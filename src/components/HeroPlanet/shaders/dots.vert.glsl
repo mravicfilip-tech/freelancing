@@ -8,6 +8,7 @@ uniform float uOceanSize;       // px
 uniform float uSizeMin;         // px (sizeByLight mode)
 uniform float uSizeMax;         // px (sizeByLight mode)
 uniform float uSizeByLight;     // 0/1
+uniform float uLitInfluence;    // 0..1
 uniform float uUseLand;         // 0/1
 uniform float uLandOpacity;
 uniform float uOceanOpacity;
@@ -38,6 +39,7 @@ void main() {
   // Halftone: dense (large) dots in shadow, fine dots toward the light.
   float litSize = mix(uSizeMax, uSizeMin, pow(lit, 0.7));
   float size = mix(baseSize, litSize, uSizeByLight) * mix(0.85 + aSeed * 0.3, 1.0, uSizeByLight);
+  size *= mix(1.0, 0.55 + 0.55 * lit, uLitInfluence);
   float opacity = mix(uOceanOpacity, uLandOpacity, land);
 
   vec3 base = mix(uColorOcean, uColorLand, land);

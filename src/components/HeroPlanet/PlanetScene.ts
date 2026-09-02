@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { PlanetConfig } from './config';
 import { resolveConfig } from './variants';
-import { generateLandMask, sampleMask, type LandMask } from './landMask';
+import { generateLandMask, loadLandMask, sampleMask, type LandMask } from './landMask';
 import { makeBadgeTexture } from './badges';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
@@ -160,9 +160,16 @@ export class PlanetScene {
     const [mw, mh] = this.cfg.landMaskSize;
     let mask: LandMask | null = null;
     if (this.cfg.useLandMask) {
-      mark('mask', () => {
-        mask = generateLandMask(mw, mh, this.cfg.landCoverage, this.cfg.landMaskSeed, this.cfg.landMaskFrequency);
-      });
+      if (this.cfg.landMaskSource === 'image') {
+        const t0 = performance.now();
+        mask = await loadLandMask(this.cfg.landMaskUrl).catch(() => null);
+        performance.measure('planet:mask', { start: t0, end: performance.now() });
+      }
+      if (!mask) {
+        mark('mask', () => {
+          mask = generateLandMask(mw, mh, this.cfg.landCoverage, this.cfg.landMaskSeed, this.cfg.landMaskFrequency);
+        });
+      }
       await idle();
       if (this.disposed) return;
     }
@@ -238,6 +245,22 @@ export class PlanetScene {
       this.glow.position.z = -0.3;
       this.glow.renderOrder = -2;
       this.root.add(this.glow);
+    }
+    if (C.body) {
+      const body = this.billboard(
+        glowFrag,
+        {
+          uSize: { value: 2.02 },
+          uColor: { value: new THREE.Color(C.bodyColor) },
+          uOpacity: { value: C.bodyOpacity },
+          uInner: { value: C.bodyEdge },
+          uFalloff: { value: 1.0 },
+        },
+        { depthTest: false },
+      );
+      body.position.z = -0.05;
+      body.renderOrder = -1;
+      this.root.add(body);
     }
     if (C.shadow) {
       this.shadow = this.billboard(
@@ -364,6 +387,7 @@ export class PlanetScene {
         uSizeMin: { value: C.sizeMinPx },
         uSizeMax: { value: C.sizeMaxPx },
         uSizeByLight: { value: C.sizeByLight ? 1 : 0 },
+        uLitInfluence: { value: C.litInfluence },
         uUseLand: { value: mask ? 1 : 0 },
         uLandOpacity: { value: C.landOpacity },
         uOceanOpacity: { value: C.oceanOpacity },
@@ -539,6 +563,7 @@ export class PlanetScene {
         (C.ringRollsDeg[i] ?? 0) * DEG,
         'ZYX',
       );
+      mesh.visible = C.ringsVisible;
       pivot.add(mesh);
 
       // --- crypto badges travelling this ring, evenly phased ---

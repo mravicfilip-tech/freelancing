@@ -70,3 +70,24 @@ export function sampleMask(mask: LandMask, x: number, y: number, z: number): num
   const bot = at(x0, y0 + 1) * (1 - fx) + at(x0 + 1, y0 + 1) * fx;
   return top * (1 - fy) + bot * fy;
 }
+
+/** Loads a greyscale equirectangular land image (white = land) as a LandMask. */
+export function loadLandMask(url: string): Promise<LandMask> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return reject(new Error('2D canvas unavailable'));
+      ctx.drawImage(img, 0, 0);
+      const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const values = new Float32Array(width * height);
+      for (let i = 0; i < values.length; i++) values[i] = data[i * 4] / 255;
+      resolve({ width, height, values, threshold: 0.5 });
+    };
+    img.onerror = () => reject(new Error(`Could not load ${url}`));
+    img.src = url;
+  });
+}

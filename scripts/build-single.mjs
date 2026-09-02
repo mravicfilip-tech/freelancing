@@ -20,6 +20,7 @@ html = html.replace(/<link rel="stylesheet"[^>]*href="\.\/(assets\/[^"]+\.css)"[
 html = html.replace(/<script type="module"[^>]*src="\.\/(assets\/[^"]+\.js)"[^>]*><\/script>/g, (_, p) => {
   let js = readFileSync('dist-single/' + p, 'utf8');
   js = js.split('/hero-planet-fallback.png').join(`data:image/png;base64,${png}`);
+  js = js.split('/land-mask.png').join(`data:image/png;base64,${readFileSync('public/land-mask.png').toString('base64')}`);
   return `<script type="module">${js.replace(/<\/script>/g, '<\\/script>')}</script>`;
 });
 writeFileSync('remittix-hero.html', html);

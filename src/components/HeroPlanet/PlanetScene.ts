@@ -295,6 +295,9 @@ export class PlanetScene {
           uWidth: { value: 0.002 },
           uSweep: { value: 0 },
           uStart: { value: C.haloStartDeg * DEG },
+          uPulse: { value: 0 },
+          uPulseLen: { value: 0 },
+          uPulseColor: { value: new THREE.Color(C.haloPulseColor) },
         },
         { depthTest: false },
       );
@@ -312,6 +315,9 @@ export class PlanetScene {
           uWidth: { value: 0.003 },
           uSweep: { value: 1 },
           uStart: { value: 0 },
+          uPulse: { value: 0 },
+          uPulseLen: { value: 0 },
+          uPulseColor: { value: new THREE.Color(C.outlineColor) },
         },
         { depthTest: false },
       );
@@ -857,6 +863,12 @@ export class PlanetScene {
     const centerViewZ = this.tmpV3
       .setFromMatrixPosition(this.root.matrixWorld)
       .applyMatrix4(this.camera.matrixWorldInverse).z;
+    if (this.halo && C.haloLoop) {
+      // The loop starts as the sweep lands: the highlight departs from the sweep's end point.
+      const u = this.halo.material.uniforms;
+      u.uPulseLen.value = C.haloPulseLength * Math.max(0, (this.state.halo - 0.85) / 0.15);
+      u.uPulse.value = (elapsed / C.haloLoopPeriodSec) % 1;
+    }
     if (this.arcs) {
       this.arcs.material.uniforms.uCenterViewZ.value = centerViewZ;
       this.arcs.material.uniforms.uTime.value = elapsed;

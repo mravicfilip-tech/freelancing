@@ -82,7 +82,8 @@ export class CoinPopups {
     group.position.copy(site.dir);
     group.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), site.dir);
 
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+    // Landings only happen on the facing hemisphere, so nothing here is depth-tested against the sphere.
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false }));
     sprite.renderOrder = 6;
     const marker = new THREE.Mesh(
       this.quad,
@@ -99,6 +100,7 @@ export class CoinPopups {
         },
         transparent: true,
         depthWrite: false,
+        depthTest: false,
       }),
     );
     marker.renderOrder = 5;
@@ -121,6 +123,7 @@ export class CoinPopups {
           },
           transparent: true,
           depthWrite: false,
+          depthTest: false,
         }),
       );
       m.renderOrder = 5;
@@ -135,7 +138,7 @@ export class CoinPopups {
     let stem: Popup['stem'] = null;
     if (this.cfg.popupStem) {
       const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0.01), new THREE.Vector3(0, 0, 0.02)]);
-      stem = new THREE.Line(g, new THREE.LineBasicMaterial({ color: coin.color, transparent: true, opacity: 0 }));
+      stem = new THREE.Line(g, new THREE.LineBasicMaterial({ color: coin.color, transparent: true, opacity: 0, depthTest: false }));
       stem.renderOrder = 5;
       stem.frustumCulled = false;
       group.add(stem);

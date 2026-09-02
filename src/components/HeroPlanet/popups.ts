@@ -17,6 +17,8 @@ interface Popup {
   sprite: THREE.Sprite;
   marker: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
   ping: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  ping2: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  stem: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial> | null;
   spawnedAt: number;
   hold: number;
   leaving: number | null;
@@ -92,7 +94,7 @@ export class CoinPopups {
           uAspect: { value: 1 },
           uColor: { value: new THREE.Color(coin.color) },
           uOpacity: { value: 0 },
-          uInner: { value: 0.55 },
+          uInner: { value: 0.86 }, // flat disc, anti-aliased edge only
           uFalloff: { value: 1 },
         },
         transparent: true,
@@ -101,33 +103,47 @@ export class CoinPopups {
     );
     marker.renderOrder = 5;
     marker.frustumCulled = false;
-    const ping = new THREE.Mesh(
-      this.quad,
-      new THREE.ShaderMaterial({
-        vertexShader: billboardVert,
-        fragmentShader: outlineFrag,
-        uniforms: {
-          uSize: { value: this.cfg.popupPingSize },
-          uAspect: { value: 1 },
-          uColor: { value: new THREE.Color(coin.color) },
-          uOpacity: { value: 0 },
-          uRadius: { value: 0.1 },
-          uWidth: { value: 0.02 },
-        },
-        transparent: true,
-        depthWrite: false,
-      }),
-    );
-    ping.renderOrder = 5;
-    ping.frustumCulled = false;
-    // marker and ping sit on the surface; the coin floats above it along the normal (local +z)
+    const makeRing = () => {
+      const m = new THREE.Mesh(
+        this.quad,
+        new THREE.ShaderMaterial({
+          vertexShader: billboardVert,
+          fragmentShader: outlineFrag,
+          uniforms: {
+            uSize: { value: this.cfg.popupPingSize },
+            uAspect: { value: 1 },
+            uColor: { value: new THREE.Color(coin.color) },
+            uOpacity: { value: 0 },
+            uRadius: { value: 0.1 },
+            uWidth: { value: 0.01 },
+            uSweep: { value: 1 },
+            uStart: { value: 0 },
+          },
+          transparent: true,
+          depthWrite: false,
+        }),
+      );
+      m.renderOrder = 5;
+      m.frustumCulled = false;
+      m.position.z = 0.05;
+      return m;
+    };
+    const ping = makeRing();
+    const ping2 = makeRing();
     marker.position.z = 0.004;
-    ping.position.z = 0.045;
-    group.add(marker, ping, sprite);
+    group.add(marker, ping, ping2, sprite);
+    let stem: Popup['stem'] = null;
+    if (this.cfg.popupStem) {
+      const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0.01), new THREE.Vector3(0, 0, 0.02)]);
+      stem = new THREE.Line(g, new THREE.LineBasicMaterial({ color: coin.color, transparent: true, opacity: 0 }));
+      stem.renderOrder = 5;
+      stem.frustumCulled = false;
+      group.add(stem);
+    }
     this.parent.add(group);
 
     const hold = this.cfg.popupHoldSec[0] + Math.random() * (this.cfg.popupHoldSec[1] - this.cfg.popupHoldSec[0]);
-    this.live.push({ site, group, sprite, marker, ping, spawnedAt: instant ? now - this.IN : now, hold, leaving: null });
+    this.live.push({ site, group, sprite, marker, ping, ping2, stem, spawnedAt: instant ? now - this.IN : now, hold, leaving: null });
     this.lastSpawn = now;
   }
 
@@ -136,6 +152,11 @@ export class CoinPopups {
     p.sprite.material.dispose();
     p.marker.material.dispose();
     p.ping.material.dispose();
+    p.ping2.material.dispose();
+    if (p.stem) {
+      p.stem.geometry.dispose();
+      p.stem.material.dispose();
+    }
   }
 
   /** @param appear 0..1 entrance gate; @param frozen static pose (reduced motion) */
@@ -159,15 +180,25 @@ export class CoinPopups {
         s = backOut(Math.min(1, age / this.IN));
       }
       const vis = s * appear * Math.max(face, p.leaving !== null ? 0 : 0.4);
-      p.sprite.position.z = C.popupLift * Math.min(1, s) + 0.02;
+      const lift = C.popupLift * Math.min(1, s) + 0.02;
+      p.sprite.position.z = lift;
       p.sprite.scale.setScalar(Math.max(0.0001, C.badgeSize * s));
       p.sprite.material.opacity = Math.min(1, vis);
-      p.marker.material.uniforms.uOpacity.value = 0.9 * Math.min(1, vis);
-      // ping: a ring that expands and fades right after the pop
-      const pingT = Math.min(1, age / C.popupPingSec);
-      p.ping.material.uniforms.uRadius.value = 0.08 + 0.4 * pingT;
-      p.ping.material.uniforms.uWidth.value = 0.03 * (1 - pingT) + 0.006;
-      p.ping.material.uniforms.uOpacity.value = 0.7 * (1 - pingT) * (1 - pingT) * Math.min(1, vis);
+      p.marker.material.uniforms.uOpacity.value = Math.min(1, vis);
+      if (p.stem) {
+        const pos = p.stem.geometry.attributes.position as THREE.BufferAttribute;
+        pos.setZ(1, Math.max(0.012, lift - (C.badgeSize * s) / 2));
+        pos.needsUpdate = true;
+        p.stem.material.opacity = 0.7 * Math.min(1, vis);
+      }
+      // two clean rings expand from the marker and fade, the second a beat behind
+      const rings: [THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>, number][] = [[p.ping, 0], [p.ping2, 0.3]];
+      for (const [ring, delay] of rings) {
+        const t = Math.min(1, Math.max(0, (age - delay) / C.popupPingSec));
+        const e = 1 - Math.pow(1 - t, 2);
+        ring.material.uniforms.uRadius.value = 0.06 + 0.42 * e;
+        ring.material.uniforms.uOpacity.value = (t > 0 && t < 1 ? 1 - e : 0) * 0.9 * Math.min(1, vis);
+      }
     }
   }
 

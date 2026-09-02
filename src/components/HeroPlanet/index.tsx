@@ -16,7 +16,10 @@ export interface HeroPlanetProps {
 type Mode = 'pending' | 'webgl' | 'fallback';
 
 /** `?devtools` exposes the live scene on window for the leak / motion checks in scripts/. */
-const DEV_TOOLS = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('devtools');
+const PARAMS = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+const DEV_TOOLS = PARAMS.has('devtools');
+/** `?variant=ledger|core|network` previews a preset from ./variants.ts. */
+const VARIANT = PARAMS.get('variant');
 type DevWindow = Window & { __heroPlanet?: PlanetScene; __heroPlanetDisposed?: ReturnType<PlanetScene['info']> };
 
 class NoWebGLError extends Error {}
@@ -91,7 +94,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
       .then(({ PlanetScene }) => {
         if (cancelled) return;
         try {
-          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll });
+          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll, variant: VARIANT });
         } catch (err) {
           console.warn('[HeroPlanet] WebGL init failed, using static fallback', err);
           setMode('fallback');

@@ -8,6 +8,7 @@ const SIZES = [
   { w: 390, h: 844, mobile: true },
 ];
 const EXTRA = (process.argv[2] || '').replace(/^\?/, '');
+const TAG = EXTRA ? '-' + EXTRA.replace(/[^a-z0-9]+/gi, '-') : '';
 
 mkdirSync('screenshots', { recursive: true });
 const server = await startPreview();
@@ -24,7 +25,7 @@ try {
     await page.goto(`${BASE}/${EXTRA ? '?' + EXTRA : ''}`, { waitUntil: 'networkidle' });
     await page.waitForSelector('.heroPlanet[data-mode]');
     await page.waitForTimeout(2600); // let the entrance finish
-    const file = `screenshots/hero-${w}x${h}.png`;
+    const file = `screenshots/hero${TAG}-${w}x${h}.png`;
     await page.screenshot({ path: file, fullPage: false });
     console.log('wrote', file);
     await context.close();

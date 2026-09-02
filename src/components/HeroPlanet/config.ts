@@ -3,68 +3,111 @@
  * Angles are degrees, durations are seconds, sizes are either world units
  * (sphere radius = 1) or CSS pixels as noted. Tune freely — nothing in the
  * shaders or PlanetScene hard-codes these.
+ *
+ * `variant` picks a preset from ./variants.ts which overrides any of these keys.
+ * Override at runtime with `?variant=ledger|core|network` for review.
  */
 export const PLANET_CONFIG = {
+  variant: 'ledger' as 'ledger' | 'core' | 'network',
+
   // ---------- Colours (brand tokens; keep in sync with src/styles/tokens.css) ----------
-  colorAccent: '#4B4BF7',   // brand indigo — used for the glow tint only
-  colorLime: '#D9F24E',     // unused by the planet now (kept for tuning)
+  colorAccent: '#4B4BF7',   // brand indigo
+  colorInk: '#111214',
+  colorLime: '#D9F24E',
   colorPlanet: '#7C858D',   // land dots
-  colorOcean: '#B9BEC4',    // lighter grey for ocean dots
-  colorRing: '#7C858D',     // orbit ring stroke
-  lightenAmount: 0.16,      // 0..1 — how much dots lighten toward the top-left light
+  colorOcean: '#B9BEC4',    // ocean dots
+  colorRing: '#A9AFB6',     // orbit ring stroke
+  lightenAmount: 0.0,       // 0..1 — how much dots lighten toward the light
   lightDirection: [-0.55, 0.65, 0.55] as [number, number, number], // view-space, normalised at runtime
 
-  // ---------- Sphere ----------
+  // ---------- Sphere: dots ----------
+  pointLayout: 'fibonacci' as 'fibonacci' | 'grid', // grid = tidy latitude rows (halftone look)
   pointCountDesktop: 14000,
   pointCountMobile: 6000,
+  useLandMask: true,        // false = uniform dots
   landCoverage: 0.3,        // fraction of the sphere that reads as land
-  landMaskSize: [160, 80] as [number, number], // equirectangular mask resolution (≈25ms to generate; 256×128 is ~100ms)
-  landMaskSeed: 7,          // change for a different set of blobs
+  landMaskSize: [160, 80] as [number, number],
+  landMaskSeed: 7,
   landMaskFrequency: 1.6,   // lower = bigger blobs
-  coastSoftness: 0.06,      // width of the land→ocean transition in mask units
+  coastSoftness: 0.06,
   landPointSizePx: 2.7,     // CSS px at the reference sphere radius below
   oceanPointSizePx: 1.7,
-  referenceSphereRadiusPx: 250, // dot sizes above are measured at this on-screen radius
+  sizeByLight: false,       // true = dot size follows lighting (halftone); uses sizeMinPx/sizeMaxPx
+  sizeMinPx: 0.7,
+  sizeMaxPx: 3.2,
+  referenceSphereRadiusPx: 250,
   landOpacity: 0.95,
   oceanOpacity: 0.42,
-  silhouettePower: 0.85,    // higher = edge dissolves sooner (dot(n, view)^power)
-  axisTiltDeg: 23,          // tilt of the rotation axis, like Earth
-  rotationPeriodSec: 90,    // one full revolution
+  silhouettePower: 0.85,    // higher = edge dissolves sooner
+  axisTiltDeg: 23,
+  rotationPeriodSec: 90,
   staticRotationDeg: 38,    // pose used for reduced-motion / fallback capture
+
+  // ---------- Sphere: solid shell (variant "core") ----------
+  shell: false,
+  shellColorDark: '#111214',
+  shellColorLight: '#4B4BF7',
+  shellColorRim: '#9D9DFF',
+  shellSpecular: 0.35,
+
+  // ---------- Sphere: wire lattice + payment arcs (variant "network") ----------
+  lattice: false,
+  latticeStepDeg: 15,
+  latticeColor: '#7C858D',
+  latticeOpacity: 0.28,
+  arcs: false,
+  arcCount: 9,
+  arcSeed: 3,
+  arcLift: 0.22,            // arc apex height above the surface, world units
+  arcColor: '#7C858D',
+  arcOpacity: 0.22,
+  arcPulseColor: '#4B4BF7',
+  arcPulseLength: 0.12,     // fraction of the arc
+  arcPulsePeriodSec: 4.5,
+
+  // ---------- Silhouette outline + contact shadow ----------
+  outline: false,
+  outlineColor: '#7C858D',
+  outlineOpacity: 0.35,
+  outlineWidthPx: 1,
+  shadow: false,
+  shadowOpacity: 0.16,
+  shadowOffsetY: -1.28,     // world units below the centre
+  shadowWidth: 2.4,         // world units
+  shadowAspect: 0.22,       // height / width
 
   // ---------- Layout (fractions of the hero box) ----------
   planetCenterX: 0.63,
   planetCenterY: 0.5,
-  sphereDiameterFraction: 0.56, // of hero height
-  // Tablet (768–1279px): pull the planet right and shrink it so it clears the copy
+  sphereDiameterFraction: 0.56,
   tabletPlanetCenterX: 0.66,
   tabletSphereDiameterFraction: 0.5,
-  // Mobile (<768px): the canvas is its own box below the copy
   mobilePlanetCenterX: 0.5,
-  mobileSphereDiameterFraction: 0.72, // of the canvas box height
-  captureSphereDiameterFraction: 0.56, // fallback PNG export — keep equal to sphereDiameterFraction
+  mobileSphereDiameterFraction: 0.72,
+  captureSphereDiameterFraction: 0.56,
   cameraFovDeg: 30,
 
   // ---------- Glow ----------
+  glow: true,
   glowScale: 3.6,           // plane width in sphere radii
-  glowOpacity: 0.10,        // peak alpha — kept faint under the grey planet
-  glowInner: 0.0,           // 0..1 — radius where the falloff starts
-  glowFalloff: 2.6,         // higher = tighter bloom
-  glowAdditive: false,      // true = additive blending (reads near-white on a light bg)
+  glowOpacity: 0.10,
+  glowInner: 0.0,
+  glowFalloff: 2.6,
+  glowAdditive: false,
 
   // ---------- Orbit rings ----------
-  ringRadii: [1.12, 1.22, 1.32],          // × sphere radius — tight orbits that hug the planet
-  ringInclinationsDeg: [12, 68, 105],     // tilt of each ring plane (rotation about X)
-  ringAzimuthsDeg: [8, 70, -75],          // rotation about Y — near ±90° makes a steep ring edge-on/thin
-  ringRollsDeg: [-8, 30, -40],            // in-screen rotation (about Z) so the ellipses sit diagonally
-  ringTubeRadius: 0.0028,                 // world units — ~1.4px at the reference radius
-  ringOpacity: 0.5,
-  ringBackFade: 0.14,                     // opacity multiplier on the half behind the sphere
+  ringRadii: [1.12, 1.22, 1.32],
+  ringInclinationsDeg: [12, 68, 105],
+  ringAzimuthsDeg: [8, 70, -75],
+  ringRollsDeg: [-8, 30, -40],
+  ringTubeRadius: 0.0028,
+  ringOpacity: 0.28,
+  ringBackFade: 0.2,
   ringSegments: 320,
 
   // ---------- Orbit nodes: crypto badges in transit ----------
-  nodePeriodsSec: [16, 20, 24],           // one loop per ring; all different so they never sync
-  // Badges are assigned to rings round-robin (0,1,2,0,1,2…) with evenly spaced phases per ring.
+  nodePeriodsSec: [16, 20, 24],
+  // Badges are assigned to rings round-robin with evenly spaced phases per ring.
   // Add `logo: '/coins/btc.svg'` to use an image instead of the generated glyph badge.
   coins: [
     { symbol: 'BTC', color: '#F7931A', glyph: '₿' },
@@ -74,24 +117,24 @@ export const PLANET_CONFIG = {
     { symbol: 'SOL', color: '#9945FF', glyph: 'S' },
     { symbol: 'XRP', color: '#23292F', glyph: 'X' },
   ] as { symbol: string; color: string; glyph: string; logo?: string }[],
-  badgeSize: 0.13,                        // badge diameter, world units (sphere radius = 1)
-  badgeTexturePx: 192,                    // generated badge texture size
-  nodeBackFade: 0.2,                      // opacity multiplier when a badge passes behind the planet
-  nodeTrailLength: 5,                     // beads behind each badge (0 = none)
-  nodeTrailSpan: 1.0,                     // seconds of travel the trail covers
+  badgeSize: 0.13,
+  badgeTexturePx: 192,
+  nodeBackFade: 0.2,
+  nodeTrailLength: 5,
+  nodeTrailSpan: 1.0,
   nodeTrailOpacity: 0.35,
-  nodeTrailSize: 0.035,                   // bead diameter, world units
+  nodeTrailSize: 0.035,
 
   // ---------- Motion ----------
   entranceTotalSec: 1.8,
-  parallaxStrength: 0.06,   // camera offset in world units at the hero's edge
-  parallaxLerp: 0.05,       // per-frame lerp toward the pointer target
-  scrollDriftFraction: 0.08, // drift right/down as the hero scrolls out (fraction of hero size)
+  parallaxStrength: 0.06,
+  parallaxLerp: 0.05,
+  scrollDriftFraction: 0.08,
 
   // ---------- Rendering ----------
   maxPixelRatio: 2,
   resizeDebounceMs: 120,
-  occluderRadius: 0.985,    // invisible depth-only sphere that hides rings behind the planet
+  occluderRadius: 0.985,
 };
 
 export type PlanetConfig = typeof PLANET_CONFIG;

@@ -1,15 +1,23 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { PLANET_CONFIG as C } from './config';
+import type { PlanetConfig } from './config';
+import { resolveConfig } from './variants';
 import { generateLandMask, sampleMask, type LandMask } from './landMask';
 import { makeBadgeTexture } from './badges';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
 import glowFrag from './shaders/glow.frag.glsl?raw';
+import outlineFrag from './shaders/outline.frag.glsl?raw';
 import ringVert from './shaders/ring.vert.glsl?raw';
 import ringFrag from './shaders/ring.frag.glsl?raw';
+import shellVert from './shaders/shell.vert.glsl?raw';
+import shellFrag from './shaders/shell.frag.glsl?raw';
+import latticeVert from './shaders/lattice.vert.glsl?raw';
+import latticeFrag from './shaders/lattice.frag.glsl?raw';
+import arcVert from './shaders/arc.vert.glsl?raw';
+import arcFrag from './shaders/arc.frag.glsl?raw';
 
 gsap.registerPlugin(ScrollTrigger);
 // Brand hexes go straight to the framebuffer — no sRGB/linear round-trip.
@@ -26,11 +34,13 @@ export interface PlanetSceneOptions {
   touch: boolean;
   /** Wire the ScrollTrigger drift/fade (off for the capture stage). */
   scroll?: boolean;
+  /** Preset name from ./variants.ts; defaults to config.variant. */
+  variant?: string | null;
 }
 
 interface Badge {
   sprite: THREE.Sprite;
-  phase: number;              // 0..1 start offset along the ring
+  phase: number;
   trail: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[];
 }
 
@@ -53,11 +63,19 @@ const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
+const lcg = (seed: number) => {
+  let s = (seed * 7919 + 1) >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+};
 
 export class PlanetScene {
   readonly renderer: THREE.WebGLRenderer;
   readonly scene = new THREE.Scene();
   readonly camera: THREE.PerspectiveCamera;
+  readonly cfg: PlanetConfig;
 
   private readonly opts: Required<PlanetSceneOptions>;
   private readonly clock = new THREE.Clock(false);
@@ -65,8 +83,14 @@ export class PlanetScene {
   private readonly tilt = new THREE.Group(); // tilted axis
   private readonly spinner = new THREE.Group(); // rotates about its Y
   private dots!: THREE.Points<THREE.BufferGeometry, THREE.ShaderMaterial>;
-  private glow!: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  private glow: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
+  private shadow: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
+  private outline: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
+  private shell: THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial> | null = null;
+  private lattice: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
+  private arcs: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private rings: Ring[] = [];
+  private readonly quad = new THREE.PlaneGeometry(1, 1);
 
   /** Entrance state, tweened by GSAP and applied every frame. */
   private readonly state = { glow: 0, dots: 0, scale: 0.92, ring0: 0, ring1: 0, ring2: 0, nodes: 0 };
@@ -90,7 +114,8 @@ export class PlanetScene {
   private readonly tmpV3 = new THREE.Vector3();
 
   constructor(options: PlanetSceneOptions) {
-    this.opts = { scroll: true, ...options };
+    this.opts = { scroll: true, variant: null, ...options };
+    this.cfg = resolveConfig(this.opts.variant);
     const { canvas } = this.opts;
 
     const t0 = performance.now();
@@ -101,18 +126,18 @@ export class PlanetScene {
       premultipliedAlpha: true,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, C.maxPixelRatio));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, this.cfg.maxPixelRatio));
     this.renderer.setClearColor(0x000000, 0); // transparent — the hero's dot grid shows through
     this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     performance.measure('planet:context', { start: t0, end: performance.now() });
 
-    this.camera = new THREE.PerspectiveCamera(C.cameraFovDeg, 1, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(this.cfg.cameraFovDeg, 1, 0.1, 100);
     this.scene.add(this.root);
     this.root.add(this.tilt);
-    this.tilt.rotation.z = -C.axisTiltDeg * DEG;
+    this.tilt.rotation.z = -this.cfg.axisTiltDeg * DEG;
     this.tilt.add(this.spinner);
 
-    this.buildGlow();
+    this.buildBackdrop();
     this.buildOccluder();
     this.ready = this.init();
   }
@@ -122,8 +147,8 @@ export class PlanetScene {
   private compiled = false;
 
   /**
-   * Construction is spread over idle callbacks — context creation, the point cloud (land mask +
-   * Fibonacci sampling), then rings and shader compilation — so no single main-thread task is long.
+   * Construction is spread over idle callbacks — context creation, the land mask, the point
+   * cloud, then rings and shader compilation — so no single main-thread task is long.
    */
   private async init() {
     const mark = (name: string, fn: () => void) => {
@@ -133,17 +158,22 @@ export class PlanetScene {
     };
     await idle();
     if (this.disposed) return;
-    const [mw, mh] = C.landMaskSize;
-    let mask!: LandMask;
-    mark('mask', () => {
-      mask = generateLandMask(mw, mh, C.landCoverage, C.landMaskSeed, C.landMaskFrequency);
-    });
-    await idle();
-    if (this.disposed) return;
+    const [mw, mh] = this.cfg.landMaskSize;
+    let mask: LandMask | null = null;
+    if (this.cfg.useLandMask) {
+      mark('mask', () => {
+        mask = generateLandMask(mw, mh, this.cfg.landCoverage, this.cfg.landMaskSeed, this.cfg.landMaskFrequency);
+      });
+      await idle();
+      if (this.disposed) return;
+    }
     mark('dots', () => this.buildDots(mask));
     await idle();
     if (this.disposed) return;
     mark('rings', () => {
+      if (this.cfg.shell) this.buildShell();
+      if (this.cfg.lattice) this.buildLattice();
+      if (this.cfg.arcs) this.buildArcs();
       this.buildRings();
       this.layout();
       this.attach();
@@ -171,62 +201,150 @@ export class PlanetScene {
 
   // ---------------------------------------------------------------- build
 
-  private buildGlow() {
-    const mat = new THREE.ShaderMaterial({
-      vertexShader: billboardVert,
-      fragmentShader: glowFrag,
-      uniforms: {
-        uSize: { value: C.glowScale },
-        uColor: { value: new THREE.Color(C.colorAccent) },
-        uOpacity: { value: 0 },
-        uInner: { value: C.glowInner },
-        uFalloff: { value: C.glowFalloff },
-      },
-      transparent: true,
-      depthTest: false,
-      depthWrite: false,
-      blending: C.glowAdditive ? THREE.AdditiveBlending : THREE.NormalBlending,
-    });
-    this.glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
-    this.glow.position.z = -0.3;
-    this.glow.renderOrder = -1;
-    this.glow.frustumCulled = false;
-    this.root.add(this.glow);
+  private billboard(
+    fragment: string,
+    uniforms: Record<string, THREE.IUniform>,
+    extra: Partial<THREE.ShaderMaterialParameters> = {},
+  ) {
+    const mesh = new THREE.Mesh(
+      this.quad,
+      new THREE.ShaderMaterial({
+        vertexShader: billboardVert,
+        fragmentShader: fragment,
+        uniforms: { uSize: { value: 1 }, uAspect: { value: 1 }, ...uniforms },
+        transparent: true,
+        depthWrite: false,
+        ...extra,
+      }),
+    );
+    mesh.frustumCulled = false;
+    return mesh;
+  }
+
+  /** Glow, contact shadow and silhouette outline — whichever the variant enables. */
+  private buildBackdrop() {
+    const C = this.cfg;
+    if (C.glow) {
+      this.glow = this.billboard(
+        glowFrag,
+        {
+          uSize: { value: C.glowScale },
+          uColor: { value: new THREE.Color(C.colorAccent) },
+          uOpacity: { value: 0 },
+          uInner: { value: C.glowInner },
+          uFalloff: { value: C.glowFalloff },
+        },
+        { depthTest: false, blending: C.glowAdditive ? THREE.AdditiveBlending : THREE.NormalBlending },
+      );
+      this.glow.position.z = -0.3;
+      this.glow.renderOrder = -2;
+      this.root.add(this.glow);
+    }
+    if (C.shadow) {
+      this.shadow = this.billboard(
+        glowFrag,
+        {
+          uSize: { value: C.shadowWidth },
+          uAspect: { value: C.shadowAspect },
+          uColor: { value: new THREE.Color(C.colorInk) },
+          uOpacity: { value: 0 },
+          uInner: { value: 0.0 },
+          uFalloff: { value: 2.2 },
+        },
+        { depthTest: false },
+      );
+      this.shadow.position.set(0.05, C.shadowOffsetY, -0.2);
+      this.shadow.renderOrder = -1;
+      this.root.add(this.shadow);
+    }
+    if (C.outline) {
+      this.outline = this.billboard(
+        outlineFrag,
+        {
+          uSize: { value: 2.08 },
+          uColor: { value: new THREE.Color(C.outlineColor) },
+          uOpacity: { value: 0 },
+          uRadius: { value: 1 / 2.08 },
+          uWidth: { value: 0.003 },
+        },
+        { depthTest: false },
+      );
+      this.outline.renderOrder = 5;
+      this.root.add(this.outline);
+    }
   }
 
   private buildOccluder() {
     // Depth-only sphere: anything passing behind the planet is hidden by it.
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(C.occluderRadius, 48, 32),
+      new THREE.SphereGeometry(this.cfg.occluderRadius, 48, 32),
       new THREE.MeshBasicMaterial({ colorWrite: false }),
     );
     mesh.renderOrder = 0;
     this.root.add(mesh);
   }
 
-  private buildDots(mask: LandMask) {
-    const n = this.opts.layout === 'mobile' ? C.pointCountMobile : C.pointCountDesktop;
-    const positions = new Float32Array(n * 3);
-    const land = new Float32Array(n);
-    const seed = new Float32Array(n);
-    const golden = Math.PI * (3 - Math.sqrt(5));
-    let s = C.landMaskSeed * 7919 + 1;
-    const rand = () => {
-      s = (s * 1664525 + 1013904223) >>> 0;
-      return s / 4294967296;
-    };
+  private buildShell() {
+    const C = this.cfg;
+    this.shell = new THREE.Mesh(
+      new THREE.SphereGeometry(0.992, 96, 64),
+      new THREE.ShaderMaterial({
+        vertexShader: shellVert,
+        fragmentShader: shellFrag,
+        uniforms: {
+          uColorDark: { value: new THREE.Color(C.shellColorDark) },
+          uColorLight: { value: new THREE.Color(C.shellColorLight) },
+          uColorRim: { value: new THREE.Color(C.shellColorRim) },
+          uLightDir: { value: new THREE.Vector3(...C.lightDirection).normalize() },
+          uSpecular: { value: C.shellSpecular },
+          uProgress: { value: 0 },
+        },
+        transparent: true,
+      }),
+    );
+    this.shell.renderOrder = 1;
+    this.spinner.add(this.shell);
+  }
 
-    for (let i = 0; i < n; i++) {
-      const y = 1 - (i / (n - 1)) * 2;
-      const r = Math.sqrt(Math.max(0, 1 - y * y));
-      const theta = golden * i;
-      const x = Math.cos(theta) * r;
-      const z = Math.sin(theta) * r;
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
-      const v = sampleMask(mask, x, y, z);
-      land[i] = smoothstep(mask.threshold - C.coastSoftness, mask.threshold + C.coastSoftness, v);
+  private buildDots(mask: LandMask | null) {
+    const C = this.cfg;
+    const n = this.opts.layout === 'mobile' ? C.pointCountMobile : C.pointCountDesktop;
+    const pts: number[] = [];
+    if (C.pointLayout === 'grid') {
+      // Latitude rows with equal arc spacing — the tidy halftone look.
+      const spacing = Math.sqrt((4 * Math.PI) / n);
+      const rows = Math.max(8, Math.round(Math.PI / spacing));
+      for (let r = 0; r < rows; r++) {
+        const lat = -Math.PI / 2 + ((r + 0.5) / rows) * Math.PI;
+        const cl = Math.cos(lat);
+        const count = Math.max(1, Math.round((2 * Math.PI * cl) / spacing));
+        const offset = (r % 2) * 0.5;
+        for (let k = 0; k < count; k++) {
+          const lon = ((k + offset) / count) * Math.PI * 2;
+          pts.push(cl * Math.cos(lon), Math.sin(lat), cl * Math.sin(lon));
+        }
+      }
+    } else {
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < n; i++) {
+        const y = 1 - (i / (n - 1)) * 2;
+        const r = Math.sqrt(Math.max(0, 1 - y * y));
+        const theta = golden * i;
+        pts.push(Math.cos(theta) * r, y, Math.sin(theta) * r);
+      }
+    }
+    const count = pts.length / 3;
+    const positions = new Float32Array(pts);
+    const land = new Float32Array(count);
+    const seed = new Float32Array(count);
+    const rand = lcg(C.landMaskSeed);
+    for (let i = 0; i < count; i++) {
+      const x = positions[i * 3];
+      const y = positions[i * 3 + 1];
+      const z = positions[i * 3 + 2];
+      land[i] = mask
+        ? smoothstep(mask.threshold - C.coastSoftness, mask.threshold + C.coastSoftness, sampleMask(mask, x, y, z))
+        : 1;
       seed[i] = rand();
     }
 
@@ -244,6 +362,10 @@ export class PlanetScene {
         uPointScale: { value: 1 },
         uLandSize: { value: C.landPointSizePx },
         uOceanSize: { value: C.oceanPointSizePx },
+        uSizeMin: { value: C.sizeMinPx },
+        uSizeMax: { value: C.sizeMaxPx },
+        uSizeByLight: { value: C.sizeByLight ? 1 : 0 },
+        uUseLand: { value: mask ? 1 : 0 },
         uLandOpacity: { value: C.landOpacity },
         uOceanOpacity: { value: C.oceanOpacity },
         uSilhouettePower: { value: C.silhouettePower },
@@ -258,12 +380,132 @@ export class PlanetScene {
     });
     this.dots = new THREE.Points(geo, mat);
     this.dots.renderOrder = 2;
+    // Sit a hair above the solid shell so the dots are not depth-rejected by it.
+    if (C.shell) this.dots.scale.setScalar(1.006);
     this.spinner.add(this.dots);
   }
 
+  private buildLattice() {
+    const C = this.cfg;
+    const seg = 96;
+    const verts: number[] = [];
+    const push = (a: THREE.Vector3, b: THREE.Vector3) => verts.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    const step = C.latticeStepDeg * DEG;
+    // parallels
+    for (let lat = -Math.PI / 2 + step; lat < Math.PI / 2 - 1e-6; lat += step) {
+      const cl = Math.cos(lat);
+      const sl = Math.sin(lat);
+      for (let k = 0; k < seg; k++) {
+        const a0 = (k / seg) * Math.PI * 2;
+        const a1 = ((k + 1) / seg) * Math.PI * 2;
+        push(
+          new THREE.Vector3(cl * Math.cos(a0), sl, cl * Math.sin(a0)),
+          new THREE.Vector3(cl * Math.cos(a1), sl, cl * Math.sin(a1)),
+        );
+      }
+    }
+    // meridians
+    for (let lon = 0; lon < Math.PI * 2 - 1e-6; lon += step) {
+      for (let k = 0; k < seg; k++) {
+        const t0 = -Math.PI / 2 + (k / seg) * Math.PI;
+        const t1 = -Math.PI / 2 + ((k + 1) / seg) * Math.PI;
+        push(
+          new THREE.Vector3(Math.cos(t0) * Math.cos(lon), Math.sin(t0), Math.cos(t0) * Math.sin(lon)),
+          new THREE.Vector3(Math.cos(t1) * Math.cos(lon), Math.sin(t1), Math.cos(t1) * Math.sin(lon)),
+        );
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1);
+    this.lattice = new THREE.LineSegments(
+      geo,
+      new THREE.ShaderMaterial({
+        vertexShader: latticeVert,
+        fragmentShader: latticeFrag,
+        uniforms: {
+          uColor: { value: new THREE.Color(C.latticeColor) },
+          uOpacity: { value: C.latticeOpacity },
+          uProgress: { value: 0 },
+        },
+        transparent: true,
+        depthWrite: false,
+      }),
+    );
+    this.lattice.renderOrder = 1;
+    this.spinner.add(this.lattice);
+  }
+
+  private buildArcs() {
+    const C = this.cfg;
+    const rand = lcg(C.arcSeed);
+    const randomDir = () => {
+      const y = rand() * 1.6 - 0.8; // keep endpoints off the poles
+      const r = Math.sqrt(1 - y * y);
+      const a = rand() * Math.PI * 2;
+      return new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a));
+    };
+    const verts: number[] = [];
+    const ts: number[] = [];
+    const ids: number[] = [];
+    const seg = 48;
+    let made = 0;
+    let guard = 0;
+    while (made < C.arcCount && guard++ < 200) {
+      const a = randomDir();
+      const b = randomDir();
+      const ang = a.angleTo(b);
+      if (ang < 40 * DEG || ang > 125 * DEG) continue;
+      const lift = C.arcLift * (0.7 + rand() * 0.6);
+      let prev: THREE.Vector3 | null = null;
+      for (let k = 0; k <= seg; k++) {
+        const t = k / seg;
+        // Renormalised lerp is close enough to a slerp for arcs under ~130°.
+        const p = a
+          .clone()
+          .lerp(b, t)
+          .normalize()
+          .multiplyScalar(1.004 + Math.sin(t * Math.PI) * lift);
+        if (prev) {
+          verts.push(prev.x, prev.y, prev.z, p.x, p.y, p.z);
+          ts.push((k - 1) / seg, t);
+          ids.push(made, made);
+        }
+        prev = p;
+      }
+      made++;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
+    geo.setAttribute('aT', new THREE.Float32BufferAttribute(ts, 1));
+    geo.setAttribute('aArc', new THREE.Float32BufferAttribute(ids, 1));
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1.5);
+    this.arcs = new THREE.LineSegments(
+      geo,
+      new THREE.ShaderMaterial({
+        vertexShader: arcVert,
+        fragmentShader: arcFrag,
+        uniforms: {
+          uCenterViewZ: { value: 0 },
+          uColor: { value: new THREE.Color(C.arcColor) },
+          uPulseColor: { value: new THREE.Color(C.arcPulseColor) },
+          uOpacity: { value: C.arcOpacity },
+          uPulseLength: { value: C.arcPulseLength },
+          uTime: { value: 0 },
+          uPeriod: { value: C.arcPulsePeriodSec },
+          uProgress: { value: 0 },
+        },
+        transparent: true,
+        depthWrite: false,
+      }),
+    );
+    this.arcs.renderOrder = 3;
+    this.spinner.add(this.arcs);
+  }
+
   private buildRings() {
+    const C = this.cfg;
     const radialSegments = 6;
-    const haloGeo = new THREE.PlaneGeometry(1, 1);
     for (let i = 0; i < C.ringRadii.length; i++) {
       const r = C.ringRadii[i];
       const ellipse = new THREE.EllipseCurve(0, 0, r, r, 0, Math.PI * 2, false, 0);
@@ -292,7 +534,12 @@ export class PlanetScene {
 
       const pivot = new THREE.Group();
       // 'ZYX': inclination first (X), then azimuth (Y), then in-screen roll (Z).
-      pivot.rotation.set(C.ringInclinationsDeg[i] * DEG, C.ringAzimuthsDeg[i] * DEG, C.ringRollsDeg[i] * DEG, 'ZYX');
+      pivot.rotation.set(
+        C.ringInclinationsDeg[i] * DEG,
+        (C.ringAzimuthsDeg[i] ?? 0) * DEG,
+        (C.ringRollsDeg[i] ?? 0) * DEG,
+        'ZYX',
+      );
       pivot.add(mesh);
 
       // --- crypto badges travelling this ring, evenly phased ---
@@ -307,24 +554,14 @@ export class PlanetScene {
         pivot.add(sprite);
         const trail: Badge['trail'] = [];
         for (let t = 0; t < C.nodeTrailLength; t++) {
-          const bead = new THREE.Mesh(
-            haloGeo,
-            new THREE.ShaderMaterial({
-              vertexShader: billboardVert,
-              fragmentShader: glowFrag,
-              uniforms: {
-                uSize: { value: C.nodeTrailSize },
-                uColor: { value: new THREE.Color(coin.color) },
-                uOpacity: { value: 0 },
-                uInner: { value: 0.0 },
-                uFalloff: { value: 1.6 },
-              },
-              transparent: true,
-              depthWrite: false,
-            }),
-          );
+          const bead = this.billboard(glowFrag, {
+            uSize: { value: C.nodeTrailSize },
+            uColor: { value: new THREE.Color(coin.color) },
+            uOpacity: { value: 0 },
+            uInner: { value: 0.0 },
+            uFalloff: { value: 1.6 },
+          });
           bead.renderOrder = 3;
-          bead.frustumCulled = false;
           pivot.add(bead);
           trail.push(bead);
         }
@@ -340,6 +577,7 @@ export class PlanetScene {
 
   /** Recompute camera distance and planet placement from the hero / canvas boxes. */
   layout() {
+    const C = this.cfg;
     const { canvas, host, layout } = this.opts;
     const hostRect = host.getBoundingClientRect();
     const rect = canvas.getBoundingClientRect();
@@ -385,6 +623,7 @@ export class PlanetScene {
     const radiusPx = (fraction * ch) / 2;
     const dpr = this.renderer.getPixelRatio();
     if (this.dots) this.dots.material.uniforms.uPointScale.value = dpr * dist * (radiusPx / C.referenceSphereRadiusPx);
+    if (this.outline) this.outline.material.uniforms.uWidth.value = C.outlineWidthPx / radiusPx / 2.08;
   }
 
   private applyScroll() {
@@ -396,6 +635,7 @@ export class PlanetScene {
   // ---------------------------------------------------------------- lifecycle
 
   private attach() {
+    const C = this.cfg;
     const { host, canvas, touch, reducedMotion, scroll } = this.opts;
 
     this.resizeObserver = new ResizeObserver(() => {
@@ -446,7 +686,7 @@ export class PlanetScene {
     const rect = this.opts.host.getBoundingClientRect();
     const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    this.pointerTarget.set(nx * C.parallaxStrength, -ny * C.parallaxStrength);
+    this.pointerTarget.set(nx * this.cfg.parallaxStrength, -ny * this.cfg.parallaxStrength);
   };
 
   private onPointerLeave = () => this.pointerTarget.set(0, 0);
@@ -495,7 +735,7 @@ export class PlanetScene {
   playEntrance() {
     if (this.entranceStarted) return;
     this.entranceStarted = true;
-    const k = C.entranceTotalSec / 1.8; // time-scale against the reference choreography
+    const k = this.cfg.entranceTotalSec / 1.8; // time-scale against the reference choreography
     const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
     tl.to(this.state, { glow: 1, duration: 0.7 * k }, 0)
       .to(this.state, { scale: 1, duration: 1.2 * k }, 0.1 * k)
@@ -515,8 +755,14 @@ export class PlanetScene {
   }
 
   private applyState() {
+    const C = this.cfg;
     const s = this.state;
-    this.glow.material.uniforms.uOpacity.value = C.glowOpacity * s.glow;
+    if (this.glow) this.glow.material.uniforms.uOpacity.value = C.glowOpacity * s.glow;
+    if (this.shadow) this.shadow.material.uniforms.uOpacity.value = C.shadowOpacity * s.glow;
+    if (this.outline) this.outline.material.uniforms.uOpacity.value = C.outlineOpacity * s.dots;
+    if (this.shell) this.shell.material.uniforms.uProgress.value = s.dots;
+    if (this.lattice) this.lattice.material.uniforms.uProgress.value = s.dots;
+    if (this.arcs) this.arcs.material.uniforms.uProgress.value = s.nodes;
     this.dots.material.uniforms.uProgress.value = s.dots;
     this.spinner.scale.setScalar(s.scale);
     const ringProgress = [s.ring0, s.ring1, s.ring2];
@@ -528,6 +774,7 @@ export class PlanetScene {
   }
 
   private update(elapsed: number) {
+    const C = this.cfg;
     this.applyState();
 
     // Continuous rotation about the tilted axis.
@@ -546,12 +793,16 @@ export class PlanetScene {
     const centerViewZ = this.tmpV3
       .setFromMatrixPosition(this.root.matrixWorld)
       .applyMatrix4(this.camera.matrixWorldInverse).z;
+    if (this.arcs) {
+      this.arcs.material.uniforms.uCenterViewZ.value = centerViewZ;
+      this.arcs.material.uniforms.uTime.value = elapsed;
+    }
 
     const appear = this.state.nodes;
     this.rings.forEach((ring, i) => {
       ring.mesh.material.uniforms.uCenterViewZ.value = centerViewZ;
 
-      const period = C.nodePeriodsSec[i];
+      const period = C.nodePeriodsSec[i] ?? 20;
       for (const badge of ring.badges) {
         const t = (badge.phase + elapsed / period) % 1;
         ring.curve.getPointAt(t, badge.sprite.position);
@@ -594,6 +845,7 @@ export class PlanetScene {
   info() {
     const { memory, render, programs } = this.renderer.info;
     return {
+      variant: this.cfg.variant,
       geometries: memory.geometries,
       textures: memory.textures,
       programs: programs?.length ?? 0,
@@ -641,6 +893,7 @@ export class PlanetScene {
         m.dispose();
       }
     });
+    this.quad.dispose();
     this.scene.clear();
     this.renderer.renderLists.dispose();
     this.renderer.dispose();

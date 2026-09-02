@@ -5,6 +5,7 @@ import type { PlanetConfig } from './config';
 import { resolveConfig } from './variants';
 import { generateLandMask, loadLandMask, sampleMask, type LandMask } from './landMask';
 import { makeBadgeTexture } from './badges';
+import { CoinPopups } from './popups';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
@@ -90,10 +91,11 @@ export class PlanetScene {
   private lattice: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private arcs: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private rings: Ring[] = [];
+  private popups: CoinPopups | null = null;
   private readonly quad = new THREE.PlaneGeometry(1, 1);
 
   /** Entrance state, tweened by GSAP and applied every frame. */
-  private readonly state = { glow: 0, dots: 0, scale: 0.92, ring0: 0, ring1: 0, ring2: 0, nodes: 0 };
+  private readonly state = { glow: 0, dots: 0, assemble: 0, spin: 1, scale: 0.92, ring0: 0, ring1: 0, ring2: 0, nodes: 0 };
   private entrance: gsap.core.Timeline | null = null;
   private scrollTrigger: ScrollTrigger | null = null;
   private scrollProgress = 0;
@@ -181,6 +183,7 @@ export class PlanetScene {
       if (this.cfg.lattice) this.buildLattice();
       if (this.cfg.arcs) this.buildArcs();
       this.buildRings();
+      if (this.cfg.coinMode === 'popup') this.popups = new CoinPopups(this.cfg, this.spinner, this.camera, this.quad);
       this.layout();
       this.attach();
       if (this.opts.reducedMotion) this.setStaticPose();
@@ -370,11 +373,25 @@ export class PlanetScene {
       seed[i] = rand();
     }
 
+    // Assemble entrance: start each dot further out, twisted around the axis, with some scatter.
+    const start = new Float32Array(count * 3);
+    const swirl = C.assembleSwirlDeg * DEG;
+    for (let i = 0; i < count; i++) {
+      const x = positions[i * 3], y = positions[i * 3 + 1], z = positions[i * 3 + 2];
+      const r = 1 + C.assembleSpread * (0.4 + seed[i] * 0.6);
+      const a = swirl * (0.5 + seed[i]) * (y > 0 ? 1 : -1);
+      const ca = Math.cos(a), sa = Math.sin(a);
+      start[i * 3] = (x * ca + z * sa) * r;
+      start[i * 3 + 1] = y * r * 1.3 + (seed[i] - 0.5) * 0.6;
+      start[i * 3 + 2] = (-x * sa + z * ca) * r;
+    }
+
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geo.setAttribute('aLand', new THREE.BufferAttribute(land, 1));
     geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
-    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1);
+    geo.setAttribute('aStart', new THREE.BufferAttribute(start, 3));
+    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1 + C.assembleSpread);
 
     const light = new THREE.Vector3(...C.lightDirection).normalize();
     const mat = new THREE.ShaderMaterial({
@@ -393,6 +410,7 @@ export class PlanetScene {
         uOceanOpacity: { value: C.oceanOpacity },
         uSilhouettePower: { value: C.silhouettePower },
         uProgress: { value: 0 },
+        uAssemble: { value: 1 },
         uLighten: { value: C.lightenAmount },
         uLightDir: { value: light },
         uColorLand: { value: new THREE.Color(C.colorPlanet) },
@@ -403,6 +421,7 @@ export class PlanetScene {
     });
     this.dots = new THREE.Points(geo, mat);
     this.dots.renderOrder = 2;
+    this.dots.frustumCulled = false;
     // Sit a hair above the solid shell so the dots are not depth-rejected by it.
     if (C.shell) this.dots.scale.setScalar(1.006);
     this.spinner.add(this.dots);
@@ -567,7 +586,7 @@ export class PlanetScene {
       pivot.add(mesh);
 
       // --- crypto badges travelling this ring, evenly phased ---
-      const coins = C.coins.filter((_, k) => k % C.ringRadii.length === i);
+      const coins = C.coinMode === 'popup' ? [] : C.coins.filter((_, k) => k % C.ringRadii.length === i);
       const badges: Badge[] = coins.map((coin, k) => {
         const texture = makeBadgeTexture(coin, C.badgeTexturePx);
         const sprite = new THREE.Sprite(
@@ -747,6 +766,22 @@ export class PlanetScene {
     this.entranceStarted = true;
     const k = this.cfg.entranceTotalSec / 1.8; // time-scale against the reference choreography
     const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+    const C = this.cfg;
+    if (C.assemble) {
+      tl.to(this.state, { dots: 1, duration: 0.6 }, 0)
+        .to(this.state, { assemble: 1, duration: C.assembleSec, ease: 'power2.inOut' }, 0)
+        .to(this.state, { spin: 0, duration: C.assembleSec * 1.15, ease: 'power3.out' }, 0)
+        .to(this.state, { scale: 1, duration: C.assembleSec, ease: 'power2.out' }, 0)
+        .to(this.state, { glow: 1, duration: 0.9 }, C.assembleSec * 0.55);
+      tl.to(this.state, { ring0: 1, duration: 0.7 * k }, C.assembleSec * 0.6)
+        .to(this.state, { ring1: 1, duration: 0.7 * k }, C.assembleSec * 0.6 + 0.12)
+        .to(this.state, { ring2: 1, duration: 0.7 * k }, C.assembleSec * 0.6 + 0.24)
+        .to(this.state, { nodes: 1, duration: 0.5 * k, ease: 'power2.out' }, C.assembleSec * 0.75);
+      this.entrance = tl;
+      return;
+    }
+    this.state.assemble = 1;
+    this.state.spin = 0;
     tl.to(this.state, { glow: 1, duration: 0.7 * k }, 0)
       .to(this.state, { scale: 1, duration: 1.2 * k }, 0.1 * k)
       .to(this.state, { dots: 1, duration: 1.2 * k }, 0.1 * k)
@@ -758,7 +793,7 @@ export class PlanetScene {
   }
 
   private setStaticPose() {
-    Object.assign(this.state, { glow: 1, dots: 1, scale: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
+    Object.assign(this.state, { glow: 1, dots: 1, assemble: 1, spin: 0, scale: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
   }
 
   private applyState() {
@@ -771,6 +806,7 @@ export class PlanetScene {
     if (this.lattice) this.lattice.material.uniforms.uProgress.value = s.dots;
     if (this.arcs) this.arcs.material.uniforms.uProgress.value = s.nodes;
     this.dots.material.uniforms.uProgress.value = s.dots;
+    this.dots.material.uniforms.uAssemble.value = s.assemble;
     this.spinner.scale.setScalar(s.scale);
     const ringProgress = [s.ring0, s.ring1, s.ring2];
     this.rings.forEach((ring, i) => {
@@ -784,8 +820,9 @@ export class PlanetScene {
     const C = this.cfg;
     this.applyState();
 
-    // Continuous rotation about the tilted axis.
-    this.spinner.rotation.y = C.staticRotationDeg * DEG + (elapsed * Math.PI * 2) / C.rotationPeriodSec;
+    // Continuous rotation about the tilted axis, plus an extra spin that decelerates as the sphere settles.
+    this.spinner.rotation.y =
+      C.staticRotationDeg * DEG + (elapsed * Math.PI * 2) / C.rotationPeriodSec - this.state.spin * C.entranceSpinDeg * DEG;
 
     this.camera.updateMatrixWorld();
     this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert();
@@ -801,6 +838,10 @@ export class PlanetScene {
     }
 
     const appear = this.state.nodes;
+    if (this.popups) {
+      this.spinner.updateMatrixWorld();
+      this.popups.update(elapsed, appear, this.opts.reducedMotion);
+    }
     this.rings.forEach((ring, i) => {
       ring.mesh.material.uniforms.uCenterViewZ.value = centerViewZ;
 
@@ -893,6 +934,8 @@ export class PlanetScene {
         m.dispose();
       }
     });
+    this.popups?.dispose();
+    this.popups = null;
     this.quad.dispose();
     this.scene.clear();
     this.renderer.renderLists.dispose();

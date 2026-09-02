@@ -8,9 +8,9 @@
  * Override at runtime with `?variant=<name>` for review.
  */
 export const PLANET_CONFIG = {
-  variant: 'globe-atlas' as
-    | 'globe-atlas'
+  variant: 'globe-halftone' as
     | 'globe-halftone'
+    | 'globe-atlas'
     | 'globe-matte'
     | 'orbital'
     | 'orbital-rise'
@@ -124,6 +124,25 @@ export const PLANET_CONFIG = {
   ringBackFade: 0.2,
   ringSegments: 320,
 
+  // ---------- Coins ----------
+  coinMode: 'orbit' as 'orbit' | 'popup', // popup = coins land at cities on the surface
+  popupVisible: 3,                        // how many are up at once
+  popupHoldSec: [2.6, 4.4] as [number, number],
+  popupSpawnGapSec: 0.9,
+  popupSiteCooldownSec: 20,
+  popupMinFacing: 0.45,                   // only sites this well turned toward the camera are chosen
+  popupLift: 0.17,                        // coin height above the surface, world units
+  popupMarkerSize: 0.05,
+  popupPingSize: 0.6,
+  popupPingSec: 1.4,
+  popupSites: [
+    ['Lagos', 6.5, 3.4], ['London', 51.5, -0.1], ['Madrid', 40.4, -3.7], ['Manila', 14.6, 121.0],
+    ['Singapore', 1.3, 103.8], ['Dubai', 25.2, 55.3], ['New York', 40.7, -74.0], ['São Paulo', -23.5, -46.6],
+    ['Nairobi', -1.3, 36.8], ['Mumbai', 19.1, 72.9], ['Mexico City', 19.4, -99.1], ['Sydney', -33.9, 151.2],
+    ['Tokyo', 35.7, 139.7], ['Johannesburg', -26.2, 28.0], ['Toronto', 43.7, -79.4], ['Istanbul', 41.0, 29.0],
+    ['Buenos Aires', -34.6, -58.4], ['Cairo', 30.0, 31.2], ['Seoul', 37.6, 127.0], ['Berlin', 52.5, 13.4],
+  ] as [string, number, number][],
+
   // ---------- Orbit nodes: crypto badges in transit ----------
   nodePeriodsSec: [16, 20, 24],
   // Badges are assigned to rings round-robin with evenly spaced phases per ring.
@@ -144,6 +163,11 @@ export const PLANET_CONFIG = {
 
   // ---------- Motion ----------
   entranceTotalSec: 1.8,
+  assemble: false,          // true = dots fly in from a swirling cloud and settle into the sphere
+  assembleSec: 2.6,
+  assembleSpread: 2.4,      // how far out the cloud starts, in sphere radii
+  assembleSwirlDeg: 160,    // how much the cloud is twisted around the axis before it settles
+  entranceSpinDeg: 70,      // extra rotation that decelerates as the sphere settles
   scrollDriftFraction: 0.08,
 
   // ---------- Rendering ----------

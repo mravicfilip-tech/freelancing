@@ -47,12 +47,14 @@ const ORBITAL: Partial<PlanetConfig> = {
 const ATLAS: Partial<PlanetConfig> = {
   ...ORBITAL,
   ringsVisible: false,
+  coinMode: 'popup',
+  assemble: true,
   ringRadii: [1.18, 1.34],
   ringInclinationsDeg: [22, 58],
   ringAzimuthsDeg: [0, 40],
   ringRollsDeg: [-14, 18],
   nodePeriodsSec: [26, 34],
-  badgeSize: 0.2,
+  badgeSize: 0.19,
   badgeTexturePx: 256,
   useLandMask: true,
   landMaskSource: 'image',
@@ -82,9 +84,9 @@ const ATLAS: Partial<PlanetConfig> = {
 };
 
 /** The three globe treatments offered by the in-page switcher. */
-export const GLOBES: { id: 'globe-atlas' | 'globe-halftone' | 'globe-matte'; label: string; blurb: string }[] = [
+export const GLOBES: { id: 'globe-halftone' | 'globe-atlas' | 'globe-matte'; label: string; blurb: string }[] = [
+  { id: 'globe-halftone', label: 'Halftone', blurb: 'Continents as a light-shaded halftone' },
   { id: 'globe-atlas', label: 'Atlas', blurb: 'Real continents in dots on a soft grey body' },
-  { id: 'globe-halftone', label: 'Halftone', blurb: 'Continents as a light-shaded halftone, no body' },
   { id: 'globe-matte', label: 'Matte', blurb: 'Solid shaded sphere with continents in white dots' },
 ];
 

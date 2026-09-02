@@ -3,13 +3,84 @@ import * as THREE from 'three';
 export interface CoinSpec {
   symbol: string;
   color: string;
-  glyph: string;
   logo?: string;
 }
 
+type Draw = (ctx: CanvasRenderingContext2D, s: number) => void;
+
+/** Drawn approximations of the coin marks, in a unit square (0..1) scaled by `s`. */
+const MARKS: Record<string, Draw> = {
+  BTC(ctx, s) {
+    ctx.save();
+    ctx.translate(0.5 * s, 0.5 * s);
+    ctx.rotate(-14 * (Math.PI / 180));
+    ctx.fillStyle = '#fff';
+    ctx.font = `800 ${0.58 * s}px "Instrument Sans Variable", Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('B', 0.01 * s, 0.03 * s);
+    // the two strokes through the B
+    ctx.fillRect(-0.075 * s, -0.33 * s, 0.05 * s, 0.09 * s);
+    ctx.fillRect(0.0 * s, -0.33 * s, 0.05 * s, 0.09 * s);
+    ctx.fillRect(-0.075 * s, 0.25 * s, 0.05 * s, 0.09 * s);
+    ctx.fillRect(0.0 * s, 0.25 * s, 0.05 * s, 0.09 * s);
+    ctx.restore();
+  },
+  ETH(ctx, s) {
+    const top = [0.5, 0.16], left = [0.27, 0.53], right = [0.73, 0.53], bottom = [0.5, 0.86];
+    const mid = [0.5, 0.63], lowL = [0.27, 0.59], lowR = [0.73, 0.59], lowMid = [0.5, 0.69];
+    const poly = (pts: number[][], alpha: number) => {
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.beginPath();
+      pts.forEach(([x, y], i) => (i ? ctx.lineTo(x * s, y * s) : ctx.moveTo(x * s, y * s)));
+      ctx.closePath();
+      ctx.fill();
+    };
+    poly([top, left, mid], 0.62);
+    poly([top, right, mid], 1);
+    poly([lowL, lowMid, bottom], 0.62);
+    poly([lowR, lowMid, bottom], 1);
+  },
+  USDT(ctx, s) {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0.26 * s, 0.24 * s, 0.48 * s, 0.11 * s); // crossbar
+    ctx.fillRect(0.44 * s, 0.24 * s, 0.12 * s, 0.52 * s); // stem
+    ctx.lineWidth = 0.075 * s;
+    ctx.strokeStyle = '#fff';
+    ctx.beginPath();
+    ctx.ellipse(0.5 * s, 0.46 * s, 0.27 * s, 0.085 * s, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = ctxFill(ctx);
+    ctx.fillRect(0.44 * s, 0.4 * s, 0.12 * s, 0.12 * s); // punch the stem back through the ellipse
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0.44 * s, 0.24 * s, 0.12 * s, 0.52 * s);
+  },
+  USDC(ctx, s) {
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 0.075 * s;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(0.5 * s, 0.5 * s, 0.32 * s, Math.PI * 0.62, Math.PI * 1.38);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0.5 * s, 0.5 * s, 0.32 * s, Math.PI * 1.62, Math.PI * 2.38);
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = `700 ${0.42 * s}px "Instrument Sans Variable", Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('$', 0.5 * s, 0.52 * s);
+  },
+};
+
+let currentFill = '#000';
+function ctxFill(_ctx: CanvasRenderingContext2D) {
+  return currentFill;
+}
+
 /**
- * Builds a camera-facing badge texture: white disc, thin grey rim, coloured inner disc with the
- * coin glyph. If `logo` is set the image is drawn into the inner disc instead (async).
+ * A coin token: coloured disc with a soft highlight, thin rim and a drop shadow so it
+ * sits on the light page. If `logo` is set the image replaces the drawn mark.
  */
 export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
@@ -17,50 +88,55 @@ export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTextur
   canvas.height = px;
   const ctx = canvas.getContext('2d')!;
   const c = px / 2;
+  const r = px * 0.36;
 
   const draw = (image?: HTMLImageElement) => {
     ctx.clearRect(0, 0, px, px);
-    // soft shadow so the badge lifts off the light background
+    // shadow
     ctx.save();
-    ctx.shadowColor = 'rgba(17,18,20,0.18)';
-    ctx.shadowBlur = px * 0.08;
-    ctx.shadowOffsetY = px * 0.02;
-    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(17,18,20,0.28)';
+    ctx.shadowBlur = px * 0.1;
+    ctx.shadowOffsetY = px * 0.035;
+    ctx.fillStyle = coin.color;
     ctx.beginPath();
-    ctx.arc(c, c, px * 0.42, 0, Math.PI * 2);
+    ctx.arc(c, c, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-    ctx.strokeStyle = 'rgba(17,18,20,0.10)';
-    ctx.lineWidth = Math.max(1, px * 0.01);
+    // glossy highlight
+    const g = ctx.createRadialGradient(c - r * 0.35, c - r * 0.45, r * 0.1, c, c, r * 1.1);
+    g.addColorStop(0, 'rgba(255,255,255,0.30)');
+    g.addColorStop(0.6, 'rgba(255,255,255,0.04)');
+    g.addColorStop(1, 'rgba(0,0,0,0.10)');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(c, c, px * 0.42, 0, Math.PI * 2);
+    ctx.arc(c, c, r, 0, Math.PI * 2);
+    ctx.fill();
+    // rim
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = Math.max(1, px * 0.012);
+    ctx.beginPath();
+    ctx.arc(c, c, r - ctx.lineWidth / 2, 0, Math.PI * 2);
     ctx.stroke();
 
-    const r = px * 0.31;
+    // mark
+    ctx.save();
+    ctx.translate(c - r, c - r);
+    const s = r * 2;
     if (image) {
-      ctx.save();
       ctx.beginPath();
-      ctx.arc(c, c, r, 0, Math.PI * 2);
+      ctx.arc(r, r, r, 0, Math.PI * 2);
       ctx.clip();
-      ctx.drawImage(image, c - r, c - r, r * 2, r * 2);
-      ctx.restore();
+      ctx.drawImage(image, 0, 0, s, s);
     } else {
-      ctx.fillStyle = coin.color;
-      ctx.beginPath();
-      ctx.arc(c, c, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `700 ${Math.round(px * 0.34)}px Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(coin.glyph, c, c + px * 0.015);
+      currentFill = coin.color;
+      (MARKS[coin.symbol] ?? MARKS.USDC)(ctx, s);
     }
+    ctx.restore();
   };
 
   draw();
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 4;
-
   if (coin.logo) {
     const img = new Image();
     img.onload = () => {

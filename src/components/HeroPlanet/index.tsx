@@ -11,6 +11,8 @@ export interface HeroPlanetProps {
   layout?: PlanetLayout;
   /** Disable the ScrollTrigger drift/fade. */
   scroll?: boolean;
+  /** Preset from ./variants.ts; `?variant=` on the URL still wins for review. */
+  variant?: string;
 }
 
 type Mode = 'pending' | 'webgl' | 'fallback';
@@ -58,7 +60,7 @@ function currentLayout(): PlanetLayout {
   return 'desktop';
 }
 
-export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true }: HeroPlanetProps) {
+export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true, variant }: HeroPlanetProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<Mode>('pending');
   const [epoch, setEpoch] = useState(0);
@@ -94,7 +96,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
       .then(({ PlanetScene }) => {
         if (cancelled) return;
         try {
-          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll, variant: VARIANT });
+          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll, variant: VARIANT ?? variant ?? null });
         } catch (err) {
           console.warn('[HeroPlanet] WebGL init failed, using static fallback', err);
           setMode('fallback');
@@ -120,7 +122,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
       }
       scene = null;
     };
-  }, [hostRef, forceStatic, layout, scroll, epoch]);
+  }, [hostRef, forceStatic, layout, scroll, variant, epoch]);
 
   return (
     <div className="heroPlanet" aria-hidden="true" data-mode={mode}>

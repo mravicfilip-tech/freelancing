@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Nav } from './components/Nav';
-import { CountdownBar } from './components/CountdownBar';
 import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 
@@ -17,13 +16,12 @@ export function App() {
   return (
     <>
       <Nav />
-      <CountdownBar />
       <main>
         {heroMounted && <Hero />}
         <section className="section" id="how">
           <h2>How it works</h2>
           <p>
-            Connect a wallet, pick a currency and a bank account, and Remittix handles the rest —
+            Connect a wallet, pick a currency and a bank account, and Remittix handles the rest:
             conversion, compliance and settlement, in one transaction.
           </p>
         </section>
@@ -37,10 +35,6 @@ export function App() {
         <section className="section" id="tokenomics">
           <h2>Tokenomics</h2>
           <p>A fixed supply, a transparent release schedule, and fees that flow back to holders.</p>
-        </section>
-        <section className="section" id="faq">
-          <h2>FAQ</h2>
-          <p>Everything you need to know before the presale closes.</p>
         </section>
       </main>
       {DEV_TOOLS && (

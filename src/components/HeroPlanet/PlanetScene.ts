@@ -27,7 +27,7 @@ export type PlanetLayout = 'desktop' | 'tablet' | 'mobile' | 'capture';
 
 export interface PlanetSceneOptions {
   canvas: HTMLCanvasElement;
-  /** The hero section: drives sizing, pointer parallax, scroll drift and visibility. */
+  /** The hero section: drives sizing, scroll drift and visibility. */
   host: HTMLElement;
   layout: PlanetLayout;
   reducedMotion: boolean;
@@ -100,7 +100,6 @@ export class PlanetScene {
 
   private basePosition = new THREE.Vector3();
   private drift = new THREE.Vector2();
-  private pointerTarget = new THREE.Vector2();
 
   private raf = 0;
   private running = false;
@@ -636,7 +635,7 @@ export class PlanetScene {
 
   private attach() {
     const C = this.cfg;
-    const { host, canvas, touch, reducedMotion, scroll } = this.opts;
+    const { host, canvas, reducedMotion, scroll } = this.opts;
 
     this.resizeObserver = new ResizeObserver(() => {
       window.clearTimeout(this.resizeTimer);
@@ -661,11 +660,6 @@ export class PlanetScene {
     this.intersection.observe(host);
     document.addEventListener('visibilitychange', this.onVisibility);
 
-    if (!touch) {
-      host.addEventListener('pointermove', this.onPointerMove);
-      host.addEventListener('pointerleave', this.onPointerLeave);
-    }
-
     if (scroll) {
       this.scrollTrigger = ScrollTrigger.create({
         trigger: host,
@@ -681,15 +675,6 @@ export class PlanetScene {
   }
 
   private onVisibility = () => this.updateRunning();
-
-  private onPointerMove = (e: PointerEvent) => {
-    const rect = this.opts.host.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    this.pointerTarget.set(nx * this.cfg.parallaxStrength, -ny * this.cfg.parallaxStrength);
-  };
-
-  private onPointerLeave = () => this.pointerTarget.set(0, 0);
 
   private updateRunning() {
     const should =
@@ -749,9 +734,6 @@ export class PlanetScene {
 
   private setStaticPose() {
     Object.assign(this.state, { glow: 1, dots: 1, scale: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
-    this.pointerTarget.set(0, 0);
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
   }
 
   private applyState() {
@@ -780,11 +762,6 @@ export class PlanetScene {
     // Continuous rotation about the tilted axis.
     this.spinner.rotation.y = C.staticRotationDeg * DEG + (elapsed * Math.PI * 2) / C.rotationPeriodSec;
 
-    // Pointer parallax on the camera, not the object.
-    if (!this.opts.reducedMotion) {
-      this.camera.position.x += (this.pointerTarget.x - this.camera.position.x) * C.parallaxLerp;
-      this.camera.position.y += (this.pointerTarget.y - this.camera.position.y) * C.parallaxLerp;
-    }
     this.camera.updateMatrixWorld();
     this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert();
 
@@ -871,8 +848,6 @@ export class PlanetScene {
     this.resizeObserver?.disconnect();
     this.intersection?.disconnect();
     document.removeEventListener('visibilitychange', this.onVisibility);
-    this.opts.host.removeEventListener('pointermove', this.onPointerMove);
-    this.opts.host.removeEventListener('pointerleave', this.onPointerLeave);
     this.opts.canvas.style.opacity = '';
 
     const seen = new Set<THREE.BufferGeometry | THREE.Material>();

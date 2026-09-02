@@ -9,9 +9,8 @@ export function Nav() {
         <a href="#how">How it works</a>
         <a href="#coverage">Coverage</a>
         <a href="#tokenomics">Tokenomics</a>
-        <a href="#faq">FAQ</a>
       </nav>
-      <a className="nav__cta" href="#presale">Connect wallet</a>
+      <a className="btn btn--small" href="#presale">Join the presale</a>
     </header>
   );
 }

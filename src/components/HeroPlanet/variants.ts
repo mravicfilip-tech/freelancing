@@ -3,7 +3,74 @@ import { PLANET_CONFIG, type PlanetConfig } from './config';
 export type VariantName = PlanetConfig['variant'];
 
 /** Three directions for review. Each overrides keys of PLANET_CONFIG. */
+/** The client's reference look: mid-grey dotted globe, tight hairline orbits, coin tokens in transit. */
+const ORBITAL: Partial<PlanetConfig> = {
+  pointLayout: 'grid',
+  pointCountDesktop: 9000,
+  pointCountMobile: 4200,
+  useLandMask: false,
+  sizeByLight: true,
+  sizeMinPx: 1.5,
+  sizeMaxPx: 3.1,
+  colorPlanet: '#7C858D',
+  landOpacity: 0.9,
+  silhouettePower: 0.4,
+  lightenAmount: 0,
+  lightDirection: [-0.5, 0.7, 0.55],
+  glow: false,
+  outline: false,
+  shadow: true,
+  shadowOpacity: 0.1,
+  shadowWidth: 2.3,
+  shadowOffsetY: -1.22,
+  ringRadii: [1.14, 1.27],
+  ringInclinationsDeg: [18, 64],
+  ringAzimuthsDeg: [0, 46],
+  ringRollsDeg: [-12, 22],
+  colorRing: '#B5BAC0',
+  ringOpacity: 0.75,
+  ringBackFade: 0.25,
+  ringTubeRadius: 0.0024,
+  nodePeriodsSec: [20, 27],
+  nodeTrailLength: 0,
+  badgeSize: 0.18,
+  badgeTexturePx: 256,
+  rotationPeriodSec: 80,
+  planetCenterX: 0.7,
+  planetCenterY: 0.5,
+  sphereDiameterFraction: 0.64,
+  tabletPlanetCenterX: 0.7,
+  tabletSphereDiameterFraction: 0.54,
+};
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
+  orbital: ORBITAL,
+  /** Centred, low and large: the bottom of the globe is cut by the hero edge. */
+  'orbital-rise': {
+    ...ORBITAL,
+    planetCenterX: 0.5,
+    planetCenterY: 1.08,
+    sphereDiameterFraction: 1.0,
+    pointCountDesktop: 15000,
+    sizeMinPx: 1.1,
+    sizeMaxPx: 2.3,
+    shadow: false,
+    ringRadii: [1.1, 1.2],
+    ringInclinationsDeg: [16, 42],
+    ringAzimuthsDeg: [0, 50],
+    ringRollsDeg: [-4, 10],
+    badgeSize: 0.11,
+    nodePeriodsSec: [24, 32],
+    mobilePlanetCenterX: 0.5,
+    mobileSphereDiameterFraction: 1.2,
+  },
+  /** Inside the product panel: the panel is the host, so the globe is centred in it. */
+  'orbital-stage': {
+    ...ORBITAL,
+    captureSphereDiameterFraction: 0.68,
+    badgeSize: 0.16,
+    shadowOpacity: 0.08,
+  },
   /** A — precise monochrome halftone. Editorial and restrained. */
   ledger: {
     pointLayout: 'grid',

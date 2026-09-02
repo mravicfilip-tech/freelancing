@@ -5,10 +5,10 @@
  * shaders or PlanetScene hard-codes these.
  *
  * `variant` picks a preset from ./variants.ts which overrides any of these keys.
- * Override at runtime with `?variant=ledger|core|network` for review.
+ * Override at runtime with `?variant=<name>` for review.
  */
 export const PLANET_CONFIG = {
-  variant: 'ledger' as 'ledger' | 'core' | 'network',
+  variant: 'orbital' as 'orbital' | 'orbital-rise' | 'orbital-stage' | 'ledger' | 'core' | 'network',
 
   // ---------- Colours (brand tokens; keep in sync with src/styles/tokens.css) ----------
   colorAccent: '#4B4BF7',   // brand indigo
@@ -108,15 +108,13 @@ export const PLANET_CONFIG = {
   // ---------- Orbit nodes: crypto badges in transit ----------
   nodePeriodsSec: [16, 20, 24],
   // Badges are assigned to rings round-robin with evenly spaced phases per ring.
-  // Add `logo: '/coins/btc.svg'` to use an image instead of the generated glyph badge.
+  // Add `logo: '/coins/btc.svg'` to use an image instead of the drawn mark.
   coins: [
-    { symbol: 'BTC', color: '#F7931A', glyph: '₿' },
-    { symbol: 'ETH', color: '#627EEA', glyph: 'Ξ' },
-    { symbol: 'USDT', color: '#26A17B', glyph: '₮' },
-    { symbol: 'USDC', color: '#2775CA', glyph: '$' },
-    { symbol: 'SOL', color: '#9945FF', glyph: 'S' },
-    { symbol: 'XRP', color: '#23292F', glyph: 'X' },
-  ] as { symbol: string; color: string; glyph: string; logo?: string }[],
+    { symbol: 'BTC', color: '#F7931A' },
+    { symbol: 'ETH', color: '#627EEA' },
+    { symbol: 'USDT', color: '#26A17B' },
+    { symbol: 'USDC', color: '#2775CA' },
+  ] as { symbol: string; color: string; logo?: string }[],
   badgeSize: 0.13,
   badgeTexturePx: 192,
   nodeBackFade: 0.2,
@@ -127,8 +125,6 @@ export const PLANET_CONFIG = {
 
   // ---------- Motion ----------
   entranceTotalSec: 1.8,
-  parallaxStrength: 0.06,
-  parallaxLerp: 0.05,
   scrollDriftFraction: 0.08,
 
   // ---------- Rendering ----------

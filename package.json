@@ -1,0 +1,30 @@
+{
+  "name": "remittix-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "fallback": "node scripts/generate-fallback.mjs",
+    "screenshots": "node scripts/screenshots.mjs",
+    "verify:leak": "node scripts/verify-leak.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^6.1.1",
+    "playwright-core": "^1.62.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2"
+  }
+}

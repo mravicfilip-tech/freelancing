@@ -1,0 +1,13 @@
+/* Remittix brand tokens — the single source of truth for colour. */
+:root {
+  --bg: #EDEFF1;      /* Page + hero background */
+  --ink: #111214;     /* Headline black, primary button */
+  --accent: #4B4BF7;  /* "Reinvented" indigo — primary planet colour */
+  --lime: #D9F24E;    /* Sparse accent only */
+  --muted: #8A8F98;   /* Body copy grey */
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --nav-h: 64px;
+  --countdown-h: 40px;
+  --page-pad: clamp(24px, 5vw, 96px);
+}

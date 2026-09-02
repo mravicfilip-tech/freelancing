@@ -6,6 +6,8 @@ export interface CoinSpec {
   logo?: string;
 }
 
+export type BadgeStyle = 'color' | 'mono';
+
 type Draw = (ctx: CanvasRenderingContext2D, s: number) => void;
 
 /** Drawn approximations of the coin marks, in a unit square (0..1) scaled by `s`. */
@@ -19,7 +21,6 @@ const MARKS: Record<string, Draw> = {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('B', 0.01 * s, 0.03 * s);
-    // the two strokes through the B
     ctx.fillRect(-0.075 * s, -0.33 * s, 0.05 * s, 0.09 * s);
     ctx.fillRect(0.0 * s, -0.33 * s, 0.05 * s, 0.09 * s);
     ctx.fillRect(-0.075 * s, 0.25 * s, 0.05 * s, 0.09 * s);
@@ -43,15 +44,15 @@ const MARKS: Record<string, Draw> = {
   },
   USDT(ctx, s) {
     ctx.fillStyle = '#fff';
-    ctx.fillRect(0.26 * s, 0.24 * s, 0.48 * s, 0.11 * s); // crossbar
-    ctx.fillRect(0.44 * s, 0.24 * s, 0.12 * s, 0.52 * s); // stem
+    ctx.fillRect(0.26 * s, 0.24 * s, 0.48 * s, 0.11 * s);
+    ctx.fillRect(0.44 * s, 0.24 * s, 0.12 * s, 0.52 * s);
     ctx.lineWidth = 0.075 * s;
     ctx.strokeStyle = '#fff';
     ctx.beginPath();
     ctx.ellipse(0.5 * s, 0.46 * s, 0.27 * s, 0.085 * s, 0, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.fillStyle = ctxFill(ctx);
-    ctx.fillRect(0.44 * s, 0.4 * s, 0.12 * s, 0.12 * s); // punch the stem back through the ellipse
+    ctx.fillStyle = currentFill;
+    ctx.fillRect(0.44 * s, 0.4 * s, 0.12 * s, 0.12 * s);
     ctx.fillStyle = '#fff';
     ctx.fillRect(0.44 * s, 0.24 * s, 0.12 * s, 0.52 * s);
   },
@@ -74,36 +75,31 @@ const MARKS: Record<string, Draw> = {
 };
 
 let currentFill = '#000';
-function ctxFill(_ctx: CanvasRenderingContext2D) {
-  return currentFill;
-}
 
 /**
- * A coin token: flat brand-colour disc with a white keyline and the coin mark.
- * If `logo` is set the image replaces the drawn mark.
+ * A coin token: flat disc with a white keyline and the coin mark. `mono` renders every coin
+ * as an ink disc. If `logo` is set the image replaces the drawn mark.
  */
-export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTexture {
+export function makeBadgeTexture(coin: CoinSpec, px: number, style: BadgeStyle = 'color', monoColor = '#111214'): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = px;
   canvas.height = px;
   const ctx = canvas.getContext('2d')!;
   const c = px / 2;
   const r = px * 0.36;
+  const fill = style === 'mono' ? monoColor : coin.color;
 
   const draw = (image?: HTMLImageElement) => {
     ctx.clearRect(0, 0, px, px);
-    // thin white keyline so the token separates cleanly from the dots behind it
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.arc(c, c, r + px * 0.02, 0, Math.PI * 2);
     ctx.fill();
-    // flat disc
-    ctx.fillStyle = coin.color;
+    ctx.fillStyle = fill;
     ctx.beginPath();
     ctx.arc(c, c, r, 0, Math.PI * 2);
     ctx.fill();
 
-    // mark
     ctx.save();
     ctx.translate(c - r, c - r);
     const s = r * 2;
@@ -113,7 +109,7 @@ export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTextur
       ctx.clip();
       ctx.drawImage(image, 0, 0, s, s);
     } else {
-      currentFill = coin.color;
+      currentFill = fill;
       (MARKS[coin.symbol] ?? MARKS.USDC)(ctx, s);
     }
     ctx.restore();
@@ -131,4 +127,42 @@ export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTextur
     img.src = coin.logo;
   }
   return texture;
+}
+
+/** A white label chip with a hairline border: a bold line and a quieter line beneath. */
+export function makeLabelTexture(title: string, subtitle: string, heightPx = 160): { texture: THREE.CanvasTexture; aspect: number } {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+  const font1 = `600 ${Math.round(heightPx * 0.3)}px "Instrument Sans Variable", Arial, sans-serif`;
+  const font2 = `500 ${Math.round(heightPx * 0.24)}px "Instrument Sans Variable", Arial, sans-serif`;
+  ctx.font = font1;
+  const w1 = ctx.measureText(title).width;
+  ctx.font = font2;
+  const w2 = ctx.measureText(subtitle).width;
+  const pad = heightPx * 0.3;
+  const width = Math.ceil(Math.max(w1, w2) + pad * 2);
+  canvas.width = width;
+  canvas.height = heightPx;
+  const radius = heightPx * 0.16;
+  const stroke = Math.max(1.5, heightPx * 0.012);
+
+  ctx.beginPath();
+  ctx.roundRect(stroke, stroke, width - stroke * 2, heightPx - stroke * 2, radius);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.lineWidth = stroke;
+  ctx.strokeStyle = '#C4C8CD';
+  ctx.stroke();
+
+  ctx.fillStyle = '#111214';
+  ctx.font = font1;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(title, pad, heightPx * 0.45);
+  ctx.fillStyle = '#5B636B';
+  ctx.font = font2;
+  ctx.fillText(subtitle, pad, heightPx * 0.78);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.anisotropy = 4;
+  return { texture, aspect: width / heightPx };
 }

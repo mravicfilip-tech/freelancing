@@ -81,26 +81,74 @@ const ATLAS: Partial<PlanetConfig> = {
   staticRotationDeg: -70,
 };
 
-/** The three globe treatments offered by the in-page switcher. */
-export const GLOBES: { id: 'globe-halftone' | 'globe-atlas' | 'globe-matte'; label: string; blurb: string }[] = [
-  { id: 'globe-halftone', label: 'Halftone', blurb: 'Continents as a light-shaded halftone' },
-  { id: 'globe-atlas', label: 'Atlas', blurb: 'Real continents in dots on a soft grey body' },
-  { id: 'globe-matte', label: 'Matte', blurb: 'Solid shaded sphere with continents in white dots' },
+/** The switcher: Halftone as the base, then three refinements of it. */
+export const GLOBES: { id: 'globe-halftone' | 'refine-mono' | 'refine-labels' | 'refine-corridors'; label: string; blurb: string }[] = [
+  { id: 'globe-halftone', label: 'Halftone', blurb: 'The base: colour tokens landing at cities' },
+  { id: 'refine-mono', label: 'Mono', blurb: 'Ink tokens, one fine ring, hairline stems' },
+  { id: 'refine-labels', label: 'Labels', blurb: 'Small tokens with a chip naming city and currency' },
+  { id: 'refine-corridors', label: 'Corridors', blurb: 'A coin travels city to city along a hairline arc' },
 ];
 
+/** Halftone: same geography as Atlas, no body disc, dots carry all the shading. */
+const HALFTONE: Partial<PlanetConfig> = {
+  ...ATLAS,
+  body: false,
+  litInfluence: 0.85,
+  landPointSizePx: 3.1,
+  oceanPointSizePx: 1.2,
+  colorPlanet: '#5F676F',
+  colorOcean: '#AEB4BA',
+  oceanOpacity: 0.5,
+};
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
-  'globe-atlas': ATLAS,
-  /** Same geography, rendered as a pure halftone: no body disc, dots carry all the shading. */
-  'globe-halftone': {
-    ...ATLAS,
-    body: false,
-    litInfluence: 0.85,
-    landPointSizePx: 3.1,
-    oceanPointSizePx: 1.2,
-    colorPlanet: '#5F676F',
-    colorOcean: '#AEB4BA',
-    oceanOpacity: 0.5,
+  'globe-halftone': HALFTONE,
+  /** Refinement 1 — monochrome. Every token is an ink disc; markers and rings in grey. */
+  'refine-mono': {
+    ...HALFTONE,
+    badgeStyle: 'mono',
+    badgeMonoColor: '#111214',
+    badgeSize: 0.15,
+    popupMarkerColor: '#7C858D',
+    popupMarkerSize: 0.036,
+    popupRings: 1,
+    popupPingSize: 0.5,
+    popupPingSec: 1.1,
+    popupLift: 0.15,
+    colorPlanet: '#586069',
+    haloPulseColor: '#7C858D',
   },
+  /** Refinement 2 — labels. Small colour tokens with a white chip: city and currency pair. */
+  'refine-labels': {
+    ...HALFTONE,
+    badgeSize: 0.13,
+    popupLabels: true,
+    popupLabelHeight: 0.105,
+    popupRings: 1,
+    popupPingSize: 0.5,
+    popupMarkerSize: 0.038,
+    popupLift: 0.14,
+    popupVisible: 2,
+    popupHoldSec: [3.2, 5],
+    popupSpawnGapSec: 1.4,
+  },
+  /** Refinement 3 — corridors. The coin travels from one city to another and lands. */
+  'refine-corridors': {
+    ...HALFTONE,
+    coinMode: 'corridor',
+    badgeSize: 0.12,
+    popupLabels: true,
+    popupLabelHeight: 0.1,
+    popupRings: 1,
+    popupPingSize: 0.5,
+    popupMarkerSize: 0.036,
+    popupMinFacing: 0.4,
+    corridorVisible: 2,
+    corridorTravelSec: 1.8,
+    corridorHoldSec: 2.4,
+    popupSpawnGapSec: 1.2,
+  },
+  'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */
   'globe-matte': {
     ...ATLAS,

@@ -14,10 +14,12 @@ import { GLOBES } from './components/HeroPlanet/variants';
 
 export type GlobeId = (typeof GLOBES)[number]['id'];
 const GLOBE_KEY = 'remittix.globe';
+/** `globe-halftone` → `halftone`, `refine-mono` → `mono`: the form used on the URL. */
+const shortId = (id: string) => id.replace(/^(globe|refine)-/, '');
 
 function readInitialGlobe(): GlobeId {
   const fromUrl = params.get('globe');
-  const match = (v: string | null) => GLOBES.find((g) => g.id === v || g.id === `globe-${v}`)?.id;
+  const match = (v: string | null) => GLOBES.find((g) => g.id === v || shortId(g.id) === v)?.id;
   let stored: string | null = null;
   try {
     stored = window.localStorage.getItem(GLOBE_KEY);
@@ -40,7 +42,7 @@ export function setGlobe(next: GlobeId) {
   }
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set('globe', next.replace(/^globe-/, ''));
+    url.searchParams.set('globe', shortId(next));
     window.history.replaceState(null, '', url);
   } catch {
     /* sandboxed frames may refuse history writes */

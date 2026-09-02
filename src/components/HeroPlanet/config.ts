@@ -10,6 +10,9 @@
 export const PLANET_CONFIG = {
   variant: 'globe-halftone' as
     | 'globe-halftone'
+    | 'refine-mono'
+    | 'refine-labels'
+    | 'refine-corridors'
     | 'globe-atlas'
     | 'globe-matte'
     | 'orbital'
@@ -138,7 +141,19 @@ export const PLANET_CONFIG = {
   ringSegments: 320,
 
   // ---------- Coins ----------
-  coinMode: 'orbit' as 'orbit' | 'popup', // popup = coins land at cities on the surface
+  coinMode: 'orbit' as 'orbit' | 'popup' | 'corridor', // popup = coins land at cities; corridor = coins travel city to city
+  badgeStyle: 'color' as 'color' | 'mono',   // mono = every token as an ink disc
+  badgeMonoColor: '#111214',
+  popupLabels: false,                     // white chip naming the city and the currency pair
+  popupLabelHeight: 0.11,                 // world units
+  popupRings: 2,                          // expanding rings per landing (0–2)
+  popupMarkerColor: null as string | null, // null = the coin's colour
+  corridorVisible: 2,
+  corridorTravelSec: 1.7,
+  corridorHoldSec: 2.2,
+  corridorLift: 0.16,
+  corridorMinDeg: 22,
+  corridorMaxDeg: 85,
   popupVisible: 3,                        // how many are up at once
   popupHoldSec: [2.6, 4.4] as [number, number],
   popupSpawnGapSec: 0.9,
@@ -149,6 +164,12 @@ export const PLANET_CONFIG = {
   popupPingSize: 0.7,
   popupPingSec: 1.3,
   popupStem: true,                        // thin line from the marker up to the coin
+  /** Local currency shown on labels for each site. */
+  siteCurrency: {
+    Lagos: 'NGN', London: 'GBP', Madrid: 'EUR', Manila: 'PHP', Singapore: 'SGD', Dubai: 'AED', 'New York': 'USD',
+    'São Paulo': 'BRL', Nairobi: 'KES', Mumbai: 'INR', 'Mexico City': 'MXN', Sydney: 'AUD', Tokyo: 'JPY',
+    Johannesburg: 'ZAR', Toronto: 'CAD', Istanbul: 'TRY', 'Buenos Aires': 'ARS', Cairo: 'EGP', Seoul: 'KRW', Berlin: 'EUR',
+  } as Record<string, string>,
   popupSites: [
     ['Lagos', 6.5, 3.4], ['London', 51.5, -0.1], ['Madrid', 40.4, -3.7], ['Manila', 14.6, 121.0],
     ['Singapore', 1.3, 103.8], ['Dubai', 25.2, 55.3], ['New York', 40.7, -74.0], ['São Paulo', -23.5, -46.6],

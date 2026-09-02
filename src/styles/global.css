@@ -376,3 +376,53 @@ html[data-hero='3'] .btn--primary:hover {
   border: 1px solid var(--muted);
   background: #fff;
 }
+
+/* ---------- Globe switcher (review control) ---------- */
+.switcher {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 40;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 14px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(17, 18, 20, 0.08);
+  font-size: 14px;
+  max-width: calc(100vw - 32px);
+}
+.switcher__label {
+  color: var(--body);
+  margin-right: 6px;
+}
+.switcher__option {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.switcher__option:hover {
+  background: color-mix(in srgb, var(--hairline) 35%, transparent);
+}
+.switcher__option[data-active] {
+  background: var(--ink);
+  color: #fff;
+}
+.switcher__blurb {
+  color: var(--body);
+  margin: 0 6px 0 10px;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .switcher__blurb {
+    display: none;
+  }
+}

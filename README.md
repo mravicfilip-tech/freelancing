@@ -11,6 +11,28 @@ npm run build          # typecheck + production build → dist/
 npm run preview        # serve dist/
 ```
 
+## Deploy to Vercel
+
+The repo is a plain Vite site, so Vercel needs no configuration beyond the
+included `vercel.json` (framework `vite`, output `dist/`, SPA rewrite, long
+cache on hashed assets). Either:
+
+- Import the GitHub repo at vercel.com/new, pick this branch, and deploy. Every
+  push then gets a preview URL and the production branch gets the main URL.
+- Or from a terminal: `npx vercel` (preview) and `npx vercel --prod`.
+
+Node 22 or newer is required (set in `package.json` engines; Vercel's default).
+
+## Globe switcher
+
+The hero ships with three globe treatments and a switcher pinned to the bottom
+of the page: Halftone, Matte and Continents. The choice is written to
+`?globe=halftone|matte|continents` on the URL, so a link carries it, and to
+localStorage, so it sticks for a returning viewer. Presets live in
+`src/components/HeroPlanet/variants.ts` under `GLOBES` and `VARIANTS`. To ship
+without the switcher, remove `<PlanetSwitcher />` from `src/App.tsx` and set the
+default in `config.ts`.
+
 ## Hero planet
 
 ```
@@ -57,7 +79,9 @@ node scripts/verify.mjs  # reduced-motion, no-WebGL, tablet, mobile and scroll c
 
 Debug switches on the URL: `?devtools` exposes `window.__heroPlanet` and a
 mount/unmount button; `?planet=off` renders the hero without the WebGL layer;
-`?capture=planet` shows the transparent capture stage.
+`?planet=static` forces the reduced-motion frame; `?capture=planet` shows the
+transparent capture stage; `?hero=1|2|3` previews the three hero layouts from
+`DESIGN.md`; `?variant=<name>` previews any preset in `variants.ts`.
 
 ### Performance notes
 

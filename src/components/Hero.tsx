@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { HeroPlanet } from './HeroPlanet';
-import { HERO_VARIANT, PLANET_ENABLED, PLANET_STATIC } from '../heroVariant';
+import { HERO_VARIANT, PLANET_ENABLED, PLANET_STATIC, useGlobe } from '../heroVariant';
 
 const PRESALE_END = Date.UTC(2026, 9, 15, 12, 0, 0); // 15 Oct 2026 12:00 UTC
 
@@ -38,6 +38,7 @@ function Countdown() {
 /** 1 — Ledger: left-aligned copy, the globe large on the right. */
 function HeroLedger() {
   const ref = useRef<HTMLElement>(null);
+  const globe = useGlobe();
   return (
     <section ref={ref} className="hero" data-hero="1" id="top">
       <Corners />
@@ -58,7 +59,7 @@ function HeroLedger() {
         <Countdown />
         <p className="hero__proof">$16.4M raised so far.</p>
       </div>
-      {PLANET_ENABLED && <HeroPlanet hostRef={ref} variant="orbital" forceStatic={PLANET_STATIC} />}
+      {PLANET_ENABLED && <HeroPlanet hostRef={ref} variant={globe} forceStatic={PLANET_STATIC} />}
     </section>
   );
 }

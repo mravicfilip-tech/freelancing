@@ -8,7 +8,16 @@
  * Override at runtime with `?variant=<name>` for review.
  */
 export const PLANET_CONFIG = {
-  variant: 'orbital' as 'orbital' | 'orbital-rise' | 'orbital-stage' | 'ledger' | 'core' | 'network',
+  variant: 'globe-halftone' as
+    | 'globe-halftone'
+    | 'globe-matte'
+    | 'globe-continents'
+    | 'orbital'
+    | 'orbital-rise'
+    | 'orbital-stage'
+    | 'ledger'
+    | 'core'
+    | 'network',
 
   // ---------- Colours (brand tokens; keep in sync with src/styles/tokens.css) ----------
   colorAccent: '#4B4BF7',   // brand indigo

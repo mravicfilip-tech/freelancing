@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Nav } from './components/Nav';
 import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
+import { PlanetSwitcher } from './components/PlanetSwitcher';
+import { HERO_VARIANT } from './heroVariant';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -37,6 +39,7 @@ export function App() {
           <p>A fixed supply, a transparent release schedule, and fees that flow back to holders.</p>
         </section>
       </main>
+      {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (
         <div className="devbar">
           <button type="button" id="dev-toggle-hero" onClick={() => setHeroMounted((m) => !m)}>

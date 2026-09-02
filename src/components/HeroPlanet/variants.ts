@@ -43,7 +43,53 @@ const ORBITAL: Partial<PlanetConfig> = {
   tabletSphereDiameterFraction: 0.54,
 };
 
+/** The three globe treatments offered by the in-page switcher. All share ORBITAL's layout and orbits. */
+export const GLOBES: { id: 'globe-halftone' | 'globe-matte' | 'globe-continents'; label: string; blurb: string }[] = [
+  { id: 'globe-halftone', label: 'Halftone', blurb: 'Dots on a latitude grid, sized by light' },
+  { id: 'globe-matte', label: 'Matte', blurb: 'Solid shaded sphere with a fine dot surface' },
+  { id: 'globe-continents', label: 'Continents', blurb: 'Land in darker dots, oceans in lighter ones' },
+];
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
+  'globe-halftone': ORBITAL,
+  /** Solid matte grey sphere, lit top-left, with a fine white dot grid on the surface. */
+  'globe-matte': {
+    ...ORBITAL,
+    shell: true,
+    shellColorDark: '#5F676F',
+    shellColorLight: '#AEB4BA',
+    shellColorRim: '#D6D9DD',
+    shellSpecular: 0.22,
+    pointCountDesktop: 7000,
+    pointCountMobile: 3200,
+    sizeByLight: false,
+    landPointSizePx: 1.7,
+    colorPlanet: '#FFFFFF',
+    landOpacity: 0.75,
+    silhouettePower: 0.9,
+    shadowOpacity: 0.16,
+    colorRing: '#9AA0A6',
+    ringOpacity: 0.7,
+  },
+  /** Land and sea in two greys on the dot grid, so continents read without a texture. */
+  'globe-continents': {
+    ...ORBITAL,
+    useLandMask: true,
+    landCoverage: 0.32,
+    landMaskSeed: 11,
+    landMaskFrequency: 1.4,
+    coastSoftness: 0.05,
+    pointCountDesktop: 12000,
+    pointCountMobile: 5000,
+    sizeByLight: false,
+    landPointSizePx: 2.9,
+    oceanPointSizePx: 1.6,
+    colorPlanet: '#59616A',
+    colorOcean: '#B4BAC0',
+    landOpacity: 0.95,
+    oceanOpacity: 0.75,
+    silhouettePower: 0.5,
+  },
   orbital: ORBITAL,
   /** Centred, low and large: the bottom of the globe is cut by the hero edge. */
   'orbital-rise': {

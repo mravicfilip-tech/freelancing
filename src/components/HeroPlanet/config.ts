@@ -8,10 +8,10 @@
  * Override at runtime with `?variant=<name>` for review.
  */
 export const PLANET_CONFIG = {
-  variant: 'globe-halftone' as
+  variant: 'globe-atlas' as
+    | 'globe-atlas'
     | 'globe-halftone'
     | 'globe-matte'
-    | 'globe-continents'
     | 'orbital'
     | 'orbital-rise'
     | 'orbital-stage'
@@ -34,7 +34,9 @@ export const PLANET_CONFIG = {
   pointCountDesktop: 14000,
   pointCountMobile: 6000,
   useLandMask: true,        // false = uniform dots
-  landCoverage: 0.3,        // fraction of the sphere that reads as land
+  landMaskSource: 'noise' as 'noise' | 'image', // image = real geography from landMaskUrl
+  landMaskUrl: '/land-mask.png',                // equirectangular, white = land (npm run landmask)
+  landCoverage: 0.3,        // noise mode only: fraction of the sphere that reads as land
   landMaskSize: [160, 80] as [number, number],
   landMaskSeed: 7,
   landMaskFrequency: 1.6,   // lower = bigger blobs
@@ -44,6 +46,7 @@ export const PLANET_CONFIG = {
   sizeByLight: false,       // true = dot size follows lighting (halftone); uses sizeMinPx/sizeMaxPx
   sizeMinPx: 0.7,
   sizeMaxPx: 3.2,
+  litInfluence: 0,          // 0..1 — how much lighting shrinks dots on the shadow side (all modes)
   referenceSphereRadiusPx: 250,
   landOpacity: 0.95,
   oceanOpacity: 0.42,
@@ -73,6 +76,12 @@ export const PLANET_CONFIG = {
   arcPulseColor: '#4B4BF7',
   arcPulseLength: 0.12,     // fraction of the arc
   arcPulsePeriodSec: 4.5,
+
+  // ---------- Body disc: a soft solid disc behind the dots so the sphere has volume ----------
+  body: false,
+  bodyColor: '#E2E5E8',
+  bodyOpacity: 1,
+  bodyEdge: 0.9,            // 0..1 — where the disc's edge starts to soften
 
   // ---------- Silhouette outline + contact shadow ----------
   outline: false,
@@ -104,7 +113,8 @@ export const PLANET_CONFIG = {
   glowFalloff: 2.6,
   glowAdditive: false,
 
-  // ---------- Orbit rings ----------
+  // ---------- Orbit rings (paths are always used by the coins; the lines are optional) ----------
+  ringsVisible: true,
   ringRadii: [1.12, 1.22, 1.32],
   ringInclinationsDeg: [12, 68, 105],
   ringAzimuthsDeg: [8, 70, -75],

@@ -87,6 +87,7 @@ export class PlanetScene {
   private glow: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
   private shadow: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
   private outline: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
+  private halo: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | null = null;
   private shell: THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial> | null = null;
   private lattice: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private arcs: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
@@ -95,7 +96,7 @@ export class PlanetScene {
   private readonly quad = new THREE.PlaneGeometry(1, 1);
 
   /** Entrance state, tweened by GSAP and applied every frame. */
-  private readonly state = { glow: 0, dots: 0, assemble: 0, spin: 1, scale: 0.92, ring0: 0, ring1: 0, ring2: 0, nodes: 0 };
+  private readonly state = { glow: 0, dots: 0, assemble: 0, spin: 1, scale: 0.92, halo: 0, ring0: 0, ring1: 0, ring2: 0, nodes: 0 };
   private entrance: gsap.core.Timeline | null = null;
   private scrollTrigger: ScrollTrigger | null = null;
   private scrollProgress = 0;
@@ -282,6 +283,24 @@ export class PlanetScene {
       this.shadow.renderOrder = -1;
       this.root.add(this.shadow);
     }
+    if (C.halo) {
+      const size = C.haloRadius * 2 * 1.04;
+      this.halo = this.billboard(
+        outlineFrag,
+        {
+          uSize: { value: size },
+          uColor: { value: new THREE.Color(C.haloColor) },
+          uOpacity: { value: C.haloOpacity },
+          uRadius: { value: C.haloRadius / size },
+          uWidth: { value: 0.002 },
+          uSweep: { value: 0 },
+          uStart: { value: C.haloStartDeg * DEG },
+        },
+        { depthTest: false },
+      );
+      this.halo.renderOrder = -1;
+      this.root.add(this.halo);
+    }
     if (C.outline) {
       this.outline = this.billboard(
         outlineFrag,
@@ -291,6 +310,8 @@ export class PlanetScene {
           uOpacity: { value: 0 },
           uRadius: { value: 1 / 2.08 },
           uWidth: { value: 0.003 },
+          uSweep: { value: 1 },
+          uStart: { value: 0 },
         },
         { depthTest: false },
       );
@@ -667,6 +688,7 @@ export class PlanetScene {
     const dpr = this.renderer.getPixelRatio();
     if (this.dots) this.dots.material.uniforms.uPointScale.value = dpr * dist * (radiusPx / C.referenceSphereRadiusPx);
     if (this.outline) this.outline.material.uniforms.uWidth.value = C.outlineWidthPx / radiusPx / 2.08;
+    if (this.halo) this.halo.material.uniforms.uWidth.value = C.haloWidthPx / radiusPx / (C.haloRadius * 2 * 1.04);
   }
 
   private applyScroll() {
@@ -772,7 +794,8 @@ export class PlanetScene {
         .to(this.state, { assemble: 1, duration: C.assembleSec, ease: 'power2.inOut' }, 0)
         .to(this.state, { spin: 0, duration: C.assembleSec * 1.15, ease: 'power3.out' }, 0)
         .to(this.state, { scale: 1, duration: C.assembleSec, ease: 'power2.out' }, 0)
-        .to(this.state, { glow: 1, duration: 0.9 }, C.assembleSec * 0.55);
+        .to(this.state, { glow: 1, duration: 0.9 }, C.assembleSec * 0.55)
+        .to(this.state, { halo: 1, duration: C.haloSweepSec, ease: 'power2.inOut' }, C.assembleSec * 0.45);
       tl.to(this.state, { ring0: 1, duration: 0.7 * k }, C.assembleSec * 0.6)
         .to(this.state, { ring1: 1, duration: 0.7 * k }, C.assembleSec * 0.6 + 0.12)
         .to(this.state, { ring2: 1, duration: 0.7 * k }, C.assembleSec * 0.6 + 0.24)
@@ -783,6 +806,7 @@ export class PlanetScene {
     this.state.assemble = 1;
     this.state.spin = 0;
     tl.to(this.state, { glow: 1, duration: 0.7 * k }, 0)
+      .to(this.state, { halo: 1, duration: C.haloSweepSec, ease: 'power2.inOut' }, 0.3 * k)
       .to(this.state, { scale: 1, duration: 1.2 * k }, 0.1 * k)
       .to(this.state, { dots: 1, duration: 1.2 * k }, 0.1 * k)
       .to(this.state, { ring0: 1, duration: 0.7 * k }, 0.75 * k)
@@ -793,7 +817,7 @@ export class PlanetScene {
   }
 
   private setStaticPose() {
-    Object.assign(this.state, { glow: 1, dots: 1, assemble: 1, spin: 0, scale: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
+    Object.assign(this.state, { glow: 1, dots: 1, assemble: 1, spin: 0, scale: 1, halo: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
   }
 
   private applyState() {
@@ -802,6 +826,7 @@ export class PlanetScene {
     if (this.glow) this.glow.material.uniforms.uOpacity.value = C.glowOpacity * s.glow;
     if (this.shadow) this.shadow.material.uniforms.uOpacity.value = C.shadowOpacity * s.glow;
     if (this.outline) this.outline.material.uniforms.uOpacity.value = C.outlineOpacity * s.dots;
+    if (this.halo) this.halo.material.uniforms.uSweep.value = s.halo;
     if (this.shell) this.shell.material.uniforms.uProgress.value = s.dots;
     if (this.lattice) this.lattice.material.uniforms.uProgress.value = s.dots;
     if (this.arcs) this.arcs.material.uniforms.uProgress.value = s.nodes;

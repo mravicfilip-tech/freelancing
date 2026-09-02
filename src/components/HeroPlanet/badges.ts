@@ -79,8 +79,8 @@ function ctxFill(_ctx: CanvasRenderingContext2D) {
 }
 
 /**
- * A coin token: coloured disc with a soft highlight, thin rim and a drop shadow so it
- * sits on the light page. If `logo` is set the image replaces the drawn mark.
+ * A coin token: flat brand-colour disc with a white keyline and the coin mark.
+ * If `logo` is set the image replaces the drawn mark.
  */
 export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
@@ -92,31 +92,16 @@ export function makeBadgeTexture(coin: CoinSpec, px: number): THREE.CanvasTextur
 
   const draw = (image?: HTMLImageElement) => {
     ctx.clearRect(0, 0, px, px);
-    // shadow
-    ctx.save();
-    ctx.shadowColor = 'rgba(17,18,20,0.28)';
-    ctx.shadowBlur = px * 0.1;
-    ctx.shadowOffsetY = px * 0.035;
+    // thin white keyline so the token separates cleanly from the dots behind it
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(c, c, r + px * 0.02, 0, Math.PI * 2);
+    ctx.fill();
+    // flat disc
     ctx.fillStyle = coin.color;
     ctx.beginPath();
     ctx.arc(c, c, r, 0, Math.PI * 2);
     ctx.fill();
-    ctx.restore();
-    // glossy highlight
-    const g = ctx.createRadialGradient(c - r * 0.35, c - r * 0.45, r * 0.1, c, c, r * 1.1);
-    g.addColorStop(0, 'rgba(255,255,255,0.30)');
-    g.addColorStop(0.6, 'rgba(255,255,255,0.04)');
-    g.addColorStop(1, 'rgba(0,0,0,0.10)');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(c, c, r, 0, Math.PI * 2);
-    ctx.fill();
-    // rim
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-    ctx.lineWidth = Math.max(1, px * 0.012);
-    ctx.beginPath();
-    ctx.arc(c, c, r - ctx.lineWidth / 2, 0, Math.PI * 2);
-    ctx.stroke();
 
     // mark
     ctx.save();

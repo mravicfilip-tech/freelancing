@@ -75,10 +75,8 @@ const ATLAS: Partial<PlanetConfig> = {
   bodyColor: '#E1E4E8',
   bodyOpacity: 1,
   bodyEdge: 0.9,
-  shadow: true,
-  shadowOpacity: 0.12,
-  shadowWidth: 2.4,
-  shadowOffsetY: -1.2,
+  shadow: false,
+  halo: true,
   rotationPeriodSec: 110,
   staticRotationDeg: -70,
 };
@@ -121,7 +119,6 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
     landOpacity: 0.92,
     oceanOpacity: 0.28,
     silhouettePower: 0.9,
-    shadowOpacity: 0.16,
   },
   orbital: ORBITAL,
   /** Centred, low and large: the bottom of the globe is cut by the hero edge. */

@@ -83,6 +83,15 @@ export const PLANET_CONFIG = {
   bodyOpacity: 1,
   bodyEdge: 0.9,            // 0..1 — where the disc's edge starts to soften
 
+  // ---------- Halo: a hairline circle around the sphere that sweeps in on load ----------
+  halo: false,
+  haloRadius: 1.34,         // × sphere radius
+  haloColor: '#A9AFB6',
+  haloOpacity: 0.8,
+  haloWidthPx: 1,
+  haloStartDeg: 120,        // where the sweep begins (0 = right, counter-clockwise)
+  haloSweepSec: 1.6,
+
   // ---------- Silhouette outline + contact shadow ----------
   outline: false,
   outlineColor: '#7C858D',
@@ -132,9 +141,10 @@ export const PLANET_CONFIG = {
   popupSiteCooldownSec: 20,
   popupMinFacing: 0.45,                   // only sites this well turned toward the camera are chosen
   popupLift: 0.17,                        // coin height above the surface, world units
-  popupMarkerSize: 0.05,
-  popupPingSize: 0.6,
-  popupPingSec: 1.4,
+  popupMarkerSize: 0.045,
+  popupPingSize: 0.7,
+  popupPingSec: 1.3,
+  popupStem: true,                        // thin line from the marker up to the coin
   popupSites: [
     ['Lagos', 6.5, 3.4], ['London', 51.5, -0.1], ['Madrid', 40.4, -3.7], ['Manila', 14.6, 121.0],
     ['Singapore', 1.3, 103.8], ['Dubai', 25.2, 55.3], ['New York', 40.7, -74.0], ['São Paulo', -23.5, -46.6],

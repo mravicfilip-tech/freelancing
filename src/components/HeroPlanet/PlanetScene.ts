@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PLANET_CONFIG as C } from './config';
-import { generateLandMask, sampleMask } from './landMask';
+import { generateLandMask, sampleMask, type LandMask } from './landMask';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
@@ -40,6 +40,11 @@ interface Ring {
 }
 
 const DEG = Math.PI / 180;
+const idle = () =>
+  new Promise<void>((resolve) => {
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 500 });
+    else window.setTimeout(resolve, 16);
+  });
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
@@ -84,6 +89,7 @@ export class PlanetScene {
     this.opts = { scroll: true, ...options };
     const { canvas } = this.opts;
 
+    const t0 = performance.now();
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
@@ -94,6 +100,7 @@ export class PlanetScene {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, C.maxPixelRatio));
     this.renderer.setClearColor(0x000000, 0); // transparent — the hero's dot grid shows through
     this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    performance.measure('planet:context', { start: t0, end: performance.now() });
 
     this.camera = new THREE.PerspectiveCamera(C.cameraFovDeg, 1, 0.1, 100);
     this.scene.add(this.root);
@@ -103,22 +110,59 @@ export class PlanetScene {
 
     this.buildGlow();
     this.buildOccluder();
-    this.buildDots();
-    this.buildRings();
+    this.ready = this.init();
+  }
 
-    this.layout();
-    this.attach();
+  /** Resolves once shaders are compiled and the first frame has been scheduled. */
+  readonly ready: Promise<void>;
+  private compiled = false;
 
+  /**
+   * Construction is spread over idle callbacks — context creation, the point cloud (land mask +
+   * Fibonacci sampling), then rings and shader compilation — so no single main-thread task is long.
+   */
+  private async init() {
+    const mark = (name: string, fn: () => void) => {
+      const t0 = performance.now();
+      fn();
+      performance.measure(`planet:${name}`, { start: t0, end: performance.now() });
+    };
+    await idle();
+    if (this.disposed) return;
+    const [mw, mh] = C.landMaskSize;
+    let mask!: LandMask;
+    mark('mask', () => {
+      mask = generateLandMask(mw, mh, C.landCoverage, C.landMaskSeed, C.landMaskFrequency);
+    });
+    await idle();
+    if (this.disposed) return;
+    mark('dots', () => this.buildDots(mask));
+    await idle();
+    if (this.disposed) return;
+    mark('rings', () => {
+      this.buildRings();
+      this.layout();
+      this.attach();
+      if (this.opts.reducedMotion) this.setStaticPose();
+      else this.applyState();
+    });
+
+    // Compile all programs off the critical path (KHR_parallel_shader_compile where available).
+    const tc = performance.now();
+    await this.renderer.compileAsync(this.scene, this.camera).catch(() => undefined);
+    performance.measure('planet:compile', { start: tc, end: performance.now() });
+    if (this.disposed) return;
+    this.compiled = true;
     if (this.opts.reducedMotion) {
-      this.setStaticPose();
-      this.renderOnce();
-    } else {
-      this.applyState();
-      this.updateRunning();
-      (document.fonts?.ready ?? Promise.resolve()).then(() => {
-        if (!this.disposed) this.playEntrance();
-      });
+      mark('firstFrame', () => this.renderOnce());
+      return;
     }
+    await idle();
+    if (this.disposed) return;
+    mark('firstFrame', () => this.renderOnce());
+    this.updateRunning();
+    await (document.fonts?.ready ?? Promise.resolve());
+    if (!this.disposed) this.playEntrance();
   }
 
   // ---------------------------------------------------------------- build
@@ -156,13 +200,11 @@ export class PlanetScene {
     this.root.add(mesh);
   }
 
-  private buildDots() {
+  private buildDots(mask: LandMask) {
     const n = this.opts.layout === 'mobile' ? C.pointCountMobile : C.pointCountDesktop;
     const positions = new Float32Array(n * 3);
     const land = new Float32Array(n);
     const seed = new Float32Array(n);
-    const [mw, mh] = C.landMaskSize;
-    const mask = generateLandMask(mw, mh, C.landCoverage, C.landMaskSeed, C.landMaskFrequency);
     const golden = Math.PI * (3 - Math.sqrt(5));
     let s = C.landMaskSeed * 7919 + 1;
     const rand = () => {
@@ -342,7 +384,7 @@ export class PlanetScene {
     // Dot sizes are specified in CSS px at a reference on-screen radius.
     const radiusPx = (fraction * ch) / 2;
     const dpr = this.renderer.getPixelRatio();
-    this.dots.material.uniforms.uPointScale.value = dpr * dist * (radiusPx / C.referenceSphereRadiusPx);
+    if (this.dots) this.dots.material.uniforms.uPointScale.value = dpr * dist * (radiusPx / C.referenceSphereRadiusPx);
   }
 
   private applyScroll() {
@@ -361,7 +403,7 @@ export class PlanetScene {
       this.resizeTimer = window.setTimeout(() => {
         if (this.disposed) return;
         this.layout();
-        if (reducedMotion || !this.running) this.renderOnce();
+        if (this.compiled && !this.running) this.renderOnce();
       }, C.resizeDebounceMs);
     });
     this.resizeObserver.observe(host);
@@ -411,7 +453,11 @@ export class PlanetScene {
 
   private updateRunning() {
     const should =
-      !this.disposed && !this.opts.reducedMotion && this.hostVisible && document.visibilityState !== 'hidden';
+      this.compiled &&
+      !this.disposed &&
+      !this.opts.reducedMotion &&
+      this.hostVisible &&
+      document.visibilityState !== 'hidden';
     if (should) this.start();
     else this.stop();
   }

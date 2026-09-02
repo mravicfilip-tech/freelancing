@@ -19,6 +19,8 @@ type Mode = 'pending' | 'webgl' | 'fallback';
 const DEV_TOOLS = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('devtools');
 type DevWindow = Window & { __heroPlanet?: PlanetScene; __heroPlanetDisposed?: ReturnType<PlanetScene['info']> };
 
+class NoWebGLError extends Error {}
+
 function supportsWebGL(): boolean {
   try {
     const c = document.createElement('canvas');
@@ -30,6 +32,21 @@ function supportsWebGL(): boolean {
   } catch {
     return false;
   }
+}
+
+function idle(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 800 });
+    else window.setTimeout(resolve, 50);
+  });
+}
+
+function afterLoadAndIdle(): Promise<void> {
+  const loaded =
+    document.readyState === 'complete'
+      ? Promise.resolve()
+      : new Promise<void>((resolve) => window.addEventListener('load', () => resolve(), { once: true }));
+  return loaded.then(idle);
 }
 
 function currentLayout(): PlanetLayout {
@@ -56,18 +73,21 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
     const canvas = canvasRef.current;
     const host = hostRef.current;
     if (!canvas || !host) return;
-    if (!supportsWebGL()) {
-      setMode('fallback');
-      return;
-    }
-
     const reducedMotion = forceStatic || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const touch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-    // The Three.js + GSAP bundle is loaded on demand so it never blocks the hero's first paint.
+    // The Three.js + GSAP bundle is loaded on demand, after the page has loaded and the main
+    // thread is idle, so it never competes with the hero's first paint.
     let scene: PlanetScene | null = null;
     let cancelled = false;
-    import('./PlanetScene')
+    afterLoadAndIdle()
+      .then(() => {
+        // Probe WebGL only now — creating a context inside the mount task would delay first paint.
+        if (!supportsWebGL()) throw new NoWebGLError();
+        return import('./PlanetScene');
+      })
+      // Module evaluation and scene construction are kept in separate tasks so neither becomes a long task.
+      .then((mod) => idle().then(() => mod))
       .then(({ PlanetScene }) => {
         if (cancelled) return;
         try {
@@ -78,10 +98,13 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
           return;
         }
         setMode('webgl');
-        if (DEV_TOOLS) (window as DevWindow).__heroPlanet = scene;
+        const live = scene;
+        live.ready.then(() => {
+          if (!cancelled && DEV_TOOLS) (window as DevWindow).__heroPlanet = live;
+        });
       })
       .catch((err) => {
-        console.warn('[HeroPlanet] failed to load, using static fallback', err);
+        if (!(err instanceof NoWebGLError)) console.warn('[HeroPlanet] failed to load, using static fallback', err);
         if (!cancelled) setMode('fallback');
       });
 

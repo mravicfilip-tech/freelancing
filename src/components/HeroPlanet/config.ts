@@ -17,7 +17,7 @@ export const PLANET_CONFIG = {
   pointCountDesktop: 14000,
   pointCountMobile: 6000,
   landCoverage: 0.3,        // fraction of the sphere that reads as land
-  landMaskSize: [256, 128] as [number, number], // equirectangular mask resolution
+  landMaskSize: [160, 80] as [number, number], // equirectangular mask resolution (≈25ms to generate; 256×128 is ~100ms)
   landMaskSeed: 7,          // change for a different set of blobs
   landMaskFrequency: 1.6,   // lower = bigger blobs
   coastSoftness: 0.06,      // width of the land→ocean transition in mask units

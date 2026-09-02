@@ -1,6 +1,12 @@
 import { useRef } from 'react';
 import { HeroPlanet } from './HeroPlanet';
 
+// `?planet=off` renders the hero without the WebGL layer (the baseline for Lighthouse comparisons);
+// `?planet=static` forces the reduced-motion single frame.
+const PLANET_PARAM = new URLSearchParams(window.location.search).get('planet');
+const PLANET_ENABLED = PLANET_PARAM !== 'off';
+const PLANET_STATIC = PLANET_PARAM === 'static';
+
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   return (
@@ -36,7 +42,7 @@ export function Hero() {
         </div>
       </div>
 
-      <HeroPlanet hostRef={heroRef} />
+      {PLANET_ENABLED && <HeroPlanet hostRef={heroRef} forceStatic={PLANET_STATIC} />}
     </section>
   );
 }

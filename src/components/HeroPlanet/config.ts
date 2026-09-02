@@ -86,11 +86,15 @@ export const PLANET_CONFIG = {
   // ---------- Halo: a hairline circle around the sphere that sweeps in on load ----------
   halo: false,
   haloRadius: 1.34,         // × sphere radius
-  haloColor: '#A9AFB6',
-  haloOpacity: 0.8,
+  haloColor: '#DADEE2',
+  haloOpacity: 1,
   haloWidthPx: 1,
   haloStartDeg: 120,        // where the sweep begins (0 = right, counter-clockwise)
   haloSweepSec: 1.6,
+  haloLoop: true,           // after the sweep, a highlight keeps travelling round the circle
+  haloLoopPeriodSec: 11,
+  haloPulseColor: '#8A9098',
+  haloPulseLength: 0.14,    // fraction of the circle
 
   // ---------- Silhouette outline + contact shadow ----------
   outline: false,

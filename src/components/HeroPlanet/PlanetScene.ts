@@ -6,6 +6,7 @@ import { resolveConfig } from './variants';
 import { generateLandMask, loadLandMask, sampleMask, type LandMask } from './landMask';
 import { makeBadgeTexture } from './badges';
 import { CoinPopups } from './popups';
+import { CoinCorridors } from './corridors';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
@@ -92,7 +93,7 @@ export class PlanetScene {
   private lattice: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private arcs: THREE.LineSegments<THREE.BufferGeometry, THREE.ShaderMaterial> | null = null;
   private rings: Ring[] = [];
-  private popups: CoinPopups | null = null;
+  private popups: CoinPopups | CoinCorridors | null = null;
   private readonly quad = new THREE.PlaneGeometry(1, 1);
 
   /** Entrance state, tweened by GSAP and applied every frame. */
@@ -185,6 +186,7 @@ export class PlanetScene {
       if (this.cfg.arcs) this.buildArcs();
       this.buildRings();
       if (this.cfg.coinMode === 'popup') this.popups = new CoinPopups(this.cfg, this.spinner, this.camera, this.quad);
+      if (this.cfg.coinMode === 'corridor') this.popups = new CoinCorridors(this.cfg, this.spinner, this.camera, this.quad);
       this.layout();
       this.attach();
       if (this.opts.reducedMotion) this.setStaticPose();
@@ -613,7 +615,7 @@ export class PlanetScene {
       pivot.add(mesh);
 
       // --- crypto badges travelling this ring, evenly phased ---
-      const coins = C.coinMode === 'popup' ? [] : C.coins.filter((_, k) => k % C.ringRadii.length === i);
+      const coins = C.coinMode === 'orbit' ? C.coins.filter((_, k) => k % C.ringRadii.length === i) : [];
       const badges: Badge[] = coins.map((coin, k) => {
         const texture = makeBadgeTexture(coin, C.badgeTexturePx);
         const sprite = new THREE.Sprite(

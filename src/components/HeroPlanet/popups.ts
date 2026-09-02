@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import type { PlanetConfig } from './config';
-import { makeBadgeTexture } from './badges';
+import { makeBadgeTexture, makeLabelTexture } from './badges';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
 import glowFrag from './shaders/glow.frag.glsl?raw';
 import outlineFrag from './shaders/outline.frag.glsl?raw';
 
-interface Site {
+export interface Site {
   name: string;
   dir: THREE.Vector3;
   lastUsed: number;
@@ -15,28 +15,110 @@ interface Popup {
   site: Site;
   group: THREE.Group;
   sprite: THREE.Sprite;
+  label: THREE.Sprite | null;
   marker: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-  ping: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-  ping2: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  rings: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[];
   stem: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial> | null;
   spawnedAt: number;
   hold: number;
   leaving: number | null;
 }
 
-const backOut = (t: number, s = 1.9) => {
+export const backOut = (t: number, s = 1.9) => {
   const u = t - 1;
   return u * u * ((s + 1) * u + s) + 1;
 };
-const smooth = (a: number, b: number, x: number) => {
+export const smooth = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
 
+export function buildSites(cfg: PlanetConfig): Site[] {
+  return cfg.popupSites.map(([name, lat, lon]) => {
+    const la = (lat * Math.PI) / 180;
+    const lo = (lon * Math.PI) / 180;
+    return { name, dir: new THREE.Vector3(Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)), lastUsed: -Infinity };
+  });
+}
+
+/** Flat disc on the surface (anti-aliased edge only). Not depth-tested: landings are always on the facing side. */
+export function makeMarker(quad: THREE.PlaneGeometry, size: number, color: string) {
+  const m = new THREE.Mesh(
+    quad,
+    new THREE.ShaderMaterial({
+      vertexShader: billboardVert,
+      fragmentShader: glowFrag,
+      uniforms: {
+        uSize: { value: size },
+        uAspect: { value: 1 },
+        uColor: { value: new THREE.Color(color) },
+        uOpacity: { value: 0 },
+        uInner: { value: 0.86 },
+        uFalloff: { value: 1 },
+      },
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    }),
+  );
+  m.renderOrder = 5;
+  m.frustumCulled = false;
+  return m;
+}
+
+export function makeRing(quad: THREE.PlaneGeometry, size: number, color: string) {
+  const m = new THREE.Mesh(
+    quad,
+    new THREE.ShaderMaterial({
+      vertexShader: billboardVert,
+      fragmentShader: outlineFrag,
+      uniforms: {
+        uSize: { value: size },
+        uAspect: { value: 1 },
+        uColor: { value: new THREE.Color(color) },
+        uOpacity: { value: 0 },
+        uRadius: { value: 0.1 },
+        uWidth: { value: 0.01 },
+        uSweep: { value: 1 },
+        uStart: { value: 0 },
+        uPulse: { value: 0 },
+        uPulseLen: { value: 0 },
+        uPulseColor: { value: new THREE.Color(color) },
+      },
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    }),
+  );
+  m.renderOrder = 5;
+  m.frustumCulled = false;
+  return m;
+}
+
+/** Label chip sprite anchored so it sits to the right of the coin. */
+export function makeLabel(title: string, subtitle: string, height: number) {
+  const { texture, aspect } = makeLabelTexture(title, subtitle);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
+  s.scale.set(height * aspect, height, 1);
+  s.center.set(-0.12, 0.5);
+  s.renderOrder = 7;
+  return s;
+}
+
+/** Drives ring expansion for a landing: `rings` fade a beat apart. Returns nothing. */
+export function animateRings(rings: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[], age: number, period: number, vis: number) {
+  rings.forEach((ring, i) => {
+    const t = Math.min(1, Math.max(0, (age - i * 0.3) / period));
+    const e = 1 - Math.pow(1 - t, 2);
+    ring.material.uniforms.uRadius.value = 0.06 + 0.42 * e;
+    ring.material.uniforms.uOpacity.value = (t > 0 && t < 1 ? 1 - e : 0) * 0.9 * Math.min(1, vis);
+  });
+}
+
 /**
- * Coins that pop up at real cities on the globe's surface, hold for a moment with a ping, then
- * leave — payments landing around the world. Instances live in the rotating group so they turn
- * with the globe; only sites facing the camera are chosen.
+ * Coins that pop up at real cities on the globe's surface, hold for a moment, then leave —
+ * payments landing around the world. Instances live in the rotating group so they turn with
+ * the globe; only sites facing the camera are chosen.
  */
 export class CoinPopups {
   private readonly sites: Site[];
@@ -54,12 +136,8 @@ export class CoinPopups {
     private readonly camera: THREE.Camera,
     private readonly quad: THREE.PlaneGeometry,
   ) {
-    this.sites = cfg.popupSites.map(([name, lat, lon]) => {
-      const la = (lat * Math.PI) / 180;
-      const lo = (lon * Math.PI) / 180;
-      return { name, dir: new THREE.Vector3(Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)), lastUsed: -Infinity };
-    });
-    this.textures = cfg.coins.map((c) => makeBadgeTexture(c, cfg.badgeTexturePx));
+    this.sites = buildSites(cfg);
+    this.textures = cfg.coins.map((c) => makeBadgeTexture(c, cfg.badgeTexturePx, cfg.badgeStyle, cfg.badgeMonoColor));
   }
 
   private facing(site: Site) {
@@ -68,85 +146,50 @@ export class CoinPopups {
   }
 
   private spawn(now: number, instant: boolean) {
+    const C = this.cfg;
     const candidates = this.sites.filter(
-      (s) => this.facing(s) > this.cfg.popupMinFacing && now - s.lastUsed > this.cfg.popupSiteCooldownSec && !this.live.some((p) => p.site === s),
+      (s) => this.facing(s) > C.popupMinFacing && now - s.lastUsed > C.popupSiteCooldownSec && !this.live.some((p) => p.site === s),
     );
     if (!candidates.length) return;
     const site = candidates[Math.floor(Math.random() * candidates.length)];
     site.lastUsed = now;
-    const coin = this.cfg.coins[this.coinIndex % this.cfg.coins.length];
+    const coin = C.coins[this.coinIndex % C.coins.length];
     const texture = this.textures[this.coinIndex % this.textures.length];
     this.coinIndex++;
+    const accent = C.popupMarkerColor ?? (C.badgeStyle === 'mono' ? C.badgeMonoColor : coin.color);
 
     const group = new THREE.Group();
     group.position.copy(site.dir);
     group.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), site.dir);
 
-    // Landings only happen on the facing hemisphere, so nothing here is depth-tested against the sphere.
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false }));
     sprite.renderOrder = 6;
-    const marker = new THREE.Mesh(
-      this.quad,
-      new THREE.ShaderMaterial({
-        vertexShader: billboardVert,
-        fragmentShader: glowFrag,
-        uniforms: {
-          uSize: { value: this.cfg.popupMarkerSize },
-          uAspect: { value: 1 },
-          uColor: { value: new THREE.Color(coin.color) },
-          uOpacity: { value: 0 },
-          uInner: { value: 0.86 }, // flat disc, anti-aliased edge only
-          uFalloff: { value: 1 },
-        },
-        transparent: true,
-        depthWrite: false,
-        depthTest: false,
-      }),
-    );
-    marker.renderOrder = 5;
-    marker.frustumCulled = false;
-    const makeRing = () => {
-      const m = new THREE.Mesh(
-        this.quad,
-        new THREE.ShaderMaterial({
-          vertexShader: billboardVert,
-          fragmentShader: outlineFrag,
-          uniforms: {
-            uSize: { value: this.cfg.popupPingSize },
-            uAspect: { value: 1 },
-            uColor: { value: new THREE.Color(coin.color) },
-            uOpacity: { value: 0 },
-            uRadius: { value: 0.1 },
-            uWidth: { value: 0.01 },
-            uSweep: { value: 1 },
-            uStart: { value: 0 },
-          },
-          transparent: true,
-          depthWrite: false,
-          depthTest: false,
-        }),
-      );
-      m.renderOrder = 5;
-      m.frustumCulled = false;
-      m.position.z = 0.05;
-      return m;
-    };
-    const ping = makeRing();
-    const ping2 = makeRing();
+    const marker = makeMarker(this.quad, C.popupMarkerSize, accent);
     marker.position.z = 0.004;
-    group.add(marker, ping, ping2, sprite);
+    const rings: Popup['rings'] = [];
+    for (let i = 0; i < C.popupRings; i++) {
+      const r = makeRing(this.quad, C.popupPingSize, accent);
+      r.position.z = 0.05;
+      rings.push(r);
+    }
+    group.add(marker, ...rings, sprite);
     let stem: Popup['stem'] = null;
-    if (this.cfg.popupStem) {
+    if (C.popupStem) {
       const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0.01), new THREE.Vector3(0, 0, 0.02)]);
-      stem = new THREE.Line(g, new THREE.LineBasicMaterial({ color: coin.color, transparent: true, opacity: 0, depthTest: false }));
+      stem = new THREE.Line(g, new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: 0, depthTest: false }));
       stem.renderOrder = 5;
       stem.frustumCulled = false;
       group.add(stem);
     }
+    let label: Popup['label'] = null;
+    if (C.popupLabels) {
+      label = makeLabel(site.name, `${coin.symbol} to ${C.siteCurrency[site.name] ?? 'local'}`, C.popupLabelHeight);
+      group.add(label);
+    }
     this.parent.add(group);
 
-    const hold = this.cfg.popupHoldSec[0] + Math.random() * (this.cfg.popupHoldSec[1] - this.cfg.popupHoldSec[0]);
-    this.live.push({ site, group, sprite, marker, ping, ping2, stem, spawnedAt: instant ? now - this.IN : now, hold, leaving: null });
+    const hold = C.popupHoldSec[0] + Math.random() * (C.popupHoldSec[1] - C.popupHoldSec[0]);
+    this.live.push({ site, group, sprite, label, marker, rings, stem, spawnedAt: instant ? now - this.IN : now, hold, leaving: null });
     this.lastSpawn = now;
   }
 
@@ -154,11 +197,14 @@ export class CoinPopups {
     this.parent.remove(p.group);
     p.sprite.material.dispose();
     p.marker.material.dispose();
-    p.ping.material.dispose();
-    p.ping2.material.dispose();
+    for (const r of p.rings) r.material.dispose();
     if (p.stem) {
       p.stem.geometry.dispose();
       p.stem.material.dispose();
+    }
+    if (p.label) {
+      p.label.material.map?.dispose();
+      p.label.material.dispose();
     }
   }
 
@@ -167,7 +213,13 @@ export class CoinPopups {
     const C = this.cfg;
     if (appear > 0.05 && this.live.length < C.popupVisible && now - this.lastSpawn > C.popupSpawnGapSec) {
       this.spawn(now, frozen);
-      if (frozen) while (this.live.length < C.popupVisible) { const n = this.live.length; this.spawn(now, true); if (this.live.length === n) break; }
+      if (frozen) {
+        while (this.live.length < C.popupVisible) {
+          const n = this.live.length;
+          this.spawn(now, true);
+          if (this.live.length === n) break;
+        }
+      }
     }
     for (let i = this.live.length - 1; i >= 0; i--) {
       const p = this.live[i];
@@ -177,7 +229,11 @@ export class CoinPopups {
       let s: number;
       if (p.leaving !== null) {
         const t = (now - p.leaving) / this.OUT;
-        if (t >= 1) { this.remove(p); this.live.splice(i, 1); continue; }
+        if (t >= 1) {
+          this.remove(p);
+          this.live.splice(i, 1);
+          continue;
+        }
         s = 1 - t * t;
       } else {
         s = backOut(Math.min(1, age / this.IN));
@@ -194,14 +250,11 @@ export class CoinPopups {
         pos.needsUpdate = true;
         p.stem.material.opacity = 0.7 * Math.min(1, vis);
       }
-      // two clean rings expand from the marker and fade, the second a beat behind
-      const rings: [THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>, number][] = [[p.ping, 0], [p.ping2, 0.3]];
-      for (const [ring, delay] of rings) {
-        const t = Math.min(1, Math.max(0, (age - delay) / C.popupPingSec));
-        const e = 1 - Math.pow(1 - t, 2);
-        ring.material.uniforms.uRadius.value = 0.06 + 0.42 * e;
-        ring.material.uniforms.uOpacity.value = (t > 0 && t < 1 ? 1 - e : 0) * 0.9 * Math.min(1, vis);
+      if (p.label) {
+        p.label.position.set(C.badgeSize * 0.55, 0, lift);
+        p.label.material.opacity = Math.min(1, vis) * smooth(0.6, 1, s);
       }
+      animateRings(p.rings, age, C.popupPingSec, vis);
     }
   }
 

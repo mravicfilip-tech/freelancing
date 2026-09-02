@@ -6,10 +6,11 @@
  */
 export const PLANET_CONFIG = {
   // ---------- Colours (brand tokens; keep in sync with src/styles/tokens.css) ----------
-  colorAccent: '#4B4BF7',   // land dots, two orbit nodes, rings, glow
-  colorLime: '#D9F24E',     // exactly one orbit node
-  colorOcean: '#9A9EC4',    // desaturated indigo-grey for ocean dots
-  colorRing: '#4B4BF7',     // orbit ring stroke
+  colorAccent: '#4B4BF7',   // brand indigo — used for the glow tint only
+  colorLime: '#D9F24E',     // unused by the planet now (kept for tuning)
+  colorPlanet: '#7C858D',   // land dots
+  colorOcean: '#B9BEC4',    // lighter grey for ocean dots
+  colorRing: '#7C858D',     // orbit ring stroke
   lightenAmount: 0.16,      // 0..1 — how much dots lighten toward the top-left light
   lightDirection: [-0.55, 0.65, 0.55] as [number, number, number], // view-space, normalised at runtime
 
@@ -32,7 +33,7 @@ export const PLANET_CONFIG = {
   staticRotationDeg: 38,    // pose used for reduced-motion / fallback capture
 
   // ---------- Layout (fractions of the hero box) ----------
-  planetCenterX: 0.62,
+  planetCenterX: 0.63,
   planetCenterY: 0.5,
   sphereDiameterFraction: 0.56, // of hero height
   // Tablet (768–1279px): pull the planet right and shrink it so it clears the copy
@@ -46,32 +47,40 @@ export const PLANET_CONFIG = {
 
   // ---------- Glow ----------
   glowScale: 3.6,           // plane width in sphere radii
-  glowOpacity: 0.15,        // peak alpha (0.12–0.18)
+  glowOpacity: 0.10,        // peak alpha — kept faint under the grey planet
   glowInner: 0.0,           // 0..1 — radius where the falloff starts
   glowFalloff: 2.6,         // higher = tighter bloom
   glowAdditive: false,      // true = additive blending (reads near-white on a light bg)
 
   // ---------- Orbit rings ----------
-  ringRadii: [1.25, 1.45, 1.7],           // × sphere radius
+  ringRadii: [1.12, 1.22, 1.32],          // × sphere radius — tight orbits that hug the planet
   ringInclinationsDeg: [12, 68, 105],     // tilt of each ring plane (rotation about X)
-  ringAzimuthsDeg: [8, 84, -88],          // rotation about Y — near ±90° makes a steep ring edge-on/thin
-  ringRollsDeg: [-8, 34, -45],            // in-screen rotation (about Z) so the ellipses sit diagonally
+  ringAzimuthsDeg: [8, 70, -75],          // rotation about Y — near ±90° makes a steep ring edge-on/thin
+  ringRollsDeg: [-8, 30, -40],            // in-screen rotation (about Z) so the ellipses sit diagonally
   ringTubeRadius: 0.0028,                 // world units — ~1.4px at the reference radius
-  ringOpacity: 0.55,
+  ringOpacity: 0.5,
   ringBackFade: 0.14,                     // opacity multiplier on the half behind the sphere
   ringSegments: 320,
 
-  // ---------- Orbit nodes ----------
-  nodePeriodsSec: [14, 18, 22],           // one loop per ring; all different so they never sync
-  nodeStartOffsets: [0.05, 0.42, 0.7],    // 0..1 phase along the ring
-  nodeColors: ['accent', 'accent', 'lime'] as const,
-  nodeRadius: 0.026,                      // core sphere, world units
-  nodeHaloScale: 7,                       // halo diameter in node radii
-  nodeHaloOpacity: 0.55,
-  nodeBackFade: 0.25,
-  nodeTrailLength: 6,                     // beads behind each node (0 = none)
-  nodeTrailSpan: 1.1,                     // seconds of travel the trail covers
-  nodeTrailOpacity: 0.45,
+  // ---------- Orbit nodes: crypto badges in transit ----------
+  nodePeriodsSec: [16, 20, 24],           // one loop per ring; all different so they never sync
+  // Badges are assigned to rings round-robin (0,1,2,0,1,2…) with evenly spaced phases per ring.
+  // Add `logo: '/coins/btc.svg'` to use an image instead of the generated glyph badge.
+  coins: [
+    { symbol: 'BTC', color: '#F7931A', glyph: '₿' },
+    { symbol: 'ETH', color: '#627EEA', glyph: 'Ξ' },
+    { symbol: 'USDT', color: '#26A17B', glyph: '₮' },
+    { symbol: 'USDC', color: '#2775CA', glyph: '$' },
+    { symbol: 'SOL', color: '#9945FF', glyph: 'S' },
+    { symbol: 'XRP', color: '#23292F', glyph: 'X' },
+  ] as { symbol: string; color: string; glyph: string; logo?: string }[],
+  badgeSize: 0.13,                        // badge diameter, world units (sphere radius = 1)
+  badgeTexturePx: 192,                    // generated badge texture size
+  nodeBackFade: 0.2,                      // opacity multiplier when a badge passes behind the planet
+  nodeTrailLength: 5,                     // beads behind each badge (0 = none)
+  nodeTrailSpan: 1.0,                     // seconds of travel the trail covers
+  nodeTrailOpacity: 0.35,
+  nodeTrailSize: 0.035,                   // bead diameter, world units
 
   // ---------- Motion ----------
   entranceTotalSec: 1.8,

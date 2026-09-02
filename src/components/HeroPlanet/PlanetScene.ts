@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PLANET_CONFIG as C } from './config';
 import { generateLandMask, sampleMask, type LandMask } from './landMask';
+import { makeBadgeTexture } from './badges';
 import dotsVert from './shaders/dots.vert.glsl?raw';
 import dotsFrag from './shaders/dots.frag.glsl?raw';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
@@ -27,16 +28,19 @@ export interface PlanetSceneOptions {
   scroll?: boolean;
 }
 
+interface Badge {
+  sprite: THREE.Sprite;
+  phase: number;              // 0..1 start offset along the ring
+  trail: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[];
+}
+
 interface Ring {
   pivot: THREE.Group;
   mesh: THREE.Mesh<THREE.TubeGeometry, THREE.ShaderMaterial>;
   curve: THREE.Curve<THREE.Vector3>;
   indexCount: number;
   indexStep: number;
-  node: THREE.Group;
-  core: THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>;
-  halo: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-  trail: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[];
+  badges: Badge[];
 }
 
 const DEG = Math.PI / 180;
@@ -246,7 +250,7 @@ export class PlanetScene {
         uProgress: { value: 0 },
         uLighten: { value: C.lightenAmount },
         uLightDir: { value: light },
-        uColorLand: { value: new THREE.Color(C.colorAccent) },
+        uColorLand: { value: new THREE.Color(C.colorPlanet) },
         uColorOcean: { value: new THREE.Color(C.colorOcean) },
       },
       transparent: true,
@@ -291,48 +295,44 @@ export class PlanetScene {
       pivot.rotation.set(C.ringInclinationsDeg[i] * DEG, C.ringAzimuthsDeg[i] * DEG, C.ringRollsDeg[i] * DEG, 'ZYX');
       pivot.add(mesh);
 
-      // --- node: core + halo + short trail ---
-      const colorHex = C.nodeColors[i] === 'lime' ? C.colorLime : C.colorAccent;
-      const node = new THREE.Group();
-      const core = new THREE.Mesh(
-        new THREE.SphereGeometry(C.nodeRadius, 16, 12),
-        new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0 }),
-      );
-      core.renderOrder = 4;
-      const makeHalo = (size: number, falloff: number) => {
-        const m = new THREE.Mesh(
-          haloGeo,
-          new THREE.ShaderMaterial({
-            vertexShader: billboardVert,
-            fragmentShader: glowFrag,
-            uniforms: {
-              uSize: { value: size },
-              uColor: { value: new THREE.Color(colorHex) },
-              uOpacity: { value: 0 },
-              uInner: { value: 0.0 },
-              uFalloff: { value: falloff },
-            },
-            transparent: true,
-            depthWrite: false,
-          }),
+      // --- crypto badges travelling this ring, evenly phased ---
+      const coins = C.coins.filter((_, k) => k % C.ringRadii.length === i);
+      const badges: Badge[] = coins.map((coin, k) => {
+        const texture = makeBadgeTexture(coin, C.badgeTexturePx);
+        const sprite = new THREE.Sprite(
+          new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0, depthWrite: false }),
         );
-        m.renderOrder = 3;
-        m.frustumCulled = false;
-        return m;
-      };
-      const halo = makeHalo(C.nodeRadius * C.nodeHaloScale, 2.2);
-      node.add(core, halo);
-      pivot.add(node);
-
-      const trail: Ring['trail'] = [];
-      for (let k = 0; k < C.nodeTrailLength; k++) {
-        const bead = makeHalo(C.nodeRadius * 2.4, 1.6);
-        pivot.add(bead);
-        trail.push(bead);
-      }
+        sprite.scale.setScalar(0.0001);
+        sprite.renderOrder = 4;
+        pivot.add(sprite);
+        const trail: Badge['trail'] = [];
+        for (let t = 0; t < C.nodeTrailLength; t++) {
+          const bead = new THREE.Mesh(
+            haloGeo,
+            new THREE.ShaderMaterial({
+              vertexShader: billboardVert,
+              fragmentShader: glowFrag,
+              uniforms: {
+                uSize: { value: C.nodeTrailSize },
+                uColor: { value: new THREE.Color(coin.color) },
+                uOpacity: { value: 0 },
+                uInner: { value: 0.0 },
+                uFalloff: { value: 1.6 },
+              },
+              transparent: true,
+              depthWrite: false,
+            }),
+          );
+          bead.renderOrder = 3;
+          bead.frustumCulled = false;
+          pivot.add(bead);
+          trail.push(bead);
+        }
+        return { sprite, phase: (k / Math.max(1, coins.length)) % 1, trail };
+      });
 
       this.root.add(pivot);
-      this.rings.push({ pivot, mesh, curve, indexCount, indexStep: radialSegments * 6, node, core, halo, trail });
+      this.rings.push({ pivot, mesh, curve, indexCount, indexStep: radialSegments * 6, badges });
     }
   }
 
@@ -552,30 +552,30 @@ export class PlanetScene {
       ring.mesh.material.uniforms.uCenterViewZ.value = centerViewZ;
 
       const period = C.nodePeriodsSec[i];
-      const t = (C.nodeStartOffsets[i] + elapsed / period) % 1;
-      ring.curve.getPointAt(t, ring.node.position);
+      for (const badge of ring.badges) {
+        const t = (badge.phase + elapsed / period) % 1;
+        ring.curve.getPointAt(t, badge.sprite.position);
 
-      // Fade the node as it passes behind the sphere (the occluder hides it inside the disc).
-      ring.node.updateMatrixWorld();
-      const dz =
-        this.tmpV3.setFromMatrixPosition(ring.core.matrixWorld).applyMatrix4(this.camera.matrixWorldInverse).z -
-        centerViewZ;
-      const behind = smoothstep(0.15, -0.55, dz);
-      const vis = appear * (1 - behind * (1 - C.nodeBackFade));
-      ring.core.material.opacity = vis;
-      ring.core.scale.setScalar(Math.max(0.0001, appear));
-      ring.halo.material.uniforms.uOpacity.value = C.nodeHaloOpacity * vis;
-      ring.halo.material.uniforms.uSize.value = C.nodeRadius * C.nodeHaloScale * appear;
+        // Fade the badge as it passes behind the sphere (the occluder hides it inside the disc).
+        badge.sprite.updateMatrixWorld();
+        const dz =
+          this.tmpV3.setFromMatrixPosition(badge.sprite.matrixWorld).applyMatrix4(this.camera.matrixWorldInverse).z -
+          centerViewZ;
+        const behind = smoothstep(0.15, -0.55, dz);
+        const vis = appear * (1 - behind * (1 - C.nodeBackFade));
+        badge.sprite.material.opacity = vis;
+        badge.sprite.scale.setScalar(Math.max(0.0001, C.badgeSize * appear));
 
-      // Trail: a few fading beads behind the node along the ring.
-      const len = ring.trail.length;
-      for (let k = 0; k < len; k++) {
-        const bead = ring.trail[k];
-        const back = ((k + 1) / len) * (C.nodeTrailSpan / period);
-        ring.curve.getPointAt((((t - back) % 1) + 1) % 1, bead.position);
-        const fade = 1 - (k + 1) / (len + 1);
-        bead.material.uniforms.uOpacity.value = C.nodeTrailOpacity * fade * vis;
-        bead.material.uniforms.uSize.value = C.nodeRadius * 2.4 * fade * appear;
+        // Trail: a few fading beads behind the badge along the ring.
+        const len = badge.trail.length;
+        for (let k = 0; k < len; k++) {
+          const bead = badge.trail[k];
+          const back = ((k + 1) / len) * (C.nodeTrailSpan / period);
+          ring.curve.getPointAt((((t - back) % 1) + 1) % 1, bead.position);
+          const fade = 1 - (k + 1) / (len + 1);
+          bead.material.uniforms.uOpacity.value = C.nodeTrailOpacity * fade * vis;
+          bead.material.uniforms.uSize.value = C.nodeTrailSize * (0.5 + 0.5 * fade) * appear;
+        }
       }
     });
   }
@@ -637,6 +637,7 @@ export class PlanetScene {
         for (const u of Object.values((m as THREE.ShaderMaterial).uniforms ?? {})) {
           if (u.value instanceof THREE.Texture) u.value.dispose();
         }
+        (m as THREE.SpriteMaterial).map?.dispose();
         m.dispose();
       }
     });

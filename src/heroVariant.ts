@@ -38,9 +38,13 @@ export function setGlobe(next: GlobeId) {
   } catch {
     /* ignore */
   }
-  const url = new URL(window.location.href);
-  url.searchParams.set('globe', next.replace(/^globe-/, ''));
-  window.history.replaceState(null, '', url);
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('globe', next.replace(/^globe-/, ''));
+    window.history.replaceState(null, '', url);
+  } catch {
+    /* sandboxed frames may refuse history writes */
+  }
   listeners.forEach((l) => l());
 }
 

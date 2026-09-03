@@ -354,11 +354,15 @@
   height: 100%;
   overflow: visible;
 }
-/* Rate chips float by their bars (design node 2346:347); Bars.tsx sets --x/--y per chip. */
+/* Rate chips float by their bars (design node 2346:347); Bars.tsx sets --x/--y per chip.
+   The outer box rides its bar's cap; the inner card pops in and bobs. */
 .bars__chip {
   position: absolute;
   left: var(--x);
   top: var(--y);
+  will-change: transform;
+}
+.bars__chipInner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -373,7 +377,7 @@
   white-space: nowrap;
   will-change: transform;
 }
-.bars__chip--light {
+.bars__chip--light .bars__chipInner {
   background: #fff;
 }
 .bars__chipLabel {
@@ -715,7 +719,7 @@
     align-self: center;
   }
   /* Smaller chips on the narrow slide; the SOL chip stops overhanging the left edge. */
-  .bars__chip {
+  .bars__chipInner {
     padding: 8px 10px;
     gap: 2px;
   }

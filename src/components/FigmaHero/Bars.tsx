@@ -19,9 +19,9 @@ const format = (chip: Chip, n: number) =>
  * The presale slide from the Figma hero: four isometric bars (inlined from the design so GSAP can
  * draw them), a lime glow on the tallest, and a rate chip floating by each bar. While `active`,
  * the strokes draw in bar by bar, the fills fade up, the chips pop in, and the slide then keeps
- * moving like a live chart: bars ease to new heights, their chips count to matching figures and
- * flick indigo, the glow flares with the BTC bar, and the chips drift. Leaving the slide reverts
- * everything, so the draw replays on every return.
+ * moving like a live chart: bars ease to new heights with their chips riding on the caps, the
+ * figures drift a few percent and flick indigo, the glow flares with the BTC bar, and the chips
+ * bob. Leaving the slide reverts everything, so the draw replays on every return.
  */
 export function Bars({ active }: { active: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,24 +39,57 @@ export function Bars({ active }: { active: boolean }) {
     import('gsap').then(({ gsap }) => {
       if (cancelled) return;
       const ctx = gsap.context(() => {
+        const svg = root.querySelector<SVGSVGElement>('svg.bars')!;
         const bars = Array.from(root.querySelectorAll<SVGGElement>('.bars__bar'));
         const glow = root.querySelector<SVGGElement>('.bars__glow');
         const chipOf = (bar: SVGGElement) => root.querySelector<HTMLElement>(`.bars__chip[data-bar="${bar.dataset.bar}"]`);
+        const innerOf = (bar: SVGGElement) => chipOf(bar)?.querySelector<HTMLElement>('.bars__chipInner') ?? null;
         const rand = (a: number, b: number) => a + Math.random() * (b - a);
+        const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
         const values = new Map<string, number>(CHIPS.map((c) => [c.bar, c.base]));
 
-        // Idle: live data. Each bar keeps easing to a new height on its own rhythm; its cap flicks
-        // indigo, its chip counts to the matching figure, and the BTC bar's glow flares with it.
+        // Each bar's footprint in viewBox units, measured from its faces before anything moves
+        // (the glow's blurred ellipse would otherwise stretch the tallest bar's box far below it).
+        // Bars scale from their base; a chip follows its bar's cap by the same distance in CSS px.
+        const R = svg.getBoundingClientRect();
+        const k0 = R.width / 606;
+        const geom = new Map(
+          bars.map((bar) => {
+            let top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
+            bar.querySelectorAll(':scope > path, :scope > rect').forEach((el) => {
+              const r = el.getBoundingClientRect();
+              top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom); left = Math.min(left, r.left); right = Math.max(right, r.right);
+            });
+            return [bar, { top: (top - R.top) / k0, bottom: (bottom - R.top) / k0, cx: ((left + right) / 2 - R.left) / k0 }] as const;
+          }),
+        );
+        const unit = () => svg.getBoundingClientRect().width / 606;
+        const scaleBar = (bar: SVGGElement, s: number) => {
+          const g = geom.get(bar)!;
+          gsap.set(bar, { scaleY: s, svgOrigin: `${g.cx} ${g.bottom}` });
+          const chip = chipOf(bar);
+          if (chip) gsap.set(chip, { y: -(s - 1) * (g.bottom - g.top) * unit() });
+        };
+        const current = new Map<SVGGElement, number>(bars.map((bar) => [bar, 1]));
+
+        // Idle: live data. Each bar keeps easing to a new height on its own rhythm, dropping a
+        // long way and rising a little; its cap flicks indigo, its chip rides along and counts to a
+        // figure that moves a few percent with the bar, and the BTC bar's glow flares with it.
         const nextValue = (bar: SVGGElement, cap: Element | null) => {
-          const factor = rand(0.86, 1.1);
-          const duration = rand(1.4, 2.6);
-          gsap.to(bar, {
-            scaleY: factor,
-            transformOrigin: '50% 100%',
+          const g = geom.get(bar)!;
+          const factor = clamp(1 + rand(-130, 55) / (g.bottom - g.top), 0.6, 1.25);
+          const duration = rand(1.6, 3);
+          const proxy = { s: current.get(bar) ?? 1 };
+          gsap.to(proxy, {
+            s: factor,
             duration,
             ease: 'power2.inOut',
+            onUpdate: () => {
+              current.set(bar, proxy.s);
+              scaleBar(bar, proxy.s);
+            },
             onComplete: () => {
-              gsap.delayedCall(rand(0.4, 1.6), () => nextValue(bar, cap));
+              gsap.delayedCall(rand(0.5, 1.8), () => nextValue(bar, cap));
             },
           });
           if (cap) gsap.fromTo(cap, { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.2, ease: 'power1.out' });
@@ -65,7 +98,7 @@ export function Bars({ active }: { active: boolean }) {
           const value = chip && chipValue(chip.bar);
           if (chip && value) {
             const counter = { v: values.get(chip.bar) ?? chip.base };
-            const target = chip.base * factor;
+            const target = chip.base * (1 + (factor - 1) * 0.08);
             values.set(chip.bar, target);
             gsap.to(counter, { v: target, duration, ease: 'power2.inOut', onUpdate: () => { value.textContent = format(chip, counter.v); } });
             gsap.fromTo(value, { color: '#4042d2' }, { color: '#122433', duration: 1.4, ease: 'power1.out' });
@@ -78,9 +111,9 @@ export function Bars({ active }: { active: boolean }) {
           onComplete: () => {
             bars.forEach((bar, i) => {
               gsap.delayedCall(i * 0.35, () => nextValue(bar, bar.firstElementChild));
-              // Each chip drifts on its own rhythm, so the slide never sits still between updates.
-              const chip = chipOf(bar);
-              if (chip) gsap.to(chip, { y: rand(-8, -4), duration: rand(2.2, 3.4), delay: rand(0, 1), yoyo: true, repeat: -1, ease: 'sine.inOut' });
+              // Each chip also drifts on its own rhythm, so the slide never sits still between updates.
+              const inner = innerOf(bar);
+              if (inner) gsap.to(inner, { y: rand(-8, -4), duration: rand(2.2, 3.4), delay: rand(0, 1), yoyo: true, repeat: -1, ease: 'sine.inOut' });
             });
           },
         });
@@ -96,8 +129,8 @@ export function Bars({ active }: { active: boolean }) {
             entry.to(el, { fillOpacity: fill, duration: 0.6, ease: 'power1.out' }, at + 0.55);
           });
           entry.fromTo(bar, { y: 18 }, { y: 0, duration: 1.0, ease: 'power3.out' }, at);
-          const chip = chipOf(bar);
-          if (chip) entry.from(chip, { y: 16, scale: 0.9, opacity: 0, duration: 0.6, ease: 'back.out(1.8)' }, at + 0.85);
+          const inner = innerOf(bar);
+          if (inner) entry.from(inner, { y: 16, scale: 0.9, opacity: 0, duration: 0.6, ease: 'back.out(1.8)' }, at + 0.85);
         });
         if (glow) entry.fromTo(glow, { opacity: 0 }, { opacity: 0.45, duration: 1.2, ease: 'power1.out' }, 2 * 0.16 + 0.7);
       }, root);
@@ -179,11 +212,13 @@ export function Bars({ active }: { active: boolean }) {
           data-bar={chip.bar}
           style={{ '--x': `${chip.x}%`, '--y': `${chip.y}%` } as React.CSSProperties}
         >
-          <span className="bars__chipLabel">
-            {chip.label}
-            <img src={chip.icon} alt="" width={14} height={14} />
-          </span>
-          <span className="bars__chipValue">{format(chip, chip.base)}</span>
+          <div className="bars__chipInner">
+            <span className="bars__chipLabel">
+              {chip.label}
+              <img src={chip.icon} alt="" width={14} height={14} />
+            </span>
+            <span className="bars__chipValue">{format(chip, chip.base)}</span>
+          </div>
         </div>
       ))}
     </div>

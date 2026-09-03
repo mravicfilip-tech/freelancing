@@ -1,0 +1,297 @@
+/* Feature band from Figma "Remittix Redesign" › "2" (node 2343:116).
+   Design frame 1920 wide: 240px side padding, 160px vertical, cards on the 1440 grid with 14px gaps. */
+
+.ff {
+  --ff-bg: #151c23;
+  --ff-card: #f5f7fa;
+  --ff-card-white: #fff;
+  --ff-ink: #2c2e31;
+  --ff-body: #7c858d;
+  --ff-muted: #8292a2;
+  --ff-radius: 12px;
+  --ff-gap: 14px;
+  --ff-pad: 32px;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+
+  background: var(--ff-bg);
+  color: #fff;
+  font-family: var(--fh-sans);
+  padding: 160px 0;
+}
+.ff__inner {
+  width: min(1440px, 100% - 48px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ---------- Headline ---------- */
+.ff__title {
+  margin: 0;
+  max-width: 972px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  color: #fff;
+}
+.ff__titleMuted {
+  color: var(--ff-muted);
+}
+
+/* ---------- Rows: 622+804 / 1440 / 710+716 (flex ratios are the design widths) ---------- */
+.ff__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ff-gap);
+}
+.ff__row {
+  display: flex;
+  gap: var(--ff-gap);
+}
+.ff__row > .ff__card {
+  min-width: 0;
+}
+/* Bases are the design widths as a share of the 1440 row (the 14px gap takes the rest). */
+.ff__card--pay { flex: 1 1 43.194%; }
+.ff__card--fx { flex: 1 1 55.833%; }
+.ff__card--simple { flex: 1 1 100%; }
+.ff__card--fast { flex: 1 1 49.306%; }
+.ff__card--ui { flex: 1 1 49.722%; }
+
+/* ---------- Cards ---------- */
+.ff__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 440px;
+  padding: var(--ff-pad);
+  border-radius: var(--ff-radius);
+  background: var(--ff-card);
+  color: var(--ff-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+.ff__text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  max-width: 562px;
+}
+.ff__cardTitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.981;
+  letter-spacing: -0.72px;
+  color: var(--ff-ink);
+}
+.ff__cardBody {
+  margin: 0;
+  font-size: 18px;
+  line-height: 25.6px;
+  color: var(--ff-body);
+}
+/* Illustrations: the exported composition sits at the design's box, above the copy. */
+.ff__art {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Pay Remittix: white card, art 562×188 at (32, 76). */
+.ff__card--pay {
+  background: var(--ff-card-white);
+}
+.ff__art--pay {
+  left: var(--ff-pad);
+  top: 76px;
+  width: min(562px, calc(100% - 2 * var(--ff-pad)));
+  height: auto;
+}
+
+/* Zero FX fees: art 435×244 centred, 42px from the top. */
+.ff__art--fx {
+  left: 50%;
+  top: 42px;
+  width: 435px;
+  height: 244px;
+  transform: translateX(-50%);
+}
+
+/* Crypto-to-fiat: a 334px band, copy + button on the left, the art panel flush right. */
+.ff__card--simple {
+  height: 334px;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-right: 60px;
+}
+.ff__simpleCopy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 651px;
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+.ff__simpleCopy .ff__text {
+  gap: 12px;
+  max-width: none;
+}
+.ff__art--simple {
+  right: 38px;
+  top: 0;
+  width: 709px;
+  height: 334px;
+}
+
+/* Super fast: soft gradient, chip top-left, the orbit art overflowing top-right. */
+.ff__card--fast {
+  background: linear-gradient(65.44deg, #fff 9.71%, #f5f7fa 100%);
+}
+.ff__chip {
+  position: absolute;
+  z-index: 1;
+  left: var(--ff-pad);
+  top: var(--ff-pad);
+  display: inline-flex;
+  align-items: center;
+  gap: 6.75px;
+  height: 34px;
+  padding: 0 14.75px;
+  border: 0.675px solid #d7d7d7;
+  border-radius: 12px;
+  background: #ebf0f9;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: -0.24px;
+  color: #6d6d6d;
+  white-space: nowrap;
+}
+.ff__chip img {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.ff__art--fast {
+  right: -83px;
+  top: 2px;
+  width: 500px;
+  height: 436px;
+}
+
+/* User-friendly interface: art 668×234 at the top, copy beneath. */
+.ff__card--ui {
+  justify-content: flex-start;
+  gap: 40px;
+}
+.ff__art--ui {
+  position: relative;
+  width: 668px;
+  max-width: 100%;
+  height: auto;
+}
+.ff__card--ui .ff__text {
+  margin-top: auto;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .ff {
+    padding: 112px 0;
+  }
+  .ff__title {
+    font-size: 52px;
+    letter-spacing: -1.5px;
+  }
+  .ff__art--simple {
+    right: 0;
+  }
+  .ff__simpleCopy {
+    width: 52%;
+  }
+  .ff__art--fx {
+    width: 380px;
+    height: auto;
+  }
+  .ff__art--fast {
+    right: -120px;
+  }
+}
+@media (max-width: 1024px) {
+  .ff__row {
+    flex-direction: column;
+  }
+  .ff__row > .ff__card {
+    flex: 0 0 auto;
+  }
+  .ff__card--simple {
+    height: auto;
+    flex-direction: column;
+    padding-right: var(--ff-pad);
+    gap: 24px;
+  }
+  .ff__simpleCopy {
+    width: 100%;
+    gap: 24px;
+  }
+  .ff__art--simple {
+    position: relative;
+    right: auto;
+    width: 100%;
+    max-width: 709px;
+    height: auto;
+    align-self: center;
+  }
+}
+@media (max-width: 720px) {
+  .ff {
+    padding: 80px 0;
+  }
+  .ff__title {
+    font-size: 40px;
+    letter-spacing: -1.2px;
+  }
+  .ff__card {
+    height: auto;
+    min-height: 0;
+    padding: 24px;
+    --ff-pad: 24px;
+  }
+  .ff__card--pay,
+  .ff__card--fx,
+  .ff__card--fast {
+    padding-top: 0;
+  }
+  .ff__art--pay,
+  .ff__art--fx,
+  .ff__art--fast {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin: 24px auto 24px;
+  }
+  .ff__art--fast {
+    max-width: 420px;
+    margin-top: 72px;
+  }
+  .ff__cardBody {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}

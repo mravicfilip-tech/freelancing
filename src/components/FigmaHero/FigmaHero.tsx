@@ -45,7 +45,7 @@ function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left'
   return <img className={`fh__chevron fh__chevron--${direction}`} src="/figma/chevron.svg" alt="" width={11} height={6} />;
 }
 
-function PresaleButton({ wide = false }: { wide?: boolean }) {
+export function PresaleButton({ wide = false }: { wide?: boolean }) {
   return (
     <a className={`fh__btn fh__btn--primary${wide ? ' fh__btn--wide' : ''}`} href="#presale">
       <span className="fh__btnShine" aria-hidden="true" />

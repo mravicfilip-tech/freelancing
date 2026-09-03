@@ -133,8 +133,9 @@ export function makeBadgeTexture(coin: CoinSpec, px: number, style: BadgeStyle =
 /**
  * The chip that names a corridor, drawn like the rate chips on the presale slide: a small grey
  * uppercase pair on top ("ETH → INR") and the bold route beneath, centred, on a silver card.
+ * Drawn at 512px tall so a mip level lands close to the on-screen size and the text stays sharp.
  */
-export function makeLabelTexture(title: string, subtitle: string, heightPx = 176): { texture: THREE.CanvasTexture; aspect: number } {
+export function makeLabelTexture(title: string, subtitle: string, heightPx = 512): { texture: THREE.CanvasTexture; aspect: number } {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
   const family = '"Onest Variable", "Instrument Sans Variable", Arial, sans-serif';
@@ -178,6 +179,8 @@ export function makeLabelTexture(title: string, subtitle: string, heightPx = 176
   ctx.fillText(title, width / 2, padY + small + gap);
 
   const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 4;
+  texture.anisotropy = 8;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   return { texture, aspect: width / heightPx };
 }

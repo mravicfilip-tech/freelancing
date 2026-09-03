@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { PlanetConfig } from './config';
 import { makeBadgeTexture } from './badges';
-import { animateRings, buildSites, makeLabel, makeMarker, makeRing, smooth, type Site } from './popups';
+import { animateRings, buildSites, makeLabel, makeMarker, makeRing, placeLabel, smooth, type Site } from './popups';
 
 interface Corridor {
   from: Site;
@@ -41,6 +41,12 @@ export class CoinCorridors {
   ) {
     this.sites = buildSites(cfg);
     this.textures = cfg.coins.map((c) => makeBadgeTexture(c, cfg.badgeTexturePx, cfg.badgeStyle, cfg.badgeMonoColor));
+  }
+
+  /** The site's horizontal position in view space: positive is the right half of the globe. */
+  private viewX(site: Site) {
+    this.tmp.copy(site.dir).transformDirection(this.parent.matrixWorld).transformDirection(this.camera.matrixWorldInverse);
+    return this.tmp.x;
   }
 
   private facing(site: Site) {
@@ -104,7 +110,8 @@ export class CoinCorridors {
     if (C.popupLabels) {
       label = makeLabel(`${from.name} to ${to.name}`, `${coin.symbol} to ${C.siteCurrency[to.name] ?? 'local'}`, C.popupLabelHeight);
       dest.add(label);
-      label.position.set(C.badgeSize * 0.55, 0, C.popupLift + 0.02);
+      label.position.set(0, 0, C.popupLift + 0.02);
+      placeLabel(label, C.badgeSize * 0.55, this.viewX(to) > 0.12);
     }
 
     this.parent.add(arc, coinSprite, origin, dest);

@@ -95,7 +95,7 @@ export function makeRing(quad: THREE.PlaneGeometry, size: number, color: string)
   return m;
 }
 
-/** Label chip sprite anchored so it sits to the right of the coin. */
+/** Label chip sprite. Which side of the coin it sits on is set by `placeLabel`. */
 export function makeLabel(title: string, subtitle: string, height: number) {
   const { texture, aspect } = makeLabelTexture(title, subtitle);
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
@@ -103,6 +103,16 @@ export function makeLabel(title: string, subtitle: string, height: number) {
   s.center.set(-0.12, 0.5);
   s.renderOrder = 7;
   return s;
+}
+
+/**
+ * Anchor the chip `gap` world units to the right of its position, or to the left when `flip` is
+ * set (cities on the right half of the globe), so it never runs off the edge of the canvas.
+ * The offset is done in sprite space, which is screen-aligned whatever the surface frame is.
+ */
+export function placeLabel(label: THREE.Sprite, gap: number, flip: boolean) {
+  const frac = gap / label.scale.x;
+  label.center.x = flip ? 1 + frac : -frac;
 }
 
 /** Drives ring expansion for a landing: `rings` fade a beat apart. Returns nothing. */
@@ -138,6 +148,12 @@ export class CoinPopups {
   ) {
     this.sites = buildSites(cfg);
     this.textures = cfg.coins.map((c) => makeBadgeTexture(c, cfg.badgeTexturePx, cfg.badgeStyle, cfg.badgeMonoColor));
+  }
+
+  /** The site's horizontal position in view space: positive is the right half of the globe. */
+  private viewX(site: Site) {
+    this.tmp.copy(site.dir).transformDirection(this.parent.matrixWorld).transformDirection(this.camera.matrixWorldInverse);
+    return this.tmp.x;
   }
 
   private facing(site: Site) {
@@ -185,6 +201,7 @@ export class CoinPopups {
     if (C.popupLabels) {
       label = makeLabel(site.name, `${coin.symbol} to ${C.siteCurrency[site.name] ?? 'local'}`, C.popupLabelHeight);
       group.add(label);
+      placeLabel(label, C.badgeSize * 0.55, this.viewX(site) > 0.12);
     }
     this.parent.add(group);
 
@@ -251,7 +268,7 @@ export class CoinPopups {
         p.stem.material.opacity = 0.7 * Math.min(1, vis);
       }
       if (p.label) {
-        p.label.position.set(C.badgeSize * 0.55, 0, lift);
+        p.label.position.set(0, 0, lift);
         p.label.material.opacity = Math.min(1, vis) * smooth(0.6, 1, s);
       }
       animateRings(p.rings, age, C.popupPingSec, vis);

@@ -141,27 +141,23 @@ export function Bars({ active }: { active: boolean }) {
           if (lead) gsap.fromTo(num, { color: '#4042d2' }, { color: '#122433', duration: 1.6, ease: 'power1.out', delay: 0.54 });
         };
 
-        // Idle: live data as a relay. Each cycle one bar (never the same twice) grows while the
-        // other three shrink; the glow moves to whichever bar ends up tallest; every chip rides
-        // its cap and its figure ticks a few percent the same way.
-        let leader: SVGGElement | undefined = bars[2];
+        // Idle: live data as a relay on four clearly separated tiers. Each cycle the shortest bar
+        // rises to the top tier and the other three each step down one tier, so exactly one bar
+        // grows, the rest shrink, and no two bars ever sit at a similar height. The glow, solid
+        // faces and white chip belong to the top tier; every chip rides its cap and its figure
+        // ticks a little the same way.
+        const capTop = (bar: SVGGElement) => FACES[idOf(bar)].y - 40 - (growth.get(bar) ?? 0);
         const cycle = () => {
-          const others = bars.filter((bar) => bar !== leader);
-          leader = others[Math.floor(Math.random() * others.length)];
+          const order = [...bars].sort((x, y) => capTop(x) - capTop(y)); // tallest first
+          const next = [order[order.length - 1], ...order.slice(0, -1)];
+          const tiers = [rand(10, 30), rand(110, 140), rand(205, 235), rand(295, 320)]; // cap tops, viewBox units
           const duration = rand(1.8, 2.6);
-          const target = new Map<SVGGElement, number>();
-          bars.forEach((bar) => {
+          next.forEach((bar, rank) => {
             const f = FACES[idOf(bar)];
-            const headroom = f.y - 40 - 10; // the cap's top (40 above the faces) stays inside the slide
-            target.set(bar, bar === leader ? Math.max(8, Math.min(rand(60, 130), headroom)) : -rand(0.15, 0.4) * f.h);
-          });
-          const capTop = (bar: SVGGElement) => FACES[idOf(bar)].y - target.get(bar)!;
-          const tallest = bars.reduce((best, bar) => (capTop(bar) < capTop(best) ? bar : best));
-          bars.forEach((bar) => {
-            const lead = bar === leader;
+            const lead = rank === 0;
             const proxy = { dh: growth.get(bar) ?? 0 };
             gsap.to(proxy, {
-              dh: target.get(bar)!,
+              dh: f.y - 40 - tiers[rank],
               duration: duration * rand(0.9, 1.1),
               ease: 'power2.inOut',
               onUpdate: () => {
@@ -169,19 +165,16 @@ export function Bars({ active }: { active: boolean }) {
                 render(bar, proxy.dh);
               },
             });
+            // The lit state hands over around the moment the bars cross, not when they set off.
             const glow = glowOf(bar);
-            // The glow hands over around the moment the bars cross, not when they set off.
-            const big = bar === tallest;
-            if (glow) gsap.to(glow, { opacity: big ? 0.5 : 0, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
-            // The biggest bar also has the design's solid faces; the rest go back to translucent.
-            gsap.to(bar.querySelectorAll('.bars__face, .bars__edgeF, .bars__edgeR'), { fillOpacity: big ? 1 : 0.24, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
-            // …and its chip goes white, while the chip that was white returns to silver.
+            if (glow) gsap.to(glow, { opacity: lead ? 0.5 : 0, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
+            gsap.to(bar.querySelectorAll('.bars__face, .bars__edgeF, .bars__edgeR'), { fillOpacity: lead ? 1 : 0.24, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             const inner = innerOf(bar);
-            if (inner) gsap.to(inner, { backgroundColor: big ? '#ffffff' : '#f1f3f4', duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
+            if (inner) gsap.to(inner, { backgroundColor: lead ? '#ffffff' : '#f1f3f4', duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             if (lead) gsap.fromTo(bar.querySelector('.bars__cap > *'), { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.4, ease: 'power1.out' });
             const chip = CHIPS.find((c) => c.bar === idOf(bar));
             const num = chip && chipNum(chip.bar);
-            if (chip && num) tickTo(chip, num, chip.base * (1 + (target.get(bar)! / FACES[idOf(bar)].h) * 0.08), lead);
+            if (chip && num) tickTo(chip, num, chip.base * (lead ? 1 + rand(0.004, 0.02) : 1 - rand(0.003, 0.015)), lead);
           });
           gsap.delayedCall(duration + rand(0.6, 1.2), cycle);
         };

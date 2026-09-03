@@ -62,8 +62,8 @@ export const fxMotion: IllustrationMotion = {
     const transfer = () => {
       gsap.fromTo(pill, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 0 rgba(64, 66, 210, 0.3)' }, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 18px rgba(64, 66, 210, 0)', duration: 1.1, ease: 'power2.out' });
       gsap.fromTo(arrows, { filter: 'brightness(1)' }, { filter: 'brightness(0.72)', duration: 0.45, yoyo: true, repeat: 1, ease: 'sine.inOut', delay: 0.2 });
-      gsap.fromTo(wallet, { scale: 1 }, { scale: 0.97, duration: 0.35, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 0.5, transformOrigin: '50% 50%' });
-      gsap.fromTo(bank, { scale: 1 }, { scale: 1.04, duration: 0.4, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 1.1, transformOrigin: '50% 50%' });
+      gsap.fromTo(wallet, { scale: 1 }, { scale: 0.85, duration: 0.4, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 0.5, transformOrigin: '50% 50%' });
+      gsap.fromTo(bank, { scale: 1 }, { scale: 1.15, duration: 0.45, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 1.1, transformOrigin: '50% 50%' });
       gsap.delayedCall(rand(4, 6), transfer);
     };
     gsap.delayedCall(1.5, transfer);

@@ -56,15 +56,24 @@ export const payMotion: IllustrationMotion = {
     count(tl, one(il, '[data-count="receive"]'), 0, 0.004174, at + 0.7, 1.1, (n) => n.toFixed(6));
   },
   idle(gsap, il) {
-    // Every few seconds the rate refreshes: the swap turns over and the BTC amount rolls to a
-    // slightly different figure, flicking indigo as it lands. The pills breathe.
+    // Every few seconds the swap turns over and the order is re-quoted: the USD amount steps by
+    // $10 — up to $400, then back down to $320 — and the BTC amount follows at the design's rate,
+    // both rolling to their new figures and flicking indigo as they land. The pills breathe.
     const swap = one(il, '.il-pay__swap');
+    const payEl = one(il, '[data-count="pay"]');
     const receive = one(il, '[data-count="receive"]');
+    const RATE = 0.004174 / 320; // BTC per USD, from the design's quote
+    let pay = 320;
+    let step = 10;
     const refresh = () => {
       gsap.to(swap, { rotation: '+=180', duration: 0.7, ease: 'back.out(1.5)' });
+      if (pay >= 400) step = -10;
+      if (pay <= 320) step = 10;
+      pay += step;
       gsap.delayedCall(0.25, () => {
-        roll(gsap, receive, (0.004174 * (1 + rand(-0.006, 0.006))).toFixed(6));
-        gsap.fromTo(receive, { color: '#4042d2' }, { color: '#2c2e31', duration: 1.4, ease: 'power1.out', delay: 0.3 });
+        roll(gsap, payEl, String(pay));
+        roll(gsap, receive, (pay * RATE).toFixed(6));
+        gsap.fromTo([payEl, receive], { color: '#4042d2' }, { color: '#2c2e31', duration: 1.4, ease: 'power1.out', delay: 0.3 });
       });
       gsap.delayedCall(rand(3.6, 5.2), refresh);
     };

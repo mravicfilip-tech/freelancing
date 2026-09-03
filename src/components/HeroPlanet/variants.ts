@@ -156,7 +156,7 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
     ...CORRIDORS,
     captureSphereDiameterFraction: 0.72,
     haloRadius: 1.12,
-    popupLabelHeight: 0.19, // the chips read at a glance, like the presale slide's
+    popupLabelHeight: 0.16, // the chips read at a glance, like the presale slide's
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

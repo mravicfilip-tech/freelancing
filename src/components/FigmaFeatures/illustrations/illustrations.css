@@ -74,9 +74,13 @@
   font-size: 16px;
 }
 .il-box__amount {
+  overflow: hidden; /* the figure rolls out and in when it changes */
   font-weight: 700;
   font-size: 32px;
   line-height: 1.15;
+}
+.il-count {
+  display: inline-block;
 }
 .il-box__amount i {
   font-style: normal;
@@ -300,6 +304,7 @@
   color: #12b67a;
 }
 .il-rc__amount {
+  overflow: hidden;
   font-weight: 700;
   font-size: 24px;
 }

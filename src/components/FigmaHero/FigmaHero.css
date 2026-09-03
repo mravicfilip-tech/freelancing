@@ -1,0 +1,430 @@
+/* Hero from Figma "Remittix Redesign" › Hero Banner v1 (node 2346:102).
+   Design frame: 1560 × 1080. Nav and main content are 1440 wide, the footer 1558. */
+
+/* NewBlack Typeface is a licensed face that is not on npm. Drop the woff2 into
+   public/fonts/ and this @font-face picks it up; until then the headline falls back to Onest. */
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+.fh {
+  --fh-bg: #edeff1;
+  --fh-line: #dadee2;
+  --fh-ink: #122433;
+  --fh-muted: #8292a2;
+  --fh-body: #7c858d;
+  --fh-label: #a2a6aa;
+  --fh-progress: #4042d2;
+  --fh-progress-soft: #b3b5f5;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  --fh-pixel: 'Silkscreen', 'Courier New', monospace;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 1080px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  background: var(--fh-bg);
+  color: var(--fh-ink);
+  font-family: var(--fh-sans);
+  overflow: hidden;
+}
+
+/* ---------- Background decoration: dashed frame + dot field ---------- */
+.fh__frame {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(1560px, 100%);
+  transform: translateX(-50%);
+  border-left: 1px dashed var(--fh-line);
+  border-right: 1px dashed var(--fh-line);
+  pointer-events: none;
+  z-index: 0;
+}
+.fh__frame::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 139px;
+  height: 728px; /* 139 → 867 */
+  border-top: 1px dashed var(--fh-line);
+  border-bottom: 1px dashed var(--fh-line);
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+}
+
+.fh > :not(.fh__frame) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Navbar ---------- */
+.fh__nav {
+  width: min(1440px, 100% - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 400px;
+}
+.fh__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 24px;
+  font-weight: 700;
+  font-size: 22.14px;
+  color: #000;
+  text-decoration: none;
+}
+.fh__brand img {
+  display: block;
+}
+.fh__links {
+  display: flex;
+  gap: 48px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--fh-label);
+  white-space: nowrap;
+}
+.fh__links a {
+  color: inherit;
+  text-decoration: none;
+}
+.fh__links a:hover {
+  color: var(--fh-ink);
+}
+.fh__navRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.fh__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 24px 0 0;
+  border: 0;
+  border-right: 1px solid var(--fh-bg);
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: #000;
+  cursor: pointer;
+}
+.fh__navButtons {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Buttons ---------- */
+.fh__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 162px;
+  height: 48px;
+  border-radius: 400px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 160ms ease;
+}
+.fh__btn--primary {
+  background: #000;
+  color: #fff;
+}
+.fh__btn--primary:hover {
+  background: #1d1f24;
+}
+.fh__btn--ghost {
+  background: #f8fafb;
+  border: 1px solid #dfe1e7;
+  color: var(--fh-muted);
+}
+.fh__btn--wide {
+  width: 184px;
+}
+.fh__chevron {
+  display: block;
+  width: 11px;
+  height: 6px;
+  margin: 4px 1.5px; /* the glyph sits inside a 14px box in the design */
+}
+.fh__chevron--right {
+  transform: rotate(-90deg);
+}
+.fh__btn--primary .fh__chevron {
+  filter: invert(1);
+}
+
+/* ---------- Main content ---------- */
+.fh__main {
+  width: min(1440px, 100% - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+.fh__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+}
+.fh__introText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fh__title {
+  margin: 0;
+  max-width: 604px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 1.12;
+  letter-spacing: -2.16px;
+  color: var(--fh-ink);
+}
+.fh__titleMuted {
+  color: var(--fh-muted);
+}
+.fh__body {
+  margin: 0;
+  max-width: 431px;
+  font-size: 18px;
+  line-height: 25.6px;
+  color: var(--fh-body);
+}
+.fh__graphic {
+  flex: 0 0 auto;
+  width: 656px;
+  height: 520px;
+  padding-left: 26px;
+}
+.fh__graphic img {
+  display: block;
+  width: 605px;
+  height: 520px;
+}
+
+/* ---------- Footer ---------- */
+.fh__footer {
+  width: min(1558px, 100%);
+  min-height: 212px;
+  display: flex;
+  gap: 48px;
+  padding: 24px 32px;
+  background: #fff;
+}
+.fh__price {
+  flex: 1 1 970px;
+  max-width: 970px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+.fh__priceTitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.98;
+  letter-spacing: -0.72px;
+  color: var(--fh-body);
+}
+.fh__progress {
+  position: relative;
+  height: 48px;
+  background-color: var(--fh-bg);
+  /* the unfilled track: a hairline every 8px */
+  background-image: repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 8px);
+  overflow: hidden;
+}
+.fh__progressFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background-color: var(--fh-bg);
+  /* 3px bars with 3px gaps, capped by a solid bar at each end */
+  background-image:
+    linear-gradient(var(--fh-progress), var(--fh-progress)),
+    linear-gradient(var(--fh-progress), var(--fh-progress)),
+    repeating-linear-gradient(90deg, var(--fh-progress-soft) 0 3px, transparent 3px 6px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 3px 100%, 3px 100%, auto;
+  background-position: left top, right top, left top;
+}
+.fh__stats {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.48px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fh__stats p {
+  margin: 0;
+  display: flex;
+  gap: 4px;
+}
+.fh__stats span {
+  color: var(--fh-label);
+}
+.fh__stats strong {
+  font-weight: 700;
+  color: var(--fh-ink);
+}
+.fh__countdown {
+  flex: 0 0 476px;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.fh__unit {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.fh__unit--bordered {
+  border-left: 1px solid #e9eaeb;
+  border-right: 1px solid #e9eaeb;
+}
+.fh__digits {
+  font-family: var(--fh-digits);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  font-variation-settings: 'ROND' 0;
+  color: var(--fh-label);
+}
+.fh__unitLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: rgba(162, 166, 170, 0.5);
+}
+.fh__sep {
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fh-pixel);
+  font-size: 48px;
+  line-height: 1.12;
+  letter-spacing: -1.44px;
+  color: rgba(162, 166, 170, 0.24);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .fh__links {
+    gap: 28px;
+  }
+  .fh__title {
+    font-size: 56px;
+    letter-spacing: -1.7px;
+  }
+  .fh__graphic {
+    width: 48%;
+    height: auto;
+    padding-left: 0;
+  }
+  .fh__graphic img {
+    width: 100%;
+    height: auto;
+  }
+}
+@media (max-width: 1100px) {
+  .fh__links {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .fh {
+    min-height: 0;
+    gap: 48px;
+    padding-top: 16px;
+  }
+  .fh__nav {
+    width: calc(100% - 24px);
+  }
+  .fh__navButtons .fh__btn--ghost,
+  .fh__lang {
+    display: none;
+  }
+  .fh__main {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 48px);
+  }
+  .fh__graphic {
+    width: 100%;
+    max-width: 520px;
+    align-self: center;
+  }
+  .fh__footer {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .fh__price {
+    flex: 0 0 auto;
+    max-width: none;
+  }
+  .fh__countdown {
+    flex-basis: auto;
+  }
+  .fh__stats {
+    flex-direction: column;
+    gap: 6px;
+    white-space: normal;
+  }
+  .fh__digits {
+    font-size: 48px;
+  }
+}
+@media (max-width: 480px) {
+  .fh__title {
+    font-size: 44px;
+    letter-spacing: -1.3px;
+  }
+  .fh__brand span {
+    display: none;
+  }
+  .fh__btn {
+    width: 140px;
+  }
+}

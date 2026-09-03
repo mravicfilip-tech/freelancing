@@ -4,6 +4,9 @@ import { App } from './App';
 import '@fontsource-variable/instrument-sans';
 import '@fontsource-variable/bricolage-grotesque/opsz.css';
 import '@fontsource-variable/schibsted-grotesk';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/doto';
+import '@fontsource/silkscreen';
 import './styles/global.css';
 import './heroVariant';
 

@@ -58,50 +58,65 @@ function Unit({ value, label, bordered = false }: { value: string; label: string
   );
 }
 
-/** The hero graphic: one slide per visual. The bars from the Figma design, then the corridors globe. */
+/** The hero graphic: one slide per visual. The corridors globe first, then the bars from the Figma design. */
 const SLIDES = [
-  { id: 'bars', label: 'Presale figures' },
   { id: 'globe', label: 'Payment corridors around the world' },
+  { id: 'bars', label: 'Presale figures' },
 ] as const;
 
-function GraphicSlider() {
-  const [index, setIndex] = useState(0);
+function GraphicSlides({ index }: { index: number }) {
   const globeHost = useRef<HTMLDivElement>(null);
-  const go = (i: number) => setIndex((i + SLIDES.length) % SLIDES.length);
-
   return (
-    <div className="fh__slider" role="region" aria-roledescription="carousel" aria-label="Hero graphic">
-      <div className="fh__viewport">
-        <div className="fh__track" style={{ transform: `translateX(-${index * 100}%)` }}>
-          <div className="fh__slide" data-slide="bars" aria-hidden={index !== 0}>
-            <img src="/figma/bars.svg" alt="" width={605} height={520} />
-          </div>
-          <div ref={globeHost} className="fh__slide fh__slide--globe" data-slide="globe" aria-hidden={index !== 1}>
-            {PLANET_ENABLED && (
-              <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} />
-            )}
-          </div>
-        </div>
+    <div className="fh__viewport" role="region" aria-roledescription="carousel" aria-label="Hero graphic">
+      <div
+        ref={globeHost}
+        className="fh__slide fh__slide--globe"
+        data-slide="globe"
+        data-active={index === 0 || undefined}
+        aria-hidden={index !== 0}
+      >
+        {PLANET_ENABLED && (
+          <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} />
+        )}
       </div>
-      <div className="fh__sliderControls">
-        <button type="button" className="fh__sliderArrow" onClick={() => go(index - 1)} aria-label="Previous slide">
+      <div className="fh__slide" data-slide="bars" data-active={index === 1 || undefined} aria-hidden={index !== 1}>
+        <img src="/figma/bars.svg" alt="" width={605} height={520} />
+      </div>
+    </div>
+  );
+}
+
+/** Segment bars (the active one stretches), a counter, and a pair of arrows. */
+function SlideControls({ index, onChange }: { index: number; onChange: (next: number) => void }) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    <div className="fh__sliderControls">
+      <div className="fh__segments" role="tablist" aria-label="Choose slide">
+        {SLIDES.map((slide, i) => (
+          <button
+            key={slide.id}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={slide.label}
+            className="fh__segment"
+            data-active={i === index || undefined}
+            onClick={() => onChange(i)}
+          >
+            <span />
+          </button>
+        ))}
+      </div>
+      <span className="fh__counter" aria-live="polite">
+        <span className="fh__counterCurrent">{pad(index + 1)}</span>
+        <span className="fh__counterSep" aria-hidden="true">/</span>
+        {pad(SLIDES.length)}
+      </span>
+      <div className="fh__arrows">
+        <button type="button" className="fh__sliderArrow" onClick={() => onChange(index - 1)} aria-label="Previous slide">
           <Chevron direction="left" />
         </button>
-        <div className="fh__dots" role="tablist" aria-label="Choose slide">
-          {SLIDES.map((slide, i) => (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={slide.label}
-              className="fh__dot"
-              data-active={i === index || undefined}
-              onClick={() => go(i)}
-            />
-          ))}
-        </div>
-        <button type="button" className="fh__sliderArrow" onClick={() => go(index + 1)} aria-label="Next slide">
+        <button type="button" className="fh__sliderArrow" onClick={() => onChange(index + 1)} aria-label="Next slide">
           <Chevron direction="right" />
         </button>
       </div>
@@ -111,6 +126,8 @@ function GraphicSlider() {
 
 export function FigmaHero() {
   const { days, hours, minutes } = useCountdown(PRESALE_END);
+  const [slide, setSlide] = useState(0);
+  const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const usd = USD_RAISED.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const tokens = TOKENS_SOLD.toLocaleString('en-US');
 
@@ -156,8 +173,9 @@ export function FigmaHero() {
           <PresaleButton wide />
         </div>
         <div className="fh__graphic">
-          <GraphicSlider />
+          <GraphicSlides index={slide} />
         </div>
+        <SlideControls index={slide} onChange={goToSlide} />
       </div>
 
       <footer className="fh__footer" data-node-id="2346:152">

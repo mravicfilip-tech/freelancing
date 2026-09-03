@@ -151,10 +151,11 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   },
   /** Refinement 3 — corridors. The coin travels from one city to another and lands. */
   'refine-corridors': CORRIDORS,
-  /** The corridors globe inside the Figma hero slider: centred in the graphic box, halo kept inside it. */
+  /** The corridors globe in the Figma hero slider: large, low in its box, a tighter halo so it clears the copy. */
   'figma-corridors': {
     ...CORRIDORS,
-    captureSphereDiameterFraction: 0.68,
+    captureSphereDiameterFraction: 0.72,
+    haloRadius: 1.12,
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

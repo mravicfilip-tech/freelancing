@@ -824,6 +824,16 @@ export class PlanetScene {
     this.entrance = tl;
   }
 
+  /** Plays the load-in again from its first frame; used when the hero slider returns to the globe. */
+  replayEntrance() {
+    if (this.disposed || this.opts.reducedMotion || !this.compiled) return;
+    this.entrance?.kill();
+    gsap.killTweensOf(this.state);
+    Object.assign(this.state, { glow: 0, dots: 0, assemble: 0, spin: 1, scale: 0.92, halo: 0, ring0: 0, ring1: 0, ring2: 0, nodes: 0 });
+    this.entranceStarted = false;
+    this.playEntrance();
+  }
+
   private setStaticPose() {
     Object.assign(this.state, { glow: 1, dots: 1, assemble: 1, spin: 0, scale: 1, halo: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
   }

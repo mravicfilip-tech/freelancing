@@ -1,41 +1,76 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * The four isometric bars from the Figma hero (public/figma/bars.svg), inlined so GSAP can draw
- * them. While `active`, the strokes draw in bar by bar, the fills fade up, and the bars then keep
- * easing to new heights like a live chart. Leaving the slide reverts everything, so the draw
- * replays on every return.
+ * Floating rate chips from the Figma hero (node 2346:347), one per bar. Positions are shares of
+ * the 605×521 slide; each chip's design value is the base its live figure moves around.
+ */
+const CHIPS = [
+  { bar: 'a', label: 'SOL → USD', icon: '/figma/coin-sol.svg', prefix: '$', base: 215407.93, suffix: '', x: -10, y: 47.05, light: false },
+  { bar: 'b', label: 'ETH → EUR', icon: '/figma/coin-eth.svg', prefix: '€', base: 126840.18, suffix: '', x: 17.25, y: 16.52, light: false },
+  { bar: 'c', label: 'BTC → USD', icon: '/figma/coin-btc.svg', prefix: '', base: 10578827.24, suffix: ' tokens', x: 34.59, y: -3.82, light: true },
+  { bar: 'd', label: 'USDT → GBP', icon: '/figma/coin-usdt.svg', prefix: '£', base: 74592.66, suffix: '', x: 71.26, y: 38.6, light: false },
+] as const;
+type Chip = (typeof CHIPS)[number];
+
+const format = (chip: Chip, n: number) =>
+  `${chip.prefix}${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${chip.suffix}`;
+
+/**
+ * The presale slide from the Figma hero: four isometric bars (inlined from the design so GSAP can
+ * draw them), a lime glow on the tallest, and a rate chip floating by each bar. While `active`,
+ * the strokes draw in bar by bar, the fills fade up, the chips pop in, and the slide then keeps
+ * moving like a live chart: bars ease to new heights, their chips count to matching figures and
+ * flick indigo, the glow flares with the BTC bar, and the chips drift. Leaving the slide reverts
+ * everything, so the draw replays on every return.
  */
 export function Bars({ active }: { active: boolean }) {
-  const ref = useRef<SVGSVGElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const svg = ref.current;
-    if (!active || !svg) return;
+    const root = ref.current;
+    if (!active || !root) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let cancelled = false;
     let revert: (() => void) | null = null;
+    const chipValue = (bar: string) => root.querySelector<HTMLElement>(`.bars__chip[data-bar="${bar}"] .bars__chipValue`);
 
     // GSAP is only loaded when the slide is first shown, so it never delays the hero's first paint.
     import('gsap').then(({ gsap }) => {
       if (cancelled) return;
       const ctx = gsap.context(() => {
-        const bars = Array.from(svg.querySelectorAll<SVGGElement>('.bars__bar'));
-        // Idle: live data. Each bar keeps easing to a new height from its base on its own rhythm,
-        // and its cap flicks indigo as the value changes, so the chart reads as updating.
+        const bars = Array.from(root.querySelectorAll<SVGGElement>('.bars__bar'));
+        const glow = root.querySelector<SVGGElement>('.bars__glow');
+        const chipOf = (bar: SVGGElement) => root.querySelector<HTMLElement>(`.bars__chip[data-bar="${bar.dataset.bar}"]`);
         const rand = (a: number, b: number) => a + Math.random() * (b - a);
+        const values = new Map<string, number>(CHIPS.map((c) => [c.bar, c.base]));
+
+        // Idle: live data. Each bar keeps easing to a new height on its own rhythm; its cap flicks
+        // indigo, its chip counts to the matching figure, and the BTC bar's glow flares with it.
         const nextValue = (bar: SVGGElement, cap: Element | null) => {
+          const factor = rand(0.86, 1.1);
+          const duration = rand(1.4, 2.6);
           gsap.to(bar, {
-            scaleY: rand(0.86, 1.1),
+            scaleY: factor,
             transformOrigin: '50% 100%',
-            duration: rand(1.4, 2.6),
+            duration,
             ease: 'power2.inOut',
             onComplete: () => {
               gsap.delayedCall(rand(0.4, 1.6), () => nextValue(bar, cap));
             },
           });
           if (cap) gsap.fromTo(cap, { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.2, ease: 'power1.out' });
+
+          const chip = CHIPS.find((c) => c.bar === bar.dataset.bar);
+          const value = chip && chipValue(chip.bar);
+          if (chip && value) {
+            const counter = { v: values.get(chip.bar) ?? chip.base };
+            const target = chip.base * factor;
+            values.set(chip.bar, target);
+            gsap.to(counter, { v: target, duration, ease: 'power2.inOut', onUpdate: () => { value.textContent = format(chip, counter.v); } });
+            gsap.fromTo(value, { color: '#4042d2' }, { color: '#122433', duration: 1.4, ease: 'power1.out' });
+          }
+          if (glow && bar.dataset.bar === 'c') gsap.fromTo(glow, { opacity: 0.75 }, { opacity: 0.45, duration, ease: 'power1.out' });
         };
 
         const entry = gsap.timeline({
@@ -43,12 +78,15 @@ export function Bars({ active }: { active: boolean }) {
           onComplete: () => {
             bars.forEach((bar, i) => {
               gsap.delayedCall(i * 0.35, () => nextValue(bar, bar.firstElementChild));
+              // Each chip drifts on its own rhythm, so the slide never sits still between updates.
+              const chip = chipOf(bar);
+              if (chip) gsap.to(chip, { y: rand(-8, -4), duration: rand(2.2, 3.4), delay: rand(0, 1), yoyo: true, repeat: -1, ease: 'sine.inOut' });
             });
           },
         });
 
         bars.forEach((bar, i) => {
-          const strokes = Array.from(bar.querySelectorAll<SVGGeometryElement>('path, rect'));
+          const strokes = Array.from(bar.querySelectorAll<SVGGeometryElement>(':scope > path, :scope > rect'));
           const at = i * 0.16;
           strokes.forEach((el) => {
             const len = el.getTotalLength();
@@ -58,19 +96,42 @@ export function Bars({ active }: { active: boolean }) {
             entry.to(el, { fillOpacity: fill, duration: 0.6, ease: 'power1.out' }, at + 0.55);
           });
           entry.fromTo(bar, { y: 18 }, { y: 0, duration: 1.0, ease: 'power3.out' }, at);
+          const chip = chipOf(bar);
+          if (chip) entry.from(chip, { y: 16, scale: 0.9, opacity: 0, duration: 0.6, ease: 'back.out(1.8)' }, at + 0.85);
         });
-      }, svg);
+        if (glow) entry.fromTo(glow, { opacity: 0 }, { opacity: 0.45, duration: 1.2, ease: 'power1.out' }, 2 * 0.16 + 0.7);
+      }, root);
       revert = () => ctx.revert();
     });
 
     return () => {
       cancelled = true;
       revert?.();
+      // The counters wrote into the DOM outside GSAP's control; put the design values back.
+      CHIPS.forEach((chip) => {
+        const value = chipValue(chip.bar);
+        if (value) value.textContent = format(chip, chip.base);
+      });
     };
   }, [active]);
 
   return (
-    <svg ref={ref} className="bars" viewBox="0 0 606 521" width={605} height={520} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <div ref={ref} className="barsSlide">
+    <svg className="bars" viewBox="0 0 606 521" width={605} height={520} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        {/* The lime glow on the tallest bar: a blurred gradient ellipse clipped to the bar's silhouette.
+            A clipPath rather than the design's alpha mask, which let the blur's filter region leak below the bar. */}
+        <filter id="bars-glow-blur" x="164.83" y="145.478" width="489.2" height="643.2" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+          <feGaussianBlur stdDeviation="31.8" />
+        </filter>
+        <linearGradient id="bars-glow-fill" x1="590.43" y1="467.078" x2="228.43" y2="467.078" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#F5F7FA" />
+          <stop offset="1" stopColor="#F9FF38" />
+        </linearGradient>
+        <clipPath id="bars-glow-clip">
+          <path d="M369.47 75.3164V75.2012L370.595 75.8506C372.367 76.8738 374.737 77.4072 377.147 77.4072C379.558 77.4072 381.929 76.8738 383.701 75.8506L384.826 75.2012V75.3164L440.151 43.375V486.875L384.826 518.816V518.933L384.451 519.149C382.397 520.335 379.752 520.907 377.147 520.907C374.543 520.907 371.899 520.335 369.845 519.149L369.47 518.933V518.816L313.278 486.375V42.875L369.47 75.3164Z" />
+        </clipPath>
+      </defs>
       {/* Bar a: x 4–135, the shortest */}
       <g className="bars__bar" data-bar="a">
         <path d="M62.354 281C66.1804 278.791 72.3841 278.791 76.2104 281L132.502 313.5C136.328 315.709 136.328 319.291 132.502 321.5L77.0765 353.5C73.2501 355.709 67.0464 355.709 63.22 353.5L6.9284 321C3.10206 318.791 3.10205 315.209 6.9284 313L62.354 281Z" fill="white" stroke="#DADEE2" strokeWidth="1.5" />
@@ -96,6 +157,9 @@ export function Bars({ active }: { active: boolean }) {
         <rect width="64" height="442" transform="matrix(0.866025 -0.5 0 1 384.076 76.5)" fill="white" stroke="#DADEE2" strokeWidth="1.5" />
         <path d="M311.059 40C311.059 41.5621 312.155 42.9763 313.928 44V486C312.155 484.976 311.059 483.562 311.059 482V40Z" fill="white" fillOpacity="0.24" stroke="#DADEE2" strokeWidth="1.5" />
         <path d="M370.22 76.5C374.046 78.7091 380.25 78.7091 384.076 76.5V518.5C380.25 520.709 374.046 520.709 370.22 518.5V76.5Z" fill="white" stroke="#DADEE2" strokeWidth="1.5" />
+        <g className="bars__glow" opacity="0.45" clipPath="url(#bars-glow-clip)">
+          <ellipse cx="409.43" cy="467.078" rx="181" ry="258" fill="url(#bars-glow-fill)" filter="url(#bars-glow-blur)" />
+        </g>
         <path d="M442.372 40.5C442.372 42.0621 441.275 43.4763 439.502 44.5V486.5C441.275 485.476 442.372 484.062 442.372 482.5V40.5Z" fill="white" stroke="#DADEE2" strokeWidth="1.5" />
       </g>
       {/* Bar d: x 470–601, the rounded cap */}
@@ -108,5 +172,20 @@ export function Bars({ active }: { active: boolean }) {
         <path d="M601.372 272.5C601.372 274.062 600.275 275.476 598.502 276.5V484.5C600.275 483.476 601.372 482.062 601.372 480.5V272.5Z" fill="white" fillOpacity="0.24" stroke="#DADEE2" strokeWidth="1.5" />
       </g>
     </svg>
+      {CHIPS.map((chip) => (
+        <div
+          key={chip.bar}
+          className={`bars__chip${chip.light ? ' bars__chip--light' : ''}`}
+          data-bar={chip.bar}
+          style={{ '--x': `${chip.x}%`, '--y': `${chip.y}%` } as React.CSSProperties}
+        >
+          <span className="bars__chipLabel">
+            {chip.label}
+            <img src={chip.icon} alt="" width={14} height={14} />
+          </span>
+          <span className="bars__chipValue">{format(chip, chip.base)}</span>
+        </div>
+      ))}
+    </div>
   );
 }

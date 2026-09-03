@@ -100,7 +100,7 @@ function GraphicSlides({ index }: { index: number }) {
         aria-hidden={index !== 0}
       >
         {PLANET_ENABLED && (
-          <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} />
+          <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} active={index === 0} />
         )}
       </div>
       <div className="fh__slide" data-slide="bars" data-active={index === 1 || undefined} aria-hidden={index !== 1}>

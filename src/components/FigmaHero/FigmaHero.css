@@ -219,6 +219,26 @@
 .fh__titleMuted {
   color: var(--fh-muted);
 }
+/* Each headline line sits in a mask so it can rise into view; the padding keeps descenders unclipped. */
+.fh__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.fh__lineInner {
+  display: block;
+}
+
+/* Hold the animated parts invisible until GSAP has set their start states (see useHeroEntrance). */
+.fh[data-entrance='pending'] .fh__nav,
+.fh[data-entrance='pending'] .fh__lineInner,
+.fh[data-entrance='pending'] .fh__body,
+.fh[data-entrance='pending'] .fh__intro .fh__btn,
+.fh[data-entrance='pending'] .fh__sliderControls,
+.fh[data-entrance='pending'] .fh__footer {
+  visibility: hidden;
+}
 .fh__body {
   margin: 0;
   max-width: 431px;
@@ -252,10 +272,11 @@
   visibility: visible;
   transition: opacity 520ms ease, visibility 0s linear 0s;
 }
-.fh__slide img {
+.fh__slide .bars {
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 /* The globe's canvas is larger than the slide: the sphere is centred in the canvas, so these
    insets put its centre a little left of the box's middle and well below it. */
@@ -405,6 +426,17 @@
   background-repeat: no-repeat, no-repeat, repeat;
   background-size: 3px 100%, 3px 100%, auto;
   background-position: left top, right top, left top;
+  overflow: hidden;
+}
+/* The sheen GSAP sweeps across the filled part of the bar. */
+.fh__progressGlow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  pointer-events: none;
 }
 .fh__stats {
   display: flex;

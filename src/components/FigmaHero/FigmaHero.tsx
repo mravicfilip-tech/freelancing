@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { HeroPlanet } from '../HeroPlanet';
+import { Bars } from './Bars';
+import { useHeroEntrance } from './useHeroEntrance';
 import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
@@ -80,7 +82,7 @@ function GraphicSlides({ index }: { index: number }) {
         )}
       </div>
       <div className="fh__slide" data-slide="bars" data-active={index === 1 || undefined} aria-hidden={index !== 1}>
-        <img src="/figma/bars.svg" alt="" width={605} height={520} />
+        <Bars active={index === 1} />
       </div>
     </div>
   );
@@ -128,11 +130,13 @@ export function FigmaHero() {
   const { days, hours, minutes } = useCountdown(PRESALE_END);
   const [slide, setSlide] = useState(0);
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
+  const root = useRef<HTMLElement>(null);
+  useHeroEntrance(root, { progress: PROGRESS, usd: USD_RAISED, tokens: TOKENS_SOLD });
   const usd = USD_RAISED.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const tokens = TOKENS_SOLD.toLocaleString('en-US');
 
   return (
-    <section className="fh" data-node-id="2346:102">
+    <section ref={root} className="fh" data-node-id="2346:102" data-entrance="pending">
       <div className="fh__frame" aria-hidden="true" />
 
       <header className="fh__nav" data-node-id="2346:110">
@@ -161,9 +165,14 @@ export function FigmaHero() {
         <div className="fh__intro">
           <div className="fh__introText">
             <h1 className="fh__title">
-              Cross-border
-              <br />
-              Payments <span className="fh__titleMuted">Reinvented</span>
+              <span className="fh__line">
+                <span className="fh__lineInner">Cross-border</span>
+              </span>
+              <span className="fh__line">
+                <span className="fh__lineInner">
+                  Payments <span className="fh__titleMuted">Reinvented</span>
+                </span>
+              </span>
             </h1>
             <p className="fh__body">
               Remittix enables users to pay fiat into any bank account around the world using crypto,
@@ -189,16 +198,18 @@ export function FigmaHero() {
             aria-valuenow={Math.round(PROGRESS * 100)}
             aria-label="Presale progress"
           >
-            <div className="fh__progressFill" style={{ width: `${PROGRESS * 100}%` }} />
+            <div className="fh__progressFill" style={{ width: `${PROGRESS * 100}%` }}>
+              <span className="fh__progressGlow" aria-hidden="true" />
+            </div>
           </div>
           <div className="fh__stats">
             <p>
               <span>USD raised so far</span>
-              <strong>${usd}</strong>
+              <strong data-count="usd">${usd}</strong>
             </p>
             <p>
               <span>Tokens sold/remaining</span>
-              <strong>{tokens}</strong>
+              <strong data-count="tokens">{tokens}</strong>
             </p>
           </div>
         </div>

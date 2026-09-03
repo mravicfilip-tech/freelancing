@@ -75,9 +75,12 @@
 }
 .il-box__amount {
   overflow: hidden; /* the figure rolls out and in when it changes */
+  margin-right: -12px; /* the longest BTC figure needs the box's right padding too */
   font-weight: 700;
   font-size: 32px;
   line-height: 1.15;
+  letter-spacing: -0.96px;
+  white-space: nowrap;
 }
 .il-count {
   display: inline-block;

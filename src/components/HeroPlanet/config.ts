@@ -13,6 +13,7 @@ export const PLANET_CONFIG = {
     | 'refine-mono'
     | 'refine-labels'
     | 'refine-corridors'
+    | 'figma-corridors'
     | 'globe-atlas'
     | 'globe-matte'
     | 'orbital'

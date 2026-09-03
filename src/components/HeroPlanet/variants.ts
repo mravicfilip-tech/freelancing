@@ -101,6 +101,23 @@ const HALFTONE: Partial<PlanetConfig> = {
   oceanOpacity: 0.5,
 };
 
+/** Corridors: the coin travels from one city to another along a hairline arc and lands. */
+const CORRIDORS: Partial<PlanetConfig> = {
+  ...HALFTONE,
+  coinMode: 'corridor',
+  badgeSize: 0.12,
+  popupLabels: true,
+  popupLabelHeight: 0.1,
+  popupRings: 1,
+  popupPingSize: 0.5,
+  popupMarkerSize: 0.036,
+  popupMinFacing: 0.4,
+  corridorVisible: 2,
+  corridorTravelSec: 1.8,
+  corridorHoldSec: 2.4,
+  popupSpawnGapSec: 1.2,
+};
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   'globe-halftone': HALFTONE,
   /** Refinement 1 — monochrome. Every token is an ink disc; markers and rings in grey. */
@@ -133,20 +150,11 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
     popupSpawnGapSec: 1.4,
   },
   /** Refinement 3 — corridors. The coin travels from one city to another and lands. */
-  'refine-corridors': {
-    ...HALFTONE,
-    coinMode: 'corridor',
-    badgeSize: 0.12,
-    popupLabels: true,
-    popupLabelHeight: 0.1,
-    popupRings: 1,
-    popupPingSize: 0.5,
-    popupMarkerSize: 0.036,
-    popupMinFacing: 0.4,
-    corridorVisible: 2,
-    corridorTravelSec: 1.8,
-    corridorHoldSec: 2.4,
-    popupSpawnGapSec: 1.2,
+  'refine-corridors': CORRIDORS,
+  /** The corridors globe inside the Figma hero slider: centred in the graphic box, halo kept inside it. */
+  'figma-corridors': {
+    ...CORRIDORS,
+    captureSphereDiameterFraction: 0.68,
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

@@ -179,6 +179,9 @@
 .fh__chevron--right {
   transform: rotate(-90deg);
 }
+.fh__chevron--left {
+  transform: rotate(90deg);
+}
 .fh__btn--primary .fh__chevron {
   filter: invert(1);
 }
@@ -225,13 +228,98 @@
 .fh__graphic {
   flex: 0 0 auto;
   width: 656px;
-  height: 520px;
   padding-left: 26px;
 }
-.fh__graphic img {
-  display: block;
+
+/* ---------- Graphic slider: the bars and the globe, one slide each ---------- */
+.fh__slider {
   width: 605px;
-  height: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.fh__viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 605 / 520;
+  overflow: hidden;
+}
+.fh__track {
+  display: flex;
+  height: 100%;
+  transition: transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.fh__slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.fh__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The globe fills the same box the bars occupy; the planet is centred in its host. */
+.fh__slide--globe .heroPlanet {
+  inset: 0;
+}
+.fh__sliderControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.fh__sliderArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--fh-line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.fh__sliderArrow:hover,
+.fh__sliderArrow:focus-visible {
+  border-color: var(--fh-muted);
+  background: rgba(255, 255, 255, 0.6);
+}
+.fh__sliderArrow:focus-visible,
+.fh__dot:focus-visible {
+  outline: 2px solid var(--fh-progress);
+  outline-offset: 2px;
+}
+.fh__dots {
+  display: flex;
+  gap: 8px;
+}
+.fh__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--fh-line);
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+.fh__dot:hover {
+  background: var(--fh-muted);
+}
+.fh__dot[data-active] {
+  background: var(--fh-ink);
+  transform: scale(1.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fh__track {
+    transition: none;
+  }
 }
 
 /* ---------- Footer ---------- */
@@ -360,12 +448,10 @@
   }
   .fh__graphic {
     width: 48%;
-    height: auto;
     padding-left: 0;
   }
-  .fh__graphic img {
+  .fh__slider {
     width: 100%;
-    height: auto;
   }
 }
 @media (max-width: 1100px) {

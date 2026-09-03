@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { HeroPlanet } from '../HeroPlanet';
+import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
 /**
@@ -34,7 +36,7 @@ function useCountdown(target: number) {
   };
 }
 
-function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' }) {
+function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left' }) {
   return <img className={`fh__chevron fh__chevron--${direction}`} src="/figma/chevron.svg" alt="" width={11} height={6} />;
 }
 
@@ -52,6 +54,57 @@ function Unit({ value, label, bordered = false }: { value: string; label: string
     <div className={`fh__unit${bordered ? ' fh__unit--bordered' : ''}`}>
       <span className="fh__digits">{value}</span>
       <span className="fh__unitLabel">{label}</span>
+    </div>
+  );
+}
+
+/** The hero graphic: one slide per visual. The bars from the Figma design, then the corridors globe. */
+const SLIDES = [
+  { id: 'bars', label: 'Presale figures' },
+  { id: 'globe', label: 'Payment corridors around the world' },
+] as const;
+
+function GraphicSlider() {
+  const [index, setIndex] = useState(0);
+  const globeHost = useRef<HTMLDivElement>(null);
+  const go = (i: number) => setIndex((i + SLIDES.length) % SLIDES.length);
+
+  return (
+    <div className="fh__slider" role="region" aria-roledescription="carousel" aria-label="Hero graphic">
+      <div className="fh__viewport">
+        <div className="fh__track" style={{ transform: `translateX(-${index * 100}%)` }}>
+          <div className="fh__slide" data-slide="bars" aria-hidden={index !== 0}>
+            <img src="/figma/bars.svg" alt="" width={605} height={520} />
+          </div>
+          <div ref={globeHost} className="fh__slide fh__slide--globe" data-slide="globe" aria-hidden={index !== 1}>
+            {PLANET_ENABLED && (
+              <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} />
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="fh__sliderControls">
+        <button type="button" className="fh__sliderArrow" onClick={() => go(index - 1)} aria-label="Previous slide">
+          <Chevron direction="left" />
+        </button>
+        <div className="fh__dots" role="tablist" aria-label="Choose slide">
+          {SLIDES.map((slide, i) => (
+            <button
+              key={slide.id}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={slide.label}
+              className="fh__dot"
+              data-active={i === index || undefined}
+              onClick={() => go(i)}
+            />
+          ))}
+        </div>
+        <button type="button" className="fh__sliderArrow" onClick={() => go(index + 1)} aria-label="Next slide">
+          <Chevron direction="right" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -102,8 +155,8 @@ export function FigmaHero() {
           </div>
           <PresaleButton wide />
         </div>
-        <div className="fh__graphic" aria-hidden="true">
-          <img src="/figma/bars.svg" alt="" width={605} height={520} />
+        <div className="fh__graphic">
+          <GraphicSlider />
         </div>
       </div>
 

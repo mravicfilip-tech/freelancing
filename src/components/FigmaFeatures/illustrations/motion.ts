@@ -40,3 +40,24 @@ export function wipe(tl: Timeline, el: Element, at: number, duration: number, fr
 export function bob(gsap: Gsap, el: Element | null, amplitude = 3, seconds = 3, delay = 0) {
   if (el) gsap.to(el, { y: -amplitude, duration: seconds, delay, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 }
+
+/** Roll a figure to a new value: the old one slides up and out, the new one in. */
+export function roll(gsap: Gsap, el: HTMLElement, next: string) {
+  gsap
+    .timeline()
+    .to(el, { yPercent: -60, opacity: 0, duration: 0.22, ease: 'power2.in' })
+    .add(() => {
+      el.textContent = next;
+    })
+    .fromTo(el, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.34, ease: 'power2.out' });
+}
+
+/** Adds a small dot to an inline SVG that can be sent along its paths. */
+export function traveller(svg: SVGSVGElement, color: string, r = 3): SVGCircleElement {
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('r', String(r));
+  dot.setAttribute('fill', color);
+  dot.setAttribute('opacity', '0');
+  svg.appendChild(dot);
+  return dot;
+}

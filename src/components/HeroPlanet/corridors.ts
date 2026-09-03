@@ -108,7 +108,7 @@ export class CoinCorridors {
     dest.add(destMarker, ...rings);
     let label: Corridor['label'] = null;
     if (C.popupLabels) {
-      label = makeLabel(`${from.name} to ${to.name}`, `${coin.symbol} to ${C.siteCurrency[to.name] ?? 'local'}`, C.popupLabelHeight);
+      label = makeLabel(`${from.name} to ${to.name}`, `${coin.symbol} → ${C.siteCurrency[to.name] ?? 'local'}`, C.popupLabelHeight);
       dest.add(label);
       label.position.set(0, 0, C.popupLift + 0.02);
       placeLabel(label, C.badgeSize * 0.55, this.viewX(to) > 0.12);

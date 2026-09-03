@@ -1,5 +1,5 @@
 import { Layer, Stage, part } from './Stage';
-import { all, bob, count, one, pop, wipe, type IllustrationMotion } from './motion';
+import { all, bob, count, one, pop, rand, wipe, type IllustrationMotion } from './motion';
 
 /** "Zero FX fees" (Figma 2354:693, 435×244): a 0% pill, a forked arrow, and a wallet card and bank card. */
 export function Fx() {
@@ -49,11 +49,23 @@ export const fxMotion: IllustrationMotion = {
     pop(tl, all(il, '.il-fx__tag'), at + 1.2, { stagger: 0.1 });
   },
   idle(gsap, il) {
-    bob(gsap, one(il, '.il-fx__pill'), 3, 3);
     const [wallet, bank] = all(il, '.il-fx__card');
+    const pill = one(il, '.il-fx__pill');
+    const arrows = one(il, '.il-fx__arrows');
+    bob(gsap, pill, 3, 3);
     bob(gsap, wallet, 3, 4);
     bob(gsap, bank, -3, 4.6, 0.8);
     // The hatching drifts across the cards' faces.
     all(il, '.il-fx__hatch').forEach((h, i) => gsap.fromTo(h, { x: -6 }, { x: 6, duration: 5 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    // Every few seconds a transfer goes through at 0%: the pill's halo pulses, the arrows light up,
+    // the wallet dips as it sends, then the bank lifts as it receives.
+    const transfer = () => {
+      gsap.fromTo(pill, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 0 rgba(64, 66, 210, 0.3)' }, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 18px rgba(64, 66, 210, 0)', duration: 1.1, ease: 'power2.out' });
+      gsap.fromTo(arrows, { filter: 'brightness(1)' }, { filter: 'brightness(0.72)', duration: 0.45, yoyo: true, repeat: 1, ease: 'sine.inOut', delay: 0.2 });
+      gsap.fromTo(wallet, { scale: 1 }, { scale: 0.97, duration: 0.35, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 0.5, transformOrigin: '50% 50%' });
+      gsap.fromTo(bank, { scale: 1 }, { scale: 1.04, duration: 0.4, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 1.1, transformOrigin: '50% 50%' });
+      gsap.delayedCall(rand(4, 6), transfer);
+    };
+    gsap.delayedCall(1.5, transfer);
   },
 };

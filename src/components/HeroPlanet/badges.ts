@@ -130,37 +130,52 @@ export function makeBadgeTexture(coin: CoinSpec, px: number, style: BadgeStyle =
 }
 
 /** A white label chip with a hairline border: a bold line and a quieter line beneath. */
-export function makeLabelTexture(title: string, subtitle: string, heightPx = 160): { texture: THREE.CanvasTexture; aspect: number } {
+/**
+ * The chip that names a corridor, drawn like the rate chips on the presale slide: a small grey
+ * uppercase pair on top ("ETH → INR") and the bold route beneath, centred, on a silver card.
+ */
+export function makeLabelTexture(title: string, subtitle: string, heightPx = 176): { texture: THREE.CanvasTexture; aspect: number } {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
-  const font1 = `600 ${Math.round(heightPx * 0.3)}px "Instrument Sans Variable", Arial, sans-serif`;
-  const font2 = `500 ${Math.round(heightPx * 0.24)}px "Instrument Sans Variable", Arial, sans-serif`;
-  ctx.font = font1;
-  const w1 = ctx.measureText(title).width;
-  ctx.font = font2;
-  const w2 = ctx.measureText(subtitle).width;
-  const pad = heightPx * 0.3;
-  const width = Math.ceil(Math.max(w1, w2) + pad * 2);
+  const family = '"Onest Variable", "Instrument Sans Variable", Arial, sans-serif';
+  const small = Math.round(heightPx * 0.19);
+  const big = Math.round(heightPx * 0.25);
+  const gap = Math.round(heightPx * 0.07);
+  const fontSmall = `700 ${small}px ${family}`;
+  const fontBig = `700 ${big}px ${family}`;
+  const pair = subtitle.toUpperCase();
+  ctx.font = fontSmall;
+  ctx.letterSpacing = `${-small * 0.03}px`;
+  const w1 = ctx.measureText(pair).width;
+  ctx.font = fontBig;
+  ctx.letterSpacing = `${-big * 0.03}px`;
+  const w2 = ctx.measureText(title).width;
+  const padX = Math.round(heightPx * 0.2);
+  const width = Math.ceil(Math.max(w1, w2) + padX * 2);
   canvas.width = width;
   canvas.height = heightPx;
-  const radius = heightPx * 0.16;
+  const radius = heightPx * 0.1;
   const stroke = Math.max(1.5, heightPx * 0.012);
 
   ctx.beginPath();
   ctx.roundRect(stroke, stroke, width - stroke * 2, heightPx - stroke * 2, radius);
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#f1f3f4';
   ctx.fill();
   ctx.lineWidth = stroke;
-  ctx.strokeStyle = '#C4C8CD';
+  ctx.strokeStyle = '#dadee2';
   ctx.stroke();
 
-  ctx.fillStyle = '#111214';
-  ctx.font = font1;
-  ctx.textBaseline = 'alphabetic';
-  ctx.fillText(title, pad, heightPx * 0.45);
-  ctx.fillStyle = '#5B636B';
-  ctx.font = font2;
-  ctx.fillText(subtitle, pad, heightPx * 0.78);
+  const padY = (heightPx - small - gap - big) / 2;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#a2a6aa';
+  ctx.font = fontSmall;
+  ctx.letterSpacing = `${-small * 0.03}px`;
+  ctx.fillText(pair, width / 2, padY);
+  ctx.fillStyle = '#122433';
+  ctx.font = fontBig;
+  ctx.letterSpacing = `${-big * 0.03}px`;
+  ctx.fillText(title, width / 2, padY + small + gap);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 4;

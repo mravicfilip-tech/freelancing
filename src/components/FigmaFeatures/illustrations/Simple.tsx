@@ -1,6 +1,6 @@
 import lines from './svg/imgGroup2085662421.svg?raw';
 import { Layer, Stage, Strokes, part } from './Stage';
-import { all, bob, count, draw, one, pop, type IllustrationMotion } from './motion';
+import { all, bob, count, draw, one, pop, rand, traveller, type IllustrationMotion } from './motion';
 
 /** "Crypto-to-fiat payments made simple" (Figma 2348:1733, 709×334): BTC flows through Remittix into a bank receipt. */
 export function Simple() {
@@ -88,8 +88,28 @@ export const simpleMotion: IllustrationMotion = {
   },
   idle(gsap, il) {
     all(il, '.il-simple__logo').forEach((l, i) => bob(gsap, l, 4, 3.2 + i * 0.5, i * 0.7));
-    gsap.to(one(il, '.il-simple__swap'), { rotation: '+=180', duration: 0.7, ease: 'back.out(1.5)', repeat: -1, repeatDelay: 4.3, repeatRefresh: true });
     gsap.fromTo(one(il, '.il-simple__lime'), { opacity: 0.75 }, { opacity: 1, duration: 3.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
     bob(gsap, one(il, '.il-toast'), 2, 3.8, 1);
+    // Every few seconds a payment travels the line from BTC through Remittix to the bank: the
+    // swap turns as it passes, the receipt's amount lands with a flick, and the toast nods.
+    const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
+    const path = one<SVGPathElement>(svg, 'path');
+    const dot = traveller(svg, '#4042d2', 3.5);
+    const swap = one(il, '.il-simple__swap');
+    const amount = one(il, '[data-count="eur"]');
+    const badge = one(il, '.il-rc__badge');
+    const send = () => {
+      gsap
+        .timeline()
+        .set(dot, { opacity: 1 })
+        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.6, ease: 'power1.inOut' })
+        .to(dot, { opacity: 0, duration: 0.2 })
+        .to(swap, { rotation: '+=180', duration: 0.6, ease: 'back.out(1.5)' }, 1.4)
+        .fromTo(amount, { color: '#4042d2' }, { color: '#000', duration: 1.4, ease: 'power1.out' }, 1.7)
+        .fromTo(badge, { scale: 1 }, { scale: 1.15, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 1.8)
+        .fromTo(one(il, '.il-toast'), { x: 0 }, { x: -4, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 2.1);
+      gsap.delayedCall(rand(4.5, 6.5), send);
+    };
+    gsap.delayedCall(1.2, send);
   },
 };

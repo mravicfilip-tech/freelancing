@@ -4,7 +4,7 @@ import curve from './svg/imgVector1682.svg?raw';
 import curveTop from './svg/imgFrame2085662222.svg?raw';
 import curveBottom from './svg/imgFrame2085662221.svg?raw';
 import { Stage, Strokes, part } from './Stage';
-import { all, bob, draw, one, pop, type IllustrationMotion } from './motion';
+import { all, bob, draw, one, pop, rand, traveller, type IllustrationMotion } from './motion';
 
 /** "User-friendly interface" (Figma 2360:1807, 668×234): two actions feed the Remittix app, which pays out to a card. */
 export function Ui() {
@@ -61,11 +61,34 @@ export const uiMotion: IllustrationMotion = {
     pop(tl, all(il, '.il-ui__node'), at + 1.95, { stagger: 0.1 });
   },
   idle(gsap, il) {
-    // The dots type; the gear turns; the app breathes; the pills and card drift.
+    // The dots type; the gear turns; the pills drift.
     gsap.to(all(il, '.il-ui__dots i'), { opacity: 0.25, duration: 0.35, ease: 'sine.inOut', stagger: { each: 0.15, repeat: -1, yoyo: true } });
     gsap.to(one(il, '.il-ui__gear'), { rotation: 360, duration: 18, ease: 'none', repeat: -1 });
-    gsap.to(one(il, '.il-ui__app'), { y: -3, boxShadow: '0 14px 22px -12px rgba(146, 147, 150, 0.5)', duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
     all(il, '.il-ui__action').forEach((p, i) => bob(gsap, p, i ? -2.5 : 2.5, 3.4 + i * 0.4));
-    bob(gsap, one(il, '.il-ui__card'), 3, 4.2, 0.6);
+    // Every few seconds a request leaves one of the actions, rides its line into the app, the app
+    // pulses, the dashes carry it on and the card's disc lights up as the payment lands.
+    const svg = one<SVGSVGElement>(il, '.il-ui__lines svg');
+    const [red, blue] = all<SVGPathElement>(svg, 'path');
+    const dots = [traveller(svg, '#FF3838', 2.5), traveller(svg, '#4D70E3', 2.5)];
+    const app = one(il, '.il-ui__app');
+    const disc = one(il, '.il-ui__discs i:last-child');
+    const dashes = all<SVGPathElement>(il, '.il-ui__dashes path');
+    let turn = 0;
+    const request = () => {
+      const i = turn++ % 2;
+      const path = i ? blue : red;
+      const dot = dots[i];
+      gsap
+        .timeline()
+        .set(dot, { opacity: 1 })
+        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: i ? 1 : 0, end: i ? 0 : 1 }, duration: 0.9, ease: 'power1.inOut' })
+        .to(dot, { opacity: 0, duration: 0.15 })
+        .fromTo(app, { scale: 1 }, { scale: 1.06, duration: 0.28, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0.85)
+        .fromTo(dashes, { strokeDasharray: '4 4', strokeDashoffset: 0 }, { strokeDashoffset: -32, duration: 0.9, ease: 'none', stagger: 0.05 }, 1.1)
+        .set(dashes, { strokeDasharray: 'none' })
+        .fromTo(disc, { backgroundColor: 'rgba(232, 232, 232, 0.79)' }, { backgroundColor: '#dcee2b', duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.9);
+      gsap.delayedCall(rand(3.2, 4.8), request);
+    };
+    gsap.delayedCall(1.4, request);
   },
 };

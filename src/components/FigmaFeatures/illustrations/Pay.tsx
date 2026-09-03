@@ -1,5 +1,5 @@
 import { Layer, Stage, part } from './Stage';
-import { all, bob, count, one, pop, wipe, type IllustrationMotion } from './motion';
+import { all, bob, count, one, pop, rand, roll, wipe, type IllustrationMotion } from './motion';
 
 /** "Pay Remittix" (Figma 2361:2281, 562×188): two currency pills over a pay/receive pair, joined by connectors and a swap. */
 export function Pay() {
@@ -56,8 +56,19 @@ export const payMotion: IllustrationMotion = {
     count(tl, one(il, '[data-count="receive"]'), 0, 0.004174, at + 0.7, 1.1, (n) => n.toFixed(6));
   },
   idle(gsap, il) {
-    // The swap turns over every few seconds; the pills breathe.
-    gsap.to(one(il, '.il-pay__swap'), { rotation: '+=180', duration: 0.7, ease: 'back.out(1.5)', repeat: -1, repeatDelay: 3.6, repeatRefresh: true });
+    // Every few seconds the rate refreshes: the swap turns over and the BTC amount rolls to a
+    // slightly different figure, flicking indigo as it lands. The pills breathe.
+    const swap = one(il, '.il-pay__swap');
+    const receive = one(il, '[data-count="receive"]');
+    const refresh = () => {
+      gsap.to(swap, { rotation: '+=180', duration: 0.7, ease: 'back.out(1.5)' });
+      gsap.delayedCall(0.25, () => {
+        roll(gsap, receive, (0.004174 * (1 + rand(-0.006, 0.006))).toFixed(6));
+        gsap.fromTo(receive, { color: '#4042d2' }, { color: '#2c2e31', duration: 1.4, ease: 'power1.out', delay: 0.3 });
+      });
+      gsap.delayedCall(rand(3.6, 5.2), refresh);
+    };
+    gsap.delayedCall(2, refresh);
     all(il, '.il-pay__pill').forEach((p, i) => bob(gsap, p, 2.5, 2.8 + i * 0.4, i * 0.6));
   },
 };

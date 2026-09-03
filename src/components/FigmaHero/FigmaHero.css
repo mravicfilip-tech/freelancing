@@ -394,10 +394,14 @@
   height: 14px;
 }
 .bars__chipValue {
+  overflow: hidden; /* the figure rolls out and in when it changes */
   font-size: 14px;
   letter-spacing: -0.42px;
   font-variant-numeric: tabular-nums;
   color: var(--fh-ink);
+}
+.bars__chipNum {
+  display: block;
 }
 /* The globe's canvas is larger than the slide: the sphere is centred in the canvas, so these
    insets put its centre a little left of the box's middle and well below it. */

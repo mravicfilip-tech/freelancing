@@ -7,7 +7,7 @@ Each file is the card's illustration group exported as PNG at 2x; the `<img>` in
 | File               | Figma node  | Box (1x)  | Card                              |
 | ------------------ | ----------- | --------- | --------------------------------- |
 | pay-remittix.png   | `2361:2281` | 562 × 188 | Pay Remittix                      |
-| zero-fx.png        | `2354:693`  | 435 × 244 | Zero FX fees.                     |
+| zero-fx.png        | `2354:693`  | 480 × 361 | Zero FX fees. (node is 435 × 244; the export adds the cards' shadow bleed, 22px each side and 10px above, see the CSS) |
 | made-simple.png    | `2348:1733` | 709 × 334 | Crypto-to-fiat payments made simple. |
 | super-fast.png     | `2361:2199` | 500 × 436 | Super fast.                       |
 | interface.png      | `2360:1807` | 668 × 234 | User-friendly interface.          |

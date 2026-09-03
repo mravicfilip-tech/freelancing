@@ -117,12 +117,14 @@
   height: auto;
 }
 
-/* Zero FX fees: art 435×244 centred, 42px from the top. */
+/* Zero FX fees: the 435×244 art centred, 42px from the top. Figma's export carries the cards'
+   soft shadow, so the file is 480×361 with the node box 22px in from each side and 10px down;
+   the image is shown at its natural size and shifted up by that bleed. */
 .ff__art--fx {
   left: 50%;
-  top: 42px;
-  width: 435px;
-  height: 244px;
+  top: 32px;
+  width: 480px;
+  height: 361px;
   transform: translateX(-50%);
 }
 
@@ -221,7 +223,8 @@
     width: 52%;
   }
   .ff__art--fx {
-    width: 380px;
+    top: 33px;
+    width: 419px; /* node box 380px wide */
     height: auto;
   }
   .ff__art--fast {

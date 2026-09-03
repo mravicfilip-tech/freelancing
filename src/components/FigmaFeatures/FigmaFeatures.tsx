@@ -10,7 +10,7 @@ import './FigmaFeatures.css';
 
 const ART = {
   pay: { src: '/figma/features/pay-remittix.png', width: 562, height: 188 },
-  fx: { src: '/figma/features/zero-fx.png', width: 435, height: 244 },
+  fx: { src: '/figma/features/zero-fx.png', width: 480, height: 361 },
   simple: { src: '/figma/features/made-simple.png', width: 709, height: 334 },
   fast: { src: '/figma/features/super-fast.png', width: 500, height: 436 },
   ui: { src: '/figma/features/interface.png', width: 668, height: 234 },

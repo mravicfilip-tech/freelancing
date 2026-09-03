@@ -83,7 +83,8 @@ function Bar({ id }: { id: BarId }) {
  * the caps and bases keep their shape, the cap rides up with its chip — and the glow always sits
  * on whichever bar is tallest. Each figure ticks once per cycle. Leaving the slide reverts
  * everything, so the draw replays on every return. The biggest bar carries the design's "lit"
- * state (glow and solid faces); the others sit in the default translucent state.
+ * state (glow, solid faces and a white chip); the others sit in the default translucent state
+ * with silver chips.
  */
 export function Bars({ active }: { active: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -174,6 +175,9 @@ export function Bars({ active }: { active: boolean }) {
             if (glow) gsap.to(glow, { opacity: big ? 0.5 : 0, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             // The biggest bar also has the design's solid faces; the rest go back to translucent.
             gsap.to(bar.querySelectorAll('.bars__face, .bars__edgeF, .bars__edgeR'), { fillOpacity: big ? 1 : 0.24, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
+            // …and its chip goes white, while the chip that was white returns to silver.
+            const inner = innerOf(bar);
+            if (inner) gsap.to(inner, { backgroundColor: big ? '#ffffff' : '#f1f3f4', duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             if (lead) gsap.fromTo(bar.querySelector('.bars__cap > *'), { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.4, ease: 'power1.out' });
             const chip = CHIPS.find((c) => c.bar === idOf(bar));
             const num = chip && chipNum(chip.bar);

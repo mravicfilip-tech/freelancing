@@ -33,7 +33,14 @@ export function useHeroEntrance(root: RefObject<HTMLElement | null>, { progress,
       .then(({ gsap }) => {
         if (cancelled) return;
         const ctx = gsap.context(() => {
-          const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+          const entered =
+            '.fh__nav, .fh__brand, .fh__links a, .fh__navRight > *, .fh__lineInner, .fh__body, .fh__intro .fh__btn, ' +
+            '.fh__sliderControls, .fh__footer, .fh__priceTitle, .fh__stats p, .fh__unit, .fh__sep';
+          const tl = gsap.timeline({
+            defaults: { ease: 'power3.out' },
+            // Drop the inline transforms/opacity the `from` tweens leave behind, so CSS hovers apply.
+            onComplete: () => gsap.set(entered, { clearProps: 'transform,opacity' }),
+          });
 
           // Nav: the bar drops in, then its contents.
           tl.from('.fh__nav', { y: -28, opacity: 0, duration: 0.9 }, 0);

@@ -23,10 +23,11 @@ const NAV_LINKS = [
   ['Whitepaper', '#whitepaper'],
 ] as const;
 
+/** Live countdown to `target`, ticking every second. All zeros once the target has passed. */
 function useCountdown(target: number) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), 30_000);
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, []);
   const left = Math.max(0, target - now);
@@ -35,6 +36,8 @@ function useCountdown(target: number) {
     days: pad(Math.floor(left / 86_400_000)),
     hours: pad(Math.floor((left % 86_400_000) / 3_600_000)),
     minutes: pad(Math.floor((left % 3_600_000) / 60_000)),
+    seconds: pad(Math.floor((left % 60_000) / 1000)),
+    ended: left === 0,
   };
 }
 
@@ -45,16 +48,20 @@ function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left'
 function PresaleButton({ wide = false }: { wide?: boolean }) {
   return (
     <a className={`fh__btn fh__btn--primary${wide ? ' fh__btn--wide' : ''}`} href="#presale">
+      <span className="fh__btnShine" aria-hidden="true" />
       Join Presale
       <Chevron direction="right" />
     </a>
   );
 }
 
-function Unit({ value, label, bordered = false }: { value: string; label: string; bordered?: boolean }) {
+function Unit({ value, label }: { value: string; label: string }) {
   return (
-    <div className={`fh__unit${bordered ? ' fh__unit--bordered' : ''}`}>
-      <span className="fh__digits">{value}</span>
+    <div className="fh__unit">
+      <span className="fh__digits">
+        {/* Keyed on the value so each change remounts the digits and replays the tick animation. */}
+        <span key={value} className="fh__digitsValue">{value}</span>
+      </span>
       <span className="fh__unitLabel">{label}</span>
     </div>
   );
@@ -127,7 +134,7 @@ function SlideControls({ index, onChange }: { index: number; onChange: (next: nu
 }
 
 export function FigmaHero() {
-  const { days, hours, minutes } = useCountdown(PRESALE_END);
+  const { days, hours, minutes, seconds, ended } = useCountdown(PRESALE_END);
   const [slide, setSlide] = useState(0);
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const root = useRef<HTMLElement>(null);
@@ -156,7 +163,10 @@ export function FigmaHero() {
           </button>
           <div className="fh__navButtons">
             <PresaleButton />
-            <a className="fh__btn fh__btn--ghost" href="#login">Login</a>
+            <a className="fh__btn fh__btn--ghost" href="#login">
+              <span className="fh__btnShine" aria-hidden="true" />
+              Login
+            </a>
           </div>
         </div>
       </header>
@@ -205,20 +215,28 @@ export function FigmaHero() {
           <div className="fh__stats">
             <p>
               <span>USD raised so far</span>
-              <strong data-count="usd">${usd}</strong>
+              <strong className="fh__figure">
+                <span data-count="usd">${usd}</span>
+                <span className="fh__figureGhost" aria-hidden="true">${usd}</span>
+              </strong>
             </p>
             <p>
               <span>Tokens sold/remaining</span>
-              <strong data-count="tokens">{tokens}</strong>
+              <strong className="fh__figure">
+                <span data-count="tokens">{tokens}</span>
+                <span className="fh__figureGhost" aria-hidden="true">{tokens}</span>
+              </strong>
             </p>
           </div>
         </div>
-        <div className="fh__countdown" aria-label="Presale ends in">
+        <div className="fh__countdown" role="timer" aria-live="off" aria-label={ended ? 'Presale has ended' : 'Presale ends in'}>
           <Unit value={days} label="days" />
           <span className="fh__sep" aria-hidden="true">:</span>
-          <Unit value={hours} label="hours" bordered />
+          <Unit value={hours} label="hours" />
           <span className="fh__sep" aria-hidden="true">:</span>
           <Unit value={minutes} label="minutes" />
+          <span className="fh__sep" aria-hidden="true">:</span>
+          <Unit value={seconds} label="seconds" />
         </div>
       </footer>
     </section>

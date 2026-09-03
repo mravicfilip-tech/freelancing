@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 
 /**
  * The four isometric bars from the Figma hero (public/figma/bars.svg), inlined so GSAP can draw
- * them. While `active`, the strokes draw in bar by bar, the fills fade up, and the bars keep a
- * slow float. Leaving the slide reverts everything, so the draw replays on every return.
+ * them. While `active`, the strokes draw in bar by bar, the fills fade up, and the bars then keep
+ * easing to new heights like a live chart. Leaving the slide reverts everything, so the draw
+ * replays on every return.
  */
 export function Bars({ active }: { active: boolean }) {
   const ref = useRef<SVGSVGElement>(null);
@@ -21,19 +22,27 @@ export function Bars({ active }: { active: boolean }) {
       if (cancelled) return;
       const ctx = gsap.context(() => {
         const bars = Array.from(svg.querySelectorAll<SVGGElement>('.bars__bar'));
+        // Idle: live data. Each bar keeps easing to a new height from its base on its own rhythm,
+        // and its cap flicks indigo as the value changes, so the chart reads as updating.
+        const rand = (a: number, b: number) => a + Math.random() * (b - a);
+        const nextValue = (bar: SVGGElement, cap: Element | null) => {
+          gsap.to(bar, {
+            scaleY: rand(0.86, 1.1),
+            transformOrigin: '50% 100%',
+            duration: rand(1.4, 2.6),
+            ease: 'power2.inOut',
+            onComplete: () => {
+              gsap.delayedCall(rand(0.4, 1.6), () => nextValue(bar, cap));
+            },
+          });
+          if (cap) gsap.fromTo(cap, { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.2, ease: 'power1.out' });
+        };
+
         const entry = gsap.timeline({
           defaults: { ease: 'power2.inOut' },
           onComplete: () => {
-            // Idle: each bar floats on its own period so the group never moves in lockstep.
             bars.forEach((bar, i) => {
-              gsap.to(bar, {
-                y: -6 - (i % 2) * 3,
-                duration: 2.6 + i * 0.4,
-                delay: i * 0.25,
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1,
-              });
+              gsap.delayedCall(i * 0.35, () => nextValue(bar, bar.firstElementChild));
             });
           },
         });

@@ -173,8 +173,18 @@
   gap: 8px;
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- Buttons ----------
+   Hover: an indigo light runs around the rim while a sheen crosses the face once
+   (variant 05 from public/button-hovers.html). The ring is a conic gradient 2px outside the
+   pill, painted behind an inherited-background cover so it only shows at the rim. */
+@property --fh-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
 .fh__btn {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -187,6 +197,62 @@
   text-decoration: none;
   white-space: nowrap;
   transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 220ms ease;
+}
+.fh__btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -2;
+  border-radius: inherit;
+  background: conic-gradient(from var(--fh-angle), transparent 0 60%, var(--fh-progress) 82%, var(--fh-progress-soft) 92%, transparent 100%);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.fh__btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+}
+.fh__btnShine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fh__btnShine::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: translateX(-160%) skewX(-16deg);
+}
+.fh__btn--ghost .fh__btnShine::before {
+  background: linear-gradient(100deg, transparent, rgba(64, 66, 210, 0.16), transparent);
+}
+.fh__btn:hover::before,
+.fh__btn:focus-visible::before {
+  opacity: 1;
+  animation: fh-sweep 1.4s linear infinite;
+}
+.fh__btn:hover .fh__btnShine::before {
+  animation: fh-shine 900ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes fh-sweep {
+  to {
+    --fh-angle: 360deg;
+  }
+}
+@keyframes fh-shine {
+  to {
+    transform: translateX(320%) skewX(-16deg);
+  }
 }
 .fh__btn .fh__chevron {
   transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -210,7 +276,7 @@
 }
 .fh__btn--ghost:hover {
   background: #fff;
-  border-color: var(--fh-muted);
+  border-color: #fff;
   color: var(--fh-ink);
 }
 .fh__btn:active {
@@ -422,6 +488,13 @@
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
+  .fh__digitsValue {
+    animation: none;
+  }
+  .fh__btn:hover::before,
+  .fh__btn:hover .fh__btnShine::before {
+    animation: none;
+  }
   .fh__slide,
   .fh__slide[data-active],
   .fh__segment,
@@ -509,8 +582,21 @@
   font-weight: 700;
   color: var(--fh-ink);
 }
+/* The figures count up on load: tabular digits and a hidden copy of the final value keep the
+   row's width fixed so nothing shifts while the numbers change. */
+.fh__figure {
+  display: inline-grid;
+  font-variant-numeric: tabular-nums;
+}
+.fh__figure > * {
+  grid-area: 1 / 1;
+  justify-self: start;
+}
+.fh__figureGhost {
+  visibility: hidden;
+}
 .fh__countdown {
-  flex: 0 0 476px;
+  flex: 0 1 600px;
   display: flex;
   align-items: stretch;
   gap: 10px;
@@ -523,9 +609,9 @@
   justify-content: center;
   gap: 24px;
 }
-.fh__unit--bordered {
+/* A hairline between units. */
+.fh__sep + .fh__unit {
   border-left: 1px solid #e9eaeb;
-  border-right: 1px solid #e9eaeb;
 }
 .fh__digits {
   font-family: var(--fh-digits);
@@ -534,7 +620,19 @@
   line-height: 1.12;
   letter-spacing: -1.92px;
   font-variation-settings: 'ROND' 0;
+  font-variant-numeric: tabular-nums;
   color: var(--fh-label);
+}
+/* Each value change remounts the digits (keyed in Unit) and drops them in. */
+.fh__digitsValue {
+  display: inline-block;
+  animation: fh-tick 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes fh-tick {
+  from {
+    opacity: 0;
+    transform: translateY(-0.28em);
+  }
 }
 .fh__unitLabel {
   font-weight: 700;

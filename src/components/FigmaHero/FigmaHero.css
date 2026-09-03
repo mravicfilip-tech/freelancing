@@ -174,17 +174,16 @@
 }
 
 /* ---------- Buttons ----------
-   Hover: an indigo light runs around the rim while a sheen crosses the face once
-   (variant 05 from public/button-hovers.html). The ring is a conic gradient 2px outside the
-   pill, painted behind an inherited-background cover so it only shows at the rim. */
-@property --fh-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
+   Hover: a circle grows from the point the pointer entered and floods the pill, then shrinks
+   back to the point it left (variant 03 from public/button-hovers.html). The anchors set
+   --x/--y from their pointer events; the circle is 220% of the pill's width so it reaches
+   every corner from any origin. Primary floods indigo, ghost floods ink. */
 .fh__btn {
+  --x: 50%;
+  --y: 50%;
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -196,63 +195,27 @@
   font-size: 14px;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 220ms ease;
+  transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .fh__btn::before {
   content: '';
   position: absolute;
-  inset: -2px;
-  z-index: -2;
-  border-radius: inherit;
-  background: conic-gradient(from var(--fh-angle), transparent 0 60%, var(--fh-progress) 82%, var(--fh-progress-soft) 92%, transparent 100%);
-  opacity: 0;
-  transition: opacity 260ms ease;
-}
-.fh__btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
   z-index: -1;
-  border-radius: inherit;
-  background: inherit;
+  left: var(--x);
+  top: var(--y);
+  width: 220%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--fh-progress);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.fh__btnShine {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  overflow: hidden;
-  pointer-events: none;
-}
-.fh__btnShine::before {
-  content: '';
-  position: absolute;
-  top: -20%;
-  bottom: -20%;
-  left: 0;
-  width: 45%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-  transform: translateX(-160%) skewX(-16deg);
-}
-.fh__btn--ghost .fh__btnShine::before {
-  background: linear-gradient(100deg, transparent, rgba(64, 66, 210, 0.16), transparent);
+.fh__btn--ghost::before {
+  background: var(--fh-ink);
 }
 .fh__btn:hover::before,
 .fh__btn:focus-visible::before {
-  opacity: 1;
-  animation: fh-sweep 1.4s linear infinite;
-}
-.fh__btn:hover .fh__btnShine::before {
-  animation: fh-shine 900ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-}
-@keyframes fh-sweep {
-  to {
-    --fh-angle: 360deg;
-  }
-}
-@keyframes fh-shine {
-  to {
-    transform: translateX(320%) skewX(-16deg);
-  }
+  transform: translate(-50%, -50%) scale(1);
 }
 .fh__btn .fh__chevron {
   transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -261,13 +224,8 @@
   background: #000;
   color: #fff;
 }
-.fh__btn--primary:hover {
-  background: #1d1f24;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.5);
-}
 .fh__btn--primary:hover .fh__chevron--right {
-  transform: rotate(-90deg) translateY(3px);
+  transform: rotate(-90deg) translateY(3px); /* rotated, so this nudges the arrow 3px right */
 }
 .fh__btn--ghost {
   background: #f8fafb;
@@ -275,12 +233,11 @@
   color: var(--fh-muted);
 }
 .fh__btn--ghost:hover {
-  background: #fff;
-  border-color: #fff;
-  color: var(--fh-ink);
+  border-color: transparent;
+  color: #fff;
 }
 .fh__btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.97);
 }
 .fh__btn--wide {
   width: 184px;
@@ -491,9 +448,8 @@
   .fh__digitsValue {
     animation: none;
   }
-  .fh__btn:hover::before,
-  .fh__btn:hover .fh__btnShine::before {
-    animation: none;
+  .fh__btn::before {
+    transition: none;
   }
   .fh__slide,
   .fh__slide[data-active],

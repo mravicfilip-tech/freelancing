@@ -45,10 +45,25 @@ function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left'
   return <img className={`fh__chevron fh__chevron--${direction}`} src="/figma/chevron.svg" alt="" width={11} height={6} />;
 }
 
+/**
+ * Button hover, variant 03 from public/button-hovers.html: the hover circle grows from the point
+ * the pointer entered and shrinks back to the point it left. The anchor's --x/--y position the
+ * circle; the CSS in FigmaHero.css does the rest.
+ */
+function blobOrigin(e: React.PointerEvent<HTMLAnchorElement>) {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--x', `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty('--y', `${e.clientY - r.top}px`);
+}
+
 export function PresaleButton({ wide = false }: { wide?: boolean }) {
   return (
-    <a className={`fh__btn fh__btn--primary${wide ? ' fh__btn--wide' : ''}`} href="#presale">
-      <span className="fh__btnShine" aria-hidden="true" />
+    <a
+      className={`fh__btn fh__btn--primary${wide ? ' fh__btn--wide' : ''}`}
+      href="#presale"
+      onPointerEnter={blobOrigin}
+      onPointerLeave={blobOrigin}
+    >
       Join Presale
       <Chevron direction="right" />
     </a>
@@ -163,8 +178,7 @@ export function FigmaHero() {
           </button>
           <div className="fh__navButtons">
             <PresaleButton />
-            <a className="fh__btn fh__btn--ghost" href="#login">
-              <span className="fh__btnShine" aria-hidden="true" />
+            <a className="fh__btn fh__btn--ghost" href="#login" onPointerEnter={blobOrigin} onPointerLeave={blobOrigin}>
               Login
             </a>
           </div>

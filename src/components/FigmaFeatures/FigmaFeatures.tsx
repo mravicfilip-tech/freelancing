@@ -1,39 +1,16 @@
 import { useRef } from 'react';
 import { PresaleButton } from '../FigmaHero/FigmaHero';
-import { FX_VARIANT } from './fxVariant';
+import { Fast, Fx, Pay, Simple, Ui } from './illustrations';
 import { useFeaturesMotion } from './useFeaturesMotion';
 import './FigmaFeatures.css';
+import './illustrations/illustrations.css';
 
 /**
  * Feature section from the Figma design "Remittix Redesign", node 2343:116 ("2").
  * A dark band under the hero: a two-tone headline and five cards on the 1440 grid.
- * Each card's illustration is the design's composition exported as a single 2x asset
- * (public/figma/features); the copy, chips and button are live. Motion (entrance, idle loops and
- * hover) lives in useFeaturesMotion, in three variants chosen with `?fx=1|2|3`.
+ * Each card's illustration is rebuilt from the design's layers (illustrations/) so it can animate
+ * part by part; the copy, chips and button are live. Motion lives in useFeaturesMotion.
  */
-
-const ART = {
-  pay: { src: '/figma/features/pay-remittix.png', width: 562, height: 188 },
-  fx: { src: '/figma/features/zero-fx.png', width: 480, height: 361 },
-  simple: { src: '/figma/features/made-simple.png', width: 709, height: 334 },
-  fast: { src: '/figma/features/super-fast.png', width: 500, height: 436 },
-  ui: { src: '/figma/features/interface.png', width: 668, height: 234 },
-} as const;
-
-function Art({ id, className }: { id: keyof typeof ART; className?: string }) {
-  const a = ART[id];
-  return (
-    <img
-      className={`ff__art${className ? ` ${className}` : ''}`}
-      src={a.src}
-      alt=""
-      width={a.width}
-      height={a.height}
-      loading="lazy"
-      decoding="async"
-    />
-  );
-}
 
 function CardText({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
   return (
@@ -46,9 +23,9 @@ function CardText({ title, children, className }: { title: string; children: Rea
 
 export function FigmaFeatures() {
   const root = useRef<HTMLElement>(null);
-  useFeaturesMotion(root, FX_VARIANT);
+  useFeaturesMotion(root);
   return (
-    <section ref={root} className="ff" data-node-id="2343:116" data-fx={FX_VARIANT} data-motion="pending" aria-labelledby="ff-title">
+    <section ref={root} className="ff" data-node-id="2343:116" data-motion="pending" aria-labelledby="ff-title">
       <div className="ff__inner">
         <h2 id="ff-title" className="ff__title" data-node-id="2343:119">
           Bridging crypto with local <span className="ff__titleMuted">payment networks globally.</span>
@@ -57,14 +34,12 @@ export function FigmaFeatures() {
         <div className="ff__grid">
           <div className="ff__row">
             <article className="ff__card ff__card--pay" data-node-id="2354:885">
-              <span className="ff__sheen" aria-hidden="true" />
-              <Art id="pay" className="ff__art--pay" />
+              <Pay />
               <CardText title="Pay Remittix">Use crypto to pay directly into any fiat bank account.</CardText>
             </article>
 
             <article className="ff__card ff__card--fx" data-node-id="2354:691">
-              <span className="ff__sheen" aria-hidden="true" />
-              <Art id="fx" className="ff__art--fx" />
+              <Fx />
               <CardText title="Zero FX fees.">
                 Cross-border transfers come with a flat fee—no extra charges for FX, wires, or hidden costs. What you send
                 is exactly what they receive.
@@ -74,7 +49,6 @@ export function FigmaFeatures() {
 
           <div className="ff__row">
             <article className="ff__card ff__card--simple" data-node-id="2348:1723">
-              <span className="ff__sheen" aria-hidden="true" />
               <div className="ff__simpleCopy">
                 <CardText title="Crypto-to-fiat payments made simple.">
                   Remittix operates just like your favorite banking apps, but we allow you to send crypto while ensuring
@@ -83,26 +57,24 @@ export function FigmaFeatures() {
                 </CardText>
                 <PresaleButton />
               </div>
-              <Art id="simple" className="ff__art--simple" />
+              <Simple />
             </article>
           </div>
 
           <div className="ff__row">
             <article className="ff__card ff__card--fast" data-node-id="2361:2188">
-              <span className="ff__sheen" aria-hidden="true" />
               <span className="ff__chip" data-node-id="2361:2193">
                 <img src="/figma/features/accel-icon.svg" alt="" width={20} height={20} />
                 Acceleration
               </span>
-              <Art id="fast" className="ff__art--fast" />
+              <Fast />
               <CardText title="Super fast.">
                 Crypto is received instantly, and fiat is sent via local payment networks, ensuring same-day processing.
               </CardText>
             </article>
 
             <article className="ff__card ff__card--ui" data-node-id="2360:1854">
-              <span className="ff__sheen" aria-hidden="true" />
-              <Art id="ui" className="ff__art--ui" />
+              <Ui />
               <CardText title="User-friendly interface.">
                 Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.
               </CardText>

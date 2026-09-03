@@ -1,0 +1,457 @@
+/* Layered illustrations for the feature band, rebuilt from the Figma layers so every part can
+   animate (see illustrations/*.tsx). Coordinates are the design's 1x px inside a scaled Stage. */
+/* Positioned and sized by the card's .ff__art--* rules (absolute on desktop, stacked on phones). */
+.ff__il {
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--fh-sans);
+  color: #2c2e31;
+  line-height: normal;
+}
+/* Out of flow, so the unscaled design size never inflates the fitted box. */
+.ff__stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  transform: scale(var(--k, 1));
+}
+.ff__stage > *,
+.il-svg {
+  position: absolute;
+  box-sizing: border-box;
+}
+.il-svg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- Shared pieces ---------- */
+.il-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 2px 16px 2px 4px;
+  border: 1px solid #e0e0e0;
+  border-radius: 18px;
+  background: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.il-pill__coin {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+.il-pill__coin img {
+  display: block;
+}
+.il-pill__chev {
+  width: 10.8px;
+  height: 6px;
+  margin-left: 2px;
+}
+.il-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  width: 220px;
+  height: 120px;
+  padding: 8px 12px 8px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  background: #fff;
+  white-space: nowrap;
+}
+.il-box__label {
+  font-size: 16px;
+}
+.il-box__amount {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+}
+.il-box__amount i {
+  font-style: normal;
+  color: #a8a8a8;
+}
+.il-box__sub {
+  font-size: 12px;
+  color: #999;
+}
+.il-swap {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #2c2e31;
+}
+.il-swap--lime {
+  background: #dcee2b;
+}
+.il-coin {
+  display: grid;
+  place-items: center;
+  border: 0.4px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  background: #ebebeb;
+}
+.il-coin--bare {
+  border: 0;
+  background: none;
+}
+.il-coin__glyph {
+  position: absolute;
+}
+.il-mono {
+  font-family: var(--fh-digits);
+  font-variation-settings: 'ROND' 0;
+}
+
+/* ---------- Pay Remittix ---------- */
+.il-pay__flag {
+  position: absolute;
+  left: 23px;
+  top: 1px;
+}
+
+/* ---------- Zero FX fees ---------- */
+.il-fx__pill {
+  display: grid;
+  place-items: center;
+  width: 59.4px;
+  height: 21.5px;
+  border-radius: 31.8px;
+  background: #fff;
+  box-shadow:
+    0 0 0 5.3px rgba(255, 255, 255, 0.59),
+    0 4.2px 4.8px rgba(0, 0, 0, 0.06),
+    0 18px 9px rgba(0, 0, 0, 0.05),
+    0 40px 12px rgba(0, 0, 0, 0.03);
+  font-weight: 700;
+  font-size: 18px;
+}
+.il-fx__fee {
+  width: 76.4px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 8.5px;
+}
+.il-fx__card {
+  width: 186.75px;
+  height: 122px;
+  overflow: hidden;
+  border: 1.06px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12.7px;
+  box-shadow:
+    0 5.3px 11.7px rgba(0, 0, 0, 0.04),
+    0 20px 20px rgba(0, 0, 0, 0.03),
+    0 46.7px 27.6px rgba(0, 0, 0, 0.02);
+  transform: rotate(-1deg);
+}
+.il-fx__card--wallet {
+  background: linear-gradient(142deg, #2b3239 30%, #12161b 106%);
+}
+.il-fx__card--bank {
+  background: linear-gradient(142deg, #f7f8f7 30%, #fff 106%);
+  transform: rotate(1deg);
+}
+.il-fx__card > * {
+  position: absolute;
+}
+.il-fx__chip {
+  width: 25.5px;
+  height: 17px;
+  border-radius: 3.2px;
+  background: rgba(255, 255, 255, 0.37);
+}
+.il-fx__bar {
+  height: 6.4px;
+  border-radius: 4.2px;
+  background: #d9d9d9;
+}
+.il-fx__icon {
+  display: grid;
+  place-items: center;
+  width: 20.2px;
+  height: 20.2px;
+  border: 0.64px solid #e3e3e3;
+  border-radius: 50%;
+  background: #fff;
+}
+.il-fx__label {
+  padding: 0 8.5px;
+  border-radius: 46.7px;
+  background: #3a3d42;
+  font-size: 12px;
+  line-height: 25.5px;
+  color: #fff;
+}
+
+/* ---------- Crypto-to-fiat made simple ---------- */
+.il-simple__swap {
+  z-index: 2; /* in front of the receipt's edge, as in the design */
+}
+.il-simple__btc {
+  gap: 7.7px;
+  height: 38px;
+  padding: 1.9px 15.4px 1.9px 3.8px;
+  border-width: 0.96px;
+  border-radius: 17.3px;
+  font-size: 15.4px;
+}
+.il-simple__btc .il-pill__coin {
+  width: 30.8px;
+  height: 30.8px;
+}
+.il-simple__wise {
+  width: 78px;
+  height: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14.1px;
+  background: #fff;
+}
+.il-simple__wise span {
+  position: absolute;
+  left: 10.3px;
+  top: 8.5px;
+  width: 55.5px;
+  height: 13.6px;
+  background: #0e6535;
+  mask-size: 55.5px 13.5px;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 55.5px 13.5px;
+  -webkit-mask-repeat: no-repeat;
+}
+.il-simple__remittix {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 104px;
+  height: 28px;
+  padding-left: 22px;
+  border-radius: 14.1px;
+  background: #121212;
+  font-weight: 700;
+  font-size: 10.4px;
+  color: #f1f7f7;
+}
+.il-rc {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  width: 200px;
+  padding: 16px;
+  border: 1px solid #dedede;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 7px 8px rgba(150, 150, 150, 0.06),
+    0 29px 14.5px rgba(150, 150, 150, 0.05),
+    0 66px 20px rgba(150, 150, 150, 0.03);
+  font-size: 12px;
+  letter-spacing: -0.24px;
+}
+.il-rc__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.il-rc__head {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.il-rc__bank {
+  display: flex;
+  gap: 4px;
+}
+.il-rc__bank span {
+  display: flex;
+  flex-direction: column;
+}
+.il-rc__bank b {
+  font-weight: 600;
+}
+.il-rc__bank small {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+.il-rc__badge {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+  padding: 0 6px;
+  border: 0.5px solid #d9f1e6;
+  border-radius: 16px;
+  background: #f1fbf6;
+  font-size: 6px;
+  color: #12b67a;
+}
+.il-rc__amount {
+  font-weight: 700;
+  font-size: 24px;
+}
+.il-rc__amount i {
+  font-style: normal;
+  color: #a8a8a8;
+}
+.il-rc__rule {
+  height: 1px;
+  background: #e4e4e4;
+}
+.il-rc__line {
+  flex-direction: row;
+  justify-content: space-between;
+  color: #bdbdbd;
+}
+.il-rc__line .il-mono {
+  color: #000;
+}
+.il-toast {
+  display: flex;
+  gap: 10px;
+  width: 199px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 4px 4.5px rgba(143, 143, 143, 0.1),
+    0 17px 8.5px rgba(143, 143, 143, 0.09),
+    0 38px 11.5px rgba(143, 143, 143, 0.05);
+  font-size: 12px;
+  letter-spacing: -0.24px;
+  white-space: nowrap;
+}
+.il-toast img {
+  transform: rotate(90deg);
+}
+.il-toast span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.il-toast small {
+  font-size: 12px;
+  color: #000;
+}
+
+/* ---------- Super fast ---------- */
+.il-fast__inner {
+  width: 550.9px;
+  height: 563px;
+  opacity: 0.3;
+  transform: rotate(-38.71deg);
+}
+.il-fast__inner > * {
+  position: absolute;
+}
+.il-fast__yen {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: rgba(25, 25, 25, 0.29);
+  transform: rotate(38.71deg);
+}
+.il-fast__logo {
+  transform: rotate(38.71deg);
+}
+
+/* ---------- User-friendly interface ---------- */
+.il-ui__pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #d7d7d7;
+  border-radius: 20px;
+  background: #f7f8f7;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: -0.24px;
+  white-space: nowrap;
+}
+.il-ui__app {
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border: 6px solid #fff;
+  border-radius: 12px;
+  background: #122433;
+  box-shadow:
+    0 2px 2px rgba(146, 147, 150, 0.1),
+    0 8px 4px rgba(146, 147, 150, 0.09),
+    0 18px 5.5px rgba(146, 147, 150, 0.05);
+}
+.il-ui__card {
+  width: 160px;
+  height: 110px;
+  overflow: hidden;
+  border: 1px solid #c2c2c2;
+  border-radius: 14px;
+  background: #fff;
+}
+.il-ui__stripe {
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 160px;
+  height: 7px;
+  background: #373f32;
+  opacity: 0.2;
+}
+.il-ui__discs {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  display: flex;
+}
+.il-ui__discs i {
+  width: 22.4px;
+  height: 22.4px;
+  border-radius: 50%;
+  background: rgba(232, 232, 232, 0.79);
+}
+.il-ui__discs i:first-child {
+  margin-right: -9px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.il-ui__node {
+  display: grid;
+  place-items: center;
+  border: 0.6px solid #d7d7d7;
+  border-radius: 30px;
+  background: #fff;
+}
+.il-ui__dots {
+  grid-auto-flow: column;
+  gap: 4px;
+  width: 36px;
+  height: 26px;
+}
+.il-ui__dots i {
+  width: 2.6px;
+  height: 2.6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.29);
+}
+.il-ui__round {
+  width: 38px;
+  height: 38px;
+}

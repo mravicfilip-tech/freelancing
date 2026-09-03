@@ -121,11 +121,10 @@
    soft shadow, so the file is 480×361 with the node box 22px in from each side and 10px down;
    the image is shown at its natural size and shifted up by that bleed. */
 .ff__art--fx {
-  left: 50%;
+  left: calc(50% - 240px); /* centred without a transform, which the motion owns */
   top: 32px;
   width: 480px;
   height: 361px;
-  transform: translateX(-50%);
 }
 
 /* Crypto-to-fiat: a 334px band, copy + button on the left, the art panel flush right. */
@@ -207,6 +206,39 @@
   margin-top: auto;
 }
 
+/* ---------- Motion (see useFeaturesMotion.ts) ----------
+   Hold the animated parts invisible until GSAP has set their start states. */
+.ff[data-motion='pending'] .ff__title,
+.ff[data-motion='pending'] .ff__card {
+  visibility: hidden;
+}
+.ff__card,
+.ff__art {
+  will-change: transform;
+}
+/* Variant 2: a sheen that sweeps across each card; GSAP moves it. */
+.ff__sheen {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.5) 48%, rgba(64, 66, 210, 0.07) 52%, transparent 62%);
+  transform: translateX(-160%);
+}
+.ff[data-fx='2'] .ff__sheen {
+  display: block;
+}
+/* Variant 3: cards tilt in 3D. */
+.ff[data-fx='3'] .ff__row {
+  perspective: 1200px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff__sheen {
+    display: none !important;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
   .ff {
@@ -224,6 +256,7 @@
   }
   .ff__art--fx {
     top: 33px;
+    left: calc(50% - 209.5px);
     width: 419px; /* node box 380px wide */
     height: auto;
   }

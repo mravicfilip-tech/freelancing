@@ -12,7 +12,10 @@ import { MOTION } from './illustrations';
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows the band at rest.
  */
-export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
+/** Which loop each illustration runs, by stage id (index into its `variants`; default 0). */
+export type MotionPicks = Partial<Record<string, number>>;
+
+export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: MotionPicks = {}) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -51,7 +54,8 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
               onComplete: () => {
                 if (!il || !motion) return;
                 // The loops run only while the card is on screen.
-                const loop = motion.idle(gsap, il);
+                const variant = motion.variants[picks[il.dataset.il ?? ''] ?? 0];
+                const loop = variant ? variant.idle(gsap, il) : motion.idle(gsap, il);
                 const io = new IntersectionObserver(([e]) => (e.isIntersecting ? loop.play() : loop.pause()), { rootMargin: '60px' });
                 io.observe(card);
                 observers.push(io);
@@ -78,5 +82,5 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
       cancelled = true;
       revert?.();
     };
-  }, [root]);
+  }, [root, picks]);
 }

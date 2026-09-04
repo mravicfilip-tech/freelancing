@@ -12,6 +12,13 @@ export type Timeline = gsap.core.Timeline;
 export interface IllustrationMotion {
   build(tl: Timeline, il: HTMLElement, at: number, gsap: Gsap): void;
   idle(gsap: Gsap, il: HTMLElement): Timeline;
+  /** Alternative loops to choose between (the first is the default `idle`). */
+  variants: MotionVariant[];
+}
+export interface MotionVariant {
+  name: string;
+  blurb: string;
+  idle(gsap: Gsap, il: HTMLElement): Timeline;
 }
 
 /** The band's entrance ease and the small rise every element makes as it appears. */

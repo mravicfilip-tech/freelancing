@@ -1,5 +1,5 @@
 import { B, Layer, Stage } from './Stage';
-import { all, count, one, roll, EASE, RISE, type IllustrationMotion } from './motion';
+import { all, count, one, roll, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
  * "Pay Remittix" (Figma 2409:2427, 622×440): the app on a phone, rising out of the card's bottom
@@ -25,6 +25,7 @@ export function Pay() {
               <span className="il-pbox__label">Pay</span>
               <span className="il-pbox__amount">
                 <b className="il-count" data-count="pay">320</b>
+                <i className="il-pbox__caret" />
                 <i>.00</i>
               </span>
               <span className="il-pbox__sub">Sell from USD Account</span>
@@ -50,6 +51,7 @@ export function Pay() {
           </div>
 
           <Layer className="il-phone__swap" src={B('exExchangeBtn.svg')} x={99.3} y={168.1} w={38} h={38} />
+          <span className="il-phone__glare" />
         </div>
         <Layer className="il-phone__island" src={B('exIsland@2x.png')} x={98.65} y={19.5} w={80} h={23} />
       </div>
@@ -73,34 +75,147 @@ export const payMotion: IllustrationMotion = {
     count(tl, one(il, '[data-count="pay"]'), 0, 320, at + 0.75, 0.9, (n) => String(Math.round(n)));
     count(tl, one(il, '[data-count="receive"]'), 0, 0.004174, at + 0.9, 1.0, (n) => n.toFixed(6));
   },
-  idle(gsap, il) {
-    // One beat every few seconds: the order is re-quoted. The swap turns over, the USD amount rolls
-    // to its next step ($10 at a time, up to $400 and back down), the BTC amount follows at the
-    // design's rate a moment later, and the receive box's edge tints indigo while the new figures
-    // settle. Between beats the screen's glow drifts; nothing else moves.
-    const swap = one(il, '.il-phone__swap');
-    const boxes = all(il, '.il-pbox');
-    const payEl = one(il, '[data-count="pay"]');
-    const receive = one(il, '[data-count="receive"]');
-    const RATE = 0.004174 / 320;
-    let pay = 320;
-    let step = 10;
-    const idle = gsap.timeline();
-    all(il, '.il-phone__glow').forEach((g, i) => idle.to(g, { opacity: 0.6, x: i ? -8 : 8, duration: 5 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0));
-    const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 2 });
-    story
-      .to(swap, { rotation: '+=180', duration: 0.6, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 0)
-      .add(() => {
-        if (pay >= 400) step = -10;
-        if (pay <= 320) step = 10;
-        pay += step;
-        roll(gsap, payEl, String(pay));
-      }, 0.15)
-      .add(() => roll(gsap, receive, (pay * RATE).toFixed(6)), 0.4)
-      .fromTo(boxes[1], { borderColor: '#dadee2' }, { borderColor: '#4042d1', duration: 0.3, ease: 'power2.out' }, 0.4)
-      .to(boxes[1], { borderColor: '#dadee2', duration: 0.9, ease: 'power2.inOut' }, 1.1)
-      .fromTo([payEl, receive], { color: '#4042d1' }, { color: '#2c2e31', duration: 1.2, ease: 'power1.out' }, 0.8);
-    idle.add(story, 0);
-    return idle;
-  },
+  idle: (gsap, il) => payMotion.variants[0].idle(gsap, il),
+  variants: [],
 };
+
+const RATE = 0.004174 / 320; // BTC per USD, from the design's quote
+const ambient = (gsap: Parameters<MotionVariant['idle']>[0], il: HTMLElement) => {
+  const idle = gsap.timeline();
+  all(il, '.il-phone__glow').forEach((g, i) => idle.to(g, { opacity: 0.6, x: i ? -8 : 8, duration: 5 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0));
+  return idle;
+};
+
+payMotion.variants = [
+  {
+    name: 'Re-quote',
+    blurb: 'Every few seconds the swap turns, the USD amount steps by $10 and the BTC amount follows at the rate, the receive box tinting indigo as the figures settle.',
+    idle(gsap, il) {
+      const swap = one(il, '.il-phone__swap');
+      const boxes = all(il, '.il-pbox');
+      const payEl = one(il, '[data-count="pay"]');
+      const receive = one(il, '[data-count="receive"]');
+      let pay = 320;
+      let step = 10;
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 2 });
+      story
+        .to(swap, { rotation: '+=180', duration: 0.6, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 0)
+        .add(() => {
+          if (pay >= 400) step = -10;
+          if (pay <= 320) step = 10;
+          pay += step;
+          roll(gsap, payEl, String(pay));
+        }, 0.15)
+        .add(() => roll(gsap, receive, (pay * RATE).toFixed(6)), 0.4)
+        .fromTo(boxes[1], { borderColor: '#dadee2' }, { borderColor: '#4042d1', duration: 0.3, ease: 'power2.out' }, 0.4)
+        .to(boxes[1], { borderColor: '#dadee2', duration: 0.9, ease: 'power2.inOut' }, 1.1)
+        .fromTo([payEl, receive], { color: '#4042d1' }, { color: '#2c2e31', duration: 1.2, ease: 'power1.out' }, 0.8);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Typing',
+    blurb: 'The amount is cleared and typed in digit by digit behind a blinking caret, and the BTC quote updates live with each keystroke.',
+    idle(gsap, il) {
+      const payEl = one(il, '[data-count="pay"]');
+      const receive = one(il, '[data-count="receive"]');
+      const caret = one(il, '.il-pbox__caret');
+      const boxes = all(il, '.il-pbox');
+      const targets = ['350', '420', '275', '320'];
+      let n = 0;
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 2 });
+      story
+        .fromTo(boxes[0], { borderColor: '#dadee2' }, { borderColor: '#4042d1', duration: 0.3 }, 0)
+        .fromTo(caret, { opacity: 0 }, { opacity: 1, duration: 0.12, yoyo: true, repeat: 15, repeatDelay: 0.32 }, 0)
+        .add(() => {
+          payEl.textContent = '';
+          receive.textContent = '0.000000';
+        }, 0.3);
+      targets.forEach((t, ti) => {
+        // Each target is typed one digit at a time; the variants cycle through the list.
+        t.split('').forEach((_, di) => {
+          story.add(() => {
+            if (ti !== n % targets.length) return;
+            const typed = t.slice(0, di + 1);
+            payEl.textContent = typed;
+            receive.textContent = (Number(typed) * RATE).toFixed(6);
+          }, 0.7 + di * 0.28);
+        });
+      });
+      story
+        .add(() => {
+          n += 1;
+        }, 1.8)
+        .to(boxes[0], { borderColor: '#dadee2', duration: 0.8, ease: 'power2.inOut' }, 2.4)
+        .fromTo(receive, { color: '#4042d1' }, { color: '#2c2e31', duration: 1.2, ease: 'power1.out' }, 1.8);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Live rate',
+    blurb: 'The BTC amount ticks like a live price every couple of seconds, its last digits changing with a faint indigo flick; the swap turns once a cycle.',
+    idle(gsap, il) {
+      const receive = one(il, '[data-count="receive"]');
+      const swap = one(il, '.il-phone__swap');
+      let base = 0.004174;
+      let k = 0;
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 0.6, delay: 1.5 });
+      [0, 1.9, 3.8].forEach((t) => {
+        story.add(() => {
+          k += 1;
+          base = 0.004174 + Math.sin(k * 1.7) * 0.000021 + Math.sin(k * 0.6) * 0.000009;
+          receive.textContent = base.toFixed(6);
+        }, t);
+        story.fromTo(receive, { color: '#4042d1' }, { color: '#2c2e31', duration: 1.1, ease: 'power1.out' }, t + 0.02);
+      });
+      story.to(swap, { rotation: '+=180', duration: 0.6, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 5.6);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Flip direction',
+    blurb: 'The swap is pressed and the order reverses: the pay and receive boxes trade places with their currency chips, so the app sells BTC instead of buying it.',
+    idle(gsap, il) {
+      const swap = one(il, '.il-phone__swap');
+      const chips = all(il, '.il-phone__chip');
+      const boxes = all(il, '.il-pbox');
+      let flipped = false;
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.5, delay: 2.2 });
+      story
+        .fromTo(swap, { scale: 1 }, { scale: 0.9, duration: 0.14, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
+        .to(swap, { rotation: '+=180', duration: 0.6, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 0.2)
+        .add(() => {
+          flipped = !flipped;
+          const d = flipped ? 1 : 0;
+          gsap.to(boxes[0], { y: 84.9 * d, duration: 0.7, ease: 'power3.inOut' });
+          gsap.to(boxes[1], { y: -84.9 * d, duration: 0.7, ease: 'power3.inOut' });
+          gsap.to(chips[0], { x: 163 * d, y: 84.9 * d, duration: 0.7, ease: 'power3.inOut' });
+          gsap.to(chips[1], { x: -163 * d, y: -84.9 * d, duration: 0.7, ease: 'power3.inOut' });
+        }, 0.25);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Ambient device',
+    blurb: 'Nothing on the screen changes. The phone turns a few degrees in space while a glare sweeps its glass, and the skeleton lines shimmer very slowly.',
+    idle(gsap, il) {
+      const phone = one(il, '.il-phone');
+      const glare = one(il, '.il-phone__glare');
+      const bars = all(il, '.il-pbox__bar');
+      const idle = ambient(gsap, il);
+      gsap.set(phone, { transformPerspective: 1100, transformOrigin: '50% 60%' });
+      idle.to(phone, { rotationY: 7, rotationX: -2, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+      idle.fromTo(glare, { xPercent: -140, opacity: 0.55 }, { xPercent: 240, duration: 2.2, ease: 'power2.inOut', repeat: -1, repeatDelay: 4.4 }, 1);
+      bars.forEach((b, i) => idle.to(b, { opacity: 0.45, duration: 1.6, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: i * 0.25 }, 0));
+      return idle;
+    },
+  },
+];

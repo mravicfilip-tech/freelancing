@@ -7,16 +7,21 @@ import { HERO_VARIANT } from './heroVariant';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
+import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
 const DEV_TOOLS = params.has('devtools');
+// Review page for the bento grid's loop variants; `?bento=` alone applies a choice to the real page.
+const BENTO_PICKER = params.has('bento-picker');
+const BENTO_PICKS = picksFromParam(params.get('bento'));
 
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
   const [heroMounted, setHeroMounted] = useState(true);
 
   if (CAPTURE_MODE) return <CaptureStage />;
+  if (BENTO_PICKER) return <BentoPicker />;
 
   const figma = HERO_VARIANT === 'figma';
   return (
@@ -25,7 +30,7 @@ export function App() {
       <main>
         {heroMounted && (figma ? <FigmaHero /> : <Hero />)}
         {figma && <FigmaSimple />}
-        {figma && <FigmaFeatures />}
+        {figma && <FigmaFeatures picks={BENTO_PICKS} />}
       </main>
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (

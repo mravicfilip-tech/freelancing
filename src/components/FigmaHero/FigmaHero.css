@@ -206,12 +206,12 @@
   width: 220%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--fh-progress);
+  background: var(--fh-progress, #4042d2); /* the fallbacks keep the hover outside the hero */
   transform: translate(-50%, -50%) scale(0);
   transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .fh__btn--ghost::before {
-  background: var(--fh-ink);
+  background: var(--fh-ink, #122433);
 }
 .fh__btn:hover::before,
 .fh__btn:focus-visible::before {
@@ -230,7 +230,7 @@
 .fh__btn--ghost {
   background: #f8fafb;
   border: 1px solid #dfe1e7;
-  color: var(--fh-muted);
+  color: var(--fh-muted, #8292a2);
 }
 .fh__btn--ghost:hover {
   border-color: transparent;

@@ -1,6 +1,6 @@
 import lines from './svg/imgGroup2085662421.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
-import { all, count, draw, one, roll, traveller, EASE, RISE, type IllustrationMotion } from './motion';
+import { all, count, draw, one, roll, traveller, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
  * "Crypto-to-fiat payments made simple" (Figma 2409:2462, 747×334): BTC flows along a line through
@@ -13,6 +13,9 @@ export function Simple() {
       <span className="il-simple__ring il-ring" style={{ left: 143, top: -93, width: 395, height: 395 }} />
       <Layer className="il-simple__haze" src={B('ellipse3438.webp')} x={219} y={-190} w={584} h={584} />
       <span className="il-simple__ring il-ring il-ring--bold" style={{ left: 258, top: -154, width: 443, height: 443 }} />
+      <span className="il-simple__orbit" style={{ left: 258, top: -154, width: 443, height: 443 }}>
+        <i />
+      </span>
 
       <Strokes className="il-simple__lines" svg={lines} x={132} y={138} w={272} h={121.75} />
 
@@ -96,45 +99,159 @@ export const simpleMotion: IllustrationMotion = {
     tl.from(one(il, '.il-rc__badge'), { opacity: 0, scale: 0.8, duration: 0.5, ease: EASE, transformOrigin: '50% 50%' }, at + 2.3);
     tl.from(one(il, '.il-toast'), { y: 16, opacity: 0, duration: 0.8, ease: EASE }, at + 2.4);
   },
-  idle(gsap, il) {
-    // One payment every few seconds: a packet travels the line from BTC through the hub, which
-    // sends out a soft ring as it passes; the exchange turns over; the receipt takes another €10
-    // with the amount flicking indigo, the arrival time re-measures, the badge's dot blinks as it
-    // settles, and the toast's clock ticks on a minute. The orbit rings turn very slowly.
-    const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
-    const path = one<SVGPathElement>(svg, 'path');
-    const dot = traveller(svg, '#4042d1', 3.5);
-    const halo = one(il, '.il-simple__hubHalo');
-    const swap = one(il, '.il-simple__swap');
-    const amount = one(il, '[data-count="eur"]');
-    const arrived = one(il, '[data-count="arrived"]');
-    const clock = one(il, '[data-count="time"]');
-    const badgeDot = one(il, '.il-rc__badge img');
-    let eur = 1240;
-    let minutes = 14 * 60 + 2;
-    let seconds = 4.2;
-    const idle = gsap.timeline();
-    all(il, '.il-simple__ring').forEach((r, i) => idle.to(r, { rotation: i ? -360 : 360, duration: 90 + i * 30, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }, 0));
-    idle.to(one(il, '.il-simple__blob'), { x: 10, y: 6, duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
-    const story = gsap.timeline({ repeat: -1, repeatDelay: 4.4, delay: 1.2 });
-    story
-      .set(dot, { opacity: 1 }, 0)
-      .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.4, ease: 'power2.inOut' }, 0)
-      .to(dot, { opacity: 0, duration: 0.2 }, 1.35)
-      .fromTo(halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.9, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.7)
-      .to(swap, { rotation: '+=180', duration: 0.5, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 1.25)
-      .add(() => {
-        eur += 10;
-        minutes += 1;
-        seconds = Math.round((3.6 + ((eur / 10) % 7) * 0.2) * 10) / 10;
-        roll(gsap, amount, `€${eur.toLocaleString('en-US')}`);
-        roll(gsap, arrived, `${seconds.toFixed(1)} sec`);
-        roll(gsap, clock, `TODAY · ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`);
-      }, 1.5)
-      .fromTo(amount, { color: '#4042d1' }, { color: '#000', duration: 1.2, ease: 'power1.out' }, 1.85)
-      .fromTo(badgeDot, { opacity: 1 }, { opacity: 0.15, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 1.6)
-      .fromTo(one(il, '.il-toast'), { y: 0 }, { y: -3, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.95);
-    idle.add(story, 0);
-    return idle;
-  },
+  idle: (gsap, il) => simpleMotion.variants[0].idle(gsap, il),
+  variants: [],
 };
+
+type G = Parameters<MotionVariant['idle']>[0];
+const ambient = (gsap: G, il: HTMLElement) => {
+  const idle = gsap.timeline();
+  all(il, '.il-simple__ring').forEach((r, i) => idle.to(r, { rotation: i ? -360 : 360, duration: 90 + i * 30, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }, 0));
+  idle.to(one(il, '.il-simple__blob'), { x: 10, y: 6, duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+  return idle;
+};
+/** The receipt state every variant advances: another €10, one more minute, a fresh arrival time. */
+const ledger = (gsap: G, il: HTMLElement) => {
+  const amount = one(il, '[data-count="eur"]');
+  const arrived = one(il, '[data-count="arrived"]');
+  const clock = one(il, '[data-count="time"]');
+  let eur = 1240;
+  let minutes = 14 * 60 + 2;
+  return {
+    amount,
+    arrived,
+    clock,
+    settle(add = 10) {
+      eur += add;
+      minutes += 1;
+      const seconds = Math.round((3.6 + ((eur / 10) % 7) * 0.2) * 10) / 10;
+      roll(gsap, amount, `€${eur.toLocaleString('en-US')}`);
+      roll(gsap, arrived, `${seconds.toFixed(1)} sec`);
+      roll(gsap, clock, `TODAY · ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`);
+      gsap.fromTo(amount, { color: '#4042d1' }, { color: '#000', duration: 1.2, ease: 'power1.out', delay: 0.35 });
+    },
+  };
+};
+
+simpleMotion.variants = [
+  {
+    name: 'Payment',
+    blurb: 'A packet travels the line through the hub, which sends out a soft ring; the exchange turns and the receipt takes another €10 with a new arrival time and clock.',
+    idle(gsap, il) {
+      const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
+      const path = one<SVGPathElement>(svg, 'path');
+      const dot = traveller(svg, '#4042d1', 3.5);
+      const halo = one(il, '.il-simple__hubHalo');
+      const swap = one(il, '.il-simple__swap');
+      const badgeDot = one(il, '.il-rc__badge img');
+      const book = ledger(gsap, il);
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.4, delay: 1.2 });
+      story
+        .set(dot, { opacity: 1 }, 0)
+        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.4, ease: 'power2.inOut' }, 0)
+        .to(dot, { opacity: 0, duration: 0.2 }, 1.35)
+        .fromTo(halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.9, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.7)
+        .to(swap, { rotation: '+=180', duration: 0.5, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 1.25)
+        .add(() => book.settle(), 1.5)
+        .fromTo(badgeDot, { opacity: 1 }, { opacity: 0.15, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 1.6)
+        .fromTo(one(il, '.il-toast'), { y: 0 }, { y: -3, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.95);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Batch',
+    blurb: 'Three packets run the line in quick succession like a settlement batch; the amount climbs €30 as they land and the hub rings for each.',
+    idle(gsap, il) {
+      const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
+      const path = one<SVGPathElement>(svg, 'path');
+      const dots = [0, 1, 2].map(() => traveller(svg, '#4042d1', 3));
+      const halo = one(il, '.il-simple__hubHalo');
+      const swap = one(il, '.il-simple__swap');
+      const book = ledger(gsap, il);
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.8, delay: 1.2 });
+      dots.forEach((d, i) => {
+        const t = i * 0.4;
+        story
+          .set(d, { opacity: 1 }, t)
+          .to(d, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.4, ease: 'power2.inOut' }, t)
+          .to(d, { opacity: 0, duration: 0.2 }, t + 1.35)
+          .fromTo(halo, { scale: 1, opacity: 0.45 }, { scale: 1.6, opacity: 0, duration: 0.8, ease: 'power2.out', transformOrigin: '50% 50%' }, t + 0.7)
+          .add(() => book.settle(10), t + 1.5);
+      });
+      story.to(swap, { rotation: '+=180', duration: 0.5, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 1.25);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Network handoff',
+    blurb: 'The stripe, coinbase and wise pills light up one after another as the local rails pick the route, then the payment runs the line and lands on the receipt.',
+    idle(gsap, il) {
+      const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
+      const path = one<SVGPathElement>(svg, 'path');
+      const dot = traveller(svg, '#4042d1', 3.5);
+      const logos = all(il, '.il-simple__logo');
+      const halo = one(il, '.il-simple__hubHalo');
+      const book = ledger(gsap, il);
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 1.2 });
+      logos.forEach((l, i) => {
+        story
+          .fromTo(l, { scale: 1, filter: 'brightness(1)' }, { scale: 1.06, filter: 'brightness(1.25)', duration: 0.3, ease: 'power2.out', transformOrigin: '50% 50%' }, i * 0.35)
+          .to(l, { scale: 1, filter: 'brightness(1)', duration: 0.5, ease: 'power2.inOut' }, i * 0.35 + 0.4);
+      });
+      story
+        .set(dot, { opacity: 1 }, 1.2)
+        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.4, ease: 'power2.inOut' }, 1.2)
+        .to(dot, { opacity: 0, duration: 0.2 }, 2.55)
+        .fromTo(halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.9, ease: 'power2.out', transformOrigin: '50% 50%' }, 1.9)
+        .add(() => book.settle(), 2.7);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Live receipt',
+    blurb: 'The receipt behaves like a terminal: the badge drops to PENDING as the packet leaves, "Arrived in" counts up in real time while it travels, and flips back to SETTLED on landing.',
+    idle(gsap, il) {
+      const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
+      const path = one<SVGPathElement>(svg, 'path');
+      const dot = traveller(svg, '#4042d1', 3.5);
+      const badge = one(il, '.il-rc__badge');
+      const badgeText = badge.lastChild as Text;
+      const book = ledger(gsap, il);
+      const timer = { t: 0 };
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 1.2 });
+      story
+        .add(() => {
+          badgeText.textContent = 'Pending';
+        }, 0)
+        .fromTo(badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d' }, { backgroundColor: '#f3f4f6', borderColor: '#e2e5e9', color: '#7c858d', duration: 0.3 }, 0)
+        .set(dot, { opacity: 1 }, 0.1)
+        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.5, ease: 'power2.inOut' }, 0.1)
+        .fromTo(timer, { t: 0 }, { t: 4.2, duration: 1.5, ease: 'none', onUpdate: () => { book.arrived.textContent = `${timer.t.toFixed(1)} sec`; } }, 0.1)
+        .to(dot, { opacity: 0, duration: 0.2 }, 1.55)
+        .add(() => {
+          badgeText.textContent = 'Settled';
+          book.settle();
+        }, 1.7)
+        .to(badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d', duration: 0.3 }, 1.7);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Orbit',
+    blurb: 'Nothing transacts. A small satellite rides the outer orbit ring, the hub breathes very gently, and the blob drifts.',
+    idle(gsap, il) {
+      const idle = ambient(gsap, il);
+      idle.to(one(il, '.il-simple__orbit'), { rotation: 360, duration: 24, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }, 0);
+      idle.to(one(il, '.il-simple__hub'), { scale: 1.03, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 0);
+      return idle;
+    },
+  },
+];

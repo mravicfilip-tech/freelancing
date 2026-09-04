@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { PresaleButton } from '../FigmaHero/FigmaHero';
 import { Fast, Fx, Pay, Simple, Ui } from './illustrations';
 import { B } from './illustrations/Stage';
-import { useFeaturesMotion } from './useFeaturesMotion';
+import { useFeaturesMotion, type MotionPicks } from './useFeaturesMotion';
 import './FigmaFeatures.css';
 import './illustrations/illustrations.css';
 
@@ -22,9 +22,9 @@ function CardText({ title, children, className }: { title: string; children: Rea
   );
 }
 
-export function FigmaFeatures() {
+export function FigmaFeatures({ picks }: { picks?: MotionPicks } = {}) {
   const root = useRef<HTMLElement>(null);
-  useFeaturesMotion(root);
+  useFeaturesMotion(root, picks);
   return (
     <section ref={root} className="ff" data-node-id="2409:2419" data-motion="pending" aria-labelledby="ff-title">
       <div className="ff__frame">

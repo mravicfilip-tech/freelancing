@@ -152,23 +152,26 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));
-            // At rest the cursor wanders the way a hand does: slow, easing drifts to nearby spots with
-            // small pauses, a slight lean into each move, and every few moves a click that bounces the badge.
-            let moves = 0;
-            const wander = () => {
-              const dx = rand(-16, 16);
-              const dy = rand(-12, 12);
-              const dur = rand(1.4, 2.6);
-              gsap.to(cursor, { x: dx, y: dy, duration: dur, ease: 'sine.inOut' });
-              gsap.to(cursorIcon, { rotation: dx * -0.35, duration: dur, ease: 'sine.inOut', transformOrigin: '20% 15%' });
-              const click = ++moves % 3 === 0;
-              if (click) {
-                gsap.fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: dur + 0.15, transformOrigin: '20% 15%' });
-                gsap.fromTo(badge, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: dur + 0.2, transformOrigin: '0% 50%' });
-              }
-              gsap.delayedCall(dur + rand(0.4, 1.6) + (click ? 0.5 : 0), wander);
+            // After the load-in the cursor keeps moving the way a hand does, in a loop: it glides off on
+            // a fresh random curve, pauses, glides back with a small overshoot, clicks so the badge
+            // bounces, and sets off again.
+            const roam = () => {
+              const away = [
+                { x: rand(30, 80), y: rand(-60, -15) },
+                { x: rand(70, 130), y: rand(10, 55) },
+              ];
+              const back = [away[1], { x: rand(-10, 40), y: rand(35, 75) }, { x: -5, y: -5 }, { x: 0, y: 0 }];
+              gsap
+                .timeline({ onComplete: () => gsap.delayedCall(rand(0.5, 1.2), roam) })
+                .to(cursor, { motionPath: { path: [{ x: 0, y: 0 }, ...away], curviness: 1.5 }, duration: rand(1.7, 2.4), ease: 'sine.inOut' }, 0)
+                .to(cursorIcon, { rotation: rand(-18, 18), duration: 1.4, ease: 'sine.inOut', transformOrigin: '20% 15%' }, 0)
+                .to({}, { duration: rand(0.3, 0.8) })
+                .to(cursor, { motionPath: { path: back, curviness: 1.4 }, duration: rand(1.5, 2.1), ease: 'power3.out' })
+                .to(cursorIcon, { rotation: 0, duration: 1.3, ease: 'power3.out', transformOrigin: '20% 15%' }, '<')
+                .fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '20% 15%' })
+                .fromTo(badge, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' }, '<0.05');
             };
-            gsap.delayedCall(1.5, wander);
+            gsap.delayedCall(1.2, roam);
           }
         }, el);
         reveal();

@@ -1,94 +1,74 @@
-import lines from './svg/imgFrame2085662216.svg?raw';
-import dashes from './svg/imgFrame2085662217.svg?raw';
-import curve from './svg/imgVector1682.svg?raw';
-import curveTop from './svg/imgFrame2085662222.svg?raw';
-import curveBottom from './svg/imgFrame2085662221.svg?raw';
-import { Stage, Strokes, part } from './Stage';
-import { all, bob, draw, one, pop, rand, traveller, type IllustrationMotion } from './motion';
+import { B, Layer, Stage } from './Stage';
+import { all, one, type IllustrationMotion } from './motion';
 
-/** "User-friendly interface" (Figma 2360:1807, 668×234): two actions feed the Remittix app, which pays out to a card. */
+/**
+ * "User-friendly interface" (Figma 2409:2544, 716×440): a connect-a-wallet panel with four wallet
+ * rows, standing on soft yellow, blue and lavender blobs at the card's foot.
+ */
 export function Ui() {
+  const rows: [string, string, string][] = [
+    ['metamask', 'MetaMask', B('imgMetamask1.svg')],
+    ['walletconnect', 'Walletconnect', B('exWalletConnect.svg')],
+    ['coinbase', 'coinbase wallet', B('exCoinbase.svg')],
+    ['phantom', 'phantom', B('imgPhantom1.svg')],
+  ];
   return (
-    <Stage id="ui" width={668} height={234} className="ff__art ff__art--ui il-ui">
-      <Strokes className="il-ui__curve" svg={curveTop} x={287.25} y={34.75} w={77.5} h={58} style={{ transform: 'rotate(90deg)' }} />
-      <Strokes className="il-ui__curve" svg={curveBottom} x={293.25} y={150.75} w={77.5} h={58} style={{ transform: 'rotate(90deg)' }} />
-      <Strokes className="il-ui__curve" svg={curve} x={244.8} y={146} w={57.5} h={53.5} style={{ transform: 'rotate(180deg)' }} />
-      <Strokes className="il-ui__lines" svg={lines} x={220.8} y={79} w={83} h={78.5} />
-      <Strokes className="il-ui__dashes" svg={dashes} x={361.4} y={108} w={58} h={9} />
+    <Stage id="ui" width={716} height={440} className="ff__art ff__art--ui il-ui">
+      <span className="il-ui__dots" style={{ left: 470, top: 0, width: 246, height: 150 }} />
+      <Layer className="il-ui__blob" src={B('imgEllipse3474.svg')} x={-142} y={192.7} w={796} h={852} style={{ transform: 'rotate(151.07deg) scaleY(-1)' }} />
+      <Layer className="il-ui__blob" src={B('imgEllipse3475.svg')} x={-169} y={206.7} w={941} h={941} style={{ transform: 'rotate(-90deg) scaleY(-1)' }} />
+      <Layer className="il-ui__blob" src={B('imgEllipse3476.svg')} x={38} y={170.7} w={796} h={852} style={{ transform: 'rotate(-90deg) scaleY(-1)' }} />
 
-      <div className="il-ui__action il-ui__pill" style={{ left: 45, top: 65 }}>
-        <img src={part('imgFi9235952.svg')} alt="" width={18} height={18} />
-        Send crypto payments
+      <div className="il-ui__panel" style={{ left: 129.5, top: 160.7 }}>
+        <div className="il-ui__intro">
+          <span className="il-ui__introTop">
+            <img className="il-ui__link" src={B('imgHyperlink1.svg')} alt="" width={20} height={20} />
+            <b>Connect a wallet</b>
+          </span>
+          <p>No account to create. Your wallet is your login, and payouts go to any bank you name.</p>
+        </div>
+        <div className="il-ui__rows">
+          {rows.map(([id, label, icon]) => (
+            <span key={id} className={`il-ui__row il-ui__row--${id}`}>
+              <i className="il-ui__hi" />
+              <img src={icon} alt="" width={24} height={24} />
+              {label}
+            </span>
+          ))}
+        </div>
       </div>
-      <div className="il-ui__action il-ui__pill" style={{ left: 45, top: 121, width: 196 }}>
-        <img src={part('imgGroup1.svg')} alt="" width={18} height={18} />
-        Straight to bank accounts
-      </div>
-
-      <div className="il-ui__app" style={{ left: 296, top: 75 }}>
-        <img src={part('imgGroup5.svg')} alt="" width={45.4} height={24.7} />
-      </div>
-      <div className="il-ui__card" style={{ left: 419, top: 57 }}>
-        <span className="il-ui__stripe" />
-        <span className="il-ui__discs">
-          <i />
-          <i />
-        </span>
-      </div>
-
-      <span className="il-ui__node il-ui__dots" style={{ left: 271, top: 19 }}>
-        <i /><i /><i />
-      </span>
-      <span className="il-ui__node il-ui__round" style={{ left: 332, top: 196 }}>
-        <img className="il-ui__gear" src={part('imgWeuiSettingFilled.svg')} alt="" width={15} height={15} />
-      </span>
-      <span className="il-ui__node il-ui__round" style={{ left: 230, top: 180, width: 36, height: 36 }}>
-        <img src={part('imgMynauiUserSolid.svg')} alt="" width={12} height={12} />
-      </span>
     </Stage>
   );
 }
 
 export const uiMotion: IllustrationMotion = {
-  build(tl, il, at, gsap) {
-    tl.from(all(il, '.il-ui__action'), { x: -40, opacity: 0, duration: 0.7, stagger: 0.15, ease: 'power3.out' }, at);
-    draw(tl, gsap, all<SVGGeometryElement>(il, '.il-ui__lines path'), at + 0.45, 0.7, 0.1);
-    pop(tl, one(il, '.il-ui__app'), at + 0.95, { scale: 0.5, duration: 0.7 });
-    tl.from(one(il, '.il-ui__app img'), { opacity: 0, duration: 0.4 }, at + 1.1);
-    draw(tl, gsap, all<SVGGeometryElement>(il, '.il-ui__dashes path'), at + 1.2, 0.5, 0.08);
-    tl.from(one(il, '.il-ui__card'), { x: 40, opacity: 0, duration: 0.7, ease: 'power3.out' }, at + 1.35);
-    all(il, '.il-ui__curve').forEach((c, i) => draw(tl, gsap, all<SVGGeometryElement>(c, 'path'), at + 1.5 + i * 0.1, 0.6));
-    pop(tl, all(il, '.il-ui__node'), at + 1.95, { stagger: 0.1 });
+  build(tl, il, at) {
+    tl.from(all(il, '.il-ui__blob'), { opacity: 0, scale: 0.8, duration: 1.4, stagger: 0.12, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
+    tl.from(one(il, '.il-ui__dots'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
+    tl.from(one(il, '.il-ui__panel'), { y: 50, opacity: 0, duration: 0.9, ease: 'power3.out' }, at + 0.3);
+    tl.from(all(il, '.il-ui__introTop > *, .il-ui__intro p'), { y: 10, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, at + 0.6);
+    tl.from(all(il, '.il-ui__row'), { x: 40, opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power3.out' }, at + 0.7);
   },
   idle(gsap, il) {
-    // The dots type; the gear turns; the pills drift.
-    gsap.to(all(il, '.il-ui__dots i'), { opacity: 0.25, duration: 0.35, ease: 'sine.inOut', stagger: { each: 0.15, repeat: -1, yoyo: true } });
-    gsap.to(one(il, '.il-ui__gear'), { rotation: 360, duration: 18, ease: 'none', repeat: -1 });
-    all(il, '.il-ui__action').forEach((p, i) => bob(gsap, p, i ? -2.5 : 2.5, 3.4 + i * 0.4));
-    // Every few seconds a request leaves one of the actions, rides its line into the app, the app
-    // pulses, the dashes carry it on and the card's disc lights up as the payment lands.
-    const svg = one<SVGSVGElement>(il, '.il-ui__lines svg');
-    const [red, blue] = all<SVGPathElement>(svg, 'path');
-    const dots = [traveller(svg, '#FF3838', 2.5), traveller(svg, '#4D70E3', 2.5)];
-    const app = one(il, '.il-ui__app');
-    const disc = one(il, '.il-ui__discs i:last-child');
-    const dashes = all<SVGPathElement>(il, '.il-ui__dashes path');
-    let turn = 0;
-    const request = () => {
-      const i = turn++ % 2;
-      const path = i ? blue : red;
-      const dot = dots[i];
+    // The blobs breathe and drift. The wallets take turns being picked: a highlight settles on each
+    // row in turn, its icon pops, and once the list has been walked the link icon gives a twirl.
+    all(il, '.il-ui__blob').forEach((b, i) => gsap.to(b, { x: i % 2 ? -12 : 12, y: i * 4, duration: 6 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    const rows = all(il, '.il-ui__row');
+    const link = one(il, '.il-ui__link');
+    let i = 0;
+    const pick = () => {
+      const row = rows[i];
       gsap
         .timeline()
-        .set(dot, { opacity: 1 })
-        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: i ? 1 : 0, end: i ? 0 : 1 }, duration: 0.9, ease: 'power1.inOut' })
-        .to(dot, { opacity: 0, duration: 0.15 })
-        .fromTo(app, { scale: 1 }, { scale: 1.06, duration: 0.28, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0.85)
-        .fromTo(dashes, { strokeDasharray: '4 4', strokeDashoffset: 0 }, { strokeDashoffset: -32, duration: 0.9, ease: 'none', stagger: 0.05 }, 1.1)
-        .set(dashes, { strokeDasharray: 'none' })
-        .fromTo(disc, { backgroundColor: 'rgba(232, 232, 232, 0.79)' }, { backgroundColor: '#dcee2b', duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.9);
-      gsap.delayedCall(rand(3.2, 4.8), request);
+        .fromTo(one(row, '.il-ui__hi'), { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 0)
+        .fromTo(row, { x: 0 }, { x: 5, duration: 0.35, ease: 'power2.out' }, 0)
+        .fromTo(one(row, 'img'), { scale: 1 }, { scale: 1.2, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
+        .to(one(row, '.il-ui__hi'), { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6)
+        .to(row, { x: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6);
+      if (i === rows.length - 1) gsap.to(link, { rotation: '+=360', duration: 0.9, ease: 'back.out(1.4)', transformOrigin: '50% 50%', delay: 0.4 });
+      i = (i + 1) % rows.length;
+      gsap.delayedCall(2.4, pick);
     };
-    gsap.delayedCall(1.4, request);
+    gsap.delayedCall(1.2, pick);
   },
 };

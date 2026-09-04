@@ -30,242 +30,258 @@
 }
 
 /* ---------- Shared pieces ---------- */
-.il-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 2px 16px 2px 4px;
-  border: 1px solid #e0e0e0;
-  border-radius: 18px;
-  background: #fff;
-  font-weight: 600;
-  font-size: 16px;
-  white-space: nowrap;
-}
-.il-pill__coin {
-  position: relative;
-  display: block;
-  width: 32px;
-  height: 32px;
-}
-.il-pill__coin img {
-  display: block;
-}
-.il-pill__chev {
-  width: 10.8px;
-  height: 6px;
-  margin-left: 2px;
-}
-.il-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  width: 220px;
-  height: 120px;
-  padding: 8px 12px 8px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 16px;
-  background: #fff;
-  white-space: nowrap;
-}
-.il-box__label {
-  font-size: 16px;
-}
-.il-box__amount {
-  overflow: hidden; /* the figure rolls out and in when it changes */
-  margin-right: -12px; /* the longest BTC figure needs the box's right padding too */
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 1.15;
-  letter-spacing: -0.96px;
-  white-space: nowrap;
+.il-mono {
+  font-family: var(--fh-digits);
+  font-variation-settings: 'ROND' 0;
 }
 .il-count {
   display: inline-block;
 }
-.il-box__amount i {
+/* The design's dotted "decoration background", drawn in CSS and faded out at its top edge. */
+.il-dots {
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.12) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+}
+/* Thin orbit rings (the design's stroked ellipses). */
+.il-ring {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+}
+.il-ring--bold {
+  border-width: 2px;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+/* Whatever loops moves on its own layer, so the cards' paint stays cheap. */
+.il-phone,
+.il-phone__glow,
+.il-phone__chip,
+.il-phone__swap,
+.il-pay__blob,
+.il-fx__bank,
+.il-fx__wallet,
+.il-fx__glow,
+.il-fx__mark,
+.il-simple__blob,
+.il-simple__ring,
+.il-simple__logo,
+.il-simple__hub,
+.il-simple__swap,
+.il-fast__blob,
+.il-fast__bolt,
+.il-fast__pill,
+.il-fast__spark,
+.il-ui__blob,
+.il-ui__row {
+  will-change: transform;
+}
+
+/* ---------- Pay Remittix: the phone ---------- */
+.il-phone {
+  width: 277.3px;
+  height: 562px;
+}
+.il-phone__frame {
+  z-index: 0;
+}
+.il-phone__screen {
+  position: absolute;
+  z-index: 1;
+  width: 249px;
+  height: 540px;
+  border-radius: 34px;
+  background: #fff;
+  overflow: hidden;
+  font-size: 9.06px;
+}
+.il-phone__screen > * {
+  position: absolute;
+}
+.il-phone__island {
+  z-index: 2;
+}
+.il-pbox {
+  width: 226.4px;
+  height: 67.9px;
+  border: 0.566px solid #dadee2;
+  border-radius: 9.06px;
+  background: #fff;
+}
+.il-pbox__col {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4.5px;
+  white-space: nowrap;
+}
+.il-pbox__label {
+  font-size: 9.06px;
+}
+.il-pbox__amount {
+  overflow: hidden; /* the figure rolls out and in when it changes */
+  font-weight: 500;
+  font-size: 18.1px;
+  letter-spacing: -0.48px;
+  line-height: 1.15;
+}
+.il-pbox__amount i {
   font-style: normal;
   color: #a8a8a8;
 }
-.il-box__sub {
-  font-size: 12px;
+.il-pbox__sub {
+  font-size: 6.79px;
   color: #999;
 }
-.il-swap {
+.il-pbox__bar {
+  position: absolute;
+  height: 5.09px;
+  border-radius: 32px;
+  background: rgba(218, 222, 226, 0.32);
+}
+
+/* ---------- Zero FX fees: bank and wallet cards ---------- */
+.il-fx__bank,
+.il-fx__wallet {
+  width: 402px;
+  height: 218px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.il-fx__bank {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+}
+.il-fx__bank > *,
+.il-fx__wallet > * {
+  position: absolute;
+}
+.il-fx__wallet {
+  background: #0b0f13;
+}
+.il-fx__temple {
+  display: block;
+}
+.il-fx__tag {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14.75px;
+  border-radius: 46px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.il-fx__tag--bank {
+  background: #fff;
+  color: #2c2e31;
+}
+.il-fx__tag--masked {
+  background: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+.il-fx__tag--wallet {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.il-fx__tag--addr {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(17.75px);
+  color: #fff;
+}
+.il-fx__addrText {
+  display: block;
+}
+/* A light that sweeps the address as a transfer goes out. */
+.il-fx__sheen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.28) 50%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+}
+
+/* ---------- Crypto-to-fiat: the flow ---------- */
+.il-simple__haze {
+  opacity: 0.2;
+}
+.il-simple__node {
+  display: inline-flex;
+  align-items: center;
+}
+.il-simple__btc {
+  gap: 7.7px;
+  height: 38px;
+  padding: 0 15.4px 0 3.85px;
+  border: 0.96px solid #e0e0e0;
+  border-radius: 17.3px;
+  background: #fff;
+  font-weight: 600;
+  font-size: 15.4px;
+  white-space: nowrap;
+}
+.il-simple__btc img {
+  display: block;
+}
+.il-simple__wise {
+  width: 78px;
+  height: 30px;
+  border: 1px solid #fff;
+  border-radius: 14.1px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.il-simple__wise span {
+  position: absolute;
+  left: 10.34px;
+  top: 8.46px;
+  width: 55.5px;
+  height: 13.6px;
+  background: #fff;
+  mask-size: 55.5px 13.5px;
+  mask-repeat: no-repeat;
+}
+.il-simple__hub {
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #fff;
+}
+.il-simple__hub img {
+  display: block;
+  margin-top: 3px;
+}
+.il-simple__swap {
+  z-index: 2;
   display: grid;
   place-items: center;
   width: 28px;
   height: 28px;
   border: 3px solid #fff;
   border-radius: 50%;
-  background: #2c2e31;
+  background: #4042d1;
+  backdrop-filter: blur(21.6px);
 }
-.il-swap--lime {
-  background: #dcee2b;
-}
-.il-coin {
-  display: grid;
-  place-items: center;
-  border: 0.4px solid rgba(255, 255, 255, 0.24);
-  border-radius: 50%;
-  background: #ebebeb;
-}
-.il-coin--bare {
-  border: 0;
-  background: none;
-}
-.il-coin__glyph {
-  position: absolute;
-}
-.il-mono {
-  font-family: var(--fh-digits);
-  font-variation-settings: 'ROND' 0;
-}
-
-/* ---------- Pay Remittix ---------- */
-.il-pay__flag {
-  position: absolute;
-  left: 23px;
-  top: 1px;
-}
-
-/* ---------- Zero FX fees ---------- */
-.il-fx__pill {
-  display: grid;
-  place-items: center;
-  width: 59.4px;
-  height: 21.5px;
-  border-radius: 31.8px;
-  background: #fff;
-  box-shadow:
-    0 0 0 5.3px rgba(255, 255, 255, 0.59),
-    0 4.2px 4.8px rgba(0, 0, 0, 0.06),
-    0 18px 9px rgba(0, 0, 0, 0.05),
-    0 40px 12px rgba(0, 0, 0, 0.03);
-  font-weight: 700;
-  font-size: 18px;
-}
-.il-fx__fee {
-  width: 76.4px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 8.5px;
-}
-.il-fx__card {
-  width: 186.75px;
-  height: 122px;
-  overflow: hidden;
-  border: 1.06px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12.7px;
-  box-shadow:
-    0 5.3px 11.7px rgba(0, 0, 0, 0.04),
-    0 20px 20px rgba(0, 0, 0, 0.03),
-    0 46.7px 27.6px rgba(0, 0, 0, 0.02);
-  transform: rotate(-1deg);
-}
-.il-fx__card--wallet {
-  background: linear-gradient(142deg, #2b3239 30%, #12161b 106%);
-}
-.il-fx__card--bank {
-  background: linear-gradient(142deg, #f7f8f7 30%, #fff 106%);
-  transform: rotate(1deg);
-}
-.il-fx__card > * {
-  position: absolute;
-}
-.il-fx__chip {
-  width: 25.5px;
-  height: 17px;
-  border-radius: 3.2px;
-  background: rgba(255, 255, 255, 0.37);
-}
-.il-fx__bar {
-  height: 6.4px;
-  border-radius: 4.2px;
-  background: #d9d9d9;
-}
-.il-fx__icon {
-  display: grid;
-  place-items: center;
-  width: 20.2px;
-  height: 20.2px;
-  border: 0.64px solid #e3e3e3;
-  border-radius: 50%;
-  background: #fff;
-}
-.il-fx__label {
-  padding: 0 8.5px;
-  border-radius: 46.7px;
-  background: #3a3d42;
-  font-size: 12px;
-  line-height: 25.5px;
-  color: #fff;
-}
-
-/* ---------- Crypto-to-fiat made simple ---------- */
-.il-simple__swap {
-  z-index: 2; /* in front of the receipt's edge, as in the design */
-}
-.il-simple__btc {
-  gap: 7.7px;
-  height: 38px;
-  padding: 1.9px 15.4px 1.9px 3.8px;
-  border-width: 0.96px;
-  border-radius: 17.3px;
-  font-size: 15.4px;
-}
-.il-simple__btc .il-pill__coin {
-  width: 30.8px;
-  height: 30.8px;
-}
-.il-simple__wise {
-  width: 78px;
-  height: 30px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 14.1px;
-  background: #fff;
-}
-.il-simple__wise span {
-  position: absolute;
-  left: 10.3px;
-  top: 8.5px;
-  width: 55.5px;
-  height: 13.6px;
-  background: #0e6535;
-  mask-size: 55.5px 13.5px;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 55.5px 13.5px;
-  -webkit-mask-repeat: no-repeat;
-}
-.il-simple__remittix {
+.il-simple__stack {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  width: 104px;
-  height: 28px;
-  padding-left: 22px;
-  border-radius: 14.1px;
-  background: #121212;
-  font-weight: 700;
-  font-size: 10.4px;
-  color: #f1f7f7;
+  flex-direction: column;
+  gap: 4px;
+  width: 200px;
 }
 .il-rc {
   display: flex;
   flex-direction: column;
   gap: 13px;
-  width: 200px;
-  padding: 16px;
-  border: 1px solid #dedede;
+  padding: 16px 12px;
+  border: 1px solid #d6e0f3;
   border-radius: 16px;
   background: #fff;
-  box-shadow:
-    0 7px 8px rgba(150, 150, 150, 0.06),
-    0 29px 14.5px rgba(150, 150, 150, 0.05),
-    0 66px 20px rgba(150, 150, 150, 0.03);
   font-size: 12px;
   letter-spacing: -0.24px;
 }
@@ -291,25 +307,36 @@
   font-weight: 600;
 }
 .il-rc__bank small {
+  font-weight: 500;
   font-size: 12px;
-  color: #bdbdbd;
+  color: #a2a6aa;
+  white-space: nowrap;
 }
 .il-rc__badge {
   display: flex;
   align-items: center;
-  gap: 2px;
-  height: 14px;
-  padding: 0 6px;
-  border: 0.5px solid #d9f1e6;
+  gap: 4px;
+  padding: 4px 6px;
+  border: 0.535px solid #d9f1e6;
   border-radius: 16px;
   background: #f1fbf6;
-  font-size: 6px;
-  color: #12b67a;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: #02774d;
+  white-space: nowrap;
+}
+.il-rc__label {
+  font-size: 14px;
+  letter-spacing: -0.28px;
 }
 .il-rc__amount {
   overflow: hidden;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 24px;
+  letter-spacing: -0.72px;
+  color: #000;
 }
 .il-rc__amount i {
   font-style: normal;
@@ -322,25 +349,28 @@
 .il-rc__line {
   flex-direction: row;
   justify-content: space-between;
-  color: #bdbdbd;
+  font-weight: 500;
+  color: #a2a6aa;
+  white-space: nowrap;
 }
 .il-rc__line .il-mono {
+  font-weight: 700;
   color: #000;
 }
 .il-toast {
   display: flex;
   gap: 10px;
-  width: 199px;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #e8e8e8;
   border-radius: 16px;
-  background: #fff;
+  background: linear-gradient(180deg, rgba(18, 36, 51, 0) 28.8%, #121212 82.78%), #000;
   box-shadow:
     0 4px 4.5px rgba(143, 143, 143, 0.1),
     0 17px 8.5px rgba(143, 143, 143, 0.09),
     0 38px 11.5px rgba(143, 143, 143, 0.05);
   font-size: 12px;
   letter-spacing: -0.24px;
+  color: #fff;
   white-space: nowrap;
 }
 .il-toast img {
@@ -352,114 +382,140 @@
   gap: 3px;
 }
 .il-toast small {
-  font-size: 12px;
-  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0;
+  color: #f9ff38;
 }
 
-/* ---------- Super fast ---------- */
-.il-fast__inner {
-  width: 550.9px;
-  height: 563px;
-  opacity: 0.3;
-  transform: rotate(-38.71deg);
+/* ---------- Super fast: the bolt ---------- */
+.il-fast__line {
+  height: 1px;
+  background: #4042d1;
 }
-.il-fast__inner > * {
-  position: absolute;
+.il-fast__spark {
+  width: 14px;
+  height: 3px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: #b3b5f5;
+  box-shadow: 0 0 6px 2px rgba(179, 181, 245, 0.7);
+  opacity: 0;
 }
-.il-fast__yen {
-  display: grid;
-  place-items: center;
-  width: 33px;
-  height: 33px;
-  border-radius: 50%;
-  background: rgba(25, 25, 25, 0.29);
-  transform: rotate(38.71deg);
+.il-fast__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14.75px;
+  border-radius: 46px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
 }
-.il-fast__logo {
-  transform: rotate(38.71deg);
+.il-fast__pill img {
+  display: block;
+}
+.il-fast__pill--local {
+  gap: 8px;
+  background: #121212;
+}
+.il-fast__pill--same {
+  gap: 6.75px;
+  background: #b3b5f5;
 }
 
-/* ---------- User-friendly interface ---------- */
-.il-ui__pill {
+/* ---------- User-friendly interface: the wallet panel ---------- */
+.il-ui__dots {
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.12) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+}
+.il-ui__panel {
+  display: flex;
+  gap: 24px;
+  padding-left: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.il-ui__intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 222px;
+  padding: 24px 0;
+}
+.il-ui__introTop {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.il-ui__introTop img {
+  display: block;
+}
+.il-ui__introTop b {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 0.981;
+  letter-spacing: -0.54px;
+  white-space: nowrap;
+}
+.il-ui__intro p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.14px;
+  color: rgba(44, 46, 49, 0.64);
+}
+.il-ui__rows {
+  display: flex;
+  flex-direction: column;
+  width: 203px;
+}
+.il-ui__row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid #d7d7d7;
-  border-radius: 20px;
-  background: #f7f8f7;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: -0.24px;
+  padding: 16px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: #080d10;
   white-space: nowrap;
 }
-.il-ui__app {
-  display: grid;
-  place-items: center;
-  width: 74px;
-  height: 74px;
-  border: 6px solid #fff;
-  border-radius: 12px;
-  background: #122433;
-  box-shadow:
-    0 2px 2px rgba(146, 147, 150, 0.1),
-    0 8px 4px rgba(146, 147, 150, 0.09),
-    0 18px 5.5px rgba(146, 147, 150, 0.05);
-}
-.il-ui__card {
-  width: 160px;
-  height: 110px;
-  overflow: hidden;
-  border: 1px solid #c2c2c2;
-  border-radius: 14px;
-  background: #fff;
-}
-.il-ui__stripe {
-  position: absolute;
-  left: 0;
-  top: 13px;
-  width: 160px;
-  height: 7px;
-  background: #373f32;
-  opacity: 0.2;
-}
-.il-ui__discs {
-  position: absolute;
-  right: 14px;
-  bottom: 8px;
-  display: flex;
-}
-.il-ui__discs i {
-  width: 22.4px;
-  height: 22.4px;
+.il-ui__row img {
+  display: block;
   border-radius: 50%;
-  background: rgba(232, 232, 232, 0.79);
 }
-.il-ui__discs i:first-child {
-  margin-right: -9px;
-  background: rgba(0, 0, 0, 0.2);
+.il-ui__row--metamask {
+  background: rgba(255, 141, 93, 0.24);
+  border-top-right-radius: 11px;
 }
-.il-ui__node {
-  display: grid;
-  place-items: center;
-  border: 0.6px solid #d7d7d7;
-  border-radius: 30px;
-  background: #fff;
+.il-ui__row--walletconnect {
+  background: rgba(59, 153, 252, 0.04);
 }
-.il-ui__dots {
-  grid-auto-flow: column;
-  gap: 4px;
-  width: 36px;
-  height: 26px;
+.il-ui__row--coinbase {
+  background: rgba(14, 91, 255, 0.12);
 }
-.il-ui__dots i {
-  width: 2.6px;
-  height: 2.6px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.29);
+.il-ui__row--phantom {
+  background: rgba(171, 159, 242, 0.12);
+  border-bottom-right-radius: 11px;
 }
-.il-ui__round {
-  width: 38px;
-  height: 38px;
+/* The highlight that settles on a row as it is picked. */
+.il-ui__hi {
+  position: absolute;
+  inset: 0;
+  background: rgba(64, 66, 209, 0.08);
+  opacity: 0;
 }

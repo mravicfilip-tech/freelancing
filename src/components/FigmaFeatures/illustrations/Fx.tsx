@@ -1,37 +1,33 @@
-import { Layer, Stage, part } from './Stage';
-import { all, bob, count, one, pop, rand, wipe, type IllustrationMotion } from './motion';
+import { B, Layer, Stage } from './Stage';
+import { all, bob, one, pop, rand, wipe, type IllustrationMotion } from './motion';
 
-/** "Zero FX fees" (Figma 2354:693, 435×244): a 0% pill, a forked arrow, and a wallet card and bank card. */
+/**
+ * "Zero FX fees" (Figma 2409:2439, 804×440): a bank card and a wallet card overlapping at the
+ * card's foot, over a dot grid. The wallet's address types in and the pair trade places.
+ */
 export function Fx() {
   return (
-    <Stage id="fx" width={435} height={244} className="ff__art ff__art--fx il-fx">
-      <div className="il-fx__pill" style={{ left: 187.8, top: 0 }}>
-        <span className="il-count" data-count="fee">0%</span>
-      </div>
-      <span className="il-fx__fee" style={{ left: 179.3, top: 34.2 }}>FX Fee</span>
-      <Layer className="il-fx__arrows" src="imgVector1683.svg" x={87.6} y={57.7} w={259.7} h={40} />
+    <Stage id="fx" width={804} height={440} className="ff__art ff__art--fx il-fx">
+      <span className="il-dots il-fx__dots" style={{ left: 0, top: 229, width: 804, height: 211 }} />
 
-      <div className="il-fx__card il-fx__card--wallet" style={{ left: 10.6, top: 112 }}>
-        <Layer className="il-fx__glow" src="imgEllipse3425.svg" x={-75.9} y={-84.7} w={202.6} h={202.6} />
-        <Layer className="il-fx__hatch" src="imgGroup2085662419.svg" x={-55.8} y={-71.4} w={636.6} h={266.4} />
-        <span className="il-fx__chip" style={{ left: 13.7, top: 7.1 }} />
-        <Layer src="imgFrame2085662232.svg" x={147.9} y={7.3} w={31.8} h={8.5} />
-        <span className="il-fx__icon il-fx__tag" style={{ left: 93.3, top: 85.9 }}>
-          <img src={part('imgFi9756779.svg')} alt="" width={10} height={10} />
-        </span>
-        <span className="il-fx__label il-fx__tag" style={{ left: 118.8, top: 84.3 }}>Wallet</span>
+      <div className="il-fx__bank" style={{ left: 98, top: 193 }}>
+        <Layer className="il-fx__bankBg" src={B('bank-bg.webp')} x={-13.2} y={-11} w={426.4} h={238} />
+        <img className="il-fx__temple" src={B('imgLandmark.svg')} alt="" width={20} height={20} style={{ left: 20, top: 28 }} />
+        <span className="il-fx__tag il-fx__tag--bank" style={{ left: 52, top: 21 }}>Bank</span>
+        <span className="il-fx__tag il-fx__tag--masked" style={{ left: 20, top: 163 }}>**** - ****</span>
       </div>
 
-      <div className="il-fx__card il-fx__card--bank" style={{ left: 237.6, top: 112 }}>
-        <Layer className="il-fx__glow" src="imgEllipse3426.svg" x={54.3} y={-44.4} w={232} h={232} style={{ transform: 'rotate(95.55deg)' }} />
-        <Layer className="il-fx__hatch" src="imgGroup2085662420.svg" x={-55.8} y={-77.5} w={636.6} h={266.4} style={{ transform: 'rotate(-2deg)' }} />
-        <Layer src="imgFrame2085662233.svg" x={147.9} y={7.2} w={31.8} h={8.5} />
-        <span className="il-fx__bar" style={{ left: 13.3, top: 7, width: 74.3 }} />
-        <span className="il-fx__bar" style={{ left: 13.2, top: 17.6, width: 31.8 }} />
-        <span className="il-fx__icon il-fx__tag" style={{ left: 13.2, top: 89.2 }}>
-          <img src={part('imgIcon.svg')} alt="" width={10} height={10} />
+      <div className="il-fx__wallet" style={{ left: 304, top: 237 }}>
+        <Layer className="il-fx__glow" src={B('imgEllipse3471.svg')} x={70} y={-578} w={941} h={941} />
+        <Layer className="il-fx__glow il-fx__glow--soft" src={B('imgEllipse3472.svg')} x={157.5} y={-490.5} w={766} h={766} />
+        <Layer className="il-fx__lines" src={B('imgVector4.svg')} x={-53.5} y={72.5} w={243} h={279.9} />
+        <Layer className="il-fx__mark" src={B('imgGroup1597883989.svg')} x={249} y={19.4} w={138.2} h={71.7} />
+        <Layer className="il-fx__logo" src={B('imgLogoDesign.svg')} x={23} y={28} w={32.85} h={16.97} />
+        <span className="il-fx__tag il-fx__tag--wallet" style={{ left: 67.85, top: 19 }}>Wallet</span>
+        <span className="il-fx__tag il-fx__tag--addr" style={{ left: 23, top: 145 }}>
+          <span className="il-fx__addrText">*******************************a23fh27e</span>
+          <i className="il-fx__sheen" />
         </span>
-        <span className="il-fx__label il-fx__tag" style={{ left: 39.1, top: 86.8 }}>Bank</span>
       </div>
     </Stage>
   );
@@ -39,33 +35,38 @@ export function Fx() {
 
 export const fxMotion: IllustrationMotion = {
   build(tl, il, at) {
-    const [wallet, bank] = all(il, '.il-fx__card');
-    tl.fromTo(wallet, { y: 44, opacity: 0, rotation: -5 }, { y: 0, opacity: 1, rotation: -1, duration: 0.9, ease: 'power3.out' }, at);
-    tl.fromTo(bank, { y: 44, opacity: 0, rotation: 5 }, { y: 0, opacity: 1, rotation: 1, duration: 0.9, ease: 'power3.out' }, at + 0.15);
-    tl.from(one(il, '.il-fx__pill'), { y: -36, opacity: 0, duration: 0.8, ease: 'back.out(2)' }, at + 0.5);
-    count(tl, one(il, '[data-count="fee"]'), 3, 0, at + 0.6, 1.0, (n) => (n < 0.05 ? '0%' : `${n.toFixed(1)}%`));
-    tl.from(one(il, '.il-fx__fee'), { y: 6, opacity: 0, duration: 0.5, ease: 'power2.out' }, at + 0.95);
-    wipe(tl, one(il, '.il-fx__arrows'), at + 1.0, 0.7, 'inset(0 50% 0 50%)');
-    pop(tl, all(il, '.il-fx__tag'), at + 1.2, { stagger: 0.1 });
+    tl.from(one(il, '.il-fx__dots'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
+    tl.from(one(il, '.il-fx__bank'), { x: -70, y: 30, rotation: -3, opacity: 0, duration: 1.0, ease: 'power3.out', transformOrigin: '0% 100%' }, at);
+    tl.from(one(il, '.il-fx__wallet'), { x: 70, y: 60, rotation: 3, opacity: 0, duration: 1.0, ease: 'power3.out', transformOrigin: '100% 100%' }, at + 0.2);
+    tl.from(all(il, '.il-fx__lines, .il-fx__mark'), { opacity: 0, duration: 1.0, stagger: 0.15, ease: 'power1.out' }, at + 0.6);
+    pop(tl, all(il, '.il-fx__temple, .il-fx__tag--bank, .il-fx__logo, .il-fx__tag--wallet'), at + 0.6, { scale: 0.6, stagger: 0.1 });
+    pop(tl, one(il, '.il-fx__tag--masked'), at + 0.9, { scale: 0.7 });
+    // The wallet address types in.
+    tl.from(one(il, '.il-fx__tag--addr'), { opacity: 0, duration: 0.3 }, at + 1.0);
+    wipe(tl, one(il, '.il-fx__addrText'), at + 1.05, 1.1, 'inset(0 100% 0 0)');
   },
   idle(gsap, il) {
-    const [wallet, bank] = all(il, '.il-fx__card');
-    const pill = one(il, '.il-fx__pill');
-    const arrows = one(il, '.il-fx__arrows');
-    bob(gsap, pill, 3, 3);
-    bob(gsap, wallet, 3, 4);
-    bob(gsap, bank, -3, 4.6, 0.8);
-    // The hatching drifts across the cards' faces.
-    all(il, '.il-fx__hatch').forEach((h, i) => gsap.fromTo(h, { x: -6 }, { x: 6, duration: 5 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }));
-    // Every few seconds a transfer goes through at 0%: the pill's halo pulses, the arrows light up,
-    // the wallet dips as it sends, then the bank lifts as it receives.
-    const transfer = () => {
-      gsap.fromTo(pill, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 0 rgba(64, 66, 210, 0.3)' }, { boxShadow: '0 0 0 5.3px rgba(255, 255, 255, 0.59), 0 0 0 18px rgba(64, 66, 210, 0)', duration: 1.1, ease: 'power2.out' });
-      gsap.fromTo(arrows, { filter: 'brightness(1)' }, { filter: 'brightness(0.72)', duration: 0.45, yoyo: true, repeat: 1, ease: 'sine.inOut', delay: 0.2 });
-      gsap.fromTo(wallet, { scale: 1 }, { scale: 0.85, duration: 0.4, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 0.5, transformOrigin: '50% 50%' });
-      gsap.fromTo(bank, { scale: 1 }, { scale: 1.15, duration: 0.45, yoyo: true, repeat: 1, ease: 'power2.inOut', delay: 1.1, transformOrigin: '50% 50%' });
-      gsap.delayedCall(rand(4, 6), transfer);
+    // Both cards float out of phase and the wallet's glow breathes; the outline mark drifts.
+    // Every few seconds the transfer plays: a sheen sweeps the wallet address, the bank's masked
+    // account lights up lavender as the funds land, and the pair briefly swap depth.
+    const bank = one(il, '.il-fx__bank');
+    const wallet = one(il, '.il-fx__wallet');
+    bob(gsap, bank, 4, 4.2);
+    bob(gsap, wallet, 5, 3.6, 0.8);
+    gsap.to(one(il, '.il-fx__glow'), { opacity: 0.6, x: -30, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(one(il, '.il-fx__mark'), { x: -6, y: 4, duration: 7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    const sheen = one(il, '.il-fx__sheen');
+    const masked = one(il, '.il-fx__tag--masked');
+    const send = () => {
+      gsap
+        .timeline()
+        .fromTo(sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 1.1, ease: 'power2.inOut' }, 0)
+        .to(wallet, { scale: 1.02, duration: 0.5, yoyo: true, repeat: 1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 0)
+        .fromTo(masked, { backgroundColor: 'rgba(255,255,255,0.24)', color: '#ffffff' }, { backgroundColor: '#b3b5f5', color: '#ffffff', duration: 0.25, ease: 'power2.out' }, 1.0)
+        .fromTo(masked, { scale: 1 }, { scale: 1.08, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 1.0)
+        .to(masked, { backgroundColor: 'rgba(255,255,255,0.24)', duration: 0.9, ease: 'power2.inOut' }, 1.6);
+      gsap.delayedCall(rand(4.5, 6), send);
     };
-    gsap.delayedCall(1.5, transfer);
+    gsap.delayedCall(1.5, send);
   },
 };

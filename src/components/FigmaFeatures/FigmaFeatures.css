@@ -1,13 +1,16 @@
-/* Feature band from Figma "Remittix Redesign" › "2" (node 2343:116).
-   Design frame 1920 wide: 240px side padding, 160px vertical, cards on the 1440 grid with 14px gaps. */
+/* Feature band from Figma "Remittix Redesign" › "2" (node 2409:2419).
+   Design frame 1920 wide: 240px side padding, 160px vertical; dashed rails at 1560; cards on the
+   1440 grid with 14px gaps. */
 
 .ff {
-  --ff-bg: #151c23;
-  --ff-card: #f5f7fa;
-  --ff-card-white: #fff;
+  --ff-bg: #edeff1;
+  --ff-line: #dadee2;
+  --ff-card: #fff;
   --ff-ink: #2c2e31;
-  --ff-body: #7c858d;
+  --ff-title: #122433;
   --ff-muted: #8292a2;
+  --ff-indigo: #4042d1;
+  --ff-lavender: #b3b5f5;
   --ff-radius: 12px;
   --ff-gap: 14px;
   --ff-pad: 32px;
@@ -16,13 +19,18 @@
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
 
   background: var(--ff-bg);
-  color: #fff;
+  color: var(--ff-ink);
   font-family: var(--fh-sans);
   padding: 160px 0;
 }
-.ff__inner {
-  width: min(1440px, 100% - 48px);
+.ff__frame {
+  width: min(1560px, 100% - 48px);
   margin: 0 auto;
+  padding: 0 clamp(0px, 3.85%, 60px);
+  border-left: 1px dashed var(--ff-line);
+  border-right: 1px dashed var(--ff-line);
+}
+.ff__inner {
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -37,7 +45,7 @@
   font-size: 64px;
   line-height: 1.12;
   letter-spacing: -1.92px;
-  color: #fff;
+  color: var(--ff-title);
 }
 .ff__titleMuted {
   color: var(--ff-muted);
@@ -79,7 +87,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   height: 440px;
   padding: var(--ff-pad);
   border-radius: var(--ff-radius);
@@ -90,11 +98,17 @@
 }
 .ff__text {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 13px;
   max-width: 562px;
+}
+.ff__text--pay .ff__cardBody {
+  max-width: 287px;
+}
+.ff__text--ui .ff__cardBody {
+  max-width: 397px;
 }
 .ff__cardTitle {
   margin: 0;
@@ -111,33 +125,31 @@
   font-size: 16px;
   line-height: 1.6;
   letter-spacing: 0.01em;
-  color: var(--ff-body);
+  color: var(--ff-ink);
 }
-/* Illustrations: each layered composition (illustrations/) sits at the design's box, above the copy. */
+/* Illustrations: each layered composition (illustrations/) is a design-size stage that scales
+   with the card; the ones drawn against the card's bottom anchor there. */
 .ff__art {
   position: absolute;
   display: block;
   pointer-events: none;
   user-select: none;
 }
-
-/* Pay Remittix: white card, art 562×188 at (32, 76). */
-.ff__card--pay {
-  background: var(--ff-card-white);
+.ff__art--pay,
+.ff__art--fx,
+.ff__art--ui {
+  bottom: 0;
+  width: 100%;
 }
-.ff__art--pay {
-  left: var(--ff-pad);
-  top: 76px;
-  width: min(562px, calc(100% - 2 * var(--ff-pad)));
-  height: auto;
-}
-
-/* Zero FX fees: the 435×244 art centred, 42px from the top (positioned without a transform, which the motion owns). */
-.ff__art--fx {
-  left: calc(50% - 217.5px);
-  top: 42px;
-  width: 435px;
-  height: auto;
+/* Never larger than the design frame: when a stacked card is wider, the art centres at 1x. */
+.ff__art--pay { max-width: 622px; left: max(0px, calc(50% - 311px)); }
+.ff__art--fx { max-width: 804px; left: max(0px, calc(50% - 402px)); }
+.ff__art--ui { max-width: 716px; left: max(0px, calc(50% - 358px)); }
+.ff__art--fast {
+  left: 0;
+  top: 0;
+  width: 100%;
+  max-width: 710px;
 }
 
 /* Crypto-to-fiat: a 334px band, copy + button on the left, the art panel flush right. */
@@ -146,16 +158,15 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  padding-right: 60px;
 }
 .ff__simpleCopy {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 651px;
-  max-width: 100%;
+  max-width: 47%;
   flex: 0 0 auto;
 }
 .ff__simpleCopy .ff__text {
@@ -163,60 +174,36 @@
   max-width: none;
 }
 .ff__art--simple {
-  right: 38px;
+  right: 0;
   top: 0;
-  width: 709px;
-  height: auto;
+  width: min(747px, 52%);
 }
 
-/* Super fast: soft gradient, chip top-left, the orbit art overflowing top-right. */
+/* Super fast: chip top-left, the bolt diagram in the middle, copy at the bottom. */
 .ff__card--fast {
-  background: linear-gradient(65.44deg, #fff 9.71%, #f5f7fa 100%);
+  justify-content: space-between;
 }
 .ff__chip {
-  position: absolute;
-  z-index: 1;
-  left: var(--ff-pad);
-  top: var(--ff-pad);
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6.75px;
   height: 34px;
   padding: 0 14.75px;
-  border: 0.675px solid #d7d7d7;
-  border-radius: 12px;
-  background: #ebf0f9;
+  border-radius: 46px;
+  background: #fff;
   font-weight: 600;
-  font-size: 12px;
-  letter-spacing: -0.24px;
-  color: #6d6d6d;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--ff-ink);
   white-space: nowrap;
 }
 .ff__chip img {
   display: block;
   width: 20px;
   height: 20px;
-}
-.ff__art--fast {
-  right: -83px;
-  top: 2px;
-  width: 500px;
-  height: auto;
-}
-
-/* User-friendly interface: art 668×234 at the top, copy beneath. */
-.ff__card--ui {
-  justify-content: flex-start;
-  gap: 40px;
-}
-.ff__art--ui {
-  position: relative;
-  width: 668px;
-  max-width: 100%;
-  height: auto;
-}
-.ff__card--ui .ff__text {
-  margin-top: auto;
 }
 
 /* ---------- Motion (see useFeaturesMotion.ts) ----------
@@ -225,8 +212,7 @@
 .ff[data-motion='pending'] .ff__card {
   visibility: hidden;
 }
-.ff__card,
-.ff__art {
+.ff__card {
   will-change: transform;
 }
 
@@ -239,19 +225,6 @@
     font-size: 52px;
     letter-spacing: -1.5px;
   }
-  .ff__art--simple {
-    right: 0;
-  }
-  .ff__simpleCopy {
-    width: 52%;
-  }
-  .ff__art--fx {
-    left: calc(50% - 190px);
-    width: 380px;
-  }
-  .ff__art--fast {
-    right: -120px;
-  }
 }
 @media (max-width: 1024px) {
   .ff__row {
@@ -263,18 +236,18 @@
   .ff__card--simple {
     height: auto;
     flex-direction: column;
-    padding-right: var(--ff-pad);
     gap: 24px;
   }
   .ff__simpleCopy {
     width: 100%;
+    max-width: none;
     gap: 24px;
   }
   .ff__art--simple {
     position: relative;
     right: auto;
     width: 100%;
-    max-width: 709px;
+    max-width: 747px;
     align-self: center;
   }
 }
@@ -290,28 +263,19 @@
     height: auto;
     min-height: 0;
     padding: 24px;
+    gap: 24px;
     --ff-pad: 24px;
-  }
-  .ff__card--pay,
-  .ff__card--fx,
-  .ff__card--fast {
-    padding-top: 0;
   }
   .ff__art--pay,
   .ff__art--fx,
-  .ff__art--fast {
+  .ff__art--fast,
+  .ff__art--ui {
     position: relative;
     left: auto;
     right: auto;
     top: auto;
-    transform: none;
+    bottom: auto;
     width: 100%;
-    max-width: 480px;
-    height: auto;
-    margin: 24px auto 24px;
-  }
-  .ff__art--fast {
-    max-width: 420px;
-    margin-top: 72px;
+    margin: 0 auto;
   }
 }

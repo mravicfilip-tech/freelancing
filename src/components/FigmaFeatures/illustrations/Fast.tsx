@@ -1,30 +1,28 @@
-import { Layer, Stage, part } from './Stage';
-import { all, bob, one, pop, rand, type IllustrationMotion } from './motion';
+import { B, Layer, Stage } from './Stage';
+import { all, bob, one, pop, rand, wipe, type IllustrationMotion } from './motion';
 
-/** "Super fast" (Figma 2361:2199, 500×436): an orbit of tick rings around the Remittix mark, with coins on the rings. */
+/**
+ * "Super fast" (Figma 2409:2532, 710×440): a bolt strikes between the local payment network and
+ * same-day processing, over a lavender blob that fills the card's left.
+ */
 export function Fast() {
   return (
-    <Stage id="fast" width={500} height={436} className="ff__art ff__art--fast il-fast">
-      <div className="il-fast__inner" style={{ left: 23.5, top: -114.5 }}>
-        <Layer className="il-fast__rings" src="imgEffect.svg" x={0} y={0} w={550.9} h={563} />
-        <span className="il-fast__yen" style={{ left: 124.5, top: 59.4 }}>
-          <img src={part('imgClarityYenSolid.svg')} alt="" width={16.8} height={16.8} />
-        </span>
-        <Layer className="il-fast__logo" src="imgGroup4.svg" x={199.9} y={248.2} w={152} h={78.5} />
-      </div>
-      <span className="il-coin il-fast__coin" style={{ left: 20.5, top: 217, width: 35, height: 35 }}>
-        <img src={part('imgCryptocurrencyColorGbp.svg')} alt="" width={17.8} height={17.8} />
+    <Stage id="fast" width={710} height={440} className="ff__art ff__art--fast il-fast">
+      <Layer className="il-fast__blob" src={B('fast-blob.webp')} x={-609} y={-130} w={1023} h={576} style={{ transform: 'scaleX(-1)', clipPath: 'inset(0 0 0 1.5%)' }} />
+
+      <Layer className="il-fast__outline" src={B('imgVector5.png')} x={332} y={77} w={175} h={206.7} />
+      <span className="il-fast__line" style={{ left: 262, top: 192.7, width: 222 }} />
+      <span className="il-fast__spark" style={{ left: 262, top: 193.2 }} />
+      <Layer className="il-fast__bolt" src={B('imgVector6.svg')} x={317.8} y={151} w={73.5} h={86.2} />
+
+      <span className="il-fast__pill il-fast__pill--local" style={{ left: 32, top: 176.7 }}>
+        <img src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
+        Local payment network
       </span>
-      <span className="il-coin il-fast__coin" style={{ left: 121, top: 295, width: 34, height: 34 }}>
-        <img src={part('imgCryptocurrencyColorGbp1.svg')} alt="" width={17.3} height={17.3} />
-        <img className="il-coin__glyph" src={part('imgVector1.svg')} alt="" style={{ left: 13.1, top: 11.8, width: 9, height: 7.8, transform: 'scaleX(-1)' }} />
-      </span>
-      <span className="il-coin il-fast__coin" style={{ left: 375, top: 273, width: 37, height: 37 }}>
-        <img src={part('imgCryptocurrencyColorGbp2.svg')} alt="" width={18.8} height={18.8} />
-        <img className="il-coin__glyph" src={part('imgVector2.svg')} alt="" style={{ left: 15.7, top: 14.2, width: 5.9, height: 9.1 }} />
-      </span>
-      <span className="il-coin il-coin--bare il-fast__coin" style={{ left: 427, top: 91, width: 35, height: 35 }}>
-        <img src={part('imgCryptocurrencyColorXrp.svg')} alt="" width={35} height={35} style={{ transform: 'scaleX(-1)' }} />
+      <Layer className="il-fast__dot" src={B('imgEllipse3477.svg')} x={480.5} y={189.5} w={7} h={7} />
+      <span className="il-fast__pill il-fast__pill--same" style={{ left: 484, top: 176.75 }}>
+        <img className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
+        Same day process
       </span>
     </Stage>
   );
@@ -32,23 +30,41 @@ export function Fast() {
 
 export const fastMotion: IllustrationMotion = {
   build(tl, il, at) {
-    tl.fromTo(one(il, '.il-fast__inner'), { clipPath: 'circle(0% at 50% 50%)' }, { clipPath: 'circle(75% at 50% 50%)', duration: 1.3, ease: 'power2.out' }, at);
-    tl.from(one(il, '.il-fast__logo'), { opacity: 0, scale: 0.8, duration: 0.9, ease: 'power3.out', transformOrigin: '50% 50%' }, at + 0.5);
-    pop(tl, one(il, '.il-fast__yen'), at + 0.8);
-    pop(tl, all(il, '.il-fast__coin'), at + 0.45, { stagger: 0.18 });
+    tl.from(one(il, '.il-fast__blob'), { opacity: 0, x: -80, duration: 1.4, ease: 'power2.out' }, at);
+    tl.from(one(il, '.il-fast__pill--local'), { x: -40, opacity: 0, duration: 0.8, ease: 'power3.out' }, at + 0.2);
+    wipe(tl, one(il, '.il-fast__line'), at + 0.5, 0.7, 'inset(0 100% 0 0)');
+    tl.from(one(il, '.il-fast__outline'), { opacity: 0, scale: 0.9, duration: 0.8, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.7);
+    // The bolt strikes: in from nothing with a snap, then the dot and the same-day pill land.
+    pop(tl, one(il, '.il-fast__bolt'), at + 0.95, { scale: 0, rotation: -18, duration: 0.6, ease: 'back.out(2.2)' });
+    pop(tl, one(il, '.il-fast__dot'), at + 1.2, { scale: 0, duration: 0.4 });
+    pop(tl, one(il, '.il-fast__pill--same'), at + 1.3, { scale: 0.7 });
+    tl.from(one(il, '.il-fast__check'), { rotation: -180, scale: 0.5, duration: 0.7, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at + 1.4);
   },
   idle(gsap, il) {
-    // The tick rings turn slowly; the coins breathe, and now and then one pings.
-    gsap.to(one(il, '.il-fast__rings'), { rotation: 360, duration: 90, ease: 'none', repeat: -1, transformOrigin: '50% 50%' });
-    const coins = all(il, '.il-fast__coin');
-    coins.forEach((c, i) => bob(gsap, c, 3, 3 + i * 0.4, i * 0.5));
-    const ping = () => {
-      const coin = coins[Math.floor(Math.random() * coins.length)];
-      gsap.fromTo(coin, { boxShadow: '0 0 0 0 rgba(64, 66, 210, 0.35)' }, { boxShadow: '0 0 0 14px rgba(64, 66, 210, 0)', duration: 0.9, ease: 'power2.out' });
-      gsap.fromTo(coin, { scale: 1 }, { scale: 1.16, duration: 0.3, yoyo: true, repeat: 1, ease: 'power2.inOut' });
-      gsap.delayedCall(rand(2.4, 4), ping);
+    // The pills float and the blob drifts. Every few seconds a payment crosses: a spark runs the
+    // line from the network to same-day; the bolt flashes as it passes and its dashed outline
+    // flickers, and the same-day pill pops with its check turning over as the spark lands.
+    bob(gsap, one(il, '.il-fast__pill--local'), 3, 3.4);
+    bob(gsap, one(il, '.il-fast__pill--same'), 3, 3.8, 1.2);
+    gsap.to(one(il, '.il-fast__blob'), { x: 16, duration: 8, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    const spark = one(il, '.il-fast__spark');
+    const bolt = one(il, '.il-fast__bolt');
+    const outline = one(il, '.il-fast__outline');
+    const same = one(il, '.il-fast__pill--same');
+    const check = one(il, '.il-fast__check');
+    const cross = () => {
+      gsap
+        .timeline()
+        .fromTo(spark, { x: 0, opacity: 0 }, { opacity: 1, duration: 0.15 }, 0)
+        .to(spark, { x: 222, duration: 1.0, ease: 'power1.inOut' }, 0)
+        .to(spark, { opacity: 0, duration: 0.15 }, 0.9)
+        .fromTo(bolt, { scale: 1 }, { scale: 1.18, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.38)
+        .fromTo(outline, { opacity: 1 }, { opacity: 0.35, duration: 0.09, yoyo: true, repeat: 3, ease: 'none' }, 0.32)
+        .fromTo(same, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' }, 1.0)
+        .to(check, { rotation: '+=360', duration: 0.7, ease: 'back.out(1.6)', transformOrigin: '50% 50%' }, 1.0);
+      gsap.delayedCall(rand(3.5, 5), cross);
     };
-    gsap.delayedCall(1.5, ping);
-    bob(gsap, one(il, '.il-fast__logo'), 3, 5);
+    gsap.delayedCall(1.5, cross);
+    all(il, '.il-fast__dot').forEach((d) => gsap.to(d, { scale: 1.3, duration: 1.4, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' }));
   },
 };

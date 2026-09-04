@@ -1,5 +1,5 @@
 import { B, Layer, Stage } from './Stage';
-import { all, one, type IllustrationMotion } from './motion';
+import { all, one, EASE, RISE, type IllustrationMotion } from './motion';
 
 /**
  * "User-friendly interface" (Figma 2409:2544, 716×440): a connect-a-wallet panel with four wallet
@@ -33,7 +33,6 @@ export function Ui() {
               <i className="il-ui__hi" />
               <img src={icon} alt="" width={24} height={24} />
               {label}
-              <i className="il-ui__ok" />
             </span>
           ))}
         </div>
@@ -44,48 +43,31 @@ export function Ui() {
 
 export const uiMotion: IllustrationMotion = {
   build(tl, il, at) {
-    // The blobs bloom, the panel tips up into place, the link icon spins on and the copy settles,
-    // then the wallet rows slide in one after another with their icons popping, and a highlight
-    // runs down the list once it is complete.
-    tl.from(all(il, '.il-ui__blob'), { opacity: 0, scale: 0.8, duration: 1.4, stagger: 0.12, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
+    // The blobs settle, the panel rises, its copy appears in reading order, and the wallet rows
+    // follow one after another.
+    tl.from(all(il, '.il-ui__blob'), { opacity: 0, duration: 1.4, stagger: 0.1, ease: 'power1.out' }, at);
     tl.from(one(il, '.il-ui__dots'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
-    tl.from(one(il, '.il-ui__panel'), { y: 60, opacity: 0, rotationX: 12, duration: 1.0, ease: 'power3.out', transformOrigin: '50% 100%', transformPerspective: 900 }, at + 0.3);
-    tl.from(one(il, '.il-ui__link'), { scale: 0, rotation: -90, duration: 0.6, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at + 0.7);
-    tl.from(one(il, '.il-ui__introTop b'), { y: 10, opacity: 0, duration: 0.5, ease: 'power2.out' }, at + 0.8);
-    tl.from(one(il, '.il-ui__intro p'), { y: 10, opacity: 0, duration: 0.5, ease: 'power2.out' }, at + 0.95);
-    tl.from(all(il, '.il-ui__row'), { x: 50, opacity: 0, duration: 0.7, stagger: 0.1, ease: 'power3.out' }, at + 0.75);
-    tl.from(all(il, '.il-ui__row img'), { scale: 0, duration: 0.5, stagger: 0.1, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at + 0.95);
-    tl.fromTo(all(il, '.il-ui__hi'), { opacity: 0 }, { opacity: 1, duration: 0.15, stagger: 0.1, yoyo: true, repeat: 1 }, at + 1.6);
+    tl.from(one(il, '.il-ui__panel'), { y: 32, opacity: 0, duration: 1.0, ease: EASE }, at + 0.15);
+    tl.from(all(il, '.il-ui__link, .il-ui__introTop b, .il-ui__intro p'), { ...RISE, y: 8, duration: 0.6, stagger: 0.07 }, at + 0.45);
+    tl.from(all(il, '.il-ui__row'), { ...RISE, duration: 0.6, stagger: 0.06 }, at + 0.5);
   },
   idle(gsap, il) {
-    // The blobs breathe and drift. The wallets take turns being picked: a highlight settles on a
-    // row, it slides forward, its icon pulses twice and a status dot lights up beside it while the
-    // panel lifts a touch and the link icon leans in; once the list has been walked the link icon
-    // gives a twirl.
-    all(il, '.il-ui__blob').forEach((b, i) => gsap.to(b, { x: i % 2 ? -12 : 12, y: i * 4, duration: 6 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }));
+    // A hover walks down the wallet list: each row in turn takes a soft highlight and eases a few
+    // pixels forward, holds, and hands over to the next. The blobs drift between passes.
     const rows = all(il, '.il-ui__row');
-    const panel = one(il, '.il-ui__panel');
-    const link = one(il, '.il-ui__link');
-    let i = 0;
-    const pick = () => {
-      const row = rows[i];
-      gsap
-        .timeline()
-        .fromTo(one(row, '.il-ui__hi'), { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, 0)
-        .fromTo(row, { x: 0 }, { x: 6, duration: 0.35, ease: 'power2.out' }, 0)
-        .fromTo(one(row, 'img'), { scale: 1 }, { scale: 1.25, duration: 0.2, yoyo: true, repeat: 3, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
-        .fromTo(one(row, '.il-ui__ok'), { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 0.5)
-        .fromTo(panel, { y: 0 }, { y: -3, duration: 0.4, ease: 'power2.out' }, 0)
-        .fromTo(link, { rotation: 0 }, { rotation: 18, duration: 0.35, ease: 'power2.out', transformOrigin: '50% 50%' }, 0)
-        .to(one(row, '.il-ui__ok'), { scale: 0, opacity: 0, duration: 0.3, ease: 'power2.in' }, 1.6)
-        .to(one(row, '.il-ui__hi'), { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6)
-        .to(row, { x: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6)
-        .to(panel, { y: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6)
-        .to(link, { rotation: 0, duration: 0.5, ease: 'power2.inOut' }, 1.6);
-      if (i === rows.length - 1) gsap.to(link, { rotation: '+=360', duration: 0.9, ease: 'back.out(1.4)', transformOrigin: '50% 50%', delay: 2.2 });
-      i = (i + 1) % rows.length;
-      gsap.delayedCall(2.6, pick);
-    };
-    gsap.delayedCall(1.2, pick);
+    const idle = gsap.timeline();
+    all(il, '.il-ui__blob').forEach((b, i) => idle.to(b, { x: i % 2 ? -10 : 10, duration: 8 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0));
+    const story = gsap.timeline({ repeat: -1, repeatDelay: 1.2, delay: 1.2 });
+    rows.forEach((row, i) => {
+      const t = i * 1.5;
+      const hi = one(row, '.il-ui__hi');
+      story
+        .fromTo(hi, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power2.out' }, t)
+        .fromTo(row, { x: 0 }, { x: 4, duration: 0.4, ease: 'power2.out' }, t)
+        .to(hi, { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, t + 1.1)
+        .to(row, { x: 0, duration: 0.4, ease: 'power2.inOut' }, t + 1.1);
+    });
+    idle.add(story, 0);
+    return idle;
   },
 };

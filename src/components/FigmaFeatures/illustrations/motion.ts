@@ -1,11 +1,22 @@
 export type Gsap = typeof import('gsap')['gsap'];
 export type Timeline = gsap.core.Timeline;
 
-/** How one illustration animates: `build` adds its zero-to-finished sequence to a timeline at `at`; `idle` starts its loops. */
+/**
+ * How one illustration animates: `build` adds its zero-to-finished sequence to a timeline at `at`;
+ * `idle` returns the timeline that holds its loops, so the band can pause it while off screen.
+ *
+ * The motion language is deliberately restrained: entrances rise a few pixels on `expo.out`,
+ * staggered tightly; nothing overshoots, rotates for effect, or floats while idle. Each loop is
+ * one deterministic story beat that shows the product doing its job, then rests.
+ */
 export interface IllustrationMotion {
   build(tl: Timeline, il: HTMLElement, at: number, gsap: Gsap): void;
-  idle(gsap: Gsap, il: HTMLElement): void;
+  idle(gsap: Gsap, il: HTMLElement): Timeline;
 }
+
+/** The band's entrance ease and the small rise every element makes as it appears. */
+export const EASE = 'expo.out';
+export const RISE = { y: 10, opacity: 0, duration: 0.7, ease: EASE } as const;
 
 export const one = <T extends Element = HTMLElement>(root: Element, sel: string) => root.querySelector<T>(sel)!;
 export const all = <T extends Element = HTMLElement>(root: Element, sel: string) => Array.from(root.querySelectorAll<T>(sel));
@@ -45,11 +56,11 @@ export function bob(gsap: Gsap, el: Element | null, amplitude = 3, seconds = 3, 
 export function roll(gsap: Gsap, el: HTMLElement, next: string) {
   gsap
     .timeline()
-    .to(el, { yPercent: -60, opacity: 0, duration: 0.22, ease: 'power2.in' })
+    .to(el, { yPercent: -45, opacity: 0, duration: 0.24, ease: 'power2.in' })
     .add(() => {
       el.textContent = next;
     })
-    .fromTo(el, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.34, ease: 'power2.out' });
+    .fromTo(el, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
 }
 
 /** Adds a small dot to an inline SVG that can be sent along its paths. */

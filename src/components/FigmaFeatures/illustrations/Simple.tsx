@@ -1,6 +1,6 @@
 import lines from './svg/imgGroup2085662421.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
-import { all, bob, count, draw, one, pop, rand, roll, traveller, type IllustrationMotion } from './motion';
+import { all, count, draw, one, roll, traveller, EASE, RISE, type IllustrationMotion } from './motion';
 
 /**
  * "Crypto-to-fiat payments made simple" (Figma 2409:2462, 747×334): BTC flows along a line through
@@ -26,6 +26,7 @@ export function Simple() {
         <span style={{ maskImage: `url(${B('imgRectangle34624647.png')})`, WebkitMaskImage: `url(${B('imgRectangle34624647.png')})` }} />
       </div>
       <div className="il-simple__hub il-simple__node" style={{ left: 242, top: 166 }}>
+        <i className="il-simple__hubHalo" />
         <img src={B('imgGroup3.svg')} alt="" width={35.5} height={18.3} />
       </div>
       <div className="il-simple__swap" style={{ left: 410, top: 130 }}>
@@ -73,87 +74,67 @@ export function Simple() {
 
 export const simpleMotion: IllustrationMotion = {
   build(tl, il, at, gsap) {
-    // The scene grows outward: the blob and orbit rings bloom, the BTC chip pops with its coin
-    // spinning in, the line draws itself with its stops landing as it passes, the hub and exchange
-    // pop into place, the logos float up, and the receipt assembles row by row — icon, names,
-    // amount counting, rule wiping, the rate and timing ticking in — before the badge and toast land.
-    tl.from(one(il, '.il-simple__blob'), { opacity: 0, scale: 0.85, duration: 1.4, ease: 'power2.out', transformOrigin: '40% 60%' }, at);
-    tl.from(all(il, '.il-simple__ring, .il-simple__haze'), { opacity: 0, scale: 0.6, rotation: -30, duration: 1.3, stagger: 0.15, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.1);
-    const btc = one(il, '.il-simple__btc');
-    pop(tl, btc, at + 0.35, { scale: 0.6, x: -20 });
-    tl.from(one(btc, 'img'), { rotation: -180, scale: 0, duration: 0.7, ease: 'back.out(1.8)', transformOrigin: '50% 50%' }, at + 0.45);
-    tl.from(one(btc, 'span'), { opacity: 0, x: -6, duration: 0.4, ease: 'power2.out' }, at + 0.6);
-    draw(tl, gsap, all<SVGGeometryElement>(il, '.il-simple__lines path'), at + 0.6, 1.1);
+    // The scene settles from the back forward: the blob and orbit rings, the BTC chip, the line
+    // drawing itself with its stops appearing as it passes, the hub and exchange, the network
+    // logos, then the receipt rising and filling row by row with its figures counting, and the
+    // toast last.
+    tl.from(one(il, '.il-simple__blob'), { opacity: 0, scale: 0.94, duration: 1.4, ease: 'power2.out', transformOrigin: '40% 60%' }, at);
+    tl.from(all(il, '.il-simple__ring, .il-simple__haze'), { opacity: 0, scale: 0.92, duration: 1.2, stagger: 0.1, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.1);
+    tl.from(one(il, '.il-simple__btc'), { ...RISE, y: 12 }, at + 0.3);
+    draw(tl, gsap, all<SVGGeometryElement>(il, '.il-simple__lines path'), at + 0.45, 1.0);
     const dots = all<SVGCircleElement>(il, '.il-simple__lines circle').sort((a, b) => Number(a.getAttribute('cx')) - Number(b.getAttribute('cx')));
-    dots.forEach((dot, i) => pop(tl, dot, at + 0.7 + i * 0.85, { scale: 0, duration: 0.45 }));
-    const hub = one(il, '.il-simple__hub');
-    pop(tl, hub, at + 1.0, { scale: 0, rotation: -40, duration: 0.7 });
-    tl.from(one(hub, 'img'), { scale: 0, duration: 0.5, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at + 1.2);
-    all(il, '.il-simple__logo').forEach((l, i) => tl.from(l, { y: 16, opacity: 0, rotation: i % 2 ? 4 : -4, scale: 0.9, duration: 0.7, ease: 'power3.out', transformOrigin: '50% 50%' }, at + 0.7 + i * 0.15));
-    pop(tl, one(il, '.il-simple__swap'), at + 1.55, { scale: 0, rotation: -180, duration: 0.7 });
-    tl.from(one(il, '.il-rc'), { x: 40, y: 10, opacity: 0, scale: 0.96, duration: 0.8, ease: 'power3.out', transformOrigin: '50% 50%' }, at + 1.6);
-    pop(tl, one(il, '.il-rc__bank img'), at + 1.75, { scale: 0, duration: 0.5 });
-    tl.from(one(il, '.il-rc__bank span'), { x: -6, opacity: 0, duration: 0.4, ease: 'power2.out' }, at + 1.8);
-    tl.from(one(il, '.il-rc__label'), { y: 6, opacity: 0, duration: 0.4, ease: 'power2.out' }, at + 1.9);
-    tl.from(one(il, '.il-rc__amount'), { y: 6, opacity: 0, duration: 0.4, ease: 'power2.out' }, at + 1.95);
-    count(tl, one(il, '[data-count="eur"]'), 0, 1240, at + 2.0, 0.9, (n) => `€${Math.round(n).toLocaleString('en-US')}`);
-    tl.from(one(il, '.il-rc__rule'), { scaleX: 0, duration: 0.5, ease: 'power2.out', transformOrigin: '0% 50%' }, at + 2.1);
-    tl.from(all(il, '.il-rc__line'), { y: 8, opacity: 0, duration: 0.45, stagger: 0.1, ease: 'power2.out' }, at + 2.15);
-    count(tl, one(il, '[data-count="rate"]'), 0, 96840, at + 2.25, 0.8, (n) => `1 BTC = €${Math.round(n).toLocaleString('en-US')}`);
-    count(tl, one(il, '[data-count="arrived"]'), 0, 4.2, at + 2.45, 0.7, (n) => `${n.toFixed(1)} sec`);
-    pop(tl, one(il, '.il-rc__badge'), at + 2.75, { scale: 0.4 });
-    const toast = one(il, '.il-toast');
-    tl.from(toast, { y: 24, opacity: 0, scale: 0.95, duration: 0.7, ease: 'power3.out', transformOrigin: '50% 100%' }, at + 2.85);
-    tl.from(one(toast, 'img'), { scale: 0, rotation: -90, duration: 0.5, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at + 3.0);
-    tl.from(all(toast, 'span, small'), { opacity: 0, x: -6, duration: 0.4, stagger: 0.1, ease: 'power2.out' }, at + 3.05);
+    dots.forEach((dot, i) => tl.from(dot, { opacity: 0, scale: 0.4, duration: 0.4, ease: EASE, transformOrigin: '50% 50%' }, at + 0.5 + i * 0.8));
+    tl.from(all(il, '.il-simple__logo'), { ...RISE, stagger: 0.08 }, at + 0.6);
+    tl.from(one(il, '.il-simple__hub'), { scale: 0.9, opacity: 0, duration: 0.7, ease: EASE, transformOrigin: '50% 50%' }, at + 1.0);
+    tl.from(one(il, '.il-simple__swap'), { scale: 0.6, opacity: 0, duration: 0.6, ease: EASE, transformOrigin: '50% 50%' }, at + 1.4);
+    tl.from(one(il, '.il-rc'), { y: 24, opacity: 0, duration: 0.9, ease: EASE }, at + 1.3);
+    tl.from(all(il, '.il-rc__row'), { ...RISE, y: 8, duration: 0.6, stagger: 0.06 }, at + 1.5);
+    tl.from(one(il, '.il-rc__rule'), { scaleX: 0, duration: 0.6, ease: EASE, transformOrigin: '0% 50%' }, at + 1.7);
+    count(tl, one(il, '[data-count="eur"]'), 0, 1240, at + 1.6, 0.9, (n) => `€${Math.round(n).toLocaleString('en-US')}`);
+    count(tl, one(il, '[data-count="rate"]'), 0, 96840, at + 1.8, 0.8, (n) => `1 BTC = €${Math.round(n).toLocaleString('en-US')}`);
+    count(tl, one(il, '[data-count="arrived"]'), 0, 4.2, at + 1.9, 0.7, (n) => `${n.toFixed(1)} sec`);
+    tl.from(one(il, '.il-rc__badge'), { opacity: 0, scale: 0.8, duration: 0.5, ease: EASE, transformOrigin: '50% 50%' }, at + 2.3);
+    tl.from(one(il, '.il-toast'), { y: 16, opacity: 0, duration: 0.8, ease: EASE }, at + 2.4);
   },
   idle(gsap, il) {
-    all(il, '.il-simple__logo').forEach((l, i) => bob(gsap, l, 4, 3.2 + i * 0.5, i * 0.7));
-    all(il, '.il-simple__ring').forEach((r, i) => gsap.to(r, { rotation: i ? -360 : 360, duration: 60 + i * 20, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }));
-    gsap.to(one(il, '.il-simple__blob'), { x: 14, y: 8, duration: 7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    bob(gsap, one(il, '.il-toast'), 2, 3.8, 1);
-    // Every few seconds a payment goes out: the BTC chip nudges and its coin spins as it sends,
-    // the packet travels the line, the network pills light up in turn as it passes, the hub tips,
-    // the exchange flips, another €10 lands on the receipt with a flick, the arrival time
-    // re-measures, the toast's clock ticks on a minute, and the badge nods.
+    // One payment every few seconds: a packet travels the line from BTC through the hub, which
+    // sends out a soft ring as it passes; the exchange turns over; the receipt takes another €10
+    // with the amount flicking indigo, the arrival time re-measures, the badge's dot blinks as it
+    // settles, and the toast's clock ticks on a minute. The orbit rings turn very slowly.
     const svg = one<SVGSVGElement>(il, '.il-simple__lines svg');
     const path = one<SVGPathElement>(svg, 'path');
     const dot = traveller(svg, '#4042d1', 3.5);
-    const btc = one(il, '.il-simple__btc');
-    const hub = one(il, '.il-simple__hub');
+    const halo = one(il, '.il-simple__hubHalo');
     const swap = one(il, '.il-simple__swap');
-    const logos = all(il, '.il-simple__logo');
     const amount = one(il, '[data-count="eur"]');
     const arrived = one(il, '[data-count="arrived"]');
     const clock = one(il, '[data-count="time"]');
-    const badge = one(il, '.il-rc__badge');
+    const badgeDot = one(il, '.il-rc__badge img');
     let eur = 1240;
     let minutes = 14 * 60 + 2;
-    const send = () => {
-      gsap
-        .timeline()
-        .fromTo(btc, { x: 0 }, { x: 8, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.inOut' }, 0)
-        .fromTo(one(btc, 'img'), { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
-        .set(dot, { opacity: 1 }, 0.2)
-        .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.6, ease: 'power1.inOut' }, 0.2)
-        .to(dot, { opacity: 0, duration: 0.2 }, 1.8)
-        .fromTo(logos, { scale: 1 }, { scale: 1.08, duration: 0.25, stagger: 0.18, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0.5)
-        .fromTo(hub, { rotation: 0 }, { rotation: -12, duration: 0.25, yoyo: true, repeat: 1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 1.0)
-        .fromTo(hub, { scale: 1 }, { scale: 1.1, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 1.0)
-        .to(swap, { rotation: '+=180', duration: 0.6, ease: 'back.out(1.5)', transformOrigin: '50% 50%' }, 1.6)
-        .add(() => {
-          eur += 10;
-          minutes += 1;
-          roll(gsap, amount, `€${eur.toLocaleString('en-US')}`);
-          arrived.textContent = `${rand(3.6, 4.9).toFixed(1)} sec`;
-          clock.textContent = `TODAY · ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-        }, 1.85)
-        .fromTo(amount, { color: '#4042d1' }, { color: '#000', duration: 1.4, ease: 'power1.out' }, 2.15)
-        .fromTo([arrived, clock], { color: '#4042d1' }, { color: '', duration: 1.2, ease: 'power1.out', clearProps: 'color' }, 2.15)
-        .fromTo(badge, { scale: 1 }, { scale: 1.15, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 2.0)
-        .fromTo(one(il, '.il-toast'), { x: 0 }, { x: -4, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 2.3);
-      gsap.delayedCall(rand(4.5, 6.5), send);
-    };
-    gsap.delayedCall(1.2, send);
+    let seconds = 4.2;
+    const idle = gsap.timeline();
+    all(il, '.il-simple__ring').forEach((r, i) => idle.to(r, { rotation: i ? -360 : 360, duration: 90 + i * 30, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }, 0));
+    idle.to(one(il, '.il-simple__blob'), { x: 10, y: 6, duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+    const story = gsap.timeline({ repeat: -1, repeatDelay: 4.4, delay: 1.2 });
+    story
+      .set(dot, { opacity: 1 }, 0)
+      .to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: 1.4, ease: 'power2.inOut' }, 0)
+      .to(dot, { opacity: 0, duration: 0.2 }, 1.35)
+      .fromTo(halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.9, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.7)
+      .to(swap, { rotation: '+=180', duration: 0.5, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 1.25)
+      .add(() => {
+        eur += 10;
+        minutes += 1;
+        seconds = Math.round((3.6 + ((eur / 10) % 7) * 0.2) * 10) / 10;
+        roll(gsap, amount, `€${eur.toLocaleString('en-US')}`);
+        roll(gsap, arrived, `${seconds.toFixed(1)} sec`);
+        roll(gsap, clock, `TODAY · ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`);
+      }, 1.5)
+      .fromTo(amount, { color: '#4042d1' }, { color: '#000', duration: 1.2, ease: 'power1.out' }, 1.85)
+      .fromTo(badgeDot, { opacity: 1 }, { opacity: 0.15, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 1.6)
+      .fromTo(one(il, '.il-toast'), { y: 0 }, { y: -3, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 1.95);
+    idle.add(story, 0);
+    return idle;
   },
 };

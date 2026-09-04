@@ -2,10 +2,11 @@ import { useEffect, type RefObject } from 'react';
 import { MOTION } from './illustrations';
 
 /**
- * Motion for the feature band. As each card scrolls into view it flips up from a slight tilt and
- * its illustration builds itself from nothing — pills pop, connectors draw, figures count, cards
- * slide in — then settles into small idle loops that replay each scene's meaning: a rate
- * recalculating, a fee-free transfer, a payment travelling to the bank, a request reaching the app.
+ * Motion for the feature band. As each card scrolls into view it rises into place, its copy follows
+ * in reading order, and its illustration builds itself element by element on one restrained ease;
+ * then each scene settles into a single, deterministic story loop that shows the product doing its
+ * job — a quote refreshing, a fee-free transfer landing, a payment reaching the bank, a payment
+ * crossing local rails, a wallet being chosen — and rests between beats. Loops pause off screen.
  * The headline rises when the section arrives.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
@@ -29,6 +30,7 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
       .then(([{ gsap }, { ScrollTrigger }, { MotionPathPlugin }]) => {
         if (cancelled) return;
         gsap.registerPlugin(ScrollTrigger);
+        const observers: IntersectionObserver[] = [];
         const ctx = gsap.context(() => {
           gsap.registerPlugin(MotionPathPlugin);
           const playWhenSeen = (trigger: Element, tl: gsap.core.Timeline) => {
@@ -44,21 +46,31 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
           gsap.utils.toArray<HTMLElement>('.ff__card', el).forEach((card) => {
             const il = card.querySelector<HTMLElement>('.ff__il');
             const motion = il ? MOTION[il.dataset.il ?? ''] : undefined;
-            const tl = gsap.timeline({ paused: true, onComplete: () => {
-              if (il && motion) motion.idle(gsap, il);
-            } });
-            gsap.set(card, { transformPerspective: 1200 });
-            tl.from(card, { y: 70, rotationX: 14, opacity: 0, duration: 1.1, ease: 'back.out(1.3)', transformOrigin: '50% 100%' }, 0);
-            tl.from(card.querySelectorAll('.ff__text, .ff__simpleCopy > .fh__btn'), { y: 18, opacity: 0, duration: 0.8, stagger: 0.06, ease: 'power3.out' }, 0.4);
-            const chip = card.querySelector('.ff__chip');
-            if (chip) tl.from(chip, { rotation: -90, scale: 0.6, opacity: 0, duration: 0.8, ease: 'back.out(2)' }, 0.8);
-            if (il && motion) motion.build(tl, il, 0.35, gsap);
+            const tl = gsap.timeline({
+              paused: true,
+              onComplete: () => {
+                if (!il || !motion) return;
+                // The loops run only while the card is on screen.
+                const loop = motion.idle(gsap, il);
+                const io = new IntersectionObserver(([e]) => (e.isIntersecting ? loop.play() : loop.pause()), { rootMargin: '60px' });
+                io.observe(card);
+                observers.push(io);
+              },
+            });
+            // The card rises into place, its copy follows in reading order, and the illustration
+            // builds once the card has landed.
+            tl.from(card, { y: 40, opacity: 0, duration: 1.0, ease: 'expo.out' }, 0);
+            tl.from(card.querySelectorAll('.ff__text, .ff__simpleCopy > .fh__btn, .ff__chip'), { y: 12, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'expo.out' }, 0.2);
+            if (il && motion) motion.build(tl, il, 0.25, gsap);
             playWhenSeen(card, tl);
           });
         }, el);
         // The `from` tweens have written their start states, so the CSS hold can go.
         reveal();
-        revert = () => ctx.revert();
+        revert = () => {
+          observers.forEach((io) => io.disconnect());
+          ctx.revert();
+        };
       })
       .catch(() => reveal());
 

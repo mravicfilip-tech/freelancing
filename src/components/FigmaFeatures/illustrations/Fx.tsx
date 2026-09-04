@@ -1,5 +1,5 @@
 import { B, Layer, Stage } from './Stage';
-import { all, bob, one, pop, rand, roll, type IllustrationMotion } from './motion';
+import { all, one, roll, EASE, RISE, type IllustrationMotion } from './motion';
 
 /**
  * "Zero FX fees" (Figma 2409:2439, 804×440): a bank card and a wallet card overlapping at the
@@ -36,59 +36,40 @@ export function Fx() {
 
 export const fxMotion: IllustrationMotion = {
   build(tl, il, at) {
-    // The bank card sweeps in from the left with its artwork settling behind it, its icon and tags
-    // pop on; the wallet card comes up from the right, its glow, traces and outline mark fade in
-    // around the logo, and the address types itself in character by character.
+    // The bank card rises with its artwork settling behind it, the wallet card follows, their
+    // labels appear in reading order, and the wallet address reveals itself left to right.
     tl.from(one(il, '.il-fx__dots'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
-    tl.from(one(il, '.il-fx__bank'), { x: -90, y: 40, rotation: -4, opacity: 0, duration: 1.1, ease: 'power3.out', transformOrigin: '0% 100%' }, at);
-    tl.from(one(il, '.il-fx__bankBg'), { scale: 1.15, duration: 1.8, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
-    pop(tl, one(il, '.il-fx__temple'), at + 0.5, { scale: 0.4, rotation: -20, duration: 0.5 });
-    pop(tl, one(il, '.il-fx__tag--bank'), at + 0.6, { scale: 0.6, rotation: -6, transformOrigin: '0% 50%' });
-    pop(tl, one(il, '.il-fx__tag--masked'), at + 0.85, { scale: 0.7, transformOrigin: '0% 50%' });
-    tl.from(one(il, '.il-fx__wallet'), { x: 90, y: 70, rotation: 4, opacity: 0, duration: 1.1, ease: 'power3.out', transformOrigin: '100% 100%' }, at + 0.25);
-    tl.from(all(il, '.il-fx__glow'), { opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power1.out' }, at + 0.6);
-    tl.from(one(il, '.il-fx__lines'), { opacity: 0, y: 24, duration: 1.0, ease: 'power2.out' }, at + 0.7);
-    tl.from(one(il, '.il-fx__mark'), { opacity: 0, rotation: -6, scale: 0.9, duration: 1.0, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.8);
-    pop(tl, one(il, '.il-fx__logo'), at + 0.75, { scale: 0.4, rotation: -30, duration: 0.6 });
-    pop(tl, one(il, '.il-fx__tag--wallet'), at + 0.85, { scale: 0.6, rotation: 6, transformOrigin: '0% 50%' });
-    tl.from(one(il, '.il-fx__tag--addr'), { opacity: 0, y: 8, duration: 0.4, ease: 'power2.out' }, at + 1.05);
-    tl.fromTo(one(il, '.il-fx__addrText'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 1.3, ease: 'steps(38)' }, at + 1.1);
+    tl.from(one(il, '.il-fx__bank'), { y: 40, opacity: 0, duration: 1.0, ease: EASE }, at);
+    tl.from(one(il, '.il-fx__bankBg'), { scale: 1.08, duration: 1.6, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
+    tl.from(one(il, '.il-fx__wallet'), { y: 56, opacity: 0, duration: 1.0, ease: EASE }, at + 0.15);
+    tl.from(all(il, '.il-fx__temple, .il-fx__tag--bank, .il-fx__tag--masked'), { ...RISE, y: 8, duration: 0.6, stagger: 0.07 }, at + 0.5);
+    tl.from(all(il, '.il-fx__lines, .il-fx__mark, .il-fx__glow'), { opacity: 0, duration: 1.0, stagger: 0.1, ease: 'power1.out' }, at + 0.6);
+    tl.from(all(il, '.il-fx__logo, .il-fx__tag--wallet, .il-fx__tag--addr'), { ...RISE, y: 8, duration: 0.6, stagger: 0.07 }, at + 0.65);
+    tl.fromTo(one(il, '.il-fx__addrText'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut' }, at + 0.95);
   },
   idle(gsap, il) {
-    // Both cards float out of phase, the wallet's glow breathes and the outline mark drifts.
-    // Every few seconds a transfer plays out: a sheen sweeps the wallet address, a packet lifts
-    // off it and arcs over to the bank, the bank card comes forward as it lands, its masked
-    // account lights up lavender and shows its last four digits, then masks again.
-    const bank = one(il, '.il-fx__bank');
-    const wallet = one(il, '.il-fx__wallet');
-    bob(gsap, bank, 4, 4.2);
-    bob(gsap, wallet, 5, 3.6, 0.8);
-    gsap.to(one(il, '.il-fx__glow'), { opacity: 0.6, x: -30, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to(one(il, '.il-fx__mark'), { x: -6, y: 4, duration: 7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    // One transfer every few seconds: a sheen passes over the wallet address as it signs, a packet
+    // lifts off the address and arcs across to the bank, and on landing the bank's masked account
+    // reveals its last four digits and brightens, then masks itself again. The wallet's glow
+    // drifts between beats.
     const sheen = one(il, '.il-fx__sheen');
     const masked = one(il, '.il-fx__tag--masked');
-    const bankTag = one(il, '.il-fx__tag--bank');
     const packet = one(il, '.il-fx__packet');
-    const send = () => {
-      gsap
-        .timeline()
-        .fromTo(sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 1.0, ease: 'power2.inOut' }, 0)
-        .fromTo(packet, { x: 0, y: 0, scale: 0, opacity: 1 }, { scale: 1, duration: 0.25, ease: 'back.out(2)' }, 0.5)
-        // From the wallet's address (stage 340, 400) over the top of the bank's masked tag (stage 160, 372).
-        .to(packet, { motionPath: { path: [{ x: 0, y: 0 }, { x: -80, y: -70 }, { x: -180, y: -28 }], curviness: 1.4 }, duration: 0.9, ease: 'power2.inOut' }, 0.7)
-        .to(packet, { scale: 0, duration: 0.2, ease: 'power2.in' }, 1.5)
-        .to(wallet, { scale: 0.985, duration: 0.5, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 1.2)
-        .to(bank, { scale: 1.03, zIndex: 2, duration: 0.5, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 1.2)
-        .fromTo(masked, { backgroundColor: 'rgba(255,255,255,0.24)' }, { backgroundColor: '#b3b5f5', duration: 0.25, ease: 'power2.out' }, 1.55)
-        .fromTo(masked, { scale: 1 }, { scale: 1.08, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' }, 1.55)
-        .fromTo(bankTag, { scale: 1 }, { scale: 1.08, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' }, 1.65)
-        .add(() => roll(gsap, masked, '**** - 4417'), 1.6)
-        .add(() => roll(gsap, masked, '**** - ****'), 3.2)
-        .to(masked, { backgroundColor: 'rgba(255,255,255,0.24)', duration: 0.9, ease: 'power2.inOut' }, 3.0)
-        .to(bank, { scale: 1, zIndex: 0, duration: 0.6, ease: 'sine.inOut' }, 3.2)
-        .to(wallet, { scale: 1, duration: 0.6, ease: 'sine.inOut' }, 3.2);
-      gsap.delayedCall(rand(5, 6.5), send);
-    };
-    gsap.delayedCall(1.5, send);
+    const idle = gsap.timeline();
+    idle.to(one(il, '.il-fx__glow'), { opacity: 0.6, x: -24, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+    idle.to(one(il, '.il-fx__mark'), { x: -5, duration: 8, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+    const story = gsap.timeline({ repeat: -1, repeatDelay: 4.5, delay: 1.6 });
+    story
+      .fromTo(sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 1.0, ease: 'power2.inOut' }, 0)
+      .fromTo(packet, { x: 0, y: 0, opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' }, 0.6)
+      // From the wallet's address (stage 340, 400) over to the bank's masked account (stage 160, 372).
+      .to(packet, { motionPath: { path: [{ x: 0, y: 0 }, { x: -90, y: -64 }, { x: -180, y: -28 }], curviness: 1.3 }, duration: 1.0, ease: 'power2.inOut' }, 0.8)
+      .to(packet, { opacity: 0, scale: 0.6, duration: 0.25, ease: 'power2.in' }, 1.7)
+      .add(() => roll(gsap, masked, '**** - 4417'), 1.75)
+      .fromTo(masked, { backgroundColor: 'rgba(255,255,255,0.24)' }, { backgroundColor: 'rgba(255,255,255,0.55)', duration: 0.3, ease: 'power2.out' }, 1.75)
+      .to(masked, { backgroundColor: 'rgba(255,255,255,0.24)', duration: 0.8, ease: 'power2.inOut' }, 3.4)
+      .add(() => roll(gsap, masked, '**** - ****'), 3.6);
+    idle.add(story, 0);
+    return idle;
   },
 };

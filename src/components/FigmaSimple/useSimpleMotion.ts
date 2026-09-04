@@ -8,8 +8,8 @@ import { all, bob, draw, one, pop } from '../FigmaFeatures/illustrations/motion'
  * arrive, the markers and dots appear, and the cursor slides in with its badge; the paragraph and
  * pill rise last. Afterwards a highlight keeps circling the orbit: each ring marker pulses as it
  * passes, and the pay-in and pay-out chips light up indigo and pop as it reaches their anchors. The
- * hub breathes, the coin groups drift, the badge stays parked by the hub, and the cursor alone rides
- * along on the highlight, clicking as it passes each chip.
+ * hub breathes, the coin groups drift, the badge settles under the hub as its caption, and the cursor
+ * alone rides along on the highlight, clicking as it passes each chip.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows it at rest.
@@ -77,7 +77,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             ringPath.parentElement!.appendChild(glowPath);
             gsap.set(ringPath, { strokeDasharray: 'none', strokeDashoffset: 0 });
             const dash = len * 0.12;
-            gsap.set(glowPath, { strokeDasharray: `${dash} ${len - dash}`, strokeDashoffset: 0, opacity: 0.9 });
 
             // Where along the path each marker and each chip's anchor dot sits: the sample nearest its
             // centre, compared on screen so the ring's tilt and the stage's scale are accounted for.
@@ -151,30 +150,29 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             const fx = gsap.quickTo(cursor, 'x', { duration: 0.3, ease: 'power2.out' });
             const fy = gsap.quickTo(cursor, 'y', { duration: 0.3, ease: 'power2.out' });
             const lean = gsap.quickTo(cursorIcon, 'rotation', { duration: 0.6, ease: 'sine.out' });
-            // 0 = parked by the hub, 1 = riding the highlight. The cursor waits for the highlight to come
-            // round to the point on the orbit nearest its resting spot, then blends onto it so the two
-            // meet there — no dash across the diagram to catch it.
+            // 0 = parked by the hub, 1 = riding the highlight. One synced beat starts the loop: the
+            // highlight spawns at the point on the orbit nearest the cursor's resting spot, the cursor
+            // sets off with it that instant, and the badge slides under the hub to sit as its caption.
             const phase = { mix: 0 };
             let following = false;
-            let joining = false;
             const restIcon = cursorIcon.getBoundingClientRect();
             const homeStation = stationOf(restIcon.left + restIcon.width * 0.2, restIcon.top + restIcon.height * 0.13);
-            const run = { off: 0 };
+            const off0 = (((homeStation - dash) % len) + len) % len; // leading edge starts at home
+            const SPAWN = 0.25;
+            gsap.set(glowPath, { strokeDasharray: `${dash} ${len - dash}`, strokeDashoffset: -off0, opacity: 0 });
+            gsap.to(glowPath, { opacity: 0.9, duration: 0.5, delay: SPAWN });
+            gsap.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', delay: SPAWN, onComplete: () => { following = true; } });
+            gsap.to(badge, { left: 777.15 - badge.offsetWidth / 2, top: 369, duration: 1.0, ease: 'power3.inOut', delay: SPAWN + 0.1 });
+            const run = { off: off0 };
             gsap.to(run, {
-              off: len,
+              off: off0 + len,
               duration: 9,
               ease: 'none',
               repeat: -1,
+              delay: SPAWN,
               onUpdate: () => {
                 gsap.set(glowPath, { strokeDashoffset: -run.off });
                 const head = (run.off + dash) % len; // the highlight's leading edge
-                if (!joining) {
-                  const toHome = (((homeStation - head) % len) + len) % len; // path left before the edge reaches home
-                  if (toHome < len * 0.16) {
-                    joining = true;
-                    gsap.to(phase, { mix: 1, duration: toHome / (len / 9), ease: 'power2.inOut', onComplete: () => { following = true; } });
-                  }
-                }
                 if (phase.mix > 0) {
                   const t = toStage(head);
                   const ahead = toStage((head + 12) % len);
@@ -200,7 +198,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             });
 
             gsap.to(hub, { scale: 1.04, duration: 2.6, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' });
-            bob(gsap, badge, 2, 3.4, 0.6);
+            bob(gsap, badge, 2, 3.4, 1.6);
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));

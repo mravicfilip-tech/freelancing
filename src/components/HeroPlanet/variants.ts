@@ -118,6 +118,25 @@ const CORRIDORS: Partial<PlanetConfig> = {
   popupSpawnGapSec: 1.2,
 };
 
+/** The corridors globe as placed in the Figma hero slider. */
+const FIGMA_CORRIDORS: Partial<PlanetConfig> = {
+  ...CORRIDORS,
+  captureSphereDiameterFraction: 0.72,
+  haloRadius: 1.12,
+  popupLabelHeight: 0.16, // the chips read at a glance, like the presale slide's
+};
+
+/** The two-colour palette for the duo directions, and the tokens they share: mono coins, lavender arcs and markers. */
+const DUO = { lavender: '#B3B5F5', sky: '#C4E0F6' } as const;
+const DUO_TOKENS: Partial<PlanetConfig> = {
+  colorAccent: DUO.lavender,
+  colorRing: DUO.sky,
+  badgeStyle: 'mono',
+  badgeMonoColor: DUO.lavender,
+  popupMarkerColor: DUO.lavender,
+};
+
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   'globe-halftone': HALFTONE,
   /** Refinement 1 — monochrome. Every token is an ink disc; markers and rings in grey. */
@@ -152,11 +171,51 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   /** Refinement 3 — corridors. The coin travels from one city to another and lands. */
   'refine-corridors': CORRIDORS,
   /** The corridors globe in the Figma hero slider: large, low in its box, a tighter halo so it clears the copy. */
-  'figma-corridors': {
-    ...CORRIDORS,
-    captureSphereDiameterFraction: 0.72,
-    haloRadius: 1.12,
-    popupLabelHeight: 0.16, // the chips read at a glance, like the presale slide's
+  'figma-corridors': FIGMA_CORRIDORS,
+  /** Two-colour directions for the Figma hero, using only lavender #B3B5F5 and sky #C4E0F6 (`?variant=`). */
+  'figma-duo-halftone': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    colorPlanet: DUO.lavender,
+    colorOcean: DUO.sky,
+    landOpacity: 1,
+    oceanOpacity: 0.8,
+    haloColor: DUO.sky,
+    haloPulseColor: DUO.lavender,
+  },
+  'figma-duo-sky': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    shell: true,
+    shellColorDark: DUO.sky,
+    shellColorLight: DUO.sky,
+    shellColorRim: DUO.lavender,
+    shellSpecular: 0.12,
+    litInfluence: 0.5,
+    colorPlanet: DUO.lavender,
+    colorOcean: DUO.sky,
+    landOpacity: 1,
+    oceanOpacity: 0,
+    haloColor: DUO.lavender,
+    haloPulseColor: DUO.sky,
+  },
+  'figma-duo-lavender': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    shell: true,
+    shellColorDark: DUO.lavender,
+    shellColorLight: DUO.lavender,
+    shellColorRim: DUO.sky,
+    shellSpecular: 0.18,
+    litInfluence: 0.5,
+    colorPlanet: DUO.sky,
+    colorOcean: DUO.lavender,
+    landOpacity: 1,
+    oceanOpacity: 0,
+    haloColor: DUO.lavender,
+    haloPulseColor: DUO.sky,
+    popupMarkerColor: DUO.sky,
+    badgeMonoColor: DUO.sky,
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

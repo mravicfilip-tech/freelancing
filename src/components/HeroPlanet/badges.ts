@@ -160,7 +160,7 @@ export function makeLabelTexture(title: string, subtitle: string, heightPx = 512
 
   ctx.beginPath();
   ctx.roundRect(stroke, stroke, width - stroke * 2, heightPx - stroke * 2, radius);
-  ctx.fillStyle = '#f1f3f4';
+  ctx.fillStyle = '#ffffff';
   ctx.fill();
   ctx.lineWidth = stroke;
   ctx.strokeStyle = '#dadee2';

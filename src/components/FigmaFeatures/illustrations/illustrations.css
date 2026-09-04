@@ -558,6 +558,32 @@
   background-size: 14px 2px;
   opacity: 0;
 }
+/* Lightning along the wire: a soft lavender glow under a thin white core, and a short branch. */
+.il-fast__lightning {
+  overflow: visible;
+  pointer-events: none;
+}
+.il-fast__lightning polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.il-fast__traceGlow {
+  stroke: #b3b5f5;
+  stroke-width: 6;
+  filter: blur(1.5px);
+}
+.il-fast__traceCore {
+  stroke: #fff;
+  stroke-width: 2.1;
+  filter: drop-shadow(0 0 3px #4042d1);
+}
+.il-fast__traceBranch {
+  stroke: #fff;
+  stroke-width: 1.1;
+  filter: drop-shadow(0 0 2px #4042d1);
+}
 /* Arcs that crackle around the bolt when it strikes. */
 .il-fast__arcs {
   overflow: visible;
@@ -572,20 +598,6 @@
   opacity: 0;
   filter: drop-shadow(0 0 3px #b3b5f5);
 }
-.il-fast__spark--tail {
-  width: 22px;
-  margin-left: -22px;
-  opacity: 0;
-  background: linear-gradient(90deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.9) 100%);
-  box-shadow: none;
-}
-.il-fast__spark--tail2 {
-  width: 34px;
-  margin-left: -44px;
-  opacity: 0;
-  background: linear-gradient(90deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.5) 100%);
-  box-shadow: none;
-}
 .il-fast__lineFill {
   height: 2px;
   border-radius: 1px;
@@ -593,15 +605,6 @@
   opacity: 0;
   transform-origin: 0 50%;
   will-change: transform;
-}
-.il-fast__spark {
-  width: 14px;
-  height: 3px;
-  margin-top: -1px;
-  border-radius: 2px;
-  background: #b3b5f5;
-  box-shadow: 0 0 6px 2px rgba(179, 181, 245, 0.7);
-  opacity: 0;
 }
 /* The burst of light behind the bolt as it strikes. */
 .il-fast__flash {

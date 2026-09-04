@@ -93,10 +93,13 @@
   letter-spacing: -0.72px;
   color: var(--ff-ink);
 }
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
 .ff__cardBody {
   margin: 0;
-  font-size: 18px;
-  line-height: 25.6px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
   color: var(--ff-body);
 }
 /* Illustrations: each layered composition (illustrations/) sits at the design's box, above the copy. */
@@ -299,9 +302,5 @@
   .ff__art--fast {
     max-width: 420px;
     margin-top: 72px;
-  }
-  .ff__cardBody {
-    font-size: 16px;
-    line-height: 24px;
   }
 }

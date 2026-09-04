@@ -311,11 +311,14 @@
 .fh[data-entrance='pending'] .fh__footer {
   visibility: hidden;
 }
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
 .fh__body {
   margin: 0;
   max-width: 431px;
-  font-size: 18px;
-  line-height: 25.6px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
   color: var(--fh-body);
 }
 .fh__graphic {

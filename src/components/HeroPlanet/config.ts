@@ -15,8 +15,8 @@ export const PLANET_CONFIG = {
     | 'refine-corridors'
     | 'figma-corridors'
     | 'figma-duo-halftone'
-    | 'figma-duo-sky'
-    | 'figma-duo-lavender'
+    | 'figma-duo-lit'
+    | 'figma-duo-tide'
     | 'globe-atlas'
     | 'globe-matte'
     | 'orbital'
@@ -32,6 +32,13 @@ export const PLANET_CONFIG = {
   colorLime: '#D9F24E',
   colorPlanet: '#7C858D',   // land dots
   colorOcean: '#B9BEC4',    // ocean dots
+  // Two-colour mixing across the dots (shaders/dots.vert.glsl). 'none' keeps the colours above flat;
+  // otherwise each dot blends toward the second colour by latitude, by how lit it is, or by a band
+  // that drifts across the sphere ("tide").
+  dotMix: 'none' as 'none' | 'latitude' | 'light' | 'tide',
+  colorPlanet2: '#7C858D',  // second land colour
+  colorOcean2: '#B9BEC4',   // second ocean colour
+  dotMixSpeed: 0.45,        // tide: how fast the band drifts, radians per second
   colorRing: '#A9AFB6',     // orbit ring stroke
   lightenAmount: 0.0,       // 0..1 — how much dots lighten toward the light
   lightDirection: [-0.55, 0.65, 0.55] as [number, number, number], // view-space, normalised at runtime

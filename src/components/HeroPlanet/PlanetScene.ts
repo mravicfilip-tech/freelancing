@@ -444,6 +444,11 @@ export class PlanetScene {
         uLightDir: { value: light },
         uColorLand: { value: new THREE.Color(C.colorPlanet) },
         uColorOcean: { value: new THREE.Color(C.colorOcean) },
+        uColorLand2: { value: new THREE.Color(C.colorPlanet2) },
+        uColorOcean2: { value: new THREE.Color(C.colorOcean2) },
+        uMixMode: { value: { none: 0, latitude: 1, light: 2, tide: 3 }[C.dotMix] },
+        uMixSpeed: { value: C.dotMixSpeed },
+        uTime: { value: 0 },
       },
       transparent: true,
       depthWrite: false,
@@ -860,6 +865,7 @@ export class PlanetScene {
   }
 
   private update(elapsed: number) {
+    if (this.dots) this.dots.material.uniforms.uTime.value = elapsed;
     const C = this.cfg;
     this.applyState();
 

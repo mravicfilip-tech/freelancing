@@ -20,6 +20,11 @@ uniform float uLighten;
 uniform vec3  uLightDir;        // view space, normalised
 uniform vec3  uColorLand;
 uniform vec3  uColorOcean;
+uniform vec3  uColorLand2;      // second colours, blended in by uMixMode
+uniform vec3  uColorOcean2;
+uniform float uMixMode;         // 0 none, 1 latitude, 2 light, 3 tide
+uniform float uMixSpeed;        // tide drift, radians per second
+uniform float uTime;
 
 varying float vAlpha;
 varying vec3  vColor;
@@ -48,7 +53,12 @@ void main() {
   size *= mix(1.0, 0.55 + 0.55 * lit, uLitInfluence);
   float opacity = mix(uOceanOpacity, uLandOpacity, land);
 
-  vec3 base = mix(uColorOcean, uColorLand, land);
+  // Two-colour mix: by latitude (north → south), by light (shadow → lit), or a drifting diagonal band.
+  float t = 0.0;
+  if (uMixMode > 2.5) t = 0.5 + 0.5 * sin((mvPosition.x - mvPosition.y * 0.6) * 2.2 - uTime * uMixSpeed);
+  else if (uMixMode > 1.5) t = smoothstep(0.05, 0.95, lit);
+  else if (uMixMode > 0.5) t = smoothstep(-0.85, 0.85, position.y);
+  vec3 base = mix(mix(uColorOcean, uColorOcean2, t), mix(uColorLand, uColorLand2, t), land);
   vColor = mix(base, vec3(1.0), lit * uLighten);
   // Dots in flight stay visible regardless of which side they will land on.
   vAlpha = opacity * mix(0.55, rim, at) * appear;

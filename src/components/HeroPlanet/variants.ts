@@ -172,50 +172,47 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   'refine-corridors': CORRIDORS,
   /** The corridors globe in the Figma hero slider: large, low in its box, a tighter halo so it clears the copy. */
   'figma-corridors': FIGMA_CORRIDORS,
-  /** Two-colour directions for the Figma hero, using only lavender #B3B5F5 and sky #C4E0F6 (`?variant=`). */
+  /** Two-colour halftone directions for the Figma hero, using only lavender #B3B5F5 and sky #C4E0F6 (`?variant=`).
+      Same dots, three ways of mixing the pair across them. */
   'figma-duo-halftone': {
     ...FIGMA_CORRIDORS,
     ...DUO_TOKENS,
+    dotMix: 'latitude', // lavender in the north fading to sky in the south
     colorPlanet: DUO.lavender,
-    colorOcean: DUO.sky,
+    colorPlanet2: DUO.sky,
+    colorOcean: DUO.lavender,
+    colorOcean2: DUO.sky,
     landOpacity: 1,
-    oceanOpacity: 0.8,
+    oceanOpacity: 0.7,
     haloColor: DUO.sky,
     haloPulseColor: DUO.lavender,
   },
-  'figma-duo-sky': {
+  'figma-duo-lit': {
     ...FIGMA_CORRIDORS,
     ...DUO_TOKENS,
-    shell: true,
-    shellColorDark: DUO.sky,
-    shellColorLight: DUO.sky,
-    shellColorRim: DUO.lavender,
-    shellSpecular: 0.12,
-    litInfluence: 0.5,
+    dotMix: 'light', // lavender in shadow, sky where the light falls
     colorPlanet: DUO.lavender,
-    colorOcean: DUO.sky,
+    colorPlanet2: DUO.sky,
+    colorOcean: DUO.lavender,
+    colorOcean2: DUO.sky,
     landOpacity: 1,
-    oceanOpacity: 0,
+    oceanOpacity: 0.7,
     haloColor: DUO.lavender,
     haloPulseColor: DUO.sky,
   },
-  'figma-duo-lavender': {
+  'figma-duo-tide': {
     ...FIGMA_CORRIDORS,
     ...DUO_TOKENS,
-    shell: true,
-    shellColorDark: DUO.lavender,
-    shellColorLight: DUO.lavender,
-    shellColorRim: DUO.sky,
-    shellSpecular: 0.18,
-    litInfluence: 0.5,
+    dotMix: 'tide', // a band of lavender drifting across a sky globe
+    dotMixSpeed: 0.45,
     colorPlanet: DUO.sky,
-    colorOcean: DUO.lavender,
+    colorPlanet2: DUO.lavender,
+    colorOcean: DUO.sky,
+    colorOcean2: DUO.lavender,
     landOpacity: 1,
-    oceanOpacity: 0,
-    haloColor: DUO.lavender,
-    haloPulseColor: DUO.sky,
-    popupMarkerColor: DUO.sky,
-    badgeMonoColor: DUO.sky,
+    oceanOpacity: 0.7,
+    haloColor: DUO.sky,
+    haloPulseColor: DUO.lavender,
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

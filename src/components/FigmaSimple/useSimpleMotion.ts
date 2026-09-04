@@ -8,7 +8,7 @@ import { all, draw, one, pop } from '../FigmaFeatures/illustrations/motion';
  * on, the pay-in and pay-out chips arrive, the markers and dots appear, and the cursor slides in with
  * its badge; the paragraph and pill rise last. Afterwards a highlight keeps circling the orbit: each
  * ring marker pulses as it passes, the pay-in and pay-out chips light up indigo and pop as it reaches
- * their anchors, and each currency group bounces as the cursor comes by. The hub breathes, the coin
+ * their anchors, and each currency group pops as the cursor comes by. The hub breathes, the coin
  * groups drift, the badge settles beside the hub on its centre line, and the cursor alone rides along
  * on the highlight, clicking as it passes each chip.
  *
@@ -124,12 +124,19 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             };
             const dots = all(orbit, '.fs__dot');
             const chips = all(orbit, '.fs__chip');
-            const anchors = [...markers, ...dots, ...groups];
-            const stations = anchors.map((m) => {
+            // Markers fire as the line's edge crosses them.
+            const stations = markers.map((m) => {
               const c = centreOf(m);
               return stationOf(c.x, c.y);
             });
-            const armed = anchors.map(() => true);
+            const armed = markers.map(() => true);
+            // Chips and groups react to the cursor itself: each fires as the cursor's tip comes within
+            // reach of its centre, and re-arms once the tip has moved well away.
+            const reach = (m: Element) => {
+              const r = m.getBoundingClientRect();
+              return r.width / k / 2 + 12;
+            };
+            const targets = [...chips, ...groups].map((m) => ({ centre: centreOf(m), reach: reach(m), armed: true }));
 
             // A ring marker pulses as the highlight's leading edge passes over it: its halo expands
             // and fades (transform and opacity only) while the marker itself gives a small bump.
@@ -152,25 +159,24 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                 .to(icon, { filter: 'invert(0)', duration: 0.6 }, 1.0)
                 .to(dot, { backgroundColor: '#c5cbd1', scale: 1, duration: 0.6 }, 1.0);
             };
-            // A currency group bounces as the cursor comes by: the pill springs up and settles, and
-            // its coins hop one after another.
+            // A currency group pops as the cursor comes by, the way the chips do: the pill swells a
+            // touch and eases back while its coins pop one after another.
             const bounce = (g: HTMLElement) => {
               const pill = one(g, '.fs__coins');
               gsap
                 .timeline()
-                .to(pill, { scale: 1.15, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 50%' }, 0)
-                .to(pill, { scale: 1, duration: 0.9, ease: 'elastic.out(1, 0.4)' }, 0.18)
-                .fromTo(all(g, '.fs__coin'), { y: 0 }, { y: -7, duration: 0.2, stagger: 0.07, yoyo: true, repeat: 1, ease: 'power2.out' }, 0.05);
+                .to(pill, { scale: 1.08, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 50%' }, 0)
+                .to(pill, { scale: 1, duration: 0.45, ease: 'power3.out' }, 0.18)
+                .fromTo(all(g, '.fs__coin'), { scale: 1 }, { scale: 1.18, duration: 0.16, stagger: 0.06, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0.04);
             };
             const click = () => {
               gsap.fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '20% 15%' });
             };
-            const hit = (i: number) => {
-              if (i < markers.length) pulse(markers[i]);
-              else if (i < markers.length + dots.length) {
-                flash(chips[i - markers.length], dots[i - markers.length]);
+            const reached = (i: number) => {
+              if (i < chips.length) {
+                flash(chips[i], dots[i]);
                 click();
-              } else bounce(groups[i - markers.length - dots.length]);
+              } else bounce(groups[i - chips.length]);
             };
 
             // The cursor rides the highlight: its tip sits on the leading edge, trailing it softly.
@@ -228,14 +234,26 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                   lean(ang * (180 / Math.PI) * 0.25 * phase.mix);
                 }
                 for (let i = 0; i < stations.length; i++) {
-                  const past = (((head - stations[i]) % len) + len) % len; // how far past the anchor the edge is
+                  const past = (((head - stations[i]) % len) + len) % len; // how far past the marker the edge is
                   if (armed[i] && past < len * 0.02) {
                     armed[i] = false;
-                    hit(i);
+                    pulse(markers[i]);
                   } else if (!armed[i] && past > len * 0.5) {
                     armed[i] = true;
                   }
                 }
+                // Where the cursor's tip actually is (GSAP's cached transform, no layout read).
+                const tipX = HOME.x + TIP.x + Number(gsap.getProperty(cursor, 'x'));
+                const tipY = HOME.y + TIP.y + Number(gsap.getProperty(cursor, 'y'));
+                targets.forEach((t, i) => {
+                  const d = Math.hypot(tipX - t.centre.x, tipY - t.centre.y);
+                  if (t.armed && d < t.reach) {
+                    t.armed = false;
+                    reached(i);
+                  } else if (!t.armed && d > t.reach * 2.5) {
+                    t.armed = true;
+                  }
+                });
               },
             }, SPAWN);
 

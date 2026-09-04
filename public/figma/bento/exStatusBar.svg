@@ -1,21 +1,21 @@
 <svg width="249" height="30" viewBox="0 0 249 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="249" height="30" fill="#484848"/>
+
 <g id="Landing Page">
 <g id="2">
-<rect width="1920" height="1738" transform="translate(-427.482 -498)" fill="#EDEFF1"/>
+
 <g id="Frame 2085662302">
 <g id="Frame 2085662257">
 <g id="Frame 2085662284">
-<g clip-path="url(#clip0_1019_119)">
-<rect x="-187.482" y="-162" width="622" height="440" rx="12" fill="white"/>
+<g>
+
 <g id="Frame 2085662254">
 <g id="Frame 2085662306">
 <g id="Frame 2085662042">
 <g id="Front">
 <g id="Mockup">
 <g id="Mockup content (1179 px x 2556 px)">
-<g clip-path="url(#clip1_1019_119)">
-<rect width="249.035" height="539.893" rx="34" fill="white"/>
+<g>
+
 <g id="Status bar/iPhone 13/Pro">
 <g id="Left">
 <g id="Time">
@@ -63,11 +63,7 @@
 </g>
 </g>
 <defs>
-<clipPath id="clip0_1019_119">
-<rect x="-187.482" y="-162" width="622" height="440" rx="12" fill="white"/>
-</clipPath>
-<clipPath id="clip1_1019_119">
-<rect width="249.035" height="539.893" rx="34" fill="white"/>
-</clipPath>
+
+
 </defs>
 </svg>

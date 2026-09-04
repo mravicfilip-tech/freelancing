@@ -1,20 +1,20 @@
 <svg width="64" height="22" viewBox="0 0 64 22" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="64" height="22" fill="#484848"/>
+
 <g id="Landing Page">
 <g id="2">
-<rect width="1920" height="1738" transform="translate(-439.085 -587.962)" fill="#EDEFF1"/>
+
 <g id="Frame 2085662302">
 <g id="Frame 2085662257">
 <g id="Frame 2085662284">
-<g clip-path="url(#clip0_1019_119)">
-<rect x="-199.085" y="-251.962" width="622" height="440" rx="12" fill="white"/>
+<g>
+
 <g id="Frame 2085662254">
 <g id="Frame 2085662306">
 <g id="Frame 2085662042">
 <g id="Front">
 <g id="Mockup">
 <g id="Mockup content (1179 px x 2556 px)">
-<rect x="-11.6027" y="-89.962" width="249.035" height="539.893" rx="34" fill="white"/>
+
 <g id="Group 2085662426">
 <g id="Frame 2085662414">
 <g id="usd">
@@ -57,9 +57,7 @@
 <pattern id="pattern0_1019_119" patternContentUnits="objectBoundingBox" width="1" height="1">
 <use xlink:href="#image0_1019_119" transform="scale(0.00444444)"/>
 </pattern>
-<clipPath id="clip0_1019_119">
-<rect x="-199.085" y="-251.962" width="622" height="440" rx="12" fill="white"/>
-</clipPath>
+
 <clipPath id="clip1_1019_119">
 <rect width="18.1117" height="18.1117" fill="white" transform="translate(2.82996 1.69797)"/>
 </clipPath>

@@ -1,20 +1,20 @@
 <svg width="64" height="22" viewBox="0 0 64 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="64" height="22" fill="#484848"/>
+
 <g id="Landing Page">
 <g id="2">
-<rect width="1920" height="1738" transform="translate(-602.09 -672.86)" fill="#EDEFF1"/>
+
 <g id="Frame 2085662302">
 <g id="Frame 2085662257">
 <g id="Frame 2085662284">
-<g clip-path="url(#clip0_1019_119)">
-<rect x="-362.09" y="-336.86" width="622" height="440" rx="12" fill="white"/>
+<g>
+
 <g id="Frame 2085662254">
 <g id="Frame 2085662306">
 <g id="Frame 2085662042">
 <g id="Front">
 <g id="Mockup">
 <g id="Mockup content (1179 px x 2556 px)">
-<rect x="-174.608" y="-174.86" width="249.035" height="539.893" rx="34" fill="white"/>
+
 <g id="Group 2085662426">
 <g id="Frame 2085662415">
 <g id="btc">
@@ -46,8 +46,6 @@
 </g>
 </g>
 <defs>
-<clipPath id="clip0_1019_119">
-<rect x="-362.09" y="-336.86" width="622" height="440" rx="12" fill="white"/>
-</clipPath>
+
 </defs>
 </svg>

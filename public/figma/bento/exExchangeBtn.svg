@@ -1,20 +1,20 @@
 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="38" height="38" fill="#484848"/>
+
 <g id="Landing Page">
 <g id="2">
-<rect width="1920" height="1738" transform="translate(-526.813 -666.069)" fill="#EDEFF1"/>
+
 <g id="Frame 2085662302">
 <g id="Frame 2085662257">
 <g id="Frame 2085662284">
-<g clip-path="url(#clip0_1019_119)">
-<rect x="-286.813" y="-330.069" width="622" height="440" rx="12" fill="white"/>
+<g>
+
 <g id="Frame 2085662254">
 <g id="Frame 2085662306">
 <g id="Frame 2085662042">
 <g id="Front">
 <g id="Mockup">
 <g id="Mockup content (1179 px x 2556 px)">
-<rect x="-99.3311" y="-168.069" width="249.035" height="539.893" rx="34" fill="white"/>
+
 <g id="Group 2085662426">
 <foreignObject x="-58.6201" y="-58.6201" width="155.162" height="155.162"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(29.31px);clip-path:url(#bgblur_1_1019_119_clip_path);height:100%;width:100%"></div></foreignObject><g id="Frame 2085662031" data-figma-bg-blur-radius="58.6201">
 <rect width="37.9213" height="37.9213" rx="18.9606" fill="#2C2E31"/>
@@ -37,8 +37,6 @@
 </g>
 <defs>
 <clipPath id="bgblur_1_1019_119_clip_path" transform="translate(58.6201 58.6201)"><rect width="37.9213" height="37.9213" rx="18.9606"/>
-</clipPath><clipPath id="clip0_1019_119">
-<rect x="-286.813" y="-330.069" width="622" height="440" rx="12" fill="white"/>
 </clipPath>
 </defs>
 </svg>

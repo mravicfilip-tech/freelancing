@@ -88,12 +88,15 @@
   border-radius: 50%;
   background: #fff;
 }
+/* The cursor and its badge travel over everything else, as a pointer does over a page. */
 .fs__cursor {
+  z-index: 6;
   width: 24px;
   height: 24px;
 }
 .fs__cursorIcon {
   display: block;
+  filter: drop-shadow(0 2px 3px rgba(18, 36, 51, 0.25));
 }
 /* Beside the cursor at rest; the motion moves it behind the cursor once it rides the orbit. */
 .fs__badge {
@@ -104,6 +107,7 @@
   padding: 4px 12px;
   border-radius: 46px;
   background: var(--fs-indigo);
+  box-shadow: 0 6px 16px -6px rgba(18, 36, 51, 0.35);
   font-weight: 700;
   font-size: 13px;
   line-height: 1.4;

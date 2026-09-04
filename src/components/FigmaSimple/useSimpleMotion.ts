@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react';
-import { all, bob, draw, one, pop, rand } from '../FigmaFeatures/illustrations/motion';
+import { all, bob, draw, one, pop } from '../FigmaFeatures/illustrations/motion';
 
 /**
  * Motion for the "made simple" section, in the feature band's manner. When the section scrolls into
@@ -8,7 +8,8 @@ import { all, bob, draw, one, pop, rand } from '../FigmaFeatures/illustrations/m
  * arrive, the markers and dots appear, and the cursor slides in with its badge; the paragraph and
  * pill rise last. Afterwards a highlight keeps circling the orbit: each ring marker pulses as it
  * passes, and the pay-in and pay-out chips light up indigo and pop as it reaches their anchors. The
- * hub breathes, the coin groups drift and the cursor wanders and clicks now and then.
+ * hub breathes, the coin groups drift, and the cursor with its badge rides along on the highlight,
+ * clicking as it passes each chip.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows it at rest.
@@ -123,10 +124,34 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                 .to(icon, { filter: 'invert(0)', duration: 0.6 }, 1.0)
                 .to(dot, { backgroundColor: '#c5cbd1', scale: 1, duration: 0.6 }, 1.0);
             };
+            const click = () => {
+              gsap.fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '20% 15%' });
+              gsap.fromTo(badge, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' });
+            };
             const hit = (i: number) => {
               if (i < markers.length) pulse(markers[i]);
-              else flash(chips[i - markers.length], dots[i - markers.length]);
+              else {
+                flash(chips[i - markers.length], dots[i - markers.length]);
+                click();
+              }
             };
+
+            // The cursor rides the highlight: its tip sits on the leading edge, trailing it softly.
+            // The path point is taken on screen and mapped back into the stage's design coordinates,
+            // then offset by the cursor's resting spot (842, 308) and its tip (5, 3).
+            const stage = one(orbit, '.ff__stage');
+            const HOME = { x: 842, y: 308 };
+            const TIP = { x: 5, y: 3 };
+            const toStage = (s: number) => {
+              const q = toScreen(s);
+              const r = stage.getBoundingClientRect();
+              const k = r.width / 1560;
+              return { x: (q.x - r.left) / k - HOME.x - TIP.x, y: (q.y - r.top) / k - HOME.y - TIP.y };
+            };
+            const fx = gsap.quickTo(cursor, 'x', { duration: 0.3, ease: 'power2.out' });
+            const fy = gsap.quickTo(cursor, 'y', { duration: 0.3, ease: 'power2.out' });
+            let following = false;
+            const lean = gsap.quickTo(cursorIcon, 'rotation', { duration: 0.6, ease: 'sine.out' });
             const run = { off: 0 };
             gsap.to(run, {
               off: len,
@@ -136,6 +161,13 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
               onUpdate: () => {
                 gsap.set(glowPath, { strokeDashoffset: -run.off });
                 const head = (run.off + dash) % len; // the highlight's leading edge
+                if (following) {
+                  const t = toStage(head);
+                  const ahead = toStage((head + 12) % len);
+                  fx(t.x);
+                  fy(t.y);
+                  lean(Math.atan2(ahead.y - t.y, ahead.x - t.x) * (180 / Math.PI) * 0.25);
+                }
                 stations.forEach((s, i) => {
                   const ahead = (((head - s) % len) + len) % len; // how far past the marker the edge is
                   if (armed[i] && ahead < len * 0.02) {
@@ -152,26 +184,12 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));
-            // After the load-in the cursor keeps moving the way a hand does, in a loop: it glides off on
-            // a fresh random curve, pauses, glides back with a small overshoot, clicks so the badge
-            // bounces, and sets off again.
-            const roam = () => {
-              const away = [
-                { x: rand(30, 80), y: rand(-60, -15) },
-                { x: rand(70, 130), y: rand(10, 55) },
-              ];
-              const back = [away[1], { x: rand(-10, 40), y: rand(35, 75) }, { x: -5, y: -5 }, { x: 0, y: 0 }];
-              gsap
-                .timeline({ onComplete: () => gsap.delayedCall(rand(0.5, 1.2), roam) })
-                .to(cursor, { motionPath: { path: [{ x: 0, y: 0 }, ...away], curviness: 1.5 }, duration: rand(1.7, 2.4), ease: 'sine.inOut' }, 0)
-                .to(cursorIcon, { rotation: rand(-18, 18), duration: 1.4, ease: 'sine.inOut', transformOrigin: '20% 15%' }, 0)
-                .to({}, { duration: rand(0.3, 0.8) })
-                .to(cursor, { motionPath: { path: back, curviness: 1.4 }, duration: rand(1.5, 2.1), ease: 'power3.out' })
-                .to(cursorIcon, { rotation: 0, duration: 1.3, ease: 'power3.out', transformOrigin: '20% 15%' }, '<')
-                .fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '20% 15%' })
-                .fromTo(badge, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' }, '<0.05');
-            };
-            gsap.delayedCall(1.2, roam);
+            // Once the load-in has settled, the cursor glides from its resting spot onto the highlight
+            // and follows it from then on.
+            gsap.delayedCall(0.8, () => {
+              const t = toStage((run.off + dash) % len);
+              gsap.to(cursor, { x: t.x, y: t.y, duration: 1.4, ease: 'power3.inOut', onComplete: () => { following = true; } });
+            });
           }
         }, el);
         reveal();

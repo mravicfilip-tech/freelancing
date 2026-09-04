@@ -105,9 +105,9 @@ const ambient = (gsap: G, p: P) => {
   return idle;
 };
 /** The device leans left and right in space, a glare sweeping its glass each way. */
-const sway = (idle: TL, gsap: G, p: P, degrees = 14, period = 7) => {
+const sway = (idle: TL, gsap: G, p: P, degrees = 7, period = 10) => {
   gsap.set(p.phone, { transformPerspective: 1000, transformOrigin: '50% 58%' });
-  idle.fromTo(p.phone, { rotationY: -degrees, rotationX: 1.5 }, { rotationY: degrees, rotationX: -1.5, duration: period, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+  idle.fromTo(p.phone, { rotationY: -degrees, rotationX: 0.8 }, { rotationY: degrees, rotationX: -0.8, duration: period, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   idle.fromTo(p.glare, { xPercent: -140, opacity: 0.5 }, { xPercent: 240, duration: period * 0.55, ease: 'sine.inOut', repeat: -1, repeatDelay: period * 0.45 }, 0.4);
   idle.fromTo(p.glare, { xPercent: 240, opacity: 0.5 }, { xPercent: -140, duration: period * 0.55, ease: 'sine.inOut', repeat: -1, repeatDelay: period * 0.45 }, period + 0.4);
   return idle;
@@ -144,10 +144,10 @@ const cycle = () => {
 payMotion.variants = [
   {
     name: 'Sway + typing',
-    blurb: 'The device leans left and right in space with a glare sweeping its glass, while every few seconds an amount is typed in behind a caret and the BTC quote follows each keystroke.',
+    blurb: 'The device leans gently left and right in space with a glare sweeping its glass, while every few seconds an amount is typed in behind a caret and the BTC quote follows each keystroke.',
     idle(gsap, il) {
       const p = parts(il);
-      const idle = sway(ambient(gsap, p), gsap, p, 14, 7);
+      const idle = sway(ambient(gsap, p), gsap, p, 7, 10);
       const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.5 });
       type(story, gsap, p, 0, cycle());
       idle.add(story, 0);
@@ -163,13 +163,13 @@ payMotion.variants = [
       gsap.set(p.phone, { transformPerspective: 1000, transformOrigin: '50% 58%' });
       const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.5 });
       story
-        .to(p.phone, { rotationY: -16, rotationX: 2, duration: 0.9, ease: 'power3.inOut' }, 0)
+        .to(p.phone, { rotationY: -8, rotationX: 1, duration: 1.1, ease: 'power2.inOut' }, 0)
         .fromTo(p.glare, { xPercent: -140, opacity: 0.5 }, { xPercent: 240, duration: 1.0, ease: 'power2.inOut' }, 0);
       type(story, gsap, p, 0.6, cycle());
       story
-        .to(p.phone, { rotationY: 16, rotationX: -2, duration: 1.1, ease: 'power3.inOut' }, 2.2)
+        .to(p.phone, { rotationY: 8, rotationX: -1, duration: 1.4, ease: 'power2.inOut' }, 2.2)
         .fromTo(p.glare, { xPercent: 240, opacity: 0.5 }, { xPercent: -140, duration: 1.1, ease: 'power2.inOut' }, 2.2)
-        .to(p.phone, { rotationY: 0, rotationX: 0, duration: 1.0, ease: 'power3.inOut' }, 3.6);
+        .to(p.phone, { rotationY: 0, rotationX: 0, duration: 1.2, ease: 'power2.inOut' }, 3.8);
       idle.add(story, 0);
       return idle;
     },
@@ -179,7 +179,7 @@ payMotion.variants = [
     blurb: 'The sway from the first option, plus a live market: between typings the BTC amount ticks like a price with a faint indigo flick, and the swap turns after every new amount.',
     idle(gsap, il) {
       const p = parts(il);
-      const idle = sway(ambient(gsap, p), gsap, p, 14, 7);
+      const idle = sway(ambient(gsap, p), gsap, p, 7, 10);
       let last = 320;
       let k = 0;
       const nextAmount = cycle();
@@ -206,7 +206,7 @@ payMotion.variants = [
     blurb: 'The sway, with the order alternating: one beat types a new amount, the next presses the swap and flips the pay and receive boxes with their chips so the direction reverses.',
     idle(gsap, il) {
       const p = parts(il);
-      const idle = sway(ambient(gsap, p), gsap, p, 12, 8);
+      const idle = sway(ambient(gsap, p), gsap, p, 6, 11);
       let flipped = false;
       const story = gsap.timeline({ repeat: -1, repeatDelay: 2.8, delay: 1.5 });
       type(story, gsap, p, 0, cycle());
@@ -227,10 +227,10 @@ payMotion.variants = [
   },
   {
     name: 'Deep sway',
-    blurb: 'The most physical: a wider, slower lean with a touch of pitch and a longer glare, the skeleton lines shimmering, and a calmer typing beat with the swap turning after each entry.',
+    blurb: 'The most physical: a slightly wider, slower lean with a touch of pitch and a longer glare, the skeleton lines shimmering, and a calmer typing beat with the swap turning after each entry.',
     idle(gsap, il) {
       const p = parts(il);
-      const idle = sway(ambient(gsap, p), gsap, p, 18, 9);
+      const idle = sway(ambient(gsap, p), gsap, p, 9, 12);
       p.bars.forEach((b, i) => idle.to(b, { opacity: 0.45, duration: 1.8, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: i * 0.22 }, 0));
       const story = gsap.timeline({ repeat: -1, repeatDelay: 4.5, delay: 2 });
       type(story, gsap, p, 0, cycle());

@@ -280,6 +280,11 @@
   stroke-linecap: round;
   opacity: 0.9;
 }
+.il-fx__wireEnd {
+  fill: #4042d1;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
 .il-fx__packet {
   z-index: 3;
   width: 12px;

@@ -89,11 +89,18 @@
   background: #fff;
 }
 .fs__cursor {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  width: 24px;
+  height: 24px;
 }
+.fs__cursorIcon {
+  display: block;
+}
+/* Beside the cursor at rest; the motion moves it behind the cursor once it rides the orbit. */
 .fs__badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(28px, -1px);
   padding: 4px 12px;
   border-radius: 46px;
   background: var(--fs-indigo);

@@ -89,10 +89,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             const dots = all(orbit, '.fs__dot');
             const chips = all(orbit, '.fs__chip');
             const anchors = [...markers, ...dots];
-            const stations = anchors.map((m) => {
-              const r = m.getBoundingClientRect();
-              const cx = r.left + r.width / 2;
-              const cy = r.top + r.height / 2;
+            const stationOf = (cx: number, cy: number) => {
               let best = 0;
               let bestD = Infinity;
               for (let i = 0; i < SAMPLES; i++) {
@@ -105,6 +102,10 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                 }
               }
               return best;
+            };
+            const stations = anchors.map((m) => {
+              const r = m.getBoundingClientRect();
+              return stationOf(r.left + r.width / 2, r.top + r.height / 2);
             });
             const armed = anchors.map(() => true);
             const pulse = (m: HTMLElement) => {
@@ -150,8 +151,20 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             };
             const fx = gsap.quickTo(cursor, 'x', { duration: 0.3, ease: 'power2.out' });
             const fy = gsap.quickTo(cursor, 'y', { duration: 0.3, ease: 'power2.out' });
-            let following = false;
             const lean = gsap.quickTo(cursorIcon, 'rotation', { duration: 0.6, ease: 'sine.out' });
+            // The badge trails behind the cursor, opposite to its direction of travel, with a longer lag.
+            const bx = gsap.quickTo(badge, 'x', { duration: 0.55, ease: 'power2.out' });
+            const by = gsap.quickTo(badge, 'y', { duration: 0.55, ease: 'power2.out' });
+            const BESIDE = { x: 28, y: -1 };
+            gsap.set(badge, BESIDE);
+            // 0 = parked by the hub, 1 = riding the highlight. The cursor waits for the highlight to come
+            // round to the point on the orbit nearest its resting spot, then blends onto it so the two
+            // meet there — no dash across the diagram to catch it.
+            const phase = { mix: 0 };
+            let following = false;
+            let joining = false;
+            const restIcon = cursorIcon.getBoundingClientRect();
+            const homeStation = stationOf(restIcon.left + restIcon.width * 0.2, restIcon.top + restIcon.height * 0.13);
             const run = { off: 0 };
             gsap.to(run, {
               off: len,
@@ -161,12 +174,30 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
               onUpdate: () => {
                 gsap.set(glowPath, { strokeDashoffset: -run.off });
                 const head = (run.off + dash) % len; // the highlight's leading edge
-                if (following) {
+                if (!joining) {
+                  const toHome = (((homeStation - head) % len) + len) % len; // path left before the edge reaches home
+                  if (toHome < len * 0.16) {
+                    joining = true;
+                    gsap.to(phase, { mix: 1, duration: toHome / (len / 9), ease: 'power2.inOut', onComplete: () => { following = true; } });
+                  }
+                }
+                if (phase.mix > 0) {
                   const t = toStage(head);
                   const ahead = toStage((head + 12) % len);
-                  fx(t.x);
-                  fy(t.y);
-                  lean(Math.atan2(ahead.y - t.y, ahead.x - t.x) * (180 / Math.PI) * 0.25);
+                  const ang = Math.atan2(ahead.y - t.y, ahead.x - t.x);
+                  if (following) {
+                    fx(t.x);
+                    fy(t.y);
+                  } else {
+                    gsap.set(cursor, { x: t.x * phase.mix, y: t.y * phase.mix });
+                  }
+                  lean(ang * (180 / Math.PI) * 0.25 * phase.mix);
+                  const bw = badge.offsetWidth;
+                  const bh = badge.offsetHeight;
+                  const back = bw / 2 + 22;
+                  const behind = { x: TIP.x - Math.cos(ang) * back - bw / 2, y: TIP.y - Math.sin(ang) * back - bh / 2 };
+                  bx(BESIDE.x + (behind.x - BESIDE.x) * phase.mix);
+                  by(BESIDE.y + (behind.y - BESIDE.y) * phase.mix);
                 }
                 stations.forEach((s, i) => {
                   const ahead = (((head - s) % len) + len) % len; // how far past the marker the edge is
@@ -184,12 +215,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));
-            // Once the load-in has settled, the cursor glides from its resting spot onto the highlight
-            // and follows it from then on.
-            gsap.delayedCall(0.8, () => {
-              const t = toStage((run.off + dash) % len);
-              gsap.to(cursor, { x: t.x, y: t.y, duration: 1.4, ease: 'power3.inOut', onComplete: () => { following = true; } });
-            });
           }
         }, el);
         reveal();

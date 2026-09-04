@@ -28,7 +28,12 @@ export function FigmaFeatures() {
     <section ref={root} className="ff" data-node-id="2343:116" data-motion="pending" aria-labelledby="ff-title">
       <div className="ff__inner">
         <h2 id="ff-title" className="ff__title" data-node-id="2343:119">
-          Bridging crypto with local <span className="ff__titleMuted">payment networks globally.</span>
+          <span className="ff__line">
+            <span className="ff__lineInner">Bridging crypto with local</span>
+          </span>
+          <span className="ff__line">
+            <span className="ff__lineInner ff__titleMuted">payment networks globally.</span>
+          </span>
         </h2>
 
         <div className="ff__grid">

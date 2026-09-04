@@ -37,7 +37,8 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>) {
           };
 
           const title = gsap.timeline({ paused: true });
-          title.from(el.querySelector('.ff__title'), { y: 40, rotationX: -18, opacity: 0, duration: 1.0, ease: 'back.out(1.4)', transformOrigin: '50% 100%', transformPerspective: 900 });
+          // The headline lines rise out of their masks, as the hero's do.
+          title.from(el.querySelectorAll('.ff__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 });
           playWhenSeen(el, title);
 
           gsap.utils.toArray<HTMLElement>('.ff__card', el).forEach((card) => {

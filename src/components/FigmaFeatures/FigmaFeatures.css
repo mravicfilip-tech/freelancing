@@ -42,6 +42,17 @@
 .ff__titleMuted {
   color: var(--ff-muted);
 }
+/* Each headline line sits in a mask so it can rise into view, as the hero's do; the padding keeps
+   descenders unclipped. */
+.ff__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ff__lineInner {
+  display: block;
+}
 
 /* ---------- Rows: 622+804 / 1440 / 710+716 (flex ratios are the design widths) ---------- */
 .ff__grid {

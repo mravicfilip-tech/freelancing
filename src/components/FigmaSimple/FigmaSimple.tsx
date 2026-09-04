@@ -46,9 +46,12 @@ export function FigmaSimple() {
     <section ref={root} className="fs" data-node-id="2409:2784" data-motion="pending" aria-labelledby="fs-title">
       <div className="fs__inner">
         <h2 id="fs-title" className="fs__title" data-node-id="2409:2788">
-          Crypto-to-fiat
-          <br />
-          <span className="fs__titleMuted">payments made simple.</span>
+          <span className="fs__line">
+            <span className="fs__lineInner">Crypto-to-fiat</span>
+          </span>
+          <span className="fs__line">
+            <span className="fs__lineInner fs__titleMuted">payments made simple.</span>
+          </span>
         </h2>
 
         <div className="fs__band" data-node-id="2409:2790">
@@ -73,8 +76,12 @@ export function FigmaSimple() {
 
             <span className="fs__dot" style={{ left: 279.5, top: 352.5 }} />
             <span className="fs__dot" style={{ left: 959, top: 115 }} />
-            <span className="fs__marker" style={{ left: 391, top: 248 }} />
-            <span className="fs__marker" style={{ left: 897, top: 403 }} />
+            <span className="fs__marker" style={{ left: 391, top: 248 }}>
+              <i className="fs__markerHalo" />
+            </span>
+            <span className="fs__marker" style={{ left: 897, top: 403 }}>
+              <i className="fs__markerHalo" />
+            </span>
           </Stage>
         </div>
 

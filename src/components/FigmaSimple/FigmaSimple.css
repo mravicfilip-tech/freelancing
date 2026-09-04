@@ -42,6 +42,17 @@
 .fs__titleMuted {
   color: rgba(18, 36, 51, 0.48);
 }
+/* Each headline line sits in a mask so it can rise into view, as the hero's do; the padding keeps
+   descenders unclipped. */
+.fs__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.fs__lineInner {
+  display: block;
+}
 
 /* ---------- Orbit band ---------- */
 .fs__band {
@@ -62,9 +73,23 @@
 .fs__ring {
   transform: rotate(-15deg) skewX(30deg) scaleY(0.87);
   transform-origin: 50% 50%;
+  will-change: transform; /* its own layer: the circling highlight repaints only the ring */
 }
+/* The blurred glow is the costliest paint in the band, so it gets its own layer to fade on. */
 .fs__glow {
   transform-origin: 50% 50%;
+  will-change: opacity;
+}
+/* Everything that moves in the loop is composited, so the dot grid behind never repaints. */
+.fs__hub,
+.fs__chip,
+.fs__group,
+.fs__badge,
+.fs__cursor,
+.fs__cursorIcon,
+.fs__marker,
+.fs__markerHalo {
+  will-change: transform;
 }
 .fs__chip {
   display: flex;
@@ -97,7 +122,7 @@
 /* A white halo, as system cursors have, so it stays distinct over whatever it crosses. */
 .fs__cursorIcon {
   display: block;
-  filter: drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 1.2px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
+  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
 }
 /* Parked beside the hub, where the cursor rests before it rides the orbit. */
 .fs__badge {
@@ -159,6 +184,15 @@
   border: 2px solid var(--fs-line);
   border-radius: 50%;
   background: var(--fs-bg);
+}
+/* The ring that expands out of a marker as the highlight passes (see useSimpleMotion.ts). */
+.fs__markerHalo {
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--fs-indigo);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- Foot ---------- */

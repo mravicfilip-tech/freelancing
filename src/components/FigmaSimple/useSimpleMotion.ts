@@ -6,8 +6,9 @@ import { all, bob, draw, one, pop, rand } from '../FigmaFeatures/illustrations/m
  * view the headline rises, then the diagram builds piece by piece: the orbit draws itself, the hub
  * pops with its glow, the currency groups and their coins pop on, the pay-in and pay-out chips
  * arrive, the markers and dots appear, and the cursor slides in with its badge; the paragraph and
- * pill rise last. Afterwards a highlight keeps circling the orbit and each ring marker pulses as it
- * passes; the hub breathes, the coin groups drift and the cursor nudges its badge now and then.
+ * pill rise last. Afterwards a highlight keeps circling the orbit: each ring marker pulses as it
+ * passes, and the pay-in and pay-out chips light up indigo and pop as it reaches their anchors. The
+ * hub breathes, the coin groups drift and the cursor wanders and clicks now and then.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows it at rest.
@@ -77,14 +78,17 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             const dash = len * 0.12;
             gsap.set(glowPath, { strokeDasharray: `${dash} ${len - dash}`, strokeDashoffset: 0, opacity: 0.9 });
 
-            // Where along the path each marker sits: the sample nearest its centre, compared on screen so
-            // the ring's tilt and the stage's scale are accounted for.
+            // Where along the path each marker and each chip's anchor dot sits: the sample nearest its
+            // centre, compared on screen so the ring's tilt and the stage's scale are accounted for.
             const toScreen = (s: number) => {
               const p = ringPath.getPointAtLength(s);
               return new DOMPoint(p.x, p.y).matrixTransform(ringPath.getScreenCTM()!);
             };
             const SAMPLES = 720;
-            const stations = markers.map((m) => {
+            const dots = all(orbit, '.fs__dot');
+            const chips = all(orbit, '.fs__chip');
+            const anchors = [...markers, ...dots];
+            const stations = anchors.map((m) => {
               const r = m.getBoundingClientRect();
               const cx = r.left + r.width / 2;
               const cy = r.top + r.height / 2;
@@ -101,10 +105,27 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
               }
               return best;
             });
-            const armed = markers.map(() => true);
+            const armed = anchors.map(() => true);
             const pulse = (m: HTMLElement) => {
               gsap.fromTo(m, { boxShadow: '0 0 0 0 rgba(64, 66, 210, 0.45)', borderColor: '#4042d2' }, { boxShadow: '0 0 0 18px rgba(64, 66, 210, 0)', borderColor: '#c5cbd1', duration: 1.1, ease: 'power2.out' });
               gsap.fromTo(m, { scale: 1 }, { scale: 1.25, duration: 0.28, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' });
+            };
+            // A chip lights up in the badge's indigo and pops as the highlight passes its anchor, then eases back.
+            const flash = (chip: HTMLElement, dot: HTMLElement) => {
+              const icon = chip.querySelector('img');
+              gsap
+                .timeline()
+                .to(chip, { backgroundColor: '#4042d2', color: '#ffffff', duration: 0.2, ease: 'power2.out' }, 0)
+                .to(icon, { filter: 'invert(1)', duration: 0.2 }, 0)
+                .fromTo(chip, { scale: 1 }, { scale: 1.12, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
+                .to(dot, { backgroundColor: '#4042d2', scale: 1.6, duration: 0.2, transformOrigin: '50% 50%' }, 0)
+                .to(chip, { backgroundColor: '#ffffff', color: '#2c2e31', duration: 0.6, ease: 'power2.inOut' }, 1.0)
+                .to(icon, { filter: 'invert(0)', duration: 0.6 }, 1.0)
+                .to(dot, { backgroundColor: '#c5cbd1', scale: 1, duration: 0.6 }, 1.0);
+            };
+            const hit = (i: number) => {
+              if (i < markers.length) pulse(markers[i]);
+              else flash(chips[i - markers.length], dots[i - markers.length]);
             };
             const run = { off: 0 };
             gsap.to(run, {
@@ -119,7 +140,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                   const ahead = (((head - s) % len) + len) % len; // how far past the marker the edge is
                   if (armed[i] && ahead < len * 0.02) {
                     armed[i] = false;
-                    pulse(markers[i]);
+                    hit(i);
                   } else if (!armed[i] && ahead > len * 0.5) {
                     armed[i] = true;
                   }
@@ -131,7 +152,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));
-            all(orbit, '.fs__dot').forEach((d, i) => gsap.to(d, { scale: 1.5, opacity: 0.5, duration: 1.1, delay: i * 0.9, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' }));
             // At rest the cursor wanders the way a hand does: slow, easing drifts to nearby spots with
             // small pauses, a slight lean into each move, and every few moves a click that bounces the badge.
             let moves = 0;

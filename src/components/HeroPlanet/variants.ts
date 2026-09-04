@@ -126,13 +126,13 @@ const FIGMA_CORRIDORS: Partial<PlanetConfig> = {
   popupLabelHeight: 0.16, // the chips read at a glance, like the presale slide's
 };
 
-/** The two-colour palette for the duo directions, and the tokens they share: mono coins, lavender arcs and markers. */
+/** The two-colour palette for the duo directions, and the tokens they share: lavender arcs and markers.
+    The coins keep their own brand colours. */
 const DUO = { lavender: '#B3B5F5', sky: '#C4E0F6' } as const;
 const DUO_TOKENS: Partial<PlanetConfig> = {
   colorAccent: DUO.lavender,
   colorRing: DUO.sky,
-  badgeStyle: 'mono',
-  badgeMonoColor: DUO.lavender,
+  badgeStyle: 'color',
   popupMarkerColor: DUO.lavender,
 };
 

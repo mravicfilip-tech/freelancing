@@ -1,0 +1,358 @@
+<title>Remittix Bento Illustrations</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<style>
+:root{
+  --bg:#EDEFF1; --ink:#111214; --body:#5B636B; --hair:#C4C8CD; --indigo:#4B4BF7; --lime:#D9F24E;
+  --page:#EDEFF1; --text:#111214; --muted:#5B636B; --rule:#C4C8CD; --dot:#B9BEC4; --note:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#16171A; --text:#F1F2F4; --muted:#A3A8B0; --rule:#3A3D43; --dot:#3A3D43; --note:#1E2024; }
+}
+:root[data-theme="dark"]{ --page:#16171A; --text:#F1F2F4; --muted:#A3A8B0; --rule:#3A3D43; --dot:#3A3D43; --note:#1E2024; }
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--text);
+  font-family:"Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--dot) 1px, transparent 1.2px); background-size:28px 28px;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:56px clamp(20px,4vw,48px) 96px}
+h1{font-size:clamp(34px,4.6vw,54px); font-weight:600; letter-spacing:-.04em; line-height:.98; margin:0 0 18px; text-wrap:balance}
+.lede{max-width:62ch; color:var(--muted); font-size:18px; margin:0 0 12px}
+.brief{display:grid; grid-template-columns:1fr 1fr; gap:24px 40px; margin:40px 0 64px; padding-top:24px; border-top:1px solid var(--rule)}
+.brief h2{font-size:15px; font-weight:600; margin:0 0 6px}
+.brief p{margin:0; color:var(--muted); font-size:15px; max-width:56ch}
+h2.sec{font-size:26px; letter-spacing:-.03em; font-weight:600; margin:0 0 8px}
+.count{color:var(--muted); font-weight:400}
+
+.concept{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:28px 40px; align-items:start; padding:40px 0; border-top:1px solid var(--rule)}
+.concept:first-of-type{border-top:0; padding-top:12px}
+.notes h3{font-size:22px; letter-spacing:-.03em; font-weight:600; margin:0 0 10px; line-height:1.15}
+.notes p{margin:0 0 12px; font-size:15px; color:var(--muted)}
+.notes p b{color:var(--text); font-weight:600}
+.notes .fit{display:flex; gap:6px; margin:14px 0 4px}
+.notes .fit span{height:6px; flex:1; border-radius:3px; background:var(--rule)}
+.notes .fit span.on{background:var(--indigo)}
+.notes .fitlabel{font-size:13px; color:var(--muted)}
+
+/* ---- Card replica ---- */
+.tile{
+  position:relative; background:#fff; border-radius:24px; overflow:hidden; color:#111214;
+  aspect-ratio:1075/655; box-shadow:0 1px 0 rgba(17,18,20,.04);
+  container-type:inline-size;
+}
+.tile::before{ /* dot grid, right side */
+  content:""; position:absolute; inset:0 0 0 62%;
+  background-image:radial-gradient(#CFC9F0 1.3px, transparent 1.5px); background-size:6cqw 6cqw; background-position:2cqw 4cqw;
+}
+.tile .blob{ /* lavender horizon */
+  position:absolute; left:-6%; right:-6%; bottom:-64%; height:110%; border-radius:50%;
+  background:linear-gradient(98deg, #F4F26A 3%, #E3E4EA 22%, #C9CDF0 44%, #B5B5F6 70%);
+  filter:blur(0.2px);
+}
+.tile .streak{ position:absolute; left:-4%; bottom:8%; width:26%; height:22%; border-radius:50%;
+  background:radial-gradient(ellipse at 40% 60%, rgba(244,242,106,.85), rgba(244,242,106,0) 70%); filter:blur(6px) }
+.tile .copy{position:relative; z-index:2; padding:6.6cqw 4.5cqw 0}
+.tile h4{margin:0 0 1.4cqw; font-size:3.15cqw; font-weight:600; letter-spacing:-.035em; line-height:1.1}
+.tile .copy p{margin:0; font-size:2.15cqw; line-height:1.5; color:#3A3F45; max-width:56ch}
+.panel{
+  position:absolute; z-index:3; left:14.6%; right:14.6%; top:44.5%; height:44%;
+  background:#fff; border:1px solid #D4D6DA; border-radius:1.6cqw; overflow:hidden;
+  font-size:1.55cqw; line-height:1.35;
+}
+.panel *{font-variant-numeric:tabular-nums}
+.hair{border:1px solid #DADCE0}
+.mono-ink{color:#111214}
+.mute{color:#6B727A}
+
+/* shared bits */
+.chip{display:flex; align-items:center; gap:1cqw; padding:1.1cqw 1.4cqw; border-radius:1cqw; background:#fff; border:1px solid #DADCE0}
+.coin{width:2.6cqw; height:2.6cqw; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; font-size:1.4cqw; flex:none}
+.coin.usdc{background:#2775CA}.coin.usdt{background:#26A17B}.coin.eth{background:#5A6BFF}.coin.btc{background:#F7931A}
+.flag{width:2.2cqw; height:2.2cqw; border-radius:50%; flex:none; position:relative; overflow:hidden}
+.flag.eu{background:#1E4DB7}.flag.eu::after{content:""; position:absolute; inset:28%; border:0.25cqw dotted #F5D547; border-radius:50%}
+.flag.ng{background:linear-gradient(90deg,#1E8A3C 33%,#fff 33% 66%,#1E8A3C 66%)}
+.flag.gb{background:#1F3A93; background-image:linear-gradient(#fff,#fff),linear-gradient(#fff,#fff); background-size:100% 26%,26% 100%; background-position:center; background-repeat:no-repeat}
+.flag.in{background:linear-gradient(#F0902E 33%,#fff 33% 66%,#178A47 66%)}
+.flag.ph{background:linear-gradient(#1F47B5 50%,#CF3A3A 50%)}
+.flag.br{background:#1F9A44}.flag.br::after{content:""; position:absolute; inset:22%; background:#F5D547; transform:rotate(45deg)}
+.flag.ke{background:linear-gradient(#111 33%,#B7292C 33% 66%,#1E8A3C 66%)}
+.btn{display:inline-flex; align-items:center; justify-content:center; background:#111214; color:#fff; border-radius:0.9cqw; padding:1cqw 1.9cqw; font-weight:600; font-size:1.55cqw}
+
+/* 1 — one line */
+.c1{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:2cqw; padding:3cqw 3.2cqw 0}
+.c1 .name{font-weight:600}
+.c1 .sub{color:#6B727A; font-size:1.35cqw}
+.c1 .wire{position:relative; height:2.6cqw}
+.c1 .wire::before{content:""; position:absolute; left:0; right:0; top:50%; border-top:1px dashed #B9BEC4}
+.c1 .wire i{position:absolute; top:50%; left:0; width:1.1cqw; height:1.1cqw; margin:-.55cqw 0 0; border-radius:50%; background:#4B4BF7; box-shadow:0 0 0 .5cqw rgba(75,75,247,.14); animation:travel 3.2s ease-in-out infinite}
+.c1 .wire em{position:absolute; left:50%; top:-1.9cqw; transform:translateX(-50%); font-style:normal; font-size:1.3cqw; color:#6B727A; white-space:nowrap}
+.c1 .foot{grid-column:1/-1; text-align:center; color:#3A3F45; font-size:1.55cqw; margin-top:.6cqw}
+@keyframes travel{0%{left:0;opacity:0}8%{opacity:1}92%{opacity:1}100%{left:calc(100% - 1.1cqw);opacity:0}}
+
+/* 2 — currency picker */
+.c2{position:relative; height:100%; padding:2.4cqw 3.2cqw}
+.c2 .field{display:flex; justify-content:space-between; align-items:center; padding:1.2cqw 1.6cqw; border:1px solid #DADCE0; border-radius:1cqw; width:58%}
+.c2 .field .lab{color:#6B727A; font-size:1.3cqw}
+.c2 .drop{position:absolute; left:3.2cqw; top:8.4cqw; width:58%; background:#fff; border:1px solid #DADCE0; border-radius:1.1cqw; box-shadow:0 1.2cqw 3cqw rgba(17,18,20,.12); overflow:hidden}
+.c2 .search{display:flex; align-items:center; gap:1cqw; padding:1.1cqw 1.6cqw; border-bottom:1px solid #EAEBEE; color:#8A8F98; font-size:1.4cqw}
+.c2 .search::before{content:""; width:1.4cqw; height:1.4cqw; border:1.5px solid #8A8F98; border-radius:50%}
+.c2 .row{display:flex; align-items:center; gap:1.2cqw; padding:.8cqw 1.6cqw}
+.c2 .row.on{background:#F1F1FD}
+.c2 .row .code{font-weight:600; width:4cqw}
+.c2 .row .nm{color:#3A3F45; flex:1}
+.c2 .row .rate{color:#8A8F98; font-size:1.3cqw}
+.c2 .more{padding:.9cqw 1.6cqw; color:#8A8F98; font-size:1.3cqw; border-top:1px solid #EAEBEE}
+.c2 .side{position:absolute; right:3.2cqw; top:2.4cqw; width:32%; color:#6B727A; font-size:1.3cqw}
+.c2 .side b{display:block; color:#111214; font-size:2.6cqw; font-weight:600; letter-spacing:-.03em; margin-top:.4cqw}
+
+/* 3 — send sheet */
+.c3{display:grid; grid-template-columns:1fr 1fr; gap:1.4cqw 2cqw; padding:2.2cqw 3.2cqw; height:100%; align-content:start}
+.c3 .amt{border:1px solid #DADCE0; border-radius:1cqw; padding:1.1cqw 1.5cqw}
+.c3 .amt .lab{color:#6B727A; font-size:1.3cqw}
+.c3 .amt .val{display:flex; align-items:center; justify-content:space-between; font-size:2.5cqw; font-weight:600; letter-spacing:-.03em; margin-top:.2cqw}
+.c3 .amt .cur{display:inline-flex; align-items:center; gap:.7cqw; font-size:1.45cqw; font-weight:500; letter-spacing:0}
+.c3 .to{grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; gap:1cqw}
+.c3 .to .who{display:flex; align-items:center; gap:1cqw}
+.c3 .to .av{width:2.8cqw; height:2.8cqw; border-radius:50%; background:#EDEFF1; display:grid; place-items:center; font-size:1.2cqw; font-weight:600; color:#3A3F45}
+.c3 .to .ib{color:#6B727A; font-size:1.3cqw}
+
+/* 4 — connect wallet */
+.c4{display:grid; grid-template-columns:1fr 1fr; height:100%}
+.c4 .left{padding:2.6cqw 3.2cqw; border-right:1px solid #EAEBEE}
+.c4 .left h5{margin:0 0 .5cqw; font-size:2.1cqw; font-weight:600; letter-spacing:-.03em}
+.c4 .left p{margin:0; color:#6B727A; font-size:1.4cqw; max-width:24ch}
+.c4 .list{padding:1.6cqw 2.4cqw; display:grid; gap:.8cqw; align-content:center}
+.c4 .w{display:flex; align-items:center; gap:1.2cqw; padding:.9cqw 1.3cqw; border:1px solid #DADCE0; border-radius:.9cqw}
+.c4 .w .ic{width:2.4cqw; height:2.4cqw; border-radius:.6cqw; flex:none}
+.c4 .w.on{border-color:#111214}
+.c4 .w .st{margin-left:auto; display:flex; align-items:center; gap:.6cqw; color:#3A3F45; font-size:1.3cqw}
+.c4 .w .st::before{content:""; width:.9cqw; height:.9cqw; border-radius:50%; background:#D9F24E; box-shadow:0 0 0 .35cqw rgba(217,242,78,.35)}
+.c4 .cursor{position:absolute; right:12.5cqw; bottom:5.2cqw; width:2cqw; height:2cqw}
+
+/* 5 — currency field */
+.c5{position:relative; height:100%}
+.c5 .grid{position:absolute; inset:-1.4cqw -2cqw; display:grid; grid-template-columns:repeat(9,1fr); gap:.9cqw; align-content:space-evenly; transform:rotate(-4deg)}
+.c5 .k{display:grid; place-items:center; height:3.2cqw; border:1px solid #D4D6DA; border-radius:.7cqw; font-size:1.35cqw; font-weight:600; color:#3A3F45; background:#fff}
+.c5 .k.ink{background:#111214; color:#fff; border-color:#111214}
+.c5 .k.ind{background:#4B4BF7; color:#fff; border-color:#4B4BF7}
+.c5 .pill{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; border:1px solid #DADCE0; box-shadow:0 1.4cqw 3.4cqw rgba(17,18,20,.14); border-radius:99px; padding:1.1cqw 2cqw; font-size:1.65cqw; font-weight:500; white-space:nowrap}
+
+/* 6 — receipts */
+.c6{position:relative; height:100%; padding:2.2cqw 3.2cqw}
+.c6 .r{display:flex; align-items:center; gap:1.2cqw; padding:1.1cqw 1.5cqw; border:1px solid #DADCE0; border-radius:1cqw; background:#fff; margin-bottom:.9cqw}
+.c6 .r .dot{width:1cqw; height:1cqw; border-radius:50%; background:#111214; flex:none}
+.c6 .r .who{flex:1}
+.c6 .r .who small{display:block; color:#6B727A; font-size:1.3cqw}
+.c6 .r .state{color:#3A3F45; font-size:1.35cqw}
+.c6 .r.live{border-color:#111214}
+.c6 .r.live .dot{background:#4B4BF7}
+.c6 .bar{position:absolute; left:0; right:0; bottom:0; height:.35cqw; background:#EAEBEE}
+.c6 .bar i{display:block; height:100%; width:38%; background:#4B4BF7; animation:fill 4s ease-in-out infinite}
+.c6 .r.live{position:relative; overflow:hidden}
+@keyframes fill{0%{width:12%}70%{width:86%}100%{width:100%}}
+
+/* recommendation */
+.reco{margin-top:64px; padding:32px 36px; background:var(--note); border:1px solid var(--rule); border-radius:18px; max-width:760px}
+.reco h2{margin:0 0 10px; font-size:24px; letter-spacing:-.03em}
+.reco p{margin:0 0 12px; color:var(--muted)}
+.reco p b{color:var(--text); font-weight:600}
+.rules{margin:48px 0 0; padding:0; list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:14px 40px; max-width:900px}
+.rules li{font-size:15px; color:var(--muted); padding-left:18px; position:relative}
+.rules li::before{content:""; position:absolute; left:0; top:.55em; width:8px; height:8px; border-radius:50%; background:var(--lime)}
+
+@media (max-width:860px){
+  .concept{grid-template-columns:1fr}
+  .brief,.rules{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: reduce){ .c1 .wire i,.c6 .bar i{animation:none} .c1 .wire i{left:50%} .c6 .bar i{width:62%} }
+</style>
+
+<div class="wrap">
+  <h1>Six ways to fill the interface tile</h1>
+  <p class="lede">The bento card says <i>User-friendly interface</i> and promises bank payouts in over 30 currencies from a connected wallet. The empty panel inside it is a product window, so each concept below is a piece of real interface, drawn at the size it will actually appear.</p>
+
+  <div class="brief">
+    <div><h2>What the illustration has to prove</h2><p>Three claims from the copy: the interface is simple, the money lands in a bank account in a local currency, and the only setup is connecting a wallet. A concept scores on how many of those it carries without a caption.</p></div>
+    <div><h2>How to read the mockups</h2><p>Each tile is a replica of the card at roughly its live proportions. Type inside the panel is the size it will be on a 1440px screen, so if a detail is hard to read here, it will be hard to read there.</p></div>
+  </div>
+
+  <h2 class="sec">Concepts <span class="count">1 to 6</span></h2>
+
+  <!-- 1 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c1">
+          <div class="chip"><span class="coin usdc">$</span><div><div class="name">0x3f8a…9c2e</div><div class="sub">1,240.00 USDC</div></div></div>
+          <div class="wire"><em>500 USDC becomes 428.10 EUR</em><i></i></div>
+          <div class="chip"><span class="flag eu"></span><div><div class="name">Maria Santos</div><div class="sub">ES91 2100 ···· 4102</div></div></div>
+          <div class="foot">Arrives in about 40 seconds</div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>One line, wallet to bank</h3>
+      <p><b>What it says.</b> Two endpoints and a single wire between them. The wallet address on the left, a named person with an IBAN on the right, and the conversion written as a sentence above the line.</p>
+      <p><b>Why it fits.</b> It draws the exact promise in the paragraph with nothing extra. The IBAN and the euro flag do the "bank account" work; the address chip does "connect your wallet".</p>
+      <p><b>One motion.</b> An indigo dot travels the dashed line every few seconds. That is the whole animation and the only indigo in the tile.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <div class="fitlabel">Carries all three claims. Least visual weight.</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c2">
+          <div class="field"><span class="lab">They receive</span><span style="display:flex;align-items:center;gap:.8cqw;font-weight:600"><span class="flag ng"></span>NGN</span></div>
+          <div class="drop">
+            <div class="search">Search 31 currencies</div>
+            <div class="row"><span class="flag eu"></span><span class="code">EUR</span><span class="nm">Euro</span><span class="rate">0.856</span></div>
+            <div class="row"><span class="flag gb"></span><span class="code">GBP</span><span class="nm">British pound</span><span class="rate">0.742</span></div>
+            <div class="row on"><span class="flag ng"></span><span class="code">NGN</span><span class="nm">Nigerian naira</span><span class="rate">1,532</span></div>
+            <div class="more">28 more, sorted by your recent transfers</div>
+          </div>
+          <div class="side">Maria receives<b>765,940 NGN</b>to GTBank, Lagos</div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>The currency picker, open</h3>
+      <p><b>What it says.</b> A select control caught mid-use: the search field, four currencies with live rates, the chosen one highlighted, and a footer that quietly counts the rest.</p>
+      <p><b>Why it fits.</b> "Over 30 currencies" is the hardest claim to illustrate without a stat tile. Here the number lives inside the interface as a footer line, which is how DESIGN.md wants numbers handled.</p>
+      <p><b>One motion.</b> None needed. If you want one, the highlighted row steps down the list every few seconds and the payout on the right updates with it.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+      <div class="fitlabel">Strongest on currencies. Weak on the wallet.</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c3">
+          <div class="amt"><div class="lab">You send</div><div class="val"><span>500.00</span><span class="cur"><span class="coin usdc">$</span>USDC</span></div></div>
+          <div class="amt"><div class="lab">They receive</div><div class="val"><span>428.10</span><span class="cur"><span class="flag eu"></span>EUR</span></div></div>
+          <div class="to">
+            <div class="who"><span class="av">MS</span><div><div>Maria Santos</div><div class="ib">ES91 2100 ···· 4102, CaixaBank</div></div></div>
+            <span class="btn">Send to bank</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>The send sheet</h3>
+      <p><b>What it says.</b> The actual form: two amount fields, a recipient with a bank, one button. Nothing to configure, nothing to learn.</p>
+      <p><b>Why it fits.</b> It is the most literal proof of "user-friendly interface", because it is the interface. If the real product looks like this, the illustration is also a promise you can keep.</p>
+      <p><b>One motion.</b> The receive amount counts up from 0 to 428.10 once on scroll-in, then holds. No looping.</p>
+      <p><b>Watch out.</b> The button is ink, not indigo, so the tile still spends indigo zero times here. Fine, as long as a neighbouring tile spends it once.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+      <div class="fitlabel">Most convincing. Needs the real form to match.</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c4">
+          <div class="left"><h5>Connect a wallet</h5><p>No account to create. Your wallet is your login, and payouts go to any bank you name.</p></div>
+          <div class="list">
+            <div class="w on"><span class="ic" style="background:#F6851B"></span>MetaMask<span class="st">Connected</span></div>
+            <div class="w"><span class="ic" style="background:#3B99FC"></span>WalletConnect</div>
+            <div class="w"><span class="ic" style="background:#1652F0"></span>Coinbase Wallet</div>
+            <div class="w"><span class="ic" style="background:#AB9FF2"></span>Phantom</div>
+          </div>
+          <svg class="cursor" viewBox="0 0 24 24" fill="#111214"><path d="M4 2l16 9-7 2-3 7z"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>Connect a wallet</h3>
+      <p><b>What it says.</b> The first screen a user meets: four wallet options, one already connected, and a sentence explaining that this is the whole sign-up.</p>
+      <p><b>Why it fits.</b> The copy ends on "simply connect your wallet". This tile shows how simple. The lime connected dot is the only accent, which is exactly how lime is meant to be spent.</p>
+      <p><b>One motion.</b> The connected state appears once, a soft tick of the lime dot, then rests.</p>
+      <p><b>Watch out.</b> Real wallet logos need brand permission for a marketing page. Drawn stand-in marks, as the hero already does for coins, avoid that.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="fitlabel">Owns the wallet claim. Says nothing about banks or currencies.</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c5">
+          <div class="grid">
+            <span class="k">CAD</span><span class="k">GBP</span><span class="k ink">EUR</span><span class="k">PLN</span><span class="k">TRY</span><span class="k">AED</span><span class="k">SGD</span><span class="k">JPY</span><span class="k">AUD</span>
+            <span class="k">MXN</span><span class="k ink">NGN</span><span class="k">KES</span><span class="k">GHS</span><span class="k">ZAR</span><span class="k ink">INR</span><span class="k">PHP</span><span class="k">VND</span><span class="k">IDR</span>
+            <span class="k">BRL</span><span class="k">COP</span><span class="k">ARS</span><span class="k">PEN</span><span class="k ind">USD</span><span class="k">EGP</span><span class="k">MAD</span><span class="k">THB</span><span class="k">MYR</span>
+            <span class="k">CLP</span><span class="k">CZK</span><span class="k">HUF</span><span class="k">SAR</span><span class="k">KRW</span><span class="k">CHF</span><span class="k">SEK</span><span class="k">NOK</span><span class="k">DKK</span>
+          </div>
+          <div class="pill">31 currencies, one wallet</div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>The currency field</h3>
+      <p><b>What it says.</b> A tilted field of currency codes running past the panel edges, a few filled in ink for the main corridors, one in indigo, and a single pill sitting on top with the count.</p>
+      <p><b>Why it fits.</b> Texture instead of a list. It makes the breadth of coverage felt rather than counted, and reads at thumbnail size when the other five would blur.</p>
+      <p><b>One motion.</b> The field drifts diagonally at a few pixels per second, like a slow conveyor. Reduced motion stops it.</p>
+      <p><b>Watch out.</b> This is decoration more than interface. Use it if a neighbouring bento tile already shows the product, otherwise the headline is unsupported.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="fitlabel">Best texture. Loosest link to "interface".</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="concept">
+    <div class="tile">
+      <div class="streak"></div><div class="blob"></div>
+      <div class="copy"><h4>User-friendly interface.</h4><p>Send crypto payments straight to bank accounts in over 30 currencies— simply connect your wallet.</p></div>
+      <div class="panel">
+        <div class="c6">
+          <div class="r live"><span class="dot"></span><div class="who">765,940 NGN to Tunde Adeyemi<small>GTBank, Lagos</small></div><span class="state">Settling</span><div class="bar"><i></i></div></div>
+          <div class="r"><span class="dot"></span><div class="who">428.10 EUR to Maria Santos<small>CaixaBank, Valencia</small></div><span class="state">Settled 38 s</span></div>
+          <div class="r"><span class="dot"></span><div class="who">24,600 PHP to Joy Ramos<small>BDO, Cebu</small></div><span class="state">Settled 41 s</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h3>Settled transfers</h3>
+      <p><b>What it says.</b> A short ledger of payouts: who got paid, at which bank, and how long it took. The top row is still settling, with an indigo progress bar.</p>
+      <p><b>Why it fits.</b> Repetition is the argument. Three different currencies and banks, all the same shape, all under a minute. It borrows the "live list of settled transfers" idea from hero direction 3, so the site stays one system.</p>
+      <p><b>One motion.</b> The progress bar fills, the row flips to settled, a new row slides in at the top. One cycle every few seconds.</p>
+      <div class="fit"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+      <div class="fitlabel">Proves banks and currencies together. Wallet implied only.</div>
+    </div>
+  </section>
+
+  <div class="reco">
+    <h2>Recommendation</h2>
+    <p><b>Build the send sheet first.</b> It is the only concept that supports the headline literally, and it doubles as a spec for what the product's main screen should look like. Keep it to two fields, one recipient and one button.</p>
+    <p><b>Keep the wallet-to-bank line as the fallback.</b> If the real form is not ready to be shown, concept 1 tells the same story with three drawn objects and no UI to keep in sync.</p>
+    <p><b>Spread the other claims across the bento.</b> The currency field or the picker belongs in the coverage tile, and the connect screen in the onboarding tile. One tile does not need to carry all three promises.</p>
+  </div>
+
+  <ul class="rules">
+    <li>The white panel is the product window from hero direction 3. Hairline border, no shadow, nothing outside it except the lavender horizon.</li>
+    <li>Indigo appears once per tile: the travelling dot, the settling bar, or one currency chip. Ink for buttons.</li>
+    <li>Lime only for a live state, such as the connected dot.</li>
+    <li>Coins and wallets get drawn marks, matching the hero badges, not vendor logos.</li>
+    <li>Numbers live inside sentences and interface labels, never as a stat tile.</li>
+    <li>One motion per tile, looping slowly, and none under reduced motion.</li>
+  </ul>
+</div>

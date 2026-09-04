@@ -1,5 +1,5 @@
 import { B, Layer, Stage } from './Stage';
-import { all, one, roll, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
+import { all, draw, one, roll, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
  * "Zero FX fees" (Figma 2409:2439, 804×440): a bank card and a wallet card overlapping at the
@@ -33,15 +33,22 @@ export function Fx() {
           <i className="il-fx__sheen" />
         </span>
       </div>
-      <span className="il-fx__packet" style={{ left: 340, top: 400 }} />
+      {/* Wires from the bank to the wallet: account to address below, Bank tag to Wallet tag above. */}
+      <svg className="il-fx__wires" viewBox="0 0 804 440" width={804} height={440} style={{ left: 0, top: 0 }} aria-hidden="true">
+        <path className="il-fx__wire" d="M209 373 C 262 373, 286 399, 340 399" />
+        <path className="il-fx__wire" d="M215 231 C 300 231, 300 273, 385 273" />
+      </svg>
+      <span className="il-fx__packet" style={{ left: 0, top: 0 }} />
+      <span className="il-fx__packet il-fx__packet--2" style={{ left: 0, top: 0 }} />
     </Stage>
   );
 }
 
 export const fxMotion: IllustrationMotion = {
-  build(tl, il, at) {
+  build(tl, il, at, gsap) {
     // The bank card rises with its artwork settling behind it, the wallet card follows, their
-    // labels appear in reading order, and the wallet address reveals itself left to right.
+    // labels appear in reading order, the wires draw from the bank to the wallet, and the wallet
+    // address reveals itself left to right.
     tl.from(one(il, '.il-fx__dots'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
     tl.from(one(il, '.il-fx__bank'), { y: 40, opacity: 0, duration: 1.0, ease: EASE }, at);
     tl.from(one(il, '.il-fx__bankBg'), { scale: 1.08, duration: 1.6, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
@@ -49,111 +56,160 @@ export const fxMotion: IllustrationMotion = {
     tl.from(all(il, '.il-fx__temple, .il-fx__tag--bank, .il-fx__tag--masked'), { ...RISE, y: 8, duration: 0.6, stagger: 0.07 }, at + 0.5);
     tl.from(all(il, '.il-fx__lines, .il-fx__mark, .il-fx__glow'), { opacity: 0, duration: 1.0, stagger: 0.1, ease: 'power1.out' }, at + 0.6);
     tl.from(all(il, '.il-fx__logo, .il-fx__tag--wallet, .il-fx__tag--addr'), { ...RISE, y: 8, duration: 0.6, stagger: 0.07 }, at + 0.65);
-    tl.fromTo(one(il, '.il-fx__addrText'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut' }, at + 0.95);
+    draw(tl, gsap, all<SVGGeometryElement>(il, '.il-fx__wire'), at + 0.9, 0.8, 0.12);
+    tl.set(all(il, '.il-fx__wire'), { strokeDasharray: '4 5' }, at + 1.85);
+    tl.fromTo(one(il, '.il-fx__addrText'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut' }, at + 1.1);
   },
   idle: (gsap, il) => fxMotion.variants[0].idle(gsap, il),
   variants: [],
 };
 
-const ambient = (gsap: Parameters<MotionVariant['idle']>[0], il: HTMLElement) => {
+type G = Parameters<MotionVariant['idle']>[0];
+type TL = gsap.core.Timeline;
+const parts = (il: HTMLElement) => ({
+  bank: one(il, '.il-fx__bank'),
+  wallet: one(il, '.il-fx__wallet'),
+  wires: all<SVGPathElement>(il, '.il-fx__wire'),
+  packets: all(il, '.il-fx__packet'),
+  sheen: one(il, '.il-fx__sheen'),
+  masked: one(il, '.il-fx__tag--masked'),
+  bankTag: one(il, '.il-fx__tag--bank'),
+  walletTag: one(il, '.il-fx__tag--wallet'),
+  addr: one(il, '.il-fx__tag--addr'),
+  addrText: one(il, '.il-fx__addrText'),
+  fee: one(il, '.il-fx__feeTag'),
+  rings: all(il, '.il-fx__ring'),
+});
+type P = ReturnType<typeof parts>;
+
+const ambient = (gsap: G, il: HTMLElement) => {
   const idle = gsap.timeline();
   idle.to(one(il, '.il-fx__glow'), { opacity: 0.6, x: -24, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   idle.to(one(il, '.il-fx__mark'), { x: -5, duration: 8, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   return idle;
 };
+/** A packet rides a wire from the bank to the wallet (or back when `reverse`). */
+const ride = (story: TL, p: P, wire: number, packet: number, t: number, duration = 1.1, reverse = false) => {
+  const el = p.packets[packet];
+  story
+    .fromTo(el, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.2 }, t)
+    .to(el, { motionPath: { path: p.wires[wire], align: p.wires[wire], alignOrigin: [0.5, 0.5], start: reverse ? 1 : 0, end: reverse ? 0 : 1 }, duration, ease: 'power2.inOut' }, t)
+    .to(el, { opacity: 0, scale: 0.5, duration: 0.2 }, t + duration - 0.1);
+  return story;
+};
+/** The wire's dashes flow in the direction of travel for a while. */
+const flow = (story: TL, wire: SVGPathElement, t: number, duration: number, reverse = false) =>
+  story.fromTo(wire, { strokeDashoffset: 0 }, { strokeDashoffset: reverse ? 36 : -36, duration, ease: 'none' }, t);
+/** A tag brightens for a moment. */
+const light = (story: TL, tag: HTMLElement, t: number, from: string, to: string) =>
+  story.fromTo(tag, { backgroundColor: from }, { backgroundColor: to, duration: 0.25, ease: 'power2.out' }, t).to(tag, { backgroundColor: from, duration: 0.7, ease: 'power2.inOut' }, t + 0.6);
+const WHITE = '#ffffff';
+const WHITE_LIT = '#e6e5ff';
+const DIM = 'rgba(255,255,255,0.24)';
+const DIM_LIT = 'rgba(255,255,255,0.6)';
+const WALLET = 'rgba(255,255,255,0.12)';
+const WALLET_LIT = 'rgba(179,181,245,0.55)';
 
 fxMotion.variants = [
   {
-    name: 'Packet',
-    blurb: 'A sheen signs the wallet address, a packet lifts off it and arcs to the bank, and the masked account reveals its last four digits before masking again.',
+    name: 'Wire transfer',
+    blurb: 'The bank account shows its digits and sends: a packet rides the lower wire from the account into the wallet address, the dashes flowing with it, and the address signs with a sheen as it arrives.',
     idle(gsap, il) {
-      const sheen = one(il, '.il-fx__sheen');
-      const masked = one(il, '.il-fx__tag--masked');
-      const packet = one(il, '.il-fx__packet');
+      const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.5, delay: 1.6 });
-      story
-        .fromTo(sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 1.0, ease: 'power2.inOut' }, 0)
-        .fromTo(packet, { x: 0, y: 0, opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' }, 0.6)
-        .to(packet, { motionPath: { path: [{ x: 0, y: 0 }, { x: -90, y: -64 }, { x: -180, y: -28 }], curviness: 1.3 }, duration: 1.0, ease: 'power2.inOut' }, 0.8)
-        .to(packet, { opacity: 0, scale: 0.6, duration: 0.25, ease: 'power2.in' }, 1.7)
-        .add(() => roll(gsap, masked, '**** - 4417'), 1.75)
-        .fromTo(masked, { backgroundColor: 'rgba(255,255,255,0.24)' }, { backgroundColor: 'rgba(255,255,255,0.55)', duration: 0.3, ease: 'power2.out' }, 1.75)
-        .to(masked, { backgroundColor: 'rgba(255,255,255,0.24)', duration: 0.8, ease: 'power2.inOut' }, 3.4)
-        .add(() => roll(gsap, masked, '**** - ****'), 3.6);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.6 });
+      story.add(() => roll(gsap, p.masked, '**** - 4417'), 0);
+      light(story, p.masked, 0, DIM, DIM_LIT);
+      flow(story, p.wires[0], 0.4, 1.4);
+      ride(story, p, 0, 0, 0.5, 1.1);
+      light(story, p.addr, 1.5, 'rgba(255,255,255,0.06)', 'rgba(179,181,245,0.35)');
+      story.fromTo(p.sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 0.9, ease: 'power2.inOut' }, 1.55);
+      story.add(() => roll(gsap, p.masked, '**** - ****'), 3.0);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Card stack',
-    blurb: 'The two cards trade depth like a wallet stack: the bank card comes forward as the wallet eases back, holds, then they swap again.',
+    name: 'Two-way',
+    blurb: 'A transfer and its confirmation: a packet goes bank to wallet on the upper wire between the two tags, then a receipt packet returns on the lower wire and the account chip lights as it lands.',
     idle(gsap, il) {
-      const bank = one(il, '.il-fx__bank');
-      const wallet = one(il, '.il-fx__wallet');
+      const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 2 });
-      story
-        .to(wallet, { scale: 0.96, y: 6, opacity: 0.85, duration: 0.7, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 0)
-        .to(bank, { scale: 1.03, y: -4, zIndex: 2, duration: 0.7, ease: 'power3.inOut', transformOrigin: '50% 50%' }, 0)
-        .to(wallet, { scale: 1, y: 0, opacity: 1, duration: 0.7, ease: 'power3.inOut' }, 3.4)
-        .to(bank, { scale: 1, y: 0, zIndex: 0, duration: 0.7, ease: 'power3.inOut' }, 3.4);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.6 });
+      light(story, p.bankTag, 0, WHITE, WHITE_LIT);
+      flow(story, p.wires[1], 0.2, 1.3);
+      ride(story, p, 1, 0, 0.3, 1.1);
+      light(story, p.walletTag, 1.3, WALLET, WALLET_LIT);
+      story.fromTo(p.sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 0.9, ease: 'power2.inOut' }, 1.4);
+      flow(story, p.wires[0], 2.2, 1.3, true);
+      ride(story, p, 0, 1, 2.3, 1.1, true);
+      story.add(() => roll(gsap, p.masked, '**** - 4417'), 3.3);
+      light(story, p.masked, 3.3, DIM, DIM_LIT);
+      story.add(() => roll(gsap, p.masked, '**** - ****'), 5.2);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Fee receipt',
-    blurb: 'After the address signs, a small "FX fee 0.00" tag rises out of the bank\'s account line and holds while the account shows its digits, then both fade back.',
+    name: 'Stream',
+    blurb: 'Both wires carry a steady flow of dashes between the cards, packets pass every couple of seconds on alternating wires, and a small "FX fee 0.00" tag rises from the account after each one.',
     idle(gsap, il) {
-      const sheen = one(il, '.il-fx__sheen');
-      const masked = one(il, '.il-fx__tag--masked');
-      const fee = one(il, '.il-fx__feeTag');
+      const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 4, delay: 1.6 });
-      story
-        .fromTo(sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 1.0, ease: 'power2.inOut' }, 0)
-        .add(() => roll(gsap, masked, '**** - 4417'), 1.0)
-        .fromTo(fee, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: EASE }, 1.2)
-        .to(fee, { y: -6, opacity: 0, duration: 0.5, ease: 'power2.in' }, 3.6)
-        .add(() => roll(gsap, masked, '**** - ****'), 3.7);
+      p.wires.forEach((w) => idle.to(w, { strokeDashoffset: -18, duration: 1.4, ease: 'none', repeat: -1 }, 0));
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 1.4, delay: 1.6 });
+      ride(story, p, 0, 0, 0, 1.0);
+      story.fromTo(p.fee, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: EASE }, 1.0).to(p.fee, { y: -6, opacity: 0, duration: 0.45, ease: 'power2.in' }, 2.4);
+      ride(story, p, 1, 1, 2.2, 1.0);
+      story.fromTo(p.sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 0.9, ease: 'power2.inOut' }, 3.1);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Sync rings',
-    blurb: 'Rings radiate from the wallet\'s logo like a contactless tap; when they reach the bank its Bank tag brightens and the account shows its digits.',
+    name: 'Handshake',
+    blurb: 'The two cards lean toward each other as the wires draw between them, the Bank and Wallet tags light in sequence, the account shows its digits, a packet crosses, and the cards ease apart again.',
     idle(gsap, il) {
-      const rings = all(il, '.il-fx__ring');
-      const masked = one(il, '.il-fx__tag--masked');
-      const bankTag = one(il, '.il-fx__tag--bank');
+      const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.8 });
-      rings.forEach((r, i) => story.fromTo(r, { scale: 1, opacity: 0.5 }, { scale: 9, opacity: 0, duration: 1.6, ease: 'power2.out', transformOrigin: '50% 50%' }, i * 0.35));
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.6 });
       story
-        .fromTo(bankTag, { backgroundColor: '#ffffff' }, { backgroundColor: '#e8e6ff', duration: 0.3 }, 1.2)
-        .to(bankTag, { backgroundColor: '#ffffff', duration: 0.8, ease: 'power2.inOut' }, 2.8)
-        .add(() => roll(gsap, masked, '**** - 4417'), 1.25)
-        .add(() => roll(gsap, masked, '**** - ****'), 3.4);
+        .to(p.bank, { x: 8, duration: 0.8, ease: 'power3.inOut' }, 0)
+        .to(p.wallet, { x: -8, duration: 0.8, ease: 'power3.inOut' }, 0);
+      light(story, p.bankTag, 0.5, WHITE, WHITE_LIT);
+      light(story, p.walletTag, 0.8, WALLET, WALLET_LIT);
+      story.add(() => roll(gsap, p.masked, '**** - 4417'), 1.0);
+      p.wires.forEach((w, i) => flow(story, w, 1.0 + i * 0.15, 1.3));
+      ride(story, p, 0, 0, 1.1, 1.1);
+      ride(story, p, 1, 1, 1.25, 1.1);
+      story.fromTo(p.sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 0.9, ease: 'power2.inOut' }, 2.2);
+      story
+        .add(() => roll(gsap, p.masked, '**** - ****'), 3.4)
+        .to(p.bank, { x: 0, duration: 0.9, ease: 'power3.inOut' }, 3.4)
+        .to(p.wallet, { x: 0, duration: 0.9, ease: 'power3.inOut' }, 3.4);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Ambient hash',
-    blurb: 'The cards rest; the bank\'s artwork and the wallet\'s outline mark drift very slowly, and the address\'s last characters re-hash every few seconds.',
+    name: 'Sync rings + wire',
+    blurb: 'A contactless feel: rings radiate from the wallet\'s logo, and as they reach the bank a packet answers back along the wire into the wallet address, the address re-hashing as it signs.',
     idle(gsap, il) {
-      const addr = one(il, '.il-fx__addrText');
+      const p = parts(il);
       const idle = ambient(gsap, il);
-      idle.to(one(il, '.il-fx__bankBg'), { x: -6, y: 4, duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
       let k = 0;
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 2 });
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.8 });
+      p.rings.forEach((r, i) => story.fromTo(r, { scale: 1, opacity: 0.5 }, { scale: 9, opacity: 0, duration: 1.6, ease: 'power2.out', transformOrigin: '50% 50%' }, i * 0.35));
+      light(story, p.bankTag, 1.2, WHITE, WHITE_LIT);
+      story.add(() => roll(gsap, p.masked, '**** - 4417'), 1.25);
+      flow(story, p.wires[0], 1.6, 1.3);
+      ride(story, p, 0, 0, 1.7, 1.1);
       story.add(() => {
         k += 1;
         const tail = ((0x9f3c27e + k * 0x1a2b3) % 0xfffffff).toString(16).padStart(7, '0');
-        roll(gsap, addr, `*******************************a${tail}`);
-      }, 0);
+        roll(gsap, p.addrText, `*******************************a${tail}`);
+      }, 2.8);
+      story.add(() => roll(gsap, p.masked, '**** - ****'), 3.6);
       idle.add(story, 0);
       return idle;
     },

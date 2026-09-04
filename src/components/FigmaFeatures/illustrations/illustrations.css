@@ -100,7 +100,23 @@
   position: absolute;
 }
 .il-phone__island {
+  position: absolute;
   z-index: 2;
+  display: block;
+  width: 80px;
+  height: 23px;
+  border-radius: 12px;
+  background: #050505;
+}
+.il-phone__island::after {
+  content: '';
+  position: absolute;
+  right: 9px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #3a3a44 0%, #14141a 55%, #050505 100%);
 }
 .il-pbox {
   width: 226.4px;
@@ -120,7 +136,6 @@
   font-size: 9.06px;
 }
 .il-pbox__amount {
-  overflow: hidden; /* the figure rolls out and in when it changes */
   font-weight: 500;
   font-size: 18.1px;
   letter-spacing: -0.48px;
@@ -252,7 +267,19 @@
   opacity: 0;
   will-change: transform, opacity;
 }
-/* The packet that arcs from the wallet to the bank on each transfer. */
+/* The wires between the cards, and the packets that ride them. */
+.il-fx__wires {
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+.il-fx__wire {
+  fill: none;
+  stroke: #4042d1;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
 .il-fx__packet {
   z-index: 3;
   width: 12px;
@@ -314,6 +341,32 @@
 .il-simple__hub img {
   display: block;
   margin-top: 3px;
+}
+/* A light that runs from a chosen rail into the hub, and the status dot beside a rail. */
+.il-simple__beam {
+  z-index: 3;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(64, 66, 209, 0.9), 0 0 10px rgba(179, 181, 245, 0.9);
+  opacity: 0;
+  will-change: transform;
+}
+.il-simple__railDot {
+  z-index: 3;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  background: #4042d1;
+  opacity: 0;
+}
+.il-simple__logo {
+  will-change: transform, filter;
 }
 /* A satellite riding the outer orbit ring (orbit variant). */
 .il-simple__orbit {
@@ -476,6 +529,58 @@
   height: 1px;
   background: #4042d1;
 }
+.il-fast__wash {
+  left: 0;
+  top: 0;
+  width: 710px;
+  height: 440px;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+/* The dashed outline is a live vector: its dashes march and jump with the strikes. */
+.il-fast__outline svg path {
+  vector-effect: non-scaling-stroke;
+}
+.il-fast__bolt {
+  will-change: transform, filter;
+}
+/* Current flowing along the wire: a moving dash pattern. */
+.il-fast__current {
+  height: 2px;
+  margin-top: -0.5px;
+  background: repeating-linear-gradient(90deg, #4042d1 0 9px, #c9caff 9px 14px);
+  background-size: 14px 2px;
+  opacity: 0;
+}
+/* Arcs that crackle around the bolt when it strikes. */
+.il-fast__arcs {
+  overflow: visible;
+  pointer-events: none;
+}
+.il-fast__arcs polyline {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px #b3b5f5);
+}
+.il-fast__spark--tail {
+  width: 22px;
+  margin-left: -22px;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.9) 100%);
+  box-shadow: none;
+}
+.il-fast__spark--tail2 {
+  width: 34px;
+  margin-left: -44px;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.5) 100%);
+  box-shadow: none;
+}
 .il-fast__lineFill {
   height: 2px;
   border-radius: 1px;
@@ -625,10 +730,38 @@
   z-index: 1;
 }
 .il-ui__cursor {
-  z-index: 3;
+  z-index: 4;
+  left: 0;
+  top: 0;
   opacity: 0;
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
   will-change: transform;
+}
+/* The ring that bursts from the cursor's tip on a click, and the status dot beside a row. */
+.il-ui__click {
+  z-index: 3;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 2.5px solid #4042d1;
+  border-radius: 50%;
+  background: rgba(64, 66, 209, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  pointer-events: none;
+}
+.il-ui__ok {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: #4042d1;
+  opacity: 0;
 }
 /* The highlight that settles on a row as it is picked. */
 .il-ui__hi {

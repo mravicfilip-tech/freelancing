@@ -6,6 +6,7 @@ import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
+import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -23,6 +24,7 @@ export function App() {
       {!figma && <Nav />}
       <main>
         {heroMounted && (figma ? <FigmaHero /> : <Hero />)}
+        {figma && <FigmaSimple />}
         {figma && <FigmaFeatures />}
       </main>
       {HERO_VARIANT === '1' && <PlanetSwitcher />}

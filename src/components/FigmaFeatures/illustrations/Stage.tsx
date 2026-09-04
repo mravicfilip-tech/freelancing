@@ -25,8 +25,8 @@ export function Stage({ id, width, height, className, children }: { id: string; 
   );
 }
 
-/** URL of a layer exported from the Figma file (public/figma/features/parts). */
-export const part = (name: string) => `/figma/features/parts/${name}`;
+/** URL of a layer exported from the Figma file (public/figma/features/parts), or an absolute path as given. */
+export const part = (name: string) => (name.startsWith('/') ? name : `/figma/features/parts/${name}`);
 
 /** An exported layer placed at design coordinates. */
 export function Layer({ src, x, y, w, h, className, style }: { src: string; x: number; y: number; w: number; h: number; className?: string; style?: React.CSSProperties }) {

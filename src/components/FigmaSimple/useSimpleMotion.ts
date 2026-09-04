@@ -8,7 +8,7 @@ import { all, bob, draw, one, pop } from '../FigmaFeatures/illustrations/motion'
  * arrive, the markers and dots appear, and the cursor slides in with its badge; the paragraph and
  * pill rise last. Afterwards a highlight keeps circling the orbit: each ring marker pulses as it
  * passes, and the pay-in and pay-out chips light up indigo and pop as it reaches their anchors. The
- * hub breathes, the coin groups drift, the badge settles under the hub as its caption, and the cursor
+ * hub breathes, the coin groups drift, the badge settles beside the hub on its centre line, and the cursor
  * alone rides along on the highlight, clicking as it passes each chip.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
@@ -152,7 +152,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             const lean = gsap.quickTo(cursorIcon, 'rotation', { duration: 0.6, ease: 'sine.out' });
             // 0 = parked by the hub, 1 = riding the highlight. One synced beat starts the loop: the
             // highlight spawns at the point on the orbit nearest the cursor's resting spot, the cursor
-            // sets off with it that instant, and the badge slides under the hub to sit as its caption.
+            // sets off with it that instant, and the badge slides beside the hub, centred on its middle.
             const phase = { mix: 0 };
             let following = false;
             const restIcon = cursorIcon.getBoundingClientRect();
@@ -162,7 +162,9 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             gsap.set(glowPath, { strokeDasharray: `${dash} ${len - dash}`, strokeDashoffset: -off0, opacity: 0 });
             gsap.to(glowPath, { opacity: 0.9, duration: 0.5, delay: SPAWN });
             gsap.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', delay: SPAWN, onComplete: () => { following = true; } });
-            gsap.to(badge, { left: 777.15 - badge.offsetWidth / 2, top: 369, duration: 1.0, ease: 'power3.inOut', delay: SPAWN + 0.1 });
+            // The badge parks beside the hub on its centre line: a fixed 16px gap to the right of the
+            // 120px hub, vertically centred on the hub's middle (233 + 60).
+            gsap.to(badge, { left: 717.15 + 120 + 16, top: 293 - badge.offsetHeight / 2, duration: 1.0, ease: 'power3.inOut', delay: SPAWN + 0.1 });
             const run = { off: off0 };
             gsap.to(run, {
               off: off0 + len,

@@ -8,8 +8,8 @@ import { all, bob, draw, one, pop } from '../FigmaFeatures/illustrations/motion'
  * arrive, the markers and dots appear, and the cursor slides in with its badge; the paragraph and
  * pill rise last. Afterwards a highlight keeps circling the orbit: each ring marker pulses as it
  * passes, and the pay-in and pay-out chips light up indigo and pop as it reaches their anchors. The
- * hub breathes, the coin groups drift, and the cursor with its badge rides along on the highlight,
- * clicking as it passes each chip.
+ * hub breathes, the coin groups drift, the badge stays parked by the hub, and the cursor alone rides
+ * along on the highlight, clicking as it passes each chip.
  *
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows it at rest.
@@ -127,7 +127,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             };
             const click = () => {
               gsap.fromTo(cursorIcon, { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '20% 15%' });
-              gsap.fromTo(badge, { scale: 1 }, { scale: 1.06, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '0% 50%' });
             };
             const hit = (i: number) => {
               if (i < markers.length) pulse(markers[i]);
@@ -152,11 +151,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             const fx = gsap.quickTo(cursor, 'x', { duration: 0.3, ease: 'power2.out' });
             const fy = gsap.quickTo(cursor, 'y', { duration: 0.3, ease: 'power2.out' });
             const lean = gsap.quickTo(cursorIcon, 'rotation', { duration: 0.6, ease: 'sine.out' });
-            // The badge trails behind the cursor, opposite to its direction of travel, with a longer lag.
-            const bx = gsap.quickTo(badge, 'x', { duration: 0.55, ease: 'power2.out' });
-            const by = gsap.quickTo(badge, 'y', { duration: 0.55, ease: 'power2.out' });
-            const BESIDE = { x: 28, y: -1 };
-            gsap.set(badge, BESIDE);
             // 0 = parked by the hub, 1 = riding the highlight. The cursor waits for the highlight to come
             // round to the point on the orbit nearest its resting spot, then blends onto it so the two
             // meet there — no dash across the diagram to catch it.
@@ -192,12 +186,6 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                     gsap.set(cursor, { x: t.x * phase.mix, y: t.y * phase.mix });
                   }
                   lean(ang * (180 / Math.PI) * 0.25 * phase.mix);
-                  const bw = badge.offsetWidth;
-                  const bh = badge.offsetHeight;
-                  const back = bw / 2 + 22;
-                  const behind = { x: TIP.x - Math.cos(ang) * back - bw / 2, y: TIP.y - Math.sin(ang) * back - bh / 2 };
-                  bx(BESIDE.x + (behind.x - BESIDE.x) * phase.mix);
-                  by(BESIDE.y + (behind.y - BESIDE.y) * phase.mix);
                 }
                 stations.forEach((s, i) => {
                   const ahead = (((head - s) % len) + len) % len; // how far past the marker the edge is
@@ -212,6 +200,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             });
 
             gsap.to(hub, { scale: 1.04, duration: 2.6, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' });
+            bob(gsap, badge, 2, 3.4, 0.6);
             gsap.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
             groups.forEach((g, i) => bob(gsap, g, 4, 3.2 + i * 0.5, i * 0.7));
             all(orbit, '.fs__chip').forEach((c, i) => bob(gsap, c, 3, 3.6 + i * 0.4, 0.5 + i));

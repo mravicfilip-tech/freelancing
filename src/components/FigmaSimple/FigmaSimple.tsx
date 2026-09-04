@@ -62,9 +62,9 @@ export function FigmaSimple() {
             <div className="fs__hub" style={{ left: 717.15, top: 233 }}>
               <img src={A('imgGroup3')} alt="" width={68.7} height={35.5} />
             </div>
+            <span className="fs__badge" style={{ left: 870, top: 307 }}>Fast &amp; reliable payments</span>
             <div className="fs__cursor" style={{ left: 842, top: 308 }}>
               <img className="fs__cursorIcon" src={A('imgCursor2StreamlineNova')} alt="" width={24} height={24} />
-              <span className="fs__badge">Fast &amp; reliable payments</span>
             </div>
 
             <Coins id="stable" label="Stablecoins" icons={['imgGroup', 'imgFlatColor1', 'imgFlatColor2']} x={495.65} y={146.59} />

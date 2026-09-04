@@ -94,16 +94,14 @@
   width: 24px;
   height: 24px;
 }
+/* A white halo, as system cursors have, so it stays distinct over whatever it crosses. */
 .fs__cursorIcon {
   display: block;
-  filter: drop-shadow(0 2px 3px rgba(18, 36, 51, 0.25));
+  filter: drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 1.2px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
 }
-/* Beside the cursor at rest; the motion moves it behind the cursor once it rides the orbit. */
+/* Parked beside the hub, where the cursor rests before it rides the orbit. */
 .fs__badge {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(28px, -1px);
+  z-index: 5;
   padding: 4px 12px;
   border-radius: 46px;
   background: var(--fs-indigo);

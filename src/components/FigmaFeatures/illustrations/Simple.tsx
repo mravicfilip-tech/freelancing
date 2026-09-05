@@ -17,17 +17,12 @@ export function Simple() {
         <i />
       </span>
 
-      {/* Dashed rails from each processor into the Remittix hub; the chosen one carries the route. */}
+      {/* One dashed rail from the front processor slot into the Remittix hub; whoever sits there routes. */}
       <svg className="il-simple__rails" viewBox="0 0 747 334" width={747} height={334} style={{ left: 0, top: 0 }} aria-hidden="true">
-        <path className="il-simple__rail" d="M297 63 C 297 112, 284 142, 278 166" />
-        <path className="il-simple__rail" d="M236 116 C 246 140, 252 158, 255 172" />
         <path className="il-simple__rail" d="M190 166 C 210 172, 228 182, 243 189" />
       </svg>
       <Strokes className="il-simple__lines" svg={lines} x={132} y={138} w={272} h={121.75} />
       <i className="il-simple__beam" />
-      <i className="il-simple__railDot" style={{ left: 331, top: 27 }} />
-      <i className="il-simple__railDot" style={{ left: 249, top: 76 }} />
-      <i className="il-simple__railDot" style={{ left: 184, top: 147 }} />
 
       <div className="il-simple__btc il-simple__node" style={{ left: 17, top: 239 }}>
         <img src={B('imgFrame2085662026.svg')} alt="" width={30.8} height={30.8} />
@@ -154,8 +149,7 @@ const scene = (gsap: G, il: HTMLElement) => {
     len,
     glow,
     logos: all(il, '.il-simple__logo'),
-    rails: all<SVGPathElement>(il, '.il-simple__rail'),
-    railDots: all(il, '.il-simple__railDot'),
+    rail: one<SVGPathElement>(il, '.il-simple__rail'),
     beam: one(il, '.il-simple__beam'),
     btc: one(il, '.il-simple__btc'),
     coin: one(il, '.il-simple__btc img'),
@@ -174,7 +168,7 @@ type Scene = ReturnType<typeof scene>;
 const sceneOf = (gsap: G, il: HTMLElement): Scene => {
   const sc: Scene = scene(gsap, il);
   sc.hubAt = hubFraction(sc);
-  sc.rails.forEach((r: SVGPathElement) => (r.style.opacity = String(RAIL_DIM)));
+  sc.rail.style.opacity = String(RAIL_DIM);
   return sc;
 };
 
@@ -217,32 +211,76 @@ const hubFraction = (sc: Scene) => {
   }
   return best;
 };
-/** A rail is queried: the pill glows, its rail turns indigo and its dashes flow out from the hub. */
-const engage = (story: TL, sc: Scene, i: number, t: number, duration: number) =>
+
+/**
+ * The processors sit in three slots around the hub (the design's stripe, coinbase and wise
+ * positions, as pill centres). The last slot is the front: it is wired to the hub and routes the
+ * payment. Between payments the carousel turns, so the next processor comes to the front.
+ */
+const SLOTS = [
+  { x: 297, y: 47 },
+  { x: 202, y: 98 },
+  { x: 151, y: 166 },
+];
+const FRONT = 2;
+/** A curved move from one slot to another, bowing away from the hub. */
+const arc = (from: { x: number; y: number }, to: { x: number; y: number }) => {
+  const mx = (from.x + to.x) / 2;
+  const my = (from.y + to.y) / 2;
+  const dx = mx - HUB.x;
+  const dy = my - HUB.y;
+  const d = Math.hypot(dx, dy) || 1;
+  return { x: mx + (dx / d) * 22, y: my + (dy / d) * 22 };
+};
+/** Carousel state: which processor (0 stripe, 1 coinbase, 2 wise) sits in each slot. */
+const carousel = (gsap: G, sc: Scene) => {
+  const inSlot = [0, 1, 2];
+  const pos = sc.logos.map((_, i) => ({ ...SLOTS[i] })); // each logo's current centre
+  return {
+    front: () => inSlot[FRONT],
+    /** Every processor advances one slot, all at once, along arcs around the hub. */
+    turn(duration = 1.3) {
+      const tl = gsap.timeline();
+      const next = [inSlot[2], inSlot[0], inSlot[1]]; // the front goes back to the far slot
+      next.forEach((logo, slot) => {
+        const from = pos[logo];
+        const to = SLOTS[slot];
+        const via = arc(from, to);
+        const home = SLOTS[logo]; // the logo's design position, which its transform is relative to
+        tl.to(sc.logos[logo], { motionPath: { path: [{ x: from.x - home.x, y: from.y - home.y }, { x: via.x - home.x, y: via.y - home.y }, { x: to.x - home.x, y: to.y - home.y }], curviness: 1.2 }, duration, ease: 'power3.inOut' }, 0);
+        pos[logo] = { ...to };
+      });
+      for (let k = 0; k < 3; k++) inSlot[k] = next[k];
+      return tl;
+    },
+  };
+};
+
+/** The front processor takes the route: it glows and the rail flows indigo toward the hub. */
+const engage = (story: TL, sc: Scene, logo: number, t: number, duration: number) =>
   story
-    .to(sc.logos[i], { ...LIT, duration: 0.3, ease: 'power2.out' }, t)
-    .to(sc.rails[i], { stroke: RAIL_LIVE, opacity: 1, duration: 0.25 }, t)
-    .to(sc.rails[i], { strokeDashoffset: `+=${Math.round(duration * 26)}`, duration, ease: 'none' }, t);
-/** The rail lets go. */
-const disengage = (story: TL, sc: Scene, i: number, t: number) =>
-  story.to(sc.logos[i], { ...UNLIT, duration: 0.6, ease: 'power2.inOut' }, t).to(sc.rails[i], { stroke: RAIL_REST, opacity: RAIL_DIM, duration: 0.6 }, t);
-/** The hub asks a processor: a light runs up the rail to the pill, and the pill answers with a light back. */
-const query = (story: TL, sc: Scene, i: number, t: number) =>
+    .to(sc.logos[logo], { ...LIT, duration: 0.3, ease: 'power2.out' }, t)
+    .to(sc.rail, { stroke: RAIL_LIVE, opacity: 1, duration: 0.25 }, t)
+    .to(sc.rail, { strokeDashoffset: `-=${Math.round(duration * 26)}`, duration, ease: 'none' }, t);
+const disengage = (story: TL, sc: Scene, logo: number, t: number) =>
+  story.to(sc.logos[logo], { ...UNLIT, duration: 0.6, ease: 'power2.inOut' }, t).to(sc.rail, { stroke: RAIL_REST, opacity: RAIL_DIM, duration: 0.6 }, t);
+/** The hub asks the front processor: a light runs up the rail, and the answer comes back. */
+const query = (story: TL, sc: Scene, t: number) =>
   story
     .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.12 }, t)
-    .to(sc.beam, { motionPath: { path: sc.rails[i], align: sc.rails[i], alignOrigin: [0.5, 0.5], start: 1, end: 0 }, duration: 0.45, ease: 'power2.out' }, t)
-    .to(sc.beam, { opacity: 0, duration: 0.1 }, t + 0.5)
-    .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.1 }, t + 0.75)
-    .to(sc.beam, { motionPath: { path: sc.rails[i], align: sc.rails[i], alignOrigin: [0.5, 0.5], start: 0, end: 1 }, duration: 0.4, ease: 'power2.in' }, t + 0.75)
-    .to(sc.beam, { opacity: 0, scale: 0.4, duration: 0.1 }, t + 1.1)
-    .fromTo(sc.halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.8, ease: 'power2.out', transformOrigin: '50% 50%' }, t + 1.15);
+    .to(sc.beam, { motionPath: { path: sc.rail, align: sc.rail, alignOrigin: [0.5, 0.5], start: 1, end: 0 }, duration: 0.4, ease: 'power2.out' }, t)
+    .to(sc.beam, { opacity: 0, duration: 0.1 }, t + 0.45)
+    .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.1 }, t + 0.65)
+    .to(sc.beam, { motionPath: { path: sc.rail, align: sc.rail, alignOrigin: [0.5, 0.5], start: 0, end: 1 }, duration: 0.35, ease: 'power2.in' }, t + 0.65)
+    .to(sc.beam, { opacity: 0, scale: 0.4, duration: 0.1 }, t + 0.95)
+    .fromTo(sc.halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.8, ease: 'power2.out', transformOrigin: '50% 50%' }, t + 1.0);
 /** The packet runs a stretch of the main line with a highlight ahead of it. */
 const run = (story: TL, sc: Scene, dot: SVGCircleElement, from: number, to: number, t: number, duration: number, ease: string) =>
   story
     .set(dot, { opacity: 1 }, t)
     .to(dot, { motionPath: { path: sc.path, align: sc.path, alignOrigin: [0.5, 0.5], start: from, end: to }, duration, ease }, t)
     .set(sc.glow, { opacity: 1 }, t)
-    .fromTo(sc.glow, { strokeDashoffset: sc.len + 34 - from * sc.len }, { strokeDashoffset: sc.len + 34 - to * sc.len - 34, duration, ease }, t - 0.04)
+    .fromTo(sc.glow, { strokeDashoffset: sc.len + 34 - from * sc.len }, { strokeDashoffset: sc.len - to * sc.len, duration, ease }, t - 0.04)
     .to(sc.glow, { opacity: 0, duration: 0.2 }, t + duration - 0.1);
 /** The exchange turns and the receipt takes the payment: rows ripple, figures roll, the badge blinks, the toast nods. */
 const land = (story: TL, sc: Scene, t: number, add = 10) =>
@@ -252,147 +290,157 @@ const land = (story: TL, sc: Scene, t: number, add = 10) =>
     .add(() => sc.book.settle(add), t + 0.1)
     .fromTo(sc.badgeDot, { opacity: 1 }, { opacity: 0.15, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, t + 0.2)
     .fromTo(sc.toast, { y: 0 }, { y: -3, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 0.5);
-/**
- * The whole journey: the coin sends, the packet runs to the hub, the hub queries a processor up
- * its rail and gets an answer back, then the packet carries on to the receipt and lands.
- */
-const journey = (story: TL, sc: Scene, dot: SVGCircleElement, rail: number, t: number) => {
+/** One payment through the front processor: send, reach the hub, ask and be answered, carry on, land. */
+const payment = (b: TL, sc: Scene, dot: SVGCircleElement, logo: number, t = 0) => {
   const f = sc.hubAt;
-  story.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, t);
-  run(story, sc, dot, 0, f, t + 0.2, 0.8, 'power2.in');
-  story.to(dot, { opacity: 0, duration: 0.15 }, t + 0.95);
-  engage(story, sc, rail, t + 1.0, 1.4);
-  query(story, sc, rail, t + 1.0);
-  run(story, sc, dot, f, 1, t + 2.25, 0.8, 'power2.out');
-  story.to(dot, { opacity: 0, duration: 0.15 }, t + 3.0);
-  disengage(story, sc, rail, t + 2.5);
-  land(story, sc, t + 3.05);
-  return story;
+  b.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, t);
+  run(b, sc, dot, 0, f, t + 0.2, 0.8, 'power2.in');
+  b.to(dot, { opacity: 0, duration: 0.15 }, t + 0.95);
+  engage(b, sc, logo, t + 1.0, 1.2);
+  query(b, sc, t + 1.0);
+  run(b, sc, dot, f, 1, t + 2.05, 0.8, 'power2.out');
+  b.to(dot, { opacity: 0, duration: 0.15 }, t + 2.8);
+  disengage(b, sc, logo, t + 2.3);
+  land(b, sc, t + 2.85);
+  return t + 3.4;
 };
 
 simpleMotion.variants = [
   {
-    name: 'Routed',
-    blurb: 'One journey: the coin sends, the packet runs to the hub and waits while the hub asks a processor up its rail and gets an answer back, then it carries on to the receipt and lands. A different rail each time.',
+    name: 'Carousel',
+    blurb: 'The processors sit around the hub and the front one is wired to it. A payment runs to the hub, the front processor is asked and answers, the payment lands, then the carousel turns smoothly so the next processor comes to the front.',
     idle(gsap, il) {
       const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
-      let n = 0;
+      const car = carousel(gsap, sc);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
-      story.add(() => journey(gsap.timeline(), sc, dot, n, 0), 0);
-      story.to({}, { duration: 3.8 }, 0); // the beat's length; the journey itself is built when it runs
-      idle.add(story, 0);
-      return idle;
-    },
-  },
-  {
-    name: 'Best rate',
-    blurb: 'At the hub all three processors are asked at once: every rail flows and every pill glows, then two dim and the best one holds while its answer returns, and the packet takes that route on to the receipt.',
-    idle(gsap, il) {
-      const sc = sceneOf(gsap, il);
-      const dot = traveller(sc.svg, '#4042d1', 3.5);
-      let n = 0;
-      const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 1.6, delay: 1.2 });
       story.add(() => {
         const b = gsap.timeline();
-        b.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0);
-        run(b, sc, dot, 0, sc.hubAt, 0.2, 0.8, 'power2.in');
-        b.to(dot, { opacity: 0, duration: 0.15 }, 0.95);
-        [0, 1, 2].forEach((i) => engage(b, sc, i, 1.0 + i * 0.08, 0.9));
-        [0, 1, 2].filter((i) => i !== n).forEach((i) => disengage(b, sc, i, 1.7));
-        query(b, sc, n, 1.75);
-        run(b, sc, dot, sc.hubAt, 1, 3.0, 0.8, 'power2.out');
-        b.to(dot, { opacity: 0, duration: 0.15 }, 3.75);
-        disengage(b, sc, n, 3.2);
-        land(b, sc, 3.8);
+        const end = payment(b, sc, dot, car.front());
+        b.add(car.turn(1.3), end + 0.3);
       }, 0);
-      story.to({}, { duration: 4.5 }, 0);
+      story.to({}, { duration: 5.3 }, 0);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Split',
-    blurb: 'A larger payment splits at the hub: two processors are queried and both answer, two packets leave the hub a beat apart and the receipt takes them one after another.',
-    idle(gsap, il) {
-      const sc = sceneOf(gsap, il);
-      const dots = [traveller(sc.svg, '#4042d1', 3.5), traveller(sc.svg, '#4042d1', 3.5)];
-      let n = 0;
-      const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
-      story.add(() => {
-        const a = n;
-        const c = (n + 1) % 3;
-        const b = gsap.timeline();
-        b.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0);
-        run(b, sc, dots[0], 0, sc.hubAt, 0.2, 0.8, 'power2.in');
-        b.to(dots[0], { opacity: 0, duration: 0.15 }, 0.95);
-        engage(b, sc, a, 1.0, 1.4);
-        engage(b, sc, c, 1.2, 1.4);
-        query(b, sc, a, 1.0);
-        b.add(() => {
-          const q = gsap.timeline();
-          query(q, sc, c, 0);
-        }, 1.35);
-        run(b, sc, dots[0], sc.hubAt, 1, 2.5, 0.8, 'power2.out');
-        run(b, sc, dots[1], sc.hubAt, 1, 2.85, 0.8, 'power2.out');
-        b.to(dots[0], { opacity: 0, duration: 0.15 }, 3.25).to(dots[1], { opacity: 0, duration: 0.15 }, 3.6);
-        disengage(b, sc, a, 2.7);
-        disengage(b, sc, c, 2.9);
-        land(b, sc, 3.3, 10);
-        land(b, sc, 3.7, 10);
-      }, 0);
-      story.to({}, { duration: 4.6 }, 0);
-      idle.add(story, 0);
-      return idle;
-    },
-  },
-  {
-    name: 'Live receipt',
-    blurb: 'The routed journey with the receipt reporting live: the badge drops to PENDING as the coin sends, "Arrived in" counts up while the packet travels and the processor answers, and everything settles on landing.',
+    name: 'Carousel + compare',
+    blurb: 'Before routing, the hub compares: all three processors glow briefly in turn, then the front one holds and is asked; the payment lands and the carousel turns for the next.',
     idle(gsap, il) {
       const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
+      const car = carousel(gsap, sc);
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 1.6, delay: 1.2 });
+      story.add(() => {
+        const b = gsap.timeline();
+        sc.logos.forEach((l, i) => b.fromTo(l, { ...UNLIT }, { ...LIT, duration: 0.25, ease: 'power2.out', yoyo: true, repeat: 1, repeatDelay: 0.1 }, i * 0.22));
+        const end = payment(b, sc, dot, car.front(), 0.7);
+        b.add(car.turn(1.3), end + 0.3);
+      }, 0);
+      story.to({}, { duration: 6.0 }, 0);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Orbit',
+    blurb: 'The processors drift around the hub in a slow, continuous orbit, and whichever is at the front when a payment arrives is the one asked. Constant gentle motion, a payment every few seconds.',
+    idle(gsap, il) {
+      const sc = sceneOf(gsap, il);
+      const dot = traveller(sc.svg, '#4042d1', 3.5);
+      const idle = ambient(gsap, il);
+      // Each processor rides a circle around the hub through its own design position.
+      const angles = sc.logos.map((_, i) => Math.atan2(SLOTS[i].y - HUB.y, SLOTS[i].x - HUB.x));
+      const radii = sc.logos.map((_, i) => Math.hypot(SLOTS[i].x - HUB.x, SLOTS[i].y - HUB.y));
+      const spin = { a: 0 };
+      idle.to(spin, {
+        a: Math.PI * 2,
+        duration: 48,
+        ease: 'none',
+        repeat: -1,
+        onUpdate: () => {
+          sc.logos.forEach((l, i) => {
+            const a = angles[i] - spin.a; // clockwise, as the line flows
+            gsap.set(l, { x: HUB.x + Math.cos(a) * radii[i] - SLOTS[i].x, y: HUB.y + Math.sin(a) * radii[i] - SLOTS[i].y });
+          });
+        },
+      }, 0);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 2.2, delay: 1.2 });
+      story.add(() => {
+        // The processor nearest the front slot right now routes; the rail is redrawn to it.
+        const frontAngle = Math.atan2(SLOTS[FRONT].y - HUB.y, SLOTS[FRONT].x - HUB.x);
+        let best = 0;
+        let bestD = Infinity;
+        sc.logos.forEach((_, i) => {
+          const a = angles[i] - spin.a;
+          const d = Math.abs(Math.atan2(Math.sin(a - frontAngle), Math.cos(a - frontAngle)));
+          if (d < bestD) { bestD = d; best = i; }
+        });
+        const a = angles[best] - spin.a;
+        const px = HUB.x + Math.cos(a) * radii[best];
+        const py = HUB.y + Math.sin(a) * radii[best];
+        const ex = HUB.x + Math.cos(a) * 33;
+        const ey = HUB.y + Math.sin(a) * 33;
+        sc.rail.setAttribute('d', `M${px.toFixed(1)} ${py.toFixed(1)} L ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+        payment(gsap.timeline(), sc, dot, best);
+      }, 0);
+      story.to({}, { duration: 3.4 }, 0);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Carousel + live receipt',
+    blurb: 'The carousel, with the receipt reporting live: the badge drops to PENDING as the coin sends, "Arrived in" counts up while the front processor answers, and it all settles on landing before the carousel turns.',
+    idle(gsap, il) {
+      const sc = sceneOf(gsap, il);
+      const dot = traveller(sc.svg, '#4042d1', 3.5);
+      const car = carousel(gsap, sc);
       const badgeText = sc.badge.lastChild as Text;
-      let n = 0;
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 1.6, delay: 1.2 });
       story.add(() => {
         const timer = { t: 0 };
         const b = gsap.timeline();
         b.add(() => { badgeText.textContent = 'Pending'; }, 0);
         b.fromTo(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d' }, { backgroundColor: '#f3f4f6', borderColor: '#e2e5e9', color: '#7c858d', duration: 0.3 }, 0);
-        b.fromTo(timer, { t: 0 }, { t: 4.2, duration: 2.9, ease: 'none', onUpdate: () => { sc.book.arrived.textContent = `${timer.t.toFixed(1)} sec`; } }, 0.2);
-        journey(b, sc, dot, n, 0);
-        b.add(() => { badgeText.textContent = 'Settled'; }, 3.05);
-        b.to(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d', duration: 0.3 }, 3.05);
+        b.fromTo(timer, { t: 0 }, { t: 4.2, duration: 2.7, ease: 'none', onUpdate: () => { sc.book.arrived.textContent = `${timer.t.toFixed(1)} sec`; } }, 0.2);
+        const end = payment(b, sc, dot, car.front());
+        b.add(() => { badgeText.textContent = 'Settled'; }, 2.85);
+        b.to(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d', duration: 0.3 }, 2.85);
+        b.add(car.turn(1.3), end + 0.3);
       }, 0);
-      story.to({}, { duration: 3.8 }, 0);
+      story.to({}, { duration: 5.3 }, 0);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Throughput',
-    blurb: 'Steady volume: a packet leaves every couple of seconds and passes straight through, the hub answering each with a quick rail flash on alternating processors, and the receipt climbs €10 on each landing.',
+    name: 'Carousel + stream',
+    blurb: 'Volume: packets pass straight through every couple of seconds, each routed by the front processor with a quick rail flash, and after every third the carousel turns to the next processor.',
     idle(gsap, il) {
       const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
-      let n = 0;
+      const car = carousel(gsap, sc);
+      let k = 0;
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 0.9, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 0.7, delay: 1.2 });
       story.add(() => {
         const b = gsap.timeline();
+        const logo = car.front();
         run(b, sc, dot, 0, 1, 0, 1.5, 'power1.inOut');
         b.to(dot, { opacity: 0, duration: 0.15 }, 1.45);
-        engage(b, sc, n, 0.55, 0.6);
+        engage(b, sc, logo, 0.5, 0.7);
         b.fromTo(sc.halo, { scale: 1, opacity: 0.45 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.7);
-        disengage(b, sc, n, 1.2);
+        disengage(b, sc, logo, 1.3);
         land(b, sc, 1.55);
+        k += 1;
+        if (k % 3 === 0) b.add(car.turn(1.2), 2.2);
       }, 0);
-      story.to({}, { duration: 2.2 }, 0);
+      story.to({}, { duration: 2.4 }, 0);
       idle.add(story, 0);
       return idle;
     },

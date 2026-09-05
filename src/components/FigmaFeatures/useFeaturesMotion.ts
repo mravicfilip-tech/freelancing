@@ -15,7 +15,7 @@ import { MOTION } from './illustrations';
 /** Which loop each illustration runs, by stage id (index into its `variants`). */
 export type MotionPicks = Partial<Record<string, number>>;
 /** The chosen loops for the live page (0-based indices into each illustration's variants). */
-export const DEFAULT_PICKS: MotionPicks = { pay: 1, fx: 1, simple: 0, fast: 0, ui: 0 };
+export const DEFAULT_PICKS: MotionPicks = { pay: 1, fx: 1, simple: 0, fast: 0, ui: 2 };
 
 export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: MotionPicks = {}) {
   useEffect(() => {

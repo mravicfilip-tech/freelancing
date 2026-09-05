@@ -382,7 +382,7 @@
   opacity: 0;
 }
 .il-simple__logo {
-  will-change: filter;
+  will-change: transform, filter;
 }
 /* A satellite riding the outer orbit ring (orbit variant). */
 .il-simple__orbit {
@@ -585,6 +585,24 @@
 }
 .il-fast__outlineRun {
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+}
+/* The line lighting up in one sweep, and the speed streaks behind the bolt. */
+.il-fast__lineGlow {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0.2), #b3b5f5 40%, #4042d1);
+  box-shadow: 0 0 8px rgba(179, 181, 245, 0.8);
+  opacity: 0;
+  transform-origin: 0 50%;
+  will-change: transform, opacity;
+}
+.il-fast__streak {
+  width: 46px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0), rgba(179, 181, 245, 0.9));
+  opacity: 0;
+  will-change: transform, opacity;
 }
 /* The ring the bolt sends out, and the small bolt that can glide the wire. */
 .il-fast__halo {

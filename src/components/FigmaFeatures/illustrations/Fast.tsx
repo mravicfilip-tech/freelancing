@@ -1,12 +1,12 @@
 import outline from './svg/boltOutline.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
-import { one, wipe, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
+import { all, one, wipe, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
  * "Super fast" (Figma 2409:2532, 710×440): a bolt between the local payment network and same-day
  * processing, over a lavender blob that fills the card's left. The dashed outline is a live vector
- * so its dashes can march, and the loops are built around the bolt symbol: it glows, charges,
- * redraws itself, and a small bolt glides the wire.
+ * so its dashes can march, and the loops are built for speed: every beat completes in under a
+ * second, a sweep along the wire, the bolt firing, the check turning.
  */
 export function Fast() {
   return (
@@ -17,6 +17,11 @@ export function Fast() {
       <span className="il-fast__line" style={{ left: 262, top: 192.7, width: 222 }} />
       <span className="il-fast__lineFill" style={{ left: 262, top: 192.2, width: 222 }} />
       <span className="il-fast__hl" style={{ left: 262, top: 191.7 }} />
+      <span className="il-fast__lineGlow" style={{ left: 262, top: 191.2, width: 222 }} />
+      {/* Speed streaks that whip past behind the bolt. */}
+      <span className="il-fast__streak" style={{ left: 300, top: 170 }} />
+      <span className="il-fast__streak" style={{ left: 290, top: 200 }} />
+      <span className="il-fast__streak" style={{ left: 306, top: 226 }} />
       <span className="il-fast__halo" style={{ left: 304.5, top: 144 }} />
       <span className="il-fast__flash" style={{ left: 274.5, top: 114 }} />
       <Layer className="il-fast__bolt" src={B('imgVector6.svg')} x={317.8} y={151} w={73.5} h={86.2} />
@@ -65,11 +70,12 @@ export const fastMotion: IllustrationMotion = {
 type G = Parameters<MotionVariant['idle']>[0];
 type TL = gsap.core.Timeline;
 const GLOW_OFF = 'drop-shadow(0 0 0px rgba(64, 66, 209, 0))';
-const GLOW_LOW = 'drop-shadow(0 0 10px rgba(64, 66, 209, 0.5))';
 const GLOW_HIGH = 'drop-shadow(0 0 18px rgba(64, 66, 209, 0.8))';
 
 const parts = (il: HTMLElement) => ({
   hl: one(il, '.il-fast__hl'),
+  lineGlow: one(il, '.il-fast__lineGlow'),
+  streaks: all(il, '.il-fast__streak'),
   halo: one(il, '.il-fast__halo'),
   fill: one(il, '.il-fast__lineFill'),
   bolt: one(il, '.il-fast__bolt'),
@@ -97,121 +103,118 @@ const trace = (idle: TL, p: P, lap = 3.2) => {
   run.setAttribute('stroke-dasharray', `26 ${len}`);
   run.classList.add('il-fast__outlineRun');
   p.outline.parentNode!.appendChild(run);
-  idle.fromTo(run, { strokeDashoffset: len + 26 }, { strokeDashoffset: -26 + 26 - len, duration: lap, ease: 'none', repeat: -1 }, 0);
+  idle.fromTo(run, { strokeDashoffset: len + 26 }, { strokeDashoffset: -len, duration: lap, ease: 'none', repeat: -1 }, 0);
   return run;
 };
 /** A shine sweeps diagonally across the bolt's shape. */
 const shine = (story: TL, p: P, t: number, duration = 0.7) => story.fromTo(p.sheen, { xPercent: -130 }, { xPercent: 130, duration, ease: 'power2.inOut' }, t);
-/** A quick, decisive pulse crosses the wire: it accelerates, and the bolt glows as it passes. */
-const pulse = (story: TL, p: P, t: number, duration = 0.6) =>
+/** The line lights in one fast sweep from the network to same-day, then fades. */
+const sweep = (story: TL, p: P, t: number, duration = 0.28) =>
   story
-    .fromTo(p.hl, { x: -40, opacity: 0 }, { opacity: 1, duration: 0.12 }, t)
-    .to(p.hl, { x: 222, duration, ease: 'power3.in' }, t)
-    .to(p.hl, { opacity: 0, duration: 0.15 }, t + duration - 0.1)
-    .to(p.bolt, { filter: GLOW_HIGH, duration: 0.15, ease: 'power2.out' }, t + duration * 0.45)
-    .to(p.bolt, { filter: GLOW_OFF, duration: 0.9, ease: 'power2.out' }, t + duration * 0.45 + 0.2);
-/** The payment lands: the end dot swells, the check turns over, the pill deepens for a moment. */
+    .fromTo(p.lineGlow, { scaleX: 0, opacity: 1 }, { scaleX: 1, duration, ease: 'power3.in', transformOrigin: '0% 50%' }, t)
+    .to(p.lineGlow, { opacity: 0, duration: 0.6, ease: 'power2.out' }, t + duration + 0.15);
+/** The bolt answers: a fast glow with a small breath. */
+const fire = (story: TL, p: P, t: number) =>
+  story
+    .to(p.bolt, { filter: GLOW_HIGH, duration: 0.12, ease: 'power2.out' }, t)
+    .to(p.bolt, { filter: GLOW_OFF, duration: 0.8, ease: 'power2.out' }, t + 0.15)
+    .fromTo(p.bolt, { scale: 1 }, { scale: 1.06, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, t);
+/** The payment lands: the end dot swells, the check turns, the pill deepens for a moment. */
 const land = (story: TL, p: P, t: number) =>
   story
-    .fromTo(p.dot, { scale: 1 }, { scale: 1.6, duration: 0.2, yoyo: true, repeat: 1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, t - 0.05)
-    .to(p.check, { rotation: '+=360', duration: 0.6, ease: 'power3.inOut', transformOrigin: '50% 50%' }, t)
-    .fromTo(p.same, { backgroundColor: '#b3b5f5' }, { backgroundColor: '#9b9ef0', duration: 0.2, ease: 'power2.out' }, t)
-    .to(p.same, { backgroundColor: '#b3b5f5', duration: 0.7, ease: 'power2.inOut' }, t + 0.25);
-/** A small bolt glides the wire from the network to the same-day dot. */
-const glide = (story: TL, p: P, t: number, duration = 1.2) =>
-  story
-    .fromTo(p.glide, { x: 0, y: -7, opacity: 0, rotation: -8, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' }, t)
-    .to(p.glide, { x: 222, duration, ease: 'power2.inOut' }, t)
-    .to(p.glide, { rotation: 8, duration, ease: 'sine.inOut' }, t)
-    .to(p.glide, { opacity: 0, scale: 0.7, duration: 0.2 }, t + duration - 0.15);
+    .fromTo(p.dot, { scale: 1 }, { scale: 1.6, duration: 0.18, yoyo: true, repeat: 1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, t - 0.05)
+    .to(p.check, { rotation: '+=360', duration: 0.5, ease: 'power3.inOut', transformOrigin: '50% 50%' }, t)
+    .fromTo(p.same, { backgroundColor: '#b3b5f5' }, { backgroundColor: '#9b9ef0', duration: 0.15, ease: 'power2.out' }, t)
+    .to(p.same, { backgroundColor: '#b3b5f5', duration: 0.6, ease: 'power2.inOut' }, t + 0.2);
+/** Speed streaks whip past behind the bolt, left to right. */
+const streaks = (story: TL, p: P, t: number) =>
+  p.streaks.forEach((sk, i) =>
+    story
+      .fromTo(sk, { x: -30, scaleX: 0.3, opacity: 0 }, { opacity: 0.9, scaleX: 1, duration: 0.1 }, t + i * 0.05)
+      .to(sk, { x: 120, duration: 0.42, ease: 'power3.in' }, t + i * 0.05)
+      .to(sk, { opacity: 0, duration: 0.12 }, t + i * 0.05 + 0.3),
+  );
+/** The network pill sends: a quick press. */
+const send = (story: TL, p: P, t: number) => story.fromTo(p.local, { scale: 1 }, { scale: 0.97, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '100% 50%' }, t);
 
 fastMotion.variants = [
   {
-    name: 'Trace',
-    blurb: 'A light keeps circling the dashed outline. Every few seconds a quick pulse crosses the wire, a shine sweeps the bolt as it passes through, and the check turns when it lands.',
+    name: 'Instant',
+    blurb: 'Speed as the effect: the network pill presses, the line lights in one fast sweep, the bolt fires and the check turns, all within a second, then the scene rests.',
     idle(gsap, il) {
       const p = parts(il);
       const idle = ambient(gsap, il);
-      trace(idle, p, 3.2);
       const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.5 });
-      pulse(story, p, 0, 0.6);
-      shine(story, p, 0.2, 0.7);
-      land(story, p, 0.62);
+      send(story, p, 0);
+      sweep(story, p, 0.1, 0.28);
+      fire(story, p, 0.22);
+      land(story, p, 0.4);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Shine',
-    blurb: 'The bolt is the hero: a shine sweeps across it with a soft glow, then the pulse it releases crosses the wire in an instant and the check turns. Nothing else moves.',
+    name: 'Speed lines',
+    blurb: 'Motion streaks whip past behind the bolt as the line sweeps and the bolt fires; the check turns as they clear. A quick, cinematic beat every few seconds.',
     idle(gsap, il) {
       const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.8, delay: 1.5 });
-      story.to(p.bolt, { filter: GLOW_LOW, duration: 0.5, ease: 'power2.out' }, 0);
-      shine(story, p, 0.1, 0.9);
-      pulse(story, p, 0.8, 0.5);
-      land(story, p, 1.32);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.5 });
+      send(story, p, 0);
+      streaks(story, p, 0.05);
+      sweep(story, p, 0.1, 0.3);
+      fire(story, p, 0.25);
+      land(story, p, 0.45);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Charge & release',
-    blurb: 'The wire fills slowly as the bolt gathers glow; when it is full the bolt shines and releases a fast pulse to same-day, the check turns, and the wire drains.',
+    name: 'Shockwave',
+    blurb: 'The bolt fires and a ring races out of it along with the line sweep, like a shockwave reaching same-day; the check turns as the ring passes it.',
     idle(gsap, il) {
       const p = parts(il);
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.5 });
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.5 });
+      fire(story, p, 0);
+      story.fromTo(p.halo, { scale: 0.6, opacity: 0.7 }, { scale: 3.2, opacity: 0, duration: 0.7, ease: 'power3.out', transformOrigin: '50% 50%' }, 0);
+      sweep(story, p, 0.02, 0.26);
+      land(story, p, 0.38);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Lean',
+    blurb: 'The bolt leans into the run: it tips forward and shines as the line sweeps past it, snaps back upright as the check turns. Physical, fast, still under a second.',
+    idle(gsap, il) {
+      const p = parts(il);
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.5 });
+      send(story, p, 0);
+      sweep(story, p, 0.1, 0.3);
       story
-        .fromTo(p.fill, { scaleX: 0, opacity: 1 }, { scaleX: 0.25, duration: 1.4, ease: 'power1.inOut', transformOrigin: '0% 50%' }, 0)
-        .fromTo(p.bolt, { filter: GLOW_OFF }, { filter: GLOW_LOW, duration: 1.4, ease: 'power2.in' }, 0);
-      shine(story, p, 1.3, 0.6);
-      story.to(p.fill, { scaleX: 1, duration: 0.45, ease: 'power3.in' }, 1.5);
-      story.to(p.bolt, { filter: GLOW_HIGH, duration: 0.15 }, 1.6).to(p.bolt, { filter: GLOW_OFF, duration: 1.0, ease: 'power2.out' }, 1.8);
-      land(story, p, 1.95);
-      story.to(p.fill, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 2.8);
+        .to(p.bolt, { rotation: -7, x: 6, duration: 0.18, ease: 'power3.out', transformOrigin: '50% 80%' }, 0.1)
+        .to(p.bolt, { rotation: 0, x: 0, duration: 0.55, ease: 'power3.inOut' }, 0.34);
+      shine(story, p, 0.12, 0.45);
+      fire(story, p, 0.24);
+      land(story, p, 0.42);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Heartbeat',
-    blurb: 'The bolt beats like a pulse, two quick glows then a rest, the wire brightening with each beat; every third beat the pulse runs through to same-day and the check turns.',
+    name: 'Trace + instant',
+    blurb: 'A light keeps circling the dashed outline between beats; the beat itself is the instant one: sweep, fire, check, under a second.',
     idle(gsap, il) {
       const p = parts(il);
       const idle = ambient(gsap, il);
-      const beat = (story: TL, t: number) =>
-        story
-          .to(p.bolt, { filter: GLOW_HIGH, duration: 0.12, ease: 'power2.out' }, t)
-          .to(p.bolt, { filter: GLOW_OFF, duration: 0.35, ease: 'power2.out' }, t + 0.14)
-          .to(p.bolt, { filter: GLOW_LOW, duration: 0.1, ease: 'power2.out' }, t + 0.3)
-          .to(p.bolt, { filter: GLOW_OFF, duration: 0.6, ease: 'power2.out' }, t + 0.42)
-          .fromTo(p.bolt, { scale: 1 }, { scale: 1.03, duration: 0.12, yoyo: true, repeat: 1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, t)
-          .fromTo(p.fill, { opacity: 0, scaleX: 1 }, { opacity: 0.5, duration: 0.12 }, t)
-          .to(p.fill, { opacity: 0, duration: 0.5 }, t + 0.16);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 1.2, delay: 1.5 });
-      beat(story, 0);
-      beat(story, 1.4);
-      beat(story, 2.8);
-      pulse(story, p, 2.85, 0.55);
-      land(story, p, 3.42);
-      idle.add(story, 0);
-      return idle;
-    },
-  },
-  {
-    name: 'Courier',
-    blurb: 'A small bolt glides the wire while the light traces the outline; the big bolt shines as the small one passes beneath it, and the check turns on arrival.',
-    idle(gsap, il) {
-      const p = parts(il);
-      const idle = ambient(gsap, il);
-      trace(idle, p, 3.6);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.5 });
-      glide(story, p, 0, 1.3);
-      shine(story, p, 0.35, 0.7);
-      story.to(p.bolt, { filter: GLOW_LOW, duration: 0.3 }, 0.45).to(p.bolt, { filter: GLOW_OFF, duration: 0.8 }, 0.8);
-      land(story, p, 1.25);
+      trace(idle, p, 3.4);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 1.5 });
+      send(story, p, 0);
+      sweep(story, p, 0.1, 0.28);
+      fire(story, p, 0.22);
+      land(story, p, 0.4);
       idle.add(story, 0);
       return idle;
     },

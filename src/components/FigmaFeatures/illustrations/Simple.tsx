@@ -123,6 +123,7 @@ const HUB = { x: 273, y: 197 };
 const LIT = { filter: 'brightness(1.25) drop-shadow(0 0 9px rgba(255,255,255,0.75))' };
 const UNLIT = { filter: 'brightness(1) drop-shadow(0 0 0px rgba(255,255,255,0))' };
 const RAIL_REST = 'rgba(255,255,255,0.7)';
+const RAIL_DIM = 0.45;
 const RAIL_LIVE = '#4042d1';
 
 /** Everything that moves between beats: the rings turn and the blob drifts. */
@@ -166,9 +167,16 @@ const scene = (gsap: G, il: HTMLElement) => {
     badgeDot: one(il, '.il-rc__badge img'),
     toast: one(il, '.il-toast'),
     book: ledger(gsap, il),
+    hubAt: 0,
   };
 };
 type Scene = ReturnType<typeof scene>;
+const sceneOf = (gsap: G, il: HTMLElement): Scene => {
+  const sc: Scene = scene(gsap, il);
+  sc.hubAt = hubFraction(sc);
+  sc.rails.forEach((r: SVGPathElement) => (r.style.opacity = String(RAIL_DIM)));
+  return sc;
+};
 
 /** The receipt state every variant advances: another €10, one more minute, a fresh arrival time. */
 function ledger(gsap: G, il: HTMLElement) {
@@ -193,31 +201,48 @@ function ledger(gsap: G, il: HTMLElement) {
   };
 }
 
-/** A rail takes the route: its pill glows, its dashes turn indigo and flow toward the hub. */
+/** Where along the main line the hub sits (fraction of its length), found once by sampling. */
+const hubFraction = (sc: Scene) => {
+  const target = { x: HUB.x - 132, y: HUB.y - 138 }; // hub centre in the line's own coordinates
+  let best = 0;
+  let bestD = Infinity;
+  for (let i = 0; i <= 400; i++) {
+    const s = (i / 400) * sc.len;
+    const q = sc.path.getPointAtLength(s);
+    const d = (q.x - target.x) ** 2 + (q.y - target.y) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = i / 400;
+    }
+  }
+  return best;
+};
+/** A rail is queried: the pill glows, its rail turns indigo and its dashes flow out from the hub. */
 const engage = (story: TL, sc: Scene, i: number, t: number, duration: number) =>
   story
-    .to(sc.logos[i], { ...LIT, duration: 0.35, ease: 'power2.out' }, t)
-    .to(sc.rails[i], { stroke: RAIL_LIVE, opacity: 1, duration: 0.3 }, t)
-    .to(sc.rails[i], { strokeDashoffset: `-=${Math.round(duration * 26)}`, duration, ease: 'none' }, t);
+    .to(sc.logos[i], { ...LIT, duration: 0.3, ease: 'power2.out' }, t)
+    .to(sc.rails[i], { stroke: RAIL_LIVE, opacity: 1, duration: 0.25 }, t)
+    .to(sc.rails[i], { strokeDashoffset: `+=${Math.round(duration * 26)}`, duration, ease: 'none' }, t);
 /** The rail lets go. */
 const disengage = (story: TL, sc: Scene, i: number, t: number) =>
-  story.to(sc.logos[i], { ...UNLIT, duration: 0.6, ease: 'power2.inOut' }, t).to(sc.rails[i], { stroke: RAIL_REST, duration: 0.6 }, t);
-/** A small light rides the rail from the pill into the hub, which answers with a ring. */
-const beam = (story: TL, sc: Scene, i: number, t: number, duration = 0.7) =>
+  story.to(sc.logos[i], { ...UNLIT, duration: 0.6, ease: 'power2.inOut' }, t).to(sc.rails[i], { stroke: RAIL_REST, opacity: RAIL_DIM, duration: 0.6 }, t);
+/** The hub asks a processor: a light runs up the rail to the pill, and the pill answers with a light back. */
+const query = (story: TL, sc: Scene, i: number, t: number) =>
   story
-    .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.15 }, t)
-    .to(sc.beam, { motionPath: { path: sc.rails[i], align: sc.rails[i], alignOrigin: [0.5, 0.5] }, duration, ease: 'power2.in' }, t)
-    .to(sc.beam, { opacity: 0, scale: 0.4, duration: 0.15 }, t + duration - 0.05)
-    .fromTo(sc.halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.9, ease: 'power2.out', transformOrigin: '50% 50%' }, t + duration);
-/** The packet runs the line, with a highlight just ahead of it; the coin spins as it sends. */
-const send = (story: TL, sc: Scene, dot: SVGCircleElement, t: number, duration = 1.4) =>
+    .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.12 }, t)
+    .to(sc.beam, { motionPath: { path: sc.rails[i], align: sc.rails[i], alignOrigin: [0.5, 0.5], start: 1, end: 0 }, duration: 0.45, ease: 'power2.out' }, t)
+    .to(sc.beam, { opacity: 0, duration: 0.1 }, t + 0.5)
+    .fromTo(sc.beam, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.1 }, t + 0.75)
+    .to(sc.beam, { motionPath: { path: sc.rails[i], align: sc.rails[i], alignOrigin: [0.5, 0.5], start: 0, end: 1 }, duration: 0.4, ease: 'power2.in' }, t + 0.75)
+    .to(sc.beam, { opacity: 0, scale: 0.4, duration: 0.1 }, t + 1.1)
+    .fromTo(sc.halo, { scale: 1, opacity: 0.5 }, { scale: 1.7, opacity: 0, duration: 0.8, ease: 'power2.out', transformOrigin: '50% 50%' }, t + 1.15);
+/** The packet runs a stretch of the main line with a highlight ahead of it. */
+const run = (story: TL, sc: Scene, dot: SVGCircleElement, from: number, to: number, t: number, duration: number, ease: string) =>
   story
-    .fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, t - 0.2)
     .set(dot, { opacity: 1 }, t)
-    .to(dot, { motionPath: { path: sc.path, align: sc.path, alignOrigin: [0.5, 0.5] }, duration, ease: 'power2.inOut' }, t)
-    .to(dot, { opacity: 0, duration: 0.2 }, t + duration - 0.05)
+    .to(dot, { motionPath: { path: sc.path, align: sc.path, alignOrigin: [0.5, 0.5], start: from, end: to }, duration, ease }, t)
     .set(sc.glow, { opacity: 1 }, t)
-    .fromTo(sc.glow, { strokeDashoffset: sc.len + 34 }, { strokeDashoffset: -34, duration, ease: 'power2.inOut' }, t - 0.06)
+    .fromTo(sc.glow, { strokeDashoffset: sc.len + 34 - from * sc.len }, { strokeDashoffset: sc.len + 34 - to * sc.len - 34, duration, ease }, t - 0.04)
     .to(sc.glow, { opacity: 0, duration: 0.2 }, t + duration - 0.1);
 /** The exchange turns and the receipt takes the payment: rows ripple, figures roll, the badge blinks, the toast nods. */
 const land = (story: TL, sc: Scene, t: number, add = 10) =>
@@ -227,121 +252,149 @@ const land = (story: TL, sc: Scene, t: number, add = 10) =>
     .add(() => sc.book.settle(add), t + 0.1)
     .fromTo(sc.badgeDot, { opacity: 1 }, { opacity: 0.15, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, t + 0.2)
     .fromTo(sc.toast, { y: 0 }, { y: -3, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 0.5);
+/**
+ * The whole journey: the coin sends, the packet runs to the hub, the hub queries a processor up
+ * its rail and gets an answer back, then the packet carries on to the receipt and lands.
+ */
+const journey = (story: TL, sc: Scene, dot: SVGCircleElement, rail: number, t: number) => {
+  const f = sc.hubAt;
+  story.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, t);
+  run(story, sc, dot, 0, f, t + 0.2, 0.8, 'power2.in');
+  story.to(dot, { opacity: 0, duration: 0.15 }, t + 0.95);
+  engage(story, sc, rail, t + 1.0, 1.4);
+  query(story, sc, rail, t + 1.0);
+  run(story, sc, dot, f, 1, t + 2.25, 0.8, 'power2.out');
+  story.to(dot, { opacity: 0, duration: 0.15 }, t + 3.0);
+  disengage(story, sc, rail, t + 2.5);
+  land(story, sc, t + 3.05);
+  return story;
+};
 
 simpleMotion.variants = [
   {
-    name: 'Payment',
-    blurb: 'One rail takes the route each beat: its pill glows and its dashed rail flows indigo into the hub, a light rides the rail in and the hub rings, then the packet runs the line and the receipt takes the payment.',
+    name: 'Routed',
+    blurb: 'One journey: the coin sends, the packet runs to the hub and waits while the hub asks a processor up its rail and gets an answer back, then it carries on to the receipt and lands. A different rail each time.',
     idle(gsap, il) {
-      const sc = scene(gsap, il);
+      const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
       let n = 0;
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
-      // The rail changes each beat, so its tweens are built when the beat runs.
-      story.add(() => {
-        const beat = gsap.timeline();
-        engage(beat, sc, n, 0, 1.6);
-        beam(beat, sc, n, 0.5, 0.7);
-        disengage(beat, sc, n, 2.6);
-      }, 0);
-      send(story, sc, dot, 1.3);
-      land(story, sc, 2.8);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      story.add(() => journey(gsap.timeline(), sc, dot, n, 0), 0);
+      story.to({}, { duration: 3.8 }, 0); // the beat's length; the journey itself is built when it runs
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Batch',
-    blurb: 'Three payments settle as a batch, one per rail: stripe, coinbase and wise light in turn, each rail flows and sends its light into the hub as its packet runs the line, and the receipt climbs €30.',
+    name: 'Best rate',
+    blurb: 'At the hub all three processors are asked at once: every rail flows and every pill glows, then two dim and the best one holds while its answer returns, and the packet takes that route on to the receipt.',
     idle(gsap, il) {
-      const sc = scene(gsap, il);
-      const dots = [0, 1, 2].map(() => traveller(sc.svg, '#4042d1', 3));
-      const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 1.2 });
-      dots.forEach((d, i) => {
-        const t = i * 0.55;
-        engage(story, sc, i, t, 1.4);
-        beam(story, sc, i, t + 0.15, 0.6);
-        send(story, sc, d, t + 0.45);
-        disengage(story, sc, i, t + 1.7);
-        land(story, sc, t + 1.9, 10);
-      });
-      idle.add(story, 0);
-      return idle;
-    },
-  },
-  {
-    name: 'Route search',
-    blurb: 'The route is negotiated: the rails flow one after another as the hub tries each, the winning rail holds its glow and sends its light in, then the payment runs the line to the receipt.',
-    idle(gsap, il) {
-      const sc = scene(gsap, il);
+      const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
+      let n = 0;
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.8, delay: 1.2 });
-      [0, 1].forEach((i) => {
-        engage(story, sc, i, i * 0.5, 0.5);
-        disengage(story, sc, i, i * 0.5 + 0.5);
-      });
-      engage(story, sc, 2, 1.0, 1.8);
-      beam(story, sc, 2, 1.3, 0.7);
-      send(story, sc, dot, 2.1);
-      land(story, sc, 3.6);
-      disengage(story, sc, 2, 3.4);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      story.add(() => {
+        const b = gsap.timeline();
+        b.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0);
+        run(b, sc, dot, 0, sc.hubAt, 0.2, 0.8, 'power2.in');
+        b.to(dot, { opacity: 0, duration: 0.15 }, 0.95);
+        [0, 1, 2].forEach((i) => engage(b, sc, i, 1.0 + i * 0.08, 0.9));
+        [0, 1, 2].filter((i) => i !== n).forEach((i) => disengage(b, sc, i, 1.7));
+        query(b, sc, n, 1.75);
+        run(b, sc, dot, sc.hubAt, 1, 3.0, 0.8, 'power2.out');
+        b.to(dot, { opacity: 0, duration: 0.15 }, 3.75);
+        disengage(b, sc, n, 3.2);
+        land(b, sc, 3.8);
+      }, 0);
+      story.to({}, { duration: 4.5 }, 0);
+      idle.add(story, 0);
+      return idle;
+    },
+  },
+  {
+    name: 'Split',
+    blurb: 'A larger payment splits at the hub: two processors are queried and both answer, two packets leave the hub a beat apart and the receipt takes them one after another.',
+    idle(gsap, il) {
+      const sc = sceneOf(gsap, il);
+      const dots = [traveller(sc.svg, '#4042d1', 3.5), traveller(sc.svg, '#4042d1', 3.5)];
+      let n = 0;
+      const idle = ambient(gsap, il);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      story.add(() => {
+        const a = n;
+        const c = (n + 1) % 3;
+        const b = gsap.timeline();
+        b.fromTo(sc.coin, { rotation: 0 }, { rotation: 360, duration: 0.7, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0);
+        run(b, sc, dots[0], 0, sc.hubAt, 0.2, 0.8, 'power2.in');
+        b.to(dots[0], { opacity: 0, duration: 0.15 }, 0.95);
+        engage(b, sc, a, 1.0, 1.4);
+        engage(b, sc, c, 1.2, 1.4);
+        query(b, sc, a, 1.0);
+        b.add(() => {
+          const q = gsap.timeline();
+          query(q, sc, c, 0);
+        }, 1.35);
+        run(b, sc, dots[0], sc.hubAt, 1, 2.5, 0.8, 'power2.out');
+        run(b, sc, dots[1], sc.hubAt, 1, 2.85, 0.8, 'power2.out');
+        b.to(dots[0], { opacity: 0, duration: 0.15 }, 3.25).to(dots[1], { opacity: 0, duration: 0.15 }, 3.6);
+        disengage(b, sc, a, 2.7);
+        disengage(b, sc, c, 2.9);
+        land(b, sc, 3.3, 10);
+        land(b, sc, 3.7, 10);
+      }, 0);
+      story.to({}, { duration: 4.6 }, 0);
       idle.add(story, 0);
       return idle;
     },
   },
   {
     name: 'Live receipt',
-    blurb: 'A rail takes the route and a status dot blinks beside its pill while the transfer is pending; the badge drops to PENDING, "Arrived in" counts up live as the packet travels, and all of it turns settled on landing.',
+    blurb: 'The routed journey with the receipt reporting live: the badge drops to PENDING as the coin sends, "Arrived in" counts up while the packet travels and the processor answers, and everything settles on landing.',
     idle(gsap, il) {
-      const sc = scene(gsap, il);
+      const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
       const badgeText = sc.badge.lastChild as Text;
-      const timer = { t: 0 };
       let n = 0;
       const idle = ambient(gsap, il);
-      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.8, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
-      story
-        .add(() => {
-          badgeText.textContent = 'Pending';
-          const beat = gsap.timeline();
-          engage(beat, sc, n, 0, 2.0);
-          beam(beat, sc, n, 0.2, 0.6);
-          beat.fromTo(sc.railDots[n], { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' }, 0);
-          beat.fromTo(sc.railDots[n], { opacity: 1 }, { opacity: 0.2, duration: 0.3, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 0.3);
-          beat.to(sc.railDots[n], { opacity: 0, scale: 0.5, duration: 0.3 }, 2.1);
-          disengage(beat, sc, n, 2.2);
-        }, 0)
-        .fromTo(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d' }, { backgroundColor: '#f3f4f6', borderColor: '#e2e5e9', color: '#7c858d', duration: 0.3 }, 0)
-        .fromTo(timer, { t: 0 }, { t: 4.2, duration: 1.7, ease: 'none', onUpdate: () => { sc.book.arrived.textContent = `${timer.t.toFixed(1)} sec`; } }, 0.5);
-      send(story, sc, dot, 0.5, 1.7);
-      story
-        .add(() => {
-          badgeText.textContent = 'Settled';
-        }, 2.25)
-        .to(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d', duration: 0.3 }, 2.25);
-      land(story, sc, 2.3);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 3.2, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      story.add(() => {
+        const timer = { t: 0 };
+        const b = gsap.timeline();
+        b.add(() => { badgeText.textContent = 'Pending'; }, 0);
+        b.fromTo(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d' }, { backgroundColor: '#f3f4f6', borderColor: '#e2e5e9', color: '#7c858d', duration: 0.3 }, 0);
+        b.fromTo(timer, { t: 0 }, { t: 4.2, duration: 2.9, ease: 'none', onUpdate: () => { sc.book.arrived.textContent = `${timer.t.toFixed(1)} sec`; } }, 0.2);
+        journey(b, sc, dot, n, 0);
+        b.add(() => { badgeText.textContent = 'Settled'; }, 3.05);
+        b.to(sc.badge, { backgroundColor: '#f1fbf6', borderColor: '#d9f1e6', color: '#02774d', duration: 0.3 }, 3.05);
+      }, 0);
+      story.to({}, { duration: 3.8 }, 0);
       idle.add(story, 0);
       return idle;
     },
   },
   {
-    name: 'Orbit',
-    blurb: 'The network idles: all three rails flow gently into the hub at different speeds, a satellite rides the outer ring, the hub breathes, and a faint packet drifts the line every ten seconds.',
+    name: 'Throughput',
+    blurb: 'Steady volume: a packet leaves every couple of seconds and passes straight through, the hub answering each with a quick rail flash on alternating processors, and the receipt climbs €10 on each landing.',
     idle(gsap, il) {
-      const sc = scene(gsap, il);
-      const dot = traveller(sc.svg, '#4042d1', 3);
+      const sc = sceneOf(gsap, il);
+      const dot = traveller(sc.svg, '#4042d1', 3.5);
+      let n = 0;
       const idle = ambient(gsap, il);
-      idle.to(one(il, '.il-simple__orbit'), { rotation: 360, duration: 24, repeat: -1, ease: 'none', transformOrigin: '50% 50%' }, 0);
-      idle.to(sc.hub, { scale: 1.03, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 0);
-      sc.rails.forEach((r, i) => idle.to(r, { strokeDashoffset: -14, duration: 1.6 + i * 0.5, ease: 'none', repeat: -1 }, 0));
-      const drift = gsap.timeline({ repeat: -1, repeatDelay: 8.5, delay: 3 });
-      drift.set(dot, { opacity: 0.6 }, 0).to(dot, { motionPath: { path: sc.path, align: sc.path, alignOrigin: [0.5, 0.5] }, duration: 2.4, ease: 'power1.inOut' }, 0).to(dot, { opacity: 0, duration: 0.3 }, 2.2);
-      idle.add(drift, 0);
+      const story = gsap.timeline({ repeat: -1, repeatDelay: 0.9, delay: 1.2, onRepeat: () => { n = (n + 1) % 3; } });
+      story.add(() => {
+        const b = gsap.timeline();
+        run(b, sc, dot, 0, 1, 0, 1.5, 'power1.inOut');
+        b.to(dot, { opacity: 0, duration: 0.15 }, 1.45);
+        engage(b, sc, n, 0.55, 0.6);
+        b.fromTo(sc.halo, { scale: 1, opacity: 0.45 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.7);
+        disengage(b, sc, n, 1.2);
+        land(b, sc, 1.55);
+      }, 0);
+      story.to({}, { duration: 2.2 }, 0);
+      idle.add(story, 0);
       return idle;
     },
   },
 ];
-void HUB;

@@ -562,6 +562,30 @@
   opacity: 0;
   will-change: transform;
 }
+/* A shine masked to the bolt's shape, and the light that runs its outline. */
+.il-fast__sheen {
+  overflow: hidden;
+  mask-image: url('/figma/bento/imgVector6.svg');
+  -webkit-mask-image: url('/figma/bento/imgVector6.svg');
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  pointer-events: none;
+}
+.il-fast__sheen i {
+  position: absolute;
+  left: 0;
+  top: -20%;
+  width: 100%;
+  height: 140%;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0) 70%);
+  transform: translateX(-130%);
+  will-change: transform;
+}
+.il-fast__outlineRun {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+}
 /* The ring the bolt sends out, and the small bolt that can glide the wire. */
 .il-fast__halo {
   width: 100px;
@@ -728,19 +752,6 @@
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
   will-change: transform;
 }
-/* The dashed connector from the link icon to the connected wallet. */
-.il-ui__connector {
-  z-index: 3;
-  overflow: visible;
-  pointer-events: none;
-}
-.il-ui__wire {
-  fill: none;
-  stroke: #4042d1;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  opacity: 0;
-}
 .il-ui__linkWrap {
   position: relative;
   display: block;
@@ -758,12 +769,35 @@
   background: #02774d;
   opacity: 0;
 }
-.il-ui__intro {
-  box-sizing: border-box;
-  width: 246px; /* 222 of copy plus the panel's 24px inset, which it reclaims to carry a tint */
-  margin-left: -24px;
-  padding-left: 24px;
-  border-radius: 12px 0 0 12px;
+/* The wallet's logo docking beside the link icon, and the progress bar under the heading. */
+.il-ui__avatar {
+  position: absolute;
+  left: 28px;
+  top: -2px;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform;
+}
+.il-ui__progress {
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: -4px;
+  border-radius: 1px;
+  background: rgba(44, 46, 49, 0.08);
+  opacity: 0;
+  overflow: hidden;
+}
+.il-ui__progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #4042d1;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.il-ui__intro p {
+  min-height: 3.2em;
 }
 /* The ring that bursts from the cursor's tip on a click, and the status dot beside a row. */
 .il-ui__click {

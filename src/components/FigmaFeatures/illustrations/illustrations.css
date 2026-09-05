@@ -347,6 +347,17 @@
   display: block;
   margin-top: 3px;
 }
+/* Dashed rails from the processors into the hub; the live one turns indigo and flows. */
+.il-simple__rails {
+  overflow: visible;
+  pointer-events: none;
+}
+.il-simple__rail {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
 /* A light that runs from a chosen rail into the hub, and the status dot beside a rail. */
 .il-simple__beam {
   z-index: 3;
@@ -371,7 +382,7 @@
   opacity: 0;
 }
 .il-simple__logo {
-  will-change: transform, filter;
+  will-change: filter;
 }
 /* A satellite riding the outer orbit ring (orbit variant). */
 .il-simple__orbit {
@@ -534,15 +545,6 @@
   height: 1px;
   background: #4042d1;
 }
-.il-fast__wash {
-  left: 0;
-  top: 0;
-  width: 710px;
-  height: 440px;
-  background: #fff;
-  opacity: 0;
-  pointer-events: none;
-}
 /* The dashed outline is a live vector: its dashes march and jump with the strikes. */
 .il-fast__outline svg path {
   vector-effect: non-scaling-stroke;
@@ -550,53 +552,30 @@
 .il-fast__bolt {
   will-change: transform, filter;
 }
-/* Current flowing along the wire: a moving dash pattern. */
-.il-fast__current {
-  height: 2px;
-  margin-top: -0.5px;
-  background: repeating-linear-gradient(90deg, #4042d1 0 9px, #c9caff 9px 14px);
-  background-size: 14px 2px;
+/* A soft light that passes along the wire. */
+.il-fast__hl {
+  width: 80px;
+  height: 3px;
+  margin-left: -40px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.95) 50%, rgba(179, 181, 245, 0) 100%);
   opacity: 0;
+  will-change: transform;
 }
-/* Lightning along the wire: a soft lavender glow under a thin white core, and a short branch. */
-.il-fast__lightning {
-  overflow: visible;
-  pointer-events: none;
-}
-.il-fast__lightning polyline {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* The ring the bolt sends out, and the small bolt that can glide the wire. */
+.il-fast__halo {
+  width: 100px;
+  height: 100px;
+  border: 1.5px solid rgba(64, 66, 209, 0.7);
+  border-radius: 50%;
   opacity: 0;
+  will-change: transform, opacity;
 }
-.il-fast__traceGlow {
-  stroke: #b3b5f5;
-  stroke-width: 6;
-  filter: blur(1.5px);
-}
-.il-fast__traceCore {
-  stroke: #fff;
-  stroke-width: 2.1;
-  filter: drop-shadow(0 0 3px #4042d1);
-}
-.il-fast__traceBranch {
-  stroke: #fff;
-  stroke-width: 1.1;
-  filter: drop-shadow(0 0 2px #4042d1);
-}
-/* Arcs that crackle around the bolt when it strikes. */
-.il-fast__arcs {
-  overflow: visible;
-  pointer-events: none;
-}
-.il-fast__arcs polyline {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.il-fast__glide {
+  margin: -7px 0 0 -6px;
   opacity: 0;
-  filter: drop-shadow(0 0 3px #b3b5f5);
+  filter: drop-shadow(0 0 4px rgba(64, 66, 209, 0.6));
+  will-change: transform;
 }
 .il-fast__lineFill {
   height: 2px;
@@ -710,6 +689,10 @@
 .il-ui__row img {
   display: block;
   border-radius: 50%;
+  will-change: filter;
+}
+.il-ui__row {
+  will-change: transform, background-color;
 }
 .il-ui__row--metamask {
   background: rgba(255, 141, 93, 0.24);
@@ -745,6 +728,43 @@
   filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
   will-change: transform;
 }
+/* The dashed connector from the link icon to the connected wallet. */
+.il-ui__connector {
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+}
+.il-ui__wire {
+  fill: none;
+  stroke: #4042d1;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.il-ui__linkWrap {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+.il-ui__linkOk {
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  background: #02774d;
+  opacity: 0;
+}
+.il-ui__intro {
+  box-sizing: border-box;
+  width: 246px; /* 222 of copy plus the panel's 24px inset, which it reclaims to carry a tint */
+  margin-left: -24px;
+  padding-left: 24px;
+  border-radius: 12px 0 0 12px;
+}
 /* The ring that bursts from the cursor's tip on a click, and the status dot beside a row. */
 .il-ui__click {
   z-index: 3;
@@ -759,17 +779,6 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
   opacity: 0;
   pointer-events: none;
-}
-.il-ui__ok {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  margin-top: -3.5px;
-  border-radius: 50%;
-  background: #4042d1;
-  opacity: 0;
 }
 /* The highlight that settles on a row as it is picked. */
 .il-ui__hi {

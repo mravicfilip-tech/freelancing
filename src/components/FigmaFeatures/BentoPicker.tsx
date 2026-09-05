@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FigmaFeatures } from './FigmaFeatures';
 import { MOTION } from './illustrations';
-import type { MotionPicks } from './useFeaturesMotion';
+import { DEFAULT_PICKS, type MotionPicks } from './useFeaturesMotion';
 import './BentoPicker.css';
 
 const CARDS: [string, string][] = [
@@ -30,9 +30,9 @@ export function picksFromParam(value: string | null): MotionPicks {
  * line at the bottom is what to send back, and it also works on the real page as `?bento=`.
  */
 export function BentoPicker() {
-  const [picks, setPicks] = useState<MotionPicks>(() => picksFromParam(new URLSearchParams(window.location.search).get('bento')));
+  const [picks, setPicks] = useState<MotionPicks>(() => ({ ...DEFAULT_PICKS, ...picksFromParam(new URLSearchParams(window.location.search).get('bento')) }));
   const [replay, setReplay] = useState(0);
-  const code = useMemo(() => CARDS.map(([id]) => (picks[id] ?? 0) + 1).join(','), [picks]);
+  const code = useMemo(() => CARDS.map(([id]) => (picks[id] ?? DEFAULT_PICKS[id] ?? 0) + 1).join(','), [picks]);
   const key = `${code}-${replay}`;
   return (
     <div className="bp">
@@ -40,7 +40,7 @@ export function BentoPicker() {
       <aside className="bp__panel" aria-label="Loop variants">
         {CARDS.map(([id, label]) => {
           const variants = MOTION[id].variants;
-          const v = picks[id] ?? 0;
+          const v = picks[id] ?? DEFAULT_PICKS[id] ?? 0;
           return (
             <section key={id} className="bp__group">
               <h4 className="bp__name">{label}</h4>

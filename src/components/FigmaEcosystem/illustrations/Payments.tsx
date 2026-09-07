@@ -19,6 +19,7 @@ const RUN = [
 export function Payments() {
   return (
     <Stage id="ec-payments" width={800} height={640} className="ec-il ec-run">
+      <div className="ec-zoom">
       <span className="ec-caption" style={{ left: 120, top: 118 }}>
         One run · five countries · five rails
       </span>
@@ -55,12 +56,24 @@ export function Payments() {
       <div className="ec-run__cursor" data-cursor>
         <img src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={24} height={24} />
       </div>
+      </div>
     </Stage>
   );
 }
 
 export const paymentsMotion: SceneMotion = {
-  build(tl, il, at) {
+  build(tl, il, at, gsap) {
+    // A scene can be shown again after its loop was cut mid-run: start from the run's rest state.
+    all(il, '.ec-run__box').forEach((b) => b.classList.remove('ec-run__box--on'));
+    all(il, '.ec-run__state').forEach((st) => {
+      st.textContent = 'Pending';
+      st.classList.remove('ec-run__state--paid');
+    });
+    one(il, '[data-sel]').textContent = '0 selected';
+    gsap.set(all(il, '[data-sel], [data-go]'), { opacity: 1, scale: 1, visibility: 'visible' });
+    gsap.set(one(il, '.ec-run__bar'), { width: 256, left: 272, borderRadius: 14, backgroundColor: '#122433' });
+    gsap.set(all(il, '[data-tick], [data-cursor], [data-ping]'), { opacity: 0 });
+    gsap.set(all(il, '.ec-run__box'), { scale: 1 });
     tl.from(one(il, '.ec-caption'), { ...RISE, y: 6 }, at);
     tl.from(one(il, '.ec-run__card'), { y: 22, opacity: 0, duration: 0.85, ease: EASE }, at + 0.08);
     tl.from(all(il, '.ec-run__row'), { ...RISE, y: 10, duration: 0.55, stagger: 0.07 }, at + 0.3);
@@ -76,7 +89,7 @@ export const paymentsMotion: SceneMotion = {
     const path = one<SVGPathElement>(il, '[data-tick] path');
     const cursor = one(il, '[data-cursor]');
     const ping = one(il, '[data-ping]');
-    const stage = one(il, '.ff__stage');
+    const zoom = one(il, '.ec-zoom');
     const WIDE = 256;
     const NARROW = 52;
     const LEFT = 272; // the wide bar's left edge
@@ -87,10 +100,10 @@ export const paymentsMotion: SceneMotion = {
     gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
     gsap.set(cursor, { x: PARK.x, y: PARK.y });
 
-    // Where a node sits in the stage's own 800x640 coordinates, whatever the stage is scaled to.
+    // Where a node sits in the scene's own 800x640 coordinates, whatever the stage and zoom scale it to.
     const centre = (node: Element) => {
-      const box = stage.getBoundingClientRect();
-      const scale = box.width / stage.offsetWidth || 1;
+      const box = zoom.getBoundingClientRect();
+      const scale = box.width / zoom.offsetWidth || 1;
       const r = node.getBoundingClientRect();
       return { x: (r.left + r.width / 2 - box.left) / scale, y: (r.top + r.height / 2 - box.top) / scale };
     };
@@ -131,6 +144,8 @@ export const paymentsMotion: SceneMotion = {
       // Send: the bar collapses to a disc and the tick draws itself.
       t.fromTo(go, { scale: 1 }, { scale: 0.95, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, SEND)
         .to([sel, go], { opacity: 0, duration: 0.18, ease: 'power2.in' }, SEND + 0.2)
+        // once faded, the labels leave the layout too, so nothing wider than the disc sits behind its clip
+        .set([sel, go], { visibility: 'hidden' }, SEND + 0.4)
         .to(bar, { width: NARROW, left: MID - NARROW / 2, borderRadius: 26, backgroundColor: '#02774d', duration: 0.52, ease: 'power3.inOut' }, SEND + 0.3)
         // the tick only starts once the box has finished collapsing around it
         .set(tick, { opacity: 1 }, SEND + 0.82)
@@ -156,6 +171,7 @@ export const paymentsMotion: SceneMotion = {
           sel.textContent = '0 selected';
           gsap.set(cursor, { x: PARK.x, y: PARK.y, scale: 1 });
         }, RESET + 0.3)
+        .set([sel, go], { visibility: 'visible' }, RESET + 0.5)
         .to([sel, go], { opacity: 1, duration: 0.3, ease: 'power2.out' }, RESET + 0.5);
     }, 0);
     beat.to({}, { duration: 7.0 }, 0);

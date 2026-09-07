@@ -103,6 +103,9 @@
   background: #122433;
   color: #fff;
   overflow: hidden;
+  /* its own layer, so the animated clip can't leave a hairline on the fractional bounds the zoom gives it */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .ec-run__bar > span { flex: 0 0 auto; font-weight: 600; font-size: 13px; white-space: nowrap; }
 .ec-run__go { padding: 9px 18px; border-radius: 10px; background: var(--ec-indigo); font-weight: 700; font-size: 12.5px; color: #fff; }
@@ -263,6 +266,10 @@
 .ec-trade__market em.is-down {
   color: #c0392b;
 }
+
+/* ---------- Shared: the scene held 20% larger about the stage's centre ---------- */
+.ec-zoom { left: 0; top: 0; width: 800px; height: 640px; transform: scale(1.2); transform-origin: 50% 50%; }
+.ec-zoom > * { position: absolute; }
 
 /* ---------- Shared: a centred column the width of the stage ---------- */
 .ec-center { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 800px; text-align: center; }

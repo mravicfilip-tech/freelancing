@@ -37,6 +37,7 @@ function Mark({ w }: { w: number }) {
 export function Staking() {
   return (
     <Stage id="ec-staking" width={800} height={640} className="ec-il ec-stk-scene">
+      <div className="ec-zoom">
       <div className="ec-center" style={{ left: 0, top: 120 }}>
         <span className="ec-caption">What is staked</span>
       </div>
@@ -85,6 +86,7 @@ export function Staking() {
       <div className="ec-center" style={{ left: 0, top: 540 }}>
         <small>Three positions · unstake any of them at any time</small>
       </div>
+      </div>
     </Stage>
   );
 }
@@ -92,7 +94,17 @@ export function Staking() {
 export const stakingMotion: SceneMotion = {
   build(tl, il, at, gsap) {
     const tics = all(il, '[data-tic]');
-    tics.forEach((t, i) => gsap.set(t, { ...GHOST[i], transformOrigin: '50% 50%' }));
+    // The deck may have rotated before the scene was left: put every card back in its first place,
+    // in front-to-back order, with its first figures.
+    tics.forEach((t, i) => {
+      gsap.set(t, { ...GHOST[i], zIndex: 10 - i, transformOrigin: '50% 50%' });
+      const acc = t.querySelector<HTMLElement>('[data-acc]');
+      if (acc) acc.textContent = `+${POS[i].acc.toFixed(2)}`;
+      const left = t.querySelector<HTMLElement>('[data-left]');
+      if (left) { left.textContent = POS[i].left; gsap.set(left, { yPercent: 0, opacity: 1 }); }
+      const principal = t.querySelector<HTMLElement>('[data-principal]');
+      if (principal) principal.textContent = POS[i].amt;
+    });
     tl.from(one(il, '.ec-caption'), { ...RISE, y: 6 }, at);
     tics.forEach((t, i) => tl.from(t, { y: GHOST[i].y + 40, opacity: 0, duration: 0.82, ease: EASE }, at + 0.14 + (tics.length - 1 - i) * 0.1));
     const front = tics[0];

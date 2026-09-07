@@ -64,7 +64,7 @@ export function odoSet(gsap: Gsap, host: HTMLElement, text: string, flash = '#40
     const face = cell.querySelector<HTMLElement>('.odo__face')!;
     const mask = cell.querySelector<HTMLElement>('.odo__mask')!;
     const strip = cell.querySelector<HTMLElement>('.odo__strip')!;
-    const h = cell.getBoundingClientRect().height;
+    const h = cell.offsetHeight; // layout px: the tween runs in the cell's own space, whatever the stage is scaled to
     const from = Number(cell.dataset.d);
     const to = Number(ch);
     // one full turn past the shortest forward route, so the roll is seen rather than inferred

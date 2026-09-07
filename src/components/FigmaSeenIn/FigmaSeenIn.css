@@ -24,14 +24,11 @@
   gap: 50px;
   /* the rails carry the section's vertical padding, so they meet the neighbouring sections' rails */
   padding: 90px 0;
-  /* the rails, and the design's dot field (2532:815): a 2px #c1ceda dot every 22px, from y=10 */
-  background-image:
-    var(--sn-dash-v),
-    var(--sn-dash-v),
-    radial-gradient(circle at 1px 1px, #c1ceda 1px, transparent 1.5px);
-  background-size: 1px 100%, 1px 100%, 22px 22px;
-  background-position: left top, right top, 0 10px;
-  background-repeat: no-repeat, no-repeat, repeat;
+  /* the rails only: the file's dot field is left out on purpose */
+  background-image: var(--sn-dash-v), var(--sn-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
 }
 
 /* ---------- Heading ---------- */
@@ -103,12 +100,10 @@
 .sn__mark {
   display: inline-flex;
   align-items: center;
-  /* the design's tint is the black mark at 32%; the hover lifts it to ink */
+  /* the black mark at 32%, as in the design; under the pointer it is the mark at full black */
   opacity: 0.32;
-  transition:
-    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
 }
 .sn__mark img {
   display: block;
@@ -117,11 +112,6 @@
 @media (hover: hover) {
   .sn__cell:hover .sn__mark {
     opacity: 1;
-    transform: translateY(-2px) scale(1.04);
-  }
-  /* the rest of the wall steps back while one mark is up */
-  .sn__grid:hover .sn__cell:not(:hover) .sn__mark {
-    opacity: 0.18;
   }
 }
 
@@ -142,9 +132,6 @@
     transform: scale(0.85);
     transform-origin: 50% 50%;
   }
-  .sn__cell:hover .sn__mark {
-    transform: translateY(-2px) scale(0.88);
-  }
 }
 @media (max-width: 720px) {
   .sn__frame {
@@ -163,8 +150,5 @@
   }
   .sn__mark {
     transform: scale(0.7);
-  }
-  .sn__cell:hover .sn__mark {
-    transform: translateY(-2px) scale(0.72);
   }
 }

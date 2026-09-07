@@ -53,7 +53,13 @@ export function Storage() {
 
 export const storageMotion: SceneMotion = {
   build(tl, il, at, gsap) {
+    // Back to the moment before the first derivation, whatever the loop had reached when it was cut.
     all(il, '[data-strip]').forEach((s) => gsap.set(s, { y: 0 }));
+    gsap.set(one(il, '[data-barfill]'), { width: '0%' });
+    gsap.set(one(il, '[data-match]'), { opacity: 0, y: 8 });
+    const print = one(il, '[data-print]');
+    print.textContent = '—— —— —— ——';
+    gsap.set(print, { opacity: 1, y: 0 });
     tl.from(all(il, '.ec-caption'), { ...RISE, y: 6, stagger: 0.5 }, at);
     tl.from(all(il, '.ec-tum__reel'), { y: 18, opacity: 0, duration: 0.6, ease: EASE, stagger: 0.06 }, at + 0.1);
     tl.from(one(il, '.ec-tum__prog'), { scaleX: 0, duration: 0.7, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.45);

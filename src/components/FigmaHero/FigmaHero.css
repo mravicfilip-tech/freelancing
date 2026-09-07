@@ -611,7 +611,8 @@
   display: flex;
   gap: 4px;
 }
-.fh__stats span {
+/* the label only — the figures are spans too, inside the strong, and keep its ink */
+.fh__stats p > span {
   color: var(--fh-body);
 }
 .fh__stats strong {

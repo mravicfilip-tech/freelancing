@@ -128,7 +128,6 @@
   display: block;
   width: 20px;
   height: 20px;
-  filter: brightness(0); /* the exported glyphs are white or grey; they read as ink here */
   opacity: 0.45;
   transition: opacity 300ms ease;
 }
@@ -177,17 +176,21 @@
 .ec__panel {
   position: relative;
   min-height: 640px;
-  background: linear-gradient(180deg, #f6f7fc 0%, #eef0fa 100%);
+  background: #eef0fa;
   overflow: hidden;
 }
-.ec__dots {
+/* Panel wallpaper. The Figma rect sits at -315,-74 and measures 1450x809 over an
+   820x690 panel, so the crop is kept proportional as the panel resizes. */
+.ec__wall {
   position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
-  background-size: 28px 28px;
-  background-position: 14px 14px;
-  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
+  left: -38.41%;
+  top: -10.72%;
+  width: 176.83%;
+  height: 117.29%;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
 }
 .ec__scene {
   position: absolute;

@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { B } from '../FigmaFeatures/illustrations/Stage';
 import { Payments, Trading, Staking, Storage } from './illustrations';
 import { useEcosystemMotion } from './useEcosystemMotion';
 import '../FigmaFeatures/illustrations/illustrations.css';
@@ -12,29 +11,32 @@ import './FigmaEcosystem.css';
  * own every few seconds (a progress accent shows where it is) and any item can be clicked. Each
  * illustration is a layered stage in the bento grid's manner, with a build-in and an idle loop.
  */
+/** Assets exported from the Figma section (node 2474:155). */
+const E = (n: string) => `/figma/ecosystem/${n}`;
+
 export const PILLARS = [
   {
     id: 'payments',
     title: 'Payments',
-    icon: B('imgLandmark.svg'),
+    icon: E('icon-payments.svg'),
     body: 'Send crypto, they receive fiat. Local payment rails in over 30 currencies with same-day settlement and zero FX fees, straight into any bank account.',
   },
   {
     id: 'trading',
     title: 'Trading',
-    icon: B('imgUilExchange.svg'),
+    icon: E('icon-trading.svg'),
     body: 'Swap between crypto and fiat at the live market rate without leaving the wallet. No exchange account, no withdrawal queue, no hidden spread.',
   },
   {
     id: 'staking',
     title: 'Staking',
-    icon: B('imgDataTransferGoalFlag.svg'),
+    icon: E('icon-staking.svg'),
     body: 'Put idle RTX to work. Stake from the wallet in one tap, watch rewards accrue daily, and unstake whenever you need the liquidity.',
   },
   {
     id: 'storage',
     title: 'Storage',
-    icon: '/figma/simple/imgShieldCheckStreamlineNova.svg',
+    icon: E('icon-storage.svg'),
     body: 'Self-custody by default. Your keys never leave your device, with hardware wallet support and a built-in vault for long-term holdings.',
   },
 ] as const;
@@ -81,7 +83,7 @@ export function FigmaEcosystem() {
           </div>
 
           <div className="ec__panel">
-            <span className="ec__dots" />
+            <img className="ec__wall" src={E('panel-bg.webp')} alt="" aria-hidden="true" />
             <div id="ec-scene-payments" className="ec__scene" data-scene="payments" role="tabpanel">
               <Payments />
             </div>

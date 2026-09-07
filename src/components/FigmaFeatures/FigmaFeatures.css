@@ -14,6 +14,8 @@
   --ff-radius: 12px;
   --ff-gap: 14px;
   --ff-pad: 32px;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --ff-dash-v: repeating-linear-gradient(180deg, var(--ff-line) 0 8px, transparent 8px 16px);
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
@@ -28,8 +30,10 @@
   width: min(1560px, 100% - 48px);
   margin: 0 auto;
   padding: 160px clamp(0px, 3.85%, 60px);
-  border-left: 1px dashed var(--ff-line);
-  border-right: 1px dashed var(--ff-line);
+  background-image: var(--ff-dash-v), var(--ff-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
 }
 .ff__inner {
   display: flex;

@@ -8,6 +8,9 @@
   --fs-text: #2c2e31;
   --fs-muted: #7c858d;
   --fs-indigo: #4042d2;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --fs-dash-v: repeating-linear-gradient(180deg, var(--fs-line) 0 8px, transparent 8px 16px);
+  --fs-dash-h: repeating-linear-gradient(90deg, var(--fs-line) 0 8px, transparent 8px 16px);
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
 
@@ -24,8 +27,10 @@
   flex-direction: column;
   align-items: center;
   gap: 50px;
-  border-left: 1px dashed var(--fs-line);
-  border-right: 1px dashed var(--fs-line);
+  background-image: var(--fs-dash-v), var(--fs-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
 }
 
 /* ---------- Headline ---------- */
@@ -59,11 +64,13 @@
 .fs__band {
   position: relative;
   width: 100%;
-  border-top: 1px dashed var(--fs-line);
-  border-bottom: 1px dashed var(--fs-line);
-  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
-  background-size: 28px 28px;
-  background-position: 14px 14px;
+  background-image:
+    var(--fs-dash-h),
+    var(--fs-dash-h),
+    radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+  background-size: 100% 1px, 100% 1px, 28px 28px;
+  background-position: left top, left bottom, 14px 14px;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 .fs .ff__il.fs__orbit {
   position: relative;

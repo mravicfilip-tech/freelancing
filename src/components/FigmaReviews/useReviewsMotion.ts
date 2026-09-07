@@ -11,6 +11,8 @@ export function useReviewsMotion(root: RefObject<HTMLElement | null>, slide: num
   const gsapRef = useRef<typeof import('gsap')['gsap'] | null>(null);
   const readyRef = useRef(false);
   const shownRef = useRef(-1);
+  /** The wipe in flight. Killed when another starts, so its clean-up can't hide the new slide. */
+  const wipeRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     const el = root.current;
@@ -95,11 +97,18 @@ export function useReviewsMotion(root: RefObject<HTMLElement | null>, slide: num
     const open = 'inset(0% 0% 0% 0%)';
     const SWEEP = 1.05;
 
-    gsap.killTweensOf([next, prev, photo(next), photo(prev), seam].filter(Boolean) as object[]);
-    const tl = gsap.timeline();
+    // Land any wipe still running before starting this one: its own clean-up would otherwise fire
+    // later and hide whichever slide is current by then, leaving the slider blank.
+    wipeRef.current?.kill();
+    gsap.killTweensOf([...all, ...all.map(photo), seam].filter(Boolean) as object[]);
+    all.forEach((s) => {
+      const on = s === prev;
+      gsap.set(s, { clipPath: 'none', zIndex: on ? 1 : 0, opacity: on ? 1 : 0, visibility: on ? 'visible' : 'hidden' });
+      gsap.set(photo(s), { xPercent: 0, scale: 1 });
+    });
 
-    gsap.set(all, { zIndex: 0 });
-    gsap.set(prev ?? [], { zIndex: 1 });
+    const tl = gsap.timeline();
+    wipeRef.current = tl;
     gsap.set(next, { zIndex: 2, visibility: 'visible', opacity: 1, clipPath: covered });
 
     tl.to(next, { clipPath: open, duration: SWEEP, ease: 'expo.inOut' }, 0);
@@ -129,9 +138,14 @@ export function useReviewsMotion(root: RefObject<HTMLElement | null>, slide: num
     tl.fromTo(next.querySelector('.rv__by'), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, 0.62);
 
     tl.add(() => {
-      if (!prev) return;
-      gsap.set(prev, { opacity: 0, visibility: 'hidden', clipPath: 'none', zIndex: 0 });
-      gsap.set(photo(prev), { xPercent: 0, scale: 1 });
+      // Settle on the arrived slide: everything else is put away, whatever it was mid-wipe.
+      all.forEach((s) => {
+        if (s === next) return;
+        gsap.set(s, { opacity: 0, visibility: 'hidden', clipPath: 'none', zIndex: 0 });
+        gsap.set(photo(s), { xPercent: 0, scale: 1 });
+      });
+      gsap.set(next, { clipPath: 'none', zIndex: 1 });
+      wipeRef.current = null;
     });
   }, [root]);
 

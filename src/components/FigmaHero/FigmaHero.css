@@ -24,6 +24,9 @@
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
   --fh-pixel: 'Silkscreen', 'Courier New', monospace;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --fh-dash-v: repeating-linear-gradient(180deg, var(--fh-line) 0 8px, transparent 8px 16px);
+  --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
 
   position: relative;
   isolation: isolate;
@@ -47,8 +50,10 @@
   left: 50%;
   width: min(1560px, 100% - 48px);
   transform: translateX(-50%);
-  border-left: 1px dashed var(--fh-line);
-  border-right: 1px dashed var(--fh-line);
+  background-image: var(--fh-dash-v), var(--fh-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
   pointer-events: none;
   z-index: 0;
 }
@@ -59,11 +64,13 @@
   right: 0;
   top: 139px;
   height: 728px; /* 139 → 867 */
-  border-top: 1px dashed var(--fh-line);
-  border-bottom: 1px dashed var(--fh-line);
-  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
-  background-size: 28px 28px;
-  background-position: 14px 14px;
+  background-image:
+    var(--fh-dash-h),
+    var(--fh-dash-h),
+    radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+  background-size: 100% 1px, 100% 1px, 28px 28px;
+  background-position: left top, left bottom, 14px 14px;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 
 .fh > :not(.fh__frame) {

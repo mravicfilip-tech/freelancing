@@ -6,6 +6,8 @@
   --rv-bg: #e6e9ed;
   --rv-line: #c5cbd1;
   --rv-ink: #122433;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --rv-dash-v: repeating-linear-gradient(180deg, var(--rv-line) 0 8px, transparent 8px 16px);
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
 
@@ -19,8 +21,10 @@
   flex-direction: column;
   align-items: center;
   gap: 50px;
-  border-left: 1px dashed var(--rv-line);
-  border-right: 1px dashed var(--rv-line);
+  background-image: var(--rv-dash-v), var(--rv-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
   /* The slide fills the 1560 band rail to rail (Figma 2496:254), and the rails carry the section's
      vertical padding so they meet the neighbouring sections' rails. */
   padding: 90px 0;

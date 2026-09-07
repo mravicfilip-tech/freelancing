@@ -13,6 +13,10 @@
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  /* The rails run 8 on / 8 off; the card's own rules are the finer [4,4] the design uses inside it. */
+  --ec-dash-v: repeating-linear-gradient(180deg, var(--ec-line) 0 8px, transparent 8px 16px);
+  --ec-rule-v: repeating-linear-gradient(180deg, var(--ec-line) 0 4px, transparent 4px 8px);
+  --ec-rule-h: repeating-linear-gradient(90deg, var(--ec-line) 0 4px, transparent 4px 8px);
 
   background: var(--ec-bg);
   color: var(--ec-ink);
@@ -23,8 +27,10 @@
   width: min(1560px, 100% - 48px);
   margin: 0 auto;
   padding: 0 clamp(0px, 3.85%, 60px) 160px;
-  border-left: 1px dashed var(--ec-line);
-  border-right: 1px dashed var(--ec-line);
+  background-image: var(--ec-dash-v), var(--ec-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
 }
 .ec__card {
   display: grid;
@@ -42,7 +48,10 @@
   display: flex;
   flex-direction: column;
   padding: 48px 48px 24px;
-  border-right: 1px dashed var(--ec-line);
+  background-image: var(--ec-rule-v);
+  background-size: 1px 100%;
+  background-position: right top;
+  background-repeat: no-repeat;
 }
 .ec__eyebrow {
   font-weight: 700;
@@ -86,7 +95,10 @@
 }
 .ec__item {
   position: relative;
-  border-top: 1px dashed var(--ec-line);
+  background-image: var(--ec-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 /* The accent along the active item's left edge, with a progress fill showing the auto-advance. */
 .ec__accent {
@@ -220,8 +232,9 @@
     grid-template-columns: 1fr;
   }
   .ec__copy {
-    border-right: 0;
-    border-bottom: 1px dashed var(--ec-line);
+    background-position: left bottom;
+    background-image: var(--ec-rule-h);
+    background-size: 100% 1px;
   }
   .ec__panel {
     min-height: 520px;

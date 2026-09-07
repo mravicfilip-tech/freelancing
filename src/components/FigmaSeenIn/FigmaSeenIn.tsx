@@ -8,7 +8,7 @@ const L = (n: string) => `/figma/logos/${n}.svg`;
  * "As seen in" (Figma 2532:809). Seven marks on a dashed lattice — four cells then three — each
  * logo at the size the design gives it, so none is stretched to a common box.
  */
-type Mark = { id: string; name: string; src: string; w: number; h: number; word?: string };
+type Mark = { id: string; name: string; src: string; w: number; h: number };
 
 const ROWS: Mark[][] = [
   [
@@ -18,7 +18,8 @@ const ROWS: Mark[][] = [
     { id: 'ethereum', name: 'Ethereum', src: L('ethereum'), w: 167.628, h: 42 },
   ],
   [
-    { id: 'uniswap', name: 'Uniswap', src: L('uniswap'), w: 42, h: 42, word: 'Uniswap' },
+    // the icon and wordmark together, text outlined, exported as one from Figma 2533:1194
+    { id: 'uniswap', name: 'Uniswap', src: L('uniswap'), w: 177.25, h: 42 },
     { id: 'trust', name: 'Trust Wallet', src: L('trust'), w: 118.336, h: 32 },
     { id: 'safe', name: 'Safe Wallet', src: L('safe'), w: 165.333, h: 32 },
   ],
@@ -48,7 +49,6 @@ export function FigmaSeenIn() {
                   {i < row.length - 1 && <i className="sn__ruleV" aria-hidden="true" />}
                   <span className="sn__mark">
                     <img src={mark.src} alt={mark.name} width={mark.w} height={mark.h} loading="lazy" />
-                    {mark.word && <b className="sn__word">{mark.word}</b>}
                   </span>
                 </div>
               ))}

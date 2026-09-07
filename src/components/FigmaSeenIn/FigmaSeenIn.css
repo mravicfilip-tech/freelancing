@@ -99,7 +99,6 @@
 .sn__mark {
   display: inline-flex;
   align-items: center;
-  gap: 5.25px;
   /* the design's tint is the black mark at 32%; the hover lifts it to ink */
   opacity: 0.32;
   transition:
@@ -111,29 +110,7 @@
   display: block;
   /* each mark keeps its own designed box (width and height set inline), never a shared one */
 }
-.sn__word {
-  font-family: 'Inter', var(--fh-sans);
-  font-weight: 500;
-  font-size: 35px;
-  line-height: 1.12;
-  letter-spacing: -2.45px;
-  color: #000;
-  white-space: nowrap;
-}
-.sn__cell::before {
-  /* the wash that comes up under the pointer */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.55);
-  opacity: 0;
-  transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
 @media (hover: hover) {
-  .sn__cell:hover::before {
-    opacity: 1;
-  }
   .sn__cell:hover .sn__mark {
     opacity: 1;
     transform: translateY(-2px) scale(1.04);

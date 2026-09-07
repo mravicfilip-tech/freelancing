@@ -1,0 +1,258 @@
+/* Ecosystem: one card, copy and an accordion on the left, a swapping illustration on the right.
+   Sits on the same light band and 1560 dashed rails as the feature band; the card is 1440 wide. */
+
+.ec {
+  --ec-bg: #edeff1;
+  --ec-line: #dadee2;
+  --ec-card: #fff;
+  --ec-ink: #2c2e31;
+  --ec-title: #122433;
+  --ec-muted: #7c858d;
+  --ec-indigo: #4042d1;
+  --ec-lavender: #b3b5f5;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+
+  background: var(--ec-bg);
+  color: var(--ec-ink);
+  font-family: var(--fh-sans);
+  padding: 0 0 160px;
+}
+.ec__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 0 clamp(0px, 3.85%, 60px);
+  border-left: 1px dashed var(--ec-line);
+  border-right: 1px dashed var(--ec-line);
+}
+.ec__card {
+  display: grid;
+  grid-template-columns: 620px minmax(0, 1fr);
+  min-height: 640px;
+  border-radius: 12px;
+  background: var(--ec-card);
+  overflow: hidden;
+  isolation: isolate;
+  will-change: transform;
+}
+
+/* ---------- Copy and accordion ---------- */
+.ec__copy {
+  display: flex;
+  flex-direction: column;
+  padding: 48px 48px 24px;
+  border-right: 1px dashed var(--ec-line);
+}
+.ec__eyebrow {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--ec-indigo);
+}
+.ec__title {
+  margin: 14px 0 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -1.2px;
+  color: var(--ec-title);
+}
+.ec__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ec__lineInner {
+  display: block;
+}
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
+.ec__body {
+  margin: 18px 0 0;
+  max-width: 480px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ec-muted);
+}
+.ec__list {
+  list-style: none;
+  margin: 36px 0 0;
+  padding: 0;
+}
+.ec__item {
+  position: relative;
+  border-top: 1px dashed var(--ec-line);
+}
+.ec__item:last-child {
+  border-bottom: 1px dashed var(--ec-line);
+}
+/* The accent along the active item's left edge, with a progress fill showing the auto-advance. */
+.ec__accent {
+  position: absolute;
+  left: -48px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  overflow: hidden;
+}
+.ec__progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ec-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}
+.ec__itemHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ec-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.ec__itemHead img {
+  display: block;
+  width: 20px;
+  height: 20px;
+  filter: brightness(0); /* the exported glyphs are white or grey; they read as ink here */
+  opacity: 0.45;
+  transition: opacity 300ms ease;
+}
+.ec__item--on .ec__itemHead img {
+  opacity: 1;
+}
+.ec__itemTitle {
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  color: var(--ec-muted);
+  transition: color 300ms ease;
+}
+.ec__item--on .ec__itemTitle {
+  color: var(--ec-ink);
+}
+/* The body opens with a grid-row transition, so the list keeps its rhythm as items change. */
+.ec__itemBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ec__itemBody > p {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding-left: 32px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ec-muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease 120ms, transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms, padding-bottom 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ec__item--on .ec__itemBody {
+  grid-template-rows: 1fr;
+}
+.ec__item--on .ec__itemBody > p {
+  padding-bottom: 22px;
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Illustration panel ---------- */
+.ec__panel {
+  position: relative;
+  min-height: 640px;
+  background: linear-gradient(180deg, #f6f7fc 0%, #eef0fa 100%);
+  overflow: hidden;
+}
+.ec__dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 78%);
+}
+.ec__scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+.ec__scene .ff__il {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(800px, 100%);
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- Motion (see useEcosystemMotion.ts) ---------- */
+.ec[data-motion='pending'] .ec__card {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .ec {
+    padding-bottom: 112px;
+  }
+  .ec__card {
+    grid-template-columns: 46% minmax(0, 1fr);
+  }
+  .ec__copy {
+    padding: 40px 32px 16px;
+  }
+  .ec__accent {
+    left: -32px;
+  }
+  .ec__title {
+    font-size: 34px;
+  }
+}
+@media (max-width: 1024px) {
+  .ec__card {
+    grid-template-columns: 1fr;
+  }
+  .ec__copy {
+    border-right: 0;
+    border-bottom: 1px dashed var(--ec-line);
+  }
+  .ec__panel {
+    min-height: 520px;
+  }
+}
+@media (max-width: 720px) {
+  .ec {
+    padding-bottom: 80px;
+  }
+  .ec__copy {
+    padding: 28px 24px 8px;
+  }
+  .ec__accent {
+    left: -24px;
+  }
+  .ec__title {
+    font-size: 30px;
+    letter-spacing: -0.9px;
+  }
+  .ec__panel {
+    min-height: 380px;
+  }
+}

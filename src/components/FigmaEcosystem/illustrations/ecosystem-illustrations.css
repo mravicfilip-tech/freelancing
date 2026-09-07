@@ -1,0 +1,478 @@
+/* Illustrations for the Ecosystem section: layered stages in the bento grid's manner (design px
+   inside a scaled 800×640 Stage). Shared pieces first, then one block per pillar. */
+
+.ec-il {
+  aspect-ratio: 800 / 640;
+}
+.ec-lines {
+  overflow: visible;
+  pointer-events: none;
+}
+.ec-pill,
+.ec-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px 0 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 19px;
+  background: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  will-change: transform;
+}
+.ec-chip {
+  height: 34px;
+  padding: 0 14px 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.26px;
+  text-transform: uppercase;
+}
+.ec-pill img,
+.ec-chip img {
+  display: block;
+}
+.ec-hub {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(18, 36, 51, 0.1);
+  will-change: transform;
+}
+.ec-hub img {
+  margin-top: 3px;
+}
+.ec-hub__halo {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid #4042d1;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.ec-caption {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: #7c858d;
+  white-space: nowrap;
+}
+.ec-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 440px;
+  padding: 22px 24px;
+  border: 1px solid #d6e0f3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 40px -20px rgba(18, 36, 51, 0.25);
+  will-change: transform;
+}
+.ec-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ec-card__head b {
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+}
+.ec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: #f1f2f7;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: #4042d1;
+}
+.ec-tag--green {
+  border: 0.5px solid #d9f1e6;
+  background: #f1fbf6;
+  color: #02774d;
+}
+.ec-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: #02774d;
+}
+.ec-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #02774d;
+  box-shadow: 0 0 0 3px rgba(2, 119, 77, 0.15);
+  animation: ec-blink 1.8s ease-in-out infinite;
+}
+@keyframes ec-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.ec-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+}
+.ec-row__label {
+  font-size: 13px;
+  color: #7c858d;
+}
+.ec-row__amount {
+  grid-row: 2;
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -0.78px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.ec-row__amount i {
+  font-style: normal;
+  color: #a8a8a8;
+}
+.ec-row__coin {
+  grid-row: 1 / span 2;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  border: 0.75px solid #dadee2;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 12px;
+}
+.ec-row__coin img {
+  display: block;
+}
+
+/* ---------- Payments ---------- */
+.ec-pay__line {
+  fill: none;
+  stroke: #4042d1;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.ec-pay__rail {
+  fill: none;
+  stroke: rgba(64, 66, 209, 0.35);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.ec-pay__rc {
+  width: 236px;
+}
+.ec-pay__chip img {
+  filter: brightness(0);
+  opacity: 0.7;
+}
+
+/* ---------- Trading ---------- */
+.ec-trade__rate {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: -8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.ec-trade__delta {
+  font-weight: 600;
+  font-size: 12px;
+  color: #02774d;
+}
+.ec-trade__spark {
+  display: block;
+  width: 100%;
+  height: 90px;
+  overflow: visible;
+}
+.ec-trade__poly {
+  fill: none;
+  stroke: #4042d1;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.ec-trade__tip {
+  fill: #4042d1;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.ec-trade__rows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ec-trade__swap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #2c2e31;
+  will-change: transform;
+}
+.ec-trade__swap img {
+  filter: invert(1);
+}
+
+/* ---------- Staking ---------- */
+.ec-stake__card {
+  width: 400px;
+}
+.ec-stake__top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ec-stake__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ec-stake__amount {
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: -0.9px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.ec-stake__amount b {
+  font-weight: 500;
+}
+.ec-stake__sub {
+  font-size: 12px;
+  color: #7c858d;
+}
+.ec-stake__ring {
+  display: block;
+  transform: rotate(-90deg);
+}
+.ec-stake__track {
+  fill: none;
+  stroke: #eef0f5;
+  stroke-width: 10;
+}
+.ec-stake__arc {
+  fill: none;
+  stroke: #4042d1;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.ec-stake__apy {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  line-height: 1;
+}
+.ec-stake__apy b {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.5px;
+}
+.ec-stake__apy small {
+  margin-top: 3px;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: #7c858d;
+}
+.ec-stake__rewards {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+}
+.ec-stake__gain {
+  grid-row: 2;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.66px;
+  color: #02774d;
+}
+.ec-stake__gain b {
+  font-weight: 500;
+}
+.ec-stake__claim {
+  grid-row: 1 / span 2;
+  align-self: center;
+  appearance: none;
+  border: 0;
+  border-radius: 400px;
+  padding: 10px 18px;
+  background: #4042d1;
+  font: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  pointer-events: none;
+  will-change: transform;
+}
+.ec-stake__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 72px;
+}
+.ec-stake__bars i {
+  flex: 1;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #b3b5f5, #4042d1);
+  opacity: 0.85;
+  transform-origin: 50% 100%;
+}
+.ec-stake__bars i:last-child {
+  opacity: 1;
+}
+
+/* ---------- Storage ---------- */
+.ec-store__card {
+  width: 420px;
+}
+.ec-store__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.ec-lock {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 26px;
+}
+.ec-lock__shackle {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid #4042d1;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  box-sizing: border-box;
+}
+.ec-lock__body {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 22px;
+  height: 16px;
+  border-radius: 4px;
+  background: #4042d1;
+}
+.ec-lock__body::after {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 5px;
+  width: 4px;
+  height: 6px;
+  border-radius: 2px;
+  background: #fff;
+}
+.ec-store__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ec-store__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #eef0f5;
+}
+.ec-store__row img {
+  display: block;
+}
+.ec-store__name,
+.ec-store__amt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ec-store__name b {
+  font-weight: 600;
+  font-size: 14px;
+}
+.ec-store__name small,
+.ec-store__amt small {
+  font-size: 11px;
+  color: #7c858d;
+}
+.ec-store__amt {
+  margin-left: auto;
+  align-items: flex-end;
+}
+.ec-store__amt b {
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
+.ec-store__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  font-size: 12px;
+  color: #7c858d;
+}
+.ec-store__key {
+  display: inline-flex;
+  gap: 5px;
+}
+.ec-store__key i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c9cdd3;
+}
+.ec-store__hw {
+  opacity: 0;
+  border-color: #d9f1e6;
+  color: #02774d;
+}

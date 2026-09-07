@@ -7,6 +7,7 @@ import { HERO_VARIANT } from './heroVariant';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
+import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
 const params = new URLSearchParams(window.location.search);
@@ -31,6 +32,7 @@ export function App() {
         {heroMounted && (figma ? <FigmaHero /> : <Hero />)}
         {figma && <FigmaSimple />}
         {figma && <FigmaFeatures picks={BENTO_PICKS} />}
+        {figma && <FigmaEcosystem />}
       </main>
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (

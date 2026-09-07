@@ -1,7 +1,7 @@
 /* Illustrations for the Ecosystem section. Each pillar gets a different silhouette so the four
-   read as one family without repeating the bento grid: Payments is a grid of rails, Trading a
-   market chart, Staking a dial and a growing stack, Storage a single sealed object. Everything is
-   placed in design px inside a scaled 800x640 Stage. */
+   read as one family without repeating the bento grid: Payments is a payout run, Trading a market
+   chart, Staking one position accruing, Storage a key fingerprint. Everything is placed in design
+   px inside a scaled 800x640 Stage. */
 
 .ec-il {
   aspect-ratio: 800 / 640;
@@ -62,101 +62,57 @@
   50% { opacity: 0.35; }
 }
 
-/* ---------- Payments: the rail grid ---------- */
-.ec-pay__grid {
-  display: grid;
-  grid-template-columns: repeat(6, 104px);
-  gap: 16px;
-  width: 704px;
-}
-.ec-pay__tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  height: 88px;
-  padding: 0 12px;
-  border: 1px solid var(--ec-line);
-  border-radius: 14px;
-  background: #fff;
-  will-change: transform, background-color;
-}
-.ec-pay__tile b {
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: -0.32px;
-  color: var(--ec-ink);
-}
-.ec-pay__tile small {
-  font-size: 10.5px;
-  letter-spacing: -0.1px;
-  color: var(--ec-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ec-pay__toast {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 704px;
-  height: 72px;
-  padding: 0 20px;
-  border: 1px solid #dfe3ef;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 18px 40px -22px rgba(18, 36, 51, 0.3);
-}
-.ec-pay__tick {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(2, 119, 77, 0.12);
-  will-change: transform;
-}
-.ec-pay__tick i {
-  width: 12px;
-  height: 7px;
-  border: 2px solid var(--ec-green);
+/* ---------- Payments: the payout run ---------- */
+.ec-run__card { width: 560px; border: 1px solid #dfe3ef; border-radius: 18px; background: #fff; overflow: hidden; }
+.ec-run__head { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 20px; border-bottom: 1px solid var(--ec-soft); }
+.ec-run__head b { font-weight: 600; font-size: 14.5px; color: var(--ec-ink); }
+.ec-run__row { display: grid; grid-template-columns: 22px 1fr 120px 92px; align-items: center; gap: 14px; height: 58px; padding: 0 20px; border-bottom: 1px solid #f2f4f8; }
+.ec-run__box { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid #cfd5e2; border-radius: 6px; background: #fff; will-change: transform; }
+/* The tick is centred by the grid; rotating a bottom+left border puts its vertex low, so it is
+   lifted by the offset between the rect's centre and the glyph's optical centre. */
+.ec-run__box::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border: 2px solid #fff;
   border-top: 0;
   border-right: 0;
-  transform: rotate(-45deg) translate(1px, -1px);
+  border-radius: 1px;
+  transform: translateY(-1.75px) rotate(-45deg) scale(0.5);
+  transform-origin: 50% 50%;
+  opacity: 0;
+  transition: opacity 130ms ease, transform 200ms cubic-bezier(0.2, 0.85, 0.35, 1);
 }
-.ec-pay__toastText {
+.ec-run__box--on { border-color: var(--ec-indigo); background: var(--ec-indigo); }
+.ec-run__box--on::after { opacity: 1; transform: translateY(-1.75px) rotate(-45deg) scale(1); }
+.ec-run__who b { display: block; font-weight: 600; font-size: 13.5px; color: var(--ec-ink); }
+.ec-run__who small { display: block; font-size: 11px; color: var(--ec-muted); }
+.ec-run__amt { font-family: var(--fh-digits); font-weight: 700; font-size: 14px; text-align: right; color: var(--ec-ink); font-variant-numeric: tabular-nums; }
+.ec-run__state { justify-self: end; padding: 5px 11px; border-radius: 999px; background: rgba(18, 36, 51, 0.06); font-weight: 700; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ec-muted); white-space: nowrap; will-change: transform; }
+.ec-run__state--paid { background: rgba(2, 119, 77, 0.12); color: var(--ec-green); }
+/* The bar's width is declared, not measured, so a late font can't wrap its labels. */
+.ec-run__bar {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 256px;
+  height: 52px;
+  padding: 0 10px 0 20px;
+  border-radius: 14px;
+  background: #122433;
+  color: #fff;
   overflow: hidden;
 }
-.ec-pay__toastText b {
-  font-weight: 500;
-  font-size: 20px;
-  letter-spacing: -0.6px;
-  color: var(--ec-ink);
-}
-.ec-pay__toastText small {
-  font-size: 12.5px;
-  color: var(--ec-muted);
-}
-.ec-pay__toastText em {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--ec-ink);
-}
-.ec-pay__fee {
-  margin-left: auto;
-  padding: 6px 12px;
-  border-radius: 14px;
-  background: rgba(2, 119, 77, 0.1);
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: -0.2px;
-  text-transform: uppercase;
-  color: var(--ec-green);
-  white-space: nowrap;
-}
+.ec-run__bar > span { flex: 0 0 auto; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.ec-run__go { padding: 9px 18px; border-radius: 10px; background: var(--ec-indigo); font-weight: 700; font-size: 12.5px; color: #fff; }
+/* the send button collapsing into a success tick */
+.ec-run__tick { position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; opacity: 0; pointer-events: none; }
+.ec-run__tick path { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+/* The pointer that works the run: the site's own cursor glyph, no halo, no shadow. */
+.ec-run__cursor { position: absolute; left: 0; top: 0; z-index: 6; width: 24px; height: 24px; opacity: 0; pointer-events: none; will-change: transform; }
+.ec-run__cursor img { display: block; }
+.ec-run__ping { position: absolute; left: 0; top: 0; z-index: 5; width: 24px; height: 24px; margin: -12px 0 0 -12px; border: 2px solid var(--ec-indigo); border-radius: 50%; opacity: 0; pointer-events: none; }
 
 /* ---------- Trading: the market chart ---------- */
 .ec-trade__head {
@@ -308,306 +264,86 @@
   color: #c0392b;
 }
 
-/* ---------- Staking: dial, terms and the growing stack ---------- */
-.ec-stake__dial {
-  width: 200px;
-  height: 200px;
-  will-change: transform;
-}
-.ec-stake__dial svg {
-  display: block;
-  transform: rotate(-90deg);
-}
-.ec-stake__track {
-  fill: none;
-  stroke: rgba(18, 36, 51, 0.08);
-  stroke-width: 14;
-}
-.ec-stake__arc {
-  fill: none;
-  stroke: var(--ec-indigo);
-  stroke-width: 14;
-  stroke-linecap: round;
-}
-.ec-stake__dialText {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  line-height: 1;
-}
-.ec-stake__dialText b {
-  font-weight: 500;
-  font-size: 34px;
-  letter-spacing: -1.1px;
-  color: #122433;
-}
-.ec-stake__dialText small {
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--ec-muted);
-}
-.ec-stake__terms {
-  display: flex;
-  gap: 10px;
-}
-.ec-stake__term {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 88px;
-  padding: 12px 14px;
-  border: 1px solid var(--ec-line);
-  border-radius: 12px;
-  background: #fff;
-}
-.ec-stake__term small {
-  font-size: 10.5px;
-  letter-spacing: 0.01em;
-  color: var(--ec-muted);
-  white-space: nowrap;
-}
-.ec-stake__term b {
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: -0.2px;
-  color: var(--ec-ink);
-  white-space: nowrap;
-}
-.ec-stake__figure {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.ec-stake__figure small {
-  font-size: 13px;
-  color: var(--ec-muted);
-}
-.ec-stake__figure b {
-  font-weight: 500;
-  font-size: 38px;
-  line-height: 1.1;
-  letter-spacing: -1.2px;
-  color: #122433;
-  white-space: nowrap;
-}
-.ec-stake__figure b .il-count {
-  font-weight: 500;
-}
-.ec-stake__figure em {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--ec-green);
-}
-.ec-stake__up {
-  width: 0;
-  height: 0;
-  border-left: 4.5px solid transparent;
-  border-right: 4.5px solid transparent;
-  border-bottom: 7px solid var(--ec-green);
-}
-.ec-stake__stack {
-  width: 156px;
-  height: 340px;
-}
-/* A coin read side-on: an elliptical face with a lit rim, stacked with a shared shadow. */
-.ec-stake__coin {
-  position: absolute;
-  left: 0;
-  width: 148px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(168deg, #dcddfd 0%, #b0b2f4 46%, #7f82e7 100%);
-  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.75), inset 0 -2px 3px rgba(58, 60, 160, 0.28),
-    0 4px 8px -4px rgba(18, 36, 51, 0.35);
-  will-change: transform, opacity;
-}
-.ec-stake__coin::after {
-  content: '';
-  position: absolute;
-  left: 26px;
-  right: 26px;
-  top: 7px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.34);
-}
+/* ---------- Shared: a centred column the width of the stage ---------- */
+.ec-center { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 800px; text-align: center; }
+.ec-center > small { font-size: 12.5px; color: var(--ec-muted); }
 
-/* ---------- Storage: the seal ---------- */
-.ec-store__seal {
-  width: 320px;
-  height: 320px;
-}
-.ec-store__ring {
-  position: absolute;
-  border-radius: 50%;
-  will-change: transform;
-}
-.ec-store__ring--outer {
-  inset: 0;
-  border: 1px solid rgba(64, 66, 209, 0.18);
-  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.42));
-  box-shadow: 0 24px 60px -30px rgba(18, 36, 51, 0.4);
-}
-.ec-store__ring--mid {
-  inset: 46px;
-  border: 1px dashed rgba(64, 66, 209, 0.28);
-}
-.ec-store__notches {
+/* ---------- Staking: one position, accruing ---------- */
+.ec-stk { position: absolute; left: 0; top: 0; width: 470px; height: 282px; border-radius: 20px; overflow: hidden; will-change: transform, opacity; }
+.ec-stk__card {
   position: absolute;
   inset: 0;
-  will-change: transform;
-}
-.ec-store__notches line {
-  stroke: rgba(64, 66, 209, 0.35);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-.ec-store__notches line.is-major {
-  stroke: rgba(64, 66, 209, 0.6);
-  stroke-width: 2;
-}
-.ec-store__core {
-  position: absolute;
-  left: 50%;
-  top: 50%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 128px;
-  height: 128px;
-  margin: -64px 0 0 -64px;
-  justify-content: center;
-  border-radius: 50%;
+  padding-bottom: 26px;
+  border: 1px solid #e6e9f2;
+  border-radius: 20px;
   background: #fff;
-  box-shadow: 0 12px 30px -14px rgba(18, 36, 51, 0.35);
-  will-change: transform;
+  overflow: hidden;
 }
-.ec-store__core b {
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ec-muted);
+.ec-stk__head { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px 0; }
+.ec-stk__brand { display: inline-flex; align-items: center; gap: 10px; color: #122433; }
+.ec-stk__brand svg { display: block; }
+.ec-stk__brand em { font-style: normal; font-weight: 700; font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ec-muted); }
+.ec-stk__tag { font-weight: 700; font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ec-muted); }
+.ec-stk__big {
+  margin: 26px 28px 0;
+  font-weight: 500;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: #122433;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
-.ec-lock {
+.ec-stk__unit { margin-left: 6px; font-size: 0.5em; letter-spacing: -0.3px; color: var(--ec-muted); }
+.ec-stk__rule { display: block; height: 1px; margin: auto 28px 0; background: var(--ec-soft); }
+.ec-stk__foot { display: flex; justify-content: space-between; padding: 18px 28px 0; }
+.ec-stk__foot span { display: flex; flex-direction: column; gap: 4px; }
+.ec-stk__lab { font-size: 11px; letter-spacing: 0.02em; color: var(--ec-muted); white-space: nowrap; }
+.ec-stk__val { font-weight: 600; font-size: 14.5px; color: var(--ec-ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ec-stk__val.is-gain { color: var(--ec-green); }
+.ec-stk__mono { font-family: var(--fh-digits); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* An odometer for a figure that changes (see odometer.ts). The digit itself stays in normal flow,
+   so the number keeps its baseline and its tracking; the rolling column is an absolutely
+   positioned overlay that is only shown while a digit is actually moving. */
+.odo__sep { display: inline-block; }
+.odo__cell { position: relative; display: inline-block; }
+.odo__mask { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
+.odo__strip { position: absolute; left: 0; top: 0; width: 100%; font-style: normal; will-change: transform; }
+/* left, not centred: the face is left-aligned in the same box, so the roll can't shift sideways */
+.odo__strip u { display: block; height: 1em; line-height: 1; text-align: left; text-decoration: none; }
+
+/* ---------- Storage: the key fingerprint ---------- */
+.ec-tum__reel { width: 62px; height: 96px; border: 1px solid #dfe3ef; border-radius: 14px; background: #fff; overflow: hidden; will-change: transform; }
+.ec-tum__strip { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-direction: column; align-items: center; will-change: transform; }
+.ec-tum__strip span { display: grid; place-items: center; width: 62px; height: 96px; font-family: var(--fh-digits); font-weight: 700; font-size: 34px; color: var(--ec-ink); }
+/* the hero's progress bar: a hairline track, 3px bars capped in solid indigo, a sweeping sheen */
+.ec-tum__prog {
   position: relative;
   display: block;
-  width: 26px;
-  height: 31px;
+  height: 26px;
+  background-color: rgba(18, 36, 51, 0.07);
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0 1px, transparent 1px 8px);
+  overflow: hidden;
 }
-.ec-lock__shackle {
+.ec-tum__progFill {
   position: absolute;
-  left: 5px;
-  top: 0;
-  width: 16px;
-  height: 16px;
-  border: 3px solid var(--ec-indigo);
-  border-bottom: 0;
-  border-radius: 9px 9px 0 0;
-  box-sizing: border-box;
+  inset: 0 auto 0 0;
+  width: 0;
+  background-color: rgba(64, 66, 209, 0.1);
+  background-image:
+    linear-gradient(var(--ec-indigo), var(--ec-indigo)),
+    linear-gradient(var(--ec-indigo), var(--ec-indigo)),
+    repeating-linear-gradient(90deg, var(--ec-lavender) 0 3px, transparent 3px 6px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 3px 100%, 3px 100%, auto;
+  background-position: left top, right top, left top;
+  overflow: hidden;
 }
-.ec-lock__body {
-  position: absolute;
-  left: 0;
-  top: 12px;
-  width: 26px;
-  height: 19px;
-  border-radius: 5px;
-  background: var(--ec-indigo);
-}
-.ec-lock__body::after {
-  content: '';
-  position: absolute;
-  left: 11px;
-  top: 6px;
-  width: 4px;
-  height: 7px;
-  border-radius: 2px;
-  background: #fff;
-}
-.ec-store__shard {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid #dfe3ef;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 10px 24px -14px rgba(18, 36, 51, 0.5);
-  will-change: transform, background-color;
-}
-.ec-store__shard {
-  color: var(--ec-indigo);
-}
-.ec-store__shard svg {
-  display: block;
-}
-.ec-store__keys {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 176px;
-}
-.ec-store__keys .ec-caption {
-  margin-bottom: 4px;
-}
-.ec-store__key {
-  display: grid;
-  grid-template-columns: 10px 1fr;
-  align-items: center;
-  gap: 4px 12px;
-  padding: 12px 14px;
-  border: 1px solid var(--ec-line);
-  border-radius: 12px;
-  background: #fff;
-  color: var(--ec-muted);
-}
-.ec-store__key i {
-  grid-row: 1 / span 2;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c9cdd3;
-}
-.ec-store__key b {
-  font-weight: 600;
-  font-size: 13.5px;
-  letter-spacing: -0.2px;
-  color: inherit;
-}
-.ec-store__key small {
-  font-size: 11px;
-  color: var(--ec-muted);
-}
-.ec-store__chips {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-.ec-store__chip {
-  font-size: 11.5px;
-  color: var(--ec-muted);
-}
-.ec-store__chip--ok {
-  border-color: #d9f1e6;
-  background: #f4fbf8;
-  color: var(--ec-green);
-}
-.ec-store__chip--ok i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ec-green);
-}
+.ec-tum__progGlow { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); pointer-events: none; }
+.ec-tum__printLabel { font-size: 12.5px; color: var(--ec-muted); }
+.ec-tum__print { font-size: 24px; letter-spacing: 0.12em; color: #122433; }
+.ec-tum__match { opacity: 0; border-color: #d9f1e6; background: #f4fbf8; color: var(--ec-green); }
+.ec-tum__match i { width: 8px; height: 8px; border-radius: 50%; background: var(--ec-green); }

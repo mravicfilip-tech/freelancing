@@ -1,111 +1,164 @@
 import { Stage } from '../../FigmaFeatures/illustrations/Stage';
-import { all, one, roll, EASE, RISE } from '../../FigmaFeatures/illustrations/motion';
+import { all, one, EASE, RISE } from '../../FigmaFeatures/illustrations/motion';
 import type { SceneMotion } from './index';
 
-/** The local rails Remittix pays out over. Code, the rail's own name, and a plausible amount. */
-const RAILS: [string, string, string][] = [
-  ['USD', 'ACH', '1,340.00'],
-  ['EUR', 'SEPA', '1,240.00'],
-  ['GBP', 'Faster Pay', '1,062.00'],
-  ['BRL', 'Pix', '7,412.00'],
-  ['MXN', 'SPEI', '23,180.00'],
-  ['NGN', 'NIP', '1,982,400'],
-  ['INR', 'UPI', '112,640.00'],
-  ['PHP', 'InstaPay', '76,290.00'],
-  ['KES', 'M-Pesa', '174,300'],
-  ['VND', 'NAPAS', '33,140,000'],
-  ['IDR', 'BI-FAST', '20,860,000'],
-  ['ARS', 'CBU', '1,286,000'],
-  ['COP', 'PSE', '5,204,000'],
-  ['ZAR', 'PayShap', '24,180.00'],
-  ['THB', 'PromptPay', '45,720.00'],
-  ['TRY', 'FAST', '43,900.00'],
-  ['PLN', 'Elixir', '5,320.00'],
-  ['CAD', 'Interac', '1,806.00'],
-];
-
-/** The order the loop walks the grid in: a wandering path, not a scan line. */
-const ORDER = [1, 7, 3, 12, 5, 9, 0, 14, 8, 16, 2, 10, 6, 13, 4, 17, 11, 15];
+/** One batch: five people, five countries, five local rails. */
+const RUN = [
+  ['Ana Ribeiro', 'Nubank · Pix', 'BRL 7,412.00'],
+  ['Tomás Silva', 'Itaú · Pix', 'BRL 2,180.00'],
+  ['Marta Cruz', 'Millennium · SEPA', 'EUR 1,240.00'],
+  ['J. Okafor', 'GTBank · NIP', 'NGN 1,982,400'],
+  ['Priya Nair', 'HDFC · UPI', 'INR 112,640.00'],
+] as const;
 
 /**
- * Payments: the reach of the payout network. A grid of local rails, each a real scheme in a real
- * currency, lights as payouts settle through it, and a receipt toast names the one that just landed.
+ * Payments: a payout run. A batch of payouts selected and sent in one action, each row flipping
+ * from pending to paid on its own rail. A pointer works the run — the site's own cursor glyph —
+ * so the selection reads as something done, not something that happens.
  */
 export function Payments() {
   return (
-    <Stage id="ec-payments" width={800} height={640} className="ec-il ec-pay">
-      <span className="ec-caption ec-pay__eyebrow" style={{ left: 48, top: 92 }}>
-        Over 30 local rails · one wallet
+    <Stage id="ec-payments" width={800} height={640} className="ec-il ec-run">
+      <span className="ec-caption" style={{ left: 120, top: 118 }}>
+        One run · five countries · five rails
       </span>
-      <div className="ec-pay__grid" style={{ left: 48, top: 148 }}>
-        {RAILS.map(([code, rail]) => (
-          <span key={code} className="ec-pay__tile">
-            <b>{code}</b>
-            <small>{rail}</small>
+      <div className="ec-run__card" style={{ left: 120, top: 156 }}>
+        <div className="ec-run__head">
+          <b>Payout run</b>
+          <span className="ec-live">
+            <i />
+            Ready
           </span>
+        </div>
+        {RUN.map(([who, bank, amt]) => (
+          <div key={who} className="ec-run__row">
+            <i className="ec-run__box" />
+            <span className="ec-run__who">
+              <b>{who}</b>
+              <small>{bank}</small>
+            </span>
+            <span className="ec-run__amt">{amt}</span>
+            <span className="ec-run__state">Pending</span>
+          </div>
         ))}
       </div>
-      <div className="ec-pay__toast" style={{ left: 48, top: 484 }}>
-        <span className="ec-pay__tick">
-          <i />
+      <div className="ec-run__bar" style={{ left: 272, top: 508 }}>
+        <span data-sel>0 selected</span>
+        <span className="ec-run__go" data-go>
+          Send payouts
         </span>
-        <span className="ec-pay__toastText">
-          <b data-count="amount">BRL 7,412.00</b>
-          <small>
-            paid out via <em data-count="rail">Pix</em> · settled in <em className="il-mono" data-count="secs">4.2s</em>
-          </small>
-        </span>
-        <span className="ec-pay__fee">0 FX fee</span>
+        <svg className="ec-run__tick" data-tick viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12.6l4.6 4.6L19 7.4" />
+        </svg>
+      </div>
+      <i className="ec-run__ping" data-ping />
+      <div className="ec-run__cursor" data-cursor>
+        <img src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={24} height={24} />
       </div>
     </Stage>
   );
 }
 
 export const paymentsMotion: SceneMotion = {
-  build(tl, il, at, gsap) {
-    const tiles = all(il, '.ec-pay__tile');
-    tl.from(one(il, '.ec-pay__eyebrow'), { ...RISE, y: 6 }, at);
-    // The grid assembles in reading order, tightly staggered so it lands as one gesture.
-    tl.from(tiles, { y: 14, opacity: 0, duration: 0.6, ease: EASE, stagger: { each: 0.028, from: 'start' } }, at + 0.12);
-    tl.from(one(il, '.ec-pay__toast'), { y: 16, opacity: 0, duration: 0.8, ease: EASE }, at + 0.75);
-    tl.from(all(il, '.ec-pay__toast > *'), { ...RISE, y: 6, duration: 0.5, stagger: 0.06 }, at + 0.9);
-    void gsap;
+  build(tl, il, at) {
+    tl.from(one(il, '.ec-caption'), { ...RISE, y: 6 }, at);
+    tl.from(one(il, '.ec-run__card'), { y: 22, opacity: 0, duration: 0.85, ease: EASE }, at + 0.08);
+    tl.from(all(il, '.ec-run__row'), { ...RISE, y: 10, duration: 0.55, stagger: 0.07 }, at + 0.3);
+    tl.from(one(il, '.ec-run__bar'), { y: 18, opacity: 0, duration: 0.7, ease: EASE }, at + 0.75);
   },
   idle(gsap, il) {
-    // A payout every couple of seconds: one rail lights, holds while it settles, and the toast
-    // takes its currency, scheme and time. The grid is never busy — one tile at a time.
-    const tiles = all(il, '.ec-pay__tile');
-    const amount = one(il, '[data-count="amount"]');
-    const rail = one(il, '[data-count="rail"]');
-    const secs = one(il, '[data-count="secs"]');
-    const tick = one(il, '.ec-pay__tick');
-    const RAILS_ = tiles.map((t) => ({ code: t.querySelector('b')!.textContent!, rail: t.querySelector('small')!.textContent! }));
-    const AMOUNTS = ['1,340.00', '1,240.00', '1,062.00', '7,412.00', '23,180.00', '1,982,400', '112,640.00', '76,290.00', '174,300', '33,140,000', '20,860,000', '1,286,000', '5,204,000', '24,180.00', '45,720.00', '43,900.00', '5,320.00', '1,806.00'];
-    let n = 0;
+    const boxes = all(il, '.ec-run__box');
+    const states = all(il, '.ec-run__state');
+    const sel = one(il, '[data-sel]');
+    const go = one(il, '[data-go]');
+    const bar = one(il, '.ec-run__bar');
+    const tick = one(il, '[data-tick]');
+    const path = one<SVGPathElement>(il, '[data-tick] path');
+    const cursor = one(il, '[data-cursor]');
+    const ping = one(il, '[data-ping]');
+    const stage = one(il, '.ff__stage');
+    const WIDE = 256;
+    const NARROW = 52;
+    const LEFT = 272; // the wide bar's left edge
+    const MID = LEFT + WIDE / 2; // the centre it must keep
+    const PARK = { x: 628, y: 566 }; // where the pointer waits between runs
+    const len = path.getTotalLength();
+    gsap.set(bar, { width: WIDE, left: LEFT });
+    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+    gsap.set(cursor, { x: PARK.x, y: PARK.y });
+
+    // Where a node sits in the stage's own 800x640 coordinates, whatever the stage is scaled to.
+    const centre = (node: Element) => {
+      const box = stage.getBoundingClientRect();
+      const scale = box.width / stage.offsetWidth || 1;
+      const r = node.getBoundingClientRect();
+      return { x: (r.left + r.width / 2 - box.left) / scale, y: (r.top + r.height / 2 - box.top) / scale };
+    };
+
     const idle = gsap.timeline();
-    const story = gsap.timeline({ repeat: -1, repeatDelay: 0.9, delay: 0.7 });
-    story.add(() => {
-      const k = ORDER[n % ORDER.length];
-      const tile = tiles[k];
-      n += 1;
-      const beat = gsap.timeline();
-      beat
-        .to(tile, { backgroundColor: '#4042d1', borderColor: '#4042d1', duration: 0.28, ease: 'power2.out' }, 0)
-        .to(tile.querySelector('b'), { color: '#ffffff', duration: 0.28 }, 0)
-        .to(tile.querySelector('small'), { color: 'rgba(255,255,255,0.72)', duration: 0.28 }, 0)
-        .fromTo(tile, { boxShadow: '0 0 0 0 rgba(64,66,209,0.35)' }, { boxShadow: '0 0 0 8px rgba(64,66,209,0)', duration: 0.8, ease: 'power2.out' }, 0)
+    const beat = gsap.timeline({ repeat: -1, repeatDelay: 1.4, delay: 0.7 });
+    beat.add(() => {
+      const t = gsap.timeline();
+      // The pointer's hotspot is the glyph's tip, so it is offset to sit just inside the target.
+      const moveTo = (p: { x: number; y: number }, when: number, dur: number) =>
+        t.to(cursor, { x: p.x - 3, y: p.y - 3, duration: dur, ease: 'power2.inOut' }, Math.max(0, when - dur));
+      const clickAt = (p: { x: number; y: number }, when: number) => {
+        t.to(cursor, { scale: 0.76, duration: 0.09, ease: 'power2.in', transformOrigin: '0% 0%' }, Math.max(0, when - 0.09))
+          .to(cursor, { scale: 1, duration: 0.24, ease: 'back.out(3)', transformOrigin: '0% 0%' }, when)
+          .fromTo(ping, { x: p.x, y: p.y, scale: 0.4, opacity: 0.9 }, { scale: 1.9, opacity: 0, duration: 0.5, ease: 'power2.out' }, when);
+      };
+
+      t.to(cursor, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0.1);
+      // One row at a time: the pointer travels to the box, presses, and the box ticks under it.
+      boxes.forEach((b, i) => {
+        const when = 0.78 + 0.44 * i;
+        const p = centre(b);
+        moveTo(p, when, i === 0 ? 0.5 : 0.34);
+        clickAt(p, when);
+        t.add(() => {
+          b.classList.add('ec-run__box--on');
+          sel.textContent = `${i + 1} selected`;
+        }, when).fromTo(b, { scale: 0.8 }, { scale: 1, duration: 0.24, ease: 'back.out(2.4)', transformOrigin: '50% 50%' }, when);
+      });
+
+      // Then across to the button, one press, and the send runs from that click.
+      const SEND = 3.24;
+      const goAt = centre(go);
+      moveTo(goAt, SEND, 0.6);
+      clickAt(goAt, SEND);
+      t.to(cursor, { opacity: 0, duration: 0.25, ease: 'power2.in' }, SEND + 0.24);
+
+      // Send: the bar collapses to a disc and the tick draws itself.
+      t.fromTo(go, { scale: 1 }, { scale: 0.95, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, SEND)
+        .to([sel, go], { opacity: 0, duration: 0.18, ease: 'power2.in' }, SEND + 0.2)
+        .to(bar, { width: NARROW, left: MID - NARROW / 2, borderRadius: 26, backgroundColor: '#02774d', duration: 0.52, ease: 'power3.inOut' }, SEND + 0.3)
+        // the tick only starts once the box has finished collapsing around it
+        .set(tick, { opacity: 1 }, SEND + 0.82)
+        .to(path, { strokeDashoffset: 0, duration: 0.44, ease: 'power2.out' }, SEND + 0.84);
+      states.forEach((st, i) => {
+        t.add(() => {
+          st.textContent = 'Paid';
+          st.classList.add('ec-run__state--paid');
+        }, SEND + 0.8 + i * 0.13).fromTo(st, { scale: 0.86, opacity: 0.4 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2)', transformOrigin: '50% 50%' }, SEND + 0.8 + i * 0.13);
+      });
+
+      // Reset for the next run.
+      const RESET = SEND + 2.9;
+      t.to(path, { strokeDashoffset: len, duration: 0.24, ease: 'power2.in' }, RESET)
+        .set(tick, { opacity: 0 }, RESET + 0.25)
+        .to(bar, { width: WIDE, left: LEFT, borderRadius: 14, backgroundColor: '#122433', duration: 0.52, ease: 'power3.inOut' }, RESET + 0.2)
         .add(() => {
-          roll(gsap, amount, `${RAILS_[k].code} ${AMOUNTS[k]}`);
-          roll(gsap, rail, RAILS_[k].rail);
-          roll(gsap, secs, `${(3.4 + ((k * 7) % 11) * 0.16).toFixed(1)}s`);
-          gsap.fromTo(tick, { scale: 0.7 }, { scale: 1, duration: 0.45, ease: 'back.out(2)', transformOrigin: '50% 50%' });
-        }, 0.45)
-        .to(tile, { backgroundColor: '#ffffff', borderColor: '#e0e0e0', duration: 0.5, ease: 'power2.inOut' }, 1.5)
-        .to(tile.querySelector('b'), { color: '#2c2e31', duration: 0.5 }, 1.5)
-        .to(tile.querySelector('small'), { color: '#7c858d', duration: 0.5 }, 1.5);
+          boxes.forEach((b) => b.classList.remove('ec-run__box--on'));
+          states.forEach((st) => {
+            st.textContent = 'Pending';
+            st.classList.remove('ec-run__state--paid');
+          });
+          sel.textContent = '0 selected';
+          gsap.set(cursor, { x: PARK.x, y: PARK.y, scale: 1 });
+        }, RESET + 0.3)
+        .to([sel, go], { opacity: 1, duration: 0.3, ease: 'power2.out' }, RESET + 0.5);
     }, 0);
-    story.to({}, { duration: 2.1 }, 0);
-    idle.add(story, 0);
-    return idle;
+    beat.to({}, { duration: 7.0 }, 0);
+    return idle.add(beat, 0);
   },
 };

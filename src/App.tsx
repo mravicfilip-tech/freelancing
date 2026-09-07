@@ -9,6 +9,7 @@ import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
 import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
 import { FigmaReviews } from './components/FigmaReviews/FigmaReviews';
+import { FigmaSeenIn } from './components/FigmaSeenIn/FigmaSeenIn';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
 const params = new URLSearchParams(window.location.search);
@@ -35,6 +36,7 @@ export function App() {
         {figma && <FigmaFeatures picks={BENTO_PICKS} />}
         {figma && <FigmaEcosystem />}
         {figma && <FigmaReviews />}
+      {figma && <FigmaSeenIn />}
       </main>
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (

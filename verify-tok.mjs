@@ -8,6 +8,15 @@ await page.route('**/cdnjs.cloudflare.com/**', (r) => r.fulfill({ status: 200, c
 await page.route('**/fonts.googleapis.com/**', (r) => r.fulfill({ status: 200, contentType: 'text/css', body: '' }));
 await page.goto('file://' + FILE, { waitUntil: 'load' });
 await page.waitForTimeout(900);
+{
+  await page.click('[data-v="0"]'); await page.waitForTimeout(4200);
+  const t = await page.evaluate(() => [...document.querySelectorAll('[data-tok]')].map((e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}px op=${cs.opacity} tf=${cs.transform.slice(0, 22)}`; }));
+  console.log('tokens:', t.join(' / '));
+  const l = await page.evaluate(() => [...document.querySelectorAll('[data-lab]')].map((e) => { const r = e.getBoundingClientRect(); return `${e.textContent.trim().slice(0, 4)}@${Math.round(r.left)},${Math.round(r.top)}`; }));
+  console.log('labels:', l.join(' '));
+  const echo = await page.evaluate(() => { const r = document.querySelector('[data-echo]').getBoundingClientRect(); return `${Math.round(r.left + r.width / 2)},${Math.round(r.top + r.height / 2)}`; });
+  console.log('echo centre (stage centre is 780,560 * k):', echo);
+}
 for (let v = 0; v < 3; v++) {
   await page.click(`[data-v="${v}"]`);
   await page.waitForTimeout(4200);

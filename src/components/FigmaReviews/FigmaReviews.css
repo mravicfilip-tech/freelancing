@@ -11,7 +11,6 @@
 
   background: var(--rv-bg);
   font-family: var(--fh-sans);
-  padding: 90px 0;
 }
 .rv__frame {
   width: min(1560px, 100% - 48px);
@@ -22,7 +21,9 @@
   gap: 50px;
   border-left: 1px dashed var(--rv-line);
   border-right: 1px dashed var(--rv-line);
-  padding: 0 clamp(0px, 3.85%, 60px);
+  /* The slide fills the 1560 band rail to rail (Figma 2496:254), and the rails carry the section's
+     vertical padding so they meet the neighbouring sections' rails. */
+  padding: 90px 0;
 }
 
 /* ---------- Heading ---------- */
@@ -131,6 +132,28 @@
   color: rgba(255, 255, 255, 0.64);
 }
 
+/* The reveal edge of the wipe, lit so the change of slide reads as a pass of light. */
+.rv__seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(179, 181, 245, 0) 0%,
+    rgba(179, 181, 245, 0.9) 22%,
+    #ffffff 50%,
+    rgba(179, 181, 245, 0.9) 78%,
+    rgba(179, 181, 245, 0) 100%
+  );
+  box-shadow: 0 0 24px 4px rgba(179, 181, 245, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
 /* ---------- Chips (the slider's navigation) ---------- */
 .rv__chips {
   position: absolute;
@@ -222,7 +245,7 @@
   .rv__chip { flex: 0 0 auto; }
 }
 @media (max-width: 720px) {
-  .rv { padding: 64px 0; }
+  .rv__frame { padding: 64px 0; }
   .rv__frame { gap: 32px; }
   .rv__title { letter-spacing: -1.1px; }
   .rv__slider { height: 620px; }

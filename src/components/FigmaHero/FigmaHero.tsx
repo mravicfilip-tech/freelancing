@@ -11,8 +11,11 @@ import './FigmaHero.css';
  */
 
 const PRESALE_END = Date.UTC(2026, 9, 15, 12, 0, 0); // 15 Oct 2026 12:00 UTC
-const USD_RAISED = 29_503_796.02;
-const TOKENS_SOLD = 15_241_796;
+const USD_RAISED = 32_000_000;
+const USD_TARGET = 36_000_000;
+const TOKENS_SOLD = 8_885_000;
+const TOKENS_TARGET = 9_000_000;
+const STAGE = '10/10';
 const PROGRESS = 0.22; // filled share of the progress bar
 
 const NAV_LINKS = [
@@ -153,9 +156,16 @@ export function FigmaHero() {
   const [slide, setSlide] = useState(0);
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const root = useRef<HTMLElement>(null);
-  useHeroEntrance(root, { progress: PROGRESS, usd: USD_RAISED, tokens: TOKENS_SOLD });
-  const usd = USD_RAISED.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const tokens = TOKENS_SOLD.toLocaleString('en-US');
+  useHeroEntrance(root, {
+    progress: PROGRESS,
+    usd: USD_RAISED,
+    usdTarget: USD_TARGET,
+    tokens: TOKENS_SOLD,
+    tokensTarget: TOKENS_TARGET,
+  });
+  const whole = (n: number) => n.toLocaleString('en-US');
+  const usd = `${whole(USD_RAISED)}/${whole(USD_TARGET)}`;
+  const tokens = `${whole(TOKENS_SOLD)}/${whole(TOKENS_TARGET)}`;
 
   return (
     <section ref={root} className="fh" data-node-id="2346:102" data-entrance="pending">
@@ -213,7 +223,12 @@ export function FigmaHero() {
 
       <footer className="fh__footer" data-node-id="2346:152">
         <div className="fh__price">
-          <p className="fh__priceTitle">Buy Now Before Price Rise</p>
+          <div className="fh__priceHead">
+            <p className="fh__priceTitle">Buy Now Before Price Rise</p>
+            <p className="fh__stage">
+              Stage <strong>{STAGE}</strong>
+            </p>
+          </div>
           <div
             className="fh__progress"
             role="progressbar"
@@ -228,14 +243,14 @@ export function FigmaHero() {
           </div>
           <div className="fh__stats">
             <p>
-              <span>USD raised so far</span>
+              <span>USD raised:</span>
               <strong className="fh__figure">
-                <span data-count="usd">${usd}</span>
-                <span className="fh__figureGhost" aria-hidden="true">${usd}</span>
+                <span data-count="usd">{usd}</span>
+                <span className="fh__figureGhost" aria-hidden="true">{usd}</span>
               </strong>
             </p>
             <p>
-              <span>Tokens sold/remaining</span>
+              <span>Tokens sold:</span>
               <strong className="fh__figure">
                 <span data-count="tokens">{tokens}</span>
                 <span className="fh__figureGhost" aria-hidden="true">{tokens}</span>

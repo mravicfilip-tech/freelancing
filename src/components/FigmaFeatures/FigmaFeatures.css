@@ -21,12 +21,13 @@
   background: var(--ff-bg);
   color: var(--ff-ink);
   font-family: var(--fh-sans);
-  padding: 160px 0;
 }
+/* The rails carry the section's vertical padding, so the dashed lines run edge to edge and meet
+   the neighbouring sections' rails without a gap. */
 .ff__frame {
   width: min(1560px, 100% - 48px);
   margin: 0 auto;
-  padding: 0 clamp(0px, 3.85%, 60px);
+  padding: 160px clamp(0px, 3.85%, 60px);
   border-left: 1px dashed var(--ff-line);
   border-right: 1px dashed var(--ff-line);
 }
@@ -218,8 +219,9 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
-  .ff {
-    padding: 112px 0;
+  .ff__frame {
+    padding-top: 112px;
+    padding-bottom: 112px;
   }
   .ff__title {
     font-size: 52px;
@@ -252,8 +254,9 @@
   }
 }
 @media (max-width: 720px) {
-  .ff {
-    padding: 80px 0;
+  .ff__frame {
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
   .ff__title {
     font-size: 40px;

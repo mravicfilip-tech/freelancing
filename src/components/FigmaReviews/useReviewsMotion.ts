@@ -2,9 +2,10 @@ import { useCallback, useEffect, useRef, type RefObject } from 'react';
 
 /**
  * Motion for the Community Reviews slider. The heading rises out of its mask and the slide frame
- * fades up when the section scrolls into view, matching the other bands. Changing slide crossfades
- * the photo and lifts the quote in behind it; the photo also settles from a slight scale, so the
- * change reads as a camera move rather than a hard cut.
+ * fades up when the section scrolls into view, matching the other bands. Changing slide is a wipe,
+ * not a crossfade: the incoming frame is uncovered by an edge that sweeps across the slider, a lit
+ * seam rides that edge, and the two photographs counter-drift behind it so the frames read as one
+ * camera pan. The quote is then uncovered by its own mask.
  */
 export function useReviewsMotion(root: RefObject<HTMLElement | null>, slide: number) {
   const gsapRef = useRef<typeof import('gsap')['gsap'] | null>(null);
@@ -68,25 +69,70 @@ export function useReviewsMotion(root: RefObject<HTMLElement | null>, slide: num
     };
   }, [root]);
 
-  /** Crossfades to slide `i`: the outgoing frame falls away, the incoming photo settles in. */
+  /**
+   * Wipes to slide `i`. The reveal edge travels the way the deck is moving — leftward when going
+   * forward, rightward when going back — with the photographs counter-drifting either side of it.
+   */
   const show = useCallback((i: number) => {
     const el = root.current;
     const gsap = gsapRef.current;
     if (!el || !gsap || shownRef.current === i) return;
     const all = Array.from(el.querySelectorAll<HTMLElement>('.rv__slide'));
-    const prev = all[shownRef.current];
     const next = all[i];
     if (!next) return;
+    const prev = all[shownRef.current];
+    const from = shownRef.current;
     shownRef.current = i;
-    if (prev) gsap.to(prev, { opacity: 0, duration: 0.55, ease: 'power2.inOut', onComplete: () => { prev.style.visibility = 'hidden'; } });
-    next.style.visibility = 'visible';
-    gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: 0.65, ease: 'power2.inOut' });
-    gsap.fromTo(next.querySelector('.rv__photo'), { scale: 1.05 }, { scale: 1, duration: 1.5, ease: 'expo.out' });
-    gsap.fromTo(
-      next.querySelectorAll('.rv__eyebrow, .rv__quoteBlock'),
-      { y: 18, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out', stagger: 0.09, delay: 0.12 },
+
+    // Take the short way round the deck, so chip 3 → chip 1 wipes forward rather than back.
+    const len = all.length;
+    const dir = from < 0 || (i - from + len) % len <= (from - i + len) % len ? 1 : -1;
+    const width = el.querySelector('.rv__slider')?.clientWidth ?? 0;
+    const seam = el.querySelector<HTMLElement>('.rv__seam');
+    const photo = (s: HTMLElement | undefined) => s?.querySelector('.rv__photo') ?? null;
+
+    const covered = dir > 0 ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)';
+    const open = 'inset(0% 0% 0% 0%)';
+    const SWEEP = 1.05;
+
+    gsap.killTweensOf([next, prev, photo(next), photo(prev), seam].filter(Boolean) as object[]);
+    const tl = gsap.timeline();
+
+    gsap.set(all, { zIndex: 0 });
+    gsap.set(prev ?? [], { zIndex: 1 });
+    gsap.set(next, { zIndex: 2, visibility: 'visible', opacity: 1, clipPath: covered });
+
+    tl.to(next, { clipPath: open, duration: SWEEP, ease: 'expo.inOut' }, 0);
+    // Each photograph moves against the edge, so neither one slides with it like a slat.
+    tl.fromTo(photo(next), { xPercent: 9 * dir, scale: 1.07 }, { xPercent: 0, scale: 1, duration: 1.5, ease: 'expo.out' }, 0);
+    if (prev) tl.to(photo(prev), { xPercent: -7 * dir, duration: SWEEP, ease: 'expo.inOut' }, 0);
+
+    // A lit seam rides the reveal edge across the frame.
+    if (seam && width) {
+      tl.fromTo(
+        seam,
+        { x: dir > 0 ? width : 0, opacity: 0 },
+        { x: dir > 0 ? 0 : width, opacity: 1, duration: SWEEP, ease: 'expo.inOut' },
+        0,
+      );
+      tl.to(seam, { opacity: 0, duration: 0.3, ease: 'power2.out' }, SWEEP - 0.22);
+    }
+
+    // The quote is uncovered by its own mask once the edge has passed over it.
+    tl.fromTo(next.querySelector('.rv__eyebrow'), { x: 26 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, 0.34);
+    tl.fromTo(
+      next.querySelector('.rv__words'),
+      { clipPath: 'inset(0% 0% 100% 0%)', y: 26 },
+      { clipPath: 'inset(0% 0% 0% 0%)', y: 0, duration: 1.0, ease: 'expo.out' },
+      0.4,
     );
+    tl.fromTo(next.querySelector('.rv__by'), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, 0.62);
+
+    tl.add(() => {
+      if (!prev) return;
+      gsap.set(prev, { opacity: 0, visibility: 'hidden', clipPath: 'none', zIndex: 0 });
+      gsap.set(photo(prev), { xPercent: 0, scale: 1 });
+    });
   }, [root]);
 
   useEffect(() => {

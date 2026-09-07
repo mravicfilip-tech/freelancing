@@ -95,6 +95,9 @@ export function FigmaReviews() {
             </article>
           ))}
 
+          {/* The lit edge that rides the wipe between slides. */}
+          <span className="rv__seam" aria-hidden="true" />
+
           <div className="rv__chips" role="tablist" aria-label="Choose a review">
             {SLIDES.map((s, i) => (
               <button

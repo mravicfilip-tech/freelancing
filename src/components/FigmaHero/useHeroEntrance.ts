@@ -4,7 +4,11 @@ interface Figures {
   /** Filled share of the progress bar, 0–1. */
   progress: number;
   usd: number;
+  /** Total the raise is running to, shown after the slash. */
+  usdTarget: number;
   tokens: number;
+  /** Tokens in the stage, shown after the slash. */
+  tokensTarget: number;
 }
 
 /**
@@ -15,7 +19,11 @@ interface Figures {
  * The hero renders with `data-entrance="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over, so nothing flashes before the sequence.
  */
-export function useHeroEntrance(root: RefObject<HTMLElement | null>, { progress, usd, tokens }: Figures) {
+export function useHeroEntrance(
+  root: RefObject<HTMLElement | null>,
+  { progress, usd, usdTarget, tokens, tokensTarget }: Figures,
+) {
+  const whole = (n: number) => Math.round(n).toLocaleString('en-US');
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -54,7 +62,7 @@ export function useHeroEntrance(root: RefObject<HTMLElement | null>, { progress,
 
           // Presale panel: lifts in, the bar fills, the figures count up, the countdown units step in.
           tl.from('.fh__footer', { y: 36, opacity: 0, duration: 0.9 }, 0.6);
-          tl.from('.fh__priceTitle', { y: 12, opacity: 0, duration: 0.6 }, 0.85);
+          tl.from('.fh__priceHead > *', { y: 12, opacity: 0, duration: 0.6, stagger: 0.08 }, 0.85);
           tl.fromTo('.fh__progressFill', { width: '0%' }, { width: `${progress * 100}%`, duration: 1.6, ease: 'power2.inOut' }, 0.95);
           tl.from('.fh__stats p', { y: 10, opacity: 0, duration: 0.6, stagger: 0.1 }, 1.0);
           tl.from('.fh__unit, .fh__sep', { y: 14, opacity: 0, duration: 0.7, stagger: 0.07 }, 0.9);
@@ -70,8 +78,8 @@ export function useHeroEntrance(root: RefObject<HTMLElement | null>, { progress,
               duration: 1.8,
               ease: 'power2.out',
               onUpdate: () => {
-                if (usdEl) usdEl.textContent = `$${counter.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                if (tokensEl) tokensEl.textContent = Math.round(counter.tokens).toLocaleString('en-US');
+                if (usdEl) usdEl.textContent = `${whole(counter.usd)}/${whole(usdTarget)}`;
+                if (tokensEl) tokensEl.textContent = `${whole(counter.tokens)}/${whole(tokensTarget)}`;
               },
             },
             0.95,

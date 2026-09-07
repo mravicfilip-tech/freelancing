@@ -45,7 +45,7 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: min(1560px, 100%);
+  width: min(1560px, 100% - 48px);
   transform: translateX(-50%);
   border-left: 1px dashed var(--fh-line);
   border-right: 1px dashed var(--fh-line);
@@ -531,6 +531,27 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
+}
+/* The title row: the standing call to action on the left, the stage counter on the right. */
+.fh__priceHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+}
+.fh__stage {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.48px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fh-label);
+}
+.fh__stage strong {
+  font-weight: 700;
+  color: var(--fh-ink);
 }
 .fh__priceTitle {
   margin: 0;

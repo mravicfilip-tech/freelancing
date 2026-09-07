@@ -556,10 +556,6 @@
   white-space: nowrap;
   color: var(--fh-label);
 }
-.fh__stage strong {
-  font-weight: 700;
-  color: var(--fh-ink);
-}
 .fh__priceTitle {
   margin: 0;
   font-weight: 500;
@@ -616,7 +612,7 @@
   gap: 4px;
 }
 .fh__stats span {
-  color: var(--fh-label);
+  color: var(--fh-body);
 }
 .fh__stats strong {
   font-weight: 700;
@@ -636,7 +632,8 @@
   visibility: hidden;
 }
 .fh__countdown {
-  flex: 0 1 600px;
+  /* the price column keeps its full 970 (the design's measure); the countdown takes the remainder */
+  flex: 0 1 476px;
   display: flex;
   align-items: stretch;
 }

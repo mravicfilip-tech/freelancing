@@ -225,9 +225,7 @@ export function FigmaHero() {
         <div className="fh__price">
           <div className="fh__priceHead">
             <p className="fh__priceTitle">Buy Now Before Price Rise</p>
-            <p className="fh__stage">
-              Stage <strong>{STAGE}</strong>
-            </p>
+            <p className="fh__stage">Stage {STAGE}</p>
           </div>
           <div
             className="fh__progress"

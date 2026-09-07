@@ -176,21 +176,10 @@
 .ec__panel {
   position: relative;
   min-height: 640px;
-  background: #eef0fa;
+  /* The panel wash from the design (Ellipse 3478): a 1623px gradient disc laid across the
+     panel, flattened here to the same axis and stop positions over the panel's own box. */
+  background: linear-gradient(121deg, #e8eef4 4%, #ffffff 34%, #f5f6e3 78%);
   overflow: hidden;
-}
-/* Panel wallpaper. The Figma rect sits at -315,-74 and measures 1450x809 over an
-   820x690 panel, so the crop is kept proportional as the panel resizes. */
-.ec__wall {
-  position: absolute;
-  left: -38.41%;
-  top: -10.72%;
-  width: 176.83%;
-  height: 117.29%;
-  max-width: none;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
 }
 .ec__scene {
   position: absolute;

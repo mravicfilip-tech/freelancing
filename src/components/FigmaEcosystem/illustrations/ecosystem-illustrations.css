@@ -1,61 +1,17 @@
-/* Illustrations for the Ecosystem section: layered stages in the bento grid's manner (design px
-   inside a scaled 800×640 Stage). Shared pieces first, then one block per pillar. */
+/* Illustrations for the Ecosystem section. Each pillar gets a different silhouette so the four
+   read as one family without repeating the bento grid: Payments is a grid of rails, Trading a
+   market chart, Staking a dial and a growing stack, Storage a single sealed object. Everything is
+   placed in design px inside a scaled 800x640 Stage. */
 
 .ec-il {
   aspect-ratio: 800 / 640;
-}
-.ec-lines {
-  overflow: visible;
-  pointer-events: none;
-}
-.ec-pill,
-.ec-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 38px;
-  padding: 0 16px 0 5px;
-  border: 1px solid #e0e0e0;
-  border-radius: 19px;
-  background: #fff;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: -0.2px;
-  white-space: nowrap;
-  will-change: transform;
-}
-.ec-chip {
-  height: 34px;
-  padding: 0 14px 0 10px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.26px;
-  text-transform: uppercase;
-}
-.ec-pill img,
-.ec-chip img {
-  display: block;
-}
-.ec-hub {
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(18, 36, 51, 0.1);
-  will-change: transform;
-}
-.ec-hub img {
-  margin-top: 3px;
-}
-.ec-hub__halo {
-  position: absolute;
-  inset: 0;
-  border: 1.5px solid #4042d1;
-  border-radius: 50%;
-  opacity: 0;
-  will-change: transform, opacity;
+  --ec-ink: #2c2e31;
+  --ec-muted: #7c858d;
+  --ec-indigo: #4042d1;
+  --ec-lavender: #b3b5f5;
+  --ec-green: #02774d;
+  --ec-line: #e0e0e0;
+  --ec-soft: #eef0f5;
 }
 .ec-caption {
   font-weight: 700;
@@ -63,64 +19,41 @@
   line-height: 1.4;
   letter-spacing: -0.39px;
   text-transform: uppercase;
-  color: #7c858d;
+  color: var(--ec-muted);
   white-space: nowrap;
 }
-.ec-card {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: 440px;
-  padding: 22px 24px;
-  border: 1px solid #d6e0f3;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 18px 40px -20px rgba(18, 36, 51, 0.25);
-  will-change: transform;
-}
-.ec-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.ec-card__head b {
-  font-weight: 500;
-  font-size: 20px;
-  letter-spacing: -0.6px;
-}
-.ec-tag {
+.ec-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 16px;
-  background: #f1f2f7;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--ec-line);
+  border-radius: 17px;
+  background: #fff;
   font-weight: 700;
-  font-size: 10px;
-  letter-spacing: -0.2px;
+  font-size: 12px;
+  letter-spacing: -0.24px;
   text-transform: uppercase;
-  color: #4042d1;
-}
-.ec-tag--green {
-  border: 0.5px solid #d9f1e6;
-  background: #f1fbf6;
-  color: #02774d;
+  color: var(--ec-ink);
+  white-space: nowrap;
 }
 .ec-live {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-style: normal;
   font-weight: 700;
   font-size: 10px;
   letter-spacing: -0.2px;
   text-transform: uppercase;
-  color: #02774d;
+  color: var(--ec-green);
 }
 .ec-live i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #02774d;
+  background: var(--ec-green);
   box-shadow: 0 0 0 3px rgba(2, 119, 77, 0.15);
   animation: ec-blink 1.8s ease-in-out infinite;
 }
@@ -128,351 +61,553 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.35; }
 }
-.ec-row {
+
+/* ---------- Payments: the rail grid ---------- */
+.ec-pay__grid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  column-gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  grid-template-columns: repeat(6, 104px);
+  gap: 16px;
+  width: 704px;
 }
-.ec-row__label {
-  font-size: 13px;
-  color: #7c858d;
+.ec-pay__tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  height: 88px;
+  padding: 0 12px;
+  border: 1px solid var(--ec-line);
+  border-radius: 14px;
+  background: #fff;
+  will-change: transform, background-color;
 }
-.ec-row__amount {
-  grid-row: 2;
+.ec-pay__tile b {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  color: var(--ec-ink);
+}
+.ec-pay__tile small {
+  font-size: 10.5px;
+  letter-spacing: -0.1px;
+  color: var(--ec-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ec-pay__toast {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 704px;
+  height: 72px;
+  padding: 0 20px;
+  border: 1px solid #dfe3ef;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 40px -22px rgba(18, 36, 51, 0.3);
+}
+.ec-pay__tick {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(2, 119, 77, 0.12);
+  will-change: transform;
+}
+.ec-pay__tick i {
+  width: 12px;
+  height: 7px;
+  border: 2px solid var(--ec-green);
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.ec-pay__toastText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
+.ec-pay__toastText b {
   font-weight: 500;
-  font-size: 26px;
-  letter-spacing: -0.78px;
-  line-height: 1.15;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  color: var(--ec-ink);
+}
+.ec-pay__toastText small {
+  font-size: 12.5px;
+  color: var(--ec-muted);
+}
+.ec-pay__toastText em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ec-ink);
+}
+.ec-pay__fee {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: rgba(2, 119, 77, 0.1);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  color: var(--ec-green);
   white-space: nowrap;
 }
-.ec-row__amount i {
-  font-style: normal;
-  color: #a8a8a8;
-}
-.ec-row__coin {
-  grid-row: 1 / span 2;
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 10px 0 4px;
-  border: 0.75px solid #dadee2;
-  border-radius: 15px;
-  font-weight: 600;
-  font-size: 12px;
-}
-.ec-row__coin img {
-  display: block;
-}
 
-/* ---------- Payments ---------- */
-.ec-pay__line {
-  fill: none;
-  stroke: #4042d1;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-.ec-pay__rail {
-  fill: none;
-  stroke: rgba(64, 66, 209, 0.35);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-.ec-pay__rc {
-  width: 236px;
-}
-.ec-pay__chip img {
-  filter: brightness(0);
-  opacity: 0.7;
-}
-
-/* ---------- Trading ---------- */
-.ec-trade__rate {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: -8px;
-  font-weight: 700;
-  font-size: 14px;
-}
-.ec-trade__delta {
-  font-weight: 600;
-  font-size: 12px;
-  color: #02774d;
-}
-.ec-trade__spark {
-  display: block;
-  width: 100%;
-  height: 90px;
-  overflow: visible;
-}
-.ec-trade__poly {
-  fill: none;
-  stroke: #4042d1;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-.ec-trade__tip {
-  fill: #4042d1;
-  stroke: #fff;
-  stroke-width: 2;
-}
-.ec-trade__rows {
-  position: relative;
+/* ---------- Trading: the market chart ---------- */
+.ec-trade__head {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.ec-trade__swap {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  background: #2c2e31;
+.ec-trade__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ec-muted);
+}
+.ec-trade__price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.ec-trade__price b {
+  font-weight: 500;
+  font-size: 46px;
+  line-height: 1.05;
+  letter-spacing: -1.6px;
+  color: #122433;
+}
+.ec-trade__delta {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 9px;
+  border-radius: 12px;
+  background: rgba(2, 119, 77, 0.1);
+  color: var(--ec-green);
+}
+.ec-trade__delta.is-down {
+  background: rgba(192, 57, 43, 0.1);
+  color: #c0392b;
+}
+.ec-trade__sub {
+  font-size: 13.5px;
+  color: var(--ec-muted);
+}
+.ec-trade__chart {
+  width: 704px;
+}
+.ec-trade__chart svg {
+  display: block;
+  overflow: visible;
+}
+.ec-trade__grid {
+  stroke: rgba(18, 36, 51, 0.09);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+.ec-trade__line {
+  fill: none;
+  stroke: var(--ec-indigo);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.ec-trade__cross {
+  stroke: rgba(64, 66, 209, 0.35);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
   will-change: transform;
 }
-.ec-trade__swap img {
-  filter: invert(1);
+.ec-trade__dot {
+  fill: var(--ec-indigo);
+  stroke: #fff;
+  stroke-width: 2.5;
+  will-change: transform;
 }
-
-/* ---------- Staking ---------- */
-.ec-stake__card {
-  width: 400px;
-}
-.ec-stake__top {
-  position: relative;
+.ec-trade__tip {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  gap: 1px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: #122433;
+  color: #fff;
+  white-space: nowrap;
+  will-change: transform;
 }
-.ec-stake__figure {
+.ec-trade__tip b {
+  font-weight: 700;
+  font-size: 13px;
+}
+.ec-trade__tip small {
+  font-size: 10px;
+  opacity: 0.62;
+}
+.ec-trade__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+.ec-trade__axis em {
+  font-style: normal;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ec-muted);
+}
+.ec-trade__markets {
+  display: flex;
+  gap: 12px;
+}
+.ec-trade__market {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 226px;
+  padding: 14px 16px;
+  border: 1px solid var(--ec-line);
+  border-radius: 14px;
+  background: #fff;
 }
-.ec-stake__amount {
-  font-weight: 500;
-  font-size: 30px;
-  letter-spacing: -0.9px;
-  line-height: 1.1;
-  white-space: nowrap;
+.ec-trade__market b {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ec-muted);
 }
-.ec-stake__amount b {
-  font-weight: 500;
+.ec-trade__market span {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.2px;
+  color: var(--ec-ink);
 }
-.ec-stake__sub {
-  font-size: 12px;
-  color: #7c858d;
+.ec-trade__market em {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--ec-green);
 }
-.ec-stake__ring {
+.ec-trade__market em.is-down {
+  color: #c0392b;
+}
+
+/* ---------- Staking: dial, terms and the growing stack ---------- */
+.ec-stake__dial {
+  width: 200px;
+  height: 200px;
+  will-change: transform;
+}
+.ec-stake__dial svg {
   display: block;
   transform: rotate(-90deg);
 }
 .ec-stake__track {
   fill: none;
-  stroke: #eef0f5;
-  stroke-width: 10;
+  stroke: rgba(18, 36, 51, 0.08);
+  stroke-width: 14;
 }
 .ec-stake__arc {
   fill: none;
-  stroke: #4042d1;
-  stroke-width: 10;
+  stroke: var(--ec-indigo);
+  stroke-width: 14;
   stroke-linecap: round;
 }
-.ec-stake__apy {
+.ec-stake__dialText {
   position: absolute;
-  right: 0;
-  top: 0;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 120px;
+  gap: 4px;
   line-height: 1;
 }
-.ec-stake__apy b {
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: -0.5px;
-}
-.ec-stake__apy small {
-  margin-top: 3px;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.02em;
-  color: #7c858d;
-}
-.ec-stake__rewards {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  column-gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-}
-.ec-stake__gain {
-  grid-row: 2;
+.ec-stake__dialText b {
   font-weight: 500;
-  font-size: 22px;
-  letter-spacing: -0.66px;
-  color: #02774d;
+  font-size: 34px;
+  letter-spacing: -1.1px;
+  color: #122433;
 }
-.ec-stake__gain b {
-  font-weight: 500;
-}
-.ec-stake__claim {
-  grid-row: 1 / span 2;
-  align-self: center;
-  appearance: none;
-  border: 0;
-  border-radius: 400px;
-  padding: 10px 18px;
-  background: #4042d1;
-  font: inherit;
+.ec-stake__dialText small {
   font-weight: 700;
-  font-size: 13px;
-  color: #fff;
-  pointer-events: none;
-  will-change: transform;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ec-muted);
 }
-.ec-stake__bars {
+.ec-stake__terms {
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  height: 72px;
+  gap: 10px;
 }
-.ec-stake__bars i {
-  flex: 1;
-  border-radius: 4px 4px 2px 2px;
-  background: linear-gradient(180deg, #b3b5f5, #4042d1);
-  opacity: 0.85;
-  transform-origin: 50% 100%;
+.ec-stake__term {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 88px;
+  padding: 12px 14px;
+  border: 1px solid var(--ec-line);
+  border-radius: 12px;
+  background: #fff;
 }
-.ec-stake__bars i:last-child {
-  opacity: 1;
+.ec-stake__term small {
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+  color: var(--ec-muted);
+  white-space: nowrap;
 }
-
-/* ---------- Storage ---------- */
-.ec-store__card {
-  width: 420px;
+.ec-stake__term b {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.2px;
+  color: var(--ec-ink);
+  white-space: nowrap;
 }
-.ec-store__title {
+.ec-stake__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ec-stake__figure small {
+  font-size: 13px;
+  color: var(--ec-muted);
+}
+.ec-stake__figure b {
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -1.2px;
+  color: #122433;
+  white-space: nowrap;
+}
+.ec-stake__figure b .il-count {
+  font-weight: 500;
+}
+.ec-stake__figure em {
   display: inline-flex;
   align-items: center;
+  gap: 7px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ec-green);
+}
+.ec-stake__up {
+  width: 0;
+  height: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-bottom: 7px solid var(--ec-green);
+}
+.ec-stake__stack {
+  width: 156px;
+  height: 340px;
+}
+/* A coin read side-on: an elliptical face with a lit rim, stacked with a shared shadow. */
+.ec-stake__coin {
+  position: absolute;
+  left: 0;
+  width: 148px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(168deg, #dcddfd 0%, #b0b2f4 46%, #7f82e7 100%);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.75), inset 0 -2px 3px rgba(58, 60, 160, 0.28),
+    0 4px 8px -4px rgba(18, 36, 51, 0.35);
+  will-change: transform, opacity;
+}
+.ec-stake__coin::after {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  top: 7px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+/* ---------- Storage: the seal ---------- */
+.ec-store__seal {
+  width: 320px;
+  height: 320px;
+}
+.ec-store__ring {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+.ec-store__ring--outer {
+  inset: 0;
+  border: 1px solid rgba(64, 66, 209, 0.18);
+  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.42));
+  box-shadow: 0 24px 60px -30px rgba(18, 36, 51, 0.4);
+}
+.ec-store__ring--mid {
+  inset: 46px;
+  border: 1px dashed rgba(64, 66, 209, 0.28);
+}
+.ec-store__notches {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.ec-store__notches line {
+  stroke: rgba(64, 66, 209, 0.35);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.ec-store__notches line.is-major {
+  stroke: rgba(64, 66, 209, 0.6);
+  stroke-width: 2;
+}
+.ec-store__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 10px;
+  width: 128px;
+  height: 128px;
+  margin: -64px 0 0 -64px;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 12px 30px -14px rgba(18, 36, 51, 0.35);
+  will-change: transform;
+}
+.ec-store__core b {
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ec-muted);
 }
 .ec-lock {
   position: relative;
   display: block;
-  width: 22px;
-  height: 26px;
+  width: 26px;
+  height: 31px;
 }
 .ec-lock__shackle {
   position: absolute;
-  left: 4px;
+  left: 5px;
   top: 0;
-  width: 14px;
-  height: 14px;
-  border: 2.5px solid #4042d1;
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--ec-indigo);
   border-bottom: 0;
-  border-radius: 8px 8px 0 0;
+  border-radius: 9px 9px 0 0;
   box-sizing: border-box;
 }
 .ec-lock__body {
   position: absolute;
   left: 0;
-  top: 10px;
-  width: 22px;
-  height: 16px;
-  border-radius: 4px;
-  background: #4042d1;
+  top: 12px;
+  width: 26px;
+  height: 19px;
+  border-radius: 5px;
+  background: var(--ec-indigo);
 }
 .ec-lock__body::after {
   content: '';
   position: absolute;
-  left: 9px;
-  top: 5px;
+  left: 11px;
+  top: 6px;
   width: 4px;
-  height: 6px;
+  height: 7px;
   border-radius: 2px;
   background: #fff;
 }
-.ec-store__rows {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+.ec-store__shard {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #dfe3ef;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 24px -14px rgba(18, 36, 51, 0.5);
+  will-change: transform, background-color;
 }
-.ec-store__row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid #eef0f5;
+.ec-store__shard {
+  color: var(--ec-indigo);
 }
-.ec-store__row img {
+.ec-store__shard svg {
   display: block;
 }
-.ec-store__name,
-.ec-store__amt {
+.ec-store__keys {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 10px;
+  width: 176px;
 }
-.ec-store__name b {
-  font-weight: 600;
-  font-size: 14px;
-}
-.ec-store__name small,
-.ec-store__amt small {
-  font-size: 11px;
-  color: #7c858d;
-}
-.ec-store__amt {
-  margin-left: auto;
-  align-items: flex-end;
-}
-.ec-store__amt b {
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: -0.3px;
-}
-.ec-store__foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 4px;
-  font-size: 12px;
-  color: #7c858d;
+.ec-store__keys .ec-caption {
+  margin-bottom: 4px;
 }
 .ec-store__key {
-  display: inline-flex;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--ec-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ec-muted);
 }
 .ec-store__key i {
-  width: 7px;
-  height: 7px;
+  grid-row: 1 / span 2;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #c9cdd3;
 }
-.ec-store__hw {
-  opacity: 0;
+.ec-store__key b {
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: -0.2px;
+  color: inherit;
+}
+.ec-store__key small {
+  font-size: 11px;
+  color: var(--ec-muted);
+}
+.ec-store__chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ec-store__chip {
+  font-size: 11.5px;
+  color: var(--ec-muted);
+}
+.ec-store__chip--ok {
   border-color: #d9f1e6;
-  color: #02774d;
+  background: #f4fbf8;
+  color: var(--ec-green);
+}
+.ec-store__chip--ok i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ec-green);
 }

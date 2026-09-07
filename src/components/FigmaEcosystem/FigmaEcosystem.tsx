@@ -83,7 +83,6 @@ export function FigmaEcosystem() {
           </div>
 
           <div className="ec__panel">
-            <img className="ec__wall" src={E('panel-bg.webp')} alt="" aria-hidden="true" />
             <div id="ec-scene-payments" className="ec__scene" data-scene="payments" role="tabpanel">
               <Payments />
             </div>

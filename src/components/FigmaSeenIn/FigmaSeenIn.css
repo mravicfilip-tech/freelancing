@@ -24,10 +24,14 @@
   gap: 50px;
   /* the rails carry the section's vertical padding, so they meet the neighbouring sections' rails */
   padding: 90px 0;
-  background-image: var(--sn-dash-v), var(--sn-dash-v);
-  background-size: 1px 100%, 1px 100%;
-  background-position: left top, right top;
-  background-repeat: no-repeat;
+  /* the rails, and the design's dot field (2532:815): a 2px #c1ceda dot every 22px, from y=10 */
+  background-image:
+    var(--sn-dash-v),
+    var(--sn-dash-v),
+    radial-gradient(circle at 1px 1px, #c1ceda 1px, transparent 1.5px);
+  background-size: 1px 100%, 1px 100%, 22px 22px;
+  background-position: left top, right top, 0 10px;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 
 /* ---------- Heading ---------- */

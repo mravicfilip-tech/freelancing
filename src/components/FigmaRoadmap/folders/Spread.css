@@ -1,4 +1,447 @@
-/* Spread — direction styles. */
+/* Spread — the folder opened flat. Two facing pages of one sheet, joined on the design's [4,4]
+   vertical rule. Both pages are the card's own paper (no wash, no border, no shadow down the
+   gutter): the crease is the only line between them, and the head and foot rules run across it
+   so the two text blocks justify to the same pair of lines. */
+
 .rd-spread {
-  display: block;
+  display: grid;
+  grid-template-columns: 420px 1px minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 640px;
+  isolation: isolate;
+}
+
+/* ---------- The two leaves ---------- */
+.rd-spread__page {
+  display: flex;
+  flex-direction: column;
+  background: var(--rd-card);
+  will-change: transform;
+}
+.rd-spread__page--index {
+  padding: 44px 40px 36px 44px;
+  border-radius: 12px 0 0 12px;
+}
+.rd-spread__page--leaf {
+  padding: 44px 52px 36px 52px;
+  border-radius: 0 12px 12px 0;
+}
+/* The gutter is a track of its own, so it runs the full height of the sheet. */
+.rd-spread__gutter {
+  align-self: stretch;
+  background-image: var(--rd-rule-v);
+  background-size: 1px 100%;
+  background-position: left top;
+  background-repeat: repeat-y;
+}
+
+/* ---------- Running head and foot: the two rules the pages hang from ---------- */
+.rd-spread__head,
+.rd-spread__foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+}
+.rd-spread__head {
+  padding-bottom: 16px;
+  background-position: left bottom;
+}
+.rd-spread__foot {
+  margin-top: 24px;
+  padding-top: 16px;
+  background-position: left top;
+}
+.rd-spread__runningEnd {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  opacity: 0.75;
+}
+.rd-spread__foot {
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.rd-spread__foot b {
+  font-weight: 700;
+  color: var(--rd-title);
+}
+
+/* ---------- Verso: the contents page ---------- */
+.rd-spread__index {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rd-spread__entry {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 54px;
+  display: flex;
+  align-items: stretch;
+}
+/* Every entry but the first is ruled; the head rule serves the first. */
+.rd-spread__entry + .rd-spread__entry {
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+/* The accent in the page's own margin, as on the FAQ and the ecosystem accordion. */
+.rd-spread__accent {
+  position: absolute;
+  left: -22px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  overflow: hidden;
+}
+.rd-spread__accent i {
+  position: absolute;
+  inset: 0;
+  background: var(--rd-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 50%;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rd-spread__entry[data-open] .rd-spread__accent i {
+  transform: scaleY(1);
+}
+.rd-spread__entry button {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 10px 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rd-spread__entry button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 3px;
+}
+/* The numeral column is the index's spine: ink behind us, indigo at the level in play, light
+   ahead of it — so the run of the seven numbers reads as the order and the position at once. */
+.rd-spread__folio {
+  flex: 0 0 auto;
+  width: 32px;
+  font-size: 16px;
+  color: var(--rd-rail);
+  transition: color 300ms ease;
+}
+.rd-spread__entry[data-status='done'] .rd-spread__folio {
+  color: var(--rd-title);
+}
+.rd-spread__entry[data-status='live'] .rd-spread__folio {
+  color: var(--rd-indigo);
+}
+.rd-spread__entryName {
+  flex: 0 0 auto;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.34px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-spread__entry[data-status='done'] .rd-spread__entryName,
+.rd-spread__entry[data-status='live'] .rd-spread__entryName {
+  color: var(--rd-ink);
+}
+.rd-spread__entry[data-open] .rd-spread__entryName {
+  color: var(--rd-title);
+}
+.rd-spread__entry button:hover .rd-spread__entryName {
+  color: var(--rd-title);
+}
+/* The leader across to the count, on the same [4,4] stroke as every rule on the sheet. */
+.rd-spread__leader {
+  flex: 1 1 auto;
+  height: 1px;
+  min-width: 20px;
+  margin: 7px 14px 0;
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-repeat: repeat-x;
+}
+.rd-spread__count {
+  flex: 0 0 auto;
+  font-size: 14px;
+  color: var(--rd-body);
+  opacity: 0.6;
+  transition: color 300ms ease, opacity 300ms ease;
+}
+.rd-spread__entry[data-status='done'] .rd-spread__count {
+  opacity: 1;
+}
+.rd-spread__entry[data-status='live'] .rd-spread__count {
+  color: var(--rd-indigo);
+  opacity: 1;
+}
+
+/* ---------- Recto: the level, set as a page ---------- */
+.rd-spread__leaf {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.rd-spread__title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 26px 0 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -1.2px;
+  color: var(--rd-title);
+}
+.rd-spread__titleN {
+  font-size: 34px;
+  letter-spacing: 0;
+  color: var(--rd-body);
+}
+.rd-spread__titleName {
+  flex: 1;
+}
+.rd-spread__marker {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14.75px;
+  border: 1px solid var(--rd-line);
+  border-radius: 46px;
+  font-family: var(--fh-sans);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+  white-space: nowrap;
+}
+.rd-spread__marker[data-status='live'] {
+  border-color: var(--rd-indigo);
+  background: var(--rd-indigo);
+  color: #fff;
+}
+.rd-spread__blurb {
+  margin: 16px 0 26px;
+  max-width: 62ch;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+}
+/* The five rows share the page's remaining height, so the block justifies to the foot rule. */
+.rd-spread .rd-miles {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.rd-spread .rd-miles li {
+  flex: 1;
+  align-content: center;
+  padding: 16px 0;
+  max-width: 78ch;
+}
+.rd-spread__foot--leaf {
+  justify-content: space-between;
+  color: var(--rd-body);
+}
+.rd-spread__turn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  color: var(--rd-body);
+  cursor: pointer;
+  transition: color 240ms ease;
+}
+.rd-spread__turn svg {
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-spread__turn:hover {
+  color: var(--rd-indigo);
+}
+.rd-spread__turn:hover svg {
+  transform: translateX(3px);
+}
+.rd-spread__turn:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 3px;
+}
+.rd-spread__folioEnd {
+  font-size: 14px;
+  color: var(--rd-body);
+}
+
+/* ---------- Setting the page again ----------
+   Choosing another entry re-sets the recto: its parts arrive off the gutter, top to bottom, on
+   the accordions' own curve. No curl, no shadow — the page is simply set again. */
+@media (prefers-reduced-motion: no-preference) {
+  .rd-spread__title,
+  .rd-spread__blurb,
+  .rd-spread__foot--leaf,
+  .rd-spread .rd-miles li {
+    animation: rd-spread-set 520ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+  }
+  .rd-spread__blurb {
+    animation-delay: 60ms;
+  }
+  .rd-spread .rd-miles li {
+    animation-delay: calc(110ms + var(--j) * 45ms);
+  }
+  .rd-spread__foot--leaf {
+    animation-delay: 340ms;
+  }
+}
+@keyframes rd-spread-set {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-spread__accent i,
+  .rd-spread__turn,
+  .rd-spread__turn svg,
+  .rd-spread__folio,
+  .rd-spread__count,
+  .rd-spread__entryName {
+    transition: none;
+  }
+}
+
+/* ---------- Narrower desktops ---------- */
+@media (max-width: 1280px) {
+  .rd-spread {
+    grid-template-columns: 340px 1px minmax(0, 1fr);
+  }
+  .rd-spread__page--index {
+    padding: 36px 28px 28px 36px;
+  }
+  .rd-spread__page--leaf {
+    padding: 36px 36px 28px;
+  }
+  .rd-spread__title {
+    font-size: 34px;
+  }
+  .rd-spread__entryName {
+    font-size: 16px;
+  }
+  .rd-spread__accent {
+    left: -18px;
+  }
+}
+
+/* ---------- The sheet folds the other way ----------
+   A spread cannot stay side by side on a phone, so the crease turns: the contents page sits above
+   the open level, the gutter becomes the horizontal fold between them, and the card keeps its one
+   outline. The index stays an index — numbers, leaders and counts — rather than becoming a strip
+   of tabs, because that is the half of the composition that carries the order. */
+@media (max-width: 1023px) {
+  .rd-spread {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .rd-spread__page--index {
+    border-radius: 12px 12px 0 0;
+    padding: 28px 24px 22px 28px;
+  }
+  .rd-spread__page--leaf {
+    border-radius: 0 0 12px 12px;
+    padding: 26px 24px 24px;
+  }
+  .rd-spread__gutter {
+    height: 1px;
+    background-image: var(--rd-rule-h);
+    background-size: 100% 1px;
+    background-repeat: repeat-x;
+  }
+  .rd-spread__entry {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+  .rd-spread__entry button {
+    padding: 13px 0;
+  }
+  .rd-spread__accent {
+    left: -14px;
+  }
+  .rd-spread__leaf {
+    flex: 0 0 auto;
+  }
+  .rd-spread .rd-miles {
+    display: block;
+  }
+  .rd-spread .rd-miles li {
+    padding: 14px 0;
+  }
+}
+@media (max-width: 720px) {
+  .rd-spread__title {
+    gap: 14px;
+    margin-top: 20px;
+    font-size: 28px;
+    letter-spacing: -0.9px;
+    /* The marker drops to its own line under the chapter opening, rather than squeezing it. */
+    flex-wrap: wrap;
+  }
+  .rd-spread__titleN {
+    font-size: 24px;
+  }
+  .rd-spread__titleName {
+    flex: 1 0 auto;
+  }
+  .rd-spread__marker {
+    order: -1;
+    flex-basis: 100%;
+    width: fit-content;
+    margin-bottom: 2px;
+    height: 30px;
+    font-size: 12px;
+  }
+  .rd-spread__blurb {
+    margin: 14px 0 18px;
+    font-size: 15px;
+  }
+  .rd-spread .rd-miles li {
+    font-size: 15px;
+    gap: 12px;
+  }
+  .rd-spread__entryName {
+    font-size: 16px;
+  }
+  .rd-spread__foot,
+  .rd-spread__head {
+    font-size: 12px;
+  }
+  .rd-spread__foot {
+    margin-top: 18px;
+  }
 }

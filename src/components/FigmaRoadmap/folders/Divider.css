@@ -1,4 +1,304 @@
-/* Divider — direction styles. */
+/* Divider — binder dividers on the band itself. No card: seven full-width [4,4] rules stacked
+   flush, their tabs flush against one right edge so the paper stacks into a column, and the open
+   level's milestones slotted in between the rules. The FAQ's row/rule/accent/disclosure
+   vocabulary, mirrored to the right. */
+
 .rd-divider {
-  display: block;
+  /* One spacing scale for the whole direction: the tab column, the name column and the gutter
+     between them, so every edge in the composition lands on one of three numbers. */
+  --rdv-tab: 116px;
+  --rdv-name: 220px;
+  --rdv-gap: 32px;
+  --rdv-pad: 26px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---------- Legend ---------- */
+/* Names the column of tabs before the first rule, and says where the project stands. */
+.rd-divider__legend {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0;
+}
+.rd-divider__legendLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+}
+.rd-divider__tally {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-divider__tally b {
+  font-weight: 700;
+  color: var(--rd-title);
+}
+
+/* ---------- The stack ---------- */
+.rd-divider__stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rd-divider__row {
+  position: relative;
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+/* The last divider closes the set, so the column of tabs has a bottom edge. */
+.rd-divider__row:last-child {
+  background-image: var(--rd-rule-h), var(--rd-rule-h);
+  background-size: 100% 1px, 100% 1px;
+  background-position: left top, left bottom;
+}
+
+/* The accent along the open divider's outer edge, as on the FAQ rows — mirrored, because the
+   right edge is this direction's spine. */
+.rd-divider__accent {
+  position: absolute;
+  right: -24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  overflow: hidden;
+}
+.rd-divider__accent i {
+  position: absolute;
+  inset: 0;
+  background: var(--rd-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rd-divider__row[data-open] .rd-divider__accent i {
+  transform: scaleY(1);
+}
+
+/* ---------- The divider itself ---------- */
+.rd-divider__head {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: var(--rdv-name) minmax(0, 1fr) auto var(--rdv-tab);
+  grid-template-areas: 'name blurb meta tab';
+  align-items: baseline;
+  gap: 0 var(--rdv-gap);
+  width: 100%;
+  padding: var(--rdv-pad) 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--rd-ink);
+  text-align: left;
+  cursor: pointer;
+}
+/* The tab's paper. Seven of them, flush, so they read as the edge of a stack rather than seven
+   labels; the row rules cross them as the seams between sheets. */
+.rd-divider__head::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 1px;
+  right: 0;
+  bottom: 0;
+  width: var(--rdv-tab);
+  background: var(--rd-tab);
+  transition: background 300ms ease;
+}
+.rd-divider__head:hover::after,
+.rd-divider__row[data-open] .rd-divider__head::after {
+  background: var(--rd-card);
+}
+.rd-divider__head:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: -2px;
+}
+
+.rd-divider__name {
+  grid-area: name;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.6px;
+  color: var(--rd-ink);
+  transition: color 300ms ease;
+}
+.rd-divider__head:hover .rd-divider__name,
+.rd-divider__row[data-open] .rd-divider__name {
+  color: var(--rd-title);
+}
+.rd-divider__blurb {
+  grid-area: blurb;
+  max-width: 58ch;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+}
+.rd-divider__meta {
+  grid-area: meta;
+  justify-self: end;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  white-space: nowrap;
+}
+.rd-divider__marker {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+}
+.rd-divider__count {
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-title);
+}
+.rd-divider__row[data-status='next'] .rd-divider__count {
+  color: var(--rd-body);
+}
+
+/* The index number, centred on its tab so the seven of them line up down the paper. */
+.rd-divider__tab {
+  grid-area: tab;
+  text-align: center;
+}
+.rd-divider__n {
+  font-size: 30px;
+  line-height: 1;
+  font-variation-settings: 'ROND' 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+/* Where the project is: the numbers behind us and the one in play are at full ink, the two ahead
+   are not, so the break in the column falls between 05 and 06. */
+.rd-divider__row[data-status='done'] .rd-divider__n,
+.rd-divider__row[data-status='live'] .rd-divider__n,
+.rd-divider__row[data-open] .rd-divider__n {
+  color: var(--rd-title);
+}
+
+/* ---------- The level, slotted in between the dividers ---------- */
+.rd-divider__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rd-divider__body > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-divider__row[data-open] .rd-divider__body {
+  grid-template-rows: 1fr;
+}
+/* The milestones take the blurb's column, so the level's name stays out in the margin and the
+   sentences keep a measure that reads. */
+.rd-divider .rd-miles {
+  padding: 0 var(--rdv-tab) 30px calc(var(--rdv-name) + var(--rdv-gap));
+  max-width: calc(var(--rdv-name) + var(--rdv-gap) + 66ch);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-divider__body,
+  .rd-divider__accent i,
+  .rd-divider__head::after,
+  .rd-divider__name,
+  .rd-divider__n {
+    transition: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .rd-divider {
+    --rdv-name: 180px;
+    --rdv-gap: 28px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .rd-divider {
+    --rdv-tab: 88px;
+    --rdv-name: 0px;
+    --rdv-gap: 24px;
+  }
+  /* No room for four columns: the name and its status take the first line, the blurb the second. */
+  .rd-divider__head {
+    grid-template-columns: minmax(0, 1fr) auto var(--rdv-tab);
+    grid-template-areas:
+      'name meta tab'
+      'blurb blurb tab';
+    row-gap: 8px;
+  }
+  .rd-divider__tab {
+    align-self: center;
+  }
+  .rd-divider__accent {
+    right: -16px;
+  }
+  .rd-divider .rd-miles {
+    padding-left: 0;
+    max-width: 66ch;
+  }
+}
+
+@media (max-width: 720px) {
+  .rd-divider {
+    --rdv-tab: 62px;
+    --rdv-gap: 16px;
+    --rdv-pad: 20px;
+  }
+  .rd-divider__head {
+    grid-template-columns: minmax(0, 1fr) var(--rdv-tab);
+    grid-template-areas:
+      'name tab'
+      'meta tab'
+      'blurb tab';
+    row-gap: 6px;
+  }
+  .rd-divider__name {
+    font-size: 18px;
+    letter-spacing: -0.4px;
+  }
+  .rd-divider__meta {
+    justify-self: start;
+    gap: 12px;
+  }
+  .rd-divider__blurb {
+    /* Two lines of the blurb is enough to say what the level is at this width. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .rd-divider__n {
+    font-size: 24px;
+  }
+  /* On the rails, the accent is the tab's own outer edge. */
+  .rd-divider__accent {
+    right: 0;
+  }
+  .rd-divider .rd-miles {
+    padding: 0 0 22px;
+  }
+  .rd-divider .rd-miles li {
+    gap: 12px;
+    padding: 14px 0;
+    font-size: 15px;
+  }
 }

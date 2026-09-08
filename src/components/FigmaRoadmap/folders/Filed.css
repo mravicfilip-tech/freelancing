@@ -1,4 +1,423 @@
-/* Filed — direction styles. */
+/* Filed — the stack seen from above.
+
+   Seven sheets flush-stacked on one hairline, each with its own tab cut from its own paper and
+   pushed above its top edge, so the tab that belongs to a sheet lies over the sheet in front of
+   it — the way a card index reads when you look down into the drawer. The tabs step across the
+   stack on the level index and carry the status: solid paper for the levels behind us, indigo for
+   the one in play, the design's dashed stroke for the ones still ahead.
+
+   Colour, rules and curves are the band's own; nothing here is a new hue. */
+
 .rd-filed {
-  display: block;
+  --f-tab-w: 86px;
+  --f-tab-h: 28px;
+  --f-tab-x: calc(3% + 14% * var(--i, 0));
+  --f-inset: 28px;
+  --f-pad: 32px;
+  /* The accordions' open curve, and their 520ms. */
+  --f-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- The stack ---------- */
+.rd-filed__stack {
+  list-style: none;
+  margin: 0;
+  /* Room above the stack for the first sheet's tab. */
+  padding: var(--f-tab-h) 0 0;
+}
+.rd-filed__sheet {
+  position: relative;
+  /* Later sheets are nearer the front of the drawer, so their tabs lie over the ones behind. */
+  z-index: calc(var(--i) + 1);
+  margin: -1px var(--f-inset) 0;
+  border: 1px solid var(--rd-line);
+  border-radius: 12px 12px 0 0;
+  background: var(--rd-card);
+  transition: margin 460ms var(--f-ease), border-radius 460ms var(--f-ease), box-shadow 460ms ease;
+}
+.rd-filed__sheet:first-child {
+  margin-top: 0;
+}
+.rd-filed__sheet[data-edge='above'] {
+  border-radius: 12px;
+}
+/* The sheet in play is pulled up out of the stack: past its edges, with air above and below it. */
+.rd-filed__sheet[data-open] {
+  z-index: 20;
+  margin: 36px 0 42px;
+  border-radius: 12px;
+  box-shadow: 0 22px 44px -30px rgb(18 36 51 / 45%);
+}
+
+/* ---------- The tab ---------- */
+/* Cut from the sheet's own paper: same fill, same hairline, and its bottom edge open into the
+   sheet — the 1px overrun takes out the sheet's top rule where the tab meets it. */
+.rd-filed__tab {
+  position: absolute;
+  left: var(--f-tab-x);
+  top: calc(-1 * var(--f-tab-h));
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--f-tab-w);
+  height: calc(var(--f-tab-h) + 1px);
+  padding-bottom: 1px;
+  border: 1px solid var(--rd-line);
+  border-bottom: 0;
+  border-radius: 9px 9px 0 0;
+  background: var(--rd-card);
+  font-size: 13px;
+  color: var(--rd-title);
+  transition: transform 320ms var(--f-ease), background 300ms ease, border-color 300ms ease,
+    color 300ms ease;
+}
+.rd-filed__sheet[data-status='live'] .rd-filed__tab {
+  border-color: var(--rd-indigo);
+  background: var(--rd-indigo);
+  color: #fff;
+}
+.rd-filed__sheet[data-status='next'] .rd-filed__tab {
+  border-style: dashed;
+  border-color: var(--rd-rail);
+  color: var(--rd-body);
+}
+
+/* ---------- The closed row ---------- */
+.rd-filed__head {
+  margin: 0;
+  font: inherit;
+}
+.rd-filed__pull {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 28px;
+  width: 100%;
+  /* The extra foot is the band the next sheet's tab lies in. */
+  padding: 22px var(--f-pad) 30px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rd-filed__pull:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: -3px;
+}
+.rd-filed__name {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.72px;
+  color: var(--rd-title);
+  transition: color 300ms ease;
+}
+.rd-filed__sheet[data-status='next'] .rd-filed__name {
+  color: var(--rd-body);
+}
+.rd-filed__sheet[data-status='next'][data-open] .rd-filed__name,
+.rd-filed__sheet[data-status='next'] .rd-filed__pull:hover .rd-filed__name {
+  color: var(--rd-title);
+}
+/* Lifting a folder before you pull it. */
+.rd-filed__sheet:not([data-open]) .rd-filed__pull:hover .rd-filed__tab {
+  transform: translateY(-3px);
+}
+
+/* The folder's contents laid along the row: five short labels on one line, ruled apart, the
+   ticked ones in ink — so a closed sheet still says what the level is and how far it got. */
+.rd-filed__contents {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: -0.13px;
+  mask-image: linear-gradient(90deg, #000 0 calc(100% - 56px), transparent);
+  transition: opacity 240ms ease;
+}
+.rd-filed__short {
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  color: var(--rd-body);
+  opacity: 0.72;
+}
+.rd-filed__short[data-done] {
+  color: var(--rd-ink);
+  opacity: 1;
+}
+.rd-filed__short + .rd-filed__short {
+  margin-left: 14px;
+  padding-left: 14px;
+  border-left: 1px solid var(--rd-line);
+}
+/* Open, the row is a title bar: the sentences below carry the contents instead. */
+.rd-filed__sheet[data-open] .rd-filed__contents {
+  opacity: 0;
+}
+
+.rd-filed__meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.rd-filed__count {
+  font-size: 14px;
+  color: var(--rd-title);
+}
+.rd-filed__count i {
+  font-style: normal;
+  color: var(--rd-body);
+  opacity: 0.7;
+}
+.rd-filed__sheet[data-status='next'] .rd-filed__count {
+  color: var(--rd-body);
+}
+.rd-filed__sheet[data-status='live'] .rd-filed__count {
+  color: var(--rd-indigo);
+}
+/* The status pill, on the band's chip spec. */
+.rd-filed__marker {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14.75px;
+  border: 1px solid var(--rd-line);
+  border-radius: 46px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  white-space: nowrap;
+}
+.rd-filed__marker[data-status='done'] {
+  color: var(--rd-ink);
+}
+.rd-filed__marker[data-status='live'] {
+  border-color: var(--rd-indigo);
+  color: var(--rd-indigo);
+}
+.rd-filed__marker[data-status='next'] {
+  border-style: dashed;
+  border-color: var(--rd-rail);
+}
+
+/* ---------- The open sheet ---------- */
+.rd-filed__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms var(--f-ease);
+}
+.rd-filed__body > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-filed__sheet[data-open] .rd-filed__body {
+  grid-template-rows: 1fr;
+}
+/* Set as a page: the caption column behind the [4,4] rule, the milestones beside it. */
+.rd-filed__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  padding: 0 var(--f-pad) 34px;
+}
+.rd-filed__aside {
+  padding: 16px 40px 0 0;
+  background-image: var(--rd-rule-v);
+  background-size: 1px 100%;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+.rd-filed__folio {
+  margin: 0;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+}
+.rd-filed__sheet[data-status='live'] .rd-filed__folio {
+  color: var(--rd-indigo);
+}
+.rd-filed__blurb {
+  margin: 10px 0 0;
+  max-width: 34ch;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+}
+.rd-filed .rd-miles {
+  padding-left: 40px;
+}
+
+/* ---------- The drawer's face ---------- */
+.rd-filed__plate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: -1px var(--f-inset) 0;
+  padding: 16px var(--f-pad);
+  border: 1px solid var(--rd-line);
+  border-radius: 0 0 12px 12px;
+  background: var(--rd-tab);
+}
+.rd-filed__plateLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-indigo);
+}
+.rd-filed__tally {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-filed__tally b {
+  font-weight: 700;
+  color: var(--rd-title);
+}
+
+.rd-filed__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- The open sheet deals its page out ---------- */
+.rd-filed__aside,
+.rd-filed .rd-miles li {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 300ms ease, transform 420ms var(--f-ease);
+}
+.rd-filed__sheet[data-open] .rd-filed__aside {
+  opacity: 1;
+  transform: none;
+  transition-delay: 90ms;
+}
+.rd-filed__sheet[data-open] .rd-miles li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(130ms + var(--j) * 45ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-filed__sheet,
+  .rd-filed__tab,
+  .rd-filed__name,
+  .rd-filed__contents,
+  .rd-filed__body,
+  .rd-filed__aside,
+  .rd-filed .rd-miles li {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- Tablet */
+@media (max-width: 1099px) {
+  .rd-filed {
+    --f-inset: 20px;
+    --f-pad: 24px;
+    --f-tab-w: 76px;
+  }
+  .rd-filed__pull {
+    grid-template-columns: minmax(0, 160px) minmax(0, 1fr) auto;
+    gap: 0 20px;
+  }
+  .rd-filed__inner {
+    grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  }
+  .rd-filed__aside {
+    padding-right: 28px;
+  }
+  .rd-filed .rd-miles {
+    padding-left: 28px;
+  }
+}
+
+/* ---------------------------------------------------------------- Mobile */
+@media (max-width: 767px) {
+  .rd-filed {
+    --f-inset: 12px;
+    --f-pad: 18px;
+    --f-tab-w: 52px;
+    --f-tab-h: 26px;
+    --f-tab-x: calc(2% + 13% * var(--i, 0));
+  }
+  /* Two rows: the level and its count, then the contents line under them. */
+  .rd-filed__pull {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name meta'
+      'contents contents';
+    align-items: center;
+    gap: 10px 12px;
+    padding: 18px var(--f-pad) 28px;
+  }
+  .rd-filed__name {
+    grid-area: name;
+    font-size: 21px;
+    letter-spacing: -0.63px;
+  }
+  .rd-filed__meta {
+    grid-area: meta;
+    gap: 12px;
+  }
+  .rd-filed__contents {
+    grid-area: contents;
+    mask-image: linear-gradient(90deg, #000 0 calc(100% - 40px), transparent);
+  }
+  .rd-filed__count {
+    font-size: 13px;
+  }
+  .rd-filed__marker {
+    height: 28px;
+    padding: 0 11px;
+    font-size: 12px;
+    letter-spacing: -0.24px;
+  }
+  .rd-filed__sheet[data-open] {
+    margin: 28px 0 32px;
+  }
+  /* The caption column becomes the lead paragraph, ruled off the milestones under it. */
+  .rd-filed__inner {
+    grid-template-columns: minmax(0, 1fr);
+    padding-bottom: 26px;
+  }
+  .rd-filed__aside {
+    padding: 14px 0 20px;
+    background-image: var(--rd-rule-h);
+    background-size: 100% 1px;
+    background-position: left bottom;
+  }
+  .rd-filed__blurb {
+    max-width: none;
+  }
+  .rd-filed .rd-miles {
+    padding-left: 0;
+  }
+  .rd-filed .rd-miles li {
+    font-size: 15px;
+    gap: 12px;
+  }
+  .rd-filed__plate {
+    padding: 14px var(--f-pad);
+  }
+  .rd-filed__tally {
+    font-size: 12px;
+  }
 }

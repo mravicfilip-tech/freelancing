@@ -16,6 +16,13 @@ const inlineFonts = (css) =>
     const b64 = readFileSync('dist-single/assets/' + file).toString('base64');
     return block.replace(/url\((?:\.\/)?[^)"']+\.woff2\)/, `url(data:font/woff2;base64,${b64})`);
   });
+// The icons are served from public/ on the real site; here they must travel inside the file.
+html = html.replace(/<link rel="icon"[^>]*href="\.?\/favicon-32\.png"[^>]*>\s*/g, '');
+html = html.replace(/<link rel="apple-touch-icon"[^>]*>\s*/g, '');
+html = html.replace(
+  /href="\.?\/favicon\.svg"/,
+  `href="data:image/svg+xml;base64,${readFileSync('public/favicon.svg').toString('base64')}"`,
+);
 html = html.replace(/<link rel="stylesheet"[^>]*href="\.\/(assets\/[^"]+\.css)"[^>]*>/g, (_, p) => `<style>${inlineFonts(readFileSync('dist-single/' + p, 'utf8'))}</style>`);
 html = html.replace(/<script type="module"[^>]*src="\.\/(assets\/[^"]+\.js)"[^>]*><\/script>/g, (_, p) => {
   let js = readFileSync('dist-single/' + p, 'utf8');

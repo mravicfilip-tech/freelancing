@@ -1,46 +1,17 @@
 import { useEffect, type RefObject } from 'react';
+import { DIAL, COINS, HALOS, SEGMENTS, SEG_BY_ID, REST, SPATIAL, WIRES, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
 
 export type TokVariant = 1 | 2 | 3 | 4 | 5;
 
 export const TOK_VARIANTS: { name: string; blurb: string }[] = [
-  { name: 'Sweep', blurb: 'The dial fills clockwise from twelve; each percentage counts up as the sweep passes it, and the chips ride in from their own side.' },
-  { name: 'Assemble', blurb: 'The mark lands first, the ring springs out around it, and the allocations are thrown outward from the hub along the wires.' },
-  { name: 'Orbit', blurb: 'Arrives whole, then keeps living — the ring turns, the marks breathe, and light runs the wires inward on a loop.' },
-  { name: 'Tally', blurb: 'Reads like a settlement: allocations resolve largest first while a running total counts to 100% inside the hub, then the mark takes its place.' },
-  { name: 'Signal', blurb: 'The wires go first: each chain sends a pulse into the hub, and every arrival lights one allocation. The ring closes last.' },
+  { name: 'Aim', blurb: 'The gradient arc swings round the dial and resizes to each allocation’s share as it lands — 50% of the circle on presale, a sliver on rewards. The chip it points at takes the indigo.' },
+  { name: 'Relay', blurb: 'Every move is paid for: a light runs in along that allocation’s own chain wire, the hub takes the hit, and only then does the arc swing across and resize onto it.' },
+  { name: 'Bloom', blurb: 'The arc closes to a thin blade at the new bearing, holds a beat, then blooms open to the allocation’s full share — so the size of each slice is the thing you read.' },
+  { name: 'Unroll', blurb: 'One continuous rotation: the leading edge runs ahead to the next allocation and the trailing edge catches up, so the arc stretches and contracts without ever jumping.' },
+  { name: 'Settle', blurb: 'The most direct of the five: a short travel onto each bearing that eases past its mark by a hair and settles, with the hub halos rippling gently outward as it lands.' },
 ];
 
-/** Pulse routes, in stage coordinates: coin centre, optional elbow, then the ring's edge. */
-const ROUTES: { sel: string; pts: [number, number][] }[] = [
-  { sel: '.tk__pulse--l0', pts: [[258, 293], [559, 293]] },
-  { sel: '.tk__pulse--l1', pts: [[168, 453], [261, 453], [426, 293]] },
-  { sel: '.tk__pulse--l2', pts: [[168, 134], [261, 134], [426, 293]] },
-  { sel: '.tk__pulse--r0', pts: [[1296, 293], [1001, 293]] },
-  { sel: '.tk__pulse--r1', pts: [[1380, 453], [1299, 453], [1134, 293]] },
-  { sel: '.tk__pulse--r2', pts: [[1380, 134], [1299, 134], [1134, 293]] },
-];
-
-/**
- * The phone frame (2639:1627) hangs its chain marks off two wire trees instead of two flanks, so
- * the lights run down the top tree into the dial's crown and up the bottom one into its foot.
- */
-const ROUTES_M: { sel: string; pts: [number, number][] }[] = [
-  { sel: '.tk__pulse--l0', pts: [[194, 103], [196.5, 400]] },
-  { sel: '.tk__pulse--l1', pts: [[104, 50], [150, 103], [196.5, 400]] },
-  { sel: '.tk__pulse--l2', pts: [[293, 50], [245, 103], [196.5, 400]] },
-  { sel: '.tk__pulse--r0', pts: [[195.5, 1023], [196.5, 610]] },
-  { sel: '.tk__pulse--r1', pts: [[101.5, 1073], [150, 1023], [196.5, 610]] },
-  { sel: '.tk__pulse--r2', pts: [[289.5, 1073], [243, 1023], [196.5, 610]] },
-];
-
-/** Largest allocation first — the order the tally variant settles them in. */
-const BY_SIZE = ['presale', 'marketing', 'listings', 'reserves', 'team', 'rewards'];
-
-/**
- * `mobile` selects the phone frame's wire routes and lets the allocations enter along the axis they
- * are stacked on; it is also a dependency, so crossing the breakpoint rebuilds the timeline.
- */
-export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1, mobile = false) {
+export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -56,213 +27,325 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
     let revert: (() => void) | null = null;
     let io: IntersectionObserver | null = null;
 
-    Promise.all([import('gsap'), import('gsap/ScrollTrigger')])
-      .then(([{ gsap }, { ScrollTrigger }]) => {
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger'), import('gsap/MotionPathPlugin')])
+      .then(([{ gsap }, { ScrollTrigger }, { MotionPathPlugin }]) => {
         if (cancelled) return;
-        gsap.registerPlugin(ScrollTrigger);
+        gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
         const ctx = gsap.context(() => {
           const q = (sel: string) => el.querySelectorAll(sel);
-          const one = (sel: string) => el.querySelector(sel) as HTMLElement | null;
-          const slice = (id: string) => el.querySelector(`[data-slice="${id}"]`) as HTMLElement | null;
-          const counters = () => Array.from(q('.tk__pct b')) as HTMLElement[];
+          const one = <T extends Element = HTMLElement>(sel: string) => el.querySelector(sel) as T | null;
+          const slice = (id: string) => one<HTMLElement>(`[data-slice="${id}"]`);
+          const wire = (id: string) => one<SVGPathElement>(`[data-wire="${id}"]`);
+          const pulse = (id: string) => one<SVGCircleElement>(`[data-pulse="${id}"]`);
+          const arcEl = one<SVGPathElement>('.tk__arc');
+          const haloEls = HALOS.map((h) => one<SVGPathElement>(`[data-halo="${h.d}"]`));
+          const stops = tourStops();
+          const coinEl = (id: string) => one<HTMLElement>(`[data-coin="${id}"]`);
+          const allocForWire = Object.fromEntries(Object.entries(WIRE_FOR).map(([a, w]) => [w, a]));
 
-          /** Reveals a node by running a conic wiper over it, so the artwork draws rather than fades. */
-          const wipe = (target: Element | null, tl: gsap.core.Timeline, at: number, dur: number) => {
-            if (!target) return;
-            const node = target as HTMLElement;
-            const proxy = { a: 0 };
-            const paint = () => {
-              const g = `conic-gradient(from -90deg, #000 ${proxy.a}deg, transparent ${proxy.a}deg)`;
-              node.style.maskImage = g;
-              node.style.webkitMaskImage = g;
-            };
-            paint();
-            tl.to(proxy, {
-              a: 360,
-              duration: dur,
-              ease: 'none',
-              onUpdate: paint,
-              onComplete: () => {
-                node.style.maskImage = '';
-                node.style.webkitMaskImage = '';
-              },
-            }, at);
+          /**
+           * How far along each wire its chain mark sits, measured off the real path so the pulse
+           * fires exactly as the dot crosses the mark rather than at a guessed moment.
+           */
+          const coinAt = new Map<string, number>();
+          WIRES.forEach((w) => {
+            const path = wire(w.id);
+            const c = COINS.find((k) => k.id === w.coin);
+            if (!path || !c) return;
+            const [cx, cy] = [c.x + 32, c.y];
+            const L = path.getTotalLength();
+            let best = Infinity;
+            let bestF = 0.5;
+            for (let i = 0; i <= 240; i++) {
+              const pt = path.getPointAtLength((i / 240) * L);
+              const d = Math.hypot(pt.x - cx, pt.y - cy);
+              if (d < best) {
+                best = d;
+                bestF = i / 240;
+              }
+            }
+            coinAt.set(w.id, bestF);
+          });
+
+          /** A chain mark reacting to a light going past: down 15%, then back. */
+          const coinPulse = (wireId: string) => {
+            const w = WIRES.find((k) => k.id === wireId);
+            const el = w && coinEl(w.coin);
+            if (!el) return;
+            gsap.timeline()
+              .to(el, { scale: 0.85, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 50%' })
+              .to(el, { scale: 1, duration: 0.55, ease: 'power2.out' });
           };
+          /** Set once the entrance is done: during load-in a mark appears instead of pulsing. */
+          let cycling = false;
 
-          /** Counts a percentage circle up to its value. */
-          const count = (node: HTMLElement, tl: gsap.core.Timeline, at: number, dur = 0.8) => {
+          /**
+           * Tempo. The dial should read as slow and deliberate: a long travel, and a rest long
+           * enough to actually take in the allocation before it moves on.
+           */
+          const MOVE = 1.5;
+          const HOLD = 2.4;
+          const EASE = 'power2.inOut';
+          const [rest0, rest1] = spanOf(SEG_BY_ID[REST]);
+
+          /**
+           * The one shape the whole section turns on: the gradient arc, with the two hub halos
+           * following the same span. Everything below just drives these two numbers.
+           */
+          const arc = { a0: rest0, a1: rest1 };
+          const ramp = one<SVGLinearGradientElement>('#tkRamp');
+          const paint = () => {
+            arcEl?.setAttribute('d', slicePath(arc.a0, arc.a1));
+            haloEls.forEach((h, i) => h?.setAttribute('d', slicePath(arc.a0, arc.a1, HALOS[i].d / 2)));
+            // Lay the ramp ALONG the wedge's own bisector — pale at the hub, indigo at the rim.
+            // That makes the shape mirror-symmetric about the direction it points, so its visual
+            // centre is its geometric centre. Running the ramp across the wedge instead puts all
+            // the colour on one edge and the pale end vanishes into the background, and the wedge
+            // then reads as aimed at that edge rather than at the allocation it is centred on.
+            if (!ramp) return;
+            const mid = ((arc.a0 + arc.a1) / 2) * (Math.PI / 180);
+            ramp.setAttribute('x1', String(DIAL.c));
+            ramp.setAttribute('y1', String(DIAL.c));
+            ramp.setAttribute('x2', String(DIAL.c + DIAL.r * Math.cos(mid)));
+            ramp.setAttribute('y2', String(DIAL.c + DIAL.r * Math.sin(mid)));
+          };
+          paint();
+
+          const aimAt = (tl: gsap.core.Timeline, at: number, a0: number, a1: number, dur = MOVE, ease = EASE) =>
+            tl.to(arc, { a0, a1, duration: dur, ease, onUpdate: paint }, at);
+
+          /** Marks one allocation live: its chip goes indigo, the rest stay ink. */
+          const light = (tl: gsap.core.Timeline, at: number, id: string | null) =>
+            tl.call(
+              () => {
+                SEGMENTS.forEach((s) => slice(s.id)?.toggleAttribute('data-on', s.id === id));
+                el.dataset.live = id ?? '';
+              },
+              undefined,
+              at,
+            );
+
+          /** Counts a percentage up to its value. */
+          const count = (id: string, tl: gsap.core.Timeline, at: number, dur = 0.9) => {
+            const node = slice(id)?.querySelector('.tk__pct b') as HTMLElement | null;
+            if (!node) return;
             const to = Number(node.dataset.pct ?? 0);
             const proxy = { v: 0 };
-            node.textContent = '0%';
+            tl.set(node, { textContent: '0%' }, at);
             tl.to(proxy, {
               v: to,
               duration: dur,
               ease: 'power2.out',
-              onUpdate: () => { node.textContent = `${Math.round(proxy.v)}%`; },
+              onUpdate: () => {
+                node.textContent = `${Math.round(proxy.v)}%`;
+              },
             }, at);
           };
 
-          /** Sends a light down one wire, hub-bound. */
-          const routes = mobile ? ROUTES_M : ROUTES;
           /**
-           * Where an allocation comes from. Ranged either side of the dial on a desk, so they come
-           * in from their own flank; stacked on a phone, so they rise from the side of the dial
-           * they sit on.
+           * Sends a light along one wire. `dir` 1 runs inward to the hub, -1 runs back out. With
+           * `draw`, the wire is stroked in behind the dot, so the dot reads as the drawing head.
+           * Either way the chain mark reacts as the dot crosses it.
            */
-          const enterFrom = (node: HTMLElement, reach = 40) =>
-            mobile
-              ? { y: node.offsetTop < 500 ? -reach : reach, x: 0 }
-              : { x: node.offsetLeft < 780 ? -reach : reach, y: 0 };
-          const runPulse = (route: (typeof ROUTES)[number], tl: gsap.core.Timeline, at: number, dur = 1) => {
-            const dot = one(route.sel);
-            if (!dot) return;
-            const [start, ...rest] = route.pts;
-            const legs = rest.length;
-            gsap.set(dot, { x: start[0], y: start[1], opacity: 0 });
-            tl.to(dot, { opacity: 1, duration: 0.12 }, at);
-            rest.forEach((p, i) => {
-              tl.to(dot, { x: p[0], y: p[1], duration: dur / legs, ease: i === legs - 1 ? 'power1.in' : 'none' }, at + (dur / legs) * i);
-            });
-            tl.to(dot, { opacity: 0, duration: 0.18 }, at + dur);
+          const runWire = (id: string, tl: gsap.core.Timeline, at: number, dur = 1.5, dir: 1 | -1 = 1, draw = false) => {
+            const dot = pulse(id);
+            const path = wire(id);
+            if (!dot || !path) return;
+            const f = coinAt.get(id) ?? 0.5;
+            const mark = dir === 1 ? f : 1 - f;
+            let fired = false;
+            // A proxy tween with the same duration and ease as the ride, so its value IS the dot's
+            // eased progress along the path. (A paused tween added to a timeline never renders, so
+            // the crossing cannot be read off the motionPath tween itself.)
+            const head = { p: 0 };
+            tl.to(head, {
+              p: 1,
+              duration: dur,
+              ease: 'power1.inOut',
+              onStart: () => {
+                fired = false;
+              },
+              onUpdate: () => {
+                if (!fired && head.p >= mark) {
+                  fired = true;
+                  if (cycling) coinPulse(id);
+                }
+              },
+            }, at);
+            tl.to(dot, {
+              motionPath: { path, start: dir === 1 ? 0 : 1, end: dir === 1 ? 1 : 0 },
+              duration: dur,
+              ease: 'power1.inOut',
+            }, at);
+            tl.set(dot, { opacity: 0 }, at);
+            tl.to(dot, { opacity: 1, duration: 0.2 }, at);
+            tl.to(dot, { opacity: 0, duration: 0.25 }, at + dur - 0.1);
+            if (draw) {
+              const L = path.getTotalLength();
+              gsap.set(path, { strokeDasharray: L, strokeDashoffset: L });
+              tl.to(path, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
+            }
           };
 
-          const tl = gsap.timeline({ paused: true });
-          const heading = () => {
-            tl.from(q('.tk__lineInner'), { yPercent: 110, duration: 1, ease: 'power4.out' }, 0);
-            tl.from(one('.tk__sub'), { opacity: 0, y: 10, duration: 0.6, ease: 'power3.out' }, 0.3);
-            tl.from(one('.tk__facts'), { opacity: 0, y: 14, duration: 0.7, ease: 'power3.out' }, 1.5);
+          const knock = (tl: gsap.core.Timeline, at: number) => {
+            tl.to(one('.tk__hubDisc'), { scale: 1.035, duration: 0.3, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
+            tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.7, ease: 'power2.out' }, at + 0.3);
           };
+
+          // ---- Entrance ---------------------------------------------------------------------
+          const tl = gsap.timeline({ paused: true });
+          tl.from(q('.tk__lineInner'), { yPercent: 110, duration: 1.3, ease: 'power3.out' }, 0);
+          tl.from(one('.tk__sub'), { opacity: 0, y: 8, duration: 0.9, ease: 'power2.out' }, 0.35);
+          tl.from(one('.tk__ring'), { scale: 0.94, opacity: 0, duration: 1.2, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.3);
+          tl.from(one('.tk__hub'), { scale: 0.86, opacity: 0, duration: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.45);
+          // The arc opens from a blade at presale's bearing to its full 50% span.
+          const restAim = (rest0 + rest1) / 2;
+          tl.fromTo(arc, { a0: restAim, a1: restAim }, { a0: rest0, a1: rest1, duration: 1.6, ease: 'power2.out', onUpdate: paint }, 0.6);
+          // Each wire strokes itself in with a light at its head, going round the section:
+          // top-left, left-centre, left-bottom, right-bottom, right-centre, right-top. The chain
+          // mark lands as the head reaches it, and its allocation follows just behind.
+          const DRAW = 1.3;
+          const STEP = 0.24;
+          SPATIAL.forEach((wid, i) => {
+            const at = 0.7 + i * STEP;
+            runWire(wid, tl, at, DRAW, 1, true);
+            const w = WIRES.find((k) => k.id === wid);
+            if (w) tl.from(coinEl(w.coin), { scale: 0, opacity: 0, duration: 0.55, ease: 'power2.out' }, at + DRAW * (coinAt.get(wid) ?? 0.5));
+            const alloc = allocForWire[wid];
+            if (slice(alloc)) {
+              tl.from(slice(alloc), { opacity: 0, y: 8, duration: 0.7, ease: 'power2.out' }, at + DRAW * 0.6);
+              count(alloc, tl, at + DRAW * 0.6);
+            }
+          });
+          const settled = 0.7 + (SPATIAL.length - 1) * STEP + DRAW;
+          light(tl, settled - 0.3, REST);
+          tl.from(one('.tk__facts'), { opacity: 0, y: 12, duration: 1, ease: 'power2.out' }, settled - 0.4);
+
+          // ---- The cycle --------------------------------------------------------------------
+          const loop = gsap.timeline({ repeat: -1, paused: true });
+
+          /** Closes a lap by snapping the arc forward a turn, so the next lap starts where this did. */
+          const relap = (at: number) =>
+            loop.call(() => {
+              arc.a0 += 360;
+              arc.a1 += 360;
+              paint();
+            }, undefined, at);
+
+          /**
+           * Every stop is fed by its own chain: a light runs in from the flank along that
+           * allocation's wire while the arc travels, and the two land together. This is what
+           * carries the rotation out to the chain marks — each one dips as the light goes past.
+           */
+          const feed = (id: string, at: number, dur: number) => runWire(WIRE_FOR[id], loop, at, dur);
 
           if (variant === 1) {
-            // Sweep — the dial fills clockwise and the figures count as it passes.
-            heading();
-            tl.from(one('.tk__ring'), { scale: 0.86, opacity: 0, duration: 0.8, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.25);
-            tl.from(one('.tk__hub'), { scale: 0.7, opacity: 0, duration: 0.7, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 0.35);
-            wipe(one('.tk__wedges'), tl, 0.5, 1.5);
-            tl.from(q('.tk__wire'), { scaleX: 0, duration: 0.9, ease: 'power3.out', stagger: 0.06, transformOrigin: '100% 50%' }, 0.6);
-            tl.from(q('.tk__coin'), { scale: 0, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.06 }, 1.15);
-            SLICES_ORDER.forEach((id, i) => {
-              const node = slice(id);
-              if (!node) return;
-              tl.from(node, { ...enterFrom(node), opacity: 0, duration: 0.6, ease: 'expo.out' }, 0.55 + i * 0.12);
-              const b = node.querySelector('.tk__pct b') as HTMLElement | null;
-              if (b) count(b, tl, 0.6 + i * 0.12);
+            // Aim — swing and resize onto each allocation in turn.
+            let at = 0;
+            stops.forEach((s) => {
+              // Nothing is lit while the arc is in flight: the chip it is leaving goes dark as
+              // it sets off, and the one it is heading for takes the indigo only on arrival.
+              light(loop, at, null);
+              feed(s.id, at, MOVE);
+              aimAt(loop, at, s.a0, s.a1);
+              light(loop, at + MOVE, s.id);
+              count(s.id, loop, at + MOVE);
+              at += MOVE + HOLD;
             });
+            relap(at);
           }
 
           if (variant === 2) {
-            // Assemble — the mark lands, the ring springs around it, the allocations are thrown out.
-            heading();
-            tl.from(one('.tk__hub'), { scale: 0, duration: 0.8, ease: 'back.out(1.8)', transformOrigin: '50% 50%' }, 0.2);
-            tl.from(one('.tk__ring'), { scale: 0, opacity: 0, duration: 1.1, ease: 'elastic.out(1, 0.55)', transformOrigin: '50% 50%' }, 0.45);
-            tl.from(q('.tk__wedge'), { scale: 0.8, rotation: -14, opacity: 0, duration: 0.9, ease: 'expo.out', stagger: 0.1, transformOrigin: '50% 50%' }, 0.6);
-            tl.from(q('.tk__wire'), { scaleX: 0, duration: 0.8, ease: 'power2.out', stagger: 0.05, transformOrigin: '100% 50%' }, 0.8);
-            SLICES_ORDER.forEach((id, i) => {
-              const node = slice(id);
-              if (!node) return;
-              const thrown = mobile
-                ? enterFrom(node, 90)
-                : { x: (node.offsetLeft < 780 ? 1 : -1) * 90, y: (node.offsetTop < 260 ? 1 : node.offsetTop > 330 ? -1 : 0) * 60 };
-              tl.from(node, { ...thrown, scale: 0.8, opacity: 0, duration: 0.75, ease: 'expo.out' }, 0.9 + i * 0.07);
-              const b = node.querySelector('.tk__pct b') as HTMLElement | null;
-              if (b) count(b, tl, 1 + i * 0.07, 0.6);
+            // Relay — the chain pays first, then the arc moves.
+            const WIRE = 1.5;
+            let at = 0;
+            stops.forEach((s) => {
+              feed(s.id, at, WIRE);
+              knock(loop, at + WIRE - 0.1);
+              light(loop, at + WIRE, null);
+              aimAt(loop, at + WIRE, s.a0, s.a1);
+              light(loop, at + WIRE + MOVE, s.id);
+              count(s.id, loop, at + WIRE + MOVE);
+              at += WIRE + MOVE + HOLD;
             });
-            tl.from(q('.tk__coin'), { scale: 0, opacity: 0, duration: 0.7, ease: 'back.out(2.2)', stagger: 0.07 }, 1.25);
+            relap(at);
           }
 
           if (variant === 3) {
-            // Orbit — arrives whole, then keeps turning.
-            heading();
-            tl.from([one('.tk__ring'), one('.tk__wedges'), one('.tk__hub')], { scale: 0.9, opacity: 0, duration: 0.9, ease: 'expo.out', stagger: 0.08, transformOrigin: '50% 50%' }, 0.25);
-            tl.from(q('.tk__wire'), { opacity: 0, duration: 0.6, stagger: 0.04 }, 0.5);
-            tl.from(q('.tk__coin'), { scale: 0.7, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.05 }, 0.7);
-            tl.from(q('.tk__slice'), { opacity: 0, y: 12, duration: 0.6, ease: 'expo.out', stagger: 0.06 }, 0.8);
-            counters().forEach((b, i) => count(b, tl, 0.85 + i * 0.06, 0.7));
-
-            const loop = gsap.timeline({ repeat: -1, paused: true });
-            loop.to(one('.tk__ring'), { rotation: 360, duration: 48, ease: 'none', transformOrigin: '50% 50%' }, 0);
-            loop.to(q('.tk__coin'), { scale: 1.06, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: 1, stagger: { each: 0.18, yoyo: true } }, 0);
-            routes.forEach((r, i) => runPulse(r, loop, 0.4 + i * 0.55, 1.6));
-            loop.to({}, { duration: 1.2 }, 4.6);
-            attachLoop(loop);
+            // Bloom — close to a blade at the new bearing, then open to the full share.
+            const CLOSE = 1.1;
+            const OPEN = 1.2;
+            let at = 0;
+            stops.forEach((s) => {
+              const mid = (s.a0 + s.a1) / 2;
+              light(loop, at, null);
+              feed(s.id, at, CLOSE);
+              aimAt(loop, at, mid - 2.5, mid + 2.5, CLOSE);
+              // the blade is on the bearing here, so this is the arrival
+              light(loop, at + CLOSE, s.id);
+              aimAt(loop, at + CLOSE + 0.15, s.a0, s.a1, OPEN, 'power2.out');
+              count(s.id, loop, at + CLOSE + 0.15);
+              at += CLOSE + 0.15 + OPEN + HOLD;
+            });
+            relap(at);
           }
 
           if (variant === 4) {
-            // Tally — allocations settle largest first while the hub counts to 100%.
-            heading();
-            const total = one('.tk__total');
-            tl.from(one('.tk__ring'), { scale: 0.9, opacity: 0, duration: 0.7, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.2);
-            tl.from(one('.tk__hub'), { scale: 0.8, opacity: 0, duration: 0.6, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.25);
-            tl.to(q('.tk__logo'), { opacity: 0, duration: 0.2 }, 0.45);
-            if (total) tl.to(total, { opacity: 1, duration: 0.2 }, 0.5);
-            tl.from(q('.tk__wire'), { opacity: 0, duration: 0.5, stagger: 0.04 }, 0.4);
-            tl.from(q('.tk__coin'), { opacity: 0, scale: 0.8, duration: 0.5, ease: 'expo.out', stagger: 0.05 }, 0.5);
-
-            const running = { v: 0 };
-            let at = 0.65;
-            BY_SIZE.forEach((id) => {
-              const node = slice(id);
-              if (!node) return;
-              const b = node.querySelector('.tk__pct b') as HTMLElement | null;
-              const pct = Number(b?.dataset.pct ?? 0);
-              tl.from(node, { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(2)', transformOrigin: '50% 50%' }, at);
-              if (b) count(b, tl, at, 0.45);
-              if (total) {
-                tl.to(running, {
-                  v: running.v + pct,
-                  duration: 0.45,
-                  ease: 'power2.out',
-                  onUpdate: () => { total.textContent = `${Math.round(running.v)}%`; },
-                }, at);
-                running.v += pct;
-              }
-              at += 0.42;
+            // Unroll — the leading edge runs ahead, the trailing edge catches up.
+            const LEAD = 1.1;
+            const FOLLOW = 1;
+            let at = 0;
+            let prev = { a0: rest0, a1: rest1 };
+            stops.forEach((s) => {
+              light(loop, at, null);
+              feed(s.id, at, LEAD + FOLLOW);
+              aimAt(loop, at, s.a0, prev.a1, LEAD, 'power2.in');
+              aimAt(loop, at + LEAD, s.a0, s.a1, FOLLOW, 'power2.out');
+              light(loop, at + LEAD + FOLLOW, s.id);
+              count(s.id, loop, at + LEAD + FOLLOW);
+              prev = { a0: s.a0, a1: s.a1 };
+              at += LEAD + FOLLOW + HOLD;
             });
-            wipe(one('.tk__wedges'), tl, 0.65, at - 0.65);
-            if (total) tl.to(total, { opacity: 0, scale: 0.8, duration: 0.35, ease: 'power2.in', transformOrigin: '50% 50%' }, at + 0.25);
-            tl.to(q('.tk__logo'), { opacity: 1, duration: 0.45, ease: 'expo.out' }, at + 0.45);
-            tl.from(q('.tk__logo'), { scale: 0.7, transformOrigin: '50% 50%', duration: 0.6, ease: 'back.out(2)' }, at + 0.45);
+            relap(at);
           }
 
           if (variant === 5) {
-            // Signal — the chains send first; every arrival lights one allocation.
-            heading();
-            tl.from(one('.tk__hub'), { scale: 0.8, opacity: 0, duration: 0.6, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.2);
-            tl.from(q('.tk__coin'), { scale: 0, opacity: 0, duration: 0.55, ease: 'back.out(2)', stagger: 0.06 }, 0.25);
-            tl.from(q('.tk__wire'), { scaleX: 0, duration: 0.7, ease: 'power2.out', stagger: 0.05, transformOrigin: '0% 50%' }, 0.4);
-
-            SLICES_ORDER.forEach((id, i) => {
-              const node = slice(id);
-              const route = routes[i % routes.length];
-              const at = 0.75 + i * 0.34;
-              runPulse(route, tl, at, 0.5);
-              tl.to(one('.tk__hubDisc'), { scale: 1.08, duration: 0.14, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.5);
-              tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.3, ease: 'power2.out' }, at + 0.64);
-              if (node) {
-                tl.from(node, { opacity: 0, ...enterFrom(node, 24), duration: 0.5, ease: 'expo.out' }, at + 0.5);
-                const b = node.querySelector('.tk__pct b') as HTMLElement | null;
-                if (b) count(b, tl, at + 0.5, 0.45);
-              }
+            // Settle — a short travel onto each bearing that eases past its mark and settles.
+            const SNAP = 1;
+            let at = 0;
+            const ripple = (t: number) => {
+              haloEls.forEach((h, i) => {
+                if (!h) return;
+                loop.fromTo(h, { scale: 1, opacity: HALOS[i].opacity }, { scale: 1.14, opacity: 0, duration: 1.1, ease: 'power2.out', transformOrigin: '50% 50%' }, t);
+                loop.set(h, { scale: 1, opacity: HALOS[i].opacity }, t + 1.1);
+              });
+            };
+            stops.forEach((s) => {
+              light(loop, at, null);
+              feed(s.id, at, SNAP);
+              aimAt(loop, at, s.a0, s.a1, SNAP, 'back.out(1.05)');
+              light(loop, at + SNAP, s.id);
+              count(s.id, loop, at + SNAP);
+              knock(loop, at + SNAP);
+              ripple(at + SNAP);
+              at += SNAP + HOLD;
             });
-            const end = 0.75 + SLICES_ORDER.length * 0.34;
-            wipe(one('.tk__wedges'), tl, 0.9, end - 0.9);
-            wipe(one('.tk__ring'), tl, end, 0.9);
-
-            const loop = gsap.timeline({ repeat: -1, paused: true });
-            routes.forEach((r, i) => runPulse(r, loop, i * 0.7, 1.4));
-            loop.to({}, { duration: 1.6 }, routes.length * 0.7 + 1.4);
-            attachLoop(loop);
+            relap(at);
           }
 
-          function attachLoop(loop: gsap.core.Timeline) {
-            tl.eventCallback('onComplete', () => loop.play());
-            io = new IntersectionObserver(
-              ([entry]) => (entry.isIntersecting ? loop.resume() : loop.pause()),
-              { rootMargin: '120px' },
-            );
-            io.observe(el!);
-          }
+          tl.eventCallback('onComplete', () => {
+            cycling = true;
+            loop.play();
+          });
+          // Only after the entrance: observing fires immediately, and resuming a not-yet-played
+          // loop would run its first stop underneath the load-in and lose it.
+          io = new IntersectionObserver(([entry]) => {
+            if (!cycling) return;
+            if (entry.isIntersecting) loop.resume();
+            else loop.pause();
+          }, { rootMargin: '120px' });
+          io.observe(el);
 
           const st = ScrollTrigger.create({ trigger: el, start: 'top 70%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();
@@ -279,8 +362,5 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
       io?.disconnect();
       revert?.();
     };
-  }, [root, variant, mobile]);
+  }, [root, variant]);
 }
-
-/** Reading order around the dial: top-left, top-right, left, right, bottom-left, bottom-right. */
-const SLICES_ORDER = ['reserves', 'listings', 'presale', 'team', 'rewards', 'marketing'];

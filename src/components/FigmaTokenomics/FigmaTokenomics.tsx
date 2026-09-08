@@ -1,81 +1,28 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { useMobileArt } from '../FigmaFeatures/illustrations/Stage';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTokenomicsMotion, type TokVariant } from './useTokenomicsMotion';
+import { COINS, DIAL, HALOS, SEGMENTS, SEG_BY_ID, REST, WIRES, slicePath, spanOf } from './dial';
 import './FigmaTokenomics.css';
 
 const A = (n: string) => `/figma/tokenomics/${n}.svg`;
-/** Layers exported from the phone frame (Figma 2639:1627). */
-const M = (n: string) => `/figma/tokenomics/mobile/${n}.svg`;
 
 /** The band is drawn at its design size and scaled to the frame, so every offset stays exact. */
-function Stage({ w, h, children }: { w: number; h: number; children: ReactNode }) {
+function Stage({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const fit = () => el.style.setProperty('--k', String(el.clientWidth / w));
+    const fit = () => el.style.setProperty('--k', String(el.clientWidth / 1560));
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [w]);
+  }, []);
   return (
-    <div ref={ref} className="tk__fit" style={{ aspectRatio: `${w} / ${h}` }}>
-      <div className="tk__stage" style={{ width: w, height: h }}>
-        {children}
-      </div>
+    <div ref={ref} className="tk__fit">
+      <div className="tk__stage">{children}</div>
     </div>
   );
 }
-
-type Slice = { id: string; label: string; pct: number; icon: string; x: number; y: number; dark?: boolean };
-type Coin = { id: string; x: number; y: number };
-
-/** Positions are the design's own; `y` is the row's centre line. */
-const SLICES: Slice[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', x: 435.6, y: 162, dark: false },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', x: 951.4, y: 162, dark: true },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', x: 414, y: 292, dark: true },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', x: 982, y: 292, dark: true },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', x: 436.5, y: 424, dark: true },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', x: 942.6, y: 424, dark: true },
-];
-
-/**
- * Portrait (Figma 2639:1627): the six allocations stack in two groups of three around the dial,
- * ranged left on a 188 column. Rows are 64 tall (the percent circle) on a 16 gap, the first group
- * from the frame's 160px of head room and the second below the 210 dial.
- */
-const SLICES_M: Slice[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', x: 102.5, y: 192, dark: false },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', x: 102.5, y: 272, dark: true },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', x: 102.5, y: 352, dark: true },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', x: 102.5, y: 658, dark: true },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', x: 102.5, y: 738, dark: true },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', x: 102.5, y: 818, dark: true },
-];
-
-const COINS: Coin[] = [
-  { id: 'coin-btc', x: 136, y: 134 },
-  { id: 'coin-eth', x: 226, y: 293 },
-  { id: 'coin-usdt', x: 136, y: 453 },
-  { id: 'coin-bnb', x: 1348, y: 134 },
-  { id: 'coin-tron', x: 1264, y: 293 },
-  { id: 'coin-sol', x: 1348, y: 453 },
-];
-
-/**
- * Portrait chain marks: two wire trees, one reaching down from the head of the frame and one up
- * from its foot. Centres, taken from the file's rotated frames (2639:1875 and 2639:1915).
- */
-const COINS_M: Coin[] = [
-  { id: 'coin-usdt', x: 104, y: 50 },
-  { id: 'coin-btc', x: 293, y: 50 },
-  { id: 'coin-eth', x: 194, y: 103 },
-  { id: 'coin-bnb', x: 195.5, y: 1023 },
-  { id: 'coin-sol', x: 101.5, y: 1073 },
-  { id: 'coin-tron', x: 289.5, y: 1073 },
-];
 
 const FACTS: [string, ReactNode][] = [
   ['Token Name', 'Remittix'],
@@ -93,54 +40,70 @@ const FACTS: [string, ReactNode][] = [
 
 const CONTRACT = '0xe7654694ec16F3163084eC559193e10c7ABA17CB';
 
-/** The ring, its wedges and the hub, as one box so a phone can scale the whole dial down. */
-function Dial() {
-  return (
-    <div className="tk__dial" aria-hidden="true">
-      <img className="tk__ring" src={A('ring-outer')} alt="" width={442} height={442} />
-      <div className="tk__wedges">
-        <img className="tk__wedge tk__wedge--a" src={A('wedge-a')} alt="" width={442} height={347.485} />
-        <img className="tk__wedge tk__wedge--b" src={A('wedge-b')} alt="" width={142} height={111.643} />
-        <img className="tk__wedge tk__wedge--c" src={A('wedge-c')} alt="" width={128} height={100.636} />
-      </div>
-      <div className="tk__hub">
-        <img className="tk__hubDisc" src={A('hub')} alt="" width={114} height={114} />
-        <img className="tk__logo tk__logo--1" src={A('logo-union')} alt="" width={14.568} height={14.733} />
-        <img className="tk__logo tk__logo--2" src={A('logo-v2')} alt="" width={25.615} height={28.405} />
-        <img className="tk__logo tk__logo--3" src={A('logo-v3')} alt="" width={25.224} height={29.075} />
-        <span className="tk__total">0%</span>
-      </div>
-    </div>
-  );
-}
+/**
+ * Copy control for the contract address. On success the icon crossfades to a tick that draws
+ * itself, the button flashes indigo, and a "Copied" pill rises above it; everything reverts after
+ * a beat. The live region announces the result for screen readers.
+ */
+function CopyAddress({ value }: { value: string }) {
+  const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const timer = useRef<number | undefined>(undefined);
 
-/** One allocation: its chip and the circle carrying the share. */
-function Allocation({ s, top }: { s: Slice; top: number }) {
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const copy = async () => {
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(value);
+      ok = true;
+    } catch {
+      // Clipboard is unavailable over plain http and in some embedded views — fall back to a selection copy.
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = value;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:0;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch {
+        ok = false;
+      }
+    }
+    setState(ok ? 'copied' : 'failed');
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setState('idle'), 1800);
+  };
+
   return (
-    <div className="tk__slice" data-slice={s.id} style={{ left: s.x, top }}>
-      <span className={`tk__chip${s.dark ? '' : ' tk__chip--indigo'}`}>
-        <img src={A(s.icon)} alt="" width={20} height={20} />
-        {s.label}
+    <span className="tk__copyWrap" data-state={state}>
+      <button type="button" className="tk__copy" onClick={copy} aria-label={`Copy contract address ${value}`}>
+        <img className="tk__copyIcon" src={A('ic-copy')} alt="" width={20} height={20} />
+        <svg className="tk__tick" viewBox="0 0 20 20" width={20} height={20} aria-hidden="true">
+          <path d="M4.5 10.5 L8.5 14.5 L15.5 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <span className="tk__copied" aria-hidden="true">{state === 'failed' ? 'Press ⌘C' : 'Copied'}</span>
+      <span className="tk__sr" role="status" aria-live="polite">
+        {state === 'copied' ? 'Contract address copied' : state === 'failed' ? 'Copy failed, press Control or Command C' : ''}
       </span>
-      <span className="tk__pct">
-        <b data-pct={s.pct}>{s.pct}%</b>
-      </span>
-    </div>
+    </span>
   );
 }
 
 /**
- * Tokenomics (Figma 2592:485). A 442 donut around the mark, six allocations reading outward, and
- * the chain marks on the flanks wired back to the hub — all on the same band and 1560 dashed rails
- * as the sections above. `variant` picks the motion treatment (see useTokenomicsMotion).
+ * Tokenomics (Figma 2592:485). One gradient arc that aims at an allocation and is sized to its
+ * share, two hub halos following the same span, six allocations reading outward, and the chain
+ * marks on the flanks wired back to the hub. `variant` picks the motion (see useTokenomicsMotion).
  */
 export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
   const root = useRef<HTMLElement>(null);
-  const mobile = useMobileArt();
-  useTokenomicsMotion(root, variant, mobile);
+  useTokenomicsMotion(root, variant);
+  const [r0, r1] = spanOf(SEG_BY_ID[REST]);
 
   return (
-    <section ref={root} className={`tk${mobile ? ' tk--m' : ''}`} id="tokenomics" data-motion="pending" data-variant={variant} data-layout={mobile ? 'mobile' : 'desktop'} aria-labelledby="tk-title">
+    <section ref={root} className="tk" id="tokenomics" data-motion="pending" data-variant={variant} aria-labelledby="tk-title">
       <div className="tk__frame">
         <header className="tk__head">
           <h2 id="tk-title" className="tk__title">
@@ -152,61 +115,78 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
         </header>
 
         <div className="tk__band">
-          {mobile ? (
-            <Stage w={393} h={1123}>
-              {/* Two wire trees, reaching down from the head of the frame and up from its foot.
-                  Each is the file's own rotated group (2639:1875, 2639:1915): the artwork turns a
-                  quarter turn while the chain marks on it stay upright. */}
-              <div className="tk__wires" aria-hidden="true">
-                <img className="tk__wire tk__wire--top" src={M('wires-top')} alt="" width={517} height={188} />
-                <img className="tk__wire tk__wire--bot" src={M('wires-bottom')} alt="" width={517.5} height={188} />
-                <span className="tk__pulse tk__pulse--l0" />
-                <span className="tk__pulse tk__pulse--l1" />
-                <span className="tk__pulse tk__pulse--l2" />
-                <span className="tk__pulse tk__pulse--r0" />
-                <span className="tk__pulse tk__pulse--r1" />
-                <span className="tk__pulse tk__pulse--r2" />
-              </div>
-              <Dial />
-              {COINS_M.map((c) => (
-                <span key={c.id} className="tk__coin" style={{ left: c.x - 20, top: c.y - 20 }} aria-hidden="true">
-                  <img src={A(c.id)} alt="" width={18.883} height={18.883} />
+          <Stage>
+            {/* Wires and their travelling lights share one canvas, so a dot rides the exact path. */}
+            <svg className="tk__wires" viewBox="0 0 1560 586" width={1560} height={586} fill="none" aria-hidden="true">
+              {WIRES.map((w) => (
+                <path key={w.id} className="tk__wire" data-wire={w.id} d={w.d} stroke="var(--tk-rail)" strokeWidth={1} />
+              ))}
+              {WIRES.map((w) => (
+                <circle key={w.id} className="tk__pulse" data-pulse={w.id} r={3.5} fill="var(--tk-indigo)" opacity={0} />
+              ))}
+            </svg>
+
+            <img className="tk__ring" src={A('ring-outer')} alt="" width={442} height={442} aria-hidden="true" />
+
+            {/* The dial: one gradient arc, aimed and sized by the motion, with the hub halos
+                following the same span exactly as they do in the design. */}
+            <svg
+              className="tk__dial"
+              viewBox={`0 0 ${DIAL.size} ${DIAL.size}`}
+              width={DIAL.size}
+              height={DIAL.size}
+              fill="none"
+              aria-hidden="true"
+            >
+              <defs>
+                {/* The ramp runs ALONG the wedge's bisector — pale at the hub, indigo at the rim —
+                    so the wedge is mirror-symmetric about the direction it points and reads as
+                    centred on its allocation. The motion re-aims it as the arc moves. */}
+                <linearGradient id="tkRamp" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
+                  <stop stopColor="#C4E0F6" />
+                  <stop offset="1" stopColor="#8487F1" />
+                </linearGradient>
+              </defs>
+              <path className="tk__arc" d={slicePath(r0, r1)} fill="url(#tkRamp)" />
+              {HALOS.map((h) => (
+                <path
+                  key={h.d}
+                  className="tk__halo"
+                  data-halo={h.d}
+                  d={slicePath(r0, r1, h.d / 2)}
+                  fill={h.fill}
+                  opacity={h.opacity}
+                />
+              ))}
+            </svg>
+
+            <div className="tk__hub" aria-hidden="true">
+              <img className="tk__hubDisc" src={A('hub')} alt="" width={114} height={114} />
+              <img className="tk__logo tk__logo--1" src={A('logo-union')} alt="" width={14.568} height={14.733} />
+              <img className="tk__logo tk__logo--2" src={A('logo-v2')} alt="" width={25.615} height={28.405} />
+              <img className="tk__logo tk__logo--3" src={A('logo-v3')} alt="" width={25.224} height={29.075} />
+            </div>
+
+            {/* the chain marks */}
+            {COINS.map((c) => (
+              <span key={c.id} className="tk__coin" data-coin={c.id} style={{ left: c.x, top: c.y - 32 }} aria-hidden="true">
+                <img src={A(c.id)} alt="" width={32} height={32} />
+              </span>
+            ))}
+
+            {/* the allocations — the live one takes the indigo chip */}
+            {SEGMENTS.map((s) => (
+              <div key={s.id} className="tk__slice" data-slice={s.id} style={{ left: s.x, top: s.y - 32 }}>
+                <span className="tk__chip">
+                  <img src={A(s.icon)} alt="" width={20} height={20} />
+                  {s.label}
                 </span>
-              ))}
-              {SLICES_M.map((s) => (
-                <Allocation key={s.id} s={s} top={s.y - 32} />
-              ))}
-            </Stage>
-          ) : (
-            <Stage w={1560} h={586}>
-              {/* wires, drawn hub-outwards */}
-              <div className="tk__wires" aria-hidden="true">
-                <img className="tk__wire tk__wire--l0" src={A('wire-straight')} alt="" width={559} height={1} />
-                <img className="tk__wire tk__wire--l1" src={A('wire-curve')} alt="" width={425.5} height={159.5} />
-                <img className="tk__wire tk__wire--l2" src={A('wire-curve')} alt="" width={425.5} height={159.5} />
-                <img className="tk__wire tk__wire--r0" src={A('wire-straight')} alt="" width={559} height={1} />
-                <img className="tk__wire tk__wire--r1" src={A('wire-curve')} alt="" width={425.5} height={159.5} />
-                <img className="tk__wire tk__wire--r2" src={A('wire-curve')} alt="" width={425.5} height={159.5} />
-                <span className="tk__pulse tk__pulse--l0" />
-                <span className="tk__pulse tk__pulse--l1" />
-                <span className="tk__pulse tk__pulse--l2" />
-                <span className="tk__pulse tk__pulse--r0" />
-                <span className="tk__pulse tk__pulse--r1" />
-                <span className="tk__pulse tk__pulse--r2" />
-              </div>
-              <Dial />
-              {/* the chain marks */}
-              {COINS.map((c) => (
-                <span key={c.id} className="tk__coin" style={{ left: c.x, top: c.y - 32 }} aria-hidden="true">
-                  <img src={A(c.id)} alt="" width={32} height={32} />
+                <span className="tk__pct">
+                  <b data-pct={s.pct}>{s.pct}%</b>
                 </span>
-              ))}
-              {/* the allocations */}
-              {SLICES.map((s) => (
-                <Allocation key={s.id} s={s} top={s.y - 32} />
-              ))}
-            </Stage>
-          )}
+              </div>
+            ))}
+          </Stage>
         </div>
 
         <dl className="tk__facts">
@@ -214,9 +194,7 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
             <dt>Contract Address</dt>
             <dd>
               <span className="tk__addr">{CONTRACT}</span>
-              <button type="button" className="tk__copy" aria-label="Copy contract address" onClick={() => navigator.clipboard?.writeText(CONTRACT)}>
-                <img src={A('ic-copy')} alt="" width={20} height={20} />
-              </button>
+              <CopyAddress value={CONTRACT} />
             </dd>
           </div>
           {FACTS.map(([label, value]) => (

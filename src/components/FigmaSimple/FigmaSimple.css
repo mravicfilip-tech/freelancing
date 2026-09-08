@@ -254,6 +254,35 @@
   visibility: hidden;
 }
 
+/* ---------- Portrait (Figma 2603:1541) ----------
+   The orbit box is turned -75° and centred in the frame, so a tall slice of the ellipse runs down
+   the card. Only the ellipse and the anchors on it turn; everything upright is laid straight onto
+   the frame, which keeps the cursor and the path it rides in the same coordinates. */
+.fs__turn {
+  transform: rotate(-75deg);
+}
+.fs__turn > * {
+  position: absolute;
+  box-sizing: border-box;
+}
+/* The filled plate the portrait frame lays under its ring. */
+.fs__plate {
+  z-index: 0;
+}
+/* The file centres two of the three group labels over their pills and leaves exotic ranged left. */
+.fs__orbit--m .fs__group[data-group='stable'],
+.fs__orbit--m .fs__group[data-group='fiat'] {
+  align-items: center;
+}
+.fs__orbit--m .fs__group[data-group='stable'] .fs__groupLabel,
+.fs__orbit--m .fs__group[data-group='fiat'] .fs__groupLabel {
+  text-align: center;
+}
+/* Most of the turned ellipse falls outside the frame, as the design draws it. */
+.fs .ff__il.fs__orbit--m {
+  overflow: hidden;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
   .fs__inner {
@@ -267,6 +296,10 @@
 @media (max-width: 720px) {
   .fs__inner {
     padding: 56px 0;
+  }
+  /* The phone frame carries the orbit on plain ground — no dot field, no rails. */
+  .fs__band {
+    background-image: none;
   }
   .fs__inner {
     gap: 32px;

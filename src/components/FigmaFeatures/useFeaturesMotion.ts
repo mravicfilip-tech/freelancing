@@ -17,7 +17,12 @@ export type MotionPicks = Partial<Record<string, number>>;
 /** The chosen loops for the live page (0-based indices into each illustration's variants). */
 export const DEFAULT_PICKS: MotionPicks = { pay: 1, fx: 1, simple: 3, fast: 4, ui: 2 };
 
-export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: MotionPicks = {}) {
+/**
+ * `mobile` is not read here — it is the layout the illustrations rendered with. Taking it as a
+ * dependency rebuilds every timeline when the breakpoint is crossed, so the scenes animate along
+ * the axis they are now drawn on rather than keeping the old layout's tweens.
+ */
+export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: MotionPicks = {}, mobile = false) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -85,5 +90,5 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: Mo
       cancelled = true;
       revert?.();
     };
-  }, [root, picks]);
+  }, [root, picks, mobile]);
 }

@@ -115,6 +115,13 @@
 .ff__text--ui .ff__cardBody {
   max-width: 397px;
 }
+/* Title and chip share a line: the phone designs sit the chip at the title's right, the desk
+   layout pins it to the card's own corner (below). */
+.ff__titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .ff__cardTitle {
   margin: 0;
   font-weight: 500;
@@ -190,7 +197,7 @@
 }
 .ff__chip {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
@@ -266,23 +273,61 @@
     font-size: 40px;
     letter-spacing: -1.2px;
   }
+  /* The design's phone cards (2597:469, :705, :844, :1042, :1126) are 394 wide with 32px of head
+     room and copy on a 362 measure; the art frame is placed against the card's own edges beneath
+     it, so it loses the padding and each card sets its own drop to the art. */
   .ff__card {
     height: auto;
     min-height: 0;
-    padding: 24px;
-    gap: 24px;
-    --ff-pad: 24px;
+    --ff-pad: 16px;
+    padding: 32px var(--ff-pad) 0;
+    gap: var(--ff-cardGap, 30px);
+  }
+  .ff__card--pay {
+    --ff-cardGap: 98px;
+  }
+  .ff__card--ui {
+    --ff-cardGap: 50px;
+  }
+  /* The 1024 rule sets its own gap at a higher specificity, so restate it here. */
+  .ff__card--simple {
+    --ff-cardGap: 12px;
+    gap: var(--ff-cardGap);
+  }
+  .ff__text,
+  .ff__text--pay .ff__cardBody,
+  .ff__text--ui .ff__cardBody {
+    max-width: none;
   }
   .ff__art--pay,
   .ff__art--fx,
   .ff__art--fast,
-  .ff__art--ui {
+  .ff__art--ui,
+  .ff__art--simple {
     position: relative;
     left: auto;
     right: auto;
     top: auto;
     bottom: auto;
+    width: auto;
+    max-width: none;
+    align-self: stretch;
+    margin: 0 calc(var(--ff-pad) * -1);
+  }
+  /* Copy first, then the diagram — the Fast card is the only one drawn the other way up. */
+  .ff__card--fast .ff__text {
+    order: 1;
+  }
+  .ff__card--fast .ff__il {
+    order: 2;
+  }
+  .ff__chip {
+    align-self: center;
+    margin-left: auto;
+  }
+  .ff__simpleCopy {
     width: 100%;
-    margin: 0 auto;
+    max-width: none;
+    gap: 24px;
   }
 }

@@ -2,59 +2,89 @@ import { B, Layer, Stage } from './Stage';
 import { all, count, one, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
- * "Pay Remittix" (Figma 2409:2427, 622×440): the app on a phone, rising out of the card's bottom
- * edge over a soft blob and a dot grid. The screen is live: the pay and receive figures roll.
+ * "Pay Remittix" (Figma 2409:2427, 622×440 landscape; 2597:469, 394×320 portrait): the app on a
+ * phone, rising out of the card's bottom edge over a soft blob and a dot grid. The screen is live:
+ * the pay and receive figures roll.
+ *
+ * The phone is the same 277×562 build in both designs — only what stands behind it changes. The
+ * portrait card centres it and lets the design's own decoration backgrounds carry the ground, and
+ * the card clips the phone's lower half exactly as the design draws it.
  */
-export function Pay() {
+export function Pay({ mobile = false }: { mobile?: boolean } = {}) {
+  return mobile ? <PayPortrait /> : <PayLandscape />;
+}
+
+/** The phone and its screen (Figma 2597:515): status bar, header, the two quote boxes and the swap. */
+function Phone({ x, y }: { x: number; y: number }) {
+  return (
+    <div className="il-phone" style={{ left: x, top: y }}>
+      <Layer className="il-phone__frame" src={B('phone.webp')} x={0} y={0} w={277.3} h={562} />
+      <div className="il-phone__screen" style={{ left: 14.1, top: 11.4 }}>
+        <Layer className="il-phone__glow" src={B('imgEllipse3469.svg')} x={-78.4} y={-343.6} w={532.6} h={532.6} />
+        <Layer className="il-phone__glow" src={B('imgEllipse3470.svg')} x={-82.9} y={-394.5} w={450.5} h={482.2} />
+        <Layer className="il-phone__bar" src={B('exStatusBar.svg')} x={0} y={0} w={249} h={30} />
+        <Layer className="il-phone__head" src={B('exAppHeader.svg')} x={11.6} y={50.9} w={225} h={18} />
+
+        <Layer className="il-phone__chip" src={B('exUsdChip.svg')} x={11.3} y={90} w={64} h={22} />
+        <div className="il-pbox" style={{ left: 11.3, top: 117.6 }}>
+          <span className="il-pbox__col" style={{ left: 9.06, top: 9.62 }}>
+            <span className="il-pbox__label">Pay</span>
+            <span className="il-pbox__amount">
+              <b className="il-count" data-count="pay">320</b>
+              <i className="il-pbox__caret" />
+              <i>.00</i>
+            </span>
+            <span className="il-pbox__sub">Sell from USD Account</span>
+          </span>
+          <span className="il-pbox__bar" style={{ left: 123.4, top: 19.8, width: 91.1, height: 6.2 }} />
+          <span className="il-pbox__bar" style={{ left: 123.4, top: 32.3, width: 70.7 }} />
+          <span className="il-pbox__bar" style={{ left: 123.4, top: 43.6, width: 43.6 }} />
+        </div>
+
+        <Layer className="il-phone__chip" src={B('exBtcChip.svg')} x={174.3} y={174.9} w={64} h={22} />
+        <div className="il-pbox" style={{ left: 11.3, top: 202.5 }}>
+          <span className="il-pbox__col il-pbox__col--right" style={{ left: 108, top: 9.62 }}>
+            <span className="il-pbox__label">Receive</span>
+            <span className="il-pbox__amount">
+              <b className="il-count" data-count="receive">0.004174</b>
+              <i>.00</i>
+            </span>
+            <span className="il-pbox__sub">Buy into BTC Account</span>
+          </span>
+          <span className="il-pbox__bar" style={{ left: 10.75, top: 19.8, width: 91.1, height: 6.2 }} />
+          <span className="il-pbox__bar" style={{ left: 10.75, top: 32.3, width: 70.7 }} />
+          <span className="il-pbox__bar" style={{ left: 10.75, top: 43.6, width: 43.6 }} />
+        </div>
+
+        <Layer className="il-phone__swap" src={B('exExchangeBtn.svg')} x={99.3} y={168.1} w={38} h={38} />
+        <span className="il-phone__glare" />
+      </div>
+      <span className="il-phone__island" style={{ left: 98.65, top: 19.5 }} />
+    </div>
+  );
+}
+
+function PayLandscape() {
   return (
     <Stage id="pay" width={622} height={440} className="ff__art ff__art--pay il-pay">
       <span className="il-dots il-pay__dots" style={{ left: 0, top: 145, width: 622, height: 295 }} />
       <Layer className="il-pay__blob" src={B('pay-blob.webp')} x={0} y={158} w={622} h={282} />
+      <Phone x={175.4} y={150.6} />
+    </Stage>
+  );
+}
 
-      <div className="il-phone" style={{ left: 175.4, top: 150.6 }}>
-        <Layer className="il-phone__frame" src={B('phone.webp')} x={0} y={0} w={277.3} h={562} />
-        <div className="il-phone__screen" style={{ left: 14.1, top: 11.4 }}>
-          <Layer className="il-phone__glow" src={B('imgEllipse3469.svg')} x={-78.4} y={-343.6} w={532.6} h={532.6} />
-          <Layer className="il-phone__glow" src={B('imgEllipse3470.svg')} x={-82.9} y={-394.5} w={450.5} h={482.2} />
-          <Layer className="il-phone__bar" src={B('exStatusBar.svg')} x={0} y={0} w={249} h={30} />
-          <Layer className="il-phone__head" src={B('exAppHeader.svg')} x={11.6} y={50.9} w={225} h={18} />
-
-          <Layer className="il-phone__chip" src={B('exUsdChip.svg')} x={11.3} y={90} w={64} h={22} />
-          <div className="il-pbox" style={{ left: 11.3, top: 117.6 }}>
-            <span className="il-pbox__col" style={{ left: 9.06, top: 9.62 }}>
-              <span className="il-pbox__label">Pay</span>
-              <span className="il-pbox__amount">
-                <b className="il-count" data-count="pay">320</b>
-                <i className="il-pbox__caret" />
-                <i>.00</i>
-              </span>
-              <span className="il-pbox__sub">Sell from USD Account</span>
-            </span>
-            <span className="il-pbox__bar" style={{ left: 123.4, top: 19.8, width: 91.1, height: 6.2 }} />
-            <span className="il-pbox__bar" style={{ left: 123.4, top: 32.3, width: 70.7 }} />
-            <span className="il-pbox__bar" style={{ left: 123.4, top: 43.6, width: 43.6 }} />
-          </div>
-
-          <Layer className="il-phone__chip" src={B('exBtcChip.svg')} x={174.3} y={174.9} w={64} h={22} />
-          <div className="il-pbox" style={{ left: 11.3, top: 202.5 }}>
-            <span className="il-pbox__col il-pbox__col--right" style={{ left: 108, top: 9.62 }}>
-              <span className="il-pbox__label">Receive</span>
-              <span className="il-pbox__amount">
-                <b className="il-count" data-count="receive">0.004174</b>
-                <i>.00</i>
-              </span>
-              <span className="il-pbox__sub">Buy into BTC Account</span>
-            </span>
-            <span className="il-pbox__bar" style={{ left: 10.75, top: 19.8, width: 91.1, height: 6.2 }} />
-            <span className="il-pbox__bar" style={{ left: 10.75, top: 32.3, width: 70.7 }} />
-            <span className="il-pbox__bar" style={{ left: 10.75, top: 43.6, width: 43.6 }} />
-          </div>
-
-          <Layer className="il-phone__swap" src={B('exExchangeBtn.svg')} x={99.3} y={168.1} w={38} h={38} />
-          <span className="il-phone__glare" />
-        </div>
-        <span className="il-phone__island" style={{ left: 98.65, top: 19.5 }} />
-      </div>
+/**
+ * Portrait (Figma 2597:469). The design's own decoration background carries both the dot field and
+ * the wash, so it replaces the desk layout's separate dot grid and blob; `.il-pay__dots` stays as
+ * an empty target so the build timeline keeps the pair it fades in.
+ */
+function PayPortrait() {
+  return (
+    <Stage id="pay" width={394} height={320} layout="mobile" className="ff__art ff__art--pay il-pay il-pay--m">
+      <Layer className="il-pay__blob" src={B('mobile/pay-decoration.svg')} x={0} y={-46} w={393} h={680} />
+      <span className="il-pay__dots" style={{ left: 0, top: 0, width: 0, height: 0 }} />
+      <Phone x={58.85} y={0} />
     </Stage>
   );
 }

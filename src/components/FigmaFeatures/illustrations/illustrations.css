@@ -239,6 +239,21 @@
   opacity: 0;
 }
 
+/* The portrait design (2597:705) carries no dot field behind the pair; the element stays in the
+   tree so the build timeline keeps its target. */
+.il-fx--m .il-fx__dots {
+  display: none;
+}
+/* The wire drops across the cards' seam rather than arcing over them, so it crosses a light card
+   and then a dark one: a lavender stroke holds on both, where the desk layout's indigo would sink
+   into the wallet. */
+.il-fx--m .il-fx__wire {
+  stroke: #8688e8;
+  stroke-width: 1.25;
+}
+.il-fx--m .il-fx__wireEnd {
+  fill: #8688e8;
+}
 /* A fee tag that can rise out of the bank's account line (fee-receipt variant). */
 .il-fx__feeTag {
   z-index: 2;
@@ -540,6 +555,28 @@
   color: #f9ff38;
 }
 
+/* Portrait (Figma 2597:963): the whole 606×394 corridor takes a quarter turn to fill the tall
+   card, and the parts that carry type turn back upright inside it. The turn stays on one wrapper
+   so the payment line and everything riding it share a transform space. */
+.il-simple__turn {
+  transform: rotate(90deg);
+}
+.il-simple__turn > * {
+  position: absolute;
+  box-sizing: border-box;
+}
+.il-simple--m .il-simple__btc,
+.il-simple--m .il-simple__logo,
+.il-simple--m .il-simple__hub,
+.il-simple--m .il-simple__swap,
+.il-simple--m .il-simple__stack {
+  transform: rotate(-90deg);
+}
+.il-simple--m .il-simple__hub {
+  width: 48px;
+  height: 48px;
+}
+
 /* ---------- Super fast: the bolt ---------- */
 .il-fast__line {
   height: 1px;
@@ -661,6 +698,53 @@
 .il-fast__pill--same {
   gap: 6.75px;
   background: #b3b5f5;
+}
+
+/* Portrait (Figma 2597:1042): the wire stands up, so every bar that lights it turns with it. */
+.il-fast--m .il-fast__lineGlow {
+  background: linear-gradient(180deg, rgba(179, 181, 245, 0.2), #b3b5f5 40%, #4042d1);
+  transform-origin: 50% 0;
+}
+.il-fast--m .il-fast__lineFill {
+  background: linear-gradient(180deg, #b3b5f5, #4042d1);
+  transform-origin: 50% 0;
+}
+.il-fast--m .il-fast__hl {
+  width: 3px;
+  height: 80px;
+  margin: -40px 0 0 -1px;
+  background: linear-gradient(180deg, rgba(179, 181, 245, 0) 0%, rgba(179, 181, 245, 0.95) 50%, rgba(179, 181, 245, 0) 100%);
+}
+.il-fast--m .il-fast__streak {
+  width: 2px;
+  height: 46px;
+  background: linear-gradient(180deg, rgba(179, 181, 245, 0), rgba(179, 181, 245, 0.9));
+}
+/* Both pills are laid out to a fixed width in the portrait design, their content centred. */
+.il-fast--m .il-fast__pill {
+  justify-content: center;
+}
+.il-fast--m .il-fast__pill--same {
+  border: 1px solid rgba(255, 255, 255, 0.52);
+}
+/* The design fills the tall card with the same landscape blob: flipped, given a quarter turn
+   inside an overflow box, and blurred. */
+.il-fast__blobBox {
+  overflow: hidden;
+}
+.il-fast__blobInner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 328px;
+  height: 394px;
+  overflow: hidden;
+  transform: translate(-50%, -50%) rotate(90deg) scaleY(-1);
+  filter: blur(9.65px);
+}
+.il-fast__blobInner img {
+  position: absolute;
+  max-width: none;
 }
 
 /* ---------- User-friendly interface: the wallet panel ---------- */
@@ -838,4 +922,33 @@
   inset: 0;
   background: rgba(64, 66, 209, 0.08);
   opacity: 0;
+}
+
+/* ---------- User-friendly interface, portrait (Figma 2597:1126) ----------
+   The panel turns through 90°: the intro sits above its rows rather than beside them. */
+.il-ui--m .il-ui__panel {
+  flex-direction: column;
+  width: 330px;
+  height: 442px;
+}
+.il-ui--m .il-ui__intro {
+  justify-content: flex-start;
+  gap: 16px;
+  width: auto;
+  height: 168px;
+  padding: 24px 24px 24px 0;
+}
+.il-ui--m .il-ui__introTop b {
+  font-size: 20px;
+  letter-spacing: -0.6px;
+}
+.il-ui--m .il-ui__intro p {
+  width: 222px;
+}
+.il-ui--m .il-ui__rows {
+  width: 280px;
+}
+.il-ui--m .il-ui__row {
+  font-size: 14px;
+  letter-spacing: -0.42px;
 }

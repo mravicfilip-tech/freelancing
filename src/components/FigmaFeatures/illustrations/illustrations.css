@@ -560,6 +560,10 @@
    so the payment line and everything riding it share a transform space. */
 .il-simple__turn {
   transform: rotate(90deg);
+  /* The design clips this box (2597:963's white 606x394 frame is overflow-clip). Without it the
+     blob — 1186 wide against the box's 606 — washes its gradient up out of the picture and over
+     the paragraph above, where the design has plain white. */
+  overflow: hidden;
 }
 .il-simple__turn > * {
   position: absolute;

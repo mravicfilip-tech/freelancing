@@ -1,2 +1,17 @@
 /* Portrait composition for the storage scene (phone). The landscape scene keeps its rules in
    ecosystem-illustrations.css; everything here belongs to the 361-wide phone canvas. */
+
+/* The centred blocks are centred on the canvas they are in, and the phone's canvas is 361 rather
+   than 800 — without this the caption, the readout and the chip would all line themselves up on
+   the landscape canvas's centre and sit half a screen to the right. */
+.ec-tum--m .ec-center {
+  width: 361px;
+}
+/* Room to breathe at the rails: the two long lines are the widest things in the scene, so they get
+   the frame's own margin and are allowed to fall onto a second line rather than run off the edge
+   if a fallback face sets them wider than Onest does. */
+.ec-tum--m .ec-caption {
+  max-width: 329px;
+  white-space: normal;
+  text-wrap: balance;
+}

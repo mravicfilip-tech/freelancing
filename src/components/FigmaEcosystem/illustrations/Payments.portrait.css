@@ -1,2 +1,120 @@
 /* Portrait composition for the payments scene (phone). The landscape scene keeps its rules in
-   ecosystem-illustrations.css; everything here belongs to the 361-wide phone canvas. */
+   ecosystem-illustrations.css; everything here belongs to the 361-wide phone canvas.
+
+   The canvas is 361x470 because that is the width the card gives a scene on a 393 phone, so the
+   stage fits at 1:1 and every label lands on screen at the size it is set in here. The one place
+   a phone is narrower than the design — a 360 screen leaves 328 — the stage fits at ~0.908, so
+   the type below is set with that headroom in mind: nothing is smaller than 12.5px, which still
+   reads at 11.3px on the narrowest screen the site supports.
+
+   The layout decision: the desktop row is four columns (box · who · amount · state) and needs
+   ~500px to hold them at readable sizes. At 361 it cannot, so the row folds into two lines
+   instead of shrinking — who over which rail on the left, how much over what state on the right.
+   Nothing is dropped: all five people stay, because "five countries, five rails" is the whole
+   claim of a batch, and the amount is the reason anyone reads a payout list at all. */
+
+/* The section's own rule centres a scene in the desktop panel with `translate(-50%, -50%)`, and
+   the phone breakpoint only unsets its position — so the transform survives and drags the whole
+   drawing half its own size up and to the left, inside a box that clips. The portrait stage is
+   laid out in the flow at the card's width and needs no centring at all. Scoped and specific
+   enough to win over that rule from here; it wants hoisting into FigmaEcosystem.css, where it
+   would cure all four scenes at once. */
+.ec__scene .ff__il.ec-run--m {
+  transform: none;
+}
+
+/* The landscape scene is held 20% larger about the stage's centre; the portrait one is drawn at
+   its own size, so it sits square in the frame with no crop. */
+.ec-run--m .ec-zoom {
+  width: 361px;
+  height: 470px;
+  transform: none;
+}
+
+.ec-run--m .ec-caption {
+  font-size: 13px;
+  letter-spacing: -0.3px;
+}
+
+.ec-run--m .ec-run__card {
+  width: 345px;
+  border-radius: 16px;
+}
+.ec-run--m .ec-run__head {
+  height: 44px;
+  padding: 0 14px;
+}
+.ec-run--m .ec-run__head b {
+  font-size: 15px;
+}
+/* The live pill's 10px tracking is a desktop size; at 1:1 on a phone it has to carry itself. */
+.ec-run--m .ec-live {
+  font-size: 12.5px;
+  letter-spacing: -0.1px;
+}
+
+/* Two lines per row: the checkbox spans both, the name and its rail stack on the left, the
+   amount and its state stack against the right edge. */
+.ec-run--m .ec-run__row {
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  grid-template-rows: 18px 17px;
+  align-content: center;
+  align-items: center;
+  column-gap: 11px;
+  row-gap: 3px;
+  height: 58px;
+  padding: 0 14px;
+}
+.ec-run--m .ec-run__row:last-child {
+  border-bottom: 0;
+}
+.ec-run--m .ec-run__box {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+.ec-run--m .ec-run__who {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.ec-run--m .ec-run__who b {
+  font-size: 13.5px;
+  line-height: 18px;
+}
+.ec-run--m .ec-run__who small {
+  font-size: 12.5px;
+  line-height: 17px;
+}
+.ec-run--m .ec-run__amt {
+  grid-column: 3;
+  grid-row: 1;
+  font-size: 13px;
+  line-height: 18px;
+}
+/* Set against the amount rather than beside it, the state has room to be a plain word: the
+   uppercase micro-tracking the desktop pill uses only makes it wider and quieter here. */
+.ec-run--m .ec-run__state {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 1px 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: -0.1px;
+  text-transform: none;
+}
+
+/* The send bar runs the card's full width, the way an action bar does on a phone — which also
+   gives the collapse into the success disc a longer, more deliberate run. */
+.ec-run--m .ec-run__bar {
+  width: 345px;
+  height: 54px;
+  padding: 0 12px 0 18px;
+  border-radius: 16px;
+}
+.ec-run--m .ec-run__bar > span {
+  font-size: 13px;
+}
+.ec-run--m .ec-run__go {
+  padding: 10px 18px;
+  font-size: 12.5px;
+}

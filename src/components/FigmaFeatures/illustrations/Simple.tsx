@@ -54,7 +54,10 @@ const PORTRAIT: SimpleGeo = {
   stripe: { x: 211, y: 293, w: 104, h: 34 },
   wise: { x: 124, y: 48 },
   hub: { x: 178, y: 221 },
-  swap: { x: 288, y: 176 },
+  // The badge meets the receipt's top edge and no more: the design has it 10px clear of the card
+  // (2597:1025 against 2597:981), and at the export's own 288 our taller receipt column rises to
+  // meet it, putting the badge through the middle of "New Bank".
+  swap: { x: 267, y: 176 },
   // The receipt column renders 298 tall against the export's 279, so it is placed by the design's
   // top edge rather than its centre — the toast then clears the card's foot.
   stack: { x: 340, y: 41 },

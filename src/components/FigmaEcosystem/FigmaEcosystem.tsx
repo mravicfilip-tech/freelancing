@@ -47,7 +47,7 @@ export const PILLARS = [
 ] as const;
 
 /** A pillar's illustration, by id — so a phone can render each one inside its own row. */
-const SCENE: Record<string, () => JSX.Element> = { payments: Payments, trading: Trading, staking: Staking, storage: Storage };
+const SCENE: Record<string, (props: { mobile?: boolean }) => JSX.Element> = { payments: Payments, trading: Trading, staking: Staking, storage: Storage };
 
 export function FigmaEcosystem() {
   const root = useRef<HTMLElement>(null);
@@ -90,7 +90,7 @@ export function FigmaEcosystem() {
                       panel below the whole list — and it takes the card's full width there. */}
                   {mobile && (
                     <div id={`ec-scene-${p.id}`} className="ec__scene" data-scene={p.id} role="tabpanel">
-                      {SCENE[p.id]()}
+                      {SCENE[p.id]({ mobile: true })}
                     </div>
                   )}
                 </li>

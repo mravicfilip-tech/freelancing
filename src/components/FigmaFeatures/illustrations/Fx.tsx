@@ -1,43 +1,88 @@
 import { B, Layer, Stage } from './Stage';
-import { all, draw, one, roll, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
+import { all, draw, isMobile, one, roll, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
- * "Zero FX fees" (Figma 2409:2439, 804×440): a bank card and a wallet card overlapping at the
- * card's foot, over a dot grid. The wallet's address types in and the pair trade places.
+ * "Zero FX fees" (Figma 2409:2439, 804×440 landscape; 2597:705, 394×362 portrait): a bank card and
+ * a wallet card overlapping, over a dot grid. The wallet's address types in and the pair trade
+ * places.
+ *
+ * Both cards are 402×218 in either design and their faces are laid out identically, so the two
+ * layouts differ only in where the pair sits and how the transfer wire runs between them. On a
+ * phone they stack, offset by 12px, and run off the card's right edge as the design draws them.
  */
-export function Fx() {
+export function Fx({ mobile = false }: { mobile?: boolean } = {}) {
+  return mobile ? <FxPortrait /> : <FxLandscape />;
+}
+
+/** The bank card's face (Figma 2597:804): artwork, the temple mark, and its two tags. */
+function BankFace() {
+  return (
+    <>
+      <Layer className="il-fx__bankBg" src={B('bank-bg.webp')} x={-13.2} y={-11} w={426.4} h={238} />
+      <img className="il-fx__temple" src={B('imgLandmark.svg')} alt="" width={20} height={20} style={{ left: 20, top: 28 }} />
+      <span className="il-fx__tag il-fx__tag--bank" style={{ left: 52, top: 21 }}>Bank</span>
+      <span className="il-fx__tag il-fx__tag--masked" style={{ left: 20, top: 163 }}>**** - ****</span>
+      <span className="il-fx__feeTag" style={{ left: 152, top: 168 }}>FX fee 0.00</span>
+    </>
+  );
+}
+
+/** The wallet card's face (Figma 2597:814): its glows, the wordmark, and the address line. */
+function WalletFace() {
+  return (
+    <>
+      <Layer className="il-fx__glow" src={B('imgEllipse3471.svg')} x={70} y={-578} w={941} h={941} />
+      <Layer className="il-fx__glow il-fx__glow--soft" src={B('imgEllipse3472.svg')} x={157.5} y={-490.5} w={766} h={766} />
+      <Layer className="il-fx__lines" src={B('imgVector4.svg')} x={-53.5} y={72.5} w={243} h={279.9} />
+      <Layer className="il-fx__mark" src={B('imgGroup1597883989.svg')} x={249} y={19.4} w={138.2} h={71.7} />
+      <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
+      <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
+      <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
+      <Layer className="il-fx__logo" src={B('imgLogoDesign.svg')} x={23} y={28} w={32.85} h={16.97} />
+      <span className="il-fx__tag il-fx__tag--wallet" style={{ left: 67.85, top: 19 }}>Wallet</span>
+      <span className="il-fx__tag il-fx__tag--addr" style={{ left: 23, top: 145 }}>
+        <span className="il-fx__addrText">*******************************a23fh27e</span>
+        <i className="il-fx__sheen" />
+      </span>
+    </>
+  );
+}
+
+function FxLandscape() {
   return (
     <Stage id="fx" width={804} height={440} className="ff__art ff__art--fx il-fx">
       <span className="il-dots il-fx__dots" style={{ left: 0, top: 229, width: 804, height: 211 }} />
-
-      <div className="il-fx__bank" style={{ left: 98, top: 193 }}>
-        <Layer className="il-fx__bankBg" src={B('bank-bg.webp')} x={-13.2} y={-11} w={426.4} h={238} />
-        <img className="il-fx__temple" src={B('imgLandmark.svg')} alt="" width={20} height={20} style={{ left: 20, top: 28 }} />
-        <span className="il-fx__tag il-fx__tag--bank" style={{ left: 52, top: 21 }}>Bank</span>
-        <span className="il-fx__tag il-fx__tag--masked" style={{ left: 20, top: 163 }}>**** - ****</span>
-        <span className="il-fx__feeTag" style={{ left: 152, top: 168 }}>FX fee 0.00</span>
-      </div>
-
-      <div className="il-fx__wallet" style={{ left: 304, top: 237 }}>
-        <Layer className="il-fx__glow" src={B('imgEllipse3471.svg')} x={70} y={-578} w={941} h={941} />
-        <Layer className="il-fx__glow il-fx__glow--soft" src={B('imgEllipse3472.svg')} x={157.5} y={-490.5} w={766} h={766} />
-        <Layer className="il-fx__lines" src={B('imgVector4.svg')} x={-53.5} y={72.5} w={243} h={279.9} />
-        <Layer className="il-fx__mark" src={B('imgGroup1597883989.svg')} x={249} y={19.4} w={138.2} h={71.7} />
-        <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
-        <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
-        <i className="il-fx__ring" style={{ left: 29, top: 26 }} />
-        <Layer className="il-fx__logo" src={B('imgLogoDesign.svg')} x={23} y={28} w={32.85} h={16.97} />
-        <span className="il-fx__tag il-fx__tag--wallet" style={{ left: 67.85, top: 19 }}>Wallet</span>
-        <span className="il-fx__tag il-fx__tag--addr" style={{ left: 23, top: 145 }}>
-          <span className="il-fx__addrText">*******************************a23fh27e</span>
-          <i className="il-fx__sheen" />
-        </span>
-      </div>
+      <div className="il-fx__bank" style={{ left: 98, top: 193 }}><BankFace /></div>
+      <div className="il-fx__wallet" style={{ left: 304, top: 237 }}><WalletFace /></div>
       {/* One arc over both cards, from the bank's top edge to the wallet's, the way a transfer travels. */}
       <svg className="il-fx__wires" viewBox="0 0 804 440" width={804} height={440} style={{ left: 0, top: 0 }} aria-hidden="true">
         <path className="il-fx__wire" d="M189 193 C 235 128, 470 108, 555 237" />
         <circle className="il-fx__wireEnd" cx="189" cy="193" r="3.5" />
         <circle className="il-fx__wireEnd" cx="555" cy="237" r="3.5" />
+      </svg>
+      <span className="il-fx__packet" style={{ left: 0, top: 0 }} />
+      <span className="il-fx__packet il-fx__packet--2" style={{ left: 0, top: 0 }} />
+    </Stage>
+  );
+}
+
+/**
+ * Portrait (Figma 2597:705). The design's art frame starts 26px in and is 414 wide, so the pair
+ * runs off the card's right edge; the wallet sits 12px right of and 119px below the bank, covering
+ * its lower half. The design draws no wire between them and there is no room to arc one over the
+ * pair, so the path stays as unpainted geometry (see illustrations.css) and only the packets that
+ * ride it are seen crossing from the bank to the wallet.
+ */
+function FxPortrait() {
+  return (
+    <Stage id="fx" width={394} height={362} layout="mobile" className="ff__art ff__art--fx il-fx il-fx--m">
+      <span className="il-dots il-fx__dots" style={{ left: 0, top: 229, width: 394, height: 133 }} />
+      <div className="il-fx__bank" style={{ left: 26, top: 0 }}><BankFace /></div>
+      <div className="il-fx__wallet" style={{ left: 38, top: 119 }}><WalletFace /></div>
+      <svg className="il-fx__wires" viewBox="0 0 394 362" width={394} height={362} style={{ left: 0, top: 0 }} aria-hidden="true">
+        <path className="il-fx__wire" d="M330 66 C 300 110, 240 120, 176 158" />
+        <circle className="il-fx__wireEnd" cx="330" cy="66" r="3.5" />
+        <circle className="il-fx__wireEnd" cx="176" cy="158" r="3.5" />
       </svg>
       <span className="il-fx__packet" style={{ left: 0, top: 0 }} />
       <span className="il-fx__packet il-fx__packet--2" style={{ left: 0, top: 0 }} />
@@ -69,6 +114,8 @@ export const fxMotion: IllustrationMotion = {
 type G = Parameters<MotionVariant['idle']>[0];
 type TL = gsap.core.Timeline;
 const parts = (il: HTMLElement) => ({
+  /** The portrait design stacks the pair, so the cards lean towards each other vertically. */
+  down: isMobile(il),
   bank: one(il, '.il-fx__bank'),
   wallet: one(il, '.il-fx__wallet'),
   wires: all<SVGPathElement>(il, '.il-fx__wire'),
@@ -86,7 +133,9 @@ type P = ReturnType<typeof parts>;
 
 const ambient = (gsap: G, il: HTMLElement) => {
   const idle = gsap.timeline();
-  idle.to(one(il, '.il-fx__glow'), { opacity: 0.6, x: -24, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+  // Stacked on a phone, so the glow breathes down the cards rather than across them.
+  const drift = isMobile(il) ? { y: -18 } : { x: -24 };
+  idle.to(one(il, '.il-fx__glow'), { opacity: 0.6, ...drift, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   idle.to(one(il, '.il-fx__mark'), { x: -5, duration: 8, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   return idle;
 };
@@ -177,8 +226,8 @@ fxMotion.variants = [
       const idle = ambient(gsap, il);
       const story = gsap.timeline({ repeat: -1, repeatDelay: 3.4, delay: 1.6 });
       story
-        .to(p.bank, { x: 8, duration: 0.8, ease: 'power3.inOut' }, 0)
-        .to(p.wallet, { x: -8, duration: 0.8, ease: 'power3.inOut' }, 0);
+        .to(p.bank, { ...(p.down ? { y: 8 } : { x: 8 }), duration: 0.8, ease: 'power3.inOut' }, 0)
+        .to(p.wallet, { ...(p.down ? { y: -8 } : { x: -8 }), duration: 0.8, ease: 'power3.inOut' }, 0);
       light(story, p.bankTag, 0.5, WHITE, WHITE_LIT);
       light(story, p.walletTag, 0.8, WALLET, WALLET_LIT);
       story.add(() => roll(gsap, p.masked, '**** - 4417'), 1.0);
@@ -188,8 +237,8 @@ fxMotion.variants = [
       story.fromTo(p.sheen, { xPercent: -120, opacity: 1 }, { xPercent: 420, duration: 0.9, ease: 'power2.inOut' }, 2.2);
       story
         .add(() => roll(gsap, p.masked, '**** - ****'), 3.4)
-        .to(p.bank, { x: 0, duration: 0.9, ease: 'power3.inOut' }, 3.4)
-        .to(p.wallet, { x: 0, duration: 0.9, ease: 'power3.inOut' }, 3.4);
+        .to(p.bank, { ...(p.down ? { y: 0 } : { x: 0 }), duration: 0.9, ease: 'power3.inOut' }, 3.4)
+        .to(p.wallet, { ...(p.down ? { y: 0 } : { x: 0 }), duration: 0.9, ease: 'power3.inOut' }, 3.4);
       idle.add(story, 0);
       return idle;
     },

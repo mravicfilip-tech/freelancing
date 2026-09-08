@@ -1,14 +1,28 @@
 import outline from './svg/boltOutline.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
-import { all, one, wipe, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
+import { all, isMobile, one, wipe, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
- * "Super fast" (Figma 2409:2532, 710×440): a bolt between the local payment network and same-day
- * processing, over a lavender blob that fills the card's left. The dashed outline is a live vector
- * so its dashes can march, and the loops are built for speed: every beat completes in under a
- * second, a sweep along the wire, the bolt firing, the check turning.
+ * "Super fast" (Figma 2409:2532, 710×440 landscape; 2597:1042, 394×362 portrait): a bolt between
+ * the local payment network and same-day processing, over a lavender blob. The dashed outline is a
+ * live vector so its dashes can march, and the loops are built for speed: every beat completes in
+ * under a second, a sweep along the wire, the bolt firing, the check turning.
+ *
+ * On a phone the design stands the whole diagram up: the network pill caps the wire, the bolt sits
+ * mid-way, and same-day processing closes it at the foot. Same parts, same class names — so the
+ * motion below reads `isMobile` and runs its sweep down the wire instead of across it.
  */
-export function Fast() {
+export function Fast({ mobile = false }: { mobile?: boolean } = {}) {
+  return mobile ? <FastPortrait /> : <FastLandscape />;
+}
+
+/** The wire's run in each layout, so the motion and the markup agree on where it starts and ends. */
+export const FAST_WIRE = {
+  desktop: { x: 262, y: 191.2, length: 222 },
+  mobile: { x: 196, y: 34, length: 240 },
+} as const;
+
+function FastLandscape() {
   return (
     <Stage id="fast" width={710} height={440} className="ff__art ff__art--fast il-fast">
       <Layer className="il-fast__blob" src={B('fast-blob.webp')} x={-609} y={-130} w={1023} h={576} style={{ transform: 'scaleX(-1)', clipPath: 'inset(0 0 0 1.5%)' }} />
@@ -44,6 +58,51 @@ export function Fast() {
   );
 }
 
+/**
+ * Portrait (Figma 2597:1042). The 394×328 blob frame at the foot holds the design's own rotated
+ * crop of the blob: the source is flipped and turned a quarter turn inside an overflow box, which
+ * is how the design fills a tall card with a landscape blob.
+ */
+function FastPortrait() {
+  const w = FAST_WIRE.mobile;
+  return (
+    <Stage id="fast" width={394} height={362} layout="mobile" className="ff__art ff__art--fast il-fast il-fast--m">
+      <span className="il-fast__blob il-fast__blobBox" style={{ left: 0, top: 34, width: 394, height: 328 }}>
+        <span className="il-fast__blobInner">
+          <img src={B('fast-blob.webp')} alt="" style={{ left: 124.3, top: -30.1, width: 451.5, height: 446 }} />
+        </span>
+      </span>
+
+      <Strokes className="il-fast__outline" svg={outline} x={155} y={62} w={150} h={182} />
+      <span className="il-fast__line" style={{ left: w.x + 1, top: w.y, width: 1, height: w.length }} />
+      <span className="il-fast__lineFill" style={{ left: w.x + 0.5, top: w.y, width: 2, height: w.length }} />
+      <span className="il-fast__hl" style={{ left: w.x + 1, top: w.y }} />
+      <span className="il-fast__lineGlow" style={{ left: w.x, top: w.y, width: 4, height: w.length }} />
+      {/* The streaks run down the wire on a phone, past the bolt's shoulders. */}
+      <span className="il-fast__streak" style={{ left: 168, top: 96 }} />
+      <span className="il-fast__streak" style={{ left: 198, top: 86 }} />
+      <span className="il-fast__streak" style={{ left: 224, top: 102 }} />
+      <span className="il-fast__halo" style={{ left: 135, top: 95 }} />
+      <span className="il-fast__flash" style={{ left: 105, top: 65 }} />
+      <Layer className="il-fast__bolt" src={B('imgVector6.svg')} x={147} y={98.5} w={76.7} h={93.1} />
+      <span className="il-fast__sheen" style={{ left: 147, top: 98.5, width: 76.7, height: 93.1 }}>
+        <i />
+      </span>
+      <Layer className="il-fast__glide" src={B('imgVector6.svg')} x={w.x + 1} y={w.y} w={12} h={14} />
+
+      <span className="il-fast__pill il-fast__pill--local" style={{ left: 89, top: 0, width: 216 }}>
+        <img src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
+        Local payment network
+      </span>
+      <span className="il-fast__pill il-fast__pill--same" style={{ left: 100, top: 277, width: 194 }}>
+        <img className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
+        Same day process
+      </span>
+      <Layer className="il-fast__dot" src={B('imgEllipse3477.svg')} x={194} y={271} w={8} h={8} />
+    </Stage>
+  );
+}
+
 export const fastMotion: IllustrationMotion = {
   build(tl, il, at, gsap) {
     // Left to right, as the payment travels: the network pill rises, the line runs out, the dashed
@@ -51,7 +110,8 @@ export const fastMotion: IllustrationMotion = {
     // end dot and the same-day pill.
     tl.from(one(il, '.il-fast__blob'), { opacity: 0, duration: 1.2, ease: 'power1.out' }, at);
     tl.from(one(il, '.il-fast__pill--local'), { ...RISE, y: 12 }, at + 0.1);
-    wipe(tl, one(il, '.il-fast__line'), at + 0.35, 0.6, 'inset(0 100% 0 0)');
+    // The wire runs out from the network pill: rightwards on a desk, downwards on a phone.
+    wipe(tl, one(il, '.il-fast__line'), at + 0.35, 0.6, isMobile(il) ? 'inset(0 0 100% 0)' : 'inset(0 100% 0 0)');
     const path = one<SVGPathElement>(il, '.il-fast__outline path');
     const len = path.getTotalLength();
     tl.fromTo(path, { strokeDashoffset: len, strokeDasharray: `${len} ${len}` }, { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, at + 0.5)
@@ -73,6 +133,8 @@ const GLOW_OFF = 'drop-shadow(0 0 0px rgba(64, 66, 209, 0))';
 const GLOW_HIGH = 'drop-shadow(0 0 18px rgba(64, 66, 209, 0.8))';
 
 const parts = (il: HTMLElement) => ({
+  /** The portrait layout stands the wire up, so the sweep and streaks run down it. */
+  down: isMobile(il),
   hl: one(il, '.il-fast__hl'),
   lineGlow: one(il, '.il-fast__lineGlow'),
   streaks: all(il, '.il-fast__streak'),
@@ -91,7 +153,7 @@ type P = ReturnType<typeof parts>;
 
 const ambient = (gsap: G, il: HTMLElement) => {
   const idle = gsap.timeline();
-  idle.to(one(il, '.il-fast__blob'), { x: 12, duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+  idle.to(one(il, '.il-fast__blob'), { ...(isMobile(il) ? { y: 10 } : { x: 12 }), duration: 9, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
   return idle;
 };
 /** A light that keeps tracing the dashed outline: a short bright run circling the bolt's silhouette. */
@@ -111,7 +173,12 @@ const shine = (story: TL, p: P, t: number, duration = 0.7) => story.fromTo(p.she
 /** The line lights in one fast sweep from the network to same-day, then fades. */
 const sweep = (story: TL, p: P, t: number, duration = 0.28) =>
   story
-    .fromTo(p.lineGlow, { scaleX: 0, opacity: 1 }, { scaleX: 1, duration, ease: 'power3.in', transformOrigin: '0% 50%' }, t)
+    .fromTo(
+      p.lineGlow,
+      p.down ? { scaleY: 0, opacity: 1 } : { scaleX: 0, opacity: 1 },
+      { ...(p.down ? { scaleY: 1 } : { scaleX: 1 }), duration, ease: 'power3.in', transformOrigin: p.down ? '50% 0%' : '0% 50%' },
+      t,
+    )
     .to(p.lineGlow, { opacity: 0, duration: 0.6, ease: 'power2.out' }, t + duration + 0.15);
 /** The bolt answers: a fast glow with a small breath. */
 const fire = (story: TL, p: P, t: number) =>
@@ -128,14 +195,17 @@ const land = (story: TL, p: P, t: number) =>
     .to(p.same, { backgroundColor: '#b3b5f5', duration: 0.6, ease: 'power2.inOut' }, t + 0.2);
 /** Speed streaks whip past behind the bolt, left to right. */
 const streaks = (story: TL, p: P, t: number) =>
-  p.streaks.forEach((sk, i) =>
+  p.streaks.forEach((sk, i) => {
+    const from = p.down ? { y: -30, scaleY: 0.3, opacity: 0 } : { x: -30, scaleX: 0.3, opacity: 0 };
+    const grown = p.down ? { scaleY: 1 } : { scaleX: 1 };
     story
-      .fromTo(sk, { x: -30, scaleX: 0.3, opacity: 0 }, { opacity: 0.9, scaleX: 1, duration: 0.1 }, t + i * 0.05)
-      .to(sk, { x: 120, duration: 0.42, ease: 'power3.in' }, t + i * 0.05)
-      .to(sk, { opacity: 0, duration: 0.12 }, t + i * 0.05 + 0.3),
-  );
+      .fromTo(sk, from, { opacity: 0.9, ...grown, duration: 0.1 }, t + i * 0.05)
+      .to(sk, { ...(p.down ? { y: 120 } : { x: 120 }), duration: 0.42, ease: 'power3.in' }, t + i * 0.05)
+      .to(sk, { opacity: 0, duration: 0.12 }, t + i * 0.05 + 0.3);
+  });
 /** The network pill sends: a quick press. */
-const send = (story: TL, p: P, t: number) => story.fromTo(p.local, { scale: 1 }, { scale: 0.97, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '100% 50%' }, t);
+const send = (story: TL, p: P, t: number) =>
+  story.fromTo(p.local, { scale: 1 }, { scale: 0.97, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: p.down ? '50% 100%' : '100% 50%' }, t);
 
 fastMotion.variants = [
   {
@@ -194,8 +264,8 @@ fastMotion.variants = [
       send(story, p, 0);
       sweep(story, p, 0.1, 0.3);
       story
-        .to(p.bolt, { rotation: -7, x: 6, duration: 0.18, ease: 'power3.out', transformOrigin: '50% 80%' }, 0.1)
-        .to(p.bolt, { rotation: 0, x: 0, duration: 0.55, ease: 'power3.inOut' }, 0.34);
+        .to(p.bolt, { rotation: -7, ...(p.down ? { y: 6 } : { x: 6 }), duration: 0.18, ease: 'power3.out', transformOrigin: '50% 80%' }, 0.1)
+        .to(p.bolt, { rotation: 0, ...(p.down ? { y: 0 } : { x: 0 }), duration: 0.55, ease: 'power3.inOut' }, 0.34);
       shine(story, p, 0.12, 0.45);
       fire(story, p, 0.24);
       land(story, p, 0.42);

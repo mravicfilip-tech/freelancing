@@ -25,6 +25,9 @@ export interface MotionVariant {
 export const EASE = 'expo.out';
 export const RISE = { y: 10, opacity: 0, duration: 0.7, ease: EASE } as const;
 
+/** True when the stage carries the design's portrait composition (see `Stage`'s `layout`). */
+export const isMobile = (il: HTMLElement) => il.dataset.layout === 'mobile';
+
 export const one = <T extends Element = HTMLElement>(root: Element, sel: string) => root.querySelector<T>(sel)!;
 export const all = <T extends Element = HTMLElement>(root: Element, sel: string) => Array.from(root.querySelectorAll<T>(sel));
 export const rand = (a: number, b: number) => a + Math.random() * (b - a);

@@ -1,47 +1,102 @@
 import lines from './svg/imgGroup2085662421.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
-import { all, count, draw, one, roll, traveller, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
+import { all, count, draw, isMobile, one, roll, traveller, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
 /**
- * "Crypto-to-fiat payments made simple" (Figma 2409:2462, 747×334): BTC flows along a line through
- * the Remittix hub and an exchange into a bank receipt, over a lavender blob ringed by orbits.
+ * "Crypto-to-fiat payments made simple" (Figma 2409:2462, 747×334 landscape; 2597:844, 394×606
+ * portrait): BTC flows along a line through the Remittix hub and an exchange into a bank receipt,
+ * over a lavender blob ringed by orbits.
+ *
+ * The portrait design builds the scene the way the file does: one 606×394 box holding the whole
+ * corridor, given a quarter turn to fill the tall card, with every chip and card turned back
+ * upright inside it. Keeping that construction (rather than re-deriving each coordinate in the
+ * card's own axes) means the payment line and everything that rides it stay in one transform
+ * space, so the motion below needs no special case for the packets.
  */
-export function Simple() {
+export function Simple({ mobile = false }: { mobile?: boolean } = {}) {
+  return mobile ? <SimplePortrait /> : <SimpleLandscape />;
+}
+
+/** Where each part of the corridor sits, in the coordinates of the box that holds it. */
+type SimpleGeo = typeof LANDSCAPE;
+
+const LANDSCAPE = {
+  box: { w: 747, h: 334 },
+  blob: { x: -71, y: -537, w: 949, h: 1050 },
+  ring1: { x: 143, y: -93, d: 395 },
+  haze: { x: 219, y: -190, d: 584 },
+  ring2: { x: 258, y: -154, d: 443 },
+  lines: { x: 132, y: 138, w: 272, h: 121.75 },
+  rail: 'M190 166 C 210 172, 228 182, 243 189',
+  btc: { x: 17, y: 239 },
+  coinbase: { x: 257, y: 31, w: 80, h: 32 },
+  stripe: { x: 149, y: 80, w: 106, h: 36 },
+  wise: { x: 112, y: 151 },
+  hub: { x: 242, y: 166 },
+  swap: { x: 410, y: 130 },
+  stack: { x: 425, y: 34 },
+};
+
+/**
+ * Portrait (Figma 2597:844), in the turned box's own coordinates. Upright parts are placed by
+ * their centres and given the design's counter-rotation in CSS.
+ */
+const PORTRAIT: SimpleGeo = {
+  box: { w: 606, h: 394 },
+  blob: { x: -303, y: -515.3, w: 1186, h: 1106.3 },
+  ring1: { x: 148, y: -93, d: 395 },
+  haze: { x: 224, y: -190, d: 584 },
+  ring2: { x: 263, y: -154, d: 443 },
+  lines: { x: 88, y: 134, w: 240, h: 110.7 },
+  rail: 'M226 149 C 222 175, 214 200, 207 221',
+  btc: { x: 20, y: 116 },
+  coinbase: { x: 187, y: 119, w: 78, h: 30 },
+  stripe: { x: 211, y: 293, w: 104, h: 34 },
+  wise: { x: 124, y: 48 },
+  hub: { x: 178, y: 221 },
+  swap: { x: 288, y: 176 },
+  // The receipt column renders 298 tall against the export's 279, so it is placed by the design's
+  // top edge rather than its centre — the toast then clears the card's foot.
+  stack: { x: 340, y: 41 },
+};
+
+/** The corridor itself: blob and orbits, the payment line, its stops, and the receipt at the end. */
+function Corridor({ g }: { g: SimpleGeo }) {
   return (
-    <Stage id="simple" width={747} height={334} className="ff__art ff__art--simple il-simple">
-      <Layer className="il-simple__blob" src={B('imgGroup2085662428.svg')} x={-71} y={-537} w={949} h={1050} />
-      <span className="il-simple__ring il-ring" style={{ left: 143, top: -93, width: 395, height: 395 }} />
-      <Layer className="il-simple__haze" src={B('ellipse3438.webp')} x={219} y={-190} w={584} h={584} />
-      <span className="il-simple__ring il-ring il-ring--bold" style={{ left: 258, top: -154, width: 443, height: 443 }} />
-      <span className="il-simple__orbit" style={{ left: 258, top: -154, width: 443, height: 443 }}>
+    <>
+      <Layer className="il-simple__blob" src={B('imgGroup2085662428.svg')} x={g.blob.x} y={g.blob.y} w={g.blob.w} h={g.blob.h} />
+      <span className="il-simple__ring il-ring" style={{ left: g.ring1.x, top: g.ring1.y, width: g.ring1.d, height: g.ring1.d }} />
+      <Layer className="il-simple__haze" src={B('ellipse3438.webp')} x={g.haze.x} y={g.haze.y} w={g.haze.d} h={g.haze.d} />
+      <span className="il-simple__ring il-ring il-ring--bold" style={{ left: g.ring2.x, top: g.ring2.y, width: g.ring2.d, height: g.ring2.d }} />
+      <span className="il-simple__orbit" style={{ left: g.ring2.x, top: g.ring2.y, width: g.ring2.d, height: g.ring2.d }}>
         <i />
       </span>
 
       {/* One dashed rail from the front processor slot into the Remittix hub; whoever sits there routes. */}
-      <svg className="il-simple__rails" viewBox="0 0 747 334" width={747} height={334} style={{ left: 0, top: 0 }} aria-hidden="true">
-        <path className="il-simple__rail" d="M190 166 C 210 172, 228 182, 243 189" />
+      <svg className="il-simple__rails" viewBox={`0 0 ${g.box.w} ${g.box.h}`} width={g.box.w} height={g.box.h} style={{ left: 0, top: 0 }} aria-hidden="true">
+        <path className="il-simple__rail" d={g.rail} />
       </svg>
-      <Strokes className="il-simple__lines" svg={lines} x={132} y={138} w={272} h={121.75} />
+      <Strokes className="il-simple__lines" svg={lines} x={g.lines.x} y={g.lines.y} w={g.lines.w} h={g.lines.h} />
       <i className="il-simple__beam" />
 
-      <div className="il-simple__btc il-simple__node" style={{ left: 17, top: 239 }}>
+      <div className="il-simple__btc il-simple__node" style={{ left: g.btc.x, top: g.btc.y }}>
         <img src={B('imgFrame2085662026.svg')} alt="" width={30.8} height={30.8} />
         <span>0.0128 BTC</span>
       </div>
-      <Layer className="il-simple__logo" src={B('imgFrame2085662273.svg')} x={257} y={31} w={80} h={32} />
-      <Layer className="il-simple__logo" src={B('imgFrame2085662272.svg')} x={149} y={80} w={106} h={36} />
-      <div className="il-simple__wise il-simple__logo" style={{ left: 112, top: 151 }}>
+      <Layer className="il-simple__logo" src={B('imgFrame2085662273.svg')} x={g.coinbase.x} y={g.coinbase.y} w={g.coinbase.w} h={g.coinbase.h} />
+      <Layer className="il-simple__logo" src={B('imgFrame2085662272.svg')} x={g.stripe.x} y={g.stripe.y} w={g.stripe.w} h={g.stripe.h} />
+      <div className="il-simple__wise il-simple__logo" style={{ left: g.wise.x, top: g.wise.y }}>
         <span style={{ maskImage: `url(${B('imgRectangle34624647.png')})`, WebkitMaskImage: `url(${B('imgRectangle34624647.png')})` }} />
       </div>
-      <div className="il-simple__hub il-simple__node" style={{ left: 242, top: 166 }}>
+      <div className="il-simple__hub il-simple__node" style={{ left: g.hub.x, top: g.hub.y }}>
         <i className="il-simple__hubHalo" />
         <img src={B('imgGroup3.svg')} alt="" width={35.5} height={18.3} />
       </div>
-      <div className="il-simple__swap" style={{ left: 410, top: 130 }}>
+      <div className="il-simple__swap" style={{ left: g.swap.x, top: g.swap.y }}>
         <img src={B('imgMoveHorizontal.svg')} alt="" width={16} height={13.4} />
       </div>
 
-      <div className="il-simple__stack" style={{ left: 425, top: 34 }}>
+      <div className="il-simple__stack" style={{ left: g.stack.x, top: g.stack.y }}>
         <div className="il-rc">
           <div className="il-rc__row il-rc__head">
             <span className="il-rc__bank">
@@ -75,6 +130,29 @@ export function Simple() {
             <small className="il-mono" data-count="time">TODAY · 14:02</small>
           </span>
         </div>
+      </div>
+    </>
+  );
+}
+
+function SimpleLandscape() {
+  return (
+    <Stage id="simple" width={747} height={334} className="ff__art ff__art--simple il-simple">
+      <Corridor g={LANDSCAPE} />
+    </Stage>
+  );
+}
+
+/**
+ * The 606×394 corridor, centred in the 394×606 card and turned a quarter turn — the design's own
+ * construction (2597:963). `.il-simple__turn` carries the turn; the CSS stands the chips, hub,
+ * exchange and receipt back up inside it.
+ */
+function SimplePortrait() {
+  return (
+    <Stage id="simple" width={394} height={606} layout="mobile" className="ff__art ff__art--simple il-simple il-simple--m">
+      <div className="il-simple__turn" style={{ left: (394 - 606) / 2, top: (606 - 394) / 2, width: 606, height: 394 }}>
+        <Corridor g={PORTRAIT} />
       </div>
     </Stage>
   );
@@ -113,7 +191,16 @@ export const simpleMotion: IllustrationMotion = {
 type G = Parameters<MotionVariant['idle']>[0];
 type TL = gsap.core.Timeline;
 
-const HUB = { x: 273, y: 197 };
+/**
+ * The motion's own geometry, per layout: the hub's centre, the line's offset inside the box, the
+ * three processor slots (in the order the logos appear), and which slot is wired to the hub.
+ */
+const MGEO = {
+  desktop: { hub: { x: 273, y: 197 }, lines: { x: 132, y: 138 }, slots: [{ x: 297, y: 47 }, { x: 202, y: 98 }, { x: 151, y: 166 }], front: 2 },
+  mobile: { hub: { x: 202, y: 245 }, lines: { x: 88, y: 134 }, slots: [{ x: 226, y: 134 }, { x: 263, y: 310 }, { x: 163, y: 63 }], front: 0 },
+} as const;
+type MGeo = (typeof MGEO)[keyof typeof MGEO];
+const mgeo = (il: HTMLElement): MGeo => (isMobile(il) ? MGEO.mobile : MGEO.desktop);
 /** A rail lights: brighter with a soft white glow. It never moves. */
 const LIT = { filter: 'brightness(1.25) drop-shadow(0 0 9px rgba(255,255,255,0.75))' };
 const UNLIT = { filter: 'brightness(1) drop-shadow(0 0 0px rgba(255,255,255,0))' };
@@ -144,6 +231,8 @@ const scene = (gsap: G, il: HTMLElement) => {
   glow.style.opacity = '0';
   path.parentNode!.insertBefore(glow, path.nextSibling);
   return {
+    /** The layout's own hub, line offset and processor slots. */
+    g: mgeo(il),
     svg,
     path,
     len,
@@ -197,7 +286,8 @@ function ledger(gsap: G, il: HTMLElement) {
 
 /** Where along the main line the hub sits (fraction of its length), found once by sampling. */
 const hubFraction = (sc: Scene) => {
-  const target = { x: HUB.x - 132, y: HUB.y - 138 }; // hub centre in the line's own coordinates
+  // The hub's centre in the line's own coordinates.
+  const target = { x: sc.g.hub.x - sc.g.lines.x, y: sc.g.hub.y - sc.g.lines.y };
   let best = 0;
   let bestD = Infinity;
   for (let i = 0; i <= 400; i++) {
@@ -214,30 +304,25 @@ const hubFraction = (sc: Scene) => {
 
 /**
  * The processors sit in three slots around the hub (the design's stripe, coinbase and wise
- * positions, as pill centres). The last slot is the front: it is wired to the hub and routes the
- * payment. Between payments the carousel turns, so the next processor comes to the front.
+ * positions, as pill centres — see MGEO). One slot is the front: it is wired to the hub and routes
+ * the payment. Between payments the carousel turns, so the next processor comes to the front.
  */
-const SLOTS = [
-  { x: 297, y: 47 },
-  { x: 202, y: 98 },
-  { x: 151, y: 166 },
-];
-const FRONT = 2;
 /** A curved move from one slot to another, bowing away from the hub. */
-const arc = (from: { x: number; y: number }, to: { x: number; y: number }) => {
+const arc = (g: MGeo, from: { x: number; y: number }, to: { x: number; y: number }) => {
   const mx = (from.x + to.x) / 2;
   const my = (from.y + to.y) / 2;
-  const dx = mx - HUB.x;
-  const dy = my - HUB.y;
+  const dx = mx - g.hub.x;
+  const dy = my - g.hub.y;
   const d = Math.hypot(dx, dy) || 1;
   return { x: mx + (dx / d) * 22, y: my + (dy / d) * 22 };
 };
 /** Carousel state: which processor (0 stripe, 1 coinbase, 2 wise) sits in each slot. */
 const carousel = (gsap: G, sc: Scene) => {
   const inSlot = [0, 1, 2];
+  const SLOTS = sc.g.slots;
   const pos = sc.logos.map((_, i) => ({ ...SLOTS[i] })); // each logo's current centre
   return {
-    front: () => inSlot[FRONT],
+    front: () => inSlot[sc.g.front],
     /** Every processor advances one slot, all at once, along arcs around the hub. */
     turn(duration = 1.3) {
       const tl = gsap.timeline();
@@ -245,7 +330,7 @@ const carousel = (gsap: G, sc: Scene) => {
       next.forEach((logo, slot) => {
         const from = pos[logo];
         const to = SLOTS[slot];
-        const via = arc(from, to);
+        const via = arc(sc.g, from, to);
         const home = SLOTS[logo]; // the logo's design position, which its transform is relative to
         tl.to(sc.logos[logo], { motionPath: { path: [{ x: from.x - home.x, y: from.y - home.y }, { x: via.x - home.x, y: via.y - home.y }, { x: to.x - home.x, y: to.y - home.y }], curviness: 1.2 }, duration, ease: 'power3.inOut' }, 0);
         pos[logo] = { ...to };
@@ -352,6 +437,7 @@ simpleMotion.variants = [
       const sc = sceneOf(gsap, il);
       const dot = traveller(sc.svg, '#4042d1', 3.5);
       const idle = ambient(gsap, il);
+      const { hub: HUB, slots: SLOTS, front: FRONT } = sc.g;
       // Each processor rides a circle around the hub through its own design position.
       const angles = sc.logos.map((_, i) => Math.atan2(SLOTS[i].y - HUB.y, SLOTS[i].x - HUB.x));
       const radii = sc.logos.map((_, i) => Math.hypot(SLOTS[i].x - HUB.x, SLOTS[i].y - HUB.y));

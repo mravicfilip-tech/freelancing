@@ -1,233 +1,243 @@
-/* Cabinet — the drawer from the front: a strip of seven tabs standing on one sheet's top edge.
-   Everything here is the band's own paper — the card fill, the [4,4] rules, the 12px radius, the
-   indigo accent — so the object reads as the same stock as the ecosystem card and the FAQ rows.
+/* Cabinet — the Index, held in one drawer.
 
-   The join is the whole trick. Every tab is pulled 1px down over the panel (margin-bottom: -1px)
-   and the strip paints above it. An unselected tab's bottom border is the rule colour, so the
-   hairline under it is unchanged; the selected tab's bottom border is the card colour, so under
-   that one tab the panel's top rule is gone and the two are one shape. */
+   Everything is the band's own stock: the card is 12px and white with no border and no shadow
+   (a card here is never edged), the rows are divided by the card's finer [4,4] rule, the open row
+   carries the 2px indigo bar outside the content padding that every accordion on this page uses,
+   and it opens on the grid-row transition. The one thing that is this direction's own is the
+   left margin: the numbered tabs stand in it, one to a row, so the index reads down the card's
+   left edge and the outer edge of the card stays a clean rectangle. */
 
 .rd-cabinet {
-  --cab-h-on: 68px; /* the selected tab */
-  --cab-h-off: 57px; /* the six standing behind it */
-  --cab-r: 10px;
-  --cab-tab-hover: #e9ecf1;
+  /* The card's padding; the accent bar's offset tracks it at every breakpoint. */
+  --cab-pad: 44px;
+  /* The tab column, and the indent everything to its right lines up on. */
+  --cab-tab: 72px;
+  --cab-gap: 22px;
+  /* One width for every name, so the sentences beside them start on one edge. */
+  --cab-name: 210px;
+  --cab-indent: calc(var(--cab-tab) + var(--cab-gap));
 
   display: flex;
   flex-direction: column;
+  gap: 52px;
 }
 
-/* ---------- Drawer label ---------- */
-.rd-cabinet__cap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px 24px;
-  padding: 0 2px 14px;
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--rd-body);
-}
-.rd-cabinet__capLabel {
-  font-weight: 700;
-  letter-spacing: -0.39px;
-  text-transform: uppercase;
-}
-.rd-cabinet__capStats {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  letter-spacing: 0.01em;
-}
-.rd-cabinet__capStats b {
-  font-family: var(--fh-digits);
-  font-weight: 700;
-  color: var(--rd-title);
-}
-.rd-cabinet__capStats b[data-live] {
-  color: var(--rd-indigo);
-}
-.rd-cabinet__capStats em {
-  font-style: normal;
-  color: var(--rd-rail);
-}
-
-/* ---------- The sheet ---------- */
-.rd-cabinet__sheet {
-  display: flex;
-  flex-direction: column;
-  isolation: isolate;
-}
-
-/* ---------- The tab strip ---------- */
-.rd-cabinet__strip {
+/* ---------- The rail ---------- */
+.rd-cabinet__rail {
   position: relative;
-  z-index: 2;
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  align-items: end;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.rd-cabinet__tab {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: var(--cab-h-off);
-  /* The vertical hairlines collapse, so the strip is divided by one rule, not two. */
-  margin: 0 0 -1px -1px;
-  padding: 0 15px 12px;
-  border: 1px solid var(--rd-line);
-  border-radius: var(--cab-r) var(--cab-r) 0 0;
-  background: var(--rd-tab);
-  font: inherit;
-  text-align: left;
-  overflow: hidden;
-  cursor: pointer;
-  transition: height 420ms cubic-bezier(0.22, 0.61, 0.36, 1), background-color 260ms ease,
-    border-color 260ms ease;
-}
-.rd-cabinet__tab:first-child {
-  margin-left: 0;
-  border-top-left-radius: 12px;
-}
-.rd-cabinet__tab:last-child {
-  border-top-right-radius: 12px;
-}
-.rd-cabinet__tab:hover {
-  background: var(--cab-tab-hover);
-}
-.rd-cabinet__tab:focus-visible {
-  outline: 2px solid var(--rd-indigo);
-  outline-offset: -3px;
-}
-/* The open file: the sheet's own paper, standing a step proud, with no floor under it. */
-.rd-cabinet__tab[aria-selected='true'] {
-  z-index: 3;
-  height: var(--cab-h-on);
-  background: var(--rd-card);
-  border-bottom-color: var(--rd-card);
-}
-/* The accent the accordions carry on their open row, here along the tab's head. */
-.rd-cabinet__tab::after {
+/* The line runs behind the stops, on the rails' own [8,8] rhythm. */
+.rd-cabinet__rail::before {
   content: '';
   position: absolute;
-  inset: 0 0 auto;
-  height: 2px;
-  background: var(--rd-indigo);
-  transform: scaleX(0);
-  transform-origin: 50% 50%;
-  transition: transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  left: 6%;
+  right: 6%;
+  top: 5px;
+  height: 1px;
+  background-image: var(--rd-dash-h);
 }
-.rd-cabinet__tab[aria-selected='true']::after {
-  transform: none;
-}
-
-.rd-cabinet__tabTop {
+.rd-cabinet__stop button {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  height: 14px;
-  margin-bottom: 7px;
+  gap: 13px;
+  width: 100%;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 }
-.rd-cabinet__tabN {
-  font-size: 13px;
+.rd-cabinet__stop button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.rd-cabinet__dot {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid var(--rd-rail);
+  background: var(--rd-bg);
+  transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.rd-cabinet__stop[data-status='done'] .rd-cabinet__dot {
+  background: var(--rd-title);
+  border-color: var(--rd-title);
+}
+.rd-cabinet__stop[data-open] .rd-cabinet__dot {
+  background: var(--rd-indigo);
+  border-color: var(--rd-indigo);
+  box-shadow: 0 0 0 5px rgb(64 66 209 / 14%);
+}
+.rd-cabinet__stopN {
+  margin-bottom: 3px;
+  font-size: 12px;
   line-height: 1;
   color: var(--rd-body);
-  transition: color 260ms ease;
+  transition: color 300ms ease;
 }
-.rd-cabinet__tab[data-status='done'] .rd-cabinet__tabN {
+.rd-cabinet__stop[data-status='done'] .rd-cabinet__stopN,
+.rd-cabinet__stop[data-open] .rd-cabinet__stopN {
   color: var(--rd-title);
 }
-.rd-cabinet__tab[data-status='live'] .rd-cabinet__tabN {
-  color: var(--rd-indigo);
+.rd-cabinet__stopName {
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  line-height: 1.2;
+  color: var(--rd-body);
+  transition: color 300ms ease;
 }
-.rd-cabinet__tabName {
+.rd-cabinet__stop[data-open] .rd-cabinet__stopName {
   font-weight: 600;
+  color: var(--rd-title);
+}
+.rd-cabinet__stop button:hover .rd-cabinet__stopName {
+  color: var(--rd-title);
+}
+
+/* ---------- The drawer ---------- */
+.rd-cabinet__card {
+  border-radius: 12px;
+  background: var(--rd-card);
+  padding: 26px var(--cab-pad) 0;
+}
+.rd-cabinet__stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rd-cabinet__row {
+  position: relative;
+}
+/* The files are divided by the card's own [4,4] rule — a background, never a border. */
+.rd-cabinet__row + .rd-cabinet__row {
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+/* The open row's bar, on the card's edge, outside the content's padding. */
+.rd-cabinet__accent {
+  position: absolute;
+  left: calc(var(--cab-pad) * -1);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  overflow: hidden;
+}
+.rd-cabinet__accent i {
+  position: absolute;
+  inset: 0;
+  background: var(--rd-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rd-cabinet__row[data-open] .rd-cabinet__accent i {
+  transform: scaleY(1);
+}
+
+/* ---------- The row's head ---------- */
+.rd-cabinet__head {
+  margin: 0;
+  font: inherit;
+}
+.rd-cabinet__head button {
+  display: grid;
+  grid-template-columns: var(--cab-tab) minmax(0, var(--cab-name)) minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: var(--cab-gap);
+  width: 100%;
+  padding: 19px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rd-cabinet__head button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+/* The tab: the file's number, standing in the card's left margin. It takes the ink ground when
+   its file is the one pulled out — the way this design marks one of a set live. */
+.rd-cabinet__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--rd-tab);
+  font-family: var(--fh-digits);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--rd-title);
+  transition: background-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
+}
+.rd-cabinet__row[data-status='next'] .rd-cabinet__tab {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--rd-line);
+  color: var(--rd-body);
+}
+.rd-cabinet__row[data-open] .rd-cabinet__tab {
+  background: var(--rd-title);
+  box-shadow: none;
+  color: #fff;
+}
+.rd-cabinet__name {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.12;
+  letter-spacing: -0.72px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-cabinet__row[data-status='done'] .rd-cabinet__name,
+.rd-cabinet__row[data-open] .rd-cabinet__name,
+.rd-cabinet__head button:hover .rd-cabinet__name {
+  color: var(--rd-title);
+}
+/* The closed file's one line. It steps aside when the file opens and the sentence is set in full
+   under the head. */
+.rd-cabinet__lede {
   font-size: 15px;
-  line-height: 1.1;
-  letter-spacing: -0.3px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
   color: var(--rd-body);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 260ms ease;
+  opacity: 0.85;
+  transition: opacity 300ms ease;
 }
-.rd-cabinet__tab:hover .rd-cabinet__tabName,
-.rd-cabinet__tab[aria-selected='true'] .rd-cabinet__tabName {
-  color: var(--rd-title);
+.rd-cabinet__row[data-open] .rd-cabinet__lede {
+  opacity: 0;
 }
-
-/* The status mark: tick, filled node, open ring. */
-.rd-cabinet__mark {
-  display: block;
-  flex: 0 0 auto;
-  color: var(--rd-title);
-}
-.rd-cabinet__node {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.rd-cabinet__node[data-status='live'] {
-  background: var(--rd-indigo);
-  box-shadow: 0 0 0 3px rgb(64 66 209 / 16%);
-}
-.rd-cabinet__node[data-status='next'] {
-  border: 1px solid var(--rd-rail);
-}
-
-/* ---------- The panel ---------- */
-.rd-cabinet__panel {
-  position: relative;
-  z-index: 1;
-  border: 1px solid var(--rd-line);
-  border-radius: 0 0 12px 12px;
-  background: var(--rd-card);
-}
-.rd-cabinet__panel:focus-visible {
-  outline: 2px solid var(--rd-indigo);
-  outline-offset: -2px;
-}
-.rd-cabinet__page {
-  padding: 40px 48px 44px;
-}
-
-/* Head: the folio, the name, and the level's marker on the right, over a [4,4] rule. */
-.rd-cabinet__head {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0 20px;
-  padding-bottom: 26px;
-  background-image: var(--rd-rule-h);
-  background-size: 100% 1px;
-  background-position: left bottom;
-  background-repeat: no-repeat;
-}
-.rd-cabinet__folio {
-  font-size: 44px;
-  line-height: 1;
+.rd-cabinet__count {
+  justify-self: end;
+  font-size: 13px;
   color: var(--rd-body);
+  transition: color 300ms ease;
 }
-.rd-cabinet__folio[data-status='done'] {
-  color: var(--rd-title);
-}
-.rd-cabinet__folio[data-status='live'] {
-  color: var(--rd-indigo);
-}
-.rd-cabinet__name {
-  margin: 0;
-  font-family: var(--fh-display);
-  font-weight: 500;
-  font-size: 40px;
-  line-height: 1.12;
-  letter-spacing: -1.2px;
+.rd-cabinet__row[data-status='done'] .rd-cabinet__count,
+.rd-cabinet__row[data-open] .rd-cabinet__count {
   color: var(--rd-title);
 }
 .rd-cabinet__marker {
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   height: 34px;
@@ -237,7 +247,7 @@
   font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.28px;
-  color: var(--rd-ink);
+  color: var(--rd-body);
   white-space: nowrap;
 }
 .rd-cabinet__marker[data-status='live'] {
@@ -247,53 +257,72 @@
 .rd-cabinet__marker[data-status='next'] {
   border-style: dashed;
   border-color: var(--rd-rail);
-  color: var(--rd-body);
 }
 
-/* Body: the level's prose on the left, its five milestones on the right, a [4,4] rule between. */
+/* ---------- The file's contents ---------- */
 .rd-cabinet__body {
   display: grid;
-  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  min-height: 340px;
-  margin-top: 30px;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.rd-cabinet__lede {
-  display: flex;
-  flex-direction: column;
-  padding-right: 48px;
-  background-image: var(--rd-rule-v);
-  background-size: 1px 100%;
-  background-position: right top;
-  background-repeat: no-repeat;
+.rd-cabinet__bodyInner {
+  min-height: 0;
+  overflow: hidden;
+  /* Everything to the right of the tab column lines up on one indent. */
+  padding-left: var(--cab-indent);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease 120ms, transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms,
+    padding-bottom 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-cabinet__row[data-open] .rd-cabinet__body {
+  grid-template-rows: 1fr;
+}
+.rd-cabinet__row[data-open] .rd-cabinet__bodyInner {
+  padding-bottom: 24px;
+  opacity: 1;
+  transform: none;
 }
 .rd-cabinet__blurb {
-  margin: 0;
-  font-size: 17px;
+  margin: 0 0 6px;
+  max-width: 74ch;
+  font-size: 16px;
   line-height: 1.6;
   letter-spacing: 0.01em;
   color: var(--rd-body);
 }
-.rd-cabinet__progress {
-  margin-top: auto;
-  padding-top: 32px;
+/* The milestone rows share the card's rule, so the file reads as part of the same ruled stack. */
+.rd-cabinet .rd-miles li {
+  padding: 15px 0;
 }
-/* Five segments for five milestones — the panel's rows, read as a bar. */
-.rd-cabinet__meter {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
-  max-width: 220px;
+
+/* ---------- The plate that closes the drawer ---------- */
+.rd-cabinet__plate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 20px 0 26px;
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
-.rd-cabinet__meter i {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--rd-line);
-}
-.rd-cabinet__meter i[data-on] {
-  background: var(--rd-indigo);
+.rd-cabinet__eyebrow {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-indigo);
 }
 .rd-cabinet__tally {
-  margin: 14px 0 0;
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 5px;
   font-size: 13px;
   letter-spacing: 0.01em;
   color: var(--rd-body);
@@ -303,49 +332,21 @@
   font-weight: 700;
   color: var(--rd-title);
 }
-.rd-cabinet__miles {
-  padding-left: 48px;
-}
-/* The five rows share the panel's height, so the column fills the page. */
-.rd-cabinet .rd-miles {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.rd-cabinet .rd-miles li {
-  flex: 1;
-  align-content: center;
-  padding: 14px 0;
-}
-.rd-cabinet .rd-miles li:first-child {
-  background-image: none;
+.rd-cabinet__tally em {
+  font-style: normal;
+  color: var(--rd-rail);
 }
 
-/* ---------- Motion ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  .rd-cabinet__head,
-  .rd-cabinet__lede,
-  .rd-cabinet .rd-miles li {
-    animation: rd-cab-deal 460ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
-  }
-  .rd-cabinet__lede {
-    animation-delay: 60ms;
-  }
-  .rd-cabinet .rd-miles li {
-    animation-delay: calc(90ms + var(--j) * 45ms);
-  }
-}
-@keyframes rd-cab-deal {
-  from {
-    opacity: 0;
-    transform: translateY(9px);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
+  .rd-cabinet__body,
+  .rd-cabinet__bodyInner,
+  .rd-cabinet__accent i,
   .rd-cabinet__tab,
-  .rd-cabinet__tab::after,
-  .rd-cabinet__tabN,
-  .rd-cabinet__tabName {
+  .rd-cabinet__name,
+  .rd-cabinet__count,
+  .rd-cabinet__dot,
+  .rd-cabinet__stopN,
+  .rd-cabinet__stopName {
     transition: none;
   }
 }
@@ -353,119 +354,82 @@
 /* ---------- Tablet ---------- */
 @media (max-width: 1099px) {
   .rd-cabinet {
-    --cab-h-on: 62px;
-    --cab-h-off: 53px;
+    --cab-pad: 32px;
+    --cab-tab: 64px;
+    --cab-gap: 18px;
+    --cab-name: 172px;
+    gap: 44px;
   }
-  .rd-cabinet__tab {
-    padding: 0 11px 11px;
-  }
-  .rd-cabinet__tabName {
-    font-size: 13.5px;
-  }
-  .rd-cabinet__page {
-    padding: 32px 32px 36px;
-  }
-  .rd-cabinet__folio {
-    font-size: 38px;
+  .rd-cabinet__card {
+    padding-top: 20px;
   }
   .rd-cabinet__name {
-    font-size: 34px;
-    letter-spacing: -1px;
-  }
-  .rd-cabinet__body {
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    font-size: 22px;
+    letter-spacing: -0.66px;
   }
   .rd-cabinet__lede {
-    padding-right: 32px;
+    font-size: 14px;
   }
-  .rd-cabinet__miles {
-    padding-left: 32px;
+  .rd-cabinet__head button {
+    padding: 17px 0;
   }
 }
 
 /* ---------- Phone ----------
-   Seven names will not fit across 358px, so the strip keeps the numbers and the marks — the order
-   and the state of the drawer — and the name is read off the panel below, where it is set large. */
+   The rail scrolls once the names stop fitting and the open stop is scrolled into view; the tab
+   column narrows but stays, because it is the index the whole direction is built on. */
 @media (max-width: 767px) {
   .rd-cabinet {
-    --cab-h-on: 54px;
-    --cab-h-off: 46px;
-    --cab-r: 8px;
+    --cab-pad: 20px;
+    --cab-tab: 48px;
+    --cab-gap: 14px;
+    gap: 34px;
   }
-  .rd-cabinet__cap {
-    font-size: 12px;
-    padding-bottom: 12px;
+  .rd-cabinet__rail {
+    grid-auto-columns: minmax(104px, 1fr);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
   }
-  .rd-cabinet__tab {
-    align-items: center;
-    padding: 0 4px 9px;
-  }
-  .rd-cabinet__tabTop {
-    flex-direction: column;
-    gap: 5px;
-    height: auto;
-    margin-bottom: 0;
-  }
-  .rd-cabinet__tabN {
-    font-size: 12px;
-  }
-  .rd-cabinet__tabName {
+  .rd-cabinet__rail::-webkit-scrollbar {
     display: none;
   }
-  .rd-cabinet__node {
-    width: 6px;
-    height: 6px;
+  .rd-cabinet__card {
+    padding-top: 14px;
   }
-  .rd-cabinet__node[data-status='live'] {
-    box-shadow: 0 0 0 2px rgb(64 66 209 / 16%);
-  }
-  .rd-cabinet__page {
-    padding: 26px 22px 30px;
-  }
-  .rd-cabinet__head {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 12px 14px;
-    padding-bottom: 20px;
-  }
-  .rd-cabinet__folio {
-    font-size: 30px;
-  }
-  .rd-cabinet__name {
-    font-size: 28px;
-    letter-spacing: -0.84px;
-  }
-  .rd-cabinet__marker {
-    grid-column: 1 / -1;
-    justify-self: start;
-    height: 30px;
-    font-size: 13px;
-  }
-  .rd-cabinet__body {
-    grid-template-columns: 1fr;
-    min-height: 0;
-    margin-top: 20px;
+  .rd-cabinet__head button {
+    grid-template-columns: var(--cab-tab) minmax(0, 1fr) auto;
+    padding: 15px 0;
   }
   .rd-cabinet__lede {
-    padding: 0 0 22px;
-    background-image: var(--rd-rule-h);
-    background-size: 100% 1px;
-    background-position: left bottom;
+    display: none;
+  }
+  .rd-cabinet__tab {
+    min-width: 46px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+  .rd-cabinet__name {
+    font-size: 20px;
+    letter-spacing: -0.6px;
+  }
+  .rd-cabinet__count {
+    display: none;
+  }
+  .rd-cabinet__marker {
+    height: 28px;
+    padding: 0 11px;
+    font-size: 12.5px;
   }
   .rd-cabinet__blurb {
     font-size: 15px;
   }
-  .rd-cabinet__progress {
-    padding-top: 20px;
-  }
-  .rd-cabinet__miles {
-    padding: 0;
-  }
   .rd-cabinet .rd-miles li {
-    padding: 15px 0;
+    padding: 13px 0;
     font-size: 15px;
   }
-  .rd-cabinet .rd-miles li:first-child {
-    background-image: none;
-    padding-top: 6px;
+  .rd-cabinet__plate {
+    padding: 16px 0 20px;
   }
 }

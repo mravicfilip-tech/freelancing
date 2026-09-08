@@ -9,9 +9,12 @@
    Colour, rules and curves are the band's own; nothing here is a new hue. */
 
 .rd-filed {
-  --f-tab-w: 86px;
-  --f-tab-h: 28px;
-  --f-tab-x: calc(3% + 14% * var(--i, 0));
+  --f-tab-w: 82px;
+  --f-tab-h: 27px;
+  /* The tabs step across the stack on the level index; the rail's stops stand on the same
+     columns. Both are resolved on the element that carries `--i`, never on this root. */
+  --f-tab-x0: 3%;
+  --f-tab-step: 14%;
   --f-inset: 28px;
   --f-pad: 32px;
   /* The accordions' open curve, and their 520ms. */
@@ -43,7 +46,7 @@
   left: 0;
   top: 0;
   height: 1px;
-  width: calc(3% + 14% * var(--f-live, 0) + var(--f-tab-w) / 2);
+  width: calc(var(--f-tab-x0) + var(--f-tab-step) * var(--f-live, 0) + var(--f-tab-w) / 2);
   background-image: repeating-linear-gradient(90deg, var(--rd-title) 0 8px, transparent 8px 16px);
   background-size: 16px 1px;
   background-repeat: repeat-x;
@@ -51,7 +54,7 @@
 .rd-filed__stop {
   position: absolute;
   bottom: 0;
-  left: calc(var(--f-tab-x) + var(--f-tab-w) / 2);
+  left: calc(var(--f-tab-x0) + var(--f-tab-step) * var(--i, 0) + var(--f-tab-w) / 2);
   transform: translateX(-50%);
 }
 .rd-filed__stop button {
@@ -140,7 +143,7 @@
    sheet — the 1px overrun takes out the sheet's top rule where the tab meets it. */
 .rd-filed__tab {
   position: absolute;
-  left: var(--f-tab-x);
+  left: calc(var(--f-tab-x0) + var(--f-tab-step) * var(--i, 0));
   top: calc(-1 * var(--f-tab-h));
   z-index: 1;
   display: inline-flex;
@@ -315,7 +318,11 @@
   padding: 0 var(--f-pad) 34px;
 }
 .rd-filed__aside {
-  padding: 16px 40px 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 16px 40px 16px 0;
   background-image: var(--rd-rule-v);
   background-size: 1px 100%;
   background-position: right top;
@@ -340,6 +347,34 @@
   line-height: 1.6;
   letter-spacing: 0.01em;
   color: var(--rd-body);
+}
+/* The five milestones as one figure: a segment each, filled as they are ticked. */
+.rd-filed__meter {
+  margin: 0;
+}
+.rd-filed__pips {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  max-width: 260px;
+}
+.rd-filed__pips i {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rd-line);
+}
+.rd-filed__pips i[data-done] {
+  background: var(--rd-indigo);
+}
+.rd-filed__meterCap {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-filed__meterCap b {
+  font-weight: 700;
+  color: var(--rd-title);
 }
 .rd-filed .rd-miles {
   padding-left: 40px;
@@ -402,6 +437,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .rd-filed__dot,
+  .rd-filed__stopName,
   .rd-filed__sheet,
   .rd-filed__tab,
   .rd-filed__name,
@@ -418,11 +455,14 @@
   .rd-filed {
     --f-inset: 20px;
     --f-pad: 24px;
-    --f-tab-w: 76px;
+    --f-tab-w: 74px;
   }
   .rd-filed__pull {
     grid-template-columns: minmax(0, 160px) minmax(0, 1fr) auto;
     gap: 0 20px;
+  }
+  .rd-filed__stopName {
+    font-size: 13px;
   }
   .rd-filed__inner {
     grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
@@ -441,8 +481,31 @@
     --f-inset: 12px;
     --f-pad: 18px;
     --f-tab-w: 52px;
-    --f-tab-h: 26px;
-    --f-tab-x: calc(2% + 13% * var(--i, 0));
+    --f-tab-h: 25px;
+    --f-tab-x0: 2%;
+    --f-tab-step: 13%;
+  }
+  /* No room for seven names, so the rail keeps only its stops — the tabs carry the numbers and
+     the names are on the rows below. */
+  .rd-filed__rail {
+    height: 12px;
+    margin-bottom: 22px;
+  }
+  .rd-filed__stopName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .rd-filed__stop button {
+    padding: 8px;
+  }
+  .rd-filed__dot {
+    width: 8px;
+    height: 8px;
+    margin-bottom: -4px;
   }
   /* Two rows: the level and its count, then the contents line under them. */
   .rd-filed__pull {
@@ -485,6 +548,7 @@
     padding-bottom: 26px;
   }
   .rd-filed__aside {
+    gap: 22px;
     padding: 14px 0 20px;
     background-image: var(--rd-rule-h);
     background-size: 100% 1px;

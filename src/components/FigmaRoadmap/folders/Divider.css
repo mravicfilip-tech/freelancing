@@ -6,7 +6,7 @@
 .rd-divider {
   /* One spacing scale for the whole direction: the tab column, the name column and the gutter
      between them, so every edge in the composition lands on one of three numbers. */
-  --rdv-tab: 116px;
+  --rdv-tab: 104px;
   --rdv-name: 220px;
   --rdv-gap: 32px;
   --rdv-pad: 26px;
@@ -26,15 +26,14 @@
   margin: 0;
   padding: 0;
 }
-/* The line runs behind the stops, on the rails' own [8,8] rhythm. */
-.rd-divider__rail::before {
-  content: '';
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 5px;
-  height: 1px;
+/* The line runs behind the stops on the rails' own [8,8] rhythm, rail edge to rail edge, so it
+   ends on the same right edge the tabs do. Drawn as the list's own background rather than an
+   inset element: once the rail scrolls, a background stays across the visible width. */
+.rd-divider__rail {
   background-image: var(--rd-dash-h);
+  background-size: 100% 1px;
+  background-position: left 5px;
+  background-repeat: no-repeat;
 }
 .rd-divider__stop button {
   display: flex;
@@ -148,11 +147,12 @@
   background-position: left top, left bottom;
 }
 
-/* The accent along the open divider's outer edge, as on the FAQ rows — mirrored, because the
-   right edge is this direction's spine. */
+/* The accent on the open divider's outer edge — the FAQ's 2px indigo bar, mirrored onto the one
+   right edge every tab aligns to, so the open tab reads as the flagged one. */
 .rd-divider__accent {
   position: absolute;
-  right: -24px;
+  z-index: 2;
+  right: 0;
   top: 0;
   bottom: 0;
   width: 2px;
@@ -261,7 +261,7 @@
   text-align: center;
 }
 .rd-divider__n {
-  font-size: 30px;
+  font-size: 34px;
   line-height: 1;
   font-variation-settings: 'ROND' 0;
   font-variant-numeric: tabular-nums;
@@ -335,8 +335,8 @@
   .rd-divider__tab {
     align-self: center;
   }
-  .rd-divider__accent {
-    right: -16px;
+  .rd-divider__n {
+    font-size: 30px;
   }
   .rd-divider .rd-miles {
     padding-left: 0;
@@ -380,12 +380,9 @@
   .rd-divider__n {
     font-size: 24px;
   }
-  /* On the rails, the accent is the tab's own outer edge. */
-  .rd-divider__accent {
-    right: 0;
-  }
   .rd-divider .rd-miles {
-    padding: 0 0 22px;
+    /* Clear of the accent on the outer edge. */
+    padding: 0 12px 22px 0;
   }
   .rd-divider .rd-miles li {
     gap: 12px;
@@ -402,10 +399,6 @@
   }
   .rd-divider__rail::-webkit-scrollbar {
     display: none;
-  }
-  .rd-divider__rail::before {
-    left: 0;
-    right: 0;
   }
   .rd-divider__plate {
     margin-top: -14px;

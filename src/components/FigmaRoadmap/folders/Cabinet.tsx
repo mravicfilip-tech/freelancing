@@ -1,161 +1,122 @@
-import { useRef, useState, type KeyboardEvent } from 'react';
-import { LEVELS, STATUS_LABEL, doneCount, type LevelStatus } from '../content';
+import { useEffect, useRef, useState } from 'react';
+import { LEVELS, STATUS_LABEL, doneCount } from '../content';
 import { Milestones } from '../shared';
 import './Cabinet.css';
 
 /**
- * Cabinet — the drawer seen from the front. One sheet, and a strip of seven tabs standing on its
- * top edge. The selected tab is the sheet's own paper: it is taller, it is white, and its bottom
- * edge is open into the panel — the tab's bottom border is painted in the card colour and pulled
- * 1px down over the panel's top rule, so the hairline is erased under exactly that tab. The other
- * six keep their bottom edge, sit a step lower and are filled a tone down from the band, which is
- * how a file behind the open one reads.
+ * Cabinet — the Index held in one drawer. The rail of seven levels runs across the top as it does
+ * everywhere in this family; under it the stack lives inside a single white card, so the card is
+ * the drawer and the rows are the files in it. The tabs sit on the rows' left edge, inside the
+ * card, so the card's outer edge stays a clean 12px rectangle and the numbered index reads down
+ * its left margin, with the name, the count and the marker ruled off to the right of it.
  *
- * The strip carries the number, the name and a status mark, so the order of the levels, what each
- * one is and where the project stands are all readable before anything is clicked.
+ * Nothing here is drawn with a box: the rows are divided by the card's own [4,4] rules, the open
+ * one is marked by the 2px indigo bar outside the content's padding, and it opens on the
+ * grid-row transition — the page's own disclosure.
  */
 
-const TALLY = {
-  done: LEVELS.filter((l) => l.status === 'done').length,
-  live: LEVELS.filter((l) => l.status === 'live').length,
-  next: LEVELS.filter((l) => l.status === 'next').length,
-};
+/** Every milestone in the roadmap, and the ones already ticked — the figure the plate closes on. */
+const TOTAL = LEVELS.reduce((n, l) => n + l.items.length, 0);
+const TICKED = LEVELS.reduce((n, l) => n + doneCount(l), 0);
+const COMPLETE = LEVELS.filter((l) => l.status === 'done').length;
+const pad = (n: number) => String(n).padStart(2, '0');
 
-/** The mark on a tab: a tick once the level is finished, a filled node for the level in play,
- *  an open ring for the ones ahead — the same vocabulary as the milestone ticks. */
-function Mark({ status }: { status: LevelStatus }) {
-  if (status === 'done') {
-    return (
-      <svg className="rd-cabinet__mark" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
-        <path
-          d="M2 6.3 4.6 8.9 10 3.1"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-  return <i className="rd-cabinet__node" data-status={status} aria-hidden="true" />;
+/** The rail above the drawer: the seven levels, filled behind the one in play, hollow ahead. */
+function Rail({ open, onPick }: { open: number; onPick: (i: number) => void }) {
+  const rail = useRef<HTMLOListElement>(null);
+
+  // On a phone the rail scrolls; keep the open level in view without moving the page.
+  useEffect(() => {
+    const el = rail.current;
+    const stop = el?.children[open] as HTMLElement | undefined;
+    if (!el || !stop || el.scrollWidth <= el.clientWidth) return;
+    el.scrollTo({ left: stop.offsetLeft - (el.clientWidth - stop.offsetWidth) / 2, behavior: 'smooth' });
+  }, [open]);
+
+  return (
+    <ol className="rd-cabinet__rail rd-fam__part" ref={rail}>
+      {LEVELS.map((l, i) => (
+        <li className="rd-cabinet__stop" key={l.n} data-status={l.status} data-open={i === open || undefined}>
+          <button
+            type="button"
+            aria-current={i === open ? 'true' : undefined}
+            aria-label={`Level ${l.n}, ${l.name} — ${STATUS_LABEL[l.status]}`}
+            onClick={() => onPick(i)}
+          >
+            <span className="rd-cabinet__dot" aria-hidden="true" />
+            <span className="rd-cabinet__stopN rd-digits" aria-hidden="true">
+              {l.n}
+            </span>
+            <span className="rd-cabinet__stopName" aria-hidden="true">
+              {l.name}
+            </span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 export function Cabinet() {
-  // The drawer opens on the level in play, so "where we are" is what the panel shows first.
-  const start = Math.max(0, LEVELS.findIndex((l) => l.status === 'live'));
-  const [active, setActive] = useState(start);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const level = LEVELS[active];
-  const done = doneCount(level);
-
-  const move = (i: number) => {
-    const n = (i + LEVELS.length) % LEVELS.length;
-    setActive(n);
-    tabs.current[n]?.focus();
-  };
-
-  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    const keys: Record<string, number> = {
-      ArrowRight: active + 1,
-      ArrowDown: active + 1,
-      ArrowLeft: active - 1,
-      ArrowUp: active - 1,
-      Home: 0,
-      End: LEVELS.length - 1,
-    };
-    if (!(e.key in keys)) return;
-    e.preventDefault();
-    move(keys[e.key]);
-  };
+  // The drawer opens on the level in play, so "where we are" is the file already pulled out.
+  const [open, setOpen] = useState(() => Math.max(0, LEVELS.findIndex((l) => l.status === 'live')));
 
   return (
     <div className="rd-cabinet">
-      <div className="rd-cabinet__cap rd-fam__part">
-        <span className="rd-cabinet__capLabel">The drawer · seven levels</span>
-        <span className="rd-cabinet__capStats">
-          <b className="rd-digits">{TALLY.done}</b> complete
-          <em aria-hidden="true">·</em>
-          <b className="rd-digits" data-live>
-            {TALLY.live}
-          </b>{' '}
-          in progress
-          <em aria-hidden="true">·</em>
-          <b className="rd-digits">{TALLY.next}</b> ahead
-        </span>
-      </div>
+      <Rail open={open} onPick={setOpen} />
 
-      <div className="rd-cabinet__sheet rd-fam__part">
-        {/* The tabs. Bottom-aligned, so the unselected ones simply stand lower. */}
-        <div className="rd-cabinet__strip" role="tablist" aria-label="Roadmap levels" onKeyDown={onKeyDown}>
+      <div className="rd-cabinet__card rd-fam__part">
+        <ol className="rd-cabinet__stack">
           {LEVELS.map((l, i) => (
-            <button
-              key={l.n}
-              type="button"
-              role="tab"
-              id={`rd-cab-tab-${l.n}`}
-              ref={(el) => {
-                tabs.current[i] = el;
-              }}
-              className="rd-cabinet__tab"
-              data-status={l.status}
-              aria-selected={i === active}
-              aria-controls="rd-cab-panel"
-              tabIndex={i === active ? 0 : -1}
-              aria-label={`Level ${l.n}, ${l.name} — ${STATUS_LABEL[l.status]}`}
-              onClick={() => setActive(i)}
-            >
-              <span className="rd-cabinet__tabTop">
-                <span className="rd-cabinet__tabN rd-digits">{l.n}</span>
-                <Mark status={l.status} />
+            <li className="rd-cabinet__row" key={l.n} data-status={l.status} data-open={i === open || undefined}>
+              {/* The open file's mark: the 2px indigo bar on the card's own edge, outside the padding. */}
+              <span className="rd-cabinet__accent" aria-hidden="true">
+                <i />
               </span>
-              <span className="rd-cabinet__tabName">{l.name}</span>
-            </button>
-          ))}
-        </div>
 
-        {/* The sheet. Keyed on the level so the page deals itself out again on every change. */}
-        <div
-          className="rd-cabinet__panel"
-          id="rd-cab-panel"
-          role="tabpanel"
-          aria-labelledby={`rd-cab-tab-${level.n}`}
-          tabIndex={0}
-        >
-          <div className="rd-cabinet__page" key={level.n}>
-            <header className="rd-cabinet__head">
-              <span className="rd-cabinet__folio rd-digits" data-status={level.status} aria-hidden="true">
-                {level.n}
-              </span>
-              <h3 className="rd-cabinet__name">{level.name}</h3>
-              <span className="rd-cabinet__marker" data-status={level.status}>
-                {level.marker}
-              </span>
-            </header>
-
-            <div className="rd-cabinet__body">
-              <div className="rd-cabinet__lede">
-                <p className="rd-cabinet__blurb">{level.blurb}</p>
-                <div className="rd-cabinet__progress">
-                  <span className="rd-cabinet__meter" aria-hidden="true">
-                    {level.items.map((it) => (
-                      <i key={it.short} data-on={it.done || undefined} />
-                    ))}
+              <h3 className="rd-cabinet__head">
+                <button
+                  type="button"
+                  aria-expanded={i === open}
+                  aria-controls={`rd-cab-${l.n}`}
+                  onClick={() => setOpen(i)}
+                >
+                  <span className="rd-cabinet__tab" aria-hidden="true">
+                    {l.n}
                   </span>
-                  <p className="rd-cabinet__tally">
-                    <b className="rd-digits">{done}</b> of <b className="rd-digits">{level.items.length}</b> milestones
-                    complete
-                  </p>
+                  <span className="rd-cabinet__name">{l.name}</span>
+                  {/* A closed file still says what it is; the sentence moves into the body when
+                      the file is pulled out. */}
+                  <span className="rd-cabinet__lede">{l.blurb}</span>
+                  <span className="rd-cabinet__count rd-digits">
+                    {doneCount(l)}/{l.items.length}
+                  </span>
+                  <span className="rd-cabinet__marker" data-status={l.status}>
+                    {l.marker}
+                  </span>
+                </button>
+              </h3>
+
+              <div className="rd-cabinet__body" id={`rd-cab-${l.n}`} role="region">
+                <div className="rd-cabinet__bodyInner">
+                  <p className="rd-cabinet__blurb">{l.blurb}</p>
+                  <Milestones level={l} />
                 </div>
               </div>
+            </li>
+          ))}
+        </ol>
 
-              <div className="rd-cabinet__miles">
-                <Milestones level={level} />
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* The plate that closes the drawer. */}
+        <p className="rd-cabinet__plate">
+          <span className="rd-cabinet__eyebrow">Remittix roadmap</span>
+          <span className="rd-cabinet__tally">
+            <b className="rd-digits">{pad(COMPLETE)}</b> of <b className="rd-digits">{pad(LEVELS.length)}</b> levels
+            complete
+            <em aria-hidden="true">·</em>
+            <b className="rd-digits">{TICKED}</b> of <b className="rd-digits">{TOTAL}</b> milestones
+          </span>
+        </p>
       </div>
     </div>
   );

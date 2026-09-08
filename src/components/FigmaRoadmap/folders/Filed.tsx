@@ -118,11 +118,25 @@ export function Filed() {
                 <div>
                   <div className="rd-filed__inner">
                     <div className="rd-filed__aside">
-                      <p className="rd-filed__folio">
-                        Level <span className="rd-digits">{l.n}</span> of{' '}
-                        <span className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</span>
+                      <div>
+                        <p className="rd-filed__folio">
+                          Level <span className="rd-digits">{l.n}</span> of{' '}
+                          <span className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</span>
+                        </p>
+                        <p className="rd-filed__blurb">{l.blurb}</p>
+                      </div>
+                      {/* The level's five milestones as one figure, at the foot of the caption. */}
+                      <p className="rd-filed__meter">
+                        <span className="rd-filed__pips" aria-hidden="true">
+                          {l.items.map((it) => (
+                            <i key={it.short} data-done={it.done || undefined} />
+                          ))}
+                        </span>
+                        <span className="rd-filed__meterCap">
+                          <b className="rd-digits">{done}</b> of{' '}
+                          <b className="rd-digits">{l.items.length}</b> milestones done
+                        </span>
                       </p>
-                      <p className="rd-filed__blurb">{l.blurb}</p>
                     </div>
                     <Milestones level={l} />
                   </div>

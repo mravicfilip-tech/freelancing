@@ -3,6 +3,7 @@ import { LangPicker } from './LangPicker';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
+import { useNavCondense } from './useNavCondense';
 import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
@@ -157,6 +158,7 @@ export function FigmaHero() {
   const [slide, setSlide] = useState(0);
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const root = useRef<HTMLElement>(null);
+  const condensed = useNavCondense();
   useHeroEntrance(root, {
     progress: PROGRESS,
     usd: USD_RAISED,
@@ -172,16 +174,21 @@ export function FigmaHero() {
     <section ref={root} className="fh" data-node-id="2346:102" data-entrance="pending">
       <div className="fh__frame" aria-hidden="true" />
 
-      <header className="fh__nav" data-node-id="2346:110">
+      {/* The nav is fixed, so a spacer stands in for it in the hero's flow. */}
+      <div className="fh__navSpacer" aria-hidden="true" />
+
+      <header className="fh__nav" data-node-id="2346:110" data-condensed={condensed || undefined}>
         <a className="fh__brand" href="/">
           <img src="/figma/logo.svg" alt="" width={33} height={17} />
           <span>Remittix</span>
         </a>
-        <nav className="fh__links" aria-label="Primary">
-          {NAV_LINKS.map(([label, href]) => (
-            <a key={label} href={href}>{label}</a>
-          ))}
-        </nav>
+        <div className="fh__linksWrap">
+          <nav className="fh__links" aria-label="Primary">
+            {NAV_LINKS.map(([label, href]) => (
+              <a key={label} href={href}>{label}</a>
+            ))}
+          </nav>
+        </div>
         <div className="fh__navRight">
           <LangPicker />
           <div className="fh__navButtons">

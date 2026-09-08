@@ -10,7 +10,8 @@ const DWELL = 7000;
 /**
  * The three customer slides. Each person's photo is both the slide's backdrop and the face on
  * their chip, so the chip row doubles as the slider's navigation: the active chip is the slide
- * you are on. `focus` is where the face sits in the photo, used to crop the 48px avatar.
+ * you are on. `focus` crops the 48px avatar: the photos are ~16:9, so covering a square overflows
+ * horizontally only and the vertical half of the pair never bites.
  */
 const SLIDES = [
   {
@@ -18,7 +19,7 @@ const SLIDES = [
     name: 'Alice Smith',
     note: 'Review from customer #1',
     photo: R('slide-1.webp'),
-    focus: '55% 6%',
+    focus: '76% 50%',
     quote: 'Remittix made sending crypto directly to my bank account surprisingly fast and simple, with no confusing steps or hidden hassle.',
   },
   {
@@ -26,7 +27,7 @@ const SLIDES = [
     name: 'Robert Brown',
     note: 'Review from customer #2',
     photo: R('slide-2.webp'),
-    focus: '53% 4%',
+    focus: '85% 50%',
     quote: 'The whole process felt smooth and straightforward, and my funds arrived exactly when I expected.',
   },
   {
@@ -34,7 +35,7 @@ const SLIDES = [
     name: 'Maria Evans',
     note: 'Review from customer #3',
     photo: R('slide-3.webp'),
-    focus: '42% 0%',
+    focus: '66% 50%',
     quote: 'Remittix takes the complexity out of crypto payments and makes sending money feel as simple as a regular bank transfer.',
   },
 ] as const;

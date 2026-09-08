@@ -18,6 +18,92 @@
   --f-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* ---------- The rail over the drawer ---------- */
+/* Every stop stands on the column of its own tab, so the rail is the top of the same object the
+   stack is: the stroke is the section's [8,8] rail, drawn in ink as far as the level in play. */
+.rd-filed__rail {
+  position: relative;
+  list-style: none;
+  margin: 0 var(--f-inset) 26px;
+  padding: 0;
+  height: 46px;
+}
+.rd-filed__railLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-image: var(--rd-dash-h);
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+}
+.rd-filed__railLine i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  width: calc(3% + 14% * var(--f-live, 0) + var(--f-tab-w) / 2);
+  background-image: repeating-linear-gradient(90deg, var(--rd-title) 0 8px, transparent 8px 16px);
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+}
+.rd-filed__stop {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--f-tab-x) + var(--f-tab-w) / 2);
+  transform: translateX(-50%);
+}
+.rd-filed__stop button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.rd-filed__stop button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 2px;
+}
+.rd-filed__stopName {
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  white-space: nowrap;
+  transition: color 300ms ease;
+}
+.rd-filed__stop[data-open] .rd-filed__stopName,
+.rd-filed__stop button:hover .rd-filed__stopName {
+  color: var(--rd-title);
+}
+.rd-filed__stop[data-open] .rd-filed__stopName {
+  font-weight: 600;
+}
+.rd-filed__dot {
+  width: 9px;
+  height: 9px;
+  margin-bottom: -4.5px;
+  border-radius: 50%;
+  background: var(--rd-title);
+  /* The band's own ground held around the dot, so the rail passes behind it rather than into it. */
+  box-shadow: 0 0 0 4px var(--rd-bg);
+  transition: background 300ms ease, box-shadow 300ms ease;
+}
+.rd-filed__stop[data-status='live'] .rd-filed__dot {
+  background: var(--rd-indigo);
+  box-shadow: 0 0 0 4px var(--rd-bg), 0 0 0 9px rgb(64 66 209 / 14%);
+}
+.rd-filed__stop[data-status='next'] .rd-filed__dot {
+  background: var(--rd-bg);
+  box-shadow: 0 0 0 4px var(--rd-bg), inset 0 0 0 1px var(--rd-rail);
+}
+
 /* ---------- The stack ---------- */
 .rd-filed__stack {
   list-style: none;

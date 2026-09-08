@@ -6,23 +6,54 @@ import './Filed.css';
 /**
  * Filed — the stack seen from above.
  *
- * Seven sheets filed one behind the next, each carrying its own tab cut from its own paper and
- * pushed above its top edge, the tabs stepping left to right across the stack. One folder is
- * pulled up at a time: it steps out past the stack's edges, opens a gap above and below itself and
- * sets its level as a page — the blurb in a caption column, the five milestones ruled beside it.
+ * A rail of the seven levels over a stack of tabbed sheets, one open at a time, and a plate
+ * closing the drawer. Each sheet carries its own tab, cut from its own paper and pushed above its
+ * top edge so it lies over the sheet in front of it; the tabs step left to right across the stack
+ * and every rail stop sits on the column of its own tab, so the rail and the stack are one object
+ * rather than two. The open folder steps out past the stack's edges, opens air above and below
+ * itself and sets its level as a page — the blurb in a caption column, the milestones ruled beside.
  *
  * Three things are meant to read without a click:
- *  - where the project is — the tabs run four solid, one indigo, two dashed across the stack;
+ *  - where the project is — the rail is drawn as far as the level in play, and the tabs run four
+ *    solid, one indigo, two dashed across the stack;
  *  - what each level is — a closed sheet still carries its five milestones as short labels, the
  *    done ones in ink and the rest muted, so the row is a contents line rather than a name;
- *  - that the levels are ordered — the tabs step, and each tab carries its number.
+ *  - that the levels are ordered — the tabs step, and every one carries its number.
  */
 export function Filed() {
-  const [open, setOpen] = useState(() => LEVELS.findIndex((l) => l.status === 'live'));
+  const live = LEVELS.findIndex((l) => l.status === 'live');
+  const [open, setOpen] = useState(live);
   const complete = LEVELS.filter((l) => l.status === 'done').length;
 
   return (
-    <div className="rd-filed">
+    <div className="rd-filed" style={{ '--f-live': live } as CSSProperties}>
+      {/* The rail over the drawer: one stop per level, each on the column of its own tab, the
+          stroke drawn in ink as far as the level in play and dashed the rest of the way. */}
+      <ol className="rd-filed__rail rd-fam__part" aria-label="Roadmap levels">
+        <li className="rd-filed__railLine" aria-hidden="true">
+          <i />
+        </li>
+        {LEVELS.map((l, i) => (
+          <li
+            key={l.n}
+            className="rd-filed__stop"
+            data-status={l.status}
+            data-open={i === open || undefined}
+            style={{ '--i': i } as CSSProperties}
+          >
+            <button
+              type="button"
+              aria-current={i === open ? 'true' : undefined}
+              aria-controls={`rd-filed-sheet-${l.n}`}
+              onClick={() => setOpen(i)}
+            >
+              <span className="rd-filed__stopName">{l.name}</span>
+              <span className="rd-filed__dot" aria-hidden="true" />
+            </button>
+          </li>
+        ))}
+      </ol>
+
       <ol className="rd-filed__stack">
         {LEVELS.map((l, i) => {
           const done = doneCount(l);

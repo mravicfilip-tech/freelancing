@@ -217,8 +217,10 @@
 }
 @media (max-width: 720px) {
   .fq__frame {
+    width: 100%;
     padding: 64px 16px;
     gap: 32px;
+    background-image: none;
   }
   .fq__title {
     letter-spacing: -1.1px;

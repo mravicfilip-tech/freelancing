@@ -243,13 +243,20 @@
 @media (max-width: 720px) {
   .ec__frame {
     /* Ranges under the feature band, so it keeps its open top and takes the shared foot. */
-    padding: 0 16px 64px;
+    width: 100%;
+    padding: 0 0 64px;
+    background-image: none;
+  }
+  /* The card is the band on a phone: it runs edge to edge and carries the 16px rail itself, so
+     the heading sits on the same rail as every other section's and the drawings get all 393. */
+  .ec__card {
+    border-radius: 0;
   }
   .ec__copy {
-    padding: 28px 24px 8px;
+    padding: 28px 16px 8px;
   }
   .ec__accent {
-    left: -24px;
+    left: -8px;
   }
   .ec__title {
     font-size: 30px;
@@ -263,10 +270,14 @@
     display: none;
     /* Out past the card's inner padding AND the frame's gutter, so the drawing gets the whole
        card rather than the ~265 a doubly padded column would leave it. */
-    margin: 4px -40px 20px;
+    margin: 4px 0 20px;
     overflow: hidden;
     opacity: 1;
     visibility: visible;
+  }
+  /* The desktop indent under the pillar title costs a quarter of a 393 screen. */
+  .ec__itemBody > p {
+    padding-left: 0;
   }
   .ec__item--on .ec__scene {
     display: block;

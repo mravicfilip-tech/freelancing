@@ -279,11 +279,38 @@
   }
 }
 @media (max-width: 720px) {
+  /* The -10px optical pull is a desktop tuning; on a phone it is the only thing that comes
+     within 27px of the edge. */
+  .ft__social {
+    margin: 0;
+  }
+  .ft__social a {
+    width: 44px;
+    height: 44px;
+  }
+  /* Links a thumb can hit: they were 17px tall. */
+  .ft__col {
+    gap: 4px;
+  }
+  .ft__brand {
+    min-height: 44px;
+    align-items: center;
+  }
+  .ft__col a,
+  .ft__legal a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  /* Edge to edge like every other band, with --ft-inset as the 16px rail. */
   .ft__frame {
+    --ft-inset: 16px;
+    width: 100%;
     padding: 0 0 32px;
+    background-image: none;
   }
   .ft__cta {
-    padding: 88px var(--ft-inset) 96px;
+    padding: 64px var(--ft-inset) 64px;
     gap: 28px;
   }
   .ft__title {
@@ -293,9 +320,10 @@
     padding: 56px var(--ft-inset);
     gap: 44px;
   }
+  /* Two even columns: max-content left 90px of dead space against the right rail. */
   .ft__nav {
-    grid-template-columns: repeat(2, max-content);
-    gap: 40px 56px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
   }
   .ft__small {
     margin-bottom: 32px;

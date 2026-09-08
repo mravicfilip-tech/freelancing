@@ -268,7 +268,9 @@
   /* One rhythm for every band on a phone: 64 top and bottom, content on the page's own gutter
      rather than inset a further 15px from the rails. */
   .ff__frame {
+    width: 100%;
     padding: 64px 16px;
+    background-image: none;
   }
   .ff__title {
     font-size: 40px;

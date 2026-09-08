@@ -135,8 +135,10 @@
 }
 @media (max-width: 720px) {
   .sn__frame {
+    width: 100%;
     padding: 64px 16px;
     gap: 32px;
+    background-image: none;
   }
   .sn__title {
     letter-spacing: -1.1px;

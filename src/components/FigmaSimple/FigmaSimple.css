@@ -294,8 +294,12 @@
   }
 }
 @media (max-width: 720px) {
+  /* On a phone the screen is the frame: the band runs edge to edge and the 16px padding is the
+     rail, rather than a 24px inset frame with the rail a further 16px inside it. */
   .fs__inner {
+    width: 100%;
     padding: 64px 16px;
+    background-image: none;
   }
   /* The phone frame carries the orbit on plain ground — no dot field, no rails. */
   .fs__band {

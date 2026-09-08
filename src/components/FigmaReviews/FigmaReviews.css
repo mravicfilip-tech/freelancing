@@ -249,14 +249,31 @@
   .rv__chip { flex: 0 0 auto; }
 }
 @media (max-width: 720px) {
-  .rv__frame { padding: 64px 16px; }
+  .rv__frame { width: 100%; padding: 64px 16px; background-image: none; }
   .rv__frame { gap: 32px; }
   .rv__title { letter-spacing: -1.1px; }
   .rv__slider { height: 620px; }
-  .rv__slide { padding: 24px 24px 96px; }
+  .rv__slide { padding: 16px 16px 88px; }
   .rv__eyebrow p { font-size: 18px; }
   .rv__words { letter-spacing: -0.6px; }
-  .rv__chips { left: 24px; right: 24px; bottom: 24px; gap: 6px; }
+  /* 2.5 of the chips fit, so the row is a scroller: snap it, hide the bar, and fade the cut edge
+     so the half-chip reads as "there is more" rather than as a clipped card. */
+  .rv__chips {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    gap: 6px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+  }
+  .rv__chips::-webkit-scrollbar {
+    display: none;
+  }
+  .rv__chip {
+    scroll-snap-align: start;
+  }
   .rv__chip { padding: 12px; gap: 10px; }
   .rv__avatar, .rv__avatar img { width: 40px; height: 40px; }
   .rv__who { gap: 6px; }

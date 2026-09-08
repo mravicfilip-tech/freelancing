@@ -1086,6 +1086,11 @@
   .fh__navRight > .lp {
     display: none;
   }
+  /* The 24px cell the brand sat in was there to space it off the links; with those gone it only
+     pushed the mark 24px further in than the trigger on the other side. */
+  .fh__brand {
+    padding: 0;
+  }
   .fh__burger {
     display: inline-flex;
   }
@@ -1173,5 +1178,44 @@
   }
   .fh__btn {
     width: 140px;
+  }
+}
+
+/* On a phone the screen is the frame: the dot field runs edge to edge, the rails come off, and the
+   hero sits on the same 16px rail as every band below it. */
+@media (max-width: 720px) {
+  .fh__frame {
+    width: 100%;
+    background-image: none;
+  }
+  .fh__main {
+    width: calc(100% - 32px);
+  }
+  .fh__footer {
+    padding: 24px 16px;
+  }
+  .fh__introText {
+    gap: 14px;
+  }
+  /* The controls sat in a huddle on the left; on a phone the row is the width of the slide. */
+  .fh__sliderControls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  /* The mark is the only link in the bar that a thumb cannot reliably hit: the wordmark is gone
+     by here, so the box is the 33px logo. The negative margin keeps it on the rail. */
+  .fh__brand {
+    min-height: 44px;
+    align-items: center;
+    padding: 0 6px;
+    margin-left: -6px;
+  }
+  /* Touch: the arrows were 40 square and a slide segment 23 tall. */
+  .fh__sliderArrow {
+    width: 44px;
+    height: 44px;
+  }
+  .fh__segment {
+    padding: 21px 0;
   }
 }

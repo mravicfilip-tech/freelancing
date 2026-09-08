@@ -401,3 +401,21 @@
     padding: 0;
   }
 }
+
+/* On a phone the screen is the frame: the band runs edge to edge and the 16px padding above is
+   the rail, rather than a 24px inset frame with the rail a further 16px inside it. */
+@media (max-width: 720px) {
+  .tk__frame {
+    width: 100%;
+    background-image: none;
+  }
+  /* 4px between a 40px headline and its paragraph reads as a collision. */
+  .tk__head {
+    gap: 14px;
+  }
+  /* The copy button was 32 square. */
+  .tk__copy {
+    width: 44px;
+    height: 44px;
+  }
+}

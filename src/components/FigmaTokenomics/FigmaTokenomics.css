@@ -371,7 +371,7 @@
 .tk--m .tk__dial,
 .tk--m .tk__hub {
   transform-origin: 50% 50%;
-  transform: translate(-583.5px, 212px) scale(0.475113);
+  transform: translate(-583px, 268.5px) scale(0.475113);
 }
 .tk--m .tk__chip {
   font-size: 12px;
@@ -385,7 +385,7 @@
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .tk__frame {
-    padding: 64px 0;
+    padding: 64px 16px;
     gap: 32px;
   }
   .tk__title {

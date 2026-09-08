@@ -31,6 +31,8 @@ export type Segment = {
   /** Chip position in stage coordinates; y is the row's centre line. */
   x: number;
   y: number;
+  /** A fixed chip width, where the frame sets one rather than letting the label size it. */
+  w?: number;
 };
 
 /** The dial's centre in stage coordinates — the hub disc and every wire converge here. */
@@ -167,9 +169,13 @@ export const COINS: { id: string; x: number; y: number }[] = [
  * ------------------------------------------------------------------------ */
 
 export const STAGE = { w: 1560, h: 586 } as const;
-export const STAGE_M = { w: 393, h: 1123 } as const;
-/** The dial keeps its 442 geometry and is mapped onto the portrait frame by one CSS transform. */
-export const HUB_M = { x: 196.5, y: 505 } as const;
+export const STAGE_M = { w: 394, h: 1123 } as const;
+/**
+ * The frame is 1123 tall against 1010 of content plus its 160 padding, so `justify-center` is not
+ * the no-op it looks like — it drops the whole stack 56.5px. Rows therefore run from 216.5, not
+ * from the padding edge, and the dial's centre follows.
+ */
+export const HUB_M = { x: 197, y: 561.5 } as const;
 
 /**
  * Aims are given rather than derived here. `aimOf` reads the bearing where a row's centre line
@@ -178,12 +184,16 @@ export const HUB_M = { x: 196.5, y: 505 } as const;
  * three across the bottom, in the order TOUR walks them, which keeps a lap one unbroken sweep.
  */
 const ROWS_M: Segment[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', side: 'l', x: 102.5, y: 192, aim: 315 },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', side: 'l', x: 102.5, y: 272, aim: 270 },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 102.5, y: 352, aim: 225 },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 102.5, y: 658, aim: 135 },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 102.5, y: 738, aim: 90 },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 102.5, y: 818, aim: 45 },
+  // The phone frame pins each chip's width rather than letting the label set it, which is also
+  // what places the percent circle beside it — so they are given here, from the file.
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', side: 'l', x: 103, y: 248.5, aim: 315, w: 124 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', side: 'l', x: 103, y: 328.5, aim: 270, w: 124 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 103, y: 408.5, aim: 225, w: 124 },
+  // Below the dial the frame reads Listings, Team, Marketing — the arc's TOUR walks them in the
+  // other direction, which is why the aims still fall as the tour steps and not as the rows do.
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 103, y: 714.5, aim: 45, w: 114 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 103, y: 794.5, aim: 90, w: 94 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 103, y: 874.5, aim: 135, w: 132 },
 ];
 export const SEGMENTS_M: Segment[] = ROWS_M;
 
@@ -194,12 +204,12 @@ export const SEGMENTS_M: Segment[] = ROWS_M;
  * trunk, so its wire is the trunk itself.
  */
 export const WIRES_M: { id: string; d: string; coin: string }[] = [
-  { id: 'l0', coin: 'coin-eth', d: 'M 196.5 123 L 196.5 400' },
-  { id: 'l1', coin: 'coin-usdt', d: 'M 104 70 L 104 104 C 104 124 147 118 179 132 C 193 138 196.5 148 196.5 164 L 196.5 400' },
-  { id: 'l2', coin: 'coin-btc', d: 'M 293 70 L 293 104 C 293 124 246 118 214 132 C 200 138 196.5 148 196.5 164 L 196.5 400' },
-  { id: 'r0', coin: 'coin-bnb', d: 'M 196.5 1003 L 196.5 610' },
-  { id: 'r1', coin: 'coin-sol', d: 'M 101.5 1053 L 101.5 1019 C 101.5 999 147 1005 179 991 C 193 985 196.5 975 196.5 959 L 196.5 610' },
-  { id: 'r2', coin: 'coin-tron', d: 'M 289.5 1053 L 289.5 1019 C 289.5 999 246 1005 214 991 C 200 985 196.5 975 196.5 959 L 196.5 610' },
+  { id: 'l0', coin: 'coin-eth', d: 'M 197 123 L 197 456.5' },
+  { id: 'l1', coin: 'coin-usdt', d: 'M 104 70 L 104 104 C 104 124 148 118 180 132 C 194 138 197 148 197 164 L 197 456.5' },
+  { id: 'l2', coin: 'coin-btc', d: 'M 293 70 L 293 104 C 293 124 246 118 214 132 C 200 138 197 148 197 164 L 197 456.5' },
+  { id: 'r0', coin: 'coin-bnb', d: 'M 197 1003 L 197 666.5' },
+  { id: 'r1', coin: 'coin-sol', d: 'M 102 1053 L 102 1019 C 102 999 148 1005 180 991 C 194 985 197 975 197 959 L 197 666.5' },
+  { id: 'r2', coin: 'coin-tron', d: 'M 290 1053 L 290 1019 C 290 999 246 1005 214 991 C 200 985 197 975 197 959 L 197 666.5' },
 ];
 
 /**
@@ -210,9 +220,9 @@ export const COINS_M: { id: string; x: number; y: number }[] = [
   { id: 'coin-usdt', x: 84, y: 50 },
   { id: 'coin-btc', x: 273, y: 50 },
   { id: 'coin-eth', x: 174, y: 103 },
-  { id: 'coin-bnb', x: 175.5, y: 1023 },
-  { id: 'coin-sol', x: 81.5, y: 1073 },
-  { id: 'coin-tron', x: 269.5, y: 1073 },
+  { id: 'coin-bnb', x: 176, y: 1023 },
+  { id: 'coin-sol', x: 82, y: 1073 },
+  { id: 'coin-tron', x: 270, y: 1073 },
 ];
 
 /** Everything the band's layout depends on, for whichever frame is on screen. */

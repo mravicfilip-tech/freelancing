@@ -135,7 +135,7 @@
 }
 @media (max-width: 720px) {
   .sn__frame {
-    padding: 64px 0;
+    padding: 64px 16px;
     gap: 32px;
   }
   .sn__title {

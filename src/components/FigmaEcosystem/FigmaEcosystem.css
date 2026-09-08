@@ -243,7 +243,7 @@
 @media (max-width: 720px) {
   .ec__frame {
     /* Ranges under the feature band, so it keeps its open top and takes the shared foot. */
-    padding: 0 0 64px;
+    padding: 0 16px 64px;
   }
   .ec__copy {
     padding: 28px 24px 8px;

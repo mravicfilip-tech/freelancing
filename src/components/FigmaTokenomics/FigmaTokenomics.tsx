@@ -190,7 +190,7 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
             {/* the allocations — the live one takes the indigo chip */}
             {g.segments.map((s) => (
               <div key={s.id} className="tk__slice" data-slice={s.id} style={{ left: s.x, top: s.y - 32 }}>
-                <span className="tk__chip">
+                <span className="tk__chip" style={s.w ? { width: s.w, justifyContent: 'center' } : undefined}>
                   <img src={A(s.icon)} alt="" width={20} height={20} />
                   {s.label}
                 </span>

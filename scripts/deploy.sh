@@ -5,7 +5,9 @@ L="${TMPDIR:-/tmp}/remittix-deploy.log"
 U=""
 for i in 1 2 3 4; do
   npx vercel deploy --prod --yes --token="$VERCEL_TOKEN" > "$L" 2>&1
-  U=$(grep -Eo 'https://remittix-[a-z0-9]+-filip-mravic-s-projects\.vercel\.app' "$L" | sort -u | head -1)
+  # Read the URL the CLI reports rather than matching a project name: the Vercel project has been
+  # renamed once already, and a stale pattern here reads a healthy deploy as a failure.
+  U=$(grep -Eo '"url": *"https://[^"]+"' "$L" | head -1 | grep -Eo 'https://[^"]+')
   if [ -n "$U" ] && grep -q '"readyState": "READY"' "$L"; then break; fi
   U=""; echo "deploy attempt $i failed: $(grep -o '"message": "[^"]*"' "$L" | head -1)"; sleep $((2 ** i))
 done

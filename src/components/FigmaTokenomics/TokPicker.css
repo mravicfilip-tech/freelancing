@@ -1,0 +1,90 @@
+/* Review chrome for the tokenomics motion variants — deliberately plain, so the section carries. */
+.tp {
+  min-height: 100vh;
+  background: #edeff1;
+  padding-bottom: 260px;
+}
+.tp__panel {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: min(880px, calc(100% - 32px));
+  padding: 18px 20px 14px;
+  border-radius: 14px;
+  background: rgb(18 36 51 / 92%);
+  color: #fff;
+  font-family: 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  backdrop-filter: blur(8px);
+}
+.tp__name {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8ea0b0;
+}
+.tp__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tp__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 999px;
+  background: transparent;
+  color: #cfd8e0;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.tp__opt b {
+  font-size: 12px;
+  color: #8ea0b0;
+}
+.tp__opt--on {
+  background: #4042d1;
+  border-color: #4042d1;
+  color: #fff;
+}
+.tp__opt--on b {
+  color: rgb(255 255 255 / 70%);
+}
+.tp__blurb {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #b8c4ce;
+}
+.tp__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+.tp__code {
+  font-family: 'Doto Variable', ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 13px;
+  color: #d9f24e;
+}
+.tp__replay {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #122433;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}

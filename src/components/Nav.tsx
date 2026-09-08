@@ -8,7 +8,6 @@ export function Nav() {
       <nav className="nav__links" aria-label="Primary">
         <a href="#how">How it works</a>
         <a href="#coverage">Coverage</a>
-        <a href="#roadmap">Roadmap</a>
         <a href="#tokenomics">Tokenomics</a>
       </nav>
       <a className="btn btn--small" href="#presale">Join the presale</a>

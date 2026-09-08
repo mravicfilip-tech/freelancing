@@ -1,0 +1,333 @@
+/* Feature band from Figma "Remittix Redesign" › "2" (node 2409:2419).
+   Design frame 1920 wide: 240px side padding, 160px vertical; dashed rails at 1560; cards on the
+   1440 grid with 14px gaps. */
+
+.ff {
+  --ff-bg: #edeff1;
+  --ff-line: #dadee2;
+  --ff-card: #fff;
+  --ff-ink: #2c2e31;
+  --ff-title: #122433;
+  --ff-muted: #8292a2;
+  --ff-indigo: #4042d1;
+  --ff-lavender: #b3b5f5;
+  --ff-radius: 12px;
+  --ff-gap: 14px;
+  --ff-pad: 32px;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --ff-dash-v: repeating-linear-gradient(180deg, var(--ff-line) 0 8px, transparent 8px 16px);
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+
+  background: var(--ff-bg);
+  color: var(--ff-ink);
+  font-family: var(--fh-sans);
+}
+/* The rails carry the section's vertical padding, so the dashed lines run edge to edge and meet
+   the neighbouring sections' rails without a gap. */
+.ff__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 160px clamp(0px, 3.85%, 60px);
+  background-image: var(--ff-dash-v), var(--ff-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+.ff__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ---------- Headline ---------- */
+.ff__title {
+  margin: 0;
+  max-width: 972px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  color: var(--ff-title);
+}
+.ff__titleMuted {
+  color: var(--ff-muted);
+}
+/* Each headline line sits in a mask so it can rise into view, as the hero's do; the padding keeps
+   descenders unclipped. */
+.ff__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ff__lineInner {
+  display: block;
+}
+
+/* ---------- Rows: 622+804 / 1440 / 710+716 (flex ratios are the design widths) ---------- */
+.ff__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ff-gap);
+}
+.ff__row {
+  display: flex;
+  gap: var(--ff-gap);
+}
+.ff__row > .ff__card {
+  min-width: 0;
+}
+/* Bases are the design widths as a share of the 1440 row (the 14px gap takes the rest). */
+.ff__card--pay { flex: 1 1 43.194%; }
+.ff__card--fx { flex: 1 1 55.833%; }
+.ff__card--simple { flex: 1 1 100%; }
+.ff__card--fast { flex: 1 1 49.306%; }
+.ff__card--ui { flex: 1 1 49.722%; }
+
+/* ---------- Cards ---------- */
+.ff__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 440px;
+  padding: var(--ff-pad);
+  border-radius: var(--ff-radius);
+  background: var(--ff-card);
+  color: var(--ff-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+.ff__text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  max-width: 562px;
+}
+.ff__text--pay .ff__cardBody {
+  max-width: 287px;
+}
+.ff__text--ui .ff__cardBody {
+  max-width: 397px;
+}
+/* Title and chip share a line: the phone designs sit the chip at the title's right, the desk
+   layout pins it to the card's own corner (below). */
+.ff__titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ff__cardTitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.981;
+  letter-spacing: -0.72px;
+  color: var(--ff-ink);
+}
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
+.ff__cardBody {
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ff-ink);
+}
+/* Illustrations: each layered composition (illustrations/) is a design-size stage that scales
+   with the card; the ones drawn against the card's bottom anchor there. */
+.ff__art {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+.ff__art--pay,
+.ff__art--fx,
+.ff__art--ui {
+  bottom: 0;
+  width: 100%;
+}
+/* Never larger than the design frame: when a stacked card is wider, the art centres at 1x. */
+.ff__art--pay { max-width: 622px; left: max(0px, calc(50% - 311px)); }
+.ff__art--fx { max-width: 804px; left: max(0px, calc(50% - 402px)); }
+.ff__art--ui { max-width: 716px; left: max(0px, calc(50% - 358px)); }
+.ff__art--fast {
+  left: 0;
+  top: 0;
+  width: 100%;
+  max-width: 710px;
+}
+
+/* Crypto-to-fiat: a 334px band, copy + button on the left, the art panel flush right. */
+.ff__card--simple {
+  height: 334px;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.ff__simpleCopy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 651px;
+  max-width: 47%;
+  flex: 0 0 auto;
+}
+.ff__simpleCopy .ff__text {
+  gap: 12px;
+  max-width: none;
+}
+.ff__art--simple {
+  right: 0;
+  top: 0;
+  width: min(747px, 52%);
+}
+
+/* Super fast: chip top-left, the bolt diagram in the middle, copy at the bottom. */
+.ff__card--fast {
+  justify-content: space-between;
+}
+.ff__chip {
+  position: relative;
+  z-index: 3;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6.75px;
+  height: 34px;
+  padding: 0 14.75px;
+  border-radius: 46px;
+  background: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--ff-ink);
+  white-space: nowrap;
+}
+.ff__chip img {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- Motion (see useFeaturesMotion.ts) ----------
+   Hold the animated parts invisible until GSAP has set their start states. */
+.ff[data-motion='pending'] .ff__title,
+.ff[data-motion='pending'] .ff__card {
+  visibility: hidden;
+}
+.ff__card {
+  will-change: transform;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .ff__frame {
+    padding-top: 112px;
+    padding-bottom: 112px;
+  }
+  .ff__title {
+    font-size: 52px;
+    letter-spacing: -1.5px;
+  }
+}
+@media (max-width: 1024px) {
+  .ff__row {
+    flex-direction: column;
+  }
+  .ff__row > .ff__card {
+    flex: 0 0 auto;
+  }
+  .ff__card--simple {
+    height: auto;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .ff__simpleCopy {
+    width: 100%;
+    max-width: none;
+    gap: 24px;
+  }
+  .ff__art--simple {
+    position: relative;
+    right: auto;
+    width: 100%;
+    max-width: 747px;
+    align-self: center;
+  }
+}
+@media (max-width: 720px) {
+  .ff__frame {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+  .ff__title {
+    font-size: 40px;
+    letter-spacing: -1.2px;
+  }
+  /* The design's phone cards (2597:469, :705, :844, :1042, :1126) are 394 wide with 32px of head
+     room and copy on a 362 measure; the art frame is placed against the card's own edges beneath
+     it, so it loses the padding and each card sets its own drop to the art. */
+  .ff__card {
+    height: auto;
+    min-height: 0;
+    --ff-pad: 16px;
+    padding: 32px var(--ff-pad) 0;
+    gap: var(--ff-cardGap, 30px);
+  }
+  .ff__card--pay {
+    --ff-cardGap: 98px;
+  }
+  .ff__card--ui {
+    --ff-cardGap: 50px;
+  }
+  /* The 1024 rule sets its own gap at a higher specificity, so restate it here. */
+  .ff__card--simple {
+    --ff-cardGap: 12px;
+    gap: var(--ff-cardGap);
+  }
+  .ff__text,
+  .ff__text--pay .ff__cardBody,
+  .ff__text--ui .ff__cardBody {
+    max-width: none;
+  }
+  .ff__art--pay,
+  .ff__art--fx,
+  .ff__art--fast,
+  .ff__art--ui,
+  .ff__art--simple {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: auto;
+    max-width: none;
+    align-self: stretch;
+    margin: 0 calc(var(--ff-pad) * -1);
+  }
+  /* Copy first, then the diagram — the Fast card is the only one drawn the other way up. */
+  .ff__card--fast .ff__text {
+    order: 1;
+  }
+  .ff__card--fast .ff__il {
+    order: 2;
+  }
+  .ff__chip {
+    align-self: center;
+    margin-left: auto;
+  }
+  .ff__simpleCopy {
+    width: 100%;
+    max-width: none;
+    gap: 24px;
+  }
+}

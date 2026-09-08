@@ -426,11 +426,3 @@ html[data-hero='3'] .btn--primary:hover {
     display: none;
   }
 }
-
-/* The globe switcher sits at the bottom; the roadmap one stacks above it. */
-.switcher--roadmap {
-  bottom: 72px;
-}
-html:not([data-hero='1']) .switcher--roadmap {
-  bottom: 20px;
-}

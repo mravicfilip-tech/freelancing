@@ -1,0 +1,306 @@
+/* Footer — the page turns over to black here, keeping the 1560 dashed rails and the [4,4] rules so
+   the grid carries through the switch. The closing line repeats the hero's headline as a bookend;
+   the accent is the brand lime, which only works on this ground. */
+
+.ft {
+  --ft-bg: #0c1219;
+  --ft-rail: #28323c;
+  --ft-line: #232d37;
+  --ft-ink: #eef2f5;
+  --ft-body: #8593a0;
+  --ft-label: #6c7783;
+  --ft-muted: #55606b;
+  --ft-accent: #d9f24e;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --ft-dash-v: repeating-linear-gradient(180deg, var(--ft-rail) 0 8px, transparent 8px 16px);
+  --ft-dash-h: repeating-linear-gradient(90deg, var(--ft-rail) 0 8px, transparent 8px 16px);
+  /* how far the content sits off the rails; the rules ignore it and run rail to rail */
+  --ft-inset: clamp(0px, 3.85%, 60px);
+
+  display: block;
+  background: var(--ft-bg);
+  color: var(--ft-ink);
+  font-family: var(--fh-sans);
+}
+/* The rails run the full height; the blocks inside carry the padding, so they meet the FAQ's. */
+.ft__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 0 0 48px;
+  display: flex;
+  flex-direction: column;
+  background-image: var(--ft-dash-v), var(--ft-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Closing line ---------- */
+.ft__cta {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  padding: 160px var(--ft-inset) 150px;
+  text-align: center;
+}
+.ft__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(40px, 4.6vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  color: var(--ft-ink);
+}
+.ft__titleMuted {
+  color: var(--ft-muted);
+}
+.ft__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ft__lineInner {
+  display: block;
+}
+
+/* The closing field: corridors from crypto into local currency, passing under the headline. */
+.ft__field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Identity and navigation ----------
+   Two anchored edges: identity on the left rail, navigation clustered on the right, with the
+   air between them declared rather than left over. Column tracks are content-width, so no
+   column carries space it does not use. */
+.ft__main {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 64px;
+  padding: 96px var(--ft-inset);
+}
+.ft__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+}
+/* The nav's lockup exactly — same 33x17 mark, same 22.14px wordmark, same 4px gap. */
+.ft__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 22.14px;
+  font-weight: 700;
+  color: var(--ft-ink);
+  text-decoration: none;
+}
+.ft__brand img {
+  display: block;
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ft__brand:hover img {
+  transform: translateX(-2px);
+}
+.ft__social {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  list-style: none;
+  margin: 0 0 0 -10px;
+  padding: 0;
+}
+.ft__social a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--ft-body);
+  transition: color 200ms, background 200ms;
+}
+.ft__social a:hover {
+  color: var(--ft-ink);
+  background: rgb(255 255 255 / 8%);
+}
+.ft__social svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.ft__nav {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: end;
+  gap: 0 96px;
+}
+/* Labels and links share the system's uppercase spec; half strength is what separates them, so a
+   label names its column without competing with it. */
+.ft__label {
+  margin: 0 0 22px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--ft-label);
+  opacity: 0.5;
+}
+.ft__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* The design system's uppercase label: 13 / 700 / 1.4 / -0.39px, as set everywhere else. */
+.ft__col a {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--ft-body);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.ft__col a:hover {
+  color: var(--ft-ink);
+}
+/* The addresses take the links' type exactly — only the casing differs, since an address is
+   written the way it is written. */
+.ft__col--contact ul a {
+  text-transform: none;
+}
+
+/* ---------- Rules ---------- */
+/* Every full-width line on the site is the rails' [8,8], not the [4,4] used inside a card. */
+.ft__rule {
+  display: block;
+  height: 1px;
+  background-image: var(--ft-dash-h);
+  background-repeat: repeat-x;
+  transform-origin: 0 50%;
+}
+
+/* ---------- Small print ---------- */
+/* Regulatory text is small print, not a peer of the navigation. */
+.ft__small {
+  margin: 0 var(--ft-inset) 44px;
+  max-width: 104ch;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--ft-label);
+}
+.ft__small b {
+  font-weight: 700;
+  color: var(--ft-body);
+}
+
+/* ---------- Legal ---------- */
+.ft__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px var(--ft-inset) 0;
+  font-size: 13px;
+  color: var(--ft-label);
+}
+.ft__legal nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+.ft__legal a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ft-body);
+  text-decoration: none;
+  transition: color 200ms;
+}
+.ft__legal a:hover {
+  color: var(--ft-accent);
+}
+
+/* The primary button is black-on-light everywhere else; here it inverts, and the indigo
+   hover blob it already carries takes the label to white as it fills. */
+.ft .fh__btn--primary {
+  background: #fff;
+  color: #122433;
+}
+.ft .fh__btn--primary:hover,
+.ft .fh__btn--primary:focus-visible {
+  color: #fff;
+}
+/* the shipped chevron is a black glyph inverted for the black button; on a white one it is not */
+.ft .fh__btn--primary .fh__chevron {
+  filter: none;
+}
+.ft .fh__btn--primary:hover .fh__chevron,
+.ft .fh__btn--primary:focus-visible .fh__chevron {
+  filter: invert(1);
+}
+
+/* Hold the animated parts until GSAP has written their start states (see useFooterMotion). */
+.ft[data-motion='pending'] .ft__lineInner,
+.ft[data-motion='pending'] .ft__cta .fh__btn,
+.ft[data-motion='pending'] .ft__main,
+.ft[data-motion='pending'] .ft__rule,
+.ft[data-motion='pending'] .ft__small,
+.ft[data-motion='pending'] .ft__legal {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .ft__main {
+    grid-template-columns: 1fr;
+    gap: 56px;
+    padding: 72px var(--ft-inset);
+  }
+  .ft__nav {
+    justify-content: start;
+    gap: 0 72px;
+  }
+}
+@media (max-width: 720px) {
+  .ft__frame {
+    padding: 0 0 32px;
+  }
+  .ft__cta {
+    padding: 88px var(--ft-inset) 96px;
+    gap: 28px;
+  }
+  .ft__title {
+    letter-spacing: -1.1px;
+  }
+  .ft__main {
+    padding: 56px var(--ft-inset);
+    gap: 44px;
+  }
+  .ft__nav {
+    grid-template-columns: repeat(2, max-content);
+    gap: 40px 56px;
+  }
+  .ft__small {
+    margin-bottom: 32px;
+  }
+  .ft__legal {
+    gap: 16px;
+  }
+}

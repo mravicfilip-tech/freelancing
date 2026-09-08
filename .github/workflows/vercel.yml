@@ -1,0 +1,49 @@
+# Deploys to Vercel from GitHub's runners (this repo's agent environment cannot reach vercel.com).
+# Needs three repository secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+# Get the last two by running `npx vercel link` once locally and reading .vercel/project.json.
+# main deploys to production; every other branch gets a preview URL (shown in the job log).
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      PROD: ${{ github.ref_name == 'main' && 'true' || 'false' }}
+    steps:
+      - id: secrets
+        name: Check Vercel secrets
+        run: echo "ok=${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}" >> "$GITHUB_OUTPUT"
+      - if: steps.secrets.outputs.ok != 'true'
+        run: echo "Vercel secrets are not set; skipping deploy. Add VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID in Settings → Secrets."
+      - if: steps.secrets.outputs.ok == 'true'
+        uses: actions/checkout@v4
+      - if: steps.secrets.outputs.ok == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.secrets.outputs.ok == 'true'
+        run: npm ci
+      - if: steps.secrets.outputs.ok == 'true'
+        run: npm install --global vercel@latest
+      - if: steps.secrets.outputs.ok == 'true'
+        run: vercel pull --yes --environment=$([ "$PROD" = true ] && echo production || echo preview) --token="${{ secrets.VERCEL_TOKEN }}"
+      - if: steps.secrets.outputs.ok == 'true'
+        run: vercel build $([ "$PROD" = true ] && echo --prod) --token="${{ secrets.VERCEL_TOKEN }}"
+      - if: steps.secrets.outputs.ok == 'true'
+        name: Deploy
+        run: |
+          url=$(vercel deploy --prebuilt $([ "$PROD" = true ] && echo --prod) --token="${{ secrets.VERCEL_TOKEN }}")
+          echo "Deployed: $url"
+          echo "### Deployed to $url" >> "$GITHUB_STEP_SUMMARY"

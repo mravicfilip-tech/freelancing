@@ -101,6 +101,42 @@ const HALFTONE: Partial<PlanetConfig> = {
   oceanOpacity: 0.5,
 };
 
+/** Corridors: the coin travels from one city to another along a hairline arc and lands. */
+const CORRIDORS: Partial<PlanetConfig> = {
+  ...HALFTONE,
+  coinMode: 'corridor',
+  badgeSize: 0.12,
+  popupLabels: true,
+  popupLabelHeight: 0.1,
+  popupRings: 1,
+  popupPingSize: 0.5,
+  popupMarkerSize: 0.036,
+  popupMinFacing: 0.4,
+  corridorVisible: 2,
+  corridorTravelSec: 1.8,
+  corridorHoldSec: 2.4,
+  popupSpawnGapSec: 1.2,
+};
+
+/** The corridors globe as placed in the Figma hero slider. */
+const FIGMA_CORRIDORS: Partial<PlanetConfig> = {
+  ...CORRIDORS,
+  captureSphereDiameterFraction: 0.72,
+  haloRadius: 1.12,
+  popupLabelHeight: 0.16, // the chips read at a glance, like the presale slide's
+};
+
+/** The two-colour palette for the duo directions, and the tokens they share: lavender arcs and markers.
+    The coins keep their own brand colours. */
+const DUO = { lavender: '#B3B5F5', sky: '#C4E0F6' } as const;
+const DUO_TOKENS: Partial<PlanetConfig> = {
+  colorAccent: DUO.lavender,
+  colorRing: DUO.sky,
+  badgeStyle: 'color',
+  popupMarkerColor: DUO.lavender,
+};
+
+
 export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   'globe-halftone': HALFTONE,
   /** Refinement 1 — monochrome. Every token is an ink disc; markers and rings in grey. */
@@ -133,20 +169,50 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
     popupSpawnGapSec: 1.4,
   },
   /** Refinement 3 — corridors. The coin travels from one city to another and lands. */
-  'refine-corridors': {
-    ...HALFTONE,
-    coinMode: 'corridor',
-    badgeSize: 0.12,
-    popupLabels: true,
-    popupLabelHeight: 0.1,
-    popupRings: 1,
-    popupPingSize: 0.5,
-    popupMarkerSize: 0.036,
-    popupMinFacing: 0.4,
-    corridorVisible: 2,
-    corridorTravelSec: 1.8,
-    corridorHoldSec: 2.4,
-    popupSpawnGapSec: 1.2,
+  'refine-corridors': CORRIDORS,
+  /** The corridors globe in the Figma hero slider: large, low in its box, a tighter halo so it clears the copy. */
+  'figma-corridors': FIGMA_CORRIDORS,
+  /** Two-colour halftone directions for the Figma hero, using only lavender #B3B5F5 and sky #C4E0F6 (`?variant=`).
+      Same dots, three ways of mixing the pair across them. */
+  'figma-duo-halftone': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    dotMix: 'latitude', // lavender in the north fading to sky in the south
+    colorPlanet: DUO.lavender,
+    colorPlanet2: DUO.sky,
+    colorOcean: DUO.lavender,
+    colorOcean2: DUO.sky,
+    landOpacity: 1,
+    oceanOpacity: 0.7,
+    haloColor: DUO.sky,
+    haloPulseColor: DUO.lavender,
+  },
+  'figma-duo-lit': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    dotMix: 'light', // lavender in shadow, sky where the light falls
+    colorPlanet: DUO.lavender,
+    colorPlanet2: DUO.sky,
+    colorOcean: DUO.lavender,
+    colorOcean2: DUO.sky,
+    landOpacity: 1,
+    oceanOpacity: 0.7,
+    haloColor: DUO.lavender,
+    haloPulseColor: DUO.sky,
+  },
+  'figma-duo-tide': {
+    ...FIGMA_CORRIDORS,
+    ...DUO_TOKENS,
+    dotMix: 'tide', // a band of lavender drifting across a sky globe
+    dotMixSpeed: 0.45,
+    colorPlanet: DUO.sky,
+    colorPlanet2: DUO.lavender,
+    colorOcean: DUO.sky,
+    colorOcean2: DUO.lavender,
+    landOpacity: 1,
+    oceanOpacity: 0.7,
+    haloColor: DUO.sky,
+    haloPulseColor: DUO.lavender,
   },
   'globe-atlas': ATLAS,
   /** Solid matte grey sphere with the continents picked out in white dots. */

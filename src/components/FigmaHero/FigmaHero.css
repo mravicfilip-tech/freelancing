@@ -1,0 +1,870 @@
+/* Hero from Figma "Remittix Redesign" › Hero Banner v1 (node 2346:102).
+   Design frame: 1560 × 1080. Nav and main content are 1440 wide, the footer 1558. */
+
+/* NewBlack Typeface is a licensed face that is not on npm. Drop the woff2 into
+   public/fonts/ and this @font-face picks it up; until then the headline falls back to Onest. */
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+.fh {
+  --fh-bg: #edeff1;
+  --fh-line: #dadee2;
+  --fh-ink: #122433;
+  --fh-muted: #8292a2;
+  --fh-body: #7c858d;
+  --fh-label: #a2a6aa;
+  --fh-progress: #4042d2;
+  --fh-progress-soft: #b3b5f5;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  --fh-pixel: 'Silkscreen', 'Courier New', monospace;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --fh-dash-v: repeating-linear-gradient(180deg, var(--fh-line) 0 8px, transparent 8px 16px);
+  --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
+
+  position: relative;
+  /* No isolation here: it would make .fh a stacking context and trap the fixed nav inside the
+     hero, letting every later section paint over it. */
+  min-height: 1080px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  background: var(--fh-bg);
+  color: var(--fh-ink);
+  font-family: var(--fh-sans);
+  overflow: hidden;
+}
+
+/* ---------- Background decoration: dashed frame + dot field ---------- */
+.fh__frame {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(1560px, 100% - 48px);
+  transform: translateX(-50%);
+  background-image: var(--fh-dash-v), var(--fh-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+.fh__frame::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 139px;
+  height: 728px; /* 139 → 867 */
+  background-image:
+    var(--fh-dash-h),
+    var(--fh-dash-h),
+    radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+  background-size: 100% 1px, 100% 1px, 28px 28px;
+  background-position: left top, left bottom, 14px 14px;
+  background-repeat: no-repeat, no-repeat, repeat;
+}
+
+/* Lift the hero's content off the dotted frame behind it. The nav is exempt: it is fixed and
+   rides the whole page, so it must not be pinned back into the hero's own layer. */
+.fh > :not(.fh__frame):not(.fh__nav) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Navbar ---------- */
+/* ---------- Nav ----------
+   The bar is fixed and rides the whole page. Past the first scroll it condenses: the links
+   collapse and the pill draws in to what is left, and hovering (or tabbing into) it brings the
+   full bar back. Centring is done with auto margins rather than a translate, because the
+   entrance timeline in useHeroEntrance owns this element's transform.
+
+   The nav and its dropdowns must paint above the hero's own content — `.fh > :not(.fh__frame)`
+   puts every sibling on z-index 1, and the planet comes later in document order. The exemption
+   in that rule plus the z-index below settle it: a `.fh > .fh__nav` override would out-specify
+   the z-index here and drop the bar back under the sections it now has to cross. */
+.fh__nav {
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin: 0 auto;
+  width: min(1440px, 100% - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 400px;
+  transition:
+    width 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 320ms ease;
+}
+/* Holds the nav's place in the hero's flow now that it is fixed. */
+.fh__navSpacer {
+  height: 74px;
+  flex: 0 0 auto;
+}
+.fh__nav[data-condensed] {
+  box-shadow: 0 8px 28px rgba(18, 36, 51, 0.12);
+}
+/* Below this the links are already hidden, so there is nothing to draw in from. */
+@media (min-width: 1101px) {
+  .fh__nav[data-condensed] {
+    width: min(760px, 100% - 48px);
+  }
+  .fh__nav[data-condensed]:hover,
+  .fh__nav[data-condensed]:focus-within {
+    width: min(1440px, 100% - 48px);
+  }
+}
+/* 1fr -> 0fr collapses the links to nothing and animates doing it, with no measured width. */
+.fh__linksWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  transition:
+    grid-template-columns 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 260ms ease;
+}
+.fh__nav[data-condensed] .fh__linksWrap {
+  grid-template-columns: 0fr;
+  opacity: 0;
+}
+.fh__nav[data-condensed]:hover .fh__linksWrap,
+.fh__nav[data-condensed]:focus-within .fh__linksWrap {
+  grid-template-columns: 1fr;
+  opacity: 1;
+}
+.fh__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 24px;
+  font-weight: 700;
+  font-size: 22.14px;
+  color: #000;
+  text-decoration: none;
+}
+.fh__brand img {
+  display: block;
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__brand:hover img {
+  transform: translateX(-2px);
+}
+.fh__links {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  gap: 48px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--fh-label);
+  white-space: nowrap;
+}
+.fh__links a {
+  position: relative;
+  padding: 4px 0;
+  color: inherit;
+  text-decoration: none;
+  transition: color 220ms ease;
+}
+.fh__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  /* the ink the label itself turns on hover, so rule and word land on one colour */
+  background: var(--fh-ink);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__links a:hover,
+.fh__links a:focus-visible {
+  color: var(--fh-ink);
+}
+.fh__links a:hover::after,
+.fh__links a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.fh__navRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.fh__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 24px 0 0;
+  border: 0;
+  border-right: 1px solid var(--fh-bg);
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: #000;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.fh__lang .fh__chevron {
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__lang:hover .fh__chevron {
+  transform: translateY(2px);
+}
+.fh__navButtons {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Buttons ----------
+   Hover: a circle grows from the point the pointer entered and floods the pill, then shrinks
+   back to the point it left (variant 03 from public/button-hovers.html). The anchors set
+   --x/--y from their pointer events; the circle is 220% of the pill's width so it reaches
+   every corner from any origin. Primary floods indigo, ghost floods ink. */
+.fh__btn {
+  --x: 50%;
+  --y: 50%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 162px;
+  height: 48px;
+  border-radius: 400px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__btn::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: var(--x);
+  top: var(--y);
+  width: 220%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--fh-progress, #4042d2); /* the fallbacks keep the hover outside the hero */
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__btn--ghost::before {
+  background: var(--fh-ink, #122433);
+}
+.fh__btn:hover::before,
+.fh__btn:focus-visible::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+.fh__btn .fh__chevron {
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__btn--primary {
+  background: #000;
+  color: #fff;
+}
+.fh__btn--primary:hover .fh__chevron--right {
+  transform: rotate(-90deg) translateY(3px); /* rotated, so this nudges the arrow 3px right */
+}
+.fh__btn--ghost {
+  background: #f8fafb;
+  border: 1px solid #dfe1e7;
+  color: var(--fh-muted, #8292a2);
+}
+.fh__btn--ghost:hover {
+  border-color: transparent;
+  color: #fff;
+}
+.fh__btn:active {
+  transform: scale(0.97);
+}
+.fh__btn--wide {
+  width: 184px;
+}
+.fh__chevron {
+  display: block;
+  width: 11px;
+  height: 6px;
+  margin: 4px 1.5px; /* the glyph sits inside a 14px box in the design */
+}
+.fh__chevron--right {
+  transform: rotate(-90deg);
+}
+.fh__chevron--left {
+  transform: rotate(90deg);
+}
+.fh__btn--primary .fh__chevron {
+  filter: invert(1);
+}
+
+/* ---------- Main content ---------- */
+.fh__main {
+  position: relative;
+  width: min(1440px, 100% - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+.fh__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+}
+.fh__introText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fh__title {
+  margin: 0;
+  max-width: 604px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 72px;
+  line-height: 1.12;
+  letter-spacing: -2.16px;
+  color: var(--fh-ink);
+}
+.fh__titleMuted {
+  color: var(--fh-muted);
+}
+/* Each headline line sits in a mask so it can rise into view; the padding keeps descenders unclipped. */
+.fh__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.fh__lineInner {
+  display: block;
+}
+
+/* Hold the animated parts invisible until GSAP has set their start states (see useHeroEntrance). */
+.fh[data-entrance='pending'] .fh__nav,
+.fh[data-entrance='pending'] .fh__lineInner,
+.fh[data-entrance='pending'] .fh__body,
+.fh[data-entrance='pending'] .fh__intro .fh__btn,
+.fh[data-entrance='pending'] .fh__sliderControls,
+.fh[data-entrance='pending'] .fh__footer {
+  visibility: hidden;
+}
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
+.fh__body {
+  margin: 0;
+  max-width: 431px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--fh-body);
+}
+.fh__graphic {
+  flex: 0 0 auto;
+  width: 656px;
+  padding-left: 26px;
+}
+
+/* ---------- Graphic slider: the globe and the bars, one slide each ----------
+   Slides are stacked and crossfade, so the globe is free to overflow its box:
+   it sits low and large, and the footer (a later sibling) paints over its lower part. */
+.fh__viewport {
+  position: relative;
+  width: 605px;
+  aspect-ratio: 605 / 520;
+}
+.fh__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 520ms ease, visibility 0s linear 520ms;
+}
+.fh__slide[data-active] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 520ms ease, visibility 0s linear 0s;
+}
+.barsSlide {
+  position: absolute;
+  inset: 0;
+}
+.fh__slide .bars {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* Rate chips float by their bars (design node 2346:347); Bars.tsx sets --x/--y per chip.
+   The outer box rides its bar's cap; the inner card pops in and bobs. */
+.bars__chip {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  will-change: transform;
+}
+.bars__chipInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--fh-line);
+  border-radius: 6px;
+  background: #f1f3f4;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+  will-change: transform;
+}
+.bars__chip--light .bars__chipInner {
+  background: #fff;
+}
+.bars__chipLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: -0.36px;
+  color: var(--fh-label);
+}
+.bars__chipLabel img {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+.bars__chipValue {
+  overflow: hidden; /* the figure rolls out and in when it changes */
+  font-size: 14px;
+  letter-spacing: -0.42px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fh-ink);
+}
+.bars__chipNum {
+  display: block;
+}
+/* The globe's canvas is larger than the slide: the sphere is centred in the canvas, so these
+   insets put its centre a little left of the box's middle and well below it. */
+.fh__slide--globe .heroPlanet {
+  inset: -20% -34% -60% -50%;
+  overflow: visible;
+}
+
+/* ---------- Slide controls: bottom-left of the main area, under the copy ---------- */
+.fh__sliderControls {
+  position: absolute;
+  left: 0;
+  bottom: -64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.fh__segments {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fh__segment {
+  display: block;
+  width: 14px;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: width 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__segment span {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--fh-line);
+  transition: background-color 240ms ease;
+}
+.fh__segment:hover span {
+  background: var(--fh-muted);
+}
+.fh__segment[data-active] {
+  width: 44px;
+}
+.fh__segment[data-active] span {
+  background: var(--fh-ink);
+}
+.fh__counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--fh-pixel);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--fh-label);
+  white-space: nowrap;
+}
+.fh__counterCurrent {
+  color: var(--fh-ink);
+}
+.fh__counterSep {
+  color: var(--fh-line);
+}
+.fh__arrows {
+  display: flex;
+  gap: 8px;
+}
+.fh__sliderArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--fh-line);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+.fh__sliderArrow:hover {
+  background: #000;
+  border-color: #000;
+}
+.fh__sliderArrow:hover .fh__chevron {
+  filter: invert(1);
+}
+.fh__sliderArrow:active {
+  transform: scale(0.94);
+}
+.fh__sliderArrow:focus-visible,
+.fh__segment:focus-visible {
+  outline: 2px solid var(--fh-progress);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fh__digitsValue {
+    animation: none;
+  }
+  .fh__btn::before {
+    transition: none;
+  }
+  .fh__slide,
+  .fh__slide[data-active],
+  .fh__segment,
+  .fh__sliderArrow,
+  .fh__nav,
+  .fh__linksWrap {
+    transition: none;
+  }
+}
+
+/* ---------- Footer ---------- */
+.fh__footer {
+  width: min(1558px, 100%);
+  min-height: 212px;
+  display: flex;
+  gap: 48px;
+  padding: 24px 32px;
+  background: #fff;
+}
+.fh__price {
+  flex: 1 1 970px;
+  max-width: 970px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+/* The title row: the standing call to action on the left, the stage counter on the right. */
+.fh__priceHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+}
+.fh__stage {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.48px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fh-label);
+}
+.fh__priceTitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.98;
+  letter-spacing: -0.72px;
+  color: var(--fh-body);
+}
+.fh__progress {
+  position: relative;
+  height: 48px;
+  background-color: var(--fh-bg);
+  /* the unfilled track: a hairline every 8px */
+  background-image: repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 8px);
+  overflow: hidden;
+}
+.fh__progressFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background-color: var(--fh-bg);
+  /* 3px bars with 3px gaps, capped by a solid bar at each end */
+  background-image:
+    linear-gradient(var(--fh-progress), var(--fh-progress)),
+    linear-gradient(var(--fh-progress), var(--fh-progress)),
+    repeating-linear-gradient(90deg, var(--fh-progress-soft) 0 3px, transparent 3px 6px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 3px 100%, 3px 100%, auto;
+  background-position: left top, right top, left top;
+  overflow: hidden;
+}
+/* The sheen GSAP sweeps across the filled part of the bar. */
+.fh__progressGlow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  pointer-events: none;
+}
+.fh__stats {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.48px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fh__stats p {
+  margin: 0;
+  display: flex;
+  gap: 4px;
+}
+/* the label only — the figures are spans too, inside the strong, and keep its ink */
+.fh__stats p > span {
+  color: var(--fh-body);
+}
+.fh__stats strong {
+  font-weight: 700;
+  color: var(--fh-ink);
+}
+/* The figures count up on load: tabular digits and a hidden copy of the final value keep the
+   row's width fixed so nothing shifts while the numbers change. */
+.fh__figure {
+  display: inline-grid;
+  font-variant-numeric: tabular-nums;
+}
+.fh__figure > * {
+  grid-area: 1 / 1;
+  justify-self: start;
+}
+.fh__figureGhost {
+  visibility: hidden;
+}
+.fh__countdown {
+  /* the price column keeps its full 970 (the design's measure); the countdown takes the remainder */
+  flex: 0 1 476px;
+  display: flex;
+  align-items: stretch;
+}
+.fh__unit {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+/* A hairline between units. */
+.fh__sep + .fh__unit {
+  border-left: 1px solid #e9eaeb;
+}
+.fh__digits {
+  font-family: var(--fh-digits);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  font-variation-settings: 'ROND' 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--fh-label);
+}
+/* Each value change remounts the digits (keyed in Unit) and drops them in. */
+.fh__digitsValue {
+  display: inline-block;
+  animation: fh-tick 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes fh-tick {
+  from {
+    opacity: 0;
+    transform: translateY(-0.28em);
+  }
+}
+.fh__unitLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: rgba(162, 166, 170, 0.5);
+}
+/* The colon takes no room in the row, so every unit is a full cell between hairlines and its
+   digits sit centred. The glyph straddles the hairline on a white patch that interrupts it,
+   lifted 21px so it lines up with the digits rather than the digits-plus-label block. */
+.fh__sep {
+  position: relative;
+  z-index: 1;
+  top: -21px;
+  align-self: center;
+  width: 0;
+  height: 54px;
+  padding: 0 9px;
+  margin: 0 -9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  font-family: var(--fh-pixel);
+  font-size: 48px;
+  line-height: 1.12;
+  letter-spacing: -1.44px;
+  color: rgba(162, 166, 170, 0.24);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .fh__links {
+    gap: 28px;
+  }
+  .fh__title {
+    font-size: 56px;
+    letter-spacing: -1.7px;
+  }
+  .fh__graphic {
+    width: 48%;
+    padding-left: 0;
+  }
+  .fh__viewport {
+    width: 100%;
+  }
+  /* Less room on the right: a smaller canvas keeps the halo inside the viewport. */
+  .fh__slide--globe .heroPlanet {
+    inset: -8% -26% -52% -42%;
+  }
+}
+@media (max-width: 1100px) {
+  .fh__links {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .fh {
+    min-height: 0;
+    gap: 48px;
+    padding-top: 16px;
+  }
+  .fh__nav {
+    top: 16px;
+    width: calc(100% - 24px);
+  }
+  .fh__navButtons .fh__btn--ghost,
+  .fh__lang {
+    display: none;
+  }
+  .fh__main {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 48px);
+  }
+  .fh__graphic {
+    width: 100%;
+    max-width: 520px;
+    align-self: center;
+  }
+  /* Smaller chips on the narrow slide; the SOL chip stops overhanging the left edge. */
+  .bars__chipInner {
+    padding: 8px 10px;
+    gap: 2px;
+  }
+  .bars__chipLabel {
+    font-size: 11px;
+  }
+  .bars__chipValue {
+    font-size: 12px;
+  }
+  .bars__chip[data-bar='a'] {
+    left: 0;
+  }
+  /* Stacked layout: the globe stays inside its box so the controls below stay clear of it. */
+  .fh__slide--globe .heroPlanet {
+    inset: -4% -16% -12% -16%;
+  }
+  .fh__sliderControls {
+    position: static;
+    margin-top: 8px;
+  }
+  .fh__footer {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .fh__price {
+    flex: 0 0 auto;
+    max-width: none;
+  }
+  .fh__countdown {
+    flex-basis: auto;
+  }
+  .fh__stats {
+    flex-direction: column;
+    gap: 6px;
+    white-space: normal;
+  }
+  .fh__digits {
+    font-size: 48px;
+  }
+}
+@media (max-width: 480px) {
+  .fh__title {
+    font-size: 44px;
+    letter-spacing: -1.3px;
+  }
+  .fh__brand span {
+    display: none;
+  }
+  .fh__btn {
+    width: 140px;
+  }
+}

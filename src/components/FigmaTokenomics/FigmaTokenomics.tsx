@@ -139,8 +139,10 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               aria-hidden="true"
             >
               <defs>
-                {/* Object-bound so the arc carries the whole ramp wherever on the dial it lands. */}
-                <linearGradient id="tkRamp" x1="0.18" y1="1" x2="0" y2="0">
+                {/* The ramp runs ACROSS the wedge, not along it: its axis is the wedge's own outer
+                    chord, so the pale end sits on one edge and the purple on the other and the
+                    shape stays solid from hub to rim. The motion re-points it as the arc moves. */}
+                <linearGradient id="tkRamp" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0">
                   <stop stopColor="#C4E0F6" />
                   <stop offset="1" stopColor="#8487F1" />
                 </linearGradient>

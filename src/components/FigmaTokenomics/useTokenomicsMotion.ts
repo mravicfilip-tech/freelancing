@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react';
-import { COINS, HALOS, SEGMENTS, SEG_BY_ID, REST, SPATIAL, WIRES, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
+import { DIAL, COINS, HALOS, SEGMENTS, SEG_BY_ID, REST, SPATIAL, WIRES, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
 
 export type TokVariant = 1 | 2 | 3 | 4 | 5;
 
@@ -94,9 +94,22 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
            * following the same span. Everything below just drives these two numbers.
            */
           const arc = { a0: rest0, a1: rest1 };
+          const ramp = one<SVGLinearGradientElement>('#tkRamp');
           const paint = () => {
             arcEl?.setAttribute('d', slicePath(arc.a0, arc.a1));
             haloEls.forEach((h, i) => h?.setAttribute('d', slicePath(arc.a0, arc.a1, HALOS[i].d / 2)));
+            // Re-point the ramp across the wedge: from the trailing outer corner (pale) to the
+            // leading one (purple). Anchoring it to the chord rather than the wedge's bounding box
+            // is what keeps every bearing reading like a solid shape instead of fading out at the
+            // hub — a box-aligned ramp puts the pale end along the wedge on the diagonals.
+            if (!ramp) return;
+            const rad = (d: number) => (d * Math.PI) / 180;
+            const px = (d: number) => DIAL.c + DIAL.r * Math.cos(rad(d));
+            const py = (d: number) => DIAL.c + DIAL.r * Math.sin(rad(d));
+            ramp.setAttribute('x1', String(px(arc.a1)));
+            ramp.setAttribute('y1', String(py(arc.a1)));
+            ramp.setAttribute('x2', String(px(arc.a0)));
+            ramp.setAttribute('y2', String(py(arc.a0)));
           };
           paint();
 

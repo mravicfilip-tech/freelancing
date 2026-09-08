@@ -20,10 +20,27 @@ const ROUTES: { sel: string; pts: [number, number][] }[] = [
   { sel: '.tk__pulse--r2', pts: [[1380, 134], [1299, 134], [1134, 293]] },
 ];
 
+/**
+ * The phone frame (2639:1627) hangs its chain marks off two wire trees instead of two flanks, so
+ * the lights run down the top tree into the dial's crown and up the bottom one into its foot.
+ */
+const ROUTES_M: { sel: string; pts: [number, number][] }[] = [
+  { sel: '.tk__pulse--l0', pts: [[194, 103], [196.5, 400]] },
+  { sel: '.tk__pulse--l1', pts: [[104, 50], [150, 103], [196.5, 400]] },
+  { sel: '.tk__pulse--l2', pts: [[293, 50], [245, 103], [196.5, 400]] },
+  { sel: '.tk__pulse--r0', pts: [[195.5, 1023], [196.5, 610]] },
+  { sel: '.tk__pulse--r1', pts: [[101.5, 1073], [150, 1023], [196.5, 610]] },
+  { sel: '.tk__pulse--r2', pts: [[289.5, 1073], [243, 1023], [196.5, 610]] },
+];
+
 /** Largest allocation first — the order the tally variant settles them in. */
 const BY_SIZE = ['presale', 'marketing', 'listings', 'reserves', 'team', 'rewards'];
 
-export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1) {
+/**
+ * `mobile` selects the phone frame's wire routes and lets the allocations enter along the axis they
+ * are stacked on; it is also a dependency, so crossing the breakpoint rebuilds the timeline.
+ */
+export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1, mobile = false) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -87,6 +104,16 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           };
 
           /** Sends a light down one wire, hub-bound. */
+          const routes = mobile ? ROUTES_M : ROUTES;
+          /**
+           * Where an allocation comes from. Ranged either side of the dial on a desk, so they come
+           * in from their own flank; stacked on a phone, so they rise from the side of the dial
+           * they sit on.
+           */
+          const enterFrom = (node: HTMLElement, reach = 40) =>
+            mobile
+              ? { y: node.offsetTop < 500 ? -reach : reach, x: 0 }
+              : { x: node.offsetLeft < 780 ? -reach : reach, y: 0 };
           const runPulse = (route: (typeof ROUTES)[number], tl: gsap.core.Timeline, at: number, dur = 1) => {
             const dot = one(route.sel);
             if (!dot) return;
@@ -118,8 +145,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             SLICES_ORDER.forEach((id, i) => {
               const node = slice(id);
               if (!node) return;
-              const fromLeft = node.offsetLeft < 780;
-              tl.from(node, { x: fromLeft ? -40 : 40, opacity: 0, duration: 0.6, ease: 'expo.out' }, 0.55 + i * 0.12);
+              tl.from(node, { ...enterFrom(node), opacity: 0, duration: 0.6, ease: 'expo.out' }, 0.55 + i * 0.12);
               const b = node.querySelector('.tk__pct b') as HTMLElement | null;
               if (b) count(b, tl, 0.6 + i * 0.12);
             });
@@ -135,9 +161,10 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             SLICES_ORDER.forEach((id, i) => {
               const node = slice(id);
               if (!node) return;
-              const dx = (node.offsetLeft < 780 ? 1 : -1) * 90;
-              const dy = (node.offsetTop < 260 ? 1 : node.offsetTop > 330 ? -1 : 0) * 60;
-              tl.from(node, { x: dx, y: dy, scale: 0.8, opacity: 0, duration: 0.75, ease: 'expo.out' }, 0.9 + i * 0.07);
+              const thrown = mobile
+                ? enterFrom(node, 90)
+                : { x: (node.offsetLeft < 780 ? 1 : -1) * 90, y: (node.offsetTop < 260 ? 1 : node.offsetTop > 330 ? -1 : 0) * 60 };
+              tl.from(node, { ...thrown, scale: 0.8, opacity: 0, duration: 0.75, ease: 'expo.out' }, 0.9 + i * 0.07);
               const b = node.querySelector('.tk__pct b') as HTMLElement | null;
               if (b) count(b, tl, 1 + i * 0.07, 0.6);
             });
@@ -156,7 +183,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             const loop = gsap.timeline({ repeat: -1, paused: true });
             loop.to(one('.tk__ring'), { rotation: 360, duration: 48, ease: 'none', transformOrigin: '50% 50%' }, 0);
             loop.to(q('.tk__coin'), { scale: 1.06, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: 1, stagger: { each: 0.18, yoyo: true } }, 0);
-            ROUTES.forEach((r, i) => runPulse(r, loop, 0.4 + i * 0.55, 1.6));
+            routes.forEach((r, i) => runPulse(r, loop, 0.4 + i * 0.55, 1.6));
             loop.to({}, { duration: 1.2 }, 4.6);
             attachLoop(loop);
           }
@@ -207,13 +234,13 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
 
             SLICES_ORDER.forEach((id, i) => {
               const node = slice(id);
-              const route = ROUTES[i % ROUTES.length];
+              const route = routes[i % routes.length];
               const at = 0.75 + i * 0.34;
               runPulse(route, tl, at, 0.5);
               tl.to(one('.tk__hubDisc'), { scale: 1.08, duration: 0.14, ease: 'power2.out', transformOrigin: '50% 50%' }, at + 0.5);
               tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.3, ease: 'power2.out' }, at + 0.64);
               if (node) {
-                tl.from(node, { opacity: 0, x: node.offsetLeft < 780 ? -24 : 24, duration: 0.5, ease: 'expo.out' }, at + 0.5);
+                tl.from(node, { opacity: 0, ...enterFrom(node, 24), duration: 0.5, ease: 'expo.out' }, at + 0.5);
                 const b = node.querySelector('.tk__pct b') as HTMLElement | null;
                 if (b) count(b, tl, at + 0.5, 0.45);
               }
@@ -223,8 +250,8 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             wipe(one('.tk__ring'), tl, end, 0.9);
 
             const loop = gsap.timeline({ repeat: -1, paused: true });
-            ROUTES.forEach((r, i) => runPulse(r, loop, i * 0.7, 1.4));
-            loop.to({}, { duration: 1.6 }, ROUTES.length * 0.7 + 1.4);
+            routes.forEach((r, i) => runPulse(r, loop, i * 0.7, 1.4));
+            loop.to({}, { duration: 1.6 }, routes.length * 0.7 + 1.4);
             attachLoop(loop);
           }
 
@@ -252,7 +279,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
       io?.disconnect();
       revert?.();
     };
-  }, [root, variant]);
+  }, [root, variant, mobile]);
 }
 
 /** Reading order around the dial: top-left, top-right, left, right, bottom-left, bottom-right. */

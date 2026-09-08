@@ -1,17 +1,20 @@
-/* "Audited, verified & certified" — the same light band and 1560 rails as the sections around it.
-   No card: two cells split by the design's finer [4,4] rule, the rails on the usual [8,8]. */
+/* "Audited, verified & certified" — the credentials band. The same light ground and 1560 rails as
+   the sections around it; three cells on the dashed lattice the "As seen in" band uses, over a
+   ledger strip carrying the contract itself. No cards: the rules do the separating. */
 
 .av {
   --av-bg: #e6e9ed;
   --av-rail: #c5cbd1;
-  --av-line: #dadee2;
+  --av-line: #c5cbd1;
   --av-ink: #122433;
   --av-body: #7c858d;
+  --av-label: #a2a6aa;
   --av-indigo: #4042d1;
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  /* the design's dash rhythm: a 1px stroke, 8 on and 8 off, rails and lattice alike */
   --av-dash-v: repeating-linear-gradient(180deg, var(--av-rail) 0 8px, transparent 8px 16px);
-  --av-rule-v: repeating-linear-gradient(180deg, var(--av-line) 0 4px, transparent 4px 8px);
+  --av-dash-h: repeating-linear-gradient(90deg, var(--av-line) 0 8px, transparent 8px 16px);
 
   background: var(--av-bg);
   color: var(--av-ink);
@@ -66,41 +69,75 @@
   color: var(--av-body);
 }
 
-/* ---------- The two cells ---------- */
-.av__cols {
+/* ---------- The lattice ---------- */
+.av__grid {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 112px;
-}
-/* The rule sits in the gutter rather than on either cell's edge, as on the FAQ. */
-.av__gutter {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background-image: var(--av-rule-v);
-  background-size: 1px 100%;
-  background-repeat: repeat-y;
-  transform-origin: 50% 0;
+  grid-template-columns: repeat(3, 1fr);
 }
 .av__cell {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 28px;
+  gap: 20px;
+  padding: 40px 48px 44px 0;
+}
+.av__cell:not(:first-child) {
+  padding-left: 48px;
+}
+/* The rules are elements rather than borders, so they can be drawn in on entrance. */
+.av__ruleH,
+.av__ruleV {
+  position: absolute;
+  pointer-events: none;
+}
+.av__ruleH {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-image: var(--av-dash-h);
+  transform-origin: 0 50%;
+}
+.av__ruleH--top {
+  top: 0;
+  bottom: auto;
+  z-index: 1;
+}
+.av__ruleV {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background-image: var(--av-dash-v);
+  transform-origin: 50% 0;
 }
 
-/* ---------- Marks ---------- */
-.av__marks {
+/* ---------- The mark ---------- */
+.av__mark {
   display: flex;
   align-items: center;
-  gap: 40px;
-  min-height: 42px;
-  flex-wrap: wrap;
+  min-height: 40px;
 }
-.av__firm {
+/* Each mark keeps its own designed box (width and height set inline), never a shared one; at rest
+   it sits at the band's mark opacity and lifts to full ink under the pointer, as on "As seen in". */
+.av__mark img {
+  display: block;
+  max-width: 100%;
+  opacity: 0.55;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* A mark drawn for a dark ground: invert it, then take the white down to the band's ink. */
+.av__mark img[data-invert] {
+  filter: invert(1) brightness(0.14) saturate(1.6);
+}
+@media (hover: hover) {
+  .av__cell:hover .av__mark img {
+    opacity: 1;
+  }
+}
+.av__drawn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -117,46 +154,173 @@
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
-.av__glyph .av__tick,
-.av__glyph .av__rule {
+.av__glyph .av__accent {
   stroke: var(--av-indigo);
   stroke-linecap: round;
 }
-.av__glyph--paper {
-  width: 42px;
-  height: 42px;
+
+/* ---------- What the document is, and what it says ---------- */
+.av__kind {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--av-ink);
+}
+.av__facts {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 34ch;
+}
+.av__fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.av__fact dt {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--av-label);
+}
+.av__fact dd {
+  margin: 0;
+  text-align: right;
+}
+/* Checkable values: lining, tabular figures so the two audit cells' dates and counts line up
+   column to column. The hero's dot-matrix face is a counter's face and goes illegible at this
+   size, so the band sets its numbers in the body face instead. */
+.av__mono {
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--av-ink);
+}
+/* The address is read character by character, so it gets air between them. */
+.av__copy .av__mono {
+  letter-spacing: 0.04em;
+}
+.av__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--av-ink);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--av-rail);
+  transition: border-color 200ms ease, color 200ms ease;
+}
+.av__link:hover {
+  color: var(--av-indigo);
+  border-bottom-color: var(--av-indigo);
+}
+.av__link .fh__chevron {
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.av__link:hover .fh__chevron {
+  transform: rotate(-90deg) translateY(3px); /* rotated, so this nudges the arrow 3px right */
+}
+/* The band's one filled button belongs to the whitepaper — the only thing here to act on. */
+.av__cell .fh__btn {
+  margin-top: 4px;
 }
 
-/* ---------- Copy ---------- */
+/* ---------- Ledger strip ---------- */
+.av__ledger {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 48px;
+}
+.av__field {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+.av__fieldLabel {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--av-label);
+}
 .av__copy {
-  margin: 0;
-  max-width: 46ch;
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--av-body);
-}
-.av__copy a {
-  color: var(--av-indigo);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-}
-.av__copy a:hover {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
   color: var(--av-ink);
+  cursor: pointer;
+}
+.av__copyLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--av-label);
+  transition: color 200ms ease;
+}
+.av__copy:hover .av__copyLabel,
+.av__copy[data-copied] .av__copyLabel {
+  color: var(--av-indigo);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Hold the animated parts until GSAP has written their start states (see useAuditsMotion). */
 .av[data-motion='pending'] .av__lineInner,
 .av[data-motion='pending'] .av__intro,
-.av[data-motion='pending'] .av__gutter,
-.av[data-motion='pending'] .av__cell {
+.av[data-motion='pending'] .av__ruleH,
+.av[data-motion='pending'] .av__ruleV,
+.av[data-motion='pending'] .av__cell > :not(i),
+.av[data-motion='pending'] .av__field {
   visibility: hidden;
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
-  .av__cols {
-    gap: 0 64px;
+  .av__cell {
+    padding: 32px 28px 36px 0;
+    gap: 16px;
+  }
+  .av__cell:not(:first-child) {
+    padding-left: 28px;
+  }
+  .av__kind {
+    font-size: 17px;
+  }
+}
+@media (max-width: 860px) {
+  .av__grid {
+    grid-template-columns: 1fr;
+  }
+  .av__cell,
+  .av__cell:not(:first-child) {
+    padding: 32px 0 36px;
+  }
+  .av__ruleV {
+    display: none;
+  }
+  .av__ledger {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 }
 @media (max-width: 720px) {
@@ -170,14 +334,7 @@
   .av__intro {
     text-align: left;
   }
-  .av__cols {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .av__gutter {
-    display: none;
-  }
-  .av__marks {
-    gap: 28px;
+  .av__cell .fh__btn {
+    width: 100%;
   }
 }

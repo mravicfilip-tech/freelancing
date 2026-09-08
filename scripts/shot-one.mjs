@@ -14,7 +14,12 @@ const SIZES = [
 execSync(`npx vite build --outDir dist-${label} --emptyOutDir`, { stdio: 'inherit' });
 mkdirSync('screenshots', { recursive: true });
 
-const server = spawn('npx', ['vite', 'preview', '--outDir', `dist-${label}`, '--port', port, '--strictPort'], { stdio: 'ignore' });
+// Detached, so the whole group can be killed: killing the npx wrapper alone leaves the vite
+// child holding the port, and the next run is served a stale build without saying so.
+const server = spawn('npx', ['vite', 'preview', '--outDir', `dist-${label}`, '--port', port, '--strictPort'], {
+  stdio: 'ignore',
+  detached: true,
+});
 for (let i = 0; i < 60; i++) {
   try {
     const r = await fetch(BASE);
@@ -42,5 +47,9 @@ try {
   }
 } finally {
   await browser.close();
-  server.kill();
+  try {
+    process.kill(-server.pid, 'SIGTERM');
+  } catch {
+    server.kill();
+  }
 }

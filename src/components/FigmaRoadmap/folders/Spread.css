@@ -7,8 +7,10 @@
    hairlines, and nothing casts a shadow. */
 
 .rd-spread {
-  /* The ecosystem card's ratio: 620px and the remainder (FigmaEcosystem.css:35-44). */
-  --gut: 620px;
+  /* The ecosystem card's proportion — 620px against the remainder of a 1440 card
+     (FigmaEcosystem.css:35-44) — held as a ratio, so the milestone column keeps its measure
+     however wide the band's rails run. */
+  --gut: min(620px, 46%);
   --pad: 28px;
   --chan: 44px;
   display: flex;
@@ -242,7 +244,7 @@
 .rd-spread__count {
   font-size: 13px;
   color: var(--rd-body);
-  opacity: 0.65;
+  opacity: 0.8;
   transition: opacity 300ms ease;
 }
 .rd-spread__level[data-open] .rd-spread__count {
@@ -319,6 +321,7 @@
 .rd-spread__tally b {
   color: var(--rd-title);
 }
+/* The folio: the level's number again at the outer end of the foot line, as a page carries it. */
 .rd-spread__folio {
   font-size: 14px;
   letter-spacing: 0;
@@ -404,7 +407,7 @@
   grid-template-rows: 1fr;
 }
 .rd-spread .rd-miles {
-  padding: 14px 0 26px;
+  padding: 13px 0 24px;
 }
 /* The sheet's own top edge rules the first milestone, so the row does not draw a second line. */
 .rd-spread .rd-miles li:first-child {
@@ -413,7 +416,7 @@
 .rd-spread .rd-miles li {
   font-size: 15px;
   line-height: 1.6;
-  padding: 12px 0;
+  padding: 11px 0;
 }
 
 /* ---------- The plate that closes the stack ---------- */
@@ -464,12 +467,12 @@
 /* ---------- Narrower desktops ---------- */
 @media (max-width: 1280px) {
   .rd-spread {
-    --gut: 46%;
     --chan: 32px;
     --pad: 24px;
   }
   .rd-spread__name {
     font-size: 22px;
+    letter-spacing: -0.66px;
   }
   .rd-spread__level[data-open] .rd-spread__name {
     font-size: 28px;
@@ -481,7 +484,7 @@
    Below the ecosystem card's own collapse point there is no room for a second column, so the
    gutter turns: the vertical rule becomes the [4,4] horizontal one above the milestones, and
    the level reads head, copy, milestones — the family's shape, with the spread folded shut. */
-@media (max-width: 1023px) {
+@media (max-width: 1099px) {
   .rd-spread {
     --gut: 100%;
     gap: 44px;
@@ -555,14 +558,12 @@
   .rd-spread__marker {
     height: 30px;
     padding: 0 11px;
-    font-size: 12px;
   }
   .rd-spread__blurb {
     font-size: 15px;
   }
   .rd-spread__tally {
     margin-top: 14px;
-    font-size: 12px;
   }
   .rd-spread__plate {
     padding: 16px var(--pad);

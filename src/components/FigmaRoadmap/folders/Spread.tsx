@@ -18,7 +18,9 @@ import './Spread.css';
  * measure of its five milestones — the same ticks that head the rows once the page opens. Opening
  * a level lets those ticks fall into their sentences.
  *
- * Ratio: 620px + the remainder, the ecosystem card's own proportion (FigmaEcosystem.css:35-44).
+ * Ratio: the ecosystem card's own — 620px against the remainder of its 1440 card
+ * (FigmaEcosystem.css:35-44) — held here as `min(620px, 46%)` so the milestone column keeps its
+ * measure whatever width the band's rails run to.
  */
 
 const COMPLETE = LEVELS.filter((l) => l.status === 'done').length;

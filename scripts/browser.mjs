@@ -8,7 +8,8 @@ export const BASE = `http://127.0.0.1:${PORT}`;
 
 export async function startPreview() {
   if (!existsSync('dist')) throw new Error('No dist/ — run `npm run build` first.');
-  const proc = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' });
+  // Detached so the caller can kill the group; killing the npx wrapper leaves vite on the port.
+  const proc = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore', detached: true });
   for (let i = 0; i < 50; i++) {
     try { const r = await fetch(BASE); if (r.ok) return proc; } catch {}
     await new Promise((r) => setTimeout(r, 200));

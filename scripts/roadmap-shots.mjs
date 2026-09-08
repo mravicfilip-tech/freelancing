@@ -36,5 +36,9 @@ try {
   }
 } finally {
   await browser.close();
-  server.kill();
+  try {
+    process.kill(-server.pid, 'SIGTERM');
+  } catch {
+    server.kill();
+  }
 }

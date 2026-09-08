@@ -56,6 +56,10 @@ export function useRoadmapMotion(root: RefObject<HTMLElement | null>, variant: R
             }
             tl.from(q('.rd-traj__node'), { opacity: 0, y: 10, duration: 0.55, ease: 'expo.out', stagger: 0.1 }, 0.75);
           } else if (variant === 4) {
+            tl.from(q('.rd-rail__stop'), { opacity: 0, y: 10, duration: 0.5, ease: 'power3.out', stagger: 0.05 }, 0.3);
+            // The folders file themselves in, back of the stack first.
+            tl.from(q('.rd-fld__folder'), { opacity: 0, y: 22, duration: 0.65, ease: 'expo.out', stagger: 0.06 }, 0.45);
+          } else if (variant === 6) {
             tl.from(el.querySelector('.rd-idx'), { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out' }, 0.3);
             tl.from(q('.rd-idx__item'), { opacity: 0, y: 14, duration: 0.6, ease: 'expo.out', stagger: 0.06 }, 0.5);
           } else {

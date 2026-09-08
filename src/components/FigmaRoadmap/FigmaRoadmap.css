@@ -35,7 +35,11 @@
   --rd-ink: #eef2f5;
   --rd-body: #8593a0;
 }
-/* Direction 4 puts a card on the band, so it keeps the band the feature and ecosystem cards use. */
+/* A tone token the rail and the folder tabs paint with: the band, one step down. */
+.rd {
+  --rd-tab: #e3e7ec;
+  --rd-dash-h: repeating-linear-gradient(90deg, var(--rd-rail) 0 8px, transparent 8px 16px);
+}
 /* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
 .rd__frame {
   width: min(1560px, 100% - 48px);
@@ -378,6 +382,289 @@
 }
 
 /* ----------------------------------------------------------------- 4 Index */
+/* The drawer: a rail of the seven levels, then the folders filed under it. A folder is one sheet
+   of paper — its tab is the same fill and hairline as the sheet, cut with the same 12px radius
+   language — and the open one lifts off the stack on the hero pill's shadow. */
+
+.rd-fld {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+/* ---------- The rail ---------- */
+.rd-rail {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* The line runs behind the stops, on the rails' own [8,8] rhythm. */
+.rd-rail::before {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 5px;
+  height: 1px;
+  background-image: var(--rd-dash-h);
+}
+.rd-rail__stop button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.rd-rail__dot {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid var(--rd-rail);
+  background: var(--rd-bg);
+  transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.rd-rail__stop[data-status='done'] .rd-rail__dot {
+  background: var(--rd-title);
+  border-color: var(--rd-title);
+}
+.rd-rail__stop[data-open] .rd-rail__dot {
+  background: var(--rd-indigo);
+  border-color: var(--rd-indigo);
+  box-shadow: 0 0 0 5px rgb(64 66 209 / 14%);
+}
+.rd-rail__name {
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-rail__stop[data-open] .rd-rail__name {
+  font-weight: 600;
+  color: var(--rd-title);
+}
+.rd-rail__stop button:hover .rd-rail__name {
+  color: var(--rd-title);
+}
+.rd-rail__stop button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* ---------- The stack ---------- */
+.rd-fld__stack {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding-top: 26px;
+}
+.rd-fld__folder {
+  position: relative;
+  /* Every sheet takes the same width — the page is on a strict grid, so the stack is read by
+     the stepped tabs and the overlap, not by a taper that would fight it. */
+  width: 100%;
+  margin: -1px auto 0;
+  border: 1px solid var(--rd-line);
+  border-radius: 12px 12px 0 0;
+  background: var(--rd-card);
+  transition: margin 420ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 420ms ease;
+}
+.rd-fld__folder[data-open] {
+  z-index: 2;
+  margin: 26px auto 34px;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgb(18 36 51 / 12%);
+}
+.rd-fld__folder:first-child {
+  margin-top: 0;
+}
+.rd-fld__head {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.rd-fld__head button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 22px 28px;
+  border: 0;
+  border-radius: 11px 11px 0 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rd-fld__head button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: -2px;
+}
+/* The tab: the sheet's own paper, cut and pushed above its top edge. */
+.rd-fld__tab {
+  position: absolute;
+  top: -25px;
+  left: var(--tab-x);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 26px;
+  padding-top: 2px;
+  clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 100%, 0 100%);
+  /* The hairline is the shape behind; the face sits 1px inside it, so the tab is edged like
+     the sheet it belongs to. */
+  background: var(--rd-line);
+  color: var(--rd-body);
+  font-size: 13px;
+  transition: color 300ms ease;
+}
+.rd-fld__tab::before {
+  content: '';
+  position: absolute;
+  inset: 1px 1px 0;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+  background: var(--rd-card);
+  transition: background 300ms ease;
+}
+.rd-fld__tab > * {
+  position: relative;
+}
+.rd-fld__folder[data-status='done'] .rd-fld__tab {
+  color: var(--rd-title);
+}
+.rd-fld__folder[data-open] .rd-fld__tab {
+  background: var(--rd-indigo);
+  color: #fff;
+}
+.rd-fld__folder[data-open] .rd-fld__tab::before {
+  background: var(--rd-indigo);
+}
+.rd-fld__name {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -0.78px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-fld__folder[data-status='done'] .rd-fld__name,
+.rd-fld__folder[data-open] .rd-fld__name {
+  color: var(--rd-title);
+}
+.rd-fld__count {
+  font-size: 13px;
+  color: var(--rd-body);
+  opacity: 0.65;
+}
+.rd-fld__folder[data-open] .rd-fld__count {
+  color: var(--rd-indigo);
+  opacity: 1;
+}
+.rd-fld__marker {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14.75px;
+  border: 1px solid var(--rd-line);
+  border-radius: 46px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  white-space: nowrap;
+}
+.rd-fld__marker[data-status='live'] {
+  border-color: var(--rd-indigo);
+  color: var(--rd-indigo);
+}
+/* The folder opens on the grid-row transition the accordions use. */
+.rd-fld__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-fld__body > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-fld__folder[data-open] .rd-fld__body {
+  grid-template-rows: 1fr;
+}
+.rd-fld__blurb {
+  margin: 0;
+  padding: 0 28px 20px;
+  max-width: 74ch;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+}
+.rd-fld__body .rd-miles {
+  padding: 0 28px 26px;
+}
+/* The drawer's face, closing the stack. */
+.rd-fld__plate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: -1px 0 0;
+  padding: 18px 28px;
+  border: 1px solid var(--rd-line);
+  border-radius: 0 0 12px 12px;
+  background: var(--rd-card);
+}
+.rd-fld__tally {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+
+/* ---------- Milestone rows (the folder and the card share these) ---------- */
+.rd-miles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rd-miles li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 16px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.rd-miles li[data-done] {
+  color: var(--rd-ink);
+}
+.rd-tick {
+  display: block;
+  margin-top: 2px;
+  color: var(--rd-line);
+}
+.rd-tick[data-done] {
+  color: var(--rd-indigo);
+}
+
+/* ------------------------------------------------------------------ 6 Card */
 /* The ecosystem card's shape, carrying the roadmap: the accordion and its copy on the left
    behind a [4,4] rule, the washed panel on the right. Same 620px column, same 12px radius,
    same accent, same open-and-close curves. */
@@ -579,43 +866,17 @@
   letter-spacing: -1.2px;
   color: var(--rd-title);
 }
-.rd-idx__miles {
-  /* The five rows share the panel's height, so the column fills the card the way the
+.rd-idx .rd-miles {
+  /* On the card the five rows share the panel's height, so the column fills it the way the
      illustration fills the ecosystem's. */
   flex: 1;
   display: flex;
   flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
-.rd-idx__miles li {
+.rd-idx .rd-miles li {
   flex: 1;
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  gap: 16px;
   align-content: center;
-  align-items: start;
   padding: 18px 0;
-  font-size: 16px;
-  line-height: 1.6;
-  letter-spacing: 0.01em;
-  color: var(--rd-body);
-  background-image: var(--rd-rule-h);
-  background-size: 100% 1px;
-  background-position: left top;
-  background-repeat: no-repeat;
-}
-.rd-idx__miles li[data-done] {
-  color: var(--rd-ink);
-}
-.rd-idx__tick {
-  display: block;
-  margin-top: 2px;
-  color: var(--rd-line);
-}
-.rd-idx__tick[data-done] {
-  color: var(--rd-indigo);
 }
 /* Changing level deals the panel out again, in reading order. */
 @media (prefers-reduced-motion: no-preference) {
@@ -626,7 +887,7 @@
   .rd-idx__panelTitle {
     animation-delay: 40ms;
   }
-  .rd-idx__miles li {
+  .rd-idx .rd-miles li {
     animation: rd-row 460ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
     animation-delay: calc(80ms + var(--j) * 45ms);
   }
@@ -796,6 +1057,8 @@
 .rd[data-motion='pending'] .rd-ledger__col,
 .rd[data-motion='pending'] .rd-stage__col,
 .rd[data-motion='pending'] .rd-idx,
+.rd[data-motion='pending'] .rd-rail__stop,
+.rd[data-motion='pending'] .rd-fld__folder,
 .rd[data-motion='pending'] .rd-wire__row,
 .rd[data-motion='pending'] .rd-meter,
 .rd[data-motion='pending'] .rd-traj__node,
@@ -977,6 +1240,38 @@
     font-size: 15px;
     line-height: 1.55;
     color: var(--rd-body);
+  }
+  .rd-fld {
+    gap: 44px;
+  }
+  /* The rail scrolls once the names stop fitting; the open stop is scrolled into view. */
+  .rd-rail {
+    grid-auto-columns: minmax(116px, 1fr);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .rd-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rd-fld__folder,
+  .rd-fld__folder[data-open] {
+    width: 100%;
+  }
+  .rd-fld__head button {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 18px 20px;
+  }
+  .rd-fld__count {
+    display: none;
+  }
+  .rd-fld__blurb,
+  .rd-fld__body .rd-miles {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .rd-fld__plate {
+    padding: 16px 20px;
   }
   .rd-idx {
     grid-template-columns: 1fr;

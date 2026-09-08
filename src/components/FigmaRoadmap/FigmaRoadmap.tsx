@@ -3,7 +3,7 @@ import { GATES, LEVELS, RAISED, STATUS_LABEL, TARGET, doneCount, type Level } fr
 import { useRoadmapMotion } from './useRoadmapMotion';
 import './FigmaRoadmap.css';
 
-export type RoadVariant = 1 | 2 | 3 | 4 | 5;
+export type RoadVariant = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const ROAD_VARIANTS = [
   { name: 'Ledger', blurb: 'Six numbered columns on the section rules, milestones cascading across them.' },
@@ -11,6 +11,7 @@ export const ROAD_VARIANTS = [
   { name: 'Trajectory', blurb: 'One curve on black, the travelled part lit, levels read off it like a chart.' },
   { name: 'Index', blurb: 'One card: the seven levels down the left, the open level’s milestones on the right.' },
   { name: 'Journey', blurb: 'The levels wired into a column beside a meter of the raise against its gates.' },
+  { name: 'Card', blurb: 'The ecosystem card’s shape: the levels down the left, the open one’s milestones on the washed panel.' },
 ] as const;
 
 /** The section heading, split into masked lines like every other band's. */
@@ -213,10 +214,10 @@ function Trajectory() {
 
 /* ----------------------------------------------------------------- 4 Index */
 
-/** The tick a milestone carries: indigo once it is done, an open ring until then. */
+/** The tick a milestone carries on the live cards: filled once it is done, an open ring until then. */
 function Tick({ done }: { done: boolean }) {
   return (
-    <span className="rd-idx__tick" data-done={done || undefined} aria-hidden="true">
+    <span className="rd-tick" data-done={done || undefined} aria-hidden="true">
       <svg viewBox="0 0 20 20" width="20" height="20">
         {done ? (
           <path
@@ -235,12 +236,113 @@ function Tick({ done }: { done: boolean }) {
   );
 }
 
+/** The milestones of one level, ruled and ticked. Shared by the folder and the card. */
+function Milestones({ level }: { level: Level }) {
+  return (
+    <ol className="rd-miles">
+      {level.items.map((item, j) => (
+        <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
+          <Tick done={item.done} />
+          {item.text}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** The rail above the drawer: the seven levels, filled behind the one in play, hollow ahead of it. */
+function Rail({ open, onPick }: { open: number; onPick: (i: number) => void }) {
+  const rail = useRef<HTMLOListElement>(null);
+
+  // On a phone the rail scrolls; keep the open level in view without moving the page.
+  useEffect(() => {
+    const el = rail.current;
+    const stop = el?.children[open] as HTMLElement | undefined;
+    if (!el || !stop || el.scrollWidth <= el.clientWidth) return;
+    el.scrollTo({ left: stop.offsetLeft - (el.clientWidth - stop.offsetWidth) / 2, behavior: 'smooth' });
+  }, [open]);
+
+  return (
+    <ol className="rd-rail" ref={rail}>
+      {LEVELS.map((l, i) => (
+        <li className="rd-rail__stop" key={l.n} data-status={l.status} data-open={i === open || undefined}>
+          <button type="button" aria-current={i === open ? 'true' : undefined} onClick={() => onPick(i)}>
+            <span className="rd-rail__dot" aria-hidden="true" />
+            <span className="rd-rail__name">{l.name}</span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /**
- * The levels as an index: the seven of them down the left of one card, the open level's milestones
- * on the right. Same shape as the ecosystem card — accordion and copy on the left, a washed panel
- * on the right — so the roadmap reads as another view of the same object rather than a new device.
+ * The drawer: seven folders filed one behind the next, tabs stepping across the stack, one open at
+ * a time. The tab belongs to its own folder — same paper, same hairline — so the stack reads as
+ * filed sheets rather than labels stuck on cards, and the rail above doubles as the progress.
  */
 function Index() {
+  const [open, setOpen] = useState(() => LEVELS.findIndex((l) => l.status === 'live'));
+  const complete = LEVELS.filter((l) => l.status === 'done').length;
+
+  return (
+    <div className="rd-fld">
+      <Rail open={open} onPick={setOpen} />
+
+      <div className="rd-fld__stack">
+        {LEVELS.map((l, i) => (
+          <article
+            className="rd-fld__folder"
+            key={l.n}
+            data-status={l.status}
+            data-open={i === open || undefined}
+            /* The sheets widen a little down the stack and the tabs step across it, the way a
+               card index is filed. */
+            style={{ '--i': i, '--tab-x': `${4 + i * 12.6}%` } as React.CSSProperties}
+          >
+            <h3 className="rd-fld__head">
+              <button type="button" aria-expanded={i === open} aria-controls={`rd-fld-${l.n}`} onClick={() => setOpen(i)}>
+                <span className="rd-fld__tab">
+                  <span className="rd-digits">{l.n}</span>
+                </span>
+                <span className="rd-fld__name">{l.name}</span>
+                <span className="rd-fld__count rd-digits">
+                  {doneCount(l)}/{l.items.length}
+                </span>
+                <span className="rd-fld__marker" data-status={l.status}>
+                  {l.marker}
+                </span>
+              </button>
+            </h3>
+            <div className="rd-fld__body" id={`rd-fld-${l.n}`}>
+              <div>
+                <p className="rd-fld__blurb">{l.blurb}</p>
+                <Milestones level={l} />
+              </div>
+            </div>
+          </article>
+        ))}
+
+        <p className="rd-fld__plate">
+          <span className="rd-idx__eyebrow">Remittix roadmap</span>
+          <span className="rd-fld__tally">
+            <b className="rd-digits">{String(complete).padStart(2, '0')}</b> of{' '}
+            <b className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</b> complete
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ 6 Card */
+
+/**
+ * The levels on the ecosystem card's shape: the seven of them down the left, the open level's
+ * milestones on the washed panel at the right. The quietest of the directions, and the one that
+ * sits closest to the section above it.
+ */
+function Card() {
   const [active, setActive] = useState(() => LEVELS.findIndex((l) => l.status === 'live'));
   const level = LEVELS[active];
   const complete = LEVELS.filter((l) => l.status === 'done').length;
@@ -292,14 +394,7 @@ function Index() {
           </span>
         </div>
         <h3 className="rd-idx__panelTitle">{level.name}</h3>
-        <ol className="rd-idx__miles">
-          {level.items.map((item, j) => (
-            <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
-              <Tick done={item.done} />
-              {item.text}
-            </li>
-          ))}
-        </ol>
+        <Milestones level={level} />
       </div>
     </div>
   );
@@ -357,7 +452,7 @@ function Journey() {
   );
 }
 
-const BODIES = { 1: Ledger, 2: Stage, 3: Trajectory, 4: Index, 5: Journey } as const;
+const BODIES = { 1: Ledger, 2: Stage, 3: Trajectory, 4: Index, 5: Journey, 6: Card } as const;
 
 /**
  * Roadmap band. Five directions over the same six levels; `?road=1..5` picks one, and

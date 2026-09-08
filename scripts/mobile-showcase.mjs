@@ -46,27 +46,22 @@ try {
     console.log(`captured ${name} (${Math.round(box.height)}px, ${Math.round(buf.length / 1024)}KB)`);
   }
 
-  // The menu open, since it is the one thing a static page of the site cannot show.
-  await page.evaluate(() => scrollTo(0, 0));
-  await page.waitForTimeout(600);
-  await page.locator('.fh__burger').click();
-  await page.waitForTimeout(500);
-  // The panel is absolutely positioned out of the bar, so an element shot of the bar clips it away.
-  // Clip the page to the union of the two instead — at scroll 0 the viewport is the page.
-  const box = await page.evaluate(() => {
-    const a = document.querySelector('.fh__nav').getBoundingClientRect();
-    const b = document.querySelector('.fh__menu').getBoundingClientRect();
-    const x = Math.min(a.left, b.left) - 8;
-    const y = Math.min(a.top, b.top) - 8;
-    return { x, y, width: Math.max(a.right, b.right) - x + 8, height: Math.max(a.bottom, b.bottom) - y + 8 };
-  });
-  const menu = await page.screenshot({ type: 'jpeg', quality: 80, clip: box });
+  // The menu open, since it is the one thing a static page of the site cannot show. It is a sheet
+  // fixed to the screen now, so it wants a phone-sized viewport and a plain shot of it.
+  const menuCtx = await browser.newContext({ viewport: { width: W, height: 852 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+  const menuPage = await menuCtx.newPage();
+  await menuPage.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+  await menuPage.waitForTimeout(2600);
+  await menuPage.locator('.fh__burger').click();
+  await menuPage.waitForTimeout(700);
+  const menu = await menuPage.screenshot({ type: 'jpeg', quality: 80 });
+  await menuCtx.close();
   shots.unshift({
     name: 'Menu',
-    note: 'What the bar drops on a phone: the primary links, language and Login. Join Presale stays in the bar, so the action is never behind a tap.',
+    note: 'What the bar drops on a phone, given the room it has on a desktop: the links at reading size, both account actions, and the language. Join Presale stays in the bar, so the presale is never behind a tap.',
     node: '',
     motion: 'new',
-    h: Math.round(box.height),
+    h: 852,
     uri: `data:image/jpeg;base64,${menu.toString('base64')}`,
   });
 } finally {
@@ -151,7 +146,7 @@ figcaption p{margin:6px 0 0;color:var(--body);font-size:14px;max-width:52ch}
       <li><b>${W}</b><span>Frame</span></li>
       <li><b>${shots.length}</b><span>Bands</span></li>
       <li><b>720</b><span>Breakpoint</span></li>
-      <li><b>64</b><span>Band padding</span></li>
+      <li><b>16</b><span>Rail</span></li>
       <li><b>${total.toLocaleString('en-US')}</b><span>Total px tall</span></li>
     </ul>
   </header>

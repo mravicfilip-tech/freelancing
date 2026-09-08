@@ -24,6 +24,7 @@ const NAV_LINKS = [
   ['$250k Giveaway', '#giveaway'],
   ['Tokenomics', '#tokenomics'],
   ['Roadmap', '#roadmap'],
+  ['How to buy', '#how-to-buy'],
   ['FAQs', '#faq'],
   ['Whitepaper', '#whitepaper'],
 ] as const;
@@ -46,7 +47,7 @@ function useCountdown(target: number) {
   };
 }
 
-function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left' }) {
+export function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left' }) {
   return <img className={`fh__chevron fh__chevron--${direction}`} src="/figma/chevron.svg" alt="" width={11} height={6} />;
 }
 
@@ -55,7 +56,7 @@ function Chevron({ direction = 'down' }: { direction?: 'down' | 'right' | 'left'
  * the pointer entered and shrinks back to the point it left. The anchor's --x/--y position the
  * circle; the CSS in FigmaHero.css does the rest.
  */
-function blobOrigin(e: React.PointerEvent<HTMLAnchorElement>) {
+export function blobOrigin(e: React.PointerEvent<HTMLAnchorElement>) {
   const r = e.currentTarget.getBoundingClientRect();
   e.currentTarget.style.setProperty('--x', `${e.clientX - r.left}px`);
   e.currentTarget.style.setProperty('--y', `${e.clientY - r.top}px`);

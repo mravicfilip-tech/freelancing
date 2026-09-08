@@ -1,0 +1,183 @@
+/* "Audited, verified & certified" — the same light band and 1560 rails as the sections around it.
+   No card: two cells split by the design's finer [4,4] rule, the rails on the usual [8,8]. */
+
+.av {
+  --av-bg: #e6e9ed;
+  --av-rail: #c5cbd1;
+  --av-line: #dadee2;
+  --av-ink: #122433;
+  --av-body: #7c858d;
+  --av-indigo: #4042d1;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --av-dash-v: repeating-linear-gradient(180deg, var(--av-rail) 0 8px, transparent 8px 16px);
+  --av-rule-v: repeating-linear-gradient(180deg, var(--av-line) 0 4px, transparent 4px 8px);
+
+  background: var(--av-bg);
+  color: var(--av-ink);
+  font-family: var(--fh-sans);
+}
+/* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
+.av__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 96px clamp(0px, 3.85%, 60px);
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  background-image: var(--av-dash-v), var(--av-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Heading ---------- */
+.av__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.av__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 60px);
+  line-height: 1.12;
+  letter-spacing: -1.8px;
+}
+.av__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.av__lineInner {
+  display: block;
+}
+.av__intro {
+  margin: 0;
+  max-width: 38ch;
+  text-align: right;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--av-body);
+}
+
+/* ---------- The two cells ---------- */
+.av__cols {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 112px;
+}
+/* The rule sits in the gutter rather than on either cell's edge, as on the FAQ. */
+.av__gutter {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: var(--av-rule-v);
+  background-size: 1px 100%;
+  background-repeat: repeat-y;
+  transform-origin: 50% 0;
+}
+.av__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+/* ---------- Marks ---------- */
+.av__marks {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  min-height: 42px;
+  flex-wrap: wrap;
+}
+.av__firm {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--av-ink);
+}
+.av__glyph {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: var(--av-ink);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.av__glyph .av__tick,
+.av__glyph .av__rule {
+  stroke: var(--av-indigo);
+  stroke-linecap: round;
+}
+.av__glyph--paper {
+  width: 42px;
+  height: 42px;
+}
+
+/* ---------- Copy ---------- */
+.av__copy {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--av-body);
+}
+.av__copy a {
+  color: var(--av-indigo);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.av__copy a:hover {
+  color: var(--av-ink);
+}
+
+/* Hold the animated parts until GSAP has written their start states (see useAuditsMotion). */
+.av[data-motion='pending'] .av__lineInner,
+.av[data-motion='pending'] .av__intro,
+.av[data-motion='pending'] .av__gutter,
+.av[data-motion='pending'] .av__cell {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .av__cols {
+    gap: 0 64px;
+  }
+}
+@media (max-width: 720px) {
+  .av__frame {
+    padding: 64px 0;
+    gap: 36px;
+  }
+  .av__title {
+    letter-spacing: -1.1px;
+  }
+  .av__intro {
+    text-align: left;
+  }
+  .av__cols {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .av__gutter {
+    display: none;
+  }
+  .av__marks {
+    gap: 28px;
+  }
+}

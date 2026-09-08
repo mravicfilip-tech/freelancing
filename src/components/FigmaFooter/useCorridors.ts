@@ -5,7 +5,7 @@ const CRYPTO = ['BTC', 'ETH', 'USDT', 'SOL'];
 const FIAT = ['NGN', 'PHP', 'INR', 'KES', 'MXN'];
 
 const DWELL = 3.2; // seconds a corridor stays live, before SPEED
-const SPEED = 0.7; // the whole field runs at 70% — one knob, everything scales together
+const SPEED = 0.4; // the whole field runs at 40% — one knob, everything scales together
 const GHOSTS = 3; // routes held faintly behind the live one; the rest of the mesh is left out
 
 const LAVENDER = '#8f91ff';

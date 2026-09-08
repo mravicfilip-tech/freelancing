@@ -41,7 +41,9 @@ const ORBIT = {
   // Turning parts stay in the box's coordinates; upright parts are given the frame positions the
   // -75° turn puts them at, which is where the file draws them.
   mobile: {
-    stage: { w: 393, h: 852 },
+    // Tall enough for what the composition holds: the ring's lower end, its dot and the pay-ins
+    // chip all sit past 852, so a screen-height frame cut the pay-in half of the story away.
+    stage: { w: 393, h: 1010 },
     turn: true,
     ring: { x: 270.4, y: 121.6 },
     glow: { x: 543, y: 235 },

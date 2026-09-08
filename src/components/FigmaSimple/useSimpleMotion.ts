@@ -99,7 +99,11 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             // stage's fitted scale are folded in), so the loop never has to read layout per frame.
             const stage = one(orbit, '.ff__stage');
             const stageRect = stage.getBoundingClientRect();
-            const k = stageRect.width / 1560;
+            // The stage publishes its own scale; the portrait frame is 393 wide, not the landscape
+            // 1560, and reading that off a constant put every sampled point about four times too
+            // far out — which is what kept the cursor, the chip pops and the group pops off the
+            // portrait orbit.
+            const k = parseFloat(getComputedStyle(stage).getPropertyValue('--k')) || stageRect.width / 1560;
             const ctm = ringPath.getScreenCTM()!;
             const SAMPLES = 720;
             const table: { x: number; y: number }[] = [];
@@ -219,11 +223,9 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             // Every loop lives on one timeline, so the section can pause it all while off screen.
             const loop = gsap.timeline();
             loop.to(glowPath, { opacity: 0.9, duration: 0.5 }, SPAWN);
-            // The cursor takes up the highlight and rides it. In the portrait frame the orbit runs
-            // mostly outside the crop, so a cursor riding it would be gone for seven seconds of
-            // every nine: there it stays parked by the badge, where the design draws it, and the
-            // highlight travels alone.
-            if (!portrait) loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
+            // The cursor takes up the highlight and rides it, on both frames: in the portrait one
+            // the ring is inside the crop bar its two bleeding ends, so the ride reads there too.
+            loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
             // The badge parks beside the hub on its centre line: a fixed 16px gap to its right,
             // vertically centred on its middle. The portrait frame already draws the badge where it
             // belongs — above the hub, where the turn puts it — and there is no room to its right,

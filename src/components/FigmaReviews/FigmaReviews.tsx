@@ -82,8 +82,11 @@ export function FigmaReviews() {
     el.scrollTo({ left: Math.max(0, chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2), behavior: 'smooth' });
   }, [slide]);
 
-  // A phone reaches a carousel by swiping it. Vertical drags are the page scrolling, not a swipe.
+  // A phone reaches a carousel by swiping it. Vertical drags are the page scrolling, not a swipe;
+  // a mouse drag is someone selecting the quote; and a drag of the chip strip is that strip
+  // scrolling, which would otherwise scroll and advance on the one gesture.
   const onDragStart = (e: React.PointerEvent) => {
+    if (e.pointerType === 'mouse' || (e.target as Element).closest('.rv__chips')) return;
     drag.current = { x: e.clientX, y: e.clientY };
   };
   const onDragEnd = (e: React.PointerEvent) => {

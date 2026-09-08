@@ -276,7 +276,7 @@
     display: none;
   }
   .rv__chip {
-    scroll-snap-align: start;
+    scroll-snap-align: center;
   }
   .rv__chip { padding: 12px; gap: 10px; }
   .rv__avatar, .rv__avatar img { width: 40px; height: 40px; }

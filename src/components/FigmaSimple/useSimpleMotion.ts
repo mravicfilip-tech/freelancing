@@ -99,11 +99,12 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             // stage's fitted scale are folded in), so the loop never has to read layout per frame.
             const stage = one(orbit, '.ff__stage');
             const stageRect = stage.getBoundingClientRect();
-            // The stage publishes its own scale; the portrait frame is 393 wide, not the landscape
-            // 1560, and reading that off a constant put every sampled point about four times too
-            // far out — which is what kept the cursor, the chip pops and the group pops off the
-            // portrait orbit.
-            const k = parseFloat(getComputedStyle(stage).getPropertyValue('--k')) || stageRect.width / 1560;
+            // The scale the stage is actually drawn at: the portrait frame is 393 wide, not the
+            // landscape 1560, and reading that off a constant put every sampled point about four
+            // times too far out — which is what kept the cursor, the chip pops and the group pops
+            // off the portrait orbit. Measured rather than taken from `--k`, so a CSS transform on
+            // the illustration cannot silently invalidate it.
+            const k = stageRect.width / (stage as HTMLElement).offsetWidth;
             const ctm = ringPath.getScreenCTM()!;
             const SAMPLES = 720;
             const table: { x: number; y: number }[] = [];
@@ -147,9 +148,11 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             const armed = markers.map(() => true);
             // Chips and groups react to the cursor itself: each fires as the cursor's tip comes within
             // reach of its centre, and re-arms once the tip has moved well away.
+            // Floored: the pay-ins chip's closest approach to the ring is 59 design px against a
+            // half-width of 67, and a slightly narrower chip would stop firing altogether.
             const reach = (m: Element) => {
               const r = m.getBoundingClientRect();
-              return r.width / k / 2 + 12;
+              return Math.max(r.width / k / 2 + 12, 40);
             };
             const targets = [...chips, ...groups].map((m) => ({ centre: centreOf(m), reach: reach(m), armed: true }));
 

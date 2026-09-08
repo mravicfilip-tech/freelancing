@@ -102,8 +102,14 @@
   align-items: center;
   /* the black mark at 32%, as in the design; under the pointer it is the mark at full black */
   opacity: 0.32;
-  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity;
+}
+/* Only where a pointer drives the opacity. On a touch screen the sequence tweens it per frame,
+   and a transition on top of that only lags the easing. */
+@media (hover: hover) {
+  .sn__mark {
+    transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 .sn__mark img {
   display: block;

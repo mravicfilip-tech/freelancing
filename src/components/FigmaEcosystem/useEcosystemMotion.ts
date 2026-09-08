@@ -127,9 +127,8 @@ export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: 
     // On a desktop the panel is fixed beside the list, so advancing on a timer costs the reader
     // nothing. On a phone the pillars are an accordion in the flow: an advance moves everything
     // below it, and the picture it advances to is usually off screen by then. There the reader
-    // drives it, and the accent stands rather than filling towards something that will not happen.
+    // drives it, and the accent — which fills over the cycle — is not drawn at all.
     if (window.matchMedia('(max-width: 720px)').matches) {
-      gsap.set(bar, { scaleY: 1 });
       progressRef.current = null;
       return;
     }

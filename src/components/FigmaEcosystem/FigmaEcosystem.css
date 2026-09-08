@@ -309,8 +309,9 @@
   .ec__scene {
     --ec-scale: 1.1;
   }
+  /* Trading fills 370 of the 393 its frame gives it, so its own margins allow only this much. */
   .ec__scene[data-scene='trading'] {
-    --ec-scale: 1;
+    --ec-scale: 1.05;
   }
   .ec__scene[data-scene='staking'] {
     --ec-scale: 1.25;

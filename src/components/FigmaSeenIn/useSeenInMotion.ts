@@ -58,8 +58,14 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
             io = new IntersectionObserver(
               ([e]) => {
                 seen = e.isIntersecting;
-                if (seen && tl.progress() === 1) loop.play();
-                else loop.pause();
+                if (seen && tl.progress() === 1) {
+                  loop.play();
+                } else {
+                  // Rewound, not frozen: pausing where it stood left whichever marks were lit
+                  // sitting at full black for as long as the band was off screen.
+                  loop.pause(0);
+                  gsap.set(marks, { opacity: 0.32 });
+                }
               },
               { rootMargin: '60px' },
             );

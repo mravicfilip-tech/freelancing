@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { HeroPlanet } from './HeroPlanet';
 import { HERO_VARIANT, PLANET_ENABLED, PLANET_STATIC, useGlobe } from '../heroVariant';
+import { RAISED } from './Roadmap/content';
 
 const PRESALE_END = Date.UTC(2026, 9, 15, 12, 0, 0); // 15 Oct 2026 12:00 UTC
 
@@ -57,7 +58,7 @@ function HeroLedger() {
           <a className="hero__link" href="#how">How it works</a>
         </div>
         <Countdown />
-        <p className="hero__proof">$16.4M raised so far.</p>
+        <p className="hero__proof">${RAISED}M raised so far.</p>
       </div>
       {PLANET_ENABLED && <HeroPlanet hostRef={ref} variant={globe} forceStatic={PLANET_STATIC} />}
     </section>

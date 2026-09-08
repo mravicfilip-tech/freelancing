@@ -3,7 +3,9 @@ import { Nav } from './components/Nav';
 import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
-import { HERO_VARIANT } from './heroVariant';
+import { Roadmap } from './components/Roadmap';
+import { RoadmapSwitcher } from './components/RoadmapSwitcher';
+import { HERO_VARIANT, useRoadmap } from './heroVariant';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -12,6 +14,7 @@ const DEV_TOOLS = params.has('devtools');
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
   const [heroMounted, setHeroMounted] = useState(true);
+  const roadmap = useRoadmap();
 
   if (CAPTURE_MODE) return <CaptureStage />;
 
@@ -34,12 +37,14 @@ export function App() {
             money lands as local currency without a detour through a correspondent bank.
           </p>
         </section>
+        <Roadmap variant={roadmap} />
         <section className="section" id="tokenomics">
           <h2>Tokenomics</h2>
           <p>A fixed supply, a transparent release schedule, and fees that flow back to holders.</p>
         </section>
       </main>
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
+      <RoadmapSwitcher />
       {DEV_TOOLS && (
         <div className="devbar">
           <button type="button" id="dev-toggle-hero" onClick={() => setHeroMounted((m) => !m)}>

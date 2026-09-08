@@ -59,3 +59,53 @@ export function useGlobe(): GlobeId {
     () => globe,
   );
 }
+
+// ---------- Roadmap direction (`?roadmap=1..5`, plus the in-page switcher) ----------
+import { ROADMAP_IDS, type RoadmapId } from './components/Roadmap';
+
+const ROADMAP_KEY = 'remittix.roadmap';
+const isRoadmap = (v: string | null): v is RoadmapId =>
+  !!v && (ROADMAP_IDS as readonly string[]).includes(v);
+
+function readInitialRoadmap(): RoadmapId {
+  const fromUrl = params.get('roadmap');
+  if (isRoadmap(fromUrl)) return fromUrl;
+  try {
+    const stored = window.localStorage.getItem(ROADMAP_KEY);
+    if (isRoadmap(stored)) return stored;
+  } catch {
+    /* private mode, blocked storage */
+  }
+  return ROADMAP_IDS[0];
+}
+
+let roadmap: RoadmapId = readInitialRoadmap();
+const roadmapListeners = new Set<() => void>();
+
+export function setRoadmap(next: RoadmapId) {
+  if (next === roadmap) return;
+  roadmap = next;
+  try {
+    window.localStorage.setItem(ROADMAP_KEY, next);
+  } catch {
+    /* ignore */
+  }
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('roadmap', next);
+    window.history.replaceState(null, '', url);
+  } catch {
+    /* sandboxed frames may refuse history writes */
+  }
+  roadmapListeners.forEach((l) => l());
+}
+
+export function useRoadmap(): RoadmapId {
+  return useSyncExternalStore(
+    (l) => {
+      roadmapListeners.add(l);
+      return () => roadmapListeners.delete(l);
+    },
+    () => roadmap,
+  );
+}

@@ -33,6 +33,32 @@ localStorage, so it sticks for a returning viewer. Presets live in
 without the switcher, remove `<PlanetSwitcher />` from `src/App.tsx` and set the
 default in `config.ts`.
 
+## Roadmap section
+
+Five directions for the roadmap, switched in place from the control pinned above
+the globe switcher. The choice is written to `?roadmap=1|2|3|4|5` and to
+localStorage, so a link carries it.
+
+```
+src/components/Roadmap/
+  content.ts     the six levels, their milestones and the raise gates — all copy lives here
+  index.tsx      the five directions, plus the id/label/blurb list the switcher reads
+  Roadmap.css    shared shell, then one block per direction
+```
+
+| # | name | what it is |
+|---|------|------------|
+| 1 | Ledger | Six numbered columns, milestone pills cascading across them. Light. |
+| 2 | Stage | A dark rail with a dot per level; the current one lifts into a lit panel. |
+| 3 | Trajectory | One curve, the travelled part lit, levels read off it like a chart. Dark. |
+| 4 | Index | A drawer of tabbed cards; the open one shows its milestones. |
+| 5 | Journey | The levels as wired pills, beside a meter showing the raise against its gates. |
+
+Copy and figures in `content.ts` are placeholders drawn from public coverage of
+the six-level roadmap — confirm the wording, the raise and the gate amounts with
+the client before launch. `npm run roadmap:shots` writes
+`screenshots/roadmap-<n>-<size>.png` for all five at desktop and mobile.
+
 ## Hero planet
 
 ```

@@ -631,6 +631,8 @@
   line-height: 0.98;
   letter-spacing: -0.72px;
   color: var(--fh-body);
+  /* Even lines rather than a single word left on the second one. */
+  text-wrap: balance;
 }
 .fh__progress {
   position: relative;

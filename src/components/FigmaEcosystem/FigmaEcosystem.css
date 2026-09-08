@@ -244,16 +244,13 @@
   .ec__frame {
     /* Ranges under the feature band, so it keeps its open top and takes the shared foot. */
     width: 100%;
-    padding: 0 0 64px;
+    padding: 0 16px 64px;
     background-image: none;
   }
-  /* The card is the band on a phone: it runs edge to edge and carries the 16px rail itself, so
-     the heading sits on the same rail as every other section's and the drawings get all 393. */
-  .ec__card {
-    border-radius: 0;
-  }
+  /* The card stands off the page on its own margins, as a card should, and the pillar rules are
+     inset within them rather than running out to the screen's edges. */
   .ec__copy {
-    padding: 64px 16px 8px;
+    padding: 56px 16px 8px;
   }
   /* No gutter to stand in on one column: at the card's own rail the marker lands 8px off the
      screen edge. The open pillar is already unmistakable — it carries the drawing. */
@@ -281,42 +278,14 @@
   .ec__itemBody > p {
     padding-left: 0;
   }
-  /* The frame is the drawing's own height at whatever size it is shown, so a scene that takes
-     no step does not sit in a box sized for one that does. */
+  /* Each drawing carries its own portrait composition at its own size, so the frame is simply
+     the height the drawing asks for. */
   .ec__item--on .ec__scene {
-    display: flex;
-    align-items: center;
-    aspect-ratio: calc(800 / (640 * var(--ec-scale, 1)));
+    display: block;
   }
   .ec__scene .ff__il {
     position: static;
     width: 100%;
   }
-  /* Fitted to the frame's width, an 800-wide canvas puts 10px labels on screen at 5. Each drawing
-     leaves a different margin of empty canvas around itself, so each takes the step that fills the
-     frame with its own writing and crops only the air: measured off the built scene, one per
-     drawing, because there is no rule that covers all four. */
-  .ec__scene .ff__il {
-    transform: scale(var(--ec-scale, 1));
-    transform-origin: 50% 50%;
-  }
 }
 
-/* Only a narrow phone needs the step: by 480 the frame is already giving the canvas most of its
-   size, and a fixed factor that suits 393 slices axis labels and card edges at 360 and crops a
-   quarter of the canvas at 720. Each drawing takes what its own margins allow. */
-@media (max-width: 480px) {
-  .ec__scene {
-    --ec-scale: 1.1;
-  }
-  /* Trading fills 370 of the 393 its frame gives it, so its own margins allow only this much. */
-  .ec__scene[data-scene='trading'] {
-    --ec-scale: 1.05;
-  }
-  .ec__scene[data-scene='staking'] {
-    --ec-scale: 1.25;
-  }
-  .ec__scene[data-scene='storage'] {
-    --ec-scale: 1.2;
-  }
-}

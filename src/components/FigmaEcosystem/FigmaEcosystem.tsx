@@ -4,6 +4,10 @@ import { useMobileArt } from '../FigmaFeatures/illustrations/Stage';
 import { useEcosystemMotion } from './useEcosystemMotion';
 import '../FigmaFeatures/illustrations/illustrations.css';
 import './illustrations/ecosystem-illustrations.css';
+import './illustrations/Payments.portrait.css';
+import './illustrations/Trading.portrait.css';
+import './illustrations/Staking.portrait.css';
+import './illustrations/Storage.portrait.css';
 import './FigmaEcosystem.css';
 
 /**

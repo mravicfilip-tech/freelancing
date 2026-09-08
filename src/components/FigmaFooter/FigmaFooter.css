@@ -95,13 +95,13 @@
   align-items: flex-start;
   gap: 32px;
 }
+/* The nav's lockup exactly — same 33x17 mark, same 22.14px wordmark, same 4px gap. */
 .ft__brand {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 20px;
+  gap: 4px;
+  font-size: 22.14px;
   font-weight: 700;
-  letter-spacing: -0.4px;
   color: var(--ft-ink);
   text-decoration: none;
 }

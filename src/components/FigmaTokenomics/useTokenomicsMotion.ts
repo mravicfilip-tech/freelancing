@@ -233,6 +233,13 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
               paint();
             }, undefined, at);
 
+          /**
+           * Every stop is fed by its own chain: a light runs in from the flank along that
+           * allocation's wire while the arc travels, and the two land together. This is what
+           * carries the rotation out to the chain marks — each one dips as the light goes past.
+           */
+          const feed = (id: string, at: number, dur: number) => runWire(WIRE_FOR[id], loop, at, dur);
+
           if (variant === 1) {
             // Aim — swing and resize onto each allocation in turn.
             let at = 0;
@@ -240,6 +247,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
               // Nothing is lit while the arc is in flight: the chip it is leaving goes dark as
               // it sets off, and the one it is heading for takes the indigo only on arrival.
               light(loop, at, null);
+              feed(s.id, at, MOVE);
               aimAt(loop, at, s.a0, s.a1);
               light(loop, at + MOVE, s.id);
               count(s.id, loop, at + MOVE);
@@ -253,7 +261,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             const WIRE = 1.5;
             let at = 0;
             stops.forEach((s) => {
-              runWire(WIRE_FOR[s.id], loop, at, WIRE);
+              feed(s.id, at, WIRE);
               knock(loop, at + WIRE - 0.1);
               light(loop, at + WIRE, null);
               aimAt(loop, at + WIRE, s.a0, s.a1);
@@ -272,6 +280,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             stops.forEach((s) => {
               const mid = (s.a0 + s.a1) / 2;
               light(loop, at, null);
+              feed(s.id, at, CLOSE);
               aimAt(loop, at, mid - 2.5, mid + 2.5, CLOSE);
               // the blade is on the bearing here, so this is the arrival
               light(loop, at + CLOSE, s.id);
@@ -290,6 +299,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             let prev = { a0: rest0, a1: rest1 };
             stops.forEach((s) => {
               light(loop, at, null);
+              feed(s.id, at, LEAD + FOLLOW);
               aimAt(loop, at, s.a0, prev.a1, LEAD, 'power2.in');
               aimAt(loop, at + LEAD, s.a0, s.a1, FOLLOW, 'power2.out');
               light(loop, at + LEAD + FOLLOW, s.id);
@@ -313,6 +323,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             };
             stops.forEach((s) => {
               light(loop, at, null);
+              feed(s.id, at, SNAP);
               aimAt(loop, at, s.a0, s.a1, SNAP, 'back.out(1.05)');
               light(loop, at + SNAP, s.id);
               count(s.id, loop, at + SNAP);

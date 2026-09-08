@@ -6,6 +6,14 @@
    is 12.5px rather than 11: a 360px screen leaves the scene 328px, which fits the 361 canvas at
    ~0.91, and 12.5 is the smallest design size that still clears 11px once that fit is applied. */
 
+/* The panel rule centres a scene on its absolute box (`left/top: 50%` plus a half-size shift). The
+   phone block puts the scene back in the flow but leaves the shift behind, so the composition is
+   dragged half its own size up and to the left and its head and chart fall out of the frame.
+   Neutralised here for this stage only — the shared rule still does its job on the desk. */
+.ec__scene .ff__il.ec-trade--m {
+  transform: none;
+}
+
 .ec-trade--m .ec-trade__head {
   gap: 6px;
 }

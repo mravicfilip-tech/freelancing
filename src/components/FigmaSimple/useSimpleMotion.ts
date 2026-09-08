@@ -90,10 +90,10 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             glowPath.classList.add('fs__ringGlow');
             ringPath.parentElement!.appendChild(glowPath);
             gsap.set(ringPath, { strokeDasharray: 'none', strokeDashoffset: 0 });
-            // The portrait crop shows about a quarter of the orbit at a time, so a segment sized
-            // for the wide band fills half of what is visible and reads as a drawn arc rather than
-            // a travelling light. There it runs short.
-            const dash = len * (portrait ? 0.045 : 0.12);
+            // The lit arc is a share of the ring's length. The portrait frame holds nearly the
+            // whole ellipse now — only its two ends bleed — so it takes an arc of its own measure
+            // rather than the quarter-crop's stub, which read as a dot rather than a comet.
+            const dash = len * (portrait ? 0.09 : 0.12);
 
             // The orbit, sampled once into the stage's design coordinates (the ring's tilt and the
             // stage's fitted scale are folded in), so the loop never has to read layout per frame.
@@ -231,9 +231,12 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
             // The badge parks beside the hub on its centre line: a fixed 16px gap to its right,
             // vertically centred on its middle. The portrait frame already draws the badge where it
-            // belongs — above the hub, where the turn puts it — and there is no room to its right,
-            // so it stays put there.
-            if (!portrait) {
+            // belongs — above the hub, where the turn puts it — and there is no room to its right.
+            // It still takes the beat, though: it settles onto that spot as the highlight sets off,
+            // so the phone gets the arrival the desktop gets rather than a badge that never moves.
+            if (portrait) {
+              loop.fromTo(badge, { y: -18 }, { y: 0, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
+            } else {
               const h = hub as HTMLElement;
               loop.to(badge, { left: h.offsetLeft + h.offsetWidth + 16, top: h.offsetTop + h.offsetHeight / 2 - badge.offsetHeight / 2, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
             }

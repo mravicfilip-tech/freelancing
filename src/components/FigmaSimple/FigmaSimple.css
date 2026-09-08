@@ -265,6 +265,19 @@
   position: absolute;
   box-sizing: border-box;
 }
+/* The filled plate the portrait frame lays under its ring. */
+.fs__plate {
+  z-index: 0;
+}
+/* The file centres two of the three group labels over their pills and leaves exotic ranged left. */
+.fs__orbit--m .fs__group[data-group='stable'],
+.fs__orbit--m .fs__group[data-group='fiat'] {
+  align-items: center;
+}
+.fs__orbit--m .fs__group[data-group='stable'] .fs__groupLabel,
+.fs__orbit--m .fs__group[data-group='fiat'] .fs__groupLabel {
+  text-align: center;
+}
 /* Most of the turned ellipse falls outside the frame, as the design draws it. */
 .fs .ff__il.fs__orbit--m {
   overflow: hidden;

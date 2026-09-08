@@ -69,9 +69,10 @@ function FxLandscape() {
 /**
  * Portrait (Figma 2597:705). The design's art frame starts 26px in and is 414 wide, so the pair
  * runs off the card's right edge; the wallet sits 12px right of and 119px below the bank, covering
- * its lower half. The design draws no wire between them and there is no room to arc one over the
- * pair, so the path stays as unpainted geometry (see illustrations.css) and only the packets that
- * ride it are seen crossing from the bank to the wallet.
+ * its lower half. There is no room to arc a wire over the pair as the desk layout does, so it takes
+ * the short drop across their seam instead: from beside the Bank tag on the exposed strip of the
+ * top card down to beside the Wallet tag on the one below. That is the journey the loop tells, and
+ * it needs to be drawn — a packet crossing an unpainted gap reads as a speck of dust.
  */
 function FxPortrait() {
   return (
@@ -80,9 +81,9 @@ function FxPortrait() {
       <div className="il-fx__bank" style={{ left: 26, top: 0 }}><BankFace /></div>
       <div className="il-fx__wallet" style={{ left: 38, top: 119 }}><WalletFace /></div>
       <svg className="il-fx__wires" viewBox="0 0 394 362" width={394} height={362} style={{ left: 0, top: 0 }} aria-hidden="true">
-        <path className="il-fx__wire" d="M330 66 C 300 110, 240 120, 176 158" />
-        <circle className="il-fx__wireEnd" cx="330" cy="66" r="3.5" />
-        <circle className="il-fx__wireEnd" cx="176" cy="158" r="3.5" />
+        <path className="il-fx__wire" d="M150 40 C 163 76, 148 118, 176 154" />
+        <circle className="il-fx__wireEnd" cx="150" cy="40" r="3.5" />
+        <circle className="il-fx__wireEnd" cx="176" cy="154" r="3.5" />
       </svg>
       <span className="il-fx__packet" style={{ left: 0, top: 0 }} />
       <span className="il-fx__packet il-fx__packet--2" style={{ left: 0, top: 0 }} />

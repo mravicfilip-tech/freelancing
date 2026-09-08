@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import orbit from './orbit.svg?raw';
+import orbitInner from '../../../public/figma/simple/ellipse-inner.svg?raw';
 import { Layer, Stage, Strokes, useMobileArt } from '../FigmaFeatures/illustrations/Stage';
 import { useSimpleMotion } from './useSimpleMotion';
 import '../FigmaFeatures/illustrations/illustrations.css';
@@ -86,11 +87,28 @@ function Chip({ text, x, y }: { text: string; x: number; y: number }) {
   );
 }
 
+/**
+ * The skew the file gives the orbit (Tailwind `-rotate-15 scale-y-87 skew-x-30`, which composes
+ * rotate → skew → scale). The desk band's export has it baked into the path; the portrait frame's
+ * ellipses are axis-aligned and carry it here.
+ */
+const ORBIT_SKEW = 'rotate(-15deg) skewX(30deg) scaleY(0.87)';
+
 /** The ellipse, its glow, and the anchors that sit on it — everything that turns with the orbit. */
 function Ring({ g }: { g: OrbitGeo }) {
   return (
     <>
-      <Strokes className="fs__ring" svg={orbit} x={g.ring.x} y={g.ring.y} w={1019} h={354} />
+      {/* Portrait draws the orbit as two layers, as the file does (2603:1440/:1441): a filled plate
+          and a narrower stroke over it. The desk band's single wide stroke already reads correctly
+          across the whole 1560, where the ellipse's ends fall outside the eye's reach. */}
+      {g.turn ? (
+        <>
+          <Layer className="fs__plate" src={A('ellipse-outer')} x={270.45} y={121.62} w={1019} h={354} style={{ transform: ORBIT_SKEW }} />
+          <Strokes className="fs__ring" svg={orbitInner} x={395.35} y={119.35} w={786.076} h={354} style={{ transform: ORBIT_SKEW }} />
+        </>
+      ) : (
+        <Strokes className="fs__ring" svg={orbit} x={g.ring.x} y={g.ring.y} w={1019} h={354} />
+      )}
       <Layer className="fs__glow" src={A('imgSubtract')} x={g.glow.x} y={g.glow.y} w={584.4} h={488.5} style={{ transform: 'rotate(-24.3deg) scaleY(-1)' }} />
       {g.dots.map((d) => (
         <span key={`${d.x}`} className="fs__dot" style={{ left: d.x, top: d.y }} />

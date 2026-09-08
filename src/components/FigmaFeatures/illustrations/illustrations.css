@@ -239,18 +239,20 @@
   opacity: 0;
 }
 
-/* The portrait design (2597:705) carries neither a dot field nor a drawn wire between the pair —
-   the two cards overlap with no room for an arc. Both stay in the tree so the build timeline keeps
-   its targets, and the wire keeps its geometry so packets still cross from bank to wallet; only
-   the ink comes off. */
+/* The portrait design (2597:705) carries no dot field behind the pair; the element stays in the
+   tree so the build timeline keeps its target. */
 .il-fx--m .il-fx__dots {
   display: none;
 }
+/* The wire drops across the cards' seam rather than arcing over them, so it crosses a light card
+   and then a dark one: a lavender stroke holds on both, where the desk layout's indigo would sink
+   into the wallet. */
 .il-fx--m .il-fx__wire {
-  stroke: transparent;
+  stroke: #8688e8;
+  stroke-width: 1.25;
 }
 .il-fx--m .il-fx__wireEnd {
-  fill: transparent;
+  fill: #8688e8;
 }
 /* A fee tag that can rise out of the bank's account line (fee-receipt variant). */
 .il-fx__feeTag {

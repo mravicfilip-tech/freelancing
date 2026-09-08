@@ -90,7 +90,10 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             glowPath.classList.add('fs__ringGlow');
             ringPath.parentElement!.appendChild(glowPath);
             gsap.set(ringPath, { strokeDasharray: 'none', strokeDashoffset: 0 });
-            const dash = len * 0.12;
+            // The portrait crop shows about a quarter of the orbit at a time, so a segment sized
+            // for the wide band fills half of what is visible and reads as a drawn arc rather than
+            // a travelling light. There it runs short.
+            const dash = len * (portrait ? 0.045 : 0.12);
 
             // The orbit, sampled once into the stage's design coordinates (the ring's tilt and the
             // stage's fitted scale are folded in), so the loop never has to read layout per frame.

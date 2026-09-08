@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GATES, LEVELS, RAISED, STATUS_LABEL, TARGET, type Level } from './content';
+import { GATES, LEVELS, RAISED, STATUS_LABEL, TARGET, doneCount, type Level } from './content';
 import { useRoadmapMotion } from './useRoadmapMotion';
 import './FigmaRoadmap.css';
 
@@ -9,7 +9,7 @@ export const ROAD_VARIANTS = [
   { name: 'Ledger', blurb: 'Six numbered columns on the section rules, milestones cascading across them.' },
   { name: 'Stage', blurb: 'The band turns over to the footer’s black; one rail, the live level lit in lime.' },
   { name: 'Trajectory', blurb: 'One curve on black, the travelled part lit, levels read off it like a chart.' },
-  { name: 'Index', blurb: 'A drawer of tabbed cards on the reviews band; the open one shows its milestones.' },
+  { name: 'Index', blurb: 'A drawer of tabbed cards under a level rail; the open one lists its milestones.' },
   { name: 'Journey', blurb: 'The levels wired into a column beside a meter of the raise against its gates.' },
 ] as const;
 
@@ -30,9 +30,9 @@ function Head({ lines, intro }: { lines: [string, string]; intro: string }) {
   );
 }
 
-const HEAD_LINES: [string, string] = ['Six levels to launch,', 'four of them behind us.'];
+const HEAD_LINES: [string, string] = ['Seven levels to launch,', 'four of them behind us.'];
 const INTRO =
-  'Every level opens on something shipped or a raise closed — a wallet in the store, money in a bank account, the listing date set.';
+  'Five milestones to a level. The wallet and the PayFi platform are built and open; Markets is trading; $32M in the presale sets the launch date.';
 
 /* ---------------------------------------------------------------- 1 Ledger */
 
@@ -57,16 +57,17 @@ function Ledger() {
             </h3>
             {l.items.map((item, j) => (
               <span
-                key={item}
+                key={item.short}
                 className="rd-chip"
                 data-status={l.status}
+                data-done={item.done || undefined}
                 /* Each level starts two rows below the last, so the cascades overlap. */
                 style={{
                   gridColumn: `${i + 1} / span ${Math.min(2, LEVELS.length - i)}`,
                   gridRow: i * 2 + j + 1,
                 }}
               >
-                {item}
+                {item.short}
               </span>
             ))}
           </li>
@@ -97,7 +98,9 @@ function Stage() {
           <h3 className="rd-stage__name">{l.name}</h3>
           <ul className="rd-stage__items">
             {l.items.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item.short} data-done={item.done || undefined}>
+                {item.short}
+              </li>
             ))}
           </ul>
         </li>
@@ -170,9 +173,11 @@ function Trajectory() {
         )}
         {pts.map((p, i) => {
           const l = LEVELS[i];
-          /* The label hangs on the side of the node with room, never over the curve. */
+          /* The label hangs on the side of the node with room, never over the curve; every other
+             one sits a tier further out, so seven of them never meet across the page. */
           const above = p.y > VIEW.h * 0.5;
-          const top = above ? p.y - 118 : p.y + 56;
+          const tier = (i % 2) * 56;
+          const top = above ? p.y - 118 - tier : p.y + 56 + tier;
           const left = i === LEVELS.length - 1 || (above && p.steep);
           const x = left ? p.x - 16 : p.x + 14;
           return (
@@ -208,43 +213,103 @@ function Trajectory() {
 
 /* ----------------------------------------------------------------- 4 Index */
 
-/** A drawer of tabbed cards. One level is open at a time; the rest stay legible as tabs. */
-function Index() {
-  const [open, setOpen] = useState(() => LEVELS.findIndex((l) => l.status === 'live'));
+/** The tick a milestone carries on the live cards: filled once it is done, an open ring until then. */
+function Tick({ done }: { done: boolean }) {
   return (
-    <div className="rd-drawer">
-      {LEVELS.map((l, i) => (
-        <div
-          className="rd-card"
-          key={l.n}
-          data-status={l.status}
-          data-open={i === open || undefined}
-          /* The stack tapers and the tabs step across, the way an index drawer reads. */
-          style={{ '--i': i, '--tab-x': `${8 + i * 13}%` } as React.CSSProperties}
-        >
-          <h3 className="rd-card__head">
-            <button type="button" aria-expanded={i === open} onClick={() => setOpen(i)}>
-              <span className="rd-card__tab">
-                <span className="rd-digits">{l.n}</span>
-                <em className="rd-digits">{l.items.length}</em>
-              </span>
-              <span className="rd-card__name">{l.name}</span>
-              <span className="rd-card__marker">{l.marker}</span>
+    <span className="rd-tick" data-done={done || undefined} aria-hidden="true">
+      {done ? (
+        <svg viewBox="0 0 14 14" width="14" height="14">
+          <path d="M2.5 7.4 5.6 10.5 11.5 3.9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 14 14" width="14" height="14">
+          <circle cx="7" cy="7" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
+/**
+ * A drawer of tabbed cards, one open at a time, under a rail of the seven levels. The rail is the
+ * drawer's navigation as well as its progress: filled behind the level in play, hollow ahead of it.
+ */
+function Index() {
+  const liveIndex = LEVELS.findIndex((l) => l.status === 'live');
+  const [open, setOpen] = useState(liveIndex);
+  const level = LEVELS[open];
+  const rail = useRef<HTMLOListElement>(null);
+
+  // On a phone the rail scrolls; keep the open level in view without moving the page.
+  useEffect(() => {
+    const el = rail.current;
+    const stop = el?.children[open] as HTMLElement | undefined;
+    if (!el || !stop || el.scrollWidth <= el.clientWidth) return;
+    el.scrollTo({ left: stop.offsetLeft - (el.clientWidth - stop.offsetWidth) / 2, behavior: 'smooth' });
+  }, [open]);
+
+  return (
+    <div className="rd-index">
+      <ol className="rd-rail" ref={rail}>
+        {LEVELS.map((l, i) => (
+          <li className="rd-rail__stop" key={l.n} data-status={l.status} data-open={i === open || undefined}>
+            <button
+              type="button"
+              aria-current={i === open ? 'true' : undefined}
+              onClick={() => setOpen(i)}
+            >
+              <span className="rd-rail__dot" aria-hidden="true" />
+              <span className="rd-rail__n rd-digits">{l.n}</span>
+              <span className="rd-rail__name">{l.name}</span>
             </button>
-          </h3>
-          <div className="rd-card__body" hidden={i !== open}>
-            <p className="rd-card__blurb">{l.blurb}</p>
-            <ul className="rd-card__items">
-              {l.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+          </li>
+        ))}
+      </ol>
+
+      <div className="rd-drawer">
+        {LEVELS.map((l, i) => (
+          <div
+            className="rd-card"
+            key={l.n}
+            data-status={l.status}
+            data-open={i === open || undefined}
+            /* The tabs step across the stack, the way a card index is filed. */
+            style={{ '--i': i, '--tab-x': `${5 + i * 12.4}%` } as React.CSSProperties}
+          >
+            <h3 className="rd-card__head">
+              <button type="button" aria-expanded={i === open} onClick={() => setOpen(i)}>
+                <span className="rd-card__tab">
+                  <span className="rd-digits">{l.n}</span>
+                  <em className="rd-digits">
+                    {doneCount(l)}/{l.items.length}
+                  </em>
+                </span>
+                <span className="rd-card__name">{l.name}</span>
+                <span className="rd-card__marker" data-status={l.status}>
+                  {l.marker}
+                </span>
+              </button>
+            </h3>
+            <div className="rd-card__body" hidden={i !== open}>
+              <p className="rd-card__blurb">{l.blurb}</p>
+              <ul className="rd-card__items">
+                {l.items.map((item, j) => (
+                  <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
+                    <Tick done={item.done} />
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-      ))}
-      <p className="rd-drawer__base">
-        <span>Remittix roadmap</span>
-      </p>
+        ))}
+        <p className="rd-drawer__base">
+          <span>
+            Level <b className="rd-digits">{level.n}</b> of{' '}
+            <b className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</b> — {STATUS_LABEL[level.status]}
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
@@ -323,6 +388,8 @@ export function FigmaRoadmap({ variant = 1 }: { variant?: RoadVariant }) {
       data-tone={dark ? 'dark' : 'light'}
       data-motion="pending"
       aria-labelledby="rd-title"
+      /* The column layouts take their track count from the data, not a number in the stylesheet. */
+      style={{ '--rd-cols': LEVELS.length } as React.CSSProperties}
     >
       <div className="rd__frame">
         <Head lines={HEAD_LINES} intro={INTRO} />

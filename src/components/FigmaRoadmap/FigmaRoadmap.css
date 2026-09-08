@@ -102,7 +102,7 @@
 .rd-ledger__cols,
 .rd-ledger__grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--rd-cols, 6), minmax(0, 1fr));
 }
 .rd-ledger__col {
   padding: 0 0 20px 16px;
@@ -152,7 +152,7 @@
   background-image: repeating-linear-gradient(
     to right,
     var(--rd-line) 0 1px,
-    transparent 1px calc(100% / 6)
+    transparent 1px calc(100% / var(--rd-cols, 6))
   );
   mask-image: repeating-linear-gradient(180deg, #000 0 4px, transparent 4px 8px);
 }
@@ -199,6 +199,12 @@
   border: 1px dashed var(--rd-rail);
   color: var(--rd-body);
 }
+/* Inside the level in play, the milestones already ticked keep the solid chip. */
+.rd-chip[data-status='live']:not([data-done]) {
+  background: transparent;
+  border: 1px solid var(--rd-indigo);
+  color: var(--rd-indigo);
+}
 
 /* ----------------------------------------------------------------- 2 Stage */
 
@@ -207,7 +213,7 @@
   margin: 200px 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--rd-cols, 6), minmax(0, 1fr));
   gap: 24px;
 }
 .rd-stage__col {
@@ -271,8 +277,9 @@
   margin: 0 0 14px;
   font-family: var(--fh-display);
   font-weight: 500;
-  font-size: clamp(20px, 2vw, 30px);
-  letter-spacing: -0.9px;
+  /* Seven columns across 1560: the names have to sit inside a 170px track. */
+  font-size: clamp(17px, 1.5vw, 26px);
+  letter-spacing: -0.7px;
   text-transform: uppercase;
   color: var(--rd-title);
 }
@@ -292,7 +299,11 @@
   color: #122433;
 }
 .rd-stage__col[data-status='live'] .rd-stage__items {
-  color: #2c3a2b;
+  color: #55663f;
+}
+.rd-stage__col[data-status='live'] .rd-stage__items li[data-done] {
+  color: #122433;
+  font-weight: 600;
 }
 
 /* ------------------------------------------------------------ 3 Trajectory */
@@ -371,22 +382,110 @@
 
 /* ----------------------------------------------------------------- 4 Index */
 
+.rd-index {
+  --rd-drawer-w: min(1040px, 100%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+}
+
+/* ---------- The level rail: the drawer's navigation and its progress ---------- */
+.rd-rail {
+  position: relative;
+  width: var(--rd-drawer-w);
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(var(--rd-cols, 7), minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+}
+/* One dashed line behind the stops, on the design's [8,8] rhythm. */
+.rd-rail::before {
+  content: '';
+  position: absolute;
+  left: calc(50% / var(--rd-cols, 7));
+  right: calc(50% / var(--rd-cols, 7));
+  top: 5px;
+  height: 1px;
+  background-image: repeating-linear-gradient(90deg, var(--rd-rail) 0 8px, transparent 8px 16px);
+}
+.rd-rail__stop button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 4px 4px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.rd-rail__dot {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid var(--rd-rail);
+  background: var(--rd-bg);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+/* Behind the level in play the rail is filled; ahead of it the stops stay hollow. */
+.rd-rail__stop[data-status='done'] .rd-rail__dot {
+  background: var(--rd-title);
+  border-color: var(--rd-title);
+}
+.rd-rail__stop[data-status='live'] .rd-rail__dot {
+  background: var(--rd-indigo);
+  border-color: var(--rd-indigo);
+}
+.rd-rail__stop[data-open] .rd-rail__dot {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--rd-indigo) 22%, transparent);
+}
+.rd-rail__n {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-rail__name {
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  white-space: nowrap;
+}
+.rd-rail__stop[data-open] .rd-rail__n,
+.rd-rail__stop[data-open] .rd-rail__name {
+  color: var(--rd-title);
+  font-weight: 600;
+}
+.rd-rail__stop button:hover .rd-rail__name {
+  color: var(--rd-title);
+}
+
+/* ---------- The drawer ---------- */
 .rd-drawer {
-  max-width: 900px;
-  margin: 0 auto;
+  width: var(--rd-drawer-w);
   padding-top: 22px;
 }
+/* Every card is the same width, as folders in a drawer are: only the tabs step across.
+   Each card sits above the one behind it, so its tab always clears the card above. */
 .rd-card {
   position: relative;
-  /* Each card is a touch wider than the one above it: the drawer tapers. */
-  width: calc(74% + var(--i) * 5.2%);
-  margin: -1px auto 0;
+  z-index: calc(var(--i) + 1);
+  margin-top: -1px;
   border: 1px solid var(--rd-title);
   border-radius: 12px 12px 0 0;
-  background: #f2f3f4;
+  background: #eceef0;
+  transition: background-color 160ms ease;
 }
 .rd-card[data-open] {
   background: var(--rd-card);
+  box-shadow: 0 22px 44px -30px rgb(18 36 51 / 45%);
+}
+.rd-card:not([data-open]) .rd-card__head button:hover {
+  background: #f6f7f8;
 }
 .rd-card__head {
   margin: 0;
@@ -399,7 +498,7 @@
   align-items: center;
   gap: 20px;
   width: 100%;
-  padding: 18px 24px;
+  padding: 18px 26px;
   border: 0;
   border-radius: 11px 11px 0 0;
   background: transparent;
@@ -407,6 +506,7 @@
   text-align: left;
   cursor: pointer;
 }
+/* The tab: a trapezoid on the card's top edge, stepping across the stack. */
 .rd-card__tab {
   position: absolute;
   top: -21px;
@@ -414,9 +514,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  width: 118px;
+  gap: 18px;
   height: 22px;
-  padding: 0 12px;
+  padding: 0 14px;
   clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 100%, 0 100%);
   background: var(--rd-title);
   color: #fff;
@@ -425,10 +525,13 @@
 }
 .rd-card__tab em {
   font-style: normal;
-  color: rgb(255 255 255 / 60%);
+  color: rgb(255 255 255 / 55%);
 }
 .rd-card[data-status='live'] .rd-card__tab {
   background: var(--rd-indigo);
+}
+.rd-card[data-status='live'] .rd-card__tab em {
+  color: rgb(255 255 255 / 72%);
 }
 .rd-card[data-status='next'] .rd-card__tab {
   background: var(--rd-body);
@@ -441,54 +544,116 @@
   color: var(--rd-title);
 }
 .rd-card__marker {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--rd-line);
+  border-radius: 46px;
+  font-size: 13px;
+  letter-spacing: -0.26px;
   color: var(--rd-body);
 }
+.rd-card__marker[data-status='live'] {
+  border-color: color-mix(in srgb, var(--rd-indigo) 40%, transparent);
+  color: var(--rd-indigo);
+  font-weight: 600;
+}
 .rd-card__body {
-  padding: 0 24px 26px;
+  padding: 0 26px 28px;
 }
 .rd-card__blurb {
-  margin: 0 0 16px;
-  max-width: 52ch;
+  margin: 0 0 20px;
+  max-width: 60ch;
   font-size: 16px;
   line-height: 1.6;
   color: var(--rd-body);
 }
+/* The milestones as the live cards read them: one line each, ticked or waiting. */
 .rd-card__items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  gap: 0;
 }
 .rd-card__items li {
-  height: 34px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--rd-body);
+}
+.rd-card__items li + li {
+  /* The design's finer [4,4] rule between rows. */
+  background-image: repeating-linear-gradient(90deg, var(--rd-line) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.rd-card__items li[data-done] {
+  color: var(--rd-ink);
+}
+.rd-tick {
   display: inline-flex;
   align-items: center;
-  padding: 0 14.75px;
-  border: 1px solid var(--rd-line);
-  border-radius: 46px;
-  font-size: 14px;
-  letter-spacing: -0.28px;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--rd-rail);
 }
+.rd-tick[data-done] {
+  background: color-mix(in srgb, var(--rd-indigo) 12%, transparent);
+  color: var(--rd-indigo);
+}
+/* Opening a card deals its milestones out in reading order. */
+@media (prefers-reduced-motion: no-preference) {
+  .rd-card[data-open] .rd-card__blurb {
+    animation: rd-row 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .rd-card[data-open] .rd-card__items li {
+    animation: rd-row 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(60ms + var(--j) * 45ms);
+  }
+}
+@keyframes rd-row {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.rd-rail__stop button:focus-visible,
+.rd-card__head button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+
+/* The drawer's front plate carries the label, the way a card index is labelled. */
 .rd-drawer__base {
   width: 100%;
   margin: 0;
-  padding: 14px 0;
+  padding: 16px 0;
   border: 1px solid var(--rd-title);
-  border-radius: 0 0 10px 10px;
-  background: #f2f3f4;
+  border-radius: 0 0 12px 12px;
+  background: #eceef0;
   text-align: center;
   font-size: 14px;
 }
 .rd-drawer__base span {
   display: inline-block;
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-radius: 46px;
   background: var(--rd-lime);
   color: #122433;
-  font-weight: 600;
+  letter-spacing: -0.28px;
+}
+.rd-drawer__base b {
+  font-weight: 700;
 }
 
 /* --------------------------------------------------------------- 5 Journey */
@@ -642,6 +807,7 @@
 .rd[data-motion='pending'] .rd-ledger__col,
 .rd[data-motion='pending'] .rd-stage__col,
 .rd[data-motion='pending'] .rd-card,
+.rd[data-motion='pending'] .rd-rail__stop,
 .rd[data-motion='pending'] .rd-wire__row,
 .rd[data-motion='pending'] .rd-meter,
 .rd[data-motion='pending'] .rd-traj__node,
@@ -829,6 +995,35 @@
   }
   .rd-card__tab {
     left: 16px;
+  }
+  .rd-card__head button {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 20px 18px 16px;
+  }
+  .rd-card__marker {
+    justify-self: start;
+  }
+  .rd-card__body {
+    padding: 0 18px 24px;
+  }
+  .rd-index {
+    gap: 36px;
+  }
+  /* Seven stops will not fit across a phone: the rail becomes a numbered strip that scrolls. */
+  .rd-rail {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 84px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .rd-rail::before {
+    left: 42px;
+    right: 42px;
+  }
+  .rd-rail__name {
+    font-size: 13px;
   }
   .rd-wire__pill {
     min-width: 0;

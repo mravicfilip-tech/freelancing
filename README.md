@@ -33,6 +33,36 @@ localStorage, so it sticks for a returning viewer. Presets live in
 without the switcher, remove `<PlanetSwitcher />` from `src/App.tsx` and set the
 default in `config.ts`.
 
+## Roadmap band
+
+The nav has linked `#roadmap` since the Figma build landed; this is the section
+it points at. Five directions over the same six levels, all in the page's own
+system — 1560 dashed rails, Onest and NewBlack, Doto for every numeral, and an
+entrance keyed off ScrollTrigger like the bands around it.
+
+```
+src/components/FigmaRoadmap/
+  content.ts           the six levels, their milestones and the raise gates — all copy lives here
+  FigmaRoadmap.tsx     the five directions
+  FigmaRoadmap.css     the band shell, then one block per direction
+  useRoadmapMotion.ts  one entrance per direction
+  RoadPicker.tsx       the review page
+```
+
+| # | name | what it is |
+|---|------|------------|
+| 1 | Ledger | Six numbered columns on the section's rules; milestone chips cascade across them. |
+| 2 | Stage | The band turns over to the footer's black; one rail, the live level lifted onto lime. |
+| 3 | Trajectory | One curve on black, the travelled part lit, the levels read off it like a chart. |
+| 4 | Index | A drawer of tabbed cards on the reviews band; the open one shows its milestones. |
+| 5 | Journey | The levels wired into a column beside a meter of the raise against its gates. |
+
+`/?road-picker` is the review page; `?road=1..5` applies a direction to the real
+page. Copy and figures in `content.ts` are placeholders drawn from public
+coverage of the six-level roadmap — confirm the wording, the raise and the gate
+amounts with the client. `npm run roadmap:shots` writes
+`screenshots/roadmap-<n>-<size>.png` for all five at 1440 and 390.
+
 ## Hero planet
 
 ```

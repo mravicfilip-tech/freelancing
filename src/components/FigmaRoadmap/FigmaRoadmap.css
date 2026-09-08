@@ -1,0 +1,843 @@
+/* Roadmap band — five directions over the same six levels. Takes the sections' shell: the 1560
+   dashed rails, the [8,8] rail rhythm and the finer [4,4] rules inside, Onest for text, NewBlack
+   for the heading and Doto for every numeral. Directions 2 and 3 turn the band over to the
+   footer's black, where the brand lime is the accent. */
+
+.rd {
+  --rd-bg: #edeff1;
+  --rd-rail: #c5cbd1;
+  --rd-line: #dadee2;
+  --rd-card: #fff;
+  --rd-title: #122433;
+  --rd-ink: #2c2e31;
+  --rd-body: #7c858d;
+  --rd-indigo: #4042d1;
+  --rd-lavender: #b3b5f5;
+  --rd-lime: #d9f24e;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  --rd-dash-v: repeating-linear-gradient(180deg, var(--rd-rail) 0 8px, transparent 8px 16px);
+  --rd-rule-v: repeating-linear-gradient(180deg, var(--rd-line) 0 4px, transparent 4px 8px);
+
+  background: var(--rd-bg);
+  color: var(--rd-ink);
+  font-family: var(--fh-sans);
+}
+/* Black ground, the footer's palette — the only place the lime works. */
+.rd[data-tone='dark'] {
+  --rd-bg: #0c1219;
+  --rd-rail: #28323c;
+  --rd-line: #232d37;
+  --rd-card: #131b24;
+  --rd-title: #eef2f5;
+  --rd-ink: #eef2f5;
+  --rd-body: #8593a0;
+}
+/* Direction 4 sits on the reviews band's slightly deeper grey, so the white cards read as cards. */
+.rd[data-variant='4'] {
+  --rd-bg: #e6e9ed;
+  --rd-line: #c5cbd1;
+}
+/* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
+.rd__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 160px clamp(0px, 3.85%, 60px);
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  background-image: var(--rd-dash-v), var(--rd-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+.rd-digits {
+  font-family: var(--fh-digits);
+  font-weight: 700;
+}
+
+/* ---------- Heading ---------- */
+.rd__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.rd__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  color: var(--rd-title);
+}
+.rd__titleMuted {
+  color: var(--rd-body);
+}
+/* Each line sits in a mask so it can rise into view; the padding keeps descenders unclipped. */
+.rd__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.rd__lineInner {
+  display: block;
+}
+.rd__intro {
+  margin: 0;
+  max-width: 40ch;
+  text-align: right;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+}
+
+/* ---------------------------------------------------------------- 1 Ledger */
+
+.rd-ledger__cols,
+.rd-ledger__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.rd-ledger__col {
+  padding: 0 0 20px 16px;
+  /* The column rule on the design's finer [4,4] stroke, matching the grid below it. */
+  background-image: repeating-linear-gradient(180deg, var(--rd-title) 0 4px, transparent 4px 8px);
+  background-size: 1px 100%;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.rd-ledger__col[data-status='next'] {
+  background-image: repeating-linear-gradient(180deg, var(--rd-line) 0 4px, transparent 4px 8px);
+}
+.rd-ledger__n {
+  display: block;
+  font-family: var(--fh-digits);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--rd-title);
+}
+.rd-ledger__name {
+  display: block;
+  margin-top: 2px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.36px;
+  text-transform: uppercase;
+  color: var(--rd-title);
+}
+.rd-ledger__col[data-status='next'] .rd-ledger__n,
+.rd-ledger__col[data-status='next'] .rd-ledger__name {
+  color: var(--rd-body);
+}
+.rd-ledger__grid {
+  list-style: none;
+  margin: 0;
+  padding: 20px 0 12px;
+  position: relative;
+  grid-auto-rows: 56px;
+}
+/* One rule per column, on the finer [4,4] stroke the design uses inside a section. The dashes are
+   a mask, so they sit on their own layer rather than cutting into the chips. */
+.rd-ledger__grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rd-line) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
+  mask-image: repeating-linear-gradient(180deg, #000 0 4px, transparent 4px 8px);
+}
+.rd-chip {
+  position: relative;
+  z-index: 1;
+}
+.rd-ledger__group {
+  display: contents;
+}
+.rd-ledger__groupHead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  margin: 0;
+}
+.rd-chip {
+  align-self: center;
+  justify-self: start;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 46px;
+  background: var(--rd-card);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rd-chip[data-status='live'] {
+  background: var(--rd-indigo);
+  color: #fff;
+  font-weight: 600;
+}
+.rd-chip[data-status='next'] {
+  background: transparent;
+  border: 1px dashed var(--rd-rail);
+  color: var(--rd-body);
+}
+
+/* ----------------------------------------------------------------- 2 Stage */
+
+.rd-stage {
+  list-style: none;
+  margin: 200px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 24px;
+}
+.rd-stage__col {
+  position: relative;
+  padding-top: 40px;
+  border-top: 1px solid var(--rd-rail);
+}
+.rd-stage__dot {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--rd-ink);
+}
+.rd-stage__col[data-status='next'] .rd-stage__dot {
+  background: var(--rd-body);
+}
+.rd-stage__col[data-status='live'] .rd-stage__dot {
+  background: var(--rd-lime);
+}
+.rd-stage__lit {
+  position: absolute;
+  z-index: 0;
+  inset: -200px -18px -28px -18px;
+  /* The copy sits at the foot of the panel's head, just above the rail. */
+  padding: 76px 22px 0;
+  border-radius: 12px;
+  background: var(--rd-lime);
+  color: #122433;
+}
+.rd-stage__kicker {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rd-stage__litBody {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #2c3a2b;
+}
+.rd-stage__n,
+.rd-stage__name,
+.rd-stage__items {
+  position: relative;
+  z-index: 1;
+}
+.rd-stage__n {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rd-body);
+}
+.rd-stage__name {
+  margin: 0 0 14px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(20px, 2vw, 30px);
+  letter-spacing: -0.9px;
+  text-transform: uppercase;
+  color: var(--rd-title);
+}
+.rd-stage__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--rd-body);
+}
+.rd-stage__items li + li {
+  margin-top: 6px;
+}
+.rd-stage__col[data-status='live'] .rd-stage__n,
+.rd-stage__col[data-status='live'] .rd-stage__name {
+  color: #122433;
+}
+.rd-stage__col[data-status='live'] .rd-stage__items {
+  color: #2c3a2b;
+}
+
+/* ------------------------------------------------------------ 3 Trajectory */
+
+.rd-traj__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.rd-traj__base {
+  fill: none;
+  stroke: var(--rd-rail);
+  stroke-width: 2;
+}
+.rd-traj__lit {
+  fill: none;
+  stroke: var(--rd-lime);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.rd-traj__lit--halo {
+  stroke-width: 12;
+  opacity: 0.35;
+}
+.rd-traj__node line {
+  stroke: var(--rd-rail);
+  stroke-width: 1;
+}
+.rd-traj__node circle {
+  fill: var(--rd-ink);
+}
+.rd-traj__node[data-side='left'] text {
+  text-anchor: end;
+}
+.rd-traj__kicker {
+  fill: var(--rd-body);
+  font-family: var(--fh-digits);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.rd-traj__name {
+  fill: var(--rd-title);
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.84px;
+}
+.rd-traj__marker {
+  fill: var(--rd-body);
+  font-size: 14px;
+}
+.rd-traj__node[data-status='live'] circle {
+  fill: var(--rd-lime);
+}
+.rd-traj__node[data-status='live'] .rd-traj__kicker,
+.rd-traj__node[data-status='live'] .rd-traj__marker {
+  fill: var(--rd-lime);
+}
+.rd-traj__node[data-status='next'] circle {
+  fill: var(--rd-body);
+}
+.rd-traj__node[data-status='next'] .rd-traj__name {
+  fill: var(--rd-body);
+}
+/* The reading-order copy is the mobile layout; on a desktop the curve carries it. */
+.rd-traj__list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ----------------------------------------------------------------- 4 Index */
+
+.rd-drawer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 22px;
+}
+.rd-card {
+  position: relative;
+  /* Each card is a touch wider than the one above it: the drawer tapers. */
+  width: calc(74% + var(--i) * 5.2%);
+  margin: -1px auto 0;
+  border: 1px solid var(--rd-title);
+  border-radius: 12px 12px 0 0;
+  background: #f2f3f4;
+}
+.rd-card[data-open] {
+  background: var(--rd-card);
+}
+.rd-card__head {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.rd-card__head button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 18px 24px;
+  border: 0;
+  border-radius: 11px 11px 0 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rd-card__tab {
+  position: absolute;
+  top: -21px;
+  left: var(--tab-x);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 118px;
+  height: 22px;
+  padding: 0 12px;
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 100%, 0 100%);
+  background: var(--rd-title);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+.rd-card__tab em {
+  font-style: normal;
+  color: rgb(255 255 255 / 60%);
+}
+.rd-card[data-status='live'] .rd-card__tab {
+  background: var(--rd-indigo);
+}
+.rd-card[data-status='next'] .rd-card__tab {
+  background: var(--rd-body);
+}
+.rd-card__name {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(20px, 2.4vw, 28px);
+  letter-spacing: -0.84px;
+  color: var(--rd-title);
+}
+.rd-card__marker {
+  font-size: 14px;
+  color: var(--rd-body);
+}
+.rd-card__body {
+  padding: 0 24px 26px;
+}
+.rd-card__blurb {
+  margin: 0 0 16px;
+  max-width: 52ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--rd-body);
+}
+.rd-card__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rd-card__items li {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14.75px;
+  border: 1px solid var(--rd-line);
+  border-radius: 46px;
+  font-size: 14px;
+  letter-spacing: -0.28px;
+}
+.rd-drawer__base {
+  width: 100%;
+  margin: 0;
+  padding: 14px 0;
+  border: 1px solid var(--rd-title);
+  border-radius: 0 0 10px 10px;
+  background: #f2f3f4;
+  text-align: center;
+  font-size: 14px;
+}
+.rd-drawer__base span {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 46px;
+  background: var(--rd-lime);
+  color: #122433;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------- 5 Journey */
+
+.rd-journey {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+.rd-wire {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 28px;
+  border-left: 1px solid var(--rd-title);
+  border-radius: 28px 0 0 28px;
+}
+.rd-wire__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.rd-wire__row + .rd-wire__row {
+  margin-top: 14px;
+}
+.rd-wire__row::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  width: 28px;
+  height: 1px;
+  background: var(--rd-title);
+}
+.rd-wire__row[data-status='next']::before {
+  background: var(--rd-line);
+}
+.rd-wire__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  max-width: 560px;
+  height: 56px;
+  padding: 0 24px;
+  border: 1px solid var(--rd-title);
+  border-radius: 46px;
+  font-size: 17px;
+  letter-spacing: -0.34px;
+  color: var(--rd-title);
+}
+.rd-wire__n {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-wire__row[data-status='live'] .rd-wire__pill {
+  background: var(--rd-indigo);
+  border-color: var(--rd-indigo);
+  color: #fff;
+  font-weight: 600;
+}
+.rd-wire__row[data-status='live'] .rd-wire__n {
+  color: rgb(255 255 255 / 72%);
+}
+.rd-wire__row[data-status='next'] .rd-wire__pill {
+  border-color: var(--rd-line);
+  color: var(--rd-body);
+}
+.rd-wire__marker {
+  font-size: 14px;
+  color: var(--rd-body);
+}
+
+.rd-meter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  /* Room on the right for the gate labels, which hang off the scale. */
+  padding: 32px 150px 32px 36px;
+  border-radius: 12px;
+  background: #0c1219;
+  color: #eef2f5;
+}
+.rd-meter__scale {
+  position: relative;
+  width: 4px;
+  height: 300px;
+  margin-left: 6px;
+  border-radius: 2px;
+  background: #28323c;
+}
+.rd-meter__fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--rd-lime);
+}
+.rd-meter__glow {
+  position: absolute;
+  left: 50%;
+  width: 108px;
+  height: 108px;
+  transform: translate(-50%, 50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(217 242 78 / 45%) 0%, transparent 68%);
+}
+.rd-meter__gate {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(50%);
+  white-space: nowrap;
+  font-size: 13px;
+  color: #55606b;
+}
+.rd-meter__gate[data-passed] {
+  color: #8593a0;
+}
+.rd-meter__gate i {
+  width: 10px;
+  height: 1px;
+  background: currentcolor;
+}
+.rd-meter__gate em {
+  font-style: normal;
+  line-height: 1;
+}
+.rd-meter__read {
+  margin: 0;
+}
+.rd-meter__read strong {
+  display: block;
+  font-size: 34px;
+  letter-spacing: -1px;
+  color: var(--rd-lime);
+}
+.rd-meter__read span {
+  font-size: 13px;
+  color: #8593a0;
+}
+
+/* ---------- Motion (see useRoadmapMotion.ts) ----------
+   Hold the animated parts invisible until GSAP has written their start states. */
+.rd[data-motion='pending'] .rd__intro,
+.rd[data-motion='pending'] .rd-chip,
+.rd[data-motion='pending'] .rd-ledger__col,
+.rd[data-motion='pending'] .rd-stage__col,
+.rd[data-motion='pending'] .rd-card,
+.rd[data-motion='pending'] .rd-wire__row,
+.rd[data-motion='pending'] .rd-meter,
+.rd[data-motion='pending'] .rd-traj__node,
+.rd[data-motion='pending'] .rd-traj__lit {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- Tablet */
+
+@media (max-width: 1099px) {
+  .rd__frame {
+    padding: 112px clamp(0px, 3.85%, 60px);
+    gap: 48px;
+  }
+  .rd__head {
+    display: block;
+  }
+  .rd__intro {
+    margin-top: 20px;
+    text-align: left;
+  }
+  .rd-ledger__cols,
+  .rd-ledger__grid,
+  .rd-stage {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .rd-ledger__grid::before {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--rd-line) 0 1px,
+      transparent 1px calc(100% / 3)
+    );
+  }
+  .rd-stage {
+    margin-top: 0;
+    row-gap: 64px;
+  }
+  /* No room above the rail once the columns stack, so the panel wraps the level itself and the
+     kicker takes a reserved band at its top. */
+  .rd-stage__lit {
+    inset: -20px -18px -20px -18px;
+    padding: 14px 22px 0;
+  }
+  .rd-stage__col[data-status='live'] {
+    padding-top: 76px;
+  }
+  .rd-stage__litBody {
+    display: none;
+  }
+  .rd-journey {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .rd-meter {
+    justify-self: start;
+  }
+}
+
+/* ---------------------------------------------------------------- Mobile */
+
+@media (max-width: 767px) {
+  .rd__frame {
+    width: min(1560px, 100% - 32px);
+    padding: 80px 0;
+    gap: 40px;
+  }
+  .rd__title {
+    letter-spacing: -1.2px;
+  }
+  .rd-ledger__cols {
+    display: none;
+  }
+  .rd-ledger__grid,
+  .rd-stage {
+    display: block;
+    padding: 0;
+  }
+  .rd-ledger__grid::before {
+    display: none;
+  }
+  .rd-ledger__group {
+    display: block;
+  }
+  .rd-ledger__group + .rd-ledger__group {
+    margin-top: 32px;
+  }
+  .rd-ledger__groupHead {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    margin: 0 0 12px;
+    padding-left: 14px;
+    border-left: 1px solid var(--rd-title);
+    font-size: 17px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--rd-title);
+  }
+  .rd-ledger__groupHead[data-status='next'] {
+    color: var(--rd-body);
+    border-left-color: var(--rd-line);
+  }
+  .rd-chip {
+    display: flex;
+    height: auto;
+    min-height: 38px;
+    padding: 9px 16px;
+    margin-top: 8px;
+    white-space: normal;
+  }
+  .rd-stage__col + .rd-stage__col {
+    margin-top: 48px;
+  }
+  /* The frame has only 16px of page margin here, so the panel bleeds less far. */
+  .rd-stage__lit {
+    inset: -20px -12px -20px -12px;
+    padding: 14px 18px 0;
+  }
+  .rd-traj__svg {
+    display: none;
+  }
+  .rd-traj__list {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 26px;
+    border-left: 1px solid var(--rd-rail);
+  }
+  .rd-traj__list li {
+    position: relative;
+  }
+  .rd-traj__list li + li {
+    margin-top: 34px;
+  }
+  .rd-traj__list li::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 7px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--rd-body);
+  }
+  .rd-traj__list li[data-status='done']::before {
+    background: var(--rd-ink);
+  }
+  .rd-traj__list li[data-status='live']::before {
+    background: var(--rd-lime);
+    box-shadow: 0 0 0 6px rgb(217 242 78 / 22%);
+  }
+  .rd-traj__listN {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rd-body);
+  }
+  .rd-traj__list li[data-status='live'] .rd-traj__listN {
+    color: var(--rd-lime);
+  }
+  .rd-traj__listName {
+    margin: 6px 0 8px;
+    font-family: var(--fh-display);
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.84px;
+    color: var(--rd-title);
+  }
+  .rd-traj__list li[data-status='next'] .rd-traj__listName {
+    color: var(--rd-body);
+  }
+  .rd-traj__listBlurb {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--rd-body);
+  }
+  .rd-card {
+    width: 100%;
+  }
+  .rd-card__tab {
+    left: 16px;
+  }
+  .rd-wire__pill {
+    min-width: 0;
+    flex: 1;
+  }
+  .rd-wire__marker {
+    display: none;
+  }
+  .rd-meter {
+    padding: 28px 130px 28px 30px;
+  }
+}

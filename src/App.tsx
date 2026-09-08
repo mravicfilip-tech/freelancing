@@ -15,6 +15,8 @@ import { FigmaTokenomics } from './components/FigmaTokenomics/FigmaTokenomics';
 import { TokPicker, tokFromParam } from './components/FigmaTokenomics/TokPicker';
 import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
+import { FigmaRoadmap } from './components/FigmaRoadmap/FigmaRoadmap';
+import { RoadPicker, roadFromParam } from './components/FigmaRoadmap/RoadPicker';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -25,6 +27,9 @@ const BENTO_PICKS = picksFromParam(params.get('bento'));
 // Review page for the tokenomics motion variants; `?tok=` alone applies a choice to the real page.
 const TOK_PICKER = params.has('tok-picker');
 const TOK_VARIANT = tokFromParam(params.get('tok'));
+// Review page for the five roadmap directions; `?road=` alone applies a choice to the real page.
+const ROAD_PICKER = params.has('road-picker');
+const ROAD_VARIANT = roadFromParam(params.get('road'));
 
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
@@ -33,6 +38,7 @@ export function App() {
   if (CAPTURE_MODE) return <CaptureStage />;
   if (BENTO_PICKER) return <BentoPicker />;
   if (TOK_PICKER) return <TokPicker />;
+  if (ROAD_PICKER) return <RoadPicker />;
 
   const figma = HERO_VARIANT === 'figma';
   return (
@@ -46,6 +52,7 @@ export function App() {
         {figma && <FigmaReviews />}
       {figma && <FigmaSeenIn />}
         {figma && <FigmaTokenomics variant={TOK_VARIANT} />}
+        {figma && <FigmaRoadmap variant={ROAD_VARIANT} />}
         {figma && <FigmaFaq />}
       </main>
       {figma && <FigmaFooter />}

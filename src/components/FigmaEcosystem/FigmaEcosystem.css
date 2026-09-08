@@ -270,7 +270,7 @@
     display: none;
     /* Out past the card's inner padding AND the frame's gutter, so the drawing gets the whole
        card rather than the ~265 a doubly padded column would leave it. */
-    margin: 4px 0 20px;
+    margin: 4px -16px 20px;
     overflow: hidden;
     opacity: 1;
     visibility: visible;
@@ -280,14 +280,31 @@
     padding-left: 0;
   }
   .ec__item--on .ec__scene {
-    display: block;
+    display: flex;
+    align-items: center;
+    /* Room for the drawing at the size below, which is taller than the 800x640 canvas fitted to
+       the width would be. */
+    height: 410px;
   }
   .ec__scene .ff__il {
     position: static;
     width: 100%;
-    transform: none;
   }
-  /* The drawings use nearly the whole 800 canvas across, so there is no side air to crop —
-     scaling past the box only cuts the labels off. The size comes from the width instead: the
-     breakout above takes the scene from the ~265 of a doubly padded column to the card's 345. */
+  /* Fitted to the frame's width, an 800-wide canvas puts 10px labels on screen at 5. Each drawing
+     leaves a different margin of empty canvas around itself, so each takes the step that fills the
+     frame with its own writing and crops only the air: measured off the built scene, one per
+     drawing, because there is no rule that covers all four. */
+  .ec__scene .ff__il {
+    transform: scale(1.1);
+    transform-origin: 50% 50%;
+  }
+  .ec__scene[data-scene='trading'] .ff__il {
+    transform: scale(1.07);
+  }
+  .ec__scene[data-scene='staking'] .ff__il {
+    transform: scale(1.4);
+  }
+  .ec__scene[data-scene='storage'] .ff__il {
+    transform: scale(1.39);
+  }
 }

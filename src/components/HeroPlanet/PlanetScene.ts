@@ -362,7 +362,10 @@ export class PlanetScene {
 
   private buildDots(mask: LandMask | null) {
     const C = this.cfg;
-    const n = this.opts.layout === 'mobile' ? C.pointCountMobile : C.pointCountDesktop;
+    // The page asks for the "capture" layout, so the mobile budget was never chosen: a phone was
+    // drawing 14000 points into a sixth of the pixels a desktop gets. Ask the screen as well.
+    const phone = typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches;
+    const n = this.opts.layout === 'mobile' || phone ? C.pointCountMobile : C.pointCountDesktop;
     const pts: number[] = [];
     if (C.pointLayout === 'grid') {
       // Latitude rows with equal arc spacing — the tidy halftone look.

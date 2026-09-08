@@ -20,6 +20,7 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
 
     let cancelled = false;
     let revert: (() => void) | null = null;
+    let io: IntersectionObserver | null = null;
     Promise.all([import('gsap'), import('gsap/ScrollTrigger')])
       .then(([{ gsap }, { ScrollTrigger }]) => {
         if (cancelled) return;
@@ -43,12 +44,38 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
             0.85,
           );
 
+          // A mouse lifts each mark as it passes it; a finger has no equivalent, so on a coarse
+          // pointer the lattice lights itself in reading order instead — the same beat the hover
+          // gives, taken over by the page. It rests whenever the band is off screen.
+          if (window.matchMedia('(hover: none)').matches) {
+            const marks = el.querySelectorAll('.sn__mark');
+            const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.2, paused: true });
+            marks.forEach((m, i) => {
+              loop.to(m, { opacity: 1, duration: 0.45, ease: 'sine.out' }, i * 0.7);
+              loop.to(m, { opacity: 0.32, duration: 0.7, ease: 'sine.inOut' }, i * 0.7 + 0.95);
+            });
+            let seen = false;
+            io = new IntersectionObserver(
+              ([e]) => {
+                seen = e.isIntersecting;
+                if (seen && tl.progress() === 1) loop.play();
+                else loop.pause();
+              },
+              { rootMargin: '60px' },
+            );
+            io.observe(el);
+            tl.eventCallback('onComplete', () => { if (seen) loop.play(); });
+          }
+
           const st = ScrollTrigger.create({ trigger: el, start: 'top 75%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();
         }, el);
         // The `from` tweens have written their start states, so the CSS hold can go.
         reveal();
-        revert = () => ctx.revert();
+        revert = () => {
+          io?.disconnect();
+          ctx.revert();
+        };
       })
       .catch(() => reveal());
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Coinsult">
+  <title>Coinsult</title>
+  <defs>
+    <linearGradient id="coinsult-tile" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#3D926F"/><stop offset="1" stop-color="#1D7793"/></linearGradient>
+  </defs>
+  <path fill="url(#coinsult-tile)" d="M23.3 0H100V76.7A23.3 23.3 0 0 1 76.7 100H0V23.3A23.3 23.3 0 0 1 23.3 0Z"/>
+  <path fill="#fff" d="M67.87 54.788A18.5 18.5 0 1 1 67.87 45.212L59.997 47.321A10.35 10.35 0 1 0 59.997 52.679Z M79.847 57.998A30.9 30.9 0 0 1 23.458 65.822L30.759 61.47A22.4 22.4 0 0 0 71.637 55.798Z M20.646 59.651A30.9 30.9 0 0 1 21.019 39.28L28.991 42.229A22.4 22.4 0 0 0 28.721 56.996Z M24.056 33.216A30.9 30.9 0 0 1 79.847 42.002L71.637 44.202A22.4 22.4 0 0 0 31.193 37.833Z"/>
+</svg>

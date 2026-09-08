@@ -1,5 +1,6 @@
 import { useRef, type ReactElement } from 'react';
 import { PresaleButton } from '../FigmaHero/FigmaHero';
+import { useCorridors } from './useCorridors';
 import { useFooterMotion } from './useFooterMotion';
 import './FigmaFooter.css';
 
@@ -55,15 +56,6 @@ const SOCIAL: [string, string, () => ReactElement][] = [
   ['Medium', 'https://medium.com/@remittix', IconMedium],
 ];
 
-function Arrow() {
-  return (
-    <svg className="ft__arrow" viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M4.5 11.5 11.5 4.5" />
-      <path d="M5.5 4.5h6v6" />
-    </svg>
-  );
-}
-
 /**
  * Footer. A full-height closing line carrying the hero's own headline and the primary button, then
  * the wordmark and socials, then the disclaimer beside the link columns — all on the same light
@@ -71,12 +63,15 @@ function Arrow() {
  */
 export function FigmaFooter() {
   const root = useRef<HTMLElement>(null);
+  const cta = useRef<HTMLDivElement>(null);
   useFooterMotion(root);
+  useCorridors(cta);
 
   return (
     <footer ref={root} className="ft" data-motion="pending">
       <div className="ft__frame">
-        <div className="ft__cta">
+        <div className="ft__cta" ref={cta}>
+          <canvas className="ft__field" aria-hidden="true" />
           <h2 className="ft__title">
             <span className="ft__line">
               <span className="ft__lineInner">Cross-border</span>
@@ -90,56 +85,54 @@ export function FigmaFooter() {
           <PresaleButton wide />
         </div>
 
-        <div className="ft__id">
-          <a className="ft__brand" href="/">
-            <img src="/figma/logo-lime.svg" alt="" width={33} height={17} />
-            <span>Remittix</span>
-          </a>
-          <ul className="ft__social">
-            {SOCIAL.map(([name, href, Icon]) => (
-              <li key={name}>
-                <a href={href} aria-label={name} rel="noreferrer noopener" target="_blank">
-                  <Icon />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
         <i className="ft__rule" aria-hidden="true" />
 
-        <div className="ft__cols">
-          <div className="ft__disclaimer">
-            <h3>Disclaimer:</h3>
-            <p>{DISCLAIMER}</p>
+        <div className="ft__main">
+          <div className="ft__identity">
+            <a className="ft__brand" href="/">
+              <img src="/figma/logo-lime.svg" alt="" width={33} height={17} />
+              <span>Remittix</span>
+            </a>
+            <ul className="ft__social">
+              {SOCIAL.map(([name, href, Icon]) => (
+                <li key={name}>
+                  <a href={href} aria-label={name} rel="noreferrer noopener" target="_blank">
+                    <Icon />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-          {LINKS.map((column, c) => (
-            <nav className="ft__col" key={c} aria-label={c === 0 ? 'Company' : 'Project'}>
+
+          <nav className="ft__nav" aria-label="Footer">
+            {LINKS.map((column, c) => (
+              <div className="ft__col" key={c}>
+                <h3 className="ft__label">{c === 0 ? 'Company' : 'Project'}</h3>
+                <ul>
+                  {column.map(([label, href]) => (
+                    <li key={label}>
+                      <a href={href}>{label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div className="ft__col ft__col--contact">
+              <h3 className="ft__label">Contact info</h3>
               <ul>
-                {column.map(([label, href]) => (
+                {CONTACT.map(([label, href]) => (
                   <li key={label}>
                     <a href={href}>{label}</a>
                   </li>
                 ))}
               </ul>
-            </nav>
-          ))}
-          <div className="ft__col ft__col--contact">
-            <h3>
-              <a href="mailto:support@remittix.io">
-                Contact info
-                <Arrow />
-              </a>
-            </h3>
-            <ul>
-              {CONTACT.map(([label, href]) => (
-                <li key={label}>
-                  <a href={href}>{label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+            </div>
+          </nav>
         </div>
+
+        <p className="ft__small">
+          <b>Disclaimer:</b> {DISCLAIMER}
+        </p>
 
         <i className="ft__rule" aria-hidden="true" />
 

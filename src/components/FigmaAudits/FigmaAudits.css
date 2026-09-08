@@ -128,12 +128,15 @@
   opacity: 0.55;
   transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* A mark drawn for a dark ground: invert it, then take the white down to the band's ink. */
-.av__mark img[data-invert] {
-  filter: invert(1) brightness(0.14) saturate(1.6);
+/* The drawn stand-in takes the same rest weight, so a cell with a real mark and a cell without
+   sit at one weight across the row. */
+.av__drawn {
+  opacity: 0.62;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (hover: hover) {
-  .av__cell:hover .av__mark img {
+  .av__cell:hover .av__mark img,
+  .av__cell:hover .av__drawn {
     opacity: 1;
   }
 }

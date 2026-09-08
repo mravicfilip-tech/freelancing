@@ -9,13 +9,15 @@ import './FigmaAudits.css';
  * document actually says (findings, verdict date, version) rather than a line of assurance copy.
  * Under them runs the ledger strip: the contract itself, its chain, and the treasury's multisig.
  *
- * NOTE: every value below is a placeholder — firm names, finding counts, dates, the contract
- * address, the multisig and all hrefs. Swap them for the published reports before this ships.
- * A firm's `logo` is used when the file exists; without one the drawn shield stands in, so
- * dropping an SVG into public/figma/logos/ is the only change needed.
+ * NOTE: the finding counts, dates, the contract address, the multisig and all hrefs are
+ * placeholders. Swap them for the published reports before this ships.
+ *
+ * Both marks ship white for a dark ground; the copies in public/figma/logos/ carry the design's
+ * ink instead, and Coinsult's gradient tile is flattened to that same ink so the two read as one
+ * set. A firm without a `logo` falls back to the drawn shield.
  */
 
-type Logo = { src: string; w: number; h: number; invert?: boolean };
+type Logo = { src: string; w: number; h: number };
 type Credential = {
   id: string;
   name: string;
@@ -31,6 +33,7 @@ const CREDENTIALS: Credential[] = [
   {
     id: 'certik',
     name: 'CertiK',
+    logo: { src: '/figma/logos/certik.svg', w: 130, h: 26 },
     kind: 'Smart contract audit',
     facts: [
       ['Findings', '0 critical · 0 major'],
@@ -42,6 +45,7 @@ const CREDENTIALS: Credential[] = [
   {
     id: 'coinsult',
     name: 'Coinsult',
+    logo: { src: '/figma/logos/coinsult.svg', w: 113, h: 29 },
     kind: 'Smart contract audit',
     facts: [
       ['Findings', '0 critical · 2 minor'],
@@ -159,7 +163,6 @@ export function FigmaAudits() {
                     alt={c.name}
                     width={c.logo.w}
                     height={c.logo.h}
-                    data-invert={c.logo.invert || undefined}
                     loading="lazy"
                   />
                 ) : (

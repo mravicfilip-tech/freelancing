@@ -8,7 +8,7 @@ export const TOK_VARIANTS: { name: string; blurb: string }[] = [
   { name: 'Relay', blurb: 'Every move is paid for: a light runs in along that allocation’s own chain wire, the hub takes the hit, and only then does the arc swing across and resize onto it.' },
   { name: 'Bloom', blurb: 'The arc closes to a thin blade at the new bearing, holds a beat, then blooms open to the allocation’s full share — so the size of each slice is the thing you read.' },
   { name: 'Unroll', blurb: 'One continuous rotation: the leading edge runs ahead to the next allocation and the trailing edge catches up, so the arc stretches and contracts without ever jumping.' },
-  { name: 'Snap', blurb: 'Quick and mechanical — the arc snaps to each bearing with a slight overshoot and the hub halos ripple outward on arrival, like a dial locking on.' },
+  { name: 'Settle', blurb: 'The most direct of the five: a short travel onto each bearing that eases past its mark by a hair and settles, with the hub halos rippling gently outward as it lands.' },
 ];
 
 export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1) {
@@ -41,6 +41,14 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const arcEl = one<SVGPathElement>('.tk__arc');
           const haloEls = HALOS.map((h) => one<SVGPathElement>(`[data-halo="${h.d}"]`));
           const stops = tourStops();
+
+          /**
+           * Tempo. The dial should read as slow and deliberate: a long travel, and a rest long
+           * enough to actually take in the allocation before it moves on.
+           */
+          const MOVE = 1.5;
+          const HOLD = 2.4;
+          const EASE = 'power2.inOut';
           const [rest0, rest1] = spanOf(SEG_BY_ID[REST]);
 
           /**
@@ -54,7 +62,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           };
           paint();
 
-          const aimAt = (tl: gsap.core.Timeline, at: number, a0: number, a1: number, dur = 0.8, ease = 'power3.inOut') =>
+          const aimAt = (tl: gsap.core.Timeline, at: number, a0: number, a1: number, dur = MOVE, ease = EASE) =>
             tl.to(arc, { a0, a1, duration: dur, ease, onUpdate: paint }, at);
 
           /** Marks one allocation live: its chip goes indigo, the rest stay ink. */
@@ -69,7 +77,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             );
 
           /** Counts a percentage up to its value. */
-          const count = (id: string, tl: gsap.core.Timeline, at: number, dur = 0.5) => {
+          const count = (id: string, tl: gsap.core.Timeline, at: number, dur = 0.9) => {
             const node = slice(id)?.querySelector('.tk__pct b') as HTMLElement | null;
             if (!node) return;
             const to = Number(node.dataset.pct ?? 0);
@@ -86,7 +94,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           };
 
           /** Sends a light along one wire. `dir` 1 runs inward to the hub, -1 runs back out. */
-          const runWire = (id: string, tl: gsap.core.Timeline, at: number, dur = 0.9, dir: 1 | -1 = 1) => {
+          const runWire = (id: string, tl: gsap.core.Timeline, at: number, dur = 1.5, dir: 1 | -1 = 1) => {
             const dot = pulse(id);
             const path = wire(id);
             if (!dot || !path) return;
@@ -101,116 +109,114 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           };
 
           const knock = (tl: gsap.core.Timeline, at: number) => {
-            tl.to(one('.tk__hubDisc'), { scale: 1.07, duration: 0.14, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
-            tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.34, ease: 'elastic.out(1, 0.5)' }, at + 0.14);
+            tl.to(one('.tk__hubDisc'), { scale: 1.035, duration: 0.3, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
+            tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.7, ease: 'power2.out' }, at + 0.3);
           };
 
           // ---- Entrance ---------------------------------------------------------------------
           const tl = gsap.timeline({ paused: true });
-          tl.from(q('.tk__lineInner'), { yPercent: 110, duration: 1, ease: 'power4.out' }, 0);
-          tl.from(one('.tk__sub'), { opacity: 0, y: 10, duration: 0.6, ease: 'power3.out' }, 0.3);
-          tl.from(one('.tk__ring'), { scale: 0.88, opacity: 0, duration: 0.8, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.25);
-          tl.from(one('.tk__hub'), { scale: 0.7, opacity: 0, duration: 0.7, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 0.35);
+          tl.from(q('.tk__lineInner'), { yPercent: 110, duration: 1.3, ease: 'power3.out' }, 0);
+          tl.from(one('.tk__sub'), { opacity: 0, y: 8, duration: 0.9, ease: 'power2.out' }, 0.35);
+          tl.from(one('.tk__ring'), { scale: 0.94, opacity: 0, duration: 1.2, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.3);
+          tl.from(one('.tk__hub'), { scale: 0.86, opacity: 0, duration: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.45);
           // The arc opens from a blade at presale's bearing to its full 50% span.
-          tl.fromTo(arc, { a0: 180, a1: 180 }, { a0: rest0, a1: rest1, duration: 1, ease: 'expo.out', onUpdate: paint }, 0.45);
-          tl.fromTo(q('.tk__wire'), { opacity: 0 }, { opacity: 1, duration: 0.6, stagger: 0.05 }, 0.5);
-          tl.from(q('.tk__coin'), { scale: 0, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.06 }, 0.6);
-          tl.from(q('.tk__slice'), { opacity: 0, y: 10, duration: 0.5, ease: 'expo.out', stagger: 0.06 }, 0.7);
-          SEGMENTS.forEach((s, i) => count(s.id, tl, 0.75 + i * 0.06));
-          light(tl, 1.1, REST);
-          tl.from(one('.tk__facts'), { opacity: 0, y: 14, duration: 0.7, ease: 'power3.out' }, 1.2);
+          tl.fromTo(arc, { a0: 180, a1: 180 }, { a0: rest0, a1: rest1, duration: 1.6, ease: 'power2.out', onUpdate: paint }, 0.6);
+          tl.fromTo(q('.tk__wire'), { opacity: 0 }, { opacity: 1, duration: 1, stagger: 0.08 }, 0.6);
+          tl.from(q('.tk__coin'), { scale: 0.8, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.09 }, 0.8);
+          tl.from(q('.tk__slice'), { opacity: 0, y: 8, duration: 0.8, ease: 'power2.out', stagger: 0.09 }, 0.95);
+          SEGMENTS.forEach((s, i) => count(s.id, tl, 1 + i * 0.09));
+          light(tl, 1.6, REST);
+          tl.from(one('.tk__facts'), { opacity: 0, y: 12, duration: 1, ease: 'power2.out' }, 1.7);
 
           // ---- The cycle --------------------------------------------------------------------
           const loop = gsap.timeline({ repeat: -1, paused: true });
-          const HOLD = 1.1;
 
           if (variant === 1) {
             // Aim — swing and resize onto each allocation in turn.
             let at = 0;
             stops.forEach((s) => {
-              aimAt(loop, at, s.a0, s.a1, 0.85);
-              light(loop, at + 0.5, s.id);
-              count(s.id, loop, at + 0.5);
-              at += 0.85 + HOLD;
+              aimAt(loop, at, s.a0, s.a1);
+              light(loop, at + MOVE * 0.55, s.id);
+              count(s.id, loop, at + MOVE * 0.55);
+              at += MOVE + HOLD;
             });
-            aimAt(loop, at, rest0 - 360, rest1 - 360, 0.9);
-            light(loop, at + 0.5, REST);
-            loop.to({}, { duration: HOLD }, at + 0.9);
+            aimAt(loop, at, rest0 - 360, rest1 - 360);
+            light(loop, at + MOVE * 0.55, REST);
+            loop.to({}, { duration: HOLD }, at + MOVE);
           }
 
           if (variant === 2) {
             // Relay — the chain pays first, then the arc moves.
+            const WIRE = 1.5;
             let at = 0;
             stops.forEach((s) => {
-              runWire(WIRE_FOR[s.id], loop, at, 0.85);
-              knock(loop, at + 0.8);
-              aimAt(loop, at + 0.85, s.a0, s.a1, 0.8);
-              light(loop, at + 1.05, s.id);
-              count(s.id, loop, at + 1.05);
-              at += 0.85 + 0.8 + HOLD;
+              runWire(WIRE_FOR[s.id], loop, at, WIRE);
+              knock(loop, at + WIRE - 0.1);
+              aimAt(loop, at + WIRE, s.a0, s.a1);
+              light(loop, at + WIRE + MOVE * 0.55, s.id);
+              count(s.id, loop, at + WIRE + MOVE * 0.55);
+              at += WIRE + MOVE + HOLD;
             });
-            runWire(WIRE_FOR[REST], loop, at, 0.85);
-            aimAt(loop, at + 0.85, rest0 - 360, rest1 - 360, 0.8);
-            light(loop, at + 1.05, REST);
-            loop.to({}, { duration: HOLD }, at + 1.65);
+            runWire(WIRE_FOR[REST], loop, at, WIRE);
+            aimAt(loop, at + WIRE, rest0 - 360, rest1 - 360);
+            light(loop, at + WIRE + MOVE * 0.55, REST);
+            loop.to({}, { duration: HOLD }, at + WIRE + MOVE);
           }
 
           if (variant === 3) {
             // Bloom — close to a blade at the new bearing, then open to the full share.
+            const CLOSE = 1.1;
+            const OPEN = 1.2;
             let at = 0;
-            stops.forEach((s) => {
-              const mid = (s.a0 + s.a1) / 2;
-              aimAt(loop, at, mid - 3, mid + 3, 0.6, 'power2.inOut');
-              light(loop, at + 0.6, s.id);
-              aimAt(loop, at + 0.72, s.a0, s.a1, 0.7, 'expo.out');
-              count(s.id, loop, at + 0.72);
-              at += 0.72 + 0.7 + HOLD;
-            });
-            const rm = (rest0 + rest1) / 2 - 360;
-            aimAt(loop, at, rm - 3, rm + 3, 0.6);
-            light(loop, at + 0.6, REST);
-            aimAt(loop, at + 0.72, rest0 - 360, rest1 - 360, 0.7, 'expo.out');
-            loop.to({}, { duration: HOLD }, at + 1.42);
+            const step = (id: string, a0: number, a1: number) => {
+              const mid = (a0 + a1) / 2;
+              aimAt(loop, at, mid - 2.5, mid + 2.5, CLOSE);
+              light(loop, at + CLOSE, id);
+              aimAt(loop, at + CLOSE + 0.15, a0, a1, OPEN, 'power2.out');
+              count(id, loop, at + CLOSE + 0.15);
+              at += CLOSE + 0.15 + OPEN + HOLD;
+            };
+            stops.forEach((s) => step(s.id, s.a0, s.a1));
+            step(REST, rest0 - 360, rest1 - 360);
           }
 
           if (variant === 4) {
             // Unroll — the leading edge runs ahead, the trailing edge catches up.
+            const LEAD = 1.1;
+            const FOLLOW = 1;
             let at = 0;
             let prev = { a0: rest0, a1: rest1 };
             [...stops, { id: REST, a0: rest0 - 360, a1: rest1 - 360 }].forEach((s) => {
-              // stretch: the leading edge (a0, anticlockwise) reaches the new slot
-              aimAt(loop, at, s.a0, prev.a1, 0.6, 'power2.in');
-              // contract: the trailing edge follows
-              aimAt(loop, at + 0.6, s.a0, s.a1, 0.55, 'power2.out');
-              light(loop, at + 0.6, s.id);
-              count(s.id, loop, at + 0.65);
+              aimAt(loop, at, s.a0, prev.a1, LEAD, 'power2.in');
+              aimAt(loop, at + LEAD, s.a0, s.a1, FOLLOW, 'power2.out');
+              light(loop, at + LEAD, s.id);
+              count(s.id, loop, at + LEAD);
               prev = { a0: s.a0, a1: s.a1 };
-              at += 0.6 + 0.55 + HOLD;
+              at += LEAD + FOLLOW + HOLD;
             });
           }
 
           if (variant === 5) {
-            // Snap — hard arrivals with a halo ripple.
+            // Snap — the most direct of the five: a short travel, then it settles.
+            const SNAP = 1;
             let at = 0;
             const ripple = (t: number) => {
               haloEls.forEach((h, i) => {
                 if (!h) return;
-                loop.fromTo(h, { scale: 1, opacity: HALOS[i].opacity }, { scale: 1.22, opacity: 0, duration: 0.6, ease: 'power2.out', transformOrigin: '50% 50%' }, t);
-                loop.set(h, { scale: 1, opacity: HALOS[i].opacity }, t + 0.6);
+                loop.fromTo(h, { scale: 1, opacity: HALOS[i].opacity }, { scale: 1.14, opacity: 0, duration: 1.1, ease: 'power2.out', transformOrigin: '50% 50%' }, t);
+                loop.set(h, { scale: 1, opacity: HALOS[i].opacity }, t + 1.1);
               });
             };
-            stops.forEach((s) => {
-              aimAt(loop, at, s.a0, s.a1, 0.5, 'back.out(1.7)');
-              light(loop, at + 0.34, s.id);
-              count(s.id, loop, at + 0.34, 0.4);
-              knock(loop, at + 0.4);
-              ripple(at + 0.4);
-              at += 0.5 + HOLD;
-            });
-            aimAt(loop, at, rest0 - 360, rest1 - 360, 0.5, 'back.out(1.7)');
-            light(loop, at + 0.34, REST);
-            ripple(at + 0.4);
-            loop.to({}, { duration: HOLD }, at + 0.5);
+            const step = (id: string, a0: number, a1: number) => {
+              aimAt(loop, at, a0, a1, SNAP, 'back.out(1.05)');
+              light(loop, at + SNAP * 0.65, id);
+              count(id, loop, at + SNAP * 0.65);
+              knock(loop, at + SNAP * 0.8);
+              ripple(at + SNAP * 0.8);
+              at += SNAP + HOLD;
+            };
+            stops.forEach((s) => step(s.id, s.a0, s.a1));
+            step(REST, rest0 - 360, rest1 - 360);
           }
 
           // Each pass ends on presale's span one turn round; reset so the next repeat matches.

@@ -164,18 +164,8 @@
   align-items: center;
 }
 /* The allocation the dial is pointing at. */
-.tk__chip,
-.tk__pct {
-  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 320ms ease,
-    background-color 340ms ease;
-}
-.tk__slice[data-on] .tk__chip {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px -12px rgba(18, 36, 51, 0.55);
-}
-.tk__slice[data-on] .tk__pct {
-  transform: scale(1.09);
-  box-shadow: 0 10px 22px -12px rgba(18, 36, 51, 0.45);
+.tk__chip {
+  transition: background-color 620ms ease;
 }
 .tk__chip {
   display: inline-flex;

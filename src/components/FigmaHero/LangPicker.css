@@ -42,21 +42,36 @@
 }
 
 /* ---------- Search ---------- */
+/* One flex row so the glyph, the field and the count share a centre line rather than each
+   being placed by hand. */
 .lp__search {
-  position: relative;
-  padding: 16px 18px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 18px;
   background-image: var(--lp-rule);
   background-size: 100% 1px;
   background-position: left bottom;
   background-repeat: no-repeat;
 }
+.lp__search svg {
+  flex: 0 0 auto;
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--lp-body);
+  stroke-width: 1.6;
+}
 .lp__search input {
-  width: 100%;
-  padding: 0 34px 0 26px;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
   border: 0;
   background: none;
   font: inherit;
   font-size: 14px;
+  line-height: 1.4;
   color: var(--lp-ink);
 }
 .lp__search input::placeholder {
@@ -65,23 +80,18 @@
 .lp__search input:focus {
   outline: none;
 }
-.lp__search svg {
-  position: absolute;
-  left: 18px;
-  top: 17px;
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: var(--lp-body);
-  stroke-width: 1.6;
+/* the platform's own clear button cannot be aligned or styled, and the count sits where it would */
+.lp__search input::-webkit-search-cancel-button,
+.lp__search input::-webkit-search-decoration {
+  appearance: none;
+  display: none;
 }
 .lp__count {
-  position: absolute;
-  right: 18px;
-  top: 17px;
+  flex: 0 0 auto;
   font-family: var(--fh-digits, 'Doto Variable', monospace);
   font-weight: 700;
   font-size: 11px;
+  line-height: 1;
   letter-spacing: 0.08em;
   color: var(--lp-label);
 }

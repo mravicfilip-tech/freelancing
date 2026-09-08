@@ -54,24 +54,28 @@ export function spanOf(s: Segment): [number, number] {
 }
 
 /**
- * The order the arc walks the dial. The aims decrease monotonically, so stepping through this
- * list rotates the arc anticlockwise all the way round. Presale is the resting state.
+ * The order the arc walks the dial: top-left, left-centre, left-bottom, then right-bottom,
+ * right-centre, right-top. Reserves is where it rests, so a lap starts and ends at the top left.
  */
 export const TOUR = ['reserves', 'presale', 'rewards', 'marketing', 'team', 'listings'];
-export const REST = 'presale';
+export const REST = 'reserves';
 
-/** Tour spans unwrapped, so the arc never jumps the long way round. */
+/**
+ * One lap, as spans. Starting from the resting allocation it steps through the other five and
+ * returns, unwrapping each aim so the bearing only ever decreases — which is a single, unbroken
+ * anticlockwise rotation, with every allocation visited exactly once.
+ */
 export function tourStops() {
-  let prev = Infinity;
-  return TOUR.map((id) => {
+  const at = TOUR.indexOf(REST);
+  const order = [...TOUR.slice(at + 1), ...TOUR.slice(0, at + 1)];
+  let prev = SEG_BY_ID[REST].aim;
+  return order.map((id) => {
     const seg = SEG_BY_ID[id];
-    let [a0, a1] = spanOf(seg);
-    while (a1 > prev) {
-      a0 -= 360;
-      a1 -= 360;
-    }
-    prev = a0;
-    return { id, a0, a1, seg };
+    let aim = seg.aim;
+    while (aim > prev) aim -= 360;
+    prev = aim;
+    const sweep = (seg.pct / 100) * 360;
+    return { id, seg, a0: aim - sweep / 2, a1: aim + sweep / 2 };
   });
 }
 

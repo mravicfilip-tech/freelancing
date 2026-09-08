@@ -188,7 +188,8 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           tl.from(one('.tk__ring'), { scale: 0.94, opacity: 0, duration: 1.2, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.3);
           tl.from(one('.tk__hub'), { scale: 0.86, opacity: 0, duration: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.45);
           // The arc opens from a blade at presale's bearing to its full 50% span.
-          tl.fromTo(arc, { a0: 180, a1: 180 }, { a0: rest0, a1: rest1, duration: 1.6, ease: 'power2.out', onUpdate: paint }, 0.6);
+          const restAim = (rest0 + rest1) / 2;
+          tl.fromTo(arc, { a0: restAim, a1: restAim }, { a0: rest0, a1: rest1, duration: 1.6, ease: 'power2.out', onUpdate: paint }, 0.6);
           // Each wire strokes itself in with a light at its head, going round the section:
           // top-left, left-centre, left-bottom, right-bottom, right-centre, right-top. The chain
           // mark lands as the head reaches it, and its allocation follows just behind.
@@ -212,18 +213,27 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           // ---- The cycle --------------------------------------------------------------------
           const loop = gsap.timeline({ repeat: -1, paused: true });
 
+          /** Closes a lap by snapping the arc forward a turn, so the next lap starts where this did. */
+          const relap = (at: number) =>
+            loop.call(() => {
+              arc.a0 += 360;
+              arc.a1 += 360;
+              paint();
+            }, undefined, at);
+
           if (variant === 1) {
             // Aim — swing and resize onto each allocation in turn.
             let at = 0;
             stops.forEach((s) => {
+              // Nothing is lit while the arc is in flight: the chip it is leaving goes dark as
+              // it sets off, and the one it is heading for takes the indigo only on arrival.
+              light(loop, at, null);
               aimAt(loop, at, s.a0, s.a1);
-              light(loop, at + MOVE * 0.55, s.id);
-              count(s.id, loop, at + MOVE * 0.55);
+              light(loop, at + MOVE, s.id);
+              count(s.id, loop, at + MOVE);
               at += MOVE + HOLD;
             });
-            aimAt(loop, at, rest0 - 360, rest1 - 360);
-            light(loop, at + MOVE * 0.55, REST);
-            loop.to({}, { duration: HOLD }, at + MOVE);
+            relap(at);
           }
 
           if (variant === 2) {
@@ -233,15 +243,13 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             stops.forEach((s) => {
               runWire(WIRE_FOR[s.id], loop, at, WIRE);
               knock(loop, at + WIRE - 0.1);
+              light(loop, at + WIRE, null);
               aimAt(loop, at + WIRE, s.a0, s.a1);
-              light(loop, at + WIRE + MOVE * 0.55, s.id);
-              count(s.id, loop, at + WIRE + MOVE * 0.55);
+              light(loop, at + WIRE + MOVE, s.id);
+              count(s.id, loop, at + WIRE + MOVE);
               at += WIRE + MOVE + HOLD;
             });
-            runWire(WIRE_FOR[REST], loop, at, WIRE);
-            aimAt(loop, at + WIRE, rest0 - 360, rest1 - 360);
-            light(loop, at + WIRE + MOVE * 0.55, REST);
-            loop.to({}, { duration: HOLD }, at + WIRE + MOVE);
+            relap(at);
           }
 
           if (variant === 3) {
@@ -249,16 +257,17 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             const CLOSE = 1.1;
             const OPEN = 1.2;
             let at = 0;
-            const step = (id: string, a0: number, a1: number) => {
-              const mid = (a0 + a1) / 2;
+            stops.forEach((s) => {
+              const mid = (s.a0 + s.a1) / 2;
+              light(loop, at, null);
               aimAt(loop, at, mid - 2.5, mid + 2.5, CLOSE);
-              light(loop, at + CLOSE, id);
-              aimAt(loop, at + CLOSE + 0.15, a0, a1, OPEN, 'power2.out');
-              count(id, loop, at + CLOSE + 0.15);
+              // the blade is on the bearing here, so this is the arrival
+              light(loop, at + CLOSE, s.id);
+              aimAt(loop, at + CLOSE + 0.15, s.a0, s.a1, OPEN, 'power2.out');
+              count(s.id, loop, at + CLOSE + 0.15);
               at += CLOSE + 0.15 + OPEN + HOLD;
-            };
-            stops.forEach((s) => step(s.id, s.a0, s.a1));
-            step(REST, rest0 - 360, rest1 - 360);
+            });
+            relap(at);
           }
 
           if (variant === 4) {
@@ -267,18 +276,20 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             const FOLLOW = 1;
             let at = 0;
             let prev = { a0: rest0, a1: rest1 };
-            [...stops, { id: REST, a0: rest0 - 360, a1: rest1 - 360 }].forEach((s) => {
+            stops.forEach((s) => {
+              light(loop, at, null);
               aimAt(loop, at, s.a0, prev.a1, LEAD, 'power2.in');
               aimAt(loop, at + LEAD, s.a0, s.a1, FOLLOW, 'power2.out');
-              light(loop, at + LEAD, s.id);
-              count(s.id, loop, at + LEAD);
+              light(loop, at + LEAD + FOLLOW, s.id);
+              count(s.id, loop, at + LEAD + FOLLOW);
               prev = { a0: s.a0, a1: s.a1 };
               at += LEAD + FOLLOW + HOLD;
             });
+            relap(at);
           }
 
           if (variant === 5) {
-            // Snap — the most direct of the five: a short travel, then it settles.
+            // Settle — a short travel onto each bearing that eases past its mark and settles.
             const SNAP = 1;
             let at = 0;
             const ripple = (t: number) => {
@@ -288,30 +299,29 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
                 loop.set(h, { scale: 1, opacity: HALOS[i].opacity }, t + 1.1);
               });
             };
-            const step = (id: string, a0: number, a1: number) => {
-              aimAt(loop, at, a0, a1, SNAP, 'back.out(1.05)');
-              light(loop, at + SNAP * 0.65, id);
-              count(id, loop, at + SNAP * 0.65);
-              knock(loop, at + SNAP * 0.8);
-              ripple(at + SNAP * 0.8);
+            stops.forEach((s) => {
+              light(loop, at, null);
+              aimAt(loop, at, s.a0, s.a1, SNAP, 'back.out(1.05)');
+              light(loop, at + SNAP, s.id);
+              count(s.id, loop, at + SNAP);
+              knock(loop, at + SNAP);
+              ripple(at + SNAP);
               at += SNAP + HOLD;
-            };
-            stops.forEach((s) => step(s.id, s.a0, s.a1));
-            step(REST, rest0 - 360, rest1 - 360);
+            });
+            relap(at);
           }
-
-          // Each pass ends on presale's span one turn round; reset so the next repeat matches.
-          loop.call(() => {
-            arc.a0 = rest0;
-            arc.a1 = rest1;
-            paint();
-          });
 
           tl.eventCallback('onComplete', () => {
             cycling = true;
             loop.play();
           });
-          io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? loop.resume() : loop.pause()), { rootMargin: '120px' });
+          // Only after the entrance: observing fires immediately, and resuming a not-yet-played
+          // loop would run its first stop underneath the load-in and lose it.
+          io = new IntersectionObserver(([entry]) => {
+            if (!cycling) return;
+            if (entry.isIntersecting) loop.resume();
+            else loop.pause();
+          }, { rootMargin: '120px' });
           io.observe(el);
 
           const st = ScrollTrigger.create({ trigger: el, start: 'top 70%', once: true, onEnter: () => tl.play() });

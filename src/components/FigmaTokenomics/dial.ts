@@ -6,8 +6,8 @@
  * `Ellipse 3480` (142, indigo at 24%) and `Ellipse 3483` (128, white at 52%). So "adjusting the
  * arc" means re-aiming and re-sizing that one gradient shape, and the halos follow it.
  *
- * Each allocation gets a sweep equal to its own share of the supply and is aimed at its chip, so
- * the arc both points at the allocation and shows how big it is.
+ * Each allocation gets a sweep equal to its own share of the supply and is centred on the line its
+ * own label row runs along, so the arc both points at the allocation and shows how big it is.
  *
  * Angles are degrees, clockwise, 0° at three o'clock — the same convention Figma's arcData uses.
  */
@@ -24,31 +24,50 @@ export type Segment = {
   label: string;
   pct: number;
   icon: string;
-  /**
-   * Direction the arc centres on: the bearing, from the hub at (780, 293), of the centre of this
-   * allocation's label chip — the pill, not the pill plus its percentage circle. The pill is what
-   * the eye reads as the allocation, so a line drawn hub-to-pill has to bisect the arc; aiming at
-   * the row's midpoint instead leaves the arc a few degrees high or low of every corner label.
-   * Measured off the rendered chips rather than assumed.
-   */
+  /** Bearing the arc centres on — see aimOf. */
   aim: number;
+  /** Which flank the allocation reads out to. */
+  side: 'l' | 'r';
   /** Chip position in stage coordinates; y is the row's centre line. */
   x: number;
   y: number;
 };
 
-export const SEGMENTS: Segment[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', aim: 204.85, x: 435.6, y: 162 },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', aim: 180.19, x: 414, y: 292 },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', aim: 155.16, x: 436.5, y: 424 },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', aim: 29.83, x: 942.6, y: 424 },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', aim: -0.23, x: 982, y: 292 },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', aim: -29.83, x: 951.4, y: 162 },
+/** The dial's centre in stage coordinates — the hub disc and every wire converge here. */
+export const HUB = { x: 780, y: 293 } as const;
+
+/**
+ * The direction an allocation reads in: the bearing of the point where its row's centre line
+ * leaves the dial. The rows are horizontal, so the arc's centreline exits the circle exactly where
+ * the row crosses it and the row then carries straight on to the chip — the arc and the label are
+ * on one continuous line.
+ *
+ * Aiming at the label box instead (its centre, or the chip within it) looks reasonable written
+ * down but comes out 8-12 degrees shallower on every corner, because the box sits far outside the
+ * circle and well off the row's exit point.
+ */
+export function aimOf(y: number, side: 'l' | 'r'): number {
+  const dy = y - HUB.y;
+  const dx = Math.sqrt(Math.max(DIAL.r * DIAL.r - dy * dy, 1)) * (side === 'l' ? -1 : 1);
+  const deg = (Math.atan2(dy, dx) * 180) / Math.PI;
+  // Keep the left flank in 90..270 so a lap reads as one continuous anticlockwise sweep.
+  return side === 'l' && deg < 0 ? deg + 360 : deg;
+}
+
+const ROWS: Omit<Segment, 'aim'>[] = [
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', side: 'l', x: 435.6, y: 162 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', side: 'l', x: 414, y: 292 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 436.5, y: 424 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 942.6, y: 424 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 982, y: 292 },
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 951.4, y: 162 },
 ];
+
+export const SEGMENTS: Segment[] = ROWS.map((r) => ({ ...r, aim: aimOf(r.y, r.side) }));
 
 export const SEG_BY_ID = Object.fromEntries(SEGMENTS.map((s) => [s.id, s])) as Record<string, Segment>;
 
-/** The arc span for one allocation: its share of the circle, centred on its chip. */
+/** The arc span for one allocation: its share of the circle, centred on its row's bearing. */
 export function spanOf(s: Segment): [number, number] {
   const sweep = (s.pct / 100) * 360;
   return [s.aim - sweep / 2, s.aim + sweep / 2];

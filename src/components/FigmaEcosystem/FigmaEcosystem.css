@@ -255,7 +255,28 @@
     font-size: 30px;
     letter-spacing: -0.9px;
   }
-  .ec__panel {
-    min-height: 380px;
+  /* The phone drops the panel: each pillar carries its own illustration, opening with its copy.
+     The scene breaks out of the card's inner padding so the picture gets the card's full width
+     rather than the ~265 the padded column would leave it. */
+  .ec__scene {
+    position: static;
+    display: none;
+    /* Out past the card's inner padding AND the frame's gutter, so the drawing gets the whole
+       card rather than the ~265 a doubly padded column would leave it. */
+    margin: 4px -40px 20px;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
   }
+  .ec__item--on .ec__scene {
+    display: block;
+  }
+  .ec__scene .ff__il {
+    position: static;
+    width: 100%;
+    transform: none;
+  }
+  /* The drawings use nearly the whole 800 canvas across, so there is no side air to crop —
+     scaling past the box only cuts the labels off. The size comes from the width instead: the
+     breakout above takes the scene from the ~265 of a doubly padded column to the card's 345. */
 }

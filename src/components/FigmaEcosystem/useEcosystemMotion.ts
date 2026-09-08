@@ -51,7 +51,8 @@ export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: 
           tl.from(el.querySelectorAll('.ec__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0.25);
           tl.from(el.querySelector('.ec__body'), { y: 12, opacity: 0, duration: 0.7, ease: 'expo.out' }, 0.5);
           tl.from(el.querySelectorAll('.ec__item'), { y: 12, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'expo.out' }, 0.6);
-          tl.from(el.querySelector('.ec__panel'), { opacity: 0, duration: 0.9, ease: 'power1.out' }, 0.3);
+          const panel = el.querySelector('.ec__panel');
+          if (panel) tl.from(panel, { opacity: 0, duration: 0.9, ease: 'power1.out' }, 0.3);
           const st = ScrollTrigger.create({ trigger: el, start: 'top 75%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();
         }, el);

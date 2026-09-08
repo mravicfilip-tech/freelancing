@@ -26,9 +26,10 @@ export function useFooterMotion(root: RefObject<HTMLElement | null>) {
           const tl = gsap.timeline({ paused: true });
           tl.from(el.querySelectorAll('.ft__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.08 }, 0);
           tl.from(el.querySelector('.ft__cta .fh__btn'), { opacity: 0, y: 14, duration: 0.7, ease: 'power3.out' }, 0.45);
-          tl.from(el.querySelector('.ft__id'), { opacity: 0, y: 16, duration: 0.7, ease: 'power3.out' }, 0.55);
+          tl.from(el.querySelector('.ft__identity'), { opacity: 0, y: 16, duration: 0.7, ease: 'power3.out' }, 0.55);
           tl.from(el.querySelectorAll('.ft__rule'), { scaleX: 0, duration: 1, ease: 'expo.inOut', stagger: 0.12 }, 0.6);
-          tl.from(el.querySelectorAll('.ft__cols > *'), { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.75);
+          tl.from(el.querySelectorAll('.ft__col'), { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.7);
+          tl.from(el.querySelector('.ft__small'), { opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.9);
           tl.from(el.querySelector('.ft__legal'), { opacity: 0, duration: 0.6, ease: 'power2.out' }, 1);
 
           const st = ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => tl.play() });

@@ -148,7 +148,7 @@ export function Filed() {
       </ol>
 
       {/* The drawer's face, closing the stack. */}
-      <p className="rd-filed__plate rd-fam__part">
+      <p className="rd-filed__plate rd-fam__part" data-loose={open === LEVELS.length - 1 || undefined}>
         <span className="rd-filed__plateLabel">Remittix roadmap</span>
         <span className="rd-filed__tally">
           <b className="rd-digits">{String(complete).padStart(2, '0')}</b> of{' '}

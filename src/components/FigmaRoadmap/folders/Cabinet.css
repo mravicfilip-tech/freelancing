@@ -220,7 +220,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  opacity: 0.85;
   transition: opacity 300ms ease;
 }
 .rd-cabinet__row[data-open] .rd-cabinet__lede {
@@ -279,7 +278,7 @@
   grid-template-rows: 1fr;
 }
 .rd-cabinet__row[data-open] .rd-cabinet__bodyInner {
-  padding-bottom: 24px;
+  padding-bottom: 20px;
   opacity: 1;
   transform: none;
 }
@@ -341,6 +340,7 @@
   .rd-cabinet__body,
   .rd-cabinet__bodyInner,
   .rd-cabinet__accent i,
+  .rd-cabinet__lede,
   .rd-cabinet__tab,
   .rd-cabinet__name,
   .rd-cabinet__count,
@@ -375,6 +375,17 @@
   }
 }
 
+/* Below this the sentence can only be shown as a stub, and a truncated line says less than
+   nothing — the row falls back to number, name, count and marker. */
+@media (max-width: 959px) {
+  .rd-cabinet__head button {
+    grid-template-columns: var(--cab-tab) minmax(0, 1fr) auto auto;
+  }
+  .rd-cabinet__lede {
+    display: none;
+  }
+}
+
 /* ---------- Phone ----------
    The rail scrolls once the names stop fitting and the open stop is scrolled into view; the tab
    column narrows but stays, because it is the index the whole direction is built on. */
@@ -403,6 +414,11 @@
   }
   .rd-cabinet__lede {
     display: none;
+  }
+  /* The head keeps its tab column, but the file's contents take the card's full measure —
+     62px of indent off 318 would leave the milestones unreadable. */
+  .rd-cabinet__bodyInner {
+    padding-left: 0;
   }
   .rd-cabinet__tab {
     min-width: 46px;

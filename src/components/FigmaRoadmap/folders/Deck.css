@@ -151,7 +151,8 @@
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
 }
-.rd-deck__file[data-open] + .rd-deck__file {
+.rd-deck__file[data-open] + .rd-deck__file,
+.rd-deck__file[data-open] + .rd-deck__plate {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
@@ -191,6 +192,13 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+.rd-deck__head button:hover .rd-deck__name {
+  color: var(--rd-title);
+}
+.rd-deck__head button:hover .rd-deck__sign::before,
+.rd-deck__head button:hover .rd-deck__sign::after {
+  background: var(--rd-title);
 }
 .rd-deck__head button:focus-visible {
   outline: 2px solid var(--rd-indigo);
@@ -283,11 +291,14 @@
 .rd-deck__file[data-open] .rd-deck__sign::after {
   background: var(--rd-indigo);
 }
-/* The strip's own bottom edge, drawn solid across the part of the level that is done. */
+/* The strip's own bottom edge, drawn solid across the part of the level that is done — four full
+   edges, one part edge and two blank is the roadmap read off the rules themselves. It has to sit
+   just inside the strip rather than on the hairline itself, because the sheet below takes that
+   hairline by a negative margin and would paint over it. */
 .rd-deck__gauge {
   position: absolute;
   left: 0;
-  bottom: -1px;
+  bottom: 0;
   height: 1px;
   width: calc(var(--p, 0) * 100%);
   background: var(--rd-title);
@@ -310,7 +321,7 @@
 /* Squared to the gutter, so the body reads as the same column as the strip's name. */
 .rd-deck__blurb {
   margin: 0;
-  padding: 4px calc(var(--deck-inset) * 2) 18px calc(var(--deck-gutter) + var(--deck-inset));
+  padding: 14px calc(var(--deck-inset) * 2) 20px calc(var(--deck-gutter) + var(--deck-inset));
   max-width: 84ch;
   font-size: 16px;
   line-height: 1.6;
@@ -318,7 +329,7 @@
   color: var(--rd-body);
 }
 .rd-deck .rd-miles {
-  padding: 0 var(--deck-inset) 8px calc(var(--deck-gutter) + var(--deck-inset));
+  padding: 0 var(--deck-inset) 14px calc(var(--deck-gutter) + var(--deck-inset));
 }
 .rd-deck .rd-miles li {
   padding: 13px 0;
@@ -328,6 +339,7 @@
 /* ---------- The plate ---------- */
 .rd-deck__plate {
   display: flex;
+  transition: border-radius 480ms cubic-bezier(0.22, 0.61, 0.36, 1);
   align-items: center;
   justify-content: space-between;
   gap: 24px;
@@ -356,6 +368,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rd-deck__file,
+  .rd-deck__plate,
   .rd-deck__body,
   .rd-deck__accent,
   .rd-deck__gauge,

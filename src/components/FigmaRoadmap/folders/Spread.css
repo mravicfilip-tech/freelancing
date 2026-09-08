@@ -1,237 +1,260 @@
-/* Spread — the folder opened flat. Two facing pages of one sheet, joined on the design's [4,4]
-   vertical rule. Both pages are the card's own paper (no wash, no border, no shadow down the
-   gutter): the crease is the only line between them, and the head and foot rules run across it
-   so the two text blocks justify to the same pair of lines. */
+/* Spread — the Index, opening into two columns.
+   Same anatomy as the rest of the family: a rail, a stack of tabbed sheets, one open, a plate.
+   The execution is the gutter: every sheet is ruled down the middle on the design's finer [4,4]
+   stroke, so the stack is two-columned before anything is clicked. The left column holds the
+   level; the right column holds its five milestones — a measure of ticks while the sheet is
+   closed, the page's second column once it opens. Nothing here is bordered but the sheets'
+   hairlines, and nothing casts a shadow. */
 
 .rd-spread {
+  /* The ecosystem card's ratio: 620px and the remainder (FigmaEcosystem.css:35-44). */
+  --gut: 620px;
+  --pad: 28px;
+  --chan: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+/* ---------- The rail ---------- */
+.rd-spread__rail {
+  position: relative;
   display: grid;
-  grid-template-columns: 420px 1px minmax(0, 1fr);
-  align-items: stretch;
-  min-height: 640px;
-  isolation: isolate;
-}
-
-/* ---------- The two leaves ---------- */
-.rd-spread__page {
-  display: flex;
-  flex-direction: column;
-  background: var(--rd-card);
-  will-change: transform;
-}
-.rd-spread__page--index {
-  padding: 44px 40px 36px 44px;
-  border-radius: 12px 0 0 12px;
-}
-.rd-spread__page--leaf {
-  padding: 44px 52px 36px 52px;
-  border-radius: 0 12px 12px 0;
-}
-/* The gutter is a track of its own, so it runs the full height of the sheet. */
-.rd-spread__gutter {
-  align-self: stretch;
-  background-image: var(--rd-rule-v);
-  background-size: 1px 100%;
-  background-position: left top;
-  background-repeat: repeat-y;
-}
-
-/* ---------- Running head and foot: the two rules the pages hang from ---------- */
-.rd-spread__head,
-.rd-spread__foot {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 1.4;
-  letter-spacing: -0.39px;
-  text-transform: uppercase;
-  color: var(--rd-body);
-  background-image: var(--rd-rule-h);
-  background-size: 100% 1px;
-  background-repeat: no-repeat;
-}
-.rd-spread__head {
-  padding-bottom: 16px;
-  background-position: left bottom;
-}
-.rd-spread__foot {
-  margin-top: 24px;
-  padding-top: 16px;
-  background-position: left top;
-}
-.rd-spread__runningEnd {
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0.01em;
-  opacity: 0.75;
-}
-.rd-spread__foot {
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.01em;
-  text-transform: none;
-}
-.rd-spread__foot b {
-  font-weight: 700;
-  color: var(--rd-title);
-}
-
-/* ---------- Verso: the contents page ---------- */
-.rd-spread__index {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.rd-spread__entry {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 54px;
+/* The line runs behind the stops on the rails' own [8,8] rhythm. */
+.rd-spread__rail::before {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 5px;
+  height: 1px;
+  background-image: var(--rd-dash-h);
+}
+.rd-spread__stop button {
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 }
-/* Every entry but the first is ruled; the head rule serves the first. */
-.rd-spread__entry + .rd-spread__entry {
-  background-image: var(--rd-rule-h);
-  background-size: 100% 1px;
-  background-position: left top;
-  background-repeat: no-repeat;
+.rd-spread__stop button:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 4px;
+  border-radius: 8px;
 }
-/* The accent in the page's own margin, as on the FAQ and the ecosystem accordion. */
+.rd-spread__dot {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid var(--rd-rail);
+  background: var(--rd-bg);
+  transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.rd-spread__stop[data-status='done'] .rd-spread__dot {
+  background: var(--rd-title);
+  border-color: var(--rd-title);
+}
+.rd-spread__stop[data-open] .rd-spread__dot {
+  background: var(--rd-indigo);
+  border-color: var(--rd-indigo);
+  box-shadow: 0 0 0 5px rgb(64 66 209 / 14%);
+}
+.rd-spread__stopName {
+  font-size: 14px;
+  letter-spacing: -0.28px;
+  color: var(--rd-body);
+  white-space: nowrap;
+  transition: color 300ms ease;
+}
+.rd-spread__stopName .rd-digits {
+  margin-right: 2px;
+  font-size: 13px;
+  opacity: 0.65;
+}
+.rd-spread__stop[data-open] .rd-spread__stopName,
+.rd-spread__stop button:hover .rd-spread__stopName {
+  color: var(--rd-title);
+}
+.rd-spread__stop[data-open] .rd-spread__stopName {
+  font-weight: 600;
+}
+
+/* ---------- The stack ---------- */
+.rd-spread__stack {
+  width: 100%;
+  padding-top: 26px;
+}
+/* One sheet. The two columns are the sheet's own, and the rule between them is drawn at the
+   column boundary rather than on either column's edge — as the FAQ's gutter is. */
+.rd-spread__level {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, var(--gut)) minmax(0, 1fr);
+  /* Row 1 is the head at its own height; row 2 takes whatever the milestone column adds, so the
+     page copy sits directly under the head rather than drifting down the column. */
+  grid-template-rows: auto 1fr;
+  margin-top: -1px;
+  border: 1px solid var(--rd-line);
+  background: var(--rd-card);
+  background-image: var(--rd-rule-v);
+  background-size: 1px 100%;
+  background-position: var(--gut) top;
+  background-repeat: repeat-y;
+}
+.rd-spread__level:first-child {
+  margin-top: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+/* The tab: the sheet's own paper, cut and pushed above its top edge. One column of them down
+   the stack — this direction reads by its gutter, so the tabs stay on a single axis. */
+.rd-spread__tab {
+  position: absolute;
+  top: -25px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 26px;
+  padding-top: 2px;
+  clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 100%, 0 100%);
+  /* The hairline is the shape behind; the face sits 1px inside it, so the tab is edged like
+     the sheet it belongs to. */
+  background: var(--rd-line);
+  color: var(--rd-body);
+  font-size: 13px;
+  transition: color 300ms ease;
+}
+.rd-spread__tab::before {
+  content: '';
+  position: absolute;
+  inset: 1px 1px 0;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 100%, 0 100%);
+  background: var(--rd-card);
+  transition: background 300ms ease;
+}
+.rd-spread__tab > * {
+  position: relative;
+}
+.rd-spread__level[data-status='done'] .rd-spread__tab {
+  color: var(--rd-title);
+}
+/* The file that is out of the drawer: ink, not indigo — the indigo on an open row is the 2px
+   accent bar the whole page marks a disclosure with. */
+.rd-spread__level[data-open] .rd-spread__tab {
+  background: var(--rd-title);
+  color: #fff;
+}
+.rd-spread__level[data-open] .rd-spread__tab::before {
+  background: var(--rd-title);
+}
+
+/* The accent on the open sheet, outside the content's padding. */
 .rd-spread__accent {
   position: absolute;
-  left: -22px;
+  left: 0;
   top: 0;
   bottom: 0;
   width: 2px;
   overflow: hidden;
+}
+.rd-spread__level:first-child .rd-spread__accent {
+  border-radius: 11px 0 0 0;
 }
 .rd-spread__accent i {
   position: absolute;
   inset: 0;
   background: var(--rd-indigo);
   transform: scaleY(0);
-  transform-origin: 50% 50%;
+  transform-origin: 50% 0;
   transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.rd-spread__entry[data-open] .rd-spread__accent i {
+.rd-spread__level[data-open] .rd-spread__accent i {
   transform: scaleY(1);
 }
-.rd-spread__entry button {
-  display: flex;
+
+/* ---------- Left column: the level ---------- */
+.rd-spread__head {
+  grid-column: 1;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.rd-spread__head button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 0;
+  gap: 20px;
   width: 100%;
-  padding: 10px 0;
+  padding: 22px var(--chan) 22px var(--pad);
   border: 0;
-  border-radius: 4px;
   background: none;
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
-.rd-spread__entry button:focus-visible {
+/* A closed sheet is clickable across both of its columns; an open one only by its head, so the
+   milestones beside it stay selectable text. */
+.rd-spread__head button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.rd-spread__level[data-open] .rd-spread__head button::after {
+  content: none;
+}
+.rd-spread__head button:focus-visible {
   outline: 2px solid var(--rd-indigo);
-  outline-offset: 3px;
+  outline-offset: -2px;
 }
-/* The numeral column is the index's spine: ink behind us, indigo at the level in play, light
-   ahead of it — so the run of the seven numbers reads as the order and the position at once. */
-.rd-spread__folio {
-  flex: 0 0 auto;
-  width: 32px;
-  font-size: 16px;
-  color: var(--rd-rail);
-  transition: color 300ms ease;
-}
-.rd-spread__entry[data-status='done'] .rd-spread__folio {
-  color: var(--rd-title);
-}
-.rd-spread__entry[data-status='live'] .rd-spread__folio {
-  color: var(--rd-indigo);
-}
-.rd-spread__entryName {
-  flex: 0 0 auto;
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: -0.34px;
-  color: var(--rd-body);
-  transition: color 300ms ease;
-}
-.rd-spread__entry[data-status='done'] .rd-spread__entryName,
-.rd-spread__entry[data-status='live'] .rd-spread__entryName {
-  color: var(--rd-ink);
-}
-.rd-spread__entry[data-open] .rd-spread__entryName {
-  color: var(--rd-title);
-}
-.rd-spread__entry button:hover .rd-spread__entryName {
-  color: var(--rd-title);
-}
-/* The leader across to the count, on the same [4,4] stroke as every rule on the sheet. */
-.rd-spread__leader {
-  flex: 1 1 auto;
-  height: 1px;
-  min-width: 20px;
-  margin: 7px 14px 0;
-  background-image: var(--rd-rule-h);
-  background-size: 100% 1px;
-  background-repeat: repeat-x;
-}
-.rd-spread__count {
-  flex: 0 0 auto;
-  font-size: 14px;
-  color: var(--rd-body);
-  opacity: 0.6;
-  transition: color 300ms ease, opacity 300ms ease;
-}
-.rd-spread__entry[data-status='done'] .rd-spread__count {
-  opacity: 1;
-}
-.rd-spread__entry[data-status='live'] .rd-spread__count {
-  color: var(--rd-indigo);
-  opacity: 1;
-}
-
-/* ---------- Recto: the level, set as a page ---------- */
-.rd-spread__leaf {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-.rd-spread__title {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin: 26px 0 0;
+.rd-spread__name {
   font-family: var(--fh-display);
   font-weight: 500;
-  font-size: 40px;
+  font-size: 24px;
   line-height: 1.12;
-  letter-spacing: -1.2px;
+  letter-spacing: -0.72px;
+  color: var(--rd-body);
+  transition: color 300ms ease, font-size 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-spread__level[data-status='done'] .rd-spread__name {
   color: var(--rd-title);
 }
-.rd-spread__titleN {
-  font-size: 34px;
-  letter-spacing: 0;
-  color: var(--rd-body);
+/* The name is set up a size when its page opens — the level stops being a row and becomes a head. */
+.rd-spread__level[data-open] .rd-spread__name {
+  font-size: 32px;
+  letter-spacing: -0.96px;
+  color: var(--rd-title);
 }
-.rd-spread__titleName {
-  flex: 1;
+.rd-spread__count {
+  font-size: 13px;
+  color: var(--rd-body);
+  opacity: 0.65;
+  transition: opacity 300ms ease;
+}
+.rd-spread__level[data-open] .rd-spread__count {
+  opacity: 1;
 }
 .rd-spread__marker {
-  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   height: 34px;
   padding: 0 14.75px;
   border: 1px solid var(--rd-line);
   border-radius: 46px;
-  font-family: var(--fh-sans);
   font-weight: 700;
   font-size: 13px;
   line-height: 1.4;
@@ -242,97 +265,198 @@
 }
 .rd-spread__marker[data-status='live'] {
   border-color: var(--rd-indigo);
-  background: var(--rd-indigo);
-  color: #fff;
+  color: var(--rd-indigo);
+}
+/* The page copy, on the system's only height animation. */
+.rd-spread__lead {
+  grid-column: 1;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-spread__lead > div {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-spread__level[data-open] .rd-spread__lead {
+  grid-template-rows: 1fr;
+}
+.rd-spread__blurb,
+.rd-spread__tally {
+  margin: 0;
+  padding: 0 var(--chan) 0 var(--pad);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease 120ms, transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms;
 }
 .rd-spread__blurb {
-  margin: 16px 0 26px;
-  max-width: 62ch;
+  max-width: 40ch;
   font-size: 16px;
   line-height: 1.6;
   letter-spacing: 0.01em;
   color: var(--rd-body);
 }
-/* The five rows share the page's remaining height, so the block justifies to the foot rule. */
-.rd-spread .rd-miles {
-  flex: 1;
+.rd-spread__tally {
+  /* Set at the foot of the column, level with the last milestone — the page's own footer, with
+     the folio at the outer end of the line. */
   display: flex;
-  flex-direction: column;
-}
-.rd-spread .rd-miles li {
-  flex: 1;
-  align-content: center;
-  padding: 16px 0;
-  max-width: 78ch;
-}
-.rd-spread__foot--leaf {
+  align-items: baseline;
   justify-content: space-between;
+  gap: 20px;
+  margin-top: auto;
+  padding-top: 18px;
+  padding-bottom: 26px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
   color: var(--rd-body);
+  opacity: 0;
 }
-.rd-spread__turn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  font: inherit;
-  color: var(--rd-body);
-  cursor: pointer;
-  transition: color 240ms ease;
+.rd-spread__tally b {
+  color: var(--rd-title);
 }
-.rd-spread__turn svg {
-  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.rd-spread__turn:hover {
-  color: var(--rd-indigo);
-}
-.rd-spread__turn:hover svg {
-  transform: translateX(3px);
-}
-.rd-spread__turn:focus-visible {
-  outline: 2px solid var(--rd-indigo);
-  outline-offset: 3px;
-}
-.rd-spread__folioEnd {
+.rd-spread__folio {
   font-size: 14px;
+  letter-spacing: 0;
   color: var(--rd-body);
+  opacity: 0.7;
+}
+.rd-spread__level[data-open] .rd-spread__blurb,
+.rd-spread__level[data-open] .rd-spread__tally {
+  opacity: 1;
+  transform: none;
+}
+.rd-spread__level[data-open] .rd-spread__tally {
+  opacity: 0.85;
+  transition-delay: 180ms, 120ms;
 }
 
-/* ---------- Setting the page again ----------
-   Choosing another entry re-sets the recto: its parts arrive off the gutter, top to bottom, on
-   the accordions' own curve. No curl, no shadow — the page is simply set again. */
-@media (prefers-reduced-motion: no-preference) {
-  .rd-spread__title,
-  .rd-spread__blurb,
-  .rd-spread__foot--leaf,
-  .rd-spread .rd-miles li {
-    animation: rd-spread-set 520ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
-  }
-  .rd-spread__blurb {
-    animation-delay: 60ms;
-  }
-  .rd-spread .rd-miles li {
-    animation-delay: calc(110ms + var(--j) * 45ms);
-  }
-  .rd-spread__foot--leaf {
-    animation-delay: 340ms;
-  }
+/* ---------- Right column: the five milestones ---------- */
+.rd-spread__pane {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad) 0 var(--chan);
 }
-@keyframes rd-spread-set {
-  from {
-    opacity: 0;
-    transform: translateX(-14px);
-  }
+/* Closed: the five ticks stand on a rule, evenly spread — the level's measure. */
+.rd-spread__stripWrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+.rd-spread__stripWrap > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-spread__level[data-open] .rd-spread__stripWrap {
+  grid-template-rows: 0fr;
+}
+.rd-spread__strip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 0;
+  opacity: 1;
+  transition: opacity 260ms ease;
+}
+.rd-spread__level[data-open] .rd-spread__strip {
+  opacity: 0;
+  transition-duration: 180ms;
+}
+.rd-spread__strip::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 50%;
+  height: 1px;
+  background-image: var(--rd-rule-h);
+}
+/* The ticks sit on the rule rather than being crossed by it, and are set in ink rather than
+   indigo: on a closed sheet they are a measure, not the live mark. */
+.rd-spread__strip .rd-tick {
+  position: relative;
+  margin-top: 0;
+  padding: 0 7px;
+  background: var(--rd-card);
+}
+.rd-spread__strip .rd-tick[data-done] {
+  color: var(--rd-body);
+}
+/* Open: the same ticks, at the head of their sentences. */
+.rd-spread__milesWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-spread__milesWrap > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rd-spread__level[data-open] .rd-spread__milesWrap {
+  grid-template-rows: 1fr;
+}
+.rd-spread .rd-miles {
+  padding: 14px 0 26px;
+}
+/* The sheet's own top edge rules the first milestone, so the row does not draw a second line. */
+.rd-spread .rd-miles li:first-child {
+  background-image: none;
+}
+.rd-spread .rd-miles li {
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 12px 0;
+}
+
+/* ---------- The plate that closes the stack ---------- */
+.rd-spread__plate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: -1px 0 0;
+  padding: 18px var(--pad);
+  border: 1px solid var(--rd-line);
+  border-radius: 0 0 12px 12px;
+  background: var(--rd-card);
+}
+.rd-spread__plateLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-body);
+}
+.rd-spread__plateTally {
+  font-size: 13px;
+  color: var(--rd-body);
+}
+.rd-spread__plateTally b {
+  color: var(--rd-title);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .rd-spread__lead,
+  .rd-spread__stripWrap,
+  .rd-spread__milesWrap,
+  .rd-spread__strip,
   .rd-spread__accent i,
-  .rd-spread__turn,
-  .rd-spread__turn svg,
-  .rd-spread__folio,
-  .rd-spread__count,
-  .rd-spread__entryName {
+  .rd-spread__blurb,
+  .rd-spread__tally,
+  .rd-spread__name,
+  .rd-spread__dot,
+  .rd-spread__stopName,
+  .rd-spread__tab,
+  .rd-spread__tab::before {
     transition: none;
   }
 }
@@ -340,108 +464,110 @@
 /* ---------- Narrower desktops ---------- */
 @media (max-width: 1280px) {
   .rd-spread {
-    grid-template-columns: 340px 1px minmax(0, 1fr);
+    --gut: 46%;
+    --chan: 32px;
+    --pad: 24px;
   }
-  .rd-spread__page--index {
-    padding: 36px 28px 28px 36px;
+  .rd-spread__name {
+    font-size: 22px;
   }
-  .rd-spread__page--leaf {
-    padding: 36px 36px 28px;
-  }
-  .rd-spread__title {
-    font-size: 34px;
-  }
-  .rd-spread__entryName {
-    font-size: 16px;
-  }
-  .rd-spread__accent {
-    left: -18px;
+  .rd-spread__level[data-open] .rd-spread__name {
+    font-size: 28px;
+    letter-spacing: -0.84px;
   }
 }
 
-/* ---------- The sheet folds the other way ----------
-   A spread cannot stay side by side on a phone, so the crease turns: the contents page sits above
-   the open level, the gutter becomes the horizontal fold between them, and the card keeps its one
-   outline. The index stays an index — numbers, leaders and counts — rather than becoming a strip
-   of tabs, because that is the half of the composition that carries the order. */
+/* ---------- The two columns become two decks ----------
+   Below the ecosystem card's own collapse point there is no room for a second column, so the
+   gutter turns: the vertical rule becomes the [4,4] horizontal one above the milestones, and
+   the level reads head, copy, milestones — the family's shape, with the spread folded shut. */
 @media (max-width: 1023px) {
   .rd-spread {
+    --gut: 100%;
+    gap: 44px;
+  }
+  .rd-spread__level {
     grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
+    background-image: none;
   }
-  .rd-spread__page--index {
-    border-radius: 12px 12px 0 0;
-    padding: 28px 24px 22px 28px;
+  .rd-spread__pane {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+    padding: 0 var(--pad);
   }
-  .rd-spread__page--leaf {
-    border-radius: 0 0 12px 12px;
-    padding: 26px 24px 24px;
+  .rd-spread__strip {
+    padding: 0 0 20px;
   }
-  .rd-spread__gutter {
-    height: 1px;
+  .rd-spread__strip .rd-tick:first-child {
+    padding-left: 0;
+  }
+  .rd-spread__strip .rd-tick:last-child {
+    padding-right: 0;
+  }
+  .rd-spread__strip::before {
+    left: 8px;
+    right: 8px;
+  }
+  .rd-spread__tally {
+    padding-bottom: 20px;
+  }
+  .rd-spread__milesWrap > div {
     background-image: var(--rd-rule-h);
     background-size: 100% 1px;
-    background-repeat: repeat-x;
-  }
-  .rd-spread__entry {
-    flex: 0 0 auto;
-    min-height: 0;
-  }
-  .rd-spread__entry button {
-    padding: 13px 0;
-  }
-  .rd-spread__accent {
-    left: -14px;
-  }
-  .rd-spread__leaf {
-    flex: 0 0 auto;
-  }
-  .rd-spread .rd-miles {
-    display: block;
-  }
-  .rd-spread .rd-miles li {
-    padding: 14px 0;
+    background-position: left top;
+    background-repeat: no-repeat;
   }
 }
+
+/* ---------- Mobile ---------- */
 @media (max-width: 720px) {
-  .rd-spread__title {
-    gap: 14px;
-    margin-top: 20px;
-    font-size: 28px;
-    letter-spacing: -0.9px;
-    /* The marker drops to its own line under the chapter opening, rather than squeezing it. */
-    flex-wrap: wrap;
+  .rd-spread {
+    --pad: 20px;
+    --chan: 20px;
   }
-  .rd-spread__titleN {
-    font-size: 24px;
+  /* The rail scrolls once the names stop fitting; the open stop is scrolled into view. */
+  .rd-spread__rail {
+    grid-auto-columns: minmax(120px, 1fr);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
   }
-  .rd-spread__titleName {
-    flex: 1 0 auto;
+  .rd-spread__rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rd-spread__head button {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 18px var(--pad);
+  }
+  .rd-spread__count {
+    display: none;
+  }
+  .rd-spread__name {
+    font-size: 21px;
+    letter-spacing: -0.63px;
+  }
+  .rd-spread__level[data-open] .rd-spread__name {
+    font-size: 25px;
+    letter-spacing: -0.75px;
   }
   .rd-spread__marker {
-    order: -1;
-    flex-basis: 100%;
-    width: fit-content;
-    margin-bottom: 2px;
     height: 30px;
+    padding: 0 11px;
     font-size: 12px;
   }
   .rd-spread__blurb {
-    margin: 14px 0 18px;
     font-size: 15px;
   }
-  .rd-spread .rd-miles li {
-    font-size: 15px;
-    gap: 12px;
-  }
-  .rd-spread__entryName {
-    font-size: 16px;
-  }
-  .rd-spread__foot,
-  .rd-spread__head {
+  .rd-spread__tally {
+    margin-top: 14px;
     font-size: 12px;
   }
-  .rd-spread__foot {
-    margin-top: 18px;
+  .rd-spread__plate {
+    padding: 16px var(--pad);
+  }
+  .rd-spread__plateTally {
+    text-align: right;
   }
 }

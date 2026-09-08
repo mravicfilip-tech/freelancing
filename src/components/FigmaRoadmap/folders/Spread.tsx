@@ -1,171 +1,135 @@
-import { useRef, useState } from 'react';
-import { LEVELS, STATUS_LABEL, doneCount } from '../content';
-import { Milestones } from '../shared';
+import { useEffect, useRef, useState } from 'react';
+import { LEVELS, doneCount } from '../content';
+import { Milestones, Tick } from '../shared';
 import './Spread.css';
 
 /**
- * Spread — the folder opened flat. One card, two facing pages, the design's [4,4] vertical rule
- * down the gutter between them.
+ * Spread — the Index, opening into two columns.
  *
- * Verso (left): the contents page. All seven levels, numbered in the digits face, leadered across
- * to their milestone counts, ruled on the [4,4] stroke. It is a register, not a menu — everything
- * on it is small, quiet and in one column of numerals, so the eye reads the run of `5/5` breaking
- * to `2/5` and finds where the project is without a click.
+ * The anatomy is the family's: a rail of the seven levels across the top, a stack of tabbed
+ * sheets under it, one open at a time, and a plate closing the stack. What is different is what
+ * a level does when it opens. Instead of the milestones running on under the row, the sheet is
+ * ruled down the middle on the [4,4] stroke and the level lays out as a page: its number, name,
+ * marker and blurb hold the left column; its five milestones stand in the right column beside
+ * them. The open level is therefore *wide* rather than tall, and the whole stack stays short.
  *
- * Recto (right): the level set as a page. Chapter opening (numeral + name + marker), a line of
- * prose, then the five milestones, and a foot that turns to the next page.
+ * The gutter is drawn on every sheet, open or closed, so the composition is two-columned before
+ * anything is clicked: the left column carries the level's identity, the right column carries a
+ * measure of its five milestones — the same ticks that head the rows once the page opens. Opening
+ * a level lets those ticks fall into their sentences.
  *
- * The two pages carry their weight deliberately unevenly: the verso is 420px of 13–17px type on
- * hairlines; the recto holds the one big display line, the one chip of colour and the prose. Both
- * text blocks are justified between a head rule and a foot rule that run across the gutter, which
- * is what makes them read as one sheet rather than two panels.
+ * Ratio: 620px + the remainder, the ecosystem card's own proportion (FigmaEcosystem.css:35-44).
  */
 
-const TOTAL = LEVELS.reduce((n, l) => n + l.items.length, 0);
-const DONE = LEVELS.reduce((n, l) => n + doneCount(l), 0);
-const LIVE = Math.max(0, LEVELS.findIndex((l) => l.status === 'live'));
+const COMPLETE = LEVELS.filter((l) => l.status === 'done').length;
 
 export function Spread() {
-  const [open, setOpen] = useState(LIVE);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [open, setOpen] = useState(() => Math.max(0, LEVELS.findIndex((l) => l.status === 'live')));
+  const rail = useRef<HTMLOListElement>(null);
 
-  const level = LEVELS[open];
-  const next = LEVELS[open + 1];
-  const live = LEVELS[LIVE];
-
-  /** A vertical tab set: the arrows move the selection and the focus together. */
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    const last = LEVELS.length - 1;
-    const to =
-      e.key === 'ArrowDown' || e.key === 'ArrowRight'
-        ? (open + 1) % LEVELS.length
-        : e.key === 'ArrowUp' || e.key === 'ArrowLeft'
-          ? (open + last) % LEVELS.length
-          : e.key === 'Home'
-            ? 0
-            : e.key === 'End'
-              ? last
-              : -1;
-    if (to < 0) return;
-    e.preventDefault();
-    setOpen(to);
-    tabs.current[to]?.focus();
-  };
+  // On a phone the rail scrolls; keep the open stop in view without moving the page.
+  useEffect(() => {
+    const el = rail.current;
+    const stop = el?.children[open] as HTMLElement | undefined;
+    if (!el || !stop || el.scrollWidth <= el.clientWidth) return;
+    el.scrollTo({ left: stop.offsetLeft - (el.clientWidth - stop.offsetWidth) / 2, behavior: 'smooth' });
+  }, [open]);
 
   return (
     <div className="rd-spread">
-      {/* ---------------- Verso: the contents page ---------------- */}
-      <div className="rd-spread__page rd-spread__page--index rd-fam__part">
-        <div className="rd-spread__head">
-          <span className="rd-spread__running">Contents</span>
-          <span className="rd-spread__runningEnd">Seven levels</span>
-        </div>
+      {/* The rail: the seven levels in order, filled behind the one in play. */}
+      <ol className="rd-spread__rail rd-fam__part" ref={rail}>
+        {LEVELS.map((l, i) => (
+          <li className="rd-spread__stop" key={l.n} data-status={l.status} data-open={i === open || undefined}>
+            <button type="button" aria-current={i === open ? 'true' : undefined} onClick={() => setOpen(i)}>
+              <span className="rd-spread__dot" aria-hidden="true" />
+              <span className="rd-spread__stopName">
+                <span className="rd-digits">{l.n}</span> {l.name}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
 
-        <ol
-          className="rd-spread__index"
-          role="tablist"
-          aria-orientation="vertical"
-          aria-label="Roadmap levels"
-          onKeyDown={onKeyDown}
-        >
-          {LEVELS.map((l, i) => (
-            <li
-              className="rd-spread__entry"
+      <div className="rd-spread__stack">
+        {LEVELS.map((l, i) => {
+          const isOpen = i === open;
+          const done = doneCount(l);
+          return (
+            <article
+              className="rd-spread__level rd-fam__part"
               key={l.n}
-              role="presentation"
               data-status={l.status}
-              data-open={i === open || undefined}
+              data-open={isOpen || undefined}
             >
+              {/* The sheet's own tab, in one column down the stack — the file's number, raised. */}
+              <span className="rd-spread__tab" aria-hidden="true">
+                <span className="rd-digits">{l.n}</span>
+              </span>
               <i className="rd-spread__accent" aria-hidden="true">
                 <i />
               </i>
-              <button
-                type="button"
-                role="tab"
-                id={`rd-spread-tab-${l.n}`}
-                aria-selected={i === open}
-                aria-controls="rd-spread-leaf"
-                tabIndex={i === open ? 0 : -1}
-                ref={(el) => {
-                  tabs.current[i] = el;
-                }}
-                onClick={() => setOpen(i)}
-                aria-label={`Level ${l.n}, ${l.name}. ${STATUS_LABEL[l.status]}. ${doneCount(l)} of ${l.items.length} milestones done.`}
-              >
-                <span className="rd-spread__folio rd-digits">{l.n}</span>
-                <span className="rd-spread__entryName">{l.name}</span>
-                <i className="rd-spread__leader" aria-hidden="true" />
-                <span className="rd-spread__count rd-digits">
-                  {doneCount(l)}/{l.items.length}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ol>
 
-        <div className="rd-spread__foot">
-          <span>
-            Now on level <b className="rd-digits">{live.n}</b>
+              <h3 className="rd-spread__head">
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={`rd-spread-lead-${l.n} rd-spread-pane-${l.n}`}
+                  onClick={() => setOpen(i)}
+                >
+                  <span className="rd-spread__name">{l.name}</span>
+                  <span className="rd-spread__count rd-digits">
+                    {done}/{l.items.length}
+                  </span>
+                  <span className="rd-spread__marker" data-status={l.status}>
+                    {l.marker}
+                  </span>
+                </button>
+              </h3>
+
+              {/* Left column: the level's page copy, under its number and name. */}
+              <div className="rd-spread__lead" id={`rd-spread-lead-${l.n}`}>
+                <div>
+                  <p className="rd-spread__blurb">{l.blurb}</p>
+                  <p className="rd-spread__tally">
+                    <span>
+                      <b className="rd-digits">{done}</b> of <b className="rd-digits">{l.items.length}</b> milestones
+                      complete
+                    </span>
+                    <span className="rd-spread__folio rd-digits">{l.n}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Right column: the level's five milestones — a measure while it is closed, the
+                  page's second column once it opens. */}
+              <div className="rd-spread__pane" id={`rd-spread-pane-${l.n}`}>
+                <div className="rd-spread__stripWrap" aria-hidden="true">
+                  <div>
+                    <div className="rd-spread__strip">
+                      {l.items.map((item) => (
+                        <Tick key={item.short} done={item.done} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="rd-spread__milesWrap">
+                  <div>
+                    <Milestones level={l} />
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+
+        <p className="rd-spread__plate rd-fam__part">
+          <span className="rd-spread__plateLabel">Remittix roadmap</span>
+          <span className="rd-spread__plateTally">
+            <b className="rd-digits">{String(COMPLETE).padStart(2, '0')}</b> of{' '}
+            <b className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</b> levels complete
           </span>
-          <span>
-            <b className="rd-digits">
-              {DONE}/{TOTAL}
-            </b>{' '}
-            complete
-          </span>
-        </div>
-      </div>
-
-      {/* The gutter: the crease the two pages are joined on. */}
-      <i className="rd-spread__gutter rd-fam__part" aria-hidden="true" />
-
-      {/* ---------------- Recto: the open level, set as a page ---------------- */}
-      <div
-        className="rd-spread__page rd-spread__page--leaf rd-fam__part"
-        id="rd-spread-leaf"
-        role="tabpanel"
-        aria-labelledby={`rd-spread-tab-${level.n}`}
-      >
-        <div className="rd-spread__head">
-          <span className="rd-spread__running">Remittix roadmap</span>
-          <span className="rd-spread__runningEnd">{STATUS_LABEL[level.status]}</span>
-        </div>
-
-        {/* Keyed on the level, so choosing another entry sets the page again from the gutter. */}
-        <div className="rd-spread__leaf" key={level.n}>
-          <h3 className="rd-spread__title">
-            <span className="rd-spread__titleN rd-digits">{level.n}</span>
-            <span className="rd-spread__titleName">{level.name}</span>
-            <span className="rd-spread__marker" data-status={level.status}>
-              {level.marker}
-            </span>
-          </h3>
-          <p className="rd-spread__blurb">{level.blurb}</p>
-          <Milestones level={level} />
-
-          <div className="rd-spread__foot rd-spread__foot--leaf">
-            {next ? (
-              <button type="button" className="rd-spread__turn" onClick={() => setOpen(open + 1)}>
-                Turn to <b className="rd-digits">{next.n}</b> {next.name}
-                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-                  <path
-                    d="M2.5 8h10M9 4.5 12.5 8 9 11.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            ) : (
-              <span>End of the roadmap</span>
-            )}
-            <span className="rd-spread__folioEnd rd-digits">
-              {level.n}/{LEVELS[LEVELS.length - 1].n}
-            </span>
-          </div>
-        </div>
+        </p>
       </div>
     </div>
   );

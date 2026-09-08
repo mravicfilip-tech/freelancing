@@ -47,7 +47,7 @@
   top: 0;
   height: 1px;
   width: calc(var(--f-tab-x0) + var(--f-tab-step) * var(--f-live, 0) + var(--f-tab-w) / 2);
-  background-image: repeating-linear-gradient(90deg, var(--rd-title) 0 8px, transparent 8px 16px);
+  background-image: repeating-linear-gradient(90deg, var(--rd-body) 0 8px, transparent 8px 16px);
   background-size: 16px 1px;
   background-repeat: repeat-x;
 }
@@ -135,7 +135,7 @@
   z-index: 20;
   margin: 36px 0 42px;
   border-radius: 12px;
-  box-shadow: 0 22px 44px -30px rgb(18 36 51 / 45%);
+  box-shadow: 0 24px 48px -26px rgb(18 36 51 / 42%);
 }
 
 /* ---------- The tab ---------- */
@@ -186,6 +186,7 @@
   /* The extra foot is the band the next sheet's tab lies in. */
   padding: 22px var(--f-pad) 30px;
   border: 0;
+  transition: padding 460ms var(--f-ease);
   border-radius: 11px;
   background: none;
   font: inherit;
@@ -228,7 +229,9 @@
   font-size: 13px;
   line-height: 1;
   letter-spacing: -0.13px;
-  mask-image: linear-gradient(90deg, #000 0 calc(100% - 56px), transparent);
+  padding-right: 12px;
+  -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - 72px), transparent);
+  mask-image: linear-gradient(90deg, #000 0 calc(100% - 72px), transparent);
   transition: opacity 240ms ease;
 }
 .rd-filed__short {
@@ -247,9 +250,13 @@
   padding-left: 14px;
   border-left: 1px solid var(--rd-line);
 }
-/* Open, the row is a title bar: the sentences below carry the contents instead. */
+/* Open, the row is a title bar: the sentences below carry the contents instead, and the foot the
+   next sheet's tab would have lain in is given back. */
 .rd-filed__sheet[data-open] .rd-filed__contents {
   opacity: 0;
+}
+.rd-filed__sheet[data-open] .rd-filed__pull {
+  padding-bottom: 20px;
 }
 
 .rd-filed__meta {
@@ -311,11 +318,20 @@
 .rd-filed__sheet[data-open] .rd-filed__body {
   grid-template-rows: 1fr;
 }
-/* Set as a page: the caption column behind the [4,4] rule, the milestones beside it. */
+/* Set as a page: one [4,4] rule under the title bar, the caption column behind the vertical rule,
+   the milestones ruled beside it. The two rules meet, so the page is drawn rather than assembled. */
 .rd-filed__inner {
   display: grid;
   grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
   padding: 0 var(--f-pad) 34px;
+  background-image: var(--rd-rule-h);
+  background-size: calc(100% - 2 * var(--f-pad)) 1px;
+  background-position: var(--f-pad) top;
+  background-repeat: no-repeat;
+}
+/* The head rule stands in for the first row's own. */
+.rd-filed .rd-miles li:first-child {
+  background-image: none;
 }
 .rd-filed__aside {
   display: flex;
@@ -391,6 +407,11 @@
   border: 1px solid var(--rd-line);
   border-radius: 0 0 12px 12px;
   background: var(--rd-tab);
+  transition: border-radius 460ms var(--f-ease);
+}
+/* With the last sheet pulled out the face stands on its own, so it takes all four corners. */
+.rd-filed__plate[data-loose] {
+  border-radius: 12px;
 }
 .rd-filed__plateLabel {
   font-weight: 700;
@@ -475,6 +496,30 @@
   }
 }
 
+/* ------------------------------------------------- Narrow: the page stacks */
+/* Under this the caption column has no measure left, so it becomes the lead paragraph and the
+   gutter rule lies down between it and the milestones. */
+@media (max-width: 899px) {
+  .rd-filed__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rd-filed__aside {
+    padding: 16px 0 22px;
+    background-image: var(--rd-rule-h);
+    background-size: 100% 1px;
+    background-position: left bottom;
+  }
+  .rd-filed__blurb {
+    max-width: none;
+  }
+  .rd-filed__pips {
+    max-width: 300px;
+  }
+  .rd-filed .rd-miles {
+    padding-left: 0;
+  }
+}
+
 /* ---------------------------------------------------------------- Mobile */
 @media (max-width: 767px) {
   .rd-filed {
@@ -528,7 +573,16 @@
   }
   .rd-filed__contents {
     grid-area: contents;
-    mask-image: linear-gradient(90deg, #000 0 calc(100% - 40px), transparent);
+    -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(90deg, #000 0 calc(100% - 48px), transparent);
+  }
+  /* Its own row here, so the open sheet gives it back rather than leaving a hole. */
+  .rd-filed__sheet[data-open] .rd-filed__contents {
+    display: none;
+  }
+  .rd-filed__sheet[data-open] .rd-filed__pull {
+    grid-template-areas: 'name meta';
+    padding-bottom: 16px;
   }
   .rd-filed__count {
     font-size: 13px;
@@ -542,23 +596,12 @@
   .rd-filed__sheet[data-open] {
     margin: 28px 0 32px;
   }
-  /* The caption column becomes the lead paragraph, ruled off the milestones under it. */
   .rd-filed__inner {
-    grid-template-columns: minmax(0, 1fr);
     padding-bottom: 26px;
   }
   .rd-filed__aside {
     gap: 22px;
     padding: 14px 0 20px;
-    background-image: var(--rd-rule-h);
-    background-size: 100% 1px;
-    background-position: left bottom;
-  }
-  .rd-filed__blurb {
-    max-width: none;
-  }
-  .rd-filed .rd-miles {
-    padding-left: 0;
   }
   .rd-filed .rd-miles li {
     font-size: 15px;

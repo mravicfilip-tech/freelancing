@@ -24,7 +24,12 @@ export type Segment = {
   label: string;
   pct: number;
   icon: string;
-  /** Direction the arc centres on — the bearing of this allocation's chip from the hub. */
+  /**
+   * Direction the arc centres on: the bearing, from the hub at (780, 293), of the centre of this
+   * allocation's whole chip + percentage row. Derived from Figma's own chip widths
+   * (reserves 124, presale 115, rewards 122, marketing 133, team 94, listings 115, each + a 64
+   * circle), so the arc lands square on the row rather than near it.
+   */
   aim: number;
   /** Chip position in stage coordinates; y is the row's centre line. */
   x: number;
@@ -32,12 +37,12 @@ export type Segment = {
 };
 
 export const SEGMENTS: Segment[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', aim: 220, x: 435.6, y: 162 },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', aim: 180, x: 414, y: 292 },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', aim: 140, x: 436.5, y: 424 },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', aim: 40, x: 942.6, y: 424 },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', aim: 0, x: 982, y: 292 },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', aim: -40, x: 951.4, y: 162 },
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', aim: 207.6, x: 435.6, y: 162 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', aim: 180.2, x: 414, y: 292 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', aim: 152.4, x: 436.5, y: 424 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', aim: 26.6, x: 942.6, y: 424 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', aim: -0.2, x: 982, y: 292 },
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', aim: -26.7, x: 951.4, y: 162 },
 ];
 
 export const SEG_BY_ID = Object.fromEntries(SEGMENTS.map((s) => [s.id, s])) as Record<string, Segment>;
@@ -94,14 +99,20 @@ export function slicePath(a0: number, a1: number, r: number = DIAL.r, c: number 
  * animated 0 → 1 along the path travels toward the hub. These trace the same geometry as the
  * original wire exports, which is what keeps a travelling dot exactly on the line.
  */
-export const WIRES: { id: string; d: string }[] = [
-  { id: 'l0', d: 'M 0 293 L 559 293' },
-  { id: 'l1', d: 'M 0.5 452.87 L 240.42 452.87 C 248.19 452.87 255.68 449.95 261.4 444.69 L 426 293.37' },
-  { id: 'l2', d: 'M 0.5 134.5 L 240.42 134.5 C 248.19 134.5 255.68 137.42 261.4 142.68 L 426 294' },
-  { id: 'r0', d: 'M 1560 293 L 1001 293' },
-  { id: 'r1', d: 'M 1559.84 452.87 L 1319.92 452.87 C 1312.15 452.87 1304.66 449.95 1298.94 444.69 L 1134.34 293.37' },
-  { id: 'r2', d: 'M 1559.84 134.5 L 1319.92 134.5 C 1312.15 134.5 1304.66 137.42 1298.94 142.68 L 1134.34 294' },
+export const WIRES: { id: string; d: string; coin: string }[] = [
+  { id: 'l0', coin: 'coin-eth', d: 'M 0 293 L 559 293' },
+  { id: 'l1', coin: 'coin-usdt', d: 'M 0.5 452.87 L 240.42 452.87 C 248.19 452.87 255.68 449.95 261.4 444.69 L 426 293.37' },
+  { id: 'l2', coin: 'coin-btc', d: 'M 0.5 134.5 L 240.42 134.5 C 248.19 134.5 255.68 137.42 261.4 142.68 L 426 294' },
+  { id: 'r0', coin: 'coin-bnb', d: 'M 1560 293 L 1001 293' },
+  { id: 'r1', coin: 'coin-sol', d: 'M 1559.84 452.87 L 1319.92 452.87 C 1312.15 452.87 1304.66 449.95 1298.94 444.69 L 1134.34 293.37' },
+  { id: 'r2', coin: 'coin-tron', d: 'M 1559.84 134.5 L 1319.92 134.5 C 1312.15 134.5 1304.66 137.42 1298.94 142.68 L 1134.34 294' },
 ];
+
+/**
+ * The order the load-in draws the wires: top-left, left-centre, left-bottom, then right-bottom,
+ * right-centre, right-top — so the lines come in around the section rather than all at once.
+ */
+export const SPATIAL = ['l2', 'l0', 'l1', 'r1', 'r0', 'r2'];
 
 /** Which wire feeds which allocation, so an arrival can be handed to the chip beside it. */
 export const WIRE_FOR: Record<string, string> = {

@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react';
-import { HALOS, SEGMENTS, SEG_BY_ID, REST, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
+import { COINS, HALOS, SEGMENTS, SEG_BY_ID, REST, SPATIAL, WIRES, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
 
 export type TokVariant = 1 | 2 | 3 | 4 | 5;
 
@@ -41,6 +41,44 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const arcEl = one<SVGPathElement>('.tk__arc');
           const haloEls = HALOS.map((h) => one<SVGPathElement>(`[data-halo="${h.d}"]`));
           const stops = tourStops();
+          const coinEl = (id: string) => one<HTMLElement>(`[data-coin="${id}"]`);
+          const allocForWire = Object.fromEntries(Object.entries(WIRE_FOR).map(([a, w]) => [w, a]));
+
+          /**
+           * How far along each wire its chain mark sits, measured off the real path so the pulse
+           * fires exactly as the dot crosses the mark rather than at a guessed moment.
+           */
+          const coinAt = new Map<string, number>();
+          WIRES.forEach((w) => {
+            const path = wire(w.id);
+            const c = COINS.find((k) => k.id === w.coin);
+            if (!path || !c) return;
+            const [cx, cy] = [c.x + 32, c.y];
+            const L = path.getTotalLength();
+            let best = Infinity;
+            let bestF = 0.5;
+            for (let i = 0; i <= 240; i++) {
+              const pt = path.getPointAtLength((i / 240) * L);
+              const d = Math.hypot(pt.x - cx, pt.y - cy);
+              if (d < best) {
+                best = d;
+                bestF = i / 240;
+              }
+            }
+            coinAt.set(w.id, bestF);
+          });
+
+          /** A chain mark reacting to a light going past: down 15%, then back. */
+          const coinPulse = (wireId: string) => {
+            const w = WIRES.find((k) => k.id === wireId);
+            const el = w && coinEl(w.coin);
+            if (!el) return;
+            gsap.timeline()
+              .to(el, { scale: 0.85, duration: 0.18, ease: 'power2.out', transformOrigin: '50% 50%' })
+              .to(el, { scale: 1, duration: 0.55, ease: 'power2.out' });
+          };
+          /** Set once the entrance is done: during load-in a mark appears instead of pulsing. */
+          let cycling = false;
 
           /**
            * Tempo. The dial should read as slow and deliberate: a long travel, and a rest long
@@ -93,19 +131,49 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             }, at);
           };
 
-          /** Sends a light along one wire. `dir` 1 runs inward to the hub, -1 runs back out. */
-          const runWire = (id: string, tl: gsap.core.Timeline, at: number, dur = 1.5, dir: 1 | -1 = 1) => {
+          /**
+           * Sends a light along one wire. `dir` 1 runs inward to the hub, -1 runs back out. With
+           * `draw`, the wire is stroked in behind the dot, so the dot reads as the drawing head.
+           * Either way the chain mark reacts as the dot crosses it.
+           */
+          const runWire = (id: string, tl: gsap.core.Timeline, at: number, dur = 1.5, dir: 1 | -1 = 1, draw = false) => {
             const dot = pulse(id);
             const path = wire(id);
             if (!dot || !path) return;
-            tl.set(dot, { opacity: 0 }, at);
-            tl.to(dot, { opacity: 1, duration: 0.14 }, at);
+            const f = coinAt.get(id) ?? 0.5;
+            const mark = dir === 1 ? f : 1 - f;
+            let fired = false;
+            // A proxy tween with the same duration and ease as the ride, so its value IS the dot's
+            // eased progress along the path. (A paused tween added to a timeline never renders, so
+            // the crossing cannot be read off the motionPath tween itself.)
+            const head = { p: 0 };
+            tl.to(head, {
+              p: 1,
+              duration: dur,
+              ease: 'power1.inOut',
+              onStart: () => {
+                fired = false;
+              },
+              onUpdate: () => {
+                if (!fired && head.p >= mark) {
+                  fired = true;
+                  if (cycling) coinPulse(id);
+                }
+              },
+            }, at);
             tl.to(dot, {
               motionPath: { path, start: dir === 1 ? 0 : 1, end: dir === 1 ? 1 : 0 },
               duration: dur,
-              ease: dir === 1 ? 'power1.in' : 'power1.out',
+              ease: 'power1.inOut',
             }, at);
-            tl.to(dot, { opacity: 0, duration: 0.2 }, at + dur - 0.05);
+            tl.set(dot, { opacity: 0 }, at);
+            tl.to(dot, { opacity: 1, duration: 0.2 }, at);
+            tl.to(dot, { opacity: 0, duration: 0.25 }, at + dur - 0.1);
+            if (draw) {
+              const L = path.getTotalLength();
+              gsap.set(path, { strokeDasharray: L, strokeDashoffset: L });
+              tl.to(path, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
+            }
           };
 
           const knock = (tl: gsap.core.Timeline, at: number) => {
@@ -121,12 +189,25 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           tl.from(one('.tk__hub'), { scale: 0.86, opacity: 0, duration: 1, ease: 'power2.out', transformOrigin: '50% 50%' }, 0.45);
           // The arc opens from a blade at presale's bearing to its full 50% span.
           tl.fromTo(arc, { a0: 180, a1: 180 }, { a0: rest0, a1: rest1, duration: 1.6, ease: 'power2.out', onUpdate: paint }, 0.6);
-          tl.fromTo(q('.tk__wire'), { opacity: 0 }, { opacity: 1, duration: 1, stagger: 0.08 }, 0.6);
-          tl.from(q('.tk__coin'), { scale: 0.8, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.09 }, 0.8);
-          tl.from(q('.tk__slice'), { opacity: 0, y: 8, duration: 0.8, ease: 'power2.out', stagger: 0.09 }, 0.95);
-          SEGMENTS.forEach((s, i) => count(s.id, tl, 1 + i * 0.09));
-          light(tl, 1.6, REST);
-          tl.from(one('.tk__facts'), { opacity: 0, y: 12, duration: 1, ease: 'power2.out' }, 1.7);
+          // Each wire strokes itself in with a light at its head, going round the section:
+          // top-left, left-centre, left-bottom, right-bottom, right-centre, right-top. The chain
+          // mark lands as the head reaches it, and its allocation follows just behind.
+          const DRAW = 1.3;
+          const STEP = 0.24;
+          SPATIAL.forEach((wid, i) => {
+            const at = 0.7 + i * STEP;
+            runWire(wid, tl, at, DRAW, 1, true);
+            const w = WIRES.find((k) => k.id === wid);
+            if (w) tl.from(coinEl(w.coin), { scale: 0, opacity: 0, duration: 0.55, ease: 'power2.out' }, at + DRAW * (coinAt.get(wid) ?? 0.5));
+            const alloc = allocForWire[wid];
+            if (slice(alloc)) {
+              tl.from(slice(alloc), { opacity: 0, y: 8, duration: 0.7, ease: 'power2.out' }, at + DRAW * 0.6);
+              count(alloc, tl, at + DRAW * 0.6);
+            }
+          });
+          const settled = 0.7 + (SPATIAL.length - 1) * STEP + DRAW;
+          light(tl, settled - 0.3, REST);
+          tl.from(one('.tk__facts'), { opacity: 0, y: 12, duration: 1, ease: 'power2.out' }, settled - 0.4);
 
           // ---- The cycle --------------------------------------------------------------------
           const loop = gsap.timeline({ repeat: -1, paused: true });
@@ -226,7 +307,10 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             paint();
           });
 
-          tl.eventCallback('onComplete', () => loop.play());
+          tl.eventCallback('onComplete', () => {
+            cycling = true;
+            loop.play();
+          });
           io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? loop.resume() : loop.pause()), { rootMargin: '120px' });
           io.observe(el);
 

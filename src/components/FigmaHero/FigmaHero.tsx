@@ -222,25 +222,64 @@ export function FigmaHero() {
           </div>
           <MenuButton open={menu.open} onClick={() => menu.setOpen((v) => !v)} buttonRef={menu.trigger} />
         </div>
-
-        {/* The phone menu carries what the bar drops on a narrow screen: the primary links, the
-            language and Login. Join Presale stays in the bar, so the action is never behind a tap. */}
-        <div className="fh__menu" id="fh-menu" ref={menu.panel} hidden={!menu.open}>
-          <nav className="fh__menuLinks" aria-label="Primary">
-            {NAV_LINKS.map(([label, href]) => (
-              <a key={label} href={href} onClick={() => menu.close(false)}>
-                {label}
-              </a>
-            ))}
-          </nav>
-          <div className="fh__menuFoot">
-            <LangPicker />
-            <a className="fh__btn fh__btn--ghost fh__menuLogin" href="#login" onClick={() => menu.close(false)}>
-              Login
-            </a>
-          </div>
-        </div>
       </header>
+
+      {/* The phone menu is a sheet, not a dropdown: it stands below the bar and runs to the foot of
+          the screen, so what the bar drops on a narrow viewport — the links, both account actions
+          and the language — gets the room it has on a desktop. It sits outside the bar and under it
+          in the stack, so the pill and its close button stay legible over the frosted page.
+          Join Presale stays in the bar, so the presale is never behind a tap. */}
+      <div
+        className="fh__scrim"
+        data-open={menu.open || undefined}
+        aria-hidden="true"
+        onClick={() => menu.close(false)}
+      />
+      <div className="fh__menu" id="fh-menu" ref={menu.panel} data-open={menu.open || undefined} inert={!menu.open}>
+        <nav className="fh__menuLinks" aria-label="Primary">
+          {NAV_LINKS.map(([label, href], i) => (
+            <a
+              key={label}
+              href={href}
+              style={{ '--i': i } as React.CSSProperties}
+              onClick={() => menu.close(false)}
+            >
+              <span className="fh__menuIndex" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="fh__menuLabel">{label}</span>
+              <Chevron direction="right" />
+            </a>
+          ))}
+        </nav>
+
+        <div className="fh__menuActions" style={{ '--i': NAV_LINKS.length } as React.CSSProperties}>
+          <a
+            className="fh__btn fh__btn--primary"
+            href="#register"
+            onPointerEnter={blobOrigin}
+            onPointerLeave={blobOrigin}
+            onClick={() => menu.close(false)}
+          >
+            Create account
+            <Chevron direction="right" />
+          </a>
+          <a
+            className="fh__btn fh__btn--ghost"
+            href="#login"
+            onPointerEnter={blobOrigin}
+            onPointerLeave={blobOrigin}
+            onClick={() => menu.close(false)}
+          >
+            Login
+          </a>
+        </div>
+
+        <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 1 } as React.CSSProperties}>
+          <span className="fh__menuFootLabel">Language</span>
+          <LangPicker />
+        </div>
+      </div>
 
       <div className="fh__main" data-node-id="2346:142">
         <div className="fh__intro">

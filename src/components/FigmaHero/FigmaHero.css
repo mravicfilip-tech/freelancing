@@ -86,7 +86,12 @@
    The bar is fixed and rides the whole page. Past the first scroll it condenses: the links
    collapse and the pill draws in to what is left, and hovering (or tabbing into) it brings the
    full bar back. Centring is done with auto margins rather than a translate, because the
-   entrance timeline in useHeroEntrance owns this element's transform. */
+   entrance timeline in useHeroEntrance owns this element's transform.
+
+   The nav and its dropdowns must paint above the hero's own content — `.fh > :not(.fh__frame)`
+   puts every sibling on z-index 1, and the planet comes later in document order. The exemption
+   in that rule plus the z-index below settle it: a `.fh > .fh__nav` override would out-specify
+   the z-index here and drop the bar back under the sections it now has to cross. */
 .fh__nav {
   position: fixed;
   top: 24px;

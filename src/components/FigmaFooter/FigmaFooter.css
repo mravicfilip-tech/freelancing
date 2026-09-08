@@ -15,6 +15,8 @@
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --ft-dash-v: repeating-linear-gradient(180deg, var(--ft-rail) 0 8px, transparent 8px 16px);
   --ft-dash-h: repeating-linear-gradient(90deg, var(--ft-rail) 0 8px, transparent 8px 16px);
+  /* how far the content sits off the rails; the rules ignore it and run rail to rail */
+  --ft-inset: clamp(0px, 3.85%, 60px);
 
   display: block;
   background: var(--ft-bg);
@@ -25,7 +27,7 @@
 .ft__frame {
   width: min(1560px, 100% - 48px);
   margin: 0 auto;
-  padding: 0 clamp(0px, 3.85%, 60px) 48px;
+  padding: 0 0 48px;
   display: flex;
   flex-direction: column;
   background-image: var(--ft-dash-v), var(--ft-dash-v);
@@ -42,7 +44,7 @@
   flex-direction: column;
   align-items: center;
   gap: 36px;
-  padding: 160px 0 150px;
+  padding: 160px var(--ft-inset) 150px;
   text-align: center;
 }
 .ft__title {
@@ -85,7 +87,7 @@
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   gap: 64px;
-  padding: 96px 0;
+  padding: 96px var(--ft-inset);
 }
 .ft__identity {
   display: flex;
@@ -144,13 +146,14 @@
   justify-content: end;
   gap: 0 96px;
 }
-/* Two sizes carry the whole block: a 12px label and a 14px link. The labels are set back to
-   half strength so they name their column without competing with it. */
+/* Labels and links share the system's uppercase spec; half strength is what separates them, so a
+   label names its column without competing with it. */
 .ft__label {
   margin: 0 0 22px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
   text-transform: uppercase;
   color: var(--ft-label);
   opacity: 0.5;
@@ -163,10 +166,12 @@
   flex-direction: column;
   gap: 16px;
 }
+/* The design system's uppercase label: 13 / 700 / 1.4 / -0.39px, as set everywhere else. */
 .ft__col a {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
   text-transform: uppercase;
   color: var(--ft-body);
   text-decoration: none;
@@ -194,7 +199,7 @@
 /* ---------- Small print ---------- */
 /* Regulatory text is small print, not a peer of the navigation. */
 .ft__small {
-  margin: 0 0 44px;
+  margin: 0 var(--ft-inset) 44px;
   max-width: 104ch;
   font-size: 12.5px;
   line-height: 1.75;
@@ -212,7 +217,7 @@
   gap: 12px 28px;
   align-items: center;
   justify-content: space-between;
-  padding-top: 26px;
+  padding: 26px var(--ft-inset) 0;
   font-size: 13px;
   color: var(--ft-label);
 }
@@ -266,7 +271,7 @@
   .ft__main {
     grid-template-columns: 1fr;
     gap: 56px;
-    padding: 72px 0;
+    padding: 72px var(--ft-inset);
   }
   .ft__nav {
     justify-content: start;
@@ -278,14 +283,14 @@
     padding: 0 0 32px;
   }
   .ft__cta {
-    padding: 88px 0 96px;
+    padding: 88px var(--ft-inset) 96px;
     gap: 28px;
   }
   .ft__title {
     letter-spacing: -1.1px;
   }
   .ft__main {
-    padding: 56px 0;
+    padding: 56px var(--ft-inset);
     gap: 44px;
   }
   .ft__nav {

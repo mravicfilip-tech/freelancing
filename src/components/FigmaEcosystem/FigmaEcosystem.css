@@ -283,11 +283,16 @@
   .ec__item--on .ec__scene {
     display: block;
   }
-  /* The desktop rule centres a scene on its absolute box with translate(-50%, -50%). Putting the
-     scene back in the flow is not enough on its own: the transform survives and drags the whole
-     drawing half its own size up and to the left, inside a box that clips. */
+  /* The desktop rule places a scene on an absolute box and centres it with translate(-50%, -50%).
+     Undoing that takes all of this at once: the transform has to go, or the drawing is dragged
+     half its own size up and to the left inside a box that clips — and the box still has to be a
+     containing block, because the stage inside it is absolute. Left `static`, the stage anchors to
+     the pillar's own list item instead and lands about 200px up the card; the stray transform had
+     been serving as that containing block by accident. */
   .ec__scene .ff__il {
-    position: static;
+    position: relative;
+    left: 0;
+    top: 0;
     width: 100%;
     transform: none;
   }

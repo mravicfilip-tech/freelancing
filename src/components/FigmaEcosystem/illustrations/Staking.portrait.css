@@ -13,15 +13,15 @@
    down, accrual counting up). The two figures the loop animates end up side by side, which is
    where the eye is anyway. Nothing is dropped and nothing is abbreviated. */
 
-/* The section's desktop rule centres the scene with a translate, and its phone rule only resets
-   `position`; the transform survives and would carry the whole stage half a frame up and left.
-   Neutralised here rather than in FigmaEcosystem.css so this file owns its own frame — the
-   portrait stage is its own containing block, at the scene's origin. */
+/* The stage inside is absolutely positioned, so the drawing needs a frame of its own to sit in:
+   left to the flow it would hang off whichever ancestor happens to be positioned that frame — the
+   pillar's `<li>` — and land somewhere above the scene entirely. Relative here pins it to the
+   scene's own origin, and the desktop rule's 50% offsets, which only meant anything while the
+   scene was absolute, are put back to zero. */
 .ec__scene .ff__il.ec-stk-scene--m {
   position: relative;
   left: 0;
   top: 0;
-  transform: none;
 }
 
 /* The landscape scene is held 20% larger about the stage's centre, which is where its crop at the

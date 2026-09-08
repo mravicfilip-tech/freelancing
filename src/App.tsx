@@ -11,6 +11,8 @@ import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
 import { FigmaReviews } from './components/FigmaReviews/FigmaReviews';
 import { FigmaSeenIn } from './components/FigmaSeenIn/FigmaSeenIn';
 import { FigmaFaq } from './components/FigmaFaq/FigmaFaq';
+import { FigmaTokenomics } from './components/FigmaTokenomics/FigmaTokenomics';
+import { TokPicker, tokFromParam } from './components/FigmaTokenomics/TokPicker';
 import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
@@ -20,6 +22,9 @@ const DEV_TOOLS = params.has('devtools');
 // Review page for the bento grid's loop variants; `?bento=` alone applies a choice to the real page.
 const BENTO_PICKER = params.has('bento-picker');
 const BENTO_PICKS = picksFromParam(params.get('bento'));
+// Review page for the tokenomics motion variants; `?tok=` alone applies a choice to the real page.
+const TOK_PICKER = params.has('tok-picker');
+const TOK_VARIANT = tokFromParam(params.get('tok'));
 
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
@@ -27,6 +32,7 @@ export function App() {
 
   if (CAPTURE_MODE) return <CaptureStage />;
   if (BENTO_PICKER) return <BentoPicker />;
+  if (TOK_PICKER) return <TokPicker />;
 
   const figma = HERO_VARIANT === 'figma';
   return (
@@ -39,6 +45,7 @@ export function App() {
         {figma && <FigmaEcosystem />}
         {figma && <FigmaReviews />}
       {figma && <FigmaSeenIn />}
+        {figma && <FigmaTokenomics variant={TOK_VARIANT} />}
         {figma && <FigmaFaq />}
       </main>
       {figma && <FigmaFooter />}

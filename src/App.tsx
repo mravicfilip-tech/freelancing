@@ -10,6 +10,8 @@ import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
 import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
 import { FigmaReviews } from './components/FigmaReviews/FigmaReviews';
 import { FigmaSeenIn } from './components/FigmaSeenIn/FigmaSeenIn';
+import { FigmaFaq } from './components/FigmaFaq/FigmaFaq';
+import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
 const params = new URLSearchParams(window.location.search);
@@ -37,7 +39,9 @@ export function App() {
         {figma && <FigmaEcosystem />}
         {figma && <FigmaReviews />}
       {figma && <FigmaSeenIn />}
+        {figma && <FigmaFaq />}
       </main>
+      {figma && <FigmaFooter />}
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (
         <div className="devbar">

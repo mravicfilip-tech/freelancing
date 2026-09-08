@@ -1,0 +1,180 @@
+/* Language picker. Twenty-two languages in two columns, so the whole set is one glance rather
+   than four screens of scrolling; the ISO code in the digits face stands in for a flag. */
+
+.lp {
+  position: relative;
+}
+
+.lp__pop {
+  --lp-line: #dadee2;
+  --lp-ink: #122433;
+  --lp-body: #7c858d;
+  --lp-label: #a2a6aa;
+  --lp-indigo: #4042d1;
+  --lp-rule: repeating-linear-gradient(90deg, var(--lp-line) 0 4px, transparent 4px 8px);
+
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  width: 440px;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 28px 64px -24px rgb(18 36 51 / 30%), 0 2px 10px rgb(18 36 51 / 6%);
+  transform-origin: 100% 0;
+  animation: lp-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes lp-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp__pop {
+    animation: none;
+  }
+}
+.lp[data-open='true'] .fh__chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- Search ---------- */
+.lp__search {
+  position: relative;
+  padding: 16px 18px 15px;
+  background-image: var(--lp-rule);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+}
+.lp__search input {
+  width: 100%;
+  padding: 0 34px 0 26px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--lp-ink);
+}
+.lp__search input::placeholder {
+  color: var(--lp-label);
+}
+.lp__search input:focus {
+  outline: none;
+}
+.lp__search svg {
+  position: absolute;
+  left: 18px;
+  top: 17px;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--lp-body);
+  stroke-width: 1.6;
+}
+.lp__count {
+  position: absolute;
+  right: 18px;
+  top: 17px;
+  font-family: var(--fh-digits, 'Doto Variable', monospace);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--lp-label);
+}
+
+/* ---------- Options ---------- */
+.lp__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 8px;
+}
+.lp__opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--lp-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.lp__opt:hover {
+  background: #f5f6f7;
+}
+.lp__opt[aria-selected='true'] {
+  background: #f3f3fb;
+}
+.lp__opt:focus-visible {
+  outline: 2px solid var(--lp-indigo);
+  outline-offset: -2px;
+}
+.lp__code {
+  flex: 0 0 auto;
+  width: 26px;
+  font-family: var(--fh-digits, 'Doto Variable', monospace);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-label);
+}
+.lp__opt[aria-selected='true'] .lp__code {
+  color: var(--lp-indigo);
+}
+.lp__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp__tick {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+.lp__opt[aria-selected='true'] .lp__tick {
+  opacity: 1;
+}
+.lp__tick svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--lp-indigo);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lp__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 26px 12px 30px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--lp-body);
+}
+
+@media (max-width: 560px) {
+  .lp__pop {
+    width: min(340px, calc(100vw - 32px));
+  }
+  .lp__list {
+    grid-template-columns: 1fr;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+}

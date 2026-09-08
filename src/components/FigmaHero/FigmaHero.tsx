@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { LangPicker } from './LangPicker';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -182,10 +183,7 @@ export function FigmaHero() {
           ))}
         </nav>
         <div className="fh__navRight">
-          <button type="button" className="fh__lang" aria-label="Language: English">
-            EN
-            <Chevron />
-          </button>
+          <LangPicker />
           <div className="fh__navButtons">
             <PresaleButton />
             <a className="fh__btn fh__btn--ghost" href="#login" onPointerEnter={blobOrigin} onPointerLeave={blobOrigin}>

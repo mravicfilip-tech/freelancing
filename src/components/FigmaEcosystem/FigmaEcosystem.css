@@ -283,9 +283,13 @@
   .ec__item--on .ec__scene {
     display: block;
   }
+  /* The desktop rule centres a scene on its absolute box with translate(-50%, -50%). Putting the
+     scene back in the flow is not enough on its own: the transform survives and drags the whole
+     drawing half its own size up and to the left, inside a box that clips. */
   .ec__scene .ff__il {
     position: static;
     width: 100%;
+    transform: none;
   }
 }
 

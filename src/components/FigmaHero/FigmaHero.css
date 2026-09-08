@@ -29,7 +29,8 @@
   --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
 
   position: relative;
-  isolation: isolate;
+  /* No isolation here: it would make .fh a stacking context and trap the fixed nav inside the
+     hero, letting every later section paint over it. */
   min-height: 1080px;
   display: flex;
   flex-direction: column;
@@ -73,13 +74,26 @@
   background-repeat: no-repeat, no-repeat, repeat;
 }
 
-.fh > :not(.fh__frame) {
+/* Lift the hero's content off the dotted frame behind it. The nav is exempt: it is fixed and
+   rides the whole page, so it must not be pinned back into the hero's own layer. */
+.fh > :not(.fh__frame):not(.fh__nav) {
   position: relative;
   z-index: 1;
 }
 
 /* ---------- Navbar ---------- */
+/* ---------- Nav ----------
+   The bar is fixed and rides the whole page. Past the first scroll it condenses: the links
+   collapse and the pill draws in to what is left, and hovering (or tabbing into) it brings the
+   full bar back. Centring is done with auto margins rather than a translate, because the
+   entrance timeline in useHeroEntrance owns this element's transform. */
 .fh__nav {
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin: 0 auto;
   width: min(1440px, 100% - 48px);
   display: flex;
   align-items: center;
@@ -88,6 +102,44 @@
   background: #fff;
   border: 1px solid #fff;
   border-radius: 400px;
+  transition:
+    width 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 320ms ease;
+}
+/* Holds the nav's place in the hero's flow now that it is fixed. */
+.fh__navSpacer {
+  height: 74px;
+  flex: 0 0 auto;
+}
+.fh__nav[data-condensed] {
+  box-shadow: 0 8px 28px rgba(18, 36, 51, 0.12);
+}
+/* Below this the links are already hidden, so there is nothing to draw in from. */
+@media (min-width: 1101px) {
+  .fh__nav[data-condensed] {
+    width: min(760px, 100% - 48px);
+  }
+  .fh__nav[data-condensed]:hover,
+  .fh__nav[data-condensed]:focus-within {
+    width: min(1440px, 100% - 48px);
+  }
+}
+/* 1fr -> 0fr collapses the links to nothing and animates doing it, with no measured width. */
+.fh__linksWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  transition:
+    grid-template-columns 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 260ms ease;
+}
+.fh__nav[data-condensed] .fh__linksWrap {
+  grid-template-columns: 0fr;
+  opacity: 0;
+}
+.fh__nav[data-condensed]:hover .fh__linksWrap,
+.fh__nav[data-condensed]:focus-within .fh__linksWrap {
+  grid-template-columns: 1fr;
+  opacity: 1;
 }
 .fh__brand {
   display: inline-flex;
@@ -108,6 +160,8 @@
 }
 .fh__links {
   display: flex;
+  min-width: 0;
+  overflow: hidden;
   gap: 48px;
   font-weight: 700;
   font-size: 13px;
@@ -132,7 +186,8 @@
   bottom: 0;
   height: 2px;
   border-radius: 2px;
-  background: var(--fh-progress);
+  /* the ink the label itself turns on hover, so rule and word land on one colour */
+  background: var(--fh-ink);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -517,7 +572,9 @@
   .fh__slide,
   .fh__slide[data-active],
   .fh__segment,
-  .fh__sliderArrow {
+  .fh__sliderArrow,
+  .fh__nav,
+  .fh__linksWrap {
     transition: none;
   }
 }
@@ -735,6 +792,7 @@
     padding-top: 16px;
   }
   .fh__nav {
+    top: 16px;
     width: calc(100% - 24px);
   }
   .fh__navButtons .fh__btn--ghost,

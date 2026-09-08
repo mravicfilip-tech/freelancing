@@ -165,10 +165,12 @@
   flex-direction: column;
   gap: 16px;
 }
+/* The design system's uppercase label: 13 / 700 / 1.4 / -0.39px, as set everywhere else. */
 .ft__col a {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
   text-transform: uppercase;
   color: var(--ft-body);
   text-decoration: none;

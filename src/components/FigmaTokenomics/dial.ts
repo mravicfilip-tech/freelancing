@@ -85,12 +85,13 @@ export const REST = 'reserves';
  * returns, unwrapping each aim so the bearing only ever decreases — which is a single, unbroken
  * anticlockwise rotation, with every allocation visited exactly once.
  */
-export function tourStops() {
+export function tourStops(segments: Segment[] = SEGMENTS) {
+  const byId = Object.fromEntries(segments.map((s) => [s.id, s])) as Record<string, Segment>;
   const at = TOUR.indexOf(REST);
   const order = [...TOUR.slice(at + 1), ...TOUR.slice(0, at + 1)];
-  let prev = SEG_BY_ID[REST].aim;
+  let prev = byId[REST].aim;
   return order.map((id) => {
-    const seg = SEG_BY_ID[id];
+    const seg = byId[id];
     let aim = seg.aim;
     while (aim > prev) aim -= 360;
     prev = aim;
@@ -156,3 +157,68 @@ export const COINS: { id: string; x: number; y: number }[] = [
   { id: 'coin-bnb', x: 1264, y: 293 },
   { id: 'coin-sol', x: 1348, y: 453 },
 ];
+
+/* ---------------------------------------------------------------------------
+ * Portrait (Figma 2639:1627)
+ *
+ * The phone frame stands the band up: the six allocations stack in two groups of three around a
+ * 210 dial, fed by a wire tree reaching down from the head of the frame and up from its foot.
+ * Same parts, same motion — only the geometry below changes.
+ * ------------------------------------------------------------------------ */
+
+export const STAGE = { w: 1560, h: 586 } as const;
+export const STAGE_M = { w: 393, h: 1123 } as const;
+/** The dial keeps its 442 geometry and is mapped onto the portrait frame by one CSS transform. */
+export const HUB_M = { x: 196.5, y: 505 } as const;
+
+/**
+ * Aims are given rather than derived here. `aimOf` reads the bearing where a row's centre line
+ * leaves the circle, which needs the rows to flank the dial; stacked above and below it, every row
+ * in a group would exit at the same bearing. So the top three fan across the top and the bottom
+ * three across the bottom, in the order TOUR walks them, which keeps a lap one unbroken sweep.
+ */
+const ROWS_M: Segment[] = [
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', side: 'l', x: 102.5, y: 192, aim: 315 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', side: 'l', x: 102.5, y: 272, aim: 270 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 102.5, y: 352, aim: 225 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 102.5, y: 658, aim: 135 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 102.5, y: 738, aim: 90 },
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 102.5, y: 818, aim: 45 },
+];
+export const SEGMENTS_M: Segment[] = ROWS_M;
+
+/**
+ * The two wire trees, drawn rather than exported: a dot animated along one of these sits exactly on
+ * the line, which an image behind a separately-positioned dot cannot promise. Each is written from
+ * the chain mark inward, so 0 → 1 travels toward the hub. The middle mark of each trio sits on the
+ * trunk, so its wire is the trunk itself.
+ */
+export const WIRES_M: { id: string; d: string; coin: string }[] = [
+  { id: 'l0', coin: 'coin-eth', d: 'M 196.5 123 L 196.5 400' },
+  { id: 'l1', coin: 'coin-usdt', d: 'M 104 70 L 104 104 C 104 124 147 118 179 132 C 193 138 196.5 148 196.5 164 L 196.5 400' },
+  { id: 'l2', coin: 'coin-btc', d: 'M 293 70 L 293 104 C 293 124 246 118 214 132 C 200 138 196.5 148 196.5 164 L 196.5 400' },
+  { id: 'r0', coin: 'coin-bnb', d: 'M 196.5 1003 L 196.5 610' },
+  { id: 'r1', coin: 'coin-sol', d: 'M 101.5 1053 L 101.5 1019 C 101.5 999 147 1005 179 991 C 193 985 196.5 975 196.5 959 L 196.5 610' },
+  { id: 'r2', coin: 'coin-tron', d: 'M 289.5 1053 L 289.5 1019 C 289.5 999 246 1005 214 991 C 200 985 196.5 975 196.5 959 L 196.5 610' },
+];
+
+/**
+ * Chain marks, from the file's rotated frames (2639:1875 and 2639:1915). As on the desk table, `x`
+ * is the disc's left edge and `y` its centre line; the discs are 40 here against the desk's 64.
+ */
+export const COINS_M: { id: string; x: number; y: number }[] = [
+  { id: 'coin-usdt', x: 84, y: 50 },
+  { id: 'coin-btc', x: 273, y: 50 },
+  { id: 'coin-eth', x: 174, y: 103 },
+  { id: 'coin-bnb', x: 175.5, y: 1023 },
+  { id: 'coin-sol', x: 81.5, y: 1073 },
+  { id: 'coin-tron', x: 269.5, y: 1073 },
+];
+
+/** Everything the band's layout depends on, for whichever frame is on screen. */
+export function geometry(mobile: boolean) {
+  return mobile
+    ? { stage: STAGE_M, hub: HUB_M, segments: SEGMENTS_M, wires: WIRES_M, coins: COINS_M, disc: 40, mark: 18.883 }
+    : { stage: STAGE, hub: HUB, segments: SEGMENTS, wires: WIRES, coins: COINS, disc: 64, mark: 32 };
+}
+export type Geometry = ReturnType<typeof geometry>;

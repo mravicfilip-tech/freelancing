@@ -80,15 +80,12 @@
 .tk__fit {
   position: relative;
   width: 100%;
-  aspect-ratio: 1560 / 586;
   overflow: hidden;
 }
 .tk__stage {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1560px;
-  height: 586px;
   transform: scale(var(--k, 1));
   transform-origin: 0 0;
 }
@@ -363,6 +360,26 @@
 .tk[data-motion='pending'] .tk__slice,
 .tk[data-motion='pending'] .tk__facts {
   visibility: hidden;
+}
+
+/* ---------- Portrait (Figma 2639:1627) ----------
+   The ring, the gradient arc and the hub are three separately placed elements that all share the
+   dial's centre, so one transform carries the whole dial from the desk band's (780, 293) to the
+   phone frame's (196.5, 505) at 210 of its 442 — their inner geometry, and every tween that reads
+   it, is untouched. */
+.tk--m .tk__ring,
+.tk--m .tk__dial,
+.tk--m .tk__hub {
+  transform-origin: 50% 50%;
+  transform: translate(-583.5px, 212px) scale(0.475113);
+}
+.tk--m .tk__chip {
+  font-size: 12px;
+  letter-spacing: -0.36px;
+}
+/* The phone frame carries the diagram on plain ground — no rails across the band. */
+.tk--m .tk__band {
+  background-image: none;
 }
 
 /* ---------- Responsive ---------- */

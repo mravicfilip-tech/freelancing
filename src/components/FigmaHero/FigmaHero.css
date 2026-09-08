@@ -764,6 +764,117 @@
   color: rgba(162, 166, 170, 0.24);
 }
 
+/* ---------- The phone menu ----------
+   The bar drops its links at 1100 and its language and Login at 900. Below 1100 a trigger takes
+   their place and a panel under the bar carries them, so a narrow screen can still navigate. */
+.fh__burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 400px;
+  background: transparent;
+  color: var(--fh-ink);
+  cursor: pointer;
+}
+.fh__burger:hover {
+  background: #f2f4f6;
+}
+.fh__burgerBars {
+  display: block;
+  position: relative;
+  width: 18px;
+  height: 12px;
+}
+.fh__burgerBars i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.75px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 160ms ease;
+}
+.fh__burgerBars i:nth-child(1) { top: 0; }
+.fh__burgerBars i:nth-child(2) { top: 5.125px; }
+.fh__burgerBars i:nth-child(3) { top: 10.25px; }
+/* Open: the outer rules meet in the middle and cross, the middle one goes. */
+[aria-expanded='true'] .fh__burgerBars i:nth-child(1) {
+  transform: translateY(5.125px) rotate(45deg);
+}
+[aria-expanded='true'] .fh__burgerBars i:nth-child(2) {
+  opacity: 0;
+}
+[aria-expanded='true'] .fh__burgerBars i:nth-child(3) {
+  transform: translateY(-5.125px) rotate(-45deg);
+}
+/* The panel hangs off the bar, which is fixed, so it follows it without its own positioning. */
+.fh__menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  padding: 8px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 18px 40px -12px rgba(18, 36, 51, 0.28);
+  animation: fh-menu-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes fh-menu-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+.fh__menuLinks {
+  display: flex;
+  flex-direction: column;
+}
+.fh__menuLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.16px;
+  color: var(--fh-ink);
+  text-decoration: none;
+}
+.fh__menuLinks a:hover,
+.fh__menuLinks a:focus-visible {
+  background: #f2f4f6;
+}
+.fh__menuFoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--fh-line);
+}
+/* In the panel the language picker and Login share the row evenly. */
+.fh__menuFoot .fh__lang {
+  flex: 1 1 0;
+  justify-content: center;
+}
+.fh__menuLogin {
+  flex: 1 1 0;
+  width: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fh__menu {
+    animation: none;
+  }
+  .fh__burgerBars i {
+    transition: none;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
   .fh__links {
@@ -789,6 +900,15 @@
   .fh__links {
     display: none;
   }
+  .fh__burger {
+    display: inline-flex;
+  }
+}
+/* Above it the panel can never open, so it must not be reachable. */
+@media (min-width: 1101px) {
+  .fh__menu {
+    display: none;
+  }
 }
 @media (max-width: 900px) {
   .fh {
@@ -801,7 +921,7 @@
     width: calc(100% - 24px);
   }
   .fh__navButtons .fh__btn--ghost,
-  .fh__lang {
+  .fh__navRight > .lp {
     display: none;
   }
   .fh__main {

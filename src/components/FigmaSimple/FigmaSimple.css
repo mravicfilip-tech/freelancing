@@ -295,7 +295,7 @@
 }
 @media (max-width: 720px) {
   .fs__inner {
-    padding: 56px 0;
+    padding: 64px 0;
   }
   /* The phone frame carries the orbit on plain ground — no dot field, no rails. */
   .fs__band {

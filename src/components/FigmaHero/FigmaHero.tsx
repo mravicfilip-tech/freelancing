@@ -4,6 +4,7 @@ import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
 import { useNavCondense } from './useNavCondense';
+import { useNavMenu } from './useNavMenu';
 import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
@@ -72,6 +73,27 @@ export function PresaleButton({ wide = false }: { wide?: boolean }) {
       Join Presale
       <Chevron direction="right" />
     </a>
+  );
+}
+
+/** The phone nav's trigger: three rules that cross when the panel is open. */
+function MenuButton({ open, onClick, buttonRef }: { open: boolean; onClick: () => void; buttonRef: React.Ref<HTMLButtonElement> }) {
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      className="fh__burger"
+      aria-expanded={open}
+      aria-controls="fh-menu"
+      aria-label={open ? 'Close menu' : 'Open menu'}
+      onClick={onClick}
+    >
+      <span className="fh__burgerBars" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    </button>
   );
 }
 
@@ -159,6 +181,7 @@ export function FigmaHero() {
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const root = useRef<HTMLElement>(null);
   const condensed = useNavCondense();
+  const menu = useNavMenu();
   useHeroEntrance(root, {
     progress: PROGRESS,
     usd: USD_RAISED,
@@ -177,7 +200,7 @@ export function FigmaHero() {
       {/* The nav is fixed, so a spacer stands in for it in the hero's flow. */}
       <div className="fh__navSpacer" aria-hidden="true" />
 
-      <header className="fh__nav" data-node-id="2346:110" data-condensed={condensed || undefined}>
+      <header className="fh__nav" data-node-id="2346:110" data-condensed={condensed || undefined} data-menu={menu.open || undefined}>
         <a className="fh__brand" href="/">
           <img src="/figma/logo.svg" alt="" width={33} height={17} />
           <span>Remittix</span>
@@ -194,6 +217,25 @@ export function FigmaHero() {
           <div className="fh__navButtons">
             <PresaleButton />
             <a className="fh__btn fh__btn--ghost" href="#login" onPointerEnter={blobOrigin} onPointerLeave={blobOrigin}>
+              Login
+            </a>
+          </div>
+          <MenuButton open={menu.open} onClick={() => menu.setOpen((v) => !v)} buttonRef={menu.trigger} />
+        </div>
+
+        {/* The phone menu carries what the bar drops on a narrow screen: the primary links, the
+            language and Login. Join Presale stays in the bar, so the action is never behind a tap. */}
+        <div className="fh__menu" id="fh-menu" ref={menu.panel} hidden={!menu.open}>
+          <nav className="fh__menuLinks" aria-label="Primary">
+            {NAV_LINKS.map(([label, href]) => (
+              <a key={label} href={href} onClick={() => menu.close(false)}>
+                {label}
+              </a>
+            ))}
+          </nav>
+          <div className="fh__menuFoot">
+            <LangPicker />
+            <a className="fh__btn fh__btn--ghost fh__menuLogin" href="#login" onClick={() => menu.close(false)}>
               Login
             </a>
           </div>

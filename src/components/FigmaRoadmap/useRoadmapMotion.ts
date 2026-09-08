@@ -31,14 +31,17 @@ export function useRoadmapMotion(root: RefObject<HTMLElement | null>, variant: R
           tl.from(q('.rd__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.08 }, 0);
           tl.from(el.querySelector('.rd__intro'), { opacity: 0, y: 12, duration: 0.7, ease: 'power3.out' }, 0.35);
 
-          if (variant === 1) {
+          if (variant <= 5) {
+            // The folder family: each direction holds its own parts and deals them in.
+            tl.from(q('.rd-fam__part'), { opacity: 0, y: 18, duration: 0.65, ease: 'expo.out', stagger: 0.06 }, 0.35);
+          } else if (variant === 6) {
             tl.from(q('.rd-ledger__col'), { opacity: 0, y: 14, duration: 0.6, ease: 'power3.out', stagger: 0.06 }, 0.3);
             // The chips are in level order in the DOM, so a plain stagger reads as the cascade.
             tl.from(q('.rd-chip'), { opacity: 0, x: -18, duration: 0.5, ease: 'expo.out', stagger: 0.035 }, 0.5);
-          } else if (variant === 2) {
+          } else if (variant === 7) {
             tl.from(q('.rd-stage__col'), { opacity: 0, y: 24, duration: 0.8, ease: 'expo.out', stagger: 0.08 }, 0.35);
             tl.from(el.querySelector('.rd-stage__lit'), { scaleY: 0.82, opacity: 0, transformOrigin: '50% 100%', duration: 0.9, ease: 'expo.out' }, 0.6);
-          } else if (variant === 3) {
+          } else if (variant === 8) {
             const lit = el.querySelector('.rd-traj__lit:not(.rd-traj__lit--halo)') as SVGPathElement | null;
             const halo = el.querySelector('.rd-traj__lit--halo') as SVGPathElement | null;
             // Draw the travelled part by growing its dash from nothing to the length it already carries.
@@ -55,11 +58,11 @@ export function useRoadmapMotion(root: RefObject<HTMLElement | null>, variant: R
               );
             }
             tl.from(q('.rd-traj__node'), { opacity: 0, y: 10, duration: 0.55, ease: 'expo.out', stagger: 0.1 }, 0.75);
-          } else if (variant === 4) {
+          } else if (variant === 9) {
             tl.from(q('.rd-rail__stop'), { opacity: 0, y: 10, duration: 0.5, ease: 'power3.out', stagger: 0.05 }, 0.3);
             // The folders file themselves in, back of the stack first.
             tl.from(q('.rd-fld__folder'), { opacity: 0, y: 22, duration: 0.65, ease: 'expo.out', stagger: 0.06 }, 0.45);
-          } else if (variant === 6) {
+          } else if (variant === 11) {
             tl.from(el.querySelector('.rd-idx'), { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out' }, 0.3);
             tl.from(q('.rd-idx__item'), { opacity: 0, y: 14, duration: 0.6, ease: 'expo.out', stagger: 0.06 }, 0.5);
           } else {

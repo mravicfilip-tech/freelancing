@@ -6,7 +6,7 @@ const SIZES = [
   { w: 1440, h: 900 },
   { w: 390, h: 844, mobile: true },
 ];
-const VARIANTS = ['1', '2', '3', '4', '5', '6'];
+const VARIANTS = (process.argv[2] || '1,2,3,4,5').split(',');
 
 mkdirSync('screenshots', { recursive: true });
 const server = await startPreview();

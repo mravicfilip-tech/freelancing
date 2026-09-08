@@ -5,3 +5,5 @@ dist
 remittix-hero.html
 .vercel
 .env*
+dist-*
+screenshots/wip-*

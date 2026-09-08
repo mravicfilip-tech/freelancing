@@ -1,15 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
 import { GATES, LEVELS, RAISED, STATUS_LABEL, TARGET, doneCount, type Level } from './content';
+import { Milestones } from './shared';
+import { Filed } from './folders/Filed';
+import { Cabinet } from './folders/Cabinet';
+import { Spread } from './folders/Spread';
+import { Deck } from './folders/Deck';
+import { Divider } from './folders/Divider';
 import { useRoadmapMotion } from './useRoadmapMotion';
 import './FigmaRoadmap.css';
 
-export type RoadVariant = 1 | 2 | 3 | 4 | 5 | 6;
+export type RoadVariant = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
 export const ROAD_VARIANTS = [
-  { name: 'Ledger', blurb: 'Six numbered columns on the section rules, milestones cascading across them.' },
+  // The folder family: five executions of the same drawer idea.
+  { name: 'Filed', blurb: 'Sheets filed in a stack, tabs stepping across it, one folder open at a time.' },
+  { name: 'Cabinet', blurb: 'One sheet behind a strip of tabs, the way the front of a drawer reads.' },
+  { name: 'Spread', blurb: 'The folder opened flat: the index on the left page, the level on the right.' },
+  { name: 'Deck', blurb: 'The open level in front, the rest stood on their spines beside it.' },
+  { name: 'Divider', blurb: 'Binder dividers, tabs on the outer edge, the level slotted between them.' },
+  // The earlier directions, kept for comparison.
+  { name: 'Ledger', blurb: 'Seven numbered columns on the section rules, milestones cascading across them.' },
   { name: 'Stage', blurb: 'The band turns over to the footer’s black; one rail, the live level lit in lime.' },
   { name: 'Trajectory', blurb: 'One curve on black, the travelled part lit, levels read off it like a chart.' },
-  { name: 'Index', blurb: 'One card: the seven levels down the left, the open level’s milestones on the right.' },
+  { name: 'Drawer', blurb: 'The first drawer: a rail over a stack of tabbed folders.' },
   { name: 'Journey', blurb: 'The levels wired into a column beside a meter of the raise against its gates.' },
   { name: 'Card', blurb: 'The ecosystem card’s shape: the levels down the left, the open one’s milestones on the washed panel.' },
 ] as const;
@@ -214,42 +227,6 @@ function Trajectory() {
 
 /* ----------------------------------------------------------------- 4 Index */
 
-/** The tick a milestone carries on the live cards: filled once it is done, an open ring until then. */
-function Tick({ done }: { done: boolean }) {
-  return (
-    <span className="rd-tick" data-done={done || undefined} aria-hidden="true">
-      <svg viewBox="0 0 20 20" width="20" height="20">
-        {done ? (
-          <path
-            d="M4.5 10.4 8.4 14.2 15.5 6.2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        ) : (
-          <circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" strokeWidth="1.4" />
-        )}
-      </svg>
-    </span>
-  );
-}
-
-/** The milestones of one level, ruled and ticked. Shared by the folder and the card. */
-function Milestones({ level }: { level: Level }) {
-  return (
-    <ol className="rd-miles">
-      {level.items.map((item, j) => (
-        <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
-          <Tick done={item.done} />
-          {item.text}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 /** The rail above the drawer: the seven levels, filled behind the one in play, hollow ahead of it. */
 function Rail({ open, onPick }: { open: number; onPick: (i: number) => void }) {
   const rail = useRef<HTMLOListElement>(null);
@@ -452,7 +429,19 @@ function Journey() {
   );
 }
 
-const BODIES = { 1: Ledger, 2: Stage, 3: Trajectory, 4: Index, 5: Journey, 6: Card } as const;
+const BODIES = {
+  1: Filed,
+  2: Cabinet,
+  3: Spread,
+  4: Deck,
+  5: Divider,
+  6: Ledger,
+  7: Stage,
+  8: Trajectory,
+  9: Index,
+  10: Journey,
+  11: Card,
+} as const;
 
 /**
  * Roadmap band. Five directions over the same six levels; `?road=1..5` picks one, and
@@ -462,8 +451,8 @@ const BODIES = { 1: Ledger, 2: Stage, 3: Trajectory, 4: Index, 5: Journey, 6: Ca
 export function FigmaRoadmap({ variant = 1 }: { variant?: RoadVariant }) {
   const root = useRef<HTMLElement>(null);
   useRoadmapMotion(root, variant);
-  const Body = BODIES[variant] ?? Ledger;
-  const dark = variant === 2 || variant === 3;
+  const Body = BODIES[variant] ?? Filed;
+  const dark = variant === 7 || variant === 8;
 
   return (
     <section

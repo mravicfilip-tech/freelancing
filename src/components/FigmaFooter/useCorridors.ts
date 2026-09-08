@@ -132,9 +132,14 @@ export function useCorridors(host: RefObject<HTMLElement | null>) {
 
     let raf = 0;
     let t = 0;
+    let last = 0;
     let running = false;
-    const frame = () => {
-      t += SPEED / 60;
+    // Real elapsed time rather than a frame count, so the field keeps its pace on any refresh rate,
+    // and a backgrounded tab does not jump when it comes back.
+    const frame = (now: number) => {
+      const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 0;
+      last = now;
+      t += dt * SPEED;
       draw(t);
       raf = requestAnimationFrame(frame);
     };
@@ -142,6 +147,7 @@ export function useCorridors(host: RefObject<HTMLElement | null>) {
       ([entry]) => {
         if (entry.isIntersecting && !running) {
           running = true;
+          last = 0;
           raf = requestAnimationFrame(frame);
         } else if (!entry.isIntersecting && running) {
           running = false;

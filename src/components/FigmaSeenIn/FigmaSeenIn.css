@@ -1,0 +1,154 @@
+/* "As seen in" (Figma 2532:809). The same light band and 1560 rails as the sections above it; a
+   dashed lattice of seven cells, four then three, each 155px, with the marks at rest in a muted
+   grey and lifting to full ink under the pointer. */
+
+.sn {
+  --sn-bg: #e6e9ed;
+  --sn-line: #c5cbd1;
+  --sn-ink: #122433;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (dashPattern [8,8]), rails and lattice alike. */
+  --sn-dash-v: repeating-linear-gradient(180deg, var(--sn-line) 0 8px, transparent 8px 16px);
+  --sn-dash-h: repeating-linear-gradient(90deg, var(--sn-line) 0 8px, transparent 8px 16px);
+
+  background: var(--sn-bg);
+  font-family: var(--fh-sans);
+}
+.sn__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  /* the rails carry the section's vertical padding, so they meet the neighbouring sections' rails */
+  padding: 90px 0;
+  /* the rails only: the file's dot field is left out on purpose */
+  background-image: var(--sn-dash-v), var(--sn-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Heading ---------- */
+.sn__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  text-align: center;
+  color: var(--sn-ink);
+}
+.sn__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.sn__lineInner {
+  display: block;
+}
+
+/* ---------- Lattice ---------- */
+.sn__grid {
+  position: relative;
+  width: 100%;
+}
+.sn__row {
+  display: flex;
+}
+.sn__cell {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 155px;
+  display: grid;
+  place-items: center;
+}
+/* The rules are elements rather than borders so they can be drawn in on entrance. */
+.sn__ruleH,
+.sn__ruleV {
+  position: absolute;
+  pointer-events: none;
+}
+.sn__ruleH {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-image: var(--sn-dash-h);
+  transform-origin: 0 50%;
+}
+.sn__ruleH--top {
+  top: 0;
+  bottom: auto;
+  z-index: 1;
+}
+.sn__ruleV {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background-image: var(--sn-dash-v);
+  transform-origin: 50% 0;
+}
+
+/* ---------- Marks ---------- */
+.sn__mark {
+  display: inline-flex;
+  align-items: center;
+  /* the black mark at 32%, as in the design; under the pointer it is the mark at full black */
+  opacity: 0.32;
+  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+.sn__mark img {
+  display: block;
+  /* each mark keeps its own designed box (width and height set inline), never a shared one */
+}
+@media (hover: hover) {
+  .sn__cell:hover .sn__mark {
+    opacity: 1;
+  }
+}
+
+/* Hold the animated parts invisible until GSAP has set their start states (see useSeenInMotion). */
+.sn[data-motion='pending'] .sn__lineInner,
+.sn[data-motion='pending'] .sn__mark,
+.sn[data-motion='pending'] .sn__ruleH,
+.sn[data-motion='pending'] .sn__ruleV {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .sn__cell {
+    height: 128px;
+  }
+  .sn__mark {
+    transform: scale(0.85);
+    transform-origin: 50% 50%;
+  }
+}
+@media (max-width: 720px) {
+  .sn__frame {
+    padding: 64px 0;
+    gap: 32px;
+  }
+  .sn__title {
+    letter-spacing: -1.1px;
+  }
+  .sn__row {
+    flex-wrap: wrap;
+  }
+  .sn__cell {
+    flex: 1 1 50%;
+    height: 104px;
+  }
+  .sn__mark {
+    transform: scale(0.7);
+  }
+}

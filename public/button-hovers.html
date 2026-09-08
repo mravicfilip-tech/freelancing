@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Remittix · Button hovers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #edeff1;
+    --line: #dadee2;
+    --ink: #122433;
+    --muted: #8292a2;
+    --body: #7c858d;
+    --label: #a2a6aa;
+    --indigo: #4042d2;
+    --indigo-soft: #b3b5f5;
+    --lime: #d9f24e;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --snap: cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
+    background-size: 28px 28px;
+    background-position: 14px 14px;
+  }
+  .page {
+    width: min(1180px, 100% - 48px);
+    margin: 0 auto;
+    padding: 64px 0 120px;
+  }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 40px; }
+  .head h1 { margin: 0; font-size: 40px; font-weight: 500; letter-spacing: -1.2px; line-height: 1.05; }
+  .head p { margin: 8px 0 0; max-width: 520px; color: var(--body); font-size: 16px; line-height: 1.5; }
+  .head .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+
+  .variant {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 40px 0;
+    border-top: 1px dashed var(--line);
+  }
+  .variant:last-of-type { border-bottom: 1px dashed var(--line); }
+  .meta .num { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--indigo); }
+  .meta h2 { margin: 8px 0 8px; font-size: 24px; font-weight: 500; letter-spacing: -0.5px; }
+  .meta p { margin: 0; color: var(--body); font-size: 14px; line-height: 1.55; }
+  .demo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 32px;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 400px;
+  }
+  .demo .spacer { flex: 1; }
+  .demo .note { font-size: 12px; color: var(--label); }
+
+  /* ---------- Base pill, as in the hero ---------- */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 162px;
+    height: 48px;
+    border-radius: 400px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    isolation: isolate;
+    transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, transform 240ms var(--ease), box-shadow 240ms ease;
+  }
+  .btn--primary { background: #000; color: #fff; }
+  .btn--ghost { background: #f8fafb; border: 1px solid #dfe1e7; color: var(--muted); }
+  .btn svg { display: block; width: 6px; height: 11px; transition: transform 280ms var(--ease); }
+  .btn:active { transform: scale(0.97); }
+
+  /* ---------- 01 · Wipe ---------- */
+  .v1 { overflow: hidden; }
+  .v1::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--indigo);
+    transform: translateY(101%);
+    transition: transform 420ms var(--snap);
+  }
+  .v1.btn--ghost::before { background: var(--ink); }
+  .v1:hover::before { transform: translateY(0); }
+  .v1:hover { color: #fff; border-color: transparent; }
+  .v1:hover svg { transform: translateX(3px); }
+
+  /* ---------- 02 · Text roll ---------- */
+  .v2 .roll { position: relative; display: block; height: 1em; overflow: hidden; }
+  .v2 .roll span {
+    display: block;
+    transition: transform 460ms var(--snap);
+  }
+  .v2 .roll span + span { position: absolute; top: 100%; left: 0; }
+  .v2:hover .roll span { transform: translateY(-100%); }
+  .v2.btn--primary:hover { background: #1d1f24; }
+  .v2.btn--primary .roll span + span { color: var(--lime); }
+  .v2.btn--ghost:hover { background: #fff; border-color: var(--ink); color: var(--ink); }
+  .v2:hover svg { transform: translateX(3px); }
+
+  /* ---------- 03 · Blob from the cursor ---------- */
+  .v3 { overflow: hidden; --x: 50%; --y: 50%; }
+  .v3::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: var(--x);
+    top: var(--y);
+    width: 220%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--indigo);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 520ms var(--ease);
+  }
+  .v3.btn--ghost::before { background: var(--ink); }
+  .v3:hover::before { transform: translate(-50%, -50%) scale(1); }
+  .v3:hover { color: #fff; border-color: transparent; }
+  .v3:hover svg { transform: translateX(3px); }
+
+  /* ---------- 04 · Magnetic ---------- */
+  .v4 { transition: transform 600ms var(--ease), background-color 240ms ease, border-color 240ms ease, color 240ms ease, box-shadow 240ms ease; will-change: transform; }
+  .v4 .inner { display: inline-flex; align-items: center; gap: 10px; transition: transform 600ms var(--ease); }
+  .v4.is-magnet, .v4.is-magnet .inner { transition-duration: 120ms; }
+  .v4.btn--primary:hover { box-shadow: 0 14px 30px -14px rgba(0, 0, 0, 0.6); background: #1d1f24; }
+  .v4.btn--ghost:hover { background: #fff; border-color: var(--muted); color: var(--ink); box-shadow: 0 14px 30px -18px rgba(18, 36, 51, 0.4); }
+  .v4:hover svg { transform: translateX(4px); }
+
+  /* ---------- 05 · Border sweep + shine ---------- */
+  @property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  .v5::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: -2;
+    border-radius: inherit;
+    background: conic-gradient(from var(--angle), transparent 0 60%, var(--indigo) 82%, var(--indigo-soft) 92%, transparent 100%);
+    opacity: 0;
+    transition: opacity 260ms ease;
+  }
+  .v5::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: inherit;
+    overflow: hidden;
+  }
+  .v5 .shine {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .v5 .shine::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    left: 0;
+    width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: translateX(-160%) skewX(-16deg);
+  }
+  .v5.btn--ghost .shine::before { background: linear-gradient(100deg, transparent, rgba(64, 66, 210, 0.16), transparent); }
+  .v5:hover::before { opacity: 1; animation: sweep 1.4s linear infinite; }
+  .v5:hover .shine::before { animation: shine 900ms var(--ease) forwards; }
+  .v5.btn--ghost:hover { background: #fff; color: var(--ink); border-color: #fff; }
+  .v5:hover svg { transform: translateX(3px); }
+  .v5 > .label, .v5 > svg { position: relative; z-index: 1; }
+  @keyframes sweep { to { --angle: 360deg; } }
+  @keyframes shine { to { transform: translateX(320%) skewX(-16deg); } }
+
+  /* ---------- Links: the underline used on the site's nav ---------- */
+  .links { display: flex; gap: 48px; align-items: center; padding: 28px 32px; background: #fff; border-radius: 400px; }
+  .links a {
+    position: relative;
+    padding: 4px 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.39px;
+    text-transform: uppercase;
+    color: var(--label);
+    text-decoration: none;
+    transition: color 220ms ease;
+  }
+  .links a::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--indigo);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 360ms var(--ease);
+  }
+  .links a:hover { color: var(--ink); }
+  .links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+  @media (max-width: 800px) {
+    .variant { grid-template-columns: 1fr; gap: 20px; }
+    .demo { border-radius: 32px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <div>
+      <div class="kicker">Remittix · hero</div>
+      <h1>Five button hovers</h1>
+      <p>Same pill, same type, five directions. Each row shows the primary and the ghost button. Hover, or tab through them.</p>
+    </div>
+  </header>
+
+  <section class="variant">
+    <div class="meta">
+      <div class="num">01</div>
+      <h2>Wipe</h2>
+      <p>A second colour wipes up from the bottom edge with a snappy ease. Primary goes indigo, ghost goes ink. The arrow nudges right.</p>
+    </div>
+    <div class="demo">
+      <a class="btn btn--primary v1" href="#">Join Presale <svg viewBox="0 0 6 11" fill="none"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn--ghost v1" href="#">Login</a>
+      <span class="spacer"></span><span class="note">CSS only</span>
+    </div>
+  </section>
+
+  <section class="variant">
+    <div class="meta">
+      <div class="num">02</div>
+      <h2>Text roll</h2>
+      <p>The label rolls up out of view and a second copy rolls in from below. On the primary the incoming copy is lime; the ghost tightens to an ink outline.</p>
+    </div>
+    <div class="demo">
+      <a class="btn btn--primary v2" href="#"><span class="roll"><span>Join Presale</span><span aria-hidden="true">Join Presale</span></span> <svg viewBox="0 0 6 11" fill="none"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn--ghost v2" href="#"><span class="roll"><span>Login</span><span aria-hidden="true">Login</span></span></a>
+      <span class="spacer"></span><span class="note">CSS only</span>
+    </div>
+  </section>
+
+  <section class="variant">
+    <div class="meta">
+      <div class="num">03</div>
+      <h2>Blob from the cursor</h2>
+      <p>A circle grows from the exact point the pointer entered and floods the pill, so every hover looks a little different. Leaves from the point it exits.</p>
+    </div>
+    <div class="demo">
+      <a class="btn btn--primary v3" href="#">Join Presale <svg viewBox="0 0 6 11" fill="none"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn--ghost v3" href="#">Login</a>
+      <span class="spacer"></span><span class="note">CSS + 6 lines of JS</span>
+    </div>
+  </section>
+
+  <section class="variant">
+    <div class="meta">
+      <div class="num">04</div>
+      <h2>Magnetic</h2>
+      <p>The pill leans toward the cursor and the label leans a touch further, then both spring back on leave. A soft lift shadow and the arrow slides out.</p>
+    </div>
+    <div class="demo">
+      <a class="btn btn--primary v4" href="#"><span class="inner">Join Presale <svg viewBox="0 0 6 11" fill="none"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <a class="btn btn--ghost v4" href="#"><span class="inner">Login</span></a>
+      <span class="spacer"></span><span class="note">CSS + small JS</span>
+    </div>
+  </section>
+
+  <section class="variant">
+    <div class="meta">
+      <div class="num">05</div>
+      <h2>Border sweep + shine</h2>
+      <p>An indigo light runs around the rim while a diagonal sheen crosses the face once. Reads as "live" without changing the pill's colour.</p>
+    </div>
+    <div class="demo">
+      <a class="btn btn--primary v5" href="#"><span class="shine"></span><span class="label">Join Presale</span> <svg viewBox="0 0 6 11" fill="none"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn--ghost v5" href="#"><span class="shine"></span><span class="label">Login</span></a>
+      <span class="spacer"></span><span class="note">CSS only</span>
+    </div>
+  </section>
+
+  <header class="head" style="margin-top: 64px">
+    <div>
+      <div class="kicker">Also on the site now</div>
+      <h1 style="font-size: 28px">Nav link underline</h1>
+      <p>Colour eases to ink and an indigo underline draws in from the left. On leave it exits to the right, so it reads as a sweep rather than a toggle.</p>
+    </div>
+  </header>
+  <nav class="links" aria-label="Demo links">
+    <a href="#">$250k Giveaway</a>
+    <a href="#">Tokenomics</a>
+    <a href="#">Roadmap</a>
+    <a href="#">FAQs</a>
+    <a href="#">Whitepaper</a>
+  </nav>
+</main>
+
+<script>
+  // 03 · Blob: record where the pointer enters and leaves so the circle grows and shrinks from there.
+  for (const el of document.querySelectorAll('.v3')) {
+    const at = (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--x', `${e.clientX - r.left}px`);
+      el.style.setProperty('--y', `${e.clientY - r.top}px`);
+    };
+    el.addEventListener('pointerenter', at);
+    el.addEventListener('pointerleave', at);
+  }
+
+  // 04 · Magnetic: the pill follows the pointer within a small radius; the label follows a bit more.
+  for (const el of document.querySelectorAll('.v4')) {
+    const inner = el.querySelector('.inner');
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+      const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+      el.classList.add('is-magnet');
+      el.style.transform = `translate(${dx * 6}px, ${dy * 4}px)`;
+      if (inner) inner.style.transform = `translate(${dx * 4}px, ${dy * 3}px)`;
+    });
+    el.addEventListener('pointerleave', () => {
+      el.classList.remove('is-magnet');
+      el.style.transform = '';
+      if (inner) inner.style.transform = '';
+    });
+  }
+</script>
+</body>
+</html>

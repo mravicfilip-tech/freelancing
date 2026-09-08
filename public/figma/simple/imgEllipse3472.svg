@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1019" height="354" viewBox="0 0 1019 354" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="Ellipse 3472" d="M509.5 0.75C650.134 0.75 777.421 20.5543 869.524 52.5508C915.58 68.5503 952.797 87.5847 978.485 108.684C1004.18 129.787 1018.25 152.877 1018.25 177C1018.25 201.123 1004.18 224.213 978.485 245.316C952.797 266.415 915.58 285.45 869.524 301.449C777.421 333.446 650.134 353.25 509.5 353.25C368.866 353.25 241.579 333.446 149.476 301.449C103.42 285.45 66.2029 266.415 40.5146 245.316C14.8214 224.213 0.75 201.123 0.75 177C0.75 152.877 14.8214 129.787 40.5146 108.684C66.2029 87.5847 103.42 68.5503 149.476 52.5508C241.579 20.5543 368.866 0.75 509.5 0.75Z" fill="#E6E9ED" stroke="url(#paint0_linear_0_31)" stroke-width="1.5"/>
+<defs>
+<linearGradient id="paint0_linear_0_31" x1="983.56" y1="200.454" x2="118.423" y2="-91.9641" gradientUnits="userSpaceOnUse">
+<stop offset="0.368494" stop-color="#C5CBD1"/>
+<stop offset="0.498747" stop-color="#AAB5C0"/>
+<stop offset="0.607683" stop-color="#C5CBD1"/>
+</linearGradient>
+</defs>
+</svg>

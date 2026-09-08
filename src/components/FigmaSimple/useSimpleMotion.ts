@@ -20,7 +20,12 @@ import { all, draw, one, pop } from '../FigmaFeatures/illustrations/motion';
  * The section renders with `data-motion="pending"`, which hides the animated parts in CSS; the
  * attribute is cleared in the same frame GSAP takes over. Reduced motion shows it at rest.
  */
-export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
+/**
+ * `mobile` is not read here — it is the layout the diagram rendered with. Taking it as a dependency
+ * rebuilds the timelines when the breakpoint is crossed, so the orbit is re-sampled against the
+ * ellipse now on screen rather than the one it replaced.
+ */
+export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = false) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -41,6 +46,9 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
         let visibility: IntersectionObserver | null = null;
         const ctx = gsap.context(() => {
           const orbit = one(el, '.fs__orbit');
+          // The portrait frame (2603:1541) lays the diagram out differently enough that a couple of
+          // beats below are placed against it rather than against the landscape band.
+          const portrait = orbit.dataset.layout === 'mobile';
           const ringPath = one<SVGPathElement>(el, '.fs__ring path');
           const hub = one(el, '.fs__hub');
           const cursor = one(el, '.fs__cursor');
@@ -180,8 +188,9 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             };
 
             // The cursor rides the highlight: its tip sits on the leading edge, trailing it softly.
-            // Path points are offset by the cursor's resting spot (842, 308) and its tip (5, 3).
-            const HOME = { x: 842, y: 308 };
+            // Path points are offset by the cursor's resting spot and its tip (5, 3). The stage is
+            // only scaled, so the cursor's offsets are its design coordinates in either layout.
+            const HOME = { x: (cursor as HTMLElement).offsetLeft, y: (cursor as HTMLElement).offsetTop };
             const TIP = { x: 5, y: 3 };
             const toCursor = (s: number) => {
               const q = pointAt(s);
@@ -195,8 +204,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             // sets off with it that instant, and the badge slides beside the hub, centred on its middle.
             const phase = { mix: 0 };
             let following = false;
-            const restIcon = cursorIcon.getBoundingClientRect();
-            const homeStation = stationOf((restIcon.left + restIcon.width * 0.2 - stageRect.left) / k, (restIcon.top + restIcon.height * 0.13 - stageRect.top) / k);
+            const homeStation = stationOf(HOME.x + TIP.x, HOME.y + TIP.y);
             const off0 = (((homeStation - dash) % len) + len) % len; // leading edge starts at home
             const SPAWN = 0.25;
             // Written to the inline style: the clone inherits the ring's draw-in dash style, which
@@ -208,10 +216,19 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
             // Every loop lives on one timeline, so the section can pause it all while off screen.
             const loop = gsap.timeline();
             loop.to(glowPath, { opacity: 0.9, duration: 0.5 }, SPAWN);
-            loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
-            // The badge parks beside the hub on its centre line: a fixed 16px gap to the right of the
-            // 120px hub, vertically centred on the hub's middle (233 + 60).
-            loop.to(badge, { left: 717.15 + 120 + 16, top: 293 - badge.offsetHeight / 2, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
+            // The cursor takes up the highlight and rides it. In the portrait frame the orbit runs
+            // mostly outside the crop, so a cursor riding it would be gone for seven seconds of
+            // every nine: there it stays parked by the badge, where the design draws it, and the
+            // highlight travels alone.
+            if (!portrait) loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
+            // The badge parks beside the hub on its centre line: a fixed 16px gap to its right,
+            // vertically centred on its middle. The portrait frame already draws the badge where it
+            // belongs — above the hub, where the turn puts it — and there is no room to its right,
+            // so it stays put there.
+            if (!portrait) {
+              const h = hub as HTMLElement;
+              loop.to(badge, { left: h.offsetLeft + h.offsetWidth + 16, top: h.offsetTop + h.offsetHeight / 2 - badge.offsetHeight / 2, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
+            }
             const run = { off: off0 };
             loop.to(run, {
               off: off0 + len,
@@ -242,9 +259,12 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
                     armed[i] = true;
                   }
                 }
-                // Where the cursor's tip actually is (GSAP's cached transform, no layout read).
-                const tipX = HOME.x + TIP.x + Number(gsap.getProperty(cursor, 'x'));
-                const tipY = HOME.y + TIP.y + Number(gsap.getProperty(cursor, 'y'));
+                // What is passing the anchors: the cursor's tip where it rides (GSAP's cached
+                // transform, no layout read), otherwise the highlight's own leading edge, so the
+                // chips and coin groups still answer as the light reaches them.
+                const lead = portrait ? pointAt(head) : null;
+                const tipX = lead ? lead.x : HOME.x + TIP.x + Number(gsap.getProperty(cursor, 'x'));
+                const tipY = lead ? lead.y : HOME.y + TIP.y + Number(gsap.getProperty(cursor, 'y'));
                 targets.forEach((t, i) => {
                   const d = Math.hypot(tipX - t.centre.x, tipY - t.centre.y);
                   if (t.armed && d < t.reach) {
@@ -280,5 +300,5 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>) {
       cancelled = true;
       revert?.();
     };
-  }, [root]);
+  }, [root, mobile]);
 }

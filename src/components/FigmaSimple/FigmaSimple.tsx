@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import orbit from './orbit.svg?raw';
-import { Layer, Stage, Strokes } from '../FigmaFeatures/illustrations/Stage';
+import { Layer, Stage, Strokes, useMobileArt } from '../FigmaFeatures/illustrations/Stage';
 import { useSimpleMotion } from './useSimpleMotion';
 import '../FigmaFeatures/illustrations/illustrations.css';
 import './FigmaSimple.css';
@@ -11,7 +11,54 @@ import './FigmaSimple.css';
  * band (currencies circling the Remittix hub, pay-ins on one side and pay-outs on the other), then a
  * paragraph and a Secure · Fast · Compliant pill. The diagram's layers sit in design coordinates on
  * a 1560×586 stage that scales to the band; motion lives in useSimpleMotion.
+ *
+ * On a phone (node 2603:1541) the file stands the diagram up: the same 1560×586 orbit is turned
+ * -75° and centred in a 393×852 frame, so a tall slice of the ellipse runs down the card with the
+ * hub at its middle. Only the ellipse, its glow and the anchors on it actually turn — the chips,
+ * hub, badge, cursor and coin groups are counter-rotated in the file, which is to say they stay in
+ * the frame's own axes, so here they are simply placed in the frame's coordinates instead.
  */
+
+/** Where the orbit's parts sit: the turning ones in the 1560×586 box, the upright ones in the frame. */
+const ORBIT = {
+  desktop: {
+    stage: { w: 1560, h: 586 },
+    turn: false,
+    ring: { x: 270.4, y: 121.6 },
+    glow: { x: 543, y: 235 },
+    dots: [{ x: 279.5, y: 352.5 }, { x: 959, y: 115 }],
+    markers: [{ x: 391, y: 248 }, { x: 897, y: 403 }],
+    payIns: { x: 197, y: 377 },
+    payOuts: { x: 990, y: 98 },
+    hub: { x: 717.15, y: 233 },
+    badge: { x: 870, y: 307 },
+    cursor: { x: 842, y: 308 },
+    stable: { x: 495.65, y: 146.59 },
+    exotic: { x: 512, y: 433 },
+    fiat: { x: 1156, y: 233 },
+  },
+  // Turning parts stay in the box's coordinates; upright parts are given the frame positions the
+  // -75° turn puts them at, which is where the file draws them.
+  mobile: {
+    stage: { w: 393, h: 852 },
+    turn: true,
+    ring: { x: 270.4, y: 121.6 },
+    glow: { x: 543, y: 235 },
+    dots: [{ x: 279.5, y: 352.5 }, { x: 964, y: 129.96 }],
+    markers: [{ x: 393.47, y: 280.76 }, { x: 737.24, y: 427.8 }],
+    payIns: { x: 100.2, y: 942.2 },
+    payOuts: { x: 72.65, y: 91.5 },
+    hub: { x: 135.76, y: 368.75 },
+    // The cursor and badge are one upright row in the file (2603:1464), so the turn is applied to
+    // the row's centre and the pair is laid out along the frame's own axis from there.
+    badge: { x: 102.4, y: 319.3 },
+    cursor: { x: 74.4, y: 320.3 },
+    stable: { x: 14.6, y: 518.4 },
+    exotic: { x: 207.7, y: 662.5 },
+    fiat: { x: 235.7, y: 126.5 },
+  },
+} as const;
+type OrbitGeo = (typeof ORBIT)[keyof typeof ORBIT];
 
 const A = (name: string) => `/figma/simple/${name}.svg`;
 
@@ -39,9 +86,78 @@ function Chip({ text, x, y }: { text: string; x: number; y: number }) {
   );
 }
 
+/** The ellipse, its glow, and the anchors that sit on it — everything that turns with the orbit. */
+function Ring({ g }: { g: OrbitGeo }) {
+  return (
+    <>
+      <Strokes className="fs__ring" svg={orbit} x={g.ring.x} y={g.ring.y} w={1019} h={354} />
+      <Layer className="fs__glow" src={A('imgSubtract')} x={g.glow.x} y={g.glow.y} w={584.4} h={488.5} style={{ transform: 'rotate(-24.3deg) scaleY(-1)' }} />
+      {g.dots.map((d) => (
+        <span key={`${d.x}`} className="fs__dot" style={{ left: d.x, top: d.y }} />
+      ))}
+      {g.markers.map((m) => (
+        <span key={`${m.x}`} className="fs__marker" style={{ left: m.x, top: m.y }}>
+          <i className="fs__markerHalo" />
+        </span>
+      ))}
+    </>
+  );
+}
+
+/** Everything that stays in the frame's own axes: the chips, hub, badge, cursor and coin groups. */
+function Upright({ g }: { g: OrbitGeo }) {
+  return (
+    <>
+      <Chip text="PAY-INS" x={g.payIns.x} y={g.payIns.y} />
+      <Chip text="PAY-OUTS" x={g.payOuts.x} y={g.payOuts.y} />
+
+      <div className="fs__hub" style={{ left: g.hub.x, top: g.hub.y }}>
+        <img src={A('imgGroup3')} alt="" width={68.7} height={35.5} />
+      </div>
+      <span className="fs__badge" style={{ left: g.badge.x, top: g.badge.y }}>Fast &amp; reliable payments</span>
+      <div className="fs__cursor" style={{ left: g.cursor.x, top: g.cursor.y }}>
+        <img className="fs__cursorIcon" src={A('imgCursor2StreamlineNova')} alt="" width={24} height={24} />
+      </div>
+
+      <Coins id="stable" label="Stablecoins" icons={['imgGroup', 'imgFlatColor1', 'imgFlatColor2']} x={g.stable.x} y={g.stable.y} />
+      <Coins id="exotic" label="Exotic currencies" icons={['imgFi12114250', 'imgFlatColor', 'imgSolana1']} x={g.exotic.x} y={g.exotic.y} />
+      <Coins id="fiat" label="Traditional currencies" icons={['imgGroup1', 'img561868088', 'imgPound1']} x={g.fiat.x} y={g.fiat.y} />
+    </>
+  );
+}
+
+/**
+ * The diagram. The portrait frame keeps the turning parts inside one -75° box (the file's own
+ * construction, node 2603:1439) and lays the upright parts straight onto the frame, so the loop's
+ * path sampling and the cursor that rides it share the stage's coordinates.
+ */
+function Orbit() {
+  const mobile = useMobileArt();
+  const g = mobile ? ORBIT.mobile : ORBIT.desktop;
+  return (
+    <Stage
+      id="orbit"
+      width={g.stage.w}
+      height={g.stage.h}
+      layout={mobile ? 'mobile' : 'desktop'}
+      className={`fs__orbit${mobile ? ' fs__orbit--m' : ''}`}
+    >
+      {g.turn ? (
+        <div className="fs__turn" style={{ left: (g.stage.w - 1560) / 2, top: (g.stage.h - 586) / 2, width: 1560, height: 586 }}>
+          <Ring g={g} />
+        </div>
+      ) : (
+        <Ring g={g} />
+      )}
+      <Upright g={g} />
+    </Stage>
+  );
+}
+
 export function FigmaSimple() {
   const root = useRef<HTMLElement>(null);
-  useSimpleMotion(root);
+  const mobile = useMobileArt();
+  useSimpleMotion(root, mobile);
   return (
     <section ref={root} className="fs" data-node-id="2409:2784" data-motion="pending" aria-labelledby="fs-title">
       <div className="fs__inner">
@@ -55,34 +171,7 @@ export function FigmaSimple() {
         </h2>
 
         <div className="fs__band" data-node-id="2409:2790">
-          <Stage id="orbit" width={1560} height={586} className="fs__orbit">
-            <Strokes className="fs__ring" svg={orbit} x={270.4} y={121.6} w={1019} h={354} />
-            <Layer className="fs__glow" src={A('imgSubtract')} x={543} y={235} w={584.4} h={488.5} style={{ transform: 'rotate(-24.3deg) scaleY(-1)' }} />
-
-            <Chip text="PAY-INS" x={197} y={377} />
-            <Chip text="PAY-OUTS" x={990} y={98} />
-
-            <div className="fs__hub" style={{ left: 717.15, top: 233 }}>
-              <img src={A('imgGroup3')} alt="" width={68.7} height={35.5} />
-            </div>
-            <span className="fs__badge" style={{ left: 870, top: 307 }}>Fast &amp; reliable payments</span>
-            <div className="fs__cursor" style={{ left: 842, top: 308 }}>
-              <img className="fs__cursorIcon" src={A('imgCursor2StreamlineNova')} alt="" width={24} height={24} />
-            </div>
-
-            <Coins id="stable" label="Stablecoins" icons={['imgGroup', 'imgFlatColor1', 'imgFlatColor2']} x={495.65} y={146.59} />
-            <Coins id="exotic" label="Exotic currencies" icons={['imgFi12114250', 'imgFlatColor', 'imgSolana1']} x={512} y={433} />
-            <Coins id="fiat" label="Traditional currencies" icons={['imgGroup1', 'img561868088', 'imgPound1']} x={1156} y={233} />
-
-            <span className="fs__dot" style={{ left: 279.5, top: 352.5 }} />
-            <span className="fs__dot" style={{ left: 959, top: 115 }} />
-            <span className="fs__marker" style={{ left: 391, top: 248 }}>
-              <i className="fs__markerHalo" />
-            </span>
-            <span className="fs__marker" style={{ left: 897, top: 403 }}>
-              <i className="fs__markerHalo" />
-            </span>
-          </Stage>
+          <Orbit />
         </div>
 
         <div className="fs__foot">

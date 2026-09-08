@@ -1,6 +1,6 @@
 import { useRef, type ReactElement } from 'react';
 import { PresaleButton } from '../FigmaHero/FigmaHero';
-import { useAurora } from './useAurora';
+import { useCorridors } from './useCorridors';
 import { useFooterMotion } from './useFooterMotion';
 import './FigmaFooter.css';
 
@@ -74,7 +74,7 @@ export function FigmaFooter() {
   const root = useRef<HTMLElement>(null);
   const cta = useRef<HTMLDivElement>(null);
   useFooterMotion(root);
-  useAurora(cta);
+  useCorridors(cta);
 
   return (
     <footer ref={root} className="ft" data-motion="pending">

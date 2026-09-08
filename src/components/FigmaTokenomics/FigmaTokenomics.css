@@ -120,40 +120,16 @@
   left: 559px;
   top: 72px;
 }
-/* The dial: six real arcs plus a pointer arc that slides onto whichever allocation is live. */
+/* The dial. The design draws one gradient arc (Ellipse 3479) with two hub halos on the same
+   span; the motion re-aims and re-sizes all three together, so this only has to place them. */
 .tk__dial {
   position: absolute;
   left: 559px;
   top: 72px;
   overflow: visible;
 }
-.tk__wedge {
-  transition: opacity 380ms ease;
-}
-.tk__pointer {
-  mix-blend-mode: multiply;
-}
-/* Focus dims everything but the live allocation. */
-.tk[data-variant='4'] .tk__wedge {
-  opacity: var(--tk-dim, 1);
-}
-.tk[data-variant='4'] .tk__wedge[data-on] {
-  opacity: 1;
-}
-/* Radar's sweep hand and Trace's rim dot each belong to one variant only. */
-.tk__hand,
-.tk__rimDot {
-  opacity: 0;
-}
-.tk[data-variant='2'] .tk__hand {
-  opacity: 0.5;
-}
-.tk[data-variant='5'] .tk__rimDot {
-  opacity: 1;
-}
-.tk__rimPath {
-  fill: none;
-  stroke: none;
+.tk__halo {
+  transform-origin: 50% 50%;
 }
 
 .tk__hub {
@@ -169,18 +145,6 @@
 .tk__logo--2 { left: 35.55px; top: 43.06px; }
 .tk__logo--3 { left: 60.78px; top: 42.72px; }
 /* The running tally, shown by the tally variant only. */
-.tk__total {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--fh-digits);
-  font-weight: 700;
-  font-size: 30px;
-  letter-spacing: -0.02em;
-  color: #fff;
-  opacity: 0;
-}
 
 /* ---------- Chain marks ---------- */
 .tk__coin {
@@ -202,7 +166,8 @@
 /* The allocation the dial is pointing at. */
 .tk__chip,
 .tk__pct {
-  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 320ms ease;
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 320ms ease,
+    background-color 340ms ease;
 }
 .tk__slice[data-on] .tk__chip {
   transform: translateY(-2px);
@@ -228,7 +193,9 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
-.tk__chip--indigo {
+/* The allocation the arc is aimed at. Ink by default, indigo when live — as in the design,
+   where Reserves carries #4042d1 and the rest carry #121212. */
+.tk__slice[data-on] .tk__chip {
   background: var(--tk-indigo);
 }
 .tk__pct {

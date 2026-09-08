@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTokenomicsMotion, type TokVariant } from './useTokenomicsMotion';
-import { DIAL, SEGMENTS, WIRES, slicePath } from './dial';
+import { COINS, DIAL, HALOS, SEGMENTS, SEG_BY_ID, REST, WIRES, slicePath, spanOf } from './dial';
 import './FigmaTokenomics.css';
 
 const A = (n: string) => `/figma/tokenomics/${n}.svg`;
@@ -23,15 +23,6 @@ function Stage({ children }: { children: ReactNode }) {
     </div>
   );
 }
-
-const COINS: { id: string; x: number; y: number }[] = [
-  { id: 'coin-btc', x: 136, y: 134 },
-  { id: 'coin-eth', x: 226, y: 293 },
-  { id: 'coin-usdt', x: 136, y: 453 },
-  { id: 'coin-tron', x: 1348, y: 134 },
-  { id: 'coin-bnb', x: 1264, y: 293 },
-  { id: 'coin-sol', x: 1348, y: 453 },
-];
 
 const FACTS: [string, ReactNode][] = [
   ['Token Name', 'Remittix'],
@@ -102,13 +93,14 @@ function CopyAddress({ value }: { value: string }) {
 }
 
 /**
- * Tokenomics (Figma 2592:485). A 442 dial around the mark, six allocations reading outward, and
- * the chain marks on the flanks wired back to the hub — all on the same band and 1560 dashed rails
- * as the sections above. `variant` picks the motion treatment (see useTokenomicsMotion).
+ * Tokenomics (Figma 2592:485). One gradient arc that aims at an allocation and is sized to its
+ * share, two hub halos following the same span, six allocations reading outward, and the chain
+ * marks on the flanks wired back to the hub. `variant` picks the motion (see useTokenomicsMotion).
  */
 export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
   const root = useRef<HTMLElement>(null);
   useTokenomicsMotion(root, variant);
+  const [r0, r1] = spanOf(SEG_BY_ID[REST]);
 
   return (
     <section ref={root} className="tk" id="tokenomics" data-motion="pending" data-variant={variant} aria-labelledby="tk-title">
@@ -134,8 +126,10 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               ))}
             </svg>
 
-            {/* the dial */}
             <img className="tk__ring" src={A('ring-outer')} alt="" width={442} height={442} aria-hidden="true" />
+
+            {/* The dial: one gradient arc, aimed and sized by the motion, with the hub halos
+                following the same span exactly as they do in the design. */}
             <svg
               className="tk__dial"
               viewBox={`0 0 ${DIAL.size} ${DIAL.size}`}
@@ -145,32 +139,23 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               aria-hidden="true"
             >
               <defs>
-                <linearGradient id="tkRamp" gradientUnits="userSpaceOnUse" x1="122" y1="325" x2="23" y2="152">
+                {/* Object-bound so the arc carries the whole ramp wherever on the dial it lands. */}
+                <linearGradient id="tkRamp" x1="0.18" y1="1" x2="0" y2="0">
                   <stop stopColor="#C4E0F6" />
                   <stop offset="1" stopColor="#8487F1" />
                 </linearGradient>
               </defs>
-              <g className="tk__slices">
-                {SEGMENTS.map((s) => (
-                  <path key={s.id} className="tk__wedge" data-wedge={s.id} d={slicePath(s.a0, s.a1)} fill="url(#tkRamp)" />
-                ))}
-              </g>
-              {/* The pointer: an arc that slides and resizes onto whichever allocation is live. */}
-              <path className="tk__pointer" d={slicePath(SEGMENTS[0].a0, SEGMENTS[0].a1)} fill="var(--tk-indigo)" opacity={0} />
-              {/* Radar only: the hand that sweeps the dial. Points at 0° (three o'clock) at rest. */}
-              <line
-                className="tk__hand"
-                x1={DIAL.c}
-                y1={DIAL.c}
-                x2={DIAL.size}
-                y2={DIAL.c}
-                stroke="var(--tk-indigo)"
-                strokeWidth={2}
-                strokeLinecap="round"
-              />
-              {/* Trace only: the rim the dot rides, anticlockwise from twelve. */}
-              <path className="tk__rimPath" d={`M ${DIAL.c} 0 A ${DIAL.r} ${DIAL.r} 0 1 0 ${DIAL.c - 0.01} 0`} fill="none" />
-              <circle className="tk__rimDot" r={6} fill="var(--tk-indigo)" />
+              <path className="tk__arc" d={slicePath(r0, r1)} fill="url(#tkRamp)" />
+              {HALOS.map((h) => (
+                <path
+                  key={h.d}
+                  className="tk__halo"
+                  data-halo={h.d}
+                  d={slicePath(r0, r1, h.d / 2)}
+                  fill={h.fill}
+                  opacity={h.opacity}
+                />
+              ))}
             </svg>
 
             <div className="tk__hub" aria-hidden="true">
@@ -178,7 +163,6 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               <img className="tk__logo tk__logo--1" src={A('logo-union')} alt="" width={14.568} height={14.733} />
               <img className="tk__logo tk__logo--2" src={A('logo-v2')} alt="" width={25.615} height={28.405} />
               <img className="tk__logo tk__logo--3" src={A('logo-v3')} alt="" width={25.224} height={29.075} />
-              <span className="tk__total" aria-hidden="true">0%</span>
             </div>
 
             {/* the chain marks */}
@@ -188,10 +172,10 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               </span>
             ))}
 
-            {/* the allocations */}
+            {/* the allocations — the live one takes the indigo chip */}
             {SEGMENTS.map((s) => (
               <div key={s.id} className="tk__slice" data-slice={s.id} style={{ left: s.x, top: s.y - 32 }}>
-                <span className={`tk__chip${s.dark ? '' : ' tk__chip--indigo'}`}>
+                <span className="tk__chip">
                   <img src={A(s.icon)} alt="" width={20} height={20} />
                   {s.label}
                 </span>

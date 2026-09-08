@@ -1,30 +1,15 @@
 import { useEffect, type RefObject } from 'react';
-import { SEG_BY_ID, SEGMENTS, TOUR, WIRE_FOR, midVector, slicePath } from './dial';
+import { HALOS, SEGMENTS, SEG_BY_ID, REST, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
 
 export type TokVariant = 1 | 2 | 3 | 4 | 5;
 
 export const TOK_VARIANTS: { name: string; blurb: string }[] = [
-  { name: 'Relay', blurb: 'A light runs in along a chain wire, the hub takes the hit, and the indigo arc slides round to the allocation it just paid — one stop at a time, anticlockwise.' },
-  { name: 'Radar', blurb: 'A hand sweeps the dial continuously and the arc follows it like a trail; each allocation lights as the sweep crosses it, and its own wire answers with a pulse.' },
-  { name: 'Unroll', blurb: 'The arc never jumps — it stretches from the allocation it holds into the next one, then contracts onto it, and each landing fires a light back out to that chain.' },
-  { name: 'Focus', blurb: 'The dial dims to a whisper and only the live allocation keeps its colour, nudged out of the ring; the wire that feeds it pulses in as it takes focus.' },
-  { name: 'Trace', blurb: 'A dot rides the rim of the dial and the arc is the trail it leaves; each boundary it crosses pops that chip and hands the total on.' },
+  { name: 'Aim', blurb: 'The gradient arc swings round the dial and resizes to each allocation’s share as it lands — 50% of the circle on presale, a sliver on rewards. The chip it points at takes the indigo.' },
+  { name: 'Relay', blurb: 'Every move is paid for: a light runs in along that allocation’s own chain wire, the hub takes the hit, and only then does the arc swing across and resize onto it.' },
+  { name: 'Bloom', blurb: 'The arc closes to a thin blade at the new bearing, holds a beat, then blooms open to the allocation’s full share — so the size of each slice is the thing you read.' },
+  { name: 'Unroll', blurb: 'One continuous rotation: the leading edge runs ahead to the next allocation and the trailing edge catches up, so the arc stretches and contracts without ever jumping.' },
+  { name: 'Snap', blurb: 'Quick and mechanical — the arc snaps to each bearing with a slight overshoot and the hub halos ripple outward on arrival, like a dial locking on.' },
 ];
-
-/** The tour angles, unwrapped so the pointer always travels anticlockwise instead of jumping. */
-function tourStops() {
-  let prev = Infinity;
-  return TOUR.map((id) => {
-    const s = SEG_BY_ID[id];
-    let { a0, a1 } = s;
-    while (a1 > prev) {
-      a0 -= 360;
-      a1 -= 360;
-    }
-    prev = a0;
-    return { id, a0, a1, seg: s };
-  });
-}
 
 export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1) {
   useEffect(() => {
@@ -51,30 +36,32 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const q = (sel: string) => el.querySelectorAll(sel);
           const one = <T extends Element = HTMLElement>(sel: string) => el.querySelector(sel) as T | null;
           const slice = (id: string) => one<HTMLElement>(`[data-slice="${id}"]`);
-          const wedge = (id: string) => one<SVGPathElement>(`[data-wedge="${id}"]`);
           const wire = (id: string) => one<SVGPathElement>(`[data-wire="${id}"]`);
           const pulse = (id: string) => one<SVGCircleElement>(`[data-pulse="${id}"]`);
-          const pointer = one<SVGPathElement>('.tk__pointer');
+          const arcEl = one<SVGPathElement>('.tk__arc');
+          const haloEls = HALOS.map((h) => one<SVGPathElement>(`[data-halo="${h.d}"]`));
           const stops = tourStops();
+          const [rest0, rest1] = spanOf(SEG_BY_ID[REST]);
 
-          /** Drives the pointer arc from wherever it is to `(a0, a1)`, redrawing it each frame. */
-          const arc = { a0: stops[0].a0, a1: stops[0].a1 };
-          const paintArc = () => pointer?.setAttribute('d', slicePath(arc.a0, arc.a1));
-          paintArc();
+          /**
+           * The one shape the whole section turns on: the gradient arc, with the two hub halos
+           * following the same span. Everything below just drives these two numbers.
+           */
+          const arc = { a0: rest0, a1: rest1 };
+          const paint = () => {
+            arcEl?.setAttribute('d', slicePath(arc.a0, arc.a1));
+            haloEls.forEach((h, i) => h?.setAttribute('d', slicePath(arc.a0, arc.a1, HALOS[i].d / 2)));
+          };
+          paint();
 
-          const moveArc = (tl: gsap.core.Timeline, at: number, a0: number, a1: number, dur = 0.7, ease = 'power3.inOut') =>
-            tl.to(arc, { a0, a1, duration: dur, ease, onUpdate: paintArc }, at);
+          const aimAt = (tl: gsap.core.Timeline, at: number, a0: number, a1: number, dur = 0.8, ease = 'power3.inOut') =>
+            tl.to(arc, { a0, a1, duration: dur, ease, onUpdate: paint }, at);
 
-          /** Marks one allocation live — chip lift and colour are handled in CSS. */
+          /** Marks one allocation live: its chip goes indigo, the rest stay ink. */
           const light = (tl: gsap.core.Timeline, at: number, id: string | null) =>
             tl.call(
               () => {
-                SEGMENTS.forEach((s) => {
-                  const n = slice(s.id);
-                  const w = wedge(s.id);
-                  if (n) n.toggleAttribute('data-on', s.id === id);
-                  if (w) w.toggleAttribute('data-on', s.id === id);
-                });
+                SEGMENTS.forEach((s) => slice(s.id)?.toggleAttribute('data-on', s.id === id));
                 el.dataset.live = id ?? '';
               },
               undefined,
@@ -82,7 +69,8 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             );
 
           /** Counts a percentage up to its value. */
-          const count = (node: HTMLElement | null, tl: gsap.core.Timeline, at: number, dur = 0.6) => {
+          const count = (id: string, tl: gsap.core.Timeline, at: number, dur = 0.5) => {
+            const node = slice(id)?.querySelector('.tk__pct b') as HTMLElement | null;
             if (!node) return;
             const to = Number(node.dataset.pct ?? 0);
             const proxy = { v: 0 };
@@ -112,133 +100,125 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
             tl.to(dot, { opacity: 0, duration: 0.2 }, at + dur - 0.05);
           };
 
-          /** A short knock on the hub, for arrivals. */
           const knock = (tl: gsap.core.Timeline, at: number) => {
             tl.to(one('.tk__hubDisc'), { scale: 1.07, duration: 0.14, ease: 'power2.out', transformOrigin: '50% 50%' }, at);
             tl.to(one('.tk__hubDisc'), { scale: 1, duration: 0.34, ease: 'elastic.out(1, 0.5)' }, at + 0.14);
           };
 
-          // ---- Entrance, shared by every variant -------------------------------------------
+          // ---- Entrance ---------------------------------------------------------------------
           const tl = gsap.timeline({ paused: true });
           tl.from(q('.tk__lineInner'), { yPercent: 110, duration: 1, ease: 'power4.out' }, 0);
           tl.from(one('.tk__sub'), { opacity: 0, y: 10, duration: 0.6, ease: 'power3.out' }, 0.3);
           tl.from(one('.tk__ring'), { scale: 0.88, opacity: 0, duration: 0.8, ease: 'expo.out', transformOrigin: '50% 50%' }, 0.25);
           tl.from(one('.tk__hub'), { scale: 0.7, opacity: 0, duration: 0.7, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 0.35);
-          // fromTo, not from: the end value is pinned to 1 rather than read off the live node.
-          tl.fromTo(q('.tk__wedge'), { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.06 }, 0.45);
-          tl.from(q('.tk__wire'), { opacity: 0, duration: 0.6, stagger: 0.05 }, 0.5);
+          // The arc opens from a blade at presale's bearing to its full 50% span.
+          tl.fromTo(arc, { a0: 180, a1: 180 }, { a0: rest0, a1: rest1, duration: 1, ease: 'expo.out', onUpdate: paint }, 0.45);
+          tl.fromTo(q('.tk__wire'), { opacity: 0 }, { opacity: 1, duration: 0.6, stagger: 0.05 }, 0.5);
           tl.from(q('.tk__coin'), { scale: 0, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.06 }, 0.6);
           tl.from(q('.tk__slice'), { opacity: 0, y: 10, duration: 0.5, ease: 'expo.out', stagger: 0.06 }, 0.7);
-          SEGMENTS.forEach((s, i) => count(slice(s.id)?.querySelector('.tk__pct b') ?? null, tl, 0.75 + i * 0.06));
+          SEGMENTS.forEach((s, i) => count(s.id, tl, 0.75 + i * 0.06));
+          light(tl, 1.1, REST);
           tl.from(one('.tk__facts'), { opacity: 0, y: 14, duration: 0.7, ease: 'power3.out' }, 1.2);
 
-          // ---- The cycle: one variant each -------------------------------------------------
+          // ---- The cycle --------------------------------------------------------------------
           const loop = gsap.timeline({ repeat: -1, paused: true });
+          const HOLD = 1.1;
 
           if (variant === 1) {
-            // Relay — a wire delivers, the hub takes it, the arc slides onto that allocation.
+            // Aim — swing and resize onto each allocation in turn.
             let at = 0;
             stops.forEach((s) => {
-              const w = WIRE_FOR[s.id];
-              runWire(w, loop, at, 0.85);
-              knock(loop, at + 0.8);
-              moveArc(loop, at + 0.85, s.a0, s.a1, 0.75);
-              loop.to(one('.tk__pointer'), { opacity: 1, duration: 0.3 }, at + 0.85);
-              light(loop, at + 0.9, s.id);
-              count(slice(s.id)?.querySelector('.tk__pct b') ?? null, loop, at + 0.95, 0.5);
-              at += 1.9;
+              aimAt(loop, at, s.a0, s.a1, 0.85);
+              light(loop, at + 0.5, s.id);
+              count(s.id, loop, at + 0.5);
+              at += 0.85 + HOLD;
             });
-            light(loop, at, null);
-            loop.to(one('.tk__pointer'), { opacity: 0, duration: 0.4 }, at);
-            loop.to({}, { duration: 0.8 }, at);
+            aimAt(loop, at, rest0 - 360, rest1 - 360, 0.9);
+            light(loop, at + 0.5, REST);
+            loop.to({}, { duration: HOLD }, at + 0.9);
           }
 
           if (variant === 2) {
-            // Radar — a continuous sweep; the arc trails the hand and lights what it crosses.
-            const hand = one('.tk__hand');
-            loop.to(one('.tk__pointer'), { opacity: 1, duration: 0.4 }, 0);
-            const turn = 9;
-            if (hand) loop.fromTo(hand, { rotate: -90 }, { rotate: 270, duration: turn, ease: 'none', transformOrigin: '50% 50%' }, 0);
-            // The arc is a short blade that follows the hand round the dial.
-            loop.fromTo(arc, { a0: -110, a1: -90 }, { a0: 250, a1: 270, duration: turn, ease: 'none', onUpdate: paintArc }, 0);
-            SEGMENTS.forEach((s) => {
-              const at = ((s.a0 + 90) / 360) * turn;
-              light(loop, at, s.id);
-              count(slice(s.id)?.querySelector('.tk__pct b') ?? null, loop, at, 0.45);
-              runWire(WIRE_FOR[s.id], loop, at, 0.7);
+            // Relay — the chain pays first, then the arc moves.
+            let at = 0;
+            stops.forEach((s) => {
+              runWire(WIRE_FOR[s.id], loop, at, 0.85);
+              knock(loop, at + 0.8);
+              aimAt(loop, at + 0.85, s.a0, s.a1, 0.8);
+              light(loop, at + 1.05, s.id);
+              count(s.id, loop, at + 1.05);
+              at += 0.85 + 0.8 + HOLD;
             });
-            light(loop, turn, null);
-            loop.to({}, { duration: 0.6 }, turn);
+            runWire(WIRE_FOR[REST], loop, at, 0.85);
+            aimAt(loop, at + 0.85, rest0 - 360, rest1 - 360, 0.8);
+            light(loop, at + 1.05, REST);
+            loop.to({}, { duration: HOLD }, at + 1.65);
           }
 
           if (variant === 3) {
-            // Unroll — the arc stretches into the next allocation, then contracts onto it.
+            // Bloom — close to a blade at the new bearing, then open to the full share.
             let at = 0;
-            loop.to(one('.tk__pointer'), { opacity: 1, duration: 0.3 }, 0);
-            stops.forEach((s, i) => {
-              const prev = i === 0 ? stops[stops.length - 1] : stops[i - 1];
-              const from = i === 0 ? { a0: prev.a0 - 360, a1: prev.a1 - 360 } : prev;
-              // stretch: leading edge reaches the new slice while the tail stays put
-              moveArc(loop, at, s.a0, from.a1, 0.55, 'power2.in');
-              // contract: the tail catches up
-              moveArc(loop, at + 0.55, s.a0, s.a1, 0.5, 'power2.out');
-              light(loop, at + 0.55, s.id);
-              knock(loop, at + 0.55);
-              count(slice(s.id)?.querySelector('.tk__pct b') ?? null, loop, at + 0.6, 0.45);
-              runWire(WIRE_FOR[s.id], loop, at + 0.7, 0.8, -1);
-              at += 1.6;
+            stops.forEach((s) => {
+              const mid = (s.a0 + s.a1) / 2;
+              aimAt(loop, at, mid - 3, mid + 3, 0.6, 'power2.inOut');
+              light(loop, at + 0.6, s.id);
+              aimAt(loop, at + 0.72, s.a0, s.a1, 0.7, 'expo.out');
+              count(s.id, loop, at + 0.72);
+              at += 0.72 + 0.7 + HOLD;
             });
-            light(loop, at, null);
-            loop.to(one('.tk__pointer'), { opacity: 0, duration: 0.4 }, at);
-            loop.to({}, { duration: 0.7 }, at);
+            const rm = (rest0 + rest1) / 2 - 360;
+            aimAt(loop, at, rm - 3, rm + 3, 0.6);
+            light(loop, at + 0.6, REST);
+            aimAt(loop, at + 0.72, rest0 - 360, rest1 - 360, 0.7, 'expo.out');
+            loop.to({}, { duration: HOLD }, at + 1.42);
           }
 
           if (variant === 4) {
-            // Focus — the dial dims, the live allocation keeps its colour and steps outward.
+            // Unroll — the leading edge runs ahead, the trailing edge catches up.
             let at = 0;
-            loop.to(el, { '--tk-dim': 0.25, duration: 0.5 } as gsap.TweenVars, 0);
-            loop.to(one('.tk__pointer'), { opacity: 1, duration: 0.3 }, 0);
-            stops.forEach((s) => {
-              const [ux, uy] = midVector(s.seg);
-              runWire(WIRE_FOR[s.id], loop, at, 0.8);
-              moveArc(loop, at + 0.3, s.a0, s.a1, 0.7);
-              light(loop, at + 0.8, s.id);
-              knock(loop, at + 0.8);
-              loop.to(wedge(s.id), { x: ux * 14, y: uy * 14, duration: 0.5, ease: 'expo.out' }, at + 0.8);
-              loop.to(one('.tk__pointer'), { x: ux * 14, y: uy * 14, duration: 0.5, ease: 'expo.out' }, at + 0.8);
-              count(slice(s.id)?.querySelector('.tk__pct b') ?? null, loop, at + 0.85, 0.45);
-              loop.to(wedge(s.id), { x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, at + 1.6);
-              loop.to(one('.tk__pointer'), { x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, at + 1.6);
-              at += 2;
+            let prev = { a0: rest0, a1: rest1 };
+            [...stops, { id: REST, a0: rest0 - 360, a1: rest1 - 360 }].forEach((s) => {
+              // stretch: the leading edge (a0, anticlockwise) reaches the new slot
+              aimAt(loop, at, s.a0, prev.a1, 0.6, 'power2.in');
+              // contract: the trailing edge follows
+              aimAt(loop, at + 0.6, s.a0, s.a1, 0.55, 'power2.out');
+              light(loop, at + 0.6, s.id);
+              count(s.id, loop, at + 0.65);
+              prev = { a0: s.a0, a1: s.a1 };
+              at += 0.6 + 0.55 + HOLD;
             });
-            light(loop, at, null);
-            loop.to(el, { '--tk-dim': 1, duration: 0.5 } as gsap.TweenVars, at);
-            loop.to(one('.tk__pointer'), { opacity: 0, duration: 0.4 }, at);
-            loop.to({}, { duration: 0.7 }, at);
           }
 
           if (variant === 5) {
-            // Trace — a dot rides the rim and the arc is the trail behind it.
-            const rim = one('.tk__rimDot');
-            const turn = 10;
-            loop.to(one('.tk__pointer'), { opacity: 1, duration: 0.3 }, 0);
-            const path = one<SVGPathElement>('.tk__rimPath');
-            if (rim && path) loop.to(rim, { motionPath: { path, start: 0, end: 1 }, duration: turn, ease: 'none' }, 0);
-            // The trail runs from the start of the live slice up to the dot.
-            stops.forEach((s, i) => {
-              const at = (i / stops.length) * turn;
-              const dur = turn / stops.length;
-              // The dot runs anticlockwise from a1 down to a0, so the trail grows behind it.
-              loop.set(arc, { a0: s.a1, a1: s.a1 }, at);
-              loop.to(arc, { a0: s.a0, duration: dur, ease: 'none', onUpdate: paintArc }, at);
-              light(loop, at, s.id);
-              count(slice(s.id)?.querySelector('.tk__pct b') ?? null, loop, at, 0.45);
-              runWire(WIRE_FOR[s.id], loop, at, 0.8, -1);
+            // Snap — hard arrivals with a halo ripple.
+            let at = 0;
+            const ripple = (t: number) => {
+              haloEls.forEach((h, i) => {
+                if (!h) return;
+                loop.fromTo(h, { scale: 1, opacity: HALOS[i].opacity }, { scale: 1.22, opacity: 0, duration: 0.6, ease: 'power2.out', transformOrigin: '50% 50%' }, t);
+                loop.set(h, { scale: 1, opacity: HALOS[i].opacity }, t + 0.6);
+              });
+            };
+            stops.forEach((s) => {
+              aimAt(loop, at, s.a0, s.a1, 0.5, 'back.out(1.7)');
+              light(loop, at + 0.34, s.id);
+              count(s.id, loop, at + 0.34, 0.4);
+              knock(loop, at + 0.4);
+              ripple(at + 0.4);
+              at += 0.5 + HOLD;
             });
-            light(loop, turn, null);
-            loop.to(one('.tk__pointer'), { opacity: 0, duration: 0.4 }, turn);
-            loop.to({}, { duration: 0.6 }, turn);
+            aimAt(loop, at, rest0 - 360, rest1 - 360, 0.5, 'back.out(1.7)');
+            light(loop, at + 0.34, REST);
+            ripple(at + 0.4);
+            loop.to({}, { duration: HOLD }, at + 0.5);
           }
+
+          // Each pass ends on presale's span one turn round; reset so the next repeat matches.
+          loop.call(() => {
+            arc.a0 = rest0;
+            arc.a1 = rest1;
+            paint();
+          });
 
           tl.eventCallback('onComplete', () => loop.play());
           io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? loop.resume() : loop.pause()), { rootMargin: '120px' });

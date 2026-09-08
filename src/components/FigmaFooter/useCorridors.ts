@@ -1,18 +1,25 @@
 import { useEffect, type RefObject } from 'react';
 
-/** What goes in on the left, what comes out on the right. */
+/** What goes in, and what comes out. Both sit on one ring around the closing block. */
 const CRYPTO = ['BTC', 'ETH', 'USDT', 'SOL'];
 const FIAT = ['NGN', 'PHP', 'INR', 'KES', 'MXN'];
-const DWELL = 2.8; // seconds a corridor stays live
+
+const DWELL = 3.2; // seconds a corridor stays live, before SPEED
+const SPEED = 0.7; // the whole field runs at 70% — one knob, everything scales together
+const GHOSTS = 3; // routes held faintly behind the live one; the rest of the mesh is left out
 
 const LAVENDER = '#8f91ff';
 const LIME = '#d9f24e';
-const LINE = 'rgba(40,50,60,';
+const DIM = '#49535e';
+const TEXT = '#cdd6de';
+
+type Node = { code: string; kind: -1 | 1; x: number; y: number };
 
 /**
- * The closing block's field: crypto on the left, local currency on the right, and one corridor
- * live at a time — a payment leaves an asset, crosses beneath the headline and settles as fiat,
- * its route named as it lands. Everything sits well under the type's contrast.
+ * The closing block's field. Assets and local currencies sit on one slowly turning ring; a payment
+ * leaves an asset, crosses beneath the headline turning from asset to fiat as it passes the middle,
+ * and lands on a currency, with the pair named as it settles. Only the live route and three ghosts
+ * are ever drawn, so the block keeps its air.
  */
 export function useCorridors(host: RefObject<HTMLElement | null>) {
   useEffect(() => {
@@ -37,93 +44,89 @@ export function useCorridors(host: RefObject<HTMLElement | null>) {
     const ro = new ResizeObserver(size);
     ro.observe(el);
 
-    const nodes = (list: string[], side: -1 | 1) =>
-      list.map((code, i) => ({
-        code,
-        x: (side === -1 ? 0.13 : 0.87) * w,
-        y: h * (0.5 + ((i - (list.length - 1) / 2) / (list.length - 1 || 1)) * 0.62),
-        side,
-      }));
+    const ALL: { code: string; kind: -1 | 1 }[] = [
+      ...CRYPTO.map((code) => ({ code, kind: -1 as const })),
+      ...FIAT.map((code) => ({ code, kind: 1 as const })),
+    ];
 
-    /** A quadratic through the middle of the block, so every route passes under the headline. */
-    const at = (a: { x: number; y: number }, b: { x: number; y: number }, t: number) => {
-      const cx = w / 2;
-      const cy = h / 2;
-      const u = 1 - t;
-      return {
-        x: u * u * a.x + 2 * u * t * cx + t * t * b.x,
-        y: u * u * a.y + 2 * u * t * cy + t * t * b.y,
-      };
-    };
+    const ring = (t: number): Node[] =>
+      ALL.map((n, i) => {
+        const a = (i / ALL.length) * Math.PI * 2 + t * 0.022 - Math.PI / 2;
+        return { ...n, x: w / 2 + Math.cos(a) * w * 0.37, y: h / 2 + Math.sin(a) * h * 0.36 };
+      });
 
-    const curve = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+    const curve = (a: Node, b: Node) => {
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.quadraticCurveTo(w / 2, h / 2, b.x, b.y);
       ctx.stroke();
     };
+    const along = (a: Node, b: Node, t: number) => {
+      const u = 1 - t;
+      return {
+        x: u * u * a.x + 2 * u * t * (w / 2) + t * t * b.x,
+        y: u * u * a.y + 2 * u * t * (h / 2) + t * t * b.y,
+      };
+    };
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
-      const left = nodes(CRYPTO, -1);
-      const right = nodes(FIAT, 1);
+      const pts = ring(t);
+      const crypto = pts.filter((p) => p.kind < 0);
+      const fiat = pts.filter((p) => p.kind > 0);
 
-      // the whole lattice, faint
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `${LINE}.55)`;
-      left.forEach((a) => right.forEach((b) => curve(a, b)));
+      ctx.strokeStyle = 'rgba(40,50,60,.7)';
+      for (let g = 0; g < GHOSTS; g++) curve(crypto[g % crypto.length], fiat[(g * 2 + 1) % fiat.length]);
 
-      // the live corridor
       const step = Math.floor(t / DWELL);
       const p = (t % DWELL) / DWELL;
-      const a = left[step % left.length];
-      const b = right[(step * 3) % right.length];
-      const fade = 1 - Math.max(0, (p - 0.72) / 0.28);
+      const fade = 1 - Math.max(0, (p - 0.74) / 0.26);
+      const from = crypto[step % crypto.length];
+      const to = fiat[(step * 3) % fiat.length];
 
       ctx.strokeStyle = `rgba(64,66,209,${0.9 * fade})`;
       ctx.lineWidth = 1.5;
-      curve(a, b);
+      curve(from, to);
 
-      // the payment itself, arriving as fiat
+      // the payment turns from asset to local currency as it crosses the middle
       const q = Math.min(1, p / 0.78);
-      const pt = at(a, b, q);
-      // the packet turns from asset to local currency as it crosses the middle
-      ctx.fillStyle = q < 0.5 ? LAVENDER : LIME;
+      const at = along(from, to, q);
       ctx.globalAlpha = fade;
+      ctx.fillStyle = q < 0.5 ? LAVENDER : LIME;
       ctx.beginPath();
-      ctx.arc(pt.x, pt.y, 3.4, 0, Math.PI * 2);
+      ctx.arc(at.x, at.y, 3.4, 0, Math.PI * 2);
       ctx.fill();
       ctx.globalAlpha = 1;
 
-      // the marks, with the live pair named
       ctx.font = '700 11px Onest, system-ui, sans-serif';
       ctx.textBaseline = 'middle';
-      [...left, ...right].forEach((n) => {
-        const live = n === a || n === b;
-        ctx.globalAlpha = live ? fade : 0.32;
-        ctx.fillStyle = live ? (n.side === -1 ? LAVENDER : LIME) : '#4a545f';
+      pts.forEach((n) => {
+        const live = n === from || n === to;
+        const outward = n.x < w / 2 ? -1 : 1; // labels sit outside the ring
+        ctx.globalAlpha = live ? fade : 0.3;
+        ctx.fillStyle = live ? (n.kind < 0 ? LAVENDER : LIME) : DIM;
         ctx.beginPath();
         ctx.arc(n.x, n.y, live ? 3.6 : 2.4, 0, Math.PI * 2);
         ctx.fill();
-        ctx.textAlign = n.side === -1 ? 'right' : 'left';
-        ctx.fillStyle = live ? '#cdd6de' : '#49535e';
-        ctx.fillText(n.code, n.x + n.side * 14, n.y + 1);
+        ctx.textAlign = outward < 0 ? 'right' : 'left';
+        ctx.fillStyle = live ? TEXT : DIM;
+        ctx.fillText(n.code, n.x + outward * 14, n.y + 1);
         ctx.globalAlpha = 1;
       });
 
-      // the route, spelled out under the pair as it lands
       if (p > 0.45) {
         ctx.globalAlpha = Math.min(1, (p - 0.45) / 0.18) * fade * 0.55;
         ctx.textAlign = 'center';
         ctx.fillStyle = '#8593a0';
         ctx.font = '600 12px Onest, system-ui, sans-serif';
-        ctx.fillText(`${a.code} → ${b.code}`, w / 2, h * 0.88);
+        ctx.fillText(`${from.code} → ${to.code}`, w / 2, h * 0.88);
         ctx.globalAlpha = 1;
       }
     };
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      draw(DWELL * 0.4);
+      draw(DWELL * 0.45);
       return () => ro.disconnect();
     }
 
@@ -131,7 +134,7 @@ export function useCorridors(host: RefObject<HTMLElement | null>) {
     let t = 0;
     let running = false;
     const frame = () => {
-      t += 1 / 60;
+      t += SPEED / 60;
       draw(t);
       raf = requestAnimationFrame(frame);
     };

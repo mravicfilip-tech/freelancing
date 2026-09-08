@@ -146,13 +146,14 @@
   justify-content: end;
   gap: 0 96px;
 }
-/* Two sizes carry the whole block: a 12px label and a 14px link. The labels are set back to
-   half strength so they name their column without competing with it. */
+/* Labels and links share the system's uppercase spec; half strength is what separates them, so a
+   label names its column without competing with it. */
 .ft__label {
   margin: 0 0 22px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
   text-transform: uppercase;
   color: var(--ft-label);
   opacity: 0.5;

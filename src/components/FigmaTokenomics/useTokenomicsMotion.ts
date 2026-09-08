@@ -98,18 +98,17 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const paint = () => {
             arcEl?.setAttribute('d', slicePath(arc.a0, arc.a1));
             haloEls.forEach((h, i) => h?.setAttribute('d', slicePath(arc.a0, arc.a1, HALOS[i].d / 2)));
-            // Re-point the ramp across the wedge: from the trailing outer corner (pale) to the
-            // leading one (purple). Anchoring it to the chord rather than the wedge's bounding box
-            // is what keeps every bearing reading like a solid shape instead of fading out at the
-            // hub — a box-aligned ramp puts the pale end along the wedge on the diagonals.
+            // Lay the ramp ALONG the wedge's own bisector — pale at the hub, indigo at the rim.
+            // That makes the shape mirror-symmetric about the direction it points, so its visual
+            // centre is its geometric centre. Running the ramp across the wedge instead puts all
+            // the colour on one edge and the pale end vanishes into the background, and the wedge
+            // then reads as aimed at that edge rather than at the allocation it is centred on.
             if (!ramp) return;
-            const rad = (d: number) => (d * Math.PI) / 180;
-            const px = (d: number) => DIAL.c + DIAL.r * Math.cos(rad(d));
-            const py = (d: number) => DIAL.c + DIAL.r * Math.sin(rad(d));
-            ramp.setAttribute('x1', String(px(arc.a1)));
-            ramp.setAttribute('y1', String(py(arc.a1)));
-            ramp.setAttribute('x2', String(px(arc.a0)));
-            ramp.setAttribute('y2', String(py(arc.a0)));
+            const mid = ((arc.a0 + arc.a1) / 2) * (Math.PI / 180);
+            ramp.setAttribute('x1', String(DIAL.c));
+            ramp.setAttribute('y1', String(DIAL.c));
+            ramp.setAttribute('x2', String(DIAL.c + DIAL.r * Math.cos(mid)));
+            ramp.setAttribute('y2', String(DIAL.c + DIAL.r * Math.sin(mid)));
           };
           paint();
 

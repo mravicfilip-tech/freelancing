@@ -26,9 +26,10 @@ export type Segment = {
   icon: string;
   /**
    * Direction the arc centres on: the bearing, from the hub at (780, 293), of the centre of this
-   * allocation's whole chip + percentage row. Derived from Figma's own chip widths
-   * (reserves 124, presale 115, rewards 122, marketing 133, team 94, listings 115, each + a 64
-   * circle), so the arc lands square on the row rather than near it.
+   * allocation's label chip — the pill, not the pill plus its percentage circle. The pill is what
+   * the eye reads as the allocation, so a line drawn hub-to-pill has to bisect the arc; aiming at
+   * the row's midpoint instead leaves the arc a few degrees high or low of every corner label.
+   * Measured off the rendered chips rather than assumed.
    */
   aim: number;
   /** Chip position in stage coordinates; y is the row's centre line. */
@@ -37,12 +38,12 @@ export type Segment = {
 };
 
 export const SEGMENTS: Segment[] = [
-  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', aim: 207.6, x: 435.6, y: 162 },
-  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', aim: 180.2, x: 414, y: 292 },
-  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', aim: 152.4, x: 436.5, y: 424 },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', aim: 26.6, x: 942.6, y: 424 },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', aim: -0.2, x: 982, y: 292 },
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', aim: -26.7, x: 951.4, y: 162 },
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', aim: 204.85, x: 435.6, y: 162 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', aim: 180.19, x: 414, y: 292 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', aim: 155.16, x: 436.5, y: 424 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', aim: 29.83, x: 942.6, y: 424 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', aim: -0.23, x: 982, y: 292 },
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', aim: -29.83, x: 951.4, y: 162 },
 ];
 
 export const SEG_BY_ID = Object.fromEntries(SEGMENTS.map((s) => [s.id, s])) as Record<string, Segment>;

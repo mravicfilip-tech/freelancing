@@ -20,8 +20,9 @@
   width: 440px;
   border-radius: 12px;
   background: #fff;
+  /* No shadow: a hairline is what separates the card from the band, as everywhere else here. */
+  border: 1px solid #dfe1e7;
   overflow: hidden;
-  box-shadow: 0 28px 64px -24px rgb(18 36 51 / 30%), 0 2px 10px rgb(18 36 51 / 6%);
   transform-origin: 100% 0;
   animation: lp-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }

@@ -79,6 +79,11 @@
 }
 
 /* ---------- Navbar ---------- */
+/* The nav and its dropdowns paint above the hero's own content; `.fh > :not(.fh__frame)` puts every
+   sibling on z-index 1, so without this the planet, which comes later, wins on document order. */
+.fh > .fh__nav {
+  z-index: 3;
+}
 .fh__nav {
   width: min(1440px, 100% - 48px);
   display: flex;

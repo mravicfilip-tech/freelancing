@@ -56,7 +56,8 @@ export function useRoadmapMotion(root: RefObject<HTMLElement | null>, variant: R
             }
             tl.from(q('.rd-traj__node'), { opacity: 0, y: 10, duration: 0.55, ease: 'expo.out', stagger: 0.1 }, 0.75);
           } else if (variant === 4) {
-            tl.from(q('.rd-card'), { opacity: 0, y: 26, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.35);
+            tl.from(el.querySelector('.rd-idx'), { opacity: 0, y: 26, duration: 0.8, ease: 'expo.out' }, 0.3);
+            tl.from(q('.rd-idx__item'), { opacity: 0, y: 14, duration: 0.6, ease: 'expo.out', stagger: 0.06 }, 0.5);
           } else {
             tl.from(q('.rd-wire__row'), { opacity: 0, x: -20, duration: 0.65, ease: 'expo.out', stagger: 0.07 }, 0.35);
             tl.from(el.querySelector('.rd-meter'), { opacity: 0, y: 20, duration: 0.7, ease: 'expo.out' }, 0.5);

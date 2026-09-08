@@ -19,6 +19,7 @@
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
   --rd-dash-v: repeating-linear-gradient(180deg, var(--rd-rail) 0 8px, transparent 8px 16px);
   --rd-rule-v: repeating-linear-gradient(180deg, var(--rd-line) 0 4px, transparent 4px 8px);
+  --rd-rule-h: repeating-linear-gradient(90deg, var(--rd-line) 0 4px, transparent 4px 8px);
 
   background: var(--rd-bg);
   color: var(--rd-ink);
@@ -34,11 +35,7 @@
   --rd-ink: #eef2f5;
   --rd-body: #8593a0;
 }
-/* Direction 4 sits on the reviews band's slightly deeper grey, so the white cards read as cards. */
-.rd[data-variant='4'] {
-  --rd-bg: #e6e9ed;
-  --rd-line: #c5cbd1;
-}
+/* Direction 4 puts a card on the band, so it keeps the band the feature and ecosystem cards use. */
 /* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
 .rd__frame {
   width: min(1560px, 100% - 48px);
@@ -381,243 +378,257 @@
 }
 
 /* ----------------------------------------------------------------- 4 Index */
+/* The ecosystem card's shape, carrying the roadmap: the accordion and its copy on the left
+   behind a [4,4] rule, the washed panel on the right. Same 620px column, same 12px radius,
+   same accent, same open-and-close curves. */
 
-.rd-index {
-  --rd-drawer-w: min(1040px, 100%);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 56px;
-}
-
-/* ---------- The level rail: the drawer's navigation and its progress ---------- */
-.rd-rail {
-  position: relative;
-  width: var(--rd-drawer-w);
-  list-style: none;
+.rd-idx {
   display: grid;
-  grid-template-columns: repeat(var(--rd-cols, 7), minmax(0, 1fr));
-  margin: 0;
-  padding: 0;
+  width: 100%;
+  will-change: transform;
+  grid-template-columns: 620px minmax(0, 1fr);
+  min-height: 640px;
+  border-radius: 12px;
+  background: var(--rd-card);
+  overflow: hidden;
+  isolation: isolate;
 }
-/* One dashed line behind the stops, on the design's [8,8] rhythm. */
-.rd-rail::before {
-  content: '';
-  position: absolute;
-  left: calc(50% / var(--rd-cols, 7));
-  right: calc(50% / var(--rd-cols, 7));
-  top: 5px;
-  height: 1px;
-  background-image: repeating-linear-gradient(90deg, var(--rd-rail) 0 8px, transparent 8px 16px);
-}
-.rd-rail__stop button {
+
+/* ---------- The index ---------- */
+.rd-idx__copy {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 0 4px 4px;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
+  padding: 48px 48px 32px;
+  background-image: var(--rd-rule-v);
+  background-size: 1px 100%;
+  background-position: right top;
+  background-repeat: no-repeat;
 }
-.rd-rail__dot {
-  position: relative;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  border: 1px solid var(--rd-rail);
-  background: var(--rd-bg);
-  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+.rd-idx__copyHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
 }
-/* Behind the level in play the rail is filled; ahead of it the stops stay hollow. */
-.rd-rail__stop[data-status='done'] .rd-rail__dot {
-  background: var(--rd-title);
-  border-color: var(--rd-title);
+.rd-idx__eyebrow {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--rd-indigo);
 }
-.rd-rail__stop[data-status='live'] .rd-rail__dot {
-  background: var(--rd-indigo);
-  border-color: var(--rd-indigo);
-}
-.rd-rail__stop[data-open] .rd-rail__dot {
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--rd-indigo) 22%, transparent);
-}
-.rd-rail__n {
+.rd-idx__tally {
   font-size: 13px;
   color: var(--rd-body);
 }
-.rd-rail__name {
+.rd-idx__list {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+}
+.rd-idx__item {
+  position: relative;
+  background-image: var(--rd-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+/* The accent along the open level's left edge, as on the ecosystem accordion. */
+.rd-idx__accent {
+  position: absolute;
+  left: -48px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  overflow: hidden;
+}
+.rd-idx__accent i {
+  position: absolute;
+  inset: 0;
+  background: var(--rd-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rd-idx__item--on .rd-idx__accent i {
+  transform: scaleY(1);
+}
+.rd-idx__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--rd-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.rd-idx__n {
+  flex: 0 0 auto;
+  width: 26px;
+  font-size: 14px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-idx__title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  color: var(--rd-body);
+  transition: color 300ms ease;
+}
+.rd-idx__count {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: var(--rd-body);
+  opacity: 0.6;
+  transition: opacity 300ms ease, color 300ms ease;
+}
+.rd-idx__item--on .rd-idx__n,
+.rd-idx__item--on .rd-idx__title {
+  color: var(--rd-title);
+}
+.rd-idx__item--on .rd-idx__count {
+  color: var(--rd-indigo);
+  opacity: 1;
+}
+/* A level with everything ticked reads back in ink even when it is not the open one. */
+.rd-idx__item[data-status='done'] .rd-idx__title {
+  color: var(--rd-ink);
+}
+.rd-idx__head:hover .rd-idx__title {
+  color: var(--rd-title);
+}
+.rd-idx__head:focus-visible {
+  outline: 2px solid var(--rd-indigo);
+  outline-offset: 2px;
+}
+/* The blurb opens with a grid-row transition, so the list keeps its rhythm as levels change. */
+.rd-idx__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-idx__body > p {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding-left: 42px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--rd-body);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 420ms ease 120ms,
+    transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms,
+    padding-bottom 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rd-idx__item--on .rd-idx__body {
+  grid-template-rows: 1fr;
+}
+.rd-idx__item--on .rd-idx__body > p {
+  padding-bottom: 22px;
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- The milestones panel ---------- */
+.rd-idx__panel {
+  display: flex;
+  flex-direction: column;
+  padding: 48px 48px 40px;
+  /* The ecosystem panel's wash, on the same axis and stops. */
+  background: linear-gradient(121deg, #e8eef4 4%, #ffffff 34%, #f5f6e3 78%);
+}
+.rd-idx__panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.rd-idx__marker {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14.75px;
+  border-radius: 46px;
+  background: #fff;
+  font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.28px;
   color: var(--rd-body);
   white-space: nowrap;
 }
-.rd-rail__stop[data-open] .rd-rail__n,
-.rd-rail__stop[data-open] .rd-rail__name {
-  color: var(--rd-title);
-  font-weight: 600;
-}
-.rd-rail__stop button:hover .rd-rail__name {
-  color: var(--rd-title);
-}
-
-/* ---------- The drawer ---------- */
-.rd-drawer {
-  width: var(--rd-drawer-w);
-  padding-top: 22px;
-}
-/* Every card is the same width, as folders in a drawer are: only the tabs step across.
-   Each card sits above the one behind it, so its tab always clears the card above. */
-.rd-card {
-  position: relative;
-  z-index: calc(var(--i) + 1);
-  margin-top: -1px;
-  border: 1px solid var(--rd-title);
-  border-radius: 12px 12px 0 0;
-  background: #eceef0;
-  transition: background-color 160ms ease;
-}
-.rd-card[data-open] {
-  background: var(--rd-card);
-  box-shadow: 0 22px 44px -30px rgb(18 36 51 / 45%);
-}
-.rd-card:not([data-open]) .rd-card__head button:hover {
-  background: #f6f7f8;
-}
-.rd-card__head {
-  margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-}
-.rd-card__head button {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  padding: 18px 26px;
-  border: 0;
-  border-radius: 11px 11px 0 0;
-  background: transparent;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-/* The tab: a trapezoid on the card's top edge, stepping across the stack. */
-.rd-card__tab {
-  position: absolute;
-  top: -21px;
-  left: var(--tab-x);
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  height: 22px;
-  padding: 0 14px;
-  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 100%, 0 100%);
-  background: var(--rd-title);
-  color: #fff;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-}
-.rd-card__tab em {
-  font-style: normal;
-  color: rgb(255 255 255 / 55%);
-}
-.rd-card[data-status='live'] .rd-card__tab {
+.rd-idx__marker[data-status='live'] {
   background: var(--rd-indigo);
+  color: #fff;
 }
-.rd-card[data-status='live'] .rd-card__tab em {
-  color: rgb(255 255 255 / 72%);
-}
-.rd-card[data-status='next'] .rd-card__tab {
-  background: var(--rd-body);
-}
-.rd-card__name {
+.rd-idx__panelTitle {
+  margin: 14px 0 32px;
   font-family: var(--fh-display);
   font-weight: 500;
-  font-size: clamp(20px, 2.4vw, 28px);
-  letter-spacing: -0.84px;
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -1.2px;
   color: var(--rd-title);
 }
-.rd-card__marker {
-  display: inline-flex;
-  align-items: center;
-  height: 28px;
-  padding: 0 12px;
-  border: 1px solid var(--rd-line);
-  border-radius: 46px;
-  font-size: 13px;
-  letter-spacing: -0.26px;
-  color: var(--rd-body);
-}
-.rd-card__marker[data-status='live'] {
-  border-color: color-mix(in srgb, var(--rd-indigo) 40%, transparent);
-  color: var(--rd-indigo);
-  font-weight: 600;
-}
-.rd-card__body {
-  padding: 0 26px 28px;
-}
-.rd-card__blurb {
-  margin: 0 0 20px;
-  max-width: 60ch;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--rd-body);
-}
-/* The milestones as the live cards read them: one line each, ticked or waiting. */
-.rd-card__items {
+.rd-idx__miles {
+  /* The five rows share the panel's height, so the column fills the card the way the
+     illustration fills the ecosystem's. */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0;
 }
-.rd-card__items li {
+.rd-idx__miles li {
+  flex: 1;
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 16px;
+  align-content: center;
   align-items: start;
-  padding: 12px 0;
-  font-size: 15px;
-  line-height: 1.5;
+  padding: 18px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
   color: var(--rd-body);
-}
-.rd-card__items li + li {
-  /* The design's finer [4,4] rule between rows. */
-  background-image: repeating-linear-gradient(90deg, var(--rd-line) 0 4px, transparent 4px 8px);
+  background-image: var(--rd-rule-h);
   background-size: 100% 1px;
   background-position: left top;
   background-repeat: no-repeat;
 }
-.rd-card__items li[data-done] {
+.rd-idx__miles li[data-done] {
   color: var(--rd-ink);
 }
-.rd-tick {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  color: var(--rd-rail);
+.rd-idx__tick {
+  display: block;
+  margin-top: 2px;
+  color: var(--rd-line);
 }
-.rd-tick[data-done] {
-  background: color-mix(in srgb, var(--rd-indigo) 12%, transparent);
+.rd-idx__tick[data-done] {
   color: var(--rd-indigo);
 }
-/* Opening a card deals its milestones out in reading order. */
+/* Changing level deals the panel out again, in reading order. */
 @media (prefers-reduced-motion: no-preference) {
-  .rd-card[data-open] .rd-card__blurb {
-    animation: rd-row 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  .rd-idx__panelHead,
+  .rd-idx__panelTitle {
+    animation: rd-row 460ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
   }
-  .rd-card[data-open] .rd-card__items li {
-    animation: rd-row 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    animation-delay: calc(60ms + var(--j) * 45ms);
+  .rd-idx__panelTitle {
+    animation-delay: 40ms;
+  }
+  .rd-idx__miles li {
+    animation: rd-row 460ms cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+    animation-delay: calc(80ms + var(--j) * 45ms);
   }
 }
 @keyframes rd-row {
@@ -626,34 +637,12 @@
     transform: translateY(8px);
   }
 }
-.rd-rail__stop button:focus-visible,
-.rd-card__head button:focus-visible {
-  outline: 2px solid var(--rd-indigo);
-  outline-offset: -2px;
-  border-radius: 10px;
-}
-
-/* The drawer's front plate carries the label, the way a card index is labelled. */
-.rd-drawer__base {
-  width: 100%;
-  margin: 0;
-  padding: 16px 0;
-  border: 1px solid var(--rd-title);
-  border-radius: 0 0 12px 12px;
-  background: #eceef0;
-  text-align: center;
-  font-size: 14px;
-}
-.rd-drawer__base span {
-  display: inline-block;
-  padding: 7px 16px;
-  border-radius: 46px;
-  background: var(--rd-lime);
-  color: #122433;
-  letter-spacing: -0.28px;
-}
-.rd-drawer__base b {
-  font-weight: 700;
+@media (prefers-reduced-motion: reduce) {
+  .rd-idx__accent i,
+  .rd-idx__body,
+  .rd-idx__body > p {
+    transition: none;
+  }
 }
 
 /* --------------------------------------------------------------- 5 Journey */
@@ -806,8 +795,7 @@
 .rd[data-motion='pending'] .rd-chip,
 .rd[data-motion='pending'] .rd-ledger__col,
 .rd[data-motion='pending'] .rd-stage__col,
-.rd[data-motion='pending'] .rd-card,
-.rd[data-motion='pending'] .rd-rail__stop,
+.rd[data-motion='pending'] .rd-idx,
 .rd[data-motion='pending'] .rd-wire__row,
 .rd[data-motion='pending'] .rd-meter,
 .rd[data-motion='pending'] .rd-traj__node,
@@ -990,40 +978,26 @@
     line-height: 1.55;
     color: var(--rd-body);
   }
-  .rd-card {
-    width: 100%;
-  }
-  .rd-card__tab {
-    left: 16px;
-  }
-  .rd-card__head button {
+  .rd-idx {
     grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 20px 18px 16px;
+    min-height: 0;
   }
-  .rd-card__marker {
-    justify-self: start;
+  .rd-idx__copy {
+    padding: 28px 24px 8px;
+    background-image: var(--rd-rule-h);
+    background-size: 100% 1px;
+    background-position: left bottom;
   }
-  .rd-card__body {
-    padding: 0 18px 24px;
+  .rd-idx__accent {
+    left: -24px;
   }
-  .rd-index {
-    gap: 36px;
+  .rd-idx__panel {
+    padding: 28px 24px 32px;
   }
-  /* Seven stops will not fit across a phone: the rail becomes a numbered strip that scrolls. */
-  .rd-rail {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 84px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .rd-rail::before {
-    left: 42px;
-    right: 42px;
-  }
-  .rd-rail__name {
-    font-size: 13px;
+  .rd-idx__panelTitle {
+    margin-bottom: 20px;
+    font-size: 30px;
+    letter-spacing: -0.9px;
   }
   .rd-wire__pill {
     min-width: 0;

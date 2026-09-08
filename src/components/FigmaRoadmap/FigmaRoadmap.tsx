@@ -9,7 +9,7 @@ export const ROAD_VARIANTS = [
   { name: 'Ledger', blurb: 'Six numbered columns on the section rules, milestones cascading across them.' },
   { name: 'Stage', blurb: 'The band turns over to the footer’s black; one rail, the live level lit in lime.' },
   { name: 'Trajectory', blurb: 'One curve on black, the travelled part lit, levels read off it like a chart.' },
-  { name: 'Index', blurb: 'A drawer of tabbed cards under a level rail; the open one lists its milestones.' },
+  { name: 'Index', blurb: 'One card: the seven levels down the left, the open level’s milestones on the right.' },
   { name: 'Journey', blurb: 'The levels wired into a column beside a meter of the raise against its gates.' },
 ] as const;
 
@@ -213,102 +213,93 @@ function Trajectory() {
 
 /* ----------------------------------------------------------------- 4 Index */
 
-/** The tick a milestone carries on the live cards: filled once it is done, an open ring until then. */
+/** The tick a milestone carries: indigo once it is done, an open ring until then. */
 function Tick({ done }: { done: boolean }) {
   return (
-    <span className="rd-tick" data-done={done || undefined} aria-hidden="true">
-      {done ? (
-        <svg viewBox="0 0 14 14" width="14" height="14">
-          <path d="M2.5 7.4 5.6 10.5 11.5 3.9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 14 14" width="14" height="14">
-          <circle cx="7" cy="7" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      )}
+    <span className="rd-idx__tick" data-done={done || undefined} aria-hidden="true">
+      <svg viewBox="0 0 20 20" width="20" height="20">
+        {done ? (
+          <path
+            d="M4.5 10.4 8.4 14.2 15.5 6.2"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ) : (
+          <circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        )}
+      </svg>
     </span>
   );
 }
 
 /**
- * A drawer of tabbed cards, one open at a time, under a rail of the seven levels. The rail is the
- * drawer's navigation as well as its progress: filled behind the level in play, hollow ahead of it.
+ * The levels as an index: the seven of them down the left of one card, the open level's milestones
+ * on the right. Same shape as the ecosystem card — accordion and copy on the left, a washed panel
+ * on the right — so the roadmap reads as another view of the same object rather than a new device.
  */
 function Index() {
-  const liveIndex = LEVELS.findIndex((l) => l.status === 'live');
-  const [open, setOpen] = useState(liveIndex);
-  const level = LEVELS[open];
-  const rail = useRef<HTMLOListElement>(null);
-
-  // On a phone the rail scrolls; keep the open level in view without moving the page.
-  useEffect(() => {
-    const el = rail.current;
-    const stop = el?.children[open] as HTMLElement | undefined;
-    if (!el || !stop || el.scrollWidth <= el.clientWidth) return;
-    el.scrollTo({ left: stop.offsetLeft - (el.clientWidth - stop.offsetWidth) / 2, behavior: 'smooth' });
-  }, [open]);
+  const [active, setActive] = useState(() => LEVELS.findIndex((l) => l.status === 'live'));
+  const level = LEVELS[active];
+  const complete = LEVELS.filter((l) => l.status === 'done').length;
 
   return (
-    <div className="rd-index">
-      <ol className="rd-rail" ref={rail}>
-        {LEVELS.map((l, i) => (
-          <li className="rd-rail__stop" key={l.n} data-status={l.status} data-open={i === open || undefined}>
-            <button
-              type="button"
-              aria-current={i === open ? 'true' : undefined}
-              onClick={() => setOpen(i)}
-            >
-              <span className="rd-rail__dot" aria-hidden="true" />
-              <span className="rd-rail__n rd-digits">{l.n}</span>
-              <span className="rd-rail__name">{l.name}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
+    <div className="rd-idx">
+      <div className="rd-idx__copy">
+        <div className="rd-idx__copyHead">
+          <span className="rd-idx__eyebrow">Levels</span>
+          <span className="rd-idx__tally">
+            <b className="rd-digits">{String(complete).padStart(2, '0')}</b> of{' '}
+            <b className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</b> complete
+          </span>
+        </div>
 
-      <div className="rd-drawer">
-        {LEVELS.map((l, i) => (
-          <div
-            className="rd-card"
-            key={l.n}
-            data-status={l.status}
-            data-open={i === open || undefined}
-            /* The tabs step across the stack, the way a card index is filed. */
-            style={{ '--i': i, '--tab-x': `${5 + i * 12.4}%` } as React.CSSProperties}
-          >
-            <h3 className="rd-card__head">
-              <button type="button" aria-expanded={i === open} onClick={() => setOpen(i)}>
-                <span className="rd-card__tab">
-                  <span className="rd-digits">{l.n}</span>
-                  <em className="rd-digits">
-                    {doneCount(l)}/{l.items.length}
-                  </em>
-                </span>
-                <span className="rd-card__name">{l.name}</span>
-                <span className="rd-card__marker" data-status={l.status}>
-                  {l.marker}
+        <ul className="rd-idx__list" role="tablist" aria-label="Roadmap levels">
+          {LEVELS.map((l, i) => (
+            <li key={l.n} className={`rd-idx__item${i === active ? ' rd-idx__item--on' : ''}`} data-status={l.status}>
+              <i className="rd-idx__accent">
+                <i />
+              </i>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={i === active}
+                aria-controls="rd-idx-panel"
+                className="rd-idx__head"
+                onClick={() => setActive(i)}
+              >
+                <span className="rd-idx__n rd-digits">{l.n}</span>
+                <span className="rd-idx__title">{l.name}</span>
+                <span className="rd-idx__count rd-digits">
+                  {doneCount(l)}/{l.items.length}
                 </span>
               </button>
-            </h3>
-            <div className="rd-card__body" hidden={i !== open}>
-              <p className="rd-card__blurb">{l.blurb}</p>
-              <ul className="rd-card__items">
-                {l.items.map((item, j) => (
-                  <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
-                    <Tick done={item.done} />
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
-        <p className="rd-drawer__base">
-          <span>
-            Level <b className="rd-digits">{level.n}</b> of{' '}
-            <b className="rd-digits">{String(LEVELS.length).padStart(2, '0')}</b> — {STATUS_LABEL[level.status]}
+              <div className="rd-idx__body">
+                <p>{l.blurb}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="rd-idx__panel" id="rd-idx-panel" role="tabpanel" key={level.n}>
+        <div className="rd-idx__panelHead">
+          <span className="rd-idx__eyebrow">Level {level.n}</span>
+          <span className="rd-idx__marker" data-status={level.status}>
+            {level.marker}
           </span>
-        </p>
+        </div>
+        <h3 className="rd-idx__panelTitle">{level.name}</h3>
+        <ol className="rd-idx__miles">
+          {level.items.map((item, j) => (
+            <li key={item.short} data-done={item.done || undefined} style={{ '--j': j } as React.CSSProperties}>
+              <Tick done={item.done} />
+              {item.text}
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );

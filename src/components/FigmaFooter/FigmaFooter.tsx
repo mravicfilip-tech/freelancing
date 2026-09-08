@@ -56,15 +56,6 @@ const SOCIAL: [string, string, () => ReactElement][] = [
   ['Medium', 'https://medium.com/@remittix', IconMedium],
 ];
 
-function Arrow() {
-  return (
-    <svg className="ft__arrow" viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M4.5 11.5 11.5 4.5" />
-      <path d="M5.5 4.5h6v6" />
-    </svg>
-  );
-}
-
 /**
  * Footer. A full-height closing line carrying the hero's own headline and the primary button, then
  * the wordmark and socials, then the disclaimer beside the link columns — all on the same light
@@ -127,12 +118,7 @@ export function FigmaFooter() {
               </div>
             ))}
             <div className="ft__col ft__col--contact">
-              <h3 className="ft__label">
-                <a href="mailto:support@remittix.io">
-                  Contact info
-                  <Arrow />
-                </a>
-              </h3>
+              <h3 className="ft__label">Contact info</h3>
               <ul>
                 {CONTACT.map(([label, href]) => (
                   <li key={label}>

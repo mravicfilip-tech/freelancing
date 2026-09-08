@@ -144,7 +144,8 @@
   justify-content: end;
   gap: 0 96px;
 }
-/* Two sizes carry the whole block: a 12px label and a 14px link. */
+/* Two sizes carry the whole block: a 12px label and a 14px link. The labels are set back to
+   half strength so they name their column without competing with it. */
 .ft__label {
   margin: 0 0 22px;
   font-size: 12px;
@@ -152,22 +153,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ft-label);
-}
-.ft__col--contact .ft__label a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--ft-accent);
-  text-decoration: none;
-}
-.ft__arrow {
-  width: 10px;
-  height: 10px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  opacity: 0.5;
 }
 .ft__col ul {
   list-style: none;
@@ -189,9 +175,9 @@
 .ft__col a:hover {
   color: var(--ft-ink);
 }
-/* The addresses stay as they are written. */
+/* The addresses take the links' type exactly — only the casing differs, since an address is
+   written the way it is written. */
 .ft__col--contact ul a {
-  letter-spacing: 0;
   text-transform: none;
 }
 

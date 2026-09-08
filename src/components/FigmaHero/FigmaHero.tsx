@@ -235,7 +235,16 @@ export function FigmaHero() {
         aria-hidden="true"
         onClick={() => menu.close(false)}
       />
-      <div className="fh__menu" id="fh-menu" ref={menu.panel} data-open={menu.open || undefined} inert={!menu.open}>
+      <div
+        className="fh__menu"
+        id="fh-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        ref={menu.panel}
+        data-open={menu.open || undefined}
+        inert={!menu.open}
+      >
         <nav className="fh__menuLinks" aria-label="Primary">
           {NAV_LINKS.map(([label, href], i) => (
             <a

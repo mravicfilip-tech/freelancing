@@ -253,10 +253,12 @@
     border-radius: 0;
   }
   .ec__copy {
-    padding: 28px 16px 8px;
+    padding: 64px 16px 8px;
   }
+  /* No gutter to stand in on one column: at the card's own rail the marker lands 8px off the
+     screen edge. The open pillar is already unmistakable — it carries the drawing. */
   .ec__accent {
-    left: -8px;
+    display: none;
   }
   .ec__title {
     font-size: 30px;
@@ -279,12 +281,12 @@
   .ec__itemBody > p {
     padding-left: 0;
   }
+  /* The frame is the drawing's own height at whatever size it is shown, so a scene that takes
+     no step does not sit in a box sized for one that does. */
   .ec__item--on .ec__scene {
     display: flex;
     align-items: center;
-    /* Room for the drawing at the size below, which is taller than the 800x640 canvas fitted to
-       the width would be. */
-    height: 410px;
+    aspect-ratio: calc(800 / (640 * var(--ec-scale, 1)));
   }
   .ec__scene .ff__il {
     position: static;
@@ -295,16 +297,25 @@
      frame with its own writing and crops only the air: measured off the built scene, one per
      drawing, because there is no rule that covers all four. */
   .ec__scene .ff__il {
-    transform: scale(1.1);
+    transform: scale(var(--ec-scale, 1));
     transform-origin: 50% 50%;
   }
-  .ec__scene[data-scene='trading'] .ff__il {
-    transform: scale(1.07);
+}
+
+/* Only a narrow phone needs the step: by 480 the frame is already giving the canvas most of its
+   size, and a fixed factor that suits 393 slices axis labels and card edges at 360 and crops a
+   quarter of the canvas at 720. Each drawing takes what its own margins allow. */
+@media (max-width: 480px) {
+  .ec__scene {
+    --ec-scale: 1.1;
   }
-  .ec__scene[data-scene='staking'] .ff__il {
-    transform: scale(1.4);
+  .ec__scene[data-scene='trading'] {
+    --ec-scale: 1;
   }
-  .ec__scene[data-scene='storage'] .ff__il {
-    transform: scale(1.39);
+  .ec__scene[data-scene='staking'] {
+    --ec-scale: 1.25;
+  }
+  .ec__scene[data-scene='storage'] {
+    --ec-scale: 1.2;
   }
 }

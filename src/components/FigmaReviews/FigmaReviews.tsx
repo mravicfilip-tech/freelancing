@@ -47,7 +47,27 @@ export function FigmaReviews() {
   const { go } = useReviewsMotion(root, slide);
 
   const chips = useRef<(HTMLButtonElement | null)[]>([]);
+  const strip = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number } | null>(null);
+
+  // The strip fades at its right edge to say there is more of it. Scrolled to the end there is
+  // not, and an unconditional fade dissolves the last chip's own words.
+  const markEdge = useCallback(() => {
+    const el = strip.current;
+    if (!el) return;
+    el.toggleAttribute('data-more', el.scrollWidth - el.clientWidth - el.scrollLeft > 2);
+  }, []);
+  useEffect(() => {
+    const el = strip.current;
+    if (!el) return;
+    markEdge();
+    el.addEventListener('scroll', markEdge, { passive: true });
+    window.addEventListener('resize', markEdge);
+    return () => {
+      el.removeEventListener('scroll', markEdge);
+      window.removeEventListener('resize', markEdge);
+    };
+  }, [markEdge]);
 
   const select = useCallback((next: number) => {
     setSlide(((next % SLIDES.length) + SLIDES.length) % SLIDES.length);
@@ -57,9 +77,9 @@ export function FigmaReviews() {
   // off the end of it. Keep it centred as the slider advances.
   useEffect(() => {
     const chip = chips.current[slide];
-    const strip = chip?.parentElement;
-    if (!chip || !strip || strip.scrollWidth <= strip.clientWidth + 1) return;
-    strip.scrollTo({ left: Math.max(0, chip.offsetLeft - (strip.clientWidth - chip.offsetWidth) / 2), behavior: 'smooth' });
+    const el = strip.current;
+    if (!chip || !el || el.scrollWidth <= el.clientWidth + 1) return;
+    el.scrollTo({ left: Math.max(0, chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2), behavior: 'smooth' });
   }, [slide]);
 
   // A phone reaches a carousel by swiping it. Vertical drags are the page scrolling, not a swipe.
@@ -129,7 +149,7 @@ export function FigmaReviews() {
           {/* The lit edge that rides the wipe between slides. */}
           <span className="rv__seam" aria-hidden="true" />
 
-          <div className="rv__chips" role="tablist" aria-label="Choose a review">
+          <div className="rv__chips" ref={strip} role="tablist" aria-label="Choose a review">
             {SLIDES.map((s, i) => (
               <button
                 key={s.id}

@@ -32,8 +32,12 @@ export function useNavMenu(query = '(max-width: 1100px)') {
     // The first link, so a keyboard lands inside the sheet rather than after it.
     panel.current?.querySelector<HTMLElement>('a, button')?.focus();
 
-    // Hold the page still behind the sheet. The bar is fixed, so only the flow needs the gutter
-    // the scrollbar leaves behind — without it every section jumps sideways as the sheet opens.
+    // Hold the page still behind the sheet, and hold its width still too: on a classic-scrollbar
+    // platform the lock takes the scrollbar away, and without the gutter back every section jumps
+    // sideways as the sheet opens. (The bar and the sheet are laid out against the initial
+    // containing block, which also widens, so those two still shift by the scrollbar's width for
+    // as long as the sheet is open. Reserving the gutter page-wide would fix that but costs a dead
+    // strip on every platform whose scrollbars are overlays, which is the worse trade.)
     const { body } = document;
     const gutter = window.innerWidth - document.documentElement.clientWidth;
     const overflow = body.style.overflow;
@@ -43,6 +47,9 @@ export function useNavMenu(query = '(max-width: 1100px)') {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // The language list is a layer of its own inside the sheet and closes itself on Escape.
+        // Taking the sheet down with it would answer one press twice.
+        if (panel.current?.querySelector('.lp[data-open="true"]')) return;
         e.preventDefault();
         close();
         return;
@@ -59,10 +66,13 @@ export function useNavMenu(query = '(max-width: 1100px)') {
       const first = ring[0];
       const last = ring[ring.length - 1];
       const active = document.activeElement as HTMLElement | null;
-      if (e.shiftKey && (active === first || !ring.includes(active as HTMLElement))) {
+      // Focus can end up on the body — closing the language list drops it there — and from there
+      // a plain Tab walked straight out to the page behind the scrim.
+      const outside = !active || !ring.includes(active);
+      if (e.shiftKey && (active === first || outside)) {
         e.preventDefault();
         last.focus();
-      } else if (!e.shiftKey && active === last) {
+      } else if (!e.shiftKey && (active === last || outside)) {
         e.preventDefault();
         first.focus();
       }

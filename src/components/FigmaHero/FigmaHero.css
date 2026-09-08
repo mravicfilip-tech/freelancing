@@ -18,6 +18,7 @@
   --fh-muted: #8292a2;
   --fh-body: #7c858d;
   --fh-label: #a2a6aa;
+  --fh-index: #6e7781;
   --fh-progress: #4042d2;
   --fh-progress-soft: #b3b5f5;
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -93,8 +94,8 @@
    full bar back. Centring is done with auto margins rather than a translate, because the
    entrance timeline in useHeroEntrance owns this element's transform.
 
-   The nav and its dropdowns must paint above the hero's own content — `.fh > :not(.fh__frame)`
-   puts every sibling on z-index 1, and the planet comes later in document order. The exemption
+   The nav and its dropdowns must paint above the hero's own content — the `.fh > :not(...)` rule
+   above puts every sibling on z-index 1, and the planet comes later in document order. The exemption
    in that rule plus the z-index below settle it: a `.fh > .fh__nav` override would out-specify
    the z-index here and drop the bar back under the sections it now has to cross. */
 .fh__nav {
@@ -826,20 +827,24 @@
   position: fixed;
   inset: 0;
   z-index: 55;
-  background: rgba(18, 36, 51, 0.14);
-  backdrop-filter: blur(10px) saturate(1.06);
-  -webkit-backdrop-filter: blur(10px) saturate(1.06);
+  background: rgba(18, 36, 51, 0.34);
+  /* Unprefixed only: written as a pair the minifier keeps the -webkit- form alone, which this
+     engine does not alias, and the frost silently disappears from the build. */
+  backdrop-filter: blur(14px) saturate(1.06);
   opacity: 0;
   visibility: hidden;
+  /* A closed scrim that is still hit-testable eats every tap for the length of its fade. */
+  pointer-events: none;
   transition:
-    opacity 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    visibility 0s linear 320ms;
+    opacity 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 240ms;
 }
 .fh__scrim[data-open] {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transition:
-    opacity 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
     visibility 0s linear 0s;
 }
 /* The sheet stands under the bar and runs to the foot of the screen. It is fixed to the viewport
@@ -862,15 +867,17 @@
   overscroll-behavior: contain;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
-    opacity 260ms ease,
-    visibility 0s linear 260ms;
+    opacity 160ms ease,
+    visibility 0s linear 160ms;
 }
 .fh__menu[data-open] {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transition:
-    opacity 260ms ease,
+    opacity 160ms ease,
     visibility 0s linear 0s;
 }
 .fh__menuLinks {
@@ -889,7 +896,8 @@
   /* The rows take the height the sheet has spare, so the list reads to the screen it is on
      rather than leaving a hole above the account actions. */
   flex: 1 1 auto;
-  min-height: 76px;
+  min-height: 64px;
+  max-height: 84px;
   padding: 0 4px;
   color: var(--fh-ink);
   text-decoration: none;
@@ -902,10 +910,10 @@
 .fh__menuIndex {
   font-family: var(--fh-digits);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 20px;
   letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
-  color: var(--fh-label);
+  color: var(--fh-index);
   transition: color 240ms ease;
 }
 .fh__menuLabel {
@@ -967,7 +975,7 @@
   flex-direction: column;
   gap: 10px;
   flex: 0 0 auto;
-  padding-top: 28px;
+  padding-top: 24px;
 }
 .fh__menuActions .fh__btn {
   width: 100%;
@@ -975,8 +983,8 @@
 }
 /* On white the bar's ghost is too faint to read as the second of two actions. */
 .fh__menu .fh__btn--ghost {
-  background: #fff;
-  border-color: var(--fh-line);
+  background: #f1f4f7;
+  border-color: #dde3e9;
   color: var(--fh-ink);
 }
 .fh__menuFoot {
@@ -984,9 +992,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--fh-line);
+  margin-top: 18px;
+  padding-top: 18px;
+  background-image: repeating-linear-gradient(90deg, var(--fh-line) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 .fh__menuFootLabel {
   font-weight: 700;
@@ -1008,14 +1019,32 @@
    foot of the screen instead — the only place a 340px list fits on a 393px phone. */
 .fh__menu .lp__pop {
   position: fixed;
-  left: var(--fh-nav-gutter);
+  left: auto;
   right: var(--fh-nav-gutter);
   top: auto;
   bottom: max(16px, env(safe-area-inset-bottom, 0px));
-  width: auto;
+  /* The sheet's own measure, not the screen's: at 900 the screen gave it 876px of slab. */
+  width: min(420px, calc(100% - var(--fh-nav-gutter) * 2));
+  max-height: min(70vh, 460px);
   border-radius: 20px;
+  /* Two white cards, one over the other: the hairline alone does not separate them. */
+  box-shadow: 0 -14px 36px -20px rgba(18, 36, 51, 0.5);
   transform-origin: 50% 100%;
   animation: fh-lang-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* Only once it is open: `display` here would out-specify the `hidden` attribute and leave the
+   list laid out over the sheet, swallowing the taps meant for the control that opens it. */
+.fh__menu .lp__pop:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+/* The 320px cap on the list only applies under 560, so above it the list drove the pop's height
+   past the screen and took the search field off the top with it. */
+.fh__menu .lp__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
 }
 @keyframes fh-lang-in {
   from { opacity: 0; transform: translateY(14px); }
@@ -1028,8 +1057,8 @@
   opacity: 0;
   transform: translateY(12px);
   transition:
-    opacity 320ms ease,
-    transform 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 220ms ease,
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
     color 240ms ease;
 }
 .fh__menu[data-open] .fh__menuLinks a,
@@ -1037,14 +1066,19 @@
 .fh__menu[data-open] .fh__menuFoot {
   opacity: 1;
   transform: none;
-  transition-delay: calc(60ms + var(--i, 0) * 45ms);
+  transition-delay: calc(30ms + var(--i, 0) * 26ms);
 }
 @media (prefers-reduced-motion: reduce) {
   .fh__scrim,
+  .fh__scrim[data-open],
   .fh__menu,
+  .fh__menu[data-open],
   .fh__menuLinks a,
   .fh__menuActions,
-  .fh__menuFoot {
+  .fh__menuFoot,
+  .fh__menu[data-open] .fh__menuLinks a,
+  .fh__menu[data-open] .fh__menuActions,
+  .fh__menu[data-open] .fh__menuFoot {
     transition-duration: 1ms;
     transition-delay: 0s;
   }
@@ -1110,7 +1144,8 @@
   }
   .fh {
     --fh-nav-top: 16px;
-    --fh-nav-gutter: 12px;
+    /* The same rail the bands are on: at 12 the pill visibly undercut it. */
+    --fh-nav-gutter: 16px;
   }
   .fh__nav {
     top: var(--fh-nav-top);
@@ -1202,8 +1237,9 @@
     width: 100%;
     justify-content: space-between;
   }
-  /* The mark is the only link in the bar that a thumb cannot reliably hit: the wordmark is gone
-     by here, so the box is the 33px logo. The negative margin keeps it on the rail. */
+  /* The mark is the only link in the bar a thumb cannot reliably hit — under 480 it is the 33px
+     logo alone. The padding widens the target and the negative margin cancels the shift it would
+     otherwise cause, so the mark stays exactly where it was. */
   .fh__brand {
     min-height: 44px;
     align-items: center;
@@ -1215,7 +1251,46 @@
     width: 44px;
     height: 44px;
   }
+  /* A 14px dash is what the design draws, so the target comes from a hit area over it rather
+     than from the dash itself: widening the button would widen the dash with it. */
   .fh__segment {
+    position: relative;
     padding: 21px 0;
+  }
+  .fh__segment::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* A landscape phone, or a small one: the sheet has 486px to hold what a tall one gives 738. Take
+   it out of the rows and the actions rather than pushing the second action off the bottom. */
+@media (max-height: 720px) {
+  .fh__menuLinks a {
+    min-height: 52px;
+    max-height: 64px;
+  }
+  .fh__menuLabel {
+    font-size: 22px;
+    letter-spacing: -0.44px;
+  }
+  .fh__menuIndex {
+    font-size: 17px;
+  }
+  .fh__menuActions {
+    padding-top: 16px;
+    gap: 8px;
+  }
+  .fh__menuActions .fh__btn {
+    height: 46px;
+  }
+  .fh__menuFoot {
+    margin-top: 12px;
+    padding-top: 12px;
   }
 }

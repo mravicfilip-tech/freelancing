@@ -1,15 +1,16 @@
-/* Footer — the same light band and 1560 dashed rails as every section above it, so the page ends
-   on the same grid. The closing line repeats the hero's headline as a bookend. */
+/* Footer — the page turns over to black here, keeping the 1560 dashed rails and the [4,4] rules so
+   the grid carries through the switch. The closing line repeats the hero's headline as a bookend;
+   the accent is the brand lime, which only works on this ground. */
 
 .ft {
-  --ft-bg: #edeff1;
-  --ft-rail: #c5cbd1;
-  --ft-line: #dadee2;
-  --ft-ink: #122433;
-  --ft-body: #7c858d;
-  --ft-label: #a2a6aa;
-  --ft-muted: #8292a2;
-  --ft-indigo: #4042d1;
+  --ft-bg: #0c1219;
+  --ft-rail: #28323c;
+  --ft-line: #232d37;
+  --ft-ink: #eef2f5;
+  --ft-body: #8593a0;
+  --ft-label: #6c7783;
+  --ft-muted: #55606b;
+  --ft-accent: #d9f24e;
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --ft-dash-v: repeating-linear-gradient(180deg, var(--ft-rail) 0 8px, transparent 8px 16px);
@@ -79,7 +80,7 @@
   gap: 4px;
   font-weight: 700;
   font-size: 22.14px;
-  color: #000;
+  color: var(--ft-ink);
   text-decoration: none;
 }
 .ft__brand img {
@@ -108,7 +109,7 @@
 }
 .ft__social a:hover {
   color: var(--ft-ink);
-  background: rgb(18 36 51 / 6%);
+  background: rgb(255 255 255 / 8%);
 }
 .ft__social svg {
   display: block;
@@ -179,7 +180,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ft-indigo);
+  color: var(--ft-accent);
 }
 .ft__arrow {
   width: 11px;
@@ -224,7 +225,26 @@
   transition: color 200ms;
 }
 .ft__legal a:hover {
-  color: var(--ft-indigo);
+  color: var(--ft-accent);
+}
+
+/* The primary button is black-on-light everywhere else; here it inverts, and the indigo
+   hover blob it already carries takes the label to white as it fills. */
+.ft .fh__btn--primary {
+  background: #fff;
+  color: #122433;
+}
+.ft .fh__btn--primary:hover,
+.ft .fh__btn--primary:focus-visible {
+  color: #fff;
+}
+/* the shipped chevron is a black glyph inverted for the black button; on a white one it is not */
+.ft .fh__btn--primary .fh__chevron {
+  filter: none;
+}
+.ft .fh__btn--primary:hover .fh__chevron,
+.ft .fh__btn--primary:focus-visible .fh__chevron {
+  filter: invert(1);
 }
 
 /* Hold the animated parts until GSAP has written their start states (see useFooterMotion). */

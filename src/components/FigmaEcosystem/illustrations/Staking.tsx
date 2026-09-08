@@ -18,16 +18,16 @@ const GHOST = [
 ];
 
 /**
- * The same deck on a phone. The steps are pulled in because a portrait card is shorter and its
- * bottom margin is thinner: at the desktop's 22/44 the cards behind would peek out far enough to
- * show a slice of their own stat row, which reads as a clipping accident rather than as depth.
- * These offsets leave each card behind showing ~12px of blank card and its rounded bottom edge —
- * enough to count them, not enough to read them.
+ * The same deck on a phone. The steps are pulled in because a portrait card is shorter: at the
+ * desktop's 22/44 the rearmost card's stat row clears the front card's bottom edge and a slice of
+ * it shows through, which reads as a clipping accident rather than as depth. Paired with the
+ * deeper bottom padding the portrait card carries, 16/32 leaves each card behind showing ~10px of
+ * blank card and its rounded bottom edge — enough to count them, not enough to read them.
  */
 const GHOST_M = [
   { y: 0, scale: 1, opacity: 1 },
-  { y: 18, scale: 0.955, opacity: 0.55 },
-  { y: 36, scale: 0.91, opacity: 0.28 },
+  { y: 16, scale: 0.955, opacity: 0.55 },
+  { y: 32, scale: 0.91, opacity: 0.28 },
 ];
 
 /** The deck's resting places for whichever composition is on screen. */
@@ -150,7 +150,7 @@ function StakingPortrait() {
         </div>
         {/* 329-wide cards on a 16px rail; the box is tall enough to hold the two stepped-back
             cards, so nothing in the deck ever reaches the stage's edge. */}
-        <div style={{ left: 16, top: 52, width: 329, height: 292 }}>
+        <div style={{ left: 16, top: 52, width: 329, height: 288 }}>
           {POS.map((p, i) => (
             <div key={p.no} className="ec-stk" data-tic={i} style={{ zIndex: 10 - i }}>
               <Card p={p} mark={20} />

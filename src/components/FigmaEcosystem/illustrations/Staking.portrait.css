@@ -53,8 +53,12 @@
   height: 268px;
   border-radius: 18px;
 }
+/* The deeper bottom padding is structural, not taste: the two cards behind are scaled about their
+   own centres, so their last stat row would otherwise clear the front card's bottom edge and show
+   through as a sliced-off line. 28px keeps the row 5px inside the front card's silhouette, which
+   leaves the visible part of each card behind as blank stock and its rounded edge. */
 .ec-stk-scene--m .ec-stk__card {
-  padding-bottom: 22px;
+  padding-bottom: 28px;
   border-radius: 18px;
 }
 

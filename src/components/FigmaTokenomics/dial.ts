@@ -191,9 +191,15 @@ const ROWS_M: Segment[] = [
   { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 103, y: 408.5, aim: 225, w: 124 },
   // Below the dial the frame reads Listings, Team, Marketing — the arc's TOUR walks them in the
   // other direction, which is why the aims still fall as the tour steps and not as the rows do.
-  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 103, y: 714.5, aim: 45, w: 114 },
-  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 103, y: 794.5, aim: 90, w: 94 },
-  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 103, y: 874.5, aim: 135, w: 132 },
+  //
+  // These three centre themselves where the three above align left: the frame stacks the upper
+  // group with items-start and the lower one with items-center (2639:1908 against 2639:1941), and
+  // since each chip is pinned to its own label's width, that is what keeps a 94-wide Team from
+  // hanging off the same left edge as a 132-wide Marketing. Centred in the group's own 188, from
+  // x = 103 + (188 - (chip + the 64 circle)) / 2.
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 108, y: 714.5, aim: 45, w: 114 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 118, y: 794.5, aim: 90, w: 94 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 99, y: 874.5, aim: 135, w: 132 },
 ];
 export const SEGMENTS_M: Segment[] = ROWS_M;
 

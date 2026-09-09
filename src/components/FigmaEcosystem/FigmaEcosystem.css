@@ -267,9 +267,12 @@
   .ec__scene {
     position: static;
     display: none;
-    /* Out past the card's inner padding AND the frame's gutter, so the drawing gets the whole
-       card rather than the ~265 a doubly padded column would leave it. */
-    margin: 4px -16px 20px;
+    /* It used to break out past the card's inner padding, which was worth it when a doubly padded
+       column left the drawing ~265. It no longer is: the card's own padding is the page's 16, so
+       breaking out buys 32px and costs the alignment — the picture ran to the card's edge while
+       every rule, title and paragraph around it stood 16 inside. It lines up with them instead,
+       and the stage scales the composition to the width that leaves. */
+    margin: 4px 0 20px;
     overflow: hidden;
     opacity: 1;
     visibility: visible;

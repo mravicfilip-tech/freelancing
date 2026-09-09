@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { StepIllustration } from './illustrations';
+import { useEffect, useRef, useState } from 'react';
+import { SCENE_MS, StepIllustration } from './illustrations';
 import { useHowToBuyMotion } from './useHowToBuyMotion';
 import './FigmaHowToBuy.css';
 
@@ -34,6 +34,31 @@ const STEPS: Step[] = [
 export function FigmaHowToBuy() {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+
+  /* The section walks its own steps: each holds for exactly as long as its illustration takes to
+     play once, then hands over to the next and round again. It runs only while the section is on
+     screen, never under prefers-reduced-motion, and stops for good once a step is picked by hand. */
+  const [auto, setAuto] = useState(true);
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !auto) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer = 0;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        window.clearTimeout(timer);
+        if (e.isIntersecting) {
+          timer = window.setTimeout(() => setActive((i) => (i + 1) % STEPS.length), SCENE_MS[STEPS[active].id] ?? 12000);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    return () => {
+      window.clearTimeout(timer);
+      io.disconnect();
+    };
+  }, [auto, active]);
   useHowToBuyMotion(root);
 
   const step = STEPS[active];
@@ -57,6 +82,7 @@ export function FigmaHowToBuy() {
               : -1;
     if (to < 0) return;
     e.preventDefault();
+    setAuto(false);
     setActive(to);
     (root.current?.querySelectorAll<HTMLButtonElement>('.hb__step')[to])?.focus();
   };
@@ -121,7 +147,10 @@ export function FigmaHowToBuy() {
                 aria-controls={`hb-panel-${s.id}`}
                 tabIndex={i === active ? 0 : -1}
                 className={`hb__step${i === active ? ' is-active' : ''}`}
-                onClick={() => setActive(i)}
+                onClick={() => {
+                  setAuto(false);
+                  setActive(i);
+                }}
               >
                 <span className="hb__stepLabel">Step {i + 1}</span>
                 <span className="hb__stepTitle">{s.title}</span>

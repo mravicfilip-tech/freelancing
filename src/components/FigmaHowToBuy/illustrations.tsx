@@ -113,6 +113,13 @@ const DASHBOARD = () =>
 
 const SCENES: Record<string, () => string> = { 'sign-up': SITE, currency: PAY_WITH, claim: DASHBOARD };
 
+/**
+ * How long each scene takes to play its story once — the period its own keyframes run on. The
+ * section holds a step for exactly this long before moving to the next, so a step is never cut
+ * off mid-sentence and never sits idle after finishing.
+ */
+export const SCENE_MS: Record<string, number> = { 'sign-up': 10000, currency: 12000, claim: 12000 };
+
 /** The dashboard's balance, counted on the scene's own 12s loop rather than a second timeline. */
 /** The subject — window or sheet — plus a margin, for the phone fit. */
 const SUBJECT_W = 680;

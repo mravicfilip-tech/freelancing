@@ -1,5 +1,5 @@
 /* "As seen in" (Figma 2532:809). The same light band and 1560 rails as the sections above it; a
-   dashed lattice of seven cells, four then three, each 155px, with the marks at rest in a muted
+   dashed lattice of seven cells, four then three, each 100px, with the marks at rest in a muted
    grey and lifting to full ink under the pointer. */
 
 .sn {
@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 50px;
+  gap: 32px;
   /* the rails carry the section's vertical padding, so they meet the neighbouring sections' rails */
   padding: 90px 0;
   /* the rails only: the file's dot field is left out on purpose */
@@ -36,9 +36,9 @@
   margin: 0;
   font-family: var(--fh-display);
   font-weight: 500;
-  font-size: clamp(38px, 4.4vw, 64px);
+  font-size: 42px;
   line-height: 1.12;
-  letter-spacing: -1.92px;
+  letter-spacing: -1.26px;
   text-align: center;
   color: var(--sn-ink);
 }
@@ -64,7 +64,7 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  height: 155px;
+  height: 100px;
   display: grid;
   place-items: center;
 }
@@ -132,7 +132,7 @@
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .sn__cell {
-    height: 128px;
+    height: 92px;
   }
   .sn__mark {
     transform: scale(0.85);
@@ -147,14 +147,15 @@
     background-image: none;
   }
   .sn__title {
-    letter-spacing: -1.1px;
+    font-size: 34px;
+    letter-spacing: -1.02px;
   }
   .sn__row {
     flex-wrap: wrap;
   }
   .sn__cell {
     flex: 1 1 50%;
-    height: 104px;
+    height: 84px;
   }
   .sn__mark {
     transform: scale(0.7);

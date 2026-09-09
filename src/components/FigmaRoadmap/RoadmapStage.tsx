@@ -153,7 +153,7 @@ export function RoadmapStage() {
               alt=""
               width={24}
               height={24}
-              style={markerY === null ? { opacity: 0 } : { top: markerY }}
+              style={markerY === null ? { opacity: 0 } : { transform: `translateY(${markerY}px)` }}
             />
           </div>
 

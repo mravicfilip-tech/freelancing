@@ -104,3 +104,50 @@ cold-starting on the first WebGL context. A real browser pays that at
 launch, not on page load, and a GPU takes the raster work off the main
 thread. Re-check the ≤3-point budget on real hardware with
 `npm run build && npm run preview` and `npx lighthouse http://localhost:4173 --preset=desktop`.
+
+## Presale dashboard
+
+`/dashboard` (or `?view=dashboard` on any path) renders the presale dashboard.
+It is a separate surface from the landing hero and shares only the brand tokens.
+
+```
+src/dashboard/
+  Dashboard.tsx      page composition
+  Sidebar.tsx        7 links in 2 groups, extended and collapsed
+  Topbar.tsx         greeting, stage pill, theme toggle
+  store.ts           URL + localStorage state, as heroVariant.ts does it
+  theme.ts           the `theme` and `rail` stores
+  data.ts            presale figures, token rates, live orders, formatters
+  icons.tsx          nav, payment and rank marks, all inline SVG
+  dashboard.css      both themes as one token layer
+  panels/            StatRow, LevelCard, BuyPanel, FlashSale, Referrals, LiveOrders
+```
+
+### Themes
+
+Dark is the home key and matches the site's `section--dark` treatment: ink
+`#111214`, lime `#D9F24E` carrying the accent. Light is the rest of the site:
+`#EDEFF1` with the dot grid, white cards, `#C4C8CD` hairlines and indigo
+`#4B4BF7` on the actions — lime fails contrast on a light ground, so it is kept
+to the live dot. Both palettes live in one token block at the top of
+`dashboard.css`; nothing below it hard-codes a colour.
+
+The choice is written to `?theme=dark|light` and to localStorage, as the globe
+switcher does, and stamped on `<html data-dash-theme>` so `<body>` carries the
+right ground on a short page.
+
+### Navigation
+
+`?rail=extended|collapsed`, persisted the same way. Extended is icon + label in
+a row; collapsed is the narrow rail with the icon centred over its label, the
+active item in an accent chip. Under 900px the rail is icon-only regardless.
+
+### Figures
+
+Everything in `data.ts` is placeholder presale data. The Buy panel prices a real
+contribution from it — token rates, the stage price and the `LAUNCH450` promo
+bonus — so swapping in an API means replacing that module, not the components.
+
+```
+node scripts/shot-dashboard.mjs   # screenshots both themes and rail states
+```

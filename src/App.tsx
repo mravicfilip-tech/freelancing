@@ -4,16 +4,21 @@ import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
+import { Dashboard } from './dashboard/Dashboard';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
 const DEV_TOOLS = params.has('devtools');
+/** The dashboard lives at /dashboard; `?view=dashboard` works too, for previews. */
+const DASHBOARD =
+  window.location.pathname.replace(/\/+$/, '') === '/dashboard' || params.get('view') === 'dashboard';
 
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
   const [heroMounted, setHeroMounted] = useState(true);
 
   if (CAPTURE_MODE) return <CaptureStage />;
+  if (DASHBOARD) return <Dashboard />;
 
   return (
     <>

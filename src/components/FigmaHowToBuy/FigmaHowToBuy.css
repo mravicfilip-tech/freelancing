@@ -127,17 +127,71 @@
   min-height: 0;
   margin: 40px -32px -32px;
 }
-/* The file's wash: an indigo-to-sky gradient laid over the card in colour blend. */
-.hb__wash {
+/* ---------- The card's background (Figma 2715:1237, 2715:2376, 2715:2469) ----------
+   Each step's card carries its own exported background: the sign-up card a blue sweep with orbit
+   lines across its foot, the claim card a glow in its bottom-left corner — both under the file's
+   "Decoration Background", a 28px dot field faded at its top with an indigo-to-sky gradient over
+   it in colour blend. The currency card's lavender ellipses sit over that field in the file, so its
+   whole art frame is exported as one, field and all. */
+.hb__bg {
   position: absolute;
-  left: 50%;
-  bottom: -12%;
-  width: 200%;
-  height: 150%;
-  transform: translateX(-50%);
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hb__bg > * {
+  position: absolute;
+}
+.hb__glow {
+  display: block;
+  max-width: none;
+}
+.hb__glow--1 {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 262px;
+  object-fit: cover;
+  object-position: right bottom;
+}
+.hb__glow--2 {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 319px;
+  object-fit: cover;
+  object-position: right bottom;
+}
+.hb__glow--3 {
+  left: -6px;
+  bottom: -6px;
+}
+.hb__dots,
+.hb__wash {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 295px;
+}
+.hb__bg[data-step='claim'] .hb__dots,
+.hb__bg[data-step='claim'] .hb__wash {
+  height: 279px;
+}
+.hb__dots {
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.12) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+}
+.hb__wash {
   background: linear-gradient(180deg, #b3b5f5 0%, #c4e0f6 86.862%);
   mix-blend-mode: color;
-  pointer-events: none;
+}
+.hb__cardInner {
+  position: relative;
 }
 
 /* ---------- Rail ---------- */

@@ -83,15 +83,28 @@ export function FigmaHowToBuy() {
             aria-labelledby={`hb-tab-${step.id}`}
             tabIndex={0}
           >
+            {/* The card's own background from the file: an exported glow per step, under the dot
+                field and its colour wash. Anchored to the card's edges so it holds at any width. */}
+            <div className="hb__bg" data-step={step.id} aria-hidden="true">
+              {step.id === 'sign-up' && <img className="hb__glow hb__glow--1" src="/figma/howtobuy/s1-glow@2x.png" alt="" width={774} height={262} />}
+              {/* The currency card's art frame carries its dot field and wash inside the export
+                  (the file stacks its ellipses over them), so it takes no CSS field of its own. */}
+              {step.id === 'currency' && <img className="hb__glow hb__glow--2" src="/figma/howtobuy/s2-art@2x.png" alt="" width={774} height={319} />}
+              {step.id === 'claim' && <img className="hb__glow hb__glow--3" src="/figma/howtobuy/s3-glow@2x.png" alt="" width={326} height={342} />}
+              {step.id !== 'currency' && (
+                <>
+                  <i className="hb__dots" />
+                  <i className="hb__wash" />
+                </>
+              )}
+            </div>
             {/* keyed on the step so the card re-runs its own entrance as the rail switches */}
             <div className="hb__cardInner" key={step.id}>
               <div className="hb__copy">
                 <h3 className="hb__cardTitle">{step.title}</h3>
                 <p className="hb__body">{step.body}</p>
               </div>
-              <div className="hb__art" data-step={step.id} aria-hidden="true">
-                <i className="hb__wash" />
-              </div>
+              <div className="hb__art" data-step={step.id} aria-hidden="true" />
             </div>
           </div>
 

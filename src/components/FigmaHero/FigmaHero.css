@@ -1,12 +1,42 @@
 /* Hero from Figma "Remittix Redesign" › Hero Banner v1 (node 2346:102).
    Design frame: 1560 × 1080. Nav and main content are 1440 wide, the footer 1558. */
 
-/* NewBlack Typeface is a licensed face that is not on npm. Drop the woff2 into
-   public/fonts/ and this @font-face picks it up; until then the headline falls back to Onest. */
+/* NewBlack Typeface: the design's display face, five static weights in
+   public/fonts/. The design sets font-weight 500 everywhere it uses
+   --fh-display, but the family ships no Medium, so 500 is mapped to Regular —
+   the nearest weight without going heavier than drawn. */
 @font-face {
   font-family: 'NewBlack Typeface';
-  src: url('/fonts/NewBlackTypeface-Medium.woff2') format('woff2');
-  font-weight: 500;
+  src: url('/fonts/NewBlackTypeface-UltraLight.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-Regular.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NewBlack Typeface';
+  src: url('/fonts/NewBlackTypeface-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }

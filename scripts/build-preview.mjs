@@ -1,7 +1,7 @@
 // Builds remittix-dashboard.html: the dashboard in one self-contained file that
 // opens straight from disk — no server, no deploy.
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 
 execSync('npx vite build --config vite.preview.config.ts', { stdio: 'inherit' });
 let html = readFileSync('dist-preview/preview.html', 'utf8');
@@ -17,9 +17,20 @@ const inlineFonts = (css) =>
     return block.replace(/url\((?:\.\/)?[^)"']+\.woff2\)/, `url(data:font/woff2;base64,${b64})`);
   });
 
+// Faces served from public/fonts/ are referenced by absolute URL, which a
+// file:// page cannot resolve, so they are embedded as well.
+const inlineLocalFonts = (css) =>
+  css.replace(/url\((['"]?)(?:\.\.?\/)*fonts\/([^)'"]+\.woff2)\1\)/g, (whole, _q, file) => {
+    const path = 'public/fonts/' + file;
+    if (!existsSync(path)) return whole;
+    return `url(data:font/woff2;base64,${readFileSync(path).toString('base64')})`;
+  });
+
 html = html.replace(
   /<link rel="stylesheet"[^>]*href="\.\/(assets\/[^"]+\.css)"[^>]*>/g,
-  (_, p) => `<style>${inlineFonts(readFileSync('dist-preview/' + p, 'utf8'))}</style>`,
+  // Local faces are embedded first: inlineFonts drops any @font-face without
+  // '-latin-' in its filename, which would otherwise delete them outright.
+  (_, p) => `<style>${inlineFonts(inlineLocalFonts(readFileSync('dist-preview/' + p, 'utf8')))}</style>`,
 );
 html = html.replace(
   /<script type="module"[^>]*src="\.\/(assets\/[^"]+\.js)"[^>]*><\/script>/g,

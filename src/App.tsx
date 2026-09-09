@@ -49,9 +49,9 @@ export function App() {
         {figma && <FigmaReviews />}
       {figma && <FigmaSeenIn />}
         {figma && <FigmaTokenomics variant={TOK_VARIANT} />}
+        {figma && <RoadmapStage />}
         {figma && <FigmaAudits />}
         {figma && <FigmaHowToBuy />}
-        {figma && <RoadmapStage />}
         {figma && <FigmaFaq />}
       </main>
       {figma && <FigmaFooter />}

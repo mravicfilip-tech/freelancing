@@ -3,9 +3,8 @@
  * milestones each, with the ticks the live cards carry — levels 1 to 4 complete, level 5 part
  * done, 6 and 7 ahead. Two source lines end without a full stop; they are punctuated here.
  *
- * The level names and blurbs are ours: the live cards are numbered only, and the layouts that
- * show a name or a line of prose need one. `short` is the same milestone in a few words, for the
- * directions that carry it as a chip or a single line — the sentence is the copy of record.
+ * The level names and blurbs are ours: the live cards are numbered only. `short` is the same
+ * milestone in a few words, for anywhere the sentence will not fit.
  */
 
 export type LevelStatus = 'done' | 'live' | 'next';
@@ -134,23 +133,3 @@ export const LEVELS: Level[] = [
     ],
   },
 ];
-
-/** Raise gates, for the meter under direction 5. The softcap and the milestone are the live
- *  section's own figures; the running total is a placeholder until the client confirms it. */
-export const GATES = [
-  { at: 18, label: 'Softcap' },
-  { at: 24, label: 'PayFi live' },
-  { at: 32, label: 'Launch date' },
-] as const;
-
-export const RAISED = 31.2;
-export const TARGET = 32;
-
-export const STATUS_LABEL: Record<LevelStatus, string> = {
-  done: 'Complete',
-  live: 'Current level',
-  next: 'Ahead',
-};
-
-/** `3/5` for the tab on a card, and the rail's fill. */
-export const doneCount = (level: Level) => level.items.filter((i) => i.done).length;

@@ -87,30 +87,23 @@
 }
 
 /* ---------- The levels ---------- */
-/* The index is a reel: the levels are spread down the stage and slide so the open one meets the
-   marker on the centre line. The window they run in stays put and fades at both ends, so a level
-   leaving the top or arriving at the foot reads as travel rather than as clipping. */
+/* Figma 2717:2659: the seven levels are spread across the stage's full height — rows of 36 at a
+   130px pitch, which is `justify-between` over 817 — and they stay put. The marker is what moves. */
 .rs__index {
   flex: 1 0 0;
   min-width: 0;
   height: 100%;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
 }
 .rs__levels {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-end;
-  gap: 64px;
   height: 100%;
   margin: 0;
   padding: 0 var(--rs-inset);
   list-style: none;
-  transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  will-change: transform;
 }
 .rs__level {
   width: 100%;
@@ -179,11 +172,11 @@
 .rs__marker {
   position: absolute;
   left: 0;
-  top: 50%;
   display: block;
   width: 24px;
   height: 24px;
   margin-top: -12px;
+  transition: top 520ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 200ms ease;
 }
 
 /* ---------- The cards ---------- */
@@ -331,9 +324,6 @@
 
   .rs__index {
     height: auto;
-    overflow: visible;
-    -webkit-mask-image: none;
-    mask-image: none;
   }
   .rs__levels {
     position: relative;

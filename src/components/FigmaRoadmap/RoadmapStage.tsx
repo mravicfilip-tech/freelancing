@@ -12,6 +12,13 @@ const CHECK_DONE = '/figma/check-done.svg';
 const CHECK_TODO = '/figma/check-todo.svg';
 const MARKER = '/figma/roadmap-marker.svg';
 
+/** The row's centre line in the rail's own coordinates — `offsetTop` would be measured from
+ *  `.rs__stage`, whose 48px padding the rail's box already starts past. */
+const rowCentreOnRail = (row: HTMLElement, rail: HTMLElement) => {
+  const r = row.getBoundingClientRect();
+  return r.top + r.height / 2 - rail.getBoundingClientRect().top;
+};
+
 function Card({ level, active }: { level: Level; active: boolean }) {
   return (
     <article className="rs__card" id={`rs-card-${level.n}`} data-active={active || undefined} aria-labelledby={`rs-card-h-${level.n}`}>
@@ -38,9 +45,10 @@ export function RoadmapStage() {
   const list = useRef<HTMLOListElement>(null);
   const stack = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
+  const rail = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [shift, setShift] = useState(0);
-  const [indexShift, setIndexShift] = useState(0);
+  const [markerY, setMarkerY] = useState<number | null>(null);
 
   useStageMotion(root);
 
@@ -74,10 +82,9 @@ export function RoadmapStage() {
      is centred in the stage — both measured, so the two columns cannot drift apart. */
   useLayoutEffect(() => {
     const measure = () => {
-      // the open level rides to the list's own middle, which is the stage's centre line
-      const index = list.current;
-      const row = index?.children[active] as HTMLElement | undefined;
-      if (index && row) setIndexShift(index.clientHeight / 2 - (row.offsetTop + row.offsetHeight / 2));
+      // the marker rides to the open level's centre line (2718:2841)
+      const row = list.current?.children[active] as HTMLElement | undefined;
+      if (row && rail.current) setMarkerY(rowCentreOnRail(row, rail.current));
       const view = viewport.current;
       // The open card, not its wrapper — the live one is grouped with its label.
       const card = stack.current?.querySelectorAll<HTMLElement>('.rs__card')[active];
@@ -91,6 +98,7 @@ export function RoadmapStage() {
     if (list.current) ro.observe(list.current);
     if (stack.current) ro.observe(stack.current);
     if (viewport.current) ro.observe(viewport.current);
+    if (rail.current) ro.observe(rail.current);
     window.addEventListener('resize', measure);
     return () => {
       ro.disconnect();
@@ -118,9 +126,8 @@ export function RoadmapStage() {
         </h2>
 
         <div className="rs__stage" data-node-id="2717:2490">
-          {/* The index travels inside a fixed window, so its fade stays put while the levels move. */}
           <div className="rs__index">
-            <ol className="rs__levels" ref={list} style={{ transform: `translateY(${indexShift}px)` }}>
+            <ol className="rs__levels" ref={list}>
             {LEVELS.map((l, i) => (
               <li className="rs__level" key={l.n} data-active={i === active || undefined}>
                 <button
@@ -138,10 +145,16 @@ export function RoadmapStage() {
             </ol>
           </div>
 
-          <div className="rs__rail" aria-hidden="true">
+          <div className="rs__rail" ref={rail} aria-hidden="true">
             <span className="rs__railLine" />
-            {/* The marker holds the stage's centre line, where the open card is centred too. */}
-            <img className="rs__marker" src={MARKER} alt="" width={24} height={24} />
+            <img
+              className="rs__marker"
+              src={MARKER}
+              alt=""
+              width={24}
+              height={24}
+              style={markerY === null ? { opacity: 0 } : { top: markerY }}
+            />
           </div>
 
           <div className="rs__cards" ref={viewport}>

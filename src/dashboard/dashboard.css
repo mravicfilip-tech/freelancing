@@ -561,6 +561,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   align-items: start;
 }
 .dash__stack { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
+/* Cards keep their natural height: stretching them to match the buy panel only
+   moves the empty space inside the card, which reads worse. The buy panel
+   sticks instead, so the space beside it fills as the page scrolls. */
 @media (min-width: 1181px) {
   .buy { position: sticky; top: 14px; }
 }

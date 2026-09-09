@@ -1,7 +1,6 @@
 import { useId, useMemo, useState } from 'react';
 import { FLASH_SALE, PRESALE, TOKENS, money, type TokenId } from '../data';
 import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
-import { StageLadder } from './StageLadder';
 
 type Method = 'crypto' | 'card';
 
@@ -28,11 +27,9 @@ export function BuyPanel() {
 
   return (
     <section className="card buy" aria-labelledby="buy-title">
-      <h2 className="sr-only" id="buy-title">
+      <h2 className="card__title buy__title" id="buy-title">
         Buy $RTX
       </h2>
-
-      <StageLadder />
 
       <div className="buy__form">
         <p className="buy__urgency">

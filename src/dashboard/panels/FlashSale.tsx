@@ -37,7 +37,7 @@ export function FlashSale() {
   const seconds = left % 60;
 
   return (
-    <section className="card card--glow flash" aria-labelledby="flash-title">
+    <section className="side__part flash" aria-labelledby="flash-title">
       <div className="flash__head">
         <h2 className="flash__title" id="flash-title">
           Flash sale ends in

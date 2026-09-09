@@ -14,8 +14,8 @@ export const PRESALE = {
 } as const;
 
 /** Stages either side of the live one, for the price ladder. */
-export const STAGE_LADDER = Array.from({ length: 7 }, (_, i) => {
-  const n = PRESALE.stage - 3 + i;
+export const STAGE_LADDER = Array.from({ length: 12 }, (_, i) => {
+  const n = PRESALE.stage - 5 + i;
   return {
     n,
     price: Number((PRESALE.price + (n - PRESALE.stage) * 0.01).toFixed(2)),

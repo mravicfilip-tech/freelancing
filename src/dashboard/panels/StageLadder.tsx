@@ -11,7 +11,7 @@ export function StageLadder() {
   const sold = PRESALE.progress * 100;
 
   return (
-    <div className="ladder">
+    <section className="card ladder" aria-label="Presale stage pricing">
       <div className="ladder__head">
         <div>
           <p className="ladder__label">Stage {PRESALE.stage} price</p>
@@ -32,7 +32,7 @@ export function StageLadder() {
             className="ladder__step"
             key={stage.n}
             data-state={stage.state}
-            style={{ '--step': `${44 + i * 11}px` } as React.CSSProperties}
+            style={{ '--step': `${40 + i * 7}px` } as React.CSSProperties}
           >
             <span className="ladder__bar">
               <span
@@ -59,6 +59,6 @@ export function StageLadder() {
           <dd>{whole(PRESALE.rtxLeft)}</dd>
         </div>
       </dl>
-    </div>
+    </section>
   );
 }

@@ -13,7 +13,8 @@
   --gap: clamp(14px, 1.4vw, 20px);
   --pad: clamp(16px, 1.6vw, 22px);
   --r-card: 12px;
-  --r-inner: 10px;
+  --r-inner: 12px;
+  --r-sm: 10px;
 
   display: grid;
   grid-template-columns: var(--rail-w) minmax(0, 1fr);
@@ -41,9 +42,11 @@
 
   /* Lime is the accent and the selected state. */
   --d-accent: #d9f24e;
+  --d-accent-hover: #e4fa72;
   --d-on-accent: #111214;
   --d-accent-soft: rgba(217, 242, 78, 0.14);
   --d-pick: #d9f24e;
+  --d-pick-hover: #e4fa72;
   --d-on-pick: #111214;
   --d-indigo: #a3a3ff;
 
@@ -68,9 +71,11 @@
   /* Indigo carries the action; lime fails contrast on a light ground. Ink is
      the selected state, as it is in the landing page's own nav button. */
   --d-accent: #4b4bf7;
+  --d-accent-hover: #3a3ad8;
   --d-on-accent: #ffffff;
   --d-accent-soft: rgba(75, 75, 247, 0.09);
   --d-pick: #111214;
+  --d-pick-hover: #2a2b30;
   --d-on-pick: #ffffff;
   --d-indigo: #4b4bf7;
 
@@ -353,22 +358,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 /* ---------- Meter ---------- */
 .meter {
   position: relative;
-  height: 22px;
+  height: 12px;
   flex: 1;
   border-radius: 999px;
   background: var(--d-track);
   overflow: hidden;
-}
-/* The distance still to go is hatched: earned solid, unearned striped. */
-.meter::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--d-hatch) 0 2px,
-    transparent 2px 7px
-  );
 }
 .meter__fill {
   position: relative;
@@ -381,31 +375,37 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
 /* ---------- Buttons and inputs ---------- */
 .btn-accent {
-  border: 0;
-  border-radius: 999px;
-  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 52px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--r-card);
   background: var(--d-accent);
   color: var(--d-on-accent);
   font: inherit;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  transition: filter 140ms ease;
+  transition: background-color 160ms ease;
 }
-.btn-accent:hover { filter: brightness(1.07); }
-.dash[data-theme='light'] .btn-accent:hover { filter: brightness(0.9); }
+.btn-accent:hover { background: var(--d-accent-hover); }
 .btn-accent--block { width: 100%; }
+
 .btn-ghost {
-  height: 46px;
+  height: 48px;
   padding: 0 20px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r-card);
   background: var(--d-track);
   color: var(--d-text);
   font: inherit;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 .btn-ghost:disabled { color: var(--d-text-3); cursor: not-allowed; }
 .btn-ghost:not(:disabled):hover { background: var(--d-pick); color: var(--d-on-pick); }
@@ -413,10 +413,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .input {
   width: 100%;
   min-width: 0;
-  height: 46px;
+  height: 48px;
   padding: 0 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r-card);
   background: var(--d-inset);
   color: var(--d-text);
   font: inherit;
@@ -534,9 +534,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-weight: 600;
   font-size: 13px;
   text-decoration: none;
-  padding: 8px 8px 8px 14px;
-  border-radius: 999px;
+  padding: 9px 12px 9px 14px;
+  border-radius: var(--r-sm);
   background: var(--d-inset);
+  transition: background-color 160ms ease, color 160ms ease;
 }
 .level__link:hover { background: var(--d-pick); color: var(--d-on-pick); }
 .level__body {
@@ -557,17 +558,24 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
 .dash__split {
   display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   gap: var(--gap);
-  align-items: start;
 }
 .dash__stack { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
-/* Cards keep their natural height: stretching them to match the buy panel only
-   moves the empty space inside the card, which reads worse. The buy panel
-   sticks instead, so the space beside it fills as the page scrolls. */
-@media (min-width: 1181px) {
-  .buy { position: sticky; top: 14px; }
+
+/* The side card: flash sale over referrals, one box with a rule between them.
+   Pinned top and bottom, so the height it borrows from the buy panel lands in
+   the middle as spacing rather than inside either half. */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.2vw, 26px);
 }
+.side__part + .side__part {
+  padding-top: clamp(18px, 2.2vw, 26px);
+  border-top: 1px solid var(--d-rule);
+}
+
 
 /* ---------- Stage ladder: the one bold moment ---------- */
 .ladder__head {
@@ -592,8 +600,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: flex-end;
   gap: clamp(4px, 0.8vw, 9px);
-  height: 132px;
-  margin: 22px 0 0;
+  height: 118px;
+  margin: 20px 0 0;
   padding: 0;
 }
 .ladder__step {
@@ -642,9 +650,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .ladder__facts {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 20px 0 0;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  justify-content: start;
+  column-gap: clamp(32px, 6vw, 96px);
+  margin: 18px 0 0;
   padding-top: 16px;
   border-top: 1px solid var(--d-rule);
 }
@@ -658,7 +667,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 /* ---------- Buy ---------- */
-.buy__form { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--d-rule); }
+.buy__title { margin-bottom: 18px; }
+.buy__form { margin-top: 0; }
 .buy__urgency {
   display: flex;
   align-items: center;
@@ -677,21 +687,24 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 4px;
-  border-radius: 999px;
+  border-radius: var(--r-card);
   background: var(--d-inset);
 }
 .tabs__tab {
-  height: 40px;
+  height: 42px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   background: transparent;
   color: var(--d-text-2);
   font: inherit;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 140ms ease, color 140ms ease;
+  transition: background-color 160ms ease, color 160ms ease;
 }
+.tabs__tab:hover { color: var(--d-text); }
 .tabs__tab[aria-selected='true'] { background: var(--d-pick); color: var(--d-on-pick); }
+.tabs__tab[aria-selected='true']:hover { background: var(--d-pick-hover); }
 .buy__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
 .buy__bonus {
   display: flex;
@@ -750,16 +763,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .clock__colon { padding-top: 11px; color: var(--d-text-3); font-size: 18px; }
 .clock__label { font-size: 11px; color: var(--d-text-3); }
-.flash__copy { margin: 18px 0 0; font-size: 15px; color: var(--d-text-2); max-width: 34em; }
+.flash__copy { margin: 14px 0 0; font-size: 15px; color: var(--d-text-2); max-width: 34em; }
 .flash__copy strong { color: var(--d-text); font-weight: 600; }
 .flash__code {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--d-rule);
+  margin-top: 14px;
 }
 .flash__code-label { color: var(--d-text-3); font-size: 13px; }
 .copy {
@@ -775,19 +786,19 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-weight: 700;
   cursor: pointer;
 }
-.copy:hover { filter: brightness(1.07); }
-.dash[data-theme='light'] .copy:hover { filter: brightness(0.9); }
+.copy:hover { background: var(--d-accent-hover); }
 .copy--field {
   width: 100%;
   justify-content: space-between;
+  height: auto;
   padding: 13px 16px;
-  border-radius: var(--r-inner);
+  border-radius: var(--r-card);
   background: var(--d-card);
   color: var(--d-text-2);
   font-weight: 400;
 }
 .dash[data-theme='dark'] .copy--field { background: var(--d-track); }
-.copy--field:hover { filter: none; color: var(--d-text); }
+.copy--field:hover { background: var(--d-track); color: var(--d-text); }
 .copy__value--link {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -800,19 +811,20 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 12px;
-  border-radius: 999px;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
   background: var(--d-inset);
   color: var(--d-text-2);
   font-size: 13px;
   text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 .link-quiet:hover { background: var(--d-pick); color: var(--d-on-pick); }
 .referrals__body {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(16px, 2vw, 24px);
-  margin-top: 18px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(18px, 2.4vw, 30px);
+  margin-top: 16px;
 }
 .referrals__label { margin: 0; font-size: 13px; color: var(--d-text-2); }
 .referrals .referrals__earnings { margin-top: 10px; font-size: clamp(30px, 3vw, 40px); }
@@ -830,7 +842,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
-.referrals__invite { padding: 18px; border-radius: var(--r-inner); background: var(--d-inset); }
+.referrals__invite { min-width: 0; }
 .referrals__pitch { margin: 0 0 14px; font-size: 14px; color: var(--d-text-2); }
 .referrals__pitch strong { color: var(--d-text); }
 .referrals__invite .referrals__label { margin-bottom: 8px; color: var(--d-text-3); }

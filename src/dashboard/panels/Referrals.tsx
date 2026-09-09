@@ -7,7 +7,7 @@ export function Referrals() {
   const [copied, copy] = useCopy();
 
   return (
-    <section className="card referrals" aria-labelledby="referrals-title">
+    <section className="side__part referrals" aria-labelledby="referrals-title">
       <header className="card__head">
         <h2 className="card__title" id="referrals-title">
           Referrals

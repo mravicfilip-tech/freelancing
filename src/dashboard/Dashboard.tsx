@@ -4,6 +4,7 @@ import { Topbar } from './Topbar';
 import { StatRow } from './panels/StatRow';
 import { LevelCard } from './panels/LevelCard';
 import { BuyPanel } from './panels/BuyPanel';
+import { StageLadder } from './panels/StageLadder';
 import { FlashSale } from './panels/FlashSale';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
@@ -30,10 +31,13 @@ export function Dashboard() {
         <Topbar />
         <StatRow />
         <LevelCard />
+        <StageLadder />
 
         <div className="dash__split">
           <BuyPanel />
-          <div className="dash__stack">
+          {/* One card, two parts: two separate boxes beside the buy panel read
+              as clutter and each was half empty. */}
+          <div className="card side">
             <FlashSale />
             <Referrals />
           </div>

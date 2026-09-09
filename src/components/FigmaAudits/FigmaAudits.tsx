@@ -194,7 +194,6 @@ export function FigmaAudits() {
                   onPointerLeave={blobOrigin}
                 >
                   {c.cta}
-                  <Chevron direction="right" />
                 </a>
               ) : (
                 <a className="av__link" href={c.href}>

@@ -118,7 +118,9 @@ export function RoadmapStage() {
         </h2>
 
         <div className="rs__stage" data-node-id="2717:2490">
-          <ol className="rs__levels" ref={list} style={{ transform: `translateY(${indexShift}px)` }}>
+          {/* The index travels inside a fixed window, so its fade stays put while the levels move. */}
+          <div className="rs__index">
+            <ol className="rs__levels" ref={list} style={{ transform: `translateY(${indexShift}px)` }}>
             {LEVELS.map((l, i) => (
               <li className="rs__level" key={l.n} data-active={i === active || undefined}>
                 <button
@@ -132,8 +134,9 @@ export function RoadmapStage() {
                   <span className="rs__sr"> — {l.name}</span>
                 </button>
               </li>
-            ))}
-          </ol>
+              ))}
+            </ol>
+          </div>
 
           <div className="rs__rail" aria-hidden="true">
             <span className="rs__railLine" />

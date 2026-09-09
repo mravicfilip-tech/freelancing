@@ -87,19 +87,25 @@
 }
 
 /* ---------- The levels ---------- */
-/* A compact index rather than a column stretched down the stage: it slides so the open level
-   meets the marker on the stage's centre line, and at 28px apart all seven stay in view at both
-   ends of that travel. */
+/* The index is a reel: the levels are spread down the stage and slide so the open one meets the
+   marker on the centre line. The window they run in stays put and fades at both ends, so a level
+   leaving the top or arriving at the foot reads as travel rather than as clipping. */
+.rs__index {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+}
 .rs__levels {
   position: relative;
   display: flex;
-  flex: 1 0 0;
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
-  gap: 28px;
+  gap: 64px;
   height: 100%;
-  min-width: 0;
   margin: 0;
   padding: 0 var(--rs-inset);
   list-style: none;
@@ -323,6 +329,12 @@
     overflow: visible;
   }
 
+  .rs__index {
+    height: auto;
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .rs__levels {
     position: relative;
     flex-direction: column;

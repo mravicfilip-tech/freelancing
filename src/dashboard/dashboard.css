@@ -12,8 +12,8 @@
   --rail-w: 236px;
   --gap: clamp(14px, 1.4vw, 20px);
   --pad: clamp(16px, 1.6vw, 22px);
-  --r-card: 22px;
-  --r-inner: 15px;
+  --r-card: 12px;
+  --r-inner: 10px;
 
   display: grid;
   grid-template-columns: var(--rail-w) minmax(0, 1fr);
@@ -75,8 +75,8 @@
   --d-indigo: #4b4bf7;
 
   --d-spent: #c9cfd5;
-  --d-lift: 0 1px 2px rgba(17, 18, 20, 0.04), 0 10px 24px -10px rgba(17, 18, 20, 0.12);
-  --d-glow: 0 0 0 1.5px #111214, 0 12px 28px -12px rgba(17, 18, 20, 0.3);
+  --d-lift: none;
+  --d-glow: 0 0 0 1.5px #111214;
   --d-grid: radial-gradient(circle at center, rgba(17, 18, 20, 0.075) 1px, transparent 1.4px);
   --d-hatch: rgba(17, 18, 20, 0.07);
 }
@@ -158,6 +158,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   letter-spacing: -0.025em;
   text-decoration: none;
 }
+/* The same mark the landing page nav draws: a ring with a dot off its shoulder. */
 .rail__mark {
   position: relative;
   width: 19px; height: 19px;
@@ -610,7 +611,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: block;
   width: 100%;
   height: var(--step);
-  border-radius: 8px;
+  border-radius: 5px;
   background: var(--d-track);
   overflow: hidden;
 }
@@ -618,7 +619,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   position: absolute;
   inset: auto 0 0 0;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 5px;
   background: var(--d-spent);
 }
 /* The live stage fills only as far as it has sold. */
@@ -740,7 +741,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: grid;
   place-items: center;
   width: 34px; height: 44px;
-  border-radius: 11px;
+  border-radius: 9px;
   background: var(--d-inset);
   font-size: 21px;
   font-weight: 600;

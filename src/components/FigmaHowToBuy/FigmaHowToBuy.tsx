@@ -88,7 +88,7 @@ export function FigmaHowToBuy() {
   };
 
   return (
-    <section ref={root} className="hb" id="how-to-buy" data-motion="pending" aria-labelledby="hb-title" data-node-id="2715:746">
+    <section ref={root} className="hb" id="how-to-buy" data-auto={auto || undefined} data-motion="pending" aria-labelledby="hb-title" data-node-id="2715:746">
       <div className="hb__frame">
         <div className="hb__head">
           <h2 id="hb-title" className="hb__title">
@@ -147,6 +147,7 @@ export function FigmaHowToBuy() {
                 aria-controls={`hb-panel-${s.id}`}
                 tabIndex={i === active ? 0 : -1}
                 className={`hb__step${i === active ? ' is-active' : ''}`}
+                style={{ '--hb-step-ms': `${SCENE_MS[s.id] ?? 12000}ms` } as React.CSSProperties}
                 onClick={() => {
                   setAuto(false);
                   setActive(i);

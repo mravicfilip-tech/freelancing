@@ -330,6 +330,29 @@ const carousel = (gsap: G, sc: Scene) => {
     turn(duration = 1.3) {
       const tl = gsap.timeline();
       const next = [inSlot[2], inSlot[0], inSlot[1]]; // the front goes back to the far slot
+
+      // The portrait frame keeps the design's own three logo positions, and those sit at very
+      // uneven distances from the hub — 89 to 186 — with two of them barely 24 degrees apart. An
+      // arc that bows a flat 22px off the chord has nowhere near the room to clear that: swept
+      // round, the pills run through each other and across the hub, which is what the carousel was
+      // doing on a phone. They change places instead — each dips out at its slot, is set to the
+      // next, and comes back up — staggered so the swap still reads as the carousel turning
+      // rather than as three pills blinking at once. The design's positions are left untouched.
+      if (sc.g === MGEO.mobile) {
+        const out = duration * 0.32;
+        next.forEach((logo, slot) => {
+          const to = SLOTS[slot];
+          const home = SLOTS[logo];
+          const at = slot * 0.12;
+          tl.to(sc.logos[logo], { opacity: 0, scale: 0.92, duration: out, ease: 'power2.in' }, at);
+          tl.set(sc.logos[logo], { x: to.x - home.x, y: to.y - home.y }, at + out);
+          tl.to(sc.logos[logo], { opacity: 1, scale: 1, duration: duration * 0.44, ease: 'power2.out' }, at + out + 0.02);
+          pos[logo] = { ...to };
+        });
+        for (let k = 0; k < 3; k++) inSlot[k] = next[k];
+        return tl;
+      }
+
       next.forEach((logo, slot) => {
         const from = pos[logo];
         const to = SLOTS[slot];

@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "fallback": "node scripts/generate-fallback.mjs",
+    "preview:dashboard": "node scripts/build-preview.mjs",
     "screenshots": "node scripts/screenshots.mjs",
     "verify:leak": "node scripts/verify-leak.mjs",
     "landmask": "node scripts/generate-land-mask.mjs"

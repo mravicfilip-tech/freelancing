@@ -302,8 +302,15 @@
      the copy actually ends. So the button overhangs the art's top corner, and reads as white only
      because the blob is transparent there. Measured from the content instead, the art started 69px
      lower and the drawing lost the same 69 off its top. */
-  .ff__card--simple .ff__text {
+  .ff__card--simple .ff__simpleCopy {
     height: 190px;
+    flex: 0 0 auto;
+    /* space-between has no room to work in and squashed the button to nothing: the block is
+       shorter than what it holds on purpose, so the rows stack from the top and hang over. */
+    justify-content: flex-start;
+  }
+  .ff__card--simple .ff__simpleCopy > * {
+    flex: 0 0 auto;
   }
   .ff__text,
   .ff__text--pay .ff__cardBody,

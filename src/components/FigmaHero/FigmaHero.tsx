@@ -91,7 +91,6 @@ function MenuButton({ open, onClick, buttonRef }: { open: boolean; onClick: () =
       <span className="fh__burgerBars" aria-hidden="true">
         <i />
         <i />
-        <i />
       </span>
     </button>
   );

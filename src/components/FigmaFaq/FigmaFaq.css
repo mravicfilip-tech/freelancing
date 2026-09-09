@@ -218,7 +218,7 @@
 @media (max-width: 720px) {
   .fq__frame {
     width: calc(100% - 32px);
-    padding: 64px 12px;
+    padding: 64px 16px;
     gap: 32px;
   }
   .fq__title {

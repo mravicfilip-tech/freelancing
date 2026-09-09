@@ -142,12 +142,14 @@
 @media (max-width: 720px) {
   .sn__frame {
     width: calc(100% - 32px);
-    padding: 64px 0;
+    /* Half the head room: the reviews band's own foot already carries the join. */
+    padding: 32px 0 64px;
     gap: 32px;
   }
   .sn__title {
     font-size: 34px;
     letter-spacing: -1.02px;
+    padding-inline: 16px;
   }
   .sn__row {
     flex-wrap: wrap;

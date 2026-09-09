@@ -251,6 +251,8 @@
 @media (max-width: 720px) {
   .rv__frame { width: calc(100% - 32px); padding: 64px 0; }
   .rv__frame { gap: 32px; }
+  /* The slide still fills rail to rail; only the title steps in. */
+  .rv__title { padding-inline: 16px; }
   .rv__title { letter-spacing: -1.1px; }
   .rv__slider { height: 620px; }
   .rv__slide { padding: 16px 16px 88px; }

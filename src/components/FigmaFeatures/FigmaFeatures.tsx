@@ -53,7 +53,12 @@ export function FigmaFeatures({ picks }: { picks?: MotionPicks } = {}) {
               <span className="ff__lineInner">Bridging crypto with local</span>
             </span>
             <span className="ff__line">
-              <span className="ff__lineInner ff__titleMuted">payment networks globally.</span>
+              {/* The two shapes this line can take are "payment networks" / "globally." and
+                  "payment" / "networks globally.". The second is what the balancer picks —
+                  "networks globally." is the narrower of the two long halves — but it puts the
+                  block's two short lines side by side. The bound pair settles it in the text,
+                  written out rather than left as an invisible byte a formatter would eat. */}
+              <span className="ff__lineInner ff__titleMuted">{'payment\u00A0networks globally.'}</span>
             </span>
           </h2>
 

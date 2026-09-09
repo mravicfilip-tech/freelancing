@@ -793,35 +793,40 @@
     background: #f2f4f6;
   }
 }
+/* Two rules, not three: the third bar is the part that dates a hamburger, and with two the open
+   state is the same two rules crossing rather than one of them having to disappear. The lower
+   one is short, which is what gives the mark its direction; it draws out to full width as the
+   sheet opens, so the close X is even. */
 .fh__burgerBars {
   display: block;
   position: relative;
-  width: 18px;
-  height: 12px;
+  width: 20px;
+  height: 9.75px;
 }
 .fh__burgerBars i {
   position: absolute;
   left: 0;
-  width: 100%;
   height: 1.75px;
   border-radius: 2px;
   background: currentColor;
   transition:
     transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    opacity 160ms ease;
+    width 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.fh__burgerBars i:nth-child(1) { top: 0; }
-.fh__burgerBars i:nth-child(2) { top: 5.125px; }
-.fh__burgerBars i:nth-child(3) { top: 10.25px; }
-/* Open: the outer rules meet in the middle and cross, the middle one goes. */
+.fh__burgerBars i:nth-child(1) { top: 0; width: 100%; }
+.fh__burgerBars i:nth-child(2) { top: 8px; width: 55%; }
+@media (hover: hover) {
+  .fh__burger:hover .fh__burgerBars i:nth-child(2) {
+    width: 100%;
+  }
+}
+/* Open: both rules run full width and cross on the mark's own centre line (4.875). */
 [aria-expanded='true'] .fh__burgerBars i:nth-child(1) {
-  transform: translateY(5.125px) rotate(45deg);
+  transform: translateY(4px) rotate(45deg);
 }
 [aria-expanded='true'] .fh__burgerBars i:nth-child(2) {
-  opacity: 0;
-}
-[aria-expanded='true'] .fh__burgerBars i:nth-child(3) {
-  transform: translateY(-5.125px) rotate(-45deg);
+  width: 100%;
+  transform: translateY(-4px) rotate(-45deg);
 }
 /* The page behind the sheet, frosted rather than blacked out: the site's own ground is what shows
    through, so the sheet reads as a layer of the page and not as a modal borrowed from elsewhere. */
@@ -1130,6 +1135,16 @@
   .fh__burger {
     display: inline-flex;
   }
+  /* The mark and the trigger were 12px off the pill's own edge, which on a phone reads as the
+     bar having no margins at all. Both step in by 16; the trigger's 44px target is pulled back
+     out by its own optical inset so the glyph lands on the same 28 as the mark, and the whole
+     target still sits inside the pill. */
+  .fh__nav {
+    padding-inline: 28px;
+  }
+  .fh__burger {
+    margin-right: -13px;
+  }
 }
 /* Above it the panel can never open, so it must not be reachable. */
 @media (min-width: 1101px) {
@@ -1225,10 +1240,13 @@
     width: calc(100% - 32px);
   }
   .fh__main {
-    width: calc(100% - 56px);
+    width: calc(100% - 64px);
+    /* The dot band's top rule is drawn at a fixed 139 and the column started level with it, so the
+       headline sat on the line. */
+    margin-top: 16px;
   }
   .fh__footer {
-    padding: 24px 28px;
+    padding: 24px 32px;
   }
   .fh__introText {
     gap: 14px;

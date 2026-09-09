@@ -15,6 +15,8 @@
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
   --hb-dash-v: repeating-linear-gradient(180deg, var(--hb-rail) 0 8px, transparent 8px 16px);
+  /* how far a step row's content and its rules sit off the rail's edge */
+  --hb-step-inset: 48px;
   --hb-rule-v: repeating-linear-gradient(180deg, var(--hb-line) 0 4px, transparent 4px 8px);
   --hb-rule-h: repeating-linear-gradient(90deg, var(--hb-line) 0 4px, transparent 4px 8px);
 
@@ -201,21 +203,23 @@
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-  padding: 32px 24px 32px 48px;
+  padding: 32px 24px 32px var(--hb-step-inset);
   border: 0;
   background: none;
   font: inherit;
   text-align: left;
   cursor: pointer;
+  /* The rules take the row's own left inset, so each starts where its "Step N" does rather than
+     out at the rail's edge. They still run to the far side, where the live row's marker sits. */
   background-image: var(--hb-rule-h);
-  background-size: 100% 1px;
-  background-position: left top;
+  background-size: calc(100% - var(--hb-step-inset)) 1px;
+  background-position: var(--hb-step-inset) top;
   background-repeat: no-repeat;
 }
 .hb__step:last-child {
   background-image: var(--hb-rule-h), var(--hb-rule-h);
-  background-size: 100% 1px, 100% 1px;
-  background-position: left top, left bottom;
+  background-size: calc(100% - var(--hb-step-inset)) 1px, calc(100% - var(--hb-step-inset)) 1px;
+  background-position: var(--hb-step-inset) top, var(--hb-step-inset) bottom;
 }
 .hb__step:focus-visible {
   outline: 2px solid var(--hb-indigo);

@@ -7,6 +7,7 @@ import { Spread } from './folders/Spread';
 import { Deck } from './folders/Deck';
 import { Divider } from './folders/Divider';
 import { useRoadmapMotion } from './useRoadmapMotion';
+import { RoadmapStage } from './RoadmapStage';
 import './FigmaRoadmap.css';
 
 export type RoadVariant = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
@@ -448,7 +449,13 @@ const BODIES = {
  * `?road-picker` opens the review page. The band takes the section shell every other band
  * uses — 1560 rails, masked heading lines, an entrance keyed off ScrollTrigger.
  */
-export function FigmaRoadmap({ variant = 1 }: { variant?: RoadVariant }) {
+export function FigmaRoadmap({ variant = 0 }: { variant?: RoadVariant | 0 }) {
+  // 0 is the design of record (Figma 2717:2477); 1–11 are the directions the picker offers.
+  if (!variant) return <RoadmapStage />;
+  return <RoadmapBand variant={variant} />;
+}
+
+function RoadmapBand({ variant }: { variant: RoadVariant }) {
   const root = useRef<HTMLElement>(null);
   useRoadmapMotion(root, variant);
   const Body = BODIES[variant] ?? Filed;

@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { FigmaRoadmap, ROAD_VARIANTS, type RoadVariant } from './FigmaRoadmap';
 import './RoadPicker.css';
 
-/** Reads `?road=3` into a direction number. */
-export function roadFromParam(value: string | null): RoadVariant {
+/** Reads `?road=3` into a direction number; 0, the default, is the design of record. */
+export function roadFromParam(value: string | null): RoadVariant | 0 {
   const n = Number(value);
-  return (n >= 1 && n <= ROAD_VARIANTS.length ? n : 1) as RoadVariant;
+  return (n >= 1 && n <= ROAD_VARIANTS.length ? n : 0) as RoadVariant | 0;
 }
 
 /**
@@ -13,8 +13,8 @@ export function roadFromParam(value: string | null): RoadVariant {
  * section so the entrance replays. The code at the bottom also works on the real page as `?road=`.
  */
 export function RoadPicker() {
-  const [variant, setVariant] = useState<RoadVariant>(() =>
-    roadFromParam(new URLSearchParams(window.location.search).get('road')),
+  const [variant, setVariant] = useState<RoadVariant>(
+    () => (roadFromParam(new URLSearchParams(window.location.search).get('road')) || 1) as RoadVariant,
   );
   const [replay, setReplay] = useState(0);
 

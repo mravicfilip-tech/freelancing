@@ -1,0 +1,374 @@
+/* Roadmap — Figma "Remittix Redesign" › 2717:2477. The page turns over to the footer's black
+   here: ground #0c1219, the 1560 dashed rails carried through, and the file's lime for the
+   marker and the ticked checks — the one ground that colour works on. */
+
+.rs {
+  --rs-bg: #0c1219;
+  --rs-rail: rgb(255 255 255 / 12%);
+  --rs-leader: #1f1f1f;
+  --rs-spine: #292e35;
+  --rs-ink: #fff;
+  --rs-body: #7c858d;
+  --rs-dim: rgb(124 133 141 / 48%);
+  --rs-card: rgb(124 133 141 / 6%);
+  --rs-card-line: rgb(124 133 141 / 12%);
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  /* The rails and the stage's own top and bottom, on the design's [8,8] rhythm. */
+  --rs-dash-v: repeating-linear-gradient(180deg, var(--rs-rail) 0 8px, transparent 8px 16px);
+  --rs-dash-h: repeating-linear-gradient(90deg, var(--rs-rail) 0 8px, transparent 8px 16px);
+  /* the stage's height and the gutter the level list keeps off the rail */
+  --rs-stage-h: 915px;
+  --rs-inset: 48px;
+
+  background: var(--rs-bg);
+  color: var(--rs-body);
+  font-family: var(--fh-sans);
+}
+/* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
+.rs__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 90px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  background-image: var(--rs-dash-v), var(--rs-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Heading ---------- */
+.rs__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  text-align: center;
+  color: var(--rs-body);
+}
+.rs__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.rs__lineInner {
+  display: block;
+}
+.rs__titleInk {
+  color: var(--rs-ink);
+}
+.rs__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- The stage ---------- */
+.rs__stage {
+  position: relative;
+  display: flex;
+  gap: 48px;
+  align-items: center;
+  height: var(--rs-stage-h);
+  padding: var(--rs-inset) 0;
+  overflow: hidden;
+  background-image: var(--rs-dash-h), var(--rs-dash-h);
+  background-size: 100% 1px, 100% 1px;
+  background-position: left top, left bottom;
+  background-repeat: no-repeat;
+}
+
+/* ---------- The levels ---------- */
+.rs__levels {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 var(--rs-inset);
+  list-style: none;
+}
+.rs__level {
+  width: 100%;
+}
+.rs__level button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 66px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.rs__leader {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 1px;
+  background-image: repeating-linear-gradient(90deg, var(--rs-leader) 0 8px, transparent 8px 16px);
+  transition: background-image 300ms ease;
+}
+.rs__level[data-active] .rs__leader {
+  background-image: repeating-linear-gradient(90deg, var(--rs-spine) 0 8px, transparent 8px 16px);
+}
+.rs__levelName {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.12;
+  letter-spacing: -0.96px;
+  color: var(--rs-dim);
+  white-space: nowrap;
+  transition: color 300ms ease;
+}
+.rs__level[data-active] .rs__levelName,
+.rs__level button:hover .rs__levelName {
+  color: var(--rs-ink);
+}
+.rs__level button:focus-visible {
+  outline: 2px solid var(--rs-ink);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+/* ---------- The rail ---------- */
+.rs__rail {
+  position: relative;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 100%;
+}
+.rs__railLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--rs-spine);
+}
+.rs__marker {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  transition: top 520ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 200ms ease;
+}
+
+/* ---------- The cards ---------- */
+.rs__cards {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--rs-inset);
+}
+.rs__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.rs__card {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 32px;
+  border: 1px solid var(--rs-card-line);
+  border-radius: 12px;
+  background: var(--rs-card);
+  opacity: 0.64;
+  transition: opacity 420ms ease, gap 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.rs__card[data-active] {
+  gap: 32px;
+  opacity: 1;
+}
+.rs__item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.rs__item img {
+  display: block;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+.rs__item p {
+  margin: 0;
+  width: 410px;
+  max-width: 100%;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.16px;
+  color: var(--rs-body);
+}
+/* The label rides above the open card, which the stack keeps on the stage's centre line. */
+.rs__stageLabel {
+  position: absolute;
+  z-index: 1;
+  left: var(--rs-inset);
+  top: calc(50% - 24px);
+  margin: 0;
+  transform: translateY(-100%);
+  transition: top 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  color: var(--rs-body);
+}
+
+/* ---------- Motion (see useStageMotion.ts) ----------
+   Hold the animated parts until GSAP has written their start states. */
+.rs[data-motion='pending'] .rs__lineInner,
+.rs[data-motion='pending'] .rs__level,
+.rs[data-motion='pending'] .rs__cards,
+.rs[data-motion='pending'] .rs__railLine {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs__marker,
+  .rs__stack,
+  .rs__card,
+  .rs__leader,
+  .rs__levelName {
+    transition: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .rs {
+    --rs-stage-h: 820px;
+    --rs-inset: 32px;
+  }
+  .rs__stage {
+    gap: 32px;
+  }
+  .rs__level button {
+    gap: 32px;
+  }
+  .rs__levelName {
+    font-size: 28px;
+  }
+}
+@media (max-width: 1024px) {
+  .rs {
+    --rs-stage-h: 720px;
+  }
+  .rs__levelName {
+    font-size: 22px;
+    letter-spacing: -0.66px;
+  }
+  .rs__item p {
+    width: auto;
+  }
+  .rs__card {
+    padding: 24px;
+    gap: 28px;
+  }
+  .rs__stack {
+    gap: 48px;
+  }
+}
+/* On a phone the two columns cannot stand side by side: the levels become a scrolling rail of
+   their own above the stage, and the open card is the section. */
+@media (max-width: 720px) {
+  .rs {
+    --rs-stage-h: auto;
+    --rs-inset: 0px;
+  }
+  .rs__frame {
+    width: min(1560px, 100% - 32px);
+    padding: 64px 0;
+    gap: 32px;
+  }
+  .rs__title {
+    letter-spacing: -1.1px;
+  }
+  .rs__stage {
+    display: block;
+    height: auto;
+    padding: 28px 0;
+    overflow: visible;
+  }
+  .rs__levels {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    height: auto;
+    padding: 0 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .rs__levels::-webkit-scrollbar {
+    display: none;
+  }
+  .rs__level {
+    width: auto;
+  }
+  .rs__level button {
+    gap: 0;
+  }
+  .rs__leader {
+    display: none;
+  }
+  .rs__levelName {
+    font-size: 20px;
+    letter-spacing: -0.6px;
+  }
+  .rs__rail {
+    width: 100%;
+    height: 1px;
+    margin-bottom: 24px;
+  }
+  .rs__railLine {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+    transform: none;
+  }
+  .rs__marker {
+    display: none;
+  }
+  .rs__cards {
+    height: auto;
+    padding: 0;
+  }
+  .rs__stack {
+    transform: none !important;
+  }
+  /* Only the open level is set on a phone; the neighbours would be three screens of scrolling. */
+  .rs__card {
+    display: none;
+  }
+  .rs__card[data-active] {
+    display: flex;
+  }
+  .rs__stageLabel {
+    position: static;
+    margin-bottom: 16px;
+    transform: none;
+  }
+}

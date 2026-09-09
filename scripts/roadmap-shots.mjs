@@ -6,7 +6,7 @@ const SIZES = [
   { w: 1440, h: 900 },
   { w: 390, h: 844, mobile: true },
 ];
-const VARIANTS = (process.argv[2] || '1,2,3,4,5').split(',');
+const VARIANTS = (process.argv[2] || '0').split(',');
 
 mkdirSync('screenshots', { recursive: true });
 const server = await startPreview();
@@ -21,7 +21,7 @@ try {
     });
     const page = await context.newPage();
     for (const v of VARIANTS) {
-      await page.goto(`${BASE}/?hero=figma&planet=off&road=${v}`, { waitUntil: 'networkidle' });
+      await page.goto(`${BASE}/?hero=figma&planet=off${v === '0' ? '' : `&road=${v}`}`, { waitUntil: 'networkidle' });
       // The site's nav is fixed, so it would sit over a section shot.
       await page.addStyleTag({ content: '.fh__nav{display:none!important}' });
       const section = await page.waitForSelector('#roadmap');

@@ -34,7 +34,7 @@ try {
   for (const { w, h, mobile } of SIZES) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: !!mobile, hasTouch: !!mobile });
     const page = await ctx.newPage();
-    await page.goto(`${BASE}/?hero=figma&planet=off&road=${variant}`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}/?hero=figma&planet=off${variant === '0' ? '' : `&road=${variant}`}`, { waitUntil: 'networkidle' });
     await page.addStyleTag({ content: '.fh__nav{display:none!important}' });
     const section = await page.waitForSelector('#roadmap');
     await section.scrollIntoViewIfNeeded();

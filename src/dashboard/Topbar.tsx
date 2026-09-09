@@ -1,5 +1,13 @@
+import { PRESALE } from './data';
 import { MoonIcon, SunIcon } from './icons';
 import { theme } from './theme';
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Morning';
+  if (h < 18) return 'Afternoon';
+  return 'Evening';
+}
 
 export function Topbar() {
   const current = theme.use();
@@ -8,18 +16,18 @@ export function Topbar() {
   return (
     <header className="topbar">
       <div>
-        <p className="topbar__eyebrow">Presale dashboard</p>
-        <h1 className="topbar__title">Welcome back</h1>
+        <p className="topbar__greeting">{greeting()}, Filip</p>
+        <h1 className="topbar__title">Presale</h1>
       </div>
 
       <div className="topbar__actions">
         <p className="topbar__live">
           <span className="topbar__dot" aria-hidden="true" />
-          Stage 12 live
+          Stage {PRESALE.stage} is live
         </p>
         <button
           type="button"
-          className="icon-btn"
+          className="chip-btn"
           onClick={() => theme.set(next)}
           aria-label={`Switch to ${next} mode`}
         >

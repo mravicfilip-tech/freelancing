@@ -31,15 +31,16 @@ export function Dashboard() {
         <StatRow />
         <LevelCard />
 
+        {/* The buy panel is the tall focused rail; everything else reads as the
+            feed running alongside it. */}
         <div className="dash__split">
           <BuyPanel />
           <div className="dash__stack">
             <FlashSale />
             <Referrals />
+            <LiveOrders />
           </div>
         </div>
-
-        <LiveOrders />
       </main>
     </div>
   );

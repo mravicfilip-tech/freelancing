@@ -120,8 +120,23 @@ src/dashboard/
   data.ts            presale figures, token rates, live orders, formatters
   icons.tsx          nav, payment and rank marks, all inline SVG
   dashboard.css      both themes as one token layer
-  panels/            StatRow, LevelCard, BuyPanel, FlashSale, Referrals, LiveOrders
+  Figure.tsx         the headline number, with the currency symbol set small
+  panels/            StatRow, LevelCard, BuyPanel, StageLadder, FlashSale,
+                     Referrals, LiveOrders
 ```
+
+### Form language
+
+Cards float on the ground rather than being fenced by hairlines: separation
+comes from the ground colour plus a soft lift in light, and from a raised
+surface in dark. One radius family throughout — 22px cards, 15px insets, pills
+for anything interactive. Numerals carry each card, set tabular at -0.045em with
+the currency symbol small and raised, so figures line up column to column.
+
+Ink is the selected state in light and lime in dark: the active nav item, the
+chosen tab and a hovered ghost button all take the same solid pill. Labels are
+sentence case — no tracked-out capitals, and no meta strings strung together
+with middle dots.
 
 ### Themes
 
@@ -141,6 +156,16 @@ right ground on a short page.
 `?rail=extended|collapsed`, persisted the same way. Extended is icon + label in
 a row; collapsed is the narrow rail with the icon centred over its label, the
 active item in an accent chip. Under 900px the rail is icon-only regardless.
+
+### The stage ladder
+
+A presale's one distinguishing mechanic is that the price ratchets up a cent per
+stage, and a flat progress bar throws that away. `StageLadder` draws the stages
+either side of the live one as a staircase priced left to right: spent stages
+are solid and recede, the live stage fills to how much of it has sold, and the
+stages ahead are outlines, because their price is a promise rather than a fact.
+It is the one place the design raises its voice; everything around it stays
+quiet.
 
 ### Figures
 

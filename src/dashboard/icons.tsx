@@ -69,6 +69,12 @@ export const ChevronRight = (p: IconProps) => (
   </svg>
 );
 
+export const ArrowOut = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M8 16 16 8M9.4 8H16v6.6" />
+  </svg>
+);
+
 export const CopyIcon = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <rect x="9" y="9" width="11" height="11" rx="2.5" />

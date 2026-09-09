@@ -40,9 +40,7 @@ export function FlashSale() {
     <section className="card card--glow flash" aria-labelledby="flash-title">
       <div className="flash__head">
         <h2 className="flash__title" id="flash-title">
-          Flash Sale for the
-          <br />
-          Next 72 Hours
+          Flash sale ends in
         </h2>
         <div
           className="clock"
@@ -63,11 +61,12 @@ export function FlashSale() {
       </div>
 
       <p className="flash__copy">
-        Get a <strong>{FLASH_SALE.bonus * 100}%</strong> purchase bonus on $RTX with our Promo Code.
+        Use this code at checkout and your purchase earns{' '}
+        <strong>{FLASH_SALE.bonus * 100}% bonus $RTX</strong> on top of whatever you buy.
       </p>
 
       <div className="flash__code">
-        <span className="flash__code-label">Promo Code</span>
+        <span className="flash__code-label">Promo code</span>
         <button type="button" className="copy" onClick={() => copy(FLASH_SALE.code)}>
           <span className="copy__value">{FLASH_SALE.code}</span>
           {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}

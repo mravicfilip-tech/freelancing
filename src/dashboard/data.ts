@@ -13,6 +13,16 @@ export const PRESALE = {
   rtxLeft: 18_376_032,
 } as const;
 
+/** Stages either side of the live one, for the price ladder. */
+export const STAGE_LADDER = Array.from({ length: 7 }, (_, i) => {
+  const n = PRESALE.stage - 3 + i;
+  return {
+    n,
+    price: Number((PRESALE.price + (n - PRESALE.stage) * 0.01).toFixed(2)),
+    state: n < PRESALE.stage ? ('done' as const) : n === PRESALE.stage ? ('live' as const) : ('next' as const),
+  };
+});
+
 export const HOLDINGS = {
   balance: 0,
   worthAtTge: 0,

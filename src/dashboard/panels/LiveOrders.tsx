@@ -6,21 +6,21 @@ const label = (method: string) => (method === 'CARD' ? 'Card' : method);
 export function LiveOrders() {
   return (
     <section className="card orders" aria-labelledby="orders-title">
-      <header className="orders__head">
-        <h2 className="orders__title" id="orders-title">
-          Live Orders
+      <header>
+        <h2 className="card__title" id="orders-title">
+          Live orders
         </h2>
-        <p className="orders__sub">Recent purchases by other buyers</p>
+        <p className="orders__sub">What other buyers just bought</p>
       </header>
 
       <div className="orders__scroll">
         <table className="orders__table">
           <thead>
             <tr>
-              <th scope="col">Paid With</th>
+              <th scope="col">Paid with</th>
               <th scope="col">Order</th>
-              <th scope="col">$RTX Amount</th>
-              <th scope="col">USD Value</th>
+              <th scope="col">$RTX</th>
+              <th scope="col">USD value</th>
               <th scope="col" className="is-right">
                 Time
               </th>

@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react';
-import { FLASH_SALE, PRESALE, TOKENS, money, whole, type TokenId } from '../data';
-import { MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
+import { FLASH_SALE, PRESALE, TOKENS, money, type TokenId } from '../data';
+import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
+import { StageLadder } from './StageLadder';
 
 type Method = 'crypto' | 'card';
 
@@ -23,51 +24,20 @@ export function BuyPanel() {
     return (amount * rate * (1 + bonus)) / PRESALE.price;
   }, [pay, rate, bonus]);
 
-  const pct = PRESALE.progress * 100;
   const promoValid = promo.trim().toUpperCase() === FLASH_SALE.code;
-
-  const applyPromo = () => {
-    if (promoValid) setApplied(FLASH_SALE.code);
-  };
 
   return (
     <section className="card buy" aria-labelledby="buy-title">
-      <h2 className="buy__title" id="buy-title">
+      <h2 className="sr-only" id="buy-title">
         Buy $RTX
       </h2>
 
-      <div className="buy__stage">
-        <p className="buy__stage-now">
-          Stage <strong>{PRESALE.stage}</strong> &middot; 1 RTX = <strong>${PRESALE.price.toFixed(2)}</strong>
-        </p>
-        <p className="buy__stage-next">
-          Next stage: <strong>${PRESALE.nextPrice.toFixed(2)}</strong>
-        </p>
-      </div>
-
-      <div className="buy__meter-row">
-        <div
-          className="meter"
-          role="progressbar"
-          aria-valuenow={Math.round(pct)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`Stage ${PRESALE.stage} sold`}
-        >
-          <span className="meter__fill" style={{ width: `${pct}%` }} />
-        </div>
-        <span className="buy__pct">{pct.toFixed(1)}%</span>
-      </div>
-
-      <p className="buy__left">
-        <strong>${whole(PRESALE.usdLeft)}</strong> left in this stage &middot;{' '}
-        {whole(PRESALE.rtxLeft)} RTX
-      </p>
+      <StageLadder />
 
       <div className="buy__form">
         <p className="buy__urgency">
           <RocketIcon className="icon-16" />
-          Buy Now Before Price Increases
+          Buy before the price goes up
         </p>
 
         <div className="tabs" role="tablist" aria-label="Payment method">
@@ -87,14 +57,14 @@ export function BuyPanel() {
             aria-selected={method === 'card'}
             onClick={() => setMethod('card')}
           >
-            Credit Card
+            Credit card
           </button>
         </div>
 
         <div className="buy__pair">
           <div className="field">
             <label className="field__label" htmlFor={payId}>
-              You Pay
+              You pay
             </label>
             <div className="field__control">
               <input
@@ -122,7 +92,7 @@ export function BuyPanel() {
                   </select>
                 </div>
               ) : (
-                <span className="field__token field__token--static">
+                <span className="field__token">
                   <PayMark id="CARD" className="icon-20" />
                   USD
                 </span>
@@ -132,35 +102,33 @@ export function BuyPanel() {
 
           <div className="field">
             <label className="field__label" htmlFor={receiveId}>
-              You Receive
+              You receive
             </label>
             <div className="field__control">
               <output id={receiveId} className="field__input field__input--output">
                 {receive ? money(receive) : '0'}
               </output>
-              <span className="field__token field__token--static">
-                <PayMark id="CARD" className="icon-20 is-hidden" />
-                RTX
-              </span>
+              <span className="field__token">RTX</span>
             </div>
           </div>
         </div>
 
         {bonus > 0 && (
           <p className="buy__bonus">
-            {FLASH_SALE.code} applied &middot; +{bonus * 100}% bonus $RTX included
+            <CheckIcon className="icon-16" />
+            {FLASH_SALE.code} applied, adding {bonus * 100}% bonus $RTX
           </p>
         )}
 
         <div className="field">
           <label className="field__label" htmlFor={promoId}>
-            Promo Code
+            Promo code
           </label>
           <div className="buy__promo">
             <input
               id={promoId}
               className="input"
-              placeholder="Enter promo code"
+              placeholder="Enter a promo code"
               value={promo}
               onChange={(e) => {
                 setPromo(e.target.value);
@@ -171,7 +139,7 @@ export function BuyPanel() {
               type="button"
               className="btn-ghost"
               disabled={!promoValid || applied !== null}
-              onClick={applyPromo}
+              onClick={() => promoValid && setApplied(FLASH_SALE.code)}
             >
               {applied ? 'Applied' : 'Apply'}
             </button>
@@ -179,7 +147,7 @@ export function BuyPanel() {
         </div>
 
         <div className="buy__pay-with">
-          <span className="buy__pay-label">Pay With:</span>
+          <span className="buy__pay-label">Pay with</span>
           <span className="buy__marks">
             <PayMark id="BTC" className="icon-22" />
             <PayMark id="ETH" className="icon-22" />

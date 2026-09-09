@@ -5,25 +5,25 @@ export function LevelCard() {
   const pct = Math.round(LEVEL.progress * 100);
   return (
     <section className="level" aria-label="Your level">
-      <header className="level__head">
-        <h2 className="level__title">Your Level</h2>
+      <div className="card__head">
+        <h2 className="card__title">Your level</h2>
         <a className="level__link" href="#leaderboard">
-          View Leaderboard
+          View leaderboard
           <ChevronRight className="icon-14" />
         </a>
-      </header>
+      </div>
 
       <div className="level__body">
         <div className="level__rank">
           <RankBadge tone="bronze" className="level__badge" />
           <div>
             <p className="level__rank-name">Level {LEVEL.current}</p>
-            <p className="level__rank-note">Current Rank</p>
+            <p className="level__rank-note">Current rank</p>
           </div>
         </div>
 
         <div
-          className="meter meter--pill"
+          className="meter"
           role="progressbar"
           aria-valuenow={pct}
           aria-valuemin={0}
@@ -37,7 +37,7 @@ export function LevelCard() {
           <RankBadge tone="silver" className="level__badge" />
           <div>
             <p className="level__rank-name">Level {LEVEL.next}</p>
-            <p className="level__rank-note">Next Rank</p>
+            <p className="level__rank-note">Next rank</p>
           </div>
         </div>
       </div>

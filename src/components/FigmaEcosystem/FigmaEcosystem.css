@@ -242,10 +242,10 @@
 }
 @media (max-width: 720px) {
   .ec__frame {
-    /* Ranges under the feature band, so it keeps its open top and takes the shared foot. */
-    width: 100%;
-    padding: 0 16px 64px;
-    background-image: none;
+    /* Ranges under the feature band, so it keeps its open top and takes the shared foot. The rails
+       stay on; only the gutter outside them narrows to the 16px every band shares. */
+    width: calc(100% - 32px);
+    padding: 0 12px 64px;
   }
   /* The card stands off the page on its own margins, as a card should, and the pillar rules are
      inset within them rather than running out to the screen's edges. */

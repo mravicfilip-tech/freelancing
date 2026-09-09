@@ -302,12 +302,12 @@
     align-items: center;
     min-height: 40px;
   }
-  /* Edge to edge like every other band, with --ft-inset as the 16px rail. */
+  /* On the same 16px gutter as every other band, with the rails where that gutter ends, so the
+     footer's rows sit against them rather than a further inset inside. */
   .ft__frame {
-    --ft-inset: 16px;
-    width: 100%;
+    --ft-inset: 12px;
+    width: calc(100% - 32px);
     padding: 0 0 32px;
-    background-image: none;
   }
   .ft__cta {
     padding: 64px var(--ft-inset) 64px;

@@ -249,7 +249,7 @@
   .rv__chip { flex: 0 0 auto; }
 }
 @media (max-width: 720px) {
-  .rv__frame { width: 100%; padding: 64px 16px; background-image: none; }
+  .rv__frame { width: calc(100% - 32px); padding: 64px 0; }
   .rv__frame { gap: 32px; }
   .rv__title { letter-spacing: -1.1px; }
   .rv__slider { height: 620px; }

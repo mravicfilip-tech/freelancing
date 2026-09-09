@@ -265,12 +265,12 @@
   }
 }
 @media (max-width: 720px) {
-  /* One rhythm for every band on a phone: 64 top and bottom, content on the page's own gutter
-     rather than inset a further 15px from the rails. */
+  /* One rhythm for every band on a phone: 64 top and bottom, and content on the rails themselves
+     rather than inset a further 15px inside them. The rails stay — only their outside gutter
+     narrows from 24px to the 16px every band shares. */
   .ff__frame {
-    width: 100%;
-    padding: 64px 16px;
-    background-image: none;
+    width: calc(100% - 32px);
+    padding: 64px 12px;
   }
   .ff__title {
     font-size: 40px;
@@ -296,6 +296,14 @@
   .ff__card--simple {
     --ff-cardGap: 12px;
     gap: var(--ff-cardGap);
+  }
+  /* The frame gives this card's copy a fixed 190 and lets its content run past it (2597:845),
+     then hangs the art at an absolute 234 — twelve below that declared height, not below where
+     the copy actually ends. So the button overhangs the art's top corner, and reads as white only
+     because the blob is transparent there. Measured from the content instead, the art started 69px
+     lower and the drawing lost the same 69 off its top. */
+  .ff__card--simple .ff__text {
+    height: 190px;
   }
   .ff__text,
   .ff__text--pay .ff__cardBody,

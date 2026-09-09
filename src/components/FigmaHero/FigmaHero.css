@@ -1218,18 +1218,17 @@
   }
 }
 
-/* On a phone the screen is the frame: the dot field runs edge to edge, the rails come off, and the
-   hero sits on the same 16px rail as every band below it. */
+/* The dot field runs edge to edge on a phone and the rails come in to the 16px gutter every band
+   below shares, so the hero's own content stands on them. */
 @media (max-width: 720px) {
   .fh__frame {
-    width: 100%;
-    background-image: none;
-  }
-  .fh__main {
     width: calc(100% - 32px);
   }
+  .fh__main {
+    width: calc(100% - 56px);
+  }
   .fh__footer {
-    padding: 24px 16px;
+    padding: 24px 28px;
   }
   .fh__introText {
     gap: 14px;

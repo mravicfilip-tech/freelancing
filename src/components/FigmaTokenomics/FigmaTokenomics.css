@@ -377,10 +377,6 @@
   font-size: 12px;
   letter-spacing: -0.36px;
 }
-/* The phone frame carries the diagram on plain ground — no rails across the band. */
-.tk--m .tk__band {
-  background-image: none;
-}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
@@ -402,12 +398,12 @@
   }
 }
 
-/* On a phone the screen is the frame: the band runs edge to edge and the 16px padding above is
-   the rail, rather than a 24px inset frame with the rail a further 16px inside it. */
+/* The frame keeps its rails on a phone; only the gutter outside them narrows, from 24px to the
+   16px every band shares. Content runs rail to rail, as it does on the desk. */
 @media (max-width: 720px) {
   .tk__frame {
-    width: 100%;
-    background-image: none;
+    width: calc(100% - 32px);
+    padding-inline: 0;
   }
   /* 4px between a 40px headline and its paragraph reads as a collision. */
   .tk__head {

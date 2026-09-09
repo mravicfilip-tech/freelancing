@@ -15,6 +15,8 @@
   /* the design's dash rhythm: a 1px stroke, 8 on and 8 off, rails and lattice alike */
   --av-dash-v: repeating-linear-gradient(180deg, var(--av-rail) 0 8px, transparent 8px 16px);
   --av-dash-h: repeating-linear-gradient(90deg, var(--av-line) 0 8px, transparent 8px 16px);
+  /* how far the content sits off the rails; the lattice's rules ignore it and run rail to rail */
+  --av-inset: clamp(0px, 3.85%, 60px);
 
   background: var(--av-bg);
   color: var(--av-ink);
@@ -24,7 +26,7 @@
 .av__frame {
   width: min(1560px, 100% - 48px);
   margin: 0 auto;
-  padding: 96px clamp(0px, 3.85%, 60px);
+  padding: 96px 0;
   display: flex;
   flex-direction: column;
   gap: 56px;
@@ -36,6 +38,7 @@
 
 /* ---------- Heading ---------- */
 .av__head {
+  padding: 0 var(--av-inset);
   display: flex;
   flex-wrap: wrap;
   gap: 24px 48px;
@@ -74,6 +77,9 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  /* the cells' content is inset; the rules below are positioned against the padding box, so they
+     still reach the rails */
+  padding: 0 var(--av-inset);
 }
 .av__cell {
   position: relative;
@@ -103,7 +109,6 @@
 .av__ruleH--top {
   top: 0;
   bottom: auto;
-  z-index: 1;
 }
 .av__ruleV {
   top: 0;
@@ -237,6 +242,7 @@
 
 /* ---------- Ledger strip ---------- */
 .av__ledger {
+  padding: 0 var(--av-inset);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px 48px;

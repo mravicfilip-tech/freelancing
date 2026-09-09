@@ -26,7 +26,9 @@ type Credential = {
   facts: [string, string][];
   href: string;
   cta: string;
-  primary?: boolean;
+  /** Renders the cell's link as a pill rather than a ruled link. Secondary — the page's primary
+      action is the presale, and this band should not compete with it. */
+  pill?: boolean;
 };
 
 const CREDENTIALS: Credential[] = [
@@ -64,7 +66,7 @@ const CREDENTIALS: Credential[] = [
     ],
     href: '#whitepaper',
     cta: 'Whitepaper',
-    primary: true,
+    pill: true,
   },
 ];
 
@@ -149,11 +151,11 @@ export function FigmaAudits() {
         </div>
 
         <div className="av__grid">
-          {/* the lattice's own top edge; every other rule belongs to a cell */}
+          {/* the lattice's own edges run rail to rail; the cells carry only the dividers */}
           <i className="av__ruleH av__ruleH--top" aria-hidden="true" />
+          <i className="av__ruleH av__ruleH--bottom" aria-hidden="true" />
           {CREDENTIALS.map((c, i) => (
             <article className="av__cell" key={c.id}>
-              <i className="av__ruleH" aria-hidden="true" />
               {i < CREDENTIALS.length - 1 && <i className="av__ruleV" aria-hidden="true" />}
 
               <div className="av__mark">
@@ -184,9 +186,9 @@ export function FigmaAudits() {
                 ))}
               </dl>
 
-              {c.primary ? (
+              {c.pill ? (
                 <a
-                  className="fh__btn fh__btn--primary fh__btn--wide"
+                  className="fh__btn fh__btn--ghost fh__btn--wide"
                   href={c.href}
                   onPointerEnter={blobOrigin}
                   onPointerLeave={blobOrigin}

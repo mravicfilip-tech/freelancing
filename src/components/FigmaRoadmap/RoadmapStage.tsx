@@ -51,7 +51,6 @@ export function RoadmapStage() {
   const [active, setActive] = useState(() => Math.max(0, LEVELS.findIndex((l) => l.status === 'live')));
   const [markerY, setMarkerY] = useState<number | null>(null);
   const [shift, setShift] = useState(0);
-  const [labelY, setLabelY] = useState<number | null>(null);
 
   useStageMotion(root);
 
@@ -62,12 +61,11 @@ export function RoadmapStage() {
       const row = list.current?.children[active] as HTMLElement | undefined;
       if (row && rail.current) setMarkerY(rowCentreOnRail(row, rail.current));
       const view = viewport.current;
-      const card = stack.current?.children[active] as HTMLElement | undefined;
+      // The open card, not its wrapper — the live one is grouped with its label.
+      const card = stack.current?.querySelectorAll<HTMLElement>('.rs__card')[active];
       if (view && card) {
-        // Centre the open card in the clipped stage, and stand the label on its top edge.
-        const middle = view.clientHeight / 2;
-        setShift(middle - (card.offsetTop + card.offsetHeight / 2));
-        setLabelY(middle - card.offsetHeight / 2 - 20);
+        // Centre the open card in the clipped stage; its label rides above it in flow.
+        setShift(view.clientHeight / 2 - (card.offsetTop + card.offsetHeight / 2));
       }
     };
     measure();
@@ -103,8 +101,6 @@ export function RoadmapStage() {
       cancelled = true;
     };
   }, [active]);
-
-  const level = LEVELS[active];
 
   return (
     <section ref={root} className="rs" id="roadmap" data-node-id="2717:2477" data-motion="pending" aria-labelledby="rs-title">
@@ -148,17 +144,19 @@ export function RoadmapStage() {
           </div>
 
           <div className="rs__cards" ref={viewport}>
-            <p
-              className="rs__stageLabel"
-              data-node-id="2718:2736"
-              style={labelY === null ? undefined : { top: labelY }}
-            >
-              {STAGE_LABEL[level.status]}
-            </p>
             <div className="rs__stack" ref={stack} style={{ transform: `translateY(${shift}px)` }}>
-              {LEVELS.map((l, i) => (
-                <Card key={l.n} level={l} active={i === active} />
-              ))}
+              {LEVELS.map((l, i) =>
+                i === active ? (
+                  <div className="rs__group" key={l.n} data-node-id="2718:2830">
+                    <p className="rs__stageLabel" data-node-id="2718:2736">
+                      {STAGE_LABEL[l.status]}
+                    </p>
+                    <Card level={l} active />
+                  </div>
+                ) : (
+                  <Card key={l.n} level={l} active={false} />
+                ),
+              )}
             </div>
           </div>
         </div>

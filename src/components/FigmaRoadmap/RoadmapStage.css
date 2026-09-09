@@ -220,15 +220,14 @@
   letter-spacing: 0.16px;
   color: var(--rs-body);
 }
-/* The label rides above the open card, which the stack keeps on the stage's centre line. */
+/* The label is grouped with the card it names (2718:2830), so it travels with it. */
+.rs__group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 .rs__stageLabel {
-  position: absolute;
-  z-index: 1;
-  left: var(--rs-inset);
-  top: calc(50% - 24px);
   margin: 0;
-  transform: translateY(-100%);
-  transition: top 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
   font-weight: 500;
   font-size: 20px;
   letter-spacing: -0.6px;

@@ -14,6 +14,7 @@ import { FigmaFaq } from './components/FigmaFaq/FigmaFaq';
 import { FigmaTokenomics } from './components/FigmaTokenomics/FigmaTokenomics';
 import { FigmaAudits } from './components/FigmaAudits/FigmaAudits';
 import { FigmaHowToBuy } from './components/FigmaHowToBuy/FigmaHowToBuy';
+import { RoadmapStage } from './components/FigmaRoadmap/RoadmapStage';
 import { TokPicker, tokFromParam } from './components/FigmaTokenomics/TokPicker';
 import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
 import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
@@ -48,6 +49,7 @@ export function App() {
         {figma && <FigmaReviews />}
       {figma && <FigmaSeenIn />}
         {figma && <FigmaTokenomics variant={TOK_VARIANT} />}
+        {figma && <RoadmapStage />}
         {figma && <FigmaAudits />}
         {figma && <FigmaHowToBuy />}
         {figma && <FigmaFaq />}

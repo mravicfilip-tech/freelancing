@@ -23,8 +23,12 @@ const PROGRESS = 0.22; // filled share of the progress bar
 
 /**
  * The bar is a table of contents for the page: one item per section, in the order they are read,
- * spread across its whole length rather than bunched at the end. Seven is the cap — beyond that
- * the row stops being scannable and starts being a list.
+ * spread across its whole length rather than bunched at the end.
+ *
+ * Six, not seven — the FAQs come last on the page and are the one section a reader reaches by
+ * getting there rather than by aiming for it, so dropping them buys the other six the design's
+ * own 48px rhythm back and keeps the row on screen further down. The section itself is untouched,
+ * and `#faq` still stops clear of the bar for anyone who arrives on the link.
  *
  * Every href resolves to a section on this page. The whitepaper is not one of them — it has no
  * anchor to land on — so it keeps its place in the footer, alongside the audits it belongs with.
@@ -36,7 +40,6 @@ const NAV_LINKS = [
   ['Tokenomics', '#tokenomics'],
   ['Roadmap', '#roadmap'],
   ['How to buy', '#how-to-buy'],
-  ['FAQs', '#faq'],
 ] as const;
 
 /** Live countdown to `target`, ticking every second. All zeros once the target has passed. */

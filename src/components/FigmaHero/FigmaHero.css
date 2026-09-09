@@ -120,7 +120,7 @@
   box-shadow: 0 8px 28px rgba(18, 36, 51, 0.12);
 }
 /* Below this the links are already hidden, so there is nothing to draw in from. */
-@media (min-width: 1361px) {
+@media (min-width: 1341px) {
   .fh__nav[data-condensed] {
     width: min(760px, 100% - 48px);
   }
@@ -167,11 +167,10 @@
   display: flex;
   min-width: 0;
   overflow: hidden;
-  /* Seven items, not the six this row was spaced for. The labels come to 472px and the bar caps
-     at 1440, so the design's 48px gap leaves the last of them 30px from the language picker at
-     every width — it was never a question of the viewport. 26 is the honest rhythm for seven, and
-     it keeps a clear break before the language picker down to the width the sheet takes over. */
-  gap: 26px;
+  /* Six items. Their labels come to 439px and the bar caps at 1440, so the design's own 48px gap
+     still does not fit — these six are wordier than the six this row was drawn for. 38 is what
+     the space buys: half again the rhythm seven could afford, and the row stays on screen lower. */
+  gap: 38px;
   font-weight: 700;
   font-size: 13px;
   line-height: 1.4;
@@ -771,7 +770,7 @@
 }
 
 /* ---------- The phone menu ----------
-   At 1360 the bar drops its links, its language and its Login all at once and a trigger takes their
+   At 1340 the bar drops its links, its language and its Login all at once and a trigger takes their
    place, so nothing is ever offered twice. What they drop into is a sheet, not a dropdown. */
 .fh__burger {
   display: none;
@@ -1113,7 +1112,7 @@
     inset: -8% -26% -52% -42%;
   }
 }
-@media (max-width: 1360px) {
+@media (max-width: 1340px) {
   .fh__links {
     display: none;
   }
@@ -1142,7 +1141,7 @@
   }
 }
 /* Above it the panel can never open, so it must not be reachable. */
-@media (min-width: 1361px) {
+@media (min-width: 1341px) {
   .fh__menu,
   .fh__scrim {
     display: none;

@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * nav's own links, so it also closes if the viewport grows past that — otherwise the state would
  * survive invisibly and the trigger would come back already open.
  */
-export function useNavMenu(query = '(max-width: 1360px)') {
+export function useNavMenu(query = '(max-width: 1340px)') {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);

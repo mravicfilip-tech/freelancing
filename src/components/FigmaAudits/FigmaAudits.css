@@ -89,7 +89,7 @@
   gap: 20px;
   padding: 40px 48px 44px 0;
 }
-.av__cell:not(:first-child) {
+.av__cell ~ .av__cell {
   padding-left: 48px;
 }
 /* The rules are elements rather than borders, so they can be drawn in on entrance. */
@@ -242,17 +242,22 @@
 }
 
 /* ---------- Ledger strip ---------- */
+/* the fields take the lattice's column inset so each sits under its cell */
 .av__ledger {
   padding: 0 var(--av-inset);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px 48px;
+  gap: 24px 0;
 }
 .av__field {
+  padding-right: 48px;
   display: flex;
   align-items: baseline;
   gap: 14px;
   min-width: 0;
+}
+.av__field ~ .av__field {
+  padding-left: 48px;
 }
 .av__fieldLabel {
   font-size: 13px;
@@ -310,7 +315,13 @@
     padding: 32px 28px 36px 0;
     gap: 16px;
   }
-  .av__cell:not(:first-child) {
+  .av__cell ~ .av__cell {
+    padding-left: 28px;
+  }
+  .av__field {
+    padding-right: 28px;
+  }
+  .av__field ~ .av__field {
     padding-left: 28px;
   }
   .av__kind {
@@ -322,7 +333,7 @@
     grid-template-columns: 1fr;
   }
   .av__cell,
-  .av__cell:not(:first-child) {
+  .av__cell ~ .av__cell {
     padding: 32px 0 36px;
   }
   .av__ruleV {
@@ -331,6 +342,10 @@
   .av__ledger {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+  .av__field,
+  .av__field ~ .av__field {
+    padding: 0;
   }
 }
 @media (max-width: 720px) {

@@ -26,9 +26,8 @@ export function useHowToBuyMotion(root: RefObject<HTMLElement | null>) {
           const tl = gsap.timeline({ paused: true });
           tl.from(el.querySelectorAll('.hb__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.08 }, 0);
           tl.from(el.querySelector('.hb__intro'), { opacity: 0, y: 12, duration: 0.7, ease: 'power3.out' }, 0.35);
-          tl.from(el.querySelector('.hb__gutter'), { scaleY: 0, duration: 1.1, ease: 'expo.inOut' }, 0.25);
           tl.from(el.querySelectorAll('.hb__step'), { opacity: 0, y: 18, duration: 0.75, ease: 'expo.out', stagger: 0.07 }, 0.45);
-          tl.from(el.querySelector('.hb__panel'), { opacity: 0, y: 18, duration: 0.75, ease: 'expo.out' }, 0.5);
+          tl.from(el.querySelector('.hb__card'), { opacity: 0, y: 18, duration: 0.75, ease: 'expo.out' }, 0.5);
 
           const st = ScrollTrigger.create({ trigger: el, start: 'top 75%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();

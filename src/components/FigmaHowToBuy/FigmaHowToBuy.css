@@ -120,13 +120,6 @@
   letter-spacing: 0.01em;
   color: #2c2e31;
 }
-/* The illustration sits under the copy and fills what is left of the card. */
-.hb__art {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  margin: 40px -32px -32px;
-}
 /* ---------- The card's background (Figma 2715:1237, 2715:2376, 2715:2469) ----------
    Each step's card carries its own exported background: the sign-up card a blue sweep with orbit
    lines across its foot, the claim card a glow in its bottom-left corner — both under the file's
@@ -192,6 +185,7 @@
 }
 .hb__cardInner {
   position: relative;
+  z-index: 1;
 }
 
 /* ---------- Rail ---------- */
@@ -354,10 +348,8 @@
   }
   .hb__card {
     padding: 24px;
-    min-height: 300px;
-  }
-  .hb__art {
-    margin: 24px -24px -24px;
+    /* the copy keeps the top, the scene stands on the floor — the card holds both */
+    min-height: 400px;
   }
   /* Three steps will not sit side by side at this width; they stack, each on its own rule. */
   .hb__rail {

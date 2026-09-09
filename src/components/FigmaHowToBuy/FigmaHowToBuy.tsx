@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { StepIllustration } from './illustrations';
 import { useHowToBuyMotion } from './useHowToBuyMotion';
 import './FigmaHowToBuy.css';
 
@@ -98,13 +99,14 @@ export function FigmaHowToBuy() {
                 </>
               )}
             </div>
+            {/* The step's illustration, its own layer over the background and under the copy. */}
+            <StepIllustration key={`art-${step.id}`} step={step.id} />
             {/* keyed on the step so the card re-runs its own entrance as the rail switches */}
             <div className="hb__cardInner" key={step.id}>
               <div className="hb__copy">
                 <h3 className="hb__cardTitle">{step.title}</h3>
                 <p className="hb__body">{step.body}</p>
               </div>
-              <div className="hb__art" data-step={step.id} aria-hidden="true" />
             </div>
           </div>
 

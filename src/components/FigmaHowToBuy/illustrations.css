@@ -68,7 +68,29 @@
 }
 
 /* ---------- product parts, in the site's system ---------- */
-.hb__scene .hbi-win{width:560px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 32px 56px -32px rgba(18,36,51,.22);overflow:hidden}
+/* Step 1's page, and step 2's body and foot — laid out here rather than inline on the markup, so
+   the phone block at the end of this file can re-lay them. */
+.hb__scene .s1a-logo{display:block;width:33px;height:17px}
+.hb__scene .s1a-cta{height:40px}
+.hb__scene .s1a-ok{height:40px}
+.hb__scene .s1a-ok .hbi-mono{font-size:14px}
+.hb__scene .s1a-h{margin-top:30px;font-weight:500;font-size:22px;letter-spacing:-.6px;color:var(--ink)}
+.hb__scene .s1a-bars{display:flex;flex-direction:column;gap:8px;margin-top:14px;width:320px}
+.hb__scene .s1a-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.hb__scene .s1a-chips .hbi-mono{font-size:13px}
+.hb__scene .s2a-body{position:relative;height:150px;margin-top:14px}
+.hb__scene .s2a-a,.hb__scene .s2a-b{position:absolute;inset:0;display:flex;flex-direction:column}
+.hb__scene .s2a-a{gap:2px}
+.hb__scene .s2a-b{gap:10px;opacity:0}
+.hb__scene .hbi-fieldRow{display:flex;gap:10px}
+.hb__scene .hbi-fieldRow .hbi-field{flex:1}
+.hb__scene .hbi-field--card{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hb__scene .hbi-brands{display:inline-flex;gap:4px;flex:none}
+.hb__scene .hbi-brands i{width:22px;height:14px;border-radius:3px}
+.hb__scene .s2a-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #eef0f3;font-size:13px;color:var(--muted)}
+.hb__scene .s2a-sum{font-weight:600;color:var(--ink)}
+.hb__scene .hbi-done{display:inline-flex;align-items:center;gap:6px}
+.hb__scene .hbi-win{left:107px;top:142px;width:560px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 32px 56px -32px rgba(18,36,51,.22);overflow:hidden}
 .hb__scene .hbi-win__bar{position:relative;display:flex;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid #eef0f3}
 .hb__scene .hbi-win__dots{display:flex;gap:6px}
 .hb__scene .hbi-win__dots i{width:10px;height:10px;border-radius:50%;background:#e3e6ea}
@@ -91,6 +113,7 @@
 .hb__scene .hbi-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
 .hb__scene .hbi-dot--amber{background:#e0a100}
 .hb__scene .hbi-dot--grey{background:#c5cbd1}
+.hb__scene .hbi-sheet--pay{left:107px;top:142px;width:560px;padding:20px}
 .hb__scene .hbi-sheet{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 32px 56px -32px rgba(18,36,51,.22)}
 .hb__scene .hbi-sheet__h{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .hb__scene .hbi-sheet__t{font-weight:600;font-size:15px;letter-spacing:-.2px;color:var(--ink)}
@@ -214,13 +237,202 @@
   }
 }
 
-/* On a phone the scene stands on the card's floor instead of its middle, so the copy above it
-   always has its own room whatever the copy runs to. */
+/* ---------------------------------------------------------------------------------------------
+   The phone frame. A phone does not get the desktop scene shrunk to fit — at 294px of card the
+   774-wide canvas lands at 0.38 and the window's own type is four pixels tall. It gets a portrait
+   frame of its own, 300 wide, and the same parts are re-laid into one column: the window and the
+   sheet fill the width, the rows lose their second line, the dashboard's sidebar becomes its top
+   bar, and the cursor goes — there is no pointer to draw on a touch screen. The story each scene
+   tells, and every keyframe that tells it, is unchanged.
+   --------------------------------------------------------------------------------------------- */
 @media (max-width: 720px) {
   .hb__scene {
-    top: auto;
-    bottom: 0;
-    transform-origin: 50% 100%;
-    transform: translateX(-50%) scale(var(--k, 1));
+    left: 0;
+    top: 0;
+    bottom: auto;
+    width: 300px;
+    height: 322px;
+    transform-origin: 0 0;
+    transform: scale(var(--k, 1));
+  }
+  .hb__scene .hbi-cur,
+  .hb__scene .hbi-click {
+    display: none;
+  }
+
+  /* The window and the sheet are the frame, and they stand in the middle of it — the three
+     scenes are not the same height, and a shorter one should sit centred rather than leave its
+     slack all at the foot. */
+  .hb__scene .hbi-win,
+  .hb__scene .hbi-sheet--pay {
+    left: 0;
+    top: 50%;
+    width: 300px;
+    transform: translateY(-50%);
+  }
+  .hb__scene .hbi-sheet--pay {
+    padding: 16px;
+  }
+  .hb__scene .hbi-win__page {
+    padding: 16px;
+  }
+  .hb__scene .hbi-win__url {
+    width: 186px;
+    font-size: 10.5px;
+  }
+
+  /* ---- step 1: the call to action is the page's own full-width button ---- */
+  .hb__scene .hbi-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .hb__scene .s1a-logo {
+    width: 40px;
+    height: 21px;
+  }
+  .hb__scene .hbi-nav__r,
+  .hb__scene .s1a-cta {
+    display: grid;
+    width: 100%;
+  }
+  .hb__scene .s1a-cta > * {
+    justify-self: stretch;
+    width: 100%;
+  }
+  .hb__scene .s1a-h {
+    margin-top: 20px;
+    font-size: 19px;
+    letter-spacing: -0.4px;
+  }
+  .hb__scene .s1a-bars {
+    width: 100%;
+    margin-top: 12px;
+  }
+  .hb__scene .s1a-chips {
+    margin-top: 16px;
+  }
+  .hb__scene .s1a-chips .hbi-ch {
+    height: 30px;
+    padding: 0 11px;
+    font-size: 12px;
+  }
+  .hb__scene .s1a-chips .hbi-mono {
+    font-size: 11px;
+  }
+
+  /* ---- step 2: one asset per line, nothing else on it ---- */
+  .hb__scene .hbi-sheet__t {
+    font-size: 14px;
+  }
+  .hb__scene .hbi-seg {
+    height: 28px;
+  }
+  .hb__scene .hbi-seg i {
+    height: 22px;
+  }
+  .hb__scene .hbi-seg span {
+    padding: 0 11px;
+    font-size: 11px;
+  }
+  .hb__scene .s2a-body {
+    height: 138px;
+    margin-top: 12px;
+  }
+  .hb__scene .hbi-lr {
+    height: 44px;
+    gap: 10px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+  /* the fiat rate is the first thing to go — the symbol and the amount carry the choice */
+  .hb__scene .hbi-lr small {
+    display: none;
+  }
+  .hb__scene .hbi-field {
+    padding: 10px 12px;
+  }
+  .hb__scene .hbi-field__v {
+    font-size: 14px;
+  }
+  .hb__scene .s2a-foot {
+    margin-top: 12px;
+    padding-top: 12px;
+    font-size: 12px;
+  }
+  .hb__scene .s2a-sum .hbi-mono {
+    font-size: 11px;
+  }
+
+  /* ---- step 3: the dashboard's sidebar becomes its top bar ---- */
+  .hb__scene .hbi-dash {
+    grid-template-columns: minmax(0, 1fr);
+    margin: -16px;
+  }
+  .hb__scene .hbi-dash__side {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-right: 0;
+    border-bottom: 1px solid #eef0f3;
+  }
+  .hb__scene .hbi-dash__brand {
+    margin: 0;
+  }
+  .hb__scene .hbi-dash__nav {
+    flex-direction: row;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .hb__scene .hbi-dash__nav span {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+  /* two tabs are all the strip has room for; the two it keeps are the two the story uses */
+  .hb__scene .hbi-dash__nav span:nth-child(2),
+  .hb__scene .hbi-dash__nav span:nth-child(4) {
+    display: none;
+  }
+  .hb__scene .hbi-dash__main {
+    gap: 12px;
+    padding: 14px;
+  }
+  .hb__scene .hbi-dash__tiles {
+    gap: 10px;
+  }
+  .hb__scene .hbi-tile {
+    padding: 10px 11px;
+  }
+  .hb__scene .hbi-tile b {
+    font-size: 8.5px;
+  }
+  .hb__scene .hbi-tile span {
+    margin-top: 4px;
+    font-size: 17px;
+  }
+  .hb__scene .hbi-tile small {
+    margin-top: 4px;
+    font-size: 9.5px;
+    line-height: 1.35;
+  }
+  /* the allocation stacks: what it is, then what you can do about it */
+  .hb__scene .hbi-claim {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 11px;
+    padding: 12px;
+  }
+  .hb__scene .hbi-claim b {
+    font-size: 13px;
+  }
+  .hb__scene .hbi-claim small {
+    font-size: 11px;
+  }
+  .hb__scene .hbi-claim__r {
+    justify-content: space-between;
+  }
+  .hb__scene .hbi-claim__r .hbi-btn {
+    min-width: 96px;
   }
 }

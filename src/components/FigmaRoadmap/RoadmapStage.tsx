@@ -19,6 +19,27 @@ const rowCentreOnRail = (row: HTMLElement, rail: HTMLElement) => {
   return r.top + r.height / 2 - rail.getBoundingClientRect().top;
 };
 
+/** Where a level stands, from its own ticks — all done, some done, none yet. */
+const stageOf = (l: Level) => (l.items.every((i) => i.done) ? 'done' : l.items.some((i) => i.done) ? 'live' : 'ahead');
+
+/**
+ * The two layouts are different objects, not one reflowed — so the component picks between them.
+ * The switch is at 900 rather than the usual 720: below it the stage's two columns leave the cards
+ * a 325px lane, where five milestones wrap to three lines each against a column of level names
+ * trailing empty leaders. The timeline is the better object well before a phone.
+ */
+const NARROW = '(max-width: 900px)';
+function usePhone() {
+  const [phone, setPhone] = useState(() => window.matchMedia(NARROW).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(NARROW);
+    const on = () => setPhone(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return phone;
+}
+
 function Card({ level, active }: { level: Level; active: boolean }) {
   return (
     <article className="rs__card" id={`rs-card-${level.n}`} data-active={active || undefined} aria-labelledby={`rs-card-h-${level.n}`}>
@@ -49,6 +70,9 @@ export function RoadmapStage() {
   const [active, setActive] = useState(0);
   const [shift, setShift] = useState(0);
   const [markerY, setMarkerY] = useState<number | null>(null);
+  const panels = useRef<(HTMLDivElement | null)[]>([]);
+  const [heights, setHeights] = useState<number[]>([]);
+  const phone = usePhone();
 
   useStageMotion(root);
 
@@ -81,6 +105,7 @@ export function RoadmapStage() {
   /* The marker sits on the active level's centre line, and the stack slides so that level's card
      is centred in the stage — both measured, so the two columns cannot drift apart. */
   useLayoutEffect(() => {
+    if (phone) return;
     const measure = () => {
       // the marker rides to the open level's centre line (2718:2841)
       const row = list.current?.children[active] as HTMLElement | undefined;
@@ -104,15 +129,30 @@ export function RoadmapStage() {
       ro.disconnect();
       window.removeEventListener('resize', measure);
     };
-  }, [active]);
+  }, [active, phone]);
 
-  // On a phone the level list scrolls; keep the level in play in view without moving the page.
-  useEffect(() => {
-    const el = list.current;
-    const row = el?.children[active] as HTMLElement | undefined;
-    if (!el || !row || el.scrollWidth <= el.clientWidth) return;
-    el.scrollTo({ left: row.offsetLeft - (el.clientWidth - row.offsetWidth) / 2, behavior: 'smooth' });
-  }, [active]);
+  /* Every level keeps its own panel, so opening one and closing another is a move rather than a
+     swap — a panel mounted fresh on each step has no height to leave from and can only snap. Each
+     is given its measured height instead of `auto`, which is what a height can be tweened from;
+     the levels vary by over 160px, and that is a jolt every time the band moves on by itself. */
+  useLayoutEffect(() => {
+    if (!phone) return;
+    const measure = () => {
+      const next = panels.current.map((el) => {
+        if (!el) return 0;
+        const held = el.style.height;
+        el.style.height = 'auto';
+        const h = el.offsetHeight;
+        el.style.height = held;
+        return h;
+      });
+      setHeights((prev) => (prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    for (const el of panels.current) if (el?.firstElementChild) ro.observe(el.firstElementChild);
+    return () => ro.disconnect();
+  }, [phone]);
 
   return (
     <section ref={root} className="rs" id="roadmap" data-node-id="2717:2477" data-motion="pending" aria-labelledby="rs-title">
@@ -125,56 +165,85 @@ export function RoadmapStage() {
           </span>
         </h2>
 
-        <div className="rs__stage" data-node-id="2717:2490">
-          <div className="rs__index">
-            <ol className="rs__levels" ref={list}>
-            {LEVELS.map((l, i) => (
-              <li className="rs__level" key={l.n} data-active={i === active || undefined}>
-                <button
-                  type="button"
-                  aria-current={i === active ? 'step' : undefined}
-                  aria-controls={`rs-card-${l.n}`}
-                  onClick={() => pick(i)}
-                >
-                  <i className="rs__leader" aria-hidden="true" />
-                  <span className="rs__levelName">Level {Number(l.n)}</span>
-                  <span className="rs__sr"> — {l.name}</span>
-                </button>
-              </li>
+        {phone ? (
+          /* A phone gets a timeline, not two columns: a spine down the left with a node per
+             level, and the level in play opening its own card directly under its row — so the
+             level and what it holds are one object rather than a list and a card far below it. */
+          <div className="rs__stage rs__stage--tl" data-node-id="2717:2490">
+            <ol className="rs__tl">
+              {LEVELS.map((l, i) => (
+                <li className="rs__tlItem" key={l.n} data-state={stageOf(l)} data-active={i === active || undefined}>
+                  <button type="button" aria-expanded={i === active} aria-controls={`rs-card-${l.n}`} onClick={() => pick(i)}>
+                    <span className="rs__tlName">Level {Number(l.n)}</span>
+                    <span className="rs__sr"> — {l.name}</span>
+                    <span className="rs__tlLabel">{l.label}</span>
+                  </button>
+                  <div
+                    className="rs__tlPanel"
+                    ref={(el) => {
+                      panels.current[i] = el;
+                    }}
+                    inert={i !== active || undefined}
+                    style={{ height: i === active ? heights[i] : 0 }}
+                  >
+                    <Card level={l} active={i === active} />
+                  </div>
+                </li>
               ))}
             </ol>
           </div>
+        ) : (
+          <div className="rs__stage" data-node-id="2717:2490">
+            <div className="rs__index">
+              <ol className="rs__levels" ref={list}>
+                {LEVELS.map((l, i) => (
+                  <li className="rs__level" key={l.n} data-active={i === active || undefined}>
+                    <button
+                      type="button"
+                      aria-current={i === active ? 'step' : undefined}
+                      aria-controls={`rs-card-${l.n}`}
+                      onClick={() => pick(i)}
+                    >
+                      <i className="rs__leader" aria-hidden="true" />
+                      <span className="rs__levelName">Level {Number(l.n)}</span>
+                      <span className="rs__sr"> — {l.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
 
-          <div className="rs__rail" ref={rail} aria-hidden="true">
-            <span className="rs__railLine" />
-            <img
-              className="rs__marker"
-              src={MARKER}
-              alt=""
-              width={24}
-              height={24}
-              style={markerY === null ? { opacity: 0 } : { transform: `translateY(${markerY}px)` }}
-            />
-          </div>
+            <div className="rs__rail" ref={rail} aria-hidden="true">
+              <span className="rs__railLine" />
+              <img
+                className="rs__marker"
+                src={MARKER}
+                alt=""
+                width={24}
+                height={24}
+                style={markerY === null ? { opacity: 0 } : { transform: `translateY(${markerY}px)` }}
+              />
+            </div>
 
-          <div className="rs__cards" ref={viewport}>
-            <div className="rs__stack" ref={stack} style={{ transform: `translateY(${shift}px)` }}>
-              {/* A level's label rides above its own card; levels without one render the card alone. */}
-              {LEVELS.map((l, i) =>
-                l.label ? (
-                  <div className="rs__group" key={l.n} data-node-id="2718:2830">
-                    <p className="rs__stageLabel" data-node-id="2718:2736">
-                      {l.label}
-                    </p>
-                    <Card level={l} active={i === active} />
-                  </div>
-                ) : (
-                  <Card key={l.n} level={l} active={i === active} />
-                ),
-              )}
+            <div className="rs__cards" ref={viewport}>
+              <div className="rs__stack" ref={stack} style={{ transform: `translateY(${shift}px)` }}>
+                {/* A level's label rides above its own card; levels without one render the card alone. */}
+                {LEVELS.map((l, i) =>
+                  l.label ? (
+                    <div className="rs__group" key={l.n} data-node-id="2718:2830">
+                      <p className="rs__stageLabel" data-node-id="2718:2736">
+                        {l.label}
+                      </p>
+                      <Card level={l} active={i === active} />
+                    </div>
+                  ) : (
+                    <Card key={l.n} level={l} active={i === active} />
+                  ),
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

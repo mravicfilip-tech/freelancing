@@ -259,6 +259,7 @@
    Hold the animated parts until GSAP has written their start states. */
 .rs[data-motion='pending'] .rs__lineInner,
 .rs[data-motion='pending'] .rs__level,
+.rs[data-motion='pending'] .rs__tlItem,
 .rs[data-motion='pending'] .rs__cards,
 .rs[data-motion='pending'] .rs__railLine {
   visibility: hidden;
@@ -269,7 +270,11 @@
   .rs__stack,
   .rs__card,
   .rs__leader,
-  .rs__levelName {
+  .rs__levelName,
+  .rs__tlPanel,
+  .rs__tlName,
+  .rs__tlLabel,
+  .rs__tlItem::before {
     transition: none;
   }
 }
@@ -309,14 +314,16 @@
     gap: 48px;
   }
 }
-/* On a phone the two columns cannot stand side by side, and a horizontal strip of level names
-   only runs off the screen. The section becomes what a roadmap is on a phone: a vertical
-   timeline — a spine down the left with a node per level, the level beside it, and the open
-   level's card under the list. The spine and its nodes are drawn by the list itself, so nothing
-   here depends on the measurement the desktop rail needs. */
-@media (max-width: 720px) {
+/* ---------------------------------------------------------------------------------------------
+   Narrow. The two columns cannot stand side by side here, and a list of levels with its card
+   somewhere below it reads as two unrelated things. The section becomes what a roadmap is on a
+   phone: a timeline. A spine runs down the left with a node per level — filled where the stage is
+   done, lit where the band is, hollow where it is still ahead — and the level in play opens its
+   own card directly under its row. `RoadmapStage.tsx` renders this instead of the stage, so none
+   of the desktop measurement applies.
+   --------------------------------------------------------------------------------------------- */
+@media (max-width: 900px) {
   .rs {
-    --rs-stage-h: auto;
     --rs-inset: 0px;
   }
   .rs__frame {
@@ -327,93 +334,125 @@
   .rs__title {
     letter-spacing: -1.1px;
   }
-  .rs__stage {
+  /* the stage keeps its two rules; everything between them is the timeline */
+  .rs__stage--tl {
     display: block;
     height: auto;
-    padding: 24px 0;
+    padding: 12px 0;
     overflow: visible;
   }
 
-  .rs__index {
-    height: auto;
-  }
-  .rs__levels {
+  .rs__tl {
     position: relative;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    height: auto;
-    padding: 0 0 0 30px;
-    /* the timeline stands still; only the desktop index rides to meet the marker */
-    transform: none !important;
+    margin: 0;
+    padding: 0 8px 0 28px;
+    list-style: none;
   }
   /* the spine, from the first node's centre to the last */
-  .rs__levels::before {
+  .rs__tl::before {
     content: '';
     position: absolute;
     left: 5px;
-    top: 22px;
-    bottom: 22px;
+    top: 26px;
+    bottom: 26px;
     width: 1px;
     background: var(--rs-spine);
   }
-  .rs__level {
+  .rs__tlItem {
     position: relative;
-    width: 100%;
   }
-  .rs__level::before {
+  .rs__tlItem::before {
     content: '';
     position: absolute;
-    left: -30px;
-    top: 50%;
+    left: -28px;
+    top: 26px;
     width: 11px;
     height: 11px;
     margin-top: -5.5px;
     border: 1px solid var(--rs-spine);
     border-radius: 50%;
     background: var(--rs-bg);
-    transition: background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+    transition: background-color var(--rs-move) var(--rs-ease), border-color var(--rs-move) var(--rs-ease),
+      box-shadow var(--rs-move) var(--rs-ease);
   }
-  /* the level in play takes the marker's own lime, and its halo */
-  .rs__level[data-active]::before {
+  /* a stage already delivered reads as filled, the one under way as a lit ring, and one still
+     ahead stays open and grey */
+  .rs__tlItem[data-state='done']::before {
+    border-color: var(--rs-body);
+    background: var(--rs-body);
+  }
+  .rs__tlItem[data-state='live']::before {
+    border-color: #f9ff38;
+  }
+  /* wherever the band is standing takes the marker's own lime, and its halo */
+  .rs__tlItem[data-active]::before {
     border-color: #f9ff38;
     background: #f9ff38;
-    box-shadow: 0 0 0 4px rgb(249 255 56 / 12%);
+    box-shadow: 0 0 0 4px rgb(249 255 56 / 14%);
   }
-  .rs__level button {
-    justify-content: flex-start;
-    gap: 0;
+  .rs__tlItem > button {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
     width: 100%;
-    padding: 12px 0;
+    padding: 15px 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
   }
-  .rs__leader {
-    display: none;
+  .rs__tlItem > button:focus-visible {
+    outline: 2px solid var(--rs-ink);
+    outline-offset: 4px;
+    border-radius: 6px;
   }
-  .rs__levelName {
-    font-size: 19px;
-    letter-spacing: -0.57px;
+  .rs__tlName {
+    font-family: var(--fh-display);
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 1.12;
+    letter-spacing: -0.63px;
+    color: var(--rs-dim);
+    transition: color var(--rs-move) var(--rs-ease);
   }
-  /* the desktop rail and its measured marker have no place in the stacked layout */
-  .rs__rail {
-    display: none;
+  .rs__tlItem[data-active] .rs__tlName {
+    color: var(--rs-ink);
+  }
+  .rs__tlLabel {
+    flex: none;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--rs-dim);
+    white-space: nowrap;
+    transition: color var(--rs-move) var(--rs-ease);
+  }
+  .rs__tlItem[data-active] .rs__tlLabel {
+    color: var(--rs-body);
   }
 
-  .rs__cards {
-    height: auto;
-    margin-top: 24px;
-    padding: 0;
+  .rs__tlPanel {
+    height: 0;
+    overflow: hidden;
+    transition: height var(--rs-move) var(--rs-ease);
   }
-  .rs__stack {
-    transform: none !important;
+  .rs__tlPanel .rs__card {
+    margin: 2px 0 22px;
+    gap: 20px;
+    padding: 20px;
+    opacity: 1;
   }
-  /* Only the open level is set on a phone; the neighbours would be three screens of scrolling. */
-  .rs__card {
-    display: none;
+  /* a checklist hangs its marks off the first line, not the middle of a wrapped sentence */
+  .rs__item {
+    gap: 10px;
+    align-items: flex-start;
   }
-  .rs__card[data-active] {
-    display: flex;
+  .rs__item img {
+    margin-top: 5px;
   }
-  .rs__group {
-    gap: 16px;
+  .rs__item p {
+    font-size: 15px;
+    line-height: 1.55;
   }
 }

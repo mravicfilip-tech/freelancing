@@ -26,9 +26,9 @@ export function useStageMotion(root: RefObject<HTMLElement | null>) {
         const ctx = gsap.context(() => {
           const tl = gsap.timeline({ paused: true });
           tl.from(el.querySelectorAll('.rs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out' }, 0);
-          tl.from(el.querySelector('.rs__railLine'), { scaleY: 0, transformOrigin: '50% 0', duration: 1.1, ease: 'expo.inOut' }, 0.25);
-          tl.from(el.querySelectorAll('.rs__level'), { opacity: 0, x: 24, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.35);
-          tl.from(el.querySelector('.rs__cards'), { opacity: 0, y: 24, duration: 0.9, ease: 'expo.out' }, 0.5);
+          tl.from(el.querySelectorAll('.rs__railLine'), { scaleY: 0, transformOrigin: '50% 0', duration: 1.1, ease: 'expo.inOut' }, 0.25);
+          tl.from(el.querySelectorAll('.rs__level, .rs__tlItem'), { opacity: 0, x: 24, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.35);
+          tl.from(el.querySelectorAll('.rs__cards'), { opacity: 0, y: 24, duration: 0.9, ease: 'expo.out' }, 0.5);
 
           const st = ScrollTrigger.create({ trigger: el, start: 'top 75%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();

@@ -29,9 +29,9 @@ const LOCK =
 
 const cur = (cls: string) => `<span class="hbi-cur ${cls}">${CURSOR}</span><span class="hbi-click ${cls}k"></span>`;
 const coin = (k: 'eth' | 'usdt' | 'sol', d = 24) => `<img src="${A[k]}" alt="" style="width:${d}px;height:${d}px">`;
-/** A browser window at the card's own left edge, holding a page. */
+/** A browser window, placed by CSS so a phone can re-frame it. */
 const win = (cls: string, url: string, page: string) => `
-  <div class="hbi-win ${cls}" style="left:107px;top:142px">
+  <div class="hbi-win ${cls}">
     <div class="hbi-win__bar"><span class="hbi-win__dots"><i></i><i></i><i></i></span><span class="hbi-win__url">${LOCK}${url}</span></div>
     <div class="hbi-win__page">${page}</div>
   </div>`;
@@ -43,39 +43,39 @@ const SITE = () =>
     '<span class="hbi-type s1a-url">remittixpresale.io</span><i class="hbi-caret s1a-caret"></i>',
     `<div class="s1a-page">
        <div class="hbi-nav">
-         <img src="${A.logo}" alt="" style="width:33px;height:17px;display:block">
+         <img class="s1a-logo" src="${A.logo}" alt="">
          <span class="hbi-nav__r">
-           <span class="hbi-sw hbi-sw--r" style="height:40px">
+           <span class="hbi-sw hbi-sw--r s1a-cta">
              <span class="hbi-btn s1a-btn">Connect Wallet &amp; Pay ${CHEV}</span>
-             <span class="hbi-ch hbi-ch--dark s1a-ok" style="height:40px"><span class="hbi-mono" style="font-size:14px">0x74…27e4</span><i class="hbi-dot"></i></span>
+             <span class="hbi-ch hbi-ch--dark s1a-ok"><span class="hbi-mono">0x74…27e4</span><i class="hbi-dot"></i></span>
            </span>
          </span>
        </div>
-       <div style="margin-top:30px;font-weight:500;font-size:22px;letter-spacing:-.6px;color:var(--ink)">Buy $RTX before listing.</div>
-       <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;width:320px"><i class="hbi-bar8" style="width:100%"></i><i class="hbi-bar8" style="width:72%"></i></div>
-       <div style="margin-top:22px;display:flex;gap:8px"><span class="hbi-ch">${coin('eth', 18)}Ethereum · ERC20<i class="hbi-dot"></i></span><span class="hbi-ch"><span class="hbi-mono" style="font-size:13px">1 RTX = $0.0271</span></span></div>
+       <div class="s1a-h">Buy $RTX before listing.</div>
+       <div class="s1a-bars"><i class="hbi-bar8" style="width:100%"></i><i class="hbi-bar8" style="width:72%"></i></div>
+       <div class="s1a-chips"><span class="hbi-ch">${coin('eth', 18)}Ethereum · ERC20<i class="hbi-dot"></i></span><span class="hbi-ch"><span class="hbi-mono">1 RTX = $0.0271</span></span></div>
      </div>`,
   ) + cur('s1a-cur');
 
 /** Step 2 — the choice moves from ETH to USDT, then the switch flips and a card form takes over. */
 const PAY_WITH = () => `
-  <div class="hbi-sheet" style="left:107px;top:142px;width:560px;padding:20px">
+  <div class="hbi-sheet hbi-sheet--pay">
     <div class="hbi-sheet__h"><span class="hbi-sheet__t">Pay with</span>
       <span class="hbi-seg"><i class="s2a-thumb"></i><span class="s2a-t0">Crypto</span><span class="s2a-t1">Card</span></span></div>
-    <div style="position:relative;height:150px;margin-top:14px">
-      <div class="s2a-a" style="position:absolute;inset:0;display:flex;flex-direction:column;gap:2px">
+    <div class="s2a-body">
+      <div class="s2a-a">
         <span class="hbi-lr s2a-r0"><span class="hbi-rad"></span>${coin('eth')}ETH<small>≈ $2,480 / ETH</small><span class="hbi-mono">2.41</span></span>
         <span class="hbi-lr s2a-r1"><span class="hbi-rad"></span>${coin('usdt')}USDT<small>≈ $1.00</small><span class="hbi-mono">1,204.00</span></span>
         <span class="hbi-lr"><span class="hbi-rad"></span>${coin('sol')}SOL<small>≈ $148 / SOL</small><span class="hbi-mono">38.20</span></span>
       </div>
-      <div class="s2a-b" style="position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;opacity:0">
-        <div class="hbi-field" style="display:flex;align-items:center;justify-content:space-between"><span><span class="hbi-field__l">Card number</span><br><span class="hbi-field__v hbi-mono">•••• •••• •••• 4417</span></span><span style="display:inline-flex;gap:4px"><i style="width:22px;height:14px;border-radius:3px;background:#1a1f71"></i><i style="width:22px;height:14px;border-radius:3px;background:#eb001b"></i></span></div>
-        <div style="display:flex;gap:10px"><div class="hbi-field" style="flex:1"><span class="hbi-field__l">Expiry</span><br><span class="hbi-field__v hbi-mono">09 / 28</span></div><div class="hbi-field" style="flex:1"><span class="hbi-field__l">CVC</span><br><span class="hbi-field__v hbi-mono">•••</span></div></div>
+      <div class="s2a-b">
+        <div class="hbi-field hbi-field--card"><span><span class="hbi-field__l">Card number</span><br><span class="hbi-field__v hbi-mono">•••• •••• •••• 4417</span></span><span class="hbi-brands"><i style="background:#1a1f71"></i><i style="background:#eb001b"></i></span></div>
+        <div class="hbi-fieldRow"><div class="hbi-field"><span class="hbi-field__l">Expiry</span><br><span class="hbi-field__v hbi-mono">09 / 28</span></div><div class="hbi-field"><span class="hbi-field__l">CVC</span><br><span class="hbi-field__v hbi-mono">•••</span></div></div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid #eef0f3;font-size:13px;color:var(--muted)">
+    <div class="s2a-foot">
       <span>You pay</span>
-      <span class="hbi-sw hbi-sw--r s2a-sum" style="font-weight:600;color:var(--ink)"><span><b class="hbi-mono">0.50 ETH</b> → <b class="hbi-mono">18,420 RTX</b></span><span><b class="hbi-mono">500 USDT</b> → <b class="hbi-mono">18,420 RTX</b></span><span><b class="hbi-mono">$1,240.00</b> → <b class="hbi-mono">18,420 RTX</b></span></span>
+      <span class="hbi-sw hbi-sw--r s2a-sum"><span><b class="hbi-mono">0.50 ETH</b> → <b class="hbi-mono">18,420 RTX</b></span><span><b class="hbi-mono">500 USDT</b> → <b class="hbi-mono">18,420 RTX</b></span><span><b class="hbi-mono">$1,240.00</b> → <b class="hbi-mono">18,420 RTX</b></span></span>
     </div>
   </div>
   ${cur('s2a-cur')}`;
@@ -104,7 +104,7 @@ const DASHBOARD = () =>
            </span>
            <span class="hbi-claim__r">
              <span class="hbi-sw s3c-st"><span class="hbi-st hbi-st--grey"><i></i>Pending</span><span class="hbi-st hbi-st--green"><i></i>Claimable</span></span>
-             <span class="hbi-btn hbi-btn--sm s3c-btn"><span class="hbi-sw"><span>Claim</span><span style="display:inline-flex;align-items:center;gap:6px">Claimed ${TICK}</span></span></span>
+             <span class="hbi-btn hbi-btn--sm s3c-btn"><span class="hbi-sw"><span>Claim</span><span class="hbi-done">Claimed ${TICK}</span></span></span>
            </span>
          </div>
        </div>
@@ -120,9 +120,16 @@ const SCENES: Record<string, () => string> = { 'sign-up': SITE, currency: PAY_WI
  */
 export const SCENE_MS: Record<string, number> = { 'sign-up': 10000, currency: 12000, claim: 12000 };
 
-/** The dashboard's balance, counted on the scene's own 12s loop rather than a second timeline. */
-/** The subject — window or sheet — plus a margin, for the phone fit. */
-const SUBJECT_W = 680;
+/** The desktop canvas — the 774x440 frame the file gives the card. */
+const CANVAS_W = 774;
+const CANVAS_H = 440;
+/**
+ * The phone canvas. A phone does not get the desktop scene shrunk — at 294px of card the window
+ * would land at 0.4 scale and its own type would be four pixels tall. It gets its own portrait
+ * frame instead, which the CSS below re-lays the same parts into: one column, full-width window,
+ * no cursor. The art box carries this ratio, so `--k` is always the box over 300.
+ */
+const PHONE_W = 300;
 
 const LOOP = 12000;
 const COUNT_FROM = 0.1;
@@ -130,9 +137,8 @@ const COUNT_TO = 0.3;
 const ease = (t: number) => 1 - (1 - t) ** 3;
 
 /**
- * A fixed 774x440 canvas fitted into the card. Desktop cards are the design's own height, so the
- * scene sits at 1:1; a phone's card is far narrower than 774, where fitting by width would leave
- * the scene unreadably small — there it fits by height instead and the card clips the sides.
+ * Fit the scene's own canvas into the box the card gives it. On a phone the box is the portrait
+ * frame, so the fit is simply its width; on desktop the 774x440 canvas is fitted whole.
  */
 function useFit(box: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
@@ -141,11 +147,8 @@ function useFit(box: React.RefObject<HTMLDivElement | null>) {
     const fit = () => {
       const { clientWidth: w, clientHeight: h } = el;
       if (!w || !h) return;
-      // Every scene's subject is the 560-wide window or sheet at x=107; the rest of the canvas is
-      // margin. A phone fits that subject rather than the whole canvas, so the scene stays whole
-      // and legible instead of being cropped or shrunk to nothing.
-      const narrow = window.matchMedia('(max-width: 720px)').matches;
-      const k = narrow ? w / SUBJECT_W : Math.min(w / 774, h / 440);
+      const phone = window.matchMedia('(max-width: 720px)').matches;
+      const k = phone ? w / PHONE_W : Math.min(w / CANVAS_W, h / CANVAS_H);
       el.style.setProperty('--k', String(Math.round(k * 1000) / 1000));
     };
     fit();

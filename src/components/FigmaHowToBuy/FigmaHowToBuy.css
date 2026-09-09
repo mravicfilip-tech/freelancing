@@ -403,10 +403,27 @@
   .hb__title {
     letter-spacing: -1.1px;
   }
+  /* On a phone the illustration stops being a layer behind the copy and becomes the second half
+     of the card: the copy sets the step, the scene shows it, and the card grows to hold both
+     rather than the two fighting over one 400px box. */
   .hb__card {
+    display: flex;
+    flex-direction: column;
     padding: 24px;
-    /* the copy keeps the top, the scene stands on the floor — the card holds both */
-    min-height: 400px;
+    min-height: 0;
+  }
+  .hb__cardInner {
+    order: 1;
+  }
+  .hb__art {
+    position: relative;
+    inset: auto;
+    order: 2;
+    width: 100%;
+    max-width: 390px;
+    margin: 22px auto 0;
+    /* the phone canvas is 300x322; the box carries that ratio, so --k is just its width over 300 */
+    aspect-ratio: 300 / 322;
   }
   /* Three steps will not sit side by side at this width; they stack, each on its own rule. */
   .hb__rail {

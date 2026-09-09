@@ -146,9 +146,8 @@
 .hb__scene .hbi-click{width:40px;height:40px;margin:-20px 0 0 -20px;border:2px solid var(--indigo);border-radius:50%;background:rgba(64,66,209,.18);opacity:0;z-index:5}
 .hb__scene .hbi-dash{display:grid;grid-template-columns:120px minmax(0,1fr);margin:-20px}
 .hb__scene .hbi-dash__side{display:flex;flex-direction:column;padding:20px 12px 20px 18px;border-right:1px solid #eef0f3}
-.hb__scene .hbi-dash__brand{display:flex;align-items:center;gap:8px;margin:2px 0 20px 10px}
+.hb__scene .hbi-dash__brand{display:flex;align-items:center;margin:2px 0 20px 10px}
 .hb__scene .hbi-dash__brand img{display:block;width:26px;height:13px}
-.hb__scene .hbi-dash__brand em{font-style:normal;font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--label)}
 .hb__scene .hbi-dash__nav{display:flex;flex-direction:column;gap:2px}
 .hb__scene .hbi-dash__nav span{padding:9px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
 .hb__scene .hbi-dash__nav .is-on{background:rgba(64,66,209,.08);color:var(--indigo)}

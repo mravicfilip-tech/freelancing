@@ -87,7 +87,7 @@ const DASHBOARD = () =>
     'remittixpresale.io/dashboard',
     `<div class="hbi-dash s3c-page">
        <div class="hbi-dash__side">
-         <span class="hbi-dash__brand"><img src="${A.logo}" alt=""><em>Remittix</em></span>
+         <span class="hbi-dash__brand"><img src="${A.logo}" alt=""></span>
          <nav class="hbi-dash__nav">
            <span class="is-on">Dashboard</span><span>Purchases</span><span>Claim</span><span>Referrals</span>
          </nav>

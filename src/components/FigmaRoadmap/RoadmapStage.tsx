@@ -15,12 +15,6 @@ const rowCentreOnRail = (row: HTMLElement, rail: HTMLElement) => {
   return r.top + r.height / 2 - rail.getBoundingClientRect().top;
 };
 
-const STAGE_LABEL: Record<Level['status'], string> = {
-  done: 'Stage Complete',
-  live: 'Stage In Progress...',
-  next: 'Stage Ahead',
-};
-
 function Card({ level, active }: { level: Level; active: boolean }) {
   return (
     <article className="rs__card" id={`rs-card-${level.n}`} data-active={active || undefined} aria-labelledby={`rs-card-h-${level.n}`}>
@@ -145,16 +139,17 @@ export function RoadmapStage() {
 
           <div className="rs__cards" ref={viewport}>
             <div className="rs__stack" ref={stack} style={{ transform: `translateY(${shift}px)` }}>
+              {/* A level's label rides above its own card; levels without one render the card alone. */}
               {LEVELS.map((l, i) =>
-                i === active ? (
+                l.label ? (
                   <div className="rs__group" key={l.n} data-node-id="2718:2830">
                     <p className="rs__stageLabel" data-node-id="2718:2736">
-                      {STAGE_LABEL[l.status]}
+                      {l.label}
                     </p>
-                    <Card level={l} active />
+                    <Card level={l} active={i === active} />
                   </div>
                 ) : (
-                  <Card key={l.n} level={l} active={false} />
+                  <Card key={l.n} level={l} active={i === active} />
                 ),
               )}
             </div>

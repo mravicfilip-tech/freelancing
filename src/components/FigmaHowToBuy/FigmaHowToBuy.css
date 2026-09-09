@@ -281,24 +281,67 @@
 }
 
 /* ---------- Responsive ---------- */
+/* The card and its rail stop being columns before they stop being legible: the rail goes above
+   the card, so the section reads the way a stepper does — choose a step, then look at it. */
 @media (max-width: 1100px) {
   .hb__cols {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
   }
   .hb__card,
   .hb__rail {
     height: auto;
   }
   .hb__card {
+    order: 2;
     min-height: 380px;
   }
-  .hb__step {
-    padding: 24px 0;
+  .hb__rail {
+    order: 1;
+    flex-direction: row;
   }
+  /* Each step is its own cell with the rule on its left, so the row reads as a segmented bar
+     rather than the stacked list the desktop column carries. */
+  .hb__step {
+    flex: 1;
+    gap: 2px;
+    padding: 18px 0 18px 20px;
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+    background-repeat: no-repeat;
+  }
+  .hb__step:first-child {
+    padding-left: 0;
+    background-image: none;
+  }
+  .hb__step:last-child {
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .hb__stepLabel {
+    font-size: 13px;
+  }
+  .hb__stepTitle {
+    font-size: 19px;
+    letter-spacing: -0.57px;
+  }
+  /* the live step is marked under its own cell, not down the column's edge */
+  /* laid flat, it wipes along the cell rather than down it */
   .hb__marker {
-    right: auto;
-    left: -12px;
+    right: 0;
+    left: 0;
+    top: auto;
+    bottom: -1px;
+    width: auto;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  .hb__step.is-active .hb__marker {
+    transform: scaleX(1);
   }
 }
 @media (max-width: 720px) {
@@ -311,9 +354,37 @@
   }
   .hb__card {
     padding: 24px;
-    min-height: 340px;
+    min-height: 300px;
   }
   .hb__art {
-    margin: 28px -24px -24px;
+    margin: 24px -24px -24px;
+  }
+  /* Three steps will not sit side by side at this width; they stack, each on its own rule. */
+  .hb__rail {
+    flex-direction: column;
+  }
+  .hb__step,
+  .hb__step:first-child,
+  .hb__step:last-child {
+    padding: 14px 0 14px 16px;
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .hb__stepTitle {
+    font-size: 20px;
+  }
+  .hb__marker {
+    right: auto;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+  }
+  .hb__step.is-active .hb__marker {
+    transform: scaleY(1);
   }
 }

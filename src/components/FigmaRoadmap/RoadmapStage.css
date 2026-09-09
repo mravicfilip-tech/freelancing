@@ -145,11 +145,14 @@
 }
 
 /* ---------- The rail ---------- */
+/* The file gives the rail the stage's full 915px against a 48px-padded stage (2718:2840), so it
+   runs from the stage's top rule to its bottom one rather than stopping inside the padding. The
+   stage clips, and centres it, so the overhang is exactly the inset at each end. */
 .rs__rail {
   position: relative;
   flex: 0 0 auto;
   width: 24px;
-  height: 100%;
+  height: calc(100% + var(--rs-inset) * 2);
 }
 .rs__railLine {
   position: absolute;
@@ -288,8 +291,11 @@
     gap: 48px;
   }
 }
-/* On a phone the two columns cannot stand side by side: the levels become a scrolling rail of
-   their own above the stage, and the open card is the section. */
+/* On a phone the two columns cannot stand side by side, and a horizontal strip of level names
+   only runs off the screen. The section becomes what a roadmap is on a phone: a vertical
+   timeline — a spine down the left with a node per level, the level beside it, and the open
+   level's card under the list. The spine and its nodes are drawn by the list itself, so nothing
+   here depends on the measurement the desktop rail needs. */
 @media (max-width: 720px) {
   .rs {
     --rs-stage-h: auto;
@@ -298,7 +304,7 @@
   .rs__frame {
     width: min(1560px, 100% - 32px);
     padding: 64px 0;
-    gap: 32px;
+    gap: 28px;
   }
   .rs__title {
     letter-spacing: -1.1px;
@@ -306,53 +312,72 @@
   .rs__stage {
     display: block;
     height: auto;
-    padding: 28px 0;
+    padding: 24px 0;
     overflow: visible;
   }
+
   .rs__levels {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
     height: auto;
-    padding: 0 0 20px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    padding: 0 0 0 30px;
   }
-  .rs__levels::-webkit-scrollbar {
-    display: none;
+  /* the spine, from the first node's centre to the last */
+  .rs__levels::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 22px;
+    bottom: 22px;
+    width: 1px;
+    background: var(--rs-spine);
   }
   .rs__level {
-    width: auto;
+    position: relative;
+    width: 100%;
+  }
+  .rs__level::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    width: 11px;
+    height: 11px;
+    margin-top: -5.5px;
+    border: 1px solid var(--rs-spine);
+    border-radius: 50%;
+    background: var(--rs-bg);
+    transition: background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+  }
+  /* the level in play takes the marker's own lime, and its halo */
+  .rs__level[data-active]::before {
+    border-color: #f9ff38;
+    background: #f9ff38;
+    box-shadow: 0 0 0 4px rgb(249 255 56 / 12%);
   }
   .rs__level button {
+    justify-content: flex-start;
     gap: 0;
+    width: 100%;
+    padding: 12px 0;
   }
   .rs__leader {
     display: none;
   }
   .rs__levelName {
-    font-size: 20px;
-    letter-spacing: -0.6px;
+    font-size: 19px;
+    letter-spacing: -0.57px;
   }
+  /* the desktop rail and its measured marker have no place in the stacked layout */
   .rs__rail {
-    width: 100%;
-    height: 1px;
-    margin-bottom: 24px;
-  }
-  .rs__railLine {
-    top: 50%;
-    right: 0;
-    bottom: auto;
-    left: 0;
-    width: auto;
-    height: 1px;
-    transform: none;
-  }
-  .rs__marker {
     display: none;
   }
+
   .rs__cards {
     height: auto;
+    margin-top: 24px;
     padding: 0;
   }
   .rs__stack {
@@ -365,9 +390,7 @@
   .rs__card[data-active] {
     display: flex;
   }
-  .rs__stageLabel {
-    position: static;
-    margin-bottom: 16px;
-    transform: none;
+  .rs__group {
+    gap: 16px;
   }
 }

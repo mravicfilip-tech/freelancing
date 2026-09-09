@@ -87,17 +87,24 @@
 }
 
 /* ---------- The levels ---------- */
+/* A compact index rather than a column stretched down the stage: it slides so the open level
+   meets the marker on the stage's centre line, and at 28px apart all seven stay in view at both
+   ends of that travel. */
 .rs__levels {
+  position: relative;
   display: flex;
   flex: 1 0 0;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-end;
+  gap: 28px;
   height: 100%;
   min-width: 0;
   margin: 0;
   padding: 0 var(--rs-inset);
   list-style: none;
+  transition: transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
 }
 .rs__level {
   width: 100%;
@@ -166,11 +173,11 @@
 .rs__marker {
   position: absolute;
   left: 0;
+  top: 50%;
   display: block;
   width: 24px;
   height: 24px;
   margin-top: -12px;
-  transition: top 520ms cubic-bezier(0.22, 0.61, 0.36, 1), opacity 200ms ease;
 }
 
 /* ---------- The cards ---------- */
@@ -323,6 +330,8 @@
     gap: 0;
     height: auto;
     padding: 0 0 0 30px;
+    /* the timeline stands still; only the desktop index rides to meet the marker */
+    transform: none !important;
   }
   /* the spine, from the first node's centre to the last */
   .rs__levels::before {

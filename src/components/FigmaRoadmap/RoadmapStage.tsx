@@ -3,17 +3,14 @@ import { LEVELS, type Level } from './content';
 import { useStageMotion } from './useStageMotion';
 import './RoadmapStage.css';
 
+/** How long each level holds before the band moves on. */
+const STEP_MS = 3600;
+
 /* Exported from Figma "Remittix Redesign" › 2717:2477. The checks and the marker are the file's
    own assets, in public/figma/. */
 const CHECK_DONE = '/figma/check-done.svg';
 const CHECK_TODO = '/figma/check-todo.svg';
 const MARKER = '/figma/roadmap-marker.svg';
-
-/** The row's centre line, in the rail's own coordinates — the marker is absolute inside the rail. */
-const rowCentreOnRail = (row: HTMLElement, rail: HTMLElement) => {
-  const r = row.getBoundingClientRect();
-  return r.top + r.height / 2 - rail.getBoundingClientRect().top;
-};
 
 function Card({ level, active }: { level: Level; active: boolean }) {
   return (
@@ -41,19 +38,46 @@ export function RoadmapStage() {
   const list = useRef<HTMLOListElement>(null);
   const stack = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
-  const rail = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(() => Math.max(0, LEVELS.findIndex((l) => l.status === 'live')));
-  const [markerY, setMarkerY] = useState<number | null>(null);
+  const [active, setActive] = useState(0);
   const [shift, setShift] = useState(0);
+  const [indexShift, setIndexShift] = useState(0);
 
   useStageMotion(root);
+
+  /* The band walks its own levels, 1 to 7 and round again, but only while it is on screen and
+     only until someone picks a level themselves — after that it is theirs. */
+  const [auto, setAuto] = useState(true);
+  const pick = (i: number) => {
+    setAuto(false);
+    setActive(i);
+  };
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !auto) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer = 0;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        window.clearInterval(timer);
+        if (e.isIntersecting) timer = window.setInterval(() => setActive((i) => (i + 1) % LEVELS.length), STEP_MS);
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => {
+      window.clearInterval(timer);
+      io.disconnect();
+    };
+  }, [auto]);
 
   /* The marker sits on the active level's centre line, and the stack slides so that level's card
      is centred in the stage — both measured, so the two columns cannot drift apart. */
   useLayoutEffect(() => {
     const measure = () => {
-      const row = list.current?.children[active] as HTMLElement | undefined;
-      if (row && rail.current) setMarkerY(rowCentreOnRail(row, rail.current));
+      // the open level rides to the list's own middle, which is the stage's centre line
+      const index = list.current;
+      const row = index?.children[active] as HTMLElement | undefined;
+      if (index && row) setIndexShift(index.clientHeight / 2 - (row.offsetTop + row.offsetHeight / 2));
       const view = viewport.current;
       // The open card, not its wrapper — the live one is grouped with its label.
       const card = stack.current?.querySelectorAll<HTMLElement>('.rs__card')[active];
@@ -67,7 +91,6 @@ export function RoadmapStage() {
     if (list.current) ro.observe(list.current);
     if (stack.current) ro.observe(stack.current);
     if (viewport.current) ro.observe(viewport.current);
-    if (rail.current) ro.observe(rail.current);
     window.addEventListener('resize', measure);
     return () => {
       ro.disconnect();
@@ -83,19 +106,6 @@ export function RoadmapStage() {
     el.scrollTo({ left: row.offsetLeft - (el.clientWidth - row.offsetWidth) / 2, behavior: 'smooth' });
   }, [active]);
 
-  // Fonts land after first paint and change the row heights the marker is measured from.
-  useEffect(() => {
-    let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (cancelled) return;
-      const row = list.current?.children[active] as HTMLElement | undefined;
-      if (row && rail.current) setMarkerY(rowCentreOnRail(row, rail.current));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [active]);
-
   return (
     <section ref={root} className="rs" id="roadmap" data-node-id="2717:2477" data-motion="pending" aria-labelledby="rs-title">
       <div className="rs__frame">
@@ -108,14 +118,14 @@ export function RoadmapStage() {
         </h2>
 
         <div className="rs__stage" data-node-id="2717:2490">
-          <ol className="rs__levels" ref={list}>
+          <ol className="rs__levels" ref={list} style={{ transform: `translateY(${indexShift}px)` }}>
             {LEVELS.map((l, i) => (
               <li className="rs__level" key={l.n} data-active={i === active || undefined}>
                 <button
                   type="button"
                   aria-current={i === active ? 'step' : undefined}
                   aria-controls={`rs-card-${l.n}`}
-                  onClick={() => setActive(i)}
+                  onClick={() => pick(i)}
                 >
                   <i className="rs__leader" aria-hidden="true" />
                   <span className="rs__levelName">Level {Number(l.n)}</span>
@@ -125,16 +135,10 @@ export function RoadmapStage() {
             ))}
           </ol>
 
-          <div className="rs__rail" ref={rail} aria-hidden="true">
+          <div className="rs__rail" aria-hidden="true">
             <span className="rs__railLine" />
-            <img
-              className="rs__marker"
-              src={MARKER}
-              alt=""
-              width={24}
-              height={24}
-              style={markerY === null ? { opacity: 0 } : { top: markerY }}
-            />
+            {/* The marker holds the stage's centre line, where the open card is centred too. */}
+            <img className="rs__marker" src={MARKER} alt="" width={24} height={24} />
           </div>
 
           <div className="rs__cards" ref={viewport}>

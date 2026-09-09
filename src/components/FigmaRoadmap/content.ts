@@ -20,8 +20,8 @@ export type Milestone = {
 };
 
 export type Level = {
-  /** The line above this level's card (2718:2736). Nothing renders until the copy is supplied. */
-  label?: string;
+  /** The line above this level's card (2718:2736) — where the level stands, in the page's words. */
+  label: string;
   /** `01`–`07`, shown as the column, node and tab number. */
   n: string;
   /** One word, in the page's voice. */
@@ -39,6 +39,7 @@ const m = (text: string, short: string, done: boolean): Milestone => ({ text, sh
 export const LEVELS: Level[] = [
   {
     n: '01',
+    label: 'Stage Complete',
     name: 'Foundation',
     marker: 'Complete',
     blurb: 'The vision, the team and the audited contract, in place before the presale opened.',
@@ -53,6 +54,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '02',
+    label: 'Stage Complete',
     name: 'Softcap',
     marker: 'Complete',
     blurb: 'Listed, partnered and past the $18m softcap, with the wallet in beta.',
@@ -67,6 +69,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '03',
+    label: 'Stage Complete',
     name: 'Wallet',
     marker: 'Complete',
     blurb: 'The wallet ships in full, the testnet opens to the community, and the ecosystem finishes.',
@@ -81,6 +84,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '04',
+    label: 'Stage Complete',
     name: 'PayFi',
     marker: 'Complete',
     blurb: 'The crypto-to-fiat platform is built, opened to live testing, and Markets is introduced.',
@@ -95,6 +99,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '05',
+    label: 'Stage In Progress...',
     name: 'Markets',
     marker: 'In progress',
     blurb: 'Markets is trading and the walkthroughs are out; the launch date waits on the $32m milestone.',
@@ -109,6 +114,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '06',
+    label: 'Stage Ahead',
     name: 'Prelaunch',
     marker: 'Next',
     blurb: 'One utility model across PayFi, Markets and Earn, with the wallet and the exchanges behind it.',
@@ -123,6 +129,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: '07',
+    label: 'Stage Ahead',
     name: 'Launch',
     marker: 'Final level',
     blurb: 'The presale closes, RTX trades on Uniswap and the confirmed exchanges, and the platform opens.',

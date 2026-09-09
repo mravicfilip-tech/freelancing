@@ -22,6 +22,45 @@ html[data-hero='3'] {
   --display-leading: 0.98;
 }
 
+/* ---------- The fixed bar, and the room the page has to leave it ----------
+   Where the bar sits and how tall it is. The phone sheet stands under it and is inset to the same
+   gutter, so both are measured from here rather than each guessing at the other — and so does the
+   offset every section jumped to from the nav has to clear. */
+:root {
+  --fh-nav-top: 24px;
+  --fh-nav-gutter: 24px;
+  --fh-nav-h: 74px;
+}
+@media (max-width: 900px) {
+  :root {
+    --fh-nav-top: 16px;
+    /* The same rail the bands are on: at 12 the pill visibly undercut it. */
+    --fh-nav-gutter: 16px;
+  }
+}
+
+/* The bar is fixed over the page, so a section the nav jumps to has to stop clear of it rather
+   than under it. The scroll itself is smooth — the bar is a table of contents for one page, and a
+   jump between its entries should read as travel — but not for a reader who has asked for less. */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+:target,
+#hero,
+#how-it-works,
+#ecosystem,
+#tokenomics,
+#roadmap,
+#how-to-buy,
+#faq {
+  scroll-margin-top: calc(var(--fh-nav-top) + var(--fh-nav-h) + 16px);
+}
+
 *,
 *::before,
 *::after {

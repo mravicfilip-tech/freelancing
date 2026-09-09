@@ -28,12 +28,6 @@
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fh-dash-v: repeating-linear-gradient(180deg, var(--fh-line) 0 8px, transparent 8px 16px);
   --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
-  /* Where the bar sits and how tall it is. The phone sheet stands under it and is inset to the
-     same gutter, so both are measured from here rather than each guessing at the other. */
-  --fh-nav-top: 24px;
-  --fh-nav-gutter: 24px;
-  --fh-nav-h: 74px;
-
   position: relative;
   /* No isolation here: it would make .fh a stacking context and trap the fixed nav inside the
      hero, letting every later section paint over it. */
@@ -126,7 +120,7 @@
   box-shadow: 0 8px 28px rgba(18, 36, 51, 0.12);
 }
 /* Below this the links are already hidden, so there is nothing to draw in from. */
-@media (min-width: 1101px) {
+@media (min-width: 1361px) {
   .fh__nav[data-condensed] {
     width: min(760px, 100% - 48px);
   }
@@ -173,7 +167,11 @@
   display: flex;
   min-width: 0;
   overflow: hidden;
-  gap: 48px;
+  /* Seven items, not the six this row was spaced for. The labels come to 472px and the bar caps
+     at 1440, so the design's 48px gap leaves the last of them 30px from the language picker at
+     every width — it was never a question of the viewport. 26 is the honest rhythm for seven, and
+     it keeps a clear break before the language picker down to the width the sheet takes over. */
+  gap: 26px;
   font-weight: 700;
   font-size: 13px;
   line-height: 1.4;
@@ -773,7 +771,7 @@
 }
 
 /* ---------- The phone menu ----------
-   At 1100 the bar drops its links, its language and its Login all at once and a trigger takes their
+   At 1360 the bar drops its links, its language and its Login all at once and a trigger takes their
    place, so nothing is ever offered twice. What they drop into is a sheet, not a dropdown. */
 .fh__burger {
   display: none;
@@ -1099,9 +1097,6 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
-  .fh__links {
-    gap: 28px;
-  }
   .fh__title {
     font-size: 56px;
     letter-spacing: -1.7px;
@@ -1118,7 +1113,7 @@
     inset: -8% -26% -52% -42%;
   }
 }
-@media (max-width: 1100px) {
+@media (max-width: 1360px) {
   .fh__links {
     display: none;
   }
@@ -1147,7 +1142,7 @@
   }
 }
 /* Above it the panel can never open, so it must not be reachable. */
-@media (min-width: 1101px) {
+@media (min-width: 1361px) {
   .fh__menu,
   .fh__scrim {
     display: none;
@@ -1158,11 +1153,6 @@
     min-height: 0;
     gap: 48px;
     padding-top: 16px;
-  }
-  .fh {
-    --fh-nav-top: 16px;
-    /* The same rail the bands are on: at 12 the pill visibly undercut it. */
-    --fh-nav-gutter: 16px;
   }
   .fh__nav {
     top: var(--fh-nav-top);

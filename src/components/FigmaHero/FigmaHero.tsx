@@ -21,13 +21,22 @@ const TOKENS_TARGET = 9_000_000;
 const STAGE = '10/10';
 const PROGRESS = 0.22; // filled share of the progress bar
 
+/**
+ * The bar is a table of contents for the page: one item per section, in the order they are read,
+ * spread across its whole length rather than bunched at the end. Seven is the cap — beyond that
+ * the row stops being scannable and starts being a list.
+ *
+ * Every href resolves to a section on this page. The whitepaper is not one of them — it has no
+ * anchor to land on — so it keeps its place in the footer, alongside the audits it belongs with.
+ */
 const NAV_LINKS = [
-  ['$250k Giveaway', '#giveaway'],
+  ['Intro', '#hero'],
+  ['How it works', '#how-it-works'],
+  ['Ecosystem', '#ecosystem'],
   ['Tokenomics', '#tokenomics'],
   ['Roadmap', '#roadmap'],
   ['How to buy', '#how-to-buy'],
   ['FAQs', '#faq'],
-  ['Whitepaper', '#whitepaper'],
 ] as const;
 
 /** Live countdown to `target`, ticking every second. All zeros once the target has passed. */
@@ -194,7 +203,7 @@ export function FigmaHero() {
   const tokens = `${whole(TOKENS_SOLD)}/${whole(TOKENS_TARGET)}`;
 
   return (
-    <section ref={root} className="fh" data-node-id="2346:102" data-entrance="pending">
+    <section ref={root} className="fh" id="hero" data-node-id="2346:102" data-entrance="pending">
       <div className="fh__frame" aria-hidden="true" />
 
       {/* The nav is fixed, so a spacer stands in for it in the hero's flow. */}

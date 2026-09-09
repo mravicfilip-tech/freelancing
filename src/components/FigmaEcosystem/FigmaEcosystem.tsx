@@ -55,7 +55,7 @@ export function FigmaEcosystem() {
   const [active, setActive] = useState(0);
   const { select } = useEcosystemMotion(root, active, setActive);
   return (
-    <section ref={root} className="ec" data-motion="pending" aria-labelledby="ec-title">
+    <section ref={root} className="ec" id="ecosystem" data-motion="pending" aria-labelledby="ec-title">
       <div className="ec__frame">
         <div className="ec__card">
           <div className="ec__copy">

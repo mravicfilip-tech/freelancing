@@ -179,7 +179,7 @@ export function FigmaSimple() {
   const mobile = useMobileArt();
   useSimpleMotion(root, mobile);
   return (
-    <section ref={root} className="fs" data-node-id="2409:2784" data-motion="pending" aria-labelledby="fs-title">
+    <section ref={root} className="fs" id="how-it-works" data-node-id="2409:2784" data-motion="pending" aria-labelledby="fs-title">
       <div className="fs__inner">
         <h2 id="fs-title" className="fs__title" data-node-id="2409:2788">
           <span className="fs__line">

@@ -138,6 +138,14 @@ chosen tab and a hovered ghost button all take the same solid pill. Labels are
 sentence case — no tracked-out capitals, and no meta strings strung together
 with middle dots.
 
+### The display face
+
+`NewBlack Typeface` is the design's display face and is a licensed retail font,
+so it is not in the repo. `public/fonts/README.md` says where to drop it and how
+to convert an `.otf`. Until it lands, `--d-display` falls back to Onest and
+nothing breaks — no failed request, since an unused `@font-face` is never
+fetched.
+
 ### Themes
 
 Dark is the home key and matches the site's `section--dark` treatment: ink

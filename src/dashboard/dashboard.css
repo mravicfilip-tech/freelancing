@@ -14,6 +14,8 @@
   --pad: clamp(16px, 1.6vw, 22px);
   /* The landing page's faces and its 8-on-8-off dash rhythm. */
   --d-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Falls back to Onest until public/fonts/NewBlackTypeface-Medium.woff2 lands. */
+  --d-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --d-digits: 'Doto Variable', 'Courier New', monospace;
   --d-pixel: 'Silkscreen', 'Courier New', monospace;
   --d-dash-h: repeating-linear-gradient(90deg, var(--d-rule) 0 8px, transparent 8px 16px);
@@ -110,6 +112,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
 /* ---------- The headline number ---------- */
 .fig {
+  font-family: var(--d-display);
   margin: 0;
   font-weight: 600;
   letter-spacing: -0.045em;
@@ -286,6 +289,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--d-text-2);
 }
 .topbar__title {
+  font-family: var(--d-display);
   margin: 3px 0 0;
   font-size: clamp(26px, 2.6vw, 36px);
   font-weight: 600;
@@ -824,6 +828,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   flex-wrap: wrap;
 }
 .flash__title {
+  font-family: var(--d-display);
   margin: 0;
   font-size: clamp(23px, 2.3vw, 30px);
   font-weight: 600;

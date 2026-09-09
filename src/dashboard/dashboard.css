@@ -12,6 +12,12 @@
   --rail-w: 236px;
   --gap: 8px;
   --pad: clamp(16px, 1.6vw, 22px);
+  /* The landing page's faces and its 8-on-8-off dash rhythm. */
+  --d-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --d-digits: 'Doto Variable', 'Courier New', monospace;
+  --d-pixel: 'Silkscreen', 'Courier New', monospace;
+  --d-dash-h: repeating-linear-gradient(90deg, var(--d-rule) 0 8px, transparent 8px 16px);
+
   --r-card: 12px;
   --r-inner: 12px;
   --r-sm: 10px;
@@ -21,7 +27,7 @@
   min-height: 100svh;
   background: var(--d-bg);
   color: var(--d-text);
-  font-family: var(--font);
+  font-family: var(--d-sans);
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
 }
@@ -29,64 +35,55 @@
   --rail-w: 108px;
 }
 
-/* ---------- Dark: the site's section--dark ground ---------- */
+/* ---------- Dark: the landing palette taken down ---------- */
 .dash[data-theme='dark'] {
-  --d-bg: #111214;
-  --d-card: #191a1e;
-  --d-inset: #212328;
-  --d-track: #2a2d33;
-  --d-text: #ffffff;
-  --d-text-2: rgba(255, 255, 255, 0.66);
-  --d-text-3: rgba(255, 255, 255, 0.5);
-  --d-rule: rgba(255, 255, 255, 0.07);
-
-  /* Lime is the accent and the selected state. */
-  --d-accent: #d9f24e;
-  --d-accent-hover: #e4fa72;
-  --d-on-accent: #111214;
-  --d-accent-soft: rgba(217, 242, 78, 0.14);
-  --d-pick: #d9f24e;
-  --d-pick-hover: #e4fa72;
-  --d-on-pick: #111214;
-  --d-indigo: #a3a3ff;
-
-  --d-spent: rgba(255, 255, 255, 0.2);
+  --d-bg: #0f1a24;
+  --d-card: #16222d;
+  --d-inset: #1b2833;
+  --d-track: #24313d;
+  --d-rule: #2c3a46;
+  --d-text: #edeff1;
+  --d-text-2: #9aa7b4;
+  --d-text-3: #7f8b97;
+  --d-accent: #7b7df0;
+  --d-accent-soft: #4a4cc4;
+  --d-accent-hover: #8f91f4;
+  --d-on-accent: #0f1a24;
+  --d-pick: #edeff1;
+  --d-pick-hover: #ffffff;
+  --d-on-pick: #122433;
+  --d-indigo: #9c9dff;
+  --d-spent: #3a4854;
   --d-lift: none;
-  --d-glow: 0 0 0 1px rgba(217, 242, 78, 0.3), 0 0 46px rgba(217, 242, 78, 0.11);
-  --d-grid: none;
-  --d-hatch: rgba(255, 255, 255, 0.05);
+  --d-glow: 0 0 0 1px var(--d-rule);
+  --d-grid: radial-gradient(circle at center, rgba(237, 239, 241, 0.08) 1px, transparent 1.4px);
 }
 
-/* ---------- Light: the rest of the site ---------- */
+/* ---------- Light: the landing page's own values ---------- */
 .dash[data-theme='light'] {
   --d-bg: #edeff1;
   --d-card: #ffffff;
-  --d-inset: #f2f4f6;
-  --d-track: #e2e6e9;
-  --d-text: #111214;
-  --d-text-2: #5b636b;
-  --d-text-3: #6e757d;
-  --d-rule: rgba(17, 18, 20, 0.07);
-
-  /* Indigo carries the action; lime fails contrast on a light ground. Ink is
-     the selected state, as it is in the landing page's own nav button. */
-  --d-accent: #4b4bf7;
-  --d-accent-hover: #3a3ad8;
+  --d-inset: #f8fafb;
+  --d-track: #eef1f4;
+  --d-rule: #dadee2;
+  --d-text: #122433;
+  --d-text-2: #7c858d;
+  --d-text-3: #a2a6aa;
+  --d-accent: #4042d2;
+  --d-accent-soft: #b3b5f5;
+  --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
-  --d-accent-soft: rgba(75, 75, 247, 0.09);
-  --d-pick: #111214;
-  --d-pick-hover: #2a2b30;
+  --d-pick: #000000;
+  --d-pick-hover: #1a1a1a;
   --d-on-pick: #ffffff;
-  --d-indigo: #4b4bf7;
-
+  --d-indigo: #4042d2;
   --d-spent: #c9cfd5;
   --d-lift: none;
-  --d-glow: 0 0 0 1.5px #111214;
-  --d-grid: radial-gradient(circle at center, rgba(17, 18, 20, 0.075) 1px, transparent 1.4px);
-  --d-hatch: rgba(17, 18, 20, 0.07);
+  --d-glow: 0 0 0 1px var(--d-rule);
+  --d-grid: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
 }
 
-html[data-dash-theme='dark'] body { background: #111214; }
+html[data-dash-theme='dark'] body { background: #0f1a24; }
 html[data-dash-theme='light'] body { background: #edeff1; }
 
 .sr-only {
@@ -163,22 +160,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   letter-spacing: -0.025em;
   text-decoration: none;
 }
-/* The same mark the landing page nav draws: a ring with a dot off its shoulder. */
-.rail__mark {
-  position: relative;
-  width: 19px; height: 19px;
+/* The real mark, from public/figma/logo.svg. Its paths are black, so dark mode
+   flips it rather than shipping a second file. */
+.rail__logo {
   flex: none;
-  border: 2px solid currentColor;
-  border-radius: 50%;
+  width: 33px;
+  height: 17px;
 }
-.rail__mark::after {
-  content: '';
-  position: absolute;
-  right: -4px; top: -3px;
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-}
+.dash[data-theme='dark'] .rail__logo { filter: invert(1); }
 .rail__nav {
   display: flex;
   flex-direction: column;
@@ -194,7 +183,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .rail__group + .rail__group {
   padding-top: 16px;
-  border-top: 1px solid var(--d-rule);
+  border-top: 0;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 .rail__item {
   display: flex;
@@ -355,6 +348,44 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   gap: 16px;
 }
 
+/* ---------- Progress bar, lifted from the hero (fh__progress) ---------- */
+.dprog {
+  position: relative;
+  height: 48px;
+  flex: 1;
+  min-width: 0;
+  background-color: var(--d-bg);
+  /* the unfilled track: a hairline every 8px */
+  background-image: repeating-linear-gradient(90deg, var(--d-card) 0 1px, transparent 1px 8px);
+  overflow: hidden;
+}
+.dash[data-theme='dark'] .dprog {
+  background-image: repeating-linear-gradient(90deg, var(--d-track) 0 1px, transparent 1px 8px);
+}
+.dprog__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background-color: var(--d-bg);
+  /* 3px bars with 3px gaps, capped by a solid bar at each end */
+  background-image:
+    linear-gradient(var(--d-accent), var(--d-accent)),
+    linear-gradient(var(--d-accent), var(--d-accent)),
+    repeating-linear-gradient(90deg, var(--d-accent-soft) 0 3px, transparent 3px 6px);
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: 3px 100%, 3px 100%, auto;
+  background-position: left top, right top, left top;
+  overflow: hidden;
+}
+.dprog__glow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  pointer-events: none;
+}
+
 /* ---------- Meter ---------- */
 .meter {
   position: relative;
@@ -374,6 +405,28 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 /* ---------- Buttons and inputs ---------- */
+/* The hover blob reads --fh-progress / --fh-ink, so pointing those at the
+   dashboard's own tokens makes the hero button theme-aware. */
+.dash { --fh-progress: var(--d-accent); --fh-ink: var(--d-text); }
+/* fh__btn--primary hardcodes black, which disappears on a dark card. */
+.dash[data-theme='dark'] .fh__btn--primary {
+  background: var(--d-pick);
+  color: var(--d-on-pick);
+}
+.dash[data-theme='dark'] .fh__btn--primary:hover,
+.dash[data-theme='dark'] .fh__btn--primary:focus-visible { color: #fff; }
+.dash[data-theme='dark'] .fh__btn--ghost {
+  background: var(--d-inset);
+  border-color: var(--d-rule);
+  color: var(--d-text-2);
+}
+
+.fh__btn.dbtn--block { width: 100%; }
+/* fh__btn is a fixed 162px in the hero; inline uses here size to their content. */
+.buy__promo .fh__btn { width: auto; padding: 0 24px; }
+.fh__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.fh__btn:disabled::before { transform: translate(-50%, -50%) scale(0); }
+
 .btn-accent {
   display: inline-flex;
   align-items: center;
@@ -573,7 +626,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .side__part + .side__part {
   padding-top: clamp(18px, 2.2vw, 26px);
-  border-top: 1px solid var(--d-rule);
+  border-top: 0;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 
 
@@ -655,7 +712,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   column-gap: clamp(32px, 6vw, 96px);
   margin: 18px 0 0;
   padding-top: 16px;
-  border-top: 1px solid var(--d-rule);
+  border-top: 0;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 .ladder__facts dt { font-size: 12px; color: var(--d-text-3); }
 .ladder__facts dd {
@@ -730,7 +791,29 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .buy__pay-label { color: var(--d-text-3); font-size: 13px; }
 .buy__marks { display: flex; align-items: center; gap: 7px; }
-.buy__form .btn-accent { margin-top: 16px; }
+.buy__form /* The hover blob reads --fh-progress / --fh-ink, so pointing those at the
+   dashboard's own tokens makes the hero button theme-aware. */
+.dash { --fh-progress: var(--d-accent); --fh-ink: var(--d-text); }
+/* fh__btn--primary hardcodes black, which disappears on a dark card. */
+.dash[data-theme='dark'] .fh__btn--primary {
+  background: var(--d-pick);
+  color: var(--d-on-pick);
+}
+.dash[data-theme='dark'] .fh__btn--primary:hover,
+.dash[data-theme='dark'] .fh__btn--primary:focus-visible { color: #fff; }
+.dash[data-theme='dark'] .fh__btn--ghost {
+  background: var(--d-inset);
+  border-color: var(--d-rule);
+  color: var(--d-text-2);
+}
+
+.fh__btn.dbtn--block { width: 100%; }
+/* fh__btn is a fixed 162px in the hero; inline uses here size to their content. */
+.buy__promo .fh__btn { width: auto; padding: 0 24px; }
+.fh__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.fh__btn:disabled::before { transform: translate(-50%, -50%) scale(0); }
+
+.btn-accent { margin-top: 16px; }
 
 /* ---------- Flash sale ---------- */
 .flash__head {
@@ -756,13 +839,20 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   width: 34px; height: 44px;
   border-radius: 9px;
   background: var(--d-inset);
-  font-size: 21px;
+  font-family: var(--d-digits);
+  font-size: 24px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 .clock__colon { padding-top: 11px; color: var(--d-text-3); font-size: 18px; }
-.clock__label { font-size: 11px; color: var(--d-text-3); }
+.clock__label {
+  font-family: var(--d-pixel);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--d-text-3);
+}
 .flash__copy { margin: 14px 0 0; font-size: 15px; color: var(--d-text-2); max-width: 34em; }
 .flash__copy strong { color: var(--d-text); font-weight: 600; }
 .flash__code {

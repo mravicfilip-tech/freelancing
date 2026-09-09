@@ -31,7 +31,7 @@ export function Sidebar({ active = 'presale' }: { active?: string }) {
   return (
     <aside className="rail" data-mode={mode}>
       <a className="rail__brand" href="/" aria-label="Remittix home">
-        <span className="rail__mark" aria-hidden="true" />
+        <img className="rail__logo" src="/figma/logo.svg" alt="" width={33} height={17} />
         <span className="rail__wordmark">Remittix</span>
       </a>
 

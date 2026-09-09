@@ -1,8 +1,8 @@
 import { LEVEL } from '../data';
 import { ChevronRight, RankBadge } from '../icons';
+import { Progress } from '../Progress';
 
 export function LevelCard() {
-  const pct = Math.round(LEVEL.progress * 100);
   return (
     <section className="level" aria-label="Your level">
       <div className="card__head">
@@ -22,16 +22,7 @@ export function LevelCard() {
           </div>
         </div>
 
-        <div
-          className="meter"
-          role="progressbar"
-          aria-valuenow={pct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`Progress to level ${LEVEL.next}`}
-        >
-          <span className="meter__fill" style={{ width: `${Math.max(pct, 4)}%` }} />
-        </div>
+        <Progress value={LEVEL.progress} label={`Progress to level ${LEVEL.next}`} />
 
         <div className="level__rank level__rank--next">
           <RankBadge tone="silver" className="level__badge" />

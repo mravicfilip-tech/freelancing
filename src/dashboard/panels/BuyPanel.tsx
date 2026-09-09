@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react';
 import { FLASH_SALE, PRESALE, TOKENS, money, type TokenId } from '../data';
 import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
+import { Button } from '../Button';
 
 type Method = 'crypto' | 'card';
 
@@ -132,14 +133,13 @@ export function BuyPanel() {
                 setApplied(null);
               }}
             />
-            <button
-              type="button"
-              className="btn-ghost"
+            <Button
+              variant="ghost"
               disabled={!promoValid || applied !== null}
               onClick={() => promoValid && setApplied(FLASH_SALE.code)}
             >
               {applied ? 'Applied' : 'Apply'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -156,9 +156,7 @@ export function BuyPanel() {
           </span>
         </div>
 
-        <button type="button" className="btn-accent btn-accent--block">
-          Buy $RTX
-        </button>
+        <Button block>Buy $RTX</Button>
       </div>
     </section>
   );

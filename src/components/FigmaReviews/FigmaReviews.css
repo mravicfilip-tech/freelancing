@@ -1,0 +1,287 @@
+/* Community Reviews (Figma 2496:243, slides 2513:634 and 2513:659).
+   The same light band and 1560 dashed rails as the sections above it; inside, one 820px slide
+   with the customer's photo behind it and a chip row that doubles as the slider's navigation. */
+
+.rv {
+  --rv-bg: #e6e9ed;
+  --rv-line: #c5cbd1;
+  --rv-ink: #122433;
+  /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
+  --rv-dash-v: repeating-linear-gradient(180deg, var(--rv-line) 0 8px, transparent 8px 16px);
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+
+  background: var(--rv-bg);
+  font-family: var(--fh-sans);
+}
+.rv__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  background-image: var(--rv-dash-v), var(--rv-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  /* The slide fills the 1560 band rail to rail (Figma 2496:254), and the rails carry the section's
+     vertical padding so they meet the neighbouring sections' rails. */
+  padding: 90px 0;
+}
+
+/* ---------- Heading ---------- */
+.rv__title {
+  margin: 0;
+  max-width: 972px;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  text-align: center;
+  color: var(--rv-ink);
+}
+.rv__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.rv__lineInner {
+  display: block;
+}
+
+/* ---------- Slider ---------- */
+.rv__slider {
+  position: relative;
+  width: 100%;
+  height: 820px;
+  isolation: isolate;
+  overflow: hidden;
+}
+.rv__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  /* the chip row is positioned, so the bottom padding reserves its height (48 + 96 + 8) */
+  padding: 48px 48px 152px;
+  background: #0b0f13;
+  opacity: 0;
+  visibility: hidden;
+}
+.rv__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+/* The scrim from the design: a left-to-right fade plus a flat lift over the whole frame. */
+.rv__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(11, 15, 19, 0.59) 0%, rgba(11, 15, 19, 0) 100%),
+    linear-gradient(90deg, rgba(62, 69, 80, 0.24) 0%, rgba(62, 69, 80, 0.24) 100%);
+}
+.rv__slide > *:not(.rv__photo):not(.rv__scrim) {
+  position: relative;
+  z-index: 1;
+}
+
+.rv__eyebrow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.rv__quote {
+  display: block;
+}
+.rv__eyebrow p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.981;
+  letter-spacing: -0.72px;
+  color: #fff;
+}
+
+.rv__quoteBlock {
+  /* centred in the space the eyebrow leaves, as the three-slot layout does in the design */
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+.rv__words {
+  margin: 0;
+  max-width: 660px;
+  font-weight: 400;
+  font-size: clamp(26px, 2.9vw, 42px);
+  line-height: 1.4;
+  letter-spacing: -1.26px;
+  color: #fff;
+  text-wrap: balance;
+}
+.rv__by {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 0.981;
+  letter-spacing: -0.48px;
+  color: rgba(255, 255, 255, 0.64);
+}
+
+/* The reveal edge of the wipe, lit so the change of slide reads as a pass of light. */
+.rv__seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(179, 181, 245, 0) 0%,
+    rgba(179, 181, 245, 0.9) 22%,
+    #ffffff 50%,
+    rgba(179, 181, 245, 0.9) 78%,
+    rgba(179, 181, 245, 0) 100%
+  );
+  box-shadow: 0 0 24px 4px rgba(179, 181, 245, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------- Chips (the slider's navigation) ---------- */
+.rv__chips {
+  position: absolute;
+  left: 48px;
+  bottom: 48px;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+}
+.rv__chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 320ms ease;
+}
+.rv__chip:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+.rv__chip[data-active] {
+  background: rgba(255, 255, 255, 0.12);
+}
+.rv__chip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.rv__avatar {
+  flex: 0 0 auto;
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 400px;
+  background: #e6e9ed;
+  overflow: hidden;
+}
+.rv__avatar img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+}
+.rv__who {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  white-space: nowrap;
+}
+.rv__who b {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 0.981;
+  letter-spacing: -0.48px;
+  color: #fff;
+}
+.rv__who small {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 0.981;
+  letter-spacing: -0.48px;
+  color: rgba(255, 255, 255, 0.64);
+}
+
+/* ---------- Motion (see useReviewsMotion.ts) ---------- */
+.rv[data-motion='pending'] .rv__slider,
+.rv[data-motion='pending'] .rv__title {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .rv__slider { height: 700px; }
+  .rv__slide { padding: 36px 36px 128px; }
+  .rv__chips { left: 36px; bottom: 36px; }
+  .rv__chip { padding: 18px; }
+  .rv__who small { font-size: 14px; }
+}
+@media (max-width: 1024px) {
+  .rv__chips {
+    right: 36px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .rv__chip { flex: 0 0 auto; }
+}
+@media (max-width: 720px) {
+  .rv__frame { width: calc(100% - 32px); padding: 64px 0; }
+  .rv__frame { gap: 32px; }
+  /* The slide still fills rail to rail; only the title steps in. */
+  .rv__title { padding-inline: 16px; }
+  .rv__title { letter-spacing: -1.1px; }
+  .rv__slider { height: 620px; }
+  .rv__slide { padding: 16px 16px 88px; }
+  .rv__eyebrow p { font-size: 18px; }
+  .rv__words { letter-spacing: -0.6px; }
+  /* 2.5 of the chips fit, so the row is a scroller: snap it, hide the bar, and fade the cut edge
+     so the half-chip reads as "there is more" rather than as a clipped card. */
+  .rv__chips {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    gap: 6px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  /* Only while there is more of the strip to reach — set from the scroll position in the
+     component, because a fade that stays on dissolves the last chip's own words. */
+  .rv__chips[data-more] {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+  }
+  .rv__chips::-webkit-scrollbar {
+    display: none;
+  }
+  .rv__chip {
+    scroll-snap-align: center;
+  }
+  .rv__chip { padding: 12px; gap: 10px; }
+  .rv__avatar, .rv__avatar img { width: 40px; height: 40px; }
+  .rv__who { gap: 6px; }
+  .rv__who b, .rv__who small { font-size: 13px; }
+}

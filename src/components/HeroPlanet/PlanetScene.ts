@@ -362,7 +362,10 @@ export class PlanetScene {
 
   private buildDots(mask: LandMask | null) {
     const C = this.cfg;
-    const n = this.opts.layout === 'mobile' ? C.pointCountMobile : C.pointCountDesktop;
+    // The page asks for the "capture" layout, so the mobile budget was never chosen: a phone was
+    // drawing 14000 points into a sixth of the pixels a desktop gets. Ask the screen as well.
+    const phone = typeof window !== 'undefined' && window.matchMedia('(max-width: 720px)').matches;
+    const n = this.opts.layout === 'mobile' || phone ? C.pointCountMobile : C.pointCountDesktop;
     const pts: number[] = [];
     if (C.pointLayout === 'grid') {
       // Latitude rows with equal arc spacing — the tidy halftone look.
@@ -444,6 +447,11 @@ export class PlanetScene {
         uLightDir: { value: light },
         uColorLand: { value: new THREE.Color(C.colorPlanet) },
         uColorOcean: { value: new THREE.Color(C.colorOcean) },
+        uColorLand2: { value: new THREE.Color(C.colorPlanet2) },
+        uColorOcean2: { value: new THREE.Color(C.colorOcean2) },
+        uMixMode: { value: { none: 0, latitude: 1, light: 2, tide: 3 }[C.dotMix] },
+        uMixSpeed: { value: C.dotMixSpeed },
+        uTime: { value: 0 },
       },
       transparent: true,
       depthWrite: false,
@@ -824,6 +832,16 @@ export class PlanetScene {
     this.entrance = tl;
   }
 
+  /** Plays the load-in again from its first frame; used when the hero slider returns to the globe. */
+  replayEntrance() {
+    if (this.disposed || this.opts.reducedMotion || !this.compiled) return;
+    this.entrance?.kill();
+    gsap.killTweensOf(this.state);
+    Object.assign(this.state, { glow: 0, dots: 0, assemble: 0, spin: 1, scale: 0.92, halo: 0, ring0: 0, ring1: 0, ring2: 0, nodes: 0 });
+    this.entranceStarted = false;
+    this.playEntrance();
+  }
+
   private setStaticPose() {
     Object.assign(this.state, { glow: 1, dots: 1, assemble: 1, spin: 0, scale: 1, halo: 1, ring0: 1, ring1: 1, ring2: 1, nodes: 1 });
   }
@@ -850,6 +868,7 @@ export class PlanetScene {
   }
 
   private update(elapsed: number) {
+    if (this.dots) this.dots.material.uniforms.uTime.value = elapsed;
     const C = this.cfg;
     this.applyState();
 

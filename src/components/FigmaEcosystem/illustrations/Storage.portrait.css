@@ -1,0 +1,46 @@
+/* Portrait composition for the storage scene (phone). The landscape scene keeps its rules in
+   ecosystem-illustrations.css; everything here belongs to the 361-wide phone canvas.
+
+   361x480 is the size a pillar's scene is actually handed on a 393 phone, so the stage fits at 1:1
+   and nothing here is a desktop figure shrunk to fit — the reels keep their 62x96 box and their
+   34px characters, the sizes they were drawn at. The one screen narrower than that, a 360 leaving
+   328, fits the canvas at ~0.908, so the type is set with that headroom in mind: nothing is
+   smaller than 12.5px, which still reads at 11.3px on the narrowest screen the site supports. */
+
+/* The section's desktop rule centres a scene on its absolute box with `left/top: 50%` and a
+   half-size `translate`, and the phone breakpoint only sets `position: static` again. Two things
+   survive that: the translate, which drags the whole drawing half its own size up and to the left
+   inside a box that clips; and, worse, the loss of a positioned host — `.ff__stage` is absolute,
+   so with nothing positioned beneath it, it hangs off whatever ancestor is, and the composition
+   lands somewhere up the card entirely. The portrait stage sits in the flow at the card's own
+   width, so it takes the origin back: its own containing block, no offset, no centring. Scoped to
+   this stage so the shared rule keeps doing its job on the desk; it wants hoisting into
+   FigmaEcosystem.css, where one rule would cure all four scenes at once. */
+.ec__scene .ff__il.ec-tum--m {
+  position: relative;
+  left: 0;
+  top: 0;
+  transform: none;
+}
+
+/* The centred blocks are centred on the canvas they are in, and the phone's canvas is 361 rather
+   than 800 — without this the caption, the readout and the chip would each line themselves up on
+   the landscape canvas's centre and sit half a screen to the right. */
+.ec-tum--m .ec-center {
+  width: 361px;
+}
+/* Room to breathe at the rails: the two long lines are the widest things in the scene, so they
+   keep the frame's own margin and are allowed to fall onto a second line rather than run off the
+   edge if a fallback face sets them wider than Onest does. */
+.ec-tum--m .ec-caption {
+  max-width: 329px;
+  white-space: normal;
+  text-wrap: balance;
+}
+/* The confirmation chip is the smallest writing in the scene and it is the sentence that closes
+   the argument, so it comes up to the same 12.5px floor the other three portrait scenes hold —
+   still comfortably inside 361 with its dot and its padding. */
+.ec-tum--m .ec-tum__match {
+  font-size: 12.5px;
+  letter-spacing: -0.2px;
+}

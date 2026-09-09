@@ -13,6 +13,8 @@ export interface HeroPlanetProps {
   scroll?: boolean;
   /** Preset from ./variants.ts; `?variant=` on the URL still wins for review. */
   variant?: string;
+  /** Replays the load-in each time this turns true (the hero slider landing on the globe). */
+  active?: boolean;
 }
 
 type Mode = 'pending' | 'webgl' | 'fallback';
@@ -60,8 +62,9 @@ function currentLayout(): PlanetLayout {
   return 'desktop';
 }
 
-export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true, variant }: HeroPlanetProps) {
+export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true, variant, active = true }: HeroPlanetProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<PlanetScene | null>(null);
   const [mode, setMode] = useState<Mode>('pending');
   const [epoch, setEpoch] = useState(0);
 
@@ -103,6 +106,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
           return;
         }
         setMode('webgl');
+        sceneRef.current = scene;
         const live = scene;
         live.ready.then(() => {
           if (!cancelled && DEV_TOOLS) (window as DevWindow).__heroPlanet = live;
@@ -121,8 +125,14 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
         delete (window as DevWindow).__heroPlanet;
       }
       scene = null;
+      sceneRef.current = null;
     };
   }, [hostRef, forceStatic, layout, scroll, variant, epoch]);
+
+  // The scene plays its own entrance once built; later activations replay it from the start.
+  useEffect(() => {
+    if (active) sceneRef.current?.replayEntrance();
+  }, [active]);
 
   return (
     <div className="heroPlanet" aria-hidden="true" data-mode={mode}>

@@ -1,0 +1,303 @@
+/* Ecosystem: one card, copy and an accordion on the left, a swapping illustration on the right.
+   Sits on the same light band and 1560 dashed rails as the feature band; the card is 1440 wide. */
+
+.ec {
+  --ec-bg: #edeff1;
+  --ec-line: #dadee2;
+  --ec-card: #fff;
+  --ec-ink: #2c2e31;
+  --ec-title: #122433;
+  --ec-muted: #7c858d;
+  --ec-indigo: #4042d1;
+  --ec-lavender: #b3b5f5;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  /* The rails run 8 on / 8 off; the card's own rules are the finer [4,4] the design uses inside it. */
+  --ec-dash-v: repeating-linear-gradient(180deg, var(--ec-line) 0 8px, transparent 8px 16px);
+  --ec-rule-v: repeating-linear-gradient(180deg, var(--ec-line) 0 4px, transparent 4px 8px);
+  --ec-rule-h: repeating-linear-gradient(90deg, var(--ec-line) 0 4px, transparent 4px 8px);
+
+  background: var(--ec-bg);
+  color: var(--ec-ink);
+  font-family: var(--fh-sans);
+}
+/* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
+.ec__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 0 clamp(0px, 3.85%, 60px) 160px;
+  background-image: var(--ec-dash-v), var(--ec-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+.ec__card {
+  display: grid;
+  grid-template-columns: 620px minmax(0, 1fr);
+  min-height: 640px;
+  border-radius: 12px;
+  background: var(--ec-card);
+  overflow: hidden;
+  isolation: isolate;
+  will-change: transform;
+}
+
+/* ---------- Copy and accordion ---------- */
+.ec__copy {
+  display: flex;
+  flex-direction: column;
+  padding: 48px 48px 24px;
+  background-image: var(--ec-rule-v);
+  background-size: 1px 100%;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+.ec__eyebrow {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--ec-indigo);
+}
+.ec__title {
+  margin: 14px 0 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -1.2px;
+  color: var(--ec-title);
+}
+.ec__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ec__lineInner {
+  display: block;
+}
+/* Paragraph style: Onest Regular 16 / 160% / 1% tracking. */
+.ec__body {
+  margin: 18px 0 0;
+  max-width: 480px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ec-muted);
+}
+.ec__list {
+  list-style: none;
+  margin: 36px 0 0;
+  padding: 0;
+}
+.ec__item {
+  position: relative;
+  background-image: var(--ec-rule-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+/* The accent along the active item's left edge, with a progress fill showing the auto-advance. */
+.ec__accent {
+  position: absolute;
+  left: -48px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  overflow: hidden;
+}
+.ec__progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ec-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}
+.ec__itemHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ec-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.ec__itemHead img {
+  display: block;
+  width: 20px;
+  height: 20px;
+  opacity: 0.45;
+  transition: opacity 300ms ease;
+}
+.ec__item--on .ec__itemHead img {
+  opacity: 1;
+}
+.ec__itemTitle {
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  color: var(--ec-muted);
+  transition: color 300ms ease;
+}
+.ec__item--on .ec__itemTitle {
+  color: var(--ec-ink);
+}
+/* The body opens with a grid-row transition, so the list keeps its rhythm as items change. */
+.ec__itemBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ec__itemBody > p {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding-left: 32px;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--ec-muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 420ms ease 120ms, transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1) 60ms, padding-bottom 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ec__item--on .ec__itemBody {
+  grid-template-rows: 1fr;
+}
+.ec__item--on .ec__itemBody > p {
+  padding-bottom: 22px;
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Illustration panel ---------- */
+.ec__panel {
+  position: relative;
+  min-height: 640px;
+  /* The panel wash from the design (Ellipse 3478): a 1623px gradient disc laid across the
+     panel, flattened here to the same axis and stop positions over the panel's own box. */
+  background: linear-gradient(121deg, #e8eef4 4%, #ffffff 34%, #f5f6e3 78%);
+  overflow: hidden;
+}
+.ec__scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+.ec__scene .ff__il {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(800px, 100%);
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- Motion (see useEcosystemMotion.ts) ---------- */
+.ec[data-motion='pending'] .ec__card {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .ec__frame {
+    padding-bottom: 112px;
+  }
+  .ec__card {
+    grid-template-columns: 46% minmax(0, 1fr);
+  }
+  .ec__copy {
+    padding: 40px 32px 16px;
+  }
+  .ec__accent {
+    left: -32px;
+  }
+  .ec__title {
+    font-size: 34px;
+  }
+}
+@media (max-width: 1024px) {
+  .ec__card {
+    grid-template-columns: 1fr;
+  }
+  .ec__copy {
+    background-position: left bottom;
+    background-image: var(--ec-rule-h);
+    background-size: 100% 1px;
+  }
+  .ec__panel {
+    min-height: 520px;
+  }
+}
+@media (max-width: 720px) {
+  .ec__frame {
+    /* Ranges under the feature band, so it keeps its open top and takes the shared foot. The rails
+       stay on; only the gutter outside them narrows to the 16px every band shares. */
+    width: calc(100% - 32px);
+    padding: 0 16px 64px;
+  }
+  /* The card stands off the page on its own margins, as a card should, and the pillar rules are
+     inset within them rather than running out to the screen's edges. */
+  .ec__copy {
+    padding: 28px 16px 8px;
+  }
+  /* No gutter to stand in on one column: at the card's own rail the marker lands 8px off the
+     screen edge. The open pillar is already unmistakable — it carries the drawing. */
+  .ec__accent {
+    display: none;
+  }
+  .ec__title {
+    font-size: 30px;
+    letter-spacing: -0.9px;
+  }
+  /* The phone drops the panel: each pillar carries its own illustration, opening with its copy.
+     The scene breaks out of the card's inner padding so the picture gets the card's full width
+     rather than the ~265 the padded column would leave it. */
+  .ec__scene {
+    position: static;
+    display: none;
+    /* It used to break out past the card's inner padding, which was worth it when a doubly padded
+       column left the drawing ~265. It no longer is: the card's own padding is the page's 16, so
+       breaking out buys 32px and costs the alignment — the picture ran to the card's edge while
+       every rule, title and paragraph around it stood 16 inside. It lines up with them instead,
+       and the stage scales the composition to the width that leaves. */
+    margin: 4px 0 20px;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+  }
+  /* The desktop indent under the pillar title costs a quarter of a 393 screen. */
+  .ec__itemBody > p {
+    padding-left: 0;
+  }
+  /* Each drawing carries its own portrait composition at its own size, so the frame is simply
+     the height the drawing asks for. */
+  .ec__item--on .ec__scene {
+    display: block;
+  }
+  /* The desktop rule places a scene on an absolute box and centres it with translate(-50%, -50%).
+     Undoing that takes all of this at once: the transform has to go, or the drawing is dragged
+     half its own size up and to the left inside a box that clips — and the box still has to be a
+     containing block, because the stage inside it is absolute. Left `static`, the stage anchors to
+     the pillar's own list item instead and lands about 200px up the card; the stray transform had
+     been serving as that containing block by accident. */
+  .ec__scene .ff__il {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transform: none;
+  }
+}
+

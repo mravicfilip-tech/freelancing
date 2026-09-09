@@ -9,6 +9,9 @@ import { FlashSale } from './panels/FlashSale';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
 import { theme } from './theme';
+// The hero's stylesheet carries fh__btn, whose --fh-* fallbacks are written so
+// the button works outside the hero.
+import '../components/FigmaHero/FigmaHero.css';
 import './dashboard.css';
 
 export function Dashboard() {

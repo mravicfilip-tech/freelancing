@@ -1,0 +1,31 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1560" height="295" viewBox="0 0 1560 295" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Decoration Background" clip-path="url(#clip0_0_104)">
+<rect width="1560" height="295" fill="url(#pattern0_0_104)"/>
+<rect width="1560" height="295" fill="url(#paint0_linear_0_104)" style="mix-blend-mode:color"/>
+<g id="Ellipse 3470" filter="url(#filter0_f_0_104)">
+<ellipse cx="298" cy="326" rx="298" ry="326" transform="matrix(-1 0 0 1 1306 190)" fill="url(#paint1_linear_0_104)"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_104" x="610" y="90" width="796" height="852" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_0_104"/>
+</filter>
+<linearGradient id="paint0_linear_0_104" x1="780" y1="0" x2="780" y2="256.242" gradientUnits="userSpaceOnUse">
+<stop stop-color="#B3B5F5"/>
+<stop offset="1" stop-color="#C4E0F6"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_104" x1="298" y1="0" x2="298" y2="33.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FBF031"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+<clipPath id="clip0_0_104">
+<rect width="1560" height="295" fill="white"/>
+</clipPath>
+<pattern id="pattern0_0_104" patternUnits="userSpaceOnUse" patternTransform="matrix(42 0 0 42 0 0)" preserveAspectRatio="none" viewBox="0 0 42 42" width="1" height="1">
+<g id="pattern0_0_104_inner">
+<circle id="Ellipse 3418" cx="1" cy="1" r="1" fill="#C1CEDA"/>
+</g>
+</pattern></defs>
+</svg>

@@ -1,0 +1,450 @@
+/* "How to buy $RTX?" — the steps sit straight on the band between the same 1560 rails as the
+   sections around it. The rail's rows carry the design's finer [4,4] rule; the selected row takes
+   the indigo edge the FAQ and ecosystem accordions use, and its number switches to the hero's
+   digit face so the sequence reads as a counter. */
+
+.hb {
+  --hb-bg: #edeff1;
+  --hb-rail: #c5cbd1;
+  --hb-line: #dadee2;
+  --hb-ink: #122433;
+  --hb-body: #7c858d;
+  --hb-label: #a2a6aa;
+  --hb-indigo: #4042d1;
+  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  --fh-digits: 'Doto Variable', 'Courier New', monospace;
+  --hb-dash-v: repeating-linear-gradient(180deg, var(--hb-rail) 0 8px, transparent 8px 16px);
+  /* how far a step row's content and its rules sit off the rail's edge */
+  --hb-step-inset: 48px;
+  --hb-rule-v: repeating-linear-gradient(180deg, var(--hb-line) 0 4px, transparent 4px 8px);
+  --hb-rule-h: repeating-linear-gradient(90deg, var(--hb-line) 0 4px, transparent 4px 8px);
+
+  background: var(--hb-bg);
+  color: var(--hb-ink);
+  font-family: var(--fh-sans);
+}
+/* The rails carry the section's vertical padding, so they meet the neighbouring sections' rails. */
+.hb__frame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  padding: 96px clamp(0px, 3.85%, 60px);
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  background-image: var(--hb-dash-v), var(--hb-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Heading: the title and its note on one row, as the file sets them ---------- */
+.hb__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 48px;
+  align-items: center;
+  justify-content: space-between;
+}
+.hb__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -1.92px;
+  color: var(--hb-ink);
+}
+.hb__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.hb__lineInner {
+  display: block;
+}
+.hb__intro {
+  margin: 0;
+  max-width: 42ch;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--hb-body);
+}
+
+/* ---------- Card and rail ----------
+   The file gives the card 774 and the rail 581 inside a 1440 row; as fractions of that row they
+   hold their proportions at any width. */
+.hb__cols {
+  display: grid;
+  grid-template-columns: 774fr 581fr;
+  gap: 0 85fr;
+  align-items: start;
+}
+
+.hb__card {
+  position: relative;
+  height: 440px;
+  padding: 32px;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hb__card:focus-visible {
+  outline: 2px solid var(--hb-indigo);
+  outline-offset: 3px;
+}
+.hb__cardInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.hb__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  max-width: 562px;
+}
+.hb__cardTitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 0.981;
+  letter-spacing: -0.72px;
+  color: #2c2e31;
+}
+.hb__body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: #2c2e31;
+}
+/* ---------- The card's background (Figma 2715:1237, 2715:2376, 2715:2469) ----------
+   Each step's card carries its own exported background: the sign-up card a blue sweep with orbit
+   lines across its foot, the claim card a glow in its bottom-left corner — both under the file's
+   "Decoration Background", a 28px dot field faded at its top with an indigo-to-sky gradient over
+   it in colour blend. The currency card's lavender ellipses sit over that field in the file, so its
+   whole art frame is exported as one, field and all. */
+.hb__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hb__bg > * {
+  position: absolute;
+}
+.hb__glow {
+  display: block;
+  max-width: none;
+}
+.hb__glow--1 {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 262px;
+  object-fit: cover;
+  object-position: right bottom;
+}
+.hb__glow--2 {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 319px;
+  object-fit: cover;
+  object-position: right bottom;
+}
+.hb__glow--3 {
+  left: -6px;
+  bottom: -6px;
+}
+.hb__dots,
+.hb__wash {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 295px;
+}
+.hb__bg[data-step='claim'] .hb__dots,
+.hb__bg[data-step='claim'] .hb__wash {
+  height: 279px;
+}
+.hb__dots {
+  background-image: radial-gradient(circle at center, rgba(18, 36, 51, 0.12) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%);
+}
+.hb__wash {
+  background: linear-gradient(180deg, #b3b5f5 0%, #c4e0f6 86.862%);
+  mix-blend-mode: color;
+}
+.hb__cardInner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Rail ---------- */
+.hb__rail {
+  display: flex;
+  flex-direction: column;
+  height: 440px;
+}
+.hb__step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 32px 24px 32px var(--hb-step-inset);
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* The rules take the row's own left inset, so each starts where its "Step N" does rather than
+     out at the rail's edge. They still run to the far side, where the live row's marker sits. */
+  background-image: var(--hb-rule-h);
+  background-size: calc(100% - var(--hb-step-inset)) 1px;
+  background-position: var(--hb-step-inset) top;
+  background-repeat: no-repeat;
+}
+.hb__step:last-child {
+  background-image: var(--hb-rule-h), var(--hb-rule-h);
+  background-size: calc(100% - var(--hb-step-inset)) 1px, calc(100% - var(--hb-step-inset)) 1px;
+  background-position: var(--hb-step-inset) top, var(--hb-step-inset) bottom;
+}
+.hb__step:focus-visible {
+  outline: 2px solid var(--hb-indigo);
+  outline-offset: -2px;
+}
+.hb__stepLabel {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--hb-body);
+  transition: color 240ms;
+}
+.hb__stepTitle {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.12;
+  letter-spacing: -0.72px;
+  color: var(--hb-body);
+  transition: color 240ms;
+}
+.hb__step.is-active .hb__stepLabel {
+  color: var(--hb-indigo);
+}
+.hb__step.is-active .hb__stepTitle {
+  color: var(--hb-ink);
+}
+/* The live step takes the indigo edge on the rail's outer side. */
+/* The live step's marker doubles as its clock: while the section is playing itself the line
+   fills over exactly the time that step holds, so the rail shows how far through it is. Picked by
+   hand, it simply marks the step. */
+.hb__marker {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--hb-indigo);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hb__step.is-active .hb__marker {
+  transform: scaleY(1);
+}
+.hb[data-auto] .hb__step.is-active .hb__marker {
+  animation: hb-tick-y var(--hb-step-ms, 12000ms) linear both;
+}
+/* The track the fill runs down. Without something behind it the marker just reads as a mark;
+   against this you can see how far through the step is. */
+.hb__step::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgb(64 66 209 / 16%);
+  opacity: 0;
+  transition: opacity 240ms ease;
+  pointer-events: none;
+}
+.hb[data-auto] .hb__step.is-active::after {
+  opacity: 1;
+}
+@keyframes hb-tick-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes hb-tick-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hb[data-auto] .hb__step.is-active .hb__marker {
+    animation: none;
+  }
+  .hb__marker,
+  .hb__stepLabel,
+  .hb__stepTitle {
+    transition: none;
+  }
+}
+
+/* Hold the animated parts until GSAP has written their start states. */
+.hb[data-motion='pending'] .hb__lineInner,
+.hb[data-motion='pending'] .hb__intro,
+.hb[data-motion='pending'] .hb__card,
+.hb[data-motion='pending'] .hb__step {
+  visibility: hidden;
+}
+
+/* ---------- Responsive ---------- */
+/* The card and its rail stop being columns before they stop being legible: the rail goes above
+   the card, so the section reads the way a stepper does — choose a step, then look at it. */
+@media (max-width: 1100px) {
+  .hb__cols {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .hb__card,
+  .hb__rail {
+    height: auto;
+  }
+  .hb__card {
+    order: 2;
+    min-height: 380px;
+  }
+  .hb__rail {
+    order: 1;
+    flex-direction: row;
+  }
+  /* Each step is its own cell with the rule on its left, so the row reads as a segmented bar
+     rather than the stacked list the desktop column carries. */
+  .hb__step {
+    flex: 1;
+    gap: 2px;
+    padding: 18px 0 18px 20px;
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+    background-repeat: no-repeat;
+  }
+  .hb__step:first-child {
+    padding-left: 0;
+    background-image: none;
+  }
+  .hb__step:last-child {
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .hb__stepLabel {
+    font-size: 13px;
+  }
+  .hb__stepTitle {
+    font-size: 19px;
+    letter-spacing: -0.57px;
+  }
+  /* the live step is marked under its own cell, not down the column's edge */
+  /* laid flat, it wipes along the cell rather than down it */
+  .hb__marker {
+    right: 0;
+    left: 0;
+    top: auto;
+    bottom: -1px;
+    width: auto;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  .hb__step.is-active .hb__marker {
+    transform: scaleX(1);
+  }
+  .hb[data-auto] .hb__step.is-active .hb__marker {
+    animation-name: hb-tick-x;
+  }
+  .hb__step::after {
+    right: 0;
+    left: 0;
+    top: auto;
+    bottom: -1px;
+    width: auto;
+    height: 2px;
+  }
+}
+@media (max-width: 720px) {
+  .hb__frame {
+    padding: 64px 0;
+    gap: 32px;
+  }
+  .hb__title {
+    letter-spacing: -1.1px;
+  }
+  .hb__card {
+    padding: 24px;
+    /* the copy keeps the top, the scene stands on the floor — the card holds both */
+    min-height: 400px;
+  }
+  /* Three steps will not sit side by side at this width; they stack, each on its own rule. */
+  .hb__rail {
+    flex-direction: column;
+  }
+  .hb__step,
+  .hb__step:first-child,
+  .hb__step:last-child {
+    padding: 14px 0 14px 16px;
+    background-image: var(--hb-rule-v);
+    background-size: 1px 100%;
+    background-position: left top;
+  }
+  .hb__stepTitle {
+    font-size: 20px;
+  }
+  .hb__marker {
+    right: auto;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+  }
+  .hb__step.is-active .hb__marker {
+    transform: scaleY(1);
+  }
+  .hb[data-auto] .hb__step.is-active .hb__marker {
+    animation-name: hb-tick-y;
+  }
+  .hb__step::after {
+    right: auto;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
+  }
+}

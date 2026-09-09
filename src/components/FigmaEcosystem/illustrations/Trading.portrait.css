@@ -1,0 +1,94 @@
+/* Portrait composition for the trading scene (phone). The landscape scene keeps its rules in
+   ecosystem-illustrations.css; everything here belongs to the 361-wide phone canvas.
+
+   The canvas is drawn at 1:1 against the width a pillar's scene actually gets, so nothing here is
+   a scaled-down desktop size — the type is picked for a phone and rendered at that size. The floor
+   is 12.5px rather than 11: a 360px screen leaves the scene 328px, which fits the 361 canvas at
+   ~0.91, and 12.5 is the smallest design size that still clears 11px once that fit is applied. */
+
+.ec-trade--m .ec-trade__head {
+  gap: 6px;
+}
+.ec-trade--m .ec-trade__pair {
+  gap: 10px;
+  font-size: 12.5px;
+}
+.ec-trade--m .ec-live {
+  font-size: 12.5px;
+}
+.ec-trade--m .ec-trade__price {
+  gap: 10px;
+}
+/* Still the loudest thing in the frame — it is the number the whole scene exists to show — but
+   sized so the price and its change pill share one line with room to spare at 361. */
+.ec-trade--m .ec-trade__price b {
+  font-size: 38px;
+  letter-spacing: -1.2px;
+}
+.ec-trade--m .ec-trade__delta {
+  font-size: 12.5px;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+.ec-trade--m .ec-trade__sub {
+  width: 361px;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+/* ---------- The chart, re-cut for a narrow frame ---------- */
+.ec-trade--m .ec-trade__tip {
+  box-sizing: border-box;
+  width: 84px;
+  gap: 0;
+  padding: 6px 8px;
+  border-radius: 9px;
+}
+.ec-trade--m .ec-trade__tip b {
+  font-size: 13px;
+}
+.ec-trade--m .ec-trade__tip small {
+  font-size: 12.5px;
+  opacity: 0.68;
+}
+/* Three ticks, not five: the day's open, its middle and its close. Five labels at this width sit
+   shoulder to shoulder, and the outer two get their first digit shaved by the frame's edge. */
+.ec-trade--m .ec-trade__axis {
+  margin-top: 10px;
+}
+.ec-trade--m .ec-trade__axis em {
+  font-size: 12.5px;
+}
+
+/* ---------- The other pairs, as a list rather than a row of cards ---------- */
+/* Three 226px cards do not become three good 112px cards; they become three cramped ones with the
+   figures wrapping. Full-width rows give each pair the whole width for its price and change, which
+   is how a phone shows a watchlist anyway, and the third pair stays on the canvas. */
+.ec-trade--m .ec-trade__markets {
+  flex-direction: column;
+  gap: 8px;
+}
+.ec-trade--m .ec-trade__market {
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 361px;
+  height: 44px;
+  padding: 0 14px;
+}
+.ec-trade--m .ec-trade__market b {
+  flex: 1;
+  font-size: 12.5px;
+}
+.ec-trade--m .ec-trade__market span {
+  font-size: 16px;
+}
+/* On the desk the change is pinned to the card's corner; in a row it belongs on the line, held to
+   a fixed column so the figures do not shuffle sideways as the market moves. */
+.ec-trade--m .ec-trade__market em {
+  position: static;
+  min-width: 54px;
+  font-size: 12.5px;
+  text-align: right;
+}

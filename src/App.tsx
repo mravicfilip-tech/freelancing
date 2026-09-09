@@ -5,6 +5,20 @@ import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
 import { Dashboard } from './dashboard/Dashboard';
+import { FigmaHero } from './components/FigmaHero/FigmaHero';
+import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
+import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
+import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
+import { FigmaReviews } from './components/FigmaReviews/FigmaReviews';
+import { FigmaSeenIn } from './components/FigmaSeenIn/FigmaSeenIn';
+import { FigmaFaq } from './components/FigmaFaq/FigmaFaq';
+import { FigmaTokenomics } from './components/FigmaTokenomics/FigmaTokenomics';
+import { FigmaAudits } from './components/FigmaAudits/FigmaAudits';
+import { FigmaHowToBuy } from './components/FigmaHowToBuy/FigmaHowToBuy';
+import { RoadmapStage } from './components/FigmaRoadmap/RoadmapStage';
+import { TokPicker, tokFromParam } from './components/FigmaTokenomics/TokPicker';
+import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
+import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -12,6 +26,12 @@ const DEV_TOOLS = params.has('devtools');
 /** The dashboard lives at /dashboard; `?view=dashboard` works too, for previews. */
 const DASHBOARD =
   window.location.pathname.replace(/\/+$/, '') === '/dashboard' || params.get('view') === 'dashboard';
+// Review page for the bento grid's loop variants; `?bento=` alone applies a choice to the real page.
+const BENTO_PICKER = params.has('bento-picker');
+const BENTO_PICKS = picksFromParam(params.get('bento'));
+// Review page for the tokenomics motion variants; `?tok=` alone applies a choice to the real page.
+const TOK_PICKER = params.has('tok-picker');
+const TOK_VARIANT = tokFromParam(params.get('tok'));
 
 export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
@@ -19,31 +39,27 @@ export function App() {
 
   if (CAPTURE_MODE) return <CaptureStage />;
   if (DASHBOARD) return <Dashboard />;
+  if (BENTO_PICKER) return <BentoPicker />;
+  if (TOK_PICKER) return <TokPicker />;
 
+  const figma = HERO_VARIANT === 'figma';
   return (
     <>
-      <Nav />
+      {!figma && <Nav />}
       <main>
-        {heroMounted && <Hero />}
-        <section className="section" id="how">
-          <h2>How it works</h2>
-          <p>
-            Connect a wallet, pick a currency and a bank account, and Remittix handles the rest:
-            conversion, compliance and settlement, in one transaction.
-          </p>
-        </section>
-        <section className="section section--dark" id="coverage">
-          <h2>Built for the corridors that matter</h2>
-          <p>
-            From Lagos to London and Manila to Madrid. Local rails in every market we launch, so
-            money lands as local currency without a detour through a correspondent bank.
-          </p>
-        </section>
-        <section className="section" id="tokenomics">
-          <h2>Tokenomics</h2>
-          <p>A fixed supply, a transparent release schedule, and fees that flow back to holders.</p>
-        </section>
+        {heroMounted && (figma ? <FigmaHero /> : <Hero />)}
+        {figma && <FigmaSimple />}
+        {figma && <FigmaFeatures picks={BENTO_PICKS} />}
+        {figma && <FigmaEcosystem />}
+        {figma && <FigmaReviews />}
+      {figma && <FigmaSeenIn />}
+        {figma && <FigmaTokenomics variant={TOK_VARIANT} />}
+        {figma && <RoadmapStage />}
+        {figma && <FigmaAudits />}
+        {figma && <FigmaHowToBuy />}
+        {figma && <FigmaFaq />}
       </main>
+      {figma && <FigmaFooter />}
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
       {DEV_TOOLS && (
         <div className="devbar">

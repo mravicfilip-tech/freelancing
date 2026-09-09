@@ -1,0 +1,114 @@
+/* Review page for the bento grid's loop variants (see BentoPicker.tsx). */
+.bp {
+  min-height: 100vh;
+  background: #edeff1;
+  padding-bottom: 300px;
+}
+.bp__panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  padding: 14px 20px 12px;
+  background: rgba(18, 36, 51, 0.96);
+  color: #fff;
+  font-family: 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 -8px 30px rgba(18, 36, 51, 0.25);
+}
+.bp__group {
+  padding: 0 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 0;
+}
+.bp__group:first-child {
+  border-left: 0;
+}
+.bp__name {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #b3b5f5;
+}
+.bp__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bp__opt {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.bp__opt b {
+  color: #b3b5f5;
+  margin-right: 2px;
+}
+.bp__opt:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.bp__opt--on {
+  background: #4042d2;
+  border-color: #4042d2;
+}
+.bp__opt--on b {
+  color: #fff;
+}
+.bp__blurb {
+  margin: 10px 0 0;
+  min-height: 3.2em;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+}
+.bp__foot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.bp__code {
+  font-family: 'Doto Variable', 'Courier New', monospace;
+  font-size: 15px;
+  color: #f9ff38;
+}
+.bp__replay {
+  margin-left: auto;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: #fff;
+  color: #122433;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 1100px) {
+  .bp__panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: 60vh;
+    overflow: auto;
+  }
+  .bp__group {
+    margin-bottom: 12px;
+  }
+}

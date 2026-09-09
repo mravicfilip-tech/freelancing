@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LEVELS, type Level } from './content';
 import { useStageMotion } from './useStageMotion';
 import './RoadmapStage.css';
 
-/** How long each level holds before the band moves on. */
-const STEP_MS = 3600;
+/** How long each level holds before the band moves on. Seven levels, so this is the whole band's
+ *  pace: at 3600 a full pass took 25 seconds and read as waiting rather than moving. */
+const STEP_MS = 2600;
 
 /* Exported from Figma "Remittix Redesign" › 2717:2477. The checks and the marker are the file's
    own assets, in public/figma/. */
@@ -40,7 +41,9 @@ function usePhone() {
   return phone;
 }
 
-function Card({ level, active }: { level: Level; active: boolean }) {
+/* Memoised: a step changes `active` on two cards, and React should not reconcile the other five —
+   35 milestone rows rebuilt inside a 620ms transition is the block that made it stutter. */
+const Card = memo(function Card({ level, active }: { level: Level; active: boolean }) {
   return (
     <article className="rs__card" id={`rs-card-${level.n}`} data-active={active || undefined} aria-labelledby={`rs-card-h-${level.n}`}>
       <h3 className="rs__sr" id={`rs-card-h-${level.n}`}>
@@ -54,7 +57,7 @@ function Card({ level, active }: { level: Level; active: boolean }) {
       ))}
     </article>
   );
-}
+});
 
 /**
  * Roadmap — Figma 2717:2477. The seven levels stand on the left against dashed leaders, a lit
@@ -67,9 +70,8 @@ export function RoadmapStage() {
   const stack = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const rail = useRef<HTMLDivElement>(null);
+  const marker = useRef<HTMLImageElement>(null);
   const [active, setActive] = useState(0);
-  const [shift, setShift] = useState(0);
-  const [markerY, setMarkerY] = useState<number | null>(null);
   const panels = useRef<(HTMLDivElement | null)[]>([]);
   const [heights, setHeights] = useState<number[]>([]);
   const phone = usePhone();
@@ -103,32 +105,62 @@ export function RoadmapStage() {
   }, [auto]);
 
   /* The marker sits on the active level's centre line, and the stack slides so that level's card
-     is centred in the stage — both measured, so the two columns cannot drift apart. */
+     is centred in the stage — both measured, so the two columns cannot drift apart.
+
+     The measuring happens once, not once per step. Every card is now the same shape, so the
+     column's geometry does not change when the band moves; reading it on each step only forced a
+     full layout of a 3400px stack inside the very transition it was driving. It is re-read when
+     something can actually have changed it — a resize, a font landing, the list reflowing.
+
+     The two results are written straight to their nodes rather than held in state: as state they
+     cost a second render and a second forced layout per step, and nothing else reads them. */
+  const geometry = useRef<{ rows: number[]; cards: number[] }>({ rows: [], cards: [] });
+  /* The measure effect outlives any one step, so it must not read `active` from the render it was
+     created in — a resize firing after the band has moved would otherwise re-apply level one's
+     target and yank the stack back mid-slide. */
+  const activeRef = useRef(active);
+  activeRef.current = active;
+
+  /** Put the marker on a level's centre line and slide that level's card to the stage's middle. */
+  const place = (i: number) => {
+    const { rows, cards } = geometry.current;
+    if (rows[i] !== undefined && marker.current) {
+      marker.current.style.transform = `translateY(${rows[i]}px)`;
+      marker.current.style.opacity = '1';
+    }
+    if (cards[i] !== undefined && stack.current) stack.current.style.transform = `translateY(${cards[i]}px)`;
+  };
+
   useLayoutEffect(() => {
     if (phone) return;
     const measure = () => {
-      // the marker rides to the open level's centre line (2718:2841)
-      const row = list.current?.children[active] as HTMLElement | undefined;
-      if (row && rail.current) setMarkerY(rowCentreOnRail(row, rail.current));
+      const listEl = list.current;
+      const railEl = rail.current;
       const view = viewport.current;
-      // The open card, not its wrapper — the live one is grouped with its label.
-      const card = stack.current?.querySelectorAll<HTMLElement>('.rs__card')[active];
-      if (view && card) {
-        // Centre the open card in the clipped stage; its label rides above it in flow.
-        setShift(view.clientHeight / 2 - (card.offsetTop + card.offsetHeight / 2));
-      }
+      const cardEls = stack.current?.querySelectorAll<HTMLElement>('.rs__card');
+      if (!listEl || !railEl || !view || !cardEls) return;
+      geometry.current = {
+        // the marker rides to each level's centre line (2718:2841)
+        rows: [...listEl.children].map((row) => rowCentreOnRail(row as HTMLElement, railEl)),
+        // and the stack slides so that level's card is centred in the clipped stage
+        cards: [...cardEls].map((card) => view.clientHeight / 2 - (card.offsetTop + card.offsetHeight / 2)),
+      };
+      place(activeRef.current);
     };
     measure();
     const ro = new ResizeObserver(measure);
-    if (list.current) ro.observe(list.current);
-    if (stack.current) ro.observe(stack.current);
-    if (viewport.current) ro.observe(viewport.current);
-    if (rail.current) ro.observe(rail.current);
+    for (const el of [list.current, stack.current, viewport.current, rail.current]) if (el) ro.observe(el);
     window.addEventListener('resize', measure);
     return () => {
       ro.disconnect();
       window.removeEventListener('resize', measure);
     };
+  }, [phone]);
+
+  /* A step only reads what was already measured — no layout, no second render. */
+  useLayoutEffect(() => {
+    if (!phone) place(active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, phone]);
 
   /* Every level keeps its own panel, so opening one and closing another is a move rather than a
@@ -215,18 +247,12 @@ export function RoadmapStage() {
 
             <div className="rs__rail" ref={rail} aria-hidden="true">
               <span className="rs__railLine" />
-              <img
-                className="rs__marker"
-                src={MARKER}
-                alt=""
-                width={24}
-                height={24}
-                style={markerY === null ? { opacity: 0 } : { transform: `translateY(${markerY}px)` }}
-              />
+              {/* held invisible until the first measurement places it, so it never flashes at 0 */}
+              <img className="rs__marker" ref={marker} src={MARKER} alt="" width={24} height={24} style={{ opacity: 0 }} />
             </div>
 
             <div className="rs__cards" ref={viewport}>
-              <div className="rs__stack" ref={stack} style={{ transform: `translateY(${shift}px)` }}>
+              <div className="rs__stack" ref={stack}>
                 {/* A level's label rides above its own card; levels without one render the card alone. */}
                 {LEVELS.map((l, i) =>
                   l.label ? (

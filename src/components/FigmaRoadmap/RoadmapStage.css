@@ -20,7 +20,7 @@
   /* the stage's height and the gutter the level list keeps off the rail */
   --rs-stage-h: 915px;
   /* one duration and one curve for everything that moves between levels */
-  --rs-move: 620ms;
+  --rs-move: 480ms;
   --rs-ease: cubic-bezier(0.32, 0.72, 0, 1);
   --rs-inset: 48px;
 
@@ -209,7 +209,11 @@
 .rs__card {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  /* One gap for every card, not 32 for the open one and 48 for its neighbours. The difference is
+     64px across five milestones, so switching level used to resize two cards and reflow the whole
+     column — an instant 64px jump inside the 620ms slide, and a forced layout on every step. The
+     neighbours are dimmed and half-clipped; the gap that matters is the one you are reading. */
+  gap: 32px;
   padding: 32px;
   border: 1px solid var(--rs-card-line);
   border-radius: 12px;
@@ -218,7 +222,6 @@
   transition: opacity var(--rs-move) var(--rs-ease);
 }
 .rs__card[data-active] {
-  gap: 32px;
   opacity: 1;
 }
 .rs__item {
@@ -308,7 +311,6 @@
   }
   .rs__card {
     padding: 24px;
-    gap: 28px;
   }
   .rs__stack {
     gap: 48px;

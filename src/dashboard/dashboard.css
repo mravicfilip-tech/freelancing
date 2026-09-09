@@ -10,7 +10,7 @@
 
 .dash {
   --rail-w: 236px;
-  --gap: clamp(14px, 1.4vw, 20px);
+  --gap: 8px;
   --pad: clamp(16px, 1.6vw, 22px);
   --r-card: 12px;
   --r-inner: 12px;

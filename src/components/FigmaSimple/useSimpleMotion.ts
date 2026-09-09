@@ -90,16 +90,21 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             glowPath.classList.add('fs__ringGlow');
             ringPath.parentElement!.appendChild(glowPath);
             gsap.set(ringPath, { strokeDasharray: 'none', strokeDashoffset: 0 });
-            // The portrait crop shows about a quarter of the orbit at a time, so a segment sized
-            // for the wide band fills half of what is visible and reads as a drawn arc rather than
-            // a travelling light. There it runs short.
-            const dash = len * (portrait ? 0.045 : 0.12);
+            // The lit arc is a share of the ring's length. The portrait frame holds nearly the
+            // whole ellipse now — only its two ends bleed — so it takes an arc of its own measure
+            // rather than the quarter-crop's stub, which read as a dot rather than a comet.
+            const dash = len * (portrait ? 0.09 : 0.12);
 
             // The orbit, sampled once into the stage's design coordinates (the ring's tilt and the
             // stage's fitted scale are folded in), so the loop never has to read layout per frame.
             const stage = one(orbit, '.ff__stage');
             const stageRect = stage.getBoundingClientRect();
-            const k = stageRect.width / 1560;
+            // The scale the stage is actually drawn at: the portrait frame is 393 wide, not the
+            // landscape 1560, and reading that off a constant put every sampled point about four
+            // times too far out — which is what kept the cursor, the chip pops and the group pops
+            // off the portrait orbit. Measured rather than taken from `--k`, so a CSS transform on
+            // the illustration cannot silently invalidate it.
+            const k = stageRect.width / (stage as HTMLElement).offsetWidth;
             const ctm = ringPath.getScreenCTM()!;
             const SAMPLES = 720;
             const table: { x: number; y: number }[] = [];
@@ -143,9 +148,11 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             const armed = markers.map(() => true);
             // Chips and groups react to the cursor itself: each fires as the cursor's tip comes within
             // reach of its centre, and re-arms once the tip has moved well away.
+            // Floored: the pay-ins chip's closest approach to the ring is 59 design px against a
+            // half-width of 67, and a slightly narrower chip would stop firing altogether.
             const reach = (m: Element) => {
               const r = m.getBoundingClientRect();
-              return r.width / k / 2 + 12;
+              return Math.max(r.width / k / 2 + 12, 40);
             };
             const targets = [...chips, ...groups].map((m) => ({ centre: centreOf(m), reach: reach(m), armed: true }));
 
@@ -219,16 +226,17 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             // Every loop lives on one timeline, so the section can pause it all while off screen.
             const loop = gsap.timeline();
             loop.to(glowPath, { opacity: 0.9, duration: 0.5 }, SPAWN);
-            // The cursor takes up the highlight and rides it. In the portrait frame the orbit runs
-            // mostly outside the crop, so a cursor riding it would be gone for seven seconds of
-            // every nine: there it stays parked by the badge, where the design draws it, and the
-            // highlight travels alone.
-            if (!portrait) loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
+            // The cursor takes up the highlight and rides it, on both frames: in the portrait one
+            // the ring is inside the crop bar its two bleeding ends, so the ride reads there too.
+            loop.to(phase, { mix: 1, duration: 0.9, ease: 'power2.inOut', onComplete: () => { following = true; } }, SPAWN);
             // The badge parks beside the hub on its centre line: a fixed 16px gap to its right,
             // vertically centred on its middle. The portrait frame already draws the badge where it
-            // belongs — above the hub, where the turn puts it — and there is no room to its right,
-            // so it stays put there.
-            if (!portrait) {
+            // belongs — above the hub, where the turn puts it — and there is no room to its right.
+            // It still takes the beat, though: it settles onto that spot as the highlight sets off,
+            // so the phone gets the arrival the desktop gets rather than a badge that never moves.
+            if (portrait) {
+              loop.fromTo(badge, { y: -18 }, { y: 0, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
+            } else {
               const h = hub as HTMLElement;
               loop.to(badge, { left: h.offsetLeft + h.offsetWidth + 16, top: h.offsetTop + h.offsetHeight / 2 - badge.offsetHeight / 2, duration: 1.0, ease: 'power3.inOut' }, SPAWN + 0.1);
             }

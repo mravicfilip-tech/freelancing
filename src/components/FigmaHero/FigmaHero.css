@@ -18,6 +18,7 @@
   --fh-muted: #8292a2;
   --fh-body: #7c858d;
   --fh-label: #a2a6aa;
+  --fh-index: #6e7781;
   --fh-progress: #4042d2;
   --fh-progress-soft: #b3b5f5;
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -27,6 +28,11 @@
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fh-dash-v: repeating-linear-gradient(180deg, var(--fh-line) 0 8px, transparent 8px 16px);
   --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
+  /* Where the bar sits and how tall it is. The phone sheet stands under it and is inset to the
+     same gutter, so both are measured from here rather than each guessing at the other. */
+  --fh-nav-top: 24px;
+  --fh-nav-gutter: 24px;
+  --fh-nav-h: 74px;
 
   position: relative;
   /* No isolation here: it would make .fh a stacking context and trap the fixed nav inside the
@@ -76,7 +82,7 @@
 
 /* Lift the hero's content off the dotted frame behind it. The nav is exempt: it is fixed and
    rides the whole page, so it must not be pinned back into the hero's own layer. */
-.fh > :not(.fh__frame):not(.fh__nav) {
+.fh > :not(.fh__frame):not(.fh__nav):not(.fh__menu):not(.fh__scrim) {
   position: relative;
   z-index: 1;
 }
@@ -88,18 +94,18 @@
    full bar back. Centring is done with auto margins rather than a translate, because the
    entrance timeline in useHeroEntrance owns this element's transform.
 
-   The nav and its dropdowns must paint above the hero's own content — `.fh > :not(.fh__frame)`
-   puts every sibling on z-index 1, and the planet comes later in document order. The exemption
+   The nav and its dropdowns must paint above the hero's own content — the `.fh > :not(...)` rule
+   above puts every sibling on z-index 1, and the planet comes later in document order. The exemption
    in that rule plus the z-index below settle it: a `.fh > .fh__nav` override would out-specify
    the z-index here and drop the bar back under the sections it now has to cross. */
 .fh__nav {
   position: fixed;
-  top: 24px;
+  top: var(--fh-nav-top);
   left: 0;
   right: 0;
   z-index: 60;
   margin: 0 auto;
-  width: min(1440px, 100% - 48px);
+  width: min(1440px, 100% - var(--fh-nav-gutter) * 2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -625,6 +631,8 @@
   line-height: 0.98;
   letter-spacing: -0.72px;
   color: var(--fh-body);
+  /* Even lines rather than a single word left on the second one. */
+  text-wrap: balance;
 }
 .fh__progress {
   position: relative;
@@ -764,6 +772,331 @@
   color: rgba(162, 166, 170, 0.24);
 }
 
+/* ---------- The phone menu ----------
+   At 1100 the bar drops its links, its language and its Login all at once and a trigger takes their
+   place, so nothing is ever offered twice. What they drop into is a sheet, not a dropdown. */
+.fh__burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 400px;
+  background: transparent;
+  color: var(--fh-ink);
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .fh__burger:hover {
+    background: #f2f4f6;
+  }
+}
+/* Two rules, not three: the third bar is the part that dates a hamburger, and with two the open
+   state is the same two rules crossing rather than one of them having to disappear. The lower
+   one is short, which is what gives the mark its direction; it draws out to full width as the
+   sheet opens, so the close X is even. */
+.fh__burgerBars {
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 9.75px;
+}
+.fh__burgerBars i {
+  position: absolute;
+  left: 0;
+  height: 1.75px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.fh__burgerBars i:nth-child(1) { top: 0; width: 100%; }
+.fh__burgerBars i:nth-child(2) { top: 8px; width: 55%; }
+@media (hover: hover) {
+  .fh__burger:hover .fh__burgerBars i:nth-child(2) {
+    width: 100%;
+  }
+}
+/* Open: both rules run full width and cross on the mark's own centre line (4.875). */
+[aria-expanded='true'] .fh__burgerBars i:nth-child(1) {
+  transform: translateY(4px) rotate(45deg);
+}
+[aria-expanded='true'] .fh__burgerBars i:nth-child(2) {
+  width: 100%;
+  transform: translateY(-4px) rotate(-45deg);
+}
+/* The page behind the sheet, frosted rather than blacked out: the site's own ground is what shows
+   through, so the sheet reads as a layer of the page and not as a modal borrowed from elsewhere. */
+.fh__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(18, 36, 51, 0.34);
+  /* Unprefixed only: written as a pair the minifier keeps the -webkit- form alone, which this
+     engine does not alias, and the frost silently disappears from the build. */
+  backdrop-filter: blur(14px) saturate(1.06);
+  opacity: 0;
+  visibility: hidden;
+  /* A closed scrim that is still hit-testable eats every tap for the length of its fade. */
+  pointer-events: none;
+  transition:
+    opacity 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 240ms;
+}
+.fh__scrim[data-open] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 0s;
+}
+/* The sheet stands under the bar and runs to the foot of the screen. It is fixed to the viewport
+   rather than hung off the bar so it can own that height, and it carries no transform of its own:
+   the language picker inside it is fixed too, and a transformed ancestor would trap it. */
+.fh__menu {
+  position: fixed;
+  z-index: 59;
+  top: calc(var(--fh-nav-top) + var(--fh-nav-h) + 8px);
+  right: var(--fh-nav-gutter);
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  width: min(420px, calc(100% - var(--fh-nav-gutter) * 2));
+  display: flex;
+  flex-direction: column;
+  padding: 12px 20px 20px;
+  border: 1px solid var(--fh-line);
+  border-radius: 28px;
+  background: #fff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    visibility 0s linear 160ms;
+}
+.fh__menu[data-open] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 160ms ease,
+    visibility 0s linear 0s;
+}
+.fh__menuLinks {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+/* A numeral, the name in the display face, and the same chevron the buttons use — the bar's own
+   voice at reading size, with the dashed rule the FAQ and the language list already separate on. */
+.fh__menuLinks a {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  /* The rows take the height the sheet has spare, so the list reads to the screen it is on
+     rather than leaving a hole above the account actions. */
+  flex: 1 1 auto;
+  min-height: 64px;
+  max-height: 84px;
+  padding: 0 4px;
+  color: var(--fh-ink);
+  text-decoration: none;
+  background-image: repeating-linear-gradient(90deg, var(--fh-line) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: color 240ms ease;
+}
+.fh__menuIndex {
+  font-family: var(--fh-digits);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--fh-index);
+  transition: color 240ms ease;
+}
+.fh__menuLabel {
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.84px;
+}
+.fh__menuLinks .fh__chevron {
+  opacity: 0.4;
+  transition:
+    transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 240ms ease;
+}
+/* The FAQ's open-row marker, reused: a rule that grows down the sheet's own edge. */
+.fh__menuLinks a::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: var(--fh-progress);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.fh__menuLinks a:active,
+.fh__menuLinks a:focus-visible {
+  color: var(--fh-progress);
+}
+.fh__menuLinks a:active::before,
+.fh__menuLinks a:focus-visible::before {
+  transform: scaleY(1);
+}
+.fh__menuLinks a:active .fh__menuIndex,
+.fh__menuLinks a:focus-visible .fh__menuIndex {
+  color: var(--fh-progress);
+}
+@media (hover: hover) {
+  .fh__menuLinks a:hover {
+    color: var(--fh-progress);
+  }
+  .fh__menuLinks a:hover::before {
+    transform: scaleY(1);
+  }
+  .fh__menuLinks a:hover .fh__menuIndex {
+    color: var(--fh-progress);
+  }
+  .fh__menuLinks a:hover .fh__chevron--right {
+    opacity: 1;
+    transform: rotate(-90deg) translateY(3px);
+  }
+}
+/* Both account actions, full width, pushed to the foot of the sheet. */
+.fh__menuActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 0 auto;
+  padding-top: 24px;
+}
+.fh__menuActions .fh__btn {
+  width: 100%;
+  height: 52px;
+}
+/* On white the bar's ghost is too faint to read as the second of two actions. */
+.fh__menu .fh__btn--ghost {
+  background: #f1f4f7;
+  border-color: #dde3e9;
+  color: var(--fh-ink);
+}
+.fh__menuFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  background-image: repeating-linear-gradient(90deg, var(--fh-line) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.fh__menuFootLabel {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  color: var(--fh-label);
+}
+/* In the sheet the language trigger is a control in its own right, not the bar's divided cell. */
+.fh__menuFoot .fh__lang {
+  height: 40px;
+  padding: 0 14px;
+  gap: 8px;
+  border: 1px solid var(--fh-line);
+  border-radius: 400px;
+}
+/* Anchored to the trigger the list would run off the left edge, so on a sheet it comes up from the
+   foot of the screen instead — the only place a 340px list fits on a 393px phone. */
+.fh__menu .lp__pop {
+  position: fixed;
+  left: auto;
+  right: var(--fh-nav-gutter);
+  top: auto;
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  /* The sheet's own measure, not the screen's: at 900 the screen gave it 876px of slab. */
+  width: min(420px, calc(100% - var(--fh-nav-gutter) * 2));
+  max-height: min(70vh, 460px);
+  border-radius: 20px;
+  /* Two white cards, one over the other: the hairline alone does not separate them. */
+  box-shadow: 0 -14px 36px -20px rgba(18, 36, 51, 0.5);
+  transform-origin: 50% 100%;
+  animation: fh-lang-in 240ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* Only once it is open: `display` here would out-specify the `hidden` attribute and leave the
+   list laid out over the sheet, swallowing the taps meant for the control that opens it. */
+.fh__menu .lp__pop:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+/* The 320px cap on the list only applies under 560, so above it the list drove the pop's height
+   past the screen and took the search field off the top with it. */
+.fh__menu .lp__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+}
+@keyframes fh-lang-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+/* The sheet's contents arrive in reading order once it is open, and leave together. */
+.fh__menuLinks a,
+.fh__menuActions,
+.fh__menuFoot {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 220ms ease,
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    color 240ms ease;
+}
+.fh__menu[data-open] .fh__menuLinks a,
+.fh__menu[data-open] .fh__menuActions,
+.fh__menu[data-open] .fh__menuFoot {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(30ms + var(--i, 0) * 26ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fh__scrim,
+  .fh__scrim[data-open],
+  .fh__menu,
+  .fh__menu[data-open],
+  .fh__menuLinks a,
+  .fh__menuActions,
+  .fh__menuFoot,
+  .fh__menu[data-open] .fh__menuLinks a,
+  .fh__menu[data-open] .fh__menuActions,
+  .fh__menu[data-open] .fh__menuFoot {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+  .fh__menu .lp__pop {
+    animation: none;
+  }
+  .fh__burgerBars i {
+    transition: none;
+  }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
   .fh__links {
@@ -789,6 +1122,36 @@
   .fh__links {
     display: none;
   }
+  /* From here the sheet carries them, so the bar keeps only the brand, the presale and the trigger. */
+  .fh__navButtons .fh__btn--ghost,
+  .fh__navRight > .lp {
+    display: none;
+  }
+  /* The 24px cell the brand sat in was there to space it off the links; with those gone it only
+     pushed the mark 24px further in than the trigger on the other side. */
+  .fh__brand {
+    padding: 0;
+  }
+  .fh__burger {
+    display: inline-flex;
+  }
+  /* The mark and the trigger were 12px off the pill's own edge, which on a phone reads as the
+     bar having no margins at all. Both step in by 16; the trigger's 44px target is pulled back
+     out by its own optical inset so the glyph lands on the same 28 as the mark, and the whole
+     target still sits inside the pill. */
+  .fh__nav {
+    padding-inline: 28px;
+  }
+  .fh__burger {
+    margin-right: -13px;
+  }
+}
+/* Above it the panel can never open, so it must not be reachable. */
+@media (min-width: 1101px) {
+  .fh__menu,
+  .fh__scrim {
+    display: none;
+  }
 }
 @media (max-width: 900px) {
   .fh {
@@ -796,13 +1159,14 @@
     gap: 48px;
     padding-top: 16px;
   }
-  .fh__nav {
-    top: 16px;
-    width: calc(100% - 24px);
+  .fh {
+    --fh-nav-top: 16px;
+    /* The same rail the bands are on: at 12 the pill visibly undercut it. */
+    --fh-nav-gutter: 16px;
   }
-  .fh__navButtons .fh__btn--ghost,
-  .fh__lang {
-    display: none;
+  .fh__nav {
+    top: var(--fh-nav-top);
+    width: calc(100% - var(--fh-nav-gutter) * 2);
   }
   .fh__main {
     flex-direction: column;
@@ -866,5 +1230,86 @@
   }
   .fh__btn {
     width: 140px;
+  }
+}
+
+/* The dot field runs edge to edge on a phone and the rails come in to the 16px gutter every band
+   below shares, so the hero's own content stands on them. */
+@media (max-width: 720px) {
+  .fh__frame {
+    width: calc(100% - 32px);
+  }
+  .fh__main {
+    width: calc(100% - 64px);
+    /* The dot band's top rule is drawn at a fixed 139 and the column started level with it, so the
+       headline sat on the line. */
+    margin-top: 16px;
+  }
+  .fh__footer {
+    padding: 24px 32px;
+  }
+  .fh__introText {
+    gap: 14px;
+  }
+  /* The controls sat in a huddle on the left; on a phone the row is the width of the slide. */
+  .fh__sliderControls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  /* The mark is the only link in the bar a thumb cannot reliably hit — under 480 it is the 33px
+     logo alone. The padding widens the target and the negative margin cancels the shift it would
+     otherwise cause, so the mark stays exactly where it was. */
+  .fh__brand {
+    min-height: 44px;
+    align-items: center;
+    padding: 0 6px;
+    margin-left: -6px;
+  }
+  /* Touch: the arrows were 40 square and a slide segment 23 tall. */
+  .fh__sliderArrow {
+    width: 44px;
+    height: 44px;
+  }
+  /* A 14px dash is what the design draws, so the target comes from a hit area over it rather
+     than from the dash itself: widening the button would widen the dash with it. */
+  .fh__segment {
+    position: relative;
+    padding: 21px 0;
+  }
+  .fh__segment::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* A landscape phone, or a small one: the sheet has 486px to hold what a tall one gives 738. Take
+   it out of the rows and the actions rather than pushing the second action off the bottom. */
+@media (max-height: 720px) {
+  .fh__menuLinks a {
+    min-height: 52px;
+    max-height: 64px;
+  }
+  .fh__menuLabel {
+    font-size: 22px;
+    letter-spacing: -0.44px;
+  }
+  .fh__menuIndex {
+    font-size: 17px;
+  }
+  .fh__menuActions {
+    padding-top: 16px;
+    gap: 8px;
+  }
+  .fh__menuActions .fh__btn {
+    height: 46px;
+  }
+  .fh__menuFoot {
+    margin-top: 12px;
+    padding-top: 12px;
   }
 }

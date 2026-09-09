@@ -294,15 +294,20 @@
   }
 }
 @media (max-width: 720px) {
+  /* The frame keeps its rails on a phone; only the gutter outside them narrows, from 24px to the
+     16px every band shares. Content runs rail to rail, as it does on the desk. */
   .fs__inner {
-    padding: 56px 0;
-  }
-  /* The phone frame carries the orbit on plain ground — no dot field, no rails. */
-  .fs__band {
-    background-image: none;
+    width: calc(100% - 32px);
+    padding: 64px 0;
   }
   .fs__inner {
     gap: 32px;
+  }
+  /* The copy clears the rails by the page's 16; the band keeps running rail to rail, so its own
+     rules and dot field still close the rectangle against them. */
+  .fs__title,
+  .fs__foot {
+    padding-inline: 16px;
   }
   .fs__title {
     font-size: 40px;

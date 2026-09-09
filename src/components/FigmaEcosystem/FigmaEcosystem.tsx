@@ -1,8 +1,13 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type JSX } from 'react';
 import { Payments, Trading, Staking, Storage } from './illustrations';
+import { useMobileArt } from '../FigmaFeatures/illustrations/Stage';
 import { useEcosystemMotion } from './useEcosystemMotion';
 import '../FigmaFeatures/illustrations/illustrations.css';
 import './illustrations/ecosystem-illustrations.css';
+import './illustrations/Payments.portrait.css';
+import './illustrations/Trading.portrait.css';
+import './illustrations/Staking.portrait.css';
+import './illustrations/Storage.portrait.css';
 import './FigmaEcosystem.css';
 
 /**
@@ -41,8 +46,12 @@ export const PILLARS = [
   },
 ] as const;
 
+/** A pillar's illustration, by id — so a phone can render each one inside its own row. */
+const SCENE: Record<string, (props: { mobile?: boolean }) => JSX.Element> = { payments: Payments, trading: Trading, staking: Staking, storage: Storage };
+
 export function FigmaEcosystem() {
   const root = useRef<HTMLElement>(null);
+  const mobile = useMobileArt();
   const [active, setActive] = useState(0);
   const { select } = useEcosystemMotion(root, active, setActive);
   return (
@@ -77,25 +86,34 @@ export function FigmaEcosystem() {
                   <div className="ec__itemBody">
                     <p>{p.body}</p>
                   </div>
+                  {/* On a phone the illustration belongs with the pillar it explains, not in a
+                      panel below the whole list — and it takes the card's full width there. */}
+                  {mobile && (
+                    <div id={`ec-scene-${p.id}`} className="ec__scene" data-scene={p.id} role="tabpanel">
+                      {SCENE[p.id]({ mobile: true })}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="ec__panel">
-            <div id="ec-scene-payments" className="ec__scene" data-scene="payments" role="tabpanel">
-              <Payments />
+          {!mobile && (
+            <div className="ec__panel">
+              <div id="ec-scene-payments" className="ec__scene" data-scene="payments" role="tabpanel">
+                <Payments />
+              </div>
+              <div id="ec-scene-trading" className="ec__scene" data-scene="trading" role="tabpanel">
+                <Trading />
+              </div>
+              <div id="ec-scene-staking" className="ec__scene" data-scene="staking" role="tabpanel">
+                <Staking />
+              </div>
+              <div id="ec-scene-storage" className="ec__scene" data-scene="storage" role="tabpanel">
+                <Storage />
+              </div>
             </div>
-            <div id="ec-scene-trading" className="ec__scene" data-scene="trading" role="tabpanel">
-              <Trading />
-            </div>
-            <div id="ec-scene-staking" className="ec__scene" data-scene="staking" role="tabpanel">
-              <Staking />
-            </div>
-            <div id="ec-scene-storage" className="ec__scene" data-scene="storage" role="tabpanel">
-              <Storage />
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

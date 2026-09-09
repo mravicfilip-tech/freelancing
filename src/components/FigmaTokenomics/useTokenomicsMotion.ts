@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react';
-import { DIAL, COINS, HALOS, SEGMENTS, SEG_BY_ID, REST, SPATIAL, WIRES, WIRE_FOR, slicePath, spanOf, tourStops } from './dial';
+import { DIAL, HALOS, REST, SPATIAL, WIRE_FOR, geometry, slicePath, spanOf, tourStops } from './dial';
 
 export type TokVariant = 1 | 2 | 3 | 4 | 5;
 
@@ -11,7 +11,12 @@ export const TOK_VARIANTS: { name: string; blurb: string }[] = [
   { name: 'Settle', blurb: 'The most direct of the five: a short travel onto each bearing that eases past its mark by a hair and settles, with the hub halos rippling gently outward as it lands.' },
 ];
 
-export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1) {
+/**
+ * `mobile` picks the frame's geometry — the phone stacks the allocations and feeds them from two
+ * wire trees rather than two flanks — and is a dependency, so crossing the breakpoint rebuilds the
+ * timeline against whichever dial is on screen.
+ */
+export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant: TokVariant = 1, mobile = false) {
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -40,7 +45,8 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const pulse = (id: string) => one<SVGCircleElement>(`[data-pulse="${id}"]`);
           const arcEl = one<SVGPathElement>('.tk__arc');
           const haloEls = HALOS.map((h) => one<SVGPathElement>(`[data-halo="${h.d}"]`));
-          const stops = tourStops();
+          const g = geometry(mobile);
+          const stops = tourStops(g.segments);
           const coinEl = (id: string) => one<HTMLElement>(`[data-coin="${id}"]`);
           const allocForWire = Object.fromEntries(Object.entries(WIRE_FOR).map(([a, w]) => [w, a]));
 
@@ -49,9 +55,9 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
            * fires exactly as the dot crosses the mark rather than at a guessed moment.
            */
           const coinAt = new Map<string, number>();
-          WIRES.forEach((w) => {
+          g.wires.forEach((w) => {
             const path = wire(w.id);
-            const c = COINS.find((k) => k.id === w.coin);
+            const c = g.coins.find((k) => k.id === w.coin);
             if (!path || !c) return;
             const [cx, cy] = [c.x + 32, c.y];
             const L = path.getTotalLength();
@@ -70,7 +76,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
 
           /** A chain mark reacting to a light going past: down 15%, then back. */
           const coinPulse = (wireId: string) => {
-            const w = WIRES.find((k) => k.id === wireId);
+            const w = g.wires.find((k) => k.id === wireId);
             const el = w && coinEl(w.coin);
             if (!el) return;
             gsap.timeline()
@@ -87,7 +93,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const MOVE = 1.5;
           const HOLD = 2.4;
           const EASE = 'power2.inOut';
-          const [rest0, rest1] = spanOf(SEG_BY_ID[REST]);
+          const [rest0, rest1] = spanOf(g.segments.find((s) => s.id === REST)!);
 
           /**
            * The one shape the whole section turns on: the gradient arc, with the two hub halos
@@ -119,7 +125,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           const light = (tl: gsap.core.Timeline, at: number, id: string | null) =>
             tl.call(
               () => {
-                SEGMENTS.forEach((s) => slice(s.id)?.toggleAttribute('data-on', s.id === id));
+                g.segments.forEach((s) => slice(s.id)?.toggleAttribute('data-on', s.id === id));
                 el.dataset.live = id ?? '';
               },
               undefined,
@@ -210,7 +216,7 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
           SPATIAL.forEach((wid, i) => {
             const at = 0.7 + i * STEP;
             runWire(wid, tl, at, DRAW, 1, true);
-            const w = WIRES.find((k) => k.id === wid);
+            const w = g.wires.find((k) => k.id === wid);
             if (w) tl.from(coinEl(w.coin), { scale: 0, opacity: 0, duration: 0.55, ease: 'power2.out' }, at + DRAW * (coinAt.get(wid) ?? 0.5));
             const alloc = allocForWire[wid];
             if (slice(alloc)) {
@@ -362,5 +368,5 @@ export function useTokenomicsMotion(root: RefObject<HTMLElement | null>, variant
       io?.disconnect();
       revert?.();
     };
-  }, [root, variant]);
+  }, [root, variant, mobile]);
 }

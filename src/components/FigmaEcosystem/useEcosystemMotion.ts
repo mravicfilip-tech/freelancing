@@ -51,7 +51,8 @@ export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: 
           tl.from(el.querySelectorAll('.ec__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0.25);
           tl.from(el.querySelector('.ec__body'), { y: 12, opacity: 0, duration: 0.7, ease: 'expo.out' }, 0.5);
           tl.from(el.querySelectorAll('.ec__item'), { y: 12, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'expo.out' }, 0.6);
-          tl.from(el.querySelector('.ec__panel'), { opacity: 0, duration: 0.9, ease: 'power1.out' }, 0.3);
+          const panel = el.querySelector('.ec__panel');
+          if (panel) tl.from(panel, { opacity: 0, duration: 0.9, ease: 'power1.out' }, 0.3);
           const st = ScrollTrigger.create({ trigger: el, start: 'top 75%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();
         }, el);
@@ -123,6 +124,14 @@ export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: 
     // The accent fills over the cycle, then the next pillar takes over.
     const bar = el.querySelectorAll<HTMLElement>('.ec__progress')[i];
     el.querySelectorAll<HTMLElement>('.ec__progress').forEach((b) => gsap.set(b, { scaleY: 0 }));
+    // On a desktop the panel is fixed beside the list, so advancing on a timer costs the reader
+    // nothing. On a phone the pillars are an accordion in the flow: an advance moves everything
+    // below it, and the picture it advances to is usually off screen by then. There the reader
+    // drives it, and the accent — which fills over the cycle — is not drawn at all.
+    if (window.matchMedia('(max-width: 720px)').matches) {
+      progressRef.current = null;
+      return;
+    }
     progressRef.current = gsap.fromTo(bar, { scaleY: 0 }, { scaleY: 1, duration: CYCLE, ease: 'none', onComplete: () => setActive((a) => (a + 1) % scenes.length) });
     if (!visibleRef.current || hoverRef.current) progressRef.current.pause();
   }, [root, setActive]);

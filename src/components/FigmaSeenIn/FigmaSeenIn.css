@@ -102,8 +102,14 @@
   align-items: center;
   /* the black mark at 32%, as in the design; under the pointer it is the mark at full black */
   opacity: 0.32;
-  transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity;
+}
+/* Only where a pointer drives the opacity. On a touch screen the sequence tweens it per frame,
+   and a transition on top of that only lags the easing. */
+@media (hover: hover) {
+  .sn__mark {
+    transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 .sn__mark img {
   display: block;
@@ -135,12 +141,15 @@
 }
 @media (max-width: 720px) {
   .sn__frame {
-    padding: 64px 0;
+    width: calc(100% - 32px);
+    /* Half the head room: the reviews band's own foot already carries the join. */
+    padding: 32px 0 64px;
     gap: 32px;
   }
   .sn__title {
     font-size: 34px;
     letter-spacing: -1.02px;
+    padding-inline: 16px;
   }
   .sn__row {
     flex-wrap: wrap;

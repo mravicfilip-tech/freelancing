@@ -242,19 +242,62 @@
 }
 @media (max-width: 720px) {
   .ec__frame {
-    padding-bottom: 80px;
+    /* Ranges under the feature band, so it keeps its open top and takes the shared foot. The rails
+       stay on; only the gutter outside them narrows to the 16px every band shares. */
+    width: calc(100% - 32px);
+    padding: 0 16px 64px;
   }
+  /* The card stands off the page on its own margins, as a card should, and the pillar rules are
+     inset within them rather than running out to the screen's edges. */
   .ec__copy {
-    padding: 28px 24px 8px;
+    padding: 28px 16px 8px;
   }
+  /* No gutter to stand in on one column: at the card's own rail the marker lands 8px off the
+     screen edge. The open pillar is already unmistakable — it carries the drawing. */
   .ec__accent {
-    left: -24px;
+    display: none;
   }
   .ec__title {
     font-size: 30px;
     letter-spacing: -0.9px;
   }
-  .ec__panel {
-    min-height: 380px;
+  /* The phone drops the panel: each pillar carries its own illustration, opening with its copy.
+     The scene breaks out of the card's inner padding so the picture gets the card's full width
+     rather than the ~265 the padded column would leave it. */
+  .ec__scene {
+    position: static;
+    display: none;
+    /* It used to break out past the card's inner padding, which was worth it when a doubly padded
+       column left the drawing ~265. It no longer is: the card's own padding is the page's 16, so
+       breaking out buys 32px and costs the alignment — the picture ran to the card's edge while
+       every rule, title and paragraph around it stood 16 inside. It lines up with them instead,
+       and the stage scales the composition to the width that leaves. */
+    margin: 4px 0 20px;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+  }
+  /* The desktop indent under the pillar title costs a quarter of a 393 screen. */
+  .ec__itemBody > p {
+    padding-left: 0;
+  }
+  /* Each drawing carries its own portrait composition at its own size, so the frame is simply
+     the height the drawing asks for. */
+  .ec__item--on .ec__scene {
+    display: block;
+  }
+  /* The desktop rule places a scene on an absolute box and centres it with translate(-50%, -50%).
+     Undoing that takes all of this at once: the transform has to go, or the drawing is dragged
+     half its own size up and to the left inside a box that clips — and the box still has to be a
+     containing block, because the stage inside it is absolute. Left `static`, the stage anchors to
+     the pillar's own list item instead and lands about 200px up the card; the stray transform had
+     been serving as that containing block by accident. */
+  .ec__scene .ff__il {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transform: none;
   }
 }
+

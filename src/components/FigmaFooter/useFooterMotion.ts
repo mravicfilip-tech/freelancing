@@ -29,11 +29,18 @@ export function useFooterMotion(root: RefObject<HTMLElement | null>) {
           tl.from(el.querySelector('.ft__identity'), { opacity: 0, y: 16, duration: 0.7, ease: 'power3.out' }, 0.55);
           tl.from(el.querySelectorAll('.ft__rule'), { scaleX: 0, duration: 1, ease: 'expo.inOut', stagger: 0.12 }, 0.6);
           tl.from(el.querySelectorAll('.ft__col'), { opacity: 0, y: 16, duration: 0.7, ease: 'expo.out', stagger: 0.07 }, 0.7);
-          tl.from(el.querySelector('.ft__small'), { opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.9);
-          tl.from(el.querySelector('.ft__legal'), { opacity: 0, duration: 0.6, ease: 'power2.out' }, 1);
-
           const st = ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => tl.play() });
           if (st.progress > 0) tl.play();
+
+          // The closing lines are a thousand pixels below the footer's own fire point on a phone,
+          // so on that timeline they had faded in and finished before they were ever on screen.
+          // They wait for themselves instead.
+          const legal = el.querySelector('.ft__legal');
+          const tail = gsap.timeline({ paused: true });
+          tail.from(el.querySelector('.ft__small'), { opacity: 0, duration: 0.6, ease: 'power2.out' }, 0);
+          tail.from(legal, { opacity: 0, duration: 0.6, ease: 'power2.out' }, 0.15);
+          const stTail = ScrollTrigger.create({ trigger: legal, start: 'top 98%', once: true, onEnter: () => tail.play() });
+          if (stTail.progress > 0) tail.play();
         }, el);
         // The `from` tweens have written their start states, so the CSS hold can go.
         reveal();

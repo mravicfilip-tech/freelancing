@@ -1,4 +1,5 @@
 import lines from './svg/imgGroup2085662421.svg?raw';
+import linesM from './svg/imgGroup2085662421-m.svg?raw';
 import { B, Layer, Stage, Strokes } from './Stage';
 import { all, count, draw, isMobile, one, roll, traveller, EASE, RISE, type IllustrationMotion, type MotionVariant } from './motion';
 
@@ -22,6 +23,16 @@ type SimpleGeo = typeof LANDSCAPE;
 
 const LANDSCAPE = {
   box: { w: 747, h: 334 },
+  // Each layout carries its own export. The file draws this corridor twice, and the two are not
+  // one drawing at two sizes: the blob is 949x1050 here against 1186x1106.3 on the phone, and the
+  // payment line 272x121.75 against 240x112.203. Stretching one into the other's box — which is
+  // what a shared asset does under preserveAspectRatio="none" — skews the gradient's soft edges
+  // into a flat wash and pulls the line's ends off the chips they are drawn to meet.
+  art: { blob: 'imgGroup2085662428.svg', lines },
+  // The hub's mark is one vector at two sizes — 0.758 of this on the phone, uniformly — so it
+  // takes a size rather than its own file, and drawing the landscape's inside the phone's smaller
+  // disc had it a third too big for the circle it sits in.
+  hubMark: { w: 35.4959, h: 18.3367 },
   blob: { x: -71, y: -537, w: 949, h: 1050 },
   ring1: { x: 143, y: -93, d: 395 },
   haze: { x: 219, y: -190, d: 584 },
@@ -43,18 +54,23 @@ const LANDSCAPE = {
  */
 const PORTRAIT: SimpleGeo = {
   box: { w: 606, h: 394 },
+  art: { blob: 'imgGroup2085662428-m.svg', lines: linesM },
+  hubMark: { w: 26.908, h: 13.901 },
   blob: { x: -303, y: -515.3, w: 1186, h: 1106.3 },
   ring1: { x: 148, y: -93, d: 395 },
   haze: { x: 224, y: -190, d: 584 },
   ring2: { x: 263, y: -154, d: 443 },
-  lines: { x: 88, y: 134, w: 240, h: 110.7 },
+  lines: { x: 88, y: 133.25, w: 240, h: 112.203 },
   rail: 'M226 149 C 222 175, 214 200, 207 221',
   btc: { x: 20, y: 116 },
   coinbase: { x: 187, y: 119, w: 78, h: 30 },
   stripe: { x: 211, y: 293, w: 104, h: 34 },
   wise: { x: 124, y: 48 },
   hub: { x: 178, y: 221 },
-  swap: { x: 288, y: 176 },
+  // The badge meets the receipt's top edge and no more: the design has it 10px clear of the card
+  // (2597:1025 against 2597:981), and at the export's own 288 our taller receipt column rises to
+  // meet it, putting the badge through the middle of "New Bank".
+  swap: { x: 267, y: 176 },
   // The receipt column renders 298 tall against the export's 279, so it is placed by the design's
   // top edge rather than its centre — the toast then clears the card's foot.
   stack: { x: 340, y: 41 },
@@ -64,7 +80,7 @@ const PORTRAIT: SimpleGeo = {
 function Corridor({ g }: { g: SimpleGeo }) {
   return (
     <>
-      <Layer className="il-simple__blob" src={B('imgGroup2085662428.svg')} x={g.blob.x} y={g.blob.y} w={g.blob.w} h={g.blob.h} />
+      <Layer className="il-simple__blob" src={B(g.art.blob)} x={g.blob.x} y={g.blob.y} w={g.blob.w} h={g.blob.h} />
       <span className="il-simple__ring il-ring" style={{ left: g.ring1.x, top: g.ring1.y, width: g.ring1.d, height: g.ring1.d }} />
       <Layer className="il-simple__haze" src={B('ellipse3438.webp')} x={g.haze.x} y={g.haze.y} w={g.haze.d} h={g.haze.d} />
       <span className="il-simple__ring il-ring il-ring--bold" style={{ left: g.ring2.x, top: g.ring2.y, width: g.ring2.d, height: g.ring2.d }} />
@@ -76,7 +92,7 @@ function Corridor({ g }: { g: SimpleGeo }) {
       <svg className="il-simple__rails" viewBox={`0 0 ${g.box.w} ${g.box.h}`} width={g.box.w} height={g.box.h} style={{ left: 0, top: 0 }} aria-hidden="true">
         <path className="il-simple__rail" d={g.rail} />
       </svg>
-      <Strokes className="il-simple__lines" svg={lines} x={g.lines.x} y={g.lines.y} w={g.lines.w} h={g.lines.h} />
+      <Strokes className="il-simple__lines" svg={g.art.lines} x={g.lines.x} y={g.lines.y} w={g.lines.w} h={g.lines.h} />
       <i className="il-simple__beam" />
 
       <div className="il-simple__btc il-simple__node" style={{ left: g.btc.x, top: g.btc.y }}>
@@ -90,7 +106,7 @@ function Corridor({ g }: { g: SimpleGeo }) {
       </div>
       <div className="il-simple__hub il-simple__node" style={{ left: g.hub.x, top: g.hub.y }}>
         <i className="il-simple__hubHalo" />
-        <img src={B('imgGroup3.svg')} alt="" width={35.5} height={18.3} />
+        <img src={B('imgGroup3.svg')} alt="" width={g.hubMark.w} height={g.hubMark.h} />
       </div>
       <div className="il-simple__swap" style={{ left: g.swap.x, top: g.swap.y }}>
         <img src={B('imgMoveHorizontal.svg')} alt="" width={16} height={13.4} />
@@ -327,6 +343,29 @@ const carousel = (gsap: G, sc: Scene) => {
     turn(duration = 1.3) {
       const tl = gsap.timeline();
       const next = [inSlot[2], inSlot[0], inSlot[1]]; // the front goes back to the far slot
+
+      // The portrait frame keeps the design's own three logo positions, and those sit at very
+      // uneven distances from the hub — 89 to 186 — with two of them barely 24 degrees apart. An
+      // arc that bows a flat 22px off the chord has nowhere near the room to clear that: swept
+      // round, the pills run through each other and across the hub, which is what the carousel was
+      // doing on a phone. They change places instead — each dips out at its slot, is set to the
+      // next, and comes back up — staggered so the swap still reads as the carousel turning
+      // rather than as three pills blinking at once. The design's positions are left untouched.
+      if (sc.g === MGEO.mobile) {
+        const out = duration * 0.32;
+        next.forEach((logo, slot) => {
+          const to = SLOTS[slot];
+          const home = SLOTS[logo];
+          const at = slot * 0.12;
+          tl.to(sc.logos[logo], { opacity: 0, scale: 0.92, duration: out, ease: 'power2.in' }, at);
+          tl.set(sc.logos[logo], { x: to.x - home.x, y: to.y - home.y }, at + out);
+          tl.to(sc.logos[logo], { opacity: 1, scale: 1, duration: duration * 0.44, ease: 'power2.out' }, at + out + 0.02);
+          pos[logo] = { ...to };
+        });
+        for (let k = 0; k < 3; k++) inSlot[k] = next[k];
+        return tl;
+      }
+
       next.forEach((logo, slot) => {
         const from = pos[logo];
         const to = SLOTS[slot];

@@ -1,25 +1,28 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTokenomicsMotion, type TokVariant } from './useTokenomicsMotion';
-import { COINS, DIAL, HALOS, SEGMENTS, SEG_BY_ID, REST, WIRES, slicePath, spanOf } from './dial';
+import { DIAL, HALOS, SEG_BY_ID, REST, geometry, slicePath, spanOf } from './dial';
+import { useMobileArt } from '../FigmaFeatures/illustrations/Stage';
 import './FigmaTokenomics.css';
 
 const A = (n: string) => `/figma/tokenomics/${n}.svg`;
 
 /** The band is drawn at its design size and scaled to the frame, so every offset stays exact. */
-function Stage({ children }: { children: ReactNode }) {
+function Stage({ w, h, children }: { w: number; h: number; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const fit = () => el.style.setProperty('--k', String(el.clientWidth / 1560));
+    const fit = () => el.style.setProperty('--k', String(el.clientWidth / w));
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [w]);
   return (
-    <div ref={ref} className="tk__fit">
-      <div className="tk__stage">{children}</div>
+    <div ref={ref} className="tk__fit" style={{ aspectRatio: `${w} / ${h}` }}>
+      <div className="tk__stage" style={{ width: w, height: h }}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -99,11 +102,21 @@ function CopyAddress({ value }: { value: string }) {
  */
 export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
   const root = useRef<HTMLElement>(null);
-  useTokenomicsMotion(root, variant);
-  const [r0, r1] = spanOf(SEG_BY_ID[REST]);
+  const mobile = useMobileArt();
+  const g = geometry(mobile);
+  useTokenomicsMotion(root, variant, mobile);
+  const [r0, r1] = spanOf(mobile ? g.segments.find((s) => s.id === REST)! : SEG_BY_ID[REST]);
 
   return (
-    <section ref={root} className="tk" id="tokenomics" data-motion="pending" data-variant={variant} aria-labelledby="tk-title">
+    <section
+      ref={root}
+      className={`tk${mobile ? ' tk--m' : ''}`}
+      id="tokenomics"
+      data-motion="pending"
+      data-variant={variant}
+      data-layout={mobile ? 'mobile' : 'desktop'}
+      aria-labelledby="tk-title"
+    >
       <div className="tk__frame">
         <header className="tk__head">
           <h2 id="tk-title" className="tk__title">
@@ -115,13 +128,13 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
         </header>
 
         <div className="tk__band">
-          <Stage>
+          <Stage w={g.stage.w} h={g.stage.h}>
             {/* Wires and their travelling lights share one canvas, so a dot rides the exact path. */}
-            <svg className="tk__wires" viewBox="0 0 1560 586" width={1560} height={586} fill="none" aria-hidden="true">
-              {WIRES.map((w) => (
+            <svg className="tk__wires" viewBox={`0 0 ${g.stage.w} ${g.stage.h}`} width={g.stage.w} height={g.stage.h} fill="none" aria-hidden="true">
+              {g.wires.map((w) => (
                 <path key={w.id} className="tk__wire" data-wire={w.id} d={w.d} stroke="var(--tk-rail)" strokeWidth={1} />
               ))}
-              {WIRES.map((w) => (
+              {g.wires.map((w) => (
                 <circle key={w.id} className="tk__pulse" data-pulse={w.id} r={3.5} fill="var(--tk-indigo)" opacity={0} />
               ))}
             </svg>
@@ -168,16 +181,16 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
             </div>
 
             {/* the chain marks */}
-            {COINS.map((c) => (
-              <span key={c.id} className="tk__coin" data-coin={c.id} style={{ left: c.x, top: c.y - 32 }} aria-hidden="true">
-                <img src={A(c.id)} alt="" width={32} height={32} />
+            {g.coins.map((c) => (
+              <span key={c.id} className="tk__coin" data-coin={c.id} style={{ left: c.x, top: c.y - g.disc / 2, width: g.disc, height: g.disc }} aria-hidden="true">
+                <img src={A(c.id)} alt="" width={g.mark} height={g.mark} />
               </span>
             ))}
 
             {/* the allocations — the live one takes the indigo chip */}
-            {SEGMENTS.map((s) => (
+            {g.segments.map((s) => (
               <div key={s.id} className="tk__slice" data-slice={s.id} style={{ left: s.x, top: s.y - 32 }}>
-                <span className="tk__chip">
+                <span className="tk__chip" style={s.w ? { width: s.w, justifyContent: 'center' } : undefined}>
                   <img src={A(s.icon)} alt="" width={20} height={20} />
                   {s.label}
                 </span>

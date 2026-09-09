@@ -31,6 +31,8 @@ export type Segment = {
   /** Chip position in stage coordinates; y is the row's centre line. */
   x: number;
   y: number;
+  /** A fixed chip width, where the frame sets one rather than letting the label size it. */
+  w?: number;
 };
 
 /** The dial's centre in stage coordinates — the hub disc and every wire converge here. */
@@ -85,12 +87,13 @@ export const REST = 'reserves';
  * returns, unwrapping each aim so the bearing only ever decreases — which is a single, unbroken
  * anticlockwise rotation, with every allocation visited exactly once.
  */
-export function tourStops() {
+export function tourStops(segments: Segment[] = SEGMENTS) {
+  const byId = Object.fromEntries(segments.map((s) => [s.id, s])) as Record<string, Segment>;
   const at = TOUR.indexOf(REST);
   const order = [...TOUR.slice(at + 1), ...TOUR.slice(0, at + 1)];
-  let prev = SEG_BY_ID[REST].aim;
+  let prev = byId[REST].aim;
   return order.map((id) => {
-    const seg = SEG_BY_ID[id];
+    const seg = byId[id];
     let aim = seg.aim;
     while (aim > prev) aim -= 360;
     prev = aim;
@@ -156,3 +159,96 @@ export const COINS: { id: string; x: number; y: number }[] = [
   { id: 'coin-bnb', x: 1264, y: 293 },
   { id: 'coin-sol', x: 1348, y: 453 },
 ];
+
+/* ---------------------------------------------------------------------------
+ * Portrait (Figma 2639:1627)
+ *
+ * The phone frame stands the band up: the six allocations stack in two groups of three around a
+ * 210 dial, fed by a wire tree reaching down from the head of the frame and up from its foot.
+ * Same parts, same motion — only the geometry below changes.
+ * ------------------------------------------------------------------------ */
+
+export const STAGE = { w: 1560, h: 586 } as const;
+export const STAGE_M = { w: 394, h: 1123 } as const;
+/**
+ * The frame is 1123 tall against 1010 of content plus its 160 padding, so `justify-center` is not
+ * the no-op it looks like — it drops the whole stack 56.5px. Rows therefore run from 216.5, not
+ * from the padding edge, and the dial's centre follows.
+ */
+export const HUB_M = { x: 197, y: 561.5 } as const;
+
+/**
+ * Aims are given rather than derived here. `aimOf` reads the bearing where a row's centre line
+ * leaves the circle, which needs the rows to flank the dial; stacked above and below it, every row
+ * in a group would exit at the same bearing. So the top three fan across the top and the bottom
+ * three across the bottom, in the order TOUR walks them, which keeps a lap one unbroken sweep.
+ */
+const ROWS_M: Segment[] = [
+  // The phone frame pins each chip's width rather than letting the label set it, which is also
+  // what places the percent circle beside it — so they are given here, from the file.
+  { id: 'reserves', label: 'Reserves', pct: 10, icon: 'ic-reserves', side: 'l', x: 103, y: 248.5, aim: 315, w: 124 },
+  { id: 'presale', label: 'Presale', pct: 50, icon: 'ic-presale', side: 'l', x: 103, y: 328.5, aim: 270, w: 124 },
+  { id: 'rewards', label: 'Rewards', pct: 4, icon: 'ic-rewards', side: 'l', x: 103, y: 408.5, aim: 225, w: 124 },
+  // Below the dial the frame reads Listings, Team, Marketing — the arc's TOUR walks them in the
+  // other direction, which is why the aims still fall as the tour steps and not as the rows do.
+  //
+  // These three centre themselves where the three above align left: the frame stacks the upper
+  // group with items-start and the lower one with items-center (2639:1908 against 2639:1941), and
+  // since each chip is pinned to its own label's width, that is what keeps a 94-wide Team from
+  // hanging off the same left edge as a 132-wide Marketing. Centred in the group's own 188, from
+  // x = 103 + (188 - (chip + the 64 circle)) / 2.
+  { id: 'listings', label: 'Listings', pct: 12, icon: 'ic-listings', side: 'r', x: 108, y: 714.5, aim: 45, w: 114 },
+  { id: 'team', label: 'Team', pct: 9, icon: 'ic-team', side: 'r', x: 118, y: 794.5, aim: 90, w: 94 },
+  { id: 'marketing', label: 'Marketing', pct: 15, icon: 'ic-marketing', side: 'r', x: 99, y: 874.5, aim: 135, w: 132 },
+];
+export const SEGMENTS_M: Segment[] = ROWS_M;
+
+/**
+ * The two wire trees, drawn rather than exported: a dot animated along one of these sits exactly on
+ * the line, which an image behind a separately-positioned dot cannot promise. Each is written from
+ * the chain mark inward, so 0 → 1 travels toward the hub. The middle mark of each trio sits on the
+ * trunk, so its wire is the trunk itself.
+ */
+export const WIRES_M: { id: string; d: string; coin: string }[] = [
+  // Traced from the file's own wire exports (Group 2085662437 at the head, 2085662438 at the foot,
+  // both 517x188 laid into the rotated frames and the lower one mirrored), mapped through that
+  // rotation into stage coordinates: frame x = 310 - local y, frame y = local x.
+  //
+  // The shape matters, and it is not the elbow these used to draw. Each outer chain runs as a
+  // straight drop from the very edge of the frame — passing behind its own coin, which is why the
+  // marks sit ON their lines rather than capping them — down to a small rounded corner, and only
+  // then cuts diagonally in to meet the trunk. The trunk itself is one line from the top edge to
+  // the dial and out the other side to the foot, with the middle coin sitting on it.
+  //
+  // The trunk lands on 194 rather than the dial's own 197: that 3px is in the file, and the coins
+  // were already placed to it, so following it keeps every mark on its own wire.
+  //
+  // Each is written from the outer edge inward, so a dot run 0 -> 1 travels toward the hub.
+  { id: 'l0', coin: 'coin-eth', d: 'M 194 0 L 194 457' },
+  { id: 'l1', coin: 'coin-usdt', d: 'M 103.5 0 L 103.5 82.3 C 103.5 86.8 105.1 91.1 108.1 94.5 L 194 192 L 194 457' },
+  { id: 'l2', coin: 'coin-btc', d: 'M 290.5 0 L 290.5 82 C 290.5 86.6 288.7 91.1 285.5 94.5 L 194 192 L 194 457' },
+  { id: 'r0', coin: 'coin-bnb', d: 'M 194 1123 L 194 661.5' },
+  { id: 'r1', coin: 'coin-sol', d: 'M 103.5 1123 L 103.5 1036.7 C 103.5 1032.2 105.1 1027.9 108.1 1024.6 L 194 927 L 194 661.5' },
+  { id: 'r2', coin: 'coin-tron', d: 'M 290.5 1123 L 290.5 1037 C 290.5 1032.4 288.7 1027.9 285.5 1024.5 L 194 927 L 194 661.5' },
+];
+
+/**
+ * Chain marks, from the file's rotated frames (2639:1875 and 2639:1915). As on the desk table, `x`
+ * is the disc's left edge and `y` its centre line; the discs are 40 here against the desk's 64.
+ */
+export const COINS_M: { id: string; x: number; y: number }[] = [
+  { id: 'coin-usdt', x: 84, y: 50 },
+  { id: 'coin-btc', x: 273, y: 50 },
+  { id: 'coin-eth', x: 174, y: 103 },
+  { id: 'coin-bnb', x: 176, y: 1023 },
+  { id: 'coin-sol', x: 82, y: 1073 },
+  { id: 'coin-tron', x: 270, y: 1073 },
+];
+
+/** Everything the band's layout depends on, for whichever frame is on screen. */
+export function geometry(mobile: boolean) {
+  return mobile
+    ? { stage: STAGE_M, hub: HUB_M, segments: SEGMENTS_M, wires: WIRES_M, coins: COINS_M, disc: 40, mark: 18.883 }
+    : { stage: STAGE, hub: HUB, segments: SEGMENTS, wires: WIRES, coins: COINS, disc: 64, mark: 32 };
+}
+export type Geometry = ReturnType<typeof geometry>;

@@ -4,6 +4,7 @@ import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
 import { useNavCondense } from './useNavCondense';
+import { useNavMenu } from './useNavMenu';
 import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
@@ -73,6 +74,26 @@ export function PresaleButton({ wide = false }: { wide?: boolean }) {
       Join Presale
       <Chevron direction="right" />
     </a>
+  );
+}
+
+/** The phone nav's trigger: three rules that cross when the panel is open. */
+function MenuButton({ open, onClick, buttonRef }: { open: boolean; onClick: () => void; buttonRef: React.Ref<HTMLButtonElement> }) {
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      className="fh__burger"
+      aria-expanded={open}
+      aria-controls="fh-menu"
+      aria-label={open ? 'Close menu' : 'Open menu'}
+      onClick={onClick}
+    >
+      <span className="fh__burgerBars" aria-hidden="true">
+        <i />
+        <i />
+      </span>
+    </button>
   );
 }
 
@@ -160,6 +181,7 @@ export function FigmaHero() {
   const goToSlide = (next: number) => setSlide((next + SLIDES.length) % SLIDES.length);
   const root = useRef<HTMLElement>(null);
   const condensed = useNavCondense();
+  const menu = useNavMenu();
   useHeroEntrance(root, {
     progress: PROGRESS,
     usd: USD_RAISED,
@@ -178,7 +200,7 @@ export function FigmaHero() {
       {/* The nav is fixed, so a spacer stands in for it in the hero's flow. */}
       <div className="fh__navSpacer" aria-hidden="true" />
 
-      <header className="fh__nav" data-node-id="2346:110" data-condensed={condensed || undefined}>
+      <header className="fh__nav" data-node-id="2346:110" data-condensed={condensed || undefined} data-menu={menu.open || undefined}>
         <a className="fh__brand" href="/">
           <img src="/figma/logo.svg" alt="" width={33} height={17} />
           <span>Remittix</span>
@@ -198,8 +220,75 @@ export function FigmaHero() {
               Login
             </a>
           </div>
+          <MenuButton open={menu.open} onClick={() => menu.setOpen((v) => !v)} buttonRef={menu.trigger} />
         </div>
       </header>
+
+      {/* The phone menu is a sheet, not a dropdown: it stands below the bar and runs to the foot of
+          the screen, so what the bar drops on a narrow viewport — the links, both account actions
+          and the language — gets the room it has on a desktop. It sits outside the bar and under it
+          in the stack, so the pill and its close button stay legible over the frosted page.
+          Join Presale stays in the bar, so the presale is never behind a tap. */}
+      <div
+        className="fh__scrim"
+        data-open={menu.open || undefined}
+        aria-hidden="true"
+        onClick={() => menu.close(false)}
+      />
+      <div
+        className="fh__menu"
+        id="fh-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        ref={menu.panel}
+        data-open={menu.open || undefined}
+        inert={!menu.open}
+      >
+        <nav className="fh__menuLinks" aria-label="Primary">
+          {NAV_LINKS.map(([label, href], i) => (
+            <a
+              key={label}
+              href={href}
+              style={{ '--i': i } as React.CSSProperties}
+              onClick={() => menu.close(false)}
+            >
+              <span className="fh__menuIndex" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="fh__menuLabel">{label}</span>
+              <Chevron direction="right" />
+            </a>
+          ))}
+        </nav>
+
+        <div className="fh__menuActions" style={{ '--i': NAV_LINKS.length } as React.CSSProperties}>
+          <a
+            className="fh__btn fh__btn--primary"
+            href="#register"
+            onPointerEnter={blobOrigin}
+            onPointerLeave={blobOrigin}
+            onClick={() => menu.close(false)}
+          >
+            Create account
+            <Chevron direction="right" />
+          </a>
+          <a
+            className="fh__btn fh__btn--ghost"
+            href="#login"
+            onPointerEnter={blobOrigin}
+            onPointerLeave={blobOrigin}
+            onClick={() => menu.close(false)}
+          >
+            Login
+          </a>
+        </div>
+
+        <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 1 } as React.CSSProperties}>
+          <span className="fh__menuFootLabel">Language</span>
+          <LangPicker />
+        </div>
+      </div>
 
       <div className="fh__main" data-node-id="2346:142">
         <div className="fh__intro">

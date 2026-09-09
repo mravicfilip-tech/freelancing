@@ -279,11 +279,51 @@
   }
 }
 @media (max-width: 720px) {
+  /* The -10px optical pull is a desktop tuning; on a phone it is the only thing that comes
+     within 27px of the edge. */
+  .ft__social {
+    margin: 0;
+  }
+  .ft__social a {
+    width: 44px;
+    height: 44px;
+  }
+  /* Links a thumb can hit: they were 17px tall. The 40px row is the whole target, so the list
+     needs no gap on top of it — with one, three links read as three separate blocks. */
+  .ft__col {
+    gap: 4px;
+  }
+  .ft__col ul {
+    gap: 0;
+  }
+  /* 22px under a label that sits 4px above its own list read as a gap between two blocks rather
+     than as a heading over its column. */
+  .ft__label {
+    margin-bottom: 10px;
+  }
+  /* The mark's own 44px row already holds the lockup off the socials. */
+  .ft__identity {
+    gap: 20px;
+  }
+  .ft__brand {
+    min-height: 44px;
+    align-items: center;
+  }
+  .ft__col a,
+  .ft__legal a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  /* On the same 16px gutter as every other band, with the rails where that gutter ends, so the
+     footer's rows sit against them rather than a further inset inside. */
   .ft__frame {
+    --ft-inset: 16px;
+    width: calc(100% - 32px);
     padding: 0 0 32px;
   }
   .ft__cta {
-    padding: 88px var(--ft-inset) 96px;
+    padding: 64px var(--ft-inset) 64px;
     gap: 28px;
   }
   .ft__title {
@@ -293,9 +333,10 @@
     padding: 56px var(--ft-inset);
     gap: 44px;
   }
+  /* Two even columns: max-content left 90px of dead space against the right rail. */
   .ft__nav {
-    grid-template-columns: repeat(2, max-content);
-    gap: 40px 56px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
   }
   .ft__small {
     margin-bottom: 32px;

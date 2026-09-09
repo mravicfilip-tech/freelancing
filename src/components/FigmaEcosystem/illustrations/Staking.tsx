@@ -1,5 +1,5 @@
 import { Stage } from '../../FigmaFeatures/illustrations/Stage';
-import { all, one, count, roll, EASE, RISE } from '../../FigmaFeatures/illustrations/motion';
+import { all, one, count, roll, isMobile, EASE, RISE } from '../../FigmaFeatures/illustrations/motion';
 import { odoBuild, odoSet } from './odometer';
 import type { SceneMotion } from './index';
 
@@ -17,6 +17,22 @@ const GHOST = [
   { y: 44, scale: 0.91, opacity: 0.28 },
 ];
 
+/**
+ * The same deck on a phone. The steps are pulled in because a portrait card is shorter: at the
+ * desktop's 22/44 the rearmost card's stat row clears the front card's bottom edge and a slice of
+ * it shows through, which reads as a clipping accident rather than as depth. Paired with the
+ * deeper bottom padding the portrait card carries, 16/32 leaves each card behind showing ~10px of
+ * blank card and its rounded bottom edge — enough to count them, not enough to read them.
+ */
+const GHOST_M = [
+  { y: 0, scale: 1, opacity: 1 },
+  { y: 16, scale: 0.955, opacity: 0.55 },
+  { y: 32, scale: 0.91, opacity: 0.28 },
+];
+
+/** The deck's resting places for whichever composition is on screen. */
+const deck = (il: HTMLElement) => (isMobile(il) ? GHOST_M : GHOST);
+
 /** The Remittix mark, in the current colour. */
 function Mark({ w }: { w: number }) {
   return (
@@ -29,63 +45,121 @@ function Mark({ w }: { w: number }) {
 }
 
 /**
+ * One position's card. Both compositions use the same parts in the same order — brand, position,
+ * balance, rule, then the four figures — so the only thing that changes between them is how wide
+ * the box is and whether the figures sit in one row or two. The motion below never has to know.
+ */
+function Card({ p, mark }: { p: (typeof POS)[number]; mark: number }) {
+  return (
+    <div className="ec-stk__card">
+      <div className="ec-stk__head">
+        <span className="ec-stk__brand">
+          <Mark w={mark} />
+          <em>Remittix staking</em>
+        </span>
+        <span className="ec-stk__tag">{p.no}</span>
+      </div>
+      <b className="ec-stk__big">
+        <span data-principal>{p.amt}</span>
+        <span className="ec-stk__unit">RTX staked</span>
+      </b>
+      <i className="ec-stk__rule" />
+      <div className="ec-stk__foot">
+        <span>
+          <small className="ec-stk__lab">Rate</small>
+          <b className="ec-stk__val">{p.rate} APY</b>
+        </span>
+        <span>
+          <small className="ec-stk__lab">Term</small>
+          <b className="ec-stk__val">{p.term}</b>
+        </span>
+        <span>
+          <small className="ec-stk__lab">Unlocks in</small>
+          <b className="ec-stk__val" data-left>
+            {p.left}
+          </b>
+        </span>
+        <span>
+          <small className="ec-stk__lab">Accrued today</small>
+          <b className="ec-stk__val is-gain ec-stk__mono" data-acc>
+            +{p.acc.toFixed(2)}
+          </b>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Staking: one position, accruing. The balance is the whole card; rate, term, unlock and today's
  * accrual sit under it as a quiet footer. Three positions stack as a deck that swaps between
  * rewards. The figures under `[data-principal]`, `[data-acc]` and `[data-left]` are written by
  * the loop, not by React, and never change in the tree.
+ *
+ * A phone gets the portrait composition below rather than this one shrunk: fitted into the 361px
+ * the card gives it, the landscape canvas puts its stat labels on screen at ~6px and crops the
+ * deck at both edges. Same scene, drawn for a narrow frame.
  */
-export function Staking() {
+export function Staking({ mobile = false }: { mobile?: boolean } = {}) {
+  return mobile ? <StakingPortrait /> : <StakingLandscape />;
+}
+
+function StakingLandscape() {
   return (
     <Stage id="ec-staking" width={800} height={640} className="ec-il ec-stk-scene">
       <div className="ec-zoom">
-      <div className="ec-center" style={{ left: 0, top: 120 }}>
-        <span className="ec-caption">What is staked</span>
-      </div>
-      <div style={{ left: 165, top: 190, width: 470, height: 330 }}>
-        {POS.map((p, i) => (
-          <div key={p.no} className="ec-stk" data-tic={i} style={{ zIndex: 10 - i }}>
-            <div className="ec-stk__card">
-              <div className="ec-stk__head">
-                <span className="ec-stk__brand">
-                  <Mark w={22} />
-                  <em>Remittix staking</em>
-                </span>
-                <span className="ec-stk__tag">{p.no}</span>
-              </div>
-              <b className="ec-stk__big">
-                <span data-principal>{p.amt}</span>
-                <span className="ec-stk__unit">RTX staked</span>
-              </b>
-              <i className="ec-stk__rule" />
-              <div className="ec-stk__foot">
-                <span>
-                  <small className="ec-stk__lab">Rate</small>
-                  <b className="ec-stk__val">{p.rate} APY</b>
-                </span>
-                <span>
-                  <small className="ec-stk__lab">Term</small>
-                  <b className="ec-stk__val">{p.term}</b>
-                </span>
-                <span>
-                  <small className="ec-stk__lab">Unlocks in</small>
-                  <b className="ec-stk__val" data-left>
-                    {p.left}
-                  </b>
-                </span>
-                <span>
-                  <small className="ec-stk__lab">Accrued today</small>
-                  <b className="ec-stk__val is-gain ec-stk__mono" data-acc>
-                    +{p.acc.toFixed(2)}
-                  </b>
-                </span>
-              </div>
+        <div className="ec-center" style={{ left: 0, top: 120 }}>
+          <span className="ec-caption">What is staked</span>
+        </div>
+        <div style={{ left: 165, top: 190, width: 470, height: 330 }}>
+          {POS.map((p, i) => (
+            <div key={p.no} className="ec-stk" data-tic={i} style={{ zIndex: 10 - i }}>
+              <Card p={p} mark={22} />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="ec-center" style={{ left: 0, top: 540 }}>
+          <small>Three positions · unstake any of them at any time</small>
+        </div>
       </div>
-      <div className="ec-center" style={{ left: 0, top: 540 }}>
-        <small>Three positions · unstake any of them at any time</small>
-      </div>
+    </Stage>
+  );
+}
+
+/**
+ * Portrait (361x400, the width the pillar card hands a scene on a 393 phone, so the stage fits
+ * at 1:1 and every figure lands on screen at the size it is set).
+ *
+ * The layout decision is the stat row. On the desktop card the four figures — rate, term, unlock,
+ * accrual — run as one row across 470px, which gives each about 100px to be legible in. At 329
+ * they would get 70, and the two longest labels ("Unlocks in", "Accrued today") would have to
+ * drop below 10px to survive. So the row folds into a 2x2 grid instead of shrinking: the terms of
+ * the deal on the top line, what the position is doing right now on the bottom. That reads better
+ * than the flat row did anyway, because the pair that moves — the unlock counting down and the
+ * accrual counting up — now sits together on one line, which is where the eye already is.
+ *
+ * Nothing is dropped and nothing is abbreviated: all four figures, all three cards, the caption
+ * and the closing line are the same words as the desktop scene.
+ */
+function StakingPortrait() {
+  return (
+    <Stage id="ec-staking" width={361} height={400} layout="mobile" className="ec-il ec-stk-scene ec-stk-scene--m">
+      <div className="ec-zoom">
+        <div className="ec-center" style={{ left: 0, top: 6 }}>
+          <span className="ec-caption">What is staked</span>
+        </div>
+        {/* 329-wide cards on a 16px rail; the box is tall enough to hold the two stepped-back
+            cards, so nothing in the deck ever reaches the stage's edge. */}
+        <div style={{ left: 16, top: 52, width: 329, height: 288 }}>
+          {POS.map((p, i) => (
+            <div key={p.no} className="ec-stk" data-tic={i} style={{ zIndex: 10 - i }}>
+              <Card p={p} mark={20} />
+            </div>
+          ))}
+        </div>
+        <div className="ec-center" style={{ left: 0, top: 370 }}>
+          <small>Three positions · unstake any of them at any time</small>
+        </div>
       </div>
     </Stage>
   );
@@ -93,11 +167,12 @@ export function Staking() {
 
 export const stakingMotion: SceneMotion = {
   build(tl, il, at, gsap) {
+    const g = deck(il);
     const tics = all(il, '[data-tic]');
     // The deck may have rotated before the scene was left: put every card back in its first place,
     // in front-to-back order, with its first figures.
     tics.forEach((t, i) => {
-      gsap.set(t, { ...GHOST[i], zIndex: 10 - i, transformOrigin: '50% 50%' });
+      gsap.set(t, { ...g[i], zIndex: 10 - i, transformOrigin: '50% 50%' });
       const acc = t.querySelector<HTMLElement>('[data-acc]');
       if (acc) acc.textContent = `+${POS[i].acc.toFixed(2)}`;
       const left = t.querySelector<HTMLElement>('[data-left]');
@@ -106,7 +181,10 @@ export const stakingMotion: SceneMotion = {
       if (principal) principal.textContent = POS[i].amt;
     });
     tl.from(one(il, '.ec-caption'), { ...RISE, y: 6 }, at);
-    tics.forEach((t, i) => tl.from(t, { y: GHOST[i].y + 40, opacity: 0, duration: 0.82, ease: EASE }, at + 0.14 + (tics.length - 1 - i) * 0.1));
+    // The cards deal in from below, back to front. A portrait card has less room under it before
+    // it would slide out of the stage, so it comes in from nearer its resting place.
+    const dealt = isMobile(il) ? 28 : 40;
+    tics.forEach((t, i) => tl.from(t, { y: g[i].y + dealt, opacity: 0, duration: 0.82, ease: EASE }, at + 0.14 + (tics.length - 1 - i) * 0.1));
     const front = tics[0];
     tl.from(front.querySelectorAll('.ec-stk__head, .ec-stk__big, .ec-stk__rule, .ec-stk__foot'), { y: 12, opacity: 0, duration: 0.6, ease: EASE, stagger: 0.07 }, at + 0.44);
     count(tl, one(front, '[data-principal]'), 0, Number(POS[0].amt.replace(/,/g, '')), at + 0.5, 1.1, (n) => Math.round(n).toLocaleString('en-US'));
@@ -118,8 +196,12 @@ export const stakingMotion: SceneMotion = {
    * rolls up on its odometer by the same amount. Between settlements the deck swaps: the front
    * card recedes and dims to nothing while the two behind rise into its place, then fades back in
    * at the rear, so the depth change never pops.
+   *
+   * Both compositions run the same beats; only the deck's resting places differ, and those come
+   * from `deck(il)` so the timeline itself is written once.
    */
   idle(gsap, il) {
+    const g = deck(il);
     const tics = all(il, '[data-tic]');
     const state = POS.map((p) => ({ total: Number(p.amt.replace(/,/g, '')), earned: p.acc, day: p.day, settling: false }));
     // The principal reads as an odometer from the start, so the first settlement rolls rather than jumps.
@@ -183,11 +265,11 @@ export const stakingMotion: SceneMotion = {
       const front = tics[order[0]];
       const rest = order.slice(1).map((i) => tics[i]);
       const t = gsap.timeline();
-      t.to(front, { y: GHOST[1].y, scale: GHOST[1].scale, opacity: 0, duration: 0.62, ease: 'power2.inOut' }, 0)
-        .set(front, { zIndex: 7, y: GHOST[2].y, scale: GHOST[2].scale }, 0.62)
-        .to(front, { opacity: GHOST[2].opacity, duration: 0.6, ease: 'power2.out' }, 0.66);
+      t.to(front, { y: g[1].y, scale: g[1].scale, opacity: 0, duration: 0.62, ease: 'power2.inOut' }, 0)
+        .set(front, { zIndex: 7, y: g[2].y, scale: g[2].scale }, 0.62)
+        .to(front, { opacity: g[2].opacity, duration: 0.6, ease: 'power2.out' }, 0.66);
       rest.forEach((el, k) => {
-        t.to(el, { ...GHOST[k], duration: 0.9, ease: 'power2.inOut' }, 0.1).set(el, { zIndex: 10 - k }, 0.1);
+        t.to(el, { ...g[k], duration: 0.9, ease: 'power2.inOut' }, 0.1).set(el, { zIndex: 10 - k }, 0.1);
       });
       order = [order[1], order[2], order[0]];
     }, 0);

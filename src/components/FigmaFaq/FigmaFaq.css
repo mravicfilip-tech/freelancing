@@ -217,7 +217,8 @@
 }
 @media (max-width: 720px) {
   .fq__frame {
-    padding: 64px 0;
+    width: calc(100% - 32px);
+    padding: 64px 16px;
     gap: 32px;
   }
   .fq__title {
@@ -235,7 +236,10 @@
   .fq__qText {
     font-size: 17px;
   }
+  /* One column, so there is no gutter for the marker to stand in: at the frame's own rail it
+     would land 4px off the screen edge. The open row is already unmistakable without it — the
+     sign turns indigo and the answer opens. */
   .fq__accent {
-    left: -12px;
+    display: none;
   }
 }

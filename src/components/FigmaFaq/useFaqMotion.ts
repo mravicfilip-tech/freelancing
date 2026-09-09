@@ -27,7 +27,12 @@ export function useFaqMotion(root: RefObject<HTMLElement | null>) {
           const tl = gsap.timeline({ paused: true });
           tl.from(el.querySelectorAll('.fq__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.08 }, 0);
           tl.from(el.querySelector('.fq__intro'), { opacity: 0, y: 12, duration: 0.7, ease: 'power3.out' }, 0.35);
-          tl.from(el.querySelector('.fq__gutter'), { scaleY: 0, duration: 1.1, ease: 'expo.inOut' }, 0.25);
+          // One column on a phone, so there is no gutter to draw: skip the beat rather than spend
+          // 1.1s of the entrance on an element that is display:none.
+          const gutter = el.querySelector('.fq__gutter');
+          if (gutter && gutter.getClientRects().length) {
+            tl.from(gutter, { scaleY: 0, duration: 1.1, ease: 'expo.inOut' }, 0.25);
+          }
 
           // Rows in reading order: left column top to bottom, then the right.
           const items = el.querySelectorAll('.fq__item');

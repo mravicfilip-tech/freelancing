@@ -210,12 +210,26 @@ export const SEGMENTS_M: Segment[] = ROWS_M;
  * trunk, so its wire is the trunk itself.
  */
 export const WIRES_M: { id: string; d: string; coin: string }[] = [
-  { id: 'l0', coin: 'coin-eth', d: 'M 197 123 L 197 456.5' },
-  { id: 'l1', coin: 'coin-usdt', d: 'M 104 70 L 104 104 C 104 124 148 118 180 132 C 194 138 197 148 197 164 L 197 456.5' },
-  { id: 'l2', coin: 'coin-btc', d: 'M 293 70 L 293 104 C 293 124 246 118 214 132 C 200 138 197 148 197 164 L 197 456.5' },
-  { id: 'r0', coin: 'coin-bnb', d: 'M 197 1003 L 197 666.5' },
-  { id: 'r1', coin: 'coin-sol', d: 'M 102 1053 L 102 1019 C 102 999 148 1005 180 991 C 194 985 197 975 197 959 L 197 666.5' },
-  { id: 'r2', coin: 'coin-tron', d: 'M 290 1053 L 290 1019 C 290 999 246 1005 214 991 C 200 985 197 975 197 959 L 197 666.5' },
+  // Traced from the file's own wire exports (Group 2085662437 at the head, 2085662438 at the foot,
+  // both 517x188 laid into the rotated frames and the lower one mirrored), mapped through that
+  // rotation into stage coordinates: frame x = 310 - local y, frame y = local x.
+  //
+  // The shape matters, and it is not the elbow these used to draw. Each outer chain runs as a
+  // straight drop from the very edge of the frame — passing behind its own coin, which is why the
+  // marks sit ON their lines rather than capping them — down to a small rounded corner, and only
+  // then cuts diagonally in to meet the trunk. The trunk itself is one line from the top edge to
+  // the dial and out the other side to the foot, with the middle coin sitting on it.
+  //
+  // The trunk lands on 194 rather than the dial's own 197: that 3px is in the file, and the coins
+  // were already placed to it, so following it keeps every mark on its own wire.
+  //
+  // Each is written from the outer edge inward, so a dot run 0 -> 1 travels toward the hub.
+  { id: 'l0', coin: 'coin-eth', d: 'M 194 0 L 194 457' },
+  { id: 'l1', coin: 'coin-usdt', d: 'M 103.5 0 L 103.5 82.3 C 103.5 86.8 105.1 91.1 108.1 94.5 L 194 192 L 194 457' },
+  { id: 'l2', coin: 'coin-btc', d: 'M 290.5 0 L 290.5 82 C 290.5 86.6 288.7 91.1 285.5 94.5 L 194 192 L 194 457' },
+  { id: 'r0', coin: 'coin-bnb', d: 'M 194 1123 L 194 661.5' },
+  { id: 'r1', coin: 'coin-sol', d: 'M 103.5 1123 L 103.5 1036.7 C 103.5 1032.2 105.1 1027.9 108.1 1024.6 L 194 927 L 194 661.5' },
+  { id: 'r2', coin: 'coin-tron', d: 'M 290.5 1123 L 290.5 1037 C 290.5 1032.4 288.7 1027.9 285.5 1024.5 L 194 927 L 194 661.5' },
 ];
 
 /**

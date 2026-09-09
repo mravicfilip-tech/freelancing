@@ -188,7 +188,7 @@ export function FigmaAudits() {
 
               {c.pill ? (
                 <a
-                  className="fh__btn fh__btn--ghost fh__btn--wide"
+                  className="fh__btn fh__btn--ghost"
                   href={c.href}
                   onPointerEnter={blobOrigin}
                   onPointerLeave={blobOrigin}

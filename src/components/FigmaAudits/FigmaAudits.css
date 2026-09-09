@@ -235,9 +235,15 @@
 .av__link:hover .fh__chevron {
   transform: rotate(-90deg) translateY(3px); /* rotated, so this nudges the arrow 3px right */
 }
-/* The band's one filled button belongs to the whitepaper — the only thing here to act on. */
+/* The band's one pill belongs to the whitepaper. It is the nav's secondary control — same fill,
+   same muted label — but the nav sits on a white bar and this band is darker, so the edge is
+   taken up a step to hold, the way the footer re-skins the primary for its ground. */
 .av__cell .fh__btn {
   margin-top: 4px;
+}
+.av .fh__btn--ghost {
+  background: #f8fafb;
+  border-color: #d3d8de;
 }
 
 /* ---------- Ledger strip ---------- */

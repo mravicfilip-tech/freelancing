@@ -268,6 +268,23 @@
 .hb[data-auto] .hb__step.is-active .hb__marker {
   animation: hb-tick-y var(--hb-step-ms, 12000ms) linear both;
 }
+/* The track the fill runs down. Without something behind it the marker just reads as a mark;
+   against this you can see how far through the step is. */
+.hb__step::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgb(64 66 209 / 16%);
+  opacity: 0;
+  transition: opacity 240ms ease;
+  pointer-events: none;
+}
+.hb[data-auto] .hb__step.is-active::after {
+  opacity: 1;
+}
 @keyframes hb-tick-y {
   from {
     transform: scaleY(0);
@@ -369,6 +386,14 @@
   .hb[data-auto] .hb__step.is-active .hb__marker {
     animation-name: hb-tick-x;
   }
+  .hb__step::after {
+    right: 0;
+    left: 0;
+    top: auto;
+    bottom: -1px;
+    width: auto;
+    height: 2px;
+  }
 }
 @media (max-width: 720px) {
   .hb__frame {
@@ -413,5 +438,13 @@
   }
   .hb[data-auto] .hb__step.is-active .hb__marker {
     animation-name: hb-tick-y;
+  }
+  .hb__step::after {
+    right: auto;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    height: auto;
   }
 }

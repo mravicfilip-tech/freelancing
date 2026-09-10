@@ -85,12 +85,16 @@ export function ChestSlide({ active }: { active: boolean }) {
   useEffect(() => {
     const root = host.current;
     if (!active || !root) return;
-    const svg = root.querySelector('svg');
+    /* The art's own svg, not merely the first one in the slide: the radial direction's rings are an
+       svg too, and they are rendered ahead of the crate — so a loose query measured those, found no
+       segments in them, and left the whole slide held at `pending`. */
+    const svg = root.querySelector('.chest__art svg');
     if (!svg) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let ctx: { revert: () => void } | undefined;
     let live = true;
+    let started = false;
 
     // Measure once. getBBox is a layout read, so all 226 happen together before anything is set.
     const segs: Seg[] = Array.from(svg.querySelectorAll<SVGPathElement>('path[id^="seg-"]')).map((el) => {
@@ -130,8 +134,33 @@ export function ChestSlide({ active }: { active: boolean }) {
       }
     };
 
+    /* The un-drawn state is set here, synchronously, rather than inside the GSAP callback: the art
+       is held hidden until it exists, and the import that would otherwise set it has been measured
+       taking anything from 0.3s to 3.7s — long enough to leave the slide blank. Setting it up front
+       means the crate is only ever revealed already un-drawn, whatever the import does. */
+    if (!reduced) {
+      segs.forEach((s) => {
+        s.el.style.strokeDasharray = String(s.len);
+        s.el.style.strokeDashoffset = String(s.len);
+        s.el.style.opacity = '0';
+      });
+    }
+    root.dataset.motion = 'ready';
+
+    /* And if the import never arrives, the crate is still the design: drawn, just not drawing. */
+    const failsafe = window.setTimeout(() => {
+      if (started) return;
+      segs.forEach((s) => {
+        s.el.style.strokeDasharray = 'none';
+        s.el.style.strokeDashoffset = '0';
+        s.el.style.opacity = '1';
+      });
+    }, 2600);
+
     import('gsap').then(({ gsap }) => {
       if (!live) return;
+      started = true;
+      window.clearTimeout(failsafe);
       ctx = gsap.context(() => {
         const lidEls = segs.filter(lid).map((s) => s.el);
 
@@ -141,13 +170,8 @@ export function ChestSlide({ active }: { active: boolean }) {
             segs.map((s) => s.el),
             { strokeDasharray: 'none', strokeDashoffset: 0, opacity: 1 },
           );
-          root.dataset.motion = 'ready';
           return;
         }
-
-        segs.forEach((s) => {
-          gsap.set(s.el, { strokeDasharray: s.len, strokeDashoffset: s.len, opacity: 0 });
-        });
 
         const tl = gsap.timeline();
         segs.forEach((s) => {
@@ -165,8 +189,6 @@ export function ChestSlide({ active }: { active: boolean }) {
             );
           }
         });
-
-        root.dataset.motion = 'ready';
 
         // ---- what it settles into ----
         if (variant === '1') {
@@ -232,6 +254,7 @@ export function ChestSlide({ active }: { active: boolean }) {
 
     return () => {
       live = false;
+      window.clearTimeout(failsafe);
       ctx?.revert();
     };
   }, [active, variant]);

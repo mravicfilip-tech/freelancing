@@ -29,6 +29,13 @@ export const STAGE_LADDER = Array.from({ length: 12 }, (_, i) => {
   };
 });
 
+/** The wallet the presale allocation is tied to — every figure below is its. */
+export const WALLET = {
+  address: '0x4f2a9b7c1d8e3fa6052c9147bd3e88a1c7f0d6b2',
+  short: '0x4f2a…d6b2',
+  chain: 'Ethereum',
+} as const;
+
 const BALANCE = 47_382.94;
 
 export const HOLDINGS = {

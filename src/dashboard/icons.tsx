@@ -95,6 +95,12 @@ export const MoreIcon = (p: IconProps) => (
   </svg>
 );
 
+export const CloseIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M6.6 6.6l10.8 10.8M17.4 6.6L6.6 17.4" />
+  </svg>
+);
+
 export const RtxMark = (p: IconProps) => (
   <svg viewBox="0 0 32 32" {...p} aria-hidden="true">
     <circle cx="16" cy="16" r="16" fill="#4042d2" />

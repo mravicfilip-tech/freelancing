@@ -67,14 +67,20 @@ export function tiltMatrix(phi: number): string {
   const d = (-U[1] * V[0] + vy * U[0]) / DET;
   return `matrix(${a} ${b} ${cc} ${d} ${H[0] - (a * H[0] + cc * H[1])} ${H[1] - (b * H[0] + d * H[1])})`;
 }
-/** The verticals, measured at the corners they belong to. */
-const V_SIDE = 185;
-const V_FRONT = 225;
+/**
+ * How thick the lid is. This is the fact the file was built without: the drawing is not a flat
+ * plate on a box, it is a slab sitting on an open body, and the slab has a measurable depth —
+ * 18.60 at the left corner (`seg-68`), 18.66 at the right (`seg-74`), 17.87 at the front, where
+ * the two underside rails meet at (194, 208.5).
+ */
+const LID = 18.5;
+/** The verticals, measured at the corners they belong to — from the body's rim, so a slab less. */
+const V_SIDE = 185 - LID;
+const V_FRONT = 225 - LID;
 /** How deep a cavity reads before the walls stop carrying a value difference. */
 const D = 74;
 
 const pts = (...p: readonly (readonly number[])[]) => p.map(([x, y]) => `${x},${y}`).join(' ');
-const lerp = (a: readonly number[], b: readonly number[], k: number) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
 const down = (p: readonly number[], d: number) => [p[0], p[1] + d];
 const unit = (a: readonly number[], b: readonly number[]) => {
   const dx = b[0] - a[0];
@@ -83,59 +89,80 @@ const unit = (a: readonly number[], b: readonly number[]) => {
   return [dx / m, dy / m] as const;
 };
 
-/** The rim inset to the hole it covers: the lid laps over the box, so the opening is inside it. */
-const M = {
-  t: lerp(TOP.t, [SEAM.x, SEAM.y], 0.1),
-  r: lerp(TOP.r, [SEAM.x, SEAM.y], 0.1),
-  f: lerp(TOP.f, [SEAM.x, SEAM.y], 0.1),
-  l: lerp(TOP.l, [SEAM.x, SEAM.y], 0.1),
+/**
+ * The rim the artwork actually draws — the inner edge of the lid's perimeter strap, taken as the
+ * intersection of `seg-18 × seg-54 × seg-17 × seg-60` rather than guessed.
+ *
+ * It replaces a 10% lerp toward the centre, which could never be right: the slab's diagonals are
+ * 395.9 and 180.9, so one proportion insets the sides by 19.8 and the front and back by 9.0 — a
+ * strap more than twice as wide at the sides as at the ends. The drawn strap is a constant
+ * 12–16 units perpendicular the whole way round, which is what a strap is.
+ */
+const PANEL = { t: [203.9, 15.5], r: [363.0, 82.7], f: [197.6, 163.4], l: [39.1, 79.1] } as const;
+/** The opening in the body: that same rim, one slab-depth down, which is where the lid seats. */
+const MOUTH = {
+  t: down(PANEL.t, LID),
+  r: down(PANEL.r, LID),
+  f: down(PANEL.f, LID),
+  l: down(PANEL.l, LID),
 };
 
 export const POLY = {
   top: pts(TOP.t, TOP.r, TOP.f, TOP.l),
-  mouth: pts(M.t, M.r, M.f, M.l),
-  /* The body's two visible faces, each dropping from its own corner by that corner's own vertical —
-     the drawing does not share one height between them. */
-  left: pts(TOP.l, TOP.f, down(TOP.f, V_FRONT), down(TOP.l, V_SIDE)),
-  right: pts(TOP.f, TOP.r, down(TOP.r, V_SIDE), down(TOP.f, V_FRONT)),
+  mouth: pts(MOUTH.t, MOUTH.r, MOUTH.f, MOUTH.l),
+  /* The body's two visible faces. They start at the body's own rim — a slab below the lid's — not
+     at the lid's silhouette: built from `TOP` the body's fill and its rim stood 18.5 units above
+     the rim the artwork draws, hanging in the air over a corner post whose top is at y=209. That
+     is the plate that sat proud of the crate. Each drops by its own corner's vertical, since the
+     drawing does not share one height between them. */
+  left: pts(down(TOP.l, LID), down(TOP.f, LID), down(TOP.f, LID + V_FRONT), down(TOP.l, LID + V_SIDE)),
+  right: pts(down(TOP.f, LID), down(TOP.r, LID), down(TOP.r, LID + V_SIDE), down(TOP.f, LID + V_FRONT)),
 
   /* The inside. Looking down into the box you see its two far walls and its floor; the near walls
      are behind the front rim, and the clip to the mouth removes them. */
-  wallBack: pts(M.l, M.t, down(M.t, D), down(M.l, D)),
-  wallSide: pts(M.t, M.r, down(M.r, D), down(M.t, D)),
-  floor: pts(down(M.t, D), down(M.r, D), down(M.f, D), down(M.l, D)),
+  wallBack: pts(MOUTH.l, MOUTH.t, down(MOUTH.t, D), down(MOUTH.l, D)),
+  wallSide: pts(MOUTH.t, MOUTH.r, down(MOUTH.r, D), down(MOUTH.t, D)),
+  floor: pts(down(MOUTH.t, D), down(MOUTH.r, D), down(MOUTH.f, D), down(MOUTH.l, D)),
 
-  /* The lid's thickness, along the two edges that face the viewer. */
-  lipLeft: pts(TOP.l, TOP.f, down(TOP.f, 11), down(TOP.l, 11)),
-  lipRight: pts(TOP.f, TOP.r, down(TOP.r, 11), down(TOP.f, 11)),
+  /* The lid's thickness, along the two edges that face the viewer — its own measured depth. At 11
+     the fill stopped 7.5 short of the underside the export draws, so the slab's bottom rail ran
+     across nothing. */
+  lipLeft: pts(TOP.l, TOP.f, down(TOP.f, LID), down(TOP.l, LID)),
+  lipRight: pts(TOP.f, TOP.r, down(TOP.r, LID), down(TOP.f, LID)),
 } as const;
 
 /** The lid's panel cut in two down its long diagonal, for the direction that parts it like a hatch. */
-export const SPLIT = [pts(M.l, M.t, M.f), pts(M.t, M.r, M.f)] as const;
+export const SPLIT = [pts(PANEL.l, PANEL.t, PANEL.f), pts(PANEL.t, PANEL.r, PANEL.f)] as const;
 /** The box's own left and right axes, taken from the measured corners rather than assumed. */
 export const AXIS = { left: unit(TOP.f, TOP.l), right: unit(TOP.f, TOP.r) };
 
 /**
- * Where the lid's outer boundary sits directly under `x` — the seam, along the two near edges. The
- * rear edges are the far silhouette and nothing of the body lies above them, so only these matter.
+ * Where the lid's UNDERSIDE sits directly below `x` — the rails the export draws along the slab's
+ * two near edges, `seg-79` on the left and `seg-81` on the right, read as full lines. They cross at
+ * (196.85, 202.68), and that crossing is the front corner of the parting line.
+ *
+ *   seg-79  (38.5, 118) → (153.5, 179.5)
+ *   seg-81  (367.5, 118) → (234.5, 184)
  */
-function seamY(x: number): number {
-  return x < TOP.f[0]
-    ? TOP.l[1] + ((x - TOP.l[0]) * (TOP.f[1] - TOP.l[1])) / (TOP.f[0] - TOP.l[0])
-    : TOP.f[1] + ((x - TOP.f[0]) * (TOP.r[1] - TOP.f[1])) / (TOP.r[0] - TOP.f[0]);
+const UNDER_L = { m: 0.534783, c: 97.412 } as const;
+const UNDER_R = { m: -0.496241, c: 300.368 } as const;
+function underY(x: number): number {
+  return Math.min(UNDER_L.m * x + UNDER_L.c, UNDER_R.m * x + UNDER_R.c);
 }
 
 /**
- * Whether a drawn path belongs to the lid — the removable top — rather than to the body.
+ * Whether a drawn path belongs to the lid — the removable slab — rather than to the body.
  *
- * It samples the path rather than reading its bounding box, because the long rim diagonals run
- * parallel to the seam and their bbox corners fall far below it. The measured gap either side of
- * the cut is wide: the deepest lid path clears the seam by 3, the shallowest body path by 16, so
- * anything from 4 to 15 gives the identical partition.
+ * The fence is the lid's own underside, because that is where the two pieces actually part. The
+ * rule this replaces measured against the lid's TOP plane and cut a whole level too high: it left
+ * the slab's own bottom edge, all six corner-brace side plates and both corner verticals on the
+ * body, so the lid came off as a bare panel and the body kept the lid's frame. 81 paths went up
+ * where 109 belong.
  *
- * The corner braces are drawn over the top and down the sides as separate paths; this sends their
- * top plates up with the lid and leaves their side plates on the body, which is how a crate's
- * braces actually cap a lid — and it leaves the body's top rim complete.
+ * It samples rather than reading a bounding box, because the rails run parallel to the cut and
+ * their bbox corners fall far below it. The margin is wide: the deepest lid path hangs 9.6 below
+ * the underside, where the left brace wraps its corner, and the shallowest body path starts 18.3
+ * below it — so anything from 10 to 18 gives the identical partition.
  */
 export function isLid(el: SVGPathElement): boolean {
   const len = el.getTotalLength();
@@ -143,9 +170,9 @@ export function isLid(el: SVGPathElement): boolean {
   let drop = -Infinity;
   for (let i = 0; i <= n; i++) {
     const pt = el.getPointAtLength((len * i) / n);
-    drop = Math.max(drop, pt.y - seamY(pt.x));
+    drop = Math.max(drop, pt.y - underY(pt.x));
   }
-  return drop < 8;
+  return drop < 14;
 }
 
 export const make = (tag: string, attrs: Record<string, string>) => {

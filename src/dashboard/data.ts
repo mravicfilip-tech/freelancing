@@ -30,13 +30,6 @@ export const HOLDINGS = {
   commission: 0.05,
 } as const;
 
-export const LEVEL = {
-  current: 4,
-  next: 5,
-  /** Progress from the current rank toward the next. */
-  progress: 0.12,
-} as const;
-
 export const REFERRALS = {
   earnings: 124.53,
   claimed: 383.65,

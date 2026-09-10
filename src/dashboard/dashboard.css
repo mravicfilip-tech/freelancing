@@ -390,24 +390,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   pointer-events: none;
 }
 
-/* ---------- Meter ---------- */
-.meter {
-  position: relative;
-  height: 12px;
-  flex: 1;
-  border-radius: 999px;
-  background: var(--d-track);
-  overflow: hidden;
-}
-.meter__fill {
-  position: relative;
-  z-index: 1;
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--d-accent);
-}
-
 /* ---------- Buttons and inputs ---------- */
 /* The hover blob reads --fh-progress / --fh-ink, so pointing those at the
    dashboard's own tokens makes the hero button theme-aware. */
@@ -577,37 +559,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .stat[data-tone='indigo'] .fig { color: var(--d-indigo); }
 .stat__chip { width: 42px; height: 42px; flex: none; }
 .stat__aside { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-
-/* ==========================================================================
-   Level
-   ========================================================================== */
-
-.level { padding: var(--pad); border-radius: var(--r-card); background: var(--d-card); box-shadow: var(--d-lift); }
-.level__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--d-text);
-  font-weight: 600;
-  font-size: 13px;
-  text-decoration: none;
-  padding: 9px 12px 9px 14px;
-  border-radius: var(--r-sm);
-  background: var(--d-inset);
-  transition: background-color 160ms ease, color 160ms ease;
-}
-.level__link:hover { background: var(--d-pick); color: var(--d-on-pick); }
-.level__body {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 2vw, 26px);
-  margin-top: 18px;
-}
-.level__rank { display: flex; align-items: center; gap: 12px; flex: none; }
-.level__rank--next { flex-direction: row-reverse; text-align: right; }
-.level__badge { width: 44px; height: 44px; flex: none; }
-.level__rank-name { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
-.level__rank-note { margin: 2px 0 0; font-size: 13px; color: var(--d-text-3); }
 
 /* ==========================================================================
    Split
@@ -986,15 +937,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .rail__item, .rail__toggle { justify-content: center; padding-inline: 4px; border-radius: var(--r-inner); }
   .rail__brand { justify-content: center; padding-inline: 0; }
   .stat-row { grid-template-columns: minmax(0, 1fr); }
-  .level__body { flex-wrap: wrap; }
-  .level__body .meter { order: 3; flex-basis: 100%; }
 }
 
 @media (max-width: 620px) {
   .buy__pair, .tabs, .buy__promo { grid-template-columns: minmax(0, 1fr); }
   .flash__head { flex-direction: column; }
   .clock__tile { width: 31px; height: 40px; font-size: 19px; }
-  .level__rank--next { flex-direction: row; text-align: left; }
   .card__head, .flash__code { flex-direction: column; align-items: flex-start; gap: 10px; }
   .ladder__facts { grid-template-columns: minmax(0, 1fr); }
 }
@@ -1002,3 +950,218 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 @media (prefers-reduced-motion: reduce) {
   .dash * { transition-duration: 0ms !important; }
 }
+
+/* ==========================================================================
+   Rail treatments under review — `?nav=1..5`
+   ========================================================================== */
+
+/* 1 Outline — roomy rhythm, a tinted plate behind the active icon only. */
+.rail[data-style='1'] .rail__group { gap: 4px; }
+.rail[data-style='1'] .rail__item { padding: 10px 6px; gap: 8px; }
+.rail[data-style='1'] .rail__icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+}
+.rail[data-style='1'] .rail__item[aria-current='page'] {
+  background: transparent;
+  color: var(--d-text);
+}
+.rail[data-style='1'] .rail__item[aria-current='page'] .rail__icon {
+  background: var(--d-accent-soft);
+  color: var(--d-accent);
+}
+.dash[data-theme='dark'] .rail[data-style='1'] .rail__item[aria-current='page'] .rail__icon {
+  background: color-mix(in srgb, var(--d-accent) 22%, transparent);
+  color: var(--d-accent);
+}
+.rail[data-style='1'] .rail__item:hover { background: var(--d-inset); }
+
+/* 2 Solid — filled glyphs, tight rhythm, colour carries the active state. */
+.rail[data-style='2'] .rail__group { gap: 0; }
+.rail[data-style='2'] .rail__item { padding: 9px 6px; gap: 6px; }
+.rail[data-style='2'] .rail__icon { width: 28px; height: 28px; }
+.rail[data-style='2'] .rail__item[aria-current='page'] {
+  background: transparent;
+  color: var(--d-accent);
+}
+.rail[data-style='2'] .rail__item[aria-current='page'] .rail__icon {
+  background: transparent;
+  color: var(--d-accent);
+}
+.rail[data-style='2'] .rail__item:hover { background: transparent; color: var(--d-text); }
+
+/* 3 Tiles — every item is a bordered square, the label sitting under it. */
+.rail[data-style='3'] .rail__group { gap: 8px; }
+.rail[data-style='3'] .rail__item {
+  padding: 0;
+  gap: 7px;
+  background: transparent;
+}
+.rail[data-style='3'] .rail__icon {
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  background: var(--d-inset);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+}
+.rail[data-style='3'] .rail__item:hover { background: transparent; }
+.rail[data-style='3'] .rail__item:hover .rail__icon { background: var(--d-track); }
+.rail[data-style='3'] .rail__item[aria-current='page'] { background: transparent; }
+.rail[data-style='3'] .rail__item[aria-current='page'] .rail__icon {
+  background: var(--d-accent);
+  color: var(--d-on-accent);
+  box-shadow: none;
+}
+
+/* 4 Icons only — no labels, an accent bar marking the active item. */
+.dash:has(.rail[data-style='4']) { --rail-w: 76px; }
+.rail[data-style='4'] .rail__label,
+.rail[data-style='4'] .rail__badge,
+.rail[data-style='4'] .rail__wordmark { display: none; }
+.rail[data-style='4'] .rail__group { gap: 6px; }
+.rail[data-style='4'] .rail__brand { justify-content: center; padding-inline: 0; }
+.rail[data-style='4'] .rail__item,
+.rail[data-style='4'] .rail__toggle {
+  position: relative;
+  justify-content: center;
+  flex-direction: row;
+  padding: 13px 0;
+  border-radius: 10px;
+}
+.rail[data-style='4'] .rail__item[aria-current='page'] {
+  background: var(--d-inset);
+  color: var(--d-accent);
+}
+.rail[data-style='4'] .rail__item[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  border-radius: 0 3px 3px 0;
+  background: var(--d-accent);
+}
+.rail[data-style='4'] .rail__icon { width: 24px; height: 24px; }
+
+/* 5 Pills — the whole item fills, with air between the two groups. */
+.rail[data-style='5'] .rail__group { gap: 5px; }
+.rail[data-style='5'] .rail__group + .rail__group { padding-top: 22px; }
+.rail[data-style='5'] .rail__item {
+  padding: 13px 6px;
+  gap: 8px;
+  border-radius: 12px;
+}
+.rail[data-style='5'] .rail__icon { width: 24px; height: 24px; }
+.rail[data-style='5'] .rail__item[aria-current='page'] {
+  background: var(--d-accent);
+  color: var(--d-on-accent);
+}
+.rail[data-style='5'] .rail__item[aria-current='page'] .rail__icon {
+  background: transparent;
+  color: inherit;
+}
+.rail[data-style='5'] .rail__item[aria-current='page'] .rail__badge {
+  background: color-mix(in srgb, var(--d-on-accent) 22%, transparent);
+  color: var(--d-on-accent);
+}
+
+/* ==========================================================================
+   Header treatments under review — `?head=1..5`
+   ========================================================================== */
+
+/* 2 Strip — no cards; the three figures share one rule-separated band. */
+.dash[data-head='2'] .stat-row {
+  gap: 0;
+  background: var(--d-card);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.dash[data-head='2'] .stat {
+  border-radius: 0;
+  background: transparent;
+}
+.dash[data-head='2'] .stat + .stat {
+  background-image: var(--d-dash-h);
+  background-size: 1px 100%;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.dash[data-head='2'] .stat + .stat {
+  background-image: repeating-linear-gradient(180deg, var(--d-rule) 0 8px, transparent 8px 16px);
+}
+
+/* 3 Lead stat — the balance leads at a larger size, the others support it. */
+.dash[data-head='3'] .stat-row { grid-template-columns: 1.5fr 1fr 1fr; }
+.dash[data-head='3'] .stat:first-child { padding: 26px; }
+.dash[data-head='3'] .stat:first-child .fig { font-size: clamp(36px, 4vw, 52px); }
+.dash[data-head='3'] .stat:not(:first-child) .fig { font-size: clamp(22px, 2.2vw, 28px); }
+.dash[data-head='3'] .stat:not(:first-child) .stat__note { display: none; }
+
+/* 4 One panel — the greeting and the figures live in a single card. */
+.dash[data-head='4'] .topbar {
+  margin-bottom: calc(var(--gap) * -1);
+  padding: var(--pad) var(--pad) 0;
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  background: var(--d-card);
+}
+.dash[data-head='4'] .stat-row {
+  gap: 0;
+  padding: 0 var(--pad) 6px;
+  background: var(--d-card);
+  border-radius: 0 0 var(--r-card) var(--r-card);
+}
+.dash[data-head='4'] .stat { background: transparent; border-radius: 0; padding-inline: 0; }
+.dash[data-head='4'] .stat + .stat { padding-left: 28px; }
+
+/* 5 Toolbar — a slim rule-under bar, figures as compact chips. */
+.dash[data-head='5'] .topbar {
+  padding-bottom: 14px;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+}
+.dash[data-head='5'] .topbar__title { font-size: clamp(20px, 1.8vw, 24px); }
+.dash[data-head='5'] .topbar__greeting { display: none; }
+.dash[data-head='5'] .stat { padding: 16px 18px; align-items: center; }
+.dash[data-head='5'] .stat .fig { font-size: clamp(20px, 2vw, 26px); margin-top: 6px; }
+.dash[data-head='5'] .stat__note { display: none; }
+.dash[data-head='5'] .stat__chip { width: 34px; height: 34px; }
+
+/* ---------- The picker itself ---------- */
+.vpick {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 60;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--d-card);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28), 0 0 0 1px var(--d-rule);
+  font-size: 12px;
+  max-width: calc(100vw - 24px);
+}
+.vpick__row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.vpick__label {
+  width: 52px;
+  flex: none;
+  color: var(--d-text-3);
+}
+.vpick__opt {
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 9px;
+  background: var(--d-inset);
+  color: var(--d-text-2);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.vpick__opt:hover { color: var(--d-text); }
+.vpick__opt[data-active] { background: var(--d-accent); color: var(--d-on-accent); font-weight: 600; }
+@media (max-width: 767px) { .vpick { display: none; } }

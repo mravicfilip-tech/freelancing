@@ -1,35 +1,33 @@
-import type { ReactElement } from 'react';
-import { NavIcon } from './icons';
-import { rail } from './theme';
+import { NavIcon, NavIconSolid } from './icons';
+import { navStyle, rail } from './theme';
 
-type Item = {
-  id: string;
-  label: string;
-  icon: (p: { className?: string }) => ReactElement;
-  badge?: string;
-};
+type Id = keyof typeof NavIcon;
 
 /** Two groups, split exactly where the reference breaks. */
-const GROUPS: Item[][] = [
-  [
-    { id: 'presale', label: 'Presale', icon: NavIcon.presale },
-    { id: 'earn', label: 'Earn', icon: NavIcon.earn },
-    { id: 'markets', label: 'Markets', icon: NavIcon.markets },
-    { id: 'payfi', label: 'PayFi', icon: NavIcon.payfi, badge: 'NEW' },
-  ],
-  [
-    { id: 'referrals', label: 'Referrals', icon: NavIcon.referrals },
-    { id: 'updates', label: 'Updates', icon: NavIcon.updates },
-    { id: 'claim', label: 'Claim', icon: NavIcon.claim, badge: 'NEW' },
-  ],
+const GROUPS: Id[][] = [
+  ['presale', 'earn', 'markets', 'payfi'],
+  ['referrals', 'updates', 'claim'],
 ];
 
-export function Sidebar({ active = 'presale' }: { active?: string }) {
+const META: Record<Id, { label: string; badge?: string }> = {
+  presale: { label: 'Presale' },
+  earn: { label: 'Earn' },
+  markets: { label: 'Markets' },
+  payfi: { label: 'PayFi', badge: 'NEW' },
+  referrals: { label: 'Referrals' },
+  updates: { label: 'Updates' },
+  claim: { label: 'Claim', badge: 'NEW' },
+};
+
+export function Sidebar({ active = 'presale' }: { active?: Id }) {
   const mode = rail.use();
+  const style = navStyle.use();
   const collapsed = mode === 'collapsed';
+  // Variant 2 is the filled set; variant 4 drops labels for icons alone.
+  const set = style === '2' ? NavIconSolid : NavIcon;
 
   return (
-    <aside className="rail" data-mode={mode}>
+    <aside className="rail" data-mode={mode} data-style={style}>
       <a className="rail__brand" href="/" aria-label="Remittix home">
         <img className="rail__logo" src="/figma/logo.svg" alt="" width={33} height={17} />
         <span className="rail__wordmark">Remittix</span>
@@ -38,22 +36,23 @@ export function Sidebar({ active = 'presale' }: { active?: string }) {
       <nav className="rail__nav" aria-label="Dashboard">
         {GROUPS.map((group, i) => (
           <ul className="rail__group" key={i}>
-            {group.map((item) => {
-              const Icon = item.icon;
-              const current = item.id === active;
+            {group.map((id) => {
+              const Icon = set[id];
+              const { label, badge } = META[id];
+              const current = id === active;
               return (
-                <li key={item.id}>
+                <li key={id}>
                   <a
                     className="rail__item"
-                    href={`#${item.id}`}
+                    href={`#${id}`}
                     aria-current={current ? 'page' : undefined}
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed || style === '4' ? label : undefined}
                   >
                     <span className="rail__icon">
                       <Icon className="icon-22" />
                     </span>
-                    <span className="rail__label">{item.label}</span>
-                    {item.badge && <span className="rail__badge">{item.badge}</span>}
+                    <span className="rail__label">{label}</span>
+                    {badge && <span className="rail__badge">{badge}</span>}
                   </a>
                 </li>
               );

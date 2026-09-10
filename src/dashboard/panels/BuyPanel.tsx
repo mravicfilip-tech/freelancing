@@ -50,7 +50,7 @@ export function BuyPanel() {
   };
 
   return (
-    <section className="card buy" aria-labelledby="buy-title">
+    <section className="card buy" id="buy" aria-labelledby="buy-title">
       <div className="card__head buy__head">
         <h2 className="card__title" id="buy-title">
           Buy $RTX

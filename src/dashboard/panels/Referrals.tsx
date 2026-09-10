@@ -9,7 +9,7 @@ export function Referrals() {
   const [copied, copy] = useCopy();
 
   return (
-    <section className="side__part referrals" aria-labelledby="referrals-title">
+    <section className="side__part referrals" id="referrals" aria-labelledby="referrals-title">
       <header className="card__head">
         <h2 className="card__title" id="referrals-title">
           Referrals
@@ -53,7 +53,7 @@ export function Referrals() {
           {REFERRAL_ROWS.map((r) => (
             <tr key={r.wallet}>
               <td className="referrals__wallet">{r.wallet}</td>
-              <td className="num">${money(r.usd, 0)}</td>
+              <td className="num referrals__spent">${money(r.usd, 0)}</td>
               <td className="num referrals__cut">+{money(r.cut)} USDT</td>
               <td className="num is-right referrals__when">{ago(r.hoursAgo)}</td>
             </tr>

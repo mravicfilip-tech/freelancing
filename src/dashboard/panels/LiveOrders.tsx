@@ -36,8 +36,8 @@ export function LiveOrders() {
                   </span>
                 </td>
                 <td className="num orders__id">#{order.id}</td>
-                <td className="num">{money(order.rtx)}</td>
-                <td className="num">{usd(order.usd)}</td>
+                <td className="num orders__rtx">{money(order.rtx)}</td>
+                <td className="num orders__usd">{usd(order.usd)}</td>
                 <td className="num is-right orders__time">{order.minutesAgo}m ago</td>
               </tr>
             ))}

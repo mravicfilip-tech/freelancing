@@ -408,7 +408,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   transition: color 140ms ease;
 }
 .chip-btn:hover { color: var(--d-text); }
-.chip-btn--sm { width: 30px; height: 30px; }
 
 /* The corner link on a stat card. It sat on the card's own colour with a
    shadow that no longer exists, so it read as a stray glyph rather than a
@@ -1180,22 +1179,139 @@ html[data-dash-theme='light'] body { background: #edeff1; }
    ========================================================================== */
 
 @media (max-width: 1180px) {
-  .dash__split, .referrals__body { grid-template-columns: minmax(0, 1fr); }
+  .dash__split { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 900px) {
   .dash, .dash:has(.rail[data-mode='collapsed']) { --rail-w: 86px; }
-  .rail__wordmark, .rail__label, .rail__badge { display: none; }
+  /* Scoped to the rail: the bottom bar's sheet reuses .rail__badge, and an
+     unscoped rule was hiding PayFi's NEW there too. */
+  .rail .rail__wordmark, .rail .rail__label, .rail .rail__badge { display: none; }
   .rail__item, .rail__toggle { justify-content: center; padding-inline: 4px; border-radius: var(--r-inner); }
   .rail__brand { justify-content: center; padding-inline: 0; }
   .stat-row { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* ==========================================================================
+   Phone. The rail hands over to the bottom bar, both tables stop being
+   tables, the buy form comes first, and every control clears 44px.
+   ========================================================================== */
+
+/* The bar and its sheet exist at every width; only here are they shown. */
+.tabbar, .sheet, .sheet__scrim { display: none; }
+
+@media (max-width: 760px) {
+  .dash { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+
+  .tabbar { display: grid; }
+  .sheet[data-open] { display: block; }
+  .sheet__scrim { display: block; }
+
+  /* Clear the fixed bar, plus the home indicator on a notched phone. */
+  .dash__main { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+
+  /* .dash__main is a column flexbox, so making the split transparent lets the
+     buy form and the flash-sale stack be ordered against their siblings. */
+  .dash__split { display: contents; }
+  .topbar { order: 1; padding-bottom: 18px; }
+  .stat-row { order: 2; }
+  .buy { order: 3; }
+  .ladder { order: 4; }
+  .side { order: 5; }
+  .orders { order: 6; }
+}
+
 @media (max-width: 620px) {
-  .buy__pair, .tabs, .buy__promo { grid-template-columns: minmax(0, 1fr); }
-  .flash__head { flex-direction: column; }
-  .clock__tile { width: 31px; height: 40px; font-size: 19px; }
-  .card__head, .flash__code { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .buy__promo { grid-template-columns: minmax(0, 1fr); }
+  .flash__head { flex-direction: column; gap: 22px; }
+  /* Only the buy card's head needs to stack — its urgency pill is a full
+     sentence. "Referrals / View all" fits on one line at 360px, and stacking
+     it left the link floating as an orphaned box. */
+  .buy__head, .flash__code { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .flash__code { align-items: stretch; }
+  .ladder__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
+
+  .buy__quick { gap: 8px; }
+
+  /* Both tables become stacked rows. A four-column grid inside 328px of card
+     was the single biggest source of horizontal overflow. */
+  .referrals__table,
+  .orders__table,
+  .referrals__table tbody,
+  .orders__table tbody { display: block; width: 100%; }
+  .referrals__table thead,
+  .orders__table thead { display: none; }
+  .orders__scroll { overflow-x: visible; }
+  /* The desktop table is held open at 560px and paints its zebra on the cells.
+     Stacked, the row carries its own ground, so both have to be undone — and
+     these selectors outrank a bare `.orders__table td`. */
+  .orders__table { min-width: 0; }
+  .referrals__table tbody tr:nth-child(odd) td,
+  .referrals__table tbody tr:hover td,
+  .orders__table tbody tr:nth-child(odd) td,
+  .orders__table tbody tr:hover td { background: none; }
+  .referrals__table tbody tr td:first-child,
+  .referrals__table tbody tr td:last-child,
+  .orders__table tbody tr td:first-child,
+  .orders__table tbody tr td:last-child { border-radius: 0; }
+
+  .referrals__table tr,
+  .orders__table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 12px;
+    row-gap: 3px;
+    padding: 12px 12px;
+    border-radius: var(--r-sm);
+    background: var(--d-inset);
+  }
+  .referrals__table tr + tr,
+  .orders__table tr + tr { margin-top: 8px; }
+  .referrals__table td,
+  .orders__table td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* Line one is who and how much; line two is the supporting detail. */
+  .referrals__table tr { grid-template-areas: 'who cut' 'spent when'; }
+  .referrals__wallet { grid-area: who; }
+  .referrals__cut { grid-area: cut; text-align: right; }
+  .referrals__spent { grid-area: spent; }
+  .referrals__when { grid-area: when; text-align: right; }
+  .referrals__spent::before { content: 'Spent '; color: var(--d-text-3); font-weight: 400; }
+
+  /* Orders has five cells, so its second line runs three across: the id, what
+     it cost, and when. Nothing is dropped. */
+  .orders__table tr {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'who who rtx' 'id usd time';
+  }
+  .orders__table td:first-child { grid-area: who; }
+  .orders__rtx { grid-area: rtx; text-align: right; }
+  .orders__rtx::after { content: ' RTX'; color: var(--d-text-3); font-size: 12px; }
+  .orders__id { grid-area: id; }
+  .orders__usd { grid-area: usd; }
+  /* A trailing space in content() collapses, so the separator carries an
+     nbsp of its own. */
+  .orders__usd::before { content: '\00b7\00a0'; color: var(--d-text-3); }
+  .orders__time { grid-area: time; text-align: right; }
+  .referrals__spent,
+  .referrals__when,
+  .orders__id,
+  .orders__usd,
+  .orders__time { font-size: 13px; font-weight: 400; color: var(--d-text-2); }
+}
+
+@media (max-width: 400px) {
+  .stat__aside { gap: 10px; }
+  .buy__quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .chip { padding: 0 6px; }
   .ladder__facts { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -1314,3 +1430,120 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 
+
+/* ==========================================================================
+   Bottom bar and its sheet
+   Only ever visible below 760px — the display rules live in the responsive
+   block above so there is one place that decides which nav is on screen.
+   ========================================================================== */
+
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 40;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  background: var(--d-card);
+  box-shadow: 0 -1px 0 var(--d-rule);
+}
+.tabbar__item {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  /* 52px of bar plus the icon's own box clears the 44px touch minimum on the
+     shortest axis without the labels having to go. */
+  min-height: 52px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--d-text-3);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.tabbar__item[aria-current='page'] { color: var(--d-text); }
+.tabbar__item[aria-expanded='true'] { color: var(--d-text); }
+.tabbar__icon { position: relative; display: block; line-height: 0; }
+/* The rail spells NEW out; a bar slot has no room, so the badge becomes a dot. */
+.tabbar__dot {
+  position: absolute;
+  top: -1px;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--d-accent);
+  box-shadow: 0 0 0 2px var(--d-card);
+}
+
+.sheet__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgb(0 0 0 / 45%);
+}
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  padding: 10px 12px calc(14px + 64px + env(safe-area-inset-bottom));
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  background: var(--d-card);
+  box-shadow: var(--d-menu-edge);
+}
+.sheet__grip {
+  display: block;
+  width: 38px;
+  height: 4px;
+  margin: 0 auto 12px;
+  border-radius: 999px;
+  background: var(--d-track);
+}
+.sheet__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.sheet__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  color: var(--d-text-2);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sheet__item:hover { background: var(--d-inset); color: var(--d-text); }
+.sheet__item .rail__badge { margin-left: auto; }
+
+/* ==========================================================================
+   Phone control sizing
+   Last in the file on purpose. .stat__aside .chip-btn and .referrals__link
+   .copy are more specific than a bare class, and .tsel__button and .copy are
+   defined below the responsive block — so sizing them from up there silently
+   lost to the desktop rule. One block at the end wins on both counts.
+   ========================================================================== */
+
+/* Width is a proxy for touch, not the signal itself: an iPad in portrait is
+   768px wide and every control here would have stayed at desktop density.
+   pointer: coarse asks the real question, bounded so a touch laptop running
+   full-screen keeps the desktop layout it is sized for. */
+@media (max-width: 620px), (pointer: coarse) and (max-width: 900px) {
+  .tabs { height: auto; }
+  .tabs__tab { height: 44px; }
+  .field__control { min-height: 56px; }
+  .tsel__button { height: 44px; }
+  .chip { height: 44px; padding: 0 16px; }
+  .chip-btn, .stat__aside .chip-btn { width: 44px; height: 44px; }
+  .copy, .referrals__link .copy { height: 48px; }
+  .link-quiet { min-height: 44px; }
+  /* The collapsed rail survives on a tablet, so its two controls need the
+     same minimum as everything else. */
+  .rail__brand, .rail__toggle { min-height: 44px; }
+}

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Sidebar } from './Sidebar';
+import { MobileNav } from './MobileNav';
 import { Topbar } from './Topbar';
 import { StatRow } from './panels/StatRow';
 import { BuyPanel } from './panels/BuyPanel';
@@ -46,6 +47,10 @@ export function Dashboard() {
 
         <LiveOrders />
       </main>
+
+      {/* CSS decides which of the two navs is visible; both are always in the
+          DOM so the rail's collapsed state survives a resize. */}
+      <MobileNav active="presale" />
     </div>
   );
 }

@@ -77,6 +77,24 @@ export const NavIcon = {
  * and full-bleed circle the official token marks use, so the two sit at one
  * size. The colour is fixed rather than themed, as a token mark is.
  */
+/* Two glyphs the rail never needed: the bottom bar's Buy action and its More
+   sheet. Same 24 grid, same 4-to-20 ink box as the nav set. */
+export const BuyIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <rect x="4" y="4" width="16" height="16" rx="4.5" />
+    <path d="M12 8.6v6.8M8.6 12h6.8" />
+  </svg>
+);
+
+export const MoreIcon = (p: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...p} aria-hidden="true">
+    <rect x="4" y="4" width="6.4" height="6.4" rx="2" />
+    <rect x="13.6" y="4" width="6.4" height="6.4" rx="2" />
+    <rect x="4" y="13.6" width="6.4" height="6.4" rx="2" />
+    <rect x="13.6" y="13.6" width="6.4" height="6.4" rx="2" />
+  </svg>
+);
+
 export const RtxMark = (p: IconProps) => (
   <svg viewBox="0 0 32 32" {...p} aria-hidden="true">
     <circle cx="16" cy="16" r="16" fill="#4042d2" />

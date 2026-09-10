@@ -271,40 +271,41 @@
    sitting on top of the section, which is what a dark page that has only had its text turned over
    looks like.
 
-   Light does not become dark by being repainted; it becomes dark by being composited. So each wash
-   is taken down to a fraction of its strength and screened onto the surface under it: what was a
-   white plate becomes a bloom the ground shows through, the hue the design chose survives, and the
-   falloff is the one the artwork was drawn with rather than one invented here. */
-[data-theme='dark'] .il-pay__blob,
-[data-theme='dark'] .il-fast__blob,
+   Each is taken down to a fraction of its strength, keeping the hue the design chose and the
+   falloff the artwork was drawn with rather than one invented here: what was a white plate becomes
+   a bloom. (Not screened — every one of these sits inside a scaled stage, and a scale isolates a
+   blend from the card behind it, so the mode would be a no-op that only looked like an answer.) */
 [data-theme='dark'] .il-simple__blob,
 [data-theme='dark'] .il-ui__blob,
-[data-theme='dark'] .il-fx__glow,
-[data-theme='dark'] .il-phone__glow {
+[data-theme='dark'] .il-fx__glow {
   filter: brightness(0.19) saturate(1.7);
-  mix-blend-mode: screen;
 }
-/* The two raster washes are near-white with a warm cast the paper absorbs. Screened at saturation
-   that cast is the only colour left in them, and both tiles came up olive — so these are taken to
-   neutral instead and let the surface under them supply the hue, which is the blue the rest of the
-   band is already lit in. */
+/* The two raster washes are the light in their tiles, and they are the one part of these scenes
+   that could not be carried over. Both ship as an opaque rectangle of near-white gradient with no
+   alpha channel — so there is nothing to mask, nothing to fade, and a filter can only push a white
+   through sepia, which makes orange and never the brand's own green-leaning yellow. Darkened they
+   were grey fog; screened they did nothing, because the stage they sit in is scaled and a scale
+   isolates a blend from the card behind it.
+
+   So on a dark page the light is painted rather than imported: the card carries the bloom itself,
+   in the yellow this brand lights everything with, at the strength a ground this dark can hold. It
+   is exact, it has no rectangle in it, and it sits behind the scene where light belongs. */
 [data-theme='dark'] .il-pay__blob,
-[data-theme='dark'] .il-fast__blob,
-[data-theme='dark'] .il-phone__glow {
-  filter: brightness(0.22) saturate(0);
-}
-/* Both are rectangles: panels of gradient that end where their box ends. On white paper the end is
-   the paper, so nothing shows; screened onto a dark card the boundary is a visible edge running
-   across the tile. Each is faded out along the edge that falls inside the picture. */
-[data-theme='dark'] .il-pay__blob {
-  mask-image: linear-gradient(180deg, transparent 0%, #000 46%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 46%);
-}
-/* The fast blob is drawn flipped, so its trailing edge on screen is its leading edge in the box. */
 [data-theme='dark'] .il-fast__blob {
-  mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+  display: none;
 }
+[data-theme='dark'] .ff__card--pay {
+  background-image: radial-gradient(128% 74% at 50% 104%, rgb(249 255 56 / 13%), rgb(249 255 56 / 0%) 68%);
+}
+[data-theme='dark'] .ff__card--fast {
+  background-image: radial-gradient(88% 116% at 6% 46%, rgb(249 255 56 / 13%), rgb(249 255 56 / 0%) 66%);
+}
+/* The phone's own screen glow stays imported — it is inside a lit UI, not behind one — and only
+   comes down to what that little dark screen can take. */
+[data-theme='dark'] .il-phone__glow {
+  filter: brightness(0.3) saturate(0.35);
+}
+
 /* The orbit rings are hairlines in the same wash — screened they would vanish, so they are simply
    dimmed to the weight a line carries on this ground. */
 [data-theme='dark'] .il-ring {
@@ -396,7 +397,19 @@
    suggestion that the hub is lit. The loop breathes it, so the value is a token the run reads
    rather than a literal it would write straight back over. */
 [data-theme='dark'] .fs {
-  --fs-glow: 0.1;
+  --fs-glow: 0;
+}
+/* The crescent is not mispositioned on a dark page — it is in exactly the place it holds on a
+   light one. What changes is how much of it survives: on white paper the whole soft wash reads and
+   its brightest part sits behind the hub, while at the strength this ground can take only its
+   densest arc clears the band, and that arc is low and to the right of the hub. What is left reads
+   as a smear beside the diagram rather than as light behind it.
+
+   So the light is painted instead of imported, and painted where light actually is: on the hub, in
+   the tint this page carries energy in. It breathes with the hub, because the hub is what it is
+   coming from. */
+[data-theme='dark'] .fs__hub {
+  box-shadow: 0 0 60px 12px rgb(144 146 244 / 13%), 0 0 150px 60px rgb(144 146 244 / 7%);
 }
 
 /* The coin belt runs on a solid grey; on a dark band it is the rail's own weight. */

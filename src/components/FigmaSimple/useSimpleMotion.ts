@@ -80,7 +80,10 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
           const ICON_REST = tone('--fs-hi-icon-rest', 'invert(0)');
           /* How much of the hub's bloom this ground can take. The loop breathes it, which writes an
              opacity inline — so the ceiling has to be read here rather than set on the element. */
-          const GLOW = Number(tone('--fs-glow', '1')) || 1;
+          const glowTok = Number(tone('--fs-glow', '1'));
+          /* Not `|| 1`: zero is a legitimate value here — it is how a theme says the imported wash
+             is not carrying the light — and `||` would read it as "unset" and hand back full. */
+          const GLOW = Number.isFinite(glowTok) ? glowTok : 1;
 
           const tl = gsap.timeline({ paused: true, onComplete: idle });
           tl.from(all(el, '.fs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0);

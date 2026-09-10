@@ -1,11 +1,19 @@
-import { REFERRALS, REFERRAL_ROWS, money } from '../data';
+import { money, type Referral } from '../data';
+import type { DashboardData } from '../useDashboardData';
+import { EmptyState, InviteArt } from '../EmptyState';
 import { Figure } from '../Figure';
 import { CheckIcon, ChevronRight, CopyIcon } from '../icons';
 import { useCopy } from '../useCopy';
 
 const ago = (h: number) => (h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`);
 
-export function Referrals() {
+export function Referrals({
+  referrals: REFERRALS,
+  rows: REFERRAL_ROWS,
+}: {
+  referrals: DashboardData['referrals'];
+  rows: Referral[];
+}) {
   const [copied, copy] = useCopy();
 
   return (
@@ -20,6 +28,15 @@ export function Referrals() {
         </a>
       </header>
 
+      {REFERRAL_ROWS.length === 0 ? (
+        <EmptyState
+          art={InviteArt}
+          title="No referrals yet"
+          body={`Send your link to anyone buying into the presale. Every friend who buys pays you ${REFERRALS.share * 100}% of what they spend, in USDT, the moment their order clears.`}
+          tight
+        />
+      ) : (
+        <>
       <div className="referrals__figures">
         <div>
           <p className="referrals__label">Earned so far</p>
@@ -60,6 +77,8 @@ export function Referrals() {
           ))}
         </tbody>
       </table>
+        </>
+      )}
 
       <div className="referrals__invite">
         <p className="referrals__label">

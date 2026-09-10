@@ -1,9 +1,10 @@
-import { LIVE_ORDERS, money, usd } from '../data';
+import { money, usd, type Order } from '../data';
+import { EmptyState, OrdersArt } from '../EmptyState';
 import { PayMark } from '../icons';
 
 const label = (method: string) => (method === 'CARD' ? 'Card' : method);
 
-export function LiveOrders() {
+export function LiveOrders({ orders }: { orders: Order[] }) {
   return (
     <section className="card orders" aria-labelledby="orders-title">
       <header>
@@ -13,6 +14,13 @@ export function LiveOrders() {
         <p className="orders__sub">What other buyers just bought</p>
       </header>
 
+      {orders.length === 0 ? (
+        <EmptyState
+          art={OrdersArt}
+          title="No orders yet"
+          body="This stage has only just opened. Every purchase across the presale shows up here within a few seconds of clearing."
+        />
+      ) : (
       <div className="orders__scroll">
         <table className="orders__table">
           <thead>
@@ -27,7 +35,7 @@ export function LiveOrders() {
             </tr>
           </thead>
           <tbody>
-            {LIVE_ORDERS.map((order) => (
+            {orders.map((order) => (
               <tr key={order.id}>
                 <td>
                   <span className="orders__method">
@@ -44,6 +52,7 @@ export function LiveOrders() {
           </tbody>
         </table>
       </div>
+      )}
     </section>
   );
 }

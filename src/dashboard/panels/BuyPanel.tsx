@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from 'react';
-import { FLASH_SALE, PRESALE, TOKENS, money, type TokenId } from '../data';
+import { TOKENS, money, type TokenId } from '../data';
+import type { DashboardData } from '../useDashboardData';
 import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
 import { Button } from '../Button';
 import { TokenSelect } from '../TokenSelect';
@@ -9,7 +10,10 @@ type Method = 'crypto' | 'card';
 /** Round sums a buyer actually thinks in, quoted in USD and converted per token. */
 const QUICK_USD = [50, 100, 500, 1000];
 
-export function BuyPanel() {
+export function BuyPanel({
+  presale: PRESALE,
+  flashSale,
+}: Pick<DashboardData, 'presale' | 'flashSale'>) {
   const [method, setMethod] = useState<Method>('crypto');
   const [token, setToken] = useState<TokenId>('USDT');
   const [pay, setPay] = useState('');
@@ -21,7 +25,8 @@ export function BuyPanel() {
   const tabId = useId();
 
   const rate = method === 'card' ? 1 : (TOKENS.find((t) => t.id === token)?.usd ?? 1);
-  const bonus = applied ? FLASH_SALE.bonus : 0;
+  const sale = flashSale.active ? flashSale : null;
+  const bonus = applied && sale ? sale.bonus : 0;
 
   const { base, extra, total, spend } = useMemo(() => {
     const amount = Number.parseFloat(pay);
@@ -41,8 +46,8 @@ export function BuyPanel() {
   };
 
   const applyPromo = () => {
-    if (promo.trim().toUpperCase() === FLASH_SALE.code) {
-      setApplied(FLASH_SALE.code);
+    if (sale && promo.trim().toUpperCase() === sale.code) {
+      setApplied(sale.code);
       setPromoError(false);
     } else {
       setPromoError(true);
@@ -147,7 +152,11 @@ export function BuyPanel() {
             {bonus > 0 ? ` (${bonus * 100}%)` : ''}
           </dt>
           <dd className="num">
-            {bonus > 0 ? `+${money(extra)} RTX` : `Add ${FLASH_SALE.code} for ${FLASH_SALE.bonus * 100}%`}
+            {bonus > 0
+              ? `+${money(extra)} RTX`
+              : sale
+                ? `Add ${sale.code} for ${sale.bonus * 100}%`
+                : 'No code running'}
           </dd>
         </div>
         <div data-total>

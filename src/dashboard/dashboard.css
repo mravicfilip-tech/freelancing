@@ -66,6 +66,7 @@
   --d-spent: #37424e;
   /* Mastercard sits on its brand white here, black in light. */
   --d-mark-ground: #eef2f5;
+  --d-skel-sheen: rgb(255 255 255 / 6%);
   /* A field is the deeper band cut into the lifted card, edged with the same
      rail the site rules everything else with. */
   --d-field: #0c1219;
@@ -116,6 +117,7 @@
   --d-indigo: #4042d2;
   --d-spent: #c9cfd5;
   --d-mark-ground: #16181D;
+  --d-skel-sheen: rgb(255 255 255 / 78%);
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
@@ -1219,7 +1221,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
      buy form and the flash-sale stack be ordered against their siblings. */
   .dash__split { display: contents; }
   .topbar { order: 1; padding-bottom: 18px; }
-  .stat-row { order: 2; }
+  /* Both variants of the position row take slot 2 — .stat-empty replaces
+     .stat-row, and without this it defaults to order 0 and jumps the topbar. */
+  .stat-row, .stat-empty { order: 2; }
   .buy { order: 3; }
   .ladder { order: 4; }
   .side { order: 5; }
@@ -1235,6 +1239,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .buy__head, .flash__code { flex-direction: column; align-items: flex-start; gap: 10px; }
   .flash__code { align-items: stretch; }
   .ladder__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
+
+  /* Twelve prices across 330px collide into one smear. The live stage and the
+     two ends read as an axis; the stages between are still told by bar height,
+     and the exact figures live in the facts row below. */
+  .ladder__n { visibility: hidden; }
+  .ladder__step:first-child .ladder__n,
+  .ladder__step:last-child .ladder__n,
+  .ladder__step[data-state='live'] .ladder__n { visibility: visible; }
 
   .buy__quick { gap: 8px; }
 
@@ -1320,7 +1332,15 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dash * { transition-duration: 0ms !important; }
+  /* This covered transition-duration only, so the sheet, the skeleton sweep
+     and every other @keyframes still ran for someone who asked for no motion. */
+  .dash *,
+  .dash *::before,
+  .dash *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* ---------- Token select ---------- */
@@ -1654,4 +1674,138 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   /* The collapsed rail survives on a tablet, so its two controls need the
      same minimum as everything else. */
   .rail__brand, .rail__toggle { min-height: 44px; }
+}
+
+/* ==========================================================================
+   Loading skeleton
+   Mirrors the real layout so nothing jumps when the figures land.
+   ========================================================================== */
+
+/* display: contents so the placeholder sections are direct children of
+   .dash__main and pick up its column gap, exactly like the real ones. */
+.skel-page { display: contents; }
+
+.skel {
+  position: relative;
+  display: block;
+  flex: none;
+  overflow: hidden;
+  background: var(--d-inset);
+}
+/* A sheen that crosses the block rather than a fade in place: a pulse on forty
+   blocks at once reads as a broken page, a sweep reads as work happening. */
+.skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--d-skel-sheen), transparent);
+  animation: skel-sweep 1400ms cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+@keyframes skel-sweep { to { transform: translateX(100%); } }
+
+.skel-stack { display: grid; gap: 10px; align-content: start; }
+.skel-stack--lg { gap: 14px; margin-top: 16px; }
+.skel-ladder {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(4px, 0.8vw, 9px);
+  height: 118px;
+  margin-top: 20px;
+}
+.skel-ladder .skel { flex: 1; }
+.skel-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+.skel-chips { display: flex; gap: 8px; }
+.skel-chips .skel { flex: 1; }
+.skel-orders { margin-top: 18px; }
+.skel-page .stat { align-items: flex-start; }
+
+/* ==========================================================================
+   Empty states
+   ========================================================================== */
+
+.empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  padding: 44px 20px 40px;
+  text-align: center;
+}
+.empty[data-tight] { padding: 30px 8px 26px; }
+.empty__art {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  color: var(--d-text-3);
+}
+.empty__title {
+  font-family: var(--d-display);
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--d-text);
+}
+.empty__body {
+  max-width: 44ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--d-text-2);
+}
+.empty .fh__btn { margin-top: 16px; }
+/* The single card that stands in for the three stat cards. */
+.stat-empty { display: grid; }
+
+/* ==========================================================================
+   Press feedback
+   Buttons dip; rows tint. Scaling a full-width table row looks like the page
+   is flexing, and tinting a pill loses the sense of it being pushed.
+   ========================================================================== */
+
+.dash { -webkit-tap-highlight-color: transparent; }
+
+.dash .fh__btn,
+.chip,
+.chip-btn,
+.copy,
+.tabs__tab,
+.seg__opt,
+.tsel__button,
+.link-quiet,
+.tabbar__item {
+  transition-property: transform, background-color, color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.dash .fh__btn:active,
+.chip:active,
+.chip-btn:active,
+.copy:active,
+.tabs__tab:active,
+.seg__opt:active,
+.tsel__button:active,
+.link-quiet:active,
+.tabbar__item:active {
+  /* Snaps down, springs back on the site's own curve. 60ms in so the dip is
+     felt on a tap that lasts barely longer than that. */
+  transform: scale(0.965);
+  transition-duration: 60ms;
+}
+/* A 44px icon button scaled by the same factor barely moves, so it goes further. */
+.chip-btn:active { transform: scale(0.92); }
+
+.referrals__table tbody tr,
+.orders__table tbody tr,
+.sheet__item,
+.rail__item {
+  transition: background-color 150ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.referrals__table tbody tr:active td,
+.orders__table tbody tr:active td,
+.sheet__item:active,
+.rail__item:active {
+  background: var(--d-track);
+  transition-duration: 60ms;
 }

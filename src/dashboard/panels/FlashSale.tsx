@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FLASH_SALE } from '../data';
+import type { FlashSaleState } from '../useDashboardData';
+import { EmptyState, TagArt } from '../EmptyState';
 import { CheckIcon, CopyIcon } from '../icons';
 import { useCopy } from '../useCopy';
 
@@ -14,8 +15,9 @@ function Unit({ value, label }: { value: number; label: string }) {
   );
 }
 
-export function FlashSale() {
-  const [left, setLeft] = useState(FLASH_SALE.secondsLeft);
+/** The running sale: countdown, what the code is worth, and the code itself. */
+function Running({ sale }: { sale: Extract<FlashSaleState, { active: true }> }) {
+  const [left, setLeft] = useState(sale.secondsLeft);
   const [copied, copy] = useCopy();
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export function FlashSale() {
   const seconds = left % 60;
 
   return (
-    <section className="side__part flash" aria-labelledby="flash-title">
+    <>
       <div className="flash__head">
         <div className="flash__lede">
           <h2 className="flash__title" id="flash-title">
@@ -36,7 +38,7 @@ export function FlashSale() {
           </h2>
           <p className="flash__copy">
             Use this code at checkout and your purchase earns{' '}
-            <strong>{FLASH_SALE.bonus * 100}% bonus $RTX</strong> on top of whatever you buy.
+            <strong>{sale.bonus * 100}% bonus $RTX</strong> on top of whatever you buy.
           </p>
         </div>
 
@@ -56,13 +58,37 @@ export function FlashSale() {
 
       <div className="flash__code">
         <span className="flash__code-label">Promo code</span>
-        <span className="flash__code-value">{FLASH_SALE.code}</span>
-        <button type="button" className="copy" onClick={() => copy(FLASH_SALE.code)}>
+        <span className="flash__code-value">{sale.code}</span>
+        <button type="button" className="copy" onClick={() => copy(sale.code)}>
           {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
           {copied ? 'Copied' : 'Copy'}
-          <span className="sr-only"> promo code {FLASH_SALE.code}</span>
+          <span className="sr-only"> promo code {sale.code}</span>
         </button>
       </div>
+    </>
+  );
+}
+
+export function FlashSale({ sale }: { sale: FlashSaleState }) {
+  return (
+    <section className="side__part flash" aria-labelledby="flash-title">
+      {sale.active ? (
+        <Running sale={sale} />
+      ) : (
+        <>
+          {/* The heading stays so the card keeps its name in the page outline
+              and for the aria-labelledby the section already points at. */}
+          <h2 className="sr-only" id="flash-title">
+            Flash sale
+          </h2>
+          <EmptyState
+            art={TagArt}
+            title="No sale running"
+            body="Bonus codes go live for a few days at a time, usually as a stage is closing. When the next one opens it appears here with a countdown."
+            tight
+          />
+        </>
+      )}
     </section>
   );
 }

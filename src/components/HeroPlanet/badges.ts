@@ -135,7 +135,16 @@ export function makeBadgeTexture(coin: CoinSpec, px: number, style: BadgeStyle =
  * uppercase pair on top ("ETH → INR") and the bold route beneath, centred, on a silver card.
  * Drawn at 512px tall so a mip level lands close to the on-screen size and the text stays sharp.
  */
-export function makeLabelTexture(title: string, subtitle: string, heightPx = 512): { texture: THREE.CanvasTexture; aspect: number } {
+/** The corridor chip's own colours, so the card can be painted for whichever page it floats over. */
+export type LabelPalette = { bg: string; line: string; sub: string; ink: string };
+export const LABEL_LIGHT: LabelPalette = { bg: '#ffffff', line: '#dadee2', sub: '#a2a6aa', ink: '#122433' };
+
+export function makeLabelTexture(
+  title: string,
+  subtitle: string,
+  heightPx = 512,
+  card: LabelPalette = LABEL_LIGHT,
+): { texture: THREE.CanvasTexture; aspect: number } {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d')!;
   const family = '"Onest Variable", "Instrument Sans Variable", Arial, sans-serif';
@@ -160,20 +169,20 @@ export function makeLabelTexture(title: string, subtitle: string, heightPx = 512
 
   ctx.beginPath();
   ctx.roundRect(stroke, stroke, width - stroke * 2, heightPx - stroke * 2, radius);
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = card.bg;
   ctx.fill();
   ctx.lineWidth = stroke;
-  ctx.strokeStyle = '#dadee2';
+  ctx.strokeStyle = card.line;
   ctx.stroke();
 
   const padY = (heightPx - small - gap - big) / 2;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillStyle = '#a2a6aa';
+  ctx.fillStyle = card.sub;
   ctx.font = fontSmall;
   ctx.letterSpacing = `${-small * 0.03}px`;
   ctx.fillText(pair, width / 2, padY);
-  ctx.fillStyle = '#122433';
+  ctx.fillStyle = card.ink;
   ctx.font = fontBig;
   ctx.letterSpacing = `${-big * 0.03}px`;
   ctx.fillText(title, width / 2, padY + small + gap);

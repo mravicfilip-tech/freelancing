@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { PlanetConfig } from './config';
-import { makeBadgeTexture, makeLabelTexture } from './badges';
+import { makeBadgeTexture, makeLabelTexture, type LabelPalette } from './badges';
 import billboardVert from './shaders/billboard.vert.glsl?raw';
 import glowFrag from './shaders/glow.frag.glsl?raw';
 import outlineFrag from './shaders/outline.frag.glsl?raw';
@@ -96,8 +96,8 @@ export function makeRing(quad: THREE.PlaneGeometry, size: number, color: string)
 }
 
 /** Label chip sprite. Which side of the coin it sits on is set by `placeLabel`. */
-export function makeLabel(title: string, subtitle: string, height: number) {
-  const { texture, aspect } = makeLabelTexture(title, subtitle);
+export function makeLabel(title: string, subtitle: string, height: number, card?: LabelPalette) {
+  const { texture, aspect } = makeLabelTexture(title, subtitle, undefined, card);
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
   s.scale.set(height * aspect, height, 1);
   s.center.set(-0.12, 0.5);

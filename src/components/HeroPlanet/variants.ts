@@ -371,7 +371,21 @@ export const VARIANTS: Record<VariantName, Partial<PlanetConfig>> = {
   },
 };
 
-export function resolveConfig(variant?: string | null): PlanetConfig {
+/**
+ * The halo is a hairline circle drawn around the sphere, and the orbit rings sit just outside it.
+ * Both are near-white on a light page, where they read as a faint edge; carried unchanged onto a
+ * dark one they become the brightest thing in the hero, a hard white circle over a dim globe. Dark
+ * takes them to roughly a tenth, which is the weight they always had against their own ground.
+ */
+const DARK: Partial<PlanetConfig> = {
+  haloOpacity: 0.12,
+  ringOpacity: 0.1,
+  /* The corridor chips are white cards painted to a canvas, so they cannot be reached from CSS. */
+  popupCard: { bg: '#171f29', line: '#2f3a45', sub: '#6c7783', ink: '#eef2f5' },
+};
+
+export function resolveConfig(variant?: string | null, theme?: 'light' | 'dark'): PlanetConfig {
   const name = (variant && variant in VARIANTS ? variant : PLANET_CONFIG.variant) as VariantName;
-  return { ...PLANET_CONFIG, ...VARIANTS[name], variant: name };
+  const base = { ...PLANET_CONFIG, ...VARIANTS[name], variant: name };
+  return theme === 'dark' ? { ...base, ...DARK } : base;
 }

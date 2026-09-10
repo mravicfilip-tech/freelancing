@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { PlanetScene, PlanetLayout } from './PlanetScene';
+import { useTheme } from '../../theme';
 import './HeroPlanet.css';
 
 export interface HeroPlanetProps {
@@ -67,6 +68,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
   const sceneRef = useRef<PlanetScene | null>(null);
   const [mode, setMode] = useState<Mode>('pending');
   const [epoch, setEpoch] = useState(0);
+  const theme = useTheme();
 
   // Remount the scene when the mobile/desktop breakpoint flips (point counts differ).
   useEffect(() => {
@@ -99,7 +101,7 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
       .then(({ PlanetScene }) => {
         if (cancelled) return;
         try {
-          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll, variant: VARIANT ?? variant ?? null });
+          scene = new PlanetScene({ canvas, host, layout: layout ?? currentLayout(), reducedMotion, touch, scroll, variant: VARIANT ?? variant ?? null, theme });
         } catch (err) {
           console.warn('[HeroPlanet] WebGL init failed, using static fallback', err);
           setMode('fallback');
@@ -127,7 +129,8 @@ export function HeroPlanet({ hostRef, forceStatic = false, layout, scroll = true
       scene = null;
       sceneRef.current = null;
     };
-  }, [hostRef, forceStatic, layout, scroll, variant, epoch]);
+    // `theme` is in the deps because the halo and rings are resolved when the scene is built.
+  }, [hostRef, forceStatic, layout, scroll, variant, epoch, theme]);
 
   // The scene plays its own entrance once built; later activations replay it from the start.
   useEffect(() => {

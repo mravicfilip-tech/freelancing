@@ -159,6 +159,8 @@ export const PLANET_CONFIG = {
   popupLabelHeight: 0.11,                 // world units
   popupRings: 2,                          // expanding rings per landing (0–2)
   popupMarkerColor: null as string | null, // null = the coin's colour
+  /** The corridor chip's card, painted to canvas — see badges.ts. */
+  popupCard: { bg: '#ffffff', line: '#dadee2', sub: '#a2a6aa', ink: '#122433' },
   corridorVisible: 2,
   corridorTravelSec: 1.7,
   corridorHoldSec: 2.2,

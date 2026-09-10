@@ -38,6 +38,8 @@ export interface PlanetSceneOptions {
   scroll?: boolean;
   /** Preset name from ./variants.ts; defaults to config.variant. */
   variant?: string | null;
+  /** Which page the globe is being drawn on, for the parts that answer to it. */
+  theme?: 'light' | 'dark';
 }
 
 interface Badge {
@@ -117,8 +119,8 @@ export class PlanetScene {
   private readonly tmpV3 = new THREE.Vector3();
 
   constructor(options: PlanetSceneOptions) {
-    this.opts = { scroll: true, variant: null, ...options };
-    this.cfg = resolveConfig(this.opts.variant);
+    this.opts = { scroll: true, variant: null, theme: 'light', ...options };
+    this.cfg = resolveConfig(this.opts.variant, this.opts.theme);
     const { canvas } = this.opts;
 
     const t0 = performance.now();

@@ -3,6 +3,8 @@ import { Nav } from './components/Nav';
 import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
+import { ChestSwitcher } from './components/ChestSwitcher';
+import { CHEST_REVIEW } from './components/FigmaHero/chestVariant';
 import { HERO_VARIANT } from './heroVariant';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
@@ -56,6 +58,7 @@ export function App() {
       </main>
       {figma && <FigmaFooter />}
       {HERO_VARIANT === '1' && <PlanetSwitcher />}
+      {CHEST_REVIEW && <ChestSwitcher />}
       {DEV_TOOLS && (
         <div className="devbar">
           <button type="button" id="dev-toggle-hero" onClick={() => setHeroMounted((m) => !m)}>

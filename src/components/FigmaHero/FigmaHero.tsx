@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { LangPicker } from './LangPicker';
 import { ThemeToggle } from './ThemeToggle';
-import { SplineSlide } from './SplineSlide';
+import { ChestSlide } from './ChestSlide';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -124,11 +124,11 @@ function Unit({ value, label }: { value: string; label: string }) {
 }
 
 /** The hero graphic: one slide per visual. The corridors globe, the bars from the Figma design,
- *  then the Spline scene — which is fetched only once a reader actually reaches it. */
+ *  then the chest, which draws itself in from its own line work. */
 const SLIDES = [
   { id: 'globe', label: 'Payment corridors around the world' },
   { id: 'bars', label: 'Presale figures' },
-  { id: 'spline', label: 'Remittix in 3D' },
+  { id: 'chest', label: 'The Remittix chest' },
 ] as const;
 
 function GraphicSlides({ index }: { index: number }) {
@@ -149,8 +149,8 @@ function GraphicSlides({ index }: { index: number }) {
       <div className="fh__slide" data-slide="bars" data-active={index === 1 || undefined} aria-hidden={index !== 1}>
         <Bars active={index === 1} />
       </div>
-      <div className="fh__slide" data-slide="spline" data-active={index === 2 || undefined} aria-hidden={index !== 2}>
-        <SplineSlide active={index === 2} />
+      <div className="fh__slide" data-slide="chest" data-active={index === 2 || undefined} aria-hidden={index !== 2}>
+        <ChestSlide active={index === 2} />
       </div>
     </div>
   );

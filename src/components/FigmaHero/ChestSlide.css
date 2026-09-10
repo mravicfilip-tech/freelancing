@@ -18,6 +18,8 @@
   --chest-wallB: #d3d8de;
   --chest-floor: #e4e4e4;
   --chest-rim: #c5cbd1;
+  /* the flank feeds' hairline, at the weight the page rules everything else with */
+  --chest-railLine: #dadee2;
   /* Energy is indigo and lavender on a light page, as it is in every other scene. */
   --chest-live: #4042d1;
   --chest-soft: #b3b5f5;
@@ -51,6 +53,35 @@
   background-size: 28px 28px;
   background-position: 14px 14px;
   mask-image: linear-gradient(180deg, transparent 0%, #000 46%, #000 78%, transparent 100%);
+}
+
+/* The feeds running in from both flanks, behind the crate. The slide is wider than the crate is,
+   and tokenomics fills that width with wires rather than leaving the object stranded in the middle
+   of a band — so this borrows the arrangement: a hairline, a light travelling it, and a node where
+   it arrives. */
+.chest__feed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.chest__rail {
+  fill: none;
+  stroke: var(--chest-railLine);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.chest__spark {
+  fill: none;
+  stroke: var(--chest-soft);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.chest__node {
+  fill: var(--chest-live);
 }
 
 .chest__art {
@@ -91,9 +122,16 @@
 
 /* ---------- the inside ----------
    Two far walls and a floor, each a step apart, which is what gives depth here — the site seats an
-   edge with a hairline, never with a blurred black stroke. */
-.chest__wall {
-  stroke: none;
+   edge with a hairline, never with a blurred black stroke.
+   Every edge of it is drawn, in the crate's own ink at the export's own weight: the rest of this
+   object is line work, and a filled shape with no outline sitting inside it reads as a hole in the
+   drawing rather than a part of it. The clip to the mouth carries the stroke with it, so what shows
+   is the box's inner corner and the join where the walls meet the floor. */
+.chest__wall,
+.chest__floor {
+  stroke: var(--chest-ink);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
 }
 .chest__wall--back {
   fill: var(--chest-wallA);
@@ -103,13 +141,13 @@
 }
 .chest__floor {
   fill: var(--chest-floor);
-  stroke: none;
 }
-/* The mouth's own edge: one hairline, the weight every other opening on the page is seated with. */
+/* The mouth's own edge — the line the lid was hiding. */
 .chest__rim {
   fill: none;
-  stroke: var(--chest-rim);
+  stroke: var(--chest-ink);
   stroke-width: 1.35;
+  stroke-linejoin: round;
 }
 
 /* The seam lights rather than the hole. A short dash on a long gap, run round the rim at a constant
@@ -132,8 +170,12 @@
 /* ---------- the lid as a slab ----------
    A lid that lifts off a box has an underside. Without these two lips it is a sheet of paper, and
    the moment it tilts the drawing gives that away. */
+/* Drawn, like everything else on the crate: the underside is the one face you only ever see while
+   it is open, and left as a bare fill it was the one edge of the lid that had no line on it. */
 .chest__lip {
-  stroke: none;
+  stroke: var(--chest-ink);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
 }
 .chest__lip--left {
   fill: var(--chest-lipL);

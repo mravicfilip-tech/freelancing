@@ -520,6 +520,7 @@
   --chest-wallB: #2b3644;
   --chest-floor: #3d4a58;
   --chest-rim: var(--d-rail);
+  --chest-railLine: var(--d-rail);
   --chest-live: var(--d-indigo);
   --chest-soft: var(--d-lavender);
 }

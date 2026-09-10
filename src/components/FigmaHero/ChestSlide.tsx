@@ -37,6 +37,22 @@ const PAYLOAD: { src: string; size: number; mark?: boolean }[] = [
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
+/* The feeds, in the slide's own 605×520 box: three a side, running in from the edge with one elbow
+   and stopping clear of the crate. Mirrored, so the pair reads as one arrangement. */
+const RAILS = [
+  'M0 118 H74 L116 162 H140',
+  'M0 250 H140',
+  'M0 382 H74 L116 338 H140',
+  'M605 118 H531 L489 162 H465',
+  'M605 250 H465',
+  'M605 382 H531 L489 338 H465',
+];
+/** Where each rail stops — the node the crate takes it at. */
+const NODES: [number, number][] = [
+  [140, 162], [140, 250], [140, 338],
+  [465, 162], [465, 250], [465, 338],
+];
+
 export function ChestSlide({ active }: { active: boolean }) {
   const variant = useChest();
   const host = useRef<HTMLDivElement>(null);
@@ -163,6 +179,24 @@ export function ChestSlide({ active }: { active: boolean }) {
         gsap.set(coins, { x: 0, y: 0, scale: 0.2, opacity: 0, rotation: 0 });
         entry.to('.chest__face, .chest__lip', { opacity: 1, duration: 0.5, ease: 'power2.out' }, DRAW * 0.7);
         entry.to('.chest__floor, .chest__wall, .chest__rim', { opacity: 1, duration: 0.45 }, DRAW * 0.78);
+
+        /* The feeds draw themselves in from the edges as the crate finishes, then each carries a
+           light inward on a loop — a short dash on a long gap at a constant rate, which is the mark
+           the orbit and the payment line are made of. */
+        gsap.utils.toArray<SVGPathElement>('.chest__rail').forEach((rail, i) => {
+          const len = rail.getTotalLength();
+          entry.fromTo(rail, { strokeDasharray: len, strokeDashoffset: len },
+            { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, DRAW * 0.5 + i * 0.05);
+        });
+        entry.fromTo('.chest__node', { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.8)', stagger: 0.04,
+            transformOrigin: '50% 50%' }, DRAW * 0.9);
+        gsap.utils.toArray<SVGPathElement>('.chest__spark').forEach((sp, i) => {
+          const len = sp.getTotalLength();
+          gsap.set(sp, { strokeDasharray: `${len * 0.09} ${len}`, strokeDashoffset: len * 0.09 });
+          gsap.to(sp, { strokeDashoffset: -len, duration: 3.4, ease: 'none', repeat: -1,
+            delay: DRAW + i * 0.55 });
+        });
 
         // ---- arm, open, empty — and again ----
         const cycle = gsap.timeline({ repeat: -1, repeatDelay: 0.8, delay: DRAW + 0.4 });
@@ -318,6 +352,20 @@ export function ChestSlide({ active }: { active: boolean }) {
   return (
     <div ref={host} className="chest" data-variant={variant} data-motion="pending">
       <div className="chest__field" aria-hidden="true" />
+      {/* The flanks. Tokenomics fills its width with hairline wires running in to the hub, each
+          carrying a travelling light and ending in a node; the crate does the same, so the slide
+          reads as something being fed rather than an object alone in the middle of a band. */}
+      <svg className="chest__feed" viewBox="0 0 605 520" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        {RAILS.map((d, i) => (
+          <g key={d} className="chest__railG">
+            <path className="chest__rail" d={d} />
+            <path className="chest__spark" d={d} data-i={i} />
+          </g>
+        ))}
+        {NODES.map(([x, y]) => (
+          <circle key={`${x}-${y}`} className="chest__node" cx={x} cy={y} r="3" />
+        ))}
+      </svg>
       <div className="chest__stage">
         <div className="chest__shadow" aria-hidden="true" />
         <div ref={art} className="chest__art" />

@@ -9,6 +9,11 @@
   --il-ink: #2c2e31;
   --il-label: #a2a6aa;
   --il-line: #e0e0e0;
+  /* Three greys the design keeps apart and a shared --il-line quietly merged: the payment box's
+     hairline, the toast's edge, and the amount's separator. Each is its own value again. */
+  --il-pboxLine: #dadee2;
+  --il-toastLine: #e8e8e8;
+  --il-sep: #a8a8a8;
   --il-mute: #e4e4e4;
   --il-tintLine: #d6e0f3;
   --il-okBg: #f1fbf6;
@@ -135,7 +140,7 @@
 .il-pbox {
   width: 226.4px;
   height: 67.9px;
-  border: 0.566px solid var(--il-line);
+  border: 0.566px solid var(--il-pboxLine);
   border-radius: 9.06px;
   background: var(--il-surface);
 }
@@ -521,7 +526,7 @@
 }
 .il-rc__amount i {
   font-style: normal;
-  color: var(--il-label);
+  color: var(--il-sep);
 }
 .il-rc__rule {
   height: 1px;
@@ -542,7 +547,7 @@
   display: flex;
   gap: 10px;
   padding: 12px;
-  border: 1px solid var(--il-line);
+  border: 1px solid var(--il-toastLine);
   border-radius: 16px;
   background: linear-gradient(180deg, rgba(18, 36, 51, 0) 28.8%, #121212 82.78%), #000;
   box-shadow:
@@ -869,7 +874,7 @@
   left: 0;
   top: 0;
   opacity: 0;
-  filter: drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
+  filter: drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
   will-change: transform;
 }
 .il-ui__linkWrap {

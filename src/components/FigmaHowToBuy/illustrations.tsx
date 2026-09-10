@@ -19,7 +19,7 @@ const A = {
   sol: '/figma/coin-sol.svg',
 };
 
-const CURSOR = '<svg viewBox="0 0 24 24"><path d="M0 0L10.5 24L13.7 13.7001L24 10.5L0 0Z" fill="#F9FF38"/></svg>';
+const CURSOR = '<svg viewBox="0 0 24 24"><path d="M0 0L10.5 24L13.7 13.7001L24 10.5L0 0Z" fill="#4042D2"/></svg>';
 const CHEV =
   '<svg viewBox="0 0 10 10" fill="none"><path d="M3 1.5 6.5 5 3 8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const TICK =

@@ -11,12 +11,11 @@
   --fs-muted: #7c858d;
   /* The cursor's own colour, and everything it touches or leaves behind: the trail it draws, the
      chip it lights, the dot it passes, the ring that opens behind it, and the badge parked where
-     it rests. The arrow is the brand yellow, so its effects are too — an indigo highlight under a
-     yellow arrow read as two unrelated marks rather than one hand moving through the orbit.
-     Yellow carries only dark ink, and it is the same yellow in both themes, so the ink on it does
-     not change with the theme the way the rest of this section does. */
-  --fs-cursor: #f9ff38;
-  --fs-cursor-ink: #122433;
+     it rests. They come off one token so the hand and its effects are never two unrelated marks.
+     On a light page that colour is the design's indigo, with white on it; the brand yellow is a
+     dark-page treatment, and dark overrides both of these together. */
+  --fs-cursor: #4042d2;
+  --fs-cursor-ink: #fff;
   /* The states the highlight paints as it sweeps the orbit (see useSimpleMotion.ts). They are
      written as inline styles by GSAP, so they have to be readable from here. */
   --fs-hi: var(--fs-cursor);
@@ -25,9 +24,9 @@
   --fs-hi-chip-bg: #fff;
   --fs-hi-chip-ink: #2c2e31;
   --fs-hi-chip-on-ink: var(--fs-cursor-ink);
-  /* The glyph on a lit chip. The art is near-black line work, which is exactly what yellow wants,
-     so it lights un-inverted in either theme; only its rest state follows the chip's surface. */
-  --fs-hi-icon: invert(0);
+  /* The glyph on a lit chip: inverted to white on the indigo, as the design has it. Only its rest
+     state follows the chip's own surface, which is what dark has to change. */
+  --fs-hi-icon: invert(1);
   --fs-hi-icon-rest: invert(0);
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fs-dash-v: repeating-linear-gradient(180deg, var(--fs-line) 0 8px, transparent 8px 16px);
@@ -152,7 +151,7 @@
    brand yellow, so on a light page the halo is the dark ink rather than white. */
 .fs__cursorIcon {
   display: block;
-  filter: drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
+  filter: drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
 }
 /* Parked beside the hub, where the cursor rests before it rides the orbit — so it wears the
    cursor's colour rather than sitting beside it in another one. */

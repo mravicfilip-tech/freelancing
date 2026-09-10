@@ -196,9 +196,10 @@
   background: rgb(144 146 244 / 12%);
 }
 
-/* The drawn cursor carries a halo so it stays distinct over whatever it crosses — the dark ink on a
-   light page, which is what a yellow arrow needs there. On a dark one that ink has nothing to
-   separate from, so the halo becomes this ground's own near-black and the cast shadow deepens. */
+/* The drawn cursor carries a halo so it stays distinct over whatever it crosses — white on a light
+   page, as a system cursor's is. On a dark one a white glow around a small arrow reads as a smudge
+   rather than an outline, so the halo becomes the ground it is being separated from and the cast
+   shadow deepens. */
 [data-theme='dark'] .fs__cursorIcon,
 [data-theme='dark'] .ff__il,
 [data-theme='dark'] .hb__scene {
@@ -216,6 +217,10 @@
   --il-ink: var(--d-body);
   --il-label: var(--d-label);
   --il-line: var(--d-il-line);
+  /* the three greys the design keeps apart; on this ground two are edges and one is a separator */
+  --il-pboxLine: var(--d-il-line);
+  --il-toastLine: var(--d-il-line);
+  --il-sep: var(--d-muted);
   --il-mute: var(--d-il-chip);
   --il-tintLine: var(--d-il-line);
   --il-okBg: rgb(53 201 138 / 12%);
@@ -232,10 +237,16 @@
   --fs-ink: var(--d-ink);
   --fs-text: var(--d-body);
   --fs-muted: var(--d-label);
+  /* The cursor's colour is the brand yellow here, and with it everything it touches: the trail, the
+     lit chip, the dot, the ring, the badge. On a light page all of that stays the design's indigo,
+     so this is the only place the yellow is spent. Yellow carries dark ink, not white. */
+  --fs-cursor: #f9ff38;
+  --fs-cursor-ink: #0c1219;
+  /* the lit chip's glyph is near-black line art, which is what yellow wants — so it stops inverting */
+  --fs-hi-icon: invert(0);
   /* The states the sweep eases back to. Left at their light values it repainted the chips white and
      the markers pale grey a second after the page had gone dark — the CSS was right and the
-     animation walked over it. The lit states are not here: they are the cursor's yellow, which is
-     one colour in both themes. */
+     animation walked over it. */
   --fs-hi-marker: #3c4753;
   --fs-hi-dot: #37424e;
   --fs-hi-chip-bg: var(--d-surface);
@@ -547,6 +558,9 @@
   --soft: var(--d-il-panel);
   --line: var(--d-il-line);
   --hair: var(--d-il-rule);
+  /* the window's dots and the ghost edge, which are their own greys rather than hairlines */
+  --dot: var(--d-il-chip);
+  --ghost-line: var(--d-il-line);
   --radio: #3a4553;
   /* the thumb has to lift off the track, and the keyframe colours have to flip with the page */
   --thumb: var(--d-il-chip);

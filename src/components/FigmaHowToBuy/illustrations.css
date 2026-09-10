@@ -54,6 +54,10 @@
   --cta: #121212;
   --cta-ink: #fff;
   --hair: #eef0f3;
+  /* Not hairlines, and not this colour: the window's dots and the ghost button's edge are their own
+     greys in the design, and folding them into --hair lightened both. */
+  --dot: #e3e6ea;
+  --ghost-line: #d3d8de;
   --radio: #cfd5e2;
   --bar: rgb(18 36 51 / 7%);
   --chipbg: rgb(18 36 51 / 5%);
@@ -107,7 +111,7 @@
 .hb__scene .hbi-win{left:107px;top:142px;width:560px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 32px 56px -32px rgba(18,36,51,.22);overflow:hidden}
 .hb__scene .hbi-win__bar{position:relative;display:flex;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid var(--hair)}
 .hb__scene .hbi-win__dots{display:flex;gap:6px}
-.hb__scene .hbi-win__dots i{width:10px;height:10px;border-radius:50%;background:var(--hair)}
+.hb__scene .hbi-win__dots i{width:10px;height:10px;border-radius:50%;background:var(--dot)}
 .hb__scene .hbi-win__url{position:absolute;left:50%;top:7px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:7px;width:260px;height:26px;padding:0 12px;border-radius:13px;background:var(--soft);font-size:12px;letter-spacing:-.1px;color:var(--body);white-space:nowrap}
 .hb__scene .hbi-win__url svg{width:10px;height:11px;flex:none}
 .hb__scene .hbi-win__page{position:relative;padding:20px}
@@ -117,7 +121,7 @@
 .hb__scene .hbi-nav__r{display:flex;align-items:center;gap:8px}
 .hb__scene .hbi-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:40px;padding:0 18px;border-radius:46px;font-weight:700;font-size:14px;letter-spacing:-.28px;white-space:nowrap;color:var(--cta-ink);background:var(--cta)}
 .hb__scene .hbi-btn svg{width:10px;height:10px;flex:none}
-.hb__scene .hbi-btn--ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair)}
+.hb__scene .hbi-btn--ghost{background:var(--surface);color:var(--ink);border:1px solid var(--ghost-line)}
 .hb__scene .hbi-btn--indigo{background:var(--indigo)}
 .hb__scene .hbi-btn--sm{height:34px;padding:0 14px;font-size:13px}
 .hb__scene .hbi-bar8{height:8px;border-radius:4px;background:var(--bar)}
@@ -155,7 +159,7 @@
 .hb__scene .hbi-field{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px}
 .hb__scene .hbi-field__l{font-size:11px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
 .hb__scene .hbi-field__v{font-weight:500;font-size:16px;color:var(--ink)}
-.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18,36,51,.3)))}
+.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18,36,51,.3)))}
 .hb__scene .hbi-cur svg{display:block;width:22px;height:22px}
 .hb__scene .hbi-click{width:40px;height:40px;margin:-20px 0 0 -20px;border:2px solid var(--indigo);border-radius:50%;background:rgba(64,66,209,.18);opacity:0;z-index:5}
 .hb__scene .hbi-dash{display:grid;grid-template-columns:120px minmax(0,1fr);margin:-20px}

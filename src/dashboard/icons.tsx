@@ -19,52 +19,55 @@ const line = {
 
 // ---------- Navigation ----------
 
-/** Outline set: one 24 grid, 1.6px stroke, rounded joins. */
+/**
+ * Outline set. One 24 grid, 1.6px stroke, rounded joins — and every glyph's
+ * ink centred on y=12 spanning roughly 4 to 20, so the gap between a glyph and
+ * its label is the same on every item. Before this they ranged from 10.5px
+ * tall (earn) to 17px (claim), which is why Earn sat high in its row.
+ */
 export const NavIcon = {
   presale: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M12 7.2v9.6M14.4 9.6a2.6 2.6 0 0 0-4.8 1.3c0 2.5 4.8 1.4 4.8 3.7a2.6 2.6 0 0 1-4.8 1.2" />
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7.4v9.2M14.2 9.7a2.4 2.4 0 0 0-4.4 1.2c0 2.3 4.4 1.3 4.4 3.4a2.4 2.4 0 0 1-4.4 1.2" />
     </svg>
   ),
   earn: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <path d="M3.5 16.5 9 10.8l3.5 3.3L20.5 6" />
-      <path d="M15.6 6h4.9v4.9" />
+      <path d="M4 18l5.5-5.5 3.5 3.5L19 6" />
+      <path d="M14.2 6H19v4.8" />
     </svg>
   ),
   markets: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <path d="M4 20V4" />
-      <path d="M4 20h16" />
-      <path d="M8.5 16.5v-4M13 16.5V8M17.5 16.5v-6" />
+      <path d="M4 4.5v15h16" />
+      <path d="M8.4 16.1v-4.6M12.6 16.1V6.3M16.8 16.1V9.1" />
     </svg>
   ),
   payfi: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <rect x="2.8" y="5.6" width="18.4" height="12.8" rx="2.8" />
-      <path d="M2.8 10h18.4" />
-      <path d="M6.6 14.4h3.2" />
+      <rect x="3" y="6" width="18" height="12" rx="2.6" />
+      <path d="M3 10h18M6.6 14.4h3.4" />
     </svg>
   ),
   referrals: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <circle cx="9.6" cy="8.4" r="3.2" />
-      <path d="M3.6 19.2a6 6 0 0 1 12 0" />
-      <path d="M16.8 5.6a3.2 3.2 0 0 1 0 5.8M18.2 19.2a6 6 0 0 0-1.6-4.1" />
+      <circle cx="9.6" cy="8.2" r="3.2" />
+      <path d="M3.8 19a5.8 5.8 0 0 1 11.6 0" />
+      <path d="M16.6 5.4a3.2 3.2 0 0 1 0 5.6M18 19a5.8 5.8 0 0 0-1.5-3.9" />
     </svg>
   ),
   updates: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <path d="M18.2 9.4a6.2 6.2 0 1 0-12.4 0c0 4.4-1.8 5.8-1.8 5.8h16s-1.8-1.4-1.8-5.8Z" />
-      <path d="M10.2 18.6a2.1 2.1 0 0 0 3.6 0" />
+      <path d="M18 10a6 6 0 1 0-12 0c0 4.2-1.7 5.6-1.7 5.6h15.4S18 14.2 18 10Z" />
+      <path d="M10.2 19a2.1 2.1 0 0 0 3.6 0" />
     </svg>
   ),
   claim: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
-      <rect x="3.4" y="10.6" width="17.2" height="9.4" rx="2" />
-      <path d="M2.6 7h18.8v3.6H2.6zM12 7v13" />
-      <path d="M12 7S10.8 3.6 8.6 3.6a2 2 0 0 0 0 3.4ZM12 7s1.2-3.4 3.4-3.4a2 2 0 0 1 0 3.4Z" />
+      <rect x="4" y="10.6" width="16" height="9.4" rx="1.8" />
+      <path d="M3.2 7.2h17.6v3.4H3.2zM12 7.2V20" />
+      <path d="M12 7.2S10.9 4 8.9 4a1.8 1.8 0 0 0 0 3.2ZM12 7.2S13.1 4 15.1 4a1.8 1.8 0 0 1 0 3.2Z" />
     </svg>
   ),
 } as const;

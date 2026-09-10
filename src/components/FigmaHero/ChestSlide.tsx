@@ -39,21 +39,34 @@ const PAYLOAD: { src: string; size: number; mark?: boolean }[] = [
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-/* The feeds, in the slide's own 605×520 box: three a side, running in from the edge with one elbow
-   and stopping clear of the crate. Mirrored, so the pair reads as one arrangement. */
-const RAILS = [
-  'M0 118 H74 L116 162 H140',
-  'M0 250 H140',
-  'M0 382 H74 L116 338 H140',
-  'M605 118 H531 L489 162 H465',
-  'M605 250 H465',
-  'M605 382 H531 L489 338 H465',
-];
-/** Where each rail stops — the node the crate takes it at. */
-const NODES: [number, number][] = [
-  [140, 162], [140, 250], [140, 338],
-  [465, 162], [465, 250], [465, 338],
-];
+/**
+ * The feeds, drawn in the crate's own 401.5 × 406 space rather than the slide's — so every line
+ * ends on a corner the artwork actually has instead of on a box that merely sits near it.
+ *
+ * One spine a side gathers what is coming in, and three short branches step off it into the crate:
+ * a bus, which is how a run of parallel hairlines becomes an arrangement rather than three
+ * unrelated wires. Both flanks are the same figure, mirrored about the crate's centre.
+ */
+const BUS = (() => {
+  const mirror = (x: number) => TOP.l[0] + TOP.r[0] - x;
+  const y = TOP.l[1] + 104;
+  const OUT = -300;
+  const BRANCH = 58;
+  const paths: string[] = [];
+  const nodes: [number, number][] = [];
+  ([
+    [OUT, TOP.l[0], 1],
+    [mirror(OUT), TOP.r[0], -1],
+  ] as const).forEach(([from, edge, dir]) => {
+    const hub = edge - dir * 118;
+    paths.push(`M${from} ${y} H${hub}`);
+    paths.push(`M${hub} ${y} L${hub + dir * 54} ${y - BRANCH} H${edge}`);
+    paths.push(`M${hub} ${y} H${edge}`);
+    paths.push(`M${hub} ${y} L${hub + dir * 54} ${y + BRANCH} H${edge}`);
+    nodes.push([hub, y], [edge, y - BRANCH], [edge, y], [edge, y + BRANCH]);
+  });
+  return { paths, nodes };
+})();
 
 export function ChestSlide({ active }: { active: boolean }) {
   const variant = useChest();
@@ -402,21 +415,25 @@ export function ChestSlide({ active }: { active: boolean }) {
   return (
     <div ref={host} className="chest" data-variant={variant} data-motion="pending">
       <div className="chest__field" aria-hidden="true" />
-      {/* The flanks. Tokenomics fills its width with hairline wires running in to the hub, each
-          carrying a travelling light and ending in a node; the crate does the same, so the slide
-          reads as something being fed rather than an object alone in the middle of a band. */}
-      <svg className="chest__feed" viewBox="0 0 605 520" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-        {RAILS.map((d, i) => (
+      <div className="chest__stage">
+        {/* The flanks. Tokenomics fills its width with hairline wires running in to the hub, each
+            carrying a travelling light and ending in a node; the crate does the same, so the slide
+            reads as something being fed rather than an object alone in the middle of a band.
+            It lives inside the stage, so its viewBox IS the crate's box: a line drawn at x=-300
+            then lands 300 of the crate's own units off its left corner, and overflows into the
+            slide from there. Hung on the slide instead, the same number was 300 units of a box
+            half again the size and the whole feed fell off the frame. */}
+      <svg className="chest__feed" viewBox="0 0 401.5 406" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        {BUS.paths.map((d, i) => (
           <g key={d} className="chest__railG">
             <path className="chest__rail" d={d} />
             <path className="chest__spark" d={d} data-i={i} />
           </g>
         ))}
-        {NODES.map(([x, y]) => (
+        {BUS.nodes.map(([x, y]) => (
           <circle key={`${x}-${y}`} className="chest__node" cx={x} cy={y} r="3" />
         ))}
       </svg>
-      <div className="chest__stage">
         <div className="chest__shadow" aria-hidden="true" />
         <div ref={art} className="chest__art" />
         <div className="chest__payload" aria-hidden="true">

@@ -51,7 +51,9 @@ function readInitial(): ChestId {
   } catch {
     /* private mode, blocked storage */
   }
-  return match(params.get('chest')) ?? match(stored) ?? CHESTS[0].id;
+  /* Hover is the direction the design settled on: the lid lifts and hangs while the contents
+     circle the crate, passing behind it on the far side and in front on the near. */
+  return match(params.get('chest')) ?? match(stored) ?? '3';
 }
 
 let chest: ChestId = readInitial();

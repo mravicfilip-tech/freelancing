@@ -1010,6 +1010,37 @@
   border-color: #dde3e9;
   color: var(--fh-ink);
 }
+/* The settings row at the head of the sheet: the theme switch and the language, both reachable
+   the moment the menu opens. It rules underneath rather than above, since what follows it is the
+   list of links. */
+.fh__menuTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  background-image: repeating-linear-gradient(90deg, var(--fh-line) 0 4px, transparent 4px 8px);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+}
+/* the label takes the space, so the two controls sit together at the right */
+.fh__menuTop .fh__menuFootLabel {
+  margin-right: auto;
+}
+.fh__menuTopSep {
+  width: 1px;
+  height: 20px;
+  background: var(--fh-line);
+}
+.fh__menuTop .fh__lang {
+  height: 40px;
+  padding: 0 14px;
+  gap: 8px;
+  border: 1px solid var(--fh-line);
+  border-radius: 400px;
+}
+
 .fh__menuFoot {
   display: flex;
   align-items: center;

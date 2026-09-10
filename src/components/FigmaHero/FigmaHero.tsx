@@ -265,12 +265,22 @@ export function FigmaHero() {
         data-open={menu.open || undefined}
         inert={!menu.open}
       >
+        {/* The two settings sit at the head of the sheet, not its foot. Below six links and two
+            buttons they were off the bottom of a phone: changing the theme meant opening the menu
+            and then scrolling it, which is a long way to go for a switch. */}
+        <div className="fh__menuTop" style={{ '--i': 0 } as React.CSSProperties}>
+          <span className="fh__menuFootLabel">Appearance</span>
+          <ThemeToggle />
+          <span className="fh__menuTopSep" aria-hidden="true" />
+          <LangPicker />
+        </div>
+
         <nav className="fh__menuLinks" aria-label="Primary">
           {NAV_LINKS.map(([label, href], i) => (
             <a
               key={label}
               href={href}
-              style={{ '--i': i } as React.CSSProperties}
+              style={{ '--i': i + 1 } as React.CSSProperties}
               onClick={() => menu.close(false)}
             >
               <span className="fh__menuIndex" aria-hidden="true">
@@ -282,7 +292,7 @@ export function FigmaHero() {
           ))}
         </nav>
 
-        <div className="fh__menuActions" style={{ '--i': NAV_LINKS.length } as React.CSSProperties}>
+        <div className="fh__menuActions" style={{ '--i': NAV_LINKS.length + 1 } as React.CSSProperties}>
           <a
             className="fh__btn fh__btn--primary"
             href="#register"
@@ -304,14 +314,6 @@ export function FigmaHero() {
           </a>
         </div>
 
-        <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 1 } as React.CSSProperties}>
-          <span className="fh__menuFootLabel">Appearance</span>
-          <ThemeToggle />
-        </div>
-        <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 2 } as React.CSSProperties}>
-          <span className="fh__menuFootLabel">Language</span>
-          <LangPicker />
-        </div>
       </div>
 
       <div className="fh__main" data-node-id="2346:142">

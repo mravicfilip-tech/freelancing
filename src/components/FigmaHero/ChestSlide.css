@@ -89,7 +89,9 @@
 .chest__rail {
   fill: none;
   stroke: var(--chest-railLine);
-  stroke-width: 1;
+  /* The weight the orbit's own ellipse carries. At 1 these runs are long enough that the line
+     thins out to nothing across the band. */
+  stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
 .chest__spark {

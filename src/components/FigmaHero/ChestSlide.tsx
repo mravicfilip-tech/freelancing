@@ -73,7 +73,9 @@ const BUS = (() => {
        a leg starting there is gone before it has drawn anything. Cut by the slide like the spine
        is, which is what makes both read as parts of a run that carries on. */
     const drop = edge - dir * 90;
-    paths.push(`M${drop} ${y} L${drop - dir * 150} ${y + 700}`);
+    /* Long enough that the slide always cuts it rather than it ending inside the band — the same
+       reason the spine runs to 700. The slope is what it was; only the ray is longer. */
+    paths.push(`M${drop} ${y} L${drop - dir * 345} ${y + 1610}`);
     nodes.push([hub, y], [drop, y], [edge, y - BRANCH], [edge, y], [edge, y + BRANCH]);
   });
   return { paths, nodes };

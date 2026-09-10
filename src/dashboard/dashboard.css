@@ -51,6 +51,9 @@
   --d-accent-soft: #4a4cc4;
   --d-accent-tint: rgba(123, 125, 240, 0.22);
   --d-on-tint: #c9caff;
+  /* Fields are a well cut into the card, and say so with a ring. */
+  --d-field: #0e1922;
+  --d-field-ring: rgba(255, 255, 255, 0.38);
   --d-accent-hover: #8f91f4;
   --d-on-accent: #0f1a24;
   --d-pick: #edeff1;
@@ -77,6 +80,8 @@
   --d-accent-soft: #b3b5f5;
   --d-accent-tint: rgba(64, 66, 210, 0.09);
   --d-on-tint: #3335bb;
+  --d-field: #f4f6f8;
+  --d-field-ring: #7a8a9a;
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -518,10 +523,13 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   padding: 0 16px;
   border: 0;
   border-radius: var(--r-card);
-  background: var(--d-inset);
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
   color: var(--d-text);
   font: inherit;
+  transition: box-shadow 140ms ease;
 }
+.input:hover { box-shadow: inset 0 0 0 1px var(--d-text-3); }
 .input::placeholder { color: var(--d-text-3); }
 
 .field__label {
@@ -537,11 +545,13 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   height: 52px;
   padding: 0 12px 0 16px;
   border-radius: var(--r-inner);
-  background: var(--d-inset);
-  box-shadow: inset 0 0 0 1.5px transparent;
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
   transition: box-shadow 140ms ease;
 }
-.field__control:focus-within { box-shadow: inset 0 0 0 1.5px var(--d-accent); }
+.field__control:hover { box-shadow: inset 0 0 0 1px var(--d-text-3); }
+.field__control:focus-within,
+.field__control:focus-within:hover { box-shadow: inset 0 0 0 1.5px var(--d-accent); }
 .field__input {
   width: 100%;
   min-width: 0;
@@ -552,7 +562,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-size: 17px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
 }
 .field__input--output {
   display: flex;
@@ -1095,3 +1105,72 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .tsel__code { font-weight: 600; }
 .tsel__name { margin-left: auto; color: var(--d-text-3); font-size: 13px; }
 .tsel__option[aria-selected='true'] .tsel__name { color: inherit; opacity: 0.75; }
+
+/* ---------- Copy buttons ---------- */
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-card);
+  background: var(--d-accent);
+  color: var(--d-on-accent);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+.copy:hover { background: var(--d-accent-hover); }
+.copy--field {
+  width: 100%;
+  height: auto;
+  justify-content: space-between;
+  padding: 13px 16px;
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
+  color: var(--d-text-2);
+  font-weight: 400;
+}
+.copy--field:hover { background: var(--d-field); color: var(--d-text); }
+.copy__value--link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ---------- Variant picker (review only) ---------- */
+.vpick {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 60;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--d-card);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--d-rule);
+  font-size: 12px;
+  max-width: calc(100vw - 24px);
+}
+.vpick__row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.vpick__label { width: 46px; flex: none; color: var(--d-text-3); }
+.vpick__opt {
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 9px;
+  background: var(--d-inset);
+  color: var(--d-text-2);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.vpick__opt:hover { color: var(--d-text); }
+.vpick__opt[data-active] { background: var(--d-accent); color: var(--d-on-accent); font-weight: 600; }
+@media (max-width: 767px) { .vpick { display: none; } }

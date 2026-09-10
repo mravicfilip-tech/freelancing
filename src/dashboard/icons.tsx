@@ -69,51 +69,15 @@ export const NavIcon = {
   ),
 } as const;
 
-/** Filled set, used by the solid rail variant. */
-const solid = { viewBox: '0 0 24 24', fill: 'currentColor' } as const;
-export const NavIconSolid = {
-  presale: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M12 2.6A9.4 9.4 0 1 0 21.4 12 9.4 9.4 0 0 0 12 2.6Zm.9 14.7v1.1h-1.6v-1.1a3.6 3.6 0 0 1-2.8-2 .9.9 0 0 1 1.6-.8 2 2 0 0 0 1.9 1.1c1 0 1.7-.5 1.7-1.2s-.5-1-2-1.4c-1.7-.4-3-1-3-2.7a2.9 2.9 0 0 1 2.6-2.7V6.5h1.6v1.1a3.3 3.3 0 0 1 2.4 1.7.9.9 0 1 1-1.5.9 1.7 1.7 0 0 0-1.6-.9c-.9 0-1.5.4-1.5 1s.6.9 2 1.3 3 1.1 3 2.8a3 3 0 0 1-2.8 2.9Z" />
-    </svg>
-  ),
-  earn: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M20.5 5h-5a1 1 0 0 0 0 2h2.6l-6.1 6.1-3.3-3.1a1 1 0 0 0-1.4 0l-4.5 4.6a1 1 0 0 0 1.4 1.4L9 11.9l3.3 3.1a1 1 0 0 0 1.4 0L19.5 9v2.5a1 1 0 1 0 2 0V6a1 1 0 0 0-1-1Z" />
-    </svg>
-  ),
-  markets: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M4 3a1 1 0 0 1 1 1v15h15a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
-      <path d="M8 12a1 1 0 0 1 1 1v3.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1ZM12.5 7a1 1 0 0 1 1 1v8.5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1ZM17 10a1 1 0 0 1 1 1v5.5a1 1 0 1 1-2 0V11a1 1 0 0 1 1-1Z" />
-    </svg>
-  ),
-  payfi: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M21.5 9.2V7.6A2.9 2.9 0 0 0 18.6 4.7H5.4A2.9 2.9 0 0 0 2.5 7.6v1.6Z" />
-      <path d="M2.5 11v5.4a2.9 2.9 0 0 0 2.9 2.9h13.2a2.9 2.9 0 0 0 2.9-2.9V11Zm5.1 5.2H6a.9.9 0 0 1 0-1.8h1.6a.9.9 0 0 1 0 1.8Z" />
-    </svg>
-  ),
-  referrals: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <circle cx="9.4" cy="8.2" r="3.6" />
-      <path d="M9.4 13.2a6.6 6.6 0 0 0-6.6 6.1.9.9 0 0 0 .9.9h11.4a.9.9 0 0 0 .9-.9 6.6 6.6 0 0 0-6.6-6.1Z" />
-      <path d="M16.8 5.2a3.4 3.4 0 0 0-.9.1.9.9 0 0 0-.3 1.6 2.6 2.6 0 0 1 0 4.2.9.9 0 0 0 .3 1.6 3.4 3.4 0 0 0 .9.1 3.8 3.8 0 0 0 0-7.6ZM18 14.4a.9.9 0 0 0-.5 1.7 4.6 4.6 0 0 1 2 3.2.9.9 0 0 0 .9.9h.4a.9.9 0 0 0 .8-1 6.4 6.4 0 0 0-3.6-4.8Z" />
-    </svg>
-  ),
-  updates: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M12 2.4a6.9 6.9 0 0 0-6.9 6.9c0 3.5-1.1 4.6-1.6 5.1a1.2 1.2 0 0 0 .8 2.1h15.4a1.2 1.2 0 0 0 .8-2.1c-.5-.5-1.6-1.6-1.6-5.1A6.9 6.9 0 0 0 12 2.4Z" />
-      <path d="M9.6 18a2.6 2.6 0 0 0 4.8 0Z" />
-    </svg>
-  ),
-  claim: (p: IconProps) => (
-    <svg {...solid} {...p} aria-hidden="true">
-      <path d="M11.1 11.6v9.1H5.8a2 2 0 0 1-2-2v-7.1Zm9.1 0v7.1a2 2 0 0 1-2 2h-5.3v-9.1ZM21.4 6.9a1 1 0 0 1 1 1v1.7a1 1 0 0 1-1 1H2.6a1 1 0 0 1-1-1V7.9a1 1 0 0 1 1-1Z" />
-      <path d="M8.6 2.6a2.9 2.9 0 0 0 0 5.8h2.5V6.9C11.1 4.6 10 2.6 8.6 2.6Zm6.8 0c-1.4 0-2.5 2-2.5 4.3v1.5h2.5a2.9 2.9 0 0 0 0-5.8Z" />
-    </svg>
-  ),
-} as const;
+/** A coin on edge: the token has no brand mark, so it gets a drawn one that
+ *  matches the nav set rather than a gold chip that matches nothing. */
+export const CoinIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <circle cx="12" cy="12" r="8.6" />
+    <circle cx="12" cy="12" r="5.9" opacity=".55" />
+    <path d="M12 8.6v6.8M13.7 10.2a1.9 1.9 0 0 0-3.4.9c0 1.8 3.4 1 3.4 2.6a1.9 1.9 0 0 1-3.4.9" />
+  </svg>
+);
 
 export const ChevronRight = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">

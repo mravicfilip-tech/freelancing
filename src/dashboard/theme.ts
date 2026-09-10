@@ -18,19 +18,3 @@ export const rail = createStore({
   values: ['extended', 'collapsed'] as const,
   fallback: 'extended',
 });
-
-/** Rail treatment under review: icon style plus vertical rhythm. */
-export const navStyle = createStore({
-  key: 'remittix.dash.nav',
-  param: 'nav',
-  values: ['1', '2', '3', '4', '5'] as const,
-  fallback: '1',
-});
-
-/** Header treatment under review: the greeting row and the stat strip. */
-export const headStyle = createStore({
-  key: 'remittix.dash.head',
-  param: 'head',
-  values: ['1', '2', '3', '4', '5'] as const,
-  fallback: '1',
-});

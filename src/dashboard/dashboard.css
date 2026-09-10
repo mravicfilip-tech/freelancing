@@ -49,6 +49,8 @@
   --d-text-3: #7f8b97;
   --d-accent: #7b7df0;
   --d-accent-soft: #4a4cc4;
+  --d-accent-tint: rgba(123, 125, 240, 0.22);
+  --d-on-tint: #c9caff;
   --d-accent-hover: #8f91f4;
   --d-on-accent: #0f1a24;
   --d-pick: #edeff1;
@@ -73,6 +75,8 @@
   --d-text-3: #a2a6aa;
   --d-accent: #4042d2;
   --d-accent-soft: #b3b5f5;
+  --d-accent-tint: rgba(64, 66, 210, 0.09);
+  --d-on-tint: #3335bb;
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -182,7 +186,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   margin: 0; padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 .rail__group + .rail__group {
   padding-top: 16px;
@@ -195,8 +199,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .rail__item {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 10px 6px;
   border-radius: 999px;
   color: var(--d-text-2);
   text-decoration: none;
@@ -204,32 +208,36 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   transition: background-color 140ms ease, color 140ms ease;
 }
 .rail__item:hover { background: var(--d-inset); color: var(--d-text); }
-.rail__icon { display: grid; place-items: center; flex: none; }
+.rail__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  transition: background-color 140ms ease, color 140ms ease;
+}
 
-/* Selected: a solid pill, ink on light and lime on dark. */
+/* Selected: the plate sits behind the icon alone, so the row stays quiet and
+   the accent is spent once. */
 .rail__item[aria-current='page'] {
-  background: var(--d-pick);
-  color: var(--d-on-pick);
+  color: var(--d-text);
   font-weight: 600;
 }
-.rail__item[aria-current='page']:hover {
-  background: var(--d-pick);
-  color: var(--d-on-pick);
+.rail__item[aria-current='page'] .rail__icon {
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
 }
 .rail__label { white-space: nowrap; }
 .rail__badge {
   margin-left: auto;
   padding: 2px 7px;
   border-radius: 999px;
-  background: var(--d-accent-soft);
-  color: var(--d-accent);
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
-}
-.rail__item[aria-current='page'] .rail__badge {
-  background: color-mix(in srgb, var(--d-on-pick) 18%, transparent);
-  color: var(--d-on-pick);
 }
 .rail__toggle {
   display: flex;
@@ -329,6 +337,25 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .chip-btn:hover { color: var(--d-text); }
 .chip-btn--sm { width: 30px; height: 30px; }
+
+/* The corner link on a stat card. It sat on the card's own colour with a
+   shadow that no longer exists, so it read as a stray glyph rather than a
+   control: it now carries its own ground and a hover. */
+.stat__aside .chip-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--d-inset);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+  color: var(--d-text-2);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+.stat__aside .chip-btn:hover {
+  background: var(--d-accent-tint);
+  box-shadow: inset 0 0 0 1px transparent;
+  color: var(--d-on-tint);
+}
 
 /* ---------- Card ---------- */
 .card {
@@ -556,8 +583,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-size: 13px;
   color: var(--d-text-3);
 }
-.stat[data-tone='indigo'] .fig { color: var(--d-indigo); }
-.stat__chip { width: 42px; height: 42px; flex: none; }
+
 .stat__aside { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 
 /* ==========================================================================
@@ -693,8 +719,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   margin: 0 auto 16px;
   padding: 9px 16px;
   border-radius: 999px;
-  background: var(--d-accent-soft);
-  color: var(--d-accent);
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
   font-size: 13px;
   font-weight: 600;
 }
@@ -950,218 +976,3 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 @media (prefers-reduced-motion: reduce) {
   .dash * { transition-duration: 0ms !important; }
 }
-
-/* ==========================================================================
-   Rail treatments under review — `?nav=1..5`
-   ========================================================================== */
-
-/* 1 Outline — roomy rhythm, a tinted plate behind the active icon only. */
-.rail[data-style='1'] .rail__group { gap: 4px; }
-.rail[data-style='1'] .rail__item { padding: 10px 6px; gap: 8px; }
-.rail[data-style='1'] .rail__icon {
-  width: 38px; height: 38px;
-  border-radius: 11px;
-}
-.rail[data-style='1'] .rail__item[aria-current='page'] {
-  background: transparent;
-  color: var(--d-text);
-}
-.rail[data-style='1'] .rail__item[aria-current='page'] .rail__icon {
-  background: var(--d-accent-soft);
-  color: var(--d-accent);
-}
-.dash[data-theme='dark'] .rail[data-style='1'] .rail__item[aria-current='page'] .rail__icon {
-  background: color-mix(in srgb, var(--d-accent) 22%, transparent);
-  color: var(--d-accent);
-}
-.rail[data-style='1'] .rail__item:hover { background: var(--d-inset); }
-
-/* 2 Solid — filled glyphs, tight rhythm, colour carries the active state. */
-.rail[data-style='2'] .rail__group { gap: 0; }
-.rail[data-style='2'] .rail__item { padding: 9px 6px; gap: 6px; }
-.rail[data-style='2'] .rail__icon { width: 28px; height: 28px; }
-.rail[data-style='2'] .rail__item[aria-current='page'] {
-  background: transparent;
-  color: var(--d-accent);
-}
-.rail[data-style='2'] .rail__item[aria-current='page'] .rail__icon {
-  background: transparent;
-  color: var(--d-accent);
-}
-.rail[data-style='2'] .rail__item:hover { background: transparent; color: var(--d-text); }
-
-/* 3 Tiles — every item is a bordered square, the label sitting under it. */
-.rail[data-style='3'] .rail__group { gap: 8px; }
-.rail[data-style='3'] .rail__item {
-  padding: 0;
-  gap: 7px;
-  background: transparent;
-}
-.rail[data-style='3'] .rail__icon {
-  width: 46px; height: 46px;
-  border-radius: 12px;
-  background: var(--d-inset);
-  box-shadow: inset 0 0 0 1px var(--d-rule);
-}
-.rail[data-style='3'] .rail__item:hover { background: transparent; }
-.rail[data-style='3'] .rail__item:hover .rail__icon { background: var(--d-track); }
-.rail[data-style='3'] .rail__item[aria-current='page'] { background: transparent; }
-.rail[data-style='3'] .rail__item[aria-current='page'] .rail__icon {
-  background: var(--d-accent);
-  color: var(--d-on-accent);
-  box-shadow: none;
-}
-
-/* 4 Icons only — no labels, an accent bar marking the active item. */
-.dash:has(.rail[data-style='4']) { --rail-w: 76px; }
-.rail[data-style='4'] .rail__label,
-.rail[data-style='4'] .rail__badge,
-.rail[data-style='4'] .rail__wordmark { display: none; }
-.rail[data-style='4'] .rail__group { gap: 6px; }
-.rail[data-style='4'] .rail__brand { justify-content: center; padding-inline: 0; }
-.rail[data-style='4'] .rail__item,
-.rail[data-style='4'] .rail__toggle {
-  position: relative;
-  justify-content: center;
-  flex-direction: row;
-  padding: 13px 0;
-  border-radius: 10px;
-}
-.rail[data-style='4'] .rail__item[aria-current='page'] {
-  background: var(--d-inset);
-  color: var(--d-accent);
-}
-.rail[data-style='4'] .rail__item[aria-current='page']::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 22px;
-  border-radius: 0 3px 3px 0;
-  background: var(--d-accent);
-}
-.rail[data-style='4'] .rail__icon { width: 24px; height: 24px; }
-
-/* 5 Pills — the whole item fills, with air between the two groups. */
-.rail[data-style='5'] .rail__group { gap: 5px; }
-.rail[data-style='5'] .rail__group + .rail__group { padding-top: 22px; }
-.rail[data-style='5'] .rail__item {
-  padding: 13px 6px;
-  gap: 8px;
-  border-radius: 12px;
-}
-.rail[data-style='5'] .rail__icon { width: 24px; height: 24px; }
-.rail[data-style='5'] .rail__item[aria-current='page'] {
-  background: var(--d-accent);
-  color: var(--d-on-accent);
-}
-.rail[data-style='5'] .rail__item[aria-current='page'] .rail__icon {
-  background: transparent;
-  color: inherit;
-}
-.rail[data-style='5'] .rail__item[aria-current='page'] .rail__badge {
-  background: color-mix(in srgb, var(--d-on-accent) 22%, transparent);
-  color: var(--d-on-accent);
-}
-
-/* ==========================================================================
-   Header treatments under review — `?head=1..5`
-   ========================================================================== */
-
-/* 2 Strip — no cards; the three figures share one rule-separated band. */
-.dash[data-head='2'] .stat-row {
-  gap: 0;
-  background: var(--d-card);
-  border-radius: var(--r-card);
-  overflow: hidden;
-}
-.dash[data-head='2'] .stat {
-  border-radius: 0;
-  background: transparent;
-}
-.dash[data-head='2'] .stat + .stat {
-  background-image: var(--d-dash-h);
-  background-size: 1px 100%;
-  background-position: left top;
-  background-repeat: no-repeat;
-}
-.dash[data-head='2'] .stat + .stat {
-  background-image: repeating-linear-gradient(180deg, var(--d-rule) 0 8px, transparent 8px 16px);
-}
-
-/* 3 Lead stat — the balance leads at a larger size, the others support it. */
-.dash[data-head='3'] .stat-row { grid-template-columns: 1.5fr 1fr 1fr; }
-.dash[data-head='3'] .stat:first-child { padding: 26px; }
-.dash[data-head='3'] .stat:first-child .fig { font-size: clamp(36px, 4vw, 52px); }
-.dash[data-head='3'] .stat:not(:first-child) .fig { font-size: clamp(22px, 2.2vw, 28px); }
-.dash[data-head='3'] .stat:not(:first-child) .stat__note { display: none; }
-
-/* 4 One panel — the greeting and the figures live in a single card. */
-.dash[data-head='4'] .topbar {
-  margin-bottom: calc(var(--gap) * -1);
-  padding: var(--pad) var(--pad) 0;
-  border-radius: var(--r-card) var(--r-card) 0 0;
-  background: var(--d-card);
-}
-.dash[data-head='4'] .stat-row {
-  gap: 0;
-  padding: 0 var(--pad) 6px;
-  background: var(--d-card);
-  border-radius: 0 0 var(--r-card) var(--r-card);
-}
-.dash[data-head='4'] .stat { background: transparent; border-radius: 0; padding-inline: 0; }
-.dash[data-head='4'] .stat + .stat { padding-left: 28px; }
-
-/* 5 Toolbar — a slim rule-under bar, figures as compact chips. */
-.dash[data-head='5'] .topbar {
-  padding-bottom: 14px;
-  background-image: var(--d-dash-h);
-  background-size: 100% 1px;
-  background-position: left bottom;
-  background-repeat: no-repeat;
-}
-.dash[data-head='5'] .topbar__title { font-size: clamp(20px, 1.8vw, 24px); }
-.dash[data-head='5'] .topbar__greeting { display: none; }
-.dash[data-head='5'] .stat { padding: 16px 18px; align-items: center; }
-.dash[data-head='5'] .stat .fig { font-size: clamp(20px, 2vw, 26px); margin-top: 6px; }
-.dash[data-head='5'] .stat__note { display: none; }
-.dash[data-head='5'] .stat__chip { width: 34px; height: 34px; }
-
-/* ---------- The picker itself ---------- */
-.vpick {
-  position: fixed;
-  left: 50%;
-  bottom: 16px;
-  z-index: 60;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: var(--d-card);
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28), 0 0 0 1px var(--d-rule);
-  font-size: 12px;
-  max-width: calc(100vw - 24px);
-}
-.vpick__row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.vpick__label {
-  width: 52px;
-  flex: none;
-  color: var(--d-text-3);
-}
-.vpick__opt {
-  border: 0;
-  border-radius: 8px;
-  padding: 6px 9px;
-  background: var(--d-inset);
-  color: var(--d-text-2);
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-.vpick__opt:hover { color: var(--d-text); }
-.vpick__opt[data-active] { background: var(--d-accent); color: var(--d-on-accent); font-weight: 600; }
-@media (max-width: 767px) { .vpick { display: none; } }

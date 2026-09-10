@@ -1,5 +1,5 @@
-import { NavIcon, NavIconSolid } from './icons';
-import { navStyle, rail } from './theme';
+import { NavIcon } from './icons';
+import { rail } from './theme';
 
 type Id = keyof typeof NavIcon;
 
@@ -21,13 +21,10 @@ const META: Record<Id, { label: string; badge?: string }> = {
 
 export function Sidebar({ active = 'presale' }: { active?: Id }) {
   const mode = rail.use();
-  const style = navStyle.use();
   const collapsed = mode === 'collapsed';
-  // Variant 2 is the filled set; variant 4 drops labels for icons alone.
-  const set = style === '2' ? NavIconSolid : NavIcon;
 
   return (
-    <aside className="rail" data-mode={mode} data-style={style}>
+    <aside className="rail" data-mode={mode}>
       <a className="rail__brand" href="/" aria-label="Remittix home">
         <img className="rail__logo" src="/figma/logo.svg" alt="" width={33} height={17} />
         <span className="rail__wordmark">Remittix</span>
@@ -37,7 +34,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
         {GROUPS.map((group, i) => (
           <ul className="rail__group" key={i}>
             {group.map((id) => {
-              const Icon = set[id];
+              const Icon = NavIcon[id];
               const { label, badge } = META[id];
               const current = id === active;
               return (
@@ -46,7 +43,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
                     className="rail__item"
                     href={`#${id}`}
                     aria-current={current ? 'page' : undefined}
-                    title={collapsed || style === '4' ? label : undefined}
+                    title={collapsed ? label : undefined}
                   >
                     <span className="rail__icon">
                       <Icon className="icon-22" />

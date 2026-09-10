@@ -202,7 +202,12 @@
    shadow deepens. */
 [data-theme='dark'] .fs__cursorIcon,
 [data-theme='dark'] .ff__il,
+[data-theme='dark'] .ec-il,
 [data-theme='dark'] .hb__scene {
+  /* The arrow is the brand yellow here, with everything it touches — the trail, the lit chip, the
+     dot, the ring. It used to be an <img>, so its fill shipped inside the asset and could not
+     follow: the page lit its chips yellow while the hand doing it stayed indigo. */
+  --cur-ink: #f9ff38;
   --cur-halo: #0c1219;
   --cur-cast: rgb(0 0 0 / 55%);
 }

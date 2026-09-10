@@ -870,6 +870,15 @@
   z-index: 1;
 }
 .il-ui__cursor {
+  width: 22px;
+  height: 22px;
+  /* The glyph is masked rather than drawn, so its colour comes from a token instead of from the
+     asset's own fill. It is an <img> everywhere else on the site, which no stylesheet can reach —
+     which is how a light-mode indigo arrow ended up lighting yellow chips on a dark page. */
+  background-color: var(--cur-ink, #4042d2);
+  -webkit-mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+  mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+
   z-index: 4;
   left: 0;
   top: 0;

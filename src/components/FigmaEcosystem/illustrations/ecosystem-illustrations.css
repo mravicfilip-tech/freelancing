@@ -124,7 +124,14 @@
 .ec-run__tick path { fill: none; stroke: var(--ec-surface); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 /* The pointer that works the run: the site's own cursor glyph, no halo, no shadow. */
 .ec-run__cursor { position: absolute; left: 0; top: 0; z-index: 6; width: 24px; height: 24px; opacity: 0; pointer-events: none; will-change: transform; }
-.ec-run__cursor img { display: block; }
+.ec-run__cursorIcon { display: block; width: 24px; height: 24px;
+  /* The glyph is masked rather than drawn, so its colour comes from a token instead of from the
+     asset's own fill. It is an <img> everywhere else on the site, which no stylesheet can reach —
+     which is how a light-mode indigo arrow ended up lighting yellow chips on a dark page. */
+  background-color: var(--cur-ink, #4042d2);
+  -webkit-mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+  mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+ }
 .ec-run__ping { position: absolute; left: 0; top: 0; z-index: 5; width: 24px; height: 24px; margin: -12px 0 0 -12px; border: 2px solid var(--ec-indigo); border-radius: 50%; opacity: 0; pointer-events: none; }
 
 /* ---------- Trading: the market chart ---------- */

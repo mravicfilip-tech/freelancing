@@ -77,7 +77,7 @@ function PaymentsLandscape() {
         </div>
         <i className="ec-run__ping" data-ping />
         <div className="ec-run__cursor" data-cursor>
-          <img src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={24} height={24} />
+          <span className="ec-run__cursorIcon" aria-hidden="true" />
         </div>
       </div>
     </Stage>
@@ -130,7 +130,7 @@ function PaymentsPortrait() {
         </div>
         <i className="ec-run__ping" data-ping />
         <div className="ec-run__cursor" data-cursor>
-          <img src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={24} height={24} />
+          <span className="ec-run__cursorIcon" aria-hidden="true" />
         </div>
       </div>
     </Stage>

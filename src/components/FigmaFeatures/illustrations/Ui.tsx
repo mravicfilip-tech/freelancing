@@ -65,7 +65,7 @@ function UiLandscape() {
       <Layer className="il-ui__blob" src={B('imgEllipse3476.svg')} x={38} y={170.7} w={796} h={852} style={{ transform: 'rotate(-90deg) scaleY(-1)' }} />
       <Panel x={129.5} y={160.7} />
       <span className="il-ui__click" />
-      <img className="il-ui__cursor" src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={22} height={22} />
+      <span className="il-ui__cursor" aria-hidden="true" />
     </Stage>
   );
 }
@@ -84,7 +84,7 @@ function UiPortrait() {
       <Layer className="il-ui__blob" src={B('mobile/ui-orbits.svg')} x={-60} y={16} w={749} h={831} style={{ transform: 'rotate(90deg)' }} />
       <Panel x={32} y={0} />
       <span className="il-ui__click" />
-      <img className="il-ui__cursor" src="/figma/simple/imgCursor2StreamlineNova.svg" alt="" width={22} height={22} />
+      <span className="il-ui__cursor" aria-hidden="true" />
     </Stage>
   );
 }

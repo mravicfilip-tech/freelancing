@@ -151,6 +151,15 @@
    brand yellow, so on a light page the halo is the dark ink rather than white. */
 .fs__cursorIcon {
   display: block;
+  width: 24px;
+  height: 24px;
+  /* The glyph is masked rather than drawn, so its colour comes from a token instead of from the
+     asset's own fill. It is an <img> everywhere else on the site, which no stylesheet can reach —
+     which is how a light-mode indigo arrow ended up lighting yellow chips on a dark page. */
+  background-color: var(--cur-ink, #4042d2);
+  -webkit-mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+  mask: url('/figma/simple/imgCursor2StreamlineNova.svg') center / contain no-repeat;
+
   filter: drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
 }
 /* Parked beside the hub, where the cursor rests before it rides the orbit — so it wears the

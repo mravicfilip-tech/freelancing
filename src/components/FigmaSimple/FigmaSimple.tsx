@@ -136,7 +136,7 @@ function Upright({ g }: { g: OrbitGeo }) {
       </div>
       <span className="fs__badge" style={{ left: g.badge.x, top: g.badge.y }}>Fast &amp; reliable payments</span>
       <div className="fs__cursor" style={{ left: g.cursor.x, top: g.cursor.y }}>
-        <img className="fs__cursorIcon" src={A('imgCursor2StreamlineNova')} alt="" width={24} height={24} />
+        <span className="fs__cursorIcon" aria-hidden="true" />
       </div>
 
       <Coins id="stable" label="Stablecoins" icons={['imgGroup', 'imgFlatColor1', 'imgFlatColor2']} x={g.stable.x} y={g.stable.y} />

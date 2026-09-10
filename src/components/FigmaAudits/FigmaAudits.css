@@ -354,7 +354,11 @@
   }
 }
 @media (max-width: 720px) {
+  /* Every other band on this page rules itself at `100% - 32px` on a phone. These two kept the
+     desk gutter, so their dashed rails stood 8px inside everyone else's and the line jogged
+     sideways at each section seam instead of running the page's whole height. */
   .av__frame {
+    width: min(1560px, 100% - 32px);
     padding: 64px 0;
     gap: 36px;
   }

@@ -443,10 +443,6 @@
   --ff-lavender: var(--d-lavender);
   --ff-chipInk: var(--d-ink);
 }
-/* The chip's glyph is near-black line art, drawn for the white plate it sat on. */
-[data-theme='dark'] .ff__chip img {
-  filter: invert(1) brightness(1.7);
-}
 /* The swap button is cut out of the payment line by a ring in the card's own colour. On this
    ground that ring is a shade off the card and reads as a stroke drawn round the disc, so it takes
    the card exactly and goes back to being a cut-out. */
@@ -458,8 +454,16 @@
    a patch rather than a raised label. It takes the ladder's own chip step with a hairline round
    it — the way every other raised chip on this page is seated. */
 [data-theme='dark'] .ff__chip {
-  background: var(--d-il-chip);
-  box-shadow: inset 0 0 0 1px var(--d-il-line);
+  /* The design puts two pills side by side in this tile — a white one and a near-black one — and
+     the contrast between them is the point. Turned dark it became a second near-black pill on a
+     tile that carries a bloom, and disappeared into both. It stays the light one, the way the
+     bank card's tag does: a small pill is a label, not a slab. */
+  background: var(--d-ink);
+  color: #0c1219;
+  box-shadow: none;
+}
+[data-theme='dark'] .ff__chip img {
+  filter: none;
 }
 
 /* The toast is a black plate carrying a soft light-grey glow — a lift off a white card. On a dark
@@ -694,14 +698,19 @@
   --chest-inkIn: #4a5866;
   /* Each face is a ramp now, so the crate is lit rather than tinted: the light comes from behind
      and above, as it does in every other scene here, and each plane falls away from it. */
-  --chest-topA: #3a4757;
-  --chest-topB: #26313f;
-  --chest-leftA: #232e3c;
-  --chest-leftB: #18212c;
-  --chest-rightA: #151d28;
-  --chest-rightB: #0b1119;
-  --chest-lipL: #0e151d;
-  --chest-lipR: #090e15;
+  /* Graphite, not slate. The band is a blue near-black and the crate was a blue slate on it, so
+     the object and its ground shared a hue and the box read as a silhouette rather than a solid —
+     and the two side faces sat close enough that the front corner all but vanished. These are
+     neutral with only a trace of cool in them, and the steps between the three planes are opened
+     up, because dark compresses the difference between neighbouring values. */
+  --chest-topA: #414852;
+  --chest-topB: #2c323a;
+  --chest-leftA: #2d333b;
+  --chest-leftB: #1f242a;
+  --chest-rightA: #1b1f25;
+  --chest-rightB: #101317;
+  --chest-lipL: #14171c;
+  --chest-lipR: #0d1014;
   /* The inside, lifted off the box rather than sunk into it — on white a cavity is darker than the
      plate, on black it has to be lighter, because what makes a hole read as one is the difference
      either way and not the darkness. */
@@ -709,7 +718,9 @@
   --chest-wallB: #222d3a;
   --chest-floor: #35424f;
   /* and lit by what it is carrying, in the indigo everything in transit on this page is drawn in */
-  --chest-glowA: rgb(144 146 244 / 32%);
+  /* And the light inside is a suggestion, not a lamp: at a third it washed lavender up over the
+     lid's own underside every time the box opened. */
+  --chest-glowA: rgb(144 146 244 / 17%);
   --chest-glowB: rgb(144 146 244 / 0%);
   --chest-rim: var(--d-rail);
   --chest-railLine: var(--d-rail);
@@ -717,8 +728,10 @@
   --chest-soft: var(--d-lavender);
   /* The mark's coin inverts with the page, as the tokenomics hub does: the same object, the same
      way round, against the ground it now sits on. */
-  --chest-markDisc: #eef2f5;
-  --chest-markInk: #0c1219;
+  /* The mark's coin is the brand's own, the way BTC's is orange and ETH's blue: a dark disc
+     carrying the white mark, on either page. It had been inverting with the theme, which put a
+     near-black M on a white disc here — the one form this mark is never drawn in. */
+  --chest-markDisc: #1a222c;
 }
 /* The dot field is near-black ink on a light band; on this one it has to be the ink instead, and
    much fainter — a white dot carries far further on black than a dark one does on white. */

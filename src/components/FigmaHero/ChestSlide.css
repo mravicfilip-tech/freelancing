@@ -22,6 +22,8 @@
   --chest-lipR: #d3d8de;
   /* The Remittix mark's own coin: the brand's ground carrying the brand's mark. */
   --chest-markDisc: #122433;
+  /* The mark is white on its own disc in both themes — it is the brand's mark, not a glyph that
+     turns over with the page. */
   --chest-markInk: #fff;
   /* The light thrown up out of the mouth. A lit page has nothing to light — the cavity is already
      the brightest thing in the drawing — so it is spent only where there is dark to spend it in. */
@@ -52,9 +54,9 @@
    both need somewhere to be. It sits low in the box so the headroom is where the motion is. */
 .chest__stage {
   position: relative;
-  width: 60%;
-  max-width: 286px;
-  margin-top: 16%;
+  width: 66%;
+  max-width: 344px;
+  margin-top: 15%;
   aspect-ratio: 401.5 / 406;
 }
 
@@ -179,6 +181,15 @@
 .chest__floor {
   fill: var(--chest-floor);
 }
+/* The body's top edge — the outline the lid's underside rails were drawing until they left with
+   it. Without this the box opens onto a filled plate with no line on it. */
+.chest__brim {
+  fill: none;
+  stroke: var(--chest-ink);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+
 /* The mouth's own edge — the line the lid was hiding. */
 .chest__rim {
   fill: none;

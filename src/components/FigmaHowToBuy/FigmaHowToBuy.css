@@ -399,7 +399,12 @@
 }
 @media (max-width: 720px) {
   .hb__frame {
-    padding: 64px 0;
+    /* Every other band rules itself at `100% - 32px` on a phone; this one kept the desk gutter, so
+       its rails stood 8px inside everyone else's and the dashed line jogged at each section seam.
+       And the rails are the frame's own edges, so the copy needs padding off them — the headline's
+       first letter was sitting on the left rule. */
+    width: min(1560px, 100% - 32px);
+    padding: 64px 16px;
     gap: 32px;
   }
   .hb__title {
@@ -427,43 +432,56 @@
     /* the phone canvas is 300x322; the box carries that ratio, so --k is just its width over 300 */
     aspect-ratio: 300 / 322;
   }
-  /* Three steps will not sit side by side at this width; they stack, each on its own rule. */
+  /* The three steps run across rather than down. Stacked they take a third of the screen to say
+     three words, and the step you are on ends up far above the card that shows it; across, the
+     whole run is one line above the card, each step under its own share of the rule — and the
+     live step's marker becomes a bar filling left to right, which is how a progress line reads. */
   .hb__rail {
-    flex-direction: column;
+    flex-direction: row;
+    height: auto;
   }
   .hb__step,
   .hb__step:first-child,
   .hb__step:last-child {
-    padding: 14px 0 14px 16px;
-    background-image: var(--hb-rule-v);
-    background-size: 1px 100%;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 2px;
+    padding: 13px 10px 0 0;
+    background-image: var(--hb-rule-h);
+    background-size: 100% 1px;
     background-position: left top;
   }
+  .hb__stepLabel {
+    font-size: 13px;
+    line-height: 1.4;
+  }
   .hb__stepTitle {
-    font-size: 20px;
+    font-size: 17px;
+    letter-spacing: -0.42px;
   }
   .hb__marker {
     right: auto;
     left: 0;
     top: 0;
-    bottom: 0;
-    width: 2px;
-    height: auto;
-    transform: scaleY(0);
-    transform-origin: 50% 0;
+    bottom: auto;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
   }
   .hb__step.is-active .hb__marker {
-    transform: scaleY(1);
+    transform: scaleX(1);
   }
   .hb[data-auto] .hb__step.is-active .hb__marker {
-    animation-name: hb-tick-y;
+    animation-name: hb-tick-x;
   }
   .hb__step::after {
     right: auto;
     left: 0;
     top: 0;
-    bottom: 0;
-    width: 2px;
-    height: auto;
+    bottom: auto;
+    width: 100%;
+    height: 2px;
   }
 }

@@ -129,6 +129,11 @@ export const POLY = {
      across nothing. */
   lipLeft: pts(TOP.l, TOP.f, down(TOP.f, LID), down(TOP.l, LID)),
   lipRight: pts(TOP.f, TOP.r, down(TOP.r, LID), down(TOP.f, LID)),
+
+  /* The body's own top edge. Every line along it belonged to the lid — they are the slab's
+     underside rails — so they go up with it, and the box was left with a filled top and no outline
+     on it the moment it opened. This is the edge the lid was covering. */
+  brim: pts(down(TOP.l, LID), down(TOP.t, LID), down(TOP.r, LID), down(TOP.f, LID)),
 } as const;
 
 /** The lid's panel cut in two down its long diagonal, for the direction that parts it like a hatch. */
@@ -214,6 +219,8 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   // the body, filled — the faces the line work only outlines
   lines.insertBefore(make('polygon', { class: 'chest__face chest__face--right', points: POLY.right }), lines.firstChild);
   lines.insertBefore(make('polygon', { class: 'chest__face chest__face--left', points: POLY.left }), lines.firstChild);
+  // and the edge those faces stop at, which the lid takes with it when it goes
+  lines.insertBefore(make('polygon', { class: 'chest__brim', points: POLY.brim }), lines.children[2] ?? null);
 
   /* The cavity, clipped to the mouth so nothing can lie over the rim. Two far walls and a floor,
      each a value step apart — that difference is the depth. No black: the light bands of this site

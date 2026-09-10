@@ -349,6 +349,10 @@
      window instead. The level's name moves out of the row and under it, where it can be read at
      full size beside the stage it is at. */
   .rs__stage--h {
+    /* The desk stage rules itself top and bottom, which is how it reads as a lane the cards run
+       through. There is no lane here — the levels are a row and the card is under them — so those
+       two rules had nothing to bound, and the lower one ran straight across the bottom of the card. */
+    background-image: none;
     display: flex;
     flex-direction: column;
     /* The desk stage centres its two columns; turned on its side that centring would size the rail

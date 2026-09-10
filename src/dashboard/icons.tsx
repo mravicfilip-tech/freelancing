@@ -85,6 +85,18 @@ export const RtxMark = (p: IconProps) => (
   </svg>
 );
 
+export const ArrowUp = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M12 19V5M6 11l6-6 6 6" />
+  </svg>
+);
+
+export const ChevronDown = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="m6 9.5 6 6 6-6" />
+  </svg>
+);
+
 export const ChevronRight = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <path d="m10 6 6 6-6 6" />

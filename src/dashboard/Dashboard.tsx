@@ -8,6 +8,7 @@ import { FlashSale } from './panels/FlashSale';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
 import { theme } from './theme';
+import { VariantPicker } from './VariantPicker';
 // The hero's stylesheet carries fh__btn, whose --fh-* fallbacks are written so
 // the button works outside the hero.
 import '../components/FigmaHero/FigmaHero.css';
@@ -46,6 +47,8 @@ export function Dashboard() {
 
         <LiveOrders />
       </main>
+
+      <VariantPicker />
     </div>
   );
 }

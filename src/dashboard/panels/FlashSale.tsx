@@ -1,23 +1,15 @@
 import { useEffect, useState } from 'react';
 import { FLASH_SALE } from '../data';
 import { CheckIcon, CopyIcon } from '../icons';
+import { flashStyle } from '../theme';
 import { useCopy } from '../useCopy';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-/** Each digit gets its own tile, as in the reference. */
 function Unit({ value, label }: { value: number; label: string }) {
   return (
     <div className="clock__unit">
-      <div className="clock__tiles">
-        {pad(value)
-          .split('')
-          .map((digit, i) => (
-            <span className="clock__tile" key={i}>
-              {digit}
-            </span>
-          ))}
-      </div>
+      <span className="clock__value">{pad(value)}</span>
       <span className="clock__label">{label}</span>
     </div>
   );
@@ -26,6 +18,7 @@ function Unit({ value, label }: { value: number; label: string }) {
 export function FlashSale() {
   const [left, setLeft] = useState(FLASH_SALE.secondsLeft);
   const [copied, copy] = useCopy();
+  const style = flashStyle.use();
 
   useEffect(() => {
     const id = window.setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
@@ -37,11 +30,18 @@ export function FlashSale() {
   const seconds = left % 60;
 
   return (
-    <section className="side__part flash" aria-labelledby="flash-title">
+    <section className="side__part flash" data-style={style} aria-labelledby="flash-title">
       <div className="flash__head">
-        <h2 className="flash__title" id="flash-title">
-          Flash sale ends in
-        </h2>
+        <div className="flash__lede">
+          <h2 className="flash__title" id="flash-title">
+            Flash sale ends in
+          </h2>
+          <p className="flash__copy">
+            Use this code at checkout and your purchase earns{' '}
+            <strong>{FLASH_SALE.bonus * 100}% bonus $RTX</strong> on top of whatever you buy.
+          </p>
+        </div>
+
         <div
           className="clock"
           role="timer"
@@ -49,21 +49,12 @@ export function FlashSale() {
           aria-label={`${hours} hours ${minutes} minutes ${seconds} seconds remaining`}
         >
           <Unit value={hours} label="Hours" />
-          <span className="clock__colon" aria-hidden="true">
-            :
-          </span>
+          <span className="clock__colon" aria-hidden="true">:</span>
           <Unit value={minutes} label="Minutes" />
-          <span className="clock__colon" aria-hidden="true">
-            :
-          </span>
+          <span className="clock__colon" aria-hidden="true">:</span>
           <Unit value={seconds} label="Seconds" />
         </div>
       </div>
-
-      <p className="flash__copy">
-        Use this code at checkout and your purchase earns{' '}
-        <strong>{FLASH_SALE.bonus * 100}% bonus $RTX</strong> on top of whatever you buy.
-      </p>
 
       <div className="flash__code">
         <span className="flash__code-label">Promo code</span>

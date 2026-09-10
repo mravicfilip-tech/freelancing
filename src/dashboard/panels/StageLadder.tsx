@@ -1,5 +1,6 @@
 import { PRESALE, STAGE_LADDER, whole } from '../data';
 import { Figure } from '../Figure';
+import { ArrowUp } from '../icons';
 
 /**
  * The one thing that makes a presale a presale: the price ratchets up a cent a
@@ -19,7 +20,9 @@ export function StageLadder() {
         </div>
         <div className="ladder__next">
           <p className="ladder__label">Next stage</p>
-          <p className="num ladder__next-price">${PRESALE.nextPrice.toFixed(2)}</p>
+          <p className="num ladder__next-price">
+            <ArrowUp className="icon-14" />${PRESALE.nextPrice.toFixed(2)}
+          </p>
         </div>
       </div>
 

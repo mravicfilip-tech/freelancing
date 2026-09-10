@@ -2,6 +2,7 @@ import { useId, useMemo, useState } from 'react';
 import { FLASH_SALE, PRESALE, TOKENS, money, type TokenId } from '../data';
 import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
 import { Button } from '../Button';
+import { TokenSelect } from '../TokenSelect';
 
 type Method = 'crypto' | 'card';
 
@@ -28,16 +29,17 @@ export function BuyPanel() {
 
   return (
     <section className="card buy" aria-labelledby="buy-title">
-      <h2 className="card__title buy__title" id="buy-title">
-        Buy $RTX
-      </h2>
-
-      <div className="buy__form">
+      <div className="card__head buy__head">
+        <h2 className="card__title" id="buy-title">
+          Buy $RTX
+        </h2>
         <p className="buy__urgency">
           <RocketIcon className="icon-16" />
           Buy before the price goes up
         </p>
+      </div>
 
+      <div className="buy__form">
         <div className="tabs" role="tablist" aria-label="Payment method">
           <button
             type="button"
@@ -74,21 +76,7 @@ export function BuyPanel() {
                 onChange={(e) => setPay(e.target.value.replace(/[^\d.]/g, ''))}
               />
               {method === 'crypto' ? (
-                <div className="field__token">
-                  <PayMark id={token} className="icon-20" />
-                  <select
-                    className="field__select"
-                    aria-label="Pay with"
-                    value={token}
-                    onChange={(e) => setToken(e.target.value as TokenId)}
-                  >
-                    {TOKENS.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.id}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <TokenSelect value={token} onChange={setToken} />
               ) : (
                 <span className="field__token">
                   <PayMark id="CARD" className="icon-20" />

@@ -13,58 +13,103 @@
 
 export const NS = 'http://www.w3.org/2000/svg';
 
-/** The lid's outer rim. */
-export const TOP = { t: [204, 6], r: [400, 82], f: [204, 156], l: [2, 80] } as const;
-/** The middle of it — where the lid parts from the body, and so where everything comes from. */
-export const SEAM = { x: 204, y: 81 };
+/**
+ * The top slab's corners, traced off the artwork itself — the intersections of the rim rails
+ * `seg-7` × `seg-69` × `seg-6` × `seg-73` — rather than eyeballed from a screenshot.
+ *
+ * The front corner is the one that mattered: it sits at y≈184, not the y≈156 this file assumed, so
+ * every polygon built from it was 25 units short and floated above the artwork's own edges.
+ *
+ * The drawing is also NOT a rigid isometric, which is why a single height constant could never fit
+ * it: opposite rim edges are not parallel (rear slopes ±0.39/0.43, front ±0.53/0.50), and the
+ * vertical edges are ~225 at the front corner against ~185 at the left and right ones. The faces
+ * below are built from those measured verticals instead of one shared height.
+ */
+export const TOP = { t: [205.2, 1.9], r: [398.0, 84.2], f: [199.3, 183.6], l: [3.9, 80.9] } as const;
+/** The middle of the slab — where the lid parts from the body, and so where everything comes from. */
+export const SEAM = { x: (TOP.l[0] + TOP.r[0]) / 2, y: (TOP.t[1] + TOP.f[1]) / 2 };
 /** The rear corner, which the lid swings about. */
-export const HINGE = '204 30';
-/** How far the box falls away below the rim. */
-const H = 249;
-/** How deep a cavity reads before the dark stops carrying detail. */
-const D = 78;
-/** The lid's own thickness, as a slab rather than a sheet. */
-const T = 11;
+export const HINGE = `${TOP.t[0]} ${TOP.t[1] - 26}`;
+/** The verticals, measured at the corners they belong to. */
+const V_SIDE = 185;
+const V_FRONT = 225;
+/** How deep a cavity reads before the walls stop carrying a value difference. */
+const D = 74;
 
-const pts = (...p: number[][]) => p.map(([x, y]) => `${x},${y}`).join(' ');
-/** The rim inset to the hole it covers: the lid laps over the box, so the opening is inside it. */
-const inset = (k: number) => {
-  const c = [SEAM.x, SEAM.y];
-  const m = ([x, y]: readonly number[]) => [c[0] + (x - c[0]) * k, c[1] + (y - c[1]) * k];
-  return { t: m(TOP.t), r: m(TOP.r), f: m(TOP.f), l: m(TOP.l) };
+const pts = (...p: readonly (readonly number[])[]) => p.map(([x, y]) => `${x},${y}`).join(' ');
+const lerp = (a: readonly number[], b: readonly number[], k: number) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const down = (p: readonly number[], d: number) => [p[0], p[1] + d];
+const unit = (a: readonly number[], b: readonly number[]) => {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const m = Math.hypot(dx, dy) || 1;
+  return [dx / m, dy / m] as const;
 };
-const M = inset(0.9);
+
+/** The rim inset to the hole it covers: the lid laps over the box, so the opening is inside it. */
+const M = {
+  t: lerp(TOP.t, [SEAM.x, SEAM.y], 0.1),
+  r: lerp(TOP.r, [SEAM.x, SEAM.y], 0.1),
+  f: lerp(TOP.f, [SEAM.x, SEAM.y], 0.1),
+  l: lerp(TOP.l, [SEAM.x, SEAM.y], 0.1),
+};
 
 export const POLY = {
-  top: pts([...TOP.t], [...TOP.r], [...TOP.f], [...TOP.l]),
+  top: pts(TOP.t, TOP.r, TOP.f, TOP.l),
   mouth: pts(M.t, M.r, M.f, M.l),
-  left: pts([...TOP.l], [...TOP.f], [TOP.f[0], TOP.f[1] + H], [TOP.l[0], TOP.l[1] + H]),
-  right: pts([...TOP.f], [...TOP.r], [TOP.r[0], TOP.r[1] + H], [TOP.f[0], TOP.f[1] + H]),
+  /* The body's two visible faces, each dropping from its own corner by that corner's own vertical —
+     the drawing does not share one height between them. */
+  left: pts(TOP.l, TOP.f, down(TOP.f, V_FRONT), down(TOP.l, V_SIDE)),
+  right: pts(TOP.f, TOP.r, down(TOP.r, V_SIDE), down(TOP.f, V_FRONT)),
 
-  /* The inside. Looking down into an isometric box you see the two far walls and the floor; the
-     near walls are behind the front rim, and the clip to the mouth removes them. Without these the
-     opening was a flat dark shape — there was nothing for it to be the opening OF. */
-  wallBack: pts(M.l, M.t, [M.t[0], M.t[1] + D], [M.l[0], M.l[1] + D]),
-  wallSide: pts(M.t, M.r, [M.r[0], M.r[1] + D], [M.t[0], M.t[1] + D]),
-  floor: pts([M.t[0], M.t[1] + D], [M.r[0], M.r[1] + D], [M.f[0], M.f[1] + D], [M.l[0], M.l[1] + D]),
+  /* The inside. Looking down into the box you see its two far walls and its floor; the near walls
+     are behind the front rim, and the clip to the mouth removes them. */
+  wallBack: pts(M.l, M.t, down(M.t, D), down(M.l, D)),
+  wallSide: pts(M.t, M.r, down(M.r, D), down(M.t, D)),
+  floor: pts(down(M.t, D), down(M.r, D), down(M.f, D), down(M.l, D)),
 
-  /* The lid's thickness, along the two edges that face the viewer. A lid that lifts off a box has
-     to have an underside, or it reads as a sticker peeling. */
-  lipLeft: pts([...TOP.l], [...TOP.f], [TOP.f[0], TOP.f[1] + T], [TOP.l[0], TOP.l[1] + T]),
-  lipRight: pts([...TOP.f], [...TOP.r], [TOP.r[0], TOP.r[1] + T], [TOP.f[0], TOP.f[1] + T]),
+  /* The lid's thickness, along the two edges that face the viewer. */
+  lipLeft: pts(TOP.l, TOP.f, down(TOP.f, 11), down(TOP.l, 11)),
+  lipRight: pts(TOP.f, TOP.r, down(TOP.r, 11), down(TOP.f, 11)),
 } as const;
 
-/**
- * The lid's panel cut in two down its long diagonal, for the direction that parts it like a hatch.
- *
- * Two halves rather than four quarters, and sliding rather than hinging, because the drawing is an
- * isometric projection: a piece that slides along one of the box's own axes stays true to it, while
- * a piece that folds up has to foreshorten, and a 2D rotation cannot do that — it just lays the
- * shape flat at an angle, which reads as torn paper rather than an opening lid.
- */
+/** The lid's panel cut in two down its long diagonal, for the direction that parts it like a hatch. */
 export const SPLIT = [pts(M.l, M.t, M.f), pts(M.t, M.r, M.f)] as const;
-/** The box's own left and right axes, as unit steps in the projection. */
-export const AXIS = { left: [-0.936, -0.352], right: [0.936, -0.354] } as const;
+/** The box's own left and right axes, taken from the measured corners rather than assumed. */
+export const AXIS = { left: unit(TOP.f, TOP.l), right: unit(TOP.f, TOP.r) };
+
+/**
+ * Where the lid's outer boundary sits directly under `x` — the seam, along the two near edges. The
+ * rear edges are the far silhouette and nothing of the body lies above them, so only these matter.
+ */
+function seamY(x: number): number {
+  return x < TOP.f[0]
+    ? TOP.l[1] + ((x - TOP.l[0]) * (TOP.f[1] - TOP.l[1])) / (TOP.f[0] - TOP.l[0])
+    : TOP.f[1] + ((x - TOP.f[0]) * (TOP.r[1] - TOP.f[1])) / (TOP.r[0] - TOP.f[0]);
+}
+
+/**
+ * Whether a drawn path belongs to the lid — the removable top — rather than to the body.
+ *
+ * It samples the path rather than reading its bounding box, because the long rim diagonals run
+ * parallel to the seam and their bbox corners fall far below it. The measured gap either side of
+ * the cut is wide: the deepest lid path clears the seam by 3, the shallowest body path by 16, so
+ * anything from 4 to 15 gives the identical partition.
+ *
+ * The corner braces are drawn over the top and down the sides as separate paths; this sends their
+ * top plates up with the lid and leaves their side plates on the body, which is how a crate's
+ * braces actually cap a lid — and it leaves the body's top rim complete.
+ */
+export function isLid(el: SVGPathElement): boolean {
+  const len = el.getTotalLength();
+  const n = Math.max(2, Math.ceil(len / 4));
+  let drop = -Infinity;
+  for (let i = 0; i <= n; i++) {
+    const pt = el.getPointAtLength((len * i) / n);
+    drop = Math.max(drop, pt.y - seamY(pt.x));
+  }
+  return drop < 8;
+}
 
 export const make = (tag: string, attrs: Record<string, string>) => {
   const el = document.createElementNS(NS, tag);

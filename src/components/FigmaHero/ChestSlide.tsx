@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import chestMarkup from './chest.svg?raw';
 import { useChest } from './chestVariant';
-import { buildCrate, make, HINGE, SPLIT, AXIS, SEAM } from './crate';
+import { buildCrate, make, isLid, HINGE, SPLIT, AXIS, SEAM, TOP } from './crate';
 import './ChestSlide.css';
 
 /**
@@ -24,8 +24,6 @@ type Seg = { el: SVGPathElement; len: number; cx: number; cy: number };
 
 /** How long the crate takes to draw itself in. */
 const DRAW = 1.5;
-/** The lid is the top face and its rim; the cut is measured off the export's own geometry. */
-const LID_CUT = 0.38;
 /** When the lid starts coming back, and so how long one pass of the mechanism runs. */
 const CLOSE = 5.6;
 
@@ -65,7 +63,11 @@ export function ChestSlide({ active }: { active: boolean }) {
     let live = true;
     let started = false;
 
-    const segs: Seg[] = Array.from(svg.querySelectorAll<SVGPathElement>('path[id^="seg-"]')).map((el) => {
+    /* Every drawn path in the group, not only the ones named `seg-`: the two `?` glyphs on the side
+       panels carry the ids `?` and `?_2`, so a prefix selector never saw them and they alone never
+       received the draw-in the other 224 get. */
+    const drawn = Array.from(svg.querySelectorAll<SVGPathElement>('#crate-lines > path'));
+    const segs: Seg[] = drawn.map((el) => {
       const b = el.getBBox();
       return { el, len: el.getTotalLength(), cx: b.x + b.width / 2, cy: b.y + b.height / 2 };
     });
@@ -76,8 +78,13 @@ export function ChestSlide({ active }: { active: boolean }) {
     const maxY = Math.max(...ys);
     const span = maxY - minY || 1;
     const up = (s: Seg) => (maxY - s.cy) / span;
-    const down = (s: Seg) => (s.cy - minY) / span;
-    const lidSegs = segs.filter((s) => down(s) < LID_CUT);
+
+    /* The lid is what clears the seam, measured off each path rather than guessed from its height.
+       A cut by centre-y took 35 of the body's paths with it — both side corner-brace plates, the rim
+       fascia and the corner verticals — which is why the box lost its top edge and the opening sat
+       proud of a crate that no longer had one, while six of the lid's own front-corner paths stayed
+       behind. */
+    const lidSegs = segs.filter((s) => isLid(s.el));
 
     const built = buildCrate(svg, lidSegs.map((s) => s.el));
     if (!built) return;
@@ -96,13 +103,13 @@ export function ChestSlide({ active }: { active: boolean }) {
         lidG.appendChild(g);
         halfGs.push(g);
       });
-      // inside the mouth rhombus: |dx|/a + |dy|/b <= 1, its own geometry rather than a bounding box
-      const A = (380 - 22) / 2;
-      const B = (148 - 13.5) / 2;
+      // inside the mouth: |dx|/a + |dy|/b <= 1 on the measured slab, not on a bounding box
+      const A = (TOP.r[0] - TOP.l[0]) / 2;
+      const B = (TOP.f[1] - TOP.t[1]) / 2;
       lidSegs.forEach((s) => {
         const dx = s.cx - SEAM.x;
         const dy = s.cy - SEAM.y;
-        if (Math.abs(dx) / A + Math.abs(dy) / B > 0.94) return;
+        if (Math.abs(dx) / A + Math.abs(dy) / B > 0.86) return;
         halfGs[dx < 0 ? 0 : 1].appendChild(s.el);
       });
     }
@@ -197,7 +204,7 @@ export function ChestSlide({ active }: { active: boolean }) {
         if (variant === '3') cycle.to(lidG, { y: -104, rotation: -9, ...OPEN }, 0.3);
         if (variant === '4') {
           cycle.to(lidG, { y: -46, duration: 0.4, ease: 'power2.out', svgOrigin: HINGE }, 0.3);
-          cycle.to(lidG, { rotation: 34, x: 40, y: 130, duration: 1.1, ease: 'power2.in', svgOrigin: '204 156' }, 0.7);
+          cycle.to(lidG, { rotation: 34, x: 40, y: 130, duration: 1.1, ease: 'power2.in', svgOrigin: `${TOP.f[0]} ${TOP.f[1]}` }, 0.7);
         }
         if (variant === '5') {
           cycle.to('.chest__face--top, .chest__lip, .chest__sheenClip', { opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.3);

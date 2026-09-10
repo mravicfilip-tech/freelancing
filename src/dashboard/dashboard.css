@@ -221,16 +221,20 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .rail__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   padding: 4px 10px 0;
   /* 48px of air under the mark. The rail already puts 20px between its
      children, so this carries the remaining 28. Applies to both rail states,
      since the mark is the same element in each. */
   margin-bottom: 28px;
   color: var(--d-text);
-  font-weight: 600;
-  font-size: 17px;
-  letter-spacing: -0.025em;
+  /* The nav and footer lockup exactly: 22.14px/700, no tracking, 4px gap,
+     in the Onest the rail already inherits — .fh sets --fh-sans to it, so
+     that is the face the site's own wordmark is set in. It had been 17px/600
+     at -0.025em with a 10px gap, which is a different wordmark. */
+  font-weight: 700;
+  font-size: 22.14px;
+  letter-spacing: normal;
   text-decoration: none;
 }
 /* The real mark, from public/figma/logo.svg. Its paths are black, so dark mode

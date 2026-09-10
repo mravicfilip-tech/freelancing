@@ -701,7 +701,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   flex-direction: column;
   gap: clamp(18px, 2.2vw, 26px);
 }
-.side .referrals { display: flex; flex-direction: column; }
+/* flex: 1 is what makes the invite's margin-top: auto mean anything — without
+   it .referrals is only as tall as its content, the auto margin has no free
+   space to consume, and the column's slack pools below the card's last row
+   instead (44px at 1440, 67px at 1920). */
+.side .referrals { display: flex; flex-direction: column; flex: 1; }
 .side .referrals__invite { margin-top: auto; padding-top: 20px; }
 .side__part + .side__part {
   padding-top: clamp(18px, 2.2vw, 26px);

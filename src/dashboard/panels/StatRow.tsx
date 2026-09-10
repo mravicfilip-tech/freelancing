@@ -1,6 +1,6 @@
 import { HOLDINGS, money } from '../data';
 import { Figure } from '../Figure';
-import { ArrowOut, CoinIcon, PayMark } from '../icons';
+import { ArrowOut, NavIcon, PayMark } from '../icons';
 
 type StatProps = {
   label: string;
@@ -24,7 +24,7 @@ function Stat({ label, symbol, value, suffix, note, href, mark }: StatProps) {
         <a className="chip-btn" href={href} aria-label={`Open ${label.toLowerCase()}`}>
           <ArrowOut className="icon-16" />
         </a>
-        {mark === 'coin' && <CoinIcon className="stat__mark stat__mark--drawn" />}
+        {mark === 'coin' && <NavIcon.presale className="stat__mark stat__mark--drawn" />}
         {mark === 'usdt' && <PayMark id="USDT" className="stat__mark" />}
       </div>
     </article>

@@ -560,7 +560,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .stat {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
   gap: 14px;
   padding: var(--pad);
@@ -584,7 +584,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--d-text-3);
 }
 
-.stat__aside { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+/* The link sits at the top, the token mark drops to the note's line. */
+.stat__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
 
 /* ==========================================================================
    Split

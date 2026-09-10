@@ -3,8 +3,8 @@
  * inherits `currentColor`. Token marks keep their own brand colour; everything
  * else is a 1.6px line icon drawn on a 24px grid.
  */
-import type { ReactElement } from 'react';
 import type { TokenId } from './data';
+import { TOKEN_ART } from './tokenArt';
 
 type IconProps = { className?: string };
 
@@ -69,16 +69,6 @@ export const NavIcon = {
   ),
 } as const;
 
-/** A coin on edge: the token has no brand mark, so it gets a drawn one that
- *  matches the nav set rather than a gold chip that matches nothing. */
-export const CoinIcon = (p: IconProps) => (
-  <svg {...line} {...p} aria-hidden="true">
-    <circle cx="12" cy="12" r="8.6" />
-    <circle cx="12" cy="12" r="5.9" opacity=".55" />
-    <path d="M12 8.6v6.8M13.7 10.2a1.9 1.9 0 0 0-3.4.9c0 1.8 3.4 1 3.4 2.6a1.9 1.9 0 0 1-3.4.9" />
-  </svg>
-);
-
 export const ChevronRight = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <path d="m10 6 6 6-6 6" />
@@ -135,91 +125,18 @@ export const RailIcon = (p: IconProps) => (
 
 // ---------- Payment marks ----------
 
-const TOKEN_ART: Record<TokenId | 'CARD', { bg: string; fg: string; glyph: ReactElement }> = {
-  BTC: {
-    bg: '#F7931A',
-    fg: '#fff',
-    glyph: (
-      <text x="12" y="16.4" textAnchor="middle" fontSize="12" fontWeight="700" fill="#fff">
-        ₿
-      </text>
-    ),
-  },
-  ETH: {
-    bg: '#627EEA',
-    fg: '#fff',
-    glyph: (
-      /* The faceted diamond: grey-on-grey loses its shape at 22px, so the mark
-         carries its own blue ground. */
-      <g fill="#fff">
-        <path d="M12 3.6 12 9.9 17.2 12.3Z" opacity=".55" />
-        <path d="M12 3.6 6.8 12.3 12 9.9Z" opacity=".85" />
-        <path d="M12 16.1 12 20.4 17.2 13.3Z" opacity=".55" />
-        <path d="M12 20.4 12 16.1 6.8 13.3Z" opacity=".85" />
-        <path d="M12 15.1 17.2 12.3 12 9.9Z" opacity=".35" />
-        <path d="M6.8 12.3 12 15.1 12 9.9Z" opacity=".55" />
-      </g>
-    ),
-  },
-  USDT: {
-    bg: '#26A17B',
-    fg: '#fff',
-    glyph: (
-      <text x="12" y="16.2" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">
-        T
-      </text>
-    ),
-  },
-  USDC: {
-    bg: '#2775CA',
-    fg: '#fff',
-    glyph: (
-      <text x="12" y="16.2" textAnchor="middle" fontSize="10" fontWeight="700" fill="#fff">
-        $
-      </text>
-    ),
-  },
-  SOL: {
-    bg: '#12121A',
-    fg: '#9945FF',
-    glyph: (
-      <g>
-        <path d="M8.8 7.2h9L15.2 9.9H6.2Z" fill="#9945FF" />
-        <path d="M6.2 10.7h9l2.6 2.7h-9Z" fill="#19B6F5" />
-        <path d="M8.8 14.2h9l-2.6 2.7H6.2Z" fill="#14F195" />
-      </g>
-    ),
-  },
-  BNB: {
-    bg: '#F3BA2F',
-    fg: '#fff',
-    glyph: (
-      <g fill="#fff">
-        <path d="m12 6.6 1.7 1.8L12 10.2 10.3 8.4Z" />
-        <path d="m8.6 10 1.7 1.8-1.7 1.8L6.9 11.8Z" />
-        <path d="m15.4 10 1.7 1.8-1.7 1.8-1.7-1.8Z" />
-        <path d="m12 13.4 1.7 1.8L12 17l-1.7-1.8Z" />
-      </g>
-    ),
-  },
-  CARD: {
-    bg: 'transparent',
-    fg: 'currentColor',
-    glyph: (
-      <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
-        <rect x="4" y="7" width="16" height="10" rx="2.2" />
-        <path d="M4 10.6h16" />
-      </g>
-    ),
-  },
-};
-
 export function PayMark({ id, className }: { id: TokenId | 'CARD'; className?: string }) {
-  const art = TOKEN_ART[id];
+  if (id === 'CARD') {
+    return (
+      <svg {...line} className={className} aria-hidden="true">
+        <rect x="2.8" y="5.6" width="18.4" height="12.8" rx="2.8" />
+        <path d="M2.8 10h18.4M6.6 14.4h3.2" />
+      </svg>
+    );
+  }
   return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      {art.bg !== 'transparent' && <circle cx="12" cy="12" r="11" fill={art.bg} />}
-      {art.glyph}
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
+      {TOKEN_ART[id]}
     </svg>
   );
 }

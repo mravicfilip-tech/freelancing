@@ -71,6 +71,8 @@
   /* A control sitting inside a field needs its own edge against it. */
   --d-chip-ring: #3a4653;
   --d-chip-lift: none;
+  /* A menu floats over the page, so on dark it needs depth to separate. */
+  --d-menu-edge: 0 0 0 1px var(--d-rule), 0 16px 36px -12px rgb(0 0 0 / 55%);
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(238, 242, 245, 0.07) 1px, transparent 1.4px);
@@ -93,7 +95,10 @@
   --d-field: #f4f6f8;
   --d-field-ring: #aab5c0;
   --d-chip-ring: #7a8a9a;
-  --d-chip-lift: 0 1px 2px rgba(18, 36, 51, 0.12);
+  /* No shadows in light: the page has none anywhere else, so a menu and a chip
+     hold their edges with a ring instead. */
+  --d-chip-lift: none;
+  --d-menu-edge: 0 0 0 1px var(--d-field-ring);
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -1167,7 +1172,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   padding: 6px;
   border-radius: var(--r-card);
   background: var(--d-card);
-  box-shadow: 0 0 0 1px var(--d-rule), 0 16px 36px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--d-menu-edge);
 }
 .tsel__option {
   display: flex;

@@ -30,6 +30,13 @@
      the lit core of a dot on the payment line. On a light page one value serves both. On a dark one
      they move in opposite directions, and a mark painted from the plate token disappears into it. */
   --il-onGlass: #fff;
+  /* Ink for the chips that stay LIGHT in both themes — the bank card's tag is a white pill either
+     way, so its label has to keep dark ink while the scene's default ink turns over around it. */
+  --il-inkOnLight: #2c2e31;
+  /* The wallet card is a near-black object by design, and the bank card's hairline a black one. */
+  --il-cardDark: #0b0f13;
+  --il-cardLine: rgba(0, 0, 0, 0.06);
+  --il-subtle: #999;
   /* The wallet column: each row is its brand at a tint mixed for white paper, its label the page's
      hardest ink, and its lit state the brand at full strength carrying white. */
   --il-panelLine: rgba(0, 0, 0, 0.12);
@@ -185,7 +192,7 @@
 }
 .il-pbox__sub {
   font-size: 6.79px;
-  color: #999;
+  color: var(--il-subtle);
 }
 .il-pbox__caret {
   display: inline-block;
@@ -221,7 +228,7 @@
   overflow: hidden;
 }
 .il-fx__bank {
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--il-cardLine);
   background: var(--il-surface);
 }
 .il-fx__bank > *,
@@ -229,7 +236,7 @@
   position: absolute;
 }
 .il-fx__wallet {
-  background: #0b0f13;
+  background: var(--il-cardDark);
 }
 .il-fx__temple {
   display: block;
@@ -248,7 +255,7 @@
 }
 .il-fx__tag--bank {
   background: var(--il-surface);
-  color: var(--il-ink);
+  color: var(--il-inkOnLight);
 }
 .il-fx__tag--masked {
   background: rgba(255, 255, 255, 0.24);
@@ -541,7 +548,7 @@
   font-weight: 500;
   font-size: 24px;
   letter-spacing: -0.72px;
-  color: #000;
+  color: var(--il-figure);
 }
 .il-rc__amount i {
   font-style: normal;
@@ -852,7 +859,7 @@
   line-height: 1.4;
   letter-spacing: -0.39px;
   text-transform: uppercase;
-  color: #080d10;
+  color: var(--il-rowInk);
   white-space: nowrap;
 }
 .il-ui__row img {

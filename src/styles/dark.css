@@ -242,6 +242,15 @@
   /* A mark on glass goes the other way from the plate it sits on: the wise wordmark, the lit core
      of a dot on the payment line. Painted from --il-surface they became the plate and vanished. */
   --il-onGlass: var(--d-ink);
+  /* The bank card's tag is a white pill on either page, so its label stays dark ink while the
+     scene's default ink turns over around it — otherwise it is white type on a white chip. */
+  --il-inkOnLight: #0c1219;
+  /* The wallet card is drawn as a near-black object beside a pale one. Left at its own value it is
+     a shade under the tile it now stands on, so its edges disappear and the card stops being an
+     object; it lifts to the ladder's own card step instead, still the darker of the pair. */
+  --il-cardDark: var(--d-il-card);
+  --il-cardLine: var(--d-il-line);
+  --il-subtle: var(--d-label);
   /* The wallet column. Its four brand tints were mixed against white paper — 4% of a blue is a
      whisper there and nothing at all here, 24% of an orange is a blush there and mud here. Each is
      restated at the strength it needs on this ground, and the row's own ink with them: the label
@@ -419,12 +428,20 @@
 [data-theme='dark'] .ff__chip img {
   filter: invert(1) brightness(1.7);
 }
+/* The toast is a black plate carrying a soft light-grey glow — a lift off a white card. On a dark
+   one a grey halo under a black plate is a smudge, and the plate is already the darkest thing in
+   the scene, so the lift is not needed and the glow is what shows. */
+[data-theme='dark'] .il-toast {
+  box-shadow: none;
+}
+
 /* Three marks that ship as dark line art and sit on surfaces that are now dark: the hub's Remittix
    mark (#111 on what was a white disc), and the phone's own status bar and app header (#333 and
    #2C2E31 on what was a white screen). An <img>'s fill is not something a stylesheet can reach, so
    each is turned over rather than repainted. The USD and BTC chips beside them are not on this
    list — they ship as white pills carrying dark text, and a white pill still reads here. */
 [data-theme='dark'] .il-simple__hub img,
+[data-theme='dark'] .il-ui__link,
 [data-theme='dark'] .il-phone__bar,
 [data-theme='dark'] .il-phone__head {
   filter: invert(1) brightness(1.7);

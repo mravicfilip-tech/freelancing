@@ -72,8 +72,8 @@ export function RoadmapStage() {
   const rail = useRef<HTMLDivElement>(null);
   const marker = useRef<HTMLImageElement>(null);
   const [active, setActive] = useState(0);
-  const panels = useRef<(HTMLDivElement | null)[]>([]);
-  const [heights, setHeights] = useState<number[]>([]);
+  const track = useRef<HTMLDivElement>(null);
+  const chips = useRef<(HTMLLIElement | null)[]>([]);
   const phone = usePhone();
 
   useStageMotion(root);
@@ -163,28 +163,19 @@ export function RoadmapStage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, phone]);
 
-  /* Every level keeps its own panel, so opening one and closing another is a move rather than a
-     swap — a panel mounted fresh on each step has no height to leave from and can only snap. Each
-     is given its measured height instead of `auto`, which is what a height can be tweened from;
-     the levels vary by over 160px, and that is a jolt every time the band moves on by itself. */
-  useLayoutEffect(() => {
+  /* On a phone the levels run across rather than down, so the band following itself is a scroll
+     rather than a slide: the level in play is brought to the middle of its own track. Measured off
+     the chip so it lands centred at any width, and instant under reduced motion — a band that
+     steps itself every 2.6s must not smooth-scroll the page's own reader around. */
+  useEffect(() => {
     if (!phone) return;
-    const measure = () => {
-      const next = panels.current.map((el) => {
-        if (!el) return 0;
-        const held = el.style.height;
-        el.style.height = 'auto';
-        const h = el.offsetHeight;
-        el.style.height = held;
-        return h;
-      });
-      setHeights((prev) => (prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next));
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    for (const el of panels.current) if (el?.firstElementChild) ro.observe(el.firstElementChild);
-    return () => ro.disconnect();
-  }, [phone]);
+    const el = track.current;
+    const chip = chips.current[active];
+    if (!el || !chip) return;
+    const left = chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2;
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
+  }, [active, phone]);
 
   return (
     <section ref={root} className="rs" id="roadmap" data-node-id="2717:2477" data-motion="pending" aria-labelledby="rs-title">
@@ -198,31 +189,45 @@ export function RoadmapStage() {
         </h2>
 
         {phone ? (
-          /* A phone gets a timeline, not two columns: a spine down the left with a node per
-             level, and the level in play opening its own card directly under its row — so the
-             level and what it holds are one object rather than a list and a card far below it. */
-          <div className="rs__stage rs__stage--tl" data-node-id="2717:2490">
-            <ol className="rs__tl">
-              {LEVELS.map((l, i) => (
-                <li className="rs__tlItem" key={l.n} data-state={stageOf(l)} data-active={i === active || undefined}>
-                  <button type="button" aria-expanded={i === active} aria-controls={`rs-card-${l.n}`} onClick={() => pick(i)}>
-                    <span className="rs__tlName">Level {Number(l.n)}</span>
-                    <span className="rs__sr"> — {l.name}</span>
-                    <span className="rs__tlLabel">{l.label}</span>
-                  </button>
-                  <div
-                    className="rs__tlPanel"
+          /* A phone gets the levels running across, not down: seven of them stacked vertically is a
+             list you scroll past rather than a road you travel, and the card that belongs to the
+             one in play ends up far below the row that named it. Across, the whole run is one
+             object you can see the shape of — where it has been, where it is, how much is left —
+             and what the level holds sits directly under it. */
+          <div className="rs__stage rs__stage--h" data-node-id="2717:2490">
+            <div className="rs__track" ref={track}>
+              <ol className="rs__hRail" role="tablist" aria-label="Roadmap levels">
+                {LEVELS.map((l, i) => (
+                  <li
+                    className="rs__hItem"
+                    key={l.n}
+                    data-state={stageOf(l)}
+                    data-active={i === active || undefined}
                     ref={(el) => {
-                      panels.current[i] = el;
+                      chips.current[i] = el;
                     }}
-                    inert={i !== active || undefined}
-                    style={{ height: i === active ? heights[i] : 0 }}
                   >
-                    <Card level={l} active={i === active} />
-                  </div>
-                </li>
-              ))}
-            </ol>
+                    <button
+                      type="button"
+                      role="tab"
+                      id={`rs-tab-${l.n}`}
+                      aria-selected={i === active}
+                      aria-controls={`rs-card-${l.n}`}
+                      tabIndex={i === active ? 0 : -1}
+                      onClick={() => pick(i)}
+                    >
+                      <i className="rs__hDot" aria-hidden="true" />
+                      <span className="rs__hName">Level {Number(l.n)}</span>
+                      <span className="rs__sr"> — {l.name}</span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <p className="rs__hLabel">{LEVELS[active].label}</p>
+            <div className="rs__hPanel" role="tabpanel" aria-labelledby={`rs-tab-${LEVELS[active].n}`}>
+              <Card level={LEVELS[active]} active />
+            </div>
           </div>
         ) : (
           <div className="rs__stage" data-node-id="2717:2490">

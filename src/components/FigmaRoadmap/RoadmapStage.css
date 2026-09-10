@@ -262,7 +262,7 @@
    Hold the animated parts until GSAP has written their start states. */
 .rs[data-motion='pending'] .rs__lineInner,
 .rs[data-motion='pending'] .rs__level,
-.rs[data-motion='pending'] .rs__tlItem,
+.rs[data-motion='pending'] .rs__hItem,
 .rs[data-motion='pending'] .rs__cards,
 .rs[data-motion='pending'] .rs__railLine {
   visibility: hidden;
@@ -336,111 +336,145 @@
   .rs__title {
     letter-spacing: -1.1px;
   }
-  /* the stage keeps its two rules; everything between them is the timeline */
-  .rs__stage--tl {
-    display: block;
+
+  /* ---------- The road, running across ----------
+     Seven levels stacked down a phone is a list you scroll past, and the card belonging to the one
+     in play ends up far below the row that named it. Across, the run is one object whose shape you
+     can read at a glance — how far it has come, where it stands, how much is left — and what the
+     level holds sits directly under it. */
+  .rs__stage--h {
+    display: flex;
+    flex-direction: column;
+    /* The desk stage centres its two columns; turned on its side that centring stops sizing the
+       track to the stage and starts sizing it to its own row of chips, which is what took the
+       section — and then the page — sideways. */
+    align-items: stretch;
+    gap: 18px;
     height: auto;
-    padding: 12px 0;
+    padding: 4px 0 0;
     overflow: visible;
   }
 
-  .rs__tl {
-    position: relative;
+  /* The track bleeds to the frame's edges so the road runs off the screen at both ends rather than
+     stopping inside a margin, and fades there rather than being cut. */
+  .rs__track {
+    /* A scroller inside a flex column will not shrink below the width its own row of chips wants
+       unless it is told it may — without this the track sizes to its content, takes the stage and
+       the section with it, and the page itself scrolls sideways. */
+    min-width: 0;
+    width: auto;
+    margin: 0 calc(var(--rs-gutter, 16px) * -1);
+    padding: 4px var(--rs-gutter, 16px) 2px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+  }
+  .rs__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rs__hRail {
+    display: flex;
+    align-items: flex-start;
     margin: 0;
-    padding: 0 8px 0 28px;
+    padding: 0;
     list-style: none;
   }
-  /* the spine, from the first node's centre to the last */
-  .rs__tl::before {
+  .rs__hItem {
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
+  /* The road itself: one hairline per level, laid end to end, so the run is continuous and its two
+     ends stop at the first and last node rather than in mid-air. */
+  .rs__hItem::before {
     content: '';
     position: absolute;
-    left: 5px;
-    top: 26px;
-    bottom: 26px;
-    width: 1px;
+    left: 0;
+    right: 0;
+    top: 13px;
+    height: 1px;
     background: var(--rs-spine);
   }
-  .rs__tlItem {
-    position: relative;
+  .rs__hItem:first-child::before {
+    left: 50%;
   }
-  .rs__tlItem::before {
-    content: '';
-    position: absolute;
-    left: -28px;
-    top: 26px;
+  .rs__hItem:last-child::before {
+    right: 50%;
+  }
+  .rs__hItem > button {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 92px;
+    padding: 8px 10px 4px;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+  }
+  .rs__hItem > button:focus-visible {
+    outline: 2px solid var(--rs-ink);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* A stage already delivered reads as filled, the one under way as a lit ring, one still ahead as
+     open and grey — the same three states the desk layout marks, at the same weights. */
+  .rs__hDot {
     width: 11px;
     height: 11px;
-    margin-top: -5.5px;
     border: 1px solid var(--rs-spine);
     border-radius: 50%;
     background: var(--rs-bg);
     transition: background-color var(--rs-move) var(--rs-ease), border-color var(--rs-move) var(--rs-ease),
       box-shadow var(--rs-move) var(--rs-ease);
   }
-  /* a stage already delivered reads as filled, the one under way as a lit ring, and one still
-     ahead stays open and grey */
-  .rs__tlItem[data-state='done']::before {
+  .rs__hItem[data-state='done'] .rs__hDot {
     border-color: var(--rs-body);
     background: var(--rs-body);
   }
-  .rs__tlItem[data-state='live']::before {
+  .rs__hItem[data-state='live'] .rs__hDot {
     border-color: #f9ff38;
   }
   /* wherever the band is standing takes the marker's own lime, and its halo */
-  .rs__tlItem[data-active]::before {
+  .rs__hItem[data-active] .rs__hDot {
     border-color: #f9ff38;
     background: #f9ff38;
     box-shadow: 0 0 0 4px rgb(249 255 56 / 14%);
   }
-  .rs__tlItem > button {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    width: 100%;
-    padding: 15px 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-  .rs__tlItem > button:focus-visible {
-    outline: 2px solid var(--rs-ink);
-    outline-offset: 4px;
-    border-radius: 6px;
-  }
-  .rs__tlName {
+
+  .rs__hName {
     font-family: var(--fh-display);
     font-weight: 500;
-    font-size: 21px;
-    line-height: 1.12;
-    letter-spacing: -0.63px;
+    font-size: 15px;
+    line-height: 1.1;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
     color: var(--rs-dim);
     transition: color var(--rs-move) var(--rs-ease);
   }
-  .rs__tlItem[data-active] .rs__tlName {
+  .rs__hItem[data-active] .rs__hName {
     color: var(--rs-ink);
   }
-  .rs__tlLabel {
-    flex: none;
+
+  /* What the level in play is called, between the road and what it holds. */
+  .rs__hLabel {
+    margin: 0;
     font-size: 12px;
-    letter-spacing: 0.02em;
-    color: var(--rs-dim);
-    white-space: nowrap;
-    transition: color var(--rs-move) var(--rs-ease);
-  }
-  .rs__tlItem[data-active] .rs__tlLabel {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--rs-body);
   }
 
-  .rs__tlPanel {
-    height: 0;
-    overflow: hidden;
-    transition: height var(--rs-move) var(--rs-ease);
-  }
-  .rs__tlPanel .rs__card {
-    margin: 2px 0 22px;
+  .rs__hPanel .rs__card {
+    margin: 0;
     gap: 20px;
     padding: 20px;
     opacity: 1;

@@ -19,7 +19,7 @@ export function StageLadder() {
         </div>
         <div className="ladder__next">
           <p className="ladder__label">Next stage</p>
-          <p className="ladder__next-price">${PRESALE.nextPrice.toFixed(2)}</p>
+          <p className="num ladder__next-price">${PRESALE.nextPrice.toFixed(2)}</p>
         </div>
       </div>
 
@@ -48,15 +48,15 @@ export function StageLadder() {
       <dl className="ladder__facts">
         <div>
           <dt>Sold this stage</dt>
-          <dd>{sold.toFixed(1)}%</dd>
+          <dd className="num">{sold.toFixed(1)}%</dd>
         </div>
         <div>
           <dt>Left to raise</dt>
-          <dd>${whole(PRESALE.usdLeft)}</dd>
+          <dd className="num">${whole(PRESALE.usdLeft)}</dd>
         </div>
         <div>
           <dt>Tokens remaining</dt>
-          <dd>{whole(PRESALE.rtxLeft)}</dd>
+          <dd className="num">{whole(PRESALE.rtxLeft)} RTX</dd>
         </div>
       </dl>
     </section>

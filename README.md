@@ -138,6 +138,23 @@ chosen tab and a hovered ghost button all take the same solid pill. Labels are
 sentence case — no tracked-out capitals, and no meta strings strung together
 with middle dots.
 
+### Numbers
+
+Two tiers, and nothing between them.
+
+`.fig` is the one figure a card exists to show — the balance, the stage price,
+referral earnings. Display face, and the unit set small and muted after the
+number rather than as a symbol in front of it, so `1,284.50 USDT` reads the
+same wherever it appears.
+
+`.num` is every other readout: the ladder facts, the referrals split, every
+numeric cell in the live table. 14px, 600, tabular, `-0.02em`, with the unit
+inline at the same size and colour. Add the class rather than restating those
+five properties, which is how four different treatments crept in before.
+
+The one exception is `.ladder__n`, the price under each stage bar. It is an
+axis label twelve across and cannot be 14px.
+
 ### The display face
 
 `NewBlack Typeface` is the design's display face and is a licensed retail font,

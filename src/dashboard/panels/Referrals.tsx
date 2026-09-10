@@ -21,15 +21,15 @@ export function Referrals() {
       <div className="referrals__body">
         <div className="referrals__figures">
           <p className="referrals__label">Earned so far</p>
-          <Figure className="referrals__earnings" symbol="$" value={money(REFERRALS.earnings)} />
+          <Figure className="referrals__earnings" value={money(REFERRALS.earnings)} suffix="USDT" />
           <dl className="referrals__split">
             <div>
               <dt>Claimed</dt>
-              <dd>{money(REFERRALS.claimed)} USDT</dd>
+              <dd className="num">{money(REFERRALS.claimed)} USDT</dd>
             </div>
             <div>
               <dt>Ready to claim</dt>
-              <dd>{money(REFERRALS.earnings - REFERRALS.claimed)} USDT</dd>
+              <dd className="num">{money(REFERRALS.earnings - REFERRALS.claimed)} USDT</dd>
             </div>
           </dl>
         </div>

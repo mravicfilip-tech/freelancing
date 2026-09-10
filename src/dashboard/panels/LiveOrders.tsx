@@ -35,10 +35,10 @@ export function LiveOrders() {
                     {label(order.method)}
                   </span>
                 </td>
-                <td className="orders__id">#{order.id}</td>
-                <td>{money(order.rtx)}</td>
-                <td>{usd(order.usd)}</td>
-                <td className="is-right orders__time">{order.minutesAgo}m ago</td>
+                <td className="num orders__id">#{order.id}</td>
+                <td className="num">{money(order.rtx)}</td>
+                <td className="num">{usd(order.usd)}</td>
+                <td className="num is-right orders__time">{order.minutesAgo}m ago</td>
               </tr>
             ))}
           </tbody>

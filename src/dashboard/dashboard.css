@@ -114,6 +114,23 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   border-radius: 6px;
 }
 
+/* ---------- Numbers ----------
+   Two tiers, and nothing in between.
+
+   Tier 1, .fig — the one figure a card exists to show. Display face, unit set
+   small and muted after it.
+   Tier 2, .num — every other readout: facts, splits, table cells. 14px, 600,
+   tabular, unit inline at the same size and colour.
+   The only exception is .ladder__n, the price under each stage bar, which is
+   an axis label twelve across and cannot be 14px. */
+.num {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* ---------- The headline number ---------- */
 .fig {
   font-family: var(--d-display);
@@ -634,11 +651,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .ladder__next { text-align: right; }
 .ladder__next-price {
   margin: 8px 0 0;
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
   color: var(--d-text-3);
-  font-variant-numeric: tabular-nums;
 }
 .ladder__steps {
   list-style: none;
@@ -709,10 +722,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .ladder__facts dt { font-size: 12px; color: var(--d-text-3); }
 .ladder__facts dd {
   margin: 5px 0 0;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Buy ---------- */
@@ -916,11 +925,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .referrals__split dt { font-size: 12px; color: var(--d-text-3); }
 .referrals__split dd {
   margin: 5px 0 0;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 .referrals__invite { min-width: 0; }
 .referrals__pitch { margin: 0 0 14px; font-size: 14px; color: var(--d-text-2); }
@@ -939,9 +943,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .orders__table td {
   padding: 13px 14px;
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
 }
 /* Rows separate by their own ground, not by rules. */
 .orders__table tbody tr td:first-child { border-radius: 999px 0 0 999px; }
@@ -954,6 +955,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   gap: 10px;
   font-weight: 500;
   font-variant-numeric: normal;
+  letter-spacing: -0.01em;
 }
 .orders__id, .orders__time { color: var(--d-text-2); }
 

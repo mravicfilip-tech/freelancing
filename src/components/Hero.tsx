@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { HeroPlanet } from './HeroPlanet';
-import { HERO_VARIANT, PLANET_ENABLED, PLANET_STATIC, useGlobe } from '../heroVariant';
+import { HERO_VARIANT, PLANET_ENABLED, PLANET_STATIC } from '../heroVariant';
+import { useGlobe } from '../globeVariant';
+import '../legacyFonts';
 
 const PRESALE_END = Date.UTC(2026, 9, 15, 12, 0, 0); // 15 Oct 2026 12:00 UTC
 

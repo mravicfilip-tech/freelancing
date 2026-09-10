@@ -1,3 +1,5 @@
+import '../legacyFonts';
+
 export function Nav() {
   return (
     <header className="nav">

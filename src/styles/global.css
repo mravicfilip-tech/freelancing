@@ -21,6 +21,12 @@ html[data-hero='3'] {
   --display-tracking: -0.035em;
   --display-leading: 0.98;
 }
+/* The Figma page is set in Onest throughout, so that is what <body> inherits here — every section
+   already declares it as --fh-sans. Left on the :root default, the document's own fallback would
+   pull Instrument Sans down on a page that never shows a glyph of it. */
+html[data-hero='figma'] {
+  --font: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
 
 /* ---------- The fixed bar, and the room the page has to leave it ----------
    Where the bar sits and how tall it is. The phone sheet stands under it and is inset to the same

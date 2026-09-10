@@ -1,5 +1,5 @@
 import { GLOBES } from './HeroPlanet/variants';
-import { setGlobe, useGlobe } from '../heroVariant';
+import { setGlobe, useGlobe } from '../globeVariant';
 
 /** Review control: switches the globe treatment in place. State lives in the URL (?globe=) and localStorage. */
 export function PlanetSwitcher() {

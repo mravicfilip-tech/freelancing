@@ -28,7 +28,7 @@ const LOCK =
   '<svg viewBox="0 0 10 11" fill="none"><rect x="1" y="4.5" width="8" height="6" rx="1.5" fill="#7c858d"/><path d="M3 4.5V3a2 2 0 0 1 4 0v1.5" stroke="#7c858d" stroke-width="1.3"/></svg>';
 
 const cur = (cls: string) => `<span class="hbi-cur ${cls}">${CURSOR}</span><span class="hbi-click ${cls}k"></span>`;
-const coin = (k: 'eth' | 'usdt' | 'sol', d = 24) => `<img src="${A[k]}" alt="" style="width:${d}px;height:${d}px">`;
+const coin = (k: 'eth' | 'usdt' | 'sol', d = 24) => `<img loading="lazy" decoding="async" src="${A[k]}" alt="" style="width:${d}px;height:${d}px">`;
 /** A browser window, placed by CSS so a phone can re-frame it. */
 const win = (cls: string, url: string, page: string) => `
   <div class="hbi-win ${cls}">
@@ -43,7 +43,7 @@ const SITE = () =>
     '<span class="hbi-type s1a-url">remittixpresale.io</span><i class="hbi-caret s1a-caret"></i>',
     `<div class="s1a-page">
        <div class="hbi-nav">
-         <img class="s1a-logo" src="${A.logo}" alt="">
+         <img loading="lazy" decoding="async" class="s1a-logo" src="${A.logo}" alt="">
          <span class="hbi-nav__r">
            <span class="hbi-sw hbi-sw--r s1a-cta">
              <span class="hbi-btn s1a-btn">Connect Wallet &amp; Pay ${CHEV}</span>
@@ -87,7 +87,7 @@ const DASHBOARD = () =>
     'remittixpresale.io/dashboard',
     `<div class="hbi-dash s3c-page">
        <div class="hbi-dash__side">
-         <span class="hbi-dash__brand"><img src="${A.logo}" alt=""></span>
+         <span class="hbi-dash__brand"><img loading="lazy" decoding="async" src="${A.logo}" alt=""></span>
          <nav class="hbi-dash__nav">
            <span class="is-on">Dashboard</span><span>Purchases</span><span>Claim</span><span>Referrals</span>
          </nav>

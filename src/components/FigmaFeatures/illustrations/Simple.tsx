@@ -96,7 +96,7 @@ function Corridor({ g }: { g: SimpleGeo }) {
       <i className="il-simple__beam" />
 
       <div className="il-simple__btc il-simple__node" style={{ left: g.btc.x, top: g.btc.y }}>
-        <img src={B('imgFrame2085662026.svg')} alt="" width={30.8} height={30.8} />
+        <img loading="lazy" decoding="async" src={B('imgFrame2085662026.svg')} alt="" width={30.8} height={30.8} />
         <span>0.0128 BTC</span>
       </div>
       <Layer className="il-simple__logo" src={B('imgFrame2085662273.svg')} x={g.coinbase.x} y={g.coinbase.y} w={g.coinbase.w} h={g.coinbase.h} />
@@ -106,24 +106,24 @@ function Corridor({ g }: { g: SimpleGeo }) {
       </div>
       <div className="il-simple__hub il-simple__node" style={{ left: g.hub.x, top: g.hub.y }}>
         <i className="il-simple__hubHalo" />
-        <img src={B('imgGroup3.svg')} alt="" width={g.hubMark.w} height={g.hubMark.h} />
+        <img loading="lazy" decoding="async" src={B('imgGroup3.svg')} alt="" width={g.hubMark.w} height={g.hubMark.h} />
       </div>
       <div className="il-simple__swap" style={{ left: g.swap.x, top: g.swap.y }}>
-        <img src={B('imgMoveHorizontal.svg')} alt="" width={16} height={13.4} />
+        <img loading="lazy" decoding="async" src={B('imgMoveHorizontal.svg')} alt="" width={16} height={13.4} />
       </div>
 
       <div className="il-simple__stack" style={{ left: g.stack.x, top: g.stack.y }}>
         <div className="il-rc">
           <div className="il-rc__row il-rc__head">
             <span className="il-rc__bank">
-              <img src={B('imgFrame2085662286.svg')} alt="" width={24} height={24} />
+              <img loading="lazy" decoding="async" src={B('imgFrame2085662286.svg')} alt="" width={24} height={24} />
               <span>
                 <b>New Bank</b>
                 <small>EUR ····4417</small>
               </span>
             </span>
             <span className="il-rc__badge">
-              <img src={B('imgEllipse3432.svg')} alt="" width={2.7} height={2.7} />
+              <img loading="lazy" decoding="async" src={B('imgEllipse3432.svg')} alt="" width={2.7} height={2.7} />
               Settled
             </span>
           </div>
@@ -140,7 +140,7 @@ function Corridor({ g }: { g: SimpleGeo }) {
           <div className="il-rc__row il-rc__line"><span>Arrived in</span><span className="il-mono" data-count="arrived">4.2 sec</span></div>
         </div>
         <div className="il-toast">
-          <img src={B('imgFrame2085662288.svg')} alt="" width={20} height={20} />
+          <img loading="lazy" decoding="async" src={B('imgFrame2085662288.svg')} alt="" width={20} height={20} />
           <span>
             Credited to bank account
             <small className="il-mono" data-count="time">TODAY · 14:02</small>

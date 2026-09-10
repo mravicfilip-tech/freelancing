@@ -1,9 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import '@fontsource-variable/instrument-sans';
-import '@fontsource-variable/bricolage-grotesque/opsz.css';
-import '@fontsource-variable/schibsted-grotesk';
+/* The faces the live page is set in. The pre-Figma directions' three load with them (./legacyFonts). */
 import '@fontsource-variable/onest';
 import '@fontsource-variable/doto';
 import '@fontsource/silkscreen';

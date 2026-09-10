@@ -80,7 +80,7 @@ export function FigmaEcosystem() {
                     <i className="ec__progress" />
                   </i>
                   <button type="button" role="tab" aria-selected={i === active} aria-controls={`ec-scene-${p.id}`} className="ec__itemHead" onClick={() => select(i)}>
-                    <img src={p.icon} alt="" width={20} height={20} />
+                    <img loading="lazy" decoding="async" src={p.icon} alt="" width={20} height={20} />
                     <span className="ec__itemTitle">{p.title}</span>
                   </button>
                   <div className="ec__itemBody">

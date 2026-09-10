@@ -72,7 +72,7 @@ function Coins({ label, icons, x, y, id }: { label: string; icons: string[]; x: 
       <span className="fs__coins">
         <span className="fs__coinsInner">
           {icons.map((icon) => (
-            <img key={icon} className="fs__coin" src={A(icon)} alt="" width={32} height={32} />
+            <img loading="lazy" decoding="async" key={icon} className="fs__coin" src={A(icon)} alt="" width={32} height={32} />
           ))}
         </span>
       </span>
@@ -83,7 +83,7 @@ function Coins({ label, icons, x, y, id }: { label: string; icons: string[]; x: 
 function Chip({ text, x, y }: { text: string; x: number; y: number }) {
   return (
     <span className="fs__chip" style={{ left: x, top: y }}>
-      <img src={A('imgCircleSelectionStreamlineNova')} alt="" width={20} height={20} />
+      <img loading="lazy" decoding="async" src={A('imgCircleSelectionStreamlineNova')} alt="" width={20} height={20} />
       {text}
     </span>
   );
@@ -132,7 +132,7 @@ function Upright({ g }: { g: OrbitGeo }) {
       <Chip text="PAY-OUTS" x={g.payOuts.x} y={g.payOuts.y} />
 
       <div className="fs__hub" style={{ left: g.hub.x, top: g.hub.y }}>
-        <img src={A('imgGroup3')} alt="" width={68.7} height={35.5} />
+        <img loading="lazy" decoding="async" src={A('imgGroup3')} alt="" width={68.7} height={35.5} />
       </div>
       <span className="fs__badge" style={{ left: g.badge.x, top: g.badge.y }}>Fast &amp; reliable payments</span>
       <div className="fs__cursor" style={{ left: g.cursor.x, top: g.cursor.y }}>
@@ -200,7 +200,7 @@ export function FigmaSimple() {
             recipients receive fiat. When you need an easy solution for crypto payments, Remittix is your go-to protocol.
           </p>
           <div className="fs__pill" data-node-id="2409:2906">
-            <img src={A('imgShieldCheckStreamlineNova')} alt="" width={20} height={20} />
+            <img loading="lazy" decoding="async" src={A('imgShieldCheckStreamlineNova')} alt="" width={20} height={20} />
             <span className="fs__pillItems">
               <span>Secure</span>
               <i />

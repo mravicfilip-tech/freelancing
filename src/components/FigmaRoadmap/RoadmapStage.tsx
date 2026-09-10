@@ -51,7 +51,7 @@ const Card = memo(function Card({ level, active }: { level: Level; active: boole
       </h3>
       {level.items.map((item) => (
         <div className="rs__item" key={item.short}>
-          <img src={item.done ? CHECK_DONE : CHECK_TODO} alt="" width={14} height={14} />
+          <img loading="lazy" decoding="async" src={item.done ? CHECK_DONE : CHECK_TODO} alt="" width={14} height={14} />
           <p>{item.text}</p>
         </div>
       ))}
@@ -229,7 +229,7 @@ export function RoadmapStage() {
             <div className="rs__rail" ref={rail} aria-hidden="true">
               <span className="rs__railLine" />
               {/* held invisible until the first measurement places it, so it never flashes at 0 */}
-              <img className="rs__marker" ref={marker} src={MARKER} alt="" width={24} height={24} style={{ opacity: 0 }} />
+              <img loading="lazy" decoding="async" className="rs__marker" ref={marker} src={MARKER} alt="" width={24} height={24} style={{ opacity: 0 }} />
             </div>
 
             <div className="rs__cards" ref={viewport}>

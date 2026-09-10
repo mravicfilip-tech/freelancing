@@ -34,7 +34,7 @@ function CardText({ title, chip, children, className }: { title: string; chip?: 
 function AccelerationChip() {
   return (
     <span className="ff__chip" data-node-id="2409:2537">
-      <img src={B('imgDataTransferGoalFlag.svg')} alt="" width={20} height={20} />
+      <img loading="lazy" decoding="async" src={B('imgDataTransferGoalFlag.svg')} alt="" width={20} height={20} />
       Acceleration
     </span>
   );

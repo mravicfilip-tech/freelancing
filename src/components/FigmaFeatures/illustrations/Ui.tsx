@@ -32,9 +32,9 @@ function Panel({ x, y }: { x: number; y: number }) {
       <div className="il-ui__intro">
         <span className="il-ui__introTop">
           <span className="il-ui__linkWrap">
-            <img className="il-ui__link" src={B('imgHyperlink1.svg')} alt="" width={20} height={20} />
+            <img loading="lazy" decoding="async" className="il-ui__link" src={B('imgHyperlink1.svg')} alt="" width={20} height={20} />
             <i className="il-ui__linkOk" />
-            <img className="il-ui__avatar" src={B('imgMetamask1.svg')} alt="" width={24} height={24} />
+            <img loading="lazy" decoding="async" className="il-ui__avatar" src={B('imgMetamask1.svg')} alt="" width={24} height={24} />
           </span>
           <b>Connect a wallet</b>
           <i className="il-ui__progress">
@@ -47,7 +47,7 @@ function Panel({ x, y }: { x: number; y: number }) {
         {WALLETS.map((w) => (
           <span key={w.id} className={`il-ui__row il-ui__row--${w.id}`} data-color={w.color} data-whiten={w.whiten ? '1' : undefined}>
             <i className="il-ui__hi" />
-            <img src={w.icon} alt="" width={24} height={24} />
+            <img loading="lazy" decoding="async" src={w.icon} alt="" width={24} height={24} />
             {w.label}
           </span>
         ))}

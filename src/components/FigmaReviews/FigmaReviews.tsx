@@ -136,10 +136,10 @@ export function FigmaReviews() {
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${SLIDES.length}`}
             >
-              <img className="rv__photo" src={s.photo} alt="" />
+              <img loading="lazy" decoding="async" className="rv__photo" src={s.photo} alt="" />
               <span className="rv__scrim" />
               <div className="rv__eyebrow">
-                <img className="rv__quote" src={R('quote.svg')} alt="" width={20} height={20} />
+                <img loading="lazy" decoding="async" className="rv__quote" src={R('quote.svg')} alt="" width={20} height={20} />
                 <p>What our Customers are saying</p>
               </div>
               <blockquote className="rv__quoteBlock">
@@ -165,7 +165,7 @@ export function FigmaReviews() {
                 onClick={() => { select(i); go(i); }}
               >
                 <span className="rv__avatar">
-                  <img src={s.photo} alt="" style={{ objectPosition: s.focus }} />
+                  <img loading="lazy" decoding="async" src={s.photo} alt="" style={{ objectPosition: s.focus }} />
                 </span>
                 <span className="rv__who">
                   <b>{s.name}</b>

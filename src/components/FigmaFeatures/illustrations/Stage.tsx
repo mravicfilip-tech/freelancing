@@ -76,7 +76,7 @@ export const B = (name: string) => `/figma/bento/${name}`;
 
 /** An exported layer placed at design coordinates. */
 export function Layer({ src, x, y, w, h, className, style }: { src: string; x: number; y: number; w: number; h: number; className?: string; style?: React.CSSProperties }) {
-  return <img className={className} src={part(src)} alt="" style={{ position: 'absolute', left: x, top: y, width: w, height: h, ...style }} />;
+  return <img loading="lazy" decoding="async" className={className} src={part(src)} alt="" style={{ position: 'absolute', left: x, top: y, width: w, height: h, ...style }} />;
 }
 
 /** An inline SVG (imported `?raw`) placed at design coordinates, so its paths can be drawn. */

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { HeroPlanet } from './index';
+import '../../legacyFonts';
 
 /**
  * Standalone, transparent stage used by `npm run fallback` to export the

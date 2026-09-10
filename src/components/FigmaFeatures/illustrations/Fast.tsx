@@ -46,11 +46,11 @@ function FastLandscape() {
       <Layer className="il-fast__glide" src={B('imgVector6.svg')} x={262} y={193.2} w={12} h={14} />
 
       <span className="il-fast__pill il-fast__pill--local" style={{ left: 32, top: 176.7 }}>
-        <img src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
+        <img loading="lazy" decoding="async" src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
         Local payment network
       </span>
       <span className="il-fast__pill il-fast__pill--same" style={{ left: 484, top: 176.75 }}>
-        <img className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
+        <img loading="lazy" decoding="async" className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
         Same day process
       </span>
       <Layer className="il-fast__dot" src={B('imgEllipse3477.svg')} x={480.5} y={189.5} w={7} h={7} />
@@ -69,7 +69,7 @@ function FastPortrait() {
     <Stage id="fast" width={394} height={362} layout="mobile" className="ff__art ff__art--fast il-fast il-fast--m">
       <span className="il-fast__blob il-fast__blobBox" style={{ left: 0, top: 34, width: 394, height: 328 }}>
         <span className="il-fast__blobInner">
-          <img src={B('fast-blob.webp')} alt="" style={{ left: 124.3, top: -30.1, width: 451.5, height: 446 }} />
+          <img loading="lazy" decoding="async" src={B('fast-blob.webp')} alt="" style={{ left: 124.3, top: -30.1, width: 451.5, height: 446 }} />
         </span>
       </span>
 
@@ -91,11 +91,11 @@ function FastPortrait() {
       <Layer className="il-fast__glide" src={B('imgVector6.svg')} x={w.x + 1} y={w.y} w={12} h={14} />
 
       <span className="il-fast__pill il-fast__pill--local" style={{ left: 89, top: 0, width: 216 }}>
-        <img src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
+        <img loading="lazy" decoding="async" src={B('imgSmartphoneSignal.svg')} alt="" width={20} height={20} />
         Local payment network
       </span>
       <span className="il-fast__pill il-fast__pill--same" style={{ left: 100, top: 277, width: 194 }}>
-        <img className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
+        <img loading="lazy" decoding="async" className="il-fast__check" src={B('imgCheckCircle2.svg')} alt="" width={20} height={20} />
         Same day process
       </span>
       <Layer className="il-fast__dot" src={B('imgEllipse3477.svg')} x={194} y={271} w={8} h={8} />

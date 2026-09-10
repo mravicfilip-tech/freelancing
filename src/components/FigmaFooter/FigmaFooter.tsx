@@ -90,7 +90,7 @@ export function FigmaFooter() {
         <div className="ft__main">
           <div className="ft__identity">
             <a className="ft__brand" href="/">
-              <img src="/figma/logo-lime.svg" alt="" width={33} height={17} />
+              <img loading="lazy" decoding="async" src="/figma/logo-lime.svg" alt="" width={33} height={17} />
               <span>Remittix</span>
             </a>
             <ul className="ft__social">

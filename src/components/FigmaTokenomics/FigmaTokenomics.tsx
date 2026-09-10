@@ -34,7 +34,7 @@ const FACTS: [string, ReactNode][] = [
   [
     'Network',
     <span className="tk__network" key="n">
-      <img src={A('coin-eth')} alt="" width={32} height={32} />
+      <img loading="lazy" decoding="async" src={A('coin-eth')} alt="" width={32} height={32} />
       Ethereum
     </span>,
   ],
@@ -82,7 +82,7 @@ function CopyAddress({ value }: { value: string }) {
   return (
     <span className="tk__copyWrap" data-state={state}>
       <button type="button" className="tk__copy" onClick={copy} aria-label={`Copy contract address ${value}`}>
-        <img className="tk__copyIcon" src={A('ic-copy')} alt="" width={20} height={20} />
+        <img loading="lazy" decoding="async" className="tk__copyIcon" src={A('ic-copy')} alt="" width={20} height={20} />
         <svg className="tk__tick" viewBox="0 0 20 20" width={20} height={20} aria-hidden="true">
           <path d="M4.5 10.5 L8.5 14.5 L15.5 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -139,7 +139,7 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
               ))}
             </svg>
 
-            <img className="tk__ring" src={A('ring-outer')} alt="" width={442} height={442} aria-hidden="true" />
+            <img loading="lazy" decoding="async" className="tk__ring" src={A('ring-outer')} alt="" width={442} height={442} aria-hidden="true" />
 
             {/* The dial: one gradient arc, aimed and sized by the motion, with the hub halos
                 following the same span exactly as they do in the design. */}
@@ -174,16 +174,16 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
             </svg>
 
             <div className="tk__hub" aria-hidden="true">
-              <img className="tk__hubDisc" src={A('hub')} alt="" width={114} height={114} />
-              <img className="tk__logo tk__logo--1" src={A('logo-union')} alt="" width={14.568} height={14.733} />
-              <img className="tk__logo tk__logo--2" src={A('logo-v2')} alt="" width={25.615} height={28.405} />
-              <img className="tk__logo tk__logo--3" src={A('logo-v3')} alt="" width={25.224} height={29.075} />
+              <img loading="lazy" decoding="async" className="tk__hubDisc" src={A('hub')} alt="" width={114} height={114} />
+              <img loading="lazy" decoding="async" className="tk__logo tk__logo--1" src={A('logo-union')} alt="" width={14.568} height={14.733} />
+              <img loading="lazy" decoding="async" className="tk__logo tk__logo--2" src={A('logo-v2')} alt="" width={25.615} height={28.405} />
+              <img loading="lazy" decoding="async" className="tk__logo tk__logo--3" src={A('logo-v3')} alt="" width={25.224} height={29.075} />
             </div>
 
             {/* the chain marks */}
             {g.coins.map((c) => (
               <span key={c.id} className="tk__coin" data-coin={c.id} style={{ left: c.x, top: c.y - g.disc / 2, width: g.disc, height: g.disc }} aria-hidden="true">
-                <img src={A(c.id)} alt="" width={g.mark} height={g.mark} />
+                <img loading="lazy" decoding="async" src={A(c.id)} alt="" width={g.mark} height={g.mark} />
               </span>
             ))}
 
@@ -191,7 +191,7 @@ export function FigmaTokenomics({ variant = 1 }: { variant?: TokVariant }) {
             {g.segments.map((s) => (
               <div key={s.id} className="tk__slice" data-slice={s.id} style={{ left: s.x, top: s.y - 32 }}>
                 <span className="tk__chip" style={s.w ? { width: s.w, justifyContent: 'center' } : undefined}>
-                  <img src={A(s.icon)} alt="" width={20} height={20} />
+                  <img loading="lazy" decoding="async" src={A(s.icon)} alt="" width={20} height={20} />
                   {s.label}
                 </span>
                 <span className="tk__pct">

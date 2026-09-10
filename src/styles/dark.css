@@ -175,6 +175,16 @@
   background: var(--d-surface-2);
 }
 
+/* The drawn cursor carries a halo so it stays distinct over whatever it crosses — white on a light
+   page. On a dark one a white glow around a small arrow reads as a smudge rather than an outline,
+   so the halo becomes the ground it is being separated from and the cast shadow deepens. */
+[data-theme='dark'] .fs__cursorIcon,
+[data-theme='dark'] .ff__il,
+[data-theme='dark'] .hb__scene {
+  --cur-halo: #0c1219;
+  --cur-cast: rgb(0 0 0 / 55%);
+}
+
 /* ---------- The shared illustrations (.ff__il) ----------
    The feature band, the ecosystem's scenes and the crypto-to-fiat orbit all draw from one sheet,
    so its palette is answered once here rather than per section — a section's own dark tokens never
@@ -217,6 +227,16 @@
    tenth rather than each stop being restated, which keeps the sweep the gradient was drawn for. */
 [data-theme='dark'] .fs__ring {
   opacity: 0.12;
+}
+/* The anchors on the orbit are a filled dot and a ringed marker, both drawn at the line's weight.
+   On a light band that is a grey mark; on a dark one the ring is the brightest thing on the path,
+   so both come down to the rail and the marker's ring loses the ink it was inheriting. */
+[data-theme='dark'] .fs__dot {
+  background: #37424e;
+}
+[data-theme='dark'] .fs__marker {
+  border-color: #3c4753;
+  background: var(--fs-bg);
 }
 /* The hub's mark and the chips' glyphs are near-black line art on what are now dark surfaces. */
 [data-theme='dark'] .fs__hub img,
@@ -324,6 +344,11 @@
   border: 1px solid #38434f;
   color: var(--d-ink);
 }
+/* The donut's outer ring is an exported circle drawn in the band's own hairline. Like the globe's
+   halo it is a faint edge on white and a hard white circle on black, so it comes down to a tenth. */
+[data-theme='dark'] .tk__ring {
+  opacity: 0.12;
+}
 /* The hub is a black disc carrying the white mark. Inverted it is a white disc carrying a black
    one — the same object, the same way round, against the ground it now sits on. */
 [data-theme='dark'] .tk__hubDisc {
@@ -342,7 +367,10 @@
    are a filled pill and what sits on it, so the pair inverts together; `--ec-strong` is the same
    colour used as text, which has to go the other way. */
 [data-theme='dark'] .ec-il {
-  --ec-surface: var(--d-surface-2);
+  /* The card is the darkest thing in the scene and the panels inside it step up, rather than card
+     and panel sitting a hair apart — on a light page the border does that work, on a dark one the
+     value has to. */
+  --ec-surface: #121a23;
   --ec-chip: var(--d-ink);
   --ec-chipInk: #0c1219;
   --ec-strong: var(--d-ink);
@@ -351,8 +379,20 @@
   --ec-indigo: var(--d-indigo);
   --ec-lavender: var(--d-lavender);
   --ec-green: #35c98a;
-  --ec-line: var(--d-rail);
-  --ec-soft: var(--d-surface);
+  --ec-line: #2b3743;
+  --ec-soft: #202b37;
+}
+/* The rows inside the payout run, the market tiles under the chart, and the staking position all
+   sit on the card and have to be read off it. */
+[data-theme='dark'] .ec-trade__market,
+[data-theme='dark'] .ec-stk__card,
+[data-theme='dark'] .ec-tum__reel {
+  background: #1c2632;
+  border-color: #333f4c;
+}
+[data-theme='dark'] .ec-run__row + .ec-run__row,
+[data-theme='dark'] .ec-run__head {
+  border-color: #2b3743;
 }
 
 /* ---------- Roadmap (.rs) ----------
@@ -393,6 +433,12 @@
 [data-theme='dark'] .hb {
   --hb-card: var(--d-surface);
 }
+/* The mark inside the mock-up is the same near-black artwork as the page's own, on what is now a
+   dark screen. */
+[data-theme='dark'] .hb__scene .s1a-logo,
+[data-theme='dark'] .hb__scene .hbi-dash__brand img {
+  filter: invert(1) brightness(1.8);
+}
 [data-theme='dark'] .hb__cardTitle,
 [data-theme='dark'] .hb__body {
   color: var(--d-ink);
@@ -414,6 +460,12 @@
   --line: #2b3542;
   --hair: #1e2733;
   --radio: #3a4553;
+  /* the thumb has to lift off the track, and the keyframe colours have to flip with the page */
+  --thumb: #2c3846;
+  --seg-on: #eef2f5;
+  --seg-off: #6c7783;
+  --cta: #eef2f5;
+  --cta-ink: #0c1219;
   --bar: rgb(238 242 245 / 9%);
   --chipbg: rgb(238 242 245 / 7%);
   --indigo: var(--d-indigo);

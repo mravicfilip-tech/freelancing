@@ -381,7 +381,7 @@ const DARK: Partial<PlanetConfig> = {
   haloOpacity: 0.12,
   ringOpacity: 0.1,
   /* The corridor chips are white cards painted to a canvas, so they cannot be reached from CSS. */
-  popupCard: { bg: '#171f29', line: '#2f3a45', sub: '#6c7783', ink: '#eef2f5' },
+  popupCard: { bg: '#26313e', line: '#46566a', sub: '#9dabb9', ink: '#ffffff' },
 };
 
 export function resolveConfig(variant?: string | null, theme?: 'light' | 'dark'): PlanetConfig {

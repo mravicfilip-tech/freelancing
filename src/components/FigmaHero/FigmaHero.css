@@ -128,7 +128,10 @@
   .fh__nav[data-condensed] {
     width: min(760px, 100% - 48px);
   }
-  .fh__nav[data-condensed]:hover,
+  /* Not while the wheel is turning: the bar is fixed across the top, so the pointer is over it
+     whenever it is resting near the top of the screen, and hover would hold it open all the way
+     down the page. */
+  .fh__nav[data-condensed]:not([data-scrolling]):hover,
   .fh__nav[data-condensed]:focus-within {
     width: min(1440px, 100% - 48px);
   }

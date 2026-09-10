@@ -865,7 +865,7 @@
   left: 0;
   top: 0;
   opacity: 0;
-  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18, 36, 51, 0.3));
+  filter: drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
   will-change: transform;
 }
 .il-ui__linkWrap {

@@ -46,6 +46,13 @@
   /* The mock-up's own surfaces and hairlines, named so the dark sheet can turn the product over
      with the page rather than leaving a lit window standing on a dark band. */
   --surface: #fff;
+  --thumb: #fff;
+  /* the segmented control's two labels, and the Claim button's resting state — all three live
+     inside @keyframes, which no selector can out-specify, so they are read as properties */
+  --seg-on: #122433;
+  --seg-off: #7c858d;
+  --cta: #121212;
+  --cta-ink: #fff;
   --hair: #eef0f3;
   --radio: #cfd5e2;
   --bar: rgb(18 36 51 / 7%);
@@ -108,7 +115,7 @@
 .hb__scene .hbi-caret{display:inline-block;width:1.5px;height:12px;margin:0 0 -2px 1px;background:var(--indigo);vertical-align:bottom}
 .hb__scene .hbi-nav{display:flex;align-items:center;justify-content:space-between}
 .hb__scene .hbi-nav__r{display:flex;align-items:center;gap:8px}
-.hb__scene .hbi-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:40px;padding:0 18px;border-radius:46px;font-weight:700;font-size:14px;letter-spacing:-.28px;white-space:nowrap;color:#fff;background:var(--black)}
+.hb__scene .hbi-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:40px;padding:0 18px;border-radius:46px;font-weight:700;font-size:14px;letter-spacing:-.28px;white-space:nowrap;color:var(--cta-ink);background:var(--cta)}
 .hb__scene .hbi-btn svg{width:10px;height:10px;flex:none}
 .hb__scene .hbi-btn--ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair)}
 .hb__scene .hbi-btn--indigo{background:var(--indigo)}
@@ -135,7 +142,7 @@
 .hb__scene .hbi-lr.is-on .hbi-rad{border-color:var(--indigo)}
 .hb__scene .hbi-lr.is-on .hbi-rad::after{opacity:1;transform:none}
 .hb__scene .hbi-seg{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;height:32px;padding:3px;border-radius:16px;background:var(--soft)}
-.hb__scene .hbi-seg i{position:absolute;left:3px;top:3px;width:calc(50% - 3px);height:26px;border-radius:13px;background:var(--surface);box-shadow:0 1px 2px rgba(18,36,51,.12)}
+.hb__scene .hbi-seg i{position:absolute;left:3px;top:3px;width:calc(50% - 3px);height:26px;border-radius:13px;background:var(--thumb);box-shadow:0 1px 2px rgba(18,36,51,.12)}
 .hb__scene .hbi-seg span{position:relative;display:grid;place-items:center;padding:0 14px;font-weight:700;font-size:12px;letter-spacing:-.2px;color:var(--muted)}
 .hb__scene .hbi-st{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-weight:700;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .hb__scene .hbi-st--grey{background:var(--chipbg);color:var(--muted)}
@@ -148,7 +155,7 @@
 .hb__scene .hbi-field{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px}
 .hb__scene .hbi-field__l{font-size:11px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
 .hb__scene .hbi-field__v{font-weight:500;font-size:16px;color:var(--ink)}
-.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18,36,51,.3))}
+.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18,36,51,.3)))}
 .hb__scene .hbi-cur svg{display:block;width:22px;height:22px}
 .hb__scene .hbi-click{width:40px;height:40px;margin:-20px 0 0 -20px;border:2px solid var(--indigo);border-radius:50%;background:rgba(64,66,209,.18);opacity:0;z-index:5}
 .hb__scene .hbi-dash{display:grid;grid-template-columns:120px minmax(0,1fr);margin:-20px}
@@ -211,8 +218,8 @@
 .hb__scene .s2a-thumb{animation:s2a-thumb 12s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes s2a-thumb{0%,51%{transform:translateX(0)}55%,93%{transform:translateX(100%)}97%,100%{transform:translateX(0)}}
 .hb__scene .s2a-t0{animation:s2a-t0 12s infinite} .s2a-t1{animation:s2a-t1 12s infinite}
-@keyframes s2a-t0{0%,51%{color:#122433}55%,93%{color:#7c858d}97%,100%{color:#122433}}
-@keyframes s2a-t1{0%,51%{color:#7c858d}55%,93%{color:#122433}97%,100%{color:#7c858d}}
+@keyframes s2a-t0{0%,51%{color:var(--seg-on)}55%,93%{color:var(--seg-off)}97%,100%{color:var(--seg-on)}}
+@keyframes s2a-t1{0%,51%{color:var(--seg-off)}55%,93%{color:var(--seg-on)}97%,100%{color:var(--seg-off)}}
 .hb__scene .s2a-a{animation:s2a-a 12s cubic-bezier(.2,.8,.2,1) infinite} .s2a-b{animation:s2a-b 12s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes s2a-a{0%,51%{opacity:1;transform:none}55%,93%{opacity:0;transform:translateY(-8px)}97%,100%{opacity:1;transform:none}}
 @keyframes s2a-b{0%,53%{opacity:0;transform:translateY(10px)}57%,93%{opacity:1;transform:none}97%,100%{opacity:0;transform:translateY(10px)}}
@@ -230,7 +237,7 @@
 .hb__scene .s3c-curk{animation:s3c-k 12s infinite}
 @keyframes s3c-k{0%,61%{transform:translate(579px,353px) scale(.2);opacity:0}61.5%{opacity:1}67%,100%{transform:translate(579px,353px) scale(1);opacity:0}}
 .hb__scene .s3c-btn{animation:s3c-btn 12s infinite}
-@keyframes s3c-btn{0%,61%{background:#121212;color:#fff}63%,95%{background:#d9f24e;color:#122433}98%,100%{background:#121212;color:#fff}}
+@keyframes s3c-btn{0%,61%{background:var(--cta);color:var(--cta-ink)}63%,95%{background:var(--lime);color:#122433}98%,100%{background:var(--cta);color:var(--cta-ink)}}
 .hb__scene .s3c-btn .hbi-sw > :nth-child(1){animation:s3c-b0 12s infinite} .s3c-btn .hbi-sw > :nth-child(2){animation:s3c-b1 12s infinite}
 @keyframes s3c-b0{0%,61%{opacity:1}63%,95%{opacity:0}98%,100%{opacity:1}}
 @keyframes s3c-b1{0%,62%{opacity:0}64%,95%{opacity:1}98%,100%{opacity:0}}

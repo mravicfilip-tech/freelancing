@@ -17,7 +17,7 @@ export function Topbar() {
     <header className="topbar">
       <div>
         <p className="topbar__greeting">{greeting()}, Filip</p>
-        <h1 className="topbar__title">Presale</h1>
+        <h1 className="topbar__title">Remittix Presale Dashboard</h1>
       </div>
 
       <div className="topbar__actions">

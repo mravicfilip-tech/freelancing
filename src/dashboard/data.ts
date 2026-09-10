@@ -57,8 +57,9 @@ export const REFERRAL_ROWS: Referral[] = [
 ];
 
 export const FLASH_SALE = {
-  bonus: 4.5,
-  code: 'LAUNCH450',
+  /** A fraction, not a percentage: the calculator multiplies by it directly. */
+  bonus: 0.045,
+  code: 'LAUNCH45',
   /** Seconds left when the page loads: 23h 11m 29s of the 72-hour window. */
   secondsLeft: 23 * 3600 + 11 * 60 + 29,
 } as const;

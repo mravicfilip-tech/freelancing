@@ -172,28 +172,34 @@ export function PayMark({ id, className }: { id: TokenId | 'CARD'; className?: s
   );
 }
 
+/* Both card marks are drawn on the same 32 grid as the token art, circle
+   included, so the "We accept" row is one geometry rather than five coins and
+   two cards. */
 export const VisaMark = (p: IconProps) => (
-  <svg viewBox="0 0 48 24" {...p} aria-hidden="true">
-    <rect width="48" height="24" rx="4" fill="#1434CB" />
+  <svg viewBox="0 0 32 32" {...p} aria-hidden="true">
+    <circle cx="16" cy="16" r="16" fill="#1434CB" />
     <text
-      x="24"
-      y="16.6"
+      x="16"
+      y="19.4"
       textAnchor="middle"
-      fontSize="11"
+      fontFamily="Helvetica, Arial, sans-serif"
+      fontSize="9.5"
       fontWeight="700"
       fontStyle="italic"
       fill="#fff"
-      letterSpacing="0.5"
+      letterSpacing="0.2"
     >
       VISA
     </text>
   </svg>
 );
 
+/* Mastercard's ground flips with the theme: its brand black vanishes on a dark
+   card, and its brand white vanishes on a light one. */
 export const MastercardMark = (p: IconProps) => (
-  <svg viewBox="0 0 48 24" {...p} aria-hidden="true">
-    <rect width="48" height="24" rx="4" fill="#16181D" />
-    <circle cx="20" cy="12" r="7" fill="#EB001B" />
-    <circle cx="28" cy="12" r="7" fill="#F79E1B" fillOpacity=".9" />
+  <svg viewBox="0 0 32 32" {...p} aria-hidden="true">
+    <circle cx="16" cy="16" r="16" fill="var(--d-mark-ground, #16181D)" />
+    <circle cx="13" cy="16" r="6.8" fill="#EB001B" />
+    <circle cx="19" cy="16" r="6.8" fill="#F79E1B" fillOpacity=".9" />
   </svg>
 );

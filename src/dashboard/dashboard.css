@@ -64,12 +64,18 @@
   --d-on-pick: #0c1219;
   --d-indigo: #9092f4;
   --d-spent: #37424e;
+  /* Mastercard sits on its brand white here, black in light. */
+  --d-mark-ground: #eef2f5;
   /* A field is the deeper band cut into the lifted card, edged with the same
      rail the site rules everything else with. */
   --d-field: #0c1219;
   --d-field-ring: #28323c;
   /* A control sitting inside a field needs its own edge against it. */
   --d-chip-ring: #3a4653;
+  /* A pill sitting on the card needs a lighter edge than one inside a field:
+     #3a4653 is only 1.72:1 on --d-card, so it reads as no edge at all. This
+     clears 3:1 against the card, the bar for a control boundary. */
+  --d-pill-ring: #5a6a80;
   --d-chip-lift: none;
   /* A menu floats over the page, so on dark it needs depth to separate. */
   --d-menu-edge: 0 0 0 1px var(--d-rule), 0 16px 36px -12px rgb(0 0 0 / 55%);
@@ -95,6 +101,9 @@
   --d-field: #f4f6f8;
   --d-field-ring: #aab5c0;
   --d-chip-ring: #7a8a9a;
+  /* 3.54:1 on --d-card. The pill's own fill is 1.05:1, so the edge is the
+     only thing that says this is a control. */
+  --d-pill-ring: #7a8a9a;
   /* No shadows in light: the page has none anywhere else, so a menu and a chip
      hold their edges with a ring instead. */
   --d-chip-lift: none;
@@ -106,6 +115,7 @@
   --d-on-pick: #ffffff;
   --d-indigo: #4042d2;
   --d-spent: #c9cfd5;
+  --d-mark-ground: #16181D;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(18, 36, 51, 0.1) 1px, transparent 1.4px);
@@ -128,7 +138,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .icon-16 { width: 16px; height: 16px; flex: none; }
 .icon-20 { width: 20px; height: 20px; flex: none; }
 .icon-22 { width: 22px; height: 22px; flex: none; }
-.mark-card { width: 29px; height: 15px; flex: none; }
 
 /* One ring per control. Fields draw their own on the wrapper, so the global
    outline would sit outside it and give every input two. */
@@ -346,7 +355,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   justify-content: space-between;
   gap: 18px;
   flex-wrap: wrap;
-  padding: 6px 4px 2px;
+  /* --gap is 8px, the rhythm between cards. A page heading needs more than
+     that beneath it, so the topbar carries the difference itself. */
+  padding: 6px 4px 24px;
 }
 .topbar__greeting {
   margin: 0;
@@ -756,10 +767,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 /* The live stage fills only as far as it has sold. */
 .ladder__step[data-state='live'] .ladder__fill { background: var(--d-accent); }
-/* Stages you have not reached are outlines: the price is a promise, not a fact. */
+/* Stages you have not reached are drawn as the sold stage's outline over the
+   empty track: the price is a promise, not a fact, but the shape is real.
+   --d-rule alone was 1.19:1 against the card in light, so the bar vanished. */
 .ladder__step[data-state='next'] .ladder__bar {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--d-rule);
+  background: var(--d-track);
+  box-shadow: inset 0 0 0 1.5px var(--d-spent);
 }
 .ladder__step[data-state='next'] .ladder__fill { display: none; }
 .ladder__n {
@@ -855,9 +868,18 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease;
+  /* The fill alone is ~1.05:1 against the card, so the ring carries the
+     affordance. Inset, so it costs no layout. */
+  box-shadow: inset 0 0 0 1px var(--d-pill-ring);
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
-.chip:hover { background: var(--d-pick); color: var(--d-on-pick); }
+/* Filled, the pill states its own bounds and the ring would only double it. */
+.chip:hover,
+.chip[aria-pressed='true'] {
+  background: var(--d-pick);
+  color: var(--d-on-pick);
+  box-shadow: none;
+}
 
 /* The order summary: what the money buys, what the code adds, what lands. */
 .buy__summary {
@@ -903,6 +925,32 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 .buy .fh__btn.dbtn--block { margin-top: 20px; }
+/* Sits where the column's slack used to pool. Quiet by design: it answers a
+   question, it is not competing with the CTA above it. */
+.buy__next {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--d-text-2);
+}
+.buy__next li {
+  position: relative;
+  padding-left: 18px;
+}
+.buy__next li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--d-text-3);
+}
 .buy__pay-with {
   display: flex;
   align-items: center;
@@ -917,7 +965,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   background-repeat: no-repeat;
 }
 /* The row needs clear air above it even when there is no slack to absorb. */
-.buy .fh__btn.dbtn--block + .buy__pay-with { margin-top: max(auto, 18px); }
+/* The next-steps list now carries the auto margin, so the marks row simply
+   follows it. (This rule was `max(auto, 18px)`, which max() rejects, so the
+   declaration had never applied.) */
+.buy .fh__btn.dbtn--block + .buy__next { margin-top: auto; padding-top: 20px; }
+.buy__next + .buy__pay-with { margin-top: 18px; }
 .buy__pay-label { color: var(--d-text-3); font-size: 13px; }
 .buy__marks { display: flex; align-items: center; gap: 7px; }
 
@@ -1230,15 +1282,15 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   padding: 0 16px;
   border: 0;
   border-radius: var(--r-card);
-  background: var(--d-accent);
-  color: var(--d-on-accent);
+  background: var(--d-pick);
+  color: var(--d-on-pick);
   font: inherit;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 160ms ease;
 }
-.copy:hover { background: var(--d-accent-hover); }
+.copy:hover { background: var(--d-pick-hover); }
 .copy--field {
   width: 100%;
   height: auto;

@@ -18,6 +18,7 @@ export function BuyPanel() {
   const [promoError, setPromoError] = useState(false);
   const payId = useId();
   const promoId = useId();
+  const tabId = useId();
 
   const rate = method === 'card' ? 1 : (TOKENS.find((t) => t.id === token)?.usd ?? 1);
   const bonus = applied ? FLASH_SALE.bonus : 0;
@@ -28,6 +29,11 @@ export function BuyPanel() {
     const b = usd / PRESALE.price;
     return { base: b, extra: b * bonus, total: b * (1 + bonus), spend: usd };
   }, [pay, rate, bonus]);
+
+  /* Derived, not stored: a pill is selected only while the field still holds
+     its amount, so typing over it clears the state without any bookkeeping.
+     The tolerance covers the 6dp rounding setQuick does on conversion. */
+  const selected = QUICK_USD.find((u) => Math.abs(spend - u) < 0.05);
 
   const setQuick = (usd: number) => {
     const amount = usd / rate;
@@ -55,28 +61,40 @@ export function BuyPanel() {
         </p>
       </div>
 
-      <div className="tabs" role="tablist" aria-label="Payment method">
-        <button
-          type="button"
-          role="tab"
-          className="tabs__tab"
-          aria-selected={method === 'crypto'}
-          onClick={() => setMethod('crypto')}
-        >
-          Crypto
-        </button>
-        <button
-          type="button"
-          role="tab"
-          className="tabs__tab"
-          aria-selected={method === 'card'}
-          onClick={() => setMethod('card')}
-        >
-          Credit card
-        </button>
+      <div
+        className="tabs"
+        role="tablist"
+        aria-label="Payment method"
+        onKeyDown={(e) => {
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          e.preventDefault();
+          setMethod((m) => (m === 'crypto' ? 'card' : 'crypto'));
+        }}
+      >
+        {(['crypto', 'card'] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            id={`${tabId}-${id}`}
+            className="tabs__tab"
+            aria-selected={method === id}
+            aria-controls={`${tabId}-panel`}
+            /* Roving tabindex: the tablist is one tab stop, arrows move within. */
+            tabIndex={method === id ? 0 : -1}
+            onClick={() => setMethod(id)}
+          >
+            {id === 'crypto' ? 'Crypto' : 'Credit card'}
+          </button>
+        ))}
       </div>
 
-      <div className="buy__amount">
+      <div
+        className="buy__amount"
+        role="tabpanel"
+        id={`${tabId}-panel`}
+        aria-labelledby={`${tabId}-${method}`}
+      >
         <div className="buy__amount-head">
           <label className="field__label" htmlFor={payId}>
             You pay
@@ -105,7 +123,13 @@ export function BuyPanel() {
 
         <div className="buy__quick">
           {QUICK_USD.map((usd) => (
-            <button key={usd} type="button" className="chip" onClick={() => setQuick(usd)}>
+            <button
+              key={usd}
+              type="button"
+              className="chip"
+              aria-pressed={selected === usd}
+              onClick={() => setQuick(usd)}
+            >
               ${usd}
             </button>
           ))}
@@ -172,6 +196,15 @@ export function BuyPanel() {
         {spend > 0 ? `Buy ${money(total)} $RTX` : 'Buy $RTX'}
       </Button>
 
+      {/* The question a buyer has at the CTA, answered in the site's own words
+          from the FAQ: allocated to the paying wallet, unlocked in full at
+          listing. It also gives the column's slack something to be. */}
+      <ul className="buy__next">
+        <li>Tokens are allocated to the wallet you pay from.</li>
+        <li>Your allocation unlocks in full at listing — no cliff, no drip.</li>
+        <li>Claim opens on this dashboard the day $RTX lists.</li>
+      </ul>
+
       <div className="buy__pay-with">
         <span className="buy__pay-label">We accept</span>
         <span className="buy__marks">
@@ -180,8 +213,8 @@ export function BuyPanel() {
           <PayMark id="USDT" className="icon-22" />
           <PayMark id="USDC" className="icon-22" />
           <PayMark id="SOL" className="icon-22" />
-          <VisaMark className="mark-card" />
-          <MastercardMark className="mark-card" />
+          <VisaMark className="icon-22" />
+          <MastercardMark className="icon-22" />
         </span>
       </div>
     </section>

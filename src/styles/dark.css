@@ -411,6 +411,13 @@
 [data-theme='dark'] .tk__logo {
   filter: invert(1);
 }
+/* The "Copied" pill is a filled plate that is already dark on a light page, carrying white — so it
+   lifts here rather than inverting. Painted from --tk-ink it followed that token to near-white and
+   kept its white text, which left the confirmation invisible at the moment it was needed. */
+[data-theme='dark'] .tk__copied {
+  background: var(--d-il-chip);
+  color: var(--d-ink);
+}
 /* The copy glyph beside the contract address is near-black line art on the band itself. */
 [data-theme='dark'] .tk__copyIcon {
   filter: invert(1) brightness(1.7);

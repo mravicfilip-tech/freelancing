@@ -83,12 +83,6 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
 
   const defs = make('defs', {});
   defs.innerHTML =
-    // the light in the box: hot at the seam, gone by the walls
-    `<radialGradient id="chest-inner" cx="50%" cy="40%">` +
-    `<stop offset="0" class="chest__innerHot"/><stop offset="1" class="chest__innerCold"/></radialGradient>` +
-    // the far wall catches the light; the floor keeps its own dark
-    `<linearGradient id="chest-wall" x1="0" y1="0" x2="0" y2="1">` +
-    `<stop offset="0" class="chest__wallLo"/><stop offset="1" class="chest__wallHi"/></linearGradient>` +
     `<clipPath id="chest-mouth"><polygon points="${POLY.mouth}"/></clipPath>` +
     `<clipPath id="chest-top"><polygon points="${POLY.top}"/></clipPath>`;
   svg.insertBefore(defs, svg.firstChild);
@@ -97,15 +91,29 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   lines.insertBefore(make('polygon', { class: 'chest__face chest__face--right', points: POLY.right }), lines.firstChild);
   lines.insertBefore(make('polygon', { class: 'chest__face chest__face--left', points: POLY.left }), lines.firstChild);
 
-  // the cavity, all of it clipped to the mouth so nothing can lie over the rim
+  /* The cavity, clipped to the mouth so nothing can lie over the rim. Two far walls and a floor,
+     each a value step apart — that difference is the depth. No black: the light bands of this site
+     have no voids, and a hole punched in the page is not a surface the design owns. */
   const cave = make('g', { class: 'chest__cave', 'clip-path': 'url(#chest-mouth)' });
   cave.appendChild(make('polygon', { class: 'chest__floor', points: POLY.floor }));
   cave.appendChild(make('polygon', { class: 'chest__wall chest__wall--back', points: POLY.wallBack }));
   cave.appendChild(make('polygon', { class: 'chest__wall chest__wall--side', points: POLY.wallSide }));
-  cave.appendChild(make('ellipse', { class: 'chest__innerGlow', cx: String(SEAM.x), cy: String(SEAM.y + 26), rx: '132', ry: '52' }));
-  // the shadow the rim casts just inside its own front lip, which is what seats the opening
-  cave.appendChild(make('polygon', { class: 'chest__occl', points: POLY.mouth }));
   lines.insertBefore(cave, lines.children[2] ?? null);
+
+  /* The mouth's own edge, and the light that runs round it. One hairline seats the opening — the
+     weight every other edge on the page is seated with — and the seam is a short dash on a long gap
+     driven at a constant rate, which is how the orbit, the bolt and the payment line each announce
+     themselves. The rings fire from the same rim when the latch gives. */
+  const rim = make('g', { class: 'chest__rimG' });
+  rim.appendChild(make('polygon', { class: 'chest__rim', points: POLY.mouth }));
+  const seam = make('polygon', { class: 'chest__seam', points: POLY.mouth }) as SVGPolygonElement;
+  rim.appendChild(seam);
+  const pings = [0, 1].map(() => {
+    const el = make('polygon', { class: 'chest__ping', points: POLY.mouth });
+    rim.appendChild(el);
+    return el;
+  });
+  lines.insertBefore(rim, lines.children[3] ?? null);
 
   /* The lid: its underside lips first, then its face, then the export's own strokes on top. As one
      group it lifts, tilts and returns without any of its parts drifting from the others. */
@@ -121,5 +129,5 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   lidG.appendChild(sheenG);
   lidSegs.forEach((el) => lidG.appendChild(el));
 
-  return { lidG, lidFace, cave };
+  return { lidG, lidFace, cave, seam, pings };
 }

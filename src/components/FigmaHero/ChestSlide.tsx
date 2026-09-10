@@ -81,7 +81,7 @@ export function ChestSlide({ active }: { active: boolean }) {
 
     const built = buildCrate(svg, lidSegs.map((s) => s.el));
     if (!built) return;
-    const { lidG, lidFace } = built;
+    const { lidG, lidFace, seam, pings } = built;
 
     /* The hatch parts the lid's panel rather than lifting the lid, so it needs a tighter cut than
        the others. The lid as a whole includes the crate's corner brackets and top rails, which read
@@ -133,13 +133,14 @@ export function ChestSlide({ active }: { active: boolean }) {
 
       ctx = gsap.context(() => {
         const coins = gsap.utils.toArray<HTMLElement>('.chest__coin');
-        const solid = '.chest__face, .chest__lip, .chest__floor, .chest__wall, .chest__occl';
+        const solid = '.chest__face, .chest__lip, .chest__floor, .chest__wall, .chest__rim';
 
         if (reduced) {
           gsap.set(segs.map((s) => s.el), { strokeDasharray: 'none', strokeDashoffset: 0, opacity: 1 });
           gsap.set(solid, { opacity: 1 });
           gsap.set(lidG, { y: -40, rotation: -7, svgOrigin: HINGE });
-          gsap.set('.chest__innerGlow', { opacity: 1 });
+          gsap.set(seam, { opacity: 0.9 });
+          gsap.set('.chest__badge', { opacity: 1 });
           coins.forEach((c, i) => gsap.set(c, { x: (i - 2) * 54, y: -86, scale: 1, opacity: 1 }));
           return;
         }
@@ -154,7 +155,7 @@ export function ChestSlide({ active }: { active: boolean }) {
         gsap.set(solid, { opacity: 0 });
         gsap.set(coins, { x: 0, y: 0, scale: 0.2, opacity: 0, rotation: 0 });
         entry.to('.chest__face, .chest__lip', { opacity: 1, duration: 0.5, ease: 'power2.out' }, DRAW * 0.7);
-        entry.to('.chest__floor, .chest__wall, .chest__occl', { opacity: 1, duration: 0.45 }, DRAW * 0.78);
+        entry.to('.chest__floor, .chest__wall, .chest__rim', { opacity: 1, duration: 0.45 }, DRAW * 0.78);
 
         // ---- arm, open, empty — and again ----
         const cycle = gsap.timeline({ repeat: -1, repeatDelay: 0.8, delay: DRAW + 0.4 });
@@ -163,10 +164,19 @@ export function ChestSlide({ active }: { active: boolean }) {
         cycle.to(svg, { scale: 0.986, duration: 0.24, ease: 'power2.in', transformOrigin: '50% 88%' }, 0);
         cycle.to(svg, { scale: 1, duration: 0.55, ease: 'elastic.out(1, 0.55)', transformOrigin: '50% 88%' }, 0.24);
 
-        // the light coming up out of the cavity, and the bloom of it that gets past the rim
-        cycle.to('.chest__innerGlow', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.3);
-        cycle.to('.chest__glow', { opacity: 0.5, duration: 0.6, ease: 'power2.out' }, 0.34);
-        cycle.fromTo('.chest__ray', { scaleY: 0.2, opacity: 0 }, { scaleY: 1, opacity: 0.26, duration: 0.7, ease: 'power3.out', stagger: 0.03 }, 0.38);
+        /* The seam lights rather than the hole: a short dash on a long gap driven round the rim at a
+           constant rate. One quick lap as the latch gives, then a slower one while it stands open —
+           the same mark the orbit, the bolt and the payment line each announce themselves with. */
+        const rimLen = seam.getTotalLength();
+        gsap.set(seam, { strokeDasharray: `${rimLen * 0.12} ${rimLen - rimLen * 0.12}`, strokeDashoffset: 0 });
+        cycle.to(seam, { opacity: 0.9, duration: 0.25 }, 0.24);
+        cycle.fromTo(seam, { strokeDashoffset: 0 }, { strokeDashoffset: -rimLen, duration: 1.1, ease: 'none' }, 0.24);
+        cycle.fromTo(seam, { strokeDashoffset: 0 }, { strokeDashoffset: -rimLen, duration: 2.6, ease: 'none' }, 1.34);
+        // and the halo the site fires whenever something is reached
+        pings.forEach((el, i) => {
+          cycle.fromTo(el, { scale: 1, opacity: 0.55 },
+            { scale: 2.1, opacity: 0, duration: 1.1, ease: 'power2.out', svgOrigin: SEAM.x + ' ' + SEAM.y }, 0.3 + i * 0.22);
+        });
         // the sheen crossing the lid's face as it turns into the light
         cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.3);
         cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.0);
@@ -198,6 +208,22 @@ export function ChestSlide({ active }: { active: boolean }) {
             }, 0.32 + Math.random() * 0.3);
           });
         }
+
+        /* What comes out leaves the seam as the site's value-in-transit mark and resolves into the
+           coin at the top of its rise, rather than the coin simply appearing out of the box. */
+        const packets = gsap.utils.toArray<HTMLElement>('.chest__packet');
+        gsap.set(packets, { x: 0, y: 0, opacity: 0, scale: 1 });
+        packets.forEach((pk, i) => {
+          const at = (variant === '1' ? 0.85 : 0.6) + i * 0.07;
+          cycle.fromTo(pk, { x: 0, y: 0, opacity: 0, scale: 0.5 },
+            { opacity: 1, scale: 1, duration: 0.22, ease: 'power2.out' }, at - 0.22);
+          cycle.to(pk, { y: -46, duration: 0.4, ease: 'power2.out' }, at - 0.22);
+          cycle.to(pk, { opacity: 0, scale: 0.6, duration: 0.2, ease: 'power2.in' }, at + 0.08);
+        });
+
+        /* The payoff is a status, not a glare — the badge the orbit lands, in its own measurements. */
+        cycle.fromTo('.chest__badge', { opacity: 0, scale: 0 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 50%' }, 1.5);
 
         // ---- what comes out ----
         const EMIT = variant === '1' ? 0.85 : 0.6;
@@ -256,8 +282,9 @@ export function ChestSlide({ active }: { active: boolean }) {
         });
 
         // ---- and it closes, and re-arms ----
-        cycle.to('.chest__ray', { opacity: 0, scaleY: 0.2, duration: 0.5, ease: 'power2.in' }, CLOSE - 0.5);
-        cycle.to('.chest__glow, .chest__innerGlow', { opacity: 0, duration: 0.6, ease: 'power2.in' }, CLOSE - 0.4);
+        cycle.to(seam, { opacity: 0, duration: 0.5, ease: 'power2.in' }, CLOSE - 0.5);
+        cycle.to('.chest__badge', { opacity: 0, scale: 0.9, duration: 0.4, ease: 'power2.in' }, CLOSE - 0.5);
+        cycle.to('.chest__packet', { opacity: 0, duration: 0.3 }, CLOSE - 0.5);
         if (variant === '2') {
           halfGs.forEach((g, i) => cycle.to(g, { x: 0, y: 0, duration: 0.85, ease: 'power3.inOut' }, CLOSE + i * 0.05));
         } else if (variant === '5') {
@@ -283,22 +310,20 @@ export function ChestSlide({ active }: { active: boolean }) {
 
   return (
     <div ref={host} className="chest" data-variant={variant} data-motion="pending">
+      <div className="chest__field" aria-hidden="true" />
       <div className="chest__stage">
         <div className="chest__shadow" aria-hidden="true" />
-        <div className="chest__glow" aria-hidden="true" />
-        <svg className="chest__rays" viewBox="0 0 401.5 406" aria-hidden="true">
-          {[-30, -15, 0, 15, 30].map((deg) => (
-            <rect key={deg} className="chest__ray" x={SEAM.x - 6} y={SEAM.y - 230} width="12" height="230" rx="6"
-              transform={`rotate(${deg} ${SEAM.x} ${SEAM.y})`} />
-          ))}
-        </svg>
         <div ref={art} className="chest__art" />
         <div className="chest__payload" aria-hidden="true">
+          {PAYLOAD.map((p) => (
+            <span key={p.src + '-pk'} className="chest__packet" />
+          ))}
           {PAYLOAD.map((p) => (
             <img key={p.src} className="chest__coin" data-mark={p.mark || undefined} src={p.src} alt=""
               style={{ width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2 }} />
           ))}
         </div>
+        <span className="chest__badge" aria-hidden="true">Presale live</span>
       </div>
     </div>
   );

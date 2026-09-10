@@ -211,7 +211,9 @@
   font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.28px;
-  color: var(--ff-ink);
+  /* A chip is a label on a raised plate, not body copy: it takes the page's ink at both themes
+     rather than the paragraph grey the card sets around it. */
+  color: var(--ff-chipInk, var(--ff-ink));
   white-space: nowrap;
 }
 .ff__chip img {

@@ -148,6 +148,11 @@ const parts = (il: HTMLElement) => ({
 });
 type P = ReturnType<typeof parts>;
 const restBg = (row: HTMLElement) => getComputedStyle(row).backgroundColor;
+/* The row's two inks. GSAP needs values rather than var(), and what it writes is an inline style
+   that outlives a theme change — so a literal here is a light-mode value the sweep repaints onto a
+   dark page a moment after the CSS has turned over. Read off the scene instead. */
+const ink = (il: HTMLElement, name: string, fallback: string) =>
+  getComputedStyle(il).getPropertyValue(name).trim() || fallback;
 const COPY = 'No account to create. Your wallet is your login, and payouts go to any bank you name.';
 
 const ambient = (gsap: G, il: HTMLElement) => {
@@ -172,13 +177,15 @@ const click = (story: TL, p: P, i: number, t: number) => {
 };
 /** The row fills to its wallet's full colour; its type turns white and its logo whitens or takes a ring. */
 const fill = (story: TL, row: HTMLElement, t: number) => {
-  story.to(row, { backgroundColor: row.dataset.color!, color: '#ffffff', duration: 0.35, ease: 'power2.out' }, t);
+  const on = ink(row.closest('.ff__il') as HTMLElement, '--il-rowInkOn', '#ffffff');
+  story.to(row, { backgroundColor: row.dataset.color!, color: on, duration: 0.35, ease: 'power2.out' }, t);
   return row.dataset.whiten
     ? story.to(one(row, 'img'), { filter: 'brightness(0) invert(1)', duration: 0.35, ease: 'power2.out' }, t)
     : story.to(one(row, 'img'), { boxShadow: '0 0 0 2px rgba(255,255,255,1)', duration: 0.35, ease: 'power2.out' }, t);
 };
 const unfill = (story: TL, row: HTMLElement, rest: string, t: number) => {
-  story.to(row, { backgroundColor: rest, color: '#080d10', duration: 0.5, ease: 'power2.inOut' }, t);
+  const off = ink(row.closest('.ff__il') as HTMLElement, '--il-rowInk', '#080d10');
+  story.to(row, { backgroundColor: rest, color: off, duration: 0.5, ease: 'power2.inOut' }, t);
   return row.dataset.whiten
     ? story.to(one(row, 'img'), { filter: 'brightness(1) invert(0)', duration: 0.5, ease: 'power2.inOut' }, t)
     : story.to(one(row, 'img'), { boxShadow: '0 0 0 0px rgba(255,255,255,0)', duration: 0.5, ease: 'power2.inOut' }, t);

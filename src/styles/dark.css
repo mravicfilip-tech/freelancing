@@ -219,7 +219,10 @@
    plates on a dark band, which is what "dark mode is not applied" looks like. */
 [data-theme='dark'] .ff__il {
   --il-surface: var(--d-il-panel);
-  --il-ink: var(--d-body);
+  /* This is what a scene's type defaults to. In light it is #2c2e31 — the page's hardest ink — so
+     every heading and figure inside an illustration is set in it. Mapped to the body grey here,
+     all of that came out a step and a half down and the scenes read as though they were disabled. */
+  --il-ink: var(--d-ink);
   --il-label: var(--d-label);
   --il-line: var(--d-il-line);
   /* the three greys the design keeps apart; on this ground two are edges and one is a separator */
@@ -236,6 +239,20 @@
      here as they take its hardest ink there; the wallet panel's aside sits a step under the body. */
   --il-figure: var(--d-ink);
   --il-bodyMute: rgb(133 147 160 / 72%);
+  /* A mark on glass goes the other way from the plate it sits on: the wise wordmark, the lit core
+     of a dot on the payment line. Painted from --il-surface they became the plate and vanished. */
+  --il-onGlass: var(--d-ink);
+  /* The wallet column. Its four brand tints were mixed against white paper — 4% of a blue is a
+     whisper there and nothing at all here, 24% of an orange is a blush there and mud here. Each is
+     restated at the strength it needs on this ground, and the row's own ink with them: the label
+     was a near-black literal the run wrote back after every sweep. */
+  --il-panelLine: var(--d-il-line);
+  --il-rowInk: var(--d-ink);
+  --il-rowInkOn: #ffffff;
+  --il-w-metamask: rgb(255 141 93 / 14%);
+  --il-w-walletconnect: rgb(59 153 252 / 8%);
+  --il-w-coinbase: rgb(84 132 255 / 12%);
+  --il-w-phantom: rgb(171 159 242 / 12%);
 }
 
 /* ---------- The light the scenes are built on ----------
@@ -265,19 +282,19 @@
 [data-theme='dark'] .il-pay__blob,
 [data-theme='dark'] .il-fast__blob,
 [data-theme='dark'] .il-phone__glow {
-  filter: brightness(0.22) saturate(0.2);
+  filter: brightness(0.22) saturate(0);
 }
 /* Both are rectangles: panels of gradient that end where their box ends. On white paper the end is
    the paper, so nothing shows; screened onto a dark card the boundary is a visible edge running
    across the tile. Each is faded out along the edge that falls inside the picture. */
 [data-theme='dark'] .il-pay__blob {
-  mask-image: linear-gradient(180deg, transparent 0%, #000 34%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 46%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 46%);
 }
 /* The fast blob is drawn flipped, so its trailing edge on screen is its leading edge in the box. */
 [data-theme='dark'] .il-fast__blob {
-  mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
 }
 /* The orbit rings are hairlines in the same wash — screened they would vanish, so they are simply
    dimmed to the weight a line carries on this ground. */
@@ -378,17 +395,46 @@
   background: var(--d-rail);
 }
 
-/* ---------- Bento grid (.ff) ---------- */
+/* ---------- Bento grid (.ff) ----------
+   The card is the ground five illustrations are drawn on, and it was a step ABOVE the ladder they
+   are built from: every plate in every scene — the phone's screen, the hub, the receipt, the
+   connect panel — came out darker than the card it sat on, so each one read as a hole punched in
+   the tile rather than an object standing on it. The card takes the scenes' own plate instead, the
+   value the ecosystem panel already uses, and the whole ladder lifts off it the way it was drawn
+   to. The band stays above the card here; on a dark page a tile recessed into its section is a
+   treatment this design already owns, and a raised white card is not available. */
 [data-theme='dark'] .ff {
   --ff-bg: var(--d-band-b);
-  --ff-surface: var(--d-surface-2);
-  --ff-card: var(--d-surface);
+  --ff-surface: var(--d-il-chip);
+  --ff-card: #0c1218;
   --ff-line: var(--d-rail);
   --ff-ink: var(--d-body);
   --ff-title: var(--d-ink);
   --ff-muted: var(--d-label);
   --ff-indigo: var(--d-indigo);
   --ff-lavender: var(--d-lavender);
+  --ff-chipInk: var(--d-ink);
+}
+/* The chip's glyph is near-black line art, drawn for the white plate it sat on. */
+[data-theme='dark'] .ff__chip img {
+  filter: invert(1) brightness(1.7);
+}
+/* Three marks that ship as dark line art and sit on surfaces that are now dark: the hub's Remittix
+   mark (#111 on what was a white disc), and the phone's own status bar and app header (#333 and
+   #2C2E31 on what was a white screen). An <img>'s fill is not something a stylesheet can reach, so
+   each is turned over rather than repainted. The USD and BTC chips beside them are not on this
+   list — they ship as white pills carrying dark text, and a white pill still reads here. */
+[data-theme='dark'] .il-simple__hub img,
+[data-theme='dark'] .il-phone__bar,
+[data-theme='dark'] .il-phone__head {
+  filter: invert(1) brightness(1.7);
+}
+
+/* The phone is a product render, lit for a white studio: a gold bezel and a bright body, which on
+   a dark tile is the one lit object in the band and pulls the eye off its own screen. It is the
+   same phone in a darker room. */
+[data-theme='dark'] .il-phone__frame {
+  filter: brightness(0.6) saturate(0.82) contrast(1.04);
 }
 
 /* ---------- Ecosystem (.ec) ---------- */

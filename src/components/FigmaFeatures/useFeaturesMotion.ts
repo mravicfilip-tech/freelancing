@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { useTheme } from '../../theme';
 import { MOTION } from './illustrations';
 
 /**
@@ -23,6 +24,9 @@ export const DEFAULT_PICKS: MotionPicks = { pay: 1, fx: 1, simple: 3, fast: 4, u
  * the axis they are now drawn on rather than keeping the old layout's tweens.
  */
 export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: MotionPicks = {}, mobile = false) {
+  /* The scenes' sweeps read their end-states off the stylesheet and then write them as inline
+     styles, which outlive a theme change — so the run is rebuilt when the resolved theme is. */
+  const theme = useTheme();
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -90,5 +94,5 @@ export function useFeaturesMotion(root: RefObject<HTMLElement | null>, picks: Mo
       cancelled = true;
       revert?.();
     };
-  }, [root, picks, mobile]);
+  }, [root, picks, mobile, theme]);
 }

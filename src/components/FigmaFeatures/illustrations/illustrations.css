@@ -25,6 +25,20 @@
      scene keeps a light theme's values after the page has turned over. */
   --il-figure: #000;
   --il-bodyMute: rgba(44, 46, 49, 0.64);
+  /* White is two different things in these scenes and only one of them is a surface: it is the
+     plate a card is made of, and it is also the mark drawn ON a plate — a glyph on a glass chip,
+     the lit core of a dot on the payment line. On a light page one value serves both. On a dark one
+     they move in opposite directions, and a mark painted from the plate token disappears into it. */
+  --il-onGlass: #fff;
+  /* The wallet column: each row is its brand at a tint mixed for white paper, its label the page's
+     hardest ink, and its lit state the brand at full strength carrying white. */
+  --il-panelLine: rgba(0, 0, 0, 0.12);
+  --il-rowInk: #080d10;
+  --il-rowInkOn: #ffffff;
+  --il-w-metamask: rgba(255, 141, 93, 0.24);
+  --il-w-walletconnect: rgba(59, 153, 252, 0.04);
+  --il-w-coinbase: rgba(14, 91, 255, 0.12);
+  --il-w-phantom: rgba(171, 159, 242, 0.12);
 
   display: block;
   pointer-events: none;
@@ -371,7 +385,7 @@
   top: 8.46px;
   width: 55.5px;
   height: 13.6px;
-  background: var(--il-surface);
+  background: var(--il-onGlass);
   mask-size: 55.5px 13.5px;
   mask-repeat: no-repeat;
 }
@@ -406,7 +420,7 @@
   height: 8px;
   margin: -4px 0 0 -4px;
   border-radius: 50%;
-  background: var(--il-surface);
+  background: var(--il-onGlass);
   box-shadow: 0 0 0 2px rgba(64, 66, 209, 0.9), 0 0 10px rgba(179, 181, 245, 0.9);
   opacity: 0;
   will-change: transform;
@@ -436,7 +450,7 @@
   height: 6px;
   margin-left: -3px;
   border-radius: 50%;
-  background: var(--il-surface);
+  background: var(--il-onGlass);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
 }
 /* The ring the hub sends out as a payment passes through it. */
@@ -787,7 +801,7 @@
   display: flex;
   gap: 24px;
   padding-left: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--il-panelLine);
   border-radius: 12px;
   background: var(--il-surface);
   overflow: hidden;
@@ -808,6 +822,7 @@
   display: block;
 }
 .il-ui__introTop b {
+  color: var(--il-ink);
   font-weight: 500;
   font-size: 18px;
   line-height: 0.981;
@@ -849,17 +864,17 @@
   will-change: transform, background-color;
 }
 .il-ui__row--metamask {
-  background: rgba(255, 141, 93, 0.24);
+  background: var(--il-w-metamask);
   border-top-right-radius: 11px;
 }
 .il-ui__row--walletconnect {
-  background: rgba(59, 153, 252, 0.04);
+  background: var(--il-w-walletconnect);
 }
 .il-ui__row--coinbase {
-  background: rgba(14, 91, 255, 0.12);
+  background: var(--il-w-coinbase);
 }
 .il-ui__row--phantom {
-  background: rgba(171, 159, 242, 0.12);
+  background: var(--il-w-phantom);
   border-bottom-right-radius: 11px;
 }
 /* A light that can sweep down the wallet column (ambient variant). */

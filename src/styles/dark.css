@@ -738,10 +738,11 @@
 [data-theme='dark'] .chest__field {
   background-image: radial-gradient(circle at center, rgb(238 242 245 / 7%) 1px, transparent 1.4px);
 }
-/* A cast shadow needs light to be cast from. On a dark ground it reads as a smudge, so the crate is
-   seated by the field falling away under it instead. */
+/* A cast shadow needs light to be cast from, and there is none here: darkened it was a black
+   smudge under a dark box, lightened it would be a glow the crate is not giving off. The field
+   falling away under the crate seats it on this ground; the shadow does not. */
 [data-theme='dark'] .chest__shadow {
-  background: radial-gradient(closest-side, rgb(0 0 0 / 55%), transparent 72%);
+  display: none;
 }
 /* The badge is indigo carrying white. Lifted, that indigo is a pale lavender, which white cannot
    sit on — so it takes the ink this ground uses under a light fill. */

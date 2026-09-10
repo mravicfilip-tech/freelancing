@@ -74,9 +74,17 @@ export function tiltMatrix(phi: number): string {
  * the two underside rails meet at (194, 208.5).
  */
 const LID = 18.5;
-/** The verticals, measured at the corners they belong to — from the body's rim, so a slab less. */
-const V_SIDE = 185 - LID;
-const V_FRONT = 225 - LID;
+/**
+ * The feet — where each visible corner of the body actually bottoms out, read off the drawing
+ * (`seg-162` on the left, `seg-165` on the right, the front foot at `seg-213`).
+ *
+ * The faces used to stop at a pair of shared verticals that landed on the TOP of the bottom rail
+ * band, so the band and all four corner feet were left with no fill in them and the dot field
+ * showed straight through the bottom of the crate. There is no one height that reaches all three:
+ * the front corner is 100 units lower than the side ones, because that is what an isometric box
+ * looks like.
+ */
+const FOOT = { l: [TOP.l[0], 306], f: [TOP.f[0], 405], r: [TOP.r[0], 305] } as const;
 /** How deep a cavity reads before the walls stop carrying a value difference. */
 const D = 74;
 
@@ -115,8 +123,8 @@ export const POLY = {
      the rim the artwork draws, hanging in the air over a corner post whose top is at y=209. That
      is the plate that sat proud of the crate. Each drops by its own corner's vertical, since the
      drawing does not share one height between them. */
-  left: pts(down(TOP.l, LID), down(TOP.f, LID), down(TOP.f, LID + V_FRONT), down(TOP.l, LID + V_SIDE)),
-  right: pts(down(TOP.f, LID), down(TOP.r, LID), down(TOP.r, LID + V_SIDE), down(TOP.f, LID + V_FRONT)),
+  left: pts(down(TOP.l, LID), down(TOP.f, LID), FOOT.f, FOOT.l),
+  right: pts(down(TOP.f, LID), down(TOP.r, LID), FOOT.r, FOOT.f),
 
   /* The inside. Looking down into the box you see its two far walls and its floor; the near walls
      are behind the front rim, and the clip to the mouth removes them. */

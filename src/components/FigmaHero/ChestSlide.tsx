@@ -50,15 +50,19 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const BUS = (() => {
   const mirror = (x: number) => TOP.l[0] + TOP.r[0] - x;
   const y = TOP.l[1] + 104;
-  const OUT = -300;
-  const BRANCH = 58;
+  /* Far enough out that the spine is always cut by the slide's own edge rather than stopping
+     inside it. On a wide screen the crate is 344px in a band three times that, so at -300 the run
+     ended in the middle of empty ground and the feed read as two short stubs beside the box. The
+     slide clips, so overshooting costs nothing and the line reads as coming in from beyond. */
+  const OUT = -700;
+  const BRANCH = 74;
   const paths: string[] = [];
   const nodes: [number, number][] = [];
   ([
     [OUT, TOP.l[0], 1],
     [mirror(OUT), TOP.r[0], -1],
   ] as const).forEach(([from, edge, dir]) => {
-    const hub = edge - dir * 118;
+    const hub = edge - dir * 158;
     paths.push(`M${from} ${y} H${hub}`);
     paths.push(`M${hub} ${y} L${hub + dir * 54} ${y - BRANCH} H${edge}`);
     paths.push(`M${hub} ${y} H${edge}`);

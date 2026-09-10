@@ -352,22 +352,18 @@ export function ChestSlide({ active }: { active: boolean }) {
           });
         }
 
-        /* What comes out leaves the seam as the site's value-in-transit mark and resolves into the
-           coin at the top of its rise, rather than the coin simply appearing out of the box. */
-        const packets = gsap.utils.toArray<HTMLElement>('.chest__packet');
-        gsap.set(packets, { x: 0, y: 0, opacity: 0, scale: 1 });
-        packets.forEach((pk, i) => {
-          const at = (variant === '1' ? 0.85 : 0.6) + i * 0.07;
-          cycle.fromTo(pk, { x: 0, y: 0, opacity: 0, scale: 0.5 },
-            { opacity: 1, scale: 1, duration: 0.22, ease: 'power2.out' }, at - 0.22);
-          cycle.to(pk, { y: -46, duration: 0.4, ease: 'power2.out' }, at - 0.22);
-          cycle.to(pk, { opacity: 0, scale: 0.6, duration: 0.2, ease: 'power2.in' }, at + 0.08);
-        });
-
         /* The rim flares as they go — the box gives something up, and the light on its own opening
            is where that reads. Without it five coins simply appear above a crate that did nothing. */
-        cycle.to(seam, { opacity: 1, strokeWidth: 3.4, duration: 0.14, ease: 'power2.out' }, 0.6);
-        cycle.to(seam, { opacity: 0.9, strokeWidth: 2, duration: 0.5, ease: 'power2.inOut' }, 0.74);
+        cycle.to(seam, { opacity: 1, strokeWidth: 4.2, duration: 0.12, ease: 'power2.out' }, 0.58);
+        cycle.to(seam, { opacity: 0.9, strokeWidth: 2, duration: 0.55, ease: 'power2.inOut' }, 0.7);
+        // a bloom out of the mouth, which is the only place the light can be coming from
+        cycle.fromTo('.chest__burst', { opacity: 0, scale: 0.2 },
+          { opacity: 0.85, scale: 0.72, duration: 0.1, ease: 'power2.out' }, 0.55);
+        cycle.to('.chest__burst', { opacity: 0, scale: 1.35, duration: 0.75, ease: 'power2.out' }, 0.65);
+        /* And the crate takes the recoil. Five things leaving at once and the box not moving is the
+           tell that nothing actually left it — this is the beat that makes the burst have weight. */
+        cycle.to(svg, { y: 7, duration: 0.11, ease: 'power2.out' }, 0.58);
+        cycle.to(svg, { y: 0, duration: 0.85, ease: 'elastic.out(1, 0.38)' }, 0.69);
 
         /* The payoff is a status, not a glare — the badge the orbit lands, in its own measurements. */
         cycle.fromTo('.chest__badge', { opacity: 0, scale: 0 },
@@ -379,7 +375,7 @@ export function ChestSlide({ active }: { active: boolean }) {
            box before the first coin. */
         const EMIT = variant === '1' ? 0.62 : 0.6;
         coins.forEach((c, i) => {
-          const at = EMIT + i * (variant === '3' ? 0.045 : 0.07);
+          const at = EMIT + i * (variant === '3' ? 0.035 : 0.07);
           const n = i - (PAYLOAD.length - 1) / 2;
 
           if (variant === '1') {
@@ -421,11 +417,12 @@ export function ChestSlide({ active }: { active: boolean }) {
                third, and is pulled back onto it — which is what gives the beat its kick. Under the
                old rise it grew to full size on a smooth curve and slid into place, and five of
                those at once read as a fade-in rather than an eruption. */
-            cycle.fromTo(c, { x: 0, y: 18, scale: 0.05, opacity: 0, rotation: -55 },
-              { x: home.x * 1.34, y: home.y * 1.28, scale: 1.22, opacity: 1, rotation: 8,
-                duration: 0.52, ease: 'expo.out' }, at);
-            cycle.to(c, { x: home.x, y: home.y, scale: home.scale, rotation: 0,
-              duration: 0.42, ease: 'back.out(1.6)' }, at + 0.52);
+            cycle.fromTo(c,
+              { x: 0, y: 22, scaleX: 0.3, scaleY: 0.9, opacity: 0, rotation: -70 },
+              { x: home.x * 1.48, y: home.y * 1.42, scaleX: 1.3, scaleY: 1.3, opacity: 1, rotation: 14,
+                duration: 0.46, ease: 'expo.out' }, at);
+            cycle.to(c, { x: home.x, y: home.y, scaleX: home.scale, scaleY: home.scale, rotation: 0,
+              duration: 0.5, ease: 'back.out(2.1)' }, at + 0.46);
             cycle.to(turn, {
               v: 1, duration: CLOSE - at - 1.4, ease: 'none',
               onUpdate: () => gsap.set(c, place(start + turn.v * Math.PI * 2)),
@@ -451,7 +448,6 @@ export function ChestSlide({ active }: { active: boolean }) {
         // ---- and it closes, and re-arms ----
         cycle.to(seam, { opacity: 0, duration: 0.5, ease: 'power2.in' }, CLOSE - 0.5);
         cycle.to('.chest__badge', { opacity: 0, scale: 0.9, duration: 0.4, ease: 'power2.in' }, CLOSE - 0.5);
-        cycle.to('.chest__packet', { opacity: 0, duration: 0.3 }, CLOSE - 0.5);
         if (variant === '2') {
           halfGs.forEach((g, i) => cycle.to(g, { x: 0, y: 0, duration: 0.85, ease: 'power3.inOut' }, CLOSE + i * 0.05));
         } else if (variant === '5') {
@@ -503,11 +499,9 @@ export function ChestSlide({ active }: { active: boolean }) {
         ))}
       </svg>
         <div className="chest__shadow" aria-hidden="true" />
+        <span className="chest__burst" aria-hidden="true" />
         <div ref={art} className="chest__art" />
         <div className="chest__payload" aria-hidden="true">
-          {PAYLOAD.map((p) => (
-            <span key={p.src + '-pk'} className="chest__packet" />
-          ))}
           {PAYLOAD.map((p) => (
             <span key={p.src} className="chest__coin" data-mark={p.mark || undefined}
               style={{ width: DISC, height: DISC, marginLeft: -DISC / 2, marginTop: -DISC / 2 }}>

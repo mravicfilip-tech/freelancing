@@ -759,10 +759,6 @@
   color: #0c1219;
   box-shadow: 0 6px 16px -6px rgb(0 0 0 / 60%);
 }
-/* The packet's white ring is what lifts it off a light card; on a dark one the ring is the ground. */
-[data-theme='dark'] .chest__packet {
-  box-shadow: 0 0 0 3px rgb(12 18 25 / 90%), 0 4px 10px rgb(0 0 0 / 45%);
-}
 /* The sheen is white light crossing a white plate on a light page. Crossing a dark plate it only
    needs to be a lift, not a flare. */
 [data-theme='dark'] .chest__sheen {

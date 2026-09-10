@@ -72,8 +72,6 @@ export function RoadmapStage() {
   const rail = useRef<HTMLDivElement>(null);
   const marker = useRef<HTMLImageElement>(null);
   const [active, setActive] = useState(0);
-  const track = useRef<HTMLDivElement>(null);
-  const chips = useRef<(HTMLLIElement | null)[]>([]);
   const phone = usePhone();
 
   useStageMotion(root);
@@ -163,20 +161,6 @@ export function RoadmapStage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, phone]);
 
-  /* On a phone the levels run across rather than down, so the band following itself is a scroll
-     rather than a slide: the level in play is brought to the middle of its own track. Measured off
-     the chip so it lands centred at any width, and instant under reduced motion — a band that
-     steps itself every 2.6s must not smooth-scroll the page's own reader around. */
-  useEffect(() => {
-    if (!phone) return;
-    const el = track.current;
-    const chip = chips.current[active];
-    if (!el || !chip) return;
-    const left = chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2;
-    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el.scrollTo({ left, behavior: smooth ? 'smooth' : 'auto' });
-  }, [active, phone]);
-
   return (
     <section ref={root} className="rs" id="roadmap" data-node-id="2717:2477" data-motion="pending" aria-labelledby="rs-title">
       <div className="rs__frame">
@@ -195,36 +179,28 @@ export function RoadmapStage() {
              object you can see the shape of — where it has been, where it is, how much is left —
              and what the level holds sits directly under it. */
           <div className="rs__stage rs__stage--h" data-node-id="2717:2490">
-            <div className="rs__track" ref={track}>
-              <ol className="rs__hRail" role="tablist" aria-label="Roadmap levels">
-                {LEVELS.map((l, i) => (
-                  <li
-                    className="rs__hItem"
-                    key={l.n}
-                    data-state={stageOf(l)}
-                    data-active={i === active || undefined}
-                    ref={(el) => {
-                      chips.current[i] = el;
-                    }}
+            <ol className="rs__hRail" role="tablist" aria-label="Roadmap levels">
+              {LEVELS.map((l, i) => (
+                <li className="rs__hItem" key={l.n} data-state={stageOf(l)} data-active={i === active || undefined}>
+                  <button
+                    type="button"
+                    role="tab"
+                    id={`rs-tab-${l.n}`}
+                    aria-selected={i === active}
+                    aria-controls={`rs-card-${l.n}`}
+                    tabIndex={i === active ? 0 : -1}
+                    onClick={() => pick(i)}
                   >
-                    <button
-                      type="button"
-                      role="tab"
-                      id={`rs-tab-${l.n}`}
-                      aria-selected={i === active}
-                      aria-controls={`rs-card-${l.n}`}
-                      tabIndex={i === active ? 0 : -1}
-                      onClick={() => pick(i)}
-                    >
-                      <i className="rs__hDot" aria-hidden="true" />
-                      <span className="rs__hName">Level {Number(l.n)}</span>
-                      <span className="rs__sr"> — {l.name}</span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-            </div>
-            <p className="rs__hLabel">{LEVELS[active].label}</p>
+                    <i className="rs__hDot">{Number(l.n)}</i>
+                    <span className="rs__sr">Level {Number(l.n)} — {l.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+            <p className="rs__hNow">
+              <b>Level {Number(LEVELS[active].n)}</b>
+              <span>{LEVELS[active].label}</span>
+            </p>
             <div className="rs__hPanel" role="tabpanel" aria-labelledby={`rs-tab-${LEVELS[active].n}`}>
               <Card level={LEVELS[active]} active />
             </div>

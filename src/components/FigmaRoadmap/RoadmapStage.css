@@ -330,7 +330,9 @@
   }
   .rs__frame {
     width: min(1560px, 100% - 32px);
-    padding: 64px 0;
+    /* The rails are the frame's own edges. Without this the card runs right up to them and the
+       band has no margin of its own — the one thing a dashed rule needs to read as an edge. */
+    padding: 64px 16px;
     gap: 28px;
   }
   .rs__title {
@@ -338,64 +340,47 @@
   }
 
   /* ---------- The road, running across ----------
-     Seven levels stacked down a phone is a list you scroll past, and the card belonging to the one
-     in play ends up far below the row that named it. Across, the run is one object whose shape you
-     can read at a glance — how far it has come, where it stands, how much is left — and what the
-     level holds sits directly under it. */
+     Seven levels stacked down a phone is a list you scroll past rather than a road you travel, and
+     the card belonging to the level in play ends up far below the row that named it.
+
+     Across, the whole run fits at once — seven nodes on 358 is 26 apart, so nothing scrolls and
+     nothing is cut at an edge. That matters more than it sounds: a roadmap's job is to show its
+     own shape, how far it has come and how much is left, and a track you have to drag shows you a
+     window instead. The level's name moves out of the row and under it, where it can be read at
+     full size beside the stage it is at. */
   .rs__stage--h {
     display: flex;
     flex-direction: column;
-    /* The desk stage centres its two columns; turned on its side that centring stops sizing the
-       track to the stage and starts sizing it to its own row of chips, which is what took the
-       section — and then the page — sideways. */
+    /* The desk stage centres its two columns; turned on its side that centring would size the rail
+       to its own content rather than to the stage. */
     align-items: stretch;
-    gap: 18px;
+    gap: 16px;
     height: auto;
-    padding: 4px 0 0;
+    padding: 6px 0 0;
     overflow: visible;
-  }
-
-  /* The track bleeds to the frame's edges so the road runs off the screen at both ends rather than
-     stopping inside a margin, and fades there rather than being cut. */
-  .rs__track {
-    /* A scroller inside a flex column will not shrink below the width its own row of chips wants
-       unless it is told it may — without this the track sizes to its content, takes the stage and
-       the section with it, and the page itself scrolls sideways. */
-    min-width: 0;
-    width: auto;
-    margin: 0 calc(var(--rs-gutter, 16px) * -1);
-    padding: 4px var(--rs-gutter, 16px) 2px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-    mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
-  }
-  .rs__track::-webkit-scrollbar {
-    display: none;
   }
 
   .rs__hRail {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
     margin: 0;
     padding: 0;
     list-style: none;
   }
   .rs__hItem {
     position: relative;
-    flex: 0 0 auto;
-    scroll-snap-align: center;
+    flex: 1 1 0;
+    min-width: 0;
   }
-  /* The road itself: one hairline per level, laid end to end, so the run is continuous and its two
-     ends stop at the first and last node rather than in mid-air. */
+  /* The road itself: one hairline per level laid end to end, so the run is continuous and stops at
+     the first and last node rather than in mid-air. */
   .rs__hItem::before {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    top: 13px;
+    top: 50%;
     height: 1px;
     background: var(--rs-spine);
   }
@@ -408,11 +393,9 @@
   .rs__hItem > button {
     position: relative;
     display: grid;
-    justify-items: center;
-    gap: 10px;
+    place-items: center;
     width: 100%;
-    min-width: 92px;
-    padding: 8px 10px 4px;
+    padding: 6px 0;
     border: 0;
     background: none;
     font: inherit;
@@ -421,51 +404,62 @@
   .rs__hItem > button:focus-visible {
     outline: 2px solid var(--rs-ink);
     outline-offset: 2px;
-    border-radius: 8px;
+    border-radius: 999px;
   }
 
   /* A stage already delivered reads as filled, the one under way as a lit ring, one still ahead as
-     open and grey — the same three states the desk layout marks, at the same weights. */
+     open and grey — the three states the desk layout marks, carrying their own number. */
   .rs__hDot {
-    width: 11px;
-    height: 11px;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
     border: 1px solid var(--rs-spine);
     border-radius: 50%;
     background: var(--rs-bg);
+    font-family: var(--fh-digits, var(--fh-sans));
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--rs-dim);
     transition: background-color var(--rs-move) var(--rs-ease), border-color var(--rs-move) var(--rs-ease),
-      box-shadow var(--rs-move) var(--rs-ease);
+      color var(--rs-move) var(--rs-ease), box-shadow var(--rs-move) var(--rs-ease);
   }
   .rs__hItem[data-state='done'] .rs__hDot {
     border-color: var(--rs-body);
-    background: var(--rs-body);
+    color: var(--rs-body);
   }
   .rs__hItem[data-state='live'] .rs__hDot {
     border-color: #f9ff38;
+    color: #f9ff38;
   }
   /* wherever the band is standing takes the marker's own lime, and its halo */
   .rs__hItem[data-active] .rs__hDot {
     border-color: #f9ff38;
     background: #f9ff38;
+    color: #0c1219;
     box-shadow: 0 0 0 4px rgb(249 255 56 / 14%);
   }
 
-  .rs__hName {
+  /* The level in play, named at full size beside the stage it is at. */
+  .rs__hNow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 2px 0 0;
+  }
+  .rs__hNow b {
     font-family: var(--fh-display);
     font-weight: 500;
-    font-size: 15px;
-    line-height: 1.1;
-    letter-spacing: -0.3px;
-    white-space: nowrap;
-    color: var(--rs-dim);
-    transition: color var(--rs-move) var(--rs-ease);
-  }
-  .rs__hItem[data-active] .rs__hName {
+    font-size: 22px;
+    line-height: 1.12;
+    letter-spacing: -0.66px;
     color: var(--rs-ink);
   }
-
-  /* What the level in play is called, between the road and what it holds. */
-  .rs__hLabel {
-    margin: 0;
+  .rs__hNow span {
+    flex: none;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;

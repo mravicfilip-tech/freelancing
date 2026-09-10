@@ -28,8 +28,45 @@ export const NS = 'http://www.w3.org/2000/svg';
 export const TOP = { t: [205.2, 1.9], r: [398.0, 84.2], f: [199.3, 183.6], l: [3.9, 80.9] } as const;
 /** The middle of the slab — where the lid parts from the body, and so where everything comes from. */
 export const SEAM = { x: (TOP.l[0] + TOP.r[0]) / 2, y: (TOP.t[1] + TOP.f[1]) / 2 };
-/** The rear corner, which the lid swings about. */
-export const HINGE = `${TOP.t[0]} ${TOP.t[1] - 26}`;
+/** The rear corner, which the lid swings about. It is a corner of the slab, not a point 26 units
+ *  above one: a pivot in mid-air is not a hinge, and by the time the old one was used the lid had
+ *  already been lifted 124 units clear of it. */
+export const HINGE = `${TOP.t[0]} ${TOP.t[1]}`;
+
+/**
+ * The lid's tilt, as this drawing understands one.
+ *
+ * A 2D `rotation` spins the slab in the picture plane. That cannot foreshorten, so an isometric
+ * rhombus turned this way keeps its full width at every angle and reads as a plate spinning rather
+ * than a lid opening — and all four of its corners move, where a hinge has two that never do. At
+ * 62° the measured result put the lid's left corner *inside* the box's left face and its right
+ * corner 230 units above the top of the frame, which is what "the top part is not in sync with the
+ * bottom" looks like.
+ *
+ * A tilt about a real edge is an affine map, so it is one matrix. Take the hinge edge `U` and the
+ * edge across it `V`, both from the back corner. Turning by φ leaves everything along `U` alone and
+ * takes the `V` component to `V·cos φ`, lifted by `κ|V|·sin φ` — κ being how much screen height a
+ * unit of real height buys in this projection (2/√5 for the 2:1 dimetric the file is drawn in).
+ * The hinge edge is fixed by construction, and the front corner's first movement is straight up.
+ */
+const H = TOP.t;
+const U = [TOP.r[0] - H[0], TOP.r[1] - H[1]] as const;
+const V = [TOP.l[0] - H[0], TOP.l[1] - H[1]] as const;
+const KV = (2 / Math.sqrt(5)) * Math.hypot(V[0], V[1]);
+const DET = U[0] * V[1] - V[0] * U[1];
+
+/** The SVG matrix that tilts the lid by `phi` radians about the box's own back-right rim edge. */
+export function tiltMatrix(phi: number): string {
+  const c = Math.cos(phi);
+  const s = Math.sin(phi);
+  const vx = V[0] * c;
+  const vy = V[1] * c - KV * s;
+  const a = (U[0] * V[1] - vx * U[1]) / DET;
+  const b = (U[1] * V[1] - vy * U[1]) / DET;
+  const cc = (U[0] * (vx - V[0])) / DET;
+  const d = (-U[1] * V[0] + vy * U[0]) / DET;
+  return `matrix(${a} ${b} ${cc} ${d} ${H[0] - (a * H[0] + cc * H[1])} ${H[1] - (b * H[0] + d * H[1])})`;
+}
 /** The verticals, measured at the corners they belong to. */
 const V_SIDE = 185;
 const V_FRONT = 225;

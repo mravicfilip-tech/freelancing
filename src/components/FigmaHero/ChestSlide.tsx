@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import chestMarkup from './chest.svg?raw';
 import { useChest } from './chestVariant';
-import { buildCrate, make, isLid, HINGE, SPLIT, AXIS, SEAM, TOP } from './crate';
+import { buildCrate, make, isLid, HINGE, SPLIT, AXIS, SEAM, TOP, tiltMatrix } from './crate';
 import './ChestSlide.css';
 
 /**
@@ -30,7 +30,9 @@ const CLOSE = 5.6;
 const PAYLOAD: { src: string; size: number; mark?: boolean }[] = [
   { src: '/figma/coin-btc.svg', size: 34 },
   { src: '/figma/coin-eth.svg', size: 30 },
-  { src: '/figma/logo.svg', size: 40, mark: true },
+  /* The mark is a coin like the other four, so it is one of them in size as well as in build —
+     at 40 it came out of the crate a head larger than everything beside it. */
+  { src: '/figma/logo.svg', size: 32, mark: true },
   { src: '/figma/coin-usdt.svg', size: 32 },
   { src: '/figma/coin-sol.svg', size: 28 },
 ];
@@ -82,6 +84,14 @@ export function ChestSlide({ active }: { active: boolean }) {
     /* Every drawn path in the group, not only the ones named `seg-`: the two `?` glyphs on the side
        panels carry the ids `?` and `?_2`, so a prefix selector never saw them and they alone never
        received the draw-in the other 224 get. */
+    const lineG = svg.querySelector('#crate-lines');
+    /* The export closes `#crate-lines` before it draws them, so they are siblings of the group and
+       a `> path` selector never reached them: they alone kept the file's own near-black stroke and
+       never received the draw-in. Brought inside, they take the crate's ink like everything else
+       and the lid passes over them rather than under. */
+    if (lineG) {
+      svg.querySelectorAll<SVGPathElement>(':scope > g > path').forEach((el) => lineG.appendChild(el));
+    }
     const drawn = Array.from(svg.querySelectorAll<SVGPathElement>('#crate-lines > path'));
     const segs: Seg[] = drawn.map((el) => {
       const b = el.getBBox();
@@ -122,12 +132,24 @@ export function ChestSlide({ active }: { active: boolean }) {
       // inside the mouth: |dx|/a + |dy|/b <= 1 on the measured slab, not on a bounding box
       const A = (TOP.r[0] - TOP.l[0]) / 2;
       const B = (TOP.f[1] - TOP.t[1]) / 2;
+      /* Every one of the lid's paths goes to a half. The ellipse test used to drop the ones outside
+         it — 43 of 81, the rim rails and the corner plates — and dropping them meant leaving them
+         parented to the lid group, which nothing moves in this variant: half the lid's own drawing
+         stayed welded to the box while the panel slid off it. What the test is actually for is
+         deciding which half a path belongs to, so that is all it does now. */
       lidSegs.forEach((s) => {
         const dx = s.cx - SEAM.x;
         const dy = s.cy - SEAM.y;
-        if (Math.abs(dx) / A + Math.abs(dy) / B > 0.86) return;
-        halfGs[dx < 0 ? 0 : 1].appendChild(s.el);
+        const inside = Math.abs(dx) / A + Math.abs(dy) / B <= 0.86;
+        halfGs[(inside ? dx : s.cx - SEAM.x) < 0 ? 0 : 1].appendChild(s.el);
       });
+      // and the lid's underside and its sheen go with the panel they belong to
+      const lipL = lidG.querySelector('.chest__lip--left');
+      const lipR = lidG.querySelector('.chest__lip--right');
+      const sheen = lidG.querySelector('.chest__sheenClip');
+      if (lipL) halfGs[0].appendChild(lipL);
+      if (lipR) halfGs[1].appendChild(lipR);
+      if (sheen) halfGs[1].appendChild(sheen);
     }
 
     if (!reduced) {
@@ -219,23 +241,42 @@ export function ChestSlide({ active }: { active: boolean }) {
             { scale: 2.1, opacity: 0, duration: 1.1, ease: 'power2.out', svgOrigin: SEAM.x + ' ' + SEAM.y }, 0.3 + i * 0.22);
         });
         // the sheen crossing the lid's face as it turns into the light
-        cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.3);
-        cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.0);
+        cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.4);
+        cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.1);
 
         const OPEN = { duration: 0.75, ease: 'expo.out', svgOrigin: HINGE } as const;
 
+        /* The lid tilts about the crate's own back-right rim edge — see `tiltMatrix`. The angle is
+           tweened and the matrix written on each frame, which is what lets one continuous ease do
+           the whole opening: the old pair of tweens popped the lid 150 units in 350ms, then stood
+           still for 460ms, then launched again on a different curve, and that gap is what read as
+           the glitch. */
+        const tilt = { phi: 0 };
+        const applyTilt = () => lidG.setAttribute('transform', tiltMatrix(tilt.phi));
+
+        /* Everything the lid does starts here rather than at 0.3: it is the peak of the latch's own
+           rebound, so the box springs open and the lid leaves on that beat. It used to go 90ms
+           before the latch had even reached its overshoot, and was gone before the body stopped
+           ringing — cause after effect. */
+        const LEAVE = 0.4;
+
         // ---- how the lid leaves ----
         if (variant === '1') {
-          cycle.to(lidG, { y: -150, duration: 0.7, ease: 'expo.out', svgOrigin: HINGE }, 0.3);
-          cycle.to(lidG, { rotation: -62, y: -166, duration: 0.8, ease: 'power3.inOut', svgOrigin: HINGE }, 0.9);
+          cycle.to(tilt, { phi: 1.152, duration: 1.15, ease: 'power2.out', onUpdate: applyTilt }, LEAVE);
         }
         if (variant === '2') {
-          // each half slides back along the box's own axis, so it stays true to the projection
+          /* Both halves part on the same beat: on `expo.out` a 60ms stagger is a 30-point gap in
+             how far each has travelled, which is not two halves of one panel splitting. And they
+             rise as they go — 18 clears the lid's own 11-unit lip, without which they stay in the
+             plane of the rim and read as decals sliding on the box rather than panels coming off. */
           const D = 132;
-          cycle.to(halfGs[0], { x: AXIS.left[0] * D, y: AXIS.left[1] * D, duration: 0.9, ease: 'expo.out' }, 0.3);
-          cycle.to(halfGs[1], { x: AXIS.right[0] * D, y: AXIS.right[1] * D, duration: 0.9, ease: 'expo.out' }, 0.36);
+          cycle.to(halfGs[0], { x: AXIS.left[0] * D, y: AXIS.left[1] * D - 18, duration: 0.85, ease: 'power2.out' }, LEAVE);
+          cycle.to(halfGs[1], { x: AXIS.right[0] * D, y: AXIS.right[1] * D - 18, duration: 0.85, ease: 'power2.out' }, LEAVE);
         }
-        if (variant === '3') cycle.to(lidG, { y: -104, rotation: -9, ...OPEN }, 0.3);
+        if (variant === '3') {
+          cycle.to(lidG, { y: -104, ...OPEN }, LEAVE);
+          cycle.to(tilt, { phi: 0.16, duration: 0.75, ease: 'power2.out', onUpdate: applyTilt }, LEAVE);
+        }
         if (variant === '4') {
           cycle.to(lidG, { y: -46, duration: 0.4, ease: 'power2.out', svgOrigin: HINGE }, 0.3);
           cycle.to(lidG, { rotation: 34, x: 40, y: 130, duration: 1.1, ease: 'power2.in', svgOrigin: `${TOP.f[0]} ${TOP.f[1]}` }, 0.7);
@@ -267,7 +308,10 @@ export function ChestSlide({ active }: { active: boolean }) {
           { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 50%' }, 1.5);
 
         // ---- what comes out ----
-        const EMIT = variant === '1' ? 0.85 : 0.6;
+        /* The mouth is clear once the lid is past about 25°, which the new tilt reaches at 0.62 —
+           the old 0.85 was set against a lift that cleared it at 0.45 and left 400ms of open, empty
+           box before the first coin. */
+        const EMIT = variant === '1' ? 0.62 : 0.6;
         coins.forEach((c, i) => {
           const at = EMIT + i * 0.07;
           const n = i - (PAYLOAD.length - 1) / 2;
@@ -331,6 +375,12 @@ export function ChestSlide({ active }: { active: boolean }) {
         } else if (variant === '5') {
           cycle.to('.chest__face--top, .chest__lip, .chest__sheenClip', { opacity: 1, duration: 0.5 }, CLOSE + 0.2);
           cycle.to(lidSegs.map((s) => s.el), { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, CLOSE);
+        } else if (variant === '1' || variant === '3') {
+          /* A lid falls, and the box takes it — the mirror of the latch that let it go. */
+          cycle.to(tilt, { phi: 0, duration: 0.62, ease: 'power2.in', onUpdate: applyTilt }, CLOSE);
+          if (variant === '3') cycle.to(lidG, { y: 0, duration: 0.62, ease: 'power2.in', svgOrigin: HINGE }, CLOSE);
+          cycle.to(svg, { scale: 0.988, duration: 0.1, ease: 'power2.out', transformOrigin: '50% 88%' }, CLOSE + 0.62);
+          cycle.to(svg, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: '50% 88%' }, CLOSE + 0.72);
         } else {
           cycle.to(lidG, { y: 0, x: 0, rotation: 0, duration: 0.85, ease: 'power3.inOut', svgOrigin: HINGE }, CLOSE);
         }

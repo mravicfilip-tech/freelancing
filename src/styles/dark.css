@@ -359,15 +359,21 @@
 [data-theme='dark'] .fs__ring path[fill='#E6E9ED'] {
   fill: var(--fs-bg);
 }
-/* Same trick, same purpose, but exported as an image where the fill cannot be reached — so it is
-   taken down to the band by brightness instead. Only the portrait orbit lays one. */
+/* Same job, but exported as an image whose fill cannot be reached, so brightness was the only
+   handle — and brightness cannot land on this band's particular blue. What it produced was a big
+   warm-black ellipse a shade under the band: the one thing the plate exists to avoid being. Its
+   whole purpose is to hide the dot field inside the ring on a light page; here the field is the
+   ground's own texture and there is nothing to hide it from, so the plate simply stands down. */
 [data-theme='dark'] .fs__plate {
-  filter: brightness(0.055) saturate(0.4);
+  display: none;
 }
 /* The orbit ring is stroked with a gradient of #C5CBD1 and #AAB5C0 — hairline weights against a
    light band, and the strongest line on the page against a dark one. The whole ring drops to a
    tenth rather than each stop being restated, which keeps the sweep the gradient was drawn for. */
-[data-theme='dark'] .fs__ring {
+/* Only the ring's own line comes down — not the group. The travelling highlight is a clone of
+   that path appended beside it, so a tenth on the container took the brand yellow down with it and
+   left the comet a dim olive thread. The ring is dimmed, the light on it is not. */
+[data-theme='dark'] .fs__ring path:not(.fs__ringGlow) {
   opacity: 0.12;
 }
 /* The anchors on the orbit are a filled dot and a ringed marker, both drawn at the line's weight.
@@ -441,6 +447,21 @@
 [data-theme='dark'] .ff__chip img {
   filter: invert(1) brightness(1.7);
 }
+/* The swap button is cut out of the payment line by a ring in the card's own colour. On this
+   ground that ring is a shade off the card and reads as a stroke drawn round the disc, so it takes
+   the card exactly and goes back to being a cut-out. */
+[data-theme='dark'] .il-simple__swap {
+  border-color: var(--ff-card, #0c1218);
+}
+
+/* The chip stands on a tile that now carries a yellow bloom, and a flat slate plate on it reads as
+   a patch rather than a raised label. It takes the ladder's own chip step with a hairline round
+   it — the way every other raised chip on this page is seated. */
+[data-theme='dark'] .ff__chip {
+  background: var(--d-il-chip);
+  box-shadow: inset 0 0 0 1px var(--d-il-line);
+}
+
 /* The toast is a black plate carrying a soft light-grey glow — a lift off a white card. On a dark
    one a grey halo under a black plate is a smudge, and the plate is already the darkest thing in
    the scene, so the lift is not needed and the glow is what shows. */

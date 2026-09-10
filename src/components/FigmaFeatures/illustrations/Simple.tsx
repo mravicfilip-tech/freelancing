@@ -295,7 +295,16 @@ function ledger(gsap: G, il: HTMLElement) {
       roll(gsap, amount, `€${eur.toLocaleString('en-US')}`);
       roll(gsap, arrived, `${seconds.toFixed(1)} sec`);
       roll(gsap, clock, `TODAY · ${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`);
-      gsap.fromTo(amount, { color: '#4042d1' }, { color: '#000', duration: 1.2, ease: 'power1.out', delay: 0.35 });
+      /* The figure flashes to the live tint and settles back to the page's hardest ink. Both were
+         literals — an indigo and a black — and GSAP writes what it is given as an inline style, so
+         after the first settle the receipt's own number was a light-mode black on a dark card,
+         whatever the sheet said. Read off the scene instead. */
+      const tone = (n: string, f: string) => getComputedStyle(il).getPropertyValue(n).trim() || f;
+      gsap.fromTo(
+        amount,
+        { color: tone('--il-indigo', '#4042d1') },
+        { color: tone('--il-figure', '#000'), duration: 1.2, ease: 'power1.out', delay: 0.35 },
+      );
     },
   };
 }

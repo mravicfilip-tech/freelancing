@@ -115,12 +115,12 @@
 }
 /* The export carries its stroke as an attribute, which a rule outranks — so the crate takes the
    site's ink without editing the asset's bytes. */
-.chest__art path[id^='seg-'] {
+.chest__art svg path {
   stroke: var(--chest-ink);
   stroke-width: 1.35;
 }
 /* The lid is the face turned to the light, so its own line work carries more of it. */
-.chest__art .chest__lid path[id^='seg-'] {
+.chest__art .chest__lid path {
   stroke: var(--chest-inkLid);
 }
 .chest[data-motion='pending'] .chest__art {
@@ -322,8 +322,20 @@
 /* The slide is the same box on a phone; the crate just takes more of it, since there is no second
    column competing for the width. */
 @media (max-width: 900px) {
+  /* The lid now stands up off the crate rather than sliding sideways, so the slide needs headroom
+     for it: the open lid reaches about 143 units above the slab, and at this scale that is the
+     difference between the corner being on screen and being cut by the top of the band. */
   .chest__stage {
-    width: 58%;
-    max-width: 230px;
+    width: 50%;
+    max-width: 196px;
+    margin-top: 26%;
+  }
+  /* At 76% of a 230px stage the badge's own width carries it off the side of the slide. It comes
+     back over the crate's right face, which is clear at every point of the open. */
+  .chest__badge {
+    left: 58%;
+    top: 56%;
+    padding: 3px 10px;
+    font-size: 11px;
   }
 }

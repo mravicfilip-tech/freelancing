@@ -1,5 +1,21 @@
 /* The hero's third slide: the line-art chest (Figma node 2767:55) as an opening mechanism.
    Five directions share this sheet; `data-variant` on the root picks what differs. */
+/* The panels' beat: a light runs down each `?` when the crate opens, and leaves the Remittix mark
+   where the question was. Both start hidden — the question is what the closed crate says. */
+.chest__brand {
+  opacity: 0;
+}
+.chest__brandPath {
+  fill: var(--chest-live);
+  stroke: none;
+}
+.chest__scan {
+  fill: var(--chest-live);
+  opacity: 0;
+  /* a line of light, not a drawn rule — the glow is what makes it read as passing over the panel */
+  filter: drop-shadow(0 0 3px var(--chest-live)) drop-shadow(0 0 7px var(--chest-live));
+}
+
 .chest {
   /* The site's ink, not the export's. `#1a1a1a` came in with the asset and appears nowhere else in
      the project; the illustrations are drawn in `#122433` and carry `#2c2e31` as body ink. */
@@ -21,6 +37,9 @@
   --chest-lipL: #dfe4e9;
   --chest-lipR: #d3d8de;
   /* The Remittix mark's own coin: the brand's ground carrying the brand's mark. */
+  /* The plate every coin sits on — the band's own surface, so the disc reads as a token laid on
+     the page rather than a hole cut in it. */
+  --chest-coinDisc: #fff;
   --chest-markDisc: #122433;
   /* The mark is white on its own disc in both themes — it is the brand's mark, not a glyph that
      turns over with the page. */
@@ -47,7 +66,11 @@
   inset: 0;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  /* Clipped at its own sides and top, but open below: the feed's legs run down into the band under
+     the hero, and `overflow: hidden` cut them at the slide's foot — 337px short of where the hero
+     itself ends. A negative bottom inset is the only way to say "clip three sides". */
+  overflow: visible;
+  clip-path: inset(0 0 -400px 0);
 }
 
 /* The crate no longer fills the slide: the lid comes off it and the payload goes above that, and
@@ -282,7 +305,8 @@
   display: grid;
   place-items: center;
   opacity: 0;
-  border-radius: 50%;
+  border-radius: 400px;
+  background: var(--chest-coinDisc);
   /* Coins are the one solid thing in a drawing made of lines, so they carry a shadow to sit in
      front of it rather than on it. */
   filter: drop-shadow(0 6px 10px rgb(18 36 51 / 22%));
@@ -290,8 +314,7 @@
 }
 .chest__coinArt {
   display: block;
-  width: 100%;
-  height: 100%;
+  max-width: none;
 }
 /* The Remittix mark rides out with the chain marks, so it has to be a coin like they are — the
    asset is only the glyph, so the disc is drawn here. It is the brand's own pairing: the mark's
@@ -302,7 +325,7 @@
 .chest__mark {
   display: block;
   /* the wordmark's own 33:17, so the M keeps its proportions inside a round disc */
-  width: 56%;
+  width: 50%;
   aspect-ratio: 33 / 17;
   /* Masked rather than drawn: the export's fill is a flat black that neither ground can carry, and
      an <img>'s fill is not something a stylesheet can reach. */

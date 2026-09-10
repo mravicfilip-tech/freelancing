@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import chestMarkup from './chest.svg?raw';
 import { useChest } from './chestVariant';
-import { buildCrate, make, isLid, HINGE, SPLIT, AXIS, SEAM, TOP, tiltMatrix } from './crate';
+import { buildCrate, make, isLid, HINGE, SPLIT, AXIS, SEAM, TOP, tiltMatrix, SCAN_H } from './crate';
 import './ChestSlide.css';
 
 /**
@@ -27,17 +27,22 @@ const DRAW = 1.5;
 /** When the lid starts coming back, and so how long one pass of the mechanism runs. */
 const CLOSE = 5.6;
 
-const PAYLOAD: { src: string; size: number; mark?: boolean }[] = [
-  { src: '/figma/coin-btc.svg', size: 34 },
-  { src: '/figma/coin-eth.svg', size: 30 },
-  /* The mark is a coin like the other four, so it is one of them in size as well as in build —
-     at 40 it came out of the crate a head larger than everything beside it. */
-  { src: '/figma/logo.svg', size: 32, mark: true },
-  { src: '/figma/coin-usdt.svg', size: 32 },
-  { src: '/figma/coin-sol.svg', size: 28 },
+/* Tokenomics' own coin, and the crate carries the same object: a glyph centred on a filled disc
+   exactly twice its diameter, and nothing else on it — no border, no shadow. That plate is what
+   makes a coin read as a token sitting on the page rather than a sticker, and it is what the five
+   were missing here; the chain marks arrived as bare artwork at five different diameters. */
+const GLYPH = 26;
+const DISC = GLYPH * 2;
+const PAYLOAD: { src: string; mark?: boolean }[] = [
+  { src: '/figma/coin-btc.svg' },
+  { src: '/figma/coin-eth.svg' },
+  { src: '/figma/logo.svg', mark: true },
+  { src: '/figma/coin-usdt.svg' },
+  { src: '/figma/coin-sol.svg' },
 ];
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
 
 /**
  * The feeds, drawn in the crate's own 401.5 × 406 space rather than the slide's — so every line
@@ -140,7 +145,7 @@ export function ChestSlide({ active }: { active: boolean }) {
 
     const built = buildCrate(svg, lidSegs.map((s) => s.el));
     if (!built) return;
-    const { lidG, lidFace, seam } = built;
+    const { lidG, lidFace, seam, panels, marks } = built;
 
     /* The hatch parts the lid's panel rather than lifting the lid, so it needs a tighter cut than
        the others. The lid as a whole includes the crate's corner brackets and top rails, which read
@@ -265,6 +270,32 @@ export function ChestSlide({ active }: { active: boolean }) {
         cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.4);
         cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.1);
 
+        /* Everything the crate does starts here rather than at 0.3: it is the peak of the latch's
+           own rebound, so the box springs open and the lid leaves on that beat. It used to go 90ms
+           before the latch had even reached its overshoot, and was gone before the body stopped
+           ringing — cause after effect. */
+        const LEAVE = 0.4;
+
+        /* The panels answer the opening. A light runs down each `?` as the lid leaves, and what it
+           leaves behind is the Remittix mark — the crate says "what is inside?" until it is open,
+           and then it says whose it is. Both faces run together; they are two views of one thing. */
+        panels.forEach(({ brand, scan }, i) => {
+          const at = LEAVE + 0.35 + i * 0.08;
+          cycle.fromTo(scan, { opacity: 0 }, { opacity: 0.95, duration: 0.18 }, at);
+          /* The light travels by its own `y` ATTRIBUTE, inside the panel's local space. Tweening a
+             transform on the group instead would have GSAP decompose and rewrite the matrix that
+             lays the panel onto an isometric face — and a skewed matrix does not survive being
+             taken apart into translate/rotate/scale and put back together. */
+          cycle.fromTo(scan, { attr: { y: 0 } }, { attr: { y: SCAN_H }, duration: 0.85, ease: 'power1.inOut' }, at);
+          cycle.to(scan, { opacity: 0, duration: 0.3, ease: 'power2.in' }, at + 0.7);
+          // the mark is uncovered by the light rather than appearing after it
+          cycle.fromTo(brand, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, at + 0.3);
+          cycle.to(marks[i], { opacity: 0, duration: 0.4, ease: 'power2.out' }, at + 0.3);
+          // and the question comes back as the crate closes
+          cycle.to(brand, { opacity: 0, duration: 0.4, ease: 'power2.in' }, CLOSE - 0.3);
+          cycle.to(marks[i], { opacity: 1, duration: 0.4, ease: 'power2.out' }, CLOSE - 0.3);
+        });
+
         /* The lid tilts about the crate's own back-right rim edge — see `tiltMatrix`. The angle is
            tweened and the matrix written on each frame, which is what lets one continuous ease do
            the whole opening: the old pair of tweens popped the lid 150 units in 350ms, then stood
@@ -276,12 +307,6 @@ export function ChestSlide({ active }: { active: boolean }) {
            lift is part of the matrix instead. */
         const tilt = { phi: 0, lift: 0 };
         const applyTilt = () => lidG.setAttribute('transform', `translate(0 ${tilt.lift}) ${tiltMatrix(tilt.phi)}`);
-
-        /* Everything the lid does starts here rather than at 0.3: it is the peak of the latch's own
-           rebound, so the box springs open and the lid leaves on that beat. It used to go 90ms
-           before the latch had even reached its overshoot, and was gone before the body stopped
-           ringing — cause after effect. */
-        const LEAVE = 0.4;
 
         // ---- how the lid leaves ----
         if (variant === '1') {
@@ -456,13 +481,13 @@ export function ChestSlide({ active }: { active: boolean }) {
           ))}
           {PAYLOAD.map((p) => (
             <span key={p.src} className="chest__coin" data-mark={p.mark || undefined}
-              style={{ width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2 }}>
+              style={{ width: DISC, height: DISC, marginLeft: -DISC / 2, marginTop: -DISC / 2 }}>
               {/* The chain marks arrive as coins — a coloured disc with its glyph already on it. The
                   Remittix mark does not: it is flat wordmark art, so on its own it came out of the
                   crate as a bare M with nothing under it, dark on a light page and invisible on a
                   dark one. It gets the disc here, and takes its ink from the page rather than from
                   the asset, which is why it is masked rather than drawn. */}
-              {p.mark ? <i className="chest__mark" /> : <img className="chest__coinArt" src={p.src} alt="" />}
+              {p.mark ? <i className="chest__mark" /> : <img className="chest__coinArt" src={p.src} alt="" width={GLYPH} height={GLYPH} />}
             </span>
           ))}
         </div>

@@ -188,6 +188,43 @@ export function isLid(el: SVGPathElement): boolean {
   return drop < 14;
 }
 
+/**
+ * The Remittix mark, as path data rather than an asset — the two `?` panels resolve into it when
+ * the crate opens, and a `<path>` is the only form of it that can be laid onto an isometric face
+ * and take the crate's own ink.
+ */
+const MARK_D = [
+  'M8.375 10.1057H8.37305V15.4309C8.37302 16.2813 7.68344 16.9709 6.83301 16.9709H5.06934C4.58429 16.9709 4.12762 16.742 3.83691 16.3538L0.307617 11.6389C0.108284 11.3726 5.94423e-05 11.0487 0 10.7161V10.0413C3.95559e-05 9.19085 0.689618 8.50122 1.54004 8.50122H8.375V10.1057Z',
+  'M4.17532 3.14357L14.1041 15.9261C14.3958 16.3017 14.8447 16.5214 15.3202 16.5214H17.0367C17.8871 16.5214 18.5765 15.832 18.5765 14.9815V8.86801C18.5765 8.5263 18.4629 8.1943 18.2535 7.92429L12.719 0.788522C12.4274 0.412451 11.9782 0.192383 11.5022 0.192383H5.39143C4.54098 0.192383 3.85156 0.881805 3.85156 1.73225V2.19896C3.85156 2.54105 3.96547 2.8734 4.17532 3.14357Z',
+  'M18.3516 7.87219V2.14624C18.3516 1.68975 18.4971 1.24515 18.7671 0.877032C19.1714 0.325716 19.8141 0 20.4978 0H21.2769C21.9602 0 22.6039 0.320107 23.0163 0.864875L32.4099 13.2747C32.6967 13.6537 32.852 14.116 32.852 14.5913V14.6596C32.852 15.1761 32.6575 15.6736 32.3072 16.053C31.9183 16.4744 31.371 16.714 30.7976 16.714H25.7926C25.125 16.714 24.4942 16.4083 24.0805 15.8845L18.821 9.22415C18.5169 8.83911 18.3516 8.36281 18.3516 7.87219Z',
+];
+/** The mark's own box, from the file. */
+const MARK_W = 33;
+const MARK_H = 17;
+
+/**
+ * The basis of a side face: how far one unit "along" it moves on screen, and how far one unit
+ * "down" it does. The drawing's verticals are pure screen-y, so down is (0,1) on both; along is
+ * the rim edge that face hangs from.
+ */
+const FACE = {
+  left: { u: unit(TOP.l, TOP.f), qc: [93.7, 235.3], w: 62 },
+  right: { u: unit(TOP.f, TOP.r), qc: [294.5, 242.6], w: 62 },
+} as const;
+
+/** The panel the light crosses, in the mark's own units: the `?` is about 101 tall, plus a margin
+ *  so the line enters above it and leaves below it rather than starting on top of it. */
+export const SCAN_H = 60;
+
+/** A transform that lays a flat drawing of width `w` centred on `c` onto one of those faces. */
+function onFace(f: (typeof FACE)[keyof typeof FACE], w: number, h: number) {
+  const s = f.w / w;
+  const [ux, uy] = f.u;
+  const tx = f.qc[0] - ux * s * (w / 2);
+  const ty = f.qc[1] - (uy * s * (w / 2) + s * (h / 2));
+  return `matrix(${ux * s} ${uy * s} 0 ${s} ${tx} ${ty})`;
+}
+
 export const make = (tag: string, attrs: Record<string, string>) => {
   const el = document.createElementNS(NS, tag);
   Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
@@ -252,6 +289,24 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
 
   lines.insertBefore(rim, lines.children[3] ?? null);
 
+  /* What the two `?` panels do when the crate opens: a light runs down each of them and leaves the
+     Remittix mark where the question was. Both are laid onto their own face — a mark drawn flat on
+     an isometric side reads as a sticker, so each takes that face's own basis, which is the rim
+     edge it hangs from and the drawing's own vertical. */
+  const panels = (['left', 'right'] as const).map((side) => {
+    const f = FACE[side];
+    const g = make('g', { class: `chest__panel chest__panel--${side}`, transform: onFace(f, MARK_W, MARK_H) });
+    const brand = make('g', { class: 'chest__brand' });
+    MARK_D.forEach((d) => brand.appendChild(make('path', { class: 'chest__brandPath', d })));
+    g.appendChild(brand);
+    lines.appendChild(g);
+    // the light that crosses the panel, in the same face's basis and a good deal taller than it
+    const scanG = make('g', { class: `chest__scanG chest__scanG--${side}`, transform: onFace(f, MARK_W, SCAN_H) });
+    scanG.appendChild(make('rect', { class: 'chest__scan', x: '-3', y: '0', width: String(MARK_W + 6), height: '1.6' }));
+    lines.appendChild(scanG);
+    return { brand, scan: scanG.firstChild as SVGGElement };
+  });
+
   /* The lid: its underside lips first, then its face, then the export's own strokes on top. As one
      group it lifts, tilts and returns without any of its parts drifting from the others. */
   const lidG = make('g', { class: 'chest__lid' });
@@ -266,5 +321,6 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   lidG.appendChild(sheenG);
   lidSegs.forEach((el) => lidG.appendChild(el));
 
-  return { lidG, lidFace, cave, seam };
+  const marks = Array.from(svg.querySelectorAll<SVGPathElement>('#crate-lines > path[id^="?"]'));
+  return { lidG, lidFace, cave, seam, panels, marks };
 }

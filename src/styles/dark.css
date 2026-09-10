@@ -739,6 +739,7 @@
      band, and the coin blended into the ground while the four beside it carried saturated colour.
      So here it takes the brand's indigo — the same value the badge and the live rail are drawn in
      — and keeps the white mark, which is the pairing every other coin in the set uses. */
+  --chest-coinDisc: var(--d-il-chip);
   --chest-markDisc: #4042d1;
 }
 /* The dot field is near-black ink on a light band; on this one it has to be the ink instead, and

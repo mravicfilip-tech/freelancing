@@ -9,16 +9,26 @@
   --fs-ink: #122433;
   --fs-text: #2c2e31;
   --fs-muted: #7c858d;
-  --fs-indigo: #4042d2;
+  /* The cursor's own colour, and everything it touches or leaves behind: the trail it draws, the
+     chip it lights, the dot it passes, the ring that opens behind it, and the badge parked where
+     it rests. The arrow is the brand yellow, so its effects are too — an indigo highlight under a
+     yellow arrow read as two unrelated marks rather than one hand moving through the orbit.
+     Yellow carries only dark ink, and it is the same yellow in both themes, so the ink on it does
+     not change with the theme the way the rest of this section does. */
+  --fs-cursor: #f9ff38;
+  --fs-cursor-ink: #122433;
   /* The states the highlight paints as it sweeps the orbit (see useSimpleMotion.ts). They are
      written as inline styles by GSAP, so they have to be readable from here. */
-  --fs-hi: #4042d2;
+  --fs-hi: var(--fs-cursor);
   --fs-hi-marker: #c5cbd1;
   --fs-hi-dot: #c5cbd1;
   --fs-hi-chip-bg: #fff;
   --fs-hi-chip-ink: #2c2e31;
-  --fs-hi-chip-on-ink: #fff;
-  --fs-hi-icon: invert(1);
+  --fs-hi-chip-on-ink: var(--fs-cursor-ink);
+  /* The glyph on a lit chip. The art is near-black line work, which is exactly what yellow wants,
+     so it lights un-inverted in either theme; only its rest state follows the chip's surface. */
+  --fs-hi-icon: invert(0);
+  --fs-hi-icon-rest: invert(0);
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fs-dash-v: repeating-linear-gradient(180deg, var(--fs-line) 0 8px, transparent 8px 16px);
   --fs-dash-h: repeating-linear-gradient(90deg, var(--fs-line) 0 8px, transparent 8px 16px);
@@ -144,19 +154,20 @@
   display: block;
   filter: drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
 }
-/* Parked beside the hub, where the cursor rests before it rides the orbit. */
+/* Parked beside the hub, where the cursor rests before it rides the orbit — so it wears the
+   cursor's colour rather than sitting beside it in another one. */
 .fs__badge {
   z-index: 5;
   padding: 4px 12px;
   border-radius: 46px;
-  background: var(--fs-indigo);
+  background: var(--fs-cursor);
   box-shadow: 0 6px 16px -6px rgba(18, 36, 51, 0.35);
   font-weight: 700;
   font-size: 13px;
   line-height: 1.4;
   letter-spacing: -0.39px;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--fs-cursor-ink);
   white-space: nowrap;
 }
 .fs__group {
@@ -209,7 +220,7 @@
 .fs__markerHalo {
   position: absolute;
   inset: -2px;
-  border: 2px solid var(--fs-indigo);
+  border: 2px solid var(--fs-cursor);
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;

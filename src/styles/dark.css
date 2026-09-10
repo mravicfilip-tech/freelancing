@@ -232,18 +232,16 @@
   --fs-ink: var(--d-ink);
   --fs-text: var(--d-body);
   --fs-muted: var(--d-label);
-  --fs-indigo: var(--d-indigo);
-  /* The highlight's own end states. Left at their light values the sweep repainted the chips white
-     and the markers pale grey a second after the page had gone dark — the CSS was right and the
-     animation walked over it. */
-  --fs-hi: var(--d-indigo);
+  /* The states the sweep eases back to. Left at their light values it repainted the chips white and
+     the markers pale grey a second after the page had gone dark — the CSS was right and the
+     animation walked over it. The lit states are not here: they are the cursor's yellow, which is
+     one colour in both themes. */
   --fs-hi-marker: #3c4753;
   --fs-hi-dot: #37424e;
   --fs-hi-chip-bg: var(--d-surface);
   --fs-hi-chip-ink: var(--d-body);
-  --fs-hi-chip-on-ink: #0c1219;
-  /* the chip's glyph is already inverted to the ink at rest, and stays that way when it lights */
-  --fs-hi-icon: invert(1) brightness(1.7);
+  /* the chip's glyph is inverted to the ink at rest here, and drops the inversion when it lights */
+  --fs-hi-icon-rest: invert(1) brightness(1.7);
 }
 
 /* The orbit's ellipse is filled #E6E9ED — the light band's own colour — so on a light page it is

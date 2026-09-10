@@ -69,7 +69,11 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
           const CHIP_BG = tone('--fs-hi-chip-bg', '#ffffff');
           const CHIP_INK = tone('--fs-hi-chip-ink', '#2c2e31');
           const CHIP_ON_INK = tone('--fs-hi-chip-on-ink', '#ffffff');
-          const ICON_ON = tone('--fs-hi-icon', 'invert(1)');
+          const ICON_ON = tone('--fs-hi-icon', 'invert(0)');
+          // The glyph's rest filter. It used to be written back as a literal invert(0), which is the
+          // light theme's rest state — an inline style, so on a dark page it overruled the sheet's
+          // inversion and left near-black line art on a near-black chip once the sweep had passed.
+          const ICON_REST = tone('--fs-hi-icon-rest', 'invert(0)');
 
           const tl = gsap.timeline({ paused: true, onComplete: idle });
           tl.from(all(el, '.fs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0);
@@ -178,7 +182,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
               gsap.fromTo(m, { scale: 1 }, { scale: 1.25, duration: 0.28, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' });
               gsap.fromTo(m, { borderColor: HI }, { borderColor: MARKER_REST, duration: 1.1, ease: 'power2.out' });
             };
-            // A chip lights up in the badge's indigo and pops as the highlight passes its anchor, then eases back.
+            // A chip lights up in the cursor's yellow and pops as the highlight passes its anchor, then eases back.
             const flash = (chip: HTMLElement, dot: HTMLElement) => {
               const icon = chip.querySelector('img');
               gsap
@@ -188,7 +192,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
                 .fromTo(chip, { scale: 1 }, { scale: 1.12, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
                 .to(dot, { backgroundColor: HI, scale: 1.6, duration: 0.2, transformOrigin: '50% 50%' }, 0)
                 .to(chip, { backgroundColor: CHIP_BG, color: CHIP_INK, duration: 0.6, ease: 'power2.inOut' }, 1.0)
-                .to(icon, { filter: 'invert(0)', duration: 0.6 }, 1.0)
+                .to(icon, { filter: ICON_REST, duration: 0.6 }, 1.0)
                 .to(dot, { backgroundColor: DOT_REST, scale: 1, duration: 0.6 }, 1.0);
             };
             // A currency group pops as the cursor comes by, the way the chips do: the pill swells a

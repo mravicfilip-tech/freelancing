@@ -75,7 +75,7 @@ const BUS = (() => {
     const drop = edge - dir * 90;
     /* Long enough that the slide always cuts it rather than it ending inside the band — the same
        reason the spine runs to 700. The slope is what it was; only the ray is longer. */
-    paths.push(`M${drop} ${y} L${drop - dir * 345} ${y + 1610}`);
+    paths.push(`M${drop} ${y} L${drop - dir * 150} ${y + 2400}`);
     nodes.push([hub, y], [drop, y], [edge, y - BRANCH], [edge, y], [edge, y + BRANCH]);
   });
   return { paths, nodes };
@@ -270,15 +270,17 @@ export function ChestSlide({ active }: { active: boolean }) {
         cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.4);
         cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.1);
 
-        const OPEN = { duration: 0.75, ease: 'expo.out', svgOrigin: HINGE } as const;
-
         /* The lid tilts about the crate's own back-right rim edge — see `tiltMatrix`. The angle is
            tweened and the matrix written on each frame, which is what lets one continuous ease do
            the whole opening: the old pair of tweens popped the lid 150 units in 350ms, then stood
            still for 460ms, then launched again on a different curve, and that gap is what read as
            the glitch. */
-        const tilt = { phi: 0 };
-        const applyTilt = () => lidG.setAttribute('transform', tiltMatrix(tilt.phi));
+        /* One writer for the lid's transform. The tilt sets the `transform` attribute directly, so
+           any GSAP tween of `y` on the same element is a second writer for the same property: the
+           two took alternate frames and the lid rose and fell at random for the whole beat. The
+           lift is part of the matrix instead. */
+        const tilt = { phi: 0, lift: 0 };
+        const applyTilt = () => lidG.setAttribute('transform', `translate(0 ${tilt.lift}) ${tiltMatrix(tilt.phi)}`);
 
         /* Everything the lid does starts here rather than at 0.3: it is the peak of the latch's own
            rebound, so the box springs open and the lid leaves on that beat. It used to go 90ms
@@ -300,8 +302,7 @@ export function ChestSlide({ active }: { active: boolean }) {
           cycle.to(halfGs[1], { x: AXIS.right[0] * D, y: AXIS.right[1] * D - 18, duration: 0.85, ease: 'power2.out' }, LEAVE);
         }
         if (variant === '3') {
-          cycle.to(lidG, { y: -104, ...OPEN }, LEAVE);
-          cycle.to(tilt, { phi: 0.16, duration: 0.75, ease: 'power2.out', onUpdate: applyTilt }, LEAVE);
+          cycle.to(tilt, { phi: 0.16, lift: -104, duration: 0.75, ease: 'power2.out', onUpdate: applyTilt }, LEAVE);
         }
         if (variant === '4') {
           cycle.to(lidG, { y: -46, duration: 0.4, ease: 'power2.out', svgOrigin: HINGE }, 0.3);
@@ -359,21 +360,27 @@ export function ChestSlide({ active }: { active: boolean }) {
           }
 
           if (variant === '3') {
-            // circling the crate: the far half passes behind it, the near half in front
+            /* Circling the crate: the far half passes behind it, the near half in front.
+               The coins used to rise to the middle of the box and then be `set` onto the ellipse on
+               the loop's first frame — a jump of up to 128 units, which is what read as them coming
+               out wrong. They fly to the point the orbit actually begins at instead, so the rise
+               hands over to the circling without a discontinuity. The five are spread by a fifth of
+               a turn each, not the 1.25 radians that left a gap where the fifth should have been. */
+            const STEP = (Math.PI * 2) / PAYLOAD.length;
+            const place = (a: number) => ({
+              x: Math.cos(a) * 128,
+              y: Math.sin(a) * 42 - 76,
+              scale: 0.82 + (Math.sin(a) + 1) * 0.16,
+              zIndex: Math.sin(a) < 0 ? 1 : 6,
+            });
+            const start = -Math.PI / 2 + i * STEP;
             const turn = { v: 0 };
-            cycle.fromTo(c, { x: 0, y: 0, scale: 0.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: 'expo.out' }, at);
+            cycle.fromTo(c, { x: 0, y: 0, scale: 0.15, opacity: 0 },
+              { ...place(start), opacity: 1, duration: 0.75, ease: 'expo.out' }, at);
             cycle.to(turn, {
-              v: 1, duration: CLOSE - at - 0.9, ease: 'none',
-              onUpdate: () => {
-                const a = -Math.PI / 2 + turn.v * Math.PI * 2 + i * 1.25;
-                gsap.set(c, {
-                  x: Math.cos(a) * 128,
-                  y: Math.sin(a) * 42 - 76,
-                  scale: 0.82 + (Math.sin(a) + 1) * 0.16,
-                  zIndex: Math.sin(a) < 0 ? 1 : 6,
-                });
-              },
-            }, at + 0.55);
+              v: 1, duration: CLOSE - at - 1.1, ease: 'none',
+              onUpdate: () => gsap.set(c, place(start + turn.v * Math.PI * 2)),
+            }, at + 0.75);
             cycle.to(c, { opacity: 0, duration: 0.5, ease: 'power2.in' }, CLOSE - 0.9);
           }
 
@@ -403,8 +410,7 @@ export function ChestSlide({ active }: { active: boolean }) {
           cycle.to(lidSegs.map((s) => s.el), { x: 0, y: 0, rotation: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, CLOSE);
         } else if (variant === '1' || variant === '3') {
           /* A lid falls, and the box takes it — the mirror of the latch that let it go. */
-          cycle.to(tilt, { phi: 0, duration: 0.62, ease: 'power2.in', onUpdate: applyTilt }, CLOSE);
-          if (variant === '3') cycle.to(lidG, { y: 0, duration: 0.62, ease: 'power2.in', svgOrigin: HINGE }, CLOSE);
+          cycle.to(tilt, { phi: 0, lift: 0, duration: 0.62, ease: 'power2.in', onUpdate: applyTilt }, CLOSE);
           cycle.to(svg, { scale: 0.988, duration: 0.1, ease: 'power2.out', transformOrigin: '50% 88%' }, CLOSE + 0.62);
           cycle.to(svg, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.5)', transformOrigin: '50% 88%' }, CLOSE + 0.72);
         } else {

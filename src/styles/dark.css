@@ -480,9 +480,15 @@
    list — they ship as white pills carrying dark text, and a white pill still reads here. */
 [data-theme='dark'] .il-simple__hub img,
 [data-theme='dark'] .il-ui__link,
-[data-theme='dark'] .il-phone__bar,
 [data-theme='dark'] .il-phone__head {
   filter: invert(1) brightness(1.7);
+}
+/* The status bar is nine grey glyphs and one amber battery. Inverting turns the greys over, which
+   is what it is for, but it also takes the battery from amber to a flat blue — and a blue battery
+   is not a thing a phone has. Turning the hue back through half a circle costs the greys nothing,
+   since a grey has no hue to rotate, and returns the one coloured mark to its own warm. */
+[data-theme='dark'] .il-phone__bar {
+  filter: invert(1) brightness(1.7) hue-rotate(180deg);
 }
 
 /* The phone is a product render, lit for a white studio: a gold bezel and a bright body, which on
@@ -728,10 +734,12 @@
   --chest-soft: var(--d-lavender);
   /* The mark's coin inverts with the page, as the tokenomics hub does: the same object, the same
      way round, against the ground it now sits on. */
-  /* The mark's coin is the brand's own, the way BTC's is orange and ETH's blue: a dark disc
-     carrying the white mark, on either page. It had been inverting with the theme, which put a
-     near-black M on a white disc here — the one form this mark is never drawn in. */
-  --chest-markDisc: #1a222c;
+  /* The mark's coin is the brand's own, the way BTC's is orange and ETH's blue. On white paper
+     that is the near-black disc the mark is always drawn on; on this band a near-black disc is the
+     band, and the coin blended into the ground while the four beside it carried saturated colour.
+     So here it takes the brand's indigo — the same value the badge and the live rail are drawn in
+     — and keeps the white mark, which is the pairing every other coin in the set uses. */
+  --chest-markDisc: #4042d1;
 }
 /* The dot field is near-black ink on a light band; on this one it has to be the ink instead, and
    much fainter — a white dot carries far further on black than a dark one does on white. */

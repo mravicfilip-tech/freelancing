@@ -501,6 +501,54 @@
   border-color: var(--d-il-rule);
 }
 
+/* ---------- The hero's chest (.chest) ----------
+   The crate turns over the way the presale bars do. On a light band it is white plates with a dark
+   line and a cavity a few steps down; solid white on a dark page is a floodlight, so here the faces
+   become the ground and the line does the drawing. The polarity of the inside inverts with it: on
+   white the cavity is darker than the box, on black it has to be lighter, because what makes a hole
+   read as a hole is the value difference either way — not darkness. */
+[data-theme='dark'] .chest {
+  --chest-ink: var(--d-ink);
+  /* the crate's three faces, a step apart, deepest on the face turned furthest from the light */
+  --chest-top: #26313e;
+  --chest-left: #1c2531;
+  --chest-right: #141c26;
+  --chest-lipL: #131a23;
+  --chest-lipR: #0d131a;
+  /* the inside, lifted off the box rather than sunk into it */
+  --chest-wallA: #35424f;
+  --chest-wallB: #2b3644;
+  --chest-floor: #3d4a58;
+  --chest-rim: var(--d-rail);
+  --chest-live: var(--d-indigo);
+  --chest-soft: var(--d-lavender);
+}
+/* The dot field is near-black ink on a light band; on this one it has to be the ink instead, and
+   much fainter — a white dot carries far further on black than a dark one does on white. */
+[data-theme='dark'] .chest__field {
+  background-image: radial-gradient(circle at center, rgb(238 242 245 / 7%) 1px, transparent 1.4px);
+}
+/* A cast shadow needs light to be cast from. On a dark ground it reads as a smudge, so the crate is
+   seated by the field falling away under it instead. */
+[data-theme='dark'] .chest__shadow {
+  background: radial-gradient(closest-side, rgb(0 0 0 / 55%), transparent 72%);
+}
+/* The badge is indigo carrying white. Lifted, that indigo is a pale lavender, which white cannot
+   sit on — so it takes the ink this ground uses under a light fill. */
+[data-theme='dark'] .chest__badge {
+  color: #0c1219;
+  box-shadow: 0 6px 16px -6px rgb(0 0 0 / 60%);
+}
+/* The packet's white ring is what lifts it off a light card; on a dark one the ring is the ground. */
+[data-theme='dark'] .chest__packet {
+  box-shadow: 0 0 0 3px rgb(12 18 25 / 90%), 0 4px 10px rgb(0 0 0 / 45%);
+}
+/* The sheen is white light crossing a white plate on a light page. Crossing a dark plate it only
+   needs to be a lift, not a flare. */
+[data-theme='dark'] .chest__sheen {
+  fill: #93a3b5;
+}
+
 /* ---------- Roadmap (.rs) ----------
    Already dark. It only needs to join the alternation: it follows tokenomics, so it takes the
    deeper band rather than repeating that section's. */

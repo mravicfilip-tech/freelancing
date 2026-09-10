@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, type Dispatch, type RefObject, type SetStateAction } from 'react';
+import { useTheme } from '../../theme';
 import { SCENES } from './illustrations';
 
 /** How long each pillar stays active before the accordion advances on its own. */
@@ -13,6 +14,9 @@ const CYCLE = 7;
  * rises, builds and loops.
  */
 export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: number, setActive: Dispatch<SetStateAction<number>>) {
+  /* The scenes read their tween colours off the stylesheet when they are built, and GSAP writes them
+     as inline styles that a theme change does not clear — so they are rebuilt when it changes. */
+  const theme = useTheme();
   const gsapRef = useRef<typeof import('gsap')['gsap'] | null>(null);
   const loopRef = useRef<gsap.core.Timeline | null>(null);
   const progressRef = useRef<gsap.core.Tween | null>(null);
@@ -134,7 +138,7 @@ export function useEcosystemMotion(root: RefObject<HTMLElement | null>, active: 
     }
     progressRef.current = gsap.fromTo(bar, { scaleY: 0 }, { scaleY: 1, duration: CYCLE, ease: 'none', onComplete: () => setActive((a) => (a + 1) % scenes.length) });
     if (!visibleRef.current || hoverRef.current) progressRef.current.pause();
-  }, [root, setActive]);
+  }, [root, setActive, theme]);
 
   useEffect(() => {
     show(active);

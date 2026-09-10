@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../../theme';
 
 /**
  * Floating rate chips from the Figma hero (node 2346:347), one per bar. Positions are shares of
@@ -90,6 +91,10 @@ function Bar({ id }: { id: BarId }) {
  * with silver chips.
  */
 export function Bars({ active }: { active: boolean }) {
+  /* The tween end-states below are read off the stylesheet once, and GSAP then writes them as inline
+     styles. An inline style outlives a theme change, so without re-running on the resolved theme the
+     dark palette stayed painted on a light page — the animation walking over the sheet again. */
+  const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -245,7 +250,7 @@ export function Bars({ active }: { active: boolean }) {
         if (num) num.textContent = format(chip, chip.base);
       });
     };
-  }, [active]);
+  }, [active, theme]);
 
   return (
     <div ref={ref} className="barsSlide">

@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { useTheme } from '../../theme';
 import { all, draw, one, pop } from '../FigmaFeatures/illustrations/motion';
 
 /**
@@ -26,6 +27,9 @@ import { all, draw, one, pop } from '../FigmaFeatures/illustrations/motion';
  * ellipse now on screen rather than the one it replaced.
  */
 export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = false) {
+  /* The sweep's end-states are read off the stylesheet once and then written as inline styles, which
+     outlive a theme change — so the run is rebuilt when the resolved theme does. */
+  const theme = useTheme();
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -329,5 +333,5 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
       cancelled = true;
       revert?.();
     };
-  }, [root, mobile]);
+  }, [root, mobile, theme]);
 }

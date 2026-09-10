@@ -5,9 +5,15 @@
 .chest__brand {
   opacity: 0;
 }
+/* Drawn, not filled: the crate is line work and so is what it resolves into. The weight is the
+   crate's own 1.35, divided back out of the scale the face matrix applies, so the mark's line is
+   the same line as the box it is on. */
 .chest__brandPath {
-  fill: var(--chest-live);
-  stroke: none;
+  fill: none;
+  stroke: var(--chest-live);
+  stroke-width: 0.72;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 .chest__scan {
   fill: var(--chest-live);

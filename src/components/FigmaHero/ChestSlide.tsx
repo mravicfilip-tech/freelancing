@@ -279,7 +279,7 @@ export function ChestSlide({ active }: { active: boolean }) {
         /* The panels answer the opening. A light runs down each `?` as the lid leaves, and what it
            leaves behind is the Remittix mark — the crate says "what is inside?" until it is open,
            and then it says whose it is. Both faces run together; they are two views of one thing. */
-        panels.forEach(({ brand, scan }, i) => {
+        panels.forEach(({ brand, strokes, scan }, i) => {
           const at = LEAVE + 0.35 + i * 0.08;
           cycle.fromTo(scan, { opacity: 0 }, { opacity: 0.95, duration: 0.18 }, at);
           /* The light travels by its own `y` ATTRIBUTE, inside the panel's local space. Tweening a
@@ -288,12 +288,26 @@ export function ChestSlide({ active }: { active: boolean }) {
              taken apart into translate/rotate/scale and put back together. */
           cycle.fromTo(scan, { attr: { y: 0 } }, { attr: { y: SCAN_H }, duration: 0.85, ease: 'power1.inOut' }, at);
           cycle.to(scan, { opacity: 0, duration: 0.3, ease: 'power2.in' }, at + 0.7);
-          // the mark is uncovered by the light rather than appearing after it
-          cycle.fromTo(brand, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, at + 0.3);
-          cycle.to(marks[i], { opacity: 0, duration: 0.4, ease: 'power2.out' }, at + 0.3);
-          // and the question comes back as the crate closes
-          cycle.to(brand, { opacity: 0, duration: 0.4, ease: 'power2.in' }, CLOSE - 0.3);
-          cycle.to(marks[i], { opacity: 1, duration: 0.4, ease: 'power2.out' }, CLOSE - 0.3);
+
+          /* The swap is a drawing, not a dissolve. Everything else on this crate arrives by being
+             drawn — 226 segments laying themselves down stroke by stroke — so the question leaves
+             the same way it came and the mark is put down after it, in the same line, at the same
+             weight. Two shapes cross-fading would be the one thing on the object that was painted
+             rather than drawn. */
+          const q = marks[i];
+          const qLen = q.getTotalLength();
+          gsap.set(q, { strokeDasharray: qLen });
+          cycle.fromTo(q, { strokeDashoffset: 0 }, { strokeDashoffset: qLen, duration: 0.5, ease: 'power2.in' }, at + 0.1);
+          cycle.set(brand, { opacity: 1 }, at + 0.3);
+          strokes.forEach((el, k) => {
+            const len = el.getTotalLength();
+            gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
+            cycle.to(el, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.out' }, at + 0.35 + k * 0.1);
+            // and it is taken up again the way it was put down
+            cycle.to(el, { strokeDashoffset: len, duration: 0.4, ease: 'power2.in' }, CLOSE - 0.45 + k * 0.05);
+          });
+          cycle.set(brand, { opacity: 0 }, CLOSE - 0.02);
+          cycle.to(q, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.out' }, CLOSE - 0.3);
         });
 
         /* The lid tilts about the crate's own back-right rim edge — see `tiltMatrix`. The angle is
@@ -350,6 +364,11 @@ export function ChestSlide({ active }: { active: boolean }) {
           cycle.to(pk, { opacity: 0, scale: 0.6, duration: 0.2, ease: 'power2.in' }, at + 0.08);
         });
 
+        /* The rim flares as they go — the box gives something up, and the light on its own opening
+           is where that reads. Without it five coins simply appear above a crate that did nothing. */
+        cycle.to(seam, { opacity: 1, strokeWidth: 3.4, duration: 0.14, ease: 'power2.out' }, 0.6);
+        cycle.to(seam, { opacity: 0.9, strokeWidth: 2, duration: 0.5, ease: 'power2.inOut' }, 0.74);
+
         /* The payoff is a status, not a glare — the badge the orbit lands, in its own measurements. */
         cycle.fromTo('.chest__badge', { opacity: 0, scale: 0 },
           { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.8)', transformOrigin: '0% 50%' }, 1.5);
@@ -360,7 +379,7 @@ export function ChestSlide({ active }: { active: boolean }) {
            box before the first coin. */
         const EMIT = variant === '1' ? 0.62 : 0.6;
         coins.forEach((c, i) => {
-          const at = EMIT + i * 0.07;
+          const at = EMIT + i * (variant === '3' ? 0.045 : 0.07);
           const n = i - (PAYLOAD.length - 1) / 2;
 
           if (variant === '1') {
@@ -394,13 +413,23 @@ export function ChestSlide({ active }: { active: boolean }) {
               zIndex: Math.sin(a) < 0 ? 1 : 6,
             });
             const start = -Math.PI / 2 + i * STEP;
+            const home = place(start);
             const turn = { v: 0 };
-            cycle.fromTo(c, { x: 0, y: 0, scale: 0.15, opacity: 0 },
-              { ...place(start), opacity: 1, duration: 0.75, ease: 'expo.out' }, at);
+
+            /* The launch is the moment the crate is for, so it is thrown rather than faded. Each
+               coin leaves the mouth small and turning, overshoots the ring it is heading for by a
+               third, and is pulled back onto it — which is what gives the beat its kick. Under the
+               old rise it grew to full size on a smooth curve and slid into place, and five of
+               those at once read as a fade-in rather than an eruption. */
+            cycle.fromTo(c, { x: 0, y: 18, scale: 0.05, opacity: 0, rotation: -55 },
+              { x: home.x * 1.34, y: home.y * 1.28, scale: 1.22, opacity: 1, rotation: 8,
+                duration: 0.52, ease: 'expo.out' }, at);
+            cycle.to(c, { x: home.x, y: home.y, scale: home.scale, rotation: 0,
+              duration: 0.42, ease: 'back.out(1.6)' }, at + 0.52);
             cycle.to(turn, {
-              v: 1, duration: CLOSE - at - 1.1, ease: 'none',
+              v: 1, duration: CLOSE - at - 1.4, ease: 'none',
               onUpdate: () => gsap.set(c, place(start + turn.v * Math.PI * 2)),
-            }, at + 0.75);
+            }, at + 0.94);
             cycle.to(c, { opacity: 0, duration: 0.5, ease: 'power2.in' }, CLOSE - 0.9);
           }
 

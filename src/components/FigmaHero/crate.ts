@@ -297,14 +297,18 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
     const f = FACE[side];
     const g = make('g', { class: `chest__panel chest__panel--${side}`, transform: onFace(f, MARK_W, MARK_H) });
     const brand = make('g', { class: 'chest__brand' });
-    MARK_D.forEach((d) => brand.appendChild(make('path', { class: 'chest__brandPath', d })));
+    const strokes = MARK_D.map((d) => {
+      const el = make('path', { class: 'chest__brandPath', d }) as SVGPathElement;
+      brand.appendChild(el);
+      return el;
+    });
     g.appendChild(brand);
     lines.appendChild(g);
     // the light that crosses the panel, in the same face's basis and a good deal taller than it
     const scanG = make('g', { class: `chest__scanG chest__scanG--${side}`, transform: onFace(f, MARK_W, SCAN_H) });
     scanG.appendChild(make('rect', { class: 'chest__scan', x: '-3', y: '0', width: String(MARK_W + 6), height: '1.6' }));
     lines.appendChild(scanG);
-    return { brand, scan: scanG.firstChild as SVGGElement };
+    return { brand, strokes, scan: scanG.firstChild as SVGGElement };
   });
 
   /* The lid: its underside lips first, then its face, then the export's own strokes on top. As one

@@ -13,6 +13,10 @@
 
 .fh {
   --fh-bg: #edeff1;
+  /* the ground, and the things that sit raised off it: the nav pill, the sheet, the chips */
+  --fh-surface: #fff;
+  /* the hairline texture ruled across the progress bar */
+  --fh-stripe: #fff;
   --fh-line: #dadee2;
   --fh-ink: #122433;
   --fh-muted: #8292a2;
@@ -104,8 +108,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: #fff;
-  border: 1px solid #fff;
+  background: var(--fh-surface);
+  border: 1px solid var(--fh-surface);
   border-radius: 400px;
   transition:
     width 460ms cubic-bezier(0.22, 0.61, 0.36, 1),
@@ -451,7 +455,7 @@
   will-change: transform;
 }
 .bars__chip--light .bars__chipInner {
-  background: #fff;
+  background: var(--fh-surface);
 }
 .bars__chipLabel {
   display: flex;
@@ -551,7 +555,7 @@
   padding: 0;
   border: 1px solid var(--fh-line);
   border-radius: 50%;
-  background: #fff;
+  background: var(--fh-surface);
   cursor: pointer;
   transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
@@ -594,7 +598,7 @@
   display: flex;
   gap: 48px;
   padding: 24px 32px;
-  background: #fff;
+  background: var(--fh-surface);
 }
 .fh__price {
   flex: 1 1 970px;
@@ -636,7 +640,7 @@
   height: 48px;
   background-color: var(--fh-bg);
   /* the unfilled track: a hairline every 8px */
-  background-image: repeating-linear-gradient(90deg, #fff 0 1px, transparent 1px 8px);
+  background-image: repeating-linear-gradient(90deg, var(--fh-stripe) 0 1px, transparent 1px 8px);
   overflow: hidden;
 }
 .fh__progressFill {
@@ -761,7 +765,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--fh-surface);
   font-family: var(--fh-pixel);
   font-size: 48px;
   line-height: 1.12;
@@ -866,7 +870,7 @@
   padding: 12px 20px 20px;
   border: 1px solid var(--fh-line);
   border-radius: 28px;
-  background: #fff;
+  background: var(--fh-surface);
   overflow-y: auto;
   overscroll-behavior: contain;
   opacity: 0;

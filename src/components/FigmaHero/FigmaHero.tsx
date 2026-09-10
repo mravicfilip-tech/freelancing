@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { LangPicker } from './LangPicker';
+import { ThemeToggle } from './ThemeToggle';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -225,6 +226,7 @@ export function FigmaHero() {
           </nav>
         </div>
         <div className="fh__navRight">
+          <ThemeToggle />
           <LangPicker />
           <div className="fh__navButtons">
             <PresaleButton />
@@ -297,6 +299,10 @@ export function FigmaHero() {
         </div>
 
         <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 1 } as React.CSSProperties}>
+          <span className="fh__menuFootLabel">Appearance</span>
+          <ThemeToggle />
+        </div>
+        <div className="fh__menuFoot" style={{ '--i': NAV_LINKS.length + 2 } as React.CSSProperties}>
           <span className="fh__menuFootLabel">Language</span>
           <LangPicker />
         </div>

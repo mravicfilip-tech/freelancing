@@ -11,6 +11,8 @@
   --hb-body: #7c858d;
   --hb-label: #a2a6aa;
   --hb-indigo: #4042d1;
+  /* the step card the illustration stands on */
+  --hb-card: #fff;
   --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
   --fh-digits: 'Doto Variable', 'Courier New', monospace;
@@ -88,7 +90,7 @@
   height: 440px;
   padding: 32px;
   border-radius: 12px;
-  background: #fff;
+  background: var(--hb-card);
   overflow: hidden;
   isolation: isolate;
 }

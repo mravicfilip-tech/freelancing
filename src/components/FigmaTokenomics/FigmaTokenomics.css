@@ -3,6 +3,8 @@
 
 .tk {
   --tk-bg: #edeff1;
+  /* what sits raised off the band: chips, coins, the hub */
+  --tk-surface: #fff;
   --tk-rail: #c5cbd1;
   --tk-ink: #122433;
   --tk-body: #2c2e31;
@@ -151,7 +153,7 @@
   width: 64px;
   height: 64px;
   border-radius: 400px;
-  background: #fff;
+  background: var(--tk-surface);
 }
 
 /* ---------- Allocations ---------- */
@@ -191,7 +193,7 @@
   width: 64px;
   height: 64px;
   border-radius: 400px;
-  background: #fff;
+  background: var(--tk-surface);
   font-size: 13px;
   font-weight: 700;
   line-height: 1.4;

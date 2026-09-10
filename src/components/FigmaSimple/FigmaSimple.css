@@ -3,6 +3,8 @@
 
 .fs {
   --fs-bg: #e6e9ed;
+  /* what sits raised off the band: chips, coins, the hub */
+  --fs-surface: #fff;
   --fs-line: #c5cbd1;
   --fs-ink: #122433;
   --fs-text: #2c2e31;
@@ -106,7 +108,7 @@
   height: 34px;
   padding: 0 14.75px;
   border-radius: 46px;
-  background: #fff;
+  background: var(--fs-surface);
   font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.28px;
@@ -119,7 +121,7 @@
   height: 120px;
   border: 1.5px solid #c9cfd7;
   border-radius: 50%;
-  background: #fff;
+  background: var(--fs-surface);
 }
 /* The cursor and its badge travel over everything else, as a pointer does over a page. */
 .fs__cursor {
@@ -173,7 +175,7 @@
   gap: 8px;
   padding: 8px 12px;
   border-radius: 400px;
-  background: #fff;
+  background: var(--fs-surface);
 }
 .fs__coin {
   display: block;

@@ -1,0 +1,380 @@
+/* ================================================================================================
+   Dark.
+
+   Not an invented palette. The footer and the roadmap were already dark in the design — the same
+   #0c1219 ground, the same #eef2f5 ink, the same slate body text — so the whole page in dark is
+   those two sections extended over the rest, and it lands as a treatment the site already owned.
+
+   Every section declares its own token block; this file answers each one. `[data-theme='dark'] .fs`
+   is one class heavier than `.fs`, so ordering against the section stylesheets never matters.
+
+   The light bands alternate between two greys, #e6e9ed and #edeff1, so that neighbouring sections
+   part. Dark keeps that alternation rather than flattening it: the deeper band is the footer's own
+   ground, the lifted one a step above it.
+   ================================================================================================ */
+
+:root {
+  /* the two bands, in page order: hero(B) simple(A) features(B) ecosystem(B) reviews(A)
+     seen-in(A) tokenomics(B) roadmap(-) audits(A) how-to-buy(B) faq(B) footer(-) */
+  --d-band-a: #0c1219;
+  --d-band-b: #121a23;
+  /* raised off the band: cards, chips, the nav pill, the sheet */
+  --d-surface: #171f29;
+  --d-surface-2: #1d2630;
+  /* the 8/8 dashed rails that run the page's full height, and the finer 4/4 rules inside a card */
+  --d-rail: #28323c;
+  --d-line: #222b35;
+  /* type */
+  --d-ink: #eef2f5;
+  --d-body: #8593a0;
+  --d-label: #6c7783;
+  --d-muted: #55606b;
+  /* Indigo carries links, the live step and the progress fill. #4042d1 is a dark blue on a light
+     ground; on this one it disappears, so dark takes the tint the design already pairs it with. */
+  --d-indigo: #9092f4;
+  --d-lavender: #4b4e8f;
+  --d-lime: #d9f24e;
+}
+
+/* The page's own ground, behind and beyond the sections. */
+[data-theme='dark'] body {
+  background: var(--d-band-a);
+}
+
+/* ---------- Hero + nav (.fh) ---------- */
+[data-theme='dark'] .fh {
+  --fh-bg: var(--d-band-b);
+  --fh-surface: var(--d-surface);
+  --fh-stripe: #46525f;
+  --fh-line: var(--d-rail);
+  --fh-ink: var(--d-ink);
+  --fh-muted: var(--d-label);
+  --fh-body: var(--d-body);
+  --fh-label: var(--d-label);
+  --fh-index: var(--d-body);
+  --fh-progress: var(--d-indigo);
+  --fh-progress-soft: var(--d-lavender);
+}
+/* The bar is a white pill on a light page; on a dark one it is a lifted panel, and it needs a
+   hairline to hold its edge where the white one had contrast to spare. */
+[data-theme='dark'] .fh__nav {
+  border-color: var(--d-rail);
+}
+[data-theme='dark'] .fh__brand,
+[data-theme='dark'] .fh__lang {
+  color: var(--d-ink);
+}
+[data-theme='dark'] .fh__lang {
+  border-right-color: var(--d-rail);
+}
+/* The mark is drawn in near-black and would vanish into the pill. */
+[data-theme='dark'] .fh__brand img,
+[data-theme='dark'] .fh__menuBrand img {
+  filter: invert(1) brightness(1.6);
+}
+/* The primary button is black on white; inverted, it is the page's ink on the page's ground. */
+[data-theme='dark'] .fh__btn--primary {
+  background: var(--d-ink);
+  color: #0c1219;
+}
+[data-theme='dark'] .fh__btn--primary .fh__chevron {
+  filter: none;
+}
+[data-theme='dark'] .fh__btn--ghost {
+  border-color: var(--d-rail);
+  color: var(--d-ink);
+  background: transparent;
+}
+[data-theme='dark'] .fh__scrim {
+  background: rgb(4 8 12 / 62%);
+}
+/* Chevrons are black artwork; on dark ink they need to become the ink. */
+[data-theme='dark'] .fh__chevron {
+  filter: invert(1) brightness(1.7);
+}
+
+/* The ghost button's plate, the burger's, and the sheet's secondary — all near-white fills that
+   have to become surfaces rather than stay plates. */
+[data-theme='dark'] .fh__menu .fh__btn--ghost {
+  background: var(--d-surface-2);
+  border-color: var(--d-rail);
+  color: var(--d-ink);
+}
+/* The hover blob is the progress indigo. On a light page that is #4042d2 and white sits on it; in
+   dark the indigo lifts to carry on this ground, so what sits on it has to come down to meet it. */
+[data-theme='dark'] .fh__btn--ghost:hover,
+[data-theme='dark'] .fh__btn--ghost:focus-visible {
+  color: #0c1219;
+}
+[data-theme='dark'] .bars__chipInner {
+  background: var(--d-surface-2);
+}
+[data-theme='dark'] .bars__chip--light .bars__chipInner {
+  background: var(--d-surface);
+}
+[data-theme='dark'] .fh__sliderArrow {
+  border-color: var(--d-rail);
+}
+[data-theme='dark'] .fh__sliderArrow:hover {
+  background: var(--d-ink);
+  border-color: var(--d-ink);
+}
+[data-theme='dark'] .fh__sliderArrow:hover .fh__chevron {
+  filter: none;
+}
+
+/* ---------- Language picker (.lp) ---------- */
+[data-theme='dark'] .lp__pop {
+  border-color: var(--d-rail);
+  background: var(--d-surface);
+  box-shadow: 0 32px 64px -24px rgb(0 0 0 / 64%);
+}
+[data-theme='dark'] .lp__search {
+  border-bottom-color: var(--d-rail);
+}
+[data-theme='dark'] .lp__search input,
+[data-theme='dark'] .lp__name {
+  color: var(--d-ink);
+}
+[data-theme='dark'] .lp__search svg {
+  stroke: var(--d-label);
+}
+[data-theme='dark'] .lp__code,
+[data-theme='dark'] .lp__count,
+[data-theme='dark'] .lp__empty {
+  color: var(--d-label);
+}
+[data-theme='dark'] .lp__opt:hover,
+[data-theme='dark'] .lp__opt:focus-visible {
+  background: var(--d-surface-2);
+}
+
+/* ---------- Crypto-to-fiat (.fs) ---------- */
+[data-theme='dark'] .fs {
+  --fs-bg: var(--d-band-a);
+  --fs-surface: var(--d-surface);
+  --fs-line: var(--d-rail);
+  --fs-ink: var(--d-ink);
+  --fs-text: var(--d-body);
+  --fs-muted: var(--d-label);
+  --fs-indigo: var(--d-indigo);
+}
+
+/* The orbit's ellipse is filled #E6E9ED — the light band's own colour — so on a light page it is
+   invisible and does nothing but occlude the dot field behind the ring. Left alone on a dark page
+   it is the one white slab in the section. It only ever wanted to be the band, so it is told to
+   be the band. (The stroke beside it is a gradient and carries on either ground.) */
+[data-theme='dark'] .fs__ring path[fill='#E6E9ED'] {
+  fill: var(--fs-bg);
+}
+/* Same trick, same purpose, but exported as an image where the fill cannot be reached — so it is
+   taken down to the band by brightness instead. Only the portrait orbit lays one. */
+[data-theme='dark'] .fs__plate {
+  filter: brightness(0.055) saturate(0.4);
+}
+/* The hub's mark and the chips' glyphs are near-black line art on what are now dark surfaces. */
+[data-theme='dark'] .fs__hub img,
+[data-theme='dark'] .fs__chip img {
+  filter: invert(1) brightness(1.7);
+}
+/* At 48% of the ink this second line reads as an aside on a light page; on a dark one it falls
+   under it. The tint is the same idea taken from the ground the page now has. */
+[data-theme='dark'] .fs__titleMuted {
+  color: rgb(238 242 245 / 42%);
+}
+
+/* The coin belt runs on a solid grey; on a dark band it is the rail's own weight. */
+[data-theme='dark'] .fs__coins {
+  background: var(--d-rail);
+}
+
+/* ---------- Bento grid (.ff) ---------- */
+[data-theme='dark'] .ff {
+  --ff-bg: var(--d-band-b);
+  --ff-surface: var(--d-surface-2);
+  --ff-card: var(--d-surface);
+  --ff-line: var(--d-rail);
+  --ff-ink: var(--d-body);
+  --ff-title: var(--d-ink);
+  --ff-muted: var(--d-label);
+  --ff-indigo: var(--d-indigo);
+  --ff-lavender: var(--d-lavender);
+}
+
+/* ---------- Ecosystem (.ec) ---------- */
+[data-theme='dark'] .ec {
+  --ec-bg: var(--d-band-b);
+  --ec-card: var(--d-surface);
+  --ec-line: var(--d-rail);
+  --ec-ink: var(--d-body);
+  --ec-title: var(--d-ink);
+  --ec-muted: var(--d-label);
+  --ec-indigo: var(--d-indigo);
+  --ec-lavender: var(--d-lavender);
+}
+
+/* The panel the scenes play in is a light gradient — a lit sheet of paper beside the copy. Dark
+   keeps the same sweep and the same three stops, taken down to the surface it now sits on. */
+[data-theme='dark'] .ec__panel {
+  background: linear-gradient(121deg, #182029 4%, #1d2630 34%, #232a26 78%);
+}
+/* The item icons are dark line art; on this ground they have to become the ink they sit beside. */
+[data-theme='dark'] .ec__item img {
+  filter: invert(1) brightness(1.7);
+}
+
+/* ---------- Community reviews (.rv) ---------- */
+[data-theme='dark'] .rv {
+  --rv-bg: var(--d-band-a);
+  --rv-line: var(--d-rail);
+  --rv-ink: var(--d-ink);
+}
+
+/* ---------- As seen in (.sn) ---------- */
+[data-theme='dark'] .sn {
+  --sn-bg: var(--d-band-a);
+  --sn-line: var(--d-rail);
+  --sn-ink: var(--d-ink);
+}
+
+/* The logo walls. Both are dark line art sitting at a low opacity on a light band — on a dark one
+   they disappear into it. `brightness(0) invert(1)` flattens each mark to the page's own ink
+   whatever colour it was drawn in, which is what a monochrome logo wall wants anyway; the opacity
+   the sections already animate on hover still does the rest. */
+[data-theme='dark'] .sn__mark img,
+[data-theme='dark'] .av__mark img {
+  filter: brightness(0) invert(1);
+}
+/* Drawn marks (the shield and the paper) are strokes in currentColor, so they follow the ink. */
+[data-theme='dark'] .av__drawn {
+  color: var(--d-ink);
+}
+
+/* ---------- Tokenomics (.tk) ---------- */
+[data-theme='dark'] .tk {
+  --tk-bg: var(--d-band-b);
+  --tk-surface: var(--d-surface);
+  --tk-rail: var(--d-rail);
+  --tk-ink: var(--d-ink);
+  --tk-body: var(--d-body);
+  --tk-indigo: var(--d-indigo);
+}
+
+/* The chip is near-black on a light band — the one thing on the page that already reads as dark.
+   On a dark band it has to lift instead, or it becomes a hole. */
+[data-theme='dark'] .tk__chip {
+  background: var(--d-surface-2);
+}
+[data-theme='dark'] .tk__pct {
+  color: var(--d-ink);
+}
+
+/* ---------- Roadmap (.rs) ----------
+   Already dark. It only needs to join the alternation: it follows tokenomics, so it takes the
+   deeper band rather than repeating that section's. */
+[data-theme='dark'] .rs {
+  --rs-bg: var(--d-band-a);
+  --rs-rail: var(--d-rail);
+  --rs-leader: #1c242d;
+  --rs-spine: var(--d-rail);
+}
+
+/* ---------- Audits (.av) ---------- */
+[data-theme='dark'] .av {
+  --av-bg: var(--d-band-b);
+  --av-rail: var(--d-rail);
+  --av-line: var(--d-rail);
+  --av-ink: var(--d-ink);
+  --av-body: var(--d-body);
+  --av-label: var(--d-label);
+  --av-indigo: var(--d-indigo);
+}
+
+/* ---------- How to buy (.hb) ---------- */
+[data-theme='dark'] .hb {
+  --hb-bg: var(--d-band-a);
+  --hb-rail: var(--d-rail);
+  --hb-line: var(--d-rail);
+  --hb-ink: var(--d-ink);
+  --hb-body: var(--d-body);
+  --hb-label: var(--d-label);
+  --hb-indigo: var(--d-indigo);
+}
+
+/* The step card, and the product mock-up standing on it. The illustrations show a website that is
+   itself light, but a lit browser window on a dark band is a hole in the page rather than a
+   picture — so the mock-up turns over too, and reads as the same product after dark. */
+[data-theme='dark'] .hb {
+  --hb-card: var(--d-surface);
+}
+[data-theme='dark'] .hb__cardTitle,
+[data-theme='dark'] .hb__body {
+  color: var(--d-ink);
+}
+[data-theme='dark'] .hb__body {
+  color: var(--d-body);
+}
+[data-theme='dark'] .hb__scene {
+  --ink: var(--d-ink);
+  --body: var(--d-body);
+  --muted: var(--d-label);
+  --label: var(--d-muted);
+  --line: #2b3542;
+  --soft: var(--d-surface-2);
+  --surface: var(--d-surface);
+  --hair: #232c37;
+  --radio: #3a4553;
+  --bar: rgb(238 242 245 / 9%);
+  --chipbg: rgb(238 242 245 / 7%);
+  --indigo: var(--d-indigo);
+  /* the ticked state has to carry on a dark ground, where #02774d reads as black */
+  --green: #35c98a;
+}
+/* The window and sheet lift off a light page with a soft drop shadow; on a dark one, shadow does
+   not lift anything — the surface being a shade above its band is what does. */
+[data-theme='dark'] .hb__scene .hbi-win,
+[data-theme='dark'] .hb__scene .hbi-sheet {
+  box-shadow: 0 24px 48px -28px rgb(0 0 0 / 70%);
+}
+/* The card's background is three exported PNGs with a white plate baked into them, plus a wash
+   that blends in `color` — none of which can be dimmed into a dark card, because what needs to go
+   is the plate rather than the light on it. Dark drops all three and draws the glow instead: the
+   same indigo falling off the card's bottom corner, in CSS, where its strength is a number. */
+[data-theme='dark'] .hb__glow,
+[data-theme='dark'] .hb__wash {
+  display: none;
+}
+[data-theme='dark'] .hb__dots {
+  opacity: 0.42;
+}
+[data-theme='dark'] .hb__bg::after {
+  content: '';
+  position: absolute;
+  right: -10%;
+  bottom: -40%;
+  width: 80%;
+  height: 110%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(110 113 232 / 26%), transparent 70%);
+}
+[data-theme='dark'] .hb__bg[data-step='claim']::after {
+  right: auto;
+  left: -18%;
+  background: radial-gradient(closest-side, rgb(150 153 245 / 22%), transparent 70%);
+}
+
+/* ---------- FAQ (.fq) ---------- */
+[data-theme='dark'] .fq {
+  --fq-bg: var(--d-band-b);
+  --fq-rail: var(--d-rail);
+  --fq-line: var(--d-rail);
+  --fq-ink: var(--d-ink);
+  --fq-body: var(--d-body);
+  --fq-indigo: var(--d-indigo);
+}
+
+/* ---------- Footer (.ft) ----------
+   Dark already, and the source of everything above. It only rejoins the alternation. */
+[data-theme='dark'] .ft {
+  --ft-bg: var(--d-band-a);
+}

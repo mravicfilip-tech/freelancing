@@ -4,6 +4,8 @@
 
 .ff {
   --ff-bg: #edeff1;
+  /* what sits raised off the band: chips, coins, the hub */
+  --ff-surface: #fff;
   --ff-line: #dadee2;
   --ff-card: #fff;
   --ff-ink: #2c2e31;
@@ -205,7 +207,7 @@
   height: 34px;
   padding: 0 14.75px;
   border-radius: 46px;
-  background: #fff;
+  background: var(--ff-surface);
   font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.28px;

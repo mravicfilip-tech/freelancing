@@ -43,6 +43,13 @@
   --label: #a2a6aa;
   --line: #e0e0e0;
   --soft: #f2f4f6;
+  /* The mock-up's own surfaces and hairlines, named so the dark sheet can turn the product over
+     with the page rather than leaving a lit window standing on a dark band. */
+  --surface: #fff;
+  --hair: #eef0f3;
+  --radio: #cfd5e2;
+  --bar: rgb(18 36 51 / 7%);
+  --chipbg: rgb(18 36 51 / 5%);
   --indigo: #4042d1;
   --green: #02774d;
   --lime: #d9f24e;
@@ -87,13 +94,13 @@
 .hb__scene .hbi-field--card{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hb__scene .hbi-brands{display:inline-flex;gap:4px;flex:none}
 .hb__scene .hbi-brands i{width:22px;height:14px;border-radius:3px}
-.hb__scene .s2a-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #eef0f3;font-size:13px;color:var(--muted)}
+.hb__scene .s2a-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--hair);font-size:13px;color:var(--muted)}
 .hb__scene .s2a-sum{font-weight:600;color:var(--ink)}
 .hb__scene .hbi-done{display:inline-flex;align-items:center;gap:6px}
-.hb__scene .hbi-win{left:107px;top:142px;width:560px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 32px 56px -32px rgba(18,36,51,.22);overflow:hidden}
-.hb__scene .hbi-win__bar{position:relative;display:flex;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid #eef0f3}
+.hb__scene .hbi-win{left:107px;top:142px;width:560px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 32px 56px -32px rgba(18,36,51,.22);overflow:hidden}
+.hb__scene .hbi-win__bar{position:relative;display:flex;align-items:center;height:40px;padding:0 14px;border-bottom:1px solid var(--hair)}
 .hb__scene .hbi-win__dots{display:flex;gap:6px}
-.hb__scene .hbi-win__dots i{width:10px;height:10px;border-radius:50%;background:#e3e6ea}
+.hb__scene .hbi-win__dots i{width:10px;height:10px;border-radius:50%;background:var(--hair)}
 .hb__scene .hbi-win__url{position:absolute;left:50%;top:7px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:7px;width:260px;height:26px;padding:0 12px;border-radius:13px;background:var(--soft);font-size:12px;letter-spacing:-.1px;color:var(--body);white-space:nowrap}
 .hb__scene .hbi-win__url svg{width:10px;height:11px;flex:none}
 .hb__scene .hbi-win__page{position:relative;padding:20px}
@@ -103,18 +110,18 @@
 .hb__scene .hbi-nav__r{display:flex;align-items:center;gap:8px}
 .hb__scene .hbi-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:40px;padding:0 18px;border-radius:46px;font-weight:700;font-size:14px;letter-spacing:-.28px;white-space:nowrap;color:#fff;background:var(--black)}
 .hb__scene .hbi-btn svg{width:10px;height:10px;flex:none}
-.hb__scene .hbi-btn--ghost{background:#fff;color:var(--ink);border:1px solid #d3d8de}
+.hb__scene .hbi-btn--ghost{background:var(--surface);color:var(--ink);border:1px solid var(--hair)}
 .hb__scene .hbi-btn--indigo{background:var(--indigo)}
 .hb__scene .hbi-btn--sm{height:34px;padding:0 14px;font-size:13px}
-.hb__scene .hbi-bar8{height:8px;border-radius:4px;background:rgba(18,36,51,.07)}
-.hb__scene .hbi-ch{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border:1px solid var(--line);border-radius:46px;background:#fff;font-weight:700;font-size:13px;letter-spacing:-.39px;color:var(--ink);white-space:nowrap}
+.hb__scene .hbi-bar8{height:8px;border-radius:4px;background:var(--bar)}
+.hb__scene .hbi-ch{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border:1px solid var(--line);border-radius:46px;background:var(--surface);font-weight:700;font-size:13px;letter-spacing:-.39px;color:var(--ink);white-space:nowrap}
 .hb__scene .hbi-ch img, .hb__scene .hbi-ch svg.ic{width:18px;height:18px;display:block;border-radius:50%}
 .hb__scene .hbi-ch--dark{background:var(--black);border-color:var(--black);color:#fff}
 .hb__scene .hbi-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
 .hb__scene .hbi-dot--amber{background:#e0a100}
 .hb__scene .hbi-dot--grey{background:#c5cbd1}
 .hb__scene .hbi-sheet--pay{left:107px;top:142px;width:560px;padding:20px}
-.hb__scene .hbi-sheet{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 32px 56px -32px rgba(18,36,51,.22)}
+.hb__scene .hbi-sheet{border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 32px 56px -32px rgba(18,36,51,.22)}
 .hb__scene .hbi-sheet__h{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .hb__scene .hbi-sheet__t{font-weight:600;font-size:15px;letter-spacing:-.2px;color:var(--ink)}
 .hb__scene .hbi-sheet__s{font-size:12px;color:var(--muted)}
@@ -122,30 +129,30 @@
 .hb__scene .hbi-lr img, .hb__scene .hbi-lr .ic{width:24px;height:24px;border-radius:50%;display:block;flex:none}
 .hb__scene .hbi-lr small{font-weight:500;font-size:12px;color:var(--muted);margin-left:2px}
 .hb__scene .hbi-lr .hbi-mono{margin-left:auto;font-size:13px;color:var(--ink)}
-.hb__scene .hbi-rad{position:relative;width:18px;height:18px;border:1.5px solid #cfd5e2;border-radius:50%;flex:none}
+.hb__scene .hbi-rad{position:relative;width:18px;height:18px;border:1.5px solid var(--radio);border-radius:50%;flex:none}
 .hb__scene .hbi-rad::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--indigo);opacity:0;transform:scale(.4)}
 .hb__scene .hbi-lr.is-on{background:rgba(64,66,209,.06)}
 .hb__scene .hbi-lr.is-on .hbi-rad{border-color:var(--indigo)}
 .hb__scene .hbi-lr.is-on .hbi-rad::after{opacity:1;transform:none}
 .hb__scene .hbi-seg{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;height:32px;padding:3px;border-radius:16px;background:var(--soft)}
-.hb__scene .hbi-seg i{position:absolute;left:3px;top:3px;width:calc(50% - 3px);height:26px;border-radius:13px;background:#fff;box-shadow:0 1px 2px rgba(18,36,51,.12)}
+.hb__scene .hbi-seg i{position:absolute;left:3px;top:3px;width:calc(50% - 3px);height:26px;border-radius:13px;background:var(--surface);box-shadow:0 1px 2px rgba(18,36,51,.12)}
 .hb__scene .hbi-seg span{position:relative;display:grid;place-items:center;padding:0 14px;font-weight:700;font-size:12px;letter-spacing:-.2px;color:var(--muted)}
 .hb__scene .hbi-st{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-weight:700;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
-.hb__scene .hbi-st--grey{background:rgba(18,36,51,.05);color:var(--muted)}
+.hb__scene .hbi-st--grey{background:var(--chipbg);color:var(--muted)}
 .hb__scene .hbi-st i{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.75;flex:none}
 .hb__scene .hbi-st--green{background:rgba(2,119,77,.12);color:var(--green)}
 .hb__scene .hbi-rail{height:1px;background:repeating-linear-gradient(90deg,#c5cbd1 0 8px,transparent 8px 16px)}
 .hb__scene .hbi-rail--v{width:1px;height:auto;background:repeating-linear-gradient(180deg,#c5cbd1 0 8px,transparent 8px 16px)}
-.hb__scene .hbi-node{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;border:1.5px solid #c5cbd1}
+.hb__scene .hbi-node{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--surface);border:1.5px solid #c5cbd1}
 .hb__scene .hbi-hl{width:70px;height:3px;margin:-1px 0 0 -35px;border-radius:2px;background:linear-gradient(90deg,rgba(179,181,245,0),rgba(64,66,209,.9) 55%,rgba(179,181,245,0));opacity:0}
-.hb__scene .hbi-field{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+.hb__scene .hbi-field{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px}
 .hb__scene .hbi-field__l{font-size:11px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
 .hb__scene .hbi-field__v{font-weight:500;font-size:16px;color:var(--ink)}
 .hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 3px rgba(18,36,51,.3))}
 .hb__scene .hbi-cur svg{display:block;width:22px;height:22px}
 .hb__scene .hbi-click{width:40px;height:40px;margin:-20px 0 0 -20px;border:2px solid var(--indigo);border-radius:50%;background:rgba(64,66,209,.18);opacity:0;z-index:5}
 .hb__scene .hbi-dash{display:grid;grid-template-columns:120px minmax(0,1fr);margin:-20px}
-.hb__scene .hbi-dash__side{display:flex;flex-direction:column;padding:20px 12px 20px 18px;border-right:1px solid #eef0f3}
+.hb__scene .hbi-dash__side{display:flex;flex-direction:column;padding:20px 12px 20px 18px;border-right:1px solid var(--hair)}
 .hb__scene .hbi-dash__brand{display:flex;align-items:center;margin:2px 0 20px 10px}
 .hb__scene .hbi-dash__brand img{display:block;width:26px;height:13px}
 .hb__scene .hbi-dash__nav{display:flex;flex-direction:column;gap:2px}
@@ -195,11 +202,11 @@
 @keyframes s2a-k{0%,19%{transform:translate(200px,283px) scale(.2);opacity:0}19.5%{opacity:1}25%{transform:translate(200px,283px) scale(1);opacity:0}50%{transform:translate(607px,179px) scale(.2);opacity:0}50.5%{opacity:1}56%,100%{transform:translate(607px,179px) scale(1);opacity:0}}
 .hb__scene .s2a-r0{animation:s2a-r0 12s infinite} .s2a-r0 .hbi-rad{animation:s2a-r0r 12s infinite} .s2a-r0 .hbi-rad::after{animation:s2a-r0a 12s infinite}
 @keyframes s2a-r0{0%,20%{background:rgba(64,66,209,.06)}21%,96%{background:transparent}99%,100%{background:rgba(64,66,209,.06)}}
-@keyframes s2a-r0r{0%,20%{border-color:#4042d1}21%,96%{border-color:#cfd5e2}99%,100%{border-color:#4042d1}}
+@keyframes s2a-r0r{0%,20%{border-color:#4042d1}21%,96%{border-color:var(--radio)}99%,100%{border-color:#4042d1}}
 @keyframes s2a-r0a{0%,20%{opacity:1;transform:none}21%,96%{opacity:0;transform:scale(.4)}99%,100%{opacity:1;transform:none}}
 .hb__scene .s2a-r1{animation:s2a-r1 12s infinite} .s2a-r1 .hbi-rad{animation:s2a-r1r 12s infinite} .s2a-r1 .hbi-rad::after{animation:s2a-r1a 12s infinite}
 @keyframes s2a-r1{0%,20%{background:transparent}21%,96%{background:rgba(64,66,209,.06)}99%,100%{background:transparent}}
-@keyframes s2a-r1r{0%,20%{border-color:#cfd5e2}21%,96%{border-color:#4042d1}99%,100%{border-color:#cfd5e2}}
+@keyframes s2a-r1r{0%,20%{border-color:var(--radio)}21%,96%{border-color:#4042d1}99%,100%{border-color:var(--radio)}}
 @keyframes s2a-r1a{0%,20%{opacity:0;transform:scale(.4)}21%,96%{opacity:1;transform:none}99%,100%{opacity:0;transform:scale(.4)}}
 .hb__scene .s2a-thumb{animation:s2a-thumb 12s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes s2a-thumb{0%,51%{transform:translateX(0)}55%,93%{transform:translateX(100%)}97%,100%{transform:translateX(0)}}
@@ -374,7 +381,7 @@
     gap: 10px;
     padding: 9px 14px;
     border-right: 0;
-    border-bottom: 1px solid #eef0f3;
+    border-bottom: 1px solid var(--hair);
   }
   .hb__scene .hbi-dash__brand {
     margin: 0;

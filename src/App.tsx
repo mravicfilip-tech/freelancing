@@ -23,9 +23,18 @@ import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPic
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
 const DEV_TOOLS = params.has('devtools');
-/** The dashboard lives at /dashboard; `?view=dashboard` works too, for previews. */
+/**
+ * The dashboard lives at /dashboard, and `?view=dashboard` works too for
+ * previews. It also has a host of its own: on rtxdash.vercel.app the root is
+ * the dashboard, so the link people are given has nothing after the domain.
+ * Matched on the exact subdomain — Vercel's per-deploy hostnames are prefixed
+ * with the project name, so a looser test would catch marketing previews.
+ */
+const DASHBOARD_HOSTS = ['rtxdash.vercel.app'];
 const DASHBOARD =
-  window.location.pathname.replace(/\/+$/, '') === '/dashboard' || params.get('view') === 'dashboard';
+  window.location.pathname.replace(/\/+$/, '') === '/dashboard' ||
+  params.get('view') === 'dashboard' ||
+  DASHBOARD_HOSTS.includes(window.location.hostname);
 // Review page for the bento grid's loop variants; `?bento=` alone applies a choice to the real page.
 const BENTO_PICKER = params.has('bento-picker');
 const BENTO_PICKS = picksFromParam(params.get('bento'));

@@ -13,7 +13,10 @@ for i in 1 2 3 4; do
 done
 if [ -z "$U" ]; then echo "DEPLOY FAILED — aliases untouched"; exit 1; fi
 echo "URL $U"
-for A in remittix-site.vercel.app remittix-hero.vercel.app; do
+# rtxdash serves the dashboard at its root (see DASHBOARD_HOSTS in App.tsx); it
+# is listed here so a production deploy carries it forward instead of leaving it
+# pinned to whatever deployment first claimed it.
+for A in remittix-site.vercel.app remittix-hero.vercel.app rtxdash.vercel.app; do
   npx vercel alias set "$U" "$A" --token="$VERCEL_TOKEN" 2>&1 | tail -1
 done
 echo "local:"; ls dist/assets/index-*.js dist/assets/index-*.css | xargs -n1 basename

@@ -204,6 +204,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   align-items: center;
   gap: 10px;
   padding: 4px 10px 0;
+  /* 48px of air under the mark. The rail already puts 20px between its
+     children, so this carries the remaining 28. Applies to both rail states,
+     since the mark is the same element in each. */
+  margin-bottom: 28px;
   color: var(--d-text);
   font-weight: 600;
   font-size: 17px;

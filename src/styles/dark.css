@@ -403,8 +403,10 @@
 [data-theme='dark'] .ec-il {
   /* The card is the darkest thing in the scene and the panels inside it step up, rather than card
      and panel sitting a hair apart — on a light page the border does that work, on a dark one the
-     value has to. */
-  --ec-surface: var(--d-il-card);
+     value has to. It takes the deepest step for the same reason the how-to-buy window does: at the
+     band's own value the card floated with nothing to seat it, and reads instead as a screen set
+     into the page with its contents stepping up out of it. */
+  --ec-surface: var(--d-il-bg);
   /* `--ec-chip` is a filled pill that is already dark on a white card, so on a dark one it lifts
      rather than inverting. Read as "the dark thing becomes the light thing" it turned the payout
      bar white — the one bright line the scene had. */
@@ -422,13 +424,31 @@
   --ec-okBg: rgb(53 201 138 / 12%);
   --ec-okLine: rgb(53 201 138 / 28%);
 }
-/* The rows inside the payout run, the market tiles under the chart, and the staking position all
-   sit on the card and have to be read off it. */
+/* The market tiles under the chart and the storage reel sit inside a scene and are read off it, so
+   they take the step above its ground. The staking card is not one of these — it is an outer card
+   like the payout run's, and holding it at the panel value was what left the two scenes sitting at
+   different depths for the same job. */
 [data-theme='dark'] .ec-trade__market,
-[data-theme='dark'] .ec-stk__card,
 [data-theme='dark'] .ec-tum__reel {
   background: var(--d-il-panel);
   border-color: var(--d-il-line);
+}
+/* The header strip of the payout run, which the how-to-buy window gets from its url bar: a band a
+   step above the screen it titles, so the object reads as a screen rather than a bordered box. */
+[data-theme='dark'] .ec-run__head {
+  background: var(--d-il-panel);
+}
+/* The outer cards' edge and seat. On a light page a soft shadow lifts them off the sheet; here the
+   edge is the rail the rest of the dark theme uses, and the shadow only deepens the seat. */
+[data-theme='dark'] .ec-run__card,
+[data-theme='dark'] .ec-stk__card {
+  border-color: var(--d-rail);
+  box-shadow: 0 24px 48px -28px rgb(0 0 0 / 70%);
+}
+/* The amount is the point of a payout row and was set at the body ink, which on this ground left
+   the one number the row exists for dimmer than the name beside it. */
+[data-theme='dark'] .ec-run__amt {
+  color: var(--d-ink);
 }
 [data-theme='dark'] .ec-run__row + .ec-run__row,
 [data-theme='dark'] .ec-run__head {

@@ -1,0 +1,45 @@
+/* The Spline slide. The scene fills the graphic's viewport the way the globe does, so the three
+   slides are the same shape and the crossfade between them has nothing to move. */
+.fh__spline {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.fh__spline spline-viewer {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* While the viewer and its scene are on the wire, the slide holds a quiet pulse in the hero's own
+   progress indigo rather than a spinner — the graphic column is decoration, and a loader with a
+   percentage would claim more of the reader's attention than what it is loading. */
+.fh__spline[data-state='loading']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220px;
+  height: 220px;
+  margin: -110px 0 0 -110px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--fh-progress-soft, #b3b5f5), transparent 70%);
+  opacity: 0.4;
+  animation: fh-spline-wait 1.8s ease-in-out infinite;
+}
+@keyframes fh-spline-wait {
+  0%,
+  100% {
+    opacity: 0.18;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 0.42;
+    transform: scale(1.04);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fh__spline[data-state='loading']::after {
+    animation: none;
+  }
+}

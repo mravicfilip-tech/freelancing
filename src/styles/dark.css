@@ -106,11 +106,37 @@
 [data-theme='dark'] .fh__btn--ghost:focus-visible {
   color: #0c1219;
 }
+/* The hairlines between the countdown's units are #e9eaeb, a rule drawn to be almost invisible on
+   a white strip. Carried onto a dark one unchanged it is the brightest thing in the band, so it
+   comes down to roughly a tenth of the ink — the weight it always meant to have. */
+[data-theme='dark'] .fh__sep + .fh__unit {
+  border-left-color: rgb(238 242 245 / 11%);
+}
+/* The presale bars. On white they are white prisms with a silver edge and the lime marks the
+   tallest; solid white on a dark page is a floodlight, so dark turns the prisms over — the faces
+   become the ground and the edges do the drawing — and the lime is left to be the one lit thing,
+   pulled a shade warmer so it glows on black instead of glaring. */
+[data-theme='dark'] .barsSlide {
+  --bars-fill: #93a3b5;
+  --bars-stroke: #46545f;
+  --bars-glow-0: #38414e;
+  --bars-glow-1: #f2f857;
+  --bars-chip-lead: #232e3b;
+  --bars-chip-rest: #19212b;
+  --bars-num-from: #9092f4;
+  --bars-num-to: #eef2f5;
+  --bars-cap-from: #6e71d8;
+}
 [data-theme='dark'] .bars__chipInner {
-  background: var(--d-surface-2);
+  background: var(--bars-chip-rest);
 }
 [data-theme='dark'] .bars__chip--light .bars__chipInner {
-  background: var(--d-surface);
+  background: var(--bars-chip-lead);
+}
+/* The countdown's own digits sit at the label tone, which is an aside on white and a whisper on
+   black. They are the one number on the band that has to be read at a glance. */
+[data-theme='dark'] .fh__digits {
+  color: var(--d-ink);
 }
 [data-theme='dark'] .fh__sliderArrow {
   border-color: var(--d-rail);
@@ -149,6 +175,20 @@
   background: var(--d-surface-2);
 }
 
+/* ---------- The shared illustrations (.ff__il) ----------
+   The feature band, the ecosystem's scenes and the crypto-to-fiat orbit all draw from one sheet,
+   so its palette is answered once here rather than per section — a section's own dark tokens never
+   reach art that another section owns. Without this the art keeps its light ink and its white
+   plates on a dark band, which is what "dark mode is not applied" looks like. */
+[data-theme='dark'] .ff__il {
+  --il-surface: var(--d-surface-2);
+  --il-ink: var(--d-body);
+  --il-label: var(--d-label);
+  --il-line: var(--d-rail);
+  --il-indigo: var(--d-indigo);
+  --il-lavender: var(--d-lavender);
+}
+
 /* ---------- Crypto-to-fiat (.fs) ---------- */
 [data-theme='dark'] .fs {
   --fs-bg: var(--d-band-a);
@@ -171,6 +211,12 @@
    taken down to the band by brightness instead. Only the portrait orbit lays one. */
 [data-theme='dark'] .fs__plate {
   filter: brightness(0.055) saturate(0.4);
+}
+/* The orbit ring is stroked with a gradient of #C5CBD1 and #AAB5C0 — hairline weights against a
+   light band, and the strongest line on the page against a dark one. The whole ring drops to a
+   tenth rather than each stop being restated, which keeps the sweep the gradient was drawn for. */
+[data-theme='dark'] .fs__ring {
+  opacity: 0.12;
 }
 /* The hub's mark and the chips' glyphs are near-black line art on what are now dark surfaces. */
 [data-theme='dark'] .fs__hub img,
@@ -241,9 +287,14 @@
    they disappear into it. `brightness(0) invert(1)` flattens each mark to the page's own ink
    whatever colour it was drawn in, which is what a monochrome logo wall wants anyway; the opacity
    the sections already animate on hover still does the rest. */
-[data-theme='dark'] .sn__mark img,
-[data-theme='dark'] .av__mark img {
+[data-theme='dark'] .sn__mark img {
   filter: brightness(0) invert(1);
+}
+/* Coinsult is not monochrome — it is a gradient tile with a white mark cut out of it, so
+   flattening it to the ink fills the cut-out and leaves a blob. Inverting lightness and putting
+   the hue back keeps the tile, the cut-out and the wordmark all three. */
+[data-theme='dark'] .av__mark img {
+  filter: invert(1) hue-rotate(180deg);
 }
 /* Drawn marks (the shield and the paper) are strokes in currentColor, so they follow the ink. */
 [data-theme='dark'] .av__drawn {
@@ -265,8 +316,43 @@
 [data-theme='dark'] .tk__chip {
   background: var(--d-surface-2);
 }
+/* The share discs are white on a light band, which is what makes them read as counters set on top
+   of the diagram rather than holes in it. A surface a single step off the band does not do that
+   here, so dark gives them the lift and the edge the white ones got for free. */
 [data-theme='dark'] .tk__pct {
+  background: #222c38;
+  border: 1px solid #38434f;
   color: var(--d-ink);
+}
+/* The hub is a black disc carrying the white mark. Inverted it is a white disc carrying a black
+   one — the same object, the same way round, against the ground it now sits on. */
+[data-theme='dark'] .tk__hubDisc {
+  filter: invert(1);
+}
+[data-theme='dark'] .tk__logo {
+  filter: invert(1);
+}
+/* The copy glyph beside the contract address is near-black line art on the band itself. */
+[data-theme='dark'] .tk__copyIcon {
+  filter: invert(1) brightness(1.7);
+}
+
+/* ---------- The ecosystem's scenes (.ec-il) ----------
+   Their own sheet, with its own palette, borrowed by four scenes. `--ec-chip` and `--ec-chipInk`
+   are a filled pill and what sits on it, so the pair inverts together; `--ec-strong` is the same
+   colour used as text, which has to go the other way. */
+[data-theme='dark'] .ec-il {
+  --ec-surface: var(--d-surface-2);
+  --ec-chip: var(--d-ink);
+  --ec-chipInk: #0c1219;
+  --ec-strong: var(--d-ink);
+  --ec-ink: var(--d-body);
+  --ec-muted: var(--d-label);
+  --ec-indigo: var(--d-indigo);
+  --ec-lavender: var(--d-lavender);
+  --ec-green: #35c98a;
+  --ec-line: var(--d-rail);
+  --ec-soft: var(--d-surface);
 }
 
 /* ---------- Roadmap (.rs) ----------
@@ -319,16 +405,27 @@
   --body: var(--d-body);
   --muted: var(--d-label);
   --label: var(--d-muted);
+  /* The window's own ground is the page's deepest band, so the mock-up reads as a screen set into
+     the card rather than a panel floating a shade above it. Everything inside then steps up from
+     there — the url bar and the tiles a shade, the rules a shade less — which is the same order
+     the light scene has, measured from the other end. */
+  --surface: var(--d-band-a);
+  --soft: #172029;
   --line: #2b3542;
-  --soft: var(--d-surface-2);
-  --surface: var(--d-surface);
-  --hair: #232c37;
+  --hair: #1e2733;
   --radio: #3a4553;
   --bar: rgb(238 242 245 / 9%);
   --chipbg: rgb(238 242 245 / 7%);
   --indigo: var(--d-indigo);
   /* the ticked state has to carry on a dark ground, where #02774d reads as black */
   --green: #35c98a;
+}
+/* Inside the window, the panels that were white-on-white now have to be a step above the screen's
+   own ground rather than the same colour as it. */
+[data-theme='dark'] .hb__scene .hbi-tile,
+[data-theme='dark'] .hb__scene .hbi-claim,
+[data-theme='dark'] .hb__scene .hbi-field {
+  background: #141c25;
 }
 /* The window and sheet lift off a light page with a soft drop shadow; on a dark one, shadow does
    not lift anything — the surface being a shade above its band is what does. */

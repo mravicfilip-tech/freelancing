@@ -5,6 +5,12 @@
 
 .ec-il {
   aspect-ratio: 800 / 640;
+  /* The scenes' own palette. `--ec-chip` is a filled pill and `--ec-chipInk` what sits on it, so
+     the pair can invert together; `--ec-strong` is the same colour used as text, which cannot. */
+  --ec-surface: #fff;
+  --ec-chip: #122433;
+  --ec-chipInk: #fff;
+  --ec-strong: #122433;
   --ec-ink: #2c2e31;
   --ec-muted: #7c858d;
   --ec-indigo: #4042d1;
@@ -30,7 +36,7 @@
   padding: 0 14px;
   border: 1px solid var(--ec-line);
   border-radius: 17px;
-  background: #fff;
+  background: var(--ec-surface);
   font-weight: 700;
   font-size: 12px;
   letter-spacing: -0.24px;
@@ -63,18 +69,18 @@
 }
 
 /* ---------- Payments: the payout run ---------- */
-.ec-run__card { width: 560px; border: 1px solid #dfe3ef; border-radius: 18px; background: #fff; overflow: hidden; }
+.ec-run__card { width: 560px; border: 1px solid var(--ec-line); border-radius: 18px; background: var(--ec-surface); overflow: hidden; }
 .ec-run__head { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 20px; border-bottom: 1px solid var(--ec-soft); }
 .ec-run__head b { font-weight: 600; font-size: 14.5px; color: var(--ec-ink); }
 .ec-run__row { display: grid; grid-template-columns: 22px 1fr 120px 92px; align-items: center; gap: 14px; height: 58px; padding: 0 20px; border-bottom: 1px solid #f2f4f8; }
-.ec-run__box { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid #cfd5e2; border-radius: 6px; background: #fff; will-change: transform; }
+.ec-run__box { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid var(--ec-line); border-radius: 6px; background: var(--ec-surface); will-change: transform; }
 /* The tick is centred by the grid; rotating a bottom+left border puts its vertex low, so it is
    lifted by the offset between the rect's centre and the glyph's optical centre. */
 .ec-run__box::after {
   content: '';
   width: 9px;
   height: 5px;
-  border: 2px solid #fff;
+  border: 2px solid var(--ec-surface);
   border-top: 0;
   border-right: 0;
   border-radius: 1px;
@@ -100,8 +106,8 @@
   height: 52px;
   padding: 0 10px 0 20px;
   border-radius: 14px;
-  background: #122433;
-  color: #fff;
+  background: var(--ec-chip);
+  color: var(--ec-chipInk);
   overflow: hidden;
   /* its own layer, so the animated clip can't leave a hairline on the fractional bounds the zoom gives it */
   transform: translateZ(0);
@@ -111,7 +117,7 @@
 .ec-run__go { padding: 9px 18px; border-radius: 10px; background: var(--ec-indigo); font-weight: 700; font-size: 12.5px; color: #fff; }
 /* the send button collapsing into a success tick */
 .ec-run__tick { position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; opacity: 0; pointer-events: none; }
-.ec-run__tick path { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.ec-run__tick path { fill: none; stroke: var(--ec-surface); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 /* The pointer that works the run: the site's own cursor glyph, no halo, no shadow. */
 .ec-run__cursor { position: absolute; left: 0; top: 0; z-index: 6; width: 24px; height: 24px; opacity: 0; pointer-events: none; will-change: transform; }
 .ec-run__cursor img { display: block; }
@@ -143,7 +149,7 @@
   font-size: 46px;
   line-height: 1.05;
   letter-spacing: -1.6px;
-  color: #122433;
+  color: var(--ec-strong);
 }
 .ec-trade__delta {
   font-style: normal;
@@ -189,7 +195,7 @@
 }
 .ec-trade__dot {
   fill: var(--ec-indigo);
-  stroke: #fff;
+  stroke: var(--ec-surface);
   stroke-width: 2.5;
   will-change: transform;
 }
@@ -203,8 +209,8 @@
   gap: 1px;
   padding: 7px 12px;
   border-radius: 10px;
-  background: #122433;
-  color: #fff;
+  background: var(--ec-chip);
+  color: var(--ec-chipInk);
   white-space: nowrap;
   will-change: transform;
 }
@@ -239,7 +245,7 @@
   padding: 14px 16px;
   border: 1px solid var(--ec-line);
   border-radius: 14px;
-  background: #fff;
+  background: var(--ec-surface);
 }
 .ec-trade__market b {
   font-weight: 700;
@@ -283,13 +289,13 @@
   display: flex;
   flex-direction: column;
   padding-bottom: 26px;
-  border: 1px solid #e6e9f2;
+  border: 1px solid var(--ec-line);
   border-radius: 20px;
-  background: #fff;
+  background: var(--ec-surface);
   overflow: hidden;
 }
 .ec-stk__head { display: flex; align-items: center; justify-content: space-between; padding: 24px 28px 0; }
-.ec-stk__brand { display: inline-flex; align-items: center; gap: 10px; color: #122433; }
+.ec-stk__brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ec-strong); }
 .ec-stk__brand svg { display: block; }
 .ec-stk__brand em { font-style: normal; font-weight: 700; font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ec-muted); }
 .ec-stk__tag { font-weight: 700; font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ec-muted); }
@@ -299,7 +305,7 @@
   font-size: 56px;
   line-height: 1;
   letter-spacing: -0.045em;
-  color: #122433;
+  color: var(--ec-strong);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -323,7 +329,7 @@
 .odo__strip u { display: block; height: 1em; line-height: 1; text-align: left; text-decoration: none; }
 
 /* ---------- Storage: the key fingerprint ---------- */
-.ec-tum__reel { width: 62px; height: 96px; border: 1px solid #dfe3ef; border-radius: 14px; background: #fff; overflow: hidden; will-change: transform; }
+.ec-tum__reel { width: 62px; height: 96px; border: 1px solid var(--ec-line); border-radius: 14px; background: var(--ec-surface); overflow: hidden; will-change: transform; }
 .ec-tum__strip { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-direction: column; align-items: center; will-change: transform; }
 .ec-tum__strip span { display: grid; place-items: center; width: 62px; height: 96px; font-family: var(--fh-digits); font-weight: 700; font-size: 34px; color: var(--ec-ink); }
 /* the hero's progress bar: a hairline track, 3px bars capped in solid indigo, a sweeping sheen */
@@ -351,6 +357,6 @@
 }
 .ec-tum__progGlow { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); pointer-events: none; }
 .ec-tum__printLabel { font-size: 12.5px; color: var(--ec-muted); }
-.ec-tum__print { font-size: 24px; letter-spacing: 0.12em; color: #122433; }
+.ec-tum__print { font-size: 24px; letter-spacing: 0.12em; color: var(--ec-strong); }
 .ec-tum__match { opacity: 0; border-color: #d9f1e6; background: #f4fbf8; color: var(--ec-green); }
 .ec-tum__match i { width: 8px; height: 8px; border-radius: 50%; background: var(--ec-green); }

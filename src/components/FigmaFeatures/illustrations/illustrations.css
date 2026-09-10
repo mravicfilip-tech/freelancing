@@ -1,12 +1,22 @@
 /* Layered illustrations for the feature band, rebuilt from the Figma layers so every part can
    animate (see illustrations/*.tsx). Coordinates are the design's 1x px inside a scaled Stage. */
 /* Positioned and sized by the card's .ff__art--* rules (absolute on desktop, stacked on phones). */
+/* The illustrations are shared: the feature band draws them, and so do the ecosystem's scenes and
+   the crypto-to-fiat orbit. That is why their palette lives on `.ff__il` rather than on any one
+   section's block — a section's own tokens never reach the art another section borrowed. */
 .ff__il {
+  --il-surface: #fff;
+  --il-ink: #2c2e31;
+  --il-label: #a2a6aa;
+  --il-line: #e0e0e0;
+  --il-indigo: #4042d1;
+  --il-lavender: #b3b5f5;
+
   display: block;
   pointer-events: none;
   user-select: none;
   font-family: var(--fh-sans);
-  color: #2c2e31;
+  color: var(--il-ink);
   line-height: normal;
 }
 /* Out of flow, so the unscaled design size never inflates the fitted box. */
@@ -92,7 +102,7 @@
   width: 249px;
   height: 540px;
   border-radius: 34px;
-  background: #fff;
+  background: var(--il-surface);
   overflow: hidden;
   font-size: 9.06px;
 }
@@ -121,9 +131,9 @@
 .il-pbox {
   width: 226.4px;
   height: 67.9px;
-  border: 0.566px solid #dadee2;
+  border: 0.566px solid var(--il-line);
   border-radius: 9.06px;
-  background: #fff;
+  background: var(--il-surface);
 }
 .il-pbox__col {
   position: absolute;
@@ -154,7 +164,7 @@
   width: 1.5px;
   height: 15px;
   margin: 0 1px -2px 1px;
-  background: #4042d1;
+  background: var(--il-indigo);
   opacity: 0;
 }
 /* A glare that can sweep the glass (ambient variant). */
@@ -184,7 +194,7 @@
 }
 .il-fx__bank {
   border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #fff;
+  background: var(--il-surface);
 }
 .il-fx__bank > *,
 .il-fx__wallet > * {
@@ -209,8 +219,8 @@
   overflow: hidden;
 }
 .il-fx__tag--bank {
-  background: #fff;
-  color: #2c2e31;
+  background: var(--il-surface);
+  color: var(--il-ink);
 }
 .il-fx__tag--masked {
   background: rgba(255, 255, 255, 0.24);
@@ -262,7 +272,7 @@
   height: 24px;
   padding: 0 10px;
   border-radius: 46px;
-  background: #fff;
+  background: var(--il-surface);
   box-shadow: 0 4px 12px rgba(18, 36, 51, 0.12);
   font-weight: 700;
   font-size: 11px;
@@ -290,14 +300,14 @@
 }
 .il-fx__wire {
   fill: none;
-  stroke: #4042d1;
+  stroke: var(--il-indigo);
   stroke-width: 1.5;
   stroke-linecap: round;
   opacity: 0.9;
 }
 .il-fx__wireEnd {
-  fill: #4042d1;
-  stroke: #fff;
+  fill: var(--il-indigo);
+  stroke: var(--il-surface);
   stroke-width: 1.5;
 }
 .il-fx__packet {
@@ -305,7 +315,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #b3b5f5;
+  background: var(--il-lavender);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 4px 10px rgba(18, 36, 51, 0.25);
   opacity: 0;
   will-change: transform;
@@ -323,9 +333,9 @@
   gap: 7.7px;
   height: 38px;
   padding: 0 15.4px 0 3.85px;
-  border: 0.96px solid #e0e0e0;
+  border: 0.96px solid var(--il-line);
   border-radius: 17.3px;
-  background: #fff;
+  background: var(--il-surface);
   font-weight: 600;
   font-size: 15.4px;
   white-space: nowrap;
@@ -336,7 +346,7 @@
 .il-simple__wise {
   width: 78px;
   height: 30px;
-  border: 1px solid #fff;
+  border: 1px solid var(--il-surface);
   border-radius: 14.1px;
   background: rgba(255, 255, 255, 0.12);
   overflow: hidden;
@@ -347,7 +357,7 @@
   top: 8.46px;
   width: 55.5px;
   height: 13.6px;
-  background: #fff;
+  background: var(--il-surface);
   mask-size: 55.5px 13.5px;
   mask-repeat: no-repeat;
 }
@@ -356,7 +366,7 @@
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--il-surface);
 }
 .il-simple__hub img {
   display: block;
@@ -382,7 +392,7 @@
   height: 8px;
   margin: -4px 0 0 -4px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--il-surface);
   box-shadow: 0 0 0 2px rgba(64, 66, 209, 0.9), 0 0 10px rgba(179, 181, 245, 0.9);
   opacity: 0;
   will-change: transform;
@@ -391,9 +401,9 @@
   z-index: 3;
   width: 7px;
   height: 7px;
-  border: 1.5px solid #fff;
+  border: 1.5px solid var(--il-surface);
   border-radius: 50%;
-  background: #4042d1;
+  background: var(--il-indigo);
   opacity: 0;
 }
 .il-simple__logo {
@@ -412,14 +422,14 @@
   height: 6px;
   margin-left: -3px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--il-surface);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
 }
 /* The ring the hub sends out as a payment passes through it. */
 .il-simple__hubHalo {
   position: absolute;
   inset: 0;
-  border: 1.5px solid #4042d1;
+  border: 1.5px solid var(--il-indigo);
   border-radius: 50%;
   opacity: 0;
   will-change: transform, opacity;
@@ -430,9 +440,9 @@
   place-items: center;
   width: 28px;
   height: 28px;
-  border: 3px solid #fff;
+  border: 3px solid var(--il-surface);
   border-radius: 50%;
-  background: #4042d1;
+  background: var(--il-indigo);
   backdrop-filter: blur(21.6px);
 }
 .il-simple__stack {
@@ -448,7 +458,7 @@
   padding: 16px 12px;
   border: 1px solid #d6e0f3;
   border-radius: 16px;
-  background: #fff;
+  background: var(--il-surface);
   font-size: 12px;
   letter-spacing: -0.24px;
 }
@@ -476,7 +486,7 @@
 .il-rc__bank small {
   font-weight: 500;
   font-size: 12px;
-  color: #a2a6aa;
+  color: var(--il-label);
   white-space: nowrap;
 }
 .il-rc__badge {
@@ -517,7 +527,7 @@
   flex-direction: row;
   justify-content: space-between;
   font-weight: 500;
-  color: #a2a6aa;
+  color: var(--il-label);
   white-space: nowrap;
 }
 .il-rc__line .il-mono {
@@ -584,7 +594,7 @@
 /* ---------- Super fast: the bolt ---------- */
 .il-fast__line {
   height: 1px;
-  background: #4042d1;
+  background: var(--il-indigo);
 }
 /* The dashed outline is a live vector: its dashes march and jump with the strikes. */
 .il-fast__outline svg path {
@@ -631,7 +641,7 @@
 .il-fast__lineGlow {
   height: 4px;
   border-radius: 2px;
-  background: linear-gradient(90deg, rgba(179, 181, 245, 0.2), #b3b5f5 40%, #4042d1);
+  background: linear-gradient(90deg, rgba(179, 181, 245, 0.2), var(--il-lavender) 40%, var(--il-indigo));
   box-shadow: 0 0 8px rgba(179, 181, 245, 0.8);
   opacity: 0;
   transform-origin: 0 50%;
@@ -663,7 +673,7 @@
 .il-fast__lineFill {
   height: 2px;
   border-radius: 1px;
-  background: linear-gradient(90deg, #b3b5f5, #4042d1);
+  background: linear-gradient(90deg, var(--il-lavender), var(--il-indigo));
   opacity: 0;
   transform-origin: 0 50%;
   will-change: transform;
@@ -701,16 +711,16 @@
 }
 .il-fast__pill--same {
   gap: 6.75px;
-  background: #b3b5f5;
+  background: var(--il-lavender);
 }
 
 /* Portrait (Figma 2597:1042): the wire stands up, so every bar that lights it turns with it. */
 .il-fast--m .il-fast__lineGlow {
-  background: linear-gradient(180deg, rgba(179, 181, 245, 0.2), #b3b5f5 40%, #4042d1);
+  background: linear-gradient(180deg, rgba(179, 181, 245, 0.2), var(--il-lavender) 40%, var(--il-indigo));
   transform-origin: 50% 0;
 }
 .il-fast--m .il-fast__lineFill {
-  background: linear-gradient(180deg, #b3b5f5, #4042d1);
+  background: linear-gradient(180deg, var(--il-lavender), var(--il-indigo));
   transform-origin: 50% 0;
 }
 .il-fast--m .il-fast__hl {
@@ -765,7 +775,7 @@
   padding-left: 24px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 12px;
-  background: #fff;
+  background: var(--il-surface);
   overflow: hidden;
 }
 .il-ui__intro {
@@ -870,7 +880,7 @@
   top: -4px;
   width: 9px;
   height: 9px;
-  border: 1.5px solid #fff;
+  border: 1.5px solid var(--il-surface);
   border-radius: 50%;
   background: #02774d;
   opacity: 0;
@@ -898,7 +908,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: #4042d1;
+  background: var(--il-indigo);
   transform: scaleX(0);
   transform-origin: 0 50%;
 }
@@ -913,7 +923,7 @@
   width: 44px;
   height: 44px;
   margin: -22px 0 0 -22px;
-  border: 2.5px solid #4042d1;
+  border: 2.5px solid var(--il-indigo);
   border-radius: 50%;
   background: rgba(64, 66, 209, 0.22);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);

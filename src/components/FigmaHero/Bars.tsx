@@ -48,7 +48,10 @@ const silhouette = ({ x, y, h }: Face) => {
 /** The faces after growing by `dh`: the base stays put, the top moves up. */
 const grown = (f: Face, dh: number): Face => ({ x: f.x, y: f.y - dh, h: f.h + dh });
 
-const STROKE = { stroke: '#DADEE2', strokeWidth: 1.5 } as const;
+/* The bars are drawn in CSS custom properties rather than literals so the slide can be re-coloured
+   for a dark page without re-drawing it: on white the prisms are white with a silver edge, on black
+   they are the ground with a lit edge, and the lime that marks the tallest carries either way. */
+const STROKE = { stroke: 'var(--bars-stroke)', strokeWidth: 1.5 } as const;
 
 /** One isometric bar, drawn from its face geometry. Bar c (the tallest) has solid faces. */
 function Bar({ id }: { id: BarId }) {
@@ -58,19 +61,19 @@ function Bar({ id }: { id: BarId }) {
     <g className="bars__bar" data-bar={id}>
       <g className="bars__cap">
         {id === 'd' ? (
-          <rect width="81" height="80" rx="8" transform="matrix(0.866025 0.5 -0.866025 0.5 535.282 232)" fill="white" {...STROKE} />
+          <rect width="81" height="80" rx="8" transform="matrix(0.866025 0.5 -0.866025 0.5 535.282 232)" fill="var(--bars-fill)" {...STROKE} />
         ) : (
-          <path d={CAP} transform={`translate(${f.x - 313.928} ${f.y - 44})`} fill="white" {...STROKE} />
+          <path d={CAP} transform={`translate(${f.x - 313.928} ${f.y - 44})`} fill="var(--bars-fill)" {...STROKE} />
         )}
       </g>
-      <rect className="bars__face" width="65" height={f.h} transform={`matrix(0.866025 0.5 0 1 ${f.x} ${f.y})`} fill="white" fillOpacity={fo} {...STROKE} />
-      <rect className="bars__face" width="64" height={f.h} transform={`matrix(0.866025 -0.5 0 1 ${f.x + 70.148} ${f.y + 32.5})`} fill="white" fillOpacity={fo} {...STROKE} />
-      <path className="bars__edgeL" d={edgeOuter(f.x - 2.87, f.y - 4, f.y - 4 + f.h, 1)} fill="white" fillOpacity="0.24" {...STROKE} />
-      <path className="bars__edgeF" d={edgeFront(f.x + 56.292, f.y + 32.5, f.y + 32.5 + f.h)} fill="white" fillOpacity={fo} {...STROKE} />
+      <rect className="bars__face" width="65" height={f.h} transform={`matrix(0.866025 0.5 0 1 ${f.x} ${f.y})`} fill="var(--bars-fill)" fillOpacity={fo} {...STROKE} />
+      <rect className="bars__face" width="64" height={f.h} transform={`matrix(0.866025 -0.5 0 1 ${f.x + 70.148} ${f.y + 32.5})`} fill="var(--bars-fill)" fillOpacity={fo} {...STROKE} />
+      <path className="bars__edgeL" d={edgeOuter(f.x - 2.87, f.y - 4, f.y - 4 + f.h, 1)} fill="var(--bars-fill)" fillOpacity="0.24" {...STROKE} />
+      <path className="bars__edgeF" d={edgeFront(f.x + 56.292, f.y + 32.5, f.y + 32.5 + f.h)} fill="var(--bars-fill)" fillOpacity={fo} {...STROKE} />
       <g className="bars__glow" data-bar={id} opacity={id === 'c' ? 0.45 : 0} clipPath={`url(#bars-clip-${id})`}>
         <ellipse cx={f.x + 95.5} cy={f.y + 32.5 + f.h - 51.4} rx="181" ry="258" fill="url(#bars-glow-fill)" filter="url(#bars-glow-blur)" />
       </g>
-      <path className="bars__edgeR" d={edgeOuter(f.x + 128.444, f.y - 3.5, f.y - 3.5 + f.h, -1)} fill="white" fillOpacity={fo} {...STROKE} />
+      <path className="bars__edgeR" d={edgeOuter(f.x + 128.444, f.y - 3.5, f.y - 3.5 + f.h, -1)} fill="var(--bars-fill)" fillOpacity={fo} {...STROKE} />
     </g>
   );
 }
@@ -97,6 +100,16 @@ export function Bars({ active }: { active: boolean }) {
     let cancelled = false;
     let revert: (() => void) | null = null;
     const chipNum = (bar: string) => root.querySelector<HTMLElement>(`.bars__chip[data-bar="${bar}"] .bars__chipNum`);
+    /* The tween end-states are colours too, and GSAP needs values rather than `var()`, so they are
+       read off the slide once — which keeps them in the stylesheet with the rest of the palette. */
+    const tone = (name: string, fallback: string) =>
+      getComputedStyle(root).getPropertyValue(name).trim() || fallback;
+    const NUM_FROM = tone('--bars-num-from', '#4042d2');
+    const NUM_TO = tone('--bars-num-to', '#122433');
+    const CHIP_LEAD = tone('--bars-chip-lead', '#ffffff');
+    const CHIP_REST = tone('--bars-chip-rest', '#f1f3f4');
+    const CAP_FROM = tone('--bars-cap-from', '#b3b5f5');
+    const CAP_TO = tone('--bars-stroke', '#DADEE2');
 
     // GSAP is only loaded when the slide is first shown, so it never delays the hero's first paint.
     import('gsap').then(({ gsap }) => {
@@ -138,7 +151,7 @@ export function Bars({ active }: { active: boolean }) {
               num.textContent = format(chip, next);
             })
             .fromTo(num, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.36, ease: 'power2.out' });
-          if (lead) gsap.fromTo(num, { color: '#4042d2' }, { color: '#122433', duration: 1.6, ease: 'power1.out', delay: 0.54 });
+          if (lead) gsap.fromTo(num, { color: NUM_FROM }, { color: NUM_TO, duration: 1.6, ease: 'power1.out', delay: 0.54 });
         };
 
         // Idle: live data as a relay on four clearly separated tiers. Each cycle the shortest bar
@@ -170,8 +183,8 @@ export function Bars({ active }: { active: boolean }) {
             if (glow) gsap.to(glow, { opacity: lead ? 0.5 : 0, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             gsap.to(bar.querySelectorAll('.bars__face, .bars__edgeF, .bars__edgeR'), { fillOpacity: lead ? 1 : 0.24, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
             const inner = innerOf(bar);
-            if (inner) gsap.to(inner, { backgroundColor: lead ? '#ffffff' : '#f1f3f4', duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
-            if (lead) gsap.fromTo(bar.querySelector('.bars__cap > *'), { stroke: '#b3b5f5' }, { stroke: '#DADEE2', duration: 1.4, ease: 'power1.out' });
+            if (inner) gsap.to(inner, { backgroundColor: lead ? CHIP_LEAD : CHIP_REST, duration: 0.9, delay: duration * 0.4, ease: 'power1.inOut' });
+            if (lead) gsap.fromTo(bar.querySelector('.bars__cap > *'), { stroke: CAP_FROM }, { stroke: CAP_TO, duration: 1.4, ease: 'power1.out' });
             const chip = CHIPS.find((c) => c.bar === idOf(bar));
             const num = chip && chipNum(chip.bar);
             if (chip && num) tickTo(chip, num, chip.base * (lead ? 1 + rand(0.004, 0.02) : 1 - rand(0.003, 0.015)), lead);
@@ -244,8 +257,8 @@ export function Bars({ active }: { active: boolean }) {
             <feGaussianBlur stdDeviation="31.8" />
           </filter>
           <linearGradient id="bars-glow-fill" x1="1" y1="0" x2="0" y2="0">
-            <stop stopColor="#F5F7FA" />
-            <stop offset="1" stopColor="#F9FF38" />
+            <stop stopColor="var(--bars-glow-0)" />
+            <stop offset="1" stopColor="var(--bars-glow-1)" />
           </linearGradient>
           {BAR_IDS.map((id) => (
             <clipPath id={`bars-clip-${id}`} key={id}>

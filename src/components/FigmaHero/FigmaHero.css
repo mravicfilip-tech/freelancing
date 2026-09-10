@@ -433,6 +433,18 @@
 }
 /* Rate chips float by their bars (design node 2346:347); Bars.tsx sets --x/--y per chip.
    The outer box rides its bar's cap; the inner card pops in and bobs. */
+/* The presale slide's palette (see Bars.tsx). */
+.barsSlide {
+  --bars-fill: #fff;
+  --bars-stroke: #dadee2;
+  --bars-glow-0: #f5f7fa;
+  --bars-glow-1: #f9ff38;
+  --bars-chip-lead: #ffffff;
+  --bars-chip-rest: #f1f3f4;
+  --bars-num-from: #4042d2;
+  --bars-num-to: #122433;
+  --bars-cap-from: #b3b5f5;
+}
 .bars__chip {
   position: absolute;
   left: var(--x);
@@ -447,7 +459,7 @@
   padding: 12px;
   border: 1px solid var(--fh-line);
   border-radius: 6px;
-  background: #f1f3f4;
+  background: var(--bars-chip-rest);
   font-weight: 700;
   line-height: 1.4;
   text-transform: uppercase;

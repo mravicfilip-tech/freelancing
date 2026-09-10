@@ -37,33 +37,40 @@
   --rail-w: 108px;
 }
 
-/* ---------- Dark: the landing palette taken down ---------- */
+/* ---------- Dark: the site's own, from src/styles/dark.css ----------
+   Not an invented palette. dark.css states that the footer and roadmap were
+   already dark in the design, and the whole page in dark is those two sections
+   extended over the rest. The dashboard takes the same values rather than a
+   sixth set: band-a as the ground, surface as the card, the 8/8 rail as the
+   dashed rule, and the indigo the site lifts to #9092F4 because #4042D2
+   disappears on this ground. */
 .dash[data-theme='dark'] {
-  --d-bg: #0f1a24;
-  --d-card: #16222d;
-  --d-inset: #1b2833;
-  --d-track: #24313d;
-  --d-rule: #2c3a46;
-  --d-text: #edeff1;
-  --d-text-2: #9aa7b4;
-  --d-text-3: #7f8b97;
-  --d-accent: #7b7df0;
-  --d-accent-soft: #4a4cc4;
-  --d-accent-tint: rgba(123, 125, 240, 0.22);
-  --d-on-tint: #c9caff;
-  /* Fields are a well cut into the card, and say so with a ring. */
-  --d-field: #0e1922;
-  --d-field-ring: rgba(255, 255, 255, 0.38);
-  --d-accent-hover: #8f91f4;
-  --d-on-accent: #0f1a24;
-  --d-pick: #edeff1;
+  --d-bg: #0c1219;
+  --d-card: #171f29;
+  --d-inset: #1d2630;
+  --d-track: #222b35;
+  --d-rule: #28323c;
+  --d-text: #eef2f5;
+  --d-text-2: #8593a0;
+  --d-text-3: #6c7783;
+  --d-accent: #9092f4;
+  --d-accent-soft: #4b4e8f;
+  --d-accent-hover: #a5a7f7;
+  --d-accent-tint: rgba(144, 146, 244, 0.2);
+  --d-on-tint: #c3c4fa;
+  --d-on-accent: #0c1219;
+  --d-pick: #eef2f5;
   --d-pick-hover: #ffffff;
-  --d-on-pick: #122433;
-  --d-indigo: #9c9dff;
-  --d-spent: #3a4854;
+  --d-on-pick: #0c1219;
+  --d-indigo: #9092f4;
+  --d-spent: #37424e;
+  /* A field is the deeper band cut into the lifted card, edged with the same
+     rail the site rules everything else with. */
+  --d-field: #0c1219;
+  --d-field-ring: #28323c;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
-  --d-grid: radial-gradient(circle at center, rgba(237, 239, 241, 0.08) 1px, transparent 1.4px);
+  --d-grid: radial-gradient(circle at center, rgba(238, 242, 245, 0.07) 1px, transparent 1.4px);
 }
 
 /* ---------- Light: the landing page's own values ---------- */
@@ -81,7 +88,7 @@
   --d-accent-tint: rgba(64, 66, 210, 0.09);
   --d-on-tint: #3335bb;
   --d-field: #f4f6f8;
-  --d-field-ring: #7a8a9a;
+  --d-field-ring: #aab5c0;
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -143,7 +150,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
    The only exception is .ladder__n, the price under each stage bar, which is
    an axis label twelve across and cannot be 14px. */
 .num {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
@@ -646,6 +653,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: grid;
   grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   gap: var(--gap);
+  /* Each column keeps its own height; stretching the side card only moves the
+     empty space inside it. */
+  align-items: start;
 }
 .dash__stack { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
 
@@ -756,7 +766,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   background-position: left top;
   background-repeat: no-repeat;
 }
-.ladder__facts dt { font-size: 12px; color: var(--d-text-3); }
+.ladder__facts dt { font-size: 13px; color: var(--d-text-2); }
 .ladder__facts dd {
   margin: 5px 0 0;
 }
@@ -945,8 +955,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .flash__code {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   margin-top: 22px;
   padding: 14px 14px 14px 18px;
   border-radius: var(--r-card);
@@ -954,11 +963,22 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   box-shadow: inset 0 0 0 1px var(--d-field-ring);
 }
 .flash__code-label {
+  flex: none;
   font-family: var(--d-pixel);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--d-text-3);
+}
+/* The code is the thing being handed over, so it reads as a value and the
+   button beside it says what pressing it does. */
+.flash__code-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--d-text);
 }
 
 /* ---------- Referrals ---------- */
@@ -989,7 +1009,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   gap: 12px;
   margin: 20px 0 0;
 }
-.referrals__split dt { font-size: 12px; color: var(--d-text-3); }
+.referrals__split dt { font-size: 13px; color: var(--d-text-2); }
 .referrals__split dd {
   margin: 5px 0 0;
 }

@@ -56,10 +56,11 @@ export function FlashSale() {
 
       <div className="flash__code">
         <span className="flash__code-label">Promo code</span>
+        <span className="flash__code-value">{FLASH_SALE.code}</span>
         <button type="button" className="copy" onClick={() => copy(FLASH_SALE.code)}>
-          <span className="copy__value">{FLASH_SALE.code}</span>
           {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
-          <span className="sr-only">{copied ? 'Copied' : 'Copy promo code'}</span>
+          {copied ? 'Copied' : 'Copy'}
+          <span className="sr-only"> promo code {FLASH_SALE.code}</span>
         </button>
       </div>
     </section>

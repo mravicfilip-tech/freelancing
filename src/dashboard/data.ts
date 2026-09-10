@@ -3,14 +3,20 @@
  * constants without touching a component.
  */
 
+const STAGE_PRICE = 0.18;
+const RTX_LEFT = 18_376_032;
+
 export const PRESALE = {
   stage: 12,
-  price: 0.18,
+  price: STAGE_PRICE,
   nextPrice: 0.19,
+  /** What a token costs once it lists, which is what a holding is worth. */
+  listPrice: 0.25,
   /** Share of the current stage already sold. */
   progress: 0.765,
-  usdLeft: 4_859_041,
-  rtxLeft: 18_376_032,
+  rtxLeft: RTX_LEFT,
+  /** Derived, so the two figures cannot drift apart. */
+  usdLeft: Math.round(RTX_LEFT * STAGE_PRICE),
 } as const;
 
 /** Stages either side of the live one, for the price ladder. */
@@ -23,16 +29,20 @@ export const STAGE_LADDER = Array.from({ length: 12 }, (_, i) => {
   };
 });
 
+const BALANCE = 47_382.94;
+
 export const HOLDINGS = {
-  balance: 0,
-  worthAtTge: 0,
-  referralEarnings: 0,
-  commission: 0.05,
+  balance: BALANCE,
+  /** Four buys across stages 9 to 12. */
+  purchases: 4,
+  worthAtTge: Number((BALANCE * PRESALE.listPrice).toFixed(2)),
 } as const;
 
 export const REFERRALS = {
-  earnings: 124.53,
-  claimed: 383.65,
+  /** Paid in USDT at 15% of what each friend spends. */
+  earnings: 1_284.5,
+  claimed: 900,
+  invited: 9,
   share: 0.15,
   link: 'https://remittix.io/join/0h2e31',
 } as const;
@@ -71,6 +81,10 @@ export const LIVE_ORDERS: Order[] = [
   { id: 94193, method: 'USDT', rtx: 1388.89, usd: 250, minutesAgo: 26 },
   { id: 94192, method: 'ETH', rtx: 472.22, usd: 85, minutesAgo: 34 },
   { id: 94191, method: 'SOL', rtx: 18888.89, usd: 3400, minutesAgo: 41 },
+  { id: 94190, method: 'USDC', rtx: 2777.78, usd: 500, minutesAgo: 53 },
+  { id: 94189, method: 'CARD', rtx: 666.67, usd: 120, minutesAgo: 67 },
+  { id: 94188, method: 'BNB', rtx: 4111.11, usd: 740, minutesAgo: 78 },
+  { id: 94187, method: 'USDT', rtx: 8333.33, usd: 1500, minutesAgo: 94 },
 ];
 
 // ---------- Formatting ----------

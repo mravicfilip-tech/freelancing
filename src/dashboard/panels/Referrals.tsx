@@ -24,12 +24,12 @@ export function Referrals() {
           <Figure className="referrals__earnings" symbol="$" value={money(REFERRALS.earnings)} />
           <dl className="referrals__split">
             <div>
-              <dt>From referrals</dt>
-              <dd>{money(REFERRALS.earnings)} USDT</dd>
-            </div>
-            <div>
               <dt>Claimed</dt>
               <dd>{money(REFERRALS.claimed)} USDT</dd>
+            </div>
+            <div>
+              <dt>Ready to claim</dt>
+              <dd>{money(REFERRALS.earnings - REFERRALS.claimed)} USDT</dd>
             </div>
           </dl>
         </div>
@@ -38,6 +38,7 @@ export function Referrals() {
           <p className="referrals__pitch">
             Every friend who buys $RTX pays you{' '}
             <strong>{REFERRALS.share * 100}% of their purchase</strong> in USDT.
+            You have invited <strong>{REFERRALS.invited}</strong> so far.
           </p>
           <p className="referrals__label">Your link</p>
           <button type="button" className="copy copy--field" onClick={() => copy(REFERRALS.link)}>

@@ -917,9 +917,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .referrals__split dd {
   margin: 5px 0 0;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .referrals__invite { min-width: 0; }
 .referrals__pitch { margin: 0 0 14px; font-size: 14px; color: var(--d-text-2); }

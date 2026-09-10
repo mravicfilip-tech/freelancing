@@ -1,4 +1,4 @@
-import { HOLDINGS, money } from '../data';
+import { HOLDINGS, PRESALE, REFERRALS, money } from '../data';
 import { Figure } from '../Figure';
 import { ArrowOut, PayMark, RtxMark } from '../icons';
 
@@ -38,7 +38,7 @@ export function StatRow() {
         label="Your balance"
         value={money(HOLDINGS.balance)}
         suffix="$RTX"
-        note="Across all purchases"
+        note={`Across ${HOLDINGS.purchases} purchases`}
         href="#holdings"
         mark="coin"
       />
@@ -46,15 +46,15 @@ export function StatRow() {
         label="Worth at launch"
         value={money(HOLDINGS.worthAtTge)}
         suffix="USDT"
-        note="Priced at the listing rate"
+        note={`At the $${PRESALE.listPrice.toFixed(2)} listing price`}
         href="#tge"
         mark="usdt"
       />
       <Stat
         label="Referral earnings"
-        value={money(HOLDINGS.referralEarnings)}
-        suffix="$RTX"
-        note={`You keep ${HOLDINGS.commission * 100}% of what friends buy`}
+        value={money(REFERRALS.earnings)}
+        suffix="USDT"
+        note={`${REFERRALS.share * 100}% of what ${REFERRALS.invited} friends have bought`}
         href="#referrals"
       />
     </section>

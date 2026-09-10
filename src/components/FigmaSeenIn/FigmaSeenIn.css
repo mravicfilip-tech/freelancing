@@ -100,8 +100,11 @@
 .sn__mark {
   display: inline-flex;
   align-items: center;
-  /* the black mark at 32%, as in the design; under the pointer it is the mark at full black */
-  opacity: 0.32;
+  /* the black mark at 32%, as in the design; under the pointer it is the mark at full black.
+     A token, not a literal: the touch sequence tweens this same value (see useSeenInMotion), and
+     a mark flattened to white on a dark band carries further at the same number than a black one
+     on a light band does — so the resting weight is not the same in both themes. */
+  opacity: var(--sn-rest, 0.32);
   will-change: opacity;
 }
 /* Only where a pointer drives the opacity. On a touch screen the sequence tweens it per frame,

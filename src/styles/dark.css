@@ -344,6 +344,12 @@
 [data-theme='dark'] .sn__mark img {
   filter: brightness(0) invert(1);
 }
+/* A white mark on a dark band carries much further than a black one on a light band does, so the
+   design's 32% rest reads as almost-on here and leaves the hover nowhere to go. Lower, the wall
+   sits back and the mark under the pointer is the one that is lit. */
+[data-theme='dark'] .sn {
+  --sn-rest: 0.2;
+}
 /* Coinsult is not monochrome — it is a gradient tile with a white mark cut out of it, so
    flattening it to the ink fills the cut-out and leaves a blob. Inverting lightness and putting
    the hue back keeps the tile, the cut-out and the wordmark all three. */
@@ -366,9 +372,12 @@
 }
 
 /* The chip is near-black on a light band — the one thing on the page that already reads as dark.
-   On a dark band it has to lift instead, or it becomes a hole. */
+   Lifting it to a mid surface kept it visible but lost what it is: a solid black label. It goes
+   back to near-black and takes a hairline instead, which separates it from the band without
+   turning it into a panel. The inset edge costs no layout, so the pill keeps its designed size. */
 [data-theme='dark'] .tk__chip {
-  background: var(--d-il-chip);
+  background: var(--d-il-bg);
+  box-shadow: inset 0 0 0 1px var(--d-il-line);
 }
 /* The share discs are white on a light band, which is what makes them read as counters set on top
    of the diagram rather than holes in it. A surface a single step off the band does not do that
@@ -430,8 +439,27 @@
    different depths for the same job. */
 [data-theme='dark'] .ec-trade__market,
 [data-theme='dark'] .ec-tum__reel {
-  background: var(--d-il-panel);
+  background: var(--d-il-card);
   border-color: var(--d-il-line);
+}
+
+/* The key's progress bar. Every part of it was a light-mode value: a track tinted 7% of the ink,
+   which is nothing on this ground, ruled with white hairlines at 90% — the brightest thing in the
+   whole scene — and swept by a white glow. On black the track is the hole the bar fills, the rules
+   are the ink at a tenth, and the glow is a lift rather than a light. */
+[data-theme='dark'] .ec-tum__prog {
+  background-color: var(--d-il-bg);
+  background-image: repeating-linear-gradient(90deg, rgb(238 242 245 / 9%) 0 1px, transparent 1px 8px);
+}
+[data-theme='dark'] .ec-tum__progFill {
+  background-color: rgb(144 146 244 / 10%);
+  background-image:
+    linear-gradient(var(--d-indigo), var(--d-indigo)),
+    linear-gradient(var(--d-indigo), var(--d-indigo)),
+    repeating-linear-gradient(90deg, rgb(144 146 244 / 45%) 0 3px, transparent 3px 6px);
+}
+[data-theme='dark'] .ec-tum__progGlow {
+  background: linear-gradient(90deg, transparent, rgb(238 242 245 / 16%), transparent);
 }
 /* The header strip of the payout run, which the how-to-buy window gets from its url bar: a band a
    step above the screen it titles, so the object reads as a screen rather than a bordered box. */

@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { useTheme } from '../../theme';
 
 /**
  * Entrance for the "As seen in" lattice. The heading rises out of its mask as the other bands' do;
@@ -7,9 +8,13 @@ import { useEffect, type RefObject } from 'react';
  * a drawing rather than a fade.
  */
 export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
+  /* The loop writes the resting opacity as an inline style, which outlives a theme change — so it
+     is rebuilt when the resolved theme is, the way the other animated palettes are. */
+  const theme = useTheme();
   useEffect(() => {
     const el = root.current;
     if (!el) return;
+    const REST = parseFloat(getComputedStyle(el).getPropertyValue('--sn-rest')) || 0.32;
     const reveal = () => {
       delete el.dataset.motion;
     };
@@ -52,7 +57,7 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
             const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.2, paused: true });
             marks.forEach((m, i) => {
               loop.to(m, { opacity: 1, duration: 0.45, ease: 'sine.out' }, i * 0.7);
-              loop.to(m, { opacity: 0.32, duration: 0.7, ease: 'sine.inOut' }, i * 0.7 + 0.95);
+              loop.to(m, { opacity: REST, duration: 0.7, ease: 'sine.inOut' }, i * 0.7 + 0.95);
             });
             let seen = false;
             io = new IntersectionObserver(
@@ -64,7 +69,7 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
                   // Rewound, not frozen: pausing where it stood left whichever marks were lit
                   // sitting at full black for as long as the band was off screen.
                   loop.pause(0);
-                  gsap.set(marks, { opacity: 0.32 });
+                  gsap.set(marks, { opacity: REST });
                 }
               },
               { rootMargin: '60px' },
@@ -89,5 +94,5 @@ export function useSeenInMotion(root: RefObject<HTMLElement | null>) {
       cancelled = true;
       revert?.();
     };
-  }, [root]);
+  }, [root, theme]);
 }

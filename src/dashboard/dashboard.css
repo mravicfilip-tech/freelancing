@@ -68,6 +68,9 @@
      rail the site rules everything else with. */
   --d-field: #0c1219;
   --d-field-ring: #28323c;
+  /* A control sitting inside a field needs its own edge against it. */
+  --d-chip-ring: #3a4653;
+  --d-chip-lift: none;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(238, 242, 245, 0.07) 1px, transparent 1.4px);
@@ -89,6 +92,8 @@
   --d-on-tint: #3335bb;
   --d-field: #f4f6f8;
   --d-field-ring: #aab5c0;
+  --d-chip-ring: #7a8a9a;
+  --d-chip-lift: 0 1px 2px rgba(18, 36, 51, 0.12);
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -590,6 +595,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   padding: 6px 10px;
   border-radius: 999px;
   background: var(--d-card);
+  box-shadow: inset 0 0 0 1px var(--d-chip-ring), var(--d-chip-lift);
   font-weight: 600;
   font-size: 13px;
 }
@@ -1137,6 +1143,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   border: 0;
   border-radius: var(--r-sm);
   background: var(--d-card);
+  box-shadow: inset 0 0 0 1px var(--d-chip-ring), var(--d-chip-lift);
   color: var(--d-text);
   font: inherit;
   font-size: 14px;
@@ -1145,7 +1152,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   transition: background-color 160ms ease;
 }
 .dash[data-theme='dark'] .tsel__button { background: var(--d-track); }
-.tsel__button:hover { background: var(--d-rule); }
+.tsel__button:hover { background: var(--d-inset); }
 .tsel__chevron { color: var(--d-text-3); transition: transform 160ms ease; }
 .tsel__button[aria-expanded='true'] .tsel__chevron { transform: rotate(180deg); }
 

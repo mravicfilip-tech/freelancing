@@ -138,10 +138,11 @@
   width: 24px;
   height: 24px;
 }
-/* A white halo, as system cursors have, so it stays distinct over whatever it crosses. */
+/* A halo, as system cursors have, so it stays distinct over whatever it crosses. The arrow is the
+   brand yellow, so on a light page the halo is the dark ink rather than white. */
 .fs__cursorIcon {
   display: block;
-  filter: drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
+  filter: drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18, 36, 51, 0.3)));
 }
 /* Parked beside the hub, where the cursor rests before it rides the orbit. */
 .fs__badge {

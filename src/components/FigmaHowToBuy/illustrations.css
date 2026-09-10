@@ -155,7 +155,7 @@
 .hb__scene .hbi-field{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px}
 .hb__scene .hbi-field__l{font-size:11px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
 .hb__scene .hbi-field__v{font-weight:500;font-size:16px;color:var(--ink)}
-.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px var(--cur-halo, #fff)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18,36,51,.3)))}
+.hb__scene .hbi-cur{width:22px;height:22px;z-index:6;pointer-events:none;filter:drop-shadow(0 0 1.5px var(--cur-halo, #122433)) drop-shadow(0 2px 3px var(--cur-cast, rgba(18,36,51,.3)))}
 .hb__scene .hbi-cur svg{display:block;width:22px;height:22px}
 .hb__scene .hbi-click{width:40px;height:40px;margin:-20px 0 0 -20px;border:2px solid var(--indigo);border-radius:50%;background:rgba(64,66,209,.18);opacity:0;z-index:5}
 .hb__scene .hbi-dash{display:grid;grid-template-columns:120px minmax(0,1fr);margin:-20px}

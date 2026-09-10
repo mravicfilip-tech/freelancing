@@ -162,6 +162,11 @@
 
 /* ---------- Language picker (.lp) ---------- */
 [data-theme='dark'] .lp__pop {
+  /* The picker's indigo is a dark ink chosen against a white sheet — as the code, the tick and the
+     focus ring it goes nearly out on this ground. It lifts to the same indigo the rest of the dark
+     theme uses, once, at the token rather than at each of the three places it lands. */
+  --lp-indigo: var(--d-indigo);
+
   border-color: var(--d-rail);
   background: var(--d-surface);
   box-shadow: 0 32px 64px -24px rgb(0 0 0 / 64%);
@@ -185,10 +190,15 @@
 [data-theme='dark'] .lp__opt:focus-visible {
   background: var(--d-surface-2);
 }
+/* The chosen language sits on a pale indigo wash — a white plate on a dark sheet, and the one row
+   in the list that was still lit. It takes the same tint at the weight this ground can carry. */
+[data-theme='dark'] .lp__opt[aria-selected='true'] {
+  background: rgb(144 146 244 / 12%);
+}
 
-/* The drawn cursor carries a halo so it stays distinct over whatever it crosses — white on a light
-   page. On a dark one a white glow around a small arrow reads as a smudge rather than an outline,
-   so the halo becomes the ground it is being separated from and the cast shadow deepens. */
+/* The drawn cursor carries a halo so it stays distinct over whatever it crosses — the dark ink on a
+   light page, which is what a yellow arrow needs there. On a dark one that ink has nothing to
+   separate from, so the halo becomes this ground's own near-black and the cast shadow deepens. */
 [data-theme='dark'] .fs__cursorIcon,
 [data-theme='dark'] .ff__il,
 [data-theme='dark'] .hb__scene {

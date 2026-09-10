@@ -57,12 +57,16 @@ const LEFT = '2,80 204,156 204,405 2,329';
 const RIGHT = '204,156 400,82 400,331 204,405';
 
 /** What the chest is carrying. The four coins the presale slide floats, and the mark. */
+/* The mark sits in the middle of the five, not at one end: the directions that fan the payload out
+   place each item by its distance from the centre, so last in this list means furthest right —
+   which put the brand in the corner, colliding with the raised lid, instead of at the head of what
+   the chest gives up. */
 const PAYLOAD: { src: string; size: number; mark?: boolean }[] = [
   { src: '/figma/coin-btc.svg', size: 34 },
   { src: '/figma/coin-eth.svg', size: 30 },
+  { src: '/figma/logo.svg', size: 40, mark: true },
   { src: '/figma/coin-usdt.svg', size: 32 },
   { src: '/figma/coin-sol.svg', size: 28 },
-  { src: '/figma/logo.svg', size: 40, mark: true },
 ];
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
@@ -233,7 +237,7 @@ export function ChestSlide({ active }: { active: boolean }) {
           if (variant === '1') {
             // an arc out of the seam into a fan that hangs above the crate
             cycle.fromTo(c, { x: 0, y: 0, scale: 0.2, opacity: 0, rotation: -30 },
-              { x: n * 62, y: -104 - Math.abs(n) * -14, scale: 1, opacity: 1, rotation: 0, duration: 0.95, ease: 'back.out(1.2)' }, at);
+              { x: n * 66, y: -92 + Math.abs(n) * 13, scale: 1, opacity: 1, rotation: 0, duration: 0.95, ease: 'back.out(1.2)' }, at);
             cycle.to(c, { y: `-=${rand(7, 13)}`, duration: rand(1.1, 1.6), yoyo: true, repeat: 2, ease: 'sine.inOut' }, at + 0.95);
             cycle.to(c, { y: '+=26', opacity: 0, scale: 0.8, duration: 0.5, ease: 'power2.in' }, at + 4.2);
           }

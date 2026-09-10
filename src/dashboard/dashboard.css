@@ -999,28 +999,71 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   transition: background-color 160ms ease, color 160ms ease;
 }
 .link-quiet:hover { background: var(--d-pick); color: var(--d-on-pick); }
-.referrals__body {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(18px, 2.4vw, 30px);
+
+/* The total leads; claimed and ready sit beside it rather than under, so the
+   list below gets the room. */
+.referrals__figures {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 40px);
+  flex-wrap: wrap;
   margin-top: 16px;
 }
 .referrals__label { margin: 0; font-size: 13px; color: var(--d-text-2); }
-.referrals .referrals__earnings { margin-top: 10px; font-size: clamp(30px, 3vw, 40px); }
-.referrals__split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 20px 0 0;
-}
+.referrals .referrals__earnings { margin-top: 8px; font-size: clamp(28px, 2.8vw, 36px); }
+.referrals__split { display: flex; gap: clamp(18px, 2.4vw, 34px); margin: 0; }
 .referrals__split dt { font-size: 13px; color: var(--d-text-2); }
-.referrals__split dd {
-  margin: 5px 0 0;
+.referrals__split dd { margin: 5px 0 0; }
+
+.referrals__table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  text-align: left;
 }
-.referrals__invite { min-width: 0; }
-.referrals__pitch { margin: 0 0 14px; font-size: 14px; color: var(--d-text-2); }
-.referrals__pitch strong { color: var(--d-text); }
-.referrals__invite .referrals__label { margin-bottom: 8px; color: var(--d-text-3); }
+.referrals__table th {
+  padding: 0 10px 10px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--d-text-3);
+}
+.referrals__table td { padding: 11px 10px; }
+.referrals__table tbody tr td:first-child { border-radius: 999px 0 0 999px; }
+.referrals__table tbody tr td:last-child { border-radius: 0 999px 999px 0; }
+.referrals__table tbody tr:nth-child(odd) td { background: var(--d-inset); }
+/* Doto is a display face; an address set in it is decoration rather than
+   something you can check against your own. */
+.referrals__wallet {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--d-text-2);
+}
+.referrals__cut { color: var(--d-on-tint); }
+.referrals__when { color: var(--d-text-2); }
+
+.referrals__invite { margin-top: 20px; }
+.referrals__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 9px;
+  padding: 10px 10px 10px 16px;
+  border-radius: var(--r-card);
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
+}
+.referrals__url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--d-text-2);
+}
+.referrals__link .copy { flex: none; height: 38px; padding: 0 14px; }
 
 /* ---------- Live orders ---------- */
 .orders__sub { margin: 5px 0 0; color: var(--d-text-3); font-size: 14px; }

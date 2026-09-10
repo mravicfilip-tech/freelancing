@@ -1,7 +1,9 @@
-import { REFERRALS, money } from '../data';
+import { REFERRALS, REFERRAL_ROWS, money } from '../data';
 import { Figure } from '../Figure';
 import { CheckIcon, ChevronRight, CopyIcon } from '../icons';
 import { useCopy } from '../useCopy';
+
+const ago = (h: number) => (h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`);
 
 export function Referrals() {
   const [copied, copy] = useCopy();
@@ -18,33 +20,57 @@ export function Referrals() {
         </a>
       </header>
 
-      <div className="referrals__body">
-        <div className="referrals__figures">
+      <div className="referrals__figures">
+        <div>
           <p className="referrals__label">Earned so far</p>
           <Figure className="referrals__earnings" value={money(REFERRALS.earnings)} suffix="USDT" />
-          <dl className="referrals__split">
-            <div>
-              <dt>Claimed</dt>
-              <dd className="num">{money(REFERRALS.claimed)} USDT</dd>
-            </div>
-            <div>
-              <dt>Ready to claim</dt>
-              <dd className="num">{money(REFERRALS.earnings - REFERRALS.claimed)} USDT</dd>
-            </div>
-          </dl>
         </div>
+        <dl className="referrals__split">
+          <div>
+            <dt>Claimed</dt>
+            <dd className="num">{money(REFERRALS.claimed)} USDT</dd>
+          </div>
+          <div>
+            <dt>Ready to claim</dt>
+            <dd className="num">{money(REFERRALS.earnings - REFERRALS.claimed)} USDT</dd>
+          </div>
+        </dl>
+      </div>
 
-        <div className="referrals__invite">
-          <p className="referrals__pitch">
-            Every friend who buys $RTX pays you{' '}
-            <strong>{REFERRALS.share * 100}% of their purchase</strong> in USDT.
-            You have invited <strong>{REFERRALS.invited}</strong> so far.
-          </p>
-          <p className="referrals__label">Your link</p>
-          <button type="button" className="copy copy--field" onClick={() => copy(REFERRALS.link)}>
-            <span className="copy__value copy__value--link">{REFERRALS.link}</span>
+      <table className="referrals__table">
+        <caption className="sr-only">Recent referrals</caption>
+        <thead>
+          <tr>
+            <th scope="col">Friend</th>
+            <th scope="col">They spent</th>
+            <th scope="col">Your {REFERRALS.share * 100}%</th>
+            <th scope="col" className="is-right">
+              When
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {REFERRAL_ROWS.map((r) => (
+            <tr key={r.wallet}>
+              <td className="referrals__wallet">{r.wallet}</td>
+              <td className="num">${money(r.usd, 0)}</td>
+              <td className="num referrals__cut">+{money(r.cut)} USDT</td>
+              <td className="num is-right referrals__when">{ago(r.hoursAgo)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="referrals__invite">
+        <p className="referrals__label">
+          Your link — every friend who buys pays you {REFERRALS.share * 100}% in USDT
+        </p>
+        <div className="referrals__link">
+          <span className="referrals__url">{REFERRALS.link}</span>
+          <button type="button" className="copy" onClick={() => copy(REFERRALS.link)}>
             {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
-            <span className="sr-only">{copied ? 'Copied' : 'Copy referral link'}</span>
+            {copied ? 'Copied' : 'Copy'}
+            <span className="sr-only"> referral link</span>
           </button>
         </div>
       </div>

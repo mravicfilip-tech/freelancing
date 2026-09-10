@@ -47,6 +47,15 @@ export const REFERRALS = {
   link: 'https://remittix.io/join/0h2e31',
 } as const;
 
+export type Referral = { wallet: string; usd: number; cut: number; hoursAgo: number };
+
+/** What the card's "View all" implies exists. */
+export const REFERRAL_ROWS: Referral[] = [
+  { wallet: '0x7a41…3f2b', usd: 250, cut: 37.5, hoursAgo: 2 },
+  { wallet: '0xc0de…91a4', usd: 1000, cut: 150, hoursAgo: 9 },
+  { wallet: '0x5f8b…d773', usd: 120, cut: 18, hoursAgo: 26 },
+];
+
 export const FLASH_SALE = {
   bonus: 4.5,
   code: 'LAUNCH450',

@@ -137,6 +137,11 @@ function PaymentsPortrait() {
   );
 }
 
+/* The bar's rest and sent states are colours, and GSAP needs values rather than `var()` — so they
+   are read off the scene, which keeps them in the stylesheet with the rest of the palette. */
+const barTone = (il: HTMLElement, name: string, fallback: string) =>
+  getComputedStyle(il).getPropertyValue(name).trim() || fallback;
+
 export const paymentsMotion: SceneMotion = {
   build(tl, il, at, gsap) {
     const g = RUN_BAR[isMobile(il) ? 'mobile' : 'desktop'];
@@ -148,7 +153,7 @@ export const paymentsMotion: SceneMotion = {
     });
     one(il, '[data-sel]').textContent = '0 selected';
     gsap.set(all(il, '[data-sel], [data-go]'), { opacity: 1, scale: 1, visibility: 'visible' });
-    gsap.set(one(il, '.ec-run__bar'), { width: g.wide, left: g.left, borderRadius: g.radius, backgroundColor: '#122433' });
+    gsap.set(one(il, '.ec-run__bar'), { width: g.wide, left: g.left, borderRadius: g.radius, backgroundColor: barTone(il, '--ec-chip', '#122433') });
     gsap.set(all(il, '[data-tick], [data-cursor], [data-ping]'), { opacity: 0 });
     gsap.set(all(il, '.ec-run__box'), { scale: 1 });
     tl.from(one(il, '.ec-caption'), { ...RISE, y: 6 }, at);
@@ -157,6 +162,8 @@ export const paymentsMotion: SceneMotion = {
     tl.from(one(il, '.ec-run__bar'), { y: 18, opacity: 0, duration: 0.7, ease: EASE }, at + 0.75);
   },
   idle(gsap, il) {
+    const BAR_REST = barTone(il, '--ec-chip', '#122433');
+    const BAR_SENT = barTone(il, '--ec-green', '#02774d');
     const boxes = all(il, '.ec-run__box');
     const states = all(il, '.ec-run__state');
     const sel = one(il, '[data-sel]');
@@ -225,7 +232,7 @@ export const paymentsMotion: SceneMotion = {
         .to([sel, go], { opacity: 0, duration: 0.18, ease: 'power2.in' }, SEND + 0.2)
         // once faded, the labels leave the layout too, so nothing wider than the disc sits behind its clip
         .set([sel, go], { visibility: 'hidden' }, SEND + 0.4)
-        .to(bar, { width: NARROW, left: MID - NARROW / 2, borderRadius: 26, backgroundColor: '#02774d', duration: 0.52, ease: 'power3.inOut' }, SEND + 0.3)
+        .to(bar, { width: NARROW, left: MID - NARROW / 2, borderRadius: 26, backgroundColor: BAR_SENT, duration: 0.52, ease: 'power3.inOut' }, SEND + 0.3)
         // the tick only starts once the box has finished collapsing around it
         .set(tick, { opacity: 1 }, SEND + 0.82)
         .to(path, { strokeDashoffset: 0, duration: 0.44, ease: 'power2.out' }, SEND + 0.84);
@@ -240,7 +247,7 @@ export const paymentsMotion: SceneMotion = {
       const RESET = SEND + 2.9;
       t.to(path, { strokeDashoffset: len, duration: 0.24, ease: 'power2.in' }, RESET)
         .set(tick, { opacity: 0 }, RESET + 0.25)
-        .to(bar, { width: WIDE, left: LEFT, borderRadius: g.radius, backgroundColor: '#122433', duration: 0.52, ease: 'power3.inOut' }, RESET + 0.2)
+        .to(bar, { width: WIDE, left: LEFT, borderRadius: g.radius, backgroundColor: BAR_REST, duration: 0.52, ease: 'power3.inOut' }, RESET + 0.2)
         .add(() => {
           boxes.forEach((b) => b.classList.remove('ec-run__box--on'));
           states.forEach((st) => {

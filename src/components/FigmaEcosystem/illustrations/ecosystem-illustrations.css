@@ -8,6 +8,10 @@
   /* The scenes' own palette. `--ec-chip` is a filled pill and `--ec-chipInk` what sits on it, so
      the pair can invert together; `--ec-strong` is the same colour used as text, which cannot. */
   --ec-surface: #fff;
+  /* the hairline between rows, and the tint a matched key takes */
+  --ec-rule: #f2f4f8;
+  --ec-okBg: #f4fbf8;
+  --ec-okLine: #d9f1e6;
   --ec-chip: #122433;
   --ec-chipInk: #fff;
   --ec-strong: #122433;
@@ -72,7 +76,7 @@
 .ec-run__card { width: 560px; border: 1px solid var(--ec-line); border-radius: 18px; background: var(--ec-surface); overflow: hidden; }
 .ec-run__head { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 20px; border-bottom: 1px solid var(--ec-soft); }
 .ec-run__head b { font-weight: 600; font-size: 14.5px; color: var(--ec-ink); }
-.ec-run__row { display: grid; grid-template-columns: 22px 1fr 120px 92px; align-items: center; gap: 14px; height: 58px; padding: 0 20px; border-bottom: 1px solid #f2f4f8; }
+.ec-run__row { display: grid; grid-template-columns: 22px 1fr 120px 92px; align-items: center; gap: 14px; height: 58px; padding: 0 20px; border-bottom: 1px solid var(--ec-rule); }
 .ec-run__box { display: grid; place-items: center; width: 20px; height: 20px; border: 1.5px solid var(--ec-line); border-radius: 6px; background: var(--ec-surface); will-change: transform; }
 /* The tick is centred by the grid; rotating a bottom+left border puts its vertex low, so it is
    lifted by the offset between the rect's centre and the glyph's optical centre. */
@@ -358,5 +362,5 @@
 .ec-tum__progGlow { position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); pointer-events: none; }
 .ec-tum__printLabel { font-size: 12.5px; color: var(--ec-muted); }
 .ec-tum__print { font-size: 24px; letter-spacing: 0.12em; color: var(--ec-strong); }
-.ec-tum__match { opacity: 0; border-color: #d9f1e6; background: #f4fbf8; color: var(--ec-green); }
+.ec-tum__match { opacity: 0; border-color: var(--ec-okLine); background: var(--ec-okBg); color: var(--ec-green); }
 .ec-tum__match i { width: 8px; height: 8px; border-radius: 50%; background: var(--ec-green); }

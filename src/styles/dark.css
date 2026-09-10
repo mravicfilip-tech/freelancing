@@ -31,6 +31,17 @@
   --d-muted: #55606b;
   /* Indigo carries links, the live step and the progress fill. #4042d1 is a dark blue on a light
      ground; on this one it disappears, so dark takes the tint the design already pairs it with. */
+  /* The illustrations' own ladder. Every scene on the page — the feature band, the ecosystem, the
+     orbit, the tokenomics diagram, the How-to-buy mock-up — is built from these six steps and
+     nothing else, so a card in one scene is the same value as a card in another and the page reads
+     as one drawing rather than five that happen to be dark. On a light page the borders carry the
+     separation between them; here the values have to. */
+  --d-il-bg: #0e151d;
+  --d-il-card: #131b24;
+  --d-il-panel: #1a232e;
+  --d-il-chip: #232e3b;
+  --d-il-line: #2b3743;
+  --d-il-rule: #212b36;
   --d-indigo: #9092f4;
   --d-lavender: #4b4e8f;
   --d-lime: #d9f24e;
@@ -191,10 +202,14 @@
    reach art that another section owns. Without this the art keeps its light ink and its white
    plates on a dark band, which is what "dark mode is not applied" looks like. */
 [data-theme='dark'] .ff__il {
-  --il-surface: var(--d-surface-2);
+  --il-surface: var(--d-il-panel);
   --il-ink: var(--d-body);
   --il-label: var(--d-label);
-  --il-line: var(--d-rail);
+  --il-line: var(--d-il-line);
+  --il-mute: var(--d-il-chip);
+  --il-tintLine: var(--d-il-line);
+  --il-okBg: rgb(53 201 138 / 12%);
+  --il-okLine: rgb(53 201 138 / 28%);
   --il-indigo: var(--d-indigo);
   --il-lavender: var(--d-lavender);
 }
@@ -208,6 +223,17 @@
   --fs-text: var(--d-body);
   --fs-muted: var(--d-label);
   --fs-indigo: var(--d-indigo);
+  /* The highlight's own end states. Left at their light values the sweep repainted the chips white
+     and the markers pale grey a second after the page had gone dark — the CSS was right and the
+     animation walked over it. */
+  --fs-hi: var(--d-indigo);
+  --fs-hi-marker: #3c4753;
+  --fs-hi-dot: #37424e;
+  --fs-hi-chip-bg: var(--d-surface);
+  --fs-hi-chip-ink: var(--d-body);
+  --fs-hi-chip-on-ink: #0c1219;
+  /* the chip's glyph is already inverted to the ink at rest, and stays that way when it lights */
+  --fs-hi-icon: invert(1) brightness(1.7);
 }
 
 /* The orbit's ellipse is filled #E6E9ED — the light band's own colour — so on a light page it is
@@ -282,7 +308,7 @@
 /* The panel the scenes play in is a light gradient — a lit sheet of paper beside the copy. Dark
    keeps the same sweep and the same three stops, taken down to the surface it now sits on. */
 [data-theme='dark'] .ec__panel {
-  background: linear-gradient(121deg, #182029 4%, #1d2630 34%, #232a26 78%);
+  background: linear-gradient(121deg, var(--d-il-bg) 4%, #121a23 34%, #141c1a 78%);
 }
 /* The item icons are dark line art; on this ground they have to become the ink they sit beside. */
 [data-theme='dark'] .ec__item img {
@@ -334,14 +360,14 @@
 /* The chip is near-black on a light band — the one thing on the page that already reads as dark.
    On a dark band it has to lift instead, or it becomes a hole. */
 [data-theme='dark'] .tk__chip {
-  background: var(--d-surface-2);
+  background: var(--d-il-chip);
 }
 /* The share discs are white on a light band, which is what makes them read as counters set on top
    of the diagram rather than holes in it. A surface a single step off the band does not do that
    here, so dark gives them the lift and the edge the white ones got for free. */
 [data-theme='dark'] .tk__pct {
-  background: #222c38;
-  border: 1px solid #38434f;
+  background: var(--d-il-chip);
+  border: 1px solid var(--d-il-line);
   color: var(--d-ink);
 }
 /* The donut's outer ring is an exported circle drawn in the band's own hairline. Like the globe's
@@ -370,29 +396,35 @@
   /* The card is the darkest thing in the scene and the panels inside it step up, rather than card
      and panel sitting a hair apart — on a light page the border does that work, on a dark one the
      value has to. */
-  --ec-surface: #121a23;
-  --ec-chip: var(--d-ink);
-  --ec-chipInk: #0c1219;
+  --ec-surface: var(--d-il-card);
+  /* `--ec-chip` is a filled pill that is already dark on a white card, so on a dark one it lifts
+     rather than inverting. Read as "the dark thing becomes the light thing" it turned the payout
+     bar white — the one bright line the scene had. */
+  --ec-chip: var(--d-il-chip);
+  --ec-chipInk: var(--d-ink);
   --ec-strong: var(--d-ink);
   --ec-ink: var(--d-body);
   --ec-muted: var(--d-label);
   --ec-indigo: var(--d-indigo);
   --ec-lavender: var(--d-lavender);
   --ec-green: #35c98a;
-  --ec-line: #2b3743;
-  --ec-soft: #202b37;
+  --ec-line: var(--d-il-line);
+  --ec-soft: var(--d-il-panel);
+  --ec-rule: var(--d-il-rule);
+  --ec-okBg: rgb(53 201 138 / 12%);
+  --ec-okLine: rgb(53 201 138 / 28%);
 }
 /* The rows inside the payout run, the market tiles under the chart, and the staking position all
    sit on the card and have to be read off it. */
 [data-theme='dark'] .ec-trade__market,
 [data-theme='dark'] .ec-stk__card,
 [data-theme='dark'] .ec-tum__reel {
-  background: #1c2632;
-  border-color: #333f4c;
+  background: var(--d-il-panel);
+  border-color: var(--d-il-line);
 }
 [data-theme='dark'] .ec-run__row + .ec-run__row,
 [data-theme='dark'] .ec-run__head {
-  border-color: #2b3743;
+  border-color: var(--d-il-rule);
 }
 
 /* ---------- Roadmap (.rs) ----------
@@ -456,15 +488,17 @@
      there — the url bar and the tiles a shade, the rules a shade less — which is the same order
      the light scene has, measured from the other end. */
   --surface: var(--d-band-a);
-  --soft: #172029;
-  --line: #2b3542;
-  --hair: #1e2733;
+  --soft: var(--d-il-panel);
+  --line: var(--d-il-line);
+  --hair: var(--d-il-rule);
   --radio: #3a4553;
   /* the thumb has to lift off the track, and the keyframe colours have to flip with the page */
-  --thumb: #2c3846;
+  --thumb: var(--d-il-chip);
   --seg-on: #eef2f5;
   --seg-off: #6c7783;
   --cta: #eef2f5;
+  /* the connected-address pill is the one full black in the scene */
+  --black: #000;
   --cta-ink: #0c1219;
   --bar: rgb(238 242 245 / 9%);
   --chipbg: rgb(238 242 245 / 7%);
@@ -477,7 +511,7 @@
 [data-theme='dark'] .hb__scene .hbi-tile,
 [data-theme='dark'] .hb__scene .hbi-claim,
 [data-theme='dark'] .hb__scene .hbi-field {
-  background: #141c25;
+  background: var(--d-il-card);
 }
 /* The window and sheet lift off a light page with a soft drop shadow; on a dark one, shadow does
    not lift anything — the surface being a shade above its band is what does. */

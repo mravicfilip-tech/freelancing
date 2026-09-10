@@ -10,6 +10,15 @@
   --fs-text: #2c2e31;
   --fs-muted: #7c858d;
   --fs-indigo: #4042d2;
+  /* The states the highlight paints as it sweeps the orbit (see useSimpleMotion.ts). They are
+     written as inline styles by GSAP, so they have to be readable from here. */
+  --fs-hi: #4042d2;
+  --fs-hi-marker: #c5cbd1;
+  --fs-hi-dot: #c5cbd1;
+  --fs-hi-chip-bg: #fff;
+  --fs-hi-chip-ink: #2c2e31;
+  --fs-hi-chip-on-ink: #fff;
+  --fs-hi-icon: invert(1);
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fs-dash-v: repeating-linear-gradient(180deg, var(--fs-line) 0 8px, transparent 8px 16px);
   --fs-dash-h: repeating-linear-gradient(90deg, var(--fs-line) 0 8px, transparent 8px 16px);
@@ -119,7 +128,7 @@
   place-items: center;
   width: 120px;
   height: 120px;
-  border: 1.5px solid #c9cfd7;
+  border: 1.5px solid var(--fs-line);
   border-radius: 50%;
   background: var(--fs-surface);
 }

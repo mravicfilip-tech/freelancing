@@ -57,6 +57,20 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
           const groups = all(el, '.fs__group');
           const markers = all(el, '.fs__marker');
 
+          /* The highlight repaints markers, chips and dots as it passes, and GSAP needs values
+             rather than `var()` — so the rest and lit states are read off the section. Left as
+             literals they were a light grey and a white, which is what put white pills and white
+             rings on a dark page long after the CSS had been turned over. */
+          const tone = (name: string, fallback: string) =>
+            getComputedStyle(el).getPropertyValue(name).trim() || fallback;
+          const HI = tone('--fs-hi', '#4042d2');
+          const MARKER_REST = tone('--fs-hi-marker', '#c5cbd1');
+          const DOT_REST = tone('--fs-hi-dot', '#c5cbd1');
+          const CHIP_BG = tone('--fs-hi-chip-bg', '#ffffff');
+          const CHIP_INK = tone('--fs-hi-chip-ink', '#2c2e31');
+          const CHIP_ON_INK = tone('--fs-hi-chip-on-ink', '#ffffff');
+          const ICON_ON = tone('--fs-hi-icon', 'invert(1)');
+
           const tl = gsap.timeline({ paused: true, onComplete: idle });
           tl.from(all(el, '.fs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0);
           draw(tl, gsap, [ringPath], 0.3, 1.4);
@@ -84,7 +98,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
             // A highlight circles the orbit for as long as the section is on screen.
             const len = ringPath.getTotalLength();
             const glowPath = ringPath.cloneNode() as SVGPathElement;
-            glowPath.setAttribute('stroke', '#4042d2');
+            glowPath.setAttribute('stroke', HI);
             glowPath.setAttribute('stroke-width', '2');
             glowPath.setAttribute('stroke-linecap', 'round');
             glowPath.classList.add('fs__ringGlow');
@@ -162,20 +176,20 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
               const halo = one(m, '.fs__markerHalo');
               gsap.fromTo(halo, { scale: 1, opacity: 0.55 }, { scale: 2.1, opacity: 0, duration: 1.1, ease: 'power2.out', transformOrigin: '50% 50%' });
               gsap.fromTo(m, { scale: 1 }, { scale: 1.25, duration: 0.28, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' });
-              gsap.fromTo(m, { borderColor: '#4042d2' }, { borderColor: '#c5cbd1', duration: 1.1, ease: 'power2.out' });
+              gsap.fromTo(m, { borderColor: HI }, { borderColor: MARKER_REST, duration: 1.1, ease: 'power2.out' });
             };
             // A chip lights up in the badge's indigo and pops as the highlight passes its anchor, then eases back.
             const flash = (chip: HTMLElement, dot: HTMLElement) => {
               const icon = chip.querySelector('img');
               gsap
                 .timeline()
-                .to(chip, { backgroundColor: '#4042d2', color: '#ffffff', duration: 0.2, ease: 'power2.out' }, 0)
-                .to(icon, { filter: 'invert(1)', duration: 0.2 }, 0)
+                .to(chip, { backgroundColor: HI, color: CHIP_ON_INK, duration: 0.2, ease: 'power2.out' }, 0)
+                .to(icon, { filter: ICON_ON, duration: 0.2 }, 0)
                 .fromTo(chip, { scale: 1 }, { scale: 1.12, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut', transformOrigin: '50% 50%' }, 0)
-                .to(dot, { backgroundColor: '#4042d2', scale: 1.6, duration: 0.2, transformOrigin: '50% 50%' }, 0)
-                .to(chip, { backgroundColor: '#ffffff', color: '#2c2e31', duration: 0.6, ease: 'power2.inOut' }, 1.0)
+                .to(dot, { backgroundColor: HI, scale: 1.6, duration: 0.2, transformOrigin: '50% 50%' }, 0)
+                .to(chip, { backgroundColor: CHIP_BG, color: CHIP_INK, duration: 0.6, ease: 'power2.inOut' }, 1.0)
                 .to(icon, { filter: 'invert(0)', duration: 0.6 }, 1.0)
-                .to(dot, { backgroundColor: '#c5cbd1', scale: 1, duration: 0.6 }, 1.0);
+                .to(dot, { backgroundColor: DOT_REST, scale: 1, duration: 0.6 }, 1.0);
             };
             // A currency group pops as the cursor comes by, the way the chips do: the pill swells a
             // touch and eases back while its coins pop one after another.

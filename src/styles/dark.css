@@ -36,12 +36,12 @@
      nothing else, so a card in one scene is the same value as a card in another and the page reads
      as one drawing rather than five that happen to be dark. On a light page the borders carry the
      separation between them; here the values have to. */
-  --d-il-bg: #0e151d;
-  --d-il-card: #131b24;
-  --d-il-panel: #1a232e;
-  --d-il-chip: #232e3b;
-  --d-il-line: #2b3743;
-  --d-il-rule: #212b36;
+  --d-il-bg: #05080c;
+  --d-il-card: #0a0f14;
+  --d-il-panel: #10161e;
+  --d-il-chip: #1a222c;
+  --d-il-line: #232d38;
+  --d-il-rule: #171e26;
   --d-indigo: #9092f4;
   --d-lavender: #4b4e8f;
   --d-lime: #d9f24e;
@@ -463,7 +463,7 @@
    itself light, but a lit browser window on a dark band is a hole in the page rather than a
    picture — so the mock-up turns over too, and reads as the same product after dark. */
 [data-theme='dark'] .hb {
-  --hb-card: var(--d-surface);
+  --hb-card: #0e141b;
 }
 /* The mark inside the mock-up is the same near-black artwork as the page's own, on what is now a
    dark screen. */
@@ -487,7 +487,7 @@
      the card rather than a panel floating a shade above it. Everything inside then steps up from
      there — the url bar and the tiles a shade, the rules a shade less — which is the same order
      the light scene has, measured from the other end. */
-  --surface: var(--d-band-a);
+  --surface: var(--d-il-bg);
   --soft: var(--d-il-panel);
   --line: var(--d-il-line);
   --hair: var(--d-il-rule);

@@ -1,10 +1,12 @@
-/* The hero's third slide: the line-art chest (Figma node 2767:55) and the field it sits in.
-   Five directions share this sheet; `data-variant` on the root picks which parts are in play. */
+/* The hero's third slide: the line-art chest (Figma node 2767:55) as an opening mechanism.
+   Five directions share this sheet; `data-variant` on the root picks what differs. */
 .chest {
   --chest-ink: #1a1a1a;
   /* The dot the site uses everywhere else, at the weight the hero's own field carries. */
   --chest-dot: rgb(18 36 51 / 22%);
-  --chest-rule: rgb(18 36 51 / 10%);
+  /* What comes up out of the seam. Warm, because it is the one warm thing on a cool page — and it
+     is the same yellow the brand already spends on the tallest bar. */
+  --chest-light: #f9ff38;
 
   position: absolute;
   inset: 0;
@@ -13,140 +15,165 @@
   overflow: hidden;
 }
 
-/* The art rides above every backdrop layer and keeps the export's own proportions. */
-.chest__art {
+/* The stage is the crate's own square, so everything placed against it — the seam, the rays, the
+   payload — can be positioned in the crate's coordinates rather than the slide's. */
+/* The crate no longer fills the slide: the lid comes off it and the payload goes above that, and
+   both need somewhere to be. It sits low in the box so the headroom is where the motion is. */
+.chest__stage {
   position: relative;
+  width: 60%;
+  max-width: 286px;
+  margin-top: 16%;
+  aspect-ratio: 401.5 / 406;
+}
+
+.chest__art {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  width: 78%;
-  max-width: 372px;
+  transition: opacity 200ms ease;
 }
 .chest__art svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   overflow: visible;
 }
 /* The export carries its stroke as an attribute, which a rule outranks — so the crate can be
-   themed without editing the asset's bytes. The 1px hairline of the export is kept. */
+   themed and weighted without editing the asset's bytes. At the size the hero shows it, the
+   export's 1px hairline reads as a sketch rather than an object, so it takes a little more body. */
 .chest__art path[id^='seg-'] {
   stroke: var(--chest-ink);
+  stroke-width: 1.35;
 }
-/* Until the segments have been measured and set to their un-drawn state, the crate would flash in
-   whole; the component clears this the moment it has them. */
+/* Held until the segments have been set to their un-drawn state, so the crate is never revealed
+   whole for a frame before it draws. */
 .chest[data-motion='pending'] .chest__art {
   opacity: 0;
 }
-.chest__art {
-  transition: opacity 200ms ease;
-}
 
-/* ---------- 1 · Assemble: a dotted floor and the shadow it casts ---------- */
-.chest__floor {
-  position: absolute;
-  left: 50%;
-  bottom: 12%;
-  width: 74%;
-  height: 34%;
-  translate: -50% 0;
-  background-image: radial-gradient(circle at center, var(--chest-dot) 1px, transparent 1.4px);
-  background-size: 16px 16px;
-  /* The field has no edge of its own — it is a floor receding, so it fades out at its far side. */
-  mask-image: linear-gradient(to top, #000 10%, transparent 95%);
-  opacity: 0.9;
+/* ---------- the crate as a solid ----------
+   The export is line work with no fills. Filled, the same drawing becomes an object: it holds its
+   own volume on a light page, and — the reason it had to happen — it stops the light meant for the
+   opening from showing through every panel. The two body faces are shaded a step apart, as the
+   drawing's own hatching implies, and the lid's face is the lightest because it faces up. */
+.chest__face {
+  stroke: none;
 }
-.chest__shadow {
-  position: absolute;
-  left: 50%;
-  bottom: 15%;
-  width: 46%;
-  height: 26px;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(18 36 51 / 26%), transparent 72%);
-  opacity: 0.7;
+.chest__face--top {
+  fill: #fff;
 }
-
-/* ---------- 2 · Scan: dashed rules the line travels across ---------- */
-.chest__rules {
-  position: absolute;
-  inset: 8% 6%;
-  background-image: repeating-linear-gradient(180deg, var(--chest-rule) 0 1px, transparent 1px 34px);
-  mask-image: radial-gradient(closest-side at 50% 50%, #000 40%, transparent 100%);
+.chest__face--left {
+  fill: #f3f5f7;
 }
-.chest__scan {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 4%;
-  height: 1px;
+.chest__face--right {
+  fill: #e9edf1;
+}
+/* What the lid was covering. Dark, so the opening reads as depth rather than as another panel, and
+   graded — deepest at the back where the box falls away, lighter at the near lip. */
+.chest__inner {
+  fill: #10161d;
+}
+.chest__innerGlow {
+  fill: url(#chest-inner);
   opacity: 0;
-  background: linear-gradient(90deg, transparent, var(--chest-ink) 18%, var(--chest-ink) 82%, transparent);
 }
-/* The line carries a little light with it, so it reads as passing over rather than lying on top. */
-.chest__scan::after {
-  content: '';
-  position: absolute;
-  inset: -13px 0 -13px;
-  background: linear-gradient(180deg, transparent, rgb(18 36 51 / 7%), transparent);
+/* Bright enough to be light coming out, not so bright that it fills the opening — the dark inner
+   face has to stay readable underneath it, or the box has no depth to give anything up from. */
+.chest__innerHot {
+  stop-color: var(--chest-light);
+  stop-opacity: 0.62;
+}
+.chest__innerCold {
+  stop-color: var(--chest-light);
+  stop-opacity: 0;
 }
 
-/* ---------- 3 · Radial: two slow dashed rings ---------- */
-.chest__rings {
+/* The bloom that gets out of the opening. It sits under the art, so the crate's own lines stay on
+   top of it and it reads as light escaping rather than lying over the box. */
+.chest__glow {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 96%;
-  height: 96%;
+  left: 50.8%;
+  top: 20%;
+  z-index: 1;
+  width: 58%;
+  aspect-ratio: 1;
   translate: -50% -50%;
-  overflow: visible;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(249 255 56 / 55%), rgb(249 255 56 / 14%) 45%, transparent 72%);
+  opacity: 0;
+  filter: blur(10px);
 }
-.chest__ring {
-  fill: none;
-  stroke: var(--chest-rule);
-  stroke-width: 1;
-}
-.chest__ring--a {
-  stroke-dasharray: 2 10;
-}
-.chest__ring--b {
-  stroke-dasharray: 1 14;
-}
-
-/* ---------- 4 · Scatter: the field the segments land out of ---------- */
-.chest__field {
+.chest__rays {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  overflow: visible;
 }
-.chest__field i {
+.chest__ray {
+  fill: var(--chest-light);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  filter: blur(7px);
+}
+
+/* The shockwave, on the direction that snaps. Above the crate, since it is the lid letting go. */
+.chest__wave {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--chest-dot);
+  inset: 0;
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+}
+.chest__waveRing {
+  fill: none;
+  stroke: var(--chest-ink);
+  stroke-dasharray: 3 7;
   opacity: 0;
 }
 
-/* ---------- 5 · Unpack: what rises from the seam once the lid lifts ---------- */
-.chest__sparks {
+/* What the chest is carrying. Positioned at the seam; every direction moves them from there. */
+.chest__payload {
   position: absolute;
-  left: 50%;
-  top: 44%;
-  z-index: 3;
+  left: 50.8%;
+  top: 20%;
+  z-index: 4;
   width: 0;
   height: 0;
 }
-.chest__sparks i {
+.chest__coin {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--chest-ink);
+  display: block;
   opacity: 0;
+  border-radius: 50%;
+  /* Coins are the one solid thing in a drawing made of lines, so they carry a shadow to sit in
+     front of it rather than on it. */
+  filter: drop-shadow(0 6px 10px rgb(18 36 51 / 22%));
+  will-change: transform;
+}
+/* The mark is not a coin: it is flat art, and a circular shadow under it would invent a disc. */
+.chest__coin[data-mark] {
+  border-radius: 0;
+  filter: drop-shadow(0 4px 8px rgb(18 36 51 / 18%));
+}
+
+/* What the crate stands on: a dotted floor and the shadow it casts. */
+.chest__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -4%;
+  z-index: 0;
+  width: 52%;
+  height: 26px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(18 36 51 / 30%), transparent 72%);
+  opacity: 0.7;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chest__scan,
-  .chest__sparks {
+  .chest__wave {
     display: none;
   }
 }
@@ -154,8 +181,8 @@
 /* The slide is the same box on a phone; the crate just takes more of it, since there is no second
    column competing for the width. */
 @media (max-width: 900px) {
-  .chest__art {
-    width: 70%;
-    max-width: 280px;
+  .chest__stage {
+    width: 58%;
+    max-width: 230px;
   }
 }

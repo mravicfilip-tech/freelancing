@@ -249,11 +249,7 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   rim.appendChild(make('polygon', { class: 'chest__rim', points: POLY.mouth }));
   const seam = make('polygon', { class: 'chest__seam', points: POLY.mouth }) as SVGPolygonElement;
   rim.appendChild(seam);
-  const pings = [0, 1].map(() => {
-    const el = make('polygon', { class: 'chest__ping', points: POLY.mouth });
-    rim.appendChild(el);
-    return el;
-  });
+
   lines.insertBefore(rim, lines.children[3] ?? null);
 
   /* The lid: its underside lips first, then its face, then the export's own strokes on top. As one
@@ -270,5 +266,5 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   lidG.appendChild(sheenG);
   lidSegs.forEach((el) => lidG.appendChild(el));
 
-  return { lidG, lidFace, cave, seam, pings };
+  return { lidG, lidFace, cave, seam };
 }

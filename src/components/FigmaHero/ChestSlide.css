@@ -209,13 +209,6 @@
   stroke-linecap: round;
   opacity: 0;
 }
-/* The halo the site fires whenever something is reached: an indigo ring that opens and fades. */
-.chest__ping {
-  fill: none;
-  stroke: var(--chest-live);
-  stroke-width: 2;
-  opacity: 0;
-}
 
 /* ---------- the lid as a slab ----------
    A lid that lifts off a box has an underside. Without these two lips it is a sheet of paper, and

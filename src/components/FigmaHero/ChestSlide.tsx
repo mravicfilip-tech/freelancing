@@ -140,7 +140,7 @@ export function ChestSlide({ active }: { active: boolean }) {
 
     const built = buildCrate(svg, lidSegs.map((s) => s.el));
     if (!built) return;
-    const { lidG, lidFace, seam, pings } = built;
+    const { lidG, lidFace, seam } = built;
 
     /* The hatch parts the lid's panel rather than lifting the lid, so it needs a tighter cut than
        the others. The lid as a whole includes the crate's corner brackets and top rails, which read
@@ -261,11 +261,6 @@ export function ChestSlide({ active }: { active: boolean }) {
         cycle.to(seam, { opacity: 0.9, duration: 0.25 }, 0.24);
         cycle.fromTo(seam, { strokeDashoffset: 0 }, { strokeDashoffset: -rimLen, duration: 1.1, ease: 'none' }, 0.24);
         cycle.fromTo(seam, { strokeDashoffset: 0 }, { strokeDashoffset: -rimLen, duration: 2.6, ease: 'none' }, 1.34);
-        // and the halo the site fires whenever something is reached
-        pings.forEach((el, i) => {
-          cycle.fromTo(el, { scale: 1, opacity: 0.55 },
-            { scale: 2.1, opacity: 0, duration: 1.1, ease: 'power2.out', svgOrigin: SEAM.x + ' ' + SEAM.y }, 0.3 + i * 0.22);
-        });
         // the sheen crossing the lid's face as it turns into the light
         cycle.fromTo('.chest__sheen', { x: 0, opacity: 0 }, { x: 620, opacity: 0.5, duration: 0.9, ease: 'power2.inOut' }, 0.4);
         cycle.to('.chest__sheen', { opacity: 0, duration: 0.3 }, 1.1);

@@ -657,9 +657,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: grid;
   grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   gap: var(--gap);
-  /* Each column keeps its own height; stretching the side card only moves the
-     empty space inside it. */
-  align-items: start;
+  /* Both columns run to the taller one's height. Whichever is shorter absorbs
+     the difference above its trailing row, which reads as spacing before a
+     footer rather than a hole in the middle. */
+  align-items: stretch;
 }
 .dash__stack { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
 
@@ -671,6 +672,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   flex-direction: column;
   gap: clamp(18px, 2.2vw, 26px);
 }
+.side .referrals { display: flex; flex-direction: column; }
+.side .referrals__invite { margin-top: auto; padding-top: 20px; }
 .side__part + .side__part {
   padding-top: clamp(18px, 2.2vw, 26px);
   border-top: 0;
@@ -894,13 +897,15 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 18px;
+  margin-top: auto;
   padding-top: 16px;
   background-image: var(--d-dash-h);
   background-size: 100% 1px;
   background-position: left top;
   background-repeat: no-repeat;
 }
+/* The row needs clear air above it even when there is no slack to absorb. */
+.buy .fh__btn.dbtn--block + .buy__pay-with { margin-top: max(auto, 18px); }
 .buy__pay-label { color: var(--d-text-3); font-size: 13px; }
 .buy__marks { display: flex; align-items: center; gap: 7px; }
 

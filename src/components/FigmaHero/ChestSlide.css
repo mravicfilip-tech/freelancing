@@ -69,24 +69,68 @@
 .chest__face--right {
   fill: #e9edf1;
 }
-/* What the lid was covering. Dark, so the opening reads as depth rather than as another panel, and
-   graded — deepest at the back where the box falls away, lighter at the near lip. */
-.chest__inner {
-  fill: #10161d;
+/* ---------- the inside ----------
+   A hole is not a dark shape laid on the lid's outline. Looking down into an isometric box you see
+   its two far walls and its floor, and it is those — not the outline — that make it a cavity. The
+   walls take the light coming up and the floor keeps its own dark, so the box has somewhere for
+   what it gives up to have come from. */
+.chest__wall {
+  fill: url(#chest-wall);
+  stroke: none;
+}
+.chest__wall--side {
+  opacity: 0.82;
+}
+.chest__floor {
+  fill: #080d13;
+  stroke: none;
+}
+.chest__wallLo {
+  stop-color: #1b2431;
+}
+.chest__wallHi {
+  stop-color: #0b1119;
+}
+/* The shadow the rim casts just inside its own front lip. It is what seats the opening in the box
+   rather than letting it read as a panel that happens to be dark. */
+.chest__occl {
+  fill: none;
+  stroke: #05080c;
+  stroke-width: 16;
+  opacity: 0.55;
+  filter: blur(5px);
 }
 .chest__innerGlow {
   fill: url(#chest-inner);
   opacity: 0;
 }
-/* Bright enough to be light coming out, not so bright that it fills the opening — the dark inner
-   face has to stay readable underneath it, or the box has no depth to give anything up from. */
+/* Bright enough to be light in the box, not so bright that it fills it — the walls and floor have
+   to stay readable underneath, or the depth goes and the stain comes back. */
 .chest__innerHot {
   stop-color: var(--chest-light);
-  stop-opacity: 0.62;
+  stop-opacity: 0.5;
 }
 .chest__innerCold {
   stop-color: var(--chest-light);
   stop-opacity: 0;
+}
+
+/* ---------- the lid as a slab ----------
+   A lid that lifts off a box has an underside. Without these two lips it is a sheet of paper, and
+   the moment it tilts the drawing gives that away. */
+.chest__lip {
+  stroke: none;
+}
+.chest__lip--left {
+  fill: #c9d0d8;
+}
+.chest__lip--right {
+  fill: #b6bfc9;
+}
+/* A sheen crossing the lid's face as it turns into the light, clipped so it never leaves the metal. */
+.chest__sheen {
+  fill: #fff;
+  opacity: 0;
 }
 
 /* The bloom that gets out of the opening. It sits under the art, so the crate's own lines stay on

@@ -232,6 +232,71 @@
   --il-okLine: rgb(53 201 138 / 28%);
   --il-indigo: var(--d-indigo);
   --il-lavender: var(--d-lavender);
+  /* The receipt's figures carry the whole point of that scene, so they take the page's hardest ink
+     here as they take its hardest ink there; the wallet panel's aside sits a step under the body. */
+  --il-figure: var(--d-ink);
+  --il-bodyMute: rgb(133 147 160 / 72%);
+}
+
+/* ---------- The light the scenes are built on ----------
+   Every one of these illustrations stands on a soft wash: a blob, a bloom, a pair of orbit rings.
+   In the design they are light falling on white paper, and they are exported as light — near-white
+   and pale lavender at full strength. Carried onto a dark band unchanged, each one is a lit slab
+   sitting on top of the section, which is what a dark page that has only had its text turned over
+   looks like.
+
+   Light does not become dark by being repainted; it becomes dark by being composited. So each wash
+   is taken down to a fraction of its strength and screened onto the surface under it: what was a
+   white plate becomes a bloom the ground shows through, the hue the design chose survives, and the
+   falloff is the one the artwork was drawn with rather than one invented here. */
+[data-theme='dark'] .il-pay__blob,
+[data-theme='dark'] .il-fast__blob,
+[data-theme='dark'] .il-simple__blob,
+[data-theme='dark'] .il-ui__blob,
+[data-theme='dark'] .il-fx__glow,
+[data-theme='dark'] .il-phone__glow {
+  filter: brightness(0.19) saturate(1.7);
+  mix-blend-mode: screen;
+}
+/* The two raster washes are near-white with a warm cast the paper absorbs. Screened at saturation
+   that cast is the only colour left in them, and both tiles came up olive — so these are taken to
+   neutral instead and let the surface under them supply the hue, which is the blue the rest of the
+   band is already lit in. */
+[data-theme='dark'] .il-pay__blob,
+[data-theme='dark'] .il-fast__blob,
+[data-theme='dark'] .il-phone__glow {
+  filter: brightness(0.22) saturate(0.2);
+}
+/* Both are rectangles: panels of gradient that end where their box ends. On white paper the end is
+   the paper, so nothing shows; screened onto a dark card the boundary is a visible edge running
+   across the tile. Each is faded out along the edge that falls inside the picture. */
+[data-theme='dark'] .il-pay__blob {
+  mask-image: linear-gradient(180deg, transparent 0%, #000 34%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%);
+}
+/* The fast blob is drawn flipped, so its trailing edge on screen is its leading edge in the box. */
+[data-theme='dark'] .il-fast__blob {
+  mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+}
+/* The orbit rings are hairlines in the same wash — screened they would vanish, so they are simply
+   dimmed to the weight a line carries on this ground. */
+[data-theme='dark'] .il-ring {
+  border-color: rgb(144 146 244 / 22%);
+}
+[data-theme='dark'] .il-ring--bold {
+  border-color: rgb(144 146 244 / 16%);
+}
+/* The bank card is not a wash — it is a face, a solid object with an edge, so it deepens where the
+   blooms composite. It keeps the lavender the design gives it, at the depth this ground can hold. */
+[data-theme='dark'] .il-fx__bankBg {
+  filter: brightness(0.34) saturate(1.25);
+}
+/* The dot grids under the scenes are near-black ink, which needs to become the ink instead — and
+   much fainter, since a light dot carries far further on black than a dark one does on white. */
+[data-theme='dark'] .il-dots,
+[data-theme='dark'] .il-ui__dots {
+  background-image: radial-gradient(circle at center, rgb(238 242 245 / 7%) 1px, transparent 1.4px);
 }
 
 /* ---------- Crypto-to-fiat (.fs) ---------- */
@@ -299,6 +364,15 @@
   color: rgb(238 242 245 / 42%);
 }
 
+/* The blurred crescent behind the hub is the band's own light — a soft white bloom that a light
+   page absorbs. On a dark one it is the brightest thing in the section by a distance, a smear
+   across the middle of the diagram, so it comes down to a tenth and becomes what it was for: a
+   suggestion that the hub is lit. The loop breathes it, so the value is a token the run reads
+   rather than a literal it would write straight back over. */
+[data-theme='dark'] .fs {
+  --fs-glow: 0.1;
+}
+
 /* The coin belt runs on a solid grey; on a dark band it is the rail's own weight. */
 [data-theme='dark'] .fs__coins {
   background: var(--d-rail);
@@ -329,10 +403,12 @@
   --ec-lavender: var(--d-lavender);
 }
 
-/* The panel the scenes play in is a light gradient — a lit sheet of paper beside the copy. Dark
-   keeps the same sweep and the same three stops, taken down to the surface it now sits on. */
+/* The panel the scenes play in is a light gradient — a lit sheet of paper beside the copy. Taken
+   down as a sweep it kept the light version's green cast at its far end, which put a tint on the
+   one surface every scene on this page is measured against. It is one value instead: the ground the
+   scenes are drawn for, so what shows on it is the scene and not the panel. */
 [data-theme='dark'] .ec__panel {
-  background: linear-gradient(121deg, var(--d-il-bg) 4%, #121a23 34%, #141c1a 78%);
+  background: #0c1218;
 }
 /* The item icons are dark line art; on this ground they have to become the ink they sit beside. */
 [data-theme='dark'] .ec__item img {
@@ -513,21 +589,39 @@
    white the cavity is darker than the box, on black it has to be lighter, because what makes a hole
    read as a hole is the value difference either way — not darkness. */
 [data-theme='dark'] .chest {
-  --chest-ink: var(--d-ink);
-  /* the crate's three faces, a step apart, deepest on the face turned furthest from the light */
-  --chest-top: #26313e;
-  --chest-left: #1c2531;
-  --chest-right: #141c26;
-  --chest-lipL: #131a23;
-  --chest-lipR: #0d131a;
-  /* the inside, lifted off the box rather than sunk into it */
-  --chest-wallA: #35424f;
-  --chest-wallB: #2b3644;
-  --chest-floor: #3d4a58;
+  /* The line is light here, so it is spent where light would fall. Full ink on all 226 segments at
+     once is what made the crate read as a wireframe rather than an object: the lid caught exactly
+     as much of it as the floor of the cavity did, and nothing had a near side. */
+  --chest-ink: #7f8f9f;
+  --chest-inkLid: #cdd8e2;
+  --chest-inkIn: #4a5866;
+  /* Each face is a ramp now, so the crate is lit rather than tinted: the light comes from behind
+     and above, as it does in every other scene here, and each plane falls away from it. */
+  --chest-topA: #3a4757;
+  --chest-topB: #26313f;
+  --chest-leftA: #232e3c;
+  --chest-leftB: #18212c;
+  --chest-rightA: #151d28;
+  --chest-rightB: #0b1119;
+  --chest-lipL: #0e151d;
+  --chest-lipR: #090e15;
+  /* The inside, lifted off the box rather than sunk into it — on white a cavity is darker than the
+     plate, on black it has to be lighter, because what makes a hole read as one is the difference
+     either way and not the darkness. */
+  --chest-wallA: #2c3846;
+  --chest-wallB: #222d3a;
+  --chest-floor: #35424f;
+  /* and lit by what it is carrying, in the indigo everything in transit on this page is drawn in */
+  --chest-glowA: rgb(144 146 244 / 32%);
+  --chest-glowB: rgb(144 146 244 / 0%);
   --chest-rim: var(--d-rail);
   --chest-railLine: var(--d-rail);
   --chest-live: var(--d-indigo);
   --chest-soft: var(--d-lavender);
+  /* The mark's coin inverts with the page, as the tokenomics hub does: the same object, the same
+     way round, against the ground it now sits on. */
+  --chest-markDisc: #eef2f5;
+  --chest-markInk: #0c1219;
 }
 /* The dot field is near-black ink on a light band; on this one it has to be the ink instead, and
    much fainter — a white dot carries far further on black than a dark one does on white. */

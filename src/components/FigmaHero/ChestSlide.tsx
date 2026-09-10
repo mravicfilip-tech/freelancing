@@ -374,8 +374,15 @@ export function ChestSlide({ active }: { active: boolean }) {
             <span key={p.src + '-pk'} className="chest__packet" />
           ))}
           {PAYLOAD.map((p) => (
-            <img key={p.src} className="chest__coin" data-mark={p.mark || undefined} src={p.src} alt=""
-              style={{ width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2 }} />
+            <span key={p.src} className="chest__coin" data-mark={p.mark || undefined}
+              style={{ width: p.size, height: p.size, marginLeft: -p.size / 2, marginTop: -p.size / 2 }}>
+              {/* The chain marks arrive as coins — a coloured disc with its glyph already on it. The
+                  Remittix mark does not: it is flat wordmark art, so on its own it came out of the
+                  crate as a bare M with nothing under it, dark on a light page and invisible on a
+                  dark one. It gets the disc here, and takes its ink from the page rather than from
+                  the asset, which is why it is masked rather than drawn. */}
+              {p.mark ? <i className="chest__mark" /> : <img className="chest__coinArt" src={p.src} alt="" />}
+            </span>
           ))}
         </div>
         <span className="chest__badge" aria-hidden="true">Presale live</span>

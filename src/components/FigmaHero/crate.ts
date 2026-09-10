@@ -126,10 +126,25 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   const lines = svg.querySelector('#crate-lines');
   if (!lines) return null;
 
+  /* Each face is a gradient rather than one flat value, so light has a direction on the object: it
+     falls from the rear-left, which is where every other scene on this page lights from. The stops
+     are tokens, so a theme sets the ladder — on a light page the two ends of each face are the same
+     value and the crate stays the flat white plate the design draws. */
+  const ramp = (id: string, a: string, b: string, x2: string, y2: string) =>
+    `<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}">` +
+    `<stop offset="0" class="chest__gs chest__gs--${a}"/><stop offset="1" class="chest__gs chest__gs--${b}"/></linearGradient>`;
+
   const defs = make('defs', {});
   defs.innerHTML =
     `<clipPath id="chest-mouth"><polygon points="${POLY.mouth}"/></clipPath>` +
-    `<clipPath id="chest-top"><polygon points="${POLY.top}"/></clipPath>`;
+    `<clipPath id="chest-top"><polygon points="${POLY.top}"/></clipPath>` +
+    ramp('chest-gTop', 'topA', 'topB', '0.55', '1') +
+    ramp('chest-gLeft', 'leftA', 'leftB', '0.2', '1') +
+    ramp('chest-gRight', 'rightA', 'rightB', '0.35', '1') +
+    /* What is inside is lit from what is inside: the crate carries value, and the light it throws
+       up out of the mouth is the same indigo everything in transit on this site is drawn in. */
+    `<radialGradient id="chest-gGlow" cx="0.5" cy="0.62" r="0.72">` +
+    `<stop offset="0" class="chest__gs chest__gs--glowA"/><stop offset="1" class="chest__gs chest__gs--glowB"/></radialGradient>`;
   svg.insertBefore(defs, svg.firstChild);
 
   // the body, filled — the faces the line work only outlines
@@ -143,6 +158,8 @@ export function buildCrate(svg: Element, lidSegs: SVGPathElement[]) {
   cave.appendChild(make('polygon', { class: 'chest__floor', points: POLY.floor }));
   cave.appendChild(make('polygon', { class: 'chest__wall chest__wall--back', points: POLY.wallBack }));
   cave.appendChild(make('polygon', { class: 'chest__wall chest__wall--side', points: POLY.wallSide }));
+  // the light in the box, laid over its walls and floor and clipped to the mouth with them
+  cave.appendChild(make('polygon', { class: 'chest__glow', points: POLY.mouth }));
   lines.insertBefore(cave, lines.children[2] ?? null);
 
   /* The mouth's own edge, and the light that runs round it. One hairline seats the opening — the

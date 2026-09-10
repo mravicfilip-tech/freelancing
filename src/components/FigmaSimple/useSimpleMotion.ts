@@ -78,12 +78,15 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
           // light theme's rest state — an inline style, so on a dark page it overruled the sheet's
           // inversion and left near-black line art on a near-black chip once the sweep had passed.
           const ICON_REST = tone('--fs-hi-icon-rest', 'invert(0)');
+          /* How much of the hub's bloom this ground can take. The loop breathes it, which writes an
+             opacity inline — so the ceiling has to be read here rather than set on the element. */
+          const GLOW = Number(tone('--fs-glow', '1')) || 1;
 
           const tl = gsap.timeline({ paused: true, onComplete: idle });
           tl.from(all(el, '.fs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0);
           draw(tl, gsap, [ringPath], 0.3, 1.4);
           pop(tl, hub, 0.7, { scale: 0.5, duration: 0.8 });
-          tl.from(one(el, '.fs__glow'), { opacity: 0, scale: 0.7, duration: 1.0, ease: 'power2.out' }, 0.9);
+          tl.fromTo(one(el, '.fs__glow'), { opacity: 0, scale: 0.7 }, { opacity: GLOW, scale: 1, duration: 1.0, ease: 'power2.out' }, 0.9);
           groups.forEach((g, i) => {
             pop(tl, g, 1.0 + i * 0.18, { scale: 0.8, y: 12, duration: 0.6 });
             tl.from(all(g, '.fs__coin'), { scale: 0, opacity: 0, duration: 0.45, stagger: 0.08, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 1.15 + i * 0.18);
@@ -312,7 +315,7 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
 
             loop.to(hub, { scale: 1.04, duration: 2.6, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 50%' }, 0);
             loop.to(badge, { y: -2, duration: 3.4, delay: 1.6, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
-            loop.to(one(orbit, '.fs__glow'), { opacity: 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
+            loop.to(one(orbit, '.fs__glow'), { opacity: GLOW * 0.6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0);
             groups.forEach((g, i) => loop.to(g, { y: -4, duration: 3.2 + i * 0.5, delay: i * 0.7, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0));
             chips.forEach((c, i) => loop.to(c, { y: -3, duration: 3.6 + i * 0.4, delay: 0.5 + i, yoyo: true, repeat: -1, ease: 'sine.inOut' }, 0));
 

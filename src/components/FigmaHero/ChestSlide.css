@@ -4,12 +4,29 @@
   /* The site's ink, not the export's. `#1a1a1a` came in with the asset and appears nowhere else in
      the project; the illustrations are drawn in `#122433` and carry `#2c2e31` as body ink. */
   --chest-ink: #122433;
-  /* The crate's surfaces, from the shared illustration ladder rather than from black. */
-  --chest-top: #fff;
-  --chest-left: #f3f5f7;
-  --chest-right: #e9edf1;
+  /* The same line at three jobs: the body's edges, the lid's, and the ones inside the box. On a
+     light page a hairline is a hairline wherever it falls; on a dark one a line is light, and a
+     lid catching as much of it as the floor of a cavity is what flattens the object. */
+  --chest-inkLid: var(--chest-ink);
+  --chest-inkIn: var(--chest-ink);
+  /* The crate's surfaces, from the shared illustration ladder rather than from black. Each face is
+     a two-stop ramp so light can fall across the object; on a light page both ends of a face are
+     the value the design draws it at, which leaves the plate flat exactly as it was. */
+  --chest-topA: #fff;
+  --chest-topB: #fff;
+  --chest-leftA: #f3f5f7;
+  --chest-leftB: #f3f5f7;
+  --chest-rightA: #e9edf1;
+  --chest-rightB: #e9edf1;
   --chest-lipL: #dfe4e9;
   --chest-lipR: #d3d8de;
+  /* The Remittix mark's own coin: the brand's ground carrying the brand's mark. */
+  --chest-markDisc: #122433;
+  --chest-markInk: #fff;
+  /* The light thrown up out of the mouth. A lit page has nothing to light — the cavity is already
+     the brightest thing in the drawing — so it is spent only where there is dark to spend it in. */
+  --chest-glowA: transparent;
+  --chest-glowB: transparent;
   /* Inside the box. Two walls a value step apart and a floor below them is what makes a cavity
      read as a cavity — not a void. The light bands of this site have no voids: every near-black on
      a light ground here is a product surface with a radius, and a hole punched in the page is not
@@ -102,6 +119,10 @@
   stroke: var(--chest-ink);
   stroke-width: 1.35;
 }
+/* The lid is the face turned to the light, so its own line work carries more of it. */
+.chest__art .chest__lid path[id^='seg-'] {
+  stroke: var(--chest-inkLid);
+}
 .chest[data-motion='pending'] .chest__art {
   opacity: 0;
 }
@@ -111,13 +132,29 @@
   stroke: none;
 }
 .chest__face--top {
-  fill: var(--chest-top);
+  fill: url('#chest-gTop');
 }
 .chest__face--left {
-  fill: var(--chest-left);
+  fill: url('#chest-gLeft');
 }
 .chest__face--right {
-  fill: var(--chest-right);
+  fill: url('#chest-gRight');
+}
+/* The ramps' ends. A stop cannot take a `fill`, so each is painted by its own rule. */
+.chest__gs--topA { stop-color: var(--chest-topA); }
+.chest__gs--topB { stop-color: var(--chest-topB); }
+.chest__gs--leftA { stop-color: var(--chest-leftA); }
+.chest__gs--leftB { stop-color: var(--chest-leftB); }
+.chest__gs--rightA { stop-color: var(--chest-rightA); }
+.chest__gs--rightB { stop-color: var(--chest-rightB); }
+.chest__gs--glowA { stop-color: var(--chest-glowA); }
+.chest__gs--glowB { stop-color: var(--chest-glowB); }
+
+/* The light in the box, over its walls and clipped to the mouth with them. */
+.chest__glow {
+  fill: url('#chest-gGlow');
+  stroke: none;
+  pointer-events: none;
 }
 
 /* ---------- the inside ----------
@@ -129,7 +166,7 @@
    is the box's inner corner and the join where the walls meet the floor. */
 .chest__wall,
 .chest__floor {
-  stroke: var(--chest-ink);
+  stroke: var(--chest-inkIn);
   stroke-width: 1.35;
   stroke-linejoin: round;
 }
@@ -145,7 +182,7 @@
 /* The mouth's own edge — the line the lid was hiding. */
 .chest__rim {
   fill: none;
-  stroke: var(--chest-ink);
+  stroke: var(--chest-inkIn);
   stroke-width: 1.35;
   stroke-linejoin: round;
 }
@@ -173,7 +210,7 @@
 /* Drawn, like everything else on the crate: the underside is the one face you only ever see while
    it is open, and left as a bare fill it was the one edge of the lid that had no line on it. */
 .chest__lip {
-  stroke: var(--chest-ink);
+  stroke: var(--chest-inkLid);
   stroke-width: 1.35;
   stroke-linejoin: round;
 }
@@ -236,7 +273,8 @@
 }
 .chest__coin {
   position: absolute;
-  display: block;
+  display: grid;
+  place-items: center;
   opacity: 0;
   border-radius: 50%;
   /* Coins are the one solid thing in a drawing made of lines, so they carry a shadow to sit in
@@ -244,10 +282,27 @@
   filter: drop-shadow(0 6px 10px rgb(18 36 51 / 22%));
   will-change: transform;
 }
-/* The mark is not a coin: it is flat art, and a circular shadow under it would invent a disc. */
+.chest__coinArt {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The Remittix mark rides out with the chain marks, so it has to be a coin like they are — the
+   asset is only the glyph, so the disc is drawn here. It is the brand's own pairing: the mark's
+   ground carrying the mark in the page's ink, which is how the tokenomics hub is built too. */
 .chest__coin[data-mark] {
-  border-radius: 0;
-  filter: drop-shadow(0 4px 8px rgb(18 36 51 / 18%));
+  background: var(--chest-markDisc);
+}
+.chest__mark {
+  display: block;
+  /* the wordmark's own 33:17, so the M keeps its proportions inside a round disc */
+  width: 56%;
+  aspect-ratio: 33 / 17;
+  /* Masked rather than drawn: the export's fill is a flat black that neither ground can carry, and
+     an <img>'s fill is not something a stylesheet can reach. */
+  background-color: var(--chest-markInk);
+  -webkit-mask: url('/figma/logo.svg') center / contain no-repeat;
+  mask: url('/figma/logo.svg') center / contain no-repeat;
 }
 
 /* What the crate stands on: a dotted floor and the shadow it casts. */

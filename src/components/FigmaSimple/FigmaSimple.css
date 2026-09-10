@@ -103,8 +103,11 @@
   transform-origin: 50% 50%;
   will-change: transform; /* its own layer: the circling highlight repaints only the ring */
 }
-/* The blurred glow is the costliest paint in the band, so it gets its own layer to fade on. */
+/* The blurred glow is the costliest paint in the band, so it gets its own layer to fade on. Its
+   strength is a token because the loop breathes it: an inline opacity from GSAP outranks any rule
+   here, so the value has to reach the run rather than the element. */
 .fs__glow {
+  opacity: var(--fs-glow, 1);
   transform-origin: 50% 50%;
   will-change: opacity;
 }

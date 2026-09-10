@@ -20,6 +20,11 @@
   --il-okLine: #d9f1e6;
   --il-indigo: #4042d1;
   --il-lavender: #b3b5f5;
+  /* The receipt's figures are set in the hardest ink the page has — the one moment a number is the
+     whole point — and the wallet panel's aside in the softest. Both were literals, which is how a
+     scene keeps a light theme's values after the page has turned over. */
+  --il-figure: #000;
+  --il-bodyMute: rgba(44, 46, 49, 0.64);
 
   display: block;
   pointer-events: none;
@@ -541,7 +546,7 @@
 }
 .il-rc__line .il-mono {
   font-weight: 700;
-  color: #000;
+  color: var(--il-figure);
 }
 .il-toast {
   display: flex;
@@ -814,7 +819,7 @@
   font-size: 14px;
   line-height: 1.6;
   letter-spacing: 0.14px;
-  color: rgba(44, 46, 49, 0.64);
+  color: var(--il-bodyMute);
 }
 .il-ui__rows {
   display: flex;

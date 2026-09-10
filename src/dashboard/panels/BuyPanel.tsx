@@ -6,26 +6,42 @@ import { TokenSelect } from '../TokenSelect';
 
 type Method = 'crypto' | 'card';
 
+/** Round sums a buyer actually thinks in, quoted in USD and converted per token. */
+const QUICK_USD = [50, 100, 500, 1000];
+
 export function BuyPanel() {
   const [method, setMethod] = useState<Method>('crypto');
   const [token, setToken] = useState<TokenId>('USDT');
   const [pay, setPay] = useState('');
   const [promo, setPromo] = useState('');
   const [applied, setApplied] = useState<string | null>(null);
+  const [promoError, setPromoError] = useState(false);
   const payId = useId();
-  const receiveId = useId();
   const promoId = useId();
 
   const rate = method === 'card' ? 1 : (TOKENS.find((t) => t.id === token)?.usd ?? 1);
   const bonus = applied ? FLASH_SALE.bonus : 0;
 
-  const receive = useMemo(() => {
+  const { base, extra, total, spend } = useMemo(() => {
     const amount = Number.parseFloat(pay);
-    if (!Number.isFinite(amount) || amount <= 0) return 0;
-    return (amount * rate * (1 + bonus)) / PRESALE.price;
+    const usd = Number.isFinite(amount) && amount > 0 ? amount * rate : 0;
+    const b = usd / PRESALE.price;
+    return { base: b, extra: b * bonus, total: b * (1 + bonus), spend: usd };
   }, [pay, rate, bonus]);
 
-  const promoValid = promo.trim().toUpperCase() === FLASH_SALE.code;
+  const setQuick = (usd: number) => {
+    const amount = usd / rate;
+    setPay(rate === 1 ? String(usd) : String(Number(amount.toFixed(6))));
+  };
+
+  const applyPromo = () => {
+    if (promo.trim().toUpperCase() === FLASH_SALE.code) {
+      setApplied(FLASH_SALE.code);
+      setPromoError(false);
+    } else {
+      setPromoError(true);
+    }
+  };
 
   return (
     <section className="card buy" aria-labelledby="buy-title">
@@ -39,112 +55,134 @@ export function BuyPanel() {
         </p>
       </div>
 
-      <div className="buy__form">
-        <div className="tabs" role="tablist" aria-label="Payment method">
-          <button
-            type="button"
-            role="tab"
-            className="tabs__tab"
-            aria-selected={method === 'crypto'}
-            onClick={() => setMethod('crypto')}
-          >
-            Crypto
-          </button>
-          <button
-            type="button"
-            role="tab"
-            className="tabs__tab"
-            aria-selected={method === 'card'}
-            onClick={() => setMethod('card')}
-          >
-            Credit card
-          </button>
+      <div className="tabs" role="tablist" aria-label="Payment method">
+        <button
+          type="button"
+          role="tab"
+          className="tabs__tab"
+          aria-selected={method === 'crypto'}
+          onClick={() => setMethod('crypto')}
+        >
+          Crypto
+        </button>
+        <button
+          type="button"
+          role="tab"
+          className="tabs__tab"
+          aria-selected={method === 'card'}
+          onClick={() => setMethod('card')}
+        >
+          Credit card
+        </button>
+      </div>
+
+      <div className="buy__amount">
+        <div className="buy__amount-head">
+          <label className="field__label" htmlFor={payId}>
+            You pay
+          </label>
+          <span className="buy__rate num">1 RTX = ${PRESALE.price.toFixed(2)}</span>
         </div>
 
-        <div className="buy__pair">
-          <div className="field">
-            <label className="field__label" htmlFor={payId}>
-              You pay
-            </label>
-            <div className="field__control">
-              <input
-                id={payId}
-                className="field__input"
-                inputMode="decimal"
-                placeholder="0"
-                value={pay}
-                onChange={(e) => setPay(e.target.value.replace(/[^\d.]/g, ''))}
-              />
-              {method === 'crypto' ? (
-                <TokenSelect value={token} onChange={setToken} />
-              ) : (
-                <span className="field__token">
-                  <PayMark id="CARD" className="icon-20" />
-                  USD
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="field">
-            <label className="field__label" htmlFor={receiveId}>
-              You receive
-            </label>
-            <div className="field__control">
-              <output id={receiveId} className="field__input field__input--output">
-                {receive ? money(receive) : '0'}
-              </output>
-              <span className="field__token">RTX</span>
-            </div>
-          </div>
+        <div className="field__control">
+          <input
+            id={payId}
+            className="field__input"
+            inputMode="decimal"
+            placeholder="0"
+            value={pay}
+            onChange={(e) => setPay(e.target.value.replace(/[^\d.]/g, ''))}
+          />
+          {method === 'crypto' ? (
+            <TokenSelect value={token} onChange={setToken} />
+          ) : (
+            <span className="field__token">
+              <PayMark id="CARD" className="icon-20" />
+              USD
+            </span>
+          )}
         </div>
 
-        {bonus > 0 && (
-          <p className="buy__bonus">
-            <CheckIcon className="icon-16" />
-            {FLASH_SALE.code} applied, adding {bonus * 100}% bonus $RTX
+        <div className="buy__quick">
+          {QUICK_USD.map((usd) => (
+            <button key={usd} type="button" className="chip" onClick={() => setQuick(usd)}>
+              ${usd}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <dl className="buy__summary" aria-label="Order summary">
+        <div>
+          <dt>Base at stage {PRESALE.stage}</dt>
+          <dd className="num">{money(base)} RTX</dd>
+        </div>
+        <div data-bonus>
+          <dt>
+            Bonus
+            {bonus > 0 ? ` (${bonus * 100}%)` : ''}
+          </dt>
+          <dd className="num">
+            {bonus > 0 ? `+${money(extra)} RTX` : `Add ${FLASH_SALE.code} for ${FLASH_SALE.bonus * 100}%`}
+          </dd>
+        </div>
+        <div data-total>
+          <dt>You receive</dt>
+          <dd className="num buy__total">{money(total)} RTX</dd>
+        </div>
+      </dl>
+
+      <div className="field buy__promo-field">
+        <label className="field__label" htmlFor={promoId}>
+          Promo code
+        </label>
+        <div className="buy__promo">
+          <input
+            id={promoId}
+            className="input"
+            placeholder="Enter a promo code"
+            aria-invalid={promoError || undefined}
+            aria-describedby={promoError ? `${promoId}-error` : undefined}
+            value={promo}
+            onChange={(e) => {
+              setPromo(e.target.value);
+              setApplied(null);
+              setPromoError(false);
+            }}
+            onKeyDown={(e) => e.key === 'Enter' && applyPromo()}
+          />
+          <Button variant="ghost" disabled={!promo.trim() || applied !== null} onClick={applyPromo}>
+            {applied ? 'Applied' : 'Apply'}
+          </Button>
+        </div>
+        {promoError && (
+          <p className="field__error" id={`${promoId}-error`} role="alert">
+            That code is not recognised. Check it and try again.
           </p>
         )}
+        {applied && (
+          <p className="field__ok">
+            <CheckIcon className="icon-16" />
+            {applied} applied
+          </p>
+        )}
+      </div>
 
-        <div className="field">
-          <label className="field__label" htmlFor={promoId}>
-            Promo code
-          </label>
-          <div className="buy__promo">
-            <input
-              id={promoId}
-              className="input"
-              placeholder="Enter a promo code"
-              value={promo}
-              onChange={(e) => {
-                setPromo(e.target.value);
-                setApplied(null);
-              }}
-            />
-            <Button
-              variant="ghost"
-              disabled={!promoValid || applied !== null}
-              onClick={() => promoValid && setApplied(FLASH_SALE.code)}
-            >
-              {applied ? 'Applied' : 'Apply'}
-            </Button>
-          </div>
-        </div>
+      <Button block>
+        {spend > 0 ? `Buy ${money(total)} $RTX` : 'Buy $RTX'}
+      </Button>
 
-        <div className="buy__pay-with">
-          <span className="buy__pay-label">Pay with</span>
-          <span className="buy__marks">
-            <PayMark id="BTC" className="icon-22" />
-            <PayMark id="ETH" className="icon-22" />
-            <PayMark id="USDT" className="icon-22" />
-            <PayMark id="USDC" className="icon-22" />
-            <PayMark id="SOL" className="icon-22" />
-            <VisaMark className="mark-card" />
-            <MastercardMark className="mark-card" />
-          </span>
-        </div>
-
-        <Button block>Buy $RTX</Button>
+      <div className="buy__pay-with">
+        <span className="buy__pay-label">We accept</span>
+        <span className="buy__marks">
+          <PayMark id="BTC" className="icon-22" />
+          <PayMark id="ETH" className="icon-22" />
+          <PayMark id="USDT" className="icon-22" />
+          <PayMark id="USDC" className="icon-22" />
+          <PayMark id="SOL" className="icon-22" />
+          <VisaMark className="mark-card" />
+          <MastercardMark className="mark-card" />
+        </span>
       </div>
     </section>
   );

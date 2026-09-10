@@ -18,11 +18,3 @@ export const rail = createStore({
   values: ['extended', 'collapsed'] as const,
   fallback: 'extended',
 });
-
-/** Flash sale treatment under review. */
-export const flashStyle = createStore({
-  key: 'remittix.dash.flash',
-  param: 'flash',
-  values: ['1', '2', '3', '4', '5'] as const,
-  fallback: '1',
-});

@@ -762,8 +762,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 /* ---------- Buy ---------- */
+.buy { display: flex; flex-direction: column; }
 .buy__head { margin-bottom: 18px; }
-.buy__form { margin-top: 0; }
 .buy__urgency {
   display: flex;
   align-items: center;
@@ -776,22 +776,25 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-size: 13px;
   font-weight: 600;
 }
+
+/* A segmented control, not two half-page buttons. */
 .tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
+  gap: 3px;
+  padding: 3px;
   border-radius: var(--r-card);
-  background: var(--d-inset);
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
 }
 .tabs__tab {
-  height: 42px;
+  height: 38px;
   border: 0;
   border-radius: var(--r-sm);
   background: transparent;
   color: var(--d-text-2);
   font: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease;
@@ -799,29 +802,86 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .tabs__tab:hover { color: var(--d-text); }
 .tabs__tab[aria-selected='true'] { background: var(--d-pick); color: var(--d-on-pick); }
 .tabs__tab[aria-selected='true']:hover { background: var(--d-pick-hover); }
-.buy__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-.buy__bonus {
+
+.buy__amount { margin-top: 20px; }
+.buy__amount-head {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 12px 0 0;
-  padding: 10px 14px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.buy__amount-head .field__label { margin-bottom: 8px; }
+.buy__rate { color: var(--d-text-3); }
+
+.buy__quick { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.chip {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
   border-radius: 999px;
-  background: var(--d-accent-soft);
-  color: var(--d-accent);
+  background: var(--d-inset);
+  color: var(--d-text-2);
+  font: inherit;
   font-size: 13px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
 }
+.chip:hover { background: var(--d-pick); color: var(--d-on-pick); }
+
+/* The order summary: what the money buys, what the code adds, what lands. */
+.buy__summary {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-radius: var(--r-card);
+  background: var(--d-inset);
+}
+.buy__summary > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.buy__summary > div + div { margin-top: 10px; }
+.buy__summary dt { font-size: 13px; color: var(--d-text-2); }
+.buy__summary dd { margin: 0; }
+.buy__summary [data-bonus] dd { color: var(--d-on-tint); }
+.buy__summary [data-total] {
+  margin-top: 12px;
+  padding-top: 12px;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.buy__summary [data-total] dt { color: var(--d-text); font-weight: 600; }
+.buy__total { font-size: 17px; }
+
+.buy__promo-field { margin-top: 18px; }
 .buy__promo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
-.buy__form > .field { margin-top: 16px; }
+.buy__promo .fh__btn { width: auto; padding: 0 24px; height: 48px; }
+.field__error { margin: 8px 0 0; font-size: 13px; color: #ff8f8f; }
+.dash[data-theme='light'] .field__error { color: #c0392b; }
+.field__ok {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-on-tint);
+}
+
+.buy .fh__btn.dbtn--block { margin-top: 20px; }
 .buy__pay-with {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 22px;
-  padding-top: 18px;
+  margin-top: 18px;
+  padding-top: 16px;
   background-image: var(--d-dash-h);
   background-size: 100% 1px;
   background-position: left top;
@@ -829,38 +889,18 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .buy__pay-label { color: var(--d-text-3); font-size: 13px; }
 .buy__marks { display: flex; align-items: center; gap: 7px; }
-.buy__form /* The hover blob reads --fh-progress / --fh-ink, so pointing those at the
-   dashboard's own tokens makes the hero button theme-aware. */
-.dash { --fh-progress: var(--d-accent); --fh-ink: var(--d-text); }
-/* fh__btn--primary hardcodes black, which disappears on a dark card. */
-.dash[data-theme='dark'] .fh__btn--primary {
-  background: var(--d-pick);
-  color: var(--d-on-pick);
-}
-.dash[data-theme='dark'] .fh__btn--primary:hover,
-.dash[data-theme='dark'] .fh__btn--primary:focus-visible { color: #fff; }
-.dash[data-theme='dark'] .fh__btn--ghost {
-  background: var(--d-inset);
-  border-color: var(--d-rule);
-  color: var(--d-text-2);
-}
-
-.fh__btn.dbtn--block {
-  width: 100%;
-  /* 400px of radius reads as a lozenge once the button spans a column. */
-  border-radius: var(--r-card);
-}
-/* fh__btn is a fixed 162px in the hero; inline uses here size to their content. */
-.buy__promo .fh__btn { width: auto; padding: 0 24px; }
-.fh__btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.fh__btn:disabled::before { transform: translate(-50%, -50%) scale(0); }
-
-.btn-accent { margin-top: 16px; }
 
 /* ---------- Flash sale ----------
-   Five treatments under review on `?flash=1..5`. Everything they share lives
-   here; each variant only says how it differs. */
-.flash__head { display: flex; gap: 22px; }
+   The countdown is the reason the card exists, so it sits top right at display
+   size, level with the title. The code below is a ticket stub: its own ground,
+   its own ring, and a pixel label, so it reads as something to tear off and
+   use rather than another line of copy. */
+.flash__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(20px, 3vw, 44px);
+}
 .flash__lede { min-width: 0; }
 .flash__title {
   font-family: var(--d-display);
@@ -874,11 +914,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   margin: 12px 0 0;
   font-size: 15px;
   color: var(--d-text-2);
-  max-width: 36em;
+  max-width: 34em;
 }
 .flash__copy strong { color: var(--d-text); font-weight: 600; }
 
-.clock { display: flex; align-items: flex-start; gap: 10px; }
+.clock { display: flex; align-items: flex-start; gap: 10px; flex: none; }
 .clock__unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .clock__value {
   font-family: var(--d-digits);
@@ -907,52 +947,18 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 18px;
-}
-.flash__code-label { color: var(--d-text-3); font-size: 13px; }
-
-/* 1 Big clock — the countdown leads, full width under the title. */
-.flash[data-style='1'] .flash__head { flex-direction: column; gap: 18px; }
-.flash[data-style='1'] .clock { justify-content: flex-start; }
-
-/* 2 Clock left — the countdown takes the left column, the copy the right. */
-.flash[data-style='2'] .flash__head { flex-direction: row-reverse; align-items: center; }
-.flash[data-style='2'] .clock { flex: none; }
-.flash[data-style='2'] .flash__lede { flex: 1; }
-
-/* 3 Accent band — the whole part sits on the accent, the code inverted. */
-.flash[data-style='3'] {
-  margin: calc(var(--pad) * -1) calc(var(--pad) * -1) 0;
-  padding: var(--pad);
-  border-radius: var(--r-card) var(--r-card) 0 0;
-  background: var(--d-accent-tint);
-}
-.flash[data-style='3'] .flash__head { flex-direction: column; gap: 18px; }
-.flash[data-style='3'] .clock__value { color: var(--d-on-tint); }
-.flash[data-style='3'] .flash__copy { color: var(--d-text-2); }
-
-/* 4 Centred — everything on the middle axis, the code a full-width action. */
-.flash[data-style='4'] { text-align: center; }
-.flash[data-style='4'] .flash__head { flex-direction: column; align-items: center; gap: 18px; }
-.flash[data-style='4'] .clock { justify-content: center; }
-.flash[data-style='4'] .flash__copy { margin-inline: auto; }
-.flash[data-style='4'] .flash__code { flex-direction: column; gap: 10px; }
-.flash[data-style='4'] .copy { width: 100%; justify-content: center; }
-
-/* 5 Ticket — the code is a stub, torn from the countdown by a dashed edge. */
-.flash[data-style='5'] .flash__head { flex-direction: column; gap: 18px; }
-.flash[data-style='5'] .flash__code {
-  margin-top: 20px;
-  padding: 16px;
+  margin-top: 22px;
+  padding: 14px 14px 14px 18px;
   border-radius: var(--r-card);
-  background: var(--d-inset);
-  box-shadow: inset 0 0 0 1px var(--d-rule);
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
 }
-.flash[data-style='5'] .flash__code-label {
+.flash__code-label {
   font-family: var(--d-pixel);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  color: var(--d-text-3);
 }
 
 /* ---------- Referrals ---------- */
@@ -1142,35 +1148,4 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-size: 14px;
 }
 
-/* ---------- Variant picker (review only) ---------- */
-.vpick {
-  position: fixed;
-  left: 50%;
-  bottom: 16px;
-  z-index: 60;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: var(--d-card);
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--d-rule);
-  font-size: 12px;
-  max-width: calc(100vw - 24px);
-}
-.vpick__row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.vpick__label { width: 46px; flex: none; color: var(--d-text-3); }
-.vpick__opt {
-  border: 0;
-  border-radius: 8px;
-  padding: 6px 9px;
-  background: var(--d-inset);
-  color: var(--d-text-2);
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-.vpick__opt:hover { color: var(--d-text); }
-.vpick__opt[data-active] { background: var(--d-accent); color: var(--d-on-accent); font-weight: 600; }
-@media (max-width: 767px) { .vpick { display: none; } }
+

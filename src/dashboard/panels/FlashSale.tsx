@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FLASH_SALE } from '../data';
 import { CheckIcon, CopyIcon } from '../icons';
-import { flashStyle } from '../theme';
 import { useCopy } from '../useCopy';
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -18,7 +17,6 @@ function Unit({ value, label }: { value: number; label: string }) {
 export function FlashSale() {
   const [left, setLeft] = useState(FLASH_SALE.secondsLeft);
   const [copied, copy] = useCopy();
-  const style = flashStyle.use();
 
   useEffect(() => {
     const id = window.setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
@@ -30,7 +28,7 @@ export function FlashSale() {
   const seconds = left % 60;
 
   return (
-    <section className="side__part flash" data-style={style} aria-labelledby="flash-title">
+    <section className="side__part flash" aria-labelledby="flash-title">
       <div className="flash__head">
         <div className="flash__lede">
           <h2 className="flash__title" id="flash-title">

@@ -67,7 +67,14 @@ const BUS = (() => {
     paths.push(`M${hub} ${y} L${hub + dir * 54} ${y - BRANCH} H${edge}`);
     paths.push(`M${hub} ${y} H${edge}`);
     paths.push(`M${hub} ${y} L${hub + dir * 54} ${y + BRANCH} H${edge}`);
-    nodes.push([hub, y], [edge, y - BRANCH], [edge, y], [edge, y + BRANCH]);
+    /* A leg down off the middle branch, out past the foot of the slide, so the feed is tied to the
+       band under it rather than ending in the middle of the ground. It tees off inboard of the
+       junction rather than at it: the junction sits at the slide's own edge on a 1512 screen, and
+       a leg starting there is gone before it has drawn anything. Cut by the slide like the spine
+       is, which is what makes both read as parts of a run that carries on. */
+    const drop = edge - dir * 90;
+    paths.push(`M${drop} ${y} L${drop - dir * 150} ${y + 700}`);
+    nodes.push([hub, y], [drop, y], [edge, y - BRANCH], [edge, y], [edge, y + BRANCH]);
   });
   return { paths, nodes };
 })();

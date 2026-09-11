@@ -1,9 +1,8 @@
 import { useRef } from 'react';
 import { HeroLogo } from './HeroLogo';
 import { LogoMark, TrendArrow } from './icons';
-import swooshTop from './assets/swoosh-top.svg';
-import swooshBottom from './assets/swoosh-bottom.svg';
-import { LOGO_ENABLED, LOGO_STATIC } from '../site';
+import { VariantSwitcher } from './VariantSwitcher';
+import { LOGO_ENABLED, LOGO_STATIC, useVariant } from '../site';
 import './phorecast.css';
 
 const NAV = [
@@ -34,6 +33,7 @@ const SECTIONS = [
 
 export function Phorecast() {
   const hero = useRef<HTMLElement>(null);
+  const variant = useVariant();
   return (
     <>
       <header className="ph-nav">
@@ -49,12 +49,9 @@ export function Phorecast() {
         <a className="ph-btn ph-btn--nav" href="#get-started" id="get-started">Get Started</a>
       </header>
       <main>
-        <section ref={hero} className="ph-hero" id="top">
-          <div className="ph-hero__lines" aria-hidden="true">
-            <img className="ph-hero__lines-top" src={swooshTop} alt="" width={2726} height={1569} decoding="async" />
-            <img className="ph-hero__lines-bottom" src={swooshBottom} alt="" width={2782} height={1624} decoding="async" />
-          </div>
-          {LOGO_ENABLED && <HeroLogo hostRef={hero} forceStatic={LOGO_STATIC} />}
+        <section ref={hero} className="ph-hero" id="top" data-variant={variant}>
+          <div className="ph-hero__ground" aria-hidden="true" />
+          {LOGO_ENABLED && <HeroLogo hostRef={hero} forceStatic={LOGO_STATIC} variant={variant} />}
           <div className="ph-hero__foot">
             <div className="ph-hero__copy">
               <h1 className="ph-hero__title">
@@ -87,6 +84,7 @@ export function Phorecast() {
           </section>
         ))}
       </main>
+      <VariantSwitcher />
     </>
   );
 }

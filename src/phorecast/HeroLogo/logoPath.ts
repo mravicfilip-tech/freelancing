@@ -61,3 +61,54 @@ export function logoOutline(samples: number): THREE.Vector2[] {
     .slice(0, samples)
     .map((p) => new THREE.Vector2((p.x - width / 2) * s, (height / 2 - p.y) * s));
 }
+
+/** Where the outer boundary and the counter of the mark touch (SVG units). */
+const PINCH = new THREE.Vector2(131.128, 131.713);
+
+/**
+ * The mark as a THREE.Shape with the counter as a proper hole, for extrusion. The supplied path is
+ * one loop that visits the pinch point twice; it is split there into the outer boundary and the
+ * counter, and the counter's pinch corner is nudged inward so the hole does not touch the outline.
+ */
+export function logoShape(divisions = 16): THREE.Shape {
+  const curves = parsePath(LOGO_PATH).curves;
+  const ends = curves.map((c, i) => (c.getPoint(1).distanceTo(PINCH) < 1e-3 ? i : -1)).filter((i) => i >= 0);
+  if (ends.length !== 2) throw new Error('logoShape: expected the path to touch the pinch point twice');
+  const [i1, i2] = ends;
+  const counter = curves.slice(i1 + 1, i2 + 1);
+  const outer = [...curves.slice(0, i1 + 1), ...curves.slice(i2 + 1)];
+
+  const toPoints = (cs: THREE.Curve<THREE.Vector2>[]) => {
+    const pts: THREE.Vector2[] = [];
+    for (const c of cs) {
+      for (const p of c.getPoints(c instanceof THREE.LineCurve ? 1 : divisions)) {
+        if (!pts.length || pts[pts.length - 1].distanceTo(p) > 1e-6) pts.push(p.clone());
+      }
+    }
+    return pts;
+  };
+  const { width, height } = LOGO_VIEWBOX;
+  const norm = (p: THREE.Vector2) => new THREE.Vector2((p.x - width / 2) / height, (height / 2 - p.y) / height);
+
+  const hole = toPoints(counter);
+  hole[0].add(new THREE.Vector2(0.8, 0.8));
+  hole[hole.length - 1].add(new THREE.Vector2(0.8, 0.8));
+
+  const shape = new THREE.Shape(toPoints(outer).map(norm));
+  shape.holes.push(new THREE.Path(hole.map(norm)));
+  return shape;
+}
+
+/** The mark extruded through `depth` (centred on z = 0), with an optional bevel. Height 1, y up. */
+export function extrudeLogo(opts: { depth: number; bevel: number; bevelSegments?: number; divisions?: number }): THREE.ExtrudeGeometry {
+  const geometry = new THREE.ExtrudeGeometry(logoShape(opts.divisions), {
+    depth: opts.depth,
+    bevelEnabled: opts.bevel > 0,
+    bevelThickness: opts.bevel,
+    bevelSize: opts.bevel,
+    bevelSegments: opts.bevelSegments ?? 3,
+    curveSegments: 1,
+  });
+  geometry.translate(0, 0, -opts.depth / 2);
+  return geometry;
+}

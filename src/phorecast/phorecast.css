@@ -136,34 +136,33 @@ html[data-site='phorecast'] :focus-visible {
   padding: 40px var(--ph-pad-r) var(--ph-bottom) var(--ph-pad-l);
   background: var(--ph-bg);
 }
-/* The swoosh line-work, placed as in the design's 1920 × 780 frame (percentages of that box). */
-.ph-hero__lines {
+/* The ground: a soft orange glow behind the mark and a fine grain, tuned per treatment below. */
+.ph-hero__ground {
   position: absolute;
-  top: 30px;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 1920 / 780;
-  overflow: hidden;
-  pointer-events: none;
+  inset: 0;
   z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse var(--ph-glow-w) var(--ph-glow-h) at var(--ph-glow-x) var(--ph-glow-y),
+    rgba(255, 99, 42, var(--ph-glow-a)) 0%,
+    rgba(255, 99, 42, calc(var(--ph-glow-a) * 0.35)) 38%,
+    rgba(255, 99, 42, 0) 72%
+  );
 }
-.ph-hero__lines img {
+.ph-hero__ground::after {
+  content: '';
   position: absolute;
-  display: block;
-  height: auto;
-  max-width: none;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.33 0.33 0.33 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.07;
+  mix-blend-mode: screen;
 }
-.ph-hero__lines-top {
-  left: 29.15%;
-  top: -145.9%;
-  width: 142%;
-}
-.ph-hero__lines-bottom {
-  left: 30.77%;
-  top: 46.3%;
-  width: 144.875%;
-  transform: rotate(-179.01deg);
-}
+.ph-hero[data-variant='lined'] { --ph-glow-x: 72%; --ph-glow-y: 42%; --ph-glow-w: 44%; --ph-glow-h: 62%; --ph-glow-a: 0.16; }
+.ph-hero[data-variant='glass'] { --ph-glow-x: 70%; --ph-glow-y: 38%; --ph-glow-w: 58%; --ph-glow-h: 80%; --ph-glow-a: 0.1; }
+.ph-hero[data-variant='particles'] { --ph-glow-x: 72%; --ph-glow-y: 42%; --ph-glow-w: 36%; --ph-glow-h: 50%; --ph-glow-a: 0.2; }
+.ph-hero[data-variant='solid'] { --ph-glow-x: 66%; --ph-glow-y: 18%; --ph-glow-w: 62%; --ph-glow-h: 74%; --ph-glow-a: 0.12; }
+.ph-hero[data-variant='liquid'] { --ph-glow-x: 74%; --ph-glow-y: 60%; --ph-glow-w: 48%; --ph-glow-h: 56%; --ph-glow-a: 0.18; }
 .ph-hero__foot {
   position: relative;
   z-index: 1;
@@ -267,6 +266,57 @@ html[data-site='phorecast'] :focus-visible {
   line-height: 1.6;
 }
 
+/* ---------- Mark switcher (review control) ---------- */
+.ph-switcher {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 40;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 14px;
+  background: color-mix(in srgb, var(--ph-card) 92%, transparent);
+  border: 1px solid var(--ph-hairline);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  max-width: calc(100vw - 32px);
+}
+.ph-switcher__label {
+  color: var(--ph-muted);
+  margin-right: 6px;
+}
+.ph-switcher__option {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ph-ink);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.ph-switcher__option:hover {
+  background: color-mix(in srgb, var(--ph-hairline) 50%, transparent);
+}
+.ph-switcher__option[data-active] {
+  background: var(--ph-accent);
+  color: var(--ph-ink);
+}
+.ph-switcher__blurb {
+  color: var(--ph-muted);
+  margin: 0 6px 0 10px;
+  white-space: nowrap;
+}
+@media (max-width: 1099px) {
+  .ph-switcher__blurb {
+    display: none;
+  }
+}
+
 /* ---------- Breakpoints ---------- */
 @media (max-width: 1500px) {
   /* Keeps the headline and the six cards on one row down to ~1400px. */
@@ -307,9 +357,7 @@ html[data-site='phorecast'] :focus-visible {
     padding-top: 0;
     justify-content: flex-start;
   }
-  .ph-hero__lines {
-    opacity: 0.8;
-  }
+  .ph-hero[data-variant] { --ph-glow-x: 50%; --ph-glow-y: 24%; --ph-glow-w: 90%; --ph-glow-h: 40%; }
   .ph-hero__foot {
     flex-direction: column;
     align-items: stretch;

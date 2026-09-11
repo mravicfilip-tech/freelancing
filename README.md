@@ -16,43 +16,67 @@ npm run preview        # serve dist/
 ## Phorecast
 
 ```
-src/site.ts                      site switch (?site=remittix) and the ?logo= flags, stamped on <html data-site>
+src/site.ts                      site switch (?site=remittix), the ?logo= flags, and the ?variant= store used by the switcher
 src/phorecast/
   Phorecast.tsx                  nav, hero, signal cards, stub sections for the nav anchors
-  phorecast.css                  dark-mode tokens (each one annotated with the light value it replaces) + layout
+  VariantSwitcher.tsx            review control pinned to the bottom: switches the mark's treatment in place
+  phorecast.css                  dark-mode tokens (each one annotated with the light value it replaces), the ground, layout
   icons.tsx                      the mark and the 6 × 6 trend arrows, inline SVG, coloured by currentColor
-  assets/swoosh-{top,bottom}.svg the design's line-work, exported from Figma; gradient ends recoloured to the orange
   assets/logo-outline.svg        static stand-in for the mark when WebGL is unavailable
+  assets/swoosh-{top,bottom}.svg the design's original line-work, kept for reference; no longer rendered
   HeroLogo/
     index.tsx                    mounts the canvas, lazy-loads the scene, reduced-motion / WebGL / breakpoint guards
-    LogoScene.ts                 Three.js class: build → layout → tick → dispose
-    config.ts                    every tunable number, with comments
-    logoPath.ts                  the mark's path data and a small SVG path reader → evenly spaced outline points
-    shaders/lines.vert/frag      instanced screen-space line segments: pixel width, draw-in, travelling pulse, depth dimming
+    LogoScene.ts                 Three.js host: camera, layout, the shared motion contract, ScrollTrigger, dispose
+    variants.ts                  the five treatments: id, label, blurb
+    config.ts                    every tunable number, per treatment, with comments
+    logoPath.ts                  the mark's path data → evenly spaced outline points, or a Shape with its counter as a hole → extrusion
+    treatments/
+      types.ts                   the Treatment interface and the per-frame state it receives
+      lined.ts                   slices + ribs as instanced screen-space line segments (shaders/lines.*)
+      glass.ts                   three slabs of transmissive glass, procedural studio reflections
+      particles.ts               40 000 points sampled on the surface (shaders/points.*)
+      solid.ts                   matte slabs, orange face, dark sides, one orange rim light
+      liquid.ts                  one extrusion whose normals ripple in the shader (shaders/ripple.glsl)
+      environment.ts             the PMREM studio (warm strip, cool strip, orange bounce) and a light helper
+      slabs.ts, sampleSurface.ts stacked copies of a geometry; area-weighted surface sampling
 ```
 
-### The 3D mark
+### The five marks
 
-The outline of the mark is sampled into 720 evenly spaced points and extruded as
-13 slices joined by ribs (one at every corner, the rest evenly spaced). Every
-segment is one instanced quad widened in screen space, drawn twice: a thin bright
-core and a wide faint glow, both additive, so crossings brighten like neon.
+Switch with the pinned control or `?variant=lined|glass|particles|solid|liquid`; the choice
+also sticks in localStorage. To ship one, remove `<VariantSwitcher />` from `Phorecast.tsx`
+and set `DEFAULT_VARIANT` in `HeroLogo/variants.ts`.
 
-- Entrance: after `document.fonts.ready` the outline draws itself in, front slice
-  first, back slice last (2.2 s), while the mark settles from 94 % to full size.
-- Idle: a slow yaw/pitch sway and a highlight that travels around the outline,
-  lighting the ribs as it passes.
+| variant   | the mark                                                                 | ground                          |
+|-----------|--------------------------------------------------------------------------|---------------------------------|
+| Lined     | outline sampled to 720 points, 13 slices + ribs, additive core + glow     | glow behind the mark, grain     |
+| Glass     | three beveled slabs, transmission + clearcoat, studio reflections         | wide low glow                   |
+| Particles | 40 000 surface points, assemble from a scatter, twinkle                   | tight bright glow               |
+| Solid     | three matte slabs, orange face with a lift, dark sides, orange rim light  | spotlight from top-right        |
+| Liquid    | one extrusion; a sum-of-sines field tilts the shading normal per fragment | low glow, warm                  |
+
+Every treatment follows the same motion contract from `LogoScene.ts`:
+
+- Entrance after `document.fonts.ready` (2.2 s): Lined draws itself in and Particles assemble
+  in place; the three material treatments turn and lift into their pose.
+- Idle: a slow yaw/pitch sway. Lined adds a highlight that travels the outline; Liquid's ripples move.
 - Pointer: the mark turns towards the cursor (up to ±0.36 rad), eased; off on touch.
-- Scroll: as the hero scrolls out the mark turns further, rises, its slices spread
-  apart (exploded view) and the canvas fades once past 55 %.
+- Scroll: as the hero scrolls out the mark turns further and rises, then each treatment
+  spreads — slices, slabs or points fly apart, Liquid boils and stretches — and the canvas fades past 55 %.
 - `prefers-reduced-motion: reduce` → one static frame, no loop.
 - No WebGL → `assets/logo-outline.svg` in the same place.
 - `< 768px` → the mark stacks above the copy at 300 px tall.
-- `dispose()` releases the geometry, materials, renderer, listeners, observers, tweens and the ScrollTrigger.
+- `dispose()` releases geometry, materials, environment maps, lights, renderer, listeners, observers, tweens and the ScrollTrigger.
 
-Debug switches on the URL: `?devtools` exposes `window.__heroLogo`; `?logo=off`
-renders the hero without the WebGL layer; `?logo=static` forces the reduced-motion
-frame. `npm run screenshots` works for either site (`npm run screenshots site=remittix`).
+The line and point shaders take brand hexes raw (colour management off, linear output); the
+three physically based treatments switch the renderer to managed colour, sRGB output and
+ACES tone mapping — `LogoScene` sets this per treatment before anything is built. Glass caps
+its pixel ratio at 1.5.
+
+Debug switches on the URL: `?devtools` exposes `window.__heroLogo`; `?logo=off` renders the
+hero without the WebGL layer; `?logo=static` forces the reduced-motion frame.
+`npm run screenshots` works for either site (`npm run screenshots variant=glass`,
+`npm run screenshots site=remittix`).
 
 ---
 

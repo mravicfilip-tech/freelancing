@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { LogoScene, LogoLayout } from './LogoScene';
+import type { VariantId } from './variants';
 import logoOutlineUrl from '../assets/logo-outline.svg';
 import './HeroLogo.css';
 
@@ -10,6 +11,8 @@ export interface HeroLogoProps {
   forceStatic?: boolean;
   /** Disable the ScrollTrigger turn/spread/fade. */
   scroll?: boolean;
+  /** Treatment of the mark (see ./variants.ts). */
+  variant: VariantId;
 }
 
 type Mode = 'pending' | 'webgl' | 'fallback';
@@ -56,7 +59,7 @@ function currentLayout(): LogoLayout {
 }
 
 /** The lined 3D Phorecast mark. Same guards as HeroPlanet: idle load, WebGL probe, reduced motion, static fallback. */
-export function HeroLogo({ hostRef, forceStatic = false, scroll = true }: HeroLogoProps) {
+export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant }: HeroLogoProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<Mode>('pending');
   const [epoch, setEpoch] = useState(0);
@@ -88,7 +91,7 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true }: HeroLo
       .then(({ LogoScene }) => {
         if (cancelled) return;
         try {
-          scene = new LogoScene({ canvas, host, layout: currentLayout(), reducedMotion, touch, scroll });
+          scene = new LogoScene({ canvas, host, layout: currentLayout(), reducedMotion, touch, scroll, variant });
         } catch (err) {
           console.warn('[HeroLogo] WebGL init failed, using static fallback', err);
           setMode('fallback');
@@ -114,10 +117,10 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true }: HeroLo
       }
       scene = null;
     };
-  }, [hostRef, forceStatic, scroll, epoch]);
+  }, [hostRef, forceStatic, scroll, variant, epoch]);
 
   return (
-    <div className="heroLogo" aria-hidden="true" data-mode={mode}>
+    <div className="heroLogo" aria-hidden="true" data-mode={mode} data-variant={variant}>
       {mode === 'fallback' ? <img src={logoOutlineUrl} alt="" decoding="async" /> : <canvas ref={canvasRef} />}
     </div>
   );

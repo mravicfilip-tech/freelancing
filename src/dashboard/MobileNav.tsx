@@ -10,6 +10,7 @@ import {
   MoreIcon,
   NavIcon,
   PayMark,
+  SignOutIcon,
   SunIcon,
 } from './icons';
 import { theme } from './theme';
@@ -116,6 +117,15 @@ function Sheet({ onClose }: { onClose: () => void }) {
           </button>
         </div>
       </div>
+
+      {/* Last in the sheet, under a rule: the one destructive-feeling move in
+          the menu, kept away from the routes so it is not tapped by accident.
+          On a phone the sheet is the only chrome there is, so without it there
+          is no way off the dashboard at all. */}
+      <a className="sheet__out" href="/auth" onClick={onClose}>
+        <SignOutIcon className="icon-22" />
+        Log out
+      </a>
     </div>
   );
 }

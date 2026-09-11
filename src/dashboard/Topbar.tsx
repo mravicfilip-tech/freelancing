@@ -1,5 +1,5 @@
 import { PRESALE } from './data';
-import { MoonIcon, SunIcon } from './icons';
+import { MoonIcon, SignOutIcon, SunIcon } from './icons';
 import { theme } from './theme';
 
 function greeting() {
@@ -33,6 +33,11 @@ export function Topbar() {
         >
           {current === 'dark' ? <SunIcon className="icon-20" /> : <MoonIcon className="icon-20" />}
         </button>
+        {/* There was no way out of the dashboard at all. Signing in is a route
+            rather than a session, so leaving is the same move in reverse. */}
+        <a className="chip-btn" href="/auth" aria-label="Log out">
+          <SignOutIcon className="icon-20" />
+        </a>
       </div>
     </header>
   );

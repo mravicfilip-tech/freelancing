@@ -23,7 +23,7 @@ try {
     });
     const page = await context.newPage();
     await page.goto(`${BASE}/${EXTRA ? '?' + EXTRA : ''}`, { waitUntil: 'networkidle' });
-    await page.waitForSelector('.heroPlanet[data-mode]');
+    await page.waitForSelector('.heroPlanet[data-mode], .heroLogo[data-mode]');
     await page.waitForTimeout(2600); // let the entrance finish
     const file = `screenshots/hero${TAG}-${w}x${h}.png`;
     await page.screenshot({ path: file, fullPage: false });

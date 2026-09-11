@@ -4,12 +4,15 @@ import { Hero } from './components/Hero';
 import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
+import { SITE } from './site';
+import { Phorecast } from './phorecast/Phorecast';
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
 const DEV_TOOLS = params.has('devtools');
 
-export function App() {
+/** The Remittix presale hero (`?site=remittix`). */
+function RemittixApp() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
   const [heroMounted, setHeroMounted] = useState(true);
 
@@ -49,4 +52,9 @@ export function App() {
       )}
     </>
   );
+}
+
+export function App() {
+  if (SITE === 'remittix') return <RemittixApp />;
+  return <Phorecast />;
 }

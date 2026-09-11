@@ -1,0 +1,336 @@
+/* ---------- Phorecast: dark-mode tokens (the design is light; every value here is its dark counterpart) ---------- */
+html[data-site='phorecast'] {
+  --ph-bg: #0f0e0d;                        /* design #fffbf8 */
+  --ph-ink: #fffbf8;                       /* design #111010 / #1c1c1c */
+  --ph-accent: #ff632a;                    /* unchanged */
+  --ph-accent-deep: #f55e22;               /* "below" values, unchanged */
+  --ph-up: #6cc02f;                        /* design #5eac24, lifted for the dark ground */
+  --ph-muted: #cfc8c2;                     /* design #2f2f2f card labels */
+  --ph-hairline: #3b3734;                  /* design #cdcdcd */
+  --ph-card: #171412;                      /* design #fff */
+  --ph-card-border: rgba(255, 99, 42, 0.32); /* design #fdd9ca */
+
+  --ph-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  --ph-sans: 'Manrope Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ph-stat: 'Onest Variable', var(--ph-sans);
+  --ph-wordmark: 'Darker Grotesque Variable', var(--ph-sans);
+
+  --ph-nav-h: 100px;
+  --ph-pad-l: 62px;
+  --ph-pad-r: 40px;
+  --ph-bottom: 74px;
+  color-scheme: dark;
+}
+html[data-site='phorecast'] body {
+  background: var(--ph-bg);
+  color: var(--ph-ink);
+  font-family: var(--ph-sans);
+  font-size: 16px;
+}
+html[data-site='phorecast'] :focus-visible {
+  outline-color: var(--ph-accent);
+}
+
+/* ---------- Nav ---------- */
+.ph-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: var(--ph-nav-h);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 30px var(--ph-pad-r) 30px var(--ph-pad-l);
+  background: color-mix(in srgb, var(--ph-bg) 84%, transparent);
+  backdrop-filter: blur(12px);
+}
+.ph-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  color: var(--ph-ink);
+}
+.ph-nav__mark {
+  display: block;
+  width: 23.35px;
+  height: 27.22px;
+  color: var(--ph-accent);
+}
+.ph-nav__wordmark {
+  font-family: var(--ph-wordmark);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1;
+}
+.ph-nav__links {
+  display: flex;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 16px;
+}
+.ph-nav__links a {
+  padding: 10px;
+  color: var(--ph-ink);
+  transition: color 160ms ease;
+}
+.ph-nav__links a:hover {
+  color: var(--ph-accent);
+}
+
+/* ---------- Buttons ---------- */
+.ph-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-family: var(--ph-sans);
+  line-height: 1.2;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.ph-btn--nav {
+  justify-self: end;
+  width: 160px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--ph-accent);
+  color: var(--ph-ink);
+  font-weight: 600;
+  font-size: 16px;
+}
+.ph-btn--nav:hover {
+  background: #ff7a48;
+}
+.ph-btn--pill {
+  width: 180px;
+  height: 50px;
+  border-radius: 43px;
+  background: var(--ph-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.04em;
+}
+.ph-btn--pill:hover {
+  background: #ff7a48;
+}
+.ph-btn--ghost {
+  background: var(--ph-bg);
+  border: 1px solid var(--ph-hairline);
+  color: var(--ph-ink);
+}
+.ph-btn--ghost:hover {
+  background: var(--ph-card);
+  border-color: #5a544f;
+}
+
+/* ---------- Hero ---------- */
+.ph-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: calc(100svh - var(--ph-nav-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 40px var(--ph-pad-r) var(--ph-bottom) var(--ph-pad-l);
+  background: var(--ph-bg);
+}
+/* The swoosh line-work, placed as in the design's 1920 × 780 frame (percentages of that box). */
+.ph-hero__lines {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1920 / 780;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.ph-hero__lines img {
+  position: absolute;
+  display: block;
+  height: auto;
+  max-width: none;
+}
+.ph-hero__lines-top {
+  left: 29.15%;
+  top: -145.9%;
+  width: 142%;
+}
+.ph-hero__lines-bottom {
+  left: 30.77%;
+  top: 46.3%;
+  width: 144.875%;
+  transform: rotate(-179.01deg);
+}
+.ph-hero__foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px 24px;
+  flex-wrap: wrap;
+}
+.ph-hero__title {
+  margin: 0;
+  font-family: var(--ph-display);
+  font-weight: 400;
+  font-size: clamp(56px, 6.72vw, 129px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--ph-ink);
+}
+.ph-hero__accent {
+  color: var(--ph-accent);
+}
+.ph-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: clamp(28px, 3.7vw, 70px);
+  flex-wrap: wrap;
+}
+
+/* ---------- Signal cards ---------- */
+.ph-signals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ph-signal {
+  width: 104px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 8px;
+  border-radius: 10px;
+  background: var(--ph-card);
+  border: 1px solid var(--ph-card-border);
+  overflow: hidden;
+  text-align: center;
+  font-family: var(--ph-stat);
+}
+.ph-signal__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 13.548px;
+  line-height: normal;
+}
+.ph-signal__value--down {
+  color: var(--ph-accent-deep);
+}
+.ph-signal__value--up {
+  color: var(--ph-up);
+}
+.ph-signal__arrow {
+  display: block;
+  width: 6px;
+  height: 6px;
+}
+.ph-signal__label {
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+  color: var(--ph-muted);
+}
+
+/* ---------- Sections below the hero ---------- */
+.ph-section {
+  padding: 96px var(--ph-pad-r) 96px var(--ph-pad-l);
+  border-top: 1px solid var(--ph-hairline);
+}
+.ph-section h2 {
+  margin: 0 0 16px;
+  font-family: var(--ph-display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.6vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.ph-section p {
+  max-width: 34em;
+  margin: 0;
+  color: var(--ph-muted);
+  line-height: 1.6;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (max-width: 1500px) {
+  /* Keeps the headline and the six cards on one row down to ~1400px. */
+  .ph-hero__title {
+    font-size: clamp(56px, 6.3vw, 129px);
+  }
+}
+@media (max-width: 1099px) {
+  .ph-nav {
+    grid-template-columns: 1fr auto;
+  }
+  .ph-nav__links {
+    display: none;
+  }
+}
+@media (max-width: 1279px) {
+  html[data-site='phorecast'] {
+    --ph-pad-l: 40px;
+  }
+}
+@media (max-width: 767px) {
+  html[data-site='phorecast'] {
+    --ph-nav-h: 72px;
+    --ph-pad-l: 20px;
+    --ph-pad-r: 20px;
+    --ph-bottom: 40px;
+  }
+  .ph-nav {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .ph-btn--nav {
+    width: auto;
+    padding: 0 20px;
+  }
+  .ph-hero {
+    min-height: 0;
+    padding-top: 0;
+    justify-content: flex-start;
+  }
+  .ph-hero__lines {
+    opacity: 0.8;
+  }
+  .ph-hero__foot {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 8px;
+  }
+  .ph-hero__title {
+    font-size: clamp(48px, 14vw, 72px);
+  }
+  .ph-btn--pill {
+    flex: 1 1 140px;
+    width: auto;
+  }
+  .ph-signals {
+    justify-content: flex-start;
+  }
+  .ph-signal {
+    flex: 1 1 104px;
+    max-width: 140px;
+  }
+  .ph-section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+}

@@ -76,7 +76,12 @@ its pixel ratio at 1.5.
 Debug switches on the URL: `?devtools` exposes `window.__heroLogo`; `?logo=off` renders the
 hero without the WebGL layer; `?logo=static` forces the reduced-motion frame.
 `npm run screenshots` works for either site (`npm run screenshots variant=glass`,
-`npm run screenshots site=remittix`).
+`npm run screenshots site=remittix`). `npm run export:mark` writes the mark in the hero's
+rest pose to `exports/` as two SVGs for design tools — solid (one fill colour plus a black
+shading layer) and lined — so the colour is a single fill edit in Figma.
+
+Deployed from this branch to the `phorecast` Vercel project: https://phorecast-gray.vercel.app
+(`npx vercel deploy --prod` from the repo root redeploys it; the link lives in the ignored `.vercel/`).
 
 ---
 

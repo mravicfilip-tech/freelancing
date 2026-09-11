@@ -95,6 +95,23 @@ export const MoreIcon = (p: IconProps) => (
   </svg>
 );
 
+/* Password reveal. The struck-through variant keeps the same eye so the pair
+   reads as one control in two states rather than two different glyphs. */
+export const EyeIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M2.6 12s3.6-6.2 9.4-6.2S21.4 12 21.4 12s-3.6 6.2-9.4 6.2S2.6 12 2.6 12Z" />
+    <circle cx="12" cy="12" r="2.9" />
+  </svg>
+);
+
+export const EyeOffIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M9.9 5.98A9.9 9.9 0 0 1 12 5.8c5.8 0 9.4 6.2 9.4 6.2a17.3 17.3 0 0 1-2.68 3.42M6.5 7.62A16.9 16.9 0 0 0 2.6 12S6.2 18.2 12 18.2c1.68 0 3.16-.52 4.4-1.25" />
+    <path d="M9.94 9.94a2.9 2.9 0 0 0 4.12 4.12" />
+    <path d="M4.4 4.4l15.2 15.2" />
+  </svg>
+);
+
 export const CloseIcon = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <path d="M6.6 6.6l10.8 10.8M17.4 6.6L6.6 17.4" />

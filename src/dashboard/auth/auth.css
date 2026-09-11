@@ -1,0 +1,410 @@
+/* ==========================================================================
+   Auth — sign in / register
+   Rides the dashboard's token layer: .auth is also .dash, so every --d-* value,
+   every control and the fh__btn CTA come across unchanged. Nothing here
+   redefines a colour.
+   ========================================================================== */
+
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: stretch;
+  min-height: 100svh;
+  background: var(--d-bg);
+}
+
+/* ---------- Left: the form ---------- */
+
+.auth__form-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(20px, 3vw, 40px);
+}
+.auth__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+/* The nav and footer lockup: 22.14px/700, no tracking, 4px gap. */
+.auth__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  color: var(--d-text);
+  font-size: 22.14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.auth__brand img { display: block; }
+
+/* The form column is centred in the space the header and footer leave. */
+.auth__body {
+  width: 100%;
+  max-width: 432px;
+  margin: auto;
+  padding: 40px 0;
+}
+.auth__title {
+  font-family: var(--d-display);
+  margin: 0;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+/* The second line carries the brand colour, the way the reference splits its
+   heading — but in the dashboard's accent rather than a new one. */
+.auth__title em { display: block; font-style: normal; color: var(--d-on-tint); }
+.auth__lede {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--d-text-2);
+}
+.auth__tabs { margin-top: 26px; }
+
+.auth__form { display: grid; gap: 16px; margin-top: 22px; }
+.auth__field { min-width: 0; }
+/* .field__input is the calculator's 17px/600 tabular figure; an email or a
+   password wants the body face at a normal weight. */
+.auth__input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--d-text);
+  font: inherit;
+  font-size: 15px;
+}
+.auth__input::placeholder { color: var(--d-text-3); }
+.auth__input:focus { outline: none; }
+/* The reveal button sits inside the field, so it drops the card ground that
+   would read as a second control stacked on the first. */
+.chip-btn--field {
+  /* .field__control is a flex row, so without this the button is a shrinkable
+     item and never reaches the width it is given. */
+  flex: none;
+  width: 38px;
+  height: 38px;
+  margin-right: -4px;
+  background: transparent;
+  box-shadow: none;
+}
+.chip-btn--field:hover { background: var(--d-track); }
+
+.auth__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.auth__link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--d-on-tint);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth__link:hover { text-decoration: underline; }
+
+/* ---------- Checkbox ---------- */
+/* The native box cannot take the field ring, so it is hidden and the span is
+   drawn instead — it still carries focus because the input is only visually
+   removed, not display: none. */
+.auth__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 14px;
+  color: var(--d-text-2);
+  cursor: pointer;
+}
+.auth__check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.auth__box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
+  color: transparent;
+  transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
+}
+.auth__check input:checked + .auth__box {
+  background: var(--d-pick);
+  box-shadow: none;
+  color: var(--d-on-pick);
+}
+.auth__check input:focus-visible + .auth__box {
+  box-shadow: inset 0 0 0 1.5px var(--d-accent);
+  outline: 2px solid var(--d-accent);
+  outline-offset: 2px;
+}
+.auth__check a { color: var(--d-on-tint); }
+
+.auth__switch {
+  margin: 20px 0 0;
+  font-size: 14px;
+  color: var(--d-text-2);
+  text-align: center;
+}
+.auth__switch button {
+  border: 0;
+  background: none;
+  /* A real action, not an inline link, so it carries its own target. */
+  min-height: 44px;
+  padding: 0 4px;
+  color: var(--d-on-tint);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth__foot {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--d-text-3);
+}
+.auth__foot a { color: inherit; text-decoration: none; }
+.auth__foot a:hover { color: var(--d-text-2); }
+
+/* ==========================================================================
+   Right: the pitch and the scene
+   ========================================================================== */
+
+.auth__scene-side {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 3vw, 40px);
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(28px, 3.4vw, 56px);
+  border-radius: 22px 0 0 22px;
+  background: var(--d-card);
+  /* The site's own dot grid, the same one the dashboard's main column runs. */
+  background-image: var(--d-grid);
+  background-size: 24px 24px;
+}
+.auth__pitch h2 {
+  font-family: var(--d-display);
+  margin: 0;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.auth__pitch ul {
+  list-style: none;
+  display: grid;
+  gap: 11px;
+  margin: 18px 0 0;
+  padding: 0;
+  max-width: 46ch;
+}
+.auth__pitch li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--d-text-2);
+}
+.auth__pitch li svg { flex: none; margin-top: 2px; color: var(--d-on-tint); }
+
+/* ---------- The scene ---------- */
+
+.scene {
+  --fill: 0;
+  --claimable: 0;
+  --pressed: 0;
+  position: relative;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+/* One soft wash behind the cards so they sit on something, rather than a
+   gradient the rest of the product does not have. */
+.scene__glow {
+  position: absolute;
+  inset: -12% -18% auto -18%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--d-accent-tint), transparent);
+  pointer-events: none;
+}
+.scene__card {
+  position: relative;
+  padding: 18px 20px;
+  border-radius: var(--r-card);
+  background: var(--d-bg);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+}
+.scene__label { margin: 0; font-size: 13px; color: var(--d-text-2); }
+.scene__figure {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-family: var(--d-display);
+  font-size: clamp(30px, 3.2vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+/* The display face is set at -0.045em; inherited at 0.4em that tracking jams
+   "$RTX" into itself, so the suffix sets its own. */
+.scene__suffix {
+  font-size: 0.4em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--d-text-3);
+}
+.scene__note { margin: 9px 0 0; font-size: 12.5px; color: var(--d-text-3); }
+.scene__mark { position: absolute; right: 20px; bottom: 18px; width: 34px; height: 34px; }
+
+.scene__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.scene__pct {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.scene__bars {
+  list-style: none;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 76px;
+  margin: 16px 0 0;
+  padding: 0;
+}
+.scene__bars li {
+  flex: 1;
+  height: var(--h);
+  border-radius: 5px;
+  background: var(--d-track);
+  /* The ladder's own treatment: a stage not yet filled is the filled stage's
+     outline. --d-spent on --d-track is only 1.40:1, so without the ring the
+     bar looks identical full or empty and the animation has no payoff. */
+  box-shadow: inset 0 0 0 1.5px var(--d-spent);
+  overflow: hidden;
+  position: relative;
+}
+/* Each bar fills a beat after the one before it, so the ladder reads left to
+   right rather than all nine lighting at once. */
+.scene__bars li::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--d-spent);
+  transform: scaleY(clamp(0, calc((var(--fill) * 9 - var(--i)) * 1.6), 1));
+  transform-origin: bottom;
+}
+.scene__bars li:nth-child(6) { box-shadow: inset 0 0 0 1.5px var(--d-accent-soft); }
+.scene__bars li:nth-child(6)::after { background: var(--d-accent); }
+
+.scene__card--claim { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.scene__claim-l { display: grid; gap: 4px; min-width: 0; }
+.scene__claim-l b { font-size: 14px; font-weight: 600; }
+.scene__claim-l small { font-size: 12.5px; color: var(--d-text-3); font-variant-numeric: tabular-nums; }
+.scene__claim-r { display: flex; align-items: center; gap: 10px; }
+
+/* Two labels in one slot, cross-faded by --claimable, so the row never changes
+   width as the status flips. */
+.scene__status { position: relative; display: grid; }
+.scene__status > * {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.scene__status-a {
+  background: var(--d-inset);
+  color: var(--d-text-3);
+  opacity: calc(1 - var(--claimable));
+}
+.scene__status-b {
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
+  opacity: var(--claimable);
+}
+
+.scene__btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--d-pick);
+  color: var(--d-on-pick);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  /* Dips as it is pressed, on the same curve the real controls use. */
+  transform: scale(calc(1 - 0.04 * var(--pressed) * (1 - var(--pressed)) * 4));
+}
+.scene__btn > * { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 6px; }
+.scene__btn-a { opacity: calc(1 - var(--pressed)); }
+.scene__btn-b { opacity: var(--pressed); }
+
+/* ==========================================================================
+   Narrow
+   ========================================================================== */
+
+@media (max-width: 1040px) {
+  .auth { grid-template-columns: minmax(0, 1fr); }
+  /* The scene follows the form rather than leading: on a phone the job is to
+     sign in, and the pitch is what you read while deciding to scroll. */
+  .auth__scene-side { order: 2; border-radius: 22px 22px 0 0; }
+  .auth__form-side { order: 1; }
+  .auth__body { margin: 32px auto; }
+  .auth__foot { justify-content: center; }
+}
+
+@media (max-width: 620px) {
+  .auth__scene-side { padding: 26px 18px 32px; }
+  .scene__card--claim { flex-direction: column; align-items: flex-start; }
+  .scene__claim-r { width: 100%; justify-content: space-between; }
+  .scene__bars { height: 60px; }
+}
+
+/* ==========================================================================
+   Phone control sizing
+   Last in this file, and this file loads after dashboard.css — the same rule
+   written up there lost to .chip-btn--field's own 38px.
+   ========================================================================== */
+
+@media (max-width: 620px), (pointer: coarse) and (max-width: 900px) {
+  .chip-btn--field { width: 44px; height: 44px; margin-right: -8px; }
+  .auth__foot { gap: 14px 20px; }
+  .auth__foot a { min-height: 44px; display: inline-flex; align-items: center; }
+}

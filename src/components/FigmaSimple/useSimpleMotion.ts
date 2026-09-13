@@ -84,12 +84,27 @@ export function useSimpleMotion(root: RefObject<HTMLElement | null>, mobile = fa
           /* Not `|| 1`: zero is a legitimate value here — it is how a theme says the imported wash
              is not carrying the light — and `||` would read it as "unset" and hand back full. */
           const GLOW = Number.isFinite(glowTok) ? glowTok : 1;
+          /* Matches the transform FigmaSimple.tsx sets on the wash; both have to agree, because
+             either one may be the last writer depending on whether the entrance runs. */
+          const GLOW_TURN = -24.3;
 
           const tl = gsap.timeline({ paused: true, onComplete: idle });
           tl.from(all(el, '.fs__lineInner'), { yPercent: 110, duration: 1.05, ease: 'power4.out', stagger: 0.12 }, 0);
           draw(tl, gsap, [ringPath], 0.3, 1.4);
           pop(tl, hub, 0.7, { scale: 0.5, duration: 0.8 });
-          tl.fromTo(one(el, '.fs__glow'), { opacity: 0, scale: 0.7 }, { opacity: GLOW, scale: 1, duration: 1.0, ease: 'power2.out' }, 0.9);
+          /* The whole transform, flip included, rather than just `scale`.
+             The wash is drawn mirrored — the file turns it -24.3deg and stands it on its head — and
+             that is written on the element as a CSS transform. Tweening `scale` alone made GSAP
+             parse that string, decompose it, and write back what it had understood, which for a
+             negative scaleY is a rotation it can express without the flip: the mirror silently went
+             missing the moment the entrance ran, and the bloom swung from behind the hub out past
+             the band's bottom-right corner. Handing GSAP every channel leaves nothing to infer. */
+          tl.fromTo(
+            one(el, '.fs__glow'),
+            { opacity: 0, rotation: GLOW_TURN, scaleX: 0.7, scaleY: -0.7 },
+            { opacity: GLOW, rotation: GLOW_TURN, scaleX: 1, scaleY: -1, duration: 1.0, ease: 'power2.out' },
+            0.9,
+          );
           groups.forEach((g, i) => {
             pop(tl, g, 1.0 + i * 0.18, { scale: 0.8, y: 12, duration: 0.6 });
             tl.from(all(g, '.fs__coin'), { scale: 0, opacity: 0, duration: 0.45, stagger: 0.08, ease: 'back.out(2)', transformOrigin: '50% 50%' }, 1.15 + i * 0.18);

@@ -74,7 +74,7 @@ function Earlier({ items }: { items: Update[] }) {
 
 const D = Math.min(5, Math.max(1, Number(new URLSearchParams(window.location.search).get('d')) || 1));
 const DARKS = [
-  { n: 1, name: 'Indigo bloom' }, { n: 2, name: 'Lavender wash' }, { n: 3, name: 'Aurora' }, { n: 4, name: 'Lime edge' }, { n: 5, name: 'Deep violet' },
+  { n: 1, name: 'Refined rim' }, { n: 2, name: 'Meeting' }, { n: 3, name: 'Wide bloom' }, { n: 4, name: 'Diagonal' }, { n: 5, name: 'Vivid' },
 ] as const;
 function Picker() {
   return (

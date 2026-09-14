@@ -296,7 +296,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 6px;
+  /* The disc sits 6px in on every side, so the pill and the disc are
+     concentric: a 50px pill round a 38px circle. At 10px above and 6px
+     beside, the disc rode the pill's left edge. */
+  padding: 6px 14px 6px 6px;
   border-radius: 999px;
   color: var(--d-text-2);
   text-decoration: none;
@@ -310,7 +313,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   flex: none;
   width: 38px;
   height: 38px;
-  border-radius: 11px;
+  border-radius: 50%;
   transition: background-color 140ms ease, color 140ms ease;
 }
 
@@ -461,7 +464,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 @media (max-height: 880px) {
   .rail { gap: 14px; }
   .rail__brand { margin-bottom: 12px; }
-  .rail__item { padding: 8px 6px; }
+  .rail__item { padding: 4px 12px 4px 4px; }
   .rail[data-mode='collapsed'] .rail__item { padding: 4px; }
   .rail[data-mode='collapsed'] .rail__label { display: none; }
 }

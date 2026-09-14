@@ -2,20 +2,39 @@ import { useEffect } from 'react';
 import { Sidebar } from '../Sidebar';
 import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
-import { Stat } from '../panels/StatRow';
 import { StatSkel, Skel, skelRows } from '../Skeleton';
-import { money, PRESALE } from '../data';
 import { theme } from '../theme';
-import { summarise } from './data';
 import { useTransactions } from './useTransactions';
 import { Transactions } from './Transactions';
-import { PurchaseTimeline, SpendBlocks, StageLadderMini } from './viz';
+import { StatsRow, type StatsVariant } from './stats';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './markets.css';
 
+const params = new URLSearchParams(window.location.search);
 /** `?empty=1` renders the page a wallet sees before its first purchase. */
-const EMPTY = new URLSearchParams(window.location.search).get('empty') === '1';
+const EMPTY = params.get('empty') === '1';
+/** `?s=1..5` picks the form of the figures; the strip is the review tool. */
+const S = Math.min(5, Math.max(1, Number(params.get('s')) || 1)) as StatsVariant;
+const FORMS = [
+  { n: 1, name: 'Facts', blurb: 'Two inset fact tiles under each figure, as the stage card does.' },
+  { n: 2, name: 'Ladder', blurb: 'The presale ladder under each figure: per stage.' },
+  { n: 3, name: 'One card', blurb: 'One wide card modelled on the presale stage card.' },
+  { n: 4, name: 'Striped bar', blurb: 'The hero bar, one per figure.' },
+  { n: 5, name: 'Rows', blurb: 'Three zebra rows under each figure.' },
+] as const;
+
+function Picker() {
+  return (
+    <nav className="vpick" aria-label="Figure forms">
+      {FORMS.map((f) => (
+        <a key={f.n} className="vpick__item" href={`?s=${f.n}`} aria-current={f.n === S ? 'page' : undefined} title={f.blurb}>
+          <b>S{f.n}</b> {f.name}
+        </a>
+      ))}
+    </nav>
+  );
+}
 
 function MarketsSkeleton() {
   return (
@@ -34,8 +53,8 @@ function MarketsSkeleton() {
 }
 
 /**
- * Markets: what this wallet has bought. Three figures sum the history, and
- * the table beneath lists every purchase with what it cost and what it is
+ * Markets: what this wallet has bought. Figures sum the history, and the
+ * table beneath lists every purchase with what it cost and what it is
  * worth at the listing price.
  */
 export function MarketsPage() {
@@ -49,48 +68,17 @@ export function MarketsPage() {
     };
   }, [mode]);
 
-  const sum = rows ? summarise(rows) : null;
-  const uplift = sum && sum.avgPrice ? Math.round((PRESALE.listPrice / sum.avgPrice - 1) * 100) : 0;
-
   return (
     <div className="dash markets" data-theme={mode}>
       <Sidebar active="markets" />
       <main className="dash__main">
         <Topbar title="Markets" />
-        {!rows || !sum ? (
+        <Picker />
+        {!rows ? (
           <MarketsSkeleton />
         ) : (
           <>
-            {rows.length > 0 && (
-              <section className="stat-row" aria-label="Your purchases">
-                <Stat
-                  label="Completed purchases"
-                  value={String(sum.count)}
-                  note={`Across stages ${sum.firstStage} to ${sum.lastStage}`}
-                >
-                  <PurchaseTimeline rows={rows} />
-                </Stat>
-                <Stat
-                  label="Total spent"
-                  symbol="$"
-                  value={money(sum.spent)}
-                  suffix="USDT"
-                  note={`For ${money(sum.rtx)} $RTX`}
-                  mark="usdt"
-                >
-                  <SpendBlocks rows={rows} />
-                </Stat>
-                <Stat
-                  label="Average price paid"
-                  symbol="$"
-                  value={sum.avgPrice.toFixed(3)}
-                  note={`Listing at $${PRESALE.listPrice.toFixed(2)} is ${uplift}% higher`}
-                  mark="coin"
-                >
-                  <StageLadderMini rows={rows} avg={sum.avgPrice} />
-                </Stat>
-              </section>
-            )}
+            {rows.length > 0 && <StatsRow rows={rows} variant={S} />}
             <Transactions rows={rows} />
           </>
         )}

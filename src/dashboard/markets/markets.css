@@ -11,101 +11,52 @@
 .markets .stat__label { font-size: 14px; }
 .markets .stat__note { margin-top: 12px; font-size: 14px; }
 
-/* ---------- The three plots ----------
-   Each on its own inset field, full width. One hue: the accent carries the
-   data, the track the rest; text stays in text tokens. */
-.viz { position: relative; padding: 14px; border-radius: var(--r-sm); background: var(--d-inset); }
-.viz-ends { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 12px; color: var(--d-text-3); }
+/* ---------- Variant picker (review tool) ---------- */
+.vpick { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px; border-radius: var(--r-sm); background: var(--d-card); box-shadow: inset 0 0 0 1px var(--d-rule); align-self: flex-start; }
+.vpick__item { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 8px; color: var(--d-text-2); font-size: 13px; text-decoration: none; }
+.vpick__item b { font-weight: 700; color: var(--d-text-3); }
+.vpick__item:hover { background: var(--d-inset); color: var(--d-text); }
+.vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
+.vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
 
-/* Timeline: stage bands under an axis, one dot per purchase sized by cost.
-   Bands, axis and dots share one plot box, so their x agree. */
-.viz-tl { display: grid; gap: 10px; }
-.viz-tl__plot { position: relative; height: 58px; }
-.viz-tl__band {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 6px;
-  background: var(--d-track);
-  box-shadow: inset 0 0 0 1px var(--d-card);
-}
-.viz-tl__band[data-live] { background: var(--d-accent-tint); }
-.viz-tl__band > span { position: absolute; left: 8px; bottom: 5px; font-size: 11px; font-weight: 600; color: var(--d-text-3); }
-.viz-tl__band[data-live] > span { color: var(--d-on-tint); }
-.viz-tl__axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--d-rule); }
-.viz-tl__dot {
-  position: absolute;
-  top: 50%;
-  border-radius: 50%;
-  background: var(--d-accent);
-  box-shadow: 0 0 0 2px var(--d-inset);
-  transform: translate(-50%, -50%);
-  transition: transform 120ms ease;
-}
-.viz-tl__dot:hover { transform: translate(-50%, -50%) scale(1.25); z-index: 1; }
+/* ---------- The figures' forms ----------
+   Every part below is one the dashboard already draws. */
 
-/* Blocks: each method a block as wide as its share, the mark inside. */
-.viz-blocks { display: flex; gap: 4px; padding: 0; background: none; }
-.viz-block {
-  container-type: inline-size;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  min-width: 0;
-  min-height: 80px;
-  padding: 12px 12px 10px;
-  border-radius: var(--r-sm);
-  background: var(--d-accent);
-  color: #0c1219;
-  overflow: hidden;
-}
-.viz-block[data-step='1'] { background: color-mix(in srgb, var(--d-accent) 62%, var(--d-inset)); }
-.viz-block[data-step='2'] { background: color-mix(in srgb, var(--d-accent) 38%, var(--d-inset)); color: var(--d-text); }
-.viz-block[data-step='3'] { background: var(--d-inset); color: var(--d-text); box-shadow: inset 0 0 0 1px var(--d-rule); }
-.viz-block__key { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12.5px; font-weight: 600; }
-.viz-block__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.viz-block__other { width: 16px; height: 16px; flex: none; border-radius: 50%; background: var(--d-track); box-shadow: inset 0 0 0 1px var(--d-field-ring); }
-.viz-block__pct { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
-.viz-block .icon-16 { flex: none; }
-/* A block too narrow for its name shows the mark alone; the title carries the rest. */
-@container (max-width: 96px) { .viz-block__name { display: none; } }
+/* S1: inset fact tiles, label over figure, as the stage card. */
+.mk-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.mk-facts > div { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-height: 62px; padding: 10px 14px; border-radius: var(--r-sm); background: var(--d-inset); }
+.mk-facts dt { font-size: 13px; color: var(--d-text-2); white-space: nowrap; }
+.mk-facts dd { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; }
 
-/* Mini ladder: a column per stage at its price, the average across them. */
-.viz-ladder { padding: 40px 14px 10px; }
-.viz-ladder__plot { position: relative; display: flex; align-items: flex-end; gap: 8px; height: 96px; }
-.viz-ladder__col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; flex: 1; height: 100%; }
-.viz-ladder__col i { display: block; width: 100%; max-width: 44px; border-radius: 4px 4px 0 0; background: var(--d-accent); opacity: 0.45; }
-.viz-ladder__col i[data-live] { opacity: 1; }
-.viz-ladder__col:hover i { opacity: 1; }
-.viz-ladder__price { font-size: 11px; color: var(--d-text-3); }
-.viz-ladder__col { padding-bottom: 20px; }
-.viz-ladder__col i { margin-bottom: 0; }
-.viz-ladder__line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top: 1px dashed var(--d-text-3);
-  margin-bottom: 20px;
-  pointer-events: none;
-}
-.viz-ladder__tag--left { left: 0; right: auto; }
-.viz-ladder__line > span {
-  position: absolute;
-  right: 0;
-  bottom: 4px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--d-card);
-  font-size: 11px;
-  color: var(--d-text-2);
-  white-space: nowrap;
-}
-.viz-ladder__line > span b { margin-left: 3px; color: var(--d-text); }
-.viz-ladder__line--avg { border-top-color: var(--d-accent); }
-.viz-ladder__line--avg > span { background: var(--d-accent-tint); color: var(--d-on-tint); }
-.viz-ladder__line--avg > span b { color: inherit; }
+/* S2: the presale ladder's own columns, shorter. */
+.mk-ladder { position: relative; }
+.mk-ladder__steps { height: 96px; margin: 0; }
+.mk-ladder__mark { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed var(--d-accent); pointer-events: none; }
+.mk-ladder__mark > span { position: absolute; right: 0; bottom: 3px; padding: 2px 7px; border-radius: 999px; background: var(--d-accent-tint); color: var(--d-on-tint); font-size: 11px; font-weight: 600; }
+
+/* S3: one card, in the stage card's shape. */
+.mk-pos { display: grid; gap: 4px; }
+.mk-pos__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.mk-pos__facts { display: grid; grid-template-columns: repeat(4, auto); column-gap: clamp(20px, 3vw, 48px); margin: 0; }
+.mk-pos__facts dt { font-size: 13px; color: var(--d-text-2); }
+.mk-pos__facts dd { margin: 5px 0 0; font-size: 17px; font-weight: 600; }
+.mk-pos__facts dd small { margin-left: 4px; font-size: 12px; font-weight: 500; color: var(--d-on-tint); }
+.mk-pos__steps { height: 132px; }
+.mk-pos__steps .ladder__step { flex: 0 1 140px; }
+
+/* S4: the hero's striped bar, low, with the stage card's caption line. */
+.mk-bar { display: grid; gap: 8px; }
+.mk-bar__head { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 13px; color: var(--d-text-2); }
+.mk-bar__head .num { font-weight: 600; color: var(--d-text); }
+.mk-bar__prog { height: 28px; border-radius: var(--r-sm); }
+
+/* S5: three rows in the orders table's zebra. */
+.mk-rows { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.mk-rows li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 40px; padding: 0 12px; border-radius: 999px; font-size: 13.5px; }
+.mk-rows li:nth-child(odd) { background: var(--d-inset); }
+.mk-rows__a { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-rows__b { font-weight: 600; }
+.mk-rows__c { color: var(--d-text-2); text-align: right; }
 
 /* Seven columns at the dashboard's cell padding need the room. */
 .tx .orders__table { min-width: 720px; }
@@ -129,6 +80,8 @@
 /* ---------- Phone ---------- */
 @media (max-width: 760px) {
   .markets .dash__main > :not(.topbar) { order: 2; }
+  .markets .dash__main > .vpick { order: 0; }
+  .mk-pos__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
 }
 @media (max-width: 620px) {
   /* The stacked row keeps who, how much, id, what it cost and when, the same

@@ -14,34 +14,35 @@
 /* ---------- The three small plots ----------
    One hue: the accent carries the data, the track the rest; text stays in
    text tokens. Marks are thin, capped, rounded at the data end only. */
-.viz-cols { display: flex; align-items: flex-end; gap: 4px; height: 44px; }
-.viz-cols__slot { display: flex; align-items: flex-end; justify-content: center; flex: 1; height: 100%; }
-.viz-cols__slot i {
-  display: block;
-  width: 100%;
-  max-width: 24px;
-  border-radius: 4px 4px 0 0;
-  background: var(--d-accent);
-  opacity: 0.55;
-  transition: opacity 120ms ease;
-}
-.viz-cols__slot i[data-now] { opacity: 1; }
-.viz-cols__slot:hover i { opacity: 1; }
+.viz-units-wrap { display: grid; gap: 8px; }
+.viz-units { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
+.viz-units__col { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 2px; flex: 1; max-width: 28px; }
+.viz-units__col i { display: block; height: 10px; border-radius: 3px; background: var(--d-accent); opacity: 0.5; }
+.viz-units__col[data-now] i { opacity: 1; }
+.viz-units__col i[data-empty] { height: 3px; background: var(--d-track); opacity: 1; }
+.viz-units__col:hover i { opacity: 1; }
+.viz-ends { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 12px; color: var(--d-text-3); }
 
-.viz-mix { display: grid; gap: 12px; }
-.viz-stack { display: flex; gap: 2px; height: 10px; }
-.viz-stack i { display: block; min-width: 4px; border-radius: 3px; background: var(--d-accent); }
-.viz-stack i[data-step='1'], .viz-legend__swatch[data-step='1'] { opacity: 0.62; }
-.viz-stack i[data-step='2'], .viz-legend__swatch[data-step='2'] { opacity: 0.38; }
-.viz-stack i[data-step='3'], .viz-legend__swatch[data-step='3'] { opacity: 0.2; }
-.viz-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--d-text-2); }
-.viz-legend li { display: inline-flex; align-items: center; gap: 6px; }
-.viz-legend b { font-weight: 600; color: var(--d-text); }
-.viz-legend__swatch { width: 10px; height: 10px; border-radius: 3px; background: var(--d-accent); }
+.viz-rows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.viz-rows__row { display: grid; grid-template-columns: 108px minmax(0, 1fr) 42px; align-items: center; gap: 12px; font-size: 13px; color: var(--d-text-2); }
+.viz-rows__key { display: inline-flex; align-items: center; gap: 7px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viz-rows__other { width: 16px; height: 16px; border-radius: 50%; background: var(--d-track); box-shadow: inset 0 0 0 1px var(--d-field-ring); }
+.viz-rows__bar { display: block; height: 8px; border-radius: 4px; background: var(--d-track); overflow: hidden; }
+.viz-rows__bar i { display: block; height: 100%; border-radius: 4px; background: var(--d-accent); }
+.viz-rows__pct { text-align: right; font-weight: 600; color: var(--d-text); }
 
 .viz-range-wrap { display: grid; gap: 10px; }
 .viz-range { position: relative; height: 10px; border-radius: 4px; background: var(--d-track); }
 .viz-range__fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--d-accent); }
+.viz-range__tick {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--d-text-3);
+  opacity: 0.55;
+}
+.viz-range__tick[data-live] { background: var(--d-accent); opacity: 1; }
 .viz-range__dot {
   position: absolute;
   top: 50%;

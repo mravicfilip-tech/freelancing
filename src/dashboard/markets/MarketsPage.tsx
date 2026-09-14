@@ -4,7 +4,7 @@ import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { Stat } from '../panels/StatRow';
 import { StatSkel, Skel, skelRows } from '../Skeleton';
-import { money, PRESALE } from '../data';
+import { money, PRESALE, stagePrice } from '../data';
 import { theme } from '../theme';
 import { summarise } from './data';
 import { useTransactions } from './useTransactions';
@@ -87,7 +87,11 @@ export function MarketsPage() {
                   note={`Listing at $${PRESALE.listPrice.toFixed(2)} is ${uplift}% higher`}
                   mark="coin"
                 >
-                  <PriceRange avg={sum.avgPrice} low={Math.min(...rows.map((r) => r.price))} />
+                  <PriceRange
+                    avg={sum.avgPrice}
+                    low={Math.min(...rows.map((r) => r.price))}
+                    stages={Array.from({ length: sum.lastStage - sum.firstStage + 1 }, (_, i) => ({ n: sum.firstStage + i, price: stagePrice(sum.firstStage + i) }))}
+                  />
                 </Stat>
               </section>
             )}

@@ -1,8 +1,9 @@
 import { useEffect, useId, useState } from 'react';
 import { Button } from '../Button';
 import { PRESALE } from '../data';
-import { CheckIcon, EyeIcon, EyeOffIcon, MoonIcon, RtxMark, SunIcon } from '../icons';
+import { CheckIcon, EyeIcon, EyeOffIcon, MoonIcon, SunIcon } from '../icons';
 import { theme } from '../theme';
+import { AuthScene } from './AuthScene';
 import { DEMO, register as registerAccount, signIn } from './session';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
@@ -180,16 +181,7 @@ export function AuthPage() {
           one ripple runs out from their centre; the dot grid fades from that
           corner. Same ink and lavender whatever the page theme. */}
       <aside className="auth__art" aria-hidden="true">
-        <svg className="auth__rings" viewBox="0 0 800 1000" preserveAspectRatio="xMaxYMin slice">
-          {[110, 210, 310, 410, 510, 610, 710].map((r, i) => (
-            <circle key={r} className="auth__ring" cx="740" cy="80" r={r} style={{ opacity: 0.85 - i * 0.11, animationDelay: `${i * -1.1}s` }} />
-          ))}
-          <circle className="auth__ripple" cx="740" cy="80" r="110" />
-        </svg>
-        <span className="thumb__brand auth__brand-mark">
-          <RtxMark className="icon-22" />
-          Remittix
-        </span>
+        <AuthScene />
         <p className="auth__headline">
           Buy at ${PRESALE.price.toFixed(2)} <em>before it steps to ${PRESALE.nextPrice.toFixed(2)}</em>
         </p>

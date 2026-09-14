@@ -39,6 +39,7 @@
   text-decoration: none;
 }
 .auth__brand img { display: block; }
+.dash[data-theme='dark'] .auth__brand img { filter: invert(1); }
 
 /* The form column is centred in the space the header and footer leave. */
 .auth__body {
@@ -134,11 +135,15 @@
   color: transparent;
   transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
 }
-.auth__check input:checked + .auth__box {
+.auth__check:hover { color: var(--d-text); }
+.auth__check:hover .auth__box { background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-text-2); }
+.auth__check input:checked + .auth__box,
+.auth__check:hover input:checked + .auth__box {
   background: var(--d-pick);
   box-shadow: none;
   color: var(--d-on-pick);
 }
+.auth__check:hover input:checked + .auth__box { background: var(--d-pick-hover); }
 .auth__check input:focus-visible + .auth__box {
   box-shadow: inset 0 0 0 1.5px var(--d-accent);
   outline: 2px solid var(--d-accent);
@@ -184,55 +189,12 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border-radius: 22px 0 0 22px;
-  background: #0c1219;
+  background: #080d13;
   color: #f2f4f8;
   isolation: isolate;
 }
-.auth__art::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(circle at center, rgba(179, 181, 245, 0.3) 1px, transparent 1.5px) 6px 6px / 22px 22px,
-    radial-gradient(40% 34% at 92% 8%, rgba(64, 66, 210, 0.55), transparent 70%);
-  -webkit-mask-image: radial-gradient(90% 110% at 100% 0%, #000 16%, rgba(0, 0, 0, 0.1) 80%);
-  mask-image: radial-gradient(90% 110% at 100% 0%, #000 16%, rgba(0, 0, 0, 0.1) 80%);
-  animation: auth-breathe 9s ease-in-out infinite;
-}
-.auth__rings { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; fill: none; stroke: #b3b5f5; stroke-width: 1; }
-.auth__ring {
-  transform-box: view-box;
-  transform-origin: 740px 80px;
-  animation: auth-ring 9s ease-in-out infinite alternate;
-}
-.auth__ripple {
-  transform-box: view-box;
-  transform-origin: 740px 80px;
-  stroke-width: 1.5;
-  opacity: 0;
-  animation: auth-ripple 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
-}
-@keyframes auth-ring { from { transform: scale(0.985); } to { transform: scale(1.02); } }
-@keyframes auth-ripple {
-  0% { transform: scale(0.6); opacity: 0; }
-  8% { opacity: 0.7; }
-  70% { transform: scale(6.4); opacity: 0; }
-  100% { transform: scale(6.4); opacity: 0; }
-}
-@keyframes auth-breathe { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .auth__art::before, .auth__ring, .auth__ripple { animation: none; }
-  .auth__ripple { display: none; }
-}
-.auth__brand-mark {
-  position: absolute;
-  left: clamp(24px, 3.4vw, 48px);
-  top: clamp(24px, 3.4vw, 48px);
-  z-index: 1;
-  font-size: 17px;
-}
+.auth__scene { position: absolute; inset: 0; z-index: 0; }
+.auth__scene canvas { display: block; width: 100%; height: 100%; }
 .auth__live {
   position: absolute;
   left: clamp(24px, 3.4vw, 48px);
@@ -265,7 +227,7 @@
   .auth { grid-template-columns: minmax(0, 1fr); }
   /* The scene follows the form rather than leading: on a phone the job is to
      sign in, and the pitch is what you read while deciding to scroll. */
-  .auth__art { order: 2; min-height: 460px; border-radius: 22px 22px 0 0; }
+  .auth__art { order: 2; min-height: 460px; }
   .auth__form-side { order: 1; }
   .auth__body { margin: 32px auto; }
   .auth__foot { justify-content: center; }

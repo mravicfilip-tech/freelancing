@@ -87,3 +87,6 @@
 @media (max-width: 620px) {
   .updates .upd-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* The feature's dark field carries no colour lift along its floor. */
+.dash[data-theme='dark'] .upd-hero .thumb.thumb--hero { background-image: none; }

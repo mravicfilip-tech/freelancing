@@ -42,6 +42,11 @@
 .upd-hero__title em { font-style: normal; color: #b3b5f5; }
 .upd-hero__excerpt { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(242, 244, 248, 0.78); }
 .upd-hero__btn { margin-top: 6px; }
+/* The banner is ink in both themes, so its button is always the dark-mode
+   one: a light pill with dark text, the hover blob in the accent. */
+.upd-hero .fh__btn--primary { background: #f2f4f8; color: #0c1219; --fh-progress: #9092f4; --fh-ink: #0c1219; }
+.upd-hero .fh__btn--primary:hover,
+.upd-hero .fh__btn--primary:focus-visible { color: #fff; }
 
 /* ---------- Grid: four across on a desktop, whatever its width ---------- */
 .updates .upd-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }

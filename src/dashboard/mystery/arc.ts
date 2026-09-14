@@ -56,10 +56,11 @@ const JITTER = 0.23 * 14 * 0.4;
 const CLOCK = 0.7;
 const CORE = 0.5 + 2.5 * 0.07;
 const SPREAD = 2.5 + 19.5 * 0.94;
-const TRAIL_ALPHA = 0.07;
-const TRAIL_R = 22;
-const TRAIL_MAX = 10;
-const TRAIL_MS = 500;
+const TRAIL_ALPHA = 0.09;
+const TRAIL_R = 24;
+const TRAIL_MAX = 6;
+const TRAIL_MS = 450;
+const TRAIL_STEP = 8;
 const R = 11;
 
 /** A point and outward normal at distance `s` along a rounded rectangle. */
@@ -145,8 +146,9 @@ function draw(row: Row, now: number, still: boolean) {
     arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still);
   }
   // The light trail: spots the pointer left, fading over half a second.
+  // Blended normally: additive spots stacked to white wherever the pointer
+  // paused.
   if (row.trail.length) {
-    ctx.globalCompositeOperation = 'lighter';
     row.trail = row.trail.filter((p) => now - p.t < TRAIL_MS);
     for (const p of row.trail) {
       const a = (1 - (now - p.t) / TRAIL_MS) * TRAIL_ALPHA;
@@ -156,7 +158,6 @@ function draw(row: Row, now: number, still: boolean) {
       ctx.fillStyle = g;
       ctx.fillRect(p.x - TRAIL_R, p.y - TRAIL_R, TRAIL_R * 2, TRAIL_R * 2);
     }
-    ctx.globalCompositeOperation = 'source-over';
   }
 }
 
@@ -209,7 +210,10 @@ export function mountRow(root: HTMLElement, canvas: HTMLCanvasElement) {
     const card = (e.target as HTMLElement).closest<HTMLElement>('.prize');
     if (!card) return;
     const r = root.getBoundingClientRect();
-    row.trail.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now(), glow: RARITY[card.dataset.rarity as Rarity].glow });
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const last = row.trail[row.trail.length - 1];
+    if (last && Math.hypot(x - last.x, y - last.y) < TRAIL_STEP) return;
+    row.trail.push({ x, y, t: performance.now(), glow: RARITY[card.dataset.rarity as Rarity].glow });
     if (row.trail.length > TRAIL_MAX) row.trail.shift();
   };
   root.addEventListener('pointermove', onMove);

@@ -1,7 +1,11 @@
-import { NavIcon } from './icons';
+import { USER, WALLET } from './data';
+import { NavIcon, SettingsIcon, SignOutIcon } from './icons';
 import { rail } from './theme';
 
 type Id = keyof typeof NavIcon;
+
+/** The screens that exist as routes; the rest are still anchors until built. */
+export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets' };
 
 /** Two groups, split exactly where the reference breaks. */
 const GROUPS: Id[][] = [
@@ -41,7 +45,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
                 <li key={id}>
                   <a
                     className="rail__item"
-                    href={`#${id}`}
+                    href={ROUTE[id] ?? `#${id}`}
                     aria-current={current ? 'page' : undefined}
                     title={collapsed ? label : undefined}
                   >
@@ -57,6 +61,39 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
           </ul>
         ))}
       </nav>
+
+      {/* The account, in the space the nav leaves: who is signed in, where to
+          change things, and the way out. The wallet short is the sub-line so
+          the rail states the one fact every figure on the page belongs to. */}
+      <div className="rail__foot">
+        <a className="rail__user" href="#profile" title={collapsed ? USER.name : undefined}>
+          <span className="rail__avatar" aria-hidden="true">
+            {USER.initials}
+          </span>
+          <span className="rail__user-text">
+            <span className="rail__user-name">{USER.name}</span>
+            <span className="rail__user-sub num">{WALLET.short}</span>
+          </span>
+        </a>
+        <ul className="rail__group">
+          <li>
+            <a className="rail__item" href="#settings" title={collapsed ? 'Settings' : undefined}>
+              <span className="rail__icon">
+                <SettingsIcon className="icon-22" />
+              </span>
+              <span className="rail__label">Settings</span>
+            </a>
+          </li>
+          <li>
+            <a className="rail__item" href="/auth" title={collapsed ? 'Log out' : undefined}>
+              <span className="rail__icon">
+                <SignOutIcon className="icon-22" />
+              </span>
+              <span className="rail__label">Log out</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
       <button
         type="button"

@@ -18,7 +18,7 @@ type StatProps = {
    of it, three times over, for destinations the dashboard reaches from the rail
    anyway — so the arrows were three controls competing with the numbers they
    sat beside. The token mark keeps the card's right edge. */
-function Stat({ label, symbol, value, suffix, note, mark }: StatProps) {
+export function Stat({ label, symbol, value, suffix, note, mark }: StatProps) {
   return (
     <article className="stat">
       <div>

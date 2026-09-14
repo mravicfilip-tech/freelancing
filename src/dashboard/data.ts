@@ -36,7 +36,7 @@ const AHEAD = 6;
 /** First step ahead is a cent; the rest grow so the last one lands on FINAL. */
 const GROWTH = (2 * (FINAL_PRICE - STAGE_PRICE - AHEAD * 0.01)) / (AHEAD * (AHEAD - 1));
 
-function stagePrice(n: number): number {
+export function stagePrice(n: number): number {
   const steps = n - PRESALE.stage;
   if (steps <= 0) return Number((STAGE_PRICE + steps * 0.01).toFixed(2));
   const climbed = steps * 0.01 + ((steps - 1) * steps * GROWTH) / 2;
@@ -52,6 +52,12 @@ export const STAGE_LADDER = Array.from({ length: 12 }, (_, i) => {
   };
 });
 
+/** Who is signed in. The greeting and the rail's profile block both read it. */
+export const USER = {
+  name: 'Filip',
+  initials: 'F',
+} as const;
+
 /** The wallet the presale allocation is tied to — every figure below is its. */
 export const WALLET = {
   address: '0x4f2a9b7c1d8e3fa6052c9147bd3e88a1c7f0d6b2',
@@ -63,8 +69,8 @@ const BALANCE = 47_382.94;
 
 export const HOLDINGS = {
   balance: BALANCE,
-  /** Four buys across stages 9 to 12. */
-  purchases: 4,
+  /** Twenty-three buys across stages 7 to 12; markets/data.ts lists them. */
+  purchases: 23,
   worthAtTge: Number((BALANCE * PRESALE.listPrice).toFixed(2)),
 } as const;
 

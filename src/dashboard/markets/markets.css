@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Markets
+   Rides the dashboard's token layer: .markets is also .dash. The table is the
+   dashboard's orders table with two more columns; only the footer is new.
+   ========================================================================== */
+
+/* Seven columns at the dashboard's cell padding need the room. */
+.tx .orders__table { min-width: 720px; }
+.tx__price { color: var(--d-text-2); }
+
+.tx__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding: 0 4px;
+}
+.tx__count { margin: 0; font-size: 13px; color: var(--d-text-3); }
+
+/* ---------- Pager ---------- */
+.pager { display: flex; align-items: center; gap: 4px; }
+.pager__btn {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--d-text-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.pager__btn:hover { background: var(--d-inset); color: var(--d-text); }
+.pager__btn[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
+.pager__btn:disabled { color: var(--d-text-3); opacity: 0.45; cursor: default; background: transparent; }
+.pager__btn--step { padding: 0; }
+.pager__prev { transform: scaleX(-1); }
+.pager__gap { min-width: 24px; text-align: center; color: var(--d-text-3); }
+
+/* ---------- Phone ---------- */
+@media (max-width: 620px) {
+  /* The stacked row keeps who, how much, id, what it cost and when, the same
+     five the live feed keeps; price and listing worth wait for a wider screen. */
+  .tx .orders__table { min-width: 0; }
+  .tx .orders__table .tx__price,
+  .tx .orders__table .tx__worth { display: none; }
+  .tx__foot { flex-direction: column; align-items: stretch; }
+  .tx__count { text-align: center; }
+  .pager { justify-content: center; }
+}
+@media (max-width: 620px), (pointer: coarse) and (max-width: 900px) {
+  .pager__btn { min-width: 44px; height: 44px; }
+}

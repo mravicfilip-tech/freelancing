@@ -339,19 +339,109 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .rail__toggle:hover { background: var(--d-inset); color: var(--d-text); }
 
+/* ---------- Account block ----------
+   Under the nav, over the toggle: who is signed in, settings, and the way out.
+   Same dashed rule the nav uses between its two groups. */
+.rail__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 16px;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+.rail__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 6px 6px;
+  border-radius: 999px;
+  color: var(--d-text);
+  text-decoration: none;
+  transition: background-color 140ms ease;
+}
+.rail__user:hover { background: var(--d-inset); }
+.rail__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
+  font-size: 15px;
+  font-weight: 600;
+}
+.rail__user-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.rail__user-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail__user-sub { font-size: 12px; color: var(--d-text-3); }
+.rail[data-mode='collapsed'] .rail__user { justify-content: center; padding: 6px 0; }
+.rail[data-mode='collapsed'] .rail__user-text { display: none; }
+/* Collapsed, the account rows are icon-only chips with a title each: with
+   labels under the icons the rail ran past a 1000px viewport. */
+.rail[data-mode='collapsed'] .rail__foot .rail__item { padding: 4px; }
+.rail[data-mode='collapsed'] .rail__foot .rail__label { display: none; }
+/* On a short screen the nav scrolls rather than pushing the account block
+   and the toggle off the bottom of the rail. */
+.rail__nav { min-height: 0; overflow-y: auto; }
+
+/* Short viewports (a 900px laptop under browser chrome is ~790). The account
+   block turns into one row of avatar and two chips, the rail's own gaps close
+   up, and the collapsed rail drops its labels — its tooltips carry them — so
+   the seven routes never scroll out of reach. */
+@media (max-height: 880px) {
+  .rail { gap: 14px; }
+  .rail__brand { margin-bottom: 12px; }
+  .rail__item { padding: 8px 6px; }
+  .rail__foot { flex-direction: row; align-items: center; gap: 4px; }
+  .rail__user { flex: 1; min-width: 0; margin: 0; padding: 4px; }
+  .rail__foot .rail__group { flex-direction: row; gap: 2px; }
+  .rail__foot .rail__item { padding: 4px; }
+  .rail__foot .rail__label { display: none; }
+  .rail[data-mode='collapsed'] .rail__foot,
+  .rail[data-mode='collapsed'] .rail__foot .rail__group { flex-direction: column; gap: 4px; }
+  .rail[data-mode='collapsed'] .rail__item { padding: 4px; }
+  .rail[data-mode='collapsed'] .rail__label { display: none; }
+}
+/* Shorter still, the rail stops being sticky and scrolls with the page. */
+@media (max-height: 760px) {
+  .rail { position: static; height: auto; }
+  .rail__nav { overflow: visible; }
+}
+
 /* Collapsed: centred chips, icon over label. */
 .rail[data-mode='collapsed'] .rail__brand { justify-content: center; padding-inline: 0; }
 .rail[data-mode='collapsed'] .rail__wordmark { display: none; }
 .rail[data-mode='collapsed'] .rail__item,
 .rail[data-mode='collapsed'] .rail__toggle {
   flex-direction: column;
-  gap: 6px;
-  padding: 11px 4px;
+  gap: 5px;
+  padding: 8px 4px;
   border-radius: var(--r-inner);
   text-align: center;
   font-size: 12px;
 }
-.rail[data-mode='collapsed'] .rail__badge { margin-left: 0; }
+/* Collapsed, a badge is a dot on the icon's corner, as the tab bar does it:
+   a pill under the label cost each flagged row another line. */
+.rail[data-mode='collapsed'] .rail__icon { position: relative; }
+.rail[data-mode='collapsed'] .rail__badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--d-on-tint);
+  font-size: 0;
+  box-shadow: 0 0 0 2px var(--d-card);
+}
+.rail[data-mode='collapsed'] .rail__toggle .rail__label { display: none; }
 
 /* ==========================================================================
    Main column
@@ -1565,6 +1655,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 /* Pushed along by the badge when there is one, so it always lands last. */
 .sheet__chev { margin-left: auto; color: var(--d-text-3); }
 .sheet__item .rail__badge + .sheet__chev { margin-left: 10px; }
+
+/* The nav list already hangs a rule off its bottom, so this one only needs
+   the gap. Being a .sheet__list itself, it hangs the next rule for the wallet. */
+.sheet__list--account { margin-top: 8px; padding-top: 8px; }
 
 /* ---------- Wallet and appearance ---------- */
 /* The settings rows share the nav rows' ground, so without a break the sheet

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { WALLET } from './data';
+import { USER, WALLET } from './data';
 import {
   BuyIcon,
   CheckIcon,
@@ -10,9 +10,12 @@ import {
   MoreIcon,
   NavIcon,
   PayMark,
+  SettingsIcon,
   SignOutIcon,
   SunIcon,
+  UserIcon,
 } from './icons';
+import { ROUTE } from './Sidebar';
 import { theme } from './theme';
 import { useCopy } from './useCopy';
 
@@ -26,8 +29,8 @@ type RailId = keyof typeof NavIcon;
  * so on a phone it gets a permanent slot that jumps to the form.
  */
 const BAR: { id: string; label: string; href: string; badge?: string }[] = [
-  { id: 'presale', label: 'Presale', href: '#presale' },
-  { id: 'buy', label: 'Buy', href: '#buy' },
+  { id: 'presale', label: 'Presale', href: '/dashboard' },
+  { id: 'buy', label: 'Buy', href: '/dashboard#buy' },
   { id: 'referrals', label: 'Referrals', href: '#referrals' },
   { id: 'claim', label: 'Claim', href: '#claim', badge: 'NEW' },
 ];
@@ -64,7 +67,7 @@ function Sheet({ onClose }: { onClose: () => void }) {
           const Icon = NavIcon[id];
           return (
             <li key={id}>
-              <a className="sheet__item" href={`#${id}`} onClick={onClose}>
+              <a className="sheet__item" href={ROUTE[id] ?? `#${id}`} onClick={onClose}>
                 <Icon className="icon-22" />
                 {label}
                 {badge && <span className="rail__badge">{badge}</span>}
@@ -73,6 +76,24 @@ function Sheet({ onClose }: { onClose: () => void }) {
             </li>
           );
         })}
+      </ul>
+
+      {/* The account rows the rail carries on a desktop. */}
+      <ul className="sheet__list sheet__list--account">
+        <li>
+          <a className="sheet__item" href="#profile" onClick={onClose}>
+            <UserIcon className="icon-22" />
+            {USER.name}
+            <ChevronRight className="icon-16 sheet__chev" />
+          </a>
+        </li>
+        <li>
+          <a className="sheet__item" href="#settings" onClick={onClose}>
+            <SettingsIcon className="icon-22" />
+            Settings
+            <ChevronRight className="icon-16 sheet__chev" />
+          </a>
+        </li>
       </ul>
 
       <div className="sheet__wallet">

@@ -8,11 +8,11 @@
  */
 
 /** One shimmering block. `w` and `h` are any CSS length. */
-function Skel({ w = '100%', h = 14, r = 7 }: { w?: string | number; h?: number; r?: number }) {
+export function Skel({ w = '100%', h = 14, r = 7 }: { w?: string | number; h?: number; r?: number }) {
   return <span className="skel" style={{ width: w, height: h, borderRadius: r }} aria-hidden="true" />;
 }
 
-function StatSkel() {
+export function StatSkel() {
   return (
     <article className="card stat">
       <div className="skel-stack">
@@ -27,7 +27,7 @@ function StatSkel() {
   );
 }
 
-function rows(n: number, h: number) {
+export function skelRows(n: number, h: number) {
   return Array.from({ length: n }, (_, i) => <Skel key={i} h={h} r={10} />);
 }
 
@@ -52,7 +52,7 @@ export function DashboardSkeleton() {
             <Skel key={i} h={40 + i * 7} r={5} />
           ))}
         </div>
-        <div className="skel-facts">{rows(3, 34)}</div>
+        <div className="skel-facts">{skelRows(3, 34)}</div>
       </section>
 
       <div className="dash__split">
@@ -61,7 +61,7 @@ export function DashboardSkeleton() {
           <div className="skel-stack skel-stack--lg">
             <Skel h={52} r={12} />
             <Skel h={56} r={12} />
-            <div className="skel-chips">{rows(4, 40)}</div>
+            <div className="skel-chips">{skelRows(4, 40)}</div>
             <Skel h={104} r={12} />
             <Skel h={52} r={12} />
             <Skel h={54} r={999} />
@@ -74,7 +74,7 @@ export function DashboardSkeleton() {
             <Skel h={64} r={12} />
             <Skel h={78} r={12} />
             <Skel w={140} h={20} r={8} />
-            <div className="skel-stack">{rows(3, 46)}</div>
+            <div className="skel-stack">{skelRows(3, 46)}</div>
             <Skel h={58} r={12} />
           </div>
         </div>
@@ -82,7 +82,7 @@ export function DashboardSkeleton() {
 
       <section className="card orders">
         <Skel w={132} h={20} r={8} />
-        <div className="skel-stack skel-orders">{rows(6, 46)}</div>
+        <div className="skel-stack skel-orders">{skelRows(6, 46)}</div>
       </section>
     </div>
   );

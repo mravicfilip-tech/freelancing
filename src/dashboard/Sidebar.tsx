@@ -8,12 +8,12 @@ import { rail } from './theme';
 type Id = keyof typeof NavIcon;
 
 /** The screens that exist as routes; the rest are still anchors until built. */
-export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets', updates: '/updates' };
+export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets', updates: '/updates', mystery: '/mystery' };
 
 /** Two groups, split exactly where the reference breaks. */
 const GROUPS: Id[][] = [
   ['presale', 'earn', 'markets', 'payfi'],
-  ['referrals', 'updates', 'claim'],
+  ['referrals', 'updates', 'mystery', 'claim'],
 ];
 
 const META: Record<Id, { label: string; badge?: string }> = {
@@ -23,6 +23,7 @@ const META: Record<Id, { label: string; badge?: string }> = {
   payfi: { label: 'PayFi', badge: 'NEW' },
   referrals: { label: 'Referrals' },
   updates: { label: 'Updates' },
+  mystery: { label: 'Mystery box' },
   claim: { label: 'Claim', badge: 'NEW' },
 };
 

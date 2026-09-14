@@ -63,6 +63,12 @@ export const NavIcon = {
       <path d="M10.2 19a2.1 2.1 0 0 0 3.6 0" />
     </svg>
   ),
+  mystery: (p: IconProps) => (
+    <svg {...line} {...p} aria-hidden="true">
+      <path d="M12 4l8 4.4v7.2L12 20l-8-4.4V8.4L12 4Z" />
+      <path d="M4 8.4l8 4.4 8-4.4M12 12.8V20" />
+    </svg>
+  ),
   claim: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
       <rect x="4" y="10.6" width="16" height="9.4" rx="1.8" />

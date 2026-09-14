@@ -41,6 +41,7 @@ const SHEET: { id: RailId; label: string; badge?: string }[] = [
   { id: 'markets', label: 'Markets' },
   { id: 'payfi', label: 'PayFi', badge: 'NEW' },
   { id: 'updates', label: 'Updates' },
+  { id: 'mystery', label: 'Mystery box' },
 ];
 
 /**

@@ -185,7 +185,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
               {phase === 'won' && i === WIN ? (
                 <span className="reel__cap reel__cap--win" style={{ color: RARITY[p.rarity].ink }}>{RARITY[p.rarity].label}!</span>
               ) : (
-                <span className="reel__cap">{CAPS[i % 3]}</span>
+                <span className="reel__cap">{phase === 'won' ? 'Open next…' : CAPS[i % 3]}</span>
               )}
               <PrizeCard p={p} won={phase === 'won' && i === WIN} />
               <span className="reel__cap num">Prize #{124 + i}</span>

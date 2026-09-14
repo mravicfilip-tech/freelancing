@@ -100,8 +100,10 @@
   overflow: hidden;
   border-top: 1px solid var(--d-rule);
   border-bottom: 1px solid var(--d-rule);
-  background: var(--d-inset);
+  /* Darker than the card around it, so the reel reads as the stage. */
+  background: var(--d-bg);
 }
+.dash[data-theme='dark'] .reel { background: #080d13; }
 .reel__view { position: absolute; inset: 0; pointer-events: none; }
 .reel__track { position: absolute; left: 0; top: 0; display: flex; height: 100%; will-change: transform; }
 .reel__slot {
@@ -188,10 +190,11 @@
   z-index: 4;
   background: radial-gradient(55% 75% at 50% 50%, rgba(var(--win-glow, 217, 242, 78), 0) 45%, rgba(var(--win-glow, 217, 242, 78), 0.55) 100%);
 }
-/* After a landing the other cards step back. */
+/* After a landing the other cards fall back to a fifth, so the winner is the reel. */
 .prize { transition: opacity 500ms ease, transform 500ms ease; }
 .prize[data-won='true'] { transition: none; }
-.reel--won .prize:not([data-won='true']) { opacity: 0.55; transform: scale(0.96); }
+.reel--won .prize:not([data-won='true']) { opacity: 0.2; transform: scale(0.96); }
+.reel--won .reel__slot:not(:has([data-won='true'])) .reel__cap { opacity: 0.5; }
 .reel__cap--win { font-weight: 600; }
 .reel__open {
   padding: 0;
@@ -247,11 +250,12 @@
 .inside__nav { display: flex; gap: 6px; }
 .inside__step { width: 34px; height: 34px; background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-pill-ring); }
 .inside__step:hover { background: var(--d-pick); color: var(--d-on-pick); box-shadow: none; }
-.inside__wrap { margin: 0 calc(var(--pad) * -1); }
+.inside__wrap { margin: 12px calc(var(--pad) * -1) 0; }
+/* Room above and below for the arc's glow, which the row's canvas would otherwise cut. */
 .inside__row {
   display: flex;
   gap: 12px;
-  padding: 4px var(--pad) 8px;
+  padding: 16px var(--pad) 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;

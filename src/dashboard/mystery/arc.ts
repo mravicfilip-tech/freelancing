@@ -178,6 +178,53 @@ function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) 
   ctx.stroke();
 }
 
+/* The crate's silhouette in its own 401.5 × 406 space: the lid's back and
+   right corners, down the right foot, the front foot, the left foot and up
+   the left corner. The lid corners are crate.ts's TOP; the feet are where
+   the drawing bottoms out. */
+const CRATE: [number, number][] = [[205.2, 1.9], [398, 84.2], [398, 305], [199.3, 405], [3.9, 306], [3.9, 80.9]];
+
+/** An electric outline round a polygon, the card arc's cousin for the chest. */
+function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], glow: [number, number, number], t: number) {
+  const time = t * CLOCK;
+  const flicker = 0.9 + 0.1 * Math.sin(t * 9);
+  const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length;
+  const cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+  ctx.beginPath();
+  let along = 0;
+  let first = true;
+  for (let i = 0; i < pts.length; i++) {
+    const [x0, y0] = pts[i];
+    const [x1, y1] = pts[(i + 1) % pts.length];
+    const len = Math.hypot(x1 - x0, y1 - y0);
+    let nx = (y1 - y0) / len, ny = -(x1 - x0) / len;
+    if ((x0 - cx) * nx + (y0 - cy) * ny < 0) { nx = -nx; ny = -ny; }
+    for (let d = 0; d <= len; d += 3) {
+      const raw = electricNoise(along + d, time);
+      const spark = Math.sign(raw) * Math.pow(Math.abs(raw), 1.15);
+      const off = spark * JITTER;
+      const x = x0 + ((x1 - x0) * d) / len + nx * off;
+      const y = y0 + ((y1 - y0) * d) / len + ny * off;
+      if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+    }
+    along += len;
+  }
+  ctx.closePath();
+  ctx.lineJoin = 'round';
+  const passes = [[SPREAD * 1.4, 0.05], [SPREAD * 0.9, 0.09], [SPREAD * 0.5, 0.14], [5, 0.28]] as const;
+  for (const [lw, a] of passes) {
+    ctx.strokeStyle = rgb(glow, a * flicker);
+    ctx.lineWidth = lw;
+    ctx.stroke();
+  }
+  ctx.strokeStyle = rgb(glow, 0.9 * flicker);
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(255,255,255,${0.8 * flicker})`;
+  ctx.lineWidth = 0.9;
+  ctx.stroke();
+}
+
 function draw(row: Row, now: number, still: boolean) {
   const { ctx, w, h, dpr, root } = row;
   const t = (now - t0) / 1000;
@@ -190,6 +237,15 @@ function draw(row: Row, now: number, still: boolean) {
   // ring, and the flash covers the hand-off.
   const flying = root.classList.contains('reel--spin');
   if (flying && !still) marker(ctx, w, h, t);
+  // The closed chest, on a dark reel, carries the arc too, in the brand's lime.
+  if (!flying && !light && !still && root.classList.contains('reel--idle')) {
+    const svg = root.querySelector<SVGSVGElement>('.chest--reel .chest__art svg');
+    if (svg) {
+      const r = svg.getBoundingClientRect();
+      const k = r.width / 401.5;
+      outline(ctx, CRATE.map(([x, y]) => [r.left - base.left + x * k, r.top - base.top + y * k]), [217, 242, 78], t);
+    }
+  }
   for (const el of flying ? [] : root.querySelectorAll<HTMLElement>('.prize')) {
     const r = el.getBoundingClientRect();
     const ox = r.left - base.left, oy = r.top - base.top;

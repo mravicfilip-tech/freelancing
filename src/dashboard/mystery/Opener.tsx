@@ -46,7 +46,6 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
   const view = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
-  const flash = useRef<HTMLDivElement>(null);
   const tick = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const glow = useRef<HTMLDivElement>(null);
@@ -89,7 +88,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
       redraw();
       if (!demo) onWin(prize, cost);
     };
-    gsap.killTweensOf([box.current, flash.current]);
+    gsap.killTweensOf(box.current);
     if (still()) {
       setChestOpen(true);
       gsap.set(box.current, { autoAlpha: 0 });
@@ -108,7 +107,6 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
       .to(box.current, { scale: 1.06, y: -6, duration: 0.9, ease: 'power1.out' }, 0.2)
       .add(() => burst(r, c.x, c.y - 20, LIME, 90, 1.3), 1.15)
       .to(box.current, { scale: 1.6, autoAlpha: 0, duration: 0.32, ease: 'power3.in' }, 1.15)
-      .fromTo(flash.current, { scale: 0.3, autoAlpha: 0.95 }, { scale: 3, autoAlpha: 0, duration: 0.7, ease: 'power2.out' }, '<')
       // …and the reel is already flying, ticking past the marker as it slows.
       .set(track.current, { x: xFor(START) }, '<')
       .to(track.current, {
@@ -206,7 +204,6 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
             <span className="reel__hint">Click to open a box!</span>
           </div>
         </div>
-        <div className="reel__flash" ref={flash} aria-hidden="true" />
         <div className="reel__ring" ref={ring} aria-hidden="true" />
         {phase === 'won' && won && (
           <button type="button" className="reel__result" ref={result} onClick={reset}>

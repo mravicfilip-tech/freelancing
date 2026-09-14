@@ -158,22 +158,11 @@
    parent above. */
 .reel__anim { display: grid; justify-items: center; gap: 2px; transform-origin: 50% 60%; }
 
-/* The opening's light: a lime flash where the box was, a tick of light at
+/* The opening's light: a tick of light at
    the marker as each card passes, a ring rolling out of the winner, and the
    reel's edges taking the winner's colour. All sit still at zero until the
    choreography lifts them. */
-.reel__flash, .reel__ring, .reel__tick, .reel__glow { position: absolute; pointer-events: none; opacity: 0; visibility: hidden; }
-.reel__flash {
-  left: 50%;
-  top: 50%;
-  z-index: 6;
-  width: 260px;
-  height: 260px;
-  margin: -130px 0 0 -130px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(217, 242, 78, 0.8) 28%, rgba(217, 242, 78, 0) 70%);
-  mix-blend-mode: screen;
-}
+.reel__ring, .reel__tick, .reel__glow { position: absolute; pointer-events: none; opacity: 0; visibility: hidden; }
 .reel__ring {
   z-index: 6;
   border: 2px solid #d9f24e;
@@ -209,6 +198,9 @@
 .chest--reel { position: absolute; inset: 0; display: block; overflow: visible; clip-path: none; }
 .chest--reel .chest__stage { width: 100%; max-width: none; margin-top: 0; }
 .chest--reel .chest__coin { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
+.chest__art .chest__lid path.chest__lidM { stroke: #d9f24e; stroke-width: 2.2; }
+/* On the light reel the white lid needs its own edge. */
+.dash[data-theme='light'] .chest--reel .chest__face--top { stroke: #122433; stroke-width: 1.35; stroke-linejoin: round; }
 /* Its dark tokens, as the hero sets them, on the dashboard's names. */
 .dash[data-theme='dark'] .chest {
   --chest-ink: #7f8f9f;

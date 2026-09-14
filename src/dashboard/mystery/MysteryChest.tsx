@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import chestMarkup from '../../components/FigmaHero/chest.svg?raw';
-import { buildCrate, isLid, tiltMatrix } from '../../components/FigmaHero/crate';
+import { buildCrate, isLid, tiltMatrix, TOP, SEAM } from '../../components/FigmaHero/crate';
 import '../../components/FigmaHero/ChestSlide.css';
 
 /**
@@ -56,6 +56,14 @@ export function MysteryChest({ open }: { open: boolean }) {
     if (!segs.length) return;
     const b = buildCrate(svg, segs.filter((s) => isLid(s.el)).map((s) => s.el));
     if (!b) return;
+    /* The export draws the mark on the lid as line-art; the strokes inside the
+       slab's middle are it, and they take the brand's lime. */
+    const A = (TOP.r[0] - TOP.l[0]) / 2, B = (TOP.f[1] - TOP.t[1]) / 2;
+    segs.forEach((sg) => {
+      const bb = sg.el.getBBox();
+      const dx = bb.x + bb.width / 2 - SEAM.x, dy = bb.y + bb.height / 2 - SEAM.y;
+      if (isLid(sg.el) && Math.abs(dx) / A + Math.abs(dy) / B <= 0.42) sg.el.classList.add('chest__lidM');
+    });
     const coins = Array.from(root.querySelectorAll<HTMLElement>('.chest__coin'));
     built.current = { svg, lidG: b.lidG as SVGGElement, seam: b.seam, coins, root };
     root.dataset.motion = 'ready';

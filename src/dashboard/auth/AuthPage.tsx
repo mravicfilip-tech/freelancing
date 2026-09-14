@@ -182,9 +182,16 @@ export function AuthPage() {
           corner. Same ink and lavender whatever the page theme. */}
       <aside className="auth__art" aria-hidden="true">
         <AuthScene />
-        <p className="auth__headline">
-          Buy at ${PRESALE.price.toFixed(2)} <em>before it steps to ${PRESALE.nextPrice.toFixed(2)}</em>
-        </p>
+        <div className="auth__copy">
+          <p className="auth__headline">
+            <span className="auth__lead">The Future of</span>
+            Global Payments
+          </p>
+          <p className="auth__body-copy">
+            Move money across borders with crypto-native infrastructure built for a faster, borderless
+            financial world.
+          </p>
+        </div>
         <p className="topbar__live auth__live">
           <span className="topbar__dot" aria-hidden="true" />
           Stage {PRESALE.stage} is live

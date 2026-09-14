@@ -1576,6 +1576,30 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   }
 }
 
+/* ---------- Text links ----------
+   Every inline text link in the app underlines the same way: a 1px rule in
+   the link's own colour draws in from the left on hover and leaves the same
+   way. Links with a 44px target keep the rule under the words, not the box. */
+.tlink,
+.auth__link,
+.auth__check a,
+.auth__switch button,
+.auth__foot a {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: background-size 260ms cubic-bezier(0.22, 0.61, 0.36, 1), color 160ms ease;
+}
+.auth__link,
+.auth__switch button { background-position: left calc(50% + 0.72em); }
+.tlink:hover,
+.auth__link:hover,
+.auth__check a:hover,
+.auth__switch button:hover,
+.auth__foot a:hover { background-size: 100% 1px; }
+
 /* ---------- Token select ---------- */
 /* The menu hangs off the field, not the button. The button is centred in a
    taller field, so anchoring to it opened the menu into the field's own focus

@@ -134,3 +134,71 @@
 .upd-grid { display: grid; gap: 12px; margin-top: 18px; }
 /* Four across, for Earn's row of the newest four. */
 .upd-grid--4 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+/* ---------- Dark field review (?d=1…5) ---------- */
+/* F1 — the light card mirrored onto ink: lavender low on the LEFT, the warm
+   lime at the centre of the floor, and sky at the rings instead of indigo,
+   so the right side holds the cool colour and the purple sits away from it. */
+.dash[data-theme='dark'][data-d='1'] .thumb {
+  background-image:
+    radial-gradient(58% 62% at 4% 106%, rgba(179, 181, 245, 0.8) 0%, rgba(179, 181, 245, 0) 68%),
+    radial-gradient(36% 40% at 52% 116%, rgba(217, 242, 78, 0.71) 0%, rgba(217, 242, 78, 0) 70%),
+    radial-gradient(42% 50% at 100% 14%, rgba(150, 200, 250, 0.55) 0%, rgba(150, 200, 250, 0) 70%);
+}
+.dash[data-theme='dark'][data-d='1'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.63) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+}
+
+/* F2 — no purple at all in the field: a sky glow with the rings, deep teal
+   rising from the lower left, and a lime spark in the corner. Lavender
+   survives only as the rings' stroke and the accent word. */
+.dash[data-theme='dark'][data-d='2'] .thumb {
+  background-image:
+    radial-gradient(60% 56% at 0% 110%, rgba(56, 150, 170, 0.76) 0%, rgba(56, 150, 170, 0) 68%),
+    radial-gradient(30% 32% at 10% 120%, rgba(217, 242, 78, 0.71) 0%, rgba(217, 242, 78, 0) 70%),
+    radial-gradient(44% 52% at 100% 10%, rgba(140, 190, 255, 0.5) 0%, rgba(140, 190, 255, 0) 70%);
+}
+.dash[data-theme='dark'][data-d='2'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.63) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+}
+
+/* F3 — spectrum floor: one soft band along the bottom running lime on the
+   left through lavender to sky on the right, all at low alpha, and nothing
+   at the rings. Colour reads as a horizon, not a corner. */
+.dash[data-theme='dark'][data-d='3'] .thumb {
+  background-image:
+    radial-gradient(34% 44% at 8% 112%, rgba(217, 242, 78, 0.76) 0%, rgba(217, 242, 78, 0) 70%),
+    radial-gradient(38% 44% at 50% 116%, rgba(179, 181, 245, 0.71) 0%, rgba(179, 181, 245, 0) 70%),
+    radial-gradient(34% 44% at 94% 112%, rgba(150, 200, 250, 0.63) 0%, rgba(150, 200, 250, 0) 70%),
+    linear-gradient(to top, rgba(179, 181, 245, 0.17), rgba(179, 181, 245, 0) 42%);
+}
+.dash[data-theme='dark'][data-d='3'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.63) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+}
+
+/* F4 — even indigo ground: the whole card tinted one step towards indigo
+   rather than a glow on one side, then a single lime lift low on the left
+   and a faint sky rim at the rings. Balanced by construction. */
+.dash[data-theme='dark'][data-d='4'] .thumb {
+  background-color: #111429;
+  background-image:
+    radial-gradient(56% 52% at 6% 110%, rgba(217, 242, 78, 0.63) 0%, rgba(217, 242, 78, 0) 68%),
+    radial-gradient(40% 46% at 100% 12%, rgba(150, 200, 250, 0.34) 0%, rgba(150, 200, 250, 0) 70%),
+    linear-gradient(180deg, rgba(64, 66, 210, 0.17), rgba(64, 66, 210, 0) 60%);
+}
+.dash[data-theme='dark'][data-d='4'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.63) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+}
+
+/* F5 — lime lead: the presale's lime is the big shape, low left and wide,
+   with lavender only as a small warm-cool seam beside it at the floor's
+   centre, and a sky pinpoint at the rings. Purple is a minority colour. */
+.dash[data-theme='dark'][data-d='5'] .thumb {
+  background-image:
+    radial-gradient(64% 70% at 0% 112%, rgba(217, 242, 78, 0.8) 0%, rgba(217, 242, 78, 0.25) 40%, rgba(217, 242, 78, 0) 70%),
+    radial-gradient(30% 36% at 58% 118%, rgba(179, 181, 245, 0.63) 0%, rgba(179, 181, 245, 0) 70%),
+    radial-gradient(30% 40% at 100% 10%, rgba(150, 200, 250, 0.42) 0%, rgba(150, 200, 250, 0) 70%);
+}
+.dash[data-theme='dark'][data-d='5'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.63) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+}

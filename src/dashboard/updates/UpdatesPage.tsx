@@ -81,9 +81,10 @@ export function UpdatesPage() {
     };
   }, [mode]);
   const [lead, ...rest] = UPDATES;
+  const dark = new URLSearchParams(window.location.search).get('d') ?? undefined;
 
   return (
-    <div className="dash updates" data-theme={mode}>
+    <div className="dash updates" data-theme={mode} data-d={dark}>
       <Sidebar active="updates" />
       <main className="dash__main">
         <Topbar title="Updates" />

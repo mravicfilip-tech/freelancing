@@ -5,33 +5,6 @@
    dashboard's.
    ========================================================================== */
 
-/* ---------- Grid picker (review tool) ---------- */
-.vpick {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 4px;
-  border-radius: var(--r-sm);
-  background: var(--d-card);
-  box-shadow: inset 0 0 0 1px var(--d-rule);
-  align-self: flex-start;
-}
-.vpick__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 8px;
-  color: var(--d-text-2);
-  font-size: 13px;
-  text-decoration: none;
-}
-.vpick__item b { font-weight: 700; color: var(--d-text-3); }
-.vpick__item:hover { background: var(--d-inset); color: var(--d-text); }
-.vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
-.vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
-
 /* ---------- Picture ---------- */
 /* A frame at a fixed shape; the scene inside keeps its own shape and fits by
    width, centred, so a taller scene crops top and bottom like a photo. */
@@ -79,7 +52,6 @@
 .upd-art[data-art='storage'] .upd-art__fit { width: 104%; }
 .upd-art[data-art='simple'] .upd-art__fit { width: 128%; }
 .upd-art--feature { aspect-ratio: 16 / 10; }
-.upd-art--thumb { width: 168px; flex: none; aspect-ratio: 3 / 2; }
 
 /* ---------- Kicker, title, excerpt ---------- */
 .upd-kicker {
@@ -133,81 +105,14 @@
 .upd-card:active { transform: translateY(0); }
 .upd-card__body { display: grid; gap: 8px; padding: 0 8px; }
 
-/* ---------- The five grids ---------- */
-.upd-grid { display: grid; gap: 12px; margin-top: 18px; }
-
-/* G1: three across, picture on top. */
-.upd-grid--g1 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-
-/* G2: two across, picture beside the text. */
-.upd-grid--g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.upd-grid--g2 .upd-card { flex-direction: row; align-items: stretch; padding: 10px; }
-.upd-grid--g2 .upd-art { width: 42%; flex: none; aspect-ratio: auto; min-height: 168px; }
-.upd-grid--g2 .upd-card__body { align-content: center; padding: 6px 8px 6px 6px; }
-
-/* G3: mosaic. Every row is one wide card and one narrow, the wide one
-   alternating sides. The wide card lays its picture beside the text. */
-.upd-grid--g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.upd-grid--g3 .upd-card:nth-child(4n + 1),
-.upd-grid--g3 .upd-card:nth-child(4n + 4) { grid-column: span 2; flex-direction: row; align-items: stretch; }
-.upd-grid--g3 .upd-card:nth-child(4n + 1) .upd-art,
-.upd-grid--g3 .upd-card:nth-child(4n + 4) .upd-art { width: 52%; flex: none; aspect-ratio: auto; }
-.upd-grid--g3 .upd-card:nth-child(4n + 1) .upd-card__body,
-.upd-grid--g3 .upd-card:nth-child(4n + 4) .upd-card__body { align-content: center; padding: 8px 8px 8px 6px; }
-
-/* G4: list rows with a thumbnail and a date column. */
-.upd-rows { list-style: none; margin: 14px 0 0; padding: 0; }
-.upd-row {
-  display: grid;
-  grid-template-columns: 168px 132px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 20px;
-  padding: 12px;
-  border-radius: var(--r-card);
-  color: inherit;
-  text-decoration: none;
-  transition: background-color 140ms ease;
-}
-.upd-row:hover { background: var(--d-inset); }
-.upd-row + li .upd-row, .upd-rows li + li .upd-row { margin-top: 4px; }
-.upd-row__date { display: grid; gap: 4px; font-size: 13px; color: var(--d-text-2); }
-.upd-row__date > span { color: var(--d-text-3); }
-.upd-row__main { display: grid; gap: 6px; }
-.upd-row__chev { color: var(--d-text-3); }
-
-/* G5: four across, title and date only. */
-.upd-grid--g5 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.upd-grid--g5 .upd-art { aspect-ratio: 4 / 3; }
-.upd-grid--g5 .upd-title { font-size: 16px; }
+/* ---------- Grid: three across, picture on top ---------- */
+.upd-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
 
 /* ---------- Narrow ---------- */
 @media (max-width: 1180px) {
   .upd-feature { grid-template-columns: minmax(0, 1fr); }
-  .upd-grid--g1, .upd-grid--g3, .upd-grid--g5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .upd-grid--g3 .upd-card:nth-child(4n + 1),
-  .upd-grid--g3 .upd-card:nth-child(4n + 4) { grid-column: span 2; }
-  .upd-row { grid-template-columns: 140px minmax(0, 1fr) auto; }
-  .upd-row__date { grid-column: 2; grid-row: 1; grid-auto-flow: column; justify-content: start; gap: 10px; }
-  .upd-row__main { grid-column: 2; }
-  .upd-row .upd-art--thumb { grid-row: 1 / span 2; width: 140px; }
-  .upd-row__chev { grid-row: 1 / span 2; }
-}
-@media (max-width: 760px) {
-  .updates .topbar { order: 1; }
-  .updates .dash__main > .vpick { order: 0; }
-  .updates .dash__main > :not(.topbar):not(.vpick) { order: 2; }
+  .upd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 620px) {
-  .upd-grid, .upd-grid--g1, .upd-grid--g2, .upd-grid--g3, .upd-grid--g5 { grid-template-columns: minmax(0, 1fr); }
-  .upd-grid--g2 .upd-card,
-  .upd-grid--g3 .upd-card:nth-child(4n + 1),
-  .upd-grid--g3 .upd-card:nth-child(4n + 4) { flex-direction: column; grid-column: auto; }
-  .upd-grid--g2 .upd-art,
-  .upd-grid--g3 .upd-card:nth-child(4n + 1) .upd-art,
-  .upd-grid--g3 .upd-card:nth-child(4n + 4) .upd-art { width: auto; aspect-ratio: 16 / 10; min-height: 0; }
-  .upd-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-  .upd-row .upd-art--thumb { grid-row: auto; width: 100%; aspect-ratio: 16 / 10; }
-  .upd-row__date, .upd-row__main { grid-column: 1; }
-  .upd-row__chev { display: none; }
-  .vpick__item { min-height: 44px; }
+  .upd-grid { grid-template-columns: minmax(0, 1fr); }
 }

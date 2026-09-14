@@ -10,9 +10,12 @@ import { ChevronDown, PayMark } from './icons';
 export function TokenSelect({
   value,
   onChange,
+  detail = false,
 }: {
   value: TokenId;
   onChange: (id: TokenId) => void;
+  /** Full-width triggers say the token's name after its code. */
+  detail?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -51,7 +54,14 @@ export function TokenSelect({
         onClick={() => setOpen((o) => !o)}
       >
         <PayMark id={value} className="icon-20" />
-        {value}
+        {detail ? (
+          <span className="tsel__label">
+            <span className="tsel__code">{value}</span>
+            <span className="tsel__name">{TOKENS.find((t) => t.id === value)?.name}</span>
+          </span>
+        ) : (
+          value
+        )}
         <ChevronDown className="icon-14 tsel__chevron" />
       </button>
 

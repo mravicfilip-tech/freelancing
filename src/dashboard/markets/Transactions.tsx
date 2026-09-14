@@ -74,12 +74,19 @@ export function Transactions({ rows }: { rows: TxRow[] }) {
   const from = (page - 1) * PAGE_SIZE;
   const slice = rows.slice(from, from + PAGE_SIZE);
 
-  /* Turning a page on a phone lands the reader at the bottom of the new one;
-     bring the table's head back into view so the page reads top-down. */
+  /* On a phone the pager sits a screen below the head, so turning a page
+     lands the reader mid-list; bring the head back only when it has actually
+     scrolled off, since on a desktop the whole card is in view and moving it
+     read as a jump. */
   useEffect(() => {
-    if (page === 1) return;
-    document.getElementById('tx-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const head = document.getElementById('tx-title');
+    if (!head || head.getBoundingClientRect().top >= 0) return;
+    head.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [page]);
+
+  /* The last page is shorter; invisible rows hold the card's height so the
+     pager stays put under the pointer. */
+  const filler = Array.from({ length: PAGE_SIZE - slice.length }, (_, i) => i);
 
   return (
     <section className="card orders tx" aria-labelledby="tx-title">
@@ -130,6 +137,11 @@ export function Transactions({ rows }: { rows: TxRow[] }) {
                     <td className="num orders__usd">{usd(t.usd)}</td>
                     <td className="num tx__worth">{usd(t.worth)}</td>
                     <td className="num is-right orders__time">{ago(t.hoursAgo)}</td>
+                  </tr>
+                ))}
+                {filler.map((i) => (
+                  <tr key={`f${i}`} className="tx__filler" aria-hidden="true">
+                    <td colSpan={7}>&nbsp;</td>
                   </tr>
                 ))}
               </tbody>

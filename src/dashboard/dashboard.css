@@ -339,14 +339,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .rail__toggle:hover { background: var(--d-inset); color: var(--d-text); }
 
-/* ---------- Account block ----------
-   Under the nav, over the toggle: who is signed in, settings, and the way out.
-   Same dashed rule the nav uses between its two groups. */
+/* ---------- Account ----------
+   Under the nav, over the toggle: one trigger, and a menu above it. Same
+   dashed rule the nav uses between its two groups. */
 .rail__foot {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-top: 16px;
+  position: relative;
+  padding-top: 14px;
   background-image: var(--d-dash-h);
   background-size: 100% 1px;
   background-position: left top;
@@ -356,14 +354,19 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
-  padding: 6px 6px;
+  width: 100%;
+  padding: 6px;
+  border: 0;
   border-radius: 999px;
+  background: transparent;
   color: var(--d-text);
-  text-decoration: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   transition: background-color 140ms ease;
 }
-.rail__user:hover { background: var(--d-inset); }
+.rail__user:hover,
+.rail__user[aria-expanded='true'] { background: var(--d-inset); }
 .rail__avatar {
   display: grid;
   place-items: center;
@@ -376,36 +379,76 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-size: 15px;
   font-weight: 600;
 }
-.rail__user-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.rail__user-text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; }
 .rail__user-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rail__user-sub { font-size: 12px; color: var(--d-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rail[data-mode='collapsed'] .rail__user { justify-content: center; padding: 6px 0; }
-.rail[data-mode='collapsed'] .rail__user-text { display: none; }
-/* Collapsed, the account rows are icon-only chips with a title each: with
-   labels under the icons the rail ran past a 1000px viewport. */
-.rail[data-mode='collapsed'] .rail__foot .rail__item { padding: 4px; }
-.rail[data-mode='collapsed'] .rail__foot .rail__label { display: none; }
-/* On a short screen the nav scrolls rather than pushing the account block
-   and the toggle off the bottom of the rail. */
-.rail__nav { min-height: 0; overflow-y: auto; }
+.rail__user-sub { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--d-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rail__user-chev { color: var(--d-text-3); transform: rotate(180deg); transition: transform 160ms ease; }
+.rail__user[aria-expanded='true'] .rail__user-chev { transform: rotate(0); }
 
-/* Short viewports (a 900px laptop under browser chrome is ~790). The account
-   block turns into one row of avatar and two chips, the rail's own gaps close
-   up, and the collapsed rail drops its labels — its tooltips carry them — so
-   the seven routes never scroll out of reach. */
+.rail__menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 30;
+  width: 248px;
+  padding: 6px;
+  border-radius: var(--r-card);
+  background: var(--d-card);
+  box-shadow: var(--d-lift), 0 0 0 1px var(--d-rule);
+}
+.rail__menu-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 12px;
+  margin-bottom: 6px;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+}
+.rail__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--d-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+.rail__menu-item:hover { background-color: var(--d-inset); }
+.rail__menu-item svg { color: var(--d-text-2); }
+.rail__menu-item--wallet { justify-content: space-between; }
+.rail__menu-hint { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 400; color: var(--d-text-3); }
+.rail__menu-item--out {
+  margin-top: 6px;
+  background-image: var(--d-dash-h);
+  background-size: 100% 1px;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+.rail[data-mode='collapsed'] .rail__user { justify-content: center; padding: 6px 0; }
+.rail[data-mode='collapsed'] .rail__user-text,
+.rail[data-mode='collapsed'] .rail__user-chev { display: none; }
+
+/* Short viewports (a 900px laptop under browser chrome is ~790): the rail's
+   gaps close up and the collapsed rail drops its labels — its tooltips carry
+   them — so the seven routes never scroll out of reach. */
 @media (max-height: 880px) {
   .rail { gap: 14px; }
   .rail__brand { margin-bottom: 12px; }
   .rail__item { padding: 8px 6px; }
-  .rail__foot { flex-direction: row; align-items: center; gap: 4px; }
-  .rail__user { flex: 1; min-width: 0; margin: 0; padding: 4px; }
-  .rail__foot .rail__group { flex-direction: row; gap: 2px; }
-  .rail__foot .rail__item { padding: 4px; }
-  .rail__foot .rail__label { display: none; }
-  /* In the row there is room for the name or the wallet, not both. */
-  .rail__user-sub { display: none; }
-  .rail[data-mode='collapsed'] .rail__foot,
-  .rail[data-mode='collapsed'] .rail__foot .rail__group { flex-direction: column; gap: 4px; }
   .rail[data-mode='collapsed'] .rail__item { padding: 4px; }
   .rail[data-mode='collapsed'] .rail__label { display: none; }
 }

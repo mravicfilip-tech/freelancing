@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from 'react';
 import { USER, WALLET } from './data';
-import { NavIcon, SettingsIcon, SignOutIcon } from './icons';
+import { CheckIcon, ChevronDown, CopyIcon, NavIcon, SettingsIcon, SignOutIcon, UserIcon } from './icons';
+import { useCopy } from './useCopy';
 import { rail } from './theme';
 
 type Id = keyof typeof NavIcon;
@@ -62,38 +64,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
         ))}
       </nav>
 
-      {/* The account, in the space the nav leaves: who is signed in, where to
-          change things, and the way out. The wallet short is the sub-line so
-          the rail states the one fact every figure on the page belongs to. */}
-      <div className="rail__foot">
-        <a className="rail__user" href="#profile" title={collapsed ? USER.name : undefined}>
-          <span className="rail__avatar" aria-hidden="true">
-            {USER.initials}
-          </span>
-          <span className="rail__user-text">
-            <span className="rail__user-name">{USER.name}</span>
-            <span className="rail__user-sub num">{WALLET.short}</span>
-          </span>
-        </a>
-        <ul className="rail__group">
-          <li>
-            <a className="rail__item" href="#settings" title={collapsed ? 'Settings' : undefined}>
-              <span className="rail__icon">
-                <SettingsIcon className="icon-22" />
-              </span>
-              <span className="rail__label">Settings</span>
-            </a>
-          </li>
-          <li>
-            <a className="rail__item" href="/auth" title={collapsed ? 'Log out' : undefined}>
-              <span className="rail__icon">
-                <SignOutIcon className="icon-22" />
-              </span>
-              <span className="rail__label">Log out</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <RailAccount collapsed={collapsed} />
 
       <button
         type="button"
@@ -117,5 +88,94 @@ export function Sidebar({ active = 'presale' }: { active?: Id }) {
         <span className="rail__label">{collapsed ? 'Expand' : 'Collapse'}</span>
       </button>
     </aside>
+  );
+}
+
+/**
+ * The account, in the space the nav leaves: one trigger with the avatar, name
+ * and wallet, and a menu above it for profile, settings and the way out. One
+ * row instead of three keeps the rail short enough for a laptop; collapsed,
+ * the trigger is the avatar alone.
+ */
+function RailAccount({ collapsed }: { collapsed: boolean }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const [copied, copy] = useCopy();
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className="rail__foot" ref={root}>
+      {open && (
+        <div className="rail__menu" role="menu" aria-label="Account">
+          <div className="rail__menu-head">
+            <span className="rail__avatar" aria-hidden="true">
+              {USER.initials}
+            </span>
+            <span className="rail__user-text">
+              <span className="rail__user-name">{USER.name}</span>
+              <span className="rail__user-sub">
+                <span className="sheet__live" aria-hidden="true" />
+                Connected · {WALLET.chain}
+              </span>
+            </span>
+          </div>
+          <button
+            type="button"
+            role="menuitem"
+            className="rail__menu-item rail__menu-item--wallet"
+            onClick={() => copy(WALLET.address)}
+          >
+            <span className="num">{WALLET.short}</span>
+            <span className="rail__menu-hint">
+              {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
+              {copied ? 'Copied' : 'Copy'}
+            </span>
+          </button>
+          <a role="menuitem" className="rail__menu-item" href="#profile" onClick={() => setOpen(false)}>
+            <UserIcon className="icon-20" />
+            Profile
+          </a>
+          <a role="menuitem" className="rail__menu-item" href="#settings" onClick={() => setOpen(false)}>
+            <SettingsIcon className="icon-20" />
+            Settings
+          </a>
+          <a role="menuitem" className="rail__menu-item rail__menu-item--out" href="/auth">
+            <SignOutIcon className="icon-20" />
+            Log out
+          </a>
+        </div>
+      )}
+
+      <button
+        type="button"
+        className="rail__user"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        title={collapsed ? USER.name : undefined}
+      >
+        <span className="rail__avatar" aria-hidden="true">
+          {USER.initials}
+        </span>
+        <span className="rail__user-text">
+          <span className="rail__user-name">{USER.name}</span>
+          <span className="rail__user-sub num">{WALLET.short}</span>
+        </span>
+        <ChevronDown className="icon-16 rail__user-chev" />
+      </button>
+    </div>
   );
 }

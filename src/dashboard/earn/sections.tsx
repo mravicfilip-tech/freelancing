@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { TOKENS, money, usd, whole, type Order, type TokenId } from '../data';
+import { PRESALE, TOKENS, money, usd, whole, type Order, type TokenId } from '../data';
 import { Button } from '../Button';
 import { Progress } from '../Progress';
 import { TokenSelect } from '../TokenSelect';
@@ -11,13 +11,13 @@ import { EARN_ORDERS, PROMOS, STAGE } from './data';
    Promotions — four small cards
    ========================================================================== */
 
-/** Line marks for the four promos, drawn like the empty-state art: 64 grid, 1.6px. */
-const art = { viewBox: '0 0 64 64', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
+/** The four promo marks, drawn as the nav set is: 24 grid, 1.6px, rounded. */
+const art = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 const PROMO_ART: Record<string, () => React.ReactNode> = {
-  rails: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M12 44h40M12 20h40" /><path d="M20 20v24M32 20v24M44 20v24" strokeDasharray="4 4" opacity=".55" /><circle cx="52" cy="32" r="5" /></svg>),
-  bank: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M12 26l20-12 20 12" /><path d="M16 26v18M32 26v18M48 26v18" /><path d="M10 48h44" /><path d="M22 34h20" strokeDasharray="4 4" opacity=".55" /></svg>),
-  xborder: () => (<svg {...art} className="promo__art" aria-hidden="true"><circle cx="32" cy="32" r="18" /><path d="M14 32h36M32 14c-7 8-7 28 0 36M32 14c7 8 7 28 0 36" opacity=".55" strokeDasharray="4 4" /><path d="M40 22l6-6-6-6" /><path d="M46 16H26" /></svg>),
-  card: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="10" y="18" width="44" height="28" rx="6" /><path d="M10 27h44" /><path d="M18 38h10" strokeDasharray="4 4" opacity=".55" /><circle cx="45" cy="38" r="3" /><circle cx="40" cy="38" r="3" /></svg>),
+  rails: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3" /><path d="M8 7V5.4A1.4 1.4 0 0 1 9.4 4h5.2A1.4 1.4 0 0 1 16 5.4V7" /><path d="M3 12.5h18" /><path d="M10 12.5v2.5h4v-2.5" /></svg>),
+  bank: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M3.5 9.5 12 4.5l8.5 5" /><path d="M5.5 10v7M10 10v7M14 10v7M18.5 10v7" /><path d="M3.5 20h17" /><path d="M4.5 9.5h15" /></svg>),
+  xborder: () => (<svg {...art} className="promo__art" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M4 12h16" /><path d="M12 4c-2.8 2.6-2.8 13.4 0 16M12 4c2.8 2.6 2.8 13.4 0 16" /></svg>),
+  card: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="3" /><path d="M3 10h18" /><path d="M7 14.5h3.5" /><path d="M14.5 14.5h2.5" /></svg>),
 };
 
 const TAG: Record<string, string> = { rails: 'Business', bank: 'Payments', xborder: 'Transfers', card: 'Spend' };
@@ -94,7 +94,7 @@ function useCountdown(seconds: number) {
  * Days · Minutes · Hours · Seconds; that is a slip in the source, not a design
  * choice, so they run in descending order here.
  */
-export function Countdown({ size = 'md', title = 'Until the price steps up' }: { size?: 'sm' | 'md' | 'lg'; title?: string }) {
+export function Countdown({ size = 'md', title = 'Until the price steps up', next = true }: { size?: 'sm' | 'md' | 'lg'; title?: string; next?: boolean }) {
   const t = useCountdown(STAGE.secondsLeft);
   const units = [
     [t.days, 'Days'],
@@ -105,7 +105,8 @@ export function Countdown({ size = 'md', title = 'Until the price steps up' }: {
   return (
     <div className={`cd cd--${size}`}>
       <p className="cd__title">
-        {title} <span className="num">→ ${STAGE.nextPrice.toFixed(2)}</span>
+        {title}
+        {next && <span className="num">→ ${STAGE.nextPrice.toFixed(2)}</span>}
       </p>
       <div
         className="clock cd__clock"
@@ -214,7 +215,7 @@ export function EarnBuy({
         <div className="efield">
           <span className="field__label">Select payment method</span>
           <div className="field__control earn-buy__method">
-            <TokenSelect value={token} onChange={setToken} />
+            <TokenSelect value={token} onChange={setToken} detail />
           </div>
         </div>
         <div className="efield">
@@ -364,33 +365,53 @@ export function EarnOrders({ layout = 'table', limit }: { layout?: 'table' | 'ti
  */
 export function StageCard() {
   const pct = (STAGE.progress * 100).toFixed(1);
+  const uplift = Math.round((PRESALE.listPrice / STAGE.price - 1) * 100);
   return (
     <section className="card stg" aria-labelledby="stage-title">
-      <div className="stg__price">
-        <p className="ladder__label" id="stage-title">
-          <span className="topbar__dot" aria-hidden="true" />
-          Stage {STAGE.n} price · live
-        </p>
-        <div className="stg__fig-row">
-          <Figure className="stg__fig" symbol="$" value={STAGE.price.toFixed(2)} />
-          <p className="num ladder__next-price stg__next">
-            <ArrowUp className="icon-14" />
-            ${STAGE.nextPrice.toFixed(2)} next
+      <div className="stg__top">
+        <div className="stg__price">
+          <p className="ladder__label" id="stage-title">
+            <span className="topbar__dot" aria-hidden="true" />
+            Stage {STAGE.n} · live
           </p>
+          <div className="stg__fig-row">
+            <Figure className="stg__fig" symbol="$" value={STAGE.price.toFixed(2)} />
+            <p className="num ladder__next-price stg__next">
+              <ArrowUp className="icon-14" />
+              ${STAGE.nextPrice.toFixed(2)} next
+            </p>
+          </div>
         </div>
-        <div className="raised__bar stg__bar">
-          <Progress value={STAGE.progress} label={`Stage ${STAGE.n} is ${pct}% sold`} />
-          <span className="raised__pct num" aria-hidden="true">{pct}% sold</span>
+        <div className="stg__clock">
+          <Countdown size="sm" next={false} />
         </div>
       </div>
 
-      <div className="stg__side">
-        <Countdown size="sm" />
-        <dl className="raised__facts stg__facts">
-          <div><dt>USDT raised</dt><dd className="num">${whole(STAGE.raised)}</dd></div>
-          <div><dt>Tokens sold</dt><dd className="num">{whole(STAGE.tokensSold)} RTX</dd></div>
-        </dl>
+      {/* One solid bar, the figure beside it rather than on it: the hero's
+          ruled bar was hiding its own caption in the fill. */}
+      <div className="stg__prog">
+        <p className="stg__prog-head">
+          <span>Stage {STAGE.n} progress</span>
+          <span className="num stg__prog-pct">{pct}% sold</span>
+        </p>
+        <div
+          className="sbar"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(STAGE.progress * 100)}
+          aria-label={`Stage ${STAGE.n} is ${pct}% sold`}
+        >
+          <span className="sbar__fill" style={{ width: `${STAGE.progress * 100}%` }} />
+        </div>
       </div>
+
+      <dl className="raised__facts stg__facts">
+        <div><dt>USDT raised</dt><dd className="num">${whole(STAGE.raised)}</dd></div>
+        <div><dt>Tokens sold</dt><dd className="num">{whole(STAGE.tokensSold)} RTX</dd></div>
+        <div><dt>Left this stage</dt><dd className="num">${whole(PRESALE.usdLeft)}</dd></div>
+        <div><dt>Listing price</dt><dd className="num">${PRESALE.listPrice.toFixed(2)} <small>+{uplift}%</small></dd></div>
+      </dl>
     </section>
   );
 }

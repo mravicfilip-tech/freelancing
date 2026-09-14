@@ -4,9 +4,20 @@
    dashboard's orders table with two more columns; only the footer is new.
    ========================================================================== */
 
+/* Three figures over a table are the page's headline, not a summary strip as
+   on the presale home, so they get the room a headline gets. */
+.markets .stat { min-height: 172px; padding: 26px 28px; }
+.markets .stat .fig { margin-top: 18px; font-size: clamp(34px, 2.8vw, 48px); }
+.markets .stat__label { font-size: 14px; }
+.markets .stat__note { margin-top: 12px; font-size: 14px; }
+
 /* Seven columns at the dashboard's cell padding need the room. */
 .tx .orders__table { min-width: 720px; }
 .tx__price { color: var(--d-text-2); }
+.tx__filler { visibility: hidden; }
+/* A filler cell carries the same 22px mark box a real row does, so its height
+   matches to the pixel and the pager does not creep on the last page. */
+.tx__filler td::before { content: ''; display: inline-block; width: 1px; height: 22px; vertical-align: middle; }
 
 .tx__foot {
   display: flex;

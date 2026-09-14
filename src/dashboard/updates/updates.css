@@ -5,14 +5,6 @@
    dashboard's.
    ========================================================================== */
 
-/* ---------- Variant picker (review tool) ---------- */
-.vpick { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px; border-radius: var(--r-sm); background: var(--d-card); box-shadow: inset 0 0 0 1px var(--d-rule); align-self: flex-start; }
-.vpick__item { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 8px; color: var(--d-text-2); font-size: 13px; text-decoration: none; }
-.vpick__item b { font-weight: 700; color: var(--d-text-3); }
-.vpick__item:hover { background: var(--d-inset); color: var(--d-text); }
-.vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
-.vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
-
 /* ---------- Feature banner ---------- */
 .upd-hero {
   position: relative;
@@ -83,7 +75,6 @@
   /* dashboard.css sends the topbar to order 1 on a phone and expects the
      page's sections to follow it; these are the sections here. */
   .updates .dash__main > :not(.topbar) { order: 2; }
-  .updates .dash__main > .vpick { order: 0; }
   /* The banner's text flows under the art's top instead of pinning to the
      bottom of a box too short to hold it. */
   .upd-hero { aspect-ratio: auto; min-height: 0; max-height: none; }

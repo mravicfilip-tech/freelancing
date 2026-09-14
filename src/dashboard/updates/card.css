@@ -49,56 +49,22 @@
   z-index: 0;
   background:
     radial-gradient(circle at center, rgba(179, 181, 245, 0.3) 1px, transparent 1.5px) 4px 4px / 16px 16px,
-    radial-gradient(48% 62% at 92% 12%, rgba(64, 66, 210, 0.5), transparent 70%);
+    radial-gradient(40% 50% at 92% 12%, rgba(64, 66, 210, 0.42), transparent 70%);
   -webkit-mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.12) 78%);
   mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.12) 78%);
 }
 .thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
-/* ---------- Dark-mode colour fields (review: ?d=1..5) ----------
-   All five: an indigo bloom in the lower right and the presale's lime as a
-   rim, the way the yellow fringes the light card. What varies is how much
-   of each and where they meet. */
-/* E1 As D4, refined: a lavender halo around the indigo, the lime rim
-   brighter and spread along the whole bottom edge. */
-.dash[data-theme='dark'] .thumb[data-d='1'] {
+/* Dark mode's colour field, balanced like the light card: the glow stays
+   with the rings in the top right and is kept modest; the lower half lifts
+   with lavender at the centre and the presale's lime in the lower left, so
+   the card is not purple down one whole side. */
+.dash[data-theme='dark'] .thumb {
   background-image:
-    radial-gradient(66% 78% at 100% 100%, rgba(64, 66, 210, 0.95) 0%, rgba(64, 66, 210, 0.45) 40%, rgba(64, 66, 210, 0) 70%),
-    radial-gradient(80% 60% at 70% 110%, rgba(179, 181, 245, 0.28) 0%, rgba(179, 181, 245, 0) 70%),
-    radial-gradient(70% 34% at 20% 114%, rgba(217, 242, 78, 0.5) 0%, rgba(217, 242, 78, 0) 70%);
+    radial-gradient(54% 46% at 52% 120%, rgba(179, 181, 245, 0.32) 0%, rgba(179, 181, 245, 0) 70%),
+    radial-gradient(50% 36% at 6% 116%, rgba(217, 242, 78, 0.4) 0%, rgba(217, 242, 78, 0) 70%);
+  background-repeat: no-repeat;
 }
-/* E2 Meeting: the lime runs in from the lower left and meets the indigo at
-   the bottom centre, the warm-cool overlap the light card has. */
-.dash[data-theme='dark'] .thumb[data-d='2'] {
-  background-image:
-    radial-gradient(62% 80% at 96% 100%, rgba(64, 66, 210, 0.95) 0%, rgba(64, 66, 210, 0.4) 44%, rgba(64, 66, 210, 0) 72%),
-    radial-gradient(56% 44% at 30% 112%, rgba(217, 242, 78, 0.55) 0%, rgba(217, 242, 78, 0.18) 40%, rgba(217, 242, 78, 0) 70%),
-    radial-gradient(30% 30% at 56% 108%, rgba(140, 200, 170, 0.35) 0%, rgba(140, 200, 170, 0) 70%);
-}
-/* E3 Wide bloom, hairline lime: the indigo takes the right half; the lime
-   is a thin glow along the bottom edge only. */
-.dash[data-theme='dark'] .thumb[data-d='3'] {
-  background-image:
-    radial-gradient(90% 100% at 110% 90%, rgba(64, 66, 210, 0.95) 0%, rgba(64, 66, 210, 0.5) 38%, rgba(64, 66, 210, 0) 68%),
-    linear-gradient(0deg, rgba(217, 242, 78, 0.5) 0%, rgba(217, 242, 78, 0.12) 6%, rgba(217, 242, 78, 0) 16%);
-}
-/* E4 Diagonal: lime faint in the upper left behind the brand, indigo strong
-   in the lower right. */
-.dash[data-theme='dark'] .thumb[data-d='4'] {
-  background-image:
-    radial-gradient(64% 76% at 100% 100%, rgba(64, 66, 210, 0.95) 0%, rgba(64, 66, 210, 0.45) 40%, rgba(64, 66, 210, 0) 70%),
-    radial-gradient(48% 52% at -6% -10%, rgba(217, 242, 78, 0.34) 0%, rgba(217, 242, 78, 0) 70%),
-    radial-gradient(40% 30% at 10% 114%, rgba(217, 242, 78, 0.3) 0%, rgba(217, 242, 78, 0) 70%);
-}
-/* E5 Vivid: a brighter indigo core with lavender behind it, the lime rim at
-   full strength. The punchiest. */
-.dash[data-theme='dark'] .thumb[data-d='5'] {
-  background-image:
-    radial-gradient(44% 56% at 100% 100%, rgba(91, 94, 245, 0.95) 0%, rgba(91, 94, 245, 0) 70%),
-    radial-gradient(76% 84% at 96% 104%, rgba(64, 66, 210, 0.85) 0%, rgba(64, 66, 210, 0.35) 48%, rgba(64, 66, 210, 0) 74%),
-    radial-gradient(60% 40% at 16% 116%, rgba(217, 242, 78, 0.65) 0%, rgba(217, 242, 78, 0.2) 40%, rgba(217, 242, 78, 0) 70%);
-}
-.dash[data-theme='dark'] .thumb[data-d] { background-repeat: no-repeat; }
 
 /* Light mode: the landing page's bento cards — white paper, the lavender
    blob with its warm yellow fringe, the rings in indigo, ink type. Drawn in

@@ -20,12 +20,9 @@ function Art() {
   );
 }
 
-/** `?d=1..5` picks the dark-mode colour field while the options are reviewed. */
-const D = Math.min(5, Math.max(1, Number(new URLSearchParams(window.location.search).get('d')) || 1));
-
 export function Thumb({ u, titled = true, className }: { u: Update; titled?: boolean; className?: string }) {
   return (
-    <div className={`thumb${className ? ` ${className}` : ''}`} data-d={D} aria-hidden={!titled || undefined}>
+    <div className={`thumb${className ? ` ${className}` : ''}`} aria-hidden={!titled || undefined}>
       <Art />
       <span className="thumb__brand">
         <RtxMark className="icon-20" />

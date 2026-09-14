@@ -12,11 +12,14 @@
  */
 import { RARITY, type Rarity } from './data';
 
+type Spark = { x: number; y: number; vx: number; vy: number; born: number; ttl: number; r: number; glow: [number, number, number] };
 type Row = {
   root: HTMLElement;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   trail: { x: number; y: number; t: number; glow: [number, number, number] }[];
+  sparks: Spark[];
+  last: number;
   w: number;
   h: number;
   dpr: number;
@@ -24,6 +27,7 @@ type Row = {
 };
 
 const rows = new Set<Row>();
+const byRoot = new WeakMap<HTMLElement, Row>();
 let raf = 0;
 let t0 = 0;
 let lastFrame = 0;
@@ -87,7 +91,7 @@ function pointAt(s: number, w: number, h: number, r: number, inset: number) {
 const rgb = ([r, g, b]: [number, number, number], a: number) => `rgba(${r},${g},${b},${a})`;
 
 /** One card's arc, drawn at (ox, oy) in the row's space. */
-function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h: number, rarity: Rarity, won: boolean, t: number, still: boolean) {
+function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h: number, rarity: Rarity, won: boolean, t: number, still: boolean, clip: boolean) {
   const color = RARITY[rarity];
   const hot = won ? 1.7 : 1;
   const time = still ? 0 : t * CLOCK;
@@ -102,6 +106,14 @@ function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h
   const P = 2 * (w - 2 * inset - 2 * R) + 2 * (h - 2 * inset - 2 * R) + 2 * Math.PI * R;
   const N = Math.max(120, Math.round(P / 4));
   const cx = w / 2, cy = h / 2;
+  // On a light ground the glow that spills past the card reads as a smudge,
+  // so there the scene is kept inside the card's own edge.
+  if (clip) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(ox, oy, w, h, R + 1);
+    ctx.clip();
+  }
   ctx.beginPath();
   for (let i = 0; i <= N; i++) {
     const s = (i % N) * (P / N);
@@ -131,6 +143,7 @@ function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h
   ctx.strokeStyle = `rgba(255,255,255,${0.95 * flicker})`;
   ctx.lineWidth = CORE + 0.3;
   ctx.stroke();
+  if (clip) ctx.restore();
 }
 
 function draw(row: Row, now: number, still: boolean) {
@@ -139,11 +152,16 @@ function draw(row: Row, now: number, still: boolean) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
   const base = root.getBoundingClientRect();
-  for (const el of root.querySelectorAll<HTMLElement>('.prize')) {
+  const light = root.closest('.dash')?.getAttribute('data-theme') === 'light';
+  // While the reel flies the cards outrun any arc drawn from where they
+  // were a frame ago, so the arcs sit out the spin; the cards keep their own
+  // ring, and the flash covers the hand-off.
+  const flying = root.classList.contains('reel--spin');
+  for (const el of flying ? [] : root.querySelectorAll<HTMLElement>('.prize')) {
     const r = el.getBoundingClientRect();
     const ox = r.left - base.left, oy = r.top - base.top;
     if (ox + r.width < -SPREAD || ox > w + SPREAD || oy + r.height < -SPREAD || oy > h + SPREAD) continue;
-    arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still);
+    arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still, light);
   }
   // The light trail: spots the pointer left, fading over half a second.
   // Blended normally: additive spots stacked to white wherever the pointer
@@ -159,6 +177,41 @@ function draw(row: Row, now: number, still: boolean) {
       ctx.fillRect(p.x - TRAIL_R, p.y - TRAIL_R, TRAIL_R * 2, TRAIL_R * 2);
     }
   }
+  // Sparks from an opening: thrown out, pulled down, gone in a second.
+  if (row.sparks.length) {
+    const dt = Math.min(0.05, (now - row.last) / 1000);
+    row.sparks = row.sparks.filter((p) => now - p.born < p.ttl);
+    for (const p of row.sparks) {
+      p.vy += 520 * dt;
+      p.vx *= 0.985;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      const life = (now - p.born) / p.ttl;
+      const a = life < 0.7 ? 1 : 1 - (life - 0.7) / 0.3;
+      ctx.fillStyle = rgb(p.glow, a);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (1 - life * 0.5), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  row.last = now;
+}
+
+/** Throws `n` sparks out from a point on the row, in a colour, with white among them. */
+export function burst(root: HTMLElement, x: number, y: number, glow: [number, number, number], n: number, power = 1) {
+  const row = byRoot.get(root);
+  if (!row || reduced()) return;
+  const now = performance.now();
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const v = (140 + Math.random() * 360) * power;
+    row.sparks.push({
+      x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 80 * power, born: now,
+      ttl: 700 + Math.random() * 700, r: 1.5 + Math.random() * 2.5,
+      glow: Math.random() < 0.3 ? [255, 255, 255] : glow,
+    });
+  }
+  start();
 }
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -183,7 +236,8 @@ export function mountRow(root: HTMLElement, canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return () => {};
   if (!t0) t0 = performance.now();
-  const row: Row = { root, canvas, ctx, trail: [], w: 0, h: 0, dpr: Math.min(window.devicePixelRatio || 1, 1.5), visible: false };
+  const row: Row = { root, canvas, ctx, trail: [], sparks: [], last: performance.now(), w: 0, h: 0, dpr: Math.min(window.devicePixelRatio || 1, 1.5), visible: false };
+  byRoot.set(root, row);
 
   const size = () => {
     const r = root.getBoundingClientRect();
@@ -222,6 +276,7 @@ export function mountRow(root: HTMLElement, canvas: HTMLCanvasElement) {
   start();
   return () => {
     rows.delete(row);
+    byRoot.delete(root);
     ro.disconnect();
     io.disconnect();
     root.removeEventListener('scroll', onScroll);

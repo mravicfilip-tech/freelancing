@@ -145,11 +145,54 @@
   left: 50%;
   top: 50%;
   z-index: 5;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
   transform: translate(-50%, -50%);
 }
+/* The tweened layer: GSAP owns its transform, so the centring lives on the
+   parent above. */
+.reel__anim { display: grid; justify-items: center; gap: 2px; transform-origin: 50% 60%; }
+
+/* The opening's light: a lime flash where the box was, a tick of light at
+   the marker as each card passes, a ring rolling out of the winner, and the
+   reel's edges taking the winner's colour. All sit still at zero until the
+   choreography lifts them. */
+.reel__flash, .reel__ring, .reel__tick, .reel__glow { position: absolute; pointer-events: none; opacity: 0; visibility: hidden; }
+.reel__flash {
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  width: 260px;
+  height: 260px;
+  margin: -130px 0 0 -130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(217, 242, 78, 0.8) 28%, rgba(217, 242, 78, 0) 70%);
+  mix-blend-mode: screen;
+}
+.reel__ring {
+  z-index: 6;
+  border: 2px solid #d9f24e;
+  border-radius: 14px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 24px 2px currentColor;
+}
+.reel__tick {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  z-index: 4;
+  width: 72px;
+  margin-left: -36px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(217, 242, 78, 0.55), rgba(217, 242, 78, 0) 70%);
+}
+.reel__glow {
+  inset: 0;
+  z-index: 4;
+  background: radial-gradient(55% 75% at 50% 50%, rgba(var(--win-glow, 217, 242, 78), 0) 45%, rgba(var(--win-glow, 217, 242, 78), 0.55) 100%);
+}
+/* After a landing the other cards step back. */
+.prize { transition: opacity 500ms ease, transform 500ms ease; }
+.prize[data-won='true'] { transition: none; }
+.reel--won .prize:not([data-won='true']) { opacity: 0.55; transform: scale(0.96); }
+.reel__cap--win { font-weight: 600; }
 .reel__open {
   padding: 0;
   border: 0;
@@ -214,7 +257,8 @@
   scrollbar-width: none;
 }
 .inside__row::-webkit-scrollbar { display: none; }
-.inside__row .prize { scroll-snap-align: start; }
+.inside__row .prize { scroll-snap-align: start; zoom: var(--z, 1); }
+.inside--fits .inside__nav { display: none; }
 
 /* ---------- Claimed rewards ---------- */
 .claimed__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); margin-top: 18px; }

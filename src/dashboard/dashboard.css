@@ -87,9 +87,10 @@
   --d-pill-ring: #5a6a80;
   --d-chip-lift: none;
   /* A menu floats over the page, so on dark it needs depth to separate. */
-  --d-menu-edge: 0 0 0 1px var(--d-rule), 0 16px 36px -12px rgb(0 0 0 / 55%);
-  /* A floating menu sits a step above the card it opens from. */
-  --d-menu: #1f2833;
+  /* A floating menu is darker than the page, not lighter, with a stroke:
+     it contrasts against the cards it opens over instead of blending. */
+  --d-menu-edge: 0 0 0 1px var(--d-field-ring);
+  --d-menu: #070b10;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(238, 242, 245, 0.07) 1px, transparent 1.4px);

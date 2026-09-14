@@ -3,7 +3,6 @@ import { Sidebar } from '../Sidebar';
 import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { Button } from '../Button';
-import { Pager } from '../Pager';
 import { theme } from '../theme';
 import { UPDATES, type Update } from './data';
 import { Thumb } from './thumb';
@@ -17,13 +16,6 @@ import './updates.css';
  * thumbnail on top.
  */
 /* ---------- Shared pieces ---------- */
-
-function usePaged(items: Update[], size: number) {
-  const [page, setPage] = useState(1);
-  const pages = Math.max(1, Math.ceil(items.length / size));
-  const slice = items.slice((page - 1) * size, page * size);
-  return { page, pages, slice, setPage };
-}
 
 /* ---------- Feature ---------- */
 
@@ -52,7 +44,9 @@ function Feature({ u }: { u: Update }) {
 const PER_PAGE = 6;
 
 function Earlier({ items }: { items: Update[] }) {
-  const { page, pages, slice, setPage } = usePaged(items, PER_PAGE);
+  const [shown, setShown] = useState(PER_PAGE);
+  const slice = items.slice(0, shown);
+  const left = items.length - slice.length;
   return (
     <section className="card upd" aria-labelledby="upd-title">
       <header className="card__head">
@@ -66,11 +60,13 @@ function Earlier({ items }: { items: Update[] }) {
         {slice.map((u) => <UpdateCard u={u} key={u.id} />)}
       </div>
 
-      <footer className="tx__foot">
-        <p className="tx__count num">
-          Showing {(page - 1) * PER_PAGE + 1}–{(page - 1) * PER_PAGE + slice.length} of {items.length}
-        </p>
-        {pages > 1 && <Pager page={page} pages={pages} onPage={setPage} />}
+      <footer className="tx__foot upd-foot">
+        <p className="tx__count num">Showing {slice.length} of {items.length}</p>
+        {left > 0 && (
+          <Button variant="ghost" onClick={() => setShown((n) => n + PER_PAGE)}>
+            Load {Math.min(PER_PAGE, left)} more
+          </Button>
+        )}
       </footer>
     </section>
   );

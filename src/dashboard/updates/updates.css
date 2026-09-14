@@ -8,8 +8,10 @@
 /* ---------- Feature ---------- */
 .upd-feature {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 32px;
+  /* The thumbnail is capped, so the card's height is the picture's, not the
+     screen's; the text sits beside it at a readable measure. */
+  grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  gap: 36px;
   align-items: center;
 }
 .upd-feature__body { display: grid; gap: 12px; justify-items: start; }
@@ -19,13 +21,15 @@
 .upd-feature__text { margin: 0; max-width: 56ch; font-size: 15px; line-height: 1.55; color: var(--d-text-2); }
 .upd-feature__btn { margin-top: 6px; }
 
-/* ---------- Grid: three across, picture on top ---------- */
-.updates .upd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* ---------- Grid: picture on top, as many across as ~300px columns allow ---------- */
+.updates .upd-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+
+/* Load more sits where the pager sat; the count stays on the left. */
+.upd-foot { margin-top: 20px; }
 
 /* ---------- Narrow ---------- */
 @media (max-width: 1180px) {
   .upd-feature { grid-template-columns: minmax(0, 1fr); }
-  .updates .upd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 620px) {
   .updates .upd-grid { grid-template-columns: minmax(0, 1fr); }

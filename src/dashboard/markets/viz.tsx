@@ -1,45 +1,66 @@
-import { PRESALE, TOKENS, money, usd, type TokenId } from '../data';
+import { PRESALE, TOKENS, money, usd, stagePrice, type TokenId } from '../data';
 import { PayMark } from '../icons';
-import type { TxRow } from './data';
+import { ago, type TxRow } from './data';
 
 /**
- * The three small plots under the Markets figures. One hue throughout: the
- * accent for the data, the track for the rest; text stays in text tokens.
+ * The three plots under the Markets figures. Each sits on its own inset
+ * field and uses the card's full width. One hue throughout: the accent for
+ * the data, the track for the rest; text stays in text tokens.
  */
 
-/** Purchases per week as units: one square per purchase, stacked, oldest
-    week on the left. Counts this small read exactly as units where a bar
-    would only read as short. */
-export function WeekBars({ rows, weeks = 9 }: { rows: TxRow[]; weeks?: number }) {
-  const counts = Array.from({ length: weeks }, () => 0);
-  for (const r of rows) {
-    const w = Math.min(weeks - 1, Math.floor(r.hoursAgo / 168));
-    counts[weeks - 1 - w] += 1;
-  }
+const NAME: Record<string, string> = Object.fromEntries(TOKENS.map((t) => [t.id, t.name]));
+const label = (m: string) => (m === 'CARD' ? 'Card' : m === 'Other' ? 'Other' : NAME[m] ?? m);
+
+/**
+ * Every purchase as a dot on a time axis, sized by what it cost, over bands
+ * for the stage each cleared in. Newest at the right.
+ */
+export function PurchaseTimeline({ rows }: { rows: TxRow[] }) {
+  const span = Math.max(1, ...rows.map((r) => r.hoursAgo)) * 1.04;
+  /* 3% in from either edge, so the newest and oldest dots sit whole. */
+  const x = (h: number) => 4 + (1 - h / span) * 92;
+  const maxUsd = Math.max(...rows.map((r) => r.usd));
+  const size = (v: number) => 8 + Math.sqrt(v / maxUsd) * 12;
+
+  /* A band per stage, from midway before its first purchase to midway after its last. */
+  const stages = [...new Set(rows.map((r) => r.stage))].sort((a, b) => a - b);
+  const bands = stages.map((st, i) => {
+    const mine = rows.filter((r) => r.stage === st).map((r) => r.hoursAgo);
+    const newest = Math.min(...mine);
+    const oldest = Math.max(...mine);
+    const prevOldest = i > 0 ? Math.min(...rows.filter((r) => r.stage === stages[i - 1]).map((r) => r.hoursAgo)) : null;
+    const nextNewest = i < stages.length - 1 ? Math.max(...rows.filter((r) => r.stage === stages[i + 1]).map((r) => r.hoursAgo)) : null;
+    const from = prevOldest === null ? span : (oldest + prevOldest) / 2;
+    const to = nextNewest === null ? 0 : (newest + nextNewest) / 2;
+    return { st, left: x(from), width: x(to) - x(from) };
+  });
+
   return (
-    <div className="viz-units-wrap">
-      <div className="viz-units" role="img" aria-label={`Purchases per week over the last ${weeks} weeks`}>
-        {counts.map((n, i) => {
-          const back = weeks - 1 - i;
-          const label = back === 0 ? 'This week' : back === 1 ? 'Last week' : `${back} weeks ago`;
-          return (
-            <span key={i} className="viz-units__col" title={`${label}: ${n} purchase${n === 1 ? '' : 's'}`} data-now={back === 0 || undefined}>
-              {Array.from({ length: n }, (_, k) => <i key={k} />)}
-              {n === 0 && <i data-empty />}
-            </span>
-          );
-        })}
+    <div className="viz viz-tl" role="img" aria-label={`${rows.length} purchases over ${Math.round(span / 24)} days, across stages ${stages[0]} to ${stages[stages.length - 1]}`}>
+      <div className="viz-tl__plot">
+        {bands.map((b) => (
+          <span key={b.st} className="viz-tl__band" style={{ left: `${b.left}%`, width: `${b.width}%` }} data-live={b.st === PRESALE.stage || undefined}>
+            <span className="num">S{b.st}</span>
+          </span>
+        ))}
+        <span className="viz-tl__axis" />
+        {rows.map((r) => (
+          <i
+            key={r.id}
+            className="viz-tl__dot"
+            style={{ left: `${x(r.hoursAgo)}%`, width: size(r.usd), height: size(r.usd) }}
+            title={`${ago(r.hoursAgo)}: ${usd(r.usd)} in stage ${r.stage}`}
+          />
+        ))}
       </div>
-      <p className="viz-ends"><span>{weeks - 1} weeks ago</span><span>This week</span></p>
+      <p className="viz-ends"><span>{Math.round(span / 24)} days ago</span><span>Today</span></p>
     </div>
   );
 }
 
-const NAME: Record<string, string> = Object.fromEntries(TOKENS.map((t) => [t.id, t.name]));
-
-/** Where the money went, by what it was paid with: the top three and the
-    rest, as bar rows keyed by the coin marks. */
-export function SpendMix({ rows }: { rows: TxRow[] }) {
+/** Where the money went, by what it was paid with: blocks as wide as their
+    share, the coin mark inside each. */
+export function SpendBlocks({ rows }: { rows: TxRow[] }) {
   const total = rows.reduce((s, r) => s + r.usd, 0);
   const by = new Map<string, number>();
   for (const r of rows) by.set(r.method, (by.get(r.method) ?? 0) + r.usd);
@@ -47,42 +68,49 @@ export function SpendMix({ rows }: { rows: TxRow[] }) {
   const top = sorted.slice(0, 3);
   const rest = sorted.slice(3).reduce((s, [, v]) => s + v, 0);
   const parts = [...top.map(([m, v]) => ({ m, v })), ...(rest > 0 ? [{ m: 'Other', v: rest }] : [])];
-  const max = Math.max(...parts.map((p) => p.v));
   const pct = (v: number) => Math.round((v / total) * 100);
   return (
-    <ul className="viz-rows" aria-label="Spend by payment method">
-      {parts.map((p) => (
-        <li key={p.m} className="viz-rows__row" title={`${p.m === 'CARD' ? 'Card' : p.m}: ${usd(p.v)} (${pct(p.v)}%)`}>
-          <span className="viz-rows__key">
-            {p.m !== 'Other' ? <PayMark id={p.m as TokenId | 'CARD'} className="icon-16" /> : <i className="viz-rows__other" aria-hidden="true" />}
-            {p.m === 'CARD' ? 'Card' : p.m === 'Other' ? 'Other' : NAME[p.m] ?? p.m}
+    <div className="viz viz-blocks" role="img" aria-label={parts.map((p) => `${label(p.m)} ${pct(p.v)}%`).join(', ')}>
+      {parts.map((p, i) => (
+        <span key={p.m} className="viz-block" style={{ flex: p.v }} data-step={i} title={`${label(p.m)}: ${usd(p.v)} (${pct(p.v)}%)`}>
+          <span className="viz-block__key">
+            {p.m !== 'Other' ? <PayMark id={p.m as TokenId | 'CARD'} className="icon-16" /> : <i className="viz-block__other" aria-hidden="true" />}
+            <span className="viz-block__name">{label(p.m)}</span>
           </span>
-          <span className="viz-rows__bar"><i style={{ width: `${(p.v / max) * 100}%` }} /></span>
-          <b className="num viz-rows__pct">{pct(p.v)}%</b>
-        </li>
+          <b className="num viz-block__pct">{pct(p.v)}%</b>
+        </span>
       ))}
-    </ul>
+    </div>
   );
 }
 
-/** Where the average sits between the lowest price paid and the listing price. */
-export function PriceRange({ avg, low, stages }: { avg: number; low: number; stages: { n: number; price: number }[] }) {
-  const high = PRESALE.listPrice;
-  const pos = (v: number) => Math.min(1, Math.max(0, (v - low) / (high - low)));
-  const at = pos(avg);
+/**
+ * The stages you bought in as a small ladder, each column at its price, the
+ * average drawn across them and the listing price at the top.
+ */
+export function StageLadderMini({ rows, avg }: { rows: TxRow[]; avg: number }) {
+  const first = Math.min(...rows.map((r) => r.stage));
+  const last = Math.max(...rows.map((r) => r.stage));
+  const stages = Array.from({ length: last - first + 1 }, (_, i) => first + i);
+  const top = PRESALE.listPrice;
+  const h = (p: number) => (p / top) * 100;
+  const spentIn = (st: number) => rows.filter((r) => r.stage === st).reduce((s, r) => s + r.usd, 0);
   return (
-    <div className="viz-range-wrap">
-      <div className="viz-range" role="img" aria-label={`Average ${money(avg, 3)} between the first buy at ${money(low)} and the ${money(high)} listing`}>
-        <i className="viz-range__fill" style={{ width: `${at * 100}%` }} />
+    <div className="viz viz-ladder" role="img" aria-label={`Average ${money(avg, 3)} across stages ${first} to ${last}; listing at ${money(top)}`}>
+      <div className="viz-ladder__plot">
+        <span className="viz-ladder__line viz-ladder__line--list" style={{ bottom: '100%' }}>
+          <span className="viz-ladder__tag viz-ladder__tag--left">Listing <b className="num">${top.toFixed(2)}</b></span>
+        </span>
+        <span className="viz-ladder__line viz-ladder__line--avg" style={{ bottom: `${h(avg)}%` }}>
+          <span className="viz-ladder__tag">Average <b className="num">${avg.toFixed(3)}</b></span>
+        </span>
         {stages.map((st) => (
-          <i key={st.n} className="viz-range__tick" style={{ left: `${pos(st.price) * 100}%` }} title={`Stage ${st.n}: $${st.price.toFixed(2)}`} data-live={st.n === PRESALE.stage || undefined} />
+          <span key={st} className="viz-ladder__col" title={`Stage ${st} at $${stagePrice(st).toFixed(2)}: ${usd(spentIn(st))} spent`}>
+            <i style={{ height: `${h(stagePrice(st))}%` }} data-live={st === PRESALE.stage || undefined} />
+            <span className="num viz-ladder__price">${stagePrice(st).toFixed(2)}</span>
+          </span>
         ))}
-        <i className="viz-range__dot" style={{ left: `${at * 100}%` }} title={`Average $${avg.toFixed(3)}`} />
       </div>
-      <p className="viz-range__ends">
-        <span><b className="num">${low.toFixed(2)}</b> first buy</span>
-        <span><b className="num">${high.toFixed(2)}</b> listing</span>
-      </p>
     </div>
   );
 }

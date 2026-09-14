@@ -23,11 +23,12 @@
 .thumb__brand {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: normal;
 }
+.thumb__brand .icon-20 { width: 26px; height: 26px; }
 .thumb__title {
   display: block;
   max-width: 14em;
@@ -55,9 +56,9 @@
 .thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
 .thumb--feature { aspect-ratio: 16 / 9; }
-.thumb--feature .thumb__brand { font-size: 15px; }
-.thumb--feature .thumb__brand .icon-20 { width: 24px; height: 24px; }
-.thumb--feature 
+.thumb--feature .thumb__brand { font-size: 19px; }
+.thumb--feature .thumb__brand .icon-20 { width: 30px; height: 30px; }
+
 /* ---------- Kicker, title, excerpt ---------- */
 .upd-kicker {
   display: flex;
@@ -99,6 +100,4 @@
 
 .upd-grid { display: grid; gap: 12px; margin-top: 18px; }
 /* Four across, for Earn's row of the newest four. */
-.upd-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 1180px) { .upd-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 620px) { .upd-grid--4 { grid-template-columns: minmax(0, 1fr); } }
+.upd-grid--4 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }

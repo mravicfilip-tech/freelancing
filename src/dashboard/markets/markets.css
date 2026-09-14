@@ -11,50 +11,101 @@
 .markets .stat__label { font-size: 14px; }
 .markets .stat__note { margin-top: 12px; font-size: 14px; }
 
-/* ---------- The three small plots ----------
-   One hue: the accent carries the data, the track the rest; text stays in
-   text tokens. Marks are thin, capped, rounded at the data end only. */
-.viz-units-wrap { display: grid; gap: 8px; }
-.viz-units { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
-.viz-units__col { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 2px; flex: 1; max-width: 28px; }
-.viz-units__col i { display: block; height: 10px; border-radius: 3px; background: var(--d-accent); opacity: 0.5; }
-.viz-units__col[data-now] i { opacity: 1; }
-.viz-units__col i[data-empty] { height: 3px; background: var(--d-track); opacity: 1; }
-.viz-units__col:hover i { opacity: 1; }
+/* ---------- The three plots ----------
+   Each on its own inset field, full width. One hue: the accent carries the
+   data, the track the rest; text stays in text tokens. */
+.viz { position: relative; padding: 14px; border-radius: var(--r-sm); background: var(--d-inset); }
 .viz-ends { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 12px; color: var(--d-text-3); }
 
-.viz-rows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.viz-rows__row { display: grid; grid-template-columns: 108px minmax(0, 1fr) 42px; align-items: center; gap: 12px; font-size: 13px; color: var(--d-text-2); }
-.viz-rows__key { display: inline-flex; align-items: center; gap: 7px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.viz-rows__other { width: 16px; height: 16px; border-radius: 50%; background: var(--d-track); box-shadow: inset 0 0 0 1px var(--d-field-ring); }
-.viz-rows__bar { display: block; height: 8px; border-radius: 4px; background: var(--d-track); overflow: hidden; }
-.viz-rows__bar i { display: block; height: 100%; border-radius: 4px; background: var(--d-accent); }
-.viz-rows__pct { text-align: right; font-weight: 600; color: var(--d-text); }
-
-.viz-range-wrap { display: grid; gap: 10px; }
-.viz-range { position: relative; height: 10px; border-radius: 4px; background: var(--d-track); }
-.viz-range__fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--d-accent); }
-.viz-range__tick {
+/* Timeline: stage bands under an axis, one dot per purchase sized by cost.
+   Bands, axis and dots share one plot box, so their x agree. */
+.viz-tl { display: grid; gap: 10px; }
+.viz-tl__plot { position: relative; height: 58px; }
+.viz-tl__band {
   position: absolute;
-  top: -3px;
-  bottom: -3px;
-  width: 1px;
-  background: var(--d-text-3);
-  opacity: 0.55;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  background: var(--d-track);
+  box-shadow: inset 0 0 0 1px var(--d-card);
 }
-.viz-range__tick[data-live] { background: var(--d-accent); opacity: 1; }
-.viz-range__dot {
+.viz-tl__band[data-live] { background: var(--d-accent-tint); }
+.viz-tl__band > span { position: absolute; left: 8px; bottom: 5px; font-size: 11px; font-weight: 600; color: var(--d-text-3); }
+.viz-tl__band[data-live] > span { color: var(--d-on-tint); }
+.viz-tl__axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--d-rule); }
+.viz-tl__dot {
   position: absolute;
   top: 50%;
-  width: 14px;
-  height: 14px;
   border-radius: 50%;
   background: var(--d-accent);
-  box-shadow: 0 0 0 2px var(--d-card);
+  box-shadow: 0 0 0 2px var(--d-inset);
   transform: translate(-50%, -50%);
+  transition: transform 120ms ease;
 }
-.viz-range__ends { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 13px; color: var(--d-text-3); }
-.viz-range__ends b { margin-right: 4px; font-weight: 600; color: var(--d-text); }
+.viz-tl__dot:hover { transform: translate(-50%, -50%) scale(1.25); z-index: 1; }
+
+/* Blocks: each method a block as wide as its share, the mark inside. */
+.viz-blocks { display: flex; gap: 4px; padding: 0; background: none; }
+.viz-block {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  min-height: 80px;
+  padding: 12px 12px 10px;
+  border-radius: var(--r-sm);
+  background: var(--d-accent);
+  color: #0c1219;
+  overflow: hidden;
+}
+.viz-block[data-step='1'] { background: color-mix(in srgb, var(--d-accent) 62%, var(--d-inset)); }
+.viz-block[data-step='2'] { background: color-mix(in srgb, var(--d-accent) 38%, var(--d-inset)); color: var(--d-text); }
+.viz-block[data-step='3'] { background: var(--d-inset); color: var(--d-text); box-shadow: inset 0 0 0 1px var(--d-rule); }
+.viz-block__key { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12.5px; font-weight: 600; }
+.viz-block__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viz-block__other { width: 16px; height: 16px; flex: none; border-radius: 50%; background: var(--d-track); box-shadow: inset 0 0 0 1px var(--d-field-ring); }
+.viz-block__pct { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+.viz-block .icon-16 { flex: none; }
+/* A block too narrow for its name shows the mark alone; the title carries the rest. */
+@container (max-width: 96px) { .viz-block__name { display: none; } }
+
+/* Mini ladder: a column per stage at its price, the average across them. */
+.viz-ladder { padding: 40px 14px 10px; }
+.viz-ladder__plot { position: relative; display: flex; align-items: flex-end; gap: 8px; height: 96px; }
+.viz-ladder__col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; flex: 1; height: 100%; }
+.viz-ladder__col i { display: block; width: 100%; max-width: 44px; border-radius: 4px 4px 0 0; background: var(--d-accent); opacity: 0.45; }
+.viz-ladder__col i[data-live] { opacity: 1; }
+.viz-ladder__col:hover i { opacity: 1; }
+.viz-ladder__price { font-size: 11px; color: var(--d-text-3); }
+.viz-ladder__col { padding-bottom: 20px; }
+.viz-ladder__col i { margin-bottom: 0; }
+.viz-ladder__line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed var(--d-text-3);
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+.viz-ladder__tag--left { left: 0; right: auto; }
+.viz-ladder__line > span {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--d-card);
+  font-size: 11px;
+  color: var(--d-text-2);
+  white-space: nowrap;
+}
+.viz-ladder__line > span b { margin-left: 3px; color: var(--d-text); }
+.viz-ladder__line--avg { border-top-color: var(--d-accent); }
+.viz-ladder__line--avg > span { background: var(--d-accent-tint); color: var(--d-on-tint); }
+.viz-ladder__line--avg > span b { color: inherit; }
 
 /* Seven columns at the dashboard's cell padding need the room. */
 .tx .orders__table { min-width: 720px; }

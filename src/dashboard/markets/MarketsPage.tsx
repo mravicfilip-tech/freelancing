@@ -4,12 +4,12 @@ import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { Stat } from '../panels/StatRow';
 import { StatSkel, Skel, skelRows } from '../Skeleton';
-import { money, PRESALE, stagePrice } from '../data';
+import { money, PRESALE } from '../data';
 import { theme } from '../theme';
 import { summarise } from './data';
 import { useTransactions } from './useTransactions';
 import { Transactions } from './Transactions';
-import { PriceRange, SpendMix, WeekBars } from './viz';
+import { PurchaseTimeline, SpendBlocks, StageLadderMini } from './viz';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './markets.css';
@@ -68,7 +68,7 @@ export function MarketsPage() {
                   value={String(sum.count)}
                   note={`Across stages ${sum.firstStage} to ${sum.lastStage}`}
                 >
-                  <WeekBars rows={rows} />
+                  <PurchaseTimeline rows={rows} />
                 </Stat>
                 <Stat
                   label="Total spent"
@@ -78,7 +78,7 @@ export function MarketsPage() {
                   note={`For ${money(sum.rtx)} $RTX`}
                   mark="usdt"
                 >
-                  <SpendMix rows={rows} />
+                  <SpendBlocks rows={rows} />
                 </Stat>
                 <Stat
                   label="Average price paid"
@@ -87,11 +87,7 @@ export function MarketsPage() {
                   note={`Listing at $${PRESALE.listPrice.toFixed(2)} is ${uplift}% higher`}
                   mark="coin"
                 >
-                  <PriceRange
-                    avg={sum.avgPrice}
-                    low={Math.min(...rows.map((r) => r.price))}
-                    stages={Array.from({ length: sum.lastStage - sum.firstStage + 1 }, (_, i) => ({ n: sum.firstStage + i, price: stagePrice(sum.firstStage + i) }))}
-                  />
+                  <StageLadderMini rows={rows} avg={sum.avgPrice} />
                 </Stat>
               </section>
             )}

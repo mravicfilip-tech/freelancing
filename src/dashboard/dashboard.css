@@ -477,12 +477,15 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .rail[data-mode='collapsed'] .rail__item,
 .rail[data-mode='collapsed'] .rail__toggle {
   flex-direction: column;
-  gap: 5px;
+  gap: 1px;
   padding: 8px 4px;
   border-radius: var(--r-inner);
   text-align: center;
   font-size: 12px;
 }
+/* Collapsed, the label sits closer under its icon and the items sit a
+   little further apart, so each chip reads as one thing. */
+.rail[data-mode='collapsed'] .rail__group { gap: 8px; }
 /* Collapsed, a badge is a dot on the icon's corner, as the tab bar does it:
    a pill under the label cost each flagged row another line. */
 .rail[data-mode='collapsed'] .rail__item { position: relative; }

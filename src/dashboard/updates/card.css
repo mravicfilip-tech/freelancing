@@ -55,15 +55,19 @@
 }
 .thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
-/* Dark mode's colour field, balanced like the light card: the glow stays
-   with the rings in the top right and is kept modest; the lower half lifts
-   with lavender at the centre and the presale's lime in the lower left, so
-   the card is not purple down one whole side. */
+/* Dark mode's colour field, the light card's composition turned to ink and
+   pushed to the same strength: lavender low on the left, the presale's lime
+   at the centre of the floor, and sky with the rings, so the right side is
+   cool rather than purple. The rings' indigo glow is gone with it. */
 .dash[data-theme='dark'] .thumb {
   background-image:
-    radial-gradient(54% 46% at 52% 120%, rgba(179, 181, 245, 0.32) 0%, rgba(179, 181, 245, 0) 70%),
-    radial-gradient(50% 36% at 6% 116%, rgba(217, 242, 78, 0.4) 0%, rgba(217, 242, 78, 0) 70%);
+    radial-gradient(62% 66% at 4% 108%, rgba(179, 181, 245, 0.62) 0%, rgba(179, 181, 245, 0.22) 38%, rgba(179, 181, 245, 0) 70%),
+    radial-gradient(40% 44% at 54% 118%, rgba(217, 242, 78, 0.5) 0%, rgba(217, 242, 78, 0) 70%),
+    radial-gradient(48% 56% at 100% 12%, rgba(150, 200, 250, 0.42) 0%, rgba(150, 200, 250, 0) 70%);
   background-repeat: no-repeat;
+}
+.dash[data-theme='dark'] .thumb::before {
+  background: radial-gradient(circle at center, rgba(179, 181, 245, 0.3) 1px, transparent 1.5px) 4px 4px / 16px 16px;
 }
 
 /* Light mode: the landing page's bento cards — white paper, the lavender

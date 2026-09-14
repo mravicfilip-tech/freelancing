@@ -120,7 +120,7 @@
   padding: 22px 0 24px;
 }
  /* The card the box sits on waits at a third of its strength, as in the design. */
-.reel__slot--under .prize { opacity: 0.35; }
+.reel__slot--under .prize { opacity: 0.15; }
 .reel__slot::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--d-dash-v); }
 .reel__cap { align-self: flex-start; padding-left: 29px; font-size: 13px; color: var(--d-text-3); }
 .reel__mark {
@@ -201,16 +201,43 @@
 .reel--won .prize:not([data-won='true']) { opacity: 0.2; transform: scale(0.96); }
 .reel--won .reel__slot:not(:has([data-won='true'])) .reel__cap { opacity: 0.5; }
 .reel__cap--win { font-weight: 600; }
-.reel__open {
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45));
-  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+.reel__chest { position: relative; width: 236px; aspect-ratio: 401.5 / 406; transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.reel__chest:hover { transform: translateY(-4px) scale(1.03); }
+/* The open button lies over the crate, so the crate's own markup stays a drawing. */
+.reel__open { position: absolute; inset: 0; z-index: 8; border: 0; background: none; cursor: pointer; }
+/* The hero's chest, sized for the slot rather than the slide. */
+.chest--reel { position: absolute; inset: 0; display: block; overflow: visible; clip-path: none; }
+.chest--reel .chest__stage { width: 100%; max-width: none; margin-top: 0; }
+.chest--reel .chest__coin { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
+/* Its dark tokens, as the hero sets them, on the dashboard's names. */
+.dash[data-theme='dark'] .chest {
+  --chest-ink: #7f8f9f;
+  --chest-inkLid: #cdd8e2;
+  --chest-inkIn: #4a5866;
+  --chest-topA: #414852;
+  --chest-topB: #2c323a;
+  --chest-leftA: #2d333b;
+  --chest-leftB: #1f242a;
+  --chest-rightA: #1b1f25;
+  --chest-rightB: #101317;
+  --chest-lipL: #14171c;
+  --chest-lipR: #0d1014;
+  --chest-wallA: #2c3846;
+  --chest-wallB: #222d3a;
+  --chest-floor: #35424f;
+  --chest-glowA: rgb(144 146 244 / 17%);
+  --chest-glowB: rgb(144 146 244 / 0%);
+  --chest-rim: var(--d-rule);
+  --chest-railLine: var(--d-rule);
+  --chest-live: var(--d-indigo);
+  --chest-soft: #b3b5f5;
+  --chest-coinDisc: var(--d-inset);
+  --chest-markDisc: #4042d1;
 }
-.reel__open:hover { transform: translateY(-4px) scale(1.03); }
-.reel__open img { display: block; width: 215px; height: 215px; }
+.dash[data-theme='dark'] .chest__shadow { background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent 72%); }
+/* The hint is for a closed box; once it is opening, the crate is the message. */
+.reel__hint { transition: opacity 200ms ease; }
+.reel--spin .reel__hint, .reel--won .reel__hint { opacity: 0; }
 .reel__hint, .reel__result {
   padding: 7px 14px;
   border: 0;
@@ -314,7 +341,7 @@
 @media (max-width: 760px) {
   .mystery .dash__main > :not(.topbar) { order: 2; }
   .reel { height: 360px; }
-  .reel__open img { width: 170px; height: 170px; }
+  .reel__chest { width: 180px; }
   .claimed__stats { grid-template-columns: minmax(0, 1fr); }
   .opener__head { flex-wrap: wrap; }
   /* Stacked rows: the prize and its tag, then the box, odds and cost, then when. */

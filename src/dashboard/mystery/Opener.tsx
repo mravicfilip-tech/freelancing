@@ -4,6 +4,7 @@ import type { TokenId } from '../data';
 import { Button } from '../Button';
 import { CheckIcon, PayMark } from '../icons';
 import { PrizeCard } from './PrizeCard';
+import { MysteryChest } from './MysteryChest';
 import { FxRow } from './FxRow';
 import { burst, redraw } from './arc';
 import { BOX, PAY, PRIZES, RARITY, draw, rate, reward, type Prize } from './data';
@@ -41,6 +42,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
   const [cards, setCards] = useState<Prize[]>(() => strip());
   const [phase, setPhase] = useState<'idle' | 'spin' | 'won'>('idle');
   const [won, setWon] = useState<Prize | null>(null);
+  const [chestOpen, setChestOpen] = useState(false);
   const view = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -89,6 +91,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     };
     gsap.killTweensOf([box.current, flash.current]);
     if (still()) {
+      setChestOpen(true);
       gsap.set(box.current, { autoAlpha: 0 });
       gsap.set(track.current, { x: xFor(WIN) });
       land();
@@ -98,12 +101,13 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     const c = local(box.current);
     let lastSlot = -1;
     const tl = gsap.timeline({ onComplete: land });
-    // The box rattles, swells and bursts in a flash of lime sparks…
-    tl.to(box.current, { rotation: -4, duration: 0.06, ease: 'none' })
-      .to(box.current, { rotation: 4, duration: 0.06, repeat: 7, yoyo: true, ease: 'none' })
-      .to(box.current, { rotation: 0, scale: 1.14, y: -8, duration: 0.2, ease: 'power2.out' })
-      .add(() => burst(r, c.x, c.y - 10, LIME, 90, 1.3))
-      .to(box.current, { scale: 1.8, autoAlpha: 0, duration: 0.3, ease: 'power3.in' })
+    // The chest's own opening: the latch gives, the lid lifts and the coins
+    // are thrown (MysteryChest). The crate leans into it, then bursts in a
+    // flash of lime sparks and is gone…
+    tl.add(() => setChestOpen(true), 0)
+      .to(box.current, { scale: 1.06, y: -6, duration: 0.9, ease: 'power1.out' }, 0.2)
+      .add(() => burst(r, c.x, c.y - 20, LIME, 90, 1.3), 1.15)
+      .to(box.current, { scale: 1.6, autoAlpha: 0, duration: 0.32, ease: 'power3.in' }, 1.15)
       .fromTo(flash.current, { scale: 0.3, autoAlpha: 0.95 }, { scale: 3, autoAlpha: 0, duration: 0.7, ease: 'power2.out' }, '<')
       // …and the reel is already flying, ticking past the marker as it slows.
       .set(track.current, { x: xFor(START) }, '<')
@@ -154,8 +158,9 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     setWon(null);
     at.current = START;
     setCards(strip());
+    setChestOpen(false);
     gsap.killTweensOf(box.current);
-    gsap.fromTo(box.current, { autoAlpha: 0, scale: 0.7, y: -30, rotation: 0 }, { autoAlpha: 1, scale: 1, y: 0, duration: still() ? 0 : 0.5, ease: 'back.out(1.6)' });
+    gsap.fromTo(box.current, { autoAlpha: 0, scale: 0.7, y: -30 }, { autoAlpha: 1, scale: 1, y: 0, duration: still() ? 0 : 0.5, ease: 'back.out(1.6)' });
   };
 
   return (
@@ -194,9 +199,10 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
         </div>
         <div className="reel__box">
           <div className="reel__anim" ref={box}>
-            <button type="button" className="reel__open" onClick={() => spin(false)} aria-label="Open a box">
-              <img src="/figma/mystery-box.webp" alt="" width={215} height={215} />
-            </button>
+            <div className="reel__chest">
+              <MysteryChest open={chestOpen} />
+              <button type="button" className="reel__open" onClick={() => spin(false)} aria-label="Open a box" />
+            </div>
             <span className="reel__hint">Click to open a box!</span>
           </div>
         </div>

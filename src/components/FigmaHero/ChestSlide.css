@@ -1,0 +1,381 @@
+/* The hero's third slide: the line-art chest (Figma node 2767:55) as an opening mechanism.
+   Five directions share this sheet; `data-variant` on the root picks what differs. */
+/* The panels' beat: a light runs down each `?` when the crate opens, and leaves the Remittix mark
+   where the question was. Both start hidden — the question is what the closed crate says. */
+.chest__brand {
+  opacity: 0;
+}
+/* Drawn, not filled: the crate is line work and so is what it resolves into. The weight is the
+   crate's own 1.35, divided back out of the scale the face matrix applies, so the mark's line is
+   the same line as the box it is on. */
+.chest__brandPath {
+  fill: none;
+  stroke: var(--chest-live);
+  stroke-width: 0.72;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.chest__scan {
+  fill: var(--chest-live);
+  opacity: 0;
+  /* a line of light, not a drawn rule — the glow is what makes it read as passing over the panel */
+  filter: drop-shadow(0 0 3px var(--chest-live)) drop-shadow(0 0 7px var(--chest-live));
+}
+
+.chest {
+  /* The site's ink, not the export's. `#1a1a1a` came in with the asset and appears nowhere else in
+     the project; the illustrations are drawn in `#122433` and carry `#2c2e31` as body ink. */
+  --chest-ink: #122433;
+  /* The same line at three jobs: the body's edges, the lid's, and the ones inside the box. On a
+     light page a hairline is a hairline wherever it falls; on a dark one a line is light, and a
+     lid catching as much of it as the floor of a cavity is what flattens the object. */
+  --chest-inkLid: var(--chest-ink);
+  --chest-inkIn: var(--chest-ink);
+  /* The crate's surfaces, from the shared illustration ladder rather than from black. Each face is
+     a two-stop ramp so light can fall across the object; on a light page both ends of a face are
+     the value the design draws it at, which leaves the plate flat exactly as it was. */
+  --chest-topA: #fff;
+  --chest-topB: #fff;
+  --chest-leftA: #f3f5f7;
+  --chest-leftB: #f3f5f7;
+  --chest-rightA: #e9edf1;
+  --chest-rightB: #e9edf1;
+  --chest-lipL: #dfe4e9;
+  --chest-lipR: #d3d8de;
+  /* The Remittix mark's own coin: the brand's ground carrying the brand's mark. */
+  /* The plate every coin sits on — the band's own surface, so the disc reads as a token laid on
+     the page rather than a hole cut in it. */
+  --chest-coinDisc: #fff;
+  --chest-markDisc: #122433;
+  /* The mark is white on its own disc in both themes — it is the brand's mark, not a glyph that
+     turns over with the page. */
+  --chest-markInk: #fff;
+  /* The light thrown up out of the mouth. A lit page has nothing to light — the cavity is already
+     the brightest thing in the drawing — so it is spent only where there is dark to spend it in. */
+  --chest-glowA: transparent;
+  --chest-glowB: transparent;
+  /* Inside the box. Two walls a value step apart and a floor below them is what makes a cavity
+     read as a cavity — not a void. The light bands of this site have no voids: every near-black on
+     a light ground here is a product surface with a radius, and a hole punched in the page is not
+     one of those. */
+  --chest-wallA: #dde3e9;
+  --chest-wallB: #d3d8de;
+  --chest-floor: #e4e4e4;
+  --chest-rim: #c5cbd1;
+  /* the flank feeds' hairline, at the weight the page rules everything else with */
+  --chest-railLine: #dadee2;
+  /* Energy is indigo and lavender on a light page, as it is in every other scene. */
+  --chest-live: #4042d1;
+  --chest-soft: #b3b5f5;
+
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* Clipped at its own sides and top, but open below: the feed's legs run down into the band under
+     the hero, and `overflow: hidden` cut them at the slide's foot — 337px short of where the hero
+     itself ends. A negative bottom inset is the only way to say "clip three sides". */
+  overflow: visible;
+  clip-path: inset(0 0 -400px 0);
+}
+
+/* The crate no longer fills the slide: the lid comes off it and the payload goes above that, and
+   both need somewhere to be. It sits low in the box so the headroom is where the motion is. */
+.chest__stage {
+  position: relative;
+  width: 66%;
+  max-width: 344px;
+  margin-top: 15%;
+  aspect-ratio: 401.5 / 406;
+}
+
+/* The site's own dot field, at the pitch and weight every other band uses, masked so it fades in
+   rather than ending. It is what the crate stands on. */
+.chest__field {
+  position: absolute;
+  left: -46%;
+  right: -46%;
+  bottom: -14%;
+  height: 82%;
+  background-image: radial-gradient(circle at center, rgb(18 36 51 / 12%) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 46%, #000 78%, transparent 100%);
+}
+
+/* The feeds running in from both flanks, behind the crate. The slide is wider than the crate is,
+   and tokenomics fills that width with wires rather than leaving the object stranded in the middle
+   of a band — so this borrows the arrangement: a hairline, a light travelling it, and a node where
+   it arrives. */
+.chest__feed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.chest__rail {
+  fill: none;
+  stroke: var(--chest-railLine);
+  /* The weight the orbit's own ellipse carries. At 1 these runs are long enough that the line
+     thins out to nothing across the band. */
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.chest__spark {
+  fill: none;
+  stroke: var(--chest-soft);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.chest__node {
+  fill: var(--chest-live);
+}
+
+.chest__art {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transition: opacity 200ms ease;
+}
+.chest__art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* The export carries its stroke as an attribute, which a rule outranks — so the crate takes the
+   site's ink without editing the asset's bytes. */
+.chest__art svg path {
+  stroke: var(--chest-ink);
+  stroke-width: 1.35;
+}
+/* The lid is the face turned to the light, so its own line work carries more of it. */
+.chest__art .chest__lid path {
+  stroke: var(--chest-inkLid);
+}
+.chest[data-motion='pending'] .chest__art {
+  opacity: 0;
+}
+
+/* ---------- the crate as a solid ---------- */
+.chest__face {
+  stroke: none;
+}
+.chest__face--top {
+  fill: url('#chest-gTop');
+}
+.chest__face--left {
+  fill: url('#chest-gLeft');
+}
+.chest__face--right {
+  fill: url('#chest-gRight');
+}
+/* The ramps' ends. A stop cannot take a `fill`, so each is painted by its own rule. */
+.chest__gs--topA { stop-color: var(--chest-topA); }
+.chest__gs--topB { stop-color: var(--chest-topB); }
+.chest__gs--leftA { stop-color: var(--chest-leftA); }
+.chest__gs--leftB { stop-color: var(--chest-leftB); }
+.chest__gs--rightA { stop-color: var(--chest-rightA); }
+.chest__gs--rightB { stop-color: var(--chest-rightB); }
+.chest__gs--glowA { stop-color: var(--chest-glowA); }
+.chest__gs--glowB { stop-color: var(--chest-glowB); }
+
+/* The light in the box, over its walls and clipped to the mouth with them. */
+.chest__glow {
+  fill: url('#chest-gGlow');
+  stroke: none;
+  pointer-events: none;
+}
+
+/* ---------- the inside ----------
+   Two far walls and a floor, each a step apart, which is what gives depth here — the site seats an
+   edge with a hairline, never with a blurred black stroke.
+   Every edge of it is drawn, in the crate's own ink at the export's own weight: the rest of this
+   object is line work, and a filled shape with no outline sitting inside it reads as a hole in the
+   drawing rather than a part of it. The clip to the mouth carries the stroke with it, so what shows
+   is the box's inner corner and the join where the walls meet the floor. */
+.chest__wall,
+.chest__floor {
+  stroke: var(--chest-inkIn);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+.chest__wall--back {
+  fill: var(--chest-wallA);
+}
+.chest__wall--side {
+  fill: var(--chest-wallB);
+}
+.chest__floor {
+  fill: var(--chest-floor);
+}
+/* The body's top edge — the outline the lid's underside rails were drawing until they left with
+   it. Without this the box opens onto a filled plate with no line on it. */
+.chest__brim {
+  fill: none;
+  stroke: var(--chest-ink);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+
+/* The mouth's own edge — the line the lid was hiding. */
+.chest__rim {
+  fill: none;
+  stroke: var(--chest-inkIn);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+
+/* The seam lights rather than the hole. A short dash on a long gap, run round the rim at a constant
+   rate — the same mark the orbit, the bolt and the payment line all announce themselves with. */
+.chest__seam {
+  fill: none;
+  stroke: var(--chest-live);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+/* ---------- the lid as a slab ----------
+   A lid that lifts off a box has an underside. Without these two lips it is a sheet of paper, and
+   the moment it tilts the drawing gives that away. */
+/* Drawn, like everything else on the crate: the underside is the one face you only ever see while
+   it is open, and left as a bare fill it was the one edge of the lid that had no line on it. */
+.chest__lip {
+  stroke: var(--chest-inkLid);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+.chest__lip--left {
+  fill: var(--chest-lipL);
+}
+.chest__lip--right {
+  fill: var(--chest-lipR);
+}
+/* The white sheen the site sweeps across a form — clipped to the face, capped low, as everywhere. */
+.chest__sheen {
+  fill: #fff;
+  opacity: 0;
+}
+
+/* The light that leaves the box with them. It sits over the mouth and under the payload, so it
+   reads as coming out of the crate rather than being laid on top of it. */
+.chest__burst {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  z-index: 3;
+  width: 104%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 4%, var(--chest-live) 26%, rgb(255 255 255 / 0%) 68%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* The payoff is a status, not a glare — the badge the orbit lands, in the same measurements. */
+.chest__badge {
+  position: absolute;
+  left: 50%;
+  /* Beside the crate rather than above it, the way the orbit parks its badge beside the hub: the
+     lid rises through the middle and the payload fans across the top, so the clear ground is here.
+     Above the art's layer, since it is the payoff. */
+  z-index: 7;
+  top: 52%;
+  left: 76%;
+  padding: 4px 12px;
+  border-radius: 46px;
+  background: var(--chest-live);
+  box-shadow: 0 6px 16px -6px rgb(18 36 51 / 35%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.39px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* What the chest is carrying. Positioned at the seam; every direction moves them from there. */
+.chest__payload {
+  position: absolute;
+  left: 50.8%;
+  top: 20%;
+  z-index: 4;
+  width: 0;
+  height: 0;
+}
+.chest__coin {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  border-radius: 400px;
+  background: var(--chest-coinDisc);
+  /* Coins are the one solid thing in a drawing made of lines, so they carry a shadow to sit in
+     front of it rather than on it. */
+  filter: drop-shadow(0 6px 10px rgb(18 36 51 / 22%));
+  will-change: transform;
+}
+.chest__coinArt {
+  display: block;
+  max-width: none;
+}
+/* The Remittix mark rides out with the chain marks, so it has to be a coin like they are — the
+   asset is only the glyph, so the disc is drawn here. It is the brand's own pairing: the mark's
+   ground carrying the mark in the page's ink, which is how the tokenomics hub is built too. */
+.chest__coin[data-mark] {
+  background: var(--chest-markDisc);
+}
+.chest__mark {
+  display: block;
+  /* the wordmark's own 33:17, so the M keeps its proportions inside a round disc */
+  width: 50%;
+  aspect-ratio: 33 / 17;
+  /* Masked rather than drawn: the export's fill is a flat black that neither ground can carry, and
+     an <img>'s fill is not something a stylesheet can reach. */
+  background-color: var(--chest-markInk);
+  -webkit-mask: url('/figma/logo.svg') center / contain no-repeat;
+  mask: url('/figma/logo.svg') center / contain no-repeat;
+}
+
+/* What the crate stands on: a dotted floor and the shadow it casts. */
+.chest__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -4%;
+  z-index: 0;
+  width: 52%;
+  height: 26px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(18 36 51 / 30%), transparent 72%);
+  opacity: 0.7;
+}
+
+/* The slide is the same box on a phone; the crate just takes more of it, since there is no second
+   column competing for the width. */
+@media (max-width: 900px) {
+  /* The lid now stands up off the crate rather than sliding sideways, so the slide needs headroom
+     for it: the open lid reaches about 143 units above the slab, and at this scale that is the
+     difference between the corner being on screen and being cut by the top of the band. */
+  .chest__stage {
+    width: 50%;
+    max-width: 196px;
+    margin-top: 26%;
+  }
+  /* At 76% of a 230px stage the badge's own width carries it off the side of the slide. It comes
+     back over the crate's right face, which is clear at every point of the open. */
+  .chest__badge {
+    left: 58%;
+    top: 56%;
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+}

@@ -25,6 +25,7 @@ const START = 8;
 const WIN = 40;
 const CAPS = ['Unwrapping…', 'You can win…', 'Opening up…'];
 const LIME: [number, number, number] = [217, 242, 78];
+const INDIGO: [number, number, number] = [64, 66, 210];
 /** How big a landing is, by rarity: sparks thrown and how far the glow reaches. */
 const TIER: Record<Prize['rarity'], [number, number]> = { uncommon: [28, 0.25], rare: [44, 0.35], epic: [64, 0.45], legendary: [90, 0.6], mythic: [130, 0.75] };
 const still = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -52,6 +53,8 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
   const result = useRef<HTMLButtonElement>(null);
   const at = useRef(START);
   const root = () => view.current?.closest<HTMLElement>('.fx-row') ?? null;
+  /* The opening's own light: lime on the dark stage, the theme's indigo on the light one. */
+  const hue = () => (root()?.closest('.dash')?.getAttribute('data-theme') === 'light' ? INDIGO : LIME);
   /** A point in the reel's own space. */
   const local = (el: Element) => {
     const r = el.getBoundingClientRect();
@@ -105,7 +108,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     // flash of lime sparks and is gone…
     tl.add(() => setChestOpen(true), 0)
       .to(box.current, { scale: 1.06, y: -6, duration: 0.9, ease: 'power1.out' }, 0.2)
-      .add(() => burst(r, c.x, c.y - 20, LIME, 90, 1.3), 1.15)
+      .add(() => burst(r, c.x, c.y - 20, hue(), 90, 1.3), 1.15)
       .to(box.current, { scale: 1.6, autoAlpha: 0, duration: 0.32, ease: 'power3.in' }, 1.15)
       // …and the reel is already flying, ticking past the marker as it slows.
       .set(track.current, { x: xFor(START) }, '<')

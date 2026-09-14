@@ -70,6 +70,8 @@
   --d-spent: #37424e;
   /* Mastercard sits on its brand white here, black in light. */
   --d-mark-ground: #eef2f5;
+  /* The ground an illustration sits on: the site's own light paper, in both themes. */
+  --d-art-ground: #eef0f5;
   --d-skel-sheen: rgb(255 255 255 / 6%);
   /* A field is the deeper band cut into the lifted card, edged with the same
      rail the site rules everything else with. */
@@ -127,6 +129,7 @@
   --d-indigo: #4042d2;
   --d-spent: #c9cfd5;
   --d-mark-ground: #16181D;
+  --d-art-ground: #eef0f5;
   --d-skel-sheen: rgb(255 255 255 / 78%);
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);

@@ -51,8 +51,11 @@
   --d-track: #222b35;
   --d-rule: #28323c;
   --d-text: #eef2f5;
-  --d-text-2: #8593a0;
-  --d-text-3: #6c7783;
+  /* Measured to clear 4.5:1 on the card and on an inset tile, not just the
+     ground: text-3 was 3.64:1 on the card at 13px, which is where the table
+     headers and every quiet label live. */
+  --d-text-2: #97a3ae;
+  --d-text-3: #848d97;
   --d-accent: #9092f4;
   --d-accent-soft: #4b4e8f;
   --d-accent-hover: #a5a7f7;
@@ -93,8 +96,11 @@
   --d-track: #eef1f4;
   --d-rule: #dadee2;
   --d-text: #122433;
-  --d-text-2: #7c858d;
-  --d-text-3: #a2a6aa;
+  /* text-2 is the landing page's own body grey; text-3 sits at the 4.5:1 floor
+     on the field ground (#f4f6f8), the darkest thing a quiet label sits on.
+     The old values were 3.75:1 and 2.45:1. */
+  --d-text-2: #5b636b;
+  --d-text-3: #6e7174;
   --d-accent: #4042d2;
   --d-accent-soft: #b3b5f5;
   --d-accent-tint: rgba(64, 66, 210, 0.09);
@@ -505,6 +511,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .dash[data-theme='dark'] .fh__btn--primary:hover,
 .dash[data-theme='dark'] .fh__btn--primary:focus-visible { color: #fff; }
+/* The hero's ghost button sets its own grey, 3.05:1 on its ground in light —
+   the only text on either screen still under 4.5:1 once the tokens passed. */
+.dash[data-theme='light'] .fh__btn--ghost { color: var(--d-text-2); }
 .dash[data-theme='dark'] .fh__btn--ghost {
   background: var(--d-inset);
   border-color: var(--d-rule);

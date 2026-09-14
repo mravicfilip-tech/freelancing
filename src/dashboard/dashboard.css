@@ -546,6 +546,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .topbar__pick .vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
 .topbar__pick .vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
 
+/* On a card ground the chips need their own disc, or they are icons floating
+   on the card. */
+.topbar[data-t='1'] .chip-btn,
+.topbar[data-t='5'] .chip-btn { background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-rule); }
+.topbar[data-t='1'] .chip-btn:hover,
+.topbar[data-t='5'] .chip-btn:hover { background: var(--d-track); }
 /* T1 Card: the bar is a card like everything else on the page. */
 .topbar[data-t='1'] {
   align-items: center;
@@ -744,6 +750,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
    rule was never needed. Rendered as a real button it inherits the browser's
    default border, which is the stroke around the primary. */
 .dash .fh__btn--primary { border: 0; }
+/* A <button> does not inherit the page face and the hero class sets none,
+   so these were Arial 14/700 beside Onest everywhere else. One button
+   type across the dashboard: the page face at 15/600, as the copy button. */
+.dash .fh__btn { font-family: inherit; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
 .fh__btn.dbtn--block { width: 100%; }
 /* fh__btn is a fixed 162px in the hero; inline uses here size to their content. */
 .buy__promo .fh__btn { width: auto; padding: 0 24px; }

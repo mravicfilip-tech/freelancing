@@ -227,7 +227,7 @@
 /* Price is the same figure on every row and the card's head already states it,
    so it only earns a column once the page is wide enough not to scroll for it. */
 @media (max-width: 1700px) {
-  .earn-orders__price { display: none; }
+  .orders__table .earn-orders__price { display: none; }
 }
 .chip-btn--sm { width: 34px; height: 34px; background: transparent; box-shadow: none; }
 .chip-btn--sm:hover { background: var(--d-track); }
@@ -328,7 +328,7 @@
   .cd__pair .clock__colon { margin: 0 4px; }
   .cd--lg .clock__value { font-size: 34px; }
   .cd--md .clock__value { font-size: 30px; }
-  .earn-orders__price, .earn-orders__go { display: none; }
+  .orders__table .earn-orders__price, .orders__table .earn-orders__go { display: none; }
   .promo { flex-basis: 84%; }
   /* Under a thumb every control clears 44px, the review strip included. */
   .vpick__item { min-height: 44px; }

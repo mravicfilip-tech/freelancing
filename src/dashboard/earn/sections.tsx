@@ -1,132 +1,69 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TOKENS, money, usd, whole, type Order, type TokenId } from '../data';
 import { Button } from '../Button';
 import { Progress } from '../Progress';
 import { TokenSelect } from '../TokenSelect';
-import { ArrowUp, ChevronRight, PayMark } from '../icons';
+import { ArrowUp, ChevronRight, PayMark, RtxMark } from '../icons';
+import { Figure } from '../Figure';
 import { EARN_ORDERS, PROMOS, STAGE } from './data';
 
 /* ==========================================================================
-   Promotions — one slide at a time
+   Promotions — four small cards
    ========================================================================== */
 
 /** Line marks for the four promos, drawn like the empty-state art: 64 grid, 1.6px. */
 const art = { viewBox: '0 0 64 64', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 const PROMO_ART: Record<string, () => React.ReactNode> = {
-  rails: () => (<svg {...art} className="slide__art" aria-hidden="true"><path d="M12 44h40M12 20h40" /><path d="M20 20v24M32 20v24M44 20v24" strokeDasharray="4 4" opacity=".55" /><circle cx="52" cy="32" r="5" /></svg>),
-  bank: () => (<svg {...art} className="slide__art" aria-hidden="true"><path d="M12 26l20-12 20 12" /><path d="M16 26v18M32 26v18M48 26v18" /><path d="M10 48h44" /><path d="M22 34h20" strokeDasharray="4 4" opacity=".55" /></svg>),
-  xborder: () => (<svg {...art} className="slide__art" aria-hidden="true"><circle cx="32" cy="32" r="18" /><path d="M14 32h36M32 14c-7 8-7 28 0 36M32 14c7 8 7 28 0 36" opacity=".55" strokeDasharray="4 4" /><path d="M40 22l6-6-6-6" /><path d="M46 16H26" /></svg>),
-  card: () => (<svg {...art} className="slide__art" aria-hidden="true"><rect x="10" y="18" width="44" height="28" rx="6" /><path d="M10 27h44" /><path d="M18 38h10" strokeDasharray="4 4" opacity=".55" /><circle cx="45" cy="38" r="3" /><circle cx="40" cy="38" r="3" /></svg>),
+  rails: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M12 44h40M12 20h40" /><path d="M20 20v24M32 20v24M44 20v24" strokeDasharray="4 4" opacity=".55" /><circle cx="52" cy="32" r="5" /></svg>),
+  bank: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M12 26l20-12 20 12" /><path d="M16 26v18M32 26v18M48 26v18" /><path d="M10 48h44" /><path d="M22 34h20" strokeDasharray="4 4" opacity=".55" /></svg>),
+  xborder: () => (<svg {...art} className="promo__art" aria-hidden="true"><circle cx="32" cy="32" r="18" /><path d="M14 32h36M32 14c-7 8-7 28 0 36M32 14c7 8 7 28 0 36" opacity=".55" strokeDasharray="4 4" /><path d="M40 22l6-6-6-6" /><path d="M46 16H26" /></svg>),
+  card: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="10" y="18" width="44" height="28" rx="6" /><path d="M10 27h44" /><path d="M18 38h10" strokeDasharray="4 4" opacity=".55" /><circle cx="45" cy="38" r="3" /><circle cx="40" cy="38" r="3" /></svg>),
 };
 
-const SLIDE_MS = 7000;
+const TAG: Record<string, string> = { rails: 'Business', bank: 'Payments', xborder: 'Transfers', card: 'Spend' };
 
 /**
- * One promotion at a time, full width. The rail is scroll-snapped so a swipe
- * works natively and the dots follow scrollLeft; the arrows and the timer just
- * scroll it. Auto-advances every 7s, holds while hovered or focused, and does
- * not run at all for anyone who has asked for reduced motion — the progress
- * fill on the active dot is how the timing is visible rather than surprising.
+ * The reference's row of cards, iterated rather than replaced: each card gets
+ * a mark on its own disc, a category tag, the two-tone headline, one line, and
+ * the whole card is the link. Four across, then two, then one.
  */
 export function Promos() {
-  const rail = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
-  const [held, setHeld] = useState(false);
-  const n = PROMOS.length;
-
-  const go = (i: number) => {
-    const el = rail.current;
-    if (!el) return;
-    const next = ((i % n) + n) % n;
-    el.scrollTo({ left: next * el.clientWidth, behavior: 'smooth' });
-  };
-
-  // The dots follow the rail, so a swipe and a click agree on what is current.
-  useEffect(() => {
-    const el = rail.current;
-    if (!el) return;
-    const onScroll = () => setIndex(Math.round(el.scrollLeft / el.clientWidth));
-    el.addEventListener('scroll', onScroll, { passive: true });
-    return () => el.removeEventListener('scroll', onScroll);
-  }, []);
-
-  const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  useEffect(() => {
-    if (held || reduced) return;
-    const id = window.setTimeout(() => go(index + 1), SLIDE_MS);
-    return () => window.clearTimeout(id);
-  }, [index, held, reduced]);
-
   return (
-    <section
-      className="card promos"
-      aria-roledescription="carousel"
-      aria-label="Latest promotions"
-      onMouseEnter={() => setHeld(true)}
-      onMouseLeave={() => setHeld(false)}
-      onFocus={() => setHeld(true)}
-      onBlur={() => setHeld(false)}
-    >
-      <div className="promos__rail" ref={rail}>
-        {PROMOS.map((p, i) => {
+    <section className="card promos" aria-labelledby="promos-title">
+      <header className="card__head">
+        <div>
+          <h2 className="card__title" id="promos-title">
+            Latest promotions
+          </h2>
+          <p className="orders__sub">What Remittix is rolling out around the presale</p>
+        </div>
+        <a className="link-quiet" href="#promos-all">
+          View all
+          <ChevronRight className="icon-14" />
+        </a>
+      </header>
+      <div className="promos__grid">
+        {PROMOS.map((p) => {
           const Art = PROMO_ART[p.id];
           return (
-            <article
-              className="slide"
-              key={p.id}
-              data-promo={p.id}
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${n}`}
-              aria-hidden={i !== index || undefined}
-            >
-              <div className="slide__copy">
-                <p className="slide__eyebrow">
-                  <span className="topbar__dot" aria-hidden="true" />
-                  Latest promotion
-                </p>
-                <h2 className="slide__title">
-                  {p.title} <em>{p.accent}</em>
-                </h2>
-                <p className="slide__body">{p.body}</p>
-                <div className="slide__actions">
-                  <Button variant="ghost">Learn more</Button>
-                </div>
-              </div>
-              <div className="slide__visual">
-                <div className="slide__disc" />
-                <Art />
-              </div>
-            </article>
+            <a className="promo" href={`#promo-${p.id}`} key={p.id} data-promo={p.id}>
+              <span className="promo__top">
+                <span className="promo__disc">
+                  <Art />
+                </span>
+                <span className="promo__tag">{TAG[p.id]}</span>
+              </span>
+              <h3 className="promo__title">
+                {p.title} <em>{p.accent}</em>
+              </h3>
+              <p className="promo__body">{p.body}</p>
+              <span className="promo__cta">
+                Learn more
+                <ChevronRight className="icon-14" />
+              </span>
+            </a>
           );
         })}
-      </div>
-
-      <div className="promos__bar">
-        <div className="promos__dots" role="tablist" aria-label="Choose promotion">
-          {PROMOS.map((p, i) => (
-            <button
-              key={p.id}
-              type="button"
-              role="tab"
-              className="promos__dot"
-              aria-selected={i === index}
-              aria-label={`Promotion ${i + 1}: ${p.title}`}
-              data-running={!held && !reduced && i === index ? '' : undefined}
-              style={{ '--ms': `${SLIDE_MS}ms` } as React.CSSProperties}
-              onClick={() => go(i)}
-            >
-              <span />
-            </button>
-          ))}
-        </div>
-        <div className="promos__nav">
-          <button type="button" className="chip-btn" onClick={() => go(index - 1)} aria-label="Previous promotion">
-            <ChevronRight className="icon-16 promos__prev" />
-          </button>
-          <button type="button" className="chip-btn" onClick={() => go(index + 1)} aria-label="Next promotion">
-            <ChevronRight className="icon-16" />
-          </button>
-        </div>
       </div>
     </section>
   );
@@ -306,7 +243,7 @@ export function EarnBuy({
         </span>
         <div className="field__control">
           <span className="field__input field__input--output">{receive ? money(receive) : '0'}</span>
-          <img src="/figma/logo.svg" alt="" width={26} height={13} className="earn-buy__mark" />
+          <RtxMark className="icon-22 earn-buy__mark" />
         </div>
       </div>
 
@@ -419,12 +356,41 @@ export function EarnOrders({ layout = 'table', limit }: { layout?: 'table' | 'ti
   );
 }
 
-/** A one-line stage summary for the variants that put the step-up in a band. */
-export function StageLine() {
+/**
+ * The stage, as the dashboard's ladder card says it: the price at display
+ * size with the next price as a chip, the hero's bar under it, and the clock
+ * and facts on the right. What had been a wide band with one line of text in
+ * its corner.
+ */
+export function StageCard() {
+  const pct = (STAGE.progress * 100).toFixed(1);
   return (
-    <p className="stage-line">
-      <ArrowUp className="icon-14" />
-      Stage {STAGE.n} at <b className="num">${STAGE.price.toFixed(2)}</b> — next stage <b className="num">${STAGE.nextPrice.toFixed(2)}</b>
-    </p>
+    <section className="card stg" aria-labelledby="stage-title">
+      <div className="stg__price">
+        <p className="ladder__label" id="stage-title">
+          <span className="topbar__dot" aria-hidden="true" />
+          Stage {STAGE.n} price · live
+        </p>
+        <div className="stg__fig-row">
+          <Figure className="stg__fig" symbol="$" value={STAGE.price.toFixed(2)} />
+          <p className="num ladder__next-price stg__next">
+            <ArrowUp className="icon-14" />
+            ${STAGE.nextPrice.toFixed(2)} next
+          </p>
+        </div>
+        <div className="raised__bar stg__bar">
+          <Progress value={STAGE.progress} label={`Stage ${STAGE.n} is ${pct}% sold`} />
+          <span className="raised__pct num" aria-hidden="true">{pct}% sold</span>
+        </div>
+      </div>
+
+      <div className="stg__side">
+        <Countdown size="sm" />
+        <dl className="raised__facts stg__facts">
+          <div><dt>USDT raised</dt><dd className="num">${whole(STAGE.raised)}</dd></div>
+          <div><dt>Tokens sold</dt><dd className="num">{whole(STAGE.tokensSold)} RTX</dd></div>
+        </dl>
+      </div>
+    </section>
   );
 }

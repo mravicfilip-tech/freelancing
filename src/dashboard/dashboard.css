@@ -73,7 +73,9 @@
   /* A field is the deeper band cut into the lifted card, edged with the same
      rail the site rules everything else with. */
   --d-field: #0c1219;
-  --d-field-ring: #28323c;
+  /* 3:1 on the card and on an inset tile — the bar for a control boundary.
+     #28323c was 1.27:1, which is a field with no visible edge at all. */
+  --d-field-ring: #686f76;
   /* A control sitting inside a field needs its own edge against it. */
   --d-chip-ring: #3a4653;
   /* A pill sitting on the card needs a lighter edge than one inside a field:
@@ -106,7 +108,8 @@
   --d-accent-tint: rgba(64, 66, 210, 0.09);
   --d-on-tint: #3335bb;
   --d-field: #f4f6f8;
-  --d-field-ring: #aab5c0;
+  /* 3:1 on white and on the inset tile; #aab5c0 was 2.08:1. */
+  --d-field-ring: #89929b;
   --d-chip-ring: #7a8a9a;
   /* 3.54:1 on --d-card. The pill's own fill is 1.05:1, so the edge is the
      only thing that says this is a control. */
@@ -513,10 +516,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .dash[data-theme='dark'] .fh__btn--primary:focus-visible { color: #fff; }
 /* The hero's ghost button sets its own grey, 3.05:1 on its ground in light —
    the only text on either screen still under 4.5:1 once the tokens passed. */
-.dash[data-theme='light'] .fh__btn--ghost { color: var(--d-text-2); }
+.dash[data-theme='light'] .fh__btn--ghost { color: var(--d-text-2); border-color: var(--d-field-ring); }
 .dash[data-theme='dark'] .fh__btn--ghost {
   background: var(--d-inset);
-  border-color: var(--d-rule);
+  border-color: var(--d-field-ring);
   color: var(--d-text-2);
 }
 
@@ -997,6 +1000,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .buy__next + .buy__pay-with { margin-top: 18px; }
 .buy__pay-label { color: var(--d-text-3); font-size: 13px; }
 .buy__marks { display: flex; align-items: center; gap: 7px; }
+/* SOL's official art is a black disc, 1.35:1 on the dark card. One edge on
+   every mark keeps the row uniform and means none of them can disappear. */
+.buy__marks svg { border-radius: 50%; box-shadow: 0 0 0 1px var(--d-field-ring); }
 
 /* ---------- Flash sale ----------
    The countdown is the reason the card exists, so it sits top right at display

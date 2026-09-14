@@ -116,6 +116,9 @@
 }
 .earn-buy__method .tsel__button:hover { background: transparent; }
 .earn-buy__method .tsel__chevron { margin-left: auto; }
+/* The menu hangs off the field and matches its width — a 208px list under a
+   full-width trigger read as belonging to something else. */
+.earn-buy__method .tsel__menu { left: 0; right: 0; min-width: 0; }
 .earn-buy__mark { flex: none; opacity: 0.9; }
 .earn-buy__promo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
 .earn-buy .field__label b { color: var(--d-on-tint); font-weight: 600; }
@@ -149,18 +152,6 @@
 /* ==========================================================================
    Bands (V2, V5)
    ========================================================================== */
-.stage-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 14px;
-  color: var(--d-text-2);
-}
-.stage-line b { color: var(--d-text); }
-.stage-line svg { color: var(--d-on-tint); }
-.earn-hero { display: grid; gap: 20px; }
-.earn-hero__top { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
 /* ==========================================================================
    Narrow
@@ -172,7 +163,7 @@
 }
 @media (max-width: 760px) {
   .earn .topbar { order: 1; }
-  .earn .promos, .earn .earn-hero, .earn .earn-split { order: 2; }
+  .earn .promos, .earn .stg, .earn .earn-split { order: 2; }
 }
 @media (max-width: 620px) {
   .earn-buy__grid { grid-template-columns: minmax(0, 1fr); }
@@ -189,134 +180,114 @@
   .earn .chip-btn { min-width: 44px; min-height: 44px; }
 }
 
+
+
 /* ==========================================================================
-   Promotions — the carousel
+   Promotions — four cards
    ========================================================================== */
-.promos { padding: 0; overflow: hidden; }
-.promos__rail {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-}
-.promos__rail::-webkit-scrollbar { display: none; }
-.slide {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
+.promos__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: clamp(20px, 3vw, 48px);
-  min-height: 300px;
-  padding: clamp(24px, 3vw, 40px) clamp(22px, 3vw, 44px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
 }
-.slide__copy { display: flex; flex-direction: column; justify-content: center; gap: 14px; min-width: 0; }
-.slide__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 12.5px;
+.promo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 236px;
+  padding: 18px;
+  border-radius: var(--r-card);
+  background: var(--d-inset);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 180ms ease;
+}
+.promo:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--d-accent-soft); }
+.promo:active { transform: translateY(0); }
+.promo__top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+/* The mark sits on the stage card's own disc: accent tint on the dot grid. */
+.promo__disc {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--d-accent-tint);
+  color: var(--d-on-tint);
+}
+.promo__art { width: 28px; height: 28px; }
+.promo__tag {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--d-card);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
+  font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--d-text-2);
 }
-.slide__title {
-  font-family: var(--d-display);
-  margin: 0;
-  font-size: clamp(30px, 3.4vw, 44px);
-  line-height: 1.04;
+.promo__title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  line-height: 1.2;
   font-weight: 600;
-  letter-spacing: -0.045em;
-  max-width: 18ch;
+  letter-spacing: -0.03em;
 }
-.slide__title em { display: block; font-style: normal; color: var(--d-on-tint); }
-.slide__body { margin: 0; max-width: 46ch; font-size: 15px; line-height: 1.55; color: var(--d-text-2); }
-.slide__actions { margin-top: 6px; }
-.slide__actions .fh__btn { width: auto; padding: 0 22px; }
-
-/* The visual is the stage card's language, not the reference's gradient art:
-   an inset panel on the dot grid, one soft accent disc, and a line mark. */
-.slide__visual {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 220px;
-  border-radius: var(--r-card);
-  background: var(--d-inset);
-  background-image: var(--d-grid);
-  background-size: 24px 24px;
-  box-shadow: inset 0 0 0 1px var(--d-rule);
-  overflow: hidden;
-}
-.slide__disc {
-  position: absolute;
-  width: 62%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, var(--d-accent-tint), transparent 72%);
-}
-.slide__art { position: relative; width: clamp(120px, 12vw, 168px); height: auto; color: var(--d-on-tint); }
-
-/* Dots and arrows share one bar under the slide, inside the card's padding. */
-.promos__bar {
-  display: flex;
+.promo__title em { display: block; font-style: normal; color: var(--d-on-tint); }
+.promo__body { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--d-text-2); }
+.promo__cta {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 0 clamp(22px, 3vw, 44px) 18px;
+  gap: 4px;
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-text);
 }
-.promos__dots { display: flex; gap: 8px; }
-.promos__dot {
-  position: relative;
-  width: 28px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.promos__dot span {
-  position: absolute;
-  inset: 10px 0;
-  border-radius: 999px;
-  background: var(--d-track);
-  overflow: hidden;
-}
-/* The active dot is wider and fills over the slide's own duration, so the
-   next advance is visible coming rather than a surprise. */
-.promos__dot[aria-selected='true'] { width: 44px; }
-.promos__dot span::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--d-text);
-  transform: scaleX(0);
-  transform-origin: left;
-}
-.promos__dot[aria-selected='true'] span::after { transform: scaleX(1); }
-.promos__dot[data-running] span::after {
-  transform: scaleX(0);
-  animation: dot-fill var(--ms) linear forwards;
-}
-@keyframes dot-fill { to { transform: scaleX(1); } }
-.promos__nav { display: flex; gap: 6px; }
-.promos__prev { transform: rotate(180deg); }
+.promo__cta svg { transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.promo:hover .promo__cta svg { transform: translateX(3px); }
 
 /* ==========================================================================
-   Phone — carousel
-   Last in the file on purpose: these override the carousel rules above, and
-   written any earlier they lose to them at equal specificity.
+   Stage card
    ========================================================================== */
-@media (max-width: 620px) {
-  .slide { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-  .slide__visual { display: none; }
-  .slide__title { font-size: 28px; max-width: none; }
-  /* The dot's bar is the inner span, so the button grows to 44px without the
-     dot looking any bigger. */
-  .promos__dot { width: 44px; height: 44px; }
-  .promos__dot span { inset: 20px 8px; }
-  .promos__dot[aria-selected='true'] { width: 56px; }
+.stg {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(24px, 3vw, 48px);
+  align-items: stretch;
 }
+.stg__price { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-width: 0; }
+.stg__price .ladder__label { display: inline-flex; align-items: center; gap: 8px; }
+.stg__fig-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.stg__fig { margin: 0; font-size: clamp(44px, 4.6vw, 64px); }
+.stg__next { margin: 0; }
+.stg__bar .dprog { height: 44px; }
+.stg__side { display: grid; gap: 14px; align-content: space-between; }
+.stg__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (max-width: 1180px) {
+  .promos__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stg { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 620px) {
+  .promos__grid { grid-template-columns: minmax(0, 1fr); }
+  .promo { min-height: 0; }
+  .stg__facts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Stage facts stack label over figure: "Tokens sold" beside "265,000,000 RTX"
+   was wrapping the label in a half-width tile. */
+.stg__facts > div {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-height: 64px;
+  padding: 10px 14px;
+}
+.stg__facts dt { white-space: nowrap; }
+/* The card-head link never wraps; on a phone it was breaking "View / all". */
+.earn .card__head .link-quiet { white-space: nowrap; flex: none; }

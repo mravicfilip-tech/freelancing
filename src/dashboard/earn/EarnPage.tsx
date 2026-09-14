@@ -3,14 +3,14 @@ import { Sidebar } from '../Sidebar';
 import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { theme } from '../theme';
-import { Countdown, EarnBuy, EarnOrders, Promos, Raised, StageLine } from './sections';
+import { EarnBuy, EarnOrders, Promos, StageCard } from './sections';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './earn.css';
 
 /**
- * Earn. Promotions lead as a single-slide carousel, the stage card carries
- * the clock, bar and facts, and the orders feed and buy form split beneath.
+ * Earn. Promotions lead as four cards, the stage card carries the price,
+ * bar, clock and facts, and the orders feed and buy form split beneath.
  */
 export function EarnPage() {
   const mode = theme.use();
@@ -28,16 +28,7 @@ export function EarnPage() {
       <main className="dash__main">
         <Topbar title="Earn" />
         <Promos />
-        <section className="card earn-hero">
-          <div className="earn-hero__top">
-            <div>
-              <p className="ladder__label">Presale</p>
-              <StageLine />
-            </div>
-            <Countdown size="md" />
-          </div>
-          <Raised inline />
-        </section>
+        <StageCard />
         <div className="earn-split">
           <EarnOrders limit={6} />
           <EarnBuy compact />

@@ -173,6 +173,11 @@
 }
 .reel__result { position: absolute; left: 50%; bottom: 22px; z-index: 6; transform: translateX(-50%); cursor: pointer; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35); }
 .reel__result strong { font-weight: 700; }
+/* On the light reel the lime pill has no ground to sit on, so the result
+   takes the primary button's ink, with the prize in lime. */
+.dash[data-theme='light'] .reel__result { background: var(--d-pick); color: var(--d-on-pick); box-shadow: 0 8px 20px -8px rgba(18, 36, 51, 0.5); }
+.dash[data-theme='light'] .reel__result strong { color: #d9f24e; }
+.dash[data-theme='light'] .reel__result:hover { background: var(--d-pick-hover); }
 .reel--won .reel__slot .reel__cap:last-child { visibility: hidden; }
 
 .opener__foot { display: grid; justify-items: center; gap: 16px; }

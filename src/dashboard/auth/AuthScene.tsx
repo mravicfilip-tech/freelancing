@@ -11,16 +11,18 @@ import * as THREE from 'three';
  */
 const SPACING = 22;
 const LAVENDER = new THREE.Color('#b3b5f5');
+const INK = new THREE.Color('#122433');
+const INDIGO = new THREE.Color('#4042d2');
 
 const VERT = /* glsl */ `
   attribute float aDist;
-  uniform float uTime, uPulse, uSize;
+  uniform float uTime, uPulse, uSize, uAlpha;
   varying float vA;
   void main() {
     float wave = 0.5 + 0.5 * sin(aDist * 0.045 - uTime * 1.5);
     float env = exp(-aDist * 0.0016);
     float pulse = exp(-pow((aDist - uPulse) / 30.0, 2.0));
-    vA = 0.08 + 0.34 * wave * env + 0.6 * pulse * (0.3 + env);
+    vA = (0.08 + 0.34 * wave * env + 0.6 * pulse * (0.3 + env)) * uAlpha;
     gl_PointSize = uSize * (1.0 + pulse * 1.4);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
@@ -50,7 +52,8 @@ function glowTexture() {
   return t;
 }
 
-export function AuthScene() {
+/** `light`: ink dots and indigo rings on the light panel, and no glow, since the panel's own flares carry the colour there. */
+export function AuthScene({ light = false }: { light?: boolean }) {
   const host = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,7 +93,7 @@ export function AuthScene() {
         pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0));
       }
       const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: LAVENDER, transparent: true, opacity: 0.55 - i * 0.065 });
+      const mat = new THREE.LineBasicMaterial({ color: light ? INDIGO : LAVENDER, transparent: true, opacity: (0.55 - i * 0.065) * (light ? 0.75 : 1) });
       ringMats.push(mat);
       rings.add(new THREE.LineLoop(geo, mat));
     }
@@ -98,7 +101,7 @@ export function AuthScene() {
     const rippleGeo = new THREE.BufferGeometry().setFromPoints(
       Array.from({ length: 181 }, (_, k) => new THREE.Vector3(Math.cos((k / 180) * Math.PI * 2), Math.sin((k / 180) * Math.PI * 2), 0)),
     );
-    const rippleMat = new THREE.LineBasicMaterial({ color: LAVENDER, transparent: true, opacity: 0 });
+    const rippleMat = new THREE.LineBasicMaterial({ color: light ? INDIGO : LAVENDER, transparent: true, opacity: 0 });
     const ripple = new THREE.LineLoop(rippleGeo, rippleMat);
     world.add(ripple);
 
@@ -106,10 +109,11 @@ export function AuthScene() {
     // Double-sided: the camera's flipped y reverses winding, and a culled quad is an invisible glow.
     const glowMat = new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), glowMat);
+    glow.visible = !light;
     world.add(glow);
 
     // the dot field
-    const uniforms = { uTime: { value: 0 }, uPulse: { value: 0 }, uSize: { value: 2.4 * dpr }, uColor: { value: LAVENDER } };
+    const uniforms = { uTime: { value: 0 }, uPulse: { value: 0 }, uSize: { value: 2.4 * dpr }, uAlpha: { value: light ? 0.55 : 1 }, uColor: { value: light ? INK : LAVENDER } };
     const dotMat = new THREE.ShaderMaterial({ uniforms, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false });
     let dots: THREE.Points | null = null;
 
@@ -162,11 +166,11 @@ export function AuthScene() {
       uniforms.uPulse.value = (t * 170) % Math.max(w, h) * 1.4;
       const breathe = 1 + Math.sin(t * 0.7) * 0.015;
       rings.scale.set(breathe, breathe, 1);
-      ringMats.forEach((m, i) => { m.opacity = (0.55 - i * 0.065) * (0.85 + 0.15 * Math.sin(t * 0.9 + i * 0.6)); });
+      ringMats.forEach((m, i) => { m.opacity = (0.55 - i * 0.065) * (light ? 0.75 : 1) * (0.85 + 0.15 * Math.sin(t * 0.9 + i * 0.6)); });
       const rp = (t % 8) / 8;
       const rr = 60 + rp * Math.max(w, h) * 1.5;
       ripple.scale.set(rr, rr, 1);
-      rippleMat.opacity = rp < 0.08 ? rp / 0.08 * 0.7 : Math.max(0, 0.7 * (1 - (rp - 0.08) / 0.7));
+      rippleMat.opacity = (rp < 0.08 ? rp / 0.08 * 0.7 : Math.max(0, 0.7 * (1 - (rp - 0.08) / 0.7))) * (light ? 0.7 : 1);
       glowMat.opacity = 0.85 + 0.15 * Math.sin(t * 0.8);
       lean.lerp(target, 0.06);
       world.position.set(lean.x, lean.y, 0);
@@ -203,7 +207,7 @@ export function AuthScene() {
       glow.geometry.dispose();
       renderer.domElement.remove();
     };
-  }, []);
+  }, [light]);
 
   return <div ref={host} className="auth__scene" aria-hidden="true" />;
 }

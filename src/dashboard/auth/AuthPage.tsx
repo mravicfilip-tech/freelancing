@@ -181,7 +181,7 @@ export function AuthPage() {
           one ripple runs out from their centre; the dot grid fades from that
           corner. Same ink and lavender whatever the page theme. */}
       <aside className="auth__art" aria-hidden="true">
-        <AuthScene />
+        <AuthScene light={mode === 'light'} />
         <div className="auth__copy">
           <p className="auth__headline">
             <span className="auth__lead">The Future of</span>

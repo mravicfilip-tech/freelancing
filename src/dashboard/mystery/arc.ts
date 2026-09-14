@@ -182,7 +182,11 @@ function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) 
    right corners, down the right foot, the front foot, the left foot and up
    the left corner. The lid corners are crate.ts's TOP; the feet are where
    the drawing bottoms out. */
-const CRATE: [number, number][] = [[205.2, 1.9], [398, 84.2], [398, 305], [199.3, 405], [3.9, 306], [3.9, 80.9]];
+let CRATE: [number, number][] = [[205.2, 1.9], [398, 84.2], [398, 305], [199.3, 405], [3.9, 306], [3.9, 80.9]];
+/** The chest hands over its real silhouette once it has measured its strokes. */
+export function setChestOutline(pts: [number, number][]) {
+  if (pts.length >= 3) CRATE = pts;
+}
 
 /** An electric outline round a polygon, the card arc's cousin for the chest. */
 function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], glow: [number, number, number], t: number) {
@@ -237,13 +241,13 @@ function draw(row: Row, now: number, still: boolean) {
   // ring, and the flash covers the hand-off.
   const flying = root.classList.contains('reel--spin');
   if (flying && !still) marker(ctx, w, h, t);
-  // The closed chest, on a dark reel, carries the arc too, in the brand's lime.
+  // The closed chest, on a dark reel, carries the arc too, in its own lid ink.
   if (!flying && !light && !still && root.classList.contains('reel--idle')) {
     const svg = root.querySelector<SVGSVGElement>('.chest--reel .chest__art svg');
     if (svg) {
       const r = svg.getBoundingClientRect();
       const k = r.width / 401.5;
-      outline(ctx, CRATE.map(([x, y]) => [r.left - base.left + x * k, r.top - base.top + y * k]), [217, 242, 78], t);
+      outline(ctx, CRATE.map(([x, y]) => [r.left - base.left + x * k, r.top - base.top + y * k]), [205, 216, 226], t);
     }
   }
   for (const el of flying ? [] : root.querySelectorAll<HTMLElement>('.prize')) {

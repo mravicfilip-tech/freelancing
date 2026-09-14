@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import chestMarkup from '../../components/FigmaHero/chest.svg?raw';
 import { buildCrate, isLid, tiltMatrix, TOP, SEAM } from '../../components/FigmaHero/crate';
+import { setChestOutline } from './arc';
 import '../../components/FigmaHero/ChestSlide.css';
 
 /**
@@ -21,6 +22,24 @@ const PAYLOAD: { src: string; mark?: boolean }[] = [
   { src: '/figma/coin-usdt.svg' },
   { src: '/figma/coin-sol.svg' },
 ];
+
+/** Andrew's monotone chain: the convex hull of a point set, counter-clockwise. */
+function hull(points: [number, number][]): [number, number][] {
+  const p = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o: number[], a: number[], b: number[]) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower: [number, number][] = [];
+  for (const q of p) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop();
+    lower.push(q);
+  }
+  const upper: [number, number][] = [];
+  for (let i = p.length - 1; i >= 0; i--) {
+    const q = p[i];
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop();
+    upper.push(q);
+  }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+}
 
 type Built = {
   svg: SVGSVGElement;
@@ -54,6 +73,17 @@ export function MysteryChest({ open }: { open: boolean }) {
       return { el, len: el.getTotalLength(), cy: b.y + b.height / 2 };
     });
     if (!segs.length) return;
+    /* The silhouette the arc traces: the convex hull of every point the export
+       draws, in the crate's own units, rather than corners read off a table. */
+    const pts: [number, number][] = [];
+    segs.forEach((sg) => {
+      const n = Math.max(2, Math.ceil(sg.len / 6));
+      for (let i = 0; i <= n; i++) {
+        const pt = sg.el.getPointAtLength((sg.len * i) / n);
+        pts.push([pt.x, pt.y]);
+      }
+    });
+    setChestOutline(hull(pts));
     const b = buildCrate(svg, segs.filter((s) => isLid(s.el)).map((s) => s.el));
     if (!b) return;
     /* The export draws the mark on the lid as line-art; the strokes inside the

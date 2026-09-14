@@ -222,6 +222,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
 .rail {
   position: sticky;
+  /* Sticky makes a stacking context; without an order the account menu
+     paints under the main column's cards. */
+  z-index: 5;
   top: 14px;
   align-self: start;
   height: calc(100svh - 28px);

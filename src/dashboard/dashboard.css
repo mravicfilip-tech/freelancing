@@ -670,6 +670,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   border-color: var(--d-field-ring);
   color: var(--d-text-2);
 }
+/* The hover blob is the ink; the label has to flip against it, or it sits
+   grey on near-black in light and grey on near-white in dark. */
+.dash[data-theme='light'] .fh__btn--ghost:hover,
+.dash[data-theme='light'] .fh__btn--ghost:focus-visible { color: #fff; }
+.dash[data-theme='dark'] .fh__btn--ghost:hover,
+.dash[data-theme='dark'] .fh__btn--ghost:focus-visible { color: var(--d-bg); }
 
 /* fh__btn never sets a border: in the hero it is always an anchor, so the
    rule was never needed. Rendered as a real button it inherits the browser's

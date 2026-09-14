@@ -103,7 +103,8 @@ export function AuthScene() {
     world.add(ripple);
 
     // the glow at the source
-    const glowMat = new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    // Double-sided: the camera's flipped y reverses winding, and a culled quad is an invisible glow.
+    const glowMat = new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
     const glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), glowMat);
     world.add(glow);
 

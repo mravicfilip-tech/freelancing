@@ -14,7 +14,12 @@
   border-radius: var(--r-card);
   overflow: hidden;
   isolation: isolate;
+  /* The banner's ink is a shade off the page's; a faded lavender stroke
+     gives it an edge in both themes. */
+  box-shadow: inset 0 0 0 1px rgba(179, 181, 245, 0.2);
 }
+/* Drawn above the art, so the stroke is not painted over. */
+.upd-hero::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(179, 181, 245, 0.2); pointer-events: none; }
 .upd-hero .thumb--hero { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; }
 .upd-hero .thumb--hero .thumb__brand { font-size: 19px; }
 .upd-hero .thumb--hero .thumb__brand .icon-20 { width: 30px; height: 30px; }

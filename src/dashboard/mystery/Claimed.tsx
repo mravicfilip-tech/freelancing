@@ -16,6 +16,7 @@ export function Claimed({ rows }: { rows: Claim[] }) {
   const slice = rows.slice(from, from + PAGE);
   const filler = Array.from({ length: PAGE - slice.length }, (_, i) => i);
   const spent = rows.reduce((s, r) => s + r.spent, 0);
+  const rare = rows.filter((r) => r.prize.rarity !== 'uncommon').length;
 
   return (
     <section className="card orders claimed" aria-labelledby="claimed-title">
@@ -28,12 +29,20 @@ export function Claimed({ rows }: { rows: Claim[] }) {
 
       <div className="claimed__stats">
         <div className="claimed__stat">
-          <span className="claimed__stat-label"><RtxMark className="icon-20" /> Total prizes claimed</span>
-          <span className="claimed__stat-value num">{rows.length}</span>
+          <div>
+            <span className="claimed__stat-label">Total prizes claimed</span>
+            <span className="claimed__stat-value num">{rows.length}</span>
+            <span className="claimed__stat-note">{rare} rare or better</span>
+          </div>
+          <span className="claimed__stat-mark"><RtxMark className="icon-22" /></span>
         </div>
         <div className="claimed__stat">
-          <span className="claimed__stat-label"><RtxMark className="icon-20" /> Total money spent</span>
-          <span className="claimed__stat-value num">{usd(spent)}</span>
+          <div>
+            <span className="claimed__stat-label">Total money spent</span>
+            <span className="claimed__stat-value num">{usd(spent)}</span>
+            <span className="claimed__stat-note">{usd(Math.round(spent / Math.max(1, rows.length)))} a box on average</span>
+          </div>
+          <span className="claimed__stat-mark"><RtxMark className="icon-22" /></span>
         </div>
       </div>
 

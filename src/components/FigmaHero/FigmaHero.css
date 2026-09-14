@@ -265,7 +265,16 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  width: 162px;
+  /* A floor, not a fixed size. The design's 162 was measured from "Join Presale", and the label is
+     nowrap inside an overflow:hidden pill — so a longer one ("Explore Mystery Boxes") was cropped
+     at both ends rather than given room. Every button short enough to fit still measures exactly
+     what it did; only one that outgrows the floor takes the padding and grows. */
+  /* fit-content, because the fixed width was also what kept the pill from stretching: as a flex
+     item in a column (the bento's copy block) a cross-size of auto is stretched to the container.
+     Sizing to content leaves every parent's own alignment alone, which align-self would not. */
+  width: fit-content;
+  min-width: 162px;
+  padding: 0 26px;
   height: 48px;
   border-radius: 400px;
   font-weight: 700;
@@ -317,7 +326,7 @@
   transform: scale(0.97);
 }
 .fh__btn--wide {
-  width: 184px;
+  min-width: 184px;
 }
 .fh__chevron {
   display: block;
@@ -1002,6 +1011,8 @@
 }
 .fh__menuActions .fh__btn {
   width: 100%;
+  /* The sheet sets the width here, so the pill's own floor steps aside on a narrow phone. */
+  min-width: 0;
   height: 52px;
 }
 /* On white the bar's ghost is too faint to read as the second of two actions. */
@@ -1268,7 +1279,8 @@
     display: none;
   }
   .fh__btn {
-    width: 140px;
+    min-width: 140px;
+    padding: 0 20px;
   }
 }
 

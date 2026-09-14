@@ -43,8 +43,8 @@
 .upd-hero__excerpt { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(242, 244, 248, 0.78); }
 .upd-hero__btn { margin-top: 6px; }
 
-/* ---------- Grid: picture on top, as many across as ~300px columns allow ---------- */
-.updates .upd-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+/* ---------- Grid: four across on a desktop, whatever its width ---------- */
+.updates .upd-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 /* Load more, centred, with the count above it. */
 .upd-foot { flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; }
@@ -61,6 +61,7 @@
   .upd-hero__title { font-size: 26px; }
 }
 @media (max-width: 1180px) {
+  .updates .upd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 620px) {
   .updates .upd-grid { grid-template-columns: minmax(0, 1fr); }

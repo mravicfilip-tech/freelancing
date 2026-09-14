@@ -51,16 +51,12 @@ export function Promos() {
                 <span className="promo__disc">
                   <Art />
                 </span>
-                <span className="promo__tag">{TAG[p.id]}</span>
+                <span className="promo__kind">{TAG[p.id]}</span>
               </span>
               <h3 className="promo__title">
                 {p.title} <em>{p.accent}</em>
               </h3>
               <p className="promo__body">{p.body}</p>
-              <span className="promo__cta">
-                Learn more
-                <ChevronRight className="icon-14" />
-              </span>
             </a>
           );
         })}

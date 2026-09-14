@@ -146,6 +146,38 @@ function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h
   if (clip) ctx.restore();
 }
 
+/** The centre marker while the reel flies: a thicker lime arc, jittering
+    like the card borders, so the line the prize will stop on has the same
+    charge as the prizes passing it. */
+function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
+  const time = t * CLOCK * 1.6;
+  const flicker = 0.9 + 0.1 * Math.sin(t * 11);
+  const x0 = w / 2;
+  ctx.beginPath();
+  for (let y = -4; y <= h + 4; y += 3) {
+    const raw = electricNoise(y * 1.3 + 500, time);
+    const spark = Math.sign(raw) * Math.pow(Math.abs(raw), 1.15);
+    const x = x0 + spark * JITTER * 2.6;
+    if (y === -4) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  const lime: [number, number, number] = [217, 242, 78];
+  const glow = [[30, 0.06], [18, 0.1], [10, 0.18], [5, 0.32]] as const;
+  for (const [lw, a] of glow) {
+    ctx.strokeStyle = rgb(lime, a * flicker);
+    ctx.lineWidth = lw;
+    ctx.stroke();
+  }
+  ctx.strokeStyle = rgb(lime, 0.95 * flicker);
+  ctx.lineWidth = 2.6;
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(255,255,255,${0.9 * flicker})`;
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+}
+
 function draw(row: Row, now: number, still: boolean) {
   const { ctx, w, h, dpr, root } = row;
   const t = (now - t0) / 1000;
@@ -157,6 +189,7 @@ function draw(row: Row, now: number, still: boolean) {
   // were a frame ago, so the arcs sit out the spin; the cards keep their own
   // ring, and the flash covers the hand-off.
   const flying = root.classList.contains('reel--spin');
+  if (flying && !still) marker(ctx, w, h, t);
   for (const el of flying ? [] : root.querySelectorAll<HTMLElement>('.prize')) {
     const r = el.getBoundingClientRect();
     const ox = r.left - base.left, oy = r.top - base.top;

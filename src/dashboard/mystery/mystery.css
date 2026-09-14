@@ -87,6 +87,9 @@
 
 /* ---------- Opener ---------- */
 .opener { display: grid; gap: 18px; }
+/* In dark the whole opener sits a step darker than the page's other cards:
+   the stage. Light keeps the card white and darkens only the reel. */
+.dash[data-theme='dark'] .opener { background: #080d13; }
 .opener__head { margin-bottom: 0; }
 .opener__pay { display: flex; gap: 6px; }
 .opener__chip { display: inline-flex; align-items: center; gap: 7px; padding-left: 10px; }
@@ -100,10 +103,9 @@
   overflow: hidden;
   border-top: 1px solid var(--d-rule);
   border-bottom: 1px solid var(--d-rule);
-  /* Darker than the card around it, so the reel reads as the stage. */
-  background: var(--d-bg);
+  background: var(--d-inset);
 }
-.dash[data-theme='dark'] .reel { background: #080d13; }
+.dash[data-theme='dark'] .reel { background: transparent; }
 .reel__view { position: absolute; inset: 0; pointer-events: none; }
 .reel__track { position: absolute; left: 0; top: 0; display: flex; height: 100%; will-change: transform; }
 .reel__slot {
@@ -131,6 +133,9 @@
   background: repeating-linear-gradient(180deg, #d9f24e 0 8px, transparent 8px 16px);
   pointer-events: none;
 }
+/* While the reel flies the canvas draws the marker as an arc of its own. */
+.reel--spin .reel__mark { opacity: 0; }
+.reel__mark { transition: opacity 200ms ease; }
 .reel__mark::before, .reel__mark::after {
   content: '';
   position: absolute;

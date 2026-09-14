@@ -198,7 +198,9 @@
 .auth__live {
   position: absolute;
   left: clamp(24px, 3.4vw, 48px);
-  top: calc(clamp(24px, 3.4vw, 48px) + 44px);
+  /* On the line of the form side's header: its padding, plus half the 40px
+     toggle less half the pill's own 36px. */
+  top: calc(clamp(20px, 3vw, 40px) + 2px);
   z-index: 1;
   background: rgba(255, 255, 255, 0.08);
   color: #e6e8f2;

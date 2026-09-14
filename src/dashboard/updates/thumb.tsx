@@ -5,8 +5,8 @@ import type { Update } from './data';
  * The default thumbnail an update carries when it has no picture of its
  * own: the brand mark, the headline, and a quiet piece of art behind them,
  * on the site's ink whatever the page theme, so it reads as an image rather
- * than another card. The feature card shows the art with the release
- * number in place of the headline, since its headline is set beside it.
+ * than another card. The feature card shows the art alone, since its
+ * headline is set beside it.
  */
 /** Thin rings off the top-right corner, brighter towards their centre, over
     the site's dot grid, which fades away from that corner. */
@@ -28,12 +28,10 @@ export function Thumb({ u, titled = true, className }: { u: Update; titled?: boo
         <RtxMark className="icon-20" />
         Remittix
       </span>
-      {titled ? (
+      {titled && (
         <span className="thumb__title">
           {u.title} <em>{u.accent}</em>
         </span>
-      ) : (
-        <span className="thumb__n num">{u.n}</span>
       )}
     </div>
   );

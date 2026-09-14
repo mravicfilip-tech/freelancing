@@ -37,14 +37,6 @@
   letter-spacing: -0.03em;
 }
 .thumb__title em { font-style: normal; color: #b3b5f5; }
-.thumb__n {
-  align-self: flex-end;
-  font-family: var(--d-display);
-  font-size: 64px;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  color: rgba(242, 244, 248, 0.18);
-}
 .thumb__art { position: absolute; z-index: 0; pointer-events: none; }
 
 /* Rings off the top-right, a glow at their centre, and the dot grid fading
@@ -65,8 +57,7 @@
 .thumb--feature { aspect-ratio: 16 / 9; }
 .thumb--feature .thumb__brand { font-size: 15px; }
 .thumb--feature .thumb__brand .icon-20 { width: 24px; height: 24px; }
-.thumb--feature .thumb__n { font-size: clamp(72px, 8vw, 120px); }
-
+.thumb--feature 
 /* ---------- Kicker, title, excerpt ---------- */
 .upd-kicker {
   display: flex;

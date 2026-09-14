@@ -89,7 +89,7 @@
   /* A menu floats over the page, so on dark it needs depth to separate. */
   /* A floating menu is darker than the page, not lighter, with a stroke:
      it contrasts against the cards it opens over instead of blending. */
-  --d-menu-edge: 0 0 0 1px var(--d-field-ring);
+  --d-menu-edge: 0 0 0 1px #3a4553;
   --d-menu: #070b10;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);

@@ -539,6 +539,69 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   letter-spacing: -0.04em;
   line-height: 1;
 }
+/* ---------- Topbar forms (review: ?t=1..5) ---------- */
+.topbar__pick { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px; border-radius: var(--r-sm); background: var(--d-card); box-shadow: inset 0 0 0 1px var(--d-rule); align-self: flex-start; }
+.topbar__pick .vpick__item { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 8px; color: var(--d-text-2); font-size: 13px; text-decoration: none; }
+.topbar__pick .vpick__item b { font-weight: 700; color: var(--d-text-3); }
+.topbar__pick .vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
+.topbar__pick .vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
+
+/* T1 Card: the bar is a card like everything else on the page. */
+.topbar[data-t='1'] {
+  align-items: center;
+  padding: 18px 22px;
+  border-radius: var(--r-card);
+  background: var(--d-card);
+  box-shadow: var(--d-lift);
+}
+.topbar[data-t='1'] .topbar__title { font-size: clamp(24px, 2.2vw, 30px); }
+
+/* T2 Ruled: no greeting, the title on the page ground, the dashed rail
+   under it as the rule the rest of the page uses. */
+.topbar[data-t='2'] { align-items: center; padding: 4px 4px 18px; background-image: var(--d-dash-h); background-size: 100% 1px; background-position: left bottom; background-repeat: no-repeat; }
+.topbar[data-t='2'] .topbar__greeting { display: none; }
+.topbar[data-t='2'] .topbar__title { margin: 0; font-size: clamp(24px, 2.2vw, 30px); }
+
+/* T3 Breadcrumb: where you are instead of a greeting; the controls in one
+   pill so the right side is one object, not three. */
+.topbar[data-t='3'] { align-items: center; padding: 4px; }
+.topbar__crumb { display: flex; align-items: center; gap: 8px; }
+.topbar__crumb a { color: inherit; text-decoration: none; }
+.topbar__crumb a:hover { color: var(--d-text); }
+.topbar__crumb span[aria-hidden] { color: var(--d-text-3); }
+.topbar__crumb span:last-child { color: var(--d-text); }
+.topbar[data-t='3'] .topbar__title { font-size: clamp(22px, 2vw, 28px); }
+.topbar[data-t='3'] .topbar__actions { gap: 2px; padding: 4px; border-radius: 999px; background: var(--d-card); box-shadow: var(--d-lift), inset 0 0 0 1px var(--d-rule); }
+.topbar[data-t='3'] .topbar__actions .chip-btn { box-shadow: none; background: transparent; }
+.topbar[data-t='3'] .topbar__actions .chip-btn:hover { background: var(--d-inset); }
+.topbar[data-t='3'] .topbar__live { background: transparent; }
+
+/* T4 Quiet bar: the title at label size on one 44px line with the controls;
+   the page's first card is the headline. */
+.topbar[data-t='4'] { align-items: center; padding: 0 4px; margin-bottom: -4px; }
+.topbar[data-t='4'] .topbar__greeting { display: none; }
+.topbar[data-t='4'] .topbar__title { font-family: inherit; margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.topbar[data-t='4'] .chip-btn { width: 36px; height: 36px; }
+.topbar[data-t='4'] .topbar__live { padding: 7px 12px; font-size: 12.5px; }
+
+/* T5 Toolbar: a card with the title, a search field, and the controls. */
+.topbar[data-t='5'] {
+  align-items: center;
+  gap: 16px;
+  padding: 12px 12px 12px 22px;
+  border-radius: var(--r-card);
+  background: var(--d-card);
+  box-shadow: var(--d-lift);
+}
+.topbar[data-t='5'] .topbar__greeting { display: none; }
+.topbar[data-t='5'] .topbar__title { margin: 0; font-size: 22px; }
+.topbar[data-t='5'] .topbar__lead { flex: none; }
+.topbar__search { flex: 1; max-width: 460px; height: 44px; margin-left: auto; padding: 0 14px; gap: 10px; color: var(--d-text-3); }
+.topbar__search-input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--d-text); font: inherit; font-size: 14px; }
+.topbar__search-input::placeholder { color: var(--d-text-3); }
+.topbar__search-input:focus { outline: none; }
+.topbar[data-t='5'] .topbar__actions { margin-left: 0; }
+
 .topbar__actions { display: flex; align-items: center; gap: 10px; }
 .topbar__live {
   display: flex;

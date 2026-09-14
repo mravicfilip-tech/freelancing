@@ -153,6 +153,13 @@ export const ArrowOut = (p: IconProps) => (
   </svg>
 );
 
+export const SearchIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="M16 16l4 4" />
+  </svg>
+);
+
 export const SettingsIcon = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <circle cx="12" cy="12" r="3" />

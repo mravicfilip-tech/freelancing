@@ -8,6 +8,7 @@ import { Dashboard } from './dashboard/Dashboard';
 import { AuthPage } from './dashboard/auth/AuthPage';
 import { EarnPage } from './dashboard/earn/EarnPage';
 import { MarketsPage } from './dashboard/markets/MarketsPage';
+import { UpdatesPage } from './dashboard/updates/UpdatesPage';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
@@ -39,6 +40,7 @@ const PATH = window.location.pathname.replace(/\/+$/, '');
 const AUTH = PATH === '/auth' || PATH === '/login' || PATH === '/register' || params.get('view') === 'auth';
 const EARN = PATH === '/earn' || params.get('view') === 'earn';
 const MARKETS = PATH === '/markets' || params.get('view') === 'markets';
+const UPDATES = PATH === '/updates' || params.get('view') === 'updates';
 const DASHBOARD =
   window.location.pathname.replace(/\/+$/, '') === '/dashboard' ||
   params.get('view') === 'dashboard' ||
@@ -58,6 +60,7 @@ export function App() {
   if (AUTH) return <AuthPage />;
   if (EARN) return <EarnPage />;
   if (MARKETS) return <MarketsPage />;
+  if (UPDATES) return <UpdatesPage />;
   if (DASHBOARD) return <Dashboard />;
   if (BENTO_PICKER) return <BentoPicker />;
   if (TOK_PICKER) return <TokPicker />;

@@ -7,7 +7,7 @@ import { rail } from './theme';
 type Id = keyof typeof NavIcon;
 
 /** The screens that exist as routes; the rest are still anchors until built. */
-export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets' };
+export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets', updates: '/updates' };
 
 /** Two groups, split exactly where the reference breaks. */
 const GROUPS: Id[][] = [

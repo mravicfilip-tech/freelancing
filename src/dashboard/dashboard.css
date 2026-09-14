@@ -19,6 +19,7 @@
   --d-digits: 'Doto Variable', 'Courier New', monospace;
   --d-pixel: 'Silkscreen', 'Courier New', monospace;
   --d-dash-h: repeating-linear-gradient(90deg, var(--d-rule) 0 8px, transparent 8px 16px);
+  --d-dash-v: repeating-linear-gradient(180deg, var(--d-rule) 0 8px, transparent 8px 16px);
 
   --r-card: 12px;
   --r-inner: 12px;
@@ -2034,3 +2035,35 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   text-decoration: none;
 }
 .sheet__out:hover { color: var(--d-text); }
+
+/* ==========================================================================
+   Pager — Markets and Updates
+   ========================================================================== */
+/* ---------- Pager ---------- */
+.pager { display: flex; align-items: center; gap: 4px; }
+.pager__btn {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--d-text-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.pager__btn:hover { background: var(--d-inset); color: var(--d-text); }
+.pager__btn[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
+.pager__btn:disabled { color: var(--d-text-3); opacity: 0.45; cursor: default; background: transparent; }
+.pager__btn--step { padding: 0; }
+.pager__prev { transform: scaleX(-1); }
+.pager__gap { min-width: 24px; text-align: center; color: var(--d-text-3); }
+
+@media (max-width: 620px), (pointer: coarse) and (max-width: 900px) {
+  .pager__btn { min-width: 44px; height: 44px; }
+}

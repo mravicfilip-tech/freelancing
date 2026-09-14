@@ -62,7 +62,6 @@ function Earlier({ items }: { items: Update[] }) {
       </div>
 
       <footer className="tx__foot upd-foot">
-        <p className="tx__count num">Showing {slice.length} of {items.length}</p>
         {left > 0 && (
           <Button variant="ghost" onClick={() => setShown((n) => n + PER_PAGE)}>
             Load {Math.min(PER_PAGE, left)} more

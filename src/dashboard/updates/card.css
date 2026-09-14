@@ -55,6 +55,27 @@
 }
 .thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
+/* Light mode: the landing page's bento cards — white paper, the lavender
+   blob with its warm yellow fringe, the rings in indigo, ink type. Drawn in
+   CSS rather than from the bento's asset, which has hard edges. */
+.dash[data-theme='light'] .thumb {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(70% 80% at 96% 104%, rgba(179, 181, 245, 0.95) 0%, rgba(179, 181, 245, 0.55) 34%, rgba(179, 181, 245, 0) 68%),
+    radial-gradient(38% 46% at 58% 118%, rgba(233, 240, 170, 0.85) 0%, rgba(233, 240, 170, 0) 70%),
+    radial-gradient(40% 50% at 100% 20%, rgba(196, 224, 246, 0.7) 0%, rgba(196, 224, 246, 0) 70%);
+  color: #122433;
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+}
+.dash[data-theme='light'] .thumb::before {
+  background:
+    radial-gradient(circle at center, rgba(18, 36, 51, 0.16) 1px, transparent 1.5px) 4px 4px / 16px 16px;
+  -webkit-mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.1) 78%);
+  mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.1) 78%);
+}
+.dash[data-theme='light'] .thumb__art--rings { stroke: #4042d2; opacity: 0.55; }
+.dash[data-theme='light'] .thumb__title em { color: #4042d2; }
+
 .thumb--feature { aspect-ratio: 16 / 9; }
 .thumb--feature .thumb__brand { font-size: 19px; }
 .thumb--feature .thumb__brand .icon-20 { width: 30px; height: 30px; }

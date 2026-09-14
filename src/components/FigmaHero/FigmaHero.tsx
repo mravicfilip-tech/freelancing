@@ -7,6 +7,7 @@ import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
 import { useNavCondense } from './useNavCondense';
 import { useNavMenu } from './useNavMenu';
+import { useSlideCopy } from './useSlideCopy';
 import { PLANET_ENABLED, PLANET_STATIC } from '../../heroVariant';
 import './FigmaHero.css';
 
@@ -77,15 +78,23 @@ export function blobOrigin(e: React.PointerEvent<HTMLAnchorElement>) {
   e.currentTarget.style.setProperty('--y', `${e.clientY - r.top}px`);
 }
 
-export function PresaleButton({ wide = false }: { wide?: boolean }) {
+export function PresaleButton({
+  wide = false,
+  label = 'Join Presale',
+  href = '#presale',
+}: {
+  wide?: boolean;
+  label?: string;
+  href?: string;
+}) {
   return (
     <a
       className={`fh__btn fh__btn--primary${wide ? ' fh__btn--wide' : ''}`}
-      href="#presale"
+      href={href}
       onPointerEnter={blobOrigin}
       onPointerLeave={blobOrigin}
     >
-      Join Presale
+      {label}
       <Chevron direction="right" />
     </a>
   );
@@ -126,9 +135,38 @@ function Unit({ value, label }: { value: string; label: string }) {
 /** The hero graphic: one slide per visual. The corridors globe, the bars from the Figma design,
  *  then the chest, which draws itself in from its own line work. */
 const SLIDES = [
-  { id: 'globe', label: 'Payment corridors around the world' },
-  { id: 'bars', label: 'Presale figures' },
-  { id: 'chest', label: 'The Remittix chest' },
+  {
+    id: 'globe',
+    label: 'Payment corridors around the world',
+    /* The headline is set in two tones, as every headline on the site is: the lead-in greys back
+       and the line that carries the promise lands in full ink. */
+    lead: 'The Future of',
+    payoff: 'Global Payments',
+    body:
+      'Move money across borders with crypto-native infrastructure built for a faster, borderless ' +
+      'financial world.',
+  },
+  {
+    id: 'bars',
+    label: 'Presale figures',
+    lead: 'Crypto In.',
+    payoff: 'Fiat Out.',
+    body:
+      'Move digital assets across borders and settle directly into local bank accounts \u2014 ' +
+      'seamlessly, securely, and globally.',
+  },
+  {
+    id: 'chest',
+    label: 'The Remittix chest',
+    lead: 'Unlock the',
+    payoff: 'Unexpected.',
+    body:
+      'Remittix Mystery Boxes are here \u2014 discover exclusive RTX rewards, bonuses and prizes ' +
+      'inside.',
+    /* No mystery-box page exists yet, so this lands on the presale with the site's other
+       placeholder anchors. Give it a real destination when there is one. */
+    cta: 'Explore Mystery Boxes',
+  },
 ] as const;
 
 function GraphicSlides({ index }: { index: number }) {
@@ -201,6 +239,8 @@ export function FigmaHero() {
   const root = useRef<HTMLElement>(null);
   const { condensed, scrolling } = useNavCondense();
   const menu = useNavMenu();
+  /* The words lag the slider by one beat so the outgoing copy can clear its masks first. */
+  const copy = SLIDES[useSlideCopy(root, slide)];
   useHeroEntrance(root, {
     progress: PROGRESS,
     usd: USD_RAISED,
@@ -319,22 +359,20 @@ export function FigmaHero() {
       <div className="fh__main" data-node-id="2346:142">
         <div className="fh__intro">
           <div className="fh__introText">
+            {/* The nodes stay put across a slide change so the words swap inside masks that are
+                already translated out of view — see useSlideCopy. Keying them per slide would
+                replace the elements and lose the out-state mid-swap. */}
             <h1 className="fh__title">
               <span className="fh__line">
-                <span className="fh__lineInner">Cross-border</span>
+                <span className="fh__lineInner fh__titleMuted">{copy.lead}</span>
               </span>
               <span className="fh__line">
-                <span className="fh__lineInner">
-                  Payments <span className="fh__titleMuted">Reinvented</span>
-                </span>
+                <span className="fh__lineInner">{copy.payoff}</span>
               </span>
             </h1>
-            <p className="fh__body">
-              Remittix enables users to pay fiat into any bank account around the world using crypto,
-              by just simply connecting your wallet.
-            </p>
+            <p className="fh__body">{copy.body}</p>
           </div>
-          <PresaleButton wide />
+          <PresaleButton wide label={'cta' in copy ? copy.cta : undefined} />
         </div>
         <div className="fh__graphic">
           <GraphicSlides index={slide} />

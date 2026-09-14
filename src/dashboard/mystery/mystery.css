@@ -198,7 +198,9 @@
 .chest--reel { position: absolute; inset: 0; display: block; overflow: visible; clip-path: none; }
 .chest--reel .chest__stage { width: 100%; max-width: none; margin-top: 0; }
 .chest--reel .chest__coin { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
-.chest__art .chest__lid path.chest__lidM { stroke: #d9f24e; stroke-width: 2.2; }
+/* The mark on the lid: white on the dark crate, ink on the light one. */
+.chest__art .chest__lid path.chest__lidM { stroke: #122433; stroke-width: 2.2; }
+.dash[data-theme='dark'] .chest__art .chest__lid path.chest__lidM { stroke: #ffffff; }
 /* On the light reel the white lid needs its own edge. */
 .dash[data-theme='light'] .chest--reel .chest__face--top { stroke: #122433; stroke-width: 1.35; stroke-linejoin: round; }
 /* Its dark tokens, as the hero sets them, on the dashboard's names. */

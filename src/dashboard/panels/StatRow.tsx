@@ -12,24 +12,29 @@ type StatProps = {
   suffix?: string;
   note: string;
   mark?: 'coin' | 'usdt';
+  /** A small plot under the figure, full width: a stat tile's sparkline. */
+  children?: React.ReactNode;
 };
 
 /* The corner link is gone. Each card stated a figure and then offered a way out
    of it, three times over, for destinations the dashboard reaches from the rail
    anyway — so the arrows were three controls competing with the numbers they
    sat beside. The token mark keeps the card's right edge. */
-export function Stat({ label, symbol, value, suffix, note, mark }: StatProps) {
+export function Stat({ label, symbol, value, suffix, note, mark, children }: StatProps) {
   return (
     <article className="stat">
-      <div>
-        <h3 className="stat__label">{label}</h3>
-        <Figure symbol={symbol} value={value} suffix={suffix} />
-        <p className="stat__note">{note}</p>
+      <div className="stat__row">
+        <div>
+          <h3 className="stat__label">{label}</h3>
+          <Figure symbol={symbol} value={value} suffix={suffix} />
+          <p className="stat__note">{note}</p>
+        </div>
+        <div className="stat__aside">
+          {mark === 'coin' && <RtxMark className="stat__mark" />}
+          {mark === 'usdt' && <PayMark id="USDT" className="stat__mark" />}
+        </div>
       </div>
-      <div className="stat__aside">
-        {mark === 'coin' && <RtxMark className="stat__mark" />}
-        {mark === 'usdt' && <PayMark id="USDT" className="stat__mark" />}
-      </div>
+      {children && <div className="stat__viz">{children}</div>}
     </article>
   );
 }

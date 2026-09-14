@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { USER, WALLET } from './data';
 import { CheckIcon, ChevronDown, CopyIcon, NavIcon, SettingsIcon, SignOutIcon, UserIcon } from './icons';
 import { useCopy } from './useCopy';
+import { signOut } from './auth/session';
 import { rail } from './theme';
 
 type Id = keyof typeof NavIcon;
@@ -152,7 +153,7 @@ function RailAccount({ collapsed }: { collapsed: boolean }) {
             <SettingsIcon className="icon-20" />
             Settings
           </a>
-          <a role="menuitem" className="rail__menu-item rail__menu-item--out" href="/auth">
+          <a role="menuitem" className="rail__menu-item rail__menu-item--out" href="/auth" onClick={signOut}>
             <SignOutIcon className="icon-20" />
             Log out
           </a>

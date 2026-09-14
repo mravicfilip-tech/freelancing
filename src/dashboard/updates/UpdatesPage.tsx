@@ -5,8 +5,9 @@ import { Topbar } from '../Topbar';
 import { Button } from '../Button';
 import { Pager } from '../Pager';
 import { theme } from '../theme';
-import { UPDATES, fmtDate, type Update } from './data';
+import { UPDATES, type Update } from './data';
 import { Thumb } from './thumb';
+import { Kicker, Title, UpdateCard } from './UpdateCard';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './updates.css';
@@ -16,25 +17,6 @@ import './updates.css';
  * thumbnail on top.
  */
 /* ---------- Shared pieces ---------- */
-
-/** What kind of update and when. "Dev release 123" carries the number the
-    team counts by; the others are just their kind. */
-function Kicker({ u, date = true }: { u: Update; date?: boolean }) {
-  return (
-    <p className="upd-kicker">
-      <span>{u.category === 'Dev release' ? `Dev release ${u.n}` : u.category}</span>
-      {date && <time className="num" dateTime={u.date}>{fmtDate(u.date)}</time>}
-    </p>
-  );
-}
-
-function Title({ u, as: Tag = 'h3', className = 'upd-title' }: { u: Update; as?: 'h2' | 'h3'; className?: string }) {
-  return (
-    <Tag className={className}>
-      {u.title} <em>{u.accent}</em>
-    </Tag>
-  );
-}
 
 function usePaged(items: Update[], size: number) {
   const [page, setPage] = useState(1);
@@ -67,20 +49,6 @@ function Feature({ u }: { u: Update }) {
 
 /* ---------- Grid cards ---------- */
 
-/** The whole card is the link and the thumbnail carries the headline, so
-    the body is the kicker and one line; no Read more under each. */
-function Card({ u }: { u: Update }) {
-  return (
-    <a className="upd-card" href={`#update-${u.id}`}>
-      <Thumb u={u} />
-      <span className="upd-card__body">
-        <Kicker u={u} />
-        <span className="upd-card__excerpt">{u.excerpt}</span>
-      </span>
-    </a>
-  );
-}
-
 const PER_PAGE = 6;
 
 function Earlier({ items }: { items: Update[] }) {
@@ -95,7 +63,7 @@ function Earlier({ items }: { items: Update[] }) {
       </header>
 
       <div className="upd-grid">
-        {slice.map((u) => <Card u={u} key={u.id} />)}
+        {slice.map((u) => <UpdateCard u={u} key={u.id} />)}
       </div>
 
       <footer className="tx__foot">

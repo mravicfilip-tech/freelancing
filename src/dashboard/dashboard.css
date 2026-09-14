@@ -807,14 +807,22 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .stat {
   position: relative;
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 14px;
+  flex-direction: column;
   padding: var(--pad);
   border-radius: var(--r-card);
   background: var(--d-card);
   box-shadow: var(--d-lift);
 }
+/* Figure on the left, mark on the right; a plot, when there is one, runs the
+   full width beneath. */
+.stat__row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 14px;
+  flex: 1;
+}
+.stat__viz { margin-top: 18px; }
 .stat__label {
   margin: 0;
   font-size: 13px;
@@ -1894,7 +1902,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .skel-chips { display: flex; gap: 8px; }
 .skel-chips .skel { flex: 1; }
 .skel-orders { margin-top: 18px; }
-.skel-page .stat { align-items: flex-start; }
+.skel-page .stat__row { align-items: flex-start; }
 
 /* ==========================================================================
    Empty states

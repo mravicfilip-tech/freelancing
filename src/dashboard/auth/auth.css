@@ -177,7 +177,7 @@
 .auth__foot a:hover { color: var(--d-text-2); }
 
 /* ==========================================================================
-   Right: the globe
+   Right: the rings, alive
    ========================================================================== */
 
 .auth__art {
@@ -185,20 +185,77 @@
   min-width: 0;
   overflow: hidden;
   border-radius: 22px 0 0 22px;
-  background: var(--d-card);
-  background-image: var(--d-grid);
-  background-size: 24px 24px;
+  background: #0c1219;
+  color: #f2f4f8;
+  isolation: isolate;
 }
-/* The planet sits in the panel and runs a little past its right and bottom
-   edges, as it does on the hero, so the corridors read as a horizon and the
-   corridor cards have room to land inside the frame. */
-.auth__art .heroPlanet { inset: 6% -8% -16% -2%; overflow: visible; }
+.auth__art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at center, rgba(179, 181, 245, 0.3) 1px, transparent 1.5px) 6px 6px / 22px 22px,
+    radial-gradient(40% 34% at 92% 8%, rgba(64, 66, 210, 0.55), transparent 70%);
+  -webkit-mask-image: radial-gradient(90% 110% at 100% 0%, #000 16%, rgba(0, 0, 0, 0.1) 80%);
+  mask-image: radial-gradient(90% 110% at 100% 0%, #000 16%, rgba(0, 0, 0, 0.1) 80%);
+  animation: auth-breathe 9s ease-in-out infinite;
+}
+.auth__rings { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; fill: none; stroke: #b3b5f5; stroke-width: 1; }
+.auth__ring {
+  transform-box: view-box;
+  transform-origin: 740px 80px;
+  animation: auth-ring 9s ease-in-out infinite alternate;
+}
+.auth__ripple {
+  transform-box: view-box;
+  transform-origin: 740px 80px;
+  stroke-width: 1.5;
+  opacity: 0;
+  animation: auth-ripple 8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+@keyframes auth-ring { from { transform: scale(0.985); } to { transform: scale(1.02); } }
+@keyframes auth-ripple {
+  0% { transform: scale(0.6); opacity: 0; }
+  8% { opacity: 0.7; }
+  70% { transform: scale(6.4); opacity: 0; }
+  100% { transform: scale(6.4); opacity: 0; }
+}
+@keyframes auth-breathe { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .auth__art::before, .auth__ring, .auth__ripple { animation: none; }
+  .auth__ripple { display: none; }
+}
+.auth__brand-mark {
+  position: absolute;
+  left: clamp(24px, 3.4vw, 48px);
+  top: clamp(24px, 3.4vw, 48px);
+  z-index: 1;
+  font-size: 17px;
+}
 .auth__live {
   position: absolute;
-  left: clamp(20px, 3vw, 36px);
-  top: clamp(20px, 3vw, 36px);
+  left: clamp(24px, 3.4vw, 48px);
+  top: calc(clamp(24px, 3.4vw, 48px) + 44px);
   z-index: 1;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6e8f2;
 }
+.auth__headline {
+  position: absolute;
+  left: clamp(24px, 3.4vw, 48px);
+  right: clamp(24px, 3.4vw, 48px);
+  bottom: clamp(28px, 4vw, 56px);
+  z-index: 1;
+  margin: 0;
+  max-width: 14em;
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+.auth__headline em { display: block; font-style: normal; color: #b3b5f5; }
+.auth__hint { margin: 0; font-size: 13px; text-align: center; color: var(--d-text-3); }
 
 /* ==========================================================================
    Narrow
@@ -208,7 +265,7 @@
   .auth { grid-template-columns: minmax(0, 1fr); }
   /* The scene follows the form rather than leading: on a phone the job is to
      sign in, and the pitch is what you read while deciding to scroll. */
-  .auth__art { order: 2; min-height: 420px; border-radius: 22px 22px 0 0; }
+  .auth__art { order: 2; min-height: 460px; border-radius: 22px 22px 0 0; }
   .auth__form-side { order: 1; }
   .auth__body { margin: 32px auto; }
   .auth__foot { justify-content: center; }

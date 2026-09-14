@@ -18,6 +18,7 @@ import {
 import { ROUTE } from './Sidebar';
 import { theme } from './theme';
 import { useCopy } from './useCopy';
+import { signOut } from './auth/session';
 
 type RailId = keyof typeof NavIcon;
 
@@ -143,7 +144,7 @@ function Sheet({ onClose }: { onClose: () => void }) {
           the menu, kept away from the routes so it is not tapped by accident.
           On a phone the sheet is the only chrome there is, so without it there
           is no way off the dashboard at all. */}
-      <a className="sheet__out" href="/auth" onClick={onClose}>
+      <a className="sheet__out" href="/auth" onClick={() => { signOut(); onClose(); }}>
         <SignOutIcon className="icon-22" />
         Log out
       </a>

@@ -15,13 +15,15 @@ export function Skel({ w = '100%', h = 14, r = 7 }: { w?: string | number; h?: n
 export function StatSkel() {
   return (
     <article className="card stat">
-      <div className="skel-stack">
-        <Skel w={92} h={12} />
-        <Skel w={168} h={34} r={9} />
-        <Skel w={124} h={12} />
-      </div>
-      <div className="stat__aside">
-        <Skel w={40} h={40} r={12} />
+      <div className="stat__row">
+        <div className="skel-stack">
+          <Skel w={92} h={12} />
+          <Skel w={168} h={34} r={9} />
+          <Skel w={124} h={12} />
+        </div>
+        <div className="stat__aside">
+          <Skel w={40} h={40} r={12} />
+        </div>
       </div>
     </article>
   );

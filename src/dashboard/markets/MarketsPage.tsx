@@ -9,6 +9,7 @@ import { theme } from '../theme';
 import { summarise } from './data';
 import { useTransactions } from './useTransactions';
 import { Transactions } from './Transactions';
+import { PriceRange, SpendMix, WeekBars } from './viz';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './markets.css';
@@ -66,7 +67,9 @@ export function MarketsPage() {
                   label="Completed purchases"
                   value={String(sum.count)}
                   note={`Across stages ${sum.firstStage} to ${sum.lastStage}`}
-                />
+                >
+                  <WeekBars rows={rows} />
+                </Stat>
                 <Stat
                   label="Total spent"
                   symbol="$"
@@ -74,14 +77,18 @@ export function MarketsPage() {
                   suffix="USDT"
                   note={`For ${money(sum.rtx)} $RTX`}
                   mark="usdt"
-                />
+                >
+                  <SpendMix rows={rows} />
+                </Stat>
                 <Stat
                   label="Average price paid"
                   symbol="$"
                   value={sum.avgPrice.toFixed(3)}
                   note={`Listing at $${PRESALE.listPrice.toFixed(2)} is ${uplift}% higher`}
                   mark="coin"
-                />
+                >
+                  <PriceRange avg={sum.avgPrice} low={Math.min(...rows.map((r) => r.price))} />
+                </Stat>
               </section>
             )}
             <Transactions rows={rows} />

@@ -5,61 +5,33 @@ import { Progress } from '../Progress';
 import { TokenSelect } from '../TokenSelect';
 import { ArrowUp, ChevronRight, PayMark, RtxMark } from '../icons';
 import { Figure } from '../Figure';
-import { EARN_ORDERS, PROMOS, STAGE } from './data';
+import { EARN_ORDERS, STAGE } from './data';
+import { UPDATES } from '../updates/data';
+import { UpdateCard } from '../updates/UpdateCard';
 
 /* ==========================================================================
-   Promotions — four small cards
+   Latest updates — the newest four, as the Updates page shows them
    ========================================================================== */
 
-/** The four promo marks, drawn as the nav set is: 24 grid, 1.6px, rounded. */
-const art = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
-const PROMO_ART: Record<string, () => React.ReactNode> = {
-  rails: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3" /><path d="M8 7V5.4A1.4 1.4 0 0 1 9.4 4h5.2A1.4 1.4 0 0 1 16 5.4V7" /><path d="M3 12.5h18" /><path d="M10 12.5v2.5h4v-2.5" /></svg>),
-  bank: () => (<svg {...art} className="promo__art" aria-hidden="true"><path d="M3.5 9.5 12 4.5l8.5 5" /><path d="M5.5 10v7M10 10v7M14 10v7M18.5 10v7" /><path d="M3.5 20h17" /><path d="M4.5 9.5h15" /></svg>),
-  xborder: () => (<svg {...art} className="promo__art" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M4 12h16" /><path d="M12 4c-2.8 2.6-2.8 13.4 0 16M12 4c2.8 2.6 2.8 13.4 0 16" /></svg>),
-  card: () => (<svg {...art} className="promo__art" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="3" /><path d="M3 10h18" /><path d="M7 14.5h3.5" /><path d="M14.5 14.5h2.5" /></svg>),
-};
-
-const TAG: Record<string, string> = { rails: 'Business', bank: 'Payments', xborder: 'Transfers', card: 'Spend' };
-
-/**
- * The reference's row of cards, iterated rather than replaced: each card gets
- * a mark on its own disc, a category tag, the two-tone headline, one line, and
- * the whole card is the link. Four across, then two, then one.
- */
 export function Promos() {
   return (
     <section className="card promos" aria-labelledby="promos-title">
       <header className="card__head">
         <div>
           <h2 className="card__title" id="promos-title">
-            Latest promotions
+            Latest updates
           </h2>
-          <p className="orders__sub">What Remittix is rolling out around the presale</p>
+          <p className="orders__sub">What the team shipped, newest first</p>
         </div>
-        <a className="link-quiet" href="#promos-all">
-          View all
+        <a className="link-quiet" href="/updates">
+          All updates
           <ChevronRight className="icon-14" />
         </a>
       </header>
-      <div className="promos__grid">
-        {PROMOS.map((p) => {
-          const Art = PROMO_ART[p.id];
-          return (
-            <a className="promo" href={`#promo-${p.id}`} key={p.id} data-promo={p.id}>
-              <span className="promo__top">
-                <span className="promo__disc">
-                  <Art />
-                </span>
-                <span className="promo__kind">{TAG[p.id]}</span>
-              </span>
-              <h3 className="promo__title">
-                {p.title} <em>{p.accent}</em>
-              </h3>
-              <p className="promo__body">{p.body}</p>
-            </a>
-          );
-        })}
+      <div className="upd-grid upd-grid--4">
+        {UPDATES.slice(0, 4).map((u) => (
+          <UpdateCard u={u} key={u.id} />
+        ))}
       </div>
     </section>
   );

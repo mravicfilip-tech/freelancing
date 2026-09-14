@@ -1,9 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Button } from '../Button';
-import { HeroPlanet } from '../../components/HeroPlanet';
 import { PRESALE } from '../data';
-import { CheckIcon, EyeIcon, EyeOffIcon, MoonIcon, SunIcon } from '../icons';
+import { CheckIcon, EyeIcon, EyeOffIcon, MoonIcon, RtxMark, SunIcon } from '../icons';
 import { theme } from '../theme';
+import { DEMO, register as registerAccount, signIn } from './session';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './auth.css';
@@ -48,14 +48,13 @@ function Password({ id, label, value, onChange, autoComplete }: {
 export function AuthPage() {
   const mode = theme.use();
   const [tab, setTab] = useState<Mode>('signin');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>(DEMO.email);
+  const [password, setPassword] = useState<string>(DEMO.password);
   const [remember, setRemember] = useState(true);
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ids = useId();
   const register = tab === 'register';
-  const art = useRef<HTMLElement>(null);
 
   useEffect(() => {
     document.documentElement.dataset.dashTheme = mode;
@@ -64,15 +63,21 @@ export function AuthPage() {
     };
   }, [mode]);
 
-  /* No backend yet, so submit validates and says so rather than pretending to
-     sign anyone in — a form that silently does nothing is worse than one that
-     tells you where it stops. */
+  /* The demo account is filled in, so sign in checks against it and goes to
+     the dashboard; register takes whatever is typed and does the same. */
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes('@')) return setError('Enter an email address we can reach you at.');
     if (password.length < 8) return setError('Passwords are at least 8 characters.');
     if (register && !agreed) return setError('Please accept the terms to create an account.');
+    if (register) {
+      registerAccount(email);
+    } else {
+      const problem = signIn(email, password);
+      if (problem) return setError(problem);
+    }
     setError(null);
+    window.location.assign('/dashboard');
   };
 
   const switchTo = (next: Mode) => {
@@ -153,6 +158,7 @@ export function AuthPage() {
             <Button block type="submit">
               {register ? 'Create account' : 'Sign in'}
             </Button>
+            <p className="auth__hint">Demo account: the email and password are filled in.</p>
           </form>
 
           <p className="auth__switch">
@@ -170,14 +176,26 @@ export function AuthPage() {
         </footer>
       </main>
 
-      {/* The landing hero's globe, live: the one thing on the site that is
-          unmistakably Remittix. It sizes itself to this panel and never takes
-          the pointer. */}
-      <aside className="auth__art" ref={art} aria-hidden="true">
-        <HeroPlanet hostRef={art} variant="figma-corridors" layout="capture" scroll={false} />
+      {/* The default thumbnail, at panel size and alive: the rings breathe and
+          one ripple runs out from their centre; the dot grid fades from that
+          corner. Same ink and lavender whatever the page theme. */}
+      <aside className="auth__art" aria-hidden="true">
+        <svg className="auth__rings" viewBox="0 0 800 1000" preserveAspectRatio="xMaxYMin slice">
+          {[110, 210, 310, 410, 510, 610, 710].map((r, i) => (
+            <circle key={r} className="auth__ring" cx="740" cy="80" r={r} style={{ opacity: 0.85 - i * 0.11, animationDelay: `${i * -1.1}s` }} />
+          ))}
+          <circle className="auth__ripple" cx="740" cy="80" r="110" />
+        </svg>
+        <span className="thumb__brand auth__brand-mark">
+          <RtxMark className="icon-22" />
+          Remittix
+        </span>
+        <p className="auth__headline">
+          Buy at ${PRESALE.price.toFixed(2)} <em>before it steps to ${PRESALE.nextPrice.toFixed(2)}</em>
+        </p>
         <p className="topbar__live auth__live">
           <span className="topbar__dot" aria-hidden="true" />
-          Stage {PRESALE.stage} is live at ${PRESALE.price.toFixed(2)}
+          Stage {PRESALE.stage} is live
         </p>
       </aside>
     </div>

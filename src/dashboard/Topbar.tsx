@@ -1,6 +1,7 @@
 import { PRESALE } from './data';
 import { MoonIcon, SignOutIcon, SunIcon } from './icons';
 import { theme } from './theme';
+import { signOut } from './auth/session';
 
 function greeting() {
   const h = new Date().getHours();
@@ -42,7 +43,7 @@ export function Topbar({
         </button>
         {/* There was no way out of the dashboard at all. Signing in is a route
             rather than a session, so leaving is the same move in reverse. */}
-        <a className="chip-btn" href="/auth" aria-label="Log out">
+        <a className="chip-btn" href="/auth" aria-label="Log out" onClick={signOut}>
           <SignOutIcon className="icon-20" />
         </a>
       </div>

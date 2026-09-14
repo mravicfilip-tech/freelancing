@@ -5,33 +5,6 @@
    dashboard's.
    ========================================================================== */
 
-/* ---------- Variant picker (review tool) ---------- */
-.vpick {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 4px;
-  border-radius: var(--r-sm);
-  background: var(--d-card);
-  box-shadow: inset 0 0 0 1px var(--d-rule);
-  align-self: flex-start;
-}
-.vpick__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 8px;
-  color: var(--d-text-2);
-  font-size: 13px;
-  text-decoration: none;
-}
-.vpick__item b { font-weight: 700; color: var(--d-text-3); }
-.vpick__item:hover { background: var(--d-inset); color: var(--d-text); }
-.vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
-.vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
-
 /* ---------- Thumbnail ----------
    Fixed colours: the site's ink and lavender, in both themes, so it reads as
    an image. 16:9 keeps it a picture rather than half the card. */
@@ -77,58 +50,20 @@
 }
 .thumb__art { position: absolute; z-index: 0; pointer-events: none; }
 
-/* T1 Glow: two soft accent glows and the dot grid. */
-.thumb[data-t='1']::before {
+/* Rings off the top-right, a glow at their centre, and the dot grid fading
+   away from that corner so the art has a near side and a far side. */
+.thumb::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(60% 70% at 100% 100%, rgba(64, 66, 210, 0.55), transparent 70%),
-    radial-gradient(45% 55% at 0% 0%, rgba(179, 181, 245, 0.22), transparent 70%),
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.07) 1px, transparent 1.4px) 0 0 / 18px 18px;
+    radial-gradient(circle at center, rgba(179, 181, 245, 0.3) 1px, transparent 1.5px) 4px 4px / 16px 16px,
+    radial-gradient(48% 62% at 92% 12%, rgba(64, 66, 210, 0.5), transparent 70%);
+  -webkit-mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.12) 78%);
+  mask-image: radial-gradient(85% 120% at 100% 0%, #000 18%, rgba(0, 0, 0, 0.12) 78%);
 }
-/* T2 Rings: thin concentric rings off the top-right corner. */
-.thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: rgba(179, 181, 245, 0.34); stroke-width: 1; }
-.thumb[data-t='2']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: radial-gradient(50% 60% at 100% 0%, rgba(64, 66, 210, 0.4), transparent 70%);
-}
-/* T3 Ladder: the presale ladder along the bottom, the live stage lit. */
-.thumb__art--ladder { left: 0; right: 0; bottom: 0; width: 100%; height: 62%; fill: rgba(255, 255, 255, 0.06); }
-.thumb__art--ladder rect[data-live] { fill: rgba(144, 146, 244, 0.7); }
-/* T4 Dashes: the site's 8/8 dashed rails, vertical, faint. */
-.thumb[data-t='4']::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    repeating-linear-gradient(180deg, rgba(179, 181, 245, 0.22) 0 8px, transparent 8px 16px) 0 0 / 1px 100% repeat-x;
-  background-size: 44px 100%;
-  background-image: repeating-linear-gradient(90deg, transparent 0 43px, rgba(179, 181, 245, 0.001) 43px 44px);
-}
-.thumb[data-t='4']::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image:
-    repeating-linear-gradient(180deg, rgba(179, 181, 245, 0.28) 0 8px, transparent 8px 16px);
-  background-size: 1px 100%;
-  background-repeat: repeat-x;
-  background-position: 22px 0;
-  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 44px);
-  mask-image: repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 44px);
-  -webkit-mask-position: 22px 0;
-  mask-position: 22px 0;
-}
-/* T5 Mark: the M mark, huge and cropped, behind the headline. */
-.thumb__art--mark { right: -18%; top: -22%; width: 78%; height: auto; opacity: 0.16; }
-.thumb__art--mark circle { fill: #4042d2; }
+.thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
 .thumb--feature { aspect-ratio: 16 / 9; }
 .thumb--feature .thumb__brand { font-size: 15px; }
@@ -195,12 +130,6 @@
   .upd-feature { grid-template-columns: minmax(0, 1fr); }
   .upd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 760px) {
-  .updates .topbar { order: 1; }
-  .updates .dash__main > .vpick { order: 0; }
-  .updates .dash__main > :not(.topbar):not(.vpick) { order: 2; }
-}
 @media (max-width: 620px) {
   .upd-grid { grid-template-columns: minmax(0, 1fr); }
-  .vpick__item { min-height: 44px; }
 }

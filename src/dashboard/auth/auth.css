@@ -49,24 +49,13 @@
 }
 .auth__title {
   font-family: var(--d-display);
-  margin: 0;
-  font-size: clamp(28px, 3vw, 38px);
+  margin: 0 0 22px;
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 600;
   line-height: 1.08;
   letter-spacing: -0.04em;
 }
-/* The second line carries the brand colour, the way the reference splits its
-   heading — but in the dashboard's accent rather than a new one. */
-.auth__title em { display: block; font-style: normal; color: var(--d-on-tint); }
-.auth__lede {
-  margin: 12px 0 0;
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--d-text-2);
-}
-.auth__tabs { margin-top: 26px; }
-
-.auth__form { display: grid; gap: 16px; margin-top: 22px; }
+.auth__form { display: grid; gap: 16px; }
 .auth__field { min-width: 0; }
 /* .field__input is the calculator's 17px/600 tabular figure; an email or a
    password wants the body face at a normal weight. */
@@ -188,193 +177,28 @@
 .auth__foot a:hover { color: var(--d-text-2); }
 
 /* ==========================================================================
-   Right: the pitch and the scene
+   Right: the globe
    ========================================================================== */
 
-.auth__scene-side {
+.auth__art {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(24px, 3vw, 40px);
   min-width: 0;
   overflow: hidden;
-  padding: clamp(28px, 3.4vw, 56px);
   border-radius: 22px 0 0 22px;
   background: var(--d-card);
-  /* The site's own dot grid, the same one the dashboard's main column runs. */
   background-image: var(--d-grid);
   background-size: 24px 24px;
 }
-.auth__pitch h2 {
-  font-family: var(--d-display);
-  margin: 0;
-  font-size: clamp(22px, 2.2vw, 30px);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-}
-.auth__pitch ul {
-  list-style: none;
-  display: grid;
-  gap: 11px;
-  margin: 18px 0 0;
-  padding: 0;
-  max-width: 46ch;
-}
-.auth__pitch li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 14.5px;
-  line-height: 1.5;
-  color: var(--d-text-2);
-}
-.auth__pitch li svg { flex: none; margin-top: 2px; color: var(--d-on-tint); }
-
-/* ---------- The scene ---------- */
-
-.scene {
-  --fill: 0;
-  --claimable: 0;
-  --pressed: 0;
-  position: relative;
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-}
-/* One soft wash behind the cards so they sit on something, rather than a
-   gradient the rest of the product does not have. */
-.scene__glow {
+/* The planet sits in the panel and runs a little past its right and bottom
+   edges, as it does on the hero, so the corridors read as a horizon and the
+   corridor cards have room to land inside the frame. */
+.auth__art .heroPlanet { inset: 6% -8% -16% -2%; overflow: visible; }
+.auth__live {
   position: absolute;
-  inset: -12% -18% auto -18%;
-  height: 70%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, var(--d-accent-tint), transparent);
-  pointer-events: none;
+  left: clamp(20px, 3vw, 36px);
+  top: clamp(20px, 3vw, 36px);
+  z-index: 1;
 }
-.scene__card {
-  position: relative;
-  padding: 18px 20px;
-  border-radius: var(--r-card);
-  background: var(--d-bg);
-  box-shadow: inset 0 0 0 1px var(--d-rule);
-}
-.scene__label { margin: 0; font-size: 13px; color: var(--d-text-2); }
-.scene__figure {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 8px 0 0;
-  font-family: var(--d-display);
-  font-size: clamp(30px, 3.2vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-/* The display face is set at -0.045em; inherited at 0.4em that tracking jams
-   "$RTX" into itself, so the suffix sets its own. */
-.scene__suffix {
-  font-size: 0.4em;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--d-text-3);
-}
-.scene__note { margin: 9px 0 0; font-size: 12.5px; color: var(--d-text-3); }
-.scene__mark { position: absolute; right: 20px; bottom: 18px; width: 34px; height: 34px; }
-
-.scene__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.scene__pct {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-.scene__bars {
-  list-style: none;
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  height: 76px;
-  margin: 16px 0 0;
-  padding: 0;
-}
-.scene__bars li {
-  flex: 1;
-  height: var(--h);
-  border-radius: 5px;
-  background: var(--d-track);
-  /* The ladder's own treatment: a stage not yet filled is the filled stage's
-     outline. --d-spent on --d-track is only 1.40:1, so without the ring the
-     bar looks identical full or empty and the animation has no payoff. */
-  box-shadow: inset 0 0 0 1.5px var(--d-spent);
-  overflow: hidden;
-  position: relative;
-}
-/* Each bar fills a beat after the one before it, so the ladder reads left to
-   right rather than all nine lighting at once. */
-.scene__bars li::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 100%;
-  border-radius: 5px;
-  background: var(--d-spent);
-  transform: scaleY(clamp(0, calc((var(--fill) * 9 - var(--i)) * 1.6), 1));
-  transform-origin: bottom;
-}
-.scene__bars li:nth-child(6) { box-shadow: inset 0 0 0 1.5px var(--d-accent-soft); }
-.scene__bars li:nth-child(6)::after { background: var(--d-accent); }
-
-.scene__card--claim { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.scene__claim-l { display: grid; gap: 4px; min-width: 0; }
-.scene__claim-l b { font-size: 14px; font-weight: 600; }
-.scene__claim-l small { font-size: 12.5px; color: var(--d-text-3); font-variant-numeric: tabular-nums; }
-.scene__claim-r { display: flex; align-items: center; gap: 10px; }
-
-/* Two labels in one slot, cross-faded by --claimable, so the row never changes
-   width as the status flips. */
-.scene__status { position: relative; display: grid; }
-.scene__status > * {
-  grid-area: 1 / 1;
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 11px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.scene__status-a {
-  background: var(--d-inset);
-  color: var(--d-text-3);
-  opacity: calc(1 - var(--claimable));
-}
-.scene__status-b {
-  background: var(--d-accent-tint);
-  color: var(--d-on-tint);
-  opacity: var(--claimable);
-}
-
-.scene__btn {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 999px;
-  background: var(--d-pick);
-  color: var(--d-on-pick);
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  /* Dips as it is pressed, on the same curve the real controls use. */
-  transform: scale(calc(1 - 0.04 * var(--pressed) * (1 - var(--pressed)) * 4));
-}
-.scene__btn > * { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 6px; }
-.scene__btn-a { opacity: calc(1 - var(--pressed)); }
-.scene__btn-b { opacity: var(--pressed); }
 
 /* ==========================================================================
    Narrow
@@ -384,17 +208,14 @@
   .auth { grid-template-columns: minmax(0, 1fr); }
   /* The scene follows the form rather than leading: on a phone the job is to
      sign in, and the pitch is what you read while deciding to scroll. */
-  .auth__scene-side { order: 2; border-radius: 22px 22px 0 0; }
+  .auth__art { order: 2; min-height: 420px; border-radius: 22px 22px 0 0; }
   .auth__form-side { order: 1; }
   .auth__body { margin: 32px auto; }
   .auth__foot { justify-content: center; }
 }
 
 @media (max-width: 620px) {
-  .auth__scene-side { padding: 26px 18px 32px; }
-  .scene__card--claim { flex-direction: column; align-items: flex-start; }
-  .scene__claim-r { width: 100%; justify-content: space-between; }
-  .scene__bars { height: 60px; }
+  .auth__art { min-height: 340px; }
 }
 
 /* ==========================================================================

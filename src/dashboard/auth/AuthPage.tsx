@@ -1,6 +1,7 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '../Button';
-import { PresaleScene } from './PresaleScene';
+import { HeroPlanet } from '../../components/HeroPlanet';
+import { PRESALE } from '../data';
 import { CheckIcon, EyeIcon, EyeOffIcon, MoonIcon, SunIcon } from '../icons';
 import { theme } from '../theme';
 import '../../components/FigmaHero/FigmaHero.css';
@@ -8,13 +9,6 @@ import '../dashboard.css';
 import './auth.css';
 
 type Mode = 'signin' | 'register';
-
-/** What the presale is actually offering, said once beside the form. */
-const POINTS = [
-  'Buy at the stage price before it steps up again',
-  'Track your allocation and claim it the day $RTX lists',
-  'Earn 15% in USDT on everything your referrals buy',
-];
 
 function Password({ id, label, value, onChange, autoComplete }: {
   id: string;
@@ -61,6 +55,7 @@ export function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const ids = useId();
   const register = tab === 'register';
+  const art = useRef<HTMLElement>(null);
 
   useEffect(() => {
     document.documentElement.dataset.dashTheme = mode;
@@ -104,41 +99,11 @@ export function AuthPage() {
         </header>
 
         <div className="auth__body">
-          <h1 className="auth__title">
-            {register ? 'Create your' : 'Sign in to your'}
-            <em> Remittix account</em>
-          </h1>
-          <p className="auth__lede">
-            {register
-              ? 'One account for the presale, your allocation and your referrals.'
-              : 'Pick up where you left off — your balance, stage price and claim.'}
-          </p>
-
-          {/* The dashboard's own segmented control, so the switch is a real
-              control rather than a link buried under the button. */}
-          <div className="tabs auth__tabs" role="tablist" aria-label="Account">
-            {(['signin', 'register'] as const).map((id) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                id={`${ids}-${id}`}
-                className="tabs__tab"
-                aria-selected={tab === id}
-                aria-controls={`${ids}-panel`}
-                tabIndex={tab === id ? 0 : -1}
-                onClick={() => switchTo(id)}
-              >
-                {id === 'signin' ? 'Sign in' : 'Register'}
-              </button>
-            ))}
-          </div>
+          <h1 className="auth__title">{register ? 'Create your account' : 'Sign in'}</h1>
 
           <form
             className="auth__form"
             id={`${ids}-panel`}
-            role="tabpanel"
-            aria-labelledby={`${ids}-${tab}`}
             onSubmit={submit}
             noValidate
           >
@@ -205,19 +170,15 @@ export function AuthPage() {
         </footer>
       </main>
 
-      <aside className="auth__scene-side">
-        <div className="auth__pitch">
-          <h2>Stage 12 is live at $0.18</h2>
-          <ul>
-            {POINTS.map((p) => (
-              <li key={p}>
-                <CheckIcon className="icon-16" />
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <PresaleScene />
+      {/* The landing hero's globe, live: the one thing on the site that is
+          unmistakably Remittix. It sizes itself to this panel and never takes
+          the pointer. */}
+      <aside className="auth__art" ref={art} aria-hidden="true">
+        <HeroPlanet hostRef={art} variant="figma-corridors" layout="capture" scroll={false} />
+        <p className="topbar__live auth__live">
+          <span className="topbar__dot" aria-hidden="true" />
+          Stage {PRESALE.stage} is live at ${PRESALE.price.toFixed(2)}
+        </p>
       </aside>
     </div>
   );

@@ -6,39 +6,15 @@ import { Button } from '../Button';
 import { Pager } from '../Pager';
 import { theme } from '../theme';
 import { UPDATES, fmtDate, type Update } from './data';
-import { Thumb, type ThumbVariant } from './thumb';
+import { Thumb } from './thumb';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './updates.css';
 
 /**
  * Updates: the newest one as a feature, the rest three across with the
- * thumbnail on top. `?t=1..5` picks the thumbnail's art; the strip at the
- * top is the review tool for flipping between them and goes when one is
- * chosen.
+ * thumbnail on top.
  */
-const THUMBS = [
-  { n: 1, name: 'Glow', blurb: 'Two soft accent glows and the dot grid, as the reference does it.' },
-  { n: 2, name: 'Rings', blurb: 'Thin concentric rings off the top-right corner.' },
-  { n: 3, name: 'Ladder', blurb: 'The presale ladder rising along the bottom, the live stage lit.' },
-  { n: 4, name: 'Dashes', blurb: 'The site\'s 8/8 dashed rails, vertical, faint.' },
-  { n: 5, name: 'Mark', blurb: 'The M mark, huge and cropped, behind the headline.' },
-] as const;
-
-const params = new URLSearchParams(window.location.search);
-const T = Math.min(5, Math.max(1, Number(params.get('t')) || 1)) as ThumbVariant;
-
-function Picker() {
-  return (
-    <nav className="vpick" aria-label="Thumbnail options">
-      {THUMBS.map((t) => (
-        <a key={t.n} className="vpick__item" href={`?t=${t.n}`} aria-current={t.n === T ? 'page' : undefined} title={t.blurb}>
-          <b>T{t.n}</b> {t.name}
-        </a>
-      ))}
-    </nav>
-  );
-}
 /* ---------- Shared pieces ---------- */
 
 /** What kind of update and when. "Dev release 123" carries the number the
@@ -72,7 +48,7 @@ function usePaged(items: Update[], size: number) {
 function Feature({ u }: { u: Update }) {
   return (
     <section className="card upd-feature" aria-label="Latest update">
-      <Thumb u={u} variant={T} titled={false} className="thumb--feature" />
+      <Thumb u={u} titled={false} className="thumb--feature" />
       <div className="upd-feature__body">
         <p className="ladder__label">
           <span className="topbar__dot" aria-hidden="true" />
@@ -96,7 +72,7 @@ function Feature({ u }: { u: Update }) {
 function Card({ u }: { u: Update }) {
   return (
     <a className="upd-card" href={`#update-${u.id}`}>
-      <Thumb u={u} variant={T} />
+      <Thumb u={u} />
       <span className="upd-card__body">
         <Kicker u={u} />
         <span className="upd-card__excerpt">{u.excerpt}</span>
@@ -147,7 +123,6 @@ export function UpdatesPage() {
       <Sidebar active="updates" />
       <main className="dash__main">
         <Topbar title="Updates" />
-        <Picker />
         <Feature u={lead} />
         <Earlier items={rest} />
       </main>

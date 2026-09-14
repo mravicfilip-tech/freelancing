@@ -12,7 +12,7 @@ import type { Update } from './data';
     the site's dot grid, which fades away from that corner. */
 function Art() {
   return (
-    <svg className="thumb__art thumb__art--rings" viewBox="0 0 320 180" aria-hidden="true">
+    <svg className="thumb__art thumb__art--rings" viewBox="0 0 320 180" preserveAspectRatio="xMaxYMin slice" aria-hidden="true">
       {[44, 84, 124, 164, 204].map((r, i) => (
         <circle key={r} cx="292" cy="26" r={r} style={{ opacity: 0.9 - i * 0.17 }} />
       ))}

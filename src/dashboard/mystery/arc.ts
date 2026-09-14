@@ -149,7 +149,7 @@ function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h
 /** The centre marker while the reel flies: a thicker lime arc, jittering
     like the card borders, so the line the prize will stop on has the same
     charge as the prizes passing it. */
-function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
+function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, light: boolean) {
   const time = t * CLOCK * 1.6;
   const flicker = 0.9 + 0.1 * Math.sin(t * 11);
   const x0 = w / 2;
@@ -163,17 +163,19 @@ function marker(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) 
   }
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
-  const lime: [number, number, number] = [217, 242, 78];
+  // Lime on the dark stage; the theme's indigo on the light one, where a white core would vanish.
+  const hue: [number, number, number] = light ? [64, 66, 210] : [217, 242, 78];
+  const core: [number, number, number] = light ? [51, 53, 187] : [255, 255, 255];
   const glow = [[30, 0.06], [18, 0.1], [10, 0.18], [5, 0.32]] as const;
   for (const [lw, a] of glow) {
-    ctx.strokeStyle = rgb(lime, a * flicker);
+    ctx.strokeStyle = rgb(hue, a * flicker);
     ctx.lineWidth = lw;
     ctx.stroke();
   }
-  ctx.strokeStyle = rgb(lime, 0.95 * flicker);
+  ctx.strokeStyle = rgb(hue, 0.95 * flicker);
   ctx.lineWidth = 2.6;
   ctx.stroke();
-  ctx.strokeStyle = `rgba(255,255,255,${0.9 * flicker})`;
+  ctx.strokeStyle = rgb(core, 0.9 * flicker);
   ctx.lineWidth = 1.2;
   ctx.stroke();
 }
@@ -249,7 +251,7 @@ function draw(row: Row, now: number, still: boolean) {
   // were a frame ago, so the arcs sit out the spin; the cards keep their own
   // ring, and the flash covers the hand-off.
   const flying = root.classList.contains('reel--spin');
-  if (flying && !still) marker(ctx, w, h, t);
+  if (flying && !still) marker(ctx, w, h, t, light);
   // The closed chest, on a dark reel, carries the arc too, as the uncommon card does.
   if (!flying && !light && !still && root.classList.contains('reel--idle')) {
     const svg = root.querySelector<SVGSVGElement>('.chest--reel .chest__art svg');

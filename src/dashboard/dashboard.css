@@ -378,7 +378,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .rail__user-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .rail__user-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rail__user-sub { font-size: 12px; color: var(--d-text-3); }
+.rail__user-sub { font-size: 12px; color: var(--d-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rail[data-mode='collapsed'] .rail__user { justify-content: center; padding: 6px 0; }
 .rail[data-mode='collapsed'] .rail__user-text { display: none; }
 /* Collapsed, the account rows are icon-only chips with a title each: with
@@ -402,6 +402,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .rail__foot .rail__group { flex-direction: row; gap: 2px; }
   .rail__foot .rail__item { padding: 4px; }
   .rail__foot .rail__label { display: none; }
+  /* In the row there is room for the name or the wallet, not both. */
+  .rail__user-sub { display: none; }
   .rail[data-mode='collapsed'] .rail__foot,
   .rail[data-mode='collapsed'] .rail__foot .rail__group { flex-direction: column; gap: 4px; }
   .rail[data-mode='collapsed'] .rail__item { padding: 4px; }
@@ -427,11 +429,11 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 /* Collapsed, a badge is a dot on the icon's corner, as the tab bar does it:
    a pill under the label cost each flagged row another line. */
-.rail[data-mode='collapsed'] .rail__icon { position: relative; }
+.rail[data-mode='collapsed'] .rail__item { position: relative; }
 .rail[data-mode='collapsed'] .rail__badge {
   position: absolute;
-  top: 3px;
-  right: 3px;
+  top: 10px;
+  right: calc(50% - 17px);
   width: 8px;
   height: 8px;
   margin: 0;

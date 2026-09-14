@@ -62,7 +62,10 @@ export function MysteryChest({ open }: { open: boolean }) {
     const root = host.current;
     const holder = art.current;
     if (!root || !holder) return;
-    if (!holder.firstChild) holder.innerHTML = markup;
+    /* Always from the export's clean markup: buildCrate reshapes the tree, and
+       a second run over a reshaped tree (StrictMode mounts twice) would miss
+       the lid's paths and leave them at their pre-draw state. */
+    holder.innerHTML = markup;
     const svg = holder.querySelector('svg');
     if (!svg) return;
     const lineG = svg.querySelector('#crate-lines');

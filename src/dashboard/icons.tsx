@@ -153,6 +153,13 @@ export const ArrowOut = (p: IconProps) => (
   </svg>
 );
 
+export const SignOutIcon = (p: IconProps) => (
+  <svg {...line} {...p} aria-hidden="true">
+    <path d="M15.5 8.2V6.4A2.4 2.4 0 0 0 13.1 4H6.4A2.4 2.4 0 0 0 4 6.4v11.2A2.4 2.4 0 0 0 6.4 20h6.7a2.4 2.4 0 0 0 2.4-2.4v-1.8" />
+    <path d="M19.6 12H9.8m9.8 0-3.1-3.1M19.6 12l-3.1 3.1" />
+  </svg>
+);
+
 export const CopyIcon = (p: IconProps) => (
   <svg {...line} {...p} aria-hidden="true">
     <rect x="9" y="9" width="11" height="11" rx="2.5" />

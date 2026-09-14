@@ -4,6 +4,8 @@
  */
 
 const STAGE_PRICE = 0.18;
+/** What the last stage of the presale costs — the right-hand end of the ladder. */
+const FINAL_PRICE = 0.35;
 const RTX_LEFT = 18_376_032;
 
 export const PRESALE = {
@@ -19,12 +21,33 @@ export const PRESALE = {
   usdLeft: Math.round(RTX_LEFT * STAGE_PRICE),
 } as const;
 
-/** Stages either side of the live one, for the price ladder. */
+/**
+ * Stages either side of the live one, for the price ladder.
+ *
+ * Behind the live stage the price has climbed a cent at a time, which is what
+ * buyers have actually paid. Ahead of it the climb steepens to land on the
+ * final stage's $0.35 — a presale gets dearer the later you come to it, and a
+ * flat cent all the way would take far more stages than the ladder can draw.
+ * The steps grow by a fixed amount each time, starting at the same cent that
+ * takes stage 12 to `nextPrice`, so the badge above the ladder and the first
+ * step ahead of the live bar cannot disagree.
+ */
+const AHEAD = 6;
+/** First step ahead is a cent; the rest grow so the last one lands on FINAL. */
+const GROWTH = (2 * (FINAL_PRICE - STAGE_PRICE - AHEAD * 0.01)) / (AHEAD * (AHEAD - 1));
+
+function stagePrice(n: number): number {
+  const steps = n - PRESALE.stage;
+  if (steps <= 0) return Number((STAGE_PRICE + steps * 0.01).toFixed(2));
+  const climbed = steps * 0.01 + ((steps - 1) * steps * GROWTH) / 2;
+  return Number((STAGE_PRICE + climbed).toFixed(2));
+}
+
 export const STAGE_LADDER = Array.from({ length: 12 }, (_, i) => {
   const n = PRESALE.stage - 5 + i;
   return {
     n,
-    price: Number((PRESALE.price + (n - PRESALE.stage) * 0.01).toFixed(2)),
+    price: stagePrice(n),
     state: n < PRESALE.stage ? ('done' as const) : n === PRESALE.stage ? ('live' as const) : ('next' as const),
   };
 });

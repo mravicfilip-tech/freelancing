@@ -1,9 +1,10 @@
 import { useId, useMemo, useState } from 'react';
 import { TOKENS, money, type TokenId } from '../data';
 import type { DashboardData } from '../useDashboardData';
-import { CheckIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
+import { CheckIcon, CopyIcon, MastercardMark, PayMark, RocketIcon, VisaMark } from '../icons';
 import { Button } from '../Button';
 import { TokenSelect } from '../TokenSelect';
+import { useCopy } from '../useCopy';
 
 type Method = 'crypto' | 'card';
 
@@ -20,6 +21,7 @@ export function BuyPanel({
   const [promo, setPromo] = useState('');
   const [applied, setApplied] = useState<string | null>(null);
   const [promoError, setPromoError] = useState(false);
+  const [codeCopied, copyCode] = useCopy();
   const payId = useId();
   const promoId = useId();
   const tabId = useId();
@@ -126,6 +128,18 @@ export function BuyPanel({
           )}
         </div>
 
+        {/* What five ETH actually is. The pay field is denominated in the token,
+            so without this the only dollar figure on screen is the RTX price —
+            and a buyer cannot tell what they are about to send. Stablecoins are
+            already dollars, so the line would just repeat the field. */}
+        {rate !== 1 && spend > 0 && (
+          <p className="buy__usd num">
+            <span className="buy__usd-approx" aria-hidden="true">&asymp;</span>
+            ${money(spend)}
+            <span className="buy__usd-rate">at ${money(rate)} / {token}</span>
+          </p>
+        )}
+
         <div className="buy__quick">
           {QUICK_USD.map((usd) => (
             <button
@@ -143,7 +157,7 @@ export function BuyPanel({
 
       <dl className="buy__summary" aria-label="Order summary">
         <div>
-          <dt>Base at stage {PRESALE.stage}</dt>
+          <dt>Stage {PRESALE.stage}</dt>
           <dd className="num">{money(base)} RTX</dd>
         </div>
         <div data-bonus>
@@ -152,11 +166,33 @@ export function BuyPanel({
             {bonus > 0 ? ` (${bonus * 100}%)` : ''}
           </dt>
           <dd className="num">
-            {bonus > 0
-              ? `+${money(extra)} RTX`
-              : sale
-                ? `Add ${sale.code} for ${sale.bonus * 100}%`
-                : 'No code running'}
+            {bonus > 0 ? (
+              `+${money(extra)} RTX`
+            ) : sale ? (
+              /* The offer names a code the buyer then has to retype into the
+                 field directly below it. Tapping it copies the code and fills
+                 that field, so the bonus is one press away rather than a
+                 transcription. */
+              <button
+                type="button"
+                className="buy__offer"
+                onClick={() => {
+                  copyCode(sale.code);
+                  setPromo(sale.code);
+                  setPromoError(false);
+                }}
+                aria-label={`Use promo code ${sale.code} for ${sale.bonus * 100}% more`}
+              >
+                Add {sale.code} for {sale.bonus * 100}%
+                {codeCopied ? (
+                  <CheckIcon className="icon-14" />
+                ) : (
+                  <CopyIcon className="icon-14" />
+                )}
+              </button>
+            ) : (
+              'No code running'
+            )}
           </dd>
         </div>
         <div data-total>
@@ -206,10 +242,8 @@ export function BuyPanel({
       </Button>
 
       {/* The question a buyer has at the CTA, answered in the site's own words
-          from the FAQ: allocated to the paying wallet, unlocked in full at
-          listing. It also gives the column's slack something to be. */}
+          from the FAQ: unlocked in full at listing, claimed here. */}
       <ul className="buy__next">
-        <li>Tokens are allocated to the wallet you pay from.</li>
         <li>Your allocation unlocks in full at listing — no cliff, no drip.</li>
         <li>Claim opens on this dashboard the day $RTX lists.</li>
       </ul>

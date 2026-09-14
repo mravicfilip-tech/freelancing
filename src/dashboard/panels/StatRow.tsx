@@ -3,7 +3,7 @@ import type { DashboardData } from '../useDashboardData';
 import { Figure } from '../Figure';
 import { Button } from '../Button';
 import { EmptyState, WalletArt } from '../EmptyState';
-import { ArrowOut, PayMark, RtxMark } from '../icons';
+import { PayMark, RtxMark } from '../icons';
 
 type StatProps = {
   label: string;
@@ -11,11 +11,14 @@ type StatProps = {
   value: string;
   suffix?: string;
   note: string;
-  href: string;
   mark?: 'coin' | 'usdt';
 };
 
-function Stat({ label, symbol, value, suffix, note, href, mark }: StatProps) {
+/* The corner link is gone. Each card stated a figure and then offered a way out
+   of it, three times over, for destinations the dashboard reaches from the rail
+   anyway — so the arrows were three controls competing with the numbers they
+   sat beside. The token mark keeps the card's right edge. */
+function Stat({ label, symbol, value, suffix, note, mark }: StatProps) {
   return (
     <article className="stat">
       <div>
@@ -24,9 +27,6 @@ function Stat({ label, symbol, value, suffix, note, href, mark }: StatProps) {
         <p className="stat__note">{note}</p>
       </div>
       <div className="stat__aside">
-        <a className="chip-btn" href={href} aria-label={`Open ${label.toLowerCase()}`}>
-          <ArrowOut className="icon-16" />
-        </a>
         {mark === 'coin' && <RtxMark className="stat__mark" />}
         {mark === 'usdt' && <PayMark id="USDT" className="stat__mark" />}
       </div>
@@ -70,7 +70,6 @@ export function StatRow({
         value={money(holdings.balance)}
         suffix="$RTX"
         note={`Across ${holdings.purchases} purchases`}
-        href="#holdings"
         mark="coin"
       />
       <Stat
@@ -78,7 +77,6 @@ export function StatRow({
         value={money(holdings.worthAtTge)}
         suffix="USDT"
         note={`At the $${presale.listPrice.toFixed(2)} listing price`}
-        href="#tge"
         mark="usdt"
       />
       <Stat
@@ -90,7 +88,6 @@ export function StatRow({
             ? `${referrals.share * 100}% of what ${referrals.invited} friends have bought`
             : `${referrals.share * 100}% of whatever your friends buy`
         }
-        href="#referrals"
       />
     </section>
   );

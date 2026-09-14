@@ -221,7 +221,9 @@ function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], rarity:
   }
   ctx.closePath();
   ctx.lineJoin = 'round';
-  const glow = [[SPREAD * 1.6, 0.05], [SPREAD * 1.1, 0.08], [SPREAD * 0.7, 0.12], [SPREAD * 0.4, 0.18], [6, 0.32]] as const;
+  // The card's inner passes only: the two widest bloom past a crate's lower
+  // edges as a wash, where on a card's rounded corners they read as halo.
+  const glow = [[SPREAD * 0.7, 0.1], [SPREAD * 0.4, 0.16], [6, 0.3]] as const;
   for (const [lw, a] of glow) {
     ctx.strokeStyle = rgb(plasma, a * flicker);
     ctx.lineWidth = lw;

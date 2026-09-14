@@ -84,7 +84,11 @@ const LID = 18.5;
  * the front corner is 100 units lower than the side ones, because that is what an isometric box
  * looks like.
  */
-const FOOT = { l: [TOP.l[0], 306], f: [TOP.f[0], 405], r: [TOP.r[0], 305] } as const;
+/* The side feet, measured against the bottom rails the export actually draws rather than the
+   bracket plates: the lowest stroke runs (19, 299) → (196, 405) on the left and (380, 303) →
+   (201, 402) on the right, which meet the corner verticals at 290 and 293. At 306 and 305 the
+   face fills hung a 12-unit strip below the line-work on both sides. */
+const FOOT = { l: [TOP.l[0], 290], f: [TOP.f[0], 405], r: [TOP.r[0], 293] } as const;
 /** How deep a cavity reads before the walls stop carrying a value difference. */
 const D = 74;
 

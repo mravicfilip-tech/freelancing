@@ -228,7 +228,8 @@
   --chest-coinDisc: var(--d-inset);
   --chest-markDisc: #4042d1;
 }
-.dash[data-theme='dark'] .chest__shadow { background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent 72%); }
+/* No cast shadow on the dark stage: a darker blob under a near-black ground only reads as colour past the crate's edge. */
+.dash[data-theme='dark'] .chest--reel .chest__shadow { display: none; }
 /* The hint is for a closed box; once it is opening, the crate is the message. */
 .reel__hint { transition: opacity 200ms ease; }
 .reel--spin .reel__hint, .reel--won .reel__hint { opacity: 0; }

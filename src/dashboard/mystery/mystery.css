@@ -305,7 +305,8 @@
 }
 .claimed__stat > div { display: grid; gap: 10px; }
 .claimed__stat-label { font-size: 14px; color: var(--d-text-2); }
-.claimed__stat-value { font-size: clamp(30px, 2.4vw, 40px); line-height: 1; font-weight: 600; letter-spacing: -0.02em; }
+/* The figure as the presale home sets it: the display face, the symbol small and raised. */
+.claimed__stat .fig { margin: 0; font-size: clamp(30px, 2.4vw, 40px); }
 .claimed__stat-note { font-size: 13px; color: var(--d-text-3); }
 .claimed__stat-mark {
   display: grid;

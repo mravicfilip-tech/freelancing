@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { usd } from '../data';
 import { RtxMark } from '../icons';
+import { Figure } from '../Figure';
 import { Pager } from '../Pager';
 import { PAGE, RARITY, reward, when, type Claim } from './data';
 
@@ -31,7 +32,7 @@ export function Claimed({ rows }: { rows: Claim[] }) {
         <div className="claimed__stat">
           <div>
             <span className="claimed__stat-label">Total prizes claimed</span>
-            <span className="claimed__stat-value num">{rows.length}</span>
+            <Figure value={String(rows.length)} />
             <span className="claimed__stat-note">{rare} rare or better</span>
           </div>
           <span className="claimed__stat-mark"><RtxMark className="icon-22" /></span>
@@ -39,7 +40,7 @@ export function Claimed({ rows }: { rows: Claim[] }) {
         <div className="claimed__stat">
           <div>
             <span className="claimed__stat-label">Total money spent</span>
-            <span className="claimed__stat-value num">{usd(spent)}</span>
+            <Figure symbol="$" value={spent.toLocaleString()} />
             <span className="claimed__stat-note">{usd(Math.round(spent / Math.max(1, rows.length)))} a box on average</span>
           </div>
           <span className="claimed__stat-mark"><RtxMark className="icon-22" /></span>

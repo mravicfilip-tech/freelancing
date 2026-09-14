@@ -16,13 +16,17 @@ import { BOX, PAY, PRIZES, draw, rate, reward, type Prize } from './data';
  * reel starts and the winning card is lit when it stops.
  */
 const SLOT = 218;
-const LEN = 44;
-const WIN = 38;
+const LEN = 48;
+/* The slot the box rests on and the slot a spin stops at: eight cards lead
+   the first and eight trail the second, so the reel is full to the edges on
+   a screen up to 3,500px wide. */
+const START = 8;
+const WIN = 40;
 const CAPS = ['Unwrapping…', 'You can win…', 'Opening up…'];
 
 function strip(winner?: Prize): Prize[] {
   const out = Array.from({ length: LEN }, (_, i) => PRIZES[(i * 7) % PRIZES.length]);
-  for (let i = 0; i < LEN; i++) if (i > 4 && Math.random() < 0.6) out[i] = draw();
+  for (let i = 0; i < LEN; i++) if (i > START + 1 && Math.random() < 0.6) out[i] = draw();
   if (winner) out[WIN] = winner;
   return out;
 }
@@ -36,7 +40,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
   const view = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLDivElement>(null);
-  const at = useRef(3);
+  const at = useRef(START);
 
   /** x that centres slot `i` in the viewport. */
   const xFor = (i: number) => (view.current?.clientWidth ?? 0) / 2 - (i + 0.5) * SLOT;
@@ -58,7 +62,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     const prize = draw();
     setWon(null);
     setPhase('spin');
-    at.current = 3;
+    at.current = START;
     setCards(strip(prize));
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const land = () => {
@@ -78,7 +82,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
       return;
     }
     const tl = gsap.timeline({ onComplete: land });
-    tl.set(track.current, { x: xFor(3) });
+    tl.set(track.current, { x: xFor(START) });
     tl.to(track.current, { x: xFor(WIN) + (Math.random() - 0.5) * SLOT * 0.5, duration: 4.2, ease: 'power4.out' }, 0.25);
     tl.to(track.current, { x: xFor(WIN), duration: 0.6, ease: 'power2.inOut' });
   };
@@ -87,7 +91,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     if (phase !== 'won' || !box.current) return;
     setPhase('idle');
     setWon(null);
-    at.current = 3;
+    at.current = START;
     setCards(strip());
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     gsap.killTweensOf(box.current);
@@ -115,7 +119,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
         <div className="reel__mark" aria-hidden="true" />
         <div className="reel__track" ref={track}>
           {cards.map((p, i) => (
-            <div className={`reel__slot${phase === 'idle' && i === 3 ? ' reel__slot--under' : ''}`} key={`${i}-${p.id}`}>
+            <div className={`reel__slot${phase === 'idle' && i === START ? ' reel__slot--under' : ''}`} key={`${i}-${p.id}`}>
               <span className="reel__cap">{CAPS[i % 3]}</span>
               <PrizeCard p={p} won={phase === 'won' && i === WIN} />
               <span className="reel__cap num">Prize #{124 + i}</span>

@@ -49,9 +49,17 @@ function electricNoise(s: number, t: number) {
   return n1 + n2 + n3;
 }
 
-const JITTER = 0.23 * 14;
+/* The shader's settings, then ours on top: the export's jitter was too
+   busy at card size, so the arc moves at under half its amplitude and a
+   slower clock, and the trail is a faint spot rather than a lamp. */
+const JITTER = 0.23 * 14 * 0.4;
+const CLOCK = 0.7;
 const CORE = 0.5 + 2.5 * 0.07;
 const SPREAD = 2.5 + 19.5 * 0.94;
+const TRAIL_ALPHA = 0.07;
+const TRAIL_R = 22;
+const TRAIL_MAX = 10;
+const TRAIL_MS = 500;
 const R = 11;
 
 /** A point and outward normal at distance `s` along a rounded rectangle. */
@@ -81,8 +89,8 @@ const rgb = ([r, g, b]: [number, number, number], a: number) => `rgba(${r},${g},
 function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h: number, rarity: Rarity, won: boolean, t: number, still: boolean) {
   const color = RARITY[rarity];
   const hot = won ? 1.7 : 1;
-  const time = still ? 0 : t * 1.5;
-  const flicker = still ? 1 : 0.88 + 0.12 * Math.sin(t * 15 + ox * 0.01);
+  const time = still ? 0 : t * CLOCK;
+  const flicker = still ? 1 : 0.92 + 0.08 * Math.sin(t * 9 + ox * 0.01);
   // Plasma = mix(base, (0.6, 0.9, 1.0), 0.25), as the shader mixes it.
   const plasma: [number, number, number] = [
     Math.round(255 * (color.base[0] * 0.75 + 0.15)),
@@ -136,17 +144,17 @@ function draw(row: Row, now: number, still: boolean) {
     if (ox + r.width < -SPREAD || ox > w + SPREAD || oy + r.height < -SPREAD || oy > h + SPREAD) continue;
     arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still);
   }
-  // The light trail: spots the pointer left, fading over 700ms.
+  // The light trail: spots the pointer left, fading over half a second.
   if (row.trail.length) {
     ctx.globalCompositeOperation = 'lighter';
-    row.trail = row.trail.filter((p) => now - p.t < 700);
+    row.trail = row.trail.filter((p) => now - p.t < TRAIL_MS);
     for (const p of row.trail) {
-      const a = (1 - (now - p.t) / 700) * 0.28;
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 30);
+      const a = (1 - (now - p.t) / TRAIL_MS) * TRAIL_ALPHA;
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, TRAIL_R);
       g.addColorStop(0, rgb(p.glow, a));
       g.addColorStop(1, rgb(p.glow, 0));
       ctx.fillStyle = g;
-      ctx.fillRect(p.x - 30, p.y - 30, 60, 60);
+      ctx.fillRect(p.x - TRAIL_R, p.y - TRAIL_R, TRAIL_R * 2, TRAIL_R * 2);
     }
     ctx.globalCompositeOperation = 'source-over';
   }
@@ -202,7 +210,7 @@ export function mountRow(root: HTMLElement, canvas: HTMLCanvasElement) {
     if (!card) return;
     const r = root.getBoundingClientRect();
     row.trail.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now(), glow: RARITY[card.dataset.rarity as Rarity].glow });
-    if (row.trail.length > 24) row.trail.shift();
+    if (row.trail.length > TRAIL_MAX) row.trail.shift();
   };
   root.addEventListener('pointermove', onMove);
 

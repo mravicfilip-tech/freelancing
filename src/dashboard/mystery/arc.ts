@@ -265,7 +265,11 @@ function draw(row: Row, now: number, still: boolean) {
     const r = el.getBoundingClientRect();
     const ox = r.left - base.left, oy = r.top - base.top;
     if (ox + r.width < -SPREAD || ox > w + SPREAD || oy + r.height < -SPREAD || oy > h + SPREAD) continue;
+    // A card that has stepped back (the losers after a win) takes its arc with it.
+    const fade = parseFloat(getComputedStyle(el).opacity) || 1;
+    ctx.globalAlpha = fade;
     arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still, light);
+    ctx.globalAlpha = 1;
   }
   // The light trail: spots the pointer left, fading over half a second.
   // Blended normally: additive spots stacked to white wherever the pointer

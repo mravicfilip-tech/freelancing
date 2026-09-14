@@ -6,7 +6,7 @@ import { StatSkel, Skel, skelRows } from '../Skeleton';
 import { theme } from '../theme';
 import { useTransactions } from './useTransactions';
 import { Transactions } from './Transactions';
-import { StatsRow, type StatsVariant } from './stats';
+import { StatsRow } from './stats';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import './markets.css';
@@ -14,28 +14,6 @@ import './markets.css';
 const params = new URLSearchParams(window.location.search);
 /** `?empty=1` renders the page a wallet sees before its first purchase. */
 const EMPTY = params.get('empty') === '1';
-/** `?s=1..5` picks the form of the figures; the strip is the review tool. */
-const S = Math.min(5, Math.max(1, Number(params.get('s')) || 1)) as StatsVariant;
-const FORMS = [
-  { n: 1, name: 'Facts', blurb: 'Two inset fact tiles under each figure, as the stage card does.' },
-  { n: 2, name: 'Ladder', blurb: 'The presale ladder under each figure: per stage.' },
-  { n: 3, name: 'One card', blurb: 'One wide card modelled on the presale stage card.' },
-  { n: 4, name: 'Striped bar', blurb: 'The hero bar, one per figure.' },
-  { n: 5, name: 'Rows', blurb: 'Three zebra rows under each figure.' },
-] as const;
-
-function Picker() {
-  return (
-    <nav className="vpick" aria-label="Figure forms">
-      {FORMS.map((f) => (
-        <a key={f.n} className="vpick__item" href={`?s=${f.n}`} aria-current={f.n === S ? 'page' : undefined} title={f.blurb}>
-          <b>S{f.n}</b> {f.name}
-        </a>
-      ))}
-    </nav>
-  );
-}
-
 function MarketsSkeleton() {
   return (
     <div className="skel-page" aria-busy="true" aria-live="polite" aria-label="Loading your transactions">
@@ -73,12 +51,11 @@ export function MarketsPage() {
       <Sidebar active="markets" />
       <main className="dash__main">
         <Topbar title="Markets" />
-        <Picker />
         {!rows ? (
           <MarketsSkeleton />
         ) : (
           <>
-            {rows.length > 0 && <StatsRow rows={rows} variant={S} />}
+            {rows.length > 0 && <StatsRow rows={rows} />}
             <Transactions rows={rows} />
           </>
         )}

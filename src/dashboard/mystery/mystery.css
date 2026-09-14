@@ -89,7 +89,7 @@
 .opener { display: grid; gap: 18px; }
 /* In dark the whole opener sits a step darker than the page's other cards:
    the stage. Light keeps the card white and darkens only the reel. */
-.dash[data-theme='dark'] .opener { background: #080d13; }
+.dash[data-theme='dark'] .opener { background: #080d13; box-shadow: 0 0 0 1px rgba(238, 242, 245, 0.09); }
 .opener__head { margin-bottom: 0; }
 .opener__pay { display: flex; gap: 6px; }
 .opener__chip { display: inline-flex; align-items: center; gap: 7px; padding-left: 10px; }

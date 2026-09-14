@@ -5,53 +5,135 @@
    dashboard's.
    ========================================================================== */
 
-/* ---------- Picture ---------- */
-/* A frame at a fixed shape; the scene inside keeps its own shape and fits by
-   width, centred, so a taller scene crops top and bottom like a photo. */
-.upd-art {
-  position: relative;
-  aspect-ratio: 16 / 10;
+/* ---------- Variant picker (review tool) ---------- */
+.vpick {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px;
   border-radius: var(--r-sm);
-  background: var(--d-art-ground);
+  background: var(--d-card);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+  align-self: flex-start;
+}
+.vpick__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--d-text-2);
+  font-size: 13px;
+  text-decoration: none;
+}
+.vpick__item b { font-weight: 700; color: var(--d-text-3); }
+.vpick__item:hover { background: var(--d-inset); color: var(--d-text); }
+.vpick__item[aria-current='page'] { background: var(--d-pick); color: var(--d-on-pick); }
+.vpick__item[aria-current='page'] b { color: inherit; opacity: 0.7; }
+
+/* ---------- Thumbnail ----------
+   Fixed colours: the site's ink and lavender, in both themes, so it reads as
+   an image. 16:9 keeps it a picture rather than half the card. */
+.thumb {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  aspect-ratio: 16 / 9;
+  padding: 14px 16px 16px;
+  border-radius: var(--r-sm);
+  background: #0c1219;
+  color: #f2f4f8;
   overflow: hidden;
-  /* The scenes read the hero's tokens; these are its values, so the pictures
-     are set the way they are on the site whatever theme the page is in. */
-  --fh-bg: #edeff1;
-  --fh-line: #dadee2;
-  --fh-ink: #122433;
-  --fh-muted: #8292a2;
-  --fh-body: #7c858d;
-  --fh-label: #a2a6aa;
-  --fh-progress: #4042d2;
-  --fh-progress-soft: #b3b5f5;
-  --fh-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --fh-display: 'NewBlack Typeface', 'Onest Variable', ui-sans-serif, system-ui, sans-serif;
-  --fh-digits: 'Doto Variable', 'Courier New', monospace;
-  --fh-pixel: 'Silkscreen', 'Courier New', monospace;
-  color: #2c2e31;
+  isolation: isolate;
 }
-.upd-art__fit {
+.thumb > * { position: relative; z-index: 1; }
+.thumb__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+.thumb__title {
+  display: block;
+  max-width: 14em;
+  font-size: 19px;
+  line-height: 1.16;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.thumb__title em { font-style: normal; color: #b3b5f5; }
+.thumb__n {
+  align-self: flex-end;
+  font-family: var(--d-display);
+  font-size: 64px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: rgba(242, 244, 248, 0.18);
+}
+.thumb__art { position: absolute; z-index: 0; pointer-events: none; }
+
+/* T1 Glow: two soft accent glows and the dot grid. */
+.thumb[data-t='1']::before {
+  content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(60% 70% at 100% 100%, rgba(64, 66, 210, 0.55), transparent 70%),
+    radial-gradient(45% 55% at 0% 0%, rgba(179, 181, 245, 0.22), transparent 70%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.07) 1px, transparent 1.4px) 0 0 / 18px 18px;
 }
-/* The how-to-buy scenes fit their own box, so the frame is the box. */
-.upd-art[data-art^='hb-'] .upd-art__fit { position: static; transform: none; width: auto; height: 100%; }
-.upd-art[data-art^='hb-'] .hb__art { position: absolute; inset: 0; }
-/* Per-scene fit. Each scene was composed for its own card on the site, so a
-   few need a nudge to sit whole inside a 16:10 frame: the wallet sheet hangs
-   above its canvas, the phone is taller than the frame, and the ecosystem
-   scenes are 5:4 with a wide margin. */
-.upd-art[data-art='ui'] .upd-art__fit { width: 92%; top: 58%; }
-.upd-art[data-art='pay'] .upd-art__fit { width: 74%; }
-.upd-art[data-art='payments'] .upd-art__fit,
-.upd-art[data-art='trading'] .upd-art__fit,
-.upd-art[data-art='staking'] .upd-art__fit,
-.upd-art[data-art='storage'] .upd-art__fit { width: 104%; }
-.upd-art[data-art='simple'] .upd-art__fit { width: 128%; }
-.upd-art--feature { aspect-ratio: 16 / 10; }
+/* T2 Rings: thin concentric rings off the top-right corner. */
+.thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: rgba(179, 181, 245, 0.34); stroke-width: 1; }
+.thumb[data-t='2']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(50% 60% at 100% 0%, rgba(64, 66, 210, 0.4), transparent 70%);
+}
+/* T3 Ladder: the presale ladder along the bottom, the live stage lit. */
+.thumb__art--ladder { left: 0; right: 0; bottom: 0; width: 100%; height: 62%; fill: rgba(255, 255, 255, 0.06); }
+.thumb__art--ladder rect[data-live] { fill: rgba(144, 146, 244, 0.7); }
+/* T4 Dashes: the site's 8/8 dashed rails, vertical, faint. */
+.thumb[data-t='4']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(180deg, rgba(179, 181, 245, 0.22) 0 8px, transparent 8px 16px) 0 0 / 1px 100% repeat-x;
+  background-size: 44px 100%;
+  background-image: repeating-linear-gradient(90deg, transparent 0 43px, rgba(179, 181, 245, 0.001) 43px 44px);
+}
+.thumb[data-t='4']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(180deg, rgba(179, 181, 245, 0.28) 0 8px, transparent 8px 16px);
+  background-size: 1px 100%;
+  background-repeat: repeat-x;
+  background-position: 22px 0;
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 44px);
+  mask-image: repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 44px);
+  -webkit-mask-position: 22px 0;
+  mask-position: 22px 0;
+}
+/* T5 Mark: the M mark, huge and cropped, behind the headline. */
+.thumb__art--mark { right: -18%; top: -22%; width: 78%; height: auto; opacity: 0.16; }
+.thumb__art--mark circle { fill: #4042d2; }
+
+.thumb--feature { aspect-ratio: 16 / 9; }
+.thumb--feature .thumb__brand { font-size: 15px; }
+.thumb--feature .thumb__brand .icon-20 { width: 24px; height: 24px; }
+.thumb--feature .thumb__n { font-size: clamp(72px, 8vw, 120px); }
 
 /* ---------- Kicker, title, excerpt ---------- */
 .upd-kicker {
@@ -77,7 +159,7 @@
 /* ---------- Feature ---------- */
 .upd-feature {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: 32px;
   align-items: center;
 }
@@ -92,8 +174,8 @@
 .upd-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 10px 10px 16px;
+  gap: 12px;
+  padding: 8px 8px 14px;
   border-radius: var(--r-card);
   background: var(--d-card);
   box-shadow: inset 0 0 0 1px var(--d-rule);
@@ -103,7 +185,7 @@
 }
 .upd-card:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px var(--d-accent-soft); }
 .upd-card:active { transform: translateY(0); }
-.upd-card__body { display: grid; gap: 8px; padding: 0 8px; }
+.upd-card__body { display: grid; gap: 6px; padding: 0 8px; }
 
 /* ---------- Grid: three across, picture on top ---------- */
 .upd-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
@@ -113,6 +195,12 @@
   .upd-feature { grid-template-columns: minmax(0, 1fr); }
   .upd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+@media (max-width: 760px) {
+  .updates .topbar { order: 1; }
+  .updates .dash__main > .vpick { order: 0; }
+  .updates .dash__main > :not(.topbar):not(.vpick) { order: 2; }
+}
 @media (max-width: 620px) {
   .upd-grid { grid-template-columns: minmax(0, 1fr); }
+  .vpick__item { min-height: 44px; }
 }

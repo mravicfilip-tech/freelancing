@@ -88,6 +88,8 @@
   --d-chip-lift: none;
   /* A menu floats over the page, so on dark it needs depth to separate. */
   --d-menu-edge: 0 0 0 1px var(--d-rule), 0 16px 36px -12px rgb(0 0 0 / 55%);
+  /* A floating menu sits a step above the card it opens from. */
+  --d-menu: #1f2833;
   --d-lift: none;
   --d-glow: 0 0 0 1px var(--d-rule);
   --d-grid: radial-gradient(circle at center, rgba(238, 242, 245, 0.07) 1px, transparent 1.4px);
@@ -120,7 +122,8 @@
   /* No shadows in light: the page has none anywhere else, so a menu and a chip
      hold their edges with a ring instead. */
   --d-chip-lift: none;
-  --d-menu-edge: 0 0 0 1px var(--d-field-ring);
+  --d-menu-edge: 0 0 0 1px var(--d-field-ring), 0 16px 36px -14px rgb(18 24 32 / 28%);
+  --d-menu: #ffffff;
   --d-accent-hover: #3335bb;
   --d-on-accent: #ffffff;
   --d-pick: #000000;
@@ -400,8 +403,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   width: 248px;
   padding: 6px;
   border-radius: var(--r-card);
-  background: var(--d-card);
-  box-shadow: var(--d-lift), 0 0 0 1px var(--d-rule);
+  /* A step above the rail and the cards, with the same edge the token
+     menu wears, so it reads as floating rather than as more rail. */
+  background: var(--d-menu);
+  box-shadow: var(--d-menu-edge);
 }
 .rail__menu-head {
   display: flex;
@@ -433,7 +438,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   cursor: pointer;
   transition: background-color 140ms ease;
 }
-.rail__menu-item:hover { background-color: var(--d-inset); }
+.rail__menu-item:hover { background-color: var(--d-track); }
 .rail__menu-item svg { color: var(--d-text-2); }
 .rail__menu-item--wallet { justify-content: space-between; }
 .rail__menu-hint { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 400; color: var(--d-text-3); }
@@ -446,7 +451,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 .rail[data-mode='collapsed'] .rail__user { justify-content: center; padding: 6px 0; }
-.rail[data-mode='collapsed'] .rail__user-text,
+.rail[data-mode='collapsed'] .rail__user > .rail__user-text,
 .rail[data-mode='collapsed'] .rail__user-chev { display: none; }
 
 /* Short viewports (a 900px laptop under browser chrome is ~790): the rail's
@@ -1559,7 +1564,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   margin: 0;
   padding: 6px;
   border-radius: var(--r-card);
-  background: var(--d-card);
+  background: var(--d-menu);
   box-shadow: var(--d-menu-edge);
 }
 .tsel__option {

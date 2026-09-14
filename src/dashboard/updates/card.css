@@ -55,6 +55,46 @@
 }
 .thumb__art--rings { inset: 0; width: 100%; height: 100%; fill: none; stroke: #b3b5f5; stroke-width: 1; }
 
+/* ---------- Dark-mode colour fields (review: ?d=1..5) ----------
+   Same ink, same rings and dots; what changes is the colour under them. */
+/* D1 Indigo bloom: a saturated indigo blob in the lower right, the live-dot
+   lime as a faint fringe below it, as the yellow fringes the light card. */
+.dash[data-theme='dark'] .thumb[data-d='1'] {
+  background-image:
+    radial-gradient(70% 80% at 96% 104%, rgba(64, 66, 210, 0.95) 0%, rgba(64, 66, 210, 0.5) 36%, rgba(64, 66, 210, 0) 70%),
+    radial-gradient(36% 44% at 58% 118%, rgba(217, 242, 78, 0.28) 0%, rgba(217, 242, 78, 0) 70%);
+}
+/* D2 Lavender wash: a broad lavender wash over the lower half, sky above. */
+.dash[data-theme='dark'] .thumb[data-d='2'] {
+  background-image:
+    linear-gradient(180deg, rgba(179, 181, 245, 0) 38%, rgba(179, 181, 245, 0.34) 100%),
+    radial-gradient(44% 56% at 100% 0%, rgba(196, 224, 246, 0.35) 0%, rgba(196, 224, 246, 0) 70%);
+}
+/* D3 Aurora: indigo lower right, sky upper left, meeting in the middle. */
+.dash[data-theme='dark'] .thumb[data-d='3'] {
+  background-image:
+    radial-gradient(64% 76% at 100% 100%, rgba(64, 66, 210, 0.9) 0%, rgba(64, 66, 210, 0) 70%),
+    radial-gradient(56% 64% at 0% 0%, rgba(196, 224, 246, 0.42) 0%, rgba(196, 224, 246, 0) 70%),
+    radial-gradient(40% 50% at 60% 110%, rgba(179, 181, 245, 0.5) 0%, rgba(179, 181, 245, 0) 70%);
+}
+/* D4 Lime edge: indigo blob with a lime rim along the lower left, the
+   presale's own live colour. */
+.dash[data-theme='dark'] .thumb[data-d='4'] {
+  background-image:
+    radial-gradient(70% 80% at 100% 100%, rgba(64, 66, 210, 0.9) 0%, rgba(64, 66, 210, 0) 68%),
+    radial-gradient(50% 40% at 0% 112%, rgba(217, 242, 78, 0.42) 0%, rgba(217, 242, 78, 0) 70%);
+}
+/* D5 Deep violet: the whole card is colour, deep indigo rising to ink. */
+.dash[data-theme='dark'] .thumb[data-d='5'] {
+  background-color: #12153f;
+  background-image:
+    linear-gradient(160deg, #0c1219 0%, #161a52 55%, #2a2fa8 100%),
+    radial-gradient(50% 60% at 100% 0%, rgba(179, 181, 245, 0.5) 0%, rgba(179, 181, 245, 0) 70%);
+}
+.dash[data-theme='dark'] .thumb[data-d='5'] .thumb__art--rings { stroke: #d6d7fb; }
+/* The ring glow that the base draws stays on top of all five. */
+.dash[data-theme='dark'] .thumb[data-d] { background-repeat: no-repeat; }
+
 /* Light mode: the landing page's bento cards — white paper, the lavender
    blob with its warm yellow fringe, the rings in indigo, ink type. Drawn in
    CSS rather than from the bento's asset, which has hard edges. */

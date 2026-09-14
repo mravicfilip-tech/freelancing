@@ -72,6 +72,22 @@ function Earlier({ items }: { items: Update[] }) {
   );
 }
 
+const D = Math.min(5, Math.max(1, Number(new URLSearchParams(window.location.search).get('d')) || 1));
+const DARKS = [
+  { n: 1, name: 'Indigo bloom' }, { n: 2, name: 'Lavender wash' }, { n: 3, name: 'Aurora' }, { n: 4, name: 'Lime edge' }, { n: 5, name: 'Deep violet' },
+] as const;
+function Picker() {
+  return (
+    <nav className="vpick" aria-label="Dark thumbnail options">
+      {DARKS.map((d) => (
+        <a key={d.n} className="vpick__item" href={`?d=${d.n}`} aria-current={d.n === D ? 'page' : undefined}>
+          <b>D{d.n}</b> {d.name}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
 export function UpdatesPage() {
   const mode = theme.use();
   useEffect(() => {
@@ -87,6 +103,7 @@ export function UpdatesPage() {
       <Sidebar active="updates" />
       <main className="dash__main">
         <Topbar title="Updates" />
+        <Picker />
         <Feature u={lead} />
         <Earlier items={rest} />
       </main>

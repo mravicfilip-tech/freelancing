@@ -6,6 +6,7 @@ import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
 import { Dashboard } from './dashboard/Dashboard';
 import { AuthPage } from './dashboard/auth/AuthPage';
+import { EarnPage } from './dashboard/earn/EarnPage';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
@@ -35,6 +36,7 @@ const DASHBOARD_HOSTS = ['rtxdash.vercel.app'];
 const PATH = window.location.pathname.replace(/\/+$/, '');
 /** Sign in and register share one route; the page's own toggle picks which. */
 const AUTH = PATH === '/auth' || PATH === '/login' || PATH === '/register' || params.get('view') === 'auth';
+const EARN = PATH === '/earn' || params.get('view') === 'earn';
 const DASHBOARD =
   window.location.pathname.replace(/\/+$/, '') === '/dashboard' ||
   params.get('view') === 'dashboard' ||
@@ -52,6 +54,7 @@ export function App() {
 
   if (CAPTURE_MODE) return <CaptureStage />;
   if (AUTH) return <AuthPage />;
+  if (EARN) return <EarnPage />;
   if (DASHBOARD) return <Dashboard />;
   if (BENTO_PICKER) return <BentoPicker />;
   if (TOK_PICKER) return <TokPicker />;

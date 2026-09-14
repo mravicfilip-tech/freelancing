@@ -9,15 +9,22 @@ function greeting() {
   return 'Evening';
 }
 
-export function Topbar() {
+/** Title and eyebrow default to the presale home; other screens pass their own. */
+export function Topbar({
+  title = 'Remittix Presale Dashboard',
+  eyebrow,
+}: {
+  title?: string;
+  eyebrow?: string;
+} = {}) {
   const current = theme.use();
   const next = current === 'dark' ? 'light' : 'dark';
 
   return (
     <header className="topbar">
       <div>
-        <p className="topbar__greeting">{greeting()}, Filip</p>
-        <h1 className="topbar__title">Remittix Presale Dashboard</h1>
+        <p className="topbar__greeting">{eyebrow ?? `${greeting()}, Filip`}</p>
+        <h1 className="topbar__title">{title}</h1>
       </div>
 
       <div className="topbar__actions">

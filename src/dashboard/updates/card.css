@@ -70,6 +70,7 @@
   color: var(--d-text-3);
 }
 .upd-kicker > span:first-child { color: var(--d-text-2); }
+.upd-kicker time { color: var(--d-text); }
 .upd-title {
   margin: 0;
   font-size: 18px;

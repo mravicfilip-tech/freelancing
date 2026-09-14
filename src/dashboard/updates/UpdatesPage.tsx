@@ -19,19 +19,22 @@ import './updates.css';
 
 /* ---------- Feature ---------- */
 
+/** The newest update as a banner: the rings art full width, the headline
+    and one paragraph on it, the way the reference sets its covers. No text
+    column beside a picture, so nothing sits empty at any width. */
 function Feature({ u }: { u: Update }) {
   return (
-    <section className="card upd-feature" aria-label="Latest update">
-      <Thumb u={u} titled={false} className="thumb--feature" />
-      <div className="upd-feature__body">
-        <p className="ladder__label">
+    <section className="upd-hero" aria-label="Latest update">
+      <Thumb u={u} titled={false} className="thumb--hero" />
+      <div className="upd-hero__text">
+        <p className="ladder__label upd-hero__latest">
           <span className="topbar__dot" aria-hidden="true" />
           Latest
         </p>
         <Kicker u={u} />
-        <Title u={u} as="h2" className="upd-feature__title" />
-        <p className="upd-feature__text">{u.body[0]}</p>
-        <div className="upd-feature__btn">
+        <Title u={u} as="h2" className="upd-hero__title" />
+        <p className="upd-hero__excerpt">{u.body[0]}</p>
+        <div className="upd-hero__btn">
           <Button onClick={() => window.location.assign(`#update-${u.id}`)}>Read the update</Button>
         </div>
       </div>
@@ -39,9 +42,7 @@ function Feature({ u }: { u: Update }) {
   );
 }
 
-/* ---------- Grid cards ---------- */
-
-const PER_PAGE = 6;
+const PER_PAGE = 8;
 
 function Earlier({ items }: { items: Update[] }) {
   const [shown, setShown] = useState(PER_PAGE);

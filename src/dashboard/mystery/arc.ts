@@ -188,10 +188,16 @@ export function setChestOutline(pts: [number, number][]) {
   if (pts.length >= 3) CRATE = pts;
 }
 
-/** An electric outline round a polygon, the card arc's cousin for the chest. */
-function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], glow: [number, number, number], t: number) {
+/** An electric outline round a polygon: the card's arc, on the chest's silhouette. */
+function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], rarity: Rarity, t: number) {
+  const color = RARITY[rarity];
   const time = t * CLOCK;
-  const flicker = 0.9 + 0.1 * Math.sin(t * 9);
+  const flicker = 0.92 + 0.08 * Math.sin(t * 9);
+  const plasma: [number, number, number] = [
+    Math.round(255 * (color.base[0] * 0.75 + 0.15)),
+    Math.round(255 * (color.base[1] * 0.75 + 0.225)),
+    Math.round(255 * (color.base[2] * 0.75 + 0.25)),
+  ];
   const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length;
   const cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
   ctx.beginPath();
@@ -215,17 +221,17 @@ function outline(ctx: CanvasRenderingContext2D, pts: [number, number][], glow: [
   }
   ctx.closePath();
   ctx.lineJoin = 'round';
-  const passes = [[SPREAD * 1.4, 0.05], [SPREAD * 0.9, 0.09], [SPREAD * 0.5, 0.14], [5, 0.28]] as const;
-  for (const [lw, a] of passes) {
-    ctx.strokeStyle = rgb(glow, a * flicker);
+  const glow = [[SPREAD * 1.6, 0.05], [SPREAD * 1.1, 0.08], [SPREAD * 0.7, 0.12], [SPREAD * 0.4, 0.18], [6, 0.32]] as const;
+  for (const [lw, a] of glow) {
+    ctx.strokeStyle = rgb(plasma, a * flicker);
     ctx.lineWidth = lw;
     ctx.stroke();
   }
-  ctx.strokeStyle = rgb(glow, 0.9 * flicker);
-  ctx.lineWidth = 1.6;
+  ctx.strokeStyle = rgb(color.glow, 0.85 * flicker);
+  ctx.lineWidth = 1.8;
   ctx.stroke();
-  ctx.strokeStyle = `rgba(255,255,255,${0.8 * flicker})`;
-  ctx.lineWidth = 0.9;
+  ctx.strokeStyle = `rgba(255,255,255,${0.95 * flicker})`;
+  ctx.lineWidth = CORE + 0.3;
   ctx.stroke();
 }
 
@@ -241,13 +247,13 @@ function draw(row: Row, now: number, still: boolean) {
   // ring, and the flash covers the hand-off.
   const flying = root.classList.contains('reel--spin');
   if (flying && !still) marker(ctx, w, h, t);
-  // The closed chest, on a dark reel, carries the arc too, in its own lid ink.
+  // The closed chest, on a dark reel, carries the arc too, as the uncommon card does.
   if (!flying && !light && !still && root.classList.contains('reel--idle')) {
     const svg = root.querySelector<SVGSVGElement>('.chest--reel .chest__art svg');
     if (svg) {
       const r = svg.getBoundingClientRect();
       const k = r.width / 401.5;
-      outline(ctx, CRATE.map(([x, y]) => [r.left - base.left + x * k, r.top - base.top + y * k]), [205, 216, 226], t);
+      outline(ctx, CRATE.map(([x, y]) => [r.left - base.left + x * k, r.top - base.top + y * k]), 'uncommon', t);
     }
   }
   for (const el of flying ? [] : root.querySelectorAll<HTMLElement>('.prize')) {

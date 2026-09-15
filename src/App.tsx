@@ -11,6 +11,7 @@ import { MarketsPage } from './dashboard/markets/MarketsPage';
 import { MarketsGate } from './dashboard/markets/MarketsGate';
 import { PayFiPage } from './dashboard/payfi/PayFiPage';
 import { ReferralsPage } from './dashboard/referrals/ReferralsPage';
+import { ClaimPage } from './dashboard/claim/ClaimPage';
 import { UpdatesPage } from './dashboard/updates/UpdatesPage';
 import { ArticlePage } from './dashboard/updates/ArticlePage';
 import { MysteryPage } from './dashboard/mystery/MysteryPage';
@@ -49,6 +50,7 @@ const TRANSACTIONS = PATH === '/transactions' || params.get('view') === 'transac
 const MARKETS = PATH === '/markets' || params.get('view') === 'markets';
 const PAYFI = PATH === '/payfi' || params.get('view') === 'payfi';
 const REFERRALS = PATH === '/referrals' || params.get('view') === 'referrals';
+const CLAIM = PATH === '/claim' || params.get('view') === 'claim';
 const UPDATES = PATH === '/updates' || params.get('view') === 'updates';
 /** One update in full: /updates/122. */
 const ARTICLE = PATH.match(/^\/updates\/(\d+)$/);
@@ -76,6 +78,7 @@ export function App() {
   if (MARKETS) return <MarketsGate />;
   if (PAYFI) return <PayFiPage />;
   if (REFERRALS) return <ReferralsPage />;
+  if (CLAIM) return <ClaimPage />;
   if (ARTICLE) return <ArticlePage id={Number(ARTICLE[1])} />;
   if (UPDATES) return <UpdatesPage />;
   if (MYSTERY) return <MysteryPage />;

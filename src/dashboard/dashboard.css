@@ -1297,7 +1297,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--d-text);
   font-weight: 600;
 }
-.card__head .link-quiet:hover { box-shadow: none; }
+/* The head rule sets the label colour above the base hover, so the hover has to flip it again. */
+.card__head .link-quiet:hover { box-shadow: none; color: var(--d-on-pick); }
 
 /* The total leads; claimed and ready sit beside it rather than under, so the
    list below gets the room. */

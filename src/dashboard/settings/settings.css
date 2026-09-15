@@ -18,8 +18,15 @@
 }
 .set-input::placeholder { color: var(--d-text-3); }
 .set-input:focus { outline: none; }
-/* The country code sits inside the phone control, parted from the number by a rule. */
-.set-code { flex: none; padding-right: 2px; font-size: 15px; }
+/* The country code sits inside the phone control, parted from the number by
+   a rule: the token menu's button and list, with a flag in front. The control
+   is the menu's anchor, so the list hangs under the whole field. */
+.set-field .field__control { position: relative; }
+.csel { position: static; }
+.csel__button { height: 36px; padding: 0 8px 0 6px; margin-left: -8px; gap: 6px; }
+.csel__flag { font-size: 18px; line-height: 1; }
+.csel__menu { left: 0; right: 0; width: auto; max-height: 300px; overflow-y: auto; }
+.csel__country { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .set-sep { flex: none; width: 1px; height: 22px; background: var(--d-field-ring); }
 /* The copy chip in the wallet control sits at its end. */
 .set-copy { order: 2; }

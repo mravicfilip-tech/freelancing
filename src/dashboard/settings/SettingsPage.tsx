@@ -3,11 +3,13 @@ import { Sidebar } from '../Sidebar';
 import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { Button } from '../Button';
+import { Switch } from '../Switch';
 import { theme } from '../theme';
 import { USER, WALLET } from '../data';
 import { CheckIcon, CopyIcon } from '../icons';
 import { useCopy } from '../useCopy';
 import { PasswordField, TextField } from './fields';
+import { CodeSelect, type Iso } from './CodeSelect';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import '../auth/auth.css';
@@ -18,7 +20,6 @@ import './settings.css';
  * two-factor sign-in, and the wallet your $RTX lands in. Each card saves
  * on its own, and says so for a moment.
  */
-const CODES = ['+1', '+44', '+49', '+33', '+34', '+381', '+385', '+91', '+971'];
 
 /** A "Saved" that shows for a couple of seconds after a card's button. */
 function useSaved(): [boolean, () => void] {
@@ -50,7 +51,7 @@ export function SettingsPage() {
 
   const [name, setName] = useState<string>(USER.name);
   const [email, setEmail] = useState('filip@remittix.io');
-  const [code, setCode] = useState('+1');
+  const [code, setCode] = useState<Iso>('US');
   const [phone, setPhone] = useState('');
   const [profileSaved, saveProfile] = useSaved();
 
@@ -85,9 +86,7 @@ export function SettingsPage() {
             <TextField id="set-name" label="Full name" value={name} onChange={setName} placeholder="Your name" autoComplete="name" />
             <TextField id="set-email" label="Email" value={email} onChange={setEmail} type="email" placeholder="you@example.com" autoComplete="email" />
             <TextField id="set-phone" label="Phone" value={phone} onChange={setPhone} type="tel" placeholder="Number" autoComplete="tel-national">
-              <select className="field__select set-code" value={code} onChange={(e) => setCode(e.target.value)} aria-label="Country code">
-                {CODES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <CodeSelect value={code} onChange={setCode} />
               <span className="set-sep" aria-hidden="true" />
             </TextField>
             <div className="set-actions">
@@ -133,9 +132,7 @@ export function SettingsPage() {
                 : 'Scan a QR code once with Google Authenticator, 1Password or any TOTP app, and every sign-in asks for its six-digit code.'}
             </p>
             <div className="set-actions">
-              <Button variant={twoFactor ? 'ghost' : 'primary'} onClick={() => setTwoFactor((v) => !v)}>
-                {twoFactor ? 'Turn off' : 'Turn on'}
-              </Button>
+              <Switch id="set-2fa-switch" checked={twoFactor} onChange={setTwoFactor} label={twoFactor ? 'Two-factor sign-in is on' : 'Turn on two-factor sign-in'} />
             </div>
           </section>
 

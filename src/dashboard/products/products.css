@@ -549,3 +549,21 @@ a.fh__btn { text-decoration: none; }
   .es__dot::before { left: 0; top: 4px; }
   .es__dot::after { left: 4.5px; right: auto; top: 18px; bottom: -14px; width: 1px; height: auto; background: var(--d-dash-v); }
 }
+
+/* Light: the inset ground is a shade off the card's white, so every inset
+   panel takes the rule as a hairline ring to keep its edge. */
+.dash[data-theme='light'] .ref-dest,
+.dash[data-theme='light'] .ref-warn,
+.dash[data-theme='light'] .ref-confirm,
+.dash[data-theme='light'] .cl-wallet,
+.dash[data-theme='light'] .es__form,
+.dash[data-theme='light'] .es__plan,
+.dash[data-theme='light'] .pc__form,
+.dash[data-theme='light'] .pc__out,
+.dash[data-theme='light'] .tm__main,
+.dash[data-theme='light'] .tm__book,
+.dash[data-theme='light'] .mtk__pair:not([aria-selected='true']) { box-shadow: inset 0 0 0 1px var(--d-rule); }
+.dash[data-theme='light'] .es__tiles > div,
+.dash[data-theme='light'] .pc__path li,
+.dash[data-theme='light'] .cl-done__facts > div { box-shadow: inset 0 0 0 1px var(--d-rule); }
+.dash[data-theme='light'] .cl-wallet[aria-busy='true'] { box-shadow: inset 0 0 0 1.5px var(--d-accent); }

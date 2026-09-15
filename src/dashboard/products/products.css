@@ -446,9 +446,11 @@ a.fh__btn { text-decoration: none; }
 /* The sheet's segmented control, at the field's left edge here. */
 .es .seg { margin-left: 0; justify-self: start; background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-pill-ring); }
 .es__plan { display: flex; flex-direction: column; gap: 18px; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
-.es__plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.es__plan-title { margin: 0; font-size: 16px; font-weight: 600; }
-.es__plan-sum { font-size: 14px; font-weight: 600; color: var(--d-text-2); }
+/* The head leads with the deposit as the panel's figure; the plan's state is the pill beside it. */
+.es__plan-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.es__plan-title { margin: 0 0 6px; font-size: 13px; color: var(--d-text-2); }
+.es__plan-fig { font-size: clamp(28px, 2.4vw, 36px); }
+.es__plan-head .pstat { flex: none; margin-top: 2px; }
 /* The timeline: three stops down a rail; the stretch that is locked runs dashed. */
 .es__line { display: grid; gap: 16px; margin: 0; padding: 4px 0 0; list-style: none; }
 .es__dot { position: relative; display: grid; gap: 3px; padding-left: 24px; font-size: 13px; }
@@ -460,7 +462,10 @@ a.fh__btn { text-decoration: none; }
 .es__dot--open::after { background: var(--d-accent-soft); }
 .es__dot--now::before { box-shadow: 0 0 0 4px var(--d-accent-tint); }
 /* The plan's facts as tiles on the card's ground, label over value. */
-.es__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.es__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 760px; margin: 0; }
+/* What waits for launch is drawn dashed, as the site draws what is not there yet. */
+.es__tiles > .es__tile--soon { background: transparent; box-shadow: none; border: 1.5px dashed var(--d-pill-ring); }
+.dash[data-theme='light'] .es__tiles > .es__tile--soon { box-shadow: none; }
 
 .es__tiles > div { display: grid; gap: 4px; align-content: start; min-height: 88px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-card); }
 .es__tiles dt { font-size: 12.5px; color: var(--d-text-2); }

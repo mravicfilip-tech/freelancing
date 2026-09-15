@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../Button';
 import { PayMark, RtxMark } from '../icons';
+import { Figure } from '../Figure';
 import type { TokenId } from '../data';
 
 /**
@@ -86,8 +87,11 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
 
         <div className="es__plan">
           <div className="es__plan-head">
-            <p className="es__plan-title">Your {plan === 'flex' ? 'flexible' : `${term}-day`} plan</p>
-            <span className="es__plan-sum num">{shown} {asset}</span>
+            <div>
+              <p className="es__plan-title">Your {plan === 'flex' ? 'flexible' : `${term}-day`} plan</p>
+              <Figure className="es__plan-fig" value={shown} suffix={asset} />
+            </div>
+            <span className="pstat pstat--sm">{plan === 'flex' ? 'Withdraw any day' : `Locked until ${day(term)}`}</span>
           </div>
           <div className="es__grid">
           <ol className="es__line" aria-label="Timeline">
@@ -98,8 +102,8 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
           <dl className="es__tiles">
             <div><dt>Access</dt><dd>{plan === 'flex' ? 'Any time' : `From ${day(term)}`}</dd><span>{plan === 'flex' ? 'Subject to product terms' : `Locked for ${term} days`}</span></div>
             <div><dt>Rewards paid in</dt><dd className="num">{asset}</dd><span>Accrue daily, tracked here</span></div>
-            <div><dt>Rate</dt><dd className="es__tbc">Set at launch</dd><span>{plan === 'flex' ? 'Variable' : `Fixed for the ${term}-day term`}</span></div>
-            <div><dt>Projected reward</dt><dd className="es__tbc">Shown at launch</dd><span>Once the rate is confirmed</span></div>
+            <div className="es__tile--soon"><dt>Rate</dt><dd className="es__tbc">Set at launch</dd><span>{plan === 'flex' ? 'Variable' : `Fixed for the ${term}-day term`}</span></div>
+            <div className="es__tile--soon"><dt>Projected reward</dt><dd className="es__tbc">Shown at launch</dd><span>Once the rate is confirmed</span></div>
           </dl>
           </div>
           <div className="es__act">

@@ -462,7 +462,8 @@ a.fh__btn { text-decoration: none; }
 .es__dot--open::after { background: var(--d-accent-soft); }
 .es__dot--now::before { box-shadow: 0 0 0 4px var(--d-accent-tint); }
 /* The plan's facts as tiles on the card's ground, label over value. */
-.es__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 760px; margin: 0; }
+.es__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; margin: 0; }
+@media (min-width: 1800px) { .es__tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 /* What waits for launch is drawn dashed, as the site draws what is not there yet. */
 .es__tiles > .es__tile--soon { background: transparent; box-shadow: none; border: 1.5px dashed var(--d-pill-ring); }
 .dash[data-theme='light'] .es__tiles > .es__tile--soon { box-shadow: none; }

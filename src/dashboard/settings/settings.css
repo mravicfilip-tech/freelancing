@@ -51,7 +51,23 @@
 .set-copy { order: 2; }
 .set-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; }
 .set-actions .fh__btn { width: auto; padding: 0 24px; }
-.set-saved { display: inline-flex; align-items: center; gap: 6px; min-height: 20px; font-size: 13px; color: var(--d-text-2); }
+.set-saved { display: inline-flex; align-items: center; min-height: 20px; }
+/* A green pill, white on it: the one moment the page confirms something. */
+.set-saved__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 9px;
+  border-radius: 999px;
+  background: #1f9d55;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  animation: set-saved-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.set-saved__pill .icon-16 { flex: none; }
+@keyframes set-saved-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .set-saved__pill { animation: none; } }
 .set-error { margin: 0; }
 /* Two lines whichever state is showing, so the switch under it stays put. */
 .set-body { margin: 0; max-width: 46em; min-height: calc(2 * 1.55em); font-size: 14px; line-height: 1.55; color: var(--d-text-2); }

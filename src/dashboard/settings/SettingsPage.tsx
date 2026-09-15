@@ -35,7 +35,7 @@ function useSaved(): [boolean, () => void] {
 function Saved({ on, children }: { on: boolean; children: React.ReactNode }) {
   return (
     <span className="set-saved" role="status" aria-live="polite">
-      {on && <><CheckIcon className="icon-16" /> {children}</>}
+      {on && <span className="set-saved__pill"><CheckIcon className="icon-16" />{children}</span>}
     </span>
   );
 }

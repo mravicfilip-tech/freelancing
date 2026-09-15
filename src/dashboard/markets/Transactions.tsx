@@ -73,12 +73,12 @@ export function Transactions({ rows }: { rows: TxRow[] }) {
                         {label(t.method)}
                       </span>
                     </td>
-                    <td className="num orders__id">#{t.id}</td>
-                    <td className="num orders__rtx">{money(t.rtx)}</td>
+                    <td className="num orders__id is-a">#{t.id}</td>
+                    <td className="num orders__rtx is-key">{money(t.rtx)}</td>
                     <td className="num tx__price">${t.price.toFixed(2)}</td>
-                    <td className="num orders__usd">{usd(t.usd)}</td>
+                    <td className="num orders__usd is-b">{usd(t.usd)}</td>
                     <td className="num tx__worth">{usd(t.worth)}</td>
-                    <td className="num is-right orders__time">{ago(t.hoursAgo)}</td>
+                    <td className="num is-right orders__time is-c">{ago(t.hoursAgo)}</td>
                   </tr>
                 ))}
                 {filler.map((i) => (

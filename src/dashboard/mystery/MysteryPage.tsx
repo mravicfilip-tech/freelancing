@@ -19,7 +19,8 @@ import './mystery.css';
  */
 export function MysteryPage() {
   const mode = theme.use();
-  const [claims, setClaims] = useState<Claim[]>(() => seedClaims());
+  /** `?empty=1` renders the page before this wallet has opened a box. */
+  const [claims, setClaims] = useState<Claim[]>(() => (new URLSearchParams(window.location.search).get('empty') === '1' ? [] : seedClaims()));
 
   useEffect(() => {
     document.documentElement.dataset.dashTheme = mode;

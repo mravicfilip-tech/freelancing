@@ -68,7 +68,35 @@
 .set-saved__pill .icon-16 { flex: none; }
 @keyframes set-saved-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .set-saved__pill { animation: none; } }
-.set-error { margin: 0; }
+/* The red twin of the saved pill: an inline error beside a card's action. */
+.set-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 6px 12px 6px 9px;
+  border-radius: 999px;
+  background: #c94141;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  animation: set-saved-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.set-error::before {
+  content: '!';
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  color: #c94141;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+@media (prefers-reduced-motion: reduce) { .set-error { animation: none; } }
 /* Two lines whichever state is showing, so the switch under it stays put. */
 .set-body { margin: 0; max-width: 46em; min-height: calc(2 * 1.55em); font-size: 14px; line-height: 1.55; color: var(--d-text-2); }
 .set-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap); }

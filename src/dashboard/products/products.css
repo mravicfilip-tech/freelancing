@@ -299,18 +299,6 @@ a.fh__btn { text-decoration: none; }
   .ref-link__row .fh__btn { width: 100%; }
   .ref-dest { flex-wrap: wrap; }
   .ref-dest__act { width: 100%; justify-content: flex-end; }
-  /* The stacked row: who and the commission on the first line, what they
-     bought, its status and the date under. */
-  .ref-table .orders__table { min-width: 0; }
-  .ref-table .orders__table tr {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas: 'who who cut' 'usd status date';
-  }
-  .ref-table .ref-user { grid-area: who; }
-  .ref-table .ref-cut { grid-area: cut; text-align: right; }
-  .ref-table .ref-usd { grid-area: usd; font-size: 13px; font-weight: 400; color: var(--d-text-2); }
-  .ref-table .ref-state { grid-area: status; }
-  .ref-table .orders__table .ref-date { grid-area: date; text-align: right; font-size: 13px; font-weight: 400; color: var(--d-text-2); }
 }
 
 /* ==========================================================================
@@ -536,6 +524,4 @@ a.fh__btn { text-decoration: none; }
   .es__dot { padding-top: 0; padding-left: 22px; }
   .es__dot::before { left: 0; top: 4px; }
   .es__dot::after { left: 4.5px; right: auto; top: 18px; bottom: -14px; width: 1px; height: auto; background: var(--d-dash-v); }
-  .pl .orders__table, .cor .orders__table, .ea { min-width: 0; }
-  .pl__vol, .pl__day, .cor__rail, .ea__net { display: none; }
 }

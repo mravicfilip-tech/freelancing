@@ -377,17 +377,7 @@
   .reel__chest { width: 180px; }
   .claimed__stats { grid-template-columns: minmax(0, 1fr); }
   .opener__head { flex-wrap: wrap; }
-  /* Stacked rows: the prize and its tag, then the box, odds and cost, then when. */
-  .claimed .orders__table { min-width: 0; }
-  .claimed .orders__table tr { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'who tag' 'box odds' 'spent time'; }
-  .cl-who { grid-area: who; }
-  .cl-tag { grid-area: tag; text-align: right; }
-  .cl-box { grid-area: box; }
-  .cl-odds { grid-area: odds; text-align: right; }
-  .cl-spent { grid-area: spent; }
-  .cl-when { grid-area: time; }
   .cl-odds::before { content: 'Odds '; color: var(--d-text-3); }
-  .cl-box, .cl-odds, .cl-spent, .cl-when { font-size: 13px; font-weight: 400; color: var(--d-text-2); }
 }
 @media (prefers-reduced-motion: reduce) {
   .prize::before { animation: none; }

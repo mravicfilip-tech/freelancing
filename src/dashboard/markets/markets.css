@@ -45,9 +45,6 @@
 @media (max-width: 620px) {
   /* The stacked row keeps who, how much, id, what it cost and when, the same
      five the live feed keeps; price and listing worth wait for a wider screen. */
-  .tx .orders__table { min-width: 0; }
-  .tx .orders__table .tx__price,
-  .tx .orders__table .tx__worth { display: none; }
   .tx__foot { flex-direction: column; align-items: stretch; }
   .tx__count { text-align: center; }
   .pager { justify-content: center; }

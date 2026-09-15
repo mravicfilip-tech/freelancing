@@ -80,17 +80,17 @@ export function PayFiPage() {
                   <th scope="col">Currency</th>
                   <th scope="col">Flat fee</th>
                   <th scope="col">Arrives</th>
-                  <th scope="col" className="is-right cor__rail">Rails</th>
+                  <th scope="col" className="is-right cor__rail is-c">Rails</th>
                 </tr>
               </thead>
               <tbody>
                 {CORRIDORS.map((c) => (
                   <tr key={c.iso}>
                     <td><span className="orders__method"><img className="csel__flag" src={c.flag} alt="" width={20} height={15} />{c.country}</span></td>
-                    <td className="num">{c.ccy}</td>
-                    <td className="num">{c.fee.toFixed(2)} USDT</td>
-                    <td>{c.eta}</td>
-                    <td className="is-right cor__rail">{c.rail}</td>
+                    <td className="num is-key">{c.ccy}</td>
+                    <td className="num is-a">{c.fee.toFixed(2)} USDT</td>
+                    <td className="is-b">{c.eta}</td>
+                    <td className="is-right cor__rail is-c">{c.rail}</td>
                   </tr>
                 ))}
               </tbody>

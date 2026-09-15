@@ -54,6 +54,24 @@ export const OrdersArt = () => (
   </svg>
 );
 
+/** A bell that has not rung yet. */
+export const BellArt = () => (
+  <svg {...art} className="empty__art" aria-hidden="true">
+    <path d="M46 40V28a14 14 0 0 0-28 0v12l-4 5h36l-4-5Z" />
+    <path d="M27 47a5 5 0 0 0 10 0" strokeDasharray="4 4" opacity=".55" />
+    <path d="M32 12v2" />
+  </svg>
+);
+
+/** A box still sealed; the lid drawn dashed. */
+export const BoxArt = () => (
+  <svg {...art} className="empty__art" aria-hidden="true">
+    <path d="M32 18 50 27v18l-18 9-18-9V27l18-9Z" />
+    <path d="M14 27l18 9 18-9M32 36v18" />
+    <path d="M32 18 50 27l-18 9-18-9 18-9Z" strokeDasharray="4 4" opacity=".55" />
+  </svg>
+);
+
 export function EmptyState({
   art: Art,
   title,

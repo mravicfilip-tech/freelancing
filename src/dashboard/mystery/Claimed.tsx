@@ -3,6 +3,7 @@ import { usd } from '../data';
 import { RtxMark } from '../icons';
 import { Figure } from '../Figure';
 import { Pager } from '../Pager';
+import { BoxArt, EmptyState } from '../EmptyState';
 import { PAGE, RARITY, reward, when, type Claim } from './data';
 
 /**
@@ -28,6 +29,10 @@ export function Claimed({ rows }: { rows: Claim[] }) {
         </div>
       </header>
 
+      {rows.length === 0 ? (
+        <EmptyState art={BoxArt} title="No boxes opened yet" body="Every box you open lands here with its prize, the odds it beat and what it cost. Open one above to start the list." />
+      ) : (
+        <>
       <div className="claimed__stats">
         <div className="claimed__stat">
           <div>
@@ -63,11 +68,11 @@ export function Claimed({ rows }: { rows: Claim[] }) {
             {slice.map((c) => (
               <tr key={c.id}>
                 <td className="cl-who"><span className="orders__method"><RtxMark className="icon-22" />{reward(c.prize)}</span></td>
-                <td className="cl-tag"><span className="rtag" style={{ '--p-ink': RARITY[c.prize.rarity].ink } as React.CSSProperties}>{RARITY[c.prize.rarity].label}</span></td>
+                <td className="cl-tag is-a"><span className="rtag" style={{ '--p-ink': RARITY[c.prize.rarity].ink } as React.CSSProperties}>{RARITY[c.prize.rarity].label}</span></td>
                 <td className="num cl-odds">{c.prize.odds}%</td>
-                <td className="cl-box">{c.box}</td>
-                <td className="num cl-spent">{usd(c.spent)}</td>
-                <td className="num is-right cl-when">{when(c.when)}</td>
+                <td className="cl-box is-b">{c.box}</td>
+                <td className="num cl-spent is-key">{usd(c.spent)}</td>
+                <td className="num is-right cl-when is-c">{when(c.when)}</td>
               </tr>
             ))}
             {filler.map((i) => (
@@ -81,6 +86,8 @@ export function Claimed({ rows }: { rows: Claim[] }) {
         <p className="tx__count num">Showing {from + 1}–{from + slice.length} of {rows.length}</p>
         {pages > 1 && <Pager page={page} pages={pages} onPage={setPage} />}
       </footer>
+        </>
+      )}
     </section>
   );
 }

@@ -205,10 +205,10 @@ function ActivityTable({ rows }: { rows: Activity[] }) {
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td className="num ref-user">{r.user}</td>
-                  <td className="num ref-usd">${money(r.usd)}</td>
-                  <td className="num referrals__cut ref-cut">+{money(r.cut)} USDT</td>
-                  <td className="ref-state"><span className={`ref-status${r.status === 'Paid' ? ' ref-status--paid' : ''}`}>{r.status}</span></td>
-                  <td className="num is-right ref-date">{fmtDate(r.date)}</td>
+                  <td className="num ref-usd is-a">${money(r.usd)}</td>
+                  <td className="num referrals__cut ref-cut is-key">+{money(r.cut)} USDT</td>
+                  <td className="ref-state is-b"><span className={`ref-status${r.status === 'Paid' ? ' ref-status--paid' : ''}`}>{r.status}</span></td>
+                  <td className="num is-right ref-date is-c">{fmtDate(r.date)}</td>
                 </tr>
               ))}
             </tbody>

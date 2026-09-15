@@ -3,6 +3,7 @@ import { Sidebar } from '../Sidebar';
 import { MobileNav } from '../MobileNav';
 import { Topbar } from '../Topbar';
 import { Button } from '../Button';
+import { BellArt, EmptyState } from '../EmptyState';
 import { theme } from '../theme';
 import { UPDATES, type Update } from './data';
 import { Thumb } from './thumb';
@@ -80,16 +81,29 @@ export function UpdatesPage() {
       delete document.documentElement.dataset.dashTheme;
     };
   }, [mode]);
-  const [lead, ...rest] = UPDATES;
-  const dark = new URLSearchParams(window.location.search).get('d') ?? undefined;
+  const params = new URLSearchParams(window.location.search);
+  /** `?empty=1` renders the page before the team has posted anything. */
+  const items = params.get('empty') === '1' ? [] : UPDATES;
+  const [lead, ...rest] = items;
+  const dark = params.get('d') ?? undefined;
 
   return (
     <div className="dash updates" data-theme={mode} data-d={dark}>
       <Sidebar active="updates" />
       <main className="dash__main">
         <Topbar title="Updates" />
-        <Feature u={lead} />
-        <Earlier items={rest} />
+        {lead ? (
+          <>
+            <Feature u={lead} />
+            <Earlier items={rest} />
+          </>
+        ) : (
+          <section className="card" aria-label="Updates">
+            <EmptyState art={BellArt} title="No updates yet" body="The team posts here as things ship: releases, presale stages and announcements. The first one lands with the next dev release.">
+              <Button onClick={() => window.location.assign('/dashboard')}>Back to the presale</Button>
+            </EmptyState>
+          </section>
+        )}
       </main>
       <MobileNav active="updates" />
     </div>

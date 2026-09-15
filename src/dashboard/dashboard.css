@@ -1304,6 +1304,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 /* The head rule sets the label colour above the base hover, so the hover has to flip it again. */
 .card__head .link-quiet:hover { box-shadow: none; color: var(--d-on-pick); }
+/* A head's link never wraps; on a phone it was breaking "All / markets". */
+.card__head .link-quiet { white-space: nowrap; flex: none; }
 
 /* The total leads; claimed and ready sit beside it rather than under, so the
    list below gets the room. */
@@ -1446,10 +1448,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
   /* The live pill and the theme toggle share the row under the title; the
      toggle belongs at the edge, not tucked against the pill. */
-  .topbar__actions { width: 100%; justify-content: space-between; }
+  .topbar__actions { width: 100%; justify-content: flex-start; gap: 8px; }
 
   /* Clear the fixed bar, plus the home indicator on a notched phone. */
-  .dash__main { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+  .dash__main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
 
   /* .dash__main is a column flexbox, so making the split transparent lets the
      buy form and the flash-sale stack be ordered against their siblings. */
@@ -1484,8 +1486,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 
   .buy__quick { gap: 8px; }
 
-  /* Both tables become stacked rows. A four-column grid inside 328px of card
-     was the single biggest source of horizontal overflow. */
+  /* Every table becomes stacked rows, one way: line one is who or what
+     (the first cell) with the key figure at the right (.is-key); line two
+     is up to three supporting cells, muted (.is-a, .is-b, .is-c). Cells a
+     page does not map are dropped on a phone. */
   .referrals__table,
   .orders__table,
   .referrals__table tbody,
@@ -1493,10 +1497,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .referrals__table thead,
   .orders__table thead { display: none; }
   .orders__scroll { overflow-x: visible; }
-  /* The desktop table is held open at 560px and paints its zebra on the cells.
-     Stacked, the row carries its own ground, so both have to be undone — and
-     these selectors outrank a bare `.orders__table td`. */
-  .orders__table { min-width: 0; }
+  /* Outranks every page's desktop min-width, whichever sheet loads last. */
+  .dash .dash__main .orders__table, .dash .dash__main .referrals__table { min-width: 0; }
   .referrals__table tbody tr:nth-child(odd) td,
   .referrals__table tbody tr:hover td,
   .orders__table tbody tr:nth-child(odd) td,
@@ -1504,16 +1506,17 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .referrals__table tbody tr td:first-child,
   .referrals__table tbody tr td:last-child,
   .orders__table tbody tr td:first-child,
-  .orders__table tbody tr td:last-child { border-radius: 0; }
+  .orders__table tbody tr td:last-child { padding: 0; border-radius: 0; }
 
   .referrals__table tr,
   .orders__table tr {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'who who key' 'a b c';
     align-items: baseline;
-    column-gap: 12px;
-    row-gap: 3px;
-    padding: 12px 12px;
+    column-gap: 10px;
+    row-gap: 4px;
+    padding: 12px 14px;
     border-radius: var(--r-sm);
     background: var(--d-inset);
   }
@@ -1527,35 +1530,22 @@ html[data-dash-theme='light'] body { background: #edeff1; }
     border: 0;
     background: none;
   }
+  .referrals__table td:first-child, .orders__table td:first-child { grid-area: who; }
+  .orders__table .is-key, .referrals__table .is-key { grid-area: key; text-align: right; }
+  .orders__table .is-a, .referrals__table .is-a { grid-area: a; }
+  .orders__table .is-b, .referrals__table .is-b { grid-area: b; }
+  .orders__table .is-c, .referrals__table .is-c { grid-area: c; text-align: right; }
+  .orders__table td:not(:first-child):not(.is-key):not(.is-a):not(.is-b):not(.is-c),
+  .referrals__table td:not(:first-child):not(.is-key):not(.is-a):not(.is-b):not(.is-c) { display: none; }
+  .orders__table .is-a, .orders__table .is-b, .orders__table .is-c,
+  .referrals__table .is-a, .referrals__table .is-b, .referrals__table .is-c { font-size: 13px; font-weight: 400; color: var(--d-text-2); }
+  /* Filler rows that hold a desktop table's height have no place in a stack. */
+  .orders__table .tx__filler { display: none; }
 
-  /* Line one is who and how much; line two is the supporting detail. */
-  .referrals__table tr { grid-template-areas: 'who cut' 'spent when'; }
-  .referrals__wallet { grid-area: who; }
-  .referrals__cut { grid-area: cut; text-align: right; }
-  .referrals__spent { grid-area: spent; }
-  .referrals__when { grid-area: when; text-align: right; }
+  /* Page decorations on the shared scheme. */
   .referrals__spent::before { content: 'Spent '; color: var(--d-text-3); font-weight: 400; }
-
-  /* Orders has five cells, so its second line runs three across: the id, what
-     it cost, and when. Nothing is dropped. */
-  .orders__table tr {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas: 'who who rtx' 'id usd time';
-  }
-  .orders__table td:first-child { grid-area: who; }
-  .orders__rtx { grid-area: rtx; text-align: right; }
   .orders__rtx::after { content: ' RTX'; color: var(--d-text-3); font-size: 12px; }
-  .orders__id { grid-area: id; }
-  .orders__usd { grid-area: usd; }
-  /* A trailing space in content() collapses, so the separator carries an
-     nbsp of its own. */
   .orders__usd::before { content: '\00b7\00a0'; color: var(--d-text-3); }
-  .orders__time { grid-area: time; text-align: right; }
-  .referrals__spent,
-  .referrals__when,
-  .orders__id,
-  .orders__usd,
-  .orders__time { font-size: 13px; font-weight: 400; color: var(--d-text-2); }
 }
 
 @media (max-width: 400px) {
@@ -1777,30 +1767,24 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 .sheet {
   position: fixed;
-  inset: auto 0 0 0;
+  left: 12px;
+  right: 12px;
+  bottom: calc(86px + env(safe-area-inset-bottom));
   z-index: 50;
-  /* Hugs its content. The sheet sits over the tab bar, so the only thing to
-     clear below it is the home indicator — the old rule reserved 64px for a
-     bar it was covering, which is where the dead space came from. */
-  max-height: 88svh;
+  max-height: calc(100svh - 110px - env(safe-area-inset-bottom));
   overflow-y: auto;
-  padding: 10px 14px calc(14px + env(safe-area-inset-bottom));
-  border-radius: 18px 18px 0 0;
+  padding: 10px 12px 12px;
+  border-radius: 24px;
   background: var(--d-card);
-  box-shadow: var(--d-menu-edge);
-  animation: sheet-rise 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  box-shadow: inset 0 0 0 1px var(--d-pill-ring), 0 24px 48px -18px rgb(0 0 0 / 60%);
+  transform-origin: 50% 100%;
+  animation: sheet-rise 240ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
-@keyframes sheet-rise { from { transform: translateY(14px); opacity: 0; } }
+@keyframes sheet-rise { from { transform: translateY(16px) scale(0.97); opacity: 0; } }
 @keyframes sheet-fade { from { opacity: 0; } }
 
-.sheet__grip {
-  display: block;
-  width: 38px;
-  height: 4px;
-  margin: 0 auto;
-  border-radius: 999px;
-  background: var(--d-track);
-}
+.sheet__grip { display: none; }
+
 .sheet__head {
   display: flex;
   align-items: center;
@@ -1916,13 +1900,17 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 /* ---------- Bottom bar ---------- */
 .tabbar {
   position: fixed;
-  inset: auto 0 0 0;
+  left: 12px;
+  right: 12px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
   z-index: 40;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
-  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  height: 66px;
+  padding: 5px;
+  border-radius: 999px;
   background: var(--d-card);
-  box-shadow: 0 -1px 0 var(--d-rule);
+  box-shadow: inset 0 0 0 1px var(--d-pill-ring), 0 14px 34px -14px rgb(0 0 0 / 55%);
 }
 .tabbar__item {
   display: grid;
@@ -1931,12 +1919,13 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   gap: 4px;
   /* 52px of bar plus the icon's own box clears the 44px touch minimum on the
      shortest axis without the labels having to go. */
-  min-height: 52px;
+  min-height: 56px;
   min-width: 0;
   padding: 4px 2px;
   border: 0;
-  border-radius: var(--r-sm);
+  border-radius: 999px;
   background: none;
+  transition: background-color 150ms ease, color 150ms ease;
   color: var(--d-text-3);
   font: inherit;
   font-size: 11.5px;
@@ -1947,7 +1936,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   -webkit-tap-highlight-color: transparent;
 }
 .tabbar__item[aria-current='page'],
-.tabbar__item[aria-expanded='true'] { color: var(--d-text); }
+.tabbar__item[aria-expanded='true'] { color: var(--d-text); background: var(--d-inset); }
 .tabbar__icon { position: relative; display: block; line-height: 0; }
 /* The rail spells NEW out; a bar slot has no room, so the badge becomes a dot. */
 .tabbar__dot {

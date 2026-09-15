@@ -86,7 +86,6 @@
 .cl-actions .fh__btn { width: auto; padding: 0 22px; }
 .cl-actions--center { justify-content: center; }
 .cl-error { margin: 0; }
-.cl-reset { border: 0; background: none; padding: 0; color: var(--d-text-2); font: inherit; font-size: 13px; cursor: pointer; }
 
 /* ---------- Done: the brand on a bed of tiles, as the reference sets it ---------- */
 .cl-done { justify-items: center; text-align: center; padding: 8px 0 4px; }
@@ -104,6 +103,8 @@
 .cl-done__facts > div { display: grid; gap: 4px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-inset); text-align: left; }
 .cl-done__facts dt { font-size: 12.5px; color: var(--d-text-2); }
 .cl-done__facts dd { margin: 0; font-size: 15px; font-weight: 600; }
+.cl-done__via { display: inline-flex; align-items: center; gap: 8px; }
+.cl-done__via svg { width: 20px; height: 20px; }
 
 @media (prefers-reduced-motion: reduce) {
   .cl-step__n, .cl-rail__fill, .cl-wallet__mark, .cl-wallet__status, .cl-wallet__bar-fill { animation: none; transition: none; }

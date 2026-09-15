@@ -45,12 +45,12 @@ export function PairList() {
               return (
                 <tr key={p.id}>
                   <td className="pl__mkt"><b>{p.base}</b><span>/{p.quote}</span></td>
-                  <td className="pl__kind">{p.kind === 'Perp' ? 'Perpetual' : 'Spot'}</td>
-                  <td className="num pl__last">{fmt(last, p.decimals)}</td>
-                  <td className={`num pl__chg${ch >= 0 ? ' is-up' : ' is-down'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</td>
+                  <td className="pl__kind is-a">{p.kind === 'Perp' ? 'Perpetual' : 'Spot'}</td>
+                  <td className="num pl__last is-key">{fmt(last, p.decimals)}</td>
+                  <td className={`num pl__chg is-b${ch >= 0 ? ' is-up' : ' is-down'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</td>
                   <td className="num pl__vol">{vol(p.volume)}</td>
                   <td className="pl__day"><Spark closes={cs.map((c) => c.c)} /></td>
-                  <td className="is-right"><a className="chip pl__go" href={`${MARKETS_URL}trade/${p.id}`} target="_blank" rel="noopener">Trade</a></td>
+                  <td className="is-right is-c"><a className="chip pl__go" href={`${MARKETS_URL}trade/${p.id}`} target="_blank" rel="noopener">Trade</a></td>
                 </tr>
               );
             })}

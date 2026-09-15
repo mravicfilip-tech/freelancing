@@ -12,7 +12,7 @@ import { TextField } from '../settings/fields';
 import { CodeSelect, COUNTRIES, type Iso } from '../settings/CodeSelect';
 import { EMAIL } from '../products/requests';
 import { PROVIDERS, WalletMark, type Provider } from './wallets';
-import { clearClaim, saveClaim, type Claim } from './store';
+import { saveClaim, type Claim } from './store';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import '../settings/settings.css';
@@ -141,7 +141,7 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.replace(/\D/g, '').length < 6) return setProblem('Enter a contact number.');
+    if (phone.replace(/\D/g, '').length < 6) return setProblem(phone.trim() ? 'Enter a valid contact number.' : 'Enter a contact number.');
     if (!EMAIL.test(email.trim())) return setProblem('Enter a valid email address.');
     if (!/^0x[0-9a-fA-F]{40}$/.test(whitelist.trim())) return setProblem('Enter a valid Ethereum address to whitelist.');
     const c: Claim = { provider, wallet, whitelist: whitelist.trim(), email: email.trim().toLowerCase(), phone: `${dial} ${phone.trim()}`, at: new Date().toISOString() };
@@ -196,7 +196,7 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
 }
 
 /* ---------- 3. Done ---------- */
-function DoneStep({ claim, onReset }: { claim: Claim; onReset: () => void }) {
+function DoneStep({ claim }: { claim: Claim }) {
   const root = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const r = root.current;
@@ -229,12 +229,11 @@ function DoneStep({ claim, onReset }: { claim: Claim; onReset: () => void }) {
       <p className="cl-done__body" role="status">Your $RTX claim request has been received. <span className="num">{short(claim.whitelist)}</span> is queued for whitelist processing. We'll email {claim.email} when it clears.</p>
       <dl className="cl-done__facts">
         <div><dt>Whitelisted address</dt><dd className="num">{short(claim.whitelist)}</dd></div>
-        <div><dt>Connected via</dt><dd>{PROVIDERS.find((p) => p.id === claim.provider)?.name}</dd></div>
+        <div><dt>Connected via</dt><dd className="cl-done__via"><WalletMark id={claim.provider} className="icon-20" />{PROVIDERS.find((p) => p.id === claim.provider)?.name}</dd></div>
         <div><dt>Submitted</dt><dd className="num">{fmt(claim.at)}</dd></div>
       </dl>
       <div className="cl-actions cl-actions--center">
         <Button onClick={() => window.location.assign('/dashboard')}>Back to home</Button>
-        <button type="button" className="tlink cl-reset" onClick={onReset}>Submit a different address</button>
       </div>
     </div>
   );
@@ -278,7 +277,7 @@ export function ClaimPage() {
           <div ref={stage}>
             {step === 0 && <Stage id={0}><WalletStep onConnected={(p, a) => go(1, () => { setProvider(p); setWallet(a); })} /></Stage>}
             {step === 1 && provider && <Stage id={1}><DetailsStep provider={provider} wallet={wallet} onBack={() => go(0)} onDone={(c) => go(2, () => setClaim(c))} /></Stage>}
-            {step === 2 && claim && <Stage id={2}><DoneStep claim={claim} onReset={() => go(0, () => { clearClaim(); setClaim(null); setProvider(null); })} /></Stage>}
+            {step === 2 && claim && <Stage id={2}><DoneStep claim={claim} /></Stage>}
           </div>
         </section>
       </main>

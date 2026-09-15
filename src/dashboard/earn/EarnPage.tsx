@@ -106,10 +106,10 @@ export function EarnPage() {
                 {ASSETS.map((a) => (
                   <tr key={a.id}>
                     <td><span className="orders__method">{a.id === 'RTX' ? <RtxMark className="icon-22" /> : <PayMark id={a.id} className="icon-22" />}<b>{a.id}</b><span className="ea__name">{a.name}</span></span></td>
-                    <td>{a.flex ? <span className="ea__yes"><CheckIcon className="icon-16" />Yes</span> : <span className="ea__no">Not at launch</span>}</td>
-                    <td>{a.fixed ? <span className="ea__yes"><CheckIcon className="icon-16" />Yes</span> : <span className="ea__no">Not at launch</span>}</td>
+                    <td className="is-a">{a.flex ? <span className="ea__yes"><CheckIcon className="icon-16" />Yes</span> : <span className="ea__no">Not at launch</span>}</td>
+                    <td className="is-b">{a.fixed ? <span className="ea__yes"><CheckIcon className="icon-16" />Yes</span> : <span className="ea__no">Not at launch</span>}</td>
                     <td className="ea__net">{a.net}</td>
-                    <td className="is-right es__tbc">Confirmed at launch</td>
+                    <td className="is-right es__tbc is-key">Confirmed at launch</td>
                   </tr>
                 ))}
               </tbody>

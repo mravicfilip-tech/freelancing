@@ -71,9 +71,9 @@ export function Referrals({
           {REFERRAL_ROWS.map((r) => (
             <tr key={r.wallet}>
               <td className="referrals__wallet">{r.wallet}</td>
-              <td className="num referrals__spent">${money(r.usd, 0)}</td>
-              <td className="num referrals__cut">+{money(r.cut)} USDT</td>
-              <td className="num is-right referrals__when">{ago(r.hoursAgo)}</td>
+              <td className="num referrals__spent is-a">${money(r.usd, 0)}</td>
+              <td className="num referrals__cut is-key">+{money(r.cut)} USDT</td>
+              <td className="num is-right referrals__when is-c">{ago(r.hoursAgo)}</td>
             </tr>
           ))}
         </tbody>

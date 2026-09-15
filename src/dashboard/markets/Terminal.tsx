@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowOut } from '../icons';
+import { ArrowOut, PayMark, RtxMark } from '../icons';
+import type { TokenId } from '../data';
 import { MARKETS_URL } from './urls';
 import { PAIRS, fmt, history, pct, rng, tick, type Candle, type Pair } from './feed';
 
@@ -28,7 +29,7 @@ function useFeed() {
 
 /** The changed price, flashing in its direction: remounted on every change. */
 function Price({ value, decimals, dir }: { value: number; decimals: number; dir: 'up' | 'down' | 'flat' }) {
-  return <span className="num tk__px" data-dir={dir} key={value}>{fmt(value, decimals)}</span>;
+  return <span className="num mtk__px" data-dir={dir} key={value}>{fmt(value, decimals)}</span>;
 }
 
 function Chart({ candles, p }: { candles: Candle[]; p: Pair }) {
@@ -55,7 +56,7 @@ function Chart({ candles, p }: { candles: Candle[]; p: Pair }) {
         <line x1="0" x2={W} y1={y(last.c)} y2={y(last.c)} className="tm__last" />
       </svg>
       <span className="tm__axis" aria-hidden="true">
-        {ticks.slice().reverse().map((t) => <span key={t} className="num">{fmt(t, p.decimals)}</span>)}
+        {ticks.slice().reverse().map((t) => <span key={t} className="num" style={{ visibility: Math.abs(y(t) - y(last.c)) < 16 ? 'hidden' : undefined }}>{fmt(t, p.decimals)}</span>)}
       </span>
       <span className="tm__tag num" style={{ top: `${(y(last.c) / H) * 100}%` }} aria-hidden="true">{fmt(last.c, p.decimals)}</span>
     </div>
@@ -111,15 +112,16 @@ export function Terminal() {
   return (
     <section className="card tm" aria-labelledby="tm-title">
       <h2 className="sr-only" id="tm-title">Markets preview</h2>
-      <div className="tk" role="tablist" aria-label="Markets">
+      <div className="mtk" role="tablist" aria-label="Markets">
         {PAIRS.map((x) => {
           const cs = books[x.id];
           const c = cs[cs.length - 1].c, ch = pct(c, cs[0].o);
           return (
-            <button type="button" role="tab" key={x.id} className="tk__pair" aria-selected={x.id === sel} onClick={() => setSel(x.id)}>
-              <span className="tk__name">{x.base}<span className="tk__quote">/{x.quote}</span>{x.kind === 'Perp' && <span className="tk__kind">Perp</span>}</span>
+            <button type="button" role="tab" key={x.id} className="mtk__pair" aria-selected={x.id === sel} onClick={() => setSel(x.id)}>
+              <span className="mtk__mark">{x.base === 'RTX' ? <RtxMark className="icon-22" /> : <PayMark id={x.base as TokenId} className="icon-22" />}</span>
+              <span className="mtk__name">{x.base}<span className="mtk__quote">/{x.quote}</span>{x.kind === 'Perp' && <span className="mtk__kind">Perp</span>}</span>
               <Price value={c} decimals={x.decimals} dir={dirs[x.id]} />
-              <span className={`num tk__chg${ch >= 0 ? ' is-up' : ' is-down'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
+              <span className={`num mtk__chg${ch >= 0 ? ' is-up' : ' is-down'}`}>{ch >= 0 ? '+' : ''}{ch.toFixed(2)}%</span>
             </button>
           );
         })}

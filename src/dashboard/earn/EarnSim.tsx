@@ -17,6 +17,7 @@ const ASSETS: { id: Asset; name: string }[] = [
   { id: 'SOL', name: 'Solana' },
 ];
 const TERMS = [30, 90, 180, 365] as const;
+const QUICK = [100, 500, 1000, 5000];
 
 const Mark = ({ id, className }: { id: Asset; className?: string }) => (id === 'RTX' ? <RtxMark className={className} /> : <PayMark id={id} className={className} />);
 
@@ -62,6 +63,11 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
               <input id="es-amount" className="field__input" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ''))} placeholder="0" />
               <span className="es__unit"><Mark id={asset} className="icon-20" />{asset}</span>
             </div>
+            <div className="es__chips es__quick" aria-label="Quick amounts">
+              {QUICK.map((q) => (
+                <button type="button" key={q} className="chip es__chip" aria-pressed={n === q} onClick={() => setAmount(String(q))}>{q.toLocaleString('en-US')}</button>
+              ))}
+            </div>
           </div>
           <div className="es__field">
             <span className="field__label">Plan</span>
@@ -81,17 +87,20 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
         </div>
 
         <div className="es__plan">
-          <p className="es__plan-title">Your {plan === 'flex' ? 'flexible' : `${term}-day`} plan</p>
+          <div className="es__plan-head">
+            <p className="es__plan-title">Your {plan === 'flex' ? 'flexible' : `${term}-day`} plan</p>
+            <span className="es__plan-sum num">{shown} {asset}</span>
+          </div>
           <ol className="es__line" aria-label="Timeline">
             <li className="es__dot es__dot--now"><b>Today</b><span>Deposit {shown} {asset}</span></li>
             <li className={`es__dot es__dot--mid${plan === 'flex' ? ' es__dot--open' : ''}`}><b>Daily</b><span>Rewards accrue in {asset}</span></li>
             <li className="es__dot"><b>{plan === 'flex' ? 'Any day' : day(term)}</b><span>{plan === 'flex' ? 'Withdraw with rewards' : 'Matures, assets and rewards released'}</span></li>
           </ol>
-          <dl className="es__facts">
-            <div><dt>Access</dt><dd>{plan === 'flex' ? 'Any time, subject to product terms' : `Locked until ${day(term)}`}</dd></div>
-            <div><dt>Rewards paid in</dt><dd className="num">{asset}</dd></div>
-            <div><dt>Rate</dt><dd className="es__tbc">{plan === 'flex' ? 'Variable, set at launch' : `Fixed for ${term} days, set at launch`}</dd></div>
-            <div><dt>Projected reward</dt><dd className="es__tbc">Shown at launch</dd></div>
+          <dl className="es__tiles">
+            <div><dt>Access</dt><dd>{plan === 'flex' ? 'Any time' : `From ${day(term)}`}</dd><span>{plan === 'flex' ? 'Subject to product terms' : `Locked for ${term} days`}</span></div>
+            <div><dt>Rewards paid in</dt><dd className="num">{asset}</dd><span>Accrue daily, tracked here</span></div>
+            <div><dt>Rate</dt><dd className="es__tbc">Set at launch</dd><span>{plan === 'flex' ? 'Variable' : `Fixed for the ${term}-day term`}</span></div>
+            <div><dt>Projected reward</dt><dd className="es__tbc">Shown at launch</dd><span>Once the rate is confirmed</span></div>
           </dl>
           <div className="es__act">
             <Button onClick={onNotify}>Notify me at launch</Button>

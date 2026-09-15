@@ -72,11 +72,11 @@ export function PayFiCalc({ asking, onAsk, copy }: { asking: boolean; onAsk: (v:
               <p className="field__label">Recipient gets</p>
               <Figure className="pc__fig" value={money(gets)} suffix={c.ccy} />
               <p className="pc__sub">to a {c.country} bank account, {c.eta.toLowerCase()}</p>
-              <ul className="pc__path" aria-label="How it moves">
-                <li><b>{n ? money(n, 4) : '0'} {token}</b><span>leaves your wallet</span></li>
-                <li><b>${money(net)}</b><span>after the {money(c.fee)} USDT fee</span></li>
-                <li><b>{money(gets)} {c.ccy}</b><span>lands over {c.rail}</span></li>
-              </ul>
+              <ol className="pc__path" aria-label="How it moves">
+                <li><span className="pc__path-k">Leaves your wallet</span><b className="num">{n ? money(n, 4) : '0'} {token}</b><span>≈ ${money(gross)}</span></li>
+                <li><span className="pc__path-k">After the flat fee</span><b className="num">${money(net)}</b><span>{money(c.fee)} USDT, nothing on FX</span></li>
+                <li><span className="pc__path-k">Lands at the bank</span><b className="num">{money(gets)} {c.ccy}</b><span>{c.rail}, {c.eta.toLowerCase()}</span></li>
+              </ol>
               <div className="pc__act">
                 <Button onClick={() => onAsk(true)}>Send with PayFi</Button>
                 <span className="pnote">Private beta · sending asks for access first</span>

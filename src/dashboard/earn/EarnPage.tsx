@@ -75,7 +75,11 @@ export function EarnPage() {
           body="Remittix Earn is being built to make earning on supported crypto simple. Choose flexible access or lock assets for a fixed term, then track everything from your dashboard."
           slim
         >
-          <RequestForm storageKey="rtx-earn-notify" copy={NOTIFY} inline id="earn-notify" />
+          <div className="phero__panel phero__panel--slim">
+            <p className="phero__panel-title">{NOTIFY.title}</p>
+            <p className="phero__panel-body">{NOTIFY.body}</p>
+            <RequestForm storageKey="rtx-earn-notify" copy={NOTIFY} inline id="earn-notify" />
+          </div>
         </ProductHero>
 
         <EarnSim onNotify={focusNotify} />

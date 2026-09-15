@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { USER, WALLET } from './data';
-import { CheckIcon, ChevronDown, CopyIcon, NavIcon, SettingsIcon, SignOutIcon, UserIcon } from './icons';
+import { CheckIcon, ChevronDown, CopyIcon, NavIcon, SettingsIcon, SignOutIcon } from './icons';
 import { useCopy } from './useCopy';
 import { signOut } from './auth/session';
 import { rail } from './theme';
@@ -147,10 +147,6 @@ function RailAccount({ collapsed }: { collapsed: boolean }) {
               {copied ? 'Copied' : 'Copy'}
             </span>
           </button>
-          <a role="menuitem" className="rail__menu-item" href="/settings" onClick={() => setOpen(false)}>
-            <UserIcon className="icon-20" />
-            Profile
-          </a>
           <a role="menuitem" className="rail__menu-item" href="/settings" onClick={() => setOpen(false)}>
             <SettingsIcon className="icon-20" />
             Settings

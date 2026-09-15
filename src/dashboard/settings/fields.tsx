@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { EyeIcon, EyeOffIcon } from '../icons';
 
 /** A labelled text field on the dashboard's field control, in the body face. */
-export function TextField({ id, label, value, onChange, type = 'text', placeholder, autoComplete, children }: {
+export function TextField({ id, label, value, onChange, type = 'text', placeholder, autoComplete, autoFocus, children }: {
   id: string;
   label: string;
   value: string;
@@ -10,6 +10,7 @@ export function TextField({ id, label, value, onChange, type = 'text', placehold
   type?: string;
   placeholder?: string;
   autoComplete?: string;
+  autoFocus?: boolean;
   /** Something to sit in the control beside the input: a prefix select, a copy chip. */
   children?: React.ReactNode;
 }) {
@@ -18,7 +19,7 @@ export function TextField({ id, label, value, onChange, type = 'text', placehold
       <label className="field__label" htmlFor={id}>{label}</label>
       <div className="field__control">
         {children}
-        <input id={id} className="set-input" type={type} value={value} placeholder={placeholder} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} />
+        <input id={id} className="set-input" type={type} value={value} placeholder={placeholder} autoComplete={autoComplete} autoFocus={autoFocus} onChange={(e) => onChange(e.target.value)} />
       </div>
     </div>
   );

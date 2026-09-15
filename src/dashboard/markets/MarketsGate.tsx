@@ -5,12 +5,13 @@ import { Topbar } from '../Topbar';
 import { theme } from '../theme';
 import { ArrowOut } from '../icons';
 import { ProductHero } from '../products/ProductHero';
-import { MarketsArt, PositionsGlyph, SpotGlyph, WalletGlyph } from '../products/art';
+import { PositionsGlyph, SpotGlyph, WalletGlyph } from '../products/art';
+import { Terminal } from './Terminal';
+import { PairList } from './PairList';
+import { MARKETS_URL } from './urls';
 import '../../components/FigmaHero/FigmaHero.css';
 import '../dashboard.css';
 import '../products/products.css';
-
-export const MARKETS_URL = 'https://remittixmarkets.io/';
 
 const FEATURES = [
   { Glyph: SpotGlyph, title: 'Spot and perpetual markets', body: 'Choose the market and trading product that fits your strategy.' },
@@ -19,9 +20,8 @@ const FEATURES = [
 ];
 
 /**
- * Markets is a gateway: the trading product lives on its own domain, so this
- * page says what it is and sends you there. One action, and a note on where
- * it goes.
+ * Markets is a gateway: the trading product lives on its own domain. The
+ * page shows it in miniature, ticking, and every pair is a way in.
  */
 export function MarketsGate() {
   const mode = theme.use();
@@ -42,7 +42,7 @@ export function MarketsGate() {
           status="Dedicated trading platform"
           title="Trade crypto with Remittix Markets"
           body="Access spot and perpetual markets through the dedicated Remittix trading platform. Connect your wallet to view live markets, manage positions and place trades."
-          aside={<MarketsArt />}
+          slim
         >
           <a className="fh__btn fh__btn--primary" href={MARKETS_URL} target="_blank" rel="noopener">
             Launch Remittix Markets
@@ -50,6 +50,9 @@ export function MarketsGate() {
           </a>
           <p className="phero__note">You'll be redirected to remittixmarkets.io</p>
         </ProductHero>
+
+        <Terminal />
+        <PairList />
 
         <section className="pfeat" aria-label="What Remittix Markets offers">
           {FEATURES.map(({ Glyph, title, body }) => (

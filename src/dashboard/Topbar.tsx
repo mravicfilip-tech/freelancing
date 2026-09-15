@@ -23,6 +23,22 @@ export function Topbar({
 
   return (
     <header className="topbar">
+      {/* On a phone the rail is gone, so the mark and the two chrome buttons
+          take a bar of their own above the title. */}
+      <div className="mbar">
+        <a className="mbar__brand" href="/dashboard" aria-label="Remittix home">
+          <img className="rail__logo" src="/figma/logo.svg" alt="" width={33} height={17} />
+          <span className="mbar__wordmark">Remittix</span>
+        </a>
+        <span className="mbar__actions">
+          <button type="button" className="chip-btn" onClick={() => theme.set(next)} aria-label={`Switch to ${next} mode`}>
+            {current === 'dark' ? <SunIcon className="icon-20" /> : <MoonIcon className="icon-20" />}
+          </button>
+          <a className="chip-btn" href="/auth" aria-label="Log out" onClick={signOut}>
+            <SignOutIcon className="icon-20" />
+          </a>
+        </span>
+      </div>
       <div className="topbar__lead">
         <p className="topbar__greeting">{eyebrow ?? `${greeting()}, Filip`}</p>
         <h1 className="topbar__title">{title}</h1>

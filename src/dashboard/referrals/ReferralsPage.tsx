@@ -9,7 +9,7 @@ import { Stat } from '../panels/StatRow';
 import { EmptyState, InviteArt } from '../EmptyState';
 import { CheckIcon, CopyIcon, PayMark } from '../icons';
 import { useCopy } from '../useCopy';
-import { TextField } from '../settings/fields';
+import { TextField, goToField } from '../settings/fields';
 import { Saved, useSaved } from '../settings/saved';
 import { NetworkSelect } from './NetworkSelect';
 import { ACTIVITY, TOTALS, fmtDate, type Activity } from './data';
@@ -99,7 +99,7 @@ function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: P
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const p = check(address, network);
-    if (p) { setProblem(p); return; }
+    if (p) { setProblem(p); goToField(p === 'network' ? 'ref-network' : 'ref-address'); return; }
     setProblem(null);
     const changed = saved && (saved.address !== address.trim() || saved.network !== network);
     if (changed) { setConfirming(true); return; }
@@ -144,11 +144,11 @@ function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: P
         <form className="ref-form" onSubmit={submit} noValidate>
           <div className="set-field ref-form__net">
             <label className="field__label" htmlFor="ref-network">Network</label>
-            <div className="field__control">
+            <div className="field__control" data-invalid={problem === 'network' || undefined}>
               <NetworkSelect id="ref-network" value={network} onChange={(n) => { setNetwork(n); clear(); }} />
             </div>
           </div>
-          <TextField id="ref-address" label="Wallet address" value={address} onChange={(v) => { setAddress(v); clear(); }} placeholder="Enter USDT wallet address" autoComplete="off" />
+          <TextField id="ref-address" label="Wallet address" value={address} onChange={(v) => { setAddress(v); clear(); }} placeholder="Enter USDT wallet address" autoComplete="off" invalid={problem === 'address' || problem === 'invalid'} />
           {confirming ? (
             <div className="ref-confirm" role="alertdialog" aria-label="Replace the saved payout wallet">
               <p>Replace the wallet on {net?.name}? Commission from the next payout goes to the new address.</p>
@@ -156,11 +156,13 @@ function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: P
               <Button variant="ghost" onClick={() => setConfirming(false)}>Keep current</Button>
             </div>
           ) : (
-            <div className="set-actions">
-              <Button type="submit">Save payout wallet</Button>
-              {saved && <Button variant="ghost" onClick={close}>Cancel</Button>}
-              {problem && <span className="field__error set-error" role="alert">{PROBLEM[problem]}</span>}
-            </div>
+            <>
+              {problem && <span className="field__error set-error ref-form__err" role="alert">{PROBLEM[problem]}</span>}
+              <div className="set-actions">
+                <Button type="submit">Save payout wallet</Button>
+                {saved && <Button variant="ghost" onClick={close}>Cancel</Button>}
+              </div>
+            </>
           )}
         </form>
       )}

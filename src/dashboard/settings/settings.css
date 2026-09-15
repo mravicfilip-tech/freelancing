@@ -68,7 +68,9 @@
 .set-saved__pill .icon-16 { flex: none; }
 @keyframes set-saved-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .set-saved__pill { animation: none; } }
-/* The red twin of the saved pill: an inline error beside a card's action. */
+/* The field a message is about wears a red ring until it changes. */
+.field__control[data-invalid], .field__control[data-invalid]:hover, .field__control[data-invalid]:focus-within { box-shadow: inset 0 0 0 1.5px #c94141; }
+/* The red twin of the saved pill: an inline error above a card's action. */
 .set-error {
   display: inline-flex;
   align-items: center;

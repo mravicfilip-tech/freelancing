@@ -198,6 +198,7 @@ a.fh__btn { text-decoration: none; }
 /* The form: the network first, since it decides what an address looks like. */
 .ref-form { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 1.5fr); gap: 16px; }
 .ref-form .set-actions { grid-column: 1 / -1; }
+.ref-form__err { grid-column: 1 / -1; justify-self: start; margin: -4px 0 0; }
 .ref-form .set-actions .fh__btn--ghost { padding: 0 18px; }
 /* The warning is the card's last word: a row on the inset ground with the
    glyph on its own tinted disc, centred with the text. */
@@ -297,8 +298,13 @@ a.fh__btn { text-decoration: none; }
 @media (max-width: 620px) {
   .ref-link__row { grid-template-columns: minmax(0, 1fr); }
   .ref-link__row .fh__btn { width: 100%; }
-  .ref-dest { flex-wrap: wrap; }
-  .ref-dest__act { width: 100%; justify-content: flex-end; }
+  /* The row keeps one line; the address ellipsizes and the chips stay at the right. */
+  .ref-dest { gap: 10px; padding: 12px; }
+  .ref-dest__act .fh__btn { padding: 0 14px; }
+  .ref-confirm { flex-direction: column; align-items: stretch; }
+  .ref-confirm .fh__btn { width: 100%; }
+  .ref-confirm .fh__btn--primary { order: -1; }
+  .ref-confirm p { order: -2; }
 }
 
 /* ==========================================================================
@@ -466,8 +472,13 @@ a.fh__btn { text-decoration: none; }
 .pc__form { display: grid; gap: 16px; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .pc__field { display: grid; gap: 7px; }
 .pc__field .field__label { margin: 0; }
-.pc__send .tsel__button { background: transparent; box-shadow: none; padding: 0 4px; }
-.pc__send .tsel__button:hover, .pc__send .tsel__button[aria-expanded='true'] { background: var(--d-inset); box-shadow: none; }
+/* The token in the amount field reads like the destination menu: the mark,
+   the code, and the chevron on its own chip. */
+.pc__send .tsel__button, .dash[data-theme='dark'] .pc__send .tsel__button { height: 100%; gap: 8px; padding: 0 0 0 4px; background: transparent; box-shadow: none; color: var(--d-text); font-size: 15px; font-weight: 600; }
+.pc__send .tsel__button:hover, .pc__send .tsel__button[aria-expanded='true'], .pc__send .tsel__button[aria-expanded='true']:hover { background: transparent; box-shadow: none; }
+.pc__send .tsel__button .tsel__chevron { box-sizing: content-box; width: 14px; height: 14px; padding: 8px; border-radius: 50%; background: var(--d-card); box-shadow: inset 0 0 0 1px var(--d-field-ring); color: var(--d-text-2); transition: transform 160ms ease, background-color 160ms ease, color 160ms ease; }
+.pc__send .tsel__button[aria-expanded='true'] .tsel__chevron { background: var(--d-accent-tint); box-shadow: none; color: var(--d-on-tint); transform: rotate(180deg); }
+.pc__send:has(.tsel__button[aria-expanded='true']) { box-shadow: inset 0 0 0 1.5px var(--d-accent); }
 .pc__field .field__control { position: relative; }
 .pc__field .tsel { position: static; }
 .pc__field .tsel__menu { left: auto; right: 0; }

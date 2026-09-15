@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { EyeIcon, EyeOffIcon } from '../icons';
 
 /** A labelled text field on the dashboard's field control, in the body face. */
-export function TextField({ id, label, value, onChange, type = 'text', placeholder, autoComplete, autoFocus, children }: {
+export function TextField({ id, label, value, onChange, type = 'text', placeholder, autoComplete, autoFocus, invalid, children }: {
   id: string;
   label: string;
   value: string;
@@ -11,15 +11,17 @@ export function TextField({ id, label, value, onChange, type = 'text', placehold
   placeholder?: string;
   autoComplete?: string;
   autoFocus?: boolean;
+  /** The field is the one a message is about: a red ring. */
+  invalid?: boolean;
   /** Something to sit in the control beside the input: a prefix select, a copy chip. */
   children?: React.ReactNode;
 }) {
   return (
     <div className="set-field">
       <label className="field__label" htmlFor={id}>{label}</label>
-      <div className="field__control">
+      <div className="field__control" data-invalid={invalid || undefined}>
         {children}
-        <input id={id} className="set-input" type={type} value={value} placeholder={placeholder} autoComplete={autoComplete} autoFocus={autoFocus} onChange={(e) => onChange(e.target.value)} />
+        <input id={id} className="set-input" type={type} value={value} placeholder={placeholder} autoComplete={autoComplete} autoFocus={autoFocus} aria-invalid={invalid || undefined} onChange={(e) => onChange(e.target.value)} />
       </div>
     </div>
   );
@@ -45,4 +47,12 @@ export function PasswordField({ id, label, value, onChange, autoComplete }: {
       </div>
     </div>
   );
+}
+
+/** Brings the field a message is about into view and puts the caret in it. */
+export function goToField(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.focus({ preventScroll: true });
 }

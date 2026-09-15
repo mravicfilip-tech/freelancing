@@ -541,6 +541,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
      that beneath it, so the topbar carries the difference itself. */
   padding: 6px 4px 24px;
 }
+.mbar { display: none; }
 .topbar__greeting {
   margin: 0;
   font-size: 14px;
@@ -1285,7 +1286,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   align-items: center;
   gap: 5px;
   padding: 8px 12px;
-  border-radius: var(--r-sm);
+  border-radius: 999px;
   background: var(--d-inset);
   color: var(--d-text-2);
   font-size: 13px;
@@ -1453,6 +1454,29 @@ html[data-dash-theme='light'] body { background: #edeff1; }
      as an indent: on the phone it is a bare label on the title's left edge,
      with the two buttons after it. */
   .topbar__live { padding: 0; margin-right: 8px; background: none; box-shadow: none; }
+  /* The brand bar: the mark at the left, the chrome at the right, a dashed
+     rule under it; the topbar's own copies of the buttons go. */
+  .mbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 0 0 12px;
+    background-image: var(--d-dash-h);
+    background-size: 100% 1px;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+  }
+  .mbar__brand { display: inline-flex; align-items: center; gap: 4px; color: var(--d-text); text-decoration: none; font-weight: 700; font-size: 20px; letter-spacing: 0; }
+  .mbar__actions { display: inline-flex; gap: 8px; }
+  .topbar__actions .chip-btn { display: none; }
+  .topbar { flex-wrap: wrap; }
+  /* A status pill in a card's head squeezed the title beside it; on the phone
+     it sits above the title as the card's eyebrow. */
+  .card__head:has(> .pstat) { flex-wrap: wrap; gap: 10px; }
+  .card__head > .pstat { order: -1; }
+  .card__head > .pstat + div, .card__head > div:has(+ .pstat) { flex: 1 1 100%; }
 
   /* Clear the fixed bar, plus the home indicator on a notched phone. */
   .dash__main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
@@ -1478,6 +1502,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
      it left the link floating as an orphaned box. */
   .buy__head, .flash__code { flex-direction: column; align-items: flex-start; gap: 10px; }
   .flash__code { align-items: stretch; }
+  .flash__code .copy { justify-content: center; }
   .ladder__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
 
   /* Twelve prices across 330px collide into one smear. The live stage and the
@@ -1775,15 +1800,30 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   right: 12px;
   bottom: calc(86px + env(safe-area-inset-bottom));
   z-index: 50;
-  max-height: calc(100svh - 110px - env(safe-area-inset-bottom));
-  overflow-y: auto;
-  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: min(72svh, 640px);
+  padding: 0;
   border-radius: 24px;
   background: var(--d-card);
   box-shadow: inset 0 0 0 1px var(--d-pill-ring), 0 24px 48px -18px rgb(0 0 0 / 60%);
+  overflow: hidden;
   transform-origin: 50% 100%;
   animation: sheet-rise 240ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
+/* Head and foot stay put; the routes scroll between them, fading at the
+   edge so the scroll reads before it is tried. */
+.sheet__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 12px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--d-pill-ring) transparent;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+}
+.sheet__foot { flex: none; padding: 8px 12px 12px; border-top: 1px solid var(--d-rule); }
 @keyframes sheet-rise { from { transform: translateY(16px) scale(0.97); opacity: 0; } }
 @keyframes sheet-fade { from { opacity: 0; } }
 
@@ -1793,9 +1833,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin: 10px 0 12px;
-  padding-left: 4px;
+  flex: none;
+  margin: 0;
+  padding: 14px 12px 10px 16px;
 }
 .sheet__title {
   font-family: var(--d-display);
@@ -1820,7 +1860,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   gap: 13px;
-  min-height: 56px;
+  min-height: 50px;
   padding: 0 14px;
   border-radius: var(--r-inner);
   /* Its own ground, so a row reads as a target rather than a line of text. */
@@ -1850,9 +1890,9 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 60px;
-  margin-top: 12px;
-  padding: 10px 14px;
+  min-height: 54px;
+  margin-top: 6px;
+  padding: 8px 14px;
   border-radius: var(--r-inner);
   background: var(--d-inset);
 }
@@ -2163,11 +2203,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-top: 1px solid var(--d-rule);
-  border-radius: 0 0 var(--r-card) var(--r-card);
+  min-height: 48px;
+  margin-top: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r-inner);
   font-size: 15px;
   font-weight: 600;
   color: var(--d-text-2);

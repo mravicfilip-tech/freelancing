@@ -65,6 +65,7 @@ function Sheet({ onClose }: { onClose: () => void }) {
         </button>
       </header>
 
+      <div className="sheet__body">
       <ul className="sheet__list">
         {SHEET.map(({ id, label, badge, soon }) => {
           const Icon = NavIcon[id];
@@ -98,7 +99,9 @@ function Sheet({ onClose }: { onClose: () => void }) {
           </a>
         </li>
       </ul>
+      </div>
 
+      <div className="sheet__foot">
       <div className="sheet__wallet">
         <PayMark id="ETH" className="icon-28" />
         <span className="sheet__wallet-text">
@@ -150,6 +153,7 @@ function Sheet({ onClose }: { onClose: () => void }) {
         <SignOutIcon className="icon-22" />
         Log out
       </a>
+      </div>
     </div>
   );
 }

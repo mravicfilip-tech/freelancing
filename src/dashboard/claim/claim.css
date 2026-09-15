@@ -85,7 +85,7 @@
 .cl-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .cl-actions .fh__btn { width: auto; padding: 0 22px; }
 .cl-actions--center { justify-content: center; }
-.cl-error { margin: 0; }
+.cl-error { justify-self: start; margin: -4px 0 0; }
 
 /* ---------- Done: the brand on a bed of tiles, as the reference sets it ---------- */
 .cl-done { justify-items: center; text-align: center; padding: 8px 0 4px; }
@@ -116,5 +116,8 @@
   .cl-wallet__go { font-size: 0; gap: 0; }
   .cl-tiles { grid-template-columns: repeat(5, 52px); grid-auto-rows: 52px; gap: 6px; }
   .cl-done__facts { grid-template-columns: minmax(0, 1fr); }
-  .cl-actions .fh__btn { flex: 1; }
+  /* Stacked: the primary on top, the way back beneath, both full width. */
+  .cl-actions { flex-direction: column; align-items: stretch; }
+  .cl-actions .fh__btn { width: 100%; }
+  .cl-actions .fh__btn--primary { order: -1; }
 }

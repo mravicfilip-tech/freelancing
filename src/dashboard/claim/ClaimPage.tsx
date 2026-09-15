@@ -8,7 +8,7 @@ import { theme } from '../theme';
 import { WALLET } from '../data';
 import { useCopy } from '../useCopy';
 import { CheckIcon, ChevronRight, CopyIcon, RtxMark } from '../icons';
-import { TextField } from '../settings/fields';
+import { TextField, goToField } from '../settings/fields';
 import { CodeSelect, COUNTRIES, type Iso } from '../settings/CodeSelect';
 import { EMAIL } from '../products/requests';
 import { PROVIDERS, WalletMark, type Provider } from './wallets';
@@ -128,6 +128,7 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
   const [email, setEmail] = useState(() => { try { return localStorage.getItem('rtx-session') ?? ''; } catch { return ''; } });
   const [whitelist, setWhitelist] = useState(wallet);
   const [problem, setProblem] = useState<string | null>(null);
+  const [bad, setBad] = useState<'phone' | 'email' | 'whitelist' | null>(null);
   const [pending, setPending] = useState<Claim | null>(null);
   const [seq, setSeq] = useState<string[] | null>(null);
   useEffect(() => { setSeq(pending ? ['Checking the address…', 'Queuing for whitelist…', 'Queued'] : null); }, [pending]);
@@ -141,9 +142,11 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.replace(/\D/g, '').length < 6) return setProblem(phone.trim() ? 'Enter a valid contact number.' : 'Enter a contact number.');
-    if (!EMAIL.test(email.trim())) return setProblem('Enter a valid email address.');
-    if (!/^0x[0-9a-fA-F]{40}$/.test(whitelist.trim())) return setProblem('Enter a valid Ethereum address to whitelist.');
+    const fail = (which: 'phone' | 'email' | 'whitelist', msg: string) => { setBad(which); setProblem(msg); goToField(`cl-${which}`); };
+    if (phone.replace(/\D/g, '').length < 6) return fail('phone', phone.trim() ? 'Enter a valid contact number.' : 'Enter a contact number.');
+    if (!EMAIL.test(email.trim())) return fail('email', 'Enter a valid email address.');
+    if (!/^0x[0-9a-fA-F]{40}$/.test(whitelist.trim())) return fail('whitelist', 'Enter a valid Ethereum address to whitelist.');
+    setBad(null);
     const c: Claim = { provider, wallet, whitelist: whitelist.trim(), email: email.trim().toLowerCase(), phone: `${dial} ${phone.trim()}`, at: new Date().toISOString() };
     if (!saveClaim(c)) return setProblem("We couldn't submit your request. Please try again.");
     setPending(c);
@@ -165,13 +168,13 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
       </div>
 
       <div className="set-grid cl-grid">
-        <TextField id="cl-phone" label="Contact number" value={phone} onChange={(v) => { setPhone(v.replace(/[^\d\s()-]/g, '')); setProblem(null); }} type="tel" placeholder="Number" autoComplete="tel-national">
+        <TextField id="cl-phone" label="Contact number" value={phone} onChange={(v) => { setPhone(v.replace(/[^\d\s()-]/g, '')); setProblem(null); setBad(null); }} type="tel" placeholder="Number" autoComplete="tel-national" invalid={bad === 'phone'}>
           <CodeSelect value={code} onChange={setCode} />
           <span className="set-sep" aria-hidden="true" />
         </TextField>
-        <TextField id="cl-email" label="Email address" value={email} onChange={(v) => { setEmail(v); setProblem(null); }} type="email" placeholder="name@email.com" autoComplete="email" />
+        <TextField id="cl-email" label="Email address" value={email} onChange={(v) => { setEmail(v); setProblem(null); setBad(null); }} type="email" placeholder="name@email.com" autoComplete="email" invalid={bad === 'email'} />
         <div className="cl-grid__wide">
-          <TextField id="cl-whitelist" label="Wallet address to whitelist" value={whitelist} onChange={(v) => { setWhitelist(v); setProblem(null); }} placeholder="0x…" autoComplete="off">
+          <TextField id="cl-whitelist" label="Wallet address to whitelist" value={whitelist} onChange={(v) => { setWhitelist(v); setProblem(null); setBad(null); }} placeholder="0x…" autoComplete="off" invalid={bad === 'whitelist'}>
             <button type="button" className="chip-btn chip-btn--field set-copy" onClick={() => copyB(whitelist)} aria-label="Copy address to whitelist">
               {copiedB ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
             </button>
@@ -186,10 +189,10 @@ function DetailsStep({ provider, wallet, onBack, onDone }: { provider: Provider;
         <span>This is the exact address that will be whitelisted. <b>A wrong address cannot be claimed against and creates a support case.</b></span>
       </p>
 
+      {problem && <span className="field__error set-error cl-error" role="alert">{problem}</span>}
       <div className="cl-actions">
         <Button variant="ghost" onClick={onBack} disabled={pending !== null}>Back</Button>
         <Button type="submit" disabled={pending !== null}>{pending ? <><Spinner /> {message}</> : 'Submit for whitelist'}</Button>
-        {problem && <span className="field__error set-error cl-error" role="alert">{problem}</span>}
       </div>
     </form>
   );

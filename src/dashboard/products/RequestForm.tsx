@@ -62,7 +62,7 @@ export function RequestForm({ storageKey, copy, inline, id, autoFocus }: {
         </div>
       )}
       <div className="rq__row">
-        <TextField id={id} label="Email address" value={email} onChange={(v) => { setEmail(v); if (state) setState(null); }} type="email" placeholder="you@example.com" autoComplete="email" autoFocus={autoFocus} />
+        <TextField id={id} label="Email address" value={email} onChange={(v) => { setEmail(v); if (state) setState(null); }} type="email" placeholder="you@example.com" autoComplete="email" autoFocus={autoFocus} invalid={state === 'invalid'} />
         <Button type="submit">{copy.cta}</Button>
       </div>
       {state && state !== 'ok' && <span className="field__error set-error" role="alert">{message[state]}</span>}

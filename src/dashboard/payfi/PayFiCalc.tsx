@@ -3,7 +3,7 @@ import { Button } from '../Button';
 import { Figure } from '../Figure';
 import { TokenSelect } from '../TokenSelect';
 import { TOKENS, type TokenId } from '../data';
-import { ArrowUp } from '../icons';
+import { ArrowUp, ChevronRight } from '../icons';
 import { RequestForm, type Copy } from '../products/RequestForm';
 import { CorridorSelect } from './CorridorSelect';
 import { CORRIDORS } from './corridors';
@@ -65,7 +65,10 @@ export function PayFiCalc({ asking, onAsk, copy }: { asking: boolean; onAsk: (v:
             <div className="pc__ask">
               <p className="pc__ask-lead"><ArrowUp className="icon-16" />Sending needs beta access.</p>
               <RequestForm storageKey="rtx-payfi-beta" copy={copy} id="payfi-email" autoFocus />
-              <button type="button" className="tlink pc__back" onClick={() => onAsk(false)}>Back to the transfer</button>
+              <button type="button" className="link-quiet pc__back" onClick={() => onAsk(false)}>
+                <ChevronRight className="icon-14 pc__back-chev" />
+                Back to the transfer
+              </button>
             </div>
           ) : (
             <>

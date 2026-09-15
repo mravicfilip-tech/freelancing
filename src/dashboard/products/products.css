@@ -519,11 +519,11 @@ a.fh__btn { text-decoration: none; }
 .pc__ask { display: flex; flex-direction: column; flex: 1; gap: 14px; }
 .pc__ask .rq { display: flex; flex-direction: column; flex: 1; gap: 12px; }
 .pc__ask .rq__row { display: grid; grid-template-columns: minmax(0, 1fr); flex: 1; align-content: space-between; gap: 12px; }
-.pc__ask .pc__back { align-self: flex-start; }
 .pc__ask-lead { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 600; }
 .pc__ask-lead .icon-16 { color: var(--d-on-tint); transform: rotate(180deg); }
 .pc__ask .rq__row .fh__btn { justify-self: start; }
-.pc__back { justify-self: start; border: 0; background: none; padding: 0; color: var(--d-text-2); font: inherit; font-size: 13px; cursor: pointer; }
+.pc__back { align-self: flex-start; gap: 4px; padding-left: 8px; border: 0; font: inherit; cursor: pointer; }
+.pc__back-chev { transform: rotate(180deg); }
 .cor .orders__table { min-width: 620px; }
 
 @media (max-width: 1180px) {

@@ -28,19 +28,20 @@ export function TextField({ id, label, value, onChange, type = 'text', placehold
 }
 
 /** The sign-in page's password field: the same control with a reveal chip inside it. */
-export function PasswordField({ id, label, value, onChange, autoComplete }: {
+export function PasswordField({ id, label, value, onChange, autoComplete, invalid }: {
   id: string;
   label: string;
   value: string;
   onChange: (v: string) => void;
   autoComplete: string;
+  invalid?: boolean;
 }) {
   const [shown, setShown] = useState(false);
   return (
     <div className="set-field">
       <label className="field__label" htmlFor={id}>{label}</label>
-      <div className="field__control">
-        <input id={id} className="set-input" type={shown ? 'text' : 'password'} autoComplete={autoComplete} placeholder="••••••••" value={value} onChange={(e) => onChange(e.target.value)} />
+      <div className="field__control" data-invalid={invalid || undefined}>
+        <input id={id} className="set-input" type={shown ? 'text' : 'password'} aria-invalid={invalid || undefined} autoComplete={autoComplete} placeholder="••••••••" value={value} onChange={(e) => onChange(e.target.value)} />
         <button type="button" className="chip-btn chip-btn--field" onClick={() => setShown((v) => !v)} aria-label={shown ? 'Hide password' : 'Show password'} aria-pressed={shown}>
           {shown ? <EyeOffIcon className="icon-20" /> : <EyeIcon className="icon-20" />}
         </button>

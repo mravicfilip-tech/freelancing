@@ -53,6 +53,7 @@ export function BuyPanel({
       setPromoError(false);
     } else {
       setPromoError(true);
+      document.getElementById(promoId)?.focus();
     }
   };
 
@@ -225,9 +226,9 @@ export function BuyPanel({
           </Button>
         </div>
         {promoError && (
-          <p className="field__error" id={`${promoId}-error`} role="alert">
+          <span className="set-error buy__promo-error" id={`${promoId}-error`} role="alert">
             That code is not recognised. Check it and try again.
-          </p>
+          </span>
         )}
         {applied && (
           <p className="field__ok">

@@ -276,3 +276,6 @@
   .auth__foot { gap: 14px 20px; }
   .auth__foot a { min-height: 44px; display: inline-flex; align-items: center; }
 }
+
+/* The error pill sits on its own line above the button. */
+.auth__error { justify-self: start; align-self: flex-start; }

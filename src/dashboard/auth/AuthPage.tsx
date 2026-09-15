@@ -11,21 +11,23 @@ import './auth.css';
 
 type Mode = 'signin' | 'register';
 
-function Password({ id, label, value, onChange, autoComplete }: {
+function Password({ id, label, value, onChange, autoComplete, invalid }: {
   id: string;
   label: string;
   value: string;
   onChange: (v: string) => void;
   autoComplete: string;
+  invalid?: boolean;
 }) {
   const [shown, setShown] = useState(false);
   return (
     <div className="auth__field">
       <label className="field__label" htmlFor={id}>{label}</label>
-      <div className="field__control">
+      <div className="field__control" data-invalid={invalid || undefined}>
         <input
           id={id}
           className="auth__input"
+          aria-invalid={invalid || undefined}
           type={shown ? 'text' : 'password'}
           autoComplete={autoComplete}
           placeholder="••••••••"
@@ -54,6 +56,7 @@ export function AuthPage() {
   const [remember, setRemember] = useState(true);
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bad, setBad] = useState<'email' | 'password' | 'agree' | null>(null);
   const ids = useId();
   const register = tab === 'register';
 
@@ -68,9 +71,16 @@ export function AuthPage() {
      the dashboard; register takes whatever is typed and does the same. */
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes('@')) return setError('Enter an email address we can reach you at.');
-    if (password.length < 8) return setError('Passwords are at least 8 characters.');
-    if (register && !agreed) return setError('Please accept the terms to create an account.');
+    const fail = (which: 'email' | 'password' | 'agree', msg: string) => {
+      setBad(which); setError(msg);
+      const el = document.getElementById(which === 'agree' ? `${ids}-panel` : `${ids}-${which}`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (which !== 'agree') el?.focus({ preventScroll: true });
+    };
+    if (!email.includes('@')) return fail('email', 'Enter an email address we can reach you at.');
+    if (password.length < 8) return fail('password', 'Passwords are at least 8 characters.');
+    if (register && !agreed) return fail('agree', 'Please accept the terms to create an account.');
+    setBad(null);
     if (register) {
       registerAccount(email);
     } else {
@@ -115,16 +125,17 @@ export function AuthPage() {
           >
             <div className="auth__field">
               <label className="field__label" htmlFor={`${ids}-email`}>Email</label>
-              <div className="field__control">
+              <div className="field__control" data-invalid={bad === 'email' || undefined}>
                 <input
                   id={`${ids}-email`}
                   className="auth__input"
+                  aria-invalid={bad === 'email' || undefined}
                   type="email"
                   inputMode="email"
                   autoComplete="email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setError(null); setBad(null); }}
                 />
               </div>
             </div>
@@ -133,8 +144,9 @@ export function AuthPage() {
               id={`${ids}-password`}
               label="Password"
               value={password}
-              onChange={setPassword}
+              onChange={(v) => { setPassword(v); setError(null); setBad(null); }}
               autoComplete={register ? 'new-password' : 'current-password'}
+              invalid={bad === 'password'}
             />
 
             {register ? (
@@ -154,7 +166,7 @@ export function AuthPage() {
               </div>
             )}
 
-            {error && <p className="field__error" role="alert">{error}</p>}
+            {error && <span className="set-error auth__error" role="alert">{error}</span>}
 
             <Button block type="submit">
               {register ? 'Create account' : 'Sign in'}

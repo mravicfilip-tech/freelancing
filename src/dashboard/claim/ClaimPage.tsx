@@ -53,7 +53,10 @@ function Stage({ children, id }: { children: React.ReactNode; id: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (!ref.current || still()) return;
-    gsap.fromTo(ref.current, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+    const ctx = gsap.context(() => {
+      gsap.fromTo(ref.current, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power3.out' });
+    }, ref);
+    return () => ctx.revert();
   }, [id]);
   return <div className="cl-stage" ref={ref}>{children}</div>;
 }
@@ -198,6 +201,9 @@ function DoneStep({ claim, onReset }: { claim: Claim; onReset: () => void }) {
   useLayoutEffect(() => {
     const r = root.current;
     if (!r || still()) return;
+    // In a context, so a StrictMode re-run reverts the first run's inline
+    // styles instead of recording opacity 0 as the values to animate to.
+    const ctx = gsap.context(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.from(r.querySelectorAll('.cl-tile:not(.cl-tile--gap):not(.cl-tile--brand):not(.cl-tile--check):not(.cl-tile--word)'), { scale: 0.6, autoAlpha: 0, duration: 0.5, stagger: { each: 0.05, from: 'random' } })
       .from(r.querySelector('.cl-tile--brand'), { scale: 0.7, autoAlpha: 0, duration: 0.55, ease: 'back.out(1.8)' }, 0.25)
@@ -206,7 +212,8 @@ function DoneStep({ claim, onReset }: { claim: Claim; onReset: () => void }) {
       .fromTo(r.querySelector('.cl-tile__ring'), { scale: 0.6, autoAlpha: 0.9 }, { scale: 2.4, autoAlpha: 0, duration: 0.9, ease: 'power2.out' }, 0.7)
       .from(r.querySelector('.cl-tile--word'), { y: 14, autoAlpha: 0, duration: 0.45 }, 0.85)
       .from(r.querySelectorAll('.cl-done__body, .cl-done__facts > div, .cl-actions'), { y: 12, autoAlpha: 0, duration: 0.45, stagger: 0.07 }, 1.0);
-    return () => { tl.kill(); };
+    }, r);
+    return () => ctx.revert();
   }, []);
   return (
     <div className="cl-body cl-done" ref={root}>

@@ -138,7 +138,6 @@ export function EarnPage() {
           ))}
         </div>
 
-        <p className="pdisc">Rates, supported assets, terms and eligibility will be confirmed before launch. Cryptoasset products carry risk and returns are not guaranteed.</p>
       </main>
       <MobileNav active="earn" />
     </div>

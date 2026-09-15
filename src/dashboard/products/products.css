@@ -427,11 +427,16 @@ a.fh__btn { text-decoration: none; }
 
 /* ---------- Earn simulator ---------- */
 .es { display: grid; gap: 18px; }
-.es__body { display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: var(--gap); align-items: stretch; }
-.es__form { display: grid; gap: 16px; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
+/* The configurator runs across the top, three fields side by side, and the
+   plan reads beneath it at full width: nothing stretches to fill a column. */
+.es__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
+.es__form { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.es__form { display: grid; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .es__quick .es__chip { height: 32px; padding: 0 12px; font-size: 12.5px; }
 .es__field { display: grid; gap: 7px; }
-.es__field[hidden] { display: none; }
+.es__field[hidden], .es__terms[hidden] { display: none; }
+.es__field--plan { align-content: start; }
+.es__plan-note { margin-top: 2px; }
 .es__field .field__label { margin: 0; }
 .es__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .es__chip { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 9px; }
@@ -455,6 +460,11 @@ a.fh__btn { text-decoration: none; }
 .es__dot--now::before { box-shadow: 0 0 0 4px var(--d-accent-tint); }
 /* The plan's facts as tiles on the card's ground, label over value. */
 .es__tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.es__plan { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'head head' 'line line' 'tiles tiles' 'act act'; }
+.es__plan-head { grid-area: head; }
+.es__line { grid-area: line; }
+.es__tiles { grid-area: tiles; }
+.es__act { grid-area: act; }
 .es__tiles > div { display: grid; gap: 4px; align-content: start; min-height: 88px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-card); }
 .es__tiles dt { font-size: 12.5px; color: var(--d-text-2); }
 .es__tiles dd { margin: 0; font-size: 15px; font-weight: 600; }
@@ -486,7 +496,7 @@ a.fh__btn { text-decoration: none; }
 .pc__lines > div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; font-size: 13.5px; background: var(--d-dash-h) no-repeat 0 100% / 100% 1px; }
 .pc__lines dt { color: var(--d-text-2); }
 .pc__lines dd { margin: 0; font-weight: 600; }
-.pc__out { display: grid; gap: 12px; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
+.pc__out { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .pc__out > .field__label { margin: 0; }
 .pc__fig { font-size: clamp(32px, 3vw, 44px); }
 .pc__sub { margin: 0; font-size: 14px; color: var(--d-text-2); }
@@ -519,6 +529,9 @@ a.fh__btn { text-decoration: none; }
 }
 @media (max-width: 1400px) {
   .es__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1100px) {
+  .es__form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
 }
 @media (max-width: 900px) {
   .es__body, .pc__body { grid-template-columns: minmax(0, 1fr); }

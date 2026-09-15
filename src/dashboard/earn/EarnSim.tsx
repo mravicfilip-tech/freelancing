@@ -69,20 +69,18 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
               ))}
             </div>
           </div>
-          <div className="es__field">
+          <div className="es__field es__field--plan">
             <span className="field__label">Plan</span>
             <div className="seg" role="radiogroup" aria-label="Plan">
               <button type="button" role="radio" className="seg__opt" aria-checked={plan === 'flex'} aria-pressed={plan === 'flex'} onClick={() => setPlan('flex')}>Flexible</button>
               <button type="button" role="radio" className="seg__opt" aria-checked={plan === 'fixed'} aria-pressed={plan === 'fixed'} onClick={() => setPlan('fixed')}>Fixed term</button>
             </div>
-          </div>
-          <div className="es__field" hidden={plan !== 'fixed'}>
-            <span className="field__label">Term</span>
-            <div className="es__chips" role="radiogroup" aria-label="Term">
+            <div className="es__chips es__terms" role="radiogroup" aria-label="Term" hidden={plan !== 'fixed'}>
               {TERMS.map((t) => (
                 <button type="button" key={t} role="radio" className="chip es__chip" aria-checked={term === t} aria-pressed={term === t} onClick={() => setTerm(t)}>{t} days</button>
               ))}
             </div>
+            <span className="pnote es__plan-note">{plan === 'flex' ? 'Withdraw any day, rewards accrue daily.' : `Locked for ${term} days, rewards paid at maturity.`}</span>
           </div>
         </div>
 

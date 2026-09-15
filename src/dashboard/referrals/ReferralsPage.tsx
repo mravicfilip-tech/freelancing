@@ -40,7 +40,10 @@ function Offer() {
       <h2 className="phero__title" id="ref-offer-title">Invite friends. Earn {PCT}.</h2>
       <p className="phero__body">Share your personal referral link and earn {PCT} of each completed purchase made by the people you refer. Commission is paid in USDT to your saved payout wallet.</p>
       <div className="ref-link">
-        <span className="field__label">Your referral link</span>
+        <span className="ref-link__head">
+          <span className="field__label">Your referral link</span>
+          <Saved on={copied}>Referral link copied.</Saved>
+        </span>
         <div className="ref-link__row">
           <span className="ref-link__url num">{TOTALS.link}</span>
           <Button onClick={() => copy(TOTALS.link)}>
@@ -48,7 +51,6 @@ function Offer() {
             Copy link
           </Button>
         </div>
-        <span className="ref-link__done"><Saved on={copied}>Referral link copied.</Saved></span>
       </div>
     </section>
   );

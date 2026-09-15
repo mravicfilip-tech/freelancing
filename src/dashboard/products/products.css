@@ -161,7 +161,8 @@ a.fh__btn { text-decoration: none; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.ref-link__done { min-height: 32px; }
+.ref-link__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
+.ref-link__head .field__label { margin: 0; }
 .ref-wallet { display: grid; gap: 16px; align-content: start; }
 .ref-wallet .card__head { align-items: flex-start; }
 .ref-wallet .card__head .set-saved { flex: none; }

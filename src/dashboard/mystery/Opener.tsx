@@ -90,7 +90,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
       el.dataset.lean = deg.toFixed(1);
       el.style.setProperty('--shade', (a * SHADE).toFixed(3));
       gsap.set(el, { rotateY: deg, scale: 1 - a * SHRINK });
-      // The slot, rail and all, slides in with the curve.
+      // The slot slides in with the curve.
       gsap.set(el.parentElement, { x: -Math.sign(d) * a ** 3 * half * GATHER });
     });
   };

@@ -143,7 +143,6 @@
 }
  /* The card the box sits on waits at a third of its strength, as in the design. */
 .reel__slot--under .prize { opacity: 0.15; }
-.reel__slot::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--d-dash-v); }
 .reel__cap { align-self: flex-start; padding-left: 29px; font-size: 13px; color: var(--d-text-3); }
 .reel__mark {
   position: absolute;

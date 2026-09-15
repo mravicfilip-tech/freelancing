@@ -83,14 +83,14 @@ function Sheet({ onClose }: { onClose: () => void }) {
       {/* The account rows the rail carries on a desktop. */}
       <ul className="sheet__list sheet__list--account">
         <li>
-          <a className="sheet__item" href="#profile" onClick={onClose}>
+          <a className="sheet__item" href="/settings" onClick={onClose}>
             <UserIcon className="icon-22" />
             {USER.name}
             <ChevronRight className="icon-16 sheet__chev" />
           </a>
         </li>
         <li>
-          <a className="sheet__item" href="#settings" onClick={onClose}>
+          <a className="sheet__item" href="/settings" onClick={onClose}>
             <SettingsIcon className="icon-22" />
             Settings
             <ChevronRight className="icon-16 sheet__chev" />

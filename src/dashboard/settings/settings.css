@@ -1,0 +1,44 @@
+/* ==========================================================================
+   Settings
+   Rides the dashboard's token layer: .settings is also .dash. Fields are
+   the buy form's control with the sign-in page's plain input inside.
+   ========================================================================== */
+.set-card { display: grid; gap: 20px; }
+.set-grid { display: grid; gap: 16px; }
+.set-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.set-field { min-width: 0; }
+.set-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--d-text);
+  font: inherit;
+  font-size: 15px;
+}
+.set-input::placeholder { color: var(--d-text-3); }
+.set-input:focus { outline: none; }
+/* The country code sits inside the phone control, parted from the number by a rule. */
+.set-code { flex: none; padding-right: 2px; font-size: 15px; }
+.set-sep { flex: none; width: 1px; height: 22px; background: var(--d-field-ring); }
+/* The copy chip in the wallet control sits at its end. */
+.set-copy { order: 2; }
+.set-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; }
+.set-actions .fh__btn { width: auto; padding: 0 24px; }
+.set-saved { display: inline-flex; align-items: center; gap: 6px; min-height: 20px; font-size: 13px; color: var(--d-text-2); }
+.set-error { margin: 0; }
+.set-body { margin: 0; max-width: 46em; font-size: 14px; line-height: 1.55; color: var(--d-text-2); }
+.set-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap); }
+/* The status pill: the topbar's live pill, grey until two-factor is on. */
+.set-status { flex: none; }
+.set-status .topbar__dot { background: var(--d-text-3); }
+.set-status.is-on .topbar__dot { background: #d9f24e; }
+
+@media (max-width: 1100px) {
+  .set-grid--3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .settings .dash__main > :not(.topbar) { order: 2; }
+  .set-grid--3, .set-split { grid-template-columns: minmax(0, 1fr); }
+  .set-actions { flex-wrap: wrap; }
+}

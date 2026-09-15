@@ -27,7 +27,8 @@ const META: Record<Id, { label: string; badge?: string }> = {
   claim: { label: 'Claim', badge: 'NEW' },
 };
 
-export function Sidebar({ active = 'presale' }: { active?: Id }) {
+/** `settings` lights no route: the account menu's pages are reached from the foot. */
+export function Sidebar({ active = 'presale' }: { active?: Id | 'settings' }) {
   const mode = rail.use();
   const collapsed = mode === 'collapsed';
 
@@ -146,11 +147,11 @@ function RailAccount({ collapsed }: { collapsed: boolean }) {
               {copied ? 'Copied' : 'Copy'}
             </span>
           </button>
-          <a role="menuitem" className="rail__menu-item" href="#profile" onClick={() => setOpen(false)}>
+          <a role="menuitem" className="rail__menu-item" href="/settings" onClick={() => setOpen(false)}>
             <UserIcon className="icon-20" />
             Profile
           </a>
-          <a role="menuitem" className="rail__menu-item" href="#settings" onClick={() => setOpen(false)}>
+          <a role="menuitem" className="rail__menu-item" href="/settings" onClick={() => setOpen(false)}>
             <SettingsIcon className="icon-20" />
             Settings
           </a>

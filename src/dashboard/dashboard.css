@@ -201,7 +201,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   font-family: var(--d-display);
   margin: 0;
   font-weight: 600;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }

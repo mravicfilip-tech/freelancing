@@ -23,6 +23,11 @@ const LEN = 48;
    a screen up to 3,500px wide. */
 const START = 8;
 const WIN = 40;
+/* The lean at the reel's edge: degrees turned toward the marker, the step
+   back in scale, and the shade laid over the card. */
+const LEAN = 42;
+const SHRINK = 0.14;
+const SHADE = 0.55;
 const CAPS = ['Unwrapping…', 'You can win…', 'Opening up…'];
 const LIME: [number, number, number] = [217, 242, 78];
 const INDIGO: [number, number, number] = [64, 66, 210];
@@ -65,11 +70,36 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
   /** x that centres slot `i` in the viewport. */
   const xFor = (i: number) => (view.current?.clientWidth ?? 0) / 2 - (i + 0.5) * SLOT;
 
+  /** The perspective: every slot turns to face the marker by how far it
+      stands from it, and steps back and into shade as it goes. Runs on
+      every frame the strip moves, since the lean follows the slot. */
+  const lean = () => {
+    if (!view.current || !track.current) return;
+    const half = view.current.clientWidth / 2;
+    const x = Number(gsap.getProperty(track.current, 'x'));
+    const leans = track.current.querySelectorAll<HTMLElement>('.reel__lean');
+    leans.forEach((el, i) => {
+      const d = (x + (i + 0.5) * SLOT - half) / half;
+      if (Math.abs(d) > 1.4) return;
+      const k = Math.sign(d) * Math.min(1, Math.abs(d)) ** 1.25;
+      const deg = k * LEAN;
+      el.dataset.lean = deg.toFixed(1);
+      el.style.setProperty('--shade', (Math.abs(k) * SHADE).toFixed(3));
+      gsap.set(el, { rotateY: deg, scale: 1 - Math.abs(k) * SHRINK });
+    });
+  };
+  /** Puts the strip at slot `i` and leans it. */
+  const place = (i: number) => {
+    if (!track.current) return;
+    gsap.set(track.current, { x: xFor(i) });
+    lean();
+  };
+
   useLayoutEffect(() => {
-    if (track.current) gsap.set(track.current, { x: xFor(at.current) });
+    place(at.current);
   }, [cards]);
   useEffect(() => {
-    const onResize = () => track.current && phase !== 'spin' && gsap.set(track.current, { x: xFor(at.current) });
+    const onResize = () => phase !== 'spin' && place(at.current);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, [phase]);
@@ -95,7 +125,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     if (still()) {
       setChestOpen(true);
       gsap.set(box.current, { autoAlpha: 0 });
-      gsap.set(track.current, { x: xFor(WIN) });
+      place(WIN);
       land();
       return;
     }
@@ -117,6 +147,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
         duration: 4.6,
         ease: 'power4.out',
         onUpdate: () => {
+          lean();
           const x = Number(gsap.getProperty(track.current!, 'x'));
           const slot = Math.floor(((view.current?.clientWidth ?? 0) / 2 - x) / SLOT);
           if (slot !== lastSlot && tick.current) {
@@ -125,7 +156,7 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
           }
         },
       }, '<+0.05')
-      .to(track.current, { x: xFor(WIN), duration: 0.55, ease: 'power2.inOut' });
+      .to(track.current, { x: xFor(WIN), duration: 0.55, ease: 'power2.inOut', onUpdate: lean });
   };
 
   /* The landing: the card pops, a ring of its colour rolls out, sparks fly
@@ -188,13 +219,15 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
         <div className="reel__track" ref={track}>
           {cards.map((p, i) => (
             <div className={`reel__slot${phase === 'idle' && i === START ? ' reel__slot--under' : ''}`} key={`${i}-${p.id}`}>
-              {phase === 'won' && i === WIN ? (
-                <span className="reel__cap reel__cap--win" style={{ color: RARITY[p.rarity].ink }}>{RARITY[p.rarity].label}!</span>
-              ) : (
-                <span className="reel__cap">{phase === 'won' ? 'Open next…' : CAPS[i % 3]}</span>
-              )}
-              <PrizeCard p={p} won={phase === 'won' && i === WIN} />
-              <span className="reel__cap num">Prize #{124 + i}</span>
+              <div className="reel__lean">
+                {phase === 'won' && i === WIN ? (
+                  <span className="reel__cap reel__cap--win" style={{ color: RARITY[p.rarity].ink }}>{RARITY[p.rarity].label}!</span>
+                ) : (
+                  <span className="reel__cap">{phase === 'won' ? 'Open next…' : CAPS[i % 3]}</span>
+                )}
+                <PrizeCard p={p} won={phase === 'won' && i === WIN} />
+                <span className="reel__cap num">Prize #{124 + i}</span>
+              </div>
             </div>
           ))}
         </div>

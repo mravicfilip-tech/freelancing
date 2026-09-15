@@ -104,20 +104,42 @@
   border-top: 1px solid var(--d-rule);
   border-bottom: 1px solid var(--d-rule);
   background: var(--d-inset);
+  /* The strip stands in perspective: the slots turn to face the marker
+     (Opener sets the lean), sharing one vanishing point at its centre. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
 }
 .dash[data-theme='dark'] .reel { background: transparent; }
 .reel__view { position: absolute; inset: 0; pointer-events: none; }
-.reel__track { position: absolute; left: 0; top: 0; display: flex; height: 100%; will-change: transform; }
+.reel__track { position: absolute; left: 0; top: 0; display: flex; height: 100%; will-change: transform; transform-style: preserve-3d; }
 .reel__slot {
   position: relative;
-  display: flex;
   flex: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
   width: 218px;
   height: 100%;
   padding: 22px 0 24px;
+  transform-style: preserve-3d;
+}
+/* The leaning column: caption, card, caption, turned as one. */
+.reel__lean {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+/* The shade a slot takes as it turns away, laid over the card's art. */
+.reel .prize::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #05080c;
+  opacity: var(--shade, 0);
+  pointer-events: none;
 }
  /* The card the box sits on waits at a third of its strength, as in the design. */
 .reel__slot--under .prize { opacity: 0.15; }

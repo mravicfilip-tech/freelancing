@@ -66,6 +66,11 @@ const TRAIL_MAX = 4;
 const TRAIL_MS = 450;
 const TRAIL_STEP = 8;
 const R = 11;
+/** The reel's perspective, in px; the slots lean into it (Opener) and the
+    arcs follow the lean here. */
+export const PERSPECTIVE = 1200;
+/** A card's half-width before it leans, for the depth its edges take. */
+const HALF_W = 80;
 
 /** A point and outward normal at distance `s` along a rounded rectangle. */
 function pointAt(s: number, w: number, h: number, r: number, inset: number) {
@@ -91,7 +96,7 @@ function pointAt(s: number, w: number, h: number, r: number, inset: number) {
 const rgb = ([r, g, b]: [number, number, number], a: number) => `rgba(${r},${g},${b},${a})`;
 
 /** One card's arc, drawn at (ox, oy) in the row's space. */
-function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h: number, rarity: Rarity, won: boolean, t: number, still: boolean, clip: boolean) {
+function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h: number, rarity: Rarity, won: boolean, t: number, still: boolean, clip: boolean, lean = 0) {
   const color = RARITY[rarity];
   const hot = won ? 1.7 : 1;
   const time = still ? 0 : t * CLOCK;
@@ -103,31 +108,47 @@ function arc(ctx: CanvasRenderingContext2D, ox: number, oy: number, w: number, h
     Math.round(255 * (color.base[2] * 0.75 + 0.25)),
   ];
   const inset = 1;
-  const P = 2 * (w - 2 * inset - 2 * R) + 2 * (h - 2 * inset - 2 * R) + 2 * Math.PI * R;
+  // A leaning card projects to a trapezoid: the box the DOM reports is as
+  // tall as the near edge, and the far edge is shorter by the perspective's
+  // ratio. The path is traced on a rectangle of the mean height and each
+  // point is then stretched to the height at its own column.
+  const depth = HALF_W * Math.sin((lean * Math.PI) / 180);
+  const far = (PERSPECTIVE - Math.abs(depth)) / (PERSPECTIVE + Math.abs(depth));
+  const hl = lean < 0 ? h * far : h, hr = lean > 0 ? h * far : h;
+  const hm = (hl + hr) / 2;
+  const warp = (x: number, y: number): [number, number] => {
+    if (!lean) return [ox + x, oy + y];
+    const u = Math.min(1, Math.max(0, x / w));
+    const hh = hl + (hr - hl) * u;
+    return [ox + x, oy + h / 2 + (y - hm / 2) * (hh / hm)];
+  };
+  const P = 2 * (w - 2 * inset - 2 * R) + 2 * (hm - 2 * inset - 2 * R) + 2 * Math.PI * R;
   const N = Math.max(120, Math.round(P / 4));
-  const cx = w / 2, cy = h / 2;
+  const cx = w / 2, cy = hm / 2;
+  const trace = (jitter: boolean) => {
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const s = (i % N) * (P / N);
+      const [x, y, nx, ny] = pointAt(s, w, hm, R, inset);
+      const ang = Math.atan2(y - cy, x - cx);
+      const along = (ang / (Math.PI * 2) + 0.5) * P;
+      const raw = still || !jitter ? 0 : electricNoise(along + ox, time);
+      const spark = Math.sign(raw) * Math.pow(Math.abs(raw), 1.15);
+      const off = spark * JITTER * hot;
+      const [px, py] = warp(x + nx * off, y + ny * off);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  };
   // On a light ground the glow that spills past the card reads as a smudge,
   // so there the scene is kept inside the card's own edge.
   if (clip) {
     ctx.save();
-    ctx.beginPath();
-    ctx.roundRect(ox, oy, w, h, R + 1);
+    trace(false);
     ctx.clip();
   }
-  ctx.beginPath();
-  for (let i = 0; i <= N; i++) {
-    const s = (i % N) * (P / N);
-    const [x, y, nx, ny] = pointAt(s, w, h, R, inset);
-    const ang = Math.atan2(y - cy, x - cx);
-    const along = (ang / (Math.PI * 2) + 0.5) * P;
-    const raw = still ? 0 : electricNoise(along + ox, time);
-    const spark = Math.sign(raw) * Math.pow(Math.abs(raw), 1.15);
-    const off = spark * JITTER * hot;
-    const px = ox + x + nx * off, py = oy + y + ny * off;
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
-  }
-  ctx.closePath();
+  trace(true);
   ctx.lineJoin = 'round';
   // The glow: the shader's exp falloff, laid down as widening strokes at
   // falling alpha rather than a canvas shadow, which costs a blur per frame.
@@ -267,8 +288,10 @@ function draw(row: Row, now: number, still: boolean) {
     if (ox + r.width < -SPREAD || ox > w + SPREAD || oy + r.height < -SPREAD || oy > h + SPREAD) continue;
     // A card that has stepped back (the losers after a win) takes its arc with it.
     const fade = parseFloat(getComputedStyle(el).opacity) || 1;
+    // The slot's lean, so the arc is drawn on the card's tilted face.
+    const lean = parseFloat(el.closest<HTMLElement>('.reel__lean')?.dataset.lean ?? '0') || 0;
     ctx.globalAlpha = fade;
-    arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still, light);
+    arc(ctx, ox, oy, r.width, r.height, el.dataset.rarity as Rarity, el.dataset.won === 'true', t, still, light, lean);
     ctx.globalAlpha = 1;
   }
   // The light trail: spots the pointer left, fading over half a second.

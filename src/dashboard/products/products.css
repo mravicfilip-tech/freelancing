@@ -427,10 +427,11 @@ a.fh__btn { text-decoration: none; }
 
 /* ---------- Earn simulator ---------- */
 .es { display: grid; gap: 18px; }
-/* The configurator runs across the top, three fields side by side, and the
-   plan reads beneath it at full width: nothing stretches to fill a column. */
-.es__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
-.es__form { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+/* The form is a fixed column; the plan beside it sets a vertical timeline
+   next to a two-by-two of facts, so it stays composed at any width. */
+.es__body { display: grid; grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); gap: var(--gap); align-items: stretch; }
+.es__form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.es__grid { display: grid; grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); gap: 16px; align-items: start; }
 .es__form { display: grid; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .es__quick .es__chip { height: 32px; padding: 0 12px; font-size: 12.5px; }
 .es__field { display: grid; gap: 7px; }
@@ -444,33 +445,29 @@ a.fh__btn { text-decoration: none; }
 .es__unit { display: inline-flex; align-items: center; gap: 8px; flex: none; font-size: 14px; font-weight: 600; color: var(--d-text-2); }
 /* The sheet's segmented control, at the field's left edge here. */
 .es .seg { margin-left: 0; justify-self: start; background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-pill-ring); }
-.es__plan { display: grid; gap: 18px; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
+.es__plan { display: flex; flex-direction: column; gap: 18px; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .es__plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .es__plan-title { margin: 0; font-size: 16px; font-weight: 600; }
 .es__plan-sum { font-size: 14px; font-weight: 600; color: var(--d-text-2); }
-/* The timeline: three stops on a rail; the stretch that is locked runs dashed. */
-.es__line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: none; }
-.es__dot { position: relative; display: grid; gap: 3px; padding-top: 18px; font-size: 13px; }
+/* The timeline: three stops down a rail; the stretch that is locked runs dashed. */
+.es__line { display: grid; gap: 16px; margin: 0; padding: 4px 0 0; list-style: none; }
+.es__dot { position: relative; display: grid; gap: 3px; padding-left: 24px; font-size: 13px; }
 .es__dot b { font-weight: 600; color: var(--d-text); }
 .es__dot span { color: var(--d-text-2); line-height: 1.4; }
 .es__dot::before { content: ''; position: absolute; left: 0; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--d-accent); }
-.es__dot::after { content: ''; position: absolute; left: 14px; right: -8px; top: 8.5px; height: 1px; background: var(--d-dash-h); }
+.es__dot::after { content: ''; position: absolute; left: 4.5px; top: 18px; bottom: -16px; width: 1px; background: var(--d-dash-v); }
 .es__dot:last-child::after { display: none; }
 .es__dot--open::after { background: var(--d-accent-soft); }
 .es__dot--now::before { box-shadow: 0 0 0 4px var(--d-accent-tint); }
 /* The plan's facts as tiles on the card's ground, label over value. */
-.es__tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
-.es__plan { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'head head' 'line line' 'tiles tiles' 'act act'; }
-.es__plan-head { grid-area: head; }
-.es__line { grid-area: line; }
-.es__tiles { grid-area: tiles; }
-.es__act { grid-area: act; }
+.es__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+
 .es__tiles > div { display: grid; gap: 4px; align-content: start; min-height: 88px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-card); }
 .es__tiles dt { font-size: 12.5px; color: var(--d-text-2); }
 .es__tiles dd { margin: 0; font-size: 15px; font-weight: 600; }
 .es__tiles span { font-size: 12px; color: var(--d-text-3); }
 .es__tbc { color: var(--d-text-3); font-weight: 500 !important; }
-.es__act { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: auto; }
+.es__act { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
 .es__act .fh__btn { width: auto; padding: 0 22px; }
 .ea__name { margin-left: 8px; color: var(--d-text-3); font-weight: 400; }
 .ea__yes { display: inline-flex; align-items: center; gap: 6px; color: var(--pv-up); font-weight: 600; }
@@ -527,11 +524,18 @@ a.fh__btn { text-decoration: none; }
   .tm__body { grid-template-columns: minmax(0, 1fr); }
   .tm__book { display: none; }
 }
-@media (max-width: 1400px) {
-  .es__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 1500px) {
+  .es__grid { grid-template-columns: minmax(0, 1fr); }
+  .es__line { display: flex; gap: 20px; }
+  .es__dot { flex: 1; padding-left: 0; padding-top: 18px; }
+  .es__dot::before { top: 3px; }
+  .es__dot::after { left: 14px; right: -12px; top: 8px; bottom: auto; width: auto; height: 1px; background: var(--d-dash-h); }
 }
-@media (max-width: 1100px) {
-  .es__form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+@media (max-width: 620px) {
+  .es__line { display: grid; }
+  .es__dot { padding-left: 24px; padding-top: 0; }
+  .es__dot::before { top: 4px; }
+  .es__dot::after { left: 4.5px; right: auto; top: 18px; bottom: -16px; width: 1px; height: auto; background: var(--d-dash-v); }
 }
 @media (max-width: 900px) {
   .es__body, .pc__body { grid-template-columns: minmax(0, 1fr); }
@@ -544,10 +548,7 @@ a.fh__btn { text-decoration: none; }
   .tm__meta { display: none; }
   .rq__row { grid-template-columns: minmax(0, 1fr); }
   .rq__row .fh__btn { width: 100%; }
-  .es__line { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .es__dot { padding-top: 0; padding-left: 22px; }
-  .es__dot::before { left: 0; top: 4px; }
-  .es__dot::after { left: 4.5px; right: auto; top: 18px; bottom: -14px; width: 1px; height: auto; background: var(--d-dash-v); }
+  .es__tiles { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Light: the inset ground is a shade off the card's white, so every inset

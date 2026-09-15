@@ -89,6 +89,7 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
             <p className="es__plan-title">Your {plan === 'flex' ? 'flexible' : `${term}-day`} plan</p>
             <span className="es__plan-sum num">{shown} {asset}</span>
           </div>
+          <div className="es__grid">
           <ol className="es__line" aria-label="Timeline">
             <li className="es__dot es__dot--now"><b>Today</b><span>Deposit {shown} {asset}</span></li>
             <li className={`es__dot es__dot--mid${plan === 'flex' ? ' es__dot--open' : ''}`}><b>Daily</b><span>Rewards accrue in {asset}</span></li>
@@ -100,6 +101,7 @@ export function EarnSim({ onNotify }: { onNotify: () => void }) {
             <div><dt>Rate</dt><dd className="es__tbc">Set at launch</dd><span>{plan === 'flex' ? 'Variable' : `Fixed for the ${term}-day term`}</span></div>
             <div><dt>Projected reward</dt><dd className="es__tbc">Shown at launch</dd><span>Once the rate is confirmed</span></div>
           </dl>
+          </div>
           <div className="es__act">
             <Button onClick={onNotify}>Notify me at launch</Button>
             <span className="pnote">No deposit is taken now.</span>

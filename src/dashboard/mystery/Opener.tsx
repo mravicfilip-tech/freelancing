@@ -25,12 +25,12 @@ const START = 8;
 const WIN = 40;
 /* The lean at the reel's edge: degrees turned toward the marker, the step
    back in scale, and the shade laid over the card. */
-const LEAN = 34;
-const SHRINK = 0.18;
-const SHADE = 0.4;
+const LEAN = 16;
+const SHRINK = 0.12;
+const SHADE = 0.3;
 /* How far the edge slots gather toward the centre, as a share of the half
    width: the strip curves away, so its pitch tightens outward. */
-const GATHER = 0.16;
+const GATHER = 0.1;
 const CAPS = ['Unwrapping…', 'You can win…', 'Opening up…'];
 const LIME: [number, number, number] = [217, 242, 78];
 const INDIGO: [number, number, number] = [64, 66, 210];

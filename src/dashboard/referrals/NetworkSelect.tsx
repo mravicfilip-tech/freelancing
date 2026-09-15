@@ -2,8 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { ChevronDown, PayMark } from '../icons';
 import { NETWORKS, type NetworkId } from './wallet';
 
-function Mark({ mark }: { mark: string }) {
-  if (mark === 'ETH' || mark === 'BNB' || mark === 'SOL') return <PayMark id={mark} className="icon-20" />;
+function Mark({ mark, className = 'icon-20' }: { mark: string; className?: string }) {
+  if (mark === 'ETH' || mark === 'BNB' || mark === 'SOL') return <PayMark id={mark} className={className} />;
   return <span className="nsel__disc" aria-hidden="true">{mark}</span>;
 }
 

@@ -8,6 +8,7 @@
 /* ---------- Feature banner ---------- */
 .upd-hero {
   position: relative;
+  width: 100%;
   min-height: 300px;
   max-height: 420px;
   aspect-ratio: 3 / 1;
@@ -96,7 +97,7 @@
    ========================================================================== */
 .art { display: grid; gap: clamp(22px, 2.6vw, 36px); }
 /* The cover is the feature banner without its text, at a shallower cut. */
-.art__cover { aspect-ratio: 3.4 / 1; min-height: 220px; max-height: 360px; }
+.art__cover { width: 100%; aspect-ratio: 3.4 / 1; min-height: 220px; max-height: 360px; }
 .art__col { display: grid; gap: 18px; width: 100%; max-width: 68ch; margin: 0 auto; padding-bottom: clamp(8px, 1.6vw, 20px); }
 .art__back { justify-self: start; gap: 4px; padding-left: 8px; }
 .art__back-chev { transform: rotate(180deg); }

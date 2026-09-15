@@ -32,13 +32,13 @@ type RailId = keyof typeof NavIcon;
 const BAR: { id: string; label: string; href: string; badge?: string }[] = [
   { id: 'presale', label: 'Presale', href: '/dashboard' },
   { id: 'buy', label: 'Buy', href: '/dashboard#buy' },
-  { id: 'referrals', label: 'Referrals', href: '#referrals' },
+  { id: 'referrals', label: 'Referrals', href: '/referrals' },
   { id: 'claim', label: 'Claim', href: '#claim', badge: 'NEW' },
 ];
 
 const SHEET: { id: RailId; label: string; badge?: string; soon?: boolean }[] = [
   { id: 'earn', label: 'Earn' },
-  { id: 'markets', label: 'Markets', badge: 'SOON', soon: true },
+  { id: 'markets', label: 'Markets' },
   { id: 'payfi', label: 'PayFi', badge: 'NEW' },
   { id: 'transactions', label: 'My transactions' },
   { id: 'updates', label: 'Updates' },

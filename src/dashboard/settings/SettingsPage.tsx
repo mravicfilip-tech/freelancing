@@ -7,6 +7,7 @@ import { Switch } from '../Switch';
 import { theme } from '../theme';
 import { USER, WALLET } from '../data';
 import { CheckIcon, CopyIcon } from '../icons';
+import { Saved, useSaved } from './saved';
 import { useCopy } from '../useCopy';
 import { PasswordField, TextField } from './fields';
 import { CodeSelect, type Iso } from './CodeSelect';
@@ -20,25 +21,6 @@ import './settings.css';
  * two-factor sign-in, and the wallet your $RTX lands in. Each card saves
  * on its own, and says so for a moment.
  */
-
-/** A "Saved" that shows for a couple of seconds after a card's button. */
-function useSaved(): [boolean, () => void] {
-  const [saved, setSaved] = useState(false);
-  useEffect(() => {
-    if (!saved) return;
-    const t = window.setTimeout(() => setSaved(false), 2200);
-    return () => window.clearTimeout(t);
-  }, [saved]);
-  return [saved, () => setSaved(true)];
-}
-
-function Saved({ on, children }: { on: boolean; children: React.ReactNode }) {
-  return (
-    <span className="set-saved" role="status" aria-live="polite">
-      {on && <span className="set-saved__pill"><CheckIcon className="icon-16" />{children}</span>}
-    </span>
-  );
-}
 
 export function SettingsPage() {
   const mode = theme.use();

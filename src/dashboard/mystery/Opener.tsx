@@ -262,7 +262,8 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
         <div className="opener__actions">
           <Button variant="ghost" onClick={() => spin(true)} disabled={phase === 'spin'}>Demo spin</Button>
           <Button onClick={() => spin(false)} disabled={phase === 'spin'}>
-            Open for ${cost} <span className="opener__rate num">≈ {inPay} {pay}</span>
+            Open for ${cost}
+            <span className="opener__rate num">≈ {inPay} {pay} <PayMark id={pay} className="icon-16 opener__rate-mark" /></span>
           </Button>
         </div>
         <div className="opener__count" role="group" aria-label="Boxes to open">

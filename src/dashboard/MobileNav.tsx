@@ -36,10 +36,11 @@ const BAR: { id: string; label: string; href: string; badge?: string }[] = [
   { id: 'claim', label: 'Claim', href: '#claim', badge: 'NEW' },
 ];
 
-const SHEET: { id: RailId; label: string; badge?: string }[] = [
+const SHEET: { id: RailId; label: string; badge?: string; soon?: boolean }[] = [
   { id: 'earn', label: 'Earn' },
-  { id: 'markets', label: 'Markets' },
+  { id: 'markets', label: 'Markets', badge: 'SOON', soon: true },
   { id: 'payfi', label: 'PayFi', badge: 'NEW' },
+  { id: 'transactions', label: 'My transactions' },
   { id: 'updates', label: 'Updates' },
   { id: 'mystery', label: 'Mystery box' },
 ];
@@ -65,11 +66,11 @@ function Sheet({ onClose }: { onClose: () => void }) {
       </header>
 
       <ul className="sheet__list">
-        {SHEET.map(({ id, label, badge }) => {
+        {SHEET.map(({ id, label, badge, soon }) => {
           const Icon = NavIcon[id];
           return (
             <li key={id}>
-              <a className="sheet__item" href={ROUTE[id] ?? `#${id}`} onClick={onClose}>
+              <a className={`sheet__item${soon ? ' sheet__item--soon' : ''}`} href={soon ? undefined : ROUTE[id] ?? `#${id}`} aria-disabled={soon || undefined} onClick={onClose}>
                 <Icon className="icon-22" />
                 {label}
                 {badge && <span className="rail__badge">{badge}</span>}

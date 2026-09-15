@@ -31,7 +31,7 @@ function MarketsSkeleton() {
 }
 
 /**
- * Markets: what this wallet has bought. Figures sum the history, and the
+ * My transactions: what this wallet has bought. Figures sum the history, and the
  * table beneath lists every purchase with what it cost and what it is
  * worth at the listing price.
  */
@@ -48,9 +48,9 @@ export function MarketsPage() {
 
   return (
     <div className="dash markets" data-theme={mode}>
-      <Sidebar active="markets" />
+      <Sidebar active="transactions" />
       <main className="dash__main">
-        <Topbar title="Markets" />
+        <Topbar title="My transactions" />
         {!rows ? (
           <MarketsSkeleton />
         ) : (
@@ -60,7 +60,7 @@ export function MarketsPage() {
           </>
         )}
       </main>
-      <MobileNav active="markets" />
+      <MobileNav active="transactions" />
     </div>
   );
 }

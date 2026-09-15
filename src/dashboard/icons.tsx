@@ -44,6 +44,12 @@ export const NavIcon = {
       <path d="M8.4 16.1v-4.6M12.6 16.1V6.3M16.8 16.1V9.1" />
     </svg>
   ),
+  transactions: (p: IconProps) => (
+    <svg {...line} {...p} aria-hidden="true">
+      <path d="M6 3.5h12v17l-2.4-1.6-2.4 1.6-1.2-.8-1.2.8-2.4-1.6L6 20.5v-17Z" />
+      <path d="M9.2 8.2h5.6M9.2 11.8h5.6M9.2 15.4h3.2" />
+    </svg>
+  ),
   payfi: (p: IconProps) => (
     <svg {...line} {...p} aria-hidden="true">
       <rect x="3" y="6" width="18" height="12" rx="2.6" />

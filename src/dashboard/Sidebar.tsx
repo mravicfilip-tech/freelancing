@@ -8,19 +8,21 @@ import { rail } from './theme';
 type Id = keyof typeof NavIcon;
 
 /** The screens that exist as routes; the rest are still anchors until built. */
-export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', markets: '/markets', updates: '/updates', mystery: '/mystery' };
+export const ROUTE: Partial<Record<Id, string>> = { presale: '/dashboard', earn: '/earn', transactions: '/transactions', updates: '/updates', mystery: '/mystery' };
 
 /** Two groups, split exactly where the reference breaks. */
 const GROUPS: Id[][] = [
   ['presale', 'earn', 'markets', 'payfi'],
-  ['referrals', 'updates', 'mystery', 'claim'],
+  ['transactions', 'referrals', 'updates', 'mystery', 'claim'],
 ];
 
-const META: Record<Id, { label: string; badge?: string }> = {
+/** `soon` rows have no page yet: they show where the product is going and lead nowhere. */
+const META: Record<Id, { label: string; badge?: string; soon?: boolean }> = {
   presale: { label: 'Presale' },
   earn: { label: 'Earn' },
-  markets: { label: 'Markets' },
+  markets: { label: 'Markets', badge: 'SOON', soon: true },
   payfi: { label: 'PayFi', badge: 'NEW' },
+  transactions: { label: 'My transactions' },
   referrals: { label: 'Referrals' },
   updates: { label: 'Updates' },
   mystery: { label: 'Mystery box' },
@@ -44,15 +46,16 @@ export function Sidebar({ active = 'presale' }: { active?: Id | 'settings' }) {
           <ul className="rail__group" key={i}>
             {group.map((id) => {
               const Icon = NavIcon[id];
-              const { label, badge } = META[id];
+              const { label, badge, soon } = META[id];
               const current = id === active;
               return (
                 <li key={id}>
                   <a
-                    className="rail__item"
-                    href={ROUTE[id] ?? `#${id}`}
+                    className={`rail__item${soon ? ' rail__item--soon' : ''}`}
+                    href={soon ? undefined : ROUTE[id] ?? `#${id}`}
                     aria-current={current ? 'page' : undefined}
-                    title={collapsed ? label : undefined}
+                    aria-disabled={soon || undefined}
+                    title={collapsed ? (soon ? `${label} · coming soon` : label) : undefined}
                   >
                     <span className="rail__icon">
                       <Icon className="icon-22" />

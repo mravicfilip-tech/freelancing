@@ -41,7 +41,7 @@ const PATH = window.location.pathname.replace(/\/+$/, '');
 /** Sign in and register share one route; the page's own toggle picks which. */
 const AUTH = PATH === '/auth' || PATH === '/login' || PATH === '/register' || params.get('view') === 'auth';
 const EARN = PATH === '/earn' || params.get('view') === 'earn';
-const MARKETS = PATH === '/markets' || params.get('view') === 'markets';
+const MARKETS = PATH === '/transactions' || PATH === '/markets' || params.get('view') === 'transactions' || params.get('view') === 'markets';
 const UPDATES = PATH === '/updates' || params.get('view') === 'updates';
 const MYSTERY = PATH === '/mystery' || params.get('view') === 'mystery';
 const SETTINGS = PATH === '/settings' || PATH === '/profile' || params.get('view') === 'settings';

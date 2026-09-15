@@ -162,9 +162,59 @@ a.fh__btn { text-decoration: none; }
   text-overflow: ellipsis;
 }
 .ref-link__done { min-height: 32px; }
-.ref-wallet { display: grid; gap: 18px; align-content: start; }
-.ref-wallet .set-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
-.ref-warn { grid-column: 1 / -1; margin: 0; font-size: 13px; line-height: 1.5; color: var(--d-text-2); }
+.ref-wallet { display: grid; gap: 16px; align-content: start; }
+.ref-wallet .card__head { align-items: flex-start; }
+.ref-wallet .card__head .set-saved { flex: none; }
+/* The destination: one row on the card's inset ground, the mark on a disc,
+   the address and where it is, the copy chip and the way to change it. */
+.ref-dest {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: var(--d-inset);
+}
+.ref-dest__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--d-card);
+  box-shadow: inset 0 0 0 1px var(--d-rule);
+}
+.ref-dest__mark .nsel__disc { width: 24px; height: 24px; font-size: 11px; }
+/* No wallet yet: the disc is the site's dashed rail, as the empty states draw what is missing. */
+.ref-dest__mark--none { background: transparent; box-shadow: none; border: 1.5px dashed var(--d-pill-ring); }
+.ref-dest__what { display: grid; gap: 3px; flex: 1; min-width: 0; }
+.ref-dest__addr { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ref-dest__net { font-size: 13px; color: var(--d-text-2); }
+.ref-dest__act { display: flex; flex: none; align-items: center; gap: 8px; }
+.ref-dest__act .fh__btn { width: auto; height: 40px; padding: 0 18px; }
+.ref-dest[data-editing] { opacity: 0.6; }
+/* The form: the network first, since it decides what an address looks like. */
+.ref-form { display: grid; grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.6fr); gap: 16px; }
+.ref-form .set-actions { grid-column: 1 / -1; }
+.ref-form .set-actions .fh__btn--ghost { padding: 0 18px; }
+/* The warning is the card's last word, set as a callout. */
+.ref-warn {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: auto 0 0;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 143, 143, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 143, 0.22);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--d-text-2);
+}
+.ref-warn__glyph { flex: none; color: #ff8f8f; margin-top: 1px; }
+.dash[data-theme='light'] .ref-warn { background: rgba(214, 69, 69, 0.06); box-shadow: inset 0 0 0 1px rgba(214, 69, 69, 0.2); }
+.dash[data-theme='light'] .ref-warn__glyph { color: #c94141; }
 .ref-warn b { font-weight: 600; color: var(--d-text); }
 /* Replacing a saved wallet is confirmed in place. */
 .ref-confirm { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: var(--r-sm); background: var(--d-inset); font-size: 14px; }
@@ -219,7 +269,7 @@ a.fh__btn { text-decoration: none; }
 @media (max-width: 900px) {
   .pfeat { grid-template-columns: minmax(0, 1fr); }
   .pduo { grid-template-columns: minmax(0, 1fr); }
-  .ref-wallet .set-grid { grid-template-columns: minmax(0, 1fr); }
+  .ref-form { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
   .pd .dash__main > :not(.topbar) { order: 2; }
@@ -227,6 +277,8 @@ a.fh__btn { text-decoration: none; }
 @media (max-width: 620px) {
   .ref-link__row { grid-template-columns: minmax(0, 1fr); }
   .ref-link__row .fh__btn { width: 100%; }
+  .ref-dest { flex-wrap: wrap; }
+  .ref-dest__act { width: 100%; justify-content: flex-end; }
   /* The stacked row: who and the commission on the first line, what they
      bought, its status and the date under. */
   .ref-table .orders__table { min-width: 0; }

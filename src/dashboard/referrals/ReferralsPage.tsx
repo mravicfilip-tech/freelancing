@@ -7,7 +7,7 @@ import { theme } from '../theme';
 import { money } from '../data';
 import { Stat } from '../panels/StatRow';
 import { EmptyState, InviteArt } from '../EmptyState';
-import { CheckIcon, CopyIcon } from '../icons';
+import { CheckIcon, CopyIcon, PayMark } from '../icons';
 import { useCopy } from '../useCopy';
 import { TextField } from '../settings/fields';
 import { Saved, useSaved } from '../settings/saved';
@@ -55,19 +55,43 @@ function Offer() {
 }
 
 /* ---------- The payout wallet ---------- */
+const short = (a: string) => (a.length > 14 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a);
+
+function NetMark({ mark, big }: { mark: string; big?: boolean }) {
+  const cls = big ? 'icon-22' : 'icon-20';
+  if (mark === 'ETH' || mark === 'BNB' || mark === 'SOL') return <PayMark id={mark} className={cls} />;
+  return <span className="nsel__disc" aria-hidden="true">{mark}</span>;
+}
+
+const WarnGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 4.5 20.5 19h-17L12 4.5Z" /><path d="M12 10v4.2M12 16.8v.2" />
+  </svg>
+);
+
+/**
+ * Where the USDT goes. The saved wallet reads as one row, the form appears
+ * only to add or change it, and replacing a saved wallet is confirmed in
+ * place. Until a wallet and its network are saved, payouts wait.
+ */
 function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: PayoutWallet) => void }) {
+  const [editing, setEditing] = useState(!saved);
   const [address, setAddress] = useState(saved?.address ?? '');
   const [network, setNetwork] = useState<NetworkId | null>(saved?.network ?? null);
   const [problem, setProblem] = useState<Problem | 'save' | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [done, flash] = useSaved();
+  const [copied, copy] = useCopy();
+  const net = NETWORKS.find((n) => n.id === saved?.network);
 
   const clear = () => { setProblem(null); setConfirming(false); };
+  const open = () => { setAddress(saved?.address ?? ''); setNetwork(saved?.network ?? null); clear(); setEditing(true); };
+  const close = () => { clear(); setEditing(false); };
   const commit = () => {
     const w: PayoutWallet = { address: address.trim(), network: network! };
     if (!saveWallet(w)) { setProblem('save'); return; }
-    setConfirming(false);
     onSaved(w);
+    close();
     flash();
   };
   const submit = (e: React.FormEvent) => {
@@ -75,12 +99,10 @@ function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: P
     const p = check(address, network);
     if (p) { setProblem(p); return; }
     setProblem(null);
-    // A saved wallet is only replaced on purpose: the change is confirmed in place.
     const changed = saved && (saved.address !== address.trim() || saved.network !== network);
     if (changed) { setConfirming(true); return; }
     commit();
   };
-  const net = NETWORKS.find((n) => n.id === saved?.network);
 
   return (
     <section className="card ref-wallet" aria-labelledby="ref-wallet-title">
@@ -89,29 +111,62 @@ function Wallet({ saved, onSaved }: { saved: PayoutWallet | null; onSaved: (w: P
           <h2 className="card__title" id="ref-wallet-title">Referral payout wallet</h2>
           <p className="orders__sub">Choose where you want to receive your USDT commission.</p>
         </div>
+        <Saved on={done}>Your referral payout wallet has been saved.</Saved>
       </header>
-      <form className="set-grid" onSubmit={submit} noValidate>
-        <TextField id="ref-address" label="Wallet address" value={address} onChange={(v) => { setAddress(v); clear(); }} placeholder="Enter USDT wallet address" autoComplete="off" />
-        <div className="set-field">
-          <label className="field__label" htmlFor="ref-network">Network</label>
-          <div className="field__control">
-            <NetworkSelect id="ref-network" value={network} onChange={(n) => { setNetwork(n); clear(); }} />
-          </div>
+
+      {saved && net ? (
+        <div className="ref-dest" data-editing={editing || undefined}>
+          <span className="ref-dest__mark"><NetMark mark={net.mark} big /></span>
+          <span className="ref-dest__what">
+            <span className="ref-dest__addr num" title={saved.address}>{short(saved.address)}</span>
+            <span className="ref-dest__net">{net.name} · {net.standard} · USDT payouts go here</span>
+          </span>
+          <span className="ref-dest__act">
+            <button type="button" className="chip-btn" onClick={() => copy(saved.address)} aria-label="Copy wallet address">
+              {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
+            </button>
+            {!editing && <Button variant="ghost" onClick={open}>Change</Button>}
+          </span>
         </div>
-        {confirming ? (
-          <div className="ref-confirm" role="alertdialog" aria-label="Replace the saved payout wallet">
-            <p>Replace the wallet on {net?.name}? Commission from the next payout goes to the new address.</p>
-            <Button onClick={commit}>Replace wallet</Button>
-            <Button variant="ghost" onClick={() => setConfirming(false)}>Keep current</Button>
+      ) : (
+        <div className="ref-dest ref-dest--none">
+          <span className="ref-dest__mark ref-dest__mark--none" aria-hidden="true" />
+          <span className="ref-dest__what">
+            <span className="ref-dest__addr">No payout wallet yet</span>
+            <span className="ref-dest__net">Pending USDT waits here until a wallet and its network are saved.</span>
+          </span>
+        </div>
+      )}
+
+      {editing && (
+        <form className="ref-form" onSubmit={submit} noValidate>
+          <div className="set-field ref-form__net">
+            <label className="field__label" htmlFor="ref-network">Network</label>
+            <div className="field__control">
+              <NetworkSelect id="ref-network" value={network} onChange={(n) => { setNetwork(n); clear(); }} />
+            </div>
           </div>
-        ) : (
-          <div className="set-actions">
-            <Button type="submit">Save payout wallet</Button>
-            {problem ? <span className="field__error set-error" role="alert">{PROBLEM[problem]}</span> : <Saved on={done}>Your referral payout wallet has been saved.</Saved>}
-          </div>
-        )}
-        <p className="ref-warn">The wallet address must support USDT on the selected network. <b>Incorrect details may result in permanent loss.</b></p>
-      </form>
+          <TextField id="ref-address" label="Wallet address" value={address} onChange={(v) => { setAddress(v); clear(); }} placeholder="Enter USDT wallet address" autoComplete="off" />
+          {confirming ? (
+            <div className="ref-confirm" role="alertdialog" aria-label="Replace the saved payout wallet">
+              <p>Replace the wallet on {net?.name}? Commission from the next payout goes to the new address.</p>
+              <Button onClick={commit}>Replace wallet</Button>
+              <Button variant="ghost" onClick={() => setConfirming(false)}>Keep current</Button>
+            </div>
+          ) : (
+            <div className="set-actions">
+              <Button type="submit">Save payout wallet</Button>
+              {saved && <Button variant="ghost" onClick={close}>Cancel</Button>}
+              {problem && <span className="field__error set-error" role="alert">{PROBLEM[problem]}</span>}
+            </div>
+          )}
+        </form>
+      )}
+
+      <p className="ref-warn">
+        <span className="ref-warn__glyph"><WarnGlyph /></span>
+        <span>The wallet address must support USDT on the selected network. <b>Incorrect details may result in permanent loss.</b></span>
+      </p>
     </section>
   );
 }

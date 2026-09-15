@@ -28,7 +28,23 @@
 .csel__button:hover { background: var(--d-inset); }
 .csel__button[aria-expanded='true'] { background: var(--d-accent-tint); box-shadow: none; }
 .csel__flag { display: block; flex: none; width: 20px; height: 15px; border-radius: 2px; object-fit: cover; }
-.csel__menu { left: 0; right: 0; width: auto; max-height: 300px; overflow-y: auto; }
+.csel__menu {
+  left: 0;
+  right: 0;
+  width: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  /* A thin scrollbar in the menu's own colours, with room for it so the codes clear it. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--d-pill-ring) transparent;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+}
+.csel__menu::-webkit-scrollbar { width: 8px; }
+.csel__menu::-webkit-scrollbar-track { background: transparent; margin: 6px 0; }
+.csel__menu::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--d-pill-ring); border: 2px solid var(--d-menu); }
+.csel__menu::-webkit-scrollbar-thumb:hover { background: var(--d-text-3); }
+.csel__menu::-webkit-scrollbar-button { display: none; height: 0; }
 .csel__country { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .set-sep { flex: none; width: 1px; height: 22px; background: var(--d-field-ring); }
 /* The copy chip in the wallet control sits at its end. */

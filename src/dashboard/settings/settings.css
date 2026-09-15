@@ -56,8 +56,6 @@
 /* Two lines whichever state is showing, so the switch under it stays put. */
 .set-body { margin: 0; max-width: 46em; min-height: calc(2 * 1.55em); font-size: 14px; line-height: 1.55; color: var(--d-text-2); }
 .set-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap); }
-/* The switch is the card's state and its control at once, in the head. */
-.set-card .card__head .switch { flex: none; align-self: flex-start; }
 
 @media (max-width: 1100px) {
   .set-grid--3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

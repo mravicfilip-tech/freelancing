@@ -121,13 +121,15 @@ export function SettingsPage() {
                 <h2 className="card__title" id="set-2fa">Two-factor sign-in</h2>
                 <p className="orders__sub">A code from your authenticator app, on top of your password</p>
               </div>
-              <Switch id="set-2fa-switch" checked={twoFactor} onChange={setTwoFactor} label={twoFactor ? 'On' : 'Off'} />
             </header>
             <p className="set-body">
               {twoFactor
                 ? 'Every sign-in now asks for the six-digit code from your authenticator app after your password. Turn it off here if you lose the device.'
                 : 'Scan a QR code once with Google Authenticator, 1Password or any TOTP app, and every sign-in asks for its six-digit code after your password.'}
             </p>
+            <div className="set-actions">
+              <Switch id="set-2fa-switch" checked={twoFactor} onChange={setTwoFactor} label={twoFactor ? 'On' : 'Off'} />
+            </div>
           </section>
 
           <section className="card set-card" aria-labelledby="set-wallet">

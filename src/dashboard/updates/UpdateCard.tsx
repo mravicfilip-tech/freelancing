@@ -26,7 +26,7 @@ export function Title({ u, as: Tag = 'h3', className = 'upd-title' }: { u: Updat
     and on Earn, so the two screens show the same thing the same way. */
 export function UpdateCard({ u }: { u: Update }) {
   return (
-    <a className="upd-card" href={`/updates#update-${u.id}`}>
+    <a className="upd-card" href={`/updates/${u.id}`}>
       <Thumb u={u} />
       <span className="upd-card__body">
         <Kicker u={u} />

@@ -2,6 +2,7 @@ import { money, type Referral } from '../data';
 import type { DashboardData } from '../useDashboardData';
 import { EmptyState, InviteArt } from '../EmptyState';
 import { Figure } from '../Figure';
+import { Button } from '../Button';
 import { CheckIcon, ChevronRight, CopyIcon } from '../icons';
 import { useCopy } from '../useCopy';
 
@@ -81,16 +82,14 @@ export function Referrals({
       )}
 
       <div className="referrals__invite">
-        <p className="referrals__label">
-          Your link — every friend who buys pays you {REFERRALS.share * 100}% in USDT
-        </p>
+        <span className="field__label">Your referral link</span>
         <div className="referrals__link">
-          <span className="referrals__url">{REFERRALS.link}</span>
-          <button type="button" className="copy" onClick={() => copy(REFERRALS.link)}>
+          <span className="referrals__url num">{REFERRALS.link}</span>
+          <Button variant="ghost" onClick={() => copy(REFERRALS.link)}>
             {copied ? <CheckIcon className="icon-16" /> : <CopyIcon className="icon-16" />}
             {copied ? 'Copied' : 'Copy'}
             <span className="sr-only"> referral link</span>
-          </button>
+          </Button>
         </div>
       </div>
     </section>

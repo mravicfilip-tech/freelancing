@@ -12,6 +12,7 @@ import { MarketsGate } from './dashboard/markets/MarketsGate';
 import { PayFiPage } from './dashboard/payfi/PayFiPage';
 import { ReferralsPage } from './dashboard/referrals/ReferralsPage';
 import { UpdatesPage } from './dashboard/updates/UpdatesPage';
+import { ArticlePage } from './dashboard/updates/ArticlePage';
 import { MysteryPage } from './dashboard/mystery/MysteryPage';
 import { SettingsPage } from './dashboard/settings/SettingsPage';
 import { FigmaHero } from './components/FigmaHero/FigmaHero';
@@ -49,6 +50,8 @@ const MARKETS = PATH === '/markets' || params.get('view') === 'markets';
 const PAYFI = PATH === '/payfi' || params.get('view') === 'payfi';
 const REFERRALS = PATH === '/referrals' || params.get('view') === 'referrals';
 const UPDATES = PATH === '/updates' || params.get('view') === 'updates';
+/** One update in full: /updates/122. */
+const ARTICLE = PATH.match(/^\/updates\/(\d+)$/);
 const MYSTERY = PATH === '/mystery' || params.get('view') === 'mystery';
 const SETTINGS = PATH === '/settings' || PATH === '/profile' || params.get('view') === 'settings';
 const DASHBOARD =
@@ -73,6 +76,7 @@ export function App() {
   if (MARKETS) return <MarketsGate />;
   if (PAYFI) return <PayFiPage />;
   if (REFERRALS) return <ReferralsPage />;
+  if (ARTICLE) return <ArticlePage id={Number(ARTICLE[1])} />;
   if (UPDATES) return <UpdatesPage />;
   if (MYSTERY) return <MysteryPage />;
   if (SETTINGS) return <SettingsPage />;

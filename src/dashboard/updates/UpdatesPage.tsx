@@ -35,7 +35,7 @@ function Feature({ u }: { u: Update }) {
         <Title u={u} as="h2" className="upd-hero__title" />
         <p className="upd-hero__excerpt">{u.body[0]}</p>
         <div className="upd-hero__btn">
-          <Button onClick={() => window.location.assign(`#update-${u.id}`)}>Read article</Button>
+          <Button onClick={() => window.location.assign(`/updates/${u.id}`)}>Read article</Button>
         </div>
       </div>
     </section>

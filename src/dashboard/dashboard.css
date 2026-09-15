@@ -1349,35 +1349,30 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .referrals__when { color: var(--d-text-2); }
 
 .referrals__invite { margin-top: 20px; }
+/* The link as the buy form sets its promo code: the field, and the copy
+   button as a ghost pill beside it. */
 .referrals__link {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  margin-top: 9px;
-  padding: 10px 10px 10px 16px;
-  border-radius: var(--r-card);
-  background-color: var(--d-field);
-  /* A 4/4 dashed edge — the finer rule dark.css draws inside a card, against
-     the 8/8 rails that run the page. */
-  background-image:
-    repeating-linear-gradient(90deg, var(--d-field-ring) 0 4px, transparent 4px 8px),
-    repeating-linear-gradient(90deg, var(--d-field-ring) 0 4px, transparent 4px 8px),
-    repeating-linear-gradient(180deg, var(--d-field-ring) 0 4px, transparent 4px 8px),
-    repeating-linear-gradient(180deg, var(--d-field-ring) 0 4px, transparent 4px 8px);
-  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
-  background-position: left top, left bottom, left top, right top;
-  background-repeat: no-repeat;
+  gap: 10px;
 }
 .referrals__url {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 52px;
   min-width: 0;
+  padding: 0 16px;
+  border-radius: var(--r-inner);
+  background: var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--d-field-ring);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 14px;
-  color: var(--d-text-2);
+  font-size: 15px;
+  color: var(--d-text);
 }
-.referrals__link .copy { flex: none; height: 38px; padding: 0 14px; }
+.referrals__link .fh__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: auto; padding: 0 20px; white-space: nowrap; }
 
 /* ---------- Live orders ---------- */
 .orders__sub { margin: 5px 0 0; color: var(--d-text-3); font-size: 14px; }

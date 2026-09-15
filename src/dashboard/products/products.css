@@ -429,9 +429,9 @@ a.fh__btn { text-decoration: none; }
 .es { display: grid; gap: 18px; }
 /* The form is a fixed column; the plan beside it sets a vertical timeline
    next to a two-by-two of facts, so it stays composed at any width. */
-.es__body { display: grid; grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); gap: var(--gap); align-items: stretch; }
+.es__body { display: grid; grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); gap: var(--gap); align-items: start; }
 .es__form { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-.es__grid { display: grid; grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.es__grid { display: grid; grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); gap: 16px; align-items: stretch; }
 .es__form { display: grid; align-content: start; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 .es__quick .es__chip { height: 32px; padding: 0 12px; font-size: 12.5px; }
 .es__field { display: grid; gap: 7px; }
@@ -447,10 +447,10 @@ a.fh__btn { text-decoration: none; }
 .es .seg { margin-left: 0; justify-self: start; background: var(--d-inset); box-shadow: inset 0 0 0 1px var(--d-pill-ring); }
 .es__plan { display: flex; flex-direction: column; gap: 18px; padding: 20px 22px; border-radius: var(--r-sm); background: var(--d-inset); }
 /* The head leads with the deposit as the panel's figure; the plan's state is the pill beside it. */
-.es__plan-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.es__plan-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .es__plan-title { margin: 0 0 6px; font-size: 13px; color: var(--d-text-2); }
 .es__plan-fig { font-size: clamp(28px, 2.4vw, 36px); }
-.es__plan-head .pstat { flex: none; margin-top: 2px; }
+.es__plan-head .pstat { flex: none; margin-bottom: 6px; }
 /* The timeline: three stops down a rail; the stretch that is locked runs dashed. */
 .es__line { display: grid; gap: 16px; margin: 0; padding: 4px 0 0; list-style: none; }
 .es__dot { position: relative; display: grid; gap: 3px; padding-left: 24px; font-size: 13px; }
@@ -468,12 +468,13 @@ a.fh__btn { text-decoration: none; }
 .es__tiles > .es__tile--soon { background: transparent; box-shadow: none; border: 1.5px dashed var(--d-pill-ring); }
 .dash[data-theme='light'] .es__tiles > .es__tile--soon { box-shadow: none; }
 
-.es__tiles > div { display: grid; gap: 4px; align-content: start; min-height: 88px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-card); }
+.es__tiles > div { display: grid; grid-template-rows: auto 1fr auto; gap: 4px; min-height: 88px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--d-card); }
+.es__tiles > div dd { align-self: center; }
 .es__tiles dt { font-size: 12.5px; color: var(--d-text-2); }
 .es__tiles dd { margin: 0; font-size: 15px; font-weight: 600; }
 .es__tiles span { font-size: 12px; color: var(--d-text-3); }
 .es__tbc { color: var(--d-text-3); font-weight: 500 !important; }
-.es__act { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+.es__act { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 2px; }
 .es__act .fh__btn { width: auto; padding: 0 22px; }
 .ea__name { margin-left: 8px; color: var(--d-text-3); font-weight: 400; }
 .ea__yes { display: inline-flex; align-items: center; gap: 6px; color: var(--pv-up); font-weight: 600; }

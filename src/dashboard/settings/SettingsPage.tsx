@@ -128,8 +128,8 @@ export function SettingsPage() {
             </header>
             <p className="set-body">
               {twoFactor
-                ? 'Every sign-in asks for a six-digit code after your password. Turn it off here if you lose the device.'
-                : 'Scan a QR code once with Google Authenticator, 1Password or any TOTP app, and every sign-in asks for its six-digit code.'}
+                ? 'Every sign-in now asks for the six-digit code from your authenticator app after your password. Turn it off here if you lose the device.'
+                : 'Scan a QR code once with Google Authenticator, 1Password or any TOTP app, and every sign-in asks for its six-digit code after your password.'}
             </p>
             <div className="set-actions">
               <Switch id="set-2fa-switch" checked={twoFactor} onChange={setTwoFactor} label={twoFactor ? 'Two-factor sign-in is on' : 'Turn on two-factor sign-in'} />

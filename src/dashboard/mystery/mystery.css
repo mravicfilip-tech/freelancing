@@ -106,7 +106,7 @@
   background: var(--d-inset);
   /* The strip stands in perspective: the slots turn to face the marker
      (Opener sets the lean), sharing one vanishing point at its centre. */
-  perspective: 1200px;
+  perspective: 2400px;
   perspective-origin: 50% 50%;
 }
 .dash[data-theme='dark'] .reel { background: transparent; }

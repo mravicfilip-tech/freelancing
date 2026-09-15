@@ -25,9 +25,12 @@ const START = 8;
 const WIN = 40;
 /* The lean at the reel's edge: degrees turned toward the marker, the step
    back in scale, and the shade laid over the card. */
-const LEAN = 42;
-const SHRINK = 0.14;
-const SHADE = 0.55;
+const LEAN = 34;
+const SHRINK = 0.18;
+const SHADE = 0.4;
+/* How far the edge slots gather toward the centre, as a share of the half
+   width: the strip curves away, so its pitch tightens outward. */
+const GATHER = 0.16;
 const CAPS = ['Unwrapping…', 'You can win…', 'Opening up…'];
 const LIME: [number, number, number] = [217, 242, 78];
 const INDIGO: [number, number, number] = [64, 66, 210];
@@ -81,11 +84,14 @@ export function Opener({ onWin }: { onWin: (p: Prize, spent: number) => void }) 
     leans.forEach((el, i) => {
       const d = (x + (i + 0.5) * SLOT - half) / half;
       if (Math.abs(d) > 1.4) return;
-      const k = Math.sign(d) * Math.min(1, Math.abs(d)) ** 1.25;
+      const a = Math.min(1, Math.abs(d));
+      const k = Math.sign(d) * a ** 1.25;
       const deg = k * LEAN;
       el.dataset.lean = deg.toFixed(1);
-      el.style.setProperty('--shade', (Math.abs(k) * SHADE).toFixed(3));
-      gsap.set(el, { rotateY: deg, scale: 1 - Math.abs(k) * SHRINK });
+      el.style.setProperty('--shade', (a * SHADE).toFixed(3));
+      gsap.set(el, { rotateY: deg, scale: 1 - a * SHRINK });
+      // The slot, rail and all, slides in with the curve.
+      gsap.set(el.parentElement, { x: -Math.sign(d) * a ** 3 * half * GATHER });
     });
   };
   /** Puts the strip at slot `i` and leans it. */

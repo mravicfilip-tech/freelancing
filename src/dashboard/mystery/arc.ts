@@ -68,7 +68,7 @@ const TRAIL_STEP = 8;
 const R = 11;
 /** The reel's perspective, in px; the slots lean into it (Opener) and the
     arcs follow the lean here. */
-export const PERSPECTIVE = 1200;
+export const PERSPECTIVE = 2400;
 /** A card's half-width before it leans, for the depth its edges take. */
 const HALF_W = 80;
 

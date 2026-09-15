@@ -1449,6 +1449,10 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   /* The live pill and the theme toggle share the row under the title; the
      toggle belongs at the edge, not tucked against the pill. */
   .topbar__actions { width: 100%; justify-content: flex-start; gap: 8px; }
+  /* The live pill's ground is the topbar's own card here, so its padding read
+     as an indent: on the phone it is a bare label on the title's left edge,
+     with the two buttons after it. */
+  .topbar__live { padding: 0; margin-right: 8px; background: none; box-shadow: none; }
 
   /* Clear the fixed bar, plus the home indicator on a notched phone. */
   .dash__main { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }

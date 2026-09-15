@@ -206,6 +206,16 @@
   z-index: 4;
   background: radial-gradient(55% 75% at 50% 50%, rgba(var(--win-glow, 217, 242, 78), 0) 45%, rgba(var(--win-glow, 217, 242, 78), 0.55) 100%);
 }
+/* On the reel the prize itself is kept under glass: glyph, value and odds
+   blurred to a shape, the frame, mark and ornaments sharp, until the card
+   has won and comes into focus. */
+.reel .prize__glyph, .reel .prize__value, .reel .prize__sub, .reel .prize__odds {
+  filter: blur(7px);
+  transition: filter 600ms ease;
+}
+.reel .prize__glyph { filter: blur(8px); }
+.reel .prize[data-won='true'] .prize__value, .reel .prize[data-won='true'] .prize__sub, .reel .prize[data-won='true'] .prize__odds { filter: none; }
+.reel .prize[data-won='true'] .prize__glyph { filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.72)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.48)); }
 /* After a landing the other cards fall back to a fifth, so the winner is the reel. */
 .prize { transition: opacity 500ms ease, transform 500ms ease; }
 .prize[data-won='true'] { transition: none; }

@@ -42,7 +42,6 @@ export function MarketsGate() {
           status="Dedicated trading platform"
           title="Trade crypto with Remittix Markets"
           body="Access spot and perpetual markets through the dedicated Remittix trading platform. Connect your wallet to view live markets, manage positions and place trades."
-          slim
         >
           <a className="fh__btn fh__btn--primary" href={MARKETS_URL} target="_blank" rel="noopener">
             Launch Remittix Markets

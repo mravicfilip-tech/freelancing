@@ -1,22 +1,7 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Nav } from './components/Nav';
-import { Hero } from './components/Hero';
-import { CaptureStage } from './components/HeroPlanet/CaptureStage';
 import { PlanetSwitcher } from './components/PlanetSwitcher';
 import { HERO_VARIANT } from './heroVariant';
-import { Dashboard } from './dashboard/Dashboard';
-import { AuthPage } from './dashboard/auth/AuthPage';
-import { EarnPage } from './dashboard/earn/EarnPage';
-import { MarketsPage } from './dashboard/markets/MarketsPage';
-import { MarketsGate } from './dashboard/markets/MarketsGate';
-import { PayFiPage } from './dashboard/payfi/PayFiPage';
-import { ReferralsPage } from './dashboard/referrals/ReferralsPage';
-import { ClaimPage } from './dashboard/claim/ClaimPage';
-import { UpdatesPage } from './dashboard/updates/UpdatesPage';
-import { ArticlePage } from './dashboard/updates/ArticlePage';
-import { MysteryPage } from './dashboard/mystery/MysteryPage';
-import { SettingsPage } from './dashboard/settings/SettingsPage';
-import { FigmaHero } from './components/FigmaHero/FigmaHero';
 import { FigmaFeatures } from './components/FigmaFeatures/FigmaFeatures';
 import { FigmaSimple } from './components/FigmaSimple/FigmaSimple';
 import { FigmaEcosystem } from './components/FigmaEcosystem/FigmaEcosystem';
@@ -27,9 +12,29 @@ import { FigmaTokenomics } from './components/FigmaTokenomics/FigmaTokenomics';
 import { FigmaAudits } from './components/FigmaAudits/FigmaAudits';
 import { FigmaHowToBuy } from './components/FigmaHowToBuy/FigmaHowToBuy';
 import { RoadmapStage } from './components/FigmaRoadmap/RoadmapStage';
-import { TokPicker, tokFromParam } from './components/FigmaTokenomics/TokPicker';
+import { tokFromParam } from './components/FigmaTokenomics/TokPicker';
 import { FigmaFooter } from './components/FigmaFooter/FigmaFooter';
-import { BentoPicker, picksFromParam } from './components/FigmaFeatures/BentoPicker';
+import { picksFromParam } from './components/FigmaFeatures/BentoPicker';
+
+/* Every page is its own chunk: the dashboard never loads the landing page's
+   three.js, and the landing page never loads the dashboard. */
+const Hero = lazy(() => import('./components/Hero').then((m) => ({ default: m.Hero })));
+const CaptureStage = lazy(() => import('./components/HeroPlanet/CaptureStage').then((m) => ({ default: m.CaptureStage })));
+const Dashboard = lazy(() => import('./dashboard/Dashboard').then((m) => ({ default: m.Dashboard })));
+const AuthPage = lazy(() => import('./dashboard/auth/AuthPage').then((m) => ({ default: m.AuthPage })));
+const EarnPage = lazy(() => import('./dashboard/earn/EarnPage').then((m) => ({ default: m.EarnPage })));
+const MarketsPage = lazy(() => import('./dashboard/markets/MarketsPage').then((m) => ({ default: m.MarketsPage })));
+const MarketsGate = lazy(() => import('./dashboard/markets/MarketsGate').then((m) => ({ default: m.MarketsGate })));
+const PayFiPage = lazy(() => import('./dashboard/payfi/PayFiPage').then((m) => ({ default: m.PayFiPage })));
+const ReferralsPage = lazy(() => import('./dashboard/referrals/ReferralsPage').then((m) => ({ default: m.ReferralsPage })));
+const ClaimPage = lazy(() => import('./dashboard/claim/ClaimPage').then((m) => ({ default: m.ClaimPage })));
+const UpdatesPage = lazy(() => import('./dashboard/updates/UpdatesPage').then((m) => ({ default: m.UpdatesPage })));
+const ArticlePage = lazy(() => import('./dashboard/updates/ArticlePage').then((m) => ({ default: m.ArticlePage })));
+const MysteryPage = lazy(() => import('./dashboard/mystery/MysteryPage').then((m) => ({ default: m.MysteryPage })));
+const SettingsPage = lazy(() => import('./dashboard/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const FigmaHero = lazy(() => import('./components/FigmaHero/FigmaHero').then((m) => ({ default: m.FigmaHero })));
+const TokPicker = lazy(() => import('./components/FigmaTokenomics/TokPicker').then((m) => ({ default: m.TokPicker })));
+const BentoPicker = lazy(() => import('./components/FigmaFeatures/BentoPicker').then((m) => ({ default: m.BentoPicker })));
 
 const params = new URLSearchParams(window.location.search);
 const CAPTURE_MODE = params.get('capture') === 'planet';
@@ -71,25 +76,27 @@ export function App() {
   // Dev-only: mount/unmount the hero to emulate a route change for the leak check.
   const [heroMounted, setHeroMounted] = useState(true);
 
-  if (CAPTURE_MODE) return <CaptureStage />;
-  if (AUTH) return <AuthPage />;
-  if (EARN) return <EarnPage />;
-  if (TRANSACTIONS) return <MarketsPage />;
-  if (MARKETS) return <MarketsGate />;
-  if (PAYFI) return <PayFiPage />;
-  if (REFERRALS) return <ReferralsPage />;
-  if (CLAIM) return <ClaimPage />;
-  if (ARTICLE) return <ArticlePage id={Number(ARTICLE[1])} />;
-  if (UPDATES) return <UpdatesPage />;
-  if (MYSTERY) return <MysteryPage />;
-  if (SETTINGS) return <SettingsPage />;
-  if (DASHBOARD) return <Dashboard />;
-  if (BENTO_PICKER) return <BentoPicker />;
-  if (TOK_PICKER) return <TokPicker />;
+  const page =
+    CAPTURE_MODE ? <CaptureStage /> :
+    AUTH ? <AuthPage /> :
+    EARN ? <EarnPage /> :
+    TRANSACTIONS ? <MarketsPage /> :
+    MARKETS ? <MarketsGate /> :
+    PAYFI ? <PayFiPage /> :
+    REFERRALS ? <ReferralsPage /> :
+    CLAIM ? <ClaimPage /> :
+    ARTICLE ? <ArticlePage id={Number(ARTICLE[1])} /> :
+    UPDATES ? <UpdatesPage /> :
+    MYSTERY ? <MysteryPage /> :
+    SETTINGS ? <SettingsPage /> :
+    DASHBOARD ? <Dashboard /> :
+    BENTO_PICKER ? <BentoPicker /> :
+    TOK_PICKER ? <TokPicker /> : null;
+  if (page) return <Suspense fallback={null}>{page}</Suspense>;
 
   const figma = HERO_VARIANT === 'figma';
   return (
-    <>
+    <Suspense fallback={null}>
       {!figma && <Nav />}
       <main>
         {heroMounted && (figma ? <FigmaHero /> : <Hero />)}
@@ -113,6 +120,6 @@ export function App() {
           </button>
         </div>
       )}
-    </>
+    </Suspense>
   );
 }

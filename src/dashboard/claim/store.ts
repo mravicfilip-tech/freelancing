@@ -5,15 +5,6 @@ export type Claim = { provider: Provider; wallet: string; whitelist: string; ema
 
 const KEY = 'rtx-claim';
 
-export function loadClaim(): Claim | null {
-  try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as Claim) : null;
-  } catch {
-    return null;
-  }
-}
-
 export function saveClaim(c: Claim): boolean {
   try {
     localStorage.setItem(KEY, JSON.stringify(c));
@@ -21,8 +12,4 @@ export function saveClaim(c: Claim): boolean {
   } catch {
     return false;
   }
-}
-
-export function clearClaim() {
-  try { localStorage.removeItem(KEY); } catch { /* private mode */ }
 }

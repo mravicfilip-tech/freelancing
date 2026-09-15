@@ -57,7 +57,6 @@ export function PayFiPage() {
           status="Beta access"
           title="Crypto in. Fiat out."
           body="Convert supported crypto into fiat and send funds directly to bank accounts through Remittix PayFi. Built for faster, simpler cross-border payments from one dashboard."
-          slim
         >
           <Button onClick={ask}>Request beta access</Button>
           <p className="phero__note">Access is currently limited and requires approval.</p>

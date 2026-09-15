@@ -85,10 +85,9 @@ export function UpdatesPage() {
   /** `?empty=1` renders the page before the team has posted anything. */
   const items = params.get('empty') === '1' ? [] : UPDATES;
   const [lead, ...rest] = items;
-  const dark = params.get('d') ?? undefined;
 
   return (
-    <div className="dash updates" data-theme={mode} data-d={dark}>
+    <div className="dash updates" data-theme={mode}>
       <Sidebar active="updates" />
       <main className="dash__main">
         <Topbar title="Updates" />

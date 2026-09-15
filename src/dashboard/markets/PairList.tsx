@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ArrowOut } from '../icons';
 import { MARKETS_URL } from './urls';
 import { PAIRS, fmt, history, pct, vol } from './feed';
@@ -13,6 +14,8 @@ function Spark({ closes }: { closes: number[] }) {
 
 /** Every market on the platform, as it opens: last, change, volume, a day's shape, and the way in. */
 export function PairList() {
+  // The opening histories are fixed for the session; drawn once, not per render.
+  const rows = useMemo(() => PAIRS.map((p) => ({ p, cs: history(p) })), []);
   return (
     <section className="card orders pl" aria-labelledby="pl-title">
       <header className="card__head">
@@ -39,8 +42,7 @@ export function PairList() {
             </tr>
           </thead>
           <tbody>
-            {PAIRS.map((p) => {
-              const cs = history(p);
+            {rows.map(({ p, cs }) => {
               const last = cs[cs.length - 1].c, ch = pct(last, cs[0].o);
               return (
                 <tr key={p.id}>

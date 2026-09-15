@@ -73,7 +73,6 @@ export function EarnPage() {
           status="Coming soon"
           title="Put your crypto to work"
           body="Remittix Earn is being built to make earning on supported crypto simple. Choose flexible access or lock assets for a fixed term, then track everything from your dashboard."
-          slim
         >
           <div className="phero__panel phero__panel--slim">
             <p className="phero__panel-title">{NOTIFY.title}</p>

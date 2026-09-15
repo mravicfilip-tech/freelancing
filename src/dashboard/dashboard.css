@@ -200,7 +200,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .fig {
   font-family: var(--d-display);
   margin: 0;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
   line-height: 1;

@@ -1838,7 +1838,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   z-index: 50;
   display: flex;
   flex-direction: column;
-  max-height: min(72svh, 640px);
+  max-height: min(78svh, 700px);
   padding: 0;
   border-radius: 24px;
   background: var(--d-card);
@@ -1860,6 +1860,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
 }
 .sheet__foot { flex: none; padding: 8px 12px 12px; border-top: 1px solid var(--d-rule); }
+/* The account row: initials on a disc, the name, and Settings as where it goes. */
+.sheet__me { margin-top: 0; }
+.sheet__avatar { display: grid; flex: none; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--d-accent-tint); color: var(--d-on-tint); font-size: 14px; font-weight: 700; }
+.sheet__me-text { display: grid; gap: 1px; min-width: 0; }
+.sheet__me-sub { font-size: 12.5px; font-weight: 500; color: var(--d-text-3); }
+.sheet__item[aria-current='page'] { background: var(--d-accent-tint); color: var(--d-on-tint); }
 @keyframes sheet-rise { from { transform: translateY(16px) scale(0.97); opacity: 0; } }
 @keyframes sheet-fade { from { opacity: 0; } }
 
@@ -2016,6 +2022,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   -webkit-tap-highlight-color: transparent;
 }
 .tabbar__item[aria-current='page'],
+.tabbar__item[data-current],
 .tabbar__item[aria-expanded='true'] { color: var(--d-text); background: var(--d-inset); }
 .tabbar__icon { position: relative; display: block; line-height: 0; }
 /* The rail spells NEW out; a bar slot has no room, so the badge becomes a dot. */

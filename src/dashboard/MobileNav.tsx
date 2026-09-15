@@ -10,10 +10,8 @@ import {
   MoreIcon,
   NavIcon,
   PayMark,
-  SettingsIcon,
   SignOutIcon,
   SunIcon,
-  UserIcon,
 } from './icons';
 import { ROUTE } from './Sidebar';
 import { theme } from './theme';
@@ -23,26 +21,30 @@ import { signOut } from './auth/session';
 type RailId = keyof typeof NavIcon;
 
 /**
- * Below the rail's breakpoint the seven-item sidebar becomes a five-slot bar
- * under the thumb. Four slots are destinations; the fifth opens the sheet.
- *
- * Buy is not a rail route — it is the one thing a presale visitor came to do,
- * so on a phone it gets a permanent slot that jumps to the form.
+ * Below the rail's breakpoint the sidebar becomes a five-slot bar under the
+ * thumb: the presale home, the two products with their own pages, the claim
+ * whitelist, and More for the rest. Buy is reached through Presale, where
+ * the form is the first thing under the figures.
  */
 const BAR: { id: string; label: string; href: string; badge?: string }[] = [
   { id: 'presale', label: 'Presale', href: '/dashboard' },
-  { id: 'buy', label: 'Buy', href: '/dashboard#buy' },
-  { id: 'referrals', label: 'Referrals', href: '/referrals' },
+  { id: 'earn', label: 'Earn', href: '/earn' },
+  { id: 'markets', label: 'Markets', href: '/markets' },
   { id: 'claim', label: 'Claim', href: '/claim', badge: 'NEW' },
 ];
 
-const SHEET: { id: RailId; label: string; badge?: string; soon?: boolean }[] = [
-  { id: 'earn', label: 'Earn' },
-  { id: 'markets', label: 'Markets' },
-  { id: 'payfi', label: 'PayFi', badge: 'NEW' },
-  { id: 'transactions', label: 'My transactions' },
-  { id: 'updates', label: 'Updates' },
-  { id: 'mystery', label: 'Mystery box' },
+type Row = { id: RailId; label: string; badge?: string; soon?: boolean };
+/** The panel's two groups: the products without a slot, then what is yours. */
+const SHEET: Row[][] = [
+  [
+    { id: 'payfi', label: 'PayFi', badge: 'NEW' },
+    { id: 'mystery', label: 'Mystery box' },
+    { id: 'updates', label: 'Updates' },
+  ],
+  [
+    { id: 'transactions', label: 'My transactions' },
+    { id: 'referrals', label: 'Referrals' },
+  ],
 ];
 
 /**
@@ -50,7 +52,7 @@ const SHEET: { id: RailId; label: string; badge?: string; soon?: boolean }[] = [
  * leftover rail routes, the wallet the whole dashboard is about, and the theme
  * switch that lives in the topbar on a desktop.
  */
-function Sheet({ onClose }: { onClose: () => void }) {
+function Sheet({ onClose, active }: { onClose: () => void; active: string }) {
   const mode = theme.use();
   const [copied, copy] = useCopy();
 
@@ -66,42 +68,34 @@ function Sheet({ onClose }: { onClose: () => void }) {
       </header>
 
       <div className="sheet__body">
-      <ul className="sheet__list">
-        {SHEET.map(({ id, label, badge, soon }) => {
-          const Icon = NavIcon[id];
-          return (
-            <li key={id}>
-              <a className={`sheet__item${soon ? ' sheet__item--soon' : ''}`} href={soon ? undefined : ROUTE[id] ?? `#${id}`} aria-disabled={soon || undefined} onClick={onClose}>
-                <Icon className="icon-22" />
-                {label}
-                {badge && <span className="rail__badge">{badge}</span>}
-                <ChevronRight className="icon-16 sheet__chev" />
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-
-      {/* The account rows the rail carries on a desktop. */}
-      <ul className="sheet__list sheet__list--account">
-        <li>
-          <a className="sheet__item" href="/settings" onClick={onClose}>
-            <UserIcon className="icon-22" />
-            {USER.name}
-            <ChevronRight className="icon-16 sheet__chev" />
-          </a>
-        </li>
-        <li>
-          <a className="sheet__item" href="/settings" onClick={onClose}>
-            <SettingsIcon className="icon-22" />
-            Settings
-            <ChevronRight className="icon-16 sheet__chev" />
-          </a>
-        </li>
-      </ul>
+      {SHEET.map((group, g) => (
+        <ul className={`sheet__list${g > 0 ? ' sheet__list--account' : ''}`} key={g}>
+          {group.map(({ id, label, badge, soon }) => {
+            const Icon = NavIcon[id];
+            return (
+              <li key={id}>
+                <a className={`sheet__item${soon ? ' sheet__item--soon' : ''}`} href={soon ? undefined : ROUTE[id] ?? `#${id}`} aria-current={id === active ? 'page' : undefined} aria-disabled={soon || undefined} onClick={onClose}>
+                  <Icon className="icon-22" />
+                  {label}
+                  {badge && <span className="rail__badge">{badge}</span>}
+                  <ChevronRight className="icon-16 sheet__chev" />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      ))}
       </div>
 
       <div className="sheet__foot">
+      <a className="sheet__item sheet__me" href="/settings" onClick={onClose}>
+        <span className="sheet__avatar">{USER.initials}</span>
+        <span className="sheet__me-text">
+          <span>{USER.name}</span>
+          <span className="sheet__me-sub">Settings</span>
+        </span>
+        <ChevronRight className="icon-16 sheet__chev" />
+      </a>
       <div className="sheet__wallet">
         <PayMark id="ETH" className="icon-28" />
         <span className="sheet__wallet-text">
@@ -184,7 +178,7 @@ export function MobileNav({ active = 'presale' }: { active?: string }) {
       {open && (
         <>
           <div className="sheet__scrim" onClick={() => setOpen(false)} aria-hidden="true" />
-          <Sheet onClose={() => setOpen(false)} />
+          <Sheet onClose={() => setOpen(false)} active={active} />
         </>
       )}
 
@@ -211,6 +205,7 @@ export function MobileNav({ active = 'presale' }: { active?: string }) {
         <button
           type="button"
           className="tabbar__item"
+          data-current={!BAR.some((b) => b.id === active) || undefined}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >

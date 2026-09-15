@@ -23,8 +23,11 @@
    is the menu's anchor, so the list hangs under the whole field. */
 .set-field .field__control { position: relative; }
 .csel { position: static; }
-.csel__button { height: 36px; padding: 0 8px 0 6px; margin-left: -8px; gap: 6px; }
-.csel__flag { font-size: 18px; line-height: 1; }
+.csel__button { height: 36px; padding: 0 8px 0 6px; margin-left: -8px; gap: 8px; white-space: nowrap; background: transparent; box-shadow: none; }
+.dash[data-theme='dark'] .csel__button { background: transparent; }
+.csel__button:hover { background: var(--d-inset); }
+.csel__button[aria-expanded='true'] { background: var(--d-accent-tint); box-shadow: none; }
+.csel__flag { display: block; flex: none; width: 20px; height: 15px; border-radius: 2px; object-fit: cover; }
 .csel__menu { left: 0; right: 0; width: auto; max-height: 300px; overflow-y: auto; }
 .csel__country { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .set-sep { flex: none; width: 1px; height: 22px; background: var(--d-field-ring); }

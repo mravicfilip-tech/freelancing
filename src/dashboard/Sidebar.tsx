@@ -17,15 +17,16 @@ const GROUPS: Id[][] = [
 ];
 
 /** `soon` rows have no page yet: they show where the product is going and lead nowhere. */
-const META: Record<Id, { label: string; badge?: string; soon?: boolean }> = {
+/** `short` is what the collapsed rail shows under the icon, where the full label would not fit. */
+const META: Record<Id, { label: string; badge?: string; soon?: boolean; short?: string }> = {
   presale: { label: 'Presale' },
   earn: { label: 'Earn' },
   markets: { label: 'Markets' },
   payfi: { label: 'PayFi', badge: 'NEW' },
-  transactions: { label: 'My transactions' },
+  transactions: { label: 'My transactions', short: 'Transactions' },
   referrals: { label: 'Referrals' },
   updates: { label: 'Updates' },
-  mystery: { label: 'Mystery box' },
+  mystery: { label: 'Mystery box', short: 'M. Box' },
   claim: { label: 'Claim', badge: 'NEW' },
 };
 
@@ -46,7 +47,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id | 'settings' }) {
           <ul className="rail__group" key={i}>
             {group.map((id) => {
               const Icon = NavIcon[id];
-              const { label, badge, soon } = META[id];
+              const { label, badge, soon, short } = META[id];
               const current = id === active;
               return (
                 <li key={id}>
@@ -60,7 +61,7 @@ export function Sidebar({ active = 'presale' }: { active?: Id | 'settings' }) {
                     <span className="rail__icon">
                       <Icon className="icon-22" />
                     </span>
-                    <span className="rail__label">{label}</span>
+                    <span className="rail__label">{collapsed && short ? short : label}</span>
                     {badge && <span className="rail__badge">{badge}</span>}
                   </a>
                 </li>

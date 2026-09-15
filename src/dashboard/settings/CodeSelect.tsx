@@ -1,43 +1,28 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { ChevronDown } from '../icons';
-import us from 'flag-icons/flags/4x3/us.svg';
-import gb from 'flag-icons/flags/4x3/gb.svg';
-import de from 'flag-icons/flags/4x3/de.svg';
-import fr from 'flag-icons/flags/4x3/fr.svg';
-import es from 'flag-icons/flags/4x3/es.svg';
-import it from 'flag-icons/flags/4x3/it.svg';
-import nl from 'flag-icons/flags/4x3/nl.svg';
-import ch from 'flag-icons/flags/4x3/ch.svg';
-import rs from 'flag-icons/flags/4x3/rs.svg';
-import hr from 'flag-icons/flags/4x3/hr.svg';
-import ae from 'flag-icons/flags/4x3/ae.svg';
-import ind from 'flag-icons/flags/4x3/in.svg';
-import sg from 'flag-icons/flags/4x3/sg.svg';
-import au from 'flag-icons/flags/4x3/au.svg';
-import ca from 'flag-icons/flags/4x3/ca.svg';
 
 /**
  * The phone field's country code, on the buy form's token menu: a button in
  * the control, a listbox under it, Escape and an outside click to close.
- * Flags are flag-icons' SVGs, one per country we list, since emoji flags do
- * not render on Windows.
+ * Flags are flag-icons' SVGs, copied into public/figma/flags for the
+ * countries we list, since emoji flags do not render on Windows.
  */
 export const COUNTRIES = [
-  { iso: 'US', dial: '+1', name: 'United States', flag: us },
-  { iso: 'GB', dial: '+44', name: 'United Kingdom', flag: gb },
-  { iso: 'DE', dial: '+49', name: 'Germany', flag: de },
-  { iso: 'FR', dial: '+33', name: 'France', flag: fr },
-  { iso: 'ES', dial: '+34', name: 'Spain', flag: es },
-  { iso: 'IT', dial: '+39', name: 'Italy', flag: it },
-  { iso: 'NL', dial: '+31', name: 'Netherlands', flag: nl },
-  { iso: 'CH', dial: '+41', name: 'Switzerland', flag: ch },
-  { iso: 'RS', dial: '+381', name: 'Serbia', flag: rs },
-  { iso: 'HR', dial: '+385', name: 'Croatia', flag: hr },
-  { iso: 'AE', dial: '+971', name: 'United Arab Emirates', flag: ae },
-  { iso: 'IN', dial: '+91', name: 'India', flag: ind },
-  { iso: 'SG', dial: '+65', name: 'Singapore', flag: sg },
-  { iso: 'AU', dial: '+61', name: 'Australia', flag: au },
-  { iso: 'CA', dial: '+1', name: 'Canada', flag: ca },
+  { iso: 'US', dial: '+1', name: 'United States', flag: '/figma/flags/us.svg' },
+  { iso: 'GB', dial: '+44', name: 'United Kingdom', flag: '/figma/flags/gb.svg' },
+  { iso: 'DE', dial: '+49', name: 'Germany', flag: '/figma/flags/de.svg' },
+  { iso: 'FR', dial: '+33', name: 'France', flag: '/figma/flags/fr.svg' },
+  { iso: 'ES', dial: '+34', name: 'Spain', flag: '/figma/flags/es.svg' },
+  { iso: 'IT', dial: '+39', name: 'Italy', flag: '/figma/flags/it.svg' },
+  { iso: 'NL', dial: '+31', name: 'Netherlands', flag: '/figma/flags/nl.svg' },
+  { iso: 'CH', dial: '+41', name: 'Switzerland', flag: '/figma/flags/ch.svg' },
+  { iso: 'RS', dial: '+381', name: 'Serbia', flag: '/figma/flags/rs.svg' },
+  { iso: 'HR', dial: '+385', name: 'Croatia', flag: '/figma/flags/hr.svg' },
+  { iso: 'AE', dial: '+971', name: 'United Arab Emirates', flag: '/figma/flags/ae.svg' },
+  { iso: 'IN', dial: '+91', name: 'India', flag: '/figma/flags/in.svg' },
+  { iso: 'SG', dial: '+65', name: 'Singapore', flag: '/figma/flags/sg.svg' },
+  { iso: 'AU', dial: '+61', name: 'Australia', flag: '/figma/flags/au.svg' },
+  { iso: 'CA', dial: '+1', name: 'Canada', flag: '/figma/flags/ca.svg' },
 ] as const;
 export type Iso = (typeof COUNTRIES)[number]['iso'];
 

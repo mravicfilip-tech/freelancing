@@ -63,8 +63,8 @@ function CardOnboard() {
         <span className="onboard__chip onboard__chip--blur" style={{ left: 87, top: 187, width: 100 }}>No documents</span>
         <span className="onboard__chip" style={{ left: 111, top: 225, width: 76 }}>No waiting</span>
         <div className="onboard__ring">
-          <img src={ring60} alt="" className="onboard__ring-img" width={128} height={129} />
-          <img src={ringArc} alt="" className="onboard__ring-arc" width={90.8} height={64.4} />
+          <img src={ring60} alt="" className="onboard__ring-img" width={128.01} height={128.78} />
+          <img src={ringArc} alt="" className="onboard__ring-arc" width={90.82} height={64.36} />
           <span className="onboard__seconds">60s</span>
         </div>
         <span className="onboard__in">You’re in.</span>

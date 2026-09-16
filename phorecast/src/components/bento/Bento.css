@@ -112,25 +112,31 @@
   backdrop-filter: blur(2px);
 }
 .onboard__chip--blur { backdrop-filter: blur(11.3px); }
-.onboard__ring { position: absolute; left: 247px; top: 166px; width: 140px; height: 140px; }
-.onboard__ring { border-radius: 50%; }
+/* Disc and arc are concentric in Figma; each carries its own rotation. */
+.onboard__ring { position: absolute; left: 238px; top: 158px; width: 157.9px; height: 158.8px; }
 .onboard__ring::before {
   content: '';
   position: absolute;
-  left: 6px; top: 5px; width: 128px; height: 129px;
+  left: 14.95px; top: 15.03px; width: 128.01px; height: 128.78px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(6px);
 }
-.onboard__ring-img { position: absolute; left: 6px; top: 5px; width: 128px; height: 129px; transform: rotate(5.72deg); opacity: 0.45; mix-blend-mode: soft-light; }
-.onboard__ring-arc { position: absolute; right: 8px; top: 6px; width: 90.8px; height: 64.4px; transform: rotate(15.8deg); }
+.onboard__ring-img { position: absolute; left: 14.95px; top: 15.03px; width: 128.01px; height: 128.78px; transform: rotate(5.72deg); opacity: 0.45; mix-blend-mode: soft-light; }
+/* The arc covers the top-right of the 128px circle, so it turns about that circle's centre, not its own. */
+.onboard__ring-arc {
+  position: absolute; left: 52.15px; top: 15.05px; width: 90.82px; height: 64.36px;
+  transform-origin: 26.8px 64.36px; transform: rotate(15.8deg);
+}
 .onboard__seconds {
-  position: absolute; left: 24px; top: 39px;
+  position: absolute; left: 32.95px; top: 48.23px;
   font-family: var(--font-mono); font-weight: 200; font-size: 50px; line-height: 1.2; color: var(--white-font);
 }
+/* Figma places this label by its cap box, so trim the line box to match. */
 .onboard__in {
   position: absolute; left: 295px; top: 311px;
-  font-family: var(--font-wordmark); font-weight: 600; font-size: 14px; line-height: 1; color: var(--white-font); white-space: nowrap;
+  font-family: var(--font-wordmark); font-weight: 600; font-size: 14px; line-height: 1.2; color: var(--white-font); white-space: nowrap;
+  text-box: trim-both cap alphabetic;
 }
 
 /* Card B ------------------------------------------------------------------ */

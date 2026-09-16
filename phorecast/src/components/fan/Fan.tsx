@@ -30,13 +30,14 @@ function SportIcon() {
   );
 }
 
+/* Figma fixes the three left pills at 120 and hugs the label on the right three. */
 const PILLS = [
   { label: 'Crypto', x: 502, y: 212, w: 120, icon: <img src={iconCrypto} alt="" /> },
   { label: 'Sport', x: 201, y: 536, w: 120, icon: <SportIcon /> },
   { label: 'Finance', x: 553, y: 558, w: 120, icon: <img src={iconFinance} alt="" /> },
-  { label: 'Geopolitics', x: 1581, y: 188, w: 0, icon: <img src={iconGeopolitics} alt="" /> },
-  { label: 'Tech', x: 1639, y: 512, w: 0, icon: <img src={iconTech} alt="" /> },
-  { label: 'Elections', x: 1372, y: 556, w: 0, icon: <img src={iconElections} alt="" /> },
+  { label: 'Geopolitics', x: 1581, y: 188, w: 149, icon: <img src={iconGeopolitics} alt="" /> },
+  { label: 'Tech', x: 1639, y: 512, w: 90, icon: <img src={iconTech} alt="" /> },
+  { label: 'Elections', x: 1372, y: 556, w: 132, icon: <img src={iconElections} alt="" /> },
 ];
 
 /** Both arc groups share one 863 x 675 sub-frame; the left one is mirrored. */
@@ -63,7 +64,7 @@ export function Fan() {
             <span
               key={p.label}
               className="fan__pill"
-              style={{ ['--x' as string]: p.x, ['--y' as string]: p.y, ...(p.w ? { ['--w' as string]: p.w } : {}) }}
+              style={{ ['--x' as string]: p.x, ['--y' as string]: p.y, ['--w' as string]: p.w }}
             >
               {p.icon}{p.label}
             </span>

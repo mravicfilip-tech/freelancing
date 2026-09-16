@@ -64,6 +64,13 @@ treatment lives in the hero and section glows rather than in a component.
   which leaves a hard line where two sections meet. The `glow-fade` utility in
   `global.css` masks each glow layer so it dissolves into the next section.
 
+## Motion labs
+
+`http://localhost:5173/motion-lab.html` — five interaction-motion directions for
+buttons, links and social icons, side by side, to pick from. Lab pages live at
+the project root rather than in `public/` so they can `import` gsap and three
+from `node_modules`; they are dev-only and are not part of `npm run build`.
+
 ## Review helpers
 
 `?slide=1..4` opens the hero on a given slide and pauses autoplay.
@@ -76,6 +83,7 @@ node scripts/shot-mobile.mjs     # 390px overflow report + section shots
 node scripts/capture-all.mjs     # every section at 1920, for diffing against Figma
 node scripts/probe.mjs           # measured geometry of the Familiar Trading band
 node scripts/assets-probe.mjs    # rendered vs natural size of each exported asset
+node scripts/shot-lab.mjs        # drives every motion-lab direction and shoots it
 ```
 
 To check a section against its frame, capture it and stack the two images:

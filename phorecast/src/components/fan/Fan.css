@@ -62,7 +62,10 @@
   position: absolute;
   left: calc(var(--x) * var(--f));
   top: calc(var(--y) * var(--f));
-  width: calc(var(--w, 0) * var(--f));
+  width: calc(var(--w) * var(--f));
+  /* The fill must never end up narrower than the label it sits behind: the
+     narrow breakpoint scales the type up without changing the design widths. */
+  min-width: max-content;
   display: inline-flex;
   align-items: center;
   gap: calc(12 * var(--f));

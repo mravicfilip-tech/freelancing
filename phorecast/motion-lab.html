@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<title>Motion Lab</title>
+<meta name="description" content="Five interaction-motion directions for Phorecast buttons, links and social icons." />
+<style>
+:root{
+  --bg:#0f0e0d; --surface:#1b1b1a; --white:#fffbf8; --orange:#f55e22;
+  --body:#9d9d9d; --line:rgba(255,251,248,.12); --ink:#140b06;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--white);
+  font:400 16px/1.55 'Manrope Variable',Manrope,system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit}
+h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
+.wrap{max-width:1100px; margin:0 auto; padding:0 24px}
+
+/* ---------- page chrome ---------- */
+.top{padding:72px 0 28px}
+.eyebrow{font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--orange)}
+.top h1{font-size:clamp(34px,5vw,52px); margin:16px 0 14px}
+.top p{max-width:60ch; color:var(--body); margin:0}
+.top .hint{margin-top:18px; font-size:14px; color:var(--body)}
+.top .hint kbd{
+  font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; background:var(--surface);
+  border:1px solid var(--line); border-radius:6px; padding:3px 7px; color:var(--white);
+}
+
+.picker{
+  position:sticky; top:0; z-index:40; margin-top:40px;
+  background:rgba(15,14,13,.82); backdrop-filter:blur(14px);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.picker__in{display:flex; gap:8px; overflow-x:auto; padding:12px 24px; max-width:1100px; margin:0 auto; scrollbar-width:none}
+.picker__in::-webkit-scrollbar{display:none}
+.picker a{
+  flex:0 0 auto; text-decoration:none; font:500 13px/1 'Manrope Variable',Manrope; color:var(--body);
+  border:1px solid var(--line); border-radius:999px; padding:9px 15px;
+  transition:color .25s, border-color .25s, background-color .25s;
+}
+.picker a:hover,.picker a:focus-visible{color:var(--white); border-color:rgba(255,251,248,.32)}
+.picker a b{color:var(--orange); font-weight:500; margin-right:7px; font-family:'Geist Mono Variable',ui-monospace,monospace; font-size:12px}
+
+/* ---------- one variant block ---------- */
+.lab{padding:88px 0 8px; border-top:1px solid transparent}
+.lab__head{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:8px}
+.lab__no{font:500 13px/1 'Geist Mono Variable',ui-monospace,monospace; color:var(--orange)}
+.lab__head h2{font-size:clamp(24px,3vw,32px)}
+.lab__why{color:var(--body); max-width:66ch; margin:0 0 6px}
+.lab__tech{font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; color:rgba(255,251,248,.38); letter-spacing:.06em; text-transform:uppercase}
+
+.panel{
+  margin-top:28px; background:var(--surface); border:1px solid var(--line);
+  border-radius:22px; padding:34px 34px 38px; position:relative; overflow:hidden;
+}
+.grp + .grp{margin-top:34px; padding-top:30px; border-top:1px dashed rgba(255,251,248,.09)}
+.grp__t{font:500 11px/1 'Geist Mono Variable',ui-monospace,monospace; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,251,248,.4); margin-bottom:18px}
+.row{display:flex; flex-wrap:wrap; align-items:center; gap:16px}
+.row--nav{gap:30px}
+.row--foot{gap:26px}
+.copy{color:var(--body); max-width:56ch; margin:18px 0 0; font-size:15px}
+
+/* ---------- shared components ---------- */
+.btn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  height:52px; padding:0 26px; border-radius:999px; border:1px solid transparent;
+  font:600 15px/1 'Manrope Variable',Manrope; letter-spacing:-.01em; color:var(--white);
+  background:transparent; cursor:pointer; overflow:hidden; isolation:isolate;
+  -webkit-tap-highlight-color:transparent; will-change:transform;
+}
+.btn__fill{position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0}
+.btn__trace{position:absolute; inset:0; z-index:1; width:100%; height:100%; pointer-events:none; opacity:0; overflow:visible}
+.btn__label,.btn__icon{position:relative; z-index:2; display:inline-flex; align-items:center}
+.btn__icon svg{display:block}
+.btn--primary{background:var(--orange); color:var(--ink)}
+.btn--secondary{border-color:rgba(255,251,248,.22)}
+.btn--ghost{padding-inline:14px}
+.btn--icon{width:52px; padding:0; border-color:rgba(255,251,248,.22)}
+.btn[disabled]{opacity:.34; cursor:not-allowed; filter:saturate(.35); pointer-events:none}
+.btn.is-loading{pointer-events:none}
+.btn.is-loading .btn__label{opacity:.55}
+.spin{
+  position:relative; z-index:2; width:15px; height:15px; border-radius:50%;
+  border:2px solid rgba(20,11,6,.28); border-top-color:currentColor;
+  animation:spin .7s linear infinite; display:none;
+}
+.btn--secondary .spin,.btn--ghost .spin{border-color:rgba(255,251,248,.25); border-top-color:var(--white)}
+.btn.is-loading .spin{display:block}
+.btn.is-loading .btn__icon{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.lnk{
+  position:relative; display:inline-block; text-decoration:none; cursor:pointer;
+  color:var(--white); will-change:transform;
+}
+.lnk--nav{font:500 15px/1 'Manrope Variable',Manrope}
+.lnk--foot{font:400 14px/1 'Manrope Variable',Manrope; color:var(--body)}
+.lnk--inline{color:var(--white); font-weight:500}
+.lnk__u{position:absolute; left:0; right:0; bottom:-5px; height:1px; background:currentColor; transform:scaleX(0); transform-origin:left; pointer-events:none}
+.lnk--inline .lnk__u{bottom:-2px; background:var(--orange)}
+
+.soc{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  width:46px; height:46px; border-radius:50%; border:1px solid var(--line);
+  color:var(--white); text-decoration:none; cursor:pointer; overflow:hidden;
+  isolation:isolate; will-change:transform;
+}
+.soc svg{position:relative; z-index:2; width:18px; height:18px; fill:currentColor; display:block}
+.soc__fill{position:absolute; inset:0; z-index:0; background:var(--orange); opacity:0; pointer-events:none}
+.soc__ring{display:none}
+.soc__flip{position:relative; z-index:2; width:18px; height:18px}
+.soc__flip svg{position:absolute; inset:0}
+.soc__flip svg:last-child{display:none}
+
+.btn:focus-visible,.soc:focus-visible{outline:2px solid var(--orange); outline-offset:3px}
+.lnk:focus-visible{outline:2px solid var(--orange); outline-offset:5px; border-radius:3px}
+
+.foot{padding:90px 0 120px; color:var(--body); font-size:15px; text-align:center}
+.foot b{color:var(--white); font-weight:600}
+
+/* ======================================================================
+   1 — MAGNETIC
+   Elements lean toward the cursor; a soft spotlight tracks it inside.
+   ====================================================================== */
+[data-v="1"] .btn{transition:border-color .35s var(--ease), background-color .35s var(--ease)}
+[data-v="1"] .btn--secondary:hover,[data-v="1"] .btn--icon:hover{border-color:rgba(255,251,248,.5)}
+[data-v="1"] .btn__fill{
+  background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%), rgba(255,251,248,.22), transparent 68%);
+  transition:opacity .35s var(--ease);
+}
+[data-v="1"] .btn--primary .btn__fill{background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%), rgba(20,11,6,.22), transparent 68%)}
+[data-v="1"] .btn:hover .btn__fill,[data-v="1"] .btn:focus-visible .btn__fill{opacity:1}
+[data-v="1"] .soc{transition:border-color .35s var(--ease), color .35s var(--ease)}
+[data-v="1"] .soc:hover{border-color:var(--orange); color:var(--orange)}
+
+/* ======================================================================
+   2 — SPLIT-FLAP
+   Labels roll over like a price board. Every glyph flips on its own beat.
+   ====================================================================== */
+[data-v="2"] .ch{position:relative; display:inline-block; overflow:hidden; vertical-align:top}
+[data-v="2"] .ch--sp{width:.32em}
+[data-v="2"] .ch__a,[data-v="2"] .ch__b{display:block}
+[data-v="2"] .ch__b{position:absolute; left:0; top:0; transform:translateY(100%); color:var(--orange)}
+[data-v="2"] .btn--primary .ch__b{color:var(--ink)}
+[data-v="2"] .btn{transition:background-color .4s var(--ease), border-color .4s var(--ease)}
+[data-v="2"] .btn--primary:hover{background:#ff7a45}
+[data-v="2"] .btn--secondary:hover,[data-v="2"] .btn--icon:hover{border-color:var(--orange)}
+[data-v="2"] .lnk__u{background:var(--orange)}
+[data-v="2"] .soc{overflow:visible}
+[data-v="2"] .soc__flip{transform-style:preserve-3d}
+[data-v="2"] .soc__flip svg:last-child{display:block; transform:rotateX(180deg); color:var(--orange)}
+[data-v="2"] .soc svg{backface-visibility:hidden}
+
+/* ======================================================================
+   3 — DIRECTIONAL SWEEP
+   A block of colour wipes in from the edge you entered and leaves by the
+   edge you exit. Nothing bounces; it reads as precision.
+   ====================================================================== */
+[data-v="3"] .btn__fill{opacity:1; transform:scaleX(0); transform-origin:left; background:var(--white)}
+[data-v="3"] .btn--secondary .btn__fill,[data-v="3"] .btn--icon .btn__fill,[data-v="3"] .btn--ghost .btn__fill{background:var(--orange)}
+[data-v="3"] .btn--ghost .btn__fill{background:rgba(255,251,248,.1)}
+[data-v="3"] .btn__label,[data-v="3"] .btn__icon{transition:color .3s var(--ease)}
+[data-v="3"] .btn--primary.is-on .btn__label,[data-v="3"] .btn--primary.is-on .btn__icon{color:var(--orange)}
+[data-v="3"] .btn--secondary.is-on .btn__label,[data-v="3"] .btn--secondary.is-on .btn__icon,
+[data-v="3"] .btn--icon.is-on .btn__icon{color:var(--ink)}
+[data-v="3"] .lnk__u{height:1.5px}
+[data-v="3"] .soc__fill{opacity:1; transform:scale(0); border-radius:50%}
+[data-v="3"] .soc{transition:color .3s var(--ease), border-color .3s var(--ease)}
+[data-v="3"] .soc.is-on{color:var(--ink); border-color:var(--orange)}
+
+/* ======================================================================
+   4 — SIGNAL TRACE
+   A pulse of light runs the outline, a dot travels the underline. Borrows
+   the circuitry already drawn in the hero and the steps panels.
+   ====================================================================== */
+[data-v="4"] .btn__trace rect{fill:none; stroke:var(--orange); stroke-width:1.5}
+[data-v="4"] .btn--primary .btn__trace rect{stroke:var(--ink)}
+[data-v="4"] .btn{transition:box-shadow .45s var(--ease), border-color .45s var(--ease)}
+[data-v="4"] .btn--secondary:hover,[data-v="4"] .btn--icon:hover{border-color:rgba(245,94,34,.55); box-shadow:0 0 30px -6px rgba(245,94,34,.55)}
+[data-v="4"] .btn--primary:hover{box-shadow:0 0 38px -6px rgba(245,94,34,.75)}
+[data-v="4"] .lnk__u{background:rgba(255,251,248,.25); transform:scaleX(1)}
+[data-v="4"] .lnk__dot{position:absolute; bottom:-7px; left:0; width:5px; height:5px; border-radius:50%; background:var(--orange); opacity:0; box-shadow:0 0 10px 1px rgba(245,94,34,.9); pointer-events:none}
+[data-v="4"] .soc__ring{display:block; position:absolute; inset:-1px; border:1px solid var(--orange); border-radius:50%; opacity:0; pointer-events:none}
+[data-v="4"] .soc{overflow:visible; transition:color .35s var(--ease), border-color .35s var(--ease)}
+[data-v="4"] .soc:hover{color:var(--orange); border-color:rgba(245,94,34,.5)}
+
+/* ======================================================================
+   5 — SHADER FIELD
+   One WebGL layer under the whole page. Every hover fires a dithered ring
+   into it — the same halftone language as the Figma glows.
+   ====================================================================== */
+#field{position:fixed; inset:0; z-index:1; pointer-events:none}
+body > *{position:relative; z-index:2}
+[data-v="5"] .panel{background:rgba(27,27,26,.78); backdrop-filter:blur(3px)}
+[data-v="5"] .btn__fill{
+  opacity:0;
+  background-image:radial-gradient(rgba(255,251,248,.5) 1px, transparent 1.1px);
+  background-size:4px 4px;
+  transition:opacity .4s var(--ease);
+}
+[data-v="5"] .btn--primary .btn__fill{background-image:radial-gradient(rgba(20,11,6,.45) 1px, transparent 1.1px)}
+[data-v="5"] .btn:hover .btn__fill,[data-v="5"] .btn:focus-visible .btn__fill{opacity:.85}
+[data-v="5"] .btn{transition:border-color .4s var(--ease)}
+[data-v="5"] .btn--secondary:hover,[data-v="5"] .btn--icon:hover{border-color:rgba(245,94,34,.6)}
+[data-v="5"] .lnk__u{background:var(--orange); box-shadow:0 0 12px rgba(245,94,34,.8)}
+[data-v="5"] .soc{transition:border-color .4s var(--ease), color .4s var(--ease)}
+[data-v="5"] .soc:hover{border-color:rgba(245,94,34,.6); color:var(--orange)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important}
+  #field{display:none}
+}
+@media (max-width:640px){
+  .panel{padding:26px 20px 30px; border-radius:18px}
+  .row--nav{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="field" aria-hidden="true"></canvas>
+
+<header class="top wrap">
+  <div class="eyebrow">Phorecast · motion lab</div>
+  <h1>Five ways to move</h1>
+  <p>The same six buttons, four nav links, two inline links, four footer links and five social icons, built five times over. Everything is driven by GSAP; direction 5 adds a Three.js/WebGL layer. Pick one and I'll wire it through the whole site.</p>
+  <p class="hint">Hover anything. Then press <kbd>Tab</kbd> — every direction animates on keyboard focus too, not just the mouse. Click <b>Place order</b> for the loading state.</p>
+</header>
+
+<nav class="picker"><div class="picker__in">
+  <a href="#v1"><b>01</b>Magnetic</a>
+  <a href="#v2"><b>02</b>Split-flap</a>
+  <a href="#v3"><b>03</b>Directional sweep</a>
+  <a href="#v4"><b>04</b>Signal trace</a>
+  <a href="#v5"><b>05</b>Shader field</a>
+</div></nav>
+
+<main class="wrap" id="main"></main>
+
+<footer class="foot wrap">
+  <p>Tell me a number — or mix them, e.g. <b>buttons from 03, links from 04</b>.</p>
+</footer>
+
+<script type="module">
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/geist-mono';
+import { gsap } from 'gsap';
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ------------------------------------------------------------------ markup */
+const ARROW = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8.2 3.7 12 7.5l-3.8 3.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const ICONS = {
+  X:'<svg viewBox="0 0 20 20"><path d="M14.2 2.4h2.6l-5.7 6.5 6.7 8.7h-5.2l-4.1-5.3-4.7 5.3H1.2l6.1-6.9L.9 2.4h5.4l3.7 4.9 4.2-4.9Zm-.9 13.6h1.4L5.5 3.9H4l9.3 12.1Z"/></svg>',
+  Discord:'<svg viewBox="0 0 20 20"><path d="M15.6 4.6a13 13 0 0 0-3.2-1l-.2.4a12 12 0 0 1 2.9 1.4 10 10 0 0 0-8.2 0 12 12 0 0 1 2.9-1.4l-.2-.4a13 13 0 0 0-3.2 1A15.5 15.5 0 0 0 3 15.2a13 13 0 0 0 3.9 2l.8-1.3c-.7-.3-1.3-.6-1.9-1l.5-.4a9.3 9.3 0 0 0 7.9 0l.5.4c-.6.4-1.2.7-1.9 1l.8 1.3a13 13 0 0 0 3.9-2 15.5 15.5 0 0 0-2.4-10.6ZM7.6 12.8c-.8 0-1.4-.7-1.4-1.6s.6-1.6 1.4-1.6 1.5.7 1.4 1.6c0 .9-.6 1.6-1.4 1.6Zm4.8 0c-.8 0-1.4-.7-1.4-1.6s.6-1.6 1.4-1.6 1.5.7 1.4 1.6c0 .9-.6 1.6-1.4 1.6Z"/></svg>',
+  Telegram:'<svg viewBox="0 0 20 20"><path d="M18.3 3.1 2.2 9.3c-1.1.4-1.1 1.1-.2 1.4l4.1 1.3 1.6 4.9c.2.5.3.7.6.7.4 0 .5-.2.8-.4l2-2 4.2 3.1c.8.4 1.3.2 1.5-.7l2.7-12.6c.2-1.1-.4-1.6-1.2-1.9ZM7.1 12.1l8.6-5.4c.4-.2.8 0 .5.3l-7.4 6.7-.3 3-1.4-4.6Z"/></svg>',
+  GitHub:'<svg viewBox="0 0 20 20"><path d="M10 .8a9.2 9.2 0 0 0-2.9 18c.5.1.6-.2.6-.4v-1.6c-2.5.5-3.1-.6-3.3-1.2-.1-.3-.6-1.2-1-1.4-.4-.2-.9-.7 0-.7.8 0 1.3.7 1.5 1 .9 1.5 2.3 1.1 2.9.9.1-.7.4-1.1.7-1.4-2.3-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.6.9a8.8 8.8 0 0 1 4.7 0c1.8-1.2 2.6-.9 2.6-.9.5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .2.1.5.6.4A9.2 9.2 0 0 0 10 .8Z"/></svg>',
+  LinkedIn:'<svg viewBox="0 0 20 20"><path d="M4.6 6.8H1.9V18h2.7V6.8ZM3.2 2a1.6 1.6 0 1 0 0 3.3 1.6 1.6 0 0 0 0-3.3ZM18.1 11.9c0-3-1.6-4.4-3.8-4.4-1.8 0-2.6.9-3 1.6V6.8H8.6c0 .8 0 11.2 0 11.2h2.7v-6.3c0-1.4.7-2.2 1.9-2.2s1.8.8 1.8 2.2V18h2.7c0 .1.4-6.1.4-6.1Z"/></svg>',
+};
+
+const btn = (cls, label, opts = {}) => `
+  <button class="btn ${cls}" ${opts.disabled ? 'disabled' : ''} ${opts.load ? 'data-load' : ''} ${opts.aria ? `aria-label="${opts.aria}"` : ''}>
+    <span class="btn__fill"></span>
+    <svg class="btn__trace" aria-hidden="true"><rect/></svg>
+    ${label ? `<span class="btn__label">${label}</span>` : ''}
+    <span class="spin"></span>
+    ${opts.arrow !== false ? `<span class="btn__icon">${ARROW}</span>` : ''}
+  </button>`;
+
+const lnk = (cls, text) => `<a class="lnk ${cls}" href="#"><span class="lnk__t">${text}</span><span class="lnk__u"></span><span class="lnk__dot"></span></a>`;
+
+const soc = (name) => `
+  <a class="soc" href="#" aria-label="${name}">
+    <span class="soc__fill"></span><span class="soc__ring"></span>
+    <span class="soc__flip">${ICONS[name]}${ICONS[name]}</span>
+  </a>`;
+
+const demo = () => `
+  <div class="panel">
+    <div class="grp">
+      <div class="grp__t">Buttons — primary · secondary · ghost · icon · disabled · loading</div>
+      <div class="row">
+        ${btn('btn--primary', 'Start trading')}
+        ${btn('btn--secondary', 'View markets')}
+        ${btn('btn--ghost', 'Learn more', { arrow: false })}
+        ${btn('btn--icon', '', { aria: 'Next slide' })}
+        ${btn('btn--primary', 'Unavailable', { disabled: true, arrow: false })}
+        ${btn('btn--secondary', 'Place order', { load: true, arrow: false })}
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp__t">Links — navigation · inline · footer</div>
+      <nav class="row row--nav">
+        ${lnk('lnk--nav', 'Markets')}${lnk('lnk--nav', 'How it works')}${lnk('lnk--nav', 'Pricing')}${lnk('lnk--nav', 'Docs')}
+      </nav>
+      <p class="copy">Every position settles ${lnk('lnk--inline', 'on-chain')}, and the full order book stays ${lnk('lnk--inline', 'public')}.</p>
+      <div class="row row--foot" style="margin-top:22px">
+        ${lnk('lnk--foot', 'Terms')}${lnk('lnk--foot', 'Privacy')}${lnk('lnk--foot', 'Status')}${lnk('lnk--foot', 'Careers')}
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp__t">Social</div>
+      <div class="row row--soc">
+        ${soc('X')}${soc('Discord')}${soc('Telegram')}${soc('GitHub')}${soc('LinkedIn')}
+      </div>
+    </div>
+  </div>`;
+
+const VARIANTS = [
+  { n: '01', id: 'v1', name: 'Magnetic', why: 'Controls lean toward the cursor and settle back with a little weight, while a soft spotlight tracks the pointer across the fill. Playful and tactile — the pointer feels like it has mass.', tech: 'GSAP quickTo · pointer tracking' },
+  { n: '02', id: 'v2', name: 'Split-flap', why: 'Every glyph flips to an orange copy of itself on a staggered beat, like a price board updating. The most on-brand for a markets product, and the most memorable.', tech: 'GSAP stagger · per-character rolls' },
+  { n: '03', id: 'v3', name: 'Directional sweep', why: 'Colour wipes in from the edge your cursor crossed and leaves by the edge it exits, inverting the label as it passes. No bounce, no overshoot — pure precision.', tech: 'GSAP · entry-edge detection' },
+  { n: '04', id: 'v4', name: 'Signal trace', why: 'A pulse of light runs the outline of a button and a dot travels the underline of a link. Picks up the circuitry already drawn in the hero and the steps panels.', tech: 'GSAP · SVG stroke-dashoffset' },
+  { n: '05', id: 'v5', name: 'Shader field', why: 'One WebGL layer sits under the page; every hover fires a dithered ring into it that spreads past the element. The same halftone language as the Figma glows, made interactive.', tech: 'Three.js · GLSL · Bayer dither' },
+];
+
+document.getElementById('main').innerHTML = VARIANTS.map((v) => `
+  <section class="lab" id="${v.id}" data-v="${v.n.slice(1)}">
+    <div class="lab__head"><span class="lab__no">${v.n}</span><h2>${v.name}</h2></div>
+    <p class="lab__why">${v.why}</p>
+    <div class="lab__tech">${v.tech}</div>
+    ${demo()}
+  </section>`).join('');
+
+/* ------------------------------------------------------------- shared glue */
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const sect = (n) => document.querySelector(`[data-v="${n}"]`);
+
+// Demo links should not navigate.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('.lnk, .soc');
+  if (a) e.preventDefault();
+});
+
+// Loading state, shared by every direction.
+$$('[data-load]').forEach((b) => {
+  b.addEventListener('click', () => {
+    b.classList.add('is-loading');
+    setTimeout(() => b.classList.remove('is-loading'), 2200);
+  });
+});
+
+/**
+ * Wire hover and keyboard focus to the same pair of handlers. Focus has no
+ * coordinates, so it reports the element's centre — every direction stays
+ * usable without a mouse.
+ */
+function hover(el, enter, leave) {
+  const pt = (e) => {
+    if (e && typeof e.clientX === 'number' && e.clientX) return { x: e.clientX, y: e.clientY };
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  };
+  el.addEventListener('pointerenter', (e) => enter(pt(e), e));
+  el.addEventListener('focus', (e) => enter(pt(e), e));
+  el.addEventListener('pointerleave', (e) => leave(pt(e), e));
+  el.addEventListener('blur', (e) => leave(pt(e), e));
+}
+
+const targets = (n) => ({
+  btns: $$('.btn:not([disabled])', sect(n)),
+  links: $$('.lnk', sect(n)),
+  socs: $$('.soc', sect(n)),
+  all: $$('.btn:not([disabled]), .lnk, .soc', sect(n)),
+});
+
+if (REDUCED) {
+  // Motion turned down: the CSS transitions above still carry hover colour,
+  // so the page stays legible instead of jumping.
+  document.body.dataset.static = 'true';
+} else {
+  buildAll();
+}
+
+function buildAll() {
+  magnetic();
+  splitFlap();
+  sweep();
+  signal();
+  shaderField();
+}
+
+/* ------------------------------------------------------------ 01 magnetic */
+function magnetic() {
+  const { btns, links, socs } = targets(1);
+
+  const pull = (el, strength, inner, innerStrength) => {
+    const xTo = gsap.quickTo(el, 'x', { duration: .55, ease: 'power3' });
+    const yTo = gsap.quickTo(el, 'y', { duration: .55, ease: 'power3' });
+    const ixTo = inner ? gsap.quickTo(inner, 'x', { duration: .7, ease: 'power3' }) : null;
+    const iyTo = inner ? gsap.quickTo(inner, 'y', { duration: .7, ease: 'power3' }) : null;
+
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      xTo(dx * strength); yTo(dy * strength);
+      if (ixTo) { ixTo(dx * innerStrength); iyTo(dy * innerStrength); }
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+
+    el.addEventListener('pointerleave', () => {
+      gsap.to(el, { x: 0, y: 0, duration: 1, ease: 'elastic.out(1, .34)' });
+      if (inner) gsap.to(inner, { x: 0, y: 0, duration: 1.1, ease: 'elastic.out(1, .34)' });
+    });
+  };
+
+  btns.forEach((b) => {
+    pull(b, .34, b.querySelector('.btn__label'), .16);
+    const icon = b.querySelector('.btn__icon');
+    hover(b,
+      () => { gsap.to(b, { scale: 1.04, duration: .4, ease: 'power3' }); if (icon) gsap.to(icon, { x: 4, duration: .4, ease: 'power3' }); },
+      () => { gsap.to(b, { scale: 1, duration: .5, ease: 'power3' }); if (icon) gsap.to(icon, { x: 0, duration: .4, ease: 'power3' }); });
+  });
+
+  links.forEach((a) => {
+    const u = a.querySelector('.lnk__u');
+    pull(a, .4, null, 0);
+    hover(a,
+      (p) => {
+        const r = a.getBoundingClientRect();
+        gsap.set(u, { transformOrigin: p.x < r.left + r.width / 2 ? 'left' : 'right' });
+        gsap.to(u, { scaleX: 1, duration: .45, ease: 'power3' });
+        gsap.to(a, { color: '#fffbf8', duration: .3 });
+      },
+      () => { gsap.to(u, { scaleX: 0, duration: .35, ease: 'power3' }); });
+  });
+
+  socs.forEach((s) => {
+    pull(s, .42, null, 0);
+    s.addEventListener('pointermove', (e) => {
+      const r = s.getBoundingClientRect();
+      gsap.to(s, { rotate: ((e.clientX - (r.left + r.width / 2)) / r.width) * 16, duration: .5, ease: 'power3' });
+    });
+    hover(s,
+      () => gsap.to(s, { scale: 1.12, duration: .4, ease: 'power3' }),
+      () => gsap.to(s, { scale: 1, rotate: 0, duration: .9, ease: 'elastic.out(1, .4)' }));
+  });
+}
+
+/* ---------------------------------------------------------- 02 split-flap */
+function splitFlap() {
+  const root = sect(2);
+
+  /** Rebuild a text node as stacked glyph pairs so each one can flip alone. */
+  const split = (el) => {
+    const text = el.textContent;
+    el.textContent = '';
+    return [...text].map((c) => {
+      const w = document.createElement('span');
+      w.className = c === ' ' ? 'ch ch--sp' : 'ch';
+      if (c === ' ') { el.appendChild(w); return null; }
+      w.innerHTML = `<span class="ch__a">${c}</span><span class="ch__b">${c}</span>`;
+      el.appendChild(w);
+      return w;
+    }).filter(Boolean);
+  };
+
+  const flip = (el, chars) => {
+    const a = chars.map((c) => c.firstChild), b = chars.map((c) => c.lastChild);
+    // The CSS parks the incoming glyph at translateY(100%), which GSAP reads off
+    // the matrix as a pixel offset. Restate it as a percentage it can tween.
+    gsap.set(b, { yPercent: 100, y: 0 });
+    hover(el,
+      () => {
+        gsap.to(a, { yPercent: -100, duration: .38, ease: 'power3.inOut', stagger: .022, overwrite: true });
+        gsap.to(b, { yPercent: 0, duration: .38, ease: 'power3.inOut', stagger: .022, overwrite: true });
+      },
+      () => {
+        gsap.to(a, { yPercent: 0, duration: .38, ease: 'power3.inOut', stagger: .018, overwrite: true });
+        gsap.to(b, { yPercent: 100, duration: .38, ease: 'power3.inOut', stagger: .018, overwrite: true });
+      });
+  };
+
+  $$('.btn:not([disabled])', root).forEach((btn) => {
+    const label = btn.querySelector('.btn__label');
+    const icon = btn.querySelector('.btn__icon');
+    if (label) flip(btn, split(label));
+    hover(btn,
+      () => { if (icon) gsap.to(icon, { rotate: 45, x: 2, duration: .4, ease: 'back.out(3)' }); },
+      () => { if (icon) gsap.to(icon, { rotate: 0, x: 0, duration: .4, ease: 'power3' }); });
+  });
+
+  $$('.lnk', root).forEach((a) => {
+    const u = a.querySelector('.lnk__u');
+    flip(a, split(a.querySelector('.lnk__t')));
+    hover(a,
+      () => { gsap.set(u, { transformOrigin: 'left' }); gsap.to(u, { scaleX: 1, duration: .5, ease: 'power3' }); },
+      () => { gsap.set(u, { transformOrigin: 'right' }); gsap.to(u, { scaleX: 0, duration: .4, ease: 'power3' }); });
+  });
+
+  $$('.soc', root).forEach((s) => {
+    const flipper = s.querySelector('.soc__flip');
+    hover(s,
+      () => gsap.to(flipper, { rotateX: 180, duration: .55, ease: 'back.out(2)' }),
+      () => gsap.to(flipper, { rotateX: 0, duration: .5, ease: 'power3' }));
+    gsap.set(flipper, { transformPerspective: 400 });
+  });
+}
+
+/* ----------------------------------------------------- 03 directional sweep */
+function sweep() {
+  const root = sect(3);
+
+  /** Which edge the pointer crossed, so the fill enters and exits with it. */
+  const side = (el, p) => {
+    const r = el.getBoundingClientRect();
+    return p.x < r.left + r.width / 2 ? 'left' : 'right';
+  };
+
+  $$('.btn:not([disabled])', root).forEach((btn) => {
+    const fill = btn.querySelector('.btn__fill');
+    const icon = btn.querySelector('.btn__icon');
+    hover(btn,
+      (p) => {
+        btn.classList.add('is-on');
+        gsap.set(fill, { transformOrigin: side(btn, p) });
+        gsap.to(fill, { scaleX: 1, duration: .45, ease: 'power3.out', overwrite: true });
+        if (icon) gsap.fromTo(icon, { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: .4, ease: 'power3.out' });
+      },
+      (p) => {
+        btn.classList.remove('is-on');
+        gsap.set(fill, { transformOrigin: side(btn, p) });
+        gsap.to(fill, { scaleX: 0, duration: .4, ease: 'power3.in', overwrite: true });
+        if (icon) gsap.to(icon, { x: 14, opacity: 0, duration: .3, ease: 'power3.in', onComplete: () => gsap.set(icon, { x: 0, opacity: 1 }) });
+      });
+  });
+
+  $$('.lnk', root).forEach((a) => {
+    const u = a.querySelector('.lnk__u');
+    hover(a,
+      (p) => { gsap.set(u, { transformOrigin: side(a, p) }); gsap.to(u, { scaleX: 1, duration: .4, ease: 'power3.out', overwrite: true }); gsap.to(a, { color: '#fffbf8', duration: .3 }); },
+      (p) => { gsap.set(u, { transformOrigin: side(a, p) }); gsap.to(u, { scaleX: 0, duration: .35, ease: 'power3.in', overwrite: true }); });
+  });
+
+  $$('.soc', root).forEach((s) => {
+    const fill = s.querySelector('.soc__fill');
+    hover(s,
+      (p) => {
+        const r = s.getBoundingClientRect();
+        s.classList.add('is-on');
+        gsap.set(fill, { transformOrigin: `${((p.x - r.left) / r.width) * 100}% ${((p.y - r.top) / r.height) * 100}%` });
+        gsap.to(fill, { scale: 1.6, duration: .45, ease: 'power3.out', overwrite: true });
+      },
+      () => { s.classList.remove('is-on'); gsap.to(fill, { scale: 0, duration: .35, ease: 'power3.in', overwrite: true }); });
+  });
+}
+
+/* ---------------------------------------------------------- 04 signal trace */
+function signal() {
+  const root = sect(4);
+
+  $$('.btn:not([disabled])', root).forEach((btn) => {
+    const svg = btn.querySelector('.btn__trace');
+    const rect = svg.querySelector('rect');
+
+    // The trace has to match the real pill, so measure rather than guess.
+    const fit = () => {
+      const r = btn.getBoundingClientRect();
+      if (!r.width) return;
+      svg.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`);
+      rect.setAttribute('x', 1); rect.setAttribute('y', 1);
+      rect.setAttribute('width', Math.max(0, r.width - 2));
+      rect.setAttribute('height', Math.max(0, r.height - 2));
+      rect.setAttribute('rx', Math.min(r.height, r.width) / 2 - 1);
+      rect.setAttribute('pathLength', 1);
+      rect.style.strokeDasharray = '.22 .78';
+    };
+    fit();
+    new ResizeObserver(fit).observe(btn);
+
+    let spin;
+    const icon = btn.querySelector('.btn__icon');
+    hover(btn,
+      () => {
+        gsap.to(svg, { opacity: 1, duration: .2 });
+        spin?.kill();
+        spin = gsap.fromTo(rect, { strokeDashoffset: .25 }, { strokeDashoffset: -.75, duration: 1.15, ease: 'none', repeat: -1 });
+        if (icon) gsap.to(icon, { x: 4, duration: .4, ease: 'power3' });
+      },
+      () => {
+        gsap.to(svg, { opacity: 0, duration: .35, onComplete: () => spin?.kill() });
+        if (icon) gsap.to(icon, { x: 0, duration: .4, ease: 'power3' });
+      });
+  });
+
+  $$('.lnk', root).forEach((a) => {
+    const u = a.querySelector('.lnk__u'), dot = a.querySelector('.lnk__dot');
+    let run;
+    hover(a,
+      () => {
+        gsap.to(u, { backgroundColor: '#f55e22', duration: .3 });
+        gsap.to(a, { color: '#fffbf8', duration: .3 });
+        run?.kill();
+        run = gsap.fromTo(dot,
+          { xPercent: 0, left: 0, opacity: 1 },
+          { left: '100%', xPercent: -100, duration: .95, ease: 'power2.inOut', repeat: -1, repeatDelay: .12 });
+      },
+      () => {
+        gsap.to(u, { backgroundColor: 'rgba(255,251,248,.25)', duration: .35 });
+        gsap.to(dot, { opacity: 0, duration: .25, onComplete: () => run?.kill() });
+      });
+  });
+
+  $$('.soc', root).forEach((s) => {
+    const ring = s.querySelector('.soc__ring');
+    let pulse;
+    hover(s,
+      () => {
+        gsap.to(s, { y: -3, duration: .4, ease: 'power3' });
+        pulse?.kill();
+        pulse = gsap.fromTo(ring, { scale: 1, opacity: .9 }, { scale: 1.55, opacity: 0, duration: 1.1, ease: 'power2.out', repeat: -1 });
+      },
+      () => { gsap.to(s, { y: 0, duration: .45, ease: 'power3' }); gsap.to(ring, { opacity: 0, duration: .25, onComplete: () => pulse?.kill() }); });
+  });
+}
+
+/* ---------------------------------------------------------- 05 shader field */
+async function shaderField() {
+  const root = sect(5);
+
+  // Element motion first, so the direction still reads if WebGL is missing.
+  $$('.btn:not([disabled])', root).forEach((btn) => {
+    const icon = btn.querySelector('.btn__icon');
+    hover(btn,
+      () => { gsap.to(btn, { scale: 1.03, duration: .45, ease: 'power3' }); if (icon) gsap.to(icon, { x: 4, duration: .45, ease: 'power3' }); },
+      () => { gsap.to(btn, { scale: 1, duration: .5, ease: 'power3' }); if (icon) gsap.to(icon, { x: 0, duration: .45, ease: 'power3' }); });
+  });
+  $$('.lnk', root).forEach((a) => {
+    const u = a.querySelector('.lnk__u');
+    hover(a,
+      () => { gsap.set(u, { transformOrigin: 'left' }); gsap.to(u, { scaleX: 1, duration: .5, ease: 'power3' }); gsap.to(a, { color: '#fffbf8', duration: .3 }); },
+      () => { gsap.set(u, { transformOrigin: 'right' }); gsap.to(u, { scaleX: 0, duration: .4, ease: 'power3' }); });
+  });
+  $$('.soc', root).forEach((s) => {
+    hover(s,
+      () => gsap.to(s, { scale: 1.1, duration: .45, ease: 'power3' }),
+      () => gsap.to(s, { scale: 1, duration: .5, ease: 'power3' }));
+  });
+
+  // Loaded on demand so directions 1-4 never pay for the 3D bundle.
+  let THREE;
+  try {
+    THREE = await import('three');
+  } catch {
+    return;
+  }
+
+  const canvas = document.getElementById('field');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+  } catch {
+    return; // No WebGL on this machine.
+  }
+
+  const MAX = 10;
+  const ripples = Array.from({ length: MAX }, () => new THREE.Vector3(0, 0, -99));
+  let slot = 0;
+
+  const uniforms = {
+    uRes: { value: new THREE.Vector2() },
+    uTime: { value: 0 },
+    uRipples: { value: ripples },
+    uColor: { value: new THREE.Color('#f55e22') },
+  };
+
+  const material = new THREE.ShaderMaterial({
+    uniforms,
+    transparent: true,
+    depthTest: false,
+    vertexShader: `
+      void main(){ gl_Position = vec4(position, 1.0); }
+    `,
+    fragmentShader: `
+      precision highp float;
+      uniform vec2 uRes;
+      uniform float uTime;
+      uniform vec3 uRipples[${MAX}];
+      uniform vec3 uColor;
+
+      // 4x4 Bayer matrix — the same ordered dither the Figma glows use.
+      float bayer(vec2 p){
+        int x = int(mod(p.x, 4.0));
+        int y = int(mod(p.y, 4.0));
+        int i = x + y * 4;
+        float m[16];
+        m[0]=0.0;  m[1]=8.0;  m[2]=2.0;  m[3]=10.0;
+        m[4]=12.0; m[5]=4.0;  m[6]=14.0; m[7]=6.0;
+        m[8]=3.0;  m[9]=11.0; m[10]=1.0; m[11]=9.0;
+        m[12]=15.0;m[13]=7.0; m[14]=13.0;m[15]=5.0;
+        for(int k=0;k<16;k++){ if(k==i) return (m[k]+0.5)/16.0; }
+        return 0.5;
+      }
+
+      void main(){
+        vec2 frag = gl_FragCoord.xy;
+        float a = 0.0;
+
+        for(int i=0;i<${MAX};i++){
+          float born = uRipples[i].z;
+          if(born < 0.0) continue;
+          float t = uTime - born;
+          if(t < 0.0 || t > 1.7) continue;
+
+          float d = distance(frag, uRipples[i].xy);
+          float r = t * 460.0;                       // expansion speed, px/s
+          float band = smoothstep(62.0, 0.0, abs(d - r));
+          a += band * (1.0 - t / 1.7);               // fade as it travels
+        }
+
+        a = clamp(a, 0.0, 1.0);
+        a = step(bayer(frag), a) * a;                // dither, then keep the falloff
+        if(a <= 0.001) discard;
+        gl_FragColor = vec4(uColor, a * 0.5);
+      }
+    `,
+  });
+
+  const scene = new THREE.Scene();
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+  const camera = new THREE.Camera();
+
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio, 2);
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(innerWidth, innerHeight, false);
+    uniforms.uRes.value.set(innerWidth * dpr, innerHeight * dpr);
+  };
+  resize();
+  addEventListener('resize', resize);
+
+  const start = performance.now();
+  const fire = (x, y) => {
+    const dpr = Math.min(devicePixelRatio, 2);
+    // gl_FragCoord counts up from the bottom; the DOM counts down from the top.
+    ripples[slot].set(x * dpr, (innerHeight - y) * dpr, uniforms.uTime.value);
+    slot = (slot + 1) % MAX;
+  };
+
+  $$('.btn:not([disabled]), .lnk, .soc', root).forEach((el) => {
+    hover(el, (p) => fire(p.x, p.y), () => {});
+    el.addEventListener('click', (e) => fire(e.clientX, e.clientY));
+  });
+
+  // Only render while direction 5 is on screen — no idle GPU cost elsewhere.
+  let visible = false;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { rootMargin: '150px' }).observe(root);
+
+  const tick = () => {
+    uniforms.uTime.value = (performance.now() - start) / 1000;
+    if (visible) renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  };
+  tick();
+}
+</script>
+</body>
+</html>

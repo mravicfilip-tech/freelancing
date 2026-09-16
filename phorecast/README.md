@@ -54,6 +54,23 @@ node scripts/screenshot.mjs <url> <out.png> [w] [h] [fullPage]
 node scripts/shot-el.mjs <url> <selector> <out.png> [w]
 node scripts/shot-steps.mjs      # panels 2 and 3 of the steps slider
 node scripts/shot-mobile.mjs     # 390px overflow report + section shots
+node scripts/capture-all.mjs     # every section at 1920, for diffing against Figma
+node scripts/probe.mjs           # measured geometry of the Familiar Trading band
+node scripts/assets-probe.mjs    # rendered vs natural size of each exported asset
+```
+
+To check a section against its frame, capture it and stack the two images:
+
+```
+node scripts/capture-all.mjs
+python3 -c "
+from PIL import Image
+a, b = Image.open('figma.png'), Image.open('/tmp/mine-bento.png')
+W = 1500
+r = lambda i: i.resize((W, round(i.height * W / i.width)), Image.LANCZOS)
+a, b = r(a.convert('RGB')), r(b.convert('RGB'))
+c = Image.new('RGB', (W, a.height + b.height + 16), (40, 40, 40))
+c.paste(a, (0, 0)); c.paste(b, (0, a.height + 16)); c.save('cmp.png')"
 ```
 
 ## Deploying to Vercel

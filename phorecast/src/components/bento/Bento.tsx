@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
-import { REDUCED, revealIn, revealUp, useSectionMotion } from '../../lib/motion';
+import { REDUCED, rise, pop, useSectionMotion } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
 import arrowWhite from '../../assets/bento/arrow-white.svg';
 import arrowOrange from '../../assets/bento/arrow-orange.svg';
@@ -230,21 +230,17 @@ function buildBento({ q, tl }: SectionMotion) {
   if (glow) {
     tl.from(glow, { opacity: 0, scale: 1.08, duration: 1, ease: 'power2.out', clearProps: 'transform' }, 0);
   }
-  revealUp(tl, q('.bento__title'), { y: 20, duration: 0.65, at: 0.08 });
-  revealUp(tl, q('.bento__sub'), { y: 16, duration: 0.6, at: 0.18 });
-  revealIn(tl, cards, { y: 26, stagger: CARD_STEP, duration: 0.75, at: CARDS_AT });
+  rise(tl, q('.bento__title'), 0.08);
+  rise(tl, q('.bento__sub'), 0.18);
+  rise(tl, cards, CARDS_AT, { y: 14, duration: 0.8, stagger: CARD_STEP });
 
   cards.forEach((card, i) => {
     const at = CARDS_AT + i * CARD_STEP + 0.16;
     const copy = Array.from(card.querySelectorAll<HTMLElement>('.bcard__title, .bcard__body, .bento__cta'));
     const art = card.querySelector<HTMLElement>('.bcard__art, .funds__art, .bonus__chart, .mk__orbits');
 
-    if (art) {
-      tl.from(art, { opacity: 0, scale: 0.96, duration: 0.7, transformOrigin: '50% 60%', clearProps: 'transform' }, at - 0.04);
-    }
-    if (copy.length) {
-      tl.from(copy, { y: 12, opacity: 0, duration: 0.5, stagger: 0.06, clearProps: 'transform' }, at);
-    }
+    if (art) pop(tl, art, at - 0.04, { scale: 0.94, duration: 0.8, transformOrigin: '50% 60%' });
+    if (copy.length) rise(tl, copy, at, { y: 8, duration: 0.55, stagger: 0.07 });
   });
 }
 

@@ -1,57 +1,22 @@
-// The hero's opening, its per-slide choreography, and the life it keeps after.
+// The hero's opening, its per-slide choreography, and the one beat it keeps.
 //
-// Two triggers only: the load-in, and loops. Nothing here listens to the pointer.
+// Written in the Remittix motion language (see src/lib/motion.ts): entrances
+// rise a few pixels on expo.out, staggered tightly; nothing overshoots, rotates
+// for effect, or floats while idle. The loop is one deterministic story beat
+// that shows the product doing its job, then rests -- here, the market prices
+// moving and the light crossing the headline.
 //
-// Built from light and masks rather than fades. Type is revealed by a mask
-// wiping up behind it while it pulls from soft to sharp, the light ignites from
-// behind the mark and blooms outward, and a specular sheen crosses the headline
-// as it lands. A fade is what you reach for when you have not decided what the
-// motion is made of.
-//
-// Everything overlaps: the headline starts before the light has finished, the
-// copy before the headline has. Settled in ~1.2s, so the stage is never empty
-// long enough to read as loading. Every tween is a `from` that clears its own
-// props — if this never runs, the hero is intact.
+// Two triggers only: the load-in, and that loop. Nothing listens to the pointer.
 
 import { gsap } from 'gsap';
+import { EASE, all, intoLines, one, pop, rise } from '../../lib/motion';
 
-const SHEEN_EVERY = 10; // seconds between repeat passes of the glare
+const SHEEN_EVERY = 9; // seconds between passes of the highlight
+const PRICE_EVERY = 2600;
 
-/**
- * Wraps text in masked lines so each can wipe up independently. When `shine` is
- * set each line also gets a duplicate layer whose gradient is clipped to the
- * glyphs, which is what makes the sweep read as light on the letterforms rather
- * than a bar passing over the section.
- */
-function intoLines(el: HTMLElement, shine = false): HTMLElement[] {
-  const text = el.textContent ?? '';
-  const parts = text.includes('\n') ? text.split('\n') : [text];
-  el.textContent = '';
-  return parts.map((part) => {
-    const inner = document.createElement('span');
-    inner.className = 'line__in';
-    inner.textContent = part;
-
-    const mask = document.createElement('span');
-    mask.className = 'line';
-    mask.appendChild(inner);
-
-    if (shine) {
-      const gloss = document.createElement('span');
-      gloss.className = 'line__shine';
-      gloss.setAttribute('aria-hidden', 'true');
-      gloss.textContent = part;
-      inner.appendChild(gloss);
-    }
-
-    el.appendChild(mask);
-    return inner;
-  });
-}
-
-/** Runs the specular highlight across the glyphs of every line at once. */
+/** Runs the specular highlight across the glyphs of every headline line. */
 function sweep(title: HTMLElement, at: number, tl: gsap.core.Timeline) {
-  const gloss = Array.from(title.querySelectorAll<HTMLElement>('.line__shine'));
+  const gloss = all<HTMLElement>(title, '.line__shine');
   if (!gloss.length) return;
 
   const pos = { p: 135 };
@@ -68,166 +33,108 @@ function sweep(title: HTMLElement, at: number, tl: gsap.core.Timeline) {
     }, at);
 }
 
-/**
- * Animates the copy of one slide in. Used by the load-in and again on every
- * slide change, so the treatment is seen four times rather than once.
- */
-export function slideCopyIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number): void {
-  const eyebrow = slide.querySelector<HTMLElement>('.eyebrow');
-  const title = slide.querySelector<HTMLElement>('.hero__title');
-  const lede = slide.querySelector<HTMLElement>('.hero__lede');
-  const cta = slide.querySelector<HTMLElement>('.hero__cta');
-
-  if (eyebrow) {
-    tl.from(eyebrow, { opacity: 0, x: -10, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' }, at);
-  }
-
-  if (title) {
-    const lines = title.dataset.split ? Array.from(title.querySelectorAll<HTMLElement>('.line__in')) : intoLines(title, true);
-    title.dataset.split = 'true';
-
-    // Mask wipe and focus pull together: the line rises out of nothing and
-    // resolves as it arrives.
-    tl.from(lines, {
-      yPercent: 110,
-      filter: 'blur(9px)',
-      duration: 0.8,
-      stagger: 0.09,
-      ease: 'expo.out',
-      clearProps: 'transform,filter',
-    }, at + 0.06);
-
-    sweep(title, at + 0.38, tl);
-  }
-
-  if (lede) {
-    const lines = lede.dataset.split ? Array.from(lede.querySelectorAll<HTMLElement>('.line__in')) : intoLines(lede);
-    lede.dataset.split = 'true';
-    tl.from(lines, { yPercent: 105, opacity: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform,opacity' }, at + 0.24);
-  }
-
-  // The illustration is the largest thing on screen. Leaving it out meant it sat
-  // at full opacity from the first frame while the copy animated beside it,
-  // which read as broken rather than staged.
-  const visual = slide.querySelector<HTMLElement>('.hero__visual');
-  if (visual) {
-    const kids = Array.from(visual.children) as HTMLElement[];
-    const parts = kids.length > 1
-      ? kids
-      : (Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[]);
-    const targets = parts.length > 1 ? parts : [visual];
-    tl.from(targets, {
-      opacity: 0,
-      y: 26,
-      scale: 0.985,
-      duration: 0.85,
-      stagger: 0.07,
-      ease: 'power3.out',
-      transformOrigin: '50% 50%',
-      clearProps: 'transform,opacity',
-    }, at + 0.08);
-  }
-
-  if (cta) {
-    tl.from(cta, {
-      opacity: 0,
-      scale: 0.96,
-      y: 8,
-      duration: 0.55,
-      ease: 'power3.out',
-      transformOrigin: '50% 50%',
-      clearProps: 'transform,opacity',
-    }, at + 0.36);
-  }
+/** Gives each headline line a duplicate layer clipped to its own glyphs. */
+function addShine(title: HTMLElement) {
+  all<HTMLElement>(title, '.line__in').forEach((inner) => {
+    if (inner.querySelector('.line__shine')) return;
+    const gloss = document.createElement('span');
+    gloss.className = 'line__shine';
+    gloss.setAttribute('aria-hidden', 'true');
+    gloss.textContent = inner.textContent;
+    inner.appendChild(gloss);
+  });
 }
 
-export function heroEntrance(hero: HTMLElement): () => void {
-  const all = (sel: string) => Array.from(hero.querySelectorAll<HTMLElement>(sel));
-  const glows = all('.hero__glow');
-  const horizon = all('.hero__horizon');
-  const mark = all('.hero__logo');
-  const cards = all('.hero__foot > *');
-  const slide = hero.querySelector<HTMLElement>('.hero__slide.is-active');
+/**
+ * Builds one slide's copy and illustration. Used by the load-in and again on
+ * every slide change, so the treatment is seen four times rather than once.
+ */
+export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number): void {
+  const eyebrow = one(slide, '.eyebrow');
+  const title = one<HTMLElement>(slide, '.hero__title');
+  const lede = one<HTMLElement>(slide, '.hero__lede');
+  const cta = one(slide, '.hero__cta');
+  const visual = one(slide, '.hero__visual');
 
-  // Built paused and released after the browser has painted once. With lag
-  // smoothing off the clock runs during mount, so a slow first paint would
-  // otherwise consume the whole sequence and the hero would simply appear.
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
-  requestAnimationFrame(() => requestAnimationFrame(() => tl.play()));
+  if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -8, duration: 0.6 });
 
-  // Light ignites from the centre and blooms outward — small and bright to full
-  // size, rather than a rectangle fading up.
+  if (title) {
+    const lines = intoLines(title);
+    addShine(title);
+    // The line rises out of its mask and resolves from soft as it arrives.
+    tl.from(lines, { yPercent: 108, filter: 'blur(8px)', duration: 0.95, stagger: 0.1, ease: 'power4.out', clearProps: 'filter' }, at + 0.05);
+    sweep(title, at + 0.45, tl);
+  }
+
+  // The illustration is the largest thing on screen; leaving it out of the
+  // sequence made the copy look like it was arriving beside a static page.
+  if (visual) {
+    const kids = Array.from(visual.children) as HTMLElement[];
+    const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
+    const parts = kids.length > 1 ? kids : nested;
+    if (parts.length > 1) pop(tl, parts, at + 0.12, { scale: 0.92, y: 10, duration: 0.7, stagger: 0.06 });
+    else rise(tl, visual, at + 0.12, { y: 14, duration: 0.85 });
+  }
+
+  if (lede) rise(tl, intoLines(lede), at + 0.3, { y: 0, yPercent: 105, duration: 0.65 });
+  if (cta) pop(tl, cta, at + 0.42, { scale: 0.94, duration: 0.6 });
+}
+
+/** The load-in. Light first, everything else overlapping it. */
+export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
+  const glows = all(hero, '.hero__glow');
+  const horizon = all(hero, '.hero__horizon');
+  const mark = all(hero, '.hero__logo');
+  const slide = one<HTMLElement>(hero, '.hero__slide.is-active');
+
+  // Light ignites small and bright and blooms outward, rather than fading up.
   if (glows.length) {
-    tl.from(glows, {
-      opacity: 0,
-      scale: 0.82,
-      duration: 1.0,
-      stagger: { each: 0.05, from: 'center' },
-      transformOrigin: '50% 50%',
-      clearProps: 'transform,opacity',
-    }, 0);
+    tl.from(glows, { opacity: 0, scale: 0.84, duration: 1.0, stagger: { each: 0.05, from: 'center' }, transformOrigin: '50% 50%', ease: EASE }, 0);
   }
   if (horizon.length) {
-    tl.from(horizon, { opacity: 0, scaleY: 0.35, transformOrigin: '50% 100%', duration: 0.9, clearProps: 'transform,opacity' }, 0.06);
+    tl.from(horizon, { opacity: 0, scaleY: 0.35, transformOrigin: '50% 100%', duration: 0.9, ease: EASE }, 0.06);
   }
   if (mark.length) {
-    tl.from(mark, { scale: 0.94, duration: 1.0, transformOrigin: '50% 50%', clearProps: 'transform' }, 0.08);
+    tl.from(mark, { scale: 0.94, duration: 1.0, transformOrigin: '50% 50%', ease: EASE }, 0.08);
   }
 
-  // Copy starts while the light is still moving. The overlap is what stops it
-  // reading as two separate events.
-  if (slide) slideCopyIn(slide, tl, 0.18);
+  if (slide) slideIn(slide, tl, 0.16);
 
-  if (all('.hero__position').length) {
-    tl.from(all('.hero__position'), { opacity: 0, y: 8, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' }, 0.62);
-  }
-  if (cards.length) {
-    tl.from(cards, { opacity: 0, yPercent: 24, duration: 0.55, stagger: 0.06, ease: 'power3.out', clearProps: 'transform,opacity' }, 0.6);
-  }
+  rise(tl, all(hero, '.hero__position'), 0.6, { y: 8, duration: 0.5 });
+  const cards = all(hero, '.hero__foot > *');
+  if (cards.length) pop(tl, cards, 0.58, { scale: 0.94, y: 10, duration: 0.6, stagger: 0.06 });
+}
 
-  // ---- Loops. Meaningful motion only: the glare, and live numbers. ----------
-  //
-  // Both look the current slide up each time they fire. Binding them to the
-  // elements present at mount silently stops them after the first slide change,
-  // because the carousel replaces that DOM.
-  let sheenTimer = 0;
-  let priceTimer = 0;
+/**
+ * The loop. Both beats look the active slide up when they fire -- bound to the
+ * elements present at mount they stop silently after the first slide change,
+ * because the carousel replaces that DOM.
+ */
+export function heroIdle(hero: HTMLElement): () => void {
+  const sheenTimer = window.setInterval(() => {
+    const title = one<HTMLElement>(hero, '.hero__slide.is-active .hero__title');
+    if (title) sweep(title, 0, gsap.timeline());
+  }, SHEEN_EVERY * 1000);
 
-  tl.call(() => {
-    sheenTimer = window.setInterval(() => {
-      const title = hero.querySelector<HTMLElement>('.hero__slide.is-active .hero__title');
-      if (title) sweep(title, 0, gsap.timeline());
-    }, SHEEN_EVERY * 1000);
+  // The market cards were frozen, which is the wrong look for a trading product.
+  const priceTimer = window.setInterval(() => {
+    const live = all<HTMLElement>(hero, '.hero__foot > *');
+    if (!live.length) return;
+    const priceEl = one<HTMLElement>(live[Math.floor(Math.random() * live.length)], '.ticker__price');
+    if (!priceEl) return;
 
-    // The market cards were frozen, which is the wrong look for a trading
-    // product. Walk each price a few basis points and flash the move.
-    priceTimer = window.setInterval(() => {
-      const live = Array.from(hero.querySelectorAll<HTMLElement>('.hero__foot > *'));
-      if (!live.length) return;
-      const card = live[Math.floor(Math.random() * live.length)];
-      const priceEl = card?.querySelector<HTMLElement>('.ticker__price');
-      if (!priceEl) return;
+    const raw = priceEl.textContent ?? '';
+    const value = Number(raw.replace(/[^0-9.]/g, ''));
+    if (!Number.isFinite(value) || value === 0) return;
 
-      const raw = priceEl.textContent ?? '';
-      const value = Number(raw.replace(/[^0-9.]/g, ''));
-      if (!Number.isFinite(value) || value === 0) return;
-
-      const next = value * (1 + (Math.random() - 0.5) * 0.0016);
-      const decimals = (raw.split('.')[1] ?? '').length || 2;
-      priceEl.textContent = `$${next.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
-
-      gsap.fromTo(priceEl,
-        { color: next > value ? '#4ade80' : '#f87171' },
-        { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
-    }, 2600);
-  });
+    const next = value * (1 + (Math.random() - 0.5) * 0.0016);
+    const decimals = (raw.split('.')[1] ?? '').length || 2;
+    priceEl.textContent = `$${next.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+    gsap.fromTo(priceEl, { color: next > value ? '#4ade80' : '#f87171' }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
+  }, PRICE_EVERY);
 
   return () => {
-    tl.kill();
     window.clearInterval(sheenTimer);
     window.clearInterval(priceTimer);
-    gsap.set(hero.querySelectorAll('.hero__glow, .hero__horizon, .hero__foot > *, .line__in'), {
-      clearProps: 'transform,opacity,filter',
-    });
   };
 }

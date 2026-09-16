@@ -1,233 +1,185 @@
-// Shared motion primitives.
+// Shared motion language, carried over from the Remittix build so the two sites
+// move the same way.
 //
-// Every section animates on the same terms: nothing runs until it is on screen,
-// everything is torn down with the component, and a person who has asked for
-// less motion gets the finished state immediately rather than a faster version
-// of the same movement.
+// The house style, in its words: entrances rise a few pixels on `expo.out`,
+// staggered tightly; nothing overshoots, rotates for effect, or floats while
+// idle. Each loop is one deterministic story beat that shows the product doing
+// its job, then rests.
+//
+// Sections render with `data-motion="pending"`, which hides the animated parts
+// in CSS; the attribute is deleted in the same frame GSAP takes over, and
+// immediately when motion is reduced or the build fails. Nothing is ever left
+// hidden by a script that did not run.
 
 import { useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { gsap } from 'gsap';
 
+export type Timeline = gsap.core.Timeline;
+
 export const REDUCED =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// GSAP freezes a timeline whenever a frame takes longer than half a second,
-// which is the right default for a game loop and the wrong one here: the WebGL
-// mark stalls the compositor on weaker GPUs, and a frozen entrance leaves copy
-// at opacity 0. Advance on wall-clock time instead — a jump after a stall is
-// far better than a hero that never arrives.
+// GSAP freezes a timeline whenever a frame exceeds half a second, which is the
+// wrong default here: the WebGL mark stalls the compositor well past that on a
+// weak GPU, and a frozen entrance leaves a section half-built. Advance on
+// wall-clock time instead.
 gsap.ticker.lagSmoothing(0);
 
-/** The house curve. Fast out of the gate, long settle, no overshoot. */
-export const EASE = 'power3.out';
+/** The band's entrance ease, and the small rise every element makes as it appears. */
+export const EASE = 'expo.out';
+export const RISE = { y: 10, opacity: 0, duration: 0.7, ease: EASE } as const;
 
-export interface SectionMotion {
-  /** The section element itself. */
-  el: HTMLElement;
-  /** Scoped query, so a build function can never reach into another section. */
-  q: (selector: string) => HTMLElement[];
-  /** The timeline the section's entrance should be added to. */
-  tl: gsap.core.Timeline;
+export const one = <T extends Element = HTMLElement>(root: Element, sel: string) =>
+  root.querySelector<T>(sel);
+export const all = <T extends Element = HTMLElement>(root: Element, sel: string) =>
+  Array.from(root.querySelectorAll<T>(sel));
+
+/** Draw stroked paths tip to tail. Elements with no length are skipped. */
+export function draw(tl: Timeline, paths: SVGGeometryElement[], at: number, duration: number, stagger = 0) {
+  paths
+    .filter((p) => typeof p.getTotalLength === 'function' && p.getTotalLength() > 0)
+    .forEach((p, i) => {
+      const len = p.getTotalLength();
+      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+      tl.to(p, { strokeDashoffset: 0, duration, ease: 'power2.inOut' }, at + i * stagger);
+    });
+}
+
+/** Pop in from small. */
+export function pop(tl: Timeline, targets: gsap.TweenTarget, at: number, vars: gsap.TweenVars = {}) {
+  tl.from(targets, { scale: 0.6, opacity: 0, duration: 0.55, ease: 'back.out(1.8)', transformOrigin: '50% 50%', ...vars }, at);
+}
+
+/** Rise a few pixels into place — the default entrance for copy and cards. */
+export function rise(tl: Timeline, targets: gsap.TweenTarget, at: number, vars: gsap.TweenVars = {}) {
+  tl.from(targets, { ...RISE, ...vars }, at);
+}
+
+/** Count a number into an element. */
+export function count(tl: Timeline, el: HTMLElement, from: number, to: number, at: number, duration: number, fmt: (n: number) => string) {
+  const o = { v: from };
+  tl.to(o, { v: to, duration, ease: 'power2.out', onUpdate: () => { el.textContent = fmt(o.v); } }, at);
+}
+
+/** Reveal with a clip-path wipe from `from` (an `inset(...)` value) to fully visible. */
+export function wipe(tl: Timeline, el: Element, at: number, duration: number, from: string) {
+  tl.fromTo(el, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration, ease: 'power2.inOut' }, at);
+}
+
+/** A gentle bob, out of phase with its neighbours. */
+export function bob(el: Element | null, amplitude = 3, seconds = 3, delay = 0) {
+  if (el) gsap.to(el, { y: -amplitude, duration: seconds, delay, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+}
+
+/** Roll a figure to a new value: the old slides up and out, the new one in. */
+export function roll(el: HTMLElement, next: string) {
+  gsap.timeline()
+    .to(el, { yPercent: -45, opacity: 0, duration: 0.24, ease: 'power2.in' })
+    .add(() => { el.textContent = next; })
+    .fromTo(el, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
 }
 
 /**
- * Runs `build` the first time the element is on screen, inside a gsap context
- * scoped to it. The context is reverted on unmount, which kills every tween the
- * build created and restores inline styles — sections can be remounted (the
- * steps slider does exactly that) without leaking animations.
+ * Splits text into masked lines so each can rise out of its own mask. Returns
+ * the inner spans — the things that move. Idempotent: calling it twice on the
+ * same element returns the spans already there.
+ */
+export function intoLines(el: HTMLElement): HTMLElement[] {
+  if (el.dataset.split) return all(el, '.line__in');
+
+  const text = el.textContent ?? '';
+  const parts = text.includes('\n') ? text.split('\n') : [text];
+  el.textContent = '';
+  parts.forEach((part) => {
+    const inner = document.createElement('span');
+    inner.className = 'line__in';
+    inner.textContent = part;
+    const mask = document.createElement('span');
+    mask.className = 'line';
+    mask.appendChild(inner);
+    el.appendChild(mask);
+  });
+  el.dataset.split = 'true';
+  return all(el, '.line__in');
+}
+
+export interface SectionMotion {
+  el: HTMLElement;
+  q: (selector: string) => HTMLElement[];
+  tl: Timeline;
+}
+
+/**
+ * Builds a section's entrance the first time it is on screen, then hands the
+ * finished timeline to `idle` for its loop. The whole thing lives in a gsap
+ * context scoped to the element, so unmounting kills every tween it created.
+ *
+ * `build` runs against a paused timeline that is released on the next frame, so
+ * a slow first paint cannot consume the sequence before anyone sees it.
  */
 export function useSectionMotion<T extends HTMLElement = HTMLElement>(
   build: (m: SectionMotion) => void,
-  { threshold = 0.15, once = true }: { threshold?: number; once?: boolean } = {},
+  { threshold = 0.15, idle }: { threshold?: number; idle?: (el: HTMLElement) => () => void } = {},
 ): RefObject<T | null> {
   const ref = useRef<T>(null);
-  const built = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    const reveal = () => { delete el.dataset.motion; };
+
+    if (REDUCED) { reveal(); return; }
+
     let ctx: gsap.Context | undefined;
+    let stopIdle: (() => void) | undefined;
+    let tl: Timeline | undefined;
 
     const start = () => {
-      if (built.current && once) return;
-      built.current = true;
-      ctx = gsap.context(() => {
-        const tl = gsap.timeline({ defaults: { ease: EASE, duration: 0.7 } });
-        build({
-          el,
-          q: (selector) => Array.from(el.querySelectorAll<HTMLElement>(selector)),
-          tl,
-        });
-        if (REDUCED) tl.progress(1).kill();
-      }, el);
+      // React's StrictMode runs effects twice in development. Without this the
+      // entrance builds, is torn down mid-flight, and rebuilds — a visible
+      // stutter that looks like a bug and only ever appears in dev. The flag
+      // lives on the node so it survives the remount.
+      if (el.dataset.motionBuilt) return;
+      el.dataset.motionBuilt = '1';
+      try {
+        ctx = gsap.context(() => {
+          tl = gsap.timeline({
+            paused: true,
+            defaults: { ease: EASE },
+            onComplete: () => { if (idle) stopIdle = idle(el); },
+          });
+          const timeline = tl;
+          build({ el, q: (sel) => all(el, sel), tl: timeline });
+          reveal();
+          requestAnimationFrame(() => timeline.play());
+        }, el);
+      } catch (err) {
+        // A build that throws part way would leave the section hidden. Show it.
+        console.warn('[motion] build failed', err);
+        reveal();
+      }
     };
 
-    // A section already in view on load should still animate in, so observe
-    // rather than checking position once.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          start();
-          if (once) io.disconnect();
-        }
-      },
-      { threshold, rootMargin: '0px 0px -10% 0px' },
-    );
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      io.disconnect();
+      start();
+    }, { threshold, rootMargin: '0px 0px -10% 0px' });
     io.observe(el);
 
     return () => {
       io.disconnect();
-      ctx?.revert();
-      built.current = false;
+      stopIdle?.();
+      // Settle rather than rewind. Reverting a half-played entrance puts the
+      // section back to its start values, which is what made the double-invoke
+      // visible; every tween ends on the design, so finishing is always safe.
+      tl?.progress(1);
+      ctx?.kill();
+      reveal();
     };
-  }, [build, threshold, once]);
+  }, [build, threshold, idle]);
 
   return ref;
-}
-
-/** Fades elements up in sequence. The default distance is deliberately small. */
-export function revealUp(
-  tl: gsap.core.Timeline,
-  targets: gsap.TweenTarget,
-  { y = 24, stagger = 0.07, duration = 0.7, at = '<0.08' }: RevealOptions = {},
-) {
-  const list = toList(targets);
-  if (!list.length) return tl;
-  return tl.from(list, { y, opacity: 0, duration, stagger, clearProps: 'transform' }, at);
-}
-
-/** Scales elements in from slightly under size, for cards and tiles. */
-export function revealIn(
-  tl: gsap.core.Timeline,
-  targets: gsap.TweenTarget,
-  { y = 18, stagger = 0.08, duration = 0.8, at = '<0.1' }: RevealOptions = {},
-) {
-  const list = toList(targets);
-  if (!list.length) return tl;
-  return tl.from(
-    list,
-    { y, scale: 0.97, opacity: 0, duration, stagger, transformOrigin: '50% 60%', clearProps: 'transform' },
-    at,
-  );
-}
-
-/**
- * Draws SVG strokes on. Works on any <path>, <line>, <circle> or <polyline>;
- * elements with no measurable length are skipped rather than left invisible.
- */
-export function drawPaths(
-  tl: gsap.core.Timeline,
-  paths: ArrayLike<SVGGeometryElement> | SVGGeometryElement,
-  { duration = 1.2, stagger = 0.06, at = '<0.05', ease = 'power2.inOut' }: DrawOptions = {},
-) {
-  const list = (paths instanceof SVGElement ? [paths] : Array.from(paths)).filter(
-    (p): p is SVGGeometryElement => typeof p.getTotalLength === 'function' && p.getTotalLength() > 0,
-  );
-  if (!list.length) return tl;
-
-  list.forEach((p) => {
-    const len = p.getTotalLength();
-    gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-  });
-
-  return tl.to(list, { strokeDashoffset: 0, duration, stagger, ease, clearProps: 'strokeDasharray,strokeDashoffset' }, at);
-}
-
-/** Counts a number up. Keeps the element's prefix/suffix (currency, units). */
-export function countTo(
-  tl: gsap.core.Timeline,
-  el: HTMLElement,
-  to: number,
-  { duration = 1.1, decimals = 0, prefix = '', suffix = '', at = '<0.2' }: CountOptions = {},
-) {
-  const obj = { v: 0 };
-  return tl.to(
-    obj,
-    {
-      v: to,
-      duration,
-      ease: 'power2.out',
-      onUpdate: () => {
-        el.textContent = `${prefix}${obj.v.toFixed(decimals)}${suffix}`;
-      },
-    },
-    at,
-  );
-}
-
-/**
- * Gentle endless drift for decorative marks. Each element gets its own phase so
- * a group never moves in lockstep. Returns the tweens so a caller can kill them.
- */
-export function drift(
-  targets: gsap.TweenTarget,
-  { distance = 8, duration = 4, rotate = 0 }: DriftOptions = {},
-): gsap.core.Tween[] {
-  if (REDUCED) return [];
-  return toList(targets).map((el, i) =>
-    gsap.to(el, {
-      y: i % 2 ? distance : -distance,
-      rotate: rotate ? (i % 2 ? rotate : -rotate) : 0,
-      duration: duration + (i % 3) * 0.6,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: (i % 5) * 0.35,
-    }),
-  );
-}
-
-/** Moves an element against the scroll. Returns a cleanup function. */
-export function parallax(el: HTMLElement, strength = 0.12): () => void {
-  if (REDUCED) return () => {};
-  const set = gsap.quickSetter(el, 'y', 'px');
-  let frame = 0;
-  const onScroll = () => {
-    if (frame) return;
-    frame = requestAnimationFrame(() => {
-      frame = 0;
-      const r = el.getBoundingClientRect();
-      set((r.top + r.height / 2 - innerHeight / 2) * -strength);
-    });
-  };
-  onScroll();
-  addEventListener('scroll', onScroll, { passive: true });
-  return () => {
-    removeEventListener('scroll', onScroll);
-    if (frame) cancelAnimationFrame(frame);
-    gsap.set(el, { y: 0 });
-  };
-}
-
-const toList = (t: gsap.TweenTarget): HTMLElement[] =>
-  typeof t === 'string' ? [] : Array.isArray(t) ? (t as HTMLElement[]) : t ? [t as HTMLElement] : [];
-
-interface RevealOptions {
-  y?: number;
-  stagger?: number;
-  duration?: number;
-  at?: gsap.Position;
-}
-
-interface DrawOptions {
-  duration?: number;
-  stagger?: number;
-  at?: gsap.Position;
-  ease?: string;
-}
-
-interface CountOptions {
-  duration?: number;
-  decimals?: number;
-  prefix?: string;
-  suffix?: string;
-  at?: gsap.Position;
-}
-
-interface DriftOptions {
-  distance?: number;
-  duration?: number;
-  rotate?: number;
 }

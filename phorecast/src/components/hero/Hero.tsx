@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { gsap } from 'gsap';
-import { REDUCED } from '../../lib/motion';
-import { heroEntrance, slideCopyIn } from './entrance';
+import { REDUCED, useSectionMotion } from '../../lib/motion';
+import { heroBuild, heroIdle, slideIn } from './entrance';
 import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
@@ -113,43 +113,26 @@ export function Hero() {
   };
 
   const active = SLIDES[index];
-  const heroRef = useRef<HTMLElement>(null);
   // Slide 1 is the only one that shows the mark; it sits where the static SVG did.
-  // The hero is above the fold, so it plays on mount rather than waiting for an
-  // observer. useLayoutEffect so the `from` tweens take their start values
-  // before the first paint and nothing flashes in at full opacity first.
-  useLayoutEffect(() => {
-    const el = heroRef.current;
-    if (!el || REDUCED) return;
-
-    let stop: (() => void) | undefined;
-    try {
-      stop = heroEntrance(el);
-    } catch (err) {
-      // A sequence that throws part way leaves `from` tweens holding their start
-      // values, which would ship invisible copy. Clear anything it touched.
-      console.warn('[hero] entrance failed to build', err);
-      gsap.set(el.querySelectorAll('.hero__slide *, .hero__foot *, .hero__position *, .hero__glow, .hero__horizon'),
-        { clearProps: 'opacity,transform' });
-    }
-    // Wall-clock safety net. The sequence runs 4s; if anything has stalled it
-    // well past that, force the settled state rather than ship invisible copy.
-    const guard = window.setTimeout(() => {
-      el.querySelectorAll<HTMLElement>('.hero__slide.is-active .eyebrow, .hero__slide.is-active .hero__title, .hero__slide.is-active .hero__lede, .hero__slide.is-active .hero__cta')
-        .forEach((node) => {
-          if (Number(getComputedStyle(node).opacity) < 0.99) gsap.set(node, { clearProps: 'opacity,transform' });
-        });
-    }, 7000);
-
-    return () => { window.clearTimeout(guard); stop?.(); };
-  }, []);
+  // The hero is above the fold, so the observer in useSectionMotion fires at
+  // once; the hook still holds the timeline until the browser has painted.
+  const heroRef = useSectionMotion<HTMLElement>(
+    useCallback(({ el, tl }) => heroBuild(el, tl), []),
+    { threshold: 0, idle: heroIdle },
+  );
 
   // Each slide change replays the copy choreography, so the mask reveal and the
   // glare are seen on every slide rather than only the first. Skipped on the
   // very first render, which the entrance above already covers.
-  const first = useRef(true);
+  // Keyed on the index actually animated, not a "first render" flag: StrictMode
+  // runs this twice on mount, and a boolean guard lets the second run replay the
+  // copy from zero — which looked exactly like the entrance stuttering.
+  const shown = useRef<number | null>(null);
   useEffect(() => {
-    if (first.current) { first.current = false; return; }
+    if (shown.current === index) return;
+    const previous = shown.current;
+    shown.current = index;
+    if (previous === null) return; // the entrance covers the first slide
     const el = heroRef.current;
     if (!el || REDUCED) return;
 
@@ -157,7 +140,7 @@ export function Hero() {
     if (!slide) return;
 
     const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-    slideCopyIn(slide, tl, 0);
+    slideIn(slide, tl, 0);
 
     // The CSS crossfade takes 600ms; if the copy tweens are still holding their
     // start values after that plus their own run, force the settled state.

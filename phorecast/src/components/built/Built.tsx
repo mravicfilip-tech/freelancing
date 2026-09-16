@@ -1,3 +1,7 @@
+import { useCallback, useEffect, useRef } from 'react';
+import { REDUCED, useSectionMotion } from '../../lib/motion';
+import type { SectionMotion } from '../../lib/motion';
+import { bindColumnHover, buildBuilt, createGate } from './motion';
 import dot from '../../assets/icons/live-dot.svg';
 import btcCoin from '../../assets/built/btc-coin.svg';
 import line from '../../assets/built/line.svg';
@@ -110,8 +114,23 @@ const COLUMNS = [
 ];
 
 export function Built() {
+  // One gate shared by the entrance and both columns: hover motion waits for
+  // the entrance to finish so the two can never tween the same card at once.
+  const gate = useRef(createGate());
+  const build = useCallback((m: SectionMotion) => buildBuilt(m, gate.current), []);
+  const ref = useSectionMotion<HTMLElement>(build);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || REDUCED) return;
+    const unbind = Array.from(el.querySelectorAll<HTMLElement>('.built__col')).map((col) =>
+      bindColumnHover(col, gate.current),
+    );
+    return () => unbind.forEach((fn) => fn());
+  }, [ref]);
+
   return (
-    <section className="built" id="built" aria-labelledby="built-title">
+    <section className="built" id="built" aria-labelledby="built-title" ref={ref}>
       <div className="built__glows glow-fade" aria-hidden="true"><span className="built__glow" /></div>
       <div className="container built__inner">
         <header className="built__head">

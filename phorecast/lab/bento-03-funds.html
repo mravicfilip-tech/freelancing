@@ -243,6 +243,7 @@ import iconLockHole from '../src/assets/bento/icon-lock-hole.svg';
 import nodeDot from '../src/assets/bento/node-dot.svg';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+window.gsap = gsap;   // exposed so the capture scripts in scripts/ can slow time down
 
 /* ------------------------------------------------------------------ markup
    A 1:1 transcription of <CardFunds/>. The only additions are the three
@@ -641,6 +642,7 @@ async function bloom(n = 5) {
     uComet:  { value: new THREE.Vector2(-999, -999) },
     uRing:   { value: new THREE.Vector2(-999, -999) },  // x = centre-x, y = born time
     uRingY:  { value: -999 },
+    uCell:   { value: 1 },
     uWarm:   { value: new THREE.Color('#ff8a4d') },
   };
 
@@ -650,7 +652,7 @@ async function bloom(n = 5) {
     fragmentShader: `
       precision highp float;
       uniform vec2  uRes, uPointer, uComet, uRing;
-      uniform float uTime, uHeat, uRingY;
+      uniform float uTime, uHeat, uRingY, uCell;
       uniform vec3  uWarm;
 
       /* 4x4 Bayer — the ordered dither the Figma halftone glows use. */
@@ -684,7 +686,7 @@ async function bloom(n = 5) {
         }
 
         a = clamp(a, 0.0, 1.0);
-        a = step(bayer(f), a) * a;         // quantise to the halftone grid
+        a = step(bayer(f / uCell), a) * a; // quantise to the halftone grid
         if(a <= 0.003) discard;
         gl_FragColor = vec4(uWarm, a * 0.42);
       }`,
@@ -700,6 +702,7 @@ async function bloom(n = 5) {
     renderer.setPixelRatio(dpr());
     renderer.setSize(b.width, b.height, false);
     uniforms.uRes.value.set(b.width * dpr(), b.height * dpr());
+    uniforms.uCell.value = dpr();
   };
   resize();
   addEventListener('resize', resize);

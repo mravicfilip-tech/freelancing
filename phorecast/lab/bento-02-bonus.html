@@ -235,7 +235,8 @@ const card = (i) => `
             <stop offset="1" stop-color="#1C1B1A"/>
           </linearGradient>
           <linearGradient id="ba${i}" x1="0" y1="0" x2="0" y2="196.559" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FA8D61" stop-opacity="0.42"/>
+            <stop stop-color="#FA8D61" stop-opacity="0.3"/>
+            <stop offset="0.45" stop-color="#FA8D61" stop-opacity="0.08"/>
             <stop offset="1" stop-color="#FA8D61" stop-opacity="0"/>
           </linearGradient>
         </defs>
@@ -532,7 +533,9 @@ function chargeTransfer() {
       .to(p.ext, { opacity: 1, duration: .12 }, landed)
       .to(seg, {
         len: p.L - p.L0, duration: .5, ease: 'power3.out',
-        onUpdate() { p.ext.setAttribute('stroke-dasharray', `0 ${p.L0} ${seg.len} ${p.L}`); },
+        // inline style, not the attribute — gsap.set below writes the style,
+        // and an inline style always beats a presentation attribute
+        onUpdate() { p.ext.style.strokeDasharray = `0 ${p.L0} ${seg.len} ${p.L}`; },
       }, landed)
       .to(p.pill, { scale: 1.022, duration: .18, ease: 'power2.out', transformOrigin: '50% 50%' }, landed)
       .to(p.pill, { scale: 1, duration: .55, ease: 'back.out(2.6)' }, landed + .18)
@@ -660,20 +663,23 @@ async function ditheredSurge() {
         float yTop = uSize.y - css.y;           // css px from the top
         float lineY = texture2D(uHeights, vec2(x / uSize.x, 0.5)).r * 196.559;
 
-        float below = yTop - lineY;             // > 0 under the curve
+        // start a few px clear of the stroke so the signed-off line stays crisp
+        float below = yTop - lineY - 3.0;       // > 0 under the curve
         if(below < 0.0) discard;
 
-        float depth = max(40.0, uSurge * 150.0);
+        float depth = 48.0 + uSurge * 46.0;
         float a = smoothstep(depth, 0.0, below) * uSurge;
 
         // a slow highlight band running the length — seamless by construction
         float phase = mod(uTime * 0.16, 1.0) * (uSize.x + 260.0) - 130.0;
-        a += smoothstep(120.0, 0.0, abs(x - phase)) * smoothstep(64.0, 0.0, below) * uSurge * 0.5;
+        a += smoothstep(120.0, 0.0, abs(x - phase)) * smoothstep(70.0, 0.0, below) * uSurge * 0.45;
 
-        a = clamp(a, 0.0, 1.0);
+        // keep the peak well under 1 so the dither never fills solid — the
+        // halftone has to stay readable as halftone
+        a = clamp(pow(clamp(a, 0.0, 1.0), 1.7) * 0.62, 0.0, 1.0);
         a = step(bayer(gl_FragCoord.xy), a) * a;
         if(a <= 0.004) discard;
-        gl_FragColor = vec4(uColor, a * 0.62);
+        gl_FragColor = vec4(uColor, a * 0.7);
       }`,
   });
 

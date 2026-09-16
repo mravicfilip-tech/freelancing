@@ -1,0 +1,22 @@
+import { chromium } from 'playwright-core';
+const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:1400,height:1000}});
+p.on('pageerror',e=>console.log('PAGEERROR',e.message.slice(0,200)));
+await p.goto('http://localhost:5173/lab/bento-01-account.html',{waitUntil:'networkidle'});
+await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(1200);
+const sec = p.locator('[data-v="3"]');
+await sec.scrollIntoViewIfNeeded(); await p.waitForTimeout(500);
+console.log('lit layers:', await p.evaluate(()=>document.querySelectorAll('[data-v="3"] .bcard__art--lit').length));
+console.log('rest clip :', await p.evaluate(()=>{const e=document.querySelector('[data-v="3"] .bcard__art--lit');return e?getComputedStyle(e).clipPath:'MISSING';}));
+const box = await sec.locator('.bcard').boundingBox();
+await p.mouse.move(box.x+box.width*0.5, box.y+box.height*0.55);
+const samples = await p.evaluate(()=>new Promise(res=>{
+  const e=document.querySelector('[data-v="3"] .bcard__art--lit');
+  const s=document.querySelector('[data-v="3"] .onboard__scan');
+  const out=[]; const t0=performance.now();
+  const tick=()=>{ out.push([Math.round(performance.now()-t0), getComputedStyle(e).clipPath, getComputedStyle(s).transform, getComputedStyle(s).opacity]);
+    if(performance.now()-t0<900) requestAnimationFrame(tick); else res(out); };
+  tick();
+}));
+for (const [t,c,tr,o] of samples.filter((_,i)=>i%6===0)) console.log(String(t).padStart(4), c, '| scan', tr, 'op', o);
+await b.close();

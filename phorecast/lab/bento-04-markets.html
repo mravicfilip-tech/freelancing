@@ -140,6 +140,8 @@ img,svg{display:block}
 [data-v="2"] .mk__tile--light{pointer-events:auto; cursor:default}
 [data-v="2"] .mk__tile.is-on{box-shadow:0 12px 26px -8px rgba(23,14,8,.34); border-color:rgba(255,99,42,.6)}
 [data-v="2"] .mk__tooltip{overflow:hidden}
+[data-v="2"] .mk__tile,[data-v="2"] .mk__cursor,[data-v="2"] .mk__tooltip{z-index:1}
+[data-v="2"] .mk__diamond{z-index:0}
 
 /* ======================================================================
    3 — CONSTELLATION DRAW
@@ -227,6 +229,7 @@ import tileDow from '../src/assets/bento/tile-dow.png';
 import cursor from '../src/assets/bento/cursor.svg';
 
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+window.gsap = gsap;   // exposed so the capture scripts in scripts/ can slow time down
 
 /* ------------------------------------------------------------------ markup
    A 1:1 transcription of <CardMarkets/>. The only addition is an invisible
@@ -425,31 +428,34 @@ if (!gsap || REDUCED) {
 function drive(n = 1) {
   const c = ctx(n);
   const riders = bindToPaths(c.paths, [...c.tiles, ...c.diamonds]);
-  const state = { v: 9 };            // px/s along the path; idle drift
+  riders.forEach((r) => { r.home = centre(r.el); });
+  // The shipped art points a cursor and a tooltip at Solana; they ride with it
+  // so the composition never comes apart while the orbits turn.
+  const sol = riders.find((r) => r.el.dataset.name === 'Solana');
+  const state = { v: 9 };            // px/s along the path — the idle drift
   let last = 0, travel = 0, target = 9;
 
   c.cardEl.addEventListener('pointermove', (e) => {
     const b = c.cardEl.getBoundingClientRect();
     const nx = (e.clientX - b.left) / b.width - .5;       // -0.5 … 0.5
-    target = nx * 320;
+    target = nx * 300;
   });
   hover(c.cardEl, () => {}, () => { target = 9; });
 
   ticker(c.root, (now) => {
     const dt = last ? Math.min((now - last) / 1000, .05) : 0;
     last = now;
-    state.v += (target - state.v) * Math.min(1, dt * 4.2);  // critically soft follow
+    state.v += (target - state.v) * Math.min(1, dt * 4.2);  // soft, never snappy
     travel += state.v * dt;
-    riders.forEach((r, i) => {
-      const dir = r.table === riders[0].table ? 1 : 1;
-      const p = pointOn(r.table, r.len + travel * dir);
-      const cx = p.x + r.dx, cy = p.y + r.dy;
-      const base = centre(r.el);
-      gsap.set(r.el, { x: cx - base.x, y: cy - base.y });
-      void i;
-      void dir;
+    riders.forEach((r) => {
+      const p = pointOn(r.table, r.len + travel);
+      gsap.set(r.el, { x: p.x + r.dx - r.home.x, y: p.y + r.dy - r.home.y });
     });
-    gsap.set(c.mark, { rotation: travel * .12 });
+    if (sol) {
+      const d = gsap.getProperty(sol.el, 'x'), e = gsap.getProperty(sol.el, 'y');
+      gsap.set([c.cursorEl, c.tip], { x: d, y: e });
+    }
+    gsap.set(c.mark, { rotation: state.v * .03 });          // the hub leans, ±9°
   });
 }
 
@@ -502,12 +508,20 @@ function focus(n = 2) {
     const t = centre(tile);
     tile.classList.add('is-on');
     gsap.to(tile, { scale: 1.07, duration: .4, ease: 'power3.out', transformOrigin: '50% 50%' });
-    gsap.to(others(tile), { opacity: .45, scale: .985, duration: .4, ease: 'power3.out' });
-    gsap.to(c.orbits, { opacity: .5, duration: .4 });
-    cxTo(t.x + tile.offsetWidth / 2 - 2 - base.cursor.x);
-    cyTo(t.y + tile.offsetHeight / 2 + 2 - base.cursor.y);
-    txTo(t.x + tile.offsetWidth / 2 + 15 - base.tip.x);
-    tyTo(t.y + tile.offsetHeight / 2 + 11 - base.tip.y);
+    gsap.to(others(tile), { opacity: .55, scale: .985, duration: .4, ease: 'power3.out' });
+    gsap.to(c.orbits, { opacity: .55, duration: .4 });
+    // Solana at rest: cursor centre sits 15/5 past the tile's bottom-right
+    // corner and the tooltip centre 60/21 past it. Reuse those exact offsets.
+    const rx = t.x + tile.offsetWidth / 2, by = t.y + tile.offsetHeight / 2;
+    const halfTip = c.tip.offsetWidth / 2;
+    let tipX = rx + 60;
+    if (tipX + halfTip > c.cardEl.clientWidth - 12) {      // flip rather than clip
+      tipX = t.x - tile.offsetWidth / 2 - 14 - halfTip;
+    }
+    cxTo(rx + 15 - base.cursor.x);
+    cyTo(by + 5 - base.cursor.y);
+    txTo(tipX - base.tip.x);
+    tyTo(by + 21 - base.tip.y);
     setLabel(tile.dataset.name);
     slideDiamond(t);
     gsap.to(c.mark, { rotation: (t.x - centre(c.hub).x) * .06, duration: .7, ease: 'power3.out' });
@@ -521,7 +535,7 @@ function focus(n = 2) {
     setLabel('Solana');
     homeDiamonds();
     gsap.to(c.mark, { rotation: 0, duration: .7, ease: 'power3.out' });
-    if (solana) solana.classList.add('is-on');
+    void solana;   // the resting card is left exactly as designed — no lift
   };
 
   c.tiles.forEach((tile) => {
@@ -646,7 +660,7 @@ function depth(n = 4) {
       const dx = pointer.x - ex, dy = pointer.y - ey;
       const dist = Math.hypot(dx, dy) || 1;
       // pulled in close, gently displaced at mid range, ignored far away
-      const pull = dist < 150 ? (1 - dist / 150) * 13 : 0;
+      const pull = dist < 150 ? (1 - dist / 150) * 16 : 0;
       const push = dist >= 150 && dist < 260 ? -(1 - (dist - 150) / 110) * 5 : 0;
       const k = (pull + push) / dist;
       gsap.to(d.el, { x: dx * k, y: dy * k, duration: .55, ease: 'power3.out', overwrite: 'auto' });
@@ -675,6 +689,7 @@ async function ink(n = 5) {
     uHeat:    { value: 0 },
     uPress:   { value: new THREE.Vector2(-999, -999) },
     uPressT:  { value: -999 },
+    uCell:    { value: 1 },
     uHub:     { value: new THREE.Vector2(0, 0) },
     uInk:     { value: new THREE.Color('#171008') },
     uWarm:    { value: new THREE.Color('#f55e22') },
@@ -686,7 +701,7 @@ async function ink(n = 5) {
     fragmentShader: `
       precision highp float;
       uniform vec2  uRes, uPointer, uPress, uHub;
-      uniform float uTime, uHeat, uPressT;
+      uniform float uTime, uHeat, uPressT, uCell;
       uniform vec3  uInk, uWarm;
 
       float bayer(vec2 p){
@@ -710,7 +725,7 @@ async function ink(n = 5) {
         float body = smoothstep(560.0, 90.0, d) * wave * 0.30;
 
         // warm ink gathers under the cursor
-        float warm = uHeat * smoothstep(240.0, 0.0, distance(f, uPointer));
+        float warm = uHeat * smoothstep(170.0, 0.0, distance(f, uPointer));
 
         // ring pressed out of the tile you touch
         float t = uTime - uPressT;
@@ -719,8 +734,8 @@ async function ink(n = 5) {
           warm += smoothstep(46.0, 0.0, abs(distance(f, uPress) - r)) * (1.0 - t / 1.2) * 0.8;
         }
 
-        float a = clamp(body + warm * 0.9, 0.0, 1.0);
-        a = step(bayer(f), a) * a;             // ordered dither → real halftone
+        float a = clamp(body + warm * 0.8, 0.0, 0.72);   // never fully solid
+        a = step(bayer(f / uCell), a) * a;     // ordered dither → real halftone
         if(a <= 0.004) discard;
 
         vec3 col = mix(uInk, uWarm, clamp(warm * 1.5, 0.0, 1.0));
@@ -739,6 +754,7 @@ async function ink(n = 5) {
     renderer.setPixelRatio(dpr());
     renderer.setSize(b.width, b.height, false);
     uniforms.uRes.value.set(b.width * dpr(), b.height * dpr());
+    uniforms.uCell.value = dpr();
     const h = centre(c.hub);
     uniforms.uHub.value.set(h.x * dpr(), (b.height - h.y) * dpr());
   };

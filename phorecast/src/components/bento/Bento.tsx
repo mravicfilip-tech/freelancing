@@ -1,4 +1,6 @@
-import { revealIn, revealUp, useSectionMotion } from '../../lib/motion';
+import { useEffect } from 'react';
+import type { RefObject } from 'react';
+import { REDUCED, revealIn, revealUp, useSectionMotion } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
 import arrowWhite from '../../assets/bento/arrow-white.svg';
 import arrowOrange from '../../assets/bento/arrow-orange.svg';
@@ -246,8 +248,56 @@ function buildBento({ q, tl }: SectionMotion) {
   });
 }
 
+/* Illustration motion ---------------------------------------------------------
+   Each card's load-in and ambient loop live in their own module, `motion/<x>.ts`
+   exporting `<x>(card) => teardown`, matched to `.bcard--<x>`. Globbed rather
+   than imported by name so a card without a module simply stays still, and
+   loaded on demand so the section costs nothing until it is reached. */
+type CardMotion = Record<string, ((card: HTMLElement) => () => void) | undefined>;
+const CARD_MOTION = import.meta.glob<CardMotion>('./motion/*.ts');
+
+function useCardMotion(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || REDUCED) return;
+
+    const teardowns: Array<() => void> = [];
+    let cancelled = false;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+
+        for (const [path, load] of Object.entries(CARD_MOTION)) {
+          const name = path.slice(path.lastIndexOf('/') + 1, -'.ts'.length);
+          const card = root.querySelector<HTMLElement>(`.bcard--${name}`);
+          if (!card) continue;
+
+          load()
+            .then((mod) => {
+              const start = mod[name];
+              if (cancelled || typeof start !== 'function') return;
+              teardowns.push(start(card));
+            })
+            .catch((err) => console.error(`bento: ${name} motion failed to load`, err));
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -5% 0px' },
+    );
+    io.observe(root);
+
+    return () => {
+      cancelled = true;
+      io.disconnect();
+      teardowns.forEach((stop) => stop());
+    };
+  }, [ref]);
+}
+
 export function Bento() {
   const ref = useSectionMotion<HTMLElement>(buildBento);
+  useCardMotion(ref);
 
   return (
     <section ref={ref} className="bento" id="why" aria-labelledby="why-title">

@@ -1,3 +1,5 @@
+import { revealIn, revealUp, useSectionMotion } from '../../lib/motion';
+import type { SectionMotion } from '../../lib/motion';
 import arrowWhite from '../../assets/bento/arrow-white.svg';
 import arrowOrange from '../../assets/bento/arrow-orange.svg';
 import arrowOrangeLight from '../../assets/bento/arrow-orange-light.svg';
@@ -202,9 +204,53 @@ function CardMarkets() {
   );
 }
 
+/* Entrance -------------------------------------------------------------------
+   The glow blooms, the header rises, then the four cards arrive one after
+   another with their copy and artwork trailing each shell, so the grid reads as
+   four arrivals rather than one block appearing. Every tween is a `from`, which
+   leaves the resting markup as the finished state: if the script never runs the
+   section is simply there. Illustration-level motion is chosen separately in
+   the /lab pages and is not part of this timeline. */
+const CARDS_AT = 0.3;
+const CARD_STEP = 0.09;
+
+function buildBento({ q, tl }: SectionMotion) {
+  const glow = q('.bento__glow')[0];
+
+  // The DOM runs down one column and then the other, so sort by position to get
+  // the order a person actually reads the grid in at any breakpoint.
+  const cards = q('.bcard').sort((a, b) => {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    return ra.top - rb.top || ra.left - rb.left;
+  });
+
+  if (glow) {
+    tl.from(glow, { opacity: 0, scale: 1.08, duration: 1, ease: 'power2.out', clearProps: 'transform' }, 0);
+  }
+  revealUp(tl, q('.bento__title'), { y: 20, duration: 0.65, at: 0.08 });
+  revealUp(tl, q('.bento__sub'), { y: 16, duration: 0.6, at: 0.18 });
+  revealIn(tl, cards, { y: 26, stagger: CARD_STEP, duration: 0.75, at: CARDS_AT });
+
+  cards.forEach((card, i) => {
+    const at = CARDS_AT + i * CARD_STEP + 0.16;
+    const copy = Array.from(card.querySelectorAll<HTMLElement>('.bcard__title, .bcard__body, .bento__cta'));
+    const art = card.querySelector<HTMLElement>('.bcard__art, .funds__art, .bonus__chart, .mk__orbits');
+
+    if (art) {
+      tl.from(art, { opacity: 0, scale: 0.96, duration: 0.7, transformOrigin: '50% 60%', clearProps: 'transform' }, at - 0.04);
+    }
+    if (copy.length) {
+      tl.from(copy, { y: 12, opacity: 0, duration: 0.5, stagger: 0.06, clearProps: 'transform' }, at);
+    }
+  });
+}
+
 export function Bento() {
+  const ref = useSectionMotion<HTMLElement>(buildBento);
+
   return (
-    <section className="bento" id="why" aria-labelledby="why-title">
+    <section ref={ref} className="bento" id="why" aria-labelledby="why-title">
       <div className="bento__glows glow-fade" aria-hidden="true"><span className="bento__glow" /></div>
       <div className="container">
         <div className="bento__card">

@@ -204,13 +204,14 @@ function drivePointer(root: HTMLElement): () => void {
 
   const run = () => {
     frame = 0;
-    cx += (tx - cx) * 0.085;
-    cy += (ty - cy) * 0.085;
-    rotY(cx * 4.2);
-    rotX(cy * -3);
-    artX(cx * 0.9);
-    markX?.(cx * -16);
-    glowX?.(cx * 22);
+    // ~0.6s to settle. Slower than instinct says, which is the point.
+    cx += (tx - cx) * 0.055;
+    cy += (ty - cy) * 0.055;
+    rotY(cx * 3.4);
+    rotX(cy * -2.4);
+    artX(cx * 0.8);
+    markX?.(cx * -15);
+    glowX?.(cx * 20);
     if (Math.abs(tx - cx) > 0.0015 || Math.abs(ty - cy) > 0.0015) frame = requestAnimationFrame(run);
   };
   const wake = () => {
@@ -259,6 +260,90 @@ export function useField(
       dispose?.();
     };
   }, [ref, ready]);
+}
+
+
+/* The pacing primitives every panel is built from. MOTION.md: one object
+   arrives, lands, and only then do the rest follow; position runs long and
+   opacity finishes before it, so nothing is still fading while it is still
+   moving. Both return the time the group has finished, so a timeline can be
+   written as a sequence of beats rather than a pile of magic numbers. */
+
+/** Transform only — opacity is handed back by its own tween. */
+export const CLEAR_T = 'transform,transformOrigin';
+
+export interface ArriveOptions {
+  x?: number;
+  y?: number;
+  scale?: number;
+  scaleX?: number;
+  scaleY?: number;
+  /** Position duration. 1.1–1.6s for a lead, 0.9–1.3s for followers. */
+  dur?: number;
+  /** 0.14–0.24s. You should be able to count them. */
+  stagger?: number;
+  at?: number;
+  ease?: string;
+  origin?: string;
+  /** Opacity duration as a fraction of `dur`. */
+  fade?: number;
+  /** What to hand back when it lands. `false` keeps the transform, for the
+   *  layers the scroll and pointer drivers own. */
+  clear?: string | false;
+}
+
+export function arrive(
+  tl: gsap.core.Timeline,
+  targets: Element[],
+  { x, y, scale, scaleX, scaleY, dur = 1.1, stagger = 0.18, at = 0, ease = 'power3.out', origin, fade = 0.62, clear = CLEAR_T }: ArriveOptions = {},
+): number {
+  const list = targets.filter(Boolean);
+  if (!list.length) return at;
+  const move: gsap.TweenVars = { duration: dur, stagger, ease };
+  if (x !== undefined) move.x = x;
+  if (y !== undefined) move.y = y;
+  if (scale !== undefined) move.scale = scale;
+  if (scaleX !== undefined) move.scaleX = scaleX;
+  if (scaleY !== undefined) move.scaleY = scaleY;
+  if (origin) move.transformOrigin = origin;
+  if (clear) move.clearProps = clear;
+  if (Object.keys(move).length > 3 || origin) tl.from(list, move, at);
+  tl.from(list, { opacity: 0, duration: dur * fade, stagger, ease: 'power2.out', clearProps: 'opacity' }, at);
+  return at + dur + stagger * (list.length - 1);
+}
+
+export interface DepartOptions {
+  x?: number;
+  y?: number;
+  scale?: number;
+  scaleX?: number;
+  dur?: number;
+  stagger?: number;
+  at?: number;
+  ease?: string;
+}
+
+export function depart(
+  tl: gsap.core.Timeline,
+  targets: Element[],
+  { x, y, scale, scaleX, dur = 0.55, stagger = 0.14, at = 0, ease = 'power2.in' }: DepartOptions = {},
+): number {
+  const list = targets.filter(Boolean);
+  if (!list.length) return at;
+  const move: gsap.TweenVars = { duration: dur, stagger, ease, opacity: 0 };
+  if (x !== undefined) move.x = x;
+  if (y !== undefined) move.y = y;
+  if (scale !== undefined) move.scale = scale;
+  if (scaleX !== undefined) move.scaleX = scaleX;
+  tl.to(list, move, at);
+  return at + dur + stagger * (list.length - 1);
+}
+
+/** The half-beat a group leans the wrong way before it leaves. */
+export function anticipate(tl: gsap.core.Timeline, targets: Element[], distance: number, axis: 'x' | 'y' = 'x') {
+  const list = targets.filter(Boolean);
+  if (!list.length) return;
+  tl.to(list, { [axis]: `+=${distance}`, duration: 0.32, ease: 'power2.out' }, 0);
 }
 
 /**

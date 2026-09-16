@@ -2,37 +2,71 @@
 // change. Both are built inside a gsap.context owned by Hero.tsx, so reverting
 // the context restores every inline style these functions write.
 //
-// The rules that shape the code below:
-//  - every reveal is a `from` tween off the settled state, so a script that
-//    never runs leaves the design exactly as the CSS paints it;
-//  - elements that still carry a CSS transform (the two diamonds rotate 45deg,
-//    the lower circuit is flipped) are only ever scaled or faded, never given
-//    an absolute x/y;
-//  - nothing here loops — idle life lives in ambient.ts.
+// Built to MOTION.md. One object arrives, is allowed to land, then the rest
+// follow it in its wake:
 //
-// Direction, not stagger: the headline leads, the sub and the CTA follow it
-// down, the illustration starts arriving before the copy has finished, and on
-// the way out everything leaves in the reverse of the order it came in.
+//   0.0s  the ground — glow and horizon bloom, the only thing on screen
+//   ~1.3s the mark has had the stage to itself; the timeline waits for it
+//   1.3s  eyebrow, then the headline line by line out of its own mask
+//   2.2s  the illustration starts arriving under the headline's tail
+//   2.4s  sub, then the CTA
+//   2.6s  the position indicator, then the ticker row last and quietest
+//   ~4.0s settled
+//
+// Rules that shape the code: every reveal is a `from` off the settled state, so
+// a script that never runs leaves the design as the CSS paints it; opacity
+// always finishes before position does; nothing structural overshoots; and the
+// two elements that still carry a CSS transform (the diamonds, rotate 45deg)
+// are only ever scaled, never given an absolute x/y.
 
 import { gsap } from 'gsap';
-import { EASE, drawPaths, revealUp } from '../../lib/motion';
+import { drawPaths } from '../../lib/motion';
 import { countFromRatio } from './ambient';
+
+/** The beat the copy waits for, while the mark has the stage alone. */
+export const LEAD = 1.3;
 
 const q = (root: ParentNode, selector: string) =>
   selector ? Array.from(root.querySelectorAll<Element>(selector)) : [];
 
-/** `tl.from` that skips an empty list, so a slide without a given part is silent. */
-function from(tl: gsap.core.Timeline, targets: Element[], vars: gsap.TweenVars, at: gsap.Position) {
-  if (targets.length) tl.from(targets, vars, at);
-  return tl;
+interface Arrive {
+  y?: number;
+  x?: number;
+  scale?: number;
+  /** How long the movement takes. Opacity always finishes well before it. */
+  dur?: number;
+  stagger?: number | gsap.StaggerVars;
+  ease?: string;
 }
 
-function to(tl: gsap.core.Timeline, targets: Element[], vars: gsap.TweenVars, at: gsap.Position) {
-  if (targets.length) tl.to(targets, vars, at);
-  return tl;
+/**
+ * The house arrival. Two tweens on purpose: the move is long and decelerating,
+ * the fade is shorter, so nothing is still fading while it is still travelling.
+ */
+function arrive(
+  tl: gsap.core.Timeline,
+  targets: Element[],
+  at: gsap.Position,
+  { y = 22, x, scale, dur = 1.1, stagger = 0.16, ease = 'power3.out' }: Arrive = {},
+) {
+  if (!targets.length) return;
+  tl.from(targets, { y, x, scale, duration: dur, stagger, ease, clearProps: 'transform' }, at);
+  tl.from(targets, { opacity: 0, duration: dur * 0.6, stagger, ease: 'power2.out', clearProps: 'opacity' }, at);
 }
 
-/** The floating pieces of each slide. */
+/** The house departure: shorter than the arrival, and it leads with opacity. */
+function leave(
+  tl: gsap.core.Timeline,
+  targets: Element[],
+  at: gsap.Position,
+  { y = -18, x, scale, dur = 0.6, stagger = 0.1 }: Arrive = {},
+) {
+  if (!targets.length) return;
+  tl.to(targets, { y, x, scale, duration: dur, stagger, ease: 'power2.in', clearProps: 'transform' }, at);
+  tl.to(targets, { opacity: 0, duration: dur * 0.8, stagger, ease: 'power2.in', clearProps: 'opacity' }, at);
+}
+
+/** The floating pieces of each slide, for the exit. */
 const CARDS: Record<string, string> = {
   mark: '',
   account: '.pred, .mcard, .mini, .toast, .hv2__tile, .hv2__onchain, .acct-pill, .hv2__y',
@@ -43,83 +77,76 @@ const CARDS: Record<string, string> = {
 /* ------------------------------------------------------------------ visuals */
 
 /**
- * The per-slide illustration. Each one has a lead element that establishes the
- * idea, a body that fills in around it and a late accent — never one uniform
- * stagger across the whole group.
+ * The per-slide illustration. Each has one lead element that lands alone, then
+ * support in its wake, then a late accent — never one uniform stagger across
+ * the group. Counted staggers, 0.14–0.22s, so you can see the order.
  */
 function visualIn(tl: gsap.core.Timeline, slide: ParentNode, id: string, at: number) {
   const sel = (s: string) => q(slide, s);
 
   if (id === 'account') {
-    // Lead: the prediction card, the thing the headline is about. The market
-    // cards follow it in, the minis fan from the far edge, and the badge row
-    // and the pill are the late accents that tie them together.
-    from(tl, sel('.pred'), { y: 26, scale: 0.97, opacity: 0, duration: 0.7, ease: 'expo.out', clearProps: 'transform' }, at);
-    from(tl, sel('.mcard'), { y: 22, scale: 0.97, opacity: 0, duration: 0.65, stagger: 0.07, ease: 'expo.out', clearProps: 'transform' }, at + 0.09);
-    from(tl, sel('.mini'), { x: 26, opacity: 0, duration: 0.55, stagger: { each: 0.055, from: 'end' }, ease: 'power3.out', clearProps: 'transform' }, at + 0.16);
-    from(tl, sel('.toast, .hv2__tile, .hv2__onchain'), { y: 14, opacity: 0, duration: 0.5, stagger: 0.05, clearProps: 'transform' }, at + 0.3);
-    from(tl, sel('.hv2__y'), { opacity: 0, duration: 0.5, stagger: 0.07 }, at + 0.36);
-    // rotate(45deg) in CSS: scale only, never y.
-    from(tl, sel('.hv2__diamond'), { opacity: 0, scale: 0.35, duration: 0.4, ease: 'back.out(2)', clearProps: 'transform' }, at + 0.5);
-    from(tl, sel('.acct-pill'), { opacity: 0, scale: 0.88, duration: 0.55, ease: 'back.out(1.4)', clearProps: 'transform' }, at + 0.44);
+    // Lead: the prediction card — the thing "one account" is about. The market
+    // cards follow, the minis fan in from the outer edge, then the badge row
+    // and the pill that ties the cluster to the headline.
+    arrive(tl, sel('.pred'), at, { y: 26, scale: 0.97, dur: 1.25, ease: 'expo.out' });
+    arrive(tl, sel('.mcard'), at + 0.42, { y: 22, scale: 0.975, dur: 1.1, stagger: 0.18 });
+    arrive(tl, sel('.mini'), at + 0.7, { y: 0, x: 24, dur: 1.0, stagger: { each: 0.16, from: 'end' } });
+    arrive(tl, sel('.toast, .hv2__tile, .hv2__onchain'), at + 1.0, { y: 16, dur: 0.95, stagger: 0.15 });
+    arrive(tl, sel('.hv2__y'), at + 1.15, { y: 0, dur: 0.9, stagger: 0.16 });
+    arrive(tl, sel('.acct-pill'), at + 1.3, { y: 18, scale: 0.96, dur: 1.05, ease: 'expo.out' });
+    // rotate(45deg) in CSS: scale only, and it is 6px across — an accent.
+    tl.from(sel('.hv2__diamond'), { opacity: 0, scale: 0.4, duration: 0.5, ease: 'back.out(1.6)', clearProps: 'transform,opacity' }, at + 1.55);
     return;
   }
 
   if (id === 'bonus') {
-    // The stack builds bottom-up: the two dark columns settle, the rule and the
-    // deposit figure land on them, then the matched half drops in from above —
-    // the one movement in the slide that goes downward.
-    from(tl, sel('.stack__col--deposit .stack__bar, .stack__col--base .stack__bar'),
-      { y: 14, opacity: 0, duration: 0.55, stagger: { each: 0.03, from: 'end' }, ease: 'power3.out', clearProps: 'transform' }, at);
-    from(tl, sel('.stack__rule, .stack__deposit-amt, .stack__cap'),
-      { y: 8, opacity: 0, duration: 0.45, stagger: 0.05, clearProps: 'transform' }, at + 0.22);
-    from(tl, sel('.stack__col--bonus .stack__bar'),
-      { y: -26, opacity: 0, duration: 0.6, stagger: 0.055, ease: 'power4.out', clearProps: 'transform' }, at + 0.32);
-    from(tl, sel('.stack__bracket'),
-      { scaleY: 0, opacity: 0, transformOrigin: '50% 0%', duration: 0.5, ease: 'power3.out', clearProps: 'transform' }, at + 0.56);
-    from(tl, sel('.stack__total'), { y: 14, opacity: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform' }, at + 0.58);
-    from(tl, sel('.stack__adds'), { x: -12, opacity: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform' }, at + 0.64);
-    from(tl, sel('.stack__tile, .stack__tag'), { y: 10, scale: 0.94, opacity: 0, duration: 0.45, stagger: 0.07, clearProps: 'transform' }, at + 0.5);
+    // Lead: the matched half of the stack, dropping in from above — the one
+    // movement on the slide that travels downward, because that is the point.
+    arrive(tl, sel('.stack__col--bonus .stack__bar'), at, { y: -24, dur: 1.3, stagger: 0.14, ease: 'expo.out' });
+    arrive(tl, sel('.stack__total'), at + 0.5, { y: 16, dur: 1.05 });
+    arrive(tl, sel('.stack__col--deposit .stack__bar, .stack__col--base .stack__bar'), at + 0.7,
+      { y: 18, dur: 1.0, stagger: { each: 0.05, from: 'end' } });
+    arrive(tl, sel('.stack__rule, .stack__deposit-amt, .stack__cap'), at + 1.1, { y: 12, dur: 0.95, stagger: 0.14 });
+    tl.from(sel('.stack__bracket'),
+      { scaleY: 0, transformOrigin: '50% 0%', duration: 1.0, ease: 'power3.out', clearProps: 'transform' }, at + 1.15);
+    tl.from(sel('.stack__bracket'), { opacity: 0, duration: 0.5, clearProps: 'opacity' }, at + 1.15);
+    arrive(tl, sel('.stack__adds'), at + 1.35, { y: 0, x: -14, dur: 1.0, ease: 'expo.out' });
+    arrive(tl, sel('.stack__tile, .stack__tag'), at + 1.2, { y: 14, scale: 0.96, dur: 0.95, stagger: 0.18 });
     return;
   }
 
   if (id === 'future') {
-    // The circuit is the spine of this slide, so it draws first and everything
-    // else arrives along it. `hv4__trace` is the solid stand-in that draws; the
-    // dotted design line fades up underneath as the trace hands over.
+    // Lead: the circuit draws itself, alone, before anything sits on it.
+    // `hv4__trace` is the solid stand-in that draws; the dotted design line
+    // fades up underneath as the trace hands over.
     const traces = slide.querySelectorAll<SVGGeometryElement>('.hv4__trace');
     if (traces.length) {
       tl.set(traces, { opacity: 1, clearProps: 'strokeDasharray,strokeDashoffset' }, at);
-      drawPaths(tl, traces, { duration: 0.8, stagger: 0.1, at, ease: 'power2.inOut' });
-      tl.to(traces, { opacity: 0, duration: 0.3, ease: 'power1.out' }, at + 0.7);
+      drawPaths(tl, traces, { duration: 1.5, stagger: 0.22, at, ease: 'power2.inOut' });
+      tl.to(traces, { opacity: 0, duration: 0.7, ease: 'power1.out' }, at + 1.35);
     }
-    from(tl, sel('.hv4__wire'), { opacity: 0, duration: 0.45, clearProps: 'opacity' }, at + 0.55);
-    // The rings come in from the inside out, the dots pop along them.
-    from(tl, sel('.hv4__ring'), { opacity: 0, scale: 0.9, duration: 0.6, stagger: { each: 0.08, from: 'end' }, ease: 'expo.out', clearProps: 'transform' }, at + 0.14);
-    from(tl, sel('.hv4__dot'), { opacity: 0, scale: 0.2, duration: 0.4, stagger: 0.035, ease: 'back.out(2.4)', clearProps: 'transform' }, at + 0.4);
-    from(tl, sel('.hv4__tile'), { opacity: 0, scale: 0.9, duration: 0.75, ease: 'expo.out', clearProps: 'transform' }, at + 0.06);
-    from(tl, sel('.hv4__chip'), { opacity: 0, scale: 0.7, duration: 0.5, stagger: { each: 0.065, from: 'center' }, ease: 'back.out(1.6)', clearProps: 'transform' }, at + 0.3);
-    from(tl, sel('.hv4__pill'), { opacity: 0, scale: 0.9, x: -14, duration: 0.55, ease: 'expo.out', clearProps: 'transform' }, at + 0.46);
-    from(tl, sel('.hv4__line'), { opacity: 0, scaleX: 0, transformOrigin: '0% 50%', duration: 0.35, clearProps: 'transform' }, at + 0.56);
-    from(tl, sel('.hv4__diamond'), { opacity: 0, scale: 0.3, duration: 0.4, ease: 'back.out(2)', clearProps: 'transform' }, at + 0.6);
-    revealUp(tl, sel('.hv4__tag'), { y: 8, stagger: 0.09, duration: 0.42, at: at + 0.62 });
+    tl.from(sel('.hv4__wire'), { opacity: 0, duration: 0.8, ease: 'power2.out', clearProps: 'opacity' }, at + 1.15);
+    // Then the app tile — the mark itself — and the rings around it.
+    arrive(tl, sel('.hv4__tile'), at + 0.85, { y: 20, scale: 0.96, dur: 1.35, ease: 'expo.out' });
+    arrive(tl, sel('.hv4__ring'), at + 1.2, { y: 0, scale: 0.97, dur: 1.15, stagger: { each: 0.18, from: 'end' } });
+    arrive(tl, sel('.hv4__chip'), at + 1.35, { y: 0, scale: 0.96, dur: 1.05, stagger: { each: 0.15, from: 'center' } });
+    tl.from(sel('.hv4__dot'), { opacity: 0, scale: 0.35, duration: 0.55, stagger: 0.09, ease: 'back.out(1.6)', clearProps: 'transform,opacity' }, at + 1.5);
+    arrive(tl, sel('.hv4__pill'), at + 1.7, { y: 0, x: -16, dur: 1.05, ease: 'expo.out' });
+    tl.from(sel('.hv4__line'), { scaleX: 0, transformOrigin: '0% 50%', duration: 0.6, ease: 'power2.out', clearProps: 'transform' }, at + 1.95);
+    tl.from(sel('.hv4__diamond'), { opacity: 0, scale: 0.45, duration: 0.55, ease: 'back.out(1.6)', clearProps: 'transform,opacity' }, at + 2.0);
+    arrive(tl, sel('.hv4__tag'), at + 1.85, { y: 12, dur: 0.9, stagger: 0.2 });
   }
 }
 
 /* ------------------------------------------------------------------- pieces */
 
-/** The headline, one masked line at a time. This is the lead of every slide. */
-function linesIn(tl: gsap.core.Timeline, slide: ParentNode, at: number, stagger: number) {
+/** The headline, one masked line at a time. The accent of every slide. */
+function linesIn(tl: gsap.core.Timeline, slide: ParentNode, at: number, dur: number, stagger: number) {
   const lines = q(slide, '.hero__line-in');
   if (!lines.length) return;
-  tl.from(lines, {
-    yPercent: 106,
-    opacity: 0,
-    duration: 0.95,
-    stagger,
-    ease: 'expo.out',
-    clearProps: 'transform,opacity',
-  }, at);
+  // Long travel out of a clipping box, so expo — and the fade lands first.
+  tl.from(lines, { yPercent: 104, duration: dur, stagger, ease: 'expo.out', clearProps: 'transform' }, at);
+  tl.from(lines, { opacity: 0, duration: dur * 0.45, stagger, ease: 'power2.out', clearProps: 'opacity' }, at);
 }
 
 /** The position ladder fills from the left; the active segment lands last. */
@@ -128,81 +155,75 @@ function ladderIn(tl: gsap.core.Timeline, el: ParentNode, at: number) {
   if (!segs.length) return;
   tl.from(segs, {
     scaleX: 0,
-    opacity: 0,
     transformOrigin: '0% 50%',
-    duration: 0.5,
-    stagger: 0.055,
+    duration: 0.85,
+    stagger: 0.14,
     ease: 'power2.out',
     clearProps: 'transform',
   }, at);
-  const active = q(el, '.position__seg.is-active');
-  if (active.length) {
-    tl.from(active, { scaleY: 0.2, duration: 0.45, ease: 'back.out(2.2)', clearProps: 'transform' }, at + 0.3);
-  }
+  tl.from(segs, { opacity: 0, duration: 0.5, stagger: 0.14, clearProps: 'opacity' }, at);
 }
 
 /* ----------------------------------------------------------------- entrance */
 
 /**
  * The page load. Above the fold, so it runs on mount rather than on scroll.
- * Beat by beat: ground, mark, live dot, eyebrow, headline, sub, CTA, indicator,
- * ticker — roughly 1.7s from black to settled.
+ * It parks at 1.2s: Hero.tsx releases it once the mark has established itself,
+ * which is the beat that makes the opening read as a title sequence rather
+ * than a page loading.
  */
 export function heroEntrance(el: HTMLElement, id: string): gsap.core.Timeline {
-  const tl = gsap.timeline({ defaults: { ease: EASE, duration: 0.7 } });
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.1 } });
   const slide = el.querySelector('.hero__slide.is-active') ?? el;
 
-  // 0.00 the ground. The discs bloom outward from the middle of the stack; the
-  //      horizon arrives late and lands fast, so the sun reads as rising into
-  //      a cut rather than the two fading up together. (When the shader takes
-  //      the layer over it runs the same bloom through uIntro.)
-  from(tl, q(el, '.hero__glow'),
-    { opacity: 0, scale: 0.84, duration: 1.1, stagger: { each: 0.055, from: 'center' }, ease: 'expo.out', clearProps: 'transform' }, 0);
-  from(tl, q(el, '.hero__horizon'),
-    { opacity: 0, yPercent: 4, duration: 0.72, ease: 'power2.out', clearProps: 'transform' }, 0.24);
+  // 0.00 the ground. Context, so it barely moves: the discs bloom outward from
+  //      the middle of the stack over a second and a half, and the horizon
+  //      settles over them afterwards so the sun reads as rising into a cut.
+  //      (With the shader live the same bloom runs through uIntro instead.)
+  const glows = q(el, '.hero__glow');
+  if (glows.length) {
+    tl.from(glows, { scale: 0.96, duration: 1.7, stagger: { each: 0.16, from: 'center' }, ease: 'expo.out', clearProps: 'transform' }, 0);
+    tl.from(glows, { opacity: 0, duration: 1.0, stagger: { each: 0.16, from: 'center' }, ease: 'power2.out', clearProps: 'opacity' }, 0);
+  }
+  const horizon = q(el, '.hero__horizon');
+  if (horizon.length) {
+    tl.from(horizon, { yPercent: 2, duration: 1.4, ease: 'power2.out', clearProps: 'transform' }, 0.55);
+    tl.from(horizon, { opacity: 0, duration: 0.8, ease: 'power2.out', clearProps: 'opacity' }, 0.55);
+  }
 
-  // 0.20 the mark's slot. HeroLogo idle-loads three and runs its own 2.2s
-  //      entrance, so the timeline leaves it a beat rather than tweening the
-  //      canvas underneath it.
-  tl.addLabel('mark', 0.2);
+  // 1.20 the mark's beat. HeroLogo idle-loads three and runs its own 2.2s
+  //      entrance; the timeline stops here and Hero.tsx resumes it once the
+  //      scene exists, so the mark is never talked over.
+  tl.addPause(1.2);
+  tl.addLabel('copy', LEAD);
 
-  // 0.18 the live dot is the first thing that moves in the copy column — one
-  //      small accent ahead of the words.
-  from(tl, q(slide, '.eyebrow__dot'),
-    { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(2.2)', transformOrigin: '50% 50%', clearProps: 'transform' }, 0.18);
-  from(tl, q(slide, '.eyebrow'), { x: -14, opacity: 0, duration: 0.55, ease: 'power3.out', clearProps: 'transform' }, 0.26);
+  // 1.30 the live dot lights — one small accent ahead of any words.
+  tl.from(q(slide, '.eyebrow__dot'),
+    { scale: 0.3, opacity: 0, duration: 0.6, ease: 'power2.out', transformOrigin: '50% 50%', clearProps: 'transform,opacity' }, LEAD);
+  arrive(tl, q(slide, '.eyebrow'), LEAD + 0.04, { y: 0, x: -12, dur: 1.0 });
 
-  // 0.34 the headline, line by line, out of its own mask.
-  linesIn(tl, slide, 0.34, 0.085);
+  // 1.62 the headline, line by line out of its own mask. This is the accent.
+  linesIn(tl, slide, LEAD + 0.32, 1.35, 0.2);
 
-  // 0.62 sub and CTA follow the headline down. The CTA is the only thing that
-  //      overshoots, and barely.
-  from(tl, q(slide, '.hero__lede'), { y: 18, opacity: 0, duration: 0.7, ease: 'power3.out', clearProps: 'transform' }, 0.62);
-  from(tl, q(slide, '.hero__cta'),
-    { y: 14, scale: 0.94, opacity: 0, duration: 0.62, ease: 'back.out(1.15)', clearProps: 'transform' }, 0.74);
+  // 2.20 the illustration starts under the headline's tail rather than queueing
+  //      behind it; on slide 1 there is nothing here and the mark holds.
+  visualIn(tl, slide, id, LEAD + 0.9);
 
-  // 0.78 the illustration starts before the copy has settled — the two overlap
-  //      rather than queueing.
-  visualIn(tl, slide, id, 0.78);
+  // 2.45 sub, then the CTA. Both shorter than the headline, neither overshoots.
+  arrive(tl, q(slide, '.hero__lede'), LEAD + 1.15, { y: 20, dur: 1.15 });
+  arrive(tl, q(slide, '.hero__cta'), LEAD + 1.4, { y: 18, scale: 0.97, dur: 1.05 });
 
-  // 0.80 the indicator, then the ticker row last.
-  from(tl, q(el, '.position__counter'), { y: 12, opacity: 0, duration: 0.5, ease: 'power3.out', clearProps: 'transform' }, 0.8);
-  ladderIn(tl, el, 0.84);
+  // 2.55 the indicator, then the ticker row last and quietest.
+  arrive(tl, q(el, '.position__counter'), LEAD + 1.2, { y: 14, dur: 0.95 });
+  ladderIn(tl, el, LEAD + 1.25);
 
   const tickers = q(el, '.hero__foot .ticker');
   if (tickers.length) {
-    tl.from(tickers, {
-      y: 30,
-      opacity: 0,
-      duration: 0.7,
-      ease: 'power3.out',
-      stagger: { each: 0.07, from: 'start', ease: 'power2.in' },
-      clearProps: 'transform',
-    }, 0.86);
+    arrive(tl, tickers, LEAD + 1.3, { y: 22, dur: 1.0, stagger: { each: 0.14, from: 'start', ease: 'power2.in' } });
     // Each price settles onto its figure instead of simply appearing.
     tickers.forEach((card, i) => {
       const price = card.querySelector<HTMLElement>('.ticker__price');
-      if (price) countFromRatio(tl, price, 0.988, 0.9, 0.95 + i * 0.07);
+      if (price) countFromRatio(tl, price, 0.992, 1.3, LEAD + 1.45 + i * 0.14);
     });
   }
 
@@ -225,74 +246,66 @@ export interface TransitionOpts {
 }
 
 /**
- * A slide change, interlocked rather than cross-faded: the old slide unbuilds
- * in the reverse of the order it was built, and the new one has already started
- * arriving before the last of it has gone. ~1.3s end to end, well inside the 7s
- * autoplay dwell.
+ * A slide change, led rather than cross-faded. The headline leads both halves:
+ * it leaves through the top of its mask first and the rest of the slide follows
+ * it out; then it rises into the new one and everything else arrives in its
+ * wake. ~2.9s end to end, against a 7s autoplay dwell.
  */
 export function heroTransition({ el, fromEl, fromId, toEl, toId, swapBg, onSettled }: TransitionOpts): gsap.core.Timeline {
-  const tl = gsap.timeline({ defaults: { ease: EASE, duration: 0.6 }, onComplete: onSettled });
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.0 }, onComplete: onSettled });
   const bg = el.querySelector('.hero__bg');
 
-  // 0.00 out, in reverse: CTA, sub, headline (through its mask), eyebrow. The
-  //      CSS has already dropped the old slide to opacity 0 now that it has
-  //      lost .is-active, so hold it up and take it down on our own clock.
+  // 0.00 out, led by the headline leaving through the top of its mask. Then
+  //      the sub, the CTA, the cards and last the eyebrow — the reverse of the
+  //      order they arrived in.
   if (fromEl) {
     gsap.set(fromEl, { opacity: 1 });
-    to(tl, q(fromEl, '.hero__cta'), { scale: 0.94, opacity: 0, duration: 0.26, ease: 'power2.in', clearProps: 'transform,opacity' }, 0);
-    to(tl, q(fromEl, '.hero__lede'), { y: -12, opacity: 0, duration: 0.28, ease: 'power2.in', clearProps: 'transform,opacity' }, 0.04);
-    to(tl, q(fromEl, '.hero__line-in'), { yPercent: -104, duration: 0.42, stagger: { each: 0.05, from: 'end' }, ease: 'power3.in', clearProps: 'transform' }, 0.06);
-    to(tl, q(fromEl, '.eyebrow'), { x: -12, opacity: 0, duration: 0.28, ease: 'power2.in', clearProps: 'transform,opacity' }, 0.12);
-    // The cards scatter rather than leaving as a block.
-    to(tl, q(fromEl, CARDS[fromId] ?? ''),
-      { y: -18, scale: 0.985, opacity: 0, duration: 0.32, stagger: { each: 0.022, from: 'random' }, ease: 'power2.in', clearProps: 'transform,opacity' }, 0.02);
-    to(tl, [fromEl], { opacity: 0, duration: 0.24, ease: 'power2.in', clearProps: 'opacity' }, 0.2);
+    const lines = q(fromEl, '.hero__line-in');
+    if (lines.length) {
+      tl.to(lines, { yPercent: -104, duration: 0.8, stagger: { each: 0.16, from: 'end' }, ease: 'power3.in', clearProps: 'transform' }, 0);
+    }
+    leave(tl, q(fromEl, '.hero__lede'), 0.2, { y: -14, dur: 0.6 });
+    leave(tl, q(fromEl, '.hero__cta'), 0.3, { y: -12, scale: 0.97, dur: 0.6 });
+    // The cards follow the headline out, scattered rather than as a block.
+    leave(tl, q(fromEl, CARDS[fromId] ?? ''), 0.15,
+      { y: -16, scale: 0.985, dur: 0.7, stagger: { each: 0.055, from: 'random' } });
+    leave(tl, q(fromEl, '.eyebrow'), 0.4, { y: 0, x: -12, dur: 0.55 });
+    tl.to([fromEl], { opacity: 0, duration: 0.5, ease: 'power2.in', clearProps: 'opacity' }, 0.6);
   }
 
-  // 0.00 the glow. With the shader live its discs slide to the new anchor over
+  // 0.00 the glow. With the shader live its discs travel to the new anchor over
   //      the whole change (driven from Hero.tsx); the CSS fallback cannot move
   //      a `left`, so it dims through the swap instead.
   if (bg) {
-    tl.to(bg, { opacity: 0.32, duration: 0.22, ease: 'power2.in' }, 0)
-      .call(swapBg, undefined, 0.22)
-      .to(bg, { opacity: 1, duration: 0.7 }, 0.24);
+    tl.to(bg, { opacity: 0.35, duration: 0.6, ease: 'power2.inOut' }, 0)
+      .call(swapBg, undefined, 0.6)
+      .to(bg, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0.7);
     const glows = q(el, '.hero__glow');
     if (glows.length) {
-      tl.fromTo(glows, { scale: 0.94 }, { scale: 1, duration: 0.8, stagger: 0.05, clearProps: 'transform' }, 0.24);
+      tl.fromTo(glows, { scale: 0.96 }, { scale: 1, duration: 1.5, stagger: 0.16, ease: 'expo.out', clearProps: 'transform' }, 0.7);
     }
   }
 
-  // 0.28 in. The illustration is already arriving while the headline is still
-  //      rising — that overlap is the whole point.
+  // 0.80 in, the headline leading again. Everything else arrives under it.
   gsap.set(toEl, { opacity: 1, clearProps: 'transform' });
-  from(tl, q(toEl, '.eyebrow'), { x: -12, opacity: 0, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' }, 0.28);
-  linesIn(tl, toEl, 0.32, 0.075);
-  visualIn(tl, toEl, toId, 0.3);
-  from(tl, q(toEl, '.hero__lede'), { y: 16, opacity: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform' }, 0.56);
-  from(tl, q(toEl, '.hero__cta'),
-    { y: 12, scale: 0.95, opacity: 0, duration: 0.55, ease: 'back.out(1.15)', clearProps: 'transform' }, 0.66);
+  arrive(tl, q(toEl, '.eyebrow'), 0.8, { y: 0, x: -12, dur: 0.95 });
+  linesIn(tl, toEl, 0.95, 1.25, 0.18);
+  visualIn(tl, toEl, toId, 1.3);
+  arrive(tl, q(toEl, '.hero__lede'), 1.55, { y: 18, dur: 1.0 });
+  arrive(tl, q(toEl, '.hero__cta'), 1.75, { y: 16, scale: 0.97, dur: 0.95 });
 
-  // 0.34 the indicator answers the change: the counter rolls, the new segment
+  // 0.95 the indicator answers the change: the counter rolls, the new segment
   //      fills from its left edge.
-  from(tl, q(el, '.position__current'), { y: 14, opacity: 0, duration: 0.45, ease: 'power3.out', clearProps: 'transform' }, 0.34);
+  arrive(tl, q(el, '.position__current'), 0.95, { y: 14, dur: 0.85 });
   const active = q(el, '.position__seg.is-active');
   if (active.length) {
-    tl.from(active, { scaleX: 0, transformOrigin: '0% 50%', duration: 0.6, ease: 'expo.out', clearProps: 'transform' }, 0.34);
+    tl.from(active, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.1, ease: 'expo.out', clearProps: 'transform' }, 0.95);
   }
 
   // Slide 1's ticker row lives outside the slide, under the carousel.
   if (toId === 'mark') {
-    const tickers = q(el, '.hero__foot .ticker');
-    if (tickers.length) {
-      tl.from(tickers, {
-        y: 24,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: { each: 0.06, from: 'start', ease: 'power2.in' },
-        clearProps: 'transform',
-      }, 0.5);
-    }
+    arrive(tl, q(el, '.hero__foot .ticker'), 1.5,
+      { y: 20, dur: 0.95, stagger: { each: 0.14, from: 'start', ease: 'power2.in' } });
   }
 
   return tl;

@@ -31,6 +31,13 @@ function progressOf(rect: DOMRect): number {
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+const TAU = Math.PI * 2;
+/** Cycle lengths in seconds. Coprime-ish so the group never resynchronises. */
+const MARK_X = [13.7, 10.9, 12.3];
+const MARK_Y = [9.1, 11.8, 8.3];
+/** Fraction of the remaining gap closed each frame: ~0.55s to settle at 60fps. */
+const DAMP = 0.055;
+
 export function startLife(
   el: HTMLElement,
   onFrame?: (timeSeconds: number, rect: DOMRectReadOnly) => void,
@@ -119,37 +126,42 @@ export function startLife(
     // section crosses; the bars below travel least, so the whole block shears
     // gently rather than sliding as one plate.
     glowY(p * 74);
-    const breathe = 1 + 0.022 * Math.sin(t * 0.21);
+    // Context: one 12.6s breath, amplitude small enough that a still of it is
+    // indistinguishable from the static design.
+    const breathe = 1 + 0.018 * Math.sin(t * TAU / 12.6);
     glowScaleX(breathe);
     glowScaleY(breathe);
     for (let i = 0; i < slotY.length; i++) slotY[i](p * (9 + i * 11));
     for (let i = 0; i < rowY.length; i++) rowY[i](p * (4 + i * 4.5));
 
     // --- resting drift -------------------------------------------------------
+    // Each mark gets its own period as well as its own phase, so the three never
+    // pulse in lockstep. On-Chain is the section's accent and drifts furthest.
     for (let i = 0; i < marks.length; i++) {
-      const dx = Math.cos(t * 0.44 + i * 2.1) * 2.2;
-      const dy = Math.sin(t * 0.61 + i * 1.7) * 3.0;
+      const amp = i === 2 ? 1.5 : 1;
+      const dx = Math.cos(t * TAU / MARK_X[i] + i * 2.1) * 1.9 * amp;
+      const dy = Math.sin(t * TAU / MARK_Y[i] + i * 1.7) * 2.6 * amp;
       markX[i](dx + have[i].mx);
       markY[i](dy + have[i].my);
     }
     if (dot) {
-      const beat = 0.5 + 0.5 * Math.sin(t * 2.1);
-      dotScaleX(1 + 0.16 * beat);
-      dotScaleY(1 + 0.16 * beat);
-      dotOpacity(0.72 + 0.28 * beat);
+      const beat = 0.5 + 0.5 * Math.sin(t * TAU / 6.4);
+      dotScaleX(1 + 0.14 * beat);
+      dotScaleY(1 + 0.14 * beat);
+      dotOpacity(0.74 + 0.26 * beat);
     }
 
     // --- pointer -------------------------------------------------------------
     for (let i = 0; i < cards.length; i++) {
       const w = want[i];
       const h = have[i];
-      h.rx = lerp(h.rx, w.rx, 0.12);
-      h.ry = lerp(h.ry, w.ry, 0.12);
-      h.mx = lerp(h.mx, w.mx, 0.10);
-      h.my = lerp(h.my, w.my, 0.10);
-      h.lit = lerp(h.lit, w.lit, 0.11);
-      h.gx = lerp(h.gx, w.gx, 0.16);
-      h.gy = lerp(h.gy, w.gy, 0.16);
+      h.rx = lerp(h.rx, w.rx, DAMP);
+      h.ry = lerp(h.ry, w.ry, DAMP);
+      h.mx = lerp(h.mx, w.mx, DAMP * 0.85);
+      h.my = lerp(h.my, w.my, DAMP * 0.85);
+      h.lit = lerp(h.lit, w.lit, DAMP);
+      h.gx = lerp(h.gx, w.gx, DAMP * 1.6);
+      h.gy = lerp(h.gy, w.gy, DAMP * 1.6);
       cardRX[i](h.rx);
       cardRY[i](h.ry);
       glintOpacity[i](h.lit);

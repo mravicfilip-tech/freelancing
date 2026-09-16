@@ -129,11 +129,12 @@ function arrive(
   tl: gsap.core.Timeline,
   targets: HTMLElement[],
   at: number,
-  { y = 22, scale, duration = 1.1, stagger = 0, ease = 'power3.out', rotate }:
-    { y?: number; scale?: number; duration?: number; stagger?: number; ease?: string; rotate?: number } = {},
+  { y = 22, x, scale, duration = 1.1, stagger = 0, ease = 'power3.out', rotate }:
+    { y?: number; x?: number; scale?: number; duration?: number; stagger?: number; ease?: string; rotate?: number } = {},
 ) {
   if (!targets.length) return;
   const from: gsap.TweenVars = { y, duration, stagger, ease, clearProps: 'transform' };
+  if (x !== undefined) from.x = x;
   if (scale !== undefined) { from.scale = scale; from.transformOrigin = '50% 60%'; }
   if (rotate !== undefined) from.rotate = rotate;
   tl.from(targets, from, at);
@@ -201,8 +202,7 @@ function buildPillars({ el, q, tl }: SectionMotion) {
       { clipPath: 'inset(0 0% 0 0 round 10px)', duration: 1.0, stagger: T.barStep, ease: 'expo.out', clearProps: 'clipPath' },
       T.bars);
     arrive(tl, slots, T.bars, { y: 14, duration: 0.95, stagger: T.barStep, ease: 'power2.out' });
-    arrive(tl, q('.prow__label'), T.bars + 0.18, { y: 0, duration: 0.85, stagger: T.barStep, ease: 'power2.out' });
-    tl.from(q('.prow__label'), { x: -12, duration: 0.85, stagger: T.barStep, ease: 'power2.out', clearProps: 'transform' }, T.bars + 0.18);
+    arrive(tl, q('.prow__label'), T.bars + 0.18, { y: 0, x: -12, duration: 0.85, stagger: T.barStep, ease: 'power2.out' });
     arrive(tl, q('.prow__chevron'), T.bars + 0.26, { y: -7, duration: 0.75, stagger: T.barStep, ease: 'power2.out' });
   }
 
@@ -318,8 +318,8 @@ function useAccordion(root: RefObject<HTMLElement | null>, open: number) {
           // the moment the tween starts, not a number baked in at build time.
           gsap.to(panel, {
             height: isOpen ? 'auto' : 0,
-            duration: d * (isOpen ? 0.52 : 0.42),
-            ease: isOpen ? 'expo.out' : 'power3.inOut',
+            duration: d * (isOpen ? 0.78 : 0.62),
+            ease: isOpen ? 'power3.out' : 'power2.inOut',
             overwrite: 'auto',
           });
         }
@@ -327,9 +327,9 @@ function useAccordion(root: RefObject<HTMLElement | null>, open: number) {
           gsap.to(inner, {
             opacity: isOpen ? 1 : 0,
             y: isOpen ? 0 : -8,
-            duration: d * (isOpen ? 0.45 : 0.22),
-            delay: d * (isOpen ? 0.12 : 0),
-            ease: isOpen ? 'power3.out' : 'power2.in',
+            duration: d * (isOpen ? 0.7 : 0.3),
+            delay: d * (isOpen ? 0.22 : 0),
+            ease: isOpen ? 'power2.out' : 'power2.in',
             overwrite: 'auto',
           });
         }
@@ -338,15 +338,15 @@ function useAccordion(root: RefObject<HTMLElement | null>, open: number) {
             rotate: isOpen ? 180 : 0,
             y: 0,
             transformOrigin: '50% 50%',
-            duration: d * 0.5,
-            ease: 'back.out(1.4)',
+            duration: d * 0.7,
+            ease: 'power3.out',
             overwrite: 'auto',
           });
         }
         // Neighbours acknowledge the change instead of sitting there: the ones
         // that are not moving dip back a little and come home.
         if (d && !changed && open !== -1) {
-          gsap.fromTo(slot, { opacity: 1 }, { opacity: 0.72, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 });
+          gsap.fromTo(slot, { opacity: 1 }, { opacity: 0.72, duration: 0.42, ease: 'sine.inOut', yoyo: true, repeat: 1 });
         }
       });
     }
@@ -390,14 +390,14 @@ function useRowPointer(root: RefObject<HTMLElement | null>, open: number) {
 
         const on = () => {
           const isOpen = openRef.current === i;
-          if (chev && !isOpen) gsap.to(chev, { y: 3, duration: 0.26, ease: EASE, overwrite: 'auto' });
-          if (label) gsap.to(label, { x: 3, duration: 0.28, ease: EASE, overwrite: 'auto' });
-          if (icon) gsap.to(icon, { scale: 1.12, transformOrigin: '50% 50%', duration: 0.28, ease: EASE, overwrite: 'auto' });
+          if (chev && !isOpen) gsap.to(chev, { y: 3, duration: 0.5, ease: EASE, overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 3, duration: 0.55, ease: EASE, overwrite: 'auto' });
+          if (icon) gsap.to(icon, { scale: 1.12, transformOrigin: '50% 50%', duration: 0.55, ease: EASE, overwrite: 'auto' });
         };
         const off = () => {
-          if (chev && openRef.current !== i) gsap.to(chev, { y: 0, duration: 0.38, ease: EASE, overwrite: 'auto' });
-          if (label) gsap.to(label, { x: 0, duration: 0.38, ease: EASE, overwrite: 'auto' });
-          if (icon) gsap.to(icon, { scale: 1, duration: 0.38, ease: EASE, overwrite: 'auto' });
+          if (chev && openRef.current !== i) gsap.to(chev, { y: 0, duration: 0.65, ease: EASE, overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 0, duration: 0.65, ease: EASE, overwrite: 'auto' });
+          if (icon) gsap.to(icon, { scale: 1, duration: 0.65, ease: EASE, overwrite: 'auto' });
         };
 
         const enter = () => {

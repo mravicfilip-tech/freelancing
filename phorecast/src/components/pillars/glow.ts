@@ -89,7 +89,7 @@ const FRAG = /* glsl */ `
     // Lens distortion, pulled around the glow's own centre of mass.
     vec2 focus = vec2(uSize.x * 0.86, -uSize.y * 0.35);
     vec2 d = (px - focus) / max(uSize.x, uSize.y);
-    float k = 0.09 + 0.02 * sin(uTime * 0.17);
+    float k = 0.09 + 0.02 * sin(uTime * 0.698);      // 9.0s
     vec2 wp = focus + (px - focus) * (1.0 + k * dot(d, d));
 
     // Four discs, composited bottom up exactly as the stacked spans are.
@@ -97,7 +97,7 @@ const FRAG = /* glsl */ `
     float alpha = 0.0;
 
     for (int i = 0; i < 4; i++) {
-      float breathe = 26.0 * sin(uTime * 0.11 + float(i) * 1.7);
+      float breathe = 26.0 * sin(uTime * (0.44 + float(i) * 0.07) + float(i) * 1.7);  // 14.3s .. 9.7s
       float a = disc(wp, uC[i], breathe);
       vec3 tint = uA[i];
       if (i == 0) {
@@ -113,7 +113,7 @@ const FRAG = /* glsl */ `
     // Halftone, weighted by luminance so it bites in the mid tones and leaves
     // the hot core and the empty corners alone.
     float lum = dot(col, vec3(0.299, 0.587, 0.114));
-    float cellPx = 2.9 + 0.7 * sin(uTime * 0.09);
+    float cellPx = 2.9 + 0.7 * sin(uTime * 0.449);   // 14.0s
     float ht = halftone(px * uDpr, lum, cellPx * uDpr, radians(27.0));
     float bite = uHalftone * smoothstep(0.02, 0.26, lum) * (1.0 - smoothstep(0.58, 0.96, lum));
     // Centred on 1.0 so the screen adds texture without dimming the field.

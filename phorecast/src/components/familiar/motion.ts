@@ -1,18 +1,20 @@
-// Motion for "Familiar Trading" (Figma 244:1465).
+// Motion for "Familiar Trading" (Figma 244:1465), built to MOTION.md.
 //
 // Three things run here, in this order:
 //
 // 1. The entrance — one timeline, built by `useSectionMotion` the first time the
-//    section is on screen. The light wakes, the phone leads, the cluster lands
-//    around it card by card with its own weight, and the horizon blooms late as
-//    the accent. It ends by dispatching `fam:settled` on the section.
+//    section is on screen. The phone is the lead: it arrives alone, lands, and
+//    is given a beat before anything else moves. The heading follows, then the
+//    cards settle around the phone one at a time in a spatial order — near left,
+//    far left, the two ghosts behind, the prediction card in front — and the
+//    horizon glow blooms last and slowest as the closing note. About four
+//    seconds end to end, and nothing in it is allowed to feel quick.
 // 2. The life — from `fam:settled` on, one rAF loop drives every floating layer
 //    from three inputs composed into a single transform each: where the section
-//    is in its scroll pass, a slow idle drift on its own phase, and a damped
-//    pointer. The same loop drives the WebGL horizon. It is paused whenever the
-//    section is off screen.
-// 3. The reactions — per card, per chip, per row: a hover lift fed into the same
-//    compose step, so nothing fights over a transform.
+//    is in its scroll pass, a long idle drift on its own phase and period, and a
+//    damped pointer. The same loop drives the WebGL horizon. Paused off screen.
+// 3. The reactions — per card, per chip, per row: a slow hover lift fed into the
+//    same compose step, so nothing fights over a transform.
 //
 // Rules of the house: everything animates *from* the rendered baseline, so a
 // section whose script never ran is the static design; at the resting point of
@@ -45,13 +47,14 @@ function unit(el: HTMLElement): number {
 
 /* 1 — The entrance ---------------------------------------------------------- */
 
-interface LandOptions {
+interface ArriveOptions {
+  /** Travel, in design pixels. Short: MOTION.md wants 16-28, never 80. */
   x?: number;
   y?: number;
   scale?: number;
-  rotation?: number;
   duration: number;
-  ease: string;
+  ease?: string;
+  stagger?: number | gsap.StaggerVars;
 }
 
 function build({ el, q, tl }: SectionMotion) {
@@ -59,34 +62,43 @@ function build({ el, q, tl }: SectionMotion) {
   const one = (selector: string) => el.querySelector<HTMLElement>(selector);
   const CLEAR = 'transform,transformOrigin,opacity';
 
-  /** A card falls into formation. Heavy cards travel further and settle harder. */
-  const land = (target: HTMLElement | null, at: number, o: LandOptions) => {
-    if (!target) return;
+  /**
+   * Something arrives: a long, decelerating move over a short distance, with the
+   * fade finishing well before the travel does so nothing is still dissolving
+   * while it is still moving.
+   */
+  const arrive = (targets: HTMLElement | HTMLElement[] | null, at: number, o: ArriveOptions) => {
+    const list = (Array.isArray(targets) ? targets : [targets]).filter((n): n is HTMLElement => !!n);
+    if (!list.length) return;
     tl.from(
-      target,
+      list,
       {
         x: (o.x ?? 0) * u,
-        y: (o.y ?? -50) * u,
-        scale: o.scale ?? 1.1,
-        rotation: o.rotation ?? 0,
+        y: (o.y ?? 22) * u,
+        scale: o.scale ?? 1,
         duration: o.duration,
-        ease: o.ease,
+        ease: o.ease ?? 'power3.out',
+        stagger: o.stagger,
         transformOrigin: '50% 60%',
         clearProps: CLEAR,
       },
       at,
-    ).from(target, { opacity: 0, duration: 0.3, ease: 'power2.out' }, at);
+    ).from(
+      list,
+      { opacity: 0, duration: o.duration * 0.5, ease: 'power2.out', stagger: o.stagger },
+      at,
+    );
   };
 
-  // Beat 1 (0.00) — the light wakes. The glow stack swells and the ground drops
-  // back onto its mark, which opens the bright crest up from the bottom edge.
+  // 0.00 — Context. The stage lights come up: the glow stack swells a hair and
+  // the ground settles onto its mark. Slow enough to read as light, not motion.
   tl.from(
     q('.fam__g'),
     {
-      scale: 0.86,
-      opacity: 0.22,
-      duration: 1.25,
-      stagger: 0.09,
+      scale: 0.975,
+      opacity: 0.55,
+      duration: 1.6,
+      stagger: 0.2,
       ease: 'power2.out',
       transformOrigin: '50% 72%',
       clearProps: CLEAR,
@@ -95,77 +107,61 @@ function build({ el, q, tl }: SectionMotion) {
   );
   const horizon = one('.fam__horizon');
   if (horizon) {
-    tl.from(horizon, { y: -78 * u, duration: 1.15, ease: 'expo.out', clearProps: CLEAR }, 0.02);
+    tl.from(horizon, { y: -16 * u, duration: 2.2, ease: 'expo.out', clearProps: CLEAR }, 0.05);
   }
 
-  // Beat 2 (0.12) — the claim.
-  const head = [one('.fam__copy--left .eyebrow'), one('.fam__title')].filter(
-    (n): n is HTMLElement => !!n,
-  );
-  revealUp(tl, head, { y: 34 * u, duration: 0.72, stagger: 0.12, at: 0.12 });
+  // 0.12 — The lead. The phone arrives whole, on its own, and is allowed to land
+  // before anything else in the section moves: 1.35s for 26 design pixels.
+  arrive(one('.fam__phone'), 0.12, { y: 26, scale: 0.975, duration: 1.35, ease: 'power3.out' });
 
-  // Beat 3 (0.20) — the phone leads: the heaviest thing here, so the slowest,
-  // rising and rolling upright on a real perspective.
-  const phone = one('.fam__phone');
-  if (phone) {
+  // 1.47 -> 1.77 — the beat. Nothing moves for a third of a second.
+
+  // 1.77 — The claim, in reading order, countable.
+  arrive([one('.fam__copy--left .eyebrow'), one('.fam__title')], 1.77, {
+    y: 20,
+    duration: 1,
+    ease: 'power2.out',
+    stagger: 0.18,
+  });
+
+  // 2.00 — The cluster settles around the phone, one card at a time, in a
+  // spatial order: nearest left, outer left, the two ghosts behind, then the
+  // prediction card in front. Each is shorter and smaller than the lead.
+  const ghosts = q('.fam__ghost');
+  arrive(one('.fam__mkt--ecb'), 2.0, { x: -12, y: 22, scale: 0.97, duration: 1.15 });
+  arrive(one('.fam__mkt--nvda'), 2.2, { x: -8, y: 20, scale: 0.97, duration: 1.1 });
+  arrive(ghosts[0] ?? null, 2.4, { x: 10, y: 16, scale: 0.98, duration: 1.05, ease: 'power2.out' });
+  arrive(ghosts[1] ?? null, 2.58, { x: 12, y: 16, scale: 0.98, duration: 1.05, ease: 'power2.out' });
+  arrive(one('.fam__pred'), 2.76, { x: 12, y: 22, scale: 0.97, duration: 1.1 });
+
+  // 2.50 — The offer, under the cluster.
+  arrive(q('.fam__copy--right > *'), 2.5, { y: 18, duration: 0.95, ease: 'power2.out', stagger: 0.16 });
+
+  // 2.90 — The chips come up off the crest, outward from the middle.
+  arrive(q('.fam__chip-pill'), 2.9, {
+    y: 18,
+    scale: 0.96,
+    duration: 0.9,
+    ease: 'power2.out',
+    stagger: { each: 0.16, from: 'center' },
+  });
+  // The two live dots are the only accent small enough to earn an overshoot.
+  const dots = q('.fam__chip-dot');
+  if (dots.length) {
     tl.from(
-      phone,
-      {
-        y: 130 * u,
-        scale: 0.9,
-        rotationX: 11,
-        transformPerspective: 1600,
-        transformOrigin: '50% 100%',
-        opacity: 0,
-        duration: 1,
-        ease: 'expo.out',
-        clearProps: CLEAR,
-      },
-      0.2,
+      dots,
+      { scale: 0.4, opacity: 0, duration: 0.5, ease: 'back.out(2)', stagger: 0.14, transformOrigin: '50% 50%', clearProps: CLEAR },
+      3.25,
     );
   }
-  // Its screen fills in behind the glass — light rows, quick, close together.
-  tl.from(
-    q('.fam__screen > *'),
-    { y: 34 * u, opacity: 0, duration: 0.55, stagger: 0.07, ease: 'power3.out', clearProps: CLEAR },
-    0.46,
-  );
 
-  // Beat 4 (0.58) — the cluster arrives. Furthest and lightest first, with the
-  // most overshoot; the heavy ECB card takes the longest and barely overshoots.
-  const ghosts = q('.fam__ghost');
-  land(ghosts[0] ?? null, 0.58, { x: 64, y: -54, scale: 1.14, rotation: 3.5, duration: 0.78, ease: 'back.out(1.9)' });
-  land(ghosts[1] ?? null, 0.66, { x: 78, y: -40, scale: 1.16, rotation: -3, duration: 0.82, ease: 'back.out(1.7)' });
-  land(one('.fam__mkt--ecb'), 0.72, { x: -74, y: -62, scale: 1.1, rotation: -4.5, duration: 0.86, ease: 'back.out(1.05)' });
-  land(one('.fam__mkt--nvda'), 0.84, { x: -34, y: -78, scale: 1.08, rotation: 3.5, duration: 0.72, ease: 'back.out(1.45)' });
-  land(one('.fam__pred'), 0.96, { x: 76, y: -46, scale: 1.12, rotation: 5, duration: 0.66, ease: 'back.out(1.8)' });
-
-  // Beat 5 (0.80) — the offer.
-  revealUp(tl, q('.fam__copy--right > *'), { y: 28 * u, duration: 0.66, stagger: 0.1, at: 0.8 });
-
-  // Beat 6 (1.20) — the horizon blooms, late, as the accent: the cream disc
-  // swells and settles back, and the shader layer fades its grain in with it.
+  // 2.95 — The closing note: the horizon blooms, the slowest move in the
+  // section. The shader layer fades its grain in over the same beat.
   const cream = one('.fam__g--cream');
   if (cream) {
-    tl.to(cream, { scale: 1.045, duration: 0.55, ease: 'power2.out', transformOrigin: '50% 62%' }, 1.2)
-      .to(cream, { scale: 1, duration: 1, ease: 'power2.inOut', clearProps: CLEAR }, 1.72);
+    tl.to(cream, { scale: 1.03, duration: 1.1, ease: 'sine.inOut', transformOrigin: '50% 62%' }, 2.95)
+      .to(cream, { scale: 1, duration: 1.3, ease: 'sine.inOut', clearProps: CLEAR }, 4.05);
   }
-
-  // Beat 7 (1.34) — the chips bloom outward from the middle of the crest.
-  tl.from(
-    q('.fam__chips > *'),
-    {
-      y: 30 * u,
-      scale: 0.6,
-      opacity: 0,
-      duration: 0.55,
-      ease: 'back.out(2.2)',
-      stagger: { each: 0.06, from: 'center' },
-      transformOrigin: '50% 50%',
-      clearProps: CLEAR,
-    },
-    1.34,
-  );
 
   // Hand over to the live layer.
   tl.call(() => el.dispatchEvent(new CustomEvent('fam:settled')));

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { REDUCED, drawPaths, revealUp, useSectionMotion } from '../../lib/motion';
+import { REDUCED, drawPaths, useSectionMotion } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
 import { createFanField, sampleArcs } from './fan-field';
 import type { FanField, SampledArc } from './fan-field';
@@ -86,28 +86,63 @@ function Arcs({ className, side }: { className: string; side: string }) {
 }
 
 /* ---------------------------------------------------------------------------
-   Entrance.
+   Entrance — built to MOTION.md.
 
-   One timeline. The four sheets of linework draw themselves ring by ring from
-   the innermost ellipse outward, sweeping in from the sides as they go; the
-   tile lands and the copy rises under it; the six pills arrive in order of
-   distance from the tile, on an uneven rhythm so it reads as arrival rather
-   than as a stagger; the diamonds twinkle in last, in two loose clusters.
+   The app tile is what this section is about, so it lands first and entirely
+   alone, over 1.25s. A beat of 0.3s follows; only then does anything else
+   move. The arcs are the longest tween on the page — four rings of linework
+   drawing themselves outward over two seconds on `expo.out`, which is the
+   right curve for a line that crosses the whole viewport. The heading and its
+   subtitle rise under the tile while that is still happening, the six pills
+   arrive in order of distance from the tile on a stagger you can count, and
+   the diamonds twinkle in last. They are the only thing here small enough for
+   `back.out`: nothing structural overshoots.
 
    Every step is a gsap.from off the real design state, so a script that never
-   runs leaves the section exactly as the stylesheet renders it.
+   runs leaves the section exactly as the stylesheet renders it. Opacity always
+   finishes ahead of position, so nothing is still fading while it still moves.
 --------------------------------------------------------------------------- */
-const DRAW_DUR = 1.15;
-/** Ring offsets open out, so the fan decelerates as it widens. */
-const RING_AT = [0, 0.16, 0.34, 0.56];
-const SHEET_AT = 0.045;
-const DRAW_END = RING_AT[3] + SHEET_AT * 3 + DRAW_DUR;
-/** Deliberately uneven: a flat stagger reads like a spreadsheet. */
-const PILL_AT = [0, 0.09, 0.16, 0.28, 0.34, 0.44];
-const DIAMOND_AT = [0, 0.05, 0.1, 0.14, 0.26, 0.3, 0.34, 0.39, 0.5, 0.54, 0.58, 0.63];
-const ENTRANCE_MS = 2400;
+const TILE_AT = 0;
+const TILE_DUR = 1.25;
+const BEAT = 0.3;                       // the pause that makes it feel directed
+const ARCS_AT = TILE_AT + TILE_DUR + BEAT;
+const ARCS_DUR = 2;
+const RING_STAGGER = 0.12;              // four concentric rings, opening outward
+const ARCS_END = ARCS_AT + RING_STAGGER * 3 + ARCS_DUR;
+const HANDOFF_AT = ARCS_END - 0.16;
+const HANDOFF_DUR = 0.35;
+const TITLE_AT = 2.05;
+const SUB_AT = 2.22;
+const PILLS_AT = 2.3;
+const PILL_STAGGER = 0.14;              // countable, six of them
+const DIAMONDS_AT = 2.6;
+const DIAMOND_STAGGER = 0.07;           // twelve accents, so tighter than siblings
+/** The whole thing, plus a little air before the ambient layer takes over. */
+const ENTRANCE_MS = 4400;
 
 function buildEntrance({ el, q, tl }: SectionMotion) {
+  /* --- the accent, alone ------------------------------------------------- */
+  const [tile] = q('.fan__tile');
+  if (tile) {
+    tl.from(tile, {
+      y: 24, scale: 0.965, duration: TILE_DUR, ease: 'power3.out',
+      transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin',
+    }, TILE_AT)
+      .from(tile, { opacity: 0, duration: 0.8, ease: 'power2.out', clearProps: 'opacity' }, TILE_AT);
+  }
+
+  /* The halo only exists while the script is running it, so it is introduced
+     here rather than sitting in the stylesheet. */
+  const [aura] = q('.fan__aura');
+  if (aura && !REDUCED) {
+    aura.style.display = 'block';
+    tl.fromTo(aura,
+      { opacity: 0, scale: 1.9 },
+      { opacity: 0.34, scale: 2.35, duration: 1.6, ease: 'power2.out' },
+      TILE_AT + 0.2);
+  }
+
+  /* --- then, after the beat, the linework draws itself ------------------- */
   const layers = q('.fan__draw');
   const art = Array.from(el.querySelectorAll<HTMLElement>('img.fan__lines'));
   const paths = Array.from(el.querySelectorAll<SVGPathElement>('.fan__draw path'));
@@ -118,63 +153,49 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
     layers.forEach((l) => { l.style.display = 'block'; });
 
     /* DOM order is left-group-then-right-group, which would draw one side
-       before the other. Re-order by each ellipse's index inside its own group,
-       so ring 1 of all four sheets draws together and the fan opens outward,
-       symmetrically, from the middle of the band. */
+       before the other. Order by each ellipse's index inside its own group so
+       all four sheets draw ring 1 together and the fan opens outward from the
+       middle of the band, perfectly mirrored. */
     const ring = (p: SVGPathElement) =>
-      p.parentElement ? Array.prototype.indexOf.call(p.parentElement.children, p) : 0;
-    const sheets = Array.from(el.querySelectorAll('.fan__draw svg'));
-    const sheetOf = (p: SVGPathElement) => Math.max(0, sheets.indexOf(p.ownerSVGElement as Element));
-    const ordered = paths.slice().sort((a, b) => ring(a) - ring(b) || sheetOf(a) - sheetOf(b));
-    const delays = ordered.map((p) => RING_AT[Math.min(3, ring(p))] + sheetOf(p) * SHEET_AT);
+      p.parentElement ? Math.min(3, Array.prototype.indexOf.call(p.parentElement.children, p)) : 0;
+    const ordered = paths.slice().sort((a, b) => ring(a) - ring(b));
+    const delays = ordered.map((p) => ring(p) * RING_STAGGER);
 
-    tl.set(art, { opacity: 0 }, 0);
+    tl.set(art, { opacity: 0 }, ARCS_AT);
     drawPaths(tl, ordered, {
-      duration: DRAW_DUR, ease: 'power2.inOut', at: 0,
+      duration: ARCS_DUR, ease: 'expo.out', at: ARCS_AT,
       stagger: ((i: number) => delays[i]) as unknown as number,
     });
-    /* ...and the two halves sweep in towards each other while they draw. */
-    tl.from(layers, { x: (i: number) => (i ? 26 : -26), duration: 1.4, ease: 'expo.out', clearProps: 'transform' }, 0);
+    /* ...and the two halves travel in towards each other while they draw. */
+    tl.from(layers, {
+      x: (i: number) => (i ? 34 : -34), duration: ARCS_DUR + 0.3, ease: 'expo.out',
+      clearProps: 'transform',
+    }, ARCS_AT);
 
     /* Hand the finished linework back to the artwork. Both copies are the same
-       picture, so a straight cross-fade holds a constant total. */
-    const handoff = DRAW_END - 0.15;
-    tl.to(art, { opacity: 1, duration: 0.28, ease: 'none' }, handoff)
-      .to(layers, { opacity: 0, duration: 0.28, ease: 'none' }, handoff)
+       picture, so a straight cross-fade holds a constant total; it overlaps the
+       flat tail of the expo curve, where nothing perceptible is left to draw. */
+    tl.to(art, { opacity: 1, duration: HANDOFF_DUR, ease: 'power1.inOut' }, HANDOFF_AT)
+      .to(layers, { opacity: 0, duration: HANDOFF_DUR, ease: 'power1.inOut' }, HANDOFF_AT)
       .set(art, { clearProps: 'opacity' })
       .set(layers, { display: 'none', clearProps: 'opacity,transform' });
   }
 
-  const [tile] = q('.fan__tile');
-  if (tile) {
-    tl.from(
-      tile,
-      {
-        scale: 0.78, y: 18, opacity: 0, duration: 0.72, ease: 'expo.out',
-        transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin,opacity',
-      },
-      0.4,
-    );
+  /* --- the copy rises under the tile ------------------------------------- */
+  const [title] = q('.fan__title');
+  if (title) {
+    tl.from(title, { y: 24, duration: 1.05, ease: 'power3.out', clearProps: 'transform' }, TITLE_AT)
+      .from(title, { opacity: 0, duration: 0.7, ease: 'power2.out', clearProps: 'opacity' }, TITLE_AT);
+  }
+  const [sub] = q('.fan__sub');
+  if (sub) {
+    tl.from(sub, { y: 20, duration: 0.95, ease: 'power3.out', clearProps: 'transform' }, SUB_AT)
+      .from(sub, { opacity: 0, duration: 0.65, ease: 'power2.out', clearProps: 'opacity' }, SUB_AT);
   }
 
-  /* The halo only exists when the script is running it, so it is introduced
-     here rather than sitting in the stylesheet. */
-  const [aura] = q('.fan__aura');
-  if (aura && !REDUCED) {
-    aura.style.display = 'block';
-    tl.fromTo(
-      aura,
-      { opacity: 0, scale: 1.5 },
-      { opacity: 0.42, scale: 2.35, duration: 0.95, ease: 'power2.out' },
-      0.5,
-    );
-  }
-
-  revealUp(tl, q('.fan__title'), { y: 18, duration: 0.6, at: 0.58 });
-  revealUp(tl, q('.fan__sub'), { y: 14, duration: 0.55, at: 0.7 });
-
-  /* Scattered marks read badly left-to-right. Bloom them outward from the tile
-     instead, which is where the eye already is when they start. */
+  /* --- six pills, blooming outward from the tile ------------------------- */
+  /* Scattered marks read badly left to right. Ordering them by distance from
+     the tile sends them outward from where the eye already is. */
   const centre = tile?.getBoundingClientRect();
   const cx = centre ? centre.left + centre.width / 2 : 0;
   const cy = centre ? centre.top + centre.height / 2 : 0;
@@ -184,34 +205,34 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
   };
   const pills = q('.fan__pill').sort((a, b) => radius(a) - radius(b));
   if (pills.length) {
-    tl.from(
-      pills,
-      {
-        scale: 0.7, y: 10, opacity: 0, duration: 0.52, ease: 'back.out(1.5)',
-        transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin,opacity',
-        stagger: ((i: number) => PILL_AT[i] ?? i * 0.08) as unknown as number,
-      },
-      0.86,
-    );
+    tl.from(pills, {
+      y: 18, scale: 0.965, duration: 0.95, ease: 'power2.out', stagger: PILL_STAGGER,
+      transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin',
+    }, PILLS_AT)
+      .from(pills, {
+        opacity: 0, duration: 0.6, ease: 'power2.out', stagger: PILL_STAGGER,
+        clearProps: 'opacity',
+      }, PILLS_AT);
   }
 
+  /* --- and the diamonds twinkle in last ---------------------------------- */
   /* A fixed scatter rather than gsap's random stagger: just as unordered to
-     look at, and reproducible frame for frame when reviewing. */
+     look at, and reproducible frame for frame when reviewing. These are 9px
+     marks, which is the one place an overshoot is not cheap. */
   const diamonds = q('.fan__diamond');
   const twinkle = diamonds
     .map((e, i) => ({ e, k: (i * 7) % (diamonds.length || 1) }))
     .sort((a, b) => a.k - b.k)
     .map((o) => o.e);
   if (twinkle.length) {
-    tl.from(
-      twinkle,
-      {
-        scale: 0.08, opacity: 0, rotation: '+=80', duration: 0.42, ease: 'power3.out',
-        clearProps: 'transform,opacity',
-        stagger: ((i: number) => DIAMOND_AT[i] ?? i * 0.05) as unknown as number,
-      },
-      1.45,
-    );
+    tl.from(twinkle, {
+      scale: 0.3, rotation: '+=45', duration: 0.7, ease: 'back.out(1.5)',
+      stagger: DIAMOND_STAGGER, clearProps: 'transform',
+    }, DIAMONDS_AT)
+      .from(twinkle, {
+        opacity: 0, duration: 0.45, ease: 'power2.out', stagger: DIAMOND_STAGGER,
+        clearProps: 'opacity',
+      }, DIAMONDS_AT);
   }
 }
 

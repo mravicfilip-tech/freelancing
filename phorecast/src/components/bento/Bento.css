@@ -6,6 +6,13 @@
   isolation: isolate;
 }
 /* left-edge orange glow (Figma shader node 244:1326 approximated) */
+.bento__glows {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
 .bento__glow {
   position: absolute;
   left: -551px;
@@ -16,8 +23,6 @@
   background: radial-gradient(circle at 50% 50%, #d1541c 0%, #8a2a0c 45%, rgba(15, 14, 13, 0) 70%);
   filter: blur(110px);
   opacity: 0.9;
-  z-index: -1;
-  pointer-events: none;
 }
 .bento__card {
   display: flex;

@@ -205,7 +205,7 @@ function CardMarkets() {
 export function Bento() {
   return (
     <section className="bento" id="why" aria-labelledby="why-title">
-      <div className="bento__glow" aria-hidden="true" />
+      <div className="bento__glows glow-fade" aria-hidden="true"><span className="bento__glow" /></div>
       <div className="container">
         <div className="bento__card">
           <header className="bento__head">

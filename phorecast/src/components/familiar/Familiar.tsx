@@ -111,7 +111,7 @@ function MarketCard(props: {
 export function Familiar() {
   return (
     <section className="fam" aria-labelledby="fam-title">
-      <div className="fam__bg" aria-hidden="true">
+      <div className="fam__bg glow-fade--top" aria-hidden="true">
         <span className="fam__g fam__g--red" />
         <span className="fam__g fam__g--orange" />
         <span className="fam__g fam__g--peach" />

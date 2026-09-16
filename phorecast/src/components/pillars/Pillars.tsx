@@ -81,7 +81,7 @@ const ROWS = [
 export function Pillars() {
   return (
     <section className="pillars" aria-labelledby="pillars-title">
-      <div className="pillars__glow" aria-hidden="true">
+      <div className="pillars__glow glow-fade" aria-hidden="true">
         <span className="pillars__g pillars__g--red" />
         <span className="pillars__g pillars__g--orange" />
         <span className="pillars__g pillars__g--peach" />

@@ -23,6 +23,7 @@ Node 22 or newer.
 | `components/steps` | 280:4547, 251:2055, 280:4816 | "Open an account in 3 simple steps" slider |
 | `components/built` | 255:3449 | "Built for the Way You Trade" feature cards |
 | `components/faq` | 297:140 | "Answers you can verify" accordion |
+| `components/HeroLogo` | — | Animated 3D mark, used by the hero and the FAQ |
 | `components/footer` | 302:140 | Footer with the cropped wordmark |
 
 Nodes 255:2705 and 255:2862 are background-glow frames with no content; their
@@ -42,8 +43,18 @@ treatment lives in the hero and section glows rather than in a component.
   under `src/assets/`. Figma's asset URLs expire after about a week, so the
   committed copies are the source of truth.
 - **Motion.** The hero autoplays every 7s and pauses on hover or focus; the
-  steps slider switches on hover or click. Both respect
-  `prefers-reduced-motion`.
+  steps slider advances every 6s and stops for good on hover, focus or click.
+  Both respect `prefers-reduced-motion`.
+- **The animated mark.** `components/HeroLogo` is a Three.js scene ported from
+  the `claude/intelligent-sagan-5bxpqc` branch. It loads after the page is idle,
+  probes for WebGL and falls back to `logo-outline.svg` when there is none. Five
+  treatments exist in `variants.ts`; both placements use `lined`. `placement`
+  overrides the breakpoint layout, which is how the same scene serves a full
+  hero and the small FAQ rail. The hero instance stays mounted across the
+  carousel and cross-fades, so its WebGL context is built once.
+- **Section seams.** Glows are clipped by their section's `overflow: hidden`,
+  which leaves a hard line where two sections meet. The `glow-fade` utility in
+  `global.css` masks each glow layer so it dissolves into the next section.
 
 ## Review helpers
 

@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
 import { StackDiagram } from './StackDiagram';
 import { VisualAccount, VisualFuture } from './visuals';
+import { HeroLogo } from '../HeroLogo';
 import './visuals.css';
 import liveDot from '../../assets/icons/live-dot.svg';
-import ribs from '../../assets/hero/mark3d-ribs.svg';
-import slices from '../../assets/hero/mark3d-slices.svg';
 import apple from '../../assets/icons/apple.svg';
 import tesla from '../../assets/icons/tesla.svg';
 import bitcoin from '../../assets/icons/bitcoin.svg';
@@ -32,24 +31,15 @@ type Slide = {
   foot?: ReactNode;
 };
 
-function Mark3D() {
-  return (
-    <div className="mark3d" aria-hidden="true">
-      <img src={ribs} alt="" className="mark3d__ribs" />
-      <img src={slices} alt="" className="mark3d__slices" />
-    </div>
-  );
-}
-
 const SLIDES: Slide[] = [
   {
-    id: 'future',
+    id: 'mark',
     eyebrow: 'Global Markets. One Platform.',
     title: 'The Future\nof Trading',
     lede: 'Phorecast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
     cta: 'Get Started',
     href: '#signup',
-    visual: <Mark3D />,
+    visual: null,
     foot: (
       <ul className="hero__foot" aria-label="Market snapshot">
         {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
@@ -120,9 +110,13 @@ export function Hero() {
   };
 
   const active = SLIDES[index];
+  const heroRef = useRef<HTMLElement>(null);
+  // Slide 1 is the only one that shows the mark; it sits where the static SVG did.
+  const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);
 
   return (
     <section
+      ref={heroRef}
       className="hero"
       id="top"
       aria-roledescription="carousel"
@@ -141,6 +135,13 @@ export function Hero() {
         <span className="hero__glow hero__glow--cream" />
         <span className="hero__horizon" />
       </div>
+
+      <HeroLogo
+        hostRef={heroRef}
+        variant="lined"
+        placement={markPlacement}
+        className={`hero__logo${index === 0 ? ' is-visible' : ''}`}
+      />
 
       <div className="container container--wide hero__inner">
         <Nav />

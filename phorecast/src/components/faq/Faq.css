@@ -20,8 +20,12 @@
 .faq__ladder span { flex: 1 0 0; height: 3px; border-radius: 2px; background: var(--color-body); transition: background-color 220ms ease; }
 .faq__ladder span.is-active { background: var(--orange-100); }
 .faq__mark { position: relative; width: 354px; max-width: 100%; aspect-ratio: 354 / 356; margin-top: 8px; }
-.faq__mark-slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
-.faq__mark-ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
+/* The logo layer fills this box; its fallback image is centred rather than
+   placed for a hero, so override the module's hero-tuned positioning. */
+.faq__mark .heroLogo img {
+  top: 50%; left: 50%; height: 86%;
+  transform: translate(-50%, -50%);
+}
 
 .faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {

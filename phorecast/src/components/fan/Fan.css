@@ -14,7 +14,17 @@
 }
 
 /* Arc groups ------------------------------------------------------------------ */
-.fan__arcs { position: absolute; width: calc(863 * var(--f)); height: calc(675 * var(--f)); overflow: hidden; opacity: 0.7; }
+.fan__arcs {
+  position: absolute;
+  width: calc(863 * var(--f));
+  height: calc(675 * var(--f));
+  overflow: hidden;
+  opacity: 0.7;
+  /* The arcs run past the band, so fade them out at both edges rather than
+     letting them stop on a hard line. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+}
 .fan__arcs--left { left: 0; top: 0; }
 .fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
 .fan__lines { position: absolute; }

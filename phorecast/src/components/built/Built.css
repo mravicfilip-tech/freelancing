@@ -1,10 +1,11 @@
 /* "Built for the Way You Trade": two 640 × 254 cards inside a 1440 column. */
 .built { position: relative; padding: 160px 0; overflow: hidden; isolation: isolate; }
+.built__glows { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
 .built__glow {
   position: absolute; right: -20%; bottom: -46%;
   width: 900px; height: 900px; border-radius: 50%;
   background: radial-gradient(circle at 42% 42%, #ffd8b8 0%, #f99e57 14%, #d1541c 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
-  filter: blur(90px); opacity: 0.3; transform: rotate(-45deg); z-index: -1; pointer-events: none;
+  filter: blur(90px); opacity: 0.3; transform: rotate(-45deg);
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
 .built__head { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }

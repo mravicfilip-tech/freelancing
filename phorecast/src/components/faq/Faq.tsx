@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import dot from '../../assets/icons/live-dot.svg';
-import ribs from '../../assets/faq/mark-ribs.svg';
-import slices from '../../assets/faq/mark-slices.svg';
+import { HeroLogo } from '../HeroLogo';
 import seal from '../../assets/faq/seal.svg';
 import './Faq.css';
 
@@ -49,6 +48,9 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
 
 export function Faq() {
   const [open, setOpen] = useState(3);
+  const markRef = useRef<HTMLDivElement>(null);
+  // Centred in its own square box, so it needs its own placement rather than the hero's.
+  const markPlacement = useMemo(() => ({ heightFraction: 0.86, widthFraction: 0.86, cx: 0.5, cy: 0.5 }), []);
 
   return (
     <section className="faq" id="faq" aria-labelledby="faq-title">
@@ -74,9 +76,8 @@ export function Faq() {
               {ITEMS.map((_, i) => <span key={i} className={i === open ? 'is-active' : ''} />)}
             </div>
           </div>
-          <div className="faq__mark" aria-hidden="true">
-            <img src={slices} alt="" className="faq__mark-slices" />
-            <img src={ribs} alt="" className="faq__mark-ribs" />
+          <div className="faq__mark" ref={markRef} aria-hidden="true">
+            <HeroLogo hostRef={markRef} variant="lined" placement={markPlacement} scroll={false} />
           </div>
         </div>
 

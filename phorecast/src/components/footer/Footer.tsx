@@ -24,7 +24,7 @@ const LEGAL = ['Terms of Service', 'Privacy Policy', 'Cookie Preferences'];
 export function Footer() {
   return (
     <footer className="footer">
-      <div className="footer__glow" aria-hidden="true">
+      <div className="footer__glow glow-fade--top" aria-hidden="true">
         <span className="footer__g footer__g--red" />
         <span className="footer__g footer__g--orange" />
         <span className="footer__g footer__g--peach" />

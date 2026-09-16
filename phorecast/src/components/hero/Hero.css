@@ -152,16 +152,15 @@
   flex-wrap: wrap;
 }
 
-/* Slide 1 visual: 3D wireframe mark (600 box at 1104,215 in the 1920 frame) */
-.mark3d {
-  position: absolute;
-  right: calc(120 * var(--u));
-  top: calc(-36 * var(--u));
-  width: calc(600 * var(--u));
-  aspect-ratio: 1;
+/* Slide 1 visual: the animated 3D mark. It stays mounted across the whole
+   carousel and cross-fades, so the WebGL context is built once. */
+.hero__logo {
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 600ms ease;
 }
-.mark3d__ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
-.mark3d__slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
+.hero__logo.is-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .hero__logo { transition: none; } }
 
 /* Per-slide glow anchoring: slide 2 sits bottom-left, slide 4 bottom-right. */
 .hero__bg--account .hero__glow--ember  { left: calc(-285 * var(--u)); }
@@ -191,7 +190,6 @@
 @media (max-width: 1180px) {
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
   .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
-  .mark3d { position: relative; right: auto; top: auto; width: min(420px, 70vw); margin-inline: auto; }
   .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }
 }
 @media (max-width: 720px) {

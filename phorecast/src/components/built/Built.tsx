@@ -112,7 +112,7 @@ const COLUMNS = [
 export function Built() {
   return (
     <section className="built" id="built" aria-labelledby="built-title">
-      <span className="built__glow" aria-hidden="true" />
+      <div className="built__glows glow-fade" aria-hidden="true"><span className="built__glow" /></div>
       <div className="container built__inner">
         <header className="built__head">
           <p className="eyebrow">

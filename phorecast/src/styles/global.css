@@ -25,6 +25,22 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 :focus-visible { outline: 2px solid var(--orange-100); outline-offset: 3px; }
 
+/* Section glows are clipped by their section's `overflow: hidden`, which leaves
+   a hard horizontal edge at the seam between sections. Fade the layer out over
+   the last stretch so the light dissolves into the next section instead. */
+.glow-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+}
+.glow-fade--top {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 20%);
+}
+.glow-fade--bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+}
+
 .container {
   width: 100%;
   max-width: calc(var(--content-max) + 2 * var(--page-pad));

@@ -24,7 +24,7 @@ rushed at any point in it.
 | Followers | 0.9–1.3s | Always shorter than the lead, never snappier |
 | Stagger between siblings | 0.14–0.24s | Not 0.06. You should be able to count them |
 | Pause after the lead | 0.25–0.4s | The beat that makes it feel directed |
-| Hover response | 0.4–0.7s | Slower than instinct says |
+| Hover response | 0.4–0.7s | Interface controls only — never artwork |
 | Ambient loop cycle | 6–14s | One full cycle. Long and lazy |
 
 Durations under 0.5s are for accents only — a dot lighting, a caret blinking.
@@ -60,6 +60,21 @@ Every illustration keeps moving after its load-in, forever, with no interaction.
 - Pause with IntersectionObserver when off-screen. Kill on unmount.
 - `prefers-reduced-motion: reduce` — every loop off, settled on the static state.
 
+## No hover, no mouse tracking
+
+**Illustrations and decorative elements animate on two triggers only: load-in and
+loop.** No hover states, no pointer tracking, no cursor-following light, no
+magnetic pull, no tilt-toward-the-cursor, no scroll-scrubbed parallax on the
+artwork. If it responds to the mouse, it does not belong in an illustration.
+
+This applies to every illustration, glow, arc, orbit, diamond, chip, tile, node
+and card graphic. Remove any of it you have already built.
+
+Real interface controls are the exception, because their feedback is functional
+rather than decorative: buttons, links, social icons, FAQ accordion rows, the
+step list, and the carousel controls keep their hover and focus states. Their
+treatment is being chosen separately in `/motion-lab.html` — do not invent one.
+
 ## Hierarchy
 
 In any group, decide what is **accent**, **support** and **context**, and move
@@ -77,6 +92,7 @@ result reads as noise.
 ## What made the first pass fail — do not repeat
 
 - A uniform fade-up applied to every element in every section.
+- Hover and pointer-tracking effects on artwork that should simply run by itself.
 - Everything starting within 200ms of everything else.
 - Overshoot easing on structural elements.
 - Entrances that finish in under a second.
@@ -92,8 +108,8 @@ result reads as noise.
   starting state — if the script fails the page must still read correctly.
 - 60fps: transform and opacity only, rAF-throttled scroll handlers, loops killed
   off-screen, WebGL DPR capped at 2.
-- Scroll progress is computed by hand from `getBoundingClientRect()`; there is no
-  ScrollTrigger. GSAP core only, no plugins.
+- GSAP core only, no plugins. Scroll position is used to start a load-in, never
+  to scrub artwork frame by frame.
 - `three` 0.185 and `gsap` 3.15 are dependencies. Lazy-import `three`, probe for
   a context, fall back to the CSS treatment when it is unavailable.
 

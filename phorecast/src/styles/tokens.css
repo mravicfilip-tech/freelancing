@@ -26,8 +26,8 @@
   --spacing-md: 16px;
   --spacing-lg: 24px;
 
-  --page-pad: clamp(20px, 3.125vw, 60px);   /* 60px at 1920 */
-  --content-max: 1800px;                    /* 1920 − 2 × 60 */
+  --page-pad: clamp(20px, 5vw, 96px);       /* 96px at 1920 */
+  --content-max: 1440px;                    /* Figma's content column */
   --radius-pill: 400px;
   --btn-w: 254px;
   --btn-h: 50px;

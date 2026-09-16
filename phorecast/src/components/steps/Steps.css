@@ -1,7 +1,7 @@
 /* Steps: 1920 × 1080 design frame, 240px side padding, 534px step column,
    886 × 610 panel. The panel scales with a --p unit so its absolutely
    positioned internals stay in proportion. */
-.steps { padding: 120px 0; }
+.steps { padding: 160px 0; }
 .steps__inner { display: flex; flex-direction: column; align-items: flex-start; }
 .steps__title {
   margin-top: 28px;
@@ -71,18 +71,10 @@
 
 /* Panel shell ---------------------------------------------------------------- */
 .steps__panels { position: relative; display: grid; }
-.steps__panel-slot {
-  grid-area: 1 / 1;
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.995);
-  transition: opacity 420ms ease, transform 420ms ease, visibility 0s linear 420ms;
-}
-.steps__panel-slot.is-active {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition: opacity 420ms ease, transform 420ms ease;
+.steps__panel-slot { grid-area: 1 / 1; animation: steps-fade 420ms ease both; }
+@keyframes steps-fade {
+  from { opacity: 0; transform: scale(0.995); }
+  to { opacity: 1; transform: none; }
 }
 .panel {
   --p: calc(100cqw / 886);

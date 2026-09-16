@@ -1,0 +1,106 @@
+/* "Modern infrastructure…" — Figma frame 1920 x 774. The content is a fixed
+   1474-wide column, vertically centred, not a padded block. */
+.pillars {
+  position: relative;
+  min-height: 774px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+.pillars__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 1474px;
+  max-width: calc(100% - 2 * var(--page-pad));
+  margin-inline: auto;
+}
+.pillars__title {
+  margin-top: 28px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 1.9vw, 32px);
+  line-height: 1.2;
+  color: var(--white-font);
+}
+
+/* The glow sits above the top edge and spills down from the right. */
+.pillars__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.pillars__g { position: absolute; width: 1539px; height: 1539px; border-radius: 50%; filter: blur(109px); }
+.pillars__g--red { left: 1004px; top: -1032px; background: linear-gradient(168deg, #0f0e0d 30%, #7e0202 100%); }
+.pillars__g--orange { left: 1018px; top: -1369px; background: #d1541c; }
+.pillars__g--peach { left: 702px; top: -1490px; background: #f99e57; }
+.pillars__g--cream { left: 1002px; top: -1647px; background: #ffeada; }
+
+/* Cards ---------------------------------------------------------------------- */
+.pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }
+.pcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 254px;
+  padding: 32px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.pcard--fixed { flex: 0 0 478px; }
+.pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.pcard__eyebrow {
+  font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
+  text-transform: uppercase; color: var(--white-font);
+}
+.pcard__mark { width: 31.13px; height: 36.29px; flex: none; }
+.pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
+.pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--white-font); }
+.pcard__text { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--color-nre-body); }
+
+.pillars__icon { position: relative; display: block; width: 20px; height: 20px; flex: none; }
+.pillars__icon--multi img { position: absolute; }
+
+/* Collapsed accordion rows ---------------------------------------------------- */
+.pillars__rows { display: flex; gap: 12px; width: 100%; margin-top: 12px; text-align: left; }
+.pillars__rows li { flex: 1 1 0; min-width: 0; }
+.prow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: 72px;
+  padding: 24px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12.25px);
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.prow:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); }
+.prow__label {
+  display: inline-flex; align-items: center; gap: 12px; min-width: 0;
+  font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
+  color: var(--color-nre-body); white-space: nowrap;
+}
+.prow__chevron { width: 17.875px; height: 9.75px; flex: none; transition: transform 200ms ease; }
+.prow:hover .prow__chevron { transform: translateY(2px); }
+
+@media (max-width: 1500px) {
+  .pillars__cards { flex-wrap: wrap; }
+  .pcard, .pcard--fixed { flex: 1 1 320px; }
+  .pillars__rows { flex-wrap: wrap; }
+  .pillars__rows li { flex: 1 1 280px; }
+}
+@media (max-width: 720px) {
+  .pillars { min-height: 0; padding: 56px 0; }
+  .pillars__title { font-size: 22px; }
+  .pcard { padding: 24px; min-height: 0; gap: 24px; }
+  .pcard__title { font-size: 21px; }
+  .pcard__text { font-size: 17px; }
+  .prow { height: 64px; padding: 18px; }
+  .prow__label { font-size: 17px; }
+}

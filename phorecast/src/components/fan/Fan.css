@@ -1,41 +1,43 @@
-/* Decorative band: two fans of gradient arcs with category pills.
-   Design frame is 863 × 675 and renders at 70% opacity. */
+/* "Your Funds Stay in Your Control" — Figma frame 1920 x 675.
+   --f is one design pixel at the current width. */
 .fan {
   position: relative;
-  height: clamp(320px, 35vw, 675px);
   overflow: hidden;
-  pointer-events: none;
-  isolation: isolate;
-}
-.fan__glow {
-  position: absolute; right: -10%; top: -60%;
-  width: 1200px; height: 1200px; border-radius: 50%;
-  background: radial-gradient(circle at 46% 54%, #ffe6d2 0%, #f99e57 12%, #d1541c 28%, #7e0202 48%, rgba(15, 14, 13, 0) 66%);
-  filter: blur(110px); opacity: 0.35; z-index: -1;
+  background: var(--bg);
 }
 .fan__frame {
-  --f: calc(100% / 863);
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: min(863px, 62vw);
-  aspect-ratio: 863 / 675;
-  opacity: 0.7;
+  --f: calc(100cqw / 1920);
+  position: relative;
   container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1920 / 675;
 }
-.fan__frame { --f: calc(100cqw / 863); }
-/* The Figma frame is rotated 180 degrees, so each fan's box is mirrored
-   (x' = 863 - x - w, y' = 675 - y - h) and its content rotated by 180 more. */
+
+/* Arc groups ------------------------------------------------------------------ */
+.fan__arcs { position: absolute; width: calc(863 * var(--f)); height: calc(675 * var(--f)); overflow: hidden; opacity: 0.7; }
+.fan__arcs--left { left: 0; top: 0; }
+.fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
 .fan__lines { position: absolute; }
-.fan__lines--lower {
+/* Figma mirrors the left group, so its boxes are x' = 863 - x - w, y' = 675 - y - h. */
+.fan__arcs--left .fan__lines--lower {
   left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));
   width: calc(2106.46 * var(--f)); height: calc(1196.7 * var(--f));
   transform: rotate(180deg);
 }
-.fan__lines--upper {
-  left: calc(-1252 * var(--f)); top: calc(-821 * var(--f));
-  width: calc(2127 * var(--f)); height: calc(1233 * var(--f));
+.fan__arcs--left .fan__lines--upper {
+  left: calc(-1251.9 * var(--f)); top: calc(-820.8 * var(--f));
+  width: calc(2126.9 * var(--f)); height: calc(1233.1 * var(--f));
   transform: rotate(0.99deg);
+}
+/* The right group is upright, with every y shifted by +120. */
+.fan__arcs--right .fan__lines--lower {
+  left: calc(-48 * var(--f)); top: calc(-799 * var(--f));
+  width: calc(2106.46 * var(--f)); height: calc(1196.7 * var(--f));
+}
+.fan__arcs--right .fan__lines--upper {
+  left: calc(-12 * var(--f)); top: calc(382.9 * var(--f));
+  width: calc(2126.9 * var(--f)); height: calc(1233.1 * var(--f));
+  transform: rotate(-179.01deg);
 }
 
 .fan__diamond {
@@ -44,16 +46,16 @@
   top: calc(var(--y) * var(--f));
   width: calc(6.29 * var(--f));
   height: calc(6.29 * var(--f));
-  transform: rotate(45deg);
+  transform: rotate(135deg);
 }
 .fan__pill {
   position: absolute;
   left: calc(var(--x) * var(--f));
   top: calc(var(--y) * var(--f));
+  width: calc(var(--w, 0) * var(--f));
   display: inline-flex;
   align-items: center;
   gap: calc(12 * var(--f));
-  width: calc(120 * var(--f));
   padding: calc(14 * var(--f));
   border-radius: calc(30 * var(--f));
   background: #000;
@@ -64,15 +66,58 @@
   text-transform: uppercase;
   color: var(--white-font);
   white-space: nowrap;
+  opacity: 0.7;
 }
-.fan__pill > img { width: calc(16 * var(--f)); height: calc(16 * var(--f)); }
-.fan__sport { position: relative; width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+.fan__pill > img, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+.fan__sport { position: relative; }
 .fan__sport img { position: absolute; }
 .fan__sport-a { inset: 0.85% 8.31% 0.36% 8.34%; }
 .fan__sport-b { inset: 12.15% 43.55% 68.31% 36.91%; }
 .fan__sport-c { inset: 2% 8.31% 85.69% 79.38%; }
 
+/* Centre tile and copy -------------------------------------------------------- */
+.fan__tile {
+  position: absolute;
+  left: calc(910 * var(--f));
+  top: calc(240 * var(--f));
+  width: calc(100 * var(--f));
+  height: calc(100 * var(--f));
+  border-radius: calc(17.86 * var(--f));
+  border: 1px solid rgba(255, 255, 255, 0.39);
+  overflow: hidden;
+  box-shadow:
+    0 calc(24 * var(--f)) calc(40 * var(--f)) rgba(255, 0, 0, 0.1),
+    0 calc(8 * var(--f)) calc(18 * var(--f)) rgba(255, 0, 0, 0.1);
+}
+.fan__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
+.fan__glass {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  width: calc(65.12 * var(--f)); height: calc(65.12 * var(--f));
+  border-radius: calc(11.63 * var(--f));
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(calc(13.6 * var(--f)));
+}
+.fan__glass img { width: calc(37 * var(--f)); height: calc(40 * var(--f)); }
+.fan__title {
+  position: absolute; left: 50%; top: calc(360 * var(--f)); transform: translateX(-50%);
+  width: calc(1440 * var(--f)); text-align: center;
+  font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--f)); line-height: 1.2;
+  color: var(--white-font);
+}
+.fan__sub {
+  position: absolute; left: 50%; top: calc(411 * var(--f)); transform: translateX(-50%);
+  width: calc(1440 * var(--f)); text-align: center;
+  font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--f)); line-height: 1.2;
+  color: var(--color-nre-body);
+}
+
 @media (max-width: 900px) {
-  .fan { height: 260px; }
-  .fan__frame { width: 96vw; }
+  .fan__frame { aspect-ratio: 1000 / 620; --f: calc(100cqw / 1000); }
+  .fan__arcs--left { left: calc(-120 * var(--f)); }
+  .fan__arcs--right { left: calc(560 * var(--f)); }
+  .fan__title { width: calc(880 * var(--f)); font-size: calc(40 * var(--f)); top: calc(330 * var(--f)); }
+  .fan__sub { width: calc(760 * var(--f)); font-size: calc(24 * var(--f)); top: calc(392 * var(--f)); }
+  .fan__tile { left: calc(450 * var(--f)); top: calc(200 * var(--f)); width: calc(100 * var(--f)); height: calc(100 * var(--f)); }
+  .fan__pill { font-size: calc(16 * var(--f)); }
 }

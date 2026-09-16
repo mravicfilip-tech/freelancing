@@ -108,7 +108,16 @@
 }
 .onboard__chip--blur { backdrop-filter: blur(11.3px); }
 .onboard__ring { position: absolute; left: 247px; top: 166px; width: 140px; height: 140px; }
-.onboard__ring-img { position: absolute; left: 6px; top: 5px; width: 128px; height: 129px; transform: rotate(5.72deg); }
+.onboard__ring { border-radius: 50%; }
+.onboard__ring::before {
+  content: '';
+  position: absolute;
+  left: 6px; top: 5px; width: 128px; height: 129px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+}
+.onboard__ring-img { position: absolute; left: 6px; top: 5px; width: 128px; height: 129px; transform: rotate(5.72deg); opacity: 0.45; mix-blend-mode: soft-light; }
 .onboard__ring-arc { position: absolute; right: 8px; top: 6px; width: 90.8px; height: 64.4px; transform: rotate(15.8deg); }
 .onboard__seconds {
   position: absolute; left: 24px; top: 39px;

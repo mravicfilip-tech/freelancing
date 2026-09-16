@@ -1,5 +1,5 @@
 .faq { padding: 120px 0; }
-.faq__inner { display: grid; grid-template-columns: 510px minmax(0, 1fr); gap: 80px; align-items: start; }
+.faq__inner { display: grid; grid-template-columns: 510px 1px minmax(0, 1fr); gap: 80px; align-items: start; }
 
 .faq__rail { display: flex; flex-direction: column; gap: 32px; }
 .faq__title {
@@ -23,7 +23,7 @@
 .faq__mark-slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
 .faq__mark-ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
 
-.faq__list { display: flex; flex-direction: column; gap: 12px; }
+.faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {
   background: #141312;
   border-radius: 10px;
@@ -72,6 +72,7 @@
 
 @media (max-width: 1180px) {
   .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .faq__list { grid-column: 1; }
   .faq__mark { display: none; }
   .faq__ladder { width: 100%; }
 }

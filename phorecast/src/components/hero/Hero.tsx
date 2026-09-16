@@ -142,7 +142,7 @@ export function Hero() {
         <span className="hero__horizon" />
       </div>
 
-      <div className="container hero__inner">
+      <div className="container container--wide hero__inner">
         <Nav />
 
         <div className="hero__stage">

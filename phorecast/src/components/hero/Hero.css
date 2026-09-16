@@ -148,7 +148,7 @@
   justify-content: center;
   gap: 12px;
   margin-top: auto;
-  padding: 40px 0 60px;
+  padding: 0 0 70px;
   flex-wrap: wrap;
 }
 
@@ -200,6 +200,6 @@
   .hero__bg { --u: 0.45px; }
   .hero__copy { gap: 32px; }
   .hero__stack { --s: 0.45; margin-left: -10px; }
-  .hero__foot { padding-bottom: 40px; }
+  .hero__foot { padding-bottom: 32px; }
   .hero__foot .ticker { width: calc(50% - 6px); }
 }

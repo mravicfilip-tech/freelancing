@@ -4,7 +4,7 @@
   position: absolute; right: -20%; bottom: -46%;
   width: 900px; height: 900px; border-radius: 50%;
   background: radial-gradient(circle at 42% 42%, #ffd8b8 0%, #f99e57 14%, #d1541c 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
-  filter: blur(90px); opacity: 0.4; transform: rotate(-45deg); z-index: -1; pointer-events: none;
+  filter: blur(90px); opacity: 0.3; transform: rotate(-45deg); z-index: -1; pointer-events: none;
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
 .built__head { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
@@ -15,7 +15,7 @@
 .built__col { display: flex; flex-direction: column; gap: 30px; }
 .built__copy { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
 .built__col-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(21px, 1.5vw, 24px); line-height: 1.2; color: var(--white-font); }
-.built__col-body { font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.3; color: var(--color-nre-body); max-width: 560px; }
+.built__col-body { font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.3; color: var(--color-nre-body); }
 .built__cta {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-mono); font-weight: 600; font-size: 16px; line-height: 1.2; color: var(--orange-100);
@@ -38,13 +38,13 @@
 .bt-card__glow { position: absolute; top: -40%; width: 60%; height: 180%; filter: blur(55px); pointer-events: none; }
 .bt-card__glow--right {
   right: -6%;
-  background: radial-gradient(ellipse at 62% 30%, #ffe3cd 0%, #f6944d 16%, #c94a14 36%, #7e0202 58%, rgba(29, 28, 27, 0) 76%);
-  opacity: 0.42;
+  background: radial-gradient(ellipse at 66% 26%, #ffd0ac 0%, #ef7a33 14%, #c02f0a 32%, #7e0202 52%, rgba(29, 28, 27, 0) 72%);
+  opacity: 0.6;
 }
 .bt-card__glow--left {
   left: -8%;
-  background: radial-gradient(ellipse at 42% 26%, #ffd9bd 0%, #e96f31 18%, #a8330e 40%, #7e0202 60%, rgba(29, 28, 27, 0) 78%);
-  opacity: 0.5;
+  background: radial-gradient(ellipse at 38% 22%, #ffcda6 0%, #e4611f 14%, #9e2408 34%, #7e0202 54%, rgba(29, 28, 27, 0) 74%);
+  opacity: 0.68;
 }
 .bt-label {
   position: absolute; z-index: 2;

@@ -41,9 +41,7 @@ export function Steps() {
           </ol>
 
           <div className="steps__panels" id="steps-panel">
-            {STEPS.map((s, i) => (
-              <div key={i} className={`steps__panel-slot${i === active ? ' is-active' : ''}`}>{s.panel}</div>
-            ))}
+            <div className="steps__panel-slot is-active" key={active}>{STEPS[active].panel}</div>
           </div>
         </div>
       </div>

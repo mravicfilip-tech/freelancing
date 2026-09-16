@@ -218,12 +218,18 @@
   inset: 0;
   pointer-events: none;
   opacity: 0;
+  /* The headline is already near-white, so a white sweep over it is invisible.
+     The highlight is brand orange with a white-hot core, which reads as heat
+     crossing the letterforms rather than a lighter shade of the same white. */
   background-image: linear-gradient(
     100deg,
-    transparent 42%,
-    rgba(255, 251, 248, 0.95) 50%,
-    transparent 58%
+    transparent 40%,
+    rgba(245, 94, 34, 0.55) 46%,
+    rgba(255, 176, 130, 0.95) 49.5%,
+    rgba(245, 94, 34, 0.55) 53%,
+    transparent 60%
   );
+  filter: drop-shadow(0 0 14px rgba(245, 94, 34, 0.55));
   background-size: 250% 100%;
   background-repeat: no-repeat;
   background-position: 135% 0;

@@ -30,12 +30,15 @@ import s3Sp500 from '../../assets/steps/s3-sp500.svg';
 import s3Apple from '../../assets/steps/s3-apple.svg';
 import s3Chart from '../../assets/steps/s3-chart.svg';
 
-/** Faint 3D wordmark that sits behind each panel's illustration. */
+/** The 3D wordmark behind each panel. Figma gives it a different box and
+ *  opacity per slide, and the ribs/slices sit at their own insets inside it. */
 function Mark({ className }: { className: string }) {
   return (
     <div className={`steps__mark ${className}`} aria-hidden="true">
-      <img src={ribs} alt="" className="steps__mark-ribs" />
-      <img src={slices} alt="" className="steps__mark-slices" />
+      <div className="steps__mark-clip">
+        <img src={ribs} alt="" className="steps__mark-ribs" />
+        <img src={slices} alt="" className="steps__mark-slices" />
+      </div>
     </div>
   );
 }
@@ -124,7 +127,7 @@ export function PanelFund() {
           ))}
         </div>
         <img src={s2Lines} alt="" className="s2__lines" width={347.7} height={315.7} />
-        {[0, 1, 2, 3, 4].map((i) => <span key={i} className={`s2__comet s2__comet--${i + 1}`} />)}
+        {[1, 2, 3, 4, 5].map((i) => <span key={i} className={`s2__comet s2__comet--${i}`} />)}
         <span className="s2__node"><img src={s2Node} alt="" /><img src={s2Lock} alt="" className="s2__lock" /></span>
         <div className="s2__balance">
           <div className="s2__balance-inner">

@@ -49,6 +49,17 @@
   transition: opacity 220ms ease;
 }
 .step.is-active::before { opacity: 1; }
+/* On autoplay the active card's bar fills to show time remaining. */
+.step::after {
+  content: '';
+  position: absolute;
+  left: -1px; top: -1px;
+  width: 4px; height: 0;
+  background: #ffb184;
+}
+.step.is-active.is-playing::after { animation: step-progress var(--dwell, 6000ms) linear forwards; }
+@keyframes step-progress { from { height: 0; } to { height: calc(100% + 2px); } }
+@media (prefers-reduced-motion: reduce) { .step.is-active.is-playing::after { animation: none; } }
 .step:hover { background: #211f1e; }
 .step__title {
   display: flex;
@@ -89,15 +100,26 @@
 .panel--2 { border: 1px solid rgba(255, 99, 42, 0.2); }
 .panel--3 { background: #1a1918; border: 1px solid #2c2b2a; }
 
-.steps__mark { position: absolute; inset: 0; pointer-events: none; filter: blur(12.65px); }
-.steps__mark img { position: absolute; }
-.steps__mark--full { opacity: 0.1; }
-.steps__mark--full .steps__mark-ribs { inset: -8.87% 22.03% -49.82% -16.68%; width: auto; height: auto; }
-.steps__mark--full .steps__mark-slices { inset: -8.87% 21.74% -50% -16.68%; width: auto; height: auto; }
-.steps__mark--right { opacity: 0.21; }
-.steps__mark--right img { right: -12%; top: -14%; width: 74%; height: auto; }
-.steps__mark--corner { opacity: 0.1; }
-.steps__mark--corner img { right: -18%; top: -22%; width: 86%; height: auto; }
+.steps__mark { position: absolute; pointer-events: none; }
+.steps__mark-clip { position: relative; width: 100%; height: 100%; }
+.steps__mark img { position: absolute; width: auto; height: auto; }
+
+/* Slide 1: the mark fills the panel. */
+.steps__mark--full { left: 0; top: 0; width: calc(886 * var(--p)); height: calc(610 * var(--p)); opacity: 0.1; filter: blur(calc(2 * var(--p))); }
+.steps__mark--full .steps__mark-ribs { inset: -8.87% 22.03% -49.82% -16.68%; }
+.steps__mark--full .steps__mark-slices { inset: -8.87% 21.74% -50% -16.68%; }
+
+/* Slide 2: a narrow box on the right, at higher opacity. */
+.steps__mark--right { left: calc(462 * var(--p)); top: calc(-1 * var(--p)); width: calc(423 * var(--p)); height: calc(610 * var(--p)); opacity: 0.17; filter: blur(calc(7 * var(--p))); }
+.steps__mark--right .steps__mark-clip { overflow: hidden; }
+.steps__mark--right .steps__mark-ribs { inset: -86.57% -111.78% 27.89% 13.53%; }
+.steps__mark--right .steps__mark-slices { inset: 5.85% -56.92% -25.31% 8.51%; }
+
+/* Slide 3: a 1352 square hung off the top-left, so only its lower right shows. */
+.steps__mark--corner { left: calc(-252 * var(--p)); top: calc(-631 * var(--p)); width: calc(1352 * var(--p)); height: calc(1352 * var(--p)); opacity: 0.1; filter: blur(calc(1.6 * var(--p))); }
+.steps__mark--corner .steps__mark-clip { overflow: hidden; }
+.steps__mark--corner .steps__mark-ribs { inset: 14.42% 19.32% 13.99% 18.66%; }
+.steps__mark--corner .steps__mark-slices { inset: 14.42% 19.13% 13.9% 18.66%; }
 
 .steps__glow { position: absolute; pointer-events: none; width: calc(944 * var(--p)); height: calc(944 * var(--p)); }
 .steps__glow--left { left: calc(-590 * var(--p)); top: calc(-90 * var(--p)); }
@@ -218,8 +240,8 @@
 /* Panel 2 ------------------------------------------------------------------- */
 .s2 { position: absolute; inset: 0; }
 .s2__rails {
-  position: absolute; left: calc(66 * var(--p)); top: calc(126 * var(--p));
-  display: flex; flex-direction: column; gap: calc(23 * var(--p));
+  position: absolute; left: calc(65 * var(--p)); top: calc(128 * var(--p));
+  display: flex; flex-direction: column; gap: calc(22.75 * var(--p));
 }
 .s2__tile {
   display: grid; place-items: center; width: calc(90 * var(--p)); height: calc(52 * var(--p));
@@ -229,24 +251,28 @@
 .s2__tile.is-first { border-color: rgba(212, 212, 212, 0.4); }
 .s2__tile.is-dim { opacity: 0.5; }
 .s2__tile img { width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
-.s2__lines { position: absolute; left: calc(156 * var(--p)); top: calc(142 * var(--p)); width: calc(348 * var(--p)); height: calc(316 * var(--p)); }
+.s2__lines { position: absolute; left: calc(149 * var(--p)); top: calc(144 * var(--p)); width: calc(348 * var(--p)); height: calc(321 * var(--p)); filter: brightness(2.4); }
+/* Five orange streaks, each centred on its Figma bounding box and rotated to
+   lie along the line it sits on. */
 .s2__comet {
-  position: absolute; width: calc(46 * var(--p)); height: calc(4 * var(--p));
-  background: #ff632a; border-radius: calc(4 * var(--p)); filter: blur(calc(8.4 * var(--p)));
+  position: absolute; height: calc(6.07 * var(--p));
+  background: #ff632a; border-radius: calc(6 * var(--p));
+  filter: blur(calc(8.411 * var(--p)));
+  transform-origin: center;
 }
-.s2__comet--1 { left: calc(284 * var(--p)); top: calc(194 * var(--p)); transform: rotate(-19deg); }
-.s2__comet--2 { left: calc(328 * var(--p)); top: calc(253 * var(--p)); transform: rotate(-11deg); }
-.s2__comet--3 { left: calc(258 * var(--p)); top: calc(297 * var(--p)); }
-.s2__comet--4 { left: calc(308 * var(--p)); top: calc(338 * var(--p)); transform: rotate(11deg); }
-.s2__comet--5 { left: calc(278 * var(--p)); top: calc(388 * var(--p)); transform: rotate(21deg); }
+.s2__comet--1 { left: calc(240.5 * var(--p)); top: calc(358.7 * var(--p)); width: calc(59.09 * var(--p)); transform: rotate(-19.42deg); }
+.s2__comet--2 { left: calc(257.1 * var(--p)); top: calc(303.7 * var(--p)); width: calc(37.66 * var(--p)); height: calc(6.277 * var(--p)); }
+.s2__comet--3 { left: calc(221.4 * var(--p)); top: calc(239.2 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(15.72deg); }
+.s2__comet--4 { left: calc(356.6 * var(--p)); top: calc(269.3 * var(--p)); width: calc(14.67 * var(--p)); transform: rotate(30deg); }
+.s2__comet--5 { left: calc(224.2 * var(--p)); top: calc(432.9 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(-19.42deg); }
 .s2__node {
-  position: absolute; left: calc(447 * var(--p)); top: calc(280 * var(--p));
+  position: absolute; left: calc(446.7 * var(--p)); top: calc(261.1 * var(--p));
   display: grid; place-items: center; width: calc(38.5 * var(--p)); height: calc(38.5 * var(--p));
 }
 .s2__node img { position: absolute; width: 100%; height: 100%; }
 .s2__lock { width: calc(16 * var(--p)) !important; height: calc(16 * var(--p)) !important; }
 .s2__balance {
-  position: absolute; left: calc(502 * var(--p)); top: calc(220 * var(--p));
+  position: absolute; left: calc(499.1 * var(--p)); top: calc(226 * var(--p));
   width: calc(346 * var(--p)); height: calc(158 * var(--p));
   padding: calc(8 * var(--p));
   background: rgba(255, 255, 255, 0.02);

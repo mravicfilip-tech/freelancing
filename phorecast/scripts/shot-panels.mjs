@@ -6,7 +6,7 @@ await page.evaluate(() => document.fonts.ready);
 for (const i of [0, 1, 2]) {
   await page.locator('.steps__list .step').nth(i).click();
   await page.waitForTimeout(800);
-  await page.locator('.steps').screenshot({ path: `/tmp/mine-steps${i + 1}.png` });
+  await page.locator('.panel').screenshot({ path: `/tmp/mine-panel${i + 1}.png` });
 }
 await browser.close();
-console.log('done');
+console.log('panels');

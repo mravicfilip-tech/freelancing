@@ -21,7 +21,7 @@
  */
 import { gsap } from 'gsap';
 
-type ThreeMod = typeof import('three');
+type ThreeMod = typeof import('../../../lib/three-lite');
 
 const NS = 'http://www.w3.org/2000/svg';
 const REVOLUTION = 14; // seconds for one full lap of an orbit
@@ -372,7 +372,7 @@ export function markets(card: HTMLElement): () => void {
   void (async () => {
     let THREE: ThreeMod;
     try {
-      THREE = await import('three');
+      THREE = await import('../../../lib/three-lite');
     } catch {
       return;
     }

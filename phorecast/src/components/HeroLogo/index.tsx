@@ -106,10 +106,11 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
         return import('./LogoScene');
       })
       .then((mod) => idle().then(() => mod))
-      .then(({ LogoScene }) => {
+      .then(async (mod) => ({ mod, treatment: await (await import('./treatments')).loadTreatment(variant) }))
+      .then(({ mod: { LogoScene }, treatment }) => {
         if (cancelled) return;
         try {
-          scene = new LogoScene({ canvas, host, layout: currentLayout(), reducedMotion, touch, scroll, variant, placement });
+          scene = new LogoScene({ canvas, host, layout: currentLayout(), reducedMotion, touch, scroll, variant, placement, treatment });
         } catch (err) {
           console.warn('[HeroLogo] WebGL init failed, using static fallback', err);
           setMode('fallback');

@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { AddEquation, Color, CustomBlending, Float32BufferAttribute, InstancedBufferAttribute, InstancedBufferGeometry, MathUtils, Mesh, OneFactor, OneMinusSrcAlphaFactor, ShaderMaterial, Vector2 } from 'three';
 import { LINED as C } from '../config';
 import { logoOutline } from '../logoPath';
 import linesVert from '../shaders/lines.vert.glsl?raw';
@@ -14,10 +16,10 @@ export class LinedTreatment implements Treatment {
   readonly maxPixelRatio = 2;
   readonly entrance = 'draw' as const;
 
-  private geometry!: THREE.InstancedBufferGeometry;
-  private readonly materials: THREE.ShaderMaterial[] = [];
+  private geometry!: InstancedBufferGeometry;
+  private readonly materials: ShaderMaterial[] = [];
   private readonly shared = {
-    uResolution: { value: new THREE.Vector2(1, 1) },
+    uResolution: { value: new Vector2(1, 1) },
     uProgress: { value: 0 },
     uTime: { value: 0 },
     uSpread: { value: 1 },
@@ -36,7 +38,7 @@ export class LinedTreatment implements Treatment {
     const t: number[] = [];
     const intensity: number[] = [];
     const delay: number[] = [];
-    const seg = (a: THREE.Vector2, az: number, b: THREE.Vector2, bz: number, ta: number, tb: number, ia: number, ib: number, d: number) => {
+    const seg = (a: Vector2, az: number, b: Vector2, bz: number, ta: number, tb: number, ia: number, ib: number, d: number) => {
       start.push(a.x, a.y, az);
       end.push(b.x, b.y, bz);
       t.push(ta, tb);
@@ -60,29 +62,29 @@ export class LinedTreatment implements Treatment {
     for (let i = 0; i < n; i++) {
       const a = pts[(i - 1 + n) % n], b = pts[i], c = pts[(i + 1) % n];
       const u = b.clone().sub(a).normalize(), v = c.clone().sub(b).normalize();
-      if (Math.acos(THREE.MathUtils.clamp(u.dot(v), -1, 1)) > C.cornerAngleRad) ribAt.add(i);
+      if (Math.acos(MathUtils.clamp(u.dot(v), -1, 1)) > C.cornerAngleRad) ribAt.add(i);
     }
     for (const i of ribAt) seg(pts[i], -depth / 2, pts[i], depth / 2, i / n, i / n, C.ribIntensity, C.ribIntensity, 0.5);
 
-    const geo = new THREE.InstancedBufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute([0, -1, 0, 1, -1, 0, 1, 1, 0, 0, 1, 0], 3));
+    const geo = new InstancedBufferGeometry();
+    geo.setAttribute('position', new Float32BufferAttribute([0, -1, 0, 1, -1, 0, 1, 1, 0, 0, 1, 0], 3));
     geo.setIndex([0, 1, 2, 0, 2, 3]);
-    geo.setAttribute('aStart', new THREE.InstancedBufferAttribute(new Float32Array(start), 3));
-    geo.setAttribute('aEnd', new THREE.InstancedBufferAttribute(new Float32Array(end), 3));
-    geo.setAttribute('aT', new THREE.InstancedBufferAttribute(new Float32Array(t), 2));
-    geo.setAttribute('aIntensity', new THREE.InstancedBufferAttribute(new Float32Array(intensity), 2));
-    geo.setAttribute('aDelay', new THREE.InstancedBufferAttribute(new Float32Array(delay), 1));
+    geo.setAttribute('aStart', new InstancedBufferAttribute(new Float32Array(start), 3));
+    geo.setAttribute('aEnd', new InstancedBufferAttribute(new Float32Array(end), 3));
+    geo.setAttribute('aT', new InstancedBufferAttribute(new Float32Array(t), 2));
+    geo.setAttribute('aIntensity', new InstancedBufferAttribute(new Float32Array(intensity), 2));
+    geo.setAttribute('aDelay', new InstancedBufferAttribute(new Float32Array(delay), 1));
     geo.instanceCount = delay.length;
     this.geometry = geo;
 
     // Glow underneath, core on top; both additive so crossings brighten.
     for (const pass of [C.glow, C.core]) {
-      const material = new THREE.ShaderMaterial({
+      const material = new ShaderMaterial({
         vertexShader: linesVert,
         fragmentShader: linesFrag,
         uniforms: {
           ...this.shared,
-          uColor: { value: new THREE.Color(C.color) },
+          uColor: { value: new Color(C.color) },
           uOpacity: { value: pass.opacity },
           uWidth: { value: pass.width },
           uFeather: { value: pass.feather },
@@ -95,15 +97,15 @@ export class LinedTreatment implements Treatment {
         depthTest: false,
         depthWrite: false,
         // rgb: additive; alpha: "over" — so a lone faded line composites like a normal one.
-        blending: THREE.CustomBlending,
-        blendEquation: THREE.AddEquation,
-        blendSrc: THREE.OneFactor,
-        blendDst: THREE.OneFactor,
-        blendSrcAlpha: THREE.OneFactor,
-        blendDstAlpha: THREE.OneMinusSrcAlphaFactor,
+        blending: CustomBlending,
+        blendEquation: AddEquation,
+        blendSrc: OneFactor,
+        blendDst: OneFactor,
+        blendSrcAlpha: OneFactor,
+        blendDstAlpha: OneMinusSrcAlphaFactor,
       });
       this.materials.push(material);
-      const mesh = new THREE.Mesh(geo, material);
+      const mesh = new Mesh(geo, material);
       mesh.frustumCulled = false;
       pivot.add(mesh);
     }

@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { BufferGeometry, Vector3 } from 'three';
 
 const lcg = (seed: number) => {
   let s = (seed * 7919 + 1) >>> 0;
@@ -9,13 +11,13 @@ const lcg = (seed: number) => {
 };
 
 /** `count` points spread evenly (area-weighted) over a geometry's triangles, with the triangle's normal. */
-export function sampleSurface(geometry: THREE.BufferGeometry, count: number, seed = 1): { positions: Float32Array; normals: Float32Array } {
+export function sampleSurface(geometry: BufferGeometry, count: number, seed = 1): { positions: Float32Array; normals: Float32Array } {
   const g = geometry.index ? geometry.toNonIndexed() : geometry;
   const pos = g.getAttribute('position');
   const tris = pos.count / 3;
   const cumulative = new Float32Array(tris);
-  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
-  const ab = new THREE.Vector3(), ac = new THREE.Vector3(), n = new THREE.Vector3();
+  const a = new Vector3(), b = new Vector3(), c = new Vector3();
+  const ab = new Vector3(), ac = new Vector3(), n = new Vector3();
   let total = 0;
   for (let i = 0; i < tris; i++) {
     a.fromBufferAttribute(pos, i * 3);

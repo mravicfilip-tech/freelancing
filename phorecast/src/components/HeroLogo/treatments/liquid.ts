@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { AmbientLight, BufferGeometry, DirectionalLight, Mesh, MeshPhysicalMaterial } from 'three';
 import { LIQUID as C } from '../config';
 import { extrudeLogo } from '../logoPath';
 import rippleGlsl from '../shaders/ripple.glsl?raw';
@@ -15,9 +17,9 @@ export class LiquidTreatment implements Treatment {
   readonly maxPixelRatio = 2;
   readonly entrance = 'rise' as const;
 
-  private geometry!: THREE.BufferGeometry;
-  private material!: THREE.MeshPhysicalMaterial;
-  private mesh!: THREE.Mesh;
+  private geometry!: BufferGeometry;
+  private material!: MeshPhysicalMaterial;
+  private mesh!: Mesh;
   private env!: Environment;
   private removeLights: () => void = () => undefined;
   private readonly ripple = {
@@ -30,7 +32,7 @@ export class LiquidTreatment implements Treatment {
     this.env = makeEnvironment(renderer);
     this.geometry = extrudeLogo({ depth: C.depth, bevel: C.bevel, bevelSegments: 3, divisions: 16 });
 
-    this.material = new THREE.MeshPhysicalMaterial({
+    this.material = new MeshPhysicalMaterial({
       color: C.color,
       roughness: C.roughness,
       metalness: 0,
@@ -56,14 +58,14 @@ export class LiquidTreatment implements Treatment {
           '#include <normal_fragment_maps>\nvec3 rippleG = rippleGradient(vRipplePos);\nnormal = normalize(normal + (vRippleX * rippleG.x + vRippleY * rippleG.y + vRippleZ * rippleG.z) * uRippleAmp);',
         );
     };
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
     pivot.add(this.mesh);
 
-    const key = new THREE.DirectionalLight(0xfff1e0, 2.2);
+    const key = new DirectionalLight(0xfff1e0, 2.2);
     key.position.set(2, 3, 4);
-    const rim = new THREE.DirectionalLight(0xffb088, 2.5);
+    const rim = new DirectionalLight(0xffb088, 2.5);
     rim.position.set(-3, 1, -4);
-    this.removeLights = addLights(scene, [key, rim, new THREE.AmbientLight(0xffffff, 0.12)]);
+    this.removeLights = addLights(scene, [key, rim, new AmbientLight(0xffffff, 0.12)]);
   }
 
   layout() {

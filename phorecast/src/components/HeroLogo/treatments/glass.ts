@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { AmbientLight, BufferGeometry, Color, DirectionalLight, Mesh, MeshPhysicalMaterial } from 'three';
 import { GLASS as C } from '../config';
 import { extrudeLogo } from '../logoPath';
 import { addLights, makeEnvironment, type Environment } from './environment';
@@ -11,16 +13,16 @@ export class GlassTreatment implements Treatment {
   readonly maxPixelRatio = C.maxPixelRatio;
   readonly entrance = 'rise' as const;
 
-  private geometry!: THREE.BufferGeometry;
-  private material!: THREE.MeshPhysicalMaterial;
-  private slabs: THREE.Mesh[] = [];
+  private geometry!: BufferGeometry;
+  private material!: MeshPhysicalMaterial;
+  private slabs: Mesh[] = [];
   private env!: Environment;
   private removeLights: () => void = () => undefined;
 
   build({ pivot, scene, renderer }: TreatmentContext) {
     this.env = makeEnvironment(renderer);
     this.geometry = extrudeLogo({ depth: C.slabDepth, bevel: C.bevel, bevelSegments: 4 });
-    this.material = new THREE.MeshPhysicalMaterial({
+    this.material = new MeshPhysicalMaterial({
       color: C.color,
       transmission: 1,
       roughness: C.roughness,
@@ -28,18 +30,18 @@ export class GlassTreatment implements Treatment {
       ior: 1.5,
       clearcoat: 1,
       clearcoatRoughness: 0.08,
-      attenuationColor: new THREE.Color(C.attenuationColor),
+      attenuationColor: new Color(C.attenuationColor),
       envMap: this.env.texture,
       envMapIntensity: C.envIntensity,
     });
     this.slabs = makeSlabs(this.geometry, this.material, 3, C.slabGap);
     this.slabs.forEach((s) => pivot.add(s));
 
-    const key = new THREE.DirectionalLight(0xfff1e0, 2.5);
+    const key = new DirectionalLight(0xfff1e0, 2.5);
     key.position.set(2, 3, 4);
-    const rim = new THREE.DirectionalLight(C.color, 3);
+    const rim = new DirectionalLight(C.color, 3);
     rim.position.set(-3, 1, -4);
-    this.removeLights = addLights(scene, [key, rim, new THREE.AmbientLight(0xffffff, 0.15)]);
+    this.removeLights = addLights(scene, [key, rim, new AmbientLight(0xffffff, 0.15)]);
   }
 
   layout(f: FrameState) {

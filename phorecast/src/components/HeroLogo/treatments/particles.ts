@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { AddEquation, BufferAttribute, BufferGeometry, Color, CustomBlending, OneFactor, OneMinusSrcAlphaFactor, Points, ShaderMaterial, Vector3 } from 'three';
 import { PARTICLES as C } from '../config';
 import { extrudeLogo } from '../logoPath';
 import { sampleSurface } from './sampleSurface';
@@ -20,8 +22,8 @@ export class ParticlesTreatment implements Treatment {
   readonly maxPixelRatio = 2;
   readonly entrance = 'draw' as const;
 
-  private geometry!: THREE.BufferGeometry;
-  private material!: THREE.ShaderMaterial;
+  private geometry!: BufferGeometry;
+  private material!: ShaderMaterial;
 
   build({ pivot }: TreatmentContext) {
     const surface = extrudeLogo({ depth: C.depth, bevel: 0.01, bevelSegments: 1, divisions: 10 });
@@ -32,7 +34,7 @@ export class ParticlesTreatment implements Treatment {
     const start = new Float32Array(C.count * 3);
     const seed = new Float32Array(C.count);
     const delay = new Float32Array(C.count);
-    const dir = new THREE.Vector3();
+    const dir = new Vector3();
     for (let i = 0; i < C.count; i++) {
       // Scatter: the target pushed out along a random direction, further for later-arriving points.
       dir.set(rand() * 2 - 1, rand() * 2 - 1, rand() * 2 - 1).normalize();
@@ -45,19 +47,19 @@ export class ParticlesTreatment implements Treatment {
       delay[i] = d;
     }
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('aNormal', new THREE.BufferAttribute(normals, 3));
-    geo.setAttribute('aStart', new THREE.BufferAttribute(start, 3));
-    geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
-    geo.setAttribute('aDelay', new THREE.BufferAttribute(delay, 1));
+    const geo = new BufferGeometry();
+    geo.setAttribute('position', new BufferAttribute(positions, 3));
+    geo.setAttribute('aNormal', new BufferAttribute(normals, 3));
+    geo.setAttribute('aStart', new BufferAttribute(start, 3));
+    geo.setAttribute('aSeed', new BufferAttribute(seed, 1));
+    geo.setAttribute('aDelay', new BufferAttribute(delay, 1));
     this.geometry = geo;
 
-    this.material = new THREE.ShaderMaterial({
+    this.material = new ShaderMaterial({
       vertexShader: pointsVert,
       fragmentShader: pointsFrag,
       uniforms: {
-        uColor: { value: new THREE.Color(C.color) },
+        uColor: { value: new Color(C.color) },
         uProgress: { value: 0 },
         uTime: { value: 0 },
         uFly: { value: 0 },
@@ -71,14 +73,14 @@ export class ParticlesTreatment implements Treatment {
       transparent: true,
       depthTest: false,
       depthWrite: false,
-      blending: THREE.CustomBlending,
-      blendEquation: THREE.AddEquation,
-      blendSrc: THREE.OneFactor,
-      blendDst: THREE.OneFactor,
-      blendSrcAlpha: THREE.OneFactor,
-      blendDstAlpha: THREE.OneMinusSrcAlphaFactor,
+      blending: CustomBlending,
+      blendEquation: AddEquation,
+      blendSrc: OneFactor,
+      blendDst: OneFactor,
+      blendSrcAlpha: OneFactor,
+      blendDstAlpha: OneMinusSrcAlphaFactor,
     });
-    const points = new THREE.Points(geo, this.material);
+    const points = new Points(geo, this.material);
     points.frustumCulled = false;
     pivot.add(points);
   }

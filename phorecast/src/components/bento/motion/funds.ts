@@ -25,7 +25,7 @@
  */
 import { gsap } from 'gsap';
 
-type ThreeMod = typeof import('three');
+type ThreeMod = typeof import('../../../lib/three-lite');
 
 const NS = 'http://www.w3.org/2000/svg';
 const P_WALLET = 'M8.5 107.5a46 46 0 1 1 92 0a46 46 0 1 1 -92 0';
@@ -278,7 +278,7 @@ export function funds(card: HTMLElement): () => void {
   void (async () => {
     let THREE: ThreeMod;
     try {
-      THREE = await import('three');
+      THREE = await import('../../../lib/three-lite');
     } catch {
       return; // no module — the SVG relay is the whole show
     }

@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { ACESFilmicToneMapping, ColorManagement, Group, LinearSRGBColorSpace, MathUtils, NoToneMapping, PerspectiveCamera, SRGBColorSpace, Scene, Timer, Vector2, Vector3, WebGLRenderer } from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { LOGO_CONFIG as C } from './config';
@@ -20,6 +22,8 @@ export interface LogoPlacement {
 }
 
 export interface LogoSceneOptions {
+  /** A treatment resolved by the caller, so non-default ones can load on demand. */
+  treatment?: Treatment;
   canvas: HTMLCanvasElement;
   /** The hero section: sizing, pointer tilt, scroll and visibility are all relative to it. */
   host: HTMLElement;
@@ -48,26 +52,26 @@ const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
  * inside a pivot scaled to its height in pixels.
  */
 export class LogoScene {
-  readonly renderer: THREE.WebGLRenderer;
-  readonly scene = new THREE.Scene();
-  readonly camera: THREE.PerspectiveCamera;
+  readonly renderer: WebGLRenderer;
+  readonly scene = new Scene();
+  readonly camera: PerspectiveCamera;
   readonly variant: VariantId;
   /** Resolves once fonts are ready and the first frame has been scheduled. */
   readonly ready: Promise<void>;
 
-  private readonly opts: Required<Omit<LogoSceneOptions, 'placement'>> & Pick<LogoSceneOptions, 'placement'>;
+  private readonly opts: Required<Omit<LogoSceneOptions, 'placement' | 'treatment'>> & Pick<LogoSceneOptions, 'placement' | 'treatment'>;
   private readonly treatment: Treatment;
-  private readonly timer = new THREE.Timer();
-  private readonly root = new THREE.Group(); // layout position, scale, scroll rise
-  private readonly pivot = new THREE.Group(); // rotation: rest + idle + pointer + scroll
+  private readonly timer = new Timer();
+  private readonly root = new Group(); // layout position, scale, scroll rise
+  private readonly pivot = new Group(); // rotation: rest + idle + pointer + scroll
   private readonly frame: FrameState = {
     progress: 0,
     time: 0,
     scroll: 0,
-    pointer: new THREE.Vector2(),
+    pointer: new Vector2(),
     size: 1,
     dpr: 1,
-    resolution: new THREE.Vector2(1, 1),
+    resolution: new Vector2(1, 1),
     viewDist: 1,
   };
 
@@ -75,8 +79,8 @@ export class LogoScene {
   private readonly state = { progress: 0, scale: C.entranceScaleFrom as number };
   private entrance: gsap.core.Tween[] = [];
   private scrollTrigger: ScrollTrigger | null = null;
-  private readonly pointerTarget = new THREE.Vector2();
-  private readonly basePosition = new THREE.Vector3();
+  private readonly pointerTarget = new Vector2();
+  private readonly basePosition = new Vector3();
   private hostHeight = 1;
   private canvasOpacity = 1;
 
@@ -92,14 +96,14 @@ export class LogoScene {
   constructor(options: LogoSceneOptions) {
     this.opts = { scroll: true, ...options };
     this.variant = options.variant;
-    this.treatment = createTreatment(this.variant);
+    this.treatment = options.treatment ?? createTreatment(this.variant);
     const t = this.treatment;
     const { canvas } = this.opts;
 
     // Colour pipeline per treatment: the line/point shaders take brand hexes raw; the physically
     // based ones want managed colour, sRGB output and tone mapping. Set before any Color is made.
-    THREE.ColorManagement.enabled = t.physical;
-    this.renderer = new THREE.WebGLRenderer({
+    ColorManagement.enabled = t.physical;
+    this.renderer = new WebGLRenderer({
       canvas,
       alpha: true,
       antialias: t.physical, // the line/point shaders feather their own edges
@@ -108,11 +112,11 @@ export class LogoScene {
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, C.maxPixelRatio, t.maxPixelRatio));
     this.renderer.setClearColor(0x000000, 0); // transparent — the hero's ground shows through
-    this.renderer.outputColorSpace = t.physical ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;
-    this.renderer.toneMapping = t.physical ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping;
+    this.renderer.outputColorSpace = t.physical ? SRGBColorSpace : LinearSRGBColorSpace;
+    this.renderer.toneMapping = t.physical ? ACESFilmicToneMapping : NoToneMapping;
     this.renderer.toneMappingExposure = 1.05;
 
-    this.camera = new THREE.PerspectiveCamera(C.cameraFovDeg, 1, 1, 10000);
+    this.camera = new PerspectiveCamera(C.cameraFovDeg, 1, 1, 10000);
     this.scene.add(this.root);
     this.root.add(this.pivot);
 
@@ -145,7 +149,7 @@ export class LogoScene {
     this.renderer.getDrawingBufferSize(f.resolution);
     f.dpr = this.renderer.getPixelRatio();
 
-    const dist = h / 2 / Math.tan(THREE.MathUtils.degToRad(C.cameraFovDeg) / 2);
+    const dist = h / 2 / Math.tan(MathUtils.degToRad(C.cameraFovDeg) / 2);
     this.camera.aspect = w / h;
     this.camera.near = dist * 0.1;
     this.camera.far = dist * 4;

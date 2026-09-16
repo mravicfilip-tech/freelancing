@@ -1,4 +1,6 @@
-import * as THREE from 'three';
+// Named imports, not a namespace import: `import * as THREE` defeats
+// tree-shaking, so the whole library ships whether it is used or not.
+import { AmbientLight, BufferGeometry, DirectionalLight, Mesh, MeshStandardMaterial } from 'three';
 import { SOLID as C } from '../config';
 import { extrudeLogo } from '../logoPath';
 import { addLights, makeEnvironment, type Environment } from './environment';
@@ -11,9 +13,9 @@ export class SolidTreatment implements Treatment {
   readonly maxPixelRatio = 2;
   readonly entrance = 'rise' as const;
 
-  private geometry!: THREE.BufferGeometry;
-  private materials: THREE.MeshStandardMaterial[] = [];
-  private slabs: THREE.Mesh[] = [];
+  private geometry!: BufferGeometry;
+  private materials: MeshStandardMaterial[] = [];
+  private slabs: Mesh[] = [];
   private env!: Environment;
   private removeLights: () => void = () => undefined;
 
@@ -21,7 +23,7 @@ export class SolidTreatment implements Treatment {
     this.env = makeEnvironment(renderer);
     this.geometry = extrudeLogo({ depth: C.slabDepth, bevel: C.bevel, bevelSegments: 2 });
     // ExtrudeGeometry groups: 0 = front and back faces, 1 = the sides.
-    const face = new THREE.MeshStandardMaterial({
+    const face = new MeshStandardMaterial({
       color: C.face,
       emissive: C.faceEmissive,
       roughness: 0.42,
@@ -29,7 +31,7 @@ export class SolidTreatment implements Treatment {
       envMap: this.env.texture,
       envMapIntensity: C.faceEnvIntensity,
     });
-    const side = new THREE.MeshStandardMaterial({
+    const side = new MeshStandardMaterial({
       color: C.side,
       roughness: 0.55,
       metalness: 0.3,
@@ -40,13 +42,13 @@ export class SolidTreatment implements Treatment {
     this.slabs = makeSlabs(this.geometry, this.materials, 3, C.slabGap);
     this.slabs.forEach((s) => pivot.add(s));
 
-    const key = new THREE.DirectionalLight(0xfff4ea, 2.2);
+    const key = new DirectionalLight(0xfff4ea, 2.2);
     key.position.set(3, 4, 5);
-    const rim = new THREE.DirectionalLight(C.face, 4);
+    const rim = new DirectionalLight(C.face, 4);
     rim.position.set(-4, 2, -3);
-    const fill = new THREE.DirectionalLight(0x6a5040, 0.5);
+    const fill = new DirectionalLight(0x6a5040, 0.5);
     fill.position.set(-3, -2, 3);
-    this.removeLights = addLights(scene, [key, rim, fill, new THREE.AmbientLight(0xffffff, 0.1)]);
+    this.removeLights = addLights(scene, [key, rim, fill, new AmbientLight(0xffffff, 0.1)]);
   }
 
   layout() {

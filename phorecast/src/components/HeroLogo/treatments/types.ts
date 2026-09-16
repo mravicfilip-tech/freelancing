@@ -1,11 +1,11 @@
-import type * as THREE from 'three';
+import type { Group, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
 
 export interface TreatmentContext {
   /** Rotates with rest + idle + pointer + scroll; scaled to the mark's height in pixels by its parent. */
-  pivot: THREE.Group;
-  scene: THREE.Scene;
-  renderer: THREE.WebGLRenderer;
-  camera: THREE.PerspectiveCamera;
+  pivot: Group;
+  scene: Scene;
+  renderer: WebGLRenderer;
+  camera: PerspectiveCamera;
 }
 
 /** What the scene knows each frame; treatments read it, never write it. */
@@ -17,12 +17,12 @@ export interface FrameState {
   /** ScrollTrigger progress, 0-1. */
   scroll: number;
   /** Smoothed pointer, -1..1 across the host. */
-  pointer: THREE.Vector2;
+  pointer: Vector2;
   /** The mark's height in CSS pixels (the pivot's scale). */
   size: number;
   dpr: number;
   /** Drawing-buffer size in device pixels. */
-  resolution: THREE.Vector2;
+  resolution: Vector2;
   /** Camera distance to the mark's centre, CSS pixels. */
   viewDist: number;
 }

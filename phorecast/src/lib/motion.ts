@@ -20,11 +20,17 @@ export type Timeline = gsap.core.Timeline;
 export const REDUCED =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// GSAP freezes a timeline whenever a frame exceeds half a second, which is the
-// wrong default here: the WebGL mark stalls the compositor well past that on a
-// weak GPU, and a frozen entrance leaves a section half-built. Advance on
-// wall-clock time instead.
-gsap.ticker.lagSmoothing(0);
+// Lag smoothing stays ON. Turning it off makes tweens advance on wall-clock
+// time, which sounds right and is badly wrong here: the main thread blocks
+// while the WebGL mark initialises and fonts load, the timeline runs through
+// that freeze unseen, and the first frame the browser paints is already near
+// the end — nothing, nothing, then everything at once. Skipped frames must not
+// advance the sequence; the guard below handles the case where it truly stalls.
+// The threshold is deliberately tight. GSAP's default only discounts a frame
+// once it exceeds half a second, and mount jank produces 200-450ms frames that
+// slip under it — each one advancing a one-second tween by a third in a single
+// step. That is the visible jump: nothing, then most of the animation at once.
+gsap.ticker.lagSmoothing(110, 16);
 
 /** The band's entrance ease, and the small rise every element makes as it appears. */
 export const EASE = 'expo.out';
@@ -135,6 +141,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     let ctx: gsap.Context | undefined;
     let stopIdle: (() => void) | undefined;
     let tl: Timeline | undefined;
+    let guard = 0;
 
     const start = () => {
       // React's StrictMode runs effects twice in development. Without this the
@@ -153,7 +160,28 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
           const timeline = tl;
           build({ el, q: (sel) => all(el, sel), tl: timeline });
           reveal();
-          requestAnimationFrame(() => timeline.play());
+
+          // Hold for two clear frames so the opening does not play against a
+          // main thread still doing mount work. Fonts get a short head start
+          // because type that swaps mid-reveal is ugly — but only a short one:
+          // document.fonts.ready waits for every face on the page, and letting
+          // that gate the hero delayed it by whole seconds.
+          const play = () => requestAnimationFrame(() =>
+            requestAnimationFrame(() => { if (!timeline.progress()) timeline.play(); }));
+
+          if (document.fonts?.status === 'loaded') play();
+          else {
+            let started = false;
+            const once = () => { if (!started) { started = true; play(); } };
+            document.fonts?.ready.then(once).catch(once);
+            window.setTimeout(once, 400);
+          }
+
+          // If something stalls the sequence for far longer than it should run,
+          // settle it rather than leave the section half-built.
+          guard = window.setTimeout(() => {
+            if (timeline.progress() < 1) timeline.progress(1);
+          }, (timeline.duration() + 6) * 1000);
         }, el);
       } catch (err) {
         // A build that throws part way would leave the section hidden. Show it.
@@ -171,6 +199,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
 
     return () => {
       io.disconnect();
+      window.clearTimeout(guard);
       stopIdle?.();
       // Settle rather than rewind. Reverting a half-played entrance puts the
       // section back to its start values, which is what made the double-invoke

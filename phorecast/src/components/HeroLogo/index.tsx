@@ -41,10 +41,24 @@ function supportsWebGL(): boolean {
   }
 }
 
+/**
+ * Hold the 3D scene back until the section's opening has finished.
+ *
+ * Compiling shaders and building the geometry blocks the main thread for long
+ * enough to starve an animation of frames. At the old 800ms ceiling that landed
+ * squarely inside the hero's entrance, which then advanced in one visible jump
+ * rather than playing: nothing, nothing, then everything at once. The mark is
+ * decorative and fades itself in, so arriving a beat later costs nothing.
+ */
+const SETTLE_MS = 2200;
+
 function idle(): Promise<void> {
   return new Promise<void>((resolve) => {
-    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => resolve(), { timeout: 800 });
-    else window.setTimeout(resolve, 50);
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(() => resolve(), { timeout: SETTLE_MS });
+    } else {
+      window.setTimeout(resolve, SETTLE_MS);
+    }
   });
 }
 

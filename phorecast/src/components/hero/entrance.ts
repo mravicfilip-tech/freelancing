@@ -23,7 +23,7 @@ function sweep(title: HTMLElement, at: number, tl: gsap.core.Timeline) {
   tl.set(gloss, { opacity: 1 }, at)
     .to(pos, {
       p: -35,
-      duration: 0.95,
+      duration: 1.3,
       ease: 'power2.inOut',
       onUpdate: () => {
         const v = `${pos.p}% 0`;
@@ -56,14 +56,14 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   const cta = one(slide, '.hero__cta');
   const visual = one(slide, '.hero__visual');
 
-  if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -8, duration: 0.6 });
+  if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -10, duration: 0.75 });
 
   if (title) {
     const lines = intoLines(title);
     addShine(title);
     // The line rises out of its mask and resolves from soft as it arrives.
-    tl.from(lines, { yPercent: 108, filter: 'blur(8px)', duration: 0.95, stagger: 0.1, ease: 'power4.out', clearProps: 'filter' }, at + 0.05);
-    sweep(title, at + 0.45, tl);
+    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14);
+    sweep(title, at + 0.95, tl);
   }
 
   // The illustration is the largest thing on screen; leaving it out of the
@@ -72,12 +72,12 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     const kids = Array.from(visual.children) as HTMLElement[];
     const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
     const parts = kids.length > 1 ? kids : nested;
-    if (parts.length > 1) pop(tl, parts, at + 0.12, { scale: 0.92, y: 10, duration: 0.7, stagger: 0.06 });
-    else rise(tl, visual, at + 0.12, { y: 14, duration: 0.85 });
+    if (parts.length > 1) pop(tl, parts, at + 0.3, { scale: 0.92, y: 12, duration: 0.85, stagger: 0.1 });
+    else rise(tl, visual, at + 0.3, { y: 16, duration: 1.0 });
   }
 
-  if (lede) rise(tl, intoLines(lede), at + 0.3, { y: 0, yPercent: 105, duration: 0.65 });
-  if (cta) pop(tl, cta, at + 0.42, { scale: 0.94, duration: 0.6 });
+  if (lede) rise(tl, intoLines(lede), at + 0.72, { y: 0, yPercent: 108, duration: 0.85 });
+  if (cta) pop(tl, cta, at + 0.98, { scale: 0.94, duration: 0.7 });
 }
 
 /** The load-in. Light first, everything else overlapping it. */
@@ -100,9 +100,9 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
 
   if (slide) slideIn(slide, tl, 0.16);
 
-  rise(tl, all(hero, '.hero__position'), 0.6, { y: 8, duration: 0.5 });
+  rise(tl, all(hero, '.hero__position'), 1.15, { y: 8, duration: 0.6 });
   const cards = all(hero, '.hero__foot > *');
-  if (cards.length) pop(tl, cards, 0.58, { scale: 0.94, y: 10, duration: 0.6, stagger: 0.06 });
+  if (cards.length) pop(tl, cards, 1.1, { scale: 0.94, y: 12, duration: 0.7, stagger: 0.1 });
 }
 
 /**

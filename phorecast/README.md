@@ -6,10 +6,16 @@ Vite + React 19 + TypeScript, built from the Phorecast Figma file
 
 ```
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:5173, reloads on local edits
+npm run dev:sync   # the same, and pulls new commits from the branch as they land
 npm run build      # typecheck + production build -> dist/
 npm run preview    # serve dist/
 ```
+
+`dev:sync` is for reviewing work pushed from elsewhere: it polls the tracked
+branch every 15s (`SYNC_SECONDS` to change that), fast-forwards, reinstalls when
+the lockfile moves, and lets Vite hot-reload the page. It never touches a dirty
+checkout, so your own uncommitted edits are safe.
 
 Node 22 or newer.
 

@@ -3,6 +3,8 @@ import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
 import { StackDiagram } from './StackDiagram';
+import { VisualAccount, VisualFuture } from './visuals';
+import './visuals.css';
 import liveDot from '../../assets/icons/live-dot.svg';
 import ribs from '../../assets/hero/mark3d-ribs.svg';
 import slices from '../../assets/hero/mark3d-slices.svg';
@@ -55,13 +57,13 @@ const SLIDES: Slide[] = [
     ),
   },
   {
-    id: 'slide-2',
+    id: 'account',
     eyebrow: 'Global Markets. One Platform.',
-    title: 'Slide two',
-    lede: '',
-    cta: 'Get Started',
+    title: 'One account.\nYour keys.',
+    lede: 'Open Phorecast in minutes and trade every asset class without handing anyone custody of your funds.',
+    cta: 'Create account',
     href: '#signup',
-    visual: null,
+    visual: <VisualAccount />,
   },
   {
     id: 'bonus',
@@ -73,13 +75,13 @@ const SLIDES: Slide[] = [
     visual: <div className="hero__stack"><StackDiagram /></div>,
   },
   {
-    id: 'slide-4',
+    id: 'future',
     eyebrow: 'Global Markets. One Platform.',
-    title: 'Slide four',
-    lede: '',
+    title: 'The Future\nof Trading',
+    lede: 'Phorecast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
     cta: 'Get Started',
     href: '#signup',
-    visual: null,
+    visual: <VisualFuture />,
   },
 ];
 
@@ -131,7 +133,7 @@ export function Hero() {
       onBlur={() => setPaused(false)}
       onKeyDown={onKey}
     >
-      <div className="hero__bg" aria-hidden="true">
+      <div className={`hero__bg hero__bg--${SLIDES[index].id}`} aria-hidden="true">
         <span className="hero__glow hero__glow--ember" />
         <span className="hero__glow hero__glow--peach" />
         <span className="hero__glow hero__glow--orange" />

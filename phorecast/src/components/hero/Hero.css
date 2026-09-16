@@ -104,6 +104,7 @@
   flex: none;
 }
 .hero__slide {
+  --u: calc(100cqw / 1800);
   grid-area: 1 / 1;
   display: grid;
   grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
@@ -134,8 +135,7 @@
 
 .hero__visual {
   position: absolute;
-  inset: 0 0 0 auto;
-  width: calc(1245 / 1800 * 100%);
+  inset: 0 0 0 0;
   transform: translateY(18px) scale(0.985);
   transition: transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -155,21 +155,32 @@
 /* Slide 1 visual: 3D wireframe mark (600 box at 1104,215 in the 1920 frame) */
 .mark3d {
   position: absolute;
-  right: calc(96 / 1245 * 100%);
-  top: -35px;
-  width: calc(600 / 1245 * 100%);
-  max-width: 600px;
+  right: calc(120 * var(--u));
+  top: calc(-36 * var(--u));
+  width: calc(600 * var(--u));
   aspect-ratio: 1;
 }
 .mark3d__ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
 .mark3d__slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
 
+/* Per-slide glow anchoring: slide 2 sits bottom-left, slide 4 bottom-right. */
+.hero__bg--account .hero__glow--ember  { left: calc(-285 * var(--u)); }
+.hero__bg--account .hero__glow--orange { left: calc(-271 * var(--u)); }
+.hero__bg--account .hero__glow--core   { left: calc(-120 * var(--u)); }
+.hero__bg--account .hero__glow--peach  { left: calc(-587 * var(--u)); }
+.hero__bg--account .hero__glow--cream  { left: calc(-287 * var(--u)); }
+.hero__bg--future .hero__glow--ember  { left: calc(566 * var(--u)); }
+.hero__bg--future .hero__glow--orange { left: calc(580 * var(--u)); }
+.hero__bg--future .hero__glow--core   { left: calc(760 * var(--u)); }
+.hero__bg--future .hero__glow--peach  { left: calc(264 * var(--u)); }
+.hero__bg--future .hero__glow--cream  { left: calc(564 * var(--u)); }
+
 /* Slide 3 visual: stack diagram (784 × 571 at 855,175) */
 .hero__stack {
   --s: 1;
   position: absolute;
-  left: calc(295 / 1245 * 100%);
-  top: -75px;
+  left: calc(795 * var(--u));
+  top: calc(-76 * var(--u));
   transform: scale(var(--s));
   transform-origin: top left;
 }
@@ -178,7 +189,7 @@
   .hero__stack { --s: 0.85; left: 10%; }
 }
 @media (max-width: 1180px) {
-  .hero__slide { grid-template-columns: minmax(0, 1fr); }
+  .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
   .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
   .mark3d { position: relative; right: auto; top: auto; width: min(420px, 70vw); margin-inline: auto; }
   .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }

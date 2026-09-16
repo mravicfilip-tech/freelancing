@@ -22,7 +22,6 @@ export const FRAG = /* glsl */ `
   uniform vec2  uRes;        // drawing-buffer size, px
   uniform float uPixel;      // device pixels per CSS px
   uniform float uUnit;       // CSS px per design px
-  uniform float uHeight;     // layer height in design px (1080 unless clipped)
   uniform float uTime;       // seconds
   uniform float uIntro;      // 0 -> 1 entrance bloom
   uniform float uScroll;     // 0 at rest, 1 when the hero has left
@@ -41,11 +40,14 @@ export const FRAG = /* glsl */ `
   const vec3 PEACH  = vec3(0.976, 0.620, 0.341);  // #f99e57
   const vec3 CREAM  = vec3(1.000, 0.918, 0.855);  // #ffeada
 
-  /* A CSS blurred disc: 1 inside, 0 outside, the edge spread over ~1.25 * blur. */
+  /* A CSS blurred disc. A CSS blur of radius b is a gaussian of sigma b/2,
+     whose edge profile is an erf; tanh is within a percent of it and costs one
+     instruction. Keeping the long tails is what makes this read as the CSS
+     stack rather than as a hard-edged circle. */
   float disc(vec2 p, vec2 c, vec2 r, float blur) {
     vec2 q = (p - c) / r;
     float e = (length(q) - 1.0) * min(r.x, r.y);
-    return 1.0 - smoothstep(-1.25 * blur, 1.25 * blur, e);
+    return 0.5 - 0.5 * tanh(1.7 * e / blur);
   }
 
   /* Recursive Bayer matrix — bayer16 is four levels of the 2x2 kernel. */
@@ -70,7 +72,7 @@ export const FRAG = /* glsl */ `
        This is the "lens" pass of the Figma shader stack. */
     vec2 sun = vec2(uX[1] + 769.5, 1590.5);
     vec2 d = (p - sun) / 1600.0;
-    float k = 0.055 + 0.02 * sin(uTime * 0.21) + 0.03 * uDepth;
+    float k = 0.028 + 0.014 * sin(uTime * 0.21) + 0.022 * uDepth;
     p += d * dot(d, d) * k * 1600.0;
 
     /* Ambient: the whole field breathes, and drifts a little with the pointer
@@ -97,10 +99,9 @@ export const FRAG = /* glsl */ `
     /* 3. the sun, screened through the halftone. */
     float aSun = disc(p, vec2(uX[1] + 769.5, 821.0 + 769.5), vec2(769.5), 110.0);
     float cell = 6.0 * uPixel;
-    vec2 gridId = floor(gl_FragCoord.xy / cell);
     vec2 gridUv = fract(gl_FragCoord.xy / cell) - 0.5;
-    float dot9 = 1.0 - smoothstep(0.15, 0.29, length(gridUv));
-    vec3 sunCol = softLight(ORANGE, mix(vec3(0.5), mix(vec3(0.5), vec3(1.0, 0.88, 0.78), dot9), 0.7));
+    float dot9 = 1.0 - smoothstep(0.13, 0.26, length(gridUv));
+    vec3 sunCol = softLight(ORANGE, mix(vec3(0.5), vec3(1.0, 0.88, 0.78), dot9 * 0.5));
     col = mix(col, sunCol, aSun);
 
     /* 4. hot core, with the breathing carried in its opacity. */

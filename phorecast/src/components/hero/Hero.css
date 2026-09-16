@@ -78,11 +78,12 @@
 /* the planet-like black horizon that cuts the glow */
 .hero__horizon {
   position: absolute;
-  left: calc(50% - 36 * var(--u));
+  /* Centred by offset rather than translateX(-50%), so the entrance and the
+     scroll parallax own the transform channel outright. */
+  left: calc(50% - 3054 * var(--u));
   top: calc(892 * var(--u));
   width: calc(6036 * var(--u));
   height: calc(2668 * var(--u));
-  transform: translateX(-50%);
   border-radius: 50%;
   background: var(--bg);
   filter: blur(calc(50 * var(--u)));
@@ -131,6 +132,17 @@
 .is-active .hero__copy { transform: none; }
 .hero__heading { display: flex; flex-direction: column; gap: 28px; }
 .hero__title { white-space: pre; width: max-content; max-width: none; }
+/* Each headline line gets its own clipping box so it can rise out of nothing.
+   The padding gives ascenders and descenders room at this 0.9 line-height and
+   the matching negative margin takes it straight back out of the layout, so the
+   headline occupies exactly the box it did before. */
+.hero__line {
+  display: block;
+  overflow: hidden;
+  padding: 0.16em 0;
+  margin: -0.16em 0;
+}
+.hero__line-in { display: block; }
 .hero__lede { max-width: 508px; }
 .hero__cta { margin-top: 12px; }
 

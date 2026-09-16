@@ -8,19 +8,29 @@
 // for: the mounted panel publishes an `exit()` that returns how long it needs,
 // and the slider waits that long before changing `shown`.
 //
-// Everything here animates *from* a visible baseline with `gsap.from`, so a
-// panel whose script never runs is simply the static Figma design.
+// A panel has four layers of motion, and each one is declared by the panel
+// itself in a `PanelSpec`:
+//
+//   enter    the assembly, played once when the panel arrives
+//   leave    the departure, played before React unmounts it
+//   ambient  endless loops that start the moment the assembly lands
+//   pointer  a damped tilt/parallax answer to the cursor, built in here
+//
+// Everything animates *from* a visible baseline with `gsap.from`, and every
+// loop is off under reduced motion, so a panel whose script never runs — or
+// whose visitor has asked for less — is exactly the static Figma design.
 
 import { createContext, useContext, useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { gsap } from 'gsap';
 import { drawPaths, EASE, REDUCED } from '../../lib/motion';
+import { mountField } from './field';
+import type { FieldOptions } from './field';
 
 /** Panel internals are placed at Figma coordinates against an 886px frame. */
 export const PANEL_W = 886;
 
-/** How long the slider holds the outgoing panel before unmounting it. */
-export const EXIT_EASE = 'power2.in';
+const EXIT_EASE = 'power3.in';
 
 export interface PanelHandle {
   /** Plays the leaving timeline. Returns its length in ms (0 = swap now). */
@@ -34,16 +44,29 @@ export interface PanelHandle {
 export type PanelStageRef = RefObject<PanelHandle | null>;
 export const PanelStage = createContext<PanelStageRef | null>(null);
 
-export interface PanelMotion {
+export interface PanelScope {
   /** The `.panel` element. */
   root: HTMLElement;
   /** Scoped query — a panel can never reach outside itself. */
   q: (selector: string) => HTMLElement[];
   /** Same for SVG geometry, which `drawPaths` needs. */
   paths: (selector: string) => SVGGeometryElement[];
-  /** One Figma pixel in real pixels, so travel distances scale with the panel. */
+  /** One Figma pixel in real pixels, so distances scale with the panel. */
   p: number;
+}
+
+export interface PanelMotion extends PanelScope {
   tl: gsap.core.Timeline;
+}
+
+export interface PanelSpec {
+  enter: (m: PanelMotion) => void;
+  leave: (m: PanelMotion) => void;
+  /**
+   * Endless loops, added to their own container timeline at absolute
+   * positions. Started when the entrance lands, never under reduced motion.
+   */
+  ambient?: (m: PanelMotion) => void;
 }
 
 export interface PanelProps {
@@ -54,14 +77,15 @@ export interface PanelProps {
 }
 
 /**
- * Builds a panel's entrance when the section is ready, and exposes its exit to
- * the slider. The whole thing lives in a gsap context scoped to the panel, so
- * unmounting kills every tween and restores every inline style — panels mount
- * and unmount on a 6s loop, so a leak would compound quickly.
+ * Builds a panel's entrance when the section is ready, starts its ambient loops
+ * behind it, drives the pointer answer, and exposes its exit to the slider.
+ *
+ * All of it lives in one gsap context scoped to the panel, so unmounting kills
+ * every tween and restores every inline style. Panels mount and unmount on a
+ * six-second loop, so a leak would compound within a minute.
  */
 export function usePanelMotion(
-  enter: (m: PanelMotion) => void,
-  leave: (m: PanelMotion) => void,
+  spec: PanelSpec,
   { ready = false, delay = 0 }: PanelProps,
 ): RefObject<HTMLDivElement | null> {
   const ref = useRef<HTMLDivElement>(null);
@@ -76,13 +100,15 @@ export function usePanelMotion(
 
     const scope = gsap.context(() => {}, root);
     let entering: gsap.core.Timeline | null = null;
+    let loops: gsap.core.Timeline | null = null;
+    let stopPointer = () => {};
     let leaving = false;
     let until = 0;
 
-    const measure = () => ({
+    const measure = (): PanelScope => ({
       root,
-      q: (selector: string) => Array.from(root.querySelectorAll<HTMLElement>(selector)),
-      paths: (selector: string) => Array.from(root.querySelectorAll<SVGGeometryElement>(selector)),
+      q: (selector) => Array.from(root.querySelectorAll<HTMLElement>(selector)),
+      paths: (selector) => Array.from(root.querySelectorAll<SVGGeometryElement>(selector)),
       p: root.clientWidth / PANEL_W || 1,
     });
 
@@ -90,9 +116,27 @@ export function usePanelMotion(
       scope.add(() => {
         const tl = gsap.timeline({ delay: delayRef.current, defaults: { ease: EASE, duration: 0.6 } });
         entering = tl;
-        enter({ ...measure(), tl });
+        spec.enter({ ...measure(), tl });
+        if (!REDUCED && spec.ambient) {
+          // The loops live in their own container, inside the same context: the
+          // container is what the departure kills, the context is what unmount
+          // reverts.
+          tl.call(
+            () =>
+              scope.add(() => {
+                loops = gsap.timeline();
+                spec.ambient?.({ ...measure(), tl: loops });
+              }),
+            undefined,
+            // Strictly after the assembly: several entrance tweens hand their
+            // element back with clearProps, which would wipe a loop that had
+            // already taken the same property.
+            '>',
+          );
+        }
         if (REDUCED) tl.progress(1).kill();
       });
+      if (!REDUCED) stopPointer = drivePointer(root);
     }
 
     const handle: PanelHandle = {
@@ -100,10 +144,16 @@ export function usePanelMotion(
         if (leaving) return Math.max(0, Math.round(until - performance.now()));
         leaving = true;
         if (REDUCED || !ready) return 0;
+        stopPointer();
+        // The loops and the assembly both have to let go before the departure
+        // can take the same properties over.
         entering?.kill();
+        loops?.kill();
+        entering = null;
+        loops = null;
         const ms = scope.add(() => {
-          const tl = gsap.timeline({ defaults: { ease: EXIT_EASE, duration: 0.24 } });
-          leave({ ...measure(), tl });
+          const tl = gsap.timeline({ defaults: { ease: EXIT_EASE, duration: 0.22 } });
+          spec.leave({ ...measure(), tl });
           return Math.round(tl.duration() * 1000);
         });
         until = performance.now() + ms;
@@ -114,23 +164,112 @@ export function usePanelMotion(
 
     return () => {
       if (stage && stage.current === handle) stage.current = null;
+      stopPointer();
       scope.revert();
     };
-  }, [ready, enter, leave, stage]);
+  }, [ready, spec, stage]);
 
   return ref;
 }
 
 /**
+ * The panel answers the cursor: the illustration tilts in real perspective, the
+ * blurred mark slides the other way behind it and the glow leads. Damped
+ * towards the pointer rather than pinned to it, and it eases back to neutral
+ * when the pointer leaves rather than snapping.
+ *
+ * Only `x`/`xPercent` and the rotations are written here; the scroll driver in
+ * Steps.tsx owns `y` on the same elements, so the two never fight over a
+ * property. Percentages, not pixels, on the illustration — `.s1` and `.s3` are
+ * centred with `translate(-50%, -50%)`, which GSAP holds as `x`/`y`.
+ */
+function drivePointer(root: HTMLElement): () => void {
+  const art = root.querySelector<HTMLElement>('.s1, .s2, .s3');
+  const mark = root.querySelector<HTMLElement>('.steps__mark');
+  const glow = root.querySelector<HTMLElement>('.steps__glow');
+  if (!art) return () => {};
+
+  gsap.set(art, { transformPerspective: 1100, transformOrigin: '50% 50%' });
+  const rotY = gsap.quickSetter(art, 'rotationY', 'deg');
+  const rotX = gsap.quickSetter(art, 'rotationX', 'deg');
+  const artX = gsap.quickSetter(art, 'xPercent');
+  const markX = mark ? gsap.quickSetter(mark, 'x', 'px') : null;
+  const glowX = glow ? gsap.quickSetter(glow, 'x', 'px') : null;
+
+  let tx = 0;
+  let ty = 0;
+  let cx = 0;
+  let cy = 0;
+  let frame = 0;
+
+  const run = () => {
+    frame = 0;
+    cx += (tx - cx) * 0.085;
+    cy += (ty - cy) * 0.085;
+    rotY(cx * 4.2);
+    rotX(cy * -3);
+    artX(cx * 0.9);
+    markX?.(cx * -16);
+    glowX?.(cx * 22);
+    if (Math.abs(tx - cx) > 0.0015 || Math.abs(ty - cy) > 0.0015) frame = requestAnimationFrame(run);
+  };
+  const wake = () => {
+    if (!frame) frame = requestAnimationFrame(run);
+  };
+
+  const onMove = (e: PointerEvent) => {
+    const r = root.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ty = ((e.clientY - r.top) / r.height) * 2 - 1;
+    wake();
+  };
+  const onLeave = () => {
+    tx = 0;
+    ty = 0;
+    wake();
+  };
+
+  root.addEventListener('pointermove', onMove);
+  root.addEventListener('pointerleave', onLeave);
+  return () => {
+    root.removeEventListener('pointermove', onMove);
+    root.removeEventListener('pointerleave', onLeave);
+    if (frame) cancelAnimationFrame(frame);
+  };
+}
+
+/** Mounts the shader field on a canvas once the section is in view. */
+export function useField(
+  ref: RefObject<HTMLCanvasElement | null>,
+  options: FieldOptions,
+  ready: boolean,
+) {
+  const opts = useRef(options);
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!ready || !canvas) return;
+    let dispose: (() => void) | null = null;
+    let done = false;
+    mountField(canvas, opts.current).then((d) => {
+      if (done) d();
+      else dispose = d;
+    });
+    return () => {
+      done = true;
+      dispose?.();
+    };
+  }, [ref, ready]);
+}
+
+/**
  * The rotation baked into an element's CSS transform, in radians. The comets in
  * panel 2 each lie along their own line; reading the angle back off the element
- * means the travel direction stays correct without restating Figma's numbers.
+ * means every travel direction stays correct without restating Figma's numbers.
  */
 export function angleOf(el: Element): number {
   const t = getComputedStyle(el).transform;
   if (!t || t === 'none') return 0;
   const nums = t.slice(t.indexOf('(') + 1, -1).split(',').map(Number);
-  if (t.startsWith('matrix3d')) return Math.atan2(nums[1], nums[0]);
   if (nums.length < 4) return 0;
   return Math.atan2(nums[1], nums[0]);
 }
@@ -146,19 +285,24 @@ export function angleOf(el: Element): number {
  * the drawing: the twin is revealed, drawn, then handed back to the image. If
  * this never runs, the twin stays `display: none` and the image is simply
  * there — which is the finished design.
+ *
+ * With `keep`, the twin is left mounted for an ambient loop to use; the caller
+ * is then responsible for making sure it only ever shows a travelling segment.
  */
 export function drawOver(
   tl: gsap.core.Timeline,
   image: HTMLElement | undefined,
   twin: HTMLElement | undefined,
   strokes: SVGGeometryElement[],
-  { at = 0, duration = 0.6, stagger = 0.06, ease = 'power2.inOut' } = {},
-) {
-  if (!image || !twin || !strokes.length) return;
+  { at = 0, duration = 0.6, stagger = 0.06, ease = 'power2.inOut', keep = false } = {},
+): number {
+  if (!image || !twin || !strokes.length) return at;
   const end = at + duration + stagger * (strokes.length - 1);
   tl.set(twin, { display: 'block' }, at).set(image, { opacity: 0 }, at);
   drawPaths(tl, strokes, { duration, stagger, ease, at });
-  tl.set(image, { clearProps: 'opacity' }, end).set(twin, { clearProps: 'display' }, end);
+  tl.set(image, { clearProps: 'opacity' }, end);
+  if (!keep) tl.set(twin, { clearProps: 'display' }, end);
+  return end;
 }
 
 /**

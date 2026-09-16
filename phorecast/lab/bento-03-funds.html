@@ -393,6 +393,37 @@ const ctx = (n) => {
   };
 };
 
+
+/**
+ * The resting layer every direction shares. Each element breathes on its own
+ * period and phase, so a capture at 10s never matches one at 20s and the loop
+ * has no seam to catch. Offsets are composed here and written once per frame,
+ * so nothing fights the interaction tweens above it.
+ */
+function ambient(c, opts = {}) {
+  const els = [...c.pills, ...c.tiles, ...c.labels, ...c.nodes];
+  const state = els.map((el, i) => ({
+    el, amp: 1.2 + (i % 3) * 0.5, per: 3.2 + (i % 4) * 0.6, ph: i * 1.7, ox: 0, oy: 0,
+    z: opts.depth ? (el.classList.contains('funds__tile') ? 40 : el.classList.contains('funds__pill') ? 30 : 26) : 0,
+  }));
+  // Anything that wants to move one of these asks the layer for its offset
+  // rather than writing the transform itself, so nothing ever fights.
+  state.at = (el) => state.find((n) => n.el === el);
+  ticker(c.root, (now) => {
+    const t = now / 1000;
+    state.forEach((n) => {
+      gsap.set(n.el, {
+        x: Math.cos(t / (n.per * 1.37) + n.ph) * n.amp * .5 + n.ox,
+        y: Math.sin(t / n.per + n.ph) * n.amp + n.oy,
+        z: n.z,
+      });
+    });
+    gsap.set(c.disc, { scale: 1 + Math.sin(t / 2.6) * .022, transformOrigin: '50% 50%' });
+    opts.frame && opts.frame(t);
+  });
+  return state;
+}
+
 /* Art coordinates → the ring centres the release sequence pushes away from. */
 const RING_C = { x: 349.5, y: 107.5 };
 
@@ -462,6 +493,8 @@ function relay(n = 1) {
   hover(c.cardEl,
     () => gsap.to(level, { v: 1, flash: 1, duration: .5, ease: 'power3.out' }),
     () => gsap.to(level, { v: .34, flash: 0, duration: .7, ease: 'power3.out' }));
+
+  ambient(c);   // the diagram keeps breathing between packets
 }
 
 /* ======================================================================
@@ -491,30 +524,54 @@ function draw(n = 2) {
   gsap.set([c.ringO, c.ringW], { visibility: 'hidden' });
 
   const walletIcon = $('.funds__wallet-icon', c.root);
+
+  /* Once it has assembled the circuit does not go dead: a highlight keeps
+     running each ring, so the card is alive before anyone hovers. */
+  const live = [gw, go].map((src, i) => {
+    const p = src.cloneNode(false);
+    p.style.stroke = '#ff7a3c'; p.style.opacity = '0'; p.style.strokeWidth = '1.4';
+    const len = src.getTotalLength(), tail = i ? 62 : 34;
+    p.style.strokeDasharray = `${tail} ${len - tail}`;
+    c.svg.appendChild(p);
+    return { p, len, per: i ? 7.4 : 5.6, dir: i ? -1 : 1 };
+  });
+
+  let tl = null;
+  const amb = ambient(c, { frame: (t) => {
+    const on = tl && tl.isActive() ? 0 : .42;
+    live.forEach((l) => {
+      const k = l.dir > 0 ? (t / l.per) % 1 : 1 - ((t / l.per) % 1);
+      l.p.style.strokeDashoffset = String(-k * l.len);
+      l.p.style.opacity = String(on);
+    });
+  } });
+
   const rest = () => {
     gsap.set([gw, go], { strokeDashoffset: 0 });
     gsap.set(c.glow, { '--wipe': '100%', opacity: 1 });
-    gsap.set([...c.pills, ...c.tiles, ...c.labels, ...c.nodes, c.disc, walletIcon],
-      { opacity: 1, x: 0, y: 0, scale: 1 });
+    gsap.set([...c.pills, ...c.tiles, ...c.labels, ...c.nodes, c.disc, walletIcon], { opacity: 1, scale: 1 });
+    amb.forEach((n) => { n.ox = 0; n.oy = 0; });
   };
 
-  let tl = null;
   const play = () => {
     if (tl && tl.isActive()) return;
     if (tl) tl.kill();
     tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.set(c.glow, { '--wipe': '0%' })
       .set([gw, go], { strokeDashoffset: (i) => (i ? lo : lw) })
-      .set([...c.pills, ...c.tiles, ...c.labels], { opacity: 0, y: 9 })
+      .set([...c.pills, ...c.tiles, ...c.labels], { opacity: 0 })
+      .set([...c.pills, ...c.tiles, ...c.labels].map((e) => amb.at(e)), { oy: 9 })
       .set(c.nodes, { opacity: 0, scale: 0, transformOrigin: '50% 50%' })
       .set([c.disc, walletIcon], { opacity: 0, scale: .84, transformOrigin: '50% 50%' })
       .to(gw, { strokeDashoffset: 0, duration: .46 })
       .to([c.disc, walletIcon], { opacity: 1, scale: 1, duration: .38 }, '-=.28')
       .to(c.glow, { '--wipe': '100%', duration: .52 }, '-=.22')
       .to(go, { strokeDashoffset: 0, duration: .52 }, '-=.3')
-      .to(c.pills, { opacity: 1, y: 0, duration: .4, stagger: .07 }, '-=.44')
+      .to(c.pills, { opacity: 1, duration: .4, stagger: .07 }, '-=.44')
+      .to(c.pills.map((e) => amb.at(e)), { oy: 0, duration: .46, stagger: .07 }, '<')
       .to(c.nodes, { opacity: 1, scale: 1, duration: .4, ease: 'back.out(2.2)', stagger: .08 }, '-=.36')
-      .to([...c.tiles, ...c.labels], { opacity: 1, y: 0, duration: .38, stagger: .04 }, '-=.4');
+      .to([...c.tiles, ...c.labels], { opacity: 1, duration: .38, stagger: .04 }, '-=.4')
+      .to([...c.tiles, ...c.labels].map((e) => amb.at(e)), { oy: 0, duration: .44, stagger: .04 }, '<');
   };
 
   rest();
@@ -537,13 +594,18 @@ function torch(n = 3) {
     ...c.pills.map((p) => [p, 30]), ...c.tiles.map((p) => [p, 40]),
     ...c.labels.map((p) => [p, 26]), ...c.nodes.map((p) => [p, 34]),
   ];
-  depth.forEach(([el, z]) => gsap.set(el, { z }));
+  // the ambient layer owns z for everything it breathes; set the rest here
+  const breathed = new Set([...c.pills, ...c.tiles, ...c.labels, ...c.nodes]);
+  depth.filter(([el]) => !breathed.has(el)).forEach(([el, z]) => gsap.set(el, { z }));
 
-  const rx = gsap.quickTo(c.art, 'rotationX', { duration: .8, ease: 'power3' });
-  const ry = gsap.quickTo(c.art, 'rotationY', { duration: .8, ease: 'power3' });
-  const px = gsap.quickTo(c.art, 'x', { duration: .9, ease: 'power3' });
-  const py = gsap.quickTo(c.art, 'y', { duration: .9, ease: 'power3' });
   gsap.set(c.art, { xPercent: -50, yPercent: -50, transformStyle: 'preserve-3d' });
+
+  /* Damped, never 1:1 — and at rest the plane keeps drifting on a Lissajous
+     figure so the card is never frozen. */
+  const aim = { rx: 0, ry: 0, x: 0, y: 0 };
+  const now_ = { rx: 0, ry: 0, x: 0, y: 0 };
+  const rx = (v) => { aim.rx = v; }, ry = (v) => { aim.ry = v; };
+  const px = (v) => { aim.x = v; }, py = (v) => { aim.y = v; };
 
   const cand = [...c.pills, ...c.tiles, ...c.labels];
   let pointer = null;
@@ -567,15 +629,26 @@ function torch(n = 3) {
       cand.forEach((el) => gsap.to(el, { filter: 'brightness(1)', scale: 1, duration: .5, ease: 'power3' }));
     });
 
-  ticker(c.root, () => {
+  ambient(c, { depth: true, frame: (t) => {
+    // resting drift, overridden the moment the pointer arrives
+    const dx = pointer ? 0 : Math.sin(t / 7.3) * 4.5;
+    const dy = pointer ? 0 : Math.cos(t / 9.1) * 3.2;
+    const drx = pointer ? 0 : Math.cos(t / 8.4) * 2.2;
+    const dry = pointer ? 0 : Math.sin(t / 6.8) * 3.0;
+    const k = .07;
+    now_.rx += (aim.rx + drx - now_.rx) * k;
+    now_.ry += (aim.ry + dry - now_.ry) * k;
+    now_.x  += (aim.x  + dx  - now_.x)  * k;
+    now_.y  += (aim.y  + dy  - now_.y)  * k;
+    gsap.set(c.art, { rotationX: now_.rx, rotationY: now_.ry, x: now_.x, y: now_.y });
     if (!pointer) return;
     cand.forEach((el) => {
       const b = el.getBoundingClientRect();
       const d = Math.hypot(b.left + b.width / 2 - pointer.x, b.top + b.height / 2 - pointer.y);
-      const k = Math.max(0, 1 - d / 165);
-      gsap.set(el, { filter: `brightness(${(1 + k * .55).toFixed(3)})`, scale: 1 + k * .055 });
+      const k2 = Math.max(0, 1 - d / 165);
+      gsap.set(el, { filter: `brightness(${(1 + k2 * .55).toFixed(3)})`, scale: 1 + k2 * .055 });
     });
-  });
+  } });
 }
 
 /* ======================================================================
@@ -583,6 +656,7 @@ function torch(n = 3) {
    ====================================================================== */
 function release(n = 4) {
   const c = ctx(n);
+  const amb4 = ambient(c);
   const pairs = c.tiles.map((tile, i) => {
     const l = parseFloat(tile.style.left), t = parseFloat(tile.style.top);
     const cx = l + 18, cy = t + 18;
@@ -592,9 +666,10 @@ function release(n = 4) {
   const lock = $('.funds__lock', c.root);
 
   const out = (p, dist, delay) => {
-    gsap.to([p.tile, p.label], {
-      x: p.ux * dist, y: p.uy * dist, duration: .42, delay, ease: 'power3.out',
-      onComplete: () => gsap.to([p.tile, p.label], { x: 0, y: 0, duration: .62, ease: 'power2.inOut' }),
+    const targets = [amb4.at(p.tile), amb4.at(p.label)].filter(Boolean);
+    gsap.to(targets, {
+      ox: p.ux * dist, oy: p.uy * dist, duration: .42, delay, ease: 'power3.out',
+      onComplete: () => gsap.to(targets, { ox: 0, oy: 0, duration: .62, ease: 'power2.inOut' }),
     });
     gsap.to(p.tile, { borderColor: 'rgba(255,99,42,.5)', duration: .3, delay, ease: 'power2.out',
       onComplete: () => gsap.to(p.tile, { borderColor: p.tile.classList.contains('funds__tile--bordered') ? 'rgba(255,99,42,.1)' : 'rgba(255,99,42,0)', duration: .6 }) });
@@ -615,6 +690,17 @@ function release(n = 4) {
   pairs.forEach((p) => {
     p.tile.style.pointerEvents = 'auto';
     hover(p.tile, () => out(p, 10, 0), () => {});
+  });
+
+  /* At rest one asset releases and re-docks every few seconds on its own, so
+     the card demonstrates itself before anyone touches it. */
+  let idle = 0, next = 3;
+  ticker(c.root, (now) => {
+    const t = now / 1000;
+    if (t < next) return;
+    next = t + 3.2;
+    out(pairs[idle % pairs.length], 9, 0);
+    idle += 1;
   });
 }
 
@@ -757,6 +843,8 @@ async function bloom(n = 5) {
 
     renderer.render(scene, camera);
   });
+
+  ambient(c);
 }
 </script>
 </body>

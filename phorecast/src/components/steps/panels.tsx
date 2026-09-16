@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import glow from '../../assets/steps/glow.svg';
 import ribs from '../../assets/steps/mark-ribs.svg';
 import slices from '../../assets/steps/mark-slices.svg';
@@ -29,8 +30,10 @@ import s3Tesla from '../../assets/steps/s3-tesla.svg';
 import s3Sp500 from '../../assets/steps/s3-sp500.svg';
 import s3Apple from '../../assets/steps/s3-apple.svg';
 import s3Chart from '../../assets/steps/s3-chart.svg';
-import { angleOf, countMoney, drawOver, usePanelMotion } from './panelMotion';
-import type { PanelMotion, PanelProps } from './panelMotion';
+import { REDUCED } from '../../lib/motion';
+import { angleOf, countMoney, drawOver, useField, usePanelMotion } from './panelMotion';
+import type { PanelMotion, PanelProps, PanelSpec } from './panelMotion';
+import type { FieldOptions } from './field';
 
 /** The 3D wordmark behind each panel. Figma gives it a different box and
  *  opacity per slide, and the ribs/slices sit at their own insets inside it. */
@@ -53,9 +56,13 @@ function Glow({ className }: { className: string }) {
    can be drawn on — see `drawOver`. The markup is the exported Figma file
    verbatim, with the generated ids renamed so two sections can never collide on
    them. They carry `--draw`, which is `display: none` until a timeline reveals
-   one; the images beside them are what the settled panel shows. */
+   one; the images beside them are what the settled panel shows. Under reduced
+   motion they are not rendered at all — nothing will ever draw them, and even
+   a `display: none` node is one more thing for the compositor to round off
+   against, which showed up as a single antialiased pixel on panel 1. */
 
 function Connector() {
+  if (REDUCED) return null;
   return (
     <svg
       className="s1__connector s1__connector--draw"
@@ -92,6 +99,7 @@ function Connector() {
 }
 
 function Lines() {
+  if (REDUCED) return null;
   return (
     <svg
       className="s2__lines s2__lines--draw"
@@ -134,6 +142,16 @@ function Lines() {
   );
 }
 
+/** The shader field. Empty and transparent until `field.ts` gets a context. */
+function Field({ options, ready }: { options: FieldOptions; ready: boolean }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useField(ref, options, ready);
+  // Under reduced motion there is nothing to draw, and an empty canvas is not
+  // quite free: it is another layer for the compositor to round off against.
+  if (REDUCED) return null;
+  return <canvas ref={ref} className="panel__field" aria-hidden="true" />;
+}
+
 /* Shared beats ------------------------------------------------------------- */
 
 /* Every entrance tween hands the element back when it lands. A left-over
@@ -141,29 +159,41 @@ function Lines() {
    raster layer, which shifts text and hairlines by a fraction of a pixel. */
 const CLEAR = 'transform,transformOrigin,opacity';
 
+/* The three layers the scroll driver and the pointer driver own — the mark, the
+   glow and the illustration root — are the exception. Under reduced motion
+   nothing will ever touch them again, so they are handed back in full; with
+   motion on, those drivers hold the transform from here and clearing it would
+   knock the element back to zero until the next scroll event. */
+const SETTLE = REDUCED ? CLEAR : 'opacity';
+
 /** The blurred mark and the glow behind every panel: settle, don't slide. */
 function shell({ q, tl }: PanelMotion) {
-  tl.from(
-    q('.steps__mark'),
-    { scale: 1.05, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: CLEAR },
-    0,
-  ).from(
-    q('.steps__glow'),
-    { scale: 0.92, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: CLEAR },
-    0.05,
-  );
+  tl.from(q('.steps__mark'), { scale: 1.05, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: SETTLE }, 0)
+    .from(q('.steps__glow'), { scale: 0.92, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: SETTLE }, 0.05)
+    .from(q('.panel__field'), { opacity: 0, duration: 0.7 }, 0.1);
 }
 
-/** Both marks leave together, a touch larger, under whatever else is going. */
-function shellOut({ q, tl }: PanelMotion) {
-  tl.to(q('.steps__mark'), { scale: 1.03, opacity: 0, duration: 0.22 }, 0).to(
-    q('.steps__glow'),
-    { opacity: 0, duration: 0.22 },
-    0,
-  );
+/** The mark is the last thing to go, a touch larger, under everything else. */
+function shellOut({ q, tl }: PanelMotion, at: number) {
+  tl.to(q('.steps__mark'), { scale: 1.035, opacity: 0, duration: 0.24 }, at)
+    .to(q('.steps__glow, .panel__field'), { opacity: 0, duration: 0.22 }, at);
+}
+
+/** The mark never quite stops: a long breath and a fraction of a degree. */
+function shellLoop({ q, tl }: PanelMotion) {
+  tl.to(q('.steps__mark'), { scale: 1.015, rotation: 0.4, duration: 11, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0)
+    .to(q('.steps__glow'), { opacity: 0.8, scale: 1.035, duration: 7.5, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.6);
 }
 
 /* Panel 1 — email → account cards → phone -------------------------------- */
+
+const REGISTER_FIELD: FieldOptions = {
+  tint: [1, 0.39, 0.17],
+  center: [-0.04, 0.63],
+  radius: 0.92,
+  strength: 0.17,
+  cell: 7,
+};
 
 function enterRegister(m: PanelMotion) {
   const { q, paths, p, tl } = m;
@@ -185,26 +215,44 @@ function enterRegister(m: PanelMotion) {
     .from(q('.s1__chart'), { y: 10 * p, opacity: 0, duration: 0.45, clearProps: CLEAR }, 0.9)
     .from(q('.s1__bars > span'), { scaleY: 0.12, duration: 0.5, stagger: 0.05, transformOrigin: '50% 100%', clearProps: CLEAR }, 1)
     .from(q('.s1__indicator, .s1__bar--block, .s1__nav'), { opacity: 0, duration: 0.4, stagger: 0.05, clearProps: CLEAR }, 1.02)
-    .from(q('.s1__bars i'), { opacity: 0, y: 4 * p, duration: 0.35, clearProps: CLEAR }, 1.4);
+    // Late accent: the one number on the slide arrives after everything else.
+    .from(q('.s1__bars i'), { opacity: 0, y: 5 * p, duration: 0.35, clearProps: CLEAR }, 1.38);
 }
 
-/** Leaves the way it arrived, in reverse: phone first, email last. */
+function loopRegister(m: PanelMotion) {
+  const { q, p, tl } = m;
+  shellLoop(m);
+  // The caret in the email field is a text cursor. It should blink like one.
+  tl.to(q('.s1__email i'), { opacity: 0.06, duration: 0.52, ease: 'steps(1)', repeat: -1, yoyo: true }, 0)
+    .to(q('.s1__bars span.is-active'), { scaleY: 1.05, duration: 2.4, transformOrigin: '50% 100%', ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.4)
+    .to(q('.s1__bars i'), { y: -1.6 * p, duration: 2.4, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.4)
+    .to(q('.s1__sk'), { opacity: 0.5, duration: 1.9, stagger: 0.35, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.2)
+    .to(q('.s1__diamond--orange'), { rotation: '+=7', duration: 9, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0)
+    .to(q('.s1__diamond--white'), { rotation: '-=7', duration: 11, ease: 'sine.inOut', repeat: -1, yoyo: true }, 1.2);
+}
+
+/** Anticipates right, then leaves left — phone first, email last. */
 function leaveRegister(m: PanelMotion) {
   const { q, p, tl } = m;
-  shellOut(m);
-  tl.to(q('.s1__phone'), { y: 18 * p, opacity: 0, duration: 0.22 }, 0)
-    .to(q('.s1__bracket, .s1__diamond--white'), { opacity: 0, duration: 0.18 }, 0.02)
-    .to(q('.s1__card'), { x: -18 * p, opacity: 0, duration: 0.22, stagger: 0.03 }, 0.04)
-    .to(q('.s1__connector, .s1__diamond--orange'), { opacity: 0, duration: 0.18 }, 0.06)
-    .to(q('.s1__email'), { x: -22 * p, opacity: 0, duration: 0.22 }, 0.08);
+  const cast = q('.s1__email, .s1__card, .s1__bracket, .s1__phone, .s1__connector, .s1__diamond');
+  tl.to(cast, { x: `+=${5 * p}`, duration: 0.08, ease: 'power2.out' }, 0)
+    .to(q('.s1__phone'), { x: `+=${32 * p}`, opacity: 0, duration: 0.22 }, 0.08)
+    .to(q('.s1__bracket, .s1__diamond--white'), { opacity: 0, duration: 0.16 }, 0.1)
+    .to(q('.s1__card'), { x: `-=${28 * p}`, opacity: 0, duration: 0.2, stagger: 0.03 }, 0.11)
+    .to(q('.s1__connector, .s1__diamond--orange'), { opacity: 0, duration: 0.16 }, 0.14)
+    .to(q('.s1__email'), { x: `-=${32 * p}`, opacity: 0, duration: 0.2 }, 0.15);
+  shellOut(m, 0.09);
 }
 
+const REGISTER: PanelSpec = { enter: enterRegister, leave: leaveRegister, ambient: loopRegister };
+
 export function PanelRegister(props: PanelProps) {
-  const ref = usePanelMotion(enterRegister, leaveRegister, props);
+  const ref = usePanelMotion(REGISTER, props);
   return (
     <div className="panel panel--1" ref={ref}>
       <Mark className="steps__mark--full" />
       <Glow className="steps__glow--left" />
+      <Field options={REGISTER_FIELD} ready={!!props.ready} />
       <div className="s1" aria-hidden="true">
         <div className="s1__email">
           <img src={envelope} alt="" width={24} height={18.85} />
@@ -266,6 +314,17 @@ export function PanelRegister(props: PanelProps) {
 /* Panel 2 — funding rails converge on a locked balance ------------------- */
 const RAILS = [s2Tile1, s2Tile2, s2Tile3, s2Tile4, s2Tile5];
 
+const FUND_FIELD: FieldOptions = {
+  tint: [1, 0.36, 0.14],
+  center: [1.02, 0.86],
+  radius: 0.86,
+  strength: 0.2,
+  cell: 6.5,
+};
+
+/** The fraction of the line work a travelling highlight occupies. */
+const SPARK = 0.028;
+
 /**
  * The one panel that is really a diagram: five rails, four converging lines and
  * five streaks that each lie along their own line. The streaks travel on the
@@ -276,11 +335,21 @@ function enterFund(m: PanelMotion) {
   const { q, paths, p, tl } = m;
   shell(m);
   tl.from(q('.s2__tile'), { x: -28 * p, opacity: 0, duration: 0.5, stagger: 0.06, clearProps: CLEAR }, 0.06);
-  drawOver(tl, q('.s2__lines')[0], q('.s2__lines--draw')[0], paths('.s2__lines--draw path'), {
+  const stroke = paths('.s2__lines--draw path')[0];
+  const drawn = drawOver(tl, q('.s2__lines')[0], q('.s2__lines--draw')[0], paths('.s2__lines--draw path'), {
     at: 0.22,
     duration: 0.8,
     ease: 'power2.inOut',
+    // Reduced motion has no travelling light to hand the twin to, so it goes
+    // back to `display: none` and the image stands alone.
+    keep: !REDUCED,
   });
+  if (stroke && !REDUCED) {
+    // The drawn twin collapses into the single travelling segment that the
+    // ambient loop then runs along the lines for good.
+    const len = stroke.getTotalLength();
+    tl.set(stroke, { strokeDasharray: `${len * SPARK} ${len}`, strokeDashoffset: len }, drawn);
+  }
 
   q('.s2__comet').forEach((comet, i) => {
     const a = angleOf(comet);
@@ -308,30 +377,79 @@ function enterFund(m: PanelMotion) {
   const amount = q('.s2__balance-amt')[0];
   if (amount) countMoney(tl, amount, 18800, { duration: 0.8, at: 0.78 });
 
-  tl.from(q('.s2__dots i'), { scaleX: 0, opacity: 0, duration: 0.4, stagger: 0.05, transformOrigin: '0% 50%', clearProps: CLEAR }, 1.05);
+  // Late accent.
+  tl.from(q('.s2__dots i'), { scaleX: 0, opacity: 0, duration: 0.4, stagger: 0.05, transformOrigin: '0% 50%', clearProps: CLEAR }, 1.08);
+}
+
+function loopFund(m: PanelMotion) {
+  const { q, paths, p, tl } = m;
+  shellLoop(m);
+
+  // Light travelling the converging lines: the drawn twin shows one short
+  // segment, chasing its way through all four branches in turn.
+  const stroke = paths('.s2__lines--draw path')[0];
+  if (stroke) {
+    const len = stroke.getTotalLength();
+    tl.set(stroke, { strokeDasharray: `${len * SPARK} ${len}`, strokeDashoffset: len }).to(
+      stroke,
+      { strokeDashoffset: -len * SPARK, duration: 9.5, ease: 'none', repeat: -1 },
+      0,
+    );
+  }
+
+  // Each streak breathes along its own axis, out of phase with the others.
+  q('.s2__comet').forEach((comet, i) => {
+    const a = angleOf(comet);
+    const d = (5.5 + i * 0.9) * p;
+    tl.to(
+      comet,
+      {
+        x: Math.cos(a) * d,
+        y: Math.sin(a) * d,
+        opacity: 0.68,
+        duration: 3.1 + i * 0.45,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+      },
+      i * 0.55,
+    );
+  });
+
+  tl.to(q('.s2__node'), { scale: 1.06, duration: 2.2, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.3)
+    .to(q('.s2__dots i'), { opacity: 0.45, duration: 1.4, stagger: 0.18, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.8)
+    .to(q('.s2__tile.is-first'), { scale: 1.02, duration: 3.4, ease: 'sine.inOut', repeat: -1, yoyo: true }, 1.1);
 }
 
 /** The streaks do not stop — they carry on down their own line and out. */
 function leaveFund(m: PanelMotion) {
   const { q, p, tl } = m;
-  shellOut(m);
   q('.s2__comet').forEach((comet, i) => {
     const a = angleOf(comet);
-    const travel = 54 * p;
-    tl.to(comet, { x: Math.cos(a) * travel, y: Math.sin(a) * travel, opacity: 0, duration: 0.24, ease: 'power2.in' }, i * 0.02);
+    const travel = 64 * p;
+    tl.to(
+      comet,
+      { x: `+=${Math.cos(a) * travel}`, y: `+=${Math.sin(a) * travel}`, scaleX: 1.5, opacity: 0, duration: 0.26, ease: 'power2.in' },
+      i * 0.022,
+    );
   });
-  tl.to(q('.s2__lines'), { opacity: 0, duration: 0.2 }, 0.02)
-    .to(q('.s2__node'), { scale: 0.6, opacity: 0, duration: 0.2 }, 0.04)
-    .to(q('.s2__balance'), { x: 26 * p, opacity: 0, duration: 0.24 }, 0.02)
-    .to(q('.s2__tile'), { x: -18 * p, opacity: 0, duration: 0.22, stagger: 0.025 }, 0.06);
+  tl.to(q('.s2__balance'), { x: `+=${7 * p}`, duration: 0.08, ease: 'power2.out' }, 0)
+    .to(q('.s2__balance'), { x: `+=${34 * p}`, opacity: 0, duration: 0.22 }, 0.08)
+    .to(q('.s2__lines'), { opacity: 0, duration: 0.2 }, 0.06)
+    .to(q('.s2__node'), { scale: 0.55, opacity: 0, duration: 0.2 }, 0.1)
+    .to(q('.s2__tile'), { x: `-=${24 * p}`, opacity: 0, duration: 0.2, stagger: 0.03 }, 0.12);
+  shellOut(m, 0.1);
 }
 
+const FUND: PanelSpec = { enter: enterFund, leave: leaveFund, ambient: loopFund };
+
 export function PanelFund(props: PanelProps) {
-  const ref = usePanelMotion(enterFund, leaveFund, props);
+  const ref = usePanelMotion(FUND, props);
   return (
     <div className="panel panel--2" ref={ref}>
       <Mark className="steps__mark--right" />
       <Glow className="steps__glow--right" />
+      <Field options={FUND_FIELD} ready={!!props.ready} />
       <div className="s2" aria-hidden="true">
         <div className="s2__rails">
           {RAILS.map((icon, i) => (
@@ -365,31 +483,54 @@ const ASSETS = [
   { icon: s3Apple, active: false },
 ];
 
+const TRADE_FIELD: FieldOptions = {
+  tint: [1, 0.42, 0.2],
+  center: [0.95, 0.09],
+  radius: 0.8,
+  strength: 0.16,
+  cell: 7.5,
+};
+
 function enterTrade(m: PanelMotion) {
   const { q, p, tl } = m;
   shell(m);
-  tl.from(q('.s3'), { scale: 0.985, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.08)
+  tl.from(q('.s3'), { scale: 0.985, opacity: 0, duration: 0.6, clearProps: SETTLE }, 0.08)
     .from(q('.s3__tile'), { y: 12 * p, opacity: 0, duration: 0.45, stagger: 0.05, clearProps: CLEAR }, 0.22)
     .from(q('.s3__label, .s3__price, .s3__delta'), { y: 8 * p, opacity: 0, duration: 0.45, stagger: 0.06, clearProps: CLEAR }, 0.42)
     // The chart slides up out of the card's own clip, so it draws itself in.
-    .from(q('.s3__chart'), { y: 22 * p, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.48);
+    .from(q('.s3__chart'), { y: 22 * p, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.48)
+    // Late accent: the move, after the price it belongs to.
+    .from(q('.s3__delta'), { opacity: 0, duration: 0.3, clearProps: CLEAR }, 0.98);
+}
+
+function loopTrade(m: PanelMotion) {
+  const { q, p, tl } = m;
+  shellLoop(m);
+  tl.to(q('.s3__tile.is-active'), { scale: 1.018, duration: 2.8, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0)
+    // A live feed never sits perfectly still.
+    .to(q('.s3__chart'), { y: -1.5 * p, duration: 6.4, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.4)
+    .to(q('.s3__delta'), { opacity: 0.55, duration: 2.1, ease: 'sine.inOut', repeat: -1, yoyo: true }, 0.9);
 }
 
 function leaveTrade(m: PanelMotion) {
   const { q, p, tl } = m;
-  shellOut(m);
-  tl.to(q('.s3__chart'), { y: 16 * p, opacity: 0, duration: 0.22 }, 0)
-    .to(q('.s3__label, .s3__price, .s3__delta'), { opacity: 0, duration: 0.18, stagger: 0.02 }, 0.02)
-    .to(q('.s3__tile'), { y: -10 * p, opacity: 0, duration: 0.22, stagger: 0.025 }, 0.04)
-    .to(q('.s3'), { scale: 0.99, opacity: 0, duration: 0.22 }, 0.06);
+  tl.to(q('.s3'), { y: `+=${6 * p}`, duration: 0.08, ease: 'power2.out' }, 0)
+    .to(q('.s3__chart'), { y: `+=${20 * p}`, opacity: 0, duration: 0.22 }, 0.08)
+    .to(q('.s3__label, .s3__price, .s3__delta'), { opacity: 0, duration: 0.16, stagger: 0.025 }, 0.1)
+    .to(q('.s3__tile'), { y: `-=${14 * p}`, opacity: 0, duration: 0.2, stagger: 0.03 }, 0.12)
+    .to(q('.s3'), { scale: 0.985, opacity: 0, duration: 0.2 }, 0.16);
+  shellOut(m, 0.12);
 }
 
+const TRADE: PanelSpec = { enter: enterTrade, leave: leaveTrade, ambient: loopTrade };
+
 export function PanelTrade(props: PanelProps) {
-  const ref = usePanelMotion(enterTrade, leaveTrade, props);
+  const ref = usePanelMotion(TRADE, props);
   return (
     <div className="panel panel--3" ref={ref}>
       <Mark className="steps__mark--corner" />
       <Glow className="steps__glow--corner" />
+      <Field options={TRADE_FIELD} ready={!!props.ready} />
       <div className="s3" aria-hidden="true">
         <div className="s3__tiles">
           {ASSETS.map((a, i) => (

@@ -1,0 +1,16 @@
+/* The shader glow sits exactly over the CSS glow stack inside .hero__bg.
+   It is transparent until the scene has drawn its first frame, so a machine
+   without WebGL simply never sees it and keeps the CSS glows. */
+.hero__shader {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero__shader.is-live {
+  opacity: 1;
+  transition: opacity 700ms ease;
+}

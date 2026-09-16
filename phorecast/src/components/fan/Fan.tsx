@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { REDUCED, drawPaths, drift, parallax, revealUp, useSectionMotion } from '../../lib/motion';
+import { REDUCED, drawPaths, revealUp, useSectionMotion } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
+import { createFanField, sampleArcs } from './fan-field';
+import type { FanField, SampledArc } from './fan-field';
+import { startConductor } from './fan-ambient';
+import type { Conductor } from './fan-ambient';
 import fanLower from '../../assets/fan/fan-lower.svg';
 import fanUpper from '../../assets/fan/fan-upper.svg';
 /* The same two files again as markup, for the entrance only — see `Arcs`. */
@@ -48,15 +52,15 @@ const PILLS = [
 ];
 
 /* Chrome rasterises an SVG in an <img> differently from the same SVG inline —
-   identical geometry, but the hairlines land on different subpixels. Since the
-   arcs have to be real nodes to be stroke-drawn, and the band at rest has to
-   stay exactly the design that was signed off, the two are kept separate: the
-   <img> pair is the artwork, and an inline copy is switched on only for the
-   draw and handed back at the end. Both copies of a file share a document, so
-   the Figma ids have to be namespaced or the second resolves its url(#...)
-   against the first one's defs. The no-op blur filter is dropped from the
-   drawn copy; re-running a full-frame filter for every frame of the draw costs
-   real time and its stdDeviation is 0. */
+   identical geometry, but the hairlines land on different subpixels. The arcs
+   have to be real nodes to be stroke-drawn and to be sampled for the field,
+   and the band at rest has to stay exactly the design that was signed off, so
+   the two are kept apart: the <img> pair is the artwork, and an inline copy is
+   switched on only to be drawn and measured, then handed back. Both copies of
+   a file share one document, so the Figma ids are namespaced or the second
+   resolves its url(#...) against the first one's defs. The no-op blur filter
+   (stdDeviation 0) is dropped from the drawn copy — re-running a full-frame
+   filter for every frame of the draw costs real time and changes nothing. */
 function drawable(raw: string, className: string, suffix: string) {
   return raw
     .replace(/id="([^"]*)"/g, (_m, id: string) => `id="${id}${suffix}"`)
@@ -82,15 +86,26 @@ function Arcs({ className, side }: { className: string; side: string }) {
 }
 
 /* ---------------------------------------------------------------------------
-   Entrance. One timeline: the arcs draw themselves from the innermost ellipse
-   outward, the tile and copy arrive over the top of it, the pills bloom out
-   from the tile, and the diamonds twinkle in last.
+   Entrance.
+
+   One timeline. The four sheets of linework draw themselves ring by ring from
+   the innermost ellipse outward, sweeping in from the sides as they go; the
+   tile lands and the copy rises under it; the six pills arrive in order of
+   distance from the tile, on an uneven rhythm so it reads as arrival rather
+   than as a stagger; the diamonds twinkle in last, in two loose clusters.
+
    Every step is a gsap.from off the real design state, so a script that never
-   runs leaves the section exactly as the CSS renders it.
+   runs leaves the section exactly as the stylesheet renders it.
 --------------------------------------------------------------------------- */
-const DRAW_DUR = 1.25;
-const DRAW_STAGGER = 0.045;
-const ENTRANCE_MS = 2300;
+const DRAW_DUR = 1.15;
+/** Ring offsets open out, so the fan decelerates as it widens. */
+const RING_AT = [0, 0.16, 0.34, 0.56];
+const SHEET_AT = 0.045;
+const DRAW_END = RING_AT[3] + SHEET_AT * 3 + DRAW_DUR;
+/** Deliberately uneven: a flat stagger reads like a spreadsheet. */
+const PILL_AT = [0, 0.09, 0.16, 0.28, 0.34, 0.44];
+const DIAMOND_AT = [0, 0.05, 0.1, 0.14, 0.26, 0.3, 0.34, 0.39, 0.5, 0.54, 0.58, 0.63];
+const ENTRANCE_MS = 2400;
 
 function buildEntrance({ el, q, tl }: SectionMotion) {
   const layers = q('.fan__draw');
@@ -103,23 +118,31 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
     layers.forEach((l) => { l.style.display = 'block'; });
 
     /* DOM order is left-group-then-right-group, which would draw one side
-       before the other. Re-order by each ellipse's index inside its own group
+       before the other. Re-order by each ellipse's index inside its own group,
        so ring 1 of all four sheets draws together and the fan opens outward,
-       symmetrically. */
+       symmetrically, from the middle of the band. */
     const ring = (p: SVGPathElement) =>
       p.parentElement ? Array.prototype.indexOf.call(p.parentElement.children, p) : 0;
-    const ordered = paths.slice().sort((a, b) => ring(a) - ring(b));
+    const sheets = Array.from(el.querySelectorAll('.fan__draw svg'));
+    const sheetOf = (p: SVGPathElement) => Math.max(0, sheets.indexOf(p.ownerSVGElement as Element));
+    const ordered = paths.slice().sort((a, b) => ring(a) - ring(b) || sheetOf(a) - sheetOf(b));
+    const delays = ordered.map((p) => RING_AT[Math.min(3, ring(p))] + sheetOf(p) * SHEET_AT);
 
     tl.set(art, { opacity: 0 }, 0);
-    drawPaths(tl, ordered, { duration: DRAW_DUR, stagger: DRAW_STAGGER, ease: 'power2.inOut', at: 0 });
+    drawPaths(tl, ordered, {
+      duration: DRAW_DUR, ease: 'power2.inOut', at: 0,
+      stagger: ((i: number) => delays[i]) as unknown as number,
+    });
+    /* ...and the two halves sweep in towards each other while they draw. */
+    tl.from(layers, { x: (i: number) => (i ? 26 : -26), duration: 1.4, ease: 'expo.out', clearProps: 'transform' }, 0);
 
     /* Hand the finished linework back to the artwork. Both copies are the same
-       picture, so a straight cross-fade over black holds a constant total. */
-    const handoff = DRAW_DUR + DRAW_STAGGER * (ordered.length - 1) - 0.18;
-    tl.to(art, { opacity: 1, duration: 0.25, ease: 'none' }, handoff)
-      .to(layers, { opacity: 0, duration: 0.25, ease: 'none' }, handoff)
+       picture, so a straight cross-fade holds a constant total. */
+    const handoff = DRAW_END - 0.15;
+    tl.to(art, { opacity: 1, duration: 0.28, ease: 'none' }, handoff)
+      .to(layers, { opacity: 0, duration: 0.28, ease: 'none' }, handoff)
       .set(art, { clearProps: 'opacity' })
-      .set(layers, { display: 'none', clearProps: 'opacity' });
+      .set(layers, { display: 'none', clearProps: 'opacity,transform' });
   }
 
   const [tile] = q('.fan__tile');
@@ -127,16 +150,28 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
     tl.from(
       tile,
       {
-        scale: 0.8, y: 14, opacity: 0, duration: 0.7, ease: 'expo.out',
+        scale: 0.78, y: 18, opacity: 0, duration: 0.72, ease: 'expo.out',
         transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin,opacity',
       },
-      0.45,
+      0.4,
     );
   }
 
-  revealUp(tl, [...q('.fan__title'), ...q('.fan__sub')], {
-    y: 16, stagger: 0.09, duration: 0.65, at: 0.62,
-  });
+  /* The halo only exists when the script is running it, so it is introduced
+     here rather than sitting in the stylesheet. */
+  const [aura] = q('.fan__aura');
+  if (aura && !REDUCED) {
+    aura.style.display = 'block';
+    tl.fromTo(
+      aura,
+      { opacity: 0, scale: 1.5 },
+      { opacity: 0.42, scale: 2.35, duration: 0.95, ease: 'power2.out' },
+      0.5,
+    );
+  }
+
+  revealUp(tl, q('.fan__title'), { y: 18, duration: 0.6, at: 0.58 });
+  revealUp(tl, q('.fan__sub'), { y: 14, duration: 0.55, at: 0.7 });
 
   /* Scattered marks read badly left-to-right. Bloom them outward from the tile
      instead, which is where the eye already is when they start. */
@@ -152,15 +187,16 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
     tl.from(
       pills,
       {
-        scale: 0.74, opacity: 0, duration: 0.5, stagger: 0.055, ease: 'back.out(1.4)',
+        scale: 0.7, y: 10, opacity: 0, duration: 0.52, ease: 'back.out(1.5)',
         transformOrigin: '50% 50%', clearProps: 'transform,transformOrigin,opacity',
+        stagger: ((i: number) => PILL_AT[i] ?? i * 0.08) as unknown as number,
       },
-      0.78,
+      0.86,
     );
   }
 
-  /* A fixed shuffle rather than gsap's random stagger: just as scattered, and
-     reproducible frame for frame when reviewing. */
+  /* A fixed scatter rather than gsap's random stagger: just as unordered to
+     look at, and reproducible frame for frame when reviewing. */
   const diamonds = q('.fan__diamond');
   const twinkle = diamonds
     .map((e, i) => ({ e, k: (i * 7) % (diamonds.length || 1) }))
@@ -170,113 +206,127 @@ function buildEntrance({ el, q, tl }: SectionMotion) {
     tl.from(
       twinkle,
       {
-        scale: 0.1, opacity: 0, rotation: '+=70', duration: 0.45, stagger: 0.04,
-        ease: 'power3.out', clearProps: 'transform,opacity',
+        scale: 0.08, opacity: 0, rotation: '+=80', duration: 0.42, ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        stagger: ((i: number) => DIAMOND_AT[i] ?? i * 0.05) as unknown as number,
       },
-      1.25,
+      1.45,
     );
   }
 }
 
 /* ---------------------------------------------------------------------------
-   Settled behaviour.
+   Lifecycle for everything that runs after the entrance.
 --------------------------------------------------------------------------- */
 
 /**
- * Local variant of the shared `drift`. That one always writes `rotate`, which
- * would flatten the diamonds' CSS `rotate(135deg)` back into a square; this one
- * only ever touches y, so each mark keeps the rotation the stylesheet gave it.
+ * Measures the arcs off the draw layer. `visibility: hidden` still has layout,
+ * so the geometry is readable without ever painting the inline copy over the
+ * artwork — which matters on resize, long after the hand-off.
  */
-function driftY(targets: HTMLElement[], distance: number, duration: number): gsap.core.Tween[] {
-  if (REDUCED) return [];
-  return targets.map((el, i) =>
-    gsap.to(el, {
-      y: i % 2 ? distance : -distance,
-      duration: duration + (i % 3) * 0.7,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: (i % 5) * 0.4,
-    }),
-  );
-}
-
-/**
- * The only interactive thing in the band: the two sheets of linework lean a few
- * pixels against each other as the cursor crosses, and the diamonds lag along
- * at their own rates. It moves the artwork inside `.fan__arcs`, never the
- * masked box itself, so the top and bottom fade stay pinned to the band.
- */
-function attachPointer(el: HTMLElement, lines: HTMLElement[], diamonds: HTMLElement[]): () => void {
-  if (REDUCED) return () => {};
-  const targets = [
-    ...lines.map((n, i) => ({
-      to: gsap.quickTo(n, 'x', { duration: 1, ease: 'power3' }),
-      amp: i < 2 ? 9 : -9,
-    })),
-    ...diamonds.map((n, i) => ({
-      to: gsap.quickTo(n, 'x', { duration: 1.2, ease: 'power3' }),
-      amp: ((i % 4) - 1.5) * 3.2,
-    })),
-  ];
-  const move = (e: PointerEvent) => {
-    const r = el.getBoundingClientRect();
-    targets.forEach((t) => t.to(((e.clientX - r.left) / (r.width || 1) - 0.5) * t.amp));
-  };
-  const leave = () => targets.forEach((t) => t.to(0));
-  el.addEventListener('pointermove', move, { passive: true });
-  el.addEventListener('pointerleave', leave);
-  return () => {
-    el.removeEventListener('pointermove', move);
-    el.removeEventListener('pointerleave', leave);
-    targets.forEach((t) => t.to.tween?.kill());
-  };
+function measureArcs(section: HTMLElement): SampledArc[] {
+  const layers = Array.from(section.querySelectorAll<HTMLElement>('.fan__draw'));
+  const prev = layers.map((l) => [l.style.display, l.style.visibility] as const);
+  layers.forEach((l) => { l.style.display = 'block'; l.style.visibility = 'hidden'; });
+  try {
+    return sampleArcs(section);
+  } catch {
+    return [];
+  } finally {
+    layers.forEach((l, i) => { l.style.display = prev[i][0]; l.style.visibility = prev[i][1]; });
+  }
 }
 
 export function Fan() {
   const ref = useSectionMotion<HTMLElement>(useCallback(buildEntrance, []), { threshold: 0.12 });
-  const idle = useRef<{ tweens: gsap.core.Tween[]; stops: (() => void)[] }>({ tweens: [], stops: [] });
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    const store = idle.current;
-    let timer = 0;
+    if (!el || REDUCED) return;
 
-    const stop = () => {
-      if (timer) window.clearTimeout(timer);
-      timer = 0;
-      store.stops.splice(0).forEach((f) => f());
-      store.tweens.splice(0).forEach((t) => t.kill());
-      gsap.set(el.querySelectorAll('.fan__diamond, .fan__pill, img.fan__lines, .fan__arcs'), {
-        clearProps: 'transform',
+    let conductor: Conductor | null = null;
+    let field: FanField | null = null;
+    let samples: SampledArc[] = [];
+    let dead = false;
+    let boot = 0;
+    let resizeTimer = 0;
+
+    const frameEl = () => el.querySelector<HTMLElement>('.fan__frame');
+    const hosts = () => ({
+      section: el,
+      arcs: Array.from(el.querySelectorAll<HTMLElement>('.fan__arcs')),
+      lines: Array.from(el.querySelectorAll<HTMLElement>('img.fan__lines')),
+      diamonds: Array.from(el.querySelectorAll<HTMLElement>('.fan__diamond')),
+      pills: Array.from(el.querySelectorAll<HTMLElement>('.fan__pill')),
+      tile: el.querySelector<HTMLElement>('.fan__tile'),
+      aura: el.querySelector<HTMLElement>('.fan__aura'),
+      field: el.querySelector<HTMLElement>('.fan__field'),
+    });
+
+    const start = () => {
+      boot = 0;
+      if (dead || conductor) return;
+      conductor = startConductor(hosts(), field);
+
+      if (field) return;
+      const host = el.querySelector<HTMLElement>('.fan__field');
+      const box = frameEl()?.getBoundingClientRect();
+      if (!host || !box) return;
+      samples = measureArcs(el);
+      if (!samples.length) return;
+      /* three is an await away, and the section is already alive without it. */
+      void createFanField(host).then((f) => {
+        if (dead || !f) { f?.dispose(); return; }
+        field = f;
+        const b = frameEl()?.getBoundingClientRect();
+        f.resize(b?.width || box.width, b?.height || box.height, samples);
+        host.style.display = 'block';
+        gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: 0.9, ease: 'power2.out' });
+        conductor?.attachField(f);
       });
     };
 
-    const start = () => {
-      timer = 0;
-      if (store.tweens.length || store.stops.length) return;
-      const pick = (s: string) => Array.from(el.querySelectorAll<HTMLElement>(s));
-      const diamonds = pick('.fan__diamond');
-      store.tweens.push(...driftY(diamonds, 5, 4.6));
-      store.tweens.push(...drift(pick('.fan__pill'), { distance: 4, duration: 5.4 }));
-      pick('.fan__arcs').forEach((a) => store.stops.push(parallax(a, 0.05)));
-      store.stops.push(attachPointer(el, pick('img.fan__lines'), diamonds));
+    const stop = () => {
+      if (boot) window.clearTimeout(boot);
+      boot = 0;
+      conductor?.stop();
+      conductor = null;
     };
 
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) stop();
-        else if (!timer && !store.tweens.length && !store.stops.length) {
-          timer = window.setTimeout(start, REDUCED ? 0 : ENTRANCE_MS);
-        }
+        else if (!conductor && !boot) boot = window.setTimeout(start, ENTRANCE_MS);
       },
       { threshold: 0.05 },
     );
     io.observe(el);
+
+    const ro = new ResizeObserver(() => {
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        resizeTimer = 0;
+        if (dead || !conductor) return;
+        const b = frameEl()?.getBoundingClientRect();
+        if (!b) return;
+        samples = measureArcs(el);
+        conductor.remeasure(samples, b.width, b.height);
+      }, 180);
+    });
+    ro.observe(el);
+
     return () => {
+      dead = true;
       io.disconnect();
+      ro.disconnect();
+      if (resizeTimer) window.clearTimeout(resizeTimer);
       stop();
+      field?.dispose();
+      field = null;
+      const host = el.querySelector<HTMLElement>('.fan__field');
+      if (host) { host.style.display = ''; host.style.opacity = ''; }
+      const aura = el.querySelector<HTMLElement>('.fan__aura');
+      if (aura) { aura.style.display = ''; aura.style.opacity = ''; aura.style.transform = ''; }
     };
   }, [ref]);
 
@@ -286,6 +336,9 @@ export function Fan() {
         <div aria-hidden="true">
           <Arcs className="fan__arcs--left" side="l" />
           <Arcs className="fan__arcs--right" side="r" />
+          {/* Host for the WebGL arc field. Empty and display:none until the
+              layer has a context; nothing here is part of the static design. */}
+          <div className="fan__field" />
           {DIAMONDS.map(([x, y, c], i) => (
             <span key={i} className="fan__diamond" style={{ ['--x' as string]: x, ['--y' as string]: y, background: c }} />
           ))}
@@ -298,6 +351,7 @@ export function Fan() {
               {p.icon}{p.label}
             </span>
           ))}
+          <div className="fan__aura" />
         </div>
 
         <div className="fan__tile" aria-hidden="true">

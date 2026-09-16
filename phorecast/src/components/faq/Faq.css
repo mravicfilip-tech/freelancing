@@ -1,0 +1,84 @@
+.faq { padding: 120px 0; }
+.faq__inner { display: grid; grid-template-columns: 510px minmax(0, 1fr); gap: 80px; align-items: start; }
+
+.faq__rail { display: flex; flex-direction: column; gap: 32px; }
+.faq__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(34px, 2.6vw, 48px);
+  line-height: 1.2;
+  color: var(--white-font);
+}
+.faq__lede { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--color-nre-body); }
+.faq__position { display: flex; flex-direction: column; gap: 16px; }
+.faq__counter {
+  display: flex; align-items: baseline; gap: 8px;
+  font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.2; color: var(--color-body);
+}
+.faq__counter-now { color: var(--orange-100); }
+.faq__ladder { display: flex; gap: 8px; width: 420px; max-width: 100%; height: 3px; }
+.faq__ladder span { flex: 1 0 0; height: 3px; border-radius: 2px; background: var(--color-body); transition: background-color 220ms ease; }
+.faq__ladder span.is-active { background: var(--orange-100); }
+.faq__mark { position: relative; width: 354px; max-width: 100%; aspect-ratio: 354 / 356; margin-top: 8px; }
+.faq__mark-slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
+.faq__mark-ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
+
+.faq__list { display: flex; flex-direction: column; gap: 12px; }
+.faq__row {
+  background: #141312;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
+}
+.faq__row.is-open { background: var(--surface); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
+.faq__q {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  padding: 24px 32px; text-align: left;
+}
+.faq__index {
+  width: 32px; flex: none;
+  font-family: var(--font-display); font-weight: 500; font-size: 14px; line-height: 1.2;
+  letter-spacing: 2.24px; text-transform: uppercase; color: var(--color-nre-body);
+  transition: color 220ms ease;
+}
+.is-open .faq__index { color: var(--orange-100); }
+.faq__question {
+  flex: 1;
+  font-family: var(--font-display); font-weight: 500; font-size: clamp(19px, 1.35vw, 24px); line-height: 1.2;
+  color: var(--white-font);
+}
+.faq__toggle { position: relative; width: 24px; height: 24px; flex: none; }
+.faq__toggle i {
+  position: absolute; background: var(--color-nre-body); border-radius: 1px;
+  transition: background-color 220ms ease, transform 220ms ease, opacity 220ms ease;
+}
+.faq__toggle i:first-child { left: 6px; top: 11.25px; width: 12px; height: 1.5px; }
+.faq__toggle i:last-child { left: 11.25px; top: 6px; width: 1.5px; height: 12px; }
+.is-open .faq__toggle i { background: var(--orange-100); }
+.is-open .faq__toggle i:last-child { opacity: 0; transform: rotate(90deg); }
+
+.faq__answer[hidden] { display: none; }
+.faq__answer { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
+.faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--color-nre-body); }
+.faq__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.faq__chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+  border-radius: 10px; background: var(--surface); border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-body); font-weight: 500; font-size: 13px; line-height: 1.2;
+}
+.faq__chip-label { color: var(--color-nre-body); }
+.faq__chip-value { color: var(--white-font); }
+.faq__chip--verify { background: rgba(245, 94, 34, 0.24); border-color: rgba(206, 79, 29, 0.4); color: var(--orange-100); }
+
+@media (max-width: 1180px) {
+  .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .faq__mark { display: none; }
+  .faq__ladder { width: 100%; }
+}
+@media (max-width: 720px) {
+  .faq { padding: 56px 0; }
+  .faq__q { padding: 18px 20px; gap: 12px; }
+  .faq__index { width: 26px; font-size: 12px; letter-spacing: 1.6px; }
+  .faq__answer { padding: 0 20px 20px; }
+  .faq__lede { font-size: 17px; }
+}

@@ -25,9 +25,16 @@ const sec = page.locator(sel);
 await sec.scrollIntoViewIfNeeded();
 await page.waitForTimeout(4000); // let the load-in settle
 
-await sec.screenshot({ path: `/tmp/${tag}-rest-a.png` });
+// locator.screenshot() waits for the element to stop moving, which never
+// happens once a section has an ambient loop — the wait that times out is the
+// very thing being measured. Capture by clip instead.
+const box = await sec.boundingBox();
+if (!box) { console.log('section not visible'); await browser.close(); process.exit(1); }
+const clip = { x: Math.max(0, box.x), y: Math.max(0, box.y), width: Math.min(box.width, Number(w)), height: Math.min(box.height, 900) };
+
+await page.screenshot({ path: `/tmp/${tag}-rest-a.png`, clip });
 await page.waitForTimeout(Number(gap) * 1000);
-await sec.screenshot({ path: `/tmp/${tag}-rest-b.png` });
+await page.screenshot({ path: `/tmp/${tag}-rest-b.png`, clip });
 
 console.log('errors:', errors.length ? errors : 'none');
 await browser.close();

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
-import { heroEntrance } from './entrance';
+import { heroEntrance, slideCopyIn } from './entrance';
 import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
@@ -143,6 +143,30 @@ export function Hero() {
 
     return () => { window.clearTimeout(guard); stop?.(); };
   }, []);
+
+  // Each slide change replays the copy choreography, so the mask reveal and the
+  // glare are seen on every slide rather than only the first. Skipped on the
+  // very first render, which the entrance above already covers.
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    const el = heroRef.current;
+    if (!el || REDUCED) return;
+
+    const slide = el.querySelector<HTMLElement>('.hero__slide.is-active');
+    if (!slide) return;
+
+    const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+    slideCopyIn(slide, tl, 0);
+
+    // The CSS crossfade takes 600ms; if the copy tweens are still holding their
+    // start values after that plus their own run, force the settled state.
+    const guard = window.setTimeout(() => {
+      if (tl.progress() < 1) tl.progress(1);
+    }, 2600);
+
+    return () => { window.clearTimeout(guard); tl.kill(); gsap.set(slide.querySelectorAll('.line__in, .eyebrow, .hero__cta'), { clearProps: 'transform,opacity,filter' }); };
+  }, [index]);
 
   const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);
 

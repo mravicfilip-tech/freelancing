@@ -201,3 +201,35 @@
   .hero__foot { padding-bottom: 32px; }
   .hero__foot .ticker { width: calc(50% - 6px); }
 }
+
+/* Masked line reveal. The wrapper clips, the inner span moves, so type rises out
+   of nothing instead of fading. Both are block-level and add no spacing, so the
+   settled layout is unchanged. */
+.hero__title .line,
+.hero__lede .line { display: block; overflow: hidden; }
+.hero__title .line__in,
+.hero__lede .line__in { display: block; position: relative; will-change: transform; }
+
+/* The specular sweep. A duplicate of the line clipped to its own glyphs, so the
+   highlight travels across the letterforms and never shows in the gaps between
+   them. */
+.hero__title .line__shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background-image: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(255, 251, 248, 0.95) 50%,
+    transparent 58%
+  );
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  background-position: 135% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) { .hero__title .line__shine { display: none; } }

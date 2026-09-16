@@ -150,10 +150,6 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     let cancelled = false;
 
     const start = () => {
-      // React's StrictMode runs effects twice in development. Without this the
-      // entrance builds, is torn down mid-flight, and rebuilds — a visible
-      // stutter that looks like a bug and only ever appears in dev. The flag
-      // lives on the node so it survives the remount.
       if (el.dataset.motionBuilt) return;
       el.dataset.motionBuilt = '1';
 
@@ -206,11 +202,16 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       io?.disconnect();
       window.clearTimeout(guard);
       stopIdle?.();
-      // Settle rather than rewind. Reverting a half-played entrance puts the
-      // section back to its start values, which is what made the double-invoke
-      // visible; every tween ends on the design, so finishing is always safe.
-      tl?.progress(1);
-      ctx?.kill();
+
+      // Rewind, and allow a rebuild. React's StrictMode runs this mount →
+      // cleanup → mount; because it is a layout effect the whole cycle happens
+      // before a paint, so reverting undoes the first build invisibly and the
+      // second one plays in full. Settling here instead — and refusing to
+      // rebuild — is what made the entrance finish instantly on load while
+      // slide changes, which take a different path, still animated.
+      ctx?.revert();
+      tl = undefined;
+      delete el.dataset.motionBuilt;
       reveal();
     };
   }, [build, threshold, idle, immediate]);

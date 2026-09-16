@@ -28,6 +28,9 @@
 .fan__arcs--left { left: 0; top: 0; }
 .fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
 .fan__lines { position: absolute; }
+/* Entrance-only copy of the linework, stroke-drawn and then handed back
+   to the <img> pair above. Hidden unless the motion script turns it on. */
+.fan__draw { position: absolute; inset: 0; display: none; }
 /* Figma mirrors the left group, so its boxes are x' = 863 - x - w, y' = 675 - y - h. */
 .fan__arcs--left .fan__lines--lower {
   left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));

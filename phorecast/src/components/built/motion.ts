@@ -37,6 +37,19 @@ const num = (el: Element, prop: string) => Number.parseFloat(getComputedStyle(el
 /** Lock node position in card-2 design units — every other node converges here. */
 const LOCK = { x: 226, y: 0 };
 
+/** Everything the entrance writes an inline transform or opacity to. */
+const TOUCHED = [
+  '.built__glow',
+  '.built__head > *',
+  '.bt-card',
+  '.bt-label',
+  '.bt1 > *',
+  '.bt1__rings > *',
+  '.bt1__text > *',
+  '.bt2 > *',
+  '.built__copy > *',
+].join(', ');
+
 /* -------------------------------------------------------------------------- */
 /* Entrance                                                                    */
 /* -------------------------------------------------------------------------- */
@@ -80,6 +93,12 @@ export function buildBuilt({ q, tl }: SectionMotion, gate: Gate) {
 
   // Copy under the panels, left column then right.
   revealUp(tl, q('.built__copy > *'), { y: 14, stagger: 0.045, duration: 0.6, at: 0.66 });
+
+  // Land on the CSS design exactly: every inline transform and opacity the
+  // entrance wrote is dropped at the end, so the settled section is identical
+  // to the one a browser with no JavaScript would paint — and a reduced-motion
+  // visitor, who gets this via `progress(1)`, lands there too.
+  tl.set(q(TOUCHED), { clearProps: 'transform,opacity,willChange' }, '>');
 
   tl.eventCallback('onComplete', () => openGate(gate));
 }

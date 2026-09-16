@@ -175,22 +175,49 @@ function useRowHover(root: React.RefObject<HTMLElement | null>) {
         const label = row.querySelector<HTMLElement>('.prow__label');
         const icon = row.querySelector<HTMLElement>('.pillars__icon');
 
-        const enter = () => {
-          if (chevron) gsap.to(chevron, { y: 3, duration: 0.3, ease: 'expo.out', overwrite: 'auto' });
-          if (label) gsap.to(label, { x: 3, duration: 0.32, ease: 'expo.out', overwrite: 'auto' });
+        // The entrance leaves an inline clip-path on the row until it finishes
+        // and clears it, so this doubles as "is the row still wiping in?". A
+        // hover during the wipe would be undone by that clearProps, and if the
+        // entrance never runs the property is empty and hover works normally.
+        const wiping = () => row.style.clipPath !== '';
+
+        // Quick in, longer settle out — the house curve, not an ease that is
+        // 94% done before the eye has caught it.
+        let waiting = 0;
+        const open = () => {
+          if (chevron) gsap.to(chevron, { y: 3, duration: 0.26, ease: EASE, overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 3, duration: 0.28, ease: EASE, overwrite: 'auto' });
           if (icon) {
-            gsap.to(icon, { scale: 1.12, transformOrigin: '50% 50%', duration: 0.32, ease: 'expo.out', overwrite: 'auto' });
+            gsap.to(icon, { scale: 1.12, transformOrigin: '50% 50%', duration: 0.28, ease: EASE, overwrite: 'auto' });
           }
         };
+        const enter = () => {
+          cancelAnimationFrame(waiting);
+          if (!wiping()) return open();
+          // Pointer landed mid-wipe: hold, then catch up once the row is its
+          // own again. The loop ends with the wipe, so nothing idles.
+          const catchUp = () => {
+            if (wiping()) { waiting = requestAnimationFrame(catchUp); return; }
+            if (row.matches(':hover') || row.matches(':focus-visible')) open();
+          };
+          waiting = requestAnimationFrame(catchUp);
+        };
         const leave = () => {
-          if (chevron) gsap.to(chevron, { y: 0, duration: 0.4, ease: EASE, overwrite: 'auto' });
-          if (label) gsap.to(label, { x: 0, duration: 0.4, ease: EASE, overwrite: 'auto' });
-          if (icon) gsap.to(icon, { scale: 1, duration: 0.4, ease: EASE, overwrite: 'auto' });
+          cancelAnimationFrame(waiting);
+          if (wiping()) return;
+          if (chevron) gsap.to(chevron, { y: 0, duration: 0.38, ease: EASE, overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 0, duration: 0.38, ease: EASE, overwrite: 'auto' });
+          if (icon) gsap.to(icon, { scale: 1, duration: 0.38, ease: EASE, overwrite: 'auto' });
+        };
+        // A mouse click focuses the button too; only keyboard focus should leave
+        // the row looking held open, so gate the focus half on :focus-visible.
+        const focusIn = () => {
+          if (row.matches(':focus-visible')) enter();
         };
 
         row.addEventListener('pointerenter', enter);
         row.addEventListener('pointerleave', leave);
-        row.addEventListener('focus', enter);
+        row.addEventListener('focus', focusIn);
         row.addEventListener('blur', leave);
       });
     }, el);

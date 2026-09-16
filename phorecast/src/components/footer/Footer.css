@@ -37,6 +37,23 @@
 }
 .footer__links a:hover { color: var(--white-font); }
 
+/* PLACEHOLDER link hover. /motion-lab.html is choosing the site-wide link
+   treatment; when that lands it replaces this. A 1px rule wiping in from the
+   left: transform only, and it costs nothing at rest because the pseudo-element
+   is painted at zero width. */
+.footer__links a,
+.footer__legal-links a { position: relative; }
+.footer__links a::after,
+.footer__legal-links a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.footer__links a:hover::after,
+.footer__links a:focus-visible::after,
+.footer__legal-links a:hover::after,
+.footer__legal-links a:focus-visible::after { transform: scaleX(1); }
+
 .footer__legal { display: flex; flex-direction: column; gap: 32px; }
 .footer__rule { height: 1px; margin: 0; border: 0; background: rgba(255, 255, 255, 0.1); }
 .footer__meta {
@@ -49,6 +66,9 @@
 
 /* giant cropped wordmark */
 .footer__wordmark { height: 226px; margin-top: 32px; overflow: hidden; display: flex; justify-content: center; }
+/* only present while the entrance is running; the letters are merged back into
+   a single text node on completion */
+.footer__wm-ch { display: inline-block; will-change: transform; }
 .footer__wordmark span {
   font-family: var(--font-display); font-weight: 600; font-size: clamp(88px, 12vw, 230px);
   line-height: 1; text-transform: uppercase; letter-spacing: -0.01em;
@@ -66,4 +86,10 @@
   .footer__meta { flex-direction: column; gap: 12px; font-size: 14px; }
   .footer__legal-links { gap: 16px; }
   .footer__wordmark { height: 90px; margin-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__links a::after,
+  .footer__legal-links a::after,
+  .footer__social { transition: none; }
 }

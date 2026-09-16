@@ -14,7 +14,7 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { gsap } from 'gsap';
-import { EASE, REDUCED } from '../../lib/motion';
+import { drawPaths, EASE, REDUCED } from '../../lib/motion';
 
 /** Panel internals are placed at Figma coordinates against an 886px frame. */
 export const PANEL_W = 886;
@@ -133,6 +133,32 @@ export function angleOf(el: Element): number {
   if (t.startsWith('matrix3d')) return Math.atan2(nums[1], nums[0]);
   if (nums.length < 4) return 0;
   return Math.atan2(nums[1], nums[0]);
+}
+
+/**
+ * Draws line work on that is rendered as an `<img>`.
+ *
+ * The strokes of an SVG loaded through `<img>` are unreachable from the page,
+ * and inlining the asset instead is not free: both of these are drawn at a size
+ * that does not match their intrinsic box, so the image is resampled where
+ * inline SVG would be vector-crisp, and the settled panel stops matching Figma.
+ * So the exported image stays exactly as it was, and a hidden inline twin does
+ * the drawing: the twin is revealed, drawn, then handed back to the image. If
+ * this never runs, the twin stays `display: none` and the image is simply
+ * there — which is the finished design.
+ */
+export function drawOver(
+  tl: gsap.core.Timeline,
+  image: HTMLElement | undefined,
+  twin: HTMLElement | undefined,
+  strokes: SVGGeometryElement[],
+  { at = 0, duration = 0.6, stagger = 0.06, ease = 'power2.inOut' } = {},
+) {
+  if (!image || !twin || !strokes.length) return;
+  const end = at + duration + stagger * (strokes.length - 1);
+  tl.set(twin, { display: 'block' }, at).set(image, { opacity: 0 }, at);
+  drawPaths(tl, strokes, { duration, stagger, ease, at });
+  tl.set(image, { clearProps: 'opacity' }, end).set(twin, { clearProps: 'display' }, end);
 }
 
 /**

@@ -112,12 +112,14 @@
   gap: clamp(32px, 4vw, 80px);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 600ms ease, visibility 0s linear 600ms;
+  /* GSAP owns the cross-fade (see choreography.ts); CSS only holds the settled
+     state and keeps the outgoing slide clickable until its exit has finished. */
+  transition: visibility 0s linear 340ms;
 }
 .hero__slide.is-active {
   opacity: 1;
   visibility: visible;
-  transition: opacity 600ms ease;
+  transition: none;
 }
 .hero__copy {
   display: flex;
@@ -125,7 +127,6 @@
   align-items: flex-start;
   gap: 48px;
   transform: translateY(14px);
-  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .is-active .hero__copy { transform: none; }
 .hero__heading { display: flex; flex-direction: column; gap: 28px; }
@@ -137,7 +138,6 @@
   position: absolute;
   inset: 0 0 0 0;
   transform: translateY(18px) scale(0.985);
-  transition: transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .is-active .hero__visual { transform: none; }
 

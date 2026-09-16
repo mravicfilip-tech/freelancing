@@ -6,6 +6,7 @@ import cardGlyph from '../../assets/steps/s1-card-glyph.svg';
 import userGlyph from '../../assets/steps/s1-user-glyph.svg';
 import divider from '../../assets/steps/s1-divider.svg';
 import bracket from '../../assets/steps/s1-bracket.svg';
+import connector from '../../assets/steps/s1-connector.svg';
 import indicator from '../../assets/steps/s1-indicator.svg';
 import bottomnav from '../../assets/steps/s1-bottomnav.svg';
 import phoneLogo from '../../assets/steps/s1-logo.svg';
@@ -14,6 +15,7 @@ import signal from '../../assets/steps/s1-signal.svg';
 import data from '../../assets/steps/s1-data.svg';
 import battery from '../../assets/steps/s1-battery.svg';
 import battTip from '../../assets/steps/s1-batt-tip.svg';
+import s2Lines from '../../assets/steps/s2-lines.svg';
 import s2Node from '../../assets/steps/s2-node.svg';
 import s2Lock from '../../assets/steps/s2-lock.svg';
 import s2Tile1 from '../../assets/steps/s2-tile1.svg';
@@ -27,8 +29,7 @@ import s3Tesla from '../../assets/steps/s3-tesla.svg';
 import s3Sp500 from '../../assets/steps/s3-sp500.svg';
 import s3Apple from '../../assets/steps/s3-apple.svg';
 import s3Chart from '../../assets/steps/s3-chart.svg';
-import { drawPaths } from '../../lib/motion';
-import { angleOf, countMoney, usePanelMotion } from './panelMotion';
+import { angleOf, countMoney, drawOver, usePanelMotion } from './panelMotion';
 import type { PanelMotion, PanelProps } from './panelMotion';
 
 /** The 3D wordmark behind each panel. Figma gives it a different box and
@@ -48,23 +49,22 @@ function Glow({ className }: { className: string }) {
   return <img src={glow} alt="" className={`steps__glow ${className}`} aria-hidden="true" />;
 }
 
-/* Two pieces of line work are inlined rather than loaded as <img> so their
-   strokes can be drawn on — an <img> is an opaque document to the page. The
-   markup is the exported Figma file verbatim, with the generated ids renamed so
-   two sections can never collide on them. Nothing about the rendering changes:
-   same viewBox, same preserveAspectRatio, same sizing from CSS. */
+/* Two hidden twins of line work that is rendered as <img>, so that the strokes
+   can be drawn on — see `drawOver`. The markup is the exported Figma file
+   verbatim, with the generated ids renamed so two sections can never collide on
+   them. They carry `--draw`, which is `display: none` until a timeline reveals
+   one; the images beside them are what the settled panel shows. */
 
 function Connector() {
   return (
     <svg
-      className="s1__connector"
+      className="s1__connector s1__connector--draw"
       width={91.1567}
       height={107.948}
       viewBox="0 0 91.1567 107.948"
       preserveAspectRatio="none"
       overflow="visible"
       fill="none"
-      style={{ display: 'block' }}
       aria-hidden="true"
     >
       <path
@@ -94,14 +94,13 @@ function Connector() {
 function Lines() {
   return (
     <svg
-      className="s2__lines"
+      className="s2__lines s2__lines--draw"
       width={347.723}
       height={315.7}
       viewBox="0 0 347.723 315.7"
       preserveAspectRatio="none"
       overflow="visible"
       fill="none"
-      style={{ display: 'block' }}
       aria-hidden="true"
     >
       <g opacity={0.2} filter="url(#steps-s2l-blur)">
@@ -137,15 +136,20 @@ function Lines() {
 
 /* Shared beats ------------------------------------------------------------- */
 
+/* Every entrance tween hands the element back when it lands. A left-over
+   identity transform is not visually neutral — it puts the element on its own
+   raster layer, which shifts text and hairlines by a fraction of a pixel. */
+const CLEAR = 'transform,transformOrigin,opacity';
+
 /** The blurred mark and the glow behind every panel: settle, don't slide. */
 function shell({ q, tl }: PanelMotion) {
   tl.from(
     q('.steps__mark'),
-    { scale: 1.05, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: 'transform,opacity' },
+    { scale: 1.05, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: CLEAR },
     0,
   ).from(
     q('.steps__glow'),
-    { scale: 0.92, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: 'transform,opacity' },
+    { scale: 0.92, opacity: 0, duration: 0.8, ease: 'expo.out', clearProps: CLEAR },
     0.05,
   );
 }
@@ -164,19 +168,24 @@ function shellOut({ q, tl }: PanelMotion) {
 function enterRegister(m: PanelMotion) {
   const { q, paths, p, tl } = m;
   shell(m);
-  tl.from(q('.s1__email'), { x: -24 * p, opacity: 0, duration: 0.55 }, 0.06);
-  drawPaths(tl, paths('.s1__connector path'), { duration: 0.5, stagger: 0.07, at: 0.24, ease: 'power2.out' });
-  tl.from(q('.s1__diamond--orange'), { scale: 0, opacity: 0, duration: 0.35, ease: 'expo.out', clearProps: 'transform,opacity' }, 0.3)
-    .from(q('.s1__card'), { x: -20 * p, y: 10 * p, opacity: 0, duration: 0.55, stagger: 0.08 }, 0.36)
-    .from(q('.s1__card > *'), { opacity: 0, duration: 0.4, stagger: 0.025 }, 0.52)
-    .from(q('.s1__bracket'), { scaleX: 0.7, opacity: 0, duration: 0.5, transformOrigin: '0% 50%', clearProps: 'transform,transformOrigin,opacity' }, 0.54)
-    .from(q('.s1__diamond--white'), { scale: 0, opacity: 0, duration: 0.35, ease: 'expo.out', clearProps: 'transform,opacity' }, 0.66)
-    .from(q('.s1__phone'), { y: 20 * p, opacity: 0, duration: 0.6 }, 0.6)
-    .from(q('.s1__status, .s1__phone-rule, .s1__phone-head, .s1__bar--row, .s1__bar--cap'), { opacity: 0, duration: 0.35, stagger: 0.04 }, 0.82)
-    .from(q('.s1__chart'), { y: 10 * p, opacity: 0, duration: 0.45 }, 0.9)
-    .from(q('.s1__bars > span'), { scaleY: 0.12, duration: 0.5, stagger: 0.05, transformOrigin: '50% 100%', clearProps: 'transform,transformOrigin' }, 1)
-    .from(q('.s1__indicator, .s1__bar--block, .s1__nav'), { opacity: 0, duration: 0.4, stagger: 0.05 }, 1.02)
-    .from(q('.s1__bars i'), { opacity: 0, y: 4 * p, duration: 0.35 }, 1.4);
+  tl.from(q('.s1__email'), { x: -24 * p, opacity: 0, duration: 0.55, clearProps: CLEAR }, 0.06);
+  drawOver(tl, q('.s1__connector')[0], q('.s1__connector--draw')[0], paths('.s1__connector--draw path'), {
+    at: 0.24,
+    duration: 0.5,
+    stagger: 0.07,
+    ease: 'power2.out',
+  });
+  tl.from(q('.s1__diamond--orange'), { scale: 0, opacity: 0, duration: 0.35, ease: 'expo.out', clearProps: CLEAR }, 0.3)
+    .from(q('.s1__card'), { x: -20 * p, y: 10 * p, opacity: 0, duration: 0.55, stagger: 0.08, clearProps: CLEAR }, 0.36)
+    .from(q('.s1__card > *'), { opacity: 0, duration: 0.4, stagger: 0.025, clearProps: CLEAR }, 0.52)
+    .from(q('.s1__bracket'), { scaleX: 0.7, opacity: 0, duration: 0.5, transformOrigin: '0% 50%', clearProps: CLEAR }, 0.54)
+    .from(q('.s1__diamond--white'), { scale: 0, opacity: 0, duration: 0.35, ease: 'expo.out', clearProps: CLEAR }, 0.66)
+    .from(q('.s1__phone'), { y: 20 * p, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.6)
+    .from(q('.s1__status, .s1__phone-rule, .s1__phone-head, .s1__bar--row, .s1__bar--cap'), { opacity: 0, duration: 0.35, stagger: 0.04, clearProps: CLEAR }, 0.82)
+    .from(q('.s1__chart'), { y: 10 * p, opacity: 0, duration: 0.45, clearProps: CLEAR }, 0.9)
+    .from(q('.s1__bars > span'), { scaleY: 0.12, duration: 0.5, stagger: 0.05, transformOrigin: '50% 100%', clearProps: CLEAR }, 1)
+    .from(q('.s1__indicator, .s1__bar--block, .s1__nav'), { opacity: 0, duration: 0.4, stagger: 0.05, clearProps: CLEAR }, 1.02)
+    .from(q('.s1__bars i'), { opacity: 0, y: 4 * p, duration: 0.35, clearProps: CLEAR }, 1.4);
 }
 
 /** Leaves the way it arrived, in reverse: phone first, email last. */
@@ -202,6 +211,7 @@ export function PanelRegister(props: PanelProps) {
           <span>you@phirecast.io<i>|</i></span>
         </div>
         <span className="s1__diamond s1__diamond--orange" />
+        <img src={connector} alt="" className="s1__connector" width={91.16} height={107.95} />
         <Connector />
         <div className="s1__card s1__card--a">
           <img src={cardGlyph} alt="" className="s1__glyph" />
@@ -265,8 +275,12 @@ const RAILS = [s2Tile1, s2Tile2, s2Tile3, s2Tile4, s2Tile5];
 function enterFund(m: PanelMotion) {
   const { q, paths, p, tl } = m;
   shell(m);
-  tl.from(q('.s2__tile'), { x: -28 * p, opacity: 0, duration: 0.5, stagger: 0.06 }, 0.06);
-  drawPaths(tl, paths('.s2__lines path'), { duration: 0.8, at: 0.22, ease: 'power2.inOut' });
+  tl.from(q('.s2__tile'), { x: -28 * p, opacity: 0, duration: 0.5, stagger: 0.06, clearProps: CLEAR }, 0.06);
+  drawOver(tl, q('.s2__lines')[0], q('.s2__lines--draw')[0], paths('.s2__lines--draw path'), {
+    at: 0.22,
+    duration: 0.8,
+    ease: 'power2.inOut',
+  });
 
   q('.s2__comet').forEach((comet, i) => {
     const a = angleOf(comet);
@@ -281,20 +295,20 @@ function enterFund(m: PanelMotion) {
         duration: 0.55,
         ease: 'expo.out',
         transformOrigin: '100% 50%',
-        clearProps: 'transform,transformOrigin,opacity',
+        clearProps: CLEAR,
       },
       0.52 + i * 0.07,
     );
   });
 
-  tl.from(q('.s2__balance'), { x: 32 * p, opacity: 0, duration: 0.6 }, 0.58)
-    .from(q('.s2__node'), { scale: 0.4, opacity: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform,opacity' }, 0.76)
-    .from(q('.s2__balance-label'), { opacity: 0, duration: 0.35 }, 0.78);
+  tl.from(q('.s2__balance'), { x: 32 * p, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.58)
+    .from(q('.s2__node'), { scale: 0.4, opacity: 0, duration: 0.5, ease: 'expo.out', clearProps: CLEAR }, 0.76)
+    .from(q('.s2__balance-label'), { opacity: 0, duration: 0.35, clearProps: CLEAR }, 0.78);
 
   const amount = q('.s2__balance-amt')[0];
   if (amount) countMoney(tl, amount, 18800, { duration: 0.8, at: 0.78 });
 
-  tl.from(q('.s2__dots i'), { scaleX: 0, opacity: 0, duration: 0.4, stagger: 0.05, transformOrigin: '0% 50%', clearProps: 'transform,transformOrigin,opacity' }, 1.05);
+  tl.from(q('.s2__dots i'), { scaleX: 0, opacity: 0, duration: 0.4, stagger: 0.05, transformOrigin: '0% 50%', clearProps: CLEAR }, 1.05);
 }
 
 /** The streaks do not stop — they carry on down their own line and out. */
@@ -326,6 +340,7 @@ export function PanelFund(props: PanelProps) {
             </span>
           ))}
         </div>
+        <img src={s2Lines} alt="" className="s2__lines" width={347.7} height={315.7} />
         <Lines />
         {[1, 2, 3, 4, 5].map((i) => <span key={i} className={`s2__comet s2__comet--${i}`} />)}
         <span className="s2__node"><img src={s2Node} alt="" /><img src={s2Lock} alt="" className="s2__lock" /></span>
@@ -353,11 +368,11 @@ const ASSETS = [
 function enterTrade(m: PanelMotion) {
   const { q, p, tl } = m;
   shell(m);
-  tl.from(q('.s3'), { scale: 0.985, opacity: 0, duration: 0.6, clearProps: 'transform,opacity' }, 0.08)
-    .from(q('.s3__tile'), { y: 12 * p, opacity: 0, duration: 0.45, stagger: 0.05 }, 0.22)
-    .from(q('.s3__label, .s3__price, .s3__delta'), { y: 8 * p, opacity: 0, duration: 0.45, stagger: 0.06 }, 0.42)
+  tl.from(q('.s3'), { scale: 0.985, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.08)
+    .from(q('.s3__tile'), { y: 12 * p, opacity: 0, duration: 0.45, stagger: 0.05, clearProps: CLEAR }, 0.22)
+    .from(q('.s3__label, .s3__price, .s3__delta'), { y: 8 * p, opacity: 0, duration: 0.45, stagger: 0.06, clearProps: CLEAR }, 0.42)
     // The chart slides up out of the card's own clip, so it draws itself in.
-    .from(q('.s3__chart'), { y: 22 * p, opacity: 0, duration: 0.6 }, 0.48);
+    .from(q('.s3__chart'), { y: 22 * p, opacity: 0, duration: 0.6, clearProps: CLEAR }, 0.48);
 }
 
 function leaveTrade(m: PanelMotion) {

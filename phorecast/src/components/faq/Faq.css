@@ -52,17 +52,25 @@
   color: var(--white-font);
 }
 .faq__toggle { position: relative; width: 24px; height: 24px; flex: none; }
+/* transform/opacity are GSAP's during a toggle; a CSS transition on the same
+   properties would fight it frame by frame. Colour stays on CSS. */
 .faq__toggle i {
   position: absolute; background: var(--color-nre-body); border-radius: 1px;
-  transition: background-color 220ms ease, transform 220ms ease, opacity 220ms ease;
+  transition: background-color 220ms ease;
 }
 .faq__toggle i:first-child { left: 6px; top: 11.25px; width: 12px; height: 1.5px; }
 .faq__toggle i:last-child { left: 11.25px; top: 6px; width: 1.5px; height: 12px; }
 .is-open .faq__toggle i { background: var(--orange-100); }
 .is-open .faq__toggle i:last-child { opacity: 0; transform: rotate(90deg); }
 
-.faq__answer[hidden] { display: none; }
-.faq__answer { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
+/* A closed answer is collapsed, not `display: none` — display cannot be tweened.
+   Height 0 + overflow hidden takes it out of flow's visual space; `visibility:
+   hidden` takes it out of the accessibility tree and the tab order. Both rest
+   states are plain CSS off `.is-open`, so the accordion still opens and closes
+   correctly if the motion script never runs. */
+.faq__answer { height: 0; overflow: hidden; visibility: hidden; }
+.faq__row.is-open .faq__answer { height: auto; visibility: visible; }
+.faq__answer-inner { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
 .faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--color-nre-body); }
 .faq__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .faq__chip {
@@ -84,6 +92,11 @@
   .faq { padding: 56px 0; }
   .faq__q { padding: 18px 20px; gap: 12px; }
   .faq__index { width: 26px; font-size: 12px; letter-spacing: 1.6px; }
-  .faq__answer { padding: 0 20px 20px; }
+  .faq__answer-inner { padding: 0 20px 20px; }
   .faq__lede { font-size: 17px; }
+}
+
+/* A person who has asked for less motion gets the finished state, instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .faq__ladder span, .faq__row, .faq__index, .faq__toggle i { transition: none; }
 }

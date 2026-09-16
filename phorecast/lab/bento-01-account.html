@@ -31,7 +31,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
 .wrap{max-width:1300px; margin:0 auto; padding:0 24px}
 
 /* ---------- page chrome ---------- */
-.top{padding:72px 0 28px}
+.top{padding:72px 24px 28px}
 .eyebrow{font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--orange)}
 .top h1{font-size:clamp(34px,5vw,52px); margin:16px 0 14px}
 .top p{max-width:64ch; color:var(--body); margin:0}
@@ -58,7 +58,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
 .picker a b{color:var(--orange); font-weight:500; margin-right:7px; font-family:'Geist Mono Variable',ui-monospace,monospace; font-size:12px}
 
 /* ---------- variant grid ---------- */
-.labs{display:grid; gap:48px 40px; grid-template-columns:repeat(auto-fit,minmax(574px,1fr)); padding:56px 0 8px}
+.labs{display:grid; gap:48px 40px; grid-template-columns:repeat(auto-fit,574px); justify-content:center; padding:56px 0 8px}
 .lab{scroll-margin-top:84px}
 .lab__head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:8px}
 .lab__no{font:500 13px/1 'Geist Mono Variable',ui-monospace,monospace; color:var(--orange)}
@@ -71,7 +71,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
   border-radius:22px; padding:20px; position:relative; overflow:hidden;
   display:flex; justify-content:center;
 }
-.foot{padding:80px 0 120px; color:var(--body); font-size:15px; text-align:center}
+.foot{padding:80px 24px 120px; color:var(--body); font-size:15px; text-align:center}
 .foot b{color:var(--white); font-weight:600}
 
 /* ======================================================================
@@ -139,7 +139,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
 .onboard__sweep{position:absolute; left:0; top:0; width:157.9px; height:158.8px; opacity:0; pointer-events:none; overflow:visible}
 .onboard__sweep circle{fill:none; stroke:var(--white-font); stroke-width:4}
 .onboard__orbit{position:absolute; left:0; top:0; width:157.9px; height:158.8px; opacity:0; pointer-events:none; overflow:visible; transform-origin:78.8px 79.4px; will-change:transform}
-.onboard__orbit circle{fill:var(--white-font)}
+.onboard__orbit .od{fill:var(--white-font)}
 .onboard__sheen{position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none}
 .onboard__scan{
   position:absolute; left:30px; top:30px; width:474px; height:2px; opacity:0; pointer-events:none; z-index:2;
@@ -175,18 +175,20 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
    filters inside an animating clip is what makes this kind of wipe stutter */
 [data-v="3"] .bcard__art--lit .onboard__chip,
 [data-v="3"] .bcard__art--lit .onboard__ring::before{backdrop-filter:none}
-[data-v="3"] .bcard__art--lit .onboard__ring-img{mix-blend-mode:normal}
 [data-v="3"] .bcard__art--lit .onboard__chip{background:rgba(255,255,255,.4); border-color:rgba(255,251,248,.95)}
 [data-v="3"] .bcard__art--lit .onboard__grid{opacity:.5}
-[data-v="3"] .bcard__art--lit .onboard__ring::before{background:rgba(255,255,255,.3)}
-[data-v="3"] .bcard__art--lit .onboard__ring-img{opacity:.8}
+[data-v="3"] .bcard__art--lit .onboard__ring::before{background:rgba(255,255,255,.2)}
+/* the clone drops the soft-light disc: re-blending it inside a moving clip
+   is what made this wipe stutter, and the layer underneath still shows through */
+[data-v="3"] .bcard__art--lit .onboard__ring-img{opacity:0}
 [data-v="3"] .bcard__art--lit .onboard__seconds{text-shadow:0 0 20px rgba(255,251,248,.85)}
 [data-v="3"] .bcard__art--lit .onboard__in{text-shadow:0 0 16px rgba(255,251,248,.9)}
 
 /* ======================================================================
    04 — ORBIT TRAIL
    ====================================================================== */
-[data-v="4"] .onboard__orbit circle{filter:drop-shadow(0 0 4px rgba(255,251,248,.8))}
+/* the halo is a gradient circle, not a drop-shadow filter: eleven live
+   SVG filters on a spinning group is the difference between 12fps and 60 */
 
 /* ======================================================================
    05 — HALFTONE BLOOM (WebGL)
@@ -249,7 +251,7 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
    .onboard__sweep, .onboard__orbit, .onboard__sheen, .onboard__scan,
    .onboard__dots and the WebGL canvas. Nothing static was restyled. */
 const ORBIT_N = 11;
-const card = () => `
+const card = (i) => `
   <article class="bcard bcard--onboard">
     <canvas class="onboard__gl" aria-hidden="true"></canvas>
     <span class="onboard__dots" aria-hidden="true"></span>
@@ -264,9 +266,14 @@ const card = () => `
         <img src="${ring60}" alt="" class="onboard__ring-img" width="128.01" height="128.78" />
         <img src="${ringArc}" alt="" class="onboard__ring-arc" width="90.82" height="64.36" />
         <svg class="onboard__sweep" viewBox="0 0 157.9 158.8"><circle cx="78.8" cy="79.4" r="64.4" transform="rotate(15.8 78.8 79.4)" /></svg>
-        <svg class="onboard__orbit" viewBox="0 0 157.9 158.8">${
-          Array.from({ length: ORBIT_N }, () => '<circle r="2" cx="78.8" cy="79.4" />').join('')
-        }</svg>
+        <svg class="onboard__orbit" viewBox="0 0 157.9 158.8">
+          <defs><radialGradient id="og${i}">
+            <stop offset="0" stop-color="#fffbf8" stop-opacity="0.5" />
+            <stop offset="1" stop-color="#fffbf8" stop-opacity="0" />
+          </radialGradient></defs>
+          ${Array.from({ length: ORBIT_N }, () => `<circle class="oh" r="7" cx="78.8" cy="79.4" fill="url(#og${i})" />`).join('')}
+          ${Array.from({ length: ORBIT_N }, () => '<circle class="od" r="2" cx="78.8" cy="79.4" />').join('')}
+        </svg>
         <span class="onboard__seconds"><i class="osec" style="font-style:normal">60</i>s</span>
       </div>
       <span class="onboard__in">You’re in.</span>
@@ -290,19 +297,19 @@ const VARIANTS = [
     why: 'A lit duplicate of the whole illustration is revealed by a masked wipe that travels down the phone behind a glowing edge — each chip brightens as the line crosses it. Reads literally as a verification passing, which is what the copy claims.',
     tech: 'clip-path wipe · duplicated lit layer · synced proxy tween' },
   { n: '04', id: 'v4', name: 'Orbit trail',
-    why: 'A comet of particles rides the circumference of the 60s ring, seamless by construction because it is driven by phase rather than a tween. Loops quietly under the hover, and a click bursts it outward before it reforms.',
-    tech: 'rAF phase loop · particles on a circular path · IntersectionObserver kill' },
+    why: 'A comet of particles rides the circumference of the 60s ring on a single composited rotation \u2014 seamless because 360\u00b0 wraps onto itself, and free per frame because nothing gets laid out again. It loops quietly under the hover, and a click throws it outward to spring back onto the ring.',
+    tech: 'composited spin \u00b7 particle trail on the ring\u2019s own circle \u00b7 IntersectionObserver pause' },
   { n: '05', id: 'v5', name: 'Halftone bloom',
     why: 'A Three.js layer under the art blooms a Bayer-dithered light around the pointer and fires an expanding dithered ring on click — the same halftone language as the Figma glows, made interactive. Falls back to a CSS dot-mask sheen with no WebGL.',
     tech: 'Three.js · GLSL · Bayer dither · CSS mask fallback' },
 ];
 
-document.getElementById('main').innerHTML = VARIANTS.map((v) => `
+document.getElementById('main').innerHTML = VARIANTS.map((v, i) => `
   <section class="lab" id="${v.id}" data-v="${v.n.slice(1)}">
     <div class="lab__head"><span class="lab__no">${v.n}</span><h2>${v.name}</h2></div>
     <p class="lab__why">${v.why}</p>
     <div class="lab__tech">${v.tech}</div>
-    <div class="panel">${card()}</div>
+    <div class="panel">${card(i + 1)}</div>
   </section>`).join('');
 
 /* ------------------------------------------------------------- shared glue */
@@ -337,7 +344,8 @@ const parts = (n) => {
     arc: c.querySelector('.onboard__ring-arc'),
     sweep: c.querySelector('.onboard__sweep circle'),
     orbit: c.querySelector('.onboard__orbit'),
-    dots: $$('.onboard__orbit circle', c),
+    dots: $$('.onboard__orbit .od', c),
+    halos: $$('.onboard__orbit .oh', c),
     num: c.querySelector('.osec'),
     inLabel: c.querySelector('.onboard__in'),
     sheen: c.querySelector('.onboard__sheen'),
@@ -372,10 +380,11 @@ function countdownCommit() {
 
   const counter = { v: 60 };
   const write = () => { p.num.textContent = String(Math.max(0, Math.round(counter.v))).padStart(2, '0'); };
-  let tl, live = true;
+  let tl, live = true, hovering = false, hold;
 
   const play = () => {
     if (!live) return;
+    hold?.kill();
     tl?.kill();
     counter.v = 60; write();
     gsap.set(p.chips, { opacity: 0, x: -16 });
@@ -388,10 +397,15 @@ function countdownCommit() {
       .to(p.ring, { scale: 1.035, duration: .2, ease: 'power2.out' }, .58)
       .to(p.ring, { scale: 1, duration: .45, ease: 'back.out(2.2)' }, .78)
       .to(p.inLabel, { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: .38, ease: 'power3.out' }, .6);
+    // A pass the visitor did not ask for has to hand the card back: the rest
+    // state is the one that shipped, 60s and a partial arc, not 00s.
+    tl.eventCallback('onComplete', () => {
+      if (!hovering) hold = gsap.delayedCall(1.1, () => { if (!hovering) rest(); });
+    });
   };
 
   const rest = () => {
-    tl?.kill();
+    tl?.kill(); hold?.kill();
     gsap.to(p.chips, { opacity: 1, x: 0, duration: .25, ease: 'power2.out', overwrite: true });
     gsap.to(p.inLabel, { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: .25, ease: 'power2.out', overwrite: true });
     gsap.to(p.ring, { scale: 1, duration: .3, ease: 'power3.out', overwrite: true });
@@ -399,7 +413,7 @@ function countdownCommit() {
     gsap.to(counter, { v: 60, duration: .45, ease: 'power2.inOut', onUpdate: write, overwrite: true });
   };
 
-  hover(p.card, play, rest);
+  hover(p.card, () => { hovering = true; play(); }, () => { hovering = false; rest(); });
   p.card.addEventListener('click', play);
 
   // Plays itself once when it scrolls in, then stops costing anything.
@@ -505,10 +519,15 @@ function orbitTrail() {
   const CX = 78.8, CY = 79.4, R = 71, N = p.dots.length;
   p.dots.forEach((d, i) => {
     const a = -i * .105;                       // the head leads, the tail lags
-    d.setAttribute('cx', (CX + Math.cos(a) * R).toFixed(2));
-    d.setAttribute('cy', (CY + Math.sin(a) * R).toFixed(2));
+    const fade = (1 - i / (N + 1)).toFixed(3);
+    const cx = (CX + Math.cos(a) * R).toFixed(2), cy = (CY + Math.sin(a) * R).toFixed(2);
+    d.setAttribute('cx', cx); d.setAttribute('cy', cy);
     d.setAttribute('r', (2.3 - i * .13).toFixed(2));
-    d.setAttribute('opacity', (1 - i / (N + 1)).toFixed(3));
+    d.setAttribute('opacity', fade);
+    const h = p.halos[i];
+    h.setAttribute('cx', cx); h.setAttribute('cy', cy);
+    h.setAttribute('r', (7.5 - i * .35).toFixed(2));
+    h.setAttribute('opacity', fade);
   });
 
   gsap.set(p.orbit, { transformOrigin: `${CX}px ${CY}px` });
@@ -662,10 +681,14 @@ async function halftoneBloom() {
     () => gsap.to(u.uHover, { value: 1, duration: .5, ease: 'power2.out' }),
     () => gsap.to(u.uHover, { value: 0, duration: .5, ease: 'power2.out' }));
 
-  let live = false, raf = 0;
+  let live = false, raf = 0, dirty = false;
   const tick = () => {
     u.uTime.value = (performance.now() - t0) / 1000;
-    renderer.render(scene, camera);
+    // Nothing to draw when the bloom is at zero and every ring has expired —
+    // skip the draw call rather than shading a fully transparent frame.
+    const ringAlive = rings.some((r) => r.z >= 0 && u.uTime.value - r.z < 1.5);
+    const show = u.uHover.value > 0.001 || ringAlive;
+    if (show || dirty) { renderer.render(scene, camera); dirty = show; }
     raf = requestAnimationFrame(tick);
   };
   onScreen(p.card,

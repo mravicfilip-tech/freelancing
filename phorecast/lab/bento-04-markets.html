@@ -146,7 +146,6 @@ img,svg{display:block}
 /* ======================================================================
    3 — CONSTELLATION DRAW
    ====================================================================== */
-[data-v="3"] .mk__orbit{visibility:hidden}
 [data-v="3"] .mk__paths .ghost{stroke:#D9D9D9; stroke-width:.759259; fill:none}
 
 /* ======================================================================
@@ -290,7 +289,7 @@ const card = () => `
 
 const VARIANTS = [
   { n:'01', id:'v1', name:'Orbit drive',
-    why:'The pointer is the dial. Move right and the assets run forward along the two elliptical tracks; move left and they run back — every tile sampled onto the real orbit path, so nothing ever leaves its rail. Let go and it eases down to a barely-there drift, which is the honest idle for an orbit. Stops completely when the card is off screen.',
+    why:'The pointer is the dial. Sweep right and the assets run forward along the two elliptical tracks, sweep left and they run back — every tile sampled onto the real orbit path, so nothing ever leaves its rail. It is sprung, not a motor: deflection is bounded so the composition never strays off the card, and letting go returns it to a slow seamless breathing drift. Stops completely when the card is off screen.',
     tech:'GSAP · getPointAtLength ride · pointer-velocity integration' },
   { n:'02', id:'v2', name:'Focus & tooltip',
     why:'The card already ships a cursor pointing at a Solana tooltip — this makes that a live control. Hover any asset and it lifts on a real cast shadow, the rest of the field steps back, the nearest orange diamond slides along the orbit to meet it, and the cursor and tooltip glide over with the label wiping through to the new name.',
@@ -432,30 +431,32 @@ function drive(n = 1) {
   // The shipped art points a cursor and a tooltip at Solana; they ride with it
   // so the composition never comes apart while the orbits turn.
   const sol = riders.find((r) => r.el.dataset.name === 'Solana');
-  const state = { v: 9 };            // px/s along the path — the idle drift
-  let last = 0, travel = 0, target = 9;
+
+  const REACH = 110;        // px along the path at full deflection
+  let travel = 0, prev = 0, target = 0, lean = 0, inside = false, t0 = 0;
 
   c.cardEl.addEventListener('pointermove', (e) => {
     const b = c.cardEl.getBoundingClientRect();
-    const nx = (e.clientX - b.left) / b.width - .5;       // -0.5 … 0.5
-    target = nx * 300;
+    target = ((e.clientX - b.left) / b.width - .5) * 2 * REACH;   // -REACH … REACH
   });
-  hover(c.cardEl, () => {}, () => { target = 9; });
+  hover(c.cardEl, () => { inside = true; }, () => { inside = false; });
 
   ticker(c.root, (now) => {
-    const dt = last ? Math.min((now - last) / 1000, .05) : 0;
-    last = now;
-    state.v += (target - state.v) * Math.min(1, dt * 4.2);  // soft, never snappy
-    travel += state.v * dt;
+    if (!t0) t0 = now;
+    const t = (now - t0) / 1000;
+    // Off the card the orbit breathes: a slow, bounded, perfectly seamless drift.
+    const want = inside ? target : Math.sin(t * 0.22) * 9;
+    travel += (want - travel) * 0.06;                     // soft, spring-like follow
+    const rate = travel - prev; prev = travel;
     riders.forEach((r) => {
       const p = pointOn(r.table, r.len + travel);
       gsap.set(r.el, { x: p.x + r.dx - r.home.x, y: p.y + r.dy - r.home.y });
     });
     if (sol) {
-      const d = gsap.getProperty(sol.el, 'x'), e = gsap.getProperty(sol.el, 'y');
-      gsap.set([c.cursorEl, c.tip], { x: d, y: e });
+      gsap.set([c.cursorEl, c.tip], { x: gsap.getProperty(sol.el, 'x'), y: gsap.getProperty(sol.el, 'y') });
     }
-    gsap.set(c.mark, { rotation: state.v * .03 });          // the hub leans, ±9°
+    lean += (rate * 1.6 - lean) * .12;                    // the hub leans into the turn
+    gsap.set(c.mark, { rotation: Math.max(-9, Math.min(9, lean)) });
   });
 }
 
@@ -559,6 +560,9 @@ function constellation(n = 3) {
     return g;
   });
   const lens = ghosts.map((g) => { const L = g.getTotalLength(); g.style.strokeDasharray = String(L); return L; });
+  // Only hide the shipped <img> orbits once their identical ghosts exist — under
+  // prefers-reduced-motion this never runs, so the fallback is the real card.
+  gsap.set($$('.mk__orbit', c.root), { visibility: 'hidden' });
 
   const hubC = centre(c.hub);
   const ordered = [...c.tiles].sort((a, b) => {

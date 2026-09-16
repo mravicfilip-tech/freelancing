@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { gsap } from 'gsap';
+import { REDUCED } from '../../lib/motion';
+import { heroEntrance, heroTransition } from './choreography';
 import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
@@ -87,6 +90,13 @@ export function Hero() {
   const [index, setIndex] = useState(initialSlide);
   const [paused, setPaused] = useState(() => initialSlide() !== 0);
   const reduced = useRef(false);
+  const heroRef = useRef<HTMLElement>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const entrance = useRef<gsap.core.Timeline | null>(null);
+  const shown = useRef<number | null>(null);
+  // The background lags the slide by the length of the glow dip, so its anchor
+  // jumps while the glows are dark instead of snapping in full view.
+  const [bgId, setBgId] = useState(() => SLIDES[initialSlide()].id);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -102,6 +112,51 @@ export function Hero() {
     return () => window.clearInterval(id);
   }, [paused, index]);
 
+  // The hero is above the fold, so the entrance runs on mount rather than
+  // waiting for an IntersectionObserver. useLayoutEffect, so the `from` tweens
+  // set their start values before the first paint.
+  useLayoutEffect(() => {
+    const el = heroRef.current;
+    if (!el || REDUCED) return;
+    const ctx = gsap.context(() => {
+      entrance.current = heroEntrance(el, SLIDES[initialSlide()].id);
+    }, el);
+    return () => {
+      entrance.current = null;
+      ctx.revert();
+    };
+  }, []);
+
+  // Slide changes. Each change owns a context, so the one before it is reverted
+  // — no inline styles survive a change, however fast they are driven.
+  useLayoutEffect(() => {
+    const el = heroRef.current;
+    const toEl = slideRefs.current[index];
+    const previous = shown.current;
+    shown.current = index;
+    if (!el || !toEl || previous === null || previous === index) return;
+    if (REDUCED) {
+      setBgId(SLIDES[index].id);
+      return;
+    }
+    // Finish any entrance still in flight so the transition starts from a
+    // settled baseline rather than fighting it.
+    entrance.current?.progress(1).kill();
+    entrance.current = null;
+
+    const ctx = gsap.context(() => {
+      heroTransition({
+        el,
+        fromEl: slideRefs.current[previous] ?? null,
+        fromId: SLIDES[previous].id,
+        toEl,
+        toId: SLIDES[index].id,
+        swapBg: () => setBgId(SLIDES[index].id),
+      });
+    }, el);
+    return () => ctx.revert();
+  }, [index]);
+
   const go = useCallback((i: number) => setIndex(((i % SLIDES.length) + SLIDES.length) % SLIDES.length), []);
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -110,7 +165,6 @@ export function Hero() {
   };
 
   const active = SLIDES[index];
-  const heroRef = useRef<HTMLElement>(null);
   // Slide 1 is the only one that shows the mark; it sits where the static SVG did.
   const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);
 
@@ -127,7 +181,7 @@ export function Hero() {
       onBlur={() => setPaused(false)}
       onKeyDown={onKey}
     >
-      <div className={`hero__bg hero__bg--${SLIDES[index].id}`} aria-hidden="true">
+      <div className={`hero__bg hero__bg--${bgId}`} aria-hidden="true">
         <span className="hero__glow hero__glow--ember" />
         <span className="hero__glow hero__glow--peach" />
         <span className="hero__glow hero__glow--orange" />
@@ -150,6 +204,7 @@ export function Hero() {
           {SLIDES.map((s, i) => (
             <div
               key={s.id}
+              ref={(node) => { slideRefs.current[i] = node; }}
               className={`hero__slide${i === index ? ' is-active' : ''}`}
               role="group"
               aria-roledescription="slide"

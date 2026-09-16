@@ -156,6 +156,9 @@
   height: calc(955 * var(--u));
 }
 .hv4__circuit { position: absolute; left: calc(373.5 * var(--u)); width: calc(731 * var(--u)); height: calc(247.5 * var(--u)); }
+/* The solid stand-in the entrance draws before handing the line back to the
+   dotted original. Invisible unless the timeline drives it. */
+.hv4__trace { opacity: 0; }
 .hv4__circuit--top { top: calc(170.5 * var(--u)); }
 .hv4__circuit--bottom { top: calc(430.5 * var(--u)); transform: scaleY(-1); }
 .hv4__ring { position: absolute; opacity: 0.9; }

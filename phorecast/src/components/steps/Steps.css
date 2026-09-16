@@ -83,6 +83,11 @@
 /* Panel shell ---------------------------------------------------------------- */
 .steps__panels { position: relative; display: grid; }
 .steps__panel-slot { grid-area: 1 / 1; animation: steps-fade 420ms ease both; }
+/* Hidden stroke twins of the two line-work images. A panel timeline reveals
+   one, draws it on, then hands the finished state back to the image it sits
+   under (see panelMotion.ts). Never visible at rest, so the settled panel is
+   exactly the exported asset — and if the script never runs, nothing shows. */
+.s1__connector--draw, .s2__lines--draw { display: none; }
 @keyframes steps-fade {
   from { opacity: 0; transform: scale(0.995); }
   to { opacity: 1; transform: none; }

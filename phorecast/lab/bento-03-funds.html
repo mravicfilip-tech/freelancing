@@ -155,7 +155,6 @@ img,svg{display:block}
   -webkit-mask-image:linear-gradient(90deg,#000 var(--wipe,100%),transparent calc(var(--wipe,100%) + 7%));
   mask-image:linear-gradient(90deg,#000 var(--wipe,100%),transparent calc(var(--wipe,100%) + 7%));
 }
-[data-v="2"] .funds__ring-orange,[data-v="2"] .funds__ring-wallet{visibility:hidden}
 [data-v="2"] .funds__paths .ghost{stroke-linecap:round}
 
 /* ======================================================================
@@ -486,6 +485,10 @@ function draw(n = 2) {
 
   const prep = (p) => { const l = p.getTotalLength(); p.style.strokeDasharray = String(l); return l; };
   const lw = prep(gw), lo = prep(go);
+  // Swap the shipped <img> rings for the identical ghost strokes only once the
+  // ghosts exist — under prefers-reduced-motion this code never runs and the
+  // original images stay, so the fallback is the real static card.
+  gsap.set([c.ringO, c.ringW], { visibility: 'hidden' });
 
   const walletIcon = $('.funds__wallet-icon', c.root);
   const rest = () => {

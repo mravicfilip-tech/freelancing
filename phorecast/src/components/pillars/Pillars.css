@@ -33,28 +33,15 @@
 .pillars__g--orange { left: 1018px; top: -1369px; background: #d1541c; }
 .pillars__g--peach { left: 702px; top: -1490px; background: #f99e57; }
 .pillars__g--cream { left: 1002px; top: -1647px; background: #ffeada; }
-/* The GLSL version of the same four discs, plus the halftone and dither the CSS
-   cannot do. Starts hidden and is cross-faded in only once a context is live, so
-   a machine without WebGL never sees it and keeps the gradients above. */
-.pillars__shader { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
 
 /* Cards ---------------------------------------------------------------------- */
-/* Two boxes where the design has one: the slot carries the section's scroll
-   response, the card carries the pointer tilt. Collapsed they render the same
-   box the single element did — the slot adds no padding, border or background. */
-.pillars__cards {
-  display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left;
-  perspective: 1400px;
-}
-.pcard-slot { display: flex; flex: 1 1 0; min-width: 0; }
-.pcard-slot--fixed { flex: 0 0 478px; }
+.pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }
 .pcard {
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   min-height: 254px;
   padding: 32px;
@@ -62,22 +49,7 @@
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
-/* Pointer highlight. Invisible at rest because the design has no highlight at
-   rest — it is not a start state waiting to be undone, and a page with no JS
-   simply never shows it. */
-.pcard__glint {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    260px circle at var(--gx, 50%) var(--gy, 50%),
-    rgba(255, 255, 255, 0.085),
-    rgba(255, 255, 255, 0.02) 42%,
-    transparent 72%
-  );
-}
+.pcard--fixed { flex: 0 0 478px; }
 .pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .pcard__eyebrow {
   font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
@@ -92,59 +64,36 @@
 .pillars__icon--multi img { position: absolute; }
 
 /* Collapsed accordion rows ---------------------------------------------------- */
-/* The bar's chrome lives on the slot, not on the button, so the panel below can
-   sit inside the same rounded box. Collapsed the sum is identical: slot border
-   1px + button 70px + slot border 1px = the 72px the button used to be, and the
-   button's 24px padding starts at the same x it always did. */
-.pillars__rows { display: flex; gap: 12px; width: 100%; margin-top: 12px; text-align: left; align-items: flex-start; }
-.prow-slot {
-  flex: 1 1 0;
-  min-width: 0;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12.25px);
-  overflow: hidden;
-  transition: background-color 160ms ease, border-color 160ms ease;
-}
-.prow-slot:hover, .prow-slot.is-open { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); }
+.pillars__rows { display: flex; gap: 12px; width: 100%; margin-top: 12px; text-align: left; }
+.pillars__rows li { flex: 1 1 0; min-width: 0; }
 .prow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  height: 70px;
+  height: 72px;
   padding: 24px;
-  background: none;
-  border: 0;
-  border-radius: inherit;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12.25px);
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
-/* Closed is the design; height 0 is where the panel starts and ends. */
-.prow__panel { height: 0; overflow: hidden; }
-.prow__text {
-  margin: -2px 24px 22px;
-  font-family: var(--font-body);
-  font-weight: 300;
-  font-size: 16px;
-  line-height: 1.4;
-  color: var(--color-nre-body);
-}
+.prow:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); }
 .prow__label {
   display: inline-flex; align-items: center; gap: 12px; min-width: 0;
   font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
   color: var(--color-nre-body); white-space: nowrap;
 }
-/* The chevron, the label and its icon are driven from Pillars.tsx so they move
-   together on one curve; a CSS transition here would fight GSAP's inline
-   transform and double-ease it. Colour stays on the transition above. */
-.prow__chevron { width: 17.875px; height: 9.75px; flex: none; }
+.prow__chevron { width: 17.875px; height: 9.75px; flex: none; transition: transform 200ms ease; }
+.prow:hover .prow__chevron { transform: translateY(2px); }
 
 @media (max-width: 1500px) {
   .pillars__cards { flex-wrap: wrap; }
-  .pcard-slot, .pcard-slot--fixed { flex: 1 1 320px; }
+  .pcard, .pcard--fixed { flex: 1 1 320px; }
   .pillars__rows { flex-wrap: wrap; }
-  .prow-slot { flex: 1 1 280px; }
+  .pillars__rows li { flex: 1 1 280px; }
 }
 @media (max-width: 720px) {
   .pillars { min-height: 0; padding: 56px 0; }
@@ -152,7 +101,6 @@
   .pcard { padding: 24px; min-height: 0; gap: 24px; }
   .pcard__title { font-size: 21px; }
   .pcard__text { font-size: 17px; }
-  .prow { height: 62px; padding: 18px; }
-  .prow__text { margin: -2px 18px 18px; font-size: 15px; }
+  .prow { height: 64px; padding: 18px; }
   .prow__label { font-size: 17px; }
 }

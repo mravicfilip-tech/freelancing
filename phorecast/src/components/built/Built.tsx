@@ -1,11 +1,3 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { REDUCED, useSectionMotion } from '../../lib/motion';
-import type { SectionMotion } from '../../lib/motion';
-import { buildBuilt } from './motion';
-import { createDriver } from './driver';
-import type { Driver } from './driver';
-import { createGlowLayer } from './glow';
-import type { GlowLayer } from './glow';
 import dot from '../../assets/icons/live-dot.svg';
 import btcCoin from '../../assets/built/btc-coin.svg';
 import line from '../../assets/built/line.svg';
@@ -118,82 +110,8 @@ const COLUMNS = [
 ];
 
 export function Built() {
-  // The entrance owns the section until it clears its inline styles; from then
-  // on the ambient/scroll/pointer driver owns every property it touched.
-  const driver = useRef<Driver | null>(null);
-  const heat = useRef(1);
-  const entered = useRef(false);
-
-  const build = useCallback((m: SectionMotion) => {
-    buildBuilt(m, {
-      heat: (v) => {
-        heat.current = v;
-        driver.current?.heat(v);
-      },
-      done: () => {
-        entered.current = true;
-        driver.current?.start();
-      },
-    });
-  }, []);
-  const ref = useSectionMotion<HTMLElement>(build);
-
-  useEffect(() => {
-    const el = ref.current;
-    // Nothing here runs for a visitor who asked for less motion: the entrance
-    // has already been snapped to its finished state, and that is the design.
-    if (!el || REDUCED) return;
-
-    let cancelled = false;
-    let layer: GlowLayer | null = null;
-
-    const boot = async () => {
-      try {
-        // The Figma glow is a halftone/lens/dither shader stack. Try for the
-        // real thing; if WebGL or three is unavailable the CSS gradient stays.
-        layer = await createGlowLayer(el.querySelector<HTMLElement>('.built__glows') ?? el);
-        if (cancelled) {
-          layer?.dispose();
-          return;
-        }
-        const d = createDriver(el, layer);
-        driver.current = d;
-        d.heat(heat.current);
-        if (entered.current) d.start();
-        if (layer) el.classList.add('built--shaded');
-      } catch (err) {
-        // A section that cannot come alive is still a section: leave the
-        // finished design in place rather than taking the page down with it.
-        console.error('[built] motion layer failed', err);
-        layer?.dispose();
-        layer = null;
-        el.classList.remove('built--shaded');
-      }
-    };
-
-    // Don't pay for three until the section is nearly in view.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        io.disconnect();
-        boot();
-      },
-      { rootMargin: '400px 0px' },
-    );
-    io.observe(el);
-
-    return () => {
-      cancelled = true;
-      io.disconnect();
-      driver.current?.dispose();
-      driver.current = null;
-      layer?.dispose();
-      el.classList.remove('built--shaded');
-    };
-  }, [ref]);
-
   return (
-    <section className="built" id="built" aria-labelledby="built-title" ref={ref}>
+    <section className="built" id="built" aria-labelledby="built-title">
       <div className="built__glows glow-fade" aria-hidden="true"><span className="built__glow" /></div>
       <div className="container built__inner">
         <header className="built__head">

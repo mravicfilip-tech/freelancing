@@ -4,33 +4,33 @@ import { createHalftone, type HalftoneLayer } from './halftone';
 /**
  * Card A — "Open an account in 60 seconds".
  *
- * Three layers of motion, in order of importance:
+ * Two triggers only, per MOTION.md: a load-in when the card first reaches the
+ * viewport, and a loop that runs forever afterwards. Nothing here responds to
+ * the pointer.
  *
- * 1. LOAD-IN. The first time the card reaches the viewport the illustration
- *    assembles in distinct beats rather than fading: the grid resolves, the
- *    phone rises into it, the ring lands with weight, the three chips fly in
- *    one per beat and "You're in." arrives last.
- * 2. LOOP. It then never stops. A progress arc picks up exactly where the
- *    static ring-arc ends and closes the remaining 245.7° while the numerals
- *    wind 60 → 00 and back; the chips breathe on three different periods; a
- *    soft light scans down the phone screen; the circuit grid drifts; a
- *    Figma-style halftone field swells behind all of it. Every cycle is
- *    seamless — each one returns to its own start value — and the periods are
- *    deliberately incommensurable, so a frame at 10s and one at 20s differ.
- * 3. REACTION. Hover commits the countdown: the dial loads backwards
- *    (anticipation), races to zero on an expo, the chips lock in with overlap,
- *    and the confirmation lands late as the accent. The pointer tilts the art
- *    in real perspective and separates its layers by depth, damped, never 1:1.
+ *   LOAD-IN (≈4.0s).  One object arrives and is allowed to land before anything
+ *   else moves. The phone is the lead — it rises 24px over 1.4s on a long
+ *   deceleration and holds the stage alone for a 0.3s beat. Then the circuit
+ *   grid resolves behind it, the ring settles, the three chips check in one at a
+ *   time with a 0.18s gap you can count, and "You're in." is the last thing to
+ *   arrive. The countdown starts itself as the card finishes assembling.
  *
- * Any single frame still reads as the approved static card. Nothing static is
- * restyled, every added element is transparent at rest, and the returned
- * teardown puts the DOM back exactly as React rendered it.
+ *   LOOP (12s, never stops).  A progress arc picks up exactly where the static
+ *   ring-arc ends and closes the remaining 245.7° while the numerals wind
+ *   60 → 00, then recharges over 2.6s. Under it the chips breathe on 7.3 / 9.1 /
+ *   11.2s periods, the ring on 10.4s, the circuit drifts on 6.5 and 8.7s, a soft
+ *   band scans the phone screen on 11s and a dithered halftone field swells on
+ *   9.7s. No two periods match, so the group never pulses in lockstep, and every
+ *   cycle returns to its own start value, so there is no seam.
+ *
+ * Entrances animate *from* the shipped state with `gsap.from`, so if this module
+ * never runs the card still reads correctly. Ambient amplitude is ≤2px and
+ * ≤1.2% of scale, so any single frame still reads as the approved static design.
  */
 export function onboard(card: HTMLElement): () => void {
   const cleanups: Array<() => void> = [];
   const teardown = () => { while (cleanups.length) cleanups.pop()!(); };
 
-  const art = card.querySelector<HTMLElement>('.bcard__art');
   const ring = card.querySelector<HTMLElement>('.onboard__ring');
   const seconds = card.querySelector<HTMLElement>('.onboard__seconds');
   const phone = card.querySelector<HTMLElement>('.onboard__phone');
@@ -38,7 +38,7 @@ export function onboard(card: HTMLElement): () => void {
   const gridImg = grid?.querySelector<HTMLElement>('img') ?? null;
   const inLabel = card.querySelector<HTMLElement>('.onboard__in');
   const chips = Array.from(card.querySelectorAll<HTMLElement>('.onboard__chip'));
-  if (!art || !ring || !seconds || !phone || !grid || !gridImg || !inLabel || chips.length < 3) return teardown;
+  if (!ring || !seconds || !phone || !grid || !gridImg || !inLabel || chips.length < 3) return teardown;
 
   const reduced = typeof matchMedia === 'function'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -47,8 +47,8 @@ export function onboard(card: HTMLElement): () => void {
   /* ------------------------------------------------------------ added layers */
 
   const NS = 'http://www.w3.org/2000/svg';
-  // The disc is 128.01 wide inset 14.95/15.03 in a 157.9 × 158.8 ring box, so
-  // it and the static arc share the centre (78.8, 79.4) with r = 64.4.
+  // The disc is 128.01 wide inset 14.95 / 15.03 inside a 157.9 × 158.8 ring box,
+  // so it and the static arc share the centre (78.8, 79.4) with r = 64.4.
   const CX = 78.8, CY = 79.4, R = 64.4;
   const CIRC = 2 * Math.PI * R;
   const ARC_SWEEP = 114.3;                // degrees the static arc already covers
@@ -75,8 +75,8 @@ export function onboard(card: HTMLElement): () => void {
   ring.insertBefore(sweep, seconds);
   cleanups.push(() => sweep.remove());
 
-  // Something alive inside the phone: a soft band scanning the screen area,
-  // clipped to the same box the circuit grid occupies.
+  // Something alive inside the phone: a soft band scanning the screen, clipped
+  // to the same box the circuit grid occupies.
   const scanHost = document.createElement('span');
   const scan = document.createElement('span');
   Object.assign(scanHost.style, {
@@ -84,8 +84,8 @@ export function onboard(card: HTMLElement): () => void {
     overflow: 'hidden', pointerEvents: 'none', borderRadius: '18px',
   });
   Object.assign(scan.style, {
-    position: 'absolute', left: '0', right: '0', height: '120px', top: '-120px', opacity: '0',
-    background: 'linear-gradient(180deg, rgba(255,251,248,0), rgba(255,251,248,.16) 46%, rgba(255,251,248,0))',
+    position: 'absolute', left: '0', right: '0', height: '140px', top: '-140px', opacity: '0',
+    background: 'linear-gradient(180deg, rgba(255,251,248,0), rgba(255,251,248,.13) 48%, rgba(255,251,248,0))',
   });
   scanHost.append(scan);
   grid.after(scanHost);
@@ -101,64 +101,43 @@ export function onboard(card: HTMLElement): () => void {
   seconds.append(num, unit);
   cleanups.push(() => { seconds.innerHTML = secondsHTML; });
 
+  // The Figma glow stack — halftone dots, then a 16×16 Bayer dither — as a
+  // slowly drifting field. Ambient only: the pointer inputs are never fed.
   const glow: HalftoneLayer | null = createHalftone(card, {
     color: [1, 0.984, 0.973],             // off-white over the orange card
-    cell: 5.4, alpha: 0.4, ambient: 0.26, reach: 230, lens: 0.38,
+    cell: 5.4, alpha: 0.36, ambient: 0.24, lens: 0,
   });
   if (glow) cleanups.push(() => glow.dispose());
 
-  /* ------------------------------------------------- pointer + float engine
-     One rAF owns `transform` on the parallax layers so the ambient float, the
-     load-in offsets and the pointer parallax compose instead of fighting over
-     one property. GSAP owns everything else plus the scalars read here. */
+  /* ------------------------------------------------------------ float engine
+     One rAF owns `transform` on the illustration's layers so the ambient float
+     and the load-in offsets compose instead of fighting over one property.
+     GSAP owns everything else, plus the scalars read here. */
 
   type Layer = {
-    el: HTMLElement; depth: number;
-    ax: number; ay: number; wx: number; wy: number; ph: number;
+    el: HTMLElement;
+    ax: number; ay: number;
+    /** seconds per cycle — deliberately mismatched across the group */
+    px: number; py: number; ph: number;
     s: { v: number };
-    /** offset owned by a timeline — the load-in flies elements in through it */
+    /** offset owned by a timeline; the load-in flies elements in through it */
     o: { x: number; y: number };
   };
-  const layer = (el: HTMLElement, depth: number, ax: number, ay: number, wx: number, wy: number, ph: number): Layer =>
-    ({ el, depth, ax, ay, wx, wy, ph, s: { v: 1 }, o: { x: 0, y: 0 } });
+  const layer = (el: HTMLElement, ax: number, ay: number, px: number, py: number, ph: number): Layer =>
+    ({ el, ax, ay, px, py, ph, s: { v: 1 }, o: { x: 0, y: 0 } });
 
   const L_GRID = 0, L_PHONE = 1, L_RING = 2, L_CHIP = 3, L_IN = 6;
   const layers: Layer[] = [
-    layer(grid, 0.014, 0, 0, 0, 0, 0),
-    layer(phone, 0.024, 0.8, 1.1, 0.19, 0.13, 0.4),
-    layer(ring, 0.05, 1.2, 1.8, 0.27, 0.21, 1.1),
-    layer(chips[0], 0.072, 2.2, 3.0, 0.41, 0.33, 0),
-    layer(chips[1], 0.088, 2.6, 3.6, 0.35, 0.29, 2.1),
-    layer(chips[2], 0.104, 2.0, 3.2, 0.47, 0.37, 4.2),
-    layer(inLabel, 0.064, 1.4, 2.2, 0.31, 0.25, 3.3),
+    // context barely moves; support a little; the accent group a little more
+    layer(grid, 0, 0, 0, 0, 0),
+    layer(phone, 0.7, 1.1, 12.6, 15.1, 0.4),
+    layer(ring, 0.9, 1.4, 10.4, 13.3, 1.1),
+    layer(chips[0], 1.5, 2.0, 7.3, 9.4, 0),
+    layer(chips[1], 1.7, 2.2, 9.1, 11.9, 2.1),
+    layer(chips[2], 1.4, 1.9, 11.2, 8.6, 4.2),
+    layer(inLabel, 1.0, 1.5, 8.9, 12.1, 3.3),
   ];
   const chipLayers = [layers[L_CHIP], layers[L_CHIP + 1], layers[L_CHIP + 2]];
-
-  const pointer = { tx: 0, ty: 0, x: 0, y: 0, tilt: 0 };
-  let onCard = false;
-
-  // .bcard__art carries a transform of its own under 720px; read it before we
-  // ever write one so the tilt composes with it instead of wiping it out.
-  let artBase = '';
-  let cardW = card.clientWidth || 1;
-  let cardH = card.clientHeight || 1;
-  const measure = () => {
-    art.style.transform = '';
-    const m = getComputedStyle(art).transform;
-    artBase = m && m !== 'none' ? `${m} ` : '';
-    cardW = card.clientWidth || 1;
-    cardH = card.clientHeight || 1;
-  };
-  measure();
-
-  const onMove = (e: PointerEvent) => {
-    const r = card.getBoundingClientRect();
-    pointer.tx = (e.clientX - r.left) / r.width - 0.5;
-    pointer.ty = (e.clientY - r.top) / r.height - 0.5;
-    glow?.setPointer(e.clientX - r.left, e.clientY - r.top);
-  };
-  card.addEventListener('pointermove', onMove);
-  cleanups.push(() => card.removeEventListener('pointermove', onMove));
 
   /* ---------------------------------------------------------------- the dial */
 
@@ -169,179 +148,95 @@ export function onboard(card: HTMLElement): () => void {
   };
   const accent = { v: 0 };                // 0…1, the "You're in." flare
 
-  /* ----------------------------------------------------------- 1 · LOAD-IN */
+  /* ----------------------------------------------------------- 1 · LOAD-IN
+     Lead 1.4s, a 0.3s beat, then followers at 0.7–1.3s with a 0.18s stagger. */
 
   let intro: gsap.core.Timeline | null = null;
   const playIntro = () => {
-    gsap.set([grid, phone, ring, inLabel, ...chips], { opacity: 0 });
-    layers[L_GRID].s.v = 1.05;
-    layers[L_PHONE].o.y = 30;
-    layers[L_RING].s.v = 0.84;
-    chipLayers.forEach((l) => { l.o.x = -20; });
-    layers[L_IN].o.y = 10;
-
     intro = gsap.timeline({ onComplete: startLoop })
-      // the circuit resolves first — the ground the rest lands on
-      .to(grid, { opacity: 0.2, duration: 0.55, ease: 'power2.out' }, 0)
-      .to(layers[L_GRID].s, { v: 1, duration: 0.7, ease: 'power3.out' }, 0)
-      // the phone rises into it
-      .to(phone, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
-      .to(layers[L_PHONE].o, { y: 0, duration: 0.72, ease: 'power3.out' }, 0.1)
-      // the ring lands with weight
-      .to(ring, { opacity: 1, duration: 0.34, ease: 'power2.out' }, 0.32)
-      .to(layers[L_RING].s, { v: 1, duration: 0.66, ease: 'back.out(1.7)' }, 0.32)
-      // then the three promises, one per beat
-      .to(chips, { opacity: 1, duration: 0.3, ease: 'power2.out', stagger: 0.1 }, 0.46)
-      .to(chipLayers.map((l) => l.o), { x: 0, duration: 0.56, ease: 'power3.out', stagger: 0.1 }, 0.46)
-      // and the confirmation arrives last
-      .to(inLabel, { opacity: 1, duration: 0.34, ease: 'power2.out' }, 0.86)
-      .to(layers[L_IN].o, { y: 0, duration: 0.5, ease: 'power3.out' }, 0.86)
-      .to(accent, { v: 1, duration: 0.3, ease: 'power2.out' }, 0.92)
-      .to(accent, { v: 0, duration: 0.6, ease: 'power2.inOut' }, 1.22);
+      /* ---- LEAD: the phone, alone ---- */
+      .from(layers[L_PHONE].o, { y: 24, duration: 1.4, ease: 'power3.out' }, 0)
+      .from(phone, { opacity: 0, duration: 0.85, ease: 'power2.out' }, 0)
+
+      /* ---- beat (0.3s) — nothing moves ---- */
+
+      /* ---- CONTEXT: the circuit resolves behind it ---- */
+      .from(grid, { opacity: 0, duration: 1.1, ease: 'power2.out' }, 1.7)
+      .from(layers[L_GRID].s, { v: 1.028, duration: 1.3, ease: 'power2.out' }, 1.7)
+
+      /* ---- SUPPORT: the ring settles ---- */
+      .from(ring, { opacity: 0, duration: 0.8, ease: 'power2.out' }, 1.95)
+      .from(layers[L_RING].s, { v: 0.968, duration: 1.2, ease: 'power3.out' }, 1.95)
+
+      /* ---- ACCENT: the three promises, one at a time ---- */
+      .from(chips, { opacity: 0, duration: 0.7, ease: 'power2.out', stagger: 0.18 }, 2.25)
+      .from(chipLayers.map((l) => l.o), { x: -16, duration: 1.05, ease: 'power3.out', stagger: 0.18 }, 2.25)
+      // a chip settling is a sub-12px accent, which is the one place back belongs
+      .from(chipLayers.map((l) => l.s), { v: 0.972, duration: 0.9, ease: 'back.out(1.4)', stagger: 0.18 }, 2.25)
+
+      /* ---- and the confirmation last ---- */
+      .from(inLabel, { opacity: 0, duration: 0.8, ease: 'power2.out' }, 2.95)
+      .from(layers[L_IN].o, { y: 12, duration: 1.05, ease: 'power3.out' }, 2.95)
+      .to(accent, { v: 1, duration: 0.6, ease: 'power2.out' }, 3.05)
+      .to(accent, { v: 0, duration: 1.0, ease: 'sine.inOut' }, 3.65);
   };
 
-  /* -------------------------------------------------------------- 2 · LOOP */
+  /* -------------------------------------------------------------- 2 · LOOP
+     12s round trip: 8.4s counting down, a beat at zero, 2.6s recharging. It
+     ends on the value it started from, so there is no seam. */
 
-  // 8.6s round trip: 6.4s counting down, a beat at zero, 1.3s winding back —
-  // it ends where it began, so there is no seam.
   const ambient = gsap.timeline({ repeat: -1, paused: true })
-    .to(dial, { t: 1, duration: 6.4, ease: 'none', onUpdate: paintDial }, 0)
-    .to(accent, { v: 1, duration: 0.34, ease: 'power2.out' }, 6.4)
-    .to(accent, { v: 0, duration: 0.8, ease: 'power2.inOut' }, 7.0)
-    .to(dial, { t: 0, duration: 1.3, ease: 'power2.inOut', onUpdate: paintDial }, 7.3);
+    // a travelling dash offset is the one place linear is right — it is a clock
+    .to(dial, { t: 1, duration: 8.4, ease: 'none', onUpdate: paintDial }, 0)
+    .to(accent, { v: 1, duration: 0.6, ease: 'sine.inOut' }, 8.4)
+    .to(accent, { v: 0, duration: 1.2, ease: 'sine.inOut' }, 9.0)
+    .to(dial, { t: 0, duration: 2.6, ease: 'sine.inOut', onUpdate: paintDial }, 9.4);
 
-  // The screen scan runs on its own clock, 7.3s, prime-ish against the dial.
-  const scanLoop = gsap.timeline({ repeat: -1, repeatDelay: 2.4, paused: true })
-    .fromTo(scan, { y: 0, opacity: 0 }, { opacity: 0.9, duration: 0.5, ease: 'power1.out' }, 0)
-    .to(scan, { y: 432, duration: 4.9, ease: 'none' }, 0)
-    .to(scan, { opacity: 0, duration: 0.6, ease: 'power1.in' }, 4.3);
+  // The screen scan runs on its own 11s clock, against the dial's 12s.
+  const scanLoop = gsap.timeline({ repeat: -1, repeatDelay: 3.2, paused: true })
+    .fromTo(scan, { y: 0, opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'sine.inOut' }, 0)
+    .to(scan, { y: 452, duration: 7.8, ease: 'sine.inOut' }, 0)
+    .to(scan, { opacity: 0, duration: 1.6, ease: 'sine.inOut' }, 6.2);
 
   const floats: Array<gsap.core.Tween | gsap.core.Timeline> = [];
   const startLoop = () => {
     if (floats.length) return;
-    // the ring breathes
-    floats.push(gsap.to(layers[L_RING].s, { v: 1.016, duration: 2.9, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    // the circuit drifts inside its clip — a slow current, never a scroll
-    floats.push(gsap.to(gridImg, { x: 9, duration: 6.1, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    floats.push(gsap.to(gridImg, { y: -6, duration: 8.3, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    if (glow) floats.push(gsap.to(glow.swell, { value: 0.44, duration: 4.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    // the ring breathes — amplitude small enough that a still frame is the design
+    floats.push(gsap.to(layers[L_RING].s, { v: 1.012, duration: 5.2, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    // the circuit drifts inside its clip: a slow current, never a scroll
+    floats.push(gsap.to(gridImg, { x: 7, duration: 6.5, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    floats.push(gsap.to(gridImg, { y: -5, duration: 8.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    if (glow) floats.push(gsap.to(glow.swell, { value: 0.42, duration: 4.85, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
     floats.push(scanLoop);
-    if (visible) { ambient.play(); floats.forEach((f) => f.play()); }
+    floats.push(ambient);
+    if (visible) floats.forEach((f) => f.play());
   };
-
-  /* ---------------------------------------------------------- 3 · REACTION */
-
-  let commit: gsap.core.Timeline | null = null;
-
-  const play = () => {
-    if (intro && intro.isActive()) return;   // never interrupt the assembly
-    commit?.kill();
-    ambient.pause();
-    const from = dial.t;
-    commit = gsap.timeline()
-      // anticipation: the dial loads backwards before it runs
-      .to(dial, { t: Math.max(0, from - 0.035), duration: 0.11, ease: 'power2.in', onUpdate: paintDial }, 0)
-      .to(chipLayers.map((l) => l.s), { v: 0.985, duration: 0.11, ease: 'power2.in' }, 0)
-      // …then commits to zero
-      .to(dial, { t: 1, duration: 0.56, ease: 'expo.out', onUpdate: paintDial }, 0.11)
-      // chips lock in on their own beat, overlapping the dial rather than
-      // queueing behind it
-      .to(chipLayers.map((l) => l.s), { v: 1.055, duration: 0.24, ease: 'back.out(3)', stagger: 0.07 }, 0.17)
-      .to(chipLayers.map((l) => l.s), { v: 1, duration: 0.42, ease: 'power3.out', stagger: 0.07 }, 0.34)
-      .to(chips, {
-        backgroundColor: 'rgba(255,255,255,0.34)', borderColor: 'rgba(255,251,248,0.9)',
-        duration: 0.2, ease: 'power2.out', stagger: 0.07,
-      }, 0.17)
-      .to(layers[L_RING].s, { v: 1.045, duration: 0.2, ease: 'power2.out' }, 0.44)
-      .to(layers[L_RING].s, { v: 1, duration: 0.5, ease: 'back.out(2.2)' }, 0.64)
-      // late accent — the confirmation is the last thing to arrive
-      .to(accent, { v: 1, duration: 0.36, ease: 'power3.out' }, 0.52);
-  };
-
-  const release = () => {
-    commit?.kill();
-    commit = null;
-    gsap.to(chips, {
-      backgroundColor: 'rgba(255,255,255,0.16)', borderColor: 'rgba(238,238,238,0.49)',
-      duration: 0.4, ease: 'power2.out', overwrite: true,
-    });
-    gsap.to(chipLayers.map((l) => l.s), { v: 1, duration: 0.4, ease: 'power3.out', overwrite: true });
-    gsap.to(accent, { v: 0, duration: 0.5, ease: 'power2.inOut', overwrite: true });
-    // hand back to the loop at the phase matching the dial, so the sweep never
-    // jumps when the pointer leaves
-    ambient.progress((dial.t * 6.4) / 8.6, true);
-    if (visible && floats.length) ambient.play();
-  };
-
-  const onEnter = () => {
-    onCard = true;
-    play();
-    if (glow) gsap.to(glow.hover, { value: 1, duration: 0.5, ease: 'power2.out' });
-  };
-  const onLeave = () => {
-    onCard = false;
-    release();
-    if (glow) gsap.to(glow.hover, { value: 0, duration: 0.55, ease: 'power2.out' });
-  };
-  const onClick = (e: MouseEvent) => {
-    const r = card.getBoundingClientRect();
-    glow?.ripple(e.clientX - r.left, e.clientY - r.top);
-    play();
-  };
-
-  card.addEventListener('pointerenter', onEnter);
-  card.addEventListener('pointerleave', onLeave);
-  card.addEventListener('focusin', onEnter);
-  card.addEventListener('focusout', onLeave);
-  card.addEventListener('click', onClick);
-  cleanups.push(() => {
-    card.removeEventListener('pointerenter', onEnter);
-    card.removeEventListener('pointerleave', onLeave);
-    card.removeEventListener('focusin', onEnter);
-    card.removeEventListener('focusout', onLeave);
-    card.removeEventListener('click', onClick);
-  });
 
   /* ---------------------------------------------------------------- the rAF */
 
   let raf = 0;
   let visible = true;
-  let last = performance.now();
-  const t0 = last;
+  const t0 = performance.now();
 
   const frame = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
     const t = (now - t0) / 1000;
 
-    // damped follow, so the parallax lags the cursor instead of tracking it
-    const k = 1 - Math.exp(-dt * 7.5);
-    pointer.x += ((onCard ? pointer.tx : 0) - pointer.x) * k;
-    pointer.y += ((onCard ? pointer.ty : 0) - pointer.y) * k;
-    pointer.tilt += ((onCard ? 1 : 0) - pointer.tilt) * k;
-
-    art.style.transform = artBase
-      + `perspective(900px) rotateX(${(-pointer.y * 7.5 * pointer.tilt).toFixed(3)}deg) `
-      + `rotateY(${(pointer.x * 10 * pointer.tilt).toFixed(3)}deg)`;
-
     for (const l of layers) {
-      const fx = l.ax * Math.sin(t * l.wx * Math.PI * 2 + l.ph);
-      const fy = l.ay * Math.sin(t * l.wy * Math.PI * 2 + l.ph * 1.7);
-      const px = pointer.x * cardW * l.depth;
-      const py = pointer.y * cardH * l.depth;
+      const fx = l.px ? l.ax * Math.sin((t / l.px) * Math.PI * 2 + l.ph) : 0;
+      const fy = l.py ? l.ay * Math.sin((t / l.py) * Math.PI * 2 + l.ph * 1.7) : 0;
       l.el.style.transform =
-        `translate3d(${(fx + px + l.o.x).toFixed(2)}px, ${(fy + py + l.o.y).toFixed(2)}px, 0) `
+        `translate3d(${(fx + l.o.x).toFixed(2)}px, ${(fy + l.o.y).toFixed(2)}px, 0) `
         + `scale(${l.s.v.toFixed(4)})`;
     }
 
     const a = accent.v;
-    inLabel.style.textShadow = a > 0.002 ? `0 0 ${(14 * a).toFixed(1)}px rgba(255,251,248,${(0.9 * a).toFixed(3)})` : '';
+    inLabel.style.textShadow = a > 0.002 ? `0 0 ${(13 * a).toFixed(1)}px rgba(255,251,248,${(0.85 * a).toFixed(3)})` : '';
 
     glow?.render(t);
     raf = requestAnimationFrame(frame);
   };
 
-  const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+  const start = () => { if (!raf) raf = requestAnimationFrame(frame); };
   const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } };
 
   let introDone = false;
@@ -350,20 +245,16 @@ export function onboard(card: HTMLElement): () => void {
     if (visible) {
       start();
       if (!introDone) { introDone = true; playIntro(); }
-      else if (floats.length) {
-        floats.forEach((f) => f.play());
-        if (!commit) ambient.play();
-      }
+      else floats.forEach((f) => f.play());
     } else {
       stop();
-      ambient.pause();
       floats.forEach((f) => f.pause());
     }
   }, { rootMargin: '100px' });
   io.observe(card);
   cleanups.push(() => io.disconnect());
 
-  const onResize = () => { measure(); glow?.resize(); };
+  const onResize = () => glow?.resize();
   window.addEventListener('resize', onResize);
   cleanups.push(() => window.removeEventListener('resize', onResize));
 
@@ -372,17 +263,14 @@ export function onboard(card: HTMLElement): () => void {
   cleanups.push(() => {
     stop();
     intro?.kill();
-    commit?.kill();
     ambient.kill();
-    floats.forEach((f) => f.kill());
     scanLoop.kill();
+    floats.forEach((f) => f.kill());
     gsap.killTweensOf([...chips, grid, phone, ring, inLabel, gridImg, scan,
       ...layers.map((l) => l.s), ...layers.map((l) => l.o), dial, accent]);
     for (const l of layers) { l.el.style.transform = ''; l.el.style.opacity = ''; }
-    art.style.transform = '';
     inLabel.style.textShadow = '';
     gridImg.style.transform = '';
-    for (const c of chips) { c.style.backgroundColor = ''; c.style.borderColor = ''; }
   });
 
   return teardown;

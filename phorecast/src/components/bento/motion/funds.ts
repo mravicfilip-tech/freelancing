@@ -1,70 +1,63 @@
 /**
  * Motion for bento card B — "Your funds leave whenever you want".
  *
- * Direction: **Signal relay** — the dotted orbit between the wallet and the
- * market ring is a wire, so the card spends its resting life pushing packets of
- * light down it. On top of that sit a Bayer-dithered WebGL bloom (the same
- * halftone language as the Figma shader stack the static art fakes with blur),
- * a real-perspective parallax that answers the pointer, and a torch that only
- * lights the part of the diagram you are reading.
+ * Two triggers only, per MOTION.md: a load-in and a loop. No hover, no pointer
+ * tracking — this is artwork, not a control.
  *
- * Nothing here touches Bento.tsx or Bento.css. Every node this module adds is
- * created at runtime and removed again by the teardown it returns.
+ *   Load-in  The wallet lands alone and is given a beat. Then the dotted orbit
+ *            draws itself out toward the contracts (the longest travel on the
+ *            card), the two chips arrive one at a time, the market ring closes
+ *            behind them, and the four assets follow with their labels. The
+ *            orange nodes are the last accent.
+ *   Loop     Packets of light run the dotted orbit and the market ring on long
+ *            10s and 13s laps, lighting each node, chip and asset they pass. A
+ *            WebGL layer prints the brand's Bayer halftone as a bloom riding
+ *            with the leading packet — the shader language the static PNG fakes
+ *            with a blur. Everything breathes on its own period and phase.
  *
- * Geometry, in the 464 x 215 coordinate space of `.funds__art`:
- *   wallet ring     circle  c(54.5, 107.5)  r 46
- *   dotted orbit    ellipse c(194.5, 108)   r 107 x 58.5
- *   market ring     circle  c(349.5, 107.5) r 107   — the four asset tiles sit on it
+ * Every entrance tween is a `gsap.from`, so if this module never runs the card
+ * is simply the approved static design.
+ *
+ * Geometry, in the 464 x 215 space of `.funds__art`:
+ *   wallet ring   circle  c(54.5, 107.5)  r 46
+ *   dotted orbit  ellipse c(194.5, 108)   r 107 x 58.5
+ *   market ring   circle  c(349.5, 107.5) r 107  — the four asset tiles sit on it
  */
 import { gsap } from 'gsap';
 
 type ThreeMod = typeof import('three');
 
 const NS = 'http://www.w3.org/2000/svg';
-
 const P_WALLET = 'M8.5 107.5a46 46 0 1 1 92 0a46 46 0 1 1 -92 0';
 const P_DOTTED = 'M87.5 108a107 58.5 0 1 1 214 0a107 58.5 0 1 1 -214 0';
 const P_RING = 'M242.5 107.5a107 107 0 1 1 214 0a107 107 0 1 1 -214 0';
 
-/** One animated element and everything currently displacing it. */
+const LAP_DOTTED = 10; // seconds for one lap of the dotted orbit
+const LAP_RING = 13; // and one of the market ring
+
+/** One element the loop breathes, plus the offsets the load-in writes. */
 interface Node {
   el: HTMLElement;
   cx: number;
   cy: number;
-  z: number;
   amp: number;
   per: number;
   ph: number;
-  mx: number;
-  my: number;
-  tx: number;
-  ty: number;
-  lit: number;
-  litTo: number;
-  isDot: boolean;
-  /* the entrance writes here, never to the element, so it cannot fight the
-     per-frame compositor below for the transform */
+  /** the load-in writes here, never to the element, so the two never fight */
   ix: number;
   is: number;
+  isDot: boolean;
+  lit: number;
 }
 
-const q = <T extends Element>(root: Element, sel: string) => root.querySelector(sel) as T | null;
-const qq = <T extends Element>(root: Element, sel: string) => Array.from(root.querySelectorAll(sel)) as T[];
-const damp = (a: number, b: number, k: number) => a + (b - a) * k;
+const q = <T extends Element>(r: Element, s: string) => r.querySelector(s) as T | null;
+const qq = <T extends Element>(r: Element, s: string) => Array.from(r.querySelectorAll(s)) as T[];
+const TAU = Math.PI * 2;
 
 export function funds(card: HTMLElement): () => void {
   const art = q<HTMLElement>(card, '.funds__art');
   if (!art) return () => {};
-
-  const kill: Array<() => void> = [];
-  const on = <K extends keyof HTMLElementEventMap>(
-    t: HTMLElement | Window,
-    k: K | string,
-    fn: (e: never) => void,
-  ) => {
-    t.addEventListener(k as string, fn as EventListener);
-    kill.push(() => t.removeEventListener(k as string, fn as EventListener));
-  };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
 
   const glow = q<HTMLElement>(art, '.funds__glow');
   const ringO = q<HTMLElement>(art, '.funds__ring-orange');
@@ -76,9 +69,7 @@ export function funds(card: HTMLElement): () => void {
   const labels = qq<HTMLElement>(art, '.funds__label:not(.funds__label--wallet)');
   const dots = qq<HTMLElement>(art, '.funds__node');
 
-  /* Under prefers-reduced-motion the signed-off static card is the whole
-     deliverable: add nothing, animate nothing, hand back a no-op. */
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+  const unbind: Array<() => void> = [];
 
   /* ------------------------------------------------------------------ layers */
   const canvas = document.createElement('canvas');
@@ -91,166 +82,106 @@ export function funds(card: HTMLElement): () => void {
   svg.setAttribute('viewBox', '0 0 464 215');
   svg.setAttribute('aria-hidden', 'true');
   svg.style.cssText = 'position:absolute;left:0;top:0;width:464px;height:215px;overflow:visible;pointer-events:none';
-  const path = (d: string, stroke: string, w: string, op: string) => {
+  const line = (d: string, stroke: string, w: string, op: string) => {
     const p = document.createElementNS(NS, 'path');
     p.setAttribute('d', d);
     p.style.cssText = `fill:none;stroke:${stroke};stroke-width:${w};opacity:${op};stroke-linecap:round`;
     svg.appendChild(p);
     return p;
   };
-  // Stand-ins for the two shipped <img> rings, stroke for stroke, so they can
-  // be drawn on. The originals are only hidden once these exist.
-  const ghostW = path(P_WALLET, '#D9D9D9', '1', '0.2');
-  const ghostR = path(P_RING, '#FF632A', '1', '0.22');
-  const cometD = path(P_DOTTED, '#ff7a3c', '1.6', '0');
-  const cometR = path(P_RING, '#ff7a3c', '1.6', '0');
-  const head = (): SVGCircleElement => {
+  // Stand-ins for the two shipped <img> rings, stroke for stroke, so the
+  // load-in can draw them. The originals only stand down once these exist.
+  const ghostW = line(P_WALLET, '#D9D9D9', '1', '0.2');
+  const ghostR = line(P_RING, '#FF632A', '1', '0.22');
+  const cometD = line(P_DOTTED, '#ff7a3c', '1.6', '0.5');
+  const cometR = line(P_RING, '#ff7a3c', '1.6', '0.5');
+  const head = () => {
     const c = document.createElementNS(NS, 'circle');
     c.setAttribute('r', '2.6');
-    c.style.cssText = 'fill:#ff8a4d;opacity:0';
+    c.style.cssText = 'fill:#ff8a4d;opacity:.8';
     svg.appendChild(c);
     return c;
   };
   const headD = head();
   const headR = head();
-  // Behind the pills and the tiles, exactly where the dotted path and the ring
-  // sit in the static art.
+  // Behind the chips and the assets, where the dotted path and the ring sit.
   art.insertBefore(svg, disc ?? art.firstChild);
+  gsap.set([ringO, ringW], { autoAlpha: 0 });
 
-  const torch = document.createElement('span');
-  torch.style.cssText =
-    'position:absolute;inset:-60px;pointer-events:none;opacity:0;mix-blend-mode:plus-lighter;' +
-    'background:radial-gradient(150px circle at var(--tx,50%) var(--ty,50%),' +
-    'rgba(255,138,77,.16),rgba(255,138,77,.05) 38%,transparent 66%)';
-  art.appendChild(torch);
-
-  const added = [canvas, svg, torch];
-
-  /* ------------------------------------------------------------- compositor */
+  /* ----------------------------------------------------------------- the loop */
   const centre = (el: HTMLElement) => ({
     x: parseFloat(el.style.left || '0') + el.offsetWidth / 2,
     y: parseFloat(el.style.top || '0') + el.offsetHeight / 2,
   });
-  const node = (el: HTMLElement, z: number, amp: number, per: number, i: number): Node => {
+  const node = (el: HTMLElement, amp: number, per: number, i: number, isDot = false): Node => {
     const c = centre(el);
-    return { el, cx: c.x, cy: c.y, z, amp, per, ph: i * 1.7, mx: 0, my: 0, tx: 0, ty: 0, lit: 0, litTo: 0, ix: 0, is: 1, isDot: false };
+    return { el, cx: c.x, cy: c.y, amp, per, ph: i * 2.3, ix: 0, is: 1, isDot, lit: 0 };
   };
-  const nodes: Node[] = [
-    ...pills.map((el, i) => node(el, 30, 1.5, 4.1, i)),
-    ...tiles.map((el, i) => node(el, 40, 2.1, 3.3, i + 2)),
-    ...labels.map((el, i) => node(el, 26, 1.7, 3.6, i + 2)),
-    ...dots.map((el, i) => ({ ...node(el, 34, 1.1, 5.2, i + 6), isDot: true })),
+  const nPills = pills.map((el, i) => node(el, 1.1, 11.5, i));
+  const nAssets = [
+    ...tiles.map((el, i) => node(el, 1.4, 9.5, i + 2)),
+    ...labels.map((el, i) => node(el, 1.1, 10.5, i + 2)),
   ];
-  gsap.set([glow], { z: -34 });
-  gsap.set([ringO, ringW, svg], { z: -10 });
-  gsap.set([disc, walletIcon], { z: 18 });
-  gsap.set(art, { xPercent: -50, yPercent: -50, transformStyle: 'preserve-3d' });
-  const prevPerspective = card.style.perspective;
-  card.style.perspective = '1100px';
+  const nDots = dots.map((el, i) => node(el, 0.8, 13, i + 6, true));
+  const nodes = [...nPills, ...nAssets, ...nDots];
 
-  /* --------------------------------------------------------------- entrance */
+  /* ------------------------------------------------------------- the load-in */
+  if (glow) {
+    // Declared here because Bento.css is not ours to touch.
+    const wipe = 'linear-gradient(90deg,#000 var(--wipe,100%),transparent calc(var(--wipe,100%) + 7%))';
+    glow.style.setProperty('--wipe', '100%');
+    glow.style.setProperty('-webkit-mask-image', wipe);
+    glow.style.setProperty('mask-image', wipe);
+  }
   const lenW = ghostW.getTotalLength();
   const lenR = ghostR.getTotalLength();
   ghostW.style.strokeDasharray = String(lenW);
   ghostR.style.strokeDasharray = String(lenR);
-  gsap.set([ringO, ringW], { autoAlpha: 0 });
 
-  /* The wipe that grows the dotted orbit out of the wallet. Declared here in
-     JS because Bento.css is not ours to touch. */
-  if (glow) {
-    const wipe = 'linear-gradient(90deg,#000 var(--wipe,100%),transparent calc(var(--wipe,100%) + 7%))';
-    glow.style.setProperty('-webkit-mask-image', wipe);
-    glow.style.setProperty('mask-image', wipe);
-  }
+  /* Settled values. The entrance is built entirely from `gsap.from`, so these
+     are the rest state and the timeline animates back to them. */
+  const relay = { on: 1 };
+  const discIn = { s: 1 };
 
-  const nPills = nodes.slice(0, pills.length);
-  const nAssets = nodes.slice(pills.length, pills.length + tiles.length + labels.length);
-  const nDots = nodes.slice(pills.length + tiles.length + labels.length);
-  const ambient = { comet: 0 };
-  const discIn = { s: 0.84 };
+  // tile and its label travel in together, one asset every 0.15s
+  const assetOrder: HTMLElement[] = [];
+  const assetNodes: Node[] = [];
+  tiles.forEach((el, i) => {
+    assetOrder.push(el);
+    assetNodes.push(nAssets[i]);
+    if (labels[i]) {
+      assetOrder.push(labels[i]);
+      assetNodes.push(nAssets[tiles.length + i]);
+    }
+  });
 
-  const intro = gsap.timeline({ paused: true, defaults: { ease: 'power3.out' } });
+  const intro = gsap.timeline({
+    paused: true,
+    defaults: { ease: 'power3.out', immediateRender: true },
+  });
   intro
-    .set([ghostW, ghostR], { strokeDashoffset: (i: number) => (i ? lenR : lenW) })
-    .set(glow, { '--wipe': '0%' })
-    .set([...pills, ...tiles, ...labels, ...dots, disc, walletIcon], { autoAlpha: 0 })
-    .set(nPills, { ix: -16 })
-    .set(nAssets, { ix: 20 })
-    .set(nDots, { is: 0 })
-    // lead — the wallet arrives first, with a little anticipation
-    .to([disc, walletIcon], { autoAlpha: 1, duration: 0.34 })
-    .to(discIn, { s: 1, duration: 0.5, ease: 'back.out(2.1)' }, '<')
-    .to(ghostW, { strokeDashoffset: 0, duration: 0.46 }, '-=0.4')
-    // the wire grows out of the wallet, the market ring closes behind it
-    .to(glow, { '--wipe': '100%', duration: 0.54 }, '-=0.26')
-    .to(ghostR, { strokeDashoffset: 0, duration: 0.56 }, '-=0.34')
-    // overlap — the two contracts slide in from the wallet side
-    .to(pills, { autoAlpha: 1, duration: 0.4, stagger: 0.07 }, '-=0.46')
-    .to(nPills, { ix: 0, duration: 0.52, stagger: 0.07 }, '<')
-    // late accent — the assets land from outside the ring and settle
-    .to([...tiles, ...labels], { autoAlpha: 1, duration: 0.38, stagger: 0.045 }, '-=0.34')
-    .to(nAssets, { ix: 0, duration: 0.54, stagger: 0.045 }, '<')
-    .to(dots, { autoAlpha: 1, duration: 0.3, stagger: 0.09 }, '-=0.3')
-    .to(nDots, { is: 1, duration: 0.42, ease: 'back.out(2.6)', stagger: 0.09 }, '<')
-    .to(ambient, { comet: 1, duration: 0.7 }, '-=0.4');
+    // LEAD — the wallet, alone
+    .from([disc, walletIcon], { autoAlpha: 0, duration: 0.85 }, 0)
+    .from(discIn, { s: 0.94, duration: 1.25 }, 0)
+    .from(ghostW, { strokeDashoffset: lenW, duration: 1.3, ease: 'expo.out' }, 0.08)
+    // ——— beat ———
+    // the wire draws itself out of the wallet: the longest travel on the card
+    .from(glow, { '--wipe': '0%', duration: 1.45, ease: 'expo.out' }, 1.65)
+    // the two contracts arrive one at a time
+    .from(pills, { autoAlpha: 0, duration: 0.7, stagger: 0.2 }, 2.1)
+    .from(nPills, { ix: -24, duration: 1.15, ease: 'expo.out', stagger: 0.2 }, 2.1)
+    // the market ring closes behind them
+    .from(ghostR, { strokeDashoffset: lenR, duration: 1.3, ease: 'expo.out' }, 2.4)
+    // then the four assets with their labels, 0.15s apart — countable
+    .from(assetOrder, { autoAlpha: 0, duration: 0.7, stagger: 0.075 }, 2.8)
+    .from(assetNodes, { ix: 22, duration: 1, ease: 'power2.out', stagger: 0.075 }, 2.8)
+    // accent — the nodes, the only overshoot here, and under 7px of it
+    .from(dots, { autoAlpha: 0, duration: 0.4, stagger: 0.18 }, 3.6)
+    .from(nDots, { is: 0.72, duration: 0.55, ease: 'back.out(1.7)', stagger: 0.18 }, 3.6)
+    // and the relay fades up into its resting loop
+    .from(relay, { on: 0, duration: 1.2, ease: 'sine.inOut' }, 3.9);
 
-  /* -------------------------------------------------------------- interaction */
-  const level = { v: 0.34, flash: 0 };
-  const tilt = { rx: 0, ry: 0, x: 0, y: 0, tRx: 0, tRy: 0, tX: 0, tY: 0 };
-  let pointer: { x: number; y: number } | null = null;
-
-  on(card, 'pointermove', (e: PointerEvent) => {
-    const b = card.getBoundingClientRect();
-    const nx = (e.clientX - b.left) / b.width - 0.5;
-    const ny = (e.clientY - b.top) / b.height - 0.5;
-    tilt.tRy = nx * 11;
-    tilt.tRx = -ny * 9;
-    tilt.tX = nx * -12;
-    tilt.tY = ny * -8;
-    const a = art.getBoundingClientRect();
-    torch.style.setProperty('--tx', `${e.clientX - a.left + 60}px`);
-    torch.style.setProperty('--ty', `${e.clientY - a.top + 60}px`);
-    pointer = { x: e.clientX, y: e.clientY };
-  });
-  on(card, 'pointerenter', () => {
-    gsap.to(level, { v: 1, flash: 1, duration: 0.5, ease: 'power3.out' });
-    gsap.to(torch, { opacity: 1, duration: 0.45, ease: 'power3.out' });
-  });
-  on(card, 'pointerleave', () => {
-    pointer = null;
-    tilt.tRx = tilt.tRy = tilt.tX = tilt.tY = 0;
-    gsap.to(level, { v: 0.34, flash: 0, duration: 0.7, ease: 'power3.out' });
-    gsap.to(torch, { opacity: 0, duration: 0.55, ease: 'power3.out' });
-    nodes.forEach((n) => {
-      n.litTo = 0;
-      n.tx = 0;
-      n.ty = 0;
-    });
-  });
-
-  /* the asset a packet is passing gets a short flash, once per pass */
-  const flashing = new WeakSet<HTMLElement>();
-  const flash = (el: HTMLElement, strength: number) => {
-    if (flashing.has(el)) return;
-    flashing.add(el);
-    gsap.fromTo(
-      el,
-      { boxShadow: '0 0 0 0 rgba(255,122,60,0)' },
-      {
-        boxShadow: `0 0 18px -2px rgba(255,122,60,${(0.2 + strength * 0.35).toFixed(2)})`,
-        duration: 0.22,
-        ease: 'power2.out',
-        yoyo: true,
-        repeat: 1,
-        onComplete: () => {
-          gsap.set(el, { clearProps: 'boxShadow' });
-          flashing.delete(el);
-        },
-      },
-    );
-  };
-
-  /* --------------------------------------------------------------- the loop */
+  /* ------------------------------------------------------- packets and pulses */
   const lenDot = cometD.getTotalLength();
   const lenRing = cometR.getTotalLength();
   cometD.style.strokeDasharray = `54 ${lenDot - 54}`;
@@ -259,82 +190,52 @@ export function funds(card: HTMLElement): () => void {
   let raf = 0;
   let running = false;
   let t0 = 0;
-  let glTick: ((t: number, dot: DOMPoint, heat: number) => void) | null = null;
+  let glTick: ((t: number, dot: DOMPoint) => void) | null = null;
 
   const frame = (now: number) => {
     if (!t0) t0 = now;
     const t = (now - t0) / 1000;
 
-    // packets — a dash segment sliding the path plus a sampled head, which is
-    // what MotionPathPlugin would do if we had it
-    const pd = (t / 3.4) % 1;
-    const pr = 1 - ((t / 5.2) % 1);
-    const o = level.v * ambient.comet;
+    /* Packets: a dash segment sliding the path plus a head sampled off it,
+       which is what MotionPathPlugin would do if we had it. Both laps are
+       whole cycles, so the loop has no seam. */
+    const pd = (t / LAP_DOTTED) % 1;
+    const pr = 1 - ((t / LAP_RING) % 1);
     cometD.style.strokeDashoffset = String(-pd * lenDot);
     cometR.style.strokeDashoffset = String(-pr * lenRing);
-    cometD.style.opacity = String(o);
-    cometR.style.opacity = String(o);
+    const o = relay.on;
+    cometD.style.opacity = String(0.5 * o);
+    cometR.style.opacity = String(0.5 * o);
     const a = cometD.getPointAtLength(pd * lenDot);
     const b = cometR.getPointAtLength(pr * lenRing);
     headD.setAttribute('cx', String(a.x));
     headD.setAttribute('cy', String(a.y));
     headR.setAttribute('cx', String(b.x));
     headR.setAttribute('cy', String(b.y));
-    const ho = String(Math.min(1, o * 1.6));
-    headD.style.opacity = ho;
-    headR.style.opacity = ho;
+    headD.style.opacity = String(0.85 * o);
+    headR.style.opacity = String(0.85 * o);
 
-    // damped pointer parallax on a real perspective
-    tilt.rx = damp(tilt.rx, tilt.tRx, 0.08);
-    tilt.ry = damp(tilt.ry, tilt.tRy, 0.08);
-    tilt.x = damp(tilt.x, tilt.tX, 0.07);
-    tilt.y = damp(tilt.y, tilt.tY, 0.07);
-    gsap.set(art, { rotationX: tilt.rx, rotationY: tilt.ry, x: tilt.x, y: tilt.y });
-
-    const pb = pointer ? art.getBoundingClientRect() : null;
     nodes.forEach((n) => {
-      if (pointer && pb) {
-        const ex = pb.left + n.cx;
-        const ey = pb.top + n.cy;
-        const d = Math.hypot(ex - pointer.x, ey - pointer.y);
-        n.litTo = Math.max(0, 1 - d / 165);
-        const pull = d < 130 ? (1 - d / 130) * 7 : 0;
-        n.tx = ((pointer.x - ex) / (d || 1)) * pull;
-        n.ty = ((pointer.y - ey) / (d || 1)) * pull;
-      }
-      // the orange nodes also answer a passing packet, hover or not
-      const packet = n.isDot
-        ? Math.max(0, 1 - Math.min(Math.hypot(n.cx - a.x, n.cy - a.y), Math.hypot(n.cx - b.x, n.cy - b.y)) / 34)
-        : 0;
-      n.lit = Math.max(damp(n.lit, n.litTo, 0.12), packet * 0.85);
-      n.mx = damp(n.mx, n.tx, 0.1);
-      n.my = damp(n.my, n.ty, 0.1);
-      // every element breathes on its own period, so a frame at 10s never
-      // matches a frame at 20s, and the loop has no seam to catch
-      const bx = Math.cos(t / (n.per * 1.37) + n.ph) * n.amp * 0.5;
-      const by = Math.sin(t / n.per + n.ph) * n.amp;
+      // each element on its own phase and period, so the group never pulses in
+      // lockstep, and every cycle is a sine
+      const by = Math.sin((t / n.per) * TAU + n.ph) * n.amp;
+      const bx = Math.cos((t / (n.per * 1.37)) * TAU + n.ph) * n.amp * 0.5;
+      // and everything lights a little as a packet goes past it
+      const d = Math.min(Math.hypot(n.cx - a.x, n.cy - a.y), Math.hypot(n.cx - b.x, n.cy - b.y));
+      const reach = n.isDot ? 34 : 30;
+      const want = Math.max(0, 1 - d / reach) * o;
+      n.lit += (want - n.lit) * 0.09;
       gsap.set(n.el, {
-        x: n.mx + bx + n.ix,
-        y: n.my + by,
-        z: n.z,
-        scale: (1 + n.lit * 0.05) * n.is,
+        x: bx + n.ix,
+        y: by,
+        scale: n.is,
         transformOrigin: '50% 50%',
-        filter: n.lit > 0.01 ? `brightness(${(1 + n.lit * 0.55).toFixed(3)})` : 'none',
+        filter: n.lit > 0.01 ? `brightness(${(1 + n.lit * 0.75).toFixed(3)})` : 'none',
       });
     });
-    gsap.set(disc, { scale: discIn.s * (1 + Math.sin(t / 2.6) * 0.022), transformOrigin: '50% 50%' });
+    gsap.set(disc, { scale: discIn.s * (1 + Math.sin((t / 9) * TAU) * 0.016), transformOrigin: '50% 50%' });
 
-    /* The nodes pulse as a packet goes by — always, not only on hover; the
-       pointer just turns the pulse up. */
-    const near = (el: HTMLElement, px: number, py: number, r: number) => {
-      const c = centre(el);
-      return Math.hypot(c.x - px, c.y - py) < r;
-    };
-    tiles.forEach((el) => near(el, b.x, b.y, 26) && flash(el, level.flash));
-    pills.forEach((el) => near(el, a.x, a.y, 30) && flash(el, level.flash));
-
-
-    glTick?.(t, a, level.v);
+    glTick?.(t, a);
     raf = requestAnimationFrame(frame);
   };
 
@@ -367,11 +268,10 @@ export function funds(card: HTMLElement): () => void {
   );
   io.observe(card);
 
-  /* ------------------------------------------------------- WebGL dither bloom
-     The Figma glows are a halftone + ordered-dither shader stack that the
-     static art approximates with a blurred PNG. This is the real thing: a
-     4x4 Bayer threshold over a warm field that pools under the pointer, rings
-     out on entry and rides along with the relay packet. */
+  /* -------------------------------------------------------- WebGL dither bloom
+     The Figma glow is a halftone + ordered-dither stack the static PNG fakes
+     with a blur. This is the real thing: a 4x4 Bayer threshold over a warm
+     field that travels with the leading packet and breathes with the wallet. */
   let disposeGl: (() => void) | null = null;
   let disposed = false;
 
@@ -380,25 +280,22 @@ export function funds(card: HTMLElement): () => void {
     try {
       THREE = await import('three');
     } catch {
-      return; // no module: the GSAP relay above is the whole show
+      return; // no module — the SVG relay is the whole show
     }
     if (disposed) return;
-
     let renderer: import('three').WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
     } catch {
-      return; // no WebGL context: same graceful result
+      return; // no context — same graceful result
     }
 
     const uniforms = {
       uTime: { value: 0 },
-      uHeat: { value: 0 },
       uCell: { value: 1 },
-      uPointer: { value: new THREE.Vector2(-999, -999) },
       uComet: { value: new THREE.Vector2(-999, -999) },
-      uRing: { value: new THREE.Vector2(-999, -999) },
-      uRingT: { value: -999 },
+      uWallet: { value: new THREE.Vector2(-999, -999) },
+      uOn: { value: 0 },
       uWarm: { value: new THREE.Color('#ff8a4d') },
     };
 
@@ -409,8 +306,8 @@ export function funds(card: HTMLElement): () => void {
       vertexShader: 'void main(){ gl_Position = vec4(position, 1.0); }',
       fragmentShader: `
         precision highp float;
-        uniform vec2  uPointer, uComet, uRing;
-        uniform float uTime, uHeat, uCell, uRingT;
+        uniform vec2  uComet, uWallet;
+        uniform float uTime, uCell, uOn;
         uniform vec3  uWarm;
 
         float bayer(vec2 p){
@@ -427,18 +324,12 @@ export function funds(card: HTMLElement): () => void {
 
         void main(){
           vec2 f = gl_FragCoord.xy;
-          float a = 0.0;
-
-          a += uHeat * smoothstep(210.0, 0.0, distance(f, uPointer)) * 0.85;
-          a += smoothstep(74.0, 0.0, distance(f, uComet)) * (0.30 + uHeat * 0.40);
-
-          float t = uTime - uRingT;
-          if(uRingT > -900.0 && t >= 0.0 && t < 1.5){
-            float r = t * 420.0;
-            a += smoothstep(58.0, 0.0, abs(distance(f, uRing) - r)) * (1.0 - t / 1.5) * 0.7;
-          }
-
-          a = clamp(a, 0.0, 1.0);
+          // the bloom riding with the leading packet
+          float a = smoothstep(96.0, 0.0, distance(f, uComet)) * 0.46;
+          // and a slow breath around the wallet, on an 11s cycle
+          a += smoothstep(150.0, 0.0, distance(f, uWallet))
+             * (0.16 + 0.08 * sin(uTime * 0.5712));
+          a = clamp(a * uOn, 0.0, 1.0);
           a = step(bayer(f / uCell), a) * a;
           if(a <= 0.003) discard;
           gl_FragColor = vec4(uWarm, a * 0.42);
@@ -458,30 +349,22 @@ export function funds(card: HTMLElement): () => void {
       uniforms.uCell.value = dpr();
     };
     resize();
-    on(window, 'resize', resize);
+    addEventListener('resize', resize);
+    unbind.push(() => removeEventListener('resize', resize));
     gsap.set(canvas, { opacity: 1 });
 
-    const toGl = (x: number, y: number): [number, number] => [x * dpr(), (card.clientHeight - y) * dpr()];
-
-    on(card, 'pointermove', (e: PointerEvent) => {
-      const b = card.getBoundingClientRect();
-      const [gx, gy] = toGl(e.clientX - b.left, e.clientY - b.top);
-      uniforms.uPointer.value.set(gx, gy);
-    });
-    on(card, 'pointerenter', (e: PointerEvent) => {
-      const b = card.getBoundingClientRect();
-      const [gx, gy] = toGl(e.clientX - b.left, e.clientY - b.top);
-      uniforms.uRing.value.set(gx, gy);
-      uniforms.uRingT.value = uniforms.uTime.value;
-    });
-
-    glTick = (t, dotPoint, heat) => {
-      uniforms.uTime.value = t;
-      uniforms.uHeat.value = heat;
+    glTick = (t, dotPoint) => {
       const ab = art.getBoundingClientRect();
       const cb = card.getBoundingClientRect();
-      const [gx, gy] = toGl(ab.left - cb.left + dotPoint.x, ab.top - cb.top + dotPoint.y);
-      uniforms.uComet.value.set(gx, gy);
+      const d = dpr();
+      const h = card.clientHeight;
+      const ox = ab.left - cb.left;
+      const oy = ab.top - cb.top;
+      uniforms.uTime.value = t;
+      uniforms.uOn.value = relay.on;
+      // gl_FragCoord counts up from the bottom; the DOM counts down from the top
+      uniforms.uComet.value.set((ox + dotPoint.x) * d, (h - (oy + dotPoint.y)) * d);
+      uniforms.uWallet.value.set((ox + 54.5) * d, (h - (oy + 107.5)) * d);
       renderer.render(scene, camera);
     };
 
@@ -500,31 +383,19 @@ export function funds(card: HTMLElement): () => void {
     stop();
     io.disconnect();
     intro.kill();
-    kill.forEach((f) => f());
+    unbind.forEach((f) => f());
     disposeGl?.();
-    gsap.killTweensOf([
-      art,
-      disc,
-      walletIcon,
-      torch,
-      level,
-      tilt,
-      ambient,
-      discIn,
-      ...nodes,
-      ...pills,
-      ...tiles,
-      ...labels,
-      ...dots,
-    ]);
-    gsap.set([art, disc, walletIcon, ...pills, ...tiles, ...labels, ...dots], { clearProps: 'transform,filter,boxShadow,opacity,visibility' });
+    gsap.killTweensOf([disc, walletIcon, relay, discIn, ...pills, ...tiles, ...labels, ...dots, ...nodes]);
+    gsap.set([disc, walletIcon, ...pills, ...tiles, ...labels, ...dots], {
+      clearProps: 'transform,filter,opacity,visibility',
+    });
     gsap.set([ringO, ringW], { clearProps: 'opacity,visibility' });
     if (glow) {
       glow.style.removeProperty('--wipe');
       glow.style.removeProperty('-webkit-mask-image');
       glow.style.removeProperty('mask-image');
     }
-    card.style.perspective = prevPerspective;
-    added.forEach((el) => el.remove());
+    canvas.remove();
+    svg.remove();
   };
 }

@@ -58,7 +58,7 @@
 .mcard__price span { color: var(--color-body); }
 .mcard__delta { font-weight: 700; font-size: calc(12 * var(--u)); color: #00c950; }
 .mcard__delta.is-down { color: #e7000b; }
-.mcard__chart { position: absolute; left: calc(6 * var(--u)); top: calc(132 * var(--u)); width: calc(188 * var(--u)); height: auto; }
+.mcard__chart { position: absolute; left: 50%; transform: translateX(-50%); top: calc(132 * var(--u)); width: calc(188 * var(--u)); height: auto; }
 .mcard__ranges { position: absolute; left: calc(16 * var(--u)); bottom: calc(16 * var(--u)); display: flex; align-items: center; gap: calc(10 * var(--u)); }
 .mcard__ranges span { font-weight: 700; font-size: calc(8 * var(--u)); color: var(--color-nre-body); }
 .mcard__ranges span.is-active {
@@ -156,9 +156,6 @@
   height: calc(955 * var(--u));
 }
 .hv4__circuit { position: absolute; left: calc(373.5 * var(--u)); width: calc(731 * var(--u)); height: calc(247.5 * var(--u)); }
-/* The solid stand-in the entrance draws before handing the line back to the
-   dotted original. Invisible unless the timeline drives it. */
-.hv4__trace { opacity: 0; }
 .hv4__circuit--top { top: calc(170.5 * var(--u)); }
 .hv4__circuit--bottom { top: calc(430.5 * var(--u)); transform: scaleY(-1); }
 .hv4__ring { position: absolute; opacity: 0.9; }
@@ -177,9 +174,7 @@
 }
 .hv4__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
 .hv4__glass {
-  /* Centred by offset rather than by translate(-50%): the transform channel is
-     left free for the pointer field and the hover scale. */
-  position: absolute; left: calc(65.6 * var(--u)); top: calc(65.6 * var(--u));
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   display: grid; place-items: center;
   width: calc(244.8 * var(--u)); height: calc(244.8 * var(--u));
   border-radius: calc(101 * var(--u));
@@ -188,11 +183,10 @@
 }
 .hv4__glass img { width: calc(141 * var(--u)); height: calc(150.4 * var(--u)); }
 .hv4__chip {
-  /* --x/--y are the chip's centre in design px; the 28.5 is half its size, so
-     it sits where translate(-50%, -50%) put it and keeps its transform free. */
   position: absolute;
-  left: calc(50% + (var(--x) - 28.5) * var(--u));
-  top: calc(50% + (var(--y) - 28.5) * var(--u));
+  left: calc(50% + var(--x) * var(--u));
+  top: calc(50% + var(--y) * var(--u));
+  transform: translate(-50%, -50%);
   display: grid; place-items: center;
   width: calc(57 * var(--u)); height: calc(57 * var(--u));
   border-radius: calc(10.18 * var(--u));

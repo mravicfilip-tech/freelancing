@@ -17,6 +17,7 @@ import btcGlyph from '../../assets/hero/btc-glyph.svg';
 import logoWhite from '../../assets/hero/logo-white.svg';
 import logoOrange from '../../assets/hero/logo-orange.svg';
 import tileBg from '../../assets/hero/tile-bg.jpg';
+import circuit from '../../assets/hero/circuit.svg';
 import shortLine from '../../assets/hero/short-line.svg';
 import ringLg from '../../assets/hero/ring-lg.svg';
 import ringMd from '../../assets/hero/ring-md.svg';
@@ -27,7 +28,6 @@ import avatarGuterres from '../../assets/hero/mini-2.jpg';
 import avatarOpec from '../../assets/hero/mini-3.jpg';
 import crestGen from '../../assets/hero/mini-gen.jpg';
 import crestSud from '../../assets/hero/avatar.png';
-import { Circuit } from './Circuit';
 
 /* ---------------------------------------------------------------- slide 2 */
 
@@ -173,8 +173,8 @@ const DOTS = [
 export function VisualFuture() {
   return (
     <div className="hv4" aria-hidden="true">
-      <Circuit className="hv4__circuit hv4__circuit--top" />
-      <Circuit className="hv4__circuit hv4__circuit--bottom" />
+      <img src={circuit} alt="" className="hv4__circuit hv4__circuit--top" />
+      <img src={circuit} alt="" className="hv4__circuit hv4__circuit--bottom" />
 
       <img src={ringLg} alt="" className="hv4__ring hv4__ring--lg" />
       <img src={ringMd} alt="" className="hv4__ring hv4__ring--md" />

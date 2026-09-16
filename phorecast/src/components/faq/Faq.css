@@ -27,27 +27,13 @@
   transform: translate(-50%, -50%);
 }
 
-.faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; position: relative; isolation: isolate; }
-
-/* Pointer highlight. Out of flow, never hit-testable, and at rest it is an
-   invisible 0-opacity blob — it is a cursor affordance, not a piece of the
-   design being hidden, and nothing in the layout depends on it. The live loop
-   is the only thing that ever raises it. */
-.faq__spot {
-  position: absolute; top: 0; left: 0; z-index: 3;
-  width: 440px; height: 440px; margin: -220px 0 0 -220px;
-  border-radius: 50%; pointer-events: none; opacity: 0;
-  mix-blend-mode: screen;
-  background: radial-gradient(circle closest-side,
-    rgba(245, 94, 34, 0.20) 0%, rgba(245, 94, 34, 0.07) 42%, rgba(245, 94, 34, 0) 72%);
-}
+.faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {
   background: #141312;
   border-radius: 10px;
   overflow: hidden;
   transition: background-color 220ms ease, box-shadow 220ms ease;
 }
-.faq__row:not(.is-open):hover { background: #191817; }
 .faq__row.is-open { background: var(--surface); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
 .faq__q {
   display: flex; align-items: center; gap: 16px; width: 100%;
@@ -60,38 +46,23 @@
   transition: color 220ms ease;
 }
 .is-open .faq__index { color: var(--orange-100); }
-/* Per-row micro-interaction: the label leans toward the reader, the number
-   warms, the indicator swells. Transform only — the row does not reflow. */
-.faq__row:hover .faq__question { transform: translateX(3px); }
-.faq__row:not(.is-open):hover .faq__index { color: var(--orange-100); }
-.faq__row:hover .faq__toggle { transform: scale(1.16); }
-.faq__toggle { transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
 .faq__question {
-  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
   flex: 1;
   font-family: var(--font-display); font-weight: 500; font-size: clamp(19px, 1.35vw, 24px); line-height: 1.2;
   color: var(--white-font);
 }
 .faq__toggle { position: relative; width: 24px; height: 24px; flex: none; }
-/* transform/opacity are GSAP's during a toggle; a CSS transition on the same
-   properties would fight it frame by frame. Colour stays on CSS. */
 .faq__toggle i {
   position: absolute; background: var(--color-nre-body); border-radius: 1px;
-  transition: background-color 220ms ease;
+  transition: background-color 220ms ease, transform 220ms ease, opacity 220ms ease;
 }
 .faq__toggle i:first-child { left: 6px; top: 11.25px; width: 12px; height: 1.5px; }
 .faq__toggle i:last-child { left: 11.25px; top: 6px; width: 1.5px; height: 12px; }
 .is-open .faq__toggle i { background: var(--orange-100); }
 .is-open .faq__toggle i:last-child { opacity: 0; transform: rotate(90deg); }
 
-/* A closed answer is collapsed, not `display: none` — display cannot be tweened.
-   Height 0 + overflow hidden takes it out of flow's visual space; `visibility:
-   hidden` takes it out of the accessibility tree and the tab order. Both rest
-   states are plain CSS off `.is-open`, so the accordion still opens and closes
-   correctly if the motion script never runs. */
-.faq__answer { height: 0; overflow: hidden; visibility: hidden; }
-.faq__row.is-open .faq__answer { height: auto; visibility: visible; }
-.faq__answer-inner { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
+.faq__answer[hidden] { display: none; }
+.faq__answer { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
 .faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--color-nre-body); }
 .faq__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .faq__chip {
@@ -113,14 +84,6 @@
   .faq { padding: 56px 0; }
   .faq__q { padding: 18px 20px; gap: 12px; }
   .faq__index { width: 26px; font-size: 12px; letter-spacing: 1.6px; }
-  .faq__answer-inner { padding: 0 20px 20px; }
+  .faq__answer { padding: 0 20px 20px; }
   .faq__lede { font-size: 17px; }
-}
-
-/* A person who has asked for less motion gets the finished state, instantly. */
-@media (prefers-reduced-motion: reduce) {
-  .faq__ladder span, .faq__row, .faq__index, .faq__toggle i,
-  .faq__toggle, .faq__question { transition: none; }
-  .faq__row:hover .faq__question, .faq__row:hover .faq__toggle { transform: none; }
-  .faq__spot { display: none; }
 }

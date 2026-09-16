@@ -18,7 +18,6 @@ import flagFr from '../../assets/familiar/flag-fr.jpg';
 import search from '../../assets/familiar/search.svg';
 import filter from '../../assets/familiar/filter.svg';
 import trendTab from '../../assets/familiar/trend-tab.svg';
-import { useFamiliarMotion } from './motion';
 import './Familiar.css';
 
 const CANDIDATES = [
@@ -110,10 +109,8 @@ function MarketCard(props: {
 }
 
 export function Familiar() {
-  const ref = useFamiliarMotion();
-
   return (
-    <section className="fam" aria-labelledby="fam-title" ref={ref}>
+    <section className="fam" aria-labelledby="fam-title">
       <div className="fam__bg glow-fade--top" aria-hidden="true">
         <span className="fam__g fam__g--red" />
         <span className="fam__g fam__g--orange" />

@@ -1,41 +1,34 @@
 /**
- * A small raw-WebGL layer that reproduces the Figma glow stack the bento cards
- * were designed with: halftone dots → lens distortion → 16×16 Bayer ordered
- * dither. Written against the GL context directly rather than pulling Three.js
- * into the marketing bundle — the whole thing is one full-screen triangle pair
- * and about 40 lines of GLSL.
+ * The Figma glow stack, as an actual shader instead of a CSS blur: a drifting
+ * field → halftone dots → lens distortion → 16×16 Bayer ordered dither.
+ *
+ * Written against a raw WebGL context rather than pulling Three.js into the
+ * marketing bundle — it is one full-screen triangle and about 40 lines of GLSL.
+ * It is ambient only, by MOTION.md: there is no pointer input of any kind.
  *
  * Internal to src/components/bento/motion; onboard.ts and bonus.ts are the
  * public entry points.
  */
 
 export interface HalftoneOptions {
-  /** Glow colour, 0–1 linear-ish RGB. */
+  /** Glow colour, 0–1 RGB. */
   color: [number, number, number];
   /** Halftone cell size in CSS px. Smaller = finer dots. */
   cell?: number;
   /** Peak opacity of the layer. */
   alpha?: number;
-  /** Strength of the always-on drifting field, 0 = only reacts to the pointer. */
+  /** Starting strength of the drifting field. Tween `swell` to breathe it. */
   ambient?: number;
-  /** Radius in CSS px of the bloom that follows the pointer. */
-  reach?: number;
-  /** Lens pinch around the pointer. 0 = flat, .35 = a noticeable bulge. */
+  /** Barrel strength of the lens stage, 0–0.4. */
   lens?: number;
-  /** Clip the field to below a curve supplied as 256 normalised heights. */
+  /** Clip the field to below a curve, as N normalised heights across the width. */
   heights?: Float32Array;
 }
 
 export interface HalftoneLayer {
   canvas: HTMLCanvasElement;
-  /** Tween this — the pointer bloom's strength. */
-  hover: { value: number };
-  /** Tween this — the ambient field's strength. */
+  /** Tween this — the field's strength. The only input the layer has. */
   swell: { value: number };
-  /** Pointer position in CSS px relative to the canvas, top-left origin. */
-  setPointer(x: number, y: number): void;
-  /** Fire an expanding dithered ring from a CSS-px point. */
-  ripple(x: number, y: number): void;
   resize(): void;
   render(seconds: number): void;
   dispose(): void;
@@ -50,19 +43,15 @@ precision mediump float;
 uniform vec2  uRes;        // drawing-buffer size, device px
 uniform float uDpr;
 uniform float uTime;
-uniform vec2  uPointer;    // device px, y up
-uniform float uHover;
 uniform float uSwell;
 uniform float uCell;
 uniform float uAlpha;
 uniform float uLens;
-uniform float uReach;
 uniform vec3  uColor;
-uniform vec3  uRipples[4]; // xy in device px, z = birth time
 ${useHeights ? 'uniform sampler2D uHeights;' : ''}
 
-/* 16×16 ordered Bayer threshold, built from the 2×2 recursion instead of a
-   256-entry lookup: bayer(2n) = 4·bayer(n) on the high bits + {0,2,3,1}. */
+/* 16×16 ordered Bayer threshold, built from the 2×2 recursion rather than a
+   256-entry lookup: each bit pair contributes {0,2,3,1} at a falling weight. */
 float bayer16(vec2 p){
   vec2 q = floor(mod(p, 16.0));
   float v = 0.0;
@@ -85,12 +74,11 @@ float halftone(vec2 css, float v, float cell, float ang){
   return smoothstep(radius, radius - 0.16, d);
 }
 
-/* Lens distortion: pull samples toward the pointer so the field magnifies
-   under the cursor, falling off smoothly with distance. */
-vec2 lens(vec2 p, vec2 c, float reach, float k){
-  vec2 d = p - c;
-  float r = length(d) / max(reach, 1.0);
-  return c + d * (1.0 - k * exp(-r * r * 1.8));
+/* Lens distortion about the centre of the layer, breathing on its own slow
+   period so the field never sits still. */
+vec2 lens(vec2 p, vec2 c, float k){
+  vec2 d = (p - c) / max(c.x, 1.0);
+  return c + (p - c) * (1.0 - k * (1.0 - dot(d, d)));
 }
 
 void main(){
@@ -104,30 +92,19 @@ void main(){
   if (below < 0.0) discard;
   ` : ''}
 
-  vec2 warped = lens(frag, uPointer, uReach * uDpr, uLens * uHover);
+  vec2 centre = uRes * 0.5;
+  float k = uLens * (0.55 + 0.45 * sin(uTime * 0.19));
+  vec2 warped = lens(frag, centre, k);
 
-  // drifting ambient field — two slow blobs on incommensurable periods, so the
-  // card never repeats itself inside a screenshot's worth of time
-  vec2 a1 = vec2(0.30 + 0.11 * sin(uTime * 0.21), 0.52 + 0.14 * cos(uTime * 0.17)) * uRes;
-  vec2 a2 = vec2(0.74 + 0.13 * cos(uTime * 0.127), 0.34 + 0.11 * sin(uTime * 0.109)) * uRes;
+  // two slow blobs on mismatched periods, so the field never repeats inside a
+  // screenshot's worth of time
+  vec2 a1 = vec2(0.30 + 0.11 * sin(uTime * 0.153), 0.52 + 0.14 * cos(uTime * 0.117)) * uRes;
+  vec2 a2 = vec2(0.74 + 0.13 * cos(uTime * 0.091), 0.34 + 0.11 * sin(uTime * 0.073)) * uRes;
   float f = uSwell * (
-      smoothstep(0.55 * uRes.x, 0.0, distance(warped, a1)) * 0.85 +
-      smoothstep(0.42 * uRes.x, 0.0, distance(warped, a2)) * 0.62);
+      smoothstep(0.55 * uRes.x, 0.0, distance(warped, a1)) * 0.9 +
+      smoothstep(0.42 * uRes.x, 0.0, distance(warped, a2)) * 0.65);
 
-  // pointer bloom
-  f += uHover * smoothstep(uReach * uDpr, 0.0, distance(warped, uPointer)) * 0.95;
-
-  // click rings
-  for (int i = 0; i < 4; i++) {
-    float born = uRipples[i].z;
-    if (born < 0.0) continue;
-    float t = uTime - born;
-    if (t < 0.0 || t > 1.4) continue;
-    float d = distance(frag, uRipples[i].xy);
-    f += smoothstep(46.0 * uDpr, 0.0, abs(d - t * 520.0 * uDpr)) * (1.0 - t / 1.4);
-  }
-
-  ${useHeights ? 'f *= smoothstep(120.0, 0.0, below);' : ''}
+  ${useHeights ? 'f *= smoothstep(130.0, 0.0, below);' : ''}
 
   float v = clamp(f, 0.0, 1.0);
   if (v <= 0.004) discard;
@@ -152,8 +129,8 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
 }
 
 /**
- * Builds the layer and appends its canvas to `host`. Returns null when WebGL
- * is unavailable or the program fails to link — callers fall back to CSS.
+ * Builds the layer and prepends its canvas to `host`. Returns null when WebGL
+ * is unavailable or the program fails to link — callers simply run without it.
  */
 export function createHalftone(host: HTMLElement, opts: HalftoneOptions): HalftoneLayer | null {
   const canvas = document.createElement('canvas');
@@ -190,9 +167,8 @@ export function createHalftone(host: HTMLElement, opts: HalftoneOptions): Halfto
 
   const u = (n: string) => gl!.getUniformLocation(prog, n);
   const loc = {
-    res: u('uRes'), dpr: u('uDpr'), time: u('uTime'), pointer: u('uPointer'),
-    hover: u('uHover'), swell: u('uSwell'), cell: u('uCell'), alpha: u('uAlpha'),
-    lens: u('uLens'), reach: u('uReach'), color: u('uColor'), ripples: u('uRipples[0]'),
+    res: u('uRes'), dpr: u('uDpr'), time: u('uTime'), swell: u('uSwell'),
+    cell: u('uCell'), alpha: u('uAlpha'), lens: u('uLens'), color: u('uColor'),
     heights: u('uHeights'),
   };
 
@@ -218,27 +194,18 @@ export function createHalftone(host: HTMLElement, opts: HalftoneOptions): Halfto
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   gl.uniform3f(loc.color, opts.color[0], opts.color[1], opts.color[2]);
   gl.uniform1f(loc.cell, opts.cell ?? 5.2);
-  gl.uniform1f(loc.alpha, opts.alpha ?? 0.5);
-  gl.uniform1f(loc.lens, opts.lens ?? 0.34);
-  gl.uniform1f(loc.reach, opts.reach ?? 210);
+  gl.uniform1f(loc.alpha, opts.alpha ?? 0.45);
+  gl.uniform1f(loc.lens, opts.lens ?? 0.18);
 
-  const hover = { value: 0 };
-  const swell = { value: opts.ambient ?? 0.35 };
-  const ripples = new Float32Array([0, 0, -99, 0, 0, -99, 0, 0, -99, 0, 0, -99]);
-  let slot = 0;
-  let dpr = 1;
-  let pointer: [number, number] = [-9999, -9999];
-  let w = 0, h = 0;
-  let clock = 0;
+  const swell = { value: opts.ambient ?? 0.28 };
 
   const resize = () => {
     const r = host.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = Math.max(1, Math.round(r.width * dpr));
-    h = Math.max(1, Math.round(r.height * dpr));
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width = w; canvas.height = h;
-    }
+    // DPR capped at 2, per MOTION.md
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(r.width * dpr));
+    const h = Math.max(1, Math.round(r.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     gl!.viewport(0, 0, w, h);
     gl!.uniform2f(loc.res, w, h);
     gl!.uniform1f(loc.dpr, dpr);
@@ -248,28 +215,12 @@ export function createHalftone(host: HTMLElement, opts: HalftoneOptions): Halfto
   resize();
 
   return {
-    canvas, hover, swell,
-    setPointer(x, y) {
-      const r = canvas.getBoundingClientRect();
-      pointer = [x * dpr, (r.height - y) * dpr];
-    },
-    ripple(x, y) {
-      const r = canvas.getBoundingClientRect();
-      ripples[slot * 3] = x * dpr;
-      ripples[slot * 3 + 1] = (r.height - y) * dpr;
-      ripples[slot * 3 + 2] = clock;
-      slot = (slot + 1) % 4;
-    },
-    resize,
+    canvas, swell, resize,
     render(seconds) {
-      clock = seconds;
       gl!.useProgram(prog);
       if (tex) { gl!.activeTexture(gl!.TEXTURE0); gl!.bindTexture(gl!.TEXTURE_2D, tex); }
       gl!.uniform1f(loc.time, seconds);
-      gl!.uniform2f(loc.pointer, pointer[0], pointer[1]);
-      gl!.uniform1f(loc.hover, hover.value);
       gl!.uniform1f(loc.swell, swell.value);
-      gl!.uniform3fv(loc.ripples, ripples);
       gl!.clearColor(0, 0, 0, 0);
       gl!.clear(gl!.COLOR_BUFFER_BIT);
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);

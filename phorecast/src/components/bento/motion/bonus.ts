@@ -2,22 +2,31 @@ import { gsap } from 'gsap';
 import { createHalftone, type HalftoneLayer } from './halftone';
 
 /**
- * Card C — "Double your capital on first deposit", motion direction 03: Charge
- * transfer.
+ * Card C — "Double your capital on first deposit".
  *
- * The first time the card comes into view the line draws itself in with the
- * node riding the edge and the two figures tally to $200.00 — the money
- * arriving. After that the card never stops: a light pulse runs the curve on a
- * 3.4s loop, the node's halo breathes on a different period, the bolt glints,
- * the badges bob, and a halftone field swells under the curve.
+ * Two triggers only, per MOTION.md: a load-in when the card first reaches the
+ * viewport, and a loop that runs forever afterwards. Nothing here responds to
+ * the pointer.
  *
- * Hover tells the story: the pill dips (anticipation), particles leave the
- * deposit wallet, climb onto the real path and ride it up to the node;
- * overlapping their landing, the bolt fires and the projection *ahead* of the
- * node lights up; the shine crossing the pill is the late accent.
+ *   LOAD-IN (≈4.0s).  The chart line is the lead and its draw is the longest
+ *   tween on the card — 1.6s of travel to exactly where the design parks the
+ *   node, with the node riding the drawing edge. It lands, holds for a 0.3s
+ *   beat, then blooms; the projection runs on to the card edge; the pie and
+ *   bolt badges arrive with a countable 0.2s gap; the pill rises; and the two
+ *   figures tally to $200.00 last, because the money is the point.
  *
- * Nothing static is restyled — every layer added here is transparent at rest
- * and the returned teardown removes all of it.
+ *   LOOP (never stops).  A charge cycle every 11s: five particles leave the
+ *   deposit wallet, climb onto the real path and ride it up to the node, where
+ *   the bolt glints and the projection ahead of the node lights and fades.
+ *   Around it a light pulse walks the curve on a 12s cycle, the node breathes on
+ *   7.6s, the badges bob on 8.4 / 10.9s, the grid drifts on 6.7 and 9.3s, a
+ *   dithered halftone field swells under the curve on 9.3s, and the figures
+ *   re-tick on 13.4s — always settling on the number the design ships. No two
+ *   periods match, so nothing pulses in step.
+ *
+ * Entrances animate *from* the shipped state with `gsap.from`, so if this module
+ * never runs the card still reads correctly. Ambient amplitude is ≤2px, so any
+ * single frame still reads as the approved static design.
  */
 
 /** The path out of assets/bento/chart-line.svg, verbatim. */
@@ -42,16 +51,17 @@ export function bonus(card: HTMLElement): () => void {
   const tiles = Array.from(card.querySelectorAll<HTMLElement>('.bonus__tile'));
   const bolt = tiles.find((t) => !t.classList.contains('bonus__tile--pie')) ?? null;
   const pie = tiles.find((t) => t.classList.contains('bonus__tile--pie')) ?? null;
-  if (!chart || !line || !marker || !grid || !gridImg || !pill || !wallet || !bolt || !pie || amounts.length < 2) return teardown;
+  if (!chart || !line || !marker || !grid || !gridImg || !pill || !wallet || !bolt || !pie
+    || amounts.length < 2) return teardown;
 
   const reduced = typeof matchMedia === 'function'
     && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) return teardown;           // the shipped design is the fallback
 
-  /* ---------------------------------------------------------------- layers */
+  /* ------------------------------------------------------------ added layers */
 
-  // An overlay sitting exactly on top of the line image: it carries the moving
-  // pulse, the lit projection and the particles. The static stroke stays the
+  // An overlay sitting exactly on the line image, carrying the walking pulse,
+  // the lit projection and the charge particles. The static stroke stays the
   // shipped <img>, untouched.
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -62,33 +72,33 @@ export function bonus(card: HTMLElement): () => void {
     overflow: 'visible', pointerEvents: 'none', zIndex: '0',
   });
 
-  const mk = (cls: string, stroke: string, width: string) => {
+  const mkPath = (stroke: string, width: string) => {
     const p = document.createElementNS(NS, 'path');
     p.setAttribute('d', LINE_D);
     p.setAttribute('fill', 'none');
     p.setAttribute('stroke', stroke);
     p.setAttribute('stroke-width', width);
     p.setAttribute('stroke-linecap', 'round');
-    p.dataset.role = cls;
     return p;
   };
-  const projection = mk('projection', '#ff8a4f', '2');
+  const projection = mkPath('#ff8a4f', '2');
   projection.style.opacity = '0';
-  projection.style.filter = 'drop-shadow(0 0 6px rgba(255,138,79,.65))';
-  const pulse = mk('pulse', '#ffd2b4', '2.4');
-  pulse.style.filter = 'drop-shadow(0 0 7px rgba(255,180,130,.9))';
+  projection.style.filter = 'drop-shadow(0 0 6px rgba(255,138,79,.6))';
+  const pulse = mkPath('#ffd2b4', '2.2');
+  pulse.style.filter = 'drop-shadow(0 0 7px rgba(255,180,130,.85))';
+  pulse.style.opacity = '0';
 
-  const FX = 6;
+  const FX = 5;
   const dots: SVGCircleElement[] = [];
   for (let i = 0; i < FX; i++) {
     const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('r', '2.4');
+    c.setAttribute('r', '2.3');
     c.setAttribute('fill', '#ffd8bd');
     c.setAttribute('opacity', '0');
     dots.push(c);
   }
   // A measuring path that is never painted — getPointAtLength needs a real node.
-  const ruler = mk('ruler', 'none', '0');
+  const ruler = mkPath('none', '0');
   ruler.style.visibility = 'hidden';
   svg.append(ruler, projection, pulse, ...dots);
   line.after(svg);
@@ -107,33 +117,22 @@ export function bonus(card: HTMLElement): () => void {
     return (lo / SAMPLES) * TOTAL;
   };
   // Where the design parks the node: the marker's circle centre is (18.42,
-  // 17.94) inside a 36.36 box at (335.1, 28.6) in chart space, and the line
-  // sits at (-0.5, 16) in that same space.
-  const NODE_L = lengthAtX(335.1 + 18.42 + 0.5);
+  // 17.94) inside a 36.36 box at (335.1, 28.6) in chart space, and the line sits
+  // at (-0.5, 16) in that same space.
+  const NODE_X = 335.1 + 18.42 + 0.5;
+  const NODE_L = lengthAtX(NODE_X);
   const NODE = ruler.getPointAtLength(NODE_L);
+  const NODE_F = NODE_X / W;              // node position as a fraction of width
 
   const halo = document.createElement('span');
   Object.assign(halo.style, {
     position: 'absolute', left: '335.1px', top: '28.6px', width: '36.36px', height: '36.36px',
-    borderRadius: '50%', pointerEvents: 'none', opacity: '0', zIndex: '0',
+    borderRadius: '50%', pointerEvents: 'none', zIndex: '0',
   });
   marker.after(halo);
   cleanups.push(() => halo.remove());
 
-  const shineWrap = document.createElement('span');
-  const shine = document.createElement('span');
-  Object.assign(shineWrap.style, {
-    position: 'absolute', inset: '0', borderRadius: '30px', overflow: 'hidden', pointerEvents: 'none',
-  });
-  Object.assign(shine.style, {
-    position: 'absolute', top: '0', bottom: '0', left: '-45%', width: '45%', opacity: '0',
-    background: 'linear-gradient(90deg, rgba(255,251,248,0), rgba(255,251,248,.16), rgba(255,251,248,0))',
-  });
-  shineWrap.append(shine);
-  pill.append(shineWrap);
-  cleanups.push(() => shineWrap.remove());
-
-  // Curve heights for the shader, so the glow is clipped by the real line.
+  // The curve's own height, so the shader glow is clipped by the real line.
   const heights = new Float32Array(256);
   for (let i = 0; i < 256; i++) heights[i] = ruler.getPointAtLength(lengthAtX((i / 255) * W)).y / H;
 
@@ -145,167 +144,129 @@ export function bonus(card: HTMLElement): () => void {
   chart.prepend(glowHost);
   cleanups.push(() => glowHost.remove());
 
+  // Halftone dots then a 16×16 Bayer dither — the Figma glow stack, drifting.
+  // Ambient only: the pointer inputs are never fed.
   const glow: HalftoneLayer | null = createHalftone(glowHost, {
     color: [0.961, 0.369, 0.133],         // #f55e22
-    cell: 4.6, alpha: 0.62, ambient: 0.22, reach: 190, lens: 0.3, heights,
+    cell: 4.6, alpha: 0.5, ambient: 0.2, lens: 0, heights,
   });
   if (glow) cleanups.push(() => glow.dispose());
 
-  /* -------------------------------------------------- pointer + float engine */
+  /* ------------------------------------------------------------ float engine */
 
   type Layer = {
-    el: HTMLElement; depth: number;
-    ax: number; ay: number; wx: number; wy: number; ph: number;
+    el: HTMLElement;
+    ax: number; ay: number; px: number; py: number; ph: number;
     s: { v: number }; base: string;
-    /** offset owned by a timeline (the intro walks the node along here) */
     o: { x: number; y: number };
   };
-  const layer = (el: HTMLElement, depth: number, ax: number, ay: number, wx: number, wy: number, ph: number): Layer =>
-    ({ el, depth, ax, ay, wx, wy, ph, s: { v: 1 }, base: '', o: { x: 0, y: 0 } });
+  const layer = (el: HTMLElement, ax: number, ay: number, px: number, py: number, ph: number): Layer =>
+    ({ el, ax, ay, px, py, ph, s: { v: 1 }, base: '', o: { x: 0, y: 0 } });
 
+  const L_NODE = 1, L_PIE = 2, L_BOLT = 3, L_PILL = 4;
   const layers: Layer[] = [
-    layer(grid, 0.012, 0, 0, 0, 0, 0),
-    layer(chart, 0.02, 0, 0, 0, 0, 0),
-    layer(marker, 0.046, 0.6, 1.0, 0.23, 0.19, 0.8),
-    layer(pie, 0.07, 1.6, 2.4, 0.29, 0.23, 2.4),
-    layer(bolt, 0.086, 1.9, 2.9, 0.34, 0.27, 4.6),
-    layer(pill, 0.03, 0.5, 0.9, 0.17, 0.15, 1.6),
+    layer(grid, 0, 0, 0, 0, 0),                    // context: drift only, inside
+    layer(marker, 0.5, 0.9, 9.6, 12.7, 0.8),       // accent
+    layer(pie, 1.2, 1.9, 8.4, 11.3, 2.4),          // support
+    layer(bolt, 1.4, 2.1, 10.9, 8.1, 4.6),         // support
+    layer(pill, 0.4, 0.8, 12.4, 9.9, 1.6),         // support
   ];
 
-  let cardW = card.clientWidth || 1;
-  let cardH = card.clientHeight || 1;
   const measure = () => {
     for (const l of layers) {
       l.el.style.transform = '';
       const m = getComputedStyle(l.el).transform;
       l.base = m && m !== 'none' ? `${m} ` : '';
     }
-    cardW = card.clientWidth || 1;
-    cardH = card.clientHeight || 1;
   };
   measure();
 
-  const pointer = { tx: 0, ty: 0, x: 0, y: 0, tilt: 0 };
-  let onCard = false;
-
-  const onMove = (e: PointerEvent) => {
-    const r = card.getBoundingClientRect();
-    pointer.tx = (e.clientX - r.left) / r.width - 0.5;
-    pointer.ty = (e.clientY - r.top) / r.height - 0.5;
-    const g = glowHost.getBoundingClientRect();
-    glow?.setPointer(e.clientX - g.left, e.clientY - g.top);
-  };
-  card.addEventListener('pointermove', onMove);
-  cleanups.push(() => card.removeEventListener('pointermove', onMove));
-
-  /* --------------------------------------------------------------- ambient */
-
-  // The travelling pulse: a short dash walking the path, seamless because the
-  // offset simply wraps.
-  const PULSE_LEN = 46;
-  pulse.style.strokeDasharray = `0 0 ${PULSE_LEN} ${TOTAL}`;
-  const walker = { p: 0 };
-  const paintPulse = () => {
-    const head = walker.p * (TOTAL + PULSE_LEN * 2);
-    const gap = Math.max(0, head - PULSE_LEN);
-    const len = Math.min(PULSE_LEN, head, TOTAL - gap);
-    pulse.style.strokeDasharray = `0 ${gap} ${Math.max(0, len)} ${TOTAL}`;
-    pulse.style.opacity = String(0.55 * Math.sin(Math.PI * Math.min(1, Math.max(0, walker.p))) ** 0.6);
-  };
-  paintPulse();
-
-  const haloBreath = { v: 0 };
-  const boltGlint = { v: 0 };
-
-  const ambient = gsap.timeline({ repeat: -1, paused: true })
-    .fromTo(walker, { p: 0 }, { p: 1, duration: 2.1, ease: 'power1.inOut', onUpdate: paintPulse }, 0)
-    .to({}, { duration: 1.3 }, 2.1);      // breathing room between pulses
-
-  const floats: Array<gsap.core.Tween | gsap.core.Timeline> = [];
-  const startLoop = () => {
-    if (floats.length) return;
-    // the node breathes
-    floats.push(gsap.to(haloBreath, { v: 1, duration: 1.45, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    // the bolt glints every few seconds
-    floats.push(gsap.fromTo(boltGlint, { v: 0 }, {
-      v: 1, duration: 0.55, ease: 'power2.inOut', repeat: -1, repeatDelay: 4.7, yoyo: true,
-    }));
-    // the circuit grid drifts inside its clip — a slow current, not a scroll
-    floats.push(gsap.to(gridImg, { x: 8, duration: 7.4, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    floats.push(gsap.to(gridImg, { y: -5, duration: 9.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    // the figures re-tick now and then, the way a live balance does. It always
-    // settles on the number the design ships: +$200.00.
-    floats.push(gsap.timeline({ repeat: -1, repeatDelay: 5.6 })
-      .fromTo(tally, { v: 198.4 }, { v: 200, duration: 0.62, ease: 'power2.out', onUpdate: writeTally }));
-    if (glow) floats.push(gsap.to(glow.swell, { value: 0.36, duration: 3.9, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
-    floats.push(ambient);
-    if (visible) floats.forEach((f) => f.play());
-  };
-
-  /* ------------------------------------------------- first-sight draw-on */
+  /* ----------------------------------------------------------- shared state */
 
   const tally = { v: 200 };
   const writeTally = () => { for (const a of amounts) a.textContent = money(tally.v); };
+
+  // 1 = the shipped line, drawn end to end. The load-in animates from 0.
   const reveal = { p: 1 };
   const paintReveal = () => {
     const cut = reveal.p;
     line.style.clipPath = cut >= 1 ? '' : `inset(0 ${((1 - cut) * 100).toFixed(2)}% 0 0)`;
-    // the rAF owns marker's transform, so the walk feeds it an offset
-    if (cut >= 1) { layers[2].o.x = 0; layers[2].o.y = 0; return; }
-    const q = ruler.getPointAtLength(lengthAtX(cut * W));
-    layers[2].o.x = q.x - NODE.x;
-    layers[2].o.y = q.y - NODE.y;
+    // the node rides the drawing edge until it reaches where the design parks it
+    const at = Math.min(cut, NODE_F);
+    const q = ruler.getPointAtLength(lengthAtX(at * W));
+    layers[L_NODE].o.x = q.x - NODE.x;
+    layers[L_NODE].o.y = q.y - NODE.y;
   };
+
+  const haloBreath = { v: 1 };
+  const boltGlint = { v: 0 };
+  const seg = { len: 0 };
+  const paintProjection = () => {
+    projection.style.strokeDasharray = `0 ${NODE_L} ${seg.len} ${TOTAL}`;
+  };
+  paintProjection();
+
+  // The travelling pulse: a short dash walking the path, seamless because it
+  // enters and leaves through zero length.
+  const PULSE_LEN = 44;
+  const walker = { p: 0 };
+  const paintPulse = () => {
+    const head = walker.p * (TOTAL + PULSE_LEN * 2);
+    const gap = Math.max(0, head - PULSE_LEN);
+    const len = Math.max(0, Math.min(PULSE_LEN, head, TOTAL - gap));
+    pulse.style.strokeDasharray = `0 ${gap} ${len} ${TOTAL}`;
+    pulse.style.opacity = String(0.5 * Math.sin(Math.PI * Math.min(1, Math.max(0, walker.p))));
+  };
+  paintPulse();
+
+  /* ----------------------------------------------------------- 1 · LOAD-IN */
 
   let intro: gsap.core.Timeline | null = null;
   const playIntro = () => {
-    gsap.set(reveal, { p: 0 });
-    gsap.set(tally, { v: 0 });
-    gsap.set([pie, bolt, pill, marker], { opacity: 0 });
-    gsap.set(grid, { opacity: 0 });
-    layers[3].s.v = 0.7; layers[4].s.v = 0.7;
-    layers[5].o.y = 16;
-    paintReveal();
-
     intro = gsap.timeline({ onComplete: startLoop })
-      // the grid resolves first — the ground the curve is drawn on
-      .to(grid, { opacity: 0.2, duration: 0.5, ease: 'power2.out' }, 0)
-      .fromTo(gridImg, { x: -14 }, { x: 0, duration: 0.8, ease: 'power3.out' }, 0)
-      // then the line draws itself up to where the design parks the node…
-      .to(reveal, { p: 335.6 / W, duration: 0.6, ease: 'power2.out', onUpdate: paintReveal }, 0.14)
-      // …the node lands there and blooms…
-      .to(marker, { opacity: 1, duration: 0.22, ease: 'power2.out' }, 0.66)
-      .fromTo(haloBreath, { v: 3.4 }, { v: 1, duration: 0.8, ease: 'power2.out' }, 0.66)
-      // …and the projection runs on to the edge
-      .to(reveal, { p: 1, duration: 0.46, ease: 'power2.inOut', onUpdate: paintReveal }, 0.7)
-      // the pill rises and tallies
-      .to(pill, { opacity: 1, duration: 0.42, ease: 'power3.out' }, 0.66)
-      .to(layers[5].o, { y: 0, duration: 0.7, ease: 'back.out(1.6)' }, 0.66)
-      .to(tally, { v: 200, duration: 0.6, ease: 'power2.out', onUpdate: writeTally }, 0.7)
-      // badges pop last, one after the other
-      .to([pie, bolt], { opacity: 1, duration: 0.3, ease: 'power2.out', stagger: 0.11 }, 0.82)
-      .to([layers[3].s, layers[4].s], { v: 1, duration: 0.62, ease: 'back.out(2.2)', stagger: 0.11 }, 0.82)
-      .fromTo(boltGlint, { v: 0 }, { v: 1.6, duration: 0.24, ease: 'power2.out' }, 1.06)
-      .to(boltGlint, { v: 0, duration: 0.6, ease: 'power2.inOut' }, 1.3);
+      /* ---- LEAD: the line draws itself. The longest tween on the card. ---- */
+      .from(reveal, { p: 0, duration: 1.6, ease: 'power2.out', onUpdate: paintReveal }, 0)
+      /* ---- CONTEXT: the grid resolves under it, barely ---- */
+      .from(grid, { opacity: 0, duration: 1.3, ease: 'power2.out' }, 0.1)
+      .from(gridImg, { x: -10, duration: 1.5, ease: 'power2.out' }, 0.1)
+
+      /* ---- beat (0.3s) ---- */
+
+      /* ---- the node lands where the draw left it, and blooms ---- */
+      .from(marker, { opacity: 0, duration: 0.55, ease: 'power2.out' }, 1.35)
+      .fromTo(haloBreath, { v: 3.2 }, { v: 1, duration: 1.2, ease: 'power2.out' }, 1.4)
+      /* ---- and the projection runs on to the edge ---- */
+      .to(reveal, { p: 1, duration: 1.15, ease: 'power2.out', onUpdate: paintReveal }, 1.9)
+
+      /* ---- SUPPORT: the badges, one then the other ---- */
+      .from([pie, bolt], { opacity: 0, duration: 0.7, ease: 'power2.out', stagger: 0.2 }, 2.15)
+      .from([layers[L_PIE].s, layers[L_BOLT].s], { v: 0.965, duration: 1.05, ease: 'power3.out', stagger: 0.2 }, 2.15)
+
+      /* ---- the pill rises ---- */
+      .from(pill, { opacity: 0, duration: 0.8, ease: 'power2.out' }, 2.55)
+      .from(layers[L_PILL].o, { y: 18, duration: 1.2, ease: 'power3.out' }, 2.55)
+      /* ---- and the money is the last thing to settle ---- */
+      .fromTo(tally, { v: 0 }, { v: 200, duration: 1.25, ease: 'power2.out', onUpdate: writeTally }, 2.75)
+      .fromTo(boltGlint, { v: 0 }, { v: 1.4, duration: 0.55, ease: 'power2.out' }, 3.1)
+      .to(boltGlint, { v: 0, duration: 0.9, ease: 'sine.inOut' }, 3.65);
   };
 
-  /* ------------------------------------------------------- charge transfer */
+  /* -------------------------------------------------------------- 2 · LOOP */
 
   const walletCentre = () => {
     const w = wallet.getBoundingClientRect();
     const s = svg.getBoundingClientRect();
-    // svg is 564 css px wide showing a W-unit viewBox, so the scale is ~1:1
     const sx = W / (s.width || W), sy = H / (s.height || H);
     return { x: (w.left + w.width / 2 - s.left) * sx, y: (w.top + w.height / 2 - s.top) * sy };
   };
 
-  const JOIN_L = lengthAtX(240);
+  const JOIN_L = lengthAtX(232);
   const placeDot = (d: SVGCircleElement, t: number, from: { x: number; y: number }) => {
     const join = ruler.getPointAtLength(JOIN_L);
     let x: number, y: number;
     if (t < 0.4) {                         // a quadratic hop from the wallet
       const u = t / 0.4, m = 1 - u;
-      const cx = (from.x + join.x) / 2 - 26, cy = Math.min(from.y, join.y) - 44;
+      const cx = (from.x + join.x) / 2 - 26, cy = Math.min(from.y, join.y) - 42;
       x = m * m * from.x + 2 * m * u * cx + u * u * join.x;
       y = m * m * from.y + 2 * m * u * cy + u * u * join.y;
     } else {                               // then it rides the real path
@@ -317,145 +278,89 @@ export function bonus(card: HTMLElement): () => void {
     d.setAttribute('cy', y.toFixed(2));
   };
 
-  const seg = { len: 0 };
-  const paintProjection = () => {
-    projection.style.strokeDasharray = `0 ${NODE_L} ${seg.len} ${TOTAL}`;
-  };
-  paintProjection();
-
-  let charge: gsap.core.Timeline | null = null;
-
-  const play = () => {
-    charge?.kill();
+  /** One charge: wallet → curve → node → bolt → projection. 4.6s of travel. */
+  const buildCharge = () => {
     const from = walletCentre();
     const tl = gsap.timeline();
-    // anticipation — the pill gathers itself before it sends anything
-    tl.to(layers[5].s, { v: 0.988, duration: 0.13, ease: 'power2.in' }, 0)
-      .to(wallet, { scale: 0.93, duration: 0.13, ease: 'power2.in' }, 0)
-      .to(layers[5].s, { v: 1, duration: 0.5, ease: 'back.out(2.4)' }, 0.13)
-      .to(wallet, { scale: 1, duration: 0.5, ease: 'back.out(2.8)' }, 0.13);
-
     dots.forEach((d, i) => {
       const prox = { t: 0 };
       tl.fromTo(prox, { t: 0 }, {
-        t: 1, duration: 0.66, ease: 'power2.inOut',
-        onStart() { d.setAttribute('opacity', '1'); },
+        t: 1, duration: 2.4, ease: 'sine.inOut',
+        onStart() { gsap.to(d, { attr: { opacity: 0.95 }, duration: 0.4, ease: 'sine.out' }); },
         onUpdate() { placeDot(d, prox.t, from); },
-        onComplete() { gsap.to(d, { attr: { opacity: 0 }, duration: 0.18 }); },
-      }, 0.12 + i * 0.07);
+        onComplete() { gsap.to(d, { attr: { opacity: 0 }, duration: 0.45, ease: 'sine.inOut' }); },
+      }, i * 0.22);
     });
-
-    const landed = 0.12 + 0.66 + (FX - 1) * 0.07;
-    tl.to(haloBreath, { v: 3.2, duration: 0.5, ease: 'power2.out' }, landed - 0.12)
-      .to(haloBreath, { v: 1, duration: 0.7, ease: 'power2.inOut' }, landed + 0.4)
-      // the bolt fires as the last particle lands — overlapping, not after
-      .to(boltGlint, { v: 2.4, duration: 0.16, ease: 'power2.out' }, landed - 0.04)
-      .to(boltGlint, { v: 0, duration: 0.6, ease: 'power2.inOut' }, landed + 0.14)
-      .to(layers[4].s, { v: 1.11, duration: 0.16, ease: 'power2.out' }, landed - 0.04)
-      .to(layers[4].s, { v: 1, duration: 0.55, ease: 'back.out(2.6)' }, landed + 0.14)
-      // and the projection ahead of the node lights up
-      .set(projection, { opacity: 1 }, landed - 0.02)
-      .fromTo(seg, { len: 0 }, { len: TOTAL - NODE_L, duration: 0.52, ease: 'power3.out', onUpdate: paintProjection }, landed)
-      // late accent: the shine crosses the pill last
-      .fromTo(shine, { opacity: 1, x: 0 }, {
-        x: (pill.clientWidth || 297) + 140, duration: 0.66, ease: 'power2.inOut',
-        onComplete() { gsap.set(shine, { opacity: 0, x: 0 }); },
-      }, landed + 0.1);
-
-    charge = tl;
+    const landed = 2.4 + (FX - 1) * 0.22;   // 3.28s
+    tl.to(haloBreath, { v: 2.6, duration: 0.9, ease: 'sine.inOut' }, landed - 0.5)
+      .to(haloBreath, { v: 1, duration: 1.4, ease: 'sine.inOut' }, landed + 0.4)
+      .to(boltGlint, { v: 1.8, duration: 0.6, ease: 'power2.out' }, landed - 0.1)
+      .to(boltGlint, { v: 0, duration: 1.2, ease: 'sine.inOut' }, landed + 0.5)
+      .to(layers[L_BOLT].s, { v: 1.05, duration: 0.6, ease: 'power2.out' }, landed - 0.1)
+      .to(layers[L_BOLT].s, { v: 1, duration: 0.9, ease: 'power2.out' }, landed + 0.5)
+      .set(projection, { opacity: 1 }, landed - 0.05)
+      .fromTo(seg, { len: 0 }, { len: TOTAL - NODE_L, duration: 1.3, ease: 'expo.out', onUpdate: paintProjection }, landed)
+      .to(projection, { opacity: 0, duration: 1.4, ease: 'sine.inOut' }, landed + 1.5);
+    return tl;
   };
 
-  const release = () => {
-    charge?.kill();
-    charge = null;
-    gsap.to(dots, { attr: { opacity: 0 }, duration: 0.2, overwrite: true });
-    gsap.to(projection, { opacity: 0, duration: 0.3, overwrite: true });
-    gsap.to(layers[4].s, { v: 1, duration: 0.35, ease: 'power3.out', overwrite: true });
-    gsap.to(layers[5].s, { v: 1, duration: 0.35, ease: 'power3.out', overwrite: true });
-    gsap.to(wallet, { scale: 1, duration: 0.3, overwrite: true });
-    gsap.to(boltGlint, { v: 0, duration: 0.3, overwrite: true });
-    gsap.set(shine, { opacity: 0, x: 0 });
-    gsap.killTweensOf(haloBreath);
-    if (floats.length) floats[0].resume();
+  const floats: Array<gsap.core.Tween | gsap.core.Timeline> = [];
+  const startLoop = () => {
+    if (floats.length) return;
+
+    // the charge cycle, every 11s — the card's ambient story
+    floats.push(gsap.timeline({ repeat: -1, repeatDelay: 4.6 }).add(buildCharge()));
+
+    // a light pulse walks the curve on a 12s cycle
+    floats.push(gsap.timeline({ repeat: -1, repeatDelay: 5.4 })
+      .fromTo(walker, { p: 0 }, { p: 1, duration: 6.6, ease: 'sine.inOut', onUpdate: paintPulse }));
+
+    // the node breathes
+    floats.push(gsap.to(haloBreath, { v: 1.55, duration: 3.8, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    // the circuit grid drifts inside its clip: a slow current, never a scroll
+    floats.push(gsap.to(gridImg, { x: 7, duration: 6.7, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    floats.push(gsap.to(gridImg, { y: -5, duration: 9.3, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    // the figures re-tick the way a live balance does, always settling on the
+    // number the design ships: +$200.00
+    floats.push(gsap.timeline({ repeat: -1, repeatDelay: 12.2 })
+      .fromTo(tally, { v: 198.15 }, { v: 200, duration: 1.2, ease: 'power2.out', onUpdate: writeTally }));
+    if (glow) floats.push(gsap.to(glow.swell, { value: 0.34, duration: 4.65, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+
+    if (visible) floats.forEach((f) => f.play());
   };
 
-  const onEnter = () => {
-    onCard = true;
-    if (floats.length) floats[0].pause();
-    play();
-    if (glow) gsap.to(glow.hover, { value: 1, duration: 0.55, ease: 'power2.out' });
-  };
-  const onLeave = () => {
-    onCard = false;
-    release();
-    if (glow) gsap.to(glow.hover, { value: 0, duration: 0.5, ease: 'power2.out' });
-  };
-  const onClick = (e: MouseEvent) => {
-    const g = glowHost.getBoundingClientRect();
-    glow?.ripple(e.clientX - g.left, e.clientY - g.top);
-    play();
-  };
-
-  card.addEventListener('pointerenter', onEnter);
-  card.addEventListener('pointerleave', onLeave);
-  card.addEventListener('focusin', onEnter);
-  card.addEventListener('focusout', onLeave);
-  card.addEventListener('click', onClick);
-  cleanups.push(() => {
-    card.removeEventListener('pointerenter', onEnter);
-    card.removeEventListener('pointerleave', onLeave);
-    card.removeEventListener('focusin', onEnter);
-    card.removeEventListener('focusout', onLeave);
-    card.removeEventListener('click', onClick);
-  });
-
-  /* ------------------------------------------------------------- the loop */
+  /* ---------------------------------------------------------------- the rAF */
 
   let raf = 0;
   let visible = true;
-  let last = performance.now();
-  const t0 = last;
+  const t0 = performance.now();
 
   const frame = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
     const t = (now - t0) / 1000;
 
-    const k = 1 - Math.exp(-dt * 7);
-    pointer.x += ((onCard ? pointer.tx : 0) - pointer.x) * k;
-    pointer.y += ((onCard ? pointer.ty : 0) - pointer.y) * k;
-    pointer.tilt += ((onCard ? 1 : 0) - pointer.tilt) * k;
-
     for (const l of layers) {
-      const fx = l.ax * Math.sin(t * l.wx * Math.PI * 2 + l.ph);
-      const fy = l.ay * Math.sin(t * l.wy * Math.PI * 2 + l.ph * 1.7);
-      const px = pointer.x * cardW * l.depth;
-      const py = pointer.y * cardH * l.depth;
-      const z = l.depth * pointer.tilt * 26;
-      l.el.style.transform = `${l.base}perspective(1000px) `
-        + `translate3d(${(fx + px + l.o.x).toFixed(2)}px, ${(fy + py + l.o.y).toFixed(2)}px, ${z.toFixed(2)}px) `
-        + `rotateY(${(pointer.x * 4 * pointer.tilt).toFixed(3)}deg) `
-        + `rotateX(${(-pointer.y * 3 * pointer.tilt).toFixed(3)}deg) `
+      const fx = l.px ? l.ax * Math.sin((t / l.px) * Math.PI * 2 + l.ph) : 0;
+      const fy = l.py ? l.ay * Math.sin((t / l.py) * Math.PI * 2 + l.ph * 1.7) : 0;
+      l.el.style.transform = `${l.base}`
+        + `translate3d(${(fx + l.o.x).toFixed(2)}px, ${(fy + l.o.y).toFixed(2)}px, 0) `
         + `scale(${l.s.v.toFixed(4)})`;
     }
 
     const hb = haloBreath.v;
     halo.style.boxShadow =
-      `0 0 0 ${(2 + hb * 2.5).toFixed(2)}px rgba(245,94,34,${(0.1 + hb * 0.12).toFixed(3)}), `
-      + `0 0 ${(14 + hb * 16).toFixed(1)}px ${(3 + hb * 5).toFixed(1)}px rgba(245,94,34,${(0.16 + hb * 0.2).toFixed(3)})`;
-    halo.style.opacity = String(Math.min(1, 0.35 + hb * 0.4));
+      `0 0 0 ${(1.5 + hb * 2).toFixed(2)}px rgba(245,94,34,${(0.05 + hb * 0.07).toFixed(3)}), `
+      + `0 0 ${(12 + hb * 14).toFixed(1)}px ${(2 + hb * 4).toFixed(1)}px rgba(245,94,34,${(0.08 + hb * 0.13).toFixed(3)})`;
 
     const bg = boltGlint.v;
     bolt.style.boxShadow = bg > 0.002
-      ? `0 0 ${(10 + bg * 22).toFixed(1)}px ${(bg * 5).toFixed(1)}px rgba(245,94,34,${(bg * 0.5).toFixed(3)})`
+      ? `0 0 ${(10 + bg * 20).toFixed(1)}px ${(bg * 4).toFixed(1)}px rgba(245,94,34,${(bg * 0.4).toFixed(3)})`
       : '';
-    bolt.style.backgroundColor = bg > 0.002 ? `rgb(${230 + Math.min(25, bg * 25)},${230 + Math.min(21, bg * 21)},${230 + Math.min(18, bg * 18)})` : '';
 
     glow?.render(t);
     raf = requestAnimationFrame(frame);
   };
 
-  const start = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+  const start = () => { if (!raf) raf = requestAnimationFrame(frame); };
   const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0; } };
 
   let introDone = false;
@@ -482,25 +387,16 @@ export function bonus(card: HTMLElement): () => void {
   cleanups.push(() => {
     stop();
     intro?.kill();
-    charge?.kill();
-    ambient.kill();
     floats.forEach((f) => f.kill());
-    gsap.killTweensOf([wallet, shine, projection, gridImg, grid, pill, pie, bolt, marker,
+    gsap.killTweensOf([gridImg, grid, pill, pie, bolt, marker, projection,
       ...dots, ...layers.map((l) => l.s), ...layers.map((l) => l.o),
       tally, reveal, walker, haloBreath, boltGlint, seg]);
     for (const l of layers) { l.el.style.transform = ''; l.el.style.opacity = ''; }
     gridImg.style.transform = '';
     grid.style.opacity = '';
     marker.style.opacity = '';
-    halo.style.boxShadow = '';
     line.style.clipPath = '';
-    marker.style.transform = '';
     bolt.style.boxShadow = '';
-    bolt.style.backgroundColor = '';
-    pill.style.opacity = '';
-    pie.style.opacity = '';
-    bolt.style.opacity = '';
-    wallet.style.transform = '';
     tally.v = 200;
     writeTally();
   });

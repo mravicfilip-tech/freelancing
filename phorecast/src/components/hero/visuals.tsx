@@ -15,8 +15,6 @@ import tagDot from '../../assets/hero/tag-dot.svg';
 import btcCircle from '../../assets/hero/btc-circle.svg';
 import btcGlyph from '../../assets/hero/btc-glyph.svg';
 import logoWhite from '../../assets/hero/logo-white.svg';
-import logoOrange from '../../assets/hero/logo-orange.svg';
-import tileBg from '../../assets/hero/tile-bg.jpg';
 import circuit from '../../assets/hero/circuit.svg';
 import shortLine from '../../assets/hero/short-line.svg';
 import ringLg from '../../assets/hero/ring-lg.svg';
@@ -182,11 +180,6 @@ export function VisualFuture() {
       {DOTS.map(([x, y], i) => (
         <img key={i} src={ringDot} alt="" className="hv4__dot" style={{ ['--x' as string]: x, ['--y' as string]: y }} />
       ))}
-
-      <div className="hv4__tile">
-        <img src={tileBg} alt="" className="hv4__tile-bg" />
-        <div className="hv4__glass"><img src={logoOrange} alt="" /></div>
-      </div>
 
       {TILES.map((t, i) => (
         <span key={i} className="hv4__chip" style={{ ['--x' as string]: t.x, ['--y' as string]: t.y }}>

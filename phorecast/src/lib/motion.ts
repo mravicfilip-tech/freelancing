@@ -11,7 +11,7 @@
 // immediately when motion is reduced or the build fails. Nothing is ever left
 // hidden by a script that did not run.
 
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { gsap } from 'gsap';
 
@@ -117,38 +117,6 @@ export interface SectionMotion {
 }
 
 /**
- * Resolves once the browser has managed a few frames in a row at a sensible
- * pace, or after `maxWait` regardless.
- *
- * This is what stops a section going blank. `gsap.from()` writes its start
- * values the instant a tween is created — even on a paused timeline — so the
- * moment an entrance is built, its targets are invisible. Build early on a busy
- * main thread and the section sits blank through mount, then plays all at once
- * the first time a frame lands. Waiting for calm frames and building then keeps
- * the design on screen until the animation can genuinely play.
- */
-function waitForSmoothFrames(maxWait = 900): Promise<void> {
-  return new Promise((resolve) => {
-    const started = performance.now();
-    let last = started;
-    let calm = 0;
-
-    const tick = () => {
-      const now = performance.now();
-      const delta = now - last;
-      last = now;
-
-      if (delta < 40) calm += 1;
-      else calm = 0;
-
-      if (calm >= 3 || now - started > maxWait) resolve();
-      else requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
-}
-
-/**
  * Builds a section's entrance the first time it is on screen, then hands the
  * finished timeline to `idle` for its loop. The whole thing lives in a gsap
  * context scoped to the element, so unmounting kills every tween it created.
@@ -158,11 +126,16 @@ function waitForSmoothFrames(maxWait = 900): Promise<void> {
  */
 export function useSectionMotion<T extends HTMLElement = HTMLElement>(
   build: (m: SectionMotion) => void,
-  { threshold = 0.15, idle }: { threshold?: number; idle?: (el: HTMLElement) => () => void } = {},
+  { threshold = 0.15, idle, immediate = false }:
+    { threshold?: number; idle?: (el: HTMLElement) => () => void; immediate?: boolean } = {},
 ): RefObject<T | null> {
   const ref = useRef<T>(null);
 
-  useEffect(() => {
+  // Layout effect, not effect: `useEffect` runs after the browser paints, so the
+  // section would paint once in its hidden pending state before any of this ran
+  // — a visible blank frame, and the whole "nothing happens, then everything"
+  // complaint. A layout effect reveals and starts before that first paint.
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
@@ -184,10 +157,12 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       if (el.dataset.motionBuilt) return;
       el.dataset.motionBuilt = '1';
 
-      // The section stays exactly as designed until this resolves. Building is
-      // what hides it, so building is what waits.
-      waitForSmoothFrames().then(() => {
-        if (cancelled) return;
+      // Build and play at once. Waiting for calm frames was solving a problem
+      // the pending CSS already solves — the section is hidden from the first
+      // paint either way — so the wait only ever delayed the opening, and mount
+      // is exactly when frames are janky. This makes a first load behave like a
+      // slide change, which is the path that already looked right.
+      if (!cancelled) {
         try {
           ctx = gsap.context(() => {
             tl = gsap.timeline({
@@ -208,19 +183,27 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
           console.warn('[motion] build failed', err);
           reveal();
         }
-      });
+      }
     };
 
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      io.disconnect();
+    // An above-the-fold section is on screen by definition; routing it through
+    // an observer only adds the callback's latency, and the section is hidden
+    // for every millisecond of it.
+    let io: IntersectionObserver | undefined;
+    if (immediate) {
       start();
-    }, { threshold, rootMargin: '0px 0px -10% 0px' });
-    io.observe(el);
+    } else {
+      io = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        io?.disconnect();
+        start();
+      }, { threshold, rootMargin: '0px 0px -10% 0px' });
+      io.observe(el);
+    }
 
     return () => {
       cancelled = true;
-      io.disconnect();
+      io?.disconnect();
       window.clearTimeout(guard);
       stopIdle?.();
       // Settle rather than rewind. Reverting a half-played entrance puts the
@@ -230,7 +213,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       ctx?.kill();
       reveal();
     };
-  }, [build, threshold, idle]);
+  }, [build, threshold, idle, immediate]);
 
   return ref;
 }

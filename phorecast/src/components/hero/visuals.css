@@ -162,25 +162,6 @@
 .hv4__ring--md { left: calc(381 * var(--u)); top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
 .hv4__ring--sm { left: calc(282 * var(--u)); top: calc(352 * var(--u)); width: calc(143 * var(--u)); height: calc(143 * var(--u)); }
 .hv4__dot { position: absolute; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: calc(7 * var(--u)); height: calc(7 * var(--u)); }
-.hv4__tile {
-  position: absolute; left: calc(650 * var(--u)); top: calc(236 * var(--u));
-  width: calc(376 * var(--u)); height: calc(376 * var(--u));
-  border-radius: calc(125 * var(--u)); overflow: hidden;
-  box-shadow:
-    0 calc(92 * var(--u)) calc(57 * var(--u)) rgba(255, 0, 0, 0.05),
-    0 calc(39 * var(--u)) calc(39 * var(--u)) rgba(255, 0, 0, 0.09),
-    0 calc(9 * var(--u)) calc(22 * var(--u)) rgba(255, 0, 0, 0.1);
-}
-.hv4__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
-.hv4__glass {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  display: grid; place-items: center;
-  width: calc(244.8 * var(--u)); height: calc(244.8 * var(--u));
-  border-radius: calc(101 * var(--u));
-  background: linear-gradient(149deg, rgba(255, 255, 255, 0.32) 19%, rgba(153, 153, 153, 0) 111%);
-  backdrop-filter: blur(calc(51 * var(--u)));
-}
-.hv4__glass img { width: calc(141 * var(--u)); height: calc(150.4 * var(--u)); }
 .hv4__chip {
   position: absolute;
   left: calc(50% + var(--x) * var(--u));

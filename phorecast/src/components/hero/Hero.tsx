@@ -118,7 +118,7 @@ export function Hero() {
   // once; the hook still holds the timeline until the browser has painted.
   const heroRef = useSectionMotion<HTMLElement>(
     useCallback(({ el, tl }) => heroBuild(el, tl), []),
-    { threshold: 0, idle: heroIdle },
+    { immediate: true, idle: heroIdle },
   );
 
   // Each slide change replays the copy choreography, so the mask reveal and the

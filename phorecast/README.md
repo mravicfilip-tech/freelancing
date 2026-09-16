@@ -13,8 +13,10 @@ npm run preview    # serve dist/
 ```
 
 `dev:sync` is for reviewing work pushed from elsewhere: it polls the tracked
-branch every 15s (`SYNC_SECONDS` to change that), fast-forwards, reinstalls when
-the lockfile moves, and lets Vite hot-reload the page. It never touches a dirty
+branch every 15s (`SYNC_SECONDS` to change that), fast-forwards, and lets Vite
+hot-reload the page. It installs any dependency that is missing from
+`node_modules` — at start-up and after each pull — so a commit that adds a
+package doesn't leave you with a Vite resolve error. It never touches a dirty
 checkout, so your own uncommitted edits are safe.
 
 Node 22 or newer.

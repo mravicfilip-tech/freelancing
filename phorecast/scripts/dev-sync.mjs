@@ -9,6 +9,8 @@
 // Ctrl+C stops both the server and the polling.
 
 import { spawn, execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,6 +32,22 @@ async function upstream() {
   } catch {
     return null;
   }
+}
+
+/**
+ * node_modules can lag behind package.json — after a pull that added a dependency,
+ * or when the last `npm install` ran before the pull. Vite fails to resolve the
+ * import and shows an overlay, so install before starting rather than after.
+ */
+async function ensureDeps() {
+  const pkg = JSON.parse(await readFile(resolve(appDir, 'package.json'), 'utf8'));
+  const wanted = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies });
+  const missing = wanted.filter((name) => !existsSync(resolve(appDir, 'node_modules', name)));
+  if (!missing.length) return;
+
+  say(`${missing.join(', ')} ${missing.length > 1 ? 'are' : 'is'} not installed — running npm install…`);
+  await run('npm', ['install', '--no-audit', '--no-fund'], { cwd: appDir, shell: process.platform === 'win32' });
+  say('npm install done');
 }
 
 async function pullOnce(tracking) {
@@ -54,7 +72,9 @@ async function pullOnce(tracking) {
   if (lockBefore !== lockAfter) {
     say('dependencies changed, running npm install…');
     await run('npm', ['install', '--no-audit', '--no-fund'], { cwd: appDir, shell: process.platform === 'win32' });
-    say('npm install done — restart the server if the page misbehaves');
+    say('npm install done');
+  } else {
+    await ensureDeps();
   }
   return true;
 }
@@ -65,6 +85,8 @@ if (!tracking) {
 } else {
   say(`watching ${tracking} every ${POLL_SECONDS}s — edits here and commits there both reload the page`);
 }
+
+await ensureDeps();
 
 const vite = spawn('npx', ['vite'], { cwd: appDir, stdio: 'inherit', shell: process.platform === 'win32' });
 

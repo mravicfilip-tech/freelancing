@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bento 01 — Open an account in 60 seconds</title>
 <meta name="description" content="Five micro-animation directions for the Phorecast onboarding bento card." />
+<link rel="icon" href="/favicon.svg" />
 <style>
 :root{
   --bg:#0f0e0d; --surface:#1b1b1a; --white:#fffbf8; --orange:#f55e22;
@@ -83,7 +84,7 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
 }
 .bcard__text{display:flex; flex-direction:column; gap:2px; line-height:1.2; position:relative; z-index:1}
 .bcard__title{font-family:var(--font-display); font-weight:500; font-size:24px; color:var(--white-font); letter-spacing:normal}
-.bcard__body{font-family:var(--font-body); font-weight:300; font-size:20px; color:var(--color-nre-body)}
+.bcard__body{margin:0; font-family:var(--font-body); font-weight:300; font-size:20px; color:var(--color-nre-body)}
 .bcard__body--light{color:var(--white-font)}
 .bento__cta{
   position:relative; z-index:1; display:inline-flex; align-items:center; gap:6px; height:20px;
@@ -109,15 +110,20 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
   color:var(--white-font); white-space:nowrap; backdrop-filter:blur(2px);
 }
 .onboard__chip--blur{backdrop-filter:blur(11.3px)}
-.onboard__ring{position:absolute; left:247px; top:166px; width:140px; height:140px; border-radius:50%}
+/* Disc and arc are concentric in Figma; each carries its own rotation. */
+.onboard__ring{position:absolute; left:238px; top:158px; width:157.9px; height:158.8px}
 .onboard__ring::before{
-  content:''; position:absolute; left:6px; top:5px; width:128px; height:129px; border-radius:50%;
+  content:''; position:absolute; left:14.95px; top:15.03px; width:128.01px; height:128.78px; border-radius:50%;
   background:rgba(255,255,255,.16); backdrop-filter:blur(6px);
 }
-.onboard__ring-img{position:absolute; left:6px; top:5px; width:128px; height:129px; transform:rotate(5.72deg); opacity:.45; mix-blend-mode:soft-light}
-.onboard__ring-arc{position:absolute; right:8px; top:6px; width:90.8px; height:64.4px; transform:rotate(15.8deg)}
+.onboard__ring-img{position:absolute; left:14.95px; top:15.03px; width:128.01px; height:128.78px; transform:rotate(5.72deg); opacity:.45; mix-blend-mode:soft-light}
+/* The arc covers the top-right of the 128px circle, so it turns about that circle's centre, not its own. */
+.onboard__ring-arc{
+  position:absolute; left:52.15px; top:15.05px; width:90.82px; height:64.36px;
+  transform-origin:26.8px 64.36px; transform:rotate(15.8deg);
+}
 .onboard__seconds{
-  position:absolute; left:24px; top:39px;
+  position:absolute; left:32.95px; top:48.23px;
   font-family:var(--font-mono); font-weight:200; font-size:50px; line-height:1.2; color:var(--white-font);
 }
 .onboard__in{
@@ -130,9 +136,9 @@ h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
 .bcard:focus-within{outline:2px solid rgba(255,251,248,.5); outline-offset:3px}
 
 /* added motion layers — invisible at rest, so the signed-off static look is untouched */
-.onboard__sweep{position:absolute; left:0; top:0; width:140px; height:140px; opacity:0; pointer-events:none; overflow:visible}
-.onboard__sweep circle{fill:none; stroke:var(--white-font); stroke-width:2.5; stroke-linecap:round; transform:rotate(-90deg); transform-origin:70px 70px}
-.onboard__orbit{position:absolute; left:0; top:0; width:140px; height:140px; opacity:0; pointer-events:none; overflow:visible}
+.onboard__sweep{position:absolute; left:0; top:0; width:157.9px; height:158.8px; opacity:0; pointer-events:none; overflow:visible}
+.onboard__sweep circle{fill:none; stroke:var(--white-font); stroke-width:4}
+.onboard__orbit{position:absolute; left:0; top:0; width:157.9px; height:158.8px; opacity:0; pointer-events:none; overflow:visible}
 .onboard__orbit circle{fill:var(--white-font)}
 .onboard__sheen{position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none}
 .onboard__scan{
@@ -250,11 +256,11 @@ const card = () => `
       <span class="onboard__chip onboard__chip--blur" style="left:87px;top:187px;width:100px">No documents</span>
       <span class="onboard__chip" style="left:111px;top:225px;width:76px">No waiting</span>
       <div class="onboard__ring">
-        <img src="${ring60}" alt="" class="onboard__ring-img" width="128" height="129" />
-        <img src="${ringArc}" alt="" class="onboard__ring-arc" width="90.8" height="64.4" />
-        <svg class="onboard__sweep" viewBox="0 0 140 140"><circle cx="70" cy="70" r="61.5" /></svg>
-        <svg class="onboard__orbit" viewBox="0 0 140 140">${
-          Array.from({ length: ORBIT_N }, () => '<circle r="2" cx="70" cy="70" />').join('')
+        <img src="${ring60}" alt="" class="onboard__ring-img" width="128.01" height="128.78" />
+        <img src="${ringArc}" alt="" class="onboard__ring-arc" width="90.82" height="64.36" />
+        <svg class="onboard__sweep" viewBox="0 0 157.9 158.8"><circle cx="78.8" cy="79.4" r="64.4" transform="rotate(15.8 78.8 79.4)" /></svg>
+        <svg class="onboard__orbit" viewBox="0 0 157.9 158.8">${
+          Array.from({ length: ORBIT_N }, () => '<circle r="2" cx="78.8" cy="79.4" />').join('')
         }</svg>
         <span class="onboard__seconds"><i class="osec" style="font-style:normal">60</i>s</span>
       </div>
@@ -353,8 +359,11 @@ if (REDUCED) {
    the confirmation lands on zero. */
 function countdownCommit() {
   const p = parts(1);
-  const R = 61.5, LEN = 2 * Math.PI * R;
-  gsap.set(p.sweep, { strokeDasharray: LEN, strokeDashoffset: LEN });
+  // The static ring-arc already covers 114.3° of the circle (east → just past
+  // north). The sweep picks up exactly where it stops and closes the remaining
+  // 245.7° clockwise, so at 00 the dial reads as one complete ring.
+  const C = 2 * Math.PI * 64.4, LEN = C * (245.7 / 360);
+  gsap.set(p.sweep, { strokeDasharray: `${LEN} ${C}`, strokeDashoffset: LEN });
 
   const counter = { v: 60 };
   const write = () => { p.num.textContent = String(Math.max(0, Math.round(counter.v))).padStart(2, '0'); };
@@ -487,7 +496,7 @@ function clearanceScan() {
    card is off screen or fully faded out. */
 function orbitTrail() {
   const p = parts(4);
-  const CX = 70, CY = 70, R = 66;
+  const CX = 78.8, CY = 79.4, R = 71;
   const seeds = p.dots.map((_, i) => ({ lag: i * .105, r: R + (i % 3) * 1.1 - 1.1 }));
   let raf = 0, live = false, hovering = false, speed = .55, blast = { v: 0 };
 

@@ -239,3 +239,28 @@
   -webkit-text-fill-color: transparent;
 }
 @media (prefers-reduced-motion: reduce) { .hero__title .line__shine { display: none; } }
+
+
+/* Pending state. `gsap.from()` writes its start values the moment a tween is
+   built, so without this the hero would flash at full opacity and then snap
+   hidden the instant the timeline is created. Hiding the animated parts from
+   the first paint instead means the only thing anyone sees is the entrance.
+   The attribute is removed in the same frame GSAP takes over.
+
+   The animation is a failsafe: if the script never runs at all, the hero
+   reveals itself after four seconds rather than staying blank forever. */
+@keyframes hero-motion-failsafe { to { visibility: visible; } }
+.hero[data-motion='pending'] .eyebrow,
+.hero[data-motion='pending'] .hero__title .line,
+.hero[data-motion='pending'] .hero__lede .line,
+.hero[data-motion='pending'] .hero__lede,
+.hero[data-motion='pending'] .hero__cta,
+.hero[data-motion='pending'] .hero__position,
+.hero[data-motion='pending'] .hero__foot > *,
+.hero[data-motion='pending'] .hero__visual {
+  visibility: hidden;
+  animation: hero-motion-failsafe 0s linear 4s forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-motion='pending'] * { visibility: visible; animation: none; }
+}

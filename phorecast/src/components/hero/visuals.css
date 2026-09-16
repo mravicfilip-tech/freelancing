@@ -16,7 +16,6 @@
   width: calc(390 * var(--u)); height: calc(248 * var(--u)); padding: calc(16 * var(--u));
   border-radius: calc(10 * var(--u)); border: calc(1.09 * var(--u)) solid var(--hairline);
   background: linear-gradient(160.5deg, #161615 8%, #200e05 88%);
-  filter: blur(calc(10.66 * var(--u)));
   font-family: var(--font-display); color: var(--white-font);
 }
 .pred__meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(14.2 * var(--u)); color: var(--color-nre-body); }

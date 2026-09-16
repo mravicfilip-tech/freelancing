@@ -26,11 +26,11 @@ export const REDUCED =
 // that freeze unseen, and the first frame the browser paints is already near
 // the end — nothing, nothing, then everything at once. Skipped frames must not
 // advance the sequence; the guard below handles the case where it truly stalls.
-// The threshold is deliberately tight. GSAP's default only discounts a frame
-// once it exceeds half a second, and mount jank produces 200-450ms frames that
-// slip under it — each one advancing a one-second tween by a third in a single
-// step. That is the visible jump: nothing, then most of the animation at once.
-gsap.ticker.lagSmoothing(110, 16);
+// A middle setting. Off, and a blocked main thread lets the sequence run to its
+// end unseen; very tight, and it crawls through the block instead. Neither
+// matters much now that nothing is built until the page can actually render
+// frames — see waitForSmoothFrames below.
+gsap.ticker.lagSmoothing(250, 20);
 
 /** The band's entrance ease, and the small rise every element makes as it appears. */
 export const EASE = 'expo.out';
@@ -117,6 +117,38 @@ export interface SectionMotion {
 }
 
 /**
+ * Resolves once the browser has managed a few frames in a row at a sensible
+ * pace, or after `maxWait` regardless.
+ *
+ * This is what stops a section going blank. `gsap.from()` writes its start
+ * values the instant a tween is created — even on a paused timeline — so the
+ * moment an entrance is built, its targets are invisible. Build early on a busy
+ * main thread and the section sits blank through mount, then plays all at once
+ * the first time a frame lands. Waiting for calm frames and building then keeps
+ * the design on screen until the animation can genuinely play.
+ */
+function waitForSmoothFrames(maxWait = 900): Promise<void> {
+  return new Promise((resolve) => {
+    const started = performance.now();
+    let last = started;
+    let calm = 0;
+
+    const tick = () => {
+      const now = performance.now();
+      const delta = now - last;
+      last = now;
+
+      if (delta < 40) calm += 1;
+      else calm = 0;
+
+      if (calm >= 3 || now - started > maxWait) resolve();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+/**
  * Builds a section's entrance the first time it is on screen, then hands the
  * finished timeline to `idle` for its loop. The whole thing lives in a gsap
  * context scoped to the element, so unmounting kills every tween it created.
@@ -142,6 +174,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     let stopIdle: (() => void) | undefined;
     let tl: Timeline | undefined;
     let guard = 0;
+    let cancelled = false;
 
     const start = () => {
       // React's StrictMode runs effects twice in development. Without this the
@@ -150,44 +183,32 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       // lives on the node so it survives the remount.
       if (el.dataset.motionBuilt) return;
       el.dataset.motionBuilt = '1';
-      try {
-        ctx = gsap.context(() => {
-          tl = gsap.timeline({
-            paused: true,
-            defaults: { ease: EASE },
-            onComplete: () => { if (idle) stopIdle = idle(el); },
-          });
-          const timeline = tl;
-          build({ el, q: (sel) => all(el, sel), tl: timeline });
+
+      // The section stays exactly as designed until this resolves. Building is
+      // what hides it, so building is what waits.
+      waitForSmoothFrames().then(() => {
+        if (cancelled) return;
+        try {
+          ctx = gsap.context(() => {
+            tl = gsap.timeline({
+              defaults: { ease: EASE },
+              onComplete: () => { if (idle) stopIdle = idle(el); },
+            });
+            const timeline = tl;
+            build({ el, q: (sel) => all(el, sel), tl: timeline });
+            reveal();
+
+            // If something stalls the sequence far past its own length, settle
+            // it rather than leave the section half-built.
+            guard = window.setTimeout(() => {
+              if (timeline.progress() < 1) timeline.progress(1);
+            }, (timeline.duration() + 2.5) * 1000);
+          }, el);
+        } catch (err) {
+          console.warn('[motion] build failed', err);
           reveal();
-
-          // Hold for two clear frames so the opening does not play against a
-          // main thread still doing mount work. Fonts get a short head start
-          // because type that swaps mid-reveal is ugly — but only a short one:
-          // document.fonts.ready waits for every face on the page, and letting
-          // that gate the hero delayed it by whole seconds.
-          const play = () => requestAnimationFrame(() =>
-            requestAnimationFrame(() => { if (!timeline.progress()) timeline.play(); }));
-
-          if (document.fonts?.status === 'loaded') play();
-          else {
-            let started = false;
-            const once = () => { if (!started) { started = true; play(); } };
-            document.fonts?.ready.then(once).catch(once);
-            window.setTimeout(once, 400);
-          }
-
-          // If something stalls the sequence for far longer than it should run,
-          // settle it rather than leave the section half-built.
-          guard = window.setTimeout(() => {
-            if (timeline.progress() < 1) timeline.progress(1);
-          }, (timeline.duration() + 6) * 1000);
-        }, el);
-      } catch (err) {
-        // A build that throws part way would leave the section hidden. Show it.
-        console.warn('[motion] build failed', err);
-        reveal();
-      }
+        }
+      });
     };
 
     const io = new IntersectionObserver(([entry]) => {
@@ -198,6 +219,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     io.observe(el);
 
     return () => {
+      cancelled = true;
       io.disconnect();
       window.clearTimeout(guard);
       stopIdle?.();

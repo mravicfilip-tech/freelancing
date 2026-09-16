@@ -156,6 +156,7 @@ export function Hero() {
   return (
     <section
       ref={heroRef}
+      data-motion="pending"
       className="hero"
       id="top"
       aria-roledescription="carousel"

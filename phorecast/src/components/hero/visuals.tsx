@@ -23,7 +23,7 @@ import ringLg from '../../assets/hero/ring-lg.svg';
 import ringMd from '../../assets/hero/ring-md.svg';
 import ringSm from '../../assets/hero/ring-sm.svg';
 import ringDot from '../../assets/hero/ring-dot.svg';
-import avatarDoherty from '../../assets/hero/mini-1.jpg';
+import avatarMadrid from '../../assets/hero/pred-real-madrid.jpg';
 import avatarGuterres from '../../assets/hero/mini-2.jpg';
 import avatarOpec from '../../assets/hero/mini-3.jpg';
 import crestGen from '../../assets/hero/mini-gen.jpg';
@@ -32,7 +32,7 @@ import crestSud from '../../assets/hero/avatar.png';
 /* ---------------------------------------------------------------- slide 2 */
 
 const ODDS = [
-  { label: 'No Prison Time', pct: '92%' },
+  { label: 'This year', pct: '92%' },
   { label: '<2 Years', pct: '4%' },
   { label: '5+ Years', pct: '2%' },
 ];
@@ -86,8 +86,8 @@ export function VisualAccount() {
           <div className="pred">
             <div className="pred__meta"><span>$23.1K Vol</span><span>Ends in 1mo 14d</span></div>
             <div className="pred__head">
-              <img src={avatarDoherty} alt="" className="pred__avatar" />
-              <p className="pred__title">Jack Doherty Prison Time?</p>
+              <img src={avatarMadrid} alt="" className="pred__avatar" width={39} height={39} />
+              <p className="pred__title">Real Madrid wins Champions League</p>
             </div>
             <ul className="pred__odds">
               {ODDS.map((o) => (

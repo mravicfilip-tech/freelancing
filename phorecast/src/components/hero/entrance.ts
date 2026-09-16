@@ -61,8 +61,11 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   if (title) {
     const lines = intoLines(title);
     addShine(title);
-    // The line rises out of its mask and resolves from soft as it arrives.
-    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14);
+    // A mask wipe and nothing else. Blurring the line as it rises sounded
+    // cinematic and made every intermediate frame look like a rendering fault:
+    // half-formed smeared type, which reads as broken rather than as motion.
+    // A clean edge travelling out of the mask is legible at every frame.
+    tl.from(lines, { yPercent: 112, duration: 1.15, stagger: 0.22, ease: 'power4.out' }, at + 0.14);
     sweep(title, at + 0.95, tl);
   }
 

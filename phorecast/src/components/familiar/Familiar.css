@@ -25,10 +25,12 @@
 .fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: #f99e57; }
 .fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: #ffeada; }
 /* A tighter core so the band just above the horizon reads as bright as the design. */
+/* The design's brightest point hugs the horizon crest, near the top of this
+   disc rather than its centre. */
 .fam__g--cream::after {
   content: '';
-  position: absolute; left: 22%; top: 24%; width: 56%; height: 44%;
-  border-radius: 50%; background: #fff4e8; filter: blur(60px);
+  position: absolute; left: 16%; top: 0.5%; width: 58%; height: 11%;
+  border-radius: 50%; background: #fff8f0; filter: blur(42px);
 }
 
 /* Copy ------------------------------------------------------------------------ */
@@ -192,7 +194,7 @@
   position: absolute; left: 50%; top: calc(37 * var(--u));
   width: calc(6036 * var(--u)); height: calc(2668 * var(--u));
   transform: translateX(-50%);
-  border-radius: 50%; background: var(--bg); filter: blur(calc(34 * var(--u)));
+  border-radius: 50%; background: var(--bg); filter: blur(calc(13 * var(--u)));
 }
 .fam__chips {
   position: absolute; left: 50%; top: calc(99 * var(--u)); transform: translateX(-50%);

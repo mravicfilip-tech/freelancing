@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { gsap } from 'gsap';
+import { REDUCED } from '../../lib/motion';
+import { heroEntrance } from './entrance';
 import { Nav } from '../Nav';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
@@ -112,6 +115,35 @@ export function Hero() {
   const active = SLIDES[index];
   const heroRef = useRef<HTMLElement>(null);
   // Slide 1 is the only one that shows the mark; it sits where the static SVG did.
+  // The hero is above the fold, so it plays on mount rather than waiting for an
+  // observer. useLayoutEffect so the `from` tweens take their start values
+  // before the first paint and nothing flashes in at full opacity first.
+  useLayoutEffect(() => {
+    const el = heroRef.current;
+    if (!el || REDUCED) return;
+
+    let stop: (() => void) | undefined;
+    try {
+      stop = heroEntrance(el);
+    } catch (err) {
+      // A sequence that throws part way leaves `from` tweens holding their start
+      // values, which would ship invisible copy. Clear anything it touched.
+      console.warn('[hero] entrance failed to build', err);
+      gsap.set(el.querySelectorAll('.hero__slide *, .hero__foot *, .hero__position *, .hero__glow, .hero__horizon'),
+        { clearProps: 'opacity,transform' });
+    }
+    // Wall-clock safety net. The sequence runs 4s; if anything has stalled it
+    // well past that, force the settled state rather than ship invisible copy.
+    const guard = window.setTimeout(() => {
+      el.querySelectorAll<HTMLElement>('.hero__slide.is-active .eyebrow, .hero__slide.is-active .hero__title, .hero__slide.is-active .hero__lede, .hero__slide.is-active .hero__cta')
+        .forEach((node) => {
+          if (Number(getComputedStyle(node).opacity) < 0.99) gsap.set(node, { clearProps: 'opacity,transform' });
+        });
+    }, 7000);
+
+    return () => { window.clearTimeout(guard); stop?.(); };
+  }, []);
+
   const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);
 
   return (

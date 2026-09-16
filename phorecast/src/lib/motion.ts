@@ -12,6 +12,13 @@ import { gsap } from 'gsap';
 export const REDUCED =
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// GSAP freezes a timeline whenever a frame takes longer than half a second,
+// which is the right default for a game loop and the wrong one here: the WebGL
+// mark stalls the compositor on weaker GPUs, and a frozen entrance leaves copy
+// at opacity 0. Advance on wall-clock time instead — a jump after a stall is
+// far better than a hero that never arrives.
+gsap.ticker.lagSmoothing(0);
+
 /** The house curve. Fast out of the gate, long settle, no overshoot. */
 export const EASE = 'power3.out';
 

@@ -1,0 +1,78 @@
+/* Decorative band: two fans of gradient arcs with category pills.
+   Design frame is 863 × 675 and renders at 70% opacity. */
+.fan {
+  position: relative;
+  height: clamp(320px, 35vw, 675px);
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+.fan__glow {
+  position: absolute; right: -10%; top: -60%;
+  width: 1200px; height: 1200px; border-radius: 50%;
+  background: radial-gradient(circle at 46% 54%, #ffe6d2 0%, #f99e57 12%, #d1541c 28%, #7e0202 48%, rgba(15, 14, 13, 0) 66%);
+  filter: blur(110px); opacity: 0.35; z-index: -1;
+}
+.fan__frame {
+  --f: calc(100% / 863);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(863px, 62vw);
+  aspect-ratio: 863 / 675;
+  opacity: 0.7;
+  container-type: inline-size;
+}
+.fan__frame { --f: calc(100cqw / 863); }
+/* The Figma frame is rotated 180 degrees, so each fan's box is mirrored
+   (x' = 863 - x - w, y' = 675 - y - h) and its content rotated by 180 more. */
+.fan__lines { position: absolute; }
+.fan__lines--lower {
+  left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));
+  width: calc(2106.46 * var(--f)); height: calc(1196.7 * var(--f));
+  transform: rotate(180deg);
+}
+.fan__lines--upper {
+  left: calc(-1252 * var(--f)); top: calc(-821 * var(--f));
+  width: calc(2127 * var(--f)); height: calc(1233 * var(--f));
+  transform: rotate(0.99deg);
+}
+
+.fan__diamond {
+  position: absolute;
+  left: calc(var(--x) * var(--f));
+  top: calc(var(--y) * var(--f));
+  width: calc(6.29 * var(--f));
+  height: calc(6.29 * var(--f));
+  transform: rotate(45deg);
+}
+.fan__pill {
+  position: absolute;
+  left: calc(var(--x) * var(--f));
+  top: calc(var(--y) * var(--f));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(12 * var(--f));
+  width: calc(120 * var(--f));
+  padding: calc(14 * var(--f));
+  border-radius: calc(30 * var(--f));
+  background: #000;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: calc(14 * var(--f));
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--white-font);
+  white-space: nowrap;
+}
+.fan__pill > img { width: calc(16 * var(--f)); height: calc(16 * var(--f)); }
+.fan__sport { position: relative; width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+.fan__sport img { position: absolute; }
+.fan__sport-a { inset: 0.85% 8.31% 0.36% 8.34%; }
+.fan__sport-b { inset: 12.15% 43.55% 68.31% 36.91%; }
+.fan__sport-c { inset: 2% 8.31% 85.69% 79.38%; }
+
+@media (max-width: 900px) {
+  .fan { height: 260px; }
+  .fan__frame { width: 96vw; }
+}

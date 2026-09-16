@@ -1,0 +1,34 @@
+/* Phorecast brand tokens — single source of truth for colour, type and spacing.
+   Values come straight from the Figma variables (--white-font, --orange-100, …). */
+:root {
+  --bg: #0f0e0d;                 /* page ground */
+  --white-font: #fffbf8;         /* headlines, primary text */
+  --orange-100: #f55e22;         /* brand accent, primary button */
+  --orange-200: #e6541b;         /* gradient start */
+  --orange-300: #fe8d52;         /* gradient end */
+  --color-body: #626262;         /* eyebrow / muted labels */
+  --color-nre-body: #9d9d9d;     /* body copy */
+  --surface: #1b1b1a;            /* raised panels */
+  --surface-2: #2b2928;          /* inactive bars */
+  --hairline: #313131;
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --green: #15a456;
+  --red: #a21605;
+
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-display: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
+  --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
+  --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;
+
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
+  --page-pad: clamp(20px, 3.125vw, 60px);   /* 60px at 1920 */
+  --content-max: 1800px;                    /* 1920 − 2 × 60 */
+  --radius-pill: 400px;
+  --btn-w: 254px;
+  --btn-h: 50px;
+}

@@ -1,0 +1,194 @@
+/* Hero: 1920 × 1080 design frame. Positions inside the decorative background
+   use container-query units so 1 design px = var(--u) at any width. */
+.hero {
+  position: relative;
+  container-type: inline-size;
+  min-height: min(1080px, 100svh);
+  padding-top: 40px;
+  overflow: hidden;
+  background: var(--bg);
+  isolation: isolate;
+}
+
+/* Background glow ---------------------------------------------------------- */
+.hero__bg {
+  --u: calc(100cqw / 1920);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(1080 * var(--u));
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  width: calc(1539 * var(--u));
+  height: calc(1539 * var(--u));
+  filter: blur(calc(110 * var(--u)));
+  will-change: transform;
+}
+/* dark red → black disc, subtle warmth above the horizon */
+.hero__glow--ember {
+  left: calc(788 * var(--u));
+  top: calc(494 * var(--u));
+  background: linear-gradient(170deg, #0f0e0d 20%, #7e0202 60%);
+}
+/* the main orange sun */
+.hero__glow--orange {
+  left: calc(802 * var(--u));
+  top: calc(821 * var(--u));
+  background: #e0581c;
+}
+/* hot core so the band reads as saturated as the shader render */
+.hero__glow--core {
+  left: calc(1000 * var(--u));
+  top: calc(860 * var(--u));
+  width: calc(1200 * var(--u));
+  height: calc(700 * var(--u));
+  background: #ff7a3a;
+  opacity: 0.55;
+  filter: blur(calc(90 * var(--u)));
+}
+/* halftone / dither texture on top of the sun (Figma shader approximation) */
+.hero__glow--orange::after {
+  content: '';
+  position: absolute;
+  inset: -6%;
+  border-radius: inherit;
+  background-image: radial-gradient(circle at center, rgba(255, 225, 200, 0.9) 0.9px, transparent 1.7px);
+  background-size: 6px 6px;
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+/* peach spill toward the left */
+.hero__glow--peach {
+  left: calc(486 * var(--u));
+  top: calc(952 * var(--u));
+  background: #f99e57;
+  opacity: 0.85;
+}
+.hero__glow--cream {
+  left: calc(786 * var(--u));
+  top: calc(1109 * var(--u));
+  background: #ffeada;
+}
+/* the planet-like black horizon that cuts the glow */
+.hero__horizon {
+  position: absolute;
+  left: calc(50% - 36 * var(--u));
+  top: calc(892 * var(--u));
+  width: calc(6036 * var(--u));
+  height: calc(2668 * var(--u));
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--bg);
+  filter: blur(calc(50 * var(--u)));
+}
+
+/* Foreground layout ------------------------------------------------------- */
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: inherit;
+}
+.hero__stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: clamp(64px, 8.4vw, 162px);
+  flex: none;
+}
+.hero__slide {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(32px, 4vw, 80px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 600ms ease, visibility 0s linear 600ms;
+}
+.hero__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 600ms ease;
+}
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+  transform: translateY(14px);
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.is-active .hero__copy { transform: none; }
+.hero__heading { display: flex; flex-direction: column; gap: 28px; }
+.hero__title { white-space: pre; width: max-content; max-width: none; }
+.hero__lede { max-width: 508px; }
+.hero__cta { margin-top: 12px; }
+
+.hero__visual {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: calc(1245 / 1800 * 100%);
+  transform: translateY(18px) scale(0.985);
+  transition: transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.is-active .hero__visual { transform: none; }
+
+.hero__position { position: relative; z-index: 2; margin-top: 60px; }
+
+.hero__foot {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: auto;
+  padding: 40px 0 60px;
+  flex-wrap: wrap;
+}
+
+/* Slide 1 visual: 3D wireframe mark (600 box at 1104,215 in the 1920 frame) */
+.mark3d {
+  position: absolute;
+  right: calc(96 / 1245 * 100%);
+  top: -35px;
+  width: calc(600 / 1245 * 100%);
+  max-width: 600px;
+  aspect-ratio: 1;
+}
+.mark3d__ribs { position: absolute; left: 18.66%; top: 14.42%; width: 62.02%; height: 71.59%; }
+.mark3d__slices { position: absolute; left: 18.66%; top: 14.42%; width: 62.21%; height: 71.68%; }
+
+/* Slide 3 visual: stack diagram (784 × 571 at 855,175) */
+.hero__stack {
+  --s: 1;
+  position: absolute;
+  left: calc(295 / 1245 * 100%);
+  top: -75px;
+  transform: scale(var(--s));
+  transform-origin: top left;
+}
+
+@media (max-width: 1500px) {
+  .hero__stack { --s: 0.85; left: 10%; }
+}
+@media (max-width: 1180px) {
+  .hero__slide { grid-template-columns: minmax(0, 1fr); }
+  .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
+  .mark3d { position: relative; right: auto; top: auto; width: min(420px, 70vw); margin-inline: auto; }
+  .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }
+}
+@media (max-width: 720px) {
+  .hero { padding-top: 24px; }
+  .hero__title { white-space: pre-line; width: auto; }
+  .hero__bg { --u: 0.45px; }
+  .hero__copy { gap: 32px; }
+  .hero__stack { --s: 0.45; margin-left: -10px; }
+  .hero__foot { padding-bottom: 40px; }
+  .hero__foot .ticker { width: calc(50% - 6px); }
+}

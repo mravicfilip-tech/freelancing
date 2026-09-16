@@ -1,0 +1,48 @@
+.stack {
+  position: relative;
+  width: 784px;
+  height: 571px;
+  font-family: var(--font-body);
+  color: var(--white-font);
+}
+.stack__total {
+  position: absolute; left: 365px; top: 74px;
+  font-family: var(--font-display); font-weight: 700; font-size: 42px; line-height: normal;
+}
+.stack__col { position: absolute; display: flex; flex-direction: column; gap: 4px; width: 154px; }
+.stack__col--bonus { left: 365px; top: 141px; }
+.stack__col--deposit { left: 163px; top: 321px; }
+.stack__col--base { left: 365px; top: 321px; }
+.stack__bar { display: block; height: 28px; border-radius: 8px; }
+.stack__col .stack__bar:first-child, .stack__col .stack__bar:last-child { height: 29px; }
+.stack__bar--orange { background: linear-gradient(90deg, var(--orange-200), var(--orange-300)); }
+.stack__bar--dark { background: var(--surface-2); border: 1.18px solid rgba(139, 139, 139, 0.19); }
+.stack__bracket { position: absolute; left: 525px; top: 141px; width: 34px; height: 161px; }
+.stack__adds {
+  position: absolute; left: 579px; top: 199px; width: 100px;
+  display: flex; flex-direction: column; gap: 1px; line-height: normal;
+}
+.stack__adds span { font-weight: 300; font-size: 14.13px; }
+.stack__adds strong { font-family: var(--font-display); font-weight: 700; font-size: 32px; color: var(--orange-100); }
+.stack__deposit-amt {
+  position: absolute; left: 163px; top: 260px;
+  font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: normal; color: var(--color-nre-body);
+}
+.stack__rule { position: absolute; left: 164.6px; top: 310.86px; width: 350.9px; height: 1.18px; }
+.stack__cap { position: absolute; font-weight: 300; line-height: normal; white-space: nowrap; }
+.stack__cap--deposit { left: 163.43px; top: 507px; font-size: 14.13px; }
+.stack__cap--trade { left: 365px; top: 506px; font-size: 16px; }
+.stack__tile {
+  position: absolute; left: 595px; top: 399px; width: 70px; height: 50px;
+  display: grid; place-items: center;
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px;
+}
+.stack__tile img { width: 46.08px; height: 10.24px; }
+.stack__tag {
+  position: absolute; display: inline-flex; align-items: center; gap: 2px; padding: 14px;
+  font-family: var(--font-mono); font-weight: 500; font-size: 13px; line-height: 0.88;
+  letter-spacing: -0.26px; text-transform: uppercase; color: var(--color-body);
+}
+.stack__tag img { width: 16px; height: 16px; }
+.stack__tag--transfer { left: 73px; top: 180px; }
+.stack__tag--stock { left: 3px; top: 430px; }

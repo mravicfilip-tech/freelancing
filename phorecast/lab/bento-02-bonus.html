@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bento 02 — Double your capital on first deposit</title>
+<meta name="description" content="Five micro-animation directions for the Phorecast first-deposit bonus bento card." />
+<link rel="icon" href="/favicon.svg" />
+<style>
+:root{
+  --bg:#0f0e0d; --surface:#1b1b1a; --white:#fffbf8; --orange:#f55e22;
+  --body:#9d9d9d; --line:rgba(255,251,248,.12); --ink:#140b06;
+  --ease:cubic-bezier(.22,1,.36,1);
+
+  /* tokens copied from src/styles/tokens.css so the cards render as they ship */
+  --white-font:#fffbf8; --orange-100:#f55e22; --color-body:#626262; --color-nre-body:#9d9d9d;
+  --font-mono:'Geist Mono Variable',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  --font-display:'Manrope Variable','Manrope',system-ui,sans-serif;
+  --font-body:'Inter Tight Variable','Inter Tight',system-ui,sans-serif;
+  --font-wordmark:'Darker Grotesque Variable','Darker Grotesque',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--white);
+  font:400 16px/1.55 'Manrope Variable',Manrope,system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit}
+h1,h2,h3{margin:0; letter-spacing:-.03em; font-weight:600}
+.wrap{max-width:1740px; margin:0 auto; padding:0 24px}
+
+/* ---------- page chrome ---------- */
+.top{padding:72px 0 28px}
+.eyebrow{font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--orange)}
+.top h1{font-size:clamp(34px,5vw,52px); margin:16px 0 14px}
+.top p{max-width:64ch; color:var(--body); margin:0}
+.top .hint{margin-top:18px; font-size:14px; color:var(--body)}
+.top .hint kbd{
+  font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; background:var(--surface);
+  border:1px solid var(--line); border-radius:6px; padding:3px 7px; color:var(--white);
+}
+.top .hint b{color:var(--white); font-weight:600}
+
+.picker{
+  position:sticky; top:0; z-index:40; margin-top:40px;
+  background:rgba(15,14,13,.82); backdrop-filter:blur(14px);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.picker__in{display:flex; gap:8px; overflow-x:auto; padding:12px 24px; max-width:1740px; margin:0 auto; scrollbar-width:none}
+.picker__in::-webkit-scrollbar{display:none}
+.picker a{
+  flex:0 0 auto; text-decoration:none; font:500 13px/1 'Manrope Variable',Manrope; color:var(--body);
+  border:1px solid var(--line); border-radius:999px; padding:9px 15px;
+  transition:color .25s, border-color .25s, background-color .25s;
+}
+.picker a:hover,.picker a:focus-visible{color:var(--white); border-color:rgba(255,251,248,.32)}
+.picker a b{color:var(--orange); font-weight:500; margin-right:7px; font-family:'Geist Mono Variable',ui-monospace,monospace; font-size:12px}
+
+/* ---------- variant grid ---------- */
+.labs{display:grid; gap:48px 40px; grid-template-columns:repeat(auto-fit,minmax(816px,1fr)); padding:56px 0 8px}
+.lab{scroll-margin-top:84px}
+.lab__head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:8px}
+.lab__no{font:500 13px/1 'Geist Mono Variable',ui-monospace,monospace; color:var(--orange)}
+.lab__head h2{font-size:26px}
+.lab__why{color:var(--body); max-width:78ch; margin:0 0 6px; font-size:15px}
+.lab__tech{font:500 12px/1 'Geist Mono Variable',ui-monospace,monospace; color:rgba(255,251,248,.38); letter-spacing:.06em; text-transform:uppercase}
+
+.panel{
+  margin-top:20px; background:var(--surface); border:1px solid var(--line);
+  border-radius:22px; padding:20px; position:relative; overflow:hidden;
+  display:flex; justify-content:center;
+}
+.foot{padding:80px 0 120px; color:var(--body); font-size:15px; text-align:center}
+.foot b{color:var(--white); font-weight:600}
+
+/* ======================================================================
+   Card C markup + CSS, copied verbatim from src/components/bento/Bento.css.
+   The line is inlined as <svg> instead of <img> so its path can be measured
+   and drawn — the geometry, gradient and stroke are byte-for-byte the asset.
+   ====================================================================== */
+.bcard{
+  position:relative; display:flex; flex-direction:column; padding:30px;
+  border-radius:10px; overflow:hidden; container-type:inline-size;
+}
+.bcard__text{display:flex; flex-direction:column; gap:2px; line-height:1.2; position:relative; z-index:1}
+.bcard__title{font-family:var(--font-display); font-weight:500; font-size:24px; color:var(--white-font); letter-spacing:normal}
+.bcard__body{margin:0; font-family:var(--font-body); font-weight:300; font-size:20px; color:var(--color-nre-body)}
+.bento__cta{
+  position:relative; z-index:1; display:inline-flex; align-items:center; gap:6px; height:20px;
+  margin-top:auto; font-family:var(--font-mono); font-weight:600; font-size:16px; line-height:1.2;
+  white-space:nowrap; width:max-content; transition:gap 160ms ease; text-decoration:none;
+}
+.bento__cta:hover{gap:10px}
+.bento__cta img{width:12px; height:6px}
+.bento__cta--orange{color:var(--orange-100)}
+
+.bcard--bonus{min-height:297px; background:#0e0e0d; border:1px solid #323232}
+.bonus__chart{position:absolute; right:-8px; bottom:-12px; width:563px; height:208px; overflow:hidden}
+.bonus__line{position:absolute; left:-.5px; top:16px; width:564px; height:196.6px}
+.bonus__marker{position:absolute; left:335.1px; top:28.6px; width:36.36px; height:137.4px}
+.bonus__grid{position:absolute; left:44px; top:-38px; width:488.255px; height:312px; opacity:.2}
+.bonus__grid img{position:absolute; left:-28px; top:-40px; width:488.255px; height:312px}
+.bonus__pill{
+  position:absolute; left:455px; top:205px; z-index:1;
+  display:flex; align-items:center; gap:20px; width:297px; padding:12px 20px;
+  border-radius:30px; background:#1d1c1b; border:1px solid rgba(245,94,34,.25);
+}
+.bonus__pill > img{flex:none}
+.bonus__amt{display:flex; flex-direction:column; align-items:center; text-align:center; font-family:var(--font-display); color:var(--white-font); line-height:normal}
+.bonus__amt strong{font-weight:800; font-size:14px}
+.bonus__amt small{font-weight:400; font-size:10px}
+.bonus__amt--orange{color:var(--orange-100)}
+.bonus__amt--orange strong{font-size:12px}
+.bonus__amt--orange small{font-size:8px; color:var(--orange-100)}
+.bonus__tile{
+  position:absolute; z-index:1; display:grid; place-items:center; width:42px; height:42px;
+  border-radius:12.2px; background:#e6e6e6; border:1.367px solid rgba(0,0,0,.09);
+}
+.bonus__tile--pie{position:absolute; padding:7px}
+.bonus__tile--pie img{position:absolute; left:7px; top:7px}
+
+/* lab-only sizing: the card normally fills a 776px column */
+.panel .bcard--bonus{width:776px; flex:none}
+.bcard:focus-within{outline:2px solid rgba(255,251,248,.5); outline-offset:3px}
+
+/* added motion layers — fully transparent at rest, so the signed-off static
+   look is untouched */
+.bonus__area{opacity:0}
+.bonus__ext{fill:none; stroke:#ff8a4f; stroke-width:2; opacity:0; filter:drop-shadow(0 0 6px rgba(255,138,79,.7))}
+.bonus__fx{position:absolute; left:0; bottom:0; width:776px; height:297px; z-index:1; pointer-events:none; overflow:visible}
+.bonus__fx circle{fill:#ffcda9}
+.bonus__shinewrap{position:absolute; inset:0; border-radius:30px; overflow:hidden; pointer-events:none}
+.bonus__shine{
+  position:absolute; top:0; bottom:0; left:-42%; width:42%; opacity:0;
+  background:linear-gradient(90deg,rgba(255,251,248,0),rgba(255,251,248,.14),rgba(255,251,248,0));
+}
+.bonus__halo{
+  position:absolute; left:335.1px; top:28.6px; width:36.36px; height:36.36px; border-radius:50%;
+  opacity:0; pointer-events:none; box-shadow:0 0 0 0 rgba(245,94,34,.55);
+}
+.bonus__gl{position:absolute; left:-.5px; top:16px; width:564px; height:196.6px; z-index:0; pointer-events:none}
+.bonus__dots{
+  position:absolute; left:-.5px; top:16px; width:564px; height:196.6px; z-index:0; opacity:0; pointer-events:none;
+  background-image:radial-gradient(rgba(245,94,34,.85) 1px, transparent 1.15px);
+  background-size:4px 4px;
+}
+
+/* ======================================================================
+   04 — FILL & SETTLE
+   ====================================================================== */
+[data-v="4"] .bonus__pill{will-change:transform}
+
+/* ======================================================================
+   05 — DITHERED SURGE (WebGL)
+   ====================================================================== */
+[data-v="5"] .panel{background:#151514}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important}
+  .bonus__gl,.bonus__dots,.bonus__fx,.bonus__area,.bonus__ext,.bonus__halo{display:none}
+}
+@media (max-width:900px){
+  .panel{padding:12px; border-radius:18px}
+  .labs{grid-template-columns:1fr}
+  .panel .bcard--bonus{width:100%; min-width:0}
+}
+</style>
+</head>
+<body>
+
+<header class="top wrap">
+  <div class="eyebrow">Phorecast · bento lab · card 02</div>
+  <h1>Five ways the bonus card can move</h1>
+  <p>The same first-deposit card — real markup, real CSS, straight out of <code>Bento.tsx</code> — built five times over. Each copy is wired to a different mechanism, not the same idea at five speeds. Everything is driven by GSAP; direction 05 adds a Three.js/WebGL halftone layer and degrades to a dithered CSS fill if WebGL is unavailable.</p>
+  <p class="hint">Hover any card. <b>02 tracks your pointer along the line</b> and reads the value out of the pill. <b>Click</b> 01, 03 and 04 to replay. Press <kbd>Tab</kbd> — focusing a card's <b>Get Your Bonus</b> link triggers the same motion without a mouse. 01 also plays once when it scrolls into view.</p>
+</header>
+
+<nav class="picker"><div class="picker__in">
+  <a href="#v1"><b>01</b>Draw &amp; tally</a>
+  <a href="#v2"><b>02</b>Scrub the line</a>
+  <a href="#v3"><b>03</b>Charge transfer</a>
+  <a href="#v4"><b>04</b>Fill &amp; settle</a>
+  <a href="#v5"><b>05</b>Dithered surge</a>
+</div></nav>
+
+<main class="wrap"><div class="labs" id="main"></div></main>
+
+<footer class="foot wrap">
+  <p>Tell me a number — or mix them, e.g. <b>the draw-on from 01 with the pointer readout from 02</b>.</p>
+</footer>
+
+<script type="module">
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/darker-grotesque';
+import { gsap } from 'gsap';
+
+import arrowOrange from '../src/assets/bento/arrow-orange.svg';
+import grid from '../src/assets/bento/grid.svg';
+import chartMarker from '../src/assets/bento/chart-marker.svg';
+import bonusWallet from '../src/assets/bento/bonus-wallet.svg';
+import iconPlus from '../src/assets/bento/icon-plus.svg';
+import iconBolt from '../src/assets/bento/icon-bolt.svg';
+import pie1 from '../src/assets/bento/pie-1.svg';
+import pie2 from '../src/assets/bento/pie-2.svg';
+import pie3 from '../src/assets/bento/pie-3.svg';
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* The exact path data and gradient stops out of assets/bento/chart-line.svg. */
+const LINE_D = 'M0.587302 195.75L121.594 107.944C123.682 106.429 126.194 105.614 128.773 105.614C131.242 105.614 133.653 104.866 135.688 103.469L139.925 100.562C143.405 98.1739 147.527 96.8958 151.747 96.8958H154.085C157.933 96.8958 161.634 95.42 164.427 92.7725L165.622 91.6393C167.647 89.7194 170.331 88.6492 173.122 88.6492C176.193 88.6492 179.122 89.9448 181.188 92.2174L182.763 93.9506C185.832 97.327 190.184 99.2519 194.747 99.2519H196.911C201.677 99.2519 206.301 97.6307 210.024 94.6547L219.548 87.0402C222.443 84.7262 226.038 83.4656 229.744 83.4656C232.616 83.4656 235.437 82.7083 237.922 81.27L241.707 79.0797C244.904 77.2299 248.532 76.2559 252.225 76.2559H258.797C263.669 76.2559 268.391 74.5614 272.151 71.4627L311.529 39.0151C315.29 35.9164 320.011 34.2219 324.884 34.2219H420.542C425.834 34.2219 430.931 32.2235 434.814 28.6266L451.973 12.7286C455.043 9.8843 459.074 8.3041 463.259 8.3041H464.99C468.292 8.3041 471.459 6.99013 473.792 4.65205C476.125 2.31397 479.292 1 482.595 1H564.087';
+const AREA_D = `${LINE_D}L564.087 196.559L0.587302 196.559Z`;
+
+/* ------------------------------------------------------------------ markup
+   A verbatim copy of <CardBonus /> from src/components/bento/Bento.tsx. The
+   chart line becomes an inline <svg> (identical geometry, stroke and
+   gradient) so the path can be measured; everything else is untouched. The
+   extra layers — area, extension stroke, particle overlay, pill shine, halo,
+   WebGL canvas — are all transparent at rest. */
+const FX_N = 7;
+const card = (i) => `
+  <article class="bcard bcard--bonus">
+    <div class="bonus__chart" aria-hidden="true">
+      <canvas class="bonus__gl"></canvas>
+      <span class="bonus__dots"></span>
+      <svg class="bonus__line" width="564.087" height="196.559" viewBox="0 0 564.087 196.559" fill="none" preserveAspectRatio="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bl${i}" x1="545.087" y1="-34.25" x2="30.0873" y2="179.75" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FFB89C" stop-opacity="0"/>
+            <stop offset="0.140227" stop-color="#FEAB8B"/>
+            <stop offset="0.480769" stop-color="#FA8D61"/>
+            <stop offset="1" stop-color="#1C1B1A"/>
+          </linearGradient>
+          <linearGradient id="ba${i}" x1="0" y1="0" x2="0" y2="196.559" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FA8D61" stop-opacity="0.42"/>
+            <stop offset="1" stop-color="#FA8D61" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path class="bonus__area" d="${AREA_D}" fill="url(#ba${i})"/>
+        <path class="bonus__path" d="${LINE_D}" stroke="url(#bl${i})" stroke-width="2"/>
+        <path class="bonus__ext" d="${LINE_D}"/>
+      </svg>
+      <img src="${chartMarker}" alt="" class="bonus__marker" width="36.36" height="137.4" />
+      <span class="bonus__halo"></span>
+      <div class="bonus__grid"><img src="${grid}" alt="" width="488.255" height="312" /></div>
+    </div>
+    <div class="bcard__text">
+      <h3 class="bcard__title">Double your capital on first deposit</h3>
+      <p class="bcard__body">Up to $200 on your first deposit.</p>
+    </div>
+    <svg class="bonus__fx" viewBox="0 0 776 297" aria-hidden="true">${
+      Array.from({ length: FX_N }, () => '<circle r="2.4" cx="-20" cy="-20" opacity="0"/>').join('')
+    }</svg>
+    <div class="bonus__pill" aria-hidden="true">
+      <img src="${bonusWallet}" alt="" width="42" height="42" />
+      <span class="bonus__amt"><strong>+$200.00</strong><small>Deposit</small></span>
+      <img src="${iconPlus}" alt="" width="16" height="16" />
+      <span class="bonus__amt bonus__amt--orange"><strong>+$200.00</strong><small>Bonus</small></span>
+      <span class="bonus__shinewrap"><span class="bonus__shine"></span></span>
+    </div>
+    <span class="bonus__tile" style="left:629px;top:72.5px" aria-hidden="true"><img src="${iconBolt}" alt="" width="28" height="28" /></span>
+    <span class="bonus__tile bonus__tile--pie" style="left:345px;top:142.5px" aria-hidden="true">
+      <img src="${pie1}" alt="" style="left:59.84%;top:54.02%;width:40.16%;height:30%" />
+      <img src="${pie2}" alt="" style="left:49.39%;top:4.2%;width:44.01%;height:44.02%" />
+      <img src="${pie3}" alt="" style="left:0;top:7.68%;width:74.09%;height:88.12%" />
+    </span>
+    <a href="#bonus" class="bento__cta bento__cta--orange">Get Your Bonus<img src="${arrowOrange}" alt="" width="12" height="6" /></a>
+  </article>`;
+
+const VARIANTS = [
+  { n: '01', id: 'v1', name: 'Draw & tally',
+    why: 'The line draws itself left to right with the node riding the pen tip, stops exactly where it rests in the design, then the projection continues on and the two figures tally up to $200.00 while the badges pop in. The most literal reading of “your money arriving”.',
+    tech: 'stroke-dashoffset draw · getPointAtLength · number ticker · IntersectionObserver' },
+  { n: '02', id: 'v2', name: 'Scrub the line',
+    why: 'Pointer x maps onto the curve: the glowing node and its drop line slide to the nearest point on the real path and the pill reads out the value there, live. Let go and it springs back to exactly the figure the design ships with. The chart behaves like a chart.',
+    tech: 'pointer tracking · path length LUT · gsap.quickTo · live readout' },
+  { n: '03', id: 'v3', name: 'Charge transfer',
+    why: 'A causal chain rather than a reveal: particles leave the deposit wallet, climb onto the curve, run it up to the node, and the moment they land the bolt fires, the projection ahead of the node lights up and a shine crosses the pill. Every beat has a reason.',
+    tech: 'particles along a path · dasharray segment draw · spring impact · shine sweep' },
+  { n: '04', id: 'v4', name: 'Fill & settle',
+    why: 'The area under the real curve wipes up from the baseline while the whole stack lifts on staggered springs — grid stiffest, pill and badges loosest — and the node overshoots before snapping back onto the line. Weight, then settle.',
+    tech: 'clip-path wipe · area path from the same d · back/elastic springs · lag stagger' },
+  { n: '05', id: 'v5', name: 'Dithered surge',
+    why: 'A Three.js layer reads the curve’s own height into a lookup texture and surges a Bayer-dithered orange glow up underneath it, with a slow highlight band travelling the length on a seamless loop. Halftone, the way the Figma glows already are. CSS dot fill if there is no WebGL.',
+    tech: 'Three.js · GLSL · height lookup texture · Bayer dither · CSS fallback' },
+];
+
+document.getElementById('main').innerHTML = VARIANTS.map((v, i) => `
+  <section class="lab" id="${v.id}" data-v="${v.n.slice(1)}">
+    <div class="lab__head"><span class="lab__no">${v.n}</span><h2>${v.name}</h2></div>
+    <p class="lab__why">${v.why}</p>
+    <div class="lab__tech">${v.tech}</div>
+    <div class="panel">${card(i + 1)}</div>
+  </section>`).join('');
+
+/* ------------------------------------------------------------- shared glue */
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const sect = (n) => document.querySelector(`[data-v="${n}"]`);
+
+document.addEventListener('click', (e) => { if (e.target.closest('.bento__cta')) e.preventDefault(); });
+
+function hover(el, enter, leave) {
+  el.addEventListener('pointerenter', enter);
+  el.addEventListener('pointerleave', leave);
+  el.addEventListener('focusin', enter);
+  el.addEventListener('focusout', leave);
+}
+function onScreen(el, on, off) {
+  new IntersectionObserver(([e]) => (e.isIntersecting ? on() : off()), { rootMargin: '140px' }).observe(el);
+}
+const money = (v) => `${v < 0 ? '-' : '+'}$${Math.abs(v).toFixed(2)}`;
+
+const parts = (n) => {
+  const root = sect(n);
+  const c = root.querySelector('.bcard');
+  const path = c.querySelector('.bonus__path');
+  const L = path.getTotalLength();
+  // Where the marker sits in the design: its circle centre is (18.42, 17.94)
+  // inside a 36.36-wide box placed at (335.1, 28.6) in chart space, and the
+  // line sits at (-0.5, 16) in that same space.
+  const restX = 335.1 + 18.42 + 0.5, restY = 28.6 + 17.94 - 16;
+  // 600-entry lookup so pointer scrubbing never has to binary-search.
+  const lut = Array.from({ length: 601 }, (_, i) => path.getPointAtLength((i / 600) * L));
+  const atX = (x) => {
+    let lo = 0, hi = 600;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (lut[m].x < x) lo = m + 1; else hi = m; }
+    return (lo / 600) * L;
+  };
+  const L0 = atX(restX);
+  const P0 = path.getPointAtLength(L0);
+  return {
+    root, card: c, path, L, L0, P0, lut, atX, restY,
+    area: c.querySelector('.bonus__area'),
+    ext: c.querySelector('.bonus__ext'),
+    svg: c.querySelector('.bonus__line'),
+    chart: c.querySelector('.bonus__chart'),
+    grid: c.querySelector('.bonus__grid'),
+    marker: c.querySelector('.bonus__marker'),
+    halo: c.querySelector('.bonus__halo'),
+    pill: c.querySelector('.bonus__pill'),
+    amounts: $$('.bonus__amt strong', c),
+    wallet: c.querySelector('.bonus__pill > img'),
+    shine: c.querySelector('.bonus__shine'),
+    bolt: c.querySelector('.bonus__tile:not(.bonus__tile--pie)'),
+    pie: c.querySelector('.bonus__tile--pie'),
+    fx: c.querySelector('.bonus__fx'),
+    dots: $$('.bonus__fx circle', c),
+    cta: c.querySelector('.bento__cta'),
+    gl: c.querySelector('.bonus__gl'),
+    fallbackDots: c.querySelector('.bonus__dots'),
+  };
+};
+
+/** Offsets that turn line-space coordinates into .bonus__fx overlay space. */
+const overlayOffset = (p) => {
+  const a = p.svg.getBoundingClientRect(), b = p.fx.getBoundingClientRect();
+  return { dx: a.left - b.left, dy: a.top - b.top };
+};
+
+if (REDUCED) {
+  document.body.dataset.static = 'true';
+} else {
+  drawAndTally();
+  scrubTheLine();
+  chargeTransfer();
+  fillAndSettle();
+  ditheredSurge();
+}
+
+/* ---------------------------------------------------------- 01 draw & tally
+   Phase one draws only as far as the node — that is where the design puts
+   "now" — with the node riding the pen tip. Phase two runs the projection out
+   to the edge while the figures tally. */
+function drawAndTally() {
+  const p = parts(1);
+  gsap.set(p.path, { strokeDasharray: p.L });
+  const money2 = { v: 200 };
+  const write = () => p.amounts.forEach((a) => { a.textContent = money(money2.v); });
+  let tl, live = true;
+
+  const play = () => {
+    if (!live) return;
+    tl?.kill();
+    money2.v = 0; write();
+    const head = { l: 0 };
+    gsap.set(p.path, { strokeDashoffset: p.L });
+    gsap.set(p.marker, { x: p.lut[0].x - p.P0.x, y: p.lut[0].y - p.P0.y, opacity: .9 });
+    gsap.set([p.bolt, p.pie], { scale: .6, opacity: 0, transformOrigin: '50% 50%' });
+    gsap.set(p.pill, { y: 14, opacity: 0 });
+    gsap.set(p.grid, { opacity: 0 });
+
+    tl = gsap.timeline()
+      .to(p.grid, { opacity: .2, duration: .5, ease: 'power2.out' }, 0)
+      .to(head, {
+        l: p.L0, duration: .46, ease: 'power2.out',
+        onUpdate() {
+          gsap.set(p.path, { strokeDashoffset: p.L - head.l });
+          const q = p.path.getPointAtLength(head.l);
+          gsap.set(p.marker, { x: q.x - p.P0.x, y: q.y - p.P0.y });
+        },
+      }, 0)
+      .to(head, {
+        l: p.L, duration: .34, ease: 'power2.inOut',
+        onUpdate() { gsap.set(p.path, { strokeDashoffset: p.L - head.l }); },
+      }, .46)
+      .fromTo(p.halo, { opacity: .9, scale: .4 }, { opacity: 0, scale: 2.4, duration: .6, ease: 'power2.out', transformOrigin: '50% 50%' }, .44)
+      .to(p.marker, { opacity: 1, duration: .2 }, .44)
+      .to(p.pill, { y: 0, opacity: 1, duration: .42, ease: 'power3.out' }, .48)
+      .to(money2, { v: 200, duration: .5, ease: 'power2.out', onUpdate: write }, .5)
+      .to([p.pie, p.bolt], { scale: 1, opacity: 1, duration: .46, ease: 'back.out(2)', stagger: .09 }, .54);
+  };
+
+  const rest = () => {
+    tl?.kill();
+    money2.v = 200; write();
+    gsap.to(p.path, { strokeDashoffset: 0, duration: .25, ease: 'power2.out', overwrite: true });
+    gsap.to(p.marker, { x: 0, y: 0, opacity: 1, duration: .28, ease: 'power3.out', overwrite: true });
+    gsap.to([p.bolt, p.pie], { scale: 1, opacity: 1, duration: .25, overwrite: true });
+    gsap.to(p.pill, { y: 0, opacity: 1, duration: .25, overwrite: true });
+    gsap.to(p.grid, { opacity: .2, duration: .25, overwrite: true });
+    gsap.to(p.halo, { opacity: 0, duration: .2, overwrite: true });
+  };
+
+  hover(p.card, play, rest);
+  p.card.addEventListener('click', play);
+
+  let fired = false;
+  onScreen(p.card,
+    () => { live = true; if (!fired) { fired = true; play(); } },
+    () => { live = false; tl?.kill(); });
+}
+
+/* --------------------------------------------------------- 02 scrub the line
+   The node is snapped to the real path, never to a straight line between
+   samples, and the readout is linear in height around the resting figure so
+   the design's +$200.00 is exactly what you get back. */
+function scrubTheLine() {
+  const p = parts(2);
+  const K = 1.1;                       // dollars per pixel of height
+  const xTo = gsap.quickTo(p.marker, 'x', { duration: .32, ease: 'power3' });
+  const yTo = gsap.quickTo(p.marker, 'y', { duration: .32, ease: 'power3' });
+  const hx = gsap.quickTo(p.halo, 'x', { duration: .32, ease: 'power3' });
+  const hy = gsap.quickTo(p.halo, 'y', { duration: .32, ease: 'power3' });
+  const shown = { v: 200 };
+  const write = () => p.amounts.forEach((a) => { a.textContent = money(shown.v); });
+  let live = true, tween;
+
+  p.card.addEventListener('pointermove', (e) => {
+    if (!live) return;
+    const r = p.svg.getBoundingClientRect();
+    const x = Math.min(564, Math.max(0, e.clientX - r.left));
+    const q = p.path.getPointAtLength(p.atX(x));
+    xTo(q.x - p.P0.x); yTo(q.y - p.P0.y);
+    hx(q.x - p.P0.x); hy(q.y - p.P0.y);
+    tween?.kill();
+    shown.v = Math.max(0, 200 + K * (p.P0.y - q.y));
+    write();
+  });
+
+  hover(p.card,
+    () => {
+      gsap.to(p.halo, { opacity: 1, duration: .3, ease: 'power2.out' });
+      gsap.to(p.pill, { borderColor: 'rgba(245,94,34,.6)', duration: .3 });
+      gsap.to(p.grid, { opacity: .32, duration: .35 });
+    },
+    () => {
+      gsap.to(p.halo, { opacity: 0, duration: .35, ease: 'power2.out' });
+      gsap.to(p.pill, { borderColor: 'rgba(245,94,34,.25)', duration: .35 });
+      gsap.to(p.grid, { opacity: .2, duration: .35 });
+      xTo(0); yTo(0); hx(0); hy(0);
+      tween = gsap.to(shown, { v: 200, duration: .45, ease: 'power3.out', onUpdate: write });
+    });
+
+  gsap.set(p.halo, { boxShadow: '0 0 0 6px rgba(245,94,34,.28), 0 0 26px 6px rgba(245,94,34,.45)' });
+  onScreen(p.card, () => { live = true; }, () => { live = false; });
+}
+
+/* ------------------------------------------------------ 03 charge transfer */
+function chargeTransfer() {
+  const p = parts(3);
+  const off = overlayOffset(p);
+  const toOv = (q) => ({ x: q.x + off.dx, y: q.y + off.dy });
+
+  const fxRect = p.fx.getBoundingClientRect();
+  const wRect = p.wallet.getBoundingClientRect();
+  const start = { x: wRect.left - fxRect.left + wRect.width / 2, y: wRect.top - fxRect.top + wRect.height / 2 };
+  const LA = p.atX(240);               // where the particles join the curve
+  const joinPt = toOv(p.path.getPointAtLength(LA));
+  const ctrl = { x: (start.x + joinPt.x) / 2 - 30, y: Math.min(start.y, joinPt.y) - 46 };
+
+  const place = (d, t) => {
+    let x, y;
+    if (t < .38) {                     // quadratic hop from the wallet to the curve
+      const u = t / .38;
+      const m = 1 - u;
+      x = m * m * start.x + 2 * m * u * ctrl.x + u * u * joinPt.x;
+      y = m * m * start.y + 2 * m * u * ctrl.y + u * u * joinPt.y;
+    } else {                           // then it rides the real path to the node
+      const u = (t - .38) / .62;
+      const q = toOv(p.path.getPointAtLength(LA + (p.L0 - LA) * u));
+      x = q.x; y = q.y;
+    }
+    d.setAttribute('cx', x.toFixed(2));
+    d.setAttribute('cy', y.toFixed(2));
+  };
+  p.dots.forEach((d) => place(d, 0));
+
+  gsap.set(p.ext, { strokeDasharray: `0 ${p.L0} 0 ${p.L}` });
+  let tl, live = true;
+
+  const play = () => {
+    if (!live) return;
+    tl?.kill();
+    const seg = { len: 0 };
+    tl = gsap.timeline();
+    p.dots.forEach((d, i) => {
+      const prox = { t: 0 };
+      tl.fromTo(prox, { t: 0 }, {
+        t: 1, duration: .68, ease: 'power2.inOut',
+        onStart() { gsap.set(d, { opacity: 1 }); },
+        onUpdate() { place(d, prox.t); },
+        onComplete() { gsap.to(d, { opacity: 0, duration: .18 }); },
+      }, i * .07);
+    });
+    const landed = .68 + (p.dots.length - 1) * .07;
+    tl.fromTo(p.halo, { opacity: .95, scale: .5 }, { opacity: 0, scale: 2.6, duration: .62, ease: 'power2.out', transformOrigin: '50% 50%' }, landed - .1)
+      .to(p.bolt, { scale: 1.12, backgroundColor: '#fffbf8', duration: .16, ease: 'power2.out', transformOrigin: '50% 50%' }, landed)
+      .to(p.bolt, { scale: 1, backgroundColor: '#e6e6e6', duration: .5, ease: 'back.out(2.4)' }, landed + .16)
+      .to(p.ext, { opacity: 1, duration: .12 }, landed)
+      .to(seg, {
+        len: p.L - p.L0, duration: .5, ease: 'power3.out',
+        onUpdate() { p.ext.setAttribute('stroke-dasharray', `0 ${p.L0} ${seg.len} ${p.L}`); },
+      }, landed)
+      .to(p.pill, { scale: 1.022, duration: .18, ease: 'power2.out', transformOrigin: '50% 50%' }, landed)
+      .to(p.pill, { scale: 1, duration: .55, ease: 'back.out(2.6)' }, landed + .18)
+      .fromTo(p.shine, { opacity: 1, x: 0 }, { x: 340, duration: .62, ease: 'power2.inOut', onComplete: () => gsap.set(p.shine, { opacity: 0 }) }, landed + .04);
+  };
+
+  const rest = () => {
+    tl?.kill();
+    gsap.to(p.dots, { opacity: 0, duration: .2, overwrite: true });
+    gsap.to(p.ext, { opacity: 0, duration: .28, overwrite: true });
+    gsap.to(p.bolt, { scale: 1, backgroundColor: '#e6e6e6', duration: .3, overwrite: true });
+    gsap.to(p.pill, { scale: 1, duration: .3, overwrite: true });
+    gsap.to(p.halo, { opacity: 0, duration: .2, overwrite: true });
+    gsap.set(p.shine, { opacity: 0, x: 0 });
+  };
+
+  hover(p.card, play, rest);
+  p.card.addEventListener('click', play);
+  onScreen(p.card, () => { live = true; }, () => { live = false; tl?.kill(); });
+}
+
+/* -------------------------------------------------------- 04 fill & settle */
+function fillAndSettle() {
+  const p = parts(4);
+  gsap.set(p.area, { clipPath: 'inset(100% 0 0 0)' });
+  let tl, live = true;
+
+  const play = () => {
+    if (!live) return;
+    tl?.kill();
+    tl = gsap.timeline()
+      .to(p.area, { opacity: 1, clipPath: 'inset(0% 0 0 0)', duration: .52, ease: 'power3.out' }, 0)
+      // stiffest layer first, loosest last — the lag is the whole point
+      .to(p.grid, { y: -3, duration: .5, ease: 'power3.out' }, 0)
+      .to(p.svg, { y: -7, duration: .7, ease: 'back.out(1.6)' }, .03)
+      .to(p.marker, { y: -13, duration: .72, ease: 'back.out(2.6)' }, .06)
+      .to(p.pie, { y: -12, duration: .85, ease: 'elastic.out(1,.62)', transformOrigin: '50% 50%' }, .08)
+      .to(p.bolt, { y: -15, duration: .9, ease: 'elastic.out(1,.6)', transformOrigin: '50% 50%' }, .1)
+      .to(p.pill, { y: -9, boxShadow: '0 22px 40px -18px rgba(0,0,0,.9)', duration: .8, ease: 'elastic.out(1,.68)' }, .12)
+      .fromTo(p.halo, { opacity: .8, scale: .5 }, { opacity: 0, scale: 2.2, duration: .7, ease: 'power2.out', transformOrigin: '50% 50%' }, .12);
+  };
+
+  const rest = () => {
+    tl?.kill();
+    gsap.to(p.area, { opacity: 0, clipPath: 'inset(100% 0 0 0)', duration: .34, ease: 'power3.in', overwrite: true });
+    gsap.to([p.grid, p.svg, p.marker, p.pie, p.bolt], { y: 0, duration: .42, ease: 'power3.out', overwrite: true });
+    gsap.to(p.pill, { y: 0, boxShadow: '0 0 0 0 rgba(0,0,0,0)', duration: .42, ease: 'power3.out', overwrite: true });
+    gsap.to(p.halo, { opacity: 0, duration: .2, overwrite: true });
+  };
+
+  hover(p.card, play, rest);
+  p.card.addEventListener('click', () => { rest(); gsap.delayedCall(.12, play); });
+  onScreen(p.card, () => { live = true; }, () => { live = false; tl?.kill(); });
+}
+
+/* -------------------------------------------------------- 05 dithered surge */
+async function ditheredSurge() {
+  const p = parts(5);
+
+  const fail = () => {
+    p.gl.remove();
+    p.root.dataset.fallback = 'css';
+    // Same halftone read without a GPU: dotted fill clipped to the real area.
+    p.fallbackDots.style.clipPath = `path('${AREA_D}')`;
+    hover(p.card,
+      () => gsap.to(p.fallbackDots, { opacity: .55, duration: .5, ease: 'power2.out' }),
+      () => gsap.to(p.fallbackDots, { opacity: 0, duration: .4, ease: 'power2.out' }));
+  };
+
+  let THREE;
+  try { THREE = await import('three'); } catch { return fail(); }
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: p.gl, alpha: true, antialias: false });
+    if (!renderer.getContext()) throw new Error('no gl');
+  } catch { return fail(); }
+
+  // The curve's own height, sampled into a 256-wide lookup the shader reads.
+  const N = 256;
+  const data = new Uint8Array(N * 4);
+  for (let i = 0; i < N; i++) {
+    const q = p.path.getPointAtLength(p.atX((i / (N - 1)) * 564.087));
+    const v = Math.round(Math.min(255, Math.max(0, (q.y / 196.559) * 255)));
+    data[i * 4] = v; data[i * 4 + 1] = v; data[i * 4 + 2] = v; data[i * 4 + 3] = 255;
+  }
+  const tex = new THREE.DataTexture(data, N, 1, THREE.RGBAFormat);
+  tex.minFilter = tex.magFilter = THREE.LinearFilter;
+  tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.needsUpdate = true;
+
+  const u = {
+    uTime: { value: 0 },
+    uSurge: { value: 0 },
+    uHeights: { value: tex },
+    uSize: { value: new THREE.Vector2(564, 196.6) },
+    uDpr: { value: 1 },
+    uColor: { value: new THREE.Color('#f55e22') },
+  };
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: u, transparent: true, depthTest: false,
+    vertexShader: 'void main(){ gl_Position = vec4(position, 1.0); }',
+    fragmentShader: `
+      precision highp float;
+      uniform float uTime, uSurge, uDpr;
+      uniform sampler2D uHeights;
+      uniform vec2 uSize;
+      uniform vec3 uColor;
+
+      float bayer(vec2 p){
+        int x = int(mod(p.x, 4.0)); int y = int(mod(p.y, 4.0)); int i = x + y * 4;
+        float m[16];
+        m[0]=0.0;  m[1]=8.0;  m[2]=2.0;  m[3]=10.0;
+        m[4]=12.0; m[5]=4.0;  m[6]=14.0; m[7]=6.0;
+        m[8]=3.0;  m[9]=11.0; m[10]=1.0; m[11]=9.0;
+        m[12]=15.0;m[13]=7.0; m[14]=13.0;m[15]=5.0;
+        for(int k=0;k<16;k++){ if(k==i) return (m[k]+0.5)/16.0; }
+        return 0.5;
+      }
+
+      void main(){
+        vec2 css = gl_FragCoord.xy / uDpr;      // css px, y counts up
+        float x = css.x;
+        float yTop = uSize.y - css.y;           // css px from the top
+        float lineY = texture2D(uHeights, vec2(x / uSize.x, 0.5)).r * 196.559;
+
+        float below = yTop - lineY;             // > 0 under the curve
+        if(below < 0.0) discard;
+
+        float depth = max(40.0, uSurge * 150.0);
+        float a = smoothstep(depth, 0.0, below) * uSurge;
+
+        // a slow highlight band running the length — seamless by construction
+        float phase = mod(uTime * 0.16, 1.0) * (uSize.x + 260.0) - 130.0;
+        a += smoothstep(120.0, 0.0, abs(x - phase)) * smoothstep(64.0, 0.0, below) * uSurge * 0.5;
+
+        a = clamp(a, 0.0, 1.0);
+        a = step(bayer(gl_FragCoord.xy), a) * a;
+        if(a <= 0.004) discard;
+        gl_FragColor = vec4(uColor, a * 0.62);
+      }`,
+  });
+
+  const scene = new THREE.Scene();
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+  const camera = new THREE.Camera();
+
+  const size = () => {
+    const dpr = Math.min(devicePixelRatio, 2);
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(564, 196.6, false);
+    u.uDpr.value = dpr;
+  };
+  size();
+  addEventListener('resize', size);
+
+  hover(p.card,
+    () => {
+      gsap.to(u.uSurge, { value: 1, duration: .6, ease: 'power2.out' });
+      gsap.to(p.grid, { opacity: .3, duration: .5 });
+      gsap.to(p.marker, { scale: 1.04, duration: .5, ease: 'power3.out', transformOrigin: '50% 13%' });
+    },
+    () => {
+      gsap.to(u.uSurge, { value: 0, duration: .5, ease: 'power2.out' });
+      gsap.to(p.grid, { opacity: .2, duration: .5 });
+      gsap.to(p.marker, { scale: 1, duration: .5, ease: 'power3.out' });
+    });
+
+  const t0 = performance.now();
+  let live = false, raf = 0;
+  const tick = () => {
+    u.uTime.value = (performance.now() - t0) / 1000;
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(tick);
+  };
+  onScreen(p.card,
+    () => { if (!live) { live = true; tick(); } },
+    () => { live = false; cancelAnimationFrame(raf); raf = 0; });
+}
+</script>
+</body>
+</html>

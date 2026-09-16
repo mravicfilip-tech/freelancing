@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { EASE, REDUCED, revealIn, revealUp, useSectionMotion } from '../../lib/motion';
+import type { SectionMotion } from '../../lib/motion';
 import dot from '../../assets/icons/live-dot.svg';
 import markWhite from '../../assets/pillars/mark-white.svg';
 import markOrange from '../../assets/pillars/mark-orange.svg';
@@ -78,9 +82,129 @@ const ROWS = [
   { label: 'Transparent Execution', icon: <img src={pill4} alt="" className="pillars__icon" /> },
 ];
 
+
+/* Entrance -------------------------------------------------------------------
+   One timeline: the glow settles, the header rises, the three cards come in
+   sequence with their own interiors trailing each shell, and the four bars
+   below wipe open left to right. The bars are 72px of horizontal line, so they
+   get a wipe rather than a fourth fade-up. Every tween is a `from`, so the
+   resting markup is already the finished state — a failure to build leaves the
+   section fully visible rather than blank. */
+const CARDS_AT = 0.32;
+const CARD_STEP = 0.09;
+const ROWS_AT = 0.78;
+const ROW_STEP = 0.075;
+
+function buildPillars({ q, tl }: SectionMotion) {
+  const glow = q('.pillars__glow')[0];
+  const cards = q('.pcard');
+  const rows = q('.prow');
+
+  if (glow) {
+    tl.from(
+      glow,
+      { opacity: 0, scale: 1.05, transformOrigin: '72% 0%', duration: 0.9, ease: 'power2.out', clearProps: 'transform' },
+      0,
+    );
+  }
+
+  revealUp(tl, q('.eyebrow'), { y: 12, duration: 0.5, at: 0.05 });
+  revealUp(tl, q('.pillars__title'), { y: 22, duration: 0.65, at: 0.14 });
+
+  revealIn(tl, cards, { y: 20, stagger: CARD_STEP, duration: 0.7, at: CARDS_AT });
+
+  // Each card's contents trail its own shell, so the three cards read as three
+  // arrivals rather than one block of text appearing at once.
+  cards.forEach((card, i) => {
+    const at = CARDS_AT + i * CARD_STEP + 0.14;
+    const inner = Array.from(card.querySelectorAll<HTMLElement>('.pcard__eyebrow, .pcard__body > *'));
+    const mark = card.querySelector<HTMLElement>('.pcard__mark');
+    if (inner.length) {
+      tl.from(inner, { y: 10, opacity: 0, duration: 0.45, stagger: 0.05, clearProps: 'transform' }, at);
+    }
+    if (mark) {
+      tl.from(
+        mark,
+        { scale: 0.72, rotate: -10, opacity: 0, transformOrigin: '50% 50%', duration: 0.55, clearProps: 'transform' },
+        at + 0.04,
+      );
+    }
+  });
+
+  if (rows.length) {
+    // `clearProps` drops the inline clip-path on completion, so the settled row
+    // is byte-for-byte the CSS resting state and nothing is clipped at rest.
+    tl.fromTo(
+      rows,
+      { clipPath: 'inset(0 100% 0 0 round 10px)' },
+      {
+        clipPath: 'inset(0 0% 0 0 round 10px)',
+        duration: 0.5,
+        stagger: ROW_STEP,
+        ease: 'expo.out',
+        clearProps: 'clipPath',
+      },
+      ROWS_AT,
+    );
+    tl.from(
+      q('.prow__label'),
+      { x: -12, opacity: 0, duration: 0.45, stagger: ROW_STEP, clearProps: 'transform' },
+      ROWS_AT + 0.06,
+    );
+    tl.from(
+      q('.prow__chevron'),
+      { y: -6, opacity: 0, duration: 0.4, stagger: ROW_STEP, clearProps: 'transform' },
+      ROWS_AT + 0.1,
+    );
+  }
+}
+
+/* Hover ----------------------------------------------------------------------
+   The four bars are buttons with a chevron but no panel and no toggle, so there
+   is no open state to animate. What they do have is a pointer state, and that
+   is driven here instead of by a CSS transition so the chevron, the label and
+   its icon move together on one curve. */
+function useRowHover(root: React.RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = root.current;
+    if (!el || REDUCED) return;
+
+    const ctx = gsap.context(() => {
+      el.querySelectorAll<HTMLElement>('.prow').forEach((row) => {
+        const chevron = row.querySelector<HTMLElement>('.prow__chevron');
+        const label = row.querySelector<HTMLElement>('.prow__label');
+        const icon = row.querySelector<HTMLElement>('.pillars__icon');
+
+        const enter = () => {
+          if (chevron) gsap.to(chevron, { y: 3, duration: 0.3, ease: 'expo.out', overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 3, duration: 0.32, ease: 'expo.out', overwrite: 'auto' });
+          if (icon) {
+            gsap.to(icon, { scale: 1.12, transformOrigin: '50% 50%', duration: 0.32, ease: 'expo.out', overwrite: 'auto' });
+          }
+        };
+        const leave = () => {
+          if (chevron) gsap.to(chevron, { y: 0, duration: 0.4, ease: EASE, overwrite: 'auto' });
+          if (label) gsap.to(label, { x: 0, duration: 0.4, ease: EASE, overwrite: 'auto' });
+          if (icon) gsap.to(icon, { scale: 1, duration: 0.4, ease: EASE, overwrite: 'auto' });
+        };
+
+        row.addEventListener('pointerenter', enter);
+        row.addEventListener('pointerleave', leave);
+        row.addEventListener('focus', enter);
+        row.addEventListener('blur', leave);
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [root]);
+}
+
 export function Pillars() {
+  const ref = useSectionMotion<HTMLElement>(buildPillars);
+  useRowHover(ref);
+
   return (
-    <section className="pillars" aria-labelledby="pillars-title">
+    <section className="pillars" ref={ref} aria-labelledby="pillars-title">
       <div className="pillars__glow glow-fade" aria-hidden="true">
         <span className="pillars__g pillars__g--red" />
         <span className="pillars__g pillars__g--orange" />

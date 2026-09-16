@@ -86,8 +86,10 @@
   font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
   color: var(--color-nre-body); white-space: nowrap;
 }
-.prow__chevron { width: 17.875px; height: 9.75px; flex: none; transition: transform 200ms ease; }
-.prow:hover .prow__chevron { transform: translateY(2px); }
+/* The chevron, the label and its icon are driven from Pillars.tsx so they move
+   together on one curve; a CSS transition here would fight GSAP's inline
+   transform and double-ease it. Colour stays on the transition above. */
+.prow__chevron { width: 17.875px; height: 9.75px; flex: none; }
 
 @media (max-width: 1500px) {
   .pillars__cards { flex-wrap: wrap; }

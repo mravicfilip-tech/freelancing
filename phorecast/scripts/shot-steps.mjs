@@ -1,0 +1,12 @@
+import { chromium } from 'playwright-core';
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+await page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
+await page.evaluate(() => document.fonts.ready);
+for (const i of [1, 2]) {
+  await page.locator('.steps__list .step').nth(i).click();
+  await page.waitForTimeout(700);
+  await page.locator('.steps__panels').screenshot({ path: `/tmp/panel${i + 1}.png` });
+}
+await browser.close();
+console.log('done');

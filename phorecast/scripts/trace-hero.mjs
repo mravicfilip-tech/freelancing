@@ -34,6 +34,13 @@ const samples = await page.evaluate(() => new Promise((resolve) => {
       title: op('.hero__title'),
       lede: op('.hero__lede'),
       cta: op('.hero__cta'),
+      visual: (() => {
+        const v = s && s.querySelector('.hero__visual');
+        if (!v) return -1;
+        const kids = v.children.length > 1 ? [...v.children] : [...(v.firstElementChild?.children ?? [])];
+        const list = kids.length > 1 ? kids : [v];
+        return list.reduce((m, e) => Math.min(m, Number(getComputedStyle(e).opacity)), 1);
+      })(),
     });
     if (performance.now() - t0 < 5200) setTimeout(read, 200);
     else resolve(out);
@@ -42,11 +49,11 @@ const samples = await page.evaluate(() => new Promise((resolve) => {
 }));
 
 const bar = (v) => (v < 0 ? '  -  ' : '█'.repeat(Math.round(v * 5)).padEnd(5, '·'));
-console.log('  time | glow  mark  eyebrow title  lede   cta');
+console.log('  time | glow  visual eyebrow title  lede   cta');
 for (const s of samples) {
-  if (s.t % 400 > 210) continue; // every ~400ms keeps the table readable
+  if (s.t % 200 > 120) continue; // every ~400ms keeps the table readable
   console.log(
-    `${String(s.t).padStart(5)} | ${bar(s.glow)} ${bar(s.mark)} ${bar(s.eyebrow)} ${bar(s.title)} ${bar(s.lede)} ${bar(s.cta)}`,
+    `${String(s.t).padStart(5)} | ${bar(s.glow)} ${bar(s.visual)} ${bar(s.eyebrow)} ${bar(s.title)} ${bar(s.lede)} ${bar(s.cta)}`,
   );
 }
 const last = samples[samples.length - 1];

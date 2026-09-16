@@ -106,6 +106,28 @@ export function slideCopyIn(slide: HTMLElement, tl: gsap.core.Timeline, at: numb
     tl.from(lines, { yPercent: 105, opacity: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform,opacity' }, at + 0.24);
   }
 
+  // The illustration is the largest thing on screen. Leaving it out meant it sat
+  // at full opacity from the first frame while the copy animated beside it,
+  // which read as broken rather than staged.
+  const visual = slide.querySelector<HTMLElement>('.hero__visual');
+  if (visual) {
+    const kids = Array.from(visual.children) as HTMLElement[];
+    const parts = kids.length > 1
+      ? kids
+      : (Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[]);
+    const targets = parts.length > 1 ? parts : [visual];
+    tl.from(targets, {
+      opacity: 0,
+      y: 26,
+      scale: 0.985,
+      duration: 0.85,
+      stagger: 0.07,
+      ease: 'power3.out',
+      transformOrigin: '50% 50%',
+      clearProps: 'transform,opacity',
+    }, at + 0.08);
+  }
+
   if (cta) {
     tl.from(cta, {
       opacity: 0,
@@ -127,7 +149,11 @@ export function heroEntrance(hero: HTMLElement): () => void {
   const cards = all('.hero__foot > *');
   const slide = hero.querySelector<HTMLElement>('.hero__slide.is-active');
 
-  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+  // Built paused and released after the browser has painted once. With lag
+  // smoothing off the clock runs during mount, so a slow first paint would
+  // otherwise consume the whole sequence and the hero would simply appear.
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+  requestAnimationFrame(() => requestAnimationFrame(() => tl.play()));
 
   // Light ignites from the centre and blooms outward — small and bright to full
   // size, rather than a rectangle fading up.
@@ -160,21 +186,25 @@ export function heroEntrance(hero: HTMLElement): () => void {
   }
 
   // ---- Loops. Meaningful motion only: the glare, and live numbers. ----------
-  const loops: Array<gsap.core.Tween | gsap.core.Timeline> = [];
+  //
+  // Both look the current slide up each time they fire. Binding them to the
+  // elements present at mount silently stops them after the first slide change,
+  // because the carousel replaces that DOM.
+  let sheenTimer = 0;
   let priceTimer = 0;
 
   tl.call(() => {
-    const title = hero.querySelector<HTMLElement>('.hero__slide.is-active .hero__title');
-    if (title) {
-      const loop = gsap.timeline({ repeat: -1, repeatDelay: SHEEN_EVERY });
-      sweep(title, 0, loop);
-      loops.push(loop);
-    }
+    sheenTimer = window.setInterval(() => {
+      const title = hero.querySelector<HTMLElement>('.hero__slide.is-active .hero__title');
+      if (title) sweep(title, 0, gsap.timeline());
+    }, SHEEN_EVERY * 1000);
 
     // The market cards were frozen, which is the wrong look for a trading
     // product. Walk each price a few basis points and flash the move.
     priceTimer = window.setInterval(() => {
-      const card = cards[Math.floor(Math.random() * cards.length)];
+      const live = Array.from(hero.querySelectorAll<HTMLElement>('.hero__foot > *'));
+      if (!live.length) return;
+      const card = live[Math.floor(Math.random() * live.length)];
       const priceEl = card?.querySelector<HTMLElement>('.ticker__price');
       if (!priceEl) return;
 
@@ -194,7 +224,7 @@ export function heroEntrance(hero: HTMLElement): () => void {
 
   return () => {
     tl.kill();
-    loops.forEach((t) => t.kill());
+    window.clearInterval(sheenTimer);
     window.clearInterval(priceTimer);
     gsap.set(hero.querySelectorAll('.hero__glow, .hero__horizon, .hero__foot > *, .line__in'), {
       clearProps: 'transform,opacity,filter',

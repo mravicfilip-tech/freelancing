@@ -364,11 +364,24 @@
   --bento-fd-ring: #c4361c;
   --bento-fd-wire: #a21605;
   --bento-fd-head: #7e0202;
-  /* brightness(1.7) on a #ece1d9 chip is a chip that has gone white. A single
-     function in both states, so GSAP interpolates the filter structurally
-     rather than falling back to a discrete swap. */
-  --bento-fd-tile-lit: brightness(0.78);
-  --bento-fd-chip-lit: rgba(162, 22, 5, 0.75);
+  /* The market chip firing, and the one beat in this band that changes which
+     ELEMENT carries it. In dark, brightness(1.7) moves the #0f0e0d chip by
+     1.03:1 and nothing at all would be visible -- what fires is the #a6a6a6
+     glyph inside it, which clips to white and takes its contrast against the
+     chip from 7.5:1 to 17.8:1. Below 1, brightness cannot clip: it scales the
+     glyph and its chip together and their mutual contrast barely moves. So on
+     paper the CHIP is what fires, against the card: 1.27:1 at rest to 2.24:1
+     at 0.72, a swing of 1.76x where dark's glyph swings 2.37x. Pushing the
+     multiplier further only crushes the glyph. One filter function either
+     side, so GSAP interpolates the list structurally. */
+  --bento-fd-tile-lit: brightness(0.72);
+  /* A lit edge is a STEP, not a density, so this is matched by the swing it
+     produces rather than by converting the alpha. Dark: the chip's edge runs
+     1.21:1 at rest to 4.81:1 lit, 3.97x. Ink at 80% over the light pill runs
+     1.49:1 to 5.58:1, 3.75x. rgba(162,22,5,.75) -- the literal alpha carried
+     across -- would have given 2.55x: a beat measurably weaker on paper while
+     passing every check there is. */
+  --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
   /* A glow around ink on paper is a smudge unless it is warm and tight; this
      is the same 12px radius reading as a bloom under the word rather than
      around it. */
@@ -380,7 +393,13 @@
      palette rather than to the accent -- it has to beat the line it is drawing
      the whole way. */
   --bento-bn-head: #7e0202;
-  --bento-bn-pill-lit: rgba(162, 22, 5, 0.75);
+  /* Same step-matching as --bento-fd-chip-lit: 1.28:1 -> 4.72:1 in dark, a
+     3.69x swing; 1.52:1 -> 5.94:1 here, 3.90x. */
+  --bento-bn-pill-lit: rgba(126, 2, 2, 0.8);
+  /* The marker is a white dot in a warm halo -- a chart handle, which is what
+     a chart handle looks like on paper too, so it is NOT inverted. Only its
+     bloom turns around: 1.5 lifts the halo off a dark card, 0.74 presses it
+     into a light one. */
   --bento-bn-marker-lit: brightness(0.74);
   }
   :root:not([data-theme='dark']) .bento {
@@ -450,11 +469,24 @@
   --bento-fd-ring: #c4361c;
   --bento-fd-wire: #a21605;
   --bento-fd-head: #7e0202;
-  /* brightness(1.7) on a #ece1d9 chip is a chip that has gone white. A single
-     function in both states, so GSAP interpolates the filter structurally
-     rather than falling back to a discrete swap. */
-  --bento-fd-tile-lit: brightness(0.78);
-  --bento-fd-chip-lit: rgba(162, 22, 5, 0.75);
+  /* The market chip firing, and the one beat in this band that changes which
+     ELEMENT carries it. In dark, brightness(1.7) moves the #0f0e0d chip by
+     1.03:1 and nothing at all would be visible -- what fires is the #a6a6a6
+     glyph inside it, which clips to white and takes its contrast against the
+     chip from 7.5:1 to 17.8:1. Below 1, brightness cannot clip: it scales the
+     glyph and its chip together and their mutual contrast barely moves. So on
+     paper the CHIP is what fires, against the card: 1.27:1 at rest to 2.24:1
+     at 0.72, a swing of 1.76x where dark's glyph swings 2.37x. Pushing the
+     multiplier further only crushes the glyph. One filter function either
+     side, so GSAP interpolates the list structurally. */
+  --bento-fd-tile-lit: brightness(0.72);
+  /* A lit edge is a STEP, not a density, so this is matched by the swing it
+     produces rather than by converting the alpha. Dark: the chip's edge runs
+     1.21:1 at rest to 4.81:1 lit, 3.97x. Ink at 80% over the light pill runs
+     1.49:1 to 5.58:1, 3.75x. rgba(162,22,5,.75) -- the literal alpha carried
+     across -- would have given 2.55x: a beat measurably weaker on paper while
+     passing every check there is. */
+  --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
   /* A glow around ink on paper is a smudge unless it is warm and tight; this
      is the same 12px radius reading as a bloom under the word rather than
      around it. */
@@ -466,7 +498,13 @@
      palette rather than to the accent -- it has to beat the line it is drawing
      the whole way. */
   --bento-bn-head: #7e0202;
-  --bento-bn-pill-lit: rgba(162, 22, 5, 0.75);
+  /* Same step-matching as --bento-fd-chip-lit: 1.28:1 -> 4.72:1 in dark, a
+     3.69x swing; 1.52:1 -> 5.94:1 here, 3.90x. */
+  --bento-bn-pill-lit: rgba(126, 2, 2, 0.8);
+  /* The marker is a white dot in a warm halo -- a chart handle, which is what
+     a chart handle looks like on paper too, so it is NOT inverted. Only its
+     bloom turns around: 1.5 lifts the halo off a dark card, 0.74 presses it
+     into a light one. */
   --bento-bn-marker-lit: brightness(0.74);
 }
 :root[data-theme='light'] .bento {

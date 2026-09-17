@@ -317,9 +317,14 @@
      other way. */
   --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
   --steps-p1-pill-ink: var(--ink);
-  /* The stroke's pair. Alpha goes up because a dark red at 22% over cream is
-     fainter than the same red at 22% over black. */
-  --steps-p1-pill-rest: rgba(162, 22, 5, 0.3);
+  /* The stroke's pair, and the value in this panel that is NOT the x 1.125
+     rule. That rule reproduces a resting density; this is half of a lit pair,
+     so what has to match is the step. Dark travels 2.78:1 from its 22% wash to
+     the full brand red. On paper the lit end is fixed -- it has to be the brand
+     red -- so the rest end is the only lever, and a faint rest makes the step
+     LARGER here, not smaller: 22% gave 5.10:1 and 30% gave 3.62:1, both beats
+     louder than dark's. 0.44 lands 2.78:1 exactly. */
+  --steps-p1-pill-rest: rgba(162, 22, 5, 0.44);
   --steps-p1-pill-lit: rgb(162, 22, 5);
 
   /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper
@@ -357,9 +362,14 @@
      other way. */
   --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
   --steps-p1-pill-ink: var(--ink);
-  /* The stroke's pair. Alpha goes up because a dark red at 22% over cream is
-     fainter than the same red at 22% over black. */
-  --steps-p1-pill-rest: rgba(162, 22, 5, 0.3);
+  /* The stroke's pair, and the value in this panel that is NOT the x 1.125
+     rule. That rule reproduces a resting density; this is half of a lit pair,
+     so what has to match is the step. Dark travels 2.78:1 from its 22% wash to
+     the full brand red. On paper the lit end is fixed -- it has to be the brand
+     red -- so the rest end is the only lever, and a faint rest makes the step
+     LARGER here, not smaller: 22% gave 5.10:1 and 30% gave 3.62:1, both beats
+     louder than dark's. 0.44 lands 2.78:1 exactly. */
+  --steps-p1-pill-rest: rgba(162, 22, 5, 0.44);
   --steps-p1-pill-lit: rgb(162, 22, 5);
 
   /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper

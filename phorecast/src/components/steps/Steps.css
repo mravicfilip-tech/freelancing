@@ -329,9 +329,17 @@
      a stain and the ground stop is a grey bruise. So the ramp inverts its
      luminance while keeping its geometry exactly: same angle, same two stop
      positions, same centre, same radius, same blur. The core becomes the
-     DEEPEST tint rather than the brightest -- 1.35:1 at its densest, against
-     the 1.37 the rest of the page settled on -- and the far stop becomes the
+     DEEPEST tint rather than the brightest, and the far stop becomes the
      panel, so the disc still dissolves into whatever it is lying on.
+
+     The density is dark's own, measured rather than assumed. The blurred disc
+     peaks at 0.689 opacity, so #f03725 arrives at the centre as (172,44,31)
+     over a panel of (20,19,18) -- 2.78:1. A first pass at #efcab5 gave 1.35:1,
+     which is the figure the page-level glows settled on and is half of what
+     this one is worth: those wash a whole band, this one lights a single
+     illustration and is what panel 2's balance card is lit THROUGH. #b8432a
+     arrives at (204,121,102) over (247,240,234) -- 2.88:1, and keeps more of
+     dark stop's chroma than a paler tint does once it is mixed into cream.
 
      The mask is what the blur was. glow.svg carries its own feGaussianBlur and
      arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
@@ -340,7 +348,7 @@
      These thirteen stops are the radial profile of a disc of radius 204.5
      convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
      with the disc's own 0.689 peak folded into the alphas. */
-  --steps-glow: linear-gradient(233.08deg, #efcab5 36.68%, var(--steps-panel) 72.68%);
+  --steps-glow: linear-gradient(233.08deg, #b8432a 36.68%, var(--steps-panel) 72.68%);
   --steps-glow-mask: radial-gradient(circle closest-side,
     rgba(0, 0, 0, 0.689) 0%,
     rgba(0, 0, 0, 0.673) 8.5%,
@@ -393,9 +401,17 @@
      a stain and the ground stop is a grey bruise. So the ramp inverts its
      luminance while keeping its geometry exactly: same angle, same two stop
      positions, same centre, same radius, same blur. The core becomes the
-     DEEPEST tint rather than the brightest -- 1.35:1 at its densest, against
-     the 1.37 the rest of the page settled on -- and the far stop becomes the
+     DEEPEST tint rather than the brightest, and the far stop becomes the
      panel, so the disc still dissolves into whatever it is lying on.
+
+     The density is dark's own, measured rather than assumed. The blurred disc
+     peaks at 0.689 opacity, so #f03725 arrives at the centre as (172,44,31)
+     over a panel of (20,19,18) -- 2.78:1. A first pass at #efcab5 gave 1.35:1,
+     which is the figure the page-level glows settled on and is half of what
+     this one is worth: those wash a whole band, this one lights a single
+     illustration and is what panel 2's balance card is lit THROUGH. #b8432a
+     arrives at (204,121,102) over (247,240,234) -- 2.88:1, and keeps more of
+     dark stop's chroma than a paler tint does once it is mixed into cream.
 
      The mask is what the blur was. glow.svg carries its own feGaussianBlur and
      arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
@@ -404,7 +420,7 @@
      These thirteen stops are the radial profile of a disc of radius 204.5
      convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
      with the disc's own 0.689 peak folded into the alphas. */
-  --steps-glow: linear-gradient(233.08deg, #efcab5 36.68%, var(--steps-panel) 72.68%);
+  --steps-glow: linear-gradient(233.08deg, #b8432a 36.68%, var(--steps-panel) 72.68%);
   --steps-glow-mask: radial-gradient(circle closest-side,
     rgba(0, 0, 0, 0.689) 0%,
     rgba(0, 0, 0, 0.673) 8.5%,

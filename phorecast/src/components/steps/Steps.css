@@ -1,6 +1,39 @@
 /* Steps: 1920 × 1080 design frame, 240px side padding, 534px step column,
    886 × 610 panel. The panel scales with a --p unit so its absolutely
    positioned internals stay in proportion. */
+
+/* The band's colour, in two layers.
+   -------------------------------------------------------------------------
+   ROLE TOKENS (--ink, --ink-2, --panel, --accent, --veil-line) for anything
+   whose job the rest of the page already names: the heading, the step cards
+   and their copy, the active card's accent rail. They flip with the theme for
+   free and the band does not get to have an opinion about them.
+
+   STEPS LOCALS (--steps-*) for the four values that are this band's own: the
+   dwell bar, the card hover, and the two panel grounds with their edges.
+   Declared on :root rather than on .steps, and that is not a style choice --
+   `tok()` in lib/theme.ts is getComputedStyle(document.documentElement), so a
+   custom property a loop has to read is only visible to it from the root, and
+   the three panels all read from here. The --steps- prefix is what keeps this
+   file out of everyone else's way.
+
+   Dark is exactly what the section shipped with, written out rather than
+   inlined, so this block is provably a no-op. The light block at the foot of
+   the file redefines exactly these names. */
+:root {
+  /* The active card's dwell bar. A pale coral over the rail's own accent --
+     the one thing in the band that says "time is passing". */
+  --steps-progress: #f69179;
+  /* The card's hover plate: one step warmer than --panel. */
+  --steps-card-hover: #211f1e;
+
+  /* The panel grounds. Panels 1 and 2 share one; panel 3 sits a shade lighter
+     and carries a visible edge where the other two carry none. */
+  --steps-panel: #141312;
+  --steps-panel-3: #1a1918;
+  --steps-panel-edge-2: rgba(255, 99, 42, 0.2);
+  --steps-panel-edge-3: #2c2b2a;
+}
 .steps { padding: 160px 0; }
 .steps__inner { display: flex; flex-direction: column; align-items: flex-start; }
 .steps__title {
@@ -9,7 +42,7 @@
   font-weight: 500;
   font-size: clamp(24px, 1.8vw, 32px);
   line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
 }
 /* Masked line reveal for the heading, the hero's treatment applied here: the
    wrapper clips, the inner span moves, so the heading rises out of nothing
@@ -52,8 +85,8 @@
   min-height: 190px;
   padding: 32px;
   text-align: left;
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--panel);
+  border: 1px solid var(--veil-line);
   border-radius: 0 10px 10px 0;
   backdrop-filter: blur(12.25px);
   transition: background-color 200ms ease;
@@ -65,7 +98,7 @@
   top: -1px;
   bottom: -1px;
   width: 4px;
-  background: var(--orange-100);
+  background: var(--accent);
   opacity: 0;
   transition: opacity 220ms ease;
 }
@@ -76,12 +109,12 @@
   position: absolute;
   left: -1px; top: -1px;
   width: 4px; height: 0;
-  background: #f69179;
+  background: var(--steps-progress);
 }
 .step.is-active.is-playing::after { animation: step-progress var(--dwell, 6000ms) linear forwards; }
 @keyframes step-progress { from { height: 0; } to { height: calc(100% + 2px); } }
 @media (prefers-reduced-motion: reduce) { .step.is-active.is-playing::after { animation: none; } }
-.step:hover { background: #211f1e; }
+.step:hover { background: var(--steps-card-hover); }
 .step__title {
   display: flex;
   gap: 10px;
@@ -89,7 +122,7 @@
   font-weight: 500;
   font-size: clamp(20px, 1.4vw, 24px);
   line-height: 1.3;
-  color: var(--white-font);
+  color: var(--ink);
 }
 .step__n { color: inherit; }
 .step__body {
@@ -97,7 +130,7 @@
   font-weight: 300;
   font-size: clamp(17px, 1.15vw, 20px);
   line-height: 1.2;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
   max-width: 414px;
 }
 
@@ -116,10 +149,10 @@
   aspect-ratio: 886 / 610;
   border-radius: 10px;
   overflow: hidden;
-  background: #141312;
+  background: var(--steps-panel);
 }
-.panel--2 { border: 1px solid rgba(255, 99, 42, 0.2); }
-.panel--3 { background: #1a1918; border: 1px solid #2c2b2a; }
+.panel--2 { border: 1px solid var(--steps-panel-edge-2); }
+.panel--3 { background: var(--steps-panel-3); border: 1px solid var(--steps-panel-edge-3); }
 
 .steps__mark { position: absolute; pointer-events: none; }
 .steps__mark-clip { position: relative; width: 100%; height: 100%; }

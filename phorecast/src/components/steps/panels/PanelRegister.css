@@ -13,6 +13,51 @@
    children are laid out against the PADDING box and Figma's absolute
    coordinates are all 1.199 larger than what CSS wants. */
 
+/* The panel's colour, in two layers -- the same split Steps.css uses.
+   -------------------------------------------------------------------------
+   ROLE TOKENS where the page already names the job: the typed address and the
+   balance are --ink, the masked digits are --ink-muted, the pill's stroke and
+   the one orange column are --accent.
+
+   PANEL LOCALS (--steps-p1-*) for everything that belongs to the app drawn
+   inside this panel -- the two account cards, the phone's ground, its grey
+   skeleton bars, the status-bar glyphs. Declared on :root because `tok()` in
+   lib/theme.ts reads document.documentElement and the loop below takes its two
+   pill-stroke values from here; the --steps- prefix keeps the file out of
+   everyone else's way.
+
+   Dark is exactly what the panel shipped with, so this block is a no-op. The
+   light block at the foot of the file redefines exactly these names. */
+:root {
+  /* The email pill: a frosted grey chip behind a --accent stroke, carrying the
+     address in white. */
+  --steps-p1-pill-bg: rgba(146, 146, 146, 0.17);
+  --steps-p1-pill-ink: #fff;
+  /* The pill's stroke, as a pair: it comes up from a wash to the full brand
+     red over the first half-second of the story. Read by the loop through
+     `tok()`, so both values live here rather than in the module. */
+  --steps-p1-pill-rest: rgba(229, 51, 30, 0.22);
+  --steps-p1-pill-lit: rgb(229, 51, 30);
+
+  /* The two account cards and the phone: one ground, one edge. */
+  --steps-p1-card: #1d1c1b;
+  --steps-p1-card-edge: rgba(212, 212, 212, 0.13);
+
+  /* The skeleton bars. Two weights -- the quiet pills and the heavier rows --
+     plus the chart plate, which is the quiet one again. */
+  --steps-p1-bar: #323232;
+  --steps-p1-bar-2: #4b4b4b;
+  /* The five columns fade from nothing at the top to --steps-p1-bar-2 at the
+     foot; only the head of that ramp is named, the foot reuses the bar. */
+  --steps-p1-col-head: rgba(177, 177, 177, 0);
+  --steps-p1-axis: #626262;
+
+  /* The phone's status bar, and the frosted tile the app mark sits on. */
+  --steps-p1-time: #cacaca;
+  --steps-p1-batt: #b5b5b5;
+  --steps-p1-tile: rgba(255, 255, 255, 0.13);
+}
+
 /* Panel 1 ------------------------------------------------------------------- */
 .s1 {
   position: absolute;
@@ -30,11 +75,11 @@
   display: flex; align-items: center; justify-content: center; gap: calc(16.792 * var(--p));
   padding: 0 calc(19.191 * var(--p));
   border-radius: calc(14.393 * var(--p));
-  background: rgba(146, 146, 146, 0.17);
-  border: calc(1.199 * var(--p)) solid var(--orange-100);
+  background: var(--steps-p1-pill-bg);
+  border: calc(1.199 * var(--p)) solid var(--accent);
   backdrop-filter: blur(calc(32.804 * var(--p)));
   font-family: var(--font-mono); font-weight: 500; font-size: calc(14 * var(--p));
-  line-height: normal; color: #fff; white-space: nowrap;
+  line-height: normal; color: var(--steps-p1-pill-ink); white-space: nowrap;
 }
 /* The envelope sits in its own 23.989-wide column with 2.399 of vertical
    padding, which is what makes the pill 45.235 tall rather than text-tall. */
@@ -44,7 +89,7 @@
 .s1__envelope img { width: calc(23.989 * var(--p)); height: calc(18.848 * var(--p)); }
 .s1__addr { flex: none; display: inline-flex; }
 .s1__addr-in { display: inline-block; }
-.s1__caret { display: inline-block; font-style: normal; color: var(--white-font); }
+.s1__caret { display: inline-block; font-style: normal; color: var(--ink); }
 
 /* Diamonds ----------------------------------------------------------------- */
 /* Figma's frame is the ROTATED square's bounding box, so the 10x10 is centred
@@ -57,12 +102,12 @@
   left: calc(228.8 * var(--p)); top: calc(141.532 * var(--p));
   width: calc(14.139 * var(--p)); height: calc(14.139 * var(--p));
 }
-.s1__diamond--orange i { background: var(--orange-100); transform: rotate(46.25deg); }
+.s1__diamond--orange i { background: var(--accent); transform: rotate(46.25deg); }
 .s1__diamond--white {
   left: calc(545.391 * var(--p)); top: calc(146.33 * var(--p));
   width: calc(13.66 * var(--p)); height: calc(13.66 * var(--p));
 }
-.s1__diamond--white i { background: var(--white-font); transform: rotate(60deg); }
+.s1__diamond--white i { background: var(--ink); transform: rotate(60deg); }
 
 /* Wires -------------------------------------------------------------------- */
 /* Both wires are stroked paths whose 1.2 stroke overhangs the frame by 0.6 at
@@ -80,7 +125,7 @@
 /* Account cards ------------------------------------------------------------ */
 .s1__card {
   left: calc(330 * var(--p)); width: calc(176 * var(--p)); height: calc(108 * var(--p));
-  background: #1d1c1b; border: calc(1.199 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  background: var(--steps-p1-card); border: calc(1.199 * var(--p)) solid var(--steps-p1-card-edge);
   border-radius: calc(14 * var(--p)); overflow: hidden;
 }
 .s1__card--a { top: calc(43 * var(--p)); }
@@ -97,16 +142,16 @@
 .s1__digits {
   left: calc(15.594 * var(--p)); top: calc(62.37 * var(--p));
   font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
-  line-height: normal; color: var(--color-body); white-space: nowrap;
+  line-height: normal; color: var(--ink-muted); white-space: nowrap;
 }
-.s1__bar { border-radius: calc(35.983 * var(--p)); background: #323232; }
+.s1__bar { border-radius: calc(35.983 * var(--p)); background: var(--steps-p1-bar); }
 .s1__bar--pill { left: calc(15.594 * var(--p)); top: calc(80.361 * var(--p)); width: calc(47.977 * var(--p)); height: calc(7.197 * var(--p)); }
-.s1__bar--wide { left: calc(15.594 * var(--p)); top: calc(63.57 * var(--p)); width: calc(95.954 * var(--p)); height: calc(11.994 * var(--p)); background: #4b4b4b; }
+.s1__bar--wide { left: calc(15.594 * var(--p)); top: calc(63.57 * var(--p)); width: calc(95.954 * var(--p)); height: calc(11.994 * var(--p)); background: var(--steps-p1-bar-2); }
 
 /* Phone -------------------------------------------------------------------- */
 .s1__phone {
   left: calc(589 * var(--p)); top: 0; width: calc(172 * var(--p)); height: calc(339 * var(--p));
-  background: #1d1c1b; border: calc(1.199 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  background: var(--steps-p1-card); border: calc(1.199 * var(--p)) solid var(--steps-p1-card-edge);
   border-radius: calc(14.393 * var(--p)); overflow: hidden;
 }
 .s1__phone > * { position: absolute; }
@@ -119,7 +164,7 @@
   width: calc(15 * var(--p));
   font-family: system-ui, -apple-system, sans-serif; font-weight: 600;
   font-size: calc(6.872 * var(--p)); line-height: calc(5.659 * var(--p));
-  letter-spacing: calc(-0.2021 * var(--p)); color: #cacaca; text-align: center;
+  letter-spacing: calc(-0.2021 * var(--p)); color: var(--steps-p1-time); text-align: center;
 }
 .s1__loc { width: calc(4.851 * var(--p)); height: calc(4.851 * var(--p)); }
 
@@ -147,7 +192,7 @@
   transform: translate(-50%, -50%);
   font-family: system-ui, -apple-system, sans-serif; font-weight: 700; font-style: normal;
   font-size: calc(4.21 * var(--p)); line-height: calc(5.359 * var(--p));
-  letter-spacing: calc(-0.5 * var(--p)); color: #b5b5b5;
+  letter-spacing: calc(-0.5 * var(--p)); color: var(--steps-p1-batt);
 }
 
 .s1__phone-rule { left: calc(-3.598 * var(--p)); top: calc(26.99 * var(--p)); width: calc(193.108 * var(--p)); height: calc(1.199 * var(--p)); }
@@ -160,7 +205,7 @@
 .s1__logo-tile {
   position: absolute; left: calc(-0.393 * var(--p)); top: calc(0.119 * var(--p));
   width: calc(20 * var(--p)); height: calc(20 * var(--p));
-  background: rgba(255, 255, 255, 0.13); border-radius: calc(3.571 * var(--p));
+  background: var(--steps-p1-tile); border-radius: calc(3.571 * var(--p));
   backdrop-filter: blur(calc(4.177 * var(--p))); overflow: hidden;
 }
 .s1__logo-tile img {
@@ -171,23 +216,23 @@
   display: flex; flex-direction: column; gap: calc(3.598 * var(--p));
   width: calc(71.966 * var(--p)); height: calc(21.59 * var(--p));
 }
-.s1__sk { display: block; background: #323232; border-radius: calc(30 * var(--p)); }
+.s1__sk { display: block; background: var(--steps-p1-bar); border-radius: calc(30 * var(--p)); }
 .s1__sk--sm { width: calc(28 * var(--p)); height: calc(5 * var(--p)); }
 .s1__sk--lg { width: calc(70 * var(--p)); height: calc(12 * var(--p)); }
 
-.s1__bar--row { left: calc(13.194 * var(--p)); top: calc(69.266 * var(--p)); width: calc(144 * var(--p)); height: calc(18 * var(--p)); background: #4b4b4b; border-radius: calc(30 * var(--p)); }
+.s1__bar--row { left: calc(13.194 * var(--p)); top: calc(69.266 * var(--p)); width: calc(144 * var(--p)); height: calc(18 * var(--p)); background: var(--steps-p1-bar-2); border-radius: calc(30 * var(--p)); }
 .s1__bar--cap { left: calc(13.194 * var(--p)); top: calc(93.561 * var(--p)); width: calc(46 * var(--p)); height: calc(7 * var(--p)); border-radius: calc(30 * var(--p)); }
 
 .s1__chart {
   left: calc(13.194 * var(--p)); top: calc(107.757 * var(--p));
   width: calc(143.931 * var(--p)); height: calc(98.353 * var(--p));
-  background: #323232; border-radius: calc(10 * var(--p)); overflow: hidden;
+  background: var(--steps-p1-bar); border-radius: calc(10 * var(--p)); overflow: hidden;
 }
 .s1__chart > * { position: absolute; }
 .s1__amount {
   left: calc(11.994 * var(--p)); top: calc(9.595 * var(--p));
   font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
-  line-height: normal; color: var(--white-font); white-space: nowrap;
+  line-height: normal; color: var(--ink); white-space: nowrap;
 }
 .s1__bars {
   left: calc(9.596 * var(--p)); top: calc(25.188 * var(--p));
@@ -198,18 +243,18 @@
 .s1__col {
   bottom: 0; width: calc(19.191 * var(--p));
   border-radius: calc(2.399 * var(--p)) calc(2.399 * var(--p)) 0 0;
-  background: linear-gradient(-2.7deg, rgba(177, 177, 177, 0) 0.88%, #4b4b4b 106.33%);
+  background: linear-gradient(-2.7deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%);
 }
 .s1__col:nth-child(1) { left: calc(3.598 * var(--p)); height: calc(50.376 * var(--p)); }
 .s1__col:nth-child(2) { left: calc(27.586 * var(--p)); height: calc(34.783 * var(--p)); }
 .s1__col:nth-child(3) { left: calc(51.574 * var(--p)); height: calc(59.971 * var(--p)); }
-.s1__col:nth-child(4) { left: calc(75.563 * var(--p)); height: calc(43.179 * var(--p)); background: var(--orange-100); }
+.s1__col:nth-child(4) { left: calc(75.563 * var(--p)); height: calc(43.179 * var(--p)); background: var(--accent); }
 .s1__col:nth-child(5) { left: calc(99.553 * var(--p)); height: calc(21.59 * var(--p)); }
-.s1__axis { left: 0; top: calc(59.971 * var(--p)); width: calc(125.94 * var(--p)); height: calc(1.199 * var(--p)); background: #626262; }
+.s1__axis { left: 0; top: calc(59.971 * var(--p)); width: calc(125.94 * var(--p)); height: calc(1.199 * var(--p)); background: var(--steps-p1-axis); }
 .s1__delta {
   left: calc(74.012 * var(--p)); top: calc(5.861 * var(--p));
   font-family: var(--font-display); font-weight: 700; font-style: normal;
-  font-size: calc(6 * var(--p)); line-height: normal; color: var(--orange-100); white-space: nowrap;
+  font-size: calc(6 * var(--p)); line-height: normal; color: var(--accent); white-space: nowrap;
 }
 
 .s1__indicator { left: calc(73.961 * var(--p)); top: calc(209.708 * var(--p)); width: calc(22.391 * var(--p)); height: calc(2.399 * var(--p)); }

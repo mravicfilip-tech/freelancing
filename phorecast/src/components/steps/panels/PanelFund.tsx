@@ -10,6 +10,7 @@ import s2Tile3 from '../../../assets/steps/s2-tile3.svg';
 import s2Tile4 from '../../../assets/steps/s2-tile4.svg';
 import s2Tile5 from '../../../assets/steps/s2-tile5.svg';
 import { REDUCED, all, count, one } from '../../../lib/motion';
+import { tok, useThemeEpoch } from '../../../lib/theme';
 import { Mark, Glow } from './shared';
 import './PanelFund.css';
 
@@ -128,6 +129,11 @@ function headingAt(pts: Pt[], u: number): number {
 
 function useFundLoop() {
   const ref = useRef<HTMLDivElement>(null);
+  /* Three colour values and each tile's resting border are read once, at build
+     time, so the build has to be redone when the theme changes -- otherwise the
+     tiles would go on firing to the palette that was live when the panel
+     mounted, and cooling back to a border that is no longer theirs. */
+  const epoch = useThemeEpoch();
 
   useLayoutEffect(() => {
     const root = ref.current;
@@ -153,6 +159,14 @@ function useFundLoop() {
     if (p <= 0) return;
     const restAmount = amount.textContent ?? money(END_AMOUNT);
     const restBorder = tiles.map((t) => getComputedStyle(t).borderTopColor);
+    /* A tile firing, as a pair per property. The glyph's lift is a `filter`,
+       and GSAP interpolates filters STRUCTURALLY, so the two values have to
+       list the same functions in the same order -- which is why the rest value
+       is named here rather than written as the identity `brightness(1)` at the
+       call site. Today's values are the fallbacks. */
+    const tileLit = tok('--steps-p2-tile-lit', 'rgba(255, 128, 96, 0.55)');
+    const glyphRest = tok('--steps-p2-glyph-rest', 'brightness(1)');
+    const glyphLit = tok('--steps-p2-glyph-lit', 'brightness(2.1)');
 
     /* Which rail is each comet resting on, and how far along it?
        Asked of the geometry rather than assumed, so the answer stays right if
@@ -219,10 +233,10 @@ function useFundLoop() {
       /* ---- 1. the rails fire, and each one lets its charge go */
       rides.forEach((ride, i) => {
         const at = i * 0.13;
-        tl.to(tiles[i], { x: 10 * p, borderColor: 'rgba(255, 128, 96, 0.55)', duration: 0.3, ease: 'power2.out' }, at)
+        tl.to(tiles[i], { x: 10 * p, borderColor: tileLit, duration: 0.3, ease: 'power2.out' }, at)
           .to(tiles[i], { x: 0, borderColor: restBorder[i], duration: 0.62, ease: 'power2.inOut' }, at + 0.3)
-          .to(glyphs[i], { filter: 'brightness(2.1)', duration: 0.3, ease: 'power2.out' }, at)
-          .to(glyphs[i], { filter: 'brightness(1)', duration: 0.62, ease: 'power2.inOut' }, at + 0.3);
+          .to(glyphs[i], { filter: glyphLit, duration: 0.3, ease: 'power2.out' }, at)
+          .to(glyphs[i], { filter: glyphRest, duration: 0.62, ease: 'power2.inOut' }, at + 0.3);
 
         const flight = { u: ride.u0 };
         tl.set(flight, { u: ride.u0 }, at + 0.12)
@@ -272,7 +286,7 @@ function useFundLoop() {
       // `revert` restores inline styles; the counted text is ours to undo.
       amount.textContent = restAmount;
     };
-  }, []);
+  }, [epoch]);
 
   return ref;
 }

@@ -1,10 +1,60 @@
-/* "Built for the Way You Trade": two 640 × 254 cards inside a 1440 column. */
+/* "Built for the Way You Trade": two 640 × 254 cards inside a 1440 column.
+
+   COLOUR LIVES IN TWO LAYERS, and the split is the same one the footer set.
+
+   ROLE TOKENS (--ink, --ink-2, --accent, --panel) for every job the rest of
+   the page already names. They flipped in the previous commit and this file
+   has no opinion about them.
+
+   BAND LOCALS (--bt-*) for the colour that is genuinely this band's own: three
+   radial glows, two blurred smears, the wires between the markets, the lit
+   head that rides them, and the off-white label. They are declared on :root
+   with today's dark values, and the light block at the foot of the file
+   redefines exactly those names.
+
+   :root rather than .built, and that is not a style choice. `tok()` in
+   lib/theme.ts is getComputedStyle(document.documentElement), so a custom
+   property a motion module has to read is only visible to it from the root --
+   and two of these (--bt-lit, --bt-warm) are read by loops/bt1.ts inside its
+   start(). The --bt- prefix is what keeps them out of everyone else's way. */
+:root {
+  /* THE BAND GLOW, bottom right, behind everything. One gradient rather than
+     four discs, so it is one local. */
+  --bt-glow: radial-gradient(circle at 42% 42%, #f9bfaa 0%, #ec7850 14%, #b43725 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
+
+  /* One glow inside each card, blurred 55px and clipped to the card. */
+  --bt-card-glow-r: radial-gradient(ellipse at 66% 26%, #f8b69f 0%, #e0512e 14%, #a21714 32%, #7e0202 52%, rgba(29, 28, 27, 0) 72%);
+  --bt-card-glow-l: radial-gradient(ellipse at 38% 22%, #f8b299 0%, #c94026 14%, #821110 34%, #7e0202 54%, rgba(29, 28, 27, 0) 74%);
+
+  /* Card two's two top labels are a hair under --ink. Kept as its own name so
+     the distinction survives rather than being rounded into the token. */
+  --bt-label-2: #eeeeed;
+
+  /* The warm bar already lit on each card's wire, blurred to a soft tail. */
+  --bt-smear: #f03725;
+
+  /* The wires. The fan's four are one flat stroke; the main link is a two-stop
+     fade, reproduced as a CSS gradient behind the same mask -- see .bt2__main.
+     --bt-main-a is the BTC end, --bt-main-b the padlock end. */
+  --bt-wire: #353433;
+  --bt-main-a: #8b2b23;
+  --bt-main-b: #9b9895;
+  /* Card one's line fades from the accent at the dot into the card's own
+     ground at the ring, so the far end is the ground and nothing else. */
+  --bt-line-fade: #1d1c1b;
+
+  /* READ BY loops/bt1.ts. The lit stroke that rides the line and wraps the
+     ring, and the colour the two grey lines warm to. Both are BRIGHTER than
+     what they sit on in dark, which is the one thing light cannot copy. */
+  --bt-lit: #ff8f63;
+  --bt-warm: rgb(222, 214, 208);
+}
 .built { position: relative; padding: 160px 0; overflow: hidden; isolation: isolate; }
 .built__glows { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
 .built__glow {
   position: absolute; right: -20%; bottom: -46%;
   width: 900px; height: 900px; border-radius: 50%;
-  background: radial-gradient(circle at 42% 42%, #f9bfaa 0%, #ec7850 14%, #b43725 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
+  background: var(--bt-glow);
   filter: blur(90px); opacity: 0.3; transform: rotate(-45deg);
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
@@ -36,7 +86,7 @@
   transition: gap 160ms ease;
 }
 .built__cta:hover { gap: 10px; }
-.built__cta img { width: 12px; height: 6px; }
+.built__cta .icon { width: 12px; height: 6px; }
 
 /* Cards --------------------------------------------------------------------- */
 .bt-card {
@@ -52,12 +102,12 @@
 .bt-card__glow { position: absolute; top: -40%; width: 60%; height: 180%; filter: blur(55px); pointer-events: none; }
 .bt-card__glow--right {
   right: -6%;
-  background: radial-gradient(ellipse at 66% 26%, #f8b69f 0%, #e0512e 14%, #a21714 32%, #7e0202 52%, rgba(29, 28, 27, 0) 72%);
+  background: var(--bt-card-glow-r);
   opacity: 0.6;
 }
 .bt-card__glow--left {
   left: -8%;
-  background: radial-gradient(ellipse at 38% 22%, #f8b299 0%, #c94026 14%, #821110 34%, #7e0202 54%, rgba(29, 28, 27, 0) 74%);
+  background: var(--bt-card-glow-l);
   opacity: 0.68;
 }
 .bt-label {
@@ -65,7 +115,7 @@
   font-family: var(--font-mono); font-weight: 500; font-size: calc(12 * var(--c));
   line-height: 1.2; text-transform: uppercase; color: var(--ink); white-space: nowrap;
 }
-.bt-label--grey { color: #eeeeed; }
+.bt-label--grey { color: var(--bt-label-2); }
 .bt-label--tl { left: calc(30 * var(--c)); top: calc(30 * var(--c)); }
 .bt-label--tr { right: calc(30 * var(--c)); top: calc(30 * var(--c)); }
 .bt-label--bl { left: calc(30 * var(--c)); bottom: calc(30 * var(--c)); }
@@ -76,18 +126,57 @@
   width: calc(299 * var(--c)); height: calc(135 * var(--c)); transform: translate(-50%, -50%);
 }
 .bt1 > *, .bt1__rings > * { position: absolute; }
-.bt1__dot { left: 0; top: calc(54 * var(--c)); width: calc(24 * var(--c)); height: calc(24 * var(--c)); }
+/* The artwork that stopped carrying its own colour.
+   -------------------------------------------------------------------------
+   Four of this band's twenty-six images are now <Icon>: the file becomes a
+   CSS mask and the paint becomes an ordinary declaration here. Only the four
+   that had to -- the rest keep their baked hex on purpose, see the note above
+   .bt1__ring-disc and the one above .bt2__node.
+
+   A mask flattens whatever it covers to one alpha channel, so a file with two
+   colours in it cannot be converted without losing one. The dot and the fan's
+   four wires are single flat strokes and convert exactly. The two gradient
+   wires convert too, because a mask does not have to be painted with a flat
+   colour: the silhouette comes from the file and the fade comes from a CSS
+   gradient behind it, matched stop for stop to the linearGradient the export
+   carries. Both of those gradients are horizontal in user space, so `to right`
+   reproduces them; link-main.svg's is 2.15 degrees off horizontal, which over
+   a 23px-tall box moves the colour at any x by 0.2% of the ramp.
+
+   Declared as `.bt1 .bt1__line` rather than `.bt1__line` so the background
+   beats `.icon { background-color: currentColor }` whichever order the two
+   stylesheets land in the bundle. */
+.bt1__dot { left: 0; top: calc(54 * var(--c)); width: calc(24 * var(--c)); height: calc(24 * var(--c)); color: var(--accent); }
 .bt1__line { left: calc(23.5 * var(--c)); top: calc(65 * var(--c)); width: calc(174 * var(--c)); height: calc(3 * var(--c)); }
+.bt1 .bt1__line { background: linear-gradient(to right, var(--accent), var(--bt-line-fade)); }
 .bt1__smear {
   left: calc(39 * var(--c)); top: calc(65 * var(--c));
   width: calc(42 * var(--c)); height: calc(4 * var(--c));
-  background: #f03725; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c));
+  background: var(--bt-smear); filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c));
 }
 .bt1__you {
   left: calc(2 * var(--c)); top: calc(82 * var(--c));
   font-family: var(--font-body); font-weight: 300; font-size: calc(12 * var(--c)); color: var(--ink-2);
 }
 .bt1__rings { left: calc(164 * var(--c)); top: 0; width: calc(135 * var(--c)); height: calc(135 * var(--c)); }
+/* THE THREE RINGS AND THE LIT DISC KEEP THEIR BAKED PAINT, on purpose.
+
+   ring-outer is #686868 at stroke-opacity 0.3, ring-mid is #e5331e at 0.4 and
+   card two's node rings are #e5331e at 0.2. A colour drawn at a fifth of its
+   strength is mostly the thing behind it, and cream is a lighter thing than
+   near-black, so these land at almost exactly the same contrast against the
+   light card as they do against the dark one: the outer ring 1.31 -> 1.48, the
+   mid ring 2.2 -> 1.6, the node rings 1.19 -> 1.43. There is nothing to fix.
+
+   ring-disc.svg cannot be converted at all: it is a 63%-opaque #22201D disc, a
+   solid #e5331e ring at r=34.5 AND a warm drop-shadow filter, and a mask would
+   flatten all three into one silhouette -- taking with it the lit ring that
+   card one's whole beat wraps around. It stays an <img> and stays a chip, the
+   same decision as card two's market plates.
+
+   Leaving all four alone has a second benefit worth naming: loops/bt1.ts
+   measures its geometry off these exact boxes and scales the disc about
+   50% 47.936%, so not one of the elements that trap touches has changed. */
 .bt1__ring-outer { left: 0; top: 0; width: 100%; height: 100%; }
 /* 17.5, not 18/17: the ring is 100 in a 135 box, so a centred placement is
    (135-100)/2 on both axes. At 18/17 its drawn centre landed at (68, 67)
@@ -113,11 +202,15 @@
   position: absolute; left: calc(32.45% ); top: 21.18%; right: 15.05%; bottom: 30.98%;
   width: auto; height: auto;
 }
+.bt2 .bt2__fan { color: var(--bt-wire); }
 .bt2__main { position: absolute; left: 16.22%; right: 15.52%; top: 41.18%; bottom: 50%; width: auto; height: auto; }
+/* 96.11% is 419.867/436.869 -- where link-main.svg's gradient ends inside its
+   own viewBox. The last 4% of the wire is the far stop flat, as it ships. */
+.bt2 .bt2__main { background: linear-gradient(to right, var(--bt-main-a), var(--bt-main-b) 96.11%); }
 .bt2__smear {
   position: absolute; left: calc(188 * var(--c)); top: calc(107 * var(--c));
   width: calc(41 * var(--c)); height: calc(4 * var(--c));
-  background: #f03725; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c)); transform: rotate(2.92deg);
+  background: var(--bt-smear); filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c)); transform: rotate(2.92deg);
 }
 .bt2__node {
   position: absolute;
@@ -127,6 +220,22 @@
   height: calc(var(--s) * var(--c));
   transform: translate(-50%, -50%);
 }
+/* NOT converted, and the reason is the five marks.
+   -------------------------------------------------------------------------
+   Each market is a dark disc (#1D1C1B) with a thin #e5331e rim, and on it sits
+   a third-party mark: Tesla's wordmark, the DAX and EUR/USD roundels, the XAU
+   bar, Bitcoin's B. LIGHTMODE.md 2.3 classes those as locked -- their colours
+   are not ours to change -- and its remedy where a mark needs a ground is to
+   change the PLATE, not the mark. Here the plate is already dark and already
+   inside the file, so on paper these stay dark chips: five market tokens laid
+   on a light card, each carrying its own mark at the contrast it was drawn
+   for. The padlock is the same object and gets the same treatment.
+
+   The alternative was to inline all nine files and map their colours, which
+   would recolour the plate and leave the marks -- and would insert about
+   thirty SVG nodes into a section the gate walks by index, turning every
+   later element into a false difference. The chip is the better answer and it
+   is also the cheaper one. */
 .bt2__node > img { position: absolute; }
 .bt2__whole { left: -18%; top: -18%; width: 136%; height: 136%; }
 .bt2__disc { left: 0; top: 0; width: 100%; height: 100%; }
@@ -182,4 +291,198 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-js] .built[data-motion='pending'] * { visibility: visible; }
+}
+
+/* --- Light ------------------------------------------------------------------
+   Written twice, exactly as tokens.css and Footer.css write theirs twice: a
+   media query cannot go in a selector list, and the custom-property
+   indirection that would avoid the duplication is the one thing
+   LIGHTMODE.md 1.4 says not to be clever about. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies -- index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back
+   to, and leaving it out is how a band ends up drawing its dark glow on a
+   light page.
+
+   Only the --bt-* locals are redefined. Everything else in this file reads a
+   role token and has already flipped, and the artwork that keeps its baked
+   hex is listed where it sits, not here. -------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* THE GLOWS. Geometry byte-for-byte -- same positions, radii, blur and
+     opacities -- and a rebuilt ramp rather than a recoloured one, on the two
+     rules the footer set:
+
+     1. THE PAGE STOP IS THE PAGE. Each of these three gradients ends in its
+        own ground at zero alpha: rgba(15,14,13,0) for the band, which is
+        --page, and rgba(29,28,27,0) for the two cards, which is --panel.
+        Those were never dark colours, they are what the disc dissolves into,
+        so on paper they are paper. (They carry no alpha, so the two themes
+        render this stop identically -- gradients interpolate premultiplied.
+        It is written out anyway, because the next person reading #0f0e0d in a
+        light block will assume it is a bug.)
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
+        first stop is the palest, because the core of a light source is its
+        brightest part; every one of these three runs pale core -> peach ->
+        brick -> deep red -> ground. Nothing on paper can be brighter than the
+        page, so a pale core is a hole and the card reads as a halo around
+        nothing. Stop order and stop positions are kept exactly and the ramp is
+        reversed: the core is still the core and is now the DEEPEST tint,
+        falling away to nothing at the same radius it always did.
+
+     Measured against the surface each one sits on, at the densest point after
+     its own opacity: the band glow 1.36:1 on --page at 0.3, the right card
+     1.29:1 and the left card 1.30:1 on --panel at 0.6 and 0.68. Warm paper
+     with a blush, a little quieter than the footer's 1.37 because these two
+     sit under labels. */
+  --bt-glow: radial-gradient(circle at 42% 42%, #d07a50 0%, #e29a72 14%, #efc0a3 30%, #f9dfd0 50%, rgba(255, 251, 248, 0) 66%);
+  --bt-card-glow-r: radial-gradient(ellipse at 66% 26%, #ecb49a 0%, #f1c4ae 14%, #f6d7c6 32%, #fae6da 52%, rgba(247, 240, 234, 0) 72%);
+  --bt-card-glow-l: radial-gradient(ellipse at 38% 22%, #f0bda6 0%, #f4cbb7 14%, #f8dbcc 34%, #fbe9de 54%, rgba(247, 240, 234, 0) 74%);
+
+  /* #eeeeed is 17.1:1 on the dark page where --ink is 18.7:1 -- a hair quieter,
+     and that hair is the only thing separating card two's top labels from card
+     one's. #262020 is 15.2:1 on paper against --ink's 17.6:1: the same hair,
+     the other way up. */
+  --bt-label-2: #262020;
+
+  /* THE SMEAR is the one already-lit thing in each card, a 4px bar blurred to
+     eight times its own height. #f03725 over near-black is a warm bloom; over
+     cream it is a pale scratch, and blurring a pale thing on a pale ground
+     produces nothing at all. So it darkens instead: --accent-deep's value,
+     which is the deepest red in the palette and still unmistakably warm. The
+     bar is the same bar, in the same place, at the same blur -- only the sign
+     of its contrast changes. */
+  --bt-smear: #7e0202;
+
+  /* THE WIRES. #353433 on the dark card is 1.5:1 -- a whisper, and deliberately
+     so: they are structure, not content, and the beads that ride them are what
+     the eye is meant to follow. Read literally on paper that same hex is
+     10.6:1, four near-black lines that would shout over every market on the
+     card. #d8cabf puts them back at 1.42:1 against --panel, which is the
+     whisper again.
+
+     The main link is a fade, and its direction is the story: in dark it is a
+     dim red at BTC and a bright grey at the padlock, so it GAINS presence as
+     it approaches what it is delivering to. On paper presence is darkness, so
+     the pair turns over -- pale at BTC, deep at the padlock -- and the wire
+     still gains as it arrives. The two ends hold their dark ratios against the
+     light card: 1.98 at BTC (dark 1.98) and 5.71 at the lock (dark 5.85).
+
+     Card one's line needs no pair. Its near end is --accent in both themes and
+     its far end is the card's own ground, which is --panel in both themes; the
+     whole gradient follows the tokens and only --bt-line-fade has to be told
+     what the ground is now. */
+  --bt-wire: #d8cabf;
+  --bt-main-a: #d9a091;
+  --bt-main-b: #655d58;
+  --bt-line-fade: #f7f0ea;
+
+  /* THE TWO VALUES loops/bt1.ts READS, and both of them are direction flips.
+
+     --bt-lit is the head that rides the line and the arc that wraps the ring.
+     In dark it is #ff8f63, a shade ABOVE the #e5331e ring it is drawn over --
+     light on a line. Nothing on paper can be lighter than the line and still
+     be seen, so the head becomes the darkest thing in the card: #7e0202 over
+     the ring is 2.8x denser than the ring, which is very close to what #ff8f63
+     is brighter by in dark.
+
+     --bt-warm is what "You" and "One market to start." warm to when the beat
+     reaches them. Rest is --ink-2 in both themes; in dark the lift is
+     6.2 -> 11.7 against the card, and #362a25 gives 6.4 -> 12.3 on paper. The
+     same lift, made of ink instead of light. */
+  --bt-lit: #7e0202;
+  --bt-warm: #362a25;
+  }
+}
+
+:root[data-theme='light'] {
+  /* THE GLOWS. Geometry byte-for-byte -- same positions, radii, blur and
+     opacities -- and a rebuilt ramp rather than a recoloured one, on the two
+     rules the footer set:
+
+     1. THE PAGE STOP IS THE PAGE. Each of these three gradients ends in its
+        own ground at zero alpha: rgba(15,14,13,0) for the band, which is
+        --page, and rgba(29,28,27,0) for the two cards, which is --panel.
+        Those were never dark colours, they are what the disc dissolves into,
+        so on paper they are paper. (They carry no alpha, so the two themes
+        render this stop identically -- gradients interpolate premultiplied.
+        It is written out anyway, because the next person reading #0f0e0d in a
+        light block will assume it is a bug.)
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
+        first stop is the palest, because the core of a light source is its
+        brightest part; every one of these three runs pale core -> peach ->
+        brick -> deep red -> ground. Nothing on paper can be brighter than the
+        page, so a pale core is a hole and the card reads as a halo around
+        nothing. Stop order and stop positions are kept exactly and the ramp is
+        reversed: the core is still the core and is now the DEEPEST tint,
+        falling away to nothing at the same radius it always did.
+
+     Measured against the surface each one sits on, at the densest point after
+     its own opacity: the band glow 1.36:1 on --page at 0.3, the right card
+     1.29:1 and the left card 1.30:1 on --panel at 0.6 and 0.68. Warm paper
+     with a blush, a little quieter than the footer's 1.37 because these two
+     sit under labels. */
+  --bt-glow: radial-gradient(circle at 42% 42%, #d07a50 0%, #e29a72 14%, #efc0a3 30%, #f9dfd0 50%, rgba(255, 251, 248, 0) 66%);
+  --bt-card-glow-r: radial-gradient(ellipse at 66% 26%, #ecb49a 0%, #f1c4ae 14%, #f6d7c6 32%, #fae6da 52%, rgba(247, 240, 234, 0) 72%);
+  --bt-card-glow-l: radial-gradient(ellipse at 38% 22%, #f0bda6 0%, #f4cbb7 14%, #f8dbcc 34%, #fbe9de 54%, rgba(247, 240, 234, 0) 74%);
+
+  /* #eeeeed is 17.1:1 on the dark page where --ink is 18.7:1 -- a hair quieter,
+     and that hair is the only thing separating card two's top labels from card
+     one's. #262020 is 15.2:1 on paper against --ink's 17.6:1: the same hair,
+     the other way up. */
+  --bt-label-2: #262020;
+
+  /* THE SMEAR is the one already-lit thing in each card, a 4px bar blurred to
+     eight times its own height. #f03725 over near-black is a warm bloom; over
+     cream it is a pale scratch, and blurring a pale thing on a pale ground
+     produces nothing at all. So it darkens instead: --accent-deep's value,
+     which is the deepest red in the palette and still unmistakably warm. The
+     bar is the same bar, in the same place, at the same blur -- only the sign
+     of its contrast changes. */
+  --bt-smear: #7e0202;
+
+  /* THE WIRES. #353433 on the dark card is 1.5:1 -- a whisper, and deliberately
+     so: they are structure, not content, and the beads that ride them are what
+     the eye is meant to follow. Read literally on paper that same hex is
+     10.6:1, four near-black lines that would shout over every market on the
+     card. #d8cabf puts them back at 1.42:1 against --panel, which is the
+     whisper again.
+
+     The main link is a fade, and its direction is the story: in dark it is a
+     dim red at BTC and a bright grey at the padlock, so it GAINS presence as
+     it approaches what it is delivering to. On paper presence is darkness, so
+     the pair turns over -- pale at BTC, deep at the padlock -- and the wire
+     still gains as it arrives. The two ends hold their dark ratios against the
+     light card: 1.98 at BTC (dark 1.98) and 5.71 at the lock (dark 5.85).
+
+     Card one's line needs no pair. Its near end is --accent in both themes and
+     its far end is the card's own ground, which is --panel in both themes; the
+     whole gradient follows the tokens and only --bt-line-fade has to be told
+     what the ground is now. */
+  --bt-wire: #d8cabf;
+  --bt-main-a: #d9a091;
+  --bt-main-b: #655d58;
+  --bt-line-fade: #f7f0ea;
+
+  /* THE TWO VALUES loops/bt1.ts READS, and both of them are direction flips.
+
+     --bt-lit is the head that rides the line and the arc that wraps the ring.
+     In dark it is #ff8f63, a shade ABOVE the #e5331e ring it is drawn over --
+     light on a line. Nothing on paper can be lighter than the line and still
+     be seen, so the head becomes the darkest thing in the card: #7e0202 over
+     the ring is 2.8x denser than the ring, which is very close to what #ff8f63
+     is brighter by in dark.
+
+     --bt-warm is what "You" and "One market to start." warm to when the beat
+     reaches them. Rest is --ink-2 in both themes; in dark the lift is
+     6.2 -> 11.7 against the card, and #362a25 gives 6.4 -> 12.3 on paper. The
+     same lift, made of ink instead of light. */
+  --bt-lit: #7e0202;
+  --bt-warm: #362a25;
 }

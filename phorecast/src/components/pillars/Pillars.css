@@ -102,13 +102,40 @@
   font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
   text-transform: uppercase; color: var(--ink);
 }
-.pcard__mark { width: 31.13px; height: 36.29px; flex: none; }
+/* The mark, and the two exports that are the same path in two colours. Masked,
+   the file gives the silhouette and `color` gives the paint, so the difference
+   between the three cards is a token rather than a second file: --ink for the
+   two neutral marks (#FFFBF8 in the file, so dark does not move) and --accent
+   for the on-chain one (#e5331e, likewise). The paired exports are kept rather
+   than collapsed onto one src, because the file name is where a reader finds
+   out that the third card is meant to be different. */
+.pcard__mark { width: 31.13px; height: 36.29px; flex: none; color: var(--ink); }
+.pcard__mark--accent { color: var(--accent); }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
 .pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--ink); }
 .pcard__text { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--ink-2); }
 
+/* The glyphs. Every one of them is a mask now (src/components/Icon.tsx), so
+   the colour is `color` on the element and the token is chosen to match the
+   hex the export bakes -- which is what keeps dark mode still across the
+   conversion and is the whole reason a masked glyph does not silently change
+   colour when the theme flips.
+
+   In the cards the files bake #FFFBF8, which is --ink exactly; the cards
+   already inherit --ink from `body`, so this rule says out loud what was true
+   by accident. In the pill rows the files bake #9D9D9D, which is --ink-2
+   exactly, and .prow__label is already --ink-2 -- so those glyphs are left to
+   inherit, and they travel with their label rather than beside it.
+
+   Both tokens flip direction for free: on the dark page the glyph is pale
+   because pale is far from the ground, and on paper it is dark for the same
+   reason. */
 .pillars__icon { position: relative; display: block; width: 20px; height: 20px; flex: none; }
-.pillars__icon--multi img { position: absolute; }
+.pcard__body .pillars__icon { color: var(--ink); }
+/* The chain and the pill3 star are several files stacked in one 20x20 box;
+   `.icon` is the class <Icon> always carries. They inherit their wrapper's
+   colour, so the rule above covers the chain and .prow__label covers pill3. */
+.pillars__icon--multi .icon { position: absolute; }
 
 /* Collapsed accordion rows ---------------------------------------------------- */
 .pillars__rows { display: flex; gap: 12px; width: 100%; margin-top: 12px; text-align: left; }
@@ -179,4 +206,124 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-js] .pillars[data-motion='pending'] * { visibility: visible; }
+}
+
+/* --- Light ------------------------------------------------------------------
+   The same palette written twice, because a media query cannot go in a
+   selector list: the system preference leads while nothing has been chosen,
+   and an explicit choice wins at any system setting. In practice (2) always
+   applies -- index.html resolves both into data-theme before first paint --
+   and (1) is what a stripped page or a prerender falls back to. Leaving it out
+   is how a section ends up drawing its dark glow on a light page.
+
+   Only the --pillars-* locals are redefined. Everything else in this file
+   reads a role token and has already flipped. -------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .pillars {
+    /* THE GLOW ON PAPER.
+
+       Geometry byte-for-byte: same four discs, same left/top, same 1539px radii,
+       same blur(109px), same paint order, same .glow-fade mask over the lot. The
+       gate stays quiet and the two themes agree about where the band's energy
+       is. What changes is what the layer DOES.
+
+       In dark this is a sunrise coming in over the top-right corner: it climbs
+       from the page's own near-black, through brick and peach, to a pale hot
+       core that sits almost entirely above the section and reaches it only as
+       blur. Recoloured literally that is a dark red smear across the headline
+       with a grey corner in it, which is exactly what it looks like before this
+       block exists.
+
+       So the ramp is rebuilt rather than translated, on two rules:
+
+       1. THE PAGE STOP IS THE PAGE -- already done a commit earlier, because it
+          is true in both themes. #0f0e0d was never a dark colour there.
+
+       2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. In dark the disc
+          painted LAST is the palest, because the core of a light source is the
+          brightest thing in it. Nothing on paper can be brighter than the page,
+          so a pale core is a hole and the band would read as a halo around
+          nothing. The order is kept and the ramp reversed: cream, still last and
+          still the core, is now the DEEPEST tint; red, still the broad outer
+          falloff that covers the whole band, is the faintest. Warmth peaks where
+          light peaked.
+
+       The four are spaced by contrast against paper rather than by hue: 1.10,
+       1.18, 1.26 and 1.37:1, the last of them the same density the footer landed
+       on. Before the blur and the .glow-fade mask take their share, so what
+       actually reaches the cards is a good deal less than that. A blush, not a
+       stain. LIGHTMODE.md 6.1 is right that this is not the sunrise in another
+       key, and asks for it to be seen before the whole page is built on it.
+
+       No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
+       multiply a no-op against the page. The colours do the work. */
+    --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fbe6da 100%);
+    --pillars-g-orange: #f8d6c3;
+    --pillars-g-peach: #f5c6ad;
+    --pillars-g-cream: #f1b190;
+
+    /* White-alpha becomes ink-alpha, and that one move flips the direction of
+       all three of these states without reversing a rule: more alpha on a dark
+       page is brighter, more alpha on paper is darker, and both mean "raised".
+       The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
+       step tokens.css takes for --veil and --veil-line -- because dark ink on
+       paper is less visible per unit alpha than white on black. */
+    --pillars-row: rgba(26, 21, 18, 0.023);
+    --pillars-row-hover: rgba(26, 21, 18, 0.068);
+    --pillars-row-line-hover: rgba(26, 21, 18, 0.225);
+  }
+}
+
+:root[data-theme='light'] .pillars {
+  /* THE GLOW ON PAPER.
+
+     Geometry byte-for-byte: same four discs, same left/top, same 1539px radii,
+     same blur(109px), same paint order, same .glow-fade mask over the lot. The
+     gate stays quiet and the two themes agree about where the band's energy
+     is. What changes is what the layer DOES.
+
+     In dark this is a sunrise coming in over the top-right corner: it climbs
+     from the page's own near-black, through brick and peach, to a pale hot
+     core that sits almost entirely above the section and reaches it only as
+     blur. Recoloured literally that is a dark red smear across the headline
+     with a grey corner in it, which is exactly what it looks like before this
+     block exists.
+
+     So the ramp is rebuilt rather than translated, on two rules:
+
+     1. THE PAGE STOP IS THE PAGE -- already done a commit earlier, because it
+        is true in both themes. #0f0e0d was never a dark colour there.
+
+     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. In dark the disc
+        painted LAST is the palest, because the core of a light source is the
+        brightest thing in it. Nothing on paper can be brighter than the page,
+        so a pale core is a hole and the band would read as a halo around
+        nothing. The order is kept and the ramp reversed: cream, still last and
+        still the core, is now the DEEPEST tint; red, still the broad outer
+        falloff that covers the whole band, is the faintest. Warmth peaks where
+        light peaked.
+
+     The four are spaced by contrast against paper rather than by hue: 1.10,
+     1.18, 1.26 and 1.37:1, the last of them the same density the footer landed
+     on. Before the blur and the .glow-fade mask take their share, so what
+     actually reaches the cards is a good deal less than that. A blush, not a
+     stain. LIGHTMODE.md 6.1 is right that this is not the sunrise in another
+     key, and asks for it to be seen before the whole page is built on it.
+
+     No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
+     multiply a no-op against the page. The colours do the work. */
+  --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fbe6da 100%);
+  --pillars-g-orange: #f8d6c3;
+  --pillars-g-peach: #f5c6ad;
+  --pillars-g-cream: #f1b190;
+
+  /* White-alpha becomes ink-alpha, and that one move flips the direction of
+     all three of these states without reversing a rule: more alpha on a dark
+     page is brighter, more alpha on paper is darker, and both mean "raised".
+     The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
+     step tokens.css takes for --veil and --veil-line -- because dark ink on
+     paper is less visible per unit alpha than white on black. */
+  --pillars-row: rgba(26, 21, 18, 0.023);
+  --pillars-row-hover: rgba(26, 21, 18, 0.068);
+  --pillars-row-line-hover: rgba(26, 21, 18, 0.225);
 }

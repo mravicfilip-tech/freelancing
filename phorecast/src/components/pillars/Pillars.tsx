@@ -6,6 +6,7 @@ import iconClock from '../../assets/pillars/icon-clock.svg';
 import pill1 from '../../assets/pillars/pill-1.svg';
 import pill2 from '../../assets/pillars/pill-2.svg';
 import pill4 from '../../assets/pillars/pill-4.svg';
+import { Icon } from '../Icon';
 import { useSectionMotion } from '../../lib/motion';
 import { buildPillars } from './Pillars.motion';
 import './Pillars.css';
@@ -16,32 +17,55 @@ const pill3 = import.meta.glob('../../assets/pillars/pill3-*.svg', { eager: true
 const byName = (m: Record<string, string>, prefix: string, n: number) =>
   m[`../../assets/pillars/${prefix}-${n}.svg`];
 
-/* Insets for the multi-path icons, straight from the Figma export. */
-const CHAIN_INSETS = [
-  '0 0 34.52% 31.97%', '34.52% 31.93% 0 0', '76.06% 13.89% 13.93% 76.1%',
-  '13.89% 76.06% 76.1% 13.93%', '57.67% 1.76% 34.95% 86.72%', '34.91% 86.68% 57.71% 1.79%',
-  '86.68% 34.91% 1.79% 57.71%', '1.75% 57.67% 86.72% 34.95%',
+/* Every glyph in this band is one flat colour on transparent -- #FFFBF8 for
+   the card icons, the chain and the white mark, #9D9D9D for the four pill
+   rows, #e5331e for the on-chain mark -- so they are <Icon>s rather than
+   <img>s: the file becomes a CSS mask and the paint becomes `color`, set in
+   Pillars.css against the token that matches the hex the file bakes. See
+   src/components/Icon.tsx. The eyebrow dot is deliberately NOT converted; it
+   is three tinted ellipses, and a mask would flatten it to one disc.
+
+   THE BOX. <Icon> writes width/height inline from `w`/`h`, but every glyph
+   here is sized by the stylesheet instead -- .pillars__icon is 20x20 and
+   .pcard__mark is 31.13x36.29 -- so those two get `cssBox`, which hands the
+   box back by writing the inline values away again. The chain and pill3 parts
+   are the opposite case: they are absolutely positioned inside a 20x20
+   wrapper and their size comes from the export, not from a rule, so they get
+   their intrinsic numbers. That distinction is not cosmetic. An <img> is a
+   replaced element, so with `width: auto` and all four insets set it takes its
+   intrinsic width and drops the over-constrained inset; a <span> is not
+   replaced and would solve its box from the insets alone. The two agree here
+   to within a thousandth of a pixel because Figma exported both consistently,
+   but only one of them is the size the artwork was drawn at. */
+const cssBox = { width: undefined, height: undefined };
+
+/* Inset, then intrinsic width and height, straight from the Figma export. */
+const CHAIN_PARTS: [string, number, number][] = [
+  ['0 0 34.52% 31.97%', 13.6054, 13.0963],
+  ['34.52% 31.93% 0 0', 13.613, 13.096],
+  ['76.06% 13.89% 13.93% 76.1%', 2.00151, 2.00154],
+  ['13.89% 76.06% 76.1% 13.93%', 2.00158, 2.00154],
+  ['57.67% 1.76% 34.95% 86.72%', 2.30492, 1.4764],
+  ['34.91% 86.68% 57.71% 1.79%', 2.305, 1.4764],
+  ['86.68% 34.91% 1.79% 57.71%', 1.47636, 2.3053],
+  ['1.75% 57.67% 86.72% 34.95%', 1.47639, 2.30497],
 ];
-const PILL3_INSETS = [
-  '0.02% 35.35% 72.48% 35.35%', '17.88% 0 54.61% 70.71%',
-  '17.88% 70.7% 54.61% 0', '32.6% 23.63% 0.02% 23.64%',
+const PILL3_PARTS: [string, number, number][] = [
+  ['0.02% 35.35% 72.48% 35.35%', 5.85943, 5.50106],
+  ['17.88% 0 54.61% 70.71%', 5.85942, 5.50048],
+  ['17.88% 70.7% 54.61% 0', 5.85943, 5.50059],
+  ['32.6% 23.63% 0.02% 23.64%', 10.5469, 13.4765],
 ];
 
-function ChainIcon() {
+function MultiIcon({ parts, map, prefix }: {
+  parts: [string, number, number][];
+  map: Record<string, string>;
+  prefix: string;
+}) {
   return (
     <span className="pillars__icon pillars__icon--multi">
-      {CHAIN_INSETS.map((inset, i) => (
-        <img key={i} src={byName(chain, 'chain', i + 1)} alt="" style={{ inset }} />
-      ))}
-    </span>
-  );
-}
-
-function Pill3Icon() {
-  return (
-    <span className="pillars__icon pillars__icon--multi">
-      {PILL3_INSETS.map((inset, i) => (
-        <img key={i} src={byName(pill3, 'pill3', i + 1)} alt="" style={{ inset }} />
+      {parts.map(([inset, w, h], i) => (
+        <Icon key={i} src={byName(map, prefix, i + 1)} w={w} h={h} style={{ inset }} />
       ))}
     </span>
   );
@@ -50,22 +74,27 @@ function Pill3Icon() {
 const CARDS = [
   {
     eyebrow: '0.05%',
-    icon: <img src={iconFee} alt="" className="pillars__icon" />,
+    icon: <Icon src={iconFee} w={20} h={20} className="pillars__icon" style={cssBox} />,
     mark: markWhite,
     title: 'Trading Fee',
     body: 'A simple commission per side on every executed trade.',
   },
   {
     eyebrow: 'Seconds',
-    icon: <img src={iconClock} alt="" className="pillars__icon" />,
+    icon: <Icon src={iconClock} w={20} h={20} className="pillars__icon" style={cssBox} />,
     mark: markWhite,
     title: 'Fast Onboarding',
     body: 'Get started with just an email or wallet.',
   },
   {
     eyebrow: 'Instant withdrawals',
-    icon: <ChainIcon />,
+    icon: <MultiIcon parts={CHAIN_PARTS} map={chain} prefix="chain" />,
     mark: markOrange,
+    /* The one accent mark in the band: #e5331e in the file, --accent on the
+       element, so it follows the brand red to #a21605 on paper while its two
+       siblings follow --ink. The distinction between the three cards is the
+       whole reason two near-identical exports of the same path exist. */
+    markAccent: true,
     title: 'On-Chain',
     body: 'A simple commission per side on every executed trade.',
     fixed: true,
@@ -73,10 +102,10 @@ const CARDS = [
 ];
 
 const ROWS = [
-  { label: 'Fast Access', icon: <img src={pill1} alt="" className="pillars__icon" /> },
-  { label: 'Full Control', icon: <img src={pill2} alt="" className="pillars__icon" /> },
-  { label: 'Familiar Experience', icon: <Pill3Icon /> },
-  { label: 'Transparent Execution', icon: <img src={pill4} alt="" className="pillars__icon" /> },
+  { label: 'Fast Access', icon: <Icon src={pill1} w={20} h={20} className="pillars__icon" style={cssBox} /> },
+  { label: 'Full Control', icon: <Icon src={pill2} w={20} h={20} className="pillars__icon" style={cssBox} /> },
+  { label: 'Familiar Experience', icon: <MultiIcon parts={PILL3_PARTS} map={pill3} prefix="pill3" /> },
+  { label: 'Transparent Execution', icon: <Icon src={pill4} w={20} h={20} className="pillars__icon" style={cssBox} /> },
 ];
 
 export function Pillars() {
@@ -108,7 +137,13 @@ export function Pillars() {
             <li key={c.title} className={`pcard${c.fixed ? ' pcard--fixed' : ''}`}>
               <div className="pcard__top">
                 <span className="pcard__eyebrow">{c.eyebrow}</span>
-                <img src={c.mark} alt="" className="pcard__mark" />
+                <Icon
+                  src={c.mark}
+                  w={31.13}
+                  h={36.29}
+                  className={`pcard__mark${c.markAccent ? ' pcard__mark--accent' : ''}`}
+                  style={cssBox}
+                />
               </div>
               <div className="pcard__body">
                 {c.icon}

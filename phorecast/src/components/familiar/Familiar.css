@@ -1,10 +1,133 @@
 /* "Familiar Trading. Better Infrastructure." — Figma frame 1920 x 1080.
    Everything but the two copy blocks is absolutely placed, so --u (one design
    pixel) drives the whole stage. */
+
+/* The band's own theme tokens.
+   -------------------------------------------------------------------------
+   Declared on :root rather than on .fam, because `tok()` in lib/theme.ts is
+   `getComputedStyle(document.documentElement)` — a custom property the loop
+   has to read is only visible to it from the root. The `--fam-` prefix is
+   what keeps them out of the other eight sections' way.
+
+   The block is split in two, and the split IS this section's decision.
+
+   PAGE CHROME (--fam-g-*, --fam-foot-*, --fam-card-*, --fam-tick-*,
+   --fam-dot, --fam-ghost-*, the lifts) is the marketing page: the glow, the
+   two glass market cards, the category strip. It is drawn from the page it
+   sits on and it flips, and the light block at the foot of this file
+   redefines exactly these names.
+
+   THE DEVICE (--fam-app-*) is the product's own dark UI, and it DOES NOT
+   FLIP. See the note over `.fam__phone` for why. Every one of these values
+   is what the section shipped with, written out rather than inlined, and
+   light never redefines any of them — which is also why every "lit means
+   brighter" beat inside the handset keeps working untouched on paper: it is
+   still a bright thing on a dark ground. Only the three lifts that meet the
+   paper turn around. */
+:root {
+  /* --- Page chrome ------------------------------------------------------ */
+
+  /* The glow: four blurred discs and a tighter core, the sunrise recipe the
+     footer and the hero share. The red disc's first stop is THE PAGE, not a
+     dark colour — it is the ground the disc dissolves into. */
+  --fam-g-red: linear-gradient(168deg, var(--page) 20%, #7e0202 100%);
+  --fam-g-orange: #b43725;
+  --fam-g-peach: #ec7850;
+  --fam-g-cream: #fbd6ca;
+  --fam-g-core: #fff8f0;
+
+  /* The ECB card's footer plate: an inset under "Current policy rate", and
+     the colour the refresh lights it to. Lit is LIGHTER than rest here. */
+  --fam-foot: #0f0f0f;
+  --fam-foot-ink: var(--art-ink);
+  --fam-foot-lit: #242422;
+
+  /* The two glass cards as a print lights them. White-alpha, so the light
+     block inverts the direction for free by making it ink-alpha. */
+  --fam-card-lit-bg: rgba(255, 255, 255, 0.11);
+  --fam-card-lit-line: rgba(255, 255, 255, 0.34);
+
+  /* The NVDA card's price tick. On the page, so it follows --pos / --neg;
+     the identically-coloured tick INSIDE the phone does not (--fam-app-up). */
+  --fam-tick-up: #00c950;
+  --fam-tick-down: #e7000b;
+
+  /* The live dots at either end of the category strip. */
+  --fam-dot: #f03725;
+
+  /* The blurred stack behind the right-hand copy: two crops of one dark
+     screenshot, at a resting opacity the loop lifts from and returns to. */
+  --fam-ghost-op: 0.4;
+  --fam-ghost-lift: 0.22;
+  --fam-ghost-line: rgba(255, 255, 255, 0.1);
+  --fam-ghost-a: #fff;
+  --fam-ghost-b: #161618;
+
+  /* The lifts that meet the paper, as MATCHED filter pairs — GSAP
+     interpolates `filter` structurally, so both ends must list the same
+     functions. Both of these mean "brighter" in dark and have to mean
+     "deeper" in light, or the beat stops existing on paper. */
+  --fam-lift-rest: brightness(1);
+  --fam-lift-eyebrow: brightness(1.75);
+  --fam-lift-dot: brightness(1.6);
+
+  /* --- The device. A dark app in BOTH themes; nothing below is redefined
+     in the light block. ------------------------------------------------- */
+
+  /* Hardware: the body and the band of it the 8px border leaves showing. */
+  --fam-app-bezel: #000;
+  --fam-app-rim: rgba(255, 255, 255, 0.08);
+
+  /* The screen, its cards, their edges, the search field, the tab divider. */
+  --fam-app-bg: #151618;
+  --fam-app-card: #1a1b1e;
+  --fam-app-line: #232427;
+  --fam-app-field: #1c1d20;
+  --fam-app-rule: rgba(255, 255, 255, 0.18);
+
+  /* The app's glyphs. Every one of these is the flat colour Figma baked into
+     the file, named here so that masking it changes nothing about how it
+     looks — only about what can reach it. */
+  --fam-app-mark: #f03725;        /* the Phorcast mark in the app header   */
+  --fam-app-status: #b5b5b5;      /* signal, data, battery                 */
+  --fam-app-tab-icon: #cacaca;    /* the Trending chevron                  */
+  --fam-app-search-icon: #71717b; /* the magnifier                         */
+  --fam-app-live: #00c950;        /* the location arrow and the battery tip*/
+  /* The filter glyph, and the glint the feed switch gives it. Still a filter
+     pair rather than a colour: the glyph is white, so brightness clips and
+     the beat is the hairline one the section shipped. */
+  --fam-app-filter: var(--art-ink);
+  --fam-app-filter-lit: brightness(1.9);
+
+  /* The leaderboard's odds chips, each with the colour the re-sort lights it
+     to, and the two figures a percentage ticks through. */
+  --fam-app-yes-bg: #10281d;
+  --fam-app-yes-fg: #00a63e;
+  --fam-app-yes-lit: #17482e;
+  --fam-app-no-bg: #2a1416;
+  --fam-app-no-fg: #e7000b;
+  --fam-app-no-lit: #4a1f23;
+  --fam-app-up: #00c950;
+  --fam-app-down: #e7000b;
+  /* The 5-minute round's ring, and the lift it takes as it advances. */
+  --fam-app-ring: #00c950;
+  --fam-app-ring-lit: brightness(1.55);
+
+  /* The floating prediction card and the ghosts are the same app, off the
+     handset: one crisp card and two blurred ones. */
+  --fam-app-pred: #1d1d20;
+  --fam-app-pred-line: rgba(255, 255, 255, 0.28);
+  --fam-app-pred-shadow: rgba(0, 0, 0, 0.04);
+  --fam-app-pred-meta: rgba(113, 113, 123, 0.7);
+  --fam-app-pred-track: rgba(24, 24, 27, 0.08);
+  --fam-app-pred-fill: #00c950;
+  --fam-app-pred-label: #000;
+}
+
 .fam {
   position: relative;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--page);
   isolation: isolate;
 }
 .fam__stage {
@@ -20,26 +143,26 @@
 .fam__bg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
 .fam__g { position: absolute; width: calc(1539 * var(--u, 0.8px)); height: calc(1539 * var(--u, 0.8px)); border-radius: 50%; filter: blur(109px); }
 .fam__bg { --u: calc(100cqw / 1920); container-type: inline-size; }
-.fam__g--red { left: calc(411 * var(--u)); top: calc(74 * var(--u)); background: linear-gradient(168deg, #0f0e0d 20%, #7e0202 100%); }
-.fam__g--orange { left: calc(425 * var(--u)); top: calc(411 * var(--u)); background: #b43725; }
-.fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: #ec7850; }
-.fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: #fbd6ca; }
+.fam__g--red { left: calc(411 * var(--u)); top: calc(74 * var(--u)); background: var(--fam-g-red); }
+.fam__g--orange { left: calc(425 * var(--u)); top: calc(411 * var(--u)); background: var(--fam-g-orange); }
+.fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: var(--fam-g-peach); }
+.fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: var(--fam-g-cream); }
 /* A tighter core so the band just above the horizon reads as bright as the design. */
 /* The design's brightest point hugs the horizon crest, near the top of this
    disc rather than its centre. */
 .fam__g--cream::after {
   content: '';
   position: absolute; left: 16%; top: 0.5%; width: 58%; height: 11%;
-  border-radius: 50%; background: #fff8f0; filter: blur(42px);
+  border-radius: 50%; background: var(--fam-g-core); filter: blur(42px);
 }
 
 /* Copy ------------------------------------------------------------------------ */
 .fam__copy { display: flex; flex-direction: column; }
 .fam__copy--left { left: calc(240 * var(--u)); top: calc(240 * var(--u)); width: calc(420 * var(--u)); gap: calc(28 * var(--u)); }
-.fam__title { font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.2; color: var(--white-font); }
+.fam__title { font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.2; color: var(--ink); }
 .fam__copy--right { left: calc(1280 * var(--u)); top: calc(240 * var(--u)); width: calc(400 * var(--u)); gap: calc(30 * var(--u)); align-items: flex-start; }
-.fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: calc(24 * var(--u)); line-height: 1.2; color: var(--white-font); }
-.fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--u)); line-height: 1.2; color: var(--white-font); margin-top: calc(-14 * var(--u)); }
+.fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: calc(24 * var(--u)); line-height: 1.2; color: var(--ink); }
+.fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--u)); line-height: 1.2; color: var(--ink); margin-top: calc(-14 * var(--u)); }
 .fam__cta { width: calc(254 * var(--u)); height: calc(56 * var(--u)); font-size: calc(16 * var(--u)); border-radius: calc(30 * var(--u)); }
 
 /* Market cards ----------------------------------------------------------------- */
@@ -47,10 +170,10 @@
   width: calc(200 * var(--u)); height: calc(160 * var(--u)); padding: calc(16 * var(--u));
   display: flex; flex-direction: column; justify-content: center; gap: calc(6 * var(--u));
   border-radius: calc(10 * var(--u));
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--veil);
+  border: 1px solid var(--veil-line);
   backdrop-filter: blur(calc(12.25 * var(--u)));
-  font-family: var(--font-display); color: var(--white-font);
+  font-family: var(--font-display); color: var(--ink);
 }
 .fam__mkt--ecb { left: calc(338 * var(--u)); top: calc(529 * var(--u)); }
 .fam__mkt--nvda { left: calc(552 * var(--u)); top: calc(529 * var(--u)); }
@@ -68,22 +191,22 @@
   font-weight: 700; font-size: calc(12 * var(--u)); line-height: 1.2;
 }
 .fam__mkt-foot img { width: calc(16 * var(--u)); height: calc(16 * var(--u)); }
-.fam__mkt-foot--dark { background: #0f0f0f; }
-.fam__mkt-foot--red { background: var(--red); }
+.fam__mkt-foot--dark { background: var(--fam-foot); color: var(--fam-foot-ink); }
+.fam__mkt-foot--red { background: var(--neg); color: var(--on-accent); }
 .fam__mkt-foot--red img { width: calc(12 * var(--u)); height: calc(10 * var(--u)); }
 
 /* Phone ------------------------------------------------------------------------- */
 .fam__phone {
   left: calc(786 * var(--u)); top: calc(274 * var(--u));
   width: calc(348 * var(--u)); height: calc(806 * var(--u));
-  background: #000;
-  border: calc(8 * var(--u)) solid rgba(255, 255, 255, 0.08);
+  background: var(--fam-app-bezel);
+  border: calc(8 * var(--u)) solid var(--fam-app-rim);
   border-radius: calc(40 * var(--u));
   overflow: hidden;
 }
 .fam__screen {
   position: absolute; inset: 0; padding: calc(14 * var(--u));
-  background: #151618; font-family: var(--font-display); color: var(--white-font); overflow: hidden;
+  background: var(--fam-app-bg); font-family: var(--font-display); color: var(--art-ink); overflow: hidden;
 }
 .fam__status { display: flex; align-items: center; gap: calc(4 * var(--u)); font-size: calc(11 * var(--u)); font-weight: 600; }
 .fam__loc { width: calc(9 * var(--u)); height: auto; }
@@ -96,28 +219,28 @@
 .fam__brand span { font-family: var(--font-display); font-weight: 600; font-size: calc(24 * var(--u)); letter-spacing: calc(-0.4 * var(--u)); }
 .fam__tabs {
   display: flex; align-items: center; gap: calc(12 * var(--u));
-  margin-top: calc(28 * var(--u)); font-weight: 400; font-size: calc(14 * var(--u)); color: var(--color-nre-body);
+  margin-top: calc(28 * var(--u)); font-weight: 400; font-size: calc(14 * var(--u)); color: var(--art-ink-2);
   white-space: nowrap;
 }
-.fam__tabs .is-active { color: var(--white-font); }
-.fam__tab-trend { display: inline-flex; align-items: center; gap: calc(5 * var(--u)); color: var(--white-font); }
+.fam__tabs .is-active { color: var(--art-ink); }
+.fam__tab-trend { display: inline-flex; align-items: center; gap: calc(5 * var(--u)); color: var(--art-ink); }
 .fam__tab-trend img { width: calc(12 * var(--u)); height: auto; }
-.fam__tab-rule { width: 1px; height: calc(14 * var(--u)); background: rgba(255, 255, 255, 0.18); }
+.fam__tab-rule { width: 1px; height: calc(14 * var(--u)); background: var(--fam-app-rule); }
 .fam__tab-cut { opacity: 0.6; }
 .fam__search { display: flex; align-items: center; gap: calc(10 * var(--u)); margin-top: calc(24 * var(--u)); }
 .fam__search-field {
   flex: 1; display: flex; align-items: center; gap: calc(8 * var(--u));
   height: calc(40 * var(--u)); padding: 0 calc(14 * var(--u));
-  border-radius: calc(9 * var(--u)); background: #1c1d20; border: 1px solid #232427;
-  font-size: calc(13 * var(--u)); color: var(--color-nre-body);
+  border-radius: calc(9 * var(--u)); background: var(--fam-app-field); border: 1px solid var(--fam-app-line);
+  font-size: calc(13 * var(--u)); color: var(--art-ink-2);
 }
 .fam__search-field img { width: calc(13 * var(--u)); height: calc(13 * var(--u)); }
 .fam__filter { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
 .fam__event {
   margin-top: calc(20 * var(--u)); padding: calc(14 * var(--u));
-  border-radius: calc(10 * var(--u)); background: #1a1b1e; border: 1px solid #232427;
+  border-radius: calc(10 * var(--u)); background: var(--fam-app-card); border: 1px solid var(--fam-app-line);
 }
-.fam__event-meta { display: flex; justify-content: space-between; font-size: calc(11 * var(--u)); color: var(--color-nre-body); }
+.fam__event-meta { display: flex; justify-content: space-between; font-size: calc(11 * var(--u)); color: var(--art-ink-2); }
 .fam__event-head { display: flex; align-items: center; gap: calc(12 * var(--u)); margin-top: calc(14 * var(--u)); }
 .fam__event-avatar { width: calc(36 * var(--u)); height: calc(36 * var(--u)); border-radius: calc(6 * var(--u)); object-fit: cover; flex: none; }
 .fam__event-head p { font-weight: 500; font-size: calc(13.5 * var(--u)); line-height: 1.25; }
@@ -129,27 +252,27 @@
   display: grid; place-items: center; width: calc(38 * var(--u)); height: calc(24 * var(--u));
   border-radius: calc(5 * var(--u)); font-size: calc(11 * var(--u));
 }
-.fam__chip--yes { background: #10281d; color: #00a63e; }
-.fam__chip--no { background: #2a1416; color: #e7000b; }
+.fam__chip--yes { background: var(--fam-app-yes-bg); color: var(--fam-app-yes-fg); }
+.fam__chip--no { background: var(--fam-app-no-bg); color: var(--fam-app-no-fg); }
 .fam__btc { display: flex; align-items: center; gap: calc(12 * var(--u)); margin-top: calc(14 * var(--u)); }
 .fam__btc-icon { width: calc(36 * var(--u)); height: calc(36 * var(--u)); flex: none; }
 .fam__btc p { flex: 1; font-weight: 500; font-size: calc(13.5 * var(--u)); }
 .fam__gauge {
   display: grid; place-items: center; width: calc(44 * var(--u)); height: calc(44 * var(--u));
-  border-radius: 50%; border: calc(2.5 * var(--u)) solid #00c950; border-bottom-color: transparent;
+  border-radius: 50%; border: calc(2.5 * var(--u)) solid var(--fam-app-ring); border-bottom-color: transparent;
   font-size: calc(12 * var(--u)); font-weight: 500;
 }
 
 /* Ghost cards and the floating prediction card ---------------------------------- */
 .fam__ghost {
   width: calc(220 * var(--u)); height: calc(162 * var(--u));
-  border: calc(6 * var(--u)) solid rgba(255, 255, 255, 0.1);
+  border: calc(6 * var(--u)) solid var(--fam-ghost-line);
   border-radius: calc(12 * var(--u));
-  opacity: 0.4; overflow: hidden;
+  opacity: var(--fam-ghost-op); overflow: hidden;
 }
 .fam__ghost img { width: 293.91%; height: 100%; object-fit: cover; }
-.fam__ghost--a { left: calc(1195 * var(--u)); top: calc(486 * var(--u)); background: #fff; filter: blur(calc(4.4 * var(--u))); }
-.fam__ghost--b { left: calc(1318 * var(--u)); top: calc(633 * var(--u)); background: #161618; filter: blur(calc(2 * var(--u))); }
+.fam__ghost--a { left: calc(1195 * var(--u)); top: calc(486 * var(--u)); background: var(--fam-ghost-a); filter: blur(calc(4.4 * var(--u))); }
+.fam__ghost--b { left: calc(1318 * var(--u)); top: calc(633 * var(--u)); background: var(--fam-ghost-b); filter: blur(calc(2 * var(--u))); }
 .fam__ghost--b img { margin-left: -195.17%; }
 
 .fam__pred {
@@ -157,30 +280,30 @@
   width: calc(206 * var(--u)); height: calc(160 * var(--u));
   display: flex; flex-direction: column; justify-content: space-between;
   padding: calc(8 * var(--u)); border-radius: calc(10 * var(--u));
-  background: #1d1d20; border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 calc(5.4 * var(--u)) calc(10.7 * var(--u)) rgba(0, 0, 0, 0.04);
-  font-family: var(--font-display); color: var(--white-font);
+  background: var(--fam-app-pred); border: 1px solid var(--fam-app-pred-line);
+  box-shadow: 0 calc(5.4 * var(--u)) calc(10.7 * var(--u)) var(--fam-app-pred-shadow);
+  font-family: var(--font-display); color: var(--art-ink);
 }
-.fam__pred-meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(8 * var(--u)); color: rgba(113, 113, 123, 0.7); }
+.fam__pred-meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-meta); }
 .fam__pred-head { display: flex; gap: calc(6.7 * var(--u)); margin-top: calc(10 * var(--u)); }
 .fam__pred-head img { width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: calc(6.7 * var(--u)); object-fit: cover; flex: none; }
 .fam__pred-head p { font-weight: 500; font-size: calc(10 * var(--u)); line-height: 1.2; }
 .fam__pred-bar {
   position: relative; height: calc(14 * var(--u)); margin-top: calc(14 * var(--u));
-  border-radius: 9999px; background: rgba(24, 24, 27, 0.08); overflow: hidden;
+  border-radius: 9999px; background: var(--fam-app-pred-track); overflow: hidden;
 }
-.fam__pred-bar i { position: absolute; inset: 0; background: #00c950; }
+.fam__pred-bar i { position: absolute; inset: 0; background: var(--fam-app-pred-fill); }
 .fam__pred-bar span {
   position: absolute; inset: 0; display: grid; place-items: center;
-  font-weight: 700; font-size: calc(8 * var(--u)); color: #000;
+  font-weight: 700; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-label);
 }
 .fam__pred-btns { display: flex; gap: calc(6 * var(--u)); margin-top: calc(8 * var(--u)); }
 .fam__pred-btns span {
   flex: 1; display: grid; place-items: center; height: calc(22 * var(--u));
   border-radius: calc(5 * var(--u)); font-size: calc(9 * var(--u)); font-weight: 600;
 }
-.fam__pred-btns .is-yes { background: #10281d; color: #00a63e; }
-.fam__pred-btns .is-no { background: #2a1416; color: #e7000b; }
+.fam__pred-btns .is-yes { background: var(--fam-app-yes-bg); color: var(--fam-app-yes-fg); }
+.fam__pred-btns .is-no { background: var(--fam-app-no-bg); color: var(--fam-app-no-fg); }
 
 /* Bottom band ------------------------------------------------------------------- */
 .fam__band {
@@ -194,7 +317,7 @@
   position: absolute; left: 50%; top: calc(37 * var(--u));
   width: calc(6036 * var(--u)); height: calc(2668 * var(--u));
   transform: translateX(-50%);
-  border-radius: 50%; background: var(--bg); filter: blur(calc(13 * var(--u)));
+  border-radius: 50%; background: var(--page); filter: blur(calc(13 * var(--u)));
 }
 .fam__chips {
   position: absolute; left: 50%; top: calc(99 * var(--u)); transform: translateX(-50%);
@@ -202,11 +325,11 @@
 }
 .fam__chip-pill {
   padding: calc(10 * var(--u)) calc(30 * var(--u));
-  border-radius: calc(30 * var(--u)); background: var(--surface);
+  border-radius: calc(30 * var(--u)); background: var(--panel);
   font-family: var(--font-display); font-weight: 500; font-size: calc(12 * var(--u));
-  letter-spacing: calc(-0.24 * var(--u)); line-height: 1.2; color: var(--color-nre-body); white-space: nowrap;
+  letter-spacing: calc(-0.24 * var(--u)); line-height: 1.2; color: var(--ink-2); white-space: nowrap;
 }
-.fam__chip-dot { width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: #f03725; flex: none; }
+.fam__chip-dot { width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: var(--fam-dot); flex: none; }
 
 @media (max-width: 1100px) {
   .fam__stage { --u: calc(100cqw / 1400); aspect-ratio: 1400 / 1180; }

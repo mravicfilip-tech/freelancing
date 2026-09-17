@@ -13,6 +13,48 @@
    382, plus 20px padding either side and a 1px border, so the card is 424 wide
    and 274 tall. */
 
+/* The panel's colour, in two layers -- the same split Steps.css uses.
+   -------------------------------------------------------------------------
+   ROLE TOKENS where the page already names the job: the "Market price" label
+   is --ink-2, the decimals are --ink-muted, the picker's hairlines are --line,
+   and both the active tile's edge and the delta are --accent.
+
+   PANEL LOCALS (--steps-p3-*) for the card the app draws -- its ground, its
+   edge, the five market tiles, the price itself, and every colour inside the
+   inlined graph. The graph's stops are reached by CSS rather than by a second
+   copy of the markup: an inlined SVG's `stop-color`, `stroke` and `fill` are
+   presentation ATTRIBUTES, and a stylesheet rule beats a presentation
+   attribute, so one selector per stop themes the export without touching the
+   id-prefix pipeline in PanelTrade.tsx or the file on disk. Its layer ids are
+   already namespaced to `s3-`, which is what makes them addressable here.
+
+   Declared on :root for the same reason as the other two panels: `tok()` reads
+   document.documentElement. Dark is exactly what the panel shipped with. */
+:root {
+  --steps-p3-card: #161514;
+  --steps-p3-card-edge: #3d3d3d;
+  /* The five market tiles and the chart card share one ground. */
+  --steps-p3-tile: #1b1b1a;
+  --steps-p3-price: #fff;
+
+  /* The graph (s3-chart.svg), stop by stop.
+     - the area fill ramps from an invisible ground stop up to --accent;
+     - the line is a warm head fading out along its own tail, and the tail's
+       colour is the card ground at zero alpha;
+     - the marker's drop line runs from a pale head to the card ground;
+     - one dashed baseline and four measure lines. */
+  --steps-p3-area-out: #1c1c1c;
+  --steps-p3-line: #ffa99e;
+  --steps-p3-line-out: #1b1b1a;
+  --steps-p3-drop: #d9d9d9;
+  --steps-p3-drop-out: #1a1a1a;
+  --steps-p3-dash: #383837;
+  --steps-p3-grid: #fff;
+  /* The lit dot that rides the drawing edge. Built by the loop, painted here
+     -- a pale peach on the dark card, brighter than everything under it. */
+  --steps-p3-head: #ffd0c6;
+}
+
 /* Panel 3 -- Price Container (365:1532) ------------------------------------- */
 .s3 {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -20,8 +62,8 @@
   gap: calc(8 * var(--p));
   width: calc(424 * var(--p)); height: calc(274 * var(--p));
   padding: calc(20 * var(--p));
-  background: #161514;
-  border: calc(1 * var(--p)) solid #3d3d3d;
+  background: var(--steps-p3-card);
+  border: calc(1 * var(--p)) solid var(--steps-p3-card-edge);
   border-radius: calc(16 * var(--p));
 }
 
@@ -31,11 +73,11 @@
   position: relative; flex: 0 0 auto;
   width: calc(70 * var(--p)); height: calc(50 * var(--p));
   overflow: hidden;
-  background: #1b1b1a;
-  border: calc(1 * var(--p)) solid var(--hairline);
+  background: var(--steps-p3-tile);
+  border: calc(1 * var(--p)) solid var(--line);
   border-radius: calc(12 * var(--p));
 }
-.s3__tile.is-active { border-color: var(--orange-100); }
+.s3__tile.is-active { border-color: var(--accent); }
 /* Every glyph is centred on the tile, half a pixel low -- Figma has them all at
    `top: calc(50% + 0.5px)`. The inactive ones are already drawn in #4B4B4B in
    the exported files; they need no filter, and the one that used to be here
@@ -63,8 +105,8 @@
   width: 100%; height: calc(173 * var(--p));
   padding: calc(16 * var(--p));
   overflow: hidden;
-  background: #1b1b1a;
-  border: calc(1 * var(--p)) solid var(--hairline);
+  background: var(--steps-p3-tile);
+  border: calc(1 * var(--p)) solid var(--line);
   border-radius: calc(12 * var(--p));
 }
 /* The three lines stack with no gaps; Figma leaves their line height on auto,
@@ -74,20 +116,20 @@
   align-self: stretch;
   font-family: var(--font-display); font-weight: 300;
   font-size: calc(12 * var(--p)); line-height: normal;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
 }
 .s3__money { display: flex; flex-direction: column; align-items: flex-start; width: calc(139 * var(--p)); }
 .s3__price {
   font-family: var(--font-display); font-weight: 700;
   font-size: calc(32 * var(--p)); line-height: normal;
-  color: #fff; white-space: nowrap;
+  color: var(--steps-p3-price); white-space: nowrap;
 }
-.s3__price-dec { color: var(--color-body); }
+.s3__price-dec { color: var(--ink-muted); }
 .s3__delta {
   align-self: stretch;
   font-family: var(--font-display); font-weight: 700;
   font-size: calc(12 * var(--p)); line-height: normal;
-  color: var(--orange-100);
+  color: var(--accent);
 }
 
 /* The graph (365:1560). 371 x 191, hung 10 in from the card's padding edge and
@@ -120,6 +162,43 @@
 .s3__grid--f { --gx: 177; --gy: 83; --gh: 71; }
 .s3__grid--g { --gx: 240; --gy: 39; --gh: 116; }
 .s3__grid--h { --gx: 109; --gy: 83; --gh: 71; }
+
+/* The graph's own colour, reached by CSS.
+   -------------------------------------------------------------------------
+   Every colour inside s3-chart.svg arrives as a presentation ATTRIBUTE --
+   `stop-color`, `stroke`, `fill` -- and an author stylesheet rule outranks a
+   presentation attribute. So one selector per stop themes the export in place:
+   no per-theme copy of the markup, no second string transform, and the
+   id-prefix pipeline in PanelTrade.tsx (which is what keeps two inlined
+   exports from stealing each other's gradients) is not touched at all. The
+   `s3-` prefix that pipeline writes is exactly what makes the gradients
+   addressable from here.
+
+   Layer ids are Figma's and are matched as attributes, the same way
+   PanelTrade.tsx's motion finds `Vector 60` and `Detail Point`. */
+.s3__chart [id='Vector 43'] { stroke: var(--steps-p3-dash); }
+.s3__chart [id='Vector 44'],
+.s3__chart [id='Vector 45'],
+.s3__chart [id='Vector 46'],
+.s3__chart [id='Vector 47'] { stroke: var(--steps-p3-grid); }
+/* The area fill: an invisible ground stop, then --accent twice. */
+.s3__chart #s3-paint0_linear_0_17 stop:nth-child(1) { stop-color: var(--steps-p3-area-out); }
+.s3__chart #s3-paint0_linear_0_17 stop:nth-child(2),
+.s3__chart #s3-paint0_linear_0_17 stop:nth-child(3) { stop-color: var(--accent); }
+/* The line: a warm head, fading out along its tail. */
+.s3__chart #s3-paint1_linear_0_17 stop:nth-child(1) { stop-color: var(--steps-p3-line); }
+.s3__chart #s3-paint1_linear_0_17 stop:nth-child(2) { stop-color: var(--steps-p3-line-out); }
+/* The marker's drop line, from a pale head down into the card. */
+.s3__chart #s3-paint2_linear_0_17 stop:nth-child(1) { stop-color: var(--steps-p3-drop); }
+.s3__chart #s3-paint2_linear_0_17 stop:nth-child(2) { stop-color: var(--steps-p3-drop-out); }
+/* The marker itself: a soft ring and a disc, both brand. */
+.s3__chart [id='Ellipse 30'],
+.s3__chart [id='Ellipse 29'] { fill: var(--accent); }
+/* The lit dot the loop builds and flies along the drawing edge. It is painted
+   from here rather than from a setAttribute in the module because this panel
+   is not rebuilt on a theme change -- a value read in JS at mount would freeze
+   against the palette that was live then, and a CSS rule cannot. */
+.s3__head { fill: var(--steps-p3-head); }
 
 /* Figma's exporter emulates the marker's background blur with a <foreignObject>
    carrying `backdrop-filter`. An <img> never ran it -- Chromium does not render

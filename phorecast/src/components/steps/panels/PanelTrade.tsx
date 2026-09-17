@@ -197,10 +197,16 @@ function tradeMotion(root: HTMLElement): () => void {
   /* The lit dot that rides the drawing edge. Inside the same <svg>, last in the
      graph group so it paints over the fill, and a flat colour so it depends on
      none of the export's gradients. It belongs to the motion, so if this module
-     never runs the artwork has no stray dot sitting on the curve. */
+     never runs the artwork has no stray dot sitting on the curve.
+
+     Its colour is a class, not a `fill` attribute and not `tok()`: this panel
+     is built on mount and never rebuilt, so a value read in JS here would
+     freeze against whichever palette was live at the time, where a CSS rule
+     re-resolves the moment the theme changes. `.s3__head` is in
+     PanelTrade.css, which this module imports. */
   const head = document.createElementNS(NS, 'circle');
   head.setAttribute('r', '4.2');
-  head.setAttribute('fill', '#ffd0c6');
+  head.setAttribute('class', 's3__head');
   head.setAttribute('cx', '-20');
   head.setAttribute('cy', '-20');
   head.style.opacity = '0';

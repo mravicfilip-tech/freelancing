@@ -13,6 +13,54 @@
    its origin at (64.929, 128.5); the children's own local coordinates are
    folded into that origin here so each rule is a plain frame coordinate. */
 
+/* The panel's colour, in two layers -- the same split Steps.css uses.
+   -------------------------------------------------------------------------
+   ROLE TOKENS where the page already names the job: BALANCE is --ink-muted,
+   the figure is --ink, the five comets are --accent.
+
+   PANEL LOCALS (--steps-p2-*) for what belongs to this illustration -- the
+   five rail tiles, the converging lines and their correction, the beam, and
+   the whole of the balance card. Declared on :root because `tok()` in
+   lib/theme.ts reads document.documentElement and the loop takes its lit tile
+   edge and its two glyph filters from here.
+
+   Two of them are PAIRS, and that is the point of naming them at all: in dark
+   a tile fires by going pale and its glyph fires by getting brighter. On paper
+   both of those climb towards the page and the beat stops being visible, so
+   light supplies its own pair pointing the other way.
+
+   Dark is exactly what the panel shipped with, so this block is a no-op. */
+:root {
+  /* The five payment rails. Tile 1 carries a stronger edge in the design. */
+  --steps-p2-tile: #1d1c1b;
+  --steps-p2-tile-edge: rgba(212, 212, 212, 0.13);
+  --steps-p2-tile-edge-1: rgba(212, 212, 212, 0.4);
+  /* A tile firing: its edge for 0.3s, read by the loop through `tok()`. */
+  --steps-p2-tile-lit: rgba(255, 128, 96, 0.55);
+  /* And its glyph, as a matched pair -- GSAP interpolates `filter`
+     structurally, so both values have to list the same function. */
+  --steps-p2-glyph-rest: brightness(1);
+  --steps-p2-glyph-lit: brightness(2.1);
+
+  /* The converging lines. See the note on the brightness correction below. */
+  --steps-p2-lines: brightness(2.4);
+
+  /* The beam behind the node, driving into the card. */
+  --steps-p2-beam-a: #f55e22;
+  --steps-p2-beam-b: #2d1208;
+
+  /* The balance card: a glass plate over the panel glow, inside a warm edge,
+     with its own lit inner face and a pale hairline around that. */
+  --steps-p2-card-bg: rgba(255, 255, 255, 0.02);
+  --steps-p2-card-edge: rgba(255, 99, 42, 0.24);
+  --steps-p2-inner-edge: rgba(244, 242, 242, 0.22);
+  --steps-p2-inner-bg: linear-gradient(134.615deg,
+    rgba(0, 0, 0, 0.3) 42.237%,
+    rgba(255, 73, 7, 0.3) 70.091%,
+    rgba(149, 43, 4, 0.3) 84.624%,
+    rgba(0, 0, 0, 0.3) 105.21%);
+}
+
 /* Panel 2 ------------------------------------------------------------------- */
 .s2 { position: absolute; inset: 0; }
 
@@ -25,11 +73,11 @@
 .s2__tile {
   position: absolute; left: 0; overflow: hidden;
   width: calc(90 * var(--p)); height: calc(52 * var(--p));
-  background: #1d1c1b;
-  border: calc(1.255 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  background: var(--steps-p2-tile);
+  border: calc(1.255 * var(--p)) solid var(--steps-p2-tile-edge);
   border-radius: calc(14 * var(--p));
 }
-.s2__tile--1 { top: 0; width: calc(92 * var(--p)); border-color: rgba(212, 212, 212, 0.4); }
+.s2__tile--1 { top: 0; width: calc(92 * var(--p)); border-color: var(--steps-p2-tile-edge-1); }
 .s2__tile--2 { top: calc(75 * var(--p)); }
 .s2__tile--3 { top: calc(150 * var(--p)); }
 .s2__tile--4 { top: calc(225 * var(--p)); }
@@ -69,7 +117,7 @@
 .s2__lines {
   position: absolute; left: calc(123.937 * var(--p)); top: calc(151.094 * var(--p));
   width: calc(347.723 * var(--p)); height: calc(315.7 * var(--p));
-  filter: brightness(2.4);
+  filter: var(--steps-p2-lines);
 }
 
 /* The same five rails again, with no paint on them at all: the loop reads
@@ -94,7 +142,7 @@
    two and a half times too soft and drops the peak from 154 to 85. */
 .s2__comet {
   position: absolute; height: calc(6.068 * var(--p));
-  background: var(--orange-100);
+  background: var(--accent);
   filter: blur(calc(3.4 * var(--p)));
   transform-origin: center;
 }
@@ -119,7 +167,7 @@
 .s2__beam i {
   position: absolute; left: calc(-0.34 * var(--p)); top: calc(0.21 * var(--p));
   width: calc(35 * var(--p)); height: calc(7 * var(--p));
-  background: linear-gradient(to right, #f55e22, #2d1208);
+  background: linear-gradient(to right, var(--steps-p2-beam-a), var(--steps-p2-beam-b));
 }
 .s2__disc { position: absolute; left: calc(-6.316 * var(--p)); top: calc(-6.736 * var(--p)); width: calc(38.5532 * var(--p)); height: calc(38.5532 * var(--p)); }
 .s2__lock { position: absolute; left: calc(4.96 * var(--p)); top: calc(4.54 * var(--p)); width: calc(16 * var(--p)); height: calc(16 * var(--p)); }
@@ -129,8 +177,8 @@
   position: absolute; left: calc(498.999 * var(--p)); top: calc(226 * var(--p));
   width: calc(346 * var(--p)); height: calc(158 * var(--p));
   padding: calc(12.553 * var(--p));
-  background: rgba(255, 255, 255, 0.02);
-  border: calc(1.255 * var(--p)) solid rgba(255, 99, 42, 0.24);
+  background: var(--steps-p2-card-bg);
+  border: calc(1.255 * var(--p)) solid var(--steps-p2-card-edge);
   border-radius: calc(20.085 * var(--p));
   backdrop-filter: blur(calc(8.662 * var(--p)));
 }
@@ -141,13 +189,9 @@
   /* Sampled off the Figma render either side of the stroke: the light edge is
      carrying roughly a fifth of #f4f2f2, not the full value the exported
      markup implies. */
-  border: calc(1.255 * var(--p)) solid rgba(244, 242, 242, 0.22);
+  border: calc(1.255 * var(--p)) solid var(--steps-p2-inner-edge);
   border-radius: calc(15.064 * var(--p));
-  background: linear-gradient(134.615deg,
-    rgba(0, 0, 0, 0.3) 42.237%,
-    rgba(255, 73, 7, 0.3) 70.091%,
-    rgba(149, 43, 4, 0.3) 84.624%,
-    rgba(0, 0, 0, 0.3) 105.21%);
+  background: var(--steps-p2-inner-bg);
   box-shadow:
     0 calc(219.681 * var(--p)) calc(30.755 * var(--p)) rgba(0, 0, 0, 0),
     0 calc(140.596 * var(--p)) calc(28.245 * var(--p)) rgba(0, 0, 0, 0.01),
@@ -160,12 +204,12 @@
 .s2__balance-label {
   margin: 0; width: 100%;
   font-family: var(--font-mono); font-weight: 400; font-size: calc(14 * var(--p));
-  line-height: normal; color: var(--color-body);
+  line-height: normal; color: var(--ink-muted);
 }
 .s2__balance-amt {
   margin: 0; width: 100%;
   font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--p));
-  line-height: normal; color: var(--white-font);
+  line-height: normal; color: var(--ink);
 }
 /* Figma ships this as one 70.299 x 7.532 asset hung on a 70 x 7 slot, not as a
    row of hand-built dots: the bar is 40.17 long with 2.51 gaps, where the first

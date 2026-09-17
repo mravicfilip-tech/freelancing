@@ -15,6 +15,7 @@ import data from '../../../assets/steps/s1-data.svg';
 import battery from '../../../assets/steps/s1-battery.svg';
 import battFill from '../../../assets/steps/s1-batt-tip.svg';
 import { REDUCED, all, count, one } from '../../../lib/motion';
+import { tok, useThemeEpoch } from '../../../lib/theme';
 import { Mark, Glow } from './shared';
 import './PanelRegister.css';
 
@@ -56,6 +57,12 @@ const REST = 1.55;
 
 function useRegisterLoop() {
   const ref = useRef<HTMLDivElement>(null);
+  /* The loop reads the pill's two stroke colours once, at build time, exactly
+     where it already measures the box -- so it has to be rebuilt when the
+     theme changes or it would keep tweening to the palette that was live when
+     the panel mounted. The stepper does remount this panel every six seconds,
+     but a six-second window of the wrong red is still the wrong red. */
+  const epoch = useThemeEpoch();
 
   useLayoutEffect(() => {
     const root = ref.current;
@@ -93,6 +100,10 @@ function useRegisterLoop() {
     const restAmount = amount.textContent ?? '$3,280';
     // How far the caret has to come back from: the full width of the address.
     const run = addr.getBoundingClientRect().width;
+    // The pill's stroke, as a pair. Today's values are the fallbacks, so a
+    // missing custom property yields exactly what the panel shipped with.
+    const pillRest = tok('--steps-p1-pill-rest', 'rgba(229, 51, 30, 0.22)');
+    const pillLit = tok('--steps-p1-pill-lit', 'rgb(229, 51, 30)');
 
     const innardsA = [q('.s1__glyph--card'), q('.s1__card--a .s1__rule'), q('.s1__digits'), q('.s1__card--a .s1__bar--pill')]
       .filter((el): el is HTMLElement => !!el);
@@ -108,7 +119,7 @@ function useRegisterLoop() {
       const tl = gsap.timeline({ repeat: -1, repeatDelay: REST, paused: true });
 
       /* ---- the panel at the start of the story, re-applied on every repeat */
-      tl.set(pill, { borderColor: 'rgba(229, 51, 30, 0.22)' }, 0)
+      tl.set(pill, { borderColor: pillRest }, 0)
         .set(env, { opacity: 0, scale: 0.55, transformOrigin: '50% 50%' }, 0)
         .set(addr, { clipPath: 'inset(0% 100% 0% 0%)' }, 0)
         .set(caret, { x: -run }, 0)
@@ -128,7 +139,7 @@ function useRegisterLoop() {
         .call(() => { amount.textContent = '$0'; }, undefined, 0);
 
       /* ---- 1. the pill wakes and the address types itself */
-      tl.to(pill, { borderColor: 'rgb(229, 51, 30)', duration: 0.5, ease: 'power2.out' }, 0)
+      tl.to(pill, { borderColor: pillLit, duration: 0.5, ease: 'power2.out' }, 0)
         .to(env, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, 0.05)
         .to(addr, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.95, ease: 'power2.inOut' }, 0.3)
         .to(caret, { x: 0, duration: 0.95, ease: 'power2.inOut' }, 0.3)
@@ -172,7 +183,7 @@ function useRegisterLoop() {
       // `revert` restores inline styles; the counted text is ours to undo.
       amount.textContent = restAmount;
     };
-  }, []);
+  }, [epoch]);
 
   return ref;
 }

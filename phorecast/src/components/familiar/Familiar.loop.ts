@@ -45,6 +45,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
+import { tok } from '../../lib/theme';
 import type { Timeline } from '../../lib/motion';
 
 /** One full cycle: 9.9s of story, 3.6s of stillness. */
@@ -52,18 +53,58 @@ const PERIOD = 13.5;
 /** How long after the entrance lands before the first beat. */
 const SETTLE = 1.2;
 
-/* The app's own semantic colours, lifted from Familiar.css so a flash reads as
-   the same interface speaking rather than a foreign hue laid over it. */
-const UP = '#00c950';
-const DOWN = '#e7000b';
-const CHIP_YES_LIT = '#17482e';
-const CHIP_NO_LIT = '#4a1f23';
-const ECB_FOOT_LIT = '#242422';
-const CARD_BG_LIT = 'rgba(255, 255, 255, 0.11)';
-const CARD_EDGE_LIT = 'rgba(255, 255, 255, 0.34)';
-const PILL_ON_BG = '#e5331e';
-const PILL_ON_FG = '#fffbf8';
-const PRED_YES_LIT = '#17482e';
+/**
+ * Every colour and every lift this loop writes, read off the document.
+ *
+ * It is called from `start()`, next to the `getComputedStyle` rest reads that
+ * were already there, and never at module scope — a theme change rebuilds the
+ * section, so this re-runs and the loop cools to the palette that is actually
+ * on the page. The fallbacks are the values the file shipped with, so a
+ * missing property yields today's dark colour rather than nothing.
+ *
+ * Read the two halves against `Familiar.css`. The `--fam-app-*` half is the
+ * handset, which is a dark app in both themes and therefore has no light
+ * value at all: "lit means brighter" is still true inside it, and those beats
+ * are untouched. The rest is page chrome, and every one of those DOES flip —
+ * the two white-alphas invert direction for free by becoming ink-alpha, and
+ * the two brightness pairs and the tick colours are turned around by hand.
+ */
+const palette = () => ({
+  /* The NVDA card's print. On the page, so it is --pos / --neg. */
+  tickUp: tok('--fam-tick-up', '#00c950'),
+  tickDown: tok('--fam-tick-down', '#e7000b'),
+  /* The same two figures on the leaderboard INSIDE the phone. Identical in
+     dark, and deliberately still identical in light. */
+  appUp: tok('--fam-app-up', '#00c950'),
+  appDown: tok('--fam-app-down', '#e7000b'),
+  /* The odds chips the re-sort lights, on the handset and on the floating
+     prediction card — the same two chips, the same app. */
+  chipYesLit: tok('--fam-app-yes-lit', '#17482e'),
+  chipNoLit: tok('--fam-app-no-lit', '#4a1f23'),
+  /* The ECB card's footer plate. Lit is LIGHTER than rest on a dark page and
+     has to be DARKER than rest on paper; both are "the plate acknowledged it". */
+  footLit: tok('--fam-foot-lit', '#242422'),
+  /* The glass under a print. White-alpha in dark, ink-alpha in light: more
+     alpha is brighter on black and darker on cream, and both mean "lit". */
+  cardBgLit: tok('--fam-card-lit-bg', 'rgba(255, 255, 255, 0.11)'),
+  cardEdgeLit: tok('--fam-card-lit-line', 'rgba(255, 255, 255, 0.34)'),
+  /* The tapped category pill: the brand red, and the label that rides it. */
+  pillOnBg: tok('--accent', '#e5331e'),
+  pillOnFg: tok('--on-accent', '#fffbf8'),
+  /* Lifts, as matched pairs — GSAP interpolates `filter` structurally, so
+     both ends must list the same functions. The two that meet the paper
+     (the eyebrow dot, the strip's live dots) turn around in light; the two
+     inside the handset (the ring, the filter glyph) do not. */
+  liftRest: tok('--fam-lift-rest', 'brightness(1)'),
+  liftEyebrow: tok('--fam-lift-eyebrow', 'brightness(1.75)'),
+  liftDot: tok('--fam-lift-dot', 'brightness(1.6)'),
+  ringLit: tok('--fam-app-ring-lit', 'brightness(1.55)'),
+  filterLit: tok('--fam-app-filter-lit', 'brightness(1.9)'),
+  /* How far the blurred stack lifts off its own resting opacity. A figure,
+     not a colour: on paper the stack rests far quieter, so the same +0.22
+     would be a third of its whole presence rather than a breath. */
+  ghostLift: Number.parseFloat(tok('--fam-ghost-lift', '0.22')) || 0.22,
+});
 
 /** A pulse that leaves nothing behind: out, then back to the value it started
  *  from, so the loop's resting frame is the design. */
@@ -176,6 +217,8 @@ export function familiarLoop(root: HTMLElement): () => void {
     const tabOnRest = css(tabAll, 'color');
     const tabOffRest = css(tabSoon, 'color');
     const predYesRest = css(predYes, 'backgroundColor');
+    // Read from the document in the same breath, and for the same reason.
+    const C = palette();
     // The ghosts sit at 0.4 in CSS. If the entrance has stranded them at zero,
     // lifting them would introduce artwork nobody has seen; leave them alone.
     const ghostRest = ghosts.map((g) => Number.parseFloat(css(g, 'opacity')) || 0);
@@ -212,7 +255,7 @@ export function familiarLoop(root: HTMLElement): () => void {
       // Numeric starts for everything the loop brightens: GSAP cannot tween out
       // of the keyword `none`. Never on the ghosts — their `filter` is the blur
       // that makes them ghosts.
-      gsap.set([gauge, filterIcon, eyebrowDot, ...dots].filter(Boolean) as HTMLElement[], { filter: 'brightness(1)' });
+      gsap.set([gauge, filterIcon, eyebrowDot, ...dots].filter(Boolean) as HTMLElement[], { filter: C.liftRest });
 
       const runCycle = () => {
         const down = phase % 2 === 0; // even: the tape ticks down and the outsider climbs
@@ -229,11 +272,11 @@ export function familiarLoop(root: HTMLElement): () => void {
             nvdaValue.textContent = `$${price.toFixed(priceDp)}`;
             if (nvdaPct && day !== null && Number.isFinite(day)) nvdaPct.nodeValue = `${day.toFixed(2)}%`;
           }, undefined, at)
-            .to(nvdaValue, { color: down ? DOWN : UP, duration: 0.2, ease: 'sine.out' }, at)
+            .to(nvdaValue, { color: down ? C.tickDown : C.tickUp, duration: 0.2, ease: 'sine.out' }, at)
             .to(nvdaValue, { color: valueRest, duration: 0.95, ease: 'sine.inOut' }, at + 0.22);
           if (nvdaCard && cardBgRest) {
             pulse(tl, nvdaCard, at,
-              { backgroundColor: CARD_BG_LIT, borderColor: CARD_EDGE_LIT },
+              { backgroundColor: C.cardBgLit, borderColor: C.cardEdgeLit },
               { backgroundColor: cardBgRest, borderColor: cardEdgeRest }, 0.3, 0.95);
           }
         };
@@ -250,14 +293,14 @@ export function familiarLoop(root: HTMLElement): () => void {
            figure does not budge. */
         if (ecbCard && cardBgRest) {
           pulse(tl, ecbCard, 0.6,
-            { backgroundColor: CARD_BG_LIT, borderColor: CARD_EDGE_LIT },
+            { backgroundColor: C.cardBgLit, borderColor: C.cardEdgeLit },
             { backgroundColor: cardBgRest, borderColor: cardEdgeRest }, 0.35, 1.0);
         }
         if (ecbFoot && ecbFootRest) {
-          pulse(tl, ecbFoot, 0.7, { backgroundColor: ECB_FOOT_LIT }, { backgroundColor: ecbFootRest }, 0.35, 0.9);
+          pulse(tl, ecbFoot, 0.7, { backgroundColor: C.footLit }, { backgroundColor: ecbFootRest }, 0.35, 0.9);
         }
         // The section's own live dot, lit by the same refresh.
-        if (eyebrowDot) pulse(tl, eyebrowDot, 0.75, { filter: 'brightness(1.75)' }, { filter: 'brightness(1)' }, 0.3, 0.9);
+        if (eyebrowDot) pulse(tl, eyebrowDot, 0.75, { filter: C.liftEyebrow }, { filter: C.liftRest }, 0.3, 0.9);
 
         /* The leaderboard re-sorts, while the card is still in its design
            position and every row of it is in clear view. */
@@ -273,7 +316,7 @@ export function familiarLoop(root: HTMLElement): () => void {
             v: to, duration: 0.8, ease: 'sine.inOut',
             onUpdate: () => { pctEl.textContent = `${Math.round(walk.v)}%`; },
           }, 1.1)
-            .to(pctEl, { color: down ? UP : DOWN, duration: 0.22, ease: 'sine.out' }, 1.1)
+            .to(pctEl, { color: down ? C.appUp : C.appDown, duration: 0.22, ease: 'sine.out' }, 1.1)
             .to(pctEl, { color: pctRest, duration: 0.9, ease: 'sine.inOut' }, 2.3);
 
           // The cross itself, measured off the rows each cycle and expressed as
@@ -308,7 +351,7 @@ export function familiarLoop(root: HTMLElement): () => void {
           const chip = mover.querySelector<HTMLElement>(down ? '.fam__chip--yes' : '.fam__chip--no');
           if (chip) {
             const chipRest = getComputedStyle(chip).backgroundColor;
-            pulse(tl, chip, 2.35, { backgroundColor: down ? CHIP_YES_LIT : CHIP_NO_LIT }, { backgroundColor: chipRest }, 0.3, 0.8);
+            pulse(tl, chip, 2.35, { backgroundColor: down ? C.chipYesLit : C.chipNoLit }, { backgroundColor: chipRest }, 0.3, 0.8);
           }
         }
 
@@ -323,7 +366,7 @@ export function familiarLoop(root: HTMLElement): () => void {
             .to(tabSoon, { color: tabOffRest, duration: 0.55, ease: 'sine.inOut' }, 8.0)
             .to(tabAll, { color: tabOnRest, duration: 0.55, ease: 'sine.inOut' }, 8.0);
         }
-        if (filterIcon) pulse(tl, filterIcon, 3.55, { filter: 'brightness(1.9)' }, { filter: 'brightness(1)' }, 0.3, 0.8);
+        if (filterIcon) pulse(tl, filterIcon, 3.55, { filter: C.filterLit }, { filter: C.liftRest }, 0.3, 0.8);
 
         if (canResort) {
           // Measured every cycle, with both cards at rest, and converted to a
@@ -354,14 +397,14 @@ export function familiarLoop(root: HTMLElement): () => void {
             v: gauge0 + (down ? 3 : 0), duration: 0.8, ease: 'sine.inOut',
             onUpdate: () => { gauge.textContent = `${Math.round(ring.v)}%`; },
           }, 4.9);
-          pulse(tl, gauge, 4.9, { filter: 'brightness(1.55)' }, { filter: 'brightness(1)' }, 0.35, 0.95);
+          pulse(tl, gauge, 4.9, { filter: C.ringLit }, { filter: C.liftRest }, 0.35, 0.95);
         }
 
         /* The blurred stack behind the copy is context: it lifts with the
            refresh and settles again, and it never travels. */
         liveGhosts.forEach((g, i) => {
           const rest = ghostRest[ghosts.indexOf(g)];
-          pulse(tl, g, 5.15 + i * 0.25, { opacity: Math.min(rest + 0.22, 1) }, { opacity: rest }, 0.5, 1.1);
+          pulse(tl, g, 5.15 + i * 0.25, { opacity: Math.min(rest + C.ghostLift, 1) }, { opacity: rest }, 0.5, 1.1);
         });
 
         /* The floating prediction card takes a trade. */
@@ -376,20 +419,20 @@ export function familiarLoop(root: HTMLElement): () => void {
           }, 5.45);
         }
         if (predYes && predYesRest) {
-          pulse(tl, predYes, 5.45, { backgroundColor: PRED_YES_LIT }, { backgroundColor: predYesRest }, 0.3, 0.9);
+          pulse(tl, predYes, 5.45, { backgroundColor: C.chipYesLit }, { backgroundColor: predYesRest }, 0.3, 0.9);
         }
 
         /* A category is tapped, holds, and lets go, so the row at rest is the
            row in the design. */
         const pill = pills[phase % (pills.length || 1)];
         if (pill && pillBg) {
-          tl.to(pill, { backgroundColor: PILL_ON_BG, color: PILL_ON_FG, duration: 0.5, ease: 'sine.out' }, 5.95)
+          tl.to(pill, { backgroundColor: C.pillOnBg, color: C.pillOnFg, duration: 0.5, ease: 'sine.out' }, 5.95)
             .to(pill, { backgroundColor: pillBg, color: pillFg, duration: 0.8, ease: 'sine.inOut' }, 7.9);
         }
         /* The live dots at either end of the row. Accents: under half a second
            out, and nothing structural depends on them. */
         dots.forEach((d, i) => {
-          pulse(tl, d, 6.25 + i * 0.12, { filter: 'brightness(1.6)', scale: 1.4 }, { filter: 'brightness(1)', scale: 1 }, 0.3, 0.75);
+          pulse(tl, d, 6.25 + i * 0.12, { filter: C.liftDot, scale: 1.4 }, { filter: C.liftRest, scale: 1 }, 0.3, 0.75);
         });
 
         phase += 1;

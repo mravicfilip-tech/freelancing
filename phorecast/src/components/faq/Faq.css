@@ -1,4 +1,45 @@
-.faq { padding: 120px 0; }
+/* "Answers you can verify" — the band's colour, in two layers.
+   -------------------------------------------------------------------------
+   ROLE TOKENS (--ink, --ink-2, --accent, --panel) for everything whose job the
+   rest of the page already names: the heading, the lede, the questions, the
+   answers, the row numbers and the plus/minus. They flip with the theme for
+   free, and the FAQ does not get to have an opinion about them.
+
+   FAQ LOCALS (--faq-*) for the five values that are this band's own: the
+   closed row's ground, the open row's shadow, the chip's hairline, and the two
+   halves of the verify chip. They are declared here with today's dark values,
+   and the light block further down redefines exactly those names. Nothing else
+   in this file mentions a colour, so "what does the FAQ do in light?" is
+   answerable by reading one block.
+
+   The accordion's three states are made of these and nothing else:
+
+     closed row   --faq-row,  number and plus/minus --ink-2
+     open row     --panel + --faq-row-shadow,  number and minus --accent
+     chips        --panel behind --faq-chip-line, or the verify pair
+
+   None of which the entrance touches -- see Faq.motion.ts. */
+.faq {
+  padding: 120px 0;
+
+  /* The closed row: barely off the page (1.04:1), so seven of them read as one
+     list rather than as seven cards. The open one steps up to --panel (1.12:1)
+     and gains the shadow below. */
+  --faq-row: #141312;
+
+  /* The open row's lift. In dark this is very nearly nothing -- 35% black over
+     a near-black page is 1.03:1 -- because the tint is doing all the work. */
+  --faq-row-shadow: rgba(0, 0, 0, 0.35);
+
+  /* The chip's hairline. A chip's ground is --panel, which is also the open
+     row it sits in, so this edge is the entire shape of the chip. Deliberately
+     not --veil-line: that token is 12% white and this is 10%. */
+  --faq-chip-line: rgba(255, 255, 255, 0.1);
+
+  /* The verify chip: the accent at a wash, with a lit edge drawn over it. */
+  --faq-verify-bg: rgba(229, 51, 30, 0.24);
+  --faq-verify-line: rgba(178, 52, 37, 0.4);
+}
 .faq__inner { display: grid; grid-template-columns: 510px 1px minmax(0, 1fr); gap: 80px; align-items: start; }
 
 .faq__rail { display: flex; flex-direction: column; gap: 32px; }
@@ -7,9 +48,9 @@
   font-weight: 500;
   font-size: clamp(34px, 2.6vw, 48px);
   line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
 }
-.faq__lede { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--color-nre-body); }
+.faq__lede { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--ink-2); }
 .faq__mark { position: relative; width: 354px; max-width: 100%; aspect-ratio: 354 / 356; margin-top: 8px; }
 /* The logo layer fills this box; its fallback image is centred rather than
    placed for a hero, so override the module's hero-tuned positioning. */
@@ -20,12 +61,12 @@
 
 .faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {
-  background: #141312;
+  background: var(--faq-row);
   border-radius: 10px;
   overflow: hidden;
   transition: background-color 220ms ease, box-shadow 220ms ease;
 }
-.faq__row.is-open { background: var(--surface); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
+.faq__row.is-open { background: var(--panel); box-shadow: 0 12px 32px var(--faq-row-shadow); }
 .faq__q {
   display: flex; align-items: center; gap: 16px; width: 100%;
   padding: 24px 32px; text-align: left;
@@ -33,37 +74,37 @@
 .faq__index {
   width: 32px; flex: none;
   font-family: var(--font-display); font-weight: 500; font-size: 14px; line-height: 1.2;
-  letter-spacing: 2.24px; text-transform: uppercase; color: var(--color-nre-body);
+  letter-spacing: 2.24px; text-transform: uppercase; color: var(--ink-2);
   transition: color 220ms ease;
 }
-.is-open .faq__index { color: var(--orange-100); }
+.is-open .faq__index { color: var(--accent); }
 .faq__question {
   flex: 1;
   font-family: var(--font-display); font-weight: 500; font-size: clamp(19px, 1.35vw, 24px); line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
 }
 .faq__toggle { position: relative; width: 24px; height: 24px; flex: none; }
 .faq__toggle i {
-  position: absolute; background: var(--color-nre-body); border-radius: 1px;
+  position: absolute; background: var(--ink-2); border-radius: 1px;
   transition: background-color 220ms ease, transform 220ms ease, opacity 220ms ease;
 }
 .faq__toggle i:first-child { left: 6px; top: 11.25px; width: 12px; height: 1.5px; }
 .faq__toggle i:last-child { left: 11.25px; top: 6px; width: 1.5px; height: 12px; }
-.is-open .faq__toggle i { background: var(--orange-100); }
+.is-open .faq__toggle i { background: var(--accent); }
 .is-open .faq__toggle i:last-child { opacity: 0; transform: rotate(90deg); }
 
 .faq__answer[hidden] { display: none; }
 .faq__answer { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
-.faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--color-nre-body); }
+.faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--ink-2); }
 .faq__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .faq__chip {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
-  border-radius: 10px; background: var(--surface); border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px; background: var(--panel); border: 1px solid var(--faq-chip-line);
   font-family: var(--font-body); font-weight: 500; font-size: 13px; line-height: 1.2;
 }
-.faq__chip-label { color: var(--color-nre-body); }
-.faq__chip-value { color: var(--white-font); }
-.faq__chip--verify { background: rgba(229, 51, 30, 0.24); border-color: rgba(178, 52, 37, 0.4); color: var(--orange-100); }
+.faq__chip-label { color: var(--ink-2); }
+.faq__chip-value { color: var(--ink); }
+.faq__chip--verify { background: var(--faq-verify-bg); border-color: var(--faq-verify-line); color: var(--accent); }
 
 @media (max-width: 1180px) {
   .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }

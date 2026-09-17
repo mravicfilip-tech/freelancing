@@ -1,0 +1,310 @@
+/* Hero slide 3 — "Half this stack is on us."
+   Figma: frame 464:284, illustration 464:309, countdown 474:857.
+
+   Everything is laid out in design pixels and multiplied by --u, exactly as
+   visuals.css does for slides 2 and 4. The two blocks define --u differently
+   because they live in two different boxes:
+
+   - .sl3 is the illustration. It makes itself the query container, so 100cqw
+     is the width of the padded 1800px content column it is dropped into and
+     --u is one design pixel of that column. Slide 3 therefore cannot inherit
+     the slide-level --u, which is measured against the *unpadded* hero width
+     and is what pushes the slide 2 and 4 illustrations past the right edge.
+   - .sl3-countdown sits in the copy column, whose type is sized off the
+     viewport (`clamp(52px, 5.2vw, 100px)` and friends in global.css). Its --u
+     tracks the same basis — 1px at the 1920 design width — so the tiles stay in
+     proportion with the headline instead of drifting away from it. */
+
+/* ---------------------------------------------------------------- illustration */
+
+.sl3 {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  pointer-events: none;
+}
+
+.sl3__frame {
+  --u: calc(100cqw / 1800);
+  position: absolute;
+  top: calc(-176 * var(--u));
+  right: calc(64 * var(--u));
+  width: calc(964 * var(--u));
+  height: calc(822 * var(--u));
+  font-family: var(--font-body);
+  color: var(--white-font);
+}
+
+/* Both stacks, one exported vector layer. Its box is given as the Figma insets
+   so the wireframe and the solid plates keep their designed relationship. */
+.sl3__stacks {
+  position: absolute;
+  inset: 24.21% 23.52% 9.98% 14.3%;
+  width: auto;
+  height: auto;
+}
+
+.sl3__total {
+  position: absolute;
+  left: calc(694 * var(--u));
+  top: calc(141 * var(--u));
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(42 * var(--u));
+  line-height: normal;
+  white-space: nowrap;
+}
+
+/* The bracket stroke overflows its layer box slightly; the negative insets are
+   Figma's, so the rounded corners are not shaved off. */
+.sl3__bracket {
+  position: absolute;
+  left: calc(746 * var(--u));
+  top: calc(216 * var(--u));
+  width: calc(34 * var(--u));
+  height: calc(208 * var(--u));
+}
+.sl3__bracket img {
+  position: absolute;
+  inset: -0.28% -1.73% -0.28% 0;
+}
+
+.sl3__adds {
+  position: absolute;
+  left: calc(804 * var(--u));
+  top: calc(290 * var(--u));
+  width: calc(100 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(1 * var(--u));
+  line-height: normal;
+}
+.sl3__adds span {
+  font-weight: 300;
+  font-size: calc(14.13 * var(--u));
+}
+.sl3__adds strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(32 * var(--u));
+  color: var(--orange-100);
+}
+
+.sl3__amount {
+  position: absolute;
+  left: calc(313 * var(--u));
+  top: calc(360 * var(--u));
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(28 * var(--u));
+  line-height: normal;
+  color: var(--color-nre-body);
+  white-space: nowrap;
+}
+
+/* A zero-height layer: the dashed stroke straddles it, hence the negative
+   vertical insets on the image. */
+.sl3__rule {
+  position: absolute;
+  left: calc(199 * var(--u));
+  top: calc(402 * var(--u));
+  width: calc(321.898 * var(--u));
+  height: 0;
+}
+.sl3__rule img {
+  position: absolute;
+  inset: calc(-0.589 * var(--u)) 0;
+}
+
+.sl3__diamond {
+  position: absolute;
+  width: calc(6 * var(--u));
+  height: calc(6 * var(--u));
+  background: var(--orange-100);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+/* Positioned by centre, because Figma gives the rotated bounding box. */
+.sl3__diamond--start {
+  left: calc(190.243 * var(--u));
+  top: calc(402.243 * var(--u));
+}
+.sl3__diamond--end {
+  left: calc(521.243 * var(--u));
+  top: calc(402.243 * var(--u));
+}
+
+.sl3__tag {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(2 * var(--u));
+  padding: calc(14 * var(--u));
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: calc(13 * var(--u));
+  line-height: 0.88;
+  letter-spacing: calc(-0.26 * var(--u));
+  text-transform: uppercase;
+  color: var(--color-body);
+  white-space: nowrap;
+}
+.sl3__tag img {
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  flex: none;
+}
+.sl3__tag--transfer {
+  left: calc(287 * var(--u));
+  top: calc(412 * var(--u));
+}
+.sl3__tag--stock {
+  left: calc(42 * var(--u));
+  top: calc(530 * var(--u));
+}
+
+.sl3__cap {
+  position: absolute;
+  font-weight: 300;
+  line-height: normal;
+  white-space: nowrap;
+}
+.sl3__cap--deposit {
+  left: calc(248 * var(--u));
+  top: calc(750 * var(--u));
+  font-size: calc(14.13 * var(--u));
+}
+.sl3__cap--trade {
+  left: calc(637 * var(--u));
+  top: calc(748 * var(--u));
+  font-size: calc(16 * var(--u));
+}
+
+.sl3__badge {
+  position: absolute;
+  left: calc(779 * var(--u));
+  width: calc(70 * var(--u));
+  height: calc(50 * var(--u));
+  border-radius: calc(12 * var(--u));
+  /* Figma: rgba(27,27,26,.3) over rgba(229,51,30,.3) — the surface and brand
+     tokens at 30%, so the brand red is never written out by hand. */
+  background: color-mix(in srgb, var(--surface) 30%, transparent);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  overflow: hidden;
+}
+.sl3__badge img {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 0.5 * var(--u));
+  width: calc(46.08 * var(--u));
+  height: calc(10.24 * var(--u));
+  transform: translate(-50%, -50%);
+}
+.sl3__badge--nikkei { top: calc(562 * var(--u)); }
+.sl3__badge--sp { top: calc(621 * var(--u)); }
+
+/* Below the two-column breakpoint the slide stacks and .hero__visual becomes a
+   normal flow box, so the frame drops out of its absolute corner and centres. */
+@media (max-width: 1180px) {
+  .sl3 {
+    position: relative;
+    inset: auto;
+    height: calc(100cqw * 822 / 1800);
+  }
+  .sl3__frame {
+    top: 0;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------------------ countdown */
+
+.sl3-countdown {
+  --u: clamp(0.75px, 100vw / 1920, 1px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(18 * var(--u));
+  padding-top: calc(10 * var(--u));
+}
+
+.sl3-countdown__label {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  padding: calc(10 * var(--u)) 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: calc(12 * var(--u));
+  line-height: normal;
+  color: var(--white-font);
+  white-space: nowrap;
+}
+
+/* The gift is five layers in one 16 × 16 box; each keeps its Figma inset, so no
+   shared sizing rule is applied across them. */
+.sl3-countdown__gift {
+  position: relative;
+  display: block;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  flex: none;
+  overflow: hidden;
+}
+.sl3-countdown__gift img { position: absolute; }
+.sl3-countdown__gift-1 { inset: 45.3% 14.93% 8.77% 14.94%; }
+.sl3-countdown__gift-2 { inset: 30.47% 8.77% 48.82% 8.78%; }
+.sl3-countdown__gift-3 { inset: 30.47% 47.05% 8.79% 47.05%; }
+.sl3-countdown__gift-4 { inset: 12.08% 28.68% 63.68% 47.17%; }
+.sl3-countdown__gift-5 { inset: 8.8% 46.93% 63.67% 25.51%; }
+
+.sl3-countdown__tiles {
+  display: flex;
+  align-items: center;
+  gap: calc(13 * var(--u));
+}
+
+.sl3-countdown__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(2 * var(--u));
+  width: calc(100 * var(--u));
+  height: calc(90 * var(--u));
+  padding: calc(10 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: rgba(255, 255, 255, 0.05);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  backdrop-filter: blur(calc(15 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(15 * var(--u)));
+  text-align: center;
+  color: var(--white-font);
+}
+/* Figma blurs the first tile a touch less than the other two. */
+.sl3-countdown__tile:first-child {
+  backdrop-filter: blur(calc(10 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(10 * var(--u)));
+}
+
+.sl3-countdown__value {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: calc(36 * var(--u));
+  line-height: 1.2;
+}
+.sl3-countdown__unit {
+  font-family: var(--font-body);
+  font-weight: 200;
+  font-size: calc(16 * var(--u));
+  line-height: 1.2;
+}
+
+.sl3-countdown__colon {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: calc(42 * var(--u));
+  line-height: normal;
+  color: var(--orange-100);
+}

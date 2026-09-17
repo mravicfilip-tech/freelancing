@@ -1,0 +1,197 @@
+/* Slide 4 — "The Future of Trading" network/orbit illustration.
+   Figma: 1-4 frame 365:762, illustration group 365:803 (1264 x 955).
+
+   COORDINATE SYSTEM
+   -----------------
+   Everything inside `.sl4__stage` uses the *raw* Figma coordinates of group
+   365:803, so any number here can be checked against the design one-to-one.
+
+   The group's box is 1264 x 955, but its painted content only spans
+   x 133..1132 and y 139..702 — 999 x 563 — the rest is empty padding Figma
+   left around it. Anchoring the 1264-wide box is what pushed slide 4 off the
+   right edge: `.hero__slide` sets `--u: calc(100cqw / 1800)` against the
+   *hero* container (the full viewport), while the padded content column is
+   only 93.75% of that, i.e. 1687.5 * --u wide. The designed group left of
+   581 put the last badge at 581 + 1132 = 1713 --u — past the column.
+
+   So `.sl4` is the *painted* box (999 x 563) and it is anchored from the
+   right, the way the design does: the design leaves 1800 - 1713 = 87 design
+   px between the last badge and the content column's right edge, and that is
+   exactly the offset used below. `.sl4__stage` then shifts the Figma origin
+   back by (133, 139) so the children keep their design numbers. Nothing is
+   painted outside `.sl4`, so its right edge is the illustration's right edge. */
+
+.sl4 {
+  position: absolute;
+  right: calc(87 * var(--u));
+  /* Design: group top is 99px from the frame top, the copy block starts at
+     262.3px, so the painted box begins 163.3 - 139 = 24.3 design px above the
+     slide's own top edge. */
+  top: calc(-24.3 * var(--u));
+  width: calc(999 * var(--u));
+  height: calc(563 * var(--u));
+  pointer-events: none;
+}
+
+.sl4__stage {
+  position: absolute;
+  left: calc(-133 * var(--u));
+  top: calc(-139 * var(--u));
+  width: calc(1264 * var(--u));
+  height: calc(955 * var(--u));
+}
+
+.sl4 img,
+.sl4 span,
+.sl4 div { position: absolute; }
+
+/* Three overlapping hairline circles (Ellipse 75/76/77) ------------------- */
+.sl4__ring { display: block; }
+.sl4__ring--lg { left: calc(460.05 * var(--u)); top: calc(287 * var(--u)); width: calc(274 * var(--u)); height: calc(274 * var(--u)); }
+.sl4__ring--md { left: calc(381 * var(--u));    top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
+.sl4__ring--sm { left: calc(282 * var(--u));    top: calc(352 * var(--u)); width: calc(143 * var(--u)); height: calc(143 * var(--u)); }
+
+/* Dashed track (Vector 75, exported 731 x 248.5). The bottom half is the same
+   asset mirrored, exactly as Figma does it (365:811 wraps 365:810 in -scale-y). */
+.sl4__track {
+  display: block;
+  left: calc(373.5 * var(--u));
+  width: calc(731 * var(--u));
+  height: calc(248.5 * var(--u));
+}
+.sl4__track--top { top: calc(170 * var(--u)); }
+.sl4__track--bottom { top: calc(430 * var(--u)); transform: scaleY(-1); }
+
+/* Phorecast badges sitting on the track (57 x 57) -------------------------- */
+.sl4__badge {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(57 * var(--u));
+  height: calc(57 * var(--u));
+  border-radius: calc(10.179 * var(--u));
+  background: rgba(255, 255, 255, 0.13);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  backdrop-filter: blur(calc(11.905 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(11.905 * var(--u)));
+  overflow: hidden;
+}
+/* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
+   optical nudge the design carries — not stretched to the 57px badge. */
+.sl4__badge img {
+  display: block;
+  left: calc(14.277 * var(--u));
+  top: calc(10.992 * var(--u));
+  width: calc(32.827 * var(--u));
+  height: calc(35.015 * var(--u));
+}
+
+/* Slot for the live 3D mark (phorecastmark3dlined 2, 370 x 370) ------------ */
+.sl4__mark-slot {
+  left: calc(734 * var(--u));
+  top: calc(242 * var(--u));
+  width: calc(370 * var(--u));
+  height: calc(370 * var(--u));
+}
+
+/* Nodes -------------------------------------------------------------------- */
+.sl4__node {
+  display: block;
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--s) * var(--u));
+  height: calc(var(--s) * var(--u));
+}
+
+/* BTC/USD pill ------------------------------------------------------------- */
+.sl4__coin {
+  display: block;
+  left: calc(133 * var(--u));
+  top: calc(398 * var(--u));
+  width: calc(50 * var(--u));
+  height: calc(50 * var(--u));
+}
+.sl4__coin-glyph {
+  display: block;
+  left: calc(152 * var(--u));
+  top: calc(412 * var(--u));
+  width: calc(15.307 * var(--u));
+  height: calc(20.262 * var(--u));
+}
+.sl4__pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: calc(183 * var(--u));
+  top: calc(398 * var(--u));
+  width: calc(161 * var(--u));
+  height: calc(50 * var(--u));
+  padding: calc(16 * var(--u)) 0;
+  border-radius: calc(30 * var(--u));
+  background: var(--surface);
+  border: calc(1 * var(--u)) solid var(--orange-100);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: calc(16 * var(--u));
+  line-height: 1.2;
+  color: var(--white-font);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Short connector between pill and diamond (Vector 77) --------------------- */
+.sl4__stub {
+  display: block;
+  left: calc(343 * var(--u));
+  top: calc(423.5 * var(--u));
+  width: calc(23 * var(--u));
+  height: calc(1 * var(--u));
+}
+
+/* Orange diamond (365:822 — a 25.071 square turned 45deg) ------------------ */
+.sl4__diamond {
+  left: calc(368.192 * var(--u));
+  top: calc(411.192 * var(--u));
+  width: calc(25.071 * var(--u));
+  height: calc(25.071 * var(--u));
+  background: var(--orange-100);
+  transform: rotate(45deg);
+}
+
+/* SPORT / ELECTIONS labels ------------------------------------------------- */
+.sl4__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(2 * var(--u));
+  padding: calc(14 * var(--u));
+  border-radius: calc(30 * var(--u));
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: calc(13 * var(--u));
+  line-height: 0.88;
+  letter-spacing: calc(-0.26 * var(--u));
+  text-transform: uppercase;
+  color: var(--white-font);
+  white-space: nowrap;
+}
+.sl4__tag img {
+  position: relative;
+  display: block;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+  flex: none;
+}
+.sl4__tag--sport { left: calc(406 * var(--u)); top: calc(265 * var(--u)); }
+.sl4__tag--elections { left: calc(406 * var(--u)); top: calc(539 * var(--u)); }
+
+/* Narrow layouts: Hero.css re-bases --u and turns .hero__visual into a
+   normal flow box, so the illustration centres itself under the copy. */
+@media (max-width: 1180px) {
+  .sl4 {
+    position: relative;
+    right: auto;
+    top: 0;
+    margin: 0 auto;
+    width: calc(999 * var(--u));
+    height: calc(563 * var(--u));
+  }
+}

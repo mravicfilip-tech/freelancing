@@ -1,0 +1,120 @@
+import { Fragment } from 'react';
+import stacks from '../../../assets/hero/slide3/stacks.svg';
+import bracket from '../../../assets/hero/slide3/bracket.svg';
+import dashed from '../../../assets/hero/slide3/dashed.svg';
+import nikkei from '../../../assets/hero/slide3/nikkei.svg';
+import sp500 from '../../../assets/hero/slide3/sp500.svg';
+import tagDot from '../../../assets/hero/slide3/tag-dot.svg';
+import gift1 from '../../../assets/hero/slide3/gift-1.svg';
+import gift2 from '../../../assets/hero/slide3/gift-2.svg';
+import gift3 from '../../../assets/hero/slide3/gift-3.svg';
+import gift4 from '../../../assets/hero/slide3/gift-4.svg';
+import gift5 from '../../../assets/hero/slide3/gift-5.svg';
+import './SlideBonus.css';
+
+/**
+ * Hero slide 3 — "Half this stack is on us."
+ *
+ * The illustration is the Figma frame 464:309: a 964 × 822 design box that sits
+ * 64 design px in from the right edge of the 1800px content column. Everything
+ * inside is laid out in that frame's own coordinates.
+ */
+export function SlideBonus() {
+  return (
+    <div
+      className="sl3"
+      role="img"
+      aria-label="You deposit $200, Phorcast adds $200, you trade with $400."
+    >
+      <div className="sl3__frame">
+        {/* Both isometric stacks, exported from Figma as one vector layer. */}
+        <img src={stacks} alt="" className="sl3__stacks" />
+
+        <p className="sl3__total">$400</p>
+
+        <span className="sl3__bracket">
+          <img src={bracket} alt="" />
+        </span>
+        <div className="sl3__adds">
+          <span>Phorcast adds</span>
+          <strong>+$200</strong>
+        </div>
+
+        <p className="sl3__amount">$200</p>
+        <span className="sl3__rule">
+          <img src={dashed} alt="" />
+        </span>
+        <span className="sl3__diamond sl3__diamond--start" />
+        <span className="sl3__diamond sl3__diamond--end" />
+
+        <p className="sl3__tag sl3__tag--transfer">
+          <img src={tagDot} alt="" />
+          Transfer
+        </p>
+        <p className="sl3__tag sl3__tag--stock">
+          <img src={tagDot} alt="" />
+          Stock
+        </p>
+
+        <p className="sl3__cap sl3__cap--deposit">You deposit</p>
+        <p className="sl3__cap sl3__cap--trade">You trade with</p>
+
+        <span className="sl3__badge sl3__badge--nikkei">
+          <img src={nikkei} alt="" />
+        </span>
+        <span className="sl3__badge sl3__badge--sp">
+          <img src={sp500} alt="" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+const COUNTDOWN = [
+  { value: '02', unit: 'Days' },
+  { value: '14', unit: 'Hours' },
+  { value: '38', unit: 'Minutes' },
+];
+
+/**
+ * The gift glyph ships from Figma as five separate vector layers inside one
+ * 16 × 16 box, each with its own inset. Redrawing them as a single path would
+ * lose that geometry, so the layers are kept and positioned by class.
+ */
+function GiftIcon() {
+  return (
+    <span className="sl3-countdown__gift">
+      <img src={gift1} alt="" className="sl3-countdown__gift-1" />
+      <img src={gift2} alt="" className="sl3-countdown__gift-2" />
+      <img src={gift3} alt="" className="sl3-countdown__gift-3" />
+      <img src={gift4} alt="" className="sl3-countdown__gift-4" />
+      <img src={gift5} alt="" className="sl3-countdown__gift-5" />
+    </span>
+  );
+}
+
+/**
+ * The limited-time bonus block that sits in slide 3's copy column, under the
+ * lede and above the "Get your bonus" button (Figma 474:857).
+ */
+export function BonusCountdown() {
+  return (
+    <div className="sl3-countdown">
+      <p className="sl3-countdown__label">
+        <GiftIcon />
+        Limited-time bonus
+      </p>
+      <div className="sl3-countdown__tiles">
+        {COUNTDOWN.map((item, i) => (
+          <Fragment key={item.unit}>
+            {i > 0 && <span className="sl3-countdown__colon" aria-hidden="true">:</span>}
+            <div className="sl3-countdown__tile">
+              <span className="sl3-countdown__value">{item.value}</span>
+              <span className="sl3-countdown__unit">{item.unit}</span>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}

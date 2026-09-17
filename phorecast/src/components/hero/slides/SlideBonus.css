@@ -35,13 +35,16 @@
   color: var(--white-font);
 }
 
-/* Both stacks, one exported vector layer. Its box is given as the Figma insets
-   so the wireframe and the solid plates keep their designed relationship. */
+/* Both stacks, one exported vector layer. Figma gives its box as insets of the
+   964 x 822 frame (24.21% 23.52% 9.98% 14.3%); those are resolved here so the
+   leaf carries explicit dimensions and scales with --u rather than falling back
+   to the SVG's intrinsic size. */
 .sl3__stacks {
   position: absolute;
-  inset: 24.21% 23.52% 9.98% 14.3%;
-  width: auto;
-  height: auto;
+  left: calc(137.852 * var(--u));
+  top: calc(199.006 * var(--u));
+  width: calc(599.418 * var(--u));
+  height: calc(540.952 * var(--u));
 }
 
 .sl3__total {
@@ -55,8 +58,9 @@
   white-space: nowrap;
 }
 
-/* The bracket stroke overflows its layer box slightly; the negative insets are
-   Figma's, so the rounded corners are not shaved off. */
+/* The bracket's stroke overflows its layer box, so the image is a shade larger
+   than the box and sits half a pixel above it — Figma's own offsets, kept so the
+   rounded corners are not shaved off. */
 .sl3__bracket {
   position: absolute;
   left: calc(746 * var(--u));
@@ -66,7 +70,10 @@
 }
 .sl3__bracket img {
   position: absolute;
-  inset: -0.28% -1.73% -0.28% 0;
+  left: 0;
+  top: calc(-0.5825 * var(--u));
+  width: calc(34.5888 * var(--u));
+  height: calc(209.178 * var(--u));
 }
 
 .sl3__adds {
@@ -113,7 +120,10 @@
 }
 .sl3__rule img {
   position: absolute;
-  inset: calc(-0.589 * var(--u)) 0;
+  left: 0;
+  top: calc(-0.5888 * var(--u));
+  width: calc(321.898 * var(--u));
+  height: calc(1.17751 * var(--u));
 }
 
 .sl3__diamond {
@@ -205,16 +215,14 @@
 /* Below the two-column breakpoint the slide stacks and .hero__visual becomes a
    normal flow box, so the frame drops out of its absolute corner and centres. */
 @media (max-width: 1180px) {
-  .sl3 {
-    position: relative;
-    inset: auto;
-    height: calc(100cqw * 822 / 1800);
-  }
+  .sl3 { position: relative; inset: auto; }
   .sl3__frame {
+    /* The frame takes the whole column instead of the 964/1800 slice it holds
+       beside the copy, so the stacks stay readable once they sit on their own. */
+    --u: calc(100cqw / 964);
+    position: relative;
     top: 0;
     right: auto;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 
@@ -253,11 +261,26 @@
   overflow: hidden;
 }
 .sl3-countdown__gift img { position: absolute; }
-.sl3-countdown__gift-1 { inset: 45.3% 14.93% 8.77% 14.94%; }
-.sl3-countdown__gift-2 { inset: 30.47% 8.77% 48.82% 8.78%; }
-.sl3-countdown__gift-3 { inset: 30.47% 47.05% 8.79% 47.05%; }
-.sl3-countdown__gift-4 { inset: 12.08% 28.68% 63.68% 47.17%; }
-.sl3-countdown__gift-5 { inset: 8.8% 46.93% 63.67% 25.51%; }
+.sl3-countdown__gift-1 {
+  left: calc(2.3904 * var(--u)); top: calc(7.248 * var(--u));
+  width: calc(11.2212 * var(--u)); height: calc(7.34878 * var(--u));
+}
+.sl3-countdown__gift-2 {
+  left: calc(1.4048 * var(--u)); top: calc(4.8752 * var(--u));
+  width: calc(13.1918 * var(--u)); height: calc(3.31357 * var(--u));
+}
+.sl3-countdown__gift-3 {
+  left: calc(7.528 * var(--u)); top: calc(4.8752 * var(--u));
+  width: calc(0.943056 * var(--u)); height: calc(9.71949 * var(--u));
+}
+.sl3-countdown__gift-4 {
+  left: calc(7.5472 * var(--u)); top: calc(1.9328 * var(--u));
+  width: calc(3.8632 * var(--u)); height: calc(3.87852 * var(--u));
+}
+.sl3-countdown__gift-5 {
+  left: calc(4.0816 * var(--u)); top: calc(1.408 * var(--u));
+  width: calc(4.40997 * var(--u)); height: calc(4.40447 * var(--u));
+}
 
 .sl3-countdown__tiles {
   display: flex;

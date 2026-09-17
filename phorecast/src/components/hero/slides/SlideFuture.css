@@ -1,36 +1,51 @@
 /* Slide 4 — "The Future of Trading" network/orbit illustration.
    Figma: 1-4 frame 365:762, illustration group 365:803 (1264 x 955).
 
+   THE UNIT
+   --------
+   `container-type: inline-size` is declared on `.hero`, which is full-bleed,
+   so the `--u` that `.hero__slide` derives from `100cqw` is one 1800th of the
+   *viewport*, not of the padded 1800px content column — 1.067px at 1920. Laid
+   out with that unit, `1800 * var(--u)` paints 1920px of space inside an
+   1800px column and everything on the right is sliced off. Slide 4 loses the
+   most, because its badges sit furthest right.
+
+   So `.sl4` makes itself the container and redefines `--u` against its own
+   width. `.sl4` spans exactly the padded column (`inset: 0` on `.hero__visual`),
+   so for every descendant `100cqw` *is* the column and `--u` is a true design
+   pixel. Note `.sl4` itself must never use `var(--u)`: container units on the
+   container resolve against its parent container, i.e. the broken one. Its own
+   box is therefore stated in `inset`/`aspect-ratio` only.
+
    COORDINATE SYSTEM
    -----------------
-   Everything inside `.sl4__stage` uses the *raw* Figma coordinates of group
-   365:803, so any number here can be checked against the design one-to-one.
-
-   The group's box is 1264 x 955, but its painted content only spans
-   x 133..1132 and y 139..702 — 999 x 563 — the rest is empty padding Figma
-   left around it. Anchoring the 1264-wide box is what pushed slide 4 off the
-   right edge: `.hero__slide` sets `--u: calc(100cqw / 1800)` against the
-   *hero* container (the full viewport), while the padded content column is
-   only 93.75% of that, i.e. 1687.5 * --u wide. The designed group left of
-   581 put the last badge at 581 + 1132 = 1713 --u — past the column.
-
-   So `.sl4` is the *painted* box (999 x 563) and it is anchored from the
-   right, the way the design does: the design leaves 1800 - 1713 = 87 design
-   px between the last badge and the content column's right edge, and that is
-   exactly the offset used below. `.sl4__stage` then shifts the Figma origin
-   back by (133, 139) so the children keep their design numbers. Nothing is
-   painted outside `.sl4`, so its right edge is the illustration's right edge. */
+   `.sl4__frame` is the painted box. The group's box is 1264 x 955, but its
+   painted content only spans x 133..1132 and y 139..709 — 999 x 570 — the rest
+   is empty padding Figma left around it. The frame is anchored from the right
+   the way the design does: the design leaves 1800 - 1713 = 87 design px
+   between the last badge and the column's right edge. `.sl4__stage` then
+   shifts the Figma origin back by (133, 139) so every child below keeps its
+   raw 365:803 coordinate and can be checked against the design one-to-one.
+   Nothing is painted outside `.sl4__frame`, so its right edge is the
+   illustration's right edge. */
 
 .sl4 {
   position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  --u: calc(100cqw / 1800);
+  pointer-events: none;
+}
+
+.sl4__frame {
+  position: absolute;
   right: calc(87 * var(--u));
-  /* Design: group top is 99px from the frame top, the copy block starts at
-     262.3px, so the painted box begins 163.3 - 139 = 24.3 design px above the
-     slide's own top edge. */
+  /* Design: the group's top is 99px from the frame top and the copy block
+     starts at 262.3px, so the painted box begins 163.3 - 139 = 24.3 design px
+     above the slide's own top edge. */
   top: calc(-24.3 * var(--u));
   width: calc(999 * var(--u));
-  height: calc(563 * var(--u));
-  pointer-events: none;
+  height: calc(570 * var(--u));
 }
 
 .sl4__stage {
@@ -41,12 +56,8 @@
   height: calc(955 * var(--u));
 }
 
-.sl4 img,
-.sl4 span,
-.sl4 div { position: absolute; }
-
 /* Three overlapping hairline circles (Ellipse 75/76/77) ------------------- */
-.sl4__ring { display: block; }
+.sl4__ring { position: absolute; display: block; }
 .sl4__ring--lg { left: calc(460.05 * var(--u)); top: calc(287 * var(--u)); width: calc(274 * var(--u)); height: calc(274 * var(--u)); }
 .sl4__ring--md { left: calc(381 * var(--u));    top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
 .sl4__ring--sm { left: calc(282 * var(--u));    top: calc(352 * var(--u)); width: calc(143 * var(--u)); height: calc(143 * var(--u)); }
@@ -54,6 +65,7 @@
 /* Dashed track (Vector 75, exported 731 x 248.5). The bottom half is the same
    asset mirrored, exactly as Figma does it (365:811 wraps 365:810 in -scale-y). */
 .sl4__track {
+  position: absolute;
   display: block;
   left: calc(373.5 * var(--u));
   width: calc(731 * var(--u));
@@ -64,6 +76,7 @@
 
 /* Phorecast badges sitting on the track (57 x 57) -------------------------- */
 .sl4__badge {
+  position: absolute;
   left: calc(var(--x) * var(--u));
   top: calc(var(--y) * var(--u));
   width: calc(57 * var(--u));
@@ -78,6 +91,7 @@
 /* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
    optical nudge the design carries — not stretched to the 57px badge. */
 .sl4__badge img {
+  position: absolute;
   display: block;
   left: calc(14.277 * var(--u));
   top: calc(10.992 * var(--u));
@@ -87,6 +101,7 @@
 
 /* Slot for the live 3D mark (phorecastmark3dlined 2, 370 x 370) ------------ */
 .sl4__mark-slot {
+  position: absolute;
   left: calc(734 * var(--u));
   top: calc(242 * var(--u));
   width: calc(370 * var(--u));
@@ -95,6 +110,7 @@
 
 /* Nodes -------------------------------------------------------------------- */
 .sl4__node {
+  position: absolute;
   display: block;
   left: calc(var(--x) * var(--u));
   top: calc(var(--y) * var(--u));
@@ -104,6 +120,7 @@
 
 /* BTC/USD pill ------------------------------------------------------------- */
 .sl4__coin {
+  position: absolute;
   display: block;
   left: calc(133 * var(--u));
   top: calc(398 * var(--u));
@@ -111,6 +128,7 @@
   height: calc(50 * var(--u));
 }
 .sl4__coin-glyph {
+  position: absolute;
   display: block;
   left: calc(152 * var(--u));
   top: calc(412 * var(--u));
@@ -118,6 +136,7 @@
   height: calc(20.262 * var(--u));
 }
 .sl4__pill {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,6 +159,7 @@
 
 /* Short connector between pill and diamond (Vector 77) --------------------- */
 .sl4__stub {
+  position: absolute;
   display: block;
   left: calc(343 * var(--u));
   top: calc(423.5 * var(--u));
@@ -149,6 +169,7 @@
 
 /* Orange diamond (365:822 — a 25.071 square turned 45deg) ------------------ */
 .sl4__diamond {
+  position: absolute;
   left: calc(368.192 * var(--u));
   top: calc(411.192 * var(--u));
   width: calc(25.071 * var(--u));
@@ -159,6 +180,7 @@
 
 /* SPORT / ELECTIONS labels ------------------------------------------------- */
 .sl4__tag {
+  position: absolute;
   display: inline-flex;
   align-items: center;
   gap: calc(2 * var(--u));
@@ -174,7 +196,6 @@
   white-space: nowrap;
 }
 .sl4__tag img {
-  position: relative;
   display: block;
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
@@ -183,15 +204,21 @@
 .sl4__tag--sport { left: calc(406 * var(--u)); top: calc(265 * var(--u)); }
 .sl4__tag--elections { left: calc(406 * var(--u)); top: calc(539 * var(--u)); }
 
-/* Narrow layouts: Hero.css re-bases --u and turns .hero__visual into a
-   normal flow box, so the illustration centres itself under the copy. */
+/* Narrow layouts: Hero.css turns .hero__visual into a normal flow box, so
+   .sl4 can no longer take its size from `inset: 0`. It stays the container —
+   full column width, height from the frame's own 1800:570 ratio — and the
+   frame centres itself under the copy. */
 @media (max-width: 1180px) {
   .sl4 {
     position: relative;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 1800 / 570;
+  }
+  .sl4__frame {
     right: auto;
+    left: 50%;
     top: 0;
-    margin: 0 auto;
-    width: calc(999 * var(--u));
-    height: calc(563 * var(--u));
+    transform: translateX(-50%);
   }
 }

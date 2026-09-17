@@ -257,7 +257,56 @@ function buildBento({ q, tl }: SectionMotion) {
 type CardMotion = Record<string, ((card: HTMLElement) => () => void) | undefined>;
 const CARD_MOTION = import.meta.glob<CardMotion>('./motion/*.ts');
 
+/**
+ * Fetch the illustration modules well before anyone reaches the band, and hand
+ * back the same promises when it is.
+ *
+ * They used to be imported at the moment the section came into view, which put
+ * a network round trip on the critical path: measured on a scroll from the top,
+ * the section revealed itself and then sat with empty artwork for 4.2 seconds
+ * while five modules were fetched. Warming them at idle costs nothing anyone
+ * can see -- the page has already settled -- and turns the arrival into a cache
+ * read. The map is module-scoped, so a second mount reuses the warm promises
+ * rather than starting again.
+ */
+const warmed = new Map<string, Promise<CardMotion>>();
+
+function warm() {
+  for (const [path, load] of Object.entries(CARD_MOTION)) {
+    if (!warmed.has(path)) warmed.set(path, load().catch((err) => {
+      // Let the real consumer below surface it; a failed prefetch must not
+      // become an unhandled rejection, and it must not poison the cache.
+      warmed.delete(path);
+      throw err;
+    }));
+  }
+}
+
+function prefetchCardMotion() {
+  if (REDUCED) return;
+  const go = () => warm();
+  if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(go, { timeout: 3000 });
+  else window.setTimeout(go, 800);
+}
+
 function useCardMotion(ref: RefObject<HTMLElement | null>) {
+  // Start warming as soon as the hero says the delicate part of its entrance is
+  // over, so the fetches share the same quiet window the 3D mark waits for.
+  useEffect(() => {
+    if (REDUCED) return;
+    const hero = document.querySelector<HTMLElement>('.hero');
+    if (!hero || hero.dataset.motionDone) { prefetchCardMotion(); return; }
+    const on = () => prefetchCardMotion();
+    hero.addEventListener('motion:ready', on, { once: true });
+    hero.addEventListener('motion:done', on, { once: true });
+    const cap = window.setTimeout(on, 5000);
+    return () => {
+      window.clearTimeout(cap);
+      hero.removeEventListener('motion:ready', on);
+      hero.removeEventListener('motion:done', on);
+    };
+  }, []);
+
   useEffect(() => {
     const root = ref.current;
     if (!root || REDUCED) return;
@@ -275,7 +324,9 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
           const card = root.querySelector<HTMLElement>(`.bcard--${name}`);
           if (!card) continue;
 
-          load()
+          // Whatever the prefetch already started, rather than a fresh import.
+          warm();
+          (warmed.get(path) ?? load())
             .then((mod) => {
               const start = mod[name];
               if (cancelled || typeof start !== 'function') return;

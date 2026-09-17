@@ -98,9 +98,11 @@
   border-radius: calc(17.86 * var(--f));
   border: 1px solid rgba(255, 255, 255, 0.39);
   overflow: hidden;
-  box-shadow:
-    0 calc(24 * var(--f)) calc(40 * var(--f)) rgba(255, 0, 0, 0.1),
-    0 calc(8 * var(--f)) calc(18 * var(--f)) rgba(255, 0, 0, 0.1);
+  /* No box-shadow. The tile carried two red shadows that bloomed either side of
+     it; asked for and removed. Nothing in this band glows any more -- the pills
+     changed to a plain colour transition for the same reason. The entrance's
+     one flash is `filter: brightness()` on the tile itself, which lights the
+     plate and does not spread past its own edge. */
 }
 .fan__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
 .fan__glass {

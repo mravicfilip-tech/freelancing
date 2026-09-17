@@ -241,8 +241,8 @@ export function buildFan({ el, q, tl }: SectionMotion) {
      come up to size on the spot. */
   gsap.set(diamonds, { opacity: 0, scale: 0.4 });
   gsap.set(pills, { opacity: 0, scale: 0.94 });
-  gsap.set(tile, { opacity: 0, scale: 0.8 });
   gsap.set(copy, { opacity: 0, y: 10, filter: 'blur(14px)' });
+  if (tile) gsap.set(tile, { opacity: 0, scale: 0.8 });
 
   /* 1 — THE EIGHT BEATS. Both sides of one half at one depth per beat, upper
      then lower, so what is read is eight separate events rather than sixteen

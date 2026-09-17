@@ -440,6 +440,12 @@ export function fanLoop(root: HTMLElement): () => void {
     buildOverlays();
     sizeOverlays();
     buildTables();
+    // The entrance leaves each `.fan__spark` holding its own `opacity: 0` and a
+    // dash pair. Invisible either way, but the rest band is meant to be one
+    // value per element and that is two, so the sixteen are handed back to the
+    // stylesheet before the first pass rather than on the frame the front first
+    // reaches each of them.
+    rest();
 
     // Resting values are read now, with the entrance finished and its
     // `clearProps` already run, so every lift has something true to return to.

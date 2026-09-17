@@ -48,6 +48,11 @@
      what they sit on in dark, which is the one thing light cannot copy. */
   --bt-lit: #ff8f63;
   --bt-warm: rgb(222, 214, 208);
+
+  /* READ BY loops/bt2.ts: SELF-CUSTODY at the moment it takes the delivery.
+     It is --accent in dark and cannot simply be --accent in light; see the
+     light block. */
+  --bt-seal: #e5331e;
 }
 .built { position: relative; padding: 160px 0; overflow: hidden; isolation: isolate; }
 .built__glows { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
@@ -356,8 +361,20 @@
      produces nothing at all. So it darkens instead: --accent-deep's value,
      which is the deepest red in the palette and still unmistakably warm. The
      bar is the same bar, in the same place, at the same blur -- only the sign
-     of its contrast changes. */
-  --bt-smear: #7e0202;
+     of its contrast changes.
+
+     It is NOT --bt-lit's value, although the smear is the head's soft tail and
+     the loop flies the two along the line together. In dark they are different
+     and the difference is the point: the smear is #f03725 at 4.33:1 against
+     the card and the head is #ff8f63 at 7.68:1, so the tail is always the
+     quieter of the two. #ca3e21 is 4.41:1 on paper against #8f2418's 7.65:1 --
+     the same pair, the same order, the other way up. Matching the head instead
+     put the tail at 7.65:1 and made it as loud as the thing it trails.
+
+     The blur does not change this reading. It is the same 8.4x blur in both
+     themes, so it divides both peaks by the same factor and the ratio between
+     the source colours is the ratio between what lands on the card. */
+  --bt-smear: #ca3e21;
 
   /* THE WIRES. #353433 on the dark card is 1.5:1 -- a whisper, and deliberately
      so: they are structure, not content, and the beads that ride them are what
@@ -387,16 +404,43 @@
      --bt-lit is the head that rides the line and the arc that wraps the ring.
      In dark it is #ff8f63, a shade ABOVE the #e5331e ring it is drawn over --
      light on a line. Nothing on paper can be lighter than the line and still
-     be seen, so the head becomes the darkest thing in the card: #7e0202 over
-     the ring is 2.8x denser than the ring, which is very close to what #ff8f63
-     is brighter by in dark.
+     be seen, so the head becomes the darker thing instead.
+
+     WHICH dark is not a matter of taste, and it is not #7e0202 (the first
+     answer here, and too heavy). A lit value's job is the SIZE OF THE STEP
+     away from what it sits on, not its own density, so the step was measured
+     against both of the things this stroke is ever drawn over -- the ring it
+     wraps, and the bare card the wave expands across:
+
+                          over the #e5331e ring    over the card
+       dark  #ff8f63            1.94:1                7.49:1
+       light #8f2418            1.98:1                7.65:1
+       (#7e0202 would be)       2.54:1                9.81:1
+
+     #8f2418 lands within 3% of dark on both, which is the whole point: the
+     beat is the same size in both themes and only its sign has changed.
 
      --bt-warm is what "You" and "One market to start." warm to when the beat
      reaches them. Rest is --ink-2 in both themes; in dark the lift is
      6.2 -> 11.7 against the card, and #362a25 gives 6.4 -> 12.3 on paper. The
      same lift, made of ink instead of light. */
-  --bt-lit: #7e0202;
+  --bt-lit: #8f2418;
   --bt-warm: #362a25;
+
+  /* THE SEAL, and the one beat in this band that --accent could not carry.
+     SELF-CUSTODY rests at --ink and goes brand red while the settlement is
+     open. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1, because dark's
+     ink is white and dark's accent is a hot red at the other end of the range.
+     On paper both ends are dark: #1a1512 -> #a21605 is a step of only 2.29:1,
+     54% of dark's, and the beat gets measurably quieter while every check
+     still passes.
+
+     --accent-lift is the token whose job is exactly this -- the accent moved
+     off its resting value -- and #c4361c restores the step to 3.36:1, 79% of
+     dark, at 4.78:1 against the card so the word stays readable while it is
+     lit. It cannot go further without leaving the palette: the rest of this
+     card is #a21605, and dark's own #e5331e on paper would be a fourth red. */
+  --bt-seal: #c4361c;
   }
 
   /* THE PLATE UNDER THE COIN, and the one thing in this band that is drawn here
@@ -485,8 +529,20 @@
      produces nothing at all. So it darkens instead: --accent-deep's value,
      which is the deepest red in the palette and still unmistakably warm. The
      bar is the same bar, in the same place, at the same blur -- only the sign
-     of its contrast changes. */
-  --bt-smear: #7e0202;
+     of its contrast changes.
+
+     It is NOT --bt-lit's value, although the smear is the head's soft tail and
+     the loop flies the two along the line together. In dark they are different
+     and the difference is the point: the smear is #f03725 at 4.33:1 against
+     the card and the head is #ff8f63 at 7.68:1, so the tail is always the
+     quieter of the two. #ca3e21 is 4.41:1 on paper against #8f2418's 7.65:1 --
+     the same pair, the same order, the other way up. Matching the head instead
+     put the tail at 7.65:1 and made it as loud as the thing it trails.
+
+     The blur does not change this reading. It is the same 8.4x blur in both
+     themes, so it divides both peaks by the same factor and the ratio between
+     the source colours is the ratio between what lands on the card. */
+  --bt-smear: #ca3e21;
 
   /* THE WIRES. #353433 on the dark card is 1.5:1 -- a whisper, and deliberately
      so: they are structure, not content, and the beads that ride them are what
@@ -516,16 +572,43 @@
      --bt-lit is the head that rides the line and the arc that wraps the ring.
      In dark it is #ff8f63, a shade ABOVE the #e5331e ring it is drawn over --
      light on a line. Nothing on paper can be lighter than the line and still
-     be seen, so the head becomes the darkest thing in the card: #7e0202 over
-     the ring is 2.8x denser than the ring, which is very close to what #ff8f63
-     is brighter by in dark.
+     be seen, so the head becomes the darker thing instead.
+
+     WHICH dark is not a matter of taste, and it is not #7e0202 (the first
+     answer here, and too heavy). A lit value's job is the SIZE OF THE STEP
+     away from what it sits on, not its own density, so the step was measured
+     against both of the things this stroke is ever drawn over -- the ring it
+     wraps, and the bare card the wave expands across:
+
+                          over the #e5331e ring    over the card
+       dark  #ff8f63            1.94:1                7.49:1
+       light #8f2418            1.98:1                7.65:1
+       (#7e0202 would be)       2.54:1                9.81:1
+
+     #8f2418 lands within 3% of dark on both, which is the whole point: the
+     beat is the same size in both themes and only its sign has changed.
 
      --bt-warm is what "You" and "One market to start." warm to when the beat
      reaches them. Rest is --ink-2 in both themes; in dark the lift is
      6.2 -> 11.7 against the card, and #362a25 gives 6.4 -> 12.3 on paper. The
      same lift, made of ink instead of light. */
-  --bt-lit: #7e0202;
+  --bt-lit: #8f2418;
   --bt-warm: #362a25;
+
+  /* THE SEAL, and the one beat in this band that --accent could not carry.
+     SELF-CUSTODY rests at --ink and goes brand red while the settlement is
+     open. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1, because dark's
+     ink is white and dark's accent is a hot red at the other end of the range.
+     On paper both ends are dark: #1a1512 -> #a21605 is a step of only 2.29:1,
+     54% of dark's, and the beat gets measurably quieter while every check
+     still passes.
+
+     --accent-lift is the token whose job is exactly this -- the accent moved
+     off its resting value -- and #c4361c restores the step to 3.36:1, 79% of
+     dark, at 4.78:1 against the card so the word stays readable while it is
+     lit. It cannot go further without leaving the palette: the rest of this
+     card is #a21605, and dark's own #e5331e on paper would be a fourth red. */
+  --bt-seal: #c4361c;
 }
 
 /* THE PLATE UNDER THE COIN, and the one thing in this band that is drawn here

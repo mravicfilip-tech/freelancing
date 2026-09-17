@@ -105,10 +105,14 @@ const BEAD_H = 2.6;
    is a chromatic object on a neutral wire, not a brightness -- 4.57:1 on the
    dark card, 4.78:1 on the light one. It needs no flip, only the token.
 
-   SEALED is --accent. SELF-CUSTODY rests at --ink and goes brand red for the
-   length of the settlement, which in dark is 18.7:1 -> 4.4:1 and in light is
-   17.6:1 -> 7.0:1. Both DIM and both turn chromatic: the beat was never a
-   brightness either, so it survives the token unchanged.
+   SEALED is --bt-seal, and it is the one value here that a role token could
+   not carry. SELF-CUSTODY rests at --ink and goes brand red for the length of
+   the settlement. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1. Read
+   as --accent in light it would be #1a1512 -> #a21605, a step of 2.29:1 --
+   both ends are dark on paper, so 46% of the beat goes missing while the loop
+   still runs and every check still passes. --bt-seal is #e5331e in dark, the
+   same hex --accent resolves to, and --accent-lift's #c4361c in light, which
+   puts the step back at 3.36:1. Built.css carries the reasoning.
 
    LIT is the flip. A market's label goes from --ink-2 to --ink while its value
    is in flight, and --ink is "as far from the page as ink goes" -- #fffbf8 on
@@ -185,7 +189,7 @@ export function bt2Loop(root: HTMLElement): () => void {
      document and runs again when useSectionMotion rebuilds on a theme flip. */
   const beadBg = tok('--accent-lift', BEAD_BG);
   const litInk = tok('--ink', LIT);
-  const sealed = tok('--accent', SEALED);
+  const sealed = tok('--bt-seal', SEALED);
 
   /* One speed for every wire, set by the longest of them. The departures fall
      out of it: a market leaves early exactly in proportion to how far it is. */

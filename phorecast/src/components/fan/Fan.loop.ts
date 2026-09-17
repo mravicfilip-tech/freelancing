@@ -91,9 +91,12 @@
  *
  * The pills are the same instruction one element down. A pill is
  * a flat chip of the brand red for as long as the front is on it: background
- * to `--orange-100`, contents to `--white-font`, and back. No halo, no bloom,
- * no drop-shadow, no scale, and `filter` on the pill itself is never written
- * at all. The one exception is noted at `PILL_ICON_LIT`.
+ * to `--accent`, contents to `--on-accent`, and back. No halo, no bloom, no
+ * drop-shadow, no scale, and `filter` is never written anywhere on a pill or
+ * on anything inside one. It used to be: the glyphs were <img> elements and
+ * the only way to whiten a baked-grey SVG through one was
+ * `brightness(0) invert(1)`. They are masks now, so the glyph is a plain
+ * `color` like the label beside it, and the filter is gone.
  *
  * Nothing here floats, breathes, drifts, or reacts to the pointer. Reduced
  * motion runs none of it.
@@ -154,18 +157,6 @@ const read = () => ({
   barEdge: tok('--fan-bar-edge', 'rgba(255, 251, 248, 0)'),
   barCore: tok('--fan-bar-core', 'rgba(255, 243, 234, 0.95)'),
 });
-
-/**
- * The pill icons are `<img>` elements holding grey (#9d9d9d) SVG files, so the
- * `color` that turns the label white cannot reach their pixels. A hard two-step
- * remap is the only way to make them white without owning `Fan.tsx`: it is a
- * paint operation with no blur, no spread and no shadow — the glyph is white or
- * it is grey, and it is never brighter than white. The pill element itself gets
- * no filter at any point. When the icons are inlined this becomes
- * `fill: currentColor` and the filter goes.
- */
-const PILL_ICON_REST = 'brightness(1) invert(0)';
-const PILL_ICON_LIT = 'brightness(0) invert(1)';
 
 /** Length of the head riding each arc, in design px of screen arc. */
 const HEAD = 132;
@@ -423,12 +414,6 @@ export function fanLoop(root: HTMLElement): () => void {
     s.el.style.removeProperty('stroke-dashoffset');
     s.lit = false;
   };
-  /** `clearProps` on `filter` leaves `filter: none` sitting in the attribute. */
-  const dropFilter = (els: HTMLElement[]) => {
-    gsap.set(els, { clearProps: 'filter' });
-    els.forEach((el) => el.style.removeProperty('filter'));
-  };
-
   const clearFan = (g: Fan) => {
     g.el.style.removeProperty('opacity');
     g.lit = false;
@@ -511,7 +496,12 @@ export function fanLoop(root: HTMLElement): () => void {
     const diaXs = diamonds.map(cx);
     const tileX = tile ? cx(tile) : DW / 2;
     const subX = sub ? cx(sub) : DW / 2;
-    const pillIcons = pills.map((p) => Array.from(p.querySelectorAll<HTMLElement>('img')));
+    // `.icon`, not `img`: the glyphs are masked spans now.
+    const pillIcons = pills.map((p) => Array.from(p.querySelectorAll<HTMLElement>('.icon')));
+    // One read for all eight; they are the same grey in every pill, and it is
+    // their own colour rather than the label's, so the pill's `color` tween
+    // does not reach them and they need a tween of their own.
+    const iconFg = css(pillIcons.flat()[0] ?? null, 'color') || tok('--fan-icon', '#9d9d9d');
 
     ctx = gsap.context(() => {
       const tl = gsap.timeline({ repeat: -1, paused: true });
@@ -583,13 +573,16 @@ export function fanLoop(root: HTMLElement): () => void {
               onComplete: () => gsap.set(el, { clearProps: 'backgroundColor,color,opacity' }),
             }, t + 0.42);
 
+          // The glyph follows the label on the same two beats and the same
+          // two eases. Plain `.to()` like the pill above, so the
+          // `immediateRender` trap structurally cannot apply.
           if (pillIcons[i].length) {
-            tl.fromTo(pillIcons[i], { filter: PILL_ICON_REST }, {
-              filter: PILL_ICON_LIT, duration: 0.3, ease: 'sine.out', immediateRender: false,
+            tl.to(pillIcons[i], {
+              color: C.pillLitFg, duration: 0.3, ease: 'sine.out',
             }, t)
               .to(pillIcons[i], {
-                filter: PILL_ICON_REST, duration: 0.95, ease: 'sine.inOut',
-                onComplete: () => dropFilter(pillIcons[i]),
+                color: iconFg, duration: 0.95, ease: 'sine.inOut',
+                onComplete: () => gsap.set(pillIcons[i], { clearProps: 'color' }),
               }, t + 0.42);
           }
         });
@@ -786,8 +779,7 @@ export function fanLoop(root: HTMLElement): () => void {
     // blanket `clearProps: 'all'` is not safe here: it empties the style
     // attribute, and that attribute is where `Fan.tsx` puts each pill's and
     // diamond's `--x` / `--y` / `--w` — clearing it collapses every one of them
-    // onto 0,0. The diamonds also carry their colour in a `background`
-    // shorthand, which `backgroundColor` would expand and drop.
+    // onto 0,0. The glyphs keep their `--icon` there for the same reason.
     const give = (el: Element | null, props: string) => {
       if (!el) return;
       gsap.killTweensOf(el);
@@ -795,9 +787,7 @@ export function fanLoop(root: HTMLElement): () => void {
     };
     pills.forEach((el) => {
       give(el, 'backgroundColor,color,opacity');
-      const icons = Array.from(el.querySelectorAll<HTMLElement>('img'));
-      icons.forEach((i) => gsap.killTweensOf(i));
-      dropFilter(icons);
+      el.querySelectorAll<HTMLElement>('.icon').forEach((i) => give(i, 'color'));
     });
     diamonds.forEach((el) => give(el, 'transform,transformOrigin,filter'));
     give(tile, 'borderColor');

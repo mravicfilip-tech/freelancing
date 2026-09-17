@@ -213,6 +213,10 @@ export function buildFan({ el, q, tl }: SectionMotion) {
      direction from `Fan.css` and this line does not care which it gets. */
   const igniteFrom = tok('--fan-tile-lit', 'brightness(2.6)');
   const igniteTo = tok('--fan-tile-rest', 'brightness(1)');
+  /* Where the pills land. The stylesheet's own resting value, read rather than
+     repeated, because light carries the pills a little stronger: dark ink on
+     paper is less present per unit alpha than white on black. */
+  const pillOp = Number(tok('--fan-pill-op', '0.7')) || 0.7;
 
   /* The sixteen lines, read out of the inlined SVGs. Each file is four whole
      ellipses in DOM order innermost to outermost, and `Fan.tsx` ships a
@@ -280,7 +284,7 @@ export function buildFan({ el, q, tl }: SectionMotion) {
      they arrive quietly and at their stylesheet's 0.7. */
   fromEdges(el, pills).forEach((p, i) => {
     tl.to(p, {
-      opacity: 0.7,
+      opacity: pillOp,
       scale: 1,
       duration: 0.42,
       ease: 'power3.out',

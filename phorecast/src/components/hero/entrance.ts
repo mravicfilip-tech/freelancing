@@ -100,24 +100,23 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
 
   rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
 
-  // The market cards deal in one at a time, left to right. They used to pop on
-  // a back.out overshoot, which is the one thing the house style says not to
-  // do: the scale bounce made four cards look like they were springing rather
-  // than being dealt. Each one now wipes up out of its own edge -- the same
-  // masked reveal the headline uses, so the section speaks one language -- and
-  // rises the last few pixels on the band's own ease. clearProps hands the
-  // transform back to CSS afterwards, otherwise the inline matrix GSAP leaves
-  // behind outranks the hover lift.
+  // The market cards resolve one at a time, left to right: each fades up out of
+  // its own blur with a fifth of a second between them, which is long enough
+  // that four cards read as four arrivals rather than one block. The blur is
+  // the headline's treatment applied to a card, so the section speaks one
+  // language. Parked, they are at zero opacity, so nothing leaks past the
+  // blur before its turn. clearProps hands everything back to CSS afterwards,
+  // otherwise the inline matrix GSAP leaves behind outranks the hover lift.
   const cards = all(hero, '.hero__foot > *');
   if (cards.length) {
     tl.from(cards, {
-      clipPath: 'inset(100% 0% 0% 0%)',
-      y: 22,
       opacity: 0,
-      duration: 0.9,
-      stagger: 0.14,
+      filter: 'blur(14px)',
+      y: 18,
+      duration: 0.95,
+      stagger: 0.2,
       ease: EASE,
-      clearProps: 'transform,opacity,clipPath',
+      clearProps: 'transform,opacity,filter',
     }, 1.25);
   }
 }

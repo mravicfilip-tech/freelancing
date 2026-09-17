@@ -1,0 +1,530 @@
+/**
+ * "New to Trading? / One market to start." — the left card's ambient loop.
+ *
+ * The section's scroll-gated entrance belongs to `Built.motion.ts`. This file
+ * owns what happens *after* it has landed on the left card only: it reads the
+ * markup the component ships, adds one SVG overlay of its own — the light on
+ * the wire and the ring that closes around the market — and takes it away
+ * again on teardown.
+ *
+ * THE STORY — one person, one market, every 9.6s
+ * ----------------------------------------------
+ * The card's argument is a single trader connecting to a single market, so the
+ * beat is one connection being made, end to end, and then nothing.
+ *
+ *   0.30s  "You" answers. The dot takes one pulse and the word under it warms.
+ *   0.55s  The light leaves. It is one scalar — distance along a route that
+ *          runs from the smear already lit on the line, out along the line, and
+ *          then round the market — and everything in the card answers to it.
+ *          A short head is painted ON the line with `stroke-dashoffset`, and
+ *          the design's own warm smear rides with it as its soft tail.
+ *   1.70s  It reaches the west point of the lit ring, exactly where the line
+ *          ends. The smear is absorbed; the coin answers.
+ *   1.70s  The wrap. The same light splits and runs both ways round the ring —
+ *          two half arcs filling from west — and meets on the far side at
+ *          2.65s. The market is connected.
+ *   2.65s  "One market to start." warms as the ring closes.
+ *   2.70s  The closed ring lets go: its radius grows from the lit ring's 34.5
+ *          out through the mid ring's 49.4 to the outer ring's 66.9, and each
+ *          of the three rings takes its own short ripple at the frame the
+ *          wavefront's radius is its radius — solved back through the ease, not
+ *          staggered by eye, and measured off the live boxes rather than
+ *          assumed. The wave thins as it spreads and is gone by 3.45s.
+ *   4.45s  Everything is the Figma frame again, and stays there to 9.6s.
+ *
+ * So 4.45s of story and 5.15s of rest — 54% of the cycle is the design, still.
+ *
+ * ONE SCALAR, TWO PATHS, NO SECOND CLOCK
+ * --------------------------------------
+ * `w.s` is distance travelled along the route in design px; `w.r` is the
+ * wavefront's radius. `paint()` is the only thing that writes the overlay, so
+ * the head on the line, the arc filling round the ring and the wave leaving it
+ * cannot disagree about where the light is. The two legs are eased so the
+ * speeds match at the junction — `power1.in` leaves the line at 2x its average,
+ * `sine.out` enters the wrap at pi/2 x its own — and the light therefore does
+ * not stall at the moment it arrives.
+ *
+ * The wrap and the wave are the SAME two paths. Their `d` is rewritten from
+ * `w.r` every frame, so the ring that closes is the ring that then expands;
+ * there is no handoff between a closing element and a rippling one to line up.
+ *
+ * THE TRAP IN `.bt1__ring-disc`
+ * -----------------------------
+ * Its SVG draws the circle at (96.9, 92.9) inside a 193.8 square viewBox —
+ * centred across, four units high, because the export reserves room for a drop
+ * shadow — and `Built.css` offsets the box asymmetrically (left -29.4, top
+ * -25.4) so the drawn circle lands concentric with the coin. Its box centre is
+ * therefore NOT its visual centre, and a scale about `50% 50%` swings the lit
+ * ring downward off the coin. Every scale on it here uses
+ * `transform-origin: 50% 47.936%` — 92.9/193.8 — which holds the drawn circle
+ * still while it grows. Verified in a browser: the drawn centre moves 0.004px
+ * over the whole ripple.
+ *
+ * NOTHING HERE GLOWS
+ * ------------------
+ * No shadow, no bloom, no halo, no `filter` is written anywhere in this file.
+ * The vocabulary is colour, position, scale and opacity. The one blurred thing
+ * that moves — `.bt1__smear` — is the design's own element, travelling along
+ * the line it already sits on; nothing soft is added to the card.
+ *
+ * Nothing floats, bobs, drifts or breathes, nothing reads the pointer, every
+ * value the loop touches returns to the one the design ships, and reduced
+ * motion runs none of it.
+ */
+import { gsap } from 'gsap';
+import { REDUCED } from '../../../lib/motion';
+
+/** One full cycle, in GSAP time. Wall-clock is longer whenever lag smoothing
+ *  is holding the sequence together through a blocked main thread. */
+const PERIOD = 9.6;
+/** Story, in GSAP time. The remainder of the period is the design at rest. */
+const STORY_END = 4.45;
+/** How long after the entrance lands before the first cycle. */
+const SETTLE = 0.9;
+
+/* The beat, in seconds from the top of a cycle. */
+const T_SEND = 0.3;   /* the dot pulses and "You" warms */
+const T_GO = 0.55;    /* the light leaves the smear */
+const LEG1 = 1.15;    /* along the line */
+const T_HIT = T_GO + LEG1;
+const LEG2 = 0.95;    /* round the ring */
+const T_CLOSE = T_HIT + LEG2;
+const T_WAVE = T_CLOSE + 0.05;
+const WAVE = 0.75;    /* the closed ring expanding out through the other two */
+const WAVE_EASE = 'power2.out';
+
+/** Length of the lit head riding the line, in design px. */
+const HEAD = 30;
+/** How far the smear's centre trails the head's tip, in design px. */
+const TRAIL = 20;
+
+/** The lit stroke. Flat brand warm, a shade above the ring's own #e5331e. */
+const LIT = '#ff8f63';
+/** Stroke weight of the wrap at the ring, and of the wave as it dissolves. */
+const W_NEAR = 1.6;
+const W_FAR = 1;
+
+/** What the two grey lines (#9d9d9d) warm to. Colour only; nothing moves. */
+const WARM = 'rgb(222, 214, 208)';
+
+/* The drawn circle's centre inside `ring-disc.svg`, as a fraction of its own
+   box — the whole point of the trap above. 96.9/193.8 across, 92.9/193.8 down. */
+const DISC_ORIGIN = `50% ${((92.9 / 193.8) * 100).toFixed(3)}%`;
+/** Drawn radius of each ring, as a fraction of that ring's own box. */
+const DISC_RF = 34.5 / 193.8;
+const MID_RF = 49.375 / 100;
+const OUTER_RF = 66.875 / 135;
+
+const NS = 'http://www.w3.org/2000/svg';
+
+/** Inverse of a GSAP ease: the progress p where ease(p) === v. */
+function invEase(name: string, v: number): number {
+  const e = gsap.parseEase(name);
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 24; i += 1) {
+    const mid = (lo + hi) / 2;
+    if (e(mid) < v) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+export function bt1Loop(root: HTMLElement): () => void {
+  if (REDUCED) return () => {};
+
+  const card = root.querySelector<HTMLElement>('.bt-card--one');
+  if (!card) return () => {};
+
+  const q = (sel: string) => card.querySelector<HTMLElement>(sel);
+  const bt1 = q('.bt1');
+  const dot = q('.bt1__dot');
+  const line = q('.bt1__line');
+  const smear = q('.bt1__smear');
+  const you = q('.bt1__you');
+  const coin = q('.bt1__coin');
+  const disc = q('.bt1__ring-disc');
+  const mid = q('.bt1__ring-mid');
+  const outer = q('.bt1__ring-outer');
+  const note = q('.bt1__note');
+  /* The overlay needs the line to sit on and the coin to turn about; without
+     either there is no beat to run. Everything else costs its own accent. */
+  if (!bt1 || !line || !coin) return () => {};
+
+  let ctx: gsap.Context | undefined;
+  let cycle: gsap.core.Timeline | undefined;
+  let io: IntersectionObserver | undefined;
+  let watcher: MutationObserver | undefined;
+  let probe = 0;
+  let ready = 0;
+  let started = false;
+  let stopped = false;
+  let offscreen = false;
+  let svg: SVGSVGElement | null = null;
+
+  /* The entrance leaves an explicit `transform-origin` in the style attribute
+     of the dot, the line, the three rings and the coin. This file overwrites it
+     while it scales something and puts back exactly what it found, rather than
+     clearing it and quietly deciding the entrance's business for it. */
+  const origins = new Map<HTMLElement, string>();
+  const keepOrigin = (el: HTMLElement) => {
+    if (!origins.has(el)) origins.set(el, el.style.transformOrigin);
+  };
+  const giveOrigin = (el: HTMLElement) => {
+    const held = origins.get(el);
+    if (held) el.style.transformOrigin = held;
+    else el.style.removeProperty('transform-origin');
+  };
+
+  /* Every inline value this file writes, taken off again BY NAME. A blanket
+     `clearProps: 'all'` is not safe in this band: it empties the style
+     attribute, and that attribute is where the right card's nodes keep their
+     `--x`/`--y` and where this card's entrance leaves its transform-origin. */
+  const clearInline = () => {
+    if (smear) gsap.set(smear, { clearProps: 'transform,opacity' });
+    for (const el of [dot, coin, disc, mid, outer]) {
+      if (!el) continue;
+      gsap.set(el, { clearProps: 'transform,transformOrigin' });
+      giveOrigin(el);
+    }
+    for (const el of [you, note]) if (el) gsap.set(el, { clearProps: 'color' });
+  };
+
+  /* ----------------------------------------------------------- the overlay */
+  let group: SVGGElement | null = null;
+  let wire: SVGPathElement | null = null;
+  const arcs: SVGPathElement[] = [];
+
+  /** Geometry, in the design px of the 299 x 135 `.bt1` box. Measured off live
+   *  rects, because the card is laid out in container units and a pixel read is
+   *  the only honest source of truth at any breakpoint. */
+  let CX = 231.5;
+  let CY = 67.5;
+  let DISC_R = 34.5;
+  let MID_R = 49.375;
+  let OUT_R = 66.875;
+  let LEN = 173.5;   /* the wire path's own length */
+  let LEAD = 57.5;   /* where along it the light starts */
+  let TRAVEL = 116;  /* how far along it the light goes */
+  let ARC0 = Math.PI * 34.5;
+
+  const w = { s: 0, r: 34.5 };
+
+  const arcD = (rad: number, up: boolean) =>
+    `M${(CX - rad).toFixed(3)} ${CY.toFixed(3)}`
+    + ` A${rad.toFixed(3)} ${rad.toFixed(3)} 0 0 ${up ? 1 : 0}`
+    + ` ${(CX + rad).toFixed(3)} ${CY.toFixed(3)}`;
+
+  /** The only thing that writes the overlay. */
+  const paint = () => {
+    const s = w.s;
+    const rad = w.r;
+
+    if (wire) {
+      // The head occupies path length [l - HEAD, l], so it walks off the end of
+      // the line by itself as the light moves onto the ring — no second rule
+      // for when to switch it off.
+      const l = LEAD + s;
+      wire.setAttribute('stroke-dashoffset', (HEAD - l).toFixed(2));
+      wire.style.opacity = l - HEAD < LEN ? '1' : '0';
+    }
+
+    const al = Math.PI * rad;
+    const drawn = Math.min(Math.max(s - TRAVEL, 0), ARC0) / ARC0;
+    const weight = W_NEAR - (W_NEAR - W_FAR)
+      * Math.min(Math.max((rad - DISC_R) / Math.max(OUT_R - DISC_R, 1), 0), 1);
+    arcs.forEach((p, i) => {
+      p.setAttribute('d', arcD(rad, i === 0));
+      p.setAttribute('stroke-dasharray', `${al.toFixed(3)} ${al.toFixed(3)}`);
+      p.setAttribute('stroke-dashoffset', (al * (1 - drawn)).toFixed(3));
+      p.setAttribute('stroke-width', weight.toFixed(2));
+    });
+  };
+
+  /** The card exactly as the stylesheet has it, with nothing of this file on it. */
+  const rest = () => {
+    w.s = 0;
+    w.r = DISC_R;
+    if (group) group.style.opacity = '0';
+    paint();
+  };
+
+  const measure = () => {
+    const B = bt1.getBoundingClientRect();
+    const u = B.width / 299 || 1;
+    const X = (v: number) => (v - B.left) / u;
+    const Y = (v: number) => (v - B.top) / u;
+    const box = (el: Element) => el.getBoundingClientRect();
+
+    const c = box(coin);
+    CX = X(c.left + c.width / 2);
+    CY = Y(c.top + c.height / 2);
+    DISC_R = disc ? (box(disc).width / u) * DISC_RF : 34.5;
+    MID_R = mid ? (box(mid).width / u) * MID_RF : 49.375;
+    OUT_R = outer ? (box(outer).width / u) * OUTER_RF : 66.875;
+    ARC0 = Math.PI * DISC_R;
+
+    const l = box(line);
+    const lx0 = X(l.left);
+    const ly = Y(l.top + l.height / 2);
+    // The line's own y and the ring's centre y are one design px apart, so the
+    // wire is drawn as the shallow ramp between them: it sits on the line for
+    // its whole length and still meets the ring's west point exactly.
+    const xEnd = CX - DISC_R;
+    // Where the light starts: the right-hand edge of the smear the design
+    // already has lit on the line, so it emerges from it rather than beside it.
+    const x0 = smear ? X(box(smear).right) : lx0 + 57.5;
+
+    return { lx0, ly, xEnd, x0, u, smearBox: smear ? box(smear) : null };
+  };
+
+  /* ------------------------------------------------------------- the cycle */
+  const start = () => {
+    if (started || stopped) return;
+    started = true;
+
+    const g = measure();
+
+    /* One overlay, built here rather than shipped in the markup because it is
+       the beat and not the design. It is sized in percentages of `.bt1`, whose
+       aspect ratio the viewBox matches exactly, so it needs no resize handling
+       and no `will-change`. */
+    svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 299 135');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('fill', 'none');
+    svg.style.cssText = 'left:0;top:0;width:100%;height:100%;pointer-events:none';
+
+    group = document.createElementNS(NS, 'g');
+    group.style.opacity = '0';
+
+    wire = document.createElementNS(NS, 'path');
+    wire.setAttribute('d', `M${g.lx0.toFixed(3)} ${g.ly.toFixed(3)} L${g.xEnd.toFixed(3)} ${CY.toFixed(3)}`);
+    wire.setAttribute('stroke', LIT);
+    wire.setAttribute('stroke-width', String(W_NEAR));
+    wire.setAttribute('stroke-linecap', 'round');
+    group.appendChild(wire);
+
+    for (let i = 0; i < 2; i += 1) {
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('stroke', LIT);
+      p.setAttribute('stroke-linecap', 'round');
+      arcs.push(p);
+      group.appendChild(p);
+    }
+
+    svg.appendChild(group);
+    bt1.appendChild(svg);
+
+    LEN = wire.getTotalLength() || Math.abs(g.xEnd - g.lx0);
+    const span = Math.max(g.xEnd - g.lx0, 1);
+    LEAD = (LEN * (g.x0 - g.lx0)) / span;
+    TRAVEL = (LEN * (g.xEnd - g.x0)) / span;
+    wire.setAttribute('stroke-dasharray', `${HEAD} ${LEN.toFixed(3)}`);
+    rest();
+
+    /* Resting values are read now, with the entrance finished and its own
+       clears already run, so every lift has something true to return to. */
+    const css = (el: HTMLElement | null, prop: string) =>
+      (el ? getComputedStyle(el).getPropertyValue(prop) : '') || '';
+    const youRest = css(you, 'color');
+    const noteRest = css(note, 'color');
+
+    /* The smear rides `TRAIL` design px behind the head's tip, written as a
+       percentage of its own 42px box — the only distance here that has to
+       survive a resize, and a percentage of the element's own box does, because
+       the element scales with the card exactly as the distance does. */
+    const rideTo = g.xEnd - TRAIL;
+    const ride = g.smearBox && g.smearBox.width > 0
+      ? (((rideTo - (g.x0 - g.smearBox.width / g.u / 2)) * g.u) / g.smearBox.width) * 100
+      : 0;
+
+    ctx = gsap.context(() => {
+      /* `onRepeat`, because a repeating timeline rewinds to zero by rendering
+         every tween it has passed at progress 0 -- which WRITES their start
+         values inline: `transform: translate(0px, 0px)` on the rings and the
+         resting colour on the two grey lines. Identical to rest to look at, and
+         still an inline style sitting on an element the stylesheet owns, for the
+         third of a second until that pulse's own clear came round again. The
+         callback runs in the same tick as the rewind, so no frame is painted
+         with them on. */
+      const tl = gsap.timeline({ repeat: -1, paused: true, onRepeat: clearInline });
+      cycle = tl;
+
+      /** A scale pulse that hands the transform back when it lands. */
+      const ripple = (el: HTMLElement | null, at: number, to: number, origin: string,
+        up = 0.28, down = 0.66) => {
+        if (!el) return;
+        keepOrigin(el);
+        tl.to(el, { scale: to, transformOrigin: origin, duration: up, ease: 'sine.out' }, at)
+          .to(el, { scale: 1, duration: down, ease: 'sine.inOut' }, at + up)
+          .call(() => {
+            gsap.set(el, { clearProps: 'transform,transformOrigin' });
+            giveOrigin(el);
+          }, undefined, at + up + down);
+      };
+
+      /** A colour lift and its return. Nothing moves. */
+      const warm = (el: HTMLElement | null, at: number, from: string,
+        up = 0.34, down = 1.1) => {
+        if (!el || !from) return;
+        tl.to(el, { color: WARM, duration: up, ease: 'sine.out' }, at)
+          .to(el, {
+            color: from, duration: down, ease: 'sine.inOut',
+            onComplete: () => gsap.set(el, { clearProps: 'color' }),
+          }, at + up);
+      };
+
+      /* 1 — "You" answers: the dot takes one pulse and the word warms. */
+      ripple(dot, T_SEND, 1.22, '50% 50%', 0.26, 0.62);
+      warm(you, T_SEND, youRest, 0.26, 0.8);
+
+      /* 2 — the light leaves, along the line and then round the ring. Both legs
+         are `fromTo` with `immediateRender: false`: a delayed `fromTo` writes
+         its start value when the timeline is BUILT, not when the playhead
+         arrives, so without the flag the wrap would slam the light back to the
+         ring at t=0 and hold it there through the whole outbound leg. */
+      tl.fromTo(w, { s: 0 }, {
+        s: TRAVEL, duration: LEG1, ease: 'power1.in', immediateRender: false, onUpdate: paint,
+      }, T_GO)
+        .fromTo(w, { s: TRAVEL }, {
+          s: TRAVEL + ARC0, duration: LEG2, ease: 'sine.out', immediateRender: false, onUpdate: paint,
+        }, T_HIT)
+        .fromTo(group, { opacity: 0 }, {
+          opacity: 1, duration: 0.22, ease: 'sine.out', immediateRender: false,
+        }, T_GO);
+
+      /* 3 — the design's own smear is the light's soft tail, and is absorbed at
+         the ring. Its transform is reset while it is invisible, so the return
+         is a fade at home rather than a slide back. */
+      if (smear && ride > 0) {
+        tl.fromTo(smear, { xPercent: 0 }, {
+          xPercent: ride, duration: LEG1, ease: 'power1.in', immediateRender: false,
+        }, T_GO)
+          .to(smear, { opacity: 0, duration: 0.32, ease: 'sine.in' }, T_HIT - 0.26)
+          .set(smear, { xPercent: 0 }, T_HIT + 0.4)
+          .to(smear, { opacity: 1, duration: 0.55, ease: 'sine.out' }, 3.3)
+          .set(smear, { clearProps: 'transform,opacity' }, 3.95);
+      }
+
+      /* 4 — the market answers as the light lands, and the sentence beside it
+         as the ring closes. */
+      ripple(coin, T_HIT, 1.18, '50% 50%', 0.24, 0.62);
+      warm(note, T_CLOSE, noteRest);
+
+      /* 5 — the closed ring lets go. `w.r` is the wavefront's radius; each ring
+         fires at the frame that radius is its own, solved back through the ease
+         rather than staggered by eye. The disc is where the wave starts, so it
+         goes with the closure itself. */
+      tl.fromTo(w, { r: DISC_R }, {
+        r: OUT_R, duration: WAVE, ease: WAVE_EASE, immediateRender: false, onUpdate: paint,
+      }, T_WAVE)
+        .to(group, { opacity: 0, duration: 0.5, ease: 'sine.in' }, T_WAVE + WAVE - 0.45);
+
+      const when = (radius: number) => {
+        const v = (radius - DISC_R) / Math.max(OUT_R - DISC_R, 1);
+        if (v <= 0) return T_WAVE;
+        if (v >= 1) return T_WAVE + WAVE;
+        return T_WAVE + WAVE * invEase(WAVE_EASE, v);
+      };
+      ripple(disc, T_CLOSE - 0.05, 1.08, DISC_ORIGIN);
+      ripple(mid, when(MID_R), 1.1, '50% 50%');
+      ripple(outer, when(OUT_R), 1.08, '50% 50%');
+
+      /* The rest of the cycle is rest. Off screen the loop stops here rather
+         than wherever the scroll happened to leave it, so the card is never
+         parked with a half-drawn ring round the coin for as long as it takes
+         someone to come back. A beat is four seconds; it is allowed to finish. */
+      tl.call(() => {
+        rest();
+        clearInline();
+        if (offscreen) tl.pause();
+      }, undefined, STORY_END);
+      tl.to({}, { duration: 0.01 }, PERIOD - 0.01);
+
+      tl.play();
+    }, card);
+
+    io = new IntersectionObserver(([entry]) => {
+      offscreen = !entry.isIntersecting;
+      if (!offscreen) cycle?.play();
+      else if (cycle && !inBeat(cycle.time())) cycle.pause();
+    }, { rootMargin: '140px' });
+    io.observe(card);
+  };
+
+  /** Is the playhead inside the beat rather than in the rest band? */
+  const inBeat = (t: number) => t > T_SEND - 0.1 && t < STORY_END;
+
+  /* ---------------------------------------------------------------- the gate
+     `useSectionMotion` passes this as its `idle` option and calls it from the
+     entrance's `onComplete`, one line after the section's `done()` — so
+     `data-motion-done` is already set and the first branch fires at once.
+     Called any earlier (a direct call, a harness) the `motion:done` event is
+     still ahead of us and is the best signal there is; under both sits the
+     question that is true either way: is anything still animating in here? */
+  const heard = () => open();
+  const open = () => {
+    if (stopped || ready) return;
+    window.clearInterval(probe);
+    probe = 0;
+    watcher?.disconnect();
+    root.removeEventListener('motion:done', heard);
+    ready = window.setTimeout(start, SETTLE * 1000);
+  };
+
+  let quiet = 0;
+  let waited = 0;
+  const busy = () =>
+    gsap.globalTimeline.getChildren(true, true, true).some((a) => {
+      if (!a.isActive()) return false;
+      const targets = (a as gsap.core.Tween).targets?.() ?? [];
+      return targets.some((t) => t instanceof Node && (t === root || root.contains(t)));
+    });
+  const watch = () => {
+    probe = window.setInterval(() => {
+      waited += 1;
+      quiet = busy() ? 0 : quiet + 1;
+      if (quiet >= 3 || waited >= 40) { window.clearInterval(probe); probe = 0; open(); }
+    }, 250);
+  };
+
+  root.addEventListener('motion:done', heard);
+  if (root.dataset.motionDone) open();
+  else if (root.dataset.motion !== 'pending') watch();
+  else {
+    watcher = new MutationObserver(() => {
+      if (root.dataset.motion !== 'pending') { watcher?.disconnect(); watch(); }
+    });
+    watcher.observe(root, { attributes: true, attributeFilter: ['data-motion'] });
+  }
+
+  return () => {
+    stopped = true;
+    window.clearTimeout(ready);
+    window.clearInterval(probe);
+    root.removeEventListener('motion:done', heard);
+    watcher?.disconnect();
+    io?.disconnect();
+    cycle?.kill();
+    // Reverts every transform, colour and opacity this loop tweened, whatever
+    // the playhead was in the middle of.
+    ctx?.revert();
+
+    /* Then each target again, by name. A blanket `clearProps: 'all'` is not
+       safe in this band: it empties the style attribute, and that attribute is
+       where the right card's nodes keep their `--x`/`--y` — and where this
+       card's entrance leaves its `transform-origin`. */
+    for (const el of [smear, dot, you, coin, disc, mid, outer, note]) {
+      if (el) gsap.killTweensOf(el);
+    }
+    clearInline();
+
+    // Everything this file created, removed.
+    svg?.remove();
+    svg = null;
+    group = null;
+    wire = null;
+    arcs.length = 0;
+  };
+}

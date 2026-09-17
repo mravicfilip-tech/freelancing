@@ -24,25 +24,41 @@ for (const width of Object.keys(A.widths)) {
     if (!sb) { report.push(`${width}  ${sel}  MISSING in second snapshot`); missing++; continue; }
     if (sa.n !== sb.n) report.push(`${width}  ${sel}  element count ${sa.n} -> ${sb.n}`);
     const perSection = [];
-    // Aligned by identity, not by array index. Index alignment meant that
-    // inserting a single node -- the theme switcher into the nav, or an inlined
-    // SVG's children into a section -- shifted every later element by one and
-    // reported thousands of false differences. That is not just noise: agents
-    // started avoiding inlining altogether to keep the gate readable, so the
-    // measuring instrument was dictating the design. Each element is keyed by
-    // its class and its ordinal among siblings sharing that class, so a new
-    // node displaces nothing and a genuinely added or removed one is reported
-    // as exactly that.
+    // Two alignments, chosen by whether the element count moved -- because the
+    // two mechanisms this job uses need opposite things.
+    //
+    // A mask conversion is a 1:1 tag swap: `<img class="x">` becomes
+    // `<span class="icon x">`. Nothing is inserted or removed, document order
+    // is preserved exactly, and so position IS identity. Keying on the class
+    // breaks it twice over: the class itself changed, so every conversion
+    // reports GONE plus ADDED, and the unclassed elements then re-ordinal
+    // around the ones that left their pool, manufacturing phantom geometry.
+    // Measured on the hero: 294 rows and 0 geometry by index, against 373 rows
+    // and 156 phantom geometry rows by identity.
+    //
+    // An insertion is the opposite: inlining an SVG or adding the switcher
+    // shifts every later element, and index alignment then reports thousands
+    // of false differences -- which is what drove agents away from inlining.
+    //
+    // Equal counts means nothing was inserted, so index is right. Unequal
+    // counts means something was, so identity is right. The `icon` marker is
+    // stripped from the key so a converted glyph still matches its old self
+    // when the identity path does run.
+    const equalCount = sa.n === sb.n;
+    const norm = (k) => k.split(/\s+/).filter((t) => t !== 'icon').join(' ') || k;
     const key_ = (els) => {
       const seen = new Map(), out = new Map();
       for (const e of els) {
-        const n = (seen.get(e.k) ?? 0) + 1;
-        seen.set(e.k, n);
-        out.set(`${e.k}#${n}`, e);
+        const base = norm(e.k);
+        const n = (seen.get(base) ?? 0) + 1;
+        seen.set(base, n);
+        out.set(`${base}#${n}`, e);
       }
       return out;
     };
-    const ma = key_(sa.els), mb = key_(sb.els);
+    const byIndex = (els) => new Map(els.map((e, i) => [`@${i}`, e]));
+    const ma = equalCount ? byIndex(sa.els) : key_(sa.els);
+    const mb = equalCount ? byIndex(sb.els) : key_(sb.els);
     for (const [id, ea] of ma) {
       const eb = mb.get(id);
       if (!eb) {

@@ -169,11 +169,22 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
             build({ el, q: (sel) => all(el, sel), tl: timeline });
             reveal();
 
-            // If something stalls the sequence far past its own length, settle
-            // it rather than leave the section half-built.
-            guard = window.setTimeout(() => {
-              if (timeline.progress() < 1) timeline.progress(1);
-            }, (timeline.duration() + 2.5) * 1000);
+            // If the sequence stalls, settle it rather than leave the section
+            // half-built. A fixed deadline cannot tell "stuck" from "slow":
+            // lag smoothing means a blocked main thread makes an honest
+            // sequence take longer in wall time than its own duration, and
+            // snapping that one cuts the entrance off for everyone on modest
+            // hardware. So sample twice a second past the deadline and only
+            // force the end once progress has actually stopped moving.
+            let seen = -1;
+            const watch = () => {
+              const now = timeline.progress();
+              if (now >= 1) return;
+              if (now === seen) { timeline.progress(1); return; }
+              seen = now;
+              guard = window.setTimeout(watch, 500);
+            };
+            guard = window.setTimeout(watch, (timeline.duration() + 1.5) * 1000);
           }, el);
         } catch (err) {
           console.warn('[motion] build failed', err);

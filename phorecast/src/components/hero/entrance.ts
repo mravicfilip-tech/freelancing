@@ -4,46 +4,14 @@
 // rise a few pixels on expo.out, staggered tightly; nothing overshoots, rotates
 // for effect, or floats while idle. The loop is one deterministic story beat
 // that shows the product doing its job, then rests -- here, the market prices
-// moving and the light crossing the headline.
+// moving and flashing.
 //
 // Two triggers only: the load-in, and that loop. Nothing listens to the pointer.
 
 import { gsap } from 'gsap';
 import { EASE, all, intoLines, one, pop, rise } from '../../lib/motion';
 
-const SHEEN_EVERY = 9; // seconds between passes of the highlight
 const PRICE_EVERY = 2600;
-
-/** Runs the specular highlight across the glyphs of every headline line. */
-function sweep(title: HTMLElement, at: number, tl: gsap.core.Timeline) {
-  const gloss = all<HTMLElement>(title, '.line__shine');
-  if (!gloss.length) return;
-
-  const pos = { p: 135 };
-  tl.set(gloss, { opacity: 1 }, at)
-    .to(pos, {
-      p: -35,
-      duration: 1.3,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        const v = `${pos.p}% 0`;
-        gloss.forEach((g) => { g.style.backgroundPosition = v; });
-      },
-      onComplete: () => gsap.set(gloss, { opacity: 0 }),
-    }, at);
-}
-
-/** Gives each headline line a duplicate layer clipped to its own glyphs. */
-function addShine(title: HTMLElement) {
-  all<HTMLElement>(title, '.line__in').forEach((inner) => {
-    if (inner.querySelector('.line__shine')) return;
-    const gloss = document.createElement('span');
-    gloss.className = 'line__shine';
-    gloss.setAttribute('aria-hidden', 'true');
-    gloss.textContent = inner.textContent;
-    inner.appendChild(gloss);
-  });
-}
 
 /**
  * Builds one slide's copy and illustration. Used by the load-in and again on
@@ -58,15 +26,12 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
 
   if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -10, duration: 0.75 });
 
+  // The line rises out of its mask and resolves from soft as it arrives. The
+  // blur is cleared afterwards so the settled type is sharp and CSS owns it
+  // again.
   if (title) {
     const lines = intoLines(title);
-    addShine(title);
-    // A mask wipe and nothing else. Blurring the line as it rises sounded
-    // cinematic and made every intermediate frame look like a rendering fault:
-    // half-formed smeared type, which reads as broken rather than as motion.
-    // A clean edge travelling out of the mask is legible at every frame.
-    tl.from(lines, { yPercent: 112, duration: 1.15, stagger: 0.22, ease: 'power4.out' }, at + 0.14);
-    sweep(title, at + 0.95, tl);
+    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14);
   }
 
   // The illustration is the largest thing on screen; leaving it out of the
@@ -79,16 +44,30 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     else rise(tl, visual, at + 0.3, { y: 16, duration: 1.0 });
   }
 
-  if (lede) rise(tl, intoLines(lede), at + 0.72, { y: 0, yPercent: 108, duration: 0.85 });
+  // Less blur on the lede: it is set much smaller, so the same 12px would wash
+  // a whole line out rather than soften its edges.
+  if (lede) {
+    rise(tl, intoLines(lede), at + 0.72, { y: 0, yPercent: 108, filter: 'blur(7px)', duration: 0.85, clearProps: 'filter' });
+  }
   if (cta) pop(tl, cta, at + 0.98, { scale: 0.94, duration: 0.7 });
 }
 
-/** The load-in. Light first, everything else overlapping it. */
+/** The load-in. The nav drops in, light ignites, everything else overlaps it. */
 export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
+  const nav = one(hero, '.nav');
+  const navParts = all(hero, '.nav .logo, .nav__links > *, .nav__actions > *, .nav__burger');
   const glows = all(hero, '.hero__glow');
   const horizon = all(hero, '.hero__horizon');
   const mark = all(hero, '.hero__logo');
   const slide = one<HTMLElement>(hero, '.hero__slide.is-active');
+
+  // The nav, as on Remittix: the bar drops from above the viewport first, then
+  // its contents settle into it. Two beats, not one -- a bar arriving with its
+  // links already in place reads as a jump cut.
+  if (nav) tl.from(nav, { y: -28, opacity: 0, duration: 0.9, ease: 'power3.out' }, 0);
+  if (navParts.length) {
+    tl.from(navParts, { y: -10, opacity: 0, duration: 0.6, stagger: 0.05, ease: 'power3.out' }, 0.25);
+  }
 
   // Light ignites small and bright and blooms outward, rather than fading up.
   if (glows.length) {
@@ -101,24 +80,26 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
     tl.from(mark, { scale: 0.94, duration: 1.0, transformOrigin: '50% 50%', ease: EASE }, 0.08);
   }
 
-  if (slide) slideIn(slide, tl, 0.16);
+  if (slide) slideIn(slide, tl, 0.3);
 
-  rise(tl, all(hero, '.hero__position'), 1.15, { y: 8, duration: 0.6 });
+  rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
+
+  // The market cards deal in one at a time, left to right, rather than arriving
+  // as a block: a wider stagger than the rest of the hero so each one is read
+  // as its own object. clearProps hands the transform back to CSS afterwards,
+  // otherwise the inline matrix GSAP leaves behind outranks the hover lift.
   const cards = all(hero, '.hero__foot > *');
-  if (cards.length) pop(tl, cards, 1.1, { scale: 0.94, y: 12, duration: 0.7, stagger: 0.1 });
+  if (cards.length) {
+    pop(tl, cards, 1.25, { scale: 0.94, y: 18, duration: 0.75, stagger: 0.16, clearProps: 'transform,opacity' });
+  }
 }
 
 /**
- * The loop. Both beats look the active slide up when they fire -- bound to the
- * elements present at mount they stop silently after the first slide change,
- * because the carousel replaces that DOM.
+ * The loop. It looks the active slide up when it fires -- bound to the elements
+ * present at mount it would stop silently after the first slide change, because
+ * the carousel replaces that DOM.
  */
 export function heroIdle(hero: HTMLElement): () => void {
-  const sheenTimer = window.setInterval(() => {
-    const title = one<HTMLElement>(hero, '.hero__slide.is-active .hero__title');
-    if (title) sweep(title, 0, gsap.timeline());
-  }, SHEEN_EVERY * 1000);
-
   // The market cards were frozen, which is the wrong look for a trading product.
   const priceTimer = window.setInterval(() => {
     const live = all<HTMLElement>(hero, '.hero__foot > *');
@@ -136,8 +117,5 @@ export function heroIdle(hero: HTMLElement): () => void {
     gsap.fromTo(priceEl, { color: next > value ? '#4ade80' : '#f87171' }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
   }, PRICE_EVERY);
 
-  return () => {
-    window.clearInterval(sheenTimer);
-    window.clearInterval(priceTimer);
-  };
+  return () => window.clearInterval(priceTimer);
 }

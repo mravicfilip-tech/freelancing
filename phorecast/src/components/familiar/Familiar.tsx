@@ -40,8 +40,8 @@ function Phone() {
           <span className="fam__time">9:41</span>
           <img src={loc} alt="" className="fam__loc" />
           <span className="fam__status-right">
-            <img src={signal} alt="" /><img src={data} alt="" />
-            <span className="fam__batt"><img src={battery} alt="" /><img src={battTip} alt="" className="fam__batt-tip" /></span>
+            <img src={signal} alt="" className="fam__signal" /><img src={data} alt="" className="fam__data" />
+            <span className="fam__batt"><img src={battery} alt="" className="fam__batt-cell" /><img src={battTip} alt="" className="fam__batt-tip" /></span>
           </span>
         </div>
 

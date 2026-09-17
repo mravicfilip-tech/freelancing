@@ -209,12 +209,18 @@ export function familiarLoop(root: HTMLElement): () => void {
           tl.to(cross, {
             v: 1, duration: 0.9, ease: 'sine.inOut',
             onUpdate: () => {
-              gsap.set(rows[1], { yPercent: pitch * cross.v });
-              gsap.set(rows[2], { yPercent: -pitch * cross.v });
+              // The rows are transparent text on the card, so at the halfway
+              // point the two lines sit on top of each other and read as a
+              // collision. Dipping both through the pass turns that into a
+              // dissolve — the travel is unchanged, only the overlap is.
+              const fade = 1 - 0.62 * Math.sin(Math.PI * cross.v);
+              gsap.set(rows[1], { yPercent: pitch * cross.v, opacity: fade });
+              gsap.set(rows[2], { yPercent: -pitch * cross.v, opacity: fade });
             },
           }, 2.15)
             .call(() => {
               gsap.set([rows[1], rows[2]], { yPercent: 0 });
+              gsap.set([rows[1], rows[2]], { clearProps: 'opacity' });
               slots[moverSlot].pct = to;
               slots.reverse();
               paint();
@@ -237,8 +243,13 @@ export function familiarLoop(root: HTMLElement): () => void {
             v: gauge0 + (up ? 2 : 0), duration: 0.7, ease: 'sine.inOut',
             onUpdate: () => { gauge.textContent = `${Math.round(ring.v)}%`; },
           }, 3.0)
+            // `immediateRender: false` or the start value is written the moment
+            // the cycle is built rather than when the playhead reaches 3.0s —
+            // harmless here, since `brightness(1)` is what the ring already
+            // looks like, but a delayed `fromTo` that parks a real offset holds
+            // the section off its settled design for most of the cycle.
             .fromTo(gauge, { filter: 'brightness(1)' },
-              { filter: 'brightness(1.5)', duration: 0.3, ease: 'sine.out' }, 3.0)
+              { filter: 'brightness(1.5)', duration: 0.3, ease: 'sine.out', immediateRender: false }, 3.0)
             .to(gauge, { filter: 'brightness(1)', duration: 0.85, ease: 'sine.inOut' }, 3.3);
         }
 

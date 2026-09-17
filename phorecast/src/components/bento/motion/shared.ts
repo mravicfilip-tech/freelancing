@@ -141,8 +141,22 @@ export function pct(el: Element, designPx: number, u: number, axis: 'x' | 'y' = 
   return size > 0 ? ((designPx * u) / size) * 100 : 0;
 }
 
-/** A pulse that leaves nothing behind: out on `up`, back on `down`, ending on
- *  the value the tween started from, so the loop's resting frame is the design. */
+/**
+ * A pulse that leaves nothing behind: out on `out`, back on `back`, ending on
+ * the value the tween started from, so the loop's resting frame is the design.
+ *
+ * `clear` names the properties CSS owns and hands them back to it once the pulse
+ * has landed. It matters more than it looks. Ending a tween on the same *value*
+ * CSS would have produced is not the same as ending with no inline style at all:
+ * an inline `transform`, even the identity one, promotes the element to its own
+ * compositing layer, and inside a `backdrop-filter` chip that switches Chrome
+ * from subpixel to greyscale text antialiasing. Measured on the three onboard
+ * chips: 799 pixels differing from the static render, up to 185/255 on the glyph
+ * edges, purely from `transform: translate(0px, 0px) scale(1)` being present.
+ * Clearing also restores the transforms the design itself carries -- the pie
+ * badge's `scale(0.7)`, the diamonds' `rotate(45deg)` -- rather than leaving
+ * GSAP's decomposition of them inline to outrank the stylesheet.
+ */
 export function pulse(
   tl: Timeline,
   target: gsap.TweenTarget,
@@ -151,7 +165,9 @@ export function pulse(
   back: gsap.TweenVars,
   up = 0.38,
   down = 0.72,
+  clear?: string,
 ) {
   tl.to(target, { ...out, duration: up, ease: 'sine.out' }, at)
     .to(target, { ...back, duration: down, ease: 'sine.inOut' }, at + up);
+  if (clear) tl.set(target, { clearProps: clear }, at + up + down);
 }

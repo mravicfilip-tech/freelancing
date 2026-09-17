@@ -111,7 +111,7 @@ export function markets(card: HTMLElement): () => void {
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 3.9 });
 
     // 1 — the hub, then a ring expanding out through the field
-    pulse(loop, hub, 0, { yPercent: -10, scale: 1.09 }, { yPercent: 0, scale: 1 }, 0.5, 0.9);
+    pulse(loop, hub, 0, { yPercent: -10, scale: 1.09 }, { yPercent: 0, scale: 1 }, 0.5, 0.9, 'transform');
     const OUT = 16; // design pixels, straight out along each tile's own radius
     const u = box(field).width / 727.454;
     const radial = (el: HTMLElement, px: number) => {
@@ -125,11 +125,11 @@ export function markets(card: HTMLElement): () => void {
     byDistance.forEach((tile, i) => {
       pulse(loop, tile, 0.25 + i * 0.07,
         { ...radial(tile, OUT), scale: 1.08 },
-        { xPercent: 0, yPercent: 0, scale: 1 }, 0.4, 0.66);
+        { xPercent: 0, yPercent: 0, scale: 1 }, 0.4, 0.66, 'transform');
     });
     diamonds.forEach((d, i) => {
       pulse(loop, d, 0.8 + i * 0.25,
-        { ...radial(d, 14), scale: 1.8 }, { xPercent: 0, yPercent: 0, scale: 1 }, 0.34, 0.66);
+        { ...radial(d, 14), scale: 1.8 }, { xPercent: 0, yPercent: 0, scale: 1 }, 0.34, 0.66, 'transform');
     });
 
     // 2 — the cursor works: Solana, across the field to Gold, and back
@@ -159,13 +159,16 @@ export function markets(card: HTMLElement): () => void {
       // the click, and the market answering it
       loop.to(cursor, { scale: 0.82, duration: 0.14, ease: 'power2.in' }, GO + 1)
         .to(cursor, { scale: 1, duration: 0.4, ease: 'power3.out' }, GO + 1.14);
-      pulse(loop, visit, GO + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8);
+      pulse(loop, visit, GO + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8, 'transform');
 
       glide(BACK, false);
       relabel(BACK + 0.35, restingTip);
       loop.to(cursor, { scale: 0.82, duration: 0.14, ease: 'power2.in' }, BACK + 1)
-        .to(cursor, { scale: 1, duration: 0.4, ease: 'power3.out' }, BACK + 1.14);
-      pulse(loop, home, BACK + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8);
+        .to(cursor, { scale: 1, duration: 0.4, ease: 'power3.out' }, BACK + 1.14)
+        // hand the cursor and its label back to CSS, so the card rests with no
+        // inline transform on them at all
+        .set([cursor, tooltip], { clearProps: 'transform' }, BACK + 1.54);
+      pulse(loop, home, BACK + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8, 'transform');
     }
 
     /* ------------------------------------------------------------- load-in */

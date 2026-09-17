@@ -53,9 +53,10 @@ export function onboard(card: HTMLElement): () => void {
     /* -------------------------------------------------------- start state
        Written while the band is still held at `data-motion="pending"`, so none
        of it is ever painted. `set`, not `from`: see shared.ts. */
-    gsap.set(pills, { transformOrigin: '100% 50%' });
-    gsap.set(inLabel, { transformOrigin: '0% 50%' });
-    gsap.set(ring, { transformOrigin: '50% 50%' });
+    /* Transform origins live in the pulses that need them rather than being
+       parked here, because a resting element must carry NO inline style of ours
+       at all -- see `pulse` in shared.ts for what a stray inline transform does
+       to text inside a `backdrop-filter` chip. */
     if (staged) {
       gsap.set(ring, { opacity: 0, y: 10, scale: 0.965 });
       gsap.set(pills, { opacity: 0, y: 8 });
@@ -85,16 +86,20 @@ export function onboard(card: HTMLElement): () => void {
     // phone and its stroke lights, then settles back.
     pills.slice(0, 3).forEach((pill, i) => {
       pulse(loop, pill, 1.5 + i * (RUN / 3.4),
-        { xPercent: pct(pill, -16, u, 'x'), scale: 1.06, borderColor: 'rgba(255, 251, 248, 0.95)' },
-        { xPercent: 0, scale: 1, borderColor: readBorder(pill) }, 0.42, 0.8);
+        { xPercent: pct(pill, -16, u, 'x'), scale: 1.06, transformOrigin: '100% 50%',
+          borderColor: 'rgba(255, 251, 248, 0.95)' },
+        { xPercent: 0, scale: 1, borderColor: readBorder(pill) }, 0.42, 0.8,
+        'transform,transformOrigin,borderColor');
     });
 
     // Zero: the confirmation flares and the ring takes one breath.
     const ZERO = 0.3 + RUN;
     pulse(loop, inLabel, ZERO,
-      { yPercent: -70, scale: 1.2, textShadow: '0 0 16px rgba(255, 251, 248, 0.9)' },
-      { yPercent: 0, scale: 1, textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9);
-    pulse(loop, ring, ZERO + 0.05, { scale: 1.05 }, { scale: 1 }, 0.5, 0.95);
+      { yPercent: -70, scale: 1.2, transformOrigin: '0% 50%', textShadow: '0 0 16px rgba(255, 251, 248, 0.9)' },
+      { yPercent: 0, scale: 1, textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9,
+      'transform,transformOrigin,textShadow');
+    pulse(loop, ring, ZERO + 0.05, { scale: 1.05, transformOrigin: '50% 50%' }, { scale: 1 },
+      0.5, 0.95, 'transform,transformOrigin');
 
     // 360 degrees is 0 degrees, so the hand can be put back without moving.
     loop.call(() => { dial.deg = 0; paintArc(); }, undefined, ZERO + 1.1)
@@ -106,7 +111,12 @@ export function onboard(card: HTMLElement): () => void {
     intro
       .to(ring, { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: 'expo.out' }, 0)
       .to(pills, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', stagger: 0.14 }, 0.45)
-      .to(inLabel, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 1.0);
+      .to(inLabel, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 1.0)
+      // Hand the three back to CSS the moment they have landed: an inline
+      // `opacity: 1` and identity transform are not visually free on a chip that
+      // paints with `backdrop-filter` — measured at 818 differing pixels against
+      // the static render before this line existed.
+      .set([ring, ...pills, inLabel], { clearProps: 'transform,transformOrigin,opacity' });
 
     if (staged) stopReady = onSectionReady(card, () => intro.play());
     else { intro.progress(1, true); runLoop(); }

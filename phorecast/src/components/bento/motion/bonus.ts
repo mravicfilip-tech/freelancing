@@ -120,18 +120,26 @@ export function bonus(card: HTMLElement): () => void {
     /* ---------------------------------------------------------------- loop */
     const DRAW_AT = 0.8;
     const DRAW = 2.2;
+    /* Every `fromTo` below states `immediateRender: false`.
+       A `fromTo` renders its FROM value the moment it is created, even inside a
+       paused timeline, which is right for an entrance and catastrophic here: the
+       loop is built during the same call that parks the artwork at its start
+       state, so a `fromTo` starting at "line fully drawn" quietly undid the
+       "line not drawn yet" the load-in was about to animate away from. Measured:
+       the card's first painted frame showed the curve already complete and the
+       load-in's draw then tweened 0 to 0. */
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.4 });
     loop
       // a beat, then the curve pulls back — right to left, so it reads as the
       // chart winding back rather than as the artwork being switched off
       .set(line, { strokeDasharray: total }, 0)
       .fromTo(line, { strokeDashoffset: 0 },
-        { strokeDashoffset: total, duration: 0.55, ease: 'power2.in' }, DRAW_AT)
+        { strokeDashoffset: total, duration: 0.55, ease: 'power2.in', immediateRender: false }, DRAW_AT)
       .to(marker, { opacity: 0, duration: 0.3, ease: 'power2.in' }, DRAW_AT)
       // and grows back, with the lit dot on its tip
       .to(line, { strokeDashoffset: 0, duration: DRAW, ease: 'power2.inOut' }, DRAW_AT + 0.55)
-      .fromTo(edge, { p: 0 }, { p: 1, duration: DRAW, ease: 'power2.inOut', onUpdate: rideEdge }, DRAW_AT + 0.55)
-      .fromTo(head, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'sine.out' }, DRAW_AT + 0.55)
+      .fromTo(edge, { p: 0 }, { p: 1, duration: DRAW, ease: 'power2.inOut', onUpdate: rideEdge, immediateRender: false }, DRAW_AT + 0.55)
+      .fromTo(head, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'sine.out', immediateRender: false }, DRAW_AT + 0.55)
       .to(head, { opacity: 0, duration: 0.4, ease: 'sine.inOut' }, DRAW_AT + 0.55 + DRAW - 0.3)
       // the marker is back on the line as soon as the edge passes its x
       .to(marker, { opacity: 1, duration: 0.45, ease: 'power2.out' },
@@ -140,14 +148,14 @@ export function bonus(card: HTMLElement): () => void {
     const after = DRAW_AT + 0.55 + DRAW;
     pulse(loop, marker, after - 0.15,
       { scale: 1.22, filter: 'brightness(1.5)' },
-      { scale: 1, filter: 'brightness(1)' }, 0.38, 0.9);
+      { scale: 1, filter: 'brightness(1)' }, 0.38, 0.9, 'transform');
     pulse(loop, bolt, after,
-      { yPercent: pct(bolt, -16, u), scale: 1.12 }, { yPercent: 0, scale: 1 }, 0.4, 0.85);
+      { yPercent: pct(bolt, -16, u), scale: 1.12 }, { yPercent: 0, scale: 1 }, 0.4, 0.85, 'transform');
     pulse(loop, pie, after + 0.3,
-      { yPercent: pct(pie, -14, u), scale: pieScale * 1.15 }, { yPercent: 0, scale: pieScale }, 0.4, 0.85);
+      { yPercent: pct(pie, -14, u), scale: pieScale * 1.15 }, { yPercent: 0, scale: pieScale }, 0.4, 0.85, 'transform');
     pulse(loop, pill, after + 0.35,
       { yPercent: pct(pill, -14, u), borderColor: 'rgba(255, 138, 92, 0.75)' },
-      { yPercent: 0, borderColor: getComputedStyle(pill).borderTopColor }, 0.45, 0.9);
+      { yPercent: 0, borderColor: getComputedStyle(pill).borderTopColor }, 0.45, 0.9, 'transform,borderColor');
     loop
       .call(() => { tally.bonus = 0; paintBonus(); }, undefined, after + 0.4)
       .to(tally, { bonus: 200, duration: 1.3, ease: 'power2.out', onUpdate: paintBonus }, after + 0.45);

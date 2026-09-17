@@ -208,14 +208,14 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   };
 
   const fireBadge = (b: (typeof badgeInfo)[number]) => spawn((tl) => {
-    tl.to(b.el, { x: b.lean.x * u, y: b.lean.y * u, scale: 1.16, duration: 0.26, ease: 'power2.out' }, 0)
-      .to(b.glow, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0)
+    tl.fromTo(b.el, { x: 0, y: 0, scale: 1 }, { x: b.lean.x * u, y: b.lean.y * u, scale: 1.16, duration: 0.26, ease: 'power2.out' }, 0)
+      .fromTo(b.glow, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0)
       .to(b.el, { x: 0, y: 0, scale: 1, duration: 0.78, ease: 'power2.out' }, 0.26)
       .to(b.glow, { opacity: 0, duration: 0.72, ease: 'power2.out' }, 0.3);
   });
 
   const fireTag = (t: (typeof tagInfo)[number]) => spawn((tl) => {
-    tl.to(t.dot, { scale: 2.1, duration: 0.24, ease: 'power2.out' }, 0)
+    tl.fromTo(t.dot, { scale: 1 }, { scale: 2.1, duration: 0.24, ease: 'power2.out' }, 0)
       .to(t.dot, { scale: 1, duration: 0.8, ease: 'power2.out' }, 0.24);
   });
 
@@ -224,6 +224,19 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     ...badgeInfo.map((b) => ({ s: b.s, fire: () => fireBadge(b) })),
     ...tagInfo.map((t) => ({ s: t.s, fire: () => fireTag(t) })),
   ].sort((a, b) => a.s - b.s);
+
+  /** Hand every design element back to CSS, exactly as it is drawn in Figma. */
+  const moved = [...rings, ...badges, ...pillGroup, ...tags, ...tagDots, ...nodes, stub, diamond, trackTop, trackBottom]
+    .filter((el): el is HTMLElement => !!el);
+  const settleProps = () => { gsap.set(moved, { clearProps: 'transform,opacity,clipPath' }); };
+
+  // Before anything is built. An earlier instance killed part-way through its
+  // load-in -- StrictMode's mount/cleanup/mount, or a hot reload -- can leave an
+  // inline `scale(0.72)` behind, and a `from` tween built against that reads it
+  // as the element's natural value and strands it there forever (the same trap
+  // lib/motion.ts documents on `pop`). Every entrance below states both ends
+  // explicitly as well, so neither half of that can happen.
+  settleProps();
 
   /* ── timelines ──────────────────────────────────────────────────────────── */
 
@@ -244,18 +257,18 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 1. The diamond fires — the order is placed at the BTC/USD desk.
   if (diamond) {
-    loop.to(diamond, { scale: 1.5, rotation: 45, duration: 0.26, ease: 'power2.out' }, 0)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.5, rotation: 45, duration: 0.26, ease: 'power2.out' }, 0)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 0.26);
   }
   if (coin) {
-    loop.to(coin, { scale: 1.12, duration: 0.26, ease: 'power2.out' }, 0.06)
+    loop.fromTo(coin, { scale: 1 }, { scale: 1.12, duration: 0.26, ease: 'power2.out' }, 0.06)
         .to(coin, { scale: 1, duration: 0.5, ease: 'power2.out' }, 0.32);
   }
 
   // 2. The rings ripple outward from it — smallest first.
   rings.forEach((ring, i) => {
     const at = 0.1 + i * 0.14;
-    loop.to(ring, { scale: 1.055, duration: 0.5, ease: 'sine.inOut' }, at)
+    loop.fromTo(ring, { scale: 1 }, { scale: 1.055, duration: 0.5, ease: 'sine.inOut' }, at)
         .to(ring, { scale: 1, duration: 0.6, ease: 'sine.inOut' }, at + 0.5);
   });
 
@@ -279,22 +292,28 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 4. It reaches the mark's feed, then settles back into the diamond.
   if (feed) {
-    loop.to(feed, { scale: 2.6, duration: 0.22, ease: 'power2.out' }, 4.45)
+    loop.fromTo(feed, { scale: 1 }, { scale: 2.6, duration: 0.22, ease: 'power2.out' }, 4.45)
         .to(feed, { scale: 1, duration: 0.55, ease: 'power2.out' }, 4.67);
   }
   if (diamond) {
-    loop.to(diamond, { scale: 1.35, rotation: 45, duration: 0.22, ease: 'power2.out' }, 4.55)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.35, rotation: 45, duration: 0.22, ease: 'power2.out' }, 4.55)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 4.77);
   }
 
-  // 5. Rest, so the beat reads as one event rather than a conveyor belt.
+  // 5. Rest, so the beat reads as one event rather than a conveyor belt. The
+  //    props are handed back to CSS first, so a still taken during the rest is
+  //    byte-identical to the design with no script running at all -- no inline
+  //    `matrix(1,0,0,1,0,0)` left behind to re-rasterise a hairline stroke.
+  loop.call(() => settleProps(), undefined, 5.7);
   loop.to({}, { duration: 0.01 }, 8.0);
 
   const loadIn = gsap.timeline({ paused: true, onComplete: () => { settleProps(); loop.restart(true); } });
   const B = 0.3; // the shared hero entrance is still fading the visual up until ~1.6s
 
   if (rings.length) {
-    loadIn.from(rings, { scale: 0.88, opacity: 0, duration: 1.0, stagger: 0.14, ease: 'expo.out', transformOrigin: '50% 50%' }, B);
+    loadIn.fromTo(rings,
+      { scale: 0.88, opacity: 0, transformOrigin: '50% 50%' },
+      { scale: 1, opacity: 1, duration: 1.0, stagger: 0.14, ease: 'expo.out' }, B);
   }
   // The track is an <img>, so it cannot be drawn with a dash offset. A clip
   // wipe from each half's own seam reads the same way: the circuit traces
@@ -303,24 +322,21 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   if (trackBottom) loadIn.fromTo(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut' }, B + 0.35);
 
   if (pillGroup.length) {
-    loadIn.from(pillGroup, { x: -22 * u, opacity: 0, duration: 0.85, stagger: 0.07, ease: 'expo.out' }, B + 0.2);
+    loadIn.fromTo(pillGroup,
+      { x: -22 * u, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.85, stagger: 0.07, ease: 'expo.out' }, B + 0.2);
   }
   // Badges arrive in the order the circuit reaches them, not in document order.
   const arrivalOrder = [...badgeInfo].sort((a, b) => a.s - b.s).map((b) => b.el);
   if (arrivalOrder.length) {
-    loadIn.from(arrivalOrder, { scale: 0.72, opacity: 0, duration: 0.7, stagger: 0.13, ease: 'expo.out', transformOrigin: '50% 50%' }, B + 0.45);
+    loadIn.fromTo(arrivalOrder,
+      { scale: 0.72, opacity: 0, transformOrigin: '50% 50%' },
+      { scale: 1, opacity: 1, duration: 0.7, stagger: 0.13, ease: 'expo.out' }, B + 0.45);
   }
-  if (tags.length) loadIn.from(tags, { y: 12 * u, opacity: 0, duration: 0.75, stagger: 0.12, ease: 'expo.out' }, B + 0.55);
-  if (stub) loadIn.from(stub, { scaleX: 0, duration: 0.45, ease: 'expo.out', transformOrigin: '0% 50%' }, B + 0.62);
+  if (tags.length) loadIn.fromTo(tags, { y: 12 * u, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'expo.out' }, B + 0.55);
+  if (stub) loadIn.fromTo(stub, { scaleX: 0, transformOrigin: '0% 50%' }, { scaleX: 1, duration: 0.45, ease: 'expo.out' }, B + 0.62);
   if (diamond) loadIn.fromTo(diamond, { scale: 0, rotation: 45 }, { scale: 1, rotation: 45, duration: 0.6, ease: 'expo.out' }, B + 0.8);
-  if (nodes.length) loadIn.from(nodes, { scale: 0.4, opacity: 0, duration: 0.5, stagger: 0.05, ease: 'expo.out', transformOrigin: '50% 50%' }, B + 0.7);
-
-  /** Hand every design element back to CSS, exactly as it is drawn in Figma. */
-  const moved = [...rings, ...badges, ...pillGroup, ...tags, ...tagDots, ...nodes, stub, diamond, trackTop, trackBottom]
-    .filter((el): el is HTMLElement => !!el);
-  function settleProps() {
-    gsap.set(moved, { clearProps: 'transform,opacity,clipPath' });
-  }
+  if (nodes.length) loadIn.fromTo(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'expo.out' }, B + 0.7);
 
   /* ── when it runs: the slide is active AND the hero is on screen ────────── */
 

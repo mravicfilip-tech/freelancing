@@ -120,7 +120,12 @@ export function funds(card: HTMLElement): () => void {
       gsap.set(nodes, { opacity: 0, scale: 0.55 });
     }
 
-    /* ---------------------------------------------------------------- loop */
+    /* ---------------------------------------------------------------- loop
+       Every `fromTo` here states `immediateRender: false`. A `fromTo` writes its
+       FROM value the moment it is created, even inside a paused timeline, and
+       this loop is built in the same call that parks the artwork at its start
+       state — so without it the loop would overwrite that start state before the
+       load-in had a chance to animate away from it. */
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.2 });
 
     // 1 — the four markets hand over, each sliding a step toward the wallet
@@ -129,20 +134,20 @@ export function funds(card: HTMLElement): () => void {
       const at = i * 0.16;
       pulse(loop, tile, at,
         { xPercent: pct(tile, -11, u, 'x'), scale: 1.16, filter: 'brightness(1.7)' },
-        { xPercent: 0, scale: 1, filter: 'brightness(1)' }, 0.36, 0.72);
+        { xPercent: 0, scale: 1, filter: 'brightness(1)' }, 0.36, 0.72, 'transform');
       if (label) {
         pulse(loop, label, at,
-          { xPercent: pct(label, -11, u, 'x') }, { xPercent: 0 }, 0.36, 0.72);
+          { xPercent: pct(label, -11, u, 'x') }, { xPercent: 0 }, 0.36, 0.72, 'transform');
       }
     });
 
     // 2 — the contract chip answers
     pulse(loop, chips[0], 0.9,
       { yPercent: pct(chips[0], -11, u), scale: 1.05, borderColor: 'rgba(255, 138, 92, 0.75)' },
-      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.42, 0.8);
+      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 3 — the node on the orbit flares and lets the packet go
-    pulse(loop, nodes[1], 1.3, { scale: 2 }, { scale: 1 }, 0.3, 0.7);
+    pulse(loop, nodes[1], 1.3, { scale: 2 }, { scale: 1 }, 0.3, 0.7, 'transform');
 
     // 4 — 226 design pixels of travel, from that node into the wallet
     const packet = { p: 0 };
@@ -154,26 +159,26 @@ export function funds(card: HTMLElement): () => void {
     ridePacket();
     loop
       .to([wire, head], { opacity: 1, duration: 0.3, ease: 'sine.out' }, 1.5)
-      .fromTo(packet, { p: 0 }, { p: 1, duration: 2, ease: 'power1.inOut', onUpdate: ridePacket }, 1.55)
+      .fromTo(packet, { p: 0 }, { p: 1, duration: 2, ease: 'power1.inOut', onUpdate: ridePacket, immediateRender: false }, 1.55)
       .fromTo(wire, { strokeDashoffset: TRAIL },
-        { strokeDashoffset: -WIRE_LEN, duration: 2, ease: 'power1.inOut' }, 1.55)
+        { strokeDashoffset: -WIRE_LEN, duration: 2, ease: 'power1.inOut', immediateRender: false }, 1.55)
       .to([wire, head], { opacity: 0, duration: 0.45, ease: 'sine.inOut' }, 3.4);
 
     // 5 — the withdrawal, under the travelling packet
     pulse(loop, chips[1], 2.35,
       { yPercent: pct(chips[1], -11, u), scale: 1.05, borderColor: 'rgba(255, 138, 92, 0.75)' },
-      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.42, 0.8);
+      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 6 — it lands: the node on the wallet ring, the ring closing, the disc
-    pulse(loop, nodes[0], 3.35, { scale: 2 }, { scale: 1 }, 0.3, 0.7);
+    pulse(loop, nodes[0], 3.35, { scale: 2 }, { scale: 1 }, 0.3, 0.7, 'transform');
     loop
       .to(ring, { opacity: 1, duration: 0.3, ease: 'sine.out' }, 3.5)
-      .fromTo(ring, { strokeDashoffset: CIRC }, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.out' }, 3.6)
+      .fromTo(ring, { strokeDashoffset: CIRC }, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.out', immediateRender: false }, 3.6)
       .to(ring, { opacity: 0, duration: 0.7, ease: 'sine.inOut' }, 5.1);
-    pulse(loop, disc, 4.25, { scale: 1.18 }, { scale: 1 }, 0.42, 0.9);
+    pulse(loop, disc, 4.25, { scale: 1.18 }, { scale: 1 }, 0.42, 0.9, 'transform');
     pulse(loop, walletLabel, 4.3,
       { textShadow: '0 0 12px rgba(255, 251, 248, 0.9)' },
-      { textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9);
+      { textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9, 'textShadow');
 
     /* ------------------------------------------------------------- load-in
        Tile and label travel together, so the pairs are interleaved and the

@@ -82,7 +82,11 @@ for (const width of WIDTHS) {
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
         const row = {
-          k: (el.className?.toString?.() || el.tagName).slice(0, 44),
+          // getAttribute, not `className`: on an SVG element `className` is an
+          // SVGAnimatedString object, so every inline-SVG node stringified to
+          // "[object SVGAnimatedString]" and a diff naming one was unlocatable.
+          // Whole sections are inline SVG now -- 124 elements in the fan alone.
+          k: (el.getAttribute('class') || el.tagName).slice(0, 44),
           x: +(r.left - base.left).toFixed(1), y: +(r.top - base.top).toFixed(1),
           w: +r.width.toFixed(1), h: +r.height.toFixed(1),
         };

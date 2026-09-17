@@ -6,7 +6,8 @@
  * pillars already use, so the type and the cards arrive out of blur rather than
  * simply fading.
  *
- * THE SEQUENCE (2.75s end to end)
+ * THE SEQUENCE (2.87s end to end; times below are measured from the end of the
+ * held lead-in beat that every cue is offset by — see LEAD)
  *   0.00  The eyebrow — the label on the band, small and quiet, so the section
  *         is named before anything stands in it.
  *   0.18  THE HEADING, rising out of its own mask and resolving from soft. The
@@ -18,6 +19,9 @@
  *         settling. It is the largest thing in the band, so it travels
  *         furthest, out of the deepest blur, over the longest tween — it is
  *         what the three cards have been pointing at. Lands at 2.75.
+ *
+ * Under 1080px the grid stacks and the panel sits above the list, so those last
+ * two beats swap and the band still fills top to bottom. See LEAD_AT.
  *
  * Every tween is a `from`: the resting markup is the finished state, so a build
  * that never runs leaves the section simply present. There is no `fromTo` here
@@ -53,13 +57,36 @@
 import { EASE, intoLines, rise } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';
 
+/**
+ * A held beat before the first element moves.
+ *
+ * The section is revealed and the timeline starts in the same frame, and that
+ * frame is an expensive one: the pending hold comes off four held elements at
+ * once, including an 886x610 panel that has never been painted. Anything
+ * scheduled at zero spends that frame travelling unseen — measured here, the
+ * eyebrow was already a third of the way through its rise by the first frame
+ * the browser actually put on screen, so only 9.6px of its 16px was ever
+ * visible. An eighth of a second of nothing costs the sequence nothing and
+ * hands the first beat back whole.
+ */
+const LEAD = 0.12;
+
 /** The heading, a beat after the eyebrow that names the band. */
-const TITLE_AT = 0.18;
-/** The step cards, once the heading has stopped moving, and the gap between them. */
-const CARDS_AT = 0.95;
+const TITLE_AT = LEAD + 0.18;
+/**
+ * The cards and the panel, and the gap between one card and the next.
+ *
+ * Whichever of the two the layout puts first goes first: the grid stacks under
+ * 1080px and the panel moves ABOVE the list there, so running the desktop order
+ * on a phone would fill the band bottom-up and leave the topmost thing on screen
+ * arriving last. The times are a mirror image, not a second design — the leader
+ * opens, the follower overlaps its tail.
+ */
+const LEAD_AT = LEAD + 0.95;
+const FOLLOW_AT = LEAD + 1.5;
 const CARD_STEP = 0.18;
-/** The panel, overlapping the last card so the column flows into it. */
-const PANEL_AT = 1.5;
+/** Where the stack puts the panel first. Matches `.steps__panels { order: 1 }`. */
+const STACKED = '(max-width: 1080px)';
 
 /**
  * Already arrived once, on this very element, and the timeline ran to its end.
@@ -107,9 +134,12 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
   const title = q('.steps__title')[0];
   const cards = q('.step');
   const panels = q('.steps__panels')[0];
+  const stacked = typeof matchMedia !== 'undefined' && matchMedia(STACKED).matches;
+  const cardsAt = stacked ? FOLLOW_AT : LEAD_AT;
+  const panelAt = stacked ? LEAD_AT : FOLLOW_AT;
 
   /* 1 — the band names itself. */
-  rise(tl, q('.eyebrow'), 0, { y: 14, duration: 0.8, clearProps: 'transform,opacity' });
+  rise(tl, q('.eyebrow'), LEAD, { y: 16, duration: 0.8, clearProps: 'transform,opacity' });
 
   /* 2 — the heading. One sentence, so one mask: the whole line rises out of it
      as a unit and sharpens on the way. It is the first real movement in the
@@ -132,14 +162,14 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
      card arrives as one thing; nothing inside them is staggered separately.
      The active card's orange rail and its progress bar are pseudo-elements and
      ride the card's own transform. */
-  outOfBlur(tl, cards, CARDS_AT, { y: 24, blur: 9, duration: 0.95, stagger: CARD_STEP, fade: 0.4 });
+  outOfBlur(tl, cards, cardsAt, { y: 24, blur: 9, duration: 0.95, stagger: CARD_STEP, fade: 0.4 });
 
   /* 4 — the panel, last and largest, as a single object. `expo.out` is 99%
      travelled at 70% of its duration, so it is effectively standing still well
      before the tween formally ends and the story loop inside it is never
      playing against a moving frame. */
   if (panels) {
-    outOfBlur(tl, panels, PANEL_AT, { y: 34, blur: 14, duration: 1.25, fade: 0.5 });
+    outOfBlur(tl, panels, panelAt, { y: 34, blur: 14, duration: 1.25, fade: 0.5 });
   }
 
   // The last item on the timeline: reached only by a build that performed the

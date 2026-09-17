@@ -47,11 +47,22 @@
  * anchor would have outranked nothing but would have promoted the span; an
  * inline transform on the span itself would have frozen the roll outright.
  *
- * The social buttons' hover. `.footer__social img` carries a `filter` of its
- * own in Footer.css that takes the glyph to white on hover and on focus. The
+ * The social buttons' hover, which is now a `color` move on the anchor rather
+ * than the `brightness(0) invert(1)` the glyph used to carry -- the icons are
+ * masks and take their paint from `color`, so hover is --ink-2 to --ink. The
  * tween below moves the `<li>` and clears `transform`, `filter` and `opacity`
- * from THAT element by name, so nothing inline is ever left sitting on the
- * anchor or on the image for the hover rule to fight.
+ * from THAT element by name, and it has never touched `color` on anything, so
+ * nothing inline is left sitting on the anchor for the hover rule to fight.
+ *
+ * COLOUR, AT ALL. This module reads no colour and sets none: every tween
+ * here is y, blur, opacity or scaleX. That is why there is no `tok()` call in
+ * it and why it needs none -- there is no cool-down target to capture, so
+ * nothing here can freeze against the palette that was live when the section
+ * built. Blur and opacity mean the same thing on paper as on the dark page:
+ * out of soft into sharp, out of nothing into present. The one beat that could
+ * have been theme-shaped is the glow bloom at 0.00, and it is a `from` to
+ * whatever the stylesheet already holds -- 0.8 in both themes -- so in light it
+ * blooms the paper's blush up off the bottom edge on exactly the same curve.
  *
  * No `will-change` anywhere: a standing compositor promotion costs text its
  * subpixel antialiasing permanently, and GSAP promotes for the length of a

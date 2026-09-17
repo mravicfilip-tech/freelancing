@@ -83,7 +83,45 @@ function unit(el: HTMLElement): number {
  */
 const LEAD = 0.34;
 
+/**
+ * Sections whose arrival has already been performed, start to finish, in this
+ * page's life.
+ *
+ * `useSectionMotion` rebuilds whenever its effect re-runs, and that is right:
+ * React mounts, tears down and mounts again inside a single frame, and the
+ * first build is reverted before a paint, so refusing to rebuild would leave
+ * the band settled and silent — the exact fault `lib/motion.ts` records against
+ * an earlier version of the hook. But a rebuild can also arrive long after the
+ * band has landed and been watched, with the section still on screen. Then the
+ * observer refires immediately and the entrance performs itself a second time.
+ *
+ * Measured on the dev server: `Familiar.loop.ts` was saved at 14:28:50, vite
+ * propagated the hot update to its importer `Familiar.tsx`, React re-mounted
+ * the section on the same DOM node, and the trace recorded the teardown at
+ * 7306ms and a second full build at 7624ms — two 131px phone landings in one
+ * page view. Wiring the loop in is what put the loop's module on this
+ * component's import path, which is why the double play appeared with it.
+ *
+ * So the two cases are told apart by whether the previous timeline actually
+ * reached its end. The mark below is the last thing on the timeline, so a build
+ * that is reverted mid-flight — StrictMode's, always — never sets it and the
+ * next build plays in full. One that ran to completion does, and the next build
+ * adds no tweens at all: the hook reveals the section, the empty timeline
+ * completes, and the band is simply there, already landed, with the ambient
+ * loop restarting over it.
+ *
+ * Keyed on the element, so a genuinely new section node performs its arrival
+ * properly. Editing this file resets the set with the module, which is what you
+ * want while working on the motion itself.
+ */
+const LANDED = new WeakSet<HTMLElement>();
+
 export function buildFamiliar({ el, q, tl }: SectionMotion) {
+  // Already landed once and still on screen: settle, do not re-perform. The
+  // hook reveals the section either way, and an empty timeline completes on the
+  // next tick, so the loop is handed the band exactly as it would have been.
+  if (LANDED.has(el)) return;
+
   const u = unit(el);
   /** Design pixels, in the CSS pixels this viewport renders them as. */
   const d = (n: number) => n * u;
@@ -171,6 +209,10 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
 
   /* 7 — the category strip closes the band out, left to right. */
   rise(tl, q('.fam__chips > *'), LEAD + 2.65, { y: d(40), duration: 0.8, stagger: 0.08, clearProps: 'transform,opacity' });
+
+  // Last on the timeline, so it is only reached if the arrival was actually
+  // performed. A reverted build never gets here. See LANDED.
+  tl.call(() => { LANDED.add(el); });
 }
 
 /* Ambient loop -----------------------------------------------------------------

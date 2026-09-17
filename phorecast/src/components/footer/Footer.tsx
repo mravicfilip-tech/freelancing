@@ -1,3 +1,4 @@
+import { Icon } from '../Icon';
 import { Logo } from '../Logo';
 import { Roll } from '../Roll';
 import { useSectionMotion } from '../../lib/motion';
@@ -47,7 +48,7 @@ export function Footer() {
               {SOCIALS.map((s) => (
                 <li key={s.name}>
                   <a href={`#${s.name.toLowerCase()}`} className="footer__social" aria-label={s.name}>
-                    <img src={s.icon} alt="" width={20} height={20} />
+                    <Icon src={s.icon} w={20} h={20} />
                   </a>
                 </li>
               ))}

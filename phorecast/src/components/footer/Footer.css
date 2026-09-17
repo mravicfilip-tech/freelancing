@@ -15,7 +15,7 @@
 
   /* The glow band. Dark's four discs, verbatim: the ramp runs deep red on the
      right, through brick and peach, to a pale hot core at 24% from the left. */
-  --footer-g-red: linear-gradient(150deg, #0f0e0d 28%, #8c0303 100%);
+  --footer-g-red: linear-gradient(150deg, var(--page) 28%, #8c0303 100%);
   --footer-g-orange: #b43725;
   --footer-g-peach: #ec7850;
   --footer-g-cream: #fbd6ca;
@@ -49,41 +49,65 @@
 .footer__social {
   display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px;
   background: var(--footer-plate); border: 1px solid var(--footer-plate-line);
-  transition: background-color 160ms ease, border-color 160ms ease;
+  color: var(--ink-2);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 .footer__social:hover,
-.footer__social:focus-visible { background: var(--veil-line); border-color: var(--footer-plate-line-hover); }
-
-/* The glyph goes to white on hover.
-
-   It cannot be recoloured the way the text links are. Each of these four icons
-   is an `<img>` pointing at an SVG file whose glyph path carries a literal
-   `fill="#9D9D9D"`, and an external SVG loaded through `<img>` is a separate
-   document: no rule in this stylesheet reaches inside it, and `currentColor`
-   has nothing to inherit from. The fan section hit exactly this and answered it
-   the same way -- see PILL_ICON_LIT in Fan.loop.ts. `brightness(0)` flattens
-   every channel to black, `invert(1)` lifts it to white; both are per-pixel and
-   leave alpha alone, so the faint 6%-white plate and 10%-white border the
-   export also draws inside the file come back out at exactly the values they
-   went in at, and only the grey glyph changes.
-
-   The rest state is written out as the identity filter rather than left as
-   `none`, so the transition has two filter lists to interpolate between instead
-   of a keyword and a list. A plain 160ms colour move, matching the button's own
-   background transition above: no glow, no bloom, no shadow, no scale.
-
-   `:focus-visible` gets the same thing, the way global.css does for the roll,
-   so hover is not the only signal. Reduced motion drops the transition and
-   keeps the state change -- the white still arrives, it just arrives at once. */
-.footer__social img {
-  width: 20px; height: 20px;
-  filter: brightness(1) invert(0);
-  transition: filter 160ms ease;
+.footer__social:focus-visible {
+  background: var(--veil-line); border-color: var(--footer-plate-line-hover); color: var(--ink);
 }
-.footer__social:hover img,
-.footer__social:focus-visible img { filter: brightness(0) invert(1); }
+
+/* The glyph, and the end of the invert hack.
+
+   What stood here was `filter: brightness(0) invert(1)`, and the comment that
+   went with it was right about why: each of these four icons is an `<img>`
+   pointing at an SVG whose glyph path carries a literal `fill="#9D9D9D"`, an
+   external SVG loaded through `<img>` is a separate document, and no rule in
+   this stylesheet reaches inside it. `currentColor` had nothing to inherit
+   from, so the only lever left was a per-pixel filter -- flatten every channel
+   to black, then lift it to white.
+
+   That lever has exactly one setting: white. On paper white is the page, so
+   the hover would have taken the glyph to invisible and the state would simply
+   have stopped existing -- the failure this whole job is about.
+
+   <Icon> makes the file a MASK instead (see src/components/Icon.tsx). The
+   silhouette comes from the asset's alpha and the paint comes from `color` on
+   this anchor, so the hover is an ordinary colour move on an ordinary token
+   and the filter is deleted rather than translated.
+
+   REST is --ink-2. That is not a preference: --ink-2 is #9d9d9d in dark, which
+   is the exact hex the four assets bake, so the conversion changes the rest
+   glyph by nothing at all. In light it is #5e5651, the same quiet grey the
+   tagline and the links beside it use.
+
+   LIT is --ink -- "as far from the page as ink goes", which is what the invert
+   actually meant. #fffbf8 in dark and #1a1512 in light, so the direction flips
+   on its own: on the dark page the glyph brightens to reach the eye, on paper
+   it darkens to do the same thing. --on-accent would have frozen it white and
+   --art-ink-2 would have frozen it at #9d9d9d, which on cream is 2.2:1 -- a
+   control nobody can see reacting.
+
+   One thing the mask gives away for free. Three of the four files (x, discord,
+   telegram) are 44x44 exports that draw their own 6%-white plate and 10%-white
+   border INSIDE the file, under the glyph. The filter left those frozen as
+   white in both themes; as mask alpha they are now painted in `color` like
+   everything else, so on paper they settle into the button instead of sitting
+   on it as a pale square. The tiktok export is a bare 24x24 glyph and has
+   never had them -- an asymmetry that predates this and is preserved.
+
+   Timing is untouched: the same 160ms ease as the plate and the border it
+   moves with, now on `color` alongside them rather than on `filter` beneath
+   them. `:focus-visible` gets the same treatment, the way global.css does for
+   the roll, so hover is not the only signal. Reduced motion drops the
+   transition and keeps the state change -- the lit colour still arrives, it
+   just arrives at once.
+
+   No sizing rule here on purpose: <Icon> writes width and height inline from
+   the 20/20 the <img> carried, so the box is the same box and there is nothing
+   for a stylesheet to disagree with. */
 @media (prefers-reduced-motion: reduce) {
-  .footer__social img { transition: none; }
+  .footer__social { transition: none; }
 }
 
 .footer__columns { display: flex; gap: 48px; flex-wrap: wrap; }
@@ -120,6 +144,145 @@
   font-family: var(--font-display); font-weight: 600; font-size: clamp(88px, 12vw, 230px);
   line-height: 1; text-transform: uppercase; letter-spacing: -0.01em;
   color: var(--veil-line); white-space: nowrap;
+}
+
+/* --- Light ------------------------------------------------------------------
+   Written twice, exactly as tokens.css writes the palette twice, because a
+   media query cannot go in a selector list and the custom-property indirection
+   that would avoid the duplication is the one thing LIGHTMODE.md 1.4 says not
+   to be clever about. The two blocks MUST stay identical; only the conditions
+   differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies -- index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back
+   to, and leaving it out is how a section ends up drawing its dark glow on a
+   light page. Only the --footer-* locals are redefined; everything else in
+   this file reads a role token and has already flipped.
+
+   This is the shape for the other eight sections. -------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .footer {
+  /* The glow band on paper.
+
+     Same four discs, same positions, same radii, same blur, same opacities --
+     the geometry is byte-for-byte what dark draws, so the gate stays quiet and
+     the two themes agree about where the band's energy is. What changes is
+     what the layer DOES.
+
+     In dark the stack is a sunrise: it climbs from the page's own near-black,
+     through brick and peach, to a pale hot core low and left of centre, and
+     falls back to near-black at the right edge. Recoloured literally, that is
+     a dark red smear with a grey corner in it over cream -- the #0f0e0d stop
+     of the red disc becomes a bruise on the right-hand legal links, which is
+     exactly what it looks like before this block exists.
+
+     So the ramp is rebuilt rather than translated, on two rules:
+
+     1. THE PAGE STOP IS THE PAGE. The red disc's first stop is var(--page) in
+        both themes. It was never a dark colour -- it is the ground the disc
+        dissolves into -- so on paper it is paper and the disc simply fades
+        out. Every glow in this repo that starts at #0f0e0d / #1b1b1a / #1d1c1b
+        is the same stop doing the same job.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
+        painted LAST is the palest, because the core of a light source is the
+        brightest thing in it. On paper nothing can be brighter than the page,
+        so a pale core is a hole: the band would read as a halo around nothing.
+        The order is therefore kept and the ramp reversed -- cream, still last
+        and still the core, is now the DEEPEST tint, and red, still the outer
+        falloff, is the faintest. Warmth still peaks where light peaked.
+
+     The result is warm paper with a blush: about 1.37:1 against the page at
+     its densest, which is a shade stronger than the wordmark's 1.35:1 ghost
+     sitting in it and a long way short of a stain. It is a good light-mode
+     idea and it is NOT the same idea as the sunrise -- see LIGHTMODE.md 6.1,
+     which asks for this to be shown before the rest of the page copies it. */
+  --footer-g-red: linear-gradient(150deg, var(--page) 28%, #eebb9f 100%);
+  --footer-g-orange: #f4c7ac;
+  --footer-g-peach: #f9d6bf;
+  --footer-g-cream: #f0b394;
+
+  /* White-alpha becomes ink-alpha, and that single move flips the direction of
+     every one of these states for free: more alpha on a dark page is brighter,
+     more alpha on paper is darker, and both mean "lit". Nothing here needed a
+     rule reversed, only a colour replaced -- which is the cheap half of this
+     job, and the half that does NOT apply to a brightness() or to a literal
+     picked lighter than its rest value.
+
+     The alphas go up by an eighth, because dark ink on paper is less visible
+     per unit alpha than white on black. That is the same 0.04 -> 0.045 and
+     0.12 -> 0.14 step tokens.css takes for --veil and --veil-line, and it
+     lands within half a percent of matching each of these four contrast
+     ratios against its own page: the plate 1.168 -> 1.161, the edges and the
+     rule 1.272 -> 1.265. */
+  --footer-plate: rgba(26, 21, 18, 0.07);
+  --footer-plate-line: rgba(26, 21, 18, 0.11);
+  --footer-plate-line-hover: rgba(26, 21, 18, 0.27);
+  --footer-rule: rgba(26, 21, 18, 0.11);
+  }
+}
+
+:root[data-theme='light'] .footer {
+  /* The glow band on paper.
+
+     Same four discs, same positions, same radii, same blur, same opacities --
+     the geometry is byte-for-byte what dark draws, so the gate stays quiet and
+     the two themes agree about where the band's energy is. What changes is
+     what the layer DOES.
+
+     In dark the stack is a sunrise: it climbs from the page's own near-black,
+     through brick and peach, to a pale hot core low and left of centre, and
+     falls back to near-black at the right edge. Recoloured literally, that is
+     a dark red smear with a grey corner in it over cream -- the #0f0e0d stop
+     of the red disc becomes a bruise on the right-hand legal links, which is
+     exactly what it looks like before this block exists.
+
+     So the ramp is rebuilt rather than translated, on two rules:
+
+     1. THE PAGE STOP IS THE PAGE. The red disc's first stop is var(--page) in
+        both themes. It was never a dark colour -- it is the ground the disc
+        dissolves into -- so on paper it is paper and the disc simply fades
+        out. Every glow in this repo that starts at #0f0e0d / #1b1b1a / #1d1c1b
+        is the same stop doing the same job.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
+        painted LAST is the palest, because the core of a light source is the
+        brightest thing in it. On paper nothing can be brighter than the page,
+        so a pale core is a hole: the band would read as a halo around nothing.
+        The order is therefore kept and the ramp reversed -- cream, still last
+        and still the core, is now the DEEPEST tint, and red, still the outer
+        falloff, is the faintest. Warmth still peaks where light peaked.
+
+     The result is warm paper with a blush: about 1.37:1 against the page at
+     its densest, which is a shade stronger than the wordmark's 1.35:1 ghost
+     sitting in it and a long way short of a stain. It is a good light-mode
+     idea and it is NOT the same idea as the sunrise -- see LIGHTMODE.md 6.1,
+     which asks for this to be shown before the rest of the page copies it. */
+  --footer-g-red: linear-gradient(150deg, var(--page) 28%, #eebb9f 100%);
+  --footer-g-orange: #f4c7ac;
+  --footer-g-peach: #f9d6bf;
+  --footer-g-cream: #f0b394;
+
+  /* White-alpha becomes ink-alpha, and that single move flips the direction of
+     every one of these states for free: more alpha on a dark page is brighter,
+     more alpha on paper is darker, and both mean "lit". Nothing here needed a
+     rule reversed, only a colour replaced -- which is the cheap half of this
+     job, and the half that does NOT apply to a brightness() or to a literal
+     picked lighter than its rest value.
+
+     The alphas go up by an eighth, because dark ink on paper is less visible
+     per unit alpha than white on black. That is the same 0.04 -> 0.045 and
+     0.12 -> 0.14 step tokens.css takes for --veil and --veil-line, and it
+     lands within half a percent of matching each of these four contrast
+     ratios against its own page: the plate 1.168 -> 1.161, the edges and the
+     rule 1.272 -> 1.265. */
+  --footer-plate: rgba(26, 21, 18, 0.07);
+  --footer-plate-line: rgba(26, 21, 18, 0.11);
+  --footer-plate-line-hover: rgba(26, 21, 18, 0.27);
+  --footer-rule: rgba(26, 21, 18, 0.11);
 }
 
 @media (max-width: 1180px) {

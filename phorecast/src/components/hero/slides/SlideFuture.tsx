@@ -12,6 +12,8 @@
  * WebGL scene (components/HeroLogo). `.sl4__mark-slot` is the empty 370 x 370
  * box it belongs in, at 734, 242 in these same group coordinates.
  */
+import { useEffect, useRef } from 'react';
+import { slideFutureMotion } from './SlideFuture.motion';
 import ringLg from '../../../assets/hero/slide4/circle-lg.svg';
 import ringMd from '../../../assets/hero/slide4/circle-md.svg';
 import ringSm from '../../../assets/hero/slide4/circle-sm.svg';
@@ -43,8 +45,17 @@ const WHITE_NODES: ReadonlyArray<readonly [number, number]> = [
 ];
 
 export function SlideFuture() {
+  // The illustration's own load-in and loop. It waits for the slide to become
+  // active (all four slides are mounted at once) and kills itself on unmount.
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    return slideFutureMotion(el);
+  }, []);
+
   return (
-    <div className="sl4" aria-hidden="true">
+    <div className="sl4" aria-hidden="true" ref={ref}>
       <div className="sl4__frame">
         <div className="sl4__stage">
           <img src={ringLg} alt="" className="sl4__ring sl4__ring--lg" />

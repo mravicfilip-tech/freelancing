@@ -754,6 +754,25 @@
   white-space: nowrap;
 }
 
+/* ------------------------------------------------------------------ motion
+   Nothing here changes the settled design — see SlideAccount.motion.ts, which
+   animates from a visible baseline and clears every property it writes. These
+   are compositor hints on the handful of elements that actually move, and they
+   are only live while the module says it is running (`data-sl2-motion`), so a
+   resting slide keeps no extra layers. */
+.sl2[data-sl2-motion='on'] .sl2-toast,
+.sl2[data-sl2-motion='on'] .sl2__tile,
+.sl2[data-sl2-motion='on'] .sl2__pill,
+.sl2[data-sl2-motion='on'] .sl2__pill-disc,
+.sl2[data-sl2-motion='on'] .sl2__diamond,
+.sl2[data-sl2-motion='on'] .sl2-mc__price {
+  will-change: transform, opacity;
+}
+.sl2[data-sl2-motion='on'] .sl2-mc__chart,
+.sl2[data-sl2-motion='on'] .sl2__conn {
+  will-change: clip-path;
+}
+
 /* Below the hero's single-column breakpoint the visual is in normal flow, so
    the box needs a height of its own and sits flush to the left. */
 @media (max-width: 1180px) {

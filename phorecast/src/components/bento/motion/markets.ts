@@ -6,21 +6,22 @@
  * resting on Solana. The card's claim is that the one mark in the middle reaches
  * all of them, so that is what the motion says and nothing else.
  *
- * LOAD-IN (2.6s, after the band's entrance has landed the card)
+ * LOAD-IN (2.2s, after the band's entrance has landed the card)
  *   The measure grid, the two orbit ellipses and the ghost tiles arrive with the
- *   card — they are the field, and the card must never read as blank cream. The
- *   hub is the lead and has the stage alone for half a second. The badged tiles
- *   then dock in order of their distance from it, nearest first, 0.055s apart:
- *   thirteen arrivals inside three quarters of a second, a wave rather than a
- *   list. The orange diamonds on the orbit paths, the cursor and finally the
- *   tooltip close it out.
+ *   card — it must never read as blank cream. The hub is the lead and has the
+ *   stage alone for half a second. The badged tiles then dock in order of their
+ *   distance from it, nearest first: thirteen arrivals inside three quarters of a
+ *   second, a wave rather than a list. The diamonds on the orbit paths, the
+ *   cursor and the tooltip close it out.
  *
- * LOOP (4.0s of story, then 8.5s of nothing — 12.5s end to end)
- *   The hub pulses once and the pulse travels out through the field in the same
- *   distance order — each tile lifts three pixels and settles — passing the two
- *   diamonds on its way. The cursor answers with a click and Solana, the market
- *   it has picked, confirms with its tooltip. Then the card is completely still
- *   for eight and a half seconds.
+ * LOOP (5.8s of story, then 3.9s of nothing — 9.7s end to end)
+ *   The hub pulses and the pulse travels out through the field in the same
+ *   distance order, each tile pushed sixteen design pixels straight out along its
+ *   own radius and drawn back — a ring expanding through the orbit rather than a
+ *   row of things blinking. Then the cursor does the card's job: it leaves Solana,
+ *   crosses two hundred and thirty six design pixels of the field to Gold, the
+ *   tooltip re-labels itself and Gold answers; then it comes back and Solana
+ *   answers. The card is then completely still for nearly four seconds.
  *
  * Two things this module must not do
  * ----------------------------------
@@ -29,19 +30,23 @@
  *    pixel and would both thicken every hairline and drag the glyphs off their
  *    marks. A previous version of this file wrote a lift shadow on every frame
  *    and silently replaced the rings: measured `rgba(0,0,0,0.09) 0 0 0 0.74px
- *    inset` at 1.2s had become `rgba(22,12,9,0.14) 0 4px 11px -8px` by 6s. The
- *    lift here is scale and translation only, which are paint transforms and
- *    leave the shadow untouched.
+ *    inset` at 1.2s had become `rgba(22,12,9,0.14) 0 4px 11px -8px` by 6s. Every
+ *    displacement here is a transform, which is a paint operation and leaves the
+ *    computed shadow untouched.
  * 2. Look tiles up by index. DOM order changed when the box was rebuilt and it
  *    can change again; every badged tile carries `data-market`, so that is the
- *    key. The ordering below is computed from measured geometry, not assumed.
+ *    key, and the ordering below is computed from measured geometry.
+ *
+ * Nothing here reads the pointer. The cursor is a drawn object following a
+ * scripted path, the same on every machine.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
 import { bandStaged, onSectionReady, pulse, q1, qa, whileVisible } from './shared';
 
-/** The market the cursor rests on in the design; it gets the closing beat. */
-const PICKED = 'Solana';
+/** The market the cursor rests on in the design, and the one it visits. */
+const HOME = 'Solana';
+const VISIT = 'Gold';
 
 export function markets(card: HTMLElement): () => void {
   if (REDUCED) return () => {};
@@ -49,33 +54,38 @@ export function markets(card: HTMLElement): () => void {
   const hub = q1(card, '.mk__hub');
   const cursor = q1(card, '.mk__cursor');
   const tooltip = q1(card, '.mk__tooltip');
+  const field = q1(card, '.mk__field');
   const diamonds = qa(card, '.mk__diamond');
   const tiles = qa(card, '.mk__tile[data-market]');
-  if (!hub || !cursor || !tooltip || tiles.length === 0) return () => {};
+  if (!hub || !cursor || !tooltip || !field || tiles.length === 0) return () => {};
 
-  const picked = tiles.find((t) => t.dataset.market === PICKED) ?? null;
+  const byName = (name: string) => tiles.find((t) => t.dataset.market === name) ?? null;
+  const home = byName(HOME);
+  const visit = byName(VISIT);
+  const restingTip = tooltip.textContent ?? HOME;
 
   /* Several tiles are dimmed in the design (0.3 to 0.8 inline), so each one has
      to come back to its own resting opacity rather than to 1 — and that value
      lives in the style attribute React wrote, which is why it is never handed to
      `clearProps`: clearing it would delete the design's own dimming. */
-  const rest = new Map<HTMLElement, string>();
-  for (const el of tiles) rest.set(el, el.style.opacity);
-  const restOpacity = (el: HTMLElement) => parseFloat(getComputedStyle(el).opacity) || 1;
+  const restOpacity = new Map<HTMLElement, string>();
   const settled = new Map<HTMLElement, number>();
-  for (const el of tiles) settled.set(el, restOpacity(el));
+  for (const el of tiles) {
+    restOpacity.set(el, el.style.opacity);
+    settled.set(el, parseFloat(getComputedStyle(el).opacity) || 1);
+  }
 
-  /* Distance from the hub, measured rather than assumed. The field is laid out
-     in the card's container unit, so pixel geometry is the only honest source
-     at any breakpoint. */
-  const centre = (el: Element) => {
-    const b = el.getBoundingClientRect();
-    return { x: b.left + b.width / 2, y: b.top + b.height / 2 };
-  };
-  const hubC = centre(hub);
-  const byDistance = [...tiles].sort((a, b) => {
-    const ca = centre(a);
-    const cb = centre(b);
+  /* Geometry, measured rather than assumed: the field is laid out in the card's
+     container unit, so pixel rects are the only honest source at any breakpoint.
+     Everything below is then converted to a percentage of the moving element's
+     own box, which is scale-invariant and so survives a resize without the
+     timeline being rebuilt. */
+  const box = (el: Element) => el.getBoundingClientRect();
+  const mid = (el: Element) => { const b = box(el); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; };
+  const hubC = mid(hub);
+  const byDistance = [...tiles].sort((a, bEl) => {
+    const ca = mid(a);
+    const cb = mid(bEl);
     return Math.hypot(ca.x - hubC.x, ca.y - hubC.y) - Math.hypot(cb.x - hubC.x, cb.y - hubC.y);
   });
 
@@ -88,44 +98,89 @@ export function markets(card: HTMLElement): () => void {
     gsap.set([hub, ...tiles, ...diamonds], { transformOrigin: '50% 50%' });
     gsap.set(cursor, { transformOrigin: '12% 10%' });
     if (staged) {
-      gsap.set(hub, { opacity: 0, y: 10, scale: 0.92 });
-      for (const el of tiles) gsap.set(el, { opacity: 0, y: 8, scale: 0.94 });
+      gsap.set(hub, { opacity: 0, y: 12, scale: 0.9 });
+      for (const el of tiles) gsap.set(el, { opacity: 0, y: 10, scale: 0.92 });
       // The diamonds already carry `transform: rotate(45deg)`; restating it keeps
       // GSAP's decomposition honest rather than trusting it to be read back.
-      gsap.set(diamonds, { opacity: 0, scale: 0.6, rotation: 45 });
-      gsap.set(cursor, { opacity: 0, x: 16, y: 13 });
+      gsap.set(diamonds, { opacity: 0, scale: 0.55, rotation: 45 });
+      gsap.set(cursor, { opacity: 0, x: 18, y: 15 });
       gsap.set(tooltip, { opacity: 0, clipPath: 'inset(0 100% 0 0)' });
     }
 
     /* ---------------------------------------------------------------- loop */
-    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 8.5 });
-    pulse(loop, hub, 0, { scale: 1.04 }, { scale: 1 }, 0.45, 0.9);
+    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 3.9 });
+
+    // 1 — the hub, then a ring expanding out through the field
+    pulse(loop, hub, 0, { yPercent: -10, scale: 1.09 }, { yPercent: 0, scale: 1 }, 0.5, 0.9);
+    const OUT = 16; // design pixels, straight out along each tile's own radius
+    const u = box(field).width / 727.454;
+    const radial = (el: HTMLElement, px: number) => {
+      const c = mid(el);
+      const dx = c.x - hubC.x;
+      const dy = c.y - hubC.y;
+      const d = Math.hypot(dx, dy) || 1;
+      const b = box(el);
+      return { xPercent: ((px * u * dx) / d / b.width) * 100, yPercent: ((px * u * dy) / d / b.height) * 100 };
+    };
     byDistance.forEach((tile, i) => {
-      pulse(loop, tile, 0.3 + i * 0.085, { y: -3, scale: 1.045 }, { y: 0, scale: 1 }, 0.38, 0.62);
+      pulse(loop, tile, 0.25 + i * 0.07,
+        { ...radial(tile, OUT), scale: 1.08 },
+        { xPercent: 0, yPercent: 0, scale: 1 }, 0.4, 0.66);
     });
     diamonds.forEach((d, i) => {
-      pulse(loop, d, 0.95 + i * 0.3, { scale: 1.3 }, { scale: 1 }, 0.3, 0.6);
+      pulse(loop, d, 0.8 + i * 0.25,
+        { ...radial(d, 14), scale: 1.8 }, { xPercent: 0, yPercent: 0, scale: 1 }, 0.34, 0.66);
     });
-    // The cursor's click, then the market it has picked answering it.
-    loop
-      .to(cursor, { scale: 0.88, duration: 0.16, ease: 'power2.in' }, 2.6)
-      .to(cursor, { scale: 1, duration: 0.42, ease: 'power3.out' }, 2.76);
-    if (picked) pulse(loop, picked, 2.7, { y: -4, scale: 1.07 }, { y: 0, scale: 1 }, 0.4, 0.8);
-    pulse(loop, tooltip, 2.78, { y: -3 }, { y: 0 }, 0.35, 0.7);
+
+    // 2 — the cursor works: Solana, across the field to Gold, and back
+    if (home && visit) {
+      const target = box(visit);
+      const from = box(cursor);
+      // land the arrow's tip inside the visited tile rather than on its corner
+      const dx = target.left + target.width * 0.78 - from.left;
+      const dy = target.top + target.height * 0.7 - from.top;
+      const move = (el: HTMLElement, out: boolean) => ({
+        xPercent: out ? (dx / box(el).width) * 100 : 0,
+        yPercent: out ? (dy / box(el).height) * 100 : 0,
+      });
+      const GO = 2.25;
+      const BACK = 3.95;
+      const glide = (at: number, out: boolean) => {
+        loop.to(cursor, { ...move(cursor, out), duration: 1, ease: 'power2.inOut' }, at)
+          .to(tooltip, { ...move(tooltip, out), duration: 1, ease: 'power2.inOut' }, at);
+      };
+      const relabel = (at: number, text: string) => {
+        loop.to(tooltip, { opacity: 0.15, duration: 0.18, ease: 'power2.in' }, at)
+          .call(() => { tooltip.textContent = text; }, undefined, at + 0.18)
+          .to(tooltip, { opacity: 1, duration: 0.3, ease: 'power2.out' }, at + 0.18);
+      };
+      glide(GO, true);
+      relabel(GO + 0.35, VISIT);
+      // the click, and the market answering it
+      loop.to(cursor, { scale: 0.82, duration: 0.14, ease: 'power2.in' }, GO + 1)
+        .to(cursor, { scale: 1, duration: 0.4, ease: 'power3.out' }, GO + 1.14);
+      pulse(loop, visit, GO + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8);
+
+      glide(BACK, false);
+      relabel(BACK + 0.35, restingTip);
+      loop.to(cursor, { scale: 0.82, duration: 0.14, ease: 'power2.in' }, BACK + 1)
+        .to(cursor, { scale: 1, duration: 0.4, ease: 'power3.out' }, BACK + 1.14);
+      pulse(loop, home, BACK + 1.05, { yPercent: -26, scale: 1.14 }, { yPercent: 0, scale: 1 }, 0.4, 0.8);
+    }
 
     /* ------------------------------------------------------------- load-in */
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
-    intro.to(hub, { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'expo.out' }, 0);
+    intro.to(hub, { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: 'expo.out' }, 0);
     byDistance.forEach((tile, i) => {
       intro.to(tile, {
         opacity: settled.get(tile) ?? 1, y: 0, scale: 1, duration: 0.7, ease: 'expo.out',
-      }, 0.55 + i * 0.055);
+      }, 0.45 + i * 0.055);
     });
     intro
-      .to(diamonds, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 1.45)
-      .to(cursor, { opacity: 1, x: 0, y: 0, duration: 0.85, ease: 'expo.out' }, 1.7)
-      .to(tooltip, { opacity: 1, clipPath: 'inset(0 0% 0 0)', duration: 0.55, ease: 'power2.out' }, 2.05)
+      .to(diamonds, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 1.25)
+      .to(cursor, { opacity: 1, x: 0, y: 0, duration: 0.8, ease: 'expo.out' }, 1.45)
+      .to(tooltip, { opacity: 1, clipPath: 'inset(0 0% 0 0)', duration: 0.55, ease: 'power2.out' }, 1.7)
       // The wipe was only a way in; the pill's own corner radius owns its shape.
       .set(tooltip, { clearProps: 'clipPath' });
 
@@ -137,9 +192,10 @@ export function markets(card: HTMLElement): () => void {
     stopReady();
     stopVisible();
     ctx.revert();
+    tooltip.textContent = restingTip;
     // `revert` hands the style attribute back as GSAP found it, but the dimmed
     // tiles are restated anyway: their opacity is design, not animation.
-    for (const [el, value] of rest) {
+    for (const [el, value] of restOpacity) {
       if (value) el.style.opacity = value; else el.style.removeProperty('opacity');
     }
   };

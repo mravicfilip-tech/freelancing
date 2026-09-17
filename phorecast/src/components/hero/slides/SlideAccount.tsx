@@ -7,6 +7,9 @@
    Geometry is laid out in Figma design pixels scaled by --u2 (see the CSS),
    so one design px is one 1800th of the hero's content column at any width. */
 
+import { useEffect, useRef } from 'react';
+
+import { slideAccountMotion } from './SlideAccount.motion';
 import './SlideAccount.css';
 
 /* Assets exported from the Figma node. Three photos already exist in the
@@ -57,8 +60,22 @@ function Ranges() {
 }
 
 export function SlideAccount() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  /* The cluster's own choreography — the detail inside the hero's block
+     entrance, and the one loop it keeps. It gates itself on this slide being
+     the active one, so nothing is spent behind a hidden slide.
+     `.sl2` must keep exactly one child (`.sl2__box`): the hero's shared
+     entrance counts the illustration's grandchildren to decide whether to pop
+     the parts or rise the whole block. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    return slideAccountMotion(el);
+  }, []);
+
   return (
-    <div className="sl2" aria-hidden="true">
+    <div className="sl2" aria-hidden="true" ref={ref}>
       <div className="sl2__box">
         <div className="sl2__group">
           <div className="sl2__row">

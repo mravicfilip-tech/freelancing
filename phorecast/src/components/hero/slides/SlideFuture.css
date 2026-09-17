@@ -227,3 +227,50 @@
     transform: translateX(-50%);
   }
 }
+
+/* ── Motion only ──────────────────────────────────────────────────────────
+   Nothing below changes the settled Figma design. `.sl4__pulse` and
+   `.sl4__badge-glow` are created and removed by SlideFuture.motion.ts and are
+   invisible (`opacity: 0`) until it animates them, so if the script never runs
+   the illustration still reads exactly as drawn. The rest is compositor hints
+   and the transform origins the load-in needs. */
+
+.sl4__ring,
+.sl4__badge,
+.sl4__diamond,
+.sl4__pulse { will-change: transform; }
+
+.sl4__diamond { transform-origin: 50% 50%; }
+.sl4__stub { transform-origin: 0% 50%; }
+
+/* The order travelling the dashed circuit. Positioned by transform in design
+   units, so its own box is centred on the origin. */
+.sl4__pulse {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  margin: calc(-6 * var(--u)) 0 0 calc(-6 * var(--u));
+  border-radius: 50%;
+  background: var(--orange-100);
+  box-shadow:
+    0 0 calc(7 * var(--u)) calc(1.5 * var(--u)) color-mix(in srgb, var(--orange-100) 70%, transparent),
+    0 0 calc(20 * var(--u)) calc(5 * var(--u)) color-mix(in srgb, var(--orange-100) 38%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Lights inside a badge as the order reaches it. Clipped by the badge's own
+   overflow: hidden, and sits under the mark so the leaf stays legible. */
+.sl4__badge-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--orange-100) 88%, transparent) 0%,
+    transparent 74%
+  );
+  opacity: 0;
+  pointer-events: none;
+}

@@ -10,21 +10,22 @@
  *   no overshoot. The three promises follow it, 0.14s apart so you can count
  *   them, and "You're in." lands last.
  *
- * LOOP (9.6s of story, then 4.2s of nothing — 13.8s end to end)
+ * LOOP (7.9s of story, then 3.6s of nothing — 11.5s end to end)
  *   One beat, and it is the card's own claim acted out: the dial runs. The arc
  *   the design already draws on the ring is the hand — it turns one full
  *   revolution on `none`, which is the one place linear belongs, because it is
  *   a clock — while the numerals wind 60 down to 00. Each promise lights as the
  *   count reaches it, a third of the way apart. At zero "You're in." flares and
  *   the ring breathes once; then the dial recharges to 60 over 1.2s and the
- *   whole card sits perfectly still for four seconds before going again.
+ *   whole card sits perfectly still for three and a half seconds before going
+ *   again.
  *
  * Nothing here responds to the pointer, and every value the loop touches is
  * returned to the one the design ships, so the resting frame is the design.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
-import { bandStaged, onSectionReady, pulse, q1, qa, whileVisible } from './shared';
+import { bandStaged, onSectionReady, pct, pulse, q1, qa, unitOf, whileVisible } from './shared';
 
 /** The resting stroke of `.onb__pill`, restated so the loop's highlight can
  *  return to it exactly. It is read off the element rather than hard-coded. */
@@ -38,7 +39,10 @@ export function onboard(card: HTMLElement): () => void {
   const seconds = q1(card, '.onb__seconds');
   const inLabel = q1(card, '.onb__in');
   const pills = qa(card, '.onb__pill');
-  if (!ring || !arcBox || !seconds || !inLabel || pills.length < 3) return () => {};
+  const art = q1(card, '.onb__art');
+  if (!ring || !arcBox || !seconds || !inLabel || !art || pills.length < 3) return () => {};
+
+  const u = unitOf(art, 474);
 
   const restingSeconds = seconds.textContent ?? '60s';
   const staged = bandStaged(card);
@@ -71,28 +75,30 @@ export function onboard(card: HTMLElement): () => void {
     const paintCount = () => { seconds.textContent = `${String(Math.round(dial.s)).padStart(2, '0')}s`; };
 
     /* ---------------------------------------------------------------- loop */
-    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.2 });
+    const RUN = 6;
+    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 3.6 });
     loop
-      .to(dial, { s: 0, duration: 7, ease: 'none', onUpdate: paintCount }, 0.3)
-      .to(dial, { deg: 360, duration: 7, ease: 'none', onUpdate: paintArc }, 0.3);
+      .to(dial, { s: 0, duration: RUN, ease: 'none', onUpdate: paintCount }, 0.3)
+      .to(dial, { deg: 360, duration: RUN, ease: 'none', onUpdate: paintArc }, 0.3);
 
-    // One promise ticks off per third of the count.
+    // One promise ticks off per third of the count: it slides a step out of the
+    // phone and its stroke lights, then settles back.
     pills.slice(0, 3).forEach((pill, i) => {
-      const lit = 'rgba(255, 251, 248, 0.92)';
-      pulse(loop, pill, 1.9 + i * 2.3,
-        { scale: 1.04, borderColor: lit },
-        { scale: 1, borderColor: readBorder(pill) }, 0.4, 0.75);
+      pulse(loop, pill, 1.5 + i * (RUN / 3.4),
+        { xPercent: pct(pill, -16, u, 'x'), scale: 1.06, borderColor: 'rgba(255, 251, 248, 0.95)' },
+        { xPercent: 0, scale: 1, borderColor: readBorder(pill) }, 0.42, 0.8);
     });
 
     // Zero: the confirmation flares and the ring takes one breath.
-    pulse(loop, inLabel, 7.3,
-      { scale: 1.07, textShadow: '0 0 14px rgba(255, 251, 248, 0.85)' },
-      { scale: 1, textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9);
-    pulse(loop, ring, 7.35, { scale: 1.014 }, { scale: 1 }, 0.5, 0.95);
+    const ZERO = 0.3 + RUN;
+    pulse(loop, inLabel, ZERO,
+      { yPercent: -70, scale: 1.2, textShadow: '0 0 16px rgba(255, 251, 248, 0.9)' },
+      { yPercent: 0, scale: 1, textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9);
+    pulse(loop, ring, ZERO + 0.05, { scale: 1.05 }, { scale: 1 }, 0.5, 0.95);
 
     // 360 degrees is 0 degrees, so the hand can be put back without moving.
-    loop.call(() => { dial.deg = 0; paintArc(); }, undefined, 8.4)
-      .to(dial, { s: 60, duration: 1.2, ease: 'power2.out', onUpdate: paintCount }, 8.4);
+    loop.call(() => { dial.deg = 0; paintArc(); }, undefined, ZERO + 1.1)
+      .to(dial, { s: 60, duration: 1.2, ease: 'power2.out', onUpdate: paintCount }, ZERO + 1.1);
 
     /* ------------------------------------------------------------- load-in */
     const runLoop = () => { stopVisible = whileVisible(card, loop); };

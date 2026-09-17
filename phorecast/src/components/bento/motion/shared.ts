@@ -113,6 +113,34 @@ export function whileVisible(card: HTMLElement, tl: Timeline): () => void {
   return () => io.disconnect();
 }
 
+/**
+ * One design pixel of the box `el` belongs to, in real CSS pixels.
+ *
+ * `designWidth` is that box's width in the Figma frame. Measuring it beats
+ * reading `--u`, which is written in container-query units: `getComputedStyle`
+ * hands back the unresolved `calc(100cqw / 774)` token stream rather than a
+ * length, and the card that declares it is the query container, so it could not
+ * resolve its own `cqw` anyway.
+ */
+export const unitOf = (el: Element, designWidth: number) =>
+  el.getBoundingClientRect().width / designWidth;
+
+/**
+ * `designPx` of travel, expressed as a percentage of the element's own box.
+ *
+ * `xPercent`/`yPercent` are the only distances in this section that survive a
+ * resize. A tween written in pixels is correct at the width it was measured at
+ * and wrong at every other; a percentage of the element's own box scales with
+ * the card, because the element scales with the card too. The tween is built
+ * once and stays true, with no ResizeObserver rebuilding timelines underneath
+ * a loop that is halfway through its beat.
+ */
+export function pct(el: Element, designPx: number, u: number, axis: 'x' | 'y' = 'y'): number {
+  const r = el.getBoundingClientRect();
+  const size = axis === 'x' ? r.width : r.height;
+  return size > 0 ? ((designPx * u) / size) * 100 : 0;
+}
+
 /** A pulse that leaves nothing behind: out on `up`, back on `down`, ending on
  *  the value the tween started from, so the loop's resting frame is the design. */
 export function pulse(

@@ -1,5 +1,10 @@
-import { Fragment } from 'react';
-import stacks from '../../../assets/hero/slide3/stacks.svg';
+import { Fragment, useEffect, useRef } from 'react';
+// Raw, not a URL: the two stacks are one exported vector layer, and the plates
+// inside it have to be addressable for SlideBonus.motion to move them. In an
+// <img> they are not reachable at all. Everything about how it paints is
+// unchanged -- the SVG already carries `preserveAspectRatio="none"`, so it
+// stretches to the same box the image was given.
+import stacksMarkup from '../../../assets/hero/slide3/stacks.svg?raw';
 import bracket from '../../../assets/hero/slide3/bracket.svg';
 import dashed from '../../../assets/hero/slide3/dashed.svg';
 import nikkei from '../../../assets/hero/slide3/nikkei.svg';
@@ -10,6 +15,7 @@ import gift2 from '../../../assets/hero/slide3/gift-2.svg';
 import gift3 from '../../../assets/hero/slide3/gift-3.svg';
 import gift4 from '../../../assets/hero/slide3/gift-4.svg';
 import gift5 from '../../../assets/hero/slide3/gift-5.svg';
+import { bonusCountdownMotion, slideBonusMotion } from './SlideBonus.motion';
 import './SlideBonus.css';
 
 /**
@@ -20,15 +26,24 @@ import './SlideBonus.css';
  * inside is laid out in that frame's own coordinates.
  */
 export function SlideBonus() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => (ref.current ? slideBonusMotion(ref.current) : undefined), []);
+
   return (
     <div
+      ref={ref}
       className="sl3"
       role="img"
       aria-label="You deposit $200, Phorcast adds $200, you trade with $400."
     >
       <div className="sl3__frame">
         {/* Both isometric stacks, exported from Figma as one vector layer. */}
-        <img src={stacks} alt="" className="sl3__stacks" />
+        <span
+          className="sl3__stacks"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: stacksMarkup }}
+        />
 
         <p className="sl3__total">$400</p>
 
@@ -98,8 +113,12 @@ function GiftIcon() {
  * lede and above the "Get your bonus" button (Figma 474:857).
  */
 export function BonusCountdown() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => (ref.current ? bonusCountdownMotion(ref.current) : undefined), []);
+
   return (
-    <div className="sl3-countdown">
+    <div className="sl3-countdown" ref={ref}>
       <p className="sl3-countdown__label">
         <GiftIcon />
         Limited-time bonus

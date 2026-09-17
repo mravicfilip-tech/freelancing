@@ -19,6 +19,8 @@ import flagFr from '../../assets/familiar/flag-fr.jpg';
 import search from '../../assets/familiar/search.svg';
 import filter from '../../assets/familiar/filter.svg';
 import trendTab from '../../assets/familiar/trend-tab.svg';
+import { useSectionMotion } from '../../lib/motion';
+import { buildFamiliar } from './Familiar.motion';
 import './Familiar.css';
 
 const CANDIDATES = [
@@ -110,8 +112,22 @@ function MarketCard(props: {
 }
 
 export function Familiar() {
+  // The band has to climb a quarter of the screen before it opens — the default
+  // gate — which is late enough that the sliver showing under the bento is not
+  // treated as "scrolled to", and early enough that the phone is never caught
+  // half-landed on the way in.
+  //
+  // The ambient loop is a separate module, `Familiar.loop.ts`, and is wired in
+  // here as the `idle` option: useSectionMotion hands it this section element
+  // once the entrance timeline completes, and calls the teardown it returns on
+  // unmount. Both arguments have to be stable module-scope references, since
+  // they are the effect's dependencies.
+  //
+  //   const ref = useSectionMotion<HTMLElement>(buildFamiliar, { idle: familiarLoop });
+  const ref = useSectionMotion<HTMLElement>(buildFamiliar);
+
   return (
-    <section className="fam" aria-labelledby="fam-title">
+    <section ref={ref} className="fam" aria-labelledby="fam-title" data-motion="pending">
       <div className="fam__bg glow-fade--top" aria-hidden="true">
         <span className="fam__g fam__g--red" />
         <span className="fam__g fam__g--orange" />

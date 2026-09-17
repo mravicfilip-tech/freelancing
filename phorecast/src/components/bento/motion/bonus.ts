@@ -1,30 +1,32 @@
 /**
  * Card C — "Double your capital on first deposit".
  *
- * LOAD-IN (3.3s, after the band's entrance has landed the card)
+ * LOAD-IN (3.0s, after the band's entrance has landed the card)
  *   The measure grid arrives with the card. Everything else is held back so the
- *   chart line can be the lead, and drawing it is the longest tween on the
- *   card: 1.5s tip to tail on `power2.inOut`, which is the house draw. The
- *   marker catches the drawing edge as it passes; the pie and lightning badges
- *   follow 0.18s apart; the pill rises last and the two figures tally to
- *   $200.00, because the money is the point of the sentence.
+ *   chart line can be the lead, and drawing it is the longest tween here: 1.3s
+ *   tip to tail on `power2.inOut`, the house draw. The marker catches the
+ *   drawing edge as it passes, the pie and lightning badges follow, the pill
+ *   rises last and both figures tally to $200.00 — the money is the point of
+ *   the sentence.
  *
- * LOOP (4.7s of story, then 7.6s of nothing — 12.3s end to end)
- *   One beat: a deposit charges the curve. A bright segment runs the real path
- *   from its left end up to the marker — sampled off the same geometry, not a
- *   guessed offset — the marker blooms as it arrives, the lightning badge
- *   glints, the pie turns over, and the bonus figure counts itself up to
- *   $200.00 beside the deposit that is already there. Then the card rests.
+ * LOOP (5.3s of story, then 4.4s of nothing — 9.7s end to end)
+ *   The card's whole claim is growth, so the loop is the line growing. After a
+ *   beat the curve retracts right to left in half a second, then draws itself
+ *   back over 2.2s with a lit dot riding the drawing edge — 560 design pixels of
+ *   travel, the full width of the artwork. The marker blooms as the edge reaches
+ *   it, the lightning badge and the pie lift, the pill lifts with them and the
+ *   bonus figure counts itself up to $200.00 beside the deposit. Then the card
+ *   rests, settled on exactly the artwork the design ships.
  *
- * The charge is a second path appended inside the shipped `<svg>`, never a
- * re-parented or cloned one: `stroke="url(#box-bonus-stroke)"` on the design's
- * line resolves against `#box-bonus-stroke` in that svg's own `<defs>`, and
- * moving either of them out of that subtree would silently drop the gradient.
- * The charge carries a flat stroke of its own and so depends on no def at all.
+ * Nothing is re-parented or cloned out of the shipped `<svg>`: the design's line
+ * carries `stroke="url(#box-bonus-stroke)"`, which resolves against
+ * `#box-bonus-stroke` in that svg's own `<defs>`, and moving either out of that
+ * subtree would drop the gradient silently. The added dot lives inside the same
+ * svg and carries a flat fill, so it depends on no def at all.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
-import { bandStaged, onSectionReady, pulse, q1, whileVisible } from './shared';
+import { bandStaged, onSectionReady, pct, pulse, q1, unitOf, whileVisible } from './shared';
 
 const NS = 'http://www.w3.org/2000/svg';
 /** The chart's viewBox width — one user unit is one design pixel. */
@@ -68,24 +70,20 @@ export function bonus(card: HTMLElement): () => void {
   const pieScale = pieTransform && pieTransform !== 'none' ? new DOMMatrixReadOnly(pieTransform).a : 1;
 
   const total = line.getTotalLength();
+  const u = unitOf(chart, CHART_W);
 
   /* Where the marker's halo sits on the curve, measured off the DOM so it holds
      at every breakpoint rather than assuming the card is at its design width. */
-  const u = chart.getBoundingClientRect().width / CHART_W;
-  const markerBox = marker.getBoundingClientRect();
-  const markerX = (markerBox.left + markerBox.width / 2 - chart.getBoundingClientRect().left) / u;
+  const markerX = (marker.getBoundingClientRect().left + marker.getBoundingClientRect().width / 2
+    - chart.getBoundingClientRect().left) / u;
   const markerLen = lengthAtX(line, total, markerX);
 
-  const charge = document.createElementNS(NS, 'path');
-  charge.setAttribute('d', line.getAttribute('d') ?? '');
-  charge.setAttribute('fill', 'none');
-  // A stop sampled out of the design's own gradient, so the charge reads as the
-  // same line lit rather than as a foreign colour laid over it.
-  charge.setAttribute('stroke', '#feab8b');
-  charge.setAttribute('stroke-width', '3');
-  charge.setAttribute('stroke-linecap', 'round');
-  charge.style.opacity = '0';
-  chart.appendChild(charge);
+  /* The lit dot that rides the drawing edge. Same svg, flat fill, no def. */
+  const head = document.createElementNS(NS, 'circle');
+  head.setAttribute('r', '5');
+  head.setAttribute('fill', '#ffd0b8');
+  head.style.opacity = '0';
+  chart.appendChild(head);
 
   const staged = bandStaged(card);
   let stopReady: () => void = () => {};
@@ -93,8 +91,6 @@ export function bonus(card: HTMLElement): () => void {
 
   const ctx = gsap.context(() => {
     /* -------------------------------------------------------- start state */
-    // An explicit resting `filter` so the loop's brightness pulse has a numeric
-    // start to interpolate from; GSAP cannot tween out of the keyword `none`.
     gsap.set(marker, { filter: 'brightness(1)', transformOrigin: '50% 12.7%' });
     gsap.set([bolt, pie], { transformOrigin: '50% 50%' });
     if (staged) {
@@ -102,7 +98,7 @@ export function bonus(card: HTMLElement): () => void {
       gsap.set([marker, bolt, pie], { opacity: 0 });
       gsap.set(bolt, { scale: 0.92 });
       gsap.set(pie, { scale: pieScale * 0.92 });
-      gsap.set(pill, { opacity: 0, y: 12 });
+      gsap.set(pill, { opacity: 0, y: 14 });
     }
 
     const tally = { deposit: 0, bonus: 0 };
@@ -110,50 +106,64 @@ export function bonus(card: HTMLElement): () => void {
     const paintBonus = () => { bonusAmt.textContent = money(tally.bonus); };
     // Zeroed while the band is still held hidden, so the pill rises already at
     // nothing and the figures are counted up rather than snapping down to zero
-    // a beat after they have been read. Skipped entirely if the band is already
-    // showing, for exactly that reason.
+    // a beat after they have been read. Skipped if the band is already showing.
     if (staged) { paintDeposit(); paintBonus(); }
 
-    /* ---------------------------------------------------------------- loop
-       The travelling segment is a dash the length of the run, slid along the
-       path by its offset — the same thing a motion path would do, without the
-       plugin. It stops exactly on the marker because `markerLen` came off the
-       geometry. */
-    const RUN = 26;
-    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 7.6 });
+    const edge = { p: 1 };
+    const rideEdge = () => {
+      const pt = line.getPointAtLength(edge.p * total);
+      head.setAttribute('cx', String(pt.x));
+      head.setAttribute('cy', String(pt.y));
+    };
+    rideEdge();
+
+    /* ---------------------------------------------------------------- loop */
+    const DRAW_AT = 0.8;
+    const DRAW = 2.2;
+    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.4 });
     loop
-      .set(charge, { strokeDasharray: `${RUN} ${total}`, strokeDashoffset: 0 }, 0)
-      .to(charge, { opacity: 0.95, duration: 0.4, ease: 'sine.out' }, 0)
-      .to(charge, { strokeDashoffset: -(markerLen - RUN), duration: 2.6, ease: 'power1.inOut' }, 0)
-      .to(charge, { opacity: 0, duration: 0.55, ease: 'sine.inOut' }, 2.35);
-    // The halo is at 12.7% down the marker's box — the rest of that box is the
-    // drop line to the pill, which must not visibly stretch.
-    pulse(loop, marker, 2.3,
-      { scale: 1.06, filter: 'brightness(1.4)' },
-      { scale: 1, filter: 'brightness(1)' }, 0.36, 0.9);
-    pulse(loop, bolt, 2.5, { scale: 1.07 }, { scale: 1 }, 0.36, 0.85);
-    pulse(loop, pie, 3.0, { scale: pieScale * 1.07 }, { scale: pieScale }, 0.4, 0.85);
+      // a beat, then the curve pulls back — right to left, so it reads as the
+      // chart winding back rather than as the artwork being switched off
+      .set(line, { strokeDasharray: total }, 0)
+      .fromTo(line, { strokeDashoffset: 0 },
+        { strokeDashoffset: total, duration: 0.55, ease: 'power2.in' }, DRAW_AT)
+      .to(marker, { opacity: 0, duration: 0.3, ease: 'power2.in' }, DRAW_AT)
+      // and grows back, with the lit dot on its tip
+      .to(line, { strokeDashoffset: 0, duration: DRAW, ease: 'power2.inOut' }, DRAW_AT + 0.55)
+      .fromTo(edge, { p: 0 }, { p: 1, duration: DRAW, ease: 'power2.inOut', onUpdate: rideEdge }, DRAW_AT + 0.55)
+      .fromTo(head, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'sine.out' }, DRAW_AT + 0.55)
+      .to(head, { opacity: 0, duration: 0.4, ease: 'sine.inOut' }, DRAW_AT + 0.55 + DRAW - 0.3)
+      // the marker is back on the line as soon as the edge passes its x
+      .to(marker, { opacity: 1, duration: 0.45, ease: 'power2.out' },
+        DRAW_AT + 0.55 + DRAW * (markerLen / total));
+
+    const after = DRAW_AT + 0.55 + DRAW;
+    pulse(loop, marker, after - 0.15,
+      { scale: 1.22, filter: 'brightness(1.5)' },
+      { scale: 1, filter: 'brightness(1)' }, 0.38, 0.9);
+    pulse(loop, bolt, after,
+      { yPercent: pct(bolt, -16, u), scale: 1.12 }, { yPercent: 0, scale: 1 }, 0.4, 0.85);
+    pulse(loop, pie, after + 0.3,
+      { yPercent: pct(pie, -14, u), scale: pieScale * 1.15 }, { yPercent: 0, scale: pieScale }, 0.4, 0.85);
+    pulse(loop, pill, after + 0.35,
+      { yPercent: pct(pill, -14, u), borderColor: 'rgba(255, 138, 92, 0.75)' },
+      { yPercent: 0, borderColor: getComputedStyle(pill).borderTopColor }, 0.45, 0.9);
     loop
-      .call(() => { tally.bonus = 0; paintBonus(); }, undefined, 3.15)
-      .to(tally, { bonus: 200, duration: 1.3, ease: 'power2.out', onUpdate: paintBonus }, 3.2);
-    pulse(loop, pill, 3.2,
-      { borderColor: 'rgba(229, 51, 30, 0.6)' },
-      { borderColor: getComputedStyle(pill).borderTopColor }, 0.45, 0.9);
+      .call(() => { tally.bonus = 0; paintBonus(); }, undefined, after + 0.4)
+      .to(tally, { bonus: 200, duration: 1.3, ease: 'power2.out', onUpdate: paintBonus }, after + 0.45);
 
     /* ------------------------------------------------------------- load-in */
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to(line, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, 0)
+      .to(line, { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut' }, 0)
       // The drawing edge reaches the marker at markerLen/total of the tween.
-      .to(marker, { opacity: 1, duration: 0.5, ease: 'expo.out' }, 1.5 * (markerLen / total))
-      .to(pie, { opacity: 1, scale: pieScale, duration: 0.7, ease: 'expo.out' }, 1.65)
-      .to(bolt, { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out' }, 1.83)
-      .to(pill, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 2.05)
-      .to(tally, { deposit: 200, duration: 1.15, ease: 'power2.out', onUpdate: paintDeposit }, 2.25)
-      .to(tally, { bonus: 200, duration: 1.15, ease: 'power2.out', onUpdate: paintBonus }, 2.4)
-      // Hand the line back to CSS: the dash was only ever a way to draw it.
-      .set(line, { clearProps: 'strokeDasharray,strokeDashoffset' });
+      .to(marker, { opacity: 1, duration: 0.45, ease: 'expo.out' }, 1.3 * (markerLen / total))
+      .to(pie, { opacity: 1, scale: pieScale, duration: 0.65, ease: 'expo.out' }, 1.4)
+      .to(bolt, { opacity: 1, scale: 1, duration: 0.65, ease: 'expo.out' }, 1.56)
+      .to(pill, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, 1.75)
+      .to(tally, { deposit: 200, duration: 1.1, ease: 'power2.out', onUpdate: paintDeposit }, 1.9)
+      .to(tally, { bonus: 200, duration: 1.1, ease: 'power2.out', onUpdate: paintBonus }, 2.05);
 
     if (staged) stopReady = onSectionReady(card, () => intro.play());
     else { intro.progress(1, true); runLoop(); }
@@ -163,8 +173,11 @@ export function bonus(card: HTMLElement): () => void {
     stopReady();
     stopVisible();
     ctx.revert();
-    charge.remove();
+    head.remove();
     deposit.textContent = restingDeposit;
     bonusAmt.textContent = restingBonus;
+    // The dash was only ever a way to draw the line; CSS owns it at rest.
+    line.style.removeProperty('stroke-dasharray');
+    line.style.removeProperty('stroke-dashoffset');
   };
 }

@@ -218,3 +218,40 @@
   .fam__pred, .fam__ghost { display: none; }
   .fam__band { height: calc(240 * var(--u)); }
 }
+
+/* Motion -------------------------------------------------------------------- */
+/* The phone is the one object that travels far enough to be worth a layer of
+   its own, and the four floating cards move on the same frames. The phone's
+   origin sits low on the handset so the little scale it carries in reads as it
+   settling onto the stage rather than growing out of its own middle; GSAP
+   clears its inline transform at the end and this is what it falls back to. */
+.fam__phone { will-change: transform, opacity; transform-origin: 50% 72%; }
+.fam__mkt, .fam__ghost, .fam__pred { will-change: transform, opacity; }
+
+/* Pending state, the same contract as the hero and the bento. Without it the
+   band painted settled from its very first frame and merely animated later, so
+   the top of it sat finished in the sliver below the bento before anyone had
+   scrolled to it. The attribute is removed in the same frame GSAP takes over.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it. A timed failsafe cannot work for a band that waits
+   to be scrolled to -- the wait is legitimate and can last minutes -- so the
+   guarantee has to come from the hold never applying in the first place when
+   nothing will undo it. Only the animated parts are held; the glow, the horizon
+   and the bottom band itself stay, so nothing about the layout pops in. The
+   phone's screen contents are covered by the phone. */
+[data-js] .fam[data-motion='pending'] .fam__copy--left .eyebrow,
+[data-js] .fam[data-motion='pending'] .fam__title,
+[data-js] .fam[data-motion='pending'] .fam__phone,
+[data-js] .fam[data-motion='pending'] .fam__mkt,
+[data-js] .fam[data-motion='pending'] .fam__ghost,
+[data-js] .fam[data-motion='pending'] .fam__pred,
+[data-js] .fam[data-motion='pending'] .fam__sub-title,
+[data-js] .fam[data-motion='pending'] .fam__sub-body,
+[data-js] .fam[data-motion='pending'] .fam__cta,
+[data-js] .fam[data-motion='pending'] .fam__chips > * {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .fam[data-motion='pending'] * { visibility: visible; }
+}

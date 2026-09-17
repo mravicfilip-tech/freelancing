@@ -51,6 +51,39 @@
   width: calc(599.418 * var(--u));
   height: calc(540.952 * var(--u));
 }
+/* The layer is inlined rather than dropped in an <img> so SlideBonus.motion can
+   move the plates inside it; this hands the inline root the box the image was
+   given, which with the export's own `preserveAspectRatio="none"` paints it
+   identically. `overflow: visible` is the export's, and is kept: the topmost
+   matched plate lifts past the top of the viewBox during the loop. */
+.sl3__stacks > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Only the parts that actually move, and only while the slide is the live one. */
+.hero__slide.is-active .sl3__stacks > svg > * > * {
+  will-change: transform, opacity;
+}
+
+/* The value crossing the connector. It belongs to the motion, so it is created
+   and removed by SlideBonus.motion; with no script it is never in the document,
+   and the rule below only describes what the script builds. */
+.sl3__spark {
+  position: absolute;
+  left: calc(190.243 * var(--u));
+  top: calc(402.243 * var(--u));
+  width: calc(11 * var(--u));
+  height: calc(11 * var(--u));
+  margin: calc(-5.5 * var(--u)) 0 0 calc(-5.5 * var(--u));
+  border-radius: calc(2 * var(--u));
+  background: var(--orange-100);
+  box-shadow: 0 0 calc(16 * var(--u)) calc(4 * var(--u))
+    color-mix(in srgb, var(--orange-100) 55%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
 
 .sl3__total {
   position: absolute;
@@ -133,6 +166,7 @@
 
 .sl3__diamond {
   position: absolute;
+  will-change: transform;
   width: calc(6 * var(--u));
   height: calc(6 * var(--u));
   background: var(--orange-100);

@@ -144,7 +144,12 @@
    rather than sliding it out of a slot, and an `overflow: hidden` mask would
    cut the blur's halo off on a hard line at the top and bottom of the text. */
 .fan__title .fan__in,
-.fan__sub .fan__in { display: block; will-change: filter, transform; }
+.fan__sub .fan__in { display: block; }
+/* No `will-change` on these. It is a standing promotion to a compositor layer,
+   and text on its own layer loses subpixel antialiasing for good: measured, the
+   settled sub-line came back 19 levels darker than the same band with motion
+   off. GSAP promotes the span for the length of the tween anyway -- it is
+   animating `filter` -- and drops it again with `clearProps`. */
 
 /* The bright head that runs along each arc while it is being drawn: a second
    copy of every path, emitted in the markup by `Fan.tsx` so nothing has to be

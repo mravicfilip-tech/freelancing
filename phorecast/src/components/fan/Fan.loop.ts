@@ -118,6 +118,8 @@ const PILL_ICON_LIT = 'brightness(0) invert(1)';
 const HEAD = 132;
 /** Design px over which a head fades in at the end of its own arc. */
 const HEAD_FADE = 70;
+/** How much thicker the lit head is than the `.fan__spark` attribute's 2.4. */
+const HEAD_WEIGHT = 1.75;
 /** Half-width of the ground wash, design px. */
 const WASH = 380;
 /** Samples per spark when the (length, x) table is built. */
@@ -331,7 +333,7 @@ export function fanLoop(root: HTMLElement): () => void {
     w.style.cssText =
       'position:absolute;top:0;left:0;height:100%;pointer-events:none;opacity:0;' +
       'mix-blend-mode:screen;will-change:transform,opacity;' +
-      'background:radial-gradient(closest-side at 50% 50%,' +
+      'background:radial-gradient(ellipse closest-side at 50% 50%,' +
       'rgba(229,51,30,0.42) 0%,rgba(229,51,30,0.16) 46%,rgba(229,51,30,0) 76%);';
     frame.insertBefore(w, frame.firstChild);
     mine.push(w);
@@ -372,6 +374,7 @@ export function fanLoop(root: HTMLElement): () => void {
 
   const clearSpark = (s: Spark) => {
     s.el.style.removeProperty('opacity');
+    s.el.style.removeProperty('stroke-width');
     s.el.style.removeProperty('stroke-dasharray');
     s.el.style.removeProperty('stroke-dashoffset');
     s.lit = false;
@@ -394,6 +397,10 @@ export function fanLoop(root: HTMLElement): () => void {
       if (o <= 0.004) { if (s.lit) clearSpark(s); continue; }
       s.el.style.strokeDasharray = `${s.head}px ${s.len}px`;
       s.el.style.strokeDashoffset = `${-(l - s.head / 2)}px`;
+      // The head puts on weight as it comes up, so the line under it is lit
+      // rather than merely recoloured. Removing the property hands the width
+      // back to the `stroke-width="2.4"` the markup ships.
+      s.el.style.strokeWidth = (2.4 * (1 + (HEAD_WEIGHT - 1) * o)).toFixed(2);
       s.el.style.opacity = o.toFixed(3);
       s.lit = true;
     }

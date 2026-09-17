@@ -1,5 +1,18 @@
 /* "Modern infrastructure…" — Figma frame 1920 x 774. The content is a fixed
-   1474-wide column, vertically centred, not a padded block. */
+   1474-wide column, vertically centred, not a padded block.
+
+   COLOUR LIVES IN TWO LAYERS, and the split is the point.
+
+   ROLE TOKENS (--ink, --ink-2, --panel, --accent, --veil-line) for anything
+   whose job the rest of the page already names. They flip with the theme for
+   free, and the band does not get to have its own opinion about them.
+
+   PILLARS LOCALS (--pillars-*) for the handful of values that are this band's
+   own: the four glow discs, and the three white-alpha steps of the pill rows
+   that are not --veil-line already. They are declared here with today's dark
+   values, and the light block at the foot of this file redefines exactly those
+   names. Nothing else in the file mentions a colour, so "what does this band
+   do on paper?" is answerable by reading one block. */
 .pillars {
   position: relative;
   min-height: 774px;
@@ -7,6 +20,27 @@
   align-items: center;
   overflow: hidden;
   isolation: isolate;
+
+  /* The glow. Dark's four discs, verbatim: a deep red wash across the whole
+     band, tightening through brick and peach to a pale hot core that sits
+     almost entirely above the top edge and reaches the page only as blur.
+
+     The red disc's first stop is var(--page) rather than #0f0e0d because that
+     is what it is — not a dark colour but the ground the disc dissolves into.
+     Identical in dark; on paper it has to be paper, or it is a grey bruise
+     under the headline. */
+  --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #7e0202 100%);
+  --pillars-g-orange: #b43725;
+  --pillars-g-peach: #ec7850;
+  --pillars-g-cream: #fbd6ca;
+
+  /* White-alpha: the dark theme's idiom for "raise this slightly". Three steps
+     the pill rows own — the plate, and the plate and edge once hovered. The
+     resting edge is not here because --veil-line already IS
+     rgba(255,255,255,.12) in dark, and the ink-alpha equivalent on paper. */
+  --pillars-row: rgba(255, 255, 255, 0.02);
+  --pillars-row-hover: rgba(255, 255, 255, 0.06);
+  --pillars-row-line-hover: rgba(255, 255, 255, 0.2);
 }
 .pillars__inner {
   display: flex;
@@ -23,7 +57,7 @@
   font-weight: 500;
   font-size: clamp(24px, 1.9vw, 32px);
   line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
 }
 
 /* Masked line reveal, the hero's treatment applied here: the wrapper clips, the
@@ -42,10 +76,10 @@
 /* The glow sits above the top edge and spills down from the right. */
 .pillars__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .pillars__g { position: absolute; width: 1539px; height: 1539px; border-radius: 50%; filter: blur(109px); }
-.pillars__g--red { left: 1004px; top: -1032px; background: linear-gradient(168deg, #0f0e0d 30%, #7e0202 100%); }
-.pillars__g--orange { left: 1018px; top: -1369px; background: #b43725; }
-.pillars__g--peach { left: 702px; top: -1490px; background: #ec7850; }
-.pillars__g--cream { left: 1002px; top: -1647px; background: #fbd6ca; }
+.pillars__g--red { left: 1004px; top: -1032px; background: var(--pillars-g-red); }
+.pillars__g--orange { left: 1018px; top: -1369px; background: var(--pillars-g-orange); }
+.pillars__g--peach { left: 702px; top: -1490px; background: var(--pillars-g-peach); }
+.pillars__g--cream { left: 1002px; top: -1647px; background: var(--pillars-g-cream); }
 
 /* Cards ---------------------------------------------------------------------- */
 .pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }
@@ -59,19 +93,19 @@
   min-height: 254px;
   padding: 32px;
   border-radius: 10px;
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--panel);
+  border: 1px solid var(--veil-line);
 }
 .pcard--fixed { flex: 0 0 478px; }
 .pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .pcard__eyebrow {
   font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
-  text-transform: uppercase; color: var(--white-font);
+  text-transform: uppercase; color: var(--ink);
 }
 .pcard__mark { width: 31.13px; height: 36.29px; flex: none; }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
-.pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--white-font); }
-.pcard__text { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--color-nre-body); }
+.pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--ink); }
+.pcard__text { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--ink-2); }
 
 .pillars__icon { position: relative; display: block; width: 20px; height: 20px; flex: none; }
 .pillars__icon--multi img { position: absolute; }
@@ -93,16 +127,16 @@
      text at all; 16px inline leaves it the room the chevron used to take. */
   padding: 24px 16px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--pillars-row);
+  border: 1px solid var(--veil-line);
   backdrop-filter: blur(12.25px);
   transition: background-color 160ms ease, border-color 160ms ease;
 }
-.prow:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); }
+.prow:hover { background: var(--pillars-row-hover); border-color: var(--pillars-row-line-hover); }
 .prow__label {
   display: inline-flex; align-items: center; gap: 12px; min-width: 0;
   font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
-  color: var(--color-nre-body); white-space: nowrap;
+  color: var(--ink-2); white-space: nowrap;
 }
 
 @media (max-width: 1500px) {

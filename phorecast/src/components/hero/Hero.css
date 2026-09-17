@@ -45,7 +45,18 @@
    --hero-sl2-* is slide 2's own price flash, read by SlideAccount.motion.ts.
    Literal values, not var(--pos): a custom property holding var() does resolve
    before getPropertyValue sees it, but there is no reason for a motion read to
-   depend on that. */
+   depend on that.
+
+   A FLASH IS A STEP, NOT A COLOUR, which is why --hero-sl2-down is #d6392a in
+   light and not --neg's #b01309 like the resting loss ink beside it. Dark's
+   flash travels 4.64:1 from the settled white figure; #b01309 travels only
+   2.54:1 from the settled near-black one, because dark's rest ink is white and
+   has the whole range below it while paper's is near-black and has very little
+   above it. #d6392a gets the swing back to 3.86:1 and still sits at 4.34:1 on
+   the card, which a 20px figure flashed for 0.9s can carry. The resting loss
+   ink beside it keeps 6.60:1, which is why the two are separate tokens at all.
+   The up flash needed nothing: dark travels 2.15:1, light already travels
+   2.84:1. */
 :root {
   --hero-tick-up: #4ade80;
   --hero-tick-down: #f87171;
@@ -442,7 +453,7 @@
     --hero-tick-up: #0b6e37;
     --hero-tick-down: #b01309;
     --hero-sl2-up: #0b6e37;
-    --hero-sl2-down: #b01309;
+    --hero-sl2-down: #d6392a;
   }
 }
 
@@ -450,5 +461,5 @@
   --hero-tick-up: #0b6e37;
   --hero-tick-down: #b01309;
   --hero-sl2-up: #0b6e37;
-  --hero-sl2-down: #b01309;
+  --hero-sl2-down: #d6392a;
 }

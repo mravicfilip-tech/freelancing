@@ -42,7 +42,11 @@
   --sl2-up-ink: #00a63e;
   --sl2-up-bg: #1a3a2c;
   --sl2-up-bg-sm: #1a372a;
-  --sl2-down-ink: var(--hero-sl2-down);
+  /* Resting loss ink: the "No" chips, the -0.20% delta, the Sudtirol button.
+     Deliberately NOT var(--hero-sl2-down): that token is the price FLASH, and
+     in light the two want different values (see the light block). In dark both
+     are #e7000b, which is what this was. */
+  --sl2-down-ink: #e7000b;
   --sl2-down-bg: #302325;
   --sl2-down-bg-sm: #2e2122;
   --sl2-card-a: #161615;
@@ -852,6 +856,10 @@
      chip plates invert with them: a dark green wash under green ink becomes a
      pale green wash under it. */
   --sl2-up-ink: #0b6e37;
+  /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
+     a label has to be. The price FLASH is a different token and a lighter red,
+     for the reason recorded in Hero.css. */
+  --sl2-down-ink: #b01309;
   --sl2-up-bg: #dcefe1;
   --sl2-up-bg-sm: #e0f0e5;
   --sl2-down-bg: #fadedb;
@@ -923,6 +931,10 @@
      chip plates invert with them: a dark green wash under green ink becomes a
      pale green wash under it. */
   --sl2-up-ink: #0b6e37;
+  /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
+     a label has to be. The price FLASH is a different token and a lighter red,
+     for the reason recorded in Hero.css. */
+  --sl2-down-ink: #b01309;
   --sl2-up-bg: #dcefe1;
   --sl2-up-bg-sm: #e0f0e5;
   --sl2-down-bg: #fadedb;

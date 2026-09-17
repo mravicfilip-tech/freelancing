@@ -118,11 +118,19 @@
      about the same on paper, so the control reacts by the same amount in the
      same place. */
   --pos-track-hover: #e5d9cd;
-  /* A segment already seen. --ink at 30% white-alpha becomes ink-alpha at
-     0.34 -- the alpha up by an eighth, as tokens.css steps --veil and
-     --veil-line -- because more alpha on a dark page is brighter and more on
-     paper is darker, and both mean "this one is done". */
-  --pos-seen: rgba(26, 21, 18, 0.34);
+  /* A segment already seen: the track, stepped away from itself to say "this
+     one is done". White-alpha becomes ink-alpha, which flips the direction for
+     free -- more alpha on a dark page is brighter, more on paper is darker,
+     and both mean done.
+
+     The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST
+     colour's density against its own page, and this is not a rest colour, it
+     is the size of a STEP away from one. Measured: dark's 30% white over
+     --panel-2 is 2.62:1 against the track it sits in; 0.34 ink gave only
+     2.11:1 -- a state visibly weaker on paper while passing every check that
+     looks at the value instead of the swing. 0.42 puts it at 2.59:1, which is
+     dark's own step. */
+  --pos-seen: rgba(26, 21, 18, 0.42);
   }
 }
 
@@ -132,9 +140,17 @@
      about the same on paper, so the control reacts by the same amount in the
      same place. */
   --pos-track-hover: #e5d9cd;
-  /* A segment already seen. --ink at 30% white-alpha becomes ink-alpha at
-     0.34 -- the alpha up by an eighth, as tokens.css steps --veil and
-     --veil-line -- because more alpha on a dark page is brighter and more on
-     paper is darker, and both mean "this one is done". */
-  --pos-seen: rgba(26, 21, 18, 0.34);
+  /* A segment already seen: the track, stepped away from itself to say "this
+     one is done". White-alpha becomes ink-alpha, which flips the direction for
+     free -- more alpha on a dark page is brighter, more on paper is darker,
+     and both mean done.
+
+     The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST
+     colour's density against its own page, and this is not a rest colour, it
+     is the size of a STEP away from one. Measured: dark's 30% white over
+     --panel-2 is 2.62:1 against the track it sits in; 0.34 ink gave only
+     2.11:1 -- a state visibly weaker on paper while passing every check that
+     looks at the value instead of the swing. 0.42 puts it at 2.59:1, which is
+     dark's own step. */
+  --pos-seen: rgba(26, 21, 18, 0.42);
 }

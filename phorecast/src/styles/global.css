@@ -6,8 +6,8 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--white-font);
+  background: var(--page);
+  color: var(--ink);
   font-family: var(--font-body);
   font-weight: 300;
   line-height: 1.2;
@@ -23,7 +23,7 @@ img, svg { display: block; }
 [hidden] { display: none !important; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 
-:focus-visible { outline: 2px solid var(--orange-100); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* Section glows are clipped by their section's `overflow: hidden`, which leaves
    a hard horizontal edge at the seam between sections. Fade the layer out over
@@ -62,7 +62,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   line-height: 1.2;
   letter-spacing: 0;
   text-transform: uppercase;
-  color: var(--color-body);
+  color: var(--ink-muted);
   white-space: nowrap;
 }
 .eyebrow__dot { width: 12px; height: 12px; flex: none; }
@@ -73,7 +73,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font-size: clamp(52px, 5.2vw, 100px);
   line-height: 0.9;
   letter-spacing: 0.02em;
-  color: var(--white-font);
+  color: var(--ink);
 }
 
 .lede {
@@ -81,7 +81,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font-weight: 300;
   font-size: clamp(17px, 1.05vw, 20px);
   line-height: 1.2;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
 }
 
 /* Buttons ------------------------------------------------------------------- */
@@ -102,9 +102,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 .btn:active { transform: translateY(1px); }
-.btn--primary { background: var(--orange-100); color: var(--white-font); }
-.btn--ghost { border: 1px solid var(--color-body); color: var(--orange-100); }
-.btn--outline { border: 1px solid var(--white-font); color: var(--white-font); }
+.btn--primary { background: var(--accent); color: var(--on-accent); }
+.btn--ghost { border: 1px solid var(--ink-muted); color: var(--accent); }
+.btn--outline { border: 1px solid var(--ink); color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -163,10 +163,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* The colour half of direction 03. The roll carries the movement; these carry
    the state, so a control still reads as hovered with motion turned off. */
-.btn--primary:hover { background: var(--white-font); color: var(--orange-100); }
-.btn--ghost:hover { border-color: var(--orange-100); background: rgba(229, 51, 30, 0.1); }
-.btn--outline:hover { border-color: var(--orange-300); color: var(--orange-300); }
-.nav__link:hover { color: var(--orange-100); }
+.btn--primary:hover { background: var(--btn-primary-hover-bg); color: var(--btn-primary-hover-ink); }
+.btn--ghost:hover { border-color: var(--accent); background: var(--accent-soft); }
+.btn--outline:hover { border-color: var(--accent-lift); color: var(--accent-lift); }
+.nav__link:hover { color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
   .roll__in { transition: none; }

@@ -17,7 +17,7 @@
   font-size: 16px;
   line-height: 1.2;
   text-transform: uppercase;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
   transition: color 160ms ease;
 }
@@ -52,7 +52,7 @@
     display: block;
     width: 22px;
     height: 2px;
-    background: var(--white-font);
+    background: var(--ink);
     transition: transform 200ms ease, opacity 200ms ease;
   }
   .nav__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }

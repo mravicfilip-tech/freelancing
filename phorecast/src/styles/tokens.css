@@ -1,6 +1,26 @@
 /* Phorcast brand tokens — single source of truth for colour, type and spacing.
-   Values come straight from the Figma variables (--white-font, --orange-100, …). */
+
+   Two layers, and the distinction is load-bearing:
+
+   1. VALUE tokens (--white-font, --orange-100, …) name a colour. They come
+      straight from the Figma variables and they DO NOT CHANGE BETWEEN THEMES —
+      `--white-font` is `#fffbf8` on paper too, because that is what it is
+      named after. Anything still reading one of these is, by definition, not
+      yet themed.
+   2. ROLE tokens (--ink, --page, --accent, …) name a job. A theme can only
+      flip a job, never a value, so every themed call site reads a role.
+
+   The distinction exists because `--white-font` is used 67 times for four
+   different jobs: page ink, the label on the red button, the white plate of
+   the Markets card, and literal white inside dark artwork. Flipping it in
+   place would make the primary CTA's label 2.29:1 on red and paint the
+   Markets card black on black. The roles below separate those jobs so that
+   the light values in §Light can be applied to exactly one of them.
+
+   Migrating a section is therefore: swap its value tokens for role tokens,
+   prove the dark snapshot is IDENTICAL, and only then look at light. */
 :root {
+  /* --- Value tokens — Figma variables, fixed in both themes ---------------- */
   --bg: #0f0e0d;                 /* page ground */
   --white-font: #fffbf8;         /* headlines, primary text */
   --orange-100: #e5331e;         /* brand accent, primary button */
@@ -15,6 +35,55 @@
   --glass-border: rgba(255, 255, 255, 0.12);
   --green: #15a456;
   --red: #a21605;
+
+  /* --- Role tokens — dark values, expressed as the values above ------------
+     Defined as `var(--value)` rather than as literals so that this block is
+     provably a no-op: the dark theme cannot drift from the Figma variables. */
+
+  /* Grounds */
+  --page: var(--bg);
+  --panel: var(--surface);             /* raised panels */
+  --panel-2: var(--surface-2);         /* inactive bars, tracks */
+  --line: var(--hairline);             /* hairline rules and edges */
+
+  /* Ink */
+  --ink: var(--white-font);            /* headings, nav, anything that must read */
+  --ink-2: var(--color-nre-body);      /* body copy */
+  --ink-muted: var(--color-body);      /* eyebrows, quiet labels */
+
+  /* Brand */
+  --accent: var(--orange-100);         /* the brand red, as text or as fill */
+  --accent-deep: var(--orange-200);    /* gradient dark stop, pressed states */
+  --accent-lift: var(--orange-300);    /* gradient light stop, hover */
+  --accent-soft: rgba(229, 51, 30, 0.1); /* accent at a wash, for tinted hovers */
+  /* The label ON the brand red. Never flips: it is read against --accent, not
+     against the page, and --accent is dark in both themes. */
+  --on-accent: #fffbf8;
+
+  /* Semantic. --neg must stay distinguishable from --accent: in light the
+     brand red IS #a21605, which is today's --red, so loss and brand would be
+     the same colour on a trading page. See §Light. */
+  --pos: var(--green);
+  --neg: var(--red);
+
+  /* Glass — the dark theme's idiom for "raise this slightly". On paper the
+     same job is done by settling, i.e. ink-alpha rather than white-alpha. */
+  --veil: var(--glass);
+  --veil-line: var(--glass-border);
+  --veil-strong: rgba(255, 255, 255, 0.28);
+
+  /* Artwork ink: literal white INSIDE a dark illustration (a phone screen, a
+     device panel). Whether it flips is a per-illustration decision, so it is
+     deliberately not --ink. Sections that re-tint their artwork override it
+     locally; the default does not move. */
+  --art-ink: #fffbf8;
+  --art-ink-2: #9d9d9d;
+
+  /* The primary button inverts on hover. In dark that means it goes pale with
+     a red label; on paper pale-on-pale is a hole, so light presses darker
+     instead. Two tokens rather than one rule per theme. */
+  --btn-primary-hover-bg: var(--ink);
+  --btn-primary-hover-ink: var(--accent);
 
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-display: 'Manrope Variable', 'Manrope', system-ui, sans-serif;

@@ -8,20 +8,22 @@
 /* Left-edge glow ------------------------------------------------------------
    Figma frame 365:857, background node 365:858 -> the `Circle` group 487:1729.
    Not a shader and not one disc: three 1539 x 1539 circles, each blurred by
-   109.3, painted bottom-up. Their design positions inside the 1920 x 1080 frame
-   are (-689, 323), (-675, 660) and (-991, 781), and only their top arcs reach
-   the frame, which is what makes the light climb the left edge and spread along
-   the floor rather than read as a disc.
+   109.3, painted bottom-up at (-689, 323), (-675, 660) and (-991, 781) inside
+   the 1920 x 1080 frame. Only their top arcs reach the frame, which is what
+   makes the light climb the left edge and spread along the floor instead of
+   reading as a disc. Figma clips the group to x <= 1114, but the widest disc
+   plus its blur bleed reaches only 1083, so the clip never bites and there is
+   nothing to model.
 
-   Anchored by `bottom`, not `top`. The band is 1080 design px tall only at
-   1920; below that the cards keep their own type sizes while --u shrinks, so
-   the section grows in design pixels. Anchoring to the floor keeps the light
-   where the design puts it -- along the bottom -- instead of stranding it
-   mid-band. The bottom offsets are the design tops re-expressed against a
-   1080-tall frame: 1080 - (top + 1539).
-
-   Figma clips this group to x <= 1114, but the widest disc plus its blur bleed
-   reaches only 1083, so the clip never bites and there is nothing to model. */
+   `.bento__glows` clips to the band and carries the unit; `.bento__glow-frame`
+   is the design's own 1080-tall frame, pinned to the floor of the band. That
+   second box is what makes the light survive a narrow viewport. The band is
+   1080 design px tall only at 1920 -- below that the cards keep their own type
+   sizes while --u shrinks, so at 900 the section runs past 1800px. A glow laid
+   out against the whole band would sit in its bottom eighth, entirely inside
+   the stretch `.glow-fade` masks away, and the background would simply vanish.
+   Pinned to a 1080 * --u frame instead, the glow and the fade shrink together
+   and the band reads the same at every width. Same shape as .hero__bg. */
 .bento__glows {
   --u: calc(100cqw / 1920);
   position: absolute;
@@ -31,17 +33,25 @@
   container-type: inline-size;
   pointer-events: none;
 }
-/* The group the entrance blooms. Keeping one wrapper around the three discs is
-   what lets `buildBento` go on tweening a single `.bento__glow`, so the light
+.bento__glow-frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(1080 * var(--u));
+}
+/* The group the entrance blooms. One wrapper around the three discs is what
+   lets `buildBento` go on tweening a single `.bento__glow`, so the light still
    arrives as one thing and the timeline is untouched. It blooms from the
-   bottom-left corner because that is where the light comes from; scaling about
-   the middle of a full-width box would slide the glow up and right instead. */
+   bottom-left corner, where the light comes from; scaling about the middle of a
+   full-width box would slide the whole glow up and right instead. The mask sits
+   on the frame above, so the fade never rides along with the scale. */
 .bento__glow {
   position: absolute;
   inset: 0;
   transform-origin: 0% 100%;
-  /* Three 109px blurs re-rasterising under the entrance's scale is the one
-     expensive frame in this section; the hint keeps it on the compositor. */
+  /* Three 109px blurs re-rasterising under that scale is the one expensive
+     frame in this section; the hint keeps it on the compositor. */
   will-change: transform;
 }
 .bento__g {
@@ -51,19 +61,19 @@
   border-radius: 50%;
   filter: blur(calc(109.3 * var(--u)));
 }
-/* Ellipse 39 -- the dark red halo that keeps the glow from meeting the ground
-   as a flat orange. Its fill is a gradient, and these are the Figma stops
+/* Ellipse 39 -- the dark red halo that stops the glow meeting the ground as a
+   flat orange. Its fill is a gradient, and these are Figma's two stops
    projected onto the CSS gradient line of a 1539 box: the vector runs from
    (1290.1, 218.6) to (1376.1, 626.1) in the export's own coordinates. */
 .bento__g--ember {
   left: calc(-689 * var(--u));
-  bottom: calc(-782 * var(--u));
+  top: calc(323 * var(--u));
   background: linear-gradient(168.08deg, #0f0e0d 8.71%, #7e0202 31.55%);
 }
 /* Ellipse 40 */
-.bento__g--orange { left: calc(-675 * var(--u)); bottom: calc(-1119 * var(--u)); background: #d1541c; }
+.bento__g--orange { left: calc(-675 * var(--u)); top: calc(660 * var(--u)); background: #d1541c; }
 /* Ellipse 41 -- the peach core, and the last one painted. */
-.bento__g--peach  { left: calc(-991 * var(--u)); bottom: calc(-1240 * var(--u)); background: #f99e57; }
+.bento__g--peach  { left: calc(-991 * var(--u)); top: calc(781 * var(--u)); background: #f99e57; }
 
 .bento__card {
   display: flex;

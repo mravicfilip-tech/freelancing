@@ -194,12 +194,14 @@ export function Bento() {
     <section ref={ref} className="bento" id="why" aria-labelledby="why-title" data-motion="pending">
       {/* Three blurred discs, in the order Figma paints them: dark-red halo, then
           the orange body, then the peach core on top. See Bento.css. */}
-      <div className="bento__glows glow-fade" aria-hidden="true">
-        <span className="bento__glow">
-          <span className="bento__g bento__g--ember" />
-          <span className="bento__g bento__g--orange" />
-          <span className="bento__g bento__g--peach" />
-        </span>
+      <div className="bento__glows" aria-hidden="true">
+        <div className="bento__glow-frame glow-fade">
+          <span className="bento__glow">
+            <span className="bento__g bento__g--ember" />
+            <span className="bento__g bento__g--orange" />
+            <span className="bento__g bento__g--peach" />
+          </span>
+        </div>
       </div>
       <div className="container">
         <div className="bento__card">

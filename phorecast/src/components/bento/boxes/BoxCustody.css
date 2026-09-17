@@ -1,0 +1,184 @@
+/* Bento card B — "Your funds leave whenever you want" (Figma 365:925).
+   534 x 355 design box, dark; the shell (padding, radius, background,
+   min-height) and the copy/link chrome come from Bento.css — this file is the
+   diagram only.
+
+   Unit: `.bcard` sets `container-type: inline-size`, so 100cqw is the card's
+   *content* box — 474 design pixels wide at the 534px design width (534 less
+   the 30px padding a side). `--u` is therefore one design pixel of that column
+   and every number below is the raw Figma coordinate times --u.
+
+   The unit is capped at 1px. Between 1100px and 1500px the grid puts two cards
+   on a full-width row, which makes this card wider than its 534px design; left
+   uncapped the diagram would grow past the designed size and run into the copy
+   and the link above and below it. Capping keeps the artwork at its drawn size
+   in a card that is bigger than the design — which is what the other bento
+   cards do by being laid out in fixed pixels — and still scales it down, with
+   the card, everywhere the card is narrower. */
+.box-custody {
+  --u: min(1px, 100cqw / 474);
+}
+
+/* Group 365:936 — the 464 x 215 diagram, centred on the card the way Figma
+   centres it (half a card plus 5 across, plus 23 down). */
+.custody__art {
+  position: absolute;
+  left: calc(50% + 5 * var(--u));
+  top: calc(50% + 23 * var(--u));
+  width: calc(464 * var(--u));
+  height: calc(215 * var(--u));
+  transform: translate(-50%, -50%);
+}
+.custody__art > * { position: absolute; }
+.custody__art img { display: block; }
+
+/* Circles ------------------------------------------------------------------
+   Three exported strokes, each at its own designed box: the dotted middle
+   ellipse is a raster in Figma (it carries a fill and a blur), the other two
+   are vectors. */
+.custody__glow {
+  left: calc(87 * var(--u));
+  top: calc(49 * var(--u));
+  width: calc(215 * var(--u));
+  height: calc(118 * var(--u));
+}
+.custody__ring-market {
+  left: calc(242 * var(--u));
+  top: 0;
+  width: calc(215 * var(--u));
+  height: calc(215 * var(--u));
+}
+.custody__ring-wallet {
+  left: calc(8 * var(--u));
+  top: calc(61 * var(--u));
+  width: calc(93 * var(--u));
+  height: calc(93 * var(--u));
+}
+
+/* Wallet: a 37px gradient disc with the 18px glyph centred on it. ---------- */
+.custody__wallet-disc {
+  left: calc(36 * var(--u));
+  top: calc(89 * var(--u));
+  width: calc(37 * var(--u));
+  height: calc(37 * var(--u));
+}
+.custody__wallet-icon {
+  left: calc(46 * var(--u));
+  top: calc(99 * var(--u));
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+}
+
+/* Labels -------------------------------------------------------------------
+   Figma's -0.24px at 12px and -0.16px at 8px are the same -0.02em, so the
+   tracking rides the font size instead of being restated. */
+.custody__label {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(12 * var(--u));
+  line-height: normal;
+  letter-spacing: -0.02em;
+  color: var(--white-font);
+  white-space: nowrap;
+}
+.custody__label--wallet { font-size: calc(8 * var(--u)); }
+
+/* Market tiles -------------------------------------------------------------
+   A shared 36 x 36 outer box. The glyph is placed, not stretched: Figma gives
+   each icon its own leaf inside the 16px slot at 10, 10, and three of the four
+   are not square. */
+.custody__tile {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(36 * var(--u));
+  height: calc(36 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: var(--bg);
+}
+.custody__tile--bordered {
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 10%, transparent);
+}
+.custody__glyph {
+  position: absolute;
+  left: calc(10 * var(--u));
+  top: calc(10 * var(--u));
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+/* fi_5314711 — the bars sit at inset 4.17% of their 16px slot. */
+.custody__glyph--stocks {
+  left: calc(10.667 * var(--u));
+  top: calc(10.667 * var(--u));
+  width: calc(14.666 * var(--u));
+  height: calc(14.666 * var(--u));
+}
+/* fi_12468092 — inset 2.56% top and bottom, full width. */
+.custody__glyph--commodities {
+  top: calc(10.41 * var(--u));
+  height: calc(15.181 * var(--u));
+}
+/* fi_4691630 — inset 2.39% top and bottom, full width. */
+.custody__glyph--forex {
+  top: calc(10.382 * var(--u));
+  height: calc(15.235 * var(--u));
+}
+
+/* Chips --------------------------------------------------------------------
+   Fixed widths from Figma (133 and 146), so the two chips keep their designed
+   right edges on the circles. */
+.custody__pill {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--w) * var(--u));
+  height: calc(36 * var(--u));
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  padding-inline: calc(10 * var(--u));
+  border-radius: calc(30 * var(--u));
+  background: #2f110c;
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 17%, transparent);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(12 * var(--u));
+  line-height: normal;
+  letter-spacing: -0.02em;
+  color: var(--white-font);
+  white-space: nowrap;
+}
+.custody__pill-icon {
+  flex: none;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+/* fi_747305 — a 16px slot holding two leaves of its own: the shackle+body at
+   inset 0 10.16%, and the keyhole at inset 55.86% 42.77% 18.36% 42.77%. */
+.custody__lock {
+  position: relative;
+  flex: none;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+.custody__lock img { position: absolute; display: block; }
+.custody__lock-body {
+  left: calc(1.626 * var(--u));
+  top: 0;
+  width: calc(12.749 * var(--u));
+  height: calc(16 * var(--u));
+}
+.custody__lock-hole {
+  left: calc(6.843 * var(--u));
+  top: calc(8.938 * var(--u));
+  width: calc(2.313 * var(--u));
+  height: calc(4.125 * var(--u));
+}
+
+/* Ellipse 35 — 8px dot inside a 22px glow, placed by the glow's own box. */
+.custody__node {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(22 * var(--u));
+  height: calc(22 * var(--u));
+}

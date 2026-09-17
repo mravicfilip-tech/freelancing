@@ -8,12 +8,13 @@
  *
  * THE STORY — one delivery, every 8.5s
  * ------------------------------------
- *   0.82s  BTC leans a dozen design pixels along its own wire and lets a bead
- *          of value go. It is the farthest market out, so it goes first.
- *   1.0 →  EUR / USD, TSLA, XAU / USD and DAX 40 follow, each at the moment its
- *   2.1s   own distance says it must leave. Every bead travels the wire at the
+ *   0.82s  BTC leans a dozen design pixels along its own wire and, at 1.00s,
+ *          lets a bead of value go. It is the farthest market out, 441 design
+ *          px from the padlock, so it goes first.
+ *   1.43 → EUR / USD, TSLA, XAU / USD and DAX 40 follow, each at the moment its
+ *   2.12s  own distance says it must leave. Every bead travels the wire at the
  *          same speed, so the five departures are a wave whose shape is the
- *          field's real geometry — nearest market last, by 1.12s.
+ *          field's real geometry — nearest market last, 1.12s behind BTC.
  *   2.75s  All five arrive at the padlock *together*. Five separate markets
  *          resolving into a single place: that convergence is the whole point,
  *          and it is solved, not staggered by eye — the departures are
@@ -131,8 +132,6 @@ export function bt2Loop(root: HTMLElement): () => void {
     return {
       x: (r.left - cb.left + r.width / 2) / u,
       y: (r.top - cb.top + r.height / 2) / u,
-      w: r.width / u,
-      h: r.height / u,
     };
   };
 
@@ -142,9 +141,13 @@ export function bt2Loop(root: HTMLElement): () => void {
     const dx = hub.x - c.x;
     const dy = hub.y - c.y;
     const d = Math.hypot(dx, dy) || 1;
+    const label = el.querySelector<HTMLElement>('.bt2__label');
     return {
       el,
-      label: el.querySelector<HTMLElement>('.bt2__label'),
+      label,
+      // Read, not assumed: a label cools back to the colour the stylesheet gives
+      // it, so a token change carries through without this file being touched.
+      cool: label ? getComputedStyle(label).color : '',
       c,
       dx,
       dy,
@@ -153,6 +156,7 @@ export function bt2Loop(root: HTMLElement): () => void {
       uy: dy / d,
     };
   });
+  const lockCool = getComputedStyle(lockLabel).color;
 
   /* One speed for every wire, set by the longest of them. The departures fall
      out of it: a market leaves early exactly in proportion to how far it is. */
@@ -264,7 +268,7 @@ export function bt2Loop(root: HTMLElement): () => void {
       .set(lock, { clearProps: 'transform' }, SEAL + 0.2 + BACK + 0.02)
       .to(lockLabel, { color: SEALED, duration: 0.2, ease: 'sine.out' }, SEAL)
       .to(lockLabel, {
-        color: LIT, duration: 0.5, ease: 'sine.inOut',
+        color: lockCool, duration: 0.5, ease: 'sine.inOut',
         onComplete: () => gsap.set(lockLabel, { clearProps: 'color' }),
       }, COOL + 0.2);
 
@@ -276,7 +280,7 @@ export function bt2Loop(root: HTMLElement): () => void {
         if (!m.label) return;
         const label = m.label;
         tl.to(label, {
-          color: 'rgb(157, 157, 157)', duration: 0.4, ease: 'sine.inOut',
+          color: m.cool, duration: 0.4, ease: 'sine.inOut',
           onComplete: () => gsap.set(label, { clearProps: 'color' }),
         }, COOL + i * 0.09);
       });

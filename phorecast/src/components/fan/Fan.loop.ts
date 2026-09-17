@@ -19,9 +19,10 @@
  *          them — each diamond and each pill fires at the frame the front's
  *          centre is at its x, solved back through the ease, not staggered by
  *          eye. The diamonds on the path flare; the pills change colour.
- *   ~2.5s  It crosses the tile. The rim and glass lift, the mark takes a bar
- *          of light across its face in the direction of travel, and the tile's
- *          own photograph lifts with it — the light goes through the vault.
+ *   ~2.5s  It crosses the tile. A bar of light runs across the mark's face in
+ *          the direction of travel, the frosted panel behind it fills, the
+ *          photograph under the glass lifts, and the hairline rim goes warm —
+ *          the light goes through the vault.
  *   ~3.3s  The right fan, ELECTIONS, GEOPOLITICS, TECH, and out past the right
  *          edge at 4.4s. The tile lets go over two seconds behind it.
  *   7.00s  The return pass, mirrored: in at the right, out at the left.
@@ -65,14 +66,24 @@
  *                 crossing it.
  *   the tile art  `.fan__tile-bg` lifts as the front passes through, so the
  *                 light is transmitted by the vault rather than applied to its
- *                 front face.
+ *                 front face. It is also, now, most of the tile's beat: there
+ *                 is no shadow ramp and no bloom on the tile or its glass, by
+ *                 standing instruction — nothing in this band gets a halo.
  *   the sub-head  The one line of copy with headroom in it (#9d9d9d) warms as
  *                 the front crosses and cools behind it — the same plain
  *                 colour transition the pills make, nothing else.
  *
- * THE PILLS DO NOT GLOW
- * ---------------------
- * Asked for explicitly, and the one place this departs from the lab. A pill is
+ * NOTHING IN THIS BAND GLOWS
+ * --------------------------
+ * A standing preference, and the one place this departs from the lab twice
+ * over. The lab's 05 ramps the tile's red `box-shadow` alpha and blur as its
+ * landing beat and hangs a drop-shadow on the mark; both are gone, along with
+ * the stylesheet's own two red shadows. What is left of the arrival is the
+ * shine crossing the mark's face, the glass filling, the photograph under it
+ * lifting and the rim changing colour — a light passing through a thing, with
+ * no aura around it anywhere.
+ *
+ * The pills are the same instruction one element down. A pill is
  * a flat chip of the brand red for as long as the front is on it: background
  * to `--orange-100`, contents to `--white-font`, and back. No halo, no bloom,
  * no drop-shadow, no scale, and `filter` on the pill itself is never written
@@ -120,8 +131,9 @@ const HEAD = 132;
 const HEAD_FADE = 70;
 /** How much thicker the lit head is than the `.fan__spark` attribute's 2.4. */
 const HEAD_WEIGHT = 1.75;
-/** Half-width of the ground wash, design px. */
-const WASH = 380;
+/** Half-width of the ground wash, design px, and how strong it ever gets. */
+const WASH = 520;
+const WASH_PEAK = 0.30;
 /** Samples per spark when the (length, x) table is built. */
 const SAMPLES = 220;
 
@@ -180,7 +192,6 @@ export function fanLoop(root: HTMLElement): () => void {
   const tile = q('.fan__tile');
   const tileArt = q('.fan__tile-bg');
   const glass = q('.fan__glass');
-  const logo = glass?.querySelector<HTMLElement>('img, svg') ?? null;
   const sub = q('.fan__sub');
 
   let ctx: gsap.Context | undefined;
@@ -330,11 +341,17 @@ export function fanLoop(root: HTMLElement): () => void {
   const buildOverlays = () => {
     const w = document.createElement('i');
     w.setAttribute('aria-hidden', 'true');
+    // Flat across its height and soft along its travel, with the same top and
+    // bottom fade the arcs carry. A radial would be a bloom sitting behind the
+    // copy; this is the ground being lit where the front is and nowhere else.
     w.style.cssText =
       'position:absolute;top:0;left:0;height:100%;pointer-events:none;opacity:0;' +
-      'mix-blend-mode:screen;will-change:transform,opacity;' +
-      'background:radial-gradient(ellipse closest-side at 50% 50%,' +
-      'rgba(229,51,30,0.42) 0%,rgba(229,51,30,0.16) 46%,rgba(229,51,30,0) 76%);';
+      'will-change:transform,opacity;' +
+      'background:linear-gradient(90deg,rgba(229,51,30,0) 0%,rgba(229,51,30,0.05) 20%,' +
+      'rgba(229,51,30,0.16) 38%,rgba(245,112,72,0.30) 50%,rgba(229,51,30,0.16) 62%,' +
+      'rgba(229,51,30,0.05) 80%,rgba(229,51,30,0) 100%);' +
+      '-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 26%,#000 74%,transparent 100%);' +
+      'mask-image:linear-gradient(to bottom,transparent 0%,#000 26%,#000 74%,transparent 100%);';
     frame.insertBefore(w, frame.firstChild);
     mine.push(w);
     wash = w;
@@ -379,6 +396,12 @@ export function fanLoop(root: HTMLElement): () => void {
     s.el.style.removeProperty('stroke-dashoffset');
     s.lit = false;
   };
+  /** `clearProps` on `filter` leaves `filter: none` sitting in the attribute. */
+  const dropFilter = (els: HTMLElement[]) => {
+    gsap.set(els, { clearProps: 'filter' });
+    els.forEach((el) => el.style.removeProperty('filter'));
+  };
+
   const clearFan = (g: Fan) => {
     g.el.style.removeProperty('opacity');
     g.lit = false;
@@ -417,7 +440,7 @@ export function fanLoop(root: HTMLElement): () => void {
 
     if (wash) {
       wash.style.transform = `translate3d(${px((x - WASH) * f)},0,0)`;
-      wash.style.opacity = (p * 0.42).toFixed(3);
+      wash.style.opacity = (p * WASH_PEAK).toFixed(3);
     }
   };
 
@@ -454,17 +477,9 @@ export function fanLoop(root: HTMLElement): () => void {
     const pillBg = css(pills[0] ?? null, 'background-color') || 'rgb(0, 0, 0)';
     const pillFg = css(pills[0] ?? null, 'color') || PILL_LIT_FG;
     const pillOp = Number(css(pills[0] ?? null, 'opacity') || '0.7') || 0.7;
-    const tileShadow = css(tile, 'box-shadow');
     const tileBorder = css(tile, 'border-color');
     const glassBg = css(glass, 'background-color');
     const subFg = css(sub, 'color');
-
-    // One design pixel, so the lit shadow scales with the band exactly as the
-    // resting one does.
-    const tf = tile ? tile.clientWidth / 100 : f;
-    const tileLit =
-      `rgba(229, 51, 30, 0.46) 0px ${px(24 * tf)} ${px(46 * tf)} 0px, ` +
-      `rgba(229, 51, 30, 0.34) 0px ${px(8 * tf)} ${px(18 * tf)} 0px`;
 
     const pillXs = pills.map(cx);
     const diaXs = diamonds.map(cx);
@@ -548,7 +563,7 @@ export function fanLoop(root: HTMLElement): () => void {
             }, t)
               .to(pillIcons[i], {
                 filter: PILL_ICON_REST, duration: 0.95, ease: 'sine.inOut',
-                onComplete: () => gsap.set(pillIcons[i], { clearProps: 'filter' }),
+                onComplete: () => dropFilter(pillIcons[i]),
               }, t + 0.42);
           }
         });
@@ -557,15 +572,16 @@ export function fanLoop(root: HTMLElement): () => void {
            mark in the direction of travel, and lets it out the far side; the
            fall is two seconds, because a vault is not a strobe. */
         const hit = when(tileX);
-        if (tile && tileShadow) {
+        if (tile && tileBorder) {
+          // The rim only. No shadow, no bloom and nothing outside the tile's own
+          // 100 design px: the rim is a hairline changing colour, the same plain
+          // transition the pills make, and the light itself is the bar below.
           tl.to(tile, {
-            boxShadow: tileLit, borderColor: 'rgba(255, 210, 165, 0.86)',
-            duration: 0.35, ease: 'power2.out',
+            borderColor: 'rgba(255, 244, 236, 0.9)', duration: 0.35, ease: 'power2.out',
           }, hit - 0.3)
             .to(tile, {
-              boxShadow: tileShadow, borderColor: tileBorder,
-              duration: 2.0, ease: 'sine.inOut',
-              onComplete: () => gsap.set(tile, { clearProps: 'boxShadow,borderColor' }),
+              borderColor: tileBorder, duration: 1.6, ease: 'sine.inOut',
+              onComplete: () => gsap.set(tile, { clearProps: 'borderColor' }),
             }, hit + 0.45);
         }
         if (glass && glassBg) {
@@ -575,21 +591,6 @@ export function fanLoop(root: HTMLElement): () => void {
             .to(glass, {
               backgroundColor: glassBg, duration: 1.8, ease: 'sine.inOut',
               onComplete: () => gsap.set(glass, { clearProps: 'backgroundColor' }),
-            }, hit + 0.45);
-        }
-        if (logo) {
-          // Both ends stated: the resting value is `filter: none`, which has
-          // nothing in it to interpolate from.
-          tl.fromTo(logo,
-            { filter: 'drop-shadow(0px 0px 0px rgba(255, 170, 120, 0)) brightness(1)' },
-            {
-              filter: `drop-shadow(0px 0px ${px(9 * tf)} rgba(255, 170, 120, 0.95)) brightness(1.4)`,
-              duration: 0.3, ease: 'power2.out', immediateRender: false,
-            }, hit - 0.3)
-            .to(logo, {
-              filter: 'drop-shadow(0px 0px 0px rgba(255, 170, 120, 0)) brightness(1)',
-              duration: 1.8, ease: 'sine.inOut',
-              onComplete: () => gsap.set(logo, { clearProps: 'filter,transform,transformOrigin' }),
             }, hit + 0.45);
         }
         if (tileArt) {
@@ -769,13 +770,14 @@ export function fanLoop(root: HTMLElement): () => void {
     };
     pills.forEach((el) => {
       give(el, 'backgroundColor,color,opacity');
-      el.querySelectorAll('img').forEach((i) => give(i, 'filter'));
+      const icons = Array.from(el.querySelectorAll<HTMLElement>('img'));
+      icons.forEach((i) => gsap.killTweensOf(i));
+      dropFilter(icons);
     });
     diamonds.forEach((el) => give(el, 'transform,transformOrigin,filter'));
-    give(tile, 'boxShadow,borderColor');
+    give(tile, 'borderColor');
     give(tileArt, 'filter');
     give(glass, 'backgroundColor');
-    give(logo, 'filter,transform,transformOrigin');
     give(sub, 'color');
 
     mine.splice(0).forEach((el) => el.remove());

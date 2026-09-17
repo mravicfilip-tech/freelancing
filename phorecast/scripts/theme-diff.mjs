@@ -23,10 +23,33 @@ for (const width of Object.keys(A.widths)) {
     if (!sa) continue;
     if (!sb) { report.push(`${width}  ${sel}  MISSING in second snapshot`); missing++; continue; }
     if (sa.n !== sb.n) report.push(`${width}  ${sel}  element count ${sa.n} -> ${sb.n}`);
-    const n = Math.min(sa.n, sb.n);
     const perSection = [];
-    for (let i = 0; i < n; i++) {
-      const ea = sa.els[i], eb = sb.els[i];
+    // Aligned by identity, not by array index. Index alignment meant that
+    // inserting a single node -- the theme switcher into the nav, or an inlined
+    // SVG's children into a section -- shifted every later element by one and
+    // reported thousands of false differences. That is not just noise: agents
+    // started avoiding inlining altogether to keep the gate readable, so the
+    // measuring instrument was dictating the design. Each element is keyed by
+    // its class and its ordinal among siblings sharing that class, so a new
+    // node displaces nothing and a genuinely added or removed one is reported
+    // as exactly that.
+    const key_ = (els) => {
+      const seen = new Map(), out = new Map();
+      for (const e of els) {
+        const n = (seen.get(e.k) ?? 0) + 1;
+        seen.set(e.k, n);
+        out.set(`${e.k}#${n}`, e);
+      }
+      return out;
+    };
+    const ma = key_(sa.els), mb = key_(sb.els);
+    for (const [id, ea] of ma) {
+      const eb = mb.get(id);
+      if (!eb) {
+        changed++; missing++;
+        if (perSection.length < 6) perSection.push(`      ${ea.k || '?'} · GONE from the second snapshot`);
+        continue;
+      }
       for (const key of Object.keys(ea)) {
         if (key === 'k') continue;
         if (ea[key] !== eb[key]) {
@@ -34,6 +57,12 @@ for (const width of Object.keys(A.widths)) {
           GEOM.has(key) ? geometry++ : colour++;
           if (perSection.length < 6) perSection.push(`      ${ea.k || '?'} · ${key}: ${ea[key]} -> ${eb[key]}`);
         }
+      }
+    }
+    for (const id of mb.keys()) {
+      if (!ma.has(id)) {
+        changed++;
+        if (perSection.length < 6) perSection.push(`      ${id.split('#')[0]} · ADDED in the second snapshot`);
       }
     }
     if (perSection.length) report.push(`${width}  ${sel}\n${perSection.join('\n')}`);

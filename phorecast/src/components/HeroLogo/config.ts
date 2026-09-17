@@ -75,6 +75,37 @@ export const LINED = {
   pulseSpeed: 0.11,
   depthFade: 0.55,
   scrollSpread: 2.4,
+
+  /**
+   * On paper the mark is a different medium, not a different colour.
+   *
+   * Dark draws the mark as emitted light: both passes blend additively over a
+   * near-black ground, so crossings brighten and the wide feathered pass reads
+   * as a glow. Neither survives a move to `#fffbf8`. Additive light over paper
+   * can only push channels toward white, so the slices and ribs wash out to a
+   * ~1.5:1 haze and only the very densest strokes survive — measured, 0.2% of
+   * the mark's pixels cleared 3:1 before this existed. And a *dark* 11px
+   * feathered pass is not a glow inverted, it is a smudge: a halo, which this
+   * page does not get.
+   *
+   * So light composites ONE pass of ink OVER the page. Everything else — the
+   * geometry, the widths, the draw-in, the depth fade, the travelling
+   * highlight — is shared with dark, because none of it is about luminance.
+   */
+  lightInk: {
+    /** Read from the palette first; the literal is the fallback and the documented value. */
+    colorToken: '--accent',
+    color: 0xa21605,
+    /**
+     * Headroom for the travelling highlight. Dark gets its highlight from the
+     * glow pass adding on top of an already-full core; with no glow pass and
+     * `f` clamped at 1, a cap at full intensity has nowhere left to go. Resting
+     * the outline a little short of full ink gives the pulse somewhere to
+     * travel: 5.78:1 at rest, 7.69:1 as it passes. On paper "lit" is more ink.
+     */
+    capIntensity: 0.85,
+    core: { width: 1.4, feather: 1.4, opacity: 1.0, pulse: 0.9 },
+  },
 } as const;
 
 /** Glass: three slabs of tinted, transmissive glass. */

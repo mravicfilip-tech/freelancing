@@ -1,15 +1,32 @@
 // Named imports, not a namespace import: `import * as THREE` defeats
 // tree-shaking, so the whole library ships whether it is used or not.
 import { AddEquation, Color, CustomBlending, Float32BufferAttribute, InstancedBufferAttribute, InstancedBufferGeometry, MathUtils, Mesh, OneFactor, OneMinusSrcAlphaFactor, ShaderMaterial, Vector2 } from 'three';
+import { getTheme, tok } from '../../../lib/theme';
 import { LINED as C } from '../config';
 import { logoOutline } from '../logoPath';
 import linesVert from '../shaders/lines.vert.glsl?raw';
 import linesFrag from '../shaders/lines.frag.glsl?raw';
 import type { FrameState, Treatment, TreatmentContext } from './types';
 
+/** `Color` takes either, but a CSS string is what `tok` returns, so normalise to one. */
+const hex = (n: number) => `#${n.toString(16).padStart(6, '0')}`;
+
+/** One draw of the whole outline at a given width and weight. */
+interface Pass {
+  readonly width: number;
+  readonly feather: number;
+  readonly opacity: number;
+  readonly pulse: number;
+}
+
 /**
- * The outline extruded into a stack of slices joined by ribs, drawn as additive orange lines:
- * one instanced quad per segment, widened in screen space, in a thin core pass and a wide glow pass.
+ * The outline extruded into a stack of slices joined by ribs: one instanced quad per segment,
+ * widened in screen space.
+ *
+ * Dark draws it as emitted orange light — a thin core pass under a wide glow pass, both
+ * additive, so crossings brighten. Light draws it as red ink: one core pass composited OVER
+ * the page, no glow pass at all. See LINED.lightInk in ../config for why that is a change of
+ * medium rather than a change of colour.
  */
 export class LinedTreatment implements Treatment {
   readonly physical = false;
@@ -18,6 +35,8 @@ export class LinedTreatment implements Treatment {
 
   private geometry!: InstancedBufferGeometry;
   private readonly materials: ShaderMaterial[] = [];
+  /** The passes this build actually made, so `layout` cannot assume there are two. */
+  private passes: readonly Pass[] = [];
   private readonly shared = {
     uResolution: { value: new Vector2(1, 1) },
     uProgress: { value: 0 },
@@ -28,6 +47,14 @@ export class LinedTreatment implements Treatment {
   };
 
   build({ pivot }: TreatmentContext) {
+    // Read once, here, and never again: the scene is rebuilt on the theme
+    // epoch (see ../index.tsx), so a live switch arrives as a fresh build
+    // rather than as materials that have to be re-themed in place.
+    const light = getTheme() === 'light';
+    const ink = light ? tok(C.lightInk.colorToken, hex(C.lightInk.color)) : hex(C.color);
+    const capIntensity = light ? C.lightInk.capIntensity : C.capIntensity;
+    this.passes = light ? [C.lightInk.core] : [C.glow, C.core];
+
     const pts = logoOutline(C.outlineSamples);
     const n = pts.length;
     const K = C.slices;
@@ -50,7 +77,7 @@ export class LinedTreatment implements Treatment {
       const f = K > 1 ? k / (K - 1) : 1; // 0 = back, 1 = front
       const z = (f - 0.5) * depth;
       const cap = k === 0 || k === K - 1;
-      const i0 = cap ? C.capIntensity : C.sliceIntensity;
+      const i0 = cap ? capIntensity : C.sliceIntensity;
       // The front outline draws first, the inner slices follow front to back, the back cap last.
       const d = k === K - 1 ? 0 : cap ? 0.85 : 0.15 + 0.6 * (1 - f);
       for (let i = 0; i < n; i++) seg(pts[i], z, pts[(i + 1) % n], z, i / n, (i + 1) / n, i0, i0, d);
@@ -77,14 +104,14 @@ export class LinedTreatment implements Treatment {
     geo.instanceCount = delay.length;
     this.geometry = geo;
 
-    // Glow underneath, core on top; both additive so crossings brighten.
-    for (const pass of [C.glow, C.core]) {
+    // Dark: glow underneath, core on top. Light: the core alone.
+    for (const pass of this.passes) {
       const material = new ShaderMaterial({
         vertexShader: linesVert,
         fragmentShader: linesFrag,
         uniforms: {
           ...this.shared,
-          uColor: { value: new Color(C.color) },
+          uColor: { value: new Color(ink) },
           uOpacity: { value: pass.opacity },
           uWidth: { value: pass.width },
           uFeather: { value: pass.feather },
@@ -96,11 +123,23 @@ export class LinedTreatment implements Treatment {
         transparent: true,
         depthTest: false,
         depthWrite: false,
-        // rgb: additive; alpha: "over" — so a lone faded line composites like a normal one.
+        // The fragment shader writes premultiplied colour, so `One` on the source
+        // is right either way and the medium is the one factor that changes:
+        //
+        //   dark  rgb: src + dst            — additive; light adds to light
+        //   light rgb: src + dst*(1 - srcA) — "over"; ink covers what is under it
+        //
+        // Alpha is "over" in both, so a lone faded line composites like a normal one.
+        //
+        // `depthTest` is off, so draw order decides what wins — except that it
+        // cannot here. One colour composited over itself is idempotent, and the
+        // accumulated alpha 1 - prod(1 - aᵢ) does not depend on the order of the
+        // terms, so crossings are order-independent and can only get denser, never
+        // lighter. That is the ink analogue of "crossings brighten".
         blending: CustomBlending,
         blendEquation: AddEquation,
         blendSrc: OneFactor,
-        blendDst: OneFactor,
+        blendDst: light ? OneMinusSrcAlphaFactor : OneFactor,
         blendSrcAlpha: OneFactor,
         blendDstAlpha: OneMinusSrcAlphaFactor,
       });
@@ -116,7 +155,7 @@ export class LinedTreatment implements Treatment {
     this.shared.uDepthNear.value = -f.viewDist + f.size * 0.6;
     this.shared.uDepthFar.value = -f.viewDist - f.size * 0.6;
     this.materials.forEach((m, i) => {
-      const pass = i === 0 ? C.glow : C.core;
+      const pass = this.passes[i];
       m.uniforms.uWidth.value = pass.width * f.dpr;
       m.uniforms.uFeather.value = pass.feather * f.dpr;
     });

@@ -2,8 +2,9 @@
  * "Your Funds Stay in Your Control" — the ambient loop.
  *
  * The section's load-in belongs to `Fan.motion.ts`. This file owns what happens
- * *after* it has landed: it reads the markup the component ships, adds two
- * overlay elements of its own, and removes both on teardown.
+ * *after* it has landed: it reads the markup the component ships, adds one
+ * overlay of its own — a clip inside the glass and the bar of light in it — and
+ * removes it on teardown.
  *
  * THE STORY — 05 CROSSFEED, one band straight through, twice, every 13s
  * ---------------------------------------------------------------------
@@ -380,6 +381,7 @@ export function fanLoop(root: HTMLElement): () => void {
 
   const clearSpark = (s: Spark) => {
     s.el.style.removeProperty('opacity');
+    s.el.style.removeProperty('stroke-linecap');
     s.el.style.removeProperty('stroke-width');
     s.el.style.removeProperty('stroke-dasharray');
     s.el.style.removeProperty('stroke-dashoffset');
@@ -413,6 +415,8 @@ export function fanLoop(root: HTMLElement): () => void {
       // rather than merely recoloured. Removing the property hands the width
       // back to the `stroke-width="2.4"` the markup ships.
       s.el.style.strokeWidth = (2.4 * (1 + (HEAD_WEIGHT - 1) * o)).toFixed(2);
+      // Round tips, so the head does not end on a square cut mid-arc.
+      s.el.style.strokeLinecap = 'round';
       s.el.style.opacity = o.toFixed(3);
       s.lit = true;
     }

@@ -97,7 +97,6 @@
   background: var(--orange-100);
   filter: blur(calc(3.4 * var(--p)));
   transform-origin: center;
-  will-change: transform;
 }
 .s2__comet--1 { left: calc(240.217 * var(--p)); top: calc(359.194 * var(--p)); width: calc(59.091 * var(--p)); transform: rotate(-19.42deg); }
 .s2__comet--2 { left: calc(256.989 * var(--p)); top: calc(304.24 * var(--p)); width: calc(37.66 * var(--p)); height: calc(6.277 * var(--p)); }

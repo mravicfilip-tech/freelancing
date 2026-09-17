@@ -173,7 +173,12 @@ function useFundLoop() {
           if (d < best.d) best = { pts, u: i / (pts.length - 1), d };
         });
       });
-      const rot = new DOMMatrixReadOnly(getComputedStyle(el).transform);
+      // `DOMMatrix` is fed the computed transform, which is the string
+      // `none` for the one comet the design does not rotate; not every
+      // engine parses that, so identity is the fallback.
+      const css = getComputedStyle(el).transform;
+      let rot = new DOMMatrixReadOnly();
+      if (css && css !== 'none') { try { rot = new DOMMatrixReadOnly(css); } catch { /* identity */ } }
       return {
         el,
         pts: best.pts,

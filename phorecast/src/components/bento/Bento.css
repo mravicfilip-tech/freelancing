@@ -85,126 +85,31 @@
 .bento__cta--orange-light { color: #f03725; }
 
 /* Card A ------------------------------------------------------------------ */
+/* 534 x 387 in Figma. The card grows to whatever the left column comes to --
+   387 + 14 + the funds card's 355 -- so the height here is a floor rather than
+   a size, but it has to be the design's floor: at 385 the bottom-anchored link
+   sat two pixels high, because `margin-top: auto` measures from the padding box
+   and the padding box was two pixels short.
+
+   The fill lives in BoxOnboard.css with the rest of the card's geometry. It used
+   to be stated here as well, in the previous palette, and only lost because the
+   box overrides it at higher specificity -- a stop nobody could edit safely,
+   since changing it did nothing. */
 .bcard--onboard {
   flex: 1 0 0;
-  min-height: 385px;
-  background: linear-gradient(180deg, #a21605 0%, #f03725 86.058%, #ec7f59 100%);
-}
-.bcard__art { position: absolute; left: 30px; top: 30px; width: 474px; height: 325px; }
-.onboard__phone { position: absolute; left: 210px; top: 98px; width: 214px; height: 420px; }
-.onboard__grid { position: absolute; left: 219px; top: 109px; width: 196px; height: 312px; overflow: hidden; opacity: 0.2; }
-.onboard__grid img { position: absolute; left: -87px; top: 0; width: 488.255px; height: 312px; }
-.onboard__chip {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(238, 238, 238, 0.49);
-  font-family: var(--font-wordmark);
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--white-font);
-  white-space: nowrap;
-  backdrop-filter: blur(2px);
-}
-.onboard__chip--blur { backdrop-filter: blur(11.3px); }
-/* Disc and arc are concentric in Figma; each carries its own rotation. */
-.onboard__ring { position: absolute; left: 238px; top: 158px; width: 157.9px; height: 158.8px; }
-.onboard__ring::before {
-  content: '';
-  position: absolute;
-  left: 14.95px; top: 15.03px; width: 128.01px; height: 128.78px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(6px);
-}
-.onboard__ring-img { position: absolute; left: 14.95px; top: 15.03px; width: 128.01px; height: 128.78px; transform: rotate(5.72deg); opacity: 0.45; mix-blend-mode: soft-light; }
-/* The arc covers the top-right of the 128px circle, so it turns about that circle's centre, not its own. */
-.onboard__ring-arc {
-  position: absolute; left: 52.15px; top: 15.05px; width: 90.82px; height: 64.36px;
-  transform-origin: 26.8px 64.36px; transform: rotate(15.8deg);
-}
-.onboard__seconds {
-  position: absolute; left: 32.95px; top: 48.23px;
-  font-family: var(--font-mono); font-weight: 200; font-size: 50px; line-height: 1.2; color: var(--white-font);
-}
-/* Figma places this label by its cap box, so trim the line box to match. */
-.onboard__in {
-  position: absolute; left: 295px; top: 311px;
-  font-family: var(--font-wordmark); font-weight: 600; font-size: 14px; line-height: 1.2; color: var(--white-font); white-space: nowrap;
-  text-box: trim-both cap alphabetic;
+  min-height: 387px;
 }
 
 /* Card B ------------------------------------------------------------------ */
 .bcard--funds { min-height: 355px; background: rgba(15, 14, 13, 0.7); }
 .bcard--funds .bcard__text { max-width: 474px; }
-.funds__art {
-  position: absolute;
-  left: calc(50% + 5px);
-  top: calc(50% + 23px);
-  width: 464px;
-  height: 215px;
-  transform: translate(-50%, -50%);
-}
-.funds__glow { position: absolute; left: 87px; top: 49px; width: 215px; height: 118px; }
-.funds__ring-orange { position: absolute; left: 242px; top: 0; width: 215px; height: 215px; }
-.funds__ring-wallet { position: absolute; left: 8px; top: 61px; width: 93px; height: 93px; }
-.funds__wallet-disc { position: absolute; left: 36px; top: 89px; width: 37px; height: 37px; }
-.funds__wallet-icon { position: absolute; left: 46px; top: 99px; width: 18px; height: 18px; }
-.funds__label {
-  position: absolute; font-family: var(--font-display); font-weight: 400; font-size: 12px; line-height: normal;
-  letter-spacing: -0.24px; color: var(--white-font); white-space: nowrap;
-}
-.funds__label--wallet { font-size: 8px; letter-spacing: -0.16px; }
-.funds__tile {
-  position: absolute; display: grid; place-items: center; width: 36px; height: 36px; padding: 10px;
-  border-radius: 8px; background: var(--bg);
-}
-.funds__tile--bordered { border: 1px solid rgba(240, 55, 37, 0.1); }
-.funds__tile img { width: 16px; height: 16px; }
-.funds__pill {
-  position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 10px; border-radius: 30px;
-  background: #2d0e0f; border: 1px solid rgba(240, 55, 37, 0.17);
-  font-family: var(--font-display); font-weight: 400; font-size: 12px; line-height: normal; letter-spacing: -0.24px;
-  color: var(--white-font); white-space: nowrap;
-}
-.funds__pill img { width: 16px; height: 16px; }
-.funds__lock { position: relative; width: 16px; height: 16px; flex: none; }
-.funds__lock-body { position: absolute; inset: 0 10.16%; width: auto !important; height: auto !important; }
-.funds__lock-hole { position: absolute; inset: 55.86% 42.77% 18.36% 42.77%; width: auto !important; height: auto !important; }
-.funds__node { position: absolute; width: 22px; height: 22px; }
+/* The diagram itself is BoxCustody.css; the rules that used to live here were
+   written for markup the rebuilt box replaced and matched nothing. */
 
 /* Card C ------------------------------------------------------------------ */
 .bcard--bonus { min-height: 297px; background: #0e0e0d; border: 1px solid #323232; }
-.bonus__chart { position: absolute; right: -8px; bottom: -12px; width: 563px; height: 208px; overflow: hidden; }
-.bonus__line { position: absolute; left: -0.5px; top: 16px; width: 564px; height: 196.6px; }
-.bonus__marker { position: absolute; left: 335.1px; top: 28.6px; width: 36.36px; height: 137.4px; }
-.bonus__grid { position: absolute; left: 44px; top: -38px; width: 488.255px; height: 312px; opacity: 0.2; }
-.bonus__grid img { position: absolute; left: -28px; top: -40px; width: 488.255px; height: 312px; }
-.bonus__pill {
-  position: absolute; left: 455px; top: 205px; z-index: 1;
-  display: flex; align-items: center; gap: 20px; width: 297px; padding: 12px 20px;
-  border-radius: 30px; background: #1d1c1b; border: 1px solid rgba(229, 51, 30, 0.25);
-}
-.bonus__pill > img { flex: none; }
-.bonus__amt { display: flex; flex-direction: column; align-items: center; text-align: center; font-family: var(--font-display); color: var(--white-font); line-height: normal; }
-.bonus__amt strong { font-weight: 800; font-size: 14px; }
-.bonus__amt small { font-weight: 400; font-size: 10px; }
-.bonus__amt--orange { color: var(--orange-100); }
-.bonus__amt--orange strong { font-size: 12px; }
-.bonus__amt--orange small { font-size: 8px; color: var(--orange-100); }
-.bonus__tile {
-  position: absolute; z-index: 1; display: grid; place-items: center; width: 42px; height: 42px;
-  border-radius: 12.2px; background: #e6e6e6; border: 1.367px solid rgba(0, 0, 0, 0.09);
-}
-.bonus__tile--pie { position: absolute; }
-.bonus__tile--pie img { position: absolute; }
-.bonus__tile--pie { padding: 7px; }
-.bonus__tile--pie img { left: 7px; top: 7px; }
+/* The chart, the pill and the badges are BoxBonus.css; the rules that used to
+   live here were written for markup the rebuilt box replaced. */
 
 /* Card D ------------------------------------------------------------------ */
 .bcard--markets {
@@ -241,13 +146,13 @@
   .bento__grid { flex-direction: column; }
   .bento__col--left, .bento__col--right { width: 100%; }
   .bento__col { display: grid; grid-template-columns: 1fr 1fr; }
-  .bcard--onboard { min-height: 385px; }
+  .bcard--onboard { min-height: 387px; }
   .bcard--markets { height: auto; min-height: 440px; }
 }
 @media (max-width: 1100px) {
   .bento__col { grid-template-columns: 1fr; }
   .bcard { --k: calc(100cqw / 474); }
-  .bcard__art, .funds__art, .bonus__chart, .mk__field, .mk__orbits, .mk__grid { transform-origin: top left; }
+  .mk__field, .mk__orbits, .mk__grid { transform-origin: top left; }
   .bcard--markets .mk__field { transform: scale(0.85); }
 }
 @media (max-width: 720px) {
@@ -267,12 +172,7 @@
   .bcard__title { font-size: 21px; }
   .bcard__body { font-size: 17px; }
   .bcard--onboard { min-height: 420px; }
-  .bcard__art { left: 0; top: 60px; transform: scale(0.72); }
-  .funds__art { transform: translate(-50%, -50%) scale(0.72); }
   .bcard--funds { min-height: 380px; }
-  .bonus__chart { transform: scale(0.75); transform-origin: bottom right; }
-  .bonus__pill { left: auto; right: 16px; top: auto; bottom: 64px; width: 250px; gap: 12px; padding: 10px 14px; }
-  .bonus__tile { display: none; }
   .bcard--bonus { min-height: 380px; }
   .bcard--markets { min-height: 460px; }
   .mk__field { left: -20px; top: 24px; transform: scale(0.5); }

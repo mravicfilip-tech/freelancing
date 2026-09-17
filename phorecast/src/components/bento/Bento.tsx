@@ -73,22 +73,13 @@ function buildBento({ q, tl }: SectionMotion) {
    loaded on demand so the section costs nothing until it is reached. */
 type CardMotion = Record<string, ((card: HTMLElement) => () => void) | undefined>;
 /**
- * The illustration loops are off while the rebuilt boxes have no motion of their
- * own.
- *
- * Every module under ./motion was written against the markup these four boxes
- * replaced. Three of them now match nothing and would simply do nothing, which
- * is harmless. `markets.ts` is not harmless: it still matches `.mk__tile` and
- * `.mk__orbits`, and it writes `boxShadow` on each tile every frame. The tiles
- * paint their sub-pixel rings with an *inset* box-shadow -- a border cannot hold
- * a 0.74px weight, Chrome snaps it to 1px -- so the loop was overwriting the
- * ring with a drop shadow. Measured: `rgba(0,0,0,0.09) 0 0 0 0.74px inset` at
- * 1.2s, `rgba(22,12,9,0.14) 0 4px 11px -8px` by 6s.
- *
- * Rather than half-port them, the glob is pointed at nothing and the files stay
- * as reference for the motion rebuild.
+ * `motion/<x>.ts` exporting `<x>(card) => teardown`, matched to `.bcard--<x>`:
+ * onboard, funds, bonus, markets. `motion/shared.ts` sits under the same glob
+ * and is simply skipped — there is no `.bcard--shared` — which keeps the four
+ * card modules importing their common plumbing from a file the loader already
+ * warms rather than four copies of it.
  */
-const CARD_MOTION = import.meta.glob<CardMotion>('./motion-disabled/*.ts');
+const CARD_MOTION = import.meta.glob<CardMotion>('./motion/*.ts');
 
 /**
  * Fetch the illustration modules well before anyone reaches the band, and hand
@@ -168,9 +159,19 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
             .catch((err) => console.error(`bento: ${name} motion failed to load`, err));
         }
       },
-      // The same penetration margin as the section's own entrance, so the
-      // illustrations start their loops on the same scroll position.
-      { threshold: 0, rootMargin: '0px 0px -25% 0px' },
+      // Deliberately EARLIER than the section's own entrance, which waits for
+      // the band to climb a quarter of the screen. A card module's first act is
+      // to park its illustration at a start state -- a chart line with no dash
+      // drawn, a ring with no numerals on it -- and that is only safe while the
+      // band is still held hidden by `data-motion="pending"`. Firing on the
+      // same margin as the entrance is a race the module loses about as often
+      // as it wins, and losing it means one painted frame of settled artwork
+      // before the module hides it again. Attaching a quarter of a screen early
+      // removes the race: the modules are warm by then, so the promises resolve
+      // in the microtask checkpoint after this callback, and the entrance has
+      // not started. Each module then waits for the band's `motion:done` before
+      // it plays anything -- see motion/shared.ts.
+      { threshold: 0, rootMargin: '0px 0px 25% 0px' },
     );
     io.observe(root);
 

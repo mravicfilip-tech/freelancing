@@ -144,7 +144,12 @@
   top: 50%;
   width: calc(128.06 * var(--u));
   height: calc(128.73 * var(--u));
-  transform: translate(-50%, -50%) rotate(15.8deg);
+  /* `--onb-spin` is the countdown hand: motion/onboard.ts turns the arc through
+     this variable rather than by writing `transform`, because GSAP would
+     otherwise replace the whole declaration and resolve the centring
+     percentages to pixels, freezing them against the card's container unit. It
+     defaults to 0deg, so the resting render is exactly the design. */
+  transform: translate(-50%, -50%) rotate(calc(15.8deg + var(--onb-spin, 0deg)));
 }
 .onb__arc {
   position: absolute;

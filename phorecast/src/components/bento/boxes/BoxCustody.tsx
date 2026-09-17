@@ -122,7 +122,10 @@ export function BoxCustody() {
         ))}
 
         <img src={walletDisc} alt="" className="custody__wallet-disc" width={37} height={37} />
-        <img src={iconWallet} alt="" className="custody__wallet-icon" width={18} height={18} />
+        {/* Masked like its seven siblings. The clipPath's `fill="white"` rect is
+            not painted, so this file is the same single #A6A6A6 they are. */}
+        <Icon src={iconWallet} w={18} h={18} className="custody__wallet-icon"
+          style={{ width: undefined, height: undefined }} />
       </div>
 
       <a href="#how" className="bento__cta bento__cta--orange">

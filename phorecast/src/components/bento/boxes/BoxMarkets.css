@@ -399,10 +399,13 @@
   /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
      guide you can only just see, and 12.8:1 on ink -- two blazing white
      ellipses across the card. The colour is right and the WEIGHT is wrong, so
-     the weight is what moves: at 14% the same stroke lands at 1.36:1 against
-     the inverted surface, which is the delicacy it has today. Cheaper than a
-     mask, and it keeps the two ellipses byte-identical to the shared asset. */
-  opacity: 0.14;
+     the weight is what moves. 0.17 lands at 1.49:1 against the inverted
+     surface where the stroke has 1.40:1 against cream -- a shade over parity
+     on purpose, because the path is 0.76px wide and a sub-pixel stroke
+     antialiases toward its ground, so the same ratio buys less line. Cheaper
+     than a mask, and it keeps the two ellipses byte-identical to the shared
+     asset. */
+  opacity: 0.17;
   }
 }
 
@@ -493,8 +496,11 @@
   /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
      guide you can only just see, and 12.8:1 on ink -- two blazing white
      ellipses across the card. The colour is right and the WEIGHT is wrong, so
-     the weight is what moves: at 14% the same stroke lands at 1.36:1 against
-     the inverted surface, which is the delicacy it has today. Cheaper than a
-     mask, and it keeps the two ellipses byte-identical to the shared asset. */
-  opacity: 0.14;
+     the weight is what moves. 0.17 lands at 1.49:1 against the inverted
+     surface where the stroke has 1.40:1 against cream -- a shade over parity
+     on purpose, because the path is 0.76px wide and a sub-pixel stroke
+     antialiases toward its ground, so the same ratio buys less line. Cheaper
+     than a mask, and it keeps the two ellipses byte-identical to the shared
+     asset. */
+  opacity: 0.17;
 }

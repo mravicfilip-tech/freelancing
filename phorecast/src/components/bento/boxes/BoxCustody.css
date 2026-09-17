@@ -75,12 +75,17 @@
 
 /* Wallet: a 37px gradient disc with the 18px glyph centred on it. ---------- */
 .custody__wallet-disc {
+  /* The plate named above. It is `transparent` in dark, where the file's own
+     18% lift is the whole effect and a plate would be a second disc. */
+  background: var(--custody-disc, transparent);
+  border-radius: 50%;
   left: calc(36 * var(--u));
   top: calc(89 * var(--u));
   width: calc(37 * var(--u));
   height: calc(37 * var(--u));
 }
 .custody__wallet-icon {
+  color: var(--custody-glyph);
   left: calc(46 * var(--u));
   top: calc(99 * var(--u));
   width: calc(18 * var(--u));
@@ -231,12 +236,28 @@
      than the label beside it by the same step in both. --ink-muted was the
      first guess and reads at 3.4:1 -- a glyph you have to look for. */
   --custody-glyph: var(--ink-2);
-  /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
-     mask alpha), so only the colour under it moves: ink at 20% lands at
-     1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
-     and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
+  /* THE WALLET DISC, and the trap under it. The file is ONE circle at
+     `opacity="0.18"`, filled with a #D9D9D9 -> #2E100B gradient. Eighteen per
+     cent of anything over near-black is a lift, so on the dark card it reads
+     as a disc; eighteen per cent of the same gradient over cream is 1.02:1 at
+     the top and 1.15:1 at the bottom -- the card's subject, gone. A
+     partial-alpha fill does not survive the ground changing under it.
+     The fix is a plate BEHIND the image rather than a change to it: the disc
+     settles onto --panel-2 like the four market chips, and the file's own
+     gradient still shades it. */
+  --custody-disc: var(--panel-2);
+  /* Both rings keep their file's own alpha -- 0.2 and 0.22 survive the mask as
+     mask alpha -- so only the colour under it moves. Left alone they would be
+     1.08:1 and 1.31:1 against paper, which for the wallet ring is no ring at
+     all. Ink at 20% puts it at 1.53:1, against 1.60:1 in dark.
+
+     The market ring goes to --accent-deep rather than --accent, and that is
+     the sub-pixel finding rather than a preference: its stroke is 0.76px, so
+     it antialiases toward whatever it sits on and the same contrast ratio buys
+     less line on cream than on near-black. --accent measures 1.44:1 and still
+     reads pink; --accent-deep measures 1.56:1 and reads as a ring. */
   --custody-ring: var(--ink);
-  --custody-ring-market: var(--accent);
+  --custody-ring-market: var(--accent-deep);
   }
   :root:not([data-theme='dark']) .box-custody .custody__glow {
   /* The one raster in the diagram, and it carries two things: the warm bloom
@@ -277,12 +298,28 @@
      than the label beside it by the same step in both. --ink-muted was the
      first guess and reads at 3.4:1 -- a glyph you have to look for. */
   --custody-glyph: var(--ink-2);
-  /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
-     mask alpha), so only the colour under it moves: ink at 20% lands at
-     1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
-     and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
+  /* THE WALLET DISC, and the trap under it. The file is ONE circle at
+     `opacity="0.18"`, filled with a #D9D9D9 -> #2E100B gradient. Eighteen per
+     cent of anything over near-black is a lift, so on the dark card it reads
+     as a disc; eighteen per cent of the same gradient over cream is 1.02:1 at
+     the top and 1.15:1 at the bottom -- the card's subject, gone. A
+     partial-alpha fill does not survive the ground changing under it.
+     The fix is a plate BEHIND the image rather than a change to it: the disc
+     settles onto --panel-2 like the four market chips, and the file's own
+     gradient still shades it. */
+  --custody-disc: var(--panel-2);
+  /* Both rings keep their file's own alpha -- 0.2 and 0.22 survive the mask as
+     mask alpha -- so only the colour under it moves. Left alone they would be
+     1.08:1 and 1.31:1 against paper, which for the wallet ring is no ring at
+     all. Ink at 20% puts it at 1.53:1, against 1.60:1 in dark.
+
+     The market ring goes to --accent-deep rather than --accent, and that is
+     the sub-pixel finding rather than a preference: its stroke is 0.76px, so
+     it antialiases toward whatever it sits on and the same contrast ratio buys
+     less line on cream than on near-black. --accent measures 1.44:1 and still
+     reads pink; --accent-deep measures 1.56:1 and reads as a ring. */
   --custody-ring: var(--ink);
-  --custody-ring-market: var(--accent);
+  --custody-ring-market: var(--accent-deep);
 }
 
 :root[data-theme='light'] .box-custody .custody__glow {

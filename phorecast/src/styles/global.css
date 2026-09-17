@@ -141,21 +141,25 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .btn:hover .roll__in + .roll__in,
 .bento__cta:hover .roll__in + .roll__in,
 .nav__link:hover .roll__in + .roll__in,
-.footer__links a:hover .roll__in + .roll__in { transform: translateY(0); }
+.footer__links a:hover .roll__in + .roll__in,
+.built__cta:hover .roll__in + .roll__in { transform: translateY(0); }
 .btn:hover .roll__in:first-child,
 .bento__cta:hover .roll__in:first-child,
 .nav__link:hover .roll__in:first-child,
-.footer__links a:hover .roll__in:first-child { transform: translateY(-100%); }
+.footer__links a:hover .roll__in:first-child,
+.built__cta:hover .roll__in:first-child { transform: translateY(-100%); }
 
 /* Keyboard users get the same thing, so the hover is not the only signal. */
 .btn:focus-visible .roll__in + .roll__in,
 .bento__cta:focus-visible .roll__in + .roll__in,
 .nav__link:focus-visible .roll__in + .roll__in,
-.footer__links a:focus-visible .roll__in + .roll__in { transform: translateY(0); }
+.footer__links a:focus-visible .roll__in + .roll__in,
+.built__cta:focus-visible .roll__in + .roll__in { transform: translateY(0); }
 .btn:focus-visible .roll__in:first-child,
 .bento__cta:focus-visible .roll__in:first-child,
 .nav__link:focus-visible .roll__in:first-child,
-.footer__links a:focus-visible .roll__in:first-child { transform: translateY(-100%); }
+.footer__links a:focus-visible .roll__in:first-child,
+.built__cta:focus-visible .roll__in:first-child { transform: translateY(-100%); }
 
 /* The colour half of direction 03. The roll carries the movement; these carry
    the state, so a control still reads as hovered with motion turned off. */

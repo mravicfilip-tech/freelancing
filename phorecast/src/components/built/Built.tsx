@@ -15,6 +15,7 @@ import nodeRingC from '../../assets/built/node-ring-c.svg';
 import nodeDax from '../../assets/built/node-dax.svg';
 import nodeEur from '../../assets/built/node-eur.svg';
 import nodeBtc from '../../assets/built/node-btc.svg';
+import { Roll } from '../Roll';
 import nodeLock from '../../assets/built/node-lock.svg';
 import gold from '../../assets/built/gold.svg';
 import arrow from '../../assets/built/arrow.svg';
@@ -130,7 +131,7 @@ export function Built() {
               <div className="built__copy">
                 <h3 className="built__col-title">{c.title}</h3>
                 <p className="built__col-body">{c.body}</p>
-                <a href={c.href} className="built__cta">{c.cta}<img src={arrow} alt="" width={12} height={6} /></a>
+                <a href={c.href} className="built__cta"><Roll>{c.cta}</Roll><img src={arrow} alt="" width={12} height={6} /></a>
               </div>
             </div>
           ))}

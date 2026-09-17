@@ -89,9 +89,13 @@
    padding, which is what makes the pill 45.235 tall rather than text-tall. */
 .s1__envelope {
   flex: none; display: block; width: calc(23.989 * var(--p)); padding: calc(2.399 * var(--p)) 0;
-  /* #9d9d9d is what the file bakes, and --ink-2 IS #9d9d9d in dark. */
-  color: var(--ink-2);
 }
+/* On the glyph itself, not on this wrapper. `color` is the initial value of
+   border-*-color, so setting it on a wrapper moves four computed border
+   colours on an element that paints no border -- twenty spurious rows across
+   three widths in the theme gate, for a colour nothing reads. #9d9d9d is what
+   the file bakes, and --ink-2 IS #9d9d9d in dark. */
+.s1__envelope .icon { color: var(--ink-2); }
 /* No display override: global.css already blocks every <img>, so this glyph
    was never in a line box and Icon's own `display: block` reproduces it. An
    inline-block here made the wrapper 3px taller at 720 and moved the glyph
@@ -194,8 +198,9 @@
 .s1__status-right > span { position: relative; display: block; height: calc(5.359 * var(--p)); }
 .s1__status-right img, .s1__status-right .icon { position: absolute; }
 /* Signal, data and the battery shell all bake #b5b5b5 -- the same grey as the
-   charge figure beside them, which already reads this token. */
-.s1__signal, .s1__data, .s1__batt { color: var(--steps-p1-batt); }
+   charge figure beside them, which already reads this token. Each colour goes
+   on the glyph, never on its wrapper: see the note on .s1__envelope. */
+.s1__signal .icon, .s1__data .icon, .s1__batt-shell { color: var(--steps-p1-batt); }
 .s1__batt-fill { color: var(--steps-p1-batt-fill); }
 .s1__signal { width: calc(6.89 * var(--p)); }
 .s1__signal img, .s1__signal .icon { left: 0; top: calc(0.383 * var(--p)); width: calc(7.082 * var(--p)); height: calc(4.785 * var(--p)); }
@@ -228,7 +233,7 @@
   backdrop-filter: blur(calc(4.177 * var(--p))); overflow: hidden;
 }
 /* The app mark bakes #e5331e. */
-.s1__logo-tile { color: var(--accent); }
+.s1__logo-tile .icon { color: var(--accent); }
 .s1__logo-tile img, .s1__logo-tile .icon {
   position: absolute; left: calc(50% + 0.77 * var(--p)); top: 50%; transform: translate(-50%, -50%);
   width: calc(11.518 * var(--p)); height: calc(12.286 * var(--p));

@@ -214,7 +214,8 @@
 /* Figma ships this as one 70.299 x 7.532 asset hung on a 70 x 7 slot, not as a
    row of hand-built dots: the bar is 40.17 long with 2.51 gaps, where the first
    build drew 34 with 4. */
-.s2__progress { position: relative; display: block; width: calc(70 * var(--p)); height: calc(7 * var(--p)); color: var(--accent); }
+.s2__progress { position: relative; display: block; width: calc(70 * var(--p)); height: calc(7 * var(--p)); }
+.s2__progress .icon { color: var(--accent); }
 .s2__progress img, .s2__progress .icon { position: absolute; left: 0; top: 0; display: block; width: calc(70.2991 * var(--p)); height: calc(7.53191 * var(--p)); }
 
 /* --- Light -------------------------------------------------------------------

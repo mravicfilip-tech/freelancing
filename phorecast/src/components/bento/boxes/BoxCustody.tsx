@@ -15,7 +15,10 @@
  * owns the card's load-in and loop.
  */
 import arrow from '../../../assets/bento/custody/arrow.svg';
-import glow from '../../../assets/bento/custody/glow-ellipse.png';
+// The same 430x236 export the bento already ships as funds-glow.png -- checked
+// pixel for pixel, not by name -- so this points at the existing file rather
+// than a second 116 KB copy of it.
+import glow from '../../../assets/bento/funds-glow.png';
 import ringMarket from '../../../assets/bento/custody/ring-market.svg';
 import ringWallet from '../../../assets/bento/custody/ring-wallet.svg';
 import walletDisc from '../../../assets/bento/custody/wallet-disc.svg';

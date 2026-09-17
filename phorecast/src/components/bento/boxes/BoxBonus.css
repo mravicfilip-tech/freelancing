@@ -1,0 +1,249 @@
+/* Bento card C — "Double your capital on first deposit" (Figma 365:988).
+
+   Design frame: 776 x 299, 1px border, so the padding box every absolute child
+   is measured against is 774 x 297. `.bcard` already declares
+   `container-type: inline-size`, which means `100cqw` inside this card is that
+   774-wide content box — so `--u` below is exactly one design pixel and the
+   whole box tracks its bento column instead of the viewport.
+
+   --u is declared here but never consumed here: an element cannot query itself,
+   so the card's own height comes from `aspect-ratio` instead. Every descendant
+   resolves `100cqw` against this card, which is what we want.
+
+   Selectors are doubled up (`.box-bonus .box-bonus__title`) wherever they have
+   to beat a `.bcard__*` rule in Bento.css, because that file's responsive block
+   matches at the same specificity and bundle order is not guaranteed.
+
+   Static only — the motion pass owns every transition, hover and load-in here,
+   including drawing `.box-bonus__line`. */
+
+.bcard--bonus.box-bonus {
+  --u: calc(100cqw / 774);
+  display: block;
+  padding: 0;
+  min-height: 0;
+  aspect-ratio: 776 / 299;
+}
+
+/* ------------------------------------------------------------------ artwork */
+
+/* Frame 2085662610: hung 8px past the right edge and 12px past the bottom, and
+   clipped by the card's own `overflow: hidden` as well as its own. */
+.box-bonus__art {
+  position: absolute;
+  right: calc(-8 * var(--u));
+  bottom: calc(-12 * var(--u));
+  width: calc(563 * var(--u));
+  height: calc(208 * var(--u));
+  overflow: hidden;
+}
+
+/* Frame 2085662764 wraps Group 2085662448 and offsets it again; both boxes are
+   kept so the grid lands where Figma puts it (44 - 28, -38 - 40). Neither one
+   clips, so the rules bleed out of the artwork well and are cut by it. */
+.box-bonus__grid {
+  position: absolute;
+  left: calc(44 * var(--u));
+  top: calc(-38 * var(--u));
+  width: calc(488.255 * var(--u));
+  height: calc(312 * var(--u));
+  opacity: 0.2;
+}
+.box-bonus__grid img {
+  position: absolute;
+  left: calc(-28 * var(--u));
+  top: calc(-40 * var(--u));
+  width: calc(488.255 * var(--u));
+  height: calc(312 * var(--u));
+}
+
+/* Group 2085662432. The layer box is 563.5 x 194.75 at (0, 16.75); the vector
+   inside bleeds by half its 2px stroke (Figma reports it as
+   inset -0.51% 0 -0.42% -0.1%), which resolves to the 564.087 x 196.559 box
+   below. Sizing the <svg> to that box makes one user unit equal one --u, so the
+   stroke width scales with the card like every other measurement. */
+.box-bonus__chart {
+  position: absolute;
+  left: calc(-0.5635 * var(--u));
+  top: calc(15.757 * var(--u));
+  width: calc(564.087 * var(--u));
+  height: calc(196.559 * var(--u));
+  overflow: visible;
+}
+
+/* Frame 2085662609 — the halo dot sitting on the line plus its drop line down
+   to the pill. */
+.box-bonus__marker {
+  position: absolute;
+  left: calc(335.111 * var(--u));
+  top: calc(28.556 * var(--u));
+  width: calc(36.361 * var(--u));
+  height: calc(137.417 * var(--u));
+}
+
+/* --------------------------------------------------------------------- copy */
+
+.box-bonus .box-bonus__text {
+  position: absolute;
+  left: calc(30 * var(--u));
+  top: calc(31 * var(--u));
+  width: calc(714 * var(--u));
+  gap: calc(2 * var(--u));
+  z-index: 1;
+}
+.box-bonus .box-bonus__title {
+  font-size: calc(24 * var(--u));
+  white-space: nowrap;
+}
+.box-bonus .box-bonus__body {
+  font-size: calc(20 * var(--u));
+}
+
+.box-bonus__cta {
+  position: absolute;
+  left: calc(30 * var(--u));
+  top: calc(246 * var(--u));
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  height: calc(20 * var(--u));
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: calc(16 * var(--u));
+  line-height: 1.2;
+  color: var(--orange-100);
+  white-space: nowrap;
+}
+/* right-arrow 1 is a 13 x 13 frame holding a 12 x 6 glyph whose centre sits 1px
+   below the frame's, so the leaf keeps its own box rather than filling. */
+.box-bonus__cta-arrow {
+  position: relative;
+  flex: none;
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+}
+.box-bonus__cta-arrow img {
+  position: absolute;
+  left: 0;
+  top: calc(4.5 * var(--u));
+  width: calc(12 * var(--u));
+  height: calc(6 * var(--u));
+}
+
+/* ------------------------------------------------------------------- badges */
+
+/* The 42 x 42 chip and the 28 x 28 glyph are siblings in Figma, both measured
+   from the badge origin, so the chip's 1.367px border must not push the glyph
+   in. Painting the chip as ::before keeps the glyph on the outer box. */
+.box-bonus__badge {
+  position: absolute;
+  z-index: 1;
+  width: calc(42 * var(--u));
+  height: calc(42 * var(--u));
+}
+.box-bonus__badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(12.202 * var(--u));
+  background: #e6e6e6;
+  border: calc(1.367 * var(--u)) solid rgba(0, 0, 0, 0.09);
+}
+.box-bonus__badge--bolt { left: calc(629 * var(--u)); top: calc(73.5 * var(--u)); }
+.box-bonus__badge--pie { left: calc(345 * var(--u)); top: calc(143.5 * var(--u)); }
+
+.box-bonus__glyph,
+.box-bonus__pie {
+  position: absolute;
+  left: calc(7 * var(--u));
+  top: calc(7 * var(--u));
+  width: calc(28 * var(--u));
+  height: calc(28 * var(--u));
+}
+
+/* fi_617333: three wedges, each with its own leaf box inside the 28 x 28 frame.
+   Figma gives them as insets; they are resolved here so nothing is stretched. */
+.box-bonus__pie img { position: absolute; }
+.box-bonus__pie-a {
+  left: calc(16.755 * var(--u));
+  top: calc(15.126 * var(--u));
+  width: calc(11.244 * var(--u));
+  height: calc(8.4 * var(--u));
+}
+.box-bonus__pie-b {
+  left: calc(13.829 * var(--u));
+  top: calc(1.176 * var(--u));
+  width: calc(12.324 * var(--u));
+  height: calc(12.327 * var(--u));
+}
+.box-bonus__pie-c {
+  left: 0;
+  top: calc(2.15 * var(--u));
+  width: calc(20.745 * var(--u));
+  height: calc(24.675 * var(--u));
+}
+
+/* --------------------------------------------------------------------- pill */
+
+/* Frame 2085662870. 20/12 padding plus the 1px border is what puts the inner
+   row at Figma's (21, 13), so those are real padding here, not offsets. */
+.box-bonus__pill {
+  position: absolute;
+  left: calc(455 * var(--u));
+  top: calc(206 * var(--u));
+  z-index: 1;
+  width: calc(299 * var(--u));
+  padding: calc(12 * var(--u)) calc(20 * var(--u));
+  border-radius: calc(30 * var(--u));
+  background: #1d1c1b;
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 25%, transparent);
+}
+
+/* The row is a 257-wide flex line in Figma with 20px gaps, but its items are
+   text whose measured width shifts between Figma and the browser. Pinning each
+   item at its Figma x keeps the wallet, plus and bonus block put regardless. */
+.box-bonus__row {
+  position: relative;
+  width: calc(257 * var(--u));
+  height: calc(42 * var(--u));
+}
+.box-bonus__wallet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(42 * var(--u));
+  height: calc(42 * var(--u));
+}
+.box-bonus__plus {
+  position: absolute;
+  left: calc(150 * var(--u));
+  top: calc(13 * var(--u));
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+.box-bonus__amt {
+  position: absolute;
+  font-family: var(--font-display);
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--white-font);
+}
+.box-bonus__amt strong { display: block; font-weight: 800; }
+.box-bonus__amt small { display: block; font-weight: 400; }
+.box-bonus__amt--deposit {
+  left: calc(62 * var(--u));
+  top: calc(4.5 * var(--u));
+  width: calc(68 * var(--u));
+}
+.box-bonus__amt--deposit strong { font-size: calc(14 * var(--u)); }
+.box-bonus__amt--deposit small { font-size: calc(10 * var(--u)); }
+.box-bonus__amt--bonus {
+  left: calc(186 * var(--u));
+  top: calc(7.5 * var(--u));
+  width: calc(58 * var(--u));
+  color: var(--orange-100);
+}
+.box-bonus__amt--bonus strong { font-size: calc(12 * var(--u)); }
+.box-bonus__amt--bonus small { font-size: calc(8 * var(--u)); }

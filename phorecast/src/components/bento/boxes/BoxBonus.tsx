@@ -1,0 +1,122 @@
+/* Bento card C — "Double your capital on first deposit".
+   Figma: frame 365:988 (776 x 299 design px), file aczG8te17zRGoK5wvirB92.
+
+   Everything is laid out in design pixels multiplied by --u, the house pattern
+   used by Hero.css / SlideBonus.css / Familiar.css. `.bcard` already declares
+   `container-type: inline-size`, so 100cqw is this card's own content box and
+   --u is one design pixel of it — the box scales with its bento column, never
+   with the viewport.
+
+   Coordinates come straight out of Figma and are measured from the card's
+   padding box (the export positions every absolute child against it). Figma's
+   inner wrapper 365:1023 sits 1px down from that box because the root frame
+   carries 1px of vertical padding, so the y of everything that lived inside it
+   is its Figma y + 1.
+
+   Static by design: no transitions, no load-in, no hover. The chart stroke is a
+   real <path class="box-bonus__line"> so the motion pass can draw it. */
+
+import chartMarker from '../../../assets/bento/bonus/marker.svg';
+import chartGrid from '../../../assets/bento/bonus/grid.svg';
+import arrowOrange from '../../../assets/bento/bonus/arrow.svg';
+import walletBadge from '../../../assets/bento/bonus/wallet-badge.svg';
+import iconPlus from '../../../assets/bento/bonus/plus.svg';
+import iconBolt from '../../../assets/bento/bonus/bolt.svg';
+import pieA from '../../../assets/bento/bonus/pie-a.svg';
+import pieB from '../../../assets/bento/bonus/pie-b.svg';
+import pieC from '../../../assets/bento/bonus/pie-c.svg';
+import './BoxBonus.css';
+
+/* Vector 5 of Group 2085662432, verbatim from the Figma export. The viewBox is
+   the vector's own 564.087 x 196.559 bleed box (the 563.5 x 194.75 layer plus
+   half a 2px stroke), so the path data needs no rescaling. */
+const LINE_D =
+  'M0.587302 195.75L121.594 107.944C123.682 106.429 126.194 105.614 128.773 105.614C131.242 105.614 133.653 104.866 135.688 103.469L139.925 100.562C143.405 98.1739 147.527 96.8958 151.747 96.8958H154.085C157.933 96.8958 161.634 95.42 164.427 92.7725L165.622 91.6393C167.647 89.7194 170.331 88.6492 173.122 88.6492C176.193 88.6492 179.122 89.9448 181.188 92.2174L182.763 93.9506C185.832 97.327 190.184 99.2519 194.747 99.2519H196.911C201.677 99.2519 206.301 97.6307 210.024 94.6547L219.548 87.0402C222.443 84.7262 226.038 83.4656 229.744 83.4656C232.616 83.4656 235.437 82.7083 237.922 81.27L241.707 79.0797C244.904 77.2299 248.532 76.2559 252.225 76.2559H258.797C263.669 76.2559 268.391 74.5614 272.151 71.4627L311.529 39.0151C315.29 35.9164 320.011 34.2219 324.884 34.2219H420.542C425.834 34.2219 430.931 32.2235 434.814 28.6266L451.973 12.7286C455.043 9.8843 459.074 8.3041 463.259 8.3041H464.99C468.292 8.3041 471.459 6.99013 473.792 4.65205C476.125 2.31397 479.292 1 482.595 1H564.087';
+
+export function BoxBonus() {
+  return (
+    <article className="bcard bcard--bonus box-bonus">
+      {/* Frame 2085662610 — the artwork well, hung off the bottom-right corner
+          and clipped by the card. */}
+      <div className="box-bonus__art" aria-hidden="true">
+        <div className="box-bonus__grid">
+          <img src={chartGrid} alt="" width={488.255} height={312} />
+        </div>
+        {/* preserveAspectRatio="none" mirrors Figma: the layer is stretched to
+            its box rather than letterboxed. The card scales uniformly, so in
+            practice the stroke stays round. */}
+        <svg
+          className="box-bonus__chart"
+          viewBox="0 0 564.087 196.559"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            {/* Artwork gradient, not the brand accent: these salmon tints have
+                no token and fade the stroke into the card at its left end. */}
+            <linearGradient
+              id="box-bonus-stroke"
+              x1="545.087"
+              y1="-34.25"
+              x2="30.0873"
+              y2="179.75"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#FFB89C" stopOpacity="0" />
+              <stop offset="0.140227" stopColor="#FEAB8B" />
+              <stop offset="0.480769" stopColor="#FA8D61" />
+              <stop offset="1" stopColor="#1C1B1A" />
+            </linearGradient>
+          </defs>
+          <path className="box-bonus__line" d={LINE_D} stroke="url(#box-bonus-stroke)" strokeWidth={2} />
+        </svg>
+        {/* Halo dot on the line plus the drop line down to the pill. */}
+        <img className="box-bonus__marker" src={chartMarker} alt="" width={36.361} height={137.417} />
+      </div>
+
+      <div className="bcard__text box-bonus__text">
+        <h3 className="bcard__title box-bonus__title">Double your capital on first deposit</h3>
+        <p className="bcard__body box-bonus__body">Up to $200 on your first deposit.</p>
+      </div>
+
+      {/* Frame 2085662868 — lightning badge, top right of the chart. */}
+      <span className="box-bonus__badge box-bonus__badge--bolt" aria-hidden="true">
+        <img className="box-bonus__glyph" src={iconBolt} alt="" width={28} height={28} />
+      </span>
+
+      {/* Frame 2085662871 — pie badge sitting on the line. Its three wedges are
+          separate vector layers in Figma; each keeps its own leaf box. */}
+      <span className="box-bonus__badge box-bonus__badge--pie" aria-hidden="true">
+        <span className="box-bonus__pie">
+          <img className="box-bonus__pie-a" src={pieA} alt="" width={11.244} height={8.4} />
+          <img className="box-bonus__pie-b" src={pieB} alt="" width={12.324} height={12.327} />
+          <img className="box-bonus__pie-c" src={pieC} alt="" width={20.745} height={24.675} />
+        </span>
+      </span>
+
+      {/* Frame 2085662870 — deposit / bonus pill. */}
+      <div className="box-bonus__pill" aria-hidden="true">
+        <div className="box-bonus__row">
+          <img className="box-bonus__wallet" src={walletBadge} alt="" width={42} height={42} />
+          <span className="box-bonus__amt box-bonus__amt--deposit">
+            <strong>+$200.00</strong>
+            <small>Deposit</small>
+          </span>
+          <img className="box-bonus__plus" src={iconPlus} alt="" width={16} height={16} />
+          <span className="box-bonus__amt box-bonus__amt--bonus">
+            <strong>+$200.00</strong>
+            <small>Bonus</small>
+          </span>
+        </div>
+      </div>
+
+      <a className="box-bonus__cta" href="#bonus">
+        <span className="box-bonus__cta-label">Get Your Bonus</span>
+        <span className="box-bonus__cta-arrow" aria-hidden="true">
+          <img src={arrowOrange} alt="" width={12} height={6} />
+        </span>
+      </a>
+    </article>
+  );
+}

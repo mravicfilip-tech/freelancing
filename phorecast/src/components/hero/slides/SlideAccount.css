@@ -111,14 +111,14 @@
   border-radius: calc(10.929 * var(--u));
   overflow: hidden;
 }
-/* The repo already carries this crest (pred-real-madrid.jpg); Figma frames a
-   slightly tighter crop of the same photo, so the leaf is scaled to match
-   inside the unchanged 39.345px avatar box. */
+/* The crest is the project's existing asset (pred-real-madrid.jpg), reused
+   rather than duplicated. It is already a square crop of the same photo Figma
+   crops in place, so it fills the 39.345px avatar box directly; the only
+   difference from the Figma render is that its framing is a touch wider. */
 .sl2-pred__avatar img {
   display: block;
-  width: 122%;
-  height: 122%;
-  margin: -12% -11%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 .sl2-pred__title {

@@ -98,26 +98,27 @@
 }
 .hero__stage {
   position: relative;
+  /* The query container the slides measure themselves against. It sits inside
+     `.container--wide`, so its width IS the content column -- which is the only
+     basis that stays true at every viewport. Deriving the unit from `.hero`
+     instead, as this did, works only while the column is a fixed fraction of
+     the viewport: above 1920 the container's max-width pins the column at
+     1800px while `100cqw` keeps growing, and the unit runs away. Measured
+     before this: the 1800px column read 1570.9 design units at 2200, 1350 at
+     2560 and 1152 at 3000, so illustrations rendered up to a third too small on
+     an ordinary wide monitor. */
+  container-type: inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   margin-top: clamp(64px, 8.4vw, 162px);
   flex: none;
 }
 .hero__slide {
-  /* One design pixel of the CONTENT COLUMN, which is what every illustration is
-     laid out against. The divisor is the Figma FRAME width, not the column's,
-     because `container-type` sits on `.hero`, which is full-bleed -- so `100cqw`
-     is the viewport. `.container--wide` pads by `clamp(20px, 3.125vw, 60px)` a
-     side, making the column exactly 93.75% of the viewport between 640 and
-     1920; dividing the viewport by 1920 therefore makes the column exactly
-     1800u, which is what the designs assume.
-
-     Dividing by 1800 instead -- as this did -- made the column 1687.5u, so
-     every illustration rendered 6.67% oversized and anything the design placed
-     near the right edge was pushed past it and clipped. Measured, not inferred:
-     a probe element of `calc(1000 * var(--u))` read 1.06666px at 1920, and the
-     1800px column measured 1687.5u at 1920, 1600 and 1280 alike. */
-  --u: calc(100cqw / 1920);
+  /* One design pixel of the content column. `.hero__stage` is the query
+     container and its width is the column, so the divisor is simply the column's
+     own design width. This holds at every viewport, including above 1920 where
+     the column stops tracking the viewport. */
+  --u: calc(100cqw / 1800);
   grid-area: 1 / 1;
   display: grid;
   grid-template-columns: minmax(0, 560px) minmax(0, 1fr);

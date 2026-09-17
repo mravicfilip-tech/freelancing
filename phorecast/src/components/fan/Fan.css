@@ -160,9 +160,14 @@
   white-space: nowrap;
   opacity: var(--fan-pill-op);
 }
-.fan__pill > img, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+.fan__pill > .icon, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+/* The glyphs are masks filled with `color`, so they take a colour of their
+   own rather than the label's: #9d9d9d is exactly the grey Figma baked into
+   all eight files, and naming it here is what keeps the conversion invisible
+   in dark. The loop tweens this `color` where it used to tween a filter. */
+.fan__pill .icon { color: var(--fan-icon); }
 .fan__sport { position: relative; }
-.fan__sport img { position: absolute; }
+.fan__sport .icon { position: absolute; }
 .fan__sport-a { inset: 0.85% 8.31% 0.36% 8.34%; }
 .fan__sport-b { inset: 12.15% 43.55% 68.31% 36.91%; }
 .fan__sport-c { inset: 2% 8.31% 85.69% 79.38%; }
@@ -250,4 +255,118 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-js] .fan[data-motion='pending'] * { visibility: visible; }
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list — the same
+   shape `tokens.css` uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+   Nothing below is a lighter version of the block at the top of this file.
+   Six of these values are LIFTS, and in dark every one of them means brighter:
+   the spark head is a pale peach on black, the diamonds flare to brightness
+   2.4, the rim and the frosted panel go pale, the sub-head warms towards
+   white, the tile ignites at 2.6. Carried across unchanged, each one would
+   climb towards the paper and the beat would stop being visible without a
+   single thing having stopped working — which is the exact failure this band
+   is the proof case for. Each is turned around here.
+
+   The one place the rule does NOT apply is inside the tile, and it is worth
+   saying why: the photograph under the glass is dark saturated artwork, the
+   same object in both themes, and `.fan__tile` clips everything to it. A bar
+   of light crossing it is crossing a photograph, not the page. So the glass,
+   the bar and the photograph's own lift keep their direction, and the rim —
+   the only part of the tile that meets the paper — turns around. -------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* THE ARCS. #f03725 at 0.7 group opacity over near-black is a warm hairline
+     that glows; the same value over cream is a pale scratch. The brand red
+     itself is what reads on paper, and the two transparent end stops move with
+     it so the fade is pure alpha with no hue drift through cream. */
+  --fan-arc: #b8300f;
+  --fan-arc-in: #b8300f;
+  --fan-arc-out: #b8300f;
+  /* THE SPARK — the first direction flip, and the one the whole beat rests on.
+     In dark the head riding each arc is a pale peach, brighter than the line
+     it sits on. On paper a pale head on a coral line is nothing at all, so the
+     head becomes the darkest thing in the band. It keeps its 1.5x weight, so
+     what reads is a dense dark segment travelling along a soft one. */
+  --fan-spark: #23100a;
+
+  /* THE PILLS. In dark the chip is BLACK on a near-black page — a hole, quieter
+     than the ground. On paper a hole is still a hole, so the chip settles
+     rather than lifts, and the opacity goes up rather than down: at 0.7 a dark
+     label on a light chip loses more than white on black does. 0.8 puts the
+     label at 7.1:1 against its own chip; 0.7 would be 5.4:1. */
+  --fan-pill-bg: #e7dbd1;
+  --fan-pill-op: 0.8;
+  --fan-icon: #7d736c;
+  --fan-dia-mute: #9a908a;
+  --fan-dia-mute-2: #80766f;
+  /* THE DIAMONDS — the second direction flip. brightness(2.4) on ink is a
+     smudge; the flare has to press the six-pixel diamond DOWN into the paper
+     instead, and saturate carries the six accent ones with it. The doubling in
+     size is what makes one readable as having fired, and it is unchanged. */
+  --fan-dia-rest: brightness(1) saturate(1);
+  --fan-dia-lit: brightness(0.42) saturate(1.5);
+
+  /* THE TILE. Its photograph is a hot orange plate — dark, saturated artwork
+     that is the same object in both themes — so only the rim touches the page,
+     and it is the rim that has to turn around: white-alpha on black becomes
+     ink-alpha on paper, and the lit rim goes to a deep brand red rather than
+     to near-white. Inside the tile the light still passes as light, because
+     what it passes over is the photograph and not the page. */
+  --fan-rim: rgba(26, 21, 18, 0.32);
+  --fan-rim-lit: rgba(126, 2, 2, 0.9);
+
+  /* The sub-head — the third flip. In dark it warms towards white; there is no
+     headroom above --ink-2 on paper, so it deepens towards --ink instead. */
+  --fan-sub-lit: #2f2926;
+  }
+}
+
+:root[data-theme='light'] {
+  /* THE ARCS. #f03725 at 0.7 group opacity over near-black is a warm hairline
+     that glows; the same value over cream is a pale scratch. The brand red
+     itself is what reads on paper, and the two transparent end stops move with
+     it so the fade is pure alpha with no hue drift through cream. */
+  --fan-arc: #b8300f;
+  --fan-arc-in: #b8300f;
+  --fan-arc-out: #b8300f;
+  /* THE SPARK — the first direction flip, and the one the whole beat rests on.
+     In dark the head riding each arc is a pale peach, brighter than the line
+     it sits on. On paper a pale head on a coral line is nothing at all, so the
+     head becomes the darkest thing in the band. It keeps its 1.5x weight, so
+     what reads is a dense dark segment travelling along a soft one. */
+  --fan-spark: #23100a;
+
+  /* THE PILLS. In dark the chip is BLACK on a near-black page — a hole, quieter
+     than the ground. On paper a hole is still a hole, so the chip settles
+     rather than lifts, and the opacity goes up rather than down: at 0.7 a dark
+     label on a light chip loses more than white on black does. 0.8 puts the
+     label at 7.1:1 against its own chip; 0.7 would be 5.4:1. */
+  --fan-pill-bg: #e7dbd1;
+  --fan-pill-op: 0.8;
+  --fan-icon: #7d736c;
+  --fan-dia-mute: #9a908a;
+  --fan-dia-mute-2: #80766f;
+  /* THE DIAMONDS — the second direction flip. brightness(2.4) on ink is a
+     smudge; the flare has to press the six-pixel diamond DOWN into the paper
+     instead, and saturate carries the six accent ones with it. The doubling in
+     size is what makes one readable as having fired, and it is unchanged. */
+  --fan-dia-rest: brightness(1) saturate(1);
+  --fan-dia-lit: brightness(0.42) saturate(1.5);
+
+  /* THE TILE. Its photograph is a hot orange plate — dark, saturated artwork
+     that is the same object in both themes — so only the rim touches the page,
+     and it is the rim that has to turn around: white-alpha on black becomes
+     ink-alpha on paper, and the lit rim goes to a deep brand red rather than
+     to near-white. Inside the tile the light still passes as light, because
+     what it passes over is the photograph and not the page. */
+  --fan-rim: rgba(26, 21, 18, 0.32);
+  --fan-rim-lit: rgba(126, 2, 2, 0.9);
+
+  /* The sub-head — the third flip. In dark it warms towards white; there is no
+     headroom above --ink-2 on paper, so it deepens towards --ink instead. */
+  --fan-sub-lit: #2f2926;
 }

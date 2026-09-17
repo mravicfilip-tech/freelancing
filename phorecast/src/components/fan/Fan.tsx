@@ -5,6 +5,7 @@
 // identically either way, because the SVG already carries
 // `preserveAspectRatio="none"` and so stretches into whatever box the CSS gives
 // it exactly as the image did.
+import type { CSSProperties } from 'react';
 import fanLowerRaw from '../../assets/fan/fan-lower.svg?raw';
 import fanUpperRaw from '../../assets/fan/fan-upper.svg?raw';
 import iconCrypto from '../../assets/fan/icon-crypto.svg';
@@ -17,6 +18,7 @@ import iconSportB from '../../assets/fan/icon-sport-b.svg';
 import iconSportC from '../../assets/fan/icon-sport-c.svg';
 import tileBg from '../../assets/fan/tile-bg.jpg';
 import tileLogo from '../../assets/fan/tile-logo.svg';
+import { Icon } from '../Icon';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFan } from './Fan.motion';
 import { fanLoop } from './Fan.loop';
@@ -34,24 +36,62 @@ const DIAMONDS = [
   [1508.1, 302.3, 'accent'], [1725.2, 312.8, 'ink'], [1571.9, 502.3, 'ink'],
 ] as const;
 
+/**
+ * A pill glyph, masked rather than painted.
+ *
+ * All eight of these files are one flat #9d9d9d on transparent, which is why
+ * the loop had to whiten them with `brightness(0) invert(1)`: `color` could
+ * not reach inside an <img>. As a mask they are ordinary CSS colour, the
+ * filter is deleted outright, and the lit state becomes the same plain colour
+ * transition the label next to it already makes.
+ *
+ * SIZE, which is the one place a mask conversion can move geometry and did.
+ * `Icon` writes a width and a height inline, and there are two different
+ * answers here:
+ *
+ *  - The six pill glyphs are sized by the stylesheet, `calc(16 * var(--f))`,
+ *    so they scale with the band. An inline pixel size would freeze them at
+ *    one width. `undefined` in `style` overrides Icon's own width/height and
+ *    hands the box straight back to the stylesheet.
+ *  - The three sport pieces are NOT. They are absolutely positioned with all
+ *    four insets, and an <img> is a replaced element: `width: auto` resolves
+ *    to the file's intrinsic size and the over-constrained `right`/`bottom`
+ *    are dropped. So they ship at a fixed 10.85 x 15.81, 3.13 and 1.97 CSS px
+ *    at every width, and a <span> — not replaced — would have taken its box
+ *    from the insets instead and shrunk by a third at 1100. Passing the
+ *    intrinsic numbers reproduces the <img> exactly. (That they do not scale
+ *    with the band is how this shipped; it is not something to fix here.)
+ */
+const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
+
+/** A pill glyph, sized by Fan.css. */
+function Glyph({ src }: { src: string }) {
+  return <Icon src={src} w={0} h={0} style={CSS_SIZED} />;
+}
+
+/** One sport piece, sized by the file, exactly as the <img> was. */
+function SportPiece({ src, w, h, className }: { src: string; w: number; h: number; className: string }) {
+  return <Icon src={src} w={w} h={h} className={className} />;
+}
+
 function SportIcon() {
   return (
     <span className="fan__sport">
-      <img src={iconSportA} alt="" className="fan__sport-a" />
-      <img src={iconSportB} alt="" className="fan__sport-b" />
-      <img src={iconSportC} alt="" className="fan__sport-c" />
+      <SportPiece src={iconSportA} w={10.8535} h={15.8064} className="fan__sport-a" />
+      <SportPiece src={iconSportB} w={3.12615} h={3.12615} className="fan__sport-b" />
+      <SportPiece src={iconSportC} w={1.96923} h={1.96923} className="fan__sport-c" />
     </span>
   );
 }
 
 /* Figma fixes the three left pills at 120 and hugs the label on the right three. */
 const PILLS = [
-  { label: 'Crypto', x: 502, y: 212, w: 120, icon: <img src={iconCrypto} alt="" /> },
+  { label: 'Crypto', x: 502, y: 212, w: 120, icon: <Glyph src={iconCrypto} /> },
   { label: 'Sport', x: 201, y: 536, w: 120, icon: <SportIcon /> },
-  { label: 'Finance', x: 553, y: 558, w: 120, icon: <img src={iconFinance} alt="" /> },
-  { label: 'Geopolitics', x: 1581, y: 188, w: 149, icon: <img src={iconGeopolitics} alt="" /> },
-  { label: 'Tech', x: 1639, y: 512, w: 90, icon: <img src={iconTech} alt="" /> },
-  { label: 'Elections', x: 1372, y: 556, w: 132, icon: <img src={iconElections} alt="" /> },
+  { label: 'Finance', x: 553, y: 558, w: 120, icon: <Glyph src={iconFinance} /> },
+  { label: 'Geopolitics', x: 1581, y: 188, w: 149, icon: <Glyph src={iconGeopolitics} /> },
+  { label: 'Tech', x: 1639, y: 512, w: 90, icon: <Glyph src={iconTech} /> },
+  { label: 'Elections', x: 1372, y: 556, w: 132, icon: <Glyph src={iconElections} /> },
 ];
 
 const RAW = { upper: fanUpperRaw, lower: fanLowerRaw } as const;

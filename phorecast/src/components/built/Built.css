@@ -10,6 +10,19 @@
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
 .built__head { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
 .built__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(25px, 1.9vw, 32px); line-height: 1.2; color: var(--white-font); }
+/* The mask the heading rises out of, the same one the pillars and the steps
+   use. `intoLines` (src/lib/motion.ts) wraps the line in `.line > .line__in` at
+   build time and only the inner span moves, so the heading rises out of nothing
+   instead of fading. The padding/margin pair is descender room -- at
+   line-height 1.2 the "y" of "Way You" sits below the box the mask would
+   otherwise clip to -- and cancels out, so the settled layout is unchanged. */
+.built__title .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.built__title .line__in { display: block; position: relative; }
 .built__sub { margin-top: -15px; font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.2; color: var(--color-nre-body); }
 
 .built__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 640px)); justify-content: space-between; gap: 60px 160px; }
@@ -133,4 +146,36 @@
   .built__inner { gap: 48px; }
   .built__head { gap: 20px; }
   .built__copy { gap: 20px; }
+}
+
+/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
+   writes its start values the moment a tween is built, and this band is not
+   built until it has been scrolled to, so without this the whole section would
+   sit finished in the sliver showing under the one above and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the section's own box, its
+   spacing and its background glow stay, so nothing about the layout pops in.
+
+   The whole card is held rather than the artwork inside it: the card is what
+   arrives first, and everything within it is held from the same instant by its
+   own `from` tweens, which render their start values as the timeline is built.
+
+   The title is held as a whole rather than by its `.line` masks: the masks only
+   exist once the build has split it, so hiding those alone would leave the
+   heading painted plainly through the entire wait. */
+[data-js] .built[data-motion='pending'] .eyebrow,
+[data-js] .built[data-motion='pending'] .built__title,
+[data-js] .built[data-motion='pending'] .built__sub,
+[data-js] .built[data-motion='pending'] .bt-card,
+[data-js] .built[data-motion='pending'] .built__col-title,
+[data-js] .built[data-motion='pending'] .built__col-body,
+[data-js] .built[data-motion='pending'] .built__cta {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .built[data-motion='pending'] * { visibility: visible; }
 }

@@ -16,6 +16,8 @@ import nodeDax from '../../assets/built/node-dax.svg';
 import nodeEur from '../../assets/built/node-eur.svg';
 import nodeBtc from '../../assets/built/node-btc.svg';
 import { Roll } from '../Roll';
+import { useSectionMotion } from '../../lib/motion';
+import { buildBuilt } from './Built.motion';
 import nodeLock from '../../assets/built/node-lock.svg';
 import gold from '../../assets/built/gold.svg';
 import arrow from '../../assets/built/arrow.svg';
@@ -111,8 +113,13 @@ const COLUMNS = [
 ];
 
 export function Built() {
+  // The band arrives when it is scrolled to; see Built.motion.ts. `pending`
+  // holds the animated parts until GSAP takes over in the same frame — the CSS
+  // for it is at the end of Built.css.
+  const ref = useSectionMotion<HTMLElement>(buildBuilt);
+
   return (
-    <section className="built" id="built" aria-labelledby="built-title">
+    <section ref={ref} className="built" id="built" aria-labelledby="built-title" data-motion="pending">
       <div className="built__glows glow-fade" aria-hidden="true"><span className="built__glow" /></div>
       <div className="container built__inner">
         <header className="built__head">

@@ -69,7 +69,7 @@ export const LINED = {
   ribs: 56,
   ribIntensity: 0.42,
   cornerAngleRad: 0.45,
-  color: 0xff632a,
+  color: 0xf03725,
   core: { width: 1.4, feather: 1.4, opacity: 1.0, pulse: 0.9 },
   glow: { width: 11, feather: 11, opacity: 0.11, pulse: 1.4 },
   pulseSpeed: 0.11,
@@ -81,7 +81,7 @@ export const LINED = {
 export const GLASS = {
   /** Near white: with transmission, `color` filters everything seen through a slab, and three slabs stack. The tint comes from attenuation. */
   color: 0xfff2ea,
-  attenuationColor: 0xff6a30,
+  attenuationColor: 0xf03f2b,
   /** World units (× mark height): how far light travels before the tint fully takes. */
   attenuationDistance: 0.14,
   /** Object units — three multiplies it by the object's world scale itself. */
@@ -97,9 +97,9 @@ export const GLASS = {
 
 /** Solid: matte slabs, orange face, dark sides, one orange rim light. */
 export const SOLID = {
-  face: 0xff6a30,
+  face: 0xf03f2b,
   /** Lifts the tone-mapped face back to the brand orange. */
-  faceEmissive: 0x4a1606,
+  faceEmissive: 0x460e0a,
   side: 0x1b1816,
   slabDepth: 0.1,
   slabGap: 0.11,
@@ -111,7 +111,7 @@ export const SOLID = {
 
 /** Liquid: one extrusion whose surface normals ripple in the shader (see shaders/ripple.glsl). */
 export const LIQUID = {
-  color: 0xff632a,
+  color: 0xf03725,
   depth: 0.3,
   bevel: 0.02,
   /** Ripple strength (normal tilt), spatial frequency (× mark height) and speed. */
@@ -128,7 +128,7 @@ export const LIQUID = {
 /** Particles: points on the mark's surface, assembling from a scatter. */
 export const PARTICLES = {
   count: 40000,
-  color: 0xff7038,
+  color: 0xf14632,
   sizePx: 2.1,
   depth: 0.3,
   /** Scatter radius at the start of the entrance, × mark height. */

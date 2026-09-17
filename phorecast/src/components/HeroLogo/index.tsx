@@ -69,23 +69,46 @@ function afterLoad(): Promise<void> {
 }
 
 /**
- * Resolves when the host section's entrance has finished, or after `cap` either
- * way. Waiting for `load` plus an idle callback was not enough on its own: a
- * quiet instant during the entrance satisfies both, and the scene was landing
- * squarely on top of the sequence it was meant to stay out of. The entrance now
- * says when it is done, so this waits for the actual event rather than guessing
- * at a duration -- with a ceiling, because a section whose motion never ran
- * must not hold the mark back forever.
+ * Resolves once the host section says it is safe to do expensive work, or after
+ * `cap` either way.
+ *
+ * Waiting for `load` plus an idle callback was not enough on its own: a quiet
+ * instant during the entrance satisfies both, and the scene landed squarely on
+ * top of the sequence it was meant to stay out of. But waiting for the entrance
+ * to *finish* was too far the other way -- the mark turned up seconds after
+ * everything else had settled. Sections now mark the point where a stutter stops
+ * costing anything, which is much earlier than the end, and that is what this
+ * waits for. `motion:done` is the fallback for a section that does not raise the
+ * earlier beat, and the cap covers one whose motion never ran at all.
  */
 function afterHostEntrance(host: HTMLElement, cap = 6000): Promise<void> {
   if (host.dataset.motionDone) return Promise.resolve();
   return new Promise<void>((resolve) => {
-    const done = () => { window.clearTimeout(timer); resolve(); };
-    const timer = window.setTimeout(() => {
+    let timer = 0;
+    const done = () => {
+      window.clearTimeout(timer);
+      host.removeEventListener('motion:ready', done);
       host.removeEventListener('motion:done', done);
       resolve();
-    }, cap);
+    };
+    timer = window.setTimeout(done, cap);
+    host.addEventListener('motion:ready', done, { once: true });
     host.addEventListener('motion:done', done, { once: true });
+  });
+}
+
+/**
+ * A short breath after the gate, not the long one. SETTLE_MS exists to keep the
+ * scene away from the entrance; once the section has said the entrance is past
+ * its delicate part, waiting the full window again just delays the mark.
+ */
+function shortIdle(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(() => resolve(), { timeout: 250 });
+    } else {
+      window.setTimeout(resolve, 60);
+    }
   });
 }
 
@@ -125,7 +148,7 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
     // so keeping both only pushed the mark up to two seconds later for nothing.
     afterLoad()
       .then(() => afterHostEntrance(host))
-      .then(idle)
+      .then(shortIdle)
       .then(() => {
         if (!supportsWebGL()) throw new NoWebGLError();
         return import('./LogoScene');

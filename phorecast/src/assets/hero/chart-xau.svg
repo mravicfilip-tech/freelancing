@@ -4,7 +4,7 @@
 <g id="Ellipse 69" filter="url(#filter0_d_0_22)">
 <circle cx="129.334" cy="39" r="8" fill="white"/>
 </g>
-<circle id="Ellipse 70" cx="129.334" cy="39" r="4" fill="#F55E22"/>
+<circle id="Ellipse 70" cx="129.334" cy="39" r="4" fill="#e5331e"/>
 </g>
 <defs>
 <filter id="filter0_d_0_22" x="103.034" y="16.7" width="52.6" height="52.6" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
@@ -18,9 +18,9 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_22" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear_0_22" x1="192.834" y1="-16" x2="-1.64998" y2="21.3298" gradientUnits="userSpaceOnUse">
-<stop stop-color="#1B120D"/>
-<stop offset="0.504808" stop-color="#8B6950"/>
-<stop offset="1" stop-color="#1A120D"/>
+<stop stop-color="#1a100e"/>
+<stop offset="0.504808" stop-color="#7b584c"/>
+<stop offset="1" stop-color="#19100e"/>
 </linearGradient>
 </defs>
 </svg>

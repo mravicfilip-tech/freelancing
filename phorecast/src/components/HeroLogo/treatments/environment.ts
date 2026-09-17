@@ -33,7 +33,7 @@ export function makeEnvironment(renderer: WebGLRenderer): Environment {
   add(new BoxGeometry(12, 12, 12), new MeshBasicMaterial({ color: 0x0a0908, side: BackSide }));
   panel(0xfff3e6, 7, 4.5, 1.2, new Vector3(2.5, 4, 2.5));
   panel(0xdfe8ff, 2.5, 1, 3.5, new Vector3(-4.5, 1, 1.5));
-  panel(0xff632a, 3.5, 4, 3, new Vector3(0.5, -3.5, -3));
+  panel(0xf03725, 3.5, 4, 3, new Vector3(0.5, -3.5, -3));
 
   const pmrem = new PMREMGenerator(renderer);
   const target = pmrem.fromScene(room, 0.04);

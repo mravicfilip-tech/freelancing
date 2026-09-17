@@ -98,6 +98,16 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
 
   if (slide) slideIn(slide, tl, 0.3);
 
+  // The point past which a stutter no longer costs anything. The headline's
+  // mask reveal is the one beat that must not drop frames -- it is the largest
+  // moving thing on the page and half-formed type reads as a fault. Once it has
+  // landed, the rest is copy and cards fading, and something expensive can
+  // start compiling under them. The 3D mark waits for this rather than for the
+  // whole sequence, which had it arriving seconds after everything else.
+  // slideIn runs from 0.3; its lines start at +0.14, stagger 0.22 and run 1.15,
+  // so the last one lands at 1.81. This sits just past that.
+  tl.call(() => hero.dispatchEvent(new CustomEvent('motion:ready', { bubbles: true })), undefined, 1.9);
+
   rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
 
   // The market cards resolve one at a time, left to right: each fades out of its

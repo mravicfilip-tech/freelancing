@@ -2,7 +2,7 @@
 <path id="Vector 73" d="M0 0.588755H26C30.4183 0.588755 34 4.17048 34 8.58876V153.589C34 158.007 30.4183 161.589 26 161.589H0" stroke="url(#paint0_linear_0_22)" stroke-width="1.17751"/>
 <defs>
 <linearGradient id="paint0_linear_0_22" x1="20.439" y1="13.8671" x2="-2.18077" y2="14.4369" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC194"/>
+<stop stop-color="#f7a388"/>
 <stop offset="1" stop-color="#1B1B1A"/>
 </linearGradient>
 </defs>

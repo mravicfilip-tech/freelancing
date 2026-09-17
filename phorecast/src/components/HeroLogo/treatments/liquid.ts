@@ -63,7 +63,7 @@ export class LiquidTreatment implements Treatment {
 
     const key = new DirectionalLight(0xfff1e0, 2.2);
     key.position.set(2, 3, 4);
-    const rim = new DirectionalLight(0xffb088, 2.5);
+    const rim = new DirectionalLight(0xf6907d, 2.5);
     rim.position.set(-3, 1, -4);
     this.removeLights = addLights(scene, [key, rim, new AmbientLight(0xffffff, 0.12)]);
   }

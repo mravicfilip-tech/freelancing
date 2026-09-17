@@ -158,7 +158,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .btn--primary:hover { background: var(--white-font); color: var(--orange-100); }
 .btn--ghost:hover { border-color: var(--orange-100); background: rgba(229, 51, 30, 0.1); }
 .btn--outline:hover { border-color: var(--orange-300); color: var(--orange-300); }
-.nav__link:hover { color: var(--orange-300); }
+.nav__link:hover { color: var(--orange-100); }
 
 @media (prefers-reduced-motion: reduce) {
   .roll__in { transition: none; }

@@ -4,8 +4,8 @@
   --bg: #0f0e0d;                 /* page ground */
   --white-font: #fffbf8;         /* headlines, primary text */
   --orange-100: #e5331e;         /* brand accent, primary button */
-  --orange-200: #c93524;         /* gradient start */
-  --orange-300: #f1664b;         /* gradient end */
+  --orange-200: #c02816;         /* gradient start, darker */
+  --orange-300: #e9513f;         /* gradient end, lighter */
   --color-body: #626262;         /* eyebrow / muted labels */
   --color-nre-body: #9d9d9d;     /* body copy */
   --surface: #1b1b1a;            /* raised panels */

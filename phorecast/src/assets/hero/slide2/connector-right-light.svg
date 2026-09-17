@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="93" height="84" viewBox="0 0 93 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Light variant of connector-right.svg. Geometry, ids, viewBox and
+     preserveAspectRatio are byte for byte the original's; only paint differs.
+     The #1B1B1A stop was never a dark colour: it is the ground the curve
+     dissolves into, so here it dissolves instead, and the peach end becomes the
+     deepest point rather than the palest.
+     No double hyphen may appear in this comment: it is illegal inside an XML
+     comment, the file then fails to parse, and an <img> pointing at it shows a
+     broken image rather than throwing. -->
+<path id="Vector 72" d="M0.5 0C0.5 21.5682 17.9845 39.0526 39.5526 39.0526H52.5C74.5914 39.0526 92.5 56.9612 92.5 79.0526V84" stroke="url(#paint0_linear_0_70)"/>
+<defs>
+<linearGradient id="paint0_linear_0_70" x1="55.8056" y1="6.92783" x2="-4.41191" y2="14.7951" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8a3a14"/>
+<stop offset="1" stop-color="#8a3a14" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

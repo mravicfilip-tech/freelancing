@@ -1,0 +1,34 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="188.933" height="83.3" viewBox="0 0 188.933 83.3" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Light variant of chart-nfl.svg. Geometry, ids, viewBox and
+     preserveAspectRatio are byte for byte the original's; only paint differs.
+     Only the head dot. #00A63E is 2.3:1 on a paper card, a price rise nobody can
+     see, so it takes the light theme's positive green. The stroke's #8B6950 middle
+     stop is 3.9:1 on paper against 3.4:1 on the dark card and is left alone.
+     No double hyphen may appear in this comment: it is illegal inside an XML
+     comment, the file then fails to parse, and an <img> pointing at it shows a
+     broken image rather than throwing. -->
+<g id="Frame 2085662908">
+<path id="Vector 70" d="M0.334482 82.8L5.33448 78.3L7.33448 74.8L13.3345 72.3V69.8L16.3345 68.8L17.8345 69.8H19.3345L28.8345 61.3L35.3345 62.8L43.3345 53.3L44.8345 54.3L47.3345 53.3L56.3345 57.3L60.3345 56.3H64.8345L72.3345 47.8L77.8345 49.3L90.3345 39.3L102.834 40.3L107.334 42.3H115.834C115.501 42.3 115.034 42.1 115.834 41.3C116.634 40.5 121.168 34.9667 123.334 32.3L126.334 30.3H135.834L137.334 28.8L142.834 25.3L154.834 20.8L165.834 21.8C166.834 21.4667 168.934 20.8 169.334 20.8C169.734 20.8 177.501 14.1333 181.334 10.8L188.834 9.3" stroke="url(#paint0_linear_0_115)"/>
+<g id="Ellipse 69" filter="url(#filter0_d_0_115)">
+<circle cx="151.334" cy="22.3" r="8" fill="white"/>
+</g>
+<circle id="Ellipse 70" cx="151.334" cy="22.3" r="4" fill="#0b6e37"/>
+</g>
+<defs>
+<filter id="filter0_d_0_115" x="125.034" y="0" width="52.6" height="52.6" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="9.15"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.386539 0 0 0 0 0.163462 0 0 0 0.46 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_115"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_115" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_0_115" x1="192.834" y1="-6.7" x2="-1.64997" y2="30.6299" gradientUnits="userSpaceOnUse">
+<stop stop-color="#1B120D" stop-opacity="0"/>
+<stop offset="0.504808" stop-color="#8B6950"/>
+<stop offset="1" stop-color="#1A120D" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

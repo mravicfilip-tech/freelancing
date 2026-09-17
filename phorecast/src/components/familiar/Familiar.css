@@ -51,9 +51,22 @@
      the identically-coloured tick INSIDE the phone does not (--fam-app-up). */
   --fam-tick-up: #00c950;
   --fam-tick-down: #e7000b;
+  /* The trend arrow on each card, as a masked glyph. These are a THIRD pair of
+     greens and reds -- #2bb673 / #e82127, what Figma baked into trend-b.svg
+     and trend-a.svg -- named here so the mask reproduces them exactly in dark
+     before they join --pos / --neg on paper. */
+  --fam-trend-up: #2bb673;
+  --fam-trend-down: #e82127;
 
   /* The live dots at either end of the category strip. */
   --fam-dot: #f03725;
+
+  /* Where the two floating app cards meet the paper. A shadow is not paint
+     inside the artwork -- it is the artwork sitting ON something -- so it is
+     page chrome and it does flip. On a near-black page a card casts almost
+     nothing; on paper it has to, or a dark card reads as a hole punched in
+     the page rather than an object laid on it. */
+  --fam-pred-shadow: rgba(0, 0, 0, 0.04);
 
   /* The blurred stack behind the right-hand copy: two crops of one dark
      screenshot, at a resting opacity the loop lifts from and returns to. */
@@ -117,7 +130,6 @@
      handset: one crisp card and two blurred ones. */
   --fam-app-pred: #1d1d20;
   --fam-app-pred-line: rgba(255, 255, 255, 0.28);
-  --fam-app-pred-shadow: rgba(0, 0, 0, 0.04);
   --fam-app-pred-meta: rgba(113, 113, 123, 0.7);
   --fam-app-pred-track: rgba(24, 24, 27, 0.08);
   --fam-app-pred-fill: #00c950;
@@ -227,6 +239,19 @@
    not a measurement.
 
    The selectors admit `.icon` alongside `img` for the same reason. */
+/* Each masked glyph is given the token whose dark value is the hex its own
+   file baked, so `color` reaching the glyph is the ONLY thing the conversion
+   changed. The three inside the handset never flip; the two on the market
+   cards and the one on the ECB plate do. */
+.fam__loc, .fam__batt-tip { color: var(--fam-app-live); }
+.fam__signal, .fam__data, .fam__batt-cell { color: var(--fam-app-status); }
+.fam__mark { color: var(--fam-app-mark); }
+.fam__tab-icon { color: var(--fam-app-tab-icon); }
+.fam__search-icon { color: var(--fam-app-search-icon); }
+.fam__mkt-trend { color: var(--fam-trend-up); }
+.fam__mkt-trend.is-down { color: var(--fam-trend-down); }
+.fam__foot-icon { color: var(--fam-foot-ink); }
+
 .fam__loc { width: calc(9 * var(--u)); height: auto; aspect-ratio: 51.1368 / 27.4524; }
 .fam__status-right :is(img, .icon) { height: calc(9 * var(--u)); width: auto; }
 .fam__signal { aspect-ratio: 11.8132 / 7.9819; }
@@ -236,7 +261,11 @@
 .fam__batt { display: inline-flex; align-items: center; }
 .fam__brand { display: flex; align-items: center; gap: calc(9 * var(--u)); margin-top: calc(24 * var(--u)); }
 .fam__brand :is(img, .icon) { width: calc(22 * var(--u)); height: calc(26 * var(--u)); }
-.fam__brand span { font-family: var(--font-display); font-weight: 600; font-size: calc(24 * var(--u)); letter-spacing: calc(-0.4 * var(--u)); }
+/* `:not(.icon)` because the mark beside this wordmark is a masked <span> now,
+   and an untyped `span` here handed it a font size and weight it has no text
+   to use — two gate rows for nothing, and a selector waiting to do something
+   visual the day it grows a rule that matters. */
+.fam__brand span:not(.icon) { font-family: var(--font-display); font-weight: 600; font-size: calc(24 * var(--u)); letter-spacing: calc(-0.4 * var(--u)); }
 .fam__tabs {
   display: flex; align-items: center; gap: calc(12 * var(--u));
   margin-top: calc(28 * var(--u)); font-weight: 400; font-size: calc(14 * var(--u)); color: var(--art-ink-2);
@@ -255,7 +284,7 @@
   font-size: calc(13 * var(--u)); color: var(--art-ink-2);
 }
 .fam__search-field :is(img, .icon) { width: calc(13 * var(--u)); height: calc(13 * var(--u)); }
-.fam__filter { width: calc(18 * var(--u)); height: calc(18 * var(--u)); }
+.fam__filter { width: calc(18 * var(--u)); height: calc(18 * var(--u)); color: var(--fam-app-filter); }
 .fam__event {
   margin-top: calc(20 * var(--u)); padding: calc(14 * var(--u));
   border-radius: calc(10 * var(--u)); background: var(--fam-app-card); border: 1px solid var(--fam-app-line);
@@ -301,7 +330,7 @@
   display: flex; flex-direction: column; justify-content: space-between;
   padding: calc(8 * var(--u)); border-radius: calc(10 * var(--u));
   background: var(--fam-app-pred); border: 1px solid var(--fam-app-pred-line);
-  box-shadow: 0 calc(5.4 * var(--u)) calc(10.7 * var(--u)) var(--fam-app-pred-shadow);
+  box-shadow: 0 calc(5.4 * var(--u)) calc(10.7 * var(--u)) var(--fam-pred-shadow);
   font-family: var(--font-display); color: var(--art-ink);
 }
 .fam__pred-meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-meta); }
@@ -397,4 +426,248 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-js] .fam[data-motion='pending'] * { visibility: visible; }
+}
+
+/* --- Light ------------------------------------------------------------------
+   THE DECISION THIS BLOCK IS SHORT BECAUSE OF.
+   -------------------------------------------------------------------------
+   LIGHTMODE.md 6.3 calls the device mockups the biggest decision in the brief
+   and records the user's preference: re-tint them, do not leave them as dark
+   panels. This section does not, and the reason is a file nobody is allowed
+   to touch.
+
+   A third of the app surface in this band is `familiar/ghost.png`: two crops
+   of one wide bitmap of three DARK product cards, sitting 60 design pixels
+   from the floating prediction card and in the same eyeline as the handset.
+   It is in src/assets, which no agent may edit (LIGHTMODE.md 2.2), and there
+   is no light variant of it. Re-tinting the phone and the prediction card
+   would therefore put a light app and a dark app side by side inside one
+   section -- a contradiction a reader sees in a single glance, and a worse
+   one than a page whose product screens are all dark.
+
+   And the phone here is the one of the four mockups that is genuinely drawn
+   as HARDWARE: a #000 body, an 8px rim catching light, a 40px corner radius,
+   with the screen inset inside it. The Steps panels and the hero's account
+   slide are flat UI with no device around them, which is a different object
+   and can honestly take a different answer. A photograph of a handset does
+   not change what is on its screen because the website changed its palette.
+
+   So: A DELIBERATE DARK INSET. The handset, the floating prediction card and
+   the two ghosts are the product's own dark theme, identical in both themes,
+   and the band gains what 6.3 asks a dark inset to gain -- a contact shadow
+   that makes it read as a screen lying on paper. This contradicts the brief's
+   stated preference and is flagged as such.
+
+   The consequence is the shape of the block below. Everything here is PAGE
+   CHROME: the glow, the two glass market cards, the ECB plate, the category
+   strip, the ghosts' weight, and the two lifts that meet the paper. Not one
+   --fam-app-* value appears, and because of that every "lit means brighter"
+   beat inside the handset -- the ring advancing, the filter glyph glinting,
+   the odds chips lighting, the leaderboard's green tick -- is still a bright
+   thing on a dark ground and needed no direction flip at all.
+
+   Written twice, exactly as tokens.css writes the palette twice, because a
+   media query cannot go in a selector list. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* THE GLOW. Same four discs and the same tighter core, at the same
+     positions, the same radii, the same blur and the same paint order -- the
+     geometry is byte-for-byte what dark draws, so the gate stays quiet and
+     the two themes agree about where the band's energy is. What changes is
+     what the layer DOES.
+
+     1. THE PAGE STOP IS THE PAGE. The red disc's first stop was never a dark
+        colour; it is the ground the disc dissolves into. It is var(--page) in
+        both themes and needs no light value at all.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
+        ramp climbs 1.74 -> 3.23 -> 6.77 -> 14.3 -> 18.31 against the page,
+        with the last-painted core the brightest thing in the band, because
+        the core of a light source is. Nothing on paper can be brighter than
+        the page, so a pale core would be a hole and the band would read as a
+        halo around nothing. The order is kept and the ramp reversed: the core
+        is still painted last and is now the DEEPEST tint, the red falloff is
+        still the outermost and is now the faintest. Warmth peaks where light
+        peaked.
+
+     These discs are opaque and carry no opacity multiplier of their own --
+     unlike the footer's -- so each token IS its rendered density. The ramp is
+     therefore written directly at 1.06 / 1.13 / 1.20 / 1.28 / 1.37 against
+     the page, landing at the footer's measured 1.37:1 at its densest. */
+  --fam-g-red: linear-gradient(168deg, var(--page) 20%, #fff3ed 100%);
+  --fam-g-orange: #ffeae1;
+  --fam-g-peach: #fde2d6;
+  --fam-g-cream: #fbd9cb;
+  --fam-g-core: #f9d1c0;
+
+  /* THE ECB PLATE. In dark it is an inset: 1.08 darker than the glass card it
+     sits in, with the refresh lighting it 1.23 lighter again. On paper an
+     inset is still darker than its card, so the plate keeps its job and only
+     its colour moves -- and the lift has to turn around, because 1.23
+     LIGHTER on cream is 1.23 nearer invisible. Ratios preserved, direction
+     reversed, which is the whole light-mode job in four lines. */
+  --fam-foot: #ece2d9;
+  --fam-foot-ink: var(--ink);
+  --fam-foot-lit: #dbcabc;
+
+  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
+     inverts for free: more alpha is brighter on black and darker on cream,
+     and both mean "this card just took a print". The alphas go up by an
+     eighth, the same 0.04 -> 0.045 step tokens.css takes for --veil, because
+     dark ink on paper is less visible per unit alpha than white on black. */
+  --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
+  --fam-card-lit-line: rgba(26, 21, 18, 0.383);
+
+  /* UP IS GREEN, DOWN IS RED, and on paper #00c950 is 2.15:1 and #2bb673 is
+     2.68:1 -- a price move nobody can see. Both pairs join --pos / --neg.
+     The identical pair INSIDE the handset (--fam-app-up / --fam-app-down)
+     deliberately does not: it is still green on #151618 there. */
+  --fam-tick-up: var(--pos);
+  --fam-tick-down: var(--neg);
+  --fam-trend-up: var(--pos);
+  --fam-trend-down: var(--neg);
+
+  /* The strip's live dots. #f03725 is 4.85:1 on the dark page and 3.87:1 on
+     paper; --accent is the brand red at 7.69:1 and is what the rest of the
+     light page already uses for exactly this. */
+  --fam-dot: var(--accent);
+
+  /* Two dark app cards laid on paper cast a shadow. They barely could on a
+     near-black page, which is why dark's is 4%. */
+  --fam-pred-shadow: rgba(26, 21, 18, 0.16);
+
+  /* THE BLURRED STACK is the one place the dark-inset decision is softened,
+     and it is a matter of weight rather than of colour. The ghosts are two
+     crops of a dark screenshot at 0.4, which on the dark page composites to
+     1.02:1 -- a whisper, which is their job: context, not accent. The same
+     0.4 on cream composites to 2.55:1 and they stop being context and become
+     a second focal point beside the prediction card. 0.18 puts them back at
+     1.46:1, a shade stronger than the blush they sit in and a long way short
+     of competing. The loop's lift is scaled with them, so the beat is the
+     same fraction of their presence (+55%) that it is in dark. */
+  --fam-ghost-op: 0.18;
+  --fam-ghost-lift: 0.1;
+  --fam-ghost-line: rgba(26, 21, 18, 0.113);
+
+  /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
+     have to mean "deeper" here, or the beat runs, moves nothing anyone can
+     see, and gets reported as a missing animation. The pair lists one
+     function at both ends in both themes so GSAP has a matching structure to
+     interpolate. The two lifts INSIDE the handset are absent from this block
+     on purpose: they are still bright things on a dark ground. */
+  --fam-lift-eyebrow: brightness(0.62);
+  --fam-lift-dot: brightness(0.62);
+  }
+  /* The handset gains the one thing a dark inset needs on paper: a contact
+     shadow. Without it a near-black slab on cream reads as a hole punched
+     through the page rather than an object lying on it. It is cast in --u, so
+     it is the same shadow proportionally at every breakpoint, and it exists
+     only here: dark declares no box-shadow on the phone at all, which is why
+     this is a light-only RULE and not a token. A token would have to resolve
+     to something in dark, and `transparent` computes as
+     `rgba(0, 0, 0, 0) 0px Npx Npx` rather than `none` -- a dark difference
+     for nothing. */
+  :root:not([data-theme='dark']) .fam__phone {
+    box-shadow: 0 calc(20 * var(--u)) calc(48 * var(--u)) rgba(26, 21, 18, 0.16);
+  }
+}
+
+:root[data-theme='light'] {
+  /* THE GLOW. Same four discs and the same tighter core, at the same
+     positions, the same radii, the same blur and the same paint order -- the
+     geometry is byte-for-byte what dark draws, so the gate stays quiet and
+     the two themes agree about where the band's energy is. What changes is
+     what the layer DOES.
+
+     1. THE PAGE STOP IS THE PAGE. The red disc's first stop was never a dark
+        colour; it is the ground the disc dissolves into. It is var(--page) in
+        both themes and needs no light value at all.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
+        ramp climbs 1.74 -> 3.23 -> 6.77 -> 14.3 -> 18.31 against the page,
+        with the last-painted core the brightest thing in the band, because
+        the core of a light source is. Nothing on paper can be brighter than
+        the page, so a pale core would be a hole and the band would read as a
+        halo around nothing. The order is kept and the ramp reversed: the core
+        is still painted last and is now the DEEPEST tint, the red falloff is
+        still the outermost and is now the faintest. Warmth peaks where light
+        peaked.
+
+     These discs are opaque and carry no opacity multiplier of their own --
+     unlike the footer's -- so each token IS its rendered density. The ramp is
+     therefore written directly at 1.06 / 1.13 / 1.20 / 1.28 / 1.37 against
+     the page, landing at the footer's measured 1.37:1 at its densest. */
+  --fam-g-red: linear-gradient(168deg, var(--page) 20%, #fff3ed 100%);
+  --fam-g-orange: #ffeae1;
+  --fam-g-peach: #fde2d6;
+  --fam-g-cream: #fbd9cb;
+  --fam-g-core: #f9d1c0;
+
+  /* THE ECB PLATE. In dark it is an inset: 1.08 darker than the glass card it
+     sits in, with the refresh lighting it 1.23 lighter again. On paper an
+     inset is still darker than its card, so the plate keeps its job and only
+     its colour moves -- and the lift has to turn around, because 1.23
+     LIGHTER on cream is 1.23 nearer invisible. Ratios preserved, direction
+     reversed, which is the whole light-mode job in four lines. */
+  --fam-foot: #ece2d9;
+  --fam-foot-ink: var(--ink);
+  --fam-foot-lit: #dbcabc;
+
+  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
+     inverts for free: more alpha is brighter on black and darker on cream,
+     and both mean "this card just took a print". The alphas go up by an
+     eighth, the same 0.04 -> 0.045 step tokens.css takes for --veil, because
+     dark ink on paper is less visible per unit alpha than white on black. */
+  --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
+  --fam-card-lit-line: rgba(26, 21, 18, 0.383);
+
+  /* UP IS GREEN, DOWN IS RED, and on paper #00c950 is 2.15:1 and #2bb673 is
+     2.68:1 -- a price move nobody can see. Both pairs join --pos / --neg.
+     The identical pair INSIDE the handset (--fam-app-up / --fam-app-down)
+     deliberately does not: it is still green on #151618 there. */
+  --fam-tick-up: var(--pos);
+  --fam-tick-down: var(--neg);
+  --fam-trend-up: var(--pos);
+  --fam-trend-down: var(--neg);
+
+  /* The strip's live dots. #f03725 is 4.85:1 on the dark page and 3.87:1 on
+     paper; --accent is the brand red at 7.69:1 and is what the rest of the
+     light page already uses for exactly this. */
+  --fam-dot: var(--accent);
+
+  /* Two dark app cards laid on paper cast a shadow. They barely could on a
+     near-black page, which is why dark's is 4%. */
+  --fam-pred-shadow: rgba(26, 21, 18, 0.16);
+
+  /* THE BLURRED STACK is the one place the dark-inset decision is softened,
+     and it is a matter of weight rather than of colour. The ghosts are two
+     crops of a dark screenshot at 0.4, which on the dark page composites to
+     1.02:1 -- a whisper, which is their job: context, not accent. The same
+     0.4 on cream composites to 2.55:1 and they stop being context and become
+     a second focal point beside the prediction card. 0.18 puts them back at
+     1.46:1, a shade stronger than the blush they sit in and a long way short
+     of competing. The loop's lift is scaled with them, so the beat is the
+     same fraction of their presence (+55%) that it is in dark. */
+  --fam-ghost-op: 0.18;
+  --fam-ghost-lift: 0.1;
+  --fam-ghost-line: rgba(26, 21, 18, 0.113);
+
+  /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
+     have to mean "deeper" here, or the beat runs, moves nothing anyone can
+     see, and gets reported as a missing animation. The pair lists one
+     function at both ends in both themes so GSAP has a matching structure to
+     interpolate. The two lifts INSIDE the handset are absent from this block
+     on purpose: they are still bright things on a dark ground. */
+  --fam-lift-eyebrow: brightness(0.62);
+  --fam-lift-dot: brightness(0.62);
+}
+
+/* The handset's contact shadow — see the note on the block above. */
+:root[data-theme='light'] .fam__phone {
+  box-shadow: 0 calc(20 * var(--u)) calc(48 * var(--u)) rgba(26, 21, 18, 0.16);
 }

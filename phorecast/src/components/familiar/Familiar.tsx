@@ -1,5 +1,7 @@
+import type { CSSProperties } from 'react';
 import dot from '../../assets/icons/live-dot.svg';
 import { Roll } from '../Roll';
+import { Icon } from '../Icon';
 import ecb from '../../assets/familiar/ecb.svg';
 import nvidia from '../../assets/familiar/nvidia.svg';
 import trendA from '../../assets/familiar/trend-a.svg';
@@ -32,35 +34,72 @@ const CANDIDATES = [
 
 const CHIPS = ['Politics', 'Sports', 'Crypto', 'Finance'];
 
+/**
+ * Every glyph in this band is sized by `Familiar.css`, not by the file.
+ *
+ * `Icon` writes a width and a height inline, which would freeze each one at
+ * whatever the stage measured when it rendered — the whole band is laid out
+ * in `--u`, one design pixel, so a pixel size is wrong at every width but one.
+ * `undefined` overrides Icon's own width/height and hands the box straight
+ * back to the stylesheet. Six of these are also sized on ONE axis, and the
+ * `aspect-ratio` the previous commit put beside each of them is what replaces
+ * the intrinsic ratio an <img> resolved `auto` from; a <span> is not a
+ * replaced element and would otherwise collapse.
+ */
+const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
+
+/**
+ * A flat single-colour glyph, masked rather than painted.
+ *
+ * Eleven of the band's <img> glyphs are one colour on transparent, and as an
+ * <img> that colour is unreachable: `color` cannot get inside. As a mask it is
+ * ordinary CSS, so each one takes a token — which is how the location arrow
+ * and the battery tip keep their #00C950 inside the handset while the market
+ * cards' trend arrows follow --pos / --neg out on the page. Every one of them
+ * is given an EXPLICIT token whose dark value is the hex Figma baked into the
+ * file, so the conversion changes what can reach the glyph and nothing about
+ * how it looks.
+ *
+ * Not converted, deliberately: the ECB and NVIDIA marks (two-colour
+ * third-party logos), the BTC coin (an orange disc with a white glyph on it),
+ * the down-arrow on the red footer plate (white on --neg in both themes, and
+ * --on-accent is what it already inherits), and the eyebrow's live dot, which
+ * is three stacked ellipses at three alphas with a white core — flattening it
+ * to a silhouette would lose the construction.
+ */
+function Glyph({ src, className }: { src: string; className: string }) {
+  return <Icon src={src} w={0} h={0} className={className} style={CSS_SIZED} />;
+}
+
 function Phone() {
   return (
     <div className="fam__phone" aria-hidden="true">
       <div className="fam__screen">
         <div className="fam__status">
           <span className="fam__time">9:41</span>
-          <img src={loc} alt="" className="fam__loc" />
+          <Glyph src={loc} className="fam__loc" />
           <span className="fam__status-right">
-            <img src={signal} alt="" className="fam__signal" /><img src={data} alt="" className="fam__data" />
-            <span className="fam__batt"><img src={battery} alt="" className="fam__batt-cell" /><img src={battTip} alt="" className="fam__batt-tip" /></span>
+            <Glyph src={signal} className="fam__signal" /><Glyph src={data} className="fam__data" />
+            <span className="fam__batt"><Glyph src={battery} className="fam__batt-cell" /><Glyph src={battTip} className="fam__batt-tip" /></span>
           </span>
         </div>
 
         <div className="fam__brand">
-          <img src={logo} alt="" />
+          <Glyph src={logo} className="fam__mark" />
           <span>Phorcast</span>
         </div>
 
         <div className="fam__tabs">
           <span className="is-active">All events</span>
-          <span className="fam__tab-trend"><img src={trendTab} alt="" />Trending</span>
+          <span className="fam__tab-trend"><Glyph src={trendTab} className="fam__tab-icon" />Trending</span>
           <i className="fam__tab-rule" />
           <span>Ending Soon</span>
           <span className="fam__tab-cut">Pol</span>
         </div>
 
         <div className="fam__search">
-          <span className="fam__search-field"><img src={search} alt="" />Search markets…</span>
-          <img src={filter} alt="" className="fam__filter" />
+          <span className="fam__search-field"><Glyph src={search} className="fam__search-icon" />Search markets…</span>
+          <Glyph src={filter} className="fam__filter" />
         </div>
 
         <div className="fam__event">
@@ -103,7 +142,7 @@ function MarketCard(props: {
       <div className="fam__mkt-head">
         <img src={props.icon} alt="" className={`fam__mkt-icon ${props.iconClass ?? ''}`} />
         <span className="fam__mkt-symbol">{props.symbol}</span>
-        <img src={props.up ? trendB : trendA} alt="" className={`fam__mkt-trend${props.up ? "" : " is-down"}`} />
+        <Glyph src={props.up ? trendB : trendA} className={`fam__mkt-trend${props.up ? '' : ' is-down'}`} />
       </div>
       <p className="fam__mkt-name">{props.name}</p>
       <p className="fam__mkt-value">{props.value}</p>
@@ -152,7 +191,7 @@ export function Familiar() {
 
         <MarketCard
           mod="ecb" icon={ecb} symbol="ECB" name="Deposit Facility Rate" value="2.25%" up
-          footerMod="dark" footer={<><img src={bank} alt="" />Current policy rate</>}
+          footerMod="dark" footer={<><Glyph src={bank} className="fam__foot-icon" />Current policy rate</>}
         />
         <MarketCard
           mod="nvda" icon={nvidia} iconClass="fam__mkt-icon--nvda" symbol="NVDA" name="NVIDIA" value="$218.36" up={false}

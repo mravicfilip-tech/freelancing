@@ -292,7 +292,7 @@
   border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   overflow: hidden;
 }
-.sl3__badge img {
+.sl3__badge .icon {
   position: absolute;
   left: 50%;
   top: calc(50% + 0.5 * var(--u));
@@ -424,4 +424,74 @@
   font-size: calc(42 * var(--u));
   line-height: normal;
   color: var(--accent);
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ: the system preference leads while
+   nothing has been chosen, an explicit choice wins at any system setting.
+   ---------------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .sl3,
+  :root:not([data-theme='dark']) .sl3-countdown {
+  /* THE STACKS. Three solid faces per plate, plus the wireframes and the seams
+     between faces. This is a shading ramp on a 3D object, not a "lit versus
+     rest" beat, so the ramp does not invert -- a lit top face is lighter than a
+     side face under any lighting. What moves is the whole ramp: on cream every
+     one of the three has to be dark enough to read, so they land exactly on the
+     three brand tokens in shading order, which also puts the artwork on the
+     same red as the page's own type.
+
+       lit top face   #e5331e -> --accent-lift  #c4361c  5.24:1
+       lit side       #ba2917 -> --accent       #a21605  7.69:1
+       shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
+  --sl3-wire: var(--accent);
+  --sl3-plate-top: var(--accent-lift);
+  --sl3-plate-b: var(--accent);
+  --sl3-plate-a: var(--accent-deep);
+  /* The seam between two faces DOES invert: in dark it is #e5331e, brighter
+     than the #93190a faces it divides, and on paper it has to be darker than
+     --accent-deep or it stops dividing anything. */
+  --sl3-plate-edge: #4a0101;
+  /* Three seams the export draws as white highlights, at 0.009px. They render
+     as nothing at any width and are given the settling version of the same
+     idea rather than a highlight that would be the page colour. */
+  --sl3-plate-edge-hi: rgba(26, 21, 18, 0.35);
+
+  /* The countdown tiles' glass: 5% white -> 5.6% ink, the alpha up by an
+     eighth. Their border and colon are --accent and flip on their own. */
+  --sl3-tile-bg: rgba(26, 21, 18, 0.056);
+  }
+}
+
+:root[data-theme='light'] .sl3,
+:root[data-theme='light'] .sl3-countdown {
+  /* THE STACKS. Three solid faces per plate, plus the wireframes and the seams
+     between faces. This is a shading ramp on a 3D object, not a "lit versus
+     rest" beat, so the ramp does not invert -- a lit top face is lighter than a
+     side face under any lighting. What moves is the whole ramp: on cream every
+     one of the three has to be dark enough to read, so they land exactly on the
+     three brand tokens in shading order, which also puts the artwork on the
+     same red as the page's own type.
+
+       lit top face   #e5331e -> --accent-lift  #c4361c  5.24:1
+       lit side       #ba2917 -> --accent       #a21605  7.69:1
+       shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
+  --sl3-wire: var(--accent);
+  --sl3-plate-top: var(--accent-lift);
+  --sl3-plate-b: var(--accent);
+  --sl3-plate-a: var(--accent-deep);
+  /* The seam between two faces DOES invert: in dark it is #e5331e, brighter
+     than the #93190a faces it divides, and on paper it has to be darker than
+     --accent-deep or it stops dividing anything. */
+  --sl3-plate-edge: #4a0101;
+  /* Three seams the export draws as white highlights, at 0.009px. They render
+     as nothing at any width and are given the settling version of the same
+     idea rather than a highlight that would be the page colour. */
+  --sl3-plate-edge-hi: rgba(26, 21, 18, 0.35);
+
+  /* The countdown tiles' glass: 5% white -> 5.6% ink, the alpha up by an
+     eighth. Their border and colon are --accent and flip on their own. */
+  --sl3-tile-bg: rgba(26, 21, 18, 0.056);
 }

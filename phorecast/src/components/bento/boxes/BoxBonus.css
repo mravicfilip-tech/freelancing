@@ -285,3 +285,77 @@
 }
 .box-bonus__amt--bonus strong { font-size: calc(12 * var(--u)); }
 .box-bonus__amt--bonus small { font-size: calc(8 * var(--u)); }
+
+/* --- Light ------------------------------------------------------------------
+   Written twice; see the note in Bento.css. -------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .box-bonus {
+  /* The card on paper. Its two chips are holes in dark -- a #e6e6e6 badge is
+     bright BECAUSE the card is near-black, and a #1d1c1b pill is a darker step
+     down from it -- so on paper both settle onto --panel-2, one step under the
+     card, and everything they carry (a red glyph, an --ink figure, an --accent
+     figure) is legible on that step without being restated.
+
+     The edge on the badge is left alone on purpose: rgba(0,0,0,.09) is ink at
+     9% over a LIGHT plate in both themes, so it is one of the few white-alpha
+     inversions this band does not have to make. */
+  --bonus-plate: var(--panel-2);
+  --bonus-pill: var(--panel-2);
+
+  /* THE CHART STROKE, and the one ramp in the section that had to be rebuilt
+     rather than recoloured.
+
+     The gradient runs from the top right (offset 0, where the line ends high
+     and the money has landed) to the bottom left (offset 1, where it fades
+     out). In dark it goes transparent, then PALE salmon, then a deeper orange,
+     then #1c1b1a -- the card itself, a hair off the ground so the tail does not
+     quite vanish. The lit end is the pale one, because on a near-black card
+     pale is lit.
+
+     Inverted, keeping the spatial ramp exactly: the lit end is now the DEEPEST
+     and the tail still dissolves into the card. 0.14 is #8e1b06 at 9.4:1, 0.48
+     is --accent-lift at 5.2:1, and the last stop is a hair darker than the
+     card's own #fdf8f4 -- the same relationship #1c1b1a has to #0e0e0d, with
+     its sign flipped. The first stop is only ever seen at alpha 0; it carries
+     the deep value so the fade is pure alpha with no hue drift through cream. */
+  --bonus-line-a: #7e0202;
+  --bonus-line-b: #8e1b06;
+  --bonus-line-c: #c4361c;
+  --bonus-line-d: #f6eee7;
+  }
+}
+
+:root[data-theme='light'] .box-bonus {
+  /* The card on paper. Its two chips are holes in dark -- a #e6e6e6 badge is
+     bright BECAUSE the card is near-black, and a #1d1c1b pill is a darker step
+     down from it -- so on paper both settle onto --panel-2, one step under the
+     card, and everything they carry (a red glyph, an --ink figure, an --accent
+     figure) is legible on that step without being restated.
+
+     The edge on the badge is left alone on purpose: rgba(0,0,0,.09) is ink at
+     9% over a LIGHT plate in both themes, so it is one of the few white-alpha
+     inversions this band does not have to make. */
+  --bonus-plate: var(--panel-2);
+  --bonus-pill: var(--panel-2);
+
+  /* THE CHART STROKE, and the one ramp in the section that had to be rebuilt
+     rather than recoloured.
+
+     The gradient runs from the top right (offset 0, where the line ends high
+     and the money has landed) to the bottom left (offset 1, where it fades
+     out). In dark it goes transparent, then PALE salmon, then a deeper orange,
+     then #1c1b1a -- the card itself, a hair off the ground so the tail does not
+     quite vanish. The lit end is the pale one, because on a near-black card
+     pale is lit.
+
+     Inverted, keeping the spatial ramp exactly: the lit end is now the DEEPEST
+     and the tail still dissolves into the card. 0.14 is #8e1b06 at 9.4:1, 0.48
+     is --accent-lift at 5.2:1, and the last stop is a hair darker than the
+     card's own #fdf8f4 -- the same relationship #1c1b1a has to #0e0e0d, with
+     its sign flipped. The first stop is only ever seen at alpha 0; it carries
+     the deep value so the fade is pure alpha with no hue drift through cream. */
+  --bonus-line-a: #7e0202;
+  --bonus-line-b: #8e1b06;
+  --bonus-line-c: #c4361c;
+  --bonus-line-d: #f6eee7;
+}

@@ -52,3 +52,25 @@
 .stack__tag img { width: 16px; height: 16px; }
 .stack__tag--transfer { left: 73px; top: 180px; }
 .stack__tag--stock { left: 3px; top: 430px; }
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies: index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back to,
+   and leaving it out is how a section ends up drawing its dark artwork on a
+   light page. ------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .stack {
+  --stack-bar-line: rgba(26, 21, 18, 0.21);
+  }
+}
+
+:root[data-theme='light'] .stack {
+  --stack-bar-line: rgba(26, 21, 18, 0.21);
+}

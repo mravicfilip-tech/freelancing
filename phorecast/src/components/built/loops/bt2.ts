@@ -69,6 +69,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 
 /** The card's design frame. Its `aspect-ratio` locks both axes to one scale. */
 const DW = 640;
@@ -88,14 +89,35 @@ const BACK = 0.62;
 /** Design px the padlock leans into the delivery as the beads reach it. */
 const LEAN_IN = 6;
 
-/** The bead, in design px, and the brand warm it is painted (`--orange-300`). */
+/** The bead, in design px. */
 const BEAD_W = 14;
 const BEAD_H = 2.6;
-const BEAD_BG = '#e9513f';
 
-/** `--white-font`: a market's label while its value is in flight. */
+/* THE THREE COLOURS THIS FILE WRITES, as dark fallbacks. Each is read from its
+   role token inside the build below, where `tok()` can see the theme that is
+   actually on the document; each constant here is the exact hex the token
+   resolves to in dark, so a missing property yields today's value.
+
+   Only one of the three is a direction flip, and it is worth saying which,
+   because "lit" does not mean the same thing twice on this card:
+
+   BEAD_BG is --accent-lift, the same warm the gradient's light stop uses. It
+   is a chromatic object on a neutral wire, not a brightness -- 4.57:1 on the
+   dark card, 4.78:1 on the light one. It needs no flip, only the token.
+
+   SEALED is --accent. SELF-CUSTODY rests at --ink and goes brand red for the
+   length of the settlement, which in dark is 18.7:1 -> 4.4:1 and in light is
+   17.6:1 -> 7.0:1. Both DIM and both turn chromatic: the beat was never a
+   brightness either, so it survives the token unchanged.
+
+   LIT is the flip. A market's label goes from --ink-2 to --ink while its value
+   is in flight, and --ink is "as far from the page as ink goes" -- #fffbf8 on
+   the dark card and #1a1512 on the light one. Taking the literal #fffbf8 into
+   light would have moved the label from 6.4:1 to 1.02:1: the loop would still
+   run, the gate would still pass, and the label would simply vanish at the
+   moment it was meant to answer. */
+const BEAD_BG = '#e9513f';
 const LIT = '#fffbf8';
-/** `--orange-100`: SELF-CUSTODY at the moment it takes the delivery. */
 const SEALED = '#e5331e';
 
 /** The moment every bead is at the padlock's centre. */
@@ -158,6 +180,13 @@ export function bt2Loop(root: HTMLElement): () => void {
   });
   const lockCool = getComputedStyle(lockLabel).color;
 
+  /* Read beside the rest colours above, for the same reason they are read
+     here: this function is the build, so it runs after the theme is on the
+     document and runs again when useSectionMotion rebuilds on a theme flip. */
+  const beadBg = tok('--accent-lift', BEAD_BG);
+  const litInk = tok('--ink', LIT);
+  const sealed = tok('--accent', SEALED);
+
   /* One speed for every wire, set by the longest of them. The departures fall
      out of it: a market leaves early exactly in proportion to how far it is. */
   const longest = markets.reduce((m, n) => Math.max(m, n.d), 0);
@@ -181,7 +210,7 @@ export function bt2Loop(root: HTMLElement): () => void {
       `height:calc(${BEAD_H} * var(--c))`,
       `margin:calc(${-BEAD_H / 2} * var(--c)) 0 0 calc(${-BEAD_W / 2} * var(--c))`,
       `border-radius:calc(${BEAD_H / 2} * var(--c))`,
-      `background:${BEAD_BG}`,
+      `background:${beadBg}`,
       'opacity:0',
       'pointer-events:none',
     ].join(';');
@@ -232,7 +261,7 @@ export function bt2Loop(root: HTMLElement): () => void {
         .set(m.el, { clearProps: 'transform' }, lean + UP + BACK + 0.02);
 
       if (m.label) {
-        tl.to(m.label, { color: LIT, duration: 0.26, ease: 'sine.out' }, lean);
+        tl.to(m.label, { color: litInk, duration: 0.26, ease: 'sine.out' }, lean);
       }
 
       /* 2 — the bead rides the wire. `fromTo` states both ends so a stranded
@@ -266,7 +295,7 @@ export function bt2Loop(root: HTMLElement): () => void {
     }, SEAL)
       .to(lock, { x: 0, scale: 1, duration: BACK, ease: 'sine.inOut' }, SEAL + 0.2)
       .set(lock, { clearProps: 'transform' }, SEAL + 0.2 + BACK + 0.02)
-      .to(lockLabel, { color: SEALED, duration: 0.2, ease: 'sine.out' }, SEAL)
+      .to(lockLabel, { color: sealed, duration: 0.2, ease: 'sine.out' }, SEAL)
       .to(lockLabel, {
         color: lockCool, duration: 0.5, ease: 'sine.inOut',
         onComplete: () => gsap.set(lockLabel, { clearProps: 'color' }),

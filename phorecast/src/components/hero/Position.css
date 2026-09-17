@@ -98,3 +98,43 @@
 @media (prefers-reduced-motion: reduce) {
   .position__arrow, .position__arrow svg, .position__seg, .position__fill { transition: none; }
 }
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies: index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back to,
+   and leaving it out is how a section ends up drawing its dark artwork on a
+   light page. ------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .position {
+  /* The track darkens on hover instead of lifting. #3a3837 is --panel-2 raised
+     by about 15 luminance units on a dark page; this is --panel-2 dropped by
+     about the same on paper, so the control reacts by the same amount in the
+     same place. */
+  --pos-track-hover: #e5d9cd;
+  /* A segment already seen. --ink at 30% white-alpha becomes ink-alpha at
+     0.34 -- the alpha up by an eighth, as tokens.css steps --veil and
+     --veil-line -- because more alpha on a dark page is brighter and more on
+     paper is darker, and both mean "this one is done". */
+  --pos-seen: rgba(26, 21, 18, 0.34);
+  }
+}
+
+:root[data-theme='light'] .position {
+  /* The track darkens on hover instead of lifting. #3a3837 is --panel-2 raised
+     by about 15 luminance units on a dark page; this is --panel-2 dropped by
+     about the same on paper, so the control reacts by the same amount in the
+     same place. */
+  --pos-track-hover: #e5d9cd;
+  /* A segment already seen. --ink at 30% white-alpha becomes ink-alpha at
+     0.34 -- the alpha up by an eighth, as tokens.css steps --veil and
+     --veil-line -- because more alpha on a dark page is brighter and more on
+     paper is darker, and both mean "this one is done". */
+  --pos-seen: rgba(26, 21, 18, 0.34);
+}

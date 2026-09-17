@@ -38,11 +38,11 @@
   --u: calc(100cqw / 1800);
 
   /* chart / market semantics, straight from the Figma node */
-  --sl2-up: #00c950;
+  --sl2-up: var(--hero-sl2-up);
   --sl2-up-ink: #00a63e;
   --sl2-up-bg: #1a3a2c;
   --sl2-up-bg-sm: #1a372a;
-  --sl2-down-ink: #e7000b;
+  --sl2-down-ink: var(--hero-sl2-down);
   --sl2-down-bg: #302325;
   --sl2-down-bg-sm: #2e2122;
   --sl2-card-a: #161615;
@@ -50,6 +50,8 @@
   --sl2-card-c: #2f2f2f;
   --sl2-ink: #fafafa;
   --sl2-track: #161414;
+  /* the grid plate's strength; see the light block */
+  --sl2-grid-op: 0.2;
 
   /* The rest of the slide's literals, named so the light block at the foot of
      the file redefines exactly these. Every one is INSIDE the product UI --
@@ -215,7 +217,7 @@
   top: calc(-26 * var(--u));
   width: calc(528.943 * var(--u));
   height: calc(338 * var(--u));
-  opacity: 0.2;
+  opacity: var(--sl2-grid-op);
 }
 .sl2-mc__grid--xau { left: calc(-145 * var(--u)); top: calc(-25 * var(--u)); }
 
@@ -326,7 +328,7 @@
   color: var(--sl2-up);
   white-space: nowrap;
 }
-.sl2-mc__delta img { flex: none; width: calc(10 * var(--u)); height: calc(8.333 * var(--u)); }
+.sl2-mc__delta .icon { flex: none; width: calc(10 * var(--u)); height: calc(8.333 * var(--u)); }
 .sl2-mc__delta b { font-weight: 700; }
 .sl2-mc__delta i { font-style: normal; font-weight: 400; color: var(--ink-muted); }
 .sl2-mc__delta.is-down { margin-top: 0; color: var(--sl2-down-ink); }
@@ -570,7 +572,7 @@
   color: var(--sl2-ink);
   filter: drop-shadow(0 calc(0.386 * var(--u)) calc(0.386 * var(--u)) rgba(0, 0, 0, 0.05));
 }
-.sl2-live__ov img { width: calc(5.405 * var(--u)); height: calc(5.405 * var(--u)); }
+.sl2-live__ov .icon { width: calc(5.405 * var(--u)); height: calc(5.405 * var(--u)); }
 
 .sl2-live__score {
   position: absolute;
@@ -811,4 +813,152 @@
     right: auto;
     left: 0;
   }
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ: the system preference leads while
+   nothing has been chosen, an explicit choice wins at any system setting.
+   ---------------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .sl2 {
+  /* THE ARTWORK DECISION, made here first because this slide is the cheapest
+     of the four device mockups to move (LIGHTMODE 6.3) and the others are
+     being decided in parallel: THE PRODUCT UI IS RE-TINTED, not left as a dark
+     inset. The cards below are a screenshot of the app, and in light mode the
+     app has a light mode. Twenty-five locals and the whole cluster follows.
+
+     What does NOT re-tint, and why: a plate of --accent, --pos or --neg is
+     dark in BOTH themes, so anything sitting on one keeps --on-accent and
+     stays white. That is the two 44px icon tiles, the active range chip, the
+     filled market bar and the trend ring behind each card's arrow. They read
+     as deliberate chips on paper rather than as leftovers. */
+
+  /* Grounds. The three card gradients keep their angles and their stop
+     positions; only the two ends move. Dark steps 1.065 / 1.034 / 1.44 off the
+     page, light steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by
+     tint, not by shadow" that tokens.css uses for --panel and --panel-2. */
+  --sl2-card-a: #fbf5f0;
+  --sl2-card-b: #f8ece0;
+  --sl2-card-c: #eee4db;
+  --sl2-ink: #1a1512;
+  --sl2-track: #e8ddd2;
+
+  /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
+     reads, so the tick flash and the figure it lands on cannot disagree.
+     #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
+     rise had to move and the fall went with it, to --pos and --neg. The four
+     chip plates invert with them: a dark green wash under green ink becomes a
+     pale green wash under it. */
+  --sl2-up-ink: #0b6e37;
+  --sl2-up-bg: #dcefe1;
+  --sl2-up-bg-sm: #e0f0e5;
+  --sl2-down-bg: #fadedb;
+  --sl2-down-bg-sm: #f9e1de;
+
+  /* The live match card. */
+  --sl2-live-red: #c01822;
+  --sl2-live-dot: #d84449;
+  --sl2-live-vol: rgba(96, 90, 99, 0.8);
+  --sl2-ov-bg: #ebe5e0;
+  --sl2-score-line: rgba(26, 21, 18, 0.14);
+  --sl2-draw-bg: #e9e3df;
+  --sl2-sud-bg: rgba(176, 19, 9, 0.12);
+  --sl2-sud-ink: #9c1c25;
+  /* The figure written across the filled bar sits ON the fill, not on the
+     track, and the fill is --pos, which is dark in both themes. In dark it was
+     #000 on #00c950; on paper it has to be white on #0b6e37 or it disappears
+     into the one colour that did not flip. */
+  --sl2-bar-ink: #fffbf8;
+  /* --sl2-lakers keeps #ffad00 in both themes: it is the club's own gold
+     behind its own crest, not ours to re-key. */
+
+  /* The One Account pill: the destination the trade routes to. A raised panel
+     with an --accent hairline in both themes. */
+  --sl2-pill-bg: var(--panel);
+
+  /* Glass settles instead of lifting: 13% white -> 15% ink, the alpha up by an
+     eighth the way tokens.css steps --veil. */
+  --sl2-toast-bg: rgba(26, 21, 18, 0.15);
+  /* The two icon tiles stay a deep brand plate, so the white pie and bolt
+     inside them stay right without being touched. */
+  --sl2-tile-bg: var(--accent-deep);
+
+  /* The grid plate behind each market card. The hairlines are ink now (see
+     card-grid-light.svg), and ink at 20% over a paper card is a fainter line
+     than white at 20% over a near-black one -- 1.25:1 against 2.6:1 -- so the
+     layer opacity comes up to put the texture back at its own weight. */
+  --sl2-grid-op: 0.34;
+  }
+}
+
+:root[data-theme='light'] .sl2 {
+  /* THE ARTWORK DECISION, made here first because this slide is the cheapest
+     of the four device mockups to move (LIGHTMODE 6.3) and the others are
+     being decided in parallel: THE PRODUCT UI IS RE-TINTED, not left as a dark
+     inset. The cards below are a screenshot of the app, and in light mode the
+     app has a light mode. Twenty-five locals and the whole cluster follows.
+
+     What does NOT re-tint, and why: a plate of --accent, --pos or --neg is
+     dark in BOTH themes, so anything sitting on one keeps --on-accent and
+     stays white. That is the two 44px icon tiles, the active range chip, the
+     filled market bar and the trend ring behind each card's arrow. They read
+     as deliberate chips on paper rather than as leftovers. */
+
+  /* Grounds. The three card gradients keep their angles and their stop
+     positions; only the two ends move. Dark steps 1.065 / 1.034 / 1.44 off the
+     page, light steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by
+     tint, not by shadow" that tokens.css uses for --panel and --panel-2. */
+  --sl2-card-a: #fbf5f0;
+  --sl2-card-b: #f8ece0;
+  --sl2-card-c: #eee4db;
+  --sl2-ink: #1a1512;
+  --sl2-track: #e8ddd2;
+
+  /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
+     reads, so the tick flash and the figure it lands on cannot disagree.
+     #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
+     rise had to move and the fall went with it, to --pos and --neg. The four
+     chip plates invert with them: a dark green wash under green ink becomes a
+     pale green wash under it. */
+  --sl2-up-ink: #0b6e37;
+  --sl2-up-bg: #dcefe1;
+  --sl2-up-bg-sm: #e0f0e5;
+  --sl2-down-bg: #fadedb;
+  --sl2-down-bg-sm: #f9e1de;
+
+  /* The live match card. */
+  --sl2-live-red: #c01822;
+  --sl2-live-dot: #d84449;
+  --sl2-live-vol: rgba(96, 90, 99, 0.8);
+  --sl2-ov-bg: #ebe5e0;
+  --sl2-score-line: rgba(26, 21, 18, 0.14);
+  --sl2-draw-bg: #e9e3df;
+  --sl2-sud-bg: rgba(176, 19, 9, 0.12);
+  --sl2-sud-ink: #9c1c25;
+  /* The figure written across the filled bar sits ON the fill, not on the
+     track, and the fill is --pos, which is dark in both themes. In dark it was
+     #000 on #00c950; on paper it has to be white on #0b6e37 or it disappears
+     into the one colour that did not flip. */
+  --sl2-bar-ink: #fffbf8;
+  /* --sl2-lakers keeps #ffad00 in both themes: it is the club's own gold
+     behind its own crest, not ours to re-key. */
+
+  /* The One Account pill: the destination the trade routes to. A raised panel
+     with an --accent hairline in both themes. */
+  --sl2-pill-bg: var(--panel);
+
+  /* Glass settles instead of lifting: 13% white -> 15% ink, the alpha up by an
+     eighth the way tokens.css steps --veil. */
+  --sl2-toast-bg: rgba(26, 21, 18, 0.15);
+  /* The two icon tiles stay a deep brand plate, so the white pie and bolt
+     inside them stay right without being touched. */
+  --sl2-tile-bg: var(--accent-deep);
+
+  /* The grid plate behind each market card. The hairlines are ink now (see
+     card-grid-light.svg), and ink at 20% over a paper card is a fainter line
+     than white at 20% over a near-black one -- 1.25:1 against 2.6:1 -- so the
+     layer opacity comes up to put the texture back at its own weight. */
+  --sl2-grid-op: 0.34;
 }

@@ -16,6 +16,7 @@
  */
 import arrow from '../../../assets/bento/custody/arrow.svg';
 import { Roll } from '../../Roll';
+import { Icon } from '../../Icon';
 // The same 430x236 export the bento already ships as funds-glow.png -- checked
 // pixel for pixel, not by name -- so this points at the existing file rather
 // than a second 116 KB copy of it.
@@ -64,8 +65,23 @@ export function BoxCustody() {
 
       <div className="custody__art" aria-hidden="true">
         <img src={glow} alt="" className="custody__glow" width={215} height={118} />
-        <img src={ringMarket} alt="" className="custody__ring-market" width={215} height={215} />
-        <img src={ringWallet} alt="" className="custody__ring-wallet" width={93} height={93} />
+        {/* The two rings and the seven glyphs below are masks, not images.
+            Every one of them is a single flat colour on transparent, and every
+            one of them is drawn LIGHT: the market ring is #FF632A at the file's
+            own 22%, the wallet ring #D9D9D9 at 20%, the glyphs #A6A6A6. On the
+            dark card that is how they reach the eye; on paper it is how they
+            disappear. As a mask the file keeps its own alpha -- the 0.2 and the
+            0.22 survive as mask alpha -- and the colour under it becomes
+            `color`, i.e. a token. See --custody-ring / --custody-glyph.
+
+            `width`/`height` are passed as undefined because BoxCustody.css
+            sizes all of these in the card's container unit; Icon's own w/h
+            would freeze them at one breakpoint. The numbers are still handed
+            over, so the intrinsic box is on record. */}
+        <Icon src={ringMarket} w={215} h={215} className="custody__ring-market"
+          style={{ width: undefined, height: undefined }} />
+        <Icon src={ringWallet} w={93} h={93} className="custody__ring-wallet"
+          style={{ width: undefined, height: undefined }} />
 
         <span className="custody__label custody__label--wallet" style={{ '--x': 43, '--y': 131 } as Vars}>Wallet</span>
         {MARKETS.map(({ label, lx, ly }) => (
@@ -80,19 +96,23 @@ export function BoxCustody() {
             className={`custody__tile${bordered ? ' custody__tile--bordered' : ''}`}
             style={{ '--x': tx, '--y': ty } as Vars}
           >
-            <img src={icon} alt="" className={`custody__glyph custody__glyph--${leaf}`} />
+            <Icon src={icon} w={16} h={16} className={`custody__glyph custody__glyph--${leaf}`}
+              style={{ width: undefined, height: undefined }} />
           </span>
         ))}
 
         <span className="custody__pill" style={{ '--x': 133, '--y': 31, '--w': 133 } as Vars}>
-          <img src={iconContract} alt="" className="custody__pill-icon" width={16} height={16} />
+          <Icon src={iconContract} w={16} h={16} className="custody__pill-icon"
+            style={{ width: undefined, height: undefined }} />
           Smart Contracts
         </span>
         <span className="custody__pill" style={{ '--x': 115, '--y': 144, '--w': 146 } as Vars}>
           {/* fi_747305 — shackle and keyhole are two layers with their own boxes. */}
           <span className="custody__lock">
-            <img src={iconLockBody} alt="" className="custody__lock-body" />
-            <img src={iconLockHole} alt="" className="custody__lock-hole" />
+            <Icon src={iconLockBody} w={12.749} h={16} className="custody__lock-body"
+              style={{ width: undefined, height: undefined }} />
+            <Icon src={iconLockHole} w={2.313} h={4.125} className="custody__lock-hole"
+              style={{ width: undefined, height: undefined }} />
           </span>
           Withdraw anytime
         </span>

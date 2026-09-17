@@ -105,7 +105,7 @@
 }
 /* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
    optical nudge the design carries — not stretched to the 57px badge. */
-.sl4__badge img {
+.sl4__badge .icon {
   position: absolute;
   display: block;
   left: calc(14.277 * var(--u));
@@ -283,4 +283,44 @@
   );
   opacity: 0;
   pointer-events: none;
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ: the system preference leads while
+   nothing has been chosen, an explicit choice wins at any system setting.
+   ---------------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .sl4 {
+  /* The three orbit rings and the grey node. #d9d9d9 is 13.7:1 on the dark page
+     and 1.29:1 on paper -- the skeleton of this slide simply going missing, and
+     the exact failure LIGHTMODE 6.5 is about. They are masked glyphs now, so
+     this token reaches them. It is not the full inversion of 13.7:1: a 1px
+     near-black ring would be the loudest thing in a quiet warm frame, and these
+     rings are structure, not subject. 3.0:1 puts them a shade under the badges
+     they carry, which is where dark has them too. */
+  --sl4-ring: #9b8e85;
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
+     --accent hairline and the radial --accent bloom the order lights it with
+     both flip on their own, and both stay DARKER than the page, so "lit" still
+     means "further from the page" here without a single rule reversed. */
+  --sl4-badge-bg: rgba(26, 21, 18, 0.15);
+  }
+}
+
+:root[data-theme='light'] .sl4 {
+  /* The three orbit rings and the grey node. #d9d9d9 is 13.7:1 on the dark page
+     and 1.29:1 on paper -- the skeleton of this slide simply going missing, and
+     the exact failure LIGHTMODE 6.5 is about. They are masked glyphs now, so
+     this token reaches them. It is not the full inversion of 13.7:1: a 1px
+     near-black ring would be the loudest thing in a quiet warm frame, and these
+     rings are structure, not subject. 3.0:1 puts them a shade under the badges
+     they carry, which is where dark has them too. */
+  --sl4-ring: #9b8e85;
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
+     --accent hairline and the radial --accent bloom the order lights it with
+     both flip on their own, and both stay DARKER than the page, so "lit" still
+     means "further from the page" here without a single rule reversed. */
+  --sl4-badge-bg: rgba(26, 21, 18, 0.15);
 }

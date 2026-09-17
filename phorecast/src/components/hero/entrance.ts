@@ -10,6 +10,7 @@
 
 import { gsap } from 'gsap';
 import { EASE, all, intoLines, one, pop, rise } from '../../lib/motion';
+import { tok } from '../../lib/theme';
 
 const PRICE_EVERY = 2600;
 
@@ -154,6 +155,20 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
  * the carousel replaces that DOM.
  */
 export function heroIdle(hero: HTMLElement): () => void {
+  // The flash, read here rather than written down. Inside heroIdle and not at
+  // module scope, which is the whole contract of tok(): useSectionMotion rebuilds
+  // this section when the theme epoch changes, so the pair is re-read then and a
+  // loop left running cannot keep flashing the other theme's colours. The
+  // hardcoded values stay as the fallbacks, so a missing property yields today's
+  // dark value -- the safest failure mode for the regression gate.
+  //
+  // These two were a THIRD up/down pair: Tailwind's green-400 and red-400,
+  // different again from --pos/--neg and from slide 2's own #00c950/#e7000b.
+  // Dark keeps them exactly. Light collapses all three onto --pos and --neg,
+  // because #4ade80 is 1.9:1 on paper -- a rise nobody can see is no flash.
+  const up = tok('--hero-tick-up', '#4ade80');
+  const down = tok('--hero-tick-down', '#f87171');
+
   // The market cards were frozen, which is the wrong look for a trading product.
   const priceTimer = window.setInterval(() => {
     const live = all<HTMLElement>(hero, '.hero__foot > *');
@@ -168,7 +183,7 @@ export function heroIdle(hero: HTMLElement): () => void {
     const next = value * (1 + (Math.random() - 0.5) * 0.0016);
     const decimals = (raw.split('.')[1] ?? '').length || 2;
     priceEl.textContent = `$${next.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
-    gsap.fromTo(priceEl, { color: next > value ? '#4ade80' : '#f87171' }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
+    gsap.fromTo(priceEl, { color: next > value ? up : down }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
   }, PRICE_EVERY);
 
   return () => window.clearInterval(priceTimer);

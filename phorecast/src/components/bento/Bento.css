@@ -1,4 +1,42 @@
 /* Bento: 1386 × 916 card inside a 1920 × 1080 frame (design coordinates). */
+/* What the four card loops read, and why it is on :root.
+   -------------------------------------------------------------------------
+   `tok()` (src/lib/theme.ts) resolves a custom property against
+   document.documentElement and nothing else, so a value a motion module has to
+   read cannot be declared on `.bento`. These thirteen are exactly the colours
+   the loops write -- nothing that only CSS paints is here, and nothing here is
+   read by CSS.
+
+   Each is the module's current hardcoded value, so `tok(name, fallback)` with
+   the old literal as the fallback cannot change dark mode even if a property
+   goes missing. What they are FOR is in the light block at the foot of this
+   file: eight of the thirteen mean "lit", and in this codebase lit means
+   brighter, which on paper means invisible. */
+:root {
+  /* Card A's pill stroke and the "You're in." flare. Both sit on a red plate
+     that does not flip, so both are the same in both themes -- they are here
+     to be stated, not to be changed. */
+  --bento-onb-lit: rgba(255, 251, 248, 0.95);
+  --bento-onb-flare: 0 0 16px rgba(255, 251, 248, 0.9);
+  --bento-onb-flare-0: 0 0 0px rgba(255, 251, 248, 0);
+
+  /* Card B: the wallet ring closing, the packet's wire and its head, the
+     brightening of a market chip, the lit chip stroke, the wallet flare. */
+  --bento-fd-ring: #ff632a;
+  --bento-fd-wire: #f26246;
+  --bento-fd-head: #ff8a5c;
+  --bento-fd-tile-lit: brightness(1.7);
+  --bento-fd-chip-lit: rgba(255, 138, 92, 0.75);
+  --bento-fd-flare: 0 0 12px rgba(255, 251, 248, 0.9);
+  --bento-fd-flare-0: 0 0 0px rgba(255, 251, 248, 0);
+
+  /* Card C: the dot riding the drawing edge, the pill stroke as the money
+     lands, the marker's bloom. */
+  --bento-bn-head: #ffd0b8;
+  --bento-bn-pill-lit: rgba(255, 138, 92, 0.75);
+  --bento-bn-marker-lit: brightness(1.5);
+}
+
 .bento {
   position: relative;
   padding: 80px 0 84px;
@@ -283,4 +321,193 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-js] .bento[data-motion='pending'] * { visibility: visible; }
+}
+
+/* --- Light ------------------------------------------------------------------
+   Written twice, as tokens.css writes the palette twice, because a media query
+   cannot go inside a selector list and the custom-property indirection that
+   would avoid the duplication is the one thing LIGHTMODE.md 1.4 says not to be
+   clever about. The blocks MUST stay identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies -- index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back
+   to, and leaving it out is how a band ends up drawing its dark glow on a
+   light page.
+
+   The band's own four cards are answered in their own files; only what
+   Bento.css owns is here -- the glow, the wash, the two card grounds, and the
+   thirteen values the loops read off :root. ---------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* THE DIRECTION FLIP, which is the whole of this block.
+     Eight of these eleven values mean "this just fired", and in dark every one
+     of them says so by getting brighter: a near-white pill stroke, two white
+     text-shadows, a peach packet head hotter than the wire it rides, a market
+     chip at brightness 1.7, a marker at 1.5. On paper nothing can be brighter
+     than the page, so each of those would fire and be invisible -- the loop
+     would run, amplitude.mjs would measure the same 563px of travel, and
+     nobody would see a thing. Each one therefore turns around and reaches the
+     eye by DARKENING instead.
+
+     Card A is the exception and keeps its values: its plate is a saturated
+     red-to-peach gradient in both themes, so white on it is still the lit
+     thing. Only --bento-onb-* is absent from this block, and that absence is
+     the decision. */
+
+  /* Card B. The ring, the wire and the head are one ramp and it inverts as a
+     ramp: in dark the head is the hottest thing on the card and the ring the
+     coolest, so on paper the head is the DEEPEST and the ring the lightest,
+     with the wire between them exactly as before. */
+  --bento-fd-ring: #c4361c;
+  --bento-fd-wire: #a21605;
+  --bento-fd-head: #7e0202;
+  /* brightness(1.7) on a #ece1d9 chip is a chip that has gone white. A single
+     function in both states, so GSAP interpolates the filter structurally
+     rather than falling back to a discrete swap. */
+  --bento-fd-tile-lit: brightness(0.78);
+  --bento-fd-chip-lit: rgba(162, 22, 5, 0.75);
+  /* A glow around ink on paper is a smudge unless it is warm and tight; this
+     is the same 12px radius reading as a bloom under the word rather than
+     around it. */
+  --bento-fd-flare: 0 0 12px rgba(126, 2, 2, 0.5);
+  --bento-fd-flare-0: 0 0 0px rgba(126, 2, 2, 0);
+
+  /* Card C. The dot riding the drawing edge is the one thing on the card that
+     must read at 560px of travel, so it goes to the deepest value in the
+     palette rather than to the accent -- it has to beat the line it is drawing
+     the whole way. */
+  --bento-bn-head: #7e0202;
+  --bento-bn-pill-lit: rgba(162, 22, 5, 0.75);
+  --bento-bn-marker-lit: brightness(0.74);
+  }
+  :root:not([data-theme='dark']) .bento {
+  /* THE GLOW: same three discs, same positions, same radii, same 109px blur,
+     same paint order -- geometry byte-for-byte, so the two themes agree about
+     where the band's light is and the gate stays quiet. What changes is what
+     the layer does.
+
+     1. THE PAGE STOP IS THE PAGE. The ember disc's first stop was #0f0e0d,
+        which was never a dark colour: it is the ground the disc dissolves
+        into. It is var(--page) in both themes. Read literally on paper it is a
+        grey bruise across the bottom-left corner of the band.
+     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. Figma paints
+        these bottom-up as ember, orange, peach -- coolest first, the pale core
+        last, because the core of a light source is its brightest part. Nothing
+        on paper is brighter than the page, so a pale core is a hole. The order
+        is kept and the ramp reversed: peach is still last and still the core,
+        and is now the DEEPEST tint; ember is still the outer falloff and is
+        now the faintest. Warmth peaks exactly where light peaked.
+
+     1.19:1, 1.30:1 and 1.45:1 against the page -- warm paper with a blush.
+     The same recipe the footer proved. */
+  --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #fbe7d9 31.55%);
+  --bento-g-orange: #f7d8c4;
+  --bento-g-peach: #f1c3a8;
+
+  /* The wash is PAGE-alpha, not ink-alpha, and that is the one white-alpha
+     rule in this repo that does not apply here: rgba(12,12,12,.3) is not
+     "raise this slightly", it is the page laid over the glow to settle it so
+     four cards can sit on it. The page does that job in either theme, so the
+     colour follows the page and only the alpha is tuned -- .55 rather than
+     .3, because a warm tint on cream needs more covering than a warm tint on
+     black. Card B's ground is the same move at the same alpha it always had. */
+  --bento-wash: rgba(255, 251, 248, 0.55);
+  --bento-funds: rgba(255, 251, 248, 0.7);
+  /* 2.8:1 against the page, matching the 3.0:1 that #626262 has against
+     #0f0e0d. The edge is what tells you the outer card is there at all once
+     the wash stops being darker than what is behind it. */
+  --bento-line: #a1958c;
+  /* The bonus card is a hair off the page with an edge of its own: 1.01:1 in
+     dark, 1.01:1 here, and its rule at 1.49:1 in both. */
+  --bento-bonus: #fdf8f4;
+  --bento-bonus-line: #ddcec2;
+  }
+}
+
+:root[data-theme='light'] {
+  /* THE DIRECTION FLIP, which is the whole of this block.
+     Eight of these eleven values mean "this just fired", and in dark every one
+     of them says so by getting brighter: a near-white pill stroke, two white
+     text-shadows, a peach packet head hotter than the wire it rides, a market
+     chip at brightness 1.7, a marker at 1.5. On paper nothing can be brighter
+     than the page, so each of those would fire and be invisible -- the loop
+     would run, amplitude.mjs would measure the same 563px of travel, and
+     nobody would see a thing. Each one therefore turns around and reaches the
+     eye by DARKENING instead.
+
+     Card A is the exception and keeps its values: its plate is a saturated
+     red-to-peach gradient in both themes, so white on it is still the lit
+     thing. Only --bento-onb-* is absent from this block, and that absence is
+     the decision. */
+
+  /* Card B. The ring, the wire and the head are one ramp and it inverts as a
+     ramp: in dark the head is the hottest thing on the card and the ring the
+     coolest, so on paper the head is the DEEPEST and the ring the lightest,
+     with the wire between them exactly as before. */
+  --bento-fd-ring: #c4361c;
+  --bento-fd-wire: #a21605;
+  --bento-fd-head: #7e0202;
+  /* brightness(1.7) on a #ece1d9 chip is a chip that has gone white. A single
+     function in both states, so GSAP interpolates the filter structurally
+     rather than falling back to a discrete swap. */
+  --bento-fd-tile-lit: brightness(0.78);
+  --bento-fd-chip-lit: rgba(162, 22, 5, 0.75);
+  /* A glow around ink on paper is a smudge unless it is warm and tight; this
+     is the same 12px radius reading as a bloom under the word rather than
+     around it. */
+  --bento-fd-flare: 0 0 12px rgba(126, 2, 2, 0.5);
+  --bento-fd-flare-0: 0 0 0px rgba(126, 2, 2, 0);
+
+  /* Card C. The dot riding the drawing edge is the one thing on the card that
+     must read at 560px of travel, so it goes to the deepest value in the
+     palette rather than to the accent -- it has to beat the line it is drawing
+     the whole way. */
+  --bento-bn-head: #7e0202;
+  --bento-bn-pill-lit: rgba(162, 22, 5, 0.75);
+  --bento-bn-marker-lit: brightness(0.74);
+}
+:root[data-theme='light'] .bento {
+  /* THE GLOW: same three discs, same positions, same radii, same 109px blur,
+     same paint order -- geometry byte-for-byte, so the two themes agree about
+     where the band's light is and the gate stays quiet. What changes is what
+     the layer does.
+
+     1. THE PAGE STOP IS THE PAGE. The ember disc's first stop was #0f0e0d,
+        which was never a dark colour: it is the ground the disc dissolves
+        into. It is var(--page) in both themes. Read literally on paper it is a
+        grey bruise across the bottom-left corner of the band.
+     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. Figma paints
+        these bottom-up as ember, orange, peach -- coolest first, the pale core
+        last, because the core of a light source is its brightest part. Nothing
+        on paper is brighter than the page, so a pale core is a hole. The order
+        is kept and the ramp reversed: peach is still last and still the core,
+        and is now the DEEPEST tint; ember is still the outer falloff and is
+        now the faintest. Warmth peaks exactly where light peaked.
+
+     1.19:1, 1.30:1 and 1.45:1 against the page -- warm paper with a blush.
+     The same recipe the footer proved. */
+  --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #fbe7d9 31.55%);
+  --bento-g-orange: #f7d8c4;
+  --bento-g-peach: #f1c3a8;
+
+  /* The wash is PAGE-alpha, not ink-alpha, and that is the one white-alpha
+     rule in this repo that does not apply here: rgba(12,12,12,.3) is not
+     "raise this slightly", it is the page laid over the glow to settle it so
+     four cards can sit on it. The page does that job in either theme, so the
+     colour follows the page and only the alpha is tuned -- .55 rather than
+     .3, because a warm tint on cream needs more covering than a warm tint on
+     black. Card B's ground is the same move at the same alpha it always had. */
+  --bento-wash: rgba(255, 251, 248, 0.55);
+  --bento-funds: rgba(255, 251, 248, 0.7);
+  /* 2.8:1 against the page, matching the 3.0:1 that #626262 has against
+     #0f0e0d. The edge is what tells you the outer card is there at all once
+     the wash stops being darker than what is behind it. */
+  --bento-line: #a1958c;
+  /* The bonus card is a hair off the page with an edge of its own: 1.01:1 in
+     dark, 1.01:1 here, and its rule at 1.49:1 in both. */
+  --bento-bonus: #fdf8f4;
+  --bento-bonus-line: #ddcec2;
 }

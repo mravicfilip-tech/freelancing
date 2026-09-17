@@ -15,6 +15,14 @@ import gift2 from '../../../assets/hero/slide3/gift-2.svg';
 import gift3 from '../../../assets/hero/slide3/gift-3.svg';
 import gift4 from '../../../assets/hero/slide3/gift-4.svg';
 import gift5 from '../../../assets/hero/slide3/gift-5.svg';
+import { Icon } from '../../Icon';
+import { useTheme } from '../../../lib/theme';
+/* Light variants of the two gradient strokes. See SlideAccount.tsx for why a
+   second file rather than an inline or a mask. stacks.svg needs neither: it is
+   already inlined, so SlideBonus.css themes its stops directly -- and swapping
+   THAT string would replace the element graph under the motion module's feet. */
+import bracketLight from '../../../assets/hero/slide3/bracket-light.svg';
+import dashedLight from '../../../assets/hero/slide3/dashed-light.svg';
 import { bonusCountdownMotion, slideBonusMotion } from './SlideBonus.motion';
 import './SlideBonus.css';
 
@@ -27,6 +35,7 @@ import './SlideBonus.css';
  */
 export function SlideBonus() {
   const ref = useRef<HTMLDivElement>(null);
+  const light = useTheme() === 'light';
 
   useEffect(() => (ref.current ? slideBonusMotion(ref.current) : undefined), []);
 
@@ -48,7 +57,7 @@ export function SlideBonus() {
         <p className="sl3__total">$400</p>
 
         <span className="sl3__bracket">
-          <img src={bracket} alt="" />
+          <img src={light ? bracketLight : bracket} alt="" />
         </span>
         <div className="sl3__adds">
           <span>Phorcast adds</span>
@@ -57,7 +66,7 @@ export function SlideBonus() {
 
         <p className="sl3__amount">$200</p>
         <span className="sl3__rule">
-          <img src={dashed} alt="" />
+          <img src={light ? dashedLight : dashed} alt="" />
         </span>
         <span className="sl3__diamond sl3__diamond--start" />
         <span className="sl3__diamond sl3__diamond--end" />
@@ -75,10 +84,10 @@ export function SlideBonus() {
         <p className="sl3__cap sl3__cap--trade">You trade with</p>
 
         <span className="sl3__badge sl3__badge--nikkei">
-          <img src={nikkei} alt="" />
+          <Icon src={nikkei} w={46.08} h={10.24} style={{ width: undefined, height: undefined }} />
         </span>
         <span className="sl3__badge sl3__badge--sp">
-          <img src={sp500} alt="" />
+          <Icon src={sp500} w={46.08} h={10.24} style={{ width: undefined, height: undefined }} />
         </span>
       </div>
     </div>

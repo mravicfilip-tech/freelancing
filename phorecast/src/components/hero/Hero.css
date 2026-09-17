@@ -31,6 +31,28 @@
   --hero-halftone-op: 0.7;
 }
 
+/* Two pairs the motion layer reads back through tok(), which is
+   getComputedStyle(document.documentElement) and therefore sees :root and
+   nothing else. The --hero- prefix keeps them out of eight other sections' way.
+
+   --hero-tick-* is entrance.ts's price flash on the market cards. Tailwind's
+   green-400 and red-400, which are a THIRD up/down pair -- different again from
+   --pos/--neg and from slide 2's own #00c950/#e7000b. Dark keeps them exactly,
+   because changing a dark colour is not this job; light collapses all three
+   pairs onto --pos and --neg, since #4ade80 is 1.9:1 on paper and a rise nobody
+   can see is the same as no flash at all.
+
+   --hero-sl2-* is slide 2's own price flash, read by SlideAccount.motion.ts.
+   Literal values, not var(--pos): a custom property holding var() does resolve
+   before getPropertyValue sees it, but there is no reason for a motion read to
+   depend on that. */
+:root {
+  --hero-tick-up: #4ade80;
+  --hero-tick-down: #f87171;
+  --hero-sl2-up: #00c950;
+  --hero-sl2-down: #e7000b;
+}
+
 /* Background glow ---------------------------------------------------------- */
 .hero__bg {
   --u: calc(100cqw / 1920);
@@ -298,4 +320,135 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .hero[data-motion='pending'] * { visibility: visible; animation: none; }
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies: index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back to,
+   and leaving it out is how a section ends up drawing its dark artwork on a
+   light page. ------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .hero {
+  /* THE GLOW ON PAPER.
+
+     Geometry byte-for-byte: same five discs, same positions, same radii, same
+     blur, same opacities, same paint order, and the halftone still sits on the
+     sun. What changes is what the layer DOES, on the two rules the footer
+     proved:
+
+     1. THE PAGE STOP IS THE PAGE. --hero-g-ember's first stop is var(--page) in
+        both themes and needed no light value at all. #0f0e0d was never a dark
+        colour there; it is the ground the disc dissolves into.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
+        painted LAST is the palest -- cream #fbd6ca at 14.3:1 -- because the core
+        of a light source is its brightest part. Nothing on paper can be brighter
+        than the page, so a pale core is a hole and the band reads as a halo
+        around nothing. The order is kept and the ramp reversed: cream is still
+        last and still the core, and is now the DEEPEST tint at 1.42:1; the ember
+        disc is still the outer falloff and is now the faintest at 1.06:1.
+        Warmth still peaks where light peaked.
+
+     THE HORIZON NEEDED NOTHING. .hero__horizon was already var(--bg), so the
+     alias pass made it var(--page) and it flips for free -- which is the whole
+     composition surviving intact. In dark it is a black planet cutting a
+     sunrise; on paper it is the paper itself cutting the blush, and the light
+     still rises out of the ground rather than floating over it.
+
+     It is a good light-mode idea and it is NOT the same idea as the sunrise.
+     LIGHTMODE 6.1 asks for that to be seen before the rest of the page copies
+     it; the footer has already asked once, and this is the section the question
+     was really about. 6.1 also suggests dropping the core disc entirely in
+     light. It is kept: the core sits between the orange disc and the cream one
+     spatially, and removing it leaves a step in a ramp whose whole point is to
+     stay monotonic. It is simply no longer the brightest thing in the stack. */
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf3ec 60%);
+  --hero-g-peach: #fae8dd;
+  --hero-g-orange: #f6decf;
+  --hero-g-core: #f4d7c5;
+  --hero-g-cream: #f2cfba;
+
+  /* The halftone dither keeps its blend mode and its opacity and turns its
+     colour around. soft-light lightens its backdrop where the source is above
+     mid-grey and darkens it where the source is below, so a pale peach dot
+     lifts the sun on black and a deep one settles it into paper -- the same
+     texture, the opposite direction, with no blend-mode change to go wrong
+     inside .hero's `isolation: isolate`. (It is academic either way: the parent
+     carries blur(110 * u), which smears a 6px dot grid into an even tint.) */
+  --hero-halftone: rgba(150, 95, 70, 0.9);
+  }
+}
+
+:root[data-theme='light'] .hero {
+  /* THE GLOW ON PAPER.
+
+     Geometry byte-for-byte: same five discs, same positions, same radii, same
+     blur, same opacities, same paint order, and the halftone still sits on the
+     sun. What changes is what the layer DOES, on the two rules the footer
+     proved:
+
+     1. THE PAGE STOP IS THE PAGE. --hero-g-ember's first stop is var(--page) in
+        both themes and needed no light value at all. #0f0e0d was never a dark
+        colour there; it is the ground the disc dissolves into.
+
+     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
+        painted LAST is the palest -- cream #fbd6ca at 14.3:1 -- because the core
+        of a light source is its brightest part. Nothing on paper can be brighter
+        than the page, so a pale core is a hole and the band reads as a halo
+        around nothing. The order is kept and the ramp reversed: cream is still
+        last and still the core, and is now the DEEPEST tint at 1.42:1; the ember
+        disc is still the outer falloff and is now the faintest at 1.06:1.
+        Warmth still peaks where light peaked.
+
+     THE HORIZON NEEDED NOTHING. .hero__horizon was already var(--bg), so the
+     alias pass made it var(--page) and it flips for free -- which is the whole
+     composition surviving intact. In dark it is a black planet cutting a
+     sunrise; on paper it is the paper itself cutting the blush, and the light
+     still rises out of the ground rather than floating over it.
+
+     It is a good light-mode idea and it is NOT the same idea as the sunrise.
+     LIGHTMODE 6.1 asks for that to be seen before the rest of the page copies
+     it; the footer has already asked once, and this is the section the question
+     was really about. 6.1 also suggests dropping the core disc entirely in
+     light. It is kept: the core sits between the orange disc and the cream one
+     spatially, and removing it leaves a step in a ramp whose whole point is to
+     stay monotonic. It is simply no longer the brightest thing in the stack. */
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf3ec 60%);
+  --hero-g-peach: #fae8dd;
+  --hero-g-orange: #f6decf;
+  --hero-g-core: #f4d7c5;
+  --hero-g-cream: #f2cfba;
+
+  /* The halftone dither keeps its blend mode and its opacity and turns its
+     colour around. soft-light lightens its backdrop where the source is above
+     mid-grey and darkens it where the source is below, so a pale peach dot
+     lifts the sun on black and a deep one settles it into paper -- the same
+     texture, the opposite direction, with no blend-mode change to go wrong
+     inside .hero's `isolation: isolate`. (It is academic either way: the parent
+     carries blur(110 * u), which smears a 6px dot grid into an even tint.) */
+  --hero-halftone: rgba(150, 95, 70, 0.9);
+}
+
+/* The two motion pairs, on :root because that is the only place tok() looks. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --hero-tick-up: #0b6e37;
+    --hero-tick-down: #b01309;
+    --hero-sl2-up: #0b6e37;
+    --hero-sl2-down: #b01309;
+  }
+}
+
+:root[data-theme='light'] {
+  --hero-tick-up: #0b6e37;
+  --hero-tick-down: #b01309;
+  --hero-sl2-up: #0b6e37;
+  --hero-sl2-down: #b01309;
 }

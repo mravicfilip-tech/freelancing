@@ -34,6 +34,7 @@
 
 import { gsap } from 'gsap';
 import { EASE, REDUCED, all, one } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 
 /** One full cycle of the loop, in seconds: the beats, then a long rest. The
  *  rest is whatever is left of this after the beats, measured off the built
@@ -79,11 +80,20 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   const priceBase = priceNode?.nodeValue ?? '';
   const priceValue = Number(priceBase.replace(/,/g, ''));
 
+  /* The flash, read from :root at build time next to the priceInk read below,
+     which is what tok() is for. SlideAccount re-runs this module when the theme
+     epoch changes (see SlideAccount.tsx), so both are re-read together and the
+     flash can never be the other theme's colour. The hardcoded values stay as
+     the fallbacks. On paper #00c950 is 2.15:1 -- a price rise nobody can see --
+     so light collapses the pair onto --pos and --neg. */
+  const flashUp = tok('--hero-sl2-up', '#00c950');
+  const flashDown = tok('--hero-sl2-down', '#e7000b');
+
   function tickPrice(): '' | string {
     if (!priceNode || !Number.isFinite(priceValue) || priceValue === 0) return '';
     const next = priceValue * (1 + (Math.random() - 0.45) * 0.0035);
     priceNode.nodeValue = next.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return next >= priceValue ? '#00c950' : '#e7000b';
+    return next >= priceValue ? flashUp : flashDown;
   }
 
   /* Everything this module may write an inline style to, so teardown can hand

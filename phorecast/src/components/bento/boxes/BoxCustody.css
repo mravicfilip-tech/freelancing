@@ -30,6 +30,9 @@
   --custody-pill: #2f110c;          /* the two contract pills */
   --custody-pill-line: color-mix(in srgb, var(--accent) 17%, transparent);
   --custody-ink: var(--ink);        /* the labels, which sit on the card */
+  --custody-glyph: #a6a6a6;         /* the seven masked glyphs bake this hex */
+  --custody-ring: #d9d9d9;          /* the wallet ring, at the file's own 20% */
+  --custody-ring-market: #ff632a;   /* the market ring, at the file's own 22% */
 }
 
 /* Group 365:936 — the 464 x 215 diagram, centred on the card the way Figma
@@ -56,12 +59,14 @@
   height: calc(118 * var(--u));
 }
 .custody__ring-market {
+  color: var(--custody-ring-market);
   left: calc(242 * var(--u));
   top: 0;
   width: calc(215 * var(--u));
   height: calc(215 * var(--u));
 }
 .custody__ring-wallet {
+  color: var(--custody-ring);
   left: calc(8 * var(--u));
   top: calc(61 * var(--u));
   width: calc(93 * var(--u));
@@ -115,6 +120,7 @@
 }
 .custody__glyph {
   position: absolute;
+  color: var(--custody-glyph);
   left: calc(10 * var(--u));
   top: calc(10 * var(--u));
   width: calc(16 * var(--u));
@@ -162,6 +168,7 @@
   white-space: nowrap;
 }
 .custody__pill-icon {
+  color: var(--custody-glyph);
   flex: none;
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
@@ -174,7 +181,10 @@
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
 }
-.custody__lock img { position: absolute; display: block; }
+/* `> *` rather than `img`: the two leaves are masks now, and a mask is a
+   <span>. Both rules computed the same thing for the <img> pair, so this is a
+   no-op on the dark render. */
+.custody__lock > * { position: absolute; display: block; color: var(--custody-glyph); }
 .custody__lock-body {
   left: calc(1.626 * var(--u));
   top: 0;
@@ -194,4 +204,64 @@
   top: calc(var(--y) * var(--u));
   width: calc(22 * var(--u));
   height: calc(22 * var(--u));
+}
+
+/* --- Light ------------------------------------------------------------------
+   Written twice; see the note in Bento.css. -------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .box-custody {
+  /* The diagram on paper. Everything in it is drawn LIGHT ON DARK today: a
+     #d9d9d9 wallet ring at 20%, a #ff632a market ring at 22%, seven #a6a6a6
+     glyphs, white labels on near-black chips. Carried across unchanged, the
+     two rings disappear into the page and the glyphs drop to 1.9:1 -- the card
+     would keep its layout and lose its diagram.
+
+     So the chips settle instead of lifting (a hole in dark is still a hole on
+     paper -- --panel-2, one step under the card rather than one step over the
+     page), the two pills become the warm chips they already are at 17% of the
+     accent, and the three baked greys become tokens through <Icon>. The
+     objects that are genuinely artwork -- the wallet's gradient disc, the two
+     orange nodes, the glow behind them -- do not move at all. */
+  --custody-chip: var(--panel-2);
+  --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
+  --custody-pill: #f8e7e0;
+  --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
+  /* #a6a6a6 is 1.9:1 on paper. --ink-muted is 4.6:1 here and 3.2:1 in dark,
+     which is the same quiet-but-readable step the glyph has today. */
+  --custody-glyph: var(--ink-muted);
+  /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
+     mask alpha), so only the colour under it moves: ink at 20% lands at
+     1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
+     and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
+  --custody-ring: var(--ink);
+  --custody-ring-market: var(--accent);
+  }
+}
+
+:root[data-theme='light'] .box-custody {
+  /* The diagram on paper. Everything in it is drawn LIGHT ON DARK today: a
+     #d9d9d9 wallet ring at 20%, a #ff632a market ring at 22%, seven #a6a6a6
+     glyphs, white labels on near-black chips. Carried across unchanged, the
+     two rings disappear into the page and the glyphs drop to 1.9:1 -- the card
+     would keep its layout and lose its diagram.
+
+     So the chips settle instead of lifting (a hole in dark is still a hole on
+     paper -- --panel-2, one step under the card rather than one step over the
+     page), the two pills become the warm chips they already are at 17% of the
+     accent, and the three baked greys become tokens through <Icon>. The
+     objects that are genuinely artwork -- the wallet's gradient disc, the two
+     orange nodes, the glow behind them -- do not move at all. */
+  --custody-chip: var(--panel-2);
+  --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
+  --custody-pill: #f8e7e0;
+  --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
+  /* #a6a6a6 is 1.9:1 on paper. --ink-muted is 4.6:1 here and 3.2:1 in dark,
+     which is the same quiet-but-readable step the glyph has today. */
+  --custody-glyph: var(--ink-muted);
+  /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
+     mask alpha), so only the colour under it moves: ink at 20% lands at
+     1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
+     and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
+  --custody-ring: var(--ink);
+  --custody-ring-market: var(--accent);
 }

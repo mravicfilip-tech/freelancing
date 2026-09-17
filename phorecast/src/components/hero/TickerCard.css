@@ -1,4 +1,13 @@
 .ticker {
+  /* Apple's mark is the only ticker glyph drawn in one flat fill, and it is
+     #ffffff -- NOT #fffbf8, so it is not --ink and naming it --ink would have
+     moved it four units in two channels in dark. It is a masked <Icon> now
+     (see TickerCard.tsx) and this is what paints it: pure white on the dark
+     card, page ink on the paper one, which is how Apple's own guidelines say
+     to place it. Tesla's red and the Bitcoin and gold coins keep their own
+     colour and stay ordinary <img>. */
+  --ticker-glyph: #ffffff;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,6 +25,7 @@
 .ticker__head { display: flex; align-items: flex-start; justify-content: space-between; }
 .ticker__id { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .ticker__icon { width: 32px; height: 32px; }
+.icon.ticker__icon { color: var(--ticker-glyph); }
 .ticker__symbol { font-weight: 700; font-size: 12px; line-height: 1.2; white-space: nowrap; }
 .ticker__trend { width: 20px; height: 11.56px; margin-top: 4px; }
 .ticker__name { margin-top: 2px; font-weight: 400; font-size: 12px; line-height: 1.2; }
@@ -69,4 +79,26 @@
 @media (prefers-reduced-motion: reduce) {
   .ticker, .ticker__icon, .ticker__price { transition: none; }
   .ticker:hover { transform: none; }
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies: index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back to,
+   and leaving it out is how a section ends up drawing its dark artwork on a
+   light page. ------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .ticker {
+  --ticker-glyph: var(--ink);
+  }
+}
+
+:root[data-theme='light'] .ticker {
+  --ticker-glyph: var(--ink);
 }

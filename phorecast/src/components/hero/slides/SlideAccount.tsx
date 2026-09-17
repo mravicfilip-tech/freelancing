@@ -9,6 +9,8 @@
 
 import { useEffect, useRef } from 'react';
 
+import { Icon } from '../../Icon';
+import { useTheme, useThemeEpoch } from '../../../lib/theme';
 import { slideAccountMotion } from './SlideAccount.motion';
 import './SlideAccount.css';
 
@@ -17,6 +19,20 @@ import './SlideAccount.css';
 import connectorLeft from '../../../assets/hero/slide2/connector-left.svg';
 import connectorRight from '../../../assets/hero/slide2/connector-right.svg';
 import cardGrid from '../../../assets/hero/slide2/card-grid.svg';
+/* Light variants. These five are gradient artwork: a mask would flatten the
+   gradient to its alpha and throw the colour away, and inlining them would add
+   elements to .hero -- which theme-diff.mjs compares by array index, so every
+   later element would report as changed. A second file swapped by `src` is the
+   one mechanism that leaves the dark DOM, the dark bytes and the dark gate
+   untouched. Each is the original with its stops changed and nothing else. */
+import connectorLeftLight from '../../../assets/hero/slide2/connector-left-light.svg';
+import connectorRightLight from '../../../assets/hero/slide2/connector-right-light.svg';
+import cardGridLight from '../../../assets/hero/slide2/card-grid-light.svg';
+import chartNflLight from '../../../assets/hero/slide2/chart-nfl-light.svg';
+import chartXauLight from '../../../assets/hero/slide2/chart-xau-light.svg';
+import trendRingLight from '../../../assets/hero/slide2/trend-ring-light.svg';
+import trendArrowNflLight from '../../../assets/hero/slide2/trend-arrow-nfl-light.svg';
+import trendArrowXauLight from '../../../assets/hero/slide2/trend-arrow-xau-light.svg';
 import nflLogo from '../../../assets/hero/slide2/nfl-logo.svg';
 import chiefs from '../../../assets/hero/slide2/chiefs.svg';
 import trendRing from '../../../assets/hero/slide2/trend-ring.svg';
@@ -61,6 +77,14 @@ function Ranges() {
 
 export function SlideAccount() {
   const ref = useRef<HTMLDivElement>(null);
+  const light = useTheme() === 'light';
+  /* The motion module reads the price's settled ink out of getComputedStyle
+     when it builds, so that the flash has somewhere exact to return to. It is
+     built from a useEffect here rather than through useSectionMotion, so
+     nothing else would ever rebuild it -- and a flash that cooled to the dark
+     page's ink on paper is the frozen-cool-down failure lib/theme.ts exists to
+     prevent. The epoch changes only when the theme actually does. */
+  const epoch = useThemeEpoch();
 
   /* The cluster's own choreography — the detail inside the hero's block
      entrance, and the one loop it keeps. It gates itself on this slide being
@@ -72,7 +96,7 @@ export function SlideAccount() {
     const el = ref.current;
     if (!el) return;
     return slideAccountMotion(el);
-  }, []);
+  }, [epoch]);
 
   return (
     <div className="sl2" aria-hidden="true" ref={ref}>
@@ -105,7 +129,7 @@ export function SlideAccount() {
 
             {/* 200 × 248 market card — NFL Super Bowl ------------------- */}
             <article className="sl2-mc sl2-mc--nfl">
-              <img src={cardGrid} alt="" className="sl2-mc__grid" />
+              <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid" />
               <div className="sl2-mc__head">
                 <img src={nflLogo} alt="" className="sl2-mc__logo" />
                 <p className="sl2-mc__id">
@@ -113,8 +137,8 @@ export function SlideAccount() {
                   <i>Super Bowl Winner</i>
                 </p>
                 <span className="sl2-mc__trend">
-                  <img src={trendRing} alt="" className="sl2-mc__trend-ring" />
-                  <img src={trendArrowNfl} alt="" className="sl2-mc__trend-arrow" />
+                  <img src={light ? trendRingLight : trendRing} alt="" className="sl2-mc__trend-ring" />
+                  <img src={light ? trendArrowNflLight : trendArrowNfl} alt="" className="sl2-mc__trend-arrow" />
                 </span>
               </div>
               <div className="sl2-mc__body">
@@ -129,18 +153,18 @@ export function SlideAccount() {
                 </div>
                 <p className="sl2-mc__price">24.<span>0%</span></p>
                 <p className="sl2-mc__delta">
-                  <img src={deltaUp} alt="" />
+                  <Icon src={deltaUp} w={10} h={8.333} style={{ width: undefined, height: undefined }} />
                   <b>2.4 pp </b>
                   <i>today</i>
                 </p>
               </div>
-              <img src={chartNfl} alt="" className="sl2-mc__chart sl2-mc__chart--nfl" />
+              <img src={light ? chartNflLight : chartNfl} alt="" className="sl2-mc__chart sl2-mc__chart--nfl" />
               <Ranges />
             </article>
 
             {/* 200 × 248 market card — XAU/USD Gold --------------------- */}
             <article className="sl2-mc sl2-mc--xau">
-              <img src={cardGrid} alt="" className="sl2-mc__grid sl2-mc__grid--xau" />
+              <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid sl2-mc__grid--xau" />
               <div className="sl2-mc__head">
                 <span className="sl2-mc__logo sl2-mc__logo--gold">
                   <img src={goldCoin} alt="" className="sl2-mc__coin" />
@@ -151,8 +175,8 @@ export function SlideAccount() {
                   <i>Gold</i>
                 </p>
                 <span className="sl2-mc__trend">
-                  <img src={trendRing} alt="" className="sl2-mc__trend-ring" />
-                  <img src={trendArrowXau} alt="" className="sl2-mc__trend-arrow" />
+                  <img src={light ? trendRingLight : trendRing} alt="" className="sl2-mc__trend-ring" />
+                  <img src={light ? trendArrowXauLight : trendArrowXau} alt="" className="sl2-mc__trend-arrow" />
                 </span>
               </div>
               <div className="sl2-mc__body">
@@ -160,7 +184,7 @@ export function SlideAccount() {
                 <p className="sl2-mc__price">4,289.74<span>00</span></p>
                 <p className="sl2-mc__delta is-down">−0.20%</p>
               </div>
-              <img src={chartXau} alt="" className="sl2-mc__chart sl2-mc__chart--xau" />
+              <img src={light ? chartXauLight : chartXau} alt="" className="sl2-mc__chart sl2-mc__chart--xau" />
               <Ranges />
             </article>
 
@@ -217,7 +241,7 @@ export function SlideAccount() {
                   <span className="sl2-live__vol">$229.2K Vol</span>
                   <span className="sl2-live__ov">
                     Game overview
-                    <img src={ovArrow} alt="" />
+                    <Icon src={ovArrow} w={5.405} h={5.405} style={{ width: undefined, height: undefined }} />
                   </span>
                 </div>
 
@@ -243,7 +267,7 @@ export function SlideAccount() {
           {/* toast + two 44px icon tiles ------------------------------- */}
           <div className="sl2__toasts">
             <div className="sl2-toast">
-              <img src={toastGlobe} alt="" className="sl2-toast__globe" />
+              <Icon src={toastGlobe} w={22} h={22} className="sl2-toast__globe" style={{ width: undefined, height: undefined }} />
               <span className="sl2-toast__text">
                 <b>Trade executed</b>
                 <i>Buy 0.25 BTC at 62,894.00</i>
@@ -261,8 +285,8 @@ export function SlideAccount() {
         </div>
 
         {/* connector curves down to the pill -------------------------- */}
-        <img src={connectorLeft} alt="" className="sl2__conn sl2__conn--l" />
-        <img src={connectorRight} alt="" className="sl2__conn sl2__conn--r" />
+        <img src={light ? connectorLeftLight : connectorLeft} alt="" className="sl2__conn sl2__conn--l" />
+        <img src={light ? connectorRightLight : connectorRight} alt="" className="sl2__conn sl2__conn--r" />
         <span className="sl2__diamond" />
 
         <div className="sl2__pill">

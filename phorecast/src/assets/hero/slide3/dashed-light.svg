@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="321.898" height="1.17751" viewBox="0 0 321.898 1.17751" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Light variant of dashed.svg. Geometry, ids, viewBox and
+     preserveAspectRatio are byte for byte the original's; only paint differs.
+     The gradient runs 5.6 units down a 1.18 unit box, so only its first ninth is
+     ever drawn: this rule is effectively one colour, and on paper that colour has
+     to be a deep warm rather than a pale one.
+     No double hyphen may appear in this comment: it is illegal inside an XML
+     comment, the file then fails to parse, and an <img> pointing at it shows a
+     broken image rather than throwing. -->
+<path id="Vector 74" d="M321.898 0.588755H0" stroke="url(#paint0_linear_0_82)" stroke-width="1.17751" stroke-dasharray="3.53 3.53"/>
+<defs>
+<linearGradient id="paint0_linear_0_82" x1="181.941" y1="0.671229" x2="181.808" y2="6.2488" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8a3a14"/>
+<stop offset="1" stop-color="#3a1503"/>
+</linearGradient>
+</defs>
+</svg>

@@ -16,6 +16,7 @@ import nodeDax from '../../assets/built/node-dax.svg';
 import nodeEur from '../../assets/built/node-eur.svg';
 import nodeBtc from '../../assets/built/node-btc.svg';
 import { Roll } from '../Roll';
+import { Icon } from '../Icon';
 import { useSectionMotion } from '../../lib/motion';
 import { buildBuilt } from './Built.motion';
 import { bt1Loop } from './loops/bt1';
@@ -26,6 +27,62 @@ import arrow from '../../assets/built/arrow.svg';
 import tesla from '../../assets/built/tesla.svg';
 import './Built.css';
 
+/* FOUR OF THIS BAND'S TWENTY-SIX IMAGES ARE <Icon>, AND NOT ONE MORE.
+ *
+ * <Icon> turns an SVG file into a CSS mask and hands the paint to `color`, so
+ * the colour stops being whatever Figma baked and starts being a token. The
+ * cost is that a mask is one alpha channel: any file with two colours in it
+ * loses one. That is the whole of the selection rule here.
+ *
+ *   converted   you-dot.svg     one #e5331e circle and ring     -> --accent
+ *               line.svg        a stroke under a two-stop fade  -> a CSS
+ *               link-main.svg   a stroke under a two-stop fade     gradient
+ *               link-fan.svg    four #353433 strokes            -> --bt-wire
+ *               arrow.svg (x2)  one #e5331e path                -> inherits
+ *                                                                  the CTA
+ *
+ * The gradient pair convert because a mask does not have to be painted flat:
+ * the silhouette comes from the file and the fade comes from a `background`
+ * in Built.css, matched to the linearGradient the export carries. Everything
+ * the file draws is still drawn.
+ *
+ *   not converted  ring-disc.svg     disc + ring + drop shadow
+ *                  ring-mid/outer, node-ring-a/b/c   already near-invisible,
+ *                                                    and land at the same
+ *                                                    ratio on paper
+ *                  node-disc(-soft), node-dax/eur/lock, btc-coin, tesla,
+ *                  gold, node-btc   dark plates carrying locked marks
+ *                  live-dot.svg      three tinted ellipses; the eyebrow dot
+ *                                    is shared with five other bands
+ *
+ * THE BOX is where a mask conversion can move geometry, and there are two
+ * different answers in this file.
+ *
+ *  - The dot, the line and the two CTA arrows are sized by Built.css, in
+ *    container units for the first two and 12x6 for the arrows. An inline
+ *    pixel size would freeze them, so `cssBox` writes Icon's own width and
+ *    height away again and hands the box back to the stylesheet.
+ *  - The two wires are NOT. They are absolutely positioned with all four
+ *    insets and `width: auto`, and an <img> is a replaced element: `auto`
+ *    resolves to the file's intrinsic size and the over-constrained `right`
+ *    and `bottom` are dropped. Both therefore ship at a fixed size at every
+ *    width -- confirmed identical at 1600, 1100 and 720 in the dark baseline.
+ *    A <span> is not replaced and would have solved its box from the insets
+ *    instead, shrinking by a third at 720, so both are given a size.
+ *
+ *    THE SIZE IS NOT THE ONE IN THE FILE. link-fan.svg says 336.243 x 122.496
+ *    and link-main.svg says 436.869 x 23.4105, but a replaced element's
+ *    intrinsic size lands on Chromium's 1/64px layout grid and does not simply
+ *    round to it: the two <img> measured 336.203125 x 122.484375 and
+ *    436.78125 x 23.40625. The numbers below are those, because what has to be
+ *    reproduced is the box that shipped rather than the box the export claims.
+ *    Asking for 436.869 left the wire 0.078px wide of the <img>, which the
+ *    gate saw as w: 436.8 -> 436.9 and called geometry, correctly.
+ *    (That the wires do not scale with the band is how this shipped; it is
+ *    not something to fix here.)
+ */
+const cssBox = { width: undefined, height: undefined };
+
 function CardOne() {
   return (
     <div className="bt-card bt-card--one">
@@ -33,8 +90,8 @@ function CardOne() {
       <span className="bt-label bt-label--tl">One market</span>
       <span className="bt-label bt-label--tr">Familiar from day one</span>
       <div className="bt1" aria-hidden="true">
-        <img src={youDot} alt="" className="bt1__dot" width={24} height={24} />
-        <img src={line} alt="" className="bt1__line" width={174} height={3} />
+        <Icon src={youDot} w={24} h={24} className="bt1__dot" style={cssBox} />
+        <Icon src={line} w={174} h={3} className="bt1__line" style={cssBox} />
         <span className="bt1__smear" />
         <span className="bt1__you">You</span>
         <div className="bt1__rings">
@@ -70,8 +127,8 @@ function CardTwo() {
       <span className="bt-label bt-label--tr bt-label--grey">Fast onboarding</span>
       <span className="bt-label bt-label--bl">Transparent execution</span>
       <div className="bt2" aria-hidden="true">
-        <img src={linkFan} alt="" className="bt2__fan" />
-        <img src={linkMain} alt="" className="bt2__main" />
+        <Icon src={linkFan} w={336.203125} h={122.484375} className="bt2__fan" />
+        <Icon src={linkMain} w={436.78125} h={23.40625} className="bt2__main" />
         <span className="bt2__smear" />
         {NODES.map((n) => (
           <span key={n.key} className="bt2__node" style={{ ['--x' as string]: n.x, ['--y' as string]: n.y, ['--s' as string]: n.size }}>
@@ -152,7 +209,7 @@ export function Built() {
               <div className="built__copy">
                 <h3 className="built__col-title">{c.title}</h3>
                 <p className="built__col-body">{c.body}</p>
-                <a href={c.href} className="built__cta"><Roll>{c.cta}</Roll><img src={arrow} alt="" width={12} height={6} /></a>
+                <a href={c.href} className="built__cta"><Roll>{c.cta}</Roll><Icon src={arrow} w={12} h={6} style={cssBox} /></a>
               </div>
             </div>
           ))}

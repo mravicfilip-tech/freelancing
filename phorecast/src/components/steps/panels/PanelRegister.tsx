@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
+import type { CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import envelope from '../../../assets/steps/s1-envelope.svg';
 import cardGlyph from '../../../assets/steps/s1-card-glyph.svg';
@@ -16,6 +17,7 @@ import battery from '../../../assets/steps/s1-battery.svg';
 import battFill from '../../../assets/steps/s1-batt-tip.svg';
 import { REDUCED, all, count, one } from '../../../lib/motion';
 import { tok, useThemeEpoch } from '../../../lib/theme';
+import { Icon } from '../../Icon';
 import { Mark, Glow } from './shared';
 import './PanelRegister.css';
 
@@ -52,6 +54,17 @@ import './PanelRegister.css';
  *   teardown because text content is not a style.
  * - No hover, no pointer, no idle drift. Reduced motion never builds anything.
  */
+/* Every glyph in this panel is sized by PanelRegister.css, in design pixels
+   off `--p`, so none of them wants Icon's own width/height: an <img> ignores
+   its width attribute once CSS gives it a length, and a <span> would take that
+   length too, but writing both invites them to disagree at some width. The
+   attribute numbers are still passed, because they are the asset's own and are
+   worth having in the markup; this clears the box they would otherwise set.
+   The two exceptions are s1-connector (a two-stop gradient wire, which a mask
+   would flatten) and s1-bottomnav (a 6% white plate carrying three #323232
+   dots, which a mask would collapse onto one colour); both stay <img>. */
+const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
+
 const STORY = 4.35;
 const REST = 1.55;
 
@@ -198,7 +211,7 @@ export function PanelRegister() {
       <Glow className="steps__glow--left" />
       <div className="s1" ref={ref} aria-hidden="true">
         <div className="s1__email">
-          <span className="s1__envelope"><img src={envelope} alt="" width={23.989} height={18.848} /></span>
+          <span className="s1__envelope"><Icon src={envelope} w={23.989} h={18.848} style={CSS_SIZED} /></span>
           <span className="s1__addr">
             <span className="s1__addr-in">you@phorcast.io</span>
             <i className="s1__caret">|</i>
@@ -207,37 +220,37 @@ export function PanelRegister() {
         <span className="s1__diamond s1__diamond--orange"><i /></span>
         <img src={connector} alt="" className="s1__connector" width={91.157} height={107.948} />
         <div className="s1__card s1__card--a">
-          <img src={cardGlyph} alt="" className="s1__glyph--card" width={28} height={18} />
-          <img src={divider} alt="" className="s1__rule" width={193.108} height={1.199} />
+          <Icon src={cardGlyph} w={28} h={18} className="s1__glyph--card" style={CSS_SIZED} />
+          <Icon src={divider} w={193.108} h={1.199} className="s1__rule" style={CSS_SIZED} />
           <p className="s1__digits">000 000 000 ****</p>
           <span className="s1__bar s1__bar--pill" />
         </div>
         <div className="s1__card s1__card--b">
-          <img src={userGlyph} alt="" className="s1__glyph--user" width={21} height={23.333} />
-          <img src={divider} alt="" className="s1__rule" width={193.108} height={1.199} />
+          <Icon src={userGlyph} w={21} h={23.333} className="s1__glyph--user" style={CSS_SIZED} />
+          <Icon src={divider} w={193.108} h={1.199} className="s1__rule" style={CSS_SIZED} />
           <span className="s1__bar s1__bar--wide" />
           <span className="s1__bar s1__bar--pill" />
         </div>
-        <img src={bracket} alt="" className="s1__bracket" width={80.362} height={182.913} />
+        <Icon src={bracket} w={80.362} h={182.913} className="s1__bracket" style={CSS_SIZED} />
         <span className="s1__diamond s1__diamond--white"><i /></span>
         <div className="s1__phone">
           <div className="s1__status">
             <span className="s1__time">9:41</span>
-            <img src={statusArrow} alt="" className="s1__loc" width={4.851} height={4.851} />
+            <Icon src={statusArrow} w={4.851} h={4.851} className="s1__loc" style={CSS_SIZED} />
           </div>
           <div className="s1__status-right">
-            <span className="s1__signal"><img src={signal} alt="" width={7.082} height={4.785} /></span>
-            <span className="s1__data"><img src={data} alt="" width={7.577} height={5.359} /></span>
+            <span className="s1__signal"><Icon src={signal} w={7.082} h={4.785} style={CSS_SIZED} /></span>
+            <span className="s1__data"><Icon src={data} w={7.577} h={5.359} style={CSS_SIZED} /></span>
             <span className="s1__batt">
-              <img src={battery} alt="" className="s1__batt-shell" width={10.335} height={5.359} />
-              <img src={battFill} alt="" className="s1__batt-fill" width={3.782} height={5.359} />
+              <Icon src={battery} w={10.335} h={5.359} className="s1__batt-shell" style={CSS_SIZED} />
+              <Icon src={battFill} w={3.782} h={5.359} className="s1__batt-fill" style={CSS_SIZED} />
               <i>32</i>
             </span>
           </div>
-          <img src={divider} alt="" className="s1__phone-rule" width={193.108} height={1.199} />
+          <Icon src={divider} w={193.108} h={1.199} className="s1__phone-rule" style={CSS_SIZED} />
           <div className="s1__phone-head">
             <span className="s1__logo-slot">
-              <span className="s1__logo-tile"><img src={phoneLogo} alt="" width={11.518} height={12.286} /></span>
+              <span className="s1__logo-tile"><Icon src={phoneLogo} w={11.518} h={12.286} style={CSS_SIZED} /></span>
             </span>
             <span className="s1__skeletons">
               <span className="s1__sk s1__sk--sm" />
@@ -258,7 +271,7 @@ export function PanelRegister() {
               <i className="s1__delta">+2.41%</i>
             </div>
           </div>
-          <img src={indicator} alt="" className="s1__indicator" width={22.391} height={2.399} />
+          <Icon src={indicator} w={22.391} h={2.399} className="s1__indicator" style={CSS_SIZED} />
           <span className="s1__bar s1__bar--block" />
           <img src={bottomnav} alt="" className="s1__nav" width={69.567} height={21.59} />
         </div>

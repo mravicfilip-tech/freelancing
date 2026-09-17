@@ -75,6 +75,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 
 /** One full cycle, in GSAP time. Wall-clock is longer whenever lag smoothing
  *  is holding the sequence together through a blocked main thread. */
@@ -102,13 +103,26 @@ const HEAD = 30;
 /** How far the smear's centre trails the head's tip, in design px. */
 const TRAIL = 20;
 
-/** The lit stroke. Flat brand warm, a shade above the ring's own #e5331e. */
+/** The lit stroke, and the DARK FALLBACK for --bt-lit.
+ *
+ *  Flat brand warm, a shade above the ring's own #e5331e -- light on a line.
+ *  That is the one thing a light theme cannot copy: nothing on paper reads as
+ *  lit by being paler than what it sits on. So the real value is read from
+ *  --bt-lit inside start() (see LIT_TOK there), where dark keeps this exact
+ *  hex and light supplies a stroke DARKER than the ring instead. This constant
+ *  stays as the fallback: a missing custom property then yields today's dark
+ *  value, which is the safest failure mode for the regression gate. */
 const LIT = '#ff8f63';
 /** Stroke weight of the wrap at the ring, and of the wave as it dissolves. */
 const W_NEAR = 1.6;
 const W_FAR = 1;
 
-/** What the two grey lines (#9d9d9d) warm to. Colour only; nothing moves. */
+/** What the two grey lines warm to, and the DARK FALLBACK for --bt-warm.
+ *
+ *  Same flip: in dark the lift is towards white, 6.2:1 -> 11.7:1 against the
+ *  card. On paper the same lift has to go the other way, towards ink, and
+ *  Built.css supplies it. Rest is read off the element either way, so only the
+ *  lit end needed a token. */
 const WARM = 'rgb(222, 214, 208)';
 
 /* The drawn circle's centre inside `ring-disc.svg`, as a fraction of its own
@@ -289,6 +303,14 @@ export function bt1Loop(root: HTMLElement): () => void {
 
     const g = measure();
 
+    /* The two colours this file writes, read here rather than at module scope.
+       `tok()` is getComputedStyle(documentElement), so it must run after the
+       theme is on the document and inside the build -- which is also what
+       makes it re-read when useSectionMotion rebuilds the band on a theme
+       change. Both are direction flips; see the notes on LIT and WARM. */
+    const litTok = tok('--bt-lit', LIT);
+    const warmTok = tok('--bt-warm', WARM);
+
     /* One overlay, built here rather than shipped in the markup because it is
        the beat and not the design. It is sized in percentages of `.bt1`, whose
        aspect ratio the viewBox matches exactly, so it needs no resize handling
@@ -304,14 +326,14 @@ export function bt1Loop(root: HTMLElement): () => void {
 
     wire = document.createElementNS(NS, 'path');
     wire.setAttribute('d', `M${g.lx0.toFixed(3)} ${g.ly.toFixed(3)} L${g.xEnd.toFixed(3)} ${CY.toFixed(3)}`);
-    wire.setAttribute('stroke', LIT);
+    wire.setAttribute('stroke', litTok);
     wire.setAttribute('stroke-width', String(W_NEAR));
     wire.setAttribute('stroke-linecap', 'round');
     group.appendChild(wire);
 
     for (let i = 0; i < 2; i += 1) {
       const p = document.createElementNS(NS, 'path');
-      p.setAttribute('stroke', LIT);
+      p.setAttribute('stroke', litTok);
       p.setAttribute('stroke-linecap', 'round');
       arcs.push(p);
       group.appendChild(p);
@@ -364,7 +386,7 @@ export function bt1Loop(root: HTMLElement): () => void {
       const warm = (el: HTMLElement | null, at: number, from: string,
         up = 0.34, down = 1.1) => {
         if (!el || !from) return;
-        tl.to(el, { color: WARM, duration: up, ease: 'sine.out' }, at)
+        tl.to(el, { color: warmTok, duration: up, ease: 'sine.out' }, at)
           .to(el, {
             color: from, duration: down, ease: 'sine.inOut',
             onComplete: () => gsap.set(el, { clearProps: 'color' }),

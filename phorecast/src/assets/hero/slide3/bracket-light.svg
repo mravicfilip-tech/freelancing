@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="34.5888" height="209.178" viewBox="0 0 34.5888 209.178" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Light variant of bracket.svg. Geometry, ids, viewBox and
+     preserveAspectRatio are byte for byte the original's; only paint differs.
+     The far stop already had stop-opacity 0, so only the visible end moves:
+     pale peach on black becomes deep warm on paper.
+     No double hyphen may appear in this comment: it is illegal inside an XML
+     comment, the file then fails to parse, and an <img> pointing at it shows a
+     broken image rather than throwing. -->
+<path id="Vector 73" d="M0 0.588755H26C30.4183 0.588755 34 4.17048 34 8.58876V200.589C34 205.007 30.4183 208.589 26 208.589H0" stroke="url(#paint0_linear_0_34)" stroke-width="1.17751"/>
+<defs>
+<linearGradient id="paint0_linear_0_34" x1="20.439" y1="17.7434" x2="-2.18652" y2="18.1845" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8a3a14"/>
+<stop offset="1" stop-color="#8a3a14" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

@@ -185,11 +185,13 @@ function bloom(
 }
 
 /**
- * Draw a line that is an `<img>`, not a stroked path in the document.
+ * Draw a line that is an image, not a stroked path in the document.
  *
  * `draw()` in lib/motion.ts animates `stroke-dashoffset`, which needs the path
- * itself; these wires are images, so the equivalent is a clip-path opening in
- * the direction the line runs. Both of card two's wires run left to right into
+ * itself; these wires are a mask over a CSS paint (Built.tsx), so there is no
+ * path here either and the equivalent is a clip-path opening in the direction
+ * the line runs. It clips the mask and the paint together, so the conversion
+ * changed nothing about this cue. Both of card two's wires run left to right into
  * the padlock, so both are uncovered from the left.
  *
  * `immediateRender: false` for the reason in the file header. The paired
@@ -262,9 +264,10 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   if (you.length) rise(tl, you, C1_YOU, { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
 
   /* The line runs out of the dot toward the rings, so it is drawn from its left
-     end: `scaleX` about `0% 50%` on a `preserveAspectRatio="none"` image is the
-     same movement `draw()` makes on a path, and unlike a clip-path it is a
-     plain `from`. */
+     end: `scaleX` about `0% 50%` is the same movement `draw()` makes on a path,
+     and unlike a clip-path it is a plain `from`. The line is a mask over a
+     gradient now rather than a `preserveAspectRatio="none"` <img>, and a
+     transform scales both together, so this reads exactly as it did. */
   const lineImg = inside(card1, '.bt1__line');
   if (lineImg.length) {
     tl.from(lineImg, {

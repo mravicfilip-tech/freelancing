@@ -33,6 +33,18 @@
   --steps-panel-3: #1a1918;
   --steps-panel-edge-2: rgba(255, 99, 42, 0.2);
   --steps-panel-edge-3: #2c2b2a;
+
+  /* The 3D wordmark behind every panel, and the two opacities Figma gives it
+     per slide. It is a mask now, so this is the only place its colour lives. */
+  --steps-mark: #fffbf8;
+  --steps-mark-op: 0.1;
+  --steps-mark-op-2: 0.21;
+
+  /* The warm disc behind every panel's artwork. In dark it is the exported
+     file, painted as a background so that a stylesheet can reach it at all;
+     light replaces it outright. See the note on .steps__glow. */
+  --steps-glow: url('../../assets/steps/glow.svg');
+  --steps-glow-mask: none;
 }
 .steps { padding: 160px 0; }
 .steps__inner { display: flex; flex-direction: column; align-items: flex-start; }
@@ -154,12 +166,16 @@
 .panel--2 { border: 1px solid var(--steps-panel-edge-2); }
 .panel--3 { background: var(--steps-panel-3); border: 1px solid var(--steps-panel-edge-3); }
 
-.steps__mark { position: absolute; pointer-events: none; }
+.steps__mark { position: absolute; pointer-events: none; color: var(--steps-mark); }
 .steps__mark-clip { position: relative; width: 100%; height: 100%; }
-.steps__mark img { position: absolute; width: auto; height: auto; }
+/* The two layers are masks now (see shared.tsx), so this addresses them by
+   name rather than by tag. `width: auto` went with the <img>: Icon writes the
+   intrinsic size inline, which is what `auto` resolved to on a replaced
+   element with four insets. */
+.steps__mark-ribs, .steps__mark-slices { position: absolute; }
 
 /* Slide 1: the mark fills the panel. */
-.steps__mark--full { left: 0; top: 0; width: calc(886 * var(--p)); height: calc(610 * var(--p)); opacity: 0.1; filter: blur(calc(2 * var(--p))); }
+.steps__mark--full { left: 0; top: 0; width: calc(886 * var(--p)); height: calc(610 * var(--p)); opacity: var(--steps-mark-op); filter: blur(calc(2 * var(--p))); }
 .steps__mark--full .steps__mark-ribs { inset: -8.87% 22.03% -49.82% -16.68%; }
 .steps__mark--full .steps__mark-slices { inset: -8.87% 21.74% -50% -16.68%; }
 
@@ -167,7 +183,7 @@
 /* Figma gives this slide opacity 0.21, no blur, and a single slices layer --
    there is no ribs layer on it at all. With ribs showing and a 7px blur it read
    as two big rounded rectangles where the design has thin faint arcs. */
-.steps__mark--right { left: calc(462 * var(--p)); top: calc(-1 * var(--p)); width: calc(423 * var(--p)); height: calc(610 * var(--p)); opacity: 0.21; }
+.steps__mark--right { left: calc(462 * var(--p)); top: calc(-1 * var(--p)); width: calc(423 * var(--p)); height: calc(610 * var(--p)); opacity: var(--steps-mark-op-2); }
 .steps__mark--right .steps__mark-clip { overflow: hidden; }
 /* Figma's node for this slide has no ribs layer. Its slices inset is held at
    the existing crop deliberately: the measured inset resolves to a box sized
@@ -183,12 +199,39 @@
    panel, so the sum is what CSS wants. Taking the node's own coordinates swept
    the arcs across the whole panel instead of confining them to the right-hand
    side. The node carries no blur in Figma either. */
-.steps__mark--corner { left: calc(268 * var(--p)); top: calc(-632 * var(--p)); width: calc(1352 * var(--p)); height: calc(1352 * var(--p)); opacity: 0.1; }
+.steps__mark--corner { left: calc(268 * var(--p)); top: calc(-632 * var(--p)); width: calc(1352 * var(--p)); height: calc(1352 * var(--p)); opacity: var(--steps-mark-op); }
 .steps__mark--corner .steps__mark-clip { overflow: hidden; }
 .steps__mark--corner .steps__mark-ribs { inset: 14.42% 19.32% 13.99% 18.66%; }
 .steps__mark--corner .steps__mark-slices { inset: 14.42% 19.13% 13.9% 18.66%; }
 
-.steps__glow { position: absolute; pointer-events: none; width: calc(944 * var(--p)); height: calc(944 * var(--p)); }
+/* The glow disc.
+
+   It stays the file in dark -- a background-image of glow.svg at
+   `background-size: 100% 100%` paints exactly what the <img> it replaces
+   painted, because the export carries `preserveAspectRatio="none"` and this
+   box is its box. What changes is that a BACKGROUND is addressable from a
+   stylesheet where an <img> is a separate document, so light can swap it.
+
+   It has to swap, because the far stop of that gradient IS the panel ground:
+   the disc is drawn to dissolve into the surface it sits on, and #1a1918 over
+   cream is a grey bruise. Light therefore rebuilds it rather than recolouring
+   it -- the colour ramp as the background, the blurred circle as a mask. The
+   obvious `clip-path` + `filter: blur()` does NOT work: CSS applies the filter
+   first and clips the RESULT, which gives a hard-edged circle of blurred
+   gradient rather than a blurred circle. Measured against the dark render that
+   was 215k differing pixels.
+
+   A <span> rather than an <img> so the element count is unchanged; see Glow()
+   in panels/shared.tsx. */
+.steps__glow {
+  position: absolute; pointer-events: none;
+  width: calc(944 * var(--p)); height: calc(944 * var(--p));
+  background: var(--steps-glow);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-mask-image: var(--steps-glow-mask);
+  mask-image: var(--steps-glow-mask);
+}
 .steps__glow--left { left: calc(-590 * var(--p)); top: calc(-90 * var(--p)); }
 /* Panel 2's glow, placed from Figma's image insets rather than eyeballed. This
    one is load-bearing: the balance card is translucent over a backdrop blur, so

@@ -262,18 +262,19 @@ export function fanLoop(root: HTMLElement): () => void {
            arcs hold still and only the light on them moves. */
         sweeps.forEach((s) => {
           const walk = { v: 0 };
-          const a = from(s);
-          const b = to(s);
+          // Both ends are read on the frame they are used, not when the cycle is
+          // built, so a window resized mid-sweep still finishes at its own edge.
+          const at = (v: number) => {
+            const x = from(s) + (to(s) - from(s)) * v;
+            gsap.set(s.win, { x });
+            gsap.set(s.inner, { x: -x });
+          };
           tl.to(walk, {
             v: 1, duration: SWEEP_DUR, ease: 'sine.inOut',
-            onUpdate: () => {
-              const x = a + (b - a) * walk.v;
-              gsap.set(s.win, { x });
-              gsap.set(s.inner, { x: -x });
-            },
+            onUpdate: () => at(walk.v),
             // Back to the outer edge the instant it is invisible, so the rest
             // band holds one value per element rather than two.
-            onComplete: () => { gsap.set(s.win, { x: a }); gsap.set(s.inner, { x: -a }); },
+            onComplete: () => at(0),
           }, SWEEP_AT)
             // It kindles at the outer edge and hands off to the tile rather than
             // running out of room, so neither end of the travel is a hard cut.

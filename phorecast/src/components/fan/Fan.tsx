@@ -1,5 +1,5 @@
-import fanLowerMarkup from '../../assets/fan/fan-lower.svg?raw';
-import fanUpperMarkup from '../../assets/fan/fan-upper.svg?raw';
+import fanLower from '../../assets/fan/fan-lower.svg';
+import fanUpper from '../../assets/fan/fan-upper.svg';
 import iconCrypto from '../../assets/fan/icon-crypto.svg';
 import iconFinance from '../../assets/fan/icon-finance.svg';
 import iconGeopolitics from '../../assets/fan/icon-geopolitics.svg';
@@ -12,7 +12,6 @@ import tileBg from '../../assets/fan/tile-bg.jpg';
 import tileLogo from '../../assets/fan/tile-logo.svg';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFan } from './Fan.motion';
-import { fanLoop } from './Fan.loop';
 import './Fan.css';
 
 /* All coordinates are screenshot space inside the 1920 x 675 frame. */
@@ -43,42 +42,12 @@ const PILLS = [
   { label: 'Elections', x: 1372, y: 556, w: 132, icon: <img src={iconElections} alt="" /> },
 ];
 
-/**
- * The arcs are inlined rather than dropped in an `<img>` so that the four
- * ellipses inside each file are addressable: the entrance draws them one at a
- * time with `stroke-dashoffset`, which nothing inside an `<img>` can do. The
- * span keeps the same box the image had and `Fan.css` stretches the `<svg>`
- * across it, so the resting render is the one the image produced.
- *
- * Both files are used twice, once per side, and an SVG's ids are document-wide:
- * four copies would put four `filter0_f_0_17` in the page and every `url(#...)`
- * in all of them would resolve to whichever came first. So each copy is given
- * its own suffix. Done once at module load, not per render.
- */
-function withIds(markup: string, suffix: string): string {
-  return markup
-    .replace(/id="([^"]+)"/g, (_, id: string) => `id="${id}__${suffix}"`)
-    .replace(/url\(#([^)]+)\)/g, (_, id: string) => `url(#${id}__${suffix})`);
-}
-
-const ARC_MARKUP = {
-  left: { upper: withIds(fanUpperMarkup, 'la'), lower: withIds(fanLowerMarkup, 'lb') },
-  right: { upper: withIds(fanUpperMarkup, 'ra'), lower: withIds(fanLowerMarkup, 'rb') },
-};
-
 /** Both arc groups share one 863 x 675 sub-frame; the left one is mirrored. */
-function Arcs({ side }: { side: 'left' | 'right' }) {
-  const markup = ARC_MARKUP[side];
+function Arcs({ className }: { className: string }) {
   return (
-    <div className={`fan__arcs fan__arcs--${side}`}>
-      <span
-        className="fan__lines fan__lines--upper"
-        dangerouslySetInnerHTML={{ __html: markup.upper }}
-      />
-      <span
-        className="fan__lines fan__lines--lower"
-        dangerouslySetInnerHTML={{ __html: markup.lower }}
-      />
+    <div className={`fan__arcs ${className}`}>
+      <img src={fanUpper} alt="" className="fan__lines fan__lines--upper" />
+      <img src={fanLower} alt="" className="fan__lines fan__lines--lower" />
     </div>
   );
 }
@@ -88,22 +57,23 @@ export function Fan() {
   // screen before it opens, so the sliver showing under the section above is
   // not enough to spend the entrance on.
   //
-  // The band's continuing motion is `Fan.loop.ts`, handed over as the `idle`
-  // option: the hook starts it on the entrance's `onComplete`, so the two never
-  // read as one continuous movement.
+  // The ambient loop belongs here too, once it exists. `useSectionMotion` takes
+  // it as the `idle` option and starts it on the entrance's `onComplete`, so the
+  // two never read as one continuous movement:
   //
-  // Importing it puts that module on this component's import path, so saving it
-  // hot-updates this file, React remounts the section on the same node and the
-  // entrance would perform itself a second time in front of someone who has
-  // already watched it. `buildFan` guards against that -- see LANDED there.
-  const ref = useSectionMotion<HTMLElement>(buildFan, { idle: fanLoop });
+  //   import { fanLoop } from './Fan.loop';
+  //   const ref = useSectionMotion<HTMLElement>(buildFan, { idle: fanLoop });
+  //
+  // Deliberately not wired yet -- Fan.loop.ts is another author's file and an
+  // import of a module that does not export yet stops the whole app mounting.
+  const ref = useSectionMotion<HTMLElement>(buildFan);
 
   return (
     <section ref={ref} className="fan" aria-labelledby="fan-title" data-motion="pending">
       <div className="fan__frame">
         <div aria-hidden="true">
-          <Arcs side="left" />
-          <Arcs side="right" />
+          <Arcs className="fan__arcs--left" />
+          <Arcs className="fan__arcs--right" />
           {DIAMONDS.map(([x, y, c], i) => (
             <span key={i} className="fan__diamond" style={{ ['--x' as string]: x, ['--y' as string]: y, background: c }} />
           ))}

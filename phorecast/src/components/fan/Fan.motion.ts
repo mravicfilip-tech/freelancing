@@ -12,24 +12,22 @@
  * only then spreads the arcs, the diamonds and the category pills outward from
  * the middle — the market arranging itself around the thing at the centre.
  *
- * THE SEQUENCE (3.35s end to end)
+ * THE SEQUENCE (3.7s end to end)
  *   0.00  THE TILE. One object, alone, resolving out of blur as it rises and
  *         grows the last 14% into place. Nothing else has moved yet.
  *   0.30  The mark inside it, a beat behind the glass that holds it.
  *   0.45  THE HEADLINE, rising out of its own mask and sharpening on the way.
  *   0.80  The sub-copy, same treatment, shallower and softer.
- *   1.05  The arcs sweep outward, each half drawn from its own centre-facing
- *         seam while its group drifts the last two dozen design pixels out.
- *   1.55  The twelve diamonds, nearest the middle first.
- *   2.05  The six category pills, also middle outward, last and quickest.
+ *   1.05  The arcs sweep IN from the two edges of the band, sixteen of them,
+ *         one every 0.11s, each drawn from its outer end toward the middle
+ *         while its fan drifts the last few design pixels inward.
+ *   1.90  The twelve diamonds, nearest the middle first.
+ *   2.40  The six category pills, also middle outward, last and quickest.
  *
  * Every tween is a `from` — the resting markup is the finished state, so a
- * build that never runs leaves the band simply present. The four arc wipes are
- * the exception and carry `immediateRender: false`: a `fromTo` writes its start
- * values the moment the timeline is BUILT, not when the playhead arrives, so
- * without the flag the arcs would be clipped at build time and the rest of the
- * opening would play against blank margins. The `tl.set` at 0 puts the clip
- * back deliberately, on the timeline, where rewinding can undo it.
+ * build that never runs leaves the band simply present. The sixteen arc draws
+ * are the exception and carry `immediateRender: false`; the reason is in
+ * `drawArc`.
  *
  * The blur carries its own lesson, recorded in src/components/hero/entrance.ts
  * and again in Pillars.motion.ts: an element parked at full opacity while still
@@ -38,22 +36,20 @@
  * duration — the thing is invisible while it is at its softest and has resolved
  * most of its blur by the time it is fully opaque.
  *
- * THE ARCS. `fan-upper.svg` and `fan-lower.svg` are `<img>`, so nothing inside
- * them is addressable and `draw()`/`stroke-dashoffset` are not available. Of
- * the two precedents on the hero slides — slide 3 re-importing the asset `?raw`
- * for per-path access, slide 4 keeping the `<img>` and wiping it with a
- * clip-path — this takes slide 4's. Each of these four images is a 2100 x 1200
- * set of four whole ellipses, of which the band shows a slice about 40% wide
- * through a masked, overflow-hidden 863-wide window; per-path access would buy
- * a dash offset along paths whose start point is far off-screen, while the
- * visible slice runs close enough to horizontal that a horizontal wipe reads as
- * the line extending. Inlining four copies of a file carrying a `filter:` and
- * gradient `<defs>` would also put duplicate ids in the document for no gain.
- * Nothing about the markup changes, and `clearProps` takes the clip off at the
- * end, so the settled render is the one the CSS already produced.
+ * THE ARCS. They have to arrive one line at a time, and nothing inside an
+ * `<img>` is addressable, so `Fan.tsx` now inlines the two files with Vite's
+ * `?raw` and renders them in a span that keeps the box the image had — hero
+ * slide 3's route (`SlideBonus.tsx`), rather than slide 4's clip-path wipe,
+ * which can only ever move a whole fan at once. Both files are used twice, so
+ * each copy's ids are suffixed; see `withIds` there.
  *
- * Each half's seam is worked out from its own box rather than written down —
- * see `wipeRange`, and the reason there for not wiping the whole image.
+ * That buys the sixteen `<path>` elements, and with them a real
+ * `stroke-dashoffset` draw. `draw()` in lib/motion.ts is not usable as-is: it
+ * runs the offset over a path's whole length, and these paths are whole
+ * ellipses about 2100 units across of which the band shows one arc through an
+ * 863-wide window, so most of such a draw would happen off screen. `visibleRun`
+ * below finds the stretch that is actually on screen and `drawArc` confines the
+ * dash to it.
  *
  * No hover, no pointer tracking, nothing here listens to the mouse.
  */
@@ -66,8 +62,12 @@ const MARK_AT = 0.3;
 const TITLE_AT = 0.45;
 const SUB_AT = 0.8;
 const ARCS_AT = 1.05;
-const DIAMONDS_AT = 1.55;
-const PILLS_AT = 2.05;
+const DIAMONDS_AT = 1.9;
+const PILLS_AT = 2.4;
+/** One arc after the next, and the gap between a fan's lower half and its upper. */
+const ARC_STEP = 0.11;
+const HALF_STEP = 0.14;
+const ARC_DRAW = 1.2;
 
 /** The design frame the CSS lays this band out in; `--f` is one of its pixels. */
 const ARCS_DESIGN_W = 863;
@@ -117,56 +117,129 @@ function fromCentre(section: HTMLElement, els: HTMLElement[]): HTMLElement[] {
 }
 
 /**
- * The clip range a single arc image is drawn through, as an `inset()` pair.
+ * The stretch of one arc that the band actually shows, as a pair of lengths
+ * along the path, plus which of the two ends faces the outside of the section.
  *
- * Derived rather than written down, because only ~43% of each 2100px image is
- * ever on screen: the rest hangs outside the 863-wide window its group clips
- * to. A hand-written `inset(0% 100% 0% 0%)` -> `inset(0% 0% 0% 0%)` wipe would
- * therefore spend well over half its duration sweeping across margin nobody can
- * see, which is exactly the "it runs and nothing moves" failure. These two
- * values bracket the visible slice instead, so the whole 1.35s is spent on the
- * part of the arc that is actually painted.
+ * Each of these files is four whole ellipses about 2100 user units across; the
+ * band shows a slice of them through an 863-wide `overflow: hidden` window, and
+ * the visible slice is a different arc of each ellipse. A dash offset run over
+ * the whole perimeter would therefore spend most of its duration drawing off
+ * screen, which is exactly the "it runs and nothing moves" failure. So the path
+ * is sampled, the run of samples that land inside the window is found, and the
+ * draw is confined to it.
  *
- * `clip-path` applies in the element's own box BEFORE its transform, so the
- * maths is in the image's untransformed layout box: `offsetLeft`/`offsetWidth`
- * against the window's `clientWidth`, both relative to the same offset parent.
- * The only thing the transform contributes is its direction -- two of the four
- * images are Figma mirrors carrying `rotate(180deg)` / `rotate(-179.01deg)`,
- * which reverses local x against window x. The computed matrix's first
- * component is the rotation's cosine, so a negative one is the flip.
- *
- * `centre` names which edge of the window faces the middle of the band: the
- * left group opens from its right edge, the right group from its left. The
- * reveal runs from there outward, so the field spreads from the tile rather
- * than closing in on it.
+ * `getScreenCTM` carries the viewBox scale and every CSS transform above the
+ * path -- two of the four spans are Figma mirrors on `rotate(180deg)` and
+ * `rotate(-179.01deg)` -- so the sampled points are in the same client
+ * coordinates as the window's own rect and no mirroring has to be reasoned
+ * about here.
  */
-function wipeRange(group: HTMLElement, half: HTMLElement, centre: 'left' | 'right'): { from: string; to: string } | null {
-  const w = half.offsetWidth;
-  const c = group.clientWidth;
-  if (!w || !c) return null;
+interface Visible { a: number; b: number; outer: 'a' | 'b'; len: number }
 
-  const left = half.offsetLeft;
-  const matrix = getComputedStyle(half).transform;
-  const flipped = Number(matrix.slice(matrix.indexOf('(') + 1).split(',')[0]) < 0;
-  // Window x -> the image's own untransformed x.
-  const local = (x: number) => (flipped ? left + w - x : x - left);
-  const clamp = (n: number) => Math.min(w, Math.max(0, n));
+/** Samples per path. 240 over ~5000 units is a point every 20 or so. */
+const SAMPLES = 240;
 
-  const start = clamp(local(centre === 'right' ? c : 0));
-  const far = clamp(local(centre === 'right' ? 0 : c));
-  // A little past the far end, so the last of the slice is fully uncovered a
-  // fraction before the tween lands rather than exactly as it lands.
-  const finish = clamp(far + Math.sign(far - start) * w * 0.03);
+function visibleRun(path: SVGPathElement, win: DOMRect, mid: number): Visible | null {
+  const len = path.getTotalLength();
+  const ctm = path.getScreenCTM();
+  if (!len || !ctm) return null;
 
-  const pct = (n: number) => `${((n / w) * 100).toFixed(3)}%`;
-  return start < finish
-    // Growing with local x: the seam is the image's own left edge.
-    ? { from: `inset(0% ${pct(w - start)} 0% 0%)`, to: `inset(0% ${pct(w - finish)} 0% 0%)` }
-    // Shrinking: the seam is its right edge.
-    : { from: `inset(0% 0% 0% ${pct(start)})`, to: `inset(0% 0% 0% ${pct(finish)})` };
+  const pts: Array<{ l: number; x: number; in: boolean }> = [];
+  for (let i = 0; i <= SAMPLES; i++) {
+    const l = (len * i) / SAMPLES;
+    const p = path.getPointAtLength(l);
+    const x = p.x * ctm.a + p.y * ctm.c + ctm.e;
+    const y = p.x * ctm.b + p.y * ctm.d + ctm.f;
+    pts.push({ l, x, in: x >= win.left && x <= win.right && y >= win.top && y <= win.bottom });
+  }
+
+  // The longest unbroken run of visible samples. Taken as a run rather than
+  // just the first and last hit, because an ellipse can clip the window twice.
+  let best: { from: number; to: number } | null = null;
+  let run: { from: number; to: number } | null = null;
+  for (let i = 0; i < pts.length; i++) {
+    if (pts[i].in) run = run ? { from: run.from, to: i } : { from: i, to: i };
+    else {
+      if (run && (!best || run.to - run.from > best.to - best.from)) best = run;
+      run = null;
+    }
+  }
+  if (run && (!best || run.to - run.from > best.to - best.from)) best = run;
+  if (!best || best.to === best.from) return null;
+
+  // One sample either side, so the draw starts and ends just outside the window
+  // rather than popping into existence on its edge.
+  const lo = Math.max(0, best.from - 1);
+  const hi = Math.min(pts.length - 1, best.to + 1);
+  // Whichever end sits further from the middle of the band is the outer one.
+  const outer = Math.abs(pts[lo].x - mid) >= Math.abs(pts[hi].x - mid) ? 'a' : 'b';
+  return { a: pts[lo].l, b: pts[hi].l, len, outer };
 }
 
+/**
+ * Draw one arc inward from the edge of the band.
+ *
+ * `stroke-dasharray: <d> <len>` with `stroke-dashoffset: -<s>` paints exactly
+ * the stretch from `s` to `s + d` and nothing else, the gap being long enough
+ * that the pattern never repeats. Growing `d` from zero is the draw; which end
+ * it grows from is whether `s` is held still or walked back with it.
+ *
+ * `immediateRender: false`, because a `fromTo` writes its start values the
+ * moment the timeline is BUILT rather than when the playhead arrives -- without
+ * it every arc would be dashed to nothing at build time, which is right, and
+ * then *un*-dashed by the next tween built after it, which is not. The `set` at
+ * 0 is what holds them closed, on the timeline, where a rewind can undo it.
+ */
+function drawArc(tl: Timeline, path: SVGPathElement, v: Visible, at: number, duration: number) {
+  const span = v.b - v.a;
+  const closed = { strokeDasharray: `0px ${v.len}px`, strokeDashoffset: `${-(v.outer === 'a' ? v.a : v.b)}px` };
+  const open = {
+    strokeDasharray: `${span}px ${v.len}px`,
+    // Drawing from `b` walks the dash's start back to `a`; drawing from `a`
+    // leaves it where it is and only the length grows.
+    strokeDashoffset: `${-v.a}px`,
+    duration,
+    ease: 'power2.inOut',
+    clearProps: 'strokeDasharray,strokeDashoffset',
+    immediateRender: false,
+  };
+  tl.set(path, closed, 0);
+  tl.fromTo(path, closed, open, at);
+}
+
+/**
+ * Sections whose arrival has already been performed, start to finish, in this
+ * page's life.
+ *
+ * `useSectionMotion` rebuilds whenever its effect re-runs, and that is right:
+ * React mounts, tears down and mounts again inside a single frame, and the
+ * first build is reverted before a paint, so refusing to rebuild would leave
+ * the band settled and silent. But a rebuild also arrives when vite hot-updates
+ * this component, and `Fan.tsx` imports `Fan.loop.ts` for the `idle` option --
+ * which puts the loop on this component's import path, so saving that file
+ * remounts this section on the same node with the band still on screen, the
+ * observer fires at once and the entrance performs itself a second time in
+ * front of someone who has already watched it. That is the fault diagnosed and
+ * fixed on the familiar section (`Familiar.motion.ts`); the guard is the same.
+ *
+ * The two cases are told apart by whether the previous timeline actually
+ * reached its end. The mark below is the last thing on the timeline, so a build
+ * reverted mid-flight -- StrictMode's, always -- never sets it and the next
+ * build plays in full. One that ran to completion does, and the next build adds
+ * no tweens at all: the hook reveals the section, the empty timeline completes
+ * on the next tick, and the loop is handed the band exactly as it would have
+ * been.
+ *
+ * Keyed on the element, so a genuinely new section node performs its arrival
+ * properly. Editing this file resets the set with the module, which is what you
+ * want while working on the motion itself.
+ */
+const LANDED = new WeakSet<HTMLElement>();
+
 export function buildFan({ el, q, tl }: SectionMotion) {
+  // Already landed once and still on screen: settle, do not re-perform.
+  if (LANDED.has(el)) return;
+
   // One design pixel as the band is currently drawn. `--f` is a `calc()` on a
   // container query unit, which `getComputedStyle` hands back unresolved, so it
   // is read off the thing whose design width is known and the same at both
@@ -200,7 +273,7 @@ export function buildFan({ el, q, tl }: SectionMotion) {
       transformOrigin: '50% 50%',
       duration: 0.7,
       ease: EASE,
-      clearProps: 'transform,opacity',
+      clearProps: 'transform,transformOrigin,opacity',
     }, MARK_AT);
   }
 
@@ -238,36 +311,42 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     tl.from(lines, { opacity: 0, duration: 0.28, ease: 'none', clearProps: 'opacity' }, SUB_AT);
   }
 
-  /* 5 — the arcs, sweeping outward from the middle. Each half is drawn with a
-     clip wipe from its own centre-facing seam (see the header), and the window
-     it lives in drifts the last couple of dozen design pixels outward at the
-     same time, so the field reads as spreading rather than switching on. */
-  arcGroups.forEach((group, i) => {
-    const outward = group.classList.contains('fan__arcs--left') ? 1 : -1;
+  /* 5 — the arcs, sweeping IN from the sides. Each of the sixteen ellipses is
+     drawn on its own, from the end of it nearest the edge of the band toward
+     the middle, one after the next, so the fans arrive line by line rather than
+     as two blocks. The window each fan lives in drifts the last few design
+     pixels inward at the same time, so the whole side settles toward the tile
+     the arcs are converging on. */
+  const band = el.getBoundingClientRect();
+  const mid = band.left + band.width / 2;
+
+  arcGroups.forEach((group) => {
+    // The two sides run together, mirrored -- the band is symmetrical and
+    // opening one side before the other would tip it.
+    const inward = group.classList.contains('fan__arcs--left') ? -1 : 1;
     tl.from(group, {
-      x: 24 * u * outward,
+      x: 18 * u * inward,
       opacity: 0,
-      duration: 1.4,
+      duration: 1.5,
       ease: EASE,
       clearProps: 'transform,opacity',
-    }, ARCS_AT + i * 0.06);
+    }, ARCS_AT);
 
+    const win = group.getBoundingClientRect();
+    // Lower fan first, upper a beat behind it: they meet at the band's waist,
+    // so starting them together would read as one thick line rather than two.
     const halves = [
       group.querySelector<HTMLElement>('.fan__lines--lower'),
       group.querySelector<HTMLElement>('.fan__lines--upper'),
     ];
     halves.forEach((half, j) => {
       if (!half) return;
-      const seam = wipeRange(group, half, outward > 0 ? 'right' : 'left');
-      if (!seam) return;
-      const at = ARCS_AT + i * 0.06 + j * 0.12;
-      // Held closed on the timeline rather than by the tween, because the tween
-      // below cannot write its own start value at build time — see the header.
-      tl.set(half, { clipPath: seam.from }, 0);
-      tl.fromTo(half,
-        { clipPath: seam.from },
-        { clipPath: seam.to, duration: 1.35, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
-        at);
+      const paths = Array.from(half.querySelectorAll<SVGPathElement>('path'));
+      paths.forEach((path, k) => {
+        const v = visibleRun(path, win, mid);
+        if (!v) return;
+        drawArc(tl, path, v, ARCS_AT + j * HALF_STEP + k * ARC_STEP, ARC_DRAW);
+      });
     });
   });
 
@@ -295,4 +374,8 @@ export function buildFan({ el, q, tl }: SectionMotion) {
   if (pills.length) {
     outOfBlur(tl, pills, PILLS_AT, { y: 18 * u, blur: 6, duration: 0.85, stagger: 0.09, fade: 0.32 });
   }
+
+  // Last on the timeline, so it is only reached if the arrival was actually
+  // performed. A reverted build never gets here. See LANDED.
+  tl.call(() => { LANDED.add(el); });
 }

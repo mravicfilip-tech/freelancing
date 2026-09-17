@@ -1,6 +1,6 @@
-# Phorecast — landing page
+# Phorcast — landing page
 
-Vite + React 19 + TypeScript, built from the Phorecast Figma file
+Vite + React 19 + TypeScript, built from the Phorcast Figma file
 (`aczG8te17zRGoK5wvirB92`). No CSS framework: plain CSS with design tokens in
 `src/styles/tokens.css`.
 
@@ -26,7 +26,7 @@ Node 22 or newer.
 | Component | Figma node | What it is |
 |---|---|---|
 | `components/hero` | 244:1030, 313:12332, 280:4184, 289:5879 | Four-slide hero carousel |
-| `components/bento` | 244:1325 | "Why Traders Move to Phorecast" bento grid |
+| `components/bento` | 244:1325 | "Why Traders Move to Phorcast" bento grid |
 | `components/fan` | 270:6297 | Decorative arc band with category pills |
 | `components/steps` | 280:4547, 251:2055, 280:4816 | "Open an account in 3 simple steps" slider |
 | `components/built` | 255:3449 | "Built for the Way You Trade" feature cards |

@@ -12,7 +12,7 @@ type Item = { q: string; a: string; chips?: Chip[] };
 
 const ITEMS: Item[] = [
   {
-    q: 'What markets can I trade on Phorecast?',
+    q: 'What markets can I trade on Phorcast?',
     a: 'Crypto, forex, stocks, commodities and indices sit behind one account and one balance. You move between them without opening a second venue or funding a second wallet.',
   },
   {
@@ -20,7 +20,7 @@ const ITEMS: Item[] = [
     a: 'Registration takes about a minute. Create the account with an email or a wallet, fund it, and the markets are open to you straight away.',
   },
   {
-    q: 'Does Phorecast hold my funds?',
+    q: 'Does Phorcast hold my funds?',
     a: 'No. Collateral sits in smart contracts we never touch, so a withdrawal is something you execute rather than something you request.',
   },
   {
@@ -69,7 +69,7 @@ export function Faq() {
           </p>
           <h2 id="faq-title" className="faq__title">Answers<br />you can verify</h2>
           <p className="faq__lede">
-            Everything below is how Phorecast actually works.<br />
+            Everything below is how Phorcast actually works.<br />
             Where a claim can be checked on-chain, we show<br />
             you where to check it.
           </p>

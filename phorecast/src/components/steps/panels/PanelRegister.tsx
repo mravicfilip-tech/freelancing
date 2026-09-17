@@ -189,7 +189,7 @@ export function PanelRegister() {
         <div className="s1__email">
           <span className="s1__envelope"><img src={envelope} alt="" width={23.989} height={18.848} /></span>
           <span className="s1__addr">
-            <span className="s1__addr-in">you@phirecast.io</span>
+            <span className="s1__addr-in">you@phorcast.io</span>
             <i className="s1__caret">|</i>
           </span>
         </div>

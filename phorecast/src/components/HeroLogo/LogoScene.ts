@@ -51,7 +51,7 @@ const smoothstep = (a: number, b: number, x: number) => {
 const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
 
 /**
- * Hosts one treatment of the Phorecast mark and gives every treatment the same motion contract:
+ * Hosts one treatment of the Phorcast mark and gives every treatment the same motion contract:
  * entrance, idle sway, turn-toward-pointer, scroll turn/rise/fade. World units are CSS pixels of
  * the host, origin at its centre, so layout numbers read like the design; the mark is height 1
  * inside a pivot scaled to its height in pixels.

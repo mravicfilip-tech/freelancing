@@ -156,7 +156,7 @@ export function BoxMarkets() {
             <img src={tileDax} alt="" style={centred(DAX, 18, 7.35, 0, -0.32)} />
           </span>
 
-          {/* 365:1118 — the Phorecast mark, ringed. The mark is deliberately
+          {/* 365:1118 — the Phorcast mark, ringed. The mark is deliberately
               off-centre in its disc (1.7 left, 1.2 up), so it is placed. */}
           <span className="mk__hub" style={shell(HUB)}>
             <img src={tilePhorecast} alt="" className="mk__mark" style={leaf(21.91 + 1.64, 19.47 + 1.64, 34.823, 40.594)} />

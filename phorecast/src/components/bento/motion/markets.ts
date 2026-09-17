@@ -2,7 +2,7 @@
  * Card D — "Trade every market from one account".
  *
  * The artwork is an orbit field: thirteen badged logo tiles and a drift of
- * unbadged ghost tiles arranged around the ringed Phorecast mark, with a cursor
+ * unbadged ghost tiles arranged around the ringed Phorcast mark, with a cursor
  * resting on Solana. The card's claim is that the one mark in the middle reaches
  * all of them, so that is what the motion says and nothing else.
  *

@@ -1,4 +1,4 @@
-/* Phorecast brand tokens — single source of truth for colour, type and spacing.
+/* Phorcast brand tokens — single source of truth for colour, type and spacing.
    Values come straight from the Figma variables (--white-font, --orange-100, …). */
 :root {
   --bg: #0f0e0d;                 /* page ground */

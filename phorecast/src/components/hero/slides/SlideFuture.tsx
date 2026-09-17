@@ -8,7 +8,7 @@
  * `.sl4` is the container-query container that defines `--u` (see the CSS);
  * `.sl4__frame` is the painted 999 x 570 box, anchored from the right.
  *
- * The 3D Phorecast mark is NOT rendered here — the hero mounts it as a live
+ * The 3D Phorcast mark is NOT rendered here — the hero mounts it as a live
  * WebGL scene (components/HeroLogo). `.sl4__mark-slot` is the empty 370 x 370
  * box it belongs in, at 734, 242 in these same group coordinates.
  */

@@ -71,7 +71,7 @@ export function Footer() {
         <div className="footer__legal">
           <hr className="footer__rule" />
           <div className="footer__meta">
-            <p>© 2026 Phorecast Labs. All rights reserved.</p>
+            <p>© 2026 Phorcast Labs. All rights reserved.</p>
             <ul className="footer__legal-links">
               {LEGAL.map((l) => <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}><Roll>{l}</Roll></a></li>)}
             </ul>
@@ -79,7 +79,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="footer__wordmark" aria-hidden="true"><span>Phorecast</span></div>
+      <div className="footer__wordmark" aria-hidden="true"><span>Phorcast</span></div>
     </footer>
   );
 }

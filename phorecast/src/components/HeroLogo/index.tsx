@@ -118,7 +118,7 @@ function currentLayout(): LogoLayout {
   return 'desktop';
 }
 
-/** The lined 3D Phorecast mark. Same guards as HeroPlanet: idle load, WebGL probe, reduced motion, static fallback. */
+/** The lined 3D Phorcast mark. Same guards as HeroPlanet: idle load, WebGL probe, reduced motion, static fallback. */
 export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant, placement, className = '' }: HeroLogoProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<Mode>('pending');

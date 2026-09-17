@@ -206,7 +206,7 @@ export function Bento() {
       <div className="container">
         <div className="bento__card">
           <header className="bento__head">
-            <h2 id="why-title" className="bento__title">Why Traders Move to Phorecast</h2>
+            <h2 id="why-title" className="bento__title">Why Traders Move to Phorcast</h2>
             <p className="bento__sub">The tools incumbents can't give you, on infrastructure that never holds your funds.</p>
           </header>
           <div className="bento__grid">

@@ -42,7 +42,7 @@ const SLIDES: Slide[] = [
     id: 'mark',
     eyebrow: 'Global Markets. One Platform.',
     title: 'The Future\nof Trading',
-    lede: 'Phorecast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
+    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
     cta: 'Get Started',
     href: '#signup',
     visual: null,
@@ -56,7 +56,7 @@ const SLIDES: Slide[] = [
     id: 'account',
     eyebrow: 'Global Markets. One Platform.',
     title: 'One account.\nYour keys.',
-    lede: 'Open Phorecast in minutes and trade every asset class without handing anyone custody of your funds.',
+    lede: 'Open Phorcast in minutes and trade every asset class without handing anyone custody of your funds.',
     cta: 'Create account',
     href: '#signup',
     visual: <SlideAccount />,
@@ -65,7 +65,7 @@ const SLIDES: Slide[] = [
     id: 'bonus',
     eyebrow: 'Global Markets. One Platform.',
     title: 'Half this stack\nis on us.',
-    lede: 'Fund your account and Phorecast matches it,\ndollar for dollar, up to $200.',
+    lede: 'Fund your account and Phorcast matches it,\ndollar for dollar, up to $200.',
     cta: 'Get your bonus',
     href: '#signup',
     visual: <SlideBonus />,
@@ -75,7 +75,7 @@ const SLIDES: Slide[] = [
     id: 'future',
     eyebrow: 'Global Markets. One Platform.',
     title: 'The Future\nof Trading',
-    lede: 'Phorecast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
+    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
     cta: 'Get Started',
     href: '#signup',
     visual: <SlideFuture />,
@@ -174,7 +174,7 @@ export function Hero() {
       className="hero"
       id="top"
       aria-roledescription="carousel"
-      aria-label="Phorecast highlights"
+      aria-label="Phorcast highlights"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}

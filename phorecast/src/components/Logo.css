@@ -5,7 +5,26 @@
   height: 48px;
   flex: none;
 }
-.logo__mark { width: 30.5px; height: 35.6px; }
+
+/* THE MARK, and the one place on the page that had no section agent.
+   -------------------------------------------------------------------------
+   It is a mask now (see Logo.tsx), so its colour is this one declaration
+   instead of a hex baked into a file two directories away.
+
+   In dark it is #f03725 exactly, which is what the file baked and what the
+   rest of the artwork uses, so the conversion changes nothing: --logo-mark is
+   a value token by another name and the light block below is the only place it
+   moves.
+
+   In light it becomes --accent. #f03725 on paper is 3.87:1 and reads as a
+   lighter, hotter red than every other brand mark on the page -- the Get
+   Started button, the nav links on hover, the section links, the Familiar
+   strip's dots, which are all #a21605 at 7.69:1. The logo is the one thing on
+   a page that must not be off-palette, and "the artwork red" is not a job the
+   logo has: it is the brand mark, so it takes the brand token. Familiar's own
+   live dots made the same move for the same reason (Familiar.css). */
+.logo__mark { width: 30.5px; height: 35.6px; color: var(--logo-mark, #f03725); }
+
 .logo__word {
   font-family: var(--font-wordmark);
   font-weight: 600;
@@ -15,3 +34,10 @@
   color: var(--ink);
   transform: translateY(-2px);
 }
+
+/* One palette, written twice, because a media query cannot be put in a
+   selector list — the same shape tokens.css and every section uses. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) { --logo-mark: var(--accent); }
+}
+:root[data-theme='light'] { --logo-mark: var(--accent); }

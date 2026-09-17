@@ -26,6 +26,19 @@
   color: var(--white-font);
 }
 
+/* Masked line reveal, the hero's treatment applied here: the wrapper clips, the
+   inner span moves, so the headline rises out of nothing instead of fading. The
+   padding/margin pair is descender room -- at line-height 1.2 the "p" and "y"
+   of "speed, transparency" sit below the box the mask would otherwise clip to
+   -- and cancels out, so the settled layout is unchanged. */
+.pillars__title .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.pillars__title .line__in { display: block; position: relative; will-change: transform; }
+
 /* The glow sits above the top edge and spills down from the right. */
 .pillars__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .pillars__g { position: absolute; width: 1539px; height: 1539px; border-radius: 50%; filter: blur(109px); }
@@ -69,11 +82,16 @@
 .prow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  /* One child now the chevron is gone, so the label is the whole content and
+     sits in the middle of the box; the icon travels with the text. */
+  justify-content: center;
   width: 100%;
   height: 72px;
-  padding: 24px;
+  /* Was 24px all round when the padding was shared with a chevron on the right.
+     The label is `nowrap`, so on a wrapped row the widest of them --
+     "Transparent Execution" -- is what decides whether the box can hold its
+     text at all; 16px inline leaves it the room the chevron used to take. */
+  padding: 24px 16px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -86,8 +104,6 @@
   font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
   color: var(--color-nre-body); white-space: nowrap;
 }
-.prow__chevron { width: 17.875px; height: 9.75px; flex: none; transition: transform 200ms ease; }
-.prow:hover .prow__chevron { transform: translateY(2px); }
 
 @media (max-width: 1500px) {
   .pillars__cards { flex-wrap: wrap; }
@@ -103,4 +119,30 @@
   .pcard__text { font-size: 17px; }
   .prow { height: 64px; padding: 18px; }
   .prow__label { font-size: 17px; }
+}
+
+/* Pending state, the same contract as the bento. `gsap.from()` writes its start
+   values the moment a tween is built, and this band is not built until it has
+   been scrolled to, so without this the whole section would sit finished in the
+   sliver showing under the one above and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the section's own box and its
+   spacing stay, so nothing about the layout pops in.
+
+   The title is held as a whole rather than by its `.line` masks: the masks only
+   exist once the build has split it, so hiding those alone would leave the
+   headline painted plainly through the entire wait. */
+[data-js] .pillars[data-motion='pending'] .pillars__glow,
+[data-js] .pillars[data-motion='pending'] .eyebrow,
+[data-js] .pillars[data-motion='pending'] .pillars__title,
+[data-js] .pillars[data-motion='pending'] .pcard,
+[data-js] .pillars[data-motion='pending'] .prow {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .pillars[data-motion='pending'] * { visibility: visible; }
 }

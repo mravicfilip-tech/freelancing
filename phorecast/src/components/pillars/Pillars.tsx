@@ -6,7 +6,8 @@ import iconClock from '../../assets/pillars/icon-clock.svg';
 import pill1 from '../../assets/pillars/pill-1.svg';
 import pill2 from '../../assets/pillars/pill-2.svg';
 import pill4 from '../../assets/pillars/pill-4.svg';
-import chevron from '../../assets/pillars/chevron.svg';
+import { useSectionMotion } from '../../lib/motion';
+import { buildPillars } from './Pillars.motion';
 import './Pillars.css';
 
 const chain = import.meta.glob('../../assets/pillars/chain-*.svg', { eager: true, import: 'default' }) as Record<string, string>;
@@ -79,8 +80,13 @@ const ROWS = [
 ];
 
 export function Pillars() {
+  // Scroll-gated on the default margin: the band has to climb a quarter of the
+  // screen before it opens, so the sliver showing under the section above is
+  // not enough to spend the entrance on.
+  const ref = useSectionMotion<HTMLElement>(buildPillars);
+
   return (
-    <section className="pillars" aria-labelledby="pillars-title">
+    <section ref={ref} className="pillars" aria-labelledby="pillars-title" data-motion="pending">
       <div className="pillars__glow glow-fade" aria-hidden="true">
         <span className="pillars__g pillars__g--red" />
         <span className="pillars__g pillars__g--orange" />
@@ -118,7 +124,6 @@ export function Pillars() {
             <li key={r.label}>
               <button type="button" className="prow">
                 <span className="prow__label">{r.icon}{r.label}</span>
-                <img src={chevron} alt="" className="prow__chevron" />
               </button>
             </li>
           ))}

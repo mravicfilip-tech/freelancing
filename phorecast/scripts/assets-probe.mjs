@@ -1,6 +1,6 @@
 import { chromium } from 'playwright-core';
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
-const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
+const p = await b.newPage({ colorScheme: 'dark', viewport: { width: 1920, height: 1080 } });
 await p.goto('http://localhost:5173', { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 const r = await p.evaluate(() => {

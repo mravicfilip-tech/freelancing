@@ -1,6 +1,6 @@
 import { chromium } from 'playwright-core';
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
 const shot = async (path, sel) => {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(500);

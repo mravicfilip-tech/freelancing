@@ -7,7 +7,7 @@
 import { chromium } from 'playwright-core';
 const URL = process.argv[2] || 'http://localhost:5173';
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox', ...(process.env.WEBGL ? ['--use-gl=swiftshader'] : ['--disable-webgl', '--disable-webgl2'])] });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 900 } });
 await page.addInitScript(() => {
   window.__s = [];
   const tick = () => {

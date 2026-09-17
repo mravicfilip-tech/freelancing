@@ -12,7 +12,7 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--use-gl=swiftshader'],
 });
-const page = await browser.newPage({ viewport: { width: Number(w), height: 900 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: Number(w), height: 900 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message.slice(0, 140)));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 140)); });

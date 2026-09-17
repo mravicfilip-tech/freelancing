@@ -13,7 +13,7 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--disable-webgl', '--disable-webgl2'],
 });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 900 } });
 
 await page.addInitScript(() => {
   window.__f = [];

@@ -37,7 +37,7 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--disable-webgl'],
 });
-const page = await browser.newPage({ viewport: { width: 1600, height: 950 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 950 } });
 const errs = [];
 page.on('pageerror', (e) => errs.push(e.message.slice(0, 110)));
 page.on('console', (m) => m.type() === 'error' && errs.push(m.text().slice(0, 110)));

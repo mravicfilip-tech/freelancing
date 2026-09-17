@@ -9,7 +9,7 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--use-gl=swiftshader'],
 });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 900 } });
 
 await page.goto('http://localhost:5173', { waitUntil: 'load' }); // warm the module graph
 await page.waitForSelector('.hero__title');

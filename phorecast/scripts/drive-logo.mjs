@@ -5,7 +5,7 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--use-gl=swiftshader'],
 });
-const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 900 } });
 page.on('console', (m) => {
   if (m.type() === 'error' || m.text().includes('HeroLogo')) console.log('  [console]', m.text().slice(0, 160));
 });

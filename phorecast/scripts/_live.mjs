@@ -3,7 +3,7 @@
 import { chromium } from 'playwright-core';
 
 const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium', args:['--no-sandbox','--use-gl=swiftshader']});
-const p = await b.newPage({viewport:{width:1600,height:1000}});
+const p = await b.newPage({ colorScheme: 'dark',viewport:{width:1600,height:1000}});
 const errs=[];
 p.on('console',m=>{if(m.type()==='error')errs.push('CONSOLE '+m.text().slice(0,200));});
 p.on('pageerror',e=>errs.push('PAGEERROR '+e.message.slice(0,200)));

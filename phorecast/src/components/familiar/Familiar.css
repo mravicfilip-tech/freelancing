@@ -517,11 +517,20 @@
 
   /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
      inverts for free: more alpha is brighter on black and darker on cream,
-     and both mean "this card just took a print". The alphas go up by an
-     eighth, the same 0.04 -> 0.045 step tokens.css takes for --veil, because
-     dark ink on paper is less visible per unit alpha than white on black. */
+     and both mean "this card just took a print".
+
+     The fill takes the usual alpha x 1.125 -- dark ink on paper is less
+     visible per unit alpha than white on black -- and lands at a 1.19:1 swing
+     against dark's 1.22:1, measured on the rendered page.
+
+     The EDGE does not, and this is where the x 1.125 rule stops applying. It
+     is a rule for reproducing a resting colour's density; a lit value's job
+     is the size of the STEP it takes from rest, and .34 -> .383 reproduces
+     the wrong thing. Dark's edge travels 2.25:1 from its resting .12, and on
+     paper the same journey from a resting .14 needs .46. Measured both ways
+     rather than derived. */
   --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
-  --fam-card-lit-line: rgba(26, 21, 18, 0.383);
+  --fam-card-lit-line: rgba(26, 21, 18, 0.46);
 
   /* UP IS GREEN, DOWN IS RED, and on paper #00c950 is 2.15:1 and #2bb673 is
      2.68:1 -- a price move nobody can see. Both pairs join --pos / --neg.
@@ -620,11 +629,20 @@
 
   /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
      inverts for free: more alpha is brighter on black and darker on cream,
-     and both mean "this card just took a print". The alphas go up by an
-     eighth, the same 0.04 -> 0.045 step tokens.css takes for --veil, because
-     dark ink on paper is less visible per unit alpha than white on black. */
+     and both mean "this card just took a print".
+
+     The fill takes the usual alpha x 1.125 -- dark ink on paper is less
+     visible per unit alpha than white on black -- and lands at a 1.19:1 swing
+     against dark's 1.22:1, measured on the rendered page.
+
+     The EDGE does not, and this is where the x 1.125 rule stops applying. It
+     is a rule for reproducing a resting colour's density; a lit value's job
+     is the size of the STEP it takes from rest, and .34 -> .383 reproduces
+     the wrong thing. Dark's edge travels 2.25:1 from its resting .12, and on
+     paper the same journey from a resting .14 needs .46. Measured both ways
+     rather than derived. */
   --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
-  --fam-card-lit-line: rgba(26, 21, 18, 0.383);
+  --fam-card-lit-line: rgba(26, 21, 18, 0.46);
 
   /* UP IS GREEN, DOWN IS RED, and on paper #00c950 is 2.15:1 and #2bb673 is
      2.68:1 -- a price move nobody can see. Both pairs join --pos / --neg.

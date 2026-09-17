@@ -11,6 +11,24 @@
   line-height: 1.2;
   color: var(--white-font);
 }
+/* Masked line reveal for the heading, the hero's treatment applied here: the
+   wrapper clips, the inner span moves, so the heading rises out of nothing
+   instead of fading. The padding/margin pair is descender room -- at
+   line-height 1.2 the "p" of "simple steps" sits below the box the mask would
+   otherwise clip to -- and cancels out, so the settled layout is unchanged.
+
+   No `will-change` on the inner span. A standing compositor promotion costs the
+   type its subpixel antialiasing permanently, which was measured on this site
+   at 5,744 differing pixels; GSAP promotes for the length of the tween anyway,
+   which is the only time it is moving. */
+.steps__title .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.steps__title .line__in { display: block; position: relative; }
+
 .steps__body {
   display: grid;
   grid-template-columns: 534px minmax(0, 886px);
@@ -164,4 +182,33 @@
   .step { padding: 20px; }
   .steps__title { margin-top: 20px; }
   .steps__body { margin-top: 28px; }
+}
+
+/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
+   writes its start values the moment a tween is built, and this band is not
+   built until it has been scrolled to, so without this the whole section would
+   sit finished in the sliver showing under the one above and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the section's own box, the
+   grid and the list keep their space, so nothing about the layout pops in.
+
+   `.steps__panels` rather than `.steps__panel-slot`: the entrance moves the
+   grid, not the slot, so that the slot's own `steps-fade` and the panel's story
+   loop are left alone. Holding the grid holds the panel inside it either way.
+
+   The heading is held as a whole rather than by its `.line` masks: the masks
+   only exist once the build has split it, so hiding those alone would leave the
+   heading painted plainly through the entire wait. */
+[data-js] .steps[data-motion='pending'] .eyebrow,
+[data-js] .steps[data-motion='pending'] .steps__title,
+[data-js] .steps[data-motion='pending'] .step,
+[data-js] .steps[data-motion='pending'] .steps__panels {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .steps[data-motion='pending'] * { visibility: visible; }
 }

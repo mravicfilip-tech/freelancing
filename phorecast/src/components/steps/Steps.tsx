@@ -3,6 +3,8 @@ import dot from '../../assets/icons/live-dot.svg';
 import { PanelRegister } from './panels/PanelRegister';
 import { PanelFund } from './panels/PanelFund';
 import { PanelTrade } from './panels/PanelTrade';
+import { useSectionMotion } from '../../lib/motion';
+import { buildSteps } from './Steps.motion';
 import './Steps.css';
 
 const STEPS = [
@@ -18,6 +20,33 @@ export function Steps() {
   const [playing, setPlaying] = useState(true);
   const reduced = useRef(false);
 
+  // The band arrives when it is scrolled to; see Steps.motion.ts.
+  const ref = useSectionMotion<HTMLElement>(buildSteps);
+
+  // The stepper does not start counting until the band has finished arriving.
+  //
+  // It is not a pause -- once armed the timer runs continuously, exactly as
+  // before, and selection stays click-only. It is about where the first dwell
+  // begins: the entrance can be waited on for minutes, and a stepper counting
+  // through that wait meant the band could arrive on step three with step one's
+  // progress bar already spent, or worse, arrive with that bar frozen half
+  // drawn. Arming on `motion:done` starts the first dwell, the `is-playing`
+  // class and therefore the bar's CSS animation in the same frame the entrance
+  // hands over, so the first card lands and its bar starts from zero.
+  //
+  // The flag is read before the listener is attached because the hook fires the
+  // event once and only once: when motion is reduced, or a build throws, it has
+  // already fired during the layout effect above this one.
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (el.dataset.motionDone) { setArmed(true); return; }
+    const onDone = () => setArmed(true);
+    el.addEventListener('motion:done', onDone);
+    return () => el.removeEventListener('motion:done', onDone);
+  }, [ref]);
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     reduced.current = mq.matches;
@@ -28,10 +57,10 @@ export function Steps() {
   }, []);
 
   useEffect(() => {
-    if (!playing || reduced.current) return;
+    if (!playing || !armed || reduced.current) return;
     const id = window.setTimeout(() => setActive((i) => (i + 1) % STEPS.length), DWELL_MS);
     return () => window.clearTimeout(id);
-  }, [playing, active]);
+  }, [playing, armed, active]);
 
   // Choosing a step jumps to it and hands it a full turn -- the dwell effect is
   // keyed on `active`, so changing it restarts the timer rather than stopping
@@ -46,10 +75,12 @@ export function Steps() {
 
   return (
     <section
+      ref={ref}
       className="steps"
       id="how"
       aria-labelledby="steps-title"
       aria-roledescription="carousel"
+      data-motion="pending"
       onKeyDown={onKey}
     >
       <div className="container steps__inner">
@@ -65,7 +96,7 @@ export function Steps() {
               <li key={s.title}>
                 <button
                   type="button"
-                  className={`step${i === active ? ' is-active' : ''}${playing ? ' is-playing' : ''}`}
+                  className={`step${i === active ? ' is-active' : ''}${playing && armed ? ' is-playing' : ''}`}
                   style={{ ['--dwell' as string]: `${DWELL_MS}ms` }}
                   aria-expanded={i === active}
                   aria-controls="steps-panel"

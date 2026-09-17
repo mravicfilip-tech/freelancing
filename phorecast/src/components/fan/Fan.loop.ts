@@ -46,20 +46,25 @@
  * single quadrant, so x along it is monotonic and the table inverts cleanly:
  * `sAt(x)` is a binary search and a lerp, evaluated sixteen times a frame.
  *
- * The cost of this is that a dash offset moves no bounding box, so
- * `scripts/amplitude.mjs` reads the arcs as static however bright they are.
- * The travel it can see is in the two created overlays, which it also cannot
- * see. Both are measured directly instead; the figures are in the report.
+ * It also has no rectangle to leak. The window it replaces was a box holding a
+ * brightened clone of the arcs, screened over the originals, and on a near-black
+ * ground a `brightness()` multiplier lifts the whole box rather than only the
+ * strokes inside it — which is what was showing as three maroon panels over the
+ * left fan. A dash on a path cannot do that: the lit region IS the stroke.
+ *
+ * The cost is that a dash offset moves no bounding box, so
+ * `scripts/amplitude.mjs` reads the arcs as static however bright they are, and
+ * the one element this file creates is created too late for it to see. The lit
+ * point's travel is measured directly instead; the figures are in the report.
  *
  * WHAT ELSE TAKES PART
  * --------------------
  * Four things in this band used to sit out the whole cycle, and now do not:
  *
- *   the ground    A wide, low warm wash travels with the front *under*
- *                 everything. The arcs only cover x 0–770 and 1100–1920; the
- *                 front used to cease to exist over the 330 design px in
- *                 between, which is exactly where the tile and the copy are.
- *                 Now the pass crosses the section rather than the two fans.
+ *   the sparks    The sixteen `.fan__spark` twins are lit once by the entrance
+ *                 and then dead for the rest of the page's life. They now carry
+ *                 the whole beat, which is also what makes the light line-shaped
+ *                 rather than box-shaped.
  *   the fans      Each group's own opacity lifts 0.70 → 0.82 while the front
  *                 is inside it and falls again behind it. The group conducts;
  *                 it does not breathe, and it is flat whenever nothing is
@@ -130,10 +135,7 @@ const HEAD = 132;
 /** Design px over which a head fades in at the end of its own arc. */
 const HEAD_FADE = 70;
 /** How much thicker the lit head is than the `.fan__spark` attribute's 2.4. */
-const HEAD_WEIGHT = 1.75;
-/** Half-width of the ground wash, design px, and how strong it ever gets. */
-const WASH = 520;
-const WASH_PEAK = 0.30;
+const HEAD_WEIGHT = 1.5;
 /** Samples per spark when the (length, x) table is built. */
 const SAMPLES = 220;
 
@@ -332,50 +334,37 @@ export function fanLoop(root: HTMLElement): () => void {
     return s.ls[lo] + (s.ls[hi] - s.ls[lo]) * t;
   };
 
-  /* --------------------------------------------------------------- overlays
-     Two, both created here and both removed on teardown. The wash goes under
-     everything in the frame; the bar lives inside the glass, which clips it. */
-  let wash: HTMLElement | null = null;
+  /* ---------------------------------------------------------------- overlay
+     One, and it lives inside the glass, which clips it to the mark's face.
+
+     There is deliberately nothing else. An earlier draft of this loop carried a
+     wide soft warm wash travelling with the front under the whole band, to keep
+     the pass alive over the 330 design px between the two fans where there are
+     no arcs. It went, with the tile's shadows and the pills' halo: any element
+     that fills an area of the background reads as a maroon patch on this ground
+     however soft its edges are, and this band is not to glow anywhere. The gap
+     is the tile's, and the tile takes the light as the front reaches it. */
   let bar: HTMLElement | null = null;
 
   const buildOverlays = () => {
-    const w = document.createElement('i');
-    w.setAttribute('aria-hidden', 'true');
-    // Flat across its height and soft along its travel, with the same top and
-    // bottom fade the arcs carry. A radial would be a bloom sitting behind the
-    // copy; this is the ground being lit where the front is and nowhere else.
-    w.style.cssText =
-      'position:absolute;top:0;left:0;height:100%;pointer-events:none;opacity:0;' +
-      'will-change:transform,opacity;' +
-      'background:linear-gradient(90deg,rgba(229,51,30,0) 0%,rgba(229,51,30,0.05) 20%,' +
-      'rgba(229,51,30,0.16) 38%,rgba(245,112,72,0.30) 50%,rgba(229,51,30,0.16) 62%,' +
-      'rgba(229,51,30,0.05) 80%,rgba(229,51,30,0) 100%);' +
-      '-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 26%,#000 74%,transparent 100%);' +
-      'mask-image:linear-gradient(to bottom,transparent 0%,#000 26%,#000 74%,transparent 100%);';
-    frame.insertBefore(w, frame.firstChild);
-    mine.push(w);
-    wash = w;
-
-    if (glass) {
-      const clip = document.createElement('i');
-      clip.setAttribute('aria-hidden', 'true');
-      clip.style.cssText =
-        'position:absolute;inset:0;overflow:hidden;pointer-events:none;' +
-        'border-radius:inherit;';
-      const b = document.createElement('b');
-      b.style.cssText =
-        'position:absolute;top:-25%;height:150%;left:0;opacity:0;will-change:transform,opacity;' +
-        'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,243,234,0.95) 50%,rgba(255,251,248,0) 100%);';
-      clip.appendChild(b);
-      glass.appendChild(clip);
-      mine.push(clip);
-      bar = b;
-    }
+    if (!glass) return;
+    const clip = document.createElement('i');
+    clip.setAttribute('aria-hidden', 'true');
+    clip.style.cssText =
+      'position:absolute;inset:0;overflow:hidden;pointer-events:none;' +
+      'border-radius:inherit;';
+    const b = document.createElement('b');
+    b.style.cssText =
+      'position:absolute;top:-25%;height:150%;left:0;opacity:0;will-change:transform,opacity;' +
+      'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,243,234,0.95) 50%,rgba(255,251,248,0) 100%);';
+    clip.appendChild(b);
+    glass.appendChild(clip);
+    mine.push(clip);
+    bar = b;
   };
 
   /** Overlay sizes are the only thing here that is not resolution-independent. */
   const sizeOverlays = () => {
-    if (wash) wash.style.width = px(WASH * 2 * f);
     if (bar) {
       bar.style.width = px(18 * f);
       bar.style.filter = `blur(${px(2.5 * f)})`;
@@ -384,8 +373,8 @@ export function fanLoop(root: HTMLElement): () => void {
 
   /* ----------------------------------------------------------------- the pass
      One driver object carries the front's design x and one carries the pass's
-     overall strength; `paint` is the only thing that writes the arcs, the fans
-     and the wash, so all three are guaranteed to agree on where the front is. */
+     overall strength; `paint` is the only thing that writes the arcs and the
+     fan groups, so the two are guaranteed to agree on where the front is. */
   const front = { x: -OVERRUN };
   const power = { v: 0 };
 
@@ -437,11 +426,6 @@ export function fanLoop(root: HTMLElement): () => void {
       g.el.style.opacity = (0.7 + 0.12 * near).toFixed(3);
       g.lit = true;
     }
-
-    if (wash) {
-      wash.style.transform = `translate3d(${px((x - WASH) * f)},0,0)`;
-      wash.style.opacity = (p * WASH_PEAK).toFixed(3);
-    }
   };
 
   /** The band exactly as the stylesheet has it, with nothing of this file on it. */
@@ -450,7 +434,6 @@ export function fanLoop(root: HTMLElement): () => void {
     power.v = 0;
     sparks.forEach(clearSpark);
     fans.forEach(clearFan);
-    if (wash) { wash.style.opacity = '0'; wash.style.transform = 'translate3d(0,0,0)'; }
     if (bar) { bar.style.opacity = '0'; bar.style.transform = 'translate3d(0,0,0)'; }
   };
 
@@ -687,7 +670,6 @@ export function fanLoop(root: HTMLElement): () => void {
     cycle = undefined;
     started = false;
     mine.splice(0).forEach((el) => el.remove());
-    wash = null;
     bar = null;
     start();
   };
@@ -751,9 +733,9 @@ export function fanLoop(root: HTMLElement): () => void {
     // was in the middle of.
     ctx?.revert();
 
-    // The sparks, the fans and the wash are written straight to `style` rather
-    // than through GSAP — sixteen dash offsets a frame is the hot path here —
-    // so `revert` has never heard of them and they are handed back by name.
+    // The sparks and the fan groups are written straight to `style` rather than
+    // through GSAP — sixteen dash offsets a frame is the hot path here — so
+    // `revert` has never heard of them and they are handed back by name.
     sparks.forEach(clearSpark);
     fans.forEach(clearFan);
 
@@ -781,7 +763,6 @@ export function fanLoop(root: HTMLElement): () => void {
     give(sub, 'color');
 
     mine.splice(0).forEach((el) => el.remove());
-    wash = null;
     bar = null;
   };
 }

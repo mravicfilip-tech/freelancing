@@ -54,8 +54,18 @@ export function BoxBonus() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            {/* Artwork gradient, not the brand accent: these salmon tints have
-                no token and fade the stroke into the card at its left end. */}
+            {/* The stroke's ramp, painted from CSS rather than from four
+                `stopColor` attributes.
+
+                It is the one gradient in this card that cannot be a fixed set
+                of tints: its last stop is not a colour at all, it is THE CARD
+                -- the point where the stroke dissolves into its own ground --
+                and the three before it are a lit end that is pale on a dark
+                card and has to be deep on a pale one. A presentation attribute
+                cannot follow a theme; a class can, and CSS beats the attribute,
+                so one class per stop themes the whole ramp with no string
+                transform and no change to what the browser computes today.
+                See --bonus-line-a..d in BoxBonus.css. */}
             <linearGradient
               id="box-bonus-stroke"
               x1="545.087"
@@ -64,10 +74,10 @@ export function BoxBonus() {
               y2="179.75"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stopColor="#FFB89C" stopOpacity="0" />
-              <stop offset="0.140227" stopColor="#FEAB8B" />
-              <stop offset="0.480769" stopColor="#FA8D61" />
-              <stop offset="1" stopColor="#1C1B1A" />
+              <stop className="box-bonus__stop-a" stopOpacity="0" />
+              <stop offset="0.140227" className="box-bonus__stop-b" />
+              <stop offset="0.480769" className="box-bonus__stop-c" />
+              <stop offset="1" className="box-bonus__stop-d" />
             </linearGradient>
           </defs>
           <path className="box-bonus__line" d={LINE_D} stroke="url(#box-bonus-stroke)" strokeWidth={2} />

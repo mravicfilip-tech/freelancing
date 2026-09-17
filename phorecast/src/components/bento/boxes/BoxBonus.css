@@ -19,6 +19,25 @@
 
 .bcard--bonus.box-bonus {
   --u: calc(100cqw / 774);
+
+  /* The card's own colours. Its SURFACE and its type belong to the page and
+     flip with it (Bento.css, --bento-bonus); the two badges and the deposit
+     pill are objects drawn on that surface. The chart line is the exception
+     and the interesting one: its gradient ends IN the card, so its last stop
+     is the card's ground in whichever theme is live, and its lit end is a
+     pale salmon that has to deepen rather than brighten on paper. The four
+     stops are painted from CSS for that reason -- see .box-bonus__stop-* and
+     the light block at the foot of this file. */
+  --bonus-plate: #e6e6e6;                  /* the two badge chips */
+  --bonus-plate-line: rgba(0, 0, 0, 0.09);
+  --bonus-pill: #1d1c1b;                   /* the deposit / bonus pill */
+  --bonus-pill-line: color-mix(in srgb, var(--accent) 25%, transparent);
+  --bonus-ink: var(--ink);                 /* the figures in that pill */
+  /* the chart stroke, tip to tail: transparent, lit, mid, and the card */
+  --bonus-line-a: #ffb89c;
+  --bonus-line-b: #feab8b;
+  --bonus-line-c: #fa8d61;
+  --bonus-line-d: #1c1b1a;
   display: block;
   padding: 0;
   min-height: 0;
@@ -70,6 +89,14 @@
   height: calc(196.559 * var(--u));
   overflow: visible;
 }
+
+/* The four stops of the stroke's gradient (BoxBonus.tsx). `stop-color` from a
+   stylesheet computes to exactly what the `stopColor` attribute computed to,
+   so this is a no-op today and a theme hook tomorrow. */
+.box-bonus__stop-a { stop-color: var(--bonus-line-a); }
+.box-bonus__stop-b { stop-color: var(--bonus-line-b); }
+.box-bonus__stop-c { stop-color: var(--bonus-line-c); }
+.box-bonus__stop-d { stop-color: var(--bonus-line-d); }
 
 /* Frame 2085662609 — the halo dot sitting on the line plus its drop line down
    to the pill. */
@@ -149,8 +176,8 @@
   position: absolute;
   inset: 0;
   border-radius: calc(12.202 * var(--u));
-  background: #e6e6e6;
-  border: calc(1.367 * var(--u)) solid rgba(0, 0, 0, 0.09);
+  background: var(--bonus-plate);
+  border: calc(1.367 * var(--u)) solid var(--bonus-plate-line);
 }
 .box-bonus__badge--bolt { left: calc(629 * var(--u)); top: calc(73.5 * var(--u)); }
 /* The pie badge sits 30% smaller than its Figma box at rest, scaled about its
@@ -207,8 +234,8 @@
   width: calc(299 * var(--u));
   padding: calc(12 * var(--u)) calc(20 * var(--u));
   border-radius: calc(30 * var(--u));
-  background: #1d1c1b;
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 25%, transparent);
+  background: var(--bonus-pill);
+  border: calc(1 * var(--u)) solid var(--bonus-pill-line);
 }
 
 /* The row is a 257-wide flex line in Figma with 20px gaps, but its items are
@@ -239,7 +266,7 @@
   line-height: normal;
   text-align: center;
   white-space: nowrap;
-  color: var(--white-font);
+  color: var(--bonus-ink);
 }
 .box-bonus__amt strong { display: block; font-weight: 800; }
 .box-bonus__amt small { display: block; font-weight: 400; }
@@ -254,7 +281,7 @@
   left: calc(186 * var(--u));
   top: calc(7.5 * var(--u));
   width: calc(58 * var(--u));
-  color: var(--orange-100);
+  color: var(--accent);
 }
 .box-bonus__amt--bonus strong { font-size: calc(12 * var(--u)); }
 .box-bonus__amt--bonus small { font-size: calc(8 * var(--u)); }

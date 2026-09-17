@@ -34,9 +34,59 @@
   min-height: 0;
   aspect-ratio: 776 / 440;
   padding: 0;
-  border: 1px solid var(--color-body);
-  background: var(--white-font);
-  color: #000;
+  border: 1px solid var(--mk-line);
+  background: var(--mk-surface);
+  color: var(--mk-ink);
+
+  /* THE CARD'S OWN PALETTE, and the reason it is stated here rather than
+     taken from the page.
+     ---------------------------------------------------------------------
+     This is the one surface in the design that is NOT the page: on the dark
+     page it is paper. Its fill is --white-font used as a FILL, not as ink,
+     which is why --white-font cannot simply be flipped -- doing that and
+     leaving --mk-ink at #000 paints black type on a black card, the single
+     most likely silent breakage in the whole job (LIGHTMODE.md 6.2).
+
+     So the card is given a palette of its own, in one block, and the light
+     block at the foot of this file answers 6.2 by redefining exactly these
+     names. Two groups, and the split is what makes the decision cheap:
+
+       SURFACE + TYPE (--mk-surface, --mk-ink, --mk-ink-2, --mk-line,
+       --mk-accent) belong to the card as a surface. They are the ones that
+       flip.
+
+       THE TILE FIELD (--mk-tile-light, --mk-tile-dark, --mk-plate,
+       --mk-edge, --mk-ring-*, --mk-tip-*) is artwork sitting ON that
+       surface: plates carrying third-party marks, their rings, the tooltip.
+       Several of those marks are locked (Apple, S&P 500, DAX, Nikkei,
+       Solana, Bitcoin, Tesla) and are drawn near-black for a light plate, so
+       the plate under them stays light in both themes and the mark itself is
+       never touched. */
+  --mk-surface: #fffbf8;          /* the fill, deliberately NOT --white-font */
+  --mk-ink: #000;                 /* Figma's --black-100; no token behind it */
+  --mk-ink-2: var(--ink-2);       /* the sub-head, #9d9d9d in dark */
+  --mk-line: var(--ink-muted);    /* the card's edge, #626262 in dark */
+  --mk-accent: var(--accent);     /* the link, the diamonds, the tile rings */
+
+  /* the tile field's own greys, kept local so the dark cards can't reach them */
+  --mk-tile-light: #e6e6e6;
+  --mk-tile-dark: #313131;
+  --mk-plate: #fff;
+  --mk-edge: rgba(0, 0, 0, 0.09);
+  --mk-ring-51: color-mix(in srgb, var(--mk-accent) 51%, transparent);
+  --mk-ring-26: color-mix(in srgb, var(--mk-accent) 26%, transparent);
+  --mk-tip-line: #d9d9d9;
+  --mk-tip-ink: #0f0e0d;
+  /* The raster Dow plate, and the seven unbadged ghost tiles whose tints the
+     geometry table in BoxMarkets.tsx names but no longer spells. */
+  --mk-dow: #2c2c2c;
+  --mk-ghost-1: #853b1e;
+  --mk-ghost-2: #542c1c;
+  --mk-ghost-3: #46271b;
+  --mk-ghost-4: #b54a1f;
+  --mk-ghost-5: #b04920;
+  --mk-ghost-6: #9c421f;
+  --mk-ghost-7: #a74620;
   /* one flex child in flow, centred: see the layout note in BoxMarkets.tsx */
   justify-content: center;
 }
@@ -47,12 +97,6 @@
    inherits it from here. */
 .box-markets > * {
   --u: calc(100cqw / 774);
-  /* ink for the heading — Figma's --black-100, which has no token */
-  --mk-ink: #000;
-  /* the tile field's own greys, kept local so the dark cards can't reach them */
-  --mk-tile-light: #e6e6e6;
-  --mk-tile-dark: #313131;
-  --mk-edge: rgba(0, 0, 0, 0.09);
 }
 
 /* 365:1090 — the column that overflows its 378 content box by 2.2 each side */
@@ -85,7 +129,7 @@
   font-weight: 300;
   font-size: max(13px, calc(18 * var(--u)));
   line-height: 1.2;
-  color: var(--color-nre-body);
+  color: var(--mk-ink-2);
 }
 
 /* 365:1096 — the link. Its gap is left on Bento.css's shared rule so the
@@ -96,7 +140,7 @@
   /* floored alongside the copy above, so the link stays readable on a phone */
   height: max(15px, calc(20 * var(--u)));
   font-size: max(12px, calc(16 * var(--u)));
-  color: var(--orange-100);
+  color: var(--mk-accent);
 }
 /* Figma gives the arrow a 13 box and centres the 12 x 6 glyph one pixel low. */
 .box-markets .mk__arrow {
@@ -196,12 +240,12 @@
 /* the unbadged tiles paint their own tint inline; only two carry a stroke */
 .box-markets .mk__tile--ghost { box-shadow: none; }
 .box-markets .mk__tile--edged { box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge); }
-.box-markets .mk__tile--accent { background: var(--orange-100); }
+.box-markets .mk__tile--accent { background: var(--mk-accent); }
 
 /* 365:1169 — white, ringed in the brand orange at 51% */
 .box-markets .mk__tile--solana {
-  background: #fff;
-  box-shadow: inset 0 0 0 var(--ring, 0px) color-mix(in srgb, var(--orange-100) 51%, transparent);
+  background: var(--mk-plate);
+  box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-51);
 }
 /* 365:1141 — Figma object-covers the raster mark */
 .box-markets .mk__cover { object-fit: cover; }
@@ -211,8 +255,8 @@
 
 /* 365:1118 — the hub, ringed in the brand orange at 26% */
 .box-markets .mk__hub {
-  background: #fff;
-  box-shadow: inset 0 0 0 var(--ring, 0px) color-mix(in srgb, var(--orange-100) 26%, transparent);
+  background: var(--mk-plate);
+  box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-26);
 }
 
 /* 365:1182 */
@@ -228,13 +272,13 @@
   justify-content: center;
   padding: calc(10 * var(--u));
   border-radius: calc(30 * var(--u));
-  background: #fff;
-  border: max(1px, calc(1 * var(--u))) solid #d9d9d9;
+  background: var(--mk-plate);
+  border: max(1px, calc(1 * var(--u))) solid var(--mk-tip-line);
   font-family: var(--font-wordmark);
   font-weight: 600;
   font-size: calc(14 * var(--u));
   line-height: calc(8 * var(--u));
-  color: var(--bg);
+  color: var(--mk-tip-ink);
   white-space: nowrap;
   text-box: trim-both cap alphabetic;
 }
@@ -245,7 +289,7 @@
   width: calc(10 * var(--u));
   height: calc(10 * var(--u));
   margin: 0; /* Bento.css puts 2px here; on an absolute box that is a 2px shift */
-  background: var(--orange-100);
+  background: var(--mk-accent);
   transform: rotate(45deg);
 }
 

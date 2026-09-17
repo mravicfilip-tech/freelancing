@@ -17,6 +17,19 @@
    the card, everywhere the card is narrower. */
 .box-custody {
   --u: min(1px, 100cqw / 474);
+
+  /* The diagram's own colours. The card's SURFACE belongs to the page and
+     flips with it (Bento.css, --bento-funds); the objects drawn on it -- the
+     four market chips, the two contract pills, the rings, the nodes, the
+     wallet -- are artwork, and artwork is the same object in both themes.
+     What has to move is only what would stop being legible or visible
+     against the new surface, which is the labels (role tokens, already) and
+     the wallet ring. See the light block at the foot of this file. */
+  --custody-chip: var(--bg);        /* the four 36px market chips */
+  --custody-chip-line: color-mix(in srgb, var(--accent) 10%, transparent);
+  --custody-pill: #2f110c;          /* the two contract pills */
+  --custody-pill-line: color-mix(in srgb, var(--accent) 17%, transparent);
+  --custody-ink: var(--ink);        /* the labels, which sit on the card */
 }
 
 /* Group 365:936 — the 464 x 215 diagram, centred on the card the way Figma
@@ -80,7 +93,7 @@
   font-size: calc(12 * var(--u));
   line-height: normal;
   letter-spacing: -0.02em;
-  color: var(--white-font);
+  color: var(--custody-ink);
   white-space: nowrap;
 }
 .custody__label--wallet { font-size: calc(8 * var(--u)); }
@@ -95,10 +108,10 @@
   width: calc(36 * var(--u));
   height: calc(36 * var(--u));
   border-radius: calc(8 * var(--u));
-  background: var(--bg);
+  background: var(--custody-chip);
 }
 .custody__tile--bordered {
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 10%, transparent);
+  border: calc(1 * var(--u)) solid var(--custody-chip-line);
 }
 .custody__glyph {
   position: absolute;
@@ -138,14 +151,14 @@
   gap: calc(8 * var(--u));
   padding-inline: calc(10 * var(--u));
   border-radius: calc(30 * var(--u));
-  background: #2f110c;
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 17%, transparent);
+  background: var(--custody-pill);
+  border: calc(1 * var(--u)) solid var(--custody-pill-line);
   font-family: var(--font-display);
   font-weight: 400;
   font-size: calc(12 * var(--u));
   line-height: normal;
   letter-spacing: -0.02em;
-  color: var(--white-font);
+  color: var(--custody-ink);
   white-space: nowrap;
 }
 .custody__pill-icon {

@@ -100,7 +100,7 @@ const DAX: Tile = { left: 512, top: 99, size: 28, radius: 5, border: 0.56 };
 const HUB: Tile = { left: 303, top: 172, size: 82, radius: 36, border: 1.64 };
 const FX: Tile = { left: 182.62, top: 452.36, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.8 };
 const DOGE: Tile = { left: 256.34, top: 579.69, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.7 };
-const DOW: Tile = { left: 412.15, top: 569.64, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.6, background: '#2c2c2c' };
+const DOW: Tile = { left: 412.15, top: 569.64, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.6, background: 'var(--mk-dow)' };
 const COPPER: Tile = { left: 484.19, top: 442.3, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.8 };
 const SP500: Tile = { left: 498, top: 199, size: 50, radius: 12.202, border: 1.367 };
 const OIL: Tile = { left: 604.82, top: 450.68, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3 };
@@ -110,15 +110,22 @@ const TESLA: Tile = { left: 73, top: 226, size: 56, radius: 10, border: 1.4 };
 
 /* 365:1153 – 365:1159 plus 365:1168. Unbadged tiles that carry the field on
    past the card's clip. Arbitrary warm tints — not the brand orange — except
-   the last, which Figma binds to the token and which the CSS paints. */
+   the last, which Figma binds to the token and which the CSS paints.
+
+   The seven tints are named rather than spelled, because this is a GEOMETRY
+   table and colour in it cannot follow a theme: what the card's ground is
+   decides what a 10%-opacity warm smudge on it has to be. The values live
+   beside the rest of the card's palette in BoxMarkets.css; only the names are
+   here. `background` still goes through `shell()` and still lands as an inline
+   style, so nothing about the layout or the paint order moves. */
 const GHOSTS: Array<Tile & { edged?: boolean; accent?: boolean }> = [
-  { left: -20.71, top: 435.91, size: 42.704, radius: 7.626, border: 0, opacity: 0.1, background: '#853b1e' },
-  { left: 53.61, top: 462.41, size: 67.016, radius: 11.967, border: 0, opacity: 0.2, background: '#542c1c' },
-  { left: 139.06, top: 586.39, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: '#46271b', edged: true },
-  { left: 199.37, top: 681.89, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: '#b54a1f' },
-  { left: 341.78, top: 698.64, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: '#b04920' },
-  { left: 470.79, top: 693.61, size: 67.016, radius: 11.967, border: 0, opacity: 0.08, background: '#9c421f' },
-  { left: 554.56, top: 569.64, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: '#a74620', edged: true },
+  { left: -20.71, top: 435.91, size: 42.704, radius: 7.626, border: 0, opacity: 0.1, background: 'var(--mk-ghost-1)' },
+  { left: 53.61, top: 462.41, size: 67.016, radius: 11.967, border: 0, opacity: 0.2, background: 'var(--mk-ghost-2)' },
+  { left: 139.06, top: 586.39, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: 'var(--mk-ghost-3)', edged: true },
+  { left: 199.37, top: 681.89, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: 'var(--mk-ghost-4)' },
+  { left: 341.78, top: 698.64, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: 'var(--mk-ghost-5)' },
+  { left: 470.79, top: 693.61, size: 67.016, radius: 11.967, border: 0, opacity: 0.08, background: 'var(--mk-ghost-6)' },
+  { left: 554.56, top: 569.64, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: 'var(--mk-ghost-7)', edged: true },
 ];
 const ACCENT: Tile = { left: 653.22, top: 350.19, size: 48.904, radius: 11.967, border: 0, opacity: 0.05 };
 

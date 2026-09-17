@@ -4,6 +4,33 @@
   padding: 80px 0 84px;
   overflow: hidden;
   isolation: isolate;
+
+  /* The band's colours live in two layers, and the split is the point.
+     ---------------------------------------------------------------------
+     ROLE TOKENS (--ink, --ink-2, --accent, --on-accent) for anything whose
+     job the rest of the page already names: they flip with the theme for
+     free and the bento does not get to have an opinion about them.
+
+     --bento-* LOCALS for the values that are this band's own -- the three
+     glow discs and the three card grounds. They are declared here with
+     today's dark values and redefined, by name, in the light block at the
+     foot of this file. Each card that carries its own palette states it the
+     same way in its own file (--onb-*, --custody-*, --bonus-*, --mk-*), so
+     "what does this card do on paper?" is always one block to read. */
+  --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #7e0202 31.55%);
+  --bento-g-orange: #d1541c;
+  --bento-g-peach: #f99e57;
+
+  /* The outer card: a wash that settles the glow behind the grid, and an
+     edge a shade stronger than --line. */
+  --bento-wash: rgba(12, 12, 12, 0.3);
+  --bento-line: var(--ink-muted);
+  /* Cards B and C. Both are near-PAGE surfaces rather than raised panels:
+     the funds card is the page at 70% cutting the glow behind it, the bonus
+     card is a hair under the page with an edge of its own. */
+  --bento-funds: rgba(15, 14, 13, 0.7);
+  --bento-bonus: #0e0e0d;
+  --bento-bonus-line: #323232;
 }
 /* Left-edge glow ------------------------------------------------------------
    Figma frame 365:857, background node 365:858 -> the `Circle` group 487:1729.
@@ -68,12 +95,12 @@
 .bento__g--ember {
   left: calc(-689 * var(--u));
   top: calc(323 * var(--u));
-  background: linear-gradient(168.08deg, #0f0e0d 8.71%, #7e0202 31.55%);
+  background: var(--bento-g-ember);
 }
 /* Ellipse 40 */
-.bento__g--orange { left: calc(-675 * var(--u)); top: calc(660 * var(--u)); background: #d1541c; }
+.bento__g--orange { left: calc(-675 * var(--u)); top: calc(660 * var(--u)); background: var(--bento-g-orange); }
 /* Ellipse 41 -- the peach core, and the last one painted. */
-.bento__g--peach  { left: calc(-991 * var(--u)); top: calc(781 * var(--u)); background: #f99e57; }
+.bento__g--peach  { left: calc(-991 * var(--u)); top: calc(781 * var(--u)); background: var(--bento-g-peach); }
 
 .bento__card {
   display: flex;
@@ -84,13 +111,13 @@
   margin-inline: auto;
   padding: 30px;
   border-radius: 12px;
-  border: 1px solid var(--color-body);
-  background: rgba(12, 12, 12, 0.3);
+  border: 1px solid var(--bento-line);
+  background: var(--bento-wash);
   overflow: hidden;
 }
 .bento__head { display: flex; flex-direction: column; gap: 8px; max-width: 788px; line-height: 1.2; }
-.bento__title { font-family: var(--font-display); font-weight: 500; font-size: 32px; color: var(--white-font); }
-.bento__sub { font-family: var(--font-body); font-weight: 300; font-size: 20px; color: var(--color-nre-body); }
+.bento__title { font-family: var(--font-display); font-weight: 500; font-size: 32px; color: var(--ink); }
+.bento__sub { font-family: var(--font-body); font-weight: 300; font-size: 20px; color: var(--ink-2); }
 
 .bento__grid { display: flex; gap: 14px; align-items: stretch; }
 .bento__col { display: flex; flex-direction: column; gap: 14px; }
@@ -108,10 +135,12 @@
   container-type: inline-size;
 }
 .bcard__text { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; position: relative; z-index: 1; }
-.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--white-font); }
-.bcard__title--dark { color: #000; }
-.bcard__body { font-family: var(--font-body); font-weight: 300; font-size: 20px; color: var(--color-nre-body); }
-.bcard__body--light { color: var(--white-font); }
+.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--ink); }
+.bcard__title--dark { color: var(--mk-ink); }
+.bcard__body { font-family: var(--font-body); font-weight: 300; font-size: 20px; color: var(--ink-2); }
+/* The copy on card A, which is a red plate in both themes: --on-accent, not
+   --ink. --ink would take it to #1a1512 on #ff632a on paper. */
+.bcard__body--light { color: var(--on-accent); }
 .bcard__body--sm { font-size: 18px; }
 .bento__cta, .bcard__cta {
   position: relative;
@@ -131,9 +160,9 @@
 }
 .bento__cta:hover { gap: 10px; }
 .bento__cta img { width: 12px; height: 6px; }
-.bento__cta--white { color: var(--white-font); }
-.bento__cta--orange { color: var(--orange-100); }
-.bento__cta--orange-light { color: #f03725; }
+.bento__cta--white { color: var(--on-accent); }   /* card A's link, on red */
+.bento__cta--orange { color: var(--accent); }
+.bento__cta--orange-light { color: var(--accent-lift); }
 
 /* Card A ------------------------------------------------------------------ */
 /* 534 x 387 in Figma. The card grows to whatever the left column comes to --
@@ -152,22 +181,22 @@
 }
 
 /* Card B ------------------------------------------------------------------ */
-.bcard--funds { min-height: 355px; background: rgba(15, 14, 13, 0.7); }
+.bcard--funds { min-height: 355px; background: var(--bento-funds); }
 .bcard--funds .bcard__text { max-width: 474px; }
 /* The diagram itself is BoxCustody.css; the rules that used to live here were
    written for markup the rebuilt box replaced and matched nothing. */
 
 /* Card C ------------------------------------------------------------------ */
-.bcard--bonus { min-height: 297px; background: #0e0e0d; border: 1px solid #323232; }
+.bcard--bonus { min-height: 297px; background: var(--bento-bonus); border: 1px solid var(--bento-bonus-line); }
 /* The chart, the pill and the badges are BoxBonus.css; the rules that used to
    live here were written for markup the rebuilt box replaced. */
 
 /* Card D ------------------------------------------------------------------ */
 .bcard--markets {
   height: 440px;
-  background: var(--white-font);
-  border: 1px solid var(--color-body);
-  color: #000;
+  background: var(--mk-surface);
+  border: 1px solid var(--mk-line);
+  color: var(--mk-ink);
 }
 .mk__grid { position: absolute; left: 215px; top: 79.5px; width: 488.255px; height: 312px; opacity: 0.2; }
 .mk__orbits { position: absolute; left: 30px; top: 30px; width: 716px; height: 380px; }
@@ -176,20 +205,23 @@
 .mk__orbit--b { left: 191px; top: 110px; transform: rotate(135deg); }
 .mk__field { position: absolute; left: 128px; top: 3px; width: 727px; height: 765px; }
 .mk__tile { position: absolute; display: grid; place-items: center; overflow: hidden; }
-.mk__tile--light { background: #e6e6e6; border: 1px solid rgba(0, 0, 0, 0.09); }
-.mk__tile--dark { border: 1.675px solid rgba(0, 0, 0, 0.09); border-radius: 15px; }
-.mk__tile--solana { width: 40px; height: 40px; border-radius: 12.2px; background: #fff; border: 1.367px solid rgba(240, 55, 37, 0.51); }
+.mk__tile--light { background: var(--mk-tile-light); border: 1px solid var(--mk-edge); }
+.mk__tile--dark { border: 1.675px solid var(--mk-edge); border-radius: 15px; }
+.mk__tile--solana {
+  width: 40px; height: 40px; border-radius: 12.2px;
+  background: var(--mk-plate); border: 1.367px solid var(--mk-ring-51);
+}
 .mk__hub {
   position: absolute; display: grid; place-items: center; width: 82px; height: 82px; border-radius: 50%;
-  background: #fff; border: 1.64px solid rgba(240, 55, 37, 0.26);
+  background: var(--mk-plate); border: 1.64px solid var(--mk-ring-26);
 }
 .mk__cursor { position: absolute; width: 20px; height: 20px; }
 .mk__tooltip {
   position: absolute; display: inline-flex; align-items: center; justify-content: center; width: 76px; padding: 10px;
-  border-radius: 30px; background: #fff; border: 1px solid #d9d9d9;
-  font-family: var(--font-wordmark); font-weight: 600; font-size: 14px; line-height: 1; color: var(--bg);
+  border-radius: 30px; background: var(--mk-plate); border: 1px solid var(--mk-tip-line);
+  font-family: var(--font-wordmark); font-weight: 600; font-size: 14px; line-height: 1; color: var(--mk-tip-ink);
 }
-.mk__diamond { position: absolute; width: 10px; height: 10px; background: var(--orange-100); transform: rotate(45deg); margin: 2px; }
+.mk__diamond { position: absolute; width: 10px; height: 10px; background: var(--mk-accent); transform: rotate(45deg); margin: 2px; }
 
 /* Responsive ---------------------------------------------------------------- */
 @media (max-width: 1500px) {
@@ -214,7 +246,7 @@
     padding: 6px 12px;
     margin-left: -12px;
     border-radius: 8px;
-    background: rgba(255, 251, 248, 0.92);
+    background: color-mix(in srgb, var(--mk-surface) 92%, transparent);
   }
   .bento__card { padding: 20px; gap: 24px; }
   .bento__title { font-size: 26px; }

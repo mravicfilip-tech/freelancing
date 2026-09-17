@@ -9,7 +9,7 @@
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
 .built__head { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
-.built__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(25px, 1.9vw, 32px); line-height: 1.2; color: var(--white-font); }
+.built__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(25px, 1.9vw, 32px); line-height: 1.2; color: var(--ink); }
 /* The mask the heading rises out of, the same one the pillars and the steps
    use. `intoLines` (src/lib/motion.ts) wraps the line in `.line > .line__in` at
    build time and only the inner span moves, so the heading rises out of nothing
@@ -23,16 +23,16 @@
   margin-bottom: -0.14em;
 }
 .built__title .line__in { display: block; position: relative; }
-.built__sub { margin-top: -15px; font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.2; color: var(--color-nre-body); }
+.built__sub { margin-top: -15px; font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.2; color: var(--ink-2); }
 
 .built__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 640px)); justify-content: space-between; gap: 60px 160px; }
 .built__col { display: flex; flex-direction: column; gap: 30px; }
 .built__copy { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
-.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(21px, 1.5vw, 24px); line-height: 1.2; color: var(--white-font); }
-.built__col-body { font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.3; color: var(--color-nre-body); }
+.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(21px, 1.5vw, 24px); line-height: 1.2; color: var(--ink); }
+.built__col-body { font-family: var(--font-body); font-weight: 300; font-size: clamp(17px, 1.15vw, 20px); line-height: 1.3; color: var(--ink-2); }
 .built__cta {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono); font-weight: 600; font-size: 16px; line-height: 1.2; color: var(--orange-100);
+  font-family: var(--font-mono); font-weight: 600; font-size: 16px; line-height: 1.2; color: var(--accent);
   transition: gap 160ms ease;
 }
 .built__cta:hover { gap: 10px; }
@@ -45,7 +45,7 @@
   container-type: inline-size;
   width: 100%;
   aspect-ratio: 640 / 254;
-  background: var(--surface);
+  background: var(--panel);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -63,7 +63,7 @@
 .bt-label {
   position: absolute; z-index: 2;
   font-family: var(--font-mono); font-weight: 500; font-size: calc(12 * var(--c));
-  line-height: 1.2; text-transform: uppercase; color: var(--white-font); white-space: nowrap;
+  line-height: 1.2; text-transform: uppercase; color: var(--ink); white-space: nowrap;
 }
 .bt-label--grey { color: #eeeeed; }
 .bt-label--tl { left: calc(30 * var(--c)); top: calc(30 * var(--c)); }
@@ -85,7 +85,7 @@
 }
 .bt1__you {
   left: calc(2 * var(--c)); top: calc(82 * var(--c));
-  font-family: var(--font-body); font-weight: 300; font-size: calc(12 * var(--c)); color: var(--color-nre-body);
+  font-family: var(--font-body); font-weight: 300; font-size: calc(12 * var(--c)); color: var(--ink-2);
 }
 .bt1__rings { left: calc(164 * var(--c)); top: 0; width: calc(135 * var(--c)); height: calc(135 * var(--c)); }
 .bt1__ring-outer { left: 0; top: 0; width: 100%; height: 100%; }
@@ -104,8 +104,8 @@
 .bt1__ring-disc { left: calc(-29.4 * var(--c)); top: calc(-25.4 * var(--c)); width: calc(193.8 * var(--c)); height: calc(193.8 * var(--c)); }
 .bt1__coin { left: calc(53.5 * var(--c)); top: calc(53.5 * var(--c)); width: calc(28 * var(--c)); height: calc(28 * var(--c)); }
 .bt1__text { position: absolute; left: calc(439 * var(--c)); top: 50%; transform: translateY(-50%); width: calc(140 * var(--c)); display: flex; flex-direction: column; gap: calc(8 * var(--c)); z-index: 2; }
-.bt1__pair { font-family: var(--font-display); font-weight: 500; font-size: calc(16 * var(--c)); color: var(--white-font); white-space: nowrap; }
-.bt1__note { font-family: var(--font-body); font-weight: 300; font-size: calc(12 * var(--c)); color: var(--color-nre-body); white-space: nowrap; }
+.bt1__pair { font-family: var(--font-display); font-weight: 500; font-size: calc(16 * var(--c)); color: var(--ink); white-space: nowrap; }
+.bt1__note { font-family: var(--font-body); font-weight: 300; font-size: calc(12 * var(--c)); color: var(--ink-2); white-space: nowrap; }
 
 /* Card 2 */
 .bt2 { position: absolute; inset: 0; }
@@ -136,9 +136,9 @@
 .bt2__label {
   position: absolute; left: 50%; top: calc(100% + 6 * var(--c)); transform: translateX(-50%);
   font-family: var(--font-body); font-weight: 400; font-size: calc(10 * var(--c));
-  color: var(--color-nre-body); white-space: nowrap;
+  color: var(--ink-2); white-space: nowrap;
 }
-.bt2__label--lock { font-family: var(--font-mono); font-weight: 500; font-size: calc(12 * var(--c)); text-transform: uppercase; color: var(--white-font); top: calc(100% + 10 * var(--c)); }
+.bt2__label--lock { font-family: var(--font-mono); font-weight: 500; font-size: calc(12 * var(--c)); text-transform: uppercase; color: var(--ink); top: calc(100% + 10 * var(--c)); }
 
 @media (max-width: 1180px) {
   .built { padding: 90px 0; }

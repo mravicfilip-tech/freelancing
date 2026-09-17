@@ -36,6 +36,18 @@
  * the `<svg>` just as happily. (If they do go inline, the stronger option opens
  * up — a real `stroke-dashoffset` chase per path — and this can be replaced.)
  *
+ * MEASURED, at 1600 x 950 (scripts/amplitude.mjs maths, section-relative)
+ * ---------------------------------------------------------------------
+ *   sweep apertures   1021px of peak travel each, opacity 0 -> 1 -> 0
+ *   shine             164px across the tile face, opacity 0 -> 0.95 -> 0
+ *   tile box-shadow   alpha 0.10 -> 0.50, blur 33.3 -> 42.1px
+ *   tile rim          alpha 0.39 -> 0.82
+ *   glass fill        alpha 0.13 -> 0.28
+ *   the mark          brightness 1.00 -> 1.45, drop-shadow 0 -> 9px
+ *   pill              #000 -> #e5331e, opacity 0.7 -> 1
+ *   diamonds          scale 1 -> 2.1, brightness 1 -> 2.4
+ * Rest band: one distinct value per element, all of them the design's.
+ *
  * Nothing here floats, breathes, drifts, or reacts to the pointer. Reduced
  * motion runs none of it.
  */
@@ -379,10 +391,12 @@ export function fanLoop(root: HTMLElement): () => void {
      The loop must not open over the entrance, and it is wired in two ways that
      look different from in here. `useSectionMotion` passes this function as its
      `idle` option, which it calls from the entrance timeline's `onComplete` —
-     one line *after* it has dispatched `motion:done`, so a listener attached
-     here would wait for an event that has already gone by. Called any earlier
-     (a direct call, a lab harness) the event is still ahead of us and is the
-     best signal there is.
+     one line *after* `done()`, so the `motion:done` event a listener here would
+     wait for has already gone by. What `done()` leaves behind is the flag, and
+     that is the path this takes in production: `data-motion-done` is already
+     set by the time this function runs, so the first branch below fires at
+     once. Called any earlier (a direct call, a lab harness) the event is still
+     ahead of us and is the best signal there is.
 
      So both are watched, and under them sits the question that is true either
      way: is anything still animating inside this section? Once the band has

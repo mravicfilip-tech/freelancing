@@ -173,9 +173,13 @@ function bloom(
   vars: { scale?: number; y?: number; duration?: number; stagger?: number; fade?: number; origin?: string; blur?: number },
 ) {
   const { scale = 0.55, y = 0, duration = 0.7, stagger = 0, fade = 0.3, origin = '50% 50%', blur = 0 } = vars;
-  const from: gsap.TweenVars = { scale, transformOrigin: origin, duration, stagger, ease: EASE, clearProps: 'transform' };
+  // `transformOrigin` is named in the clear as well as `transform`: GSAP writes
+  // the origin inline and leaving it behind would put a stale one on an element
+  // whose CSS never asked for it. Named properties only, never `all` — that
+  // would empty the style attribute the market nodes keep `--x`/`--y` in.
+  const from: gsap.TweenVars = { scale, transformOrigin: origin, duration, stagger, ease: EASE, clearProps: 'transform,transformOrigin' };
   if (y) from.y = y;
-  if (blur) { from.filter = `blur(${blur}px)`; from.clearProps = 'transform,filter'; }
+  if (blur) { from.filter = `blur(${blur}px)`; from.clearProps = 'transform,transformOrigin,filter'; }
   tl.from(targets, from, at);
   tl.from(targets, { opacity: 0, duration: fade, stagger, ease: 'none', clearProps: 'opacity' }, at);
 }
@@ -246,13 +250,16 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   /* 5 — card one's artwork, in the order the picture is read: you, the line you
      run along, then what it arrives at. */
   const labels1 = inside(card1, '.bt-label');
-  if (labels1.length) rise(tl, labels1, C1_LABELS, { y: 8, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
+  if (labels1.length) rise(tl, labels1, C1_LABELS, { y: 10, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
 
   const dot = inside(card1, '.bt1__dot');
-  if (dot.length) bloom(tl, dot, C1_DOT, { scale: 0.4, duration: 0.6, fade: 0.26 });
+  if (dot.length) bloom(tl, dot, C1_DOT, { scale: 0.4, y: 6, duration: 0.6, fade: 0.26 });
 
   const you = inside(card1, '.bt1__you');
-  if (you.length) rise(tl, you, C1_YOU, { y: 6, duration: 0.55, clearProps: 'transform,opacity' });
+  // 10px, not the 6 this started at: measured on its own, away from the card's
+  // rise underneath it, 6px of travel on a 12px word is under the 8px this
+  // project counts as visible.
+  if (you.length) rise(tl, you, C1_YOU, { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
 
   /* The line runs out of the dot toward the rings, so it is drawn from its left
      end: `scaleX` about `0% 50%` on a `preserveAspectRatio="none"` image is the
@@ -265,7 +272,7 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
       transformOrigin: '0% 50%',
       duration: 0.75,
       ease: 'power2.inOut',
-      clearProps: 'transform',
+      clearProps: 'transform,transformOrigin',
     }, C1_LINE);
     tl.from(lineImg, { opacity: 0, duration: 0.25, ease: 'none', clearProps: 'opacity' }, C1_LINE);
   }
@@ -297,7 +304,7 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   /* 6 — card two's artwork: the markets exist, the wires run from them, the
      padlock is what they run to. */
   const labels2 = inside(card2, '.bt-label');
-  if (labels2.length) rise(tl, labels2, C2_LABELS, { y: 8, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
+  if (labels2.length) rise(tl, labels2, C2_LABELS, { y: 10, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
 
   /* Left to right across the constellation, by where each node actually sits
      rather than by source order — the markup lists them BTC, TSLA, DAX, EUR,

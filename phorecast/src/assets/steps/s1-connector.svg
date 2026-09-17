@@ -1,16 +1,16 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="91.1567" height="107.948" viewBox="0 0 91.1567 107.948" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Frame 2085662828">
-<path id="Vector 53" d="M0.000130131 53.3745H20.8072C35.3806 53.3745 47.1946 41.5605 47.1946 26.9871C47.1946 12.4138 59.0087 0.599714 73.582 0.599714H91.1566" stroke="url(#paint0_linear_0_28)" stroke-width="1.19943"/>
-<path id="Vector 54" d="M0 54.5739H20.8071C35.3804 54.5739 47.1945 66.388 47.1945 80.9613C47.1945 95.5347 59.0085 107.349 73.5819 107.349H91.1565" stroke="url(#paint1_linear_0_28)" stroke-width="1.19943"/>
+<g id="Button Container">
+<path id="Vector 53" d="M0.000130131 53.3745H20.8072C35.3806 53.3745 47.1946 41.5605 47.1946 26.9871C47.1946 12.4138 59.0087 0.599714 73.582 0.599714H91.1566" stroke="url(#paint0_linear_0_20)" stroke-width="1.19943"/>
+<path id="Vector 54" d="M0 54.5739H20.8071C35.3804 54.5739 47.1945 66.388 47.1945 80.9613C47.1945 95.5347 59.0085 107.349 73.5819 107.349H91.1565" stroke="url(#paint1_linear_0_20)" stroke-width="1.19943"/>
 </g>
 <defs>
-<linearGradient id="paint0_linear_0_28" x1="-2.39872" y1="56.9728" x2="100.152" y2="7.19657" gradientUnits="userSpaceOnUse">
-<stop stop-color="#f03725"/>
+<linearGradient id="paint0_linear_0_20" x1="-2.39872" y1="56.9728" x2="100.152" y2="7.19657" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF632A"/>
 <stop offset="1" stop-color="#9B9898"/>
 </linearGradient>
-<linearGradient id="paint1_linear_0_28" x1="91.1565" y1="110.347" x2="5.34683e-06" y2="54.5739" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint1_linear_0_20" x1="91.1565" y1="110.347" x2="5.34683e-06" y2="54.5739" gradientUnits="userSpaceOnUse">
 <stop stop-color="#353434"/>
-<stop offset="1" stop-color="#f03725"/>
+<stop offset="1" stop-color="#FF632A"/>
 </linearGradient>
 </defs>
 </svg>

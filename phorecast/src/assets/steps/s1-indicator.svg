@@ -1,8 +1,8 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="22.3909" height="2.39886" viewBox="0 0 22.3909 2.39886" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Frame 2085662766">
-<circle id="Ellipse 46" cx="1.19943" cy="1.19943" r="1.19943" fill="#e5331e"/>
-<circle id="Ellipse 48" cx="17.9924" cy="1.19943" r="1.19943" fill="#e5331e"/>
-<circle id="Ellipse 49" cx="21.1915" cy="1.19943" r="1.19943" fill="#e5331e"/>
-<rect id="Rectangle 88" x="3.19922" y="7.06289e-06" width="12.7939" height="2.39886" rx="1.19943" fill="#e5331e"/>
+<g id="Control Container">
+<circle id="Ellipse 46" cx="1.19943" cy="1.19943" r="1.19943" fill="#E5331E"/>
+<circle id="Ellipse 48" cx="17.9924" cy="1.19943" r="1.19943" fill="#E5331E"/>
+<circle id="Ellipse 49" cx="21.1915" cy="1.19943" r="1.19943" fill="#E5331E"/>
+<rect id="Scrollbar" x="3.19922" y="7.06289e-06" width="12.7939" height="2.39886" rx="1.19943" fill="#E5331E"/>
 </g>
 </svg>

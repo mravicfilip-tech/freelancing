@@ -1,35 +1,35 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="371" height="191" viewBox="0 0 371 191" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Frame 2085662800">
-<path id="Vector 6" d="M81.8422 108.82L1 166.876L74.9303 191H370V56H306.977L295.027 61.5204L265.676 64.0297L250.228 71.5576H202.339L177.107 87.1152L170.413 83.6022L158.569 92.6357H143.636L130.248 98.057L121.317 104.784L115.019 98.057H109.029L103.346 103.289H93.6692L86.9109 108.82H81.8422Z" fill="url(#paint0_linear_0_49)"/>
+<g id="Graph Container">
+<path id="Vector 6" d="M81.8422 108.82L1 166.876L74.9303 191H370V56H306.977L295.027 61.5204L265.676 64.0297L250.228 71.5576H202.339L177.107 87.1152L170.413 83.6022L158.569 92.6357H143.636L130.248 98.057L121.317 104.784L115.019 98.057H109.029L103.346 103.289H93.6692L86.9109 108.82H81.8422Z" fill="url(#paint0_linear_0_17)"/>
 <path id="Vector 43" d="M9 137H350.5" stroke="#383837" stroke-dasharray="2 2"/>
 <path id="Vector 44" opacity="0.2" d="M346 137V0" stroke="white" stroke-opacity="0.2"/>
 <path id="Vector 46" opacity="0.2" d="M215 137V53" stroke="white" stroke-opacity="0.2"/>
 <path id="Vector 45" opacity="0.2" d="M278 137V0" stroke="white" stroke-opacity="0.2"/>
 <path id="Vector 47" opacity="0.2" d="M147 137V53" stroke="white" stroke-opacity="0.2"/>
-<path id="Vector 60" d="M21 152.5L82 108.5H87.5L93.5 103H104L108.5 98H114.5L121.5 105L130 98L143.5 92.5H158.5L169.5 84L177.5 87L202.5 71.5H248.5L265 64L295.5 61.5L307 55.5H369.5" stroke="url(#paint1_linear_0_49)"/>
-<g id="Frame 2085662609" clip-path="url(#clip0_0_49)">
-<rect id="Rectangle 4" x="253.352" y="64.8359" width="0.597341" height="72.5769" fill="url(#paint2_linear_0_49)"/>
-<foreignObject x="210.201" y="18.4" width="86.8989" height="86.899"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(16.05px);clip-path:url(#bgblur_1_0_49_clip_path);height:100%;width:100%"></div></foreignObject><circle id="Ellipse 30" data-figma-bg-blur-radius="32.1" cx="253.65" cy="61.8495" r="11.3495" fill="#f57c6d" fill-opacity="0.59"/>
-<ellipse id="Ellipse 29" cx="253.8" cy="61.8494" rx="7.01876" ry="6.86942" fill="#dc2f16"/>
+<path id="Vector 60" d="M21 152.5L82 108.5H87.5L93.5 103H104L108.5 98H114.5L121.5 105L130 98L143.5 92.5H158.5L169.5 84L177.5 87L202.5 71.5H248.5L265 64L295.5 61.5L307 55.5H369.5" stroke="url(#paint1_linear_0_17)"/>
+<g id="Detail Point" clip-path="url(#clip0_0_17)">
+<rect id="Dialog Box" x="253.352" y="64.8359" width="0.597341" height="72.5769" fill="url(#paint2_linear_0_17)"/>
+<foreignObject x="210.201" y="18.4" width="86.8989" height="86.899"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(16.05px);clip-path:url(#bgblur_1_0_17_clip_path);height:100%;width:100%"></div></foreignObject><circle id="Ellipse 30" data-figma-bg-blur-radius="32.1" cx="253.65" cy="61.8495" r="11.3495" fill="#E5331E" fill-opacity="0.34"/>
+<ellipse id="Ellipse 29" cx="253.8" cy="61.8494" rx="7.01876" ry="6.86942" fill="#E5331E"/>
 <ellipse id="Ellipse 28" cx="253.8" cy="61.8495" rx="3.13604" ry="2.9867" fill="white"/>
 </g>
 </g>
 <defs>
-<clipPath id="bgblur_1_0_49_clip_path" transform="translate(-210.201 -18.4)"><circle cx="253.65" cy="61.8495" r="11.3495"/>
-</clipPath><linearGradient id="paint0_linear_0_49" x1="208.1" y1="141.855" x2="198.636" y2="65.2562" gradientUnits="userSpaceOnUse">
+<clipPath id="bgblur_1_0_17_clip_path" transform="translate(-210.201 -18.4)"><circle cx="253.65" cy="61.8495" r="11.3495"/>
+</clipPath><linearGradient id="paint0_linear_0_17" x1="208.1" y1="141.855" x2="198.636" y2="65.2562" gradientUnits="userSpaceOnUse">
 <stop stop-color="#1C1C1C" stop-opacity="0"/>
-<stop offset="0.682692" stop-color="#e5331e"/>
-<stop offset="1" stop-color="#e5331e"/>
+<stop offset="0.682692" stop-color="#E5331E"/>
+<stop offset="1" stop-color="#E5331E"/>
 </linearGradient>
-<linearGradient id="paint1_linear_0_49" x1="230.5" y1="63.5" x2="34.5" y2="147.5" gradientUnits="userSpaceOnUse">
-<stop stop-color="#f7a388"/>
-<stop offset="1" stop-color="#1B1B1A"/>
+<linearGradient id="paint1_linear_0_17" x1="230.5" y1="63.5" x2="34.5" y2="147.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFA99E"/>
+<stop offset="1" stop-color="#1B1B1A" stop-opacity="0"/>
 </linearGradient>
-<linearGradient id="paint2_linear_0_49" x1="253.65" y1="64.8359" x2="253.65" y2="137.413" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint2_linear_0_17" x1="253.65" y1="64.8359" x2="253.65" y2="137.413" gradientUnits="userSpaceOnUse">
 <stop stop-color="#D9D9D9"/>
 <stop offset="1" stop-color="#1A1A1A"/>
 </linearGradient>
-<clipPath id="clip0_0_49">
+<clipPath id="clip0_0_17">
 <rect width="22.9976" height="86.9131" fill="white" transform="translate(242 50.5)"/>
 </clipPath>
 </defs>

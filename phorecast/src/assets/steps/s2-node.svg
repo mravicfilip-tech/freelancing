@@ -1,9 +1,9 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="38.5532" height="38.5532" viewBox="0 0 38.5532 38.5532" fill="none" xmlns="http://www.w3.org/2000/svg">
-<foreignObject x="-5.02128" y="-5.02128" width="48.5957" height="48.5957"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2.51px);clip-path:url(#bgblur_0_0_9_clip_path);height:100%;width:100%"></div></foreignObject><g id="Ellipse 50" data-figma-bg-blur-radius="5.02128">
-<circle cx="19.2766" cy="19.2766" r="13" fill="#e5331e"/>
+<foreignObject x="-5.02128" y="-5.02128" width="48.5957" height="48.5957"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(2.51px);clip-path:url(#bgblur_0_0_6_clip_path);height:100%;width:100%"></div></foreignObject><g id="Ellipse 50" data-figma-bg-blur-radius="5.02128">
+<circle cx="19.2766" cy="19.2766" r="13" fill="#E5331E"/>
 <circle cx="19.2766" cy="19.2766" r="16.1383" stroke="white" stroke-opacity="0.16" stroke-width="6.2766"/>
 </g>
 <defs>
-<clipPath id="bgblur_0_0_9_clip_path" transform="translate(5.02128 5.02128)"><circle cx="19.2766" cy="19.2766" r="13"/>
+<clipPath id="bgblur_0_0_6_clip_path" transform="translate(5.02128 5.02128)"><circle cx="19.2766" cy="19.2766" r="13"/>
 </clipPath></defs>
 </svg>

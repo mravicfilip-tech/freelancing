@@ -5,29 +5,127 @@
    not any one panel's.
 
    `--p` is the panel's design-pixel unit and is declared on `.panel` in
-   Steps.css, so it resolves here through the cascade. */
+   Steps.css, so it resolves here through the cascade.
 
-/* Panel 3 ------------------------------------------------------------------- */
+   Geometry is Figma 365:1476 ("4650", the 886 x 610 panel) and its Price
+   Container 365:1532. Every number below is a design pixel read off that frame.
+   The container hugs its contents there: five 70px tiles with four 8px gaps is
+   382, plus 20px padding either side and a 1px border, so the card is 424 wide
+   and 274 tall. */
+
+/* Panel 3 -- Price Container (365:1532) ------------------------------------- */
 .s3 {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: calc(422 * var(--p)); padding: calc(20 * var(--p));
-  background: #161514; border: calc(1 * var(--p)) solid #3d3d3d; border-radius: calc(16 * var(--p));
+  display: flex; flex-direction: column; justify-content: center;
+  gap: calc(8 * var(--p));
+  width: calc(424 * var(--p)); height: calc(274 * var(--p));
+  padding: calc(20 * var(--p));
+  background: #161514;
+  border: calc(1 * var(--p)) solid #3d3d3d;
+  border-radius: calc(16 * var(--p));
 }
-.s3__tiles { display: flex; gap: calc(9 * var(--p)); }
+
+/* The market picker (365:1534) ---------------------------------------------- */
+.s3__tiles { display: flex; gap: calc(8 * var(--p)); }
 .s3__tile {
-  display: grid; place-items: center; width: calc(70 * var(--p)); height: calc(50 * var(--p));
-  background: #1b1b1a; border: calc(1 * var(--p)) solid var(--hairline); border-radius: calc(12 * var(--p));
+  position: relative; flex: 0 0 auto;
+  width: calc(70 * var(--p)); height: calc(50 * var(--p));
+  overflow: hidden;
+  background: #1b1b1a;
+  border: calc(1 * var(--p)) solid var(--hairline);
+  border-radius: calc(12 * var(--p));
 }
-.s3__tile.is-active { border-color: #f03725; }
-.s3__tile img { width: calc(24 * var(--p)); height: auto; }
-.s3__tile:not(.is-active) img { filter: grayscale(1) brightness(0.55); }
+.s3__tile.is-active { border-color: var(--orange-100); }
+/* Every glyph is centred on the tile, half a pixel low -- Figma has them all at
+   `top: calc(50% + 0.5px)`. The inactive ones are already drawn in #4B4B4B in
+   the exported files; they need no filter, and the one that used to be here
+   dimmed them a stop and a half below the design. */
+.s3__tile img {
+  position: absolute; left: 50%; top: calc(50% + 0.5 * var(--p));
+  transform: translate(-50%, -50%);
+}
+.s3__tile--btc img,
+.s3__tile--gold img,
+.s3__tile--apple img { width: calc(28 * var(--p)); height: calc(28 * var(--p)); }
+/* Tesla ships at its own aspect, and Figma hangs it slightly up and left of the
+   tile's centre inside a 32px box -- the margins carry that offset. */
+.s3__tile--tesla img {
+  width: calc(20.8 * var(--p)); height: calc(20.7113 * var(--p));
+  margin-left: calc(-0.154 * var(--p)); margin-top: calc(-0.267 * var(--p));
+}
+/* The S&P wordmark is a wide, short lockup: 30 x 8, not a square icon. */
+.s3__tile--sp img { width: calc(30 * var(--p)); height: calc(8 * var(--p)); }
+
+/* The chart card (Details Container 365:1555) -------------------------------- */
 .s3__chart-card {
-  position: relative; margin-top: calc(12 * var(--p)); padding: calc(16 * var(--p));
-  height: calc(173 * var(--p)); overflow: hidden;
-  background: #1b1b1a; border: calc(1 * var(--p)) solid var(--hairline); border-radius: calc(12 * var(--p));
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 100%; height: calc(173 * var(--p));
+  padding: calc(16 * var(--p));
+  overflow: hidden;
+  background: #1b1b1a;
+  border: calc(1 * var(--p)) solid var(--hairline);
+  border-radius: calc(12 * var(--p));
 }
-.s3__label { font-family: var(--font-display); font-weight: 300; font-size: calc(12 * var(--p)); color: var(--color-nre-body); }
-.s3__price { font-family: var(--font-display); font-weight: 700; font-size: calc(32 * var(--p)); color: #fff; line-height: 1.1; }
-.s3__price span { color: var(--color-body); }
-.s3__delta { font-family: var(--font-display); font-weight: 700; font-size: calc(12 * var(--p)); color: #f03725; }
-.s3__chart { position: absolute; left: calc(8 * var(--p)); right: 0; bottom: calc(4 * var(--p)); width: calc(371 * var(--p)); height: calc(191 * var(--p)); }
+/* The three lines stack with no gaps; Figma leaves their line height on auto,
+   so `normal` is the faithful value. A tightened 1.1 used to pull the delta
+   eight pixels up into the price. */
+.s3__label {
+  align-self: stretch;
+  font-family: var(--font-display); font-weight: 300;
+  font-size: calc(12 * var(--p)); line-height: normal;
+  color: var(--color-nre-body);
+}
+.s3__money { display: flex; flex-direction: column; align-items: flex-start; width: calc(139 * var(--p)); }
+.s3__price {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: calc(32 * var(--p)); line-height: normal;
+  color: #fff; white-space: nowrap;
+}
+.s3__price-dec { color: var(--color-body); }
+.s3__delta {
+  align-self: stretch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: calc(12 * var(--p)); line-height: normal;
+  color: var(--orange-100);
+}
+
+/* The graph (365:1560). 371 x 191, hung 10 in from the card's padding edge and
+   17.5 down, so its foot runs past the bottom of the card and is clipped -- the
+   fill is meant to bleed off the bottom-left corner. The markup inlines the
+   exported SVG rather than pointing an <img> at it, because nothing inside an
+   <img> is addressable and the loop draws the line and wipes the fill. The root
+   keeps its own 371 x 191 viewBox and `preserveAspectRatio="none"`, and the box
+   below is exactly 371 x 191 design px, so it paints identically. */
+.s3__chart {
+  position: absolute; left: calc(10 * var(--p)); top: calc(17.5 * var(--p));
+  width: calc(371 * var(--p)); height: calc(191 * var(--p));
+}
+.s3__chart svg { display: block; width: 100%; height: 100%; }
+
+/* Eight more measure lines sit over the graph (365:1573-1580); four more are
+   baked into the graph export itself. */
+.s3__grid {
+  position: absolute;
+  left: calc(var(--gx) * var(--p));
+  top: calc(var(--gy) * var(--p));
+  width: calc(1 * var(--p));
+  height: calc(var(--gh) * var(--p));
+}
+.s3__grid--a { --gx: 332; --gy: 39; --gh: 116; }
+.s3__grid--b { --gx: 201; --gy: 83; --gh: 71; }
+.s3__grid--c { --gx: 264; --gy: 90.5; --gh: 64.5; }
+.s3__grid--d { --gx: 133; --gy: 83; --gh: 71; }
+.s3__grid--e { --gx: 308; --gy: 39; --gh: 116; }
+.s3__grid--f { --gx: 177; --gy: 83; --gh: 71; }
+.s3__grid--g { --gx: 240; --gy: 39; --gh: 116; }
+.s3__grid--h { --gx: 109; --gy: 83; --gh: 71; }
+
+/* Figma's exporter emulates the marker's background blur with a <foreignObject>
+   carrying `backdrop-filter`. An <img> never ran it -- Chromium does not render
+   HTML inside a foreignObject in an image document -- and inlining the file
+   turned it on for the first time, which paints the blur's 23 x 87 clip
+   rectangle as a lighter patch across the fill that the design does not have.
+   The layer it stands in for, `Ellipse 30`, still paints the dark ring. The file
+   on disk is untouched; only this one shim is suppressed. */
+.s3__chart foreignObject { display: none; }

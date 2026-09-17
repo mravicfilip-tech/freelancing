@@ -6,18 +6,19 @@
 <title>Phorecast slider lab</title>
 <style>
 /* ===========================================================================
-   Phorecast slider lab — five slide indicators, no numerals.
+   Phorecast slider lab — five slider controls for the hero.
 
-   Nothing here counts. The control's whole job is to say where you are, how
-   many there are, and that the clock is running, and a numeral pair does none
-   of the first two better than a shape does. Four marks already say "four", and
-   which one is lit already says "here", so the digits were carrying nothing.
+   These are controls, not indicators: every one has prev/next, a track you can
+   click or drag, keyboard support and real hover and pressed states. No digits.
 
-   The one thing every variant keeps: the hero advances by itself every seven
-   seconds, and the control has to show that time running out, or the carousel
-   looks like it jumps on its own.
+   The handle position is (slide + progress) / 4, so it travels continuously
+   across the rail over the full 28 second cycle rather than hopping between
+   four stops. That is what makes it worth dragging: the thing you grab is
+   already where you expect it to be.
 
-   All five are live on the real clock. Click any target to jump. Hover to pause.
+   Every variant is live on the hero's real 7s clock. Drag, click the rail, use
+   the arrows, or focus one and press left/right. Hovering or dragging pauses it,
+   the way the hero pauses.
    =========================================================================== */
 :root {
   --bg: #0f0e0d;
@@ -29,136 +30,155 @@
   --surface: #1b1b1a;
   --surface-2: #2b2928;
   --hairline: #313131;
-  --past: rgba(255, 251, 248, 0.32);   /* a slide already seen: done, not current */
+  --past: rgba(255, 251, 248, 0.3);
   --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-display: 'Manrope', system-ui, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --glow: 0 0 10px rgba(245, 94, 34, 0.55);
+  --glow: 0 0 12px rgba(245, 94, 34, 0.5);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg); color: var(--white-font); font-family: var(--font-display);
-  padding: 56px clamp(20px, 5vw, 72px) 120px; -webkit-font-smoothing: antialiased;
-}
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+body { background: var(--bg); color: var(--white-font); font-family: var(--font-display);
+  padding: 56px clamp(20px, 5vw, 72px) 130px; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 
 .head { max-width: 780px; }
 .head h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; }
 .head p { margin-top: 12px; color: var(--color-nre-body); font-size: 15px; line-height: 1.6; }
 .head code { font-family: var(--font-mono); font-size: 13px; color: var(--orange-300); }
 
-.dir { border-top: 1px solid var(--hairline); padding: 36px 0 12px; margin-top: 34px; }
-.dir__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 34px; }
+.dir { border-top: 1px solid var(--hairline); padding: 34px 0 14px; margin-top: 32px; }
+.dir__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
 .dir__n { font-family: var(--font-mono); font-size: 13px; color: var(--orange-100);
   border: 1px solid var(--orange-100); border-radius: 4px; padding: 3px 8px; }
 .dir__name { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
 .dir__note { color: var(--color-nre-body); font-size: 14px; line-height: 1.5; flex: 1 1 340px; min-width: 260px; }
-.stage { padding: 10px 4px 14px; }
+
+/* A stand-in for the slides, so dragging visibly drives something. Not part of
+   any control — it is the hero, reduced to four grey panels. */
+.slides { display: flex; gap: 8px; margin-bottom: 26px; width: 420px; max-width: 100%; }
+.slides div { flex: 1; height: 46px; border-radius: 6px; background: var(--surface);
+  border: 1px solid var(--hairline); transition: background-color 300ms ease, border-color 300ms ease; }
+.slides div.on { background: rgba(245, 94, 34, 0.18); border-color: var(--orange-100); }
+
+/* ---------- shared control furniture ---------- */
+.arrow {
+  position: relative; display: grid; place-content: center; flex: none;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--hairline); color: var(--white-font);
+  transition: border-color 260ms ease, background-color 260ms ease, color 260ms ease, transform 260ms var(--ease-out);
+}
+.arrow svg { width: 15px; height: 15px; display: block; transition: transform 320ms var(--ease-out); }
+.arrow:hover { border-color: var(--orange-100); background: rgba(245, 94, 34, 0.1); color: var(--orange-300); }
+.arrow:active { transform: scale(0.94); }
+.arrow:focus-visible { outline: 2px solid var(--orange-300); outline-offset: 3px; }
+.arrow--prev:hover svg { transform: translateX(-3px); }
+.arrow--next:hover svg { transform: translateX(3px); }
+
+/* The rail is the drag surface in every variant that has one. */
+.rail { position: relative; flex: 1; cursor: grab; touch-action: none; }
+.rail.dragging { cursor: grabbing; }
+.rail:focus-visible { outline: 2px solid var(--orange-300); outline-offset: 6px; border-radius: 2px; }
+.rail__line { position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+  margin-top: -1px; background: var(--surface-2); border-radius: 2px; }
+.rail__done { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px;
+  background: var(--past); border-radius: 2px; }
 
 /* --------------------------------------------------------------------------
-   01  PILL — the active mark is the only one with a shape
-   Four dots. The current one stretches into a lozenge and fills as the clock
-   runs, then collapses back to a dot as the next one opens. The quietest of the
-   five: at rest it is four small marks and nothing else.
+   01  CLUSTER — the classic control group
+   Two round arrows and a short segmented track, sitting together as one object.
+   The most conventional of the five and the one nobody has to learn.
    -------------------------------------------------------------------------- */
-.p1 { display: flex; align-items: center; gap: 10px; height: 20px; }
-.p1 button {
-  position: relative; height: 6px; width: 6px; border-radius: 3px;
+.c1 { display: flex; align-items: center; gap: 18px; width: 340px; }
+.c1 .rail { height: 32px; }
+.c1__segs { position: absolute; inset: 0; display: flex; gap: 6px; align-items: center; }
+.c1__seg { position: relative; flex: 1; height: 3px; border-radius: 2px;
+  background: var(--surface-2); overflow: hidden; transition: background-color 280ms ease; }
+.c1__seg.is-past { background: var(--past); }
+.c1 .rail:hover .c1__seg { background: #3a3837; }
+.c1 .rail:hover .c1__seg.is-past { background: var(--past); }
+.c1__seg i { position: absolute; inset: 0; background: var(--orange-100); box-shadow: var(--glow);
+  transform-origin: left; transform: scaleX(0); border-radius: 2px; }
+
+/* --------------------------------------------------------------------------
+   02  SCRUBBER — a handle you grab
+   One long rail with a round handle that travels it over the whole cycle. Drag
+   anywhere, release to snap. The arrows step it one at a time.
+   -------------------------------------------------------------------------- */
+.c2 { display: flex; align-items: center; gap: 20px; width: 470px; }
+.c2 .rail { height: 34px; }
+.c2__tick { position: absolute; top: 50%; width: 1px; height: 8px; margin-top: -4px;
+  background: var(--surface-2); transform: translateX(-50%); }
+.c2__grip {
+  position: absolute; top: 50%; width: 16px; height: 16px; margin-top: -8px;
+  border-radius: 50%; background: var(--orange-100); box-shadow: var(--glow);
+  transform: translateX(-50%); transition: transform 180ms var(--ease-out), box-shadow 220ms ease;
+}
+.c2 .rail:hover .c2__grip, .c2 .rail.dragging .c2__grip {
+  transform: translateX(-50%) scale(1.25); box-shadow: 0 0 0 6px rgba(245, 94, 34, 0.16), var(--glow);
+}
+
+/* --------------------------------------------------------------------------
+   03  BOOKENDS — arrows at the far ends
+   The arrows move out to the edges and the rail takes the whole width between
+   them, so the drag surface is as large as the control allows. The handle is a
+   vertical bar rather than a dot, which sits better against a wide rail.
+   -------------------------------------------------------------------------- */
+.c3 { display: flex; align-items: center; gap: 26px; width: 560px; }
+.c3 .arrow { width: 38px; height: 38px; border-radius: 10px; }
+.c3 .rail { height: 40px; }
+.c3 .rail__line, .c3 .rail__done { height: 1px; margin-top: 0; }
+.c3__grip {
+  position: absolute; top: 50%; width: 3px; height: 22px; margin-top: -11px;
+  border-radius: 2px; background: var(--orange-100); box-shadow: var(--glow);
+  transform: translateX(-50%); transition: height 200ms var(--ease-out);
+}
+.c3 .rail:hover .c3__grip, .c3 .rail.dragging .c3__grip { height: 30px; }
+.c3__stop { position: absolute; top: 50%; width: 5px; height: 5px; margin-top: -2.5px;
+  border-radius: 50%; background: var(--surface-2); transform: translateX(-50%);
+  transition: background-color 280ms ease; }
+.c3__stop.is-past { background: var(--past); }
+
+/* --------------------------------------------------------------------------
+   04  THUMB — a scrollbar you can throw
+   The handle is a quarter of the rail wide, the way a scrollbar thumb shows how
+   much of a document you are seeing, and it fills as the clock runs. The
+   largest drag target of the five by a distance.
+   -------------------------------------------------------------------------- */
+.c4 { display: flex; align-items: center; gap: 18px; width: 470px; }
+.c4 .arrow { width: 36px; height: 36px; }
+.c4 .rail { height: 30px; }
+.c4 .rail__line { height: 8px; margin-top: -4px; border-radius: 4px; background: var(--surface); }
+.c4__thumb {
+  position: absolute; top: 50%; height: 8px; margin-top: -4px; border-radius: 4px;
   background: var(--surface-2); overflow: hidden;
-  transition: width 520ms var(--ease-out), background-color 300ms ease;
+  transition: background-color 260ms ease, height 200ms var(--ease-out), margin-top 200ms var(--ease-out);
 }
-.p1 button::after { content: ''; position: absolute; inset: -14px -4px; }
-.p1 button:hover { background: var(--color-body); }
-.p1 button.is-past { background: var(--past); }
-.p1 button.is-on { width: 46px; background: rgba(245, 94, 34, 0.22); }
-.p1 i { position: absolute; inset: 0; background: var(--orange-100); box-shadow: var(--glow);
-  transform-origin: left; transform: scaleX(0); border-radius: 3px; }
+.c4 .rail:hover .c4__thumb, .c4 .rail.dragging .c4__thumb { height: 12px; margin-top: -6px; }
+.c4__thumb i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--orange-100), var(--orange-300));
+  box-shadow: var(--glow); transform-origin: left; transform: scaleX(0); }
 
 /* --------------------------------------------------------------------------
-   02  SCALE — a market scale, not a carousel
-   Forty-eight hairlines in four groups. The current group lights tick by tick as
-   the clock runs, so the progress is quantised rather than smooth — it reads
-   like a price scale filling, which is the one motif on this page that belongs
-   to the product rather than to slideshows.
+   05  CAPSULE — everything inside one pill
+   Arrows and rail live in a single bordered capsule, so the control reads as
+   one component rather than three things placed near each other. The most
+   compact, and the easiest to drop anywhere on the page.
    -------------------------------------------------------------------------- */
-.p2 { display: flex; align-items: flex-end; gap: 14px; }
-.p2 button { display: flex; align-items: flex-end; gap: 3px; height: 22px; position: relative; }
-.p2 button::after { content: ''; position: absolute; inset: -12px -6px; }
-.p2 s {
-  display: block; width: 1px; height: 9px; background: var(--surface-2);
-  transition: background-color 180ms ease, height 180ms var(--ease-out);
+.c5 {
+  display: flex; align-items: center; gap: 14px; width: 400px;
+  padding: 6px 10px; border: 1px solid var(--hairline); border-radius: 400px;
+  background: rgba(255, 255, 255, 0.02); transition: border-color 280ms ease;
 }
-.p2 s:nth-child(4n + 1) { height: 15px; }           /* a taller rule every fourth */
-.p2 button:hover s { background: var(--color-body); }
-.p2 button.is-past s { background: var(--past); }
-.p2 s.lit { background: var(--orange-100); height: 18px; box-shadow: var(--glow); }
-.p2 s.lit:nth-child(4n + 1) { height: 22px; }
-
-/* --------------------------------------------------------------------------
-   03  LEVEL — four columns, filling
-   The shape of a volume meter turned into navigation: each slide is a column,
-   the current one fills from the floor up. Reads as something accumulating,
-   which is what an autoplay interval actually is.
-   -------------------------------------------------------------------------- */
-.p3 { display: flex; align-items: flex-end; gap: 9px; height: 34px; }
-.p3 button {
-  position: relative; width: 4px; height: 30px; border-radius: 2px;
-  background: var(--surface-2); overflow: hidden; transition: background-color 300ms ease;
-}
-.p3 button::after { content: ''; position: absolute; inset: -12px -6px; }
-.p3 button:hover { background: var(--color-body); }
-.p3 button.is-past { background: var(--past); }
-.p3 i { position: absolute; inset: 0; border-radius: 2px;
-  background: linear-gradient(0deg, var(--orange-100), var(--orange-300));
-  box-shadow: var(--glow); transform-origin: bottom; transform: scaleY(0); }
-
-/* --------------------------------------------------------------------------
-   04  ARC — a shallow sweep
-   The four marks bend into one wide arc, and the current segment draws itself
-   along that curve. Nothing else on the page is curved, which is the whole
-   argument for it and also the whole argument against it.
-   -------------------------------------------------------------------------- */
-.p4 { position: relative; width: 240px; height: 54px; }
-.p4 svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.p4 .seg { fill: none; stroke: var(--surface-2); stroke-width: 2.5; stroke-linecap: round;
-  transition: stroke 300ms ease; }
-.p4 .seg.is-past { stroke: var(--past); }
-.p4 .run { fill: none; stroke: var(--orange-100); stroke-width: 2.5; stroke-linecap: round;
-  filter: drop-shadow(0 0 5px rgba(245, 94, 34, 0.7)); }
-.p4 .hit { fill: none; stroke: transparent; stroke-width: 26; cursor: pointer; }
-.p4 .hit:hover + .seg { stroke: var(--color-body); }
-
-/* --------------------------------------------------------------------------
-   05  RETICLE — the chart crosshair
-   One hairline the width of the copy, four notches on it, and a bracket that
-   travels to the live notch while a second line fills beneath it. Borrowed from
-   the crosshair on a trading chart, so it reads as instrumentation rather than
-   decoration.
-   -------------------------------------------------------------------------- */
-.p5 { position: relative; width: 268px; padding-top: 16px; }
-.p5__rule { position: relative; height: 1px; background: var(--hairline); }
-.p5__notch {
-  position: absolute; top: -4px; width: 1px; height: 9px; background: var(--surface-2);
-  transform: translateX(-50%); transition: background-color 280ms ease;
-}
-.p5__notch.is-past { background: var(--past); }
-.p5__hit { position: absolute; inset: -16px 0; display: flex; }
-.p5__hit button { flex: 1; }
-.p5__mark {
-  position: absolute; top: -13px; width: 26px; height: 26px; transform: translateX(-50%);
-  transition: left 560ms var(--ease-out);
-}
-.p5__mark::before, .p5__mark::after {
-  content: ''; position: absolute; top: 0; width: 6px; height: 100%;
-  border: 1px solid var(--orange-100);
-}
-.p5__mark::before { left: 0; border-right: 0; }
-.p5__mark::after { right: 0; border-left: 0; }
-.p5__fill {
-  position: absolute; top: 0; height: 1px; background: var(--orange-100);
-  box-shadow: var(--glow); transform-origin: left; transform: scaleX(0);
-  transition: left 560ms var(--ease-out);
-}
+.c5:hover { border-color: #43403e; }
+.c5 .arrow { width: 32px; height: 32px; border: 0; }
+.c5 .arrow:hover { background: rgba(245, 94, 34, 0.14); }
+.c5 .rail { height: 28px; }
+.c5 .rail__line, .c5 .rail__done { height: 3px; margin-top: -1.5px; }
+.c5__fill { position: absolute; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px;
+  background: var(--orange-100); box-shadow: var(--glow); transform-origin: left; }
+.c5__grip { position: absolute; top: 50%; width: 10px; height: 10px; margin-top: -5px;
+  border-radius: 50%; background: var(--white-font); transform: translateX(-50%);
+  transition: transform 180ms var(--ease-out); }
+.c5 .rail:hover .c5__grip, .c5 .rail.dragging .c5__grip { transform: translateX(-50%) scale(1.3); }
 
 @media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
 </style>
@@ -168,15 +188,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 <div class="head">
   <h1>Slider lab</h1>
   <p>
-    Five slide indicators with no numerals. Four marks already say how many there are and which one
-    is lit already says where you are, so the digits were carrying nothing the shape did not.
+    Five slider controls for the hero. These are controls, not indicators: each one has prev and next,
+    a track you can click or drag, keyboard support, and real hover and pressed states. No digits.
   </p>
   <p style="margin-top:10px">
-    What every one of them keeps is the clock. The hero advances by itself every seven seconds, and a
-    control that does not show that time running out makes the carousel look like it jumps on its own.
+    The handle sits at slide plus progress, so it travels the rail continuously over the full cycle
+    rather than hopping between four stops. That is what makes it worth dragging — the thing you grab
+    is already where you expect it to be.
   </p>
   <p style="margin-top:10px">
-    All five are live and clickable, and pause on hover. Open at <code>/slider-lab.html</code>.
+    All five are live on the hero's seven second clock. Drag the rail, click it, use the arrows, or
+    focus a rail and press left and right. Hovering or dragging pauses it. Open at <code>/slider-lab.html</code>.
   </p>
 </div>
 
@@ -184,112 +206,134 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 <script>
 const COUNT = 4;
-const PERIOD = 7000;          // AUTOPLAY_MS from Hero.tsx
-const TICKS = 12;             // hairlines per group in 02
+const PERIOD = 7000;                       // AUTOPLAY_MS from Hero.tsx
+const pct = (n) => `${(n * 100).toFixed(3)}%`;
+const ARROW = (d) => `<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="${d}"
+  stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const PREV = ARROW('M10 3 L5 8 L10 13');
+const NEXT = ARROW('M6 3 L11 8 L6 13');
+const prevBtn = `<button class="arrow arrow--prev" data-step="-1" aria-label="Previous slide">${PREV}</button>`;
+const nextBtn = `<button class="arrow arrow--next" data-step="1" aria-label="Next slide">${NEXT}</button>`;
+const railAttrs = 'class="rail" tabindex="0" role="slider" aria-label="Slide" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"';
+const rep = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join('');
 
 const DIRS = [
-  ['p1', 'Pill', 'Four dots; the current one stretches into a lozenge and fills, then collapses back as the next opens. The quietest of the five — at rest it is four small marks and nothing else.'],
-  ['p2', 'Scale', 'Forty-eight hairlines in four groups. The live group lights tick by tick, so progress is quantised rather than smooth. Reads like a price scale filling, which is the one motif here that belongs to the product rather than to slideshows.'],
-  ['p3', 'Level', 'A volume meter turned into navigation: each slide is a column and the current one fills from the floor up. Reads as something accumulating, which is what an autoplay interval is.'],
-  ['p4', 'Arc', 'The four marks bend into one wide sweep and the current segment draws itself along the curve. Nothing else on the page is curved, which is the argument for it and against it.'],
-  ['p5', 'Reticle', 'A hairline the width of the copy, four notches, and a bracket that travels to the live one while a second line fills beneath. Borrowed from a trading chart crosshair, so it reads as instrumentation.'],
+  ['c1', 'Cluster', 'Two round arrows and a short segmented track, sitting together as one object. The most conventional of the five and the one nobody has to learn.'],
+  ['c2', 'Scrubber', 'One long rail with a round handle that travels it over the whole cycle. Drag anywhere and release to snap; the arrows step one at a time.'],
+  ['c3', 'Bookends', 'The arrows move out to the edges and the rail takes the whole width between them, so the drag surface is as large as the control allows.'],
+  ['c4', 'Thumb', 'The handle is a quarter of the rail wide, the way a scrollbar thumb shows how much of a document you are seeing, and it fills as the clock runs. Largest drag target by a distance.'],
+  ['c5', 'Capsule', 'Arrows and rail inside one bordered pill, so the control reads as a single component rather than three things placed near each other. The most compact.'],
 ];
 
-// One wide, shallow arc, cut into four segments with a small gap between them.
-const arcPath = (i) => {
-  const span = 150 / COUNT, gap = 4;
-  const a0 = (-165 + i * span + gap / 2) * Math.PI / 180;
-  const a1 = (-165 + (i + 1) * span - gap / 2) * Math.PI / 180;
-  const pt = (a) => [120 + 112 * Math.cos(a), 150 + 112 * Math.sin(a)];
-  const [x0, y0] = pt(a0), [x1, y1] = pt(a1);
-  return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A 112 112 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
-};
-
 const MARKUP = {
-  p1: () => `<div class="p1" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
-      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('')}</div>`,
-  p2: () => `<div class="p2" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
-      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}">${'<s></s>'.repeat(TICKS)}</button>`).join('')}</div>`,
-  p3: () => `<div class="p3" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
-      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('')}</div>`,
-  p4: () => `<div class="p4"><svg viewBox="0 0 240 54" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
-      `<path class="hit" d="${arcPath(i)}" data-i="${i}" role="tab" aria-label="Slide ${i + 1}"/>
-       <path class="seg" d="${arcPath(i)}"/>`).join('')}
-      <path class="run" d="${arcPath(0)}"/></svg></div>`,
-  p5: () => `<div class="p5"><div class="p5__rule">
-      ${Array.from({ length: COUNT }, (_, i) =>
-        `<span class="p5__notch" style="left:${(i + 0.5) * (100 / COUNT)}%"></span>`).join('')}
-      <div class="p5__fill"></div>
-      <div class="p5__mark"></div>
-      <div class="p5__hit" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
-        `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
-    </div></div>`,
+  c1: () => `<div class="c1">${prevBtn}<div ${railAttrs}><div class="c1__segs">
+      ${rep(COUNT, () => '<span class="c1__seg"><i></i></span>')}</div></div>${nextBtn}</div>`,
+  c2: () => `<div class="c2">${prevBtn}<div ${railAttrs}>
+      <span class="rail__line"></span><span class="rail__done"></span>
+      ${rep(COUNT, (i) => `<span class="c2__tick" style="left:${pct((i + 0.5) / COUNT)}"></span>`)}
+      <span class="c2__grip"></span></div>${nextBtn}</div>`,
+  c3: () => `<div class="c3">${prevBtn}<div ${railAttrs}>
+      <span class="rail__line"></span><span class="rail__done"></span>
+      ${rep(COUNT, (i) => `<span class="c3__stop" style="left:${pct((i + 0.5) / COUNT)}"></span>`)}
+      <span class="c3__grip"></span></div>${nextBtn}</div>`,
+  c4: () => `<div class="c4">${prevBtn}<div ${railAttrs}>
+      <span class="rail__line"></span><span class="c4__thumb"><i></i></span></div>${nextBtn}</div>`,
+  c5: () => `<div class="c5">${prevBtn}<div ${railAttrs}>
+      <span class="rail__line"></span><span class="rail__done"></span>
+      <span class="c5__fill"></span><span class="c5__grip"></span></div>${nextBtn}</div>`,
 };
 
 document.getElementById('out').innerHTML = DIRS.map(([id, name, note]) => `
   <section class="dir" data-v="${id}">
     <div class="dir__head">
-      <span class="dir__n">0${id[1]}</span>
-      <span class="dir__name">${name}</span>
+      <span class="dir__n">0${id[1]}</span><span class="dir__name">${name}</span>
       <span class="dir__note">${note}</span>
     </div>
+    <div class="slides">${rep(COUNT, () => '<div></div>')}</div>
     <div class="stage">${MARKUP[id]()}</div>
   </section>`).join('');
 
-// Each variant paints the same {index, progress} its own way. A mark already
-// seen keeps its fill but loses the brand colour: left orange, finished marks
-// shout louder than the one filling and the active state stops being the
-// most prominent thing in the control.
+/* Each variant paints the same {index, progress, pos}. `pos` is where the
+   handle belongs on the rail, 0 to 1: normally slide plus progress, and while
+   dragging, wherever the pointer is. A mark already passed keeps its fill and
+   loses the brand colour, so the live one stays the most prominent thing. */
 const PAINT = {
-  p1: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
-    b.classList.toggle('is-on', n === i);
-    b.classList.toggle('is-past', n < i);
-    b.querySelector('i').style.transform = `scaleX(${n === i ? p : 0})`;
+  c1: (r, i, p) => r.querySelectorAll('.c1__seg').forEach((s, n) => {
+    s.classList.toggle('is-past', n < i);
+    s.querySelector('i').style.transform = `scaleX(${n === i ? p : 0})`;
   }),
-  p2: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
-    b.classList.toggle('is-past', n < i);
-    const lit = n === i ? Math.round(p * TICKS) : 0;
-    b.querySelectorAll('s').forEach((s, k) => s.classList.toggle('lit', k < lit));
-  }),
-  p3: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
-    b.classList.toggle('is-past', n < i);
-    b.querySelector('i').style.transform = `scaleY(${n === i ? p : 0})`;
-  }),
-  p4: (r, i, p) => {
-    r.querySelectorAll('.seg').forEach((s, n) => s.classList.toggle('is-past', n < i));
-    const run = r.querySelector('.run');
-    run.setAttribute('d', r.querySelectorAll('.seg')[i].getAttribute('d'));
-    const len = run.getTotalLength();
-    run.style.strokeDasharray = len;
-    run.style.strokeDashoffset = len * (1 - p);
+  c2: (r, i, p, pos) => {
+    r.querySelector('.c2__grip').style.left = pct(pos);
+    r.querySelector('.rail__done').style.width = pct(pos);
   },
-  p5: (r, i, p) => {
-    const share = 100 / COUNT;
-    r.querySelectorAll('.p5__notch').forEach((s, n) => s.classList.toggle('is-past', n < i));
-    r.querySelector('.p5__mark').style.left = `${(i + 0.5) * share}%`;
-    const f = r.querySelector('.p5__fill');
-    f.style.left = `${i * share}%`;
-    f.style.width = `${share}%`;
-    f.style.transform = `scaleX(${p})`;
+  c3: (r, i, p, pos) => {
+    r.querySelector('.c3__grip').style.left = pct(pos);
+    r.querySelector('.rail__done').style.width = pct(pos);
+    r.querySelectorAll('.c3__stop').forEach((s, n) => s.classList.toggle('is-past', n < i));
+  },
+  c4: (r, i, p, pos, dragging) => {
+    const t = r.querySelector('.c4__thumb');
+    t.style.width = pct(1 / COUNT);
+    // Dragging moves the thumb by its own centre; otherwise it sits on its slide.
+    t.style.left = pct(dragging ? Math.min(1 - 1 / COUNT, Math.max(0, pos - 0.5 / COUNT)) : i / COUNT);
+    t.querySelector('i').style.transform = `scaleX(${dragging ? 0 : p})`;
+  },
+  c5: (r, i, p, pos) => {
+    r.querySelector('.c5__grip').style.left = pct(pos);
+    r.querySelector('.c5__fill').style.width = pct(pos);
   },
 };
 
-// One clock per variant, so pausing one does not stop the others.
+const clamp = (n, a, z) => Math.min(z, Math.max(a, n));
+const slideAt = (f) => clamp(Math.floor(f * COUNT), 0, COUNT - 1);
+
 const rigs = DIRS.map(([id]) => {
   const section = document.querySelector(`[data-v="${id}"]`);
-  const rig = { id, root: section.querySelector('.stage'), index: 0, start: performance.now(), paused: false, held: 0 };
-  section.addEventListener('pointerenter', () => {
-    if (!rig.paused) { rig.paused = true; rig.held = performance.now() - rig.start; }
+  const root = section.querySelector('.stage');
+  const rail = root.querySelector('.rail');
+  const panels = section.querySelectorAll('.slides div');
+  const rig = { id, root, rail, panels, index: 0, start: performance.now(), paused: false, held: 0, drag: null };
+
+  const pause = () => { if (!rig.paused) { rig.paused = true; rig.held = performance.now() - rig.start; } };
+  const resume = () => { if (rig.paused) { rig.paused = false; rig.start = performance.now() - rig.held; } };
+  const goTo = (i) => { rig.index = (i + COUNT) % COUNT; rig.start = performance.now(); rig.held = 0; };
+
+  section.addEventListener('pointerenter', pause);
+  section.addEventListener('pointerleave', () => { if (!rig.drag) resume(); });
+
+  root.querySelectorAll('[data-step]').forEach((b) =>
+    b.addEventListener('click', () => goTo(rig.index + +b.dataset.step)));
+
+  // Drag and click are the same gesture: press picks up the handle wherever you
+  // pressed, so a plain click is just a drag with no travel and lands on the
+  // slide under the pointer.
+  const frac = (e) => {
+    const box = rail.getBoundingClientRect();
+    return clamp((e.clientX - box.left) / box.width, 0, 1);
+  };
+  rail.addEventListener('pointerdown', (e) => {
+    rail.setPointerCapture(e.pointerId);
+    rail.classList.add('dragging');
+    rig.drag = frac(e);
+    pause();
   });
-  section.addEventListener('pointerleave', () => {
-    if (rig.paused) { rig.paused = false; rig.start = performance.now() - rig.held; }
-  });
-  rig.root.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-i]');
-    if (!b) return;
-    rig.index = +b.dataset.i;
-    rig.start = performance.now();
-    rig.held = 0;
+  rail.addEventListener('pointermove', (e) => { if (rig.drag !== null) rig.drag = frac(e); });
+  const drop = (e) => {
+    if (rig.drag === null) return;
+    goTo(slideAt(rig.drag));
+    rig.drag = null;
+    rail.classList.remove('dragging');
+    rail.releasePointerCapture?.(e.pointerId);
+    if (!rail.matches(':hover')) resume();
+  };
+  rail.addEventListener('pointerup', drop);
+  rail.addEventListener('pointercancel', drop);
+
+  rail.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { goTo(rig.index + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { goTo(rig.index - 1); e.preventDefault(); }
+    if (e.key === 'Home') { goTo(0); e.preventDefault(); }
+    if (e.key === 'End') { goTo(COUNT - 1); e.preventDefault(); }
   });
   return rig;
 });
@@ -299,7 +343,14 @@ const frame = () => {
   for (const rig of rigs) {
     const elapsed = rig.paused ? rig.held : now - rig.start;
     if (elapsed >= PERIOD) { rig.index = (rig.index + 1) % COUNT; rig.start = now; }
-    PAINT[rig.id](rig.root, rig.index, Math.min(1, elapsed / PERIOD));
+    const p = Math.min(1, elapsed / PERIOD);
+    const dragging = rig.drag !== null;
+    // Shown index follows the pointer while dragging, so the panels above
+    // respond as you scrub rather than only on release.
+    const i = dragging ? slideAt(rig.drag) : rig.index;
+    PAINT[rig.id](rig.root, i, p, dragging ? rig.drag : (rig.index + p) / COUNT, dragging);
+    rig.panels.forEach((el, n) => el.classList.toggle('on', n === i));
+    rig.rail.setAttribute('aria-valuenow', i + 1);
   }
   requestAnimationFrame(frame);
 };

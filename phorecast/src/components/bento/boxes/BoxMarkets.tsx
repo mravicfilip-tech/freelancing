@@ -18,13 +18,17 @@
  *
  * Coordinate note. Every offset here is a design pixel scaled by `--u`, the
  * card's own container unit (see BoxMarkets.css), so the box scales with the
- * grid cell it is handed rather than with the viewport. A tile's glyph is
- * positioned against the tile's PADDING box — CSS measures `left`/`top` from
- * the padding edge — so each tile declares its Figma border width and the
- * helpers below subtract it. The tiles genuinely differ in outer size, corner,
- * border and inner inset, so none of that is expressed as a shared rule.
+ * grid cell it is handed rather than with the viewport. Tile offsets are the
+ * ones Figma reports, measured from each tile's OUTER edge — which works only
+ * because the tile rings are painted as inset shadows rather than borders (see
+ * BoxMarkets.css: Chrome snaps a 0.56 border to 1px and would drag every glyph
+ * off by the difference). The tiles genuinely differ in outer size, corner,
+ * ring weight and inner inset, so none of that is expressed as a shared rule.
  */
-import grid from '../../../assets/bento/grid.svg';
+/* NOT the shared assets/bento/grid.svg: that copy has had its gradient
+   mid-stops flipped to white so the mesh reads on the dark cards. On cream the
+   mesh has to be ink, which is what Figma exports for this node (#343434). */
+import grid from '../../../assets/bento/markets/grid.svg';
 import orbitRing from '../../../assets/bento/orbit-ring.svg';
 import arrowOrange from '../../../assets/bento/arrow-orange.svg';
 import cursorArrow from '../../../assets/bento/cursor.svg';
@@ -62,19 +66,19 @@ interface Tile {
   background?: string;
 }
 
-/** The tile's own box. */
+/** The tile's own box. `--ring` is the inset stroke's weight; see the CSS. */
 const shell = (t: Tile) => ({
   left: u(t.left),
   top: u(t.top),
   width: u(t.size),
   height: u(t.size),
   borderRadius: u(t.radius),
-  borderWidth: u(t.border),
+  ['--ring' as string]: u(t.border),
   ...(t.opacity === undefined ? null : { opacity: t.opacity }),
   ...(t.background === undefined ? null : { background: t.background }),
 });
 
-/** A glyph placed by its own top-left inside the tile's padding box. */
+/** A glyph placed by its own top-left inside the tile. */
 const leaf = (left: number, top: number, w: number, h: number) => ({
   left: u(left),
   top: u(top),
@@ -84,10 +88,8 @@ const leaf = (left: number, top: number, w: number, h: number) => ({
 
 /** A glyph Figma centres in its tile, resolved to an explicit box so the SVG's
  *  intrinsic size can never leak in. `dx`/`dy` carry Figma's own nudges. */
-const centred = (t: Tile, w: number, h: number, dx = 0, dy = 0) => {
-  const box = t.size - 2 * t.border; // the padding box left/top measure from
-  return leaf((box - w) / 2 + dx, (box - h) / 2 + dy, w, h);
-};
+const centred = (t: Tile, w: number, h: number, dx = 0, dy = 0) =>
+  leaf((t.size - w) / 2 + dx, (t.size - h) / 2 + dy, w, h);
 
 /* Tiles, in the design's own paint order. -------------------------------- */
 const GOLD: Tile = { left: 191, top: 146, size: 42, radius: 7.5, border: 0.75 };
@@ -156,19 +158,19 @@ export function BoxMarkets() {
           {/* 365:1118 — the Phorecast mark, ringed. The mark is deliberately
               off-centre in its disc (1.7 left, 1.2 up), so it is placed. */}
           <span className="mk__hub" style={shell(HUB)}>
-            <img src={tilePhorecast} alt="" className="mk__mark" style={leaf(21.91, 19.47, 34.823, 40.594)} />
+            <img src={tilePhorecast} alt="" className="mk__mark" style={leaf(21.91 + 1.64, 19.47 + 1.64, 34.823, 40.594)} />
           </span>
 
           {/* 365:1120 — a currency-pair mark: two 25.131 discs side by side in a
               50.262 window that Figma insets 23.33%/26.67% inside the tile. */}
           <span className="mk__tile mk__tile--dark mk__tile--fx" data-market="Forex" style={shell(FX)}>
-            <span className="mk__pair" style={leaf(15.08, 15.08 + 11.727, 50.262, 25.131)}>
+            <span className="mk__pair" style={leaf(15.08 + 1.675, 15.08 + 1.675 + 11.727, 50.262, 25.131)}>
               <img src={fxPairUsd} alt="" style={leaf(0, 0, 25.131, 25.131)} />
               <img src={fxPairAlt} alt="" style={leaf(25.131, 0, 25.131, 25.131)} />
             </span>
           </span>
           <span className="mk__tile mk__tile--dark mk__tile--doge" data-market="Dogecoin" style={shell(DOGE)}>
-            <img src={tileDoge} alt="" style={leaf(18.43, 18.43, 43.56, 43.56)} />
+            <img src={tileDoge} alt="" style={leaf(18.43 + 1.675, 18.43 + 1.675, 43.56, 43.56)} />
           </span>
           {/* The only raster mark in the box; Figma object-covers it. */}
           <span className="mk__tile mk__tile--dark mk__tile--dow" data-market="Dow Jones" style={shell(DOW)}>
@@ -192,20 +194,20 @@ export function BoxMarkets() {
           {/* 365:1160 — Brent oil. Figma nests the glyph one level deeper and
               insets it inside that, so both steps are folded in here. */}
           <span className="mk__tile mk__tile--dark mk__tile--oil" data-market="Brent Oil" style={shell(OIL)}>
-            <img src={tileOil} alt="" style={leaf(18.43 + 1.885, 18.43 + 0.147, 23.004, 26.482)} />
+            <img src={tileOil} alt="" style={leaf(18.43 + 1.675 + 1.885, 18.43 + 1.675 + 0.147, 23.004, 26.482)} />
           </span>
           {/* 365:1168 — the one tint Figma binds to the brand token */}
           <span className="mk__tile mk__tile--ghost mk__tile--accent" style={shell(ACCENT)} />
 
           {/* 365:1169 — Solana, the tile the cursor has picked */}
           <span className="mk__tile mk__tile--solana" data-market="Solana" style={shell(SOLANA)}>
-            <img src={tileSolana} alt="" style={leaf(8.234, 10.63, 20.798, 16.306)} />
+            <img src={tileSolana} alt="" style={leaf(8.234 + 1.367, 10.63 + 1.367, 20.798, 16.306)} />
           </span>
           <span className="mk__tile mk__tile--dark mk__tile--bitcoin" data-market="Bitcoin" style={shell(BITCOIN)}>
-            <img src={tileBitcoin} alt="" style={leaf(23.46, 23.46, 43.56, 43.56)} />
+            <img src={tileBitcoin} alt="" style={leaf(23.46 + 1.675, 23.46 + 1.675, 43.56, 43.56)} />
           </span>
           <span className="mk__tile mk__tile--light mk__tile--tesla" data-market="Tesla" style={shell(TESLA)}>
-            <img src={tileTesla} alt="" style={leaf(8.135, 8.013, 36.4, 36.241)} />
+            <img src={tileTesla} alt="" style={leaf(8.135 + 1.4, 8.013 + 1.4, 36.4, 36.241)} />
           </span>
 
           {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the

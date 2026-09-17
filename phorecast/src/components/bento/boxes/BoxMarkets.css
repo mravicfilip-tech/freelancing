@@ -167,16 +167,23 @@
   pointer-events: none;
 }
 
-/* Tiles. Size, corner, border and inner inset all come from the markup,
+/* Tiles. Size, corner, ring weight and inner inset all come from the markup,
    because they genuinely differ tile to tile — only the shared chrome is here.
-   A single global sizing rule for the glyphs would be wrong. */
+   A single global sizing rule for the glyphs would be wrong.
+
+   The ring is an inset shadow, not a border. Figma's weights run 0.56 to 1.675
+   and Chrome snaps a used border-width to a whole pixel, which would both
+   thicken every hairline and — because `left`/`top` measure from the padding
+   edge — drag each glyph off its mark by the rounding error. An inset shadow
+   keeps its sub-pixel weight, follows the corner radius, and leaves the
+   padding box equal to the outer box, so the offsets below are Figma's own. */
 .box-markets .mk__tile,
 .box-markets .mk__hub {
   position: absolute;
   display: block;
   overflow: hidden;
-  border-style: solid;
-  border-color: var(--mk-edge);
+  border: 0;
+  box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge);
 }
 .box-markets .mk__tile > img,
 .box-markets .mk__tile > span,
@@ -186,14 +193,14 @@
 .box-markets .mk__tile--light { background: var(--mk-tile-light); }
 .box-markets .mk__tile--dark { background: var(--mk-tile-dark); }
 /* the unbadged tiles paint their own tint inline; only two carry a stroke */
-.box-markets .mk__tile--ghost { border-color: transparent; }
-.box-markets .mk__tile--edged { border-color: var(--mk-edge); }
+.box-markets .mk__tile--ghost { box-shadow: none; }
+.box-markets .mk__tile--edged { box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge); }
 .box-markets .mk__tile--accent { background: var(--orange-100); }
 
 /* 365:1169 — white, ringed in the brand orange at 51% */
 .box-markets .mk__tile--solana {
   background: #fff;
-  border-color: color-mix(in srgb, var(--orange-100) 51%, transparent);
+  box-shadow: inset 0 0 0 var(--ring, 0px) color-mix(in srgb, var(--orange-100) 51%, transparent);
 }
 /* 365:1141 — Figma object-covers the raster mark */
 .box-markets .mk__cover { object-fit: cover; }
@@ -204,7 +211,7 @@
 /* 365:1118 — the hub, ringed in the brand orange at 26% */
 .box-markets .mk__hub {
   background: #fff;
-  border-color: color-mix(in srgb, var(--orange-100) 26%, transparent);
+  box-shadow: inset 0 0 0 var(--ring, 0px) color-mix(in srgb, var(--orange-100) 26%, transparent);
 }
 
 /* 365:1182 */

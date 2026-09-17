@@ -19,7 +19,7 @@
  * No motion lives here: this file is the resting state only. A separate module
  * owns the card's load-in and loop.
  */
-/* Three of this card's four assets already exist in the shared bento folder and
+/* Three of this card's five assets already exist in the shared bento folder and
    are byte-for-byte the same export (grid and ring-arc differ only in the
    internal ids Figma renumbers on every download; the arrow is identical), so
    they are reused rather than duplicated. The phone is not: the side-button

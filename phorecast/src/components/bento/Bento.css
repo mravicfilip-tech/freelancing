@@ -278,3 +278,25 @@
   .mk__field { left: -20px; top: 24px; transform: scale(0.5); }
   .mk__orbits { left: -40px; transform: scale(0.6); }
 }
+
+/* Pending state, the same contract as the hero. Without it the band painted
+   settled from the very first frame and merely animated later, so the top of it
+   sat finished in the sliver below the hero before anyone had scrolled. The
+   attribute is removed in the same frame GSAP takes over.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it. A timed failsafe cannot work for a band that waits
+   to be scrolled to -- the wait is legitimate and can last minutes -- so the
+   guarantee has to come from the hold never applying in the first place when
+   nothing will undo it. Only the animated parts are held; the card's frame and
+   background stay, so nothing about the layout pops in. */
+[data-js] .bento[data-motion='pending'] .bento__glow,
+[data-js] .bento[data-motion='pending'] .bento__title,
+[data-js] .bento[data-motion='pending'] .bento__sub,
+[data-js] .bento[data-motion='pending'] .bcard,
+[data-js] .bento[data-motion='pending'] .bento__cta {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .bento[data-motion='pending'] * { visibility: visible; }
+}

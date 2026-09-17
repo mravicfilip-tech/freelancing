@@ -168,7 +168,14 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     const el = ref.current;
     if (!el) return;
 
+    // What the section was holding before this effect touched it, so teardown
+    // can put it back. Cleanup used to reveal unconditionally, and React runs
+    // mount, cleanup, mount: the cleanup stripped the pending attribute and the
+    // second mount never got it back, so an observer-gated section sat visible
+    // and finished from the first paint while still waiting to be scrolled to.
+    const held = el.dataset.motion;
     const reveal = () => { delete el.dataset.motion; };
+    const rehide = () => { if (held !== undefined) el.dataset.motion = held; };
 
     // The flag matters as much as the event: a listener that attaches after the
     // entrance has already finished would otherwise wait for one that will
@@ -244,10 +251,18 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       start();
     } else {
       io = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
+        // isIntersecting is true for any overlap at all, however small, so
+        // testing it ignores the threshold entirely -- which is how a band
+        // opened on the sliver of itself showing under the hero before anyone
+        // had scrolled, and was finished by the time you arrived. Compare the
+        // ratio instead. A section taller than the viewport can never reach a
+        // high ratio, so filling most of the screen counts too.
+        const enough = entry.intersectionRatio >= threshold
+          || entry.intersectionRect.height >= entry.rootBounds!.height * 0.6;
+        if (!entry.isIntersecting || !enough) return;
         io?.disconnect();
         start();
-      }, { threshold, rootMargin: '0px 0px -10% 0px' });
+      }, { threshold: [0, threshold, 1], rootMargin: '0px 0px -10% 0px' });
       io.observe(el);
     }
 
@@ -266,7 +281,9 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       ctx?.revert();
       tl = undefined;
       delete el.dataset.motionBuilt;
-      reveal();
+      // Back to how it was found. A section that never built stays hidden for
+      // the next mount; one that did will reveal again when it rebuilds.
+      rehide();
     };
   }, [build, threshold, idle, immediate]);
 

@@ -6,18 +6,18 @@
 <title>Phorecast slider lab</title>
 <style>
 /* ===========================================================================
-   Phorecast slider lab — five redesigns of the hero's slide indicator.
+   Phorecast slider lab — five slide indicators, no numerals.
 
-   The one thing every variant fixes: the hero advances by itself every 7
-   seconds and the current control never says so. Four identical dashes cannot
-   tell you a slide is about to change, how long is left, or that anything is
-   moving at all, so the carousel appears to jump on its own. Each variant below
-   shows the time running out, in its own way.
+   Nothing here counts. The control's whole job is to say where you are, how
+   many there are, and that the clock is running, and a numeral pair does none
+   of the first two better than a shape does. Four marks already say "four", and
+   which one is lit already says "here", so the digits were carrying nothing.
 
-   Every variant is live and on the real 7s clock. Click any target to jump.
-   Hover a variant to pause it, the way the hero pauses on hover.
+   The one thing every variant keeps: the hero advances by itself every seven
+   seconds, and the control has to show that time running out, or the carousel
+   looks like it jumps on its own.
 
-   Real Phorecast tokens, so what gets picked is what lands in the build.
+   All five are live on the real clock. Click any target to jump. Hover to pause.
    =========================================================================== */
 :root {
   --bg: #0f0e0d;
@@ -29,173 +29,138 @@
   --surface: #1b1b1a;
   --surface-2: #2b2928;
   --hairline: #313131;
+  --past: rgba(255, 251, 248, 0.32);   /* a slide already seen: done, not current */
   --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-display: 'Manrope', system-ui, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --glow: 0 0 10px rgba(245, 94, 34, 0.55);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--bg); color: var(--white-font); font-family: var(--font-display);
   padding: 56px clamp(20px, 5vw, 72px) 120px; -webkit-font-smoothing: antialiased;
 }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
 
-.head { max-width: 780px; margin-bottom: 20px; }
+.head { max-width: 780px; }
 .head h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; }
 .head p { margin-top: 12px; color: var(--color-nre-body); font-size: 15px; line-height: 1.6; }
 .head code { font-family: var(--font-mono); font-size: 13px; color: var(--orange-300); }
 
-.now {
-  display: flex; align-items: center; gap: 14px; margin: 26px 0 40px;
-  font-family: var(--font-mono); font-size: 12px; color: var(--color-body);
-  text-transform: uppercase; letter-spacing: 0.1em;
-}
-.now b { color: var(--orange-300); font-weight: 500; }
-
-.dir { border-top: 1px solid var(--hairline); padding: 36px 0 12px; }
-.dir__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+.dir { border-top: 1px solid var(--hairline); padding: 36px 0 12px; margin-top: 34px; }
+.dir__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 34px; }
 .dir__n { font-family: var(--font-mono); font-size: 13px; color: var(--orange-100);
   border: 1px solid var(--orange-100); border-radius: 4px; padding: 3px 8px; }
 .dir__name { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
 .dir__note { color: var(--color-nre-body); font-size: 14px; line-height: 1.5; flex: 1 1 340px; min-width: 260px; }
-.stage { padding: 8px 4px 4px; }
+.stage { padding: 10px 4px 14px; }
 
 /* --------------------------------------------------------------------------
-   01  METER — the ladder, made honest
-   The shape everyone already approved. The active rung fills as the clock runs
-   down, rungs already seen stay lit but dim, rungs to come are hairlines. The
-   smallest change that fixes the actual problem.
+   01  PILL — the active mark is the only one with a shape
+   Four dots. The current one stretches into a lozenge and fills as the clock
+   runs, then collapses back to a dot as the next one opens. The quietest of the
+   five: at rest it is four small marks and nothing else.
    -------------------------------------------------------------------------- */
-.v1 { display: flex; flex-direction: column; gap: 16px; width: 191px; }
-.v1__count { display: flex; align-items: baseline; gap: 8px; font-size: 28px; line-height: 1.2; }
-.v1__cur { font-weight: 200; color: var(--orange-100); font-variant-numeric: tabular-nums; }
-.v1__slash { font-weight: 700; }
-.v1__tot { font-weight: 500; }
-.v1__rungs { display: flex; gap: 8px; }
-.v1__rung {
-  position: relative; width: 41px; height: 3px; border-radius: 2px;
-  background: var(--surface-2); overflow: hidden; transition: background-color 240ms ease;
+.p1 { display: flex; align-items: center; gap: 10px; height: 20px; }
+.p1 button {
+  position: relative; height: 6px; width: 6px; border-radius: 3px;
+  background: var(--surface-2); overflow: hidden;
+  transition: width 520ms var(--ease-out), background-color 300ms ease;
 }
-.v1__rung::before { content: ''; position: absolute; inset: -14px 0; }
-.v1__rung i {
-  position: absolute; inset: 0; background: var(--orange-100);
-  transform-origin: left; transform: scaleX(0);
-  transition: background-color 300ms ease;
-}
-/* A rung already seen keeps its fill but loses the brand colour. Leaving it
-   orange meant three finished rungs shouting louder than the one filling, and
-   the active state ended up the least prominent thing in the control. */
-.v1__rung.is-seen i { background: rgba(255, 251, 248, 0.34); }
-.v1__rung:hover { background: rgba(255, 251, 248, 0.3); }
+.p1 button::after { content: ''; position: absolute; inset: -14px -4px; }
+.p1 button:hover { background: var(--color-body); }
+.p1 button.is-past { background: var(--past); }
+.p1 button.is-on { width: 46px; background: rgba(245, 94, 34, 0.22); }
+.p1 i { position: absolute; inset: 0; background: var(--orange-100); box-shadow: var(--glow);
+  transform-origin: left; transform: scaleX(0); border-radius: 3px; }
 
 /* --------------------------------------------------------------------------
-   02  RAIL — one line, one travelling lozenge
-   The four dashes become a single rail. A lozenge sits at the current position
-   and grows across its share as the clock runs, then slides on. Reads as one
-   object moving through a sequence rather than four lights taking turns.
+   02  SCALE — a market scale, not a carousel
+   Forty-eight hairlines in four groups. The current group lights tick by tick as
+   the clock runs, so the progress is quantised rather than smooth — it reads
+   like a price scale filling, which is the one motif on this page that belongs
+   to the product rather than to slideshows.
    -------------------------------------------------------------------------- */
-.v2 { display: flex; flex-direction: column; gap: 18px; width: 230px; }
-.v2__count { display: flex; align-items: baseline; gap: 6px; font-family: var(--font-mono); }
-.v2__cur { font-size: 40px; font-weight: 500; color: var(--white-font); line-height: 1;
-  font-variant-numeric: tabular-nums; }
-.v2__tot { font-size: 14px; color: var(--color-body); }
-.v2__rail { position: relative; height: 2px; background: var(--surface-2); border-radius: 2px; }
-.v2__fill {
-  position: absolute; top: -1px; height: 4px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--orange-100), var(--orange-300));
-  box-shadow: 0 0 12px rgba(245, 94, 34, 0.55);
-  transition: left 620ms var(--ease-out);
+.p2 { display: flex; align-items: flex-end; gap: 14px; }
+.p2 button { display: flex; align-items: flex-end; gap: 3px; height: 22px; position: relative; }
+.p2 button::after { content: ''; position: absolute; inset: -12px -6px; }
+.p2 s {
+  display: block; width: 1px; height: 9px; background: var(--surface-2);
+  transition: background-color 180ms ease, height 180ms var(--ease-out);
 }
-.v2__hits { position: absolute; inset: -14px 0; display: flex; }
-.v2__hits button { flex: 1; }
+.p2 s:nth-child(4n + 1) { height: 15px; }           /* a taller rule every fourth */
+.p2 button:hover s { background: var(--color-body); }
+.p2 button.is-past s { background: var(--past); }
+.p2 s.lit { background: var(--orange-100); height: 18px; box-shadow: var(--glow); }
+.p2 s.lit:nth-child(4n + 1) { height: 22px; }
 
 /* --------------------------------------------------------------------------
-   03  INDEX — the slides get names
-   Anonymous dashes tell you nothing about where you are going. This lists the
-   slides, marks the current one, and runs the clock down its edge. The most
-   useful of the five, and the one that costs the most vertical space.
+   03  LEVEL — four columns, filling
+   The shape of a volume meter turned into navigation: each slide is a column,
+   the current one fills from the floor up. Reads as something accumulating,
+   which is what an autoplay interval actually is.
    -------------------------------------------------------------------------- */
-.v3 { display: flex; flex-direction: column; gap: 2px; width: 290px; }
-.v3__row {
-  position: relative; display: flex; align-items: center; gap: 14px;
-  padding: 9px 0 9px 16px; text-align: left; color: var(--color-body);
-  font-size: 14px; line-height: 1.3; transition: color 300ms ease;
+.p3 { display: flex; align-items: flex-end; gap: 9px; height: 34px; }
+.p3 button {
+  position: relative; width: 4px; height: 30px; border-radius: 2px;
+  background: var(--surface-2); overflow: hidden; transition: background-color 300ms ease;
 }
-.v3__row::before { /* the rail each row sits against */
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-  background: var(--hairline);
-}
-.v3__row i { /* the clock, running down the rail */
-  position: absolute; left: 0; top: 0; width: 2px; height: 100%;
-  background: var(--orange-100); transform-origin: top; transform: scaleY(0);
-  transition: background-color 300ms ease;
-}
-.v3__row.is-seen i { background: rgba(255, 251, 248, 0.3); }
-.v3__row:hover { color: var(--color-nre-body); }
-.v3__row.is-active { color: var(--white-font); }
-.v3__row.is-seen { color: #6f6f6f; }
-.v3__n { font-family: var(--font-mono); font-size: 11px; opacity: 0.75; font-variant-numeric: tabular-nums; }
+.p3 button::after { content: ''; position: absolute; inset: -12px -6px; }
+.p3 button:hover { background: var(--color-body); }
+.p3 button.is-past { background: var(--past); }
+.p3 i { position: absolute; inset: 0; border-radius: 2px;
+  background: linear-gradient(0deg, var(--orange-100), var(--orange-300));
+  box-shadow: var(--glow); transform-origin: bottom; transform: scaleY(0); }
 
 /* --------------------------------------------------------------------------
-   04  DIAL — a ring around the numeral
-   The countdown becomes a ring sweeping around the current slide number, with
-   four dots to jump by. Compact, distinctive, and the only variant that reads
-   as a clock rather than a bar.
+   04  ARC — a shallow sweep
+   The four marks bend into one wide arc, and the current segment draws itself
+   along that curve. Nothing else on the page is curved, which is the whole
+   argument for it and also the whole argument against it.
    -------------------------------------------------------------------------- */
-.v4 { display: flex; align-items: center; gap: 22px; }
-.v4__dial { position: relative; width: 74px; height: 74px; flex: none; }
-.v4__dial svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
-.v4__track { fill: none; stroke: var(--surface-2); stroke-width: 2; }
-.v4__arc { fill: none; stroke: var(--orange-100); stroke-width: 2; stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgba(245, 94, 34, 0.6)); }
-.v4__num {
-  position: absolute; inset: 0; display: grid; place-content: center;
-  font-family: var(--font-mono); font-size: 22px; font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-.v4__num small { font-size: 11px; color: var(--color-body); }
-.v4__dots { display: flex; flex-direction: column; gap: 10px; }
-.v4__dot {
-  position: relative; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--surface-2); transition: background-color 280ms ease, transform 280ms var(--ease-out);
-}
-.v4__dot::before { content: ''; position: absolute; inset: -7px; }
-.v4__dot:hover { background: var(--color-body); }
-.v4__dot.is-seen { background: rgba(255, 251, 248, 0.38); }
-.v4__dot.is-active { background: var(--orange-100); transform: scale(1.5); }
+.p4 { position: relative; width: 240px; height: 54px; }
+.p4 svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.p4 .seg { fill: none; stroke: var(--surface-2); stroke-width: 2.5; stroke-linecap: round;
+  transition: stroke 300ms ease; }
+.p4 .seg.is-past { stroke: var(--past); }
+.p4 .run { fill: none; stroke: var(--orange-100); stroke-width: 2.5; stroke-linecap: round;
+  filter: drop-shadow(0 0 5px rgba(245, 94, 34, 0.7)); }
+.p4 .hit { fill: none; stroke: transparent; stroke-width: 26; cursor: pointer; }
+.p4 .hit:hover + .seg { stroke: var(--color-body); }
 
 /* --------------------------------------------------------------------------
-   05  ODOMETER — the numeral rolls
-   The same language as the Swap hover already chosen for buttons and links: the
-   current figure leaves through the top as the next arrives from below. A full
-   hairline under it carries the clock. The most uniform with the rest of the
-   site.
+   05  RETICLE — the chart crosshair
+   One hairline the width of the copy, four notches on it, and a bracket that
+   travels to the live notch while a second line fills beneath it. Borrowed from
+   the crosshair on a trading chart, so it reads as instrumentation rather than
+   decoration.
    -------------------------------------------------------------------------- */
-.v5 { display: flex; flex-direction: column; gap: 14px; width: 210px; }
-.v5__count { display: flex; align-items: baseline; gap: 8px; font-size: 30px; line-height: 1.15; }
-.v5__win { position: relative; overflow: hidden; height: 1.15em; width: 1.35em; }
-.v5__win span {
-  position: absolute; inset: 0; font-weight: 200; color: var(--orange-100);
-  font-variant-numeric: tabular-nums;
+.p5 { position: relative; width: 268px; padding-top: 16px; }
+.p5__rule { position: relative; height: 1px; background: var(--hairline); }
+.p5__notch {
+  position: absolute; top: -4px; width: 1px; height: 9px; background: var(--surface-2);
+  transform: translateX(-50%); transition: background-color 280ms ease;
 }
-.v5__slash { font-weight: 700; }
-.v5__tot { font-weight: 500; }
-.v5__bar { position: relative; height: 1px; background: var(--hairline); }
-.v5__bar i { position: absolute; inset: 0; background: var(--orange-100);
-  transform-origin: left; transform: scaleX(0); box-shadow: 0 0 8px rgba(245, 94, 34, 0.7); }
-.v5__ticks { display: flex; gap: 6px; }
-.v5__tick {
-  position: relative; flex: 1; height: 10px;
-  border-left: 1px solid var(--hairline); transition: border-color 280ms ease;
+.p5__notch.is-past { background: var(--past); }
+.p5__hit { position: absolute; inset: -16px 0; display: flex; }
+.p5__hit button { flex: 1; }
+.p5__mark {
+  position: absolute; top: -13px; width: 26px; height: 26px; transform: translateX(-50%);
+  transition: left 560ms var(--ease-out);
 }
-.v5__tick::before { content: ''; position: absolute; inset: -10px -3px; }
-.v5__tick:hover { border-color: var(--color-body); }
-.v5__tick.is-seen { border-color: rgba(255, 251, 248, 0.4); }
-.v5__tick.is-active { border-color: var(--orange-100); }
+.p5__mark::before, .p5__mark::after {
+  content: ''; position: absolute; top: 0; width: 6px; height: 100%;
+  border: 1px solid var(--orange-100);
+}
+.p5__mark::before { left: 0; border-right: 0; }
+.p5__mark::after { right: 0; border-left: 0; }
+.p5__fill {
+  position: absolute; top: 0; height: 1px; background: var(--orange-100);
+  box-shadow: var(--glow); transform-origin: left; transform: scaleX(0);
+  transition: left 560ms var(--ease-out);
+}
 
-@media (prefers-reduced-motion: reduce) {
-  * { transition-duration: 1ms !important; }
-}
+@media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
 </style>
 </head>
 <body>
@@ -203,74 +168,66 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 <div class="head">
   <h1>Slider lab</h1>
   <p>
-    Five redesigns of the hero's slide indicator. The problem all of them fix is the same: the hero
-    advances by itself every seven seconds and the current control never says so, so four identical
-    dashes leave the carousel looking like it jumps on its own.
+    Five slide indicators with no numerals. Four marks already say how many there are and which one
+    is lit already says where you are, so the digits were carrying nothing the shape did not.
   </p>
   <p style="margin-top:10px">
-    All five are live on the real seven second clock. Click any target to jump. Hover one to pause it,
-    the way the hero pauses on hover. Open at <code>/slider-lab.html</code>, or double-click the file.
+    What every one of them keeps is the clock. The hero advances by itself every seven seconds, and a
+    control that does not show that time running out makes the carousel look like it jumps on its own.
+  </p>
+  <p style="margin-top:10px">
+    All five are live and clickable, and pause on hover. Open at <code>/slider-lab.html</code>.
   </p>
 </div>
-
-<div class="now">clock <b id="clock">0.0s</b> · slide <b id="who">01</b></div>
 
 <div id="out"></div>
 
 <script>
-const TITLES = ['The Future of Trading', 'One account. Your keys.', 'Half this stack is on us.', 'The Future of Trading'];
 const COUNT = 4;
-const PERIOD = 7000;               // AUTOPLAY_MS from Hero.tsx
-const pad = (n) => String(n).padStart(2, '0');
+const PERIOD = 7000;          // AUTOPLAY_MS from Hero.tsx
+const TICKS = 12;             // hairlines per group in 02
 
 const DIRS = [
-  ['v1', 'Meter', 'The shape already approved, made honest. The active rung fills as the clock runs down, rungs already seen stay lit but dim, rungs to come are hairlines. Smallest change that fixes the real problem.'],
-  ['v2', 'Rail', 'The four dashes become one rail. A lozenge sits at the current position, grows across its share as the clock runs, then slides on. One object moving through a sequence, not four lights taking turns.'],
-  ['v3', 'Index', 'The slides get names. Marks where you are, says where you are going, and runs the clock down the edge of the current row. Most useful of the five, and the one that costs real vertical space.'],
-  ['v4', 'Dial', 'The countdown becomes a ring sweeping around the current number, with four dots to jump by. Compact, distinctive, and the only one that reads as a clock rather than a bar.'],
-  ['v5', 'Odometer', 'The numeral rolls: the current figure leaves through the top as the next arrives from below. The same language as the Swap hover already chosen for buttons and links, so it is the most uniform with the rest of the site.'],
+  ['p1', 'Pill', 'Four dots; the current one stretches into a lozenge and fills, then collapses back as the next opens. The quietest of the five — at rest it is four small marks and nothing else.'],
+  ['p2', 'Scale', 'Forty-eight hairlines in four groups. The live group lights tick by tick, so progress is quantised rather than smooth. Reads like a price scale filling, which is the one motif here that belongs to the product rather than to slideshows.'],
+  ['p3', 'Level', 'A volume meter turned into navigation: each slide is a column and the current one fills from the floor up. Reads as something accumulating, which is what an autoplay interval is.'],
+  ['p4', 'Arc', 'The four marks bend into one wide sweep and the current segment draws itself along the curve. Nothing else on the page is curved, which is the argument for it and against it.'],
+  ['p5', 'Reticle', 'A hairline the width of the copy, four notches, and a bracket that travels to the live one while a second line fills beneath. Borrowed from a trading chart crosshair, so it reads as instrumentation.'],
 ];
 
+// One wide, shallow arc, cut into four segments with a small gap between them.
+const arcPath = (i) => {
+  const span = 150 / COUNT, gap = 4;
+  const a0 = (-165 + i * span + gap / 2) * Math.PI / 180;
+  const a1 = (-165 + (i + 1) * span - gap / 2) * Math.PI / 180;
+  const pt = (a) => [120 + 112 * Math.cos(a), 150 + 112 * Math.sin(a)];
+  const [x0, y0] = pt(a0), [x1, y1] = pt(a1);
+  return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A 112 112 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+};
+
 const MARKUP = {
-  v1: () => `<div class="v1">
-      <div class="v1__count"><span class="v1__cur">01</span><span class="v1__slash">/</span><span class="v1__tot">${pad(COUNT)}</span></div>
-      <div class="v1__rungs" role="tablist">${Array.from({length: COUNT}, (_, i) =>
-        `<button class="v1__rung" role="tab" data-i="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('')}</div>
-    </div>`,
-  v2: () => `<div class="v2">
-      <div class="v2__count"><span class="v2__cur">01</span><span class="v2__tot">/ ${pad(COUNT)}</span></div>
-      <div class="v2__rail"><div class="v2__fill"></div>
-        <div class="v2__hits" role="tablist">${Array.from({length: COUNT}, (_, i) =>
-          `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
-      </div>
-    </div>`,
-  v3: () => `<div class="v3" role="tablist">${TITLES.map((t, i) =>
-      `<button class="v3__row" role="tab" data-i="${i}"><i></i><span class="v3__n">${pad(i + 1)}</span><span>${t}</span></button>`).join('')}
-    </div>`,
-  v4: () => `<div class="v4">
-      <div class="v4__dial">
-        <svg viewBox="0 0 74 74" aria-hidden="true">
-          <circle class="v4__track" cx="37" cy="37" r="35"/>
-          <circle class="v4__arc" cx="37" cy="37" r="35"/>
-        </svg>
-        <div class="v4__num"><span>01</span><small>/${pad(COUNT)}</small></div>
-      </div>
-      <div class="v4__dots" role="tablist">${Array.from({length: COUNT}, (_, i) =>
-        `<button class="v4__dot" role="tab" data-i="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
-    </div>`,
-  v5: () => `<div class="v5">
-      <div class="v5__count">
-        <span class="v5__win"><span class="v5__a">01</span><span class="v5__b"></span></span>
-        <span class="v5__slash">/</span><span class="v5__tot">${pad(COUNT)}</span>
-      </div>
-      <div class="v5__bar"><i></i></div>
-      <div class="v5__ticks" role="tablist">${Array.from({length: COUNT}, (_, i) =>
-        `<button class="v5__tick" role="tab" data-i="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
-    </div>`,
+  p1: () => `<div class="p1" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
+      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('')}</div>`,
+  p2: () => `<div class="p2" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
+      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}">${'<s></s>'.repeat(TICKS)}</button>`).join('')}</div>`,
+  p3: () => `<div class="p3" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
+      `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"><i></i></button>`).join('')}</div>`,
+  p4: () => `<div class="p4"><svg viewBox="0 0 240 54" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
+      `<path class="hit" d="${arcPath(i)}" data-i="${i}" role="tab" aria-label="Slide ${i + 1}"/>
+       <path class="seg" d="${arcPath(i)}"/>`).join('')}
+      <path class="run" d="${arcPath(0)}"/></svg></div>`,
+  p5: () => `<div class="p5"><div class="p5__rule">
+      ${Array.from({ length: COUNT }, (_, i) =>
+        `<span class="p5__notch" style="left:${(i + 0.5) * (100 / COUNT)}%"></span>`).join('')}
+      <div class="p5__fill"></div>
+      <div class="p5__mark"></div>
+      <div class="p5__hit" role="tablist">${Array.from({ length: COUNT }, (_, i) =>
+        `<button role="tab" data-i="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
+    </div></div>`,
 };
 
 document.getElementById('out').innerHTML = DIRS.map(([id, name, note]) => `
-  <section class="dir ${id}" data-v="${id}">
+  <section class="dir" data-v="${id}">
     <div class="dir__head">
       <span class="dir__n">0${id[1]}</span>
       <span class="dir__name">${name}</span>
@@ -279,89 +236,53 @@ document.getElementById('out').innerHTML = DIRS.map(([id, name, note]) => `
     <div class="stage">${MARKUP[id]()}</div>
   </section>`).join('');
 
-/* Each variant gets the same {index, progress} and paints it its own way. The
-   numbers are the hero's, so the pacing on this page is the pacing on the site. */
+// Each variant paints the same {index, progress} its own way. A mark already
+// seen keeps its fill but loses the brand colour: left orange, finished marks
+// shout louder than the one filling and the active state stops being the
+// most prominent thing in the control.
 const PAINT = {
-  v1: (r, i, p) => {
-    r.querySelector('.v1__cur').textContent = pad(i + 1);
-    r.querySelectorAll('.v1__rung').forEach((el, n) => {
-      el.classList.toggle('is-seen', n < i);
-      el.querySelector('i').style.transform = `scaleX(${n < i ? 1 : n === i ? p : 0})`;
-    });
+  p1: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
+    b.classList.toggle('is-on', n === i);
+    b.classList.toggle('is-past', n < i);
+    b.querySelector('i').style.transform = `scaleX(${n === i ? p : 0})`;
+  }),
+  p2: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
+    b.classList.toggle('is-past', n < i);
+    const lit = n === i ? Math.round(p * TICKS) : 0;
+    b.querySelectorAll('s').forEach((s, k) => s.classList.toggle('lit', k < lit));
+  }),
+  p3: (r, i, p) => r.querySelectorAll('button').forEach((b, n) => {
+    b.classList.toggle('is-past', n < i);
+    b.querySelector('i').style.transform = `scaleY(${n === i ? p : 0})`;
+  }),
+  p4: (r, i, p) => {
+    r.querySelectorAll('.seg').forEach((s, n) => s.classList.toggle('is-past', n < i));
+    const run = r.querySelector('.run');
+    run.setAttribute('d', r.querySelectorAll('.seg')[i].getAttribute('d'));
+    const len = run.getTotalLength();
+    run.style.strokeDasharray = len;
+    run.style.strokeDashoffset = len * (1 - p);
   },
-  v2: (r, i, p) => {
-    r.querySelector('.v2__cur').textContent = pad(i + 1);
+  p5: (r, i, p) => {
     const share = 100 / COUNT;
-    const f = r.querySelector('.v2__fill');
+    r.querySelectorAll('.p5__notch').forEach((s, n) => s.classList.toggle('is-past', n < i));
+    r.querySelector('.p5__mark').style.left = `${(i + 0.5) * share}%`;
+    const f = r.querySelector('.p5__fill');
     f.style.left = `${i * share}%`;
-    // A visible nub at zero, growing to its full share: a lozenge that vanishes
-    // between slides reads as a glitch rather than a reset.
-    f.style.width = `${share * (0.16 + 0.84 * p)}%`;
-  },
-  v3: (r, i, p) => {
-    r.querySelectorAll('.v3__row').forEach((el, n) => {
-      el.classList.toggle('is-active', n === i);
-      el.classList.toggle('is-seen', n < i);
-      el.querySelector('i').style.transform = `scaleY(${n < i ? 1 : n === i ? p : 0})`;
-    });
-  },
-  v4: (r, i, p) => {
-    r.querySelector('.v4__num span').textContent = pad(i + 1);
-    const arc = r.querySelector('.v4__arc');
-    const len = 2 * Math.PI * 35;
-    arc.style.strokeDasharray = len;
-    arc.style.strokeDashoffset = len * (1 - p);
-    r.querySelectorAll('.v4__dot').forEach((el, n) => {
-      el.classList.toggle('is-active', n === i);
-      el.classList.toggle('is-seen', n < i);
-    });
-  },
-  v5: (r, i, p) => {
-    const a = r.querySelector('.v5__a');
-    if (a.dataset.shown !== String(i)) {
-      const b = r.querySelector('.v5__b');
-      // Roll only when there is a previous figure to roll away.
-      if (a.dataset.shown !== undefined) {
-        b.textContent = pad(i + 1);
-        a.style.transition = b.style.transition = 'none';
-        b.style.transform = 'translateY(100%)';
-        requestAnimationFrame(() => {
-          a.style.transition = b.style.transition = 'transform 460ms var(--ease-out)';
-          a.style.transform = 'translateY(-100%)';
-          b.style.transform = 'translateY(0)';
-          setTimeout(() => {
-            a.textContent = pad(i + 1);
-            a.style.transition = 'none';
-            a.style.transform = 'translateY(0)';
-            b.textContent = '';
-          }, 470);
-        });
-      } else {
-        a.textContent = pad(i + 1);
-      }
-      a.dataset.shown = i;
-    }
-    r.querySelector('.v5__bar i').style.transform = `scaleX(${p})`;
-    r.querySelectorAll('.v5__tick').forEach((el, n) => {
-      el.classList.toggle('is-active', n === i);
-      el.classList.toggle('is-seen', n < i);
-    });
+    f.style.width = `${share}%`;
+    f.style.transform = `scaleX(${p})`;
   },
 };
 
 // One clock per variant, so pausing one does not stop the others.
-const clockEl = document.getElementById('clock');
-const whoEl = document.getElementById('who');
 const rigs = DIRS.map(([id]) => {
   const section = document.querySelector(`[data-v="${id}"]`);
   const rig = { id, root: section.querySelector('.stage'), index: 0, start: performance.now(), paused: false, held: 0 };
   section.addEventListener('pointerenter', () => {
-    if (rig.paused) return;
-    rig.paused = true; rig.held = performance.now() - rig.start;
+    if (!rig.paused) { rig.paused = true; rig.held = performance.now() - rig.start; }
   });
   section.addEventListener('pointerleave', () => {
-    if (!rig.paused) return;
-    rig.paused = false; rig.start = performance.now() - rig.held;
+    if (rig.paused) { rig.paused = false; rig.start = performance.now() - rig.held; }
   });
   rig.root.addEventListener('click', (e) => {
     const b = e.target.closest('[data-i]');
@@ -380,8 +301,6 @@ const frame = () => {
     if (elapsed >= PERIOD) { rig.index = (rig.index + 1) % COUNT; rig.start = now; }
     PAINT[rig.id](rig.root, rig.index, Math.min(1, elapsed / PERIOD));
   }
-  clockEl.textContent = `${((rigs[0].paused ? rigs[0].held : now - rigs[0].start) / 1000).toFixed(1)}s`;
-  whoEl.textContent = pad(rigs[0].index + 1);
   requestAnimationFrame(frame);
 };
 requestAnimationFrame(frame);

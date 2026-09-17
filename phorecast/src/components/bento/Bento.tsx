@@ -262,7 +262,11 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return;
+        // Same rule as useSectionMotion: the ratio decides, not isIntersecting,
+        // which is true for the thinnest sliver of overlap.
+        const enough = entry.intersectionRatio >= 0.33
+          || entry.intersectionRect.height >= (entry.rootBounds?.height ?? Infinity) * 0.6;
+        if (!entry.isIntersecting || !enough) return;
         io.disconnect();
 
         for (const [path, load] of Object.entries(CARD_MOTION)) {
@@ -279,7 +283,7 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
             .catch((err) => console.error(`bento: ${name} motion failed to load`, err));
         }
       },
-      { threshold: 0.1, rootMargin: '0px 0px -5% 0px' },
+      { threshold: [0, 0.33, 1], rootMargin: '0px 0px -5% 0px' },
     );
     io.observe(root);
 
@@ -292,11 +296,15 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
 }
 
 export function Bento() {
-  const ref = useSectionMotion<HTMLElement>(buildBento);
+  // A third of the section has to be on screen before it opens. At the old
+  // default it fired on the sliver that shows under the hero before anyone has
+  // scrolled, so the band spent its entrance off screen and was simply there,
+  // finished, the moment you arrived.
+  const ref = useSectionMotion<HTMLElement>(buildBento, { threshold: 0.33 });
   useCardMotion(ref);
 
   return (
-    <section ref={ref} className="bento" id="why" aria-labelledby="why-title">
+    <section ref={ref} className="bento" id="why" aria-labelledby="why-title" data-motion="pending">
       <div className="bento__glows glow-fade" aria-hidden="true"><span className="bento__glow" /></div>
       <div className="container">
         <div className="bento__card">

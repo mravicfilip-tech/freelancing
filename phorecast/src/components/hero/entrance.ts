@@ -100,9 +100,11 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
 
   rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
 
-  // The market cards resolve one at a time, left to right: each fades up out of
-  // its own blur with a fifth of a second between them, which is long enough
-  // that four cards read as four arrivals rather than one block. The blur is
+  // The market cards resolve one at a time, left to right: each fades out of its
+  // own blur with a fifth of a second between them, which is long enough that
+  // four cards read as four arrivals rather than one block. They do not travel
+  // -- the card resolves where it already sits, so the row never shifts. The
+  // blur is
   // the headline's treatment applied to a card, so the section speaks one
   // language. Parked, they are at zero opacity, so nothing leaks past the
   // blur before its turn. clearProps hands everything back to CSS afterwards,
@@ -112,7 +114,6 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
     tl.from(cards, {
       opacity: 0,
       filter: 'blur(14px)',
-      y: 18,
       duration: 0.95,
       stagger: 0.2,
       ease: EASE,

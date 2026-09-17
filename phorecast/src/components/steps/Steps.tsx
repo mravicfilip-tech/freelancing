@@ -33,18 +33,11 @@ export function Steps() {
     return () => window.clearTimeout(id);
   }, [playing, active]);
 
-  // Choosing a step is sticky: the visitor has taken over, so autoplay does not
-  // resume behind them when the pointer leaves.
-  const chosen = useRef(false);
-  const select = useCallback((i: number) => { chosen.current = true; setActive(i); setPlaying(false); }, []);
-
-  // Pausing on enter without resuming on leave stopped the carousel for the
-  // rest of the visit: one stray pointer crossing and it never advanced again,
-  // which also stranded whichever panel was showing as the only one anyone saw.
-  // Reduced motion and an explicit choice both still win over the resume.
-  const resume = useCallback(() => {
-    if (!chosen.current && !reduced.current) setPlaying(true);
-  }, []);
+  // Choosing a step jumps to it and hands it a full turn -- the dwell effect is
+  // keyed on `active`, so changing it restarts the timer rather than stopping
+  // it. The carousel keeps progressing either way; `playing` now answers only
+  // "is motion allowed", which is reduced-motion's business alone.
+  const select = useCallback((i: number) => { setActive(i); }, []);
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); select((active + 1) % STEPS.length); }
@@ -57,10 +50,6 @@ export function Steps() {
       id="how"
       aria-labelledby="steps-title"
       aria-roledescription="carousel"
-      onMouseEnter={() => setPlaying(false)}
-      onMouseLeave={resume}
-      onFocusCapture={() => setPlaying(false)}
-      onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) resume(); }}
       onKeyDown={onKey}
     >
       <div className="container steps__inner">
@@ -81,7 +70,6 @@ export function Steps() {
                   aria-expanded={i === active}
                   aria-controls="steps-panel"
                   onClick={() => select(i)}
-                  onMouseEnter={() => select(i)}
                 >
                   <span className="step__title"><span className="step__n">{i + 1}.</span>{s.title}</span>
                   <span className="step__body">{s.body}</span>

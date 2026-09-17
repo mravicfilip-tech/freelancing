@@ -26,6 +26,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  /* The card is taller than its copy, so centre the block rather than letting
+     it hang from the top edge with all the slack beneath it. */
+  justify-content: center;
   gap: 8px;
   width: 100%;
   min-height: 190px;

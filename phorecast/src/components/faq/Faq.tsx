@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import dot from '../../assets/icons/live-dot.svg';
 import { HeroLogo } from '../HeroLogo';
+import { Icon } from '../Icon';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFaq } from './Faq.motion';
 import seal from '../../assets/faq/seal.svg';
@@ -102,9 +103,16 @@ export function Faq() {
                   {item.chips && (
                     <div className="faq__chips">
                       {item.chips.map((c, ci) =>
+                        /* The seal is a mask, not a picture: seal.svg is one flat
+                           #e5331e path, which is exactly --accent in dark, and the
+                           chip already sets `color: var(--accent)`. So it inherits
+                           currentColor and follows the brand red to #a21605 on paper
+                           without a light variant of the file existing. The eyebrow's
+                           live-dot above is NOT convertible -- it is three stacked
+                           ellipses at three alphas -- and stays an <img>. */
                         'verify' in c ? (
                           <span key={ci} className="faq__chip faq__chip--verify">
-                            <img src={seal} alt="" width={16} height={16} />{c.verify}
+                            <Icon src={seal} w={16} h={16} />{c.verify}
                           </span>
                         ) : (
                           <span key={ci} className="faq__chip">

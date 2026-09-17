@@ -106,6 +106,139 @@
 .faq__chip-value { color: var(--ink); }
 .faq__chip--verify { background: var(--faq-verify-bg); border-color: var(--faq-verify-line); color: var(--accent); }
 
+/* --- Light ------------------------------------------------------------------
+   Written twice, exactly as tokens.css and Footer.css write theirs, because a
+   media query cannot go in a selector list. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies -- index.html resolves both into data-theme
+   before first paint. (1) is what a stripped page or a prerender falls back
+   to, and leaving it out is how a band ends up drawing its dark rows on a
+   light page.
+
+   Only the five --faq-* locals are redefined. Everything else in this file
+   reads a role token and has already flipped, including all four of the
+   accordion's state colours: the number and the plus/minus go --ink-2 ->
+   --accent on open in both themes, which on paper is #5e5651 -> #a21605.
+
+   There is no glow in this band and none is introduced. -------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .faq {
+  /* THE ROW LADDER INVERTS AND KEEPS ITS SPACING.
+
+     In dark the ladder climbs away from the page: page #0f0e0d, closed row
+     #141312 at 1.04:1, open row --panel at 1.12:1. "Open" means "lit". On
+     paper nothing can be brighter than the page, so the same ladder runs the
+     other way -- down from #fffbf8 through #fcf6f1 to --panel #f7f0ea -- and
+     the open row is the DEEPEST tint rather than the palest. The step sizes
+     are kept, not the luminances: 1.04:1 against the page here against 1.04:1
+     in dark, so seven closed rows still read as one list and the open one is
+     still the only card in it.
+
+     --panel and --page do this half by themselves; only the closed row, which
+     sits between them, needs a value. */
+  --faq-row: #fcf6f1;
+
+  /* THE SHADOW IS THE ONE VALUE THAT CANNOT BE TRANSLATED.
+
+     35% black over a near-black page is 1.03:1 -- in dark this shadow is
+     decoration on top of a tint that has already said everything. The same
+     declaration over paper is 2.2:1 at full density: the open row would stop
+     being a raised panel and start being a modal. So the alpha comes down to
+     a tenth and the colour becomes the page's own warm ink rather than pure
+     black, which lands at 1.23:1 at its densest -- a shade deeper than the
+     panel it is cast from, which is what a shadow is. The offset and the blur
+     are not here at all: they are on the rule, so they cannot move. */
+  --faq-row-shadow: rgba(26, 21, 18, 0.1);
+
+  /* White-alpha becomes ink-alpha, which flips the direction for free: more
+     alpha on a dark page is brighter, more on paper is darker, and both mean
+     "there is an edge here". 10% -> 11% is the same eighth-up step the footer
+     took for its own 10% plate line, and for the same reason -- dark ink on
+     paper is less visible per unit alpha. The chip has no ground of its own
+     (it is --panel inside an open row that is also --panel), so this hairline
+     is still the entire shape of the chip in both themes. */
+  --faq-chip-line: rgba(26, 21, 18, 0.11);
+
+  /* The verify chip, rebuilt rather than recoloured.
+
+     In dark it is the accent at 24% over the panel, which lands BRIGHTER than
+     the panel (1.26:1) with a lit brick edge over it (1.36:1) -- the chip
+     glows faintly, the way everything that means "yes, check this" does in
+     this design. Recoloured literally on paper that is a pale pink that lifts
+     off nothing and an edge that has vanished.
+
+     So the wash goes down instead of up: --accent at 12% over --panel is
+     1.23:1 DARKER, which is dark's 1.26:1 read in the only direction paper
+     has, and the edge at 18% is 1.35:1 against that wash against dark's
+     1.36:1. Both steps survive at their own weight. The text is --accent and
+     is already handled: 3.15:1 on the dark chip, 5.70:1 on the light one, the
+     chip being the one place in the band where light is plainly the better
+     of the two. */
+  --faq-verify-bg: rgba(162, 22, 5, 0.12);
+  --faq-verify-line: rgba(162, 22, 5, 0.18);
+  }
+}
+
+:root[data-theme='light'] .faq {
+  /* THE ROW LADDER INVERTS AND KEEPS ITS SPACING.
+
+     In dark the ladder climbs away from the page: page #0f0e0d, closed row
+     #141312 at 1.04:1, open row --panel at 1.12:1. "Open" means "lit". On
+     paper nothing can be brighter than the page, so the same ladder runs the
+     other way -- down from #fffbf8 through #fcf6f1 to --panel #f7f0ea -- and
+     the open row is the DEEPEST tint rather than the palest. The step sizes
+     are kept, not the luminances: 1.04:1 against the page here against 1.04:1
+     in dark, so seven closed rows still read as one list and the open one is
+     still the only card in it.
+
+     --panel and --page do this half by themselves; only the closed row, which
+     sits between them, needs a value. */
+  --faq-row: #fcf6f1;
+
+  /* THE SHADOW IS THE ONE VALUE THAT CANNOT BE TRANSLATED.
+
+     35% black over a near-black page is 1.03:1 -- in dark this shadow is
+     decoration on top of a tint that has already said everything. The same
+     declaration over paper is 2.2:1 at full density: the open row would stop
+     being a raised panel and start being a modal. So the alpha comes down to
+     a tenth and the colour becomes the page's own warm ink rather than pure
+     black, which lands at 1.23:1 at its densest -- a shade deeper than the
+     panel it is cast from, which is what a shadow is. The offset and the blur
+     are not here at all: they are on the rule, so they cannot move. */
+  --faq-row-shadow: rgba(26, 21, 18, 0.1);
+
+  /* White-alpha becomes ink-alpha, which flips the direction for free: more
+     alpha on a dark page is brighter, more on paper is darker, and both mean
+     "there is an edge here". 10% -> 11% is the same eighth-up step the footer
+     took for its own 10% plate line, and for the same reason -- dark ink on
+     paper is less visible per unit alpha. The chip has no ground of its own
+     (it is --panel inside an open row that is also --panel), so this hairline
+     is still the entire shape of the chip in both themes. */
+  --faq-chip-line: rgba(26, 21, 18, 0.11);
+
+  /* The verify chip, rebuilt rather than recoloured.
+
+     In dark it is the accent at 24% over the panel, which lands BRIGHTER than
+     the panel (1.26:1) with a lit brick edge over it (1.36:1) -- the chip
+     glows faintly, the way everything that means "yes, check this" does in
+     this design. Recoloured literally on paper that is a pale pink that lifts
+     off nothing and an edge that has vanished.
+
+     So the wash goes down instead of up: --accent at 12% over --panel is
+     1.23:1 DARKER, which is dark's 1.26:1 read in the only direction paper
+     has, and the edge at 18% is 1.35:1 against that wash against dark's
+     1.36:1. Both steps survive at their own weight. The text is --accent and
+     is already handled: 3.15:1 on the dark chip, 5.70:1 on the light one, the
+     chip being the one place in the band where light is plainly the better
+     of the two. */
+  --faq-verify-bg: rgba(162, 22, 5, 0.12);
+  --faq-verify-line: rgba(162, 22, 5, 0.18);
+}
+
 @media (max-width: 1180px) {
   .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .faq__list { grid-column: 1; }

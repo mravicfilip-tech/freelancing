@@ -4,7 +4,8 @@
  * so the phone is the one object the section is about and everything else is
  * staged around its arrival.
  *
- * THE SEQUENCE (3.9s end to end)
+ * THE SEQUENCE (4.0s end to end). Times below are measured from the end of the
+ * held lead-in beat, which every cue is offset by — see LEAD.
  *   0.00  The eyebrow, then the two-line heading: the label on the band, quiet
  *         and small, so the stage is named before anything fills it.
  *   0.70  THE PHONE. The lead, alone, for a beat and a half: it rises 140
@@ -32,24 +33,55 @@
 import { EASE, one, rise } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
 
-/** The stage is authored at 1920 wide; `--u` is one of its pixels. */
-const DESIGN_W = 1920;
-
 /**
- * Design pixels to CSS pixels for the stage as it is actually laid out.
+ * One design pixel, in the CSS pixels this viewport actually renders it as.
  *
- * `--u` itself cannot be read back — it is written in container query units and
- * `getComputedStyle` hands back the unresolved `calc(100cqw / 1920)` token
- * stream — so the factor is measured off the stage's own box. Clamped at the
- * bottom so a narrow viewport still gets travel a person can see, and at the
- * top so an ultra-wide one does not fling the cards across the screen.
+ * The stage does all its geometry in `--u`, and every distance below is stated
+ * in the design's own pixels so the entrance is proportionally identical at
+ * every width instead of travelling twice as far, relatively, on a laptop as on
+ * a desktop. So the factor has to be `--u` itself.
+ *
+ * It cannot be read off `getComputedStyle`: `--u` is written in container query
+ * units, so the property hands back the unresolved `calc(100cqw / 1920)` token
+ * stream rather than a length. Nor can it be derived as width / 1920, because
+ * under 1100px the stage re-bases itself to a 1400-wide design and that guess
+ * is then 37% wrong. A probe sized in `--u` and measured makes the browser
+ * resolve it, correctly at every breakpoint and with no knowledge here of what
+ * the breakpoints are. It is appended, measured and removed inside one
+ * synchronous block, before the timeline is built, so it cannot be seen.
  */
 function unit(el: HTMLElement): number {
   const stage = one(el, '.fam__stage');
-  const w = stage?.getBoundingClientRect().width ?? 0;
-  const k = w > 0 ? w / DESIGN_W : 0.75;
-  return Math.min(1.1, Math.max(0.62, k));
+  if (!stage) return 0.75;
+
+  const probe = document.createElement('div');
+  probe.style.cssText =
+    'position:absolute;top:0;left:0;height:0;visibility:hidden;pointer-events:none;width:calc(1000 * var(--u))';
+  stage.appendChild(probe);
+  const u = probe.getBoundingClientRect().width / 1000;
+  probe.remove();
+
+  if (u > 0) return u;
+  // The probe could not resolve -- no container support, a detached stage.
+  // Fall back to the full-width design, which is right above 1100px.
+  const w = stage.getBoundingClientRect().width;
+  return w > 0 ? w / 1920 : 0.75;
 }
+
+/**
+ * A held beat before the first element moves.
+ *
+ * The section is revealed and the timeline starts in the same frame, and that
+ * frame is the most expensive one this band ever has: the observer fires, React
+ * runs a layout effect, and the browser lays out and paints a full-bleed stage
+ * with a phone, four cards and a blurred glow field that have never been
+ * painted before. Measured on the dev server, 588ms passed between the scroll
+ * and the first frame the page actually put on screen. Anything scheduled at
+ * zero spends that window travelling unseen: the eyebrow was 71% faded in and
+ * had 9 of its 33 pixels left by the time anyone could see it. The lead-in
+ * costs a third of a second of stillness and buys the opening beat back.
+ */
+const LEAD = 0.34;
 
 export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const u = unit(el);
@@ -63,8 +95,8 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const pred = q('.fam__pred')[0];
 
   /* 1 — the band names itself. */
-  rise(tl, q('.fam__copy--left .eyebrow'), 0, { y: d(44), duration: 0.9, clearProps: 'transform,opacity' });
-  rise(tl, q('.fam__title'), 0.16, { y: d(52), duration: 1.1, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.9, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__title'), LEAD + 0.16, { y: d(52), duration: 1.1, clearProps: 'transform,opacity' });
 
   /* 2 — the lead. Origin low on the handset so the small amount of scale reads
      as it settling onto the stage rather than growing out of its own middle. */
@@ -77,12 +109,12 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
       ease: EASE,
       transformOrigin: '50% 72%',
       clearProps: 'transform,opacity',
-    }, 0.7);
+    }, LEAD + 0.7);
 
     /* 3 — the app fills in, once the handset has stopped moving. `expo.out` is
        99% travelled at 70% of its duration, so 1.8s is after the landing, not
        during it. */
-    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), 1.8, {
+    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), LEAD + 1.8, {
       y: d(28),
       duration: 0.9,
       stagger: 0.18,
@@ -93,10 +125,10 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   /* 4 — the floating cards come in from the left, towards the phone. Different
      vectors so the pair does not read as one block sliding. */
   if (ecb) {
-    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, 2.05);
+    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.05);
   }
   if (nvda) {
-    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, 2.22);
+    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.22);
   }
 
   /* 5 — context behind the right-hand copy: furthest back, so smallest moves
@@ -104,14 +136,14 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
      `from` tween ends wherever the element already is; `clearProps` hands the
      settled value back to the stylesheet either way. */
   ghosts.forEach((g, i) => {
-    tl.from(g, { x: d(62), y: d(26), opacity: 0, duration: 1.1, ease: 'power3.out', clearProps: 'transform,opacity' }, 2.15 + i * 0.1);
+    tl.from(g, { x: d(62), y: d(26), opacity: 0, duration: 1.1, ease: 'power3.out', clearProps: 'transform,opacity' }, LEAD + 2.15 + i * 0.1);
   });
   if (pred) {
-    tl.from(pred, { x: d(90), y: d(34), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, 2.35);
+    tl.from(pred, { x: d(90), y: d(34), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.35);
   }
 
   /* 6 — the claim, then its button. */
-  rise(tl, q('.fam__sub-title, .fam__sub-body'), 2.4, {
+  rise(tl, q('.fam__sub-title, .fam__sub-body'), LEAD + 2.4, {
     y: d(48),
     duration: 0.95,
     stagger: 0.16,
@@ -134,11 +166,11 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     tl.fromTo(cta,
       { y: d(48), opacity: 0 },
       { y: 0, opacity: 1, duration: 0.95, ease: EASE, clearProps: 'transform,opacity' },
-      2.72);
+      LEAD + 2.72);
   }
 
   /* 7 — the category strip closes the band out, left to right. */
-  rise(tl, q('.fam__chips > *'), 2.65, { y: d(40), duration: 0.8, stagger: 0.08, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__chips > *'), LEAD + 2.65, { y: d(40), duration: 0.8, stagger: 0.08, clearProps: 'transform,opacity' });
 }
 
 /* Ambient loop -----------------------------------------------------------------

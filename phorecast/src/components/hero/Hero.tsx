@@ -10,7 +10,7 @@ import { SlideAccount } from './slides/SlideAccount';
 import { SlideBonus, BonusCountdown } from './slides/SlideBonus';
 import { SlideFuture } from './slides/SlideFuture';
 import { HeroLogo } from '../HeroLogo';
-import liveDot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import apple from '../../assets/icons/apple.svg';
 import tesla from '../../assets/icons/tesla.svg';
 import bitcoin from '../../assets/icons/bitcoin.svg';
@@ -213,7 +213,7 @@ export function Hero() {
               <div className="hero__copy">
                 <div className="hero__heading">
                   <p className="eyebrow">
-                    <img src={liveDot} alt="" className="eyebrow__dot" width={12} height={12} />
+                    <LiveDot />
                     {s.eyebrow}
                   </p>
                   <h1 className="display hero__title">{s.title}</h1>

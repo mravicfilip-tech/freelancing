@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import dot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import { PanelRegister } from './panels/PanelRegister';
 import { PanelFund } from './panels/PanelFund';
 import { PanelTrade } from './panels/PanelTrade';
@@ -85,7 +85,7 @@ export function Steps() {
     >
       <div className="container steps__inner">
         <p className="eyebrow">
-          <img src={dot} alt="" className="eyebrow__dot" width={12} height={12} />
+          <LiveDot />
           Registration
         </p>
         <h2 id="steps-title" className="steps__title">Open an account in 3 simple steps</h2>

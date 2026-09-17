@@ -1,4 +1,4 @@
-import dot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import btcCoin from '../../assets/built/btc-coin.svg';
 import line from '../../assets/built/line.svg';
 import youDot from '../../assets/built/you-dot.svg';
@@ -53,7 +53,9 @@ import './Built.css';
  *                  node-disc(-soft), node-dax/eur/lock, btc-coin, tesla,
  *                  gold, node-btc   dark plates carrying locked marks
  *                  live-dot.svg      three tinted ellipses; the eyebrow dot
- *                                    is shared with five other bands
+ *                                    is shared with five other bands, and all
+ *                                    six swap the whole file through <LiveDot>
+ *                                    rather than masking it flat
  *
  * THE BOX is where a mask conversion can move geometry, and there are two
  * different answers in this file.
@@ -195,7 +197,7 @@ export function Built() {
       <div className="container built__inner">
         <header className="built__head">
           <p className="eyebrow">
-            <img src={dot} alt="" className="eyebrow__dot" width={12} height={12} />
+            <LiveDot />
             Better Infrastructure
           </p>
           <h2 id="built-title" className="built__title">Built for the Way You Trade</h2>

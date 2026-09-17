@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import dot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import { HeroLogo } from '../HeroLogo';
 import { Icon } from '../Icon';
 import { useSectionMotion } from '../../lib/motion';
@@ -65,7 +65,7 @@ export function Faq() {
       <div className="container faq__inner">
         <div className="faq__rail">
           <p className="eyebrow">
-            <img src={dot} alt="" className="eyebrow__dot" width={12} height={12} />
+            <LiveDot />
             Frequently asked
           </p>
           <h2 id="faq-title" className="faq__title">Answers<br />you can verify</h2>
@@ -109,7 +109,9 @@ export function Faq() {
                            currentColor and follows the brand red to #a21605 on paper
                            without a light variant of the file existing. The eyebrow's
                            live-dot above is NOT convertible -- it is three stacked
-                           ellipses at three alphas -- and stays an <img>. */
+                           ellipses at three alphas, and a mask would flatten them
+                           into one disc -- so it stays an <img> and swaps the whole
+                           file per theme. See src/components/LiveDot.tsx. */
                         'verify' in c ? (
                           <span key={ci} className="faq__chip faq__chip--verify">
                             <Icon src={seal} w={16} h={16} />{c.verify}

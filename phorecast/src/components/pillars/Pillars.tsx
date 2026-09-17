@@ -1,4 +1,4 @@
-import dot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import markWhite from '../../assets/pillars/mark-white.svg';
 import markOrange from '../../assets/pillars/mark-orange.svg';
 import iconFee from '../../assets/pillars/icon-fee.svg';
@@ -22,8 +22,10 @@ const byName = (m: Record<string, string>, prefix: string, n: number) =>
    rows, #e5331e for the on-chain mark -- so they are <Icon>s rather than
    <img>s: the file becomes a CSS mask and the paint becomes `color`, set in
    Pillars.css against the token that matches the hex the file bakes. See
-   src/components/Icon.tsx. The eyebrow dot is deliberately NOT converted; it
-   is three tinted ellipses, and a mask would flatten it to one disc.
+   src/components/Icon.tsx. The eyebrow dot is deliberately NOT an <Icon>: it
+   is three tinted ellipses, and a mask would flatten it to one disc. It is
+   <LiveDot> instead, which picks between two files by theme -- one decision,
+   made once, for the six bands that share it. See src/components/LiveDot.tsx.
 
    THE BOX, which is where a geometry regression hides. <Icon> writes
    width/height inline from `w`/`h`, but the four single-file glyphs and the
@@ -134,7 +136,7 @@ export function Pillars() {
 
       <div className="pillars__inner">
         <p className="eyebrow">
-          <img src={dot} alt="" className="eyebrow__dot" width={12} height={12} />
+          <LiveDot />
           Built for Better Trading
         </p>
         <h2 id="pillars-title" className="pillars__title">

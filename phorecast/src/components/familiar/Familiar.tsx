@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import dot from '../../assets/icons/live-dot.svg';
+import { LiveDot } from '../LiveDot';
 import { Roll } from '../Roll';
 import { Icon } from '../Icon';
 import ecb from '../../assets/familiar/ecb.svg';
@@ -177,7 +177,7 @@ export function Familiar() {
       <div className="fam__stage">
         <div className="fam__copy fam__copy--left">
           <p className="eyebrow">
-            <img src={dot} alt="" className="eyebrow__dot" width={12} height={12} />
+            <LiveDot />
             Built for Traders
           </p>
           <h2 id="fam-title" className="fam__title">Familiar Trading.<br />Better Infrastructure.</h2>

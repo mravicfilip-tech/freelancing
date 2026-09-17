@@ -5,25 +5,66 @@
   overflow: hidden;
   isolation: isolate;
 }
-/* left-edge orange glow (Figma shader node 244:1326 approximated) */
+/* Left-edge glow ------------------------------------------------------------
+   Figma frame 365:857, background node 365:858 -> the `Circle` group 487:1729.
+   Not a shader and not one disc: three 1539 x 1539 circles, each blurred by
+   109.3, painted bottom-up. Their design positions inside the 1920 x 1080 frame
+   are (-689, 323), (-675, 660) and (-991, 781), and only their top arcs reach
+   the frame, which is what makes the light climb the left edge and spread along
+   the floor rather than read as a disc.
+
+   Anchored by `bottom`, not `top`. The band is 1080 design px tall only at
+   1920; below that the cards keep their own type sizes while --u shrinks, so
+   the section grows in design pixels. Anchoring to the floor keeps the light
+   where the design puts it -- along the bottom -- instead of stranding it
+   mid-band. The bottom offsets are the design tops re-expressed against a
+   1080-tall frame: 1080 - (top + 1539).
+
+   Figma clips this group to x <= 1114, but the widest disc plus its blur bleed
+   reaches only 1083, so the clip never bites and there is nothing to model. */
 .bento__glows {
+  --u: calc(100cqw / 1920);
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
+  container-type: inline-size;
   pointer-events: none;
 }
+/* The group the entrance blooms. Keeping one wrapper around the three discs is
+   what lets `buildBento` go on tweening a single `.bento__glow`, so the light
+   arrives as one thing and the timeline is untouched. It blooms from the
+   bottom-left corner because that is where the light comes from; scaling about
+   the middle of a full-width box would slide the glow up and right instead. */
 .bento__glow {
   position: absolute;
-  left: -551px;
-  bottom: -297px;
-  width: 1539px;
-  height: 1539px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #b43725 0%, #701712 45%, rgba(15, 14, 13, 0) 70%);
-  filter: blur(110px);
-  opacity: 0.9;
+  inset: 0;
+  transform-origin: 0% 100%;
+  /* Three 109px blurs re-rasterising under the entrance's scale is the one
+     expensive frame in this section; the hint keeps it on the compositor. */
+  will-change: transform;
 }
+.bento__g {
+  position: absolute;
+  width: calc(1539 * var(--u));
+  height: calc(1539 * var(--u));
+  border-radius: 50%;
+  filter: blur(calc(109.3 * var(--u)));
+}
+/* Ellipse 39 -- the dark red halo that keeps the glow from meeting the ground
+   as a flat orange. Its fill is a gradient, and these are the Figma stops
+   projected onto the CSS gradient line of a 1539 box: the vector runs from
+   (1290.1, 218.6) to (1376.1, 626.1) in the export's own coordinates. */
+.bento__g--ember {
+  left: calc(-689 * var(--u));
+  bottom: calc(-782 * var(--u));
+  background: linear-gradient(168.08deg, #0f0e0d 8.71%, #7e0202 31.55%);
+}
+/* Ellipse 40 */
+.bento__g--orange { left: calc(-675 * var(--u)); bottom: calc(-1119 * var(--u)); background: #d1541c; }
+/* Ellipse 41 -- the peach core, and the last one painted. */
+.bento__g--peach  { left: calc(-991 * var(--u)); bottom: calc(-1240 * var(--u)); background: #f99e57; }
+
 .bento__card {
   display: flex;
   flex-direction: column;

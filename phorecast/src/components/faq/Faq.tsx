@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from 'react';
 import dot from '../../assets/icons/live-dot.svg';
 import { HeroLogo } from '../HeroLogo';
+import { useSectionMotion } from '../../lib/motion';
+import { buildFaq } from './Faq.motion';
 import seal from '../../assets/faq/seal.svg';
 import './Faq.css';
 
@@ -52,8 +54,13 @@ export function Faq() {
   // Centred in its own square box, so it needs its own placement rather than the hero's.
   const markPlacement = useMemo(() => ({ heightFraction: 0.86, widthFraction: 0.86, cx: 0.5, cy: 0.5 }), []);
 
+  // The band arrives when it is scrolled to; see Faq.motion.ts. `data-motion`
+  // below holds the animated parts in CSS until this takes over, and the
+  // accordion's own state is untouched by any of it.
+  const ref = useSectionMotion<HTMLElement>(buildFaq);
+
   return (
-    <section className="faq" id="faq" aria-labelledby="faq-title">
+    <section ref={ref} className="faq" id="faq" aria-labelledby="faq-title" data-motion="pending">
       <div className="container faq__inner">
         <div className="faq__rail">
           <p className="eyebrow">

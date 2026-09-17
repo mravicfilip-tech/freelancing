@@ -21,8 +21,40 @@
   background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
   transition: background-color 160ms ease, border-color 160ms ease;
 }
-.footer__social:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.24); }
-.footer__social img { width: 20px; height: 20px; }
+.footer__social:hover,
+.footer__social:focus-visible { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.24); }
+
+/* The glyph goes to white on hover.
+
+   It cannot be recoloured the way the text links are. Each of these four icons
+   is an `<img>` pointing at an SVG file whose glyph path carries a literal
+   `fill="#9D9D9D"`, and an external SVG loaded through `<img>` is a separate
+   document: no rule in this stylesheet reaches inside it, and `currentColor`
+   has nothing to inherit from. The fan section hit exactly this and answered it
+   the same way -- see PILL_ICON_LIT in Fan.loop.ts. `brightness(0)` flattens
+   every channel to black, `invert(1)` lifts it to white; both are per-pixel and
+   leave alpha alone, so the faint 6%-white plate and 10%-white border the
+   export also draws inside the file come back out at exactly the values they
+   went in at, and only the grey glyph changes.
+
+   The rest state is written out as the identity filter rather than left as
+   `none`, so the transition has two filter lists to interpolate between instead
+   of a keyword and a list. A plain 160ms colour move, matching the button's own
+   background transition above: no glow, no bloom, no shadow, no scale.
+
+   `:focus-visible` gets the same thing, the way global.css does for the roll,
+   so hover is not the only signal. Reduced motion drops the transition and
+   keeps the state change -- the white still arrives, it just arrives at once. */
+.footer__social img {
+  width: 20px; height: 20px;
+  filter: brightness(1) invert(0);
+  transition: filter 160ms ease;
+}
+.footer__social:hover img,
+.footer__social:focus-visible img { filter: brightness(0) invert(1); }
+@media (prefers-reduced-motion: reduce) {
+  .footer__social img { transition: none; }
+}
 
 .footer__columns { display: flex; gap: 48px; flex-wrap: wrap; }
 .footer__col { display: flex; flex-direction: column; gap: 24px; width: 208px; }
@@ -66,4 +98,36 @@
   .footer__meta { flex-direction: column; gap: 12px; font-size: 14px; }
   .footer__legal-links { gap: 16px; }
   .footer__wordmark { height: 90px; margin-top: 16px; }
+}
+
+/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
+   writes its start values the moment a tween is built, and this band is not
+   built until it has been scrolled to, so without this the whole footer would
+   sit finished in the sliver showing under the FAQ and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the footer's own box and all
+   of its spacing stay, so nothing about the layout pops in and the page does
+   not change height when the band arrives.
+
+   `.footer__col` and `.footer__socials` are held as containers, which hides
+   what is inside them, and the entrance moves those children -- so the hold is
+   lifted onto elements GSAP has already parked at opacity 0. Nothing addresses
+   `.roll__in`: the hover's two spans are inside a held `<li>` and come back
+   exactly as the stylesheet left them. */
+[data-js] .footer[data-motion='pending'] .footer__glow,
+[data-js] .footer[data-motion='pending'] .footer__brand .logo,
+[data-js] .footer[data-motion='pending'] .footer__tagline,
+[data-js] .footer[data-motion='pending'] .footer__socials,
+[data-js] .footer[data-motion='pending'] .footer__col,
+[data-js] .footer[data-motion='pending'] .footer__rule,
+[data-js] .footer[data-motion='pending'] .footer__meta,
+[data-js] .footer[data-motion='pending'] .footer__wordmark {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .footer[data-motion='pending'] * { visibility: visible; }
 }

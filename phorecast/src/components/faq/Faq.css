@@ -77,3 +77,30 @@
   .faq__answer { padding: 0 20px 20px; }
   .faq__lede { font-size: 17px; }
 }
+
+/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
+   writes its start values the moment a tween is built, and this band is not
+   built until it has been scrolled to, so without this the whole section would
+   sit finished in the sliver showing under the one above and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the section's own box, the
+   grid and the rows' spacing stay, so nothing about the layout pops in.
+
+   The rows are held as whole `<li>`s, which is also what the entrance moves.
+   The open row's answer panel is inside one of them and is never addressed
+   separately -- by this rule or by any tween -- so the accordion cannot be
+   caught half open by a hold that is lifted mid-click. */
+[data-js] .faq[data-motion='pending'] .faq__rail .eyebrow,
+[data-js] .faq[data-motion='pending'] .faq__title,
+[data-js] .faq[data-motion='pending'] .faq__lede,
+[data-js] .faq[data-motion='pending'] .faq__mark,
+[data-js] .faq[data-motion='pending'] .faq__row {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .faq[data-motion='pending'] * { visibility: visible; }
+}

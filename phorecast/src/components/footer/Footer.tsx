@@ -1,5 +1,7 @@
 import { Logo } from '../Logo';
 import { Roll } from '../Roll';
+import { useSectionMotion } from '../../lib/motion';
+import { buildFooter } from './Footer.motion';
 import x from '../../assets/social/x.svg';
 import discord from '../../assets/social/discord.svg';
 import telegram from '../../assets/social/telegram.svg';
@@ -23,8 +25,12 @@ const SOCIALS = [
 const LEGAL = ['Terms of Service', 'Privacy Policy', 'Cookie Preferences'];
 
 export function Footer() {
+  // The band arrives when it is scrolled to; see Footer.motion.ts. `data-motion`
+  // below holds the animated parts in CSS until this takes over.
+  const ref = useSectionMotion<HTMLElement>(buildFooter);
+
   return (
-    <footer className="footer">
+    <footer ref={ref} className="footer" data-motion="pending">
       <div className="footer__glow glow-fade--top" aria-hidden="true">
         <span className="footer__g footer__g--red" />
         <span className="footer__g footer__g--orange" />

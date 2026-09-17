@@ -20,6 +20,22 @@
    Migrating a section is therefore: swap its value tokens for role tokens,
    prove the dark snapshot is IDENTICAL, and only then look at light. */
 :root {
+  /* The counterpart of the `color-scheme: light` in the two blocks below, and
+     it has to be here or that pair does nothing: with only one side declared,
+     `color-scheme` resolves to `normal` in dark, which renders the native UI
+     in the LIGHT scheme in BOTH themes. Measured on the built page --
+     `getComputedStyle(documentElement).colorScheme` read `normal` in dark and
+     `light` in light, i.e. the same rendering either way.
+
+     This is the one change in the light-mode job that alters dark, and it is
+     deliberate. It moves the scrollbar, the text-selection default, the
+     spellcheck underline and the canvas fallback to the dark scheme; there are
+     no form controls on the page to move. Nothing in the element model
+     changes, so `theme-snapshot.mjs` cannot see it and the dark diff is still
+     IDENTICAL -- which is exactly why LIGHTMODE.md §1.4 says to say it out
+     loud rather than let it turn up as a surprise. */
+  color-scheme: dark;
+
   /* --- Value tokens — Figma variables, fixed in both themes ---------------- */
   --bg: #0f0e0d;                 /* page ground */
   --white-font: #fffbf8;         /* headlines, primary text */

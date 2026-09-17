@@ -28,6 +28,14 @@
 import { chromium } from 'playwright-core';
 
 const ENTRANCE = process.argv.includes('--entrance');
+// A theme is not a cosmetic argument here. Six motion modules read their
+// resting colours through getComputedStyle at BUILD time, and several beats in
+// this design work by getting BRIGHTER -- which on paper has to become darker
+// instead. A loop can therefore keep its timing, keep its travel, score
+// identically on this script, and still be invisible in the other theme. So
+// the same numbers have to be produced twice, once per theme, and this is how
+// you ask for the second one.
+const THEME = process.argv.includes('--light') ? 'light' : 'dark';
 const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const URL = args[0] || 'http://localhost:5173';
 const SECONDS = Number(args[1] || (ENTRANCE ? 6 : 9));
@@ -37,19 +45,32 @@ const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   args: ['--no-sandbox', '--disable-webgl'],
 });
-const page = await browser.newPage({ colorScheme: 'dark', viewport: { width: 1600, height: 950 } });
+const page = await browser.newPage({ colorScheme: THEME, viewport: { width: 1600, height: 950 } });
 const errs = [];
 page.on('pageerror', (e) => errs.push(e.message.slice(0, 110)));
 page.on('console', (m) => m.type() === 'error' && errs.push(m.text().slice(0, 110)));
 
 await page.goto(URL, { waitUntil: 'load' });
+// index.html resolves the theme before first paint from localStorage first and
+// only then from the media query, so the emulated colorScheme above is not on
+// its own enough to pin it. Writing the attribute is.
+await page.addInitScript((t) => {
+  document.addEventListener('DOMContentLoaded', () => { document.documentElement.dataset.theme = t; });
+  try { document.documentElement.dataset.theme = t; } catch { /* before <html> exists */ }
+}, THEME);
+await page.evaluate((t) => { document.documentElement.dataset.theme = t; }, THEME);
+
+console.log(`# ${THEME}${ENTRANCE ? ' entrance' : ''} — ${URL}`);
 
 for (const sel of SECTIONS) {
   // An entrance plays once. Scrolling to section three necessarily passes
   // section four's trigger, so by its turn it would already have opened and
   // would read as STATIC. A reload per section gives each one an untouched
   // page; the cost is a few seconds and the alternative is a false negative.
-  if (ENTRANCE && sel !== SECTIONS[0]) await page.goto(URL, { waitUntil: 'load' });
+  if (ENTRANCE && sel !== SECTIONS[0]) {
+    await page.goto(URL, { waitUntil: 'load' });
+    await page.evaluate((t) => { document.documentElement.dataset.theme = t; }, THEME);
+  }
 
   const found = await page.evaluate((s) => !!document.querySelector(s), sel);
   if (!found) { console.log(`${sel.padEnd(9)} not found`); continue; }

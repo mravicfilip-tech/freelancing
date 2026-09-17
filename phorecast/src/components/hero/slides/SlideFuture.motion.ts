@@ -257,23 +257,23 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 1. The diamond fires — the order is placed at the BTC/USD desk.
   if (diamond) {
-    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.5, rotation: 45, duration: 0.26, ease: 'power2.out' }, 0)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.5, rotation: 45, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 0.26);
   }
   if (coin) {
-    loop.fromTo(coin, { scale: 1 }, { scale: 1.12, duration: 0.26, ease: 'power2.out' }, 0.06)
+    loop.fromTo(coin, { scale: 1 }, { scale: 1.12, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.06)
         .to(coin, { scale: 1, duration: 0.5, ease: 'power2.out' }, 0.32);
   }
 
   // 2. The rings ripple outward from it — smallest first.
   rings.forEach((ring, i) => {
     const at = 0.1 + i * 0.14;
-    loop.fromTo(ring, { scale: 1 }, { scale: 1.055, duration: 0.5, ease: 'sine.inOut' }, at)
+    loop.fromTo(ring, { scale: 1 }, { scale: 1.055, duration: 0.5, ease: 'sine.inOut', immediateRender: false }, at)
         .to(ring, { scale: 1, duration: 0.6, ease: 'sine.inOut' }, at + 0.5);
   });
 
   // 3. The order travels the whole circuit, clockwise, lighting what it reaches.
-  loop.fromTo(pulse, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: 'power2.out' }, 0.34)
+  loop.fromTo(pulse, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: 'power2.out', immediateRender: false }, 0.34)
       .fromTo(
         travel,
         { s: 0 },
@@ -281,6 +281,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
           s: circuit.total,
           duration: 4.0,
           ease: 'power1.inOut',
+          immediateRender: false,
           onUpdate: () => {
             placePulse();
             while (next < stops.length && travel.s >= stops[next].s) stops[next++].fire();
@@ -292,11 +293,11 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 4. It reaches the mark's feed, then settles back into the diamond.
   if (feed) {
-    loop.fromTo(feed, { scale: 1 }, { scale: 2.6, duration: 0.22, ease: 'power2.out' }, 4.45)
+    loop.fromTo(feed, { scale: 1 }, { scale: 2.6, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.45)
         .to(feed, { scale: 1, duration: 0.55, ease: 'power2.out' }, 4.67);
   }
   if (diamond) {
-    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.35, rotation: 45, duration: 0.22, ease: 'power2.out' }, 4.55)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.35, rotation: 45, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.55)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 4.77);
   }
 
@@ -310,33 +311,52 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   const loadIn = gsap.timeline({ paused: true, onComplete: () => { settleProps(); loop.restart(true); } });
   const B = 0.3; // the shared hero entrance is still fading the visual up until ~1.6s
 
+  // Every tween below is `immediateRender: false`, and the start states are
+  // parked by these `set`s at position 0 instead. A delayed `fromTo` renders
+  // its FROM value the moment the timeline is BUILT, not when the playhead
+  // reaches it -- so with the default the illustration would be parked half
+  // assembled from mount until slide 4 is first shown, which on this carousel
+  // can be twenty seconds of a slide nobody is looking at yet, and any lag in
+  // the load-in holds it there on screen. Parking at frame 0 means the
+  // illustration is untouched until the load-in actually runs, and each part
+  // is hidden for exactly its own tween.
+  if (rings.length) loadIn.set(rings, { scale: 0.88, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  if (pillGroup.length) loadIn.set(pillGroup, { x: -22 * u, opacity: 0 }, 0);
+  if (badges.length) loadIn.set(badges, { scale: 0.72, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  if (tags.length) loadIn.set(tags, { y: 12 * u, opacity: 0 }, 0);
+  if (nodes.length) loadIn.set(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  if (stub) loadIn.set(stub, { scaleX: 0, transformOrigin: '0% 50%' }, 0);
+  if (diamond) loadIn.set(diamond, { scale: 0, rotation: 45 }, 0);
+  if (trackTop) loadIn.set(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, 0);
+  if (trackBottom) loadIn.set(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, 0);
+
   if (rings.length) {
     loadIn.fromTo(rings,
       { scale: 0.88, opacity: 0, transformOrigin: '50% 50%' },
-      { scale: 1, opacity: 1, duration: 1.0, stagger: 0.14, ease: 'expo.out' }, B);
+      { scale: 1, opacity: 1, duration: 1.0, stagger: 0.14, ease: 'expo.out', immediateRender: false }, B);
   }
   // The track is an <img>, so it cannot be drawn with a dash offset. A clip
   // wipe from each half's own seam reads the same way: the circuit traces
   // itself clockwise, top half left-to-right, bottom half right-to-left.
-  if (trackTop) loadIn.fromTo(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut' }, B + 0.1);
-  if (trackBottom) loadIn.fromTo(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut' }, B + 0.35);
+  if (trackTop) loadIn.fromTo(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 0.1);
+  if (trackBottom) loadIn.fromTo(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 0.35);
 
   if (pillGroup.length) {
     loadIn.fromTo(pillGroup,
       { x: -22 * u, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.85, stagger: 0.07, ease: 'expo.out' }, B + 0.2);
+      { x: 0, opacity: 1, duration: 0.85, stagger: 0.07, ease: 'expo.out', immediateRender: false }, B + 0.2);
   }
   // Badges arrive in the order the circuit reaches them, not in document order.
   const arrivalOrder = [...badgeInfo].sort((a, b) => a.s - b.s).map((b) => b.el);
   if (arrivalOrder.length) {
     loadIn.fromTo(arrivalOrder,
       { scale: 0.72, opacity: 0, transformOrigin: '50% 50%' },
-      { scale: 1, opacity: 1, duration: 0.7, stagger: 0.13, ease: 'expo.out' }, B + 0.45);
+      { scale: 1, opacity: 1, duration: 0.7, stagger: 0.13, ease: 'expo.out', immediateRender: false }, B + 0.45);
   }
-  if (tags.length) loadIn.fromTo(tags, { y: 12 * u, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'expo.out' }, B + 0.55);
-  if (stub) loadIn.fromTo(stub, { scaleX: 0, transformOrigin: '0% 50%' }, { scaleX: 1, duration: 0.45, ease: 'expo.out' }, B + 0.62);
-  if (diamond) loadIn.fromTo(diamond, { scale: 0, rotation: 45 }, { scale: 1, rotation: 45, duration: 0.6, ease: 'expo.out' }, B + 0.8);
-  if (nodes.length) loadIn.fromTo(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'expo.out' }, B + 0.7);
+  if (tags.length) loadIn.fromTo(tags, { y: 12 * u, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'expo.out', immediateRender: false }, B + 0.55);
+  if (stub) loadIn.fromTo(stub, { scaleX: 0, transformOrigin: '0% 50%' }, { scaleX: 1, duration: 0.45, ease: 'expo.out', immediateRender: false }, B + 0.62);
+  if (diamond) loadIn.fromTo(diamond, { scale: 0, rotation: 45 }, { scale: 1, rotation: 45, duration: 0.6, ease: 'expo.out', immediateRender: false }, B + 0.8);
+  if (nodes.length) loadIn.fromTo(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'expo.out', immediateRender: false }, B + 0.7);
 
   /* ── when it runs: the slide is active AND the hero is on screen ────────── */
 
@@ -346,8 +366,11 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   let running = false;
 
   const halt = () => {
-    if (!running) return;
+    // No `running` guard: if this is reached before anything played, settling is
+    // a no-op, and if it is reached mid-load-in it is the only thing that puts
+    // a half-assembled illustration back to the design.
     running = false;
+    window.clearTimeout(guard);
     loadIn.pause();
     loop.pause();
     spawned.forEach((tl) => tl.kill());
@@ -356,12 +379,34 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     settleProps();
   };
 
+  // If the load-in stalls -- a blocked main thread while the WebGL mark
+  // compiles, a tab throttled in the background -- settle it rather than leave
+  // the illustration half assembled on screen. A fixed deadline cannot tell
+  // "stuck" from "slow", because lag smoothing makes an honest sequence take
+  // longer in wall time than its own duration, so sample past the deadline and
+  // only force the end once progress has actually stopped moving. Same shape as
+  // the guard in lib/motion.ts.
+  let guard = 0;
+  const watchLoadIn = () => {
+    let seen = -1;
+    const watch = () => {
+      const now = loadIn.progress();
+      if (now >= 1 || !running) return;
+      if (now === seen) { loadIn.progress(1); return; }
+      seen = now;
+      guard = window.setTimeout(watch, 500);
+    };
+    guard = window.setTimeout(watch, (loadIn.duration() + 2) * 1000);
+  };
+
   const start = () => {
     if (running) return;
     running = true;
     measureUnit();
     loop.pause(0);
     loadIn.restart(true);
+    window.clearTimeout(guard);
+    watchLoadIn();
   };
 
   const sync = () => { if (isActive && onScreen) start(); else halt(); };
@@ -391,6 +436,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   sync();
 
   return () => {
+    window.clearTimeout(guard);
     window.removeEventListener('resize', onResize);
     classObserver?.disconnect();
     io.disconnect();

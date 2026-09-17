@@ -111,6 +111,8 @@ export function familiarLoop(root: HTMLElement): () => void {
   let watcher: MutationObserver | undefined;
   let started = false;
   let stopped = false;
+  let probe = 0;
+  const heard = () => open();
 
   /* ------------------------------------------------------------ the story */
   const start = () => {
@@ -276,23 +278,29 @@ export function familiarLoop(root: HTMLElement): () => void {
 
     /* The round's clock. One digit, once a second, and only while the section
        is on screen. It restarts at 5:00 because the market is a 5m round. */
-    if (timer) {
-      let left = (() => {
-        const [m, s] = (timer.textContent ?? '').trim().split(':');
-        return Number.parseInt(m, 10) * 60 + Number.parseInt(s, 10);
-      })();
+    let left = timer
+      ? (() => { const [m, sec] = (timer.textContent ?? '').trim().split(':'); return Number.parseInt(m, 10) * 60 + Number.parseInt(sec, 10); })()
+      : 0;
+    const runClock = () => {
+      if (!timer || tick) return;
       tick = window.setInterval(() => {
         left = left > 0 ? left - 1 : 300;
         timer.textContent = clock(left);
       }, 1000);
-    }
+    };
+    const stopClock = () => { window.clearInterval(tick); tick = 0; };
 
-    // Off screen, nothing runs.
+    /* Off screen the loop costs nothing — but only the clock between beats is
+       stopped, never a beat halfway through. Pausing the story timeline would
+       strand the section on a lit pill or a pair of crossed rows for as long as
+       it took someone to scroll back, and a still of that is not the design.
+       The beat is at most six seconds; it is allowed to finish. */
     io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { driver?.play(); story?.play(); }
-      else { driver?.pause(); story?.pause(); }
+      if (entry.isIntersecting) { driver?.play(); runClock(); }
+      else { driver?.pause(); stopClock(); }
     }, { rootMargin: '120px' });
     io.observe(root);
+    runClock();
   };
 
   /* -------------------------------------------------------------- the gate
@@ -314,10 +322,13 @@ export function familiarLoop(root: HTMLElement): () => void {
      later. */
   const open = () => {
     if (stopped || ready) return;
+    window.clearInterval(probe);
+    probe = 0;
+    watcher?.disconnect();
+    root.removeEventListener('motion:done', heard);
     ready = window.setTimeout(start, SETTLE * 1000);
   };
 
-  let probe = 0;
   let quiet = 0;
   let waited = 0;
   const busy = () =>
@@ -336,7 +347,6 @@ export function familiarLoop(root: HTMLElement): () => void {
     }, 250);
   };
 
-  const heard = () => { open(); };
   root.addEventListener('motion:done', heard);
 
   if (root.dataset.motionDone) open();

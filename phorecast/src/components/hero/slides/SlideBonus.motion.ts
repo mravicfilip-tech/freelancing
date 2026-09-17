@@ -176,8 +176,8 @@ function build(root: HTMLElement): () => void {
 
     // -------------------------------------------------------------- the loop
     // One beat: the deposit leaves, crosses, and the matched plates take it.
-    // Everything ends exactly where the settled design has it, and the turn
-    // spends its last four seconds there.
+    // The beats run for 2.85s; everything ends exactly where the settled design
+    // has it, and the turn spends its remaining six seconds there.
     const loop = gsap.timeline({ repeat: -1, paused: true });
 
     if (amount) loop.to(amount, { y: -12 * u, duration: 0.4, ease: 'power2.out' }, 0).to(amount, { y: 0, duration: 0.55, ease: 'power2.inOut', clearProps: 'transform,transformOrigin' }, 0.4);
@@ -306,7 +306,14 @@ function buildCountdown(root: HTMLElement): () => void {
       tl.to(colons, { opacity: 0.35, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1 }, intro);
     }
 
-    tl.call(() => { timer = window.setInterval(tick, TICK_MS); }, undefined, intro + 1.2);
+    // The first minute goes shortly after the tiles have landed, then every
+    // TICK_MS. It has to be early: the carousel holds a slide for 7s, so a clock
+    // whose first move came a tick after the tiles would never be seen moving by
+    // anyone who did not stop the carousel.
+    tl.call(() => {
+      tick();
+      timer = window.setInterval(tick, TICK_MS);
+    }, undefined, intro + 2.6);
   }, root);
 
   /** Take one minute off the clock, carrying into hours and days. */

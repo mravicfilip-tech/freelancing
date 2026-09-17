@@ -142,6 +142,26 @@
   font-size: max(12px, calc(16 * var(--u)));
   color: var(--mk-accent);
 }
+/* THE FOCUS RING FOLLOWS THE CARD, not the page.
+
+   global.css:26 is `:focus-visible { outline: 2px solid var(--accent) }`, and
+   --accent is read against the PAGE. This card is the one surface on the site
+   that is the opposite of the page in both themes, so the page's ring lands on
+   the wrong ground here and only here.
+
+   Measured, by focusing the link and reading the pixels the ring painted
+   against what was under them: in dark the card is #fffbf8 and #e5331e on it is
+   4.23:1, which is fine and is why nobody saw this. In light the card inverts
+   to #1a1512 and --accent is #a21605, which is 2.29:1 -- under the 3:1 WCAG 2.2
+   asks of a focus indicator, on the only keyboard target inside the card.
+
+   --mk-accent is the token the card already keeps for exactly this reason: it
+   is var(--accent) in dark, so this rule resolves to the identical colour the
+   global rule was already producing and dark cannot move, and it is
+   --orange-100 in light, where #e5331e on #1a1512 is 4.43:1. Same reasoning,
+   same token, as the link text one rule above. */
+.box-markets :focus-visible { outline-color: var(--mk-accent); }
+
 /* Figma gives the arrow a 13 box and centres the 12 x 6 glyph one pixel low. */
 .box-markets .mk__arrow {
   position: relative;

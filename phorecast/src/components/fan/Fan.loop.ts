@@ -2,51 +2,81 @@
  * "Your Funds Stay in Your Control" — the ambient loop.
  *
  * The section's load-in belongs to `Fan.motion.ts`. This file owns what happens
- * *after* it has landed. It reads the markup the component already ships, adds
- * three overlay elements of its own, and removes every one of them on teardown.
+ * *after* it has landed: it reads the markup the component ships, adds two
+ * overlay elements of its own, and removes both on teardown.
  *
- * THE STORY, one beat every 11s
- * -----------------------------
- * The band is a pair of arc fans converging on the vault tile, with the markets
- * the product covers named around the edges. So the beat is the settlement path,
- * once, end to end:
- *
- *   0.00s  A market prints. One category pill lights — CRYPTO, then GEOPOLITICS,
- *          then SPORT, alternating sides so the band never leans.
- *   0.15s  The arcs carry it. A band of light leaves the outer edge of each fan
- *          and runs inward along the lines, both sides at once, 2.5s of travel.
- *   0.4s   The scattered diamonds catch the front as it passes them, outermost
- *          first — they are on the path, so they light in the order it reaches
- *          them and not a frame before.
- *   2.35s  It arrives. The tile's rim, its glass and its red cast all lift, and
- *          a shine crosses the face: the funds landed in your own custody.
- *   2.95s  The light lets go over nearly two seconds. A vault is not a strobe.
- *   ~5.0s  Everything is the Figma frame again, and stays there for 6s.
- *
- * ARCS WITHOUT MARKUP
- * -------------------
- * `Fan.tsx` ships the arcs as `<img>`, so nothing inside them is addressable and
- * no per-path travel is possible. Instead each `.fan__arcs` group gets a sweep
- * window: a narrow, soft-edged, `overflow: hidden` box holding a CLONE of that
- * group's own children, brightened and screened over the originals. The window
- * travels; the clone inside is counter-translated by the same amount, so the
- * copied arcs never move — only the lit part of them does. The clone is made
- * with `cloneNode`, keeps the shipped class names, and is positioned by the
- * shipped CSS, so this survives the arcs becoming inline `<svg>`: it would clone
- * the `<svg>` just as happily. (If they do go inline, the stronger option opens
- * up — a real `stroke-dashoffset` chase per path — and this can be replaced.)
- *
- * MEASURED, at 1600 x 950 (scripts/amplitude.mjs maths, section-relative)
+ * THE STORY — 05 CROSSFEED, one band straight through, twice, every 13s
  * ---------------------------------------------------------------------
- *   sweep apertures   1021px of peak travel each, opacity 0 -> 1 -> 0
- *   shine             164px across the tile face, opacity 0 -> 0.95 -> 0
- *   tile box-shadow   alpha 0.10 -> 0.50, blur 33.3 -> 42.1px
- *   tile rim          alpha 0.39 -> 0.82
- *   glass fill        alpha 0.13 -> 0.28
- *   the mark          brightness 1.00 -> 1.45, drop-shadow 0 -> 9px
- *   pill              #000 -> #e5331e, opacity 0.7 -> 1
- *   diamonds          scale 1 -> 2.1, brightness 1 -> 2.4
- * Rest band: one distinct value per element, all of them the design's.
+ * The chosen loop is not an arrival. It is a pass: settlement going *through*
+ * your custody rather than stopping at it.
+ *
+ *   0.60s  A front enters past the left edge of the band and starts across.
+ *          It is one x, moving, and everything in the section answers to it.
+ *   ~1.0s  It is on the left fan: a short bright head rides each of the eight
+ *          arcs there, ON the line, at exactly the point of the curve that
+ *          stands at the front's x.
+ *   ~1.8s  SPORT, then CRYPTO, then FINANCE turn over as the front reaches
+ *          them — each diamond and each pill fires at the frame the front's
+ *          centre is at its x, solved back through the ease, not staggered by
+ *          eye. The diamonds on the path flare; the pills change colour.
+ *   ~2.5s  It crosses the tile. The rim and glass lift, the mark takes a bar
+ *          of light across its face in the direction of travel, and the tile's
+ *          own photograph lifts with it — the light goes through the vault.
+ *   ~3.3s  The right fan, ELECTIONS, GEOPOLITICS, TECH, and out past the right
+ *          edge at 4.4s. The tile lets go over two seconds behind it.
+ *   7.00s  The return pass, mirrored: in at the right, out at the left.
+ *   11.4s  Everything is the Figma frame again, and stays there to 13s.
+ *
+ * THE LIGHT IS ON THE CURVE, NOT IN A BOX ACROSS IT
+ * -------------------------------------------------
+ * The arcs ship inlined now, sixteen addressable paths with a `.fan__spark`
+ * twin beside each one — same geometry, flat `#ffc0a4`, held at opacity 0 by
+ * the stylesheet. So the band of light is not a travelling window holding a
+ * brightened clone of the arcs, as it had to be while they were `<img>`: each
+ * spark carries a short `stroke-dasharray` head and the head is placed by
+ * `stroke-dashoffset`, so the light is genuinely painted along the wire.
+ *
+ * Which needs the inverse of the map the entrance uses. The entrance walks the
+ * dash by arc length; this has to walk it by *screen x*, because x is what the
+ * whole section shares. Each spark is therefore sampled once — its longest
+ * unbroken run inside its group's `overflow: hidden` window, the same problem
+ * `Fan.motion.ts` solves for the draw — and that run is stored as a paired
+ * (length, design-x) table. The visible run of each of these ellipses is a
+ * single quadrant, so x along it is monotonic and the table inverts cleanly:
+ * `sAt(x)` is a binary search and a lerp, evaluated sixteen times a frame.
+ *
+ * The cost of this is that a dash offset moves no bounding box, so
+ * `scripts/amplitude.mjs` reads the arcs as static however bright they are.
+ * The travel it can see is in the two created overlays, which it also cannot
+ * see. Both are measured directly instead; the figures are in the report.
+ *
+ * WHAT ELSE TAKES PART
+ * --------------------
+ * Four things in this band used to sit out the whole cycle, and now do not:
+ *
+ *   the ground    A wide, low warm wash travels with the front *under*
+ *                 everything. The arcs only cover x 0–770 and 1100–1920; the
+ *                 front used to cease to exist over the 330 design px in
+ *                 between, which is exactly where the tile and the copy are.
+ *                 Now the pass crosses the section rather than the two fans.
+ *   the fans      Each group's own opacity lifts 0.70 → 0.82 while the front
+ *                 is inside it and falls again behind it. The group conducts;
+ *                 it does not breathe, and it is flat whenever nothing is
+ *                 crossing it.
+ *   the tile art  `.fan__tile-bg` lifts as the front passes through, so the
+ *                 light is transmitted by the vault rather than applied to its
+ *                 front face.
+ *   the sub-head  The one line of copy with headroom in it (#9d9d9d) warms as
+ *                 the front crosses and cools behind it — the same plain
+ *                 colour transition the pills make, nothing else.
+ *
+ * THE PILLS DO NOT GLOW
+ * ---------------------
+ * Asked for explicitly, and the one place this departs from the lab. A pill is
+ * a flat chip of the brand red for as long as the front is on it: background
+ * to `--orange-100`, contents to `--white-font`, and back. No halo, no bloom,
+ * no drop-shadow, no scale, and `filter` on the pill itself is never written
+ * at all. The one exception is noted at `PILL_ICON_LIT`.
  *
  * Nothing here floats, breathes, drifts, or reacts to the pointer. Reduced
  * motion runs none of it.
@@ -54,28 +84,83 @@
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
 
-/** One full cycle: ~5s of story, the rest of it still. */
-const PERIOD = 11;
-/** How long after the entrance lands before the first beat. */
+/** One full cycle, in GSAP time: two passes and then the band at rest. */
+const PERIOD = 13;
+/** How long after the entrance lands before the first pass. */
 const SETTLE = 1.2;
 
-/* Beat marks, in seconds from the top of a cycle. */
-const PILL_ON = 0;
-const SWEEP_AT = 0.15;
-const SWEEP_DUR = 2.5;
-const PILL_OFF = 1.9;
-const ARRIVE = 2.35;
-const SHINE_AT = 2.55;
-const RELEASE = 2.95;
+/* The two passes, in seconds from the top of a cycle, and how long one takes. */
+const PASS_A = 0.6;
+const PASS_B = 7.0;
+const DUR = 3.8;
+const EASE = 'power1.inOut';
 
-/** The brand red, as the diamonds and the arc gradients already use it. */
-const HOT = '#e5331e';
-const PILL_ON_FG = '#fffbf8';
+/** Where the front starts and ends, as design px either side of the band. */
+const OVERRUN = 250;
 
-/** Fraction of a fan's width the travelling light occupies. */
-const BAND = 0.42;
+/** The brand, as `tokens.css` defines it and the arc gradients already use it. */
+const PILL_LIT_BG = '#e5331e'; /* --orange-100 */
+const PILL_LIT_FG = '#fffbf8'; /* --white-font */
+
+/**
+ * The pill icons are `<img>` elements holding grey (#9d9d9d) SVG files, so the
+ * `color` that turns the label white cannot reach their pixels. A hard two-step
+ * remap is the only way to make them white without owning `Fan.tsx`: it is a
+ * paint operation with no blur, no spread and no shadow — the glyph is white or
+ * it is grey, and it is never brighter than white. The pill element itself gets
+ * no filter at any point. When the icons are inlined this becomes
+ * `fill: currentColor` and the filter goes.
+ */
+const PILL_ICON_REST = 'brightness(1) invert(0)';
+const PILL_ICON_LIT = 'brightness(0) invert(1)';
+
+/** Length of the head riding each arc, in design px of screen arc. */
+const HEAD = 132;
+/** Design px over which a head fades in at the end of its own arc. */
+const HEAD_FADE = 70;
+/** Half-width of the ground wash, design px. */
+const WASH = 380;
+/** Samples per spark when the (length, x) table is built. */
+const SAMPLES = 220;
 
 const px = (n: number) => `${n}px`;
+/** 0..1 with both ends flat, for presence curves that must not have corners. */
+const smooth = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
+
+/** Inverse of a GSAP ease: the progress p where ease(p) === v. */
+function invEase(name: string, v: number): number {
+  const e = gsap.parseEase(name);
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 24; i += 1) {
+    const mid = (lo + hi) / 2;
+    if (e(mid) < v) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/** One arc's bright twin, plus the map from design x to length along it. */
+interface Spark {
+  el: SVGPathElement;
+  len: number;
+  /** Paired samples over the visible run; `xs` is monotonic. */
+  ls: number[];
+  xs: number[];
+  x0: number;
+  x1: number;
+  /** Head length in this path's own user units, sized to HEAD on screen. */
+  head: number;
+  lit: boolean;
+}
+
+/** An arc group, and the stretch of the band it occupies. */
+interface Fan {
+  el: HTMLElement;
+  x0: number;
+  x1: number;
+  lit: boolean;
+}
 
 export function fanLoop(root: HTMLElement): () => void {
   if (REDUCED) return () => {};
@@ -84,326 +169,523 @@ export function fanLoop(root: HTMLElement): () => void {
   const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
   /* ------------------------------------------------------------- handles
-     Every one of these is optional. A sibling agent is rewriting the markup
-     under this file; a missing hook costs its own beat and nothing else. */
-  const arcGroups = qa('.fan__arcs');
+     Every one of these is optional. A missing hook costs its own beat and
+     nothing else; the rest of the pass still crosses the band. */
+  const frame = q('.fan__frame') ?? root;
+  const groups = qa('.fan__arcs');
   const pills = qa('.fan__pill');
   const diamonds = qa('.fan__diamond');
-  const frame = q('.fan__frame') ?? root;
   const tile = q('.fan__tile');
+  const tileArt = q('.fan__tile-bg');
   const glass = q('.fan__glass');
-  const logo = glass?.querySelector<HTMLElement>('img') ?? null;
+  const logo = glass?.querySelector<HTMLElement>('img, svg') ?? null;
+  const sub = q('.fan__sub');
 
   let ctx: gsap.Context | undefined;
-  let driver: gsap.core.Timeline | undefined;
-  let story: gsap.core.Timeline | undefined;
+  let cycle: gsap.core.Timeline | undefined;
   let io: IntersectionObserver | undefined;
   let ro: ResizeObserver | undefined;
   let watcher: MutationObserver | undefined;
   let ready = 0;
   let probe = 0;
+  let resizer = 0;
   let started = false;
   let stopped = false;
+  let offscreen = false;
+  let rebuild = false;
   const mine: HTMLElement[] = [];
   const heard = () => open();
 
-  /* ------------------------------------------------------- the sweep windows
-     One per fan. `win` is the moving aperture, `inner` holds the bright copy
-     and is dragged back by exactly as much as `win` goes forward. */
-  interface Sweep {
-    group: HTMLElement;
-    win: HTMLElement;
-    inner: HTMLElement;
-    inward: 1 | -1;
-    w: number;
-    band: number;
-  }
-  const sweeps: Sweep[] = [];
+  /* --------------------------------------------------------------- the frame
+     Everything below is in design px — the 1920 x 675 screenshot space the
+     stylesheet's `--f` scales from, or 1000 x 620 under the breakpoint. Live
+     rects are divided back into it, so a pill's x is the same number at every
+     width and only a breakpoint crossing invalidates the timeline. */
+  let DW = 1920;
+  let f = 1;
+  let box = frame.getBoundingClientRect();
 
-  const buildSweeps = () => {
-    arcGroups.forEach((group) => {
-      const kids = Array.from(group.children) as HTMLElement[];
-      if (!kids.length) return;
+  const measureFrame = () => {
+    box = frame.getBoundingClientRect();
+    DW = matchMedia('(max-width: 900px)').matches ? 1000 : 1920;
+    f = box.width / DW || 1;
+  };
+  /** A client rect's centre, in design px relative to the frame. */
+  const cx = (el: Element) => {
+    const r = el.getBoundingClientRect();
+    return (r.left + r.width / 2 - box.left) / f;
+  };
 
-      const inner = document.createElement('div');
-      inner.setAttribute('aria-hidden', 'true');
-      inner.style.cssText =
-        'position:absolute;left:0;top:0;pointer-events:none;' +
-        // The copy is the same arcs, run hot: the red gradient pushed toward
-        // white and desaturated a touch so the band reads as light on the line
-        // rather than a second, redder line laid over the first.
-        'filter:brightness(2.9) saturate(0.5);will-change:transform;';
-      kids.forEach((k) => inner.appendChild(k.cloneNode(true)));
+  /* -------------------------------------------------------------- the sparks
+     The table is (length along the path, design x), over the longest unbroken
+     run of the path that its group's window actually shows. Sampling is the
+     only way in: these are whole ellipses about 2100 units across, seen through
+     an 863-wide clip, so five sixths of each path is off screen and a dash
+     walked over the whole perimeter would be invisible for most of its travel.
+     Because the visible run is a single quadrant, x along it is monotonic, and
+     the table inverts. */
+  const sparks: Spark[] = [];
+  const fans: Fan[] = [];
 
-      const win = document.createElement('div');
-      win.setAttribute('aria-hidden', 'true');
-      win.style.cssText =
-        'position:absolute;left:0;top:0;overflow:hidden;pointer-events:none;opacity:0;' +
-        'mix-blend-mode:screen;will-change:transform,opacity;' +
-        // Soft on both sides, so the light has no edge of its own.
-        '-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%);' +
-        'mask-image:linear-gradient(90deg,transparent 0%,#000 38%,#000 62%,transparent 100%);';
-      win.appendChild(inner);
-      group.appendChild(win);
-      mine.push(win);
+  const buildTables = () => {
+    sparks.length = 0;
+    fans.length = 0;
 
-      sweeps.push({
-        group,
-        win,
-        inner,
-        inward: group.classList.contains('fan__arcs--right') ? -1 : 1,
-        w: 0,
-        band: 0,
+    groups.forEach((group) => {
+      const win = group.getBoundingClientRect();
+      const twins = Array.from(group.querySelectorAll<SVGPathElement>('path.fan__spark'));
+      let gx0 = Infinity;
+      let gx1 = -Infinity;
+
+      twins.forEach((el) => {
+        const len = typeof el.getTotalLength === 'function' ? el.getTotalLength() : 0;
+        const m = el.getScreenCTM();
+        if (!len || !m) return;
+
+        const ls: number[] = [];
+        const xs: number[] = [];
+        const ys: boolean[] = [];
+        for (let i = 0; i <= SAMPLES; i += 1) {
+          const l = (len * i) / SAMPLES;
+          const p = el.getPointAtLength(l);
+          const sx = p.x * m.a + p.y * m.c + m.e;
+          const sy = p.x * m.b + p.y * m.d + m.f;
+          ls.push(l);
+          xs.push((sx - box.left) / f);
+          ys.push(sx >= win.left && sx <= win.right && sy >= win.top && sy <= win.bottom);
+        }
+
+        // Longest unbroken visible run, one sample either side so the head
+        // enters and leaves just outside the window instead of on its edge.
+        let best: [number, number] | null = null;
+        let run: [number, number] | null = null;
+        for (let i = 0; i <= SAMPLES; i += 1) {
+          if (ys[i]) run = run ? [run[0], i] : [i, i];
+          else {
+            if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+            run = null;
+          }
+        }
+        if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+        if (!best || best[1] === best[0]) return;
+        const lo = Math.max(0, best[0] - 1);
+        const hi = Math.min(SAMPLES, best[1] + 1);
+
+        const rl = ls.slice(lo, hi + 1);
+        const rx = xs.slice(lo, hi + 1);
+        // The table is searched with x ascending; a run that walks right to
+        // left is simply reversed, which leaves the pairing intact.
+        if (rx[rx.length - 1] < rx[0]) { rl.reverse(); rx.reverse(); }
+
+        const span = rl[rl.length - 1] - rl[0];
+        const width = rx[rx.length - 1] - rx[0];
+        if (!(width > 1) || !(Math.abs(span) > 1)) return;
+
+        // Design px of screen arc per user unit, so a 132px head is 132px on
+        // every one of the sixteen however long that ellipse happens to be.
+        let screen = 0;
+        for (let i = 1; i < rx.length; i += 1) screen += Math.abs(rx[i] - rx[i - 1]);
+
+        gx0 = Math.min(gx0, rx[0]);
+        gx1 = Math.max(gx1, rx[rx.length - 1]);
+        sparks.push({
+          el,
+          len,
+          ls: rl,
+          xs: rx,
+          x0: rx[0],
+          x1: rx[rx.length - 1],
+          head: Math.abs(span) * (HEAD / Math.max(screen, 1)),
+          lit: false,
+        });
       });
+
+      if (gx0 < gx1) fans.push({ el: group, x0: gx0, x1: gx1, lit: false });
     });
   };
 
-  /** Sizes are read from the live group, so a resize needs no timeline rebuild. */
-  const layout = () => {
-    sweeps.forEach((s) => {
-      const w = s.group.clientWidth;
-      const h = s.group.clientHeight;
-      if (!w || !h) return;
-      s.w = w;
-      s.band = Math.round(w * BAND);
-      s.win.style.width = px(s.band);
-      s.win.style.height = px(h);
-      s.inner.style.width = px(w);
-      s.inner.style.height = px(h);
-    });
-    // Mid-sweep a re-park would teleport the light; the aperture is already
-    // being driven frame by frame and will pick the new width up next cycle.
-    if (!story?.isActive()) park();
+  /** Length along a spark at design x, or null if the front is not on it. */
+  const sAt = (s: Spark, x: number): number | null => {
+    if (x < s.x0 || x > s.x1) return null;
+    let lo = 0;
+    let hi = s.xs.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1;
+      if (s.xs[mid] <= x) lo = mid;
+      else hi = mid;
+    }
+    const span = s.xs[hi] - s.xs[lo] || 1;
+    const t = (x - s.xs[lo]) / span;
+    return s.ls[lo] + (s.ls[hi] - s.ls[lo]) * t;
   };
 
-  /** Both ends of a sweep, in window-x. Inward means toward the tile. */
-  const from = (s: Sweep) => (s.inward === 1 ? -s.band : s.w);
-  const to = (s: Sweep) => (s.inward === 1 ? s.w : -s.band);
+  /* --------------------------------------------------------------- overlays
+     Two, both created here and both removed on teardown. The wash goes under
+     everything in the frame; the bar lives inside the glass, which clips it. */
+  let wash: HTMLElement | null = null;
+  let bar: HTMLElement | null = null;
 
-  /** Off-beat the aperture sits at its start mark, invisible. */
-  const park = () => {
-    sweeps.forEach((s) => {
-      gsap.set(s.win, { x: from(s), opacity: 0 });
-      gsap.set(s.inner, { x: -from(s) });
-    });
-  };
-
-  /* ------------------------------------------------------------- the shine
-     A single pane of light crossing the tile face. It lives inside `.fan__tile`,
-     whose own `overflow: hidden` and radius clip it to the tile. */
-  let shine: HTMLElement | null = null;
-  const buildShine = () => {
-    if (!tile) return;
-    const el = document.createElement('span');
-    el.setAttribute('aria-hidden', 'true');
-    el.style.cssText =
-      'position:absolute;left:0;top:-30%;width:48%;height:160%;opacity:0;pointer-events:none;' +
+  const buildOverlays = () => {
+    const w = document.createElement('i');
+    w.setAttribute('aria-hidden', 'true');
+    w.style.cssText =
+      'position:absolute;top:0;left:0;height:100%;pointer-events:none;opacity:0;' +
       'mix-blend-mode:screen;will-change:transform,opacity;' +
-      'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,251,248,0.45) 50%,rgba(255,251,248,0) 100%);';
-    tile.appendChild(el);
-    mine.push(el);
-    shine = el;
-    gsap.set(el, { rotation: 16, xPercent: -170, transformOrigin: '50% 50%' });
+      'background:radial-gradient(closest-side at 50% 50%,' +
+      'rgba(229,51,30,0.42) 0%,rgba(229,51,30,0.16) 46%,rgba(229,51,30,0) 76%);';
+    frame.insertBefore(w, frame.firstChild);
+    mine.push(w);
+    wash = w;
+
+    if (glass) {
+      const clip = document.createElement('i');
+      clip.setAttribute('aria-hidden', 'true');
+      clip.style.cssText =
+        'position:absolute;inset:0;overflow:hidden;pointer-events:none;' +
+        'border-radius:inherit;';
+      const b = document.createElement('b');
+      b.style.cssText =
+        'position:absolute;top:-25%;height:150%;left:0;opacity:0;will-change:transform,opacity;' +
+        'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,243,234,0.95) 50%,rgba(255,251,248,0) 100%);';
+      clip.appendChild(b);
+      glass.appendChild(clip);
+      mine.push(clip);
+      bar = b;
+    }
   };
 
-  /* ---------------------------------------------------------------- the story */
+  /** Overlay sizes are the only thing here that is not resolution-independent. */
+  const sizeOverlays = () => {
+    if (wash) wash.style.width = px(WASH * 2 * f);
+    if (bar) {
+      bar.style.width = px(18 * f);
+      bar.style.filter = `blur(${px(2.5 * f)})`;
+    }
+  };
+
+  /* ----------------------------------------------------------------- the pass
+     One driver object carries the front's design x and one carries the pass's
+     overall strength; `paint` is the only thing that writes the arcs, the fans
+     and the wash, so all three are guaranteed to agree on where the front is. */
+  const front = { x: -OVERRUN };
+  const power = { v: 0 };
+
+  const clearSpark = (s: Spark) => {
+    s.el.style.removeProperty('opacity');
+    s.el.style.removeProperty('stroke-dasharray');
+    s.el.style.removeProperty('stroke-dashoffset');
+    s.lit = false;
+  };
+  const clearFan = (g: Fan) => {
+    g.el.style.removeProperty('opacity');
+    g.lit = false;
+  };
+
+  const paint = () => {
+    const x = front.x;
+    const p = power.v;
+
+    for (const s of sparks) {
+      const l = p > 0.001 ? sAt(s, x) : null;
+      if (l === null) { if (s.lit) clearSpark(s); continue; }
+      // Its own ends are soft, so a head is never switched on or off mid-arc.
+      const edge = smooth(Math.min(x - s.x0, s.x1 - x) / HEAD_FADE);
+      const o = p * edge;
+      if (o <= 0.004) { if (s.lit) clearSpark(s); continue; }
+      s.el.style.strokeDasharray = `${s.head}px ${s.len}px`;
+      s.el.style.strokeDashoffset = `${-(l - s.head / 2)}px`;
+      s.el.style.opacity = o.toFixed(3);
+      s.lit = true;
+    }
+
+    for (const g of fans) {
+      // Presence: full while the front is inside the group, easing off over
+      // 260 design px either side so the lift arrives and leaves with it.
+      const d = x < g.x0 ? g.x0 - x : x > g.x1 ? x - g.x1 : 0;
+      const near = p * smooth(1 - d / 260);
+      if (near <= 0.004) { if (g.lit) clearFan(g); continue; }
+      g.el.style.opacity = (0.7 + 0.12 * near).toFixed(3);
+      g.lit = true;
+    }
+
+    if (wash) {
+      wash.style.transform = `translate3d(${px((x - WASH) * f)},0,0)`;
+      wash.style.opacity = (p * 0.42).toFixed(3);
+    }
+  };
+
+  /** The band exactly as the stylesheet has it, with nothing of this file on it. */
+  const rest = () => {
+    front.x = -OVERRUN;
+    power.v = 0;
+    sparks.forEach(clearSpark);
+    fans.forEach(clearFan);
+    if (wash) { wash.style.opacity = '0'; wash.style.transform = 'translate3d(0,0,0)'; }
+    if (bar) { bar.style.opacity = '0'; bar.style.transform = 'translate3d(0,0,0)'; }
+  };
+
+  /* ---------------------------------------------------------------- the cycle */
   const start = () => {
     if (started || stopped) return;
     started = true;
 
-    buildSweeps();
-    buildShine();
-    layout();
+    measureFrame();
+    buildOverlays();
+    sizeOverlays();
+    buildTables();
 
     // Resting values are read now, with the entrance finished and its
-    // `clearProps` already run, so a lift has something true to return to.
-    const css = (el: HTMLElement | null, prop: 'color' | 'backgroundColor' | 'boxShadow' | 'borderColor' | 'opacity') =>
-      (el ? getComputedStyle(el)[prop] : '') || '';
-    const pillBg = css(pills[0] ?? null, 'backgroundColor');
-    const pillFg = css(pills[0] ?? null, 'color');
-    const pillOp = css(pills[0] ?? null, 'opacity') || '1';
-    const tileShadow = css(tile, 'boxShadow');
-    const tileBorder = css(tile, 'borderColor');
-    const glassBg = css(glass, 'backgroundColor');
+    // `clearProps` already run, so every lift has something true to return to.
+    const css = (el: Element | null, prop: string) =>
+      (el ? getComputedStyle(el).getPropertyValue(prop) : '') || '';
+    const pillBg = css(pills[0] ?? null, 'background-color') || 'rgb(0, 0, 0)';
+    const pillFg = css(pills[0] ?? null, 'color') || PILL_LIT_FG;
+    const pillOp = Number(css(pills[0] ?? null, 'opacity') || '0.7') || 0.7;
+    const tileShadow = css(tile, 'box-shadow');
+    const tileBorder = css(tile, 'border-color');
+    const glassBg = css(glass, 'background-color');
+    const subFg = css(sub, 'color');
 
     // One design pixel, so the lit shadow scales with the band exactly as the
     // resting one does.
-    const f = tile ? tile.clientWidth / 100 : 1;
+    const tf = tile ? tile.clientWidth / 100 : f;
     const tileLit =
-      `rgba(229, 51, 30, 0.5) 0px ${24 * f}px ${52 * f}px 0px, ` +
-      `rgba(255, 214, 205, 0.34) 0px 0px ${30 * f}px ${5 * f}px`;
+      `rgba(229, 51, 30, 0.46) 0px ${px(24 * tf)} ${px(46 * tf)} 0px, ` +
+      `rgba(229, 51, 30, 0.34) 0px ${px(8 * tf)} ${px(18 * tf)} 0px`;
 
-    // Where each diamond sits across the band, as a fraction — used only to
-    // decide WHEN the front reaches it. Outermost first on both sides.
-    const frameW = frame.clientWidth || 1;
-    const fronts = diamonds.map((d) => {
-      const rel = (d.getBoundingClientRect().left - frame.getBoundingClientRect().left) / frameW;
-      const p = rel < 0.5 ? rel / 0.5 : (1 - rel) / 0.5;
-      return Math.min(0.96, Math.max(0.04, p));
-    });
-
-    // Pills alternate sides: left, right, left, right. Figma lists the three
-    // left pills first, so the order is simply interleaved.
-    const half = Math.ceil(pills.length / 2);
-    const order = pills.map((_, i) => (i % 2 === 0 ? i / 2 : half + (i - 1) / 2))
-      .filter((i) => Number.isInteger(i) && i < pills.length);
-
-    let phase = 0;
+    const pillXs = pills.map(cx);
+    const diaXs = diamonds.map(cx);
+    const tileX = tile ? cx(tile) : DW / 2;
+    const subX = sub ? cx(sub) : DW / 2;
+    const pillIcons = pills.map((p) => Array.from(p.querySelectorAll<HTMLElement>('img')));
 
     ctx = gsap.context(() => {
-      const runCycle = () => {
-        const tl = gsap.timeline();
-        story = tl;
+      const tl = gsap.timeline({ repeat: -1, paused: true });
+      cycle = tl;
 
-        /* 1 — a market prints. */
-        const pill = pills[order[phase % (order.length || 1)] ?? 0];
-        if (pill && pillBg) {
-          tl.to(pill, {
-            backgroundColor: HOT, color: PILL_ON_FG, opacity: 1,
-            duration: 0.45, ease: 'sine.out',
-          }, PILL_ON)
-            .to(pill, {
-              backgroundColor: pillBg, color: pillFg, opacity: Number(pillOp),
-              duration: 1.0, ease: 'sine.inOut',
-              onComplete: () => gsap.set(pill, { clearProps: 'backgroundColor,color,opacity' }),
-            }, PILL_OFF);
-        }
+      /**
+       * One pass. `dir` 1 runs left to right, -1 right to left. Everything in
+       * the band is scheduled off `when`, which asks the ease when the front's
+       * centre is at a given design x — so a pill turns over on the frame the
+       * light is on it and not a frame either side, at any duration.
+       */
+      const pass = (at: number, dir: 1 | -1) => {
+        const a = dir > 0 ? -OVERRUN : DW + OVERRUN;
+        const b = dir > 0 ? DW + OVERRUN : -OVERRUN;
+        const when = (x: number) => {
+          const v = (x - a) / (b - a);
+          if (v <= 0) return at;
+          if (v >= 1) return at + DUR;
+          return at + DUR * invEase(EASE, v);
+        };
 
-        /* 2 — the arcs carry it inward. The aperture travels a fan's width plus
-           its own; the copy inside is dragged back by the same amount, so the
-           arcs hold still and only the light on them moves. */
-        sweeps.forEach((s) => {
-          const walk = { v: 0 };
-          // Both ends are read on the frame they are used, not when the cycle is
-          // built, so a window resized mid-sweep still finishes at its own edge.
-          const at = (v: number) => {
-            const x = from(s) + (to(s) - from(s)) * v;
-            gsap.set(s.win, { x });
-            gsap.set(s.inner, { x: -x });
-          };
-          tl.to(walk, {
-            v: 1, duration: SWEEP_DUR, ease: 'sine.inOut',
-            onUpdate: () => at(walk.v),
-            // Back to the outer edge the instant it is invisible, so the rest
-            // band holds one value per element rather than two.
-            onComplete: () => at(0),
-          }, SWEEP_AT)
-            // It kindles at the outer edge and hands off to the tile rather than
-            // running out of room, so neither end of the travel is a hard cut.
-            .to(s.win, { opacity: 1, duration: 0.45, ease: 'sine.out' }, SWEEP_AT)
-            .to(s.win, { opacity: 0, duration: 0.6, ease: 'sine.in' }, SWEEP_AT + SWEEP_DUR - 0.6);
-        });
-
-        /* 3 — the diamonds on the path catch the front as it reaches them. */
-        diamonds.forEach((d, i) => {
-          const at = SWEEP_AT + fronts[i] * SWEEP_DUR;
-          // `immediateRender: false`: a fromTo writes its start values when the
-          // timeline is BUILT, not when the playhead arrives. Without it every
-          // diamond would be pinned at scale 1 / brightness 1 from t=0 — here
-          // that happens to be the resting look, but the habit is the point:
-          // the tile's filter below parks a real offset.
-          tl.fromTo(d, { scale: 1, filter: 'brightness(1)' }, {
-            scale: 2.1, filter: 'brightness(2.4)',
-            duration: 0.22, ease: 'sine.out', immediateRender: false,
+        /* 1 — the front crosses, and the arcs, the fans and the ground with it.
+           `immediateRender: false` on both: a delayed `fromTo` writes its start
+           values when the timeline is BUILT, not when the playhead arrives, and
+           without it the second pass would slam the front back to its own start
+           at t=0 and hold it there through the first. */
+        tl.fromTo(front, { x: a }, {
+          x: b, duration: DUR, ease: EASE, immediateRender: false, onUpdate: paint,
+        }, at)
+          .fromTo(power, { v: 0 }, {
+            v: 1, duration: 0.5, ease: 'sine.out', immediateRender: false, onUpdate: paint,
           }, at)
+          .to(power, {
+            v: 0, duration: 0.7, ease: 'sine.in', onUpdate: paint,
+            // Back to nothing the instant the pass is over, so the rest band
+            // holds one value per element rather than two.
+            onComplete: rest,
+          }, at + DUR - 0.7);
+
+        /* 2 — the diamonds on the path catch the front as it reaches them.
+           They are six design px across, so size is what makes one readable as
+           having fired at all. */
+        diamonds.forEach((d, i) => {
+          const t = when(diaXs[i]);
+          tl.fromTo(d, { scale: 1, filter: 'brightness(1)' }, {
+            scale: 2, filter: 'brightness(2.4)',
+            duration: 0.24, ease: 'power2.out', immediateRender: false,
+          }, t)
             .to(d, {
-              scale: 1, filter: 'brightness(1)',
-              duration: 0.6, ease: 'sine.inOut',
+              scale: 1, filter: 'brightness(1)', duration: 0.85, ease: 'sine.inOut',
               onComplete: () => gsap.set(d, { clearProps: 'transform,transformOrigin,filter' }),
-            }, at + 0.22);
+            }, t + 0.26);
         });
 
-        /* 4 — it arrives, and the vault lights. A ramp of half a second and a
-           fall of nearly two: a light, not a flash. */
+        /* 3 — the pills turn over. A flat chip of the brand red and back: no
+           halo, no bloom, no shadow, no scale, and no filter on the pill. The
+           opacity goes with the colour because it is part of it — at the
+           stylesheet's 0.7 over this ground #e5331e renders as rgb(167,42,27),
+           which is not the brand colour but 70% of it. */
+        pills.forEach((el, i) => {
+          const t = when(pillXs[i]) - 0.14;
+          tl.to(el, {
+            backgroundColor: PILL_LIT_BG, color: PILL_LIT_FG, opacity: 1,
+            duration: 0.3, ease: 'sine.out',
+          }, t)
+            .to(el, {
+              backgroundColor: pillBg, color: pillFg, opacity: pillOp,
+              duration: 0.95, ease: 'sine.inOut',
+              onComplete: () => gsap.set(el, { clearProps: 'backgroundColor,color,opacity' }),
+            }, t + 0.42);
+
+          if (pillIcons[i].length) {
+            tl.fromTo(pillIcons[i], { filter: PILL_ICON_REST }, {
+              filter: PILL_ICON_LIT, duration: 0.3, ease: 'sine.out', immediateRender: false,
+            }, t)
+              .to(pillIcons[i], {
+                filter: PILL_ICON_REST, duration: 0.95, ease: 'sine.inOut',
+                onComplete: () => gsap.set(pillIcons[i], { clearProps: 'filter' }),
+              }, t + 0.42);
+          }
+        });
+
+        /* 4 — the tile transmits. It takes the light in, carries it across the
+           mark in the direction of travel, and lets it out the far side; the
+           fall is two seconds, because a vault is not a strobe. */
+        const hit = when(tileX);
         if (tile && tileShadow) {
           tl.to(tile, {
-            boxShadow: tileLit, borderColor: 'rgba(255, 255, 255, 0.82)',
-            duration: 0.55, ease: 'sine.out',
-          }, ARRIVE)
+            boxShadow: tileLit, borderColor: 'rgba(255, 210, 165, 0.86)',
+            duration: 0.35, ease: 'power2.out',
+          }, hit - 0.3)
             .to(tile, {
               boxShadow: tileShadow, borderColor: tileBorder,
-              duration: 1.9, ease: 'sine.inOut',
+              duration: 2.0, ease: 'sine.inOut',
               onComplete: () => gsap.set(tile, { clearProps: 'boxShadow,borderColor' }),
-            }, RELEASE);
+            }, hit + 0.45);
         }
         if (glass && glassBg) {
-          tl.to(glass, { backgroundColor: 'rgba(255, 255, 255, 0.28)', duration: 0.55, ease: 'sine.out' }, ARRIVE)
+          tl.to(glass, {
+            backgroundColor: 'rgba(255, 239, 227, 0.32)', duration: 0.3, ease: 'power2.out',
+          }, hit - 0.3)
             .to(glass, {
-              backgroundColor: glassBg, duration: 1.9, ease: 'sine.inOut',
+              backgroundColor: glassBg, duration: 1.8, ease: 'sine.inOut',
               onComplete: () => gsap.set(glass, { clearProps: 'backgroundColor' }),
-            }, RELEASE);
+            }, hit + 0.45);
         }
         if (logo) {
-          // Both ends stated, because the resting value is `filter: none` and
-          // there is nothing there to interpolate from. Delayed, so
-          // `immediateRender: false` is mandatory — otherwise the mark carries a
-          // drop-shadow from the instant the cycle is built.
+          // Both ends stated: the resting value is `filter: none`, which has
+          // nothing in it to interpolate from.
           tl.fromTo(logo,
-            { filter: 'brightness(1) drop-shadow(0px 0px 0px rgba(255, 251, 248, 0))' },
+            { filter: 'drop-shadow(0px 0px 0px rgba(255, 170, 120, 0)) brightness(1)' },
             {
-              filter: 'brightness(1.45) drop-shadow(0px 0px 9px rgba(255, 251, 248, 0.8))',
-              duration: 0.55, ease: 'sine.out', immediateRender: false,
-            }, ARRIVE)
+              filter: `drop-shadow(0px 0px ${px(9 * tf)} rgba(255, 170, 120, 0.95)) brightness(1.4)`,
+              duration: 0.3, ease: 'power2.out', immediateRender: false,
+            }, hit - 0.3)
             .to(logo, {
-              filter: 'brightness(1) drop-shadow(0px 0px 0px rgba(255, 251, 248, 0))',
-              duration: 1.9, ease: 'sine.inOut',
+              filter: 'drop-shadow(0px 0px 0px rgba(255, 170, 120, 0)) brightness(1)',
+              duration: 1.8, ease: 'sine.inOut',
               onComplete: () => gsap.set(logo, { clearProps: 'filter,transform,transformOrigin' }),
-            }, RELEASE);
+            }, hit + 0.45);
+        }
+        if (tileArt) {
+          // The photograph under the glass, lifting as the light goes through
+          // it — the one part of the tile that used to sit out the whole cycle.
+          tl.fromTo(tileArt, { filter: 'brightness(1)' }, {
+            filter: 'brightness(1.5)', duration: 0.3, ease: 'power2.out', immediateRender: false,
+          }, hit - 0.3)
+            .to(tileArt, {
+              filter: 'brightness(1)', duration: 1.8, ease: 'sine.inOut',
+              onComplete: () => gsap.set(tileArt, { clearProps: 'filter' }),
+            }, hit + 0.45);
+        }
+        if (bar) {
+          const x0 = (dir > 0 ? -26 : 92) * f;
+          const x1 = (dir > 0 ? 92 : -26) * f;
+          tl.fromTo(bar, { x: x0, opacity: 0 },
+            { opacity: 0.95, duration: 0.18, ease: 'none', immediateRender: false }, hit - 0.2)
+            .to(bar, { x: x1, duration: 0.72, ease: 'power1.inOut' }, hit - 0.2)
+            .to(bar, { opacity: 0, duration: 0.2, ease: 'none' }, hit + 0.34);
         }
 
-        /* 5 — and a shine crosses the face. */
-        if (shine) {
-          tl.fromTo(shine, { xPercent: -170 },
-            { xPercent: 250, duration: 1.0, ease: 'sine.inOut', immediateRender: false }, SHINE_AT)
-            .fromTo(shine, { opacity: 0 },
-              { opacity: 0.95, duration: 0.3, ease: 'sine.out', immediateRender: false }, SHINE_AT)
-            .to(shine, { opacity: 0, duration: 0.42, ease: 'sine.in' }, SHINE_AT + 0.58);
+        /* 5 — the sub-head warms as the front crosses it. The only line of copy
+           in the band with headroom in it, and the same plain colour change the
+           pills make. Nothing moves; the type is not touched otherwise. */
+        if (sub && subFg) {
+          const t = when(subX) - 0.2;
+          tl.to(sub, { color: 'rgb(201, 194, 189)', duration: 0.35, ease: 'sine.out' }, t)
+            .to(sub, {
+              color: subFg, duration: 1.2, ease: 'sine.inOut',
+              onComplete: () => gsap.set(sub, { clearProps: 'color' }),
+            }, t + 0.5);
         }
-
-        phase += 1;
       };
 
-      // A clock the cycles hang off, rather than one repeating timeline whose
-      // tweens would have to be rebuilt in place every pass: each cycle knows
-      // which pill is printing, so it is built with real targets and discarded.
-      driver = gsap.timeline({ repeat: -1, paused: true })
-        .call(runCycle)
-        .to({}, { duration: PERIOD });
-      driver.play();
+      pass(PASS_A, 1);
+      pass(PASS_B, -1);
+
+      /* The rest of the cycle is rest. Two hooks sit in it: off screen the loop
+         stops here rather than wherever the scroll happened to leave it, so the
+         section is never parked on a lit pill with a bright head halfway down a
+         fan for as long as it takes someone to come back. A beat is four
+         seconds; it is allowed to finish. */
+      const settle = () => {
+        rest();
+        // Deferred: this runs inside the timeline's own tick, and `remeasure`
+        // throws that timeline away.
+        if (rebuild) { rebuild = false; window.setTimeout(remeasure, 0); }
+        if (offscreen) tl.pause();
+      };
+      tl.call(settle, undefined, PASS_B - 1.4);
+      tl.call(settle, undefined, PERIOD - 0.05);
+      tl.to({}, { duration: 0.01 }, PERIOD - 0.01);
+
+      tl.play();
     }, root);
 
-    /* Off screen the loop costs nothing — but only the clock between beats is
-       stopped, never a beat halfway through. Pausing mid-sweep would strand the
-       band on a lit pill and a bright aperture parked in the middle of a fan for
-       as long as it took someone to scroll back, and a still of that is not the
-       design. The beat is five seconds; it is allowed to finish. */
     io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) driver?.play();
-      else driver?.pause();
+      offscreen = !entry.isIntersecting;
+      if (!offscreen) cycle?.play();
+      else if (cycle && !inBeat(cycle.time())) cycle.pause();
     }, { rootMargin: '120px' });
     io.observe(root);
 
-    ro = new ResizeObserver(() => layout());
+    ro = new ResizeObserver(() => {
+      window.clearTimeout(resizer);
+      resizer = window.setTimeout(() => {
+        const wide = DW;
+        measureFrame();
+        sizeOverlays();
+        // Design coordinates survive a resize; a breakpoint crossing changes
+        // the design space itself, and with it every time the timeline baked.
+        if (wide !== DW) rebuild = true;
+        else if (!inBeat(cycle?.time() ?? 0)) buildTables();
+        else rebuild = true;
+      }, 250);
+    });
     ro.observe(frame);
   };
 
-  /* -------------------------------------------------------------- the gate
-     The loop must not open over the entrance, and it is wired in two ways that
-     look different from in here. `useSectionMotion` passes this function as its
-     `idle` option, which it calls from the entrance timeline's `onComplete` —
-     one line *after* `done()`, so the `motion:done` event a listener here would
-     wait for has already gone by. What `done()` leaves behind is the flag, and
-     that is the path this takes in production: `data-motion-done` is already
-     set by the time this function runs, so the first branch below fires at
-     once. Called any earlier (a direct call, a lab harness) the event is still
-     ahead of us and is the best signal there is.
+  /** Is the playhead inside a pass rather than in one of the two rest bands? */
+  const inBeat = (t: number) =>
+    (t > PASS_A - 0.1 && t < PASS_B - 1.4) || (t > PASS_B - 0.1 && t < PERIOD - 0.05);
 
-     So both are watched, and under them sits the question that is true either
-     way: is anything still animating inside this section? Once the band has
-     dropped `data-motion="pending"` — i.e. is demonstrably running rather than
-     waiting to be scrolled to — the section is sampled four times a second and
-     counted quiet only after three consecutive still samples. Whichever answers
-     first opens the loop, and the first beat lands SETTLE later. */
+  /** Re-derive everything a breakpoint crossing invalidated, and start again. */
+  const remeasure = () => {
+    measureFrame();
+    sizeOverlays();
+    buildTables();
+    // The baked times are wrong at the new design width, so the cycle is thrown
+    // away and rebuilt — from rest, which `settle` has just established.
+    ctx?.revert();
+    ctx = undefined;
+    cycle = undefined;
+    started = false;
+    mine.splice(0).forEach((el) => el.remove());
+    wash = null;
+    bar = null;
+    start();
+  };
+
+  /* -------------------------------------------------------------- the gate
+     `useSectionMotion` passes this function as its `idle` option and calls it
+     from the entrance's `onComplete`, one line after `done()` — so
+     `data-motion-done` is already set by the time this runs and the first
+     branch below fires at once. Called any earlier (a direct call, a lab
+     harness) the `motion:done` event is still ahead of us and is the best
+     signal there is, and under both sits the question that is true either way:
+     is anything still animating inside this section? */
   const open = () => {
     if (stopped || ready) return;
     window.clearInterval(probe);
@@ -425,8 +707,7 @@ export function fanLoop(root: HTMLElement): () => void {
     probe = window.setInterval(() => {
       waited += 1;
       quiet = busy() ? 0 : quiet + 1;
-      // The cap is a backstop, not the plan: something in the section looping
-      // already would otherwise hold this closed forever.
+      // The cap is a backstop, not the plan.
       if (quiet >= 3 || waited >= 40) { window.clearInterval(probe); probe = 0; open(); }
     }, 250);
   };
@@ -445,35 +726,47 @@ export function fanLoop(root: HTMLElement): () => void {
   return () => {
     stopped = true;
     window.clearTimeout(ready);
+    window.clearTimeout(resizer);
     window.clearInterval(probe);
     root.removeEventListener('motion:done', heard);
     watcher?.disconnect();
     io?.disconnect();
     ro?.disconnect();
-    story?.kill();
-    driver?.kill();
-    // Reverts every transform, colour and filter this loop wrote, then the three
-    // overlay elements go with it, so the section is left exactly as the design
-    // shipped it and with nothing of this file's in the tree.
+    cycle?.kill();
+    // Reverts every colour and filter this loop tweened, whatever the playhead
+    // was in the middle of.
     ctx?.revert();
 
-    // Then each target is handed back explicitly, and only the properties this
-    // file ever wrote. A blanket `clearProps` list is not safe here: the
-    // diamonds carry their colour in an inline `background` shorthand from
-    // `Fan.tsx`, and clearing `backgroundColor` on them expands that shorthand
-    // and drops the colour with it.
+    // The sparks, the fans and the wash are written straight to `style` rather
+    // than through GSAP — sixteen dash offsets a frame is the hot path here —
+    // so `revert` has never heard of them and they are handed back by name.
+    sparks.forEach(clearSpark);
+    fans.forEach(clearFan);
+
+    // Then each tweened target, and only the properties this file ever wrote. A
+    // blanket `clearProps: 'all'` is not safe here: it empties the style
+    // attribute, and that attribute is where `Fan.tsx` puts each pill's and
+    // diamond's `--x` / `--y` / `--w` — clearing it collapses every one of them
+    // onto 0,0. The diamonds also carry their colour in a `background`
+    // shorthand, which `backgroundColor` would expand and drop.
     const give = (el: Element | null, props: string) => {
       if (!el) return;
       gsap.killTweensOf(el);
       gsap.set(el, { clearProps: props });
     };
-    pills.forEach((el) => give(el, 'backgroundColor,color,opacity,transform,transformOrigin,filter'));
+    pills.forEach((el) => {
+      give(el, 'backgroundColor,color,opacity');
+      el.querySelectorAll('img').forEach((i) => give(i, 'filter'));
+    });
     diamonds.forEach((el) => give(el, 'transform,transformOrigin,filter'));
     give(tile, 'boxShadow,borderColor');
+    give(tileArt, 'filter');
     give(glass, 'backgroundColor');
     give(logo, 'filter,transform,transformOrigin');
+    give(sub, 'color');
 
-    mine.forEach((el) => el.remove());
-    mine.length = 0;
+    mine.splice(0).forEach((el) => el.remove());
+    wash = null;
+    bar = null;
   };
 }

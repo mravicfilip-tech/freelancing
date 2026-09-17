@@ -1,210 +1,175 @@
 /* "Your Funds Stay in Your Control" — the band's load-in.
  *
- * Written in the house language (src/lib/motion.ts): entrances rise a few
- * pixels on `expo.out`, staggered tightly, nothing overshoots or rotates for
- * effect. The band's own accent is the soft-to-sharp resolve borrowed from the
- * hero's headline, so the tile and the type arrive out of blur rather than
- * simply fading.
+ * 02 TRACE, chosen from the five in `fan-loadin-lab.html`:
  *
- * The section's argument is that the funds are yours, so the logo tile is what
- * the eye lands on and everything else is the field it sits in. The sequence
- * therefore opens on the tile alone, hands the sentence to the headline, and
- * only then spreads the arcs, the diamonds and the category pills outward from
- * the middle — the market arranging itself around the thing at the centre.
+ *   "Nothing slides; the lines are drawn. A bright head runs the length of each
+ *    arc and leaves the line behind it, one mirrored pair at a time, so you can
+ *    follow the order. The tile ignites on the last pair."
  *
- * THE SEQUENCE (3.7s end to end)
- *   0.00  THE TILE. One object, alone, resolving out of blur as it rises and
- *         grows the last 14% into place. Nothing else has moved yet.
- *   0.30  The mark inside it, a beat behind the glass that holds it.
- *   0.45  THE HEADLINE, rising out of its own mask and sharpening on the way.
- *   0.80  The sub-copy, same treatment, shallower and softer.
- *   1.05  The arcs sweep IN from the two edges of the band, sixteen of them,
- *         one every 0.11s, each drawn from its outer end toward the middle
- *         while its fan drifts the last few design pixels inward.
- *   1.90  The twelve diamonds, nearest the middle first.
- *   2.40  The six category pills, also middle outward, last and quickest.
+ * Nothing in this band translates. The sixteen arcs are already in their final
+ * places from the first frame; what arrives is the ink. A short bright dash
+ * enters from the outer edge of each fan, runs inward along the line, and the
+ * stroke exists behind it. The two fans are mirrors, so a pair fires together
+ * and the pairs are spaced far enough apart to be counted: EIGHT BEATS, one per
+ * depth per half, upper then lower.
  *
- * Every tween is a `from` — the resting markup is the finished state, so a
- * build that never runs leaves the band simply present. The sixteen arc draws
- * are the exception and carry `immediateRender: false`; the reason is in
- * `drawArc`.
+ * THE SEQUENCE (3.25s end to end)
+ *   0.00  Beat 1. The innermost pair of the upper halves is drawn, left and
+ *         right together, 0.95s of travel each.
+ *   0.24  Beat 2, the lower halves at the same depth. Then a beat every 0.24s
+ *         through all four depths — beats 3 to 8 at 0.48 … 1.68.
+ *   0.55  The twelve diamonds, outermost first, 0.09s apart: they are on the
+ *         path the heads are running, so they light in the order it reaches
+ *         them.
+ *   1.73  The six category pills, also outermost first, ending with the last
+ *         pair of arcs.
+ *   2.13  The heading, then the sub-line 0.12s behind it, resolving out of a
+ *         14px blur.
+ *   2.28  THE TILE IGNITES. It arrives on the last pair landing and flashes to
+ *         brightness 2.6, falling back to 1 over 0.9s. The band's one moment of
+ *         real light, and it is the thing the arcs have been converging on.
  *
- * The blur carries its own lesson, recorded in src/components/hero/entrance.ts
- * and again in Pillars.motion.ts: an element parked at full opacity while still
- * blurred paints a visible smudge of itself before its turn. So opacity is
- * always a second, much shorter tween rather than riding the whole blur
- * duration — the thing is invisible while it is at its softest and has resolved
- * most of its blur by the time it is fully opaque.
+ * WHY NOT `draw()` FROM lib/motion.ts. Each of these paths is a whole ellipse
+ * roughly 2100 user units across, and the band shows one sliver of it through
+ * an 863-wide `overflow: hidden` window. A tip-to-tail `stroke-dashoffset`
+ * sweep over the full perimeter therefore spends about four fifths of its
+ * duration drawing off-frame: the head crosses the visible piece in a fraction
+ * of the tween and the line then sits there while the tween finishes. So each
+ * path is sampled once for the stretch that is actually inside its window
+ * (`visibleSpan`) and the whole tween is spent on that.
  *
- * THE ARCS. They have to arrive one line at a time, and nothing inside an
- * `<img>` is addressable, so `Fan.tsx` now inlines the two files with Vite's
- * `?raw` and renders them in a span that keeps the box the image had — hero
- * slide 3's route (`SlideBonus.tsx`), rather than slide 4's clip-path wipe,
- * which can only ever move a whole fan at once. Both files are used twice, so
- * each copy's ids are suffixed; see `withIds` there.
+ * AND WHY IT DRAWS BACKWARDS. All four of these files are traversed
+ * inward-to-outward — the two halves Figma rotated 180deg mirror the direction
+ * along with the geometry, so it holds for all sixteen lines — which means a
+ * forward draw would start at the tile and run out to the edge. Backwards is
+ * what sends the head IN from the edge. See `drawArc`.
  *
- * That buys the sixteen `<path>` elements, and with them a real
- * `stroke-dashoffset` draw. `draw()` in lib/motion.ts is not usable as-is: it
- * runs the offset over a path's whole length, and these paths are whole
- * ellipses about 2100 units across of which the band shows one arc through an
- * 863-wide window, so most of such a draw would happen off screen. `visibleRun`
- * below finds the stretch that is actually on screen and `drawArc` confines the
- * dash to it.
+ * DISCIPLINE. Start states are written with `gsap.set` and everything is
+ * animated with `.to()`, so the `immediateRender` trap — a `fromTo` writing its
+ * start values when the timeline is BUILT rather than when the playhead arrives
+ * — structurally cannot apply. The one `fromTo` here, the tile's brightness
+ * flash, carries `immediateRender: false` for exactly that reason.
  *
  * No hover, no pointer tracking, nothing here listens to the mouse.
  */
-import { EASE, intoLines } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';
+import { gsap } from 'gsap';
 
-/* Beat marks, in seconds. */
-const TILE_AT = 0;
-const MARK_AT = 0.3;
-const TITLE_AT = 0.45;
-const SUB_AT = 0.8;
-const ARCS_AT = 1.05;
-const DIAMONDS_AT = 1.9;
-const PILLS_AT = 2.4;
-/** One arc after the next, and the gap between a fan's lower half and its upper. */
-const ARC_STEP = 0.11;
-const HALF_STEP = 0.14;
-const ARC_DRAW = 1.2;
+/** One beat. Eight of them, and they have to be countable. */
+const BEAT = 0.24;
+/** How long one head takes to cross its own visible stretch. */
+const DRAW = 0.95;
+/** The last pair finishes here; the tile and the copy hang off it. */
+const LAST = 7 * BEAT + DRAW;
 
-/** The design frame the CSS lays this band out in; `--f` is one of its pixels. */
-const ARCS_DESIGN_W = 863;
+const DIAMOND_AT = 0.55;
+const DIAMOND_STEP = 0.09;
+const PILLS_AT = LAST - 0.9;
+const PILL_STEP = 0.07;
+const TILE_AT = LAST - 0.35;
+const COPY_AT = LAST - 0.5;
 
-/**
- * Rise out of blur: the travel and the softening on one tween, the opacity on
- * its own much shorter one starting at the same moment. See the note above —
- * this pairing is the whole reason the blur does not smear.
- */
-function outOfBlur(
-  tl: Timeline,
-  targets: gsap.TweenTarget,
-  at: number,
-  vars: { y?: number; scale?: number; blur?: number; duration?: number; stagger?: number | object; fade?: number },
-) {
-  const { y = 12, scale, blur = 8, duration = 0.9, stagger = 0, fade = 0.35 } = vars;
-  const from: gsap.TweenVars = {
-    y,
-    filter: `blur(${blur}px)`,
-    duration,
-    stagger,
-    ease: EASE,
-    clearProps: 'transform,transformOrigin,filter',
-  };
-  if (scale !== undefined) {
-    from.scale = scale;
-    from.transformOrigin = '50% 50%';
-  }
-  tl.from(targets, from, at);
-  tl.from(targets, { opacity: 0, duration: fade, stagger, ease: 'none', clearProps: 'opacity' }, at);
+/** Samples per path when looking for the stretch inside the window. */
+const SAMPLES = 220;
+/** How far outside the window a sample still counts, in CSS pixels. */
+const PAD = 6;
+
+interface Arc {
+  path: SVGPathElement;
+  /** The bright head: the same geometry again, shipped beside it by `Fan.tsx`. */
+  spark: SVGPathElement | null;
+  /** Index of this ellipse inside its own file, 0 (innermost) to 3. */
+  depth: number;
+  half: 'upper' | 'lower';
+  len: number;
+  /** The arc-length range this line is actually on screen over. */
+  span: [number, number];
 }
 
 /**
- * Order elements by how far their middle sits from the band's, nearest first,
- * so a stagger runs outward from the centre in both directions at once. Read
- * off live rects rather than the authored design coordinates, so it stays right
- * at the narrow breakpoint, where the two arc groups move but the pills do not.
- */
-function fromCentre(section: HTMLElement, els: HTMLElement[]): HTMLElement[] {
-  const box = section.getBoundingClientRect();
-  const mid = box.left + box.width / 2;
-  return [...els].sort((a, b) => {
-    const da = Math.abs(a.getBoundingClientRect().left + a.getBoundingClientRect().width / 2 - mid);
-    const db = Math.abs(b.getBoundingClientRect().left + b.getBoundingClientRect().width / 2 - mid);
-    return da - db;
-  });
-}
-
-/**
- * The stretch of one arc that the band actually shows, as a pair of lengths
- * along the path, plus which of the two ends faces the outside of the section.
+ * The stretch of one path that the band actually shows, as a pair of lengths
+ * along it.
  *
- * Each of these files is four whole ellipses about 2100 user units across; the
- * band shows a slice of them through an 863-wide `overflow: hidden` window, and
- * the visible slice is a different arc of each ellipse. A dash offset run over
- * the whole perimeter would therefore spend most of its duration drawing off
- * screen, which is exactly the "it runs and nothing moves" failure. So the path
- * is sampled, the run of samples that land inside the window is found, and the
- * draw is confined to it.
+ * The path is walked at `SAMPLES` even steps, each point pushed through
+ * `getScreenCTM` — which carries the viewBox scale and every CSS transform
+ * above the path, including the `rotate(180deg)` and `rotate(-179.01deg)` that
+ * Figma's mirrors are built from, so no mirroring has to be reasoned about
+ * here — and tested against the window's own client rect. First hit to last
+ * hit, padded by one sample either side so the draw starts and ends just
+ * outside the window rather than popping into existence on its edge.
  *
- * `getScreenCTM` carries the viewBox scale and every CSS transform above the
- * path -- two of the four spans are Figma mirrors on `rotate(180deg)` and
- * `rotate(-179.01deg)` -- so the sampled points are in the same client
- * coordinates as the window's own rect and no mirroring has to be reasoned
- * about here.
+ * A line with no hits at all is drawn over its whole length: it cannot be seen
+ * either way, and a zero-length span would divide by nothing downstream.
  */
-interface Visible { a: number; b: number; outer: 'a' | 'b'; len: number }
+function visibleSpan(path: SVGPathElement, win: DOMRect, len: number): [number, number] {
+  const m = path.getScreenCTM();
+  if (!m) return [0, len];
 
-/** Samples per path. 240 over ~5000 units is a point every 20 or so. */
-const SAMPLES = 240;
-
-function visibleRun(path: SVGPathElement, win: DOMRect, mid: number): Visible | null {
-  const len = path.getTotalLength();
-  const ctm = path.getScreenCTM();
-  if (!len || !ctm) return null;
-
-  const pts: Array<{ l: number; x: number; in: boolean }> = [];
+  let first = -1;
+  let last = -1;
   for (let i = 0; i <= SAMPLES; i++) {
     const l = (len * i) / SAMPLES;
     const p = path.getPointAtLength(l);
-    const x = p.x * ctm.a + p.y * ctm.c + ctm.e;
-    const y = p.x * ctm.b + p.y * ctm.d + ctm.f;
-    pts.push({ l, x, in: x >= win.left && x <= win.right && y >= win.top && y <= win.bottom });
-  }
-
-  // The longest unbroken run of visible samples. Taken as a run rather than
-  // just the first and last hit, because an ellipse can clip the window twice.
-  let best: { from: number; to: number } | null = null;
-  let run: { from: number; to: number } | null = null;
-  for (let i = 0; i < pts.length; i++) {
-    if (pts[i].in) run = run ? { from: run.from, to: i } : { from: i, to: i };
-    else {
-      if (run && (!best || run.to - run.from > best.to - best.from)) best = run;
-      run = null;
+    const x = p.x * m.a + p.y * m.c + m.e;
+    const y = p.x * m.b + p.y * m.d + m.f;
+    if (x >= win.left - PAD && x <= win.right + PAD && y >= win.top - PAD && y <= win.bottom + PAD) {
+      if (first < 0) first = l;
+      last = l;
     }
   }
-  if (run && (!best || run.to - run.from > best.to - best.from)) best = run;
-  if (!best || best.to === best.from) return null;
+  if (first < 0) return [0, len];
 
-  // One sample either side, so the draw starts and ends just outside the window
-  // rather than popping into existence on its edge.
-  const lo = Math.max(0, best.from - 1);
-  const hi = Math.min(pts.length - 1, best.to + 1);
-  // Whichever end sits further from the middle of the band is the outer one.
-  const outer = Math.abs(pts[lo].x - mid) >= Math.abs(pts[hi].x - mid) ? 'a' : 'b';
-  return { a: pts[lo].l, b: pts[hi].l, len, outer };
+  const pad = len / SAMPLES;
+  return [Math.max(0, first - pad), Math.min(len, last + pad)];
 }
 
 /**
- * Draw one arc inward from the edge of the band.
+ * Draw one arc, head first, inward from the edge of the band.
  *
- * `stroke-dasharray: <d> <len>` with `stroke-dashoffset: -<s>` paints exactly
- * the stretch from `s` to `s + d` and nothing else, the gap being long enough
- * that the pattern never repeats. Growing `d` from zero is the draw; which end
- * it grows from is whether `s` is held still or walked back with it.
+ * With `stroke-dasharray: len` — one value, so the pattern is the whole line on
+ * and the whole line off — a `stroke-dashoffset` of `-t` paints exactly the
+ * stretch from `t` to the end and nothing before it. Start with `t` at the
+ * span's far end and walk it down to the near end, and the line fills in
+ * backwards: the head enters at the outer edge and the stroke follows it in.
+ * The remainder, `[0, span0]`, is entirely off-frame, so it is completed in one
+ * invisible `set` at the end rather than given any of the tween.
  *
- * `immediateRender: false`, because a `fromTo` writes its start values the
- * moment the timeline is BUILT rather than when the playhead arrives -- without
- * it every arc would be dashed to nothing at build time, which is right, and
- * then *un*-dashed by the next tween built after it, which is not. The `set` at
- * 0 is what holds them closed, on the timeline, where a rewind can undo it.
+ * The spark is the same path again carrying a short dash — `h` on, everything
+ * else off — walked on the identical offset, so it sits pinned to the head with
+ * the drawn stroke behind it. It fades out before the line lands.
  */
-function drawArc(tl: Timeline, path: SVGPathElement, v: Visible, at: number, duration: number) {
-  const span = v.b - v.a;
-  const closed = { strokeDasharray: `0px ${v.len}px`, strokeDashoffset: `${-(v.outer === 'a' ? v.a : v.b)}px` };
-  const open = {
-    strokeDasharray: `${span}px ${v.len}px`,
-    // Drawing from `b` walks the dash's start back to `a`; drawing from `a`
-    // leaves it where it is and only the length grows.
-    strokeDashoffset: `${-v.a}px`,
-    duration,
-    ease: 'power2.inOut',
-    clearProps: 'strokeDasharray,strokeDashoffset',
-    immediateRender: false,
+function drawArc(tl: Timeline, a: Arc, at: number) {
+  const [s0, s1] = a.span;
+  const head = Math.min((s1 - s0) * 0.3, 240);
+
+  gsap.set(a.path, { strokeDasharray: a.len, strokeDashoffset: -s1 });
+  tl.to(a.path, { strokeDashoffset: -s0, duration: DRAW, ease: 'power2.inOut' }, at);
+  // Off-frame and instant: the line is whole from here on, and a plain
+  // `stroke-dashoffset: 0` with the dash still set paints exactly as no dash.
+  tl.set(a.path, { strokeDashoffset: 0 }, at + DRAW);
+
+  if (!a.spark) return;
+  gsap.set(a.spark, { strokeDasharray: `${head} ${a.len + head}`, strokeDashoffset: -s1, opacity: 0.95 });
+  tl.to(a.spark, { strokeDashoffset: -s0, duration: DRAW, ease: 'power2.inOut' }, at);
+  tl.to(a.spark, { opacity: 0, duration: 0.4, ease: 'power2.out' }, at + DRAW * 0.72);
+}
+
+/**
+ * Outermost first: order by how far each element's middle sits from the band's,
+ * furthest away leading.
+ *
+ * Read off live rects rather than the authored design coordinates, because at
+ * the narrow breakpoint the two arc groups move and the pills do not — the
+ * design x would put the stagger in the wrong order there.
+ */
+function fromEdges(el: HTMLElement, els: HTMLElement[]): HTMLElement[] {
+  const box = el.getBoundingClientRect();
+  const mid = box.left + box.width / 2;
+  const off = (n: HTMLElement) => {
+    const r = n.getBoundingClientRect();
+    return Math.abs(r.left + r.width / 2 - mid);
   };
-  tl.set(path, closed, 0);
-  tl.fromTo(path, closed, open, at);
+  return [...els].sort((a, b) => off(b) - off(a));
 }
 
 /**
@@ -215,20 +180,19 @@ function drawArc(tl: Timeline, path: SVGPathElement, v: Visible, at: number, dur
  * React mounts, tears down and mounts again inside a single frame, and the
  * first build is reverted before a paint, so refusing to rebuild would leave
  * the band settled and silent. But a rebuild also arrives when vite hot-updates
- * this component, and `Fan.tsx` imports `Fan.loop.ts` for the `idle` option --
- * which puts the loop on this component's import path, so saving that file
- * remounts this section on the same node with the band still on screen, the
- * observer fires at once and the entrance performs itself a second time in
- * front of someone who has already watched it. That is the fault diagnosed and
- * fixed on the familiar section (`Familiar.motion.ts`); the guard is the same.
+ * this component, and `Fan.tsx` imports `Fan.loop.ts` for the `idle` option —
+ * which puts the loop's module on this component's import path, so saving that
+ * file re-mounts the section on the same DOM node with the band still on
+ * screen, the observer fires at once, and the entrance performs itself a second
+ * time in front of someone who has already watched it. That fault was diagnosed
+ * and fixed on the familiar band; `Familiar.motion.ts` carries the measurements.
  *
  * The two cases are told apart by whether the previous timeline actually
- * reached its end. The mark below is the last thing on the timeline, so a build
- * reverted mid-flight -- StrictMode's, always -- never sets it and the next
- * build plays in full. One that ran to completion does, and the next build adds
- * no tweens at all: the hook reveals the section, the empty timeline completes
- * on the next tick, and the loop is handed the band exactly as it would have
- * been.
+ * reached its end. The mark below is the LAST thing on the timeline, so a build
+ * reverted mid-flight — StrictMode's, always — never sets it and the next build
+ * plays in full. One that ran to completion does, and the next build adds no
+ * tweens at all: the hook reveals the section, the empty timeline completes on
+ * the next tick, and the loop is handed the band exactly as it would have been.
  *
  * Keyed on the element, so a genuinely new section node performs its arrival
  * properly. Editing this file resets the set with the module, which is what you
@@ -240,139 +204,114 @@ export function buildFan({ el, q, tl }: SectionMotion) {
   // Already landed once and still on screen: settle, do not re-perform.
   if (LANDED.has(el)) return;
 
-  // One design pixel as the band is currently drawn. `--f` is a `calc()` on a
-  // container query unit, which `getComputedStyle` hands back unresolved, so it
-  // is read off the thing whose design width is known and the same at both
-  // breakpoints: an arc window is 863 design px wide.
-  const arcGroups = q('.fan__arcs');
-  const u = arcGroups.length
-    ? (arcGroups[0].getBoundingClientRect().width || ARCS_DESIGN_W) / ARCS_DESIGN_W
-    : 1;
-
-  const tile = q('.fan__tile')[0];
-  const mark = q('.fan__glass img')[0];
-  const title = q('.fan__title')[0];
-  const sub = q('.fan__sub')[0];
-
-  /* 1 — the tile. The one object the band opens with, and the only thing
-     moving for the first half second. It grows the last sixth of the way in
-     rather than popping: the house forbids the overshoot, and a 100px plate
-     that overshot would read as a button anyway. */
-  if (tile) {
-    outOfBlur(tl, tile, TILE_AT, { y: 20 * u, scale: 0.86, blur: 14, duration: 1.15, fade: 0.34 });
-  }
-
-  /* 2 — the mark inside the glass, a beat behind the plate that carries it, so
-     the tile reads as filling rather than arriving whole. The glass itself is
-     left alone: it is centred with `translate(-50%, -50%)`, and GSAP would
-     rewrite that transform in resolved pixels for the length of the tween. */
-  if (mark) {
-    tl.from(mark, {
-      scale: 0.6,
-      opacity: 0,
-      transformOrigin: '50% 50%',
-      duration: 0.7,
-      ease: EASE,
-      clearProps: 'transform,transformOrigin,opacity',
-    }, MARK_AT);
-  }
-
-  /* 3 — the headline, rising out of its own mask and sharpening on the way.
-     The largest single movement in the band and the thing the eye should land
-     on after the tile.
-
-     The mask spans, not the heading itself: `.fan__title` is centred with
-     `translateX(-50%)` and animating it directly would hand that centring to
-     GSAP as a pixel value for the length of the tween. `intoLines` is
-     idempotent, so a StrictMode remount reuses the spans already there. */
-  if (title) {
-    const lines = intoLines(title);
-    tl.from(lines, {
-      yPercent: 108,
-      filter: 'blur(10px)',
-      duration: 1.15,
-      ease: 'power4.out',
-      clearProps: 'transform,filter',
-    }, TITLE_AT);
-    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none', clearProps: 'opacity' }, TITLE_AT);
-  }
-
-  /* 4 — the sub-copy. Same treatment, shallower and softer: it is set much
-     smaller, so the headline's 10px of blur would wash it out entirely. */
-  if (sub) {
-    const lines = intoLines(sub);
-    tl.from(lines, {
-      yPercent: 106,
-      filter: 'blur(6px)',
-      duration: 0.9,
-      ease: 'power4.out',
-      clearProps: 'transform,filter',
-    }, SUB_AT);
-    tl.from(lines, { opacity: 0, duration: 0.28, ease: 'none', clearProps: 'opacity' }, SUB_AT);
-  }
-
-  /* 5 — the arcs, sweeping IN from the sides. Each of the sixteen ellipses is
-     drawn on its own, from the end of it nearest the edge of the band toward
-     the middle, one after the next, so the fans arrive line by line rather than
-     as two blocks. The window each fan lives in drifts the last few design
-     pixels inward at the same time, so the whole side settles toward the tile
-     the arcs are converging on. */
-  const band = el.getBoundingClientRect();
-  const mid = band.left + band.width / 2;
-
-  arcGroups.forEach((group) => {
-    // The two sides run together, mirrored -- the band is symmetrical and
-    // opening one side before the other would tip it.
-    const inward = group.classList.contains('fan__arcs--left') ? -1 : 1;
-    tl.from(group, {
-      x: 18 * u * inward,
-      opacity: 0,
-      duration: 1.5,
-      ease: EASE,
-      clearProps: 'transform,opacity',
-    }, ARCS_AT);
-
+  /* The sixteen lines, read out of the inlined SVGs. Each file is four whole
+     ellipses in DOM order innermost to outermost, and `Fan.tsx` ships a
+     `.fan__spark` twin immediately after each one — hence `:not()` here and
+     `nextElementSibling` for the head. */
+  const arcs: Arc[] = [];
+  q('.fan__arcs').forEach((group) => {
     const win = group.getBoundingClientRect();
-    // Lower fan first, upper a beat behind it: they meet at the band's waist,
-    // so starting them together would read as one thick line rather than two.
-    const halves = [
-      group.querySelector<HTMLElement>('.fan__lines--lower'),
-      group.querySelector<HTMLElement>('.fan__lines--upper'),
-    ];
-    halves.forEach((half, j) => {
-      if (!half) return;
-      const paths = Array.from(half.querySelectorAll<SVGPathElement>('path'));
-      paths.forEach((path, k) => {
-        const v = visibleRun(path, win, mid);
-        if (!v) return;
-        drawArc(tl, path, v, ARCS_AT + j * HALF_STEP + k * ARC_STEP, ARC_DRAW);
+    (['upper', 'lower'] as const).forEach((half) => {
+      const svg = group.querySelector(`.fan__lines--${half}`);
+      if (!svg) return;
+      svg.querySelectorAll<SVGPathElement>('path:not(.fan__spark)').forEach((path, depth) => {
+        const len = path.getTotalLength();
+        if (!len) return;
+        const next = path.nextElementSibling;
+        arcs.push({
+          path,
+          spark: next instanceof SVGPathElement && next.classList.contains('fan__spark') ? next : null,
+          depth,
+          half,
+          len,
+          span: visibleSpan(path, win, len),
+        });
       });
     });
   });
 
-  /* 6 — the diamonds, nearest the middle first. Six design pixels across, so
-     they need real travel of their own to be seen arriving at all; the scale is
-     there to make them read as settling, not to overshoot. */
-  const diamonds = fromCentre(el, q('.fan__diamond'));
-  if (diamonds.length) {
-    tl.from(diamonds, {
-      y: 16 * u,
-      scale: 0.45,
-      duration: 0.8,
-      stagger: 0.045,
-      ease: EASE,
-      clearProps: 'transform',
-    }, DIAMONDS_AT);
-    tl.from(diamonds, { opacity: 0, duration: 0.3, stagger: 0.045, ease: 'none', clearProps: 'opacity' }, DIAMONDS_AT);
-  }
+  const diamonds = q('.fan__diamond');
+  const pills = q('.fan__pill');
+  const tile = q('.fan__tile')[0];
+  const copy = q('.fan__title .fan__in, .fan__sub .fan__in');
 
-  /* 7 — the category pills, last and quickest, also middle outward. They are
-     the labels on the field, not a fourth statement, so they arrive after
-     everything they label. Their resting opacity is 0.7, which `clearProps`
-     inside `outOfBlur` hands back to CSS. */
-  const pills = fromCentre(el, q('.fan__pill'));
-  if (pills.length) {
-    outOfBlur(tl, pills, PILLS_AT, { y: 18 * u, blur: 6, duration: 0.85, stagger: 0.09, fade: 0.32 });
+  /* Start states, all of them written here with `set` so that every tween below
+     can be a plain `.to()`. Nothing is parked off to one side: this entrance
+     moves nothing positionally, and the only thing the diamonds and pills do is
+     come up to size on the spot. */
+  gsap.set(diamonds, { opacity: 0, scale: 0.4 });
+  gsap.set(pills, { opacity: 0, scale: 0.94 });
+  gsap.set(tile, { opacity: 0, scale: 0.8 });
+  gsap.set(copy, { opacity: 0, y: 10, filter: 'blur(14px)' });
+
+  /* 1 — THE EIGHT BEATS. Both sides of one half at one depth per beat, upper
+     then lower, so what is read is eight separate events rather than sixteen
+     overlapping ones. Left and right share a beat because the band is a mirror
+     and opening one side ahead of the other would tip it. */
+  arcs.forEach((a) => drawArc(tl, a, (a.depth * 2 + (a.half === 'lower' ? 1 : 0)) * BEAT));
+
+  /* 2 — the diamonds, outermost first. They sit along the arcs, so they come up
+     roughly with the heads that are passing them. Six design pixels across, so
+     the scale is what makes them readable as arriving at all; it settles rather
+     than overshoots. `clearProps` hands the transform back to the stylesheet,
+     which is where their `rotate(135deg)` lives. */
+  fromEdges(el, diamonds).forEach((d, i) => {
+    tl.to(d, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.28,
+      ease: 'power3.out',
+      clearProps: 'transform',
+    }, DIAMOND_AT + i * DIAMOND_STEP);
+  });
+
+  /* 3 — the category pills, outermost first as well, finishing under the last
+     pair of arcs. They are the labels on the field, not a fourth statement, so
+     they arrive quietly and at their stylesheet's 0.7. */
+  fromEdges(el, pills).forEach((p, i) => {
+    tl.to(p, {
+      opacity: 0.7,
+      scale: 1,
+      duration: 0.42,
+      ease: 'power3.out',
+      clearProps: 'transform',
+    }, PILLS_AT + i * PILL_STEP);
+  });
+
+  /* 4 — the copy, out of blur. The inner spans, never the blocks: both are
+     centred with `translateX(-50%)` and GSAP would resolve that centring to a
+     pixel value for the length of the tween. */
+  copy.forEach((c, i) => {
+    tl.to(c, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 1,
+      ease: 'expo.out',
+      clearProps: 'transform,filter,opacity',
+    }, COPY_AT + i * 0.12);
+  });
+
+  /* 5 — THE TILE IGNITES, on the last pair of arcs landing. Two tweens: it
+     comes up to size, and it flashes.
+
+     The flash is the only `fromTo` in this file, and it carries
+     `immediateRender: false` because a `fromTo` writes its start values the
+     moment the tween is BUILT rather than when the playhead arrives — without
+     it the tile would sit at brightness 2.6 from build time, through every beat
+     before this one, which is the whole entrance. */
+  if (tile) {
+    tl.to(tile, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: 'back.out(2)',
+      clearProps: 'transform',
+    }, TILE_AT);
+    tl.fromTo(tile,
+      { filter: 'brightness(2.6)' },
+      { filter: 'brightness(1)', duration: 0.9, ease: 'power2.out', immediateRender: false, clearProps: 'filter' },
+      TILE_AT);
   }
 
   // Last on the timeline, so it is only reached if the arrival was actually

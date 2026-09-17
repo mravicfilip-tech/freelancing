@@ -5,59 +5,171 @@
    not any one panel's.
 
    `--p` is the panel's design-pixel unit and is declared on `.panel` in
-   Steps.css, so it resolves here through the cascade. */
+   Steps.css, so it resolves here through the cascade.
+
+   Every number below is a design pixel taken off Figma node 365:1314, the
+   886 x 610 "Account Overview" frame. The artwork lives in a "Side Panel"
+   group 755.702 x 354 whose centre is pinned to the frame's centre, which puts
+   its origin at (64.929, 128.5); the children's own local coordinates are
+   folded into that origin here so each rule is a plain frame coordinate. */
 
 /* Panel 2 ------------------------------------------------------------------- */
 .s2 { position: absolute; inset: 0; }
-.s2__rails {
-  position: absolute; left: calc(65 * var(--p)); top: calc(128 * var(--p));
-  display: flex; flex-direction: column; gap: calc(22.75 * var(--p));
-}
+
+/* The five payment rails ----------------------------------------------------
+   Figma stacks them at local y 0.5 / 75.5 / 150.5 / 225.5 / 301.5 -- four gaps
+   of 23, 23, 23 and 24, not the even gap a flex column would give -- and the
+   first tile is 92 wide where the other four are 90. Absolute tops, therefore,
+   rather than `gap`. */
+.s2__rails { position: absolute; left: calc(64.999 * var(--p)); top: calc(129 * var(--p)); }
 .s2__tile {
-  display: grid; place-items: center; width: calc(90 * var(--p)); height: calc(52 * var(--p));
-  background: var(--surface); border: calc(1.255 * var(--p)) solid rgba(212, 212, 212, 0.13);
-  border-radius: calc(10 * var(--p));
+  position: absolute; left: 0; overflow: hidden;
+  width: calc(90 * var(--p)); height: calc(52 * var(--p));
+  background: #1d1c1b;
+  border: calc(1.255 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  border-radius: calc(14 * var(--p));
 }
-.s2__tile.is-first { border-color: rgba(212, 212, 212, 0.4); }
-.s2__tile.is-dim { opacity: 0.5; }
-.s2__tile img { width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
-.s2__lines { position: absolute; left: calc(149 * var(--p)); top: calc(144 * var(--p)); width: calc(348 * var(--p)); height: calc(321 * var(--p)); filter: brightness(2.4); }
-/* Five orange streaks, each centred on its Figma bounding box and rotated to
-   lie along the line it sits on. */
+.s2__tile--1 { top: 0; width: calc(92 * var(--p)); border-color: rgba(212, 212, 212, 0.4); }
+.s2__tile--2 { top: calc(75 * var(--p)); }
+.s2__tile--3 { top: calc(150 * var(--p)); }
+.s2__tile--4 { top: calc(225 * var(--p)); }
+.s2__tile--5 { top: calc(301 * var(--p)); }
+
+/* Each glyph sits in its own clipped box centred in the tile. The box is 34
+   square for four of them and 30 for the bank, and the SVG inside keeps its
+   own root width/height -- two of these are not square and stretching them to
+   fill the box is what squashed the card and the bank in the first build.
+   Tiles 3 and 4 carry `opacity: 0.5` inside the asset itself; tiles 2 and 5
+   carry it on the wrapper, which is where Figma puts it. */
+.s2__tile-icon {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: calc(34 * var(--p)); height: calc(34 * var(--p)); overflow: hidden;
+}
+.s2__tile-icon img { position: absolute; display: block; }
+.s2__tile--1 .s2__tile-icon img { left: 0; top: 0; width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
+.s2__tile--2 .s2__tile-icon { opacity: 0.5; }
+.s2__tile--2 .s2__tile-icon img { left: 0; top: calc(5.311 * var(--p)); width: calc(34 * var(--p)); height: calc(23.3755 * var(--p)); }
+.s2__tile--3 .s2__tile-icon img,
+.s2__tile--4 .s2__tile-icon img { left: 0; top: 0; width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
+.s2__tile--5 .s2__tile-icon { width: calc(30 * var(--p)); height: calc(30 * var(--p)); opacity: 0.5; }
+.s2__tile--5 .s2__tile-icon img { left: calc(2.499 * var(--p)); top: calc(1.572 * var(--p)); width: calc(23.75 * var(--p)); height: calc(25.9281 * var(--p)); }
+
+/* The converging lines ------------------------------------------------------
+   Figma hangs this asset off the 25.106 square "Profile Picture Container" at
+   (446.549, 261.56) with insets -440% / 0 / -717.45% / -1285%, which lands its
+   top-left at (123.937, 151.094) at its natural 347.723 x 315.7. The first
+   build read the anchor box as the node itself and put the asset 25 design px
+   right and 7 down of where it belongs.
+
+   `brightness` is a deliberate correction, not drift: the asset is a single
+   stroke at opacity 0.2 under an feGaussianBlur of stdDeviation 2.51, and a
+   browser renders that measurably fainter than Figma's own compositor. Sampled
+   at (224, 308) on the straight rail, Figma peaks 10/255 above the panel
+   ground; the raw asset gives 4. */
+.s2__lines {
+  position: absolute; left: calc(123.937 * var(--p)); top: calc(151.094 * var(--p));
+  width: calc(347.723 * var(--p)); height: calc(315.7 * var(--p));
+  filter: brightness(2.4);
+}
+
+/* The same five rails again, with no paint on them at all: the loop reads
+   `getPointAtLength` off these to fly the comets down the curves the artwork
+   draws. Shipped in the markup rather than built at runtime so there is
+   nothing on this panel a DOM sampler cannot see. */
+.s2__geom {
+  position: absolute; left: calc(123.937 * var(--p)); top: calc(151.094 * var(--p));
+  width: calc(347.723 * var(--p)); height: calc(315.7 * var(--p));
+  opacity: 0; pointer-events: none;
+}
+
+/* Five orange streaks, each on the rail it belongs to. Figma wraps each one in
+   a flex box that centres the rotated rectangle, so the numbers here are the
+   un-rotated box's own top-left, recovered from that box's centre.
+
+   The blur is Figma's layer blur of 8.411, which is not a CSS blur radius. The
+   profile of the un-rotated streak (comet 2) was sampled out of the Figma
+   render and fitted: a 6.277 tall bar of #e5331e over the panel ground, peak
+   154/255, half-max 9.1px wide. That is a Gaussian of sigma 3.4, so
+   `blur(3.4px)` in design pixels -- the literal 8.411 the first build used is
+   two and a half times too soft and drops the peak from 154 to 85. */
 .s2__comet {
-  position: absolute; height: calc(6.07 * var(--p));
-  background: #f03725; border-radius: calc(6 * var(--p));
-  filter: blur(calc(8.411 * var(--p)));
+  position: absolute; height: calc(6.068 * var(--p));
+  background: var(--orange-100);
+  filter: blur(calc(3.4 * var(--p)));
   transform-origin: center;
+  will-change: transform;
 }
-.s2__comet--1 { left: calc(240.5 * var(--p)); top: calc(358.7 * var(--p)); width: calc(59.09 * var(--p)); transform: rotate(-19.42deg); }
-.s2__comet--2 { left: calc(257.1 * var(--p)); top: calc(303.7 * var(--p)); width: calc(37.66 * var(--p)); height: calc(6.277 * var(--p)); }
-.s2__comet--3 { left: calc(221.4 * var(--p)); top: calc(239.2 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(15.72deg); }
-.s2__comet--4 { left: calc(356.6 * var(--p)); top: calc(269.3 * var(--p)); width: calc(14.67 * var(--p)); transform: rotate(30deg); }
-.s2__comet--5 { left: calc(224.2 * var(--p)); top: calc(432.9 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(-19.42deg); }
-.s2__node {
-  position: absolute; left: calc(446.7 * var(--p)); top: calc(261.1 * var(--p));
-  display: grid; place-items: center; width: calc(38.5 * var(--p)); height: calc(38.5 * var(--p));
+.s2__comet--1 { left: calc(240.217 * var(--p)); top: calc(359.194 * var(--p)); width: calc(59.091 * var(--p)); transform: rotate(-19.42deg); }
+.s2__comet--2 { left: calc(256.989 * var(--p)); top: calc(304.24 * var(--p)); width: calc(37.66 * var(--p)); height: calc(6.277 * var(--p)); }
+.s2__comet--3 { left: calc(220.954 * var(--p)); top: calc(239.66 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(15.72deg); }
+.s2__comet--4 { left: calc(356.694 * var(--p)); top: calc(269.84 * var(--p)); width: calc(14.665 * var(--p)); transform: rotate(30deg); }
+.s2__comet--5 { left: calc(224.662 * var(--p)); top: calc(433.675 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(-19.42deg); }
+
+/* The locked node ----------------------------------------------------------
+   Figma's "Notification Icon" group at (443.999, 295): a blurred progress
+   streak running right into the card, the glowing disc, and the padlock. The
+   first build hung the disc off the lines' anchor box instead, 9 design px
+   left and 27 up of the group, which is why the lock floated above the rails
+   rather than sitting on their junction. */
+.s2__node { position: absolute; left: calc(443.999 * var(--p)); top: calc(295 * var(--p)); width: calc(76 * var(--p)); height: calc(26 * var(--p)); }
+.s2__beam {
+  position: absolute; left: calc(21.34 * var(--p)); top: calc(8.79 * var(--p));
+  width: calc(56.489 * var(--p)); height: calc(7.532 * var(--p));
+  filter: blur(calc(1.014 * var(--p)));
 }
-.s2__node img { position: absolute; width: 100%; height: 100%; }
-.s2__lock { width: calc(16 * var(--p)) !important; height: calc(16 * var(--p)) !important; }
+.s2__beam i {
+  position: absolute; left: calc(-0.34 * var(--p)); top: calc(0.21 * var(--p));
+  width: calc(35 * var(--p)); height: calc(7 * var(--p));
+  background: linear-gradient(to right, #f55e22, #2d1208);
+}
+.s2__disc { position: absolute; left: calc(-6.316 * var(--p)); top: calc(-6.736 * var(--p)); width: calc(38.5532 * var(--p)); height: calc(38.5532 * var(--p)); }
+.s2__lock { position: absolute; left: calc(4.96 * var(--p)); top: calc(4.54 * var(--p)); width: calc(16 * var(--p)); height: calc(16 * var(--p)); }
+
+/* The balance card ---------------------------------------------------------- */
 .s2__balance {
-  position: absolute; left: calc(499.1 * var(--p)); top: calc(226 * var(--p));
+  position: absolute; left: calc(498.999 * var(--p)); top: calc(226 * var(--p));
   width: calc(346 * var(--p)); height: calc(158 * var(--p));
-  padding: calc(8 * var(--p));
+  padding: calc(12.553 * var(--p));
   background: rgba(255, 255, 255, 0.02);
-  border: calc(1.255 * var(--p)) solid rgba(240, 55, 37, 0.24);
-  border-radius: calc(20 * var(--p));
+  border: calc(1.255 * var(--p)) solid rgba(255, 99, 42, 0.24);
+  border-radius: calc(20.085 * var(--p));
+  backdrop-filter: blur(calc(8.662 * var(--p)));
 }
 .s2__balance-inner {
-  width: 100%; height: 100%; padding: calc(18 * var(--p)) calc(22 * var(--p));
-  border: calc(1.255 * var(--p)) solid rgba(244, 242, 242, 0.32);
-  border-radius: calc(14 * var(--p));
-  background: linear-gradient(134.6deg, rgba(0, 0, 0, 0.3) 42%, rgba(226, 34, 16, 0.28) 70%, rgba(121, 22, 12, 0.3) 85%, rgba(0, 0, 0, 0.3)), #1a1817;
-  box-shadow: 0 calc(8 * var(--p)) calc(24 * var(--p)) rgba(0, 0, 0, 0.35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: calc(130.553 * var(--p));
+  padding: calc(20.085 * var(--p));
+  /* Sampled off the Figma render either side of the stroke: the light edge is
+     carrying roughly a fifth of #f4f2f2, not the full value the exported
+     markup implies. */
+  border: calc(1.255 * var(--p)) solid rgba(244, 242, 242, 0.22);
+  border-radius: calc(15.064 * var(--p));
+  background: linear-gradient(134.615deg,
+    rgba(0, 0, 0, 0.3) 42.237%,
+    rgba(255, 73, 7, 0.3) 70.091%,
+    rgba(149, 43, 4, 0.3) 84.624%,
+    rgba(0, 0, 0, 0.3) 105.21%);
+  box-shadow:
+    0 calc(219.681 * var(--p)) calc(30.755 * var(--p)) rgba(0, 0, 0, 0),
+    0 calc(140.596 * var(--p)) calc(28.245 * var(--p)) rgba(0, 0, 0, 0.01),
+    0 calc(79.085 * var(--p)) calc(23.851 * var(--p)) rgba(0, 0, 0, 0.05),
+    0 calc(35.149 * var(--p)) calc(17.574 * var(--p)) rgba(0, 0, 0, 0.09),
+    0 calc(8.787 * var(--p)) calc(9.415 * var(--p)) rgba(0, 0, 0, 0.1);
 }
-.s2__balance-label { font-family: var(--font-mono); font-weight: 400; font-size: calc(14 * var(--p)); text-transform: uppercase; color: var(--color-body); }
-.s2__balance-amt { margin-top: calc(6 * var(--p)); font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--p)); color: var(--white-font); }
-.s2__dots { display: flex; align-items: center; gap: calc(4 * var(--p)); margin-top: calc(12 * var(--p)); }
-.s2__dots i { width: calc(7 * var(--p)); height: calc(7 * var(--p)); border-radius: 50%; background: var(--orange-100); }
-.s2__dots i.is-bar { width: calc(34 * var(--p)); border-radius: calc(7 * var(--p)); }
+.s2__balance-content { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: calc(6.277 * var(--p)); width: 100%; }
+.s2__balance-text { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+.s2__balance-label {
+  margin: 0; width: 100%;
+  font-family: var(--font-mono); font-weight: 400; font-size: calc(14 * var(--p));
+  line-height: normal; color: var(--color-body);
+}
+.s2__balance-amt {
+  margin: 0; width: 100%;
+  font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--p));
+  line-height: normal; color: var(--white-font);
+}
+/* Figma ships this as one 70.299 x 7.532 asset hung on a 70 x 7 slot, not as a
+   row of hand-built dots: the bar is 40.17 long with 2.51 gaps, where the first
+   build drew 34 with 4. */
+.s2__progress { position: relative; display: block; width: calc(70 * var(--p)); height: calc(7 * var(--p)); }
+.s2__progress img { position: absolute; left: 0; top: 0; display: block; width: calc(70.2991 * var(--p)); height: calc(7.53191 * var(--p)); }

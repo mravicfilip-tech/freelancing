@@ -25,9 +25,21 @@ const WIDTHS = [1600, 1100, 720];
 
 // Only properties a theme legitimately changes. Transform and filter are left
 // out on purpose: they belong to motion, not colour.
+//
+// `fill`, `stroke` and `stopColor` were the biggest hole in this list. Inline
+// SVG children ARE walked -- the fan alone contributes about 120 of them --
+// but until now the only properties read off them were HTML ones, so every
+// recolour of an inlined illustration was invisible here. That is most of the
+// hard work in the light-mode job.
+//
+// `maskImage` is recorded because the single-colour glyphs convert from <img>
+// to a CSS mask, and `src` because swapping an asset for a light variant in
+// the wrong branch would otherwise pass silently. `src` is an attribute, not a
+// computed property, so it is collected separately below.
 const PROPS = ['color', 'backgroundColor', 'backgroundImage', 'borderTopColor', 'borderBottomColor',
   'borderLeftColor', 'borderRightColor', 'borderTopWidth', 'boxShadow', 'opacity', 'fontSize',
-  'fontWeight', 'fontFamily', 'visibility', 'display', 'mixBlendMode'];
+  'fontWeight', 'fontFamily', 'visibility', 'display', 'mixBlendMode',
+  'fill', 'stroke', 'stopColor', 'maskImage'];
 
 const browser = await chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
@@ -37,11 +49,18 @@ const browser = await chromium.launch({
 const snap = { theme: THEME, url: URL, widths: {} };
 
 for (const width of WIDTHS) {
-  const page = await browser.newPage({ viewport: { width, height: 950 }, reducedMotion: 'reduce' });
+  // `colorScheme` matters from the first byte now: index.html resolves the
+  // theme in a blocking inline script, and Chromium's default preference is
+  // light, so without this a run asked for dark would load light and then be
+  // forced back -- measuring a page that had already painted the other
+  // palette. The explicit write afterwards covers the localStorage case.
+  const page = await browser.newPage({
+    viewport: { width, height: 950 },
+    reducedMotion: 'reduce',
+    colorScheme: THEME === 'light' ? 'light' : 'dark',
+  });
   await page.goto(URL, { waitUntil: 'load' });
-  await page.evaluate((t) => {
-    if (t === 'light') document.documentElement.dataset.theme = 'light';
-  }, THEME);
+  await page.evaluate((t) => { document.documentElement.dataset.theme = t; }, THEME);
   // Reveal every band: reduced motion already settles them, this only forces
   // the observer-gated ones that have not been scrolled past.
   await page.evaluate(() => document.querySelectorAll('[data-motion]').forEach((s) => delete s.dataset.motion));
@@ -54,7 +73,12 @@ for (const width of WIDTHS) {
       if (!root) return null;
       const base = root.getBoundingClientRect();
       const out = [];
-      for (const el of [...root.querySelectorAll('*')].slice(0, 600)) {
+      // Raised from 600. It was never binding -- the hero, the largest
+      // section, was at 447 -- but the theme switcher renders inside .hero and
+      // masked-icon wrappers add nodes too, and a cap that starts truncating
+      // does it silently: the tail of a section would simply stop being
+      // checked.
+      for (const el of [...root.querySelectorAll('*')].slice(0, 1200)) {
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
         const row = {
@@ -63,6 +87,7 @@ for (const width of WIDTHS) {
           w: +r.width.toFixed(1), h: +r.height.toFixed(1),
         };
         for (const p of props) row[p] = cs[p];
+        row.src = el.getAttribute('src') ?? '';
         out.push(row);
       }
       return { w: +base.width.toFixed(1), h: +base.height.toFixed(1), n: out.length, els: out };

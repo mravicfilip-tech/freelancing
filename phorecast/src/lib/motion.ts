@@ -14,6 +14,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { gsap } from 'gsap';
+import { useThemeEpoch } from './theme';
 
 export type Timeline = gsap.core.Timeline;
 
@@ -182,6 +183,29 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
 ): RefObject<T | null> {
   const ref = useRef<T>(null);
 
+  // A theme change has to rebuild every section, and this is the dependency
+  // that makes it happen.
+  //
+  // Ten call sites across six motion modules read their resting colours out of
+  // `getComputedStyle` at BUILD time and hold them for the life of the loop —
+  // the fan's pill fill, Built's cool-down inks, Familiar's card backgrounds,
+  // three `borderTopColor` reads in bento, PanelFund's tile rims,
+  // SlideAccount's price ink. Nothing re-reads them, and nothing can be made
+  // to: a loop that has already captured its targets has no way back to the
+  // stylesheet. So a section built in dark and then switched to light cools to
+  // near-black on paper, forever, with no error and nothing visible in a
+  // still.
+  //
+  // The rebuild path this takes is not a new one. `ctx.revert()`, `delete
+  // motionBuilt`, `rehide()` is exactly the mount -> cleanup -> mount cycle
+  // StrictMode runs on every single load, which makes it the best-tested code
+  // in this file. Entrances replay on a switch, which is honest: the page the
+  // user asked for is a different page.
+  //
+  // The epoch is bumped only on an actual change of theme (see theme.ts), so
+  // this is inert unless someone touches the switcher.
+  const themeEpoch = useThemeEpoch();
+
   // Layout effect, not effect: `useEffect` runs after the browser paints, so the
   // section would paint once in its hidden pending state before any of this ran
   // — a visible blank frame, and the whole "nothing happens, then everything"
@@ -280,7 +304,19 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     // an observer only adds the callback's latency, and the section is hidden
     // for every millisecond of it.
     let io: IntersectionObserver | undefined;
-    if (immediate) {
+
+    // A section that has already played once is being rebuilt, not mounted —
+    // a theme switch, in practice. Routing it back through the observer would
+    // hand it to whether it happens to be on screen at the moment of the
+    // click: everything above the fold would revert to its hidden pending
+    // state and stay there until it was scrolled to a second time, so
+    // switching theme at the footer would empty the page behind you. The flag
+    // survives teardown precisely so this question can be asked, and it is
+    // never set on a first mount — including StrictMode's second one, whose
+    // cleanup runs before any entrance can complete.
+    const replay = el.dataset.motionDone === '1';
+
+    if (immediate || replay) {
       start();
     } else {
       // "Has this been scrolled to" is a question about how far the section has
@@ -318,7 +354,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       // the next mount; one that did will reveal again when it rebuilds.
       rehide();
     };
-  }, [build, threshold, idle, immediate]);
+  }, [build, threshold, idle, immediate, themeEpoch]);
 
   return ref;
 }

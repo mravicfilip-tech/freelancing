@@ -37,7 +37,7 @@
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
-.pillars__title .line__in { display: block; position: relative; will-change: transform; }
+.pillars__title .line__in { display: block; position: relative; }
 
 /* The glow sits above the top edge and spills down from the right. */
 .pillars__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }

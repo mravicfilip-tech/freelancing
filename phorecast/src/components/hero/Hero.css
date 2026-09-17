@@ -223,10 +223,25 @@
 /* Masked line reveal. The wrapper clips, the inner span moves, so type rises out
    of nothing instead of fading. Both are block-level and add no spacing, so the
    settled layout is unchanged. */
+/* The mask clips to the line box, and at these line-heights the descenders of
+   g, y and p hang below it -- "of Trading" lost the tail of its g. The padding
+   gives the mask that room back and the negative margin takes it out of the
+   layout again, so the descender is inside the clip while the spacing between
+   lines is unchanged.
+
+   No `will-change` here. It is a standing compositor promotion, and text on its
+   own layer loses subpixel antialiasing permanently -- measured on the fan
+   section today as 5,744 differing pixels against the same type unpromoted.
+   GSAP promotes for the length of the tween by itself. */
 .hero__title .line,
-.hero__lede .line { display: block; overflow: hidden; }
+.hero__lede .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
 .hero__title .line__in,
-.hero__lede .line__in { display: block; position: relative; will-change: transform; }
+.hero__lede .line__in { display: block; position: relative; }
 
 
 

@@ -56,7 +56,12 @@
 .sl2__box {
   position: absolute;
   top: calc(170 * var(--u));
-  right: calc(137 * var(--u));
+  /* Flush with the content column's right edge, which is where the nav's Sign
+     Up button ends -- the illustration and the header now line up on the same
+     rule. Figma leaves a 137px gutter here, but the frame in the file is wider
+     than its visible content, so honouring that gutter left the cards floating
+     short of the column edge rather than aligned to anything on the page. */
+  right: 0;
   width: calc(963 * var(--u));
   height: calc(365 * var(--u));
 }

@@ -28,7 +28,12 @@
   --u: calc(100cqw / 1800);
   position: absolute;
   top: calc(-176 * var(--u));
-  right: calc(64 * var(--u));
+  /* Flush with the content column's right edge, which is where the nav's Sign
+     Up button ends -- the illustration and the header line up on the same rule.
+     Figma leaves a gutter here, but its frame is wider than its visible content,
+     so honouring that gutter left the artwork floating short of the column edge
+     rather than aligned to anything on the page. */
+  right: 0;
   width: calc(964 * var(--u));
   height: calc(822 * var(--u));
   font-family: var(--font-body);

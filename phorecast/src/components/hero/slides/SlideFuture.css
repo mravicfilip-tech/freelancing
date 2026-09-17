@@ -39,7 +39,12 @@
 
 .sl4__frame {
   position: absolute;
-  right: calc(87 * var(--u));
+  /* Flush with the content column's right edge, which is where the nav's Sign
+     Up button ends -- the illustration and the header line up on the same rule.
+     Figma leaves a gutter here, but its frame is wider than its visible content,
+     so honouring that gutter left the artwork floating short of the column edge
+     rather than aligned to anything on the page. */
+  right: 0;
   /* Design: the group's top is 99px from the frame top and the copy block
      starts at 262.3px, so the painted box begins 163.3 - 139 = 24.3 design px
      above the slide's own top edge. */

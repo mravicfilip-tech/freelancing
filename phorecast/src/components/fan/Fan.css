@@ -134,3 +134,54 @@
   .fan__tile { left: calc(450 * var(--f)); top: calc(200 * var(--f)); width: calc(100 * var(--f)); height: calc(100 * var(--f)); }
   .fan__pill { font-size: calc(16 * var(--f)); }
 }
+
+/* Masked line reveal, the hero's treatment applied here: the wrapper clips, the
+   inner span moves, so the copy rises out of nothing instead of fading. The
+   spans are built by `intoLines` at build time, so this CSS does nothing at all
+   until the entrance has run.
+
+   The masks live on the copy rather than the copy being moved directly: both
+   blocks are centred with `translateX(-50%)`, and animating them would hand
+   that centring to GSAP as a resolved pixel value for the length of the tween.
+
+   The padding/margin pair is descender room -- at line-height 1.2 the "y" of
+   "Your Funds Stay" sits below the box the mask would otherwise clip to -- and
+   cancels out, so the settled layout is unchanged. */
+.fan__title .line,
+.fan__sub .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+.fan__title .line__in,
+.fan__sub .line__in { display: block; position: relative; will-change: transform; }
+
+/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
+   writes its start values the moment a tween is built, and this band is not
+   built until it has been scrolled to, so without this the whole section would
+   sit finished in the sliver showing under the one above and only then animate.
+
+   Gated on [data-js], which main.tsx sets: the hold only exists while there is
+   script here to release it, and there is deliberately no timed failsafe -- for
+   a band that waits to be scrolled to the wait is legitimate and can last
+   minutes, so the guarantee has to be that the hold never applies when nothing
+   will undo it. Only the animated parts are held; the section's own box and its
+   aspect ratio stay, so nothing about the layout pops in.
+
+   The copy is held as a whole rather than by its `.line` masks: the masks only
+   exist once the build has split it, so hiding those alone would leave both
+   blocks painted plainly through the entire wait. The arc windows are held
+   rather than the images inside them, so the one hold covers both the clip
+   wipe and the group's own drift. */
+[data-js] .fan[data-motion='pending'] .fan__arcs,
+[data-js] .fan[data-motion='pending'] .fan__diamond,
+[data-js] .fan[data-motion='pending'] .fan__pill,
+[data-js] .fan[data-motion='pending'] .fan__tile,
+[data-js] .fan[data-motion='pending'] .fan__title,
+[data-js] .fan[data-motion='pending'] .fan__sub {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .fan[data-motion='pending'] * { visibility: visible; }
+}

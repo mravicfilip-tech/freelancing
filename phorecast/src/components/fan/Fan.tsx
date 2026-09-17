@@ -10,6 +10,8 @@ import iconSportB from '../../assets/fan/icon-sport-b.svg';
 import iconSportC from '../../assets/fan/icon-sport-c.svg';
 import tileBg from '../../assets/fan/tile-bg.jpg';
 import tileLogo from '../../assets/fan/tile-logo.svg';
+import { useSectionMotion } from '../../lib/motion';
+import { buildFan } from './Fan.motion';
 import './Fan.css';
 
 /* All coordinates are screenshot space inside the 1920 x 675 frame. */
@@ -51,8 +53,23 @@ function Arcs({ className }: { className: string }) {
 }
 
 export function Fan() {
+  // Scroll-gated on the default margin: the band has to climb a quarter of the
+  // screen before it opens, so the sliver showing under the section above is
+  // not enough to spend the entrance on.
+  //
+  // The ambient loop belongs here too, once it exists. `useSectionMotion` takes
+  // it as the `idle` option and starts it on the entrance's `onComplete`, so the
+  // two never read as one continuous movement:
+  //
+  //   import { fanLoop } from './Fan.loop';
+  //   const ref = useSectionMotion<HTMLElement>(buildFan, { idle: fanLoop });
+  //
+  // Deliberately not wired yet -- Fan.loop.ts is another author's file and an
+  // import of a module that does not export yet stops the whole app mounting.
+  const ref = useSectionMotion<HTMLElement>(buildFan);
+
   return (
-    <section className="fan" aria-labelledby="fan-title">
+    <section ref={ref} className="fan" aria-labelledby="fan-title" data-motion="pending">
       <div className="fan__frame">
         <div aria-hidden="true">
           <Arcs className="fan__arcs--left" />

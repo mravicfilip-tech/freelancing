@@ -3,41 +3,52 @@
  *
  * The section's load-in belongs to `Familiar.motion.ts`. This file owns what
  * happens *after* it has landed, and it owns nothing else: it reads the markup
- * the component already ships, writes text and colour into it, and puts every
- * value back on teardown.
+ * the component already ships, writes text, colour and transform into it, and
+ * puts every one of them back on teardown.
  *
- * THE STORY, one beat per region, 13s apart
- * -----------------------------------------
- * A tick arrives and the book moves. That is the whole thing:
+ * THE STORY — three acts, 13.5s, then 3.6s of nothing
+ * --------------------------------------------------
+ * A live screen doing its job, in the order it would really do it.
  *
- *   0.00s  NVDA prints. $218.36 -> $218.29 and the day follows -2.37% -> -2.40%,
- *          the figure flashing red on a down print, green on the way back.
- *   0.55s  The same refresh reaches the ECB card, whose policy rate is honestly
- *          unmoved, so only its chip lifts.
- *   1.30s  The French election re-sorts. Cazeneuve counts 55% -> 56% -> 57%,
- *          crosses Hollande — the two rows physically exchange places, a full
- *          row pitch each — and the Yes chip on the row that moved brightens.
- *   3.00s  The BTC ring follows the same print, 63% -> 65%.
- *   3.60s  A category is tapped in the filter row; it holds, then lets go.
- *   5.80s  Everything is at rest, and stays there for 7.2s.
+ * I. THE BOOK MOVES (0.0 – 3.4s)
+ *   NVDA prints twice, $218.36 -> $218.31 -> $218.29, the card lighting under
+ *   each print and the day following to -2.40%. The same refresh reaches the
+ *   ECB card, whose policy rate is honestly unmoved, so only the card and its
+ *   chip acknowledge it. In the phone, the French election re-sorts: Cazeneuve
+ *   counts 55% -> 57%, crosses Hollande — the two rows physically exchange
+ *   places — and the Yes chip on the row that gained brightens.
  *
- * The next cycle plays the same story backwards — Cazeneuve gives second place
- * back, NVDA prints up to where it started — so after two cycles every figure
- * on the screen is exactly the one in the Figma frame again. Nothing drifts.
+ * II. THE ROUND IS ENDING (3.3 – 7.9s)
+ *   The feed switches to Ending Soon. The tab moves, the filter glints, and the
+ *   two market cards trade places: the 5-minute BTC round climbs 242px over the
+ *   French election, which will not resolve for seven months. With BTC at the
+ *   top its ring advances 63% -> 66%, the blurred stack behind the copy lifts,
+ *   the floating prediction card takes a trade, and a category is tapped in the
+ *   filter row while the live dots at either end light.
  *
- * The one thing that never rests is the 5-minute BTC round's clock, which ticks
- * a second at a time for as long as the section is on screen and restarts at
- * 5:00 when it runs out. A countdown that freezes is a screenshot; this is the
- * cheapest honest signal that the screen is live, and it is one digit.
+ * III. BACK TO DEFAULT (7.9 – 9.9s)
+ *   All events again, and the feed returns. Every frame of the rest window is
+ *   the design exactly.
+ *
+ * The next cycle plays the figures backwards — Cazeneuve gives second place
+ * back, NVDA prints up to where it started, the ring returns to 63% — so after
+ * two cycles every number on the screen is the one in the Figma frame. Nothing
+ * drifts, and nothing structural is ever left displaced: the sort is undone
+ * inside the cycle that made it.
+ *
+ * The one thing that never rests is the 5-minute round's clock, which ticks a
+ * second at a time while the section is on screen and restarts at 5:00 when it
+ * runs out. A countdown that freezes is a screenshot.
  *
  * Nothing here floats, breathes, drifts, overshoots, rotates, or reacts to the
  * pointer. Reduced motion runs none of it.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
+import type { Timeline } from '../../lib/motion';
 
-/** One full cycle: ~5.8s of story, the rest of it still. */
-const PERIOD = 13;
+/** One full cycle: 9.9s of story, 3.6s of stillness. */
+const PERIOD = 13.5;
 /** How long after the entrance lands before the first beat. */
 const SETTLE = 1.2;
 
@@ -48,8 +59,18 @@ const DOWN = '#e7000b';
 const CHIP_YES_LIT = '#17482e';
 const CHIP_NO_LIT = '#4a1f23';
 const ECB_FOOT_LIT = '#242422';
+const CARD_BG_LIT = 'rgba(255, 255, 255, 0.11)';
+const CARD_EDGE_LIT = 'rgba(255, 255, 255, 0.34)';
 const PILL_ON_BG = '#e5331e';
 const PILL_ON_FG = '#fffbf8';
+const PRED_YES_LIT = '#17482e';
+
+/** A pulse that leaves nothing behind: out, then back to the value it started
+ *  from, so the loop's resting frame is the design. */
+function pulse(tl: Timeline, target: gsap.TweenTarget, at: number, out: gsap.TweenVars, back: gsap.TweenVars, up = 0.35, down = 0.8) {
+  tl.to(target, { ...out, duration: up, ease: 'sine.out' }, at)
+    .to(target, { ...back, duration: down, ease: 'sine.inOut' }, at + up);
+}
 
 /** The last non-empty text node inside `el` — the NVDA footer's `-2.37%` sits
  *  beside an `<img>` with no element of its own to hold it. */
@@ -76,26 +97,44 @@ export function familiarLoop(root: HTMLElement): () => void {
   const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
   /* ------------------------------------------------------------- handles
-     Every one of these is optional. A sibling agent is rewriting the markup
-     under this file; a missing hook costs its own beat and nothing else. */
+     Every one of these is optional and separately guarded. A sibling agent is
+     still editing this section's markup; a hook that moves costs its own beat
+     and nothing else. */
+  const nvdaCard = q('.fam__mkt--nvda');
   const nvdaValue = q('.fam__mkt--nvda .fam__mkt-value');
   const nvdaPct = lastText(q('.fam__mkt--nvda .fam__mkt-foot'));
+  const ecbCard = q('.fam__mkt--ecb');
   const ecbFoot = q('.fam__mkt--ecb .fam__mkt-foot');
+
+  const events = qa('.fam__event');
+  const feedA = events[0] ?? null;                                   // French election, 7 months out
+  const feedB = events.find((e) => e.classList.contains('fam__event--btc')) ?? null; // BTC, 3 minutes out
   const rows = qa('.fam__event:not(.fam__event--btc) .fam__rows li');
   const gauge = q('.fam__gauge');
-  const pills = qa('.fam__chips .fam__chip-pill');
+  const filterIcon = q('.fam__filter');
+  const tabAll = q('.fam__tabs .is-active');
+  // Anchored, because `/ending/` also matches "Tr-ending" — which is styled
+  // white already, so the tab switch silently tweened white to white.
+  const tabSoon = qa('.fam__tabs span').find((s) => /^ending\s/i.test((s.textContent ?? '').trim())) ?? null;
   const btcMeta = q('.fam__event--btc .fam__event-meta');
   const timer = btcMeta
     ? Array.from(btcMeta.querySelectorAll('span'))
         .find((s) => /^\d{1,2}:\d{2}$/.test((s.textContent ?? '').trim())) ?? null
     : null;
 
+  const pills = qa('.fam__chips .fam__chip-pill');
+  const dots = qa('.fam__chip-dot');
+  const eyebrowDot = q('.fam__copy--left .eyebrow__dot');
+  const ghosts = qa('.fam__ghost');
+  const predPct = q('.fam__pred-bar span');
+  const predYes = q('.fam__pred-btns .is-yes');
+
   const rowPct = (i: number) => rows[i]?.querySelector<HTMLElement>('.fam__row-pct') ?? null;
   const rowName = (i: number) => rows[i]?.querySelector<HTMLElement>('.fam__row-name') ?? null;
   const canSort = rows.length >= 3 && !!rowPct(1) && !!rowPct(2) && !!rowName(1) && !!rowName(2);
+  const canResort = !!feedA && !!feedB && feedA !== feedB;
 
-  /* Everything this loop writes into, and what it said before it did. Teardown
-     hands the section back character for character. */
+  /* Everything this loop writes into, and what it said before it did. */
   const held: Array<[Text | HTMLElement, string]> = [];
   const hold = (t: Text | HTMLElement | null) => {
     if (!t) return;
@@ -119,27 +158,37 @@ export function familiarLoop(root: HTMLElement): () => void {
     if (started || stopped) return;
     started = true;
 
-    [nvdaValue, gauge, timer].forEach(hold);
+    [nvdaValue, gauge, timer, predPct].forEach(hold);
     hold(nvdaPct);
     if (canSort) [1, 2].forEach((i) => { hold(rowName(i)); hold(rowPct(i)); });
 
     // Resting values are read now, with the entrance finished and its
     // `clearProps` already run, so a flash has something true to return to.
-    const css = (el: HTMLElement | null, prop: 'color' | 'backgroundColor') =>
+    const css = (el: HTMLElement | null, prop: 'color' | 'backgroundColor' | 'borderColor' | 'opacity') =>
       (el ? getComputedStyle(el)[prop] : '') || '';
     const valueRest = css(nvdaValue, 'color');
     const pctRest = css(rowPct(1), 'color');
-    const ecbRest = css(ecbFoot, 'backgroundColor');
+    const ecbFootRest = css(ecbFoot, 'backgroundColor');
+    const cardBgRest = css(nvdaCard, 'backgroundColor');
+    const cardEdgeRest = css(nvdaCard, 'borderColor');
     const pillBg = css(pills[0] ?? null, 'backgroundColor');
     const pillFg = css(pills[0] ?? null, 'color');
+    const tabOnRest = css(tabAll, 'color');
+    const tabOffRest = css(tabSoon, 'color');
+    const predYesRest = css(predYes, 'backgroundColor');
+    // The ghosts sit at 0.4 in CSS. If the entrance has stranded them at zero,
+    // lifting them would introduce artwork nobody has seen; leave them alone.
+    const ghostRest = ghosts.map((g) => Number.parseFloat(css(g, 'opacity')) || 0);
+    const liveGhosts = ghosts.filter((_, i) => ghostRest[i] > 0.05);
 
-    // The two states each figure ping-pongs between. Both are read off the
-    // design rather than hard-coded, so the resting frame is whatever the
-    // component ships today.
+    // The two states each figure ping-pongs between, all read off the design so
+    // the resting frame is whatever the component ships today.
     const price0 = num(nvdaValue?.textContent);
     const day0 = num(nvdaPct?.nodeValue);
     const gauge0 = num(gauge?.textContent);
+    const pred0 = num(predPct?.textContent);
     const priceDp = (nvdaValue?.textContent ?? '').includes('.') ? 2 : 0;
+    const predComma = (predPct?.textContent ?? '').includes(',');
 
     // Positions 1 and 2 of the leaderboard, as a model. The DOM keeps its own
     // order; only what the two rows say is exchanged, so nothing is reparented
@@ -160,48 +209,74 @@ export function familiarLoop(root: HTMLElement): () => void {
     let phase = 0;
 
     ctx = gsap.context(() => {
+      // Numeric starts for everything the loop brightens: GSAP cannot tween out
+      // of the keyword `none`. Never on the ghosts — their `filter` is the blur
+      // that makes them ghosts.
+      gsap.set([gauge, filterIcon, eyebrowDot, ...dots].filter(Boolean) as HTMLElement[], { filter: 'brightness(1)' });
+
       const runCycle = () => {
-        const up = phase % 2 === 0; // even: the outsider climbs. odd: it gives it back.
+        const down = phase % 2 === 0; // even: the tape ticks down and the outsider climbs
         const tl = gsap.timeline();
         story = tl;
 
-        /* 1 — NVDA prints. The figure changes on the frame the flash starts;
-           the colour is the tell, the digits are the beat. */
-        if (nvdaValue && Number.isFinite(price0)) {
-          const next = up ? price0 - 0.07 : price0;
-          const nextDay = Number.isFinite(day0) ? (up ? day0 - 0.03 : day0) : NaN;
+        /* ================================================== I. THE BOOK MOVES */
+
+        /* Two prints, not one. A quote that changes once every quarter minute
+           is a screenshot with a typo; a quote that prints twice is a tape. */
+        const printAt = (at: number, price: number, day: number | null) => {
+          if (!nvdaValue || !Number.isFinite(price)) return;
           tl.call(() => {
-            nvdaValue.textContent = `$${next.toFixed(priceDp)}`;
-            if (nvdaPct && Number.isFinite(nextDay)) nvdaPct.nodeValue = `${nextDay.toFixed(2)}%`;
-          }, undefined, 0)
-            .to(nvdaValue, { color: up ? DOWN : UP, duration: 0.22, ease: 'sine.out' }, 0)
-            .to(nvdaValue, { color: valueRest, duration: 1.0, ease: 'sine.inOut' }, 0.24);
+            nvdaValue.textContent = `$${price.toFixed(priceDp)}`;
+            if (nvdaPct && day !== null && Number.isFinite(day)) nvdaPct.nodeValue = `${day.toFixed(2)}%`;
+          }, undefined, at)
+            .to(nvdaValue, { color: down ? DOWN : UP, duration: 0.2, ease: 'sine.out' }, at)
+            .to(nvdaValue, { color: valueRest, duration: 0.95, ease: 'sine.inOut' }, at + 0.22);
+          if (nvdaCard && cardBgRest) {
+            pulse(tl, nvdaCard, at,
+              { backgroundColor: CARD_BG_LIT, borderColor: CARD_EDGE_LIT },
+              { backgroundColor: cardBgRest, borderColor: cardEdgeRest }, 0.3, 0.95);
+          }
+        };
+        if (Number.isFinite(price0)) {
+          const mid = down ? price0 - 0.05 : price0 - 0.03;
+          const end = down ? price0 - 0.07 : price0;
+          const dayEnd = Number.isFinite(day0) ? (down ? day0 - 0.03 : day0) : null;
+          printAt(0, mid, null);
+          printAt(2.5, end, dayEnd);
         }
 
-        /* 2 — the refresh reaches the ECB card. A deposit facility rate does not
-           move every thirteen seconds, so only the chip acknowledges it. */
-        if (ecbFoot && ecbRest) {
-          tl.to(ecbFoot, { backgroundColor: ECB_FOOT_LIT, duration: 0.35, ease: 'sine.out' }, 0.55)
-            .to(ecbFoot, { backgroundColor: ecbRest, duration: 0.85, ease: 'sine.inOut' }, 0.9);
+        /* The refresh reaches the ECB card. A deposit facility rate does not
+           move every thirteen seconds, so the card acknowledges it and the
+           figure does not budge. */
+        if (ecbCard && cardBgRest) {
+          pulse(tl, ecbCard, 0.6,
+            { backgroundColor: CARD_BG_LIT, borderColor: CARD_EDGE_LIT },
+            { backgroundColor: cardBgRest, borderColor: cardEdgeRest }, 0.35, 1.0);
         }
+        if (ecbFoot && ecbFootRest) {
+          pulse(tl, ecbFoot, 0.7, { backgroundColor: ECB_FOOT_LIT }, { backgroundColor: ecbFootRest }, 0.35, 0.9);
+        }
+        // The section's own live dot, lit by the same refresh.
+        if (eyebrowDot) pulse(tl, eyebrowDot, 0.75, { filter: 'brightness(1.75)' }, { filter: 'brightness(1)' }, 0.3, 0.9);
 
-        /* 3 — the leaderboard re-sorts. */
+        /* The leaderboard re-sorts, while the card is still in its design
+           position and every row of it is in clear view. */
         if (canSort && Number.isFinite(slots[0].pct) && Number.isFinite(slots[1].pct)) {
-          const moverSlot = up ? 1 : 0;           // bottom row climbs, then the same name falls back
+          const moverSlot = down ? 1 : 0;           // the bottom row climbs, then the same name falls back
           const mover = rows[moverSlot + 1];
           const pctEl = rowPct(moverSlot + 1)!;
           const from = slots[moverSlot].pct;
-          const to = up ? from + 2 : from - 2;
+          const to = down ? from + 2 : from - 2;
           const walk = { v: from };
 
           tl.to(walk, {
             v: to, duration: 0.8, ease: 'sine.inOut',
             onUpdate: () => { pctEl.textContent = `${Math.round(walk.v)}%`; },
-          }, 1.3)
-            .to(pctEl, { color: up ? UP : DOWN, duration: 0.22, ease: 'sine.out' }, 1.3)
-            .to(pctEl, { color: pctRest, duration: 0.9, ease: 'sine.inOut' }, 2.5);
+          }, 1.1)
+            .to(pctEl, { color: down ? UP : DOWN, duration: 0.22, ease: 'sine.out' }, 1.1)
+            .to(pctEl, { color: pctRest, duration: 0.9, ease: 'sine.inOut' }, 2.3);
 
-          // The cross itself. Measured off the rows each cycle and expressed as
+          // The cross itself, measured off the rows each cycle and expressed as
           // a share of a row's own height, so it stays a row pitch at every
           // breakpoint without a timeline rebuild on resize.
           const a = rows[1].getBoundingClientRect();
@@ -219,49 +294,103 @@ export function familiarLoop(root: HTMLElement): () => void {
               gsap.set(rows[1], { yPercent: pitch * cross.v, opacity: fade });
               gsap.set(rows[2], { yPercent: -pitch * cross.v, opacity: fade });
             },
-          }, 2.15)
+          }, 1.95)
             .call(() => {
               gsap.set([rows[1], rows[2]], { yPercent: 0 });
               gsap.set([rows[1], rows[2]], { clearProps: 'opacity' });
               slots[moverSlot].pct = to;
               slots.reverse();
               paint();
-            }, undefined, 3.05);
+            }, undefined, 2.85);
 
           // The odds follow the move: Yes on the row that gained, No on the one
           // that gave it up.
-          const chip = mover.querySelector<HTMLElement>(up ? '.fam__chip--yes' : '.fam__chip--no');
+          const chip = mover.querySelector<HTMLElement>(down ? '.fam__chip--yes' : '.fam__chip--no');
           if (chip) {
             const chipRest = getComputedStyle(chip).backgroundColor;
-            tl.to(chip, { backgroundColor: up ? CHIP_YES_LIT : CHIP_NO_LIT, duration: 0.3, ease: 'sine.out' }, 2.6)
-              .to(chip, { backgroundColor: chipRest, duration: 0.8, ease: 'sine.inOut' }, 2.9);
+            pulse(tl, chip, 2.35, { backgroundColor: down ? CHIP_YES_LIT : CHIP_NO_LIT }, { backgroundColor: chipRest }, 0.3, 0.8);
           }
         }
 
-        /* 4 — the 5-minute BTC ring follows the same print. */
-        if (gauge && Number.isFinite(gauge0)) {
-          const ring = { v: gauge0 + (up ? 0 : 2) };
-          tl.to(ring, {
-            v: gauge0 + (up ? 2 : 0), duration: 0.7, ease: 'sine.inOut',
-            onUpdate: () => { gauge.textContent = `${Math.round(ring.v)}%`; },
-          }, 3.0)
-            // `immediateRender: false` or the start value is written the moment
-            // the cycle is built rather than when the playhead reaches 3.0s —
-            // harmless here, since `brightness(1)` is what the ring already
-            // looks like, but a delayed `fromTo` that parks a real offset holds
-            // the section off its settled design for most of the cycle.
-            .fromTo(gauge, { filter: 'brightness(1)' },
-              { filter: 'brightness(1.5)', duration: 0.3, ease: 'sine.out', immediateRender: false }, 3.0)
-            .to(gauge, { filter: 'brightness(1)', duration: 0.85, ease: 'sine.inOut' }, 3.3);
+        /* ============================================ II. THE ROUND IS ENDING */
+
+        /* The feed switches to Ending Soon, and the sort that follows is the
+           honest consequence: a market with three minutes left belongs above
+           one that resolves in seven months. */
+        if (tabAll && tabSoon && tabOnRest && tabOffRest) {
+          tl.to(tabAll, { color: tabOffRest, duration: 0.55, ease: 'sine.inOut' }, 3.3)
+            .to(tabSoon, { color: tabOnRest, duration: 0.55, ease: 'sine.inOut' }, 3.3)
+            .to(tabSoon, { color: tabOffRest, duration: 0.55, ease: 'sine.inOut' }, 8.0)
+            .to(tabAll, { color: tabOnRest, duration: 0.55, ease: 'sine.inOut' }, 8.0);
+        }
+        if (filterIcon) pulse(tl, filterIcon, 3.55, { filter: 'brightness(1.9)' }, { filter: 'brightness(1)' }, 0.3, 0.8);
+
+        if (canResort) {
+          // Measured every cycle, with both cards at rest, and converted to a
+          // share of each card's own height: percentages survive a resize, a
+          // pixel figure measured once does not.
+          const ra = feedA!.getBoundingClientRect();
+          const rb = feedB!.getBoundingClientRect();
+          const gap = rb.top - ra.bottom;
+          const riseBy = rb.height > 0 ? ((ra.height + gap) / rb.height) * 100 : 0;
+          const sinkBy = ra.height > 0 ? ((rb.height + gap) / ra.height) * 100 : 0;
+
+          tl.to(feedB, { yPercent: -riseBy, duration: 1.25, ease: 'sine.inOut' }, 3.75)
+            .to(feedA, { yPercent: sinkBy, duration: 1.25, ease: 'sine.inOut' }, 3.75)
+            // The BTC card is later in the DOM and so passes in front; the card
+            // going the other way steps back a little rather than fighting it.
+            .to(feedA, { opacity: 0.72, duration: 0.5, ease: 'sine.out' }, 3.75)
+            .to(feedA, { opacity: 1, duration: 0.6, ease: 'sine.inOut' }, 4.4)
+            .to(feedB, { yPercent: 0, duration: 1.25, ease: 'sine.inOut' }, 8.45)
+            .to(feedA, { yPercent: 0, duration: 1.25, ease: 'sine.inOut' }, 8.45)
+            .to(feedA, { opacity: 0.72, duration: 0.5, ease: 'sine.out' }, 8.45)
+            .to(feedA, { opacity: 1, duration: 0.6, ease: 'sine.inOut' }, 9.1);
         }
 
-        /* 5 — a category is tapped, holds, and lets go, so the row at rest is
-           the row in the design. */
+        /* At the top of the feed, the 5-minute round's ring advances. */
+        if (gauge && Number.isFinite(gauge0)) {
+          const ring = { v: gauge0 + (down ? 0 : 3) };
+          tl.to(ring, {
+            v: gauge0 + (down ? 3 : 0), duration: 0.8, ease: 'sine.inOut',
+            onUpdate: () => { gauge.textContent = `${Math.round(ring.v)}%`; },
+          }, 4.9);
+          pulse(tl, gauge, 4.9, { filter: 'brightness(1.55)' }, { filter: 'brightness(1)' }, 0.35, 0.95);
+        }
+
+        /* The blurred stack behind the copy is context: it lifts with the
+           refresh and settles again, and it never travels. */
+        liveGhosts.forEach((g, i) => {
+          const rest = ghostRest[ghosts.indexOf(g)];
+          pulse(tl, g, 5.15 + i * 0.25, { opacity: Math.min(rest + 0.22, 1) }, { opacity: rest }, 0.5, 1.1);
+        });
+
+        /* The floating prediction card takes a trade. */
+        if (predPct && Number.isFinite(pred0)) {
+          const step = { v: down ? pred0 : pred0 + 0.2 };
+          tl.to(step, {
+            v: down ? pred0 + 0.2 : pred0, duration: 0.7, ease: 'sine.inOut',
+            onUpdate: () => {
+              const t = step.v.toFixed(2);
+              predPct.textContent = `${predComma ? t.replace('.', ',') : t}%`;
+            },
+          }, 5.45);
+        }
+        if (predYes && predYesRest) {
+          pulse(tl, predYes, 5.45, { backgroundColor: PRED_YES_LIT }, { backgroundColor: predYesRest }, 0.3, 0.9);
+        }
+
+        /* A category is tapped, holds, and lets go, so the row at rest is the
+           row in the design. */
         const pill = pills[phase % (pills.length || 1)];
         if (pill && pillBg) {
-          tl.to(pill, { backgroundColor: PILL_ON_BG, color: PILL_ON_FG, duration: 0.5, ease: 'sine.out' }, 3.6)
-            .to(pill, { backgroundColor: pillBg, color: pillFg, duration: 0.8, ease: 'sine.inOut' }, 5.0);
+          tl.to(pill, { backgroundColor: PILL_ON_BG, color: PILL_ON_FG, duration: 0.5, ease: 'sine.out' }, 5.95)
+            .to(pill, { backgroundColor: pillBg, color: pillFg, duration: 0.8, ease: 'sine.inOut' }, 7.9);
         }
+        /* The live dots at either end of the row. Accents: under half a second
+           out, and nothing structural depends on them. */
+        dots.forEach((d, i) => {
+          pulse(tl, d, 6.25 + i * 0.12, { filter: 'brightness(1.6)', scale: 1.4 }, { filter: 'brightness(1)', scale: 1 }, 0.3, 0.75);
+        });
 
         phase += 1;
       };
@@ -292,9 +421,9 @@ export function familiarLoop(root: HTMLElement): () => void {
 
     /* Off screen the loop costs nothing — but only the clock between beats is
        stopped, never a beat halfway through. Pausing the story timeline would
-       strand the section on a lit pill or a pair of crossed rows for as long as
-       it took someone to scroll back, and a still of that is not the design.
-       The beat is at most six seconds; it is allowed to finish. */
+       strand the section on a lit pill or a re-sorted feed for as long as it
+       took someone to scroll back, and a still of that is not the design. The
+       story is ten seconds; it is allowed to finish. */
     io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { driver?.play(); runClock(); }
       else { driver?.pause(); stopClock(); }

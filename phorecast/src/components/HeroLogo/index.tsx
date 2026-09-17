@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useThemeEpoch } from '../../lib/theme';
 import type { LogoScene, LogoLayout, LogoPlacement } from './LogoScene';
 import type { VariantId } from './variants';
 import logoOutlineUrl from './logo-outline.svg';
@@ -123,6 +124,13 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mode, setMode] = useState<Mode>('pending');
   const [epoch, setEpoch] = useState(0);
+  // The treatment resolves its medium once, in `build` — additive light on a
+  // dark ground, ink over paper (see treatments/lined.ts). Nothing re-reads it,
+  // so a live switch has to arrive as a rebuild, exactly as `useSectionMotion`
+  // rebuilds a section rather than re-theming a running timeline. The section
+  // has already raised `motion:done` by then, so the gate in `afterHostEntrance`
+  // is already open and the mark is back within an idle callback.
+  const themeEpoch = useThemeEpoch();
 
   // Remount the scene when a breakpoint flips (placement differs).
   useEffect(() => {
@@ -197,7 +205,7 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
       }
       scene = null;
     };
-  }, [hostRef, forceStatic, scroll, variant, placement, epoch]);
+  }, [hostRef, forceStatic, scroll, variant, placement, epoch, themeEpoch]);
 
   return (
     <div className={`heroLogo ${className}`} aria-hidden="true" data-mode={mode} data-variant={variant}>

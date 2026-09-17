@@ -292,7 +292,14 @@
   border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   overflow: hidden;
 }
+/* NIKKEI and S&P 500 bake #9D9D9D, which is --ink-2 exactly. Without this they
+   inherit .sl3__frame's --ink and render #fffbf8: two index marks that went
+   from grey to white IN DARK the moment they were masked, which is precisely
+   the silent colour change a conversion must not cause. On paper --ink-2 is
+   #5e5651, 6.4:1 on the chip, and LIGHTMODE 2.3's "keep a dark chip under a
+   light-drawn mark" is no longer needed -- the mark follows the page instead. */
 .sl3__badge .icon {
+  color: var(--ink-2);
   position: absolute;
   left: 50%;
   top: calc(50% + 0.5 * var(--u));

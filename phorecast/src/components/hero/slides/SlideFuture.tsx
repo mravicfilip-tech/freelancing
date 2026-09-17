@@ -104,7 +104,12 @@ export function SlideFuture() {
               style={{ '--x': x, '--y': y, '--s': 6, ...NO_BOX } as Vars}
             />
           ))}
-          <Icon src={dotGrey} w={7} h={7} className="sl4__node" style={{ '--x': 278, '--y': 421, '--s': 7, ...NO_BOX } as Vars} />
+          {/* The one grey node. Its colour is carried inline rather than by a
+              modifier class because theme-diff.mjs keys an element by its class
+              plus its ordinal: renaming the class would report this node as
+              GONE and ADDED, which is exactly the noise that keying exists to
+              remove. The value is still a token, not a literal. */}
+          <Icon src={dotGrey} w={7} h={7} className="sl4__node" style={{ '--x': 278, '--y': 421, '--s': 7, color: 'var(--sl4-node-2)', ...NO_BOX } as Vars} />
           <img src={dotAccent} alt="" className="sl4__node" style={{ '--x': 730.97, '--y': 419, '--s': 6 } as Vars} />
 
           <img src={btcCircle} alt="" className="sl4__coin" />

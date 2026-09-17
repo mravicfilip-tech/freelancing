@@ -669,7 +669,7 @@
   backdrop-filter: blur(calc(5.55 * var(--u)));
   -webkit-backdrop-filter: blur(calc(5.55 * var(--u)));
 }
-.sl2-toast__globe { flex: none; width: calc(22 * var(--u)); height: calc(22 * var(--u)); }
+.sl2-toast__globe { color: var(--ink); flex: none; width: calc(22 * var(--u)); height: calc(22 * var(--u)); }
 .sl2-toast__text {
   display: flex;
   flex-direction: column;

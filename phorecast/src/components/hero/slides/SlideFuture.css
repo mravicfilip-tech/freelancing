@@ -43,6 +43,11 @@
      missing. They are masked glyphs now (see SlideFuture.tsx) so this token
      reaches them. */
   --sl4-ring: #d9d9d9;
+  /* The one grey node, at 278,421. Same hex, and in dark it IS the same value
+     -- but the rings carry opacity="0.3" inside the file and this dot does not,
+     so the two were never the same rendered weight and cannot share one light
+     value. See the light block. */
+  --sl4-node-2: #d9d9d9;
   /* 13% white glass under each market badge. */
   --sl4-badge-bg: rgba(255, 255, 255, 0.13);
 }
@@ -72,7 +77,12 @@
 }
 
 /* Three overlapping hairline circles (Ellipse 75/76/77) ------------------- */
-.sl4__ring { position: absolute; display: block; }
+/* A masked glyph paints in `color`, so a converted glyph that is given no
+   `color` silently takes whatever it inherits -- here --ink, which is #fffbf8
+   and NOT the #d9d9d9 these files bake. That is a dark-mode colour change, in
+   dark mode, caused by a conversion that was supposed to be invisible there.
+   Naming the token is not documentation; it is the fix. */
+.sl4__ring { position: absolute; display: block; color: var(--sl4-ring); }
 .sl4__ring--lg { left: calc(460.05 * var(--u)); top: calc(287 * var(--u)); width: calc(274 * var(--u)); height: calc(274 * var(--u)); }
 .sl4__ring--md { left: calc(381 * var(--u));    top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
 .sl4__ring--sm { left: calc(282 * var(--u));    top: calc(352 * var(--u)); width: calc(143 * var(--u)); height: calc(143 * var(--u)); }
@@ -105,7 +115,10 @@
 }
 /* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
    optical nudge the design carries — not stretched to the 57px badge. */
+/* The mark inside each badge bakes #FFFBF8, which is --ink. It inherited that
+   already -- this states it, so the next edit to an ancestor cannot move it. */
 .sl4__badge .icon {
+  color: var(--ink);
   position: absolute;
   display: block;
   left: calc(14.277 * var(--u));
@@ -124,7 +137,11 @@
 }
 
 /* Nodes -------------------------------------------------------------------- */
+/* Six white nodes, one grey, one accent. The white six bake #FFFBF8, which is
+   --ink exactly; the grey one bakes #D9D9D9 and carries --sl4-node-2 inline;
+   the accent one is still an <img> and ignores `color` entirely. */
 .sl4__node {
+  color: var(--ink);
   position: absolute;
   display: block;
   left: calc(var(--x) * var(--u));
@@ -293,14 +310,27 @@
    ---------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .sl4 {
-  /* The three orbit rings and the grey node. #d9d9d9 is 13.7:1 on the dark page
-     and 1.29:1 on paper -- the skeleton of this slide simply going missing, and
-     the exact failure LIGHTMODE 6.5 is about. They are masked glyphs now, so
-     this token reaches them. It is not the full inversion of 13.7:1: a 1px
-     near-black ring would be the loudest thing in a quiet warm frame, and these
-     rings are structure, not subject. 3.0:1 puts them a shade under the badges
-     they carry, which is where dark has them too. */
+  /* THE THREE ORBIT RINGS. The skeleton of this slide, and #d9d9d9 on paper is
+     1.29:1 -- it simply goes missing, which is the failure LIGHTMODE 6.5 is
+     about. They are masked glyphs now, so this token reaches them.
+
+     The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
+     that is not what the rings are: circle-*.svg carries opacity="0.3", so the
+     stroke is attenuated before it ever meets the page, and a 1px stroke is
+     then antialiased on top of that. What matters is the RENDERED weight, and
+     it was measured on the rendered pixels rather than computed: dark draws
+     these rings at 1.51:1 against its own ground, and #9b8e85 draws them at
+     1.47:1 against paper. Left unconverted they would have been 1.05:1 -- so
+     the conversion was worth its nine gate rows per ring, but only just, and
+     only because the colour was chosen against the measurement. */
   --sl4-ring: #9b8e85;
+  /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
+     has no opacity attribute, so it renders at full strength: 13.7:1 in dark
+     against the rings' 1.51:1. At --sl4-ring it came out 2.63:1 on paper, a
+     node visibly quieter than the six white ones beside it where dark has it
+     only slightly quieter. --ink-2 restores the relationship: 6.97:1 against
+     the white nodes' 17.6:1. */
+  --sl4-node-2: var(--ink-2);
   /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
      --accent hairline and the radial --accent bloom the order lights it with
      both flip on their own, and both stay DARKER than the page, so "lit" still
@@ -310,14 +340,27 @@
 }
 
 :root[data-theme='light'] .sl4 {
-  /* The three orbit rings and the grey node. #d9d9d9 is 13.7:1 on the dark page
-     and 1.29:1 on paper -- the skeleton of this slide simply going missing, and
-     the exact failure LIGHTMODE 6.5 is about. They are masked glyphs now, so
-     this token reaches them. It is not the full inversion of 13.7:1: a 1px
-     near-black ring would be the loudest thing in a quiet warm frame, and these
-     rings are structure, not subject. 3.0:1 puts them a shade under the badges
-     they carry, which is where dark has them too. */
+  /* THE THREE ORBIT RINGS. The skeleton of this slide, and #d9d9d9 on paper is
+     1.29:1 -- it simply goes missing, which is the failure LIGHTMODE 6.5 is
+     about. They are masked glyphs now, so this token reaches them.
+
+     The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
+     that is not what the rings are: circle-*.svg carries opacity="0.3", so the
+     stroke is attenuated before it ever meets the page, and a 1px stroke is
+     then antialiased on top of that. What matters is the RENDERED weight, and
+     it was measured on the rendered pixels rather than computed: dark draws
+     these rings at 1.51:1 against its own ground, and #9b8e85 draws them at
+     1.47:1 against paper. Left unconverted they would have been 1.05:1 -- so
+     the conversion was worth its nine gate rows per ring, but only just, and
+     only because the colour was chosen against the measurement. */
   --sl4-ring: #9b8e85;
+  /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
+     has no opacity attribute, so it renders at full strength: 13.7:1 in dark
+     against the rings' 1.51:1. At --sl4-ring it came out 2.63:1 on paper, a
+     node visibly quieter than the six white ones beside it where dark has it
+     only slightly quieter. --ink-2 restores the relationship: 6.97:1 against
+     the white nodes' 17.6:1. */
+  --sl4-node-2: var(--ink-2);
   /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
      --accent hairline and the radial --accent bloom the order lights it with
      both flip on their own, and both stay DARKER than the page, so "lit" still

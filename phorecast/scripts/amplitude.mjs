@@ -66,12 +66,24 @@ for (const sel of SECTIONS) {
   const r = await page.evaluate(([s, secs, entrance]) => new Promise((res) => {
     const root = document.querySelector(s);
     if (entrance) root.scrollIntoView({ behavior: 'instant', block: 'center' });
-    const nodes = [...root.querySelectorAll('*')].slice(0, 400);
+    // Re-queried as we go, not captured once. Elements that only exist while a
+    // sequence runs -- the line spans `intoLines` creates at build time, a
+    // travelling head a loop spawns for one beat -- were never in a list taken
+    // before sampling started, so the very things carrying the motion were the
+    // ones this script could not see.
+    let nodes = [...root.querySelectorAll('*')].slice(0, 400);
+    let rescan = 0;
     const seen = new Map();
     const t0 = performance.now();
     const tick = () => {
       const base = root.getBoundingClientRect();
+      if (++rescan % 15 === 0) nodes = [...root.querySelectorAll('*')].slice(0, 400);
       for (const e of nodes) {
+        // A parked element is not a still element. While a section is held at
+        // `visibility: hidden` it sits at its RESTING position, so counting
+        // those frames reports the whole entrance offset as travel for
+        // everything on the section at once.
+        if (getComputedStyle(e).visibility === 'hidden') continue;
         const q = e.getBoundingClientRect();
         const x = q.left - base.left;       // relative: cancels the page scroll
         const y = q.top - base.top;

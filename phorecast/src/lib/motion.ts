@@ -99,7 +99,18 @@ export function count(tl: Timeline, el: HTMLElement, from: number, to: number, a
 
 /** Reveal with a clip-path wipe from `from` (an `inset(...)` value) to fully visible. */
 export function wipe(tl: Timeline, el: Element, at: number, duration: number, from: string) {
-  tl.fromTo(el, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration, ease: 'power2.inOut' }, at);
+  // `immediateRender: false` because this is a fromTo, and a fromTo writes its
+  // START value the moment the tween is BUILT rather than when the playhead
+  // reaches it. Called at a non-zero `at`, the element would therefore sit
+  // clipped from the first painted frame and only un-clip when its turn came --
+  // invisible for the whole run-up while every "does it animate" check passes.
+  // Clearing the property at the end hands the settled element back to CSS.
+  tl.fromTo(
+    el,
+    { clipPath: from },
+    { clipPath: 'inset(0% 0% 0% 0%)', duration, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
+    at,
+  );
 }
 
 /** A gentle bob, out of phase with its neighbours. */

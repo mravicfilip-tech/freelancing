@@ -29,9 +29,17 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   // The line rises out of its mask and resolves from soft as it arrives. The
   // blur is cleared afterwards so the settled type is sharp and CSS owns it
   // again.
+  //
+  // The opacity is a second, much shorter tween rather than part of the first.
+  // A blur bleeds past its mask: parked 84px below the clip at full opacity,
+  // 12px of blur leaked a faint grey smudge of the headline into the hero
+  // before anything had arrived. Starting at zero stops the leak, and ramping
+  // back in 0.3s -- while the line is still deep in the mask and still soft --
+  // means the reveal itself looks exactly as it did.
   if (title) {
     const lines = intoLines(title);
-    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14);
+    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14)
+      .from(lines, { opacity: 0, duration: 0.3, stagger: 0.22, ease: 'none' }, at + 0.14);
   }
 
   // The illustration is the largest thing on screen; leaving it out of the
@@ -54,19 +62,27 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
 
 /** The load-in. The nav drops in, light ignites, everything else overlaps it. */
 export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
-  const nav = one(hero, '.nav');
+  // Document order is already left to right here, which is what the stagger wants.
   const navParts = all(hero, '.nav .logo, .nav__links > *, .nav__actions > *, .nav__burger');
   const glows = all(hero, '.hero__glow');
   const horizon = all(hero, '.hero__horizon');
   const mark = all(hero, '.hero__logo');
   const slide = one<HTMLElement>(hero, '.hero__slide.is-active');
 
-  // The nav, as on Remittix: the bar drops from above the viewport first, then
-  // its contents settle into it. Two beats, not one -- a bar arriving with its
-  // links already in place reads as a jump cut.
-  if (nav) tl.from(nav, { y: -28, opacity: 0, duration: 0.9, ease: 'power3.out' }, 0);
+  // The nav assembles rather than arriving. Dropping the whole bar and then
+  // dropping its contents again was two movements on the same pixels: the
+  // logo fell twice, the fades multiplied, and the result read as a flop
+  // rather than a sequence. The bar itself now never moves. Its pieces come
+  // in left to right on one clean stagger -- logo, then each link, then the
+  // buttons -- so the eye is led across the top of the page once.
   if (navParts.length) {
-    tl.from(navParts, { y: -10, opacity: 0, duration: 0.6, stagger: 0.05, ease: 'power3.out' }, 0.25);
+    tl.from(navParts, {
+      y: -14,
+      opacity: 0,
+      duration: 0.85,
+      stagger: 0.075,
+      ease: EASE,
+    }, 0.1);
   }
 
   // Light ignites small and bright and blooms outward, rather than fading up.
@@ -84,13 +100,25 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
 
   rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
 
-  // The market cards deal in one at a time, left to right, rather than arriving
-  // as a block: a wider stagger than the rest of the hero so each one is read
-  // as its own object. clearProps hands the transform back to CSS afterwards,
-  // otherwise the inline matrix GSAP leaves behind outranks the hover lift.
+  // The market cards deal in one at a time, left to right. They used to pop on
+  // a back.out overshoot, which is the one thing the house style says not to
+  // do: the scale bounce made four cards look like they were springing rather
+  // than being dealt. Each one now wipes up out of its own edge -- the same
+  // masked reveal the headline uses, so the section speaks one language -- and
+  // rises the last few pixels on the band's own ease. clearProps hands the
+  // transform back to CSS afterwards, otherwise the inline matrix GSAP leaves
+  // behind outranks the hover lift.
   const cards = all(hero, '.hero__foot > *');
   if (cards.length) {
-    pop(tl, cards, 1.25, { scale: 0.94, y: 18, duration: 0.75, stagger: 0.16, clearProps: 'transform,opacity' });
+    tl.from(cards, {
+      clipPath: 'inset(100% 0% 0% 0%)',
+      y: 22,
+      opacity: 0,
+      duration: 0.9,
+      stagger: 0.14,
+      ease: EASE,
+      clearProps: 'transform,opacity,clipPath',
+    }, 1.25);
   }
 }
 

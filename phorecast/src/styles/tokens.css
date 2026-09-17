@@ -28,6 +28,9 @@
 
   --page-pad: clamp(20px, 5vw, 96px);       /* 96px at 1920 */
   --content-max: 1440px;                    /* Figma's content column */
+  /* The house ease for hovers and short state changes: expo-like, no overshoot. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
   --radius-pill: 400px;
   --btn-w: 254px;
   --btn-h: 50px;

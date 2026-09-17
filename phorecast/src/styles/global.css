@@ -103,13 +103,64 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .btn:active { transform: translateY(1px); }
 .btn--primary { background: var(--orange-100); color: var(--white-font); }
-.btn--primary:hover { background: #ff6a2e; }
 .btn--ghost { border: 1px solid var(--color-body); color: var(--orange-100); }
-.btn--ghost:hover { border-color: var(--orange-100); }
 .btn--outline { border: 1px solid var(--white-font); color: var(--white-font); }
-.btn--outline:hover { background: rgba(255, 251, 248, 0.08); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
+}
+
+/* Swap hover ---------------------------------------------------------------
+   Direction 03 from hover-lab.html, applied to every button, menu link and
+   footer link. The label rolls: the live copy leaves through the top of its
+   own box while the duplicate arrives from below.
+
+   The padding gives descenders room inside the clip -- without it the tails of
+   g, p and y are shaved off -- and the matching negative margin takes that room
+   back out of the layout, so nothing shifts. The duplicate travels 100% of its
+   own height, not the wrapper's, so the padding cannot knock it out of line. */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.roll__in {
+  display: block;
+  transition: transform 460ms var(--ease-out);
+}
+.roll__in + .roll__in {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(100%);
+}
+.btn:hover .roll__in + .roll__in,
+.nav__link:hover .roll__in + .roll__in,
+.footer__links a:hover .roll__in + .roll__in { transform: translateY(0); }
+.btn:hover .roll__in:first-child,
+.nav__link:hover .roll__in:first-child,
+.footer__links a:hover .roll__in:first-child { transform: translateY(-100%); }
+
+/* Keyboard users get the same thing, so the hover is not the only signal. */
+.btn:focus-visible .roll__in + .roll__in,
+.nav__link:focus-visible .roll__in + .roll__in,
+.footer__links a:focus-visible .roll__in + .roll__in { transform: translateY(0); }
+.btn:focus-visible .roll__in:first-child,
+.nav__link:focus-visible .roll__in:first-child,
+.footer__links a:focus-visible .roll__in:first-child { transform: translateY(-100%); }
+
+/* The colour half of direction 03. The roll carries the movement; these carry
+   the state, so a control still reads as hovered with motion turned off. */
+.btn--primary:hover { background: var(--white-font); color: var(--orange-100); }
+.btn--ghost:hover { border-color: var(--orange-100); background: rgba(245, 94, 34, 0.1); }
+.btn--outline:hover { border-color: var(--orange-300); color: var(--orange-300); }
+.nav__link:hover { color: var(--orange-300); }
+
+@media (prefers-reduced-motion: reduce) {
+  .roll__in { transition: none; }
+  .roll__in + .roll__in { display: none; }
 }

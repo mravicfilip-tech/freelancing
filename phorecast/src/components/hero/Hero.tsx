@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { REDUCED, useSectionMotion } from '../../lib/motion';
 import { heroBuild, heroIdle, slideIn } from './entrance';
 import { Nav } from '../Nav';
+import { Roll } from '../Roll';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
 import { StackDiagram } from './StackDiagram';
@@ -205,7 +206,7 @@ export function Hero() {
                   <h1 className="display hero__title">{s.title}</h1>
                 </div>
                 <p className="lede hero__lede">{s.lede}</p>
-                <a href={s.href} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}>{s.cta}</a>
+                <a href={s.href} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}><Roll>{s.cta}</Roll></a>
               </div>
               <div className="hero__visual">{s.visual}</div>
             </div>

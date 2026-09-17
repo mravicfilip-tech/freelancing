@@ -1,4 +1,5 @@
 import dot from '../../assets/icons/live-dot.svg';
+import { Roll } from '../Roll';
 import ecb from '../../assets/familiar/ecb.svg';
 import nvidia from '../../assets/familiar/nvidia.svg';
 import trendA from '../../assets/familiar/trend-a.svg';
@@ -130,7 +131,7 @@ export function Familiar() {
         <div className="fam__copy fam__copy--right">
           <h3 className="fam__sub-title">Phorecast Trading</h3>
           <p className="fam__sub-body">Trade crypto, forex, stocks, commodities and indices through one simple, intuitive platform.</p>
-          <a href="#signup" className="btn btn--primary fam__cta">Start Trading</a>
+          <a href="#signup" className="btn btn--primary fam__cta"><Roll>Start Trading</Roll></a>
         </div>
 
         <MarketCard

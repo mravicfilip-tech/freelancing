@@ -21,7 +21,6 @@
   white-space: nowrap;
   transition: color 160ms ease;
 }
-.nav__link:hover { color: var(--orange-100); }
 .nav__more { display: inline-flex; align-items: center; gap: 7.8px; }
 .nav__actions {
   display: flex;

@@ -1,4 +1,5 @@
 import { Logo } from '../Logo';
+import { Roll } from '../Roll';
 import x from '../../assets/social/x.svg';
 import discord from '../../assets/social/discord.svg';
 import telegram from '../../assets/social/telegram.svg';
@@ -53,7 +54,7 @@ export function Footer() {
                 <h2 className="footer__col-title">{c.title}</h2>
                 <ul className="footer__links">
                   {c.links.map((l) => (
-                    <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}>{l}</a></li>
+                    <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}><Roll>{l}</Roll></a></li>
                   ))}
                 </ul>
               </div>
@@ -66,7 +67,7 @@ export function Footer() {
           <div className="footer__meta">
             <p>© 2026 Phorecast Labs. All rights reserved.</p>
             <ul className="footer__legal-links">
-              {LEGAL.map((l) => <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}>{l}</a></li>)}
+              {LEGAL.map((l) => <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}><Roll>{l}</Roll></a></li>)}
             </ul>
           </div>
         </div>

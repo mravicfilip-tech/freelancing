@@ -26,6 +26,7 @@
    fill has moved from #511715 to #662514 since the shared copy was taken, so
    this card carries its own current export. */
 import grid from '../../../assets/bento/grid.svg';
+import { Roll } from '../../Roll';
 import ringArc from '../../../assets/bento/ring-arc.svg';
 import arrow from '../../../assets/bento/arrow-white.svg';
 import logoWatermark from '../../../assets/bento/onboard/logo-watermark.svg';
@@ -90,7 +91,7 @@ export function BoxOnboard() {
       </div>
 
       <a className="bento__cta bento__cta--white" href="#signup">
-        Open an Account
+        <Roll>Open an Account</Roll>
         <img src={arrow} alt="" width={12} height={6} />
       </a>
     </article>

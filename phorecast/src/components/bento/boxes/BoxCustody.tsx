@@ -15,6 +15,7 @@
  * owns the card's load-in and loop.
  */
 import arrow from '../../../assets/bento/custody/arrow.svg';
+import { Roll } from '../../Roll';
 // The same 430x236 export the bento already ships as funds-glow.png -- checked
 // pixel for pixel, not by name -- so this points at the existing file rather
 // than a second 116 KB copy of it.
@@ -105,7 +106,7 @@ export function BoxCustody() {
       </div>
 
       <a href="#how" className="bento__cta bento__cta--orange">
-        See How It Works
+        <Roll>See How It Works</Roll>
         <img src={arrow} alt="" width={12} height={6} />
       </a>
     </article>

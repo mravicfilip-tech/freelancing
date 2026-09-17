@@ -17,6 +17,7 @@
    real <path class="box-bonus__line"> so the motion pass can draw it. */
 
 import chartMarker from '../../../assets/bento/bonus/marker.svg';
+import { Roll } from '../../Roll';
 import chartGrid from '../../../assets/bento/bonus/grid.svg';
 import arrowOrange from '../../../assets/bento/bonus/arrow.svg';
 import walletBadge from '../../../assets/bento/bonus/wallet-badge.svg';
@@ -112,7 +113,7 @@ export function BoxBonus() {
       </div>
 
       <a className="bento__cta bento__cta--orange box-bonus__cta" href="#bonus">
-        <span className="box-bonus__cta-label">Get Your Bonus</span>
+        <span className="box-bonus__cta-label"><Roll>Get Your Bonus</Roll></span>
         <span className="box-bonus__cta-arrow" aria-hidden="true">
           <img src={arrowOrange} alt="" width={12} height={6} />
         </span>

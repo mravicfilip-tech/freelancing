@@ -153,7 +153,16 @@
   border: calc(1.367 * var(--u)) solid rgba(0, 0, 0, 0.09);
 }
 .box-bonus__badge--bolt { left: calc(629 * var(--u)); top: calc(73.5 * var(--u)); }
-.box-bonus__badge--pie { left: calc(345 * var(--u)); top: calc(143.5 * var(--u)); }
+/* The pie badge sits 30% smaller than its Figma box at rest, scaled about its
+   own centre so it stays on the same point of the chart line. Scaling rather
+   than restating the geometry keeps the three wedges' leaf boxes -- which are
+   Figma's own resolved insets -- correct relative to each other. */
+.box-bonus__badge--pie {
+  left: calc(345 * var(--u));
+  top: calc(143.5 * var(--u));
+  transform: scale(0.7);
+  transform-origin: 50% 50%;
+}
 
 .box-bonus__glyph,
 .box-bonus__pie {

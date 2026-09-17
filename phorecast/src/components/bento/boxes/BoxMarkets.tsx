@@ -29,6 +29,7 @@
    mid-stops flipped to white so the mesh reads on the dark cards. On cream the
    mesh has to be ink, which is what Figma exports for this node (#343434). */
 import grid from '../../../assets/bento/markets/grid.svg';
+import { Roll } from '../../Roll';
 import orbitRing from '../../../assets/bento/orbit-ring.svg';
 import arrowOrange from '../../../assets/bento/arrow-orange.svg';
 import cursorArrow from '../../../assets/bento/cursor.svg';
@@ -229,7 +230,7 @@ export function BoxMarkets() {
 
         {/* 365:1096 */}
         <a href="#markets" className="bento__cta bento__cta--orange">
-          Explore Markets
+          <Roll>Explore Markets</Roll>
           <span className="mk__arrow">
             <img src={arrowOrange} alt="" width={12} height={6} />
           </span>

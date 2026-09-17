@@ -66,16 +66,6 @@ export function Faq() {
             Where a claim can be checked on-chain, we show<br />
             you where to check it.
           </p>
-          <div className="faq__position">
-            <p className="faq__counter">
-              <span className="faq__counter-now">{pad(open)}</span>
-              <span>/</span>
-              <span>{pad(ITEMS.length - 1)}</span>
-            </p>
-            <div className="faq__ladder" aria-hidden="true">
-              {ITEMS.map((_, i) => <span key={i} className={i === open ? 'is-active' : ''} />)}
-            </div>
-          </div>
           <div className="faq__mark" ref={markRef} aria-hidden="true">
             <HeroLogo hostRef={markRef} variant="lined" placement={markPlacement} scroll={false} />
           </div>

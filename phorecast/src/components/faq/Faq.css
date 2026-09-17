@@ -10,15 +10,6 @@
   color: var(--white-font);
 }
 .faq__lede { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--color-nre-body); }
-.faq__position { display: flex; flex-direction: column; gap: 16px; }
-.faq__counter {
-  display: flex; align-items: baseline; gap: 8px;
-  font-family: var(--font-display); font-weight: 700; font-size: 28px; line-height: 1.2; color: var(--color-body);
-}
-.faq__counter-now { color: var(--orange-100); }
-.faq__ladder { display: flex; gap: 8px; width: 420px; max-width: 100%; height: 3px; }
-.faq__ladder span { flex: 1 0 0; height: 3px; border-radius: 2px; background: var(--color-body); transition: background-color 220ms ease; }
-.faq__ladder span.is-active { background: var(--orange-100); }
 .faq__mark { position: relative; width: 354px; max-width: 100%; aspect-ratio: 354 / 356; margin-top: 8px; }
 /* The logo layer fills this box; its fallback image is centred rather than
    placed for a hero, so override the module's hero-tuned positioning. */
@@ -78,7 +69,6 @@
   .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .faq__list { grid-column: 1; }
   .faq__mark { display: none; }
-  .faq__ladder { width: 100%; }
 }
 @media (max-width: 720px) {
   .faq { padding: 56px 0; }

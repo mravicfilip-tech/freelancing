@@ -6,10 +6,10 @@ import { Nav } from '../Nav';
 import { Roll } from '../Roll';
 import { Position } from './Position';
 import { TickerCard, type Ticker } from './TickerCard';
-import { StackDiagram } from './StackDiagram';
-import { VisualAccount, VisualFuture } from './visuals';
+import { SlideAccount } from './slides/SlideAccount';
+import { SlideBonus, BonusCountdown } from './slides/SlideBonus';
+import { SlideFuture } from './slides/SlideFuture';
 import { HeroLogo } from '../HeroLogo';
-import './visuals.css';
 import liveDot from '../../assets/icons/live-dot.svg';
 import apple from '../../assets/icons/apple.svg';
 import tesla from '../../assets/icons/tesla.svg';
@@ -32,6 +32,8 @@ type Slide = {
   cta: string;
   href: string;
   visual: ReactNode;
+  /** Extra copy-column content, between the lede and the CTA. */
+  aside?: ReactNode;
   foot?: ReactNode;
 };
 
@@ -57,7 +59,7 @@ const SLIDES: Slide[] = [
     lede: 'Open Phorecast in minutes and trade every asset class without handing anyone custody of your funds.',
     cta: 'Create account',
     href: '#signup',
-    visual: <VisualAccount />,
+    visual: <SlideAccount />,
   },
   {
     id: 'bonus',
@@ -66,7 +68,8 @@ const SLIDES: Slide[] = [
     lede: 'Fund your account and Phorecast matches it,\ndollar for dollar, up to $200.',
     cta: 'Get your bonus',
     href: '#signup',
-    visual: <div className="hero__stack"><StackDiagram /></div>,
+    visual: <SlideBonus />,
+    aside: <BonusCountdown />,
   },
   {
     id: 'future',
@@ -75,7 +78,7 @@ const SLIDES: Slide[] = [
     lede: 'Phorecast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
     cta: 'Get Started',
     href: '#signup',
-    visual: <VisualFuture />,
+    visual: <SlideFuture />,
   },
 ];
 
@@ -216,6 +219,7 @@ export function Hero() {
                   <h1 className="display hero__title">{s.title}</h1>
                 </div>
                 <p className="lede hero__lede">{s.lede}</p>
+                {s.aside}
                 <a href={s.href} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}><Roll>{s.cta}</Roll></a>
               </div>
               <div className="hero__visual">{s.visual}</div>

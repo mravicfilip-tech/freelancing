@@ -99,7 +99,11 @@
   font-size: calc(20 * var(--u));
 }
 
-.box-bonus__cta {
+/* Carries `.bento__cta bento__cta--orange` so the motion pass finds it with the
+   same selector it uses on every other card; the fixed px sizing and the gap
+   transition that class brings are replaced here, because this box is static
+   and scales with --u. */
+.box-bonus .box-bonus__cta {
   position: absolute;
   left: calc(30 * var(--u));
   top: calc(246 * var(--u));
@@ -108,12 +112,10 @@
   align-items: center;
   gap: calc(6 * var(--u));
   height: calc(20 * var(--u));
-  font-family: var(--font-mono);
-  font-weight: 600;
+  margin-top: 0;
   font-size: calc(16 * var(--u));
   line-height: 1.2;
-  color: var(--orange-100);
-  white-space: nowrap;
+  transition: none;
 }
 /* right-arrow 1 is a 13 x 13 frame holding a 12 x 6 glyph whose centre sits 1px
    below the frame's, so the leaf keeps its own box rather than filling. */

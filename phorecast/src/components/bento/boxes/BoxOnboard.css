@@ -1,0 +1,193 @@
+/* Bento card A — "Open an account in 60 seconds" (Figma 365:866).
+   534 x 387 design box, the only orange-filled card in the grid. The shell
+   (padding, radius, min-height) and the copy/link chrome come from Bento.css —
+   this file is the fill and the diagram.
+
+   Unit: `.bcard` sets `container-type: inline-size`, so 100cqw is the card's
+   *content* box — 474 design pixels wide at the 534px design width (534 less
+   the 30px padding a side). `--u` is therefore one design pixel of that column
+   and every number below is the raw Figma coordinate times --u.
+
+   The unit is capped at 1px, the same as the sibling cards. Between 1100px and
+   1500px the grid puts two cards on a full-width row, which makes this card
+   wider than its 534px design; left uncapped the phone and the ring would grow
+   past the size they were drawn at and collide with the copy above them.
+   Capping holds the artwork at its drawn size in a card that is bigger than the
+   design, and still scales it down, with the card, wherever the card is
+   narrower. */
+.box-onboard {
+  --u: min(1px, 100cqw / 474);
+}
+
+/* The fill. Figma paints the card with a vertical three-stop gradient; the
+   first stop is the --red token exactly, the other two are one-off gradient
+   stops with no variable behind them. Sampling Figma's render of the card down
+   the left edge, clear of the artwork, reproduces this to within 1/255 at every
+   row — the stops in Bento.css are the previous palette and read noticeably
+   redder through the middle of the card. */
+.bcard--onboard.box-onboard {
+  background: linear-gradient(180deg, var(--red) 0%, #ff632a 86.058%, #f8a361 100%);
+}
+
+/* Frame 365:868 — the 474 x 327 content column. Absolute positioning resolves
+   against the card's padding box, so the column is placed at the padding
+   itself; every child below is a raw Figma coordinate inside it. */
+.onb__art {
+  position: absolute;
+  left: 30px;
+  top: 30px;
+  width: calc(474 * var(--u));
+  height: calc(327 * var(--u));
+}
+.onb__art > * {
+  position: absolute;
+}
+.onb__art img {
+  display: block;
+}
+
+/* 365:867 — the watermark instance. Figma parents it to the card, not to the
+   column, so its (84, 107.5) sits at (54, 77.5) here. The export is an empty
+   group, so it draws nothing; the box is kept so the layer is accounted for. */
+.onb__logo {
+  left: calc(54 * var(--u));
+  top: calc(77.5 * var(--u));
+  width: calc(184.286 * var(--u));
+  height: calc(215 * var(--u));
+}
+
+/* 365:878 — the phone outline. 420 tall inside a 327 column: the foot runs off
+   the bottom of the card, which `overflow: hidden` on `.bcard` cuts. */
+.onb__phone {
+  left: calc(210 * var(--u));
+  top: calc(98 * var(--u));
+  width: calc(214 * var(--u));
+  height: calc(420 * var(--u));
+}
+
+/* 365:889 — the grid. The 196px frame it sits in does not clip in Figma, so the
+   asset is placed at its true origin: the frame's x 219 plus the image's own
+   x -87.003. It then runs past the card's right edge, which the card clips. */
+.onb__grid {
+  left: calc(131.997 * var(--u));
+  top: calc(109 * var(--u));
+  width: calc(488.255 * var(--u));
+  height: calc(312 * var(--u));
+  opacity: 0.2;
+}
+
+/* The three pills. Figma gives each a fixed width with the label centred in it,
+   a 10px pad, and a 30px height that is 2px more than the pad plus the label's
+   cap box — so the height is set, not derived. `text-box` trims the line box to
+   that cap box, which is what Figma measures and centres. */
+.onb__pill {
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--w) * var(--u));
+  height: calc(30 * var(--u));
+  padding: calc(10 * var(--u));
+  border-radius: calc(30 * var(--u));
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(238, 238, 238, 0.49);
+  box-sizing: border-box;
+  backdrop-filter: blur(var(--blur));
+  font-family: var(--font-wordmark);
+  font-weight: 600;
+  font-size: calc(14 * var(--u));
+  line-height: 1.2;
+  color: var(--white-font);
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+}
+
+/* Group 365:920 — the ring. -------------------------------------------------
+   The disc and the arc are two 128 x 128.8 ellipses sharing one centre inside a
+   157.87 x 158.84 box; the box is that size because each ellipse is rotated and
+   Figma reports their union. Both are therefore centred and then turned. */
+.onb__ring {
+  left: calc(238.064 * var(--u));
+  top: calc(158.032 * var(--u));
+  width: calc(157.87 * var(--u));
+  height: calc(158.841 * var(--u));
+}
+.onb__ring > * {
+  position: absolute;
+}
+
+/* Ellipse 60. Figma exports this one as a PNG because it carries a background
+   blur, but that export is the layer rendered against a transparent backdrop:
+   composited normally it is a dark brown disc, nothing like the design. Reading
+   Figma's own render of the card at twelve points inside the disc gives a flat
+   translucent tint over the gradient instead — rgba(242,109,74,0.58) reproduces
+   every one of them to an RMSE of 0.57/255, against 4.35 for the closest the
+   PNG can be made to sit (screen at 0.6) and far worse for a plain draw. So the
+   disc is that fill, at the ellipse's designed box and rotation. */
+.onb__disc {
+  left: 50%;
+  top: 50%;
+  width: calc(128.008 * var(--u));
+  height: calc(128.78 * var(--u));
+  border-radius: 50%;
+  background: rgba(242, 109, 74, 0.58);
+  transform: translate(-50%, -50%) rotate(5.72deg);
+}
+
+/* Ellipse 61 — the open arc. The stroke only covers the top-right quadrant of
+   its ellipse, so it turns about the ellipse's centre, not its own: the box is
+   the full 128 x 128.73 ellipse, rotated, with the 90.82 x 64.37 asset pinned
+   to its top right. */
+.onb__arc-box {
+  left: 50%;
+  top: 50%;
+  width: calc(128.06 * var(--u));
+  height: calc(128.73 * var(--u));
+  transform: translate(-50%, -50%) rotate(15.8deg);
+}
+.onb__arc {
+  position: absolute;
+  left: calc(37.24 * var(--u));
+  top: 0;
+  width: calc(90.8153 * var(--u));
+  height: calc(64.3651 * var(--u));
+}
+
+/* Text 365:923. Figma leaves the line height on auto, which for Geist Mono is
+   1.2476 — its own 62.381px box at 50px — so the box is stated rather than left
+   to the browser's idea of `normal`, and the glyphs land where Figma puts
+   them. Measured against Figma's render the digit tops agree to within 1px. */
+.onb__seconds {
+  left: calc(32.928 * var(--u));
+  top: calc(48.23 * var(--u));
+  font-family: var(--font-mono);
+  font-weight: 200;
+  font-size: calc(50 * var(--u));
+  line-height: calc(62.381 * var(--u));
+  color: var(--white-font);
+  white-space: nowrap;
+}
+
+/* Text 365:924. Figma places this by its cap box, so the line box is trimmed to
+   match — otherwise the caption sits a few pixels low. */
+.onb__in {
+  left: calc(295 * var(--u));
+  top: calc(311 * var(--u));
+  font-family: var(--font-wordmark);
+  font-weight: 600;
+  font-size: calc(14 * var(--u));
+  line-height: 1.2;
+  color: var(--white-font);
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+}
+
+/* Below 720px Bento.css drops the card's padding to 24px; the column follows it
+   so the artwork stays flush with the copy. */
+@media (max-width: 720px) {
+  .box-onboard .onb__art {
+    left: 24px;
+    top: 24px;
+  }
+}

@@ -111,7 +111,7 @@ export function BoxBonus() {
         </div>
       </div>
 
-      <a className="box-bonus__cta" href="#bonus">
+      <a className="bento__cta bento__cta--orange box-bonus__cta" href="#bonus">
         <span className="box-bonus__cta-label">Get Your Bonus</span>
         <span className="box-bonus__cta-arrow" aria-hidden="true">
           <img src={arrowOrange} alt="" width={12} height={6} />

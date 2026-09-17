@@ -1,23 +1,28 @@
 /* Bento box D — "Trade every market from one account" (Figma 365:1063).
  *
- * The one light card in the grid: a 776 x 440 cream surface with dark type,
+ * The one light card in the grid: a 776 x 440 cream surface carrying dark type,
  * inverted from its three dark siblings. Everything below is the approved
  * static design at 1:1 design pixels — no motion of any kind lives here. The
- * `motion/markets.ts` module owns the load-in and the orbiting loop and reads
- * this markup through the class names documented beside each element.
+ * `motion/markets.ts` module owns the load-in and the orbiting loop; it reads
+ * this markup through the class names and `data-market` attributes below.
  *
- * Geometry note. Figma's card is `flex items-center justify-between` around a
- * single flex child (365:1090) whose two rows sit 310px apart. That column is
- * 382.4 tall inside a 378 content box, so it overflows 2.2px top and bottom —
- * which is why the heading starts at y 28.8 rather than 31. Reproducing that by
- * hand would be brittle, so `.box-markets` centres a real `.mk__stage` column
- * the same way the design does and lets the browser land on the same numbers.
- * The two artwork layers that Figma parents to 365:1090 live inside that stage
- * for the same reason: they move with it instead of drifting from it.
+ * Layout note. Figma's card is `flex items-center justify-between` around a
+ * single flex child (365:1090) whose two text rows sit 310 apart. That column
+ * is 382.4 tall inside a 378 content box, so it overflows 2.2 top and bottom —
+ * which is why the heading starts at y 28.8 rather than 31, and why the link
+ * ends 28.8 above the bottom edge rather than flush with the padding. Pinning
+ * those offsets by hand would be brittle, so `.box-markets` centres a real
+ * `.mk__stage` column exactly as the design does and lets the browser arrive at
+ * the same numbers. The two artwork layers Figma parents to 365:1090 sit inside
+ * that stage for the same reason: they travel with it instead of drifting.
  *
- * All offsets are design pixels multiplied by `--u`, the card's own container
- * unit (see BoxMarkets.css), so the whole box scales with the grid cell it is
- * given rather than with the viewport.
+ * Coordinate note. Every offset here is a design pixel scaled by `--u`, the
+ * card's own container unit (see BoxMarkets.css), so the box scales with the
+ * grid cell it is handed rather than with the viewport. A tile's glyph is
+ * positioned against the tile's PADDING box — CSS measures `left`/`top` from
+ * the padding edge — so each tile declares its Figma border width and the
+ * helpers below subtract it. The tiles genuinely differ in outer size, corner,
+ * border and inner inset, so none of that is expressed as a shared rule.
  */
 import grid from '../../../assets/bento/grid.svg';
 import orbitRing from '../../../assets/bento/orbit-ring.svg';
@@ -40,23 +45,36 @@ import fxPairUsd from '../../../assets/bento/markets/fx-pair-usd.svg';
 import fxPairAlt from '../../../assets/bento/markets/fx-pair-alt.svg';
 import './BoxMarkets.css';
 
-/* Design pixels -> the card's container unit. Keeping this in one helper means
-   every number below can be read straight off the Figma node. */
+/** Design pixels -> the card's container unit, so every number below can be
+ *  read straight off the Figma node. */
 const u = (n: number) => `calc(${n} * var(--u))`;
 
-type Box = { left: number; top: number; size: number; radius: number };
+interface Tile {
+  /** top-left in .mk__field coordinates */
+  left: number;
+  top: number;
+  /** outer, border-box edge */
+  size: number;
+  radius: number;
+  /** Figma's stroke weight; 0 when the tile has none */
+  border: number;
+  opacity?: number;
+  background?: string;
+}
 
-/** A tile's shell. `size` is the outer box; `radius` is Figma's own corner. */
-const shell = ({ left, top, size, radius }: Box) => ({
-  left: u(left),
-  top: u(top),
-  width: u(size),
-  height: u(size),
-  borderRadius: u(radius),
+/** The tile's own box. */
+const shell = (t: Tile) => ({
+  left: u(t.left),
+  top: u(t.top),
+  width: u(t.size),
+  height: u(t.size),
+  borderRadius: u(t.radius),
+  borderWidth: u(t.border),
+  ...(t.opacity === undefined ? null : { opacity: t.opacity }),
+  ...(t.background === undefined ? null : { background: t.background }),
 });
 
-/** A glyph placed by its own top-left inside the tile, never by a shared rule:
- *  the leaves differ in both size and inset from tile to tile. */
+/** A glyph placed by its own top-left inside the tile's padding box. */
 const leaf = (left: number, top: number, w: number, h: number) => ({
   left: u(left),
   top: u(top),
@@ -64,10 +82,42 @@ const leaf = (left: number, top: number, w: number, h: number) => ({
   height: u(h),
 });
 
-/** A glyph Figma centres in its tile, expressed as an explicit box so the
- *  intrinsic SVG size can never leak in. */
-const leafCentred = (box: number, w: number, h: number, dx = 0, dy = 0) =>
-  leaf((box - w) / 2 + dx, (box - h) / 2 + dy, w, h);
+/** A glyph Figma centres in its tile, resolved to an explicit box so the SVG's
+ *  intrinsic size can never leak in. `dx`/`dy` carry Figma's own nudges. */
+const centred = (t: Tile, w: number, h: number, dx = 0, dy = 0) => {
+  const box = t.size - 2 * t.border; // the padding box left/top measure from
+  return leaf((box - w) / 2 + dx, (box - h) / 2 + dy, w, h);
+};
+
+/* Tiles, in the design's own paint order. -------------------------------- */
+const GOLD: Tile = { left: 190.997, top: 146, size: 42, radius: 7.5, border: 0.75 };
+const NIKKEI: Tile = { left: 199, top: 315, size: 64, radius: 11.429, border: 1.28 };
+const APPLE: Tile = { left: 435, top: 27, size: 36, radius: 6.607, border: 0.74 };
+const DAX: Tile = { left: 512, top: 99, size: 28, radius: 5, border: 0.56 };
+const HUB: Tile = { left: 303, top: 172, size: 82, radius: 36, border: 1.64 };
+const FX: Tile = { left: 182.62, top: 452.36, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.8 };
+const DOGE: Tile = { left: 256.34, top: 579.69, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.7 };
+const DOW: Tile = { left: 412.15, top: 569.64, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.6, background: '#2c2c2c' };
+const COPPER: Tile = { left: 484.19, top: 442.3, size: 83.77, radius: 14.959, border: 1.675, opacity: 0.8 };
+const SP500: Tile = { left: 498, top: 199, size: 50, radius: 12.202, border: 1.367 };
+const OIL: Tile = { left: 604.82, top: 450.68, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3 };
+const SOLANA: Tile = { left: 415, top: 256, size: 40, radius: 12.202, border: 1.367 };
+const BITCOIN: Tile = { left: 328.38, top: 442.3, size: 93.822, radius: 16.754, border: 1.675 };
+const TESLA: Tile = { left: 73, top: 226, size: 56, radius: 10, border: 1.4 };
+
+/* 365:1153 – 365:1159 plus 365:1168. Unbadged tiles that carry the field on
+   past the card's clip. Arbitrary warm tints — not the brand orange — except
+   the last, which Figma binds to the token and which the CSS paints. */
+const GHOSTS: Array<Tile & { edged?: boolean; accent?: boolean }> = [
+  { left: -20.71, top: 435.91, size: 42.704, radius: 7.626, border: 0, opacity: 0.1, background: '#853b1e' },
+  { left: 53.61, top: 462.41, size: 67.016, radius: 11.967, border: 0, opacity: 0.2, background: '#542c1c' },
+  { left: 139.06, top: 586.39, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: '#46271b', edged: true },
+  { left: 199.37, top: 681.89, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: '#b54a1f' },
+  { left: 341.78, top: 698.64, size: 67.016, radius: 11.967, border: 0, opacity: 0.1, background: '#b04920' },
+  { left: 470.79, top: 693.61, size: 67.016, radius: 11.967, border: 0, opacity: 0.08, background: '#9c421f' },
+  { left: 554.56, top: 569.64, size: 67.016, radius: 11.967, border: 1.675, opacity: 0.3, background: '#a74620', edged: true },
+];
+const ACCENT: Tile = { left: 653.22, top: 350.19, size: 48.904, radius: 11.967, border: 0, opacity: 0.05 };
 
 export function BoxMarkets() {
   return (
@@ -77,102 +127,96 @@ export function BoxMarkets() {
         <img src={grid} alt="" width={488.255} height={312} />
       </div>
 
-      {/* 365:1090 — the centred column the design hangs everything else off */}
+      {/* 365:1090 — the centred column the design hangs everything off */}
       <div className="mk__stage">
-        {/* 365:1091 / 365:1092 — two copies of one ellipse, each on its own tilt */}
+        {/* 365:1091 / 365:1092 — one ellipse drawn twice, each on its own tilt */}
         <div className="mk__orbits" aria-hidden="true">
           <img src={orbitRing} alt="" className="mk__orbit mk__orbit--a" width={498.296} height={186.446} />
           <img src={orbitRing} alt="" className="mk__orbit mk__orbit--b" width={498.296} height={186.446} />
         </div>
 
-        {/* 365:1102 — the market field. 727 x 765, so its lower half is
-            deliberately below the card's clip: the design only lets the bottom
-            row of dark tiles show as a sliver. */}
+        {/* 365:1102 — the market field. 727 x 765, so its lower half sits below
+            the card's clip by design: the bottom row of dark tiles is only ever
+            meant to show as a sliver at the card's edge. */}
         <div className="mk__field" aria-hidden="true">
-          {/* 365:1103 — gold */}
-          <span className="mk__tile mk__tile--light mk__tile--gold" data-market="Gold" style={shell({ left: 190.997, top: 146, size: 42, radius: 7.5 })}>
-            <img src={tileGold} alt="" style={leafCentred(42, 19.5, 19.5)} />
+          <span className="mk__tile mk__tile--light mk__tile--gold" data-market="Gold" style={shell(GOLD)}>
+            <img src={tileGold} alt="" style={centred(GOLD, 19.5, 19.5)} />
           </span>
-          {/* 365:1108 — NIKKEI */}
-          <span className="mk__tile mk__tile--light mk__tile--nikkei" data-market="NIKKEI" style={shell({ left: 199, top: 315, size: 64, radius: 11.429 })}>
-            <img src={tileNikkei} alt="" style={leafCentred(64, 46.08, 10.24)} />
+          <span className="mk__tile mk__tile--light mk__tile--nikkei" data-market="NIKKEI" style={shell(NIKKEI)}>
+            <img src={tileNikkei} alt="" style={centred(NIKKEI, 46.08, 10.24)} />
           </span>
-          {/* 365:1111 — Apple */}
-          <span className="mk__tile mk__tile--light mk__tile--apple" data-market="Apple" style={shell({ left: 435, top: 27, size: 36, radius: 6.607 })}>
-            <img src={tileApple} alt="" style={leafCentred(36, 20, 20)} />
+          <span className="mk__tile mk__tile--light mk__tile--apple" data-market="Apple" style={shell(APPLE)}>
+            <img src={tileApple} alt="" style={centred(APPLE, 20, 20)} />
           </span>
-          {/* 365:1114 — DAX. Figma nudges this glyph 0.32 above centre. */}
-          <span className="mk__tile mk__tile--light mk__tile--dax" data-market="DAX" style={shell({ left: 512, top: 99, size: 28, radius: 5 })}>
-            <img src={tileDax} alt="" style={leafCentred(28, 18, 7.35, 0, -0.32)} />
+          {/* Figma lifts the DAX wordmark 0.32 off centre. */}
+          <span className="mk__tile mk__tile--light mk__tile--dax" data-market="DAX" style={shell(DAX)}>
+            <img src={tileDax} alt="" style={centred(DAX, 18, 7.35, 0, -0.32)} />
           </span>
 
-          {/* 365:1118 — the Phorecast mark, ringed. The mark sits off-centre in
-              its disc in the design (1.68 left, 1.23 up), so it is placed. */}
-          <span className="mk__hub" style={shell({ left: 303, top: 172, size: 82, radius: 41 })}>
+          {/* 365:1118 — the Phorecast mark, ringed. The mark is deliberately
+              off-centre in its disc (1.7 left, 1.2 up), so it is placed. */}
+          <span className="mk__hub" style={shell(HUB)}>
             <img src={tilePhorecast} alt="" className="mk__mark" style={leaf(21.91, 19.47, 34.823, 40.594)} />
           </span>
 
-          {/* 365:1120 — a two-half currency-pair mark, both circles 25.131 */}
-          <span className="mk__tile mk__tile--dark mk__tile--fx" data-market="Forex" style={{ ...shell({ left: 182.62, top: 452.36, size: 83.77, radius: 14.959 }), opacity: 0.8 }}>
-            <span className="mk__pair" style={leaf(15.08, 26.808, 50.262, 25.131)}>
+          {/* 365:1120 — a currency-pair mark: two 25.131 discs side by side in a
+              50.262 window that Figma insets 23.33%/26.67% inside the tile. */}
+          <span className="mk__tile mk__tile--dark mk__tile--fx" data-market="Forex" style={shell(FX)}>
+            <span className="mk__pair" style={leaf(15.08, 15.08 + 11.727, 50.262, 25.131)}>
               <img src={fxPairUsd} alt="" style={leaf(0, 0, 25.131, 25.131)} />
               <img src={fxPairAlt} alt="" style={leaf(25.131, 0, 25.131, 25.131)} />
             </span>
           </span>
-          {/* 365:1138 — dogecoin */}
-          <span className="mk__tile mk__tile--dark mk__tile--doge" data-market="Dogecoin" style={{ ...shell({ left: 256.34, top: 579.69, size: 83.77, radius: 14.959 }), opacity: 0.7 }}>
+          <span className="mk__tile mk__tile--dark mk__tile--doge" data-market="Dogecoin" style={shell(DOGE)}>
             <img src={tileDoge} alt="" style={leaf(18.43, 18.43, 43.56, 43.56)} />
           </span>
-          {/* 365:1141 — Dow Jones. The only raster mark in the box. */}
-          <span className="mk__tile mk__tile--dark mk__tile--dow" data-market="Dow Jones" style={{ ...shell({ left: 412.15, top: 569.64, size: 83.77, radius: 14.959 }), opacity: 0.6, background: '#2c2c2c' }}>
-            <img src={tileDow} alt="" className="mk__leaf--cover" style={leafCentred(83.77, 50.262, 50.262)} />
+          {/* The only raster mark in the box; Figma object-covers it. */}
+          <span className="mk__tile mk__tile--dark mk__tile--dow" data-market="Dow Jones" style={shell(DOW)}>
+            <img src={tileDow} alt="" className="mk__cover" style={centred(DOW, 50.262, 50.262)} />
           </span>
-          {/* 365:1143 — copper */}
-          <span className="mk__tile mk__tile--dark mk__tile--copper" data-market="Copper" style={{ ...shell({ left: 484.19, top: 442.3, size: 83.77, radius: 14.959 }), opacity: 0.8 }}>
-            <img src={tileCopper} alt="" style={leafCentred(83.77, 43.56, 43.56)} />
+          <span className="mk__tile mk__tile--dark mk__tile--copper" data-market="Copper" style={shell(COPPER)}>
+            <img src={tileCopper} alt="" style={centred(COPPER, 43.56, 43.56)} />
           </span>
-          {/* 365:1150 — S&P 500 */}
-          <span className="mk__tile mk__tile--light mk__tile--sp500" data-market="S&amp;P 500" style={shell({ left: 498, top: 199, size: 50, radius: 12.202 })}>
-            <img src={tileSp500} alt="" style={leafCentred(50, 30, 8)} />
+          <span className="mk__tile mk__tile--light mk__tile--sp500" data-market="S&amp;P 500" style={shell(SP500)}>
+            <img src={tileSp500} alt="" style={centred(SP500, 30, 8)} />
           </span>
 
-          {/* 365:1153 – 365:1159 — unbadged tiles that carry the field past the
-              card's edge. Arbitrary warm tints, not the brand orange. */}
-          <span className="mk__tile mk__tile--ghost" style={{ ...shell({ left: -20.71, top: 435.91, size: 42.704, radius: 7.626 }), opacity: 0.1, background: '#853b1e' }} />
-          <span className="mk__tile mk__tile--ghost" style={{ ...shell({ left: 53.61, top: 462.41, size: 67.016, radius: 11.967 }), opacity: 0.2, background: '#542c1c' }} />
-          <span className="mk__tile mk__tile--ghost mk__tile--edged" style={{ ...shell({ left: 139.06, top: 586.39, size: 67.016, radius: 11.967 }), opacity: 0.3, background: '#46271b' }} />
-          <span className="mk__tile mk__tile--ghost" style={{ ...shell({ left: 199.37, top: 681.89, size: 67.016, radius: 11.967 }), opacity: 0.1, background: '#b54a1f' }} />
-          <span className="mk__tile mk__tile--ghost" style={{ ...shell({ left: 341.78, top: 698.64, size: 67.016, radius: 11.967 }), opacity: 0.1, background: '#b04920' }} />
-          <span className="mk__tile mk__tile--ghost" style={{ ...shell({ left: 470.79, top: 693.61, size: 67.016, radius: 11.967 }), opacity: 0.08, background: '#9c421f' }} />
-          <span className="mk__tile mk__tile--ghost mk__tile--edged" style={{ ...shell({ left: 554.56, top: 569.64, size: 67.016, radius: 11.967 }), opacity: 0.3, background: '#a74620' }} />
+          {GHOSTS.map((g, i) => (
+            <span
+              key={i}
+              className={`mk__tile mk__tile--ghost${g.edged ? ' mk__tile--edged' : ''}`}
+              style={shell(g)}
+            />
+          ))}
 
-          {/* 365:1160 — Brent oil */}
-          <span className="mk__tile mk__tile--dark mk__tile--oil" data-market="Brent Oil" style={{ ...shell({ left: 604.82, top: 450.68, size: 67.016, radius: 11.967 }), opacity: 0.3 }}>
+          {/* 365:1160 — Brent oil. Figma nests the glyph one level deeper and
+              insets it inside that, so both steps are folded in here. */}
+          <span className="mk__tile mk__tile--dark mk__tile--oil" data-market="Brent Oil" style={shell(OIL)}>
             <img src={tileOil} alt="" style={leaf(18.43 + 1.885, 18.43 + 0.147, 23.004, 26.482)} />
           </span>
           {/* 365:1168 — the one tint Figma binds to the brand token */}
-          <span className="mk__tile mk__tile--ghost mk__tile--accent" style={{ ...shell({ left: 653.22, top: 350.19, size: 48.904, radius: 11.967 }), opacity: 0.05 }} />
+          <span className="mk__tile mk__tile--ghost mk__tile--accent" style={shell(ACCENT)} />
 
-          {/* 365:1169 — Solana, the tile the cursor is pointing at */}
-          <span className="mk__tile mk__tile--solana" data-market="Solana" style={shell({ left: 415, top: 256, size: 40, radius: 12.202 })}>
-            <img src={tileSolana} alt="" style={leaf(8.234 + 1.367, 10.63 + 1.367, 20.798, 16.306)} />
+          {/* 365:1169 — Solana, the tile the cursor has picked */}
+          <span className="mk__tile mk__tile--solana" data-market="Solana" style={shell(SOLANA)}>
+            <img src={tileSolana} alt="" style={leaf(8.234, 10.63, 20.798, 16.306)} />
           </span>
-          {/* 365:1174 — bitcoin, the largest tile in the field */}
-          <span className="mk__tile mk__tile--dark mk__tile--bitcoin" data-market="Bitcoin" style={shell({ left: 328.38, top: 442.3, size: 93.822, radius: 16.754 })}>
+          <span className="mk__tile mk__tile--dark mk__tile--bitcoin" data-market="Bitcoin" style={shell(BITCOIN)}>
             <img src={tileBitcoin} alt="" style={leaf(23.46, 23.46, 43.56, 43.56)} />
           </span>
-          {/* 365:1178 — Tesla */}
-          <span className="mk__tile mk__tile--light mk__tile--tesla" data-market="Tesla" style={shell({ left: 73, top: 226, size: 56, radius: 10 })}>
-            <img src={tileTesla} alt="" style={leaf(8.135 + 1.4, 8.013 + 1.4, 36.4, 36.241)} />
+          <span className="mk__tile mk__tile--light mk__tile--tesla" data-market="Tesla" style={shell(TESLA)}>
+            <img src={tileTesla} alt="" style={leaf(8.135, 8.013, 36.4, 36.241)} />
           </span>
 
-          {/* 365:1182 / 365:1185 — the pointer and its label */}
-          <img src={cursorArrow} alt="" className="mk__cursor" style={leaf(460 + 1.51, 291 + 1.506, 16.974, 16.988)} />
+          {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the
+              arrow 7.55% inside a 20 box; that is folded into the offsets. */}
+          <img src={cursorArrow} alt="" className="mk__cursor" style={leaf(461.51, 292.506, 16.974, 16.988)} />
           <span className="mk__tooltip" style={{ left: u(477), top: u(300), width: u(76) }}>Solana</span>
 
-          {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths */}
-          <span className="mk__diamond" style={{ left: u(307.43 + 2.071), top: u(122.72 + 2.071) }} />
-          <span className="mk__diamond" style={{ left: u(149 + 2.071), top: u(342 + 2.071) }} />
+          {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.
+              Figma centres a 10 square in a 14.142 box; 2.071 is that inset. */}
+          <span className="mk__diamond" style={{ left: u(309.501), top: u(124.791) }} />
+          <span className="mk__diamond" style={{ left: u(151.071), top: u(344.071) }} />
         </div>
 
         {/* 365:1093 */}

@@ -1,9 +1,74 @@
 /* "Your Funds Stay in Your Control" — Figma frame 1920 x 675.
    --f is one design pixel at the current width. */
+
+/* The band's own theme tokens.
+   -------------------------------------------------------------------------
+   Declared on :root rather than on .fan, and that is not a style choice.
+   `tok()` in lib/theme.ts is `getComputedStyle(document.documentElement)`, so
+   a custom property the loop has to read is only visible to it from the root.
+   Everything a motion module reads therefore lives here; the `--fan-` prefix
+   is what keeps it out of everyone else's way.
+
+   Dark is exactly what the section shipped with, written out rather than
+   inlined, so this block is provably a no-op. Light is at the foot of the
+   file, and its job is not to lighten these values — it is to turn every one
+   of them around. In dark, "lit" means brighter: the diamonds flare to
+   brightness 2.4, the tile photograph to 1.5, the spark head is a pale peach
+   on black, the rim and the glass go pale, the sub-head warms towards white.
+   On paper every one of those brightens towards the page and the beat simply
+   stops existing. So each lift below is a PAIR — a rest value and a lit value
+   — and light supplies its own pair pointing the other way. */
+:root {
+  /* The arcs. Both files are the same three stops four times over: a
+     transparent head, #f03725 at the middle, a transparent tail. Only the
+     middle one is ever visible; the other two carry stop-opacity="0" and exist
+     to fade it out at both ends. Driven from CSS rather than from a per-theme
+     copy of the raw string — see `inlineArcs` in Fan.tsx. */
+  --fan-arc: #f03725;
+  --fan-arc-in: #f9f0e8;
+  --fan-arc-out: #d5d2d0;
+  /* The bright head that rides each arc, in the entrance and in the loop. */
+  --fan-spark: #ffc0a4;
+
+  /* The category pills: a near-black chip carrying --ink at 0.7. */
+  --fan-pill-bg: #000;
+  --fan-pill-op: 0.7;
+  /* The pill glyphs. #9d9d9d is the grey Figma baked into all eight files, and
+     it is named here so that masking them changes nothing about how they look
+     — only about what can reach them. */
+  --fan-icon: #9d9d9d;
+  /* The two quiet diamonds. The other ten are --accent and --ink. */
+  --fan-dia-mute: #5b5b5a;
+  --fan-dia-mute-2: #7c7c7c;
+  /* The diamonds' flare, as a filter pair. Both themes list the same two
+     functions so GSAP has a matching structure to interpolate; saturate(1) is
+     an identity here and dark renders exactly as it did. */
+  --fan-dia-rest: brightness(1) saturate(1);
+  --fan-dia-lit: brightness(2.4) saturate(1);
+
+  /* The tile: a photograph behind a frosted chip, inside a hairline rim. */
+  --fan-rim: rgba(255, 255, 255, 0.39);
+  --fan-rim-lit: rgba(255, 244, 236, 0.9);
+  --fan-glass: rgba(255, 255, 255, 0.13);
+  --fan-glass-lit: rgba(255, 239, 227, 0.32);
+  /* The photograph under the glass, as the front goes through it. */
+  --fan-art-rest: brightness(1) contrast(1);
+  --fan-art-lit: brightness(1.5) contrast(1);
+  /* The entrance's one moment of light: the tile ignites on the last pair of
+     arcs landing. */
+  --fan-tile-rest: brightness(1);
+  --fan-tile-lit: brightness(2.6);
+  /* The bar that runs across the mark's face, built by the loop. */
+  --fan-bar-edge: rgba(255, 251, 248, 0);
+  --fan-bar-core: rgba(255, 243, 234, 0.95);
+  /* The sub-head, warming as the front crosses it. */
+  --fan-sub-lit: rgb(201, 194, 189);
+}
+
 .fan {
   position: relative;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--page);
 }
 .fan__frame {
   --f: calc(100cqw / 1920);
@@ -28,6 +93,14 @@
 .fan__arcs--left { left: 0; top: 0; }
 .fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
 .fan__lines { position: absolute; }
+/* `stop-color` is a CSS property as well as a presentation attribute, and CSS
+   wins — so the gradients re-colour with the theme without the raw string
+   being transformed twice, without a second copy of it at module scope and
+   without the arcs' markup being re-rendered when the theme flips. The baked
+   attribute stays put underneath as the fallback. */
+.fan__stop--in { stop-color: var(--fan-arc-in); }
+.fan__stop--core { stop-color: var(--fan-arc); }
+.fan__stop--out { stop-color: var(--fan-arc-out); }
 /* Figma mirrors the left group, so its boxes are x' = 863 - x - w, y' = 675 - y - h. */
 .fan__arcs--left .fan__lines--lower {
   left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));
@@ -58,6 +131,12 @@
   height: calc(6.29 * var(--f));
   transform: rotate(135deg);
 }
+/* Colour comes off a class rather than an inline `background`, so the twelve
+   follow the theme without Fan.tsx holding a palette. */
+.fan__diamond--accent { background: var(--accent); }
+.fan__diamond--ink { background: var(--ink); }
+.fan__diamond--mute { background: var(--fan-dia-mute); }
+.fan__diamond--mute-2 { background: var(--fan-dia-mute-2); }
 .fan__pill {
   position: absolute;
   left: calc(var(--x) * var(--f));
@@ -71,15 +150,15 @@
   gap: calc(12 * var(--f));
   padding: calc(14 * var(--f));
   border-radius: calc(30 * var(--f));
-  background: #000;
+  background: var(--fan-pill-bg);
   font-family: var(--font-mono);
   font-weight: 500;
   font-size: calc(14 * var(--f));
   line-height: 1.2;
   text-transform: uppercase;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
-  opacity: 0.7;
+  opacity: var(--fan-pill-op);
 }
 .fan__pill > img, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
 .fan__sport { position: relative; }
@@ -96,7 +175,7 @@
   width: calc(100 * var(--f));
   height: calc(100 * var(--f));
   border-radius: calc(17.86 * var(--f));
-  border: 1px solid rgba(255, 255, 255, 0.39);
+  border: 1px solid var(--fan-rim);
   overflow: hidden;
   /* No box-shadow. The tile carried two red shadows that bloomed either side of
      it; asked for and removed. Nothing in this band glows any more -- the pills
@@ -110,7 +189,7 @@
   display: grid; place-items: center;
   width: calc(65.12 * var(--f)); height: calc(65.12 * var(--f));
   border-radius: calc(11.63 * var(--f));
-  background: rgba(255, 255, 255, 0.13);
+  background: var(--fan-glass);
   backdrop-filter: blur(calc(13.6 * var(--f)));
 }
 .fan__glass img { width: calc(37 * var(--f)); height: calc(40 * var(--f)); }
@@ -118,13 +197,13 @@
   position: absolute; left: 50%; top: calc(360 * var(--f)); transform: translateX(-50%);
   width: calc(1440 * var(--f)); text-align: center;
   font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--f)); line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
 }
 .fan__sub {
   position: absolute; left: 50%; top: calc(411 * var(--f)); transform: translateX(-50%);
   width: calc(1440 * var(--f)); text-align: center;
   font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--f)); line-height: 1.2;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
 }
 
 @media (max-width: 900px) {
@@ -159,7 +238,7 @@
    so the band at rest is identical whether the entrance has run, has never run,
    or was reverted mid-flight -- a revert drops GSAP's inline opacity and this
    is what the twin falls back to. */
-.fan__spark { opacity: 0; }
+.fan__spark { opacity: 0; stroke: var(--fan-spark); }
 
 [data-js] .fan[data-motion='pending'] .fan__arcs,
 [data-js] .fan[data-motion='pending'] .fan__diamond,

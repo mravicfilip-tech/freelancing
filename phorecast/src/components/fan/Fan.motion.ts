@@ -54,6 +54,7 @@
  */
 import type { SectionMotion, Timeline } from '../../lib/motion';
 import { gsap } from 'gsap';
+import { tok } from '../../lib/theme';
 
 /** One beat. Eight of them, and they have to be countable. */
 const BEAT = 0.24;
@@ -204,6 +205,15 @@ export function buildFan({ el, q, tl }: SectionMotion) {
   // Already landed once and still on screen: settle, do not re-perform.
   if (LANDED.has(el)) return;
 
+  /* The tile's ignition, read from the document rather than baked, and read
+     HERE — inside the build — because `useSectionMotion` takes the theme epoch
+     as a dependency and runs this again when the theme changes. In dark the
+     flash is `brightness(2.6)`: the band's one moment of real light. On paper
+     that washes a 100px plate to nothing, so light supplies the other
+     direction from `Fan.css` and this line does not care which it gets. */
+  const igniteFrom = tok('--fan-tile-lit', 'brightness(2.6)');
+  const igniteTo = tok('--fan-tile-rest', 'brightness(1)');
+
   /* The sixteen lines, read out of the inlined SVGs. Each file is four whole
      ellipses in DOM order innermost to outermost, and `Fan.tsx` ships a
      `.fan__spark` twin immediately after each one — hence `:not()` here and
@@ -309,8 +319,8 @@ export function buildFan({ el, q, tl }: SectionMotion) {
       clearProps: 'transform',
     }, TILE_AT);
     tl.fromTo(tile,
-      { filter: 'brightness(2.6)' },
-      { filter: 'brightness(1)', duration: 0.9, ease: 'power2.out', immediateRender: false, clearProps: 'filter' },
+      { filter: igniteFrom },
+      { filter: igniteTo, duration: 0.9, ease: 'power2.out', immediateRender: false, clearProps: 'filter' },
       TILE_AT);
   }
 

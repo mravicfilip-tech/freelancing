@@ -22,12 +22,16 @@ import { buildFan } from './Fan.motion';
 import { fanLoop } from './Fan.loop';
 import './Fan.css';
 
-/* All coordinates are screenshot space inside the 1920 x 675 frame. */
+/* All coordinates are screenshot space inside the 1920 x 675 frame. The third
+   column is a role, not a colour: Figma's twelve fills are six #e5331e, four
+   #fffbf8 and two greys, which is `accent`, `ink` and the two quiet ones. The
+   colours themselves are in Fan.css, so a theme can reach them and this table
+   stays geometry. */
 const DIAMONDS = [
-  [23, 351.9, '#e5331e'], [97, 429, '#e5331e'], [440, 91, '#5b5b5a'],
-  [401, 480, '#e5331e'], [183.9, 469.5, '#fffbf8'], [337.2, 280.1, '#fffbf8'],
-  [1886.1, 430.5, '#e5331e'], [1812.1, 353.3, '#e5331e'], [1508.1, 86.3, '#7c7c7c'],
-  [1508.1, 302.3, '#e5331e'], [1725.2, 312.8, '#fffbf8'], [1571.9, 502.3, '#fffbf8'],
+  [23, 351.9, 'accent'], [97, 429, 'accent'], [440, 91, 'mute'],
+  [401, 480, 'accent'], [183.9, 469.5, 'ink'], [337.2, 280.1, 'ink'],
+  [1886.1, 430.5, 'accent'], [1812.1, 353.3, 'accent'], [1508.1, 86.3, 'mute-2'],
+  [1508.1, 302.3, 'accent'], [1725.2, 312.8, 'ink'], [1571.9, 502.3, 'ink'],
 ] as const;
 
 function SportIcon() {
@@ -87,10 +91,52 @@ function inlineArcs(half: 'upper' | 'lower', instance: string): string {
     .replace(/id="([^"]+)"/g, (_m, a: string) => `id="${n}${a.replace(/\s+/g, '_')}"`)
     .replace(/url\(#([^)]+)\)/g, (_m, a: string) => `url(#${n}${a.replace(/\s+/g, '_')})`)
     .replace('<svg ', `<svg class="fan__lines fan__lines--${half}" `)
+    .replace(/<stop\b[^>]*\/>/g, classStop)
     .replace(/<path\b[^>]*\/>/g, (p) => p + sparkTwin(p));
 }
 
-/** The bright head's path: the same geometry, flat colour, no gradient, no id. */
+/**
+ * COLOUR. Both files carry the same three stops, four times over: a
+ * transparent head, `#f03725` at the middle, a transparent tail. The middle
+ * one is the only paint anybody ever sees; the other two are there to fade it
+ * out at each end and carry `stop-opacity="0"`.
+ *
+ * `stop-color` is a CSS property as well as a presentation attribute, and CSS
+ * wins over the attribute — so a class per stop is enough to put the whole
+ * gradient under the theme. That is worth stating plainly, because the
+ * strategy's class-F recipe is a per-theme transform of the raw string: this
+ * needs no second copy of the string at module scope, no re-render of the
+ * arcs when the theme flips, and it leaves the id-prefix pipeline above
+ * completely alone. The baked attribute stays underneath as the fallback.
+ *
+ * Figma exports `#f03725` lowercase here and `#F9F0E8` / `#D5D2D0` uppercase
+ * in the same file, so the lookup is case-insensitive on principle.
+ */
+const STOP_ROLE: Record<string, string> = {
+  '#f9f0e8': 'fan__stop--in',
+  '#f03725': 'fan__stop--core',
+  '#d5d2d0': 'fan__stop--out',
+};
+
+function classStop(stop: string): string {
+  const hex = /stop-color="([^"]+)"/.exec(stop)?.[1]?.toLowerCase() ?? '';
+  const role = STOP_ROLE[hex];
+  return role ? stop.replace('<stop ', `<stop class="${role}" `) : stop;
+}
+
+/**
+ * The bright head's path: the same geometry, flat colour, no gradient, no id.
+ *
+ * The peach stays baked here as the fallback and `.fan__spark` sets `stroke`
+ * from a token on top of it — CSS beats a presentation attribute, so the head
+ * follows the theme with nothing about this string changing. `currentColor`
+ * would have done the same job, but it also rewrites the element's computed
+ * `color`, and with it the four currentColor-derived border colours the
+ * regression gate records on all thirty-two twins. Setting `stroke` directly
+ * moves exactly the one property that paints.
+ *
+ * On paper this head has to be DARK. A pale head on cream is nothing at all.
+ */
 function sparkTwin(path: string): string {
   return path
     .replace(/\sid="[^"]*"/, '')
@@ -129,8 +175,8 @@ export function Fan() {
         <div aria-hidden="true">
           <Arcs side="left" />
           <Arcs side="right" />
-          {DIAMONDS.map(([x, y, c], i) => (
-            <span key={i} className="fan__diamond" style={{ ['--x' as string]: x, ['--y' as string]: y, background: c }} />
+          {DIAMONDS.map(([x, y, role], i) => (
+            <span key={i} className={`fan__diamond fan__diamond--${role}`} style={{ ['--x' as string]: x, ['--y' as string]: y }} />
           ))}
           {PILLS.map((p) => (
             <span

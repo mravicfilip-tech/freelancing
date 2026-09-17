@@ -100,6 +100,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
+import { tok } from '../../lib/theme';
 
 /** One full cycle, in GSAP time: two passes and then the band at rest. */
 const PERIOD = 13;
@@ -115,9 +116,44 @@ const EASE = 'power1.inOut';
 /** Where the front starts and ends, as design px either side of the band. */
 const OVERRUN = 250;
 
-/** The brand, as `tokens.css` defines it and the arc gradients already use it. */
-const PILL_LIT_BG = '#e5331e'; /* --orange-100 */
-const PILL_LIT_FG = '#fffbf8'; /* --white-font */
+/**
+ * Every colour and every lift this loop applies, read from the document at
+ * BUILD time — which is to say inside `start()` below, beside the
+ * `getComputedStyle` rest reads that were already there, and never at module
+ * scope. `useSectionMotion` takes the theme epoch as a dependency, so a theme
+ * change tears this loop down and builds it again and these run afresh; read
+ * once at module scope they would freeze to whichever palette happened to be
+ * live when the bundle evaluated, and the band would cool to dark-mode
+ * colours on paper for the life of the page.
+ *
+ * The fallbacks are the literals this file shipped with, so a missing custom
+ * property yields today's dark value — the safest failure mode there is for
+ * the regression gate.
+ *
+ * DIRECTION. Five of these are lifts, and in dark every one of them means
+ * BRIGHTER: the diamonds flare, the photograph under the glass lifts, the rim
+ * and the frosted panel go pale, the sub-head warms towards white, and the
+ * bar that crosses the mark is very nearly white. On paper brighter is less —
+ * each of those would climb towards the page and the beat would stop being
+ * visible without a single thing stopping working. The inversion is in the
+ * light half of `Fan.css`; what matters here is only that nothing is baked.
+ */
+const read = () => ({
+  /* The lit pill: a flat chip of the brand red carrying its own label colour.
+     --on-accent does not flip — it is read against --accent, which is dark in
+     both themes. */
+  pillLitBg: tok('--accent', '#e5331e'),
+  pillLitFg: tok('--on-accent', '#fffbf8'),
+  diaRest: tok('--fan-dia-rest', 'brightness(1) saturate(1)'),
+  diaLit: tok('--fan-dia-lit', 'brightness(2.4) saturate(1)'),
+  rimLit: tok('--fan-rim-lit', 'rgba(255, 244, 236, 0.9)'),
+  glassLit: tok('--fan-glass-lit', 'rgba(255, 239, 227, 0.32)'),
+  artRest: tok('--fan-art-rest', 'brightness(1) contrast(1)'),
+  artLit: tok('--fan-art-lit', 'brightness(1.5) contrast(1)'),
+  subLit: tok('--fan-sub-lit', 'rgb(201, 194, 189)'),
+  barEdge: tok('--fan-bar-edge', 'rgba(255, 251, 248, 0)'),
+  barCore: tok('--fan-bar-core', 'rgba(255, 243, 234, 0.95)'),
+});
 
 /**
  * The pill icons are `<img>` elements holding grey (#9d9d9d) SVG files, so the
@@ -347,7 +383,7 @@ export function fanLoop(root: HTMLElement): () => void {
      is the tile's, and the tile takes the light as the front reaches it. */
   let bar: HTMLElement | null = null;
 
-  const buildOverlays = () => {
+  const buildOverlays = (barEdge: string, barCore: string) => {
     if (!glass) return;
     const clip = document.createElement('i');
     clip.setAttribute('aria-hidden', 'true');
@@ -357,7 +393,7 @@ export function fanLoop(root: HTMLElement): () => void {
     const b = document.createElement('b');
     b.style.cssText =
       'position:absolute;top:-25%;height:150%;left:0;opacity:0;will-change:transform,opacity;' +
-      'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,243,234,0.95) 50%,rgba(255,251,248,0) 100%);';
+      `background:linear-gradient(90deg,${barEdge} 0%,${barCore} 50%,${barEdge} 100%);`;
     clip.appendChild(b);
     glass.appendChild(clip);
     mine.push(clip);
@@ -447,7 +483,10 @@ export function fanLoop(root: HTMLElement): () => void {
     started = true;
 
     measureFrame();
-    buildOverlays();
+    // Read before the overlay is built: the bar's gradient is baked into its
+    // style attribute, so it has to know the palette first.
+    const C = read();
+    buildOverlays(C.barEdge, C.barCore);
     sizeOverlays();
     buildTables();
     // The entrance leaves each `.fan__spark` holding its own `opacity: 0` and a
@@ -462,7 +501,7 @@ export function fanLoop(root: HTMLElement): () => void {
     const css = (el: Element | null, prop: string) =>
       (el ? getComputedStyle(el).getPropertyValue(prop) : '') || '';
     const pillBg = css(pills[0] ?? null, 'background-color') || 'rgb(0, 0, 0)';
-    const pillFg = css(pills[0] ?? null, 'color') || PILL_LIT_FG;
+    const pillFg = css(pills[0] ?? null, 'color') || C.pillLitFg;
     const pillOp = Number(css(pills[0] ?? null, 'opacity') || '0.7') || 0.7;
     const tileBorder = css(tile, 'border-color');
     const glassBg = css(glass, 'background-color');
@@ -517,12 +556,12 @@ export function fanLoop(root: HTMLElement): () => void {
            having fired at all. */
         diamonds.forEach((d, i) => {
           const t = when(diaXs[i]);
-          tl.fromTo(d, { scale: 1, filter: 'brightness(1)' }, {
-            scale: 2, filter: 'brightness(2.4)',
+          tl.fromTo(d, { scale: 1, filter: C.diaRest }, {
+            scale: 2, filter: C.diaLit,
             duration: 0.24, ease: 'power2.out', immediateRender: false,
           }, t)
             .to(d, {
-              scale: 1, filter: 'brightness(1)', duration: 0.85, ease: 'sine.inOut',
+              scale: 1, filter: C.diaRest, duration: 0.85, ease: 'sine.inOut',
               onComplete: () => gsap.set(d, { clearProps: 'transform,transformOrigin,filter' }),
             }, t + 0.26);
         });
@@ -535,7 +574,7 @@ export function fanLoop(root: HTMLElement): () => void {
         pills.forEach((el, i) => {
           const t = when(pillXs[i]) - 0.14;
           tl.to(el, {
-            backgroundColor: PILL_LIT_BG, color: PILL_LIT_FG, opacity: 1,
+            backgroundColor: C.pillLitBg, color: C.pillLitFg, opacity: 1,
             duration: 0.3, ease: 'sine.out',
           }, t)
             .to(el, {
@@ -564,7 +603,7 @@ export function fanLoop(root: HTMLElement): () => void {
           // 100 design px: the rim is a hairline changing colour, the same plain
           // transition the pills make, and the light itself is the bar below.
           tl.to(tile, {
-            borderColor: 'rgba(255, 244, 236, 0.9)', duration: 0.35, ease: 'power2.out',
+            borderColor: C.rimLit, duration: 0.35, ease: 'power2.out',
           }, hit - 0.3)
             .to(tile, {
               borderColor: tileBorder, duration: 1.6, ease: 'sine.inOut',
@@ -573,7 +612,7 @@ export function fanLoop(root: HTMLElement): () => void {
         }
         if (glass && glassBg) {
           tl.to(glass, {
-            backgroundColor: 'rgba(255, 239, 227, 0.32)', duration: 0.3, ease: 'power2.out',
+            backgroundColor: C.glassLit, duration: 0.3, ease: 'power2.out',
           }, hit - 0.3)
             .to(glass, {
               backgroundColor: glassBg, duration: 1.8, ease: 'sine.inOut',
@@ -583,11 +622,11 @@ export function fanLoop(root: HTMLElement): () => void {
         if (tileArt) {
           // The photograph under the glass, lifting as the light goes through
           // it — the one part of the tile that used to sit out the whole cycle.
-          tl.fromTo(tileArt, { filter: 'brightness(1)' }, {
-            filter: 'brightness(1.5)', duration: 0.3, ease: 'power2.out', immediateRender: false,
+          tl.fromTo(tileArt, { filter: C.artRest }, {
+            filter: C.artLit, duration: 0.3, ease: 'power2.out', immediateRender: false,
           }, hit - 0.3)
             .to(tileArt, {
-              filter: 'brightness(1)', duration: 1.8, ease: 'sine.inOut',
+              filter: C.artRest, duration: 1.8, ease: 'sine.inOut',
               onComplete: () => gsap.set(tileArt, { clearProps: 'filter' }),
             }, hit + 0.45);
         }
@@ -605,7 +644,7 @@ export function fanLoop(root: HTMLElement): () => void {
            pills make. Nothing moves; the type is not touched otherwise. */
         if (sub && subFg) {
           const t = when(subX) - 0.2;
-          tl.to(sub, { color: 'rgb(201, 194, 189)', duration: 0.35, ease: 'sine.out' }, t)
+          tl.to(sub, { color: C.subLit, duration: 0.35, ease: 'sine.out' }, t)
             .to(sub, {
               color: subFg, duration: 1.2, ease: 'sine.inOut',
               onComplete: () => gsap.set(sub, { clearProps: 'color' }),

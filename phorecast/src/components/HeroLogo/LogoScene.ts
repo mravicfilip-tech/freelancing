@@ -36,6 +36,11 @@ export interface LogoSceneOptions {
   variant: VariantId;
   /** Place the mark explicitly instead of using the breakpoint layout. */
   placement?: LogoPlacement;
+  /**
+   * Called when the device cannot draw the mark at a usable rate. The scene has
+   * already stopped itself; the caller should swap in the static fallback.
+   */
+  onTooSlow?: () => void;
 }
 
 const TAU = Math.PI * 2;
@@ -59,7 +64,8 @@ export class LogoScene {
   /** Resolves once fonts are ready and the first frame has been scheduled. */
   readonly ready: Promise<void>;
 
-  private readonly opts: Required<Omit<LogoSceneOptions, 'placement' | 'treatment'>> & Pick<LogoSceneOptions, 'placement' | 'treatment'>;
+  private readonly opts: Required<Omit<LogoSceneOptions, 'placement' | 'treatment' | 'onTooSlow'>>
+    & Pick<LogoSceneOptions, 'placement' | 'treatment' | 'onTooSlow'>;
   private readonly treatment: Treatment;
   private readonly timer = new Timer();
   private readonly root = new Group(); // layout position, scale, scroll rise
@@ -92,6 +98,19 @@ export class LogoScene {
   private resizeObserver: ResizeObserver | null = null;
   private intersection: IntersectionObserver | null = null;
   private entranceStarted = false;
+  /** Set when the draw-in has landed; until then the loop runs uncapped. */
+  private entranceDone = false;
+  private lastDraw = 0;
+  /** Set while the first frame after a start would measure the pause, not a frame. */
+  private resumed = true;
+  /** The idle rate we are currently asking for; halved once if the device cannot hold it. */
+  private fpsCap: number = C.idleFps;
+  /** Consecutive frames over budget, walked back down by every frame under it. */
+  private slowFrames = 0;
+  /** Accumulated milliseconds over the per-frame budget. */
+  private overrun = 0;
+  private drawn = 0;
+  private degraded = false;
 
   constructor(options: LogoSceneOptions) {
     this.opts = { scroll: true, ...options };
@@ -259,6 +278,8 @@ export class LogoScene {
 
   private start() {
     this.running = true;
+    this.resumed = true;
+    this.lastDraw = 0;
     this.timer.update(); // so the first frame's delta is not the whole pause
     cancelAnimationFrame(this.raf);
     this.raf = requestAnimationFrame(this.tick);
@@ -276,6 +297,24 @@ export class LogoScene {
   private readonly tick = () => {
     if (!this.running || this.disposed) return;
     this.raf = requestAnimationFrame(this.tick);
+
+    // Cap the idle loop. The entrance runs at whatever the display gives it,
+    // because that is the part anyone watches closely; once it has landed the
+    // sway has a 15-second period and 30fps is indistinguishable from 60, at
+    // half the draw. Skipped frames still advance time, so the motion keeps
+    // wall-clock pace rather than slowing down.
+    const now = performance.now();
+    const budget = this.entranceDone ? 1000 / this.fpsCap : 1000 / 60;
+    if (this.entranceDone && now - this.lastDraw < budget - 1) return; // -1ms so a 30Hz display is not halved
+
+    // How late this frame is, measured from the last one we drew. This is the
+    // only honest number available: renderer.render() queues GL commands and
+    // returns, so timing the call itself reports near zero however long the
+    // draw actually takes -- the cost lands at swap, and only the gap to the
+    // next frame shows it.
+    const gap = this.lastDraw ? now - this.lastDraw : budget;
+    this.lastDraw = now;
+
     this.timer.update();
     const dt = Math.min(this.timer.getDelta(), 0.1);
     this.frame.time += dt;
@@ -283,7 +322,58 @@ export class LogoScene {
     this.frame.pointer.lerp(this.pointerTarget, k);
     this.applyPose();
     this.renderer.render(this.scene, this.camera);
+    this.watchCost(gap, budget);
   };
+
+  /**
+   * Degrade, then give up. WebGL reports no device class and every heuristic
+   * for guessing one is wrong somewhere, so the only honest signal is what the
+   * frames actually cost. Resolution goes first because it is the cheapest
+   * thing to give back; if that does not save it, the mark is decorative and a
+   * static outline is worth more than a page running at three frames a second.
+   *
+   * The measure is accumulated overrun rather than a count of slow frames. A
+   * count cannot tell a device that is slightly late from one spending half a
+   * second on every frame, and on the second kind it takes half a minute to
+   * reach any threshold loose enough for the first. Overrun crosses in a few
+   * frames when frames are catastrophic and never when they are merely
+   * imperfect, because good frames pay it back faster than bad ones add to it.
+   */
+  private watchCost(gap: number, budget: number) {
+    if (this.drawn++ < C.warmupFrames) return; // shader compile, not the steady cost
+    if (this.resumed) { this.resumed = false; return; } // first frame back spans the pause
+
+    // 60% headroom over the rate we asked for, so ordinary jitter is not a verdict.
+    const over = gap - budget * 1.6;
+    if (over <= 0) {
+      this.overrun = Math.max(0, this.overrun + over * 2);
+      this.slowFrames = Math.max(0, this.slowFrames - 1);
+      return;
+    }
+    this.overrun += over;
+    this.slowFrames++;
+
+    if (!this.degraded
+      && this.overrun >= C.overrunBeforeDegrade
+      && this.slowFrames >= C.slowFramesBeforeDegrade) {
+      this.degraded = true;
+      // Give back the cheapest thing first. Where there is no resolution to
+      // give back -- a 1x display, which is most desktops -- halve the rate
+      // instead, which halves the draw outright. On a device that is merely
+      // short of the budget that is often enough to keep the mark, and keeping
+      // it degraded is a better outcome than losing it.
+      const dpr = this.renderer.getPixelRatio();
+      if (dpr > 1) { this.renderer.setPixelRatio(1); this.layout(); }
+      else this.fpsCap = Math.max(12, this.fpsCap / 2);
+      this.overrun = 0;
+      this.slowFrames = 0;
+      return;
+    }
+    if (this.overrun >= C.overrunBeforeFallback && this.slowFrames >= C.slowFramesBeforeFallback) {
+      this.stop();
+      this.opts.onTooSlow?.();
+    }
+  }
 
   private renderOnce() {
     if (this.disposed) return;
@@ -296,7 +386,12 @@ export class LogoScene {
     if (this.entranceStarted) return;
     this.entranceStarted = true;
     this.entrance = [
-      gsap.to(this.state, { progress: 1, duration: C.entranceSec, ease: 'power2.inOut' }),
+      gsap.to(this.state, {
+        progress: 1,
+        duration: C.entranceSec,
+        ease: 'power2.inOut',
+        onComplete: () => { this.entranceDone = true; },
+      }),
       gsap.to(this.state, { scale: 1, duration: C.entranceSec * 0.9, ease: 'power3.out' }),
     ];
   }

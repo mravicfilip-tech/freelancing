@@ -52,9 +52,38 @@ export function draw(tl: Timeline, paths: SVGGeometryElement[], at: number, dura
     });
 }
 
-/** Pop in from small. */
+/**
+ * Pop in from small. `vars` carries both the start offsets (scale, opacity and
+ * any transform key) and the tween's own options; they are split here.
+ *
+ * Explicitly fromTo, never from. A `from` tween infers its end from whatever
+ * the element reads as when the tween is created, and an element that already
+ * carries an inline transform -- left by an earlier entrance, a rebuild, or a
+ * timeline that was killed part-way -- reads as its own start value. The tween
+ * is then built to animate 0.94 to 0.94: it runs, it reports complete, and the
+ * element is stranded 6% small forever. That is exactly what had happened to
+ * the hero's Get Started button. Stating both ends cannot be poisoned by prior
+ * state, and clearing the props at the end hands the settled element back to
+ * CSS so the next run starts from a clean slate.
+ */
+const START_KEYS = ['scale', 'opacity', 'x', 'y', 'xPercent', 'yPercent', 'rotation', 'rotate'] as const;
+
 export function pop(tl: Timeline, targets: gsap.TweenTarget, at: number, vars: gsap.TweenVars = {}) {
-  tl.from(targets, { scale: 0.6, opacity: 0, duration: 0.55, ease: 'back.out(1.8)', transformOrigin: '50% 50%', ...vars }, at);
+  const from: gsap.TweenVars = { scale: 0.6, opacity: 0, transformOrigin: '50% 50%' };
+  const to: gsap.TweenVars = { scale: 1, opacity: 1, duration: 0.55, ease: 'back.out(1.8)', clearProps: 'transform,opacity' };
+
+  for (const [k, v] of Object.entries(vars)) {
+    if ((START_KEYS as readonly string[]).includes(k)) {
+      from[k] = v;
+      // Whatever the caller offsets from, the element ends at its natural value.
+      if (k !== 'scale' && k !== 'opacity') to[k] = 0;
+    } else if (k === 'transformOrigin') {
+      from[k] = v;
+    } else {
+      to[k] = v;
+    }
+  }
+  tl.fromTo(targets, from, to, at);
 }
 
 /** Rise a few pixels into place — the default entrance for copy and cards. */
@@ -141,7 +170,15 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
 
     const reveal = () => { delete el.dataset.motion; };
 
-    if (REDUCED) { reveal(); return; }
+    // The flag matters as much as the event: a listener that attaches after the
+    // entrance has already finished would otherwise wait for one that will
+    // never fire again.
+    const done = () => {
+      el.dataset.motionDone = '1';
+      el.dispatchEvent(new CustomEvent('motion:done', { bubbles: true }));
+    };
+
+    if (REDUCED) { reveal(); done(); return; }
 
     let ctx: gsap.Context | undefined;
     let stopIdle: (() => void) | undefined;
@@ -163,7 +200,12 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
           ctx = gsap.context(() => {
             tl = gsap.timeline({
               defaults: { ease: EASE },
-              onComplete: () => { if (idle) stopIdle = idle(el); },
+              onComplete: () => {
+                // Anything expensive that would have stolen frames from this
+                // sequence can start now. The 3D mark listens for it.
+                el.dispatchEvent(new CustomEvent('motion:done', { bubbles: true }));
+                if (idle) stopIdle = idle(el);
+              },
             });
             const timeline = tl;
             build({ el, q: (sel) => all(el, sel), tl: timeline });
@@ -189,6 +231,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
         } catch (err) {
           console.warn('[motion] build failed', err);
           reveal();
+          done();
         }
       }
     };

@@ -140,16 +140,26 @@ export function Hero() {
     const slide = el.querySelector<HTMLElement>('.hero__slide.is-active');
     if (!slide) return;
 
-    const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-    slideIn(slide, tl, 0);
+    // A context scoped to the slide, so teardown can put back everything the
+    // timeline touched. The old cleanup killed the timeline where it stood and
+    // then cleared props from a hand-written list of selectors, which left
+    // every element not on that list -- the illustration's parts, above all --
+    // frozen at the start values `from` had written: an illustration stuck at
+    // 92% and, when a change landed mid-flight, a Get Started button stranded
+    // at opacity 0. revert() restores what GSAP set, all of it, by construction.
+    let guard = 0;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      slideIn(slide, tl, 0);
 
-    // The CSS crossfade takes 600ms; if the copy tweens are still holding their
-    // start values after that plus their own run, force the settled state.
-    const guard = window.setTimeout(() => {
-      if (tl.progress() < 1) tl.progress(1);
-    }, 2600);
+      // The CSS crossfade takes 600ms; if the copy tweens are still holding
+      // their start values after that plus their own run, force the settled state.
+      guard = window.setTimeout(() => {
+        if (tl.progress() < 1) tl.progress(1);
+      }, 2600);
+    }, slide);
 
-    return () => { window.clearTimeout(guard); tl.kill(); gsap.set(slide.querySelectorAll('.line__in, .eyebrow, .hero__cta'), { clearProps: 'transform,opacity,filter' }); };
+    return () => { window.clearTimeout(guard); ctx.revert(); };
   }, [index]);
 
   const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);

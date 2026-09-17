@@ -62,12 +62,31 @@ function idle(): Promise<void> {
   });
 }
 
-function afterLoadAndIdle(): Promise<void> {
-  const loaded =
-    document.readyState === 'complete'
-      ? Promise.resolve()
-      : new Promise<void>((resolve) => window.addEventListener('load', () => resolve(), { once: true }));
-  return loaded.then(idle);
+function afterLoad(): Promise<void> {
+  return document.readyState === 'complete'
+    ? Promise.resolve()
+    : new Promise<void>((resolve) => window.addEventListener('load', () => resolve(), { once: true }));
+}
+
+/**
+ * Resolves when the host section's entrance has finished, or after `cap` either
+ * way. Waiting for `load` plus an idle callback was not enough on its own: a
+ * quiet instant during the entrance satisfies both, and the scene was landing
+ * squarely on top of the sequence it was meant to stay out of. The entrance now
+ * says when it is done, so this waits for the actual event rather than guessing
+ * at a duration -- with a ceiling, because a section whose motion never ran
+ * must not hold the mark back forever.
+ */
+function afterHostEntrance(host: HTMLElement, cap = 6000): Promise<void> {
+  if (host.dataset.motionDone) return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    const done = () => { window.clearTimeout(timer); resolve(); };
+    const timer = window.setTimeout(() => {
+      host.removeEventListener('motion:done', done);
+      resolve();
+    }, cap);
+    host.addEventListener('motion:done', done, { once: true });
+  });
 }
 
 function currentLayout(): LogoLayout {
@@ -100,7 +119,13 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
     // Three.js + GSAP load on demand, after the page has loaded and the main thread is idle.
     let scene: LogoScene | null = null;
     let cancelled = false;
-    afterLoadAndIdle()
+    // Load, then the host's entrance, then one idle callback. The idle that
+    // used to sit between load and the scene is gone: waiting for the entrance
+    // covers everything it was guarding against and does it on the real signal,
+    // so keeping both only pushed the mark up to two seconds later for nothing.
+    afterLoad()
+      .then(() => afterHostEntrance(host))
+      .then(idle)
       .then(() => {
         if (!supportsWebGL()) throw new NoWebGLError();
         return import('./LogoScene');
@@ -110,7 +135,20 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
       .then(({ mod: { LogoScene }, treatment }) => {
         if (cancelled) return;
         try {
-          scene = new LogoScene({ canvas, host, layout: currentLayout(), reducedMotion, touch, scroll, variant, placement, treatment });
+          scene = new LogoScene({
+            canvas, host, layout: currentLayout(), reducedMotion, touch, scroll, variant, placement, treatment,
+            // The device cannot draw it at a usable rate. The mark is
+            // decorative; a static outline beats taking the page down with it.
+            onTooSlow: () => {
+              if (cancelled) return;
+              console.info('[HeroLogo] frames over budget, falling back to the static mark');
+              setMode('fallback');
+              // Out of the tick that raised it before touching the renderer, and
+              // after React has swapped the canvas out, so the context is
+              // released rather than left alive on a detached element.
+              window.setTimeout(() => { scene?.dispose(); scene = null; }, 0);
+            },
+          });
         } catch (err) {
           console.warn('[HeroLogo] WebGL init failed, using static fallback', err);
           setMode('fallback');

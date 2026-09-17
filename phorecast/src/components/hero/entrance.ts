@@ -48,7 +48,7 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     const kids = Array.from(visual.children) as HTMLElement[];
     const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
     const parts = kids.length > 1 ? kids : nested;
-    if (parts.length > 1) pop(tl, parts, at + 0.3, { scale: 0.92, y: 12, duration: 0.85, stagger: 0.1 });
+    if (parts.length > 1) pop(tl, parts, at + 0.3, { scale: 0.92, y: 12, duration: 0.85, stagger: 0.1, ease: EASE });
     else rise(tl, visual, at + 0.3, { y: 16, duration: 1.0 });
   }
 
@@ -57,7 +57,7 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   if (lede) {
     rise(tl, intoLines(lede), at + 0.72, { y: 0, yPercent: 108, filter: 'blur(7px)', duration: 0.85, clearProps: 'filter' });
   }
-  if (cta) pop(tl, cta, at + 0.98, { scale: 0.94, duration: 0.7 });
+  if (cta) pop(tl, cta, at + 0.98, { scale: 0.94, duration: 0.7, ease: EASE });
 }
 
 /** The load-in. The nav drops in, light ignites, everything else overlaps it. */

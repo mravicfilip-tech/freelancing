@@ -2,6 +2,30 @@
 export const LOGO_CONFIG = {
   cameraFovDeg: 32,
   maxPixelRatio: 2,
+
+  // ---------- Frame budget ----------
+  // The mark is ~18,800 blended line quads drawn with depthTest off, so every
+  // fragment is shaded and composited and the cost is overdraw, not geometry.
+  // That is fine on a GPU and ruinous without one, where it can take the whole
+  // page down to single-digit frames. These three numbers let it notice.
+
+  /** Idle cap. The sway has a 15s period; past this nobody can see the difference. */
+  idleFps: 30,
+  /** First frames of a scene compile shaders and are always slow; skip them. */
+  warmupFrames: 4,
+  /**
+   * Budget overrun, in milliseconds, before dropping resolution and before
+   * giving up entirely -- accumulated, not counted. Counting frames cannot tell
+   * a device that is slightly late from one taking 480ms a frame, and on the
+   * second the count takes half a minute to reach any threshold worth setting
+   * for the first. Overrun crosses these in a few frames when frames are
+   * catastrophic and never when they are merely imperfect.
+   */
+  overrunBeforeDegrade: 250,
+  overrunBeforeFallback: 1500,
+  /** Slow frames required alongside the overrun, so one hiccup cannot trip it. */
+  slowFramesBeforeDegrade: 4,
+  slowFramesBeforeFallback: 8,
   /** Per breakpoint: the mark's height as a fraction of the host's height and width (the smaller wins), and its centre. */
   layouts: {
     desktop: { heightFraction: 0.6, widthFraction: 0.34, cx: 0.72, cy: 0.42 },

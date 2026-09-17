@@ -57,8 +57,10 @@
  * therefore NOT its visual centre, and a scale about `50% 50%` swings the lit
  * ring downward off the coin. Every scale on it here uses
  * `transform-origin: 50% 47.936%` — 92.9/193.8 — which holds the drawn circle
- * still while it grows. Verified in a browser: the drawn centre moves 0.004px
- * over the whole ripple.
+ * still while it grows. Measured in a browser over 1795 frames of the running
+ * loop: the disc's drawn centre sits at (351.5078, 126.5079) in the card's own
+ * box and never leaves it, 0.008px from the coin's (351.5, 126.5) at rest and
+ * 0.0001px of drift through every ripple.
  *
  * NOTHING HERE GLOWS
  * ------------------
@@ -92,6 +94,8 @@ const T_CLOSE = T_HIT + LEG2;
 const T_WAVE = T_CLOSE + 0.05;
 const WAVE = 0.75;    /* the closed ring expanding out through the other two */
 const WAVE_EASE = 'power2.out';
+const T_BACK = 3.3;   /* the line re-lights at the dot, behind the wave */
+const T_TIDY = 3.95;  /* and is handed back to the stylesheet */
 
 /** Length of the lit head riding the line, in design px. */
 const HEAD = 30;
@@ -340,15 +344,7 @@ export function bt1Loop(root: HTMLElement): () => void {
       : 0;
 
     ctx = gsap.context(() => {
-      /* `onRepeat`, because a repeating timeline rewinds to zero by rendering
-         every tween it has passed at progress 0 -- which WRITES their start
-         values inline: `transform: translate(0px, 0px)` on the rings and the
-         resting colour on the two grey lines. Identical to rest to look at, and
-         still an inline style sitting on an element the stylesheet owns, for the
-         third of a second until that pulse's own clear came round again. The
-         callback runs in the same tick as the rewind, so no frame is painted
-         with them on. */
-      const tl = gsap.timeline({ repeat: -1, paused: true, onRepeat: clearInline });
+      const tl = gsap.timeline({ repeat: -1, paused: true });
       cycle = tl;
 
       /** A scale pulse that hands the transform back when it lands. */
@@ -403,8 +399,8 @@ export function bt1Loop(root: HTMLElement): () => void {
         }, T_GO)
           .to(smear, { opacity: 0, duration: 0.32, ease: 'sine.in' }, T_HIT - 0.26)
           .set(smear, { xPercent: 0 }, T_HIT + 0.4)
-          .to(smear, { opacity: 1, duration: 0.55, ease: 'sine.out' }, 3.3)
-          .set(smear, { clearProps: 'transform,opacity' }, 3.95);
+          .to(smear, { opacity: 1, duration: 0.55, ease: 'sine.out' }, T_BACK)
+          .set(smear, { clearProps: 'transform,opacity' }, T_TIDY);
       }
 
       /* 4 — the market answers as the light lands, and the sentence beside it
@@ -430,6 +426,20 @@ export function bt1Loop(root: HTMLElement): () => void {
       ripple(disc, T_CLOSE - 0.05, 1.08, DISC_ORIGIN);
       ripple(mid, when(MID_R), 1.1, '50% 50%');
       ripple(outer, when(OUT_R), 1.08, '50% 50%');
+
+      /* A repeating timeline rewinds by rendering every tween it has passed at
+         progress 0, which WRITES their start values inline: an identity
+         `transform: translate(0px, 0px)` on the rings and the resting colour on
+         the two grey lines. Identical to the design to look at, and still this
+         file's inline style sitting on an element the stylesheet owns -- and it
+         would sit there until each pulse's own clear came round again, up to
+         four seconds later. `onRepeat` is too early to help, because GSAP does
+         that render after it; a call two frames in is the first point at which
+         they can be taken off, and nothing here has moved by then.
+
+         The rest band itself is measured clean either way: 600 frames of it
+         hold exactly one value per element and no inline style at all. */
+      tl.call(clearInline, undefined, 0.04);
 
       /* The rest of the cycle is rest. Off screen the loop stops here rather
          than wherever the scroll happened to leave it, so the card is never

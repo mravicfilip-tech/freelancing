@@ -1,0 +1,119 @@
+/* PanelRegister -- extracted from Steps.css so each step panel owns its own stylesheet.
+   Three agents rebuild these panels from Figma in parallel, and a single shared
+   file is a single file for them to clobber. The shared shell -- `.panel`, the
+   3D wordmark and the glow -- stays in Steps.css, because it is the section's,
+   not any one panel's.
+
+   `--p` is the panel's design-pixel unit and is declared on `.panel` in
+   Steps.css, so it resolves here through the cascade. */
+
+/* Panel 1 ------------------------------------------------------------------- */
+.s1 {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 0.5px);
+  width: calc(760 * var(--p));
+  height: calc(329 * var(--p));
+  transform: translate(-50%, -50%);
+  font-size: calc(1px * 886 / 886);
+}
+.s1 > * { position: absolute; }
+.s1__email {
+  left: 0; top: calc(125 * var(--p));
+  display: flex; align-items: center; gap: calc(16.8 * var(--p));
+  width: calc(228 * var(--p)); padding: calc(9.6 * var(--p)) calc(19.2 * var(--p));
+  border-radius: calc(14.39 * var(--p));
+  background: rgba(146, 146, 146, 0.17);
+  border: calc(1.2 * var(--p)) solid #f03725;
+  backdrop-filter: blur(calc(32.8 * var(--p)));
+  font-family: var(--font-mono); font-weight: 500; font-size: calc(14 * var(--p));
+  color: var(--white-font); white-space: nowrap;
+}
+.s1__email img { width: calc(24 * var(--p)); height: calc(18.85 * var(--p)); }
+.s1__email i { font-style: normal; opacity: 0.8; }
+.s1__diamond { width: calc(10 * var(--p)); height: calc(10 * var(--p)); }
+.s1__diamond--orange { left: calc(228.8 * var(--p)); top: calc(141.5 * var(--p)); background: #f03725; transform: rotate(46.25deg); }
+.s1__diamond--white { left: calc(545.4 * var(--p)); top: calc(146.3 * var(--p)); background: var(--white-font); transform: rotate(60deg); }
+.s1__connector { left: calc(241 * var(--p)); top: calc(95 * var(--p)); width: calc(91.16 * var(--p)); height: calc(107.95 * var(--p)); }
+.s1__card {
+  left: calc(330 * var(--p)); width: calc(176 * var(--p)); height: calc(108 * var(--p));
+  background: var(--surface); border: calc(1.2 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  border-radius: calc(14 * var(--p));
+}
+.s1__card--a { top: calc(43 * var(--p)); }
+.s1__card--b { top: calc(161 * var(--p)); }
+.s1__glyph { position: absolute; left: calc(15.6 * var(--p)); top: calc(15.6 * var(--p)); width: calc(20 * var(--p)); height: auto; }
+.s1__rule { position: absolute; left: 0; top: calc(46.8 * var(--p)); width: 100%; height: calc(1.2 * var(--p)); }
+.s1__digits {
+  position: absolute; left: calc(15.6 * var(--p)); top: calc(58 * var(--p));
+  font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p)); color: var(--color-body); white-space: nowrap;
+}
+.s1__bar {
+  position: absolute; left: calc(15.6 * var(--p)); height: calc(7.2 * var(--p));
+  background: #323232; border-radius: calc(4 * var(--p));
+}
+.s1__bar--light { background: #4b4b4b; }
+.s1__card .s1__bar { left: calc(15.6 * var(--p)); }
+.s1__bar--pill { width: calc(48 * var(--p)); top: calc(80.4 * var(--p)); }
+.s1__bar--wide { width: calc(96 * var(--p)); height: calc(12 * var(--p)); top: calc(63.6 * var(--p)); }
+.s1__bar--row { width: calc(144 * var(--p)); height: calc(18 * var(--p)); left: calc(13.2 * var(--p)); top: calc(68 * var(--p)); background: #4b4b4b; }
+.s1__bar--cap { width: calc(46 * var(--p)); height: calc(7 * var(--p)); left: calc(13.2 * var(--p)); top: calc(93.6 * var(--p)); }
+.s1__sk { display: block; background: #323232; border-radius: calc(4 * var(--p)); }
+.s1__sk--sm { width: calc(28 * var(--p)); height: calc(5 * var(--p)); }
+.s1__sk--lg { width: calc(70 * var(--p)); height: calc(12 * var(--p)); }
+.s1__bracket { left: calc(509.8 * var(--p)); top: calc(68.4 * var(--p)); width: calc(80.36 * var(--p)); height: calc(182.91 * var(--p)); }
+.s1__phone {
+  left: calc(589 * var(--p)); top: 0; width: calc(172 * var(--p)); height: calc(339 * var(--p));
+  background: var(--surface); border: calc(1.2 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  border-radius: calc(14.39 * var(--p)); overflow: hidden;
+}
+.s1__status {
+  position: absolute; left: calc(13.2 * var(--p)); right: calc(13.2 * var(--p)); top: calc(10 * var(--p));
+  display: flex; align-items: center; gap: calc(3 * var(--p));
+  font-family: system-ui, sans-serif; font-weight: 600; font-size: calc(6.87 * var(--p)); color: #cacaca;
+}
+.s1__loc { width: calc(6 * var(--p)); height: auto; }
+.s1__status-right { display: flex; align-items: center; gap: calc(2.5 * var(--p)); margin-left: auto; }
+.s1__status-right img { height: calc(5 * var(--p)); width: auto; }
+.s1__batt { position: relative; display: inline-flex; align-items: center; }
+.s1__batt i { position: absolute; left: calc(2 * var(--p)); font-style: normal; font-size: calc(4.2 * var(--p)); color: #b5b5b5; }
+.s1__batt-tip { margin-left: calc(0.5 * var(--p)); }
+.s1__phone-rule { position: absolute; left: 0; top: calc(27.6 * var(--p)); width: 100%; height: calc(1.2 * var(--p)); }
+.s1__phone-head {
+  position: absolute; left: calc(13.2 * var(--p)); top: calc(38.7 * var(--p));
+  display: flex; align-items: center; gap: calc(8 * var(--p));
+}
+.s1__logo-tile {
+  display: grid; place-items: center; width: calc(20 * var(--p)); height: calc(20 * var(--p));
+  background: rgba(255, 255, 255, 0.13); border-radius: calc(3.57 * var(--p));
+}
+.s1__logo-tile img { width: calc(11.5 * var(--p)); height: calc(12.3 * var(--p)); }
+.s1__skeletons { display: flex; flex-direction: column; gap: calc(3 * var(--p)); }
+.s1__chart {
+  position: absolute; left: calc(13.2 * var(--p)); top: calc(106 * var(--p));
+  width: calc(144 * var(--p)); height: calc(98 * var(--p));
+  padding: calc(8 * var(--p)); background: #323232; border-radius: calc(10 * var(--p));
+}
+.s1__amount { font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p)); color: var(--white-font); }
+.s1__bars {
+  position: absolute; left: calc(8 * var(--p)); right: calc(8 * var(--p)); bottom: calc(10 * var(--p));
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: calc(1.2 * var(--p)) solid var(--color-body);
+}
+.s1__bars span {
+  position: relative; width: calc(19.2 * var(--p)); height: calc(var(--h) * var(--p));
+  border-radius: calc(2.4 * var(--p)) calc(2.4 * var(--p)) 0 0;
+  background: linear-gradient(358deg, rgba(177, 177, 177, 0) 1%, #4b4b4b 106%);
+}
+
+.s1__bars span.is-active { background: var(--orange-100); }
+.s1__bars span i {
+  position: absolute; left: 50%; top: calc(-9 * var(--p)); transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 700; font-size: calc(6 * var(--p)); color: var(--orange-100); font-style: normal;
+}
+.s1__indicator { position: absolute; left: calc(13.2 * var(--p)); top: calc(212 * var(--p)); width: calc(22.4 * var(--p)); height: auto; }
+.s1__bar--block {
+  left: calc(13.2 * var(--p)); top: calc(224 * var(--p));
+  width: calc(144 * var(--p)); height: calc(62 * var(--p)); opacity: 0.4; border-radius: calc(8 * var(--p));
+}
+.s1__nav { position: absolute; left: 50%; transform: translateX(-50%); top: calc(297 * var(--p)); width: calc(69.6 * var(--p)); height: auto; }

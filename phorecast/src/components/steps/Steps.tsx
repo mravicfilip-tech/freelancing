@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import dot from '../../assets/icons/live-dot.svg';
-import { PanelRegister, PanelFund, PanelTrade } from './panels';
+import { PanelRegister } from './panels/PanelRegister';
+import { PanelFund } from './panels/PanelFund';
+import { PanelTrade } from './panels/PanelTrade';
 import './Steps.css';
 
 const STEPS = [

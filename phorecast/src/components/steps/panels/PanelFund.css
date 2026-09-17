@@ -1,0 +1,63 @@
+/* PanelFund -- extracted from Steps.css so each step panel owns its own stylesheet.
+   Three agents rebuild these panels from Figma in parallel, and a single shared
+   file is a single file for them to clobber. The shared shell -- `.panel`, the
+   3D wordmark and the glow -- stays in Steps.css, because it is the section's,
+   not any one panel's.
+
+   `--p` is the panel's design-pixel unit and is declared on `.panel` in
+   Steps.css, so it resolves here through the cascade. */
+
+/* Panel 2 ------------------------------------------------------------------- */
+.s2 { position: absolute; inset: 0; }
+.s2__rails {
+  position: absolute; left: calc(65 * var(--p)); top: calc(128 * var(--p));
+  display: flex; flex-direction: column; gap: calc(22.75 * var(--p));
+}
+.s2__tile {
+  display: grid; place-items: center; width: calc(90 * var(--p)); height: calc(52 * var(--p));
+  background: var(--surface); border: calc(1.255 * var(--p)) solid rgba(212, 212, 212, 0.13);
+  border-radius: calc(10 * var(--p));
+}
+.s2__tile.is-first { border-color: rgba(212, 212, 212, 0.4); }
+.s2__tile.is-dim { opacity: 0.5; }
+.s2__tile img { width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
+.s2__lines { position: absolute; left: calc(149 * var(--p)); top: calc(144 * var(--p)); width: calc(348 * var(--p)); height: calc(321 * var(--p)); filter: brightness(2.4); }
+/* Five orange streaks, each centred on its Figma bounding box and rotated to
+   lie along the line it sits on. */
+.s2__comet {
+  position: absolute; height: calc(6.07 * var(--p));
+  background: #f03725; border-radius: calc(6 * var(--p));
+  filter: blur(calc(8.411 * var(--p)));
+  transform-origin: center;
+}
+.s2__comet--1 { left: calc(240.5 * var(--p)); top: calc(358.7 * var(--p)); width: calc(59.09 * var(--p)); transform: rotate(-19.42deg); }
+.s2__comet--2 { left: calc(257.1 * var(--p)); top: calc(303.7 * var(--p)); width: calc(37.66 * var(--p)); height: calc(6.277 * var(--p)); }
+.s2__comet--3 { left: calc(221.4 * var(--p)); top: calc(239.2 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(15.72deg); }
+.s2__comet--4 { left: calc(356.6 * var(--p)); top: calc(269.3 * var(--p)); width: calc(14.67 * var(--p)); transform: rotate(30deg); }
+.s2__comet--5 { left: calc(224.2 * var(--p)); top: calc(432.9 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(-19.42deg); }
+.s2__node {
+  position: absolute; left: calc(446.7 * var(--p)); top: calc(261.1 * var(--p));
+  display: grid; place-items: center; width: calc(38.5 * var(--p)); height: calc(38.5 * var(--p));
+}
+.s2__node img { position: absolute; width: 100%; height: 100%; }
+.s2__lock { width: calc(16 * var(--p)) !important; height: calc(16 * var(--p)) !important; }
+.s2__balance {
+  position: absolute; left: calc(499.1 * var(--p)); top: calc(226 * var(--p));
+  width: calc(346 * var(--p)); height: calc(158 * var(--p));
+  padding: calc(8 * var(--p));
+  background: rgba(255, 255, 255, 0.02);
+  border: calc(1.255 * var(--p)) solid rgba(240, 55, 37, 0.24);
+  border-radius: calc(20 * var(--p));
+}
+.s2__balance-inner {
+  width: 100%; height: 100%; padding: calc(18 * var(--p)) calc(22 * var(--p));
+  border: calc(1.255 * var(--p)) solid rgba(244, 242, 242, 0.32);
+  border-radius: calc(14 * var(--p));
+  background: linear-gradient(134.6deg, rgba(0, 0, 0, 0.3) 42%, rgba(226, 34, 16, 0.28) 70%, rgba(121, 22, 12, 0.3) 85%, rgba(0, 0, 0, 0.3)), #1a1817;
+  box-shadow: 0 calc(8 * var(--p)) calc(24 * var(--p)) rgba(0, 0, 0, 0.35);
+}
+.s2__balance-label { font-family: var(--font-mono); font-weight: 400; font-size: calc(14 * var(--p)); text-transform: uppercase; color: var(--color-body); }
+.s2__balance-amt { margin-top: calc(6 * var(--p)); font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--p)); color: var(--white-font); }
+.s2__dots { display: flex; align-items: center; gap: calc(4 * var(--p)); margin-top: calc(12 * var(--p)); }
+.s2__dots i { width: calc(7 * var(--p)); height: calc(7 * var(--p)); border-radius: 50%; background: var(--orange-100); }
+.s2__dots i.is-bar { width: calc(34 * var(--p)); border-radius: calc(7 * var(--p)); }

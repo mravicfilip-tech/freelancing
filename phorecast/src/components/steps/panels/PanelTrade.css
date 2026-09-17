@@ -1,0 +1,33 @@
+/* PanelTrade -- extracted from Steps.css so each step panel owns its own stylesheet.
+   Three agents rebuild these panels from Figma in parallel, and a single shared
+   file is a single file for them to clobber. The shared shell -- `.panel`, the
+   3D wordmark and the glow -- stays in Steps.css, because it is the section's,
+   not any one panel's.
+
+   `--p` is the panel's design-pixel unit and is declared on `.panel` in
+   Steps.css, so it resolves here through the cascade. */
+
+/* Panel 3 ------------------------------------------------------------------- */
+.s3 {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: calc(422 * var(--p)); padding: calc(20 * var(--p));
+  background: #161514; border: calc(1 * var(--p)) solid #3d3d3d; border-radius: calc(16 * var(--p));
+}
+.s3__tiles { display: flex; gap: calc(9 * var(--p)); }
+.s3__tile {
+  display: grid; place-items: center; width: calc(70 * var(--p)); height: calc(50 * var(--p));
+  background: #1b1b1a; border: calc(1 * var(--p)) solid var(--hairline); border-radius: calc(12 * var(--p));
+}
+.s3__tile.is-active { border-color: #f03725; }
+.s3__tile img { width: calc(24 * var(--p)); height: auto; }
+.s3__tile:not(.is-active) img { filter: grayscale(1) brightness(0.55); }
+.s3__chart-card {
+  position: relative; margin-top: calc(12 * var(--p)); padding: calc(16 * var(--p));
+  height: calc(173 * var(--p)); overflow: hidden;
+  background: #1b1b1a; border: calc(1 * var(--p)) solid var(--hairline); border-radius: calc(12 * var(--p));
+}
+.s3__label { font-family: var(--font-display); font-weight: 300; font-size: calc(12 * var(--p)); color: var(--color-nre-body); }
+.s3__price { font-family: var(--font-display); font-weight: 700; font-size: calc(32 * var(--p)); color: #fff; line-height: 1.1; }
+.s3__price span { color: var(--color-body); }
+.s3__delta { font-family: var(--font-display); font-weight: 700; font-size: calc(12 * var(--p)); color: #f03725; }
+.s3__chart { position: absolute; left: calc(8 * var(--p)); right: 0; bottom: calc(4 * var(--p)); width: calc(371 * var(--p)); height: calc(191 * var(--p)); }

@@ -27,7 +27,15 @@
 }
 .fan__arcs--left { left: 0; top: 0; }
 .fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
-.fan__lines { position: absolute; }
+/* The arcs ship as inline `<svg>` inside a span that keeps the box the `<img>`
+   had, so the entrance can draw the four ellipses in each file one at a time.
+   The file carries `preserveAspectRatio="none"`, so stretching the svg across
+   the span reproduces exactly what the browser did when it rasterised the same
+   file into an image of the same size. `overflow: hidden` matches an image's
+   own clipping: the file says `overflow="visible"`, which an `<img>` cannot
+   honour and an inline svg would. */
+.fan__lines { position: absolute; display: block; }
+.fan__lines > svg { display: block; width: 100%; height: 100%; overflow: hidden; }
 /* Figma mirrors the left group, so its boxes are x' = 863 - x - w, y' = 675 - y - h. */
 .fan__arcs--left .fan__lines--lower {
   left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));

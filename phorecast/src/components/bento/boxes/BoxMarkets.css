@@ -4,11 +4,15 @@
  * dark-card palette: the surface is --white-font, the heading is ink, the sub
  * is --color-nre-body and the link is --orange-100.
  *
- * `--u` is the design pixel. `.bcard` already declares `container-type:
- * inline-size`, so `100cqw` resolves against this card and not the viewport;
- * dividing by the card's 776 design width gives a unit that is exactly 1px when
- * the card is at its designed size and scales with the grid cell otherwise.
- * That is the same idiom as Hero.css's `--u` and Built.css's `--c`.
+ * `--u` is the design pixel, the same idiom as Hero.css's `--u` and Built.css's
+ * `--c`. `.bcard` already declares `container-type: inline-size`, so inside the
+ * card `100cqw` measures the card rather than the viewport — but only from a
+ * DESCENDANT, and only across the card's CONTENT box. Both matter: `--u` is
+ * declared on the card's children, not on the card, and the divisor is 774
+ * (776 less its two 1px borders) with the card's own padding moved onto
+ * `.mk__stage` so the content box is the full width. Declared on the card, the
+ * unit silently resolved against the viewport instead and came out at 0.81
+ * where it should have been 1.
  *
  * Selectors here are written at `.bcard.box-markets` / `.box-markets <x>` so
  * they beat Bento.css's shared `.bcard--markets` and `.mk__*` rules — including
@@ -21,25 +25,34 @@
  */
 
 .bcard.box-markets {
-  --u: calc(100cqw / 776);
+  /* 776 x 440 as a ratio, so the card keeps its proportions in any cell.
+     The inset that Figma puts on the card is carried by .mk__stage instead:
+     a container's own `cqw` resolves against the NEXT container out, never
+     against itself, so the card cannot be sized in its own unit. Zero padding
+     also makes the content box the full 774 the unit below is derived from. */
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 776 / 440;
+  padding: 0;
+  border: 1px solid var(--color-body);
+  background: var(--white-font);
+  color: #000;
+  /* one flex child in flow, centred: see the layout note in BoxMarkets.tsx */
+  justify-content: center;
+}
+
+/* The design pixel. `.bcard` declares `container-type: inline-size`, so on a
+   DESCENDANT `100cqw` is this card's content box — 776 minus its two 1px
+   borders — which is why the divisor is 774 and not 776. Everything inside
+   inherits it from here. */
+.box-markets > * {
+  --u: calc(100cqw / 774);
   /* ink for the heading — Figma's --black-100, which has no token */
   --mk-ink: #000;
   /* the tile field's own greys, kept local so the dark cards can't reach them */
   --mk-tile-light: #e6e6e6;
   --mk-tile-dark: #313131;
   --mk-edge: rgba(0, 0, 0, 0.09);
-
-  /* 776 x 440 as a ratio, so the card keeps its proportions in any cell */
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 776 / 440;
-  padding: calc(30 * var(--u));
-  border-radius: calc(10 * var(--u));
-  border: 1px solid var(--color-body);
-  background: var(--white-font);
-  color: var(--mk-ink);
-  /* one flex child, centred: see the layout note in BoxMarkets.tsx */
-  justify-content: center;
 }
 
 /* 365:1090 — the column that overflows its 378 content box by 2.2 each side */
@@ -49,7 +62,9 @@
   display: flex;
   flex-direction: column;
   gap: calc(310 * var(--u));
-  width: 100%;
+  /* 365:1063's 30px padding, now that the card itself has none */
+  width: calc(714 * var(--u));
+  margin-inline: calc(30 * var(--u));
 }
 
 /* Copy ------------------------------------------------------------------- */
@@ -195,7 +210,9 @@
 /* 365:1182 */
 .box-markets .mk__cursor { position: absolute; }
 
-/* 365:1185 — Figma places this label by its cap box, so trim the line box. */
+/* 365:1185 — 76 x 30 in Figma, 10 padding around an 8px cap box. Figma places
+   the label by that cap box, so the line box is trimmed to it; the outer height
+   is stated as well so the pill is 30 even where `text-box` is unsupported. */
 .box-markets .mk__tooltip {
   position: absolute;
   display: inline-flex;
@@ -208,7 +225,7 @@
   font-family: var(--font-wordmark);
   font-weight: 600;
   font-size: calc(14 * var(--u));
-  line-height: normal;
+  line-height: calc(8 * var(--u));
   color: var(--bg);
   white-space: nowrap;
   text-box: trim-both cap alphabetic;
@@ -219,6 +236,7 @@
   position: absolute;
   width: calc(10 * var(--u));
   height: calc(10 * var(--u));
+  margin: 0; /* Bento.css puts 2px here; on an absolute box that is a 2px shift */
   background: var(--orange-100);
   transform: rotate(45deg);
 }
@@ -229,9 +247,6 @@
    its container, so those transforms are cleared above and the small-screen
    scrim under the link is not needed either — the field never reaches it. */
 @media (max-width: 720px) {
-  .bcard.box-markets {
-    padding: calc(30 * var(--u));
-  }
   .bcard.box-markets .bento__cta {
     padding: 0;
     margin-left: 0;

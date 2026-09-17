@@ -90,7 +90,7 @@ const centred = (t: Tile, w: number, h: number, dx = 0, dy = 0) => {
 };
 
 /* Tiles, in the design's own paint order. -------------------------------- */
-const GOLD: Tile = { left: 190.997, top: 146, size: 42, radius: 7.5, border: 0.75 };
+const GOLD: Tile = { left: 191, top: 146, size: 42, radius: 7.5, border: 0.75 };
 const NIKKEI: Tile = { left: 199, top: 315, size: 64, radius: 11.429, border: 1.28 };
 const APPLE: Tile = { left: 435, top: 27, size: 36, radius: 6.607, border: 0.74 };
 const DAX: Tile = { left: 512, top: 99, size: 28, radius: 5, border: 0.56 };
@@ -211,7 +211,7 @@ export function BoxMarkets() {
           {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the
               arrow 7.55% inside a 20 box; that is folded into the offsets. */}
           <img src={cursorArrow} alt="" className="mk__cursor" style={leaf(461.51, 292.506, 16.974, 16.988)} />
-          <span className="mk__tooltip" style={{ left: u(477), top: u(300), width: u(76) }}>Solana</span>
+          <span className="mk__tooltip" style={{ left: u(477), top: u(300), width: u(76), height: u(30) }}>Solana</span>
 
           {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.
               Figma centres a 10 square in a 14.142 box; 2.071 is that inset. */}

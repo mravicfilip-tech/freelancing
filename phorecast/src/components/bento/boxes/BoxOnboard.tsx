@@ -19,11 +19,17 @@
  * No motion lives here: this file is the resting state only. A separate module
  * owns the card's load-in and loop.
  */
+/* Three of this card's four assets already exist in the shared bento folder and
+   are byte-for-byte the same export (grid and ring-arc differ only in the
+   internal ids Figma renumbers on every download; the arrow is identical), so
+   they are reused rather than duplicated. The phone is not: the side-button
+   fill has moved from #511715 to #662514 since the shared copy was taken, so
+   this card carries its own current export. */
+import grid from '../../../assets/bento/grid.svg';
+import ringArc from '../../../assets/bento/ring-arc.svg';
+import arrow from '../../../assets/bento/arrow-white.svg';
 import logoWatermark from '../../../assets/bento/onboard/logo-watermark.svg';
 import phone from '../../../assets/bento/onboard/phone.svg';
-import grid from '../../../assets/bento/onboard/grid.svg';
-import ringArc from '../../../assets/bento/onboard/ring-arc.svg';
-import arrow from '../../../assets/bento/onboard/arrow-right.svg';
 import './BoxOnboard.css';
 
 type Vars = React.CSSProperties & Record<`--${string}`, string | number>;

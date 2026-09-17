@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import s3Btc from '../../../assets/steps/s3-btc.svg';
 import s3Target from '../../../assets/steps/s3-target.svg';
@@ -7,7 +8,6 @@ import s3Sp500 from '../../../assets/steps/s3-sp500.svg';
 import s3Apple from '../../../assets/steps/s3-apple.svg';
 import s3GridTall from '../../../assets/steps/s3-grid-tall.svg';
 import s3GridShort from '../../../assets/steps/s3-grid-short.svg';
-import s3Marker from '../../../assets/steps/s3-marker.svg';
 // Raw, not a URL. The graph is one exported vector layer and the loop has to
 // reach the line inside it -- nothing inside an <img> is addressable, so there
 // is no `stroke-dashoffset` and no per-path access. It paints exactly as the
@@ -16,6 +16,7 @@ import s3Marker from '../../../assets/steps/s3-marker.svg';
 // those design pixels.
 import chartMarkup from '../../../assets/steps/s3-chart.svg?raw';
 import { REDUCED } from '../../../lib/motion';
+import { Icon } from '../../Icon';
 import { Mark, Glow } from './shared';
 import './PanelTrade.css';
 
@@ -52,17 +53,28 @@ const TILES = [
 ];
 
 /** The measure lines drawn over the graph (365:1573-1580), in Figma's order.
- *  Their x, y and height live in PanelTrade.css as `.s3__grid--<key>`. */
-const GRID = [
+ *  Their x, y and height live in PanelTrade.css as `.s3__grid--<key>`.
+ *
+ *  Seven of the eight are one white stroke on transparent, so they are masks:
+ *  white at a twentieth of an opacity is the page on paper and they would
+ *  simply stop existing. The eighth, `c`, is the price marker's drop line and
+ *  is a two-stop GRADIENT -- a mask keeps only a silhouette and would throw
+ *  the fade away -- so it carries no file at all and PanelTrade.css draws it,
+ *  which is also what lets it turn around: in dark it runs pale at the marker
+ *  down into the card, and on paper it has to run dark. */
+const GRID: { key: string; src: string | null; h: number }[] = [
   { key: 'a', src: s3GridTall, h: 116 },
   { key: 'b', src: s3GridShort, h: 71 },
-  { key: 'c', src: s3Marker, h: 64.5 },
+  { key: 'c', src: null, h: 64.5 },
   { key: 'd', src: s3GridShort, h: 71 },
   { key: 'e', src: s3GridTall, h: 116 },
   { key: 'f', src: s3GridShort, h: 71 },
   { key: 'g', src: s3GridTall, h: 116 },
   { key: 'h', src: s3GridShort, h: 71 },
 ];
+
+/** Every glyph in this panel is sized by PanelTrade.css off `--p`. */
+const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
 export function PanelTrade() {
   const ref = useRef<HTMLDivElement>(null);
@@ -90,8 +102,9 @@ export function PanelTrade() {
             <p className="s3__delta">+2.41%</p>
           </div>
           <span className="s3__chart" dangerouslySetInnerHTML={{ __html: CHART_MARKUP }} />
-          {GRID.map((g) => (
-            <img key={g.key} src={g.src} alt="" width={1} height={g.h} className={`s3__grid s3__grid--${g.key}`} />
+          {GRID.map((g) => (g.src
+            ? <Icon key={g.key} src={g.src} w={1} h={g.h} className={`s3__grid s3__grid--${g.key}`} style={CSS_SIZED} />
+            : <span key={g.key} aria-hidden="true" className={`s3__grid s3__grid--${g.key}`} />
           ))}
         </div>
       </div>

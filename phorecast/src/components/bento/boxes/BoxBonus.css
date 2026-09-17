@@ -152,7 +152,9 @@
   width: calc(13 * var(--u));
   height: calc(13 * var(--u));
 }
-.box-bonus__cta-arrow img {
+/* `> *`, not `img`: the arrow is a mask now, and the two rules compute the
+   same box for the <img> they both matched. */
+.box-bonus__cta-arrow > * {
   position: absolute;
   left: 0;
   top: calc(4.5 * var(--u));

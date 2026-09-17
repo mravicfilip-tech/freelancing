@@ -18,6 +18,7 @@
 
 import chartMarker from '../../../assets/bento/bonus/marker.svg';
 import { Roll } from '../../Roll';
+import { Icon } from '../../Icon';
 import chartGrid from '../../../assets/bento/bonus/grid.svg';
 import arrowOrange from '../../../assets/bento/bonus/arrow.svg';
 import walletBadge from '../../../assets/bento/bonus/wallet-badge.svg';
@@ -125,7 +126,17 @@ export function BoxBonus() {
       <a className="bento__cta bento__cta--orange box-bonus__cta" href="#bonus">
         <span className="box-bonus__cta-label"><Roll>Get Your Bonus</Roll></span>
         <span className="box-bonus__cta-arrow" aria-hidden="true">
-          <img src={arrowOrange} alt="" width={12} height={6} />
+          {/* Masked so the arrow follows the link; see BoxCustody.tsx.
+
+              w/h are NOT cleared here, and that is the gate's finding rather
+              than a preference: two rules match this glyph at the same
+              specificity -- `.bento__cta img` at a flat 12x6 and
+              `.box-bonus__cta-arrow img` in the card's container unit -- and
+              the flat one wins the tie, so the <img> has always been 12x6 at
+              every width. Clearing the inline box handed the element to the
+              --u rule and moved it to 9.4 at 720 and 14.3 at 1100. The inline
+              pair reproduces what the image actually rendered. */}
+          <Icon src={arrowOrange} w={12} h={6} />
         </span>
       </a>
     </article>

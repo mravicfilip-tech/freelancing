@@ -127,7 +127,12 @@ export function BoxCustody() {
 
       <a href="#how" className="bento__cta bento__cta--orange">
         <Roll>See How It Works</Roll>
-        <img src={arrow} alt="" width={12} height={6} />
+        {/* Masked so the arrow follows the link. The file bakes #E5331E, which
+            is what this link's `color` already resolves to in dark, so the
+            conversion changes nothing there -- and on paper --accent moves to
+            #a21605 and the arrow moves with it instead of staying the dark
+            theme's red beside light theme's text. */}
+        <Icon src={arrow} w={12} h={6} />
       </a>
     </article>
   );

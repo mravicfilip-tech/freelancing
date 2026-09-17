@@ -22,8 +22,8 @@ export function Mark({ className }: { className: string }) {
   return (
     <div className={`steps__mark ${className}`} aria-hidden="true">
       <div className="steps__mark-clip">
-        <Icon src={ribs} w={840.038} h={969.384} className="steps__mark-ribs" />
-        <Icon src={slices} w={844.001} h={971.908} className="steps__mark-slices" />
+        <Icon src={ribs} w={840.015625} h={969.384} className="steps__mark-ribs" />
+        <Icon src={slices} w={843.984375} h={971.908} className="steps__mark-slices" />
       </div>
     </div>
   );

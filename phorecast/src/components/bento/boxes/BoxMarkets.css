@@ -259,8 +259,10 @@
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-26);
 }
 
-/* 365:1182 */
-.box-markets .mk__cursor { position: absolute; }
+/* 365:1182 — the pointer, a mask rather than an image: the file is a solid
+   black arrow, which is --mk-ink exactly in dark and would be an invisible
+   black arrow on an inverted card. As a mask it is the card's ink in both. */
+.box-markets .mk__cursor { position: absolute; color: var(--mk-ink); }
 
 /* 365:1185 — 76 x 30 in Figma, 10 padding around an 8px cap box. Figma places
    the label by that cap box, so the line box is trimmed to it; the outer height
@@ -305,4 +307,194 @@
     border-radius: 0;
     background: none;
   }
+}
+
+/* --- Light ------------------------------------------------------------------
+   Written twice; see the note in Bento.css. -------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .bcard.box-markets {
+  /* 6.2, ANSWERED: THE CARD INVERTS.
+     ---------------------------------------------------------------------
+     Read what this card is rather than what colour it is. In the dark grid it
+     is the one surface that is NOT the page: three near-black cards, one red
+     one, and this -- a lit window in a dark composition, and the biggest block
+     on the band. That step change IS the card's argument. "Every market, one
+     account" is the offer that is different, drawn as the card that is
+     different.
+
+     On paper, keeping it pale does not keep that. --page is #fffbf8, which is
+     this card's exact fill today, so "stay white" means the card stops being a
+     surface at all -- a hole with a hairline round it. Tinting it to --panel
+     instead makes it the third pale panel in a row of pale panels, and the
+     band loses its diagonal: card A red at top left, card D loud at bottom
+     right, in both themes.
+
+     So the surface and the type invert and the artwork does not. The card
+     carries the palette the page is not carrying -- which is precisely what it
+     does in dark, only the other way round. Five values move:
+
+       --mk-surface  the page's ink
+       --mk-ink      the page's paper
+       --mk-ink-2    #9d9d9d, and this is the one place the flip IMPROVES on
+                     dark: the sub-head is 2.6:1 on today's cream card, a known
+                     defect, and 7.1:1 here
+       --mk-accent   --orange-100, NOT --accent. #a21605 on #1a1512 is 1.5:1;
+                     the brand red that reads on a dark ground is the dark
+                     theme's brand red, and this card is a dark ground.
+       --mk-tile-dark lifted a step so a dark chip on a dark card is still a
+                     chip -- 1.6:1 against the surface where #313131 has 4.9:1
+                     against cream.
+
+     --mk-line does NOT move: a mid grey is the step between the card and the
+     page whichever of the two is darker. Neither do the plates, the rings, the
+     edges or the tooltip: every one of them is a plate carrying a mark, and
+     seven of those marks are LOCKED third-party property (Apple, DAX, Nikkei,
+     S&P 500, Tesla, Gold, Solana). They are drawn near-black for a light
+     plate, so the plate stays light and the mark is never touched
+     (LIGHTMODE.md 2.3, class L). The tooltip is a white pill with dark type in
+     both themes, which is what a tooltip is.
+
+     What this costs is three pieces of artwork drawn FOR cream, handled below:
+     the measure grid, the two orbit ellipses and the cursor. */
+  --mk-surface: var(--ink);
+  --mk-ink: var(--page);
+  --mk-ink-2: #9d9d9d;
+  --mk-accent: var(--orange-100);
+  --mk-tile-dark: #3a3533;
+
+  /* The seven unbadged ghosts are smudges DARKER than the cream card. On ink
+     they would be smudges on a smudge, so each one is lifted toward the page
+     by the same amount and keeps its own hue and its own inline opacity. */
+  --mk-ghost-1: color-mix(in srgb, #853b1e 45%, var(--page));
+  --mk-ghost-2: color-mix(in srgb, #542c1c 45%, var(--page));
+  --mk-ghost-3: color-mix(in srgb, #46271b 45%, var(--page));
+  --mk-ghost-4: color-mix(in srgb, #b54a1f 45%, var(--page));
+  --mk-ghost-5: color-mix(in srgb, #b04920 45%, var(--page));
+  --mk-ghost-6: color-mix(in srgb, #9c421f 45%, var(--page));
+  --mk-ghost-7: color-mix(in srgb, #a74620 45%, var(--page));
+  }
+  :root:not([data-theme='dark']) .box-markets .mk__grid img {
+  /* THE MEASURE GRID. Its file is the one exported for THIS card -- the shared
+     bento/grid.svg has its mid-stops flipped to white so the mesh reads on the
+     dark cards, and this copy keeps Figma's ink (#343434), fading to white at
+     both ends of every line. On an inverted card that is ink on ink through
+     the middle and page at the ends: the mesh is simply gone.
+
+     `invert(1)` is the whole fix, and it is the right tool rather than a hack:
+     the file is a 24-gradient mesh, so it is not a mask candidate, and what
+     has to happen to it is exactly what invert does -- swap the ink for the
+     page and the page for the ink, at every alpha, leaving the fade untouched.
+     Scoped to the light selector, so the dark render never evaluates it. */
+  filter: invert(1);
+  }
+  :root:not([data-theme='dark']) .bcard.box-markets .mk__grid {
+  /* Inverted, the mesh lands at 1.51:1 against the card where Figma's ink mesh
+     has 1.17:1 against cream -- brighter than it has ever been. The layer's
+     own opacity is what carries that back: 0.12 puts it at 1.25:1, texture you
+     notice only once you look for it. It is on the LAYER, not on the image,
+     because the two multiply. */
+  opacity: 0.12;
+  }
+  :root:not([data-theme='dark']) .box-markets .mk__orbit {
+  /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
+     guide you can only just see, and 12.8:1 on ink -- two blazing white
+     ellipses across the card. The colour is right and the WEIGHT is wrong, so
+     the weight is what moves: at 14% the same stroke lands at 1.36:1 against
+     the inverted surface, which is the delicacy it has today. Cheaper than a
+     mask, and it keeps the two ellipses byte-identical to the shared asset. */
+  opacity: 0.14;
+  }
+}
+
+:root[data-theme='light'] .bcard.box-markets {
+  /* 6.2, ANSWERED: THE CARD INVERTS.
+     ---------------------------------------------------------------------
+     Read what this card is rather than what colour it is. In the dark grid it
+     is the one surface that is NOT the page: three near-black cards, one red
+     one, and this -- a lit window in a dark composition, and the biggest block
+     on the band. That step change IS the card's argument. "Every market, one
+     account" is the offer that is different, drawn as the card that is
+     different.
+
+     On paper, keeping it pale does not keep that. --page is #fffbf8, which is
+     this card's exact fill today, so "stay white" means the card stops being a
+     surface at all -- a hole with a hairline round it. Tinting it to --panel
+     instead makes it the third pale panel in a row of pale panels, and the
+     band loses its diagonal: card A red at top left, card D loud at bottom
+     right, in both themes.
+
+     So the surface and the type invert and the artwork does not. The card
+     carries the palette the page is not carrying -- which is precisely what it
+     does in dark, only the other way round. Five values move:
+
+       --mk-surface  the page's ink
+       --mk-ink      the page's paper
+       --mk-ink-2    #9d9d9d, and this is the one place the flip IMPROVES on
+                     dark: the sub-head is 2.6:1 on today's cream card, a known
+                     defect, and 7.1:1 here
+       --mk-accent   --orange-100, NOT --accent. #a21605 on #1a1512 is 1.5:1;
+                     the brand red that reads on a dark ground is the dark
+                     theme's brand red, and this card is a dark ground.
+       --mk-tile-dark lifted a step so a dark chip on a dark card is still a
+                     chip -- 1.6:1 against the surface where #313131 has 4.9:1
+                     against cream.
+
+     --mk-line does NOT move: a mid grey is the step between the card and the
+     page whichever of the two is darker. Neither do the plates, the rings, the
+     edges or the tooltip: every one of them is a plate carrying a mark, and
+     seven of those marks are LOCKED third-party property (Apple, DAX, Nikkei,
+     S&P 500, Tesla, Gold, Solana). They are drawn near-black for a light
+     plate, so the plate stays light and the mark is never touched
+     (LIGHTMODE.md 2.3, class L). The tooltip is a white pill with dark type in
+     both themes, which is what a tooltip is.
+
+     What this costs is three pieces of artwork drawn FOR cream, handled below:
+     the measure grid, the two orbit ellipses and the cursor. */
+  --mk-surface: var(--ink);
+  --mk-ink: var(--page);
+  --mk-ink-2: #9d9d9d;
+  --mk-accent: var(--orange-100);
+  --mk-tile-dark: #3a3533;
+
+  /* The seven unbadged ghosts are smudges DARKER than the cream card. On ink
+     they would be smudges on a smudge, so each one is lifted toward the page
+     by the same amount and keeps its own hue and its own inline opacity. */
+  --mk-ghost-1: color-mix(in srgb, #853b1e 45%, var(--page));
+  --mk-ghost-2: color-mix(in srgb, #542c1c 45%, var(--page));
+  --mk-ghost-3: color-mix(in srgb, #46271b 45%, var(--page));
+  --mk-ghost-4: color-mix(in srgb, #b54a1f 45%, var(--page));
+  --mk-ghost-5: color-mix(in srgb, #b04920 45%, var(--page));
+  --mk-ghost-6: color-mix(in srgb, #9c421f 45%, var(--page));
+  --mk-ghost-7: color-mix(in srgb, #a74620 45%, var(--page));
+}
+:root[data-theme='light'] .box-markets .mk__grid img {
+  /* THE MEASURE GRID. Its file is the one exported for THIS card -- the shared
+     bento/grid.svg has its mid-stops flipped to white so the mesh reads on the
+     dark cards, and this copy keeps Figma's ink (#343434), fading to white at
+     both ends of every line. On an inverted card that is ink on ink through
+     the middle and page at the ends: the mesh is simply gone.
+
+     `invert(1)` is the whole fix, and it is the right tool rather than a hack:
+     the file is a 24-gradient mesh, so it is not a mask candidate, and what
+     has to happen to it is exactly what invert does -- swap the ink for the
+     page and the page for the ink, at every alpha, leaving the fade untouched.
+     Scoped to the light selector, so the dark render never evaluates it. */
+  filter: invert(1);
+}
+:root[data-theme='light'] .bcard.box-markets .mk__grid {
+  /* Inverted, the mesh lands at 1.51:1 against the card where Figma's ink mesh
+     has 1.17:1 against cream -- brighter than it has ever been. The layer's
+     own opacity is what carries that back: 0.12 puts it at 1.25:1, texture you
+     notice only once you look for it. It is on the LAYER, not on the image,
+     because the two multiply. */
+  opacity: 0.12;
+}
+:root[data-theme='light'] .box-markets .mk__orbit {
+  /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
+     guide you can only just see, and 12.8:1 on ink -- two blazing white
+     ellipses across the card. The colour is right and the WEIGHT is wrong, so
+     the weight is what moves: at 14% the same stroke lands at 1.36:1 against
+     the inverted surface, which is the delicacy it has today. Cheaper than a
+     mask, and it keeps the two ellipses byte-identical to the shared asset. */
+  opacity: 0.14;
 }

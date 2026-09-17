@@ -48,6 +48,15 @@
   --steps-p3-line-out: #1b1b1a;
   --steps-p3-drop: #d9d9d9;
   --steps-p3-drop-out: #1a1a1a;
+  /* The same drop line again, drawn over the graph rather than inside it
+     (365:1575). It stays the exported file in dark -- a background-image at
+     `background-size: 100% 100%` is pixel-for-pixel what the <img> painted,
+     where a hand-written gradient was not: Chromium rasterises an SVG image
+     into its own bitmap and the 1px stroke came out at about half coverage,
+     so redrawing it made the line 2.4 times as heavy. Light replaces it,
+     because the file's second stop is the card ground and its first is white
+     at the marker -- exactly the wrong way round on paper. */
+  --steps-p3-drop-line: url('../../../assets/steps/s3-marker.svg');
   --steps-p3-dash: #383837;
   --steps-p3-grid: #fff;
   /* The lit dot that rides the drawing edge. Built by the loop, painted here
@@ -147,8 +156,12 @@
 
 /* Eight more measure lines sit over the graph (365:1573-1580); four more are
    baked into the graph export itself. */
+/* Seven masks and one drawn gradient -- see GRID in PanelTrade.tsx. The seven
+   bake white at opacity 0.2 over stroke-opacity 0.2, and a mask keeps that
+   alpha, so only the white is replaced. */
 .s3__grid {
   position: absolute;
+  color: var(--steps-p3-grid);
   left: calc(var(--gx) * var(--p));
   top: calc(var(--gy) * var(--p));
   width: calc(1 * var(--p));
@@ -156,7 +169,12 @@
 }
 .s3__grid--a { --gx: 332; --gy: 39; --gh: 116; }
 .s3__grid--b { --gx: 201; --gy: 83; --gh: 71; }
-.s3__grid--c { --gx: 264; --gy: 90.5; --gh: 64.5; }
+.s3__grid--c {
+  --gx: 264; --gy: 90.5; --gh: 64.5;
+  background: var(--steps-p3-drop-line);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 .s3__grid--d { --gx: 133; --gy: 83; --gh: 71; }
 .s3__grid--e { --gx: 308; --gy: 39; --gh: 116; }
 .s3__grid--f { --gx: 177; --gy: 83; --gh: 71; }
@@ -208,3 +226,100 @@
    The layer it stands in for, `Ellipse 30`, still paints the dark ring. The file
    on disk is untouched; only this one shim is suppressed. */
 .s3__chart foreignObject { display: none; }
+
+/* --- Light -------------------------------------------------------------------
+   Written twice; the two blocks MUST stay identical, only their conditions
+   differ. The section's device decision is in Steps.css.
+
+   This is the panel the graph lives on, so it carries the section's last two
+   direction flips: the curve's head and the lit dot that rides it are both
+   drawn BRIGHTER than everything under them in dark, and both have to become
+   the darkest things on the card on paper. The stops themselves are reached by
+   the CSS rules further up this file -- an author rule outranks the
+   presentation attributes the export ships -- so nothing here touches the
+   markup, the ids or the string pipeline in PanelTrade.tsx. ---------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* The price card is an INSET in dark (1.04 darker than the panel), so on
+     paper it is 1.05 lighter, which is the page's own --panel. The five market
+     tiles and the chart card are raised off it, so they go the other way. */
+  --steps-p3-card: var(--panel);
+  --steps-p3-card-edge: #cbb8a7;
+  --steps-p3-tile: #f2e9e1;
+  --steps-p3-price: var(--ink);
+
+  /* The area fill under the curve. Its far stop carries stop-opacity 0, so
+     only the hue matters: naming it --accent keeps the fade free of any drift
+     through a neutral on its way out. */
+  --steps-p3-area-out: var(--accent);
+  /* THE CURVE -- the flip this panel turns on, and the one place where "read
+     it against the page" gives the wrong answer. The line does not sit on the
+     card, it sits on the TOP EDGE of its own area fill, and in dark that fill
+     ends at #e5331e while the line is #ffa99e: the line is LIGHTER than what
+     is under it. So the value that matters is its contrast with --accent, not
+     with the ground. --accent-deep was tried first and is only 1.4:1 against
+     the fill -- the curve vanished into it in the light render. #4d0700 is
+     2.8:1 and reads as the crisp edge the peach reads as in dark. */
+  --steps-p3-line: #4d0700;
+  --steps-p3-line-out: #4d0700;
+  /* The marker's drop line, inside the graph and again over it. Dark runs it
+     pale at the marker down into the card ground; paper runs it dark at the
+     marker and dissolves it into the chart card. */
+  --steps-p3-drop: #4a4038;
+  --steps-p3-drop-out: #f2e9e1;
+  --steps-p3-drop-line: linear-gradient(to bottom, #4a4038 24.03%, #f2e9e1 100%);
+  --steps-p3-dash: #cbbdb0;
+  /* Twelve measure lines, four inside the export and eight over it, all at a
+     twentieth of an opacity. White at 4% on the dark card lifts it 9/255; ink
+     at 4% on the light card drops it 9/255. */
+  --steps-p3-grid: var(--ink);
+  /* THE LIT DOT on the drawing edge -- the last flip, and the smallest object
+     carrying it. In dark it is #ffd0c6 against the line's #ffa99e: brighter
+     than the line, which is itself brighter than the fill. On paper the whole
+     stack turns over, so the dot has to be darker than the line just as the
+     line is darker than the fill. */
+  --steps-p3-head: #1f0200;
+  }
+}
+
+:root[data-theme='light'] {
+  /* The price card is an INSET in dark (1.04 darker than the panel), so on
+     paper it is 1.05 lighter, which is the page's own --panel. The five market
+     tiles and the chart card are raised off it, so they go the other way. */
+  --steps-p3-card: var(--panel);
+  --steps-p3-card-edge: #cbb8a7;
+  --steps-p3-tile: #f2e9e1;
+  --steps-p3-price: var(--ink);
+
+  /* The area fill under the curve. Its far stop carries stop-opacity 0, so
+     only the hue matters: naming it --accent keeps the fade free of any drift
+     through a neutral on its way out. */
+  --steps-p3-area-out: var(--accent);
+  /* THE CURVE -- the flip this panel turns on, and the one place where "read
+     it against the page" gives the wrong answer. The line does not sit on the
+     card, it sits on the TOP EDGE of its own area fill, and in dark that fill
+     ends at #e5331e while the line is #ffa99e: the line is LIGHTER than what
+     is under it. So the value that matters is its contrast with --accent, not
+     with the ground. --accent-deep was tried first and is only 1.4:1 against
+     the fill -- the curve vanished into it in the light render. #4d0700 is
+     2.8:1 and reads as the crisp edge the peach reads as in dark. */
+  --steps-p3-line: #4d0700;
+  --steps-p3-line-out: #4d0700;
+  /* The marker's drop line, inside the graph and again over it. Dark runs it
+     pale at the marker down into the card ground; paper runs it dark at the
+     marker and dissolves it into the chart card. */
+  --steps-p3-drop: #4a4038;
+  --steps-p3-drop-out: #f2e9e1;
+  --steps-p3-drop-line: linear-gradient(to bottom, #4a4038 24.03%, #f2e9e1 100%);
+  --steps-p3-dash: #cbbdb0;
+  /* Twelve measure lines, four inside the export and eight over it, all at a
+     twentieth of an opacity. White at 4% on the dark card lifts it 9/255; ink
+     at 4% on the light card drops it 9/255. */
+  --steps-p3-grid: var(--ink);
+  /* THE LIT DOT on the drawing edge -- the last flip, and the smallest object
+     carrying it. In dark it is #ffd0c6 against the line's #ffa99e: brighter
+     than the line, which is itself brighter than the fill. On paper the whole
+     stack turns over, so the dot has to be darker than the line just as the
+     line is darker than the fill. */
+  --steps-p3-head: #1f0200;
+}

@@ -11,6 +11,7 @@ import s2Tile4 from '../../../assets/steps/s2-tile4.svg';
 import s2Tile5 from '../../../assets/steps/s2-tile5.svg';
 import { REDUCED, all, count, one } from '../../../lib/motion';
 import { tok, useThemeEpoch } from '../../../lib/theme';
+import { Icon } from '../../Icon';
 import { Mark, Glow } from './shared';
 import './PanelFund.css';
 
@@ -331,7 +332,12 @@ export function PanelFund() {
                 <p className="s2__balance-amt">$18,800</p>
               </div>
               <span className="s2__progress">
-                <img src={s2Progress} alt="" width={70.2991} height={7.53191} />
+                {/* Four #e5331e bars on transparent: one flat brand colour, so
+                    a mask, and --accent carries it to #a21605 on paper rather
+                    than leaving one stray dark-theme red inside a light card.
+                    Sized by PanelFund.css in design pixels, like every other
+                    glyph here. */}
+                <Icon src={s2Progress} w={70.2991} h={7.53191} style={{ width: undefined, height: undefined }} />
               </span>
             </div>
           </div>

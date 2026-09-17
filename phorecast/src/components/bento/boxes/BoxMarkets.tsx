@@ -30,6 +30,7 @@
    mesh has to be ink, which is what Figma exports for this node (#343434). */
 import grid from '../../../assets/bento/markets/grid.svg';
 import { Roll } from '../../Roll';
+import { Icon } from '../../Icon';
 import orbitRing from '../../../assets/bento/orbit-ring.svg';
 import arrowOrange from '../../../assets/bento/arrow-orange.svg';
 import cursorArrow from '../../../assets/bento/cursor.svg';
@@ -220,7 +221,13 @@ export function BoxMarkets() {
 
           {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the
               arrow 7.55% inside a 20 box; that is folded into the offsets. */}
-          <img src={cursorArrow} alt="" className="mk__cursor" style={leaf(461.51, 292.506, 16.974, 16.988)} />
+          {/* A mask, not an image: the file is one solid black arrow, which is
+              --mk-ink exactly, so on the inverted card it follows the card's
+              ink instead of staying black on black. `leaf` still supplies the
+              box in the card's own unit and lands after Icon's w/h, so the
+              geometry is the <img>'s to the pixel. */}
+          <Icon src={cursorArrow} w={16.974} h={16.988} className="mk__cursor"
+            style={leaf(461.51, 292.506, 16.974, 16.988)} />
           <span className="mk__tooltip" style={{ left: u(477), top: u(300), width: u(76), height: u(30) }}>Solana</span>
 
           {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.

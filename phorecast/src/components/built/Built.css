@@ -171,8 +171,8 @@
    ring-disc.svg cannot be converted at all: it is a 63%-opaque #22201D disc, a
    solid #e5331e ring at r=34.5 AND a warm drop-shadow filter, and a mask would
    flatten all three into one silhouette -- taking with it the lit ring that
-   card one's whole beat wraps around. It stays an <img> and stays a chip, the
-   same decision as card two's market plates.
+   card one's whole beat wraps around. It stays an <img>, and its one light-mode
+   problem is solved behind it rather than inside it; see --bt-disc-plate.
 
    Leaving all four alone has a second benefit worth naming: loops/bt1.ts
    measures its geometry off these exact boxes and scales the disc about
@@ -398,6 +398,47 @@
   --bt-lit: #7e0202;
   --bt-warm: #362a25;
   }
+
+  /* THE PLATE UNDER THE COIN, and the one thing in this band that is drawn here
+     rather than taken from a file.
+
+     ring-disc.svg fills its circle with #22201D at 63% opacity. On the dark card
+     that is the ground again -- 1.15:1 against the page, a hole punched through
+     the glow so the target stays clean. Sixty-three per cent of a near-black
+     over cream is #716b66, a flat 5.1:1 grey: the same declaration stops being a
+     hole and becomes the second-loudest object on the card. LIGHTMODE.md 2.5
+     names this exact file as the case where the dark colour reads as "empty" on
+     black and "filled" on paper.
+
+     Nothing at the call site can lighten it. At 63% alpha the composite cannot
+     get paler than about #706d69 whatever is put behind it, a mask would throw
+     away the ring, an opacity cut takes the ring down with the fill, and every
+     blend mode that lightens the fill lightens the ring too. Editing the asset
+     is out (LIGHTMODE.md 2.2) and so is a light variant of it.
+
+     So the plate goes the other way, and it is the decision the brief already
+     makes for card two: the thing in the middle of this circle is btc-coin.svg,
+     a locked third-party mark drawn #f08b25-on-#211E1C for a dark ground. Class
+     L's remedy where a mark is drawn for a dark plate is to KEEP A DARK CHIP
+     UNDER IT. Card two's five markets carry that chip inside their own files;
+     card one's coin has only a translucent one, so it is supplied here, as an
+     opaque disc painted BEHIND the image. The 63% fill then lands on the chip
+     instead of on paper and the card's target becomes what card two's BTC node
+     already is: the same mark, the same #1d1c1b plate, the same red rim.
+
+     Geometry. 17.5% is 34/193.8 -- the ring's INNER edge, so the chip stops
+     under the stroke and no dark edge can show outside it. 47.936% is 92.9/193.8,
+     the same fraction .bt1__ring-disc's own offsets encode and the same origin
+     loops/bt1.ts scales this element about, so the chip is concentric with the
+     coin at rest and stays concentric through the entrance bloom and the ripple:
+     it is a background, so every transform on the element carries it along.
+
+     Dark declares no background at all rather than a transparent one, so its
+     computed backgroundImage stays `none` and this cannot show up in the gate. */
+
+  :root:not([data-theme='dark']) .bt1__ring-disc {
+    background: radial-gradient(ellipse 17.5% 17.5% at 50% 47.936%, #1d1c1b 0 100%, transparent 100%);
+  }
 }
 
 :root[data-theme='light'] {
@@ -485,4 +526,44 @@
      same lift, made of ink instead of light. */
   --bt-lit: #7e0202;
   --bt-warm: #362a25;
+}
+
+/* THE PLATE UNDER THE COIN, and the one thing in this band that is drawn here
+   rather than taken from a file.
+
+   ring-disc.svg fills its circle with #22201D at 63% opacity. On the dark card
+   that is the ground again -- 1.15:1 against the page, a hole punched through
+   the glow so the target stays clean. Sixty-three per cent of a near-black
+   over cream is #716b66, a flat 5.1:1 grey: the same declaration stops being a
+   hole and becomes the second-loudest object on the card. LIGHTMODE.md 2.5
+   names this exact file as the case where the dark colour reads as "empty" on
+   black and "filled" on paper.
+
+   Nothing at the call site can lighten it. At 63% alpha the composite cannot
+   get paler than about #706d69 whatever is put behind it, a mask would throw
+   away the ring, an opacity cut takes the ring down with the fill, and every
+   blend mode that lightens the fill lightens the ring too. Editing the asset
+   is out (LIGHTMODE.md 2.2) and so is a light variant of it.
+
+   So the plate goes the other way, and it is the decision the brief already
+   makes for card two: the thing in the middle of this circle is btc-coin.svg,
+   a locked third-party mark drawn #f08b25-on-#211E1C for a dark ground. Class
+   L's remedy where a mark is drawn for a dark plate is to KEEP A DARK CHIP
+   UNDER IT. Card two's five markets carry that chip inside their own files;
+   card one's coin has only a translucent one, so it is supplied here, as an
+   opaque disc painted BEHIND the image. The 63% fill then lands on the chip
+   instead of on paper and the card's target becomes what card two's BTC node
+   already is: the same mark, the same #1d1c1b plate, the same red rim.
+
+   Geometry. 17.5% is 34/193.8 -- the ring's INNER edge, so the chip stops
+   under the stroke and no dark edge can show outside it. 47.936% is 92.9/193.8,
+   the same fraction .bt1__ring-disc's own offsets encode and the same origin
+   loops/bt1.ts scales this element about, so the chip is concentric with the
+   coin at rest and stays concentric through the entrance bloom and the ripple:
+   it is a background, so every transform on the element carries it along.
+
+   Dark declares no background at all rather than a transparent one, so its
+   computed backgroundImage stays `none` and this cannot show up in the gate. */
+:root[data-theme='light'] .bt1__ring-disc {
+  background: radial-gradient(ellipse 17.5% 17.5% at 50% 47.936%, #1d1c1b 0 100%, transparent 100%);
 }

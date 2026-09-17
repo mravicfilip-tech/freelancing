@@ -446,7 +446,11 @@
        lit top face   #e5331e -> --accent-lift  #c4361c  5.24:1
        lit side       #ba2917 -> --accent       #a21605  7.69:1
        shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
-  --sl3-wire: var(--accent);
+  /* The wireframes are 0.42px strokes. A sub-pixel stroke antialiases toward
+     whatever it sits on, so the SAME contrast ratio buys less line on paper
+     than on black: --accent left the deposit stack reading pink. --accent-deep
+     puts it back at the weight dark draws it. */
+  --sl3-wire: var(--accent-deep);
   --sl3-plate-top: var(--accent-lift);
   --sl3-plate-b: var(--accent);
   --sl3-plate-a: var(--accent-deep);
@@ -478,7 +482,11 @@
        lit top face   #e5331e -> --accent-lift  #c4361c  5.24:1
        lit side       #ba2917 -> --accent       #a21605  7.69:1
        shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
-  --sl3-wire: var(--accent);
+  /* The wireframes are 0.42px strokes. A sub-pixel stroke antialiases toward
+     whatever it sits on, so the SAME contrast ratio buys less line on paper
+     than on black: --accent left the deposit stack reading pink. --accent-deep
+     puts it back at the weight dark draws it. */
+  --sl3-wire: var(--accent-deep);
   --sl3-plate-top: var(--accent-lift);
   --sl3-plate-b: var(--accent);
   --sl3-plate-a: var(--accent-deep);

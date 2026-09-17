@@ -224,17 +224,34 @@
      orange nodes, the glow behind them -- do not move at all. */
   --custody-chip: var(--panel-2);
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
-  --custody-pill: #f8e7e0;
+  --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #a6a6a6 is 1.9:1 on paper. --ink-muted is 4.6:1 here and 3.2:1 in dark,
-     which is the same quiet-but-readable step the glyph has today. */
-  --custody-glyph: var(--ink-muted);
+  /* #a6a6a6 is 1.9:1 on paper. The glyph has to keep its RATIO against the
+     chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
+     than the label beside it by the same step in both. --ink-muted was the
+     first guess and reads at 3.4:1 -- a glyph you have to look for. */
+  --custody-glyph: var(--ink-2);
   /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
      mask alpha), so only the colour under it moves: ink at 20% lands at
      1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
      and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
   --custody-ring: var(--ink);
   --custody-ring-market: var(--accent);
+  }
+  :root:not([data-theme='dark']) .box-custody .custody__glow {
+  /* The one raster in the diagram, and it carries two things: the warm bloom
+     behind the wallet AND the dotted ellipse the packet travels along. Both
+     are drawn LIGHT -- pale dots, a glow that works by adding light -- so on
+     paper the dots disappear and the bloom turns into a pale smear on a pale
+     card. The path the whole loop is about stops being visible.
+
+     `invert(1) hue-rotate(180deg)` is the direction flip written as a filter:
+     invert turns the luminance around and hue-rotate puts the hue back, so the
+     pale dots become ink dots at the same alpha and the bloom stays warm and
+     becomes a tint instead of a light. It is the honest translation of an
+     additive raster that cannot be recoloured any other way -- and it is
+     scoped to light, so the dark render never evaluates it. */
+  filter: invert(1) hue-rotate(180deg);
   }
 }
 
@@ -253,15 +270,33 @@
      orange nodes, the glow behind them -- do not move at all. */
   --custody-chip: var(--panel-2);
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
-  --custody-pill: #f8e7e0;
+  --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #a6a6a6 is 1.9:1 on paper. --ink-muted is 4.6:1 here and 3.2:1 in dark,
-     which is the same quiet-but-readable step the glyph has today. */
-  --custody-glyph: var(--ink-muted);
+  /* #a6a6a6 is 1.9:1 on paper. The glyph has to keep its RATIO against the
+     chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
+     than the label beside it by the same step in both. --ink-muted was the
+     first guess and reads at 3.4:1 -- a glyph you have to look for. */
+  --custody-glyph: var(--ink-2);
   /* Both rings keep their file's own alpha (0.2 and 0.22 survive the mask as
      mask alpha), so only the colour under it moves: ink at 20% lands at
      1.53:1 against paper where #d9d9d9 at 20% is 1.60:1 against the dark card,
      and the accent at 22% lands at 1.44:1 where the orange is 1.61:1. */
   --custody-ring: var(--ink);
   --custody-ring-market: var(--accent);
+}
+
+:root[data-theme='light'] .box-custody .custody__glow {
+  /* The one raster in the diagram, and it carries two things: the warm bloom
+     behind the wallet AND the dotted ellipse the packet travels along. Both
+     are drawn LIGHT -- pale dots, a glow that works by adding light -- so on
+     paper the dots disappear and the bloom turns into a pale smear on a pale
+     card. The path the whole loop is about stops being visible.
+
+     `invert(1) hue-rotate(180deg)` is the direction flip written as a filter:
+     invert turns the luminance around and hue-rotate puts the hue back, so the
+     pale dots become ink dots at the same alpha and the bloom stays warm and
+     becomes a tint instead of a light. It is the honest translation of an
+     additive raster that cannot be recoloured any other way -- and it is
+     scoped to light, so the dark render never evaluates it. */
+  filter: invert(1) hue-rotate(180deg);
 }

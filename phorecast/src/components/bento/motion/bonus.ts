@@ -26,6 +26,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 import { bandStaged, onSectionReady, pct, pulse, q1, unitOf, whileVisible } from './shared';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -58,6 +59,16 @@ export function bonus(card: HTMLElement): () => void {
   const bonusAmt = q1(card, '.box-bonus__amt--bonus strong');
   if (!chart || !line || !marker || !bolt || !pie || !pill || !deposit || !bonusAmt) return () => {};
 
+  /* Build-time colour reads; see the note in funds.ts. Two of the three mean
+     "lit", and both invert on paper: the dot riding the drawing edge has to
+     beat the line it is drawing for 560 design pixels, and the marker's bloom
+     has to press into the card rather than off it. */
+  const C = {
+    head: tok('--bento-bn-head', '#ffd0b8'),
+    pillLit: tok('--bento-bn-pill-lit', 'rgba(255, 138, 92, 0.75)'),
+    markerLit: tok('--bento-bn-marker-lit', 'brightness(1.5)'),
+  };
+
   const restingDeposit = deposit.textContent ?? '';
   const restingBonus = bonusAmt.textContent ?? '';
 
@@ -81,7 +92,7 @@ export function bonus(card: HTMLElement): () => void {
   /* The lit dot that rides the drawing edge. Same svg, flat fill, no def. */
   const head = document.createElementNS(NS, 'circle');
   head.setAttribute('r', '5');
-  head.setAttribute('fill', '#ffd0b8');
+  head.setAttribute('fill', C.head);
   head.style.opacity = '0';
   chart.appendChild(head);
 
@@ -147,14 +158,14 @@ export function bonus(card: HTMLElement): () => void {
 
     const after = DRAW_AT + 0.55 + DRAW;
     pulse(loop, marker, after - 0.15,
-      { scale: 1.22, filter: 'brightness(1.5)' },
+      { scale: 1.22, filter: C.markerLit },
       { scale: 1, filter: 'brightness(1)' }, 0.38, 0.9, 'transform');
     pulse(loop, bolt, after,
       { yPercent: pct(bolt, -16, u), scale: 1.12 }, { yPercent: 0, scale: 1 }, 0.4, 0.85, 'transform');
     pulse(loop, pie, after + 0.3,
       { yPercent: pct(pie, -14, u), scale: pieScale * 1.15 }, { yPercent: 0, scale: pieScale }, 0.4, 0.85, 'transform');
     pulse(loop, pill, after + 0.35,
-      { yPercent: pct(pill, -14, u), borderColor: 'rgba(255, 138, 92, 0.75)' },
+      { yPercent: pct(pill, -14, u), borderColor: C.pillLit },
       { yPercent: 0, borderColor: getComputedStyle(pill).borderTopColor }, 0.45, 0.9, 'transform,borderColor');
     loop
       .call(() => { tally.bonus = 0; paintBonus(); }, undefined, after + 0.4)

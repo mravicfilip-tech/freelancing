@@ -260,6 +260,167 @@
   .steps__body { margin-top: 28px; }
 }
 
+
+/* --- Light -------------------------------------------------------------------
+   Written twice, because a media query cannot go in a selector list -- the same
+   shape tokens.css uses, and for the same reason. The two blocks MUST stay
+   identical; only their conditions differ.
+
+   THE DEVICE DECISION, which this block is, is stated once here and followed by
+   all three panels. The panels RE-TINT: the app drawn inside each one follows
+   the website onto paper rather than staying a dark screen photographed on a
+   light page. Three reasons, in order of weight.
+
+   1. Only one of the three is a device at all. Panel 2 is a funding diagram --
+      rails, a locked node, a balance card -- and panel 3 is a price card. Panel
+      1 has a phone, but it is a rounded rectangle with no bezel, no chrome and
+      no shadow: a diagram of a phone, not a photograph of one. `.panel` is not
+      a screen. It is the surface the section stands its artwork on, which makes
+      it a raised panel of the marketing page, and a raised panel is --panel.
+   2. It is 55% of the band. Three 886x610 plates at #141312 would be the
+      largest dark objects on the page by a wide margin and would read as dark
+      mode with a cream margin around it.
+   3. LIGHTMODE.md section 6.3 records the user asking for these illustrations
+      to be re-tinted rather than left dark, and says the dark-inset fallback
+      must be arrived at by decision rather than by accident. Nothing here made
+      it too expensive to do what was asked.
+
+   So --art-ink and --art-ink-2 are deliberately NOT used anywhere in this
+   section. They exist for artwork that stays dark; this artwork does not.
+
+   Nothing below is a lighter version of the block at the top of this file. Four
+   of these values are lifts, and in dark every lift means brighter -- the dwell
+   bar is paler than the rail it covers, the glow's core is a hot orange, a
+   funding tile fires by going pale and its glyph by brightening. Each is turned
+   around here, and where the direction matters the note says so. ----------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* THE DWELL BAR, and the first direction flip. In dark it is a pale coral
+     running down over the card's own --accent rail: 1.92 times as bright as
+     the thing it covers. On paper a paler red over a dark red is nothing at
+     all, so it goes the other way and becomes the densest red in the band --
+     1.96 times darker than the rail, which is the same step measured from the
+     other end. */
+  --steps-progress: #4d0700;
+  /* The card hover. Dark lifts the plate 1.07:1 off --panel; paper settles it
+     by the same 1.07, because on paper raised and touched read as darker. */
+  --steps-card-hover: #f1e8e0;
+
+  /* THE PANEL GROUNDS -- the device decision, in two values. In dark the panel
+     is 1.02:1 against the page, which is almost nothing: it is allowed to be,
+     because everything standing on it is luminous. On paper nothing on it is
+     luminous, so it has to be a card, and --panel is the page's own word for
+     that. Panel 3 keeps the extra step dark gives it and keeps its edge. */
+  --steps-panel: var(--panel);
+  --steps-panel-3: #f2eae2;
+  --steps-panel-edge-2: rgba(162, 22, 5, 0.22);
+  --steps-panel-edge-3: #e2d2c5;
+
+  /* THE WORDMARK. White at a tenth of an opacity is the page on paper, so the
+     mark is ink and the opacity goes UP rather than down -- 0.10 -> 0.12 and
+     0.21 -> 0.25, which is the alpha x 1.125 rule, and lands the ghost at
+     1.28:1 against its panel where dark has it at 1.28:1 against its own. */
+  --steps-mark: var(--ink);
+  --steps-mark-op: 0.12;
+  --steps-mark-op-2: 0.25;
+
+  /* THE GLOW, and the second direction flip. Dark's disc runs a hot #f03725
+     into the panel ground; carried across, a hot orange blurred over cream is
+     a stain and the ground stop is a grey bruise. So the ramp inverts its
+     luminance while keeping its geometry exactly: same angle, same two stop
+     positions, same centre, same radius, same blur. The core becomes the
+     DEEPEST tint rather than the brightest -- 1.35:1 at its densest, against
+     the 1.37 the rest of the page settled on -- and the far stop becomes the
+     panel, so the disc still dissolves into whatever it is lying on.
+
+     The mask is what the blur was. glow.svg carries its own feGaussianBlur and
+     arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
+     `filter: blur()` cannot stand in for it because CSS applies the filter
+     first and clips the RESULT -- a hard-edged circle of blurred gradient.
+     These thirteen stops are the radial profile of a disc of radius 204.5
+     convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
+     with the disc's own 0.689 peak folded into the alphas. */
+  --steps-glow: linear-gradient(233.08deg, #efcab5 36.68%, var(--steps-panel) 72.68%);
+  --steps-glow-mask: radial-gradient(circle closest-side,
+    rgba(0, 0, 0, 0.689) 0%,
+    rgba(0, 0, 0, 0.673) 8.5%,
+    rgba(0, 0, 0, 0.626) 17%,
+    rgba(0, 0, 0, 0.554) 25%,
+    rgba(0, 0, 0, 0.466) 34%,
+    rgba(0, 0, 0, 0.370) 42%,
+    rgba(0, 0, 0, 0.277) 51%,
+    rgba(0, 0, 0, 0.194) 59%,
+    rgba(0, 0, 0, 0.127) 68%,
+    rgba(0, 0, 0, 0.078) 76%,
+    rgba(0, 0, 0, 0.045) 85%,
+    rgba(0, 0, 0, 0.023) 93%,
+    rgba(0, 0, 0, 0.013) 100%);
+  }
+}
+
+:root[data-theme='light'] {
+  /* THE DWELL BAR, and the first direction flip. In dark it is a pale coral
+     running down over the card's own --accent rail: 1.92 times as bright as
+     the thing it covers. On paper a paler red over a dark red is nothing at
+     all, so it goes the other way and becomes the densest red in the band --
+     1.96 times darker than the rail, which is the same step measured from the
+     other end. */
+  --steps-progress: #4d0700;
+  /* The card hover. Dark lifts the plate 1.07:1 off --panel; paper settles it
+     by the same 1.07, because on paper raised and touched read as darker. */
+  --steps-card-hover: #f1e8e0;
+
+  /* THE PANEL GROUNDS -- the device decision, in two values. In dark the panel
+     is 1.02:1 against the page, which is almost nothing: it is allowed to be,
+     because everything standing on it is luminous. On paper nothing on it is
+     luminous, so it has to be a card, and --panel is the page's own word for
+     that. Panel 3 keeps the extra step dark gives it and keeps its edge. */
+  --steps-panel: var(--panel);
+  --steps-panel-3: #f2eae2;
+  --steps-panel-edge-2: rgba(162, 22, 5, 0.22);
+  --steps-panel-edge-3: #e2d2c5;
+
+  /* THE WORDMARK. White at a tenth of an opacity is the page on paper, so the
+     mark is ink and the opacity goes UP rather than down -- 0.10 -> 0.12 and
+     0.21 -> 0.25, which is the alpha x 1.125 rule, and lands the ghost at
+     1.28:1 against its panel where dark has it at 1.28:1 against its own. */
+  --steps-mark: var(--ink);
+  --steps-mark-op: 0.12;
+  --steps-mark-op-2: 0.25;
+
+  /* THE GLOW, and the second direction flip. Dark's disc runs a hot #f03725
+     into the panel ground; carried across, a hot orange blurred over cream is
+     a stain and the ground stop is a grey bruise. So the ramp inverts its
+     luminance while keeping its geometry exactly: same angle, same two stop
+     positions, same centre, same radius, same blur. The core becomes the
+     DEEPEST tint rather than the brightest -- 1.35:1 at its densest, against
+     the 1.37 the rest of the page settled on -- and the far stop becomes the
+     panel, so the disc still dissolves into whatever it is lying on.
+
+     The mask is what the blur was. glow.svg carries its own feGaussianBlur and
+     arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
+     `filter: blur()` cannot stand in for it because CSS applies the filter
+     first and clips the RESULT -- a hard-edged circle of blurred gradient.
+     These thirteen stops are the radial profile of a disc of radius 204.5
+     convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
+     with the disc's own 0.689 peak folded into the alphas. */
+  --steps-glow: linear-gradient(233.08deg, #efcab5 36.68%, var(--steps-panel) 72.68%);
+  --steps-glow-mask: radial-gradient(circle closest-side,
+    rgba(0, 0, 0, 0.689) 0%,
+    rgba(0, 0, 0, 0.673) 8.5%,
+    rgba(0, 0, 0, 0.626) 17%,
+    rgba(0, 0, 0, 0.554) 25%,
+    rgba(0, 0, 0, 0.466) 34%,
+    rgba(0, 0, 0, 0.370) 42%,
+    rgba(0, 0, 0, 0.277) 51%,
+    rgba(0, 0, 0, 0.194) 59%,
+    rgba(0, 0, 0, 0.127) 68%,
+    rgba(0, 0, 0, 0.078) 76%,
+    rgba(0, 0, 0, 0.045) 85%,
+    rgba(0, 0, 0, 0.023) 93%,
+    rgba(0, 0, 0, 0.013) 100%);
+}
+
 /* Pending state, the same contract as the bento and the pillars. `gsap.from()`
    writes its start values the moment a tween is built, and this band is not
    built until it has been scrolled to, so without this the whole section would

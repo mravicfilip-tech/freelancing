@@ -285,4 +285,107 @@
   width: calc(143.931 * var(--p)); height: calc(62.37 * var(--p));
   opacity: 0.4; border-radius: calc(10 * var(--p));
 }
-.s1__nav { left: calc(50.378 * var(--p)); top: calc(291.461 * var(--p)); width: calc(69.567 * var(--p)); height: calc(21.59 * var(--p)); }
+/* The app indicators. Three #323232 dots on a 6% white plate: two colours, so
+   masking it does cost something -- the plate stops being a lift and becomes a
+   6% wash of the dot colour, which in dark takes a faint rounded rectangle at
+   43/255 down to 30/255 against a phone at 29. That is the whole of the dark
+   change, and it buys the light one: unmasked, #323232 on a cream phone is
+   three near-black blobs, by a distance the loudest thing inside a device
+   whose every other element is a quiet skeleton. Masked, the dots are
+   --steps-p1-bar -- which IS #323232 in dark, so they do not move -- and on
+   paper they join the skeletons they belong with. */
+.s1__nav {
+  left: calc(50.378 * var(--p)); top: calc(291.461 * var(--p));
+  width: calc(69.567 * var(--p)); height: calc(21.59 * var(--p));
+  color: var(--steps-p1-bar);
+}
+
+/* --- Light -------------------------------------------------------------------
+   Written twice; the two blocks MUST stay identical, only their conditions
+   differ. The section's device decision is stated in Steps.css: this panel
+   re-tints, so the phone and the two account cards are a LIGHT app on a light
+   page and nothing here reaches for --art-ink.
+
+   Everything in this panel except the pill's stroke is a neutral, and every
+   one of them is derived the same way: take what the value is worth against
+   the surface it sits on in dark, and reproduce that RATIO on paper. Dark's
+   hierarchy survives; dark's luminance does not, because it cannot. ------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  /* The email pill. Grey at 17% over near-black lifts the chip off the panel;
+     ink at 7% settles it into the paper, which is the same gesture read the
+     other way. */
+  --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
+  --steps-p1-pill-ink: var(--ink);
+  /* The stroke's pair. Alpha goes up because a dark red at 22% over cream is
+     fainter than the same red at 22% over black. */
+  --steps-p1-pill-rest: rgba(162, 22, 5, 0.3);
+  --steps-p1-pill-lit: rgb(162, 22, 5);
+
+  /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper
+     settles them by 1.08, because raised reads as darker on paper. */
+  --steps-p1-card: #f0e7de;
+  --steps-p1-card-edge: var(--veil-line);
+
+  /* The skeleton bars, at their two dark ratios against the card: 1.33 and
+     1.95. #d7c8bb is 1.32, #b9a493 is 2.00. */
+  --steps-p1-bar: #d7c8bb;
+  --steps-p1-bar-2: #b9a493;
+  --steps-p1-col-head: rgba(185, 164, 147, 0);
+  /* The chart's baseline, 2.10 against its plate where dark is 2.10. */
+  --steps-p1-axis: #9a8574;
+
+  /* The status bar. #cacaca and #b5b5b5 are quiet greys on a dark phone but
+     they are still 10.2:1 and 8.1:1 against it -- the clock is meant to be
+     read. Reproduced against the light phone at 10.3 and 8.2, which on paper
+     means dark, not pale. */
+  --steps-p1-time: #3d352f;
+  --steps-p1-batt: #4e453e;
+  --steps-p1-tile: rgba(26, 21, 18, 0.15);
+  --steps-p1-rule: #d2c2b4;
+  /* The battery's charge level. #f7ce45 is 11.2:1 on the dark phone and 1.5:1
+     on the light one -- the one value here where keeping the hue at its own
+     lightness would simply delete it. A dark amber holds both the hue and the
+     9:1 it is worth, which is also what every light-mode phone does. */
+  --steps-p1-batt-fill: #4c3a04;
+  }
+}
+
+:root[data-theme='light'] {
+  /* The email pill. Grey at 17% over near-black lifts the chip off the panel;
+     ink at 7% settles it into the paper, which is the same gesture read the
+     other way. */
+  --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
+  --steps-p1-pill-ink: var(--ink);
+  /* The stroke's pair. Alpha goes up because a dark red at 22% over cream is
+     fainter than the same red at 22% over black. */
+  --steps-p1-pill-rest: rgba(162, 22, 5, 0.3);
+  --steps-p1-pill-lit: rgb(162, 22, 5);
+
+  /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper
+     settles them by 1.08, because raised reads as darker on paper. */
+  --steps-p1-card: #f0e7de;
+  --steps-p1-card-edge: var(--veil-line);
+
+  /* The skeleton bars, at their two dark ratios against the card: 1.33 and
+     1.95. #d7c8bb is 1.32, #b9a493 is 2.00. */
+  --steps-p1-bar: #d7c8bb;
+  --steps-p1-bar-2: #b9a493;
+  --steps-p1-col-head: rgba(185, 164, 147, 0);
+  /* The chart's baseline, 2.10 against its plate where dark is 2.10. */
+  --steps-p1-axis: #9a8574;
+
+  /* The status bar. #cacaca and #b5b5b5 are quiet greys on a dark phone but
+     they are still 10.2:1 and 8.1:1 against it -- the clock is meant to be
+     read. Reproduced against the light phone at 10.3 and 8.2, which on paper
+     means dark, not pale. */
+  --steps-p1-time: #3d352f;
+  --steps-p1-batt: #4e453e;
+  --steps-p1-tile: rgba(26, 21, 18, 0.15);
+  --steps-p1-rule: #d2c2b4;
+  /* The battery's charge level. #f7ce45 is 11.2:1 on the dark phone and 1.5:1
+     on the light one -- the one value here where keeping the hue at its own
+     lightness would simply delete it. A dark amber holds both the hue and the
+     9:1 it is worth, which is also what every light-mode phone does. */
+  --steps-p1-batt-fill: #4c3a04;
+}

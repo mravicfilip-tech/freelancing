@@ -60,9 +60,9 @@ import './PanelRegister.css';
    length too, but writing both invites them to disagree at some width. The
    attribute numbers are still passed, because they are the asset's own and are
    worth having in the markup; this clears the box they would otherwise set.
-   The two exceptions are s1-connector (a two-stop gradient wire, which a mask
-   would flatten) and s1-bottomnav (a 6% white plate carrying three #323232
-   dots, which a mask would collapse onto one colour); both stay <img>. */
+   The one exception is s1-connector: a two-stop gradient wire, which a mask
+   would flatten to a silhouette. It stays an <img>, and both of its ends -- a
+   warm #ff632a and a mid grey -- still read on paper. */
 const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
 const STORY = 4.35;
@@ -273,7 +273,7 @@ export function PanelRegister() {
           </div>
           <Icon src={indicator} w={22.391} h={2.399} className="s1__indicator" style={CSS_SIZED} />
           <span className="s1__bar s1__bar--block" />
-          <img src={bottomnav} alt="" className="s1__nav" width={69.567} height={21.59} />
+          <Icon src={bottomnav} w={69.567} h={21.59} className="s1__nav" style={CSS_SIZED} />
         </div>
       </div>
     </div>

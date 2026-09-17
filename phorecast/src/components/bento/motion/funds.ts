@@ -29,6 +29,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 import { bandStaged, onSectionReady, pct, pulse, q1, qa, unitOf, whileVisible } from './shared';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -51,6 +52,26 @@ const PACKET_D = 'M302 108 C 248 84 132 132 78 107.5';
 
 export function funds(card: HTMLElement): () => void {
   if (REDUCED) return () => {};
+
+  /* Every colour this loop writes, read once, here, at BUILD time -- beside
+     the two `getComputedStyle(...).borderTopColor` reads further down, which
+     is the place LIGHTMODE.md 4.3 names and the place the rest of the repo
+     already uses. Never at module scope: the theme is not known there, and a
+     value cached there could never be re-read.
+     Re-reading on a theme change is Bento.tsx's job: its card-motion effect
+     takes the theme epoch as a dependency, which tears these four modules down
+     and builds them again, exactly as useSectionMotion does for the band.
+     The fallbacks are the literals this file shipped with, so a missing
+     property yields today's dark value rather than nothing. */
+  const C = {
+    ring: tok('--bento-fd-ring', '#ff632a'),
+    wire: tok('--bento-fd-wire', '#f26246'),
+    head: tok('--bento-fd-head', '#ff8a5c'),
+    tileLit: tok('--bento-fd-tile-lit', 'brightness(1.7)'),
+    chipLit: tok('--bento-fd-chip-lit', 'rgba(255, 138, 92, 0.75)'),
+    flare: tok('--bento-fd-flare', '0 0 12px rgba(255, 251, 248, 0.9)'),
+    flare0: tok('--bento-fd-flare-0', '0 0 0px rgba(255, 251, 248, 0)'),
+  };
 
   const art = q1(card, '.custody__art');
   const disc = q1(card, '.custody__wallet-disc');
@@ -79,20 +100,20 @@ export function funds(card: HTMLElement): () => void {
   ring.setAttribute('cx', String(WALLET_CX));
   ring.setAttribute('cy', String(WALLET_CY));
   ring.setAttribute('r', String(WALLET_R));
-  ring.setAttribute('stroke', '#ff632a');
+  ring.setAttribute('stroke', C.ring);
   ring.setAttribute('stroke-width', '2');
   ring.setAttribute('stroke-linecap', 'round');
   ring.setAttribute('transform', `rotate(${NODE_A_DEG} ${WALLET_CX} ${WALLET_CY})`);
 
   const wire = document.createElementNS(NS, 'path');
   wire.setAttribute('d', PACKET_D);
-  wire.setAttribute('stroke', '#f26246');
+  wire.setAttribute('stroke', C.wire);
   wire.setAttribute('stroke-width', '1.6');
   wire.setAttribute('stroke-linecap', 'round');
 
   const head = document.createElementNS(NS, 'circle');
   head.setAttribute('r', '4.2');
-  head.setAttribute('fill', '#ff8a5c');
+  head.setAttribute('fill', C.head);
 
   svg.append(ring, wire, head);
   art.insertBefore(svg, disc);
@@ -133,7 +154,10 @@ export function funds(card: HTMLElement): () => void {
       const label = labels[i];
       const at = i * 0.16;
       pulse(loop, tile, at,
-        { xPercent: pct(tile, -11, u, 'x'), scale: 1.16, filter: 'brightness(1.7)' },
+        // One filter FUNCTION either side, so GSAP interpolates the list
+        // structurally instead of swapping it. In light `--bento-fd-tile-lit`
+        // is brightness(0.78): a chip that has settled, not one gone white.
+        { xPercent: pct(tile, -11, u, 'x'), scale: 1.16, filter: C.tileLit },
         { xPercent: 0, scale: 1, filter: 'brightness(1)' }, 0.36, 0.72, 'transform');
       if (label) {
         pulse(loop, label, at,
@@ -143,7 +167,7 @@ export function funds(card: HTMLElement): () => void {
 
     // 2 — the contract chip answers
     pulse(loop, chips[0], 0.9,
-      { yPercent: pct(chips[0], -11, u), scale: 1.05, borderColor: 'rgba(255, 138, 92, 0.75)' },
+      { yPercent: pct(chips[0], -11, u), scale: 1.05, borderColor: C.chipLit },
       { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 3 — the node on the orbit flares and lets the packet go
@@ -166,7 +190,7 @@ export function funds(card: HTMLElement): () => void {
 
     // 5 — the withdrawal, under the travelling packet
     pulse(loop, chips[1], 2.35,
-      { yPercent: pct(chips[1], -11, u), scale: 1.05, borderColor: 'rgba(255, 138, 92, 0.75)' },
+      { yPercent: pct(chips[1], -11, u), scale: 1.05, borderColor: C.chipLit },
       { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 6 — it lands: the node on the wallet ring, the ring closing, the disc
@@ -177,8 +201,8 @@ export function funds(card: HTMLElement): () => void {
       .to(ring, { opacity: 0, duration: 0.7, ease: 'sine.inOut' }, 5.1);
     pulse(loop, disc, 4.25, { scale: 1.18 }, { scale: 1 }, 0.42, 0.9, 'transform');
     pulse(loop, walletLabel, 4.3,
-      { textShadow: '0 0 12px rgba(255, 251, 248, 0.9)' },
-      { textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9, 'textShadow');
+      { textShadow: C.flare },
+      { textShadow: C.flare0 }, 0.42, 0.9, 'textShadow');
 
     /* ------------------------------------------------------------- load-in
        Tile and label travel together, so the pairs are interleaved and the

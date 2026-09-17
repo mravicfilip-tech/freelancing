@@ -25,6 +25,7 @@
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
+import { tok } from '../../../lib/theme';
 import { bandStaged, onSectionReady, pct, pulse, q1, qa, unitOf, whileVisible } from './shared';
 
 /** The resting stroke of `.onb__pill`, restated so the loop's highlight can
@@ -43,6 +44,20 @@ export function onboard(card: HTMLElement): () => void {
   if (!ring || !arcBox || !seconds || !inLabel || !art || pills.length < 3) return () => {};
 
   const u = unitOf(art, 474);
+
+  /* Build-time colour reads; see the note in funds.ts. This card is the one
+     that does NOT flip, and these three values are why it is worth saying so
+     out loud: a lit pill stroke and a flare around "You're in." are white
+     because the plate under them is a saturated red-to-peach gradient, in both
+     themes. White on that plate is still the lit thing on paper, so
+     --bento-onb-* is absent from the light block in Bento.css and these three
+     resolve to the same values on either page. Read through `tok` anyway, so
+     the claim is checkable in one place rather than buried as a literal. */
+  const C = {
+    pillLit: tok('--bento-onb-lit', 'rgba(255, 251, 248, 0.95)'),
+    flare: tok('--bento-onb-flare', '0 0 16px rgba(255, 251, 248, 0.9)'),
+    flare0: tok('--bento-onb-flare-0', '0 0 0px rgba(255, 251, 248, 0)'),
+  };
 
   const restingSeconds = seconds.textContent ?? '60s';
   const staged = bandStaged(card);
@@ -87,7 +102,7 @@ export function onboard(card: HTMLElement): () => void {
     pills.slice(0, 3).forEach((pill, i) => {
       pulse(loop, pill, 1.5 + i * (RUN / 3.4),
         { xPercent: pct(pill, -16, u, 'x'), scale: 1.06, transformOrigin: '100% 50%',
-          borderColor: 'rgba(255, 251, 248, 0.95)' },
+          borderColor: C.pillLit },
         { xPercent: 0, scale: 1, borderColor: readBorder(pill) }, 0.42, 0.8,
         'transform,transformOrigin,borderColor');
     });
@@ -95,8 +110,8 @@ export function onboard(card: HTMLElement): () => void {
     // Zero: the confirmation flares and the ring takes one breath.
     const ZERO = 0.3 + RUN;
     pulse(loop, inLabel, ZERO,
-      { yPercent: -70, scale: 1.2, transformOrigin: '0% 50%', textShadow: '0 0 16px rgba(255, 251, 248, 0.9)' },
-      { yPercent: 0, scale: 1, textShadow: '0 0 0px rgba(255, 251, 248, 0)' }, 0.42, 0.9,
+      { yPercent: -70, scale: 1.2, transformOrigin: '0% 50%', textShadow: C.flare },
+      { yPercent: 0, scale: 1, textShadow: C.flare0 }, 0.42, 0.9,
       'transform,transformOrigin,textShadow');
     pulse(loop, ring, ZERO + 0.05, { scale: 1.05, transformOrigin: '50% 50%' }, { scale: 1 },
       0.5, 0.95, 'transform,transformOrigin');

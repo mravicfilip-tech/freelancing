@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 import { REDUCED, rise, pop, useSectionMotion } from '../../lib/motion';
+import { useThemeEpoch } from '../../lib/theme';
 import { BoxOnboard } from './boxes/BoxOnboard';
 import { BoxCustody } from './boxes/BoxCustody';
 import { BoxBonus } from './boxes/BoxBonus';
@@ -114,6 +115,17 @@ function prefetchCardMotion() {
 }
 
 function useCardMotion(ref: RefObject<HTMLElement | null>) {
+  /* The card loops read their colours from resolved custom properties at BUILD
+     time and cache them for the life of the loop -- the packet head, the lit
+     chip stroke, the brightness a market tile fires at. `useSectionMotion` has
+     its own epoch dependency for the band's entrance, but these four modules
+     are attached here, by an observer, with an effect of their own: without
+     this they would keep cooling to the palette that was live when the section
+     was first reached. Flip the theme at the bento and the wallet would go on
+     flaring white on paper, forever, with nothing thrown and nothing to see in
+     a still. The teardown below is the same one StrictMode runs on every load,
+     so the rebuild path is the best-tested in the file. */
+  const themeEpoch = useThemeEpoch();
   // Start warming as soon as the hero says the delicate part of its entrance is
   // over, so the fetches share the same quiet window the 3D mark waits for.
   useEffect(() => {
@@ -180,7 +192,7 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
       io.disconnect();
       teardowns.forEach((stop) => stop());
     };
-  }, [ref]);
+  }, [ref, themeEpoch]);
 }
 
 export function Bento() {

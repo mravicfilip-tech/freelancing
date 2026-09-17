@@ -9,7 +9,16 @@
 // Reports, per section, the largest travel of any descendant and the largest
 // opacity swing, so a beat can be judged on what a person would see.
 //
-//   node scripts/amplitude.mjs [url] [seconds]
+//   node scripts/amplitude.mjs [url] [seconds] [--entrance]
+//
+// Two modes, because a loop and an entrance want opposite sampling windows.
+// The default holds still for 2.5s after scrolling a section in, so the page
+// settling is over before anything is read -- right for an ambient loop, which
+// is still going. It is exactly wrong for a one-shot entrance: a 3s timeline is
+// all but finished by the time the first frame is taken, and the section scores
+// as STATIC because it was measured after it arrived. `--entrance` starts the
+// sampler on the same frame as the scroll instead, and leans on the relative
+// maths below to cancel the settle rather than on waiting it out.
 //
 // One trap this deliberately avoids: scrolling a section into view shifts every
 // bounding box by the scroll amount, which reads as movement. Everything below
@@ -18,8 +27,10 @@
 // entirely the scroll.
 import { chromium } from 'playwright-core';
 
-const URL = process.argv[2] || 'http://localhost:5173';
-const SECONDS = Number(process.argv[3] || 9);
+const ENTRANCE = process.argv.includes('--entrance');
+const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+const URL = args[0] || 'http://localhost:5173';
+const SECONDS = Number(args[1] || (ENTRANCE ? 6 : 9));
 const SECTIONS = ['.hero', '.bento', '.fam', '.pillars', '.fan', '.steps', '.built', '.faq', 'footer'];
 
 const browser = await chromium.launch({
@@ -34,15 +45,27 @@ page.on('console', (m) => m.type() === 'error' && errs.push(m.text().slice(0, 11
 await page.goto(URL, { waitUntil: 'load' });
 
 for (const sel of SECTIONS) {
+  // An entrance plays once. Scrolling to section three necessarily passes
+  // section four's trigger, so by its turn it would already have opened and
+  // would read as STATIC. A reload per section gives each one an untouched
+  // page; the cost is a few seconds and the alternative is a false negative.
+  if (ENTRANCE && sel !== SECTIONS[0]) await page.goto(URL, { waitUntil: 'load' });
+
   const found = await page.evaluate((s) => !!document.querySelector(s), sel);
   if (!found) { console.log(`${sel.padEnd(9)} not found`); continue; }
 
-  // Scroll it in, then hold still so the settle is not counted as motion.
-  await page.evaluate((s) => document.querySelector(s).scrollIntoView({ behavior: 'instant', block: 'center' }), sel);
-  await page.waitForTimeout(2500);
+  // In loop mode, scroll it in and hold still so the settle is not counted as
+  // motion. In entrance mode the scroll happens inside the sampler below, on
+  // the frame sampling starts, because the thing being measured begins the
+  // moment the section is scrolled to.
+  if (!ENTRANCE) {
+    await page.evaluate((s) => document.querySelector(s).scrollIntoView({ behavior: 'instant', block: 'center' }), sel);
+    await page.waitForTimeout(2500);
+  }
 
-  const r = await page.evaluate(([s, secs]) => new Promise((res) => {
+  const r = await page.evaluate(([s, secs, entrance]) => new Promise((res) => {
     const root = document.querySelector(s);
+    if (entrance) root.scrollIntoView({ behavior: 'instant', block: 'center' });
     const nodes = [...root.querySelectorAll('*')].slice(0, 400);
     const seen = new Map();
     const t0 = performance.now();
@@ -73,7 +96,7 @@ for (const sel of SECTIONS) {
       }
     };
     requestAnimationFrame(tick);
-  }), [sel, SECONDS]);
+  }), [sel, SECONDS, ENTRANCE]);
 
   const peak = Math.max(r.mx, r.my);
   const verdict = peak >= 8 ? 'visible' : peak >= 2 ? 'faint' : r.mo >= 0.2 ? 'fades only' : 'STATIC';

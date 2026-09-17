@@ -96,9 +96,15 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
      flash has somewhere exact to return to. */
   const priceInk = price ? getComputedStyle(price).color : '';
 
-  /* Tweens started from inside a callback, which no timeline owns. */
+  /* Tweens started from inside a callback, which no timeline owns, held so
+     teardown can kill them. Finished ones are dropped as new ones arrive —
+     otherwise a page left open all day collects one per cycle. */
   const spawned: gsap.core.Tween[] = [];
-  const spawn = (t: gsap.core.Tween) => { spawned.push(t); return t; };
+  const spawn = (t: gsap.core.Tween) => {
+    for (let i = spawned.length - 1; i >= 0; i--) if (!spawned[i].isActive()) spawned.splice(i, 1);
+    spawned.push(t);
+    return t;
+  };
 
   /* Distances are CSS pixels, not design units, so the beat reads the same on a
      laptop and on a 4K panel. They are the house's travel (10–30px) at the top
@@ -179,6 +185,13 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
 
   /* ---------------------------------------------------------------- loop */
   function buildLoop(): gsap.core.Timeline {
+    // Every fromTo here carries immediateRender: false. Without it GSAP writes
+    // each tween's start value the instant the timeline is built, not when the
+    // playhead reaches it: the cycle opened with the connectors clipped to
+    // nothing, the sparkline erased and the diamond parked 58px high, all of it
+    // holding for seconds before its turn came. A still of the illustration has
+    // to read as the approved design at every moment except the one it is
+    // actually animating through.
     const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: EASE } });
 
     // 1 — a trade executes. The old notification drops away and the new one
@@ -188,13 +201,13 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
       tl.to(toast, { y: D.toastSwap, opacity: 0, duration: 0.42, ease: 'power2.in' }, 0)
         .fromTo(toast,
           { y: D.toastSwap, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.95, ease: EASE, clearProps: 'transform,opacity' },
+          { y: 0, opacity: 1, duration: 0.95, ease: EASE, immediateRender: false, clearProps: 'transform,opacity' },
           0.5);
     }
     if (bolt) {
       tl.fromTo(bolt,
         { scale: 0.86 },
-        { scale: 1, duration: 0.6, ease: EASE, transformOrigin: '50% 50%', clearProps: 'transform' },
+        { scale: 1, duration: 0.6, ease: EASE, transformOrigin: '50% 50%', immediateRender: false, clearProps: 'transform' },
         0.72);
     }
 
@@ -203,13 +216,13 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     conns.forEach((c, i) => {
       tl.fromTo(c,
         { clipPath: 'inset(0% 0% 100% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.85, ease: 'power2.inOut', clearProps: 'clipPath' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.85, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
         1.45 + i * 0.06);
     });
     if (diamond) {
       tl.fromTo(diamond,
         { y: -D.diamondRide, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: 'power2.inOut', clearProps: 'transform,opacity' },
+        { y: 0, opacity: 1, duration: 0.9, ease: 'power2.inOut', immediateRender: false, clearProps: 'transform,opacity' },
         1.5);
     }
 
@@ -228,13 +241,13 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     if (chartXau) {
       tl.fromTo(chartXau,
         { clipPath: 'inset(0% 100% 0% 0%)' },
-        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.15, ease: 'power2.inOut', clearProps: 'clipPath' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.15, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
         3.0);
     }
     if (price && priceNode) {
       tl.fromTo(price,
         { yPercent: 0, opacity: 1 },
-        { yPercent: -60, opacity: 0, duration: 0.26, ease: 'power2.in' },
+        { yPercent: -60, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false },
         3.15)
         // The flash is spawned rather than written into the timeline: which way
         // the price went is decided in this callback, and a tween built once
@@ -245,7 +258,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
         }, undefined, 3.41)
         .fromTo(price,
           { yPercent: 60, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' },
+          { yPercent: 0, opacity: 1, duration: 0.5, ease: 'power3.out', immediateRender: false, clearProps: 'transform,opacity' },
           3.43);
     }
 

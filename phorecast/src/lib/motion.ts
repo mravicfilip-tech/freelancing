@@ -221,7 +221,18 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
               onComplete: () => {
                 // Anything expensive that would have stolen frames from this
                 // sequence can start now. The 3D mark listens for it.
-                el.dispatchEvent(new CustomEvent('motion:done', { bubbles: true }));
+                //
+                // `done()`, not a bare dispatch. This is the ordinary success
+                // path, and it used to fire the event without setting the flag
+                // -- so `dataset.motionDone` was written only when motion was
+                // reduced or the build threw, i.e. never on a normal entrance.
+                // That defeats the whole point recorded where `done` is
+                // defined: a consumer that attaches after the entrance has
+                // finished asks the flag precisely because the event it missed
+                // will not fire again. Familiar.loop.ts reads that flag first
+                // and was silently falling through to its polling fallback on
+                // every load.
+                done();
                 if (idle) stopIdle = idle(el);
               },
             });

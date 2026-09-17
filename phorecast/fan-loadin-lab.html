@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phorecast fan load-in lab</title>
+
+<!-- Fonts are a nicety, never a blocker: loaded as print and promoted on load, so
+     the page paints immediately offline and picks up the real faces when online. -->
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;800&family=Inter+Tight:wght@300;400&family=Geist+Mono:wght@500;600&display=swap">
+
+<style>
+/* ===========================================================================
+   Phorecast fan load-in lab — five entrances for "Your Funds Stay in Your Control".
+
+   Same format as hover-lab.html and slider-lab.html: one file, five numbered
+   options, all on one page, each replayable. Answer with a number.
+
+   Fixed across all five, because they are what was asked for:
+     - the arcs enter from the OUTER EDGES and travel inward, never from the middle
+     - every arc is its own tween, staggered; the fans never appear as a block
+     - the heading and sub-line resolve out of blur
+     - nothing responds to the pointer. Load and Replay, that is all.
+
+   What differs is the mechanism of the entrance, not its tempo. See each
+   section's note.
+
+   The section itself is the real thing: Fan.css copied verbatim, the real
+   assets from src/assets/fan/, the real Figma coordinates from Fan.tsx. The one
+   change is that the two arc SVGs are INLINED rather than <img>-ed, because
+   nothing inside an <img> is addressable and per-line animation needs the 16
+   paths to be real DOM. Their ids are rewritten per copy so twenty instances of
+   the same four gradients do not collapse onto the first set.
+   =========================================================================== */
+
+/* --- tokens, straight from src/styles/tokens.css ------------------------- */
+:root {
+  --bg: #0f0e0d;
+  --white-font: #fffbf8;
+  --orange-100: #e5331e;
+  --orange-200: #c02816;
+  --orange-300: #e9513f;
+  --color-body: #626262;
+  --color-nre-body: #9d9d9d;
+  --surface: #1b1b1a;
+  --hairline: #313131;
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-body: 'Inter Tight', system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--white-font);
+  font-family: var(--font-display);
+  padding: 48px clamp(16px, 4vw, 56px) 140px;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* --- page furniture ------------------------------------------------------ */
+.head { max-width: 820px; }
+.head h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; }
+.head p { margin-top: 12px; color: var(--color-nre-body); font-size: 15px; line-height: 1.6; }
+.head code { font-family: var(--font-mono); font-size: 13px; color: var(--orange-300); }
+
+.bar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 28px 0 8px; padding: 12px 0;
+  background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+}
+.ctrl {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 9px 16px; border-radius: 400px;
+  border: 1px solid var(--hairline); color: var(--white-font);
+  transition: border-color 220ms ease, background-color 220ms ease, color 220ms ease;
+}
+.ctrl--go { border-color: var(--orange-100); color: var(--orange-300); }
+.ctrl[aria-pressed="true"] { background: rgba(229, 51, 30, 0.16); border-color: var(--orange-100); color: var(--orange-300); }
+.bar .hint { font-size: 13px; color: var(--color-body); }
+
+.dir { border-top: 1px solid var(--hairline); padding: 30px 0 10px; margin-top: 26px; }
+.dir__head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.dir__n {
+  font-family: var(--font-mono); font-size: 13px; color: var(--orange-100);
+  border: 1px solid var(--orange-100); border-radius: 4px; padding: 3px 8px;
+}
+.dir__name { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.dir__note { color: var(--color-nre-body); font-size: 14px; line-height: 1.5; flex: 1 1 360px; min-width: 260px; }
+.dir__replay { margin-left: auto; }
+.stage { width: 100%; max-width: 1360px; }
+
+/* ===========================================================================
+   Below here is src/components/fan/Fan.css, copied as-is apart from the
+   pending-state selector (scoped to .fan here instead of [data-js]) and the
+   .fan__lines rules gaining an inline-<svg> friendly display.
+   =========================================================================== */
+
+/* "Your Funds Stay in Your Control" — Figma frame 1920 x 675.
+   --f is one design pixel at the current width. */
+.fan {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+.fan__frame {
+  --f: calc(100cqw / 1920);
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  aspect-ratio: 1920 / 675;
+}
+
+/* Arc groups ------------------------------------------------------------------ */
+.fan__arcs {
+  position: absolute;
+  width: calc(863 * var(--f));
+  height: calc(675 * var(--f));
+  overflow: hidden;
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+}
+.fan__arcs--left { left: 0; top: 0; }
+.fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
+.fan__lines { position: absolute; display: block; overflow: visible; }
+/* Figma mirrors the left group, so its boxes are x' = 863 - x - w, y' = 675 - y - h. */
+.fan__arcs--left .fan__lines--lower {
+  left: calc(-1195.4 * var(--f)); top: calc(397.5 * var(--f));
+  width: calc(2106.46 * var(--f)); height: calc(1196.7 * var(--f));
+  transform: rotate(180deg);
+}
+.fan__arcs--left .fan__lines--upper {
+  left: calc(-1251.9 * var(--f)); top: calc(-820.8 * var(--f));
+  width: calc(2126.9 * var(--f)); height: calc(1233.1 * var(--f));
+  transform: rotate(0.99deg);
+}
+/* The right group is upright, with every y shifted by +120. */
+.fan__arcs--right .fan__lines--lower {
+  left: calc(-48 * var(--f)); top: calc(-799 * var(--f));
+  width: calc(2106.46 * var(--f)); height: calc(1196.7 * var(--f));
+}
+.fan__arcs--right .fan__lines--upper {
+  left: calc(-12 * var(--f)); top: calc(382.9 * var(--f));
+  width: calc(2126.9 * var(--f)); height: calc(1233.1 * var(--f));
+  transform: rotate(-179.01deg);
+}
+
+.fan__diamond {
+  position: absolute;
+  left: calc(var(--x) * var(--f));
+  top: calc(var(--y) * var(--f));
+  width: calc(6.29 * var(--f));
+  height: calc(6.29 * var(--f));
+  transform: rotate(135deg);
+}
+.fan__pill {
+  position: absolute;
+  left: calc(var(--x) * var(--f));
+  top: calc(var(--y) * var(--f));
+  width: calc(var(--w) * var(--f));
+  min-width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(12 * var(--f));
+  padding: calc(14 * var(--f));
+  border-radius: calc(30 * var(--f));
+  background: #000;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: calc(14 * var(--f));
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--white-font);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+.fan__pill > img, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
+.fan__sport { position: relative; }
+.fan__sport img { position: absolute; }
+.fan__sport-a { inset: 0.85% 8.31% 0.36% 8.34%; }
+.fan__sport-b { inset: 12.15% 43.55% 68.31% 36.91%; }
+.fan__sport-c { inset: 2% 8.31% 85.69% 79.38%; }
+
+/* Centre tile and copy -------------------------------------------------------- */
+.fan__tile {
+  position: absolute;
+  left: calc(910 * var(--f));
+  top: calc(240 * var(--f));
+  width: calc(100 * var(--f));
+  height: calc(100 * var(--f));
+  border-radius: calc(17.86 * var(--f));
+  border: 1px solid rgba(255, 255, 255, 0.39);
+  overflow: hidden;
+  box-shadow:
+    0 calc(24 * var(--f)) calc(40 * var(--f)) rgba(255, 0, 0, 0.1),
+    0 calc(8 * var(--f)) calc(18 * var(--f)) rgba(255, 0, 0, 0.1);
+}
+.fan__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
+.fan__glass {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  width: calc(65.12 * var(--f)); height: calc(65.12 * var(--f));
+  border-radius: calc(11.63 * var(--f));
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(calc(13.6 * var(--f)));
+}
+.fan__glass img { width: calc(37 * var(--f)); height: calc(40 * var(--f)); }
+.fan__title {
+  position: absolute; left: 50%; top: calc(360 * var(--f)); transform: translateX(-50%);
+  width: calc(1440 * var(--f)); text-align: center;
+  font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--f)); line-height: 1.2;
+  color: var(--white-font);
+}
+.fan__sub {
+  position: absolute; left: 50%; top: calc(411 * var(--f)); transform: translateX(-50%);
+  width: calc(1440 * var(--f)); text-align: center;
+  font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--f)); line-height: 1.2;
+  color: var(--color-nre-body);
+}
+
+/* Lab-only. Both copy blocks are centred with translateX(-50%), which GSAP would
+   resolve to a pixel value the moment it touched `x`. Every variant therefore
+   animates an inner span, never the block itself. */
+.fan__title i, .fan__sub i { display: block; font-style: inherit; will-change: filter, transform; }
+
+/* Lab-only: the scan head used by 04. Present in every stage, animated by one. */
+.fan__front {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  width: calc(2 * var(--f)); opacity: 0; pointer-events: none;
+  background: linear-gradient(to bottom,
+    transparent 0%, rgba(233, 81, 63, 0.75) 16%, rgba(255, 233, 224, 0.95) 50%,
+    rgba(233, 81, 63, 0.75) 84%, transparent 100%);
+  box-shadow: 0 0 calc(26 * var(--f)) rgba(229, 51, 30, 0.55);
+}
+.fan__front--r { left: 100%; }
+
+/* The pending hold, same contract as the real section: nothing animated is
+   painted until the script has parked it in its start state. `prep` drops the
+   attribute in the same frame it writes those values. */
+.fan[data-motion='pending'] .fan__arcs,
+.fan[data-motion='pending'] .fan__diamond,
+.fan[data-motion='pending'] .fan__pill,
+.fan[data-motion='pending'] .fan__tile,
+.fan[data-motion='pending'] .fan__title,
+.fan[data-motion='pending'] .fan__sub { visibility: hidden; }
+
+/* 02 draws a bright head ahead of each line; the clone carries this. */
+.spark { pointer-events: none; }
+
+@media (max-width: 900px) {
+  .fan__frame { aspect-ratio: 1000 / 620; --f: calc(100cqw / 1000); }
+  .fan__arcs--left { left: calc(-120 * var(--f)); }
+  .fan__arcs--right { left: calc(560 * var(--f)); }
+  .fan__title { width: calc(880 * var(--f)); font-size: calc(40 * var(--f)); top: calc(330 * var(--f)); }
+  .fan__sub { width: calc(760 * var(--f)); font-size: calc(24 * var(--f)); top: calc(392 * var(--f)); }
+  .fan__tile { left: calc(450 * var(--f)); top: calc(200 * var(--f)); width: calc(100 * var(--f)); height: calc(100 * var(--f)); }
+  .fan__pill { font-size: calc(16 * var(--f)); }
+}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>Fan load-in lab</h1>
+  <p>
+    Five entrances for the &ldquo;Your Funds Stay in Your Control&rdquo; band. All five obey the
+    same brief &mdash; arcs enter from the outer edges and travel inward, every line is its own
+    staggered tween, the heading and sub-line resolve out of blur, nothing tracks the pointer.
+    What changes between them is the <em>mechanism</em>: what leads, in what order, and how a line
+    is revealed. They are not five speeds of one idea.
+  </p>
+  <p>
+    Each one plays once when it scrolls into view, and again on its Replay button.
+    Answer with a number.
+  </p>
+  <p style="margin-top:10px">
+    Open at <code>/fan-loadin-lab.html</code> on the dev server, or just double-click the file.
+    Nothing here is wired into <code>src/</code>.
+  </p>
+</div>
+
+<div class="bar">
+  <button class="ctrl ctrl--go" id="all">Replay all</button>
+  <button class="ctrl" id="slow" aria-pressed="false">Half speed</button>
+  <span class="hint">Half speed only slows playback &mdash; it does not change any variant.</span>
+</div>
+
+<div id="out"></div>
+
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script>
+/* Opened from a copy of this file with no node_modules beside it, fall back to
+   the CDN. Deliberately synchronous so the builder below still finds gsap. */
+if (!window.gsap) {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"><\/script>');
+}
+</script>
+
+<script>
+/* The two arc SVGs, inlined verbatim from src/assets/fan/. */
+const RAW = {
+  upper: `<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="2186.65" height="1276.89" viewBox="0 0 2186.65 1276.89" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 2" filter="url(#filter0_f_0_17)">
+<path id="Ellipse 4" d="M1136.84 40.7768C1519.23 40.777 1829.02 304.2 1829.02 628.926C1829.02 953.652 1519.23 1217.07 1136.84 1217.07C754.452 1217.07 444.659 953.652 444.659 628.926C444.659 304.2 754.452 40.7768 1136.84 40.7768Z" stroke="url(#paint0_linear_0_17)" stroke-width="1.35988"/>
+<path id="Ellipse 5" d="M1120.52 48.9358C1343.27 48.9358 1544.9 114.578 1690.82 220.672C1836.75 326.767 1926.93 473.279 1926.93 635.045C1926.93 796.811 1836.75 943.322 1690.82 1049.42C1544.9 1155.51 1343.27 1221.15 1120.52 1221.15C897.78 1221.15 696.151 1155.51 550.225 1049.42C404.298 943.322 314.113 796.811 314.113 635.045C314.113 473.279 404.298 326.767 550.225 220.672C696.151 114.578 897.78 48.9358 1120.52 48.9358Z" stroke="url(#paint1_linear_0_17)" stroke-width="1.35988"/>
+<path id="Ellipse 6" d="M1117.8 61.175C1360.09 61.175 1579.4 126.519 1738.13 232.131C1896.86 337.746 1994.93 483.577 1994.93 644.565C1994.93 805.552 1896.86 951.383 1738.13 1057C1579.4 1162.61 1360.09 1227.95 1117.8 1227.95C875.519 1227.95 656.203 1162.61 497.478 1057C338.748 951.383 240.678 805.552 240.678 644.565C240.678 483.577 338.748 337.746 497.478 232.131C656.203 126.519 875.519 61.175 1117.8 61.175Z" stroke="url(#paint2_linear_0_17)" stroke-width="1.35988"/>
+<path id="Ellipse 7" d="M1093.33 61.1748C1384.07 61.1748 1647.26 126.986 1837.74 233.354C2028.24 339.734 2145.87 486.589 2145.87 648.645C2145.87 810.7 2028.24 957.555 1837.74 1063.93C1647.26 1170.3 1384.07 1236.11 1093.33 1236.11C802.579 1236.11 539.39 1170.3 348.913 1063.93C158.413 957.555 40.777 810.7 40.7768 648.645C40.7768 486.589 158.412 339.734 348.913 233.354C539.39 126.986 802.579 61.1748 1093.33 61.1748Z" stroke="url(#paint3_linear_0_17)" stroke-width="1.35988"/>
+</g>
+<defs>
+<filter id="filter0_f_0_17" x="0" y="0" width="2186.65" height="1276.89" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0" result="effect1_foregroundBlur_0_17"/>
+</filter>
+<linearGradient id="paint0_linear_0_17" x1="443.98" y1="628.926" x2="1829.7" y2="628.926" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_17" x1="313.434" y1="635.045" x2="1927.61" y2="635.045" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_17" x1="239.998" y1="644.565" x2="1995.61" y2="644.565" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint3_linear_0_17" x1="40.0971" y1="648.644" x2="2146.55" y2="648.644" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>`,
+  lower: `<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="2143.29" height="1233.53" viewBox="0 0 2143.29 1233.53" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1" filter="url(#filter0_f_0_22)">
+<path id="Ellipse 4" d="M1115.16 19.0964C1497.55 19.0966 1807.34 282.52 1807.34 607.246C1807.34 931.972 1497.55 1195.39 1115.16 1195.39C732.774 1195.39 422.981 931.972 422.981 607.246C422.981 282.52 732.773 19.0964 1115.16 19.0964Z" stroke="url(#paint0_linear_0_22)" stroke-width="1.35988"/>
+<path id="Ellipse 5" d="M1098.84 27.2556C1321.59 27.2556 1523.21 92.8973 1669.14 198.992C1815.07 305.087 1905.25 451.599 1905.25 613.365C1905.25 775.131 1815.07 921.642 1669.14 1027.74C1523.21 1133.83 1321.59 1199.47 1098.84 1199.47C876.099 1199.47 674.47 1133.83 528.544 1027.74C382.617 921.642 292.432 775.131 292.432 613.365C292.432 451.599 382.617 305.087 528.544 198.992C674.47 92.8973 876.099 27.2556 1098.84 27.2556Z" stroke="url(#paint1_linear_0_22)" stroke-width="1.35988"/>
+<path id="Ellipse 6" d="M1096.12 39.4943C1338.41 39.4943 1557.72 104.839 1716.45 210.45C1875.18 316.065 1973.25 461.896 1973.25 622.884C1973.25 783.872 1875.18 929.703 1716.45 1035.32C1557.72 1140.93 1338.41 1206.27 1096.12 1206.27C853.839 1206.27 634.523 1140.93 475.799 1035.32C317.069 929.703 218.999 783.872 218.999 622.884C218.999 461.896 317.069 316.065 475.799 210.45C634.523 104.839 853.839 39.4943 1096.12 39.4943Z" stroke="url(#paint2_linear_0_22)" stroke-width="1.35988"/>
+<path id="Ellipse 7" d="M1071.65 39.4944C1362.39 39.4944 1625.58 105.306 1816.06 211.673C2006.56 318.053 2124.19 464.909 2124.19 626.964C2124.19 789.019 2006.56 935.874 1816.06 1042.25C1625.58 1148.62 1362.39 1214.43 1071.65 1214.43C780.898 1214.43 517.71 1148.62 327.232 1042.25C136.732 935.874 19.0966 789.019 19.0964 626.964C19.0964 464.909 136.732 318.053 327.232 211.673C517.71 105.306 780.898 39.4944 1071.65 39.4944Z" stroke="url(#paint3_linear_0_22)" stroke-width="1.35988"/>
+</g>
+<defs>
+<filter id="filter0_f_0_22" x="-1.24106e-07" y="9.30897e-07" width="2143.29" height="1233.53" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0" result="effect1_foregroundBlur_0_22"/>
+</filter>
+<linearGradient id="paint0_linear_0_22" x1="422.301" y1="607.246" x2="1808.02" y2="607.246" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_22" x1="291.753" y1="613.365" x2="1905.93" y2="613.365" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_0_22" x1="218.319" y1="622.884" x2="1973.93" y2="622.884" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint3_linear_0_22" x1="18.4167" y1="626.964" x2="2124.87" y2="626.964" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F9F0E8" stop-opacity="0"/>
+<stop offset="0.495192" stop-color="#f03725"/>
+<stop offset="1" stop-color="#D5D2D0" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>`,
+};
+</script>
+
+<script>
+/* ===========================================================================
+   Section markup — the real component, rebuilt in plain DOM.
+   =========================================================================== */
+
+/* All coordinates are screenshot space inside the 1920 x 675 frame (Fan.tsx). */
+const DIAMONDS = [
+  [23, 351.9, '#e5331e'], [97, 429, '#e5331e'], [440, 91, '#5b5b5a'],
+  [401, 480, '#e5331e'], [183.9, 469.5, '#fffbf8'], [337.2, 280.1, '#fffbf8'],
+  [1886.1, 430.5, '#e5331e'], [1812.1, 353.3, '#e5331e'], [1508.1, 86.3, '#7c7c7c'],
+  [1508.1, 302.3, '#e5331e'], [1725.2, 312.8, '#fffbf8'], [1571.9, 502.3, '#fffbf8'],
+];
+
+const A = 'src/assets/fan/';
+const SPORT =
+  `<span class="fan__sport">` +
+  `<img src="${A}icon-sport-a.svg" alt="" class="fan__sport-a">` +
+  `<img src="${A}icon-sport-b.svg" alt="" class="fan__sport-b">` +
+  `<img src="${A}icon-sport-c.svg" alt="" class="fan__sport-c"></span>`;
+
+const PILLS = [
+  { label: 'Crypto', x: 502, y: 212, w: 120, icon: `<img src="${A}icon-crypto.svg" alt="">` },
+  { label: 'Sport', x: 201, y: 536, w: 120, icon: SPORT },
+  { label: 'Finance', x: 553, y: 558, w: 120, icon: `<img src="${A}icon-finance.svg" alt="">` },
+  { label: 'Geopolitics', x: 1581, y: 188, w: 149, icon: `<img src="${A}icon-geopolitics.svg" alt="">` },
+  { label: 'Tech', x: 1639, y: 512, w: 90, icon: `<img src="${A}icon-tech.svg" alt="">` },
+  { label: 'Elections', x: 1372, y: 556, w: 132, icon: `<img src="${A}icon-elections.svg" alt="">` },
+];
+
+/* Every copy of an arc SVG needs its own gradient ids: twenty instances of
+   `paint0_linear_0_17` in one document all resolve to the first, and because the
+   gradients are userSpaceOnUse with per-path coordinates that would re-aim the
+   fade on fifteen of the sixteen lines. The no-op blur filter (stdDeviation 0)
+   is dropped on the way past — it paints nothing and costs a filter pass per
+   frame on every arc that moves. */
+let uid = 0;
+function inlineSvg(half) {
+  const n = 'f' + (++uid) + '-';
+  return RAW[half]
+    .replace(/\sfilter="url\(#[^"]*\)"/g, '')
+    .replace(/id="([^"]+)"/g, (m, a) => `id="${n}${a.replace(/\s+/g, '_')}"`)
+    .replace(/url\(#([^)]+)\)/g, (m, a) => `url(#${n}${a.replace(/\s+/g, '_')})`)
+    .replace('<svg ', `<svg class="fan__lines fan__lines--${half}" `);
+}
+
+const arcGroup = (side) =>
+  `<div class="fan__arcs fan__arcs--${side}">${inlineSvg('upper')}${inlineSvg('lower')}</div>`;
+
+function stage() {
+  return `<div class="fan" data-motion="pending"><div class="fan__frame">
+    <div aria-hidden="true">
+      ${arcGroup('left')}${arcGroup('right')}
+      ${DIAMONDS.map(([x, y, c]) =>
+        `<span class="fan__diamond" data-x="${x}" style="--x:${x};--y:${y};background:${c}"></span>`).join('')}
+      ${PILLS.map((p) =>
+        `<span class="fan__pill" data-x="${p.x + p.w / 2}" style="--x:${p.x};--y:${p.y};--w:${p.w}">${p.icon}${p.label}</span>`).join('')}
+      <span class="fan__front fan__front--l"></span>
+      <span class="fan__front fan__front--r"></span>
+    </div>
+    <div class="fan__tile" aria-hidden="true">
+      <img src="${A}tile-bg.jpg" alt="" class="fan__tile-bg">
+      <span class="fan__glass"><img src="${A}tile-logo.svg" alt=""></span>
+    </div>
+    <h2 class="fan__title"><i>Your Funds Stay in Your Control</i></h2>
+    <p class="fan__sub"><i>Your assets stay under your control through non-custodial infrastructure and transparent on-chain settlement.</i></p>
+  </div></div>`;
+}
+
+/* ===========================================================================
+   Variants
+   =========================================================================== */
+const VARIANTS = [
+  ['Sweep', 'The lines themselves travel. Each arc starts fully outside its window and glides in from the edge on one long expo, outermost first, the two fans in mirror. Everything else follows in their wake and the copy lands last.'],
+  ['Trace', 'Nothing slides; the lines are drawn. A bright head runs the length of each arc and leaves the line behind it, one mirrored pair at a time, so you can follow the order. The tile ignites on the last pair.'],
+  ['Bloom', 'Inside out. The logo tile lights first and the heading answers it immediately, then the arcs expand inward from their far centres like rings growing, nearest the tile first, outward to the edge.'],
+  ['Front', 'Two scan lines start at the outer edges and sweep to the centre at constant speed. Nothing moves and nothing fades in on a timer: every arc, pill and diamond appears exactly as the front crosses it, so the order is the geometry. Copy opens from the middle where the two meet.'],
+  ['Signal', 'The lines arrive as broken segments streaming inward and fuse into solid arcs, in scattered order rather than a sweep. Diamonds blink like indicator lights, the pills lock on in two steps, the copy tunes in from a heavy blur.'],
+];
+
+document.getElementById('out').innerHTML = VARIANTS.map(([name, note], i) => `
+  <section class="dir" data-v="${i}">
+    <div class="dir__head">
+      <span class="dir__n">0${i + 1}</span>
+      <span class="dir__name">${name}</span>
+      <span class="dir__note">${note}</span>
+      <button class="ctrl dir__replay" data-replay="${i}">Replay</button>
+    </div>
+    <div class="stage">${stage()}</div>
+  </section>`).join('');
+
+/* --- reading the built section ------------------------------------------- */
+function collect(section) {
+  const root = section.querySelector('.fan');
+  const frame = root.querySelector('.fan__frame');
+  const arcs = [];
+  root.querySelectorAll('.fan__arcs').forEach((g) => {
+    const grp = g.classList.contains('fan__arcs--left') ? 'l' : 'r';
+    ['upper', 'lower'].forEach((half) => {
+      const svg = g.querySelector('.fan__lines--' + half);
+      svg.querySelectorAll('path').forEach((el, depth) => {
+        arcs.push({
+          el, svg, grp, half, depth,
+          /* Which way is "inward" (toward the band's centre) in this SVG's own
+             user space, and which way its local +x points on screen. The left
+             group's lower half and the right group's upper half are the two
+             that Figma rotated 180deg, so both of their axes are flipped. */
+          dir: half === 'upper' ? 1 : -1,
+          orient: (grp === 'l') === (half === 'upper') ? 1 : -1,
+          outSign: grp === 'l' ? -1 : 1,   /* screen direction of "outward" */
+        });
+      });
+    });
+  });
+  return {
+    root, frame, arcs,
+    groups: [...root.querySelectorAll('.fan__arcs')],
+    pills: [...root.querySelectorAll('.fan__pill')],
+    diamonds: [...root.querySelectorAll('.fan__diamond')],
+    fronts: [...root.querySelectorAll('.fan__front')],
+    tile: root.querySelector('.fan__tile'),
+    title: root.querySelector('.fan__title i'),
+    sub: root.querySelector('.fan__sub i'),
+  };
+}
+
+/* Screen geometry, remeasured on every replay because --f follows the window.
+   `travel` is how far, in px, this arc has to move outward before its leading
+   extreme clears the edge of its own window — what "enters from the side"
+   actually costs for a line whose ellipse is mostly off-frame already. */
+function measure(ctx) {
+  const f = ctx.frame.getBoundingClientRect();
+  ctx.W = f.width; ctx.L = f.left; ctx.T = f.top;
+  ctx.arcs.forEach((a) => {
+    const g = a.el.parentNode.closest('.fan__arcs').getBoundingClientRect();
+    const r = a.el.getBoundingClientRect();
+    const b = a.el.getBBox();
+    a.bbox = b;
+    a.rect = r;
+    /* Frame-relative, because every screen x in this file is measured from the
+       left edge of the band, never from the viewport. */
+    a.fl = r.left - f.left;
+    a.fr = r.right - f.left;
+    a.scale = r.width / b.width;                  /* px per local unit, x */
+    a.exit = (a.grp === 'l' ? r.right - g.left : g.right - r.left) + 14;
+    /* Half of a full exit, not a full one. Each stroke is painted with a
+       userSpaceOnUse gradient that is transparent at both ends, and the paint
+       server travels with the path: slide a line a long way outward and it
+       walks into the transparent tail of its own gradient and is gone long
+       before it leaves the window. A full exit therefore buys half a second of
+       black screen, not a bigger entrance. Half of it fades the line out just
+       as it reaches the edge, which is the effect we wanted anyway. */
+    a.travel = a.exit * 0.5;
+    /* Where this line sits across the band, 0 at the outer edge of the frame
+       to 1 at the centre — what 04 orders everything by. */
+    a.outX = Math.max(0, Math.min(ctx.W, (a.grp === 'l' ? r.left : r.right) - f.left));
+    a.inX = Math.max(0, Math.min(ctx.W, (a.grp === 'l' ? r.right : r.left) - f.left));
+  });
+  const at = (el) => {
+    const r = el.getBoundingClientRect();
+    return (r.left + r.width / 2) - f.left;
+  };
+  ctx.pills.forEach((p) => { p._x = at(p); });
+  ctx.diamonds.forEach((d) => { d._x = at(d); });
+}
+
+/* Outermost first. The pills and diamonds carry their design x, so this is the
+   same ordering the arcs get without measuring anything. */
+const outIn = (els) => els.slice().sort((a, b) =>
+  Math.abs(+b.dataset.x - 960) - Math.abs(+a.dataset.x - 960));
+
+/* Local x for a given screen x, inside one arc's own SVG user space. */
+const toLocal = (a, sx) => a.orient === 1
+  ? a.bbox.x + (sx - a.fl) / a.scale
+  : a.bbox.x + (a.fr - sx) / a.scale;
+
+/* A per-arc clip window in user space, used by 04. Lives in the SVG's own
+   <defs>-less tail and is torn down on reset. */
+function clipFor(a) {
+  const svg = a.svg;
+  const ns = 'http://www.w3.org/2000/svg';
+  const cp = document.createElementNS(ns, 'clipPath');
+  const id = 'wipe' + (++uid);
+  cp.setAttribute('id', id);
+  cp.setAttribute('class', 'wipe-clip');
+  const rect = document.createElementNS(ns, 'rect');
+  rect.setAttribute('y', a.bbox.y - 60);
+  rect.setAttribute('height', a.bbox.height + 120);
+  rect.setAttribute('width', 0);
+  rect.setAttribute('x', a.bbox.x);
+  cp.appendChild(rect);
+  svg.appendChild(cp);
+  a.el.setAttribute('clip-path', `url(#${id})`);
+  return rect;
+}
+
+/* The copy, in every variant: out of blur, never with a transform on the block
+   itself (both are centred with translateX(-50%)). */
+function copyIn(tl, ctx, at, o) {
+  o = Object.assign({ blur: 18, y: 16, dur: 1.1, ease: 'expo.out', gap: 0.12 }, o || {});
+  gsap.set([ctx.title, ctx.sub], { opacity: 0, y: o.y, filter: `blur(${o.blur}px)` });
+  tl.to(ctx.title, { opacity: 1, y: 0, filter: 'blur(0px)', duration: o.dur, ease: o.ease }, at);
+  tl.to(ctx.sub, { opacity: 1, y: 0, filter: 'blur(0px)', duration: o.dur, ease: o.ease }, at + o.gap);
+}
+
+/* Draw helper for 02. `strokeDashoffset` len -> 0 draws forward from the path's
+   start point; -len -> 0 fills in backward from its end. The spark is a short
+   dash pinned to whichever end is currently moving, so one expression covers
+   both directions. See draw() in src/lib/motion.ts for the production version. */
+function drawArc(tl, a, at, dur, fwd) {
+  const len = a.len;
+  const h = Math.min(len * 0.06, 260);
+  gsap.set(a.el, { strokeDasharray: len, strokeDashoffset: fwd ? len : -len, opacity: 1 });
+  gsap.set(a.spark, {
+    strokeDasharray: `${h} ${len + h}`,
+    strokeDashoffset: fwd ? h : -len,
+    opacity: 0.95,
+  });
+  tl.to(a.el, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
+  tl.to(a.spark, { strokeDashoffset: fwd ? h - len : 0, duration: dur, ease: 'power1.inOut' }, at);
+  tl.to(a.spark, { opacity: 0, duration: 0.45, ease: 'power2.out' }, at + dur * 0.72);
+}
+
+const BUILD = [
+
+/* -------------------------------------------------------------------------
+   01  SWEEP — the lines travel
+   Each arc is parked entirely outside its own window and flies back in. The
+   only variant where the geometry of every line actually moves across the
+   band; the stagger is by depth, outermost first, both fans in mirror.
+   ------------------------------------------------------------------------- */
+function sweep(tl, ctx) {
+  ctx.arcs.forEach((a) => {
+    gsap.set(a.el, { x: a.outSign * a.travel * a.orient / a.scale, opacity: 0 });
+  });
+  gsap.set(ctx.diamonds, { opacity: 0, scale: 0 });
+  ctx.pills.forEach((p) => gsap.set(p, { opacity: 0, x: (p._x < ctx.W / 2 ? -30 : 30), y: 6 }));
+  gsap.set(ctx.tile, { opacity: 0, scale: 0.72, y: 12 });
+  copyIn(tl, ctx, 1.1);
+
+  ctx.arcs.forEach((a) => {
+    const at = a.depth * 0.09 + (a.half === 'lower' ? 0.045 : 0);
+    tl.to(a.el, { x: 0, duration: 1.25, ease: 'power3.out' }, at);
+    tl.to(a.el, { opacity: 1, duration: 0.55, ease: 'power1.out' }, at);
+  });
+  outIn(ctx.diamonds).forEach((d, i) =>
+    tl.to(d, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2.2)' }, 0.34 + i * 0.045));
+  outIn(ctx.pills).forEach((p, i) =>
+    tl.to(p, { opacity: 0.7, x: 0, y: 0, duration: 1, ease: 'expo.out' }, 0.5 + i * 0.075));
+  tl.to(ctx.tile, { opacity: 1, scale: 1, y: 0, duration: 0.9, ease: 'expo.out' }, 0.95);
+},
+
+/* -------------------------------------------------------------------------
+   02  TRACE — the lines are drawn
+   Nothing translates. A bright head runs the length of each arc and leaves the
+   stroke behind it. Mirrored pairs fire one at a time, upper then lower at each
+   depth, so the order is legible as eight separate events.
+   ------------------------------------------------------------------------- */
+function trace(tl, ctx) {
+  ctx.arcs.forEach((a) => {
+    a.len = a.el.getTotalLength();
+    const sp = a.el.cloneNode(false);
+    sp.removeAttribute('id');
+    sp.setAttribute('class', 'spark');
+    sp.setAttribute('stroke', '#ffc0a4');
+    sp.setAttribute('stroke-width', '2.4');
+    a.el.parentNode.insertBefore(sp, a.el.nextSibling);
+    a.spark = sp;
+  });
+  gsap.set(ctx.diamonds, { opacity: 0, scale: 0.4 });
+  gsap.set(ctx.pills, { opacity: 0, scale: 0.94 });
+  gsap.set(ctx.tile, { opacity: 0, scale: 0.8 });
+
+  const BEAT = 0.26, DUR = 1.05;
+  ctx.arcs.forEach((a) => {
+    /* Upper halves draw downward from the top of the window, lower halves
+       upward from the bottom: forward along the path for both, which the two
+       180deg-rotated copies turn into a mirror for free. */
+    drawArc(tl, a, (a.depth * 2 + (a.half === 'lower' ? 1 : 0)) * BEAT, DUR, true);
+  });
+  const last = 7 * BEAT + DUR;
+
+  outIn(ctx.diamonds).forEach((d, i) =>
+    tl.to(d, { opacity: 1, scale: 1, duration: 0.28, ease: 'power3.out' }, 0.55 + i * 0.09));
+  outIn(ctx.pills).forEach((p, i) =>
+    tl.to(p, { opacity: 0.7, scale: 1, duration: 0.42, ease: 'power3.out' }, last - 0.9 + i * 0.07));
+  tl.to(ctx.tile, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, last - 0.35);
+  tl.fromTo(ctx.tile, { filter: 'brightness(2.6)' },
+    { filter: 'brightness(1)', duration: 0.9, ease: 'power2.out', immediateRender: false }, last - 0.35);
+  copyIn(tl, ctx, last - 0.5, { blur: 14, y: 10, dur: 1 });
+},
+
+/* -------------------------------------------------------------------------
+   03  BLOOM — inside out
+   The only variant that starts at the centre. The tile lights, the copy answers
+   it immediately, and the arcs then expand inward from their own far centres —
+   nearest the tile first, propagating outward to the edge. No translation and
+   no drawing: each line simply grows into place.
+   ------------------------------------------------------------------------- */
+function bloom(tl, ctx) {
+  ctx.arcs.forEach((a) => gsap.set(a.el, { scale: 0.86, rotation: a.dir * 1.4, opacity: 0 }));
+  gsap.set(ctx.diamonds, { opacity: 0, scale: 0.5 });
+  gsap.set(ctx.pills, { opacity: 0, scale: 0.94, y: 8 });
+  gsap.set(ctx.tile, { opacity: 0, scale: 0.55 });
+
+  tl.to(ctx.tile, { opacity: 1, scale: 1, duration: 0.95, ease: 'back.out(1.7)' }, 0);
+  tl.fromTo(ctx.tile, { filter: 'brightness(2.8)' },
+    { filter: 'brightness(1)', duration: 1.3, ease: 'power2.out' }, 0);
+  copyIn(tl, ctx, 0.22, { blur: 22, y: 10, dur: 1.2, ease: 'power3.out', gap: 0.14 });
+
+  ctx.arcs.forEach((a) => {
+    const at = 0.4 + (3 - a.depth) * 0.19 + (a.half === 'lower' ? 0.07 : 0);
+    tl.to(a.el, { scale: 1, rotation: 0, duration: 1.6, ease: 'power3.out' }, at);
+    tl.to(a.el, { opacity: 1, duration: 0.8, ease: 'power1.out' }, at);
+  });
+  outIn(ctx.diamonds).reverse().forEach((d, i) =>
+    tl.to(d, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, 0.55 + i * 0.05));
+  outIn(ctx.pills).reverse().forEach((p, i) =>
+    tl.to(p, { opacity: 0.7, scale: 1, y: 0, duration: 0.85, ease: 'power3.out' }, 0.7 + i * 0.07));
+},
+
+/* -------------------------------------------------------------------------
+   04  FRONT — a scan, not a stagger
+   Two fronts leave the outer edges at constant speed and meet in the middle.
+   Every arc has its own clip window in its own user space, driven by where the
+   front is rather than by an index, so the sixteen lines resolve in the order
+   their geometry reaches the light. Pills and diamonds light as they are
+   crossed. Nothing anywhere moves.
+   ------------------------------------------------------------------------- */
+function front(tl, ctx) {
+  const DUR = 1.75, half = ctx.W / 2;
+
+  gsap.set(ctx.arcs.map((a) => a.el), { opacity: 1 });
+  gsap.set(ctx.diamonds, { opacity: 0 });
+  gsap.set(ctx.pills, { opacity: 0 });
+  gsap.set(ctx.tile, { opacity: 0, scale: 0.9 });
+  gsap.set(ctx.fronts, { opacity: 0, x: 0 });
+
+  tl.to(ctx.fronts, { opacity: 1, duration: 0.18, ease: 'none' }, 0);
+  tl.to(ctx.fronts[0], { x: half, duration: DUR, ease: 'none' }, 0);
+  tl.to(ctx.fronts[1], { x: -half, duration: DUR, ease: 'none' }, 0);
+  tl.to(ctx.fronts, { opacity: 0, duration: 0.35, ease: 'power2.out' }, DUR - 0.1);
+
+  /* How far the front has travelled, 0..1, when it is at screen x. */
+  const reach = (x) => Math.max(0, Math.min(1, (x < half ? x : ctx.W - x) / half));
+
+  ctx.arcs.forEach((a) => {
+    const rect = clipFor(a);
+    const t0 = reach(a.outX), t1 = reach(a.inX);
+    if (!(t1 > t0)) { tl.to(a.el, { opacity: 1, duration: 0.01 }, DUR * t0); return; }
+    const p = { sx: a.outX };
+    const edge = toLocal(a, a.outX);
+    tl.to(p, {
+      sx: a.inX, duration: DUR * (t1 - t0), ease: 'none',
+      onUpdate() {
+        const lx = toLocal(a, p.sx);
+        rect.setAttribute('x', Math.min(edge, lx) - 2);
+        rect.setAttribute('width', Math.abs(lx - edge) + 2);
+      },
+    }, DUR * t0);
+  });
+
+  ctx.diamonds.forEach((d) =>
+    tl.to(d, { opacity: 1, duration: 0.24, ease: 'power2.out' }, DUR * reach(d._x)));
+  ctx.pills.forEach((p) =>
+    tl.to(p, { opacity: 0.7, duration: 0.32, ease: 'power2.out' }, DUR * reach(p._x)));
+  tl.to(ctx.tile, { opacity: 1, scale: 1, duration: 0.55, ease: 'power3.out' }, DUR - 0.12);
+
+  /* The two fronts meet on the copy, so it opens from the middle outward as
+     well as clearing its blur. */
+  gsap.set([ctx.title, ctx.sub], { opacity: 0, filter: 'blur(16px)', clipPath: 'inset(-30% 50% -30% 50%)' });
+  tl.to(ctx.title, { opacity: 1, filter: 'blur(0px)', clipPath: 'inset(-30% 0% -30% 0%)', duration: 1, ease: 'power3.out' }, DUR - 0.05);
+  tl.to(ctx.sub, { opacity: 1, filter: 'blur(0px)', clipPath: 'inset(-30% 0% -30% 0%)', duration: 1, ease: 'power3.out' }, DUR + 0.08);
+},
+
+/* -------------------------------------------------------------------------
+   05  SIGNAL — the lines materialise
+   Each arc arrives as a stream of short dashes travelling along itself, which
+   close up into a solid line as it drifts the last of the way in. The order is
+   scattered rather than swept, and everything else behaves like hardware coming
+   online: diamonds blink, pills lock on in two steps, the copy tunes in.
+   ------------------------------------------------------------------------- */
+function signal(tl, ctx) {
+  /* A fixed shuffle, so the scatter is the same on every replay and between
+     reloads — it has to be comparable, not random. */
+  const ORDER = [6, 13, 1, 9, 4, 15, 2, 11, 7, 0, 12, 5, 14, 3, 10, 8];
+
+  ctx.arcs.forEach((a) => {
+    a.len = a.el.getTotalLength();
+    gsap.set(a.el, { opacity: 0, x: a.outSign * (a.travel * 0.45) * a.orient / a.scale });
+    a.el.style.strokeDasharray = '14 30';
+  });
+  gsap.set(ctx.diamonds, { opacity: 0 });
+  gsap.set(ctx.pills, { opacity: 0 });
+  gsap.set(ctx.tile, { opacity: 0 });
+
+  ORDER.forEach((n, i) => {
+    const a = ctx.arcs[n];
+    const at = i * 0.075;
+    /* The segments are also fatter than the settled line and thin down into it.
+       At 1.36 user units the stroke is under a pixel once the frame is scaled,
+       and a sparse dash on a sub-pixel line is invisible rather than dotted. */
+    const s = { dash: 14, gap: 30, off: a.len * 0.12 * a.dir, w: 2.9 };
+    tl.to(s, {
+      dash: 60, gap: 0, off: 0, w: 1.35988, duration: 1.15, ease: 'power2.out',
+      onUpdate() {
+        a.el.style.strokeDasharray = `${s.dash} ${s.gap}`;
+        a.el.style.strokeDashoffset = s.off;
+        a.el.style.strokeWidth = s.w;
+      },
+    }, at);
+    tl.to(a.el, { keyframes: [
+      { opacity: 0.45, duration: 0.1 }, { opacity: 0.12, duration: 0.08 }, { opacity: 1, duration: 0.5 },
+    ], ease: 'none' }, at);
+    tl.to(a.el, { x: 0, duration: 1.3, ease: 'power3.out' }, at);
+  });
+
+  ctx.diamonds.forEach((d, i) =>
+    tl.to(d, { keyframes: [
+      { opacity: 1, duration: 0.06 }, { opacity: 0, duration: 0.07 },
+      { opacity: 1, duration: 0.06 }, { opacity: 0.25, duration: 0.09 }, { opacity: 1, duration: 0.2 },
+    ], ease: 'none' }, 0.45 + ((i * 7) % 12) * 0.055));
+
+  ctx.pills.forEach((p, i) => {
+    gsap.set(p, { x: (p._x < ctx.W / 2 ? -12 : 12) });
+    tl.to(p, { keyframes: [
+      { opacity: 0.22, duration: 0.09 }, { opacity: 0, duration: 0.06 }, { opacity: 0.7, duration: 0.24 },
+    ], ease: 'none' }, 1.1 + ((i * 5) % 6) * 0.08);
+    tl.to(p, { x: 0, duration: 0.7, ease: 'power3.out' }, 1.1 + ((i * 5) % 6) * 0.08);
+  });
+
+  tl.to(ctx.tile, { keyframes: [
+    { opacity: 0.5, duration: 0.07 }, { opacity: 0, duration: 0.08 },
+    { opacity: 0.8, duration: 0.06 }, { opacity: 0.1, duration: 0.07 }, { opacity: 1, duration: 0.35 },
+  ], ease: 'none' }, 1.25);
+  tl.fromTo(ctx.tile, { scale: 0.92 }, { scale: 1, duration: 0.7, ease: 'power3.out', immediateRender: false }, 1.25);
+
+  gsap.set([ctx.title, ctx.sub], { opacity: 0, filter: 'blur(26px)' });
+  [ctx.title, ctx.sub].forEach((el, i) =>
+    tl.to(el, { keyframes: [
+      { opacity: 0.55, filter: 'blur(9px)', duration: 0.4, ease: 'power2.out' },
+      { filter: 'blur(11px)', duration: 0.12, ease: 'none' },
+      { opacity: 1, filter: 'blur(0px)', duration: 0.7, ease: 'power3.out' },
+    ] }, 1.45 + i * 0.12));
+},
+];
+
+/* ===========================================================================
+   Rig — build, reset, replay
+   =========================================================================== */
+const rigs = [...document.querySelectorAll('.dir')].map((section, i) => {
+  const ctx = collect(section);
+  return { i, ctx, tl: null, played: false };
+});
+
+function reset(rig) {
+  const { ctx } = rig;
+  if (rig.tl) { rig.tl.kill(); rig.tl = null; }
+  const arcs = ctx.arcs.map((a) => a.el);
+  const everything = arcs.concat(ctx.pills, ctx.diamonds, ctx.fronts,
+    [ctx.tile, ctx.title, ctx.sub]);
+  gsap.killTweensOf(everything);
+  /* Never clearProps:'all' here. The pills and diamonds are positioned by the
+     --x/--y/--w custom properties in their own style attribute, exactly as in
+     Fan.tsx, and 'all' empties the attribute — every pill collapses onto 0,0
+     and the section is wrong from the second replay on. Name the properties. */
+  gsap.set(everything, { clearProps: 'opacity,transform,filter,clipPath,visibility' });
+  ctx.arcs.forEach((a) => {
+    a.el.removeAttribute('transform');
+    a.el.removeAttribute('clip-path');
+    a.el.style.strokeDasharray = '';
+    a.el.style.strokeDashoffset = '';
+    a.el.style.strokeWidth = '';
+    a.spark = null;
+  });
+  ctx.root.querySelectorAll('.spark, .wipe-clip').forEach((n) => n.remove());
+}
+
+function play(rig) {
+  reset(rig);
+  measure(rig.ctx);
+  const tl = gsap.timeline({ paused: true });
+  BUILD[rig.i](tl, rig.ctx);
+  rig.ctx.root.removeAttribute('data-motion');   /* same frame the start state is written */
+  rig.tl = tl;
+  tl.timeScale(slow ? 0.5 : 1).play(0);
+  rig.played = true;
+}
+
+let slow = false;
+document.getElementById('slow').addEventListener('click', (e) => {
+  slow = !slow;
+  e.currentTarget.setAttribute('aria-pressed', String(slow));
+  rigs.forEach((r) => r.tl && r.tl.timeScale(slow ? 0.5 : 1));
+});
+document.getElementById('all').addEventListener('click', () => rigs.forEach(play));
+document.querySelectorAll('[data-replay]').forEach((b) =>
+  b.addEventListener('click', () => play(rigs[+b.dataset.replay])));
+
+/* Plays once when it arrives, the way the real band is scroll-gated. Replay is
+   the only other trigger; nothing here responds to the pointer. */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    const rig = rigs.find((r) => r.ctx.root === e.target);
+    if (e.isIntersecting && rig && !rig.played) play(rig);
+  });
+}, { threshold: 0.35 });
+rigs.forEach((r) => io.observe(r.ctx.root));
+
+/* Fonts landing late reflow the frame, and a variant measured against the old
+   width would fly its lines in from the wrong place. Anything still waiting is
+   simply measured later; anything already played is left alone. */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => rigs.forEach((r) => r.played || measure(r.ctx)));
+}
+</script>
+</body>
+</html>

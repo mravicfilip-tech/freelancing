@@ -49,7 +49,23 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
     const parts = kids.length > 1 ? kids : nested;
     if (parts.length > 1) pop(tl, parts, at + 0.3, { scale: 0.92, y: 12, duration: 0.85, stagger: 0.1, ease: EASE });
-    else rise(tl, visual, at + 0.3, { y: 16, duration: 1.0 });
+    // Explicitly fromTo, and never `rise`, which is a `from`. `.hero__visual`
+    // carries its own CSS `transition: transform 800ms` toward `transform:
+    // none` on `.is-active`, and a `from` tween reads its END value off the
+    // element when the tween is built -- which is mid-transition, so GSAP
+    // recorded whatever the transition happened to be passing through as the
+    // place to finish. The illustration then stayed there: measured settling at
+    // top 245.0 with `matrix(0.985, ..., 16.31)` against 224.4 and `none` under
+    // reduced motion, on every slide, and landing on a different sub-pixel
+    // every load (16.2487 / 16.3103 / 16.347 across three runs) so the
+    // hairlines in the artwork rasterised differently run to run. Stating both
+    // ends cannot be poisoned by a transform in flight, and clearing the props
+    // hands the settled element back to CSS. Same fault the `pop()` docstring
+    // in lib/motion.ts records against the hero's Get Started button.
+    else tl.fromTo(visual,
+      { y: 16, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.0, ease: EASE, clearProps: 'transform,opacity' },
+      at + 0.3);
   }
 
   // Less blur on the lede: it is set much smaller, so the same 12px would wash

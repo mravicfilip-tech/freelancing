@@ -21,6 +21,7 @@ import filter from '../../assets/familiar/filter.svg';
 import trendTab from '../../assets/familiar/trend-tab.svg';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFamiliar } from './Familiar.motion';
+import { familiarLoop } from './Familiar.loop';
 import './Familiar.css';
 
 const CANDIDATES = [
@@ -123,8 +124,7 @@ export function Familiar() {
   // unmount. Both arguments have to be stable module-scope references, since
   // they are the effect's dependencies.
   //
-  //   const ref = useSectionMotion<HTMLElement>(buildFamiliar, { idle: familiarLoop });
-  const ref = useSectionMotion<HTMLElement>(buildFamiliar);
+  const ref = useSectionMotion<HTMLElement>(buildFamiliar, { idle: familiarLoop });
 
   return (
     <section ref={ref} className="fam" aria-labelledby="fam-title" data-motion="pending">

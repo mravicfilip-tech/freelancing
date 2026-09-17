@@ -365,20 +365,6 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   let onScreen = true;
   let running = false;
 
-  const halt = () => {
-    // No `running` guard: if this is reached before anything played, settling is
-    // a no-op, and if it is reached mid-load-in it is the only thing that puts
-    // a half-assembled illustration back to the design.
-    running = false;
-    window.clearTimeout(guard);
-    loadIn.pause();
-    loop.pause();
-    spawned.forEach((tl) => tl.kill());
-    spawned.clear();
-    gsap.set(pulse, { opacity: 0 });
-    settleProps();
-  };
-
   // If the load-in stalls -- a blocked main thread while the WebGL mark
   // compiles, a tab throttled in the background -- settle it rather than leave
   // the illustration half assembled on screen. A fixed deadline cannot tell
@@ -397,6 +383,20 @@ export function slideFutureMotion(root: HTMLElement): () => void {
       guard = window.setTimeout(watch, 500);
     };
     guard = window.setTimeout(watch, (loadIn.duration() + 2) * 1000);
+  };
+
+  const halt = () => {
+    // No `running` guard: if this is reached before anything played, settling is
+    // a no-op, and if it is reached mid-load-in it is the only thing that puts
+    // a half-assembled illustration back to the design.
+    running = false;
+    window.clearTimeout(guard);
+    loadIn.pause();
+    loop.pause();
+    spawned.forEach((tl) => tl.kill());
+    spawned.clear();
+    gsap.set(pulse, { opacity: 0 });
+    settleProps();
   };
 
   const start = () => {

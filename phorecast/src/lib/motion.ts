@@ -107,12 +107,23 @@ export function bob(el: Element | null, amplitude = 3, seconds = 3, delay = 0) {
   if (el) gsap.to(el, { y: -amplitude, duration: seconds, delay, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 }
 
-/** Roll a figure to a new value: the old slides up and out, the new one in. */
+/**
+ * Roll a figure to a new value: the old slides up and out, the new one in.
+ *
+ * `immediateRender: false` is load-bearing. A `fromTo` writes its START values
+ * the moment the tween is BUILT, not when the playhead reaches it -- and this
+ * one is built at the same instant as the departure tween that is supposed to
+ * run first. Without the flag the outgoing figure is parked 45% down at opacity
+ * 0 before it has moved at all, so the departure plays on something already
+ * invisible and only the second half of the roll is ever seen.
+ */
 export function roll(el: HTMLElement, next: string) {
   gsap.timeline()
     .to(el, { yPercent: -45, opacity: 0, duration: 0.24, ease: 'power2.in' })
     .add(() => { el.textContent = next; })
-    .fromTo(el, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
+    .fromTo(el,
+      { yPercent: 45, opacity: 0 },
+      { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out', immediateRender: false });
 }
 
 /**

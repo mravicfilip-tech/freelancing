@@ -18,6 +18,8 @@ import nodeBtc from '../../assets/built/node-btc.svg';
 import { Roll } from '../Roll';
 import { useSectionMotion } from '../../lib/motion';
 import { buildBuilt } from './Built.motion';
+import { bt1Loop } from './loops/bt1';
+import { bt2Loop } from './loops/bt2';
 import nodeLock from '../../assets/built/node-lock.svg';
 import gold from '../../assets/built/gold.svg';
 import arrow from '../../assets/built/arrow.svg';
@@ -112,11 +114,23 @@ const COLUMNS = [
   },
 ];
 
+/**
+ * The two cards loop independently, but `useSectionMotion` takes a single
+ * `idle`, so they are started together and torn down together here. Module
+ * scope, not inline: `idle` is one of the layout effect's dependencies, and a
+ * new function identity on every render would tear the entrance down and
+ * replay it -- which is exactly what happened on the familiar section.
+ */
+function builtIdle(root: HTMLElement) {
+  const stops = [bt1Loop(root), bt2Loop(root)];
+  return () => stops.forEach((stop) => stop());
+}
+
 export function Built() {
   // The band arrives when it is scrolled to; see Built.motion.ts. `pending`
   // holds the animated parts until GSAP takes over in the same frame — the CSS
   // for it is at the end of Built.css.
-  const ref = useSectionMotion<HTMLElement>(buildBuilt);
+  const ref = useSectionMotion<HTMLElement>(buildBuilt, { idle: builtIdle });
 
   return (
     <section ref={ref} className="built" id="built" aria-labelledby="built-title" data-motion="pending">

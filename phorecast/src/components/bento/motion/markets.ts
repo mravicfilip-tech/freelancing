@@ -286,7 +286,7 @@ export function markets(card: HTMLElement): () => void {
         scale: n.is * (1 + n.lift * 0.04),
         transformOrigin: '50% 50%',
         // cream reads depth as a cast shadow, never as a glow
-        boxShadow: `0 ${(4 + n.lift * 9).toFixed(1)}px ${(11 + n.lift * 16).toFixed(1)}px -8px rgba(23,14,8,${(
+        boxShadow: `0 ${(4 + n.lift * 9).toFixed(1)}px ${(11 + n.lift * 16).toFixed(1)}px -8px rgba(22, 12, 9,${(
           0.14 + n.lift * 0.2
         ).toFixed(3)})`,
       });
@@ -391,8 +391,8 @@ export function markets(card: HTMLElement): () => void {
       uPress: { value: new THREE.Vector2(-999, -999) },
       uPressT: { value: -999 },
       uHub: { value: new THREE.Vector2(0, 0) },
-      uInk: { value: new THREE.Color('#171008') },
-      uWarm: { value: new THREE.Color('#f55e22') },
+      uInk: { value: new THREE.Color('#160e09') },
+      uWarm: { value: new THREE.Color('#e5331e') },
     };
 
     const material = new THREE.ShaderMaterial({

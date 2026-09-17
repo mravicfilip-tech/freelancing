@@ -8,9 +8,9 @@
 }
 .footer__g { position: absolute; border-radius: 50%; filter: blur(110px); }
 .footer__g--red { right: -14%; bottom: -800px; width: 1300px; height: 1300px; background: linear-gradient(150deg, #0f0e0d 28%, #8c0303 100%); }
-.footer__g--orange { left: -6%; bottom: -880px; width: 1400px; height: 1400px; background: #d1541c; opacity: 0.9; }
-.footer__g--peach { left: 12%; bottom: -1120px; width: 1300px; height: 1300px; background: #f99e57; opacity: 0.65; }
-.footer__g--cream { left: 24%; bottom: -1010px; width: 1000px; height: 1000px; background: #ffeada; opacity: 0.6; }
+.footer__g--orange { left: -6%; bottom: -880px; width: 1400px; height: 1400px; background: #b43725; opacity: 0.9; }
+.footer__g--peach { left: 12%; bottom: -1120px; width: 1300px; height: 1300px; background: #ec7850; opacity: 0.65; }
+.footer__g--cream { left: 24%; bottom: -1010px; width: 1000px; height: 1000px; background: #fbd6ca; opacity: 0.6; }
 
 .footer__top { display: flex; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
 .footer__brand { display: flex; flex-direction: column; gap: 24px; width: 352px; max-width: 100%; }

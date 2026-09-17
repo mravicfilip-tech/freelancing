@@ -156,7 +156,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 /* The colour half of direction 03. The roll carries the movement; these carry
    the state, so a control still reads as hovered with motion turned off. */
 .btn--primary:hover { background: var(--white-font); color: var(--orange-100); }
-.btn--ghost:hover { border-color: var(--orange-100); background: rgba(245, 94, 34, 0.1); }
+.btn--ghost:hover { border-color: var(--orange-100); background: rgba(229, 51, 30, 0.1); }
 .btn--outline:hover { border-color: var(--orange-300); color: var(--orange-300); }
 .nav__link:hover { color: var(--orange-300); }
 

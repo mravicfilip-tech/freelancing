@@ -21,9 +21,9 @@
 .fam__g { position: absolute; width: calc(1539 * var(--u, 0.8px)); height: calc(1539 * var(--u, 0.8px)); border-radius: 50%; filter: blur(109px); }
 .fam__bg { --u: calc(100cqw / 1920); container-type: inline-size; }
 .fam__g--red { left: calc(411 * var(--u)); top: calc(74 * var(--u)); background: linear-gradient(168deg, #0f0e0d 20%, #7e0202 100%); }
-.fam__g--orange { left: calc(425 * var(--u)); top: calc(411 * var(--u)); background: #d1541c; }
-.fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: #f99e57; }
-.fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: #ffeada; }
+.fam__g--orange { left: calc(425 * var(--u)); top: calc(411 * var(--u)); background: #b43725; }
+.fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: #ec7850; }
+.fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: #fbd6ca; }
 /* A tighter core so the band just above the horizon reads as bright as the design. */
 /* The design's brightest point hugs the horizon crest, near the top of this
    disc rather than its centre. */
@@ -206,7 +206,7 @@
   font-family: var(--font-display); font-weight: 500; font-size: calc(12 * var(--u));
   letter-spacing: calc(-0.24 * var(--u)); line-height: 1.2; color: var(--color-nre-body); white-space: nowrap;
 }
-.fam__chip-dot { width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: #ff632a; flex: none; }
+.fam__chip-dot { width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 50%; background: #f03725; flex: none; }
 
 @media (max-width: 1100px) {
   .fam__stage { --u: calc(100cqw / 1400); aspect-ratio: 1400 / 1180; }

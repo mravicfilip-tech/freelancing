@@ -92,13 +92,13 @@ export function funds(card: HTMLElement): () => void {
   // Stand-ins for the two shipped <img> rings, stroke for stroke, so the
   // load-in can draw them. The originals only stand down once these exist.
   const ghostW = line(P_WALLET, '#D9D9D9', '1', '0.2');
-  const ghostR = line(P_RING, '#FF632A', '1', '0.22');
-  const cometD = line(P_DOTTED, '#ff7a3c', '1.6', '0.5');
-  const cometR = line(P_RING, '#ff7a3c', '1.6', '0.5');
+  const ghostR = line(P_RING, '#f03725', '1', '0.22');
+  const cometD = line(P_DOTTED, '#f15036', '1.6', '0.5');
+  const cometR = line(P_RING, '#f15036', '1.6', '0.5');
   const head = () => {
     const c = document.createElementNS(NS, 'circle');
     c.setAttribute('r', '2.6');
-    c.style.cssText = 'fill:#ff8a4d;opacity:.8';
+    c.style.cssText = 'fill:#f26246;opacity:.8';
     svg.appendChild(c);
     return c;
   };
@@ -296,7 +296,7 @@ export function funds(card: HTMLElement): () => void {
       uComet: { value: new THREE.Vector2(-999, -999) },
       uWallet: { value: new THREE.Vector2(-999, -999) },
       uOn: { value: 0 },
-      uWarm: { value: new THREE.Color('#ff8a4d') },
+      uWarm: { value: new THREE.Color('#f26246') },
     };
 
     const material = new THREE.ShaderMaterial({

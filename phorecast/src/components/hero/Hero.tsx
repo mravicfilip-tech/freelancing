@@ -224,7 +224,13 @@ export function Hero() {
         </div>
 
         <div className="hero__position">
-          <Position index={index} count={SLIDES.length} onSelect={go} />
+          <Position
+            index={index}
+            count={SLIDES.length}
+            onSelect={go}
+            periodMs={AUTOPLAY_MS}
+            paused={paused || reduced.current}
+          />
         </div>
 
         {active.foot ?? <div className="hero__foot" />}

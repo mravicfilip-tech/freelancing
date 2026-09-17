@@ -20,7 +20,7 @@
   width: 1539px;
   height: 1539px;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #d1541c 0%, #8a2a0c 45%, rgba(15, 14, 13, 0) 70%);
+  background: radial-gradient(circle at 50% 50%, #b43725 0%, #701712 45%, rgba(15, 14, 13, 0) 70%);
   filter: blur(110px);
   opacity: 0.9;
 }
@@ -82,13 +82,13 @@
 .bento__cta img { width: 12px; height: 6px; }
 .bento__cta--white { color: var(--white-font); }
 .bento__cta--orange { color: var(--orange-100); }
-.bento__cta--orange-light { color: #ff632a; }
+.bento__cta--orange-light { color: #f03725; }
 
 /* Card A ------------------------------------------------------------------ */
 .bcard--onboard {
   flex: 1 0 0;
   min-height: 385px;
-  background: linear-gradient(180deg, #a21605 0%, #ff632a 86.058%, #f8a361 100%);
+  background: linear-gradient(180deg, #a21605 0%, #f03725 86.058%, #ec7f59 100%);
 }
 .bcard__art { position: absolute; left: 30px; top: 30px; width: 474px; height: 325px; }
 .onboard__phone { position: absolute; left: 210px; top: 98px; width: 214px; height: 420px; }
@@ -164,11 +164,11 @@
   position: absolute; display: grid; place-items: center; width: 36px; height: 36px; padding: 10px;
   border-radius: 8px; background: var(--bg);
 }
-.funds__tile--bordered { border: 1px solid rgba(255, 99, 42, 0.1); }
+.funds__tile--bordered { border: 1px solid rgba(240, 55, 37, 0.1); }
 .funds__tile img { width: 16px; height: 16px; }
 .funds__pill {
   position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 10px; border-radius: 30px;
-  background: #2f110c; border: 1px solid rgba(255, 99, 42, 0.17);
+  background: #2d0e0f; border: 1px solid rgba(240, 55, 37, 0.17);
   font-family: var(--font-display); font-weight: 400; font-size: 12px; line-height: normal; letter-spacing: -0.24px;
   color: var(--white-font); white-space: nowrap;
 }
@@ -188,7 +188,7 @@
 .bonus__pill {
   position: absolute; left: 455px; top: 205px; z-index: 1;
   display: flex; align-items: center; gap: 20px; width: 297px; padding: 12px 20px;
-  border-radius: 30px; background: #1d1c1b; border: 1px solid rgba(245, 94, 34, 0.25);
+  border-radius: 30px; background: #1d1c1b; border: 1px solid rgba(229, 51, 30, 0.25);
 }
 .bonus__pill > img { flex: none; }
 .bonus__amt { display: flex; flex-direction: column; align-items: center; text-align: center; font-family: var(--font-display); color: var(--white-font); line-height: normal; }
@@ -222,10 +222,10 @@
 .mk__tile { position: absolute; display: grid; place-items: center; overflow: hidden; }
 .mk__tile--light { background: #e6e6e6; border: 1px solid rgba(0, 0, 0, 0.09); }
 .mk__tile--dark { border: 1.675px solid rgba(0, 0, 0, 0.09); border-radius: 15px; }
-.mk__tile--solana { width: 40px; height: 40px; border-radius: 12.2px; background: #fff; border: 1.367px solid rgba(255, 99, 42, 0.51); }
+.mk__tile--solana { width: 40px; height: 40px; border-radius: 12.2px; background: #fff; border: 1.367px solid rgba(240, 55, 37, 0.51); }
 .mk__hub {
   position: absolute; display: grid; place-items: center; width: 82px; height: 82px; border-radius: 50%;
-  background: #fff; border: 1.64px solid rgba(255, 99, 42, 0.26);
+  background: #fff; border: 1.64px solid rgba(240, 55, 37, 0.26);
 }
 .mk__cursor { position: absolute; width: 20px; height: 20px; }
 .mk__tooltip {
@@ -290,6 +290,7 @@
    guarantee has to come from the hold never applying in the first place when
    nothing will undo it. Only the animated parts are held; the card's frame and
    background stay, so nothing about the layout pops in. */
+[data-js] .bento[data-motion='pending'] .bento__card,
 [data-js] .bento[data-motion='pending'] .bento__glow,
 [data-js] .bento[data-motion='pending'] .bento__title,
 [data-js] .bento[data-motion='pending'] .bento__sub,

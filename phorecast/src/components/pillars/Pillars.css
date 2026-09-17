@@ -30,9 +30,9 @@
 .pillars__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .pillars__g { position: absolute; width: 1539px; height: 1539px; border-radius: 50%; filter: blur(109px); }
 .pillars__g--red { left: 1004px; top: -1032px; background: linear-gradient(168deg, #0f0e0d 30%, #7e0202 100%); }
-.pillars__g--orange { left: 1018px; top: -1369px; background: #d1541c; }
-.pillars__g--peach { left: 702px; top: -1490px; background: #f99e57; }
-.pillars__g--cream { left: 1002px; top: -1647px; background: #ffeada; }
+.pillars__g--orange { left: 1018px; top: -1369px; background: #b43725; }
+.pillars__g--peach { left: 702px; top: -1490px; background: #ec7850; }
+.pillars__g--cream { left: 1002px; top: -1647px; background: #fbd6ca; }
 
 /* Cards ---------------------------------------------------------------------- */
 .pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }

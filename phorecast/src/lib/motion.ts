@@ -155,8 +155,8 @@ export interface SectionMotion {
  */
 export function useSectionMotion<T extends HTMLElement = HTMLElement>(
   build: (m: SectionMotion) => void,
-  { threshold = 0.15, idle, immediate = false }:
-    { threshold?: number; idle?: (el: HTMLElement) => () => void; immediate?: boolean } = {},
+  { threshold = 0, rootMargin = '0px 0px -25% 0px', idle, immediate = false }:
+    { threshold?: number; rootMargin?: string; idle?: (el: HTMLElement) => () => void; immediate?: boolean } = {},
 ): RefObject<T | null> {
   const ref = useRef<T>(null);
 
@@ -250,19 +250,19 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     if (immediate) {
       start();
     } else {
+      // "Has this been scrolled to" is a question about how far the section has
+      // come up the screen, not what fraction of it is showing. A ratio cannot
+      // answer it: a section taller than the viewport can never reach a high
+      // one, so a threshold set high enough to ignore the sliver under the hero
+      // is a threshold the section may never cross, and the band sits holding
+      // an empty frame the whole way down. The negative bottom margin asks the
+      // question directly -- the section must climb a quarter of the screen
+      // before it counts -- and it behaves the same whatever either height is.
       io = new IntersectionObserver(([entry]) => {
-        // isIntersecting is true for any overlap at all, however small, so
-        // testing it ignores the threshold entirely -- which is how a band
-        // opened on the sliver of itself showing under the hero before anyone
-        // had scrolled, and was finished by the time you arrived. Compare the
-        // ratio instead. A section taller than the viewport can never reach a
-        // high ratio, so filling most of the screen counts too.
-        const enough = entry.intersectionRatio >= threshold
-          || entry.intersectionRect.height >= entry.rootBounds!.height * 0.6;
-        if (!entry.isIntersecting || !enough) return;
+        if (!entry.isIntersecting || entry.intersectionRatio < threshold) return;
         io?.disconnect();
         start();
-      }, { threshold: [0, threshold, 1], rootMargin: '0px 0px -10% 0px' });
+      }, { threshold, rootMargin });
       io.observe(el);
     }
 

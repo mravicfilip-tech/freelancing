@@ -81,11 +81,11 @@ export function bonus(card: HTMLElement): () => void {
     p.setAttribute('stroke-linecap', 'round');
     return p;
   };
-  const projection = mkPath('#ff8a4f', '2');
+  const projection = mkPath('#f26348', '2');
   projection.style.opacity = '0';
-  projection.style.filter = 'drop-shadow(0 0 6px rgba(255,138,79,.6))';
-  const pulse = mkPath('#ffd2b4', '2.2');
-  pulse.style.filter = 'drop-shadow(0 0 7px rgba(255,180,130,.85))';
+  projection.style.filter = 'drop-shadow(0 0 6px rgba(242, 99, 72,.6))';
+  const pulse = mkPath('#f9b9a6', '2.2');
+  pulse.style.filter = 'drop-shadow(0 0 7px rgba(245, 147, 120,.85))';
   pulse.style.opacity = '0';
 
   const FX = 5;
@@ -93,7 +93,7 @@ export function bonus(card: HTMLElement): () => void {
   for (let i = 0; i < FX; i++) {
     const c = document.createElementNS(NS, 'circle');
     c.setAttribute('r', '2.3');
-    c.setAttribute('fill', '#ffd8bd');
+    c.setAttribute('fill', '#f9c0af');
     c.setAttribute('opacity', '0');
     dots.push(c);
   }
@@ -147,7 +147,7 @@ export function bonus(card: HTMLElement): () => void {
   // Halftone dots then a 16×16 Bayer dither — the Figma glow stack, drifting.
   // Ambient only: the pointer inputs are never fed.
   const glow: HalftoneLayer | null = createHalftone(glowHost, {
-    color: [0.961, 0.369, 0.133],         // #f55e22
+    color: [0.961, 0.369, 0.133],         // #e5331e
     cell: 4.6, alpha: 0.5, ambient: 0.2, lens: 0, heights,
   });
   if (glow) cleanups.push(() => glow.dispose());
@@ -348,12 +348,12 @@ export function bonus(card: HTMLElement): () => void {
 
     const hb = haloBreath.v;
     halo.style.boxShadow =
-      `0 0 0 ${(1.5 + hb * 2).toFixed(2)}px rgba(245,94,34,${(0.05 + hb * 0.07).toFixed(3)}), `
-      + `0 0 ${(12 + hb * 14).toFixed(1)}px ${(2 + hb * 4).toFixed(1)}px rgba(245,94,34,${(0.08 + hb * 0.13).toFixed(3)})`;
+      `0 0 0 ${(1.5 + hb * 2).toFixed(2)}px rgba(229, 51, 30,${(0.05 + hb * 0.07).toFixed(3)}), `
+      + `0 0 ${(12 + hb * 14).toFixed(1)}px ${(2 + hb * 4).toFixed(1)}px rgba(229, 51, 30,${(0.08 + hb * 0.13).toFixed(3)})`;
 
     const bg = boltGlint.v;
     bolt.style.boxShadow = bg > 0.002
-      ? `0 0 ${(10 + bg * 20).toFixed(1)}px ${(bg * 4).toFixed(1)}px rgba(245,94,34,${(bg * 0.4).toFixed(3)})`
+      ? `0 0 ${(10 + bg * 20).toFixed(1)}px ${(bg * 4).toFixed(1)}px rgba(229, 51, 30,${(bg * 0.4).toFixed(3)})`
       : '';
 
     glow?.render(t);

@@ -230,6 +230,11 @@ function buildBento({ q, tl }: SectionMotion) {
   if (glow) {
     tl.from(glow, { opacity: 0, scale: 1.08, duration: 1, ease: 'power2.out', clearProps: 'transform' }, 0);
   }
+  // The frame fades with everything else. Left out of the sequence it was the
+  // one part that painted immediately, so on the way in there was a moment of
+  // empty outlined box waiting for its contents -- which reads as the section
+  // failing to load rather than as it arriving.
+  rise(tl, q('.bento__card'), 0, { y: 0, duration: 0.7 });
   rise(tl, q('.bento__title'), 0.08);
   rise(tl, q('.bento__sub'), 0.18);
   rise(tl, cards, CARDS_AT, { y: 14, duration: 0.8, stagger: CARD_STEP });
@@ -262,11 +267,7 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        // Same rule as useSectionMotion: the ratio decides, not isIntersecting,
-        // which is true for the thinnest sliver of overlap.
-        const enough = entry.intersectionRatio >= 0.33
-          || entry.intersectionRect.height >= (entry.rootBounds?.height ?? Infinity) * 0.6;
-        if (!entry.isIntersecting || !enough) return;
+        if (!entry.isIntersecting) return;
         io.disconnect();
 
         for (const [path, load] of Object.entries(CARD_MOTION)) {
@@ -283,7 +284,9 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
             .catch((err) => console.error(`bento: ${name} motion failed to load`, err));
         }
       },
-      { threshold: [0, 0.33, 1], rootMargin: '0px 0px -5% 0px' },
+      // The same penetration margin as the section's own entrance, so the
+      // illustrations start their loops on the same scroll position.
+      { threshold: 0, rootMargin: '0px 0px -25% 0px' },
     );
     io.observe(root);
 
@@ -296,11 +299,10 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
 }
 
 export function Bento() {
-  // A third of the section has to be on screen before it opens. At the old
-  // default it fired on the sliver that shows under the hero before anyone has
-  // scrolled, so the band spent its entrance off screen and was simply there,
-  // finished, the moment you arrived.
-  const ref = useSectionMotion<HTMLElement>(buildBento, { threshold: 0.33 });
+  // The section has to climb a quarter of the screen before it opens. Enough to
+  // ignore the sliver that shows under the hero before anyone has scrolled, and
+  // early enough that the band is never caught part-built on the way in.
+  const ref = useSectionMotion<HTMLElement>(buildBento);
   useCardMotion(ref);
 
   return (

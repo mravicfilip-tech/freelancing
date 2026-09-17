@@ -4,7 +4,7 @@
 .built__glow {
   position: absolute; right: -20%; bottom: -46%;
   width: 900px; height: 900px; border-radius: 50%;
-  background: radial-gradient(circle at 42% 42%, #ffd8b8 0%, #f99e57 14%, #d1541c 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
+  background: radial-gradient(circle at 42% 42%, #f9bfaa 0%, #ec7850 14%, #b43725 30%, #7e0202 50%, rgba(15, 14, 13, 0) 66%);
   filter: blur(90px); opacity: 0.3; transform: rotate(-45deg);
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
@@ -39,12 +39,12 @@
 .bt-card__glow { position: absolute; top: -40%; width: 60%; height: 180%; filter: blur(55px); pointer-events: none; }
 .bt-card__glow--right {
   right: -6%;
-  background: radial-gradient(ellipse at 66% 26%, #ffd0ac 0%, #ef7a33 14%, #c02f0a 32%, #7e0202 52%, rgba(29, 28, 27, 0) 72%);
+  background: radial-gradient(ellipse at 66% 26%, #f8b69f 0%, #e0512e 14%, #a21714 32%, #7e0202 52%, rgba(29, 28, 27, 0) 72%);
   opacity: 0.6;
 }
 .bt-card__glow--left {
   left: -8%;
-  background: radial-gradient(ellipse at 38% 22%, #ffcda6 0%, #e4611f 14%, #9e2408 34%, #7e0202 54%, rgba(29, 28, 27, 0) 74%);
+  background: radial-gradient(ellipse at 38% 22%, #f8b299 0%, #c94026 14%, #821110 34%, #7e0202 54%, rgba(29, 28, 27, 0) 74%);
   opacity: 0.68;
 }
 .bt-label {
@@ -68,7 +68,7 @@
 .bt1__smear {
   left: calc(39 * var(--c)); top: calc(65 * var(--c));
   width: calc(42 * var(--c)); height: calc(4 * var(--c));
-  background: #ff632a; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c));
+  background: #f03725; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c));
 }
 .bt1__you {
   left: calc(2 * var(--c)); top: calc(82 * var(--c));
@@ -93,7 +93,7 @@
 .bt2__smear {
   position: absolute; left: calc(188 * var(--c)); top: calc(107 * var(--c));
   width: calc(41 * var(--c)); height: calc(4 * var(--c));
-  background: #ff632a; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c)); transform: rotate(2.92deg);
+  background: #f03725; filter: blur(calc(8.4 * var(--c))); border-radius: calc(4 * var(--c)); transform: rotate(2.92deg);
 }
 .bt2__node {
   position: absolute;

@@ -40,7 +40,7 @@
 .hero__glow--orange {
   left: calc(802 * var(--u));
   top: calc(821 * var(--u));
-  background: #e0581c;
+  background: #c23a26;
 }
 /* hot core so the band reads as saturated as the shader render */
 .hero__glow--core {
@@ -48,7 +48,7 @@
   top: calc(860 * var(--u));
   width: calc(1200 * var(--u));
   height: calc(700 * var(--u));
-  background: #ff7a3a;
+  background: #f15034;
   opacity: 0.55;
   filter: blur(calc(90 * var(--u)));
 }
@@ -58,7 +58,7 @@
   position: absolute;
   inset: -6%;
   border-radius: inherit;
-  background-image: radial-gradient(circle at center, rgba(255, 225, 200, 0.9) 0.9px, transparent 1.7px);
+  background-image: radial-gradient(circle at center, rgba(250, 203, 185, 0.9) 0.9px, transparent 1.7px);
   background-size: 6px 6px;
   mix-blend-mode: soft-light;
   opacity: 0.7;
@@ -67,13 +67,13 @@
 .hero__glow--peach {
   left: calc(486 * var(--u));
   top: calc(952 * var(--u));
-  background: #f99e57;
+  background: #ec7850;
   opacity: 0.85;
 }
 .hero__glow--cream {
   left: calc(786 * var(--u));
   top: calc(1109 * var(--u));
-  background: #ffeada;
+  background: #fbd6ca;
 }
 /* the planet-like black horizon that cuts the glow */
 .hero__horizon {

@@ -72,7 +72,7 @@
 }
 .faq__chip-label { color: var(--color-nre-body); }
 .faq__chip-value { color: var(--white-font); }
-.faq__chip--verify { background: rgba(245, 94, 34, 0.24); border-color: rgba(206, 79, 29, 0.4); color: var(--orange-100); }
+.faq__chip--verify { background: rgba(229, 51, 30, 0.24); border-color: rgba(178, 52, 37, 0.4); color: var(--orange-100); }
 
 @media (max-width: 1180px) {
   .faq__inner { grid-template-columns: minmax(0, 1fr); gap: 40px; }

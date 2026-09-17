@@ -185,9 +185,9 @@ export function fanLoop(root: HTMLElement): () => void {
     const el = document.createElement('span');
     el.setAttribute('aria-hidden', 'true');
     el.style.cssText =
-      'position:absolute;left:0;top:-30%;width:58%;height:160%;opacity:0;pointer-events:none;' +
+      'position:absolute;left:0;top:-30%;width:48%;height:160%;opacity:0;pointer-events:none;' +
       'mix-blend-mode:screen;will-change:transform,opacity;' +
-      'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,251,248,0.62) 50%,rgba(255,251,248,0) 100%);';
+      'background:linear-gradient(90deg,rgba(255,251,248,0) 0%,rgba(255,251,248,0.45) 50%,rgba(255,251,248,0) 100%);';
     tile.appendChild(el);
     mine.push(el);
     shine = el;

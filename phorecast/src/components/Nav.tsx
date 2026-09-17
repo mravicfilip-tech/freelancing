@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Logo } from './Logo';
 import { Roll } from './Roll';
+import { Icon } from './Icon';
+import { ThemeToggle } from './ThemeToggle';
 import chevron from '../assets/icons/chevron-down.svg';
 import './Nav.css';
 
@@ -30,10 +32,16 @@ export function Nav() {
           ))}
           <button type="button" className="nav__link nav__more" aria-haspopup="menu">
             <Roll>More</Roll>
-            <img src={chevron} alt="" width={13.73} height={7.49} />
+            {/* The mask primitive's proof case: the chevron used to be an
+                <img> baked #fffbf8, so it could only ever be that colour. As a
+                mask it is `color`, which means it follows --ink, inherits the
+                nav link's hover to --accent for free, and needs no light
+                variant on disk. */}
+            <Icon src={chevron} w={13.73} h={7.49} />
           </button>
         </nav>
         <div className="nav__actions">
+          <ThemeToggle />
           <a href="#login" className="btn btn--ghost"><Roll>Login</Roll></a>
           <a href="#signup" className="btn btn--outline"><Roll>Sign Up</Roll></a>
         </div>
@@ -54,6 +62,7 @@ export function Nav() {
         ))}
         <a href="#more" className="nav__link" onClick={() => setOpen(false)}><Roll>More</Roll></a>
         <div className="nav__sheet-actions">
+          <ThemeToggle className="theme-toggle--sheet" />
           <a href="#login" className="btn btn--ghost"><Roll>Login</Roll></a>
           <a href="#signup" className="btn btn--outline"><Roll>Sign Up</Roll></a>
         </div>

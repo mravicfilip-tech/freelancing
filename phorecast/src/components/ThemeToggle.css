@@ -1,0 +1,61 @@
+/* Sized to sit level with the nav's pill buttons without being one of them:
+   same 50px height as --btn-h at full width, square, so it reads as a control
+   rather than a third call to action. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Both glyphs occupy the same cell so the button cannot change size when the
+   theme does — a control that resizes as you click it is a control you cannot
+   click twice. */
+.theme-toggle__glyphs {
+  display: grid;
+  width: 18px;
+  height: 18px;
+}
+.theme-toggle__glyphs > svg {
+  grid-area: 1 / 1;
+  transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out);
+}
+.theme-toggle[data-mode='dark'] .theme-toggle__sun,
+.theme-toggle[data-mode='light'] .theme-toggle__moon {
+  opacity: 0;
+  transform: scale(0.6) rotate(-45deg);
+}
+.theme-toggle[data-mode='light'] .theme-toggle__sun,
+.theme-toggle[data-mode='dark'] .theme-toggle__moon {
+  opacity: 1;
+  transform: none;
+}
+
+/* The mobile sheet stacks full-width controls; this one keeps its own size and
+   gains a label so it is not a mystery square in a column of words. */
+.theme-toggle--sheet {
+  width: 100%;
+  height: var(--btn-h);
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.theme-toggle__label { display: none; }
+.theme-toggle--sheet .theme-toggle__label { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle__glyphs > svg { transition: none; }
+}

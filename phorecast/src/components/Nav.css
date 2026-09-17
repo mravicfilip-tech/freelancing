@@ -22,6 +22,18 @@
   transition: color 160ms ease;
 }
 .nav__more { display: inline-flex; align-items: center; gap: 7.8px; }
+/* The chevron is a mask now, so it takes its colour from `color` rather than
+   from the #9D9D9D Figma baked into the file. That hex is exactly
+   --color-nre-body, i.e. --ink-2, so naming the role here reproduces dark mode
+   to the byte and gives light mode #5e5651 for free.
+
+   Stating it on the icon rather than inheriting is deliberate: the link turns
+   --accent on hover and the <img> never did, so an inherited colour would be a
+   new behaviour dressed as a conversion. Note that NEITHER of these is visible
+   to theme-diff.mjs -- a mask's paint is `background-color: currentColor`,
+   which the gate reads as a change from transparent either way. Every masked
+   glyph has to be given the token matching the hex it used to bake. */
+.nav__more .icon { color: var(--ink-2); }
 .nav__actions {
   display: flex;
   align-items: center;

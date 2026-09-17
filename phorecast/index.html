@@ -4,9 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Phorcast — global markets, one platform. Fast onboarding, non-custodial trading, transparent on-chain execution." />
-    <meta name="theme-color" content="#0f0e0d" />
+    <meta name="theme-color" content="#0f0e0d" media="(prefers-color-scheme: dark)" data-theme="dark" />
+    <meta name="theme-color" content="#fffbf8" media="(prefers-color-scheme: light)" data-theme="light" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Phorcast — The Future of Trading</title>
+    <script>
+      /* Resolve the theme before the first paint, or the page flashes the
+         wrong one on every load. This has to be inline and blocking — a
+         module, a `src`, or anything in main.tsx runs after the browser has
+         already painted the default palette.
+
+         `try` because Safari's private mode throws on localStorage rather
+         than returning null, and a throw here would leave the document with
+         no `data-theme` at all.
+
+         The meta tags above carry their own media queries, which is right
+         until someone chooses a theme that disagrees with their system; from
+         then on the choice has to be applied by hand. Same reason
+         `src/lib/theme.ts` does it again on every switch.
+
+         This follows the pattern main.tsx already uses for `data-js`. */
+      (function () {
+        var root = document.documentElement;
+        try {
+          var t = localStorage.getItem('phorecast-theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          root.dataset.theme = t;
+          var tags = document.querySelectorAll('meta[name="theme-color"]');
+          for (var i = 0; i < tags.length; i++) {
+            tags[i].media = tags[i].dataset.theme === t ? 'all' : 'not all';
+          }
+        } catch (e) {
+          root.dataset.theme = 'dark';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

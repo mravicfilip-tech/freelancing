@@ -104,3 +104,131 @@
   --btn-w: 254px;
   --btn-h: 50px;
 }
+
+/* --- Light -----------------------------------------------------------------
+   One palette, written twice, because a media query cannot be put in a
+   selector list. The two blocks below MUST stay identical; only their
+   conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   In practice (2) always applies: the inline script in index.html resolves the
+   two into `data-theme` before first paint, so there is no frame in which the
+   wrong palette is live. (1) is what a stripped page or a prerender falls back
+   to. -------------------------------------------------------------------- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+  color-scheme: light;
+
+  /* Grounds. Raised panels read by tint, not by shadow — the same grammar as
+     dark, with the same step sizes: 1.10 and 1.25 against the page where dark
+     is 1.12 and 1.33. */
+  --page: #fffbf8;          /* the dark theme's own ink, reused as paper */
+  --panel: #f7f0ea;
+  --panel-2: #ece1d9;
+  --line: #e3d6cb;
+
+  /* Ink. Matched to dark's contrast ratios rather than to its luminance, so
+     light reproduces the legibility HIERARCHY and not the palette:
+     18.74 -> 17.59, 7.11 -> 6.97. */
+  --ink: #1a1512;
+  --ink-2: #5e5651;
+  /* The one deliberate divergence. Dark's eyebrow (#626262 on #0f0e0d) is
+     3.16:1 and fails AA at 16px today. Reproducing that on paper would be a
+     choice to ship a known defect twice, so light is 4.63:1 — still visibly
+     quieter than body copy, and readable. Dark is left exactly as it is;
+     fixing it there is a separate decision and would fail the dark gate. */
+  --ink-muted: #7a716c;
+
+  /* Brand. #a21605 is given, and is a stronger text colour on paper (7.69:1)
+     than #e5331e is on the dark ground (4.43:1). */
+  --accent: #a21605;
+  --accent-deep: #7e0202;
+  --accent-lift: #c4361c;
+  --accent-soft: rgba(162, 22, 5, 0.08);
+  --on-accent: #fffbf8;     /* unchanged: 4.23:1 on dark red, 7.69:1 on light */
+
+  /* #a21605 is already --red in the dark tokens — the price-DOWN colour — and
+     in light it becomes the brand. Loss and brand cannot be the same colour on
+     a trading page, so they are split: brand keeps the given value and loss
+     moves to #b01309 (6.93:1). They stay close enough to read as the same
+     family and far enough apart to read as different things.
+     #15a456 on paper is 3.15:1 and #00c950 is 2.15:1 — a price rise nobody can
+     see — so --pos moves too, to 6.18:1. */
+  --pos: #0b6e37;
+  --neg: #b01309;
+
+  /* Glass stops lifting and starts settling. The alphas go up, not down: dark
+     ink on paper is less visible per unit alpha than white on black. */
+  --veil: rgba(26, 21, 18, 0.045);
+  --veil-line: rgba(26, 21, 18, 0.14);
+  --veil-strong: rgba(26, 21, 18, 0.32);
+
+  /* --art-ink does NOT flip. It is white inside a dark illustration, and
+     whether a given illustration re-tints for light is that section's
+     decision, made in that section's CSS. */
+
+  /* Dark's primary button inverts to a pale chip with a red label. On paper a
+     pale chip is a hole, so light presses darker instead. */
+  --btn-primary-hover-bg: var(--accent-deep);
+  --btn-primary-hover-ink: var(--on-accent);
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Grounds. Raised panels read by tint, not by shadow — the same grammar as
+     dark, with the same step sizes: 1.10 and 1.25 against the page where dark
+     is 1.12 and 1.33. */
+  --page: #fffbf8;          /* the dark theme's own ink, reused as paper */
+  --panel: #f7f0ea;
+  --panel-2: #ece1d9;
+  --line: #e3d6cb;
+
+  /* Ink. Matched to dark's contrast ratios rather than to its luminance, so
+     light reproduces the legibility HIERARCHY and not the palette:
+     18.74 -> 17.59, 7.11 -> 6.97. */
+  --ink: #1a1512;
+  --ink-2: #5e5651;
+  /* The one deliberate divergence. Dark's eyebrow (#626262 on #0f0e0d) is
+     3.16:1 and fails AA at 16px today. Reproducing that on paper would be a
+     choice to ship a known defect twice, so light is 4.63:1 — still visibly
+     quieter than body copy, and readable. Dark is left exactly as it is;
+     fixing it there is a separate decision and would fail the dark gate. */
+  --ink-muted: #7a716c;
+
+  /* Brand. #a21605 is given, and is a stronger text colour on paper (7.69:1)
+     than #e5331e is on the dark ground (4.43:1). */
+  --accent: #a21605;
+  --accent-deep: #7e0202;
+  --accent-lift: #c4361c;
+  --accent-soft: rgba(162, 22, 5, 0.08);
+  --on-accent: #fffbf8;     /* unchanged: 4.23:1 on dark red, 7.69:1 on light */
+
+  /* #a21605 is already --red in the dark tokens — the price-DOWN colour — and
+     in light it becomes the brand. Loss and brand cannot be the same colour on
+     a trading page, so they are split: brand keeps the given value and loss
+     moves to #b01309 (6.93:1). They stay close enough to read as the same
+     family and far enough apart to read as different things.
+     #15a456 on paper is 3.15:1 and #00c950 is 2.15:1 — a price rise nobody can
+     see — so --pos moves too, to 6.18:1. */
+  --pos: #0b6e37;
+  --neg: #b01309;
+
+  /* Glass stops lifting and starts settling. The alphas go up, not down: dark
+     ink on paper is less visible per unit alpha than white on black. */
+  --veil: rgba(26, 21, 18, 0.045);
+  --veil-line: rgba(26, 21, 18, 0.14);
+  --veil-strong: rgba(26, 21, 18, 0.32);
+
+  /* --art-ink does NOT flip. It is white inside a dark illustration, and
+     whether a given illustration re-tints for light is that section's
+     decision, made in that section's CSS. */
+
+  /* Dark's primary button inverts to a pale chip with a red label. On paper a
+     pale chip is a hole, so light presses darker instead. */
+  --btn-primary-hover-bg: var(--accent-deep);
+  --btn-primary-hover-ink: var(--on-accent);
+}

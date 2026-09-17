@@ -1,4 +1,34 @@
-.footer { position: relative; padding-top: 96px; overflow: hidden; isolation: isolate; }
+/* The footer's colour lives in two layers, and the split is the whole point.
+   -------------------------------------------------------------------------
+   ROLE TOKENS (--ink, --ink-2, --veil-line) for anything whose job the rest of
+   the page already names. They flip with the theme for free and they are the
+   same decision everywhere, so the footer does not get to have an opinion.
+
+   FOOTER LOCALS (--footer-*) for the handful of values that are this band's
+   own: the four glow discs and the four white-alpha steps of the social
+   buttons and the rule. They are declared here with today's dark values, and
+   the light block at the bottom of this file redefines exactly those names.
+   Nothing else in the file mentions a colour, so "what does the footer do in
+   light?" is answerable by reading one block. */
+.footer {
+  position: relative; padding-top: 96px; overflow: hidden; isolation: isolate;
+
+  /* The glow band. Dark's four discs, verbatim: the ramp runs deep red on the
+     right, through brick and peach, to a pale hot core at 24% from the left. */
+  --footer-g-red: linear-gradient(150deg, #0f0e0d 28%, #8c0303 100%);
+  --footer-g-orange: #b43725;
+  --footer-g-peach: #ec7850;
+  --footer-g-cream: #fbd6ca;
+
+  /* White-alpha: the dark theme's entire idiom for "raise this slightly".
+     Four steps -- the social plate, its edge, that edge lit, and the rule.
+     The hover plate and the wordmark are not here because --veil-line already
+     IS rgba(255,255,255,.12) in dark and the ink-alpha equivalent in light. */
+  --footer-plate: rgba(255, 255, 255, 0.06);
+  --footer-plate-line: rgba(255, 255, 255, 0.1);
+  --footer-plate-line-hover: rgba(255, 255, 255, 0.24);
+  --footer-rule: rgba(255, 255, 255, 0.1);
+}
 .footer__inner { display: flex; flex-direction: column; gap: 64px; }
 
 /* bottom glow band (five blurred discs in the Figma frame) */
@@ -7,22 +37,22 @@
   z-index: -1; opacity: 0.8; overflow: hidden; pointer-events: none;
 }
 .footer__g { position: absolute; border-radius: 50%; filter: blur(110px); }
-.footer__g--red { right: -14%; bottom: -800px; width: 1300px; height: 1300px; background: linear-gradient(150deg, #0f0e0d 28%, #8c0303 100%); }
-.footer__g--orange { left: -6%; bottom: -880px; width: 1400px; height: 1400px; background: #b43725; opacity: 0.9; }
-.footer__g--peach { left: 12%; bottom: -1120px; width: 1300px; height: 1300px; background: #ec7850; opacity: 0.65; }
-.footer__g--cream { left: 24%; bottom: -1010px; width: 1000px; height: 1000px; background: #fbd6ca; opacity: 0.6; }
+.footer__g--red { right: -14%; bottom: -800px; width: 1300px; height: 1300px; background: var(--footer-g-red); }
+.footer__g--orange { left: -6%; bottom: -880px; width: 1400px; height: 1400px; background: var(--footer-g-orange); opacity: 0.9; }
+.footer__g--peach { left: 12%; bottom: -1120px; width: 1300px; height: 1300px; background: var(--footer-g-peach); opacity: 0.65; }
+.footer__g--cream { left: 24%; bottom: -1010px; width: 1000px; height: 1000px; background: var(--footer-g-cream); opacity: 0.6; }
 
 .footer__top { display: flex; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
 .footer__brand { display: flex; flex-direction: column; gap: 24px; width: 352px; max-width: 100%; }
-.footer__tagline { font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.4; color: var(--color-nre-body); }
+.footer__tagline { font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.4; color: var(--ink-2); }
 .footer__socials { display: flex; gap: 12px; }
 .footer__social {
   display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--footer-plate); border: 1px solid var(--footer-plate-line);
   transition: background-color 160ms ease, border-color 160ms ease;
 }
 .footer__social:hover,
-.footer__social:focus-visible { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.24); }
+.footer__social:focus-visible { background: var(--veil-line); border-color: var(--footer-plate-line-hover); }
 
 /* The glyph goes to white on hover.
 
@@ -60,31 +90,36 @@
 .footer__col { display: flex; flex-direction: column; gap: 24px; width: 208px; }
 .footer__col-title {
   font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
-  text-transform: uppercase; color: var(--white-font);
+  text-transform: uppercase; color: var(--ink);
 }
 .footer__links { display: flex; flex-direction: column; gap: 16px; }
 .footer__links a {
   font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.2;
-  color: var(--color-nre-body); transition: color 160ms ease;
+  color: var(--ink-2); transition: color 160ms ease;
 }
-.footer__links a:hover { color: var(--white-font); }
+.footer__links a:hover { color: var(--ink); }
 
 .footer__legal { display: flex; flex-direction: column; gap: 32px; }
-.footer__rule { height: 1px; margin: 0; border: 0; background: rgba(255, 255, 255, 0.1); }
+.footer__rule { height: 1px; margin: 0; border: 0; background: var(--footer-rule); }
 .footer__meta {
   display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
-  font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.2; color: var(--color-nre-body);
+  font-family: var(--font-body); font-weight: 300; font-size: 16px; line-height: 1.2; color: var(--ink-2);
 }
 .footer__legal-links { display: flex; gap: 24px; flex-wrap: wrap; }
 .footer__legal-links a { transition: color 160ms ease; }
-.footer__legal-links a:hover { color: var(--white-font); }
+.footer__legal-links a:hover { color: var(--ink); }
 
-/* giant cropped wordmark */
+/* giant cropped wordmark
+
+   12% white on the dark ground is 1.36:1 against the page -- a ghost, present
+   but refusing to compete with anything above it. --veil-line carries exactly
+   that value in dark and rgba(26,21,18,.14) in light, which lands at 1.35:1 on
+   paper: the same ghost, made of ink instead of light. */
 .footer__wordmark { height: 226px; margin-top: 32px; overflow: hidden; display: flex; justify-content: center; }
 .footer__wordmark span {
   font-family: var(--font-display); font-weight: 600; font-size: clamp(88px, 12vw, 230px);
   line-height: 1; text-transform: uppercase; letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.12); white-space: nowrap;
+  color: var(--veil-line); white-space: nowrap;
 }
 
 @media (max-width: 1180px) {

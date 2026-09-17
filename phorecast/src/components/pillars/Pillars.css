@@ -248,19 +248,28 @@
           falloff that covers the whole band, is the faintest. Warmth peaks where
           light peaked.
 
-       The four are spaced by contrast against paper rather than by hue: 1.10,
-       1.18, 1.26 and 1.37:1, the last of them the same density the footer landed
-       on. Before the blur and the .glow-fade mask take their share, so what
-       actually reaches the cards is a good deal less than that. A blush, not a
-       stain. LIGHTMODE.md 6.1 is right that this is not the sunrise in another
-       key, and asks for it to be seen before the whole page is built on it.
+       The four are spaced by contrast against paper rather than by hue --
+       1.22, 1.44, 1.71 and 2.18:1 as source colours -- and those numbers are a
+       good deal larger than the band ever draws, because three of the four discs
+       sit above the section and reach it only as blur, and .glow-fade then empties
+       the top 16% where they are strongest.
+
+       Measured on the rendered page, the densest pixel in the band is 1.37:1
+       against paper, which is where the footer landed and is the number to match:
+       a blush, not a stain. The same measurement in dark is 2.53:1, so paper
+       carries the glow at about half dark's weight. That is deliberate, not a
+       shortfall -- a warm tint on cream reads at a distance that the same tint on
+       black does not.
+
+       LIGHTMODE.md 6.1 is right that this is not the sunrise in another key, and
+       asks for it to be seen before the whole page is built on it.
 
        No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
        multiply a no-op against the page. The colours do the work. */
-    --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fbe6da 100%);
-    --pillars-g-orange: #f8d6c3;
-    --pillars-g-peach: #f5c6ad;
-    --pillars-g-cream: #f1b190;
+    --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fae0d2 100%);
+    --pillars-g-orange: #f6cbb5;
+    --pillars-g-peach: #f2b697;
+    --pillars-g-cream: #ec996e;
 
     /* White-alpha becomes ink-alpha, and that one move flips the direction of
        all three of these states without reversing a rule: more alpha on a dark
@@ -303,19 +312,28 @@
         falloff that covers the whole band, is the faintest. Warmth peaks where
         light peaked.
 
-     The four are spaced by contrast against paper rather than by hue: 1.10,
-     1.18, 1.26 and 1.37:1, the last of them the same density the footer landed
-     on. Before the blur and the .glow-fade mask take their share, so what
-     actually reaches the cards is a good deal less than that. A blush, not a
-     stain. LIGHTMODE.md 6.1 is right that this is not the sunrise in another
-     key, and asks for it to be seen before the whole page is built on it.
+     The four are spaced by contrast against paper rather than by hue --
+     1.22, 1.44, 1.71 and 2.18:1 as source colours -- and those numbers are a
+     good deal larger than the band ever draws, because three of the four discs
+     sit above the section and reach it only as blur, and .glow-fade then empties
+     the top 16% where they are strongest.
+
+     Measured on the rendered page, the densest pixel in the band is 1.37:1
+     against paper, which is where the footer landed and is the number to match:
+     a blush, not a stain. The same measurement in dark is 2.53:1, so paper
+     carries the glow at about half dark's weight. That is deliberate, not a
+     shortfall -- a warm tint on cream reads at a distance that the same tint on
+     black does not.
+
+     LIGHTMODE.md 6.1 is right that this is not the sunrise in another key, and
+     asks for it to be seen before the whole page is built on it.
 
      No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
      multiply a no-op against the page. The colours do the work. */
-  --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fbe6da 100%);
-  --pillars-g-orange: #f8d6c3;
-  --pillars-g-peach: #f5c6ad;
-  --pillars-g-cream: #f1b190;
+  --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fae0d2 100%);
+  --pillars-g-orange: #f6cbb5;
+  --pillars-g-peach: #f2b697;
+  --pillars-g-cream: #ec996e;
 
   /* White-alpha becomes ink-alpha, and that one move flips the direction of
      all three of these states without reversing a rule: more alpha on a dark

@@ -25,36 +25,45 @@ const byName = (m: Record<string, string>, prefix: string, n: number) =>
    src/components/Icon.tsx. The eyebrow dot is deliberately NOT converted; it
    is three tinted ellipses, and a mask would flatten it to one disc.
 
-   THE BOX. <Icon> writes width/height inline from `w`/`h`, but every glyph
-   here is sized by the stylesheet instead -- .pillars__icon is 20x20 and
-   .pcard__mark is 31.13x36.29 -- so those two get `cssBox`, which hands the
-   box back by writing the inline values away again. The chain and pill3 parts
-   are the opposite case: they are absolutely positioned inside a 20x20
-   wrapper and their size comes from the export, not from a rule, so they get
-   their intrinsic numbers. That distinction is not cosmetic. An <img> is a
-   replaced element, so with `width: auto` and all four insets set it takes its
-   intrinsic width and drops the over-constrained inset; a <span> is not
-   replaced and would solve its box from the insets alone. The two agree here
-   to within a thousandth of a pixel because Figma exported both consistently,
-   but only one of them is the size the artwork was drawn at. */
+   THE BOX, which is where a geometry regression hides. <Icon> writes
+   width/height inline from `w`/`h`, but the four single-file glyphs and the
+   three marks are sized by the stylesheet instead -- .pillars__icon is 20x20,
+   .pcard__mark is 31.13x36.29 -- so they get `cssBox`, which hands the box
+   back to the rule by writing the inline values away again.
+
+   The chain and pill3 parts are the opposite case and needed measuring. They
+   are absolutely positioned inside a 20x20 wrapper with all four insets set,
+   and an <img> is a REPLACED element: with `width: auto` it ignores the
+   over-constrained inset, takes its height from the export, and then derives
+   its width from that used height and the intrinsic ratio -- all of it
+   quantised to 1/64px on the way. A <span> is not replaced and would solve its
+   box from the insets instead, which lands up to a thirtieth of a pixel out
+   and, on the three star points, across a rounding boundary the theme gate
+   reads as movement.
+
+   So the numbers below are neither the insets nor the file's own width and
+   height: they are the box each <img> actually occupied, measured in the
+   browser, to 1/64px. They are what keeps `geometry` at 0 across the
+   conversion. Nothing moves; the box is simply now stated rather than
+   derived. */
 const cssBox = { width: undefined, height: undefined };
 
-/* Inset, then intrinsic width and height, straight from the Figma export. */
+/* Inset from the Figma export, then the used width and height in px. */
 const CHAIN_PARTS: [string, number, number][] = [
-  ['0 0 34.52% 31.97%', 13.6054, 13.0963],
-  ['34.52% 31.93% 0 0', 13.613, 13.096],
-  ['76.06% 13.89% 13.93% 76.1%', 2.00151, 2.00154],
-  ['13.89% 76.06% 76.1% 13.93%', 2.00158, 2.00154],
-  ['57.67% 1.76% 34.95% 86.72%', 2.30492, 1.4764],
-  ['34.91% 86.68% 57.71% 1.79%', 2.305, 1.4764],
-  ['86.68% 34.91% 1.79% 57.71%', 1.47636, 2.3053],
-  ['1.75% 57.67% 86.72% 34.95%', 1.47639, 2.30497],
+  ['0 0 34.52% 31.97%', 13.59375, 13.09375],
+  ['34.52% 31.93% 0 0', 13.59375, 13.078125],
+  ['76.06% 13.89% 13.93% 76.1%', 1.984375, 2],
+  ['13.89% 76.06% 76.1% 13.93%', 1.984375, 1.984375],
+  ['57.67% 1.76% 34.95% 86.72%', 2.28125, 1.46875],
+  ['34.91% 86.68% 57.71% 1.79%', 2.28125, 1.46875],
+  ['86.68% 34.91% 1.79% 57.71%', 1.453125, 2.28125],
+  ['1.75% 57.67% 86.72% 34.95%', 1.453125, 2.28125],
 ];
 const PILL3_PARTS: [string, number, number][] = [
-  ['0.02% 35.35% 72.48% 35.35%', 5.85943, 5.50106],
-  ['17.88% 0 54.61% 70.71%', 5.85942, 5.50048],
-  ['17.88% 70.7% 54.61% 0', 5.85943, 5.50059],
-  ['32.6% 23.63% 0.02% 23.64%', 10.5469, 13.4765],
+  ['0.02% 35.35% 72.48% 35.35%', 5.84375, 5.5],
+  ['17.88% 0 54.61% 70.71%', 5.84375, 5.5],
+  ['17.88% 70.7% 54.61% 0', 5.84375, 5.5],
+  ['32.6% 23.63% 0.02% 23.64%', 10.53125, 13.46875],
 ];
 
 function MultiIcon({ parts, map, prefix }: {

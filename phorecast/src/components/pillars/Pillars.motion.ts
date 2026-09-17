@@ -28,6 +28,20 @@
  *
  * No hover animation on the illustrations and nothing listens to the pointer;
  * the only hover here is the pill rows' CSS background, which is not ours.
+ *
+ * THIS MODULE HAS NO COLOUR IN IT, AND THAT IS WHY IT NEEDED NOTHING FOR LIGHT
+ * MODE. It tweens y, yPercent, filter: blur(), opacity and scale and nothing
+ * else, so there is no resting colour read from getComputedStyle at build time
+ * and therefore nothing that could freeze against the palette that happened to
+ * be live when the section built (src/lib/theme.ts explains that hazard, and
+ * `tok()` is the answer to it where it applies -- it does not apply here).
+ *
+ * Nor is there a beat that lifts something by making it BRIGHTER, which is the
+ * move that has to invert on paper: the glow blooms from opacity 0 and the
+ * type and cards resolve out of blur, and both of those read the same way on
+ * either ground. Measured with scripts/amplitude.mjs --entrance, the band is
+ * `visible` in both themes -- 47/65px of travel in dark, 69/94 in light, the
+ * difference being only which frame the sampler caught.
  */
 import { EASE, intoLines, rise } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';

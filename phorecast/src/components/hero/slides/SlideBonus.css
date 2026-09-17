@@ -22,7 +22,59 @@
   inset: 0;
   container-type: inline-size;
   pointer-events: none;
+
+  /* The two stacks' own paint. stacks.svg is inlined (see SlideBonus.tsx), so
+     its stops are reachable from here and CSS outranks a presentation
+     attribute -- which means one rule per stop themes the whole export with
+     no per-theme copy of the raw string and no change to the id pipeline the
+     motion module walks. Dark is the exact hex the file bakes, so naming them
+     changes nothing. */
+  --sl3-wire: #e5331e;        /* the two wireframe stacks */
+  --sl3-plate-top: #e5331e;   /* the lit top face of the topmost plate */
+  --sl3-plate-a: #93190a;     /* the matched plates' shadowed faces */
+  --sl3-plate-b: #ba2917;     /* their lit faces */
+  --sl3-plate-edge: #e5331e;  /* the seam between two faces */
+  --sl3-plate-edge-hi: #ffffff; /* three 0.009px highlight seams */
+
+  /* The connector, the bracket and the dashed rule are gradient artwork and
+     cannot be reached from CSS at all; they carry a light variant instead --
+     see SlideBonus.tsx. */
 }
+
+/* One rule per stop. Listing ids rather than adding classes, because no agent
+   edits a file under src/assets -- and the ids are already load-bearing:
+   SlideBonus.motion.ts addresses these same nodes by name. */
+.sl3__stacks [id^='deposit-block-'],
+.sl3__stacks [id^='balance-block-'] { stroke: var(--sl3-wire); }
+
+.sl3__stacks [id='Vector'] { fill: var(--sl3-plate-top); stroke: var(--sl3-plate-top); }
+
+.sl3__stacks [id='Vector_2'],
+.sl3__stacks [id='Vector_3'],
+.sl3__stacks [id='Vector_6'],
+.sl3__stacks [id='Vector_7'],
+.sl3__stacks [id='Vector_8'],
+.sl3__stacks [id='Vector_9'],
+.sl3__stacks [id='Vector_11'],
+.sl3__stacks [id='Vector_12'] { fill: var(--sl3-plate-a); }
+
+.sl3__stacks [id='Vector_4'],
+.sl3__stacks [id='Vector_5'],
+.sl3__stacks [id='Vector_10'] { fill: var(--sl3-plate-b); }
+
+.sl3__stacks [id='Vector_3'],
+.sl3__stacks [id='Vector_6'],
+.sl3__stacks [id='Vector_8'],
+.sl3__stacks [id='Vector_9'],
+.sl3__stacks [id='Vector_10'],
+.sl3__stacks [id='Vector_11'],
+.sl3__stacks [id='Vector_12'] { stroke: var(--sl3-plate-edge); }
+
+/* Vector_5 carries no stroke attribute at all and gets no rule, so it stays
+   `none` rather than gaining a seam the export never drew. */
+.sl3__stacks [id='Vector_2'],
+.sl3__stacks [id='Vector_4'],
+.sl3__stacks [id='Vector_7'] { stroke: var(--sl3-plate-edge-hi); }
 
 .sl3__frame {
   --u: calc(100cqw / 1800);
@@ -37,7 +89,7 @@
   width: calc(964 * var(--u));
   height: calc(822 * var(--u));
   font-family: var(--font-body);
-  color: var(--white-font);
+  color: var(--ink);
 }
 
 /* Both stacks, one exported vector layer. Figma gives its box as insets of the
@@ -77,9 +129,9 @@
   height: calc(11 * var(--u));
   margin: calc(-5.5 * var(--u)) 0 0 calc(-5.5 * var(--u));
   border-radius: calc(2 * var(--u));
-  background: var(--orange-100);
+  background: var(--accent);
   box-shadow: 0 0 calc(16 * var(--u)) calc(4 * var(--u))
-    color-mix(in srgb, var(--orange-100) 55%, transparent);
+    color-mix(in srgb, var(--accent) 55%, transparent);
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
@@ -132,7 +184,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: calc(32 * var(--u));
-  color: var(--orange-100);
+  color: var(--accent);
 }
 
 .sl3__amount {
@@ -143,7 +195,7 @@
   font-weight: 700;
   font-size: calc(28 * var(--u));
   line-height: normal;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
   white-space: nowrap;
 }
 
@@ -169,7 +221,7 @@
   will-change: transform;
   width: calc(6 * var(--u));
   height: calc(6 * var(--u));
-  background: var(--orange-100);
+  background: var(--accent);
   transform: translate(-50%, -50%) rotate(45deg);
 }
 /* Positioned by centre, because Figma gives the rotated bounding box. */
@@ -194,7 +246,7 @@
   line-height: 0.88;
   letter-spacing: calc(-0.26 * var(--u));
   text-transform: uppercase;
-  color: var(--color-body);
+  color: var(--ink-muted);
   white-space: nowrap;
 }
 .sl3__tag img {
@@ -236,8 +288,8 @@
   border-radius: calc(12 * var(--u));
   /* Figma: rgba(27,27,26,.3) over rgba(229,51,30,.3) — the surface and brand
      tokens at 30%, so the brand red is never written out by hand. */
-  background: color-mix(in srgb, var(--surface) 30%, transparent);
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  background: color-mix(in srgb, var(--panel) 30%, transparent);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   overflow: hidden;
 }
 .sl3__badge img {
@@ -269,6 +321,9 @@
 
 .sl3-countdown {
   --u: clamp(0.75px, 100vw / 1920, 1px);
+  /* 5% white: this block's own glass step, quieter than --veil-line and not
+     shared with anything, so it is named here rather than forced onto a role. */
+  --sl3-tile-bg: rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -285,7 +340,7 @@
   font-weight: 500;
   font-size: calc(12 * var(--u));
   line-height: normal;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
 }
 
@@ -337,12 +392,12 @@
   height: calc(90 * var(--u));
   padding: calc(10 * var(--u));
   border-radius: calc(8 * var(--u));
-  background: rgba(255, 255, 255, 0.05);
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  background: var(--sl3-tile-bg);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   backdrop-filter: blur(calc(15 * var(--u)));
   -webkit-backdrop-filter: blur(calc(15 * var(--u)));
   text-align: center;
-  color: var(--white-font);
+  color: var(--ink);
 }
 /* Figma blurs the first tile a touch less than the other two. */
 .sl3-countdown__tile:first-child {
@@ -368,5 +423,5 @@
   font-weight: 400;
   font-size: calc(42 * var(--u));
   line-height: normal;
-  color: var(--orange-100);
+  color: var(--accent);
 }

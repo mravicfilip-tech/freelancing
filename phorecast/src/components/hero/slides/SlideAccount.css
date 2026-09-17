@@ -50,6 +50,28 @@
   --sl2-card-c: #2f2f2f;
   --sl2-ink: #fafafa;
   --sl2-track: #161414;
+
+  /* The rest of the slide's literals, named so the light block at the foot of
+     the file redefines exactly these. Every one is INSIDE the product UI --
+     this cluster is a screenshot of the app, not page chrome -- so they move
+     together when the screenshot is re-tinted and nowhere else. */
+  --sl2-live-red: #fb2c36;        /* the LIVE word */
+  --sl2-live-dot: #ff6467;        /* the pulsing dot beside it */
+  --sl2-live-vol: rgba(159, 159, 169, 0.8);
+  --sl2-ov-bg: #27272a;           /* "Game overview" chip */
+  --sl2-score-line: rgba(206, 206, 206, 0.1);
+  --sl2-draw-bg: #2c2c2f;         /* the Draw button */
+  --sl2-sud-bg: rgba(191, 43, 53, 0.15);
+  --sl2-sud-ink: #bf2b35;
+  --sl2-bar-ink: #000;            /* the figure written across the filled bar */
+  --sl2-lakers: #ffad00;          /* the club's own gold, behind its crest */
+  --sl2-pill-bg: #1d1c1b;         /* the "One Account" pill's plate */
+  /* The toast is glass: 13% white is this file's own step, between --veil and
+     --veil-strong, so it is named here rather than forced onto either. */
+  --sl2-toast-bg: rgba(255, 255, 255, 0.13);
+  /* The two 44px icon tiles. A deep brand plate in both themes -- the white
+     pie and bolt inside them are --on-accent by another name. */
+  --sl2-tile-bg: #6a2626;
 }
 
 /* 963 × 365 of visible content, anchored on the design's own right gutter. */
@@ -87,11 +109,11 @@
   padding: calc(16 * var(--u));
   flex: none;
   overflow: hidden;
-  border: calc(1.093 * var(--u)) solid var(--hairline);
+  border: calc(1.093 * var(--u)) solid var(--line);
   border-radius: calc(10 * var(--u));
   background: linear-gradient(-19.512deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%);
   font-family: var(--font-display);
-  color: var(--white-font);
+  color: var(--ink);
 }
 .sl2-pred__meta {
   display: flex;
@@ -99,7 +121,7 @@
   font-weight: 500;
   font-size: calc(14.208 * var(--u));
   line-height: calc(21.312 * var(--u));
-  color: var(--color-nre-body);
+  color: var(--ink-2);
   white-space: nowrap;
 }
 .sl2-pred__head {
@@ -151,7 +173,7 @@
   font-weight: 600;
   font-size: calc(15.301 * var(--u));
   line-height: calc(21.858 * var(--u));
-  color: var(--orange-100);
+  color: var(--accent);
 }
 .sl2-pred__pct {
   width: calc(43.717 * var(--u));
@@ -159,7 +181,7 @@
   text-align: right;
   font-size: calc(15.301 * var(--u));
   line-height: calc(21.858 * var(--u));
-  color: var(--white-font);
+  color: var(--ink);
 }
 .sl2-chip {
   padding: calc(6.558 * var(--u)) calc(13.115 * var(--u));
@@ -178,10 +200,10 @@
   height: calc(248 * var(--u));
   flex: none;
   overflow: hidden;
-  border: calc(1 * var(--u)) solid var(--hairline);
+  border: calc(1 * var(--u)) solid var(--line);
   border-radius: calc(10 * var(--u));
   font-family: var(--font-display);
-  color: var(--white-font);
+  color: var(--ink);
 }
 .sl2-mc--nfl { background: linear-gradient(-34.645deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%); }
 .sl2-mc--xau { background: linear-gradient(17.063deg, var(--sl2-card-a) 53.071%, var(--sl2-card-b) 144.6%); }
@@ -284,7 +306,7 @@
   font-weight: 300;
   font-size: calc(8 * var(--u));
   line-height: normal;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
 }
 .sl2-mc__price {
   font-weight: 700;
@@ -292,7 +314,7 @@
   line-height: normal;
   white-space: nowrap;
 }
-.sl2-mc__price span { color: var(--color-body); }
+.sl2-mc__price span { color: var(--ink-muted); }
 .sl2-mc__delta {
   display: flex;
   align-items: center;
@@ -306,7 +328,7 @@
 }
 .sl2-mc__delta img { flex: none; width: calc(10 * var(--u)); height: calc(8.333 * var(--u)); }
 .sl2-mc__delta b { font-weight: 700; }
-.sl2-mc__delta i { font-style: normal; font-weight: 400; color: var(--color-body); }
+.sl2-mc__delta i { font-style: normal; font-weight: 400; color: var(--ink-muted); }
 .sl2-mc__delta.is-down { margin-top: 0; color: var(--sl2-down-ink); }
 
 /* Sparklines. Outer box is 188 × 74 at y 132; the artwork bleeds past it by the
@@ -340,7 +362,7 @@
   font-weight: 700;
   font-size: calc(8 * var(--u));
   line-height: normal;
-  color: var(--color-nre-body);
+  color: var(--ink-2);
 }
 .sl2-mc__range.is-active {
   display: grid;
@@ -349,8 +371,10 @@
   height: calc(24 * var(--u));
   margin-right: calc(-0.5 * var(--u));
   border-radius: calc(6 * var(--u));
-  background: var(--orange-100);
-  color: var(--white-font);
+  background: var(--accent);
+  /* A label on the brand red, not on the card: --on-accent, which does not
+     flip. In dark it is #fffbf8, exactly what --white-font gave it here. */
+  color: var(--on-accent);
 }
 
 /* ------------------------------------------- 140px column of 3 small cards */
@@ -366,7 +390,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
-  border: calc(0.386 * var(--u)) solid var(--hairline);
+  border: calc(0.386 * var(--u)) solid var(--line);
   border-radius: calc(8 * var(--u));
   font-family: var(--font-display);
   color: var(--sl2-ink);
@@ -390,7 +414,7 @@
   font-weight: 500;
   font-size: calc(5.019 * var(--u));
   line-height: calc(7.528 * var(--u));
-  color: var(--color-nre-body);
+  color: var(--ink-2);
   white-space: nowrap;
 }
 .sl2-mini__head {
@@ -408,7 +432,7 @@
   border-radius: calc(3.861 * var(--u));
   overflow: hidden;
 }
-.sl2-mini__avatar--lakers { background: #ffad00; }
+.sl2-mini__avatar--lakers { background: var(--sl2-lakers); }
 .sl2-mini__avatar--lakers img {
   position: absolute;
   left: calc(1.61 * var(--u));
@@ -429,7 +453,7 @@
   font-size: calc(5.405 * var(--u));
   line-height: calc(7.722 * var(--u));
   white-space: nowrap;
-  color: var(--white-font);
+  color: var(--ink);
 }
 .sl2-mini__title--wrap { width: calc(90 * var(--u)); white-space: normal; }
 
@@ -456,14 +480,14 @@
   margin-top: calc(6 * var(--u));
   border-radius: calc(30 * var(--u));
 }
-.sl2-mini__bar--a i { color: var(--white-font); }
+.sl2-mini__bar--a i { color: var(--ink); }
 .sl2-mini__bar--b {
   width: 100%;
   height: calc(4.633 * var(--u));
   margin-top: calc(12.354 * var(--u));
   border-radius: 9999px;
 }
-.sl2-mini__bar--b i { color: #000; }
+.sl2-mini__bar--b i { color: var(--sl2-bar-ink); }
 
 .sl2-mini__btns {
   display: flex;
@@ -502,13 +526,13 @@
   font-weight: 700;
   font-size: calc(5.019 * var(--u));
   line-height: calc(7.528 * var(--u));
-  color: #fb2c36;
+  color: var(--sl2-live-red);
 }
 .sl2-live__badge i {
   width: calc(3.089 * var(--u));
   height: calc(3.089 * var(--u));
   border-radius: 50%;
-  background: #ff6467;
+  background: var(--sl2-live-dot);
   opacity: 0.75;
 }
 .sl2-live__clock {
@@ -527,7 +551,7 @@
   font-weight: 400;
   font-size: calc(4.672 * var(--u));
   line-height: calc(7.528 * var(--u));
-  color: rgba(159, 159, 169, 0.8);
+  color: var(--sl2-live-vol);
 }
 .sl2-live__ov {
   box-sizing: border-box;
@@ -539,7 +563,7 @@
   height: calc(9.562 * var(--u));
   padding: 0 calc(1.739 * var(--u));
   border-radius: calc(3.089 * var(--u));
-  background: #27272a;
+  background: var(--sl2-ov-bg);
   font-weight: 700;
   font-size: calc(4.478 * var(--u));
   line-height: calc(6.177 * var(--u));
@@ -555,7 +579,7 @@
   height: calc(9.266 * var(--u));
   display: grid;
   place-items: center;
-  border: calc(0.386 * var(--u)) solid rgba(206, 206, 206, 0.1);
+  border: calc(0.386 * var(--u)) solid var(--sl2-score-line);
   border-radius: calc(3.089 * var(--u));
   font-weight: 700;
   font-size: calc(5.405 * var(--u));
@@ -613,14 +637,14 @@
 .sl2-live__btn--draw {
   left: calc(48.65 * var(--u));
   right: calc(48.43 * var(--u));
-  background: #2c2c2f;
+  background: var(--sl2-draw-bg);
   color: var(--sl2-ink);
 }
 .sl2-live__btn--sud {
   left: calc(91.11 * var(--u));
   right: calc(5.96 * var(--u));
-  background: rgba(191, 43, 53, 0.15);
-  color: #bf2b35;
+  background: var(--sl2-sud-bg);
+  color: var(--sl2-sud-ink);
 }
 
 /* --------------------------------------------------- toast row (44px tall) */
@@ -635,7 +659,7 @@
   gap: calc(8 * var(--u));
   padding: calc(10 * var(--u));
   border-radius: calc(8 * var(--u));
-  background: rgba(255, 255, 255, 0.13);
+  background: var(--sl2-toast-bg);
   backdrop-filter: blur(calc(5.55 * var(--u)));
   -webkit-backdrop-filter: blur(calc(5.55 * var(--u)));
 }
@@ -650,8 +674,8 @@
   line-height: normal;
   white-space: nowrap;
 }
-.sl2-toast__text b { font-weight: 700; color: var(--orange-100); }
-.sl2-toast__text i { font-style: normal; font-weight: 500; color: var(--white-font); }
+.sl2-toast__text b { font-weight: 700; color: var(--accent); }
+.sl2-toast__text i { font-style: normal; font-weight: 500; color: var(--ink); }
 
 .sl2__tile {
   position: relative;
@@ -660,7 +684,7 @@
   width: calc(44 * var(--u));
   height: calc(44 * var(--u));
   overflow: hidden;
-  background: #6a2626;
+  background: var(--sl2-tile-bg);
 }
 .sl2__tile--pie { border-radius: calc(8.381 * var(--u)); }
 .sl2__tile--bolt { border-radius: calc(8 * var(--u)); }
@@ -709,7 +733,7 @@
   top: calc(300.997 * var(--u));
   width: calc(6 * var(--u));
   height: calc(6 * var(--u));
-  background: var(--orange-100);
+  background: var(--accent);
   transform: rotate(-45deg);
 }
 
@@ -743,14 +767,14 @@
   place-items: center;
   width: calc(161 * var(--u));
   height: calc(50 * var(--u));
-  border: calc(1 * var(--u)) solid var(--orange-100);
+  border: calc(1 * var(--u)) solid var(--accent);
   border-radius: calc(30 * var(--u));
-  background: #1d1c1b;
+  background: var(--sl2-pill-bg);
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: calc(16 * var(--u));
   line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
 }
 

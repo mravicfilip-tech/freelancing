@@ -1,6 +1,13 @@
 /* The hero's slider control. Two round arrows and a segmented track, sitting
    together as one object: variant 01 from slider-lab.html. */
 .position {
+  /* This control's own two colours, named here so the light block at the foot
+     of the file redefines exactly these. Dark is what it shipped with. */
+  --pos-track-hover: #3a3837;
+  /* A segment already seen. rgba(255,251,248,.3) is --ink at 30% -- the dark
+     theme's "raise this slightly", which on paper has to settle instead. */
+  --pos-seen: rgba(255, 251, 248, 0.3);
+
   display: flex;
   align-items: center;
   gap: 16px;
@@ -15,8 +22,8 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid var(--hairline);
-  color: var(--white-font);
+  border: 1px solid var(--line);
+  color: var(--ink);
   cursor: pointer;
   transition:
     border-color 260ms ease,
@@ -31,12 +38,12 @@
   transition: transform 320ms var(--ease-out);
 }
 .position__arrow:hover {
-  border-color: var(--orange-100);
-  background: color-mix(in srgb, var(--orange-100) 10%, transparent);
-  color: var(--orange-300);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-lift);
 }
 .position__arrow:active { transform: scale(0.94); }
-.position__arrow:focus-visible { outline: 2px solid var(--orange-300); outline-offset: 3px; }
+.position__arrow:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 3px; }
 /* The arrow leans the way it will take you. */
 .position__arrow:first-child:hover svg { transform: translateX(-3px); }
 .position:last-child svg,
@@ -55,30 +62,30 @@
   touch-action: none;
 }
 .position__rail.is-dragging { cursor: grabbing; }
-.position__rail:focus-visible { outline: 2px solid var(--orange-300); outline-offset: 6px; border-radius: 3px; }
+.position__rail:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 6px; border-radius: 3px; }
 
 .position__seg {
   position: relative;
   flex: 1;
   height: 3px;
   border-radius: 2px;
-  background: var(--surface-2);
+  background: var(--panel-2);
   overflow: hidden;
   transition: background-color 280ms ease;
 }
-.position__rail:hover .position__seg { background: #3a3837; }
+.position__rail:hover .position__seg { background: var(--pos-track-hover); }
 /* A segment already seen keeps its fill and loses the brand colour, so the one
    filling stays the most prominent thing in the control. */
 .position__seg.is-past,
-.position__rail:hover .position__seg.is-past { background: rgba(255, 251, 248, 0.3); }
-.position__seg.is-past .position__fill { background: rgba(255, 251, 248, 0.3); box-shadow: none; }
+.position__rail:hover .position__seg.is-past { background: var(--pos-seen); }
+.position__seg.is-past .position__fill { background: var(--pos-seen); box-shadow: none; }
 
 .position__fill {
   position: absolute;
   inset: 0;
   border-radius: 2px;
-  background: var(--orange-100);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--orange-100) 50%, transparent);
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 50%, transparent);
   transform-origin: left;
   transform: scaleX(0);
   transition: background-color 280ms ease, box-shadow 280ms ease;

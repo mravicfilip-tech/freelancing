@@ -35,6 +35,16 @@
   container-type: inline-size;
   --u: calc(100cqw / 1800);
   pointer-events: none;
+
+  /* The illustration's own colour, named so the light block at the foot of the
+     file redefines exactly these. Dark is what it shipped with. */
+  /* The three orbit rings and the grey node: #d9d9d9 is 12:1 on the dark page
+     and 1.29:1 on paper, which is the whole skeleton of this slide going
+     missing. They are masked glyphs now (see SlideFuture.tsx) so this token
+     reaches them. */
+  --sl4-ring: #d9d9d9;
+  /* 13% white glass under each market badge. */
+  --sl4-badge-bg: rgba(255, 255, 255, 0.13);
 }
 
 .sl4__frame {
@@ -87,8 +97,8 @@
   width: calc(57 * var(--u));
   height: calc(57 * var(--u));
   border-radius: calc(10.179 * var(--u));
-  background: rgba(255, 255, 255, 0.13);
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--orange-100) 30%, transparent);
+  background: var(--sl4-badge-bg);
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   backdrop-filter: blur(calc(11.905 * var(--u)));
   -webkit-backdrop-filter: blur(calc(11.905 * var(--u)));
   overflow: hidden;
@@ -151,13 +161,13 @@
   height: calc(50 * var(--u));
   padding: calc(16 * var(--u)) 0;
   border-radius: calc(30 * var(--u));
-  background: var(--surface);
-  border: calc(1 * var(--u)) solid var(--orange-100);
+  background: var(--panel);
+  border: calc(1 * var(--u)) solid var(--accent);
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: calc(16 * var(--u));
   line-height: 1.2;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -179,7 +189,7 @@
   top: calc(411.192 * var(--u));
   width: calc(25.071 * var(--u));
   height: calc(25.071 * var(--u));
-  background: var(--orange-100);
+  background: var(--accent);
   transform: rotate(45deg);
 }
 
@@ -197,7 +207,7 @@
   line-height: 0.88;
   letter-spacing: calc(-0.26 * var(--u));
   text-transform: uppercase;
-  color: var(--white-font);
+  color: var(--ink);
   white-space: nowrap;
 }
 .sl4__tag img {
@@ -253,10 +263,10 @@
   height: calc(12 * var(--u));
   margin: calc(-6 * var(--u)) 0 0 calc(-6 * var(--u));
   border-radius: 50%;
-  background: var(--orange-100);
+  background: var(--accent);
   box-shadow:
-    0 0 calc(7 * var(--u)) calc(1.5 * var(--u)) color-mix(in srgb, var(--orange-100) 70%, transparent),
-    0 0 calc(20 * var(--u)) calc(5 * var(--u)) color-mix(in srgb, var(--orange-100) 38%, transparent);
+    0 0 calc(7 * var(--u)) calc(1.5 * var(--u)) color-mix(in srgb, var(--accent) 70%, transparent),
+    0 0 calc(20 * var(--u)) calc(5 * var(--u)) color-mix(in srgb, var(--accent) 38%, transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -268,7 +278,7 @@
   inset: 0;
   background: radial-gradient(
     circle at 50% 50%,
-    color-mix(in srgb, var(--orange-100) 88%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 88%, transparent) 0%,
     transparent 74%
   );
   opacity: 0;

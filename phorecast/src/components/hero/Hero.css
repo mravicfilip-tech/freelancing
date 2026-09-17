@@ -6,8 +6,29 @@
   min-height: min(1080px, 100svh);
   padding-top: 40px;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--page);
   isolation: isolate;
+
+  /* The band's own colour, named here so the light block at the foot of the
+     file redefines exactly these and nothing has to be hunted for. Dark is
+     what the section shipped with, written out rather than inlined, so this
+     block is provably a no-op.
+
+     The first stop of --hero-g-ember was #0f0e0d, which is --bg. It was never
+     a dark colour there: it is the ground the disc dissolves into, so it is
+     var(--page) in both themes. Read literally on paper it would be a grey
+     bruise across the middle of the hero -- the same trap the footer found. */
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #7e0202 60%);
+  --hero-g-orange: #c23a26;
+  --hero-g-core: #f15034;
+  --hero-g-core-op: 0.55;
+  --hero-g-peach: #ec7850;
+  --hero-g-cream: #fbd6ca;
+  /* The halftone dither over the sun. `soft-light` over a dark ground lifts;
+     over paper it does almost nothing, so the blend mode is a token too. */
+  --hero-halftone: rgba(250, 203, 185, 0.9);
+  --hero-halftone-blend: soft-light;
+  --hero-halftone-op: 0.7;
 }
 
 /* Background glow ---------------------------------------------------------- */
@@ -34,13 +55,13 @@
 .hero__glow--ember {
   left: calc(788 * var(--u));
   top: calc(494 * var(--u));
-  background: linear-gradient(170deg, #0f0e0d 20%, #7e0202 60%);
+  background: var(--hero-g-ember);
 }
 /* the main orange sun */
 .hero__glow--orange {
   left: calc(802 * var(--u));
   top: calc(821 * var(--u));
-  background: #c23a26;
+  background: var(--hero-g-orange);
 }
 /* hot core so the band reads as saturated as the shader render */
 .hero__glow--core {
@@ -48,8 +69,8 @@
   top: calc(860 * var(--u));
   width: calc(1200 * var(--u));
   height: calc(700 * var(--u));
-  background: #f15034;
-  opacity: 0.55;
+  background: var(--hero-g-core);
+  opacity: var(--hero-g-core-op);
   filter: blur(calc(90 * var(--u)));
 }
 /* halftone / dither texture on top of the sun (Figma shader approximation) */
@@ -58,22 +79,22 @@
   position: absolute;
   inset: -6%;
   border-radius: inherit;
-  background-image: radial-gradient(circle at center, rgba(250, 203, 185, 0.9) 0.9px, transparent 1.7px);
+  background-image: radial-gradient(circle at center, var(--hero-halftone) 0.9px, transparent 1.7px);
   background-size: 6px 6px;
-  mix-blend-mode: soft-light;
-  opacity: 0.7;
+  mix-blend-mode: var(--hero-halftone-blend);
+  opacity: var(--hero-halftone-op);
 }
 /* peach spill toward the left */
 .hero__glow--peach {
   left: calc(486 * var(--u));
   top: calc(952 * var(--u));
-  background: #ec7850;
+  background: var(--hero-g-peach);
   opacity: 0.85;
 }
 .hero__glow--cream {
   left: calc(786 * var(--u));
   top: calc(1109 * var(--u));
-  background: #fbd6ca;
+  background: var(--hero-g-cream);
 }
 /* the planet-like black horizon that cuts the glow */
 .hero__horizon {
@@ -84,7 +105,7 @@
   height: calc(2668 * var(--u));
   transform: translateX(-50%);
   border-radius: 50%;
-  background: var(--bg);
+  background: var(--page);
   filter: blur(calc(50 * var(--u)));
 }
 

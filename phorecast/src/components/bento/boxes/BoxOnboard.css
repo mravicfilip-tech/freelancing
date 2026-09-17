@@ -51,6 +51,24 @@
   background: linear-gradient(180deg, var(--onb-grad-top) 0%, var(--onb-grad-mid) 86.058%, var(--onb-grad-end) 100%);
 }
 
+/* The heading, and the one thing on this card that was still reading the page.
+   ------------------------------------------------------------------------
+   `.bcard__title` is shared chrome and is --ink, which is right for the three
+   cards whose ground IS the page and wrong for this one: --ink flips to
+   #1a1512 and the heading lands on #a21605 at 2.15:1, the same failure
+   LIGHTMODE.md 1.1 describes for the primary button's label. Every other piece
+   of type on this card was already on --on-accent -- the body copy, the link,
+   the three pills, "60s", "You're in." -- and the heading is the same job: it
+   is read against the brand red, not against the page.
+
+   Identical in dark, where --ink and --on-accent are both #fffbf8. It was
+   caught by comparing the card's pixels BETWEEN THEMES rather than across the
+   change: a card that does not flip must render the same in both, and 3189
+   pixels of it did not. */
+.bcard--onboard.box-onboard .bcard__title {
+  color: var(--on-accent);
+}
+
 /* Frame 365:868 — the 474 x 327 content column. Absolute positioning resolves
    against the card's padding box, so the column is placed at the padding
    itself; every child below is a raw Figma coordinate inside it. */

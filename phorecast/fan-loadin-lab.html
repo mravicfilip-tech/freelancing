@@ -448,7 +448,7 @@ function stage() {
    Variants
    =========================================================================== */
 const VARIANTS = [
-  ['Sweep', 'The lines themselves travel. Each arc starts fully outside its window and glides in from the edge on one long expo, outermost first, the two fans in mirror. Everything else follows in their wake and the copy lands last.'],
+  ['Sweep', 'The lines themselves travel. Each arc comes in bodily from the outer edge, fading up out of the dark as it arrives, outermost first and the two fans in mirror. The diamonds, then the pills, follow in their wake from the outside in; the tile and the copy land last.'],
   ['Trace', 'Nothing slides; the lines are drawn. A bright head runs the length of each arc and leaves the line behind it, one mirrored pair at a time, so you can follow the order. The tile ignites on the last pair.'],
   ['Bloom', 'Inside out. The logo tile lights first and the heading answers it immediately, then the arcs expand inward from their far centres like rings growing, nearest the tile first, outward to the edge.'],
   ['Front', 'Two scan lines start at the outer edges and sweep to the centre at constant speed. Nothing moves and nothing fades in on a timer: every arc, pill and diamond appears exactly as the front crosses it, so the order is the geometry. Copy opens from the middle where the two meet.'],
@@ -478,6 +478,7 @@ function collect(section) {
       svg.querySelectorAll('path').forEach((el, depth) => {
         arcs.push({
           el, svg, grp, half, depth,
+          w0: el.getAttribute('stroke-width') || '1.35988',
           /* Which way is "inward" (toward the band's centre) in this SVG's own
              user space, and which way its local +x points on screen. The left
              group's lower half and the right group's upper half are the two
@@ -514,6 +515,10 @@ function measure(ctx) {
     const b = a.el.getBBox();
     a.bbox = b;
     a.rect = r;
+    a.yscale = r.height / b.height;
+    a.gl = g.left - f.left; a.gr = g.right - f.left;
+    a.gt = g.top - f.top; a.gb = g.bottom - f.top;
+    a.ft = r.top - f.top; a.fb = r.bottom - f.top;
     /* Frame-relative, because every screen x in this file is measured from the
        left edge of the band, never from the viewport. */
     a.fl = r.left - f.left;
@@ -545,6 +550,37 @@ function measure(ctx) {
    same ordering the arcs get without measuring anything. */
 const outIn = (els) => els.slice().sort((a, b) =>
   Math.abs(+b.dataset.x - 960) - Math.abs(+a.dataset.x - 960));
+
+/* Where along its own length this arc is actually inside its window. Each line
+   is a whole ellipse and the band shows one sliver of it, so a plain tip-to-tail
+   draw spends two thirds of its time off-frame: the head crosses the visible
+   piece in a fifth of the tween and the line then just sits there. Sampling the
+   path once tells us which stretch to spend the time on. */
+function visibleSpan(a, ctx) {
+  if (a._span && a._spanW === ctx.W) return a._span;
+  const N = 220, len = a.len || (a.len = a.el.getTotalLength());
+  const sx = (lx) => a.orient === 1
+    ? a.fl + (lx - a.bbox.x) * a.scale
+    : a.fr - (lx - a.bbox.x) * a.scale;
+  const sy = (ly) => a.orient === 1
+    ? a.ft + (ly - a.bbox.y) * a.yscale
+    : a.fb - (ly - a.bbox.y) * a.yscale;
+  let s0 = -1, s1 = -1;
+  for (let i = 0; i <= N; i++) {
+    const L = len * i / N;
+    const q = a.el.getPointAtLength(L);
+    const X = sx(q.x), Y = sy(q.y);
+    if (X >= a.gl - 6 && X <= a.gr + 6 && Y >= a.gt - 6 && Y <= a.gb + 6) {
+      if (s0 < 0) s0 = L;
+      s1 = L;
+    }
+  }
+  if (s0 < 0) { s0 = 0; s1 = len; }          /* never off-frame entirely: draw it all */
+  const pad = len / N;
+  a._span = [Math.max(0, s0 - pad), Math.min(len, s1 + pad)];
+  a._spanW = ctx.W;
+  return a._span;
+}
 
 /* Local x for a given screen x, inside one arc's own SVG user space. */
 const toLocal = (a, sx) => a.orient === 1
@@ -580,31 +616,38 @@ function copyIn(tl, ctx, at, o) {
   tl.to(ctx.sub, { opacity: 1, y: 0, filter: 'blur(0px)', duration: o.dur, ease: o.ease }, at + o.gap);
 }
 
-/* Draw helper for 02. `strokeDashoffset` len -> 0 draws forward from the path's
-   start point; -len -> 0 fills in backward from its end. The spark is a short
-   dash pinned to whichever end is currently moving, so one expression covers
-   both directions. See draw() in src/lib/motion.ts for the production version. */
-function drawArc(tl, a, at, dur, fwd) {
+/* Draw helper for 02, from the outer end inward.
+
+   With `stroke-dasharray: len`, a `stroke-dashoffset` of -t draws the stretch
+   [t, len]: lower t, and the line fills in backwards from its far end. Every
+   one of these four SVGs is traversed inward-to-outward — the two that Figma
+   rotated 180deg mirror both the geometry and the direction, so it holds for
+   all sixteen lines — which means drawing BACKWARDS is what sends the head in
+   from the edge. The stretch outside the span is off-frame, so it is completed
+   in one invisible step at the end rather than animated.
+
+   The spark is a short dash pinned to the head. See draw() in src/lib/motion.ts
+   for the production tip-to-tail version. */
+function drawArc(tl, a, at, dur, ctx) {
   const len = a.len;
-  const h = Math.min(len * 0.06, 260);
-  gsap.set(a.el, { strokeDasharray: len, strokeDashoffset: fwd ? len : -len, opacity: 1 });
-  gsap.set(a.spark, {
-    strokeDasharray: `${h} ${len + h}`,
-    strokeDashoffset: fwd ? h : -len,
-    opacity: 0.95,
-  });
-  tl.to(a.el, { strokeDashoffset: 0, duration: dur, ease: 'power1.inOut' }, at);
-  tl.to(a.spark, { strokeDashoffset: fwd ? h - len : 0, duration: dur, ease: 'power1.inOut' }, at);
-  tl.to(a.spark, { opacity: 0, duration: 0.45, ease: 'power2.out' }, at + dur * 0.72);
+  const span = visibleSpan(a, ctx);
+  const h = Math.min((span[1] - span[0]) * 0.3, 240);
+  const o0 = -span[1], o1 = -span[0];         /* head at the outer end, then inward */
+  gsap.set(a.el, { strokeDasharray: len, strokeDashoffset: o0, opacity: 1 });
+  gsap.set(a.spark, { strokeDasharray: `${h} ${len + h}`, strokeDashoffset: o0, opacity: 0.95 });
+  tl.to(a.el, { strokeDashoffset: o1, duration: dur, ease: 'power2.inOut' }, at);
+  tl.to(a.spark, { strokeDashoffset: o1, duration: dur, ease: 'power2.inOut' }, at);
+  tl.set(a.el, { strokeDashoffset: 0 }, at + dur);
+  tl.to(a.spark, { opacity: 0, duration: 0.4, ease: 'power2.out' }, at + dur * 0.72);
 }
 
 const BUILD = [
 
 /* -------------------------------------------------------------------------
    01  SWEEP — the lines travel
-   Each arc is parked entirely outside its own window and flies back in. The
-   only variant where the geometry of every line actually moves across the
-   band; the stagger is by depth, outermost first, both fans in mirror.
+   The only variant where the geometry of every line actually crosses the band.
+   Each arc starts pushed out toward its own edge and slides back in; the
+   stagger is by depth, outermost first, both fans in mirror.
    ------------------------------------------------------------------------- */
 function sweep(tl, ctx) {
   ctx.arcs.forEach((a) => {
@@ -648,14 +691,13 @@ function trace(tl, ctx) {
   gsap.set(ctx.pills, { opacity: 0, scale: 0.94 });
   gsap.set(ctx.tile, { opacity: 0, scale: 0.8 });
 
-  const BEAT = 0.26, DUR = 1.05;
-  ctx.arcs.forEach((a) => {
-    /* Upper halves draw downward from the top of the window, lower halves
-       upward from the bottom: forward along the path for both, which the two
-       180deg-rotated copies turn into a mirror for free. */
-    drawArc(tl, a, (a.depth * 2 + (a.half === 'lower' ? 1 : 0)) * BEAT, DUR, true);
-  });
-  const last = 7 * BEAT + DUR;
+  /* Eight beats: both sides of one half at one depth per beat, upper then
+     lower, so the order is legible as eight separate events rather than
+     sixteen overlapping ones. */
+  const BEAT = 0.24, DUR = 0.95;
+  ctx.arcs.forEach((a) =>
+    drawArc(tl, a, (a.depth * 2 + (a.half === 'lower' ? 1 : 0)) * BEAT, DUR, ctx));
+  const last = 7 * BEAT + DUR;   /* when the final pair finishes drawing */
 
   outIn(ctx.diamonds).forEach((d, i) =>
     tl.to(d, { opacity: 1, scale: 1, duration: 0.28, ease: 'power3.out' }, 0.55 + i * 0.09));
@@ -718,22 +760,34 @@ function front(tl, ctx) {
   tl.to(ctx.fronts[1], { x: -half, duration: DUR, ease: 'none' }, 0);
   tl.to(ctx.fronts, { opacity: 0, duration: 0.35, ease: 'power2.out' }, DUR - 0.1);
 
-  /* How far the front has travelled, 0..1, when it is at screen x. */
+  /* How far the front has travelled, 0..1, when it is at screen x. The arcs ask
+     by group: an ellipse on the right reaches left of the centre line, and the
+     nearer-edge shortcut would hand it to the wrong front. */
   const reach = (x) => Math.max(0, Math.min(1, (x < half ? x : ctx.W - x) / half));
+  const reachG = (g, x) => Math.max(0, Math.min(1, (g === 'l' ? x : ctx.W - x) / half));
 
   ctx.arcs.forEach((a) => {
     const rect = clipFor(a);
-    const t0 = reach(a.outX), t1 = reach(a.inX);
-    if (!(t1 > t0)) { tl.to(a.el, { opacity: 1, duration: 0.01 }, DUR * t0); return; }
-    const p = { sx: a.outX };
+    const t0 = reachG(a.grp, a.outX), t1 = reachG(a.grp, a.inX);
+    /* Degenerate line — nothing of it is inside the band. Hand it back its full
+       clip window rather than leaving it clipped to nothing for good. */
+    if (!(t1 > t0)) {
+      rect.setAttribute('x', a.bbox.x - 2);
+      rect.setAttribute('width', a.bbox.width + 4);
+      return;
+    }
+    /* The window opens from the local x the front is at when it reaches this
+       line, to the local x where it leaves it. Both ends of the rect are linear
+       in time, so this is two attribute tweens and no per-frame callback —
+       which also means it survives a seek, where GSAP suppresses onUpdate. */
     const edge = toLocal(a, a.outX);
-    tl.to(p, {
-      sx: a.inX, duration: DUR * (t1 - t0), ease: 'none',
-      onUpdate() {
-        const lx = toLocal(a, p.sx);
-        rect.setAttribute('x', Math.min(edge, lx) - 2);
-        rect.setAttribute('width', Math.abs(lx - edge) + 2);
-      },
+    const far = toLocal(a, a.inX);
+    const grow = far > edge;
+    rect.setAttribute('x', (grow ? edge : edge) - 2);
+    rect.setAttribute('width', 2);
+    tl.to(rect, {
+      attr: { x: (grow ? edge : far) - 2, width: Math.abs(far - edge) + 2 },
+      duration: DUR * (t1 - t0), ease: 'none',
     }, DUR * t0);
   });
 
@@ -765,7 +819,9 @@ function signal(tl, ctx) {
   ctx.arcs.forEach((a) => {
     a.len = a.el.getTotalLength();
     gsap.set(a.el, { opacity: 0, x: a.outSign * (a.travel * 0.45) * a.orient / a.scale });
-    a.el.style.strokeDasharray = '14 30';
+    a.el.setAttribute('stroke-dasharray', '14 30');
+    a.el.setAttribute('stroke-dashoffset', a.len * 0.12 * a.dir);
+    a.el.setAttribute('stroke-width', 2.9);
   });
   gsap.set(ctx.diamonds, { opacity: 0 });
   gsap.set(ctx.pills, { opacity: 0 });
@@ -774,17 +830,13 @@ function signal(tl, ctx) {
   ORDER.forEach((n, i) => {
     const a = ctx.arcs[n];
     const at = i * 0.075;
-    /* The segments are also fatter than the settled line and thin down into it.
-       At 1.36 user units the stroke is under a pixel once the frame is scaled,
-       and a sparse dash on a sub-pixel line is invisible rather than dotted. */
-    const s = { dash: 14, gap: 30, off: a.len * 0.12 * a.dir, w: 2.9 };
-    tl.to(s, {
-      dash: 60, gap: 0, off: 0, w: 1.35988, duration: 1.15, ease: 'power2.out',
-      onUpdate() {
-        a.el.style.strokeDasharray = `${s.dash} ${s.gap}`;
-        a.el.style.strokeDashoffset = s.off;
-        a.el.style.strokeWidth = s.w;
-      },
+    /* The segments are fatter than the settled line and thin down into it. At
+       1.36 user units the stroke is under a pixel once the frame is scaled, and
+       a sparse dash on a sub-pixel line reads as nothing at all rather than as
+       a dotted line. The gap closing to zero is what fuses them. */
+    tl.to(a.el, {
+      attr: { 'stroke-dasharray': '60 0', 'stroke-dashoffset': 0, 'stroke-width': a.w0 },
+      duration: 1.15, ease: 'power2.out',
     }, at);
     tl.to(a.el, { keyframes: [
       { opacity: 0.45, duration: 0.1 }, { opacity: 0.12, duration: 0.08 }, { opacity: 1, duration: 0.5 },
@@ -847,7 +899,9 @@ function reset(rig) {
     a.el.removeAttribute('clip-path');
     a.el.style.strokeDasharray = '';
     a.el.style.strokeDashoffset = '';
-    a.el.style.strokeWidth = '';
+    a.el.removeAttribute('stroke-dasharray');
+    a.el.removeAttribute('stroke-dashoffset');
+    a.el.setAttribute('stroke-width', a.w0);
     a.spark = null;
   });
   ctx.root.querySelectorAll('.spark, .wipe-clip').forEach((n) => n.remove());

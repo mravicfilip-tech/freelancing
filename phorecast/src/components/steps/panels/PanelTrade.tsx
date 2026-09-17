@@ -245,6 +245,10 @@ function tradeMotion(root: HTMLElement): () => void {
     line.style.removeProperty('stroke-dashoffset');
     area.removeAttribute('clip-path');
     rect.setAttribute('width', '373');
+    // `clearProps` on an SVG node drops the transform but leaves the
+    // transform-origin GSAP wrote beside it; the export carries neither.
+    marker.style.removeProperty('transform-origin');
+    marker.removeAttribute('data-svg-origin');
   };
 
   let io: IntersectionObserver | undefined;
@@ -279,7 +283,7 @@ function tradeMotion(root: HTMLElement): () => void {
     loop
       .to(marker, { opacity: 0, y: -10, duration: 0.3, ease: 'power2.in' }, LEAD)
       .to(markerRule, { opacity: 0, duration: 0.3, ease: 'power2.in' }, LEAD)
-      .to(marker, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform,opacity' }, LAND)
+      .to(marker, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', clearProps: 'transform,transformOrigin,opacity' }, LAND)
       .to(markerRule, { opacity: 1, duration: 0.45, ease: 'power2.out', clearProps: 'opacity' }, LAND + 0.1);
 
     // The figure answers the curve: up from the -2.41% base to the design's own.

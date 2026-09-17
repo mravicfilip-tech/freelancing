@@ -237,8 +237,14 @@
 .hero__lede .line {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.16em;
-  margin-bottom: -0.16em;
+  /* 0.26em, sized from the font rather than guessed. Manrope's `g` puts 21px
+     of ink below the baseline at this size, while `line-height: 0.9` ends the
+     inner box only 5.43px below it -- the line box is SHORTER than the glyphs
+     it holds. 0.16em still left the tail 2.27px outside the clip; 0.26em
+     clears it by about 4px at every size the headline uses. The negative
+     margin takes the room back out of the layout, so nothing shifts. */
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 .hero__title .line__in,
 .hero__lede .line__in { display: block; position: relative; }

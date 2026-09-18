@@ -825,6 +825,54 @@
   }
 }
 
+/* THE PHONE COMPOSITION -------------------------------------------------------
+   Above this width the whole 963-wide group is scaled to fit the column. At
+   390px that is 0.363x: the prediction card's 15px title renders at 5.5px and
+   the market cards' 8px micro-copy at 2.9px. A faithful reproduction of the
+   design at a fifth of its size is not a small illustration, it is noise -- and
+   it left a 314px void under it, because 365 design units at 0.363x is a 133px
+   strip in a slot the stage had reserved 400px for.
+
+   So the phone is given FEWER PARTS, LARGER, not the same parts smaller. What
+   stays is the pair of 200px market cards and the node they converge on, which
+   is the slide's whole sentence: two different markets -- a sports book and a
+   commodity -- one account. Two cards side by side with their gap is 411 design
+   units, so 411 becomes the basis and everything is drawn at 0.85x: the price
+   is 17px, the card headings 10px, the range picker 7px. Legible, at last.
+
+   What goes is the 390px prediction card, the 140px column of three small event
+   cards and the toast row. They are the parts with the smallest type relative
+   to their area -- exactly the parts that were costing the most width and
+   returning the least. Nothing is deleted from the markup: this is a phone
+   composition of the same illustration, and everything is back at 721px.
+
+   The box keeps its 365-unit height, so the connectors' 231..315 run and the
+   pill's 315 baseline are untouched; only the horizontal anchors move, from
+   the group's right-hand third to the middle of a column that is now 411 wide.
+   The pill's 211 units centre at left: (411 - 211) / 2 = 100, which carries the
+   diamond the connectors meet at from 632 to 222 -- the same 122-unit offset
+   from the pill's left edge that the design draws. */
+@media (max-width: 720px) {
+  .sl2 {
+    /* 371 and not the box's own 365: the extra six units are the bottom margin
+       that puts the pill the same distance off the foot of the slot that the
+       cards sit off its head, and they are what makes this slot the same
+       315.8px at 390 that slides 1, 3 and 4 fill. */
+    height: calc(371 * 100cqw / 411);
+    --u: calc(100cqw / 411);
+  }
+  .sl2__box { width: calc(411 * var(--u)); }
+
+  .sl2-pred,
+  .sl2__minis,
+  .sl2__toasts { display: none; }
+
+  .sl2__conn--l { left: calc(129 * var(--u)); }
+  .sl2__conn--r { left: calc(221.5 * var(--u)); }
+  .sl2__diamond { left: calc(219 * var(--u)); }
+  .sl2__pill { left: calc(100 * var(--u)); }
+}
+
 /* --- Light -------------------------------------------------------------------
    Written twice, because a media query cannot go in a selector list -- the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay

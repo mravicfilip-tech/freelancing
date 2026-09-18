@@ -51,3 +51,16 @@
     height: 86%;
   }
 }
+
+/* The phone. `min(300px, 66vw)` was a box sized to be safe, not to be filled:
+   at 390 it reserved 257px, the mark inside it was width-limited to 221px, and
+   the 189px the hero had left over sat under it as a void. The box now takes
+   the height the stage reserves for it (see Hero.css), and Hero.tsx widens the
+   mark's fractions so the mark fills the box rather than floating in it. */
+@media (max-width: 720px) {
+  /* 0.9023 of the content column, which is the hero's shared phone art slot --
+     the same 315.8px at 390 that slide 2's cards and slide 4's window fill. The
+     column, not the viewport: `.hero__stage` is the query container, so this
+     tracks the same basis every illustration is drawn against. */
+  .heroLogo { height: calc(0.9023 * 100cqw); }
+}

@@ -37,6 +37,11 @@
  * closes from are each mapped through the one rotation the layout applies. The
  * numbers are in `LANDSCAPE` and `PORTRAIT` below with the map beside them.
  * The orientation is measured off the artwork's own box, not a media query.
+ *
+ * The one beat that reads differently is the fourth: the phone has no corridor
+ * to send the packet down, because it stacks the two chips across the line of
+ * travel rather than along it, so the packet crosses over them instead. They
+ * still answer as it passes, on the beats they always did.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';

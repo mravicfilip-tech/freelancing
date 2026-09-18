@@ -23,6 +23,10 @@
  * Under 1080px the grid stacks and the panel sits above the list, so those last
  * two beats swap and the band still fills top to bottom. See LEAD_AT.
  *
+ * Under 700px there is no list and no single panel: the band is a row of tabs
+ * over a swipeable track, so the last two beats become two objects instead of
+ * four — the tab row on the cards' cue, the track on the panel's. See PHONE.
+ *
  * Every tween is a `from`: the resting markup is the finished state, so a build
  * that never runs leaves the section simply present. There is no `fromTo` here
  * at all, delayed or otherwise — see the note on `immediateRender` in
@@ -87,6 +91,17 @@ const FOLLOW_AT = LEAD + 1.5;
 const CARD_STEP = 0.18;
 /** Where the stack puts the panel first. Matches `.steps__panels { order: 1 }`. */
 const STACKED = '(max-width: 1080px)';
+/**
+ * Where the band is a switcher and a slider instead of a graphic and a list.
+ *
+ * Matches PHONE in Steps.tsx and the `max-width: 700px` block in Steps.css,
+ * and it has to: below it the three cards do not exist as cards at all, so
+ * there is nothing for beat 3 to stagger. The phone gets two objects instead of
+ * four -- the tab row, then the track with the graphic and its copy inside it --
+ * and they arrive in the order they are read, top down, on the same two cues
+ * the desktop uses for its own leader and follower.
+ */
+const PHONE = '(max-width: 700px)';
 
 /**
  * Already arrived once, on this very element, and the timeline ran to its end.
@@ -134,6 +149,7 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
   const title = q('.steps__title')[0];
   const cards = q('.step');
   const panels = q('.steps__panels')[0];
+  const phone = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
   const stacked = typeof matchMedia !== 'undefined' && matchMedia(STACKED).matches;
   const cardsAt = stacked ? FOLLOW_AT : LEAD_AT;
   const panelAt = stacked ? LEAD_AT : FOLLOW_AT;
@@ -156,6 +172,21 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
       clearProps: 'filter',
     }, TITLE_AT);
     tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, TITLE_AT);
+  }
+
+  /* 3p — the phone. Two objects, in reading order: the row that chooses, then
+     the track that answers it. The track is taken as ONE thing rather than as
+     three slides, because two of the three are off the side of the screen and
+     a stagger nobody can see is a stagger that has to finish before the band is
+     settled. Its own children -- the plate, the title, the body -- ride it, the
+     way the desktop panel's contents ride the panel. */
+  if (phone) {
+    const tabs = q('.steps__tabs')[0];
+    const track = q('.steps__track')[0];
+    if (tabs) outOfBlur(tl, tabs, LEAD_AT, { y: 16, blur: 7, duration: 0.85, fade: 0.35 });
+    if (track) outOfBlur(tl, track, FOLLOW_AT, { y: 30, blur: 12, duration: 1.2, fade: 0.5 });
+    tl.call(() => { LANDED.add(el); });
+    return;
   }
 
   /* 3 — the three cards, top to bottom. Each is a whole statement, so the whole

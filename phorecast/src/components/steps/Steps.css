@@ -261,6 +261,222 @@
 }
 
 
+/* The phone — a switcher and a slider ---------------------------------------
+   THE PHONE LAYOUT IS NOT THE STACK AT A SMALLER SIZE. Above 700 the band is a
+   graphic with a list of three cards under it: all three steps on screen at
+   once, the current one marked by a 4px rail, and 900px of section to scroll
+   past. That is a list, not a stepper, and the graphic it is meant to explain
+   was 350 wide with 20px of page gutter either side of it.
+
+   So below 700 the three cards become three SLIDES, the card the reader is on
+   becomes the one they can see, and the choosing moves up into a row of three
+   tabs with an underline that slides between them. The graphic takes the whole
+   width of the screen, edge to edge, and each panel is scaled to ITS OWN
+   artwork rather than all three to the same 886-wide frame — see the geometry
+   block below, which is where the size actually comes from.
+
+   Everything the band already did, it still does. The 6s timer advances the
+   step; the step is what the track scrolls to; the underline follows the step;
+   the dwell fills the underline on the same `is-playing` + `--dwell` mechanism
+   that fills the desktop card's bar, and re-starts on every change because
+   Steps.tsx keys the fill on `active`. Nothing here listens to the pointer:
+   the swipe is scroll-snap, and the only thing read back is a scroll offset.
+
+   700 rather than 720: see the note on PHONE in Steps.tsx. ------------------ */
+@media (max-width: 700px) {
+  .steps__body { display: flex; flex-direction: column; gap: 16px; }
+
+  /* The switcher ----------------------------------------------------------- */
+  .steps__tabs {
+    position: relative;
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+  }
+  .steps__tab {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    /* 48, not the 44 floor: three of them make the one horizontal row in the
+       band, and a thumb arriving at a row aims at its middle. */
+    min-height: 48px;
+    padding: 12px 6px;
+    background: none;
+    border: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.2;
+    /* Both states are role ink, so both are AA in both themes and neither is
+       --ink-muted, which is the token this page has a hundredth of a stop of
+       headroom on. Selected is --ink (18.74:1 dark, 17.59:1 light), unselected
+       is --ink-2 (7.11 / 6.97). The accent is spent on the underline instead:
+       as 16px type #e5331e is 4.43:1 on dark and would be the one label in the
+       band that fails. */
+    color: var(--ink-2);
+    transition: color 200ms ease;
+  }
+  .steps__tab.is-active { color: var(--ink); }
+  .steps__tab-n {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .steps__tab.is-active .steps__tab-n { color: var(--accent); }
+
+  /* The underline. ONE element for three positions -- it travels between them
+     rather than appearing and disappearing, which is the whole difference
+     between one control and three. `--i` is the selected index, written by
+     Steps.tsx, so the travel is a single transform and the transition does not
+     care which direction it is going. */
+  .steps__ind {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: calc(100% / 3);
+    height: 3px;
+    background: var(--accent);
+    transform: translateX(calc(var(--i, 0) * 100%));
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* The dwell, which used to be the card's left-hand bar: the same
+     --steps-progress over the same accent, filling over the same --dwell, held
+     off until the entrance arms it by the same `is-playing`. Horizontal now,
+     because the thing it is drawn on is. scaleX rather than width so the fill
+     is one composited transform and not a layout every frame. */
+  .steps__ind-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--steps-progress);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .steps__ind.is-playing .steps__ind-fill { animation: steps-dwell var(--dwell, 6000ms) linear forwards; }
+  @keyframes steps-dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* The track -------------------------------------------------------------- */
+  /* Full width of the screen, out through the container's gutter, so the
+     graphic can go edge to edge. `margin-inline` rather than 100vw on purpose:
+     a viewport unit counts a classic scrollbar that the element does not have,
+     which is a horizontal overflow on every desktop browser that still draws
+     one, and this rule is one resize away from those.
+
+     The swipe is scroll-snap and nothing else. No drag handler, no pointer
+     maths, no transform driven from a touch delta: the browser does the
+     physics, and Steps.tsx reads back only the offset it settled on. */
+  .steps__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    margin-inline: calc(-1 * var(--page-pad));
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .steps__track::-webkit-scrollbar { display: none; }
+  .steps__slide {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding-inline: var(--page-pad);
+    scroll-snap-align: start;
+    /* A stepper is read a step at a time, so a fling may not skip one. */
+    scroll-snap-stop: always;
+  }
+  .steps__slide:focus-visible { outline-offset: -3px; }
+  /* The graphic goes edge to edge; the copy keeps the page's gutter, so it
+     still lines up with the eyebrow, the heading and the tabs above it.
+     `order` is restated because the 1080 block lifts `.steps__panels` above
+     the list with `order: 1`, and inside a slide that would put the copy
+     first -- here the graphic leads and its sentence follows it. */
+  .steps__slide .steps__panels { order: 0; margin-inline: calc(-1 * var(--page-pad)); }
+  .steps__slide .step { order: 1; }
+
+  /* The card, which is no longer a card. Its title and body belong to the
+     slide they describe; the plate, the rail, the hover and the dwell bar were
+     all the job of being a chooser, and the tabs do that now. */
+  .steps__slide .step {
+    min-height: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    backdrop-filter: none;
+  }
+  .steps__slide .step::before,
+  .steps__slide .step::after { content: none; }
+  .steps__slide .step:hover { background: none; }
+
+  /* The graphic, and where its size comes from -----------------------------
+     Each panel is an 886 x 610 field with its artwork somewhere inside it, and
+     on desktop the field IS the plate. On a phone that is the wrong bargain:
+     panel 3's artwork is a 424-wide card in the middle of that field, so
+     fitting the field to the screen spends 52% of the width on empty ground.
+
+     So the plate stops being the field. It becomes a 4:3 window onto it, and
+     each panel redefines `--p` -- the design pixel every rule in these three
+     stylesheets is written in -- so that ITS OWN artwork, not the field,
+     fills the screen with a 10px margin. `--cx`/`--cy` are that artwork's
+     centre in field coordinates, and `--fx`/`--fy` move the field so that
+     centre lands in the middle of the window. Everything hung in the field --
+     the artwork, the ghosted wordmark, the warm disc -- moves with it as one,
+     which is what keeps panel 2's balance card lit through the middle of the
+     glow rather than off its edge.
+
+     `--p` is the supported knob, and a transform is not: the panels measure
+     their own design pixel with getBoundingClientRect and drive the loop's
+     travel from it, so a scaled panel would have every beat overshoot by the
+     scale factor. Changing `--p` keeps CSS and the measurement agreeing.
+
+     The measured result at 390: --p goes 0.395 -> 0.487 (panel 1), 0.474
+     (panel 2) and 0.873 (panel 3), and the artwork goes from 300 wide to 370
+     in all three. See the report; panel 3 is the one that gains most, because
+     it is the one with the most air to give back.
+
+     `translate` rather than `transform`: the loops write `transform` on
+     elements inside the field, and the two properties compose instead of
+     fighting. Nothing here scales, so the measured design pixel stays true. */
+  .panel {
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+    --fx: calc(50cqw - var(--cx) * var(--p));
+    --fy: calc(37.5cqw - var(--cy) * var(--p));
+  }
+  /* Edge to edge, so the side edges are off the screen rather than drawn on
+     it. The top and bottom edges stay: they are what makes the band a plate. */
+  .panel--2, .panel--3 { border-left: 0; border-right: 0; }
+
+  /* 63..823 x 141..470 in the field: the pill, the wire, the two cards and
+     the phone, 760 x 329, centred on (443, 305.5). */
+  .panel--1 { --p: calc(100cqw / 801); --cx: 443; --cy: 305.5; }
+  /* 65..845 x 129..482: the five rails, the arcs, the locked node and the
+     balance card, 780 x 353, centred on (455, 305.5). */
+  .panel--2 { --p: calc(100cqw / 822); --cx: 455; --cy: 305.5; }
+  /* One 424 x 274 card on the field's own centre. It is width-limited like
+     the other two, so it gets the same 370 of artwork -- at 1.8x their
+     scale, because it is 1.8x smaller in the design. */
+  .panel--3 { --p: calc(100cqw / 447); --cx: 443; --cy: 305; }
+
+  .panel .steps__mark,
+  .panel .steps__glow,
+  .panel .s1,
+  .panel .s2 { translate: var(--fx) var(--fy); }
+  /* .s3 is not in the list: it is already placed on the field's centre with
+     left/top 50%, which is the window's centre too, so the offset would move
+     it off the middle it is meant to sit on. */
+
+  @media (prefers-reduced-motion: reduce) {
+    .steps__ind { transition: none; }
+    .steps__ind.is-playing .steps__ind-fill { animation: none; }
+  }
+}
+
 /* --- Light -------------------------------------------------------------------
    Written twice, because a media query cannot go in a selector list -- the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay
@@ -459,7 +675,9 @@
 [data-js] .steps[data-motion='pending'] .eyebrow,
 [data-js] .steps[data-motion='pending'] .steps__title,
 [data-js] .steps[data-motion='pending'] .step,
-[data-js] .steps[data-motion='pending'] .steps__panels {
+[data-js] .steps[data-motion='pending'] .steps__panels,
+[data-js] .steps[data-motion='pending'] .steps__tabs,
+[data-js] .steps[data-motion='pending'] .steps__track {
   visibility: hidden;
 }
 @media (prefers-reduced-motion: reduce) {

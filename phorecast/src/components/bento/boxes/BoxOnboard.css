@@ -228,11 +228,109 @@
   text-box: trim-both cap alphabetic;
 }
 
-/* Below 720px Bento.css drops the card's padding to 24px; the column follows it
-   so the artwork stays flush with the copy. */
+/* The heading's mobile line break. Off by default, so the desktop card keeps
+   the single run of text it has always had; see BoxOnboard.tsx. */
+.onb__brk {
+  display: none;
+}
+
+/* === MOBILE — Figma 526:184, 394 x 460 ====================================
+   The mobile frame is the same illustration, cropped and moved, and this block
+   is that sentence in CSS. Reading 526:184 against 365:866 node by node:
+
+     phone       mobile (123,   9)  desktop (210,  98)
+     grid        mobile ( 45,  20)  desktop (132, 109)
+     No KYC      mobile ( 24,  60)  desktop (111, 149)
+     No docs     mobile (  0,  98)  desktop ( 87, 187)
+     No waiting  mobile ( 24, 136)  desktop (111, 225)
+     ring        mobile (151,  69)  desktop (238, 158)
+     You're in.  mobile (208, 222)  desktop (295, 311)
+
+   Every one of them is the desktop coordinate less (87, 89), to the pixel, and
+   every size is unchanged. So nothing inside the column moves: the column does.
+   The mobile frame is also a tighter box — 364 x 308 at card (30, 152) against
+   474 x 327 at (30, 30) — but the crop is empty. The grid runs off the card's
+   right edge in both frames and the phone's foot off the bottom in both, and
+   `.bcard`'s own `overflow: hidden` already cuts exactly where 526:1163's
+   `overflow-clip` does. So `.onb__art` keeps its 474 x 327 box here, which also
+   means `unitOf(art, 474)` in motion/onboard.ts goes on returning the right
+   unit with nothing to change.
+
+   The mobile column is NOT clipped to 364 x 308 deliberately: the loop slides
+   the "No documents" pill 16 design px to its left, and that pill starts at
+   column x 0, so a clip on the frame would eat the beat. The card still clips
+   it, 24px further out.
+
+   What genuinely differs is the copy, and it differs by getting BIGGER, not
+   smaller: 526:190 is 24px and 526:191 is 16px with an 18px gap between them,
+   where Bento.css's shared mobile block takes every card's heading down to 21px
+   and its body to 17px on a 2px gap. The design is followed here, scoped to
+   this card. If the sibling cards' mobile frames say the same thing, the right
+   home for it is Bento.css rather than four copies of this rule. */
 @media (max-width: 720px) {
+  .box-onboard {
+    /* One design pixel of the MOBILE card. 526:184 is 394 wide with 30px of
+       padding, so its content column is 334; Bento.css drops the padding to
+       24px here, and the two readings agree to within half a percent at a 390
+       phone (308/394 = 0.782 against 260/334 = 0.778). Capped at 1px for the
+       same reason the desktop unit is: by 720 the single-column grid has made
+       this card twice the width it was drawn at, and an uncapped unit would
+       blow the artwork up with it. */
+    --u: min(1px, 100cqw / 334);
+  }
+
+  /* The card is as tall as its contents, and the contents are what place the
+     artwork. `.bcard__text` reserves the column's height less the 18px that
+     the link and its padding already account for, so the flow below resolves
+     to the design exactly:
+
+       card = 24 + text + (308u - 18) + 20 + 24
+       column top  = card - 308u = text + 50 = 24 + text + 26   (the design's
+                                                                 26px gap)
+       link top    = card - 44                                  (24 up from the
+                                                                 floor, as 30
+                                                                 is in Figma)
+
+     At u = 1 with the design's own type that comes to a 454px card with the
+     link at 410 — Figma's 460 and 410, less the 6px of padding this card gives
+     up to match its siblings. Driving it through the flow rather than through a
+     fixed min-height is what keeps it honest at 360, where the body copy wraps
+     to a second line and a fixed height would have let the phone climb into it.
+     Bento.css's 420px floor has to come off for any of that to be reachable. */
+  .bcard--onboard.box-onboard {
+    min-height: auto;
+  }
+  .box-onboard .bcard__text {
+    gap: 18px;
+    margin-bottom: calc(308 * var(--u) - 18px);
+  }
+  /* 526:190 / 526:191. --on-accent already, via the rules above and
+     `.bcard__body--light`: this card is a red plate in both themes and --ink
+     would put the heading at 2.15:1 on it in light. */
+  .box-onboard .bcard__title { font-size: 24px; }
+  .box-onboard .bcard__body { font-size: 16px; }
+  .box-onboard .onb__brk { display: inline; }
+
+  /* The column, moved. Children stay at their desktop coordinates, so the box
+     is placed where those coordinates land on the mobile frame: the mobile
+     column's own origin is the card's padding edge, (24, card - 308u), and the
+     desktop origin sits (87, 89) design px up and to the left of it. Anchored
+     from the floor, because that is the edge the design shares — 152 + 308 is
+     460, the card's own bottom — and because it is the edge that stays put when
+     the copy above grows a line. `left` and `bottom`, never `translate`: GSAP
+     folds an independent transform into the inline `transform` it writes, and
+     `clearProps: 'transform'` in the loop would then strip the offset with it.
+
+       element top    = card - 397u   (= column top 308u, less 89u)
+       element bottom = card -  70u   (= that, plus its own 327u box) */
   .box-onboard .onb__art {
-    left: 24px;
-    top: 24px;
+    left: calc(24px - 87 * var(--u));
+    top: auto;
+    bottom: calc(70 * var(--u));
+  }
+  /* 365:867 has no counterpart in 526:184. Its export is an empty group, so
+     this changes no pixels; it is here so the layer set matches the frame. */
+  .box-onboard .onb__logo {
+    display: none;
   }
 }

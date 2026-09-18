@@ -1,5 +1,23 @@
 /**
- * Bento card A — "Open an account in 60 seconds" (Figma 365:866).
+ * Bento card A — "Open an account in 60 seconds" (Figma 365:866 desktop,
+ * 526:184 mobile).
+ *
+ * ONE MARKUP, TWO FRAMES. The mobile design is not a second drawing: every one
+ * of the eight illustration nodes sits at its desktop coordinate less exactly
+ * (87, 89), inside a 364 x 308 crop of the same column, and the four assets it
+ * names are byte-for-byte the exports this file already imports. So the markup
+ * below is shared and BoxOnboard.css moves the column; see the mobile block at
+ * the foot of that file for the arithmetic. The only markup the mobile frame
+ * adds is a line break in the heading, which is switched off above the
+ * breakpoint.
+ *
+ * ONE THING FROM 526:184 IS DELIBERATELY NOT HERE. Node 526:1490 is a single
+ * #FA9C5A ellipse under a 38.75px Gaussian blur, parked at the card's
+ * bottom-left corner — a bloom. This page has a standing rule against glow,
+ * bloom and halo, and that rule has outlived three attempts to reintroduce one,
+ * so the asset is not downloaded and not drawn. The gradient's own #f8a361
+ * bottom stop already lifts that corner; what is lost is the asymmetry, which
+ * is the part the rule is about.
  *
  * The card is 534 x 387 in design pixels and is the one orange card in the
  * grid. `.bcard` (Bento.css) already supplies the shell — padding, radius,
@@ -48,7 +66,17 @@ export function BoxOnboard() {
   return (
     <article className="bcard bcard--onboard box-onboard">
       <div className="bcard__text">
-        <h3 className="bcard__title">Open an account in 60 seconds</h3>
+        {/* 526:190 — the mobile design breaks the heading after "account" rather
+            than letting it wrap wherever the narrower card happens to run out.
+            The break is a real <br> that BoxOnboard.css switches off above the
+            mobile breakpoint, so the desktop card keeps the single run of text
+            it has always had; the trailing space before it is what makes the
+            two halves join cleanly when the break is display:none. */}
+        <h3 className="bcard__title">
+          Open an account{' '}
+          <br className="onb__brk" />
+          in 60 seconds
+        </h3>
         <p className="bcard__body bcard__body--light">No KYC, no documents, no waiting.</p>
       </div>
 

@@ -439,53 +439,42 @@
     height: calc(16 * var(--u));
   }
 
-  /* Ellipse 35 — both nodes, by the 22px glow box the dot sits inside. */
-  .custody__node--wallet { left: calc(60 * var(--u)); top: calc(427 * var(--u)); }
-  .custody__node--orbit  { left: calc(97 * var(--u)); top: calc(151 * var(--u)); }
+  /* Everything the frame re-places rather than turns ------------------------
+     The four labels, the four tiles, the wallet's own label, the two pills and
+     the two nodes all carry their phone coordinates beside their desktop ones,
+     as `--mx`/`--my` beside `--x`/`--y` -- see the MARKETS table in
+     BoxCustody.tsx, which is where the desktop pair already lives and so the
+     only honest place for its twin. That is what makes this a swap of two
+     numbers rather than a rule per market, and it is why nothing here needs a
+     class the desktop does not already have.
 
-  /* Markets ---------------------------------------------------------------
-     Four horizontal pairs, each centred on its wrapper in 526:1588: Stocks
-     (33, 150) and Crypto (36, 77) read tile-then-label, Commodities
-     (146.5, 39) and Forex (187.5, 123) read label-then-tile, with Figma's own
-     9, 9, 11 and 9 pixel gaps. Tiles are placed at centre minus 18, labels at
-     centre minus 8 -- a 12px line box is 16 tall here as it is in the frame.
-     Forex's tile ends 10 past the art box on purpose; the frame hangs it off
-     the edge too, and the card has the room. */
+     One of the eight is worth stating: Forex's tile ends 10 past the right of
+     the art box and Smart Contracts starts 17.5 off the left, both on purpose
+     -- the frame hangs them off its edges too, and the card has the room. */
+  .custody__label,
+  .custody__tile,
+  .custody__pill,
+  .custody__node {
+    left: calc(var(--mx) * var(--u));
+    top: calc(var(--my) * var(--u));
+  }
+  .custody__pill { width: calc(var(--mw) * var(--u)); }
   .box-custody .custody__tile {
-    /* All four, where the desktop borders Stocks alone. */
+    /* All four carry a border here, where the desktop borders Stocks alone. */
     border: calc(1 * var(--u)) solid var(--custody-chip-line);
   }
-  .custody__tile--stocks      { left: calc(-8 * var(--u));  top: calc(132 * var(--u)); }
-  .custody__tile--crypto      { left: calc(-5 * var(--u));  top: calc(59 * var(--u)); }
-  .custody__tile--commodities { left: calc(170 * var(--u)); top: calc(21 * var(--u)); }
-  .custody__tile--forex       { left: calc(189 * var(--u)); top: calc(105 * var(--u)); }
 
-  .custody__label--stocks      { left: calc(37 * var(--u));  top: calc(142 * var(--u)); }
-  .custody__label--crypto      { left: calc(40 * var(--u));  top: calc(69 * var(--u)); }
-  .custody__label--commodities { left: calc(87 * var(--u));  top: calc(31 * var(--u)); }
-  .custody__label--forex       { left: calc(150 * var(--u)); top: calc(115 * var(--u)); }
-  .custody__label--wallet      { left: calc(95 * var(--u));  top: calc(429 * var(--u)); }
-
-  /* Chips — 135 and 143 are the frame's own widths, stroke included, which is
-     what border-box asks for. Smart Contracts hangs 17.5 off the left the way
-     Forex's tile hangs off the right. */
-  .custody__pill--contract {
-    left: calc(-17.5 * var(--u));
-    top: calc(245.5 * var(--u));
-    width: calc(135 * var(--u));
-  }
-  .custody__pill--withdraw {
-    left: calc(95 * var(--u));
-    top: calc(295 * var(--u));
-    width: calc(143 * var(--u));
-  }
-
-  /* The glyph swap, in one place ------------------------------------------ */
-  .custody__glyph--line,
+  /* The glyph swap, in one place ------------------------------------------
+     The desktop half is named by exclusion rather than by a class of its own,
+     so that turning the phone's set on does not rewrite the class string of
+     seven elements the desktop already ships -- a change that renders
+     identically and still reads as a difference in every snapshot taken of
+     this page. */
+  .custody__glyph:not(.custody__glyph--solid),
+  .custody__wallet-icon:not(.custody__wallet-icon--solid),
   .custody__doc-line,
   .custody__lock-body,
-  .custody__lock-hole,
-  .custody__wallet-icon--line { display: none; }
+  .custody__lock-hole { display: none; }
 
   .custody__glyph--solid,
   .custody__doc-body,

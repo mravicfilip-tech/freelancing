@@ -66,30 +66,47 @@ import './BoxCustody.css';
 
 type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
 
-/** The four market labels and the 36 x 36 icon tile each one belongs to.
+/** The four market labels and the 36 x 36 icon tile each one belongs to, at
+ *  both of the card's sizes.
+ *
+ *  `lx`/`ly` and `tx`/`ty` are the label's and the tile's raw Figma
+ *  coordinates in the desktop group; `mlx`/`mly` and `mtx`/`mty` are the
+ *  phone's. The phone's are NOT the desktop's run through the quarter-turn
+ *  map: 526:305 re-lays the four pairs out around the ring rather than
+ *  rotating them, so each pair is read from its own wrapper in that frame and
+ *  placed from its centre — tile at centre minus 18, label at centre minus 8,
+ *  with Figma's own gap between them.
+ *
+ *      Stocks      centre (33, 150)    tile, gap 9,  label
+ *      Crypto      centre (36, 77)     tile, gap 9,  label
+ *      Commodities centre (146.5, 39)  label, gap 11, tile
+ *      Forex       centre (187.5, 123) label, gap 9,  tile
+ *
  *  `leaf` is the icon's own class: the tiles share an outer box, the glyphs
  *  inside them do not share a size (Figma gives each its own inset), and the
  *  phone's solid glyph has an inset of its own again — `sw`/`sh` are its root
  *  width and height, which BoxCustody.css places at the mobile breakpoint. */
 const MARKETS = [
-  { label: 'Stocks',      lx: 348, ly: 12,  tx: 394, ty: 0,   icon: iconStocks,      leaf: 'stocks',      bordered: true,
-    solid: solidStocks,      sw: 14.3333, sh: 14.3331 },
-  { label: 'Crypto',      lx: 386, ly: 62,  tx: 432, ty: 55,  icon: iconCrypto,      leaf: 'crypto',      bordered: false,
-    solid: solidCrypto,      sw: 16,      sh: 16 },
-  { label: 'Commodities', lx: 349, ly: 129, tx: 432, ty: 124, icon: iconCommodities, leaf: 'commodities', bordered: false,
-    solid: solidCommodities, sw: 16,      sh: 15.453 },
-  { label: 'Forex',       lx: 350, ly: 187, tx: 389, ty: 182, icon: iconForex,       leaf: 'forex',       bordered: false,
-    solid: solidForex,       sw: 16,      sh: 16 },
+  { label: 'Stocks',      lx: 348, ly: 12,  tx: 394, ty: 0,   mlx: 37,  mly: 142, mtx: -8,  mty: 132,
+    icon: iconStocks,      leaf: 'stocks',      bordered: true,  solid: solidStocks,      sw: 14.3333, sh: 14.3331 },
+  { label: 'Crypto',      lx: 386, ly: 62,  tx: 432, ty: 55,  mlx: 40,  mly: 69,  mtx: -5,  mty: 59,
+    icon: iconCrypto,      leaf: 'crypto',      bordered: false, solid: solidCrypto,      sw: 16,      sh: 16 },
+  { label: 'Commodities', lx: 349, ly: 129, tx: 432, ty: 124, mlx: 87,  mly: 31,  mtx: 170, mty: 21,
+    icon: iconCommodities, leaf: 'commodities', bordered: false, solid: solidCommodities, sw: 16,      sh: 15.453 },
+  { label: 'Forex',       lx: 350, ly: 187, tx: 389, ty: 182, mlx: 150, mly: 115, mtx: 189, mty: 105,
+    icon: iconForex,       leaf: 'forex',       bordered: false, solid: solidForex,       sw: 16,      sh: 16 },
 ] as const;
 
 /** Ellipse 35 — the two orange nodes sitting on the strokes. Figma's 8px layer
  *  carries a glow that overflows it by 7px a side, so the exported 22 x 22
- *  asset is placed at the layer origin minus 7. `at` names which stroke, since
- *  the phone parks them at coordinates of its own and the loop flares them in
- *  the order the story runs: the orbit lets a packet go, the wallet catches it. */
+ *  asset is placed at the layer origin minus 7 at both sizes. These two DO
+ *  follow the quarter-turn map, being artwork rather than type: the dot on the
+ *  wallet ring at (22, 67) becomes (60, 427) and the one on the orbit at
+ *  (298, 104) becomes (97, 151). Order is the order the loop flares them in —
+ *  the orbit lets a packet go, the wallet catches it. */
 const NODES = [
-  { at: 'wallet', x: 22 - 7,  y: 67 - 7 },
-  { at: 'orbit',  x: 298 - 7, y: 104 - 7 },
+  { key: 'wallet', x: 22 - 7,  y: 67 - 7,  mx: 60, my: 427 },
+  { key: 'orbit',  x: 298 - 7, y: 104 - 7, mx: 97, my: 151 },
 ] as const;
 
 export function BoxCustody() {
@@ -121,21 +138,21 @@ export function BoxCustody() {
         <Icon src={ringWallet} w={93} h={93} className="custody__ring-wallet"
           style={{ width: undefined, height: undefined }} />
 
-        <span className="custody__label custody__label--wallet" style={{ '--x': 43, '--y': 131 } as Vars}>Wallet</span>
-        {MARKETS.map(({ label, lx, ly, leaf }) => (
-          <span key={label} className={`custody__label custody__label--${leaf}`} style={{ '--x': lx, '--y': ly } as Vars}>
+        <span className="custody__label custody__label--wallet" style={{ '--x': 43, '--y': 131, '--mx': 95, '--my': 429 } as Vars}>Wallet</span>
+        {MARKETS.map(({ label, lx, ly, mlx, mly }) => (
+          <span key={label} className="custody__label" style={{ '--x': lx, '--y': ly, '--mx': mlx, '--my': mly } as Vars}>
             {label}
           </span>
         ))}
 
-        {MARKETS.map(({ label, tx, ty, icon, leaf, bordered, solid, sw, sh }) => (
+        {MARKETS.map(({ label, tx, ty, mtx, mty, icon, leaf, bordered, solid, sw, sh }) => (
           <span
             key={label}
-            className={`custody__tile custody__tile--${leaf}${bordered ? ' custody__tile--bordered' : ''}`}
-            style={{ '--x': tx, '--y': ty } as Vars}
+            className={`custody__tile${bordered ? ' custody__tile--bordered' : ''}`}
+            style={{ '--x': tx, '--y': ty, '--mx': mtx, '--my': mty } as Vars}
           >
             <Icon src={icon} w={16} h={16}
-              className={`custody__glyph custody__glyph--line custody__glyph--${leaf}`}
+              className={`custody__glyph custody__glyph--${leaf}`}
               style={{ width: undefined, height: undefined }} />
             <Icon src={solid} w={sw} h={sh}
               className={`custody__glyph custody__glyph--solid custody__glyph--solid-${leaf}`}
@@ -143,7 +160,12 @@ export function BoxCustody() {
           </span>
         ))}
 
-        <span className="custody__pill custody__pill--contract" style={{ '--x': 133, '--y': 31, '--w': 133 } as Vars}>
+        {/* The phone's own 135 and 143 are the frame's widths with the stroke in,
+            which is what border-box asks for; the desktop's 133 and 146 are its
+            frame's. Both pills hang off the left of the portrait box the way
+            Forex's tile hangs off the right. */}
+        <span className="custody__pill"
+          style={{ '--x': 133, '--y': 31, '--w': 133, '--mx': -17.5, '--my': 245.5, '--mw': 135 } as Vars}>
           {/* One 16px slot, three leaves, one of which is ever painted: the
               desktop's outlined document, and the phone's filled one, which
               Figma splits into a body and the folded corner (fi_9716066). The
@@ -160,7 +182,8 @@ export function BoxCustody() {
           </span>
           Smart Contracts
         </span>
-        <span className="custody__pill custody__pill--withdraw" style={{ '--x': 115, '--y': 144, '--w': 146 } as Vars}>
+        <span className="custody__pill"
+          style={{ '--x': 115, '--y': 144, '--w': 146, '--mx': 95, '--my': 295, '--mw': 143 } as Vars}>
           {/* fi_747305 — shackle and keyhole are two layers with their own boxes.
               The phone's padlock (fi_17508481) is one solid layer instead, so it
               is a third leaf in the same slot rather than a restyling of these. */}
@@ -175,15 +198,15 @@ export function BoxCustody() {
           Withdraw anytime
         </span>
 
-        {NODES.map(({ at, x, y }) => (
-          <img key={at} src={nodeDot} alt="" className={`custody__node custody__node--${at}`}
-            style={{ '--x': x, '--y': y } as Vars} width={22} height={22} />
+        {NODES.map(({ key, x, y, mx, my }) => (
+          <img key={key} src={nodeDot} alt="" className="custody__node"
+            style={{ '--x': x, '--y': y, '--mx': mx, '--my': my } as Vars} width={22} height={22} />
         ))}
 
         <img src={walletDisc} alt="" className="custody__wallet-disc" width={37} height={37} />
         {/* Masked like its siblings. The clipPath's `fill="white"` rect is not
             painted, so both of these files are the single flat grey they look. */}
-        <Icon src={iconWallet} w={18} h={18} className="custody__wallet-icon custody__wallet-icon--line"
+        <Icon src={iconWallet} w={18} h={18} className="custody__wallet-icon"
           style={{ width: undefined, height: undefined }} />
         <Icon src={solidWallet} w={16} h={16} className="custody__wallet-icon custody__wallet-icon--solid"
           style={{ width: undefined, height: undefined }} />

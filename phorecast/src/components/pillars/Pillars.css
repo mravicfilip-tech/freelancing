@@ -8,11 +8,15 @@
    free, and the band does not get to have its own opinion about them.
 
    PILLARS LOCALS (--pillars-*) for the handful of values that are this band's
-   own: the four glow discs, and the three white-alpha steps of the pill rows
-   that are not --veil-line already. They are declared here with today's dark
-   values, and the light block at the foot of this file redefines exactly those
-   names. Nothing else in the file mentions a colour, so "what does this band
-   do on paper?" is answerable by reading one block. */
+   own: the four glow discs, the three white-alpha steps of the pill rows
+   that are not --veil-line already, and the card/chip surface and edge
+   (--pillars-card, --pillars-card-line, --pillars-row-line) that on paper
+   need to move independently of --panel and --veil-line elsewhere on the
+   page. They are declared here with today's dark values -- pass-throughs onto
+   the roles they already used, so dark is provably a no-op -- and the light
+   block at the foot of this file redefines exactly those names. Nothing else
+   in the file mentions a colour, so "what does this band do on paper?" is
+   answerable by reading one block. */
 .pillars {
   position: relative;
   min-height: 774px;
@@ -41,6 +45,17 @@
   --pillars-row: rgba(255, 255, 255, 0.02);
   --pillars-row-hover: rgba(255, 255, 255, 0.06);
   --pillars-row-line-hover: rgba(255, 255, 255, 0.2);
+
+  /* Card and chip surface + edge. Declared as pass-throughs onto the roles
+     the rules already read (--panel, --veil-line), so this block is provably
+     a no-op in dark -- the same discipline the role tokens themselves use in
+     tokens.css. The light block at the foot of this file is the only place
+     these three move, and it moves them together: a white card needs a
+     stronger edge than --veil-line gives it, or it is not a card at all. See
+     that block for the measured reason. */
+  --pillars-card: var(--panel);
+  --pillars-card-line: var(--veil-line);
+  --pillars-row-line: var(--veil-line);
 }
 .pillars__inner {
   display: flex;
@@ -93,8 +108,8 @@
   min-height: 254px;
   padding: 32px;
   border-radius: 10px;
-  background: var(--panel);
-  border: 1px solid var(--veil-line);
+  background: var(--pillars-card);
+  border: 1px solid var(--pillars-card-line);
 }
 .pcard--fixed { flex: 0 0 478px; }
 .pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
@@ -155,7 +170,7 @@
   padding: 24px 16px;
   border-radius: 10px;
   background: var(--pillars-row);
-  border: 1px solid var(--veil-line);
+  border: 1px solid var(--pillars-row-line);
   backdrop-filter: blur(12.25px);
   transition: background-color 160ms ease, border-color 160ms ease;
 }
@@ -277,9 +292,39 @@
        The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
        step tokens.css takes for --veil and --veil-line -- because dark ink on
        paper is less visible per unit alpha than white on black. */
-    --pillars-row: rgba(26, 21, 18, 0.023);
     --pillars-row-hover: rgba(26, 21, 18, 0.068);
-    --pillars-row-line-hover: rgba(26, 21, 18, 0.225);
+
+    /* CARD AND CHIP SURFACE, i.e. what "white" resolved to.
+
+       White, not paper's own #fffbf8: a card painted the page colour vanishes
+       -- measured, card-vs-page is 1.03:1, effectively a rendering artifact --
+       so the fill goes all the way to white and the SEPARATION is left to the
+       edge, not the fill. That is also why the chips take the same plate
+       rather than keep their own near-invisible ink-alpha wash: that wash can
+       only ever sit at or below the page's own luminance (it is ink over
+       paper), so it can never actually reach white, and three white cards
+       over four still-beige chips would read as a mistake, which is the thing
+       this change is for.
+
+       The edge has to be strengthened to carry a fill that pale. --veil-line
+       is 0.14 ink-alpha; blended onto white that lands the border at 1.30:1
+       against the page -- WEAKER than the beige plate's own edge is today
+       (1.46:1), which is backwards for a card that now depends on its edge
+       for all of its separation. --pillars-card-line reuses 0.225, the same
+       ink-alpha this file already trusted for the row's hover edge, and lands
+       at 1.58:1 against the page: the beige plate's separation, restored, on
+       a fill three times paler. The row's own hover edge is bumped in turn,
+       0.225 -> 0.3, so hovering still reads as a step past the new resting
+       edge instead of arriving already there.
+
+       Text is unaffected -- --ink and --ink-2 are card contrast already, at
+       18.1:1 and 7.18:1 on white, both stronger than they were on the beige
+       plate (16.0:1 / 6.36:1) because the fill only got paler. */
+    --pillars-card: #fff;
+    --pillars-card-line: rgba(26, 21, 18, 0.225);
+    --pillars-row: var(--pillars-card);
+    --pillars-row-line: var(--pillars-card-line);
+    --pillars-row-line-hover: rgba(26, 21, 18, 0.3);
   }
 }
 
@@ -341,7 +386,37 @@
      The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
      step tokens.css takes for --veil and --veil-line -- because dark ink on
      paper is less visible per unit alpha than white on black. */
-  --pillars-row: rgba(26, 21, 18, 0.023);
   --pillars-row-hover: rgba(26, 21, 18, 0.068);
-  --pillars-row-line-hover: rgba(26, 21, 18, 0.225);
+
+  /* CARD AND CHIP SURFACE, i.e. what "white" resolved to.
+
+     White, not paper's own #fffbf8: a card painted the page colour vanishes
+     -- measured, card-vs-page is 1.03:1, effectively a rendering artifact --
+     so the fill goes all the way to white and the SEPARATION is left to the
+     edge, not the fill. That is also why the chips take the same plate
+     rather than keep their own near-invisible ink-alpha wash: that wash can
+     only ever sit at or below the page's own luminance (it is ink over
+     paper), so it can never actually reach white, and three white cards
+     over four still-beige chips would read as a mistake, which is the thing
+     this change is for.
+
+     The edge has to be strengthened to carry a fill that pale. --veil-line
+     is 0.14 ink-alpha; blended onto white that lands the border at 1.30:1
+     against the page -- WEAKER than the beige plate's own edge is today
+     (1.46:1), which is backwards for a card that now depends on its edge
+     for all of its separation. --pillars-card-line reuses 0.225, the same
+     ink-alpha this file already trusted for the row's hover edge, and lands
+     at 1.58:1 against the page: the beige plate's separation, restored, on
+     a fill three times paler. The row's own hover edge is bumped in turn,
+     0.225 -> 0.3, so hovering still reads as a step past the new resting
+     edge instead of arriving already there.
+
+     Text is unaffected -- --ink and --ink-2 are card contrast already, at
+     18.1:1 and 7.18:1 on white, both stronger than they were on the beige
+     plate (16.0:1 / 6.36:1) because the fill only got paler. */
+  --pillars-card: #fff;
+  --pillars-card-line: rgba(26, 21, 18, 0.225);
+  --pillars-row: var(--pillars-card);
+  --pillars-row-line: var(--pillars-card-line);
+  --pillars-row-line-hover: rgba(26, 21, 18, 0.3);
 }

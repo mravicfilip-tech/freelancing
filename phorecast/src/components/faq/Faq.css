@@ -245,6 +245,18 @@
   .faq__mark { display: none; }
 }
 @media (max-width: 720px) {
+  /* The lede's line breaks are typography, not content. They were placed for a
+     desktop measure -- three balanced lines -- and a phone is narrower than the
+     shortest of them, so each authored break landed mid-thought on top of the
+     wrapping the browser was already doing: "we show / you where to check it."
+     Dropping them lets the paragraph wrap once, to its own width.
+
+     They are hidden rather than deleted because they are right where they were
+     written, above this breakpoint. JSX collapses the newline and indentation
+     between the segments into a single space, so the sentences still separate
+     correctly with the breaks gone. */
+  .faq__lede .br-wide { display: none; }
+
   .faq { padding: 56px 0; }
   .faq__q { padding: 18px 20px; gap: 12px; }
   .faq__index { width: 26px; font-size: 12px; letter-spacing: 1.6px; }

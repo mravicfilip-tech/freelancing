@@ -146,6 +146,17 @@
   color: var(--veil-line); white-space: nowrap;
 }
 
+/* On a phone the 88px floor is wider than the viewport, so the word cropped
+   horizontally as well as vertically and read as "PHORCAS" with both ends cut.
+   The vertical crop is the device -- the box is deliberately shorter than the
+   glyphs. The horizontal one was just the floor being taller than the screen is
+   wide. Below 720 the size follows the viewport instead, and the box follows
+   the size so the same slice comes off the bottom at every width. */
+@media (max-width: 720px) {
+  .footer__wordmark { --fw: min(16.5vw, 88px); height: calc(var(--fw) * 0.98); margin-top: 24px; }
+  .footer__wordmark span { font-size: var(--fw); }
+}
+
 /* --- Light ------------------------------------------------------------------
    Written twice, exactly as tokens.css writes the palette twice, because a
    media query cannot go in a selector list and the custom-property indirection

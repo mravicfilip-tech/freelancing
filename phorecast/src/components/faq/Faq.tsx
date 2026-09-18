@@ -70,8 +70,8 @@ export function Faq() {
           </p>
           <h2 id="faq-title" className="faq__title">Answers<br />you can verify</h2>
           <p className="faq__lede">
-            Everything below is how Phorcast actually works.<br />
-            Where a claim can be checked on-chain, we show<br />
+            Everything below is how Phorcast actually works.<br className="br-wide" />
+            Where a claim can be checked on-chain, we show<br className="br-wide" />
             you where to check it.
           </p>
           <div className="faq__mark" ref={markRef} aria-hidden="true">

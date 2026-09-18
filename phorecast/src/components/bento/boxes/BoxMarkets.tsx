@@ -249,8 +249,13 @@ export function BoxMarkets() {
 
           {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.
               Figma centres a 10 square in a 14.142 box; 2.071 is that inset. */}
-          <span className="mk__diamond mk__diamond--a" style={at(309.501, 124.791)} />
-          <span className="mk__diamond mk__diamond--b" style={at(151.071, 344.071)} />
+          {/* `data-diamond`, not a modifier class, for the reason `data-market`
+              exists on the tiles: it names WHICH of two identical marks this is
+              so the phone block can place each one, without changing what the
+              element IS. A class here would also rewrite the key theme-diff
+              identifies these two by, and report a rename as a disappearance. */}
+          <span className="mk__diamond" data-diamond="a" style={at(309.501, 124.791)} />
+          <span className="mk__diamond" data-diamond="b" style={at(151.071, 344.071)} />
         </div>
 
         {/* 365:1093 */}

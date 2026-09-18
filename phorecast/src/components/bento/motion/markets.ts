@@ -42,8 +42,9 @@
  *
  * TWO LAYOUTS, ONE TIMELINE
  * -------------------------
- * Below 560 the card is Figma 526:394: the field is recomposed portrait, the
- * six dark plates and the eight unbadged tints are `display: none`, and eight
+ * At 720 and under the card is Figma 526:394: the field is recomposed
+ * portrait, the six dark plates and the eight unbadged tints are
+ * `display: none`, and eight
  * badged tiles sit somewhere else entirely. Nothing about the beats changes --
  * the hub still leads, the ring still expands out through the field in distance
  * order, the cursor still leaves Solana at 2.25 and is back by 3.95, and the
@@ -79,7 +80,7 @@ const VISIT = 'Gold';
 /** The breakpoint BoxMarkets.css recomposes the field at. Matched, not
  *  measured: the stylesheet is the thing that decides, so asking it directly is
  *  the only way this cannot drift away from it. */
-const PHONE = '(max-width: 560px)';
+const PHONE = '(max-width: 720px)';
 
 export function markets(card: HTMLElement): () => void {
   if (REDUCED) return () => {};

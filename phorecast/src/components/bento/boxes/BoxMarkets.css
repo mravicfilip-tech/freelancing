@@ -345,16 +345,7 @@
 /* Breakpoints ------------------------------------------------------------
    Bento.css scales this card's artwork down at 1100 and 720 because the old
    version was fixed-pixel inside a shrinking card. This one is already tied to
-   its container, so those transforms are cleared above and the small-screen
-   scrim under the link is not needed either — the field never reaches it. */
-@media (max-width: 720px) {
-  .bcard.box-markets .bento__cta {
-    padding: 0;
-    margin-left: 0;
-    border-radius: 0;
-    background: none;
-  }
-}
+   its container, so those transforms are cleared above. */
 
 /* The phone card — Figma 526:394, 394 x 712 --------------------------------
    THE MOBILE DESIGN IS NOT THE DESKTOP CARD RESIZED. Figma stands the artwork
@@ -382,12 +373,15 @@
        498.296 x 186.446 one drawn twice on desktop — so it is its own asset;
      - the sub-head is --color-body, not --ink-2. See the note on it below.
 
-   The breakpoint is 560 rather than the band's 720. Above it the card would be
-   ~480 wide, and a 394 x 712 portrait design at that width is a 480 x 868
-   column — taller than most laptops' viewport for one bento card. 560 is where
-   the portrait reading stops being the better one. The mobile GRID (how the
-   four cards stack) is not this file's to set. */
-@media (max-width: 560px) {
+   The breakpoint is the band's own 720, which is where Cards A, B and C take
+   their phone frames too: four cards in one grid have to change shape at one
+   width or the band is half portrait and half landscape for 160px of viewport.
+   The cost is that the card is a uniform scale of the design all the way up to
+   720, so at the top of the range it is around 640 x 1150 -- big, but composed,
+   which is the trade Card A makes at the same width. Bounding that is the
+   GRID's call (two columns above some width would halve it), and the grid is
+   not this file's to set. */
+@media (max-width: 720px) {
   /* The design pixel, now measured against the phone frame. 392 and not 394:
      `100cqw` is the card's content box and the card carries a 1px border on
      each side, the same derivation as the 774 above. */
@@ -451,6 +445,15 @@
   .box-markets .bento__cta {
     height: max(14px, calc(20 * var(--u)));
     font-size: max(14px, calc(16 * var(--u)));
+  }
+  /* Bento.css puts a scrim plate behind this link below 720, for the old card
+     where the field ran under it. It does not here -- the artwork is clipped
+     well above the link -- so the plate is undone rather than inherited. */
+  .bcard.box-markets .bento__cta {
+    padding: 0;
+    margin-left: 0;
+    border-radius: 0;
+    background: none;
   }
 
   /* 526:1062 — the mesh, turned with the illustration. Its box is stated
@@ -536,8 +539,8 @@
   .box-markets .mk__tooltip { --mx: 149; --my: 409; }
 
   /* 526:1060 / 526:1061 — the 10 square inset 2.071 in its 14.142 box, as above */
-  .box-markets .mk__diamond--a { --mx: 286.209; --my: 266.501; }
-  .box-markets .mk__diamond--b { --mx: 66.069; --my: 123.071; }
+  .box-markets .mk__diamond[data-diamond='a'] { --mx: 286.209; --my: 266.501; }
+  .box-markets .mk__diamond[data-diamond='b'] { --mx: 66.069; --my: 123.071; }
 }
 
 /* --- Light ------------------------------------------------------------------

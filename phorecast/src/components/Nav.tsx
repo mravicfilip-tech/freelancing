@@ -26,17 +26,7 @@ export function Nav() {
   const sheetRef = useRef<HTMLDivElement>(null);
   const captionId = useId();
 
-  /* Closing always hands focus back to the burger. For Escape and the X that
-     is simply the dialog rule. For a menu link it is a judgement call: the
-     hrefs here are in-page anchors and most of their targets do not exist as
-     elements yet, so there is nothing better to move to, and landing on the
-     trigger beats landing on <body> with no position at all. */
-  const close = useCallback(() => {
-    setOpen(false);
-    // After the inert attributes come off, which happens in the effect cleanup
-    // below — a focus() into an inert subtree is silently dropped.
-    queueMicrotask(() => burgerRef.current?.focus());
-  }, []);
+  const close = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
     if (!open) return;
@@ -104,6 +94,25 @@ export function Nav() {
       document.body.style.overflow = prevBody;
       for (const el of inerted) el.removeAttribute('inert');
       for (const el of hidden) el.removeAttribute('aria-hidden');
+
+      /* Focus goes back to the trigger, from HERE rather than from the click
+         handler: a focus() into a subtree still marked `inert` is dropped on
+         the floor, and whether React has flushed this cleanup by the time a
+         microtask queued in the handler runs is not something to bet on.
+
+         `preventScroll`, and this is the interesting half. The nav bar is not
+         sticky, so the burger is off screen for anyone who had scrolled
+         before opening the menu — and a plain focus() scrolls it into view,
+         which means closing the menu silently threw the reader back to the
+         top of the page. Measured: 240 -> 0 on Escape. Holding the viewport
+         still costs a keyboard user a focus ring they cannot see until they
+         press Tab; teleporting the page costs every user their place. The
+         second is worse, so the ring loses.
+
+         Closing on a menu link is the same call for a different reason: those
+         hrefs are in-page anchors whose targets mostly do not exist yet, so
+         there is nothing better to land on than the control that opened this. */
+      burgerRef.current?.focus({ preventScroll: true });
     };
   }, [open, close]);
 

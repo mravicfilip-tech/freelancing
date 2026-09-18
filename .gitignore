@@ -5,3 +5,5 @@ dist
 remittix-hero.html
 phorecast/node_modules
 phorecast/dist
+.claude/worktrees/
+phorecast/dist-*

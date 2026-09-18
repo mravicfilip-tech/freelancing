@@ -28,13 +28,22 @@
     height: 50%;
   }
 }
-@media (max-width: 767px) {
-  /* The mark stacks above the copy at a fixed height. */
+/* The stacked slide (Hero.css collapses it to one column at 1180). Hero.tsx
+   moves the mark into slide 1's visual slot there, so this is no longer a layer
+   over the hero: it is a normal block under the copy and states its own height.
+   The breakpoint is 1180 and not 767 because 1180 is where the column that the
+   mark used to sit beside stops existing -- at 768..1180 the old rule left the
+   mark absolutely positioned inside a flow box with no height, i.e. nowhere.
+
+   66vw keeps it a little under two thirds of the screen rather than the
+   near-full-bleed 300px a 360px phone was giving it, and 300px is the ceiling
+   it had, so nothing between 455px and 1180px wide grows. */
+@media (max-width: 1180px) {
   .heroLogo {
     position: relative;
     inset: auto;
     width: 100%;
-    height: 300px;
+    height: min(300px, 66vw);
   }
   .heroLogo img {
     top: 7%;

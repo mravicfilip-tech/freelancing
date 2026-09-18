@@ -70,12 +70,154 @@
   .nav__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .nav__burger.is-open span:nth-child(2) { opacity: 0; }
   .nav__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* The sheet ---------------------------------------------------------------
+     It used to be an in-flow block inside the header, so it pushed the page
+     down and opened as a panel over the top half of the screen with the hero
+     still scrolling behind it. It is now a surface: it covers the viewport,
+     the page behind it is locked, and the sheet is the only thing that
+     scrolls — and only if its own content ever outgrows the screen, which at
+     360x640 it very nearly does.
+
+     `position: fixed` rather than a height on a static box, because the two
+     things that have to be true are "starts at the top of the viewport" and
+     "ends at the bottom of it", and inset is the one declaration that says
+     both without asking what the document is doing. The portal in Nav.tsx is
+     what makes it safe to say. */
   .nav__sheet.is-open {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: block;
+    background: var(--page);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    /* The device insets, named once. They are read through custom properties
+       rather than called inline so that the padding below has a seam a test
+       can reach: headless Chromium reports every env() as 0 and would happily
+       pass a sheet that puts Sign Up under a home indicator. Set these four to
+       a notch's worth and the layout can be measured as it lands on a phone
+       with one. */
+    --sheet-safe-t: env(safe-area-inset-top, 0px);
+    --sheet-safe-r: env(safe-area-inset-right, 0px);
+    --sheet-safe-b: env(safe-area-inset-bottom, 0px);
+    --sheet-safe-l: env(safe-area-inset-left, 0px);
+  }
+  /* min-height, not height: the flex column fills the screen when it fits and
+     grows past it when it does not, and the scroll container above takes over
+     at exactly that point. A fixed height would clip instead. */
+  .nav__sheet-inner {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 28px 0 8px;
+    min-height: 100%;
+    padding-top: calc(var(--sheet-safe-t, 0px) + 20px);
+    padding-bottom: calc(var(--sheet-safe-b, 0px) + 24px);
+    padding-left: calc(var(--sheet-safe-l, 0px) + var(--page-pad));
+    padding-right: calc(var(--sheet-safe-r, 0px) + var(--page-pad));
   }
-  .nav__sheet-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
-  .nav__sheet-actions .btn { width: 100%; }
+  /* The bottom inset is the reason the dock is worth doing at all: a control
+     parked under a home indicator is further out of reach than one at the top,
+     because you cannot press it. The top inset matters less here — nothing is
+     flush to the top edge — but a notch would otherwise eat the wordmark in
+     landscape, so it is stated too. */
+
+  .nav__sheet-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex: none;
+    min-height: 48px;           /* the same 48px the nav row stands at */
+  }
+  .nav__sheet-close {
+    display: grid;
+    place-content: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    /* The burger it replaces is 40px wide and flush to the gutter, so its
+       centre sits 20px in; a 44px box flush to the same gutter would put the
+       X at 22px. Two pixels back and the cross lands where the burger was. */
+    margin-right: -2px;
+    color: var(--ink);
+    transition: color 160ms ease;
+  }
+  .nav__sheet-close:hover { color: var(--accent); }
+
+  /* The links stop being a 16px list marooned on an 844px surface: they take
+     the screen's own scale, and the block bottoms out against the dock rather
+     than floating at the top of the sheet. So the whole lower two thirds is
+     one continuous mass of things you can reach, and the slack lands at the
+     top, under the wordmark, where nothing needs to be. That slack is the
+     composition, not a leftover — it is what makes the surface read as full
+     screen rather than as a tall panel.
+
+     Each row still GROWS, capped, so the menu breathes on a big phone; the
+     min-height is the floor that keeps it a tap target on a short one, at
+     which point the rows stop sharing space and the sheet's own scroller
+     takes over. */
+  .nav__sheet-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    flex: 1 1 auto;
+    margin-top: 24px;
+  }
+  .nav__sheet .nav__link {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-height: 56px;
+    max-height: 92px;
+    font-size: clamp(26px, 8vw, 34px);
+    letter-spacing: -0.01em;
+  }
+  .nav__sheet .nav__link + .nav__link { border-top: 1px solid var(--line); }
+
+  /* The dock. Pinned to the bottom of the column, which is the bottom of the
+     screen, because this is the half of a phone a thumb can reach. */
+  .nav__sheet-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: none;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  /* --ink-2, not --ink-muted. At 13px on a tinted ground --ink-muted is under
+     AA in light (4.63:1 is its figure on #fffbf8 flat, and it only goes down
+     from there); --ink-2 is 6.97:1 in light and 7.11:1 in dark and is the
+     token that means "quiet but read". */
+  .nav__sheet-caption {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  /* Login and Sign Up keep the exact classes the desktop bar gives them —
+     --ghost is the quiet one, --outline carries the ink border — so the
+     hierarchy is the same hierarchy, not a second one invented for mobile.
+     What changes is that they stop being two identical full-width slabs: side
+     by side, and Sign Up a third wider, the difference is in the shape as well
+     as in the palette, and neither of them is the same silhouette as the mode
+     control above. */
+  .nav__sheet-auth { display: flex; gap: 10px; margin-top: 4px; }
+  .nav__sheet-auth .btn { width: auto; min-width: 0; padding-inline: 12px; }
+  .nav__sheet-login { flex: 1 1 0; }
+  .nav__sheet-signup { flex: 1.35 1 0; }
+}
+
+/* A phone on its side: ~400px of height, most of it gone to the two insets.
+   The rows stop growing, the dock stops padding itself out, and the sheet's
+   own scroller takes the remainder. */
+@media (max-width: 960px) and (max-height: 560px) {
+  .nav__sheet-nav { margin-top: 16px; }
+  .nav__sheet .nav__link { flex: 0 0 auto; min-height: 50px; font-size: 22px; }
+  .nav__sheet-actions { margin-top: 20px; padding-top: 16px; }
 }

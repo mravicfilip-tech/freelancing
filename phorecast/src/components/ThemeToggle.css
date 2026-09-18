@@ -42,20 +42,75 @@
   transform: none;
 }
 
-/* The mobile sheet stacks full-width controls; this one keeps its own size and
-   gains a label so it is not a mystery square in a column of words. */
-.theme-toggle--sheet {
-  width: 100%;
-  height: var(--btn-h);
-  gap: 12px;
+/* The segmented switch -------------------------------------------------------
+   The sheet's form of the same control. Both halves are always on screen and
+   the current one is filled, so "which mode am I in" is answered by looking
+   rather than by reading a sentence about what will happen next.
+
+   Deliberately MONOCHROME. --ink/--page, never --accent: the brand red on this
+   page means "do something" (Get Started, Login's label), and the whole defect
+   being fixed is a mode control that read as an account action. A filled
+   near-black chip in light and a filled near-white chip in dark is the same
+   inversion grammar --btn-primary-hover-bg already uses, so it is not a new
+   idiom either.
+
+   Nothing here is on an entrance target: entrance.ts animates
+   `.nav .logo, .nav__links > *, .nav__actions > *, .nav__burger`, and the
+   switch is rendered only into the sheet, which is portalled out of .hero
+   altogether. So the thumb may carry a transform transition without repeating
+   the fault commit 21b499c fixed. */
+.theme-seg {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+}
+.theme-seg__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  transition: transform 260ms var(--ease-out);
+}
+/* 100% of the thumb's own width is (50% - 4px), and the right segment's box
+   starts at exactly 50% of the track — so one translate lands it, at any
+   width, with no second measurement to drift. */
+.theme-seg[data-mode='dark'] .theme-seg__thumb { transform: translateX(100%); }
+
+.theme-seg__opt {
+  position: relative;      /* above the thumb */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;        /* the tap target, not the track */
+  padding-inline: 8px;
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-2);
+  transition: color 200ms ease;
 }
-.theme-toggle__label { display: none; }
-.theme-toggle--sheet .theme-toggle__label { display: block; }
+.theme-seg__opt[aria-checked='true'] { color: var(--page); }
+.theme-seg__glyph { width: 17px; height: 17px; flex: none; }
+
+/* The focus ring is drawn on the segment, not on the track, so a keyboard user
+   sees WHICH option is focused. The offset is negative because a positive one
+   would fall outside the track's own border. */
+.theme-seg__opt:focus-visible { outline-offset: -3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle__glyphs > svg { transition: none; }
+  .theme-seg__thumb { transition: none; }
 }

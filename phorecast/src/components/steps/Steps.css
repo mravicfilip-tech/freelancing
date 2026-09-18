@@ -319,13 +319,17 @@
     transition: color 200ms ease;
   }
   .steps__tab.is-active { color: var(--ink); }
+  /* The ordinal follows its label rather than going accent, which is what the
+     desktop card does too (`.step__n { color: inherit }`). Measured: --accent
+     at 13px is 4.43:1 on the dark ground, a hundredth under AA, and a number
+     that names which step this is is not decoration that may fail it. The
+     brand red is spent on the underline, where nothing has to be read. */
   .steps__tab-n {
     font-family: var(--font-mono);
     font-weight: 500;
     font-size: 13px;
-    color: var(--ink-2);
+    color: inherit;
   }
-  .steps__tab.is-active .steps__tab-n { color: var(--accent); }
 
   /* The underline. ONE element for three positions -- it travels between them
      rather than appearing and disappearing, which is the whole difference

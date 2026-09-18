@@ -18,6 +18,21 @@
  *   bonus figure counts itself up to $200.00 beside the deposit. Then the card
  *   rests, settled on exactly the artwork the design ships.
  *
+ * THE CROP (and why the draw is not simply "the whole path")
+ *   The landscape card hangs the 563-wide chart well off its right edge only,
+ *   so all but the last eight design pixels of the curve are on the card. The
+ *   PHONE frame (Figma 526:261) hangs the same well 110 design pixels off the
+ *   LEFT edge as well as 61 off the right, which puts roughly a third of the
+ *   path outside the card. Drawn tip to tail, the loop would then spend its
+ *   first half second and its last quarter second growing a line nobody can
+ *   see, and the lit dot would fade in off the card and fade out off it again.
+ *   So the draw is measured against the card's own clip and runs over the
+ *   VISIBLE arc: same beats, same durations, same easing, just mapped onto the
+ *   part of the curve a person is looking at. Where the crop is negligible --
+ *   the landscape card, inside EDGE_TOL below -- the measurement collapses to
+ *   0 and `total` and every tween here is the one that shipped, which is why
+ *   the desktop card is byte-identical rather than merely close.
+ *
  * Nothing is re-parented or cloned out of the shipped `<svg>`: the design's line
  * carries `stroke="url(#box-bonus-stroke)"`, which resolves against
  * `#box-bonus-stroke` in that svg's own `<defs>`, and moving either out of that
@@ -33,6 +48,14 @@ const NS = 'http://www.w3.org/2000/svg';
 /** The chart's viewBox width — one user unit is one design pixel. */
 const CHART_W = 564.087;
 const money = (v: number) => `+$${v.toFixed(2)}`;
+
+/** How much of the path may be cropped before the draw is remapped, as a
+ *  fraction of its length. The landscape card loses 8.5 design px of flat tail
+ *  at its right edge and half a pixel at its left -- about 1.4% and 0.08% of
+ *  the arc -- and remapping for that would retime a tween that has nothing
+ *  wrong with it. A phone loses 20% at one end and 11% at the other. Three per
+ *  cent sits an order of magnitude clear of both. */
+const EDGE_TOL = 0.03;
 
 /** The arc length at which the path crosses `x`. The curve is monotonic left to
  *  right, so a bisection is exact to within a twentieth of a design pixel. */
@@ -82,12 +105,37 @@ export function bonus(card: HTMLElement): () => void {
 
   const total = line.getTotalLength();
   const u = unitOf(chart, CHART_W);
+  const chartLeft = chart.getBoundingClientRect().left;
 
   /* Where the marker's halo sits on the curve, measured off the DOM so it holds
      at every breakpoint rather than assuming the card is at its design width. */
   const markerX = (marker.getBoundingClientRect().left + marker.getBoundingClientRect().width / 2
-    - chart.getBoundingClientRect().left) / u;
+    - chartLeft) / u;
   const markerLen = lengthAtX(line, total, markerX);
+
+  /* The visible arc. Two boxes clip this curve -- the card and the artwork well
+     inside it -- and which of them bites is the whole difference between the
+     two frames, so the window is their intersection measured off the DOM rather
+     than a breakpoint the script would have to be told about. Both edges are
+     snapped to the ends of the path when the crop is under EDGE_TOL, so the
+     landscape card produces exactly 0 and `total`. */
+  const art = q1(card, '.box-bonus__art');
+  const clip = card.getBoundingClientRect();
+  const well = art ? art.getBoundingClientRect() : clip;
+  const drawFromRaw = lengthAtX(line, total, (Math.max(clip.left, well.left) - chartLeft) / u);
+  const drawToRaw = lengthAtX(line, total, (Math.min(clip.right, well.right) - chartLeft) / u);
+  const drawFrom = drawFromRaw < total * EDGE_TOL ? 0 : drawFromRaw;
+  const drawTo = drawToRaw > total * (1 - EDGE_TOL) ? total : drawToRaw;
+  const span = Math.max(drawTo - drawFrom, 1);
+  /* `stroke-dasharray` stays the whole path in both states; only the offset
+     moves. At `total - drawFrom` the drawn run ends where the card's left edge
+     begins, so the card reads empty; at `total - drawTo` it reaches the right
+     edge, so the card reads complete. On desktop these are `total` and 0. */
+  const OFF_HIDDEN = total - drawFrom;
+  const OFF_SHOWN = total - drawTo;
+  /** Where along the DRAW the edge passes arc length `len`, 0..1. */
+  const at = (len: number) => Math.min(Math.max((len - drawFrom) / span, 0), 1);
+  const markerAt = at(markerLen);
 
   /* The lit dot that rides the drawing edge. Same svg, flat fill, no def. */
   const head = document.createElementNS(NS, 'circle');
@@ -105,7 +153,7 @@ export function bonus(card: HTMLElement): () => void {
     gsap.set(marker, { filter: 'brightness(1)', transformOrigin: '50% 12.7%' });
     gsap.set([bolt, pie], { transformOrigin: '50% 50%' });
     if (staged) {
-      gsap.set(line, { strokeDasharray: total, strokeDashoffset: total });
+      gsap.set(line, { strokeDasharray: total, strokeDashoffset: OFF_HIDDEN });
       gsap.set([marker, bolt, pie], { opacity: 0 });
       gsap.set(bolt, { scale: 0.92 });
       gsap.set(pie, { scale: pieScale * 0.92 });
@@ -122,7 +170,7 @@ export function bonus(card: HTMLElement): () => void {
 
     const edge = { p: 1 };
     const rideEdge = () => {
-      const pt = line.getPointAtLength(edge.p * total);
+      const pt = line.getPointAtLength(drawFrom + edge.p * span);
       head.setAttribute('cx', String(pt.x));
       head.setAttribute('cy', String(pt.y));
     };
@@ -144,17 +192,17 @@ export function bonus(card: HTMLElement): () => void {
       // a beat, then the curve pulls back — right to left, so it reads as the
       // chart winding back rather than as the artwork being switched off
       .set(line, { strokeDasharray: total }, 0)
-      .fromTo(line, { strokeDashoffset: 0 },
-        { strokeDashoffset: total, duration: 0.55, ease: 'power2.in', immediateRender: false }, DRAW_AT)
+      .fromTo(line, { strokeDashoffset: OFF_SHOWN },
+        { strokeDashoffset: OFF_HIDDEN, duration: 0.55, ease: 'power2.in', immediateRender: false }, DRAW_AT)
       .to(marker, { opacity: 0, duration: 0.3, ease: 'power2.in' }, DRAW_AT)
       // and grows back, with the lit dot on its tip
-      .to(line, { strokeDashoffset: 0, duration: DRAW, ease: 'power2.inOut' }, DRAW_AT + 0.55)
+      .to(line, { strokeDashoffset: OFF_SHOWN, duration: DRAW, ease: 'power2.inOut' }, DRAW_AT + 0.55)
       .fromTo(edge, { p: 0 }, { p: 1, duration: DRAW, ease: 'power2.inOut', onUpdate: rideEdge, immediateRender: false }, DRAW_AT + 0.55)
       .fromTo(head, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'sine.out', immediateRender: false }, DRAW_AT + 0.55)
       .to(head, { opacity: 0, duration: 0.4, ease: 'sine.inOut' }, DRAW_AT + 0.55 + DRAW - 0.3)
       // the marker is back on the line as soon as the edge passes its x
       .to(marker, { opacity: 1, duration: 0.45, ease: 'power2.out' },
-        DRAW_AT + 0.55 + DRAW * (markerLen / total));
+        DRAW_AT + 0.55 + DRAW * markerAt);
 
     const after = DRAW_AT + 0.55 + DRAW;
     pulse(loop, marker, after - 0.15,
@@ -175,9 +223,9 @@ export function bonus(card: HTMLElement): () => void {
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to(line, { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut' }, 0)
-      // The drawing edge reaches the marker at markerLen/total of the tween.
-      .to(marker, { opacity: 1, duration: 0.45, ease: 'expo.out' }, 1.3 * (markerLen / total))
+      .to(line, { strokeDashoffset: OFF_SHOWN, duration: 1.3, ease: 'power2.inOut' }, 0)
+      // The drawing edge reaches the marker at markerAt of the tween.
+      .to(marker, { opacity: 1, duration: 0.45, ease: 'expo.out' }, 1.3 * markerAt)
       .to(pie, { opacity: 1, scale: pieScale, duration: 0.65, ease: 'expo.out' }, 1.4)
       .to(bolt, { opacity: 1, scale: 1, duration: 0.65, ease: 'expo.out' }, 1.56)
       .to(pill, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, 1.75)

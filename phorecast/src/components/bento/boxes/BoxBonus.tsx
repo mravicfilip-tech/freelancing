@@ -1,5 +1,14 @@
 /* Bento card C — "Double your capital on first deposit".
-   Figma: frame 365:988 (776 x 299 design px), file aczG8te17zRGoK5wvirB92.
+   Figma: frame 365:988 (776 x 299 design px) and, on a phone, frame 526:261
+   (394 x 460), file aczG8te17zRGoK5wvirB92.
+
+   ONE set of markup serves both frames. The two designs are the same objects
+   in different places -- and the artwork well is not even that: the chart, the
+   grid and the marker carry identical numbers in both, so only the well's
+   anchor, the badges, the pill and the copy move. All of that is geometry, so
+   it all lives in BoxBonus.css and nothing below is conditional. The single
+   exception is the hand-set line break in the title, which is content rather
+   than geometry; see .box-bonus__brk.
 
    Everything is laid out in design pixels multiplied by --u, the house pattern
    used by Hero.css / SlideBonus.css / Familiar.css. `.bcard` already declares
@@ -88,7 +97,13 @@ export function BoxBonus() {
       </div>
 
       <div className="bcard__text box-bonus__text">
-        <h3 className="bcard__title box-bonus__title">Double your capital on first deposit</h3>
+        <h3 className="bcard__title box-bonus__title">
+          Double your capital{' '}
+          {/* The phone frame breaks the title by hand; BoxBonus.css hides this
+              above 720 so the landscape card keeps its single nowrap line. */}
+          <br className="box-bonus__brk" />
+          on first deposit
+        </h3>
         <p className="bcard__body box-bonus__body">Up to $200 on your first deposit.</p>
       </div>
 

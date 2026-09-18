@@ -122,6 +122,12 @@
   font-size: calc(24 * var(--u));
   white-space: nowrap;
 }
+/* The hand-set line break the PHONE frame asks for (526:263). It is markup
+   rather than a max-width because a max-width would be a guess at where Manrope
+   Medium happens to run out, and it is off here rather than on there because
+   the landscape title is one line: a <br> that generates no box makes no break,
+   so the desktop card reads the same string it always has. */
+.box-bonus__brk { display: none; }
 .box-bonus .box-bonus__body {
   font-size: calc(20 * var(--u));
 }
@@ -287,6 +293,104 @@
 }
 .box-bonus__amt--bonus strong { font-size: calc(12 * var(--u)); }
 .box-bonus__amt--bonus small { font-size: calc(8 * var(--u)); }
+
+/* --- Mobile (Figma 526:261, 394 x 460) -------------------------------------
+
+   The phone card is not the desktop card reflowed; it is a second frame, and
+   the two agree on exactly one thing -- the artwork. The 563 x 208 chart well,
+   the line inside it, the marker, the grid: same layers, same numbers, so
+   everything under .box-bonus__art below is left alone and only the well's own
+   anchor moves. What changes is the frame around it:
+
+     * 394 x 460 portrait instead of 776 x 299 landscape, so --u is one design
+       pixel of the NEW frame: 392 is the 394 border box less the 1px border
+       the band gives every card, which is what 100cqw resolves to (padding is
+       0 on this card). Figma's root coordinates are therefore design - 1.
+     * The title breaks after "capital" -- the design sets the break by hand,
+       so .box-bonus__brk carries it rather than a max-width guessed off font
+       metrics.
+     * The copy is 24 / 16 with 18 between, not 24 / 20 with 2.
+     * The artwork well hangs 110 design px off the LEFT edge and 61 off the
+       right (desktop hangs it off the right only), which crops the line's
+       first 110 and last 61 units. motion/bonus.ts measures that crop and
+       draws the visible arc rather than the whole path.
+     * The pie badge is full size here; on desktop it is scale(0.7).
+     * The pill is centred, the badges swap corners, and the link sits at the
+       foot of a 400-tall text column rather than 51px above the card's edge.
+
+   720px, not 394px: it is the breakpoint Bento.css already treats as mobile,
+   and the card between 720 and 1100 is a full-width single column that the
+   landscape frame still fits. ------------------------------------------- */
+@media (max-width: 720px) {
+  .bcard--bonus.box-bonus {
+    --u: calc(100cqw / 392);
+    aspect-ratio: 394 / 460;
+  }
+
+  /* Frame 2085662983 holds the well at (-109, 171) of the root frame, i.e.
+     (-110, 170) of the padding box; 563 x 208 is unchanged, so the right and
+     bottom anchors are 392 - (-110) - 563 and 458 - 170 - 208. Its own clip is
+     redundant -- the chart container clips the grid first -- so the wrapper is
+     not rebuilt here. */
+  .box-bonus__art {
+    right: calc(-61 * var(--u));
+    bottom: calc(80 * var(--u));
+  }
+
+  /* Frame 2085662980, the 334 x 400 text column at (30, 30) -> (29, 29). */
+  .box-bonus .box-bonus__text {
+    left: calc(29 * var(--u));
+    top: calc(29 * var(--u));
+    width: calc(334 * var(--u));
+    gap: calc(18 * var(--u));
+  }
+  .box-bonus .box-bonus__title {
+    white-space: normal;
+    font-size: calc(24 * var(--u));
+  }
+  /* revert, not inline: `br` has no display in the UA sheet to name, and what
+     is wanted is simply the break the browser would have made on its own. */
+  .box-bonus__brk { display: revert; }
+  .box-bonus .box-bonus__body {
+    font-size: calc(16 * var(--u));
+    /* Figma's 0.16px at 16px. As an em it survives the card scaling. */
+    letter-spacing: 0.01em;
+  }
+
+  /* Button Container, the foot of that same column: (30, 410) -> (29, 409). */
+  .box-bonus .box-bonus__cta {
+    left: calc(29 * var(--u));
+    top: calc(409 * var(--u));
+  }
+  /* The one !important in this file, and it is answering an inline style.
+     <Icon> writes width/height onto the element (see BoxBonus.tsx), which
+     outranks any selector; on desktop that is right, because --u is ~1 there
+     and the flat 12 x 6 is the design. On a 308-wide card it is a 12px glyph
+     in a 10px frame. */
+  .box-bonus .box-bonus__cta-arrow > * {
+    width: calc(12 * var(--u)) !important;
+    height: calc(6 * var(--u)) !important;
+  }
+
+  /* Both badges are 42 x 42 chips here. fi_1829261 at (294, 17) and fi_617333
+     at (78, 67) of the artwork frame, so (293, 149) and (77, 199) of the
+     padding box -- and the pie is NOT scaled down on a phone. */
+  .box-bonus__badge--bolt {
+    left: calc(293 * var(--u));
+    top: calc(149 * var(--u));
+  }
+  .box-bonus__badge--pie {
+    left: calc(77 * var(--u));
+    top: calc(199 * var(--u));
+    transform: none;
+  }
+
+  /* Tag Container, centred on the artwork frame at y 165 -> (47, 297). */
+  .box-bonus__pill {
+    left: calc(47 * var(--u));
+    top: calc(297 * var(--u));
+  }
+}
 
 /* --- Light ------------------------------------------------------------------
    Written twice; see the note in Bento.css. -------------------------------- */

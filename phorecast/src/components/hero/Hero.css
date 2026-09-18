@@ -495,7 +495,16 @@
    moves.
 
    Today's light ground spans 1.22:1 to 1.25:1 against the page, over the whole
-   band. That third of a stop is the thing being fixed. */
+   band. That third of a stop is the thing being fixed.
+
+   THE ONE LINE WITH NO HEADROOM. --ink-muted is 4.63:1 on the page at 16px,
+   which is AA with about a hundredth of a stop to spare, so the eyebrow fails
+   the moment anything at all is painted behind it. Every variant here keeps the
+   ground off it entirely -- measured on all four slides at exactly #fffbf8
+   behind the eyebrow, which the geometry gives for free: the highest disc
+   starts at y641 and the eyebrow sits at y224. A future variant that washes the
+   TOP of the band has to move the eyebrow's ink inside .hero as well, and say
+   so. The headline and the lede have room; that line does not. */
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark'])[data-hero-variant='1'] .hero {
@@ -504,7 +513,11 @@
        as it falls.
        Costs: The only variant that tints the whole band, so it is the least
        "white page" of the five. The wash has to be matched on the horizon or
-       the planet reads as a flat bright ellipse. */
+       the planet reads as a flat bright ellipse.
+       Measured at 1600, worst case over the four slides: ground 1.83:1 to
+       1.91:1 against the page; headline 16.94:1 on #fef6f0 (slide 2); lede
+       6.33:1 on #fdeee4 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+       market-card plate #e0ac8c, card ink 9.01:1. */
     --hero-page: linear-gradient(180deg, var(--page) 0%, var(--page) 30%, #fff5ec 68%, #fdeadb 100%);
     --hero-horizon: #fdebdc;
     --hero-g-ember: linear-gradient(172deg, var(--page) 2%, #fdeade 11%, #f7d2b6 20%, #efb693 30%, #e59a70 52%, #dd8459 100%);
@@ -523,7 +536,11 @@
      as it falls.
      Costs: The only variant that tints the whole band, so it is the least
      "white page" of the five. The wash has to be matched on the horizon or
-     the planet reads as a flat bright ellipse. */
+     the planet reads as a flat bright ellipse.
+     Measured at 1600, worst case over the four slides: ground 1.83:1 to
+     1.91:1 against the page; headline 16.94:1 on #fef6f0 (slide 2); lede
+     6.33:1 on #fdeee4 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+     market-card plate #e0ac8c, card ink 9.01:1. */
   --hero-page: linear-gradient(180deg, var(--page) 0%, var(--page) 30%, #fff5ec 68%, #fdeadb 100%);
   --hero-horizon: #fdebdc;
   --hero-g-ember: linear-gradient(172deg, var(--page) 2%, #fdeade 11%, #f7d2b6 20%, #efb693 30%, #e59a70 52%, #dd8459 100%);
@@ -543,7 +560,11 @@
        toward terracotta.
        Costs: Flat by construction: the band is a colour, not a light. The most
        "brand-adjacent brown" of the five, and the sky above the sun does
-       nothing. */
+       nothing.
+       Measured at 1600, worst case over the four slides: ground 1.98:1 to
+       2.12:1 against the page; headline 17.43:1 on #fefaf6 (slide 2); lede
+       6.82:1 on #fef8f4 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+       market-card plate #d2a686, card ink 8.22:1. */
     --hero-g-ember: linear-gradient(170deg, var(--page) 10%, #f5dcc7 40%, #ecc5a6 100%);
     --hero-g-peach: #e0b28d;
     --hero-g-orange: #d69b6f;
@@ -560,7 +581,11 @@
      toward terracotta.
      Costs: Flat by construction: the band is a colour, not a light. The most
      "brand-adjacent brown" of the five, and the sky above the sun does
-     nothing. */
+     nothing.
+     Measured at 1600, worst case over the four slides: ground 1.98:1 to
+     2.12:1 against the page; headline 17.43:1 on #fefaf6 (slide 2); lede
+     6.82:1 on #fef8f4 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+     market-card plate #d2a686, card ink 8.22:1. */
   --hero-g-ember: linear-gradient(170deg, var(--page) 10%, #f5dcc7 40%, #ecc5a6 100%);
   --hero-g-peach: #e0b28d;
   --hero-g-orange: #d69b6f;
@@ -574,12 +599,16 @@
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark'])[data-hero-variant='3'] .hero {
     /* 3. THROUGH THE RED — Two hues, not one tint: the ground travels paper ->
-       amber -> the brand red, and the sun is a radial with #c1301a at its
+       amber -> the brand red, and the sun is a radial with #c9432b at its
        heart. The page carries the logo colour without a single element wearing
        it.
        Costs: The hottest and the riskiest. Red is a real colour on a trading
        page and this one is a neighbour of --neg; on slide 2 it also comes
-       furthest up the copy column. */
+       furthest up the copy column.
+       Measured at 1600, worst case over the four slides: ground 3.35:1 to
+       3.65:1 against the page; headline 16.73:1 on #fef4ef (slide 2); lede
+       5.91:1 on #fbe5d6 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+       market-card plate #cd6c52, card ink 5.05:1. */
     --hero-g-ember: linear-gradient(168deg, var(--page) 1%, #fde7d7 9%, #f5c1a1 18%, #e8956f 27%, #d86d4a 40%, #ca5637 100%);
     --hero-g-peach: #eaa98e;
     --hero-g-orange: radial-gradient(circle at 50% 7%, #c9432b 0%, #d55a3f 18%, #de7658 34%, #e89a7c 55%, #f1bda8 76%, #f8dccd 100%);
@@ -592,12 +621,16 @@
 }
 :root[data-theme='light'][data-hero-variant='3'] .hero {
   /* 3. THROUGH THE RED — Two hues, not one tint: the ground travels paper ->
-     amber -> the brand red, and the sun is a radial with #c1301a at its
+     amber -> the brand red, and the sun is a radial with #c9432b at its
      heart. The page carries the logo colour without a single element wearing
      it.
      Costs: The hottest and the riskiest. Red is a real colour on a trading
      page and this one is a neighbour of --neg; on slide 2 it also comes
-     furthest up the copy column. */
+     furthest up the copy column.
+     Measured at 1600, worst case over the four slides: ground 3.35:1 to
+     3.65:1 against the page; headline 16.73:1 on #fef4ef (slide 2); lede
+     5.91:1 on #fbe5d6 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+     market-card plate #cd6c52, card ink 5.05:1. */
   --hero-g-ember: linear-gradient(168deg, var(--page) 1%, #fde7d7 9%, #f5c1a1 18%, #e8956f 27%, #d86d4a 40%, #ca5637 100%);
   --hero-g-peach: #eaa98e;
   --hero-g-orange: radial-gradient(circle at 50% 7%, #c9432b 0%, #d55a3f 18%, #de7658 34%, #e89a7c 55%, #f1bda8 76%, #f8dccd 100%);
@@ -616,7 +649,11 @@
        it is.
        Costs: A second warm hue on a page that had one. Gold under a dark-red
        CTA is a classic pairing but it is a decision about the brand, not just
-       about the hero. */
+       about the hero.
+       Measured at 1600, worst case over the four slides: ground 1.74:1 to
+       1.84:1 against the page; headline 17.30:1 on #fef9f4 (slide 2); lede
+       6.64:1 on #fdf5e9 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+       market-card plate #dbb479, card ink 9.33:1. */
     --hero-g-ember: linear-gradient(172deg, var(--page) 3%, #fdf1dd 12%, #f7ddb1 22%, #eec584 32%, #e2ad5c 60%);
     --hero-g-peach: #eed0a0;
     --hero-g-orange: #e5b872;
@@ -634,7 +671,11 @@
      it is.
      Costs: A second warm hue on a page that had one. Gold under a dark-red
      CTA is a classic pairing but it is a decision about the brand, not just
-     about the hero. */
+     about the hero.
+     Measured at 1600, worst case over the four slides: ground 1.74:1 to
+     1.84:1 against the page; headline 17.30:1 on #fef9f4 (slide 2); lede
+     6.64:1 on #fdf5e9 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+     market-card plate #dbb479, card ink 9.33:1. */
   --hero-g-ember: linear-gradient(172deg, var(--page) 3%, #fdf1dd 12%, #f7ddb1 22%, #eec584 32%, #e2ad5c 60%);
   --hero-g-peach: #eed0a0;
   --hero-g-orange: #e5b872;
@@ -652,7 +693,10 @@
        rather than five warm ones.
        Costs: Subtle, and deliberately so. On a narrow screen, where the horizon
        eats more of the sun, there is less of it left than on any other variant.
-       */
+       Measured at 1600, worst case over the four slides: ground 2.77:1 to
+       3.06:1 against the page; headline 17.47:1 on #fffaf7 (slide 2); lede
+       6.93:1 on #fffaf7 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+       market-card plate #c18973, card ink 6.12:1. */
     --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf1e7 58%, #fae4d5 100%);
     --hero-g-peach: #f2d9c6;
     --hero-g-orange: radial-gradient(circle at 50% 5%, #9c3a17 0%, #b3552f 14%, #cd8360 30%, #e5b499 52%, #f4dccd 76%, var(--page) 100%);
@@ -669,7 +713,10 @@
      rather than five warm ones.
      Costs: Subtle, and deliberately so. On a narrow screen, where the horizon
      eats more of the sun, there is less of it left than on any other variant.
-     */
+     Measured at 1600, worst case over the four slides: ground 2.77:1 to
+     3.06:1 against the page; headline 17.47:1 on #fffaf7 (slide 2); lede
+     6.93:1 on #fffaf7 (slide 2); eyebrow 4.63:1 on #fffbf8 (slide 1); worst
+     market-card plate #c18973, card ink 6.12:1. */
   --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf1e7 58%, #fae4d5 100%);
   --hero-g-peach: #f2d9c6;
   --hero-g-orange: radial-gradient(circle at 50% 5%, #9c3a17 0%, #b3552f 14%, #cd8360 30%, #e5b499 52%, #f4dccd 76%, var(--page) 100%);

@@ -135,8 +135,25 @@ const clock = (total: number) => `${Math.floor(total / 60)}:${String(total % 60)
 export function familiarLoop(root: HTMLElement): () => void {
   if (REDUCED) return () => {};
 
-  const q = (sel: string) => root.querySelector<HTMLElement>(sel);
-  const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
+  /**
+   * `q` and `qa`, but only what this width actually draws.
+   *
+   * Below 700px the band drops the two glass market cards, and below 1100 both
+   * floating prediction cards — see the media blocks in `Familiar.css`. They
+   * stay in the DOM, so an unfiltered selector still finds them and the loop
+   * would spend a third of its cycle printing prices onto `display: none`
+   * boxes, reading resting colours off them, and holding their text for a
+   * teardown that has nothing to put back. The three acts all keep their
+   * subjects on a phone: the handset carries Act I's leaderboard re-sort and
+   * the whole of Acts II and III, and the category strip closes it out.
+   */
+  const box = (el: HTMLElement | null) => {
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 ? el : null;
+  };
+  const q = (sel: string) => box(root.querySelector<HTMLElement>(sel));
+  const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel)).filter((e) => box(e));
 
   /* ------------------------------------------------------------- handles
      Every one of these is optional and separately guarded. A sibling agent is
@@ -183,6 +200,18 @@ export function familiarLoop(root: HTMLElement): () => void {
     // sized to be visible at that precision: 0.2 of a point where there are
     // decimals to show it, a whole point where there are not.
     const dp = /[.,](\d+)%?\s*$/.exec(text)?.[1].length ?? 0;
+    // The volume figure, "$112.5K Vol" and "$95.8K Vol": split so the number
+    // can move and everything around it — currency, magnitude, the word — is
+    // put back untouched.
+    const vol = card.querySelector<HTMLElement>('.fam__pred-meta span');
+    const volText = vol?.textContent ?? '';
+    const volParts = /^(\D*)([\d.]+)(.*)$/.exec(volText);
+    const volDp = volParts?.[2].split('.')[1]?.length ?? 0;
+    // The bar's green run, as the stylesheet's own inline percentage. The first
+    // card's is the whole track, so it has nowhere to advance to and is left
+    // alone; the second's is a quarter full and follows its figure.
+    const fill = card.querySelector<HTMLElement>('.fam__pred-bar i');
+    const fill0 = Number.parseFloat(fill?.style.width ?? '') || 0;
     return {
       label,
       yes: card.querySelector<HTMLElement>('.fam__pred-btns .is-yes'),
@@ -190,6 +219,14 @@ export function familiarLoop(root: HTMLElement): () => void {
       dp,
       step: dp > 0 ? 0.2 : 1,
       comma: text.includes(','),
+      vol,
+      volPre: volParts?.[1] ?? '',
+      volPost: volParts?.[3] ?? '',
+      vol0: volParts ? Number.parseFloat(volParts[2]) : NaN,
+      volDp,
+      volStep: volDp > 0 ? 0.1 : 1,
+      fill: fill0 > 0 && fill0 < 99.5 ? fill : null,
+      fill0,
     };
   });
 
@@ -222,7 +259,7 @@ export function familiarLoop(root: HTMLElement): () => void {
     if (started || stopped) return;
     started = true;
 
-    [nvdaValue, gauge, timer, ...preds.map((p) => p.label)].forEach(hold);
+    [nvdaValue, gauge, timer, ...preds.map((p) => p.label), ...preds.map((p) => p.vol)].forEach(hold);
     hold(nvdaPct);
     if (canSort) [1, 2].forEach((i) => { hold(rowName(i)); hold(rowPct(i)); });
 
@@ -430,18 +467,47 @@ export function familiarLoop(root: HTMLElement): () => void {
            two cycles both cards print the number in the Figma frame again. */
         preds.forEach((p, i) => {
           const at = 5.45 + i * 0.25;
+
+          /* The money arrives first. */
+          if (p.vol && Number.isFinite(p.vol0)) {
+            const v = { n: down ? p.vol0 : p.vol0 + p.volStep };
+            tl.to(v, {
+              n: down ? p.vol0 + p.volStep : p.vol0, duration: 0.9, ease: 'sine.inOut',
+              onUpdate: () => { p.vol!.textContent = `${p.volPre}${v.n.toFixed(p.volDp)}${p.volPost}`; },
+            }, at);
+          }
+
+          /* Then the odds move, and the bar moves with them — the green run is
+             the figure, so it would be a lie for one to travel without the
+             other. The first card's bar is already the whole track and has
+             nowhere to go, which is why `fill` is null there; its figure still
+             ticks. */
           if (p.label && Number.isFinite(p.from)) {
-            const step = { v: down ? p.from : p.from + p.step };
+            const to = p.from + p.step;
+            const step = { v: down ? p.from : to };
             tl.to(step, {
-              v: down ? p.from + p.step : p.from, duration: 0.7, ease: 'sine.inOut',
+              v: down ? to : p.from, duration: 0.7, ease: 'sine.inOut',
               onUpdate: () => {
                 const t = step.v.toFixed(p.dp);
                 p.label!.textContent = `${p.comma ? t.replace('.', ',') : t}%`;
               },
-            }, at);
+            }, at + 0.12);
+            if (p.fill) {
+              // `fromTo`, not `to` — both ends stated, so the bar cannot be
+              // handed a stale inline width by a teardown that landed mid-tween
+              // and then animate from it to itself. Same reason the entrance
+              // states both ends on the CTA.
+              const w = (n: number) => `${(p.fill0 * (n / p.from)).toFixed(2)}%`;
+              tl.fromTo(p.fill,
+                { width: down ? w(p.from) : w(to) },
+                { width: down ? w(to) : w(p.from), duration: 0.7, ease: 'sine.inOut' },
+                at + 0.12);
+            }
           }
+
+          /* Then the plate the trade went through acknowledges it. */
           if (p.yes && predYesRest[i]) {
-            pulse(tl, p.yes, at, { backgroundColor: C.predYesLit }, { backgroundColor: predYesRest[i] }, 0.3, 0.9);
+            pulse(tl, p.yes, at + 0.2, { backgroundColor: C.predYesLit }, { backgroundColor: predYesRest[i] }, 0.3, 0.9);
           }
         });
 
@@ -569,5 +635,9 @@ export function familiarLoop(root: HTMLElement): () => void {
     held.forEach(([node, text]) => {
       if (node instanceof Text) node.nodeValue = text; else node.textContent = text;
     });
+    // The one thing this loop writes that is neither a transform, a colour nor
+    // text: the green run of the second card's bar, which is an inline width
+    // the component ships. Put back explicitly rather than trusting a revert.
+    preds.forEach((p) => { if (p.fill) p.fill.style.width = `${p.fill0}%`; });
   };
 }

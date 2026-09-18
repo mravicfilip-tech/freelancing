@@ -118,6 +118,28 @@ const LEAD = 0.34;
  */
 const LANDED = new WeakSet<HTMLElement>();
 
+/**
+ * The element, but only if this width actually draws it.
+ *
+ * Below 700px this band drops the two glass market cards, and below 1100 it
+ * drops both floating prediction cards — see the media blocks in
+ * `Familiar.css`. `display: none` leaves them in the DOM, so every selector
+ * here still finds them and every tween below would still be built, spending
+ * its 1.15 seconds moving something with no box. That is not a visible bug,
+ * which is exactly why it is worth refusing: a timeline whose cues are half
+ * addressed to nothing is a timeline nobody can reason about, and the next
+ * person to add a beat inherits the confusion.
+ *
+ * `offsetParent` is null for a `display: none` element and for every
+ * descendant of one; the rect check catches the `position: fixed` case it
+ * misses, which this section does not have but a copy of this helper might.
+ */
+function shown(el: HTMLElement | undefined): HTMLElement | undefined {
+  if (!el) return undefined;
+  const r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0 ? el : undefined;
+}
+
 export function buildFamiliar({ el, q, tl }: SectionMotion) {
   // Already landed once and still on screen: settle, do not re-perform. The
   // hook reveals the section either way, and an empty timeline completes on the
@@ -128,12 +150,12 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   /** Design pixels, in the CSS pixels this viewport renders them as. */
   const d = (n: number) => n * u;
 
-  const phone = q('.fam__phone')[0];
-  const ecb = q('.fam__mkt--ecb')[0];
-  const nvda = q('.fam__mkt--nvda')[0];
+  const phone = shown(q('.fam__phone')[0]);
+  const ecb = shown(q('.fam__mkt--ecb')[0]);
+  const nvda = shown(q('.fam__mkt--nvda')[0]);
   // Both floating prediction cards, outermost first — see step 5.
-  const predOuter = q('.fam__pred--b')[0];
-  const predInner = q('.fam__pred--a')[0];
+  const predOuter = shown(q('.fam__pred--b')[0]);
+  const predInner = shown(q('.fam__pred--a')[0]);
 
   /* 1 — the band names itself. */
   rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.9, clearProps: 'transform,opacity' });

@@ -194,6 +194,12 @@
 .fam__copy { display: flex; flex-direction: column; }
 .fam__copy--left { left: calc(240 * var(--u)); top: calc(240 * var(--u)); width: calc(420 * var(--u)); gap: calc(28 * var(--u)); }
 .fam__title { font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.2; color: var(--ink); }
+/* THE COLUMN'S RIGHT EDGE, as a name. The copy column is placed by `left` plus
+   a width, which says nothing about where it ENDS — and where it ends is what
+   the two floating prediction cards are now aligned to. Written once here so
+   the cards are derived from the column rather than from a number that happens
+   to match it today. 1280 + 400. */
+.fam__stage { --fam-col-right: calc(1680 * var(--u)); }
 .fam__copy--right { left: calc(1280 * var(--u)); top: calc(240 * var(--u)); width: calc(400 * var(--u)); gap: calc(30 * var(--u)); align-items: flex-start; }
 .fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: calc(24 * var(--u)); line-height: 1.2; color: var(--ink); }
 .fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--u)); line-height: 1.2; color: var(--ink); margin-top: calc(-14 * var(--u)); }
@@ -365,8 +371,19 @@
   box-shadow: 0 calc(5.356 * var(--u)) calc(10.712 * var(--u)) var(--fam-pred-shadow);
   font-family: var(--font-display); color: var(--art-ink);
 }
-.fam__pred--a { left: calc(1162 * var(--u)); }
-.fam__pred--b { left: calc(1382 * var(--u)); }
+/* RIGHT-ALIGNED TO THE COPY COLUMN, which is a deliberate departure from the
+   file and not a bug fix — worth saying, because the obvious diagnosis is
+   wrong. The cards and the column are NOT anchored to different things: both
+   are absolute children of the same stage, both are placed in `--u`, and the
+   frame itself draws the pair ending at 1588 while the column ends at 1680.
+   The 92-pixel inset is Figma's, not the implementation's. The pair is moved
+   the full 92 so the section's right edge reads as one line.
+
+   Placed from the right edge inward, so the 14px gutter between the cards and
+   their 206 widths are stated once and the arithmetic cannot drift: the outer
+   card ends at the column's edge, the inner one a card and a gutter before it. */
+.fam__pred--b { left: calc(var(--fam-col-right) - 206 * var(--u)); }
+.fam__pred--a { left: calc(var(--fam-col-right) - 426 * var(--u)); }
 
 .fam__pred-meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-meta); }
 .fam__pred-head { display: flex; align-items: flex-start; gap: calc(6.695 * var(--u)); margin-top: calc(16.069 * var(--u)); }
@@ -429,6 +446,27 @@
 
 @media (max-width: 1100px) {
   .fam__stage { --u: calc(100cqw / 1400); aspect-ratio: 1400 / 1180; }
+
+  /* TYPE LEAVES `--u` HERE, at the width the stage re-bases, because this is
+     where the fault starts and not 400px lower. Every size in this band is a
+     design pixel scaled by the stage, which is right for artwork and wrong for
+     words: `.eyebrow` and `.btn` in global.css are flat 16px and do not scale
+     with it, so from about 900px down the label overtakes the heading it
+     introduces, and at 700 the two are exactly equal. Measured: 25.1px title
+     against a 16px eyebrow at 1100, 16.0 against 16.0 at 701.
+
+     `clamp` rather than a size per breakpoint, so the ratio holds continuously
+     across the whole range instead of at three chosen widths. The title leads
+     the eyebrow by 2.3x or better everywhere from 320 to 1100. */
+  .fam .eyebrow { font-size: clamp(12px, 1.25vw, 14px); }
+  .fam .eyebrow__dot { width: clamp(9px, 1vw, 12px); height: clamp(9px, 1vw, 12px); }
+  .fam__title { font-size: clamp(26px, 3vw, 32px); line-height: 1.15; }
+  .fam__sub-title { font-size: clamp(17px, 2vw, 22px); }
+  .fam__sub-body { font-size: clamp(15px, 1.6vw, 18px); line-height: 1.4; margin-top: 0; }
+  /* And the button hands its three `--u` overrides back to `.btn`, which is
+     already drawn in flat pixels: 48px of fixed padding inside a `--u` box is
+     what cut "Start Trading" to "Start Tradi". */
+  .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; font-size: 16px; border-radius: var(--radius-pill); }
   .fam__copy--left { left: calc(60 * var(--u)); top: calc(60 * var(--u)); width: calc(600 * var(--u)); }
   .fam__copy--right { left: calc(60 * var(--u)); top: calc(250 * var(--u)); width: calc(560 * var(--u)); }
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
@@ -438,6 +476,131 @@
      1400-wide design and there is no room to the right of the handset. */
   .fam__pred { display: none; }
   .fam__band { height: calc(240 * var(--u)); }
+}
+
+/* --- Phone --------------------------------------------------------------------
+   THE FAULT THIS BLOCK EXISTS TO FIX, AND WHY IT IS ONE FAULT AND NOT SIX.
+
+   Everything in this band is drawn on a stage whose whole geometry is `--u`,
+   one design pixel. The block above re-bases `--u` to a 1400-wide design under
+   1100px, which is right for the artwork and wrong for the type, because type
+   is the one thing here that is NOT the artwork. At 390px `--u` is 0.279, so
+   the title set at `calc(32 * var(--u))` renders at 8.9px — while `.eyebrow`
+   in global.css is a flat `font-size: 16px` and does not move. The label meant
+   to introduce the heading came out nearly twice its size, and the whole
+   hierarchy read upside down.
+
+   The same mismatch is what clipped the button. `.fam__cta` overrides `.btn`'s
+   width, height and font-size in `--u` — 71 x 16px at this width — while
+   `.btn` keeps its flat `padding: 16px 24px` and `white-space: nowrap`. Forty-
+   eight pixels of padding inside a 71px box left 23px for "Start Trading", and
+   `Roll`'s overflow cut it to "Start Tradi".
+
+   So the fix is one decision, not a table of sizes: BELOW THIS WIDTH, TYPE
+   STOPS BEING DRAWN IN `--u`. The eyebrow, the title, the body and the button
+   are set in real pixels and sized against each other; `--u` keeps only the
+   job it is good at, which is the handset, and gets its own value there so the
+   mockup can be large while the stage around it is not.
+
+   The breakpoint is 700 rather than 640 because that is where the inversion
+   actually starts: `calc(32 * var(--u))` at 1400-base crosses under 16px at
+   exactly 700px wide.
+
+   WHAT IS GONE ON A PHONE, and why:
+
+   - THE TWO GLASS MARKET CARDS (ECB, NVDA). A 200 x 160 card carrying four
+     type sizes cannot sit two-up inside a 350px column without every label
+     falling under 10px — which is the exact fault this block is fixing, so
+     shrinking them to fit would be answering the complaint with more of it.
+     They are also the one thing here that repeats: the handset's own screen is
+     already a market list with prices and moves on it, at a size a person can
+     read. They are `aria-hidden` decoration, so nothing leaves the document.
+     The ambient loop keeps all three of its acts without them — Act I still
+     has the leaderboard re-sort inside the phone, and Acts II and III were
+     always the phone and the category strip.
+
+   - THE TWO PREDICTION CARDS, already hidden by the block above, for the same
+     reason and since before this one.
+
+   - "PHORCAST TRADING", the second copy block's heading. Stacked, it lands two
+     lines under "Familiar Trading. Better Infrastructure." and reads as a
+     second section starting. One heading introduces this band; the body copy
+     belongs to it.
+
+   THE ORDER. Eyebrow, title, HANDSET, body, button. The phone is the strongest
+   thing this section owns at this width, so it takes the middle rather than
+   queueing behind all the copy — and the order is the entrance's own order
+   anyway: the phone is the lead at 0.70s and the right-hand copy and its
+   button are the last things to arrive. */
+@media (max-width: 700px) {
+  /* The stage stops being a fixed-ratio absolute composition and becomes an
+     ordinary column. `position: static` on the children is what releases the
+     `left`/`top` pairs every rule above states in `--u`; nothing has to be
+     unset one property at a time. */
+  .fam__stage {
+    aspect-ratio: auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 28px; padding: 56px 20px 24px;
+  }
+  .fam__stage > * { position: static; }
+
+  .fam__copy--left { order: 1; width: 100%; gap: 14px; }
+  .fam__phone { order: 2; }
+  .fam__copy--right { order: 3; width: 100%; gap: 16px; }
+
+  /* Type, in real pixels, sized against each other rather than against a
+     design width. The eyebrow is a label again. */
+  .fam .eyebrow { font-size: 12px; gap: 8px; }
+  .fam .eyebrow__dot { width: 9px; height: 9px; }
+  .fam__title { font-size: 28px; line-height: 1.15; }
+  .fam__sub-title { display: none; }
+  .fam__sub-body { font-size: 16px; line-height: 1.45; margin-top: 0; }
+
+  /* The button hands every one of its `--u` overrides back to `.btn`, which is
+     already drawn in flat pixels and already knows how to hold its own label.
+     Full width to the gutters, capped so it does not become a slab. */
+  .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; font-size: 16px; border-radius: var(--radius-pill); }
+
+  /* THE HANDSET GETS ITS OWN `--u`. Every rule inside the phone — the bezel,
+     the screen, the status bar, both market panels, the leaderboard, the BTC
+     ring — is written in `--u`, so one declaration here resizes all of it and
+     no rule inside the device is touched. 272px wide is the 348-wide design at
+     0.78; the vw cap keeps it off the gutters at 360 and 320. */
+  .fam__phone { --u: calc(min(272px, 74vw) / 348); flex: none; }
+
+  .fam__mkt { display: none; }
+
+  /* THE GLOW, RE-ANCHORED. Its discs are positioned in its own `--u` against a
+     1920-wide frame, so in a column three times taller than it is wide they
+     bunch into the top corner and the band's brightest point — which belongs
+     just above the horizon — ends up halfway up the copy. Bottom-anchoring a
+     900-wide crop of the same field puts the sunrise back at the foot of the
+     section, under the copy and over the horizon, which is the relationship
+     the desktop composition has. Same four discs, same core, same order. */
+  .fam__bg { --u: calc(100cqw / 900); top: auto; height: calc(1080 * var(--u)); }
+
+  /* The category strip. In `--u` its pills were 2px of padding round 2px type;
+     in flat pixels all four still fit inside a 350px column with the two live
+     dots. */
+  /* `relative`, NOT `static`. The band has to leave its `bottom: 0` corner and
+     join the column, and the reflex is `position: static` — but `.fam__horizon`
+     is absolute INSIDE it, so static hands the horizon's containing block to
+     `.fam` itself and a 487 x 215 blurred ellipse painted in the PAGE colour
+     lands on the heading. It cost an hour: the eyebrow vanished and "Familiar
+     Trading." faded out along the arc, which reads as a font or a compositing
+     fault and is neither. `relative` is in flow and still a containing block. */
+  .fam__band { position: relative; height: auto; padding: 18px 0 34px; display: flex; justify-content: center; }
+  /* Three viewport-widths across and 520 tall, so what crosses the band is a
+     shallow arc rather than the top of a small circle — the same relationship
+     the 6036 x 2668 ellipse has to the 1920 frame, restated at this width. */
+  .fam__horizon { top: 10px; width: 300vw; height: 520px; }
+  /* `relative`, not `static`, and for a second painting reason: `.fam__horizon`
+     is an absolutely-positioned sibling BEFORE the strip in the band, so a
+     static strip paints under it and the four pills disappear behind the
+     page-coloured ellipse. Positioned-in-flow puts them back on top. */
+  .fam__chips { position: relative; inset: auto; transform: none; justify-content: center; flex-wrap: nowrap; gap: 5px; }
+  .fam__chip-pill { padding: 7px 13px; font-size: 11px; }
+  .fam__chip-dot { width: 7px; height: 7px; }
 }
 
 /* Motion -------------------------------------------------------------------- */

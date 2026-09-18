@@ -11,7 +11,20 @@ const LINKS = [
   { label: 'Home', href: '#top' },
   { label: 'Markets', href: '#markets' },
   { label: 'Leaderboard', href: '#leaderboard' },
-  { label: 'More', href: '#more' },
+];
+
+/* What MORE opens. There was nothing to mirror: the desktop bar's More is a
+   `<button aria-haspopup="menu">` with a chevron and no menu behind it, so the
+   sheet was reproducing a stub faithfully. These four are not invented either
+   -- they are the page's own remaining sections, and every href here is an id
+   that exists in the document (#why, #how, #built, #faq), so the disclosure
+   goes somewhere. Desktop's More stays a stub because desktop must not move;
+   this is the list to give it when someone is allowed to. */
+const MORE_LINKS = [
+  { label: 'Why Phorcast', href: '#why' },
+  { label: 'How it works', href: '#how' },
+  { label: 'Infrastructure', href: '#built' },
+  { label: 'FAQ', href: '#faq' },
 ];
 
 /** The breakpoint the sheet exists below. Kept in step with Nav.css by hand. */
@@ -21,10 +34,12 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]';
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const captionId = useId();
+  const moreId = useId();
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -61,9 +76,13 @@ export function Nav() {
       if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key !== 'Tab') return;
       const items = Array.from(sheet.querySelectorAll<HTMLElement>(FOCUSABLE))
-        // The unchecked theme option is tabindex="-1" on purpose: a radio
-        // group is one Tab stop, and the arrow keys reach the other half.
-        .filter((el) => el.tabIndex >= 0 && el.getClientRects().length > 0);
+        // Three things are deliberately not Tab stops. The unchecked theme
+        // option carries tabindex="-1" because a radio group is one stop and
+        // the arrows reach the other half. A collapsed More is `inert`, which
+        // does not clear tabIndex, so it has to be asked for by hand. And
+        // anything the sheet has scrolled past still has a rect, which is why
+        // the visibility test is a rect test and not an offsetParent one.
+        .filter((el) => el.tabIndex >= 0 && !el.closest('[inert]') && el.getClientRects().length > 0);
       if (!items.length) return;
       const first = items[0];
       const last = items[items.length - 1];
@@ -86,6 +105,9 @@ export function Nav() {
     // Focus lands on the X, not on the wordmark: the first thing a dialog
     // should offer is the way out.
     closeRef.current?.focus();
+    // A disclosure left open from last time is a menu that opens at a
+    // different height every time you press the burger.
+    setMoreOpen(false);
 
     return () => {
       window.removeEventListener('keydown', onKey);
@@ -121,6 +143,7 @@ export function Nav() {
       id="mobile-menu"
       ref={sheetRef}
       className={`nav__sheet${open ? ' is-open' : ''}`}
+      data-more={moreOpen}
       hidden={!open}
       role="dialog"
       aria-modal="true"
@@ -138,8 +161,33 @@ export function Nav() {
 
         <nav className="nav__sheet-nav" aria-label="Primary">
           {LINKS.map((l) => (
-            <a key={l.label} href={l.href} className="nav__link" onClick={close}><Roll>{l.label}</Roll></a>
+            <a key={l.label} href={l.href} className="sheet-link" onClick={close}>{l.label}</a>
           ))}
+
+          {/* The disclosure. `aria-expanded` on the control, `aria-controls`
+              pointing at the list it opens, and the list itself `inert` and
+              `aria-hidden` while shut -- which takes its four links out of
+              both the focus order and the accessibility tree without taking
+              them out of the DOM, so the panel still has a height to animate
+              between. `hidden` would do the first two jobs and make the third
+              impossible. */}
+          <button
+            type="button"
+            className="sheet-link sheet-link--more"
+            aria-expanded={moreOpen}
+            aria-controls={moreId}
+            onClick={() => setMoreOpen((o) => !o)}
+          >
+            More
+            <Icon src={chevron} w={13.73} h={7.49} className="sheet-link__chev" />
+          </button>
+          <div className="sheet-sub" data-open={moreOpen}>
+            <ul id={moreId} className="sheet-sub__list" inert={!moreOpen} aria-hidden={!moreOpen}>
+              {MORE_LINKS.map((l) => (
+                <li key={l.label}><a href={l.href} className="sheet-sub__link" onClick={close}>{l.label}</a></li>
+              ))}
+            </ul>
+          </div>
         </nav>
 
         {/* The dock. Everything actionable lives here, at the bottom of a
@@ -163,7 +211,7 @@ export function Nav() {
       <div className="nav__row">
         <Logo />
         <nav className="nav__links" aria-label="Primary">
-          {LINKS.slice(0, 3).map((l) => (
+          {LINKS.map((l) => (
             <a key={l.label} href={l.href} className="nav__link"><Roll>{l.label}</Roll></a>
           ))}
           <button type="button" className="nav__link nav__more" aria-haspopup="menu">

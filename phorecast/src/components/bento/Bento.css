@@ -97,6 +97,29 @@
   overflow: hidden;
   container-type: inline-size;
   pointer-events: none;
+  /* The band's own top fade, and it has to live HERE rather than on the frame.
+     ---------------------------------------------------------------------
+     `.glow-fade` on `.bento__glow-frame` measures its 16% against the frame,
+     which is `1080 * --u` tall and pinned to the floor. The band is 1082px
+     tall once the cards stop growing, so above 1080 * --u = 1082 -- that is,
+     from about 1923px of viewport -- the frame is TALLER than the band and its
+     top, with the whole fade-in ramp, is pushed above the band and thrown away
+     by the `overflow: hidden` two lines up. The glow then meets the band's top
+     edge at full strength and that clip cuts it as a hard horizontal line:
+     measured at 1px of step at 2100, 6px at 2560 and 26px at 3000, and nothing
+     at all at 1920 and below. So the guard on the band's top edge has to be
+     measured against the BAND, which is exactly this box.
+
+     Top only. The frame's bottom is the band's bottom at every width, so
+     `.glow-fade` already guards the floor correctly and is left alone; adding
+     a second bottom ramp here would darken it twice. Below 1923 this ramp runs
+     over bare page -- the glow's first light is hundreds of pixels lower -- so
+     it costs those widths nothing.
+
+     Nested inside the frame's mask, not replacing it, and outside the element
+     the entrance scales, so the fade still never rides along with the bloom. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
 }
 .bento__glow-frame {
   position: absolute;

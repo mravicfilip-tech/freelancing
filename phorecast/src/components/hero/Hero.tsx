@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { gsap } from 'gsap';
 import { REDUCED, useSectionMotion } from '../../lib/motion';
 import { heroBuild, heroIdle, slideIn } from './entrance';
@@ -84,6 +84,36 @@ const SLIDES: Slide[] = [
 
 const AUTOPLAY_MS = 7000;
 
+/* Below this the slide collapses to one column (see Hero.css), so the mark has
+   to come down with it. It is the SAME number as the stacking rule on purpose:
+   the mark and the illustration it replaces are the same slot. */
+const STACKED = '(max-width: 1180px)';
+
+/**
+ * Where the 3D mark lives.
+ *
+ * Two columns: the mark is a layer over the whole hero, placed into the empty
+ * right-hand half by `markPlacement` below. One column: there is no right-hand
+ * half, so the layer has nowhere to be and it belongs in slide 1's own visual
+ * slot, under the copy, exactly where every other slide puts its illustration.
+ *
+ * It really is a move and not two marks. `.heroLogo` is mounted once either
+ * way, and crossing this breakpoint rebuilds the WebGL scene -- which the
+ * component already does on its own 767/1279 queries, because the placement
+ * differs. So the cost of the move is a cost that was already being paid.
+ */
+function useStacked() {
+  return useSyncExternalStore(
+    (onChange) => {
+      const q = window.matchMedia(STACKED);
+      q.addEventListener('change', onChange);
+      return () => q.removeEventListener('change', onChange);
+    },
+    () => window.matchMedia(STACKED).matches,
+    () => false,
+  );
+}
+
 /** `?slide=3` opens on a given slide (handy for review) and pauses autoplay. */
 function initialSlide() {
   const n = Number(new URLSearchParams(window.location.search).get('slide'));
@@ -165,7 +195,26 @@ export function Hero() {
     return () => { window.clearTimeout(guard); ctx.revert(); };
   }, [index]);
 
-  const markPlacement = useMemo(() => ({ heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }), []);
+  const stacked = useStacked();
+  // Two columns: the mark sits in the empty right-hand half of the hero.
+  // One column: its box IS the visual slot, so it simply fills it, centred.
+  // LogoScene sizes the mark against `canvas.parentElement`, i.e. `.heroLogo`
+  // itself, so these fractions are read against whichever box it is given.
+  const markPlacement = useMemo(
+    () => (stacked
+      ? { heightFraction: 0.86, widthFraction: 0.7, cx: 0.5, cy: 0.5 }
+      : { heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }),
+    [stacked],
+  );
+
+  const mark = (
+    <HeroLogo
+      hostRef={heroRef}
+      variant="lined"
+      placement={markPlacement}
+      className={`hero__logo${index === 0 ? ' is-visible' : ''}`}
+    />
+  );
 
   return (
     <section
@@ -190,12 +239,7 @@ export function Hero() {
         <span className="hero__horizon" />
       </div>
 
-      <HeroLogo
-        hostRef={heroRef}
-        variant="lined"
-        placement={markPlacement}
-        className={`hero__logo${index === 0 ? ' is-visible' : ''}`}
-      />
+      {stacked ? null : mark}
 
       <div className="container container--wide hero__inner">
         <Nav />
@@ -222,7 +266,8 @@ export function Hero() {
                 {s.aside}
                 <a href={s.href} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}><Roll>{s.cta}</Roll></a>
               </div>
-              <div className="hero__visual">{s.visual}</div>
+              {/* Slide 1's visual IS the mark once the slide is one column. */}
+              <div className="hero__visual">{stacked && i === 0 ? mark : s.visual}</div>
             </div>
           ))}
         </div>

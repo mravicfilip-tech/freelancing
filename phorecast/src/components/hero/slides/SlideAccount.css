@@ -809,8 +809,14 @@
   .sl2 {
     position: relative;
     inset: auto;
-    height: calc(375 * 100cqw / 1920);
-    --u: calc(100cqw / 1020);
+    /* Both numbers off the SAME unit. The height was derived from /1920 while
+       the unit came from /1020, so the box reserved 68px of flow for 125px of
+       cards and the bottom half of the strip was drawn over whatever followed
+       it. 963 x 365 is `.sl2__box`, i.e. the painted extent, so the cards now
+       sit flush in the column the way slide 3's stacks and slide 4's circuit
+       do -- and the box reserves exactly what it paints. */
+    height: calc(365 * 100cqw / 963);
+    --u: calc(100cqw / 963);
   }
   .sl2__box {
     top: 0;

@@ -249,6 +249,22 @@
   overflow: hidden;
   border: 0;
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge);
+  /* `--x`/`--y`/`--s`/`--r` are the tile's own design pixels, written inline by
+     BoxMarkets.tsx as plain numbers. Resolving them here rather than there is
+     what lets the phone layout move a tile; the used value on desktop is
+     unchanged, since `calc(var(--x) * var(--u))` with `--x: 191` is the
+     `calc(191 * var(--u))` this rule replaced.
+
+     `--mx`/`--my` is how the phone block restates a point, and the indirection
+     is not decoration: `--x` arrives as an INLINE custom property, which no
+     stylesheet rule can outrank without `!important` on every one of them. A
+     second name, set only inside the breakpoint, wins by simply existing —
+     `left` and `top` themselves live here and nowhere else. */
+  left: calc(var(--mx, var(--x)) * var(--u));
+  top: calc(var(--my, var(--y)) * var(--u));
+  width: calc(var(--s) * var(--u));
+  height: calc(var(--s) * var(--u));
+  border-radius: calc(var(--r) * var(--u));
 }
 .box-markets .mk__tile > img,
 .box-markets .mk__tile > span,
@@ -282,13 +298,22 @@
 /* 365:1182 — the pointer, a mask rather than an image: the file is a solid
    black arrow, which is --mk-ink exactly in dark and would be an invisible
    black arrow on an inverted card. As a mask it is the card's ink in both. */
-.box-markets .mk__cursor { position: absolute; color: var(--mk-ink); }
+.box-markets .mk__cursor {
+  position: absolute;
+  color: var(--mk-ink);
+  left: calc(var(--mx, var(--x)) * var(--u));
+  top: calc(var(--my, var(--y)) * var(--u));
+}
 
 /* 365:1185 — 76 x 30 in Figma, 10 padding around an 8px cap box. Figma places
    the label by that cap box, so the line box is trimmed to it; the outer height
    is stated as well so the pill is 30 even where `text-box` is unsupported. */
 .box-markets .mk__tooltip {
   position: absolute;
+  left: calc(var(--mx, var(--x)) * var(--u));
+  top: calc(var(--my, var(--y)) * var(--u));
+  width: calc(76 * var(--u));
+  height: calc(30 * var(--u));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -308,6 +333,8 @@
 /* 365:1187 / 365:1188 — a 10 square turned 45, inset 2.071 in its 14.142 box */
 .box-markets .mk__diamond {
   position: absolute;
+  left: calc(var(--mx, var(--x)) * var(--u));
+  top: calc(var(--my, var(--y)) * var(--u));
   width: calc(10 * var(--u));
   height: calc(10 * var(--u));
   margin: 0; /* Bento.css puts 2px here; on an absolute box that is a 2px shift */
@@ -327,6 +354,190 @@
     border-radius: 0;
     background: none;
   }
+}
+
+/* The phone card — Figma 526:394, 394 x 712 --------------------------------
+   THE MOBILE DESIGN IS NOT THE DESKTOP CARD RESIZED. Figma stands the artwork
+   on its end: the illustration frame is authored 540 x 394 and dropped into the
+   card rotated 90deg, with every tile, the cursor and the label counter-rotated
+   -90deg so their contents stay upright. Only the grid mesh and the two orbit
+   ellipses turn with it.
+
+   None of that rotation is reproduced here, and deliberately. A rotated
+   container would put every tile in a rotated LOCAL coordinate space, and the
+   loop in motion/markets.ts pushes each tile out along its own radius with
+   `xPercent`/`yPercent` — which GSAP applies in local space, so a push that
+   should read as "right" would come out as "down". The rotation is Figma's
+   construction, not the result, so what is stated below is the result: every
+   design coordinate mapped through (x, y) -> (394 - y - h, x) once, by hand,
+   into an upright field. The tiles then need no transform at all and the loop
+   measures the truth with getBoundingClientRect.
+
+   Three other things the phone design changes, none of them a resize:
+     - it keeps only the LIGHT plates (gold, NIKKEI, Apple, DAX, S&P 500,
+       Tesla), the Solana plate and the hub. The six dark tiles and the eight
+       unbadged tints are gone, which is why the rule below can hide them by
+       their two existing class names rather than one by one;
+     - the second orbit is a DIFFERENT ellipse — 432.711 x 183.649, not the
+       498.296 x 186.446 one drawn twice on desktop — so it is its own asset;
+     - the sub-head is --color-body, not --ink-2. See the note on it below.
+
+   The breakpoint is 560 rather than the band's 720. Above it the card would be
+   ~480 wide, and a 394 x 712 portrait design at that width is a 480 x 868
+   column — taller than most laptops' viewport for one bento card. 560 is where
+   the portrait reading stops being the better one. The mobile GRID (how the
+   four cards stack) is not this file's to set. */
+@media (max-width: 560px) {
+  /* The design pixel, now measured against the phone frame. 392 and not 394:
+     `100cqw` is the card's content box and the card carries a 1px border on
+     each side, the same derivation as the 774 above. */
+  .box-markets > * {
+    --u: calc(100cqw / 392);
+  }
+
+  .bcard.box-markets {
+    aspect-ratio: 394 / 712;
+
+    /* THE SUB-HEAD, AND WHY IT IS NOT --ink-2 HERE.
+       -------------------------------------------------------------------
+       The desktop node binds the description to --ink-2 (#9d9d9d), which on
+       this card's cream is 2.6:1 — the defect the light block at the foot of
+       this file records and improves on. The phone node binds the SAME line
+       to --color-body (#626262) instead, which on the same cream is 5.9:1.
+       That is the design's own token, not a correction invented here, and it
+       is taken as written.
+
+       It is set on the card rather than on the paragraph so it goes through
+       --mk-ink-2 like everything else, and so the light blocks below — which
+       are more specific and come later — still win. On the inverted card
+       #626262 would be 2.9:1, i.e. exactly backwards, and #9d9d9d at 6.6:1 is
+       what stays there. Read the light block before touching this. */
+    --mk-ink-2: var(--color-body);
+  }
+
+  /* 526:1218 — 334 x 652, inset 30 from the card's edge, heading at the top and
+     the link at the foot. Taken out of flow so the card's height comes from the
+     aspect ratio alone and the stage is an exact box rather than the sum of
+     three intrinsic ones; 29 and not 30 because the inset is measured from the
+     content box, one border in. */
+  .box-markets .mk__stage {
+    position: absolute;
+    inset: calc(29 * var(--u));
+    width: auto;
+    margin-inline: 0;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  /* 526:798 — 18 between the heading and the description, where desktop has 2 */
+  .box-markets .bcard__text {
+    gap: calc(18 * var(--u));
+  }
+  /* The design sets the heading in two lines, breaking after "market". The
+     break is asked for rather than typed: an inserted <br> would be one more
+     node in the desktop DOM for no desktop reason. Two lines of 18 and 16
+     characters is what `balance` arrives at. */
+  .box-markets .bcard__title {
+    font-size: max(19px, calc(24 * var(--u)));
+    text-wrap: balance;
+  }
+  /* 16 design px is 12.5 real ones on a 390 phone, which is below the floor
+     this site sets for body copy anywhere else, so the floor engages. 0.16px of
+     tracking is the design's. */
+  .box-markets .bcard__body {
+    font-size: max(14px, calc(16 * var(--u)));
+    letter-spacing: 0.16px;
+  }
+  .box-markets .bento__cta {
+    height: max(14px, calc(20 * var(--u)));
+    font-size: max(14px, calc(16 * var(--u)));
+  }
+
+  /* 526:1062 — the mesh, turned with the illustration. Its box is stated
+     unrotated and turned about its own centre, so the two numbers below are the
+     centre Figma lands it on (210, 417.13 from the card's edge) less half the
+     box, less the one border the coordinate space starts inside. */
+  .bcard.box-markets .mk__grid {
+    left: calc(-35.128 * var(--u));
+    top: calc(260.13 * var(--u));
+    transform: rotate(90deg);
+    /* Bento.css pins this layer's origin to its top-left below 1100, for the
+       scale() it applies there. A quarter turn about a corner is a 121px throw
+       off the card; the turn has to be about the centre the numbers above are
+       measured to. */
+    transform-origin: 50% 50%;
+  }
+
+  /* 526:1024 / 526:1025 — the two ellipses, also turned with the illustration,
+     so each carries its own tilt plus the frame's 90. The box is re-hung on the
+     card's own coordinates (the stage sits 30 in, hence the negative origin)
+     so the numbers below can be read straight off the node. */
+  .bcard.box-markets .mk__orbits {
+    left: calc(-30 * var(--u));
+    top: calc(-30 * var(--u));
+    width: calc(394 * var(--u));
+    height: calc(712 * var(--u));
+  }
+  .box-markets .mk__orbit--a {
+    left: calc(-53.504 * var(--u));
+    top: calc(311.462 * var(--u));
+    transform: rotate(69.22deg);
+  }
+  /* Ellipse 45 is not Ellipse 44: 432.711 x 183.649 against 498.296 x 186.446,
+     a rounder ellipse that the desktop card does not contain. It is painted on
+     a pseudo-element rather than swapped into the <img>, because an <img> can
+     only change its source from the markup and the desktop DOM has no reason to
+     carry a second one. `preserveAspectRatio="none"` in the file makes the
+     100% 100% sizing below exact rather than a fit. */
+  .box-markets .mk__orbit--b {
+    display: none;
+  }
+  .bcard.box-markets .mk__orbits::after {
+    content: '';
+    position: absolute;
+    left: calc(-28.722 * var(--u));
+    top: calc(327.012 * var(--u));
+    width: calc(432.711 * var(--u));
+    height: calc(183.649 * var(--u));
+    background: url('../../../assets/bento/markets/orbit-ring-b.svg') no-repeat 0 0 / 100% 100%;
+    transform: rotate(225deg);
+  }
+
+  /* 526:1023 — the illustration frame: 394 x 540, hung 125 below the card's top
+     edge. The stage is 30 in on both axes, so the field starts 30 back and 95
+     down from it. Every tile coordinate below is inside THIS box. */
+  .bcard.box-markets .mk__field {
+    left: calc(-30 * var(--u));
+    top: calc(95 * var(--u));
+    width: calc(394 * var(--u));
+    height: calc(540 * var(--u));
+  }
+
+  /* The phone design carries no dark plate and no unbadged tint at all. */
+  .box-markets .mk__tile--dark,
+  .box-markets .mk__tile--ghost {
+    display: none;
+  }
+
+  /* 526:1026 – 526:1061. Size, corner, ring and the glyph inside each tile are
+     unchanged from the desktop node — only the place is new. */
+  .box-markets .mk__tile--tesla { --mx: 147; --my: 41; }
+  .box-markets .mk__tile--gold { --mx: 232; --my: 159; }
+  .box-markets .mk__tile--nikkei { --mx: 51; --my: 187; }
+  .box-markets .mk__hub { --mx: 156; --my: 259; }
+  .box-markets .mk__tile--solana { --mx: 110; --my: 350; }
+  .box-markets .mk__tile--apple { --mx: 330; --my: 362; }
+  .box-markets .mk__tile--dax { --mx: 303; --my: 444; }
+  .box-markets .mk__tile--sp500 { --mx: 200; --my: 467; }
+
+  /* 526:1055 / 526:1058 — the pointer and its label. Figma insets the arrow
+     7.55% inside its 20 box, which is folded in as it is on desktop. */
+  .box-markets .mk__cursor { --mx: 133.51; --my: 401.506; }
+  .box-markets .mk__tooltip { --mx: 149; --my: 409; }
+
+  /* 526:1060 / 526:1061 — the 10 square inset 2.071 in its 14.142 box, as above */
+  .box-markets .mk__diamond--a { --mx: 286.209; --my: 266.501; }
+  .box-markets .mk__diamond--b { --mx: 66.069; --my: 123.071; }
 }
 
 /* --- Light ------------------------------------------------------------------
@@ -415,7 +626,8 @@
      because the two multiply. */
   opacity: 0.12;
   }
-  :root:not([data-theme='dark']) .box-markets .mk__orbit {
+  :root:not([data-theme='dark']) .box-markets .mk__orbit,
+:root:not([data-theme='dark']) .box-markets .mk__orbits::after {
   /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
      guide you can only just see, and 12.8:1 on ink -- two blazing white
      ellipses across the card. The colour is right and the WEIGHT is wrong, so
@@ -424,7 +636,14 @@
      on purpose, because the path is 0.76px wide and a sub-pixel stroke
      antialiases toward its ground, so the same ratio buys less line. Cheaper
      than a mask, and it keeps the two ellipses byte-identical to the shared
-     asset. */
+     asset.
+
+     The pseudo-element in the selector is the phone card's second ellipse --
+     526:1025, a rounder one the desktop node does not contain, painted as a
+     background rather than as a second <img> (see the breakpoint above). It is
+     the SAME #D9D9D9 stroke at the same 0.759 weight, so it takes the same
+     answer. Outside that breakpoint it has no `content` and is not generated,
+     which is why this costs the desktop render nothing. */
   opacity: 0.17;
   }
 }
@@ -512,7 +731,8 @@
      because the two multiply. */
   opacity: 0.12;
 }
-:root[data-theme='light'] .box-markets .mk__orbit {
+:root[data-theme='light'] .box-markets .mk__orbit,
+:root[data-theme='light'] .box-markets .mk__orbits::after {
   /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
      guide you can only just see, and 12.8:1 on ink -- two blazing white
      ellipses across the card. The colour is right and the WEIGHT is wrong, so
@@ -521,6 +741,13 @@
      on purpose, because the path is 0.76px wide and a sub-pixel stroke
      antialiases toward its ground, so the same ratio buys less line. Cheaper
      than a mask, and it keeps the two ellipses byte-identical to the shared
-     asset. */
+     asset.
+
+     The pseudo-element in the selector is the phone card's second ellipse --
+     526:1025, a rounder one the desktop node does not contain, painted as a
+     background rather than as a second <img> (see the breakpoint above). It is
+     the SAME #D9D9D9 stroke at the same 0.759 weight, so it takes the same
+     answer. Outside that breakpoint it has no `content` and is not generated,
+     which is why this costs the desktop render nothing. */
   opacity: 0.17;
 }

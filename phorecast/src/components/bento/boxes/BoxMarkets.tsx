@@ -68,17 +68,34 @@ interface Tile {
   background?: string;
 }
 
-/** The tile's own box. `--ring` is the inset stroke's weight; see the CSS. */
+/** The tile's own box, handed to CSS as four design-pixel NUMBERS rather than
+ *  as four resolved lengths.
+ *
+ *  Why: the card has two layouts now. On a phone the artwork is recomposed --
+ *  Figma 526:394 turns the field on its side and drops the dark half of it --
+ *  and every surviving tile keeps its size, corner, ring and glyph and moves to
+ *  a new place. `left`/`top` written here as inline styles could only be moved
+ *  from CSS with `!important` on every one of them; written as `--x`/`--y` the
+ *  breakpoint simply restates two numbers and BoxMarkets.css does the calc.
+ *
+ *  The desktop render does not move: `left: calc(var(--x) * var(--u))` with
+ *  `--x: 191` resolves to exactly what `left: calc(191 * var(--u))` did.
+ *
+ *  `--ring` stays a length because it is a shadow spread, not a coordinate, and
+ *  it is identical in both layouts. */
 const shell = (t: Tile) => ({
-  left: u(t.left),
-  top: u(t.top),
-  width: u(t.size),
-  height: u(t.size),
-  borderRadius: u(t.radius),
+  ['--x' as string]: t.left,
+  ['--y' as string]: t.top,
+  ['--s' as string]: t.size,
+  ['--r' as string]: t.radius,
   ['--ring' as string]: u(t.border),
   ...(t.opacity === undefined ? null : { opacity: t.opacity }),
   ...(t.background === undefined ? null : { background: t.background }),
 });
+
+/** A point in the current field's design pixels, for the loose parts that are
+ *  not tiles: the cursor, its label and the two diamonds. */
+const at = (x: number, y: number) => ({ ['--x' as string]: x, ['--y' as string]: y });
 
 /** A glyph placed by its own top-left inside the tile. */
 const leaf = (left: number, top: number, w: number, h: number) => ({
@@ -227,13 +244,13 @@ export function BoxMarkets() {
               box in the card's own unit and lands after Icon's w/h, so the
               geometry is the <img>'s to the pixel. */}
           <Icon src={cursorArrow} w={16.974} h={16.988} className="mk__cursor"
-            style={leaf(461.51, 292.506, 16.974, 16.988)} />
-          <span className="mk__tooltip" style={{ left: u(477), top: u(300), width: u(76), height: u(30) }}>Solana</span>
+            style={{ ...at(461.51, 292.506), width: u(16.974), height: u(16.988) }} />
+          <span className="mk__tooltip" style={at(477, 300)}>Solana</span>
 
           {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.
               Figma centres a 10 square in a 14.142 box; 2.071 is that inset. */}
-          <span className="mk__diamond" style={{ left: u(309.501), top: u(124.791) }} />
-          <span className="mk__diamond" style={{ left: u(151.071), top: u(344.071) }} />
+          <span className="mk__diamond mk__diamond--a" style={at(309.501, 124.791)} />
+          <span className="mk__diamond mk__diamond--b" style={at(151.071, 344.071)} />
         </div>
 
         {/* 365:1093 */}

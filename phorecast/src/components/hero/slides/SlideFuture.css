@@ -245,13 +245,20 @@
     position: relative;
     inset: auto;
     width: 100%;
-    aspect-ratio: 1800 / 570;
+    /* The FRAME's ratio, not the column's. `1800 / 570` sized this box to the
+       whole 1800-wide content column while only 999 of those units are ever
+       painted, so the illustration was drawn at 0.19x on a 390px phone -- a
+       350 x 111 sliver with 5px badges. The frame is the painted box (999 x
+       570, see the header), so once it is the one that fills the column the
+       artwork is drawn at 0.35x and the ratio below is its own. */
+    aspect-ratio: 999 / 570;
+    --u: calc(100cqw / 999);
   }
   .sl4__frame {
     right: auto;
-    left: 50%;
+    left: 0;
     top: 0;
-    transform: translateX(-50%);
+    transform: none;
   }
 }
 

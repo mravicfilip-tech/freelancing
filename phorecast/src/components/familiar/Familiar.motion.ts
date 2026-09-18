@@ -17,8 +17,10 @@
  *   2.05  The floating ECB and NVDA cards slide in from the left, towards the
  *         phone, 0.17s apart. They are the detail that makes the stage feel
  *         inhabited, so they travel further than the copy does.
- *   2.15  The blurred ghost cards and the prediction card settle in from the
- *         right, the quietest arrivals on the stage — context, not accent.
+ *   2.15  The two prediction cards settle in from the right, 0.17s apart and
+ *         mirroring the pair on the left: the outer one first and travelling
+ *         furthest, the inner one behind it and travelling less, so they do
+ *         not read as one block sliding. The quietest arrivals on the stage.
  *   2.40  The right-hand copy and the Start Trading button, tightly staggered.
  *   2.65  The category pills across the bottom band, left to right.
  *
@@ -28,7 +30,7 @@
  *
  * Every tween is a `from`: the resting markup is the finished state, so a build
  * that never runs leaves the section simply present. Nothing overshoots and
- * nothing rotates; the only eases here are `expo.out` and `power3.out`.
+ * nothing rotates; every ease here is `expo.out`.
  */
 import { EASE, one, rise } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
@@ -129,8 +131,9 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const phone = q('.fam__phone')[0];
   const ecb = q('.fam__mkt--ecb')[0];
   const nvda = q('.fam__mkt--nvda')[0];
-  const ghosts = q('.fam__ghost');
-  const pred = q('.fam__pred')[0];
+  // Both floating prediction cards, outermost first — see step 5.
+  const predOuter = q('.fam__pred--b')[0];
+  const predInner = q('.fam__pred--a')[0];
 
   /* 1 — the band names itself. */
   rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.9, clearProps: 'transform,opacity' });
@@ -169,15 +172,23 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.22);
   }
 
-  /* 5 — context behind the right-hand copy: furthest back, so smallest moves
-     and the softest ease. The ghosts keep their 0.4 resting opacity because a
-     `from` tween ends wherever the element already is; `clearProps` hands the
-     settled value back to the stylesheet either way. */
-  ghosts.forEach((g, i) => {
-    tl.from(g, { x: d(62), y: d(26), opacity: 0, duration: 1.1, ease: 'power3.out', clearProps: 'transform,opacity' }, LEAD + 2.15 + i * 0.1);
-  });
-  if (pred) {
-    tl.from(pred, { x: d(90), y: d(34), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.35);
+  /* 5 — the two prediction cards, in from the right, towards the phone. The
+     exact mirror of step 4: outermost first and travelling furthest, the inner
+     one 0.17s behind it on a shorter vector, so the pair arrives as two cards
+     rather than one block sliding.
+
+     The distances and the ease are the ones this step already used — d(90) /
+     d(34) on `expo.out` was the single prediction card's vector and is now the
+     outer card's, d(62) / d(26) was the ghosts' and is now the inner card's.
+     Both are 1.1s, which is what every arrival in this step has always been,
+     and both land inside the 2.15 – 2.35 window the sequence note describes.
+     `from` tweens, like everything else in this file: the resting markup is
+     the finished state. */
+  if (predOuter) {
+    tl.from(predOuter, { x: d(90), y: d(34), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.15);
+  }
+  if (predInner) {
+    tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.32);
   }
 
   /* 6 — the claim, then its button. */

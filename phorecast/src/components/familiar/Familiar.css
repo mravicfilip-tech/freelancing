@@ -12,8 +12,9 @@
    The block is split in two, and the split IS this section's decision.
 
    PAGE CHROME (--fam-g-*, --fam-foot-*, --fam-card-*, --fam-tick-*,
-   --fam-dot, --fam-ghost-*, the lifts) is the marketing page: the glow, the
-   two glass market cards, the category strip. It is drawn from the page it
+   --fam-dot, --fam-pred-shadow, the lifts) is the marketing page: the glow,
+   the two glass market cards, the category strip, and the contact shadow the
+   floating cards cast on it. It is drawn from the page it
    sits on and it flips, and the light block at the foot of this file
    redefines exactly these names.
 
@@ -68,14 +69,6 @@
      the page rather than an object laid on it. */
   --fam-pred-shadow: rgba(0, 0, 0, 0.04);
 
-  /* The blurred stack behind the right-hand copy: two crops of one dark
-     screenshot, at a resting opacity the loop lifts from and returns to. */
-  --fam-ghost-op: 0.4;
-  --fam-ghost-lift: 0.22;
-  --fam-ghost-line: rgba(255, 255, 255, 0.1);
-  --fam-ghost-a: #fff;
-  --fam-ghost-b: #161618;
-
   /* The lifts that meet the paper, as MATCHED filter pairs — GSAP
      interpolates `filter` structurally, so both ends must list the same
      functions. Both of these mean "brighter" in dark and have to mean
@@ -126,14 +119,43 @@
   --fam-app-ring: #00c950;
   --fam-app-ring-lit: brightness(1.55);
 
-  /* The floating prediction card and the ghosts are the same app, off the
-     handset: one crisp card and two blurred ones. */
+  /* THE TWO FLOATING PREDICTION CARDS, right of the handset. Same app, off
+     the device: Figma 365:1807 and 474:913, re-exported together. Every value
+     below is the flat colour the file bakes in, named here rather than
+     inlined, and none of them is redefined in the light block -- they are the
+     product's own dark UI, exactly like the handset above.
+
+     THE YES/NO PAIR IS THE ARGUABLE ONE and is called out on purpose. Out on
+     the page, up/down joins --pos / --neg in light (--fam-tick-* and
+     --fam-trend-* just above). These two do not, for the same reason the
+     handset's leaderboard chips do not: the chip is a dark green plate inside
+     a #1d1d20 card in BOTH themes, and light's --pos (#0b6e37) on #1a3a2c is
+     a dark green label on a dark green plate -- the control would stop being
+     legible rather than start being correct. They are a picture of a control,
+     not a control: the whole card is aria-hidden and nothing in it is
+     focusable. */
   --fam-app-pred: #1d1d20;
   --fam-app-pred-line: rgba(255, 255, 255, 0.28);
   --fam-app-pred-meta: rgba(113, 113, 123, 0.7);
-  --fam-app-pred-track: rgba(24, 24, 27, 0.08);
   --fam-app-pred-fill: #00c950;
+  /* Two tracks, because the file draws two. The first card's bar is filled end
+     to end, so its track never shows and its label sits ON the green and is
+     dark. The second stops at 23.69%, so its label sits on the bare track and
+     has to be light instead. */
+  --fam-app-pred-track: rgba(24, 24, 27, 0.08);
+  --fam-app-pred-track-bare: #161414;
   --fam-app-pred-label: #000;
+  --fam-app-pred-label-bare: var(--art-ink);
+  /* The odds plates on these cards, and the colour the loop's trade lights the
+     Yes plate to. The lit value is not in the file -- it is the handset chip's
+     own step (#10281d -> #17482e, x1.49 in relative luminance) walked out from
+     this card's resting #1a3a2c, so the same beat reads as the same size of
+     acknowledgement on both objects. */
+  --fam-app-pred-yes-bg: #1a3a2c;
+  --fam-app-pred-yes-fg: #00a63e;
+  --fam-app-pred-yes-lit: #21583c;
+  --fam-app-pred-no-bg: #302325;
+  --fam-app-pred-no-fg: #e5331e;
 }
 
 .fam {
@@ -312,47 +334,72 @@
   font-size: calc(12 * var(--u)); font-weight: 500;
 }
 
-/* Ghost cards and the floating prediction card ---------------------------------- */
-.fam__ghost {
-  width: calc(220 * var(--u)); height: calc(162 * var(--u));
-  border: calc(6 * var(--u)) solid var(--fam-ghost-line);
-  border-radius: calc(12 * var(--u));
-  opacity: var(--fam-ghost-op); overflow: hidden;
-}
-.fam__ghost img { width: 293.91%; height: 100%; object-fit: cover; }
-.fam__ghost--a { left: calc(1195 * var(--u)); top: calc(486 * var(--u)); background: var(--fam-ghost-a); filter: blur(calc(4.4 * var(--u))); }
-.fam__ghost--b { left: calc(1318 * var(--u)); top: calc(633 * var(--u)); background: var(--fam-ghost-b); filter: blur(calc(2 * var(--u))); }
-.fam__ghost--b img { margin-left: -195.17%; }
+/* The two floating prediction cards ---------------------------------------------
+   Figma 365:1807 and 474:913, re-exported together: two 206 x 160 cards of the
+   product's dark UI, side by side at y 532 with a 14px gutter.
 
+   WHAT WAS HERE BEFORE. One of these two cards, at 1264 / 566, plus a pair of
+   `.fam__ghost` spans -- 220 x 162 boxes each showing a blurred crop of
+   `familiar/ghost.png`, a 1449 x 366 bitmap of three UNRELATED product cards
+   (an XRP market, a BTC round, a BNB market). They stood where the second card
+   stands, out of focus, and the frame they were taken from does not contain
+   them: it has two crisp cards and nothing behind them. So they were a
+   stand-in, not a backdrop, and they are gone. `familiar/ghost.png` is left on
+   disk unreferenced -- src/assets is not ours to delete from.
+
+   The vertical rhythm is pinned rather than distributed. Figma runs
+   meta(10) -> 16.07 -> head(24.10) -> [slack] -> bar(14) -> 10.71 -> btns(26)
+   inside a 143.93 content box, with the slack falling in ONE place, between
+   the head and the bar, because the file splits the card into two groups and
+   spaces them apart. A flat `space-between` over four children would share that
+   slack three ways and put ~7 design pixels under the meta row and under the
+   bar that the design does not have; `margin-top: auto` on the bar puts all of
+   it where the file puts it, with no wrapper elements for the loop to reach
+   through. */
 .fam__pred {
-  left: calc(1264 * var(--u)); top: calc(566 * var(--u));
+  top: calc(532 * var(--u));
   width: calc(206 * var(--u)); height: calc(160 * var(--u));
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: calc(8 * var(--u)); border-radius: calc(10 * var(--u));
+  display: flex; flex-direction: column;
+  padding: calc(8.034 * var(--u)); border-radius: calc(10 * var(--u));
   background: var(--fam-app-pred); border: 1px solid var(--fam-app-pred-line);
-  box-shadow: 0 calc(5.4 * var(--u)) calc(10.7 * var(--u)) var(--fam-pred-shadow);
+  box-shadow: 0 calc(5.356 * var(--u)) calc(10.712 * var(--u)) var(--fam-pred-shadow);
   font-family: var(--font-display); color: var(--art-ink);
 }
+.fam__pred--a { left: calc(1162 * var(--u)); }
+.fam__pred--b { left: calc(1382 * var(--u)); }
+
 .fam__pred-meta { display: flex; justify-content: space-between; font-weight: 500; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-meta); }
-.fam__pred-head { display: flex; gap: calc(6.7 * var(--u)); margin-top: calc(10 * var(--u)); }
-.fam__pred-head img { width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: calc(6.7 * var(--u)); object-fit: cover; flex: none; }
+.fam__pred-head { display: flex; align-items: flex-start; gap: calc(6.695 * var(--u)); margin-top: calc(16.069 * var(--u)); }
+.fam__pred-head img { width: calc(24.103 * var(--u)); height: calc(24.103 * var(--u)); border-radius: calc(6.695 * var(--u)); object-fit: cover; flex: none; }
+/* The measure is set per card from the file -- see PREDICTIONS in Familiar.tsx
+   -- so the line breaks land where the design breaks them rather than wherever
+   the flex row happens to run out. */
 .fam__pred-head p { font-weight: 500; font-size: calc(10 * var(--u)); line-height: 1.2; }
 .fam__pred-bar {
-  position: relative; height: calc(14 * var(--u)); margin-top: calc(14 * var(--u));
+  position: relative; margin-top: auto; height: calc(14 * var(--u));
   border-radius: 9999px; background: var(--fam-app-pred-track); overflow: hidden;
 }
-.fam__pred-bar i { position: absolute; inset: 0; background: var(--fam-app-pred-fill); }
+/* Width is written per card from the file: 100% on the first, 23.69% on the
+   second. `inset: 0 auto 0 0` rather than `inset: 0`, so the inline width is
+   what decides how far the fill runs. */
+.fam__pred-bar i { position: absolute; inset: 0 auto 0 0; background: var(--fam-app-pred-fill); }
 .fam__pred-bar span {
   position: absolute; inset: 0; display: grid; place-items: center;
-  font-weight: 700; font-size: calc(8 * var(--u)); color: var(--fam-app-pred-label);
+  font-weight: 700; font-size: calc(8 * var(--u)); text-transform: uppercase;
+  color: var(--fam-app-pred-label);
 }
-.fam__pred-btns { display: flex; gap: calc(6 * var(--u)); margin-top: calc(8 * var(--u)); }
+/* The second card's bar is a quarter full, so its label sits on the bare track
+   and takes the track's own pair instead. */
+.fam__pred--b .fam__pred-bar { background: var(--fam-app-pred-track-bare); }
+.fam__pred--b .fam__pred-bar span { color: var(--fam-app-pred-label-bare); }
+
+.fam__pred-btns { display: flex; gap: calc(5.356 * var(--u)); margin-top: calc(10.712 * var(--u)); }
 .fam__pred-btns span {
-  flex: 1; display: grid; place-items: center; height: calc(22 * var(--u));
-  border-radius: calc(5 * var(--u)); font-size: calc(9 * var(--u)); font-weight: 600;
+  flex: 1; display: grid; place-items: center; height: calc(26 * var(--u));
+  border-radius: calc(4.017 * var(--u)); font-size: calc(9.373 * var(--u)); font-weight: 700;
 }
-.fam__pred-btns .is-yes { background: var(--fam-app-yes-bg); color: var(--fam-app-yes-fg); }
-.fam__pred-btns .is-no { background: var(--fam-app-no-bg); color: var(--fam-app-no-fg); }
+.fam__pred-btns .is-yes { background: var(--fam-app-pred-yes-bg); color: var(--fam-app-pred-yes-fg); }
+.fam__pred-btns .is-no { background: var(--fam-app-pred-no-bg); color: var(--fam-app-pred-no-fg); }
 
 /* Bottom band ------------------------------------------------------------------- */
 .fam__band {
@@ -387,7 +434,9 @@
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
   .fam__mkt--ecb { left: calc(60 * var(--u)); top: calc(560 * var(--u)); }
   .fam__mkt--nvda { left: calc(290 * var(--u)); top: calc(560 * var(--u)); }
-  .fam__pred, .fam__ghost { display: none; }
+  /* Both cards, together: below this width the stage re-bases to a
+     1400-wide design and there is no room to the right of the handset. */
+  .fam__pred { display: none; }
   .fam__band { height: calc(240 * var(--u)); }
 }
 
@@ -398,7 +447,7 @@
    settling onto the stage rather than growing out of its own middle; GSAP
    clears its inline transform at the end and this is what it falls back to. */
 .fam__phone { will-change: transform, opacity; transform-origin: 50% 72%; }
-.fam__mkt, .fam__ghost, .fam__pred { will-change: transform, opacity; }
+.fam__mkt, .fam__pred { will-change: transform, opacity; }
 
 /* Pending state, the same contract as the hero and the bento. Without it the
    band painted settled from its very first frame and merely animated later, so
@@ -416,7 +465,6 @@
 [data-js] .fam[data-motion='pending'] .fam__title,
 [data-js] .fam[data-motion='pending'] .fam__phone,
 [data-js] .fam[data-motion='pending'] .fam__mkt,
-[data-js] .fam[data-motion='pending'] .fam__ghost,
 [data-js] .fam[data-motion='pending'] .fam__pred,
 [data-js] .fam[data-motion='pending'] .fam__sub-title,
 [data-js] .fam[data-motion='pending'] .fam__sub-body,
@@ -436,31 +484,36 @@
    panels. This section does not, and the reason is a file nobody is allowed
    to touch.
 
-   A third of the app surface in this band is `familiar/ghost.png`: two crops
-   of one wide bitmap of three DARK product cards, sitting 60 design pixels
-   from the floating prediction card and in the same eyeline as the handset.
-   It is in src/assets, which no agent may edit (LIGHTMODE.md 2.2), and there
-   is no light variant of it. Re-tinting the phone and the prediction card
-   would therefore put a light app and a dark app side by side inside one
-   section -- a contradiction a reader sees in a single glance, and a worse
-   one than a page whose product screens are all dark.
-
-   And the phone here is the one of the four mockups that is genuinely drawn
-   as HARDWARE: a #000 body, an 8px rim catching light, a 40px corner radius,
+   The phone here is the one of the four mockups that is genuinely drawn as
+   HARDWARE: a #000 body, an 8px rim catching light, a 40px corner radius,
    with the screen inset inside it. The Steps panels and the hero's account
    slide are flat UI with no device around them, which is a different object
    and can honestly take a different answer. A photograph of a handset does
    not change what is on its screen because the website changed its palette.
 
-   So: A DELIBERATE DARK INSET. The handset, the floating prediction card and
-   the two ghosts are the product's own dark theme, identical in both themes,
-   and the band gains what 6.3 asks a dark inset to gain -- a contact shadow
-   that makes it read as a screen lying on paper. This contradicts the brief's
+   And the two prediction cards floating beside it are the SAME APP, off the
+   device -- close enough to be read in one glance with it. Re-tinting them
+   and not the handset, or the handset and not them, would put a light app and
+   a dark app side by side inside one section; a contradiction a reader sees
+   immediately, and a worse one than a page whose product screens are all
+   dark.
+
+   (An earlier version of this note rested the argument on `familiar/ghost.png`
+   -- a bitmap of dark product cards that had no light variant and lived in
+   src/assets, which no agent may edit, LIGHTMODE.md 2.2. That file is no
+   longer used by this section: the re-export of the two cards replaced the
+   blurred crops it was standing in for. The conclusion is unchanged, but it
+   now rests on what the artwork IS rather than on what could not be edited.)
+
+   So: A DELIBERATE DARK INSET. The handset and the two floating prediction
+   cards are the product's own dark theme, identical in both themes, and the
+   band gains what 6.3 asks a dark inset to gain -- a contact shadow that
+   makes it read as a screen lying on paper. This contradicts the brief's
    stated preference and is flagged as such.
 
    The consequence is the shape of the block below. Everything here is PAGE
    CHROME: the glow, the two glass market cards, the ECB plate, the category
-   strip, the ghosts' weight, and the two lifts that meet the paper. Not one
+   strip, the contact shadow, and the two lifts that meet the paper. Not one
    --fam-app-* value appears, and because of that every "lit means brighter"
    beat inside the handset -- the ring advancing, the filter glyph glinting,
    the odds chips lighting, the leaderboard's green tick -- is still a bright
@@ -546,22 +599,9 @@
      light page already uses for exactly this. */
   --fam-dot: var(--accent);
 
-  /* Two dark app cards laid on paper cast a shadow. They barely could on a
-     near-black page, which is why dark's is 4%. */
+  /* The two prediction cards, laid on paper, cast a shadow. They barely could
+     on a near-black page, which is why dark's is 4%. */
   --fam-pred-shadow: rgba(26, 21, 18, 0.16);
-
-  /* THE BLURRED STACK is the one place the dark-inset decision is softened,
-     and it is a matter of weight rather than of colour. The ghosts are two
-     crops of a dark screenshot at 0.4, which on the dark page composites to
-     1.02:1 -- a whisper, which is their job: context, not accent. The same
-     0.4 on cream composites to 2.55:1 and they stop being context and become
-     a second focal point beside the prediction card. 0.18 puts them back at
-     1.46:1, a shade stronger than the blush they sit in and a long way short
-     of competing. The loop's lift is scaled with them, so the beat is the
-     same fraction of their presence (+55%) that it is in dark. */
-  --fam-ghost-op: 0.18;
-  --fam-ghost-lift: 0.1;
-  --fam-ghost-line: rgba(26, 21, 18, 0.113);
 
   /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
      have to mean "deeper" here, or the beat runs, moves nothing anyone can
@@ -658,22 +698,9 @@
      light page already uses for exactly this. */
   --fam-dot: var(--accent);
 
-  /* Two dark app cards laid on paper cast a shadow. They barely could on a
-     near-black page, which is why dark's is 4%. */
+  /* The two prediction cards, laid on paper, cast a shadow. They barely could
+     on a near-black page, which is why dark's is 4%. */
   --fam-pred-shadow: rgba(26, 21, 18, 0.16);
-
-  /* THE BLURRED STACK is the one place the dark-inset decision is softened,
-     and it is a matter of weight rather than of colour. The ghosts are two
-     crops of a dark screenshot at 0.4, which on the dark page composites to
-     1.02:1 -- a whisper, which is their job: context, not accent. The same
-     0.4 on cream composites to 2.55:1 and they stop being context and become
-     a second focal point beside the prediction card. 0.18 puts them back at
-     1.46:1, a shade stronger than the blush they sit in and a long way short
-     of competing. The loop's lift is scaled with them, so the beat is the
-     same fraction of their presence (+55%) that it is in dark. */
-  --fam-ghost-op: 0.18;
-  --fam-ghost-lift: 0.1;
-  --fam-ghost-line: rgba(26, 21, 18, 0.113);
 
   /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
      have to mean "deeper" here, or the beat runs, moves nothing anyone can

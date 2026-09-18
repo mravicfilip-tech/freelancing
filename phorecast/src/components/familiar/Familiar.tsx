@@ -9,7 +9,7 @@ import trendB from '../../assets/familiar/trend-b.svg';
 import arrowDown from '../../assets/familiar/arrow-down.svg';
 import bank from '../../assets/familiar/bank.svg';
 import avatar from '../../assets/familiar/avatar.jpg';
-import ghost from '../../assets/familiar/ghost.png';
+import petro from '../../assets/familiar/petro.jpg';
 import logo from '../../assets/familiar/logo.svg';
 import signal from '../../assets/familiar/signal.svg';
 import data from '../../assets/familiar/data.svg';
@@ -33,6 +33,53 @@ const CANDIDATES = [
 ];
 
 const CHIPS = ['Politics', 'Sports', 'Crypto', 'Finance'];
+
+/**
+ * The two prediction cards that float to the RIGHT OF THE HANDSET.
+ *
+ * Figma `365:1807` and `474:913` — two 206 x 160 cards of the product's own
+ * dark UI, side by side at y 532 with a 14px gutter, the second one 220 design
+ * pixels right of the first. Both were re-exported from the file on the same
+ * pass; before it there was one real card here and two blurred bitmap crops of
+ * `familiar/ghost.png` standing in beside it, which the current frame does not
+ * contain at all. See the note over `.fam__pred` in `Familiar.css`.
+ *
+ * `lines` rather than one string because the design breaks the first card's
+ * title by hand (a nowrap block with an explicit break after "sever") and lets
+ * the second wrap inside its own 143px measure. `titleW` is that measure, in
+ * design pixels; the first card takes the width Figma's nowrap block measures
+ * so the break lands where the file puts it rather than wherever the flex row
+ * happens to run out.
+ *
+ * `fill` is the green run of the bar as a percentage of the track, read off the
+ * file: the first card's is the whole track — which is why its label is dark,
+ * it sits ON the green — and the second's stops at 23.67%, leaving the label
+ * over the bare track where it has to be light instead.
+ */
+const PREDICTIONS = [
+  {
+    mod: 'a',
+    vol: '$112.5K Vol',
+    ends: 'Ends in 3mo 17d',
+    avatar,
+    alt: '',
+    lines: ['UAE x Saudi Arabia sever', 'diplomatic relations in 2026?'],
+    titleW: 135,
+    fill: '100%',
+    pct: '95,70%',
+  },
+  {
+    mod: 'b',
+    vol: '$95.8K Vol',
+    ends: 'Ends in 3mo 17d',
+    avatar: petro,
+    alt: '',
+    lines: ['Will Gustavo Petro be charged in the US by...?'],
+    titleW: 143,
+    fill: '23.67%',
+    pct: '27%',
+  },
+];
 
 /**
  * Every glyph in this band is sized by `Familiar.css`, not by the file.
@@ -151,6 +198,28 @@ function MarketCard(props: {
   );
 }
 
+/**
+ * One floating prediction card. Everything it is sized and coloured by lives in
+ * `Familiar.css`; this only carries what differs between the two of them.
+ */
+function Prediction(props: (typeof PREDICTIONS)[number]) {
+  return (
+    <div className={`fam__pred fam__pred--${props.mod}`} aria-hidden="true">
+      <div className="fam__pred-meta"><span>{props.vol}</span><span>{props.ends}</span></div>
+      <div className="fam__pred-head">
+        <img src={props.avatar} alt={props.alt} />
+        <p style={{ maxWidth: `calc(${props.titleW} * var(--u))` }}>
+          {props.lines.map((line, i) => (
+            <span key={line}>{i > 0 ? <br /> : null}{line}</span>
+          ))}
+        </p>
+      </div>
+      <div className="fam__pred-bar"><i style={{ width: props.fill }} /><span>{props.pct}</span></div>
+      <div className="fam__pred-btns"><span className="is-yes">Yes</span><span className="is-no">No</span></div>
+    </div>
+  );
+}
+
 export function Familiar() {
   // The band has to climb a quarter of the screen before it opens — the default
   // gate — which is late enough that the sliver showing under the bento is not
@@ -200,18 +269,7 @@ export function Familiar() {
 
         <Phone />
 
-        <span className="fam__ghost fam__ghost--a" aria-hidden="true"><img src={ghost} alt="" /></span>
-        <span className="fam__ghost fam__ghost--b" aria-hidden="true"><img src={ghost} alt="" /></span>
-
-        <div className="fam__pred" aria-hidden="true">
-          <div className="fam__pred-meta"><span>$112.5K Vol</span><span>Ends in 3mo 17d</span></div>
-          <div className="fam__pred-head">
-            <img src={avatar} alt="" />
-            <p>UAE x Saudi Arabia sever diplomatic relations in 2026?</p>
-          </div>
-          <div className="fam__pred-bar"><i /><span>95,70%</span></div>
-          <div className="fam__pred-btns"><span className="is-yes">Yes</span><span className="is-no">No</span></div>
-        </div>
+        {PREDICTIONS.map((p) => <Prediction key={p.mod} {...p} />)}
       </div>
 
       <div className="fam__band" aria-hidden="true">

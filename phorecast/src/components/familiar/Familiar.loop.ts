@@ -22,9 +22,9 @@
  *   The feed switches to Ending Soon. The tab moves, the filter glints, and the
  *   two market cards trade places: the 5-minute BTC round climbs 242px over the
  *   French election, which will not resolve for seven months. With BTC at the
- *   top its ring advances 63% -> 66%, the blurred stack behind the copy lifts,
- *   the floating prediction card takes a trade, and a category is tapped in the
- *   filter row while the live dots at either end light.
+ *   top its ring advances 63% -> 66%, the two floating prediction cards each
+ *   take a trade, 0.25s apart, and a category is tapped in the filter row while
+ *   the live dots at either end light.
  *
  * III. BACK TO DEFAULT (7.9 – 9.9s)
  *   All events again, and the feed returns. Every frame of the rest window is
@@ -77,10 +77,15 @@ const palette = () => ({
      dark, and deliberately still identical in light. */
   appUp: tok('--fam-app-up', '#00c950'),
   appDown: tok('--fam-app-down', '#e7000b'),
-  /* The odds chips the re-sort lights, on the handset and on the floating
-     prediction card — the same two chips, the same app. */
+  /* The odds chips the re-sort lights, on the handset's leaderboard. */
   chipYesLit: tok('--fam-app-yes-lit', '#17482e'),
   chipNoLit: tok('--fam-app-no-lit', '#4a1f23'),
+  /* The same beat on the two floating prediction cards. Their plates rest at a
+     different colour from the handset's (#1a3a2c against #10281d — the file
+     draws the card and the phone differently), so the lit value is its own
+     token rather than the chip's; both are the same 1.49x step in relative
+     luminance, so the acknowledgement is the same size on both objects. */
+  predYesLit: tok('--fam-app-pred-yes-lit', '#21583c'),
   /* The ECB card's footer plate. Lit is LIGHTER than rest on a dark page and
      has to be DARKER than rest on paper; both are "the plate acknowledged it". */
   footLit: tok('--fam-foot-lit', '#242422'),
@@ -100,10 +105,6 @@ const palette = () => ({
   liftDot: tok('--fam-lift-dot', 'brightness(1.6)'),
   ringLit: tok('--fam-app-ring-lit', 'brightness(1.55)'),
   filterLit: tok('--fam-app-filter-lit', 'brightness(1.9)'),
-  /* How far the blurred stack lifts off its own resting opacity. A figure,
-     not a colour: on paper the stack rests far quieter, so the same +0.22
-     would be a third of its whole presence rather than a breath. */
-  ghostLift: Number.parseFloat(tok('--fam-ghost-lift', '0.22')) || 0.22,
 });
 
 /** A pulse that leaves nothing behind: out, then back to the value it started
@@ -166,9 +167,31 @@ export function familiarLoop(root: HTMLElement): () => void {
   const pills = qa('.fam__chips .fam__chip-pill');
   const dots = qa('.fam__chip-dot');
   const eyebrowDot = q('.fam__copy--left .eyebrow__dot');
-  const ghosts = qa('.fam__ghost');
-  const predPct = q('.fam__pred-bar span');
-  const predYes = q('.fam__pred-btns .is-yes');
+  /* THE TWO FLOATING PREDICTION CARDS, as a list rather than a pair of single
+     handles. There was one card here and two blurred bitmap stand-ins beside
+     it; the re-export replaced the lot with two real cards, and a `q()` that
+     takes the first match would have animated one of them and left its
+     neighbour sitting still — which is the specific way a beat half-covers new
+     markup and nobody notices. Everything below is per-card. */
+  const preds = qa('.fam__pred').map((card) => {
+    const label = card.querySelector<HTMLElement>('.fam__pred-bar span');
+    const text = label?.textContent ?? '';
+    // The two cards print their odds differently — "95,70%" and "27%" — and a
+    // tween that rounded both to two places would leave the second sitting at
+    // "27.00%" for the rest of the page's life. So each card keeps the
+    // separator and the number of decimals the design gave it, and the step is
+    // sized to be visible at that precision: 0.2 of a point where there are
+    // decimals to show it, a whole point where there are not.
+    const dp = /[.,](\d+)%?\s*$/.exec(text)?.[1].length ?? 0;
+    return {
+      label,
+      yes: card.querySelector<HTMLElement>('.fam__pred-btns .is-yes'),
+      from: num(text),
+      dp,
+      step: dp > 0 ? 0.2 : 1,
+      comma: text.includes(','),
+    };
+  });
 
   const rowPct = (i: number) => rows[i]?.querySelector<HTMLElement>('.fam__row-pct') ?? null;
   const rowName = (i: number) => rows[i]?.querySelector<HTMLElement>('.fam__row-name') ?? null;
@@ -199,7 +222,7 @@ export function familiarLoop(root: HTMLElement): () => void {
     if (started || stopped) return;
     started = true;
 
-    [nvdaValue, gauge, timer, predPct].forEach(hold);
+    [nvdaValue, gauge, timer, ...preds.map((p) => p.label)].forEach(hold);
     hold(nvdaPct);
     if (canSort) [1, 2].forEach((i) => { hold(rowName(i)); hold(rowPct(i)); });
 
@@ -216,22 +239,15 @@ export function familiarLoop(root: HTMLElement): () => void {
     const pillFg = css(pills[0] ?? null, 'color');
     const tabOnRest = css(tabAll, 'color');
     const tabOffRest = css(tabSoon, 'color');
-    const predYesRest = css(predYes, 'backgroundColor');
+    const predYesRest = preds.map((p) => css(p.yes, 'backgroundColor'));
     // Read from the document in the same breath, and for the same reason.
     const C = palette();
-    // The ghosts sit at 0.4 in CSS. If the entrance has stranded them at zero,
-    // lifting them would introduce artwork nobody has seen; leave them alone.
-    const ghostRest = ghosts.map((g) => Number.parseFloat(css(g, 'opacity')) || 0);
-    const liveGhosts = ghosts.filter((_, i) => ghostRest[i] > 0.05);
-
     // The two states each figure ping-pongs between, all read off the design so
     // the resting frame is whatever the component ships today.
     const price0 = num(nvdaValue?.textContent);
     const day0 = num(nvdaPct?.nodeValue);
     const gauge0 = num(gauge?.textContent);
-    const pred0 = num(predPct?.textContent);
     const priceDp = (nvdaValue?.textContent ?? '').includes('.') ? 2 : 0;
-    const predComma = (predPct?.textContent ?? '').includes(',');
 
     // Positions 1 and 2 of the leaderboard, as a model. The DOM keeps its own
     // order; only what the two rows say is exchanged, so nothing is reparented
@@ -253,8 +269,7 @@ export function familiarLoop(root: HTMLElement): () => void {
 
     ctx = gsap.context(() => {
       // Numeric starts for everything the loop brightens: GSAP cannot tween out
-      // of the keyword `none`. Never on the ghosts — their `filter` is the blur
-      // that makes them ghosts.
+      // of the keyword `none`.
       gsap.set([gauge, filterIcon, eyebrowDot, ...dots].filter(Boolean) as HTMLElement[], { filter: C.liftRest });
 
       const runCycle = () => {
@@ -400,27 +415,35 @@ export function familiarLoop(root: HTMLElement): () => void {
           pulse(tl, gauge, 4.9, { filter: C.ringLit }, { filter: C.liftRest }, 0.35, 0.95);
         }
 
-        /* The blurred stack behind the copy is context: it lifts with the
-           refresh and settles again, and it never travels. */
-        liveGhosts.forEach((g, i) => {
-          const rest = ghostRest[ghosts.indexOf(g)];
-          pulse(tl, g, 5.15 + i * 0.25, { opacity: Math.min(rest + C.ghostLift, 1) }, { opacity: rest }, 0.5, 1.1);
-        });
+        /* THE TWO FLOATING PREDICTION CARDS EACH TAKE A TRADE: the odds move
+           and the Yes plate acknowledges it, exactly the beat the single card
+           here has always played, now played twice.
 
-        /* The floating prediction card takes a trade. */
-        if (predPct && Number.isFinite(pred0)) {
-          const step = { v: down ? pred0 : pred0 + 0.2 };
-          tl.to(step, {
-            v: down ? pred0 + 0.2 : pred0, duration: 0.7, ease: 'sine.inOut',
-            onUpdate: () => {
-              const t = step.v.toFixed(2);
-              predPct.textContent = `${predComma ? t.replace('.', ',') : t}%`;
-            },
-          }, 5.45);
-        }
-        if (predYes && predYesRest) {
-          pulse(tl, predYes, 5.45, { backgroundColor: C.chipYesLit }, { backgroundColor: predYesRest }, 0.3, 0.9);
-        }
+           The first card keeps its old cue to the frame — 5.45, a 0.7s
+           `sine.inOut` on the figure, a 0.3s/0.9s pulse on the plate. The
+           second is 0.25s behind it, which is the stagger the pair of blurred
+           stand-ins that used to sit here played on, so the region's beats
+           still land across the same window they always did.
+
+           Each card's figure ping-pongs between its own two states, at its own
+           precision, and `down` alternates the direction per cycle — so after
+           two cycles both cards print the number in the Figma frame again. */
+        preds.forEach((p, i) => {
+          const at = 5.45 + i * 0.25;
+          if (p.label && Number.isFinite(p.from)) {
+            const step = { v: down ? p.from : p.from + p.step };
+            tl.to(step, {
+              v: down ? p.from + p.step : p.from, duration: 0.7, ease: 'sine.inOut',
+              onUpdate: () => {
+                const t = step.v.toFixed(p.dp);
+                p.label!.textContent = `${p.comma ? t.replace('.', ',') : t}%`;
+              },
+            }, at);
+          }
+          if (p.yes && predYesRest[i]) {
+            pulse(tl, p.yes, at, { backgroundColor: C.predYesLit }, { backgroundColor: predYesRest[i] }, 0.3, 0.9);
+          }
+        });
 
         /* A category is tapped, holds, and lets go, so the row at rest is the
            row in the design. */

@@ -23,6 +23,13 @@
  *         them.
  *   1.73  The six category pills, also outermost first, ending with the last
  *         pair of arcs.
+ *
+ *         Both of those counts are the wide band's. Below 900 the stylesheet
+ *         drops the diamonds outright and keeps three pills, and `shown()`
+ *         below takes them out of the timeline with it, so the sequence there
+ *         is eight beats of arcs, three pills, the copy and the tile — the
+ *         same shape and the same timings, with nothing tweening a box that is
+ *         not on the page.
  *   2.13  The heading, then the sub-line 0.12s behind it, resolving out of a
  *         14px blur.
  *   2.28  THE TILE IGNITES. It arrives on the last pair landing and flashes to
@@ -159,9 +166,11 @@ function drawArc(tl: Timeline, a: Arc, at: number) {
  * Outermost first: order by how far each element's middle sits from the band's,
  * furthest away leading.
  *
- * Read off live rects rather than the authored design coordinates, because at
- * the narrow breakpoint the two arc groups move and the pills do not — the
- * design x would put the stagger in the wrong order there.
+ * Read off live rects rather than the authored design coordinates, because
+ * below 900 the band is a different composition and not a scaled one: the arc
+ * groups are re-placed from the painted extent and the surviving pills leave
+ * their absolute coordinates for a centred row. The authored x would put the
+ * stagger in the wrong order there; a live rect is right at every width.
  */
 function fromEdges(el: HTMLElement, els: HTMLElement[]): HTMLElement[] {
   const box = el.getBoundingClientRect();
@@ -200,6 +209,24 @@ function fromEdges(el: HTMLElement, els: HTMLElement[]): HTMLElement[] {
  * want while working on the motion itself.
  */
 const LANDED = new WeakSet<HTMLElement>();
+
+/**
+ * Only the elements the stylesheet is actually rendering.
+ *
+ * Below 900 the band drops the twelve diamonds and three of the six pills with
+ * `display: none` — a mobile composition, not a rescale of the 1920 one. A
+ * tween aimed at a box that does not exist is dead motion: it costs a beat of
+ * the stagger, it holds a slot in `fromEdges`, and it reads as a pause in a
+ * sequence whose whole point is that it can be counted. Asking the layout
+ * rather than repeating the media query here means the two cannot drift: hide
+ * anything in `Fan.css` at any width and it leaves the entrance with it.
+ *
+ * `getClientRects()`, not `offsetParent` or a visibility read, because the
+ * band is `visibility: hidden` while `data-motion="pending"` — which is
+ * exactly when this runs. A `visibility: hidden` element still has boxes; a
+ * `display: none` one has none.
+ */
+const shown = (els: HTMLElement[]) => els.filter((e) => e.getClientRects().length > 0);
 
 export function buildFan({ el, q, tl }: SectionMotion) {
   // Already landed once and still on screen: settle, do not re-perform.
@@ -244,8 +271,8 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     });
   });
 
-  const diamonds = q('.fan__diamond');
-  const pills = q('.fan__pill');
+  const diamonds = shown(q('.fan__diamond'));
+  const pills = shown(q('.fan__pill'));
   const tile = q('.fan__tile')[0];
   const copy = q('.fan__title .fan__in, .fan__sub .fan__in');
 

@@ -71,11 +71,19 @@
   background: var(--page);
 }
 .fan__frame {
-  --f: calc(100cqw / 1920);
+  /* The design width this band is drawn in, and one design pixel at the
+     current width. They are one variable and one derivation rather than two
+     literals because `Fan.loop.ts` has to work in the SAME space -- it reads
+     `--fan-dw` off this element and divides the live box by it, so the front's
+     x, the pills' x and the sixteen arc tables are all in design px whatever
+     the breakpoint has done to the frame. Two copies of the number drifted
+     apart once already: see the narrow block. */
+  --fan-dw: 1920;
+  --f: calc(100cqw / var(--fan-dw));
   position: relative;
   container-type: inline-size;
   width: 100%;
-  aspect-ratio: 1920 / 675;
+  aspect-ratio: var(--fan-dw) / 675;
 }
 
 /* Arc groups ------------------------------------------------------------------ */
@@ -211,14 +219,175 @@
   color: var(--ink-2);
 }
 
+/* --- Narrow ------------------------------------------------------------------
+   Below 900 the band stops being a 1920-wide picture and becomes a column: the
+   fan converging on the vault, the markets it carries, then the claim. Three
+   things in that order, each with its own space, and nothing on top of
+   anything else.
+
+   WHAT ACTUALLY BROKE, and why the fix is one line rather than a dozen
+   offsets. `--f` is one design pixel. The block that used to be here set it to
+   `100cqw / 1000` -- a design width this artwork has never had. Each arc
+   window is 863 design px wide and the right one was placed at 560, so what
+   the band PAINTS ran from -120 to 1423: 1543 design px of picture measured in
+   a unit cut for 1000. Every absolute position in the section was therefore
+   about 1.5x too far from the middle. At 390 that put both fans half off the
+   screen, CRYPTO on top of the heading, SPORT on a line bundle and the
+   right-hand three pills past the right edge entirely -- not a positioning
+   bug per element, one unit that did not describe the thing it was measuring.
+
+   `.sl3__frame` makes the same move when the hero stops sitting side by side:
+   it drops `--u` from the column's 1800 to the artwork's own 964. Here the
+   painted extent is REBASED rather than measured, because it is ours to
+   choose: `--fan-dw` is the extent, the two windows are placed FROM it, and so
+   the picture is exactly as wide as the frame by construction at every width.
+   1440 puts the left tail on the left edge, the right tail on the right edge,
+   and carries the two inner tips 286 design px past each other in the middle,
+   so the fans genuinely cross and the vault sits on the crossing -- which is
+   the one thing this band has to say, and it says it better at 390 than the
+   1920 composition does, where they fade out short of each other.
+
+   AND WHAT STOPS SCALING. A design pixel at 390 is a quarter of a CSS pixel.
+   Anything that has to be READ -- the tile, the chips, the type -- comes off
+   real units here; only the arcs, which are abstract curve, still ride `--f`.
+   That is the other half of why the old block failed: it scaled a 14px label
+   to 3.4px and called it a breakpoint. */
 @media (max-width: 900px) {
-  .fan__frame { aspect-ratio: 1000 / 620; --f: calc(100cqw / 1000); }
-  .fan__arcs--left { left: calc(-120 * var(--f)); }
-  .fan__arcs--right { left: calc(560 * var(--f)); }
-  .fan__title { width: calc(880 * var(--f)); font-size: calc(40 * var(--f)); top: calc(330 * var(--f)); }
-  .fan__sub { width: calc(760 * var(--f)); font-size: calc(24 * var(--f)); top: calc(392 * var(--f)); }
-  .fan__tile { left: calc(450 * var(--f)); top: calc(200 * var(--f)); width: calc(100 * var(--f)); height: calc(100 * var(--f)); }
-  .fan__pill { font-size: calc(16 * var(--f)); }
+  .fan__frame {
+    --fan-dw: 1440;
+    /* Height is the content's now, not a slab cut to a fixed ratio. */
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding-bottom: clamp(28px, 8vw, 48px);
+  }
+
+  /* The artwork, as one block. `Fan.tsx` wraps the arcs, the diamonds and the
+     pills in an un-classed `<div aria-hidden>`; it is selected on that rather
+     than given a class of its own because the regression fingerprint records
+     every element's class attribute at 1600, and a rename there would move
+     desktop's record for a change that only ever happens below 900.
+
+     The two arc groups are absolute, so the band they occupy is reserved as
+     padding and the surviving pills flow underneath it in one centred row. */
+  .fan__frame > div:not([class]) {
+    grid-area: 1 / 1;
+    position: relative;
+    width: 100%;
+    padding: calc(675 * var(--f) + 8px) 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Both fans, placed from the extent so the picture cannot grow wider than
+     the frame again. The right group keeps its -4 design px of lift, which is
+     half of what makes the two halves mirror. */
+  .fan__arcs--right { left: calc((var(--fan-dw) - 863) * var(--f)); }
+
+  /* AND THE ONE THING THAT MUST NOT SCALE WITH THEM. Figma exports these lines
+     at stroke-width 1.35988 in a viewBox about 2187 units wide shown in
+     2126.9 * --f px, so the stroke is drawn at roughly 1.36 * --f * 0.97: 1.1
+     CSS px at 1600, and 0.29 px at 390. A third of a pixel is not a thin line,
+     it is a line the rasteriser spreads over one pixel at a third of its
+     alpha, which is why the fans read as grey haze in the collapse rather than
+     as fans. `non-scaling-stroke` takes the width out of the transform
+     entirely, so 1.05px is 1.05px at every width and the band keeps the weight
+     it has on a desktop. The twin is named separately because the loop writes
+     `stroke-width` on it inline sixteen times a frame and its resting value
+     has to stay proportionate to the line underneath. */
+  .fan__lines path { vector-effect: non-scaling-stroke; stroke-width: 1.05px; }
+  .fan__lines path.fan__spark { stroke-width: 2px; }
+
+  /* THE DIAMONDS GO. Six design px is 1.5 CSS px at 390. At that size they are
+     not accents, they are dust, and twelve of them scattered over a 390-wide
+     frame was most of what read as noise in the collapse. Dropped in CSS so
+     the removal reverses itself above 900 on its own; both motion modules skip
+     anything with no box, so this leaves nothing animating a hidden element. */
+  .fan__diamond { display: none; }
+
+  /* THREE MARKETS, NOT SIX. At a legible chip size six wrap into three rows of
+     tag cloud and stop reading as labels the fan is carrying in; three name
+     three genuinely different markets and still say "many". The three that go
+     are the last three spans in the artwork -- GEOPOLITICS, TECH, ELECTIONS --
+     and they are selected by position because the pills carry no per-label
+     class, for the same fingerprint reason as the wrapper above.
+     `nth-last-of-type` rather than `nth-of-type(n+16)`: it counts from the end
+     of the pills, so it does not depend on there being twelve diamonds. */
+  .fan__pill:nth-last-of-type(-n + 3) { display: none; }
+
+  /* What is left is a chip, at a chip's size. Everything here was `--f` and is
+     not any more. 11px uppercase mono on the chip measures 9.9:1 in dark and
+     7.7:1 on paper -- both well clear of AA at this size. */
+  .fan__pill {
+    position: static;
+    width: auto;
+    gap: 6px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+  .fan__pill > .icon, .fan__sport { width: 13px; height: 13px; }
+
+  /* THE VAULT, on the crossing. Laid into the same grid cell as the artwork
+     and pushed down to the arcs' own middle, so it sits where the two fans
+     meet rather than above the heading. It keeps `position: relative` -- the
+     frosted panel inside it is absolute and would otherwise escape to the
+     frame -- and it is sized in real pixels, because 100 design px is 24 of
+     them here. Everything inside is a fraction of that one size, so the
+     photograph, the glass and the mark stay in the proportions Figma drew. */
+  .fan__tile {
+    --fan-tile: clamp(58px, 17vw, 76px);
+    grid-area: 1 / 1;
+    position: relative;
+    left: auto;
+    top: auto;
+    justify-self: center;
+    align-self: start;
+    margin-top: calc(337.5 * var(--f) - var(--fan-tile) / 2);
+    width: var(--fan-tile);
+    height: var(--fan-tile);
+    border-radius: calc(var(--fan-tile) * 0.1786);
+  }
+  .fan__glass {
+    width: calc(var(--fan-tile) * 0.6512);
+    height: calc(var(--fan-tile) * 0.6512);
+    border-radius: calc(var(--fan-tile) * 0.1163);
+    backdrop-filter: blur(calc(var(--fan-tile) * 0.136));
+  }
+  .fan__glass img { width: calc(var(--fan-tile) * 0.37); height: calc(var(--fan-tile) * 0.40); }
+
+  /* THE CLAIM, in its own rows. Both blocks come out of their absolute corners
+     and off `translateX(-50%)` -- the grid centres them, which also takes the
+     transform out of GSAP's way rather than leaving it to be resolved to a
+     pixel value for the length of a tween. Nothing crosses them: the artwork
+     row ends above. */
+  .fan__title,
+  .fan__sub {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    justify-self: center;
+  }
+  .fan__title {
+    grid-area: 2 / 1;
+    width: min(100% - 32px, 21ch);
+    margin-top: clamp(18px, 5vw, 30px);
+    font-size: clamp(25px, 7.2vw, 34px);
+    line-height: 1.16;
+  }
+  .fan__sub {
+    grid-area: 3 / 1;
+    width: min(100% - 32px, 36ch);
+    margin-top: 10px;
+    font-size: clamp(14px, 4vw, 17px);
+    line-height: 1.45;
+  }
 }
 
 /* The copy's inner span. Both blocks are centred with `translateX(-50%)`, so

@@ -20,6 +20,13 @@
  *          them — each diamond and each pill fires at the frame the front's
  *          centre is at its x, solved back through the ease, not staggered by
  *          eye. The diamonds on the path flare; the pills change colour.
+ *
+ *          Below 900 the band keeps three pills and no diamonds at all, and
+ *          `shown()` takes the rest out of the pass with them. The three that
+ *          are left still span most of the width, so they still turn over one
+ *          after another as the front reaches each one; the pass is shorter by
+ *          the beats whose elements are not on the page, and nothing else
+ *          about it changes.
  *   ~2.5s  It crosses the tile. A bar of light runs across the mark's face in
  *          the direction of travel, the frosted panel behind it fills, the
  *          photograph under the glass lifts, and the hairline rim goes warm —
@@ -168,6 +175,22 @@ const HEAD_WEIGHT = 1.5;
 const SAMPLES = 220;
 
 const px = (n: number) => `${n}px`;
+/**
+ * Only the elements the stylesheet is actually rendering.
+ *
+ * Below 900 the band is a different composition rather than a scaled one: the
+ * twelve diamonds go and three of the six pills go with them, in CSS, so the
+ * removal reverses itself above the breakpoint on its own. A pass that still
+ * schedules them is scheduling beats nobody can see — and worse, a
+ * `display: none` element's rect is all zeros, so `cx()` would place every one
+ * of them at the left edge of the band and fire them together on the frame the
+ * front enters. Asking the layout rather than repeating the media query keeps
+ * the loop and the stylesheet in step by construction.
+ *
+ * `getClientRects()`, not a `visibility` read: the band is `visibility: hidden`
+ * until its entrance runs, and a hidden element still has boxes.
+ */
+const shown = (els: HTMLElement[]) => els.filter((e) => e.getClientRects().length > 0);
 /** 0..1 with both ends flat, for presence curves that must not have corners. */
 const smooth = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
 
@@ -217,8 +240,8 @@ export function fanLoop(root: HTMLElement): () => void {
      nothing else; the rest of the pass still crosses the band. */
   const frame = q('.fan__frame') ?? root;
   const groups = qa('.fan__arcs');
-  const pills = qa('.fan__pill');
-  const diamonds = qa('.fan__diamond');
+  const pills = shown(qa('.fan__pill'));
+  const diamonds = shown(qa('.fan__diamond'));
   const tile = q('.fan__tile');
   const tileArt = q('.fan__tile-bg');
   const glass = q('.fan__glass');
@@ -240,18 +263,35 @@ export function fanLoop(root: HTMLElement): () => void {
   const heard = () => open();
 
   /* --------------------------------------------------------------- the frame
-     Everything below is in design px — the 1920 x 675 screenshot space the
-     stylesheet's `--f` scales from, or 1000 x 620 under the breakpoint. Live
-     rects are divided back into it, so a pill's x is the same number at every
-     width and only a breakpoint crossing invalidates the timeline. */
+     Everything below is in design px — the 1920-wide screenshot space the
+     stylesheet's `--f` scales from, or the 1600-wide one it rebases to below
+     900, where the band is re-laid out as a column. Live rects are divided
+     back into it, so a pill's x is the same number at every width and only a
+     breakpoint crossing invalidates the timeline. */
   let DW = 1920;
   let f = 1;
   let box = frame.getBoundingClientRect();
+  /* The mark's face, in CSS px. Everything else here is resolution-independent
+     design px; the bar that crosses the tile cannot be, because below 900 the
+     tile stops being 100 design px and takes a real size instead — 100 design
+     px is 24 CSS px at 390, and a bar cut to it would be a quarter of the
+     width of the thing it is meant to cross. So the bar is a fraction of the
+     glass it lives inside. On desktop the glass IS 65.12 * f, so nothing about
+     the wide band moves. */
+  let face = 65.12;
 
   const measureFrame = () => {
     box = frame.getBoundingClientRect();
-    DW = matchMedia('(max-width: 900px)').matches ? 1000 : 1920;
+    /* Read, not branched on. `Fan.css` owns the design width — 1920 wide, and
+       1440 below 900 where the artwork is re-placed from its own painted
+       extent — and this file has to work in the same space or every baked time
+       in the timeline is wrong by the ratio between the two. It used to carry
+       its own copy of the number and its own copy of the media query, and the
+       copy was stale: the stylesheet said 1000 and the picture was 1543 wide.
+       One value, in one place, asked for here. */
+    DW = Number(getComputedStyle(frame).getPropertyValue('--fan-dw')) || 1920;
     f = box.width / DW || 1;
+    face = (glass?.getBoundingClientRect().width || 0) || 65.12 * f;
   };
   /** A client rect's centre, in design px relative to the frame. */
   const cx = (el: Element) => {
@@ -391,11 +431,14 @@ export function fanLoop(root: HTMLElement): () => void {
     bar = b;
   };
 
-  /** Overlay sizes are the only thing here that is not resolution-independent. */
+  /** Overlay sizes are the only thing here that is not resolution-independent.
+      Both are the Figma fractions of the 65.12-px glass rather than multiples
+      of `--f`, so they follow the tile at whichever size the breakpoint gave
+      it. At 1920 the two are the same number. */
   const sizeOverlays = () => {
     if (bar) {
-      bar.style.width = px(18 * f);
-      bar.style.filter = `blur(${px(2.5 * f)})`;
+      bar.style.width = px((18 / 65.12) * face);
+      bar.style.filter = `blur(${px((2.5 / 65.12) * face)})`;
     }
   };
 
@@ -624,8 +667,10 @@ export function fanLoop(root: HTMLElement): () => void {
             }, hit + 0.45);
         }
         if (bar) {
-          const x0 = (dir > 0 ? -26 : 92) * f;
-          const x1 = (dir > 0 ? 92 : -26) * f;
+          // -26 .. 92 across a 65.12-wide face: fully off one side to fully off
+          // the other, as fractions of the face for the same reason as above.
+          const x0 = ((dir > 0 ? -26 : 92) / 65.12) * face;
+          const x1 = ((dir > 0 ? 92 : -26) / 65.12) * face;
           tl.fromTo(bar, { x: x0, opacity: 0 },
             { opacity: 0.95, duration: 0.18, ease: 'none', immediateRender: false }, hit - 0.2)
             .to(bar, { x: x1, duration: 0.72, ease: 'power1.inOut' }, hit - 0.2)

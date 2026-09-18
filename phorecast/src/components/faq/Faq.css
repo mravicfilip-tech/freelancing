@@ -5,17 +5,23 @@
    answers, the row numbers and the plus/minus. They flip with the theme for
    free, and the FAQ does not get to have an opinion about them.
 
-   FAQ LOCALS (--faq-*) for the five values that are this band's own: the
-   closed row's ground, the open row's shadow, the chip's hairline, and the two
+   FAQ LOCALS (--faq-*) for the values that are this band's own: the closed
+   row's ground, the open row's shadow, the chip's hairline, and the two
    halves of the verify chip. They are declared here with today's dark values,
-   and the light block further down redefines exactly those names. Nothing else
-   in this file mentions a colour, so "what does the FAQ do in light?" is
-   answerable by reading one block.
+   and the light block further down redefines those names -- plus two the
+   light block alone needs, --faq-row-open and --faq-row-stroke, for the
+   client's white-cards-with-an-8%-stroke brief (light only; dark's states are
+   still exactly the five above). Nothing else in this file mentions a
+   colour, so "what does the FAQ do in light?" is answerable by reading one
+   block.
 
    The accordion's three states are made of these and nothing else:
 
-     closed row   --faq-row,  number and plus/minus --ink-2
-     open row     --panel + --faq-row-shadow,  number and minus --accent
+     closed row   --faq-row (+ --faq-row-stroke in light), number and
+                  plus/minus --ink-2
+     open row     --panel in dark / --faq-row-open in light, + --faq-row-shadow
+                  (dark only -- zeroed in light, see that block), number and
+                  minus --accent
      chips        --panel behind --faq-chip-line, or the verify pair
 
    None of which the entrance touches -- see Faq.motion.ts. */
@@ -62,11 +68,39 @@
 .faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {
   background: var(--faq-row);
+  /* Dark has no card edge: --faq-row-stroke is only ever declared inside the
+     light blocks below, so here the custom property is unset and this falls
+     back to `none` -- literally no border, not a zero-alpha one. A `none`
+     fallback keeps dark's box model untouched to the pixel; a 1px transparent
+     one would not, even invisibly, because box-sizing: border-box still takes
+     the width out of the content box. */
+  /* An inset ring, not a border. A border on an auto-height row adds its two
+     edges to the row's outer height -- `box-sizing: border-box` does not save
+     you when the height comes from the content -- so declaring it in light and
+     leaving dark at `none` made the band 977px tall in dark and 991px in light
+     at 1600. A theme must not change layout, and giving dark a transparent 1px
+     border to match would have moved dark instead, which is the one thing that
+     cannot move here.
+     `box-shadow: inset` paints the same hairline and takes no space at all, so
+     both themes keep the height they already had. It is a stroke, not a cast:
+     no offset, no blur, no spread. */
+  box-shadow: var(--faq-row-stroke, none);
   border-radius: 10px;
   overflow: hidden;
-  transition: background-color 220ms ease, box-shadow 220ms ease;
+  transition: background-color 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
-.faq__row.is-open { background: var(--panel); box-shadow: 0 12px 32px var(--faq-row-shadow); }
+/* The open row's own ground, same fallback trick: unset in dark, so it stays
+   --panel exactly as before; the light blocks point it at the same white as
+   the closed row, so the two states share one surface and only the stroke,
+   the shadow and the content tell them apart. */
+/* The open row states its own box-shadow, so it has to restate the ring or it
+   would be the one row in the band without an edge -- and it is the row most
+   likely to be looked at. The ring is listed first so it paints over the lift
+   rather than under it. The lift itself is pre-existing and untouched. */
+.faq__row.is-open {
+  background: var(--faq-row-open, var(--panel));
+  box-shadow: var(--faq-row-stroke, none), 0 12px 32px var(--faq-row-shadow);
+}
 .faq__q {
   display: flex; align-items: center; gap: 16px; width: 100%;
   padding: 24px 32px; text-align: left;
@@ -127,32 +161,43 @@
    There is no glow in this band and none is introduced. -------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .faq {
-  /* THE ROW LADDER INVERTS AND KEEPS ITS SPACING.
+  /* THE ROW LADDER, AS BUILT -- AND WHY THIS SECTION NO LONGER READS IT.
 
      In dark the ladder climbs away from the page: page #0f0e0d, closed row
-     #141312 at 1.04:1, open row --panel at 1.12:1. "Open" means "lit". On
-     paper nothing can be brighter than the page, so the same ladder runs the
-     other way -- down from #fffbf8 through #fcf6f1 to --panel #f7f0ea -- and
-     the open row is the DEEPEST tint rather than the palest. The step sizes
-     are kept, not the luminances: 1.04:1 against the page here against 1.04:1
-     in dark, so seven closed rows still read as one list and the open one is
-     still the only card in it.
+     #141312 at 1.04:1, open row --panel at 1.12:1. On paper the same ladder
+     used to run the other way -- down from #fffbf8 through a beige #fcf6f1
+     tint to --panel #f7f0ea -- with the open row as the deepest tint rather
+     than the palest.
 
-     --panel and --page do this half by themselves; only the closed row, which
-     sits between them, needs a value. */
-  --faq-row: #fcf6f1;
+     The client's brief for light supersedes that tint for these rows
+     specifically: white, both states, with an 8% black stroke as the only
+     separation from the page and from each other (see --faq-row-stroke,
+     below). So --faq-row no longer carries the ladder's #fcf6f1 -- it carries
+     the same white --faq-row-open uses, and the stroke does the job the tint
+     used to. A white closed row under a beige open one would read as a bug,
+     so both states share this one value; nothing else in the band still asks
+     the ladder a question. */
+  --faq-row: #ffffff;
 
-  /* THE SHADOW IS THE ONE VALUE THAT CANNOT BE TRANSLATED.
+  /* THE SHADOW IS DROPPED IN LIGHT, NOT TRANSLATED.
 
-     35% black over a near-black page is 1.03:1 -- in dark this shadow is
-     decoration on top of a tint that has already said everything. The same
-     declaration over paper is 2.2:1 at full density: the open row would stop
-     being a raised panel and start being a modal. So the alpha comes down to
-     a tenth and the colour becomes the page's own warm ink rather than pure
-     black, which lands at 1.23:1 at its densest -- a shade deeper than the
-     panel it is cast from, which is what a shadow is. The offset and the blur
-     are not here at all: they are on the rule, so they cannot move. */
-  --faq-row-shadow: rgba(26, 21, 18, 0.1);
+     Dark keeps its own cast: 35% black over a near-black page is 1.03:1 --
+     decoration on top of a tint that already says everything, see Faq.css's
+     header. That was already brought down to a tenth of the alpha once for
+     paper, landing at 1.23:1 against the ladder's beige panel -- soft, but a
+     real cast underneath a raised card.
+
+     This section's cards are white now (below) and the client's own framing
+     gives the 8% stroke the separation job, not a shadow: "a soft black
+     stroke around it" is the whole brief. A cast that was soft against beige
+     reads as a cast against white, and this page has had glow pulled three
+     times and a hover shadow pulled off the hero ticker cards earlier today
+     for reading as a heavy smudge on paper -- the standing reason not to
+     pair a new edge with one here. So the open row's elevation shadow is
+     zeroed for light; the token stays wired to the rule below it, in case
+     dark's box-shadow declaration ever needs a light counterpart again, but
+     it casts nothing. */
+  --faq-row-shadow: transparent;
 
   /* White-alpha becomes ink-alpha, which flips the direction for free: more
      alpha on a dark page is brighter, more on paper is darker, and both mean
@@ -180,36 +225,64 @@
      of the two. */
   --faq-verify-bg: rgba(162, 22, 5, 0.12);
   --faq-verify-line: rgba(162, 22, 5, 0.18);
+
+  /* THE OPEN ROW'S GROUND, AND THE STROKE THE CLIENT ASKED FOR.
+
+     --faq-row-open just points at the same white --faq-row carries above --
+     one surface for both states, so the pair stays coherent instead of a
+     white closed row sitting under a beige open one.
+
+     The stroke is its own token, `--faq-row-stroke`, and not `--veil-line`:
+     the page's existing hairline is a warm 14% near-black
+     (rgba(26, 21, 18, 0.14)) tuned for edges drawn on --panel; the client
+     asked for a neutral black at 8%, a different colour and a different
+     weight on purpose, so it gets its own name here rather than bending a
+     token five other sections share. It is the ONLY separation these cards
+     get in light -- see --faq-row-shadow just above, zeroed for the same
+     reason: the client gave the edge this job, not a cast. */
+  --faq-row-open: var(--faq-row);
+  --faq-row-stroke: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
   }
 }
 
 :root[data-theme='light'] .faq {
-  /* THE ROW LADDER INVERTS AND KEEPS ITS SPACING.
+  /* THE ROW LADDER, AS BUILT -- AND WHY THIS SECTION NO LONGER READS IT.
 
      In dark the ladder climbs away from the page: page #0f0e0d, closed row
-     #141312 at 1.04:1, open row --panel at 1.12:1. "Open" means "lit". On
-     paper nothing can be brighter than the page, so the same ladder runs the
-     other way -- down from #fffbf8 through #fcf6f1 to --panel #f7f0ea -- and
-     the open row is the DEEPEST tint rather than the palest. The step sizes
-     are kept, not the luminances: 1.04:1 against the page here against 1.04:1
-     in dark, so seven closed rows still read as one list and the open one is
-     still the only card in it.
+     #141312 at 1.04:1, open row --panel at 1.12:1. On paper the same ladder
+     used to run the other way -- down from #fffbf8 through a beige #fcf6f1
+     tint to --panel #f7f0ea -- with the open row as the deepest tint rather
+     than the palest.
 
-     --panel and --page do this half by themselves; only the closed row, which
-     sits between them, needs a value. */
-  --faq-row: #fcf6f1;
+     The client's brief for light supersedes that tint for these rows
+     specifically: white, both states, with an 8% black stroke as the only
+     separation from the page and from each other (see --faq-row-stroke,
+     below). So --faq-row no longer carries the ladder's #fcf6f1 -- it carries
+     the same white --faq-row-open uses, and the stroke does the job the tint
+     used to. A white closed row under a beige open one would read as a bug,
+     so both states share this one value; nothing else in the band still asks
+     the ladder a question. */
+  --faq-row: #ffffff;
 
-  /* THE SHADOW IS THE ONE VALUE THAT CANNOT BE TRANSLATED.
+  /* THE SHADOW IS DROPPED IN LIGHT, NOT TRANSLATED.
 
-     35% black over a near-black page is 1.03:1 -- in dark this shadow is
-     decoration on top of a tint that has already said everything. The same
-     declaration over paper is 2.2:1 at full density: the open row would stop
-     being a raised panel and start being a modal. So the alpha comes down to
-     a tenth and the colour becomes the page's own warm ink rather than pure
-     black, which lands at 1.23:1 at its densest -- a shade deeper than the
-     panel it is cast from, which is what a shadow is. The offset and the blur
-     are not here at all: they are on the rule, so they cannot move. */
-  --faq-row-shadow: rgba(26, 21, 18, 0.1);
+     Dark keeps its own cast: 35% black over a near-black page is 1.03:1 --
+     decoration on top of a tint that already says everything, see Faq.css's
+     header. That was already brought down to a tenth of the alpha once for
+     paper, landing at 1.23:1 against the ladder's beige panel -- soft, but a
+     real cast underneath a raised card.
+
+     This section's cards are white now (below) and the client's own framing
+     gives the 8% stroke the separation job, not a shadow: "a soft black
+     stroke around it" is the whole brief. A cast that was soft against beige
+     reads as a cast against white, and this page has had glow pulled three
+     times and a hover shadow pulled off the hero ticker cards earlier today
+     for reading as a heavy smudge on paper -- the standing reason not to
+     pair a new edge with one here. So the open row's elevation shadow is
+     zeroed for light; the token stays wired to the rule below it, in case
+     dark's box-shadow declaration ever needs a light counterpart again, but
+     it casts nothing. */
+  --faq-row-shadow: transparent;
 
   /* White-alpha becomes ink-alpha, which flips the direction for free: more
      alpha on a dark page is brighter, more on paper is darker, and both mean
@@ -237,6 +310,23 @@
      of the two. */
   --faq-verify-bg: rgba(162, 22, 5, 0.12);
   --faq-verify-line: rgba(162, 22, 5, 0.18);
+
+  /* THE OPEN ROW'S GROUND, AND THE STROKE THE CLIENT ASKED FOR.
+
+     --faq-row-open just points at the same white --faq-row carries above --
+     one surface for both states, so the pair stays coherent instead of a
+     white closed row sitting under a beige open one.
+
+     The stroke is its own token, `--faq-row-stroke`, and not `--veil-line`:
+     the page's existing hairline is a warm 14% near-black
+     (rgba(26, 21, 18, 0.14)) tuned for edges drawn on --panel; the client
+     asked for a neutral black at 8%, a different colour and a different
+     weight on purpose, so it gets its own name here rather than bending a
+     token five other sections share. It is the ONLY separation these cards
+     get in light -- see --faq-row-shadow just above, zeroed for the same
+     reason: the client gave the edge this job, not a cast. */
+  --faq-row-open: var(--faq-row);
+  --faq-row-stroke: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 1180px) {

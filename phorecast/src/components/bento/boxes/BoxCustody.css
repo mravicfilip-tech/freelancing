@@ -172,9 +172,21 @@
   color: var(--custody-ink);
   white-space: nowrap;
 }
-.custody__pill-icon {
-  color: var(--custody-glyph);
+/* fi_9716066 — one 16px slot, and the flex item the pill lays out. It used to
+   be a bare <Icon> at this box; it is a wrapper at the same box now, because
+   the phone's filled document arrives as two leaves and has to live somewhere.
+   The desktop leaf inside it is absolutely placed at 0, 0 at the same 16 x 16,
+   so nothing about the pill's layout or its painting moves. */
+.custody__doc {
+  position: relative;
   flex: none;
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
+}
+.custody__doc > * { position: absolute; display: block; color: var(--custody-glyph); }
+.custody__doc-line {
+  left: 0;
+  top: 0;
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
 }
@@ -202,6 +214,18 @@
   width: calc(2.313 * var(--u));
   height: calc(4.125 * var(--u));
 }
+
+/* The phone's solid set, parked ------------------------------------------- */
+/* Seven files the desktop frame never asks for. They ship in the markup so the
+   swap is a breakpoint rather than a second component, and they cost the
+   desktop nothing but a `display: none` -- no request is made for a mask image
+   on an element that is not laid out. The mobile block at the foot of this
+   file turns these on and the `--line` set off, together, once. */
+.custody__glyph--solid,
+.custody__doc-body,
+.custody__doc-fold,
+.custody__lock-solid,
+.custody__wallet-icon--solid { display: none; }
 
 /* Ellipse 35 — 8px dot inside a 22px glow, placed by the glow's own box. */
 .custody__node {
@@ -336,4 +360,173 @@
      additive raster that cannot be recoloured any other way -- and it is
      scoped to light, so the dark render never evaluates it. */
   filter: invert(1) hue-rotate(180deg);
+}
+
+/* --- Phone (Figma 526:305) --------------------------------------------------
+   The same diagram, turned a quarter-turn.
+
+   Figma 526:1588 places this identical 464 x 215 group at -90deg inside a
+   215 x 464 box and counter-rotates each label, chip, pill and the wallet so
+   the words stay level. Rotating the container in CSS and un-rotating eight
+   descendants would reproduce that, and would then put every tween in a frame
+   whose axes are not the screen's -- so instead the rotation is applied once,
+   on paper, and the result is written out as ordinary coordinates:
+
+       a point (x, y) of the landscape group  ->  (y, 464 - x) here
+
+   Every number in this block is that map applied to a Figma number, and the
+   map is worth keeping in view because it is also what `motion/funds.ts` runs
+   its packet path and its ring through. Three spot checks: the market ring at
+   (242, 0) becomes (0, 7); the wallet ring at (8, 61) becomes (61, 363); the
+   node on the orbit at (298, 104) becomes (104, 158). The labels and chips do
+   NOT follow the map -- the phone frame re-lays them out around the ring, and
+   each one's centre below is read from its own wrapper in 526:1588.
+
+   Two things the phone genuinely redraws rather than moves: the glyph set,
+   which is solid where the desktop is line art (see BoxCustody.tsx), and the
+   market tiles, which all four carry a border here where only Stocks did. */
+@media (max-width: 720px) {
+  .box-custody {
+    /* 334 design pixels, not 474. The phone frame is 394 wide with the same
+       30px padding, so its content column is 334, and the diagram is 215 of
+       those -- 54.6% of the card, whatever the card comes to. Capped at 1px
+       for the reason the desktop unit is capped: past roughly 465px of
+       viewport the card is wider than the frame was ever drawn, and the
+       artwork should stop growing rather than follow it up to 720. */
+    --u: min(1px, 100cqw / 334);
+  }
+
+  /* 526:1588 sits at a flat 145px from the card's top edge, which works in a
+     frame whose heading is known to be two lines. Ours is two at 390 and three
+     at 360, so the art becomes a flow item between the copy and the link
+     instead and the card takes its own height. The 20 above and the 10 below
+     are Figma's own gaps (heading block ends at 125, art 145..609, link 619). */
+  .box-custody .custody__art {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    flex: none;
+    width: calc(215 * var(--u));
+    height: calc(464 * var(--u));
+    margin: calc(20 * var(--u)) auto calc(10 * var(--u));
+  }
+
+  /* Circles ---------------------------------------------------------------
+     The two rings are circles, so the quarter-turn only moves them. The glow
+     is the one raster and it is 215 x 118 of dotted ellipse and warm bloom:
+     it has to TURN, not just move. Left at its own box and rotated about its
+     centre, which the map puts at (108, 269.5) -- hence a 215-wide box parked
+     at 0.5, 210.5. `filter` in the light block below is a separate property
+     and composes with this. */
+  .custody__glow {
+    left: calc(0.5 * var(--u));
+    top: calc(210.5 * var(--u));
+    transform: rotate(-90deg);
+  }
+  .custody__ring-market { left: 0; top: calc(7 * var(--u)); }
+  .custody__ring-wallet { left: calc(61 * var(--u)); top: calc(363 * var(--u)); }
+
+  /* Wallet: concentric with the ring at (107.5, 409.5), which is where the map
+     puts the landscape wallet's own centre. Figma's mobile frame states the
+     same stack a pixel off that (a 38px wrapper around a 37px disc); being
+     concentric with the ring the loop closes matters more than the pixel. */
+  .custody__wallet-disc { left: calc(89 * var(--u)); top: calc(391 * var(--u)); }
+  .custody__wallet-icon--solid {
+    left: calc(99.5 * var(--u));
+    top: calc(401.5 * var(--u));
+    width: calc(16 * var(--u));
+    height: calc(16 * var(--u));
+  }
+
+  /* Ellipse 35 — both nodes, by the 22px glow box the dot sits inside. */
+  .custody__node--wallet { left: calc(60 * var(--u)); top: calc(427 * var(--u)); }
+  .custody__node--orbit  { left: calc(97 * var(--u)); top: calc(151 * var(--u)); }
+
+  /* Markets ---------------------------------------------------------------
+     Four horizontal pairs, each centred on its wrapper in 526:1588: Stocks
+     (33, 150) and Crypto (36, 77) read tile-then-label, Commodities
+     (146.5, 39) and Forex (187.5, 123) read label-then-tile, with Figma's own
+     9, 9, 11 and 9 pixel gaps. Tiles are placed at centre minus 18, labels at
+     centre minus 8 -- a 12px line box is 16 tall here as it is in the frame.
+     Forex's tile ends 10 past the art box on purpose; the frame hangs it off
+     the edge too, and the card has the room. */
+  .box-custody .custody__tile {
+    /* All four, where the desktop borders Stocks alone. */
+    border: calc(1 * var(--u)) solid var(--custody-chip-line);
+  }
+  .custody__tile--stocks      { left: calc(-8 * var(--u));  top: calc(132 * var(--u)); }
+  .custody__tile--crypto      { left: calc(-5 * var(--u));  top: calc(59 * var(--u)); }
+  .custody__tile--commodities { left: calc(170 * var(--u)); top: calc(21 * var(--u)); }
+  .custody__tile--forex       { left: calc(189 * var(--u)); top: calc(105 * var(--u)); }
+
+  .custody__label--stocks      { left: calc(37 * var(--u));  top: calc(142 * var(--u)); }
+  .custody__label--crypto      { left: calc(40 * var(--u));  top: calc(69 * var(--u)); }
+  .custody__label--commodities { left: calc(87 * var(--u));  top: calc(31 * var(--u)); }
+  .custody__label--forex       { left: calc(150 * var(--u)); top: calc(115 * var(--u)); }
+  .custody__label--wallet      { left: calc(95 * var(--u));  top: calc(429 * var(--u)); }
+
+  /* Chips — 135 and 143 are the frame's own widths, stroke included, which is
+     what border-box asks for. Smart Contracts hangs 17.5 off the left the way
+     Forex's tile hangs off the right. */
+  .custody__pill--contract {
+    left: calc(-17.5 * var(--u));
+    top: calc(245.5 * var(--u));
+    width: calc(135 * var(--u));
+  }
+  .custody__pill--withdraw {
+    left: calc(95 * var(--u));
+    top: calc(295 * var(--u));
+    width: calc(143 * var(--u));
+  }
+
+  /* The glyph swap, in one place ------------------------------------------ */
+  .custody__glyph--line,
+  .custody__doc-line,
+  .custody__lock-body,
+  .custody__lock-hole,
+  .custody__wallet-icon--line { display: none; }
+
+  .custody__glyph--solid,
+  .custody__doc-body,
+  .custody__doc-fold,
+  .custody__lock-solid,
+  .custody__wallet-icon--solid { display: block; }
+
+  /* Each solid leaf at its own inset inside the 16px slot, exactly as the four
+     line glyphs are placed above. Only the two that are not a full 16 need
+     saying; the others inherit the slot. */
+  /* fi_9155737 — inset 5.21% of the slot. */
+  .custody__glyph--solid-stocks {
+    left: calc(10.834 * var(--u));
+    top: calc(10.834 * var(--u));
+    width: calc(14.333 * var(--u));
+    height: calc(14.333 * var(--u));
+  }
+  /* fi_12468105 — inset 1.71% top and bottom, full width. */
+  .custody__glyph--solid-commodities {
+    top: calc(10.274 * var(--u));
+    height: calc(15.453 * var(--u));
+  }
+  /* fi_9716066 — the body at inset 7.14% 15.46%, the folded corner at
+     inset 10.71% 19.04% 74.75% 66.39%. */
+  .custody__doc-body {
+    left: calc(2.474 * var(--u));
+    top: calc(1.142 * var(--u));
+    width: calc(11.051 * var(--u));
+    height: calc(13.714 * var(--u));
+  }
+  .custody__doc-fold {
+    left: calc(10.622 * var(--u));
+    top: calc(1.714 * var(--u));
+    width: calc(2.331 * var(--u));
+    height: calc(2.326 * var(--u));
+  }
+  /* fi_17508481 — one piece, the whole slot. */
+  .custody__lock-solid {
+    left: 0;
+    top: 0;
+    width: calc(16 * var(--u));
+    height: calc(16 * var(--u));
+  }
 }

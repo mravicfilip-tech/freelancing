@@ -26,6 +26,17 @@
  * Distances are written as percentages of each element's own box, never pixels,
  * so one build of the timeline is correct at every breakpoint — see `pct` in
  * shared.ts.
+ *
+ * ON THE PHONE it is the same seven beats at the same seven times, because the
+ * phone's card is the same diagram turned a quarter-turn (Figma 526:305). The
+ * two things a quarter-turn moves are directions and paths, and both are
+ * re-derived rather than reused: a market tile hands its value on DOWNWARD
+ * instead of leftward, a contract chip answers LEFTWARD instead of upward —
+ * still the perpendicular of the packet's travel, which is what that step
+ * means — and the packet's curve, the wallet ring's radius and the angle it
+ * closes from are each mapped through the one rotation the layout applies. The
+ * numbers are in `LANDSCAPE` and `PORTRAIT` below with the map beside them.
+ * The orientation is measured off the artwork's own box, not a media query.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -34,7 +45,10 @@ import { bandStaged, onSectionReady, pct, pulse, q1, qa, unitOf, whileVisible } 
 
 const NS = 'http://www.w3.org/2000/svg';
 
-/* The 464 x 215 diagram, in its own design pixels.
+/* The diagram, in its own design pixels, at both of the orientations
+   BoxCustody.css lays it out in.
+   ---------------------------------------------------------------------------
+   LANDSCAPE (464 x 215, Figma 365:936)
    Wallet ring: Ellipse 56 of ring-wallet.svg is r 46 about (46.5, 46.5) in a 93
    box BoxCustody.css parks at (8, 61) — so (54.5, 107.5) here.
    Node A's dot centre is (26, 71), which is 232 degrees round that circle the
@@ -43,12 +57,44 @@ const NS = 'http://www.w3.org/2000/svg';
    Node B's dot centre is (302, 108), on the right extreme of the dotted orbit.
    The corridor between the two chips — "Smart Contracts" ends at y 67, "Withdraw
    anytime" begins at y 144 — is clear, so the packet's curve is drawn to stay
-   inside y 96..120 the whole way across. */
+   inside y 96..120 the whole way across.
+
+   PORTRAIT (215 x 464, Figma 526:305)
+   The phone draws that same group at -90deg, so every number above is re-derived
+   through the one map BoxCustody.css states: (x, y) -> (y, 464 - x). Nothing
+   here is reused blind and nothing is re-measured by hand — the wallet centre
+   (54.5, 107.5) becomes (107.5, 409.5), the start angle loses the same quarter
+   turn the frame did (232 - 90 = 142), and each of the packet path's four
+   points is mapped in place, which is why the two `d` strings are the same
+   curve twice.
+
+   What does NOT survive the map is the corridor. The phone re-lays the two
+   pills out around the ring rather than rotating them, and on screen they end
+   up stacked ACROSS the packet's new line of travel — Smart Contracts at
+   y 245..282 reaching to x 117, Withdraw at y 295..332 from x 95 — with no
+   gap to thread. The packet therefore crosses them instead of dodging, painted
+   over the top: the overlay is inserted before the wallet disc, which is after
+   both pills in the markup. The two chips still answer under it on the same
+   beats, which is what carries "through the contracts" either way. */
+type Geometry = {
+  w: number; h: number;
+  wx: number; wy: number;
+  nodeA: number;
+  packet: string;
+};
 const WALLET_R = 46;
-const WALLET_CX = 54.5;
-const WALLET_CY = 107.5;
-const NODE_A_DEG = 232;
-const PACKET_D = 'M302 108 C 248 84 132 132 78 107.5';
+const LANDSCAPE: Geometry = {
+  w: 464, h: 215,
+  wx: 54.5, wy: 107.5,
+  nodeA: 232,
+  packet: 'M302 108 C 248 84 132 132 78 107.5',
+};
+const PORTRAIT: Geometry = {
+  w: 215, h: 464,
+  wx: 107.5, wy: 409.5,
+  nodeA: 142,
+  packet: 'M108 162 C 84 216 132 332 107.5 386',
+};
 
 export function funds(card: HTMLElement): () => void {
   if (REDUCED) return () => {};
@@ -75,38 +121,53 @@ export function funds(card: HTMLElement): () => void {
 
   const art = q1(card, '.custody__art');
   const disc = q1(card, '.custody__wallet-disc');
-  const icon = q1(card, '.custody__wallet-icon');
+  /* Both wallet glyphs: the desktop's outlined one and the phone's solid one
+     ship together and the breakpoint hides one of them (BoxCustody.tsx). The
+     hidden one is `display: none`, so a tween on it writes a style nobody
+     paints — which is exactly right, and much better than a selector that
+     picks the wrong one and leaves the visible glyph out of the load-in. */
+  const icons = qa(card, '.custody__wallet-icon');
   const walletLabel = q1(card, '.custody__label--wallet');
   const tiles = qa(card, '.custody__tile');
   const labels = qa(card, '.custody__label:not(.custody__label--wallet)');
   const chips = qa(card, '.custody__pill');
   const nodes = qa(card, '.custody__node');
-  if (!art || !disc || !icon || !walletLabel || tiles.length < 4 || chips.length < 2 || nodes.length < 2) {
+  if (!art || !disc || !icons.length || !walletLabel || tiles.length < 4 || chips.length < 2 || nodes.length < 2) {
     return () => {};
   }
+
+  /* Which way up is the card? Measured rather than matched against a media
+     query, because the geometry is the thing that has to agree and the box is
+     the geometry: the landscape group is 464 x 215 and the portrait one is
+     215 x 464, so a card taller than it is wide is the phone. A card that has
+     not been laid out reads 0 x 0 and falls to landscape, which is the
+     orientation whose start state is already on the page. */
+  const box = art.getBoundingClientRect();
+  const portrait = box.height > box.width;
+  const G = portrait ? PORTRAIT : LANDSCAPE;
 
   /* One overlay for both added layers. Neither exists in the resting design —
      they are the beat — so they are built here rather than shipped in the
      markup, sized in the card's own `--u`, which a descendant resolves normally
      even though the card that declares it cannot read it back. */
   const svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('viewBox', '0 0 464 215');
+  svg.setAttribute('viewBox', `0 0 ${G.w} ${G.h}`);
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('fill', 'none');
-  svg.style.cssText = 'left:0;top:0;width:calc(464 * var(--u));height:calc(215 * var(--u));'
+  svg.style.cssText = `left:0;top:0;width:calc(${G.w} * var(--u));height:calc(${G.h} * var(--u));`
     + 'overflow:visible;pointer-events:none';
 
   const ring = document.createElementNS(NS, 'circle');
-  ring.setAttribute('cx', String(WALLET_CX));
-  ring.setAttribute('cy', String(WALLET_CY));
+  ring.setAttribute('cx', String(G.wx));
+  ring.setAttribute('cy', String(G.wy));
   ring.setAttribute('r', String(WALLET_R));
   ring.setAttribute('stroke', C.ring);
   ring.setAttribute('stroke-width', '2');
   ring.setAttribute('stroke-linecap', 'round');
-  ring.setAttribute('transform', `rotate(${NODE_A_DEG} ${WALLET_CX} ${WALLET_CY})`);
+  ring.setAttribute('transform', `rotate(${G.nodeA} ${G.wx} ${G.wy})`);
 
   const wire = document.createElementNS(NS, 'path');
-  wire.setAttribute('d', PACKET_D);
+  wire.setAttribute('d', G.packet);
   wire.setAttribute('stroke', C.wire);
   wire.setAttribute('stroke-width', '1.6');
   wire.setAttribute('stroke-linecap', 'round');
@@ -122,21 +183,39 @@ export function funds(card: HTMLElement): () => void {
   const WIRE_LEN = wire.getTotalLength();
   const TRAIL = 46;
 
-  const u = unitOf(art, 464);
+  const u = unitOf(art, G.w);
+
+  /* The two directions every beat below is written in, once, in whichever axis
+     points that way at this orientation. `toward` is the step a market tile
+     takes handing its value on -- toward the wallet, which is to the LEFT along
+     the landscape group and, after the quarter turn, DOWN the phone. `aside` is
+     the step a contract chip takes to answer, which is the perpendicular of the
+     packet's travel in both cases: up on the desktop, left on the phone. Eleven
+     design pixels either way, as a percentage of the element's own box, so the
+     tween survives a resize (see `pct` in shared.ts). */
+  const toward = (el: HTMLElement) => (portrait
+    ? { yPercent: pct(el, 11, u) }
+    : { xPercent: pct(el, -11, u, 'x') });
+  const TOWARD_BACK = portrait ? { yPercent: 0 } : { xPercent: 0 };
+  const aside = (el: HTMLElement) => (portrait
+    ? { xPercent: pct(el, -11, u, 'x') }
+    : { yPercent: pct(el, -11, u) });
+  const ASIDE_BACK = portrait ? { xPercent: 0 } : { yPercent: 0 };
+
   const staged = bandStaged(card);
   let stopReady: () => void = () => {};
   let stopVisible: () => void = () => {};
 
   const ctx = gsap.context(() => {
     /* -------------------------------------------------------- start state */
-    gsap.set([disc, icon, ...nodes], { transformOrigin: '50% 50%' });
+    gsap.set([disc, ...icons, ...nodes], { transformOrigin: '50% 50%' });
     gsap.set(tiles, { filter: 'brightness(1)', transformOrigin: '50% 50%' });
     gsap.set(ring, { strokeDasharray: CIRC, strokeDashoffset: CIRC, opacity: 0 });
     gsap.set(wire, { strokeDasharray: `${TRAIL} ${WIRE_LEN}`, strokeDashoffset: TRAIL, opacity: 0 });
     gsap.set(head, { opacity: 0 });
     if (staged) {
-      gsap.set([disc, icon, walletLabel, ...chips, ...tiles, ...labels], { opacity: 0 });
-      gsap.set([disc, icon], { scale: 0.9 });
+      gsap.set([disc, ...icons, walletLabel, ...chips, ...tiles, ...labels], { opacity: 0 });
+      gsap.set([disc, ...icons], { scale: 0.9 });
       gsap.set([walletLabel, ...chips, ...tiles, ...labels], { y: 9 });
       gsap.set(nodes, { opacity: 0, scale: 0.55 });
     }
@@ -157,18 +236,17 @@ export function funds(card: HTMLElement): () => void {
         // One filter FUNCTION either side, so GSAP interpolates the list
         // structurally instead of swapping it. In light `--bento-fd-tile-lit`
         // is brightness(0.78): a chip that has settled, not one gone white.
-        { xPercent: pct(tile, -11, u, 'x'), scale: 1.16, filter: C.tileLit },
-        { xPercent: 0, scale: 1, filter: 'brightness(1)' }, 0.36, 0.72, 'transform');
+        { ...toward(tile), scale: 1.16, filter: C.tileLit },
+        { ...TOWARD_BACK, scale: 1, filter: 'brightness(1)' }, 0.36, 0.72, 'transform');
       if (label) {
-        pulse(loop, label, at,
-          { xPercent: pct(label, -11, u, 'x') }, { xPercent: 0 }, 0.36, 0.72, 'transform');
+        pulse(loop, label, at, toward(label), TOWARD_BACK, 0.36, 0.72, 'transform');
       }
     });
 
     // 2 — the contract chip answers
     pulse(loop, chips[0], 0.9,
-      { yPercent: pct(chips[0], -11, u), scale: 1.05, borderColor: C.chipLit },
-      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
+      { ...aside(chips[0]), scale: 1.05, borderColor: C.chipLit },
+      { ...ASIDE_BACK, scale: 1, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 3 — the node on the orbit flares and lets the packet go
     pulse(loop, nodes[1], 1.3, { scale: 2 }, { scale: 1 }, 0.3, 0.7, 'transform');
@@ -190,8 +268,8 @@ export function funds(card: HTMLElement): () => void {
 
     // 5 — the withdrawal, under the travelling packet
     pulse(loop, chips[1], 2.35,
-      { yPercent: pct(chips[1], -11, u), scale: 1.05, borderColor: C.chipLit },
-      { yPercent: 0, scale: 1, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
+      { ...aside(chips[1]), scale: 1.05, borderColor: C.chipLit },
+      { ...ASIDE_BACK, scale: 1, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.42, 0.8, 'transform,borderColor');
 
     // 6 — it lands: the node on the wallet ring, the ring closing, the disc
     pulse(loop, nodes[0], 3.35, { scale: 2 }, { scale: 1 }, 0.3, 0.7, 'transform');
@@ -213,7 +291,7 @@ export function funds(card: HTMLElement): () => void {
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to([disc, icon], { opacity: 1, scale: 1, duration: 0.95, ease: 'expo.out' }, 0)
+      .to([disc, ...icons], { opacity: 1, scale: 1, duration: 0.95, ease: 'expo.out' }, 0)
       .to(walletLabel, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, 0.12)
       .to(chips, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', stagger: 0.14 }, 0.45)
       .to(assets, { opacity: 1, y: 0, duration: 0.65, ease: 'expo.out', stagger: 0.05 }, 0.72)

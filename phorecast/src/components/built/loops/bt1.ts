@@ -18,11 +18,11 @@
  *          then round the market — and everything in the card answers to it.
  *          A short head is painted ON the line with `stroke-dashoffset`, and
  *          the design's own warm smear rides with it as its soft tail.
- *   1.70s  It reaches the west point of the lit ring, exactly where the line
- *          ends. The smear is absorbed; the coin answers.
+ *   1.70s  It reaches the lit ring at exactly the point the line ends on. The
+ *          smear is absorbed; the coin answers.
  *   1.70s  The wrap. The same light splits and runs both ways round the ring —
- *          two half arcs filling from west — and meets on the far side at
- *          2.65s. The market is connected.
+ *          two half arcs filling from the point it arrived at — and meets on
+ *          the far side at 2.65s. The market is connected.
  *   2.65s  "One market to start." warms as the ring closes.
  *   2.70s  The closed ring lets go: its radius grows from the lit ring's 34.5
  *          out through the mid ring's 49.4 to the outer ring's 66.9, and each
@@ -47,6 +47,30 @@
  * The wrap and the wave are the SAME two paths. Their `d` is rewritten from
  * `w.r` every frame, so the ring that closes is the ring that then expands;
  * there is no handoff between a closing element and a rippling one to line up.
+ *
+ * TWO ORIENTATIONS, ONE BEAT
+ * --------------------------
+ * Below 700px Built.css re-lays this card into a portrait frame: "You" sits
+ * above its market rather than beside it, the line stands up, and the light
+ * therefore arrives at the ring's NORTH point rather than its west one. Three
+ * numbers used to assume the landscape frame and each has been re-derived
+ * rather than special-cased:
+ *
+ *   the overlay's viewBox   was the literal `0 0 299 135`. It is now `--bt1-w`
+ *                           from the stylesheet and a height taken from the
+ *                           live aspect ratio, so the coordinate system this
+ *                           file works in is whatever box it was handed.
+ *   the route               was "the line's left edge, along x, to CX - R". It
+ *                           is now the line's starting end, along whichever
+ *                           axis the line's own rect says it runs, to the point
+ *                           (CX + R*EX, CY + R*EY) where it meets the ring.
+ *   the head and its trail  were 30 and 20 design px, which is a third of the
+ *                           portrait line. They are fractions of the measured
+ *                           run, equal to the old numbers at 1600.
+ *
+ * `DOWN` is a measurement, not a breakpoint: the stylesheet turns the line a
+ * quarter turn and a rotated element's client rect is the rotated one, so the
+ * question "which way does this line run" is answered by the line.
  *
  * THE TRAP IN `.bt1__ring-disc`
  * -----------------------------
@@ -98,10 +122,17 @@ const WAVE_EASE = 'power2.out';
 const T_BACK = 3.3;   /* the line re-lights at the dot, behind the wave */
 const T_TIDY = 3.95;  /* and is handed back to the stylesheet */
 
-/** Length of the lit head riding the line, in design px. */
-const HEAD = 30;
-/** How far the smear's centre trails the head's tip, in design px. */
-const TRAIL = 20;
+/** The lit head, and its soft tail, AS FRACTIONS OF THE RUN THEY RIDE.
+ *
+ *  They were 30 and 20 design px, which is right for exactly one line: the
+ *  173.5px one in the landscape frame. The portrait frame's line is 96 long, so
+ *  a 30px head would be a third of it and a 20px trail would put the smear's
+ *  centre outside the line it is supposed to be lying on. 0.17291 and 0.11527
+ *  are 30/173.5 and 20/173.5 — the same head and the same trail at 1600, to
+ *  three decimals, and a head and a trail that mean the same thing anywhere
+ *  else. Both are resolved against the measured path length in `start()`. */
+const HEAD_F = 30 / 173.5;
+const TRAIL_F = 20 / 173.5;
 
 /** The lit stroke, and the DARK FALLBACK for --bt-lit.
  *
@@ -213,9 +244,17 @@ export function bt1Loop(root: HTMLElement): () => void {
   let wire: SVGPathElement | null = null;
   const arcs: SVGPathElement[] = [];
 
-  /** Geometry, in the design px of the 299 x 135 `.bt1` box. Measured off live
-   *  rects, because the card is laid out in container units and a pixel read is
-   *  the only honest source of truth at any breakpoint. */
+  /** Geometry, in the design px of the `.bt1` box. Measured off live rects,
+   *  because the card is laid out in container units and a pixel read is the
+   *  only honest source of truth at any breakpoint.
+   *
+   *  DW is that box's own design width, read from `--bt1-w`: 299 in the
+   *  landscape frame, where `.bt1` is a sub-box of the card, and 320 in the
+   *  portrait one, where it IS the card. DH is derived from the live aspect
+   *  ratio rather than stated, so the overlay cannot be stretched by a frame
+   *  that is no longer 299 x 135. */
+  let DW = 299;
+  let DH = 135;
   let CX = 231.5;
   let CY = 67.5;
   let DISC_R = 34.5;
@@ -225,13 +264,29 @@ export function bt1Loop(root: HTMLElement): () => void {
   let LEAD = 57.5;   /* where along it the light starts */
   let TRAVEL = 116;  /* how far along it the light goes */
   let ARC0 = Math.PI * 34.5;
+  let HEAD = 30;     /* resolved from HEAD_F once LEN is known */
+  let TRAIL = 20;
+
+  /** WHICH WAY THE LIGHT RUNS, and it is the only thing about this beat that
+   *  the layout decides. `DOWN` is true when the line stands up — the portrait
+   *  frame, where "You" is above its market rather than beside it. Everything
+   *  below is written once and reads these two numbers: (EX, EY) is the unit
+   *  vector from the ring's centre to the point the light ARRIVES at, which is
+   *  the ring's west point when the line runs across and its north point when
+   *  the line runs down. */
+  let DOWN = false;
+  let EX = -1;
+  let EY = 0;
 
   const w = { s: 0, r: 34.5 };
 
+  /** Half the ring, from the point the light arrives at to the point opposite.
+   *  Two of these, sweeping opposite ways, are the wrap; the same two with a
+   *  growing radius are the wave. */
   const arcD = (rad: number, up: boolean) =>
-    `M${(CX - rad).toFixed(3)} ${CY.toFixed(3)}`
+    `M${(CX + rad * EX).toFixed(3)} ${(CY + rad * EY).toFixed(3)}`
     + ` A${rad.toFixed(3)} ${rad.toFixed(3)} 0 0 ${up ? 1 : 0}`
-    + ` ${(CX + rad).toFixed(3)} ${CY.toFixed(3)}`;
+    + ` ${(CX - rad * EX).toFixed(3)} ${(CY - rad * EY).toFixed(3)}`;
 
   /** The only thing that writes the overlay. */
   const paint = () => {
@@ -269,7 +324,9 @@ export function bt1Loop(root: HTMLElement): () => void {
 
   const measure = () => {
     const B = bt1.getBoundingClientRect();
-    const u = B.width / 299 || 1;
+    DW = Number(getComputedStyle(bt1).getPropertyValue('--bt1-w')) || 299;
+    DH = B.width > 0 ? (DW * B.height) / B.width : 135;
+    const u = B.width / DW || 1;
     const X = (v: number) => (v - B.left) / u;
     const Y = (v: number) => (v - B.top) / u;
     const box = (el: Element) => el.getBoundingClientRect();
@@ -282,18 +339,35 @@ export function bt1Loop(root: HTMLElement): () => void {
     OUT_R = outer ? (box(outer).width / u) * OUTER_RF : 66.875;
     ARC0 = Math.PI * DISC_R;
 
+    // The line's OWN box says which way it runs. In the portrait frame the
+    // stylesheet turns it a quarter turn, and a rotated element's client rect
+    // is the rotated one, so this is a measurement rather than a breakpoint
+    // test -- and it is taken every time the loop is built.
     const l = box(line);
-    const lx0 = X(l.left);
-    const ly = Y(l.top + l.height / 2);
-    // The line's own y and the ring's centre y are one design px apart, so the
-    // wire is drawn as the shallow ramp between them: it sits on the line for
-    // its whole length and still meets the ring's west point exactly.
-    const xEnd = CX - DISC_R;
-    // Where the light starts: the right-hand edge of the smear the design
-    // already has lit on the line, so it emerges from it rather than beside it.
-    const x0 = smear ? X(box(smear).right) : lx0 + 57.5;
+    DOWN = l.height > l.width;
+    EX = DOWN ? 0 : -1;
+    EY = DOWN ? -1 : 0;
 
-    return { lx0, ly, xEnd, x0, u, smearBox: smear ? box(smear) : null };
+    // The route: from the line's starting end, along the line, to the point on
+    // the lit ring the line runs into. The line's own cross-axis and the ring's
+    // centre are about one design px apart, so the wire is drawn as the shallow
+    // ramp between them -- it sits on the line for its whole length and still
+    // meets the ring exactly.
+    const p0 = DOWN
+      ? { x: X(l.left + l.width / 2), y: Y(l.top) }
+      : { x: X(l.left), y: Y(l.top + l.height / 2) };
+    const p1 = { x: CX + DISC_R * EX, y: CY + DISC_R * EY };
+
+    // Where the light starts: the far edge of the smear the design already has
+    // lit on the line, so it emerges from it rather than beside it. "Far" is
+    // the smear's right edge when the light runs across and its bottom edge
+    // when it runs down.
+    const sb = smear ? box(smear) : null;
+    const s0 = sb
+      ? (DOWN ? Y(sb.bottom) : X(sb.right))
+      : (DOWN ? p0.y : p0.x) + 57.5;
+
+    return { p0, p1, s0, u, smearBox: sb };
   };
 
   /* ------------------------------------------------------------- the cycle */
@@ -316,7 +390,7 @@ export function bt1Loop(root: HTMLElement): () => void {
        aspect ratio the viewBox matches exactly, so it needs no resize handling
        and no `will-change`. */
     svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 299 135');
+    svg.setAttribute('viewBox', `0 0 ${DW.toFixed(3)} ${DH.toFixed(3)}`);
     svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('fill', 'none');
     svg.style.cssText = 'left:0;top:0;width:100%;height:100%;pointer-events:none';
@@ -325,7 +399,7 @@ export function bt1Loop(root: HTMLElement): () => void {
     group.style.opacity = '0';
 
     wire = document.createElementNS(NS, 'path');
-    wire.setAttribute('d', `M${g.lx0.toFixed(3)} ${g.ly.toFixed(3)} L${g.xEnd.toFixed(3)} ${CY.toFixed(3)}`);
+    wire.setAttribute('d', `M${g.p0.x.toFixed(3)} ${g.p0.y.toFixed(3)} L${g.p1.x.toFixed(3)} ${g.p1.y.toFixed(3)}`);
     wire.setAttribute('stroke', litTok);
     wire.setAttribute('stroke-width', String(W_NEAR));
     wire.setAttribute('stroke-linecap', 'round');
@@ -342,11 +416,18 @@ export function bt1Loop(root: HTMLElement): () => void {
     svg.appendChild(group);
     bt1.appendChild(svg);
 
-    LEN = wire.getTotalLength() || Math.abs(g.xEnd - g.lx0);
-    const span = Math.max(g.xEnd - g.lx0, 1);
-    LEAD = (LEN * (g.x0 - g.lx0)) / span;
-    TRAVEL = (LEN * (g.xEnd - g.x0)) / span;
-    wire.setAttribute('stroke-dasharray', `${HEAD} ${LEN.toFixed(3)}`);
+    // The route's own length, and where along it the light starts and stops.
+    // Solved on the axis the line runs down rather than on x, so the portrait
+    // frame needs no second arithmetic -- only the axis to project onto.
+    const a0 = DOWN ? g.p0.y : g.p0.x;
+    const a1 = DOWN ? g.p1.y : g.p1.x;
+    LEN = wire.getTotalLength() || Math.abs(a1 - a0);
+    const span = Math.max(Math.abs(a1 - a0), 1);
+    LEAD = (LEN * Math.abs(g.s0 - a0)) / span;
+    TRAVEL = Math.max(LEN - LEAD, 1);
+    HEAD = LEN * HEAD_F;
+    TRAIL = LEN * TRAIL_F;
+    wire.setAttribute('stroke-dasharray', `${HEAD.toFixed(3)} ${LEN.toFixed(3)}`);
     rest();
 
     /* Resting values are read now, with the entrance finished and its own
@@ -356,14 +437,17 @@ export function bt1Loop(root: HTMLElement): () => void {
     const youRest = css(you, 'color');
     const noteRest = css(note, 'color');
 
-    /* The smear rides `TRAIL` design px behind the head's tip, written as a
-       percentage of its own 42px box — the only distance here that has to
-       survive a resize, and a percentage of the element's own box does, because
-       the element scales with the card exactly as the distance does. */
-    const rideTo = g.xEnd - TRAIL;
-    const ride = g.smearBox && g.smearBox.width > 0
-      ? (((rideTo - (g.x0 - g.smearBox.width / g.u / 2)) * g.u) / g.smearBox.width) * 100
+    /* The smear rides `TRAIL` design px behind the head's tip. */
+    // On the axis the light runs down: the smear's own length along that axis,
+    // its resting centre, and how far it has to travel written as a percentage
+    // of its own box. A percentage of the element's own box is the only
+    // distance here that survives a resize untouched, because the element
+    // scales with the card exactly as the distance does.
+    const smearLen = g.smearBox
+      ? (DOWN ? g.smearBox.height : g.smearBox.width) / g.u
       : 0;
+    const rideTo = (DOWN ? g.p1.y : g.p1.x) - TRAIL;
+    const ride = smearLen > 0 ? ((rideTo - (g.s0 - smearLen / 2)) / smearLen) * 100 : 0;
 
     ctx = gsap.context(() => {
       const tl = gsap.timeline({ repeat: -1, paused: true });
@@ -416,11 +500,12 @@ export function bt1Loop(root: HTMLElement): () => void {
          the ring. Its transform is reset while it is invisible, so the return
          is a fade at home rather than a slide back. */
       if (smear && ride > 0) {
-        tl.fromTo(smear, { xPercent: 0 }, {
-          xPercent: ride, duration: LEG1, ease: 'power1.in', immediateRender: false,
+        tl.fromTo(smear, DOWN ? { yPercent: 0 } : { xPercent: 0 }, {
+          [DOWN ? 'yPercent' : 'xPercent']: ride,
+          duration: LEG1, ease: 'power1.in', immediateRender: false,
         }, T_GO)
           .to(smear, { opacity: 0, duration: 0.32, ease: 'sine.in' }, T_HIT - 0.26)
-          .set(smear, { xPercent: 0 }, T_HIT + 0.4)
+          .set(smear, DOWN ? { yPercent: 0 } : { xPercent: 0 }, T_HIT + 0.4)
           .to(smear, { opacity: 1, duration: 0.55, ease: 'sine.out' }, T_BACK)
           .set(smear, { clearProps: 'transform,opacity' }, T_TIDY);
       }

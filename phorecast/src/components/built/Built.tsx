@@ -111,14 +111,60 @@ function CardOne() {
   );
 }
 
-type Node = { key: string; label: string; size: number; x: number; y: number; ring: string; icon?: string; iconSize?: number; whole?: string; wholeSize?: number };
+/* A market node carries TWO placements.
+ *
+ * `x`/`y`/`size`/`iconSize` are the landscape frame Figma drew: a 640 x 254
+ * card, five markets spread left to right, one padlock on the right-hand edge.
+ *
+ * `mx`/`my`/`ms`/`mis` are the SAME five markets in the portrait frame the
+ * card takes below 700px — 320 x 364, the markets in one row across the top
+ * and the padlock beneath them. Built.css picks one set or the other; nothing
+ * here decides, so a node cannot be half-moved. The five wires are drawn from
+ * these same portrait coordinates, once, inside .bt2__fan's mobile mask —
+ * Built.css names them there so the two cannot drift apart.
+ *
+ * Both sets ride in the style attribute as custom properties. That attribute
+ * is load-bearing for the motion layer — see the `clearProps` notes in
+ * Built.motion.ts and loops/bt2.ts — and this only adds names to it. */
+type Node = {
+  key: string; label: string; ring: string; icon?: string; whole?: string;
+  size: number; x: number; y: number; iconSize?: number; wholeSize?: number;
+  ms: number; mx: number; my: number; mis?: number;
+};
 
+/* THE PORTRAIT ROW: five columns at a pitch of 62, and every number solved.
+ *
+ * `ms` IS NOT THE MARK. Each node's painted rim is a fixed fraction of `ms`,
+ * and the fraction is not the same for all five: a ringed node (BTC, TSLA, XAU
+ * = a disc plus node-ring-*.svg at 136%) paints its faint rim at 0.6715 * ms
+ * and its solid plate at 0.4929 * ms, while a whole node (DAX, EUR, and the
+ * padlock = one file at 136%) paints 0.4974 and 0.3476. Carrying the landscape
+ * sizes across would have put DAX's and EUR's plates at two thirds of TSLA's
+ * in a row where they sit side by side. So the sizes below are solved from the
+ * PLATE instead: 20.2 design units of radius for the four supporting markets
+ * (41 ringed, 58 whole) and 23.2 for BTC (47), which keeps the featured market
+ * a step larger exactly as it is at 1600. The rims land within 1.3 units of
+ * each other as a result.
+ *
+ * THE PITCH is bounded from both sides. Adjacent rims must clear: BTC and TSLA
+ * are the tightest at 31.6 + 27.5, so nothing under 59.1 works. The outermost
+ * rim must stay inside the frame: BTC sits at 160 - 2p and needs p <= 63.6.
+ * 62 sits in that window with 2.9 units of rim clearance and 4.4 units of
+ * frame, and every market name fits its column at the 320px worst case, where
+ * the widest (XAU / USD, 26.6 half-width) has 9.4 units to spare against its
+ * neighbour. That is the whole reason all five markets survive the phone.
+ *
+ * The padlock sits 194 units below the row, which is the closest it can come
+ * before BTC's wire starts grazing TSLA's rim on the way down (24.8 units of
+ * clearance at 194). */
+const HUB_MX = 0;
+const HUB_MY = 124;   /* the padlock, from the card's centre */
 const NODES: Node[] = [
-  { key: 'btc', label: 'BTC / USD', size: 64, x: -215, y: -23, ring: nodeRingC, icon: nodeBtc, iconSize: 17.9 },
-  { key: 'tsla', label: 'TSLA', size: 50, x: -74, y: -72, ring: nodeRingA, icon: tesla, iconSize: 15.4 },
-  { key: 'dax', label: 'DAX 40', size: 60, x: 85, y: -72, ring: '', whole: nodeDax, wholeSize: 81 },
-  { key: 'eur', label: 'EUR / USD', size: 50, x: -106, y: 28, ring: '', whole: nodeEur, wholeSize: 67.5 },
-  { key: 'xau', label: 'XAU / USD', size: 50, x: 28, y: 48, ring: nodeRingB, icon: gold, iconSize: 16 },
+  { key: 'btc', label: 'BTC / USD', size: 64, x: -215, y: -23, ring: nodeRingC, icon: nodeBtc, iconSize: 17.9, ms: 47, mx: -124, my: -70, mis: 13.2 },
+  { key: 'tsla', label: 'TSLA', size: 50, x: -74, y: -72, ring: nodeRingA, icon: tesla, iconSize: 15.4, ms: 41, mx: -62, my: -70, mis: 12.6 },
+  { key: 'dax', label: 'DAX 40', size: 60, x: 85, y: -72, ring: '', whole: nodeDax, wholeSize: 81, ms: 58, mx: 0, my: -70 },
+  { key: 'eur', label: 'EUR / USD', size: 50, x: -106, y: 28, ring: '', whole: nodeEur, wholeSize: 67.5, ms: 58, mx: 62, my: -70 },
+  { key: 'xau', label: 'XAU / USD', size: 50, x: 28, y: 48, ring: nodeRingB, icon: gold, iconSize: 16, ms: 41, mx: 124, my: -70, mis: 13.1 },
 ];
 
 function CardTwo() {
@@ -129,11 +175,20 @@ function CardTwo() {
       <span className="bt-label bt-label--tr bt-label--grey">Fast onboarding</span>
       <span className="bt-label bt-label--bl">Transparent execution</span>
       <div className="bt2" aria-hidden="true">
-        <Icon src={linkFan} w={336.203125} h={122.484375} className="bt2__fan" />
-        <Icon src={linkMain} w={436.78125} h={23.40625} className="bt2__main" />
+        <Icon src={linkFan} w={336.203125} h={122.484375} className="bt2__fan" style={cssBox} />
+        <Icon src={linkMain} w={436.78125} h={23.40625} className="bt2__main" style={cssBox} />
         <span className="bt2__smear" />
         {NODES.map((n) => (
-          <span key={n.key} className="bt2__node" style={{ ['--x' as string]: n.x, ['--y' as string]: n.y, ['--s' as string]: n.size }}>
+          <span
+            key={n.key}
+            className="bt2__node"
+            data-k={n.key}
+            style={{
+              ['--x' as string]: n.x, ['--y' as string]: n.y, ['--s' as string]: n.size,
+              ['--mx' as string]: n.mx, ['--my' as string]: n.my, ['--ms' as string]: n.ms,
+              ['--i' as string]: n.iconSize, ['--mi' as string]: n.mis,
+            }}
+          >
             {n.whole ? (
               <img src={n.whole} alt="" className="bt2__whole" />
             ) : (
@@ -141,13 +196,24 @@ function CardTwo() {
                 <img src={nodeDisc} alt="" className="bt2__disc" />
                 <img src={nodeDiscSoft} alt="" className="bt2__disc bt2__disc--soft" />
                 <img src={n.ring} alt="" className="bt2__ring" />
-                <img src={n.icon} alt="" className="bt2__icon" style={{ width: n.iconSize, height: n.iconSize }} />
+                {/* Sized from `--i` in Built.css rather than inline, because the
+                    portrait frame has to be able to say a different number. The
+                    landscape value is the same 17.9 / 15.4 / 16 it always was
+                    and resolves to the same used width. */}
+                <img src={n.icon} alt="" className="bt2__icon" />
               </>
             )}
             <span className="bt2__label">{n.label}</span>
           </span>
         ))}
-        <span className="bt2__node bt2__node--lock" style={{ ['--x' as string]: 226, ['--y' as string]: 0, ['--s' as string]: 70 }}>
+        <span
+          className="bt2__node bt2__node--lock"
+          data-k="lock"
+          style={{
+            ['--x' as string]: 226, ['--y' as string]: 0, ['--s' as string]: 70,
+            ['--mx' as string]: HUB_MX, ['--my' as string]: HUB_MY, ['--ms' as string]: 66,
+          }}
+        >
           <img src={nodeLock} alt="" className="bt2__whole" />
           <span className="bt2__label bt2__label--lock">Self-custody</span>
         </span>

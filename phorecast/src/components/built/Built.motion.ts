@@ -28,10 +28,19 @@
  *   1.72  THE RIGHT CARD, while the left one's artwork is still assembling, so
  *         the two read as a pair rather than two separate arrivals. Its own
  *         artwork from 2.14: the five market nodes left to right (2.15), the
- *         wires drawing from them toward the right (2.42), and SELF-CUSTODY
+ *         wires drawing from them toward the padlock (2.42), and SELF-CUSTODY
  *         arriving last at the point they converge (3.05).
  *   2.24  The left column's copy and CTA, a beat behind its illustration.
  *   3.12  The right column's copy and CTA. Lands at 3.85.
+ *
+ * THE TIMELINE IS THE SAME IN BOTH FRAMES. Below 700px Built.css re-lays both
+ * cards into a portrait 320 x 356 -- "You" above its line rather than beside
+ * it, the five markets in a row above the padlock rather than spread to its
+ * left. Every cue above still has something to play, at the same second, and
+ * only two of them read the layout rather than assuming it: the line's draw
+ * composes with the quarter-turn the stylesheet gives it, and the wire draw
+ * asks which wires are actually on the card and which way they run. Neither is
+ * a breakpoint test; both are questions about the element in front of them.
  *
  * Every tween is a `from`, so the resting markup is the finished state and a
  * build that never runs leaves the section simply present. The two wire draws
@@ -191,16 +200,21 @@ function bloom(
  * itself; these wires are a mask over a CSS paint (Built.tsx), so there is no
  * path here either and the equivalent is a clip-path opening in the direction
  * the line runs. It clips the mask and the paint together, so the conversion
- * changed nothing about this cue. Both of card two's wires run left to right into
- * the padlock, so both are uncovered from the left.
+ * changed nothing about this cue.
+ *
+ * WHICH DIRECTION IS THE LAYOUT'S TO SAY. In the landscape frame both of card
+ * two's wires run left to right into the padlock, so both are uncovered from
+ * the left. In the portrait frame the five wires run DOWNWARD out of the
+ * market row into the padlock beneath it, so the same cue has to open from the
+ * top -- `down` is not a style choice, it is where the padlock is.
  *
  * `immediateRender: false` for the reason in the file header. The paired
  * opacity tween is a `from`, which does render at build, and is what holds the
  * wire invisible between the card's reveal and this cue.
  */
-function wipeIn(tl: Timeline, el: Element, at: number, duration: number, fade = 0.3) {
+function wipeIn(tl: Timeline, el: Element, at: number, duration: number, fade = 0.3, down = false) {
   tl.fromTo(el,
-    { clipPath: 'inset(0% 100% 0% 0%)' },
+    { clipPath: down ? 'inset(0% 0% 100% 0%)' : 'inset(0% 100% 0% 0%)' },
     { clipPath: 'inset(0% 0% 0% 0%)', duration, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
     at);
   tl.from(el, { opacity: 0, duration: fade, ease: 'none', clearProps: 'opacity' }, at);
@@ -263,11 +277,19 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   // project counts as visible.
   if (you.length) rise(tl, you, C1_YOU, { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
 
-  /* The line runs out of the dot toward the rings, so it is drawn from its left
-     end: `scaleX` about `0% 50%` is the same movement `draw()` makes on a path,
-     and unlike a clip-path it is a plain `from`. The line is a mask over a
-     gradient now rather than a `preserveAspectRatio="none"` <img>, and a
-     transform scales both together, so this reads exactly as it did. */
+  /* The line runs out of the dot toward the rings, so it is drawn from its
+     starting end: `scaleX` about `0% 50%` is the same movement `draw()` makes on
+     a path, and unlike a clip-path it is a plain `from`. The line is a mask over
+     a gradient now rather than a `preserveAspectRatio="none"` <img>, and a
+     transform scales both together, so this reads exactly as it did.
+
+     IT NEEDS NO SECOND CASE FOR THE PORTRAIT CARD, and that is the reason the
+     stylesheet rotates that line rather than reshaping its box. GSAP decomposes
+     the `rotate(90deg)` already on the element and composes this scale after
+     it, so `scaleX` about `0% 50%` is the element's OWN x either way: rightward
+     out of the dot at 1600, downward out of it on a phone. `clearProps` names
+     `transform`, which hands the rotation back to the stylesheet rather than
+     clearing it -- the rotation is CSS, not something written here. */
   const lineImg = inside(card1, '.bt1__line');
   if (lineImg.length) {
     tl.from(lineImg, {
@@ -319,12 +341,27 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
     bloom(tl, nodes, C2_NODES, { scale: 0.5, y: 10, duration: 0.8, stagger: C2_NODE_STEP, fade: 0.32, blur: 5 });
   }
 
-  /* The wires, drawn from the markets toward the padlock. The fan first, since
-     it carries four of the five, and the main link a beat behind it. */
+  /* The wires, drawn from the markets toward the padlock.
+     -----------------------------------------------------------------------
+     Landscape: the fan first, since it carries four of the five markets, and
+     BTC's own link a beat behind it, both opening from the left.
+
+     Portrait: there is no second wire. Built.css gives `.bt2__fan` a mask drawn
+     for that frame which carries all five lines, and takes `.bt2__main` off the
+     card entirely -- so this reads `display` rather than a width, and the cue
+     that has nothing left to draw is not queued at all. A `fromTo` on a
+     `display: none` element would still write its start value at build time,
+     still hold a `clearProps` to run, and still read as a wire being drawn in
+     the timeline while moving no pixels: a dead selector with a schedule. The
+     one wire that IS there takes both slots' worth of the beat -- it starts at
+     the fan's cue and runs to where the main link's would have ended -- so the
+     portrait card spends the same time drawing its circuit as the landscape
+     one does. */
   const fan = inside(card2, '.bt2__fan')[0];
-  if (fan) wipeIn(tl, fan, C2_FAN, 0.85, 0.32);
   const main = inside(card2, '.bt2__main')[0];
-  if (main) wipeIn(tl, main, C2_MAIN, 0.75, 0.3);
+  const mainOff = !main || getComputedStyle(main).display === 'none';
+  if (fan) wipeIn(tl, fan, C2_FAN, mainOff ? (C2_MAIN - C2_FAN) + 0.75 : 0.85, 0.32, mainOff);
+  if (main && !mainOff) wipeIn(tl, main, C2_MAIN, 0.75, 0.3);
 
   const smear2 = inside(card2, '.bt2__smear');
   if (smear2.length) tl.from(smear2, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, C2_SMEAR);

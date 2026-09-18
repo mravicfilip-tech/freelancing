@@ -96,6 +96,14 @@
 /* Cards --------------------------------------------------------------------- */
 .bt-card {
   --c: calc(100cqw / 640);
+  /* THE DESIGN FRAME, as two plain numbers. `--c` is the same frame expressed
+     as a length, and the portrait block below redeclares all three together.
+     loops/bt2.ts reads these to divide live pixels back into design units, and
+     it used to carry 640 x 254 as module constants -- which is exactly the kind
+     of number that goes stale the moment a breakpoint re-lays the card. They
+     are integers in both frames, so no float creeps into the division. */
+  --fw: 640;
+  --fh: 254;
   position: relative;
   container-type: inline-size;
   width: 100%;
@@ -127,6 +135,12 @@
 
 /* Card 1 */
 .bt1 {
+  /* The sub-box the left card's artwork lives in, and its own design width as a
+     plain number. loops/bt1.ts builds an SVG overlay over this box and used to
+     hardcode `viewBox="0 0 299 135"`; it now reads this and derives the height
+     from the live aspect ratio, so the overlay cannot be stretched by a frame
+     that is no longer 299 x 135. */
+  --bt1-w: 299;
   position: absolute; left: calc(50% - 50.5 * var(--c)); top: calc(50% - 0.5 * var(--c));
   width: calc(299 * var(--c)); height: calc(135 * var(--c)); transform: translate(-50%, -50%);
 }
@@ -203,12 +217,19 @@
 
 /* Card 2 */
 .bt2 { position: absolute; inset: 0; }
+/* THE TWO WIRE SPANS ARE SIZED HERE, not on the element.
+   Built.tsx's note above `cssBox` explains why they carry a fixed px box at all
+   -- they are the two things in this band that do not scale with it, and the
+   numbers are the <img> boxes that shipped, on Chromium's 1/64px grid, not the
+   ones the export claims. What has changed is only WHERE the numbers live: an
+   inline width beats every selector, and the portrait block below has to be
+   able to hand these two a different box. The used value is unchanged. */
 .bt2__fan {
   position: absolute; left: calc(32.45% ); top: 21.18%; right: 15.05%; bottom: 30.98%;
-  width: auto; height: auto;
+  width: 336.203125px; height: 122.484375px;
 }
 .bt2 .bt2__fan { color: var(--bt-wire); }
-.bt2__main { position: absolute; left: 16.22%; right: 15.52%; top: 41.18%; bottom: 50%; width: auto; height: auto; }
+.bt2__main { position: absolute; left: 16.22%; right: 15.52%; top: 41.18%; bottom: 50%; width: 436.78125px; height: 23.40625px; }
 /* 96.11% is 419.867/436.869 -- where link-main.svg's gradient ends inside its
    own viewBox. The last 4% of the wire is the far stop flat, as it ships. */
 .bt2 .bt2__main { background: linear-gradient(to right, var(--bt-main-a), var(--bt-main-b) 96.11%); }
@@ -246,7 +267,10 @@
 .bt2__disc { left: 0; top: 0; width: 100%; height: 100%; }
 .bt2__disc--soft { opacity: 0.53; }
 .bt2__ring { left: -18%; top: -18%; width: 136%; height: 136%; }
-.bt2__icon { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+/* `--i` is the mark's box in design px, and it used to be an inline width.
+   Same used value; the portrait block needs to be able to say a smaller one,
+   and an inline width cannot be overridden without `!important`. */
+.bt2__icon { left: 50%; top: 50%; width: calc(var(--i) * 1px); height: calc(var(--i) * 1px); transform: translate(-50%, -50%); }
 .bt2__label {
   position: absolute; left: 50%; top: calc(100% + 6 * var(--c)); transform: translateX(-50%);
   font-family: var(--font-body); font-weight: 400; font-size: calc(10 * var(--c));
@@ -264,6 +288,196 @@
   .built__inner { gap: 48px; }
   .built__head { gap: 20px; }
   .built__copy { gap: 20px; }
+}
+
+/* --- The phone: a portrait diagram, not a letterboxed landscape one ---------
+
+   BOTH CARDS LEAVE THE 640 x 254 FRAME AND TAKE A 320 x 364 ONE, and that is
+   the whole change. A 2.52:1 card on a 390px phone is 350 x 139: the corner
+   labels land at 6.6px, the market names at 5.5px, card two's main link -- a
+   fixed 436px box -- runs 143px past the right edge and is clipped, and
+   roughly half of card one is empty. Scaling further only makes the type
+   smaller. These two diagrams read LEFT TO RIGHT, and a phone has no width to
+   give them, so they are re-laid to read TOP TO BOTTOM and the frame turns
+   onto its side with them.
+
+   THE BREAKPOINT IS 700px, not the 720 above it, and that is on purpose. The
+   card is `100% - 2 * clamp(20px, 5vw, 96px)` wide, so it is still 640 -- its
+   own design width -- at about 711px of viewport. 700 is therefore the first
+   width at which the landscape card can no longer be drawn at the size it was
+   drawn for, which is the honest place for the portrait frame to take over. It
+   also leaves theme-snapshot.mjs's 720 sample on the landscape layout, so the
+   1600 / 1100 / 720 fingerprint this band already passes is untouched.
+
+   THE SAME RESTRUCTURE, TWICE. The pair makes a before/after argument and has
+   to keep making it, so both cards take the same shape: a label rail across the
+   top, the SOURCE on one row at y=112 with its name above it, a run of wire
+   down the middle, and the THING IT ARRIVES AT at the foot with its name under
+   it. Card one is one person and one market; card two is five markets and one
+   padlock. Read down the page they are the same picture at two densities,
+   which is the argument the section is making.
+
+   ALL FIVE MARKETS SURVIVE, and the packing that proves it is solved at 320px
+   -- where the card is 280 and --c is 0.875, the one place the px-floored
+   labels are largest relative to the artwork. The row's pitch is bounded above
+   by the frame (BTC's rim leaves it past 63.6) and below by BTC's and TSLA's
+   rims touching (59.1); 62 sits in that window, and every market name fits its
+   own column with 9.4 units to spare on the tightest pair. Nothing had to be
+   dropped. The full derivation, including why the five nodes are not all the
+   same `ms`, is over NODES in Built.tsx.
+
+   TYPE STOPS SCALING WITH THE PICTURE. Every label here is `clamp(floor, N *
+   var(--c), ceiling)`: the artwork still scales with the card, the type stops
+   at 11px (the mono corner labels and SELF-CUSTODY) and 10px (market names,
+   "You") on the way down and at 13px / 12px on the way up. That floor is why
+   the packing above is solved at 320px -- it is the width where the two scales
+   diverge most.
+
+   NOTHING NEW GLOWS. The two card washes are the ones already here, re-aimed at
+   the foot of a portrait card and with their blur put into design units so it
+   stays the same fraction of the card it was (8.6% -> 8.75%). No shadow, no
+   halo, no filter is added to any mark. -------------------------------------- */
+@media (max-width: 700px) {
+  .bt-card {
+    --c: calc(100cqw / 320);
+    --fw: 320;
+    --fh: 364;
+    aspect-ratio: 320 / 364;
+    /* The breakpoint runs to 700px but a phone is 320-430, so without a ceiling
+       the card would be 630 x 717 at the top of the range. Capped and centred,
+       it stays an illustration rather than becoming a page of its own. */
+    max-width: 400px;
+    margin-inline: auto;
+  }
+  .bt-card__glow { top: 34%; width: 92%; height: 66%; filter: blur(calc(28 * var(--c))); }
+  .bt-card__glow--right { right: -20%; }
+  .bt-card__glow--left { left: -22%; }
+
+  /* The label rail. Two lines -- the left column stacked, the right column
+     single -- so three labels fit across 245px of usable card at the 320px
+     worst case: FIVE MARKETS 90.5 + FAST ONBOARDING 113.1 on the first line,
+     TRANSPARENT EXECUTION 158.4 on the second, in design units. The bottom-left
+     label becomes the rail's second line rather than staying at the foot of the
+     card, because the foot of a portrait card is where the padlock now is. */
+  .bt-label { font-size: clamp(11px, calc(11 * var(--c)), 13px); }
+  .bt-label--tl { left: calc(20 * var(--c)); top: calc(18 * var(--c)); }
+  .bt-label--tr { right: calc(20 * var(--c)); top: calc(18 * var(--c)); }
+  .bt-label--bl { left: calc(20 * var(--c)); top: calc(40 * var(--c)); bottom: auto; }
+
+  /* Card one: You at the top, the line straight down, the market at the foot.
+     `.bt1` stops being a 299 x 135 sub-box and becomes the card, so every
+     coordinate below is in the card's own 320 x 356 frame. */
+  .bt1 { --bt1-w: 320; left: 0; top: 0; width: 100%; height: 100%; transform: none; }
+  .bt1__dot { left: calc(148 * var(--c)); top: calc(100 * var(--c)); }
+  /* THE LINE IS ROTATED, NOT RESHAPED. line.svg is a 174 x 3 stroke drawn at
+     `mask-size: 100% 100%`, so squashing its box into 3 x 96 would stretch the
+     stroke's ends rather than stand it up. The box keeps its proportions
+     (96 x 3, centred on 160, 168) and turns a quarter turn, which takes the
+     `to right` gradient with it: the accent stays at the dot and the fade still
+     arrives at the ring. Built.motion.ts's `scaleX` draw composes with this
+     rotation rather than replacing it, and loops/bt1.ts reads the rotated rect,
+     so neither needs to know which way round the line is drawn -- only which
+     end the light leaves from. */
+  .bt1__line {
+    left: calc(110 * var(--c)); top: calc(172.5 * var(--c));
+    width: calc(100 * var(--c)); height: calc(3 * var(--c));
+    transform: rotate(90deg);
+  }
+  /* The smear stands up with it: 4 x 30 rather than 42 x 4, at the same 2.1x
+     blur, so it is the same soft bar lying along the same line. */
+  .bt1__smear {
+    left: calc(158 * var(--c)); top: calc(142 * var(--c));
+    width: calc(4 * var(--c)); height: calc(30 * var(--c));
+  }
+  /* "You" goes above its dot, on the same baseline card two's market names take
+     above theirs -- 82 units down the frame on both cards. */
+  .bt1__you {
+    left: 0; right: 0; top: auto; bottom: calc(100% - 76 * var(--c));
+    width: 100%; text-align: center;
+    font-size: clamp(10px, calc(10 * var(--c)), 12px);
+  }
+  /* The ring stack shrinks from 135 to 108, so its children are restated as
+     fractions of it rather than in design units: 17.5/135, 100/135, -29.4/135,
+     -25.4/135, 193.8/135, 53.5/135, 28/135. The asymmetry in the lit disc is
+     ring-disc.svg's drop-shadow room and is preserved exactly -- see the note
+     above .bt1__ring-disc. The light-mode plate under the coin is already a
+     percentage of this same box and needs no restating. */
+  .bt1__rings {
+    left: calc(106 * var(--c)); top: calc(198 * var(--c));
+    width: calc(108 * var(--c)); height: calc(108 * var(--c));
+  }
+  .bt1__ring-mid { left: 12.963%; top: 12.963%; width: 74.074%; height: 74.074%; }
+  .bt1__ring-disc { left: -21.778%; top: -18.815%; width: 143.556%; height: 143.556%; }
+  .bt1__coin { left: 39.63%; top: 39.63%; width: 20.741%; height: 20.741%; }
+  .bt1__text {
+    left: 0; right: auto; top: calc(314 * var(--c)); transform: none;
+    width: 100%; align-items: center; text-align: center; gap: calc(6 * var(--c));
+  }
+  .bt1__pair { font-size: clamp(14px, calc(15 * var(--c)), 17px); }
+  .bt1__note { font-size: clamp(11px, calc(11 * var(--c)), 13px); }
+
+  /* Card two: the five markets in one row across the top, the padlock 194 units
+     below them. `--mx`/`--my`/`--ms`/`--mi` are the portrait placement Built.tsx
+     ships beside the landscape one; this is the only thing that chooses it. */
+  .bt2__node {
+    left: calc(50% + var(--mx) * var(--c));
+    top: calc(50% + var(--my) * var(--c));
+    width: calc(var(--ms) * var(--c));
+    height: calc(var(--ms) * var(--c));
+  }
+  /* The marks scale with the card here. `--i` is a fixed px box, which is right
+     at 1600 and much too big once the plate under it is 40px across -- on the
+     shipped phone layout the Bitcoin B and the Tesla wordmark very nearly fill
+     their own discs. `--mi` holds each mark at the fraction of its own PLATE it
+     has at 1600 -- 0.284, 0.312, 0.325 of the plate's diameter -- rather than of
+     its node box, because the node box changed proportion here and the plate is
+     what the mark is actually drawn on. */
+  .bt2__icon { width: calc(var(--mi) * var(--c)); height: calc(var(--mi) * var(--c)); }
+  /* Market names go ABOVE their marks. Every wire now runs downward out of a
+     mark, so anything under one is in a wire's way and anything above one is
+     not. 36 units clears the widest faint rim (BTC's, at 31.6) by 4.4, and
+     leaves 7 between the name and the second line of the rail above it. */
+  .bt2__label { top: auto; bottom: calc(50% + 36 * var(--c)); font-size: clamp(10px, calc(10 * var(--c)), 12px); }
+  .bt2__label--lock { top: calc(50% + 36 * var(--c)); bottom: auto; font-size: clamp(11px, calc(11 * var(--c)), 13px); }
+  /* THE FIVE WIRES, REDRAWN. link-fan.svg is four strokes converging on a point
+     to the RIGHT and link-main.svg is a 436px horizontal run; neither describes
+     anything in this frame, and the second is the element that overflows the
+     card today. `.bt2__fan` keeps its job -- one element, ordered before the
+     beads loops/bt2.ts flies along the wires and before the marks, so a bead
+     rides over its wire and under a disc at both ends -- and is given a mask
+     drawn for this frame: five lines from (36,112), (98,112), (160,112),
+     (222,112) and (284,112) down to the padlock at (160,306). Those are exactly
+     NODES' `mx`/`my` in Built.tsx, re-expressed from the frame's top-left
+     instead of its centre; if one moves the other has to move with it.
+
+     THE FADE MOVED FROM THE PAINT INTO THE MASK. In the landscape frame BTC has
+     its own wire and its own two-stop gradient -- pale at the market, dense at
+     the padlock, so the wire gains presence as it arrives -- and the other four
+     are flat. In portrait the five are peers in one row and there is no odd one
+     out to carry that, so every line's ALPHA ramps 0.32 -> 1 toward the padlock
+     instead. The paint stays `--bt-wire`, which is what makes the gain read the
+     right way round in both themes without inventing a second pair of colours:
+     on the dark card a whisper grows to 1.5:1, on paper the same whisper grows
+     to 1.42:1. `.bt2__main` then has nothing left to draw and is taken off the
+     card -- and out of the entrance; see Built.motion.ts. */
+  .bt2__fan {
+    inset: 0; width: 100%; height: 100%;
+    /* `!important` because <Icon> writes `--icon` into the style attribute,
+       and an inline declaration beats every selector without it. This is the
+       one place in the band where a stylesheet has to overrule the component,
+       and the alternative -- a second Icon in the markup, hidden at one
+       breakpoint or the other -- would put five more elements into a section
+       the theme gate walks by index, at every width. */
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 364' fill='none' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='bf1' gradientUnits='userSpaceOnUse' x1='36' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf2' gradientUnits='userSpaceOnUse' x1='98' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf3' gradientUnits='userSpaceOnUse' x1='160' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf4' gradientUnits='userSpaceOnUse' x1='222' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf5' gradientUnits='userSpaceOnUse' x1='284' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M36 112L160 306' stroke='url(%23bf1)'/%3E%3Cpath d='M98 112L160 306' stroke='url(%23bf2)'/%3E%3Cpath d='M160 112L160 306' stroke='url(%23bf3)'/%3E%3Cpath d='M222 112L160 306' stroke='url(%23bf4)'/%3E%3Cpath d='M284 112L160 306' stroke='url(%23bf5)'/%3E%3C/g%3E%3C/svg%3E") !important;
+  }
+  .bt2__main { display: none; }
+  /* The one lit bar on the card moves onto the centre wire and stands up with
+     it, at the same fifth of the way along the run it sat at before. */
+  .bt2__smear {
+    left: calc(158 * var(--c)); top: calc(146 * var(--c));
+    width: calc(4 * var(--c)); height: calc(34 * var(--c));
+    transform: none;
+  }
 }
 
 /* Pending state, the same contract as the bento and the pillars. `gsap.from()`

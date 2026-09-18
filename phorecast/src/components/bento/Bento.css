@@ -309,15 +309,57 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--mk-surface) 92%, transparent);
   }
-  .bento__card { padding: 20px; gap: 24px; }
+  /* The four cards are drawn in Figma as 394-wide frames whose own 30px
+     padding IS their margin -- there is no page gutter in the mobile design,
+     because at 394 the card is the screen. Every chain of outer chrome we add
+     comes straight off the artwork: the page gutter (20px a side) plus this
+     wrapper's padding (20px a side) left a 390 phone with a 308px card and a
+     260px content column against a designed 334, so the whole diagram drew at
+     78% and 12px chip labels landed at 9.3px.
+
+     Three of the four card agents measured that independently and each asked
+     for the same thing, so it is fixed here once rather than four times. The
+     cards' own `--u` is `min(1px, 100cqw / 334)`, which picks the design up the
+     moment the width arrives -- no card file changes.
+
+     The wrapper goes edge to edge by cancelling the gutter it sits inside
+     rather than by removing it from `.container`, which is shared with eight
+     other sections. */
+  .bento__card {
+    padding: 0;
+    gap: 24px;
+    /* `width: 1386px; max-width: 100%` caps this box at the container's content
+       box, so a negative margin alone widens nothing -- measured 350 at a 390
+       phone with the margin already applied. The cap has to go with it. */
+    width: auto;
+    max-width: none;
+    margin-inline: calc(-1 * var(--page-pad));
+  }
   .bento__title { font-size: 26px; }
   .bento__sub { font-size: 17px; }
-  .bcard { padding: 24px; }
-  .bcard__title { font-size: 21px; }
-  .bcard__body { font-size: 17px; }
-  .bcard--onboard { min-height: 420px; }
-  .bcard--funds { min-height: 380px; }
-  .bcard--bonus { min-height: 380px; }
+
+  /* Figma's own values for the mobile card: 30px padding, 24/16 type with 18px
+     between heading and body. What was here (24px padding, 21/17, 2px gap) was
+     a guess made before the mobile frames existed, and every card that has been
+     exported since has had to override it locally. */
+  /* Each exported card is a 394-wide frame that scales itself through
+     `--u: min(1px, 100cqw / 394)`, so it must never be given MORE than 394 or
+     it draws above its design size: measured at a 720 viewport the card came
+     out 646 wide and set its 24px title at 39px, which is the uncapped-unit
+     seam. Capping the card rather than the wrapper keeps the band full-bleed
+     on a phone and centres the cards once the screen outgrows the design.
+
+     Padding and type are the cards' own business now -- each exported frame
+     positions its contents in `--u` from its own edge -- so the values that
+     used to be set here are gone rather than left to be overridden four
+     times. */
+  .bcard { padding: 0; width: 100%; max-width: 394px; margin-inline: auto; }
+
+  /* The min-heights were floors for cards that had no mobile frame. Each
+     exported card now sizes itself from its own aspect-ratio or its content,
+     and these sit below that -- dead, and misleading to leave. --markets keeps
+     its floor until that card's rebuild lands. */
+  .bcard--funds { min-height: 0; }
   .bcard--markets { min-height: 460px; }
   .mk__field { left: -20px; top: 24px; transform: scale(0.5); }
   .mk__orbits { left: -40px; transform: scale(0.6); }

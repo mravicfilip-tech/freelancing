@@ -37,6 +37,27 @@ type Slide = {
   foot?: ReactNode;
 };
 
+/**
+ * The market snapshot strip, below the pager.
+ *
+ * WHOSE CONTENT IS THIS? It is rendered outside `.hero__stage`, as a sibling of
+ * the pager, and the slides that do not carry it fall back to an EMPTY box of
+ * the same class -- an admission in the markup itself that the strip's slot
+ * belongs to the hero rather than to slide 1. Desktop can afford to treat it as
+ * slide 1's alone, because `min-height: 1080px` swallows the difference. A
+ * phone cannot: four cards wrapped 2 x 2 are 332px taller than the empty box,
+ * so the document grew and shrank by 332px every seven seconds, moving
+ * everything below the hero under the reader's thumb.
+ *
+ * So on a phone it is hero furniture and is shown on every slide (see
+ * `compact` below). Nothing changes at 721px and up.
+ */
+const MARKET_SNAPSHOT = (
+  <ul className="hero__foot" aria-label="Market snapshot">
+    {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
+  </ul>
+);
+
 const SLIDES: Slide[] = [
   {
     id: 'mark',
@@ -46,11 +67,7 @@ const SLIDES: Slide[] = [
     cta: 'Get Started',
     href: '#signup',
     visual: null,
-    foot: (
-      <ul className="hero__foot" aria-label="Market snapshot">
-        {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
-      </ul>
-    ),
+    foot: MARKET_SNAPSHOT,
   },
   {
     id: 'account',
@@ -89,6 +106,12 @@ const AUTOPLAY_MS = 7000;
    the mark and the illustration it replaces are the same slot. */
 const STACKED = '(max-width: 1180px)';
 
+/* The phone range. Hero.css's own `@media (max-width: 720px)` block, read from
+   script: below it the hero is a single narrow column whose vertical budget is
+   a viewport rather than a 1080px frame, and two things have to know it --
+   where the market snapshot lives, and how large the mark is drawn. */
+const COMPACT = '(max-width: 720px)';
+
 /**
  * Where the 3D mark lives.
  *
@@ -102,14 +125,14 @@ const STACKED = '(max-width: 1180px)';
  * component already does on its own 767/1279 queries, because the placement
  * differs. So the cost of the move is a cost that was already being paid.
  */
-function useStacked() {
+function useMedia(query: string) {
   return useSyncExternalStore(
-    (onChange) => {
-      const q = window.matchMedia(STACKED);
+    useCallback((onChange) => {
+      const q = window.matchMedia(query);
       q.addEventListener('change', onChange);
       return () => q.removeEventListener('change', onChange);
-    },
-    () => window.matchMedia(STACKED).matches,
+    }, [query]),
+    () => window.matchMedia(query).matches,
     () => false,
   );
 }
@@ -195,16 +218,25 @@ export function Hero() {
     return () => { window.clearTimeout(guard); ctx.revert(); };
   }, [index]);
 
-  const stacked = useStacked();
+  const stacked = useMedia(STACKED);
+  const compact = useMedia(COMPACT);
   // Two columns: the mark sits in the empty right-hand half of the hero.
   // One column: its box IS the visual slot, so it simply fills it, centred.
   // LogoScene sizes the mark against `canvas.parentElement`, i.e. `.heroLogo`
   // itself, so these fractions are read against whichever box it is given.
+  //
+  // On a phone the fractions are nearly 1. LogoScene takes the SMALLER of
+  // `heightFraction * h` and `widthFraction * w`, so at 390px the old 0.7 width
+  // fraction was the binding one and drew a 221px mark inside a 257px box --
+  // a mark that read as small and sat low. 0.94/0.96 make the box itself the
+  // limit, which is the point of giving it a box.
   const markPlacement = useMemo(
-    () => (stacked
-      ? { heightFraction: 0.86, widthFraction: 0.7, cx: 0.5, cy: 0.5 }
-      : { heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }),
-    [stacked],
+    () => (compact
+      ? { heightFraction: 0.96, widthFraction: 0.94, cx: 0.5, cy: 0.5 }
+      : stacked
+        ? { heightFraction: 0.86, widthFraction: 0.7, cx: 0.5, cy: 0.5 }
+        : { heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }),
+    [stacked, compact],
   );
 
   const mark = (
@@ -282,7 +314,7 @@ export function Hero() {
           />
         </div>
 
-        {active.foot ?? <div className="hero__foot" />}
+        {compact ? MARKET_SNAPSHOT : active.foot ?? <div className="hero__foot" />}
       </div>
     </section>
   );

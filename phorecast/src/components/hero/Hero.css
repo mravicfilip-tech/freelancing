@@ -303,12 +303,33 @@
   .hero__heading { gap: 16px; }
   /* The copy and its illustration are one block on a phone; the desktop
      clamp's 32px floor was set against a 560px column standing beside the
-     artwork, not under it. */
-  .hero__slide { gap: 24px; }
+     artwork, not under it.
+
+     20px and not 24px because the 1180 block also gives `.hero__visual` an 8px
+     top margin, so what the phone actually measured between the Get Started
+     button and the artwork was 32px -- two spacings stacked, neither of them
+     chosen for this width. One spacing, stated once. */
+  .hero__slide { gap: 20px; }
+  .hero__visual { margin-top: 0; }
   .hero__position { margin-top: 24px; }
   .hero__stack { --s: 0.45; margin-left: -10px; }
-  .hero__foot { padding-bottom: 32px; }
-  .hero__foot .ticker { width: calc(50% - 6px); }
+
+  /* The market snapshot. On a phone it is on EVERY slide (see Hero.tsx), so it
+     is a band the hero always carries rather than a block that appears and
+     disappears -- and it is compacted to earn that place: the name under the
+     symbol goes (AAPL already says Apple), the figure and the change pill come
+     down, and the card sizes to its content instead of a 160px desktop box.
+     332px of reflow every seven seconds becomes none. */
+  .hero__foot { margin-top: 28px; gap: 10px; padding-bottom: 32px; }
+  .hero__foot .ticker {
+    width: calc(50% - 5px);
+    height: auto;
+    padding: 12px;
+  }
+  .hero__foot .ticker__icon { width: 26px; height: 26px; }
+  .hero__foot .ticker__name { display: none; }
+  .hero__foot .ticker__price { margin-top: 8px; font-size: 18px; }
+  .hero__foot .ticker__pill { height: 28px; margin-top: 8px; }
 }
 
 /* Masked line reveal. The wrapper clips, the inner span moves, so type rises out

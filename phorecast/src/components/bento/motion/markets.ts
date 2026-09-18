@@ -39,6 +39,34 @@
  *
  * Nothing here reads the pointer. The cursor is a drawn object following a
  * scripted path, the same on every machine.
+ *
+ * TWO LAYOUTS, ONE TIMELINE
+ * -------------------------
+ * Below 560 the card is Figma 526:394: the field is recomposed portrait, the
+ * six dark plates and the eight unbadged tints are `display: none`, and eight
+ * badged tiles sit somewhere else entirely. Nothing about the beats changes --
+ * the hub still leads, the ring still expands out through the field in distance
+ * order, the cursor still leaves Solana at 2.25 and is back by 3.95, and the
+ * loop is still 5.8s of story on a 9.7s cycle. What changes is what those beats
+ * are measured AGAINST, and all three places that could have been hard-coded to
+ * the desktop field are named here because getting any of them wrong is silent:
+ *
+ *   1. WHICH TILES. `display: none` is not "a tile that happens to be
+ *      invisible": its rect is 0 x 0 at the origin, so it sorts as though it
+ *      were on top of the hub, it takes a slot in the wave that then plays to
+ *      an empty stage, and `radial()` divides its push by a zero width and
+ *      hands GSAP an Infinity. Hidden tiles are dropped before anything is
+ *      measured.
+ *   2. THE DESIGN PIXEL. It used to come from the field's own width over
+ *      727.454, which is the DESKTOP field's design width. On the phone the
+ *      field is 394 wide, so the same expression under-read the unit by 46%
+ *      and every radial push came out a little under half the size it was
+ *      written as. It is taken off the hub instead: 82 design pixels in both
+ *      layouts, and the one element guaranteed to be present.
+ *   3. WHEN THE LAYOUT CHANGES. Percentages survive a resize; they do not
+ *      survive a tile moving 200 pixels because a media query started matching.
+ *      Crossing the breakpoint -- turning a phone on its side is the real case
+ *      -- rebuilds, and nothing else does.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -48,15 +76,42 @@ import { bandStaged, onSectionReady, pulse, q1, qa, whileVisible } from './share
 const HOME = 'Solana';
 const VISIT = 'Gold';
 
+/** The breakpoint BoxMarkets.css recomposes the field at. Matched, not
+ *  measured: the stylesheet is the thing that decides, so asking it directly is
+ *  the only way this cannot drift away from it. */
+const PHONE = '(max-width: 560px)';
+
 export function markets(card: HTMLElement): () => void {
   if (REDUCED) return () => {};
 
+  const layout = window.matchMedia(PHONE);
+  let stop = attach(card);
+  // Tear the old timeline down BEFORE reading the card again: teardown puts the
+  // tooltip's label and the dimmed tiles' opacities back, and the rebuild reads
+  // both as its resting state.
+  const again = () => { stop(); stop = attach(card); };
+  layout.addEventListener('change', again);
+
+  return () => {
+    layout.removeEventListener('change', again);
+    stop();
+  };
+}
+
+function attach(card: HTMLElement): () => void {
   const hub = q1(card, '.mk__hub');
   const cursor = q1(card, '.mk__cursor');
   const tooltip = q1(card, '.mk__tooltip');
   const field = q1(card, '.mk__field');
-  const diamonds = qa(card, '.mk__diamond');
-  const tiles = qa(card, '.mk__tile[data-market]');
+  /* Rendered, not merely present. See note 1 in the header: a `display: none`
+     tile measures 0 x 0 at the viewport origin, which is not a position, not a
+     distance and not a divisor. */
+  const rendered = (el: HTMLElement) => {
+    const b = el.getBoundingClientRect();
+    return b.width > 0 && b.height > 0;
+  };
+  const diamonds = qa(card, '.mk__diamond').filter(rendered);
+  const tiles = qa(card, '.mk__tile[data-market]').filter(rendered);
   if (!hub || !cursor || !tooltip || !field || tiles.length === 0) return () => {};
 
   const byName = (name: string) => tiles.find((t) => t.dataset.market === name) ?? null;
@@ -112,8 +167,14 @@ export function markets(card: HTMLElement): () => void {
 
     // 1 — the hub, then a ring expanding out through the field
     pulse(loop, hub, 0, { yPercent: -10, scale: 1.09 }, { yPercent: 0, scale: 1 }, 0.5, 0.9, 'transform');
-    const OUT = 16; // design pixels, straight out along each tile's own radius
-    const u = box(field).width / 727.454;
+    // Design pixels, straight out along each tile's own radius. The tiles keep
+    // their design sizes in both layouts, so the same 16 is the same fraction
+    // of a tile on a phone as it is on a desktop.
+    const OUT = 16;
+    // One design pixel, off the hub. See note 2 in the header: the field's own
+    // width is 727.454 design pixels on a desktop and 394 on a phone, so
+    // dividing by either one is right in one layout and wrong in the other.
+    const u = box(hub).width / 82;
     const radial = (el: HTMLElement, px: number) => {
       const c = mid(el);
       const dx = c.x - hubC.x;

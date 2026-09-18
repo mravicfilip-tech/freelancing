@@ -374,13 +374,16 @@
 
        a point (x, y) of the landscape group  ->  (y, 464 - x) here
 
-   Every number in this block is that map applied to a Figma number, and the
-   map is worth keeping in view because it is also what `motion/funds.ts` runs
-   its packet path and its ring through. Three spot checks: the market ring at
-   (242, 0) becomes (0, 7); the wallet ring at (8, 61) becomes (61, 363); the
-   node on the orbit at (298, 104) becomes (104, 158). The labels and chips do
-   NOT follow the map -- the phone frame re-lays them out around the ring, and
-   each one's centre below is read from its own wrapper in 526:1588.
+   The artwork follows that map exactly, and it is worth keeping in view
+   because `motion/funds.ts` runs its packet path and its closing ring through
+   the same one. Three spot checks: the market ring at (242, 0) becomes
+   (0, 7); the wallet ring at (8, 61) becomes (61, 363); the node on the orbit
+   at (298, 104) becomes (104, 158).
+
+   The type does NOT follow it. The frame re-lays the four labels, the four
+   tiles and the two pills out around the ring rather than turning them, so
+   each of those is read from its own wrapper in 526:1588 -- see the MARKETS
+   table in BoxCustody.tsx, which carries both sets of coordinates.
 
    Two things the phone genuinely redraws rather than moves: the glyph set,
    which is solid where the desktop is line art (see BoxCustody.tsx), and the
@@ -417,8 +420,8 @@
      is the one raster and it is 215 x 118 of dotted ellipse and warm bloom:
      it has to TURN, not just move. Left at its own box and rotated about its
      centre, which the map puts at (108, 269.5) -- hence a 215-wide box parked
-     at 0.5, 210.5. `filter` in the light block below is a separate property
-     and composes with this. */
+     at 0.5, 210.5. The light block above sets `filter` on this same element;
+     the two are separate properties and compose. */
   .custody__glow {
     left: calc(0.5 * var(--u));
     top: calc(210.5 * var(--u));

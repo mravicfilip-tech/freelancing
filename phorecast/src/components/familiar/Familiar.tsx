@@ -53,7 +53,7 @@ const CHIPS = ['Politics', 'Sports', 'Crypto', 'Finance'];
  *
  * `fill` is the green run of the bar as a percentage of the track, read off the
  * file: the first card's is the whole track — which is why its label is dark,
- * it sits ON the green — and the second's stops at 23.67%, leaving the label
+ * it sits ON the green — and the second's stops at 23.69%, leaving the label
  * over the bare track where it has to be light instead.
  */
 const PREDICTIONS = [
@@ -76,7 +76,7 @@ const PREDICTIONS = [
     alt: '',
     lines: ['Will Gustavo Petro be charged in the US by...?'],
     titleW: 143,
-    fill: '23.67%',
+    fill: '23.69%',
     pct: '27%',
   },
 ];

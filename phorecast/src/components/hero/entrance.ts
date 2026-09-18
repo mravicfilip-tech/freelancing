@@ -92,14 +92,33 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   // rather than a sequence. The bar itself now never moves. Its pieces come
   // in left to right on one clean stagger -- logo, then each link, then the
   // buttons -- so the eye is led across the top of the page once.
+  //
+  // fromTo, never from, for the third time in this file: `.btn` carries
+  // `transition: ... transform 160ms ease` in global.css so its `:active`
+  // press can ease, and a `from` tween reads its end value off the element
+  // when it first renders. Setting the start here handed that transition a
+  // target, so by the time the staggered button tweens took their reading the
+  // element had already transitioned to -14 -- and GSAP built them to animate
+  // -14 to -14. They ran, reported complete, and left both nav buttons parked
+  // 14px above the logo, the links and the theme toggle, which carry no
+  // transform transition and so landed correctly. Same fault the pop()
+  // docstring in lib/motion.ts records against the hero's Get Started button
+  // and the .hero__visual comment above records against the illustration.
+  // Stating both ends cannot be poisoned by a transition in flight, and
+  // clearing the props hands the settled bar back to CSS -- which is also what
+  // gives the buttons their :active press back, an inline identity transform
+  // having outranked it.
   if (navParts.length) {
-    tl.from(navParts, {
-      y: -14,
-      opacity: 0,
-      duration: 0.85,
-      stagger: 0.075,
-      ease: EASE,
-    }, 0.1);
+    tl.fromTo(navParts,
+      { y: -14, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.85,
+        stagger: 0.075,
+        ease: EASE,
+        clearProps: 'transform,opacity',
+      }, 0.1);
   }
 
   // Light ignites small and bright and blooms outward, rather than fading up.

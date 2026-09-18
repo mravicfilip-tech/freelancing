@@ -261,14 +261,40 @@
 }
 @media (max-width: 1180px) {
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
+  /* Pack the two rows to the top. `.hero__slide` is a grid item at 1/1 of
+     `.hero__stage`, so it is stretched to the height of the TALLEST slide --
+     and its own rows, being auto, then shared that slack out between them.
+     That is the gap the phone shows between the button and the illustration:
+     not spacing anybody chose, just a stretched grid distributing space it had
+     no use for. The slack now stays at the bottom of the stage, in one piece,
+     instead of being dealt into the middle of every slide. */
+  .hero__slide { align-content: start; }
   .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
   .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }
 }
 @media (max-width: 720px) {
   .hero { padding-top: 24px; }
   .hero__title { white-space: pre-line; width: auto; }
+  /* 52px was the floor of a scale whose ceiling is a 1920 frame. On a 390px
+     screen it puts "Half this stack" onto three lines and leaves the headline
+     almost touching the lede. The floor comes down and the phone range is
+     driven by vw, so the type grows with the screen instead of stepping.
+
+     `.hero .hero__title`, not `.hero__title`: `.display` in global.css carries
+     the same specificity and is bundled after this file, so a bare class here
+     loses the cascade by source order and the headline stayed at 52px. */
+  .hero .hero__title { font-size: clamp(38px, 10.6vw, 52px); }
   .hero__bg { --u: 0.45px; }
-  .hero__copy { gap: 32px; }
+  /* Tighter than the desktop 162/48/28, because a phone reads these as one
+     block and the desktop rhythm spreads them over most of the viewport. */
+  .hero__stage { margin-top: 40px; }
+  .hero__copy { gap: 28px; }
+  .hero__heading { gap: 16px; }
+  /* The copy and its illustration are one block on a phone; the desktop
+     clamp's 32px floor was set against a 560px column standing beside the
+     artwork, not under it. */
+  .hero__slide { gap: 24px; }
+  .hero__position { margin-top: 24px; }
   .hero__stack { --s: 0.45; margin-left: -10px; }
   .hero__foot { padding-bottom: 32px; }
   .hero__foot .ticker { width: calc(50% - 6px); }

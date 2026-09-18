@@ -225,14 +225,20 @@ export function Hero() {
   // LogoScene sizes the mark against `canvas.parentElement`, i.e. `.heroLogo`
   // itself, so these fractions are read against whichever box it is given.
   //
-  // On a phone the fractions are nearly 1. LogoScene takes the SMALLER of
-  // `heightFraction * h` and `widthFraction * w`, so at 390px the old 0.7 width
-  // fraction was the binding one and drew a 221px mark inside a 257px box --
-  // a mark that read as small and sat low. 0.94/0.96 make the box itself the
-  // limit, which is the point of giving it a box.
+  // On a phone the height fraction is the binding one. LogoScene takes the
+  // SMALLER of `heightFraction * h` and `widthFraction * w`, so at 390px the
+  // old 0.7 width fraction won and drew a 221-unit mark inside a 257px box --
+  // a mark that read as small and sat low. 0.94 takes width out of the way and
+  // hands the decision to the box, which is the point of giving it a box.
+  //
+  // 0.88 and not 0.96, because `size` is not the mark's drawn height: the
+  // silhouette is about 1.084 times taller than the number it is given (240px
+  // drawn from a size of 221.4, measured). At 0.96 the mark rendered 328px in
+  // a 315.8px box and `.heroLogo`'s `overflow: hidden` took 6px off the top
+  // and the bottom. 0.88 draws it at 301 with 7px of air either side.
   const markPlacement = useMemo(
     () => (compact
-      ? { heightFraction: 0.96, widthFraction: 0.94, cx: 0.5, cy: 0.5 }
+      ? { heightFraction: 0.88, widthFraction: 0.94, cx: 0.5, cy: 0.5 }
       : stacked
         ? { heightFraction: 0.86, widthFraction: 0.7, cx: 0.5, cy: 0.5 }
         : { heightFraction: 0.56, widthFraction: 0.33, cx: 0.735, cy: 0.42 }),

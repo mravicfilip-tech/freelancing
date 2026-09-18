@@ -309,6 +309,53 @@
   pointer-events: none;
 }
 
+/* THE PHONE COMPOSITION -------------------------------------------------------
+   999 design units of circuit in a 350px column is a scale of 0.35, at which
+   the SPORT and ELECTIONS labels are 4.6px, the BTC/USD pill is 5.6px and the
+   dotted routes are a grey speckle. The box is also the wrong shape for a
+   phone: 999 x 570 is 1.75:1, so filling the column's width left 250px of the
+   slot empty underneath -- and the frame is exactly 999 units while the
+   rightmost badge sits at 942 and is 57 wide, so that badge's right edge landed
+   ON the content column's edge, measured at 390: L350.0 R370.0 against a column
+   that ends at 370.0. Not a clip, but no gutter either, which is the same thing
+   to look at. The window below gives it 11.7px.
+
+   THE CROP. The composition is a hub on the left -- BTC/USD, the order diamond,
+   SPORT and ELECTIONS, three orbit rings and their nodes -- and five market
+   tiles strung along two dashed routes to the right, with a 370-unit hole in
+   between that holds nothing at all (`.sl4__mark-slot`; the mark is never
+   rendered here). So the phone is shown the hub and the first two tiles: a
+   690 x 623 window, which is 1.11:1, fills the slot exactly, and draws
+   everything 1.45x larger. The window's right edge falls in empty space between
+   the tiles, which end at 667, and the next ones, which start at 887, so
+   NOTHING IS CUT except the two routes, which is what a route running off the
+   edge of a diagram is for.
+
+   Then the labels are promoted, the same rule slide 3 uses: everything that
+   stays is sized to clear 9px at this scale. SPORT, ELECTIONS and BTC/USD go
+   from 13 and 16 units to 18 -- 9.5px -- with their padding and dot brought in
+   so the pills keep their proportions. */
+@media (max-width: 720px) {
+  .sl4 {
+    --u: calc(100cqw / 690);
+    aspect-ratio: 690 / 623;
+    /* The window. Everything outside it is off-frame, not shrunk. */
+    overflow: hidden;
+  }
+  /* The window's own margins. Kept content runs x 0..644 and y 0..570 of the
+     frame, so 23 units on each side and 26 above put it in the middle of the
+     window instead of flush against three of its edges. */
+  .sl4__frame { left: calc(23 * var(--u)); top: calc(26 * var(--u)); }
+
+  .sl4__pill { font-size: calc(18 * var(--u)); }
+  .sl4__tag {
+    padding: calc(12 * var(--u));
+    font-size: calc(18 * var(--u));
+    letter-spacing: calc(-0.36 * var(--u));
+  }
+  .sl4__tag img { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+}
+
 /* --- Light -------------------------------------------------------------------
    Written twice, because a media query cannot go in a selector list -- the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay

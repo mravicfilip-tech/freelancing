@@ -433,6 +433,118 @@
   color: var(--accent);
 }
 
+/* THE PHONE COMPOSITION -------------------------------------------------------
+   The desktop diagram is 964 x 822 design units and its smallest type is 13.
+   Dropped whole into a 350px column that is a scale of 0.363, which puts
+   "TRANSFER", "STOCK", "You deposit", "You trade with", "Phorcast adds" and the
+   two index chips between 4.2px and 5.8px. The stacks survive it -- isometric
+   slabs are shape, and shape scales -- but every word in the picture does not,
+   and a diagram whose labels cannot be read is a texture.
+
+   So: THE NUMBERS ARE PROMOTED OVER THE GEOMETRY. The stacks keep exactly the
+   size they had. The frame keeps its 964-unit width, and therefore its scale,
+   so SlideBonus.motion's `frame.width / 964` still yields a true design pixel.
+   What changes is the arrangement and the type: the frame's height comes down
+   from 822 units to 648 (298px to 235px at 390), the stacks move to the top-left
+   corner, each is captioned directly underneath with its own figure, and the
+   bracket and "Phorcast adds +$200" take the column freed on the right.
+
+   Every word that stays is re-sized to clear 9px at this scale -- 25 units --
+   and the figures go further, because they are the sentence: $400 at 48 units
+   is 17.4px, +$200 at 44 is 16px, $200 at 40 is 14.5px, the captions at 26 are
+   9.4px. Two to four times what they were.
+
+   Four things go, in the order the hero drops things: decoration first
+   (TRANSFER and STOCK are tags on a line nobody can follow at this size, and
+   the NIKKEI / S&P chips are 3.3px wordmarks), then the dashed rule and its two
+   diamonds, whose whole job was to join two stacks that now sit side by side
+   with nothing between them. The travelling spark goes with the rule it rode.
+   Nothing is deleted from the markup and everything is back at 721px. */
+@media (max-width: 720px) {
+  .sl3__frame { height: calc(648 * var(--u)); }
+
+  /* The stacks keep their size and take the top-left corner. 8 units of head
+     room, because the topmost matched plate lifts out of the layer's own box
+     during the loop and `overflow` here is the export's `visible`. */
+  .sl3__stacks { left: 0; top: calc(4 * var(--u)); }
+
+  /* THE WIREFRAME'S REAL PROBLEM IS ITS WIDTH, NOT ITS HUE. stacks.svg strokes
+     the two wireframes at 0.422647 user units in a 599.854 viewBox; on a 390px
+     phone that box is drawn 217.6px wide, so the stroke lands at 0.153 DEVICE
+     PIXELS and what reaches the screen is whatever a sixth of a line survives
+     antialiasing. Measured over the deposit stack at 390 (mean luminance delta
+     from the page, over the pixels the stack inks):
+
+                            light            dark
+       as shipped           13.65            4.44   (dark: nothing at all above
+       0.45px               36.92           12.64    a delta of 16 -- the stack
+       0.60px               48.01           16.39    is a rumour on a phone)
+       0.75px               59.53           20.57
+
+     0.60px, non-scaling so it is a screen width rather than a design one. It is
+     3.5x the ink in light and 3.7x in dark, and it is the same fix in both --
+     which is the tell that this was never a colour problem.
+
+     ON THE COLOUR, since it was asked: at 0.60px --accent-deep measures 48.01
+     delta / 31.96 chroma and --accent 43.59 / 39.60. So --accent buys 24% more
+     chroma for 9% less contrast. The earlier reading that the hairline "reads
+     brown-grey rather than red" is real, but it is a consequence of the width:
+     at 0.153px every stroke is mostly page, so its chroma is mostly the page's.
+     Widening it alone takes the chroma from 14.05 to 31.96 -- 2.3x -- without
+     spending any contrast. --accent-deep stays; the comment above it, written
+     when --accent "left the deposit stack reading pink", still holds, and it
+     holds more easily now that the stroke has ink to be red with. */
+  .sl3__stacks [id^='deposit-block-'],
+  .sl3__stacks [id^='balance-block-'] {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 0.6px;
+  }
+
+  /* Each stack is captioned directly under itself, figure over label, the two
+     pairs sharing a baseline: $200 you deposit / $400 you trade with. */
+  .sl3__amount {
+    left: calc(12 * var(--u));
+    top: calc(552 * var(--u));
+    font-size: calc(40 * var(--u));
+    color: var(--ink);
+  }
+  .sl3__cap--deposit {
+    left: calc(12 * var(--u));
+    top: calc(606 * var(--u));
+    font-size: calc(26 * var(--u));
+  }
+  .sl3__total {
+    left: calc(300 * var(--u));
+    top: calc(544 * var(--u));
+    font-size: calc(48 * var(--u));
+  }
+  .sl3__cap--trade {
+    left: calc(302 * var(--u));
+    top: calc(606 * var(--u));
+    font-size: calc(26 * var(--u));
+  }
+
+  .sl3__bracket { left: calc(620 * var(--u)); top: calc(110 * var(--u)); height: calc(280 * var(--u)); }
+  .sl3__bracket img { height: calc(281.6 * var(--u)); }
+  .sl3__adds { left: calc(665 * var(--u)); top: calc(200 * var(--u)); width: calc(290 * var(--u)); }
+  .sl3__adds span { font-size: calc(28 * var(--u)); }
+  .sl3__adds strong { font-size: calc(44 * var(--u)); }
+
+  .sl3__tag,
+  .sl3__badge,
+  .sl3__rule,
+  .sl3__diamond,
+  .sl3__spark { display: none; }
+
+  /* The countdown is the other half of why this slide is the tallest: it is the
+     only one carrying a block between the lede and the button, and whatever it
+     costs, the stage reserves for all four. 43.5px of its own padding and tile
+     height come off; none of its type does. */
+  .sl3-countdown { gap: calc(10 * var(--u)); padding-top: 0; }
+  .sl3-countdown__label { padding: calc(2 * var(--u)) 0; }
+  .sl3-countdown__tile { height: calc(66 * var(--u)); }
+}
+
 /* --- Light -------------------------------------------------------------------
    Written twice, because a media query cannot go in a selector list -- the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay

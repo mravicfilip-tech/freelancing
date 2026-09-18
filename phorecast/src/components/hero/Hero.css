@@ -6,7 +6,7 @@
   min-height: min(1080px, 100svh);
   padding-top: 40px;
   overflow: hidden;
-  background: var(--page);
+  background: var(--hero-page);
   isolation: isolate;
 
   /* The band's own colour, named here so the light block at the foot of the
@@ -23,7 +23,18 @@
   --hero-g-core: #f15034;
   --hero-g-core-op: 0.55;
   --hero-g-peach: #ec7850;
+  --hero-g-peach-op: 0.85;
   --hero-g-cream: #fbd6ca;
+  /* The two surfaces that are NOT discs: the band's own paper and the planet
+     that cuts it. Both were literal var(--page) and both stay literal
+     var(--page) here, so dark and today's light are provably unmoved. They are
+     named only so a light variant can wash the ground with a gradient without
+     reaching for .hero's `background` shorthand or the horizon's fill. A wash
+     needs BOTH: the horizon paints over the discs last, so a flat paper ellipse
+     on a washed ground is a bright flat shape rather than the ground showing
+     through. */
+  --hero-page: var(--page);
+  --hero-horizon: var(--page);
   /* The halftone dither over the sun. `soft-light` over a dark ground lifts;
      over paper it does almost nothing, so the blend mode is a token too. */
   --hero-halftone: rgba(250, 203, 185, 0.9);
@@ -122,7 +133,7 @@
   left: calc(486 * var(--u));
   top: calc(952 * var(--u));
   background: var(--hero-g-peach);
-  opacity: 0.85;
+  opacity: var(--hero-g-peach-op);
 }
 .hero__glow--cream {
   left: calc(786 * var(--u));
@@ -138,7 +149,7 @@
   height: calc(2668 * var(--u));
   transform: translateX(-50%);
   border-radius: 50%;
-  background: var(--page);
+  background: var(--hero-horizon);
   filter: blur(calc(50 * var(--u)));
 }
 
@@ -446,6 +457,230 @@
      carries blur(110 * u), which smears a 6px dot grid into an even tint.) */
   --hero-halftone: rgba(150, 95, 70, 0.9);
 }
+
+/* === HERO LIGHT VARIANTS — generated, review only ===
+
+   Five light grounds for the hero, to be looked at side by side and chosen
+   between. NOTHING HERE IS LIVE. With no [data-hero-variant] on <html> the
+   section paints exactly what it painted before this block existed, in both
+   themes, which is what the pixel gate checks.
+
+   Each one is written twice for the same reason the default light block is:
+   the system preference leads while nothing has been chosen, an explicit
+   choice wins at any system setting, and a media query cannot go in a selector
+   list. The two copies are generated from one source and MUST stay identical.
+
+   TO LOOK AT ONE: set the attribute on the document element -- in devtools,
+   document.documentElement.dataset.heroVariant = '3' -- or open
+   hero-light-lab.html at the project root, which paints all five from the same
+   values these blocks are generated from.
+
+   TO PROMOTE A WINNER: copy the chosen variant's declarations into BOTH default
+   light blocks above (the two "THE GLOW ON PAPER" ones), replacing the five
+   --hero-g-* lines and the halftone -- and, if the winner sets them, carrying
+   --hero-page and --hero-horizon across too, since those two travel together
+   and a washed ground with an unwashed horizon is a flat bright ellipse. Then
+   delete this whole section. Nothing else in the file has to move.
+
+   WHAT THE VALUES ARE AIMED AT. Measured on the built page at 1600: the only
+   discs that paint anything a person sees are ORANGE and, behind it, CORE. The
+   horizon is an ellipse of paper 2223px tall starting at y972, and peach
+   (y1022) and cream (y1153) begin under it, so their colour never surfaces --
+   hiding either one moves the darkest pixel in the band by one unit. Ember is
+   1283px tall starting at y641, so its visible slice is its TOP 26%, which the
+   shipped gradient fills with its var(--page) stop; that is why the layer reads
+   as nothing. Variants that want the gradient to do work move its coloured
+   stops up into that slice, where they become the sky above the sun. Peach and
+   cream still carry values so the ramp stays monotonic if the geometry ever
+   moves.
+
+   Today's light ground spans 1.22:1 to 1.25:1 against the page, over the whole
+   band. That third of a stop is the thing being fixed. */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark'])[data-hero-variant='1'] .hero {
+    /* 1. DAWN SKY — The gradient IS the design. The ember layer stops being a
+       hidden disc and becomes the sky above the sun, and the paper itself warms
+       as it falls.
+       Costs: The only variant that tints the whole band, so it is the least
+       "white page" of the five. The wash has to be matched on the horizon or
+       the planet reads as a flat bright ellipse. */
+    --hero-page: linear-gradient(180deg, var(--page) 0%, var(--page) 30%, #fff5ec 68%, #fdeadb 100%);
+    --hero-horizon: #fdebdc;
+    --hero-g-ember: linear-gradient(172deg, var(--page) 2%, #fdeade 11%, #f7d2b6 20%, #efb693 30%, #e59a70 52%, #dd8459 100%);
+    --hero-g-peach: #eec3a6;
+    --hero-g-orange: #e9b48f;
+    --hero-g-core: #e09a6e;
+    --hero-g-core-op: 0.58;
+    --hero-g-cream: #d9855a;
+    --hero-halftone: rgba(150, 95, 70, 0.9);
+    --hero-halftone-op: 0.7;
+  }
+}
+:root[data-theme='light'][data-hero-variant='1'] .hero {
+  /* 1. DAWN SKY — The gradient IS the design. The ember layer stops being a
+     hidden disc and becomes the sky above the sun, and the paper itself warms
+     as it falls.
+     Costs: The only variant that tints the whole band, so it is the least
+     "white page" of the five. The wash has to be matched on the horizon or
+     the planet reads as a flat bright ellipse. */
+  --hero-page: linear-gradient(180deg, var(--page) 0%, var(--page) 30%, #fff5ec 68%, #fdeadb 100%);
+  --hero-horizon: #fdebdc;
+  --hero-g-ember: linear-gradient(172deg, var(--page) 2%, #fdeade 11%, #f7d2b6 20%, #efb693 30%, #e59a70 52%, #dd8459 100%);
+  --hero-g-peach: #eec3a6;
+  --hero-g-orange: #e9b48f;
+  --hero-g-core: #e09a6e;
+  --hero-g-core-op: 0.58;
+  --hero-g-cream: #d9855a;
+  --hero-halftone: rgba(150, 95, 70, 0.9);
+  --hero-halftone-op: 0.7;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark'])[data-hero-variant='2'] .hero {
+    /* 2. TERRACOTTA BED — No gradient tricks. One deep, earthy clay bed under
+       the horizon, real amplitude in the discs, hues pulled off peach and
+       toward terracotta.
+       Costs: Flat by construction: the band is a colour, not a light. The most
+       "brand-adjacent brown" of the five, and the sky above the sun does
+       nothing. */
+    --hero-g-ember: linear-gradient(170deg, var(--page) 10%, #f5dcc7 40%, #ecc5a6 100%);
+    --hero-g-peach: #e0b28d;
+    --hero-g-orange: #d69b6f;
+    --hero-g-core: #c67f4c;
+    --hero-g-core-op: 0.62;
+    --hero-g-cream: #bd6d38;
+    --hero-halftone: rgba(110, 58, 30, 0.9);
+    --hero-halftone-op: 0.85;
+  }
+}
+:root[data-theme='light'][data-hero-variant='2'] .hero {
+  /* 2. TERRACOTTA BED — No gradient tricks. One deep, earthy clay bed under
+     the horizon, real amplitude in the discs, hues pulled off peach and
+     toward terracotta.
+     Costs: Flat by construction: the band is a colour, not a light. The most
+     "brand-adjacent brown" of the five, and the sky above the sun does
+     nothing. */
+  --hero-g-ember: linear-gradient(170deg, var(--page) 10%, #f5dcc7 40%, #ecc5a6 100%);
+  --hero-g-peach: #e0b28d;
+  --hero-g-orange: #d69b6f;
+  --hero-g-core: #c67f4c;
+  --hero-g-core-op: 0.62;
+  --hero-g-cream: #bd6d38;
+  --hero-halftone: rgba(110, 58, 30, 0.9);
+  --hero-halftone-op: 0.85;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark'])[data-hero-variant='3'] .hero {
+    /* 3. THROUGH THE RED — Two hues, not one tint: the ground travels paper ->
+       amber -> the brand red, and the sun is a radial with #c1301a at its
+       heart. The page carries the logo colour without a single element wearing
+       it.
+       Costs: The hottest and the riskiest. Red is a real colour on a trading
+       page and this one is a neighbour of --neg; on slide 2 it also comes
+       furthest up the copy column. */
+    --hero-g-ember: linear-gradient(168deg, var(--page) 1%, #fde7d7 9%, #f5c1a1 18%, #e8956f 27%, #d86d4a 40%, #ca5637 100%);
+    --hero-g-peach: #eaa98e;
+    --hero-g-orange: radial-gradient(circle at 50% 7%, #c9432b 0%, #d55a3f 18%, #de7658 34%, #e89a7c 55%, #f1bda8 76%, #f8dccd 100%);
+    --hero-g-core: #ae3a20;
+    --hero-g-core-op: 0.28;
+    --hero-g-cream: #bc3a1d;
+    --hero-halftone: rgba(150, 40, 20, 0.9);
+    --hero-halftone-op: 0.85;
+  }
+}
+:root[data-theme='light'][data-hero-variant='3'] .hero {
+  /* 3. THROUGH THE RED — Two hues, not one tint: the ground travels paper ->
+     amber -> the brand red, and the sun is a radial with #c1301a at its
+     heart. The page carries the logo colour without a single element wearing
+     it.
+     Costs: The hottest and the riskiest. Red is a real colour on a trading
+     page and this one is a neighbour of --neg; on slide 2 it also comes
+     furthest up the copy column. */
+  --hero-g-ember: linear-gradient(168deg, var(--page) 1%, #fde7d7 9%, #f5c1a1 18%, #e8956f 27%, #d86d4a 40%, #ca5637 100%);
+  --hero-g-peach: #eaa98e;
+  --hero-g-orange: radial-gradient(circle at 50% 7%, #c9432b 0%, #d55a3f 18%, #de7658 34%, #e89a7c 55%, #f1bda8 76%, #f8dccd 100%);
+  --hero-g-core: #ae3a20;
+  --hero-g-core-op: 0.28;
+  --hero-g-cream: #bc3a1d;
+  --hero-halftone: rgba(150, 40, 20, 0.9);
+  --hero-halftone-op: 0.85;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark'])[data-hero-variant='4'] .hero {
+    /* 4. GOLD HOUR — The one that changes hue rather than depth: the ground
+       swings off red and onto amber and honey, so the brand red on the button
+       and the mark is the only red left on the screen and reads as the accent
+       it is.
+       Costs: A second warm hue on a page that had one. Gold under a dark-red
+       CTA is a classic pairing but it is a decision about the brand, not just
+       about the hero. */
+    --hero-g-ember: linear-gradient(172deg, var(--page) 3%, #fdf1dd 12%, #f7ddb1 22%, #eec584 32%, #e2ad5c 60%);
+    --hero-g-peach: #eed0a0;
+    --hero-g-orange: #e5b872;
+    --hero-g-core: #d79f48;
+    --hero-g-core-op: 0.55;
+    --hero-g-cream: #c88d2c;
+    --hero-halftone: rgba(125, 82, 20, 0.9);
+    --hero-halftone-op: 0.8;
+  }
+}
+:root[data-theme='light'][data-hero-variant='4'] .hero {
+  /* 4. GOLD HOUR — The one that changes hue rather than depth: the ground
+     swings off red and onto amber and honey, so the brand red on the button
+     and the mark is the only red left on the screen and reads as the accent
+     it is.
+     Costs: A second warm hue on a page that had one. Gold under a dark-red
+     CTA is a classic pairing but it is a decision about the brand, not just
+     about the hero. */
+  --hero-g-ember: linear-gradient(172deg, var(--page) 3%, #fdf1dd 12%, #f7ddb1 22%, #eec584 32%, #e2ad5c 60%);
+  --hero-g-peach: #eed0a0;
+  --hero-g-orange: #e5b872;
+  --hero-g-core: #d79f48;
+  --hero-g-core-op: 0.55;
+  --hero-g-cream: #c88d2c;
+  --hero-halftone: rgba(125, 82, 20, 0.9);
+  --hero-halftone-op: 0.8;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark'])[data-hero-variant='5'] .hero {
+    /* 5. EDITORIAL — Everything near paper except one deep stop where the sun
+       meets the horizon. The drama is a single dark note in a quiet field
+       rather than five warm ones.
+       Costs: Subtle, and deliberately so. On a narrow screen, where the horizon
+       eats more of the sun, there is less of it left than on any other variant.
+       */
+    --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf1e7 58%, #fae4d5 100%);
+    --hero-g-peach: #f2d9c6;
+    --hero-g-orange: radial-gradient(circle at 50% 5%, #9c3a17 0%, #b3552f 14%, #cd8360 30%, #e5b499 52%, #f4dccd 76%, var(--page) 100%);
+    --hero-g-core: #8f3314;
+    --hero-g-core-op: 0.3;
+    --hero-g-cream: #ecc9b1;
+    --hero-halftone: rgba(120, 60, 35, 0.9);
+    --hero-halftone-op: 0.65;
+  }
+}
+:root[data-theme='light'][data-hero-variant='5'] .hero {
+  /* 5. EDITORIAL — Everything near paper except one deep stop where the sun
+     meets the horizon. The drama is a single dark note in a quiet field
+     rather than five warm ones.
+     Costs: Subtle, and deliberately so. On a narrow screen, where the horizon
+     eats more of the sun, there is less of it left than on any other variant.
+     */
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf1e7 58%, #fae4d5 100%);
+  --hero-g-peach: #f2d9c6;
+  --hero-g-orange: radial-gradient(circle at 50% 5%, #9c3a17 0%, #b3552f 14%, #cd8360 30%, #e5b499 52%, #f4dccd 76%, var(--page) 100%);
+  --hero-g-core: #8f3314;
+  --hero-g-core-op: 0.3;
+  --hero-g-cream: #ecc9b1;
+  --hero-halftone: rgba(120, 60, 35, 0.9);
+  --hero-halftone-op: 0.65;
+}
+
+/* === end hero light variants === */
 
 /* The two motion pairs, on :root because that is the only place tok() looks. */
 @media (prefers-color-scheme: light) {

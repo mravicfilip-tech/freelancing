@@ -546,7 +546,21 @@
 
   .fam__copy--left { order: 1; width: 100%; gap: 14px; }
   .fam__phone { order: 2; }
-  .fam__copy--right { order: 3; width: 100%; gap: 16px; }
+  /* `align-items` is the bug, and the button is only where it shows.
+     `.fam__copy--right` is `align-items: flex-start` for the desktop layout,
+     where it is a left-aligned column standing beside the artwork — and that
+     rule was never restated for the stacked one. Every child of this column is
+     shrink-to-fit under it, so the button, which is the one child with a fixed
+     width (`--btn-w`, the site's button width, the same in every section),
+     parks against the left edge between a full-width paragraph and a centred
+     chip row and reads as a mistake. The paragraph only looks unaffected
+     because at this width its text happens to fill the column.
+
+     So the column centres its children, and the paragraph is given the full
+     width back explicitly rather than being left to shrink-to-fit — its lines
+     stay left-aligned and its measure stays the column's. */
+  .fam__copy--right { order: 3; width: 100%; gap: 16px; align-items: center; }
+  .fam__sub-body { width: 100%; }
 
   /* Type, in real pixels, sized against each other rather than against a
      design width. The eyebrow is a label again. */

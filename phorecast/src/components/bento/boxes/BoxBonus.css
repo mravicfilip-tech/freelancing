@@ -122,12 +122,6 @@
   font-size: calc(24 * var(--u));
   white-space: nowrap;
 }
-/* The hand-set line break the PHONE frame asks for (526:263). It is markup
-   rather than a max-width because a max-width would be a guess at where Manrope
-   Medium happens to run out, and it is off here rather than on there because
-   the landscape title is one line: a <br> that generates no box makes no break,
-   so the desktop card reads the same string it always has. */
-.box-bonus__brk { display: none; }
 .box-bonus .box-bonus__body {
   font-size: calc(20 * var(--u));
 }
@@ -306,9 +300,8 @@
        pixel of the NEW frame: 392 is the 394 border box less the 1px border
        the band gives every card, which is what 100cqw resolves to (padding is
        0 on this card). Figma's root coordinates are therefore design - 1.
-     * The title breaks after "capital" -- the design sets the break by hand,
-       so .box-bonus__brk carries it rather than a max-width guessed off font
-       metrics.
+     * The title breaks after "capital" -- the design sets that break by hand,
+       and `text-wrap: balance` reproduces it without touching the markup.
      * The copy is 24 / 16 with 18 between, not 24 / 20 with 2.
      * The artwork well hangs 110 design px off the LEFT edge and 61 off the
        right (desktop hangs it off the right only), which crops the line's
@@ -344,13 +337,26 @@
     width: calc(334 * var(--u));
     gap: calc(18 * var(--u));
   }
+  /* The phone frame breaks this title after "capital" (526:263), and `balance`
+     is how that is asked for without touching the markup. A <br> switched off
+     above 720 was tried first and rejected: splitting the string into two
+     shaping runs moved the DESKTOP title by a subpixel, 160 pixels over three
+     rows, for markup that renders identical characters.
+
+     `balance` earns it on the numbers rather than by luck. Measured at 390:
+     the title box is 334 design px, "Double your capital" is 216 and "Double
+     your capital on" is 250, so the natural wrap is 4 + 2 and balancing to
+     3 + 3 takes the widest line from 250 to 216. That is the minimum, so it is
+     the split the algorithm returns -- and where it is unsupported or declines,
+     the fallback is the natural 4 + 2 wrap: a different break, still two lines,
+     still inside the box. A max-width tuned between 216 and 250 would force the
+     right break too, and fail into a THREE-line title the moment the webfont
+     did not arrive. */
   .box-bonus .box-bonus__title {
     white-space: normal;
+    text-wrap: balance;
     font-size: calc(24 * var(--u));
   }
-  /* revert, not inline: `br` has no display in the UA sheet to name, and what
-     is wanted is simply the break the browser would have made on its own. */
-  .box-bonus__brk { display: revert; }
   .box-bonus .box-bonus__body {
     font-size: calc(16 * var(--u));
     /* Figma's 0.16px at 16px. As an em it survives the card scaling. */

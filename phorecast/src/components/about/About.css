@@ -229,6 +229,11 @@
      on a different basis is simply cut to whatever the clip came out as. */
   --ground-u: calc(100cqw / 1920);
   padding-top: 40px;          /* the nav sits 40 from the top, as on the landing page */
+  /* ...but only on a desktop. The landing hero drops to 20 below 720 and
+     this band never got that rule, so on a phone the About nav started
+     40 from the top against the landing's 24 and the menu sheet's 20 --
+     measured at 390, logo top 40 closed against 20 open, so opening the
+     menu moved the wordmark 20px up the screen. See the phone block. */
 }
 
 /* THE GROUND — 531:149 "Background Container".
@@ -1005,6 +1010,8 @@
   .ab-ground { top: auto; bottom: calc(-986 * var(--ground-u)); }
 }
 @media (max-width: 720px) {
+  /* Same line as the menu sheet's top, and as the landing hero's. */
+  .ab-hero { padding-top: 20px; }
   .ab-hero { --ground-u: 0.62px; }
 }
 

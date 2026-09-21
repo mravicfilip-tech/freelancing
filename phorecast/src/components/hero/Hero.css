@@ -284,7 +284,12 @@
   .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }
 }
 @media (max-width: 720px) {
-  .hero { padding-top: 24px; }
+  /* 20, not 24, because on a phone this is the SAME BAR the menu sheet
+     draws when it opens, and the sheet's own top is
+     `max(var(--sheet-safe-t, 0px), 20px)` (Nav.css). At 24 the logo
+     jumped 4px up the moment the sheet opened and back down when it
+     closed. Closed and open now start the row on the same line. */
+  .hero { padding-top: 20px; }
 
   /* The eyebrow is a 29-character string set at a flat 16px with
      `white-space: nowrap` (global.css), so it has ONE width and does not care

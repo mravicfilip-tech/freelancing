@@ -36,6 +36,7 @@
    `color`, so the codebase file is an exact match and two more near-duplicate
    SVGs did not need to land in src/assets. */
 
+import type { CSSProperties } from 'react';
 import { LiveDot } from '../LiveDot';
 import { Icon } from '../Icon';
 import { Nav } from '../Nav';
@@ -59,6 +60,14 @@ import logoPredictfun from '../../assets/about/logo-predictfun.png';
 import logoMagicmarkets from '../../assets/about/logo-magicmarkets.png';
 import '../hero/Hero.css';
 import './About.css';
+
+/* <Icon> writes `w`/`h` inline, which beats any stylesheet rule without
+   `!important` -- so a mark given a box in `--u` would sit at a hard 26 x 30
+   at every width while the table around it scaled, and clip against its own
+   window. Passing the two properties back as `undefined` erases the inline
+   values and hands the box to About.css, which is the same `cssBox` Pillars.tsx
+   uses and for the same reason. */
+const cssBox = { width: undefined, height: undefined } as CSSProperties;
 
 /* ── 1. Hero ──────────────────────────────────────────────────────────────── */
 
@@ -179,7 +188,7 @@ function Brand() {
           <h2 className="eyebrow" id="ab-brand-title"><LiveDot />About Phorcast</h2>
           <div className="ab-brand__card">
             <div className="ab-brand__copy">
-              <Icon src={mark} w={33.827} h={39.432} className="ab-brand__mark" />
+              <Icon src={mark} w={33.827} h={39.432} className="ab-brand__mark" style={cssBox} />
               <div className="ab-brand__prose">
                 <p>
                   <strong>Phorcast</strong> is a prediction market platform where you trade on what happens next. Take a position on hundreds of markets across sports, crypto, stocks, forex, indices, commodities, and real-world assets from the next five minutes to the next twelve months.
@@ -289,7 +298,7 @@ function Compare() {
                         <span className={`ab-cmp__logo ${b.box}`}>
                           {b.logo
                             ? <img src={b.logo} alt="" loading="lazy" decoding="async" />
-                            : <Icon src={mark} w={26} h={30} className="ab-cmp__mark" />}
+                            : <Icon src={mark} w={26} h={30} className="ab-cmp__mark" style={cssBox} />}
                         </span>
                         <span className="ab-cmp__name">{b.name}</span>
                       </th>

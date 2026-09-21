@@ -594,8 +594,14 @@
    and it is only the frame's number at the frame's proportions: this band is
    `justify-content: center` inside a 722-unit min-height, so where the
    eyebrow falls inside it depends on how tall the statement has wrapped.
-   Measured, the eyebrow sits 110px below the band top at 1600, 44 at 1100 and
-   24 at 390 -- while the field's own top moves the other way, 79 / 54 / 18.
+   Measured after the band was taken to a screen tall, the eyebrow sits 292px
+   below the band top at 1600, 321 at 1100 and 138 at 390 -- three numbers that
+   share no pattern, because each is the leftover of a different wrap centred
+   in a different viewport. They were 110 / 44 / 24 when the band was sized to
+   the frame's 722 units; the rule did not change and did not need to, which is
+   the whole argument for hanging the field off the eyebrow rather than off the
+   band. A number stated from the band goes stale when the band is resized. One
+   stated from the label does not.
    Stated from the band, the arc lands 31px above the label at 1600, 10px
    BELOW it at 1100 and 6 above at 390. It crossed the type at 1100 and at
    720, where the label measured 3.40:1 in dark and 3.82:1 in light on the lit

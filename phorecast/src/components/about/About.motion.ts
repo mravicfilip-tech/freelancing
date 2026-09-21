@@ -105,7 +105,7 @@ function outOfBlur(
  */
 export function buildAboutHero({ q, tl }: SectionMotion) {
   const { cue, step } = schedule();
-  const glow = q('.hero__bg')[0];
+  const glow = q('.ab-ground')[0];
   const title = q('.ab-hero__title')[0];
 
   if (glow) {

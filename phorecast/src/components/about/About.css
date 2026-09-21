@@ -24,11 +24,33 @@
    dark rendering is provably what the design says, and the light block at the
    foot of this file is the ONLY place they move.
 
-   NO GLOW ANYWHERE BUT THE GROUND. The frame draws a shader ember behind the
-   ABOUT PHORCAST card (531:234) and a second ellipse cluster behind CAST YOUR
-   CONVICTION (531:158). Neither is here. The one light field on this page is
-   the hero's, and it is the landing hero's own -- same five discs, same
-   horizon, same tokens, re-anchored below. */
+   THE PAGE'S GROUND IS ITS OWN, and that is the one thing that changed here.
+   It used to be the landing hero's: `.hero` on the ground wrapper, so that
+   Hero.css's `--hero-g-*` ramp and its light block applied, with the four box
+   properties undone below. That borrow is GONE. The reason is not style, it
+   is that they are different drawings. The landing frame's ground is five
+   upright 1539px discs cut by a 6036px black horizon; this frame's, 531:149,
+   is five ellipses -- two of them 255 x 519 and rotated, none of them a
+   circle, no horizon at all -- and no amount of re-anchoring turns one into
+   the other. Painting this page with that one is what the client saw as a
+   broad wash flattening the middle of the page.
+
+   So all three of the frame's backgrounds are built here and the page states
+   its own palette:
+
+     531:149  Background Container, 1920 x 1154 at the top, five ellipses.
+     531:158  Container, 1170 x 664, four ellipse outlines behind CAST YOUR
+              CONVICTION.
+     531:234  Ellipses, three discs inside the ABOUT PHORCAST card.
+
+   The second and third were left out before under this project's standing
+   no-glow rule. That rule is lifted for this page's ground and for nothing
+   else: these are the frame's own fields at the frame's own values, not a
+   bloom invented to fill space.
+
+   WHAT THE BORROW WAS CARRYING, restated below rather than inherited:
+   `position: relative`, `container-type: inline-size` and `overflow: hidden`
+   on the ground box, and the ramp itself, which is now `--ab-g-*` here. */
 
 .about-page {
   position: relative;
@@ -59,7 +81,96 @@
      rows slide through it; it cannot be `var(--panel)`, which is a different
      colour from the card it would be sitting in. */
   --ab-solid: #1d1d1c;
+
+  /* THE GROUND'S PALETTE, and it is the frame's own six hexes.
+     -----------------------------------------------------------------------
+     531:149, 531:158 and 531:234 between them use six paints and no more, so
+     they are named once here and referenced by class from the three drawings
+     in About.tsx. Dark is what Figma states, character for character, so this
+     block is provably the design; the light block at the foot of this file is
+     the only place any of it moves.
+
+       --ab-g-night  #0f0e0d  the stop an ellipse dissolves INTO. It is --bg
+                              exactly, i.e. the page: not a dark colour but
+                              "no light here", which is why it is var(--page)
+                              and follows the ground on paper. Hero.css makes
+                              the same call about the same hex and says so.
+       --ab-g-blood  #7e0202  the deep red half of the top ellipse.
+       --ab-g-rust   #6b2b0e  the dim end of the second ellipse's ramp.
+       --ab-g-ember  #d1541c  the field's main orange. The one that does most
+                              of the work on all three backgrounds.
+       --ab-g-peach  #f99e57  the warm highlight.
+       --ab-g-flare  #ff632a  the arcs' stroke in 531:158.
+     and two that are only ever drawn at zero alpha -- the ramps' outer stops
+     -- which is why they are here as themselves and need nothing on paper:
+       --ab-g-paper  #f9f0e8
+       --ab-g-ash    #d5d2d0  */
+  --ab-g-night: var(--page);
+  --ab-g-blood: #7e0202;
+  --ab-g-rust: #6b2b0e;
+  --ab-g-ember: #d1541c;
+  --ab-g-peach: #f99e57;
+  --ab-g-flare: #ff632a;
+  --ab-g-paper: #f9f0e8;
+  --ab-g-ash: #d5d2d0;
+
+  /* THE EYEBROW'S INK, and it is this page's own rather than --ink-muted.
+     -----------------------------------------------------------------------
+     Every band here opens with one, and --ink-muted does not carry them. In
+     dark it is #626262, which is 3.16:1 on the flat page before any light
+     reaches it -- the documented AA failure LIGHTMODE.md 1.2 leaves standing
+     on the landing page -- and this page then puts a lit field under three of
+     the six. In light it is #7a716c, which is 4.63:1 on paper and drops to
+     4.37 where the CAST YOUR CONVICTION arcs warm the ground beneath it.
+     Both measured against the ground each label is ACTUALLY painted on, with
+     the type hidden, at 1600, 1100, 720, 390 and 360.
+
+     --ink-muted itself is not touched. It is the eyebrow ink on six landing
+     bands, every quiet label in the nav, the footer and the FAQ, and the
+     table's column names; moving it would be a site-wide type change made
+     from an About-page defect, and the landing page is held pixel-identical.
+     It is also, in dark, a deliberate decision recorded elsewhere. This is
+     the About page's ground, so this is the About page's token.
+
+     THE VALUES, and both are the SAME COLOUR moved, not a new one. Dark's
+     #626262 is neutral grey and light's #7a716c is warm grey; each keeps its
+     own family and travels along it -- lighter on black, darker on paper.
+
+       dark   #8d8d8d   5.81:1 on the page, 5.21:1 on the warmest ground any
+                        eyebrow sits on. Between --ink-muted and --ink-2, so
+                        it is still a step below body copy and four steps
+                        below the #fffbf8 heading under it.
+       light  #6f6560   5.57:1 on paper, 5.26:1 on the arc-warmed ground.
+                        Below --ink-2's #5e5651 in weight of colour, so the
+                        label still reads quieter than the copy beside it.
+
+     NOTHING WAS BOUGHT WITH SIZE OR WEIGHT, because nothing had to be. The
+     eyebrow is 16px/500 uppercase against a display heading of 24 to 72px at
+     full ink: the hierarchy is carried by the 3x size difference and the
+     case, and both inks above leave the heading 3x further from the ground
+     than the label is. */
+  --ab-eyebrow: #8d8d8d;
 }
+
+/* It reaches the FAQ's eyebrow too, and that is deliberate: App.tsx mounts
+   <Faq /> INSIDE `.about-page`, so "Frequently asked" is the sixth label on
+   this page and sits on this page's ground. The selector is scoped to
+   `.about-page`, so the same component on the landing page is untouched. */
+.about-page .eyebrow { color: var(--ab-eyebrow); }
+
+/* The six paints reaching the three drawings. Classes rather than `fill=`
+   attributes so the hex stays in this file, next to the block that moves it
+   for paper. */
+.ab-stop--night { stop-color: var(--ab-g-night); }
+.ab-stop--blood { stop-color: var(--ab-g-blood); }
+.ab-stop--rust { stop-color: var(--ab-g-rust); }
+.ab-stop--ember { stop-color: var(--ab-g-ember); }
+.ab-stop--flare { stop-color: var(--ab-g-flare); }
+.ab-stop--paper { stop-color: var(--ab-g-paper); }
+.ab-stop--ash { stop-color: var(--ab-g-ash); }
+.ab-stop--clear { stop-color: #fff; }
+.ab-fill--ember { fill: var(--ab-g-ember); }
+.ab-fill--peach { fill: var(--ab-g-peach); }
 
 /* The query root for every band. `.container--wide`'s content box IS the 1800
    column, so 100cqw inside it is the column and `--u` on the child below is
@@ -110,96 +221,87 @@
   position: relative;
   /* The query root the ground measures itself against. It is the section's
      own width -- the document's, without the scrollbar -- which is the basis
-     `.hero__bg`'s `--u: calc(100cqw / 1920)` expects. */
+     `--ground-u: 100cqw / 1920` expects. */
   container-type: inline-size;
 
-  /* ONE UNIT FOR THE GROUND, and both the box and the field read it. They
-     have to: the box carries `overflow: hidden` (it is `.hero`), so a field
-     sized on a different basis is simply clipped to whatever the box came
-     out as. That is what happened on a phone -- the field was pinned to
-     0.62px and the box was still on 100cqw/1920, so 715px of light was cut
-     to 234 and what reached the screen was a smear in one corner. */
+  /* ONE UNIT FOR THE GROUND, and the box, the clip and the drawing all read
+     it. They have to: the clip carries `overflow: hidden`, so a drawing sized
+     on a different basis is simply cut to whatever the clip came out as. */
   --ground-u: calc(100cqw / 1920);
   padding-top: 40px;          /* the nav sits 40 from the top, as on the landing page */
 }
 
-/* The ground's box. `.hero` on this element is a deliberate borrow -- see the
-   note at its call site in About.tsx -- so these four declarations are the
-   whole of undoing what `.hero` means as a LAYOUT and keeping only what it
-   means as a PALETTE. It also keeps `.hero`'s `container-type: inline-size`,
-   which is what makes `.hero__bg`'s own `--u: calc(100cqw / 1920)` resolve
-   against the viewport exactly as it does on the landing page, and its
-   `overflow: hidden`, which clips the field to its 1154. */
-.ab-hero__ground {
+/* THE GROUND — 531:149 "Background Container".
+   -------------------------------------------------------------------------
+   1920 x 1154 at frame y 0, and frame y 0 is the top of this section: the
+   navbar sits at 40 in the frame and `.ab-hero` pads 40 before it here, so
+   the two origins are the same edge and the field can simply be top-anchored.
+   That is the whole anchoring rule, and it is the frame's, which is the point
+   -- the ground the old borrow needed was re-anchored twice (once for
+   desktop, once again under 720) to keep its light off the CHOOSE AN EVENT
+   eyebrow, because that ground's sun opened where this frame's does not.
+   This one does not need the correction: the Circle group starts at x 320 and
+   its light is centred right of the middle, and the eyebrow is at x 0.
+
+   Three boxes, because the frame is three boxes and each does one job:
+     .ab-ground        the 1154 band, which is what spills past the hero into
+                       CHOOSE AN EVENT -- the frame puts the light there, so
+                       `.ab-hero` does not clip and the bands below carry a
+                       z-index.
+     .ab-ground__clip  531:150, the 1920 x 1140 window that cuts the drawing.
+     .ab-ground__spin  531:152's -90deg. The rotation lives here so the SVG in
+                       About.tsx stays in the export's own coordinates. */
+.ab-ground {
   position: absolute;
-  inset: 0 0 auto 0;
-  min-height: 0;
-  padding-top: 0;
-  background: none;
-  pointer-events: none;
-  height: calc(1154 * var(--ground-u));
-}
-
-/* THE GROUND, REUSED. `.hero__bg` and its five `.hero__glow--*` children are
-   the landing hero's, imported from Hero.css by About.tsx: same discs, same
-   radii, same blur, same gradients, same tokens, same light-mode inversion.
-   Only the anchoring is this page's.
-
-   TWO CHANGES AND NO THIRD. (1) The field is top-anchored and 1154 design px
-   tall, because on this frame the light starts at the top of the document
-   rather than rising into the bottom of a 1080 hero. (2) The group is
-   translated by (-638, -194) and the horizon dropped 108 -- one rigid
-   translation of a ramp that was tuned as a unit, plus a lower cut, which is
-   the same move Hero.css already makes per slide (`.hero__bg--account`,
-   `.hero__bg--future`). Nothing about the ramp itself is touched, so the
-   light block in Hero.css inverts this page exactly as it inverts that one.
-
-   It is allowed to spill past the hero into CHOOSE AN EVENT -- that is where
-   the frame puts it -- which is why `.ab-hero` does not clip and the bands
-   below carry a z-index. */
-.hero__bg--about {
-  --u: var(--ground-u);
+  left: 0;
+  right: 0;
   top: 0;
-  bottom: auto;
-  height: 100%;
+  height: calc(1154 * var(--ground-u));
+  pointer-events: none;
 }
-/* THE FIELD IS ANCHORED TO THE COPY, not to the top of the document, and it
-   is worth saying why because `top: 0` is the obvious thing and it is wrong.
-
-   The frame has the hero's copy ending at 480 and the sun opening at 507, so
-   the light begins just under the Get Started button and the CHOOSE AN EVENT
-   eyebrow -- which is --ink-muted, and --ink-muted on a lit ground is about
-   1.5:1 -- sits in the dark left shoulder of the composition. Reproduce that
-   with a top-anchored field and the relationship only holds at 1920: the
-   field scales with the viewport but the copy does NOT, because type is
-   clamped and the gaps have floors. Measured at 1100, the eyebrow had climbed
-   from 49% of the field's height to 29% of it and was sitting in the middle
-   of the sun.
-
-   So the field hangs off the bottom of the hero section instead. 1154 - 480
-   is the distance from the copy's end to the field's end in design pixels;
-   stating it as the `bottom` inset puts the sun 27 design px under the button
-   at every width, which is the frame's own relationship rather than one that
-   is only true at one size. */
-.ab-hero__ground { top: auto; bottom: calc(-674 * var(--ground-u)); }
-/* THE DISCS DO NOT NEED A COMPOSITOR PROMOTION HERE, and taking it off is
-   worth more than it sounds. `.hero__glow` carries `will-change: transform`
-   in Hero.css, which puts each of the five 1539px discs on its own layer so
-   the landing hero's entrance can move them cheaply. Nothing moves them on
-   this page: the entrance tweens `.hero__bg`, the wrapper, as one object, and
-   there is no loop at all. A standing promotion with nothing to promote is
-   five blurred layers the renderer re-rasterises for free -- measured at 1600
-   in headless Chromium, 3fps with the promotion against 11 without it, on a
-   page that runs at 59 with the field off screen. GSAP promotes the wrapper
-   for the length of its own tween by itself. */
-.hero__bg--about .hero__glow { will-change: auto; }
-
-.hero__bg--about .hero__glow--ember  { left: calc(150 * var(--u)); top: calc(180 * var(--u)); }
-.hero__bg--about .hero__glow--peach  { left: calc(-152 * var(--u)); top: calc(638 * var(--u)); }
-.hero__bg--about .hero__glow--orange { left: calc(164 * var(--u)); top: calc(507 * var(--u)); }
-.hero__bg--about .hero__glow--core   { left: calc(362 * var(--u)); top: calc(546 * var(--u)); }
-.hero__bg--about .hero__glow--cream  { left: calc(148 * var(--u)); top: calc(795 * var(--u)); }
-.hero__bg--about .hero__horizon      { top: calc(1060 * var(--u)); }
+.ab-ground__clip {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: calc(1920 * var(--ground-u));
+  height: calc(1140 * var(--ground-u));
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+/* 531:151's box is 1543.058 x 1057.047 at (320, 222.52) in the clip, and
+   531:152 centres an unrotated 1057.047 x 1543.058 drawing in it before
+   turning it a quarter turn. Stating the unrotated box and letting the
+   transform do the quarter turn is the same two steps the frame takes, so
+   the numbers below are the frame's and not a rotation worked out by hand:
+     left  1091.529 - 1057.047/2 = 563.0055
+     top    751.0435 - 1543.058/2 = -20.4855 */
+.ab-ground__spin {
+  position: absolute;
+  left: calc(563.0055 * var(--ground-u));
+  top: calc(-20.4855 * var(--ground-u));
+  width: calc(1057.047 * var(--ground-u));
+  height: calc(1543.058 * var(--ground-u));
+  transform: rotate(-90deg);
+}
+/* The export is 1626.06 tall for a 1543.058 box -- the blur's own bleed,
+   which Figma states as inset -4.31% / -1.07% and which is 66.51 above the
+   box and 16.51 below it. `preserveAspectRatio="none"` on the element plus
+   this box is what makes the viewBox scale: one width in --ground-u carries
+   the ellipse radii, the rotations AND the gaussian sigma with it. */
+.ab-ground__art {
+  position: absolute;
+  left: 0;
+  top: calc(-66.51 * var(--ground-u));
+  width: calc(1057.047 * var(--ground-u));
+  height: calc(1626.06 * var(--ground-u));
+  display: block;
+}
+/* NO COMPOSITOR PROMOTION ON THE DRAWING. The old ground carried
+   `will-change: transform` on five separately-blurred divs, inherited from
+   Hero.css, where the landing entrance needs it. Nothing moves these: the
+   entrance tweens `.ab-ground`, the wrapper, as one object, and there is no
+   loop on this page at all. GSAP promotes the wrapper for the length of its
+   own tween by itself. */
 
 .ab-hero__inner { position: relative; z-index: 1; }
 .ab-hero__copy {
@@ -314,6 +416,45 @@
   background: var(--ab-veil);
   overflow: hidden;
 }
+/* 531:234 "Ellipses" — the field behind the product shot.
+   -------------------------------------------------------------------------
+   Three r=532.138 discs at sigma 75.585 in a 1282.8 x 1381 box that starts at
+   the card's 871 mark and runs from 420.3 ABOVE the card to 960.7 below it.
+   Those four numbers are the frame's; the card's own `overflow: hidden` is
+   what crops them, which is exactly what crops them in Figma, so the visible
+   sliver is the design's and not a re-composition of it.
+
+   871 is the same mark `.ab-brand__visual` starts at, and that is not a
+   coincidence: 531:233 "root" -- the three rounded rectangles that ARE the
+   laptop and the two panels -- starts there too. The field is first in the
+   card's DOM and both layers sit at z-index 0, so paint order is DOM order
+   and the discs land under the photograph exactly as the frame stacks them.
+
+   It is the reason the right half of this card is no longer a dark
+   photograph on a dark plate. */
+.ab-brand__field {
+  position: absolute;
+  z-index: 0;
+  left: calc(871 * var(--u));
+  top: calc(-420.308 * var(--u));
+  width: calc(1282.801 * var(--u));
+  height: calc(1381 * var(--u));
+  pointer-events: none;
+}
+/* `overflow: visible`, and it is the difference between this field reading
+   as the frame's and reading as a rectangle of orange.
+
+   531:234's box is the BBOX OF ITS THREE CIRCLES and nothing more -- Figma
+   does not clip it, so each disc's sigma-75.6 blur bleeds 151.17 past every
+   edge, and the left bleed is the only part of this field the card ever shows:
+   the product shot is opaque from the 871 mark rightward, so what the eye
+   gets is the disc's left shoulder in the gap beside it. Clipped to the
+   viewBox that shoulder is a hard vertical edge at 871 instead of a fade, and
+   the glow disappears behind the photograph entirely. Visible, the card's own
+   `overflow: hidden` does the cropping -- which is exactly what crops it in
+   Figma. */
+.ab-brand__art { display: block; width: 100%; height: 100%; overflow: visible; }
+
 .ab-brand__copy {
   position: relative;
   z-index: 1;
@@ -387,6 +528,7 @@
 /* ── 4. Cast your conviction ──────────────────────────────────────────────── */
 
 .ab-conv__inner {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -395,6 +537,60 @@
   gap: calc(20 * var(--u));
   min-height: calc(722 * var(--u));
   padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(40 * var(--u));
+}
+
+/* 531:158 "Container" — the four arcs behind this band.
+   -------------------------------------------------------------------------
+   1170 x 664 at frame (375, 1772.87). The band itself (531:241) is 1800 x 722
+   at frame (60, 1676.31), so in the band's own box the field is 630 narrower
+   -- 315 each side, i.e. dead centre of the column -- and starts 96.56 down
+   it. It is four ellipse OUTLINES, 1.36px, each stroked with the same clear
+   -> #ff632a -> clear ramp across its own width and blurred at sigma 5, and
+   the frame mirrors the drawing vertically. What reaches the page is one fine
+   bright arc across the TOP, apex over the eyebrow, and a broad soft one at
+   the bottom of the band.
+
+   IT IS ANCHORED TO THE LABEL, NOT TO THE BAND, and that is the whole reason
+   `.ab-conv__crown` exists. 96.56 from the band's top is the frame's number
+   and it is only the frame's number at the frame's proportions: this band is
+   `justify-content: center` inside a 722-unit min-height, so where the
+   eyebrow falls inside it depends on how tall the statement has wrapped.
+   Measured, the eyebrow sits 110px below the band top at 1600, 44 at 1100 and
+   24 at 390 -- while the field's own top moves the other way, 79 / 54 / 18.
+   Stated from the band, the arc lands 31px above the label at 1600, 10px
+   BELOW it at 1100 and 6 above at 390. It crossed the type at 1100 and at
+   720, where the label measured 3.40:1 in dark and 3.82:1 in light on the lit
+   stroke.
+
+   So the crown is the eyebrow's own box and the field hangs off it at the
+   frame's own 35.4 design px -- WITH A FLOOR. The gap has to have one,
+   because it is the only distance in this band that is negotiating with type
+   rather than with geometry: the eyebrow is a fixed 16px at every width and
+   the arc's blur is +/-15 design px, so below about 1400 the unit shrinks the
+   clearance faster than the type it has to clear. 44px is that clearance
+   measured at the tightest width, and above it the frame's own number is the
+   larger of the two and wins. */
+.ab-conv__crown { position: relative; }
+.ab-conv__field {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: calc(-1 * max(35.438 * var(--u), 44px));
+  width: calc(1170 * var(--u));
+  height: calc(664 * var(--u));
+  transform: translateX(-50%) scaleY(-1);
+  pointer-events: none;
+}
+/* The export is 1250 x 744 for a 1170 x 664 box: Figma states the blur's
+   bleed as inset -3.42% / -6.02%, which is 40 each side and 39.97 top and
+   bottom. */
+.ab-conv__art {
+  position: absolute;
+  left: calc(-40 * var(--u));
+  top: calc(-39.97 * var(--u));
+  width: calc(1250 * var(--u));
+  height: calc(744 * var(--u));
+  display: block;
 }
 
 /* THE STATEMENT, and the one piece of paint that is not a flat colour.
@@ -747,56 +943,48 @@
   .ab-choose__row { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* THE GROUND ON A PHONE.
+/* THE GROUND BELOW 1100, and this is the correction the frame cannot make
+   for itself.
    -------------------------------------------------------------------------
-   Hero.css pins `--u` to 0.45px below 720 so the landing hero keeps a glow at
-   all rather than a 234px smudge, and pinning the unit is the right idea
-   here too. What does not carry over is the horizontal anchoring: the discs
-   are placed from the LEFT EDGE of a 1920 frame, and once the unit stops
-   being viewport/1920 those left offsets stop meaning "centre of the
-   composition". Measured at 390 with the landing's own 0.45px: the sun's
-   centre landed 478px from the left of a 390px screen, i.e. off the side, and
-   what reached the page was the disc's left shoulder in the top-right corner.
+   531:149 is anchored to the top of the document because that is where the
+   frame anchors it, and at 1920 that is right twice over: the light opens
+   below the hero's copy AND it opens at x 254, which is 194 design px right
+   of the content column's left edge, so the CHOOSE AN EVENT label -- which
+   starts AT that edge -- sits in the dark left shoulder of the composition.
 
-   So the five are re-anchored from the GROUP's centre instead of the frame's
-   edge. 933.5 is the sun's own centre in design pixels (its left 164 plus
-   half its 1539), every disc keeps its exact offset from that, and the whole
-   ramp is simply translated so the sun sits at 50%. Nothing about the ramp
-   itself changes -- same discs, same radii, same blur, same order.
+   Neither half of that survives a narrow viewport, because the ground scales
+   and the copy does not. The headline is clamped type and the gaps have
+   floors, so the hero grows from 409px tall at 1600 to 544 at 360 while the
+   field shrinks from 962 to 715. Measured with the type hidden, the eyebrow's
+   own ground went from rgb(15,14,13) at 1600 to rgb(203,92,40) at 720 -- the
+   centre of the sun -- which is 1.24:1 under any ink an eyebrow can carry.
+   Horizontally it is just as bad: pinning the unit at 0.62 makes the clip
+   1190px wide on a 390px screen, so the group that starts 320 into a 1920
+   frame starts 202px OFF THE LEFT of the phone, and the whole label is inside
+   it.
 
-   0.62px rather than 0.45: the About hero is a five-line headline, a lede and
-   a button, which is about 700px of content at 390, and a 519px field would
-   have stopped halfway down the lede. At 0.62 the field is 715px, which is
-   the same relationship the desktop frame has between its light and its
-   copy. */
+   So below 1100 the field hangs from the BOTTOM of the hero section instead
+   of the top of the document, which restores the relationship the frame has
+   rather than the coordinate it states. 986 is measured: it puts the field's
+   top 104px above the hero's bottom edge, and the field's own light does not
+   become perceptible until 377 design px into it, so the light opens 55px
+   below the eyebrow's last line and 30 below the top of the first card --
+   which is exactly where the frame opens it at 1920, on the cards and not on
+   the label. One number, and it holds at 1100, 900, 720, 500, 390 and 360
+   because the hero's bottom is what it is measured from.
+
+   THE UNIT IS PINNED BELOW 720 as well. At 390 a viewport-derived unit is
+   0.203px, which makes the Circle group 313 x 215 -- a thumbnail of a field
+   on a page whose hero copy is seven lines tall. Hero.css pins its own to
+   0.45 below 720 for the same reason and records the measurement; 0.62 is
+   this page's number, because at 0.62 the 1154 band is 715px against about
+   700px of hero copy, which is the same relationship the 1920 frame has
+   between its light and its copy. */
+@media (max-width: 1100px) {
+  .ab-ground { top: auto; bottom: calc(-986 * var(--ground-u)); }
+}
 @media (max-width: 720px) {
   .ab-hero { --ground-u: 0.62px; }
-  /* AND THE FIELD MOVES DOWN, anchored to the bottom of the copy rather than
-     to the top of the document.
-
-     On the 1920 frame the hero's copy is 300 of the field's 1154 and the sun
-     opens at 507, so the light begins well below the Get Started button. At
-     390 the same copy is five lines of headline and four of lede -- about 560
-     of a 715 field -- so a top-anchored field puts the sun's core straight
-     through the lede, and grey body copy on a lit ground is not body copy any
-     more. It was measured at three units and washed out at all three.
-
-     `bottom` places the field so the sun opens 188px BELOW the hero section --
-     that is, below the Get Started button AND below the CHOOSE AN EVENT
-     eyebrow, which is the other thing the light can eat. The eyebrow is
-     --ink-muted, and --ink-muted on a lit ground is about 1.5:1. 188px of
-     clearance is 120 more than the 68px the disc's own blur spills upward,
-     so the label is on paper-dark ground and the light begins on the first
-     card. The same relationship the frame has at 1920, restated against
-     content that is two and a half times taller. */
-  .ab-hero__ground { top: auto; bottom: calc(-950 * var(--ground-u)); }
-  .hero__bg--about .hero__glow--ember  { left: calc(50% - 783.5 * var(--u)); }
-  .hero__bg--about .hero__glow--peach  { left: calc(50% - 1085.5 * var(--u)); }
-  .hero__bg--about .hero__glow--orange { left: calc(50% - 769.5 * var(--u)); }
-  .hero__bg--about .hero__glow--core   { left: calc(50% - 571.5 * var(--u)); }
-  .hero__bg--about .hero__glow--cream  { left: calc(50% - 785.5 * var(--u)); }
-  /* The horizon is already centred on the viewport in Hero.css and needs no
-     translation; only its cut follows the field down. */
 }
 
 /* THE TABLE ON A PHONE.
@@ -886,12 +1074,14 @@
   --ab-veil: rgba(26, 21, 18, 0.05);
   --ab-card-line: var(--line);
   --ab-solid: #f4f1ee;
+  --ab-eyebrow: #6f6560;
   }
 }
 :root[data-theme='light'] .about-page {
   --ab-veil: rgba(26, 21, 18, 0.05);
   --ab-card-line: var(--line);
   --ab-solid: #f4f1ee;
+  --ab-eyebrow: #6f6560;
 }
 
 /* THE FIFTH THING, and it is a mask rather than a colour.

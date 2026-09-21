@@ -485,7 +485,7 @@
 .ab-cmp__table .ab-cmp__crit--head {
   /* Level with the logos, which are at the top of their own cells. */
   vertical-align: top;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   font-size: clamp(12px, 0.8333vw, 16px);
   letter-spacing: 0;
@@ -554,7 +554,7 @@
 .ab-cmp__name {
   display: block;
   margin-bottom: calc(46 * var(--u));
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   font-size: clamp(11px, 0.8333vw, 16px);
   line-height: 1.2;

@@ -13,10 +13,22 @@ import './Footer.css';
 // were already here. The footer's MARKETS column is plain text, so it just
 // takes another entry -- unlike the icon rows elsewhere on the page, which
 // would need an asset that does not exist in src/assets.
+/* A column entry is usually just its label, and its href is that label
+   slugged -- every one of these is a placeholder pointing at a fragment that
+   does not exist yet. About is the exception: that page is real now and lives
+   at a route, so the entry carries its own href rather than being slugged into
+   a dead `#about`. Written as a union so the other fifteen stay one string
+   each and only the ones with somewhere to go grow a second field. */
+type Link = string | { label: string; href: string };
+
+const label = (l: Link) => (typeof l === 'string' ? l : l.label);
+const href = (l: Link) =>
+  typeof l === 'string' ? `#${l.toLowerCase().replace(/\s+/g, '-')}` : l.href;
+
 const COLUMNS = [
   { title: 'Product', links: ['Markets', 'Fees', 'How it works', 'Security'] },
   { title: 'Markets', links: ['Crypto', 'Forex', 'Stocks', 'Commodities', 'Indices', 'Sports'] },
-  { title: 'Company', links: ['About', 'Careers', 'Blog', 'Brand'] },
+  { title: 'Company', links: [{ label: 'About', href: '/about' }, 'Careers', 'Blog', 'Brand'] },
   { title: 'Resources', links: ['Docs', 'API', 'Status', 'Support', 'FAQs'] },
 ];
 
@@ -75,7 +87,7 @@ export function Footer() {
                 <h2 className="footer__col-title">{c.title}</h2>
                 <ul className="footer__links">
                   {c.links.map((l) => (
-                    <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}><Roll>{l}</Roll></a></li>
+                    <li key={label(l)}><a href={href(l)}><Roll>{label(l)}</Roll></a></li>
                   ))}
                 </ul>
               </div>

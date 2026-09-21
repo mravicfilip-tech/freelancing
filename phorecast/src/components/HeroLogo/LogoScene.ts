@@ -93,7 +93,7 @@ export class LogoScene {
   private raf = 0;
   private running = false;
   private disposed = false;
-  private hostVisible = true;
+  private markVisible = true;
   private resizeTimer = 0;
   private resizeObserver: ResizeObserver | null = null;
   private intersection: IntersectionObserver | null = null;
@@ -230,9 +230,9 @@ export class LogoScene {
     if (reducedMotion) return;
 
     // The wake-up, not the gate: `updateRunning` re-reads the box itself, so
-    // this only has to say "something changed, look again". See hostOnScreen().
+    // this only has to say "something changed, look again". See markOnScreen().
     this.intersection = new IntersectionObserver(() => this.updateRunning(), { threshold: 0 });
-    this.intersection.observe(host);
+    this.intersection.observe(this.markBox);
     document.addEventListener('visibilitychange', this.onVisibility);
 
     if (!touch) {
@@ -248,7 +248,10 @@ export class LogoScene {
         scrub: true,
         onUpdate: (self) => {
           this.frame.scroll = self.progress;
-          if (!this.running) {
+          // Only draw the scrubbed pose if there is somewhere to see it. The
+          // loop re-applies the pose on its first frame back, so a mark that
+          // was scrolled past and is scrolled to again is still correct.
+          if (!this.running && this.markOnScreen()) {
             this.applyPose();
             this.renderOnce();
           }
@@ -259,8 +262,13 @@ export class LogoScene {
 
   private readonly onVisibility = () => this.updateRunning();
 
+  /** The box the mark is drawn into -- the same one `layout()` sizes the renderer to. */
+  private get markBox(): HTMLElement {
+    return this.opts.canvas.parentElement ?? this.opts.host;
+  }
+
   /**
-   * Is the host on screen RIGHT NOW? Read from the box, not from the
+   * Is the MARK on screen RIGHT NOW? Read from the box, not from the
    * IntersectionObserver.
    *
    * The observer is the correct thing to wake the scene up and the wrong thing
@@ -278,8 +286,8 @@ export class LogoScene {
    * One rect read per frame is cheaper than any single one of those draws, and
    * it cannot be starved by them.
    */
-  private hostOnScreen(): boolean {
-    const r = this.opts.host.getBoundingClientRect();
+  private markOnScreen(): boolean {
+    const r = this.markBox.getBoundingClientRect();
     const h = window.innerHeight || document.documentElement.clientHeight;
     return r.bottom > 0 && r.top < h && r.width > 0 && r.height > 0;
   }
@@ -292,13 +300,13 @@ export class LogoScene {
   private readonly onPointerLeave = () => this.pointerTarget.set(0, 0);
 
   private updateRunning() {
-    // Ask the box rather than trusting `hostVisible`. The observer's entry is a
-    // snapshot of whenever the callback was queued, and `hostVisible` starts
+    // Ask the box rather than trusting `markVisible`. The observer's entry is a
+    // snapshot of whenever the callback was queued, and `markVisible` starts
     // life as `true` -- so a scene that finished building while the reader was
     // already past the hero used to start drawing anyway, and kept drawing
     // until an observation could be delivered.
-    if (!this.opts.reducedMotion) this.hostVisible = this.hostOnScreen();
-    const shouldRun = !this.disposed && !this.opts.reducedMotion && this.hostVisible && document.visibilityState === 'visible';
+    if (!this.opts.reducedMotion) this.markVisible = this.markOnScreen();
+    const shouldRun = !this.disposed && !this.opts.reducedMotion && this.markVisible && document.visibilityState === 'visible';
     if (shouldRun && !this.running) this.start();
     else if (!shouldRun && this.running) this.stop();
   }
@@ -326,10 +334,10 @@ export class LogoScene {
     this.raf = requestAnimationFrame(this.tick);
 
     // Off screen, stop here -- before the draw, not after an observation has
-    // managed to get through. See hostOnScreen(). The observer stays wired and
+    // managed to get through. See markOnScreen(). The observer stays wired and
     // is what starts the loop again when the hero comes back.
-    if (!this.hostOnScreen()) {
-      this.hostVisible = false;
+    if (!this.markOnScreen()) {
+      this.markVisible = false;
       this.stop();
       return;
     }

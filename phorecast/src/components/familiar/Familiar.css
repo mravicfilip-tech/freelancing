@@ -506,46 +506,91 @@
    actually starts: `calc(32 * var(--u))` at 1400-base crosses under 16px at
    exactly 700px wide.
 
-   WHAT IS GONE ON A PHONE, and why:
+   WHAT THIS BLOCK NOW DRAWS, AND WHERE IT CAME FROM.
 
-   - THE TWO GLASS MARKET CARDS (ECB, NVDA). A 200 x 160 card carrying four
-     type sizes cannot sit two-up inside a 350px column without every label
-     falling under 10px — which is the exact fault this block is fixing, so
-     shrinking them to fit would be answering the complaint with more of it.
-     They are also the one thing here that repeats: the handset's own screen is
-     already a market list with prices and moves on it, at a size a person can
-     read. They are `aria-hidden` decoration, so nothing leaves the document.
-     The ambient loop keeps all three of its acts without them — Act I still
-     has the leaderboard re-sort inside the phone, and Acts II and III were
-     always the phone and the category strip.
+   The order and the contents below are Figma frame `538:4601`, the section's
+   own mobile artboard: 394 x 1081, named "Familiar Trading. Better
+   Infrastructure.", 30px gutters round a 334-wide column. Top to bottom it is
+   THE ECB CARD, THE HANDSET (cropped), THE CATEGORY STRIP AS A 2 x 2 GRID
+   with the two live dots flanking it, "PHORCAST TRADING", the body copy, and a
+   FULL-WIDTH "Start Trading" button.
 
-   - THE TWO PREDICTION CARDS, already hidden by the block above, for the same
-     reason and since before this one.
+   An earlier pass built this breakpoint without a mobile frame to build it
+   from. Three of its calls the frame overrules, and they are worth naming
+   because none of them was careless:
 
-   - "PHORCAST TRADING", the second copy block's heading. Stacked, it lands two
-     lines under "Familiar Trading. Better Infrastructure." and reads as a
-     second section starting. One heading introduces this band; the body copy
-     belongs to it.
+   - THE ECB CARD IS BACK. The argument against it was that a 200 x 160 card
+     carrying four type sizes cannot sit TWO-UP in a 350px column without
+     every label falling under 10px. That is true and the frame agrees with
+     it — it drops NVDA and keeps ECB alone, centred, at its full 200 x 160.
+     One card at full size was the third option, and it is the one the design
+     takes. It gets `--u: 1px` below, which is the card's design pixel at 1:1.
 
-   THE ORDER. Eyebrow, title, HANDSET, body, button. The phone is the strongest
-   thing this section owns at this width, so it takes the middle rather than
-   queueing behind all the copy — and the order is the entrance's own order
-   anyway: the phone is the lead at 0.70s and the right-hand copy and its
-   button are the last things to arrive. */
+   - "PHORCAST TRADING" IS BACK. The argument against it was that stacked, it
+     lands two lines under the main heading and reads as a second section
+     starting. In the frame it does not land under the heading at all: the
+     card, the handset and the strip stand between them, which is most of a
+     screen, and by then a second title is a new subject rather than a
+     restatement.
+
+   - THE BUTTON RUNS THE FULL COLUMN, rather than sitting at `--btn-w` in the
+     middle of it. Same 16px label, same padding, same pill; only the width
+     changes, and it is the frame's.
+
+   STILL GONE, unchanged: the NVDA card and both floating prediction cards.
+   The frame contains neither.
+
+   WHAT THE FRAME DOES NOT CONTAIN, and is kept anyway: the eyebrow and
+   "Familiar Trading. Better Infrastructure.". The artboard is NAMED for that
+   heading and starts at the ECB card, so the heading is the one thing the
+   file leaves ambiguous — omitted, or simply not drawn on an artboard that
+   was cut to the part that changes. Dropping it would leave the section with
+   no heading at all on a phone, and `aria-labelledby="fam-title"` pointing at
+   nothing. So it stays, above the card, at the sizes this block already gave
+   it. Judgement call, recorded here rather than silently made.
+
+   THE GUTTER IS 20px, NOT THE FRAME'S 30. Every other section on this page
+   sets its phone gutter to 20 — measured: hero, pillars, steps, faq and the
+   footer all start their copy at x=20 at 390 wide. A section that alone
+   indents to 30 reads as misaligned with the two it sits between, and the
+   frame's 30 is artboard padding rather than a page rule. The card and the
+   strip are centred and do not notice; the copy and the button gain 10px of
+   measure each side.
+
+   THE ORDER, then: eyebrow, title, ECB CARD, HANDSET, CATEGORY STRIP, claim,
+   body, button. The gaps between them are the frame's, measured off it in its
+   own pixels: 38 to the card, 17 to the handset, 38 to the strip, 43 to the
+   copy. */
 @media (max-width: 700px) {
   /* The stage stops being a fixed-ratio absolute composition and becomes an
      ordinary column. `position: static` on the children is what releases the
      `left`/`top` pairs every rule above states in `--u`; nothing has to be
      unset one property at a time. */
+  /* The stage stops being a fixed-ratio absolute composition and becomes an
+     ordinary column. `position: static` on the children is what releases the
+     `left`/`top` pairs every rule above states in `--u`; nothing has to be
+     unset one property at a time.
+
+     `gap: 0` and a margin per block, rather than one gap for all of them: the
+     frame's four gaps are 38, 17, 38 and 43, and a single figure would be
+     four compromises. Each margin sits on the block it introduces. */
   .fam__stage {
     aspect-ratio: auto;
     display: flex; flex-direction: column; align-items: center;
-    gap: 28px; padding: 56px 20px 24px;
+    gap: 0; padding: 56px 20px 34px;
   }
   .fam__stage > * { position: static; }
 
   .fam__copy--left { order: 1; width: 100%; gap: 14px; }
-  .fam__phone { order: 2; }
+  /* THE ECB CARD, ALONE AND AT FULL SIZE — see the note above this block.
+     `--u: 1px` is the whole re-size: every rule in the card is written in
+     design pixels, so one declaration gives it the frame's 200 x 160 with its
+     16px padding, 20px figure and 12px labels intact, and nothing inside the
+     card is touched. `flex: none` because a 160px box in a column that also
+     holds a 370px handset would otherwise be a candidate for shrinking. */
+  .fam__mkt--ecb { order: 2; --u: 1px; flex: none; margin-top: 38px; }
+  .fam__phone { order: 3; margin-top: 17px; }
+  .fam__band { order: 4; margin-top: 38px; }
   /* `align-items` is the bug, and the button is only where it shows.
      `.fam__copy--right` is `align-items: flex-start` for the desktop layout,
      where it is a left-aligned column standing beside the artwork — and that
@@ -558,63 +603,178 @@
 
      So the column centres its children, and the paragraph is given the full
      width back explicitly rather than being left to shrink-to-fit — its lines
-     stay left-aligned and its measure stays the column's. */
-  .fam__copy--right { order: 3; width: 100%; gap: 16px; align-items: center; }
-  .fam__sub-body { width: 100%; }
+     stay left-aligned and its measure stays the column's. Every child of it is
+     now `width: 100%` — the claim included — so the centring is inert and the
+     three of them set flush left, which is where the frame puts them. */
+  .fam__copy--right { order: 5; margin-top: 43px; width: 100%; gap: 12px; align-items: center; }
+  .fam__sub-title, .fam__sub-body { width: 100%; }
 
   /* Type, in real pixels, sized against each other rather than against a
-     design width. The eyebrow is a label again. */
+     design width. The eyebrow is a label again.
+
+     The claim and the body are the frame's own sizes — 24 and 20 — which are
+     also the desktop design's, because the artboard sets them in the same
+     design pixels rather than shrinking them. The body takes `--ink-2`, the
+     `--color-nre-body` the frame names for it; desktop's white is left where
+     it is, since nothing here should reach a width this block does not own. */
   .fam .eyebrow { font-size: 12px; gap: 8px; }
   .fam .eyebrow__dot { width: 9px; height: 9px; }
   .fam__title { font-size: 28px; line-height: 1.15; }
-  .fam__sub-title { display: none; }
-  .fam__sub-body { font-size: 16px; line-height: 1.45; margin-top: 0; }
+  .fam__sub-title { font-size: 24px; line-height: 1.2; }
+  .fam__sub-body { font-size: 20px; line-height: 1.2; margin-top: 0; color: var(--ink-2); }
 
   /* The button hands every one of its `--u` overrides back to `.btn`, which is
      already drawn in flat pixels and already knows how to hold its own label.
-     Full width to the gutters, capped so it does not become a slab. */
-  .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; font-size: 16px; border-radius: var(--radius-pill); }
+     The frame runs it the full width of the column, so `--btn-w` goes too —
+     and with it the last thing that could fight `.btn`'s own `padding: 16px
+     24px` and `white-space: nowrap` for room. `height: auto` leaves that
+     padding to set the height, which lands on the frame's 51px exactly.
+     `margin-top` is the frame's 30 less the column's own 12 gap. */
+  /* TWO CLASSES, because `.btn` in global.css states `width` and `height` at
+     the same specificity and is loaded after this file — so the single-class
+     form of this rule set the margin and lost the size, and the button stayed
+     254px wide. The rule it replaced looked like it was winning only because
+     it restated `--btn-w`, the value it was failing to override. */
+  .fam__copy--right .fam__cta {
+    width: 100%; max-width: none; height: auto;
+    font-size: 16px; border-radius: var(--radius-pill); margin-top: 18px;
+  }
 
   /* THE HANDSET GETS ITS OWN `--u`. Every rule inside the phone — the bezel,
      the screen, the status bar, both market panels, the leaderboard, the BTC
      ring — is written in `--u`, so one declaration here resizes all of it and
-     no rule inside the device is touched. 272px wide is the 348-wide design at
-     0.78; the vw cap keeps it off the gutters at 360 and 320. */
-  .fam__phone { --u: calc(min(272px, 74vw) / 348); flex: none; }
+     no rule inside the device is touched. 240px wide is the 348-wide design at
+     0.69, which is the scale the frame places it at; the vw cap keeps it off
+     the gutters at 360 and 320.
 
-  .fam__mkt { display: none; }
+     AND IT IS CROPPED, which is the frame's doing and not a shortening of the
+     device. `.fam__phone` is already `overflow: hidden` over a screen whose
+     contents run past it — that is how the desktop composition ends the phone
+     on the stage's bottom edge, with the band's horizon under it. The frame
+     does the same thing higher up: the handset ends a few pixels into the BTC
+     card, with no bottom bezel, and the strip follows. So the crop is this
+     section's existing language restated at a phone's height, and the height
+     below is where the frame cuts it — just past the foot of the BTC panel,
+     which is also where the screen's content ends. Measured: the BTC panel's
+     own bottom edge is 540 design pixels down, and the crop is eight above
+     it — enough to take the card's bottom corners off, which is what makes it
+     read as a screen continuing rather than a short device. Without any of it
+     the phone carries 90px of empty screen and then a bezel, which is what
+     shipped. */
+  .fam__phone { --u: calc(min(240px, 64vw) / 348); flex: none; height: calc(532 * var(--u)); }
+
+  /* NVDA only. The frame keeps ECB and drops this one — see the note above. */
+  .fam__mkt--nvda { display: none; }
 
   /* THE GLOW, RE-ANCHORED. Its discs are positioned in its own `--u` against a
      1920-wide frame, so in a column three times taller than it is wide they
      bunch into the top corner and the band's brightest point — which belongs
-     just above the horizon — ends up halfway up the copy. Bottom-anchoring a
-     900-wide crop of the same field puts the sunrise back at the foot of the
-     section, under the copy and over the horizon, which is the relationship
-     the desktop composition has. Same four discs, same core, same order. */
-  .fam__bg { --u: calc(100cqw / 900); top: auto; height: calc(1080 * var(--u)); }
+     just above the horizon — ends up halfway up the copy. A 900-wide crop of
+     the same field puts the sunrise back where the frame has it: behind the
+     handset, ending at the strip. Same four discs, same core, same order.
 
-  /* The category strip. In `--u` its pills were 2px of padding round 2px type;
-     in flat pixels all four still fit inside a 350px column with the two live
-     dots. */
+     It used to hang off the foot of the section, which was right while the
+     strip was the last thing in the column. It is now fourth of five, and the
+     frame draws the copy under it on flat ground, so the field is anchored
+     from the top instead.
+
+     A FIXED TOP AND A CLAMPED FIELD, both for the same reason. The glow is
+     absolutely placed in `.fam` and the handset it belongs behind is in the
+     column's flow, so no length can relate the two — but at this breakpoint
+     the column above the handset is the same height at every width it serves:
+     56 of padding, a heading the markup breaks into exactly two lines, 38, a
+     160px card, 17. The handset's top measures 364 at 320 and at 700 alike,
+     and 250 puts the field's masked-in edge on it.
+
+     A PERCENTAGE OF THE SECTION WAS TRIED FIRST AND IS WRONG, which is worth
+     recording. The field's height is `1080 * --u` against `100cqw`, so it
+     grows with the VIEWPORT while the column above it does not: 468px tall at
+     390 and 840 at 700. Any share of the section's height that framed the
+     handset at one of those widths ran the light down over the copy at the
+     other, and the horizon then cut a hard page-coloured bar across the
+     category strip. Clamping the field's own unit to 360–430 holds it between
+     432 and 516 tall across the whole range instead, which is the handset and
+     a little.
+
+     Its top 20% is masked away by `.glow-fade--top` and its foot by the stop
+     added below; the discs under both are blurred by 109px, so a few pixels
+     either way is not a thing that can be seen. */
+  .fam__bg { --u: calc(clamp(360px, 100cqw, 430px) / 900); top: 250px; bottom: auto; height: calc(1080 * var(--u)); }
+  /* TWO CLASSES, for the same reason `.fam__copy--right .fam__cta` above has
+     two: `.glow-fade--top` is a single class in global.css, which is loaded
+     after this file, so a single-class mask here loses the cascade outright
+     and the hard edge stays. */
+  .fam .fam__bg {
+    /* AND IT FADES OUT AT THE FOOT, which `.glow-fade--top` in global.css does
+       not do — that utility softens the top edge only, because until now this
+       field ended at the bottom of the section where the next band took over.
+       It now ends in the middle of one, forty-odd pixels under the handset,
+       and an unmasked edge there is a hard horizontal line drawn across the
+       category strip. The stops are the utility's own 20% at the top and the
+       last twelfth at the bottom, which lands on the handset's crop: the two
+       strips of light either side of the device fade out level with it, which
+       is where the frame ends them. Both properties are restated because a mask is one shorthand: a
+       bottom stop cannot be added to the top one from here. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 92%, transparent 100%);
+  }
+
   /* `relative`, NOT `static`. The band has to leave its `bottom: 0` corner and
      join the column, and the reflex is `position: static` — but `.fam__horizon`
      is absolute INSIDE it, so static hands the horizon's containing block to
      `.fam` itself and a 487 x 215 blurred ellipse painted in the PAGE colour
      lands on the heading. It cost an hour: the eyebrow vanished and "Familiar
      Trading." faded out along the arc, which reads as a font or a compositing
-     fault and is neither. `relative` is in flow and still a containing block. */
-  .fam__band { position: relative; height: auto; padding: 18px 0 34px; display: flex; justify-content: center; }
+     fault and is neither. `relative` is in flow and still a containing block.
+
+     No padding of its own any more: the frame's gaps above and below the strip
+     are carried by the margins on the blocks either side, where the other
+     three gaps in this column are. */
+  .fam__band {
+    position: relative; width: 100%; height: auto; padding: 0;
+    display: flex; justify-content: center;
+  }
   /* Three viewport-widths across and 520 tall, so what crosses the band is a
      shallow arc rather than the top of a small circle — the same relationship
-     the 6036 x 2668 ellipse has to the 1920 frame, restated at this width. */
+     the 6036 x 2668 ellipse has to the 1920 frame, restated at this width. It
+     is page-coloured, so everything it covers below the strip is simply the
+     page — including the hard bottom edge of the glow field above it. */
   .fam__horizon { top: 10px; width: 300vw; height: 520px; }
-  /* `relative`, not `static`, and for a second painting reason: `.fam__horizon`
-     is an absolutely-positioned sibling BEFORE the strip in the band, so a
-     static strip paints under it and the four pills disappear behind the
-     page-coloured ellipse. Positioned-in-flow puts them back on top. */
-  .fam__chips { position: relative; inset: auto; transform: none; justify-content: center; flex-wrap: nowrap; gap: 5px; }
-  .fam__chip-pill { padding: 7px 13px; font-size: 11px; }
-  .fam__chip-dot { width: 7px; height: 7px; }
+
+  /* THE CATEGORY STRIP, AS THE FRAME DRAWS IT: a 2 x 2 grid of pills at the
+     desktop's own size — 10 / 30 of padding round 12px type — with the two
+     live dots flanking the block rather than book-ending a row.
+     It was one row of four shrunk to 7 / 13 round 11px type to fit; the frame
+     fits them by stacking instead, and keeps the type readable.
+
+     `grid-template-columns: auto auto` rather than two equal tracks: each
+     column takes the wider of the two pills in it and both pills stretch to
+     fill it, so the four meet with no gaps and the seam runs straight down.
+     That is what makes the small four-cornered negative space in the middle of
+     the block, which is the shape the frame has there. Equal fractions would
+     have squeezed "Finance" — it is the widest of the four — against its own
+     padding.
+
+     `position: relative` on the strip was already here, and for a painting
+     reason: `.fam__horizon` is an absolutely-positioned sibling BEFORE it in
+     the band, so a static strip paints under the page-coloured ellipse and the
+     pills disappear. It now also gives the two dots something to hang off. */
+  .fam__chips {
+    position: relative; inset: auto; transform: none;
+    display: grid; grid-template-columns: auto auto; gap: 0;
+  }
+  .fam__chip-pill { padding: 10px 30px; font-size: 12px; }
+  /* Flush to the grid's two sides, centred on its full height. `top` with half
+     the dot subtracted rather than `translateY(-50%)`: the entrance tweens
+     `y` on every child of the strip, and a transform there would be
+     overwritten for the length of that tween and the dots would sit 4px low
+     until it cleared. */
+  .fam__chip-dot {
+    position: absolute; top: calc(50% - 4px);
+    width: 8px; height: 8px;
+  }
+  .fam__chip-dot:first-child { left: -8px; }
+  .fam__chip-dot:last-child { right: -8px; }
 }
 
 /* Motion -------------------------------------------------------------------- */

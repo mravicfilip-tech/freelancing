@@ -32,9 +32,10 @@
  * between the handset and the copy rather than under everything, so it arrives
  * at 1.25 and the copy closes the section at 1.38. Measured on the built page
  * at 390, clock starting the frame the section crosses the viewport bottom:
- * first content 833ms and the last beat at 4684 before, 247 and 1631 after.
- * The ECB card is on this timeline at that width now, which it was not: the
- * mobile frame keeps it.
+ * the last beat stopped at 2458ms and now stops at 1634. First content does
+ * not move — 226 to 250ms either way, which is LEAD and the frame it covers,
+ * and is the point. The ECB card is on this timeline at that width now, which
+ * it was not: the mobile frame keeps it.
  *
  * WHAT CHANGED, AND WHY. This ran 4.0s after a third of a second of stillness,
  * and on a phone that meant 612ms before a word of it could be read and 4.05s
@@ -155,13 +156,15 @@ const LANDED = new WeakSet<HTMLElement>();
  * built band and the fan were given this morning, and for the complaint that
  * prompted all five: animation delaying the entry of content.
  *
- * Measured here before touching it, at 390 wide on the built page, clock
- * starting the frame the section's top crosses the viewport bottom: the
- * eyebrow was readable at 833ms and the last beat stopped at 4684ms; after,
- * 247 and 1631, over three runs each and stable to a few milliseconds. A band
- * this tall is most of three screens on a phone and is usually still moving
- * under the reader, so a beat cued at four and a half seconds is played to an
- * empty seat.
+ * Measured at 390 wide on the built page, clock starting the frame the
+ * section's top crosses the viewport bottom, against the same tree with only
+ * this section's four files reverted — not against an older commit, which is
+ * how a neighbouring band's main-thread fix gets read as this one's win. The
+ * last beat stopped at 2458ms and now stops at 1634. The eyebrow is readable
+ * at 226–250ms either way. A band this tall is most of three screens on a
+ * phone and is usually still moving under the reader, so a beat cued near two
+ * and a half seconds is played to an empty seat, while the first beat was
+ * already as early as LEAD allows and had nothing to gain.
  *
  * TWO NUMBERS, because the two kinds of gap answer to different things. CUE
  * scales where a BEAT starts, which is the wait worth cutting because nothing

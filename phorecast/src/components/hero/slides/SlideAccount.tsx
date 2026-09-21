@@ -1,11 +1,13 @@
 /* Hero slide 2 — "One account. Your keys." illustration.
-   Figma: file aczG8te17zRGoK5wvirB92, node 365:346 (the right-hand cluster).
+   Figma: file aczG8te17zRGoK5wvirB92, slide 365:293, cluster 365:346
+   ("Stats Container"). Re-exported from the node; see SlideAccount.css for the
+   geometry and THE EXPORT note there for what the previous pass had wrong.
 
    Only the illustration lives here. The nav, eyebrow, headline, lede and CTA
-   are the slide's own markup and are untouched.
+   are the slide's own markup (Hero.tsx) and are untouched.
 
-   Geometry is laid out in Figma design pixels scaled by --u2 (see the CSS),
-   so one design px is one 1800th of the hero's content column at any width. */
+   Geometry is laid out in Figma design pixels scaled by --u (see the CSS), so
+   one design px is one 1800th of the hero's content column at any width. */
 
 import { useEffect, useRef } from 'react';
 
@@ -14,12 +16,11 @@ import { useTheme, useThemeEpoch } from '../../../lib/theme';
 import { slideAccountMotion } from './SlideAccount.motion';
 import './SlideAccount.css';
 
-/* Assets exported from the Figma node. Three photos already exist in the
-   project from the earlier pass and are reused rather than duplicated. */
+/* Assets exported from the Figma node. */
 import connectorLeft from '../../../assets/hero/slide2/connector-left.svg';
 import connectorRight from '../../../assets/hero/slide2/connector-right.svg';
 import cardGrid from '../../../assets/hero/slide2/card-grid.svg';
-/* Light variants. These five are gradient artwork: a mask would flatten the
+/* Light variants. These are gradient artwork: a mask would flatten the
    gradient to its alpha and throw the colour away, and inlining them would add
    elements to .hero -- which theme-diff.mjs compares by array index, so every
    later element would report as changed. A second file swapped by `src` is the
@@ -43,20 +44,26 @@ import chartNfl from '../../../assets/hero/slide2/chart-nfl.svg';
 import chartXau from '../../../assets/hero/slide2/chart-xau.svg';
 import goldCoin from '../../../assets/hero/slide2/gold-coin.svg';
 import goldGlyph from '../../../assets/hero/slide2/gold-glyph.svg';
+import madrid from '../../../assets/hero/slide2/madrid.jpg';
 import lakers from '../../../assets/hero/slide2/lakers.png';
-import ovArrow from '../../../assets/hero/slide2/ov-arrow.svg';
+import miniIsrael from '../../../assets/hero/slide2/mini-israel.png';
 import toastGlobe from '../../../assets/hero/slide2/toast-globe.svg';
 import pie1 from '../../../assets/hero/slide2/pie-1.svg';
 import pie2 from '../../../assets/hero/slide2/pie-2.svg';
 import pie3 from '../../../assets/hero/slide2/pie-3.svg';
 import toastBolt from '../../../assets/hero/slide2/toast-bolt.svg';
 import pillDisc from '../../../assets/hero/slide2/pill-disc.svg';
-import pillMark from '../../../assets/hero/slide2/pill-mark.svg';
-/* already in the repo — same bytes as the Figma exports */
-import madrid from '../../../assets/hero/pred-real-madrid.jpg';
-import guterres from '../../../assets/hero/mini-2.jpg';
-import crestGen from '../../../assets/hero/mini-gen.jpg';
-import crestSud from '../../../assets/hero/avatar.png';
+/* The Union inside the disc is the brand mark, the same path Logo.tsx paints
+   in the nav -- one flat glyph, so it is the shared asset through <Icon> and
+   the colour comes from `color`, not from a second copy of the artwork with a
+   white fill baked in. */
+import brandMark from '../../../assets/brand/mark.svg';
+
+/* <Icon> writes width/height inline from w/h, which would outrank the
+   `calc(N * var(--u))` that sizes everything in this illustration. The numbers
+   are still passed, so the file's intrinsic box is recorded at the call site,
+   but CSS wins. Same contract as SlideFuture.tsx. */
+const NO_BOX = { width: undefined, height: undefined } as const;
 
 const ODDS = [
   { label: 'This year', pct: '92%' },
@@ -103,7 +110,7 @@ export function SlideAccount() {
       <div className="sl2__box">
         <div className="sl2__group">
           <div className="sl2__row">
-            {/* 390 × 248 prediction card ------------------------------- */}
+            {/* 390 × 258 prediction card — 365:352 ---------------------- */}
             <article className="sl2-pred">
               <div className="sl2-pred__meta">
                 <span>3.2m Vol</span>
@@ -127,7 +134,7 @@ export function SlideAccount() {
               </ul>
             </article>
 
-            {/* 200 × 248 market card — NFL Super Bowl ------------------- */}
+            {/* 200 × 258 market card — NFL Super Bowl, 365:407 ---------- */}
             <article className="sl2-mc sl2-mc--nfl">
               <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid" />
               <div className="sl2-mc__head">
@@ -153,7 +160,7 @@ export function SlideAccount() {
                 </div>
                 <p className="sl2-mc__price">24.<span>0%</span></p>
                 <p className="sl2-mc__delta">
-                  <Icon src={deltaUp} w={10} h={8.333} style={{ width: undefined, height: undefined }} />
+                  <Icon src={deltaUp} w={10} h={8.333} style={NO_BOX} />
                   <b>2.4 pp </b>
                   <i>today</i>
                 </p>
@@ -162,7 +169,7 @@ export function SlideAccount() {
               <Ranges />
             </article>
 
-            {/* 200 × 248 market card — XAU/USD Gold --------------------- */}
+            {/* 200 × 258 market card — XAU/USD Gold, 365:474 ------------ */}
             <article className="sl2-mc sl2-mc--xau">
               <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid sl2-mc__grid--xau" />
               <div className="sl2-mc__head">
@@ -188,24 +195,26 @@ export function SlideAccount() {
               <Ranges />
             </article>
 
-            {/* 140px column of three stacked cards ---------------------- */}
+            {/* Two 206 × 124 event cards, 526:1658 / 526:1680. They are
+                absolutely placed at x 815 inside the 963-wide row and run 58
+                units past its right edge, exactly as the node draws them. */}
             <div className="sl2__minis">
               <article className="sl2-mini sl2-mini--a">
                 <div className="sl2-mini__meta">
                   <span>$2.3K Vol</span>
-                  <span>Ends in 3mo 16d</span>
+                  <span>Ends in 3mo 17d</span>
                 </div>
                 <div className="sl2-mini__head">
                   <span className="sl2-mini__avatar sl2-mini__avatar--lakers">
                     <img src={lakers} alt="" />
                   </span>
-                  <p className="sl2-mini__title sl2-mini__title--wrap">
+                  <p className="sl2-mini__title sl2-mini__title--a">
                     {' Will LA Lakers win the 2027 NBA Championship?'}
                   </p>
                 </div>
-                <div className="sl2-mini__bar sl2-mini__bar--a">
-                  <span style={{ left: '0.48%', right: '78.3%' }} />
-                  <i>29%</i>
+                <div className="sl2-mini__bar">
+                  <span style={{ left: '-0.02%', right: '76.33%' }} />
+                  <i>27%</i>
                 </div>
                 <div className="sl2-mini__btns">
                   <span className="is-yes">Yes</span>
@@ -215,59 +224,33 @@ export function SlideAccount() {
 
               <article className="sl2-mini sl2-mini--b">
                 <div className="sl2-mini__meta">
-                  <span>$2.3K Vol</span>
-                  <span>Ends in 3mo 16d</span>
+                  <span>$53.9K Vol</span>
+                  <span>Ends in 3mo 17d</span>
                 </div>
                 <div className="sl2-mini__head">
                   <span className="sl2-mini__avatar">
-                    <img src={guterres} alt="" className="sl2-mini__avatar-img" />
+                    <img src={miniIsrael} alt="" />
                   </span>
-                  <p className="sl2-mini__title">António Guterres out by December 31?</p>
+                  <p className="sl2-mini__title">
+                    Will any country expel an Israeli ambassador by December 31?
+                  </p>
                 </div>
-                <div className="sl2-mini__bar sl2-mini__bar--b">
-                  <span style={{ left: '0.31%', right: '40.34%' }} />
-                  <i>53,50%</i>
+                <div className="sl2-mini__bar">
+                  <span style={{ left: '0%', right: '29.47%' }} />
+                  <i>77%</i>
                 </div>
                 <div className="sl2-mini__btns">
                   <span className="is-yes">Yes</span>
                   <span className="is-no">No</span>
                 </div>
               </article>
-
-              <article className="sl2-mini sl2-mini--live">
-                <div className="sl2-live__top">
-                  <span className="sl2-live__badge"><i />Live</span>
-                  <span className="sl2-live__clock">16:00</span>
-                  <span className="sl2-live__vol">$229.2K Vol</span>
-                  <span className="sl2-live__ov">
-                    Game overview
-                    <Icon src={ovArrow} w={5.405} h={5.405} style={{ width: undefined, height: undefined }} />
-                  </span>
-                </div>
-
-                <span className="sl2-live__score sl2-live__score--1">0</span>
-                <span className="sl2-live__crest sl2-live__crest--gen">
-                  <img src={crestGen} alt="" />
-                </span>
-                <span className="sl2-live__name sl2-live__name--1">Genoa CFC</span>
-
-                <span className="sl2-live__score sl2-live__score--2">0</span>
-                <span className="sl2-live__crest sl2-live__crest--sud">
-                  <img src={crestSud} alt="" />
-                </span>
-                <span className="sl2-live__name sl2-live__name--2">FC Südtirol</span>
-
-                <span className="sl2-live__btn sl2-live__btn--gen"><b>gen</b><i>53¢</i></span>
-                <span className="sl2-live__btn sl2-live__btn--draw"><b>Draw</b><i>38¢</i></span>
-                <span className="sl2-live__btn sl2-live__btn--sud"><b>sud</b><i>15¢</i></span>
-              </article>
             </div>
           </div>
 
-          {/* toast + two 44px icon tiles ------------------------------- */}
+          {/* Action Container 538:4465 — toast + two 48px tiles --------- */}
           <div className="sl2__toasts">
             <div className="sl2-toast">
-              <Icon src={toastGlobe} w={22} h={22} className="sl2-toast__globe" style={{ width: undefined, height: undefined }} />
+              <Icon src={toastGlobe} w={22} h={22} className="sl2-toast__globe" style={NO_BOX} />
               <span className="sl2-toast__text">
                 <b>Trade executed</b>
                 <i>Buy 0.25 BTC at 62,894.00</i>
@@ -284,7 +267,7 @@ export function SlideAccount() {
           </div>
         </div>
 
-        {/* connector curves down to the pill -------------------------- */}
+        {/* connector curves down to the pill — 365:294 / 365:295 ------- */}
         <img src={light ? connectorLeftLight : connectorLeft} alt="" className="sl2__conn sl2__conn--l" />
         <img src={light ? connectorRightLight : connectorRight} alt="" className="sl2__conn sl2__conn--r" />
         <span className="sl2__diamond" />
@@ -292,7 +275,7 @@ export function SlideAccount() {
         <div className="sl2__pill">
           <span className="sl2__pill-disc">
             <img src={pillDisc} alt="" className="sl2__pill-ring" />
-            <img src={pillMark} alt="" className="sl2__pill-mark" />
+            <Icon src={brandMark} w={18.169} h={21.179} className="sl2__pill-mark" style={NO_BOX} />
           </span>
           <span className="sl2__pill-body">One Account</span>
         </div>

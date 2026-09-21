@@ -1,4 +1,27 @@
-/* Hero slide 2 illustration — Figma node 365:346.
+/* Hero slide 2 illustration — Figma node 365:346 ("Stats Container"), inside
+   slide 365:293. Re-exported from the node; the connectors (365:294/365:295)
+   are the slide's own siblings and are drawn here because they belong to this
+   cluster, not to the hero's ground.
+
+   THE EXPORT
+   ----------
+   What the previous pass had wrong, recorded here because "it was wrong" is
+   the whole of the brief:
+     * The right-hand column was three 140-wide cards, the third a live match
+       score (Genoa CFC / FC Sudtirol). The node has TWO cards, 206 x 124, at
+       x 815 -- and 815 + 206 = 1021 runs 58 units PAST the 963-wide frame, so
+       the group is 1021 wide and the design's 137px right gutter is real after
+       all. The live card does not exist anywhere in the file.
+     * Both remaining cards carried the wrong copy and the wrong figures.
+     * Every card is 258 tall, not 248, bottom-aligned in a 248 row, so the
+       row's top ten units are overhang.
+     * The row gap is 8, not 11.
+     * The action bar's tiles are 48 with 30px glyphs, not 44 with 28; its gap
+       is 6, not 7; and the toast is set at 12/10, not 8/8.
+     * The 1D chip sits at a different height in each of the two market cards
+       (207 and 215) -- it was pinned 16 off the bottom of both.
+     * The figure written across a market bar is --white-font, not black, and
+       the "No" button beside it is the brand red, not the loss red.
 
    THE UNIT
    --------
@@ -9,15 +32,12 @@
    not the 1800px content column the design is drawn against. The two only track
    each other while `.container--wide`'s padding is in its linear range; past
    1920px the column stops growing at 1800px while the viewport does not, so the
-   group runs off the right of the column: the XAU/USD card gets sliced and the
-   140px mini column disappears entirely. That is the bug this file fixes.
+   group runs off the right of the column.
 
    So `.sl2` makes *itself* the query container and redefines --u against it.
    Custom properties are substituted at the use site, so every descendant's
    `calc(N * var(--u))` now measures the real content column: one design px is
-   exactly one 1800th of the column at every width, the whole 963px-wide group
-   is a fixed 53.5% of it, and the design's own 137px right gutter anchors the
-   frame. Nothing can overflow, by construction.
+   exactly one 1800th of the column at every width.
 
    `.sl2`'s own declarations must NOT use var(--u) — an element is never its
    own query container, so `100cqw` would fall back to `.hero` there.
@@ -41,18 +61,15 @@
   --sl2-up: var(--hero-sl2-up);
   --sl2-up-ink: #00a63e;
   --sl2-up-bg: #1a3a2c;
-  --sl2-up-bg-sm: #1a372a;
-  /* Resting loss ink: the "No" chips, the -0.20% delta, the Sudtirol button.
-     Deliberately NOT var(--hero-sl2-down): that token is the price FLASH, and
-     in light the two want different values (see the light block). In dark both
-     are #e7000b, which is what this was. */
+  /* Resting loss ink: the "No" chips on the prediction card and the -0.20%
+     delta. Deliberately NOT var(--hero-sl2-down): that token is the price
+     FLASH, and in light the two want different values (see the light block).
+     In dark both are #e7000b, which is what this was. */
   --sl2-down-ink: #e7000b;
   --sl2-down-bg: #302325;
-  --sl2-down-bg-sm: #2e2122;
   --sl2-card-a: #161615;
   --sl2-card-b: #200e05;
   --sl2-card-c: #2f2f2f;
-  --sl2-ink: #fafafa;
   --sl2-track: #161414;
   /* the grid plate's strength; see the light block */
   --sl2-grid-op: 0.2;
@@ -61,35 +78,29 @@
      the file redefines exactly these. Every one is INSIDE the product UI --
      this cluster is a screenshot of the app, not page chrome -- so they move
      together when the screenshot is re-tinted and nowhere else. */
-  --sl2-live-red: #fb2c36;        /* the LIVE word */
-  --sl2-live-dot: #ff6467;        /* the pulsing dot beside it */
-  --sl2-live-vol: rgba(159, 159, 169, 0.8);
-  --sl2-ov-bg: #27272a;           /* "Game overview" chip */
-  --sl2-score-line: rgba(206, 206, 206, 0.1);
-  --sl2-draw-bg: #2c2c2f;         /* the Draw button */
-  --sl2-sud-bg: rgba(191, 43, 53, 0.15);
-  --sl2-sud-ink: #bf2b35;
-  --sl2-bar-ink: #000;            /* the figure written across the filled bar */
   --sl2-lakers: #ffad00;          /* the club's own gold, behind its crest */
   --sl2-pill-bg: #1d1c1b;         /* the "One Account" pill's plate */
   /* The toast is glass: 13% white is this file's own step, between --veil and
      --veil-strong, so it is named here rather than forced onto either. */
   --sl2-toast-bg: rgba(255, 255, 255, 0.13);
-  /* The two 44px icon tiles. A deep brand plate in both themes -- the white
+  /* The two 48px icon tiles. A deep brand plate in both themes -- the white
      pie and bolt inside them are --on-accent by another name. */
   --sl2-tile-bg: #6a2626;
 }
 
-/* 963 × 365 of visible content, anchored on the design's own right gutter. */
+/* `.sl2__box` IS the node's "Stats Details" frame (963 x 310 at 6,247 in the
+   cluster) extended down to the foot of the One Account pill: 963 x 365.
+
+   It is anchored on the design's own 137-unit right gutter. That gutter was
+   dropped by the previous pass because its 963-wide group stopped short of the
+   column edge and looked unanchored -- but the group is 1021 wide once the two
+   event cards are the size the node actually draws them, so honouring the
+   gutter puts the painted right edge at 1721 of the 1800 column, which is
+   where the node puts it. */
 .sl2__box {
   position: absolute;
   top: calc(170 * var(--u));
-  /* Flush with the content column's right edge, which is where the nav's Sign
-     Up button ends -- the illustration and the header now line up on the same
-     rule. Figma leaves a 137px gutter here, but the frame in the file is wider
-     than its visible content, so honouring that gutter left the cards floating
-     short of the column edge rather than aligned to anything on the page. */
-  right: 0;
+  right: calc(137 * var(--u));
   width: calc(963 * var(--u));
   height: calc(365 * var(--u));
 }
@@ -101,23 +112,28 @@
   flex-direction: column;
   gap: calc(14 * var(--u));
 }
+/* "Overview Container" 365:351: a 248-tall row of 258-tall cards, bottom
+   aligned, so ten units of card stand above the row. The two event cards are
+   absolutely placed inside it, exactly as the node has them. */
 .sl2__row {
+  position: relative;
   display: flex;
   align-items: flex-end;
-  gap: calc(11 * var(--u));
+  gap: calc(8 * var(--u));
+  height: calc(248 * var(--u));
 }
 
-/* ------------------------------------------------ 390 × 248 prediction card */
+/* ------------------------------------------------ 390 × 258 prediction card */
 .sl2-pred {
   box-sizing: border-box;
   width: calc(390 * var(--u));
-  height: calc(248 * var(--u));
+  height: calc(258 * var(--u));
   padding: calc(16 * var(--u));
   flex: none;
   overflow: hidden;
   border: calc(1.093 * var(--u)) solid var(--line);
   border-radius: calc(10 * var(--u));
-  background: linear-gradient(-19.512deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%);
+  background: linear-gradient(-20.236deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%);
   font-family: var(--font-display);
   color: var(--ink);
 }
@@ -144,10 +160,13 @@
   border-radius: calc(10.929 * var(--u));
   overflow: hidden;
 }
-/* The crest is the project's existing asset (pred-real-madrid.jpg), reused
-   rather than duplicated. It is already a square crop of the same photo Figma
-   crops in place, so it fills the 39.345px avatar box directly; the only
-   difference from the Figma render is that its framing is a touch wider. */
+/* madrid.jpg is the node's own source photo cropped to the window the node
+   crops it to (left -36.9%, top -8.68%, 172.58% x 107.86% of a 39.345 box) and
+   resampled to 160px. The raw export is a 1920 x 1200 PNG: 3.5MB inside the
+   hero for a 39px slot. The crop is exact, so `object-fit: cover` on the
+   square renders the same pixels the node does. The project's older
+   `hero/pred-real-madrid.jpg` is a DIFFERENT, tighter crop of the same photo
+   and is no longer used here. */
 .sl2-pred__avatar img {
   display: block;
   width: 100%;
@@ -172,6 +191,7 @@
 .sl2-pred__odds li {
   display: flex;
   align-items: center;
+  height: calc(31.115 * var(--u));
   gap: calc(4.372 * var(--u));
 }
 .sl2-pred__label {
@@ -198,12 +218,12 @@
 .sl2-chip--yes { background: var(--sl2-up-bg); color: var(--sl2-up-ink); }
 .sl2-chip--no { background: var(--sl2-down-bg); color: var(--sl2-down-ink); }
 
-/* --------------------------------------------------- 200 × 248 market cards */
+/* --------------------------------------------------- 200 × 258 market cards */
 .sl2-mc {
   box-sizing: border-box;
   position: relative;
   width: calc(200 * var(--u));
-  height: calc(248 * var(--u));
+  height: calc(258 * var(--u));
   flex: none;
   overflow: hidden;
   border: calc(1 * var(--u)) solid var(--line);
@@ -211,8 +231,8 @@
   font-family: var(--font-display);
   color: var(--ink);
 }
-.sl2-mc--nfl { background: linear-gradient(-34.645deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%); }
-.sl2-mc--xau { background: linear-gradient(17.063deg, var(--sl2-card-a) 53.071%, var(--sl2-card-b) 144.6%); }
+.sl2-mc--nfl { background: linear-gradient(-35.711deg, var(--sl2-card-a) 8.124%, var(--sl2-card-b) 88.104%); }
+.sl2-mc--xau { background: linear-gradient(17.709deg, var(--sl2-card-a) 53.071%, var(--sl2-card-b) 144.6%); }
 
 /* faint grid plate behind the card content */
 .sl2-mc__grid {
@@ -356,26 +376,33 @@
   margin-left: calc(-94.338 * var(--u));
 }
 
+/* The range picker is NOT pinned to the foot of the card: the two cards stack
+   their content differently and the node lands the 1D chip eight units lower
+   in the gold card than in the NFL one. Both are given their own top. */
 .sl2-mc__ranges {
   position: absolute;
   left: calc(16 * var(--u));
-  bottom: calc(16 * var(--u));
   display: flex;
   align-items: center;
-  gap: calc(9 * var(--u));
+  gap: calc(8 * var(--u));
 }
+.sl2-mc--nfl .sl2-mc__ranges { top: calc(207 * var(--u)); }
+.sl2-mc--xau .sl2-mc__ranges { top: calc(215 * var(--u)); }
 .sl2-mc__range {
   font-weight: 700;
   font-size: calc(8 * var(--u));
   line-height: normal;
   color: var(--ink-2);
 }
+/* 1W → 1M is a 10-unit gap inside the label pair; the chip → 1W gap is 8. */
+.sl2-mc__range:not(.is-active) + .sl2-mc__range { margin-left: calc(2 * var(--u)); }
 .sl2-mc__range.is-active {
   display: grid;
   place-items: center;
   width: calc(32 * var(--u));
   height: calc(24 * var(--u));
-  margin-right: calc(-0.5 * var(--u));
+  /* the chip is centred in a 33-unit slot */
+  margin: 0 calc(0.5 * var(--u));
   border-radius: calc(6 * var(--u));
   background: var(--accent);
   /* A label on the brand red, not on the card: --on-accent, which does not
@@ -383,34 +410,48 @@
   color: var(--on-accent);
 }
 
-/* ------------------------------------------- 140px column of 3 small cards */
+/* ------------------------------------------- two 206 × 124 event cards, at
+   x 815 of the 963 row. They overhang the row by 58 units, which is the node's
+   own arrangement -- "Stats Details" does not clip. */
 .sl2__minis {
-  width: calc(140 * var(--u));
-  flex: none;
+  position: absolute;
+  left: calc(815 * var(--u));
+  top: calc(-9 * var(--u));
+  width: calc(206 * var(--u));
   display: flex;
   flex-direction: column;
-  gap: calc(8 * var(--u));
+  gap: calc(9 * var(--u));
 }
 .sl2-mini {
   box-sizing: border-box;
   position: relative;
   width: 100%;
+  height: calc(124 * var(--u));
+  /* 7, not 8: Figma measures the 8-unit padding from the frame edge and draws
+     the hairline inside it without taking layout space, so the content box is
+     190 wide. 8 + a 1-unit CSS border would make it 188 and the two 92-unit
+     buttons would not fit the row they are drawn in. */
+  padding: calc(7 * var(--u));
   overflow: hidden;
-  border: calc(0.386 * var(--u)) solid var(--line);
-  border-radius: calc(8 * var(--u));
+  border: calc(1 * var(--u)) solid var(--line);
+  border-radius: calc(10 * var(--u));
+  box-shadow: 0 calc(5.356 * var(--u)) calc(10.712 * var(--u)) rgba(0, 0, 0, 0.04);
   font-family: var(--font-display);
-  color: var(--sl2-ink);
+  color: var(--ink);
 }
-.sl2-mini--a,
+/* The node's own gradient strings for these two cards come out of the export
+   with their stops in descending order, which CSS cannot express and which
+   renders as a flat plate. These are the rendered node measured instead: the
+   light end of the ramp sits far outside the card, so only a slice of it
+   shows -- 32% of the way to --sl2-card-c in the first card and 64% in the
+   second, at the bottom-right corner, falling to the card ground at the top
+   left. Written as a mix of the same two tokens so the light block still
+   re-tints both ends. */
+.sl2-mini--a {
+  background: linear-gradient(-28.094deg, color-mix(in srgb, var(--sl2-card-c) 32%, var(--sl2-card-a)) 0%, var(--sl2-card-a) 100%);
+}
 .sl2-mini--b {
-  height: calc(80.56 * var(--u));
-  padding: calc(6 * var(--u));
-}
-.sl2-mini--a { background: linear-gradient(-38.3deg, var(--sl2-card-a) 20.213%, var(--sl2-card-c) 90.156%); }
-.sl2-mini--b { background: linear-gradient(-38.647deg, var(--sl2-card-a) 20.213%, var(--sl2-card-c) 90.156%); }
-.sl2-mini--live {
-  height: calc(69 * var(--u));
-  background: linear-gradient(119.111deg, var(--sl2-card-c) 4.989%, var(--sl2-card-a) 94.806%);
+  background: linear-gradient(-26.103deg, color-mix(in srgb, var(--sl2-card-c) 64%, var(--sl2-card-a)) 0%, var(--sl2-card-a) 100%);
 }
 
 .sl2-mini__meta {
@@ -418,57 +459,77 @@
   justify-content: space-between;
   gap: calc(4 * var(--u));
   font-weight: 500;
-  font-size: calc(5.019 * var(--u));
-  line-height: calc(7.528 * var(--u));
+  font-size: calc(8 * var(--u));
+  line-height: 1.2;
   color: var(--ink-2);
   white-space: nowrap;
 }
 .sl2-mini__head {
   display: flex;
-  align-items: center;
-  gap: calc(3.477 * var(--u));
-  margin-top: calc(9.266 * var(--u));
+  align-items: flex-start;
+  gap: calc(6 * var(--u));
+  height: calc(24 * var(--u));
+  margin-top: calc(16 * var(--u));
 }
 .sl2-mini__avatar {
   flex: none;
   position: relative;
   display: block;
-  width: calc(13.899 * var(--u));
-  height: calc(13.899 * var(--u));
-  border-radius: calc(3.861 * var(--u));
+  width: calc(24.103 * var(--u));
+  height: calc(24.103 * var(--u));
+  border-radius: calc(6.695 * var(--u));
   overflow: hidden;
+}
+.sl2-mini__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .sl2-mini__avatar--lakers { background: var(--sl2-lakers); }
 .sl2-mini__avatar--lakers img {
   position: absolute;
-  left: calc(1.61 * var(--u));
-  top: calc(3.3 * var(--u));
-  width: calc(11.238 * var(--u));
-  height: calc(6.981 * var(--u));
-}
-.sl2-mini__avatar-img {
-  position: absolute;
-  left: 0;
-  top: calc(-2.255 * var(--u));
-  width: calc(13.899 * var(--u));
-  height: calc(18.409 * var(--u));
-  object-fit: cover;
+  left: calc(1 * var(--u));
+  top: calc(6 * var(--u));
+  width: calc(21 * var(--u));
+  height: calc(13.045 * var(--u));
+  object-fit: contain;
 }
 .sl2-mini__title {
-  font-weight: 600;
-  font-size: calc(5.405 * var(--u));
-  line-height: calc(7.722 * var(--u));
-  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  font-size: calc(10 * var(--u));
+  line-height: 1.2;
   color: var(--ink);
 }
-.sl2-mini__title--wrap { width: calc(90 * var(--u)); white-space: normal; }
+/* The Lakers line breaks on its own inside a 143-unit measure; the node draws
+   it that way and the card's own 160-unit slot is wider than the text. */
+.sl2-mini__title--a { flex: none; width: calc(143 * var(--u)); }
 
 .sl2-mini__bar {
   position: relative;
+  width: 100%;
+  height: calc(14 * var(--u));
+  margin-top: calc(8 * var(--u));
   overflow: hidden;
+  border-radius: 9999px;
   background: var(--sl2-track);
 }
-.sl2-mini__bar span { position: absolute; top: 0; bottom: 0; border-radius: 9999px; background: var(--sl2-up); }
+.sl2-mini__bar span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 9999px;
+  background: var(--sl2-up);
+}
+/* The figure is centred on the whole track, so WHICH ground it lands on
+   depends on the number: 27% leaves the centre on the empty track, 77% puts it
+   on the fill. The node writes both in --white-font, which works in dark
+   because the track is #161414 and the fill is --pos. On paper the track
+   becomes #e8ddd2 and white on it is gone, while the fill is STILL --pos and
+   dark. So each card takes the token that is right for what is under it, and
+   both resolve to #fffbf8 in dark -- exactly the node's value. */
 .sl2-mini__bar i {
   position: absolute;
   inset: 0;
@@ -476,194 +537,45 @@
   place-items: center;
   font-style: normal;
   font-weight: 700;
-  font-size: calc(3.477 * var(--u));
-  line-height: calc(5.791 * var(--u));
+  font-size: calc(8 * var(--u));
+  line-height: 1.2;
   text-transform: uppercase;
 }
-.sl2-mini__bar--a {
-  width: calc(126 * var(--u));
-  height: calc(6 * var(--u));
-  margin-top: calc(6 * var(--u));
-  border-radius: calc(30 * var(--u));
-}
-.sl2-mini__bar--a i { color: var(--ink); }
-.sl2-mini__bar--b {
-  width: 100%;
-  height: calc(4.633 * var(--u));
-  margin-top: calc(12.354 * var(--u));
-  border-radius: 9999px;
-}
-.sl2-mini__bar--b i { color: var(--sl2-bar-ink); }
+.sl2-mini--a .sl2-mini__bar i { color: var(--ink); }
+.sl2-mini--b .sl2-mini__bar i { color: var(--on-accent); }
 
 .sl2-mini__btns {
   display: flex;
-  gap: calc(3.089 * var(--u));
-  margin-top: calc(6 * var(--u));
+  gap: calc(5.356 * var(--u));
+  margin-top: calc(10.712 * var(--u));
 }
-.sl2-mini--b .sl2-mini__btns { margin-top: calc(6.177 * var(--u)); }
 .sl2-mini__btns span {
   flex: 1;
   display: grid;
   place-items: center;
-  height: calc(15.443 * var(--u));
-  border-radius: calc(2.316 * var(--u));
-  font-weight: 600;
-  font-size: calc(5.405 * var(--u));
-  line-height: calc(7.722 * var(--u));
-}
-.sl2-mini__btns .is-yes { background: var(--sl2-up-bg-sm); color: var(--sl2-up-ink); }
-.sl2-mini__btns .is-no { background: var(--sl2-down-bg-sm); color: var(--sl2-down-ink); }
-
-/* live match card — everything is absolutely placed in the Figma frame */
-.sl2-live__top {
-  position: absolute;
-  left: calc(6.18 * var(--u));
-  top: calc(6.18 * var(--u));
-  display: flex;
-  align-items: center;
-  gap: calc(9.562 * var(--u));
-  white-space: nowrap;
-}
-.sl2-live__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(2.608 * var(--u));
-  margin-right: calc(-6.954 * var(--u));
+  height: calc(26 * var(--u));
+  border-radius: calc(4.017 * var(--u));
   font-weight: 700;
-  font-size: calc(5.019 * var(--u));
-  line-height: calc(7.528 * var(--u));
-  color: var(--sl2-live-red);
+  font-size: calc(9.373 * var(--u));
+  line-height: 1.2;
 }
-.sl2-live__badge i {
-  width: calc(3.089 * var(--u));
-  height: calc(3.089 * var(--u));
-  border-radius: 50%;
-  background: var(--sl2-live-dot);
-  opacity: 0.75;
-}
-.sl2-live__clock {
-  display: inline-grid;
-  place-items: center;
-  width: calc(16.516 * var(--u));
-  height: calc(8.693 * var(--u));
-  border-radius: calc(3.089 * var(--u));
-  background: var(--sl2-track);
-  font-weight: 400;
-  font-size: calc(4.71 * var(--u));
-  line-height: calc(7.528 * var(--u));
-  color: var(--sl2-ink);
-}
-.sl2-live__vol {
-  font-weight: 400;
-  font-size: calc(4.672 * var(--u));
-  line-height: calc(7.528 * var(--u));
-  color: var(--sl2-live-vol);
-}
-.sl2-live__ov {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: calc(2.608 * var(--u));
-  width: calc(46.941 * var(--u));
-  height: calc(9.562 * var(--u));
-  padding: 0 calc(1.739 * var(--u));
-  border-radius: calc(3.089 * var(--u));
-  background: var(--sl2-ov-bg);
-  font-weight: 700;
-  font-size: calc(4.478 * var(--u));
-  line-height: calc(6.177 * var(--u));
-  color: var(--sl2-ink);
-  filter: drop-shadow(0 calc(0.386 * var(--u)) calc(0.386 * var(--u)) rgba(0, 0, 0, 0.05));
-}
-.sl2-live__ov .icon { width: calc(5.405 * var(--u)); height: calc(5.405 * var(--u)); }
+.sl2-mini__btns .is-yes { background: var(--sl2-up-bg); color: var(--sl2-up-ink); }
+/* The "No" on an event card is the brand red, not the loss red -- it is a
+   side of the market, not a fall. The prediction card's chips are the pair
+   that carry the up/down semantics. */
+.sl2-mini__btns .is-no { background: var(--sl2-down-bg); color: var(--accent); }
 
-.sl2-live__score {
-  position: absolute;
-  left: calc(6.18 * var(--u));
-  right: calc(121.78 * var(--u));
-  height: calc(9.266 * var(--u));
-  display: grid;
-  place-items: center;
-  border: calc(0.386 * var(--u)) solid var(--sl2-score-line);
-  border-radius: calc(3.089 * var(--u));
-  font-weight: 700;
-  font-size: calc(5.405 * var(--u));
-  line-height: calc(7.722 * var(--u));
-  color: var(--sl2-ink);
-}
-.sl2-live__score--1 { top: calc(20.08 * var(--u)); }
-.sl2-live__score--2 { top: calc(32.43 * var(--u)); }
-
-.sl2-live__crest {
-  position: absolute;
-  left: calc(19.3 * var(--u));
-  right: calc(108.66 * var(--u));
-  height: calc(9.266 * var(--u));
-  overflow: hidden;
-}
-.sl2-live__crest img { position: absolute; }
-.sl2-live__crest--gen { top: calc(20.08 * var(--u)); }
-.sl2-live__crest--gen img { left: 23.25%; top: 5.2%; width: 57.21%; height: 89.57%; }
-.sl2-live__crest--sud { top: calc(32.43 * var(--u)); }
-.sl2-live__crest--sud img { left: 12.91%; top: 9.51%; width: 71.74%; height: 87.23%; }
-
-.sl2-live__name {
-  position: absolute;
-  left: calc(32.43 * var(--u));
-  font-weight: 700;
-  font-size: calc(5.405 * var(--u));
-  line-height: calc(7.722 * var(--u));
-  color: var(--sl2-ink);
-  white-space: nowrap;
-}
-.sl2-live__name--1 { top: calc(20.85 * var(--u)); }
-.sl2-live__name--2 { top: calc(33.2 * var(--u)); }
-
-.sl2-live__btn {
-  position: absolute;
-  top: calc(47.87 * var(--u));
-  height: calc(13.899 * var(--u));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: calc(2.5 * var(--u));
-  border-radius: calc(3.089 * var(--u));
-  font-weight: 700;
-  line-height: calc(5.791 * var(--u));
-}
-.sl2-live__btn b { font-weight: 700; font-size: calc(4.633 * var(--u)); text-transform: uppercase; opacity: 0.7; }
-.sl2-live__btn i { font-style: normal; font-weight: 700; font-size: calc(4.2 * var(--u)); }
-.sl2-live__btn--gen {
-  left: calc(6.18 * var(--u));
-  right: calc(90.9 * var(--u));
-  background: var(--sl2-up-bg-sm);
-  color: var(--sl2-up-ink);
-}
-.sl2-live__btn--draw {
-  left: calc(48.65 * var(--u));
-  right: calc(48.43 * var(--u));
-  background: var(--sl2-draw-bg);
-  color: var(--sl2-ink);
-}
-.sl2-live__btn--sud {
-  left: calc(91.11 * var(--u));
-  right: calc(5.96 * var(--u));
-  background: var(--sl2-sud-bg);
-  color: var(--sl2-sud-ink);
-}
-
-/* --------------------------------------------------- toast row (44px tall) */
+/* ----------------------------------- action bar 538:4465 (293 × 48 at y 262) */
 .sl2__toasts {
   display: flex;
   align-items: flex-start;
-  gap: calc(7 * var(--u));
+  gap: calc(6 * var(--u));
 }
 .sl2-toast {
   display: flex;
   align-items: center;
   gap: calc(8 * var(--u));
-  padding: calc(10 * var(--u));
+  padding: calc(8 * var(--u)) calc(16 * var(--u));
   border-radius: calc(8 * var(--u));
   background: var(--sl2-toast-bg);
   backdrop-filter: blur(calc(5.55 * var(--u)));
@@ -674,21 +586,19 @@
   display: flex;
   flex-direction: column;
   gap: calc(2 * var(--u));
-  width: calc(102 * var(--u));
   font-family: var(--font-display);
-  font-size: calc(8 * var(--u));
   line-height: normal;
   white-space: nowrap;
 }
-.sl2-toast__text b { font-weight: 700; color: var(--accent); }
-.sl2-toast__text i { font-style: normal; font-weight: 500; color: var(--ink); }
+.sl2-toast__text b { font-weight: 700; font-size: calc(12 * var(--u)); color: var(--accent); }
+.sl2-toast__text i { font-style: normal; font-weight: 500; font-size: calc(10 * var(--u)); color: var(--ink); }
 
 .sl2__tile {
   position: relative;
   flex: none;
   display: block;
-  width: calc(44 * var(--u));
-  height: calc(44 * var(--u));
+  width: calc(48 * var(--u));
+  height: calc(48 * var(--u));
   overflow: hidden;
   background: var(--sl2-tile-bg);
 }
@@ -696,47 +606,49 @@
 .sl2__tile--bolt { border-radius: calc(8 * var(--u)); }
 .sl2__tile--bolt img {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(28 * var(--u));
-  height: calc(28 * var(--u));
-  transform: translate(-50%, -50%);
+  left: calc(9 * var(--u));
+  top: calc(9 * var(--u));
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
 }
-/* the pie is three separate vector leaves inside a 28 × 28 box at 7,7 */
+/* the pie is three separate vector leaves inside a 30 × 30 box at 9,9 */
 .sl2__pie { position: absolute; }
 .sl2__pie--1 {
-  left: calc(23.755 * var(--u));
-  top: calc(22.126 * var(--u));
-  width: calc(11.244 * var(--u));
-  height: calc(8.4 * var(--u));
+  left: calc(26.952 * var(--u));
+  top: calc(25.206 * var(--u));
+  width: calc(12.047 * var(--u));
+  height: calc(9 * var(--u));
 }
 .sl2__pie--2 {
-  left: calc(20.829 * var(--u));
-  top: calc(8.176 * var(--u));
-  width: calc(12.324 * var(--u));
-  height: calc(12.327 * var(--u));
+  left: calc(23.817 * var(--u));
+  top: calc(10.26 * var(--u));
+  width: calc(13.204 * var(--u));
+  height: calc(13.207 * var(--u));
 }
 .sl2__pie--3 {
-  left: calc(7 * var(--u));
-  top: calc(9.15 * var(--u));
-  width: calc(20.745 * var(--u));
-  height: calc(24.675 * var(--u));
+  left: calc(9 * var(--u));
+  top: calc(11.304 * var(--u));
+  width: calc(22.227 * var(--u));
+  height: calc(26.438 * var(--u));
 }
 
-/* -------------------------------------------- connectors, diamond and pill */
+/* -------------------------------------------- connectors, diamond and pill
+   365:294 and 365:295 are the same 92 × 84 curve; the right-hand one is drawn
+   flipped, so it is the same file mirrored rather than a second asset. The
+   two meet on the diamond at 632. */
 .sl2__conn {
   position: absolute;
   top: calc(231 * var(--u));
   width: calc(93 * var(--u));
   height: calc(84 * var(--u));
 }
-.sl2__conn--l { left: calc(539.503 * var(--u)); }
-.sl2__conn--r { left: calc(631.503 * var(--u)); transform: scaleX(-1); }
+.sl2__conn--l { left: calc(539.5 * var(--u)); }
+.sl2__conn--r { left: calc(631.5 * var(--u)); transform: scaleX(-1); }
 
 .sl2__diamond {
   position: absolute;
-  left: calc(628.997 * var(--u));
-  top: calc(300.997 * var(--u));
+  left: calc(629 * var(--u));
+  top: calc(301 * var(--u));
   width: calc(6 * var(--u));
   height: calc(6 * var(--u));
   background: var(--accent);
@@ -765,6 +677,7 @@
   top: calc(13.83 * var(--u));
   width: calc(18.169 * var(--u));
   height: calc(21.179 * var(--u));
+  color: var(--on-accent);
 }
 .sl2__pill-body {
   box-sizing: border-box;
@@ -804,73 +717,91 @@
 }
 
 /* Below the hero's single-column breakpoint the visual is in normal flow, so
-   the box needs a height of its own and sits flush to the left. */
+   the box needs a height of its own and sits flush to the left.
+
+   The basis is 1021, not 963: that is the painted width of the group once the
+   two event cards run past the frame. The height is 375, not 365, because the
+   cards stand ten units above the row. The box is pushed down by those ten so
+   the cards start on the column's own top line, and the reserved height is
+   exactly what is painted. */
 @media (max-width: 1180px) {
   .sl2 {
     position: relative;
     inset: auto;
-    /* Both numbers off the SAME unit. The height was derived from /1920 while
-       the unit came from /1020, so the box reserved 68px of flow for 125px of
-       cards and the bottom half of the strip was drawn over whatever followed
-       it. 963 x 365 is `.sl2__box`, i.e. the painted extent, so the cards now
-       sit flush in the column the way slide 3's stacks and slide 4's circuit
-       do -- and the box reserves exactly what it paints. */
-    height: calc(365 * 100cqw / 963);
-    --u: calc(100cqw / 963);
+    height: calc(375 * 100cqw / 1021);
+    --u: calc(100cqw / 1021);
   }
   .sl2__box {
-    top: 0;
+    top: calc(10 * var(--u));
     right: auto;
     left: 0;
   }
 }
 
 /* THE PHONE COMPOSITION -------------------------------------------------------
-   Above this width the whole 963-wide group is scaled to fit the column. At
-   390px that is 0.363x: the prediction card's 15px title renders at 5.5px and
-   the market cards' 8px micro-copy at 2.9px. A faithful reproduction of the
-   design at a fifth of its size is not a small illustration, it is noise -- and
-   it left a 314px void under it, because 365 design units at 0.363x is a 133px
-   strip in a slot the stage had reserved 400px for.
+   Above this width the whole 1021-wide group is scaled to fit the column. At
+   390px that is 0.343x: the prediction card's 15.3px title renders at 5.2px,
+   the market cards' 8px micro-copy at 2.7px and the event cards' 9.4px buttons
+   at 3.2px. A faithful reproduction of the design at a third of its size is
+   not a small illustration, it is noise.
 
    So the phone is given FEWER PARTS, LARGER, not the same parts smaller. What
    stays is the pair of 200px market cards and the node they converge on, which
    is the slide's whole sentence: two different markets -- a sports book and a
-   commodity -- one account. Two cards side by side with their gap is 411 design
-   units, so 411 becomes the basis and everything is drawn at 0.85x: the price
-   is 17px, the card headings 10px, the range picker 7px. Legible, at last.
+   commodity -- one account.
 
-   What goes is the 390px prediction card, the 140px column of three small event
-   cards and the toast row. They are the parts with the smallest type relative
-   to their area -- exactly the parts that were costing the most width and
-   returning the least. Nothing is deleted from the markup: this is a phone
-   composition of the same illustration, and everything is back at 721px.
+   WHAT GOES, AND WHY
+   * The 390 prediction card. It is 390 wide on its own, so keeping it costs
+     more than the rest of the composition put together; at any basis that
+     still fits it, the market cards are pushed below legibility.
+   * The two 206 event cards. They are the densest type in the node relative to
+     their area -- 8px volume lines and 9.4px buttons -- and they are the third
+     column of a three-column idea the phone has no width for.
+   * The action bar. Not for size: at this scale its 12/10 type is the most
+     legible thing left. It is dropped because it CANNOT COEXIST with the
+     connectors once the pill is centred. The bar is 293 units wide at y
+     262..310 and the connector fan occupies 128..312 at y 231..315; on a
+     phone-width group those two rectangles are the same rectangle. The fan is
+     the slide's argument, so the fan wins.
+
+   THE BASIS
+   Two 200 cards and their 8-unit gap are 408 units, and the painted height is
+   375 (-10 at the card tops to 365 at the foot of the pill). The basis is 416
+   rather than 408 so that the height lands on the line the other three slides
+   bottom out on, and the group is centred in the four units of slack that
+   leaves on each side.
+
+   The reserved height is 375.4 and not 375: the four tenths are slack under
+   the pill, and they are what puts this slide's foot on the same line as the
+   other three. Measured at 390, off a freshly started server, the four slide
+   bottoms are 624.56 / 624.59 / 624.64 / 624.77 against a 624.77 stage --
+   a 0.21px spread, which is the balance this hero was already holding. At 375
+   flat the slide bottomed at 624.27 and the spread was 0.50.
 
    The box keeps its 365-unit height, so the connectors' 231..315 run and the
    pill's 315 baseline are untouched; only the horizontal anchors move, from
-   the group's right-hand third to the middle of a column that is now 411 wide.
-   The pill's 211 units centre at left: (411 - 211) / 2 = 100, which carries the
-   diamond the connectors meet at from 632 to 222 -- the same 122-unit offset
-   from the pill's left edge that the design draws. */
+   the group's right-hand third to the middle of a 408-wide pair. The pill's
+   211 units centre at (408 - 211) / 2 = 98.5, and every other anchor is the
+   design's own offset from the pill's left edge: +29.5 for the left curve,
+   +121.5 for the right, +119 for the diamond. */
 @media (max-width: 720px) {
   .sl2 {
-    /* 371 and not the box's own 365: the extra six units are the bottom margin
-       that puts the pill the same distance off the foot of the slot that the
-       cards sit off its head, and they are what makes this slot the same
-       315.8px at 390 that slides 1, 3 and 4 fill. */
-    height: calc(371 * 100cqw / 411);
-    --u: calc(100cqw / 411);
+    height: calc(375.4 * 100cqw / 416);
+    --u: calc(100cqw / 416);
   }
-  .sl2__box { width: calc(411 * var(--u)); }
+  .sl2__box {
+    left: calc(4 * var(--u));
+    width: calc(408 * var(--u));
+  }
 
   .sl2-pred,
   .sl2__minis,
   .sl2__toasts { display: none; }
 
-  .sl2__conn--l { left: calc(129 * var(--u)); }
-  .sl2__conn--r { left: calc(221.5 * var(--u)); }
-  .sl2__diamond { left: calc(219 * var(--u)); }
-  .sl2__pill { left: calc(100 * var(--u)); }
+  .sl2__conn--l { left: calc(128 * var(--u)); }
+  .sl2__conn--r { left: calc(220 * var(--u)); }
+  .sl2__diamond { left: calc(217.5 * var(--u)); }
+  .sl2__pill { left: calc(98.5 * var(--u)); }
 }
 
 /* --- Light -------------------------------------------------------------------
@@ -881,58 +812,39 @@
    ---------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .sl2 {
-  /* THE ARTWORK DECISION, made here first because this slide is the cheapest
-     of the four device mockups to move (LIGHTMODE 6.3) and the others are
-     being decided in parallel: THE PRODUCT UI IS RE-TINTED, not left as a dark
+  /* THE ARTWORK DECISION: THE PRODUCT UI IS RE-TINTED, not left as a dark
      inset. The cards below are a screenshot of the app, and in light mode the
-     app has a light mode. Twenty-five locals and the whole cluster follows.
+     app has a light mode.
 
      What does NOT re-tint, and why: a plate of --accent, --pos or --neg is
      dark in BOTH themes, so anything sitting on one keeps --on-accent and
-     stays white. That is the two 44px icon tiles, the active range chip, the
+     stays white. That is the two 48px icon tiles, the active range chip, the
      filled market bar and the trend ring behind each card's arrow. They read
      as deliberate chips on paper rather than as leftovers. */
 
-  /* Grounds. The three card gradients keep their angles and their stop
-     positions; only the two ends move. Dark steps 1.065 / 1.034 / 1.44 off the
-     page, light steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by
-     tint, not by shadow" that tokens.css uses for --panel and --panel-2. */
+  /* Grounds. The card gradients keep their angles and their stop positions;
+     only the ends move. Dark steps 1.065 / 1.034 / 1.44 off the page, light
+     steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by tint, not by
+     shadow" that tokens.css uses for --panel and --panel-2. */
   --sl2-card-a: #fbf5f0;
   --sl2-card-b: #f8ece0;
   --sl2-card-c: #eee4db;
-  --sl2-ink: #1a1512;
   --sl2-track: #e8ddd2;
 
   /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
      reads, so the tick flash and the figure it lands on cannot disagree.
      #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
-     rise had to move and the fall went with it, to --pos and --neg. The four
-     chip plates invert with them: a dark green wash under green ink becomes a
-     pale green wash under it. */
+     rise had to move and the fall went with it, to --pos and --neg. The chip
+     plates invert with them: a dark green wash under green ink becomes a pale
+     green wash under it. */
   --sl2-up-ink: #0b6e37;
   /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
      a label has to be. The price FLASH is a different token and a lighter red,
      for the reason recorded in Hero.css. */
   --sl2-down-ink: #b01309;
   --sl2-up-bg: #dcefe1;
-  --sl2-up-bg-sm: #e0f0e5;
   --sl2-down-bg: #fadedb;
-  --sl2-down-bg-sm: #f9e1de;
 
-  /* The live match card. */
-  --sl2-live-red: #c01822;
-  --sl2-live-dot: #d84449;
-  --sl2-live-vol: rgba(96, 90, 99, 0.8);
-  --sl2-ov-bg: #ebe5e0;
-  --sl2-score-line: rgba(26, 21, 18, 0.14);
-  --sl2-draw-bg: #e9e3df;
-  --sl2-sud-bg: rgba(176, 19, 9, 0.12);
-  --sl2-sud-ink: #9c1c25;
-  /* The figure written across the filled bar sits ON the fill, not on the
-     track, and the fill is --pos, which is dark in both themes. In dark it was
-     #000 on #00c950; on paper it has to be white on #0b6e37 or it disappears
-     into the one colour that did not flip. */
-  --sl2-bar-ink: #fffbf8;
   /* --sl2-lakers keeps #ffad00 in both themes: it is the club's own gold
      behind its own crest, not ours to re-key. */
 
@@ -956,58 +868,39 @@
 }
 
 :root[data-theme='light'] .sl2 {
-  /* THE ARTWORK DECISION, made here first because this slide is the cheapest
-     of the four device mockups to move (LIGHTMODE 6.3) and the others are
-     being decided in parallel: THE PRODUCT UI IS RE-TINTED, not left as a dark
+  /* THE ARTWORK DECISION: THE PRODUCT UI IS RE-TINTED, not left as a dark
      inset. The cards below are a screenshot of the app, and in light mode the
-     app has a light mode. Twenty-five locals and the whole cluster follows.
+     app has a light mode.
 
      What does NOT re-tint, and why: a plate of --accent, --pos or --neg is
      dark in BOTH themes, so anything sitting on one keeps --on-accent and
-     stays white. That is the two 44px icon tiles, the active range chip, the
+     stays white. That is the two 48px icon tiles, the active range chip, the
      filled market bar and the trend ring behind each card's arrow. They read
      as deliberate chips on paper rather than as leftovers. */
 
-  /* Grounds. The three card gradients keep their angles and their stop
-     positions; only the two ends move. Dark steps 1.065 / 1.034 / 1.44 off the
-     page, light steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by
-     tint, not by shadow" that tokens.css uses for --panel and --panel-2. */
+  /* Grounds. The card gradients keep their angles and their stop positions;
+     only the ends move. Dark steps 1.065 / 1.034 / 1.44 off the page, light
+     steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by tint, not by
+     shadow" that tokens.css uses for --panel and --panel-2. */
   --sl2-card-a: #fbf5f0;
   --sl2-card-b: #f8ece0;
   --sl2-card-c: #eee4db;
-  --sl2-ink: #1a1512;
   --sl2-track: #e8ddd2;
 
   /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
      reads, so the tick flash and the figure it lands on cannot disagree.
      #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
-     rise had to move and the fall went with it, to --pos and --neg. The four
-     chip plates invert with them: a dark green wash under green ink becomes a
-     pale green wash under it. */
+     rise had to move and the fall went with it, to --pos and --neg. The chip
+     plates invert with them: a dark green wash under green ink becomes a pale
+     green wash under it. */
   --sl2-up-ink: #0b6e37;
   /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
      a label has to be. The price FLASH is a different token and a lighter red,
      for the reason recorded in Hero.css. */
   --sl2-down-ink: #b01309;
   --sl2-up-bg: #dcefe1;
-  --sl2-up-bg-sm: #e0f0e5;
   --sl2-down-bg: #fadedb;
-  --sl2-down-bg-sm: #f9e1de;
 
-  /* The live match card. */
-  --sl2-live-red: #c01822;
-  --sl2-live-dot: #d84449;
-  --sl2-live-vol: rgba(96, 90, 99, 0.8);
-  --sl2-ov-bg: #ebe5e0;
-  --sl2-score-line: rgba(26, 21, 18, 0.14);
-  --sl2-draw-bg: #e9e3df;
-  --sl2-sud-bg: rgba(176, 19, 9, 0.12);
-  --sl2-sud-ink: #9c1c25;
-  /* The figure written across the filled bar sits ON the fill, not on the
-     track, and the fill is --pos, which is dark in both themes. In dark it was
-     #000 on #00c950; on paper it has to be white on #0b6e37 or it disappears
-     into the one colour that did not flip. */
-  --sl2-bar-ink: #fffbf8;
   /* --sl2-lakers keeps #ffad00 in both themes: it is the club's own gold
      behind its own crest, not ours to re-key. */
 

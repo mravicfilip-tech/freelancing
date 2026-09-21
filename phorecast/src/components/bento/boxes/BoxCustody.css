@@ -399,6 +399,31 @@
     --u: min(1px, 100cqw / 334);
   }
 
+  /* THE COPY'S GUTTER, WHICH THIS CARD WAS MISSING.
+     Bento.css takes the cards' padding to zero on a phone and leaves each
+     exported frame to place its own contents; the three sibling cards do,
+     and this one never did, so its heading, body and link sat flush on the
+     card's edge while everything else in the band -- including the band's own
+     `.bento__head` -- was inset by the design's 30 of 394. Measured at a 390
+     viewport: 21.0 against the heading's and the other three cards' 47.484.
+
+     The inset is a PERCENTAGE OF THE CARD, 30/394, and not `30 * var(--u)`,
+     for two separate reasons. The band's heading is inset by that same
+     percentage, so a percentage is what agrees with it by construction rather
+     than by coincidence. And `--u` here is capped at 1px and divides by 334,
+     the content column, not by 394, the frame -- so below the cap it is a
+     different number from the sibling cards' unit and `30 * var(--u)` would
+     land 3.5px wide of them at 390.
+
+     Padding on the card would have been the obvious way to do this and is the
+     wrong one: `container-type: inline-size` makes 100cqw the CONTENT box, so
+     padding would feed back into `--u` and shrink the diagram by 14%. Margins
+     on the two flow children leave the unit, and therefore the artwork,
+     exactly where they are. The art itself is already `margin-inline: auto`
+     and is centred on the card at any width, so it is not in this rule. */
+  .box-custody .bcard__text { margin-inline: 7.614%; }
+  .box-custody .bento__cta { margin-inline-start: 7.614%; }
+
   /* 526:1588 sits at a flat 145px from the card's top edge, which works in a
      frame whose heading is known to be two lines. Ours is two at 390 and three
      at 360, so the art becomes a flow item between the copy and the link

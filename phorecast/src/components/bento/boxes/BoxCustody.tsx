@@ -1,6 +1,38 @@
 /**
- * Bento card B — "Your funds leave whenever you want" (Figma 365:925 desktop,
- * 526:305 mobile).
+ * Bento card B — "You can never lose more than you stake" (Figma 365:925
+ * desktop, 526:305 mobile).
+ *
+ * THE PREMISE CHANGED, THE GEOMETRY DID NOT. The card was drawn to argue
+ * self-custody: "Your funds leave whenever you want" over "Collateral sits in
+ * contracts we never touch", with a Smart Contracts chip, a Withdraw anytime
+ * chip and a Wallet at the end of the chain. The product no longer supports
+ * any of that -- there is no collateral in contracts, and large withdrawals
+ * may be held up to 24 hours for a security review, so nothing here can say
+ * "anytime". What the product DOES support, and what this card argues now, is
+ * bounded risk: your stake is the most you can lose. So the four labels that
+ * carried the old claim are the four things that changed --
+ *
+ *   title    Your funds leave whenever you want -> You can never lose more
+ *            than you stake
+ *   body     Collateral sits in contracts we never touch -> No leverage. Each
+ *            winning contract pays $1.
+ *   chip 1   Smart Contracts  -> No liquidations
+ *   chip 2   Withdraw anytime -> No margin calls
+ *   node     Wallet           -> Balance
+ *
+ * -- and every coordinate, box and asset below is untouched. Both chips keep
+ * their designed widths (133 and 146) so their right edges stay on the
+ * circles, and `--wallet` survives as a CLASS NAME on the balance node: the
+ * motion module and the theme snapshot both key off it, and renaming it would
+ * read as a disappearance rather than a rewording.
+ *
+ * WHAT IS STILL THE OLD STORY, AND IS FLAGGED RATHER THAN REDRAWN: the packet
+ * travels from the market orbit into that node, and the node is a wallet
+ * glyph on a wallet disc. Read as "a contract settles into your balance" that
+ * is true. Read as "your money leaves to a wallet we do not control" it is the
+ * claim that was just cut, and the drawing cannot tell you which it means.
+ * Relabelling it "Balance" is the most an editor can do; the disc and the
+ * glyph want a designer.
  *
  * The card is 534 x 355 in desktop design pixels and 394 x 669 on the phone.
  * `.bcard` (Bento.css) already supplies the shell — padding, radius,
@@ -113,8 +145,8 @@ export function BoxCustody() {
   return (
     <article className="bcard bcard--funds box-custody">
       <div className="bcard__text">
-        <h3 className="bcard__title">Your funds leave whenever you want</h3>
-        <p className="bcard__body">Collateral sits in contracts we never touch.</p>
+        <h3 className="bcard__title">You can never lose more than you stake</h3>
+        <p className="bcard__body">No leverage. Each winning contract pays $1.</p>
       </div>
 
       <div className="custody__art" aria-hidden="true">
@@ -138,7 +170,11 @@ export function BoxCustody() {
         <Icon src={ringWallet} w={93} h={93} className="custody__ring-wallet"
           style={{ width: undefined, height: undefined }} />
 
-        <span className="custody__label custody__label--wallet" style={{ '--x': 43, '--y': 131, '--mx': 95, '--my': 429 } as Vars}>Wallet</span>
+        {/* The class stays `--wallet` -- it is the motion module's handle and
+            the theme snapshot's key -- but the word does not: the node is the
+            balance a settled contract lands in, not a wallet we are claiming
+            never to hold. */}
+        <span className="custody__label custody__label--wallet" style={{ '--x': 43, '--y': 131, '--mx': 95, '--my': 429 } as Vars}>Balance</span>
         {MARKETS.map(({ label, lx, ly, mlx, mly }) => (
           <span key={label} className="custody__label" style={{ '--x': lx, '--y': ly, '--mx': mlx, '--my': mly } as Vars}>
             {label}
@@ -180,7 +216,7 @@ export function BoxCustody() {
             <Icon src={solidContractFold} w={2.33144} h={2.32572} className="custody__doc-fold"
               style={{ width: undefined, height: undefined }} />
           </span>
-          Smart Contracts
+          No liquidations
         </span>
         <span className="custody__pill"
           style={{ '--x': 115, '--y': 144, '--w': 146, '--mx': 95, '--my': 295, '--mw': 143 } as Vars}>
@@ -195,7 +231,7 @@ export function BoxCustody() {
             <Icon src={solidLock} w={16} h={16} className="custody__lock-solid"
               style={{ width: undefined, height: undefined }} />
           </span>
-          Withdraw anytime
+          No margin calls
         </span>
 
         {NODES.map(({ key, x, y, mx, my }) => (

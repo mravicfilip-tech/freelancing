@@ -4,25 +4,37 @@
  * so the phone is the one object the section is about and everything else is
  * staged around its arrival.
  *
- * THE SEQUENCE (4.0s end to end). Times below are measured from the end of the
- * held lead-in beat, which every cue is offset by — see LEAD.
- *   0.00  The eyebrow, then the two-line heading: the label on the band, quiet
- *         and small, so the stage is named before anything fills it.
- *   0.70  THE PHONE. The lead, alone, for a beat and a half: it rises 140
- *         design pixels from slightly small and decelerates into place on
+ * THE SEQUENCE (2.25s end to end). Times below are measured from the end of
+ * the held lead-in beat, which every cue is offset by — see LEAD.
+ *   0.00  The eyebrow, then the two-line heading 0.10s behind it: the label on
+ *         the band, quiet and small, so the stage is named before anything
+ *         fills it — and named at once, because it is the only thing in this
+ *         section a reader can actually read.
+ *   0.34  THE PHONE. The lead, alone, for three quarters of a beat: it rises
+ *         140 design pixels from slightly small and decelerates into place on
  *         `expo.out`, so it reads as landing rather than fading up.
- *   1.80  The two market panels inside its screen — the French election and
+ *   1.10  The two market panels inside its screen — the French election and
  *         the BTC row — rise into the settled handset, which is the app doing
  *         its job rather than a screenshot appearing.
- *   2.05  The floating ECB and NVDA cards slide in from the left, towards the
- *         phone, 0.17s apart. They are the detail that makes the stage feel
+ *   1.15  The floating ECB and NVDA cards slide in from the left, towards the
+ *         phone, 0.13s apart. They are the detail that makes the stage feel
  *         inhabited, so they travel further than the copy does.
- *   2.15  The two prediction cards settle in from the right, 0.17s apart and
+ *   1.20  The two prediction cards settle in from the right, 0.13s apart and
  *         mirroring the pair on the left: the outer one first and travelling
  *         furthest, the inner one behind it and travelling less, so they do
  *         not read as one block sliding. The quietest arrivals on the stage.
- *   2.40  The right-hand copy and the Start Trading button, tightly staggered.
- *   2.65  The category pills across the bottom band, left to right.
+ *   1.25  The right-hand copy and the Start Trading button, tightly staggered.
+ *   1.38  The category pills across the bottom band, left to right.
+ *
+ * WHAT CHANGED, AND WHY. This ran 4.0s after a third of a second of stillness,
+ * and on a phone that meant 612ms before a word of it could be read and 4.05s
+ * before the last chip stopped moving — measured at 390 wide from the frame the
+ * section was scrolled into view. Every beat is still here, in the same order,
+ * travelling the same distances in the same direction, on the same `expo.out`.
+ * They simply overlap the way `expo.out` invites them to: it is 98% travelled
+ * at 60% of its duration, so a beat that waits for the one before it to run its
+ * full clock is waiting on nothing anybody can see. The held lead-in is halved
+ * with them, for the reason recorded at LEAD.
  *
  * Distances are stated in the design's own 1920-wide pixels and scaled by the
  * stage's measured width, so the entrance is proportionally identical at every
@@ -77,13 +89,23 @@ function unit(el: HTMLElement): number {
  * frame is the most expensive one this band ever has: the observer fires, React
  * runs a layout effect, and the browser lays out and paints a full-bleed stage
  * with a phone, four cards and a blurred glow field that have never been
- * painted before. Measured on the dev server, 588ms passed between the scroll
- * and the first frame the page actually put on screen. Anything scheduled at
- * zero spends that window travelling unseen: the eyebrow was 71% faded in and
- * had 9 of its 33 pixels left by the time anyone could see it. The lead-in
- * costs a third of a second of stillness and buys the opening beat back.
+ * painted before. Anything scheduled at zero spends that window travelling
+ * unseen.
+ *
+ * It was a third of a second, against a 588ms first paint measured on the dev
+ * server at desktop width. Re-measured since, at both widths and on the same
+ * harness as the timings above: the band drops `data-motion="pending"` 242 to
+ * 367ms after the scroll at 390, and 311 to 777ms at 1600. So a third of a
+ * second is most of a phone's whole reveal spent holding still on top of it,
+ * and the eyebrow was not readable until 612ms.
+ *
+ * Halved. The remainder still covers the frame the reveal lands on, and the
+ * beat it opens is short enough that being caught part-way through it on a
+ * slow desktop paint costs a readable eyebrow rather than a finished one. That
+ * is the right way round: the earlier fault was a sequence finishing unseen,
+ * and nothing here can finish in 150ms.
  */
-const LEAD = 0.34;
+const LEAD = 0.15;
 
 /**
  * Sections whose arrival has already been performed, start to finish, in this
@@ -158,8 +180,8 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const predInner = shown(q('.fam__pred--a')[0]);
 
   /* 1 — the band names itself. */
-  rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.9, clearProps: 'transform,opacity' });
-  rise(tl, q('.fam__title'), LEAD + 0.16, { y: d(52), duration: 1.1, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.6, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__title'), LEAD + 0.1, { y: d(52), duration: 0.75, clearProps: 'transform,opacity' });
 
   /* 2 — the lead. Origin low on the handset so the small amount of scale reads
      as it settling onto the stage rather than growing out of its own middle. */
@@ -168,19 +190,20 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
       y: d(140),
       scale: 0.94,
       opacity: 0,
-      duration: 1.5,
+      duration: 1.25,
       ease: EASE,
       transformOrigin: '50% 72%',
       clearProps: 'transform,opacity',
-    }, LEAD + 0.7);
+    }, LEAD + 0.34);
 
     /* 3 — the app fills in, once the handset has stopped moving. `expo.out` is
-       99% travelled at 70% of its duration, so 1.8s is after the landing, not
-       during it. */
-    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), LEAD + 1.8, {
+       98% travelled at 60% of its duration, so 1.10s catches the phone with
+       under three design pixels of its 140 left to go — landed, for any eye
+       and for the pixel diff both. */
+    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), LEAD + 1.1, {
       y: d(28),
-      duration: 0.9,
-      stagger: 0.18,
+      duration: 0.7,
+      stagger: 0.12,
       clearProps: 'transform,opacity',
     });
   }
@@ -188,10 +211,10 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   /* 4 — the floating cards come in from the left, towards the phone. Different
      vectors so the pair does not read as one block sliding. */
   if (ecb) {
-    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.05);
+    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.15);
   }
   if (nvda) {
-    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 1.15, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.22);
+    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.28);
   }
 
   /* 5 — the two prediction cards, in from the right, towards the phone. The
@@ -202,22 +225,22 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
      The distances and the ease are the ones this step already used — d(90) /
      d(34) on `expo.out` was the single prediction card's vector and is now the
      outer card's, d(62) / d(26) was the ghosts' and is now the inner card's.
-     Both are 1.1s, which is what every arrival in this step has always been,
-     and both land inside the 2.15 – 2.35 window the sequence note describes.
+     Both are 0.85s, and both land inside the 1.20 – 1.33 window the sequence
+     note describes.
      `from` tweens, like everything else in this file: the resting markup is
      the finished state. */
   if (predOuter) {
-    tl.from(predOuter, { x: d(90), y: d(34), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.15);
+    tl.from(predOuter, { x: d(90), y: d(34), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.2);
   }
   if (predInner) {
-    tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 1.1, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 2.32);
+    tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.33);
   }
 
   /* 6 — the claim, then its button. */
-  rise(tl, q('.fam__sub-title, .fam__sub-body'), LEAD + 2.4, {
+  rise(tl, q('.fam__sub-title, .fam__sub-body'), LEAD + 1.25, {
     y: d(48),
-    duration: 0.95,
-    stagger: 0.16,
+    duration: 0.7,
+    stagger: 0.13,
     clearProps: 'transform,opacity',
   });
 
@@ -227,8 +250,9 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
      the inline transform is dropped but the *computed* one is still 160ms from
      home. A `from` tween built in that window reads the stale 36px as the value
      to finish on, animates 36 to 36, reports complete and leaves the button
-     sitting a line below its own copy forever. Measured: `translate(0px, 36px)`
-     held from 2.27s to 3.58s with the tween running. It is the same fault
+     sitting a line below its own copy forever. Measured, on the timings this
+     file carried then: `translate(0px, 36px)` held from 2.27s to 3.58s with
+     the tween running. It is the same fault
      `pop()` in lib/motion.ts was written to describe, and it bites here for the
      same reason — React mounts, tears down and mounts again inside one frame.
      Stated ends cannot be poisoned by whatever the element currently reads as. */
@@ -236,12 +260,12 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   if (cta) {
     tl.fromTo(cta,
       { y: d(48), opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.95, ease: EASE, clearProps: 'transform,opacity' },
-      LEAD + 2.72);
+      { y: 0, opacity: 1, duration: 0.65, ease: EASE, clearProps: 'transform,opacity' },
+      LEAD + 1.45);
   }
 
   /* 7 — the category strip closes the band out, left to right. */
-  rise(tl, q('.fam__chips > *'), LEAD + 2.65, { y: d(40), duration: 0.8, stagger: 0.08, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__chips > *'), LEAD + 1.38, { y: d(40), duration: 0.55, stagger: 0.06, clearProps: 'transform,opacity' });
 
   // Last on the timeline, so it is only reached if the arrival was actually
   // performed. A reverted build never gets here. See LANDED.

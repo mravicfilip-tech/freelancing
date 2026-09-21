@@ -545,8 +545,37 @@
   justify-content: center;
   text-align: center;
   gap: calc(20 * var(--u));
-  min-height: calc(722 * var(--u));
   padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(40 * var(--u));
+
+  /* THE BAND IS A SCREEN TALL, BECAUSE IT PINS.
+     -----------------------------------------------------------------------
+     722 design units is the frame's own height for this band and it is still
+     the floor, but it is no longer the whole story: About.conv.motion.ts pins
+     this band and spends 170% of a screen of scrolling on filling the
+     statement, and while it is pinned whatever the band does not occupy is
+     dead space held under the reader's eye. Measured at 1600 x 900 before
+     this: the band was 668px, so a third of the screen under the goal line
+     was empty for the whole pin, and the next band climbed into it over the
+     last stretch. The client drew a box round exactly that.
+
+     A screen LESS THE GAP the band opens with, because the pinned element is
+     `.ab-conv` and that carries `--ab-gap` above this box -- the two together
+     are what has to come to 100svh.
+
+     `max()` and not a replacement, so the CONTENT still wins: where the copy
+     is taller than the screen this floor is the smaller of the two and does
+     nothing. That is the case at 360, where the statement wraps to 21 lines
+     and the band is 813px against a 780 viewport, and it must stay the case
+     or the goal line would be clipped by its own band.
+
+     `svh` and not `vh`, matching the client's reference: the small viewport
+     is the one with the browser's chrome showing, so the band is a screen
+     tall in the state where a phone has the least room rather than the most.
+
+     Two declarations, and the first is the fallback: a browser without `svh`
+     drops the second as invalid and keeps the frame's own height. */
+  min-height: calc(722 * var(--u));
+  min-height: max(calc(722 * var(--u)), calc(100svh - var(--ab-gap)));
 }
 
 /* 531:158 "Container" — the four arcs behind this band.
@@ -958,7 +987,15 @@
     margin-right: calc(-1 * clamp(20px, 2.6vw, 32px));
   }
 
-  .ab-conv__inner { min-height: 0; padding-block: clamp(24px, 4vw, 60px); }
+  /* The design height goes, because below 1100 the unit makes 722 of it a
+     number this copy has outgrown -- but the pin's floor stays, for the same
+     reason it exists at all. Content still wins over it: at 360 the statement
+     alone is taller than the screen and this resolves to less than it. */
+  .ab-conv__inner {
+    min-height: 0;
+    min-height: calc(100svh - var(--ab-gap));
+    padding-block: clamp(24px, 4vw, 60px);
+  }
   .ab-why__row { flex-wrap: wrap; }
   .ab-why__card { flex: 1 1 100%; min-height: 0; padding: clamp(20px, 2.6vw, 32px); }
   .ab-cmp__card { padding: clamp(20px, 2.6vw, 32px); }

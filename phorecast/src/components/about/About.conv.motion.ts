@@ -311,7 +311,11 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
    * own and is killed by the latch. Same trigger element, same start, same
    * end, so they pin and scrub over exactly the same stretch.
    */
-  const start = () => (el.offsetHeight > window.innerHeight ? START_TALL : START_FITS);
+  // A pixel of tolerance, because the band is now sized to be exactly a screen
+  // and "exactly" is a subpixel question: `100svh` resolving to 900.4 against
+  // an `innerHeight` of 900 would otherwise flip a band that fits into the
+  // branch for one that does not, over nothing a reader could see.
+  const start = () => (el.offsetHeight > window.innerHeight + 1 ? START_TALL : START_FITS);
 
   ScrollTrigger.create({
     trigger: el,

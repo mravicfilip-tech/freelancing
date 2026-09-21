@@ -35,19 +35,24 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* THE STATEMENT FILLS AS YOU SCROLL, AND THE GRAIN IS THE WORD.
  * ---------------------------------------------------------------------------
- * Per LINE is the other defensible grain and it was rejected on a measurement:
- * the statement wraps to 6 lines at 1600, 7 at 1100 and 11 at 390, so a
- * per-line reveal has a different number of steps at every width -- eleven
- * beats on a phone and six on a desktop, from one piece of copy. It also
- * cannot start filling until a whole line's worth of scroll has been spent,
- * which at 48px display type is a visible block switching on rather than
- * something filling. Per CHARACTER is ~250 units on a sentence whose type is
- * 48px and uppercase; at that size the eye reads the wave, not the letters,
- * and 250 composited spans buys nothing over 47.
+ * Per LINE is the other defensible grain and it was rejected on a measurement.
+ * Counted on the page, the statement wraps to 6 lines at 1600 and at 1100, 8
+ * at 720, 18 at 390 and 21 at 360 -- so a per-line reveal is a six-step move
+ * on a desktop and a twenty-one-step one on a phone, from one piece of copy,
+ * and the reader who sees both sees two different animations. It is also the
+ * coarsest thing the copy can be cut into: nothing happens until a whole
+ * line's worth of scroll has been spent, and then a whole line of 40px display
+ * type switches on at once, which is a block appearing and not a fill.
  *
- * The word is the only grain that is width-invariant: 47 words at 1600 and 47
- * at 390, so the reveal has the same texture on a phone as on a desktop, and
- * the wave advances in the unit the reader is actually consuming.
+ * Per CHARACTER is the opposite failure: ~250 spans on a sentence set in 24 to
+ * 40px uppercase, where the eye is reading the front of the wave and not the
+ * letters inside it. It buys nothing over the word and costs six times the
+ * elements, each of them composited.
+ *
+ * The word is the only grain that is width-invariant. Forty words is forty
+ * words at 1600 and at 360, so the reveal has the same texture on a phone as
+ * on a desktop while the line count triples underneath it, and the wave
+ * advances in the unit the reader is actually consuming.
  *
  * WHY THE WORDS CARRY THEIR OWN PAINT. `.ab-conv__statement` paints its type
  * with a gradient clipped to the text (About.css), and in Chromium a
@@ -115,9 +120,26 @@ const SPREAD = 1;
  *
  * So the second rule is a ceiling on that: never later than the point where
  * the first line has climbed to 12% of the screen. At 1600 the centre rule is
- * the earlier of the two and wins by 150px; at 360 the ceiling is, and holds
- * the top line about 94px clear of the edge. Both are stated against the
- * statement's own box, so both mean the same thing at every width.
+ * the earlier of the two and wins by 153px; at 360 the ceiling is. Both are
+ * stated against the statement's own box, so both mean the same thing at every
+ * width.
+ *
+ * DRIVEN AND MEASURED, in both themes, at the moment the last word lands --
+ * the statement's top and bottom against the viewport, and the scroll spent
+ * getting there:
+ *
+ *   1600 x 900   6 lines, 288 tall    213..501 of 900    625px
+ *   1100 x 850   6 lines, 198 tall    218..441 of 850    600px
+ *    720 x 900   8 lines, 230 tall    238..468 of 900    600px
+ *    390 x 844  18 lines, 518 tall     81..599 of 844    700px
+ *    360 x 780  21 lines, 605 tall     41..646 of 780    675px
+ *
+ * Every line of the sentence is on screen at every one of them, and the fill
+ * is spent over two thirds to four fifths of a screen of scrolling wherever it
+ * runs. The numbers sit inside the trigger's own end because the reader keeps
+ * scrolling through the quarter-second the latch takes to finish the last
+ * words; at 360 the end itself puts the top line 94px clear and what is
+ * measured is 41.
  *
  * `end` is therefore a function returning a scroll position rather than one of
  * ScrollTrigger's strings -- a string can say one of these and not the lesser

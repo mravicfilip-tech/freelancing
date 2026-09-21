@@ -4,7 +4,6 @@ import { App } from './App';
 import './lib/theme';
 import '@fontsource-variable/manrope';
 import '@fontsource-variable/inter-tight';
-import '@fontsource-variable/geist-mono';
 import '@fontsource-variable/darker-grotesque';
 import './styles/global.css';
 

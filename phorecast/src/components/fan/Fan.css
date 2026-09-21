@@ -159,7 +159,7 @@
   padding: calc(14 * var(--f));
   border-radius: calc(30 * var(--f));
   background: var(--fan-pill-bg);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   font-size: calc(14 * var(--f));
   line-height: 1.2;

@@ -252,7 +252,7 @@
    price OF. --ink-2 is the body-copy token `.lede` already uses, 6.36:1 on
    paper, and it keeps the note quieter than the cards without hiding it. */
 .hero__snapshot-note {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   font-size: 13px;
   line-height: 1.2;

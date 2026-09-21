@@ -325,7 +325,7 @@
      that names which step this is is not decoration that may fail it. The
      brand red is spent on the underline, where nothing has to be read. */
   .steps__tab-n {
-    font-family: var(--font-mono);
+    font-family: var(--font-label);
     font-weight: 500;
     font-size: 13px;
     color: inherit;

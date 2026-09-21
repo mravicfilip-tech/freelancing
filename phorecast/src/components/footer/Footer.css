@@ -113,7 +113,7 @@
 .footer__columns { display: flex; gap: 48px; flex-wrap: wrap; }
 .footer__col { display: flex; flex-direction: column; gap: 24px; width: 208px; }
 .footer__col-title {
-  font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
+  font-family: var(--font-label); font-weight: 500; font-size: 16px; line-height: 1.2;
   text-transform: uppercase; color: var(--ink);
 }
 .footer__links { display: flex; flex-direction: column; gap: 16px; }

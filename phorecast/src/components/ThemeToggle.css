@@ -92,7 +92,7 @@
   min-height: 44px;        /* the tap target, not the track */
   padding-inline: 8px;
   border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
   font-size: 15px;
   line-height: 1.2;

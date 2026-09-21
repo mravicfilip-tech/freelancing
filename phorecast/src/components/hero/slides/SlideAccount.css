@@ -776,7 +776,7 @@
   border: calc(1 * var(--u)) solid var(--accent);
   border-radius: calc(30 * var(--u));
   background: var(--sl2-pill-bg);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 600;
   font-size: calc(16 * var(--u));
   line-height: 1.2;

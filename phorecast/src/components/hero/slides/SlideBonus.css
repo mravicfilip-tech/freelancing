@@ -240,7 +240,7 @@
   align-items: center;
   gap: calc(2 * var(--u));
   padding: calc(14 * var(--u));
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 500;
   font-size: calc(13 * var(--u));
   line-height: 0.88;
@@ -426,7 +426,7 @@
 }
 
 .sl3-countdown__colon {
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-weight: 400;
   font-size: calc(42 * var(--u));
   line-height: normal;

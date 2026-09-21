@@ -101,7 +101,64 @@
   --btn-primary-hover-bg: var(--ink);
   --btn-primary-hover-ink: var(--accent);
 
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* The label face. Eyebrows, buttons, tab labels, chips, column headings and
+     the numbers inside the illustrations -- everything the client's spec calls
+     a subtitle. It was Geist Mono; the client has ruled Geist Mono out, and
+     this token is now Galano Grotesque per the Figma inspector (500 / 120% /
+     uppercase). It is NOT called --font-mono any more because nothing
+     monospaced is left in it; --font-mono survives below as an alias only.
+
+     THE FILES ARE NOT SHIPPED YET (see styles/fonts.css). Everything after the
+     first name is therefore what actually renders today, and will still be
+     what renders on any machine where the webfont fails. That makes the order
+     below a real design decision rather than boilerplate:
+
+       Avenir Next / Avenir   macOS and iOS. Geometric-humanist, a large family
+                              of the same genus as Galano; by far the closest
+                              fit anybody gets for free.
+       Futura                 macOS's other geometric, and on Windows machines
+                              that have Office. Only ever reached if Avenir is
+                              somehow absent.
+       Segoe UI               Windows. Humanist rather than geometric, so the
+                              genre is wrong, but the WIDTHS are close and this
+                              site is measured on widths.
+       Roboto                 Android and ChromeOS, same argument.
+       Liberation Sans /      Linux desktops, and the headless Chromium every
+       DejaVu Sans            script in scripts/ runs in. Naming them is what
+                              makes the measurements in this repo reproducible
+                              instead of resolving to whatever the box has.
+       system-ui, sans-serif  the floor.
+
+     DELIBERATELY NOT IN THE STACK:
+
+       ui-monospace et al     what was here. A monospace behind a grotesque is
+                              not a fallback, it is a different design.
+       Century Gothic         the obvious geometric on Windows, and the trap.
+                              It is anomalously wide -- uppercase strings set
+                              10-15% longer than any other name on this list --
+                              and it arrives with Office rather than with the
+                              OS, so including it would make the same page
+                              measurably wider on an arbitrary subset of
+                              Windows machines. Every nowrap width budget in
+                              this repo would have to be cut to its worst case
+                              to protect a fallback almost nobody reaches.
+       Poppins / Montserrat   closer in genus, but web-only: naming a font
+                              nobody has installed is naming nothing. */
+  --font-label:
+    'Galano Grotesque',
+    'Avenir Next', 'Avenir',
+    'Futura',
+    'Segoe UI',
+    Roboto,
+    'Liberation Sans', 'DejaVu Sans',
+    system-ui, sans-serif;
+
+  /* Deprecated alias. src/components/Nav.css and src/components/about/About.css
+     still say var(--font-mono) at six call sites; they are owned by another
+     branch in flight and could not be rewritten here without a collision. This
+     keeps them rendering the right face through the cascade. Retire it, and
+     this line, once those six are moved to --font-label. */
+  --font-mono: var(--font-label);
   --font-display: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
   --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
   --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;

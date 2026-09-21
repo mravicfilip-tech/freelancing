@@ -114,7 +114,7 @@
 .pcard--fixed { flex: 0 0 478px; }
 .pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .pcard__eyebrow {
-  font-family: var(--font-mono); font-weight: 500; font-size: 16px; line-height: 1.2;
+  font-family: var(--font-label); font-weight: 500; font-size: 16px; line-height: 1.2;
   text-transform: uppercase; color: var(--ink);
 }
 /* The mark, and the two exports that are the same path in two colours. Masked,

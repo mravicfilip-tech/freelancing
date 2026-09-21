@@ -162,6 +162,44 @@ export function intoLines(el: HTMLElement): HTMLElement[] {
   return all(el, '.line__in');
 }
 
+/**
+ * How far up the screen a section must have come before its entrance starts.
+ *
+ * This is one number and it decides the whole page's sense of lateness, so the
+ * reasoning is written down twice -- once for the shape, once for the size.
+ *
+ * THE SHAPE. "Has this been scrolled to" is a question about how far the
+ * section has come up the screen, not what fraction of it is showing. A ratio
+ * cannot answer it: a section taller than the viewport can never reach a high
+ * one, so a threshold set high enough to ignore the sliver of a section
+ * showing under the one above is a threshold the section may never cross, and
+ * the band sits holding an empty frame the whole way down. A negative bottom
+ * margin asks the question directly -- the section must climb this far before
+ * it counts -- and it behaves the same whatever either height is. That is why
+ * this is a bottom margin and not a threshold, and it does not change.
+ *
+ * THE SIZE. It used to be -25%, and -25% is a quarter of the screen: 211px on
+ * an 844px phone. The reader had scrolled 211px INTO the section before the
+ * first tween was even created, and the section's own timeline -- one to four
+ * seconds of it -- then started from zero. Measured on the fan at 390 wide:
+ * the title was unreadable for 1240ms after the section's top crossed the
+ * bottom of the screen and the tiles for 3516ms. The entrance was not
+ * decorating the content, it was standing in front of it.
+ *
+ * -5% keeps the guarantee the shape exists for and drops the waiting. It is
+ * about 42px on a phone, which is still more than any seam, hairline overlap
+ * or rounding error between two abutting sections -- nothing peeks by 42px --
+ * so a section genuinely just below the fold still does not count as arrived
+ * at. But it means the entrance now starts as the section ENTERS rather than
+ * after a quarter of it has gone by, which at a normal phone scroll rate hands
+ * the sequence roughly 400ms of run-up. The first beat has landed by the time
+ * the section is under the reader's eye; the later beats play while it is.
+ *
+ * Every section on the page reads this default. Sections that pass their own
+ * rootMargin are unaffected.
+ */
+const GATE = '0px 0px -5% 0px';
+
 export interface SectionMotion {
   el: HTMLElement;
   q: (selector: string) => HTMLElement[];
@@ -178,7 +216,7 @@ export interface SectionMotion {
  */
 export function useSectionMotion<T extends HTMLElement = HTMLElement>(
   build: (m: SectionMotion) => void,
-  { threshold = 0, rootMargin = '0px 0px -25% 0px', idle, immediate = false }:
+  { threshold = 0, rootMargin = GATE, idle, immediate = false }:
     { threshold?: number; rootMargin?: string; idle?: (el: HTMLElement) => () => void; immediate?: boolean } = {},
 ): RefObject<T | null> {
   const ref = useRef<T>(null);
@@ -319,14 +357,8 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
     if (immediate || replay) {
       start();
     } else {
-      // "Has this been scrolled to" is a question about how far the section has
-      // come up the screen, not what fraction of it is showing. A ratio cannot
-      // answer it: a section taller than the viewport can never reach a high
-      // one, so a threshold set high enough to ignore the sliver under the hero
-      // is a threshold the section may never cross, and the band sits holding
-      // an empty frame the whole way down. The negative bottom margin asks the
-      // question directly -- the section must climb a quarter of the screen
-      // before it counts -- and it behaves the same whatever either height is.
+      // A bottom margin and not a threshold, and a small one. Both halves of
+      // that choice are argued where GATE is defined.
       io = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < threshold) return;
         io?.disconnect();

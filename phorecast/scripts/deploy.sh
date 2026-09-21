@@ -24,11 +24,37 @@ set -euo pipefail
 DOMAIN="${DEPLOY_DOMAIN:-phorcast-app.vercel.app}"
 cd "$(dirname "$0")/.."
 
+# THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. This
+# sandbox ships with a VERCEL_TOKEN belonging to a DIFFERENT account, and
+# reading the environment first is exactly how this project was deployed to the
+# wrong one. The file is the account this site belongs to.
 TOKEN_FILE="${VERCEL_TOKEN_FILE:-$HOME/.vercel-token}"
-if [ -z "${VERCEL_TOKEN:-}" ] && [ -r "$TOKEN_FILE" ]; then
+if [ -r "$TOKEN_FILE" ]; then
   VERCEL_TOKEN=$(tr -d '\r\n' < "$TOKEN_FILE")
 fi
-: "${VERCEL_TOKEN:?no token: set VERCEL_TOKEN or put one in $TOKEN_FILE}"
+: "${VERCEL_TOKEN:?no token: put one in $TOKEN_FILE, or set VERCEL_TOKEN}"
+
+# And then prove whose it is before anything is uploaded. A token is opaque --
+# nothing about it says which account it opens -- so the only way to keep a
+# deployment off the wrong account is to ask, every time, and refuse. One
+# request, before any build artefact leaves this machine.
+EXPECT_ACCOUNT="${VERCEL_ACCOUNT:-cleavegfx@gmail.com}"
+ACTUAL_ACCOUNT=$(curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" \
+  https://api.vercel.com/v2/user \
+  | python3 -c 'import sys,json; d=json.load(sys.stdin); u=d.get("user") or d; print(u.get("email",""))' \
+  2>/dev/null || true)
+
+if [ "$ACTUAL_ACCOUNT" != "$EXPECT_ACCOUNT" ]; then
+  echo "refusing to deploy." >&2
+  echo "  this token belongs to: ${ACTUAL_ACCOUNT:-<could not resolve>}" >&2
+  echo "  this project ships to: $EXPECT_ACCOUNT" >&2
+  echo >&2
+  echo "  Phorcast is deployed ONLY from $EXPECT_ACCOUNT. If that has genuinely" >&2
+  echo "  changed, set VERCEL_ACCOUNT to the new address deliberately -- do not" >&2
+  echo "  delete this check." >&2
+  exit 1
+fi
+echo "==> account $ACTUAL_ACCOUNT"
 export NODE_USE_ENV_PROXY=1
 export NODE_EXTRA_CA_CERTS="${NODE_EXTRA_CA_CERTS:-/root/.ccr/ca-bundle.crt}"
 

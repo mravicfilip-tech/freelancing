@@ -190,6 +190,14 @@ export function heroIdle(hero: HTMLElement): () => void {
 
   // The market cards were frozen, which is the wrong look for a trading product.
   const priceTimer = window.setInterval(() => {
+    // Not while the reader is somewhere else. A tick rewrites a price and runs
+    // a 1.1s colour tween over it -- a style write a frame, on a card nobody
+    // can see, every 2.6 seconds for as long as the page is open. The loop is a
+    // story beat about the product working, and a beat nobody is watching is
+    // not one worth paying for; it picks up again when the hero comes back.
+    const box = hero.getBoundingClientRect();
+    if (box.bottom <= 0 || box.top >= (window.innerHeight || document.documentElement.clientHeight)) return;
+
     const live = all<HTMLElement>(hero, '.hero__foot > *');
     if (!live.length) return;
     const priceEl = one<HTMLElement>(live[Math.floor(Math.random() * live.length)], '.ticker__price');

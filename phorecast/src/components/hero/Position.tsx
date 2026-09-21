@@ -8,8 +8,10 @@ type Props = {
   onSelect: (i: number) => void;
   /** The autoplay interval, so the track can show it running out. */
   periodMs: number;
-  /** True while the hero is holding the carousel (hover, focus, reduced motion). */
+  /** True while the hero is holding the carousel (hover, focus, off screen, reduced motion). */
   paused: boolean;
+  /** Changing this restarts the track's run, for a hold that also restarted the hero's interval. */
+  cycleKey?: unknown;
   label?: string;
 };
 
@@ -28,7 +30,7 @@ const clamp = (n: number, a: number, z: number) => Math.min(z, Math.max(a, n));
  * than while the pointer moves: following the drag live would replay the slide
  * choreography on every segment the pointer crossed.
  */
-export function Position({ index, count, onSelect, periodMs, paused, label = 'Slide' }: Props) {
+export function Position({ index, count, onSelect, periodMs, paused, cycleKey, label = 'Slide' }: Props) {
   const railRef = useRef<HTMLDivElement>(null);
   const fillsRef = useRef<HTMLSpanElement[]>([]);
   const [dragTo, setDragTo] = useState<number | null>(null);
@@ -39,7 +41,7 @@ export function Position({ index, count, onSelect, periodMs, paused, label = 'Sl
   const heldRef = useRef(0);
   const pausedRef = useRef(paused);
 
-  useEffect(() => { startRef.current = performance.now(); heldRef.current = 0; }, [index]);
+  useEffect(() => { startRef.current = performance.now(); heldRef.current = 0; }, [index, cycleKey]);
   useEffect(() => {
     pausedRef.current = paused;
     if (paused) heldRef.current = performance.now() - startRef.current;
@@ -56,10 +58,16 @@ export function Position({ index, count, onSelect, periodMs, paused, label = 'Sl
     };
     if (REDUCED) { paint(1); return; }
 
+    // Paint only when the number moves. Held -- hovered, or the hero scrolled
+    // away -- the elapsed time is a constant, and writing the same four
+    // transforms every frame is a style recalculation a frame for a bar that
+    // is not moving and may not even be on screen.
+    let last = -1;
     let raf = 0;
     const tick = () => {
       const elapsed = pausedRef.current ? heldRef.current : performance.now() - startRef.current;
-      paint(clamp(elapsed / periodMs, 0, 1));
+      const p = clamp(elapsed / periodMs, 0, 1);
+      if (p !== last) { last = p; paint(p); }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

@@ -156,11 +156,15 @@ export function Hero() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // Is any of the hero on screen? The carousel and the market-price loop both
+  // ask, and neither should run for a reader who is three bands further down.
+  const [onScreen, setOnScreen] = useState(true);
+
   useEffect(() => {
-    if (paused || reduced.current) return;
+    if (paused || !onScreen || reduced.current) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [paused, index]);
+  }, [paused, onScreen, index]);
 
   const go = useCallback((i: number) => setIndex(((i % SLIDES.length) + SLIDES.length) % SLIDES.length), []);
 
@@ -177,6 +181,26 @@ export function Hero() {
     useCallback(({ el, tl }) => heroBuild(el, tl), []),
     { immediate: true, idle: heroIdle },
   );
+
+  // Off screen, the carousel holds. It was advancing every seven seconds
+  // whatever was under the reader's eye, and a slide change is not a cheap
+  // thing to do unwatched: it re-renders the stage, swaps the background
+  // modifier, and builds a fresh slideIn -- a masked line reveal carrying 12px
+  // of blur across the display type and 7px across the lede, plus the
+  // illustration's pop.
+  //
+  // Holding, not stopping. The interval is cleared and a new one is started
+  // when the hero comes back, so the reader who scrolls up finds the slide they
+  // left on, given a full seven seconds before it moves -- rather than the
+  // slide the page would have reached, or a run of catch-up changes, or slide
+  // one. `index` is React state and is never touched here.
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [heroRef]);
 
   // Each slide change replays the copy choreography, so the mask reveal and the
   // glare are seen on every slide rather than only the first. Skipped on the
@@ -316,7 +340,13 @@ export function Hero() {
             count={SLIDES.length}
             onSelect={go}
             periodMs={AUTOPLAY_MS}
-            paused={paused || reduced.current}
+            paused={paused || !onScreen || reduced.current}
+            // The hero leaving or returning starts a fresh interval above, so
+            // the track has to start a fresh run with it. Without this it
+            // resumed the elapsed time it had banked when the reader scrolled
+            // away and filled to the end several seconds before the slide it
+            // is describing actually changed.
+            cycleKey={onScreen}
           />
         </div>
 

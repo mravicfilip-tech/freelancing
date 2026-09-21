@@ -1,11 +1,11 @@
 /**
- * Card A — "Open an account in under two minutes".
+ * Card A — "Open an account in 60 seconds".
  *
  * LOAD-IN (1.2s, after the band's entrance has landed the card)
  *   The phone and the circuit grid behind it arrive with the card itself, as
  *   part of the section's own entrance — they are context, and the card should
  *   never appear as an empty orange rectangle. What this module holds back is
- *   the interface drawn on top of them. The dial ring is the lead and takes the
+ *   the interface drawn on top of them. The 60s ring is the lead and takes the
  *   stage alone for 0.32s: ten pixels of rise and a hair of scale on `expo.out`,
  *   no overshoot. The three promises follow it, 0.11s apart so you can still
  *   count them, and "You're in." lands last.
@@ -18,18 +18,11 @@
  *   One beat, and it is the card's own claim acted out: the dial runs. The arc
  *   the design already draws on the ring is the hand — it turns one full
  *   revolution on `none`, which is the one place linear belongs, because it is
- *   a clock — while the numerals wind 2:00 down to 0:00. Each promise lights as
- *   the count reaches it, a third of the way apart. At zero "You're in." flares
- *   and the ring breathes once; then the dial recharges to 2:00 over 1.2s and
- *   the whole card sits perfectly still for three and a half seconds before
- *   going again.
- *
- *   IT USED TO COUNT 60 SECONDS, because the card used to claim them. It is
- *   under two minutes now, so the budget on the dial is two minutes: the count
- *   is the clock the signup has to beat, not a stopwatch of how long it took,
- *   which is why it still reaches zero on the same beat "You're in." lands on.
- *   The run is the same six seconds of screen time at the same eases; only what
- *   the numerals read changed.
+ *   a clock — while the numerals wind 60 down to 00. Each promise lights as the
+ *   count reaches it, a third of the way apart. At zero "You're in." flares and
+ *   the ring breathes once; then the dial recharges to 60 over 1.2s and the
+ *   whole card sits perfectly still for three and a half seconds before going
+ *   again.
  *
  * Nothing here responds to the pointer, and every value the loop touches is
  * returned to the one the design ships, so the resting frame is the design.
@@ -38,11 +31,6 @@ import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
 import { tok } from '../../../lib/theme';
 import { bandStaged, onSectionReady, pct, pulse, q1, qa, unitOf, whileVisible } from './shared';
-
-/** The budget the dial counts down from, in seconds. The card's claim is
- *  "under two minutes", and this is that two minutes; the markup ships the
- *  same number as `2:00` so the resting frame needs no script to be correct. */
-const DIAL_SECONDS = 120;
 
 /** The resting stroke of `.onb__pill`, restated so the loop's highlight can
  *  return to it exactly. It is read off the element rather than hard-coded. */
@@ -75,9 +63,9 @@ export function onboard(card: HTMLElement): () => void {
     flare0: tok('--bento-onb-flare-0', '0 0 0px rgba(255, 251, 248, 0)'),
   };
 
-  // One cell per digit -- see BoxOnboard.css. The colon is not a cell, so the
-  // three digits are all this has to paint, and the resting value is what the
-  // markup shipped rather than a literal restated here.
+  // One cell per digit -- see BoxOnboard.css. The "s" is not a cell, so the two
+  // digits are all this has to paint, and the resting value is what the markup
+  // shipped rather than a literal restated here.
   const digits = Array.from(seconds.querySelectorAll<HTMLElement>('.onb__digit'));
   const restingSeconds = digits.map((d) => d.textContent ?? '0');
   const staged = bandStaged(card);
@@ -105,19 +93,17 @@ export function onboard(card: HTMLElement): () => void {
        would resolve those percentages to pixels and freeze them against the
        card's container unit. BoxOnboard.css folds `--onb-spin` into the same
        rotate, defaulting to 0deg, so the resting render is untouched. */
-    const dial = { deg: 0, s: DIAL_SECONDS };
+    const dial = { deg: 0, s: 60 };
     const paintArc = () => arcBox.style.setProperty('--onb-spin', `${dial.deg.toFixed(2)}deg`);
-    // m:ss has to be the same width at every count, or the numerals crawl
+    // The count has to be the same width at every value, or the numerals crawl
     // sideways as the dial winds down. That used to be free: the old face was
-    // monospaced and its colon advanced like a digit. It is bought deliberately
-    // now -- three fixed cells in BoxOnboard.css, one digit written into each,
-    // and the element centred on the ring rather than anchored by a left offset
-    // computed from a glyph width. The pad is on the seconds for the same
-    // reason the old seconds-only dial had one; it is what makes m:ss always
-    // exactly three digits and so always exactly three cells.
+    // monospaced. It is bought deliberately now -- two fixed cells in
+    // BoxOnboard.css, one digit written into each, and the element centred on
+    // the ring rather than anchored by a left offset computed from a glyph
+    // width. The pad is what makes the count always exactly two digits and so
+    // always exactly two cells.
     const paintCount = () => {
-      const t = Math.round(dial.s);
-      const s = `${Math.floor(t / 60)}${String(t % 60).padStart(2, '0')}`;
+      const s = String(Math.round(dial.s)).padStart(2, '0');
       for (let i = 0; i < digits.length; i++) digits[i].textContent = s[i] ?? '0';
     };
 
@@ -149,7 +135,7 @@ export function onboard(card: HTMLElement): () => void {
 
     // 360 degrees is 0 degrees, so the hand can be put back without moving.
     loop.call(() => { dial.deg = 0; paintArc(); }, undefined, ZERO + 1.1)
-      .to(dial, { s: DIAL_SECONDS, duration: 1.2, ease: 'power2.out', onUpdate: paintCount }, ZERO + 1.1);
+      .to(dial, { s: 60, duration: 1.2, ease: 'power2.out', onUpdate: paintCount }, ZERO + 1.1);
 
     /* ------------------------------------------------------------- load-in */
     const runLoop = () => { stopVisible = whileVisible(card, loop); };

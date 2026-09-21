@@ -12,9 +12,10 @@
  *
  * I. THE BOOK MOVES (0.0 – 3.4s)
  *   NVDA prints twice, $218.36 -> $218.31 -> $218.29, the card lighting under
- *   each print and the day following to -2.40%. The same refresh reaches the
- *   ECB card, whose policy rate is honestly unmoved, so only the card and its
- *   chip acknowledge it. In the phone, the French election re-sorts: Cazeneuve
+ *   each print and the day following to -2.40%. (NVDA is not drawn below
+ *   700px; the ECB card beside it is, and the rest of this act runs there.)
+ *   The same refresh reaches the ECB card, whose policy rate is honestly
+ *   unmoved, so only the card and its chip acknowledge it. In the phone, the French election re-sorts: Cazeneuve
  *   counts 55% -> 57%, crosses Hollande — the two rows physically exchange
  *   places — and the Yes chip on the row that gained brightens.
  *
@@ -138,14 +139,28 @@ export function familiarLoop(root: HTMLElement): () => void {
   /**
    * `q` and `qa`, but only what this width actually draws.
    *
-   * Below 700px the band drops the two glass market cards, and below 1100 both
-   * floating prediction cards — see the media blocks in `Familiar.css`. They
-   * stay in the DOM, so an unfiltered selector still finds them and the loop
-   * would spend a third of its cycle printing prices onto `display: none`
-   * boxes, reading resting colours off them, and holding their text for a
-   * teardown that has nothing to put back. The three acts all keep their
-   * subjects on a phone: the handset carries Act I's leaderboard re-sort and
-   * the whole of Acts II and III, and the category strip closes it out.
+   * Below 700px the band drops the NVDA card, and below 1100 both floating
+   * prediction cards — see the media blocks in `Familiar.css`. They stay in
+   * the DOM, so an unfiltered selector still finds them and the loop would
+   * spend a third of its cycle printing prices onto `display: none` boxes,
+   * reading resting colours off them, and holding their text for a teardown
+   * that has nothing to put back.
+   *
+   * WHAT EACH ACT HAS TO WORK WITH ON A PHONE, now that Figma frame 538:4601
+   * has put the ECB card back at that width:
+   *
+   *   I.   The refresh lights the ECB card and its policy-rate plate, the
+   *        section's own live dot answers it, and the leaderboard inside the
+   *        handset re-sorts. Only NVDA's two prints are missing, and they are
+   *        the one beat that has no card to print onto.
+   *   II.  Entirely inside the handset and the strip — the tab switch, the
+   *        filter glint, the two feed cards trading places, the 5-minute
+   *        round's ring — plus the live dots at either end of the strip. The
+   *        two floating prediction cards' trades are the only part that does
+   *        not run, and they have not been drawn here since 1100.
+   *   III. The feed returns. Nothing in it is width-dependent.
+   *
+   * So every act still has a subject, and Act I has a card again.
    */
   const box = (el: HTMLElement | null) => {
     if (!el) return null;
@@ -270,8 +285,17 @@ export function familiarLoop(root: HTMLElement): () => void {
     const valueRest = css(nvdaValue, 'color');
     const pctRest = css(rowPct(1), 'color');
     const ecbFootRest = css(ecbFoot, 'backgroundColor');
-    const cardBgRest = css(nvdaCard, 'backgroundColor');
-    const cardEdgeRest = css(nvdaCard, 'borderColor');
+    /* THE GLASS CARDS' RESTING FILL AND EDGE, read off WHICHEVER OF THE TWO
+       this width draws. It used to be read off NVDA alone, which was right
+       while the two cards were either both drawn or both gone — and stopped
+       being right the moment the phone layout kept ECB and dropped NVDA: the
+       read returned '' and the `&& cardBgRest` guard below then skipped the
+       ECB card's own refresh, silently, on every phone. The card sat through
+       the whole cycle with its plate lighting underneath it and nothing
+       happening to the card. The two cards carry the same `.fam__mkt` rule, so
+       either one answers for both. */
+    const cardBgRest = css(nvdaCard ?? ecbCard, 'backgroundColor');
+    const cardEdgeRest = css(nvdaCard ?? ecbCard, 'borderColor');
     const pillBg = css(pills[0] ?? null, 'backgroundColor');
     const pillFg = css(pills[0] ?? null, 'color');
     const tabOnRest = css(tabAll, 'color');

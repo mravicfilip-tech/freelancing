@@ -26,6 +26,16 @@
  *   1.25  The right-hand copy and the Start Trading button, tightly staggered.
  *   1.38  The category pills across the bottom band, left to right.
  *
+ * ON A PHONE the same beats are taken at 0.42 of the times above, with the
+ * staggers inside them at 0.7 — see CUE and STEP — and the last two trade
+ * places, because the things they move do: below 700px the category strip sits
+ * between the handset and the copy rather than under everything, so it arrives
+ * at 1.25 and the copy closes the section at 1.38. Measured on the built page
+ * at 390, clock starting the frame the section crosses the viewport bottom:
+ * first content 833ms and the last beat at 4684 before, 247 and 1631 after.
+ * The ECB card is on this timeline at that width now, which it was not: the
+ * mobile frame keeps it.
+ *
  * WHAT CHANGED, AND WHY. This ran 4.0s after a third of a second of stillness,
  * and on a phone that meant 612ms before a word of it could be read and 4.05s
  * before the last chip stopped moving — measured at 390 wide from the frame the
@@ -141,11 +151,45 @@ const LEAD = 0.15;
 const LANDED = new WeakSet<HTMLElement>();
 
 /**
+ * THE PHONE SCHEDULE. The same treatment the footer, the bento, the steps, the
+ * built band and the fan were given this morning, and for the complaint that
+ * prompted all five: animation delaying the entry of content.
+ *
+ * Measured here before touching it, at 390 wide on the built page, clock
+ * starting the frame the section's top crosses the viewport bottom: the
+ * eyebrow was readable at 833ms and the last beat stopped at 4684ms; after,
+ * 247 and 1631, over three runs each and stable to a few milliseconds. A band
+ * this tall is most of three screens on a phone and is usually still moving
+ * under the reader, so a beat cued at four and a half seconds is played to an
+ * empty seat.
+ *
+ * TWO NUMBERS, because the two kinds of gap answer to different things. CUE
+ * scales where a BEAT starts, which is the wait worth cutting because nothing
+ * is happening during it. STEP scales the gap between things INSIDE one beat
+ * and is barely cut at all: it is what makes the strip fill left to right
+ * rather than switch on, and the six chips still arrive 42ms apart. Durations
+ * are untouched, so the beats simply overlap more — which is what `expo.out`
+ * invites anyway, being 98% travelled at 60% of its clock.
+ *
+ * The first beat does not move. LEAD is a fixed cost rather than a cue — it
+ * buys back the expensive first frame, which is no cheaper on a phone — so it
+ * is added after the scaling rather than scaled with it, and the eyebrow is
+ * still the thing that arrives first and alone. First one object comes out,
+ * the rest follow, closer together.
+ */
+const PHONE = '(max-width: 700px)';
+const CUE = 0.42;
+const STEP = 0.7;
+
+/**
  * The element, but only if this width actually draws it.
  *
- * Below 700px this band drops the two glass market cards, and below 1100 it
- * drops both floating prediction cards — see the media blocks in
- * `Familiar.css`. `display: none` leaves them in the DOM, so every selector
+ * Below 700px this band drops the NVDA card, and below 1100 it drops both
+ * floating prediction cards — see the media blocks in `Familiar.css`. The ECB
+ * card is NOT dropped any more: Figma frame `538:4601`, the section's mobile
+ * artboard, keeps it alone and at full size, so on a phone it is drawn and
+ * this helper hands it back and step 4 below animates it in.
+ * `display: none` leaves the other two in the DOM, so every selector
  * here still finds them and every tween below would still be built, spending
  * its 1.15 seconds moving something with no box. That is not a visible bug,
  * which is exactly why it is worth refusing: a timeline whose cues are half
@@ -172,6 +216,25 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   /** Design pixels, in the CSS pixels this viewport renders them as. */
   const d = (n: number) => n * u;
 
+  /* Asked here rather than read at module scope: a module-scope `matchMedia`
+     is answered once, when the bundle is parsed, and never again — so a
+     rotation or a resize would keep whichever schedule the page happened to
+     load under. `useSectionMotion` rebuilds this band on a theme switch and
+     React rebuilds it on a remount; both come back through this line. */
+  const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
+  const cue = (t: number) => LEAD + (tight ? (t - LEAD) * CUE : t - LEAD);
+  const step = (t: number) => (tight ? t * STEP : t);
+
+  /* THE LAST TWO BEATS TRADE PLACES ON A PHONE, because the two things they
+     move do. On the stage the category strip runs along the bottom of the
+     band, under everything, and closes it out; in the column the frame draws
+     the strip BETWEEN the handset and the copy, so the copy is what closes the
+     section and the strip arrives before it. A band whose last beat lands
+     above its second-to-last reads as something arriving out of order. */
+  const CHIPS_AT = tight ? LEAD + 1.25 : LEAD + 1.38;
+  const COPY_AT = tight ? LEAD + 1.38 : LEAD + 1.25;
+  const CTA_AT = tight ? LEAD + 1.58 : LEAD + 1.45;
+
   const phone = shown(q('.fam__phone')[0]);
   const ecb = shown(q('.fam__mkt--ecb')[0]);
   const nvda = shown(q('.fam__mkt--nvda')[0]);
@@ -180,8 +243,8 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const predInner = shown(q('.fam__pred--a')[0]);
 
   /* 1 — the band names itself. */
-  rise(tl, q('.fam__copy--left .eyebrow'), LEAD, { y: d(44), duration: 0.6, clearProps: 'transform,opacity' });
-  rise(tl, q('.fam__title'), LEAD + 0.1, { y: d(52), duration: 0.75, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__copy--left .eyebrow'), cue(LEAD), { y: d(44), duration: 0.6, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__title'), cue(LEAD + 0.1), { y: d(52), duration: 0.75, clearProps: 'transform,opacity' });
 
   /* 2 — the lead. Origin low on the handset so the small amount of scale reads
      as it settling onto the stage rather than growing out of its own middle. */
@@ -194,16 +257,16 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
       ease: EASE,
       transformOrigin: '50% 72%',
       clearProps: 'transform,opacity',
-    }, LEAD + 0.34);
+    }, cue(LEAD + 0.34));
 
     /* 3 — the app fills in, once the handset has stopped moving. `expo.out` is
        98% travelled at 60% of its duration, so 1.10s catches the phone with
        under three design pixels of its 140 left to go — landed, for any eye
        and for the pixel diff both. */
-    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), LEAD + 1.1, {
+    rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), cue(LEAD + 1.1), {
       y: d(28),
       duration: 0.7,
-      stagger: 0.12,
+      stagger: step(0.12),
       clearProps: 'transform,opacity',
     });
   }
@@ -211,10 +274,10 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   /* 4 — the floating cards come in from the left, towards the phone. Different
      vectors so the pair does not read as one block sliding. */
   if (ecb) {
-    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.15);
+    tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.15));
   }
   if (nvda) {
-    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.28);
+    tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.28));
   }
 
   /* 5 — the two prediction cards, in from the right, towards the phone. The
@@ -230,17 +293,17 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
      `from` tweens, like everything else in this file: the resting markup is
      the finished state. */
   if (predOuter) {
-    tl.from(predOuter, { x: d(90), y: d(34), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.2);
+    tl.from(predOuter, { x: d(90), y: d(34), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.2));
   }
   if (predInner) {
-    tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, LEAD + 1.33);
+    tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.33));
   }
 
   /* 6 — the claim, then its button. */
-  rise(tl, q('.fam__sub-title, .fam__sub-body'), LEAD + 1.25, {
+  rise(tl, q('.fam__sub-title, .fam__sub-body'), cue(COPY_AT), {
     y: d(48),
     duration: 0.7,
-    stagger: 0.13,
+    stagger: step(0.13),
     clearProps: 'transform,opacity',
   });
 
@@ -261,11 +324,11 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     tl.fromTo(cta,
       { y: d(48), opacity: 0 },
       { y: 0, opacity: 1, duration: 0.65, ease: EASE, clearProps: 'transform,opacity' },
-      LEAD + 1.45);
+      cue(CTA_AT));
   }
 
   /* 7 — the category strip closes the band out, left to right. */
-  rise(tl, q('.fam__chips > *'), LEAD + 1.38, { y: d(40), duration: 0.55, stagger: 0.06, clearProps: 'transform,opacity' });
+  rise(tl, q('.fam__chips > *'), cue(CHIPS_AT), { y: d(40), duration: 0.55, stagger: step(0.06), clearProps: 'transform,opacity' });
 
   // Last on the timeline, so it is only reached if the arrival was actually
   // performed. A reverted build never gets here. See LANDED.

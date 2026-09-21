@@ -2,9 +2,24 @@
  *
  * The six entrances were written as one module. They are split per band so
  * that several people can work on the page at once without editing the same
- * file, which is the only reason -- nothing about the motion changed in the
- * split, and the house language, the phone split and the shared helpers all
+ * file -- the house language, the phone split and the shared helpers all
  * still live in About.motion.ts, which every one of these imports from.
+ *
+ * WHAT THIS BAND IS. One sentence, in 40px uppercase display type, with the
+ * band's four arcs above it and a quiet goal line under it. The sentence is
+ * the band: it is the only thing in it that carries an argument, and the
+ * whole of the band's 722-unit min-height exists to give it a frame.
+ *
+ * THE ONE THING THIS BAND DOES THAT THE OTHERS DO NOT: the sentence FILLS AS
+ * THE READER SCROLLS, word by word, and stays filled. That is a scroll-linked
+ * scrub and not an entrance, so it is the only ScrollTrigger on this page
+ * outside the landing hero's mark. Everything about why it is per-word, why
+ * the words carry their own paint, and where the trigger starts and ends is
+ * argued below, next to the thing it decides.
+ *
+ * NO LOOP. Nothing in this band is a thing doing its job over time -- a
+ * sentence and four arcs are not that -- and the fill is not a loop either:
+ * it runs once, in one direction, and the reader drives it.
  */
 
 import { gsap } from 'gsap';
@@ -86,20 +101,39 @@ const SPREAD = 1;
  * place in the copy at every width. Phrased against the statement's own box it
  * means the same thing everywhere.
  *
- * END IS `center 45%`, NOT A BOTTOM EDGE. The fill has to finish while the
- * whole sentence is still comfortably in frame, and the sentence is 289px tall
- * at 1600 and 288 at 390 -- an end tied to its bottom edge completes with the
- * first lines already gone off the top at the tall widths. Tied to its centre,
- * the sentence is centred slightly above the middle of the screen at the
- * moment it completes, which at every width tested puts every line of it on
- * screen with room above and below. The distance scrubbed is
- * `0.43 * viewport + height/2` -- 531px at 1600 and 507 at 390 -- so the
- * reveal is paced the same fraction of a screen everywhere.
+ * THE END IS TWO RULES AND THE EARLIER ONE WINS, and it is two because the
+ * statement is not the same shape at both ends of the range: measured, it is
+ * 288px tall in a 900 viewport at 1600 -- a third of the screen -- and 605 in
+ * a 780 viewport at 360, which is more than three quarters of it.
+ *
+ * CENTRED reads best and is the rule that governs at the wide widths: finish
+ * when the sentence's own centre reaches 45% of the screen, and it comes to
+ * rest a little above the middle with room above and below. Applied to the
+ * phone it is too late -- a sentence that is 78% of the screen tall, centred,
+ * has 87px of headroom and 250ms of the reader's own scrolling eats most of
+ * it, so the first line is grazing the top edge as the last word lands.
+ *
+ * So the second rule is a ceiling on that: never later than the point where
+ * the first line has climbed to 12% of the screen. At 1600 the centre rule is
+ * the earlier of the two and wins by 150px; at 360 the ceiling is, and holds
+ * the top line about 94px clear of the edge. Both are stated against the
+ * statement's own box, so both mean the same thing at every width.
+ *
+ * `end` is therefore a function returning a scroll position rather than one of
+ * ScrollTrigger's strings -- a string can say one of these and not the lesser
+ * of them -- and being a function it is re-evaluated on every refresh, which
+ * is what resize and font-load both end in.
  */
 const START = 'top 88%';
-const END = 'center 45%';
-/** A little smoothing, so a trackpad's jitter does not read in the type. */
-const SCRUB = 0.45;
+/** Where the sentence's centre has got to when the fill is done. */
+const END_CENTRE = 0.45;
+/** ...unless its first line has got this high first. */
+const END_CEILING = 0.12;
+/** A little smoothing, so a trackpad's jitter does not read in the type. Kept
+ *  short: what the scrub lags by is what the reader scrolls past before the
+ *  last words land, and on the phone that is headroom at the top of the
+ *  sentence. */
+const SCRUB = 0.3;
 
 /**
  * Split a statement into per-word spans WITHOUT flattening it.
@@ -184,14 +218,19 @@ function anchorLead(p: HTMLElement) {
  *       furthest. It is the only thing in the band and it is the band. It
  *       arrives at 22% -- present, legible as a shape, not yet read.
  * 1.10  The goal line, quieter and shallower, after the statement has settled.
- *       then, ON SCROLL and not on the clock, the statement fills word by word
- *       from the first to the last and stays filled.
  *
- * The entrance is still the band's one arrival and the fill is not a second
- * one: nothing else in the band moves while it runs, and it runs only once the
- * reader is the one moving. The statement is animated AS ONE BLOCK for the
- * entrance -- the travel, the blur and the fade are on the <p> -- and only the
- * fill reaches inside it.
+ * ...and then, ON SCROLL AND NOT ON THE CLOCK, the statement fills word by
+ * word from the first to the last, and stays filled.
+ *
+ * The fill is not a second arrival. The band's one arrival is still the
+ * statement's, on the timeline above, and the fill cannot overlap it: the
+ * entrance is over long before the reader has scrolled the statement up to
+ * where the trigger starts. Nothing else in the band moves while the fill
+ * runs, and it only runs while the reader is the one moving.
+ *
+ * The statement is animated AS ONE BLOCK for the entrance -- the travel, the
+ * blur and the fade are on the <p>, unchanged -- and only the fill reaches
+ * inside it.
  */
 export function buildConviction({ q, tl }: SectionMotion) {
   const { cue } = schedule();
@@ -238,7 +277,11 @@ export function buildConviction({ q, tl }: SectionMotion) {
   const latch = (self: ScrollTrigger) => {
     if (latched) return;
     latched = true;
-    self.kill();
+    // `kill(revert, allowAnimation)`, and the second argument is the load-
+    // bearing one: left off, ScrollTrigger kills the timeline it was driving
+    // as well, and the finishing tween below would then be pushing progress
+    // into something already dead.
+    self.kill(false, true);
     gsap.to(fill, { progress: 1, duration: 0.25, ease: 'none', overwrite: true });
   };
 
@@ -246,9 +289,22 @@ export function buildConviction({ q, tl }: SectionMotion) {
     animation: fill,
     trigger: statement,
     start: START,
-    end: END,
+    // The lesser of the two rules argued above, as an absolute scroll
+    // position. Read from the live rect every refresh; differences of the
+    // element's own box, so the entrance's translate cancels out of it.
+    end: () => {
+      const r = statement.getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      const vh = window.innerHeight;
+      return Math.min(top + r.height / 2 - vh * END_CENTRE, top - vh * END_CEILING);
+    },
     scrub: SCRUB,
-    invalidateOnRefresh: true,
+    // Deliberately NOT `invalidateOnRefresh`. A refresh recomputes start and
+    // end whatever this says; all the flag adds is `invalidate()` on the
+    // animation, which would re-record each word's start value from whatever
+    // opacity it is wearing at that instant. Resize the window halfway through
+    // the fill and every word in the wave would take its own half-lit state as
+    // its beginning and never be able to go back.
     onRefresh: (self) => {
       anchorLead(statement);
       // A reveal that cannot complete is worse than one that completes at
@@ -256,7 +312,17 @@ export function buildConviction({ q, tl }: SectionMotion) {
       // the sentence rather than strand it part-read.
       if (self.end > ScrollTrigger.maxScroll(self.scroller as Window)) latch(self);
     },
-    onUpdate: (self) => { if (self.progress >= 1) latch(self); },
+    /* TWO WAYS IN, because one of them is not reliable on its own. `onUpdate`
+     * with an exact `progress === 1` is a float comparison at the end of a
+     * scrub, and measured over ten runs of the width sweep it missed three
+     * times -- the sentence read as full (every word above 0.995 at a progress
+     * of 0.9997) while the trigger was still alive, so scrolling back up
+     * emptied it again. `onLeave` is the event for "the scroll has passed the
+     * end" and does not depend on a number landing exactly; the epsilon on
+     * `onUpdate` catches the case where the reader stops ON the end and never
+     * leaves. `latch` is idempotent, so both firing is free. */
+    onUpdate: (self) => { if (self.progress >= 0.999) latch(self); },
+    onLeave: (self) => latch(self),
   });
 
   // The band can be built when it is already above the reader -- a theme

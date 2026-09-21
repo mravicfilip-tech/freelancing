@@ -36,6 +36,11 @@
    through the word's glyphs -- same ink, same turnover on the last letter of
    "FOUNDED", both themes, because both ends are tokens and neither is a hex.
 
+   IT IS ONE PAINT WRITTEN TWICE, so the two have to move together: if the
+   ramp on `.ab-conv__statement` in About.css ever changes -- its stops, its
+   angle, either token -- this rule is the copy the reader actually sees for
+   the opening words and has to change with it.
+
    Inside `@supports`, like the rule it mirrors in About.css: a browser without
    `background-clip: text` never sees this block and the words inherit the
    statement's own opaque `color`, which is bright ink on nothing rather than

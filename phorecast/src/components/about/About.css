@@ -677,6 +677,32 @@
    screenshot and two lines of 20px copy, which is a card that has stopped
    working. */
 @media (max-width: 1100px) {
+  /* THE GAPS GET A FLOOR, and this is the one thing the design unit cannot do
+     on its own. Every space between two things on this page is written in the
+     frame's own pixels -- 14 between the cards, 14 between a card's title and
+     its copy, 20 under an eyebrow, 32 inside a primer card -- and `--u` is one
+     eighteen-hundredth of the content column, so at 360 those become 2.5, 2.5,
+     3.6 and 5.7px. That is correct scaling and it is unreadable: a heading
+     five pixels off its own paragraph is not a heading with a gap, it is two
+     lines of the same block. Type is clamped for exactly this reason and the
+     spacing between type has to be clamped with it.
+
+     Each ceiling below is the frame's number and each vw is that number at
+     1920, so at every width above this breakpoint the value is identical to
+     the `--u` expression it replaces -- the column is a fixed fraction of the
+     viewport there, so the two agree to the tenth of a pixel. Only the floor
+     is new. */
+  .ab-choose__inner > .eyebrow,
+  .ab-brand__inner > .eyebrow,
+  .ab-cmp__inner > .eyebrow,
+  .ab-why__inner > .eyebrow { margin-bottom: clamp(14px, 1.0417vw, 20px); }
+  .ab-choose__row { gap: clamp(12px, 0.729vw, 14px); }
+  .ab-card__text { gap: clamp(10px, 0.729vw, 14px); }
+  .ab-brand__copy { gap: clamp(20px, 2.0833vw, 40px); }
+  .ab-conv__inner { gap: clamp(14px, 1.0417vw, 20px); }
+  .ab-why__row { gap: clamp(16px, 1.0417vw, 20px); }
+  .ab-why__card { gap: clamp(18px, 1.6667vw, 32px); }
+
   /* A grid rather than a wrapped flex row, and the difference is the third
      card. Wrapped, it grows to the full 1040 on its own line, which blows the
      524 x 238 screenshot window up to 1040 x 472 -- a 2x enlargement of a

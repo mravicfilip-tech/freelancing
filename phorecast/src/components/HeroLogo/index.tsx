@@ -142,8 +142,8 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
     // in practice is before the entrance has begun, and by the time the gate
     // opens the modules are already parsed and waiting.
     //
-    // The catch on `warm` is not decoration: if the gate path settles first the
-    // warm promise would be an unhandled rejection with nothing attached to it.
+    // The catch on `warm` is not decoration: it starts before anything is
+    // waiting on it, so a rejection would otherwise be unhandled.
     const warm = afterLoad()
       .then(shortIdle)
       .then(() => {
@@ -152,10 +152,20 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
       });
     warm.catch(() => {});
 
-    const gate = afterLoad().then(() => afterHostEntrance(host)).then(shortIdle);
-
-    Promise.all([warm, gate])
-      .then(async ([[mod, treatments]]) => ({ mod, treatment: await treatments.loadTreatment(variant) }))
+    // The gate FIRST and the modules second, rather than both at once. The two
+    // read the same when everything succeeds, and differently when the probe
+    // finds no WebGL: with `Promise.all` that rejection arrives the moment the
+    // probe runs, and the static fallback is swapped in immediately instead of
+    // whenever this element's host says it is ready. That is a visible change
+    // and not always for the better -- a second mark on this page is hosted by
+    // an element that never hears `motion:ready` or `motion:done`, so its gate
+    // runs to the 6s cap and the swap timing there moved by seconds. Chaining
+    // leaves every decision exactly where it was and moves only the fetch.
+    afterLoad()
+      .then(() => afterHostEntrance(host))
+      .then(shortIdle)
+      .then(() => warm)
+      .then(async ([mod, treatments]) => ({ mod, treatment: await treatments.loadTreatment(variant) }))
       .then(({ mod: { LogoScene }, treatment }) => {
         if (cancelled) return;
         try {

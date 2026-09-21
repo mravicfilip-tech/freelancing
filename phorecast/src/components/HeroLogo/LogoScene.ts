@@ -107,6 +107,9 @@ export class LogoScene {
   private costPending = false;
   /** When the page last scrolled. Only consulted when a frame is costing too much. */
   private lastScroll = 0;
+  /** The mark's own opacity, polled rather than read every frame (see markFaded). */
+  private faded = false;
+  private fadeChecked = 0;
   /** Set while the first frame after a start would measure the pause, not a frame. */
   private resumed = true;
   /** The idle rate we are currently asking for; halved once if the device cannot hold it. */
@@ -277,6 +280,35 @@ export class LogoScene {
   }
 
   /**
+   * Is the mark faded out?
+   *
+   * `.hero__logo` is a cross-fading layer: the hero mounts the scene once and
+   * shows it on slide one only, holding it at `opacity: 0` for the other three
+   * (Hero.css). Nothing in the carousel unmounts it, so the loop went on
+   * drawing every frame of a mark at zero opacity for three of every four
+   * slides -- twenty-one seconds out of every twenty-eight, forever, for a
+   * reader sitting on the hero.
+   *
+   * Polled, not read per frame: `getComputedStyle` against a hero whose styles
+   * are dirty every frame of an entrance is a style recalculation, and the
+   * cross-fade takes 600ms, so a quarter-second poll can be late by a fraction
+   * of one fade and never by anything a reader could see.
+   *
+   * This skips the DRAW and leaves the loop ticking, deliberately. Stopping
+   * would need something to start it again, and an opacity that changes under
+   * a CSS transition raises no event the IntersectionObserver can hear -- a
+   * mark that stopped here would have every chance of never coming back. An
+   * idle rAF callback costs nothing; the draw is the whole cost.
+   */
+  private markFaded(now: number): boolean {
+    if (now - this.fadeChecked >= 250) {
+      this.fadeChecked = now;
+      this.faded = getComputedStyle(this.markBox).opacity === '0';
+    }
+    return this.faded;
+  }
+
+  /**
    * Is the MARK on screen RIGHT NOW? Read from the box, not from the
    * IntersectionObserver.
    *
@@ -388,6 +420,9 @@ export class LogoScene {
     // fifteen-second period. Nothing here runs on a device that draws a frame
     // in under `costlyFrameMs`.
     if (costly && now - this.lastScroll < this.frameCost) return;
+
+    // And nothing at all while the hero is holding the mark at zero opacity.
+    if (this.markFaded(now)) return;
 
     // How late this frame is, measured from the last one we drew. This is the
     // only honest number available: renderer.render() queues GL commands and

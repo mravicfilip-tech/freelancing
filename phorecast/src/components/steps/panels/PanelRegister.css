@@ -82,7 +82,7 @@
   background: var(--steps-p1-pill-bg);
   border: calc(1.199 * var(--p)) solid var(--accent);
   backdrop-filter: blur(calc(32.804 * var(--p)));
-  font-family: var(--font-label); font-weight: 500; font-size: calc(14 * var(--p));
+  font-family: var(--font-mono); font-weight: 500; font-size: calc(14 * var(--p));
   line-height: normal; color: var(--steps-p1-pill-ink); white-space: nowrap;
 }
 /* The envelope sits in its own 23.989-wide column with 2.399 of vertical
@@ -150,20 +150,16 @@
    past both edges and is clipped by the card. */
 .s1__rule, .s1__phone-rule { color: var(--steps-p1-rule); }
 .s1__rule { left: calc(-3.598 * var(--p)); top: calc(46.178 * var(--p)); width: calc(193.108 * var(--p)); height: calc(1.199 * var(--p)); }
-/* The user glyph bakes #626262, which is --ink-muted exactly; the wallet is
-   masked to the same token, so the pair still reads as one set.
-   18 square rather than the payment card's 28 x 18 box: the wallet asset is
-   square and `preserveAspectRatio="none"` would stretch it across the wider
-   slot. It keeps the slot's top-left, which is where the design anchors it. */
-.s1__glyph--wallet, .s1__glyph--user { color: var(--ink-muted); }
-.s1__glyph--wallet { left: calc(15.678 * var(--p)); top: calc(13.197 * var(--p)); width: calc(18 * var(--p)); height: calc(18 * var(--p)); }
+/* Both card glyphs bake #626262, which is --ink-muted exactly. */
+.s1__glyph--card, .s1__glyph--user { color: var(--ink-muted); }
+.s1__glyph--card { left: calc(15.678 * var(--p)); top: calc(13.197 * var(--p)); width: calc(28 * var(--p)); height: calc(18 * var(--p)); }
 /* Figma's slot resolves to 20.987 x 23.216, a hair off the exported glyph's own
    21 x 23.333. Use the asset's ratio and keep it on the slot's centre, so it is
    placed exactly where the design puts it without being squashed. */
 .s1__glyph--user { left: calc(21.301 * var(--p)); top: calc(13.134 * var(--p)); width: calc(21 * var(--p)); height: calc(23.333 * var(--p)); }
 .s1__digits {
   left: calc(15.594 * var(--p)); top: calc(62.37 * var(--p));
-  font-family: var(--font-label); font-weight: 400; font-size: calc(10 * var(--p));
+  font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
   line-height: normal; color: var(--ink-muted); white-space: nowrap;
 }
 .s1__bar { border-radius: calc(35.983 * var(--p)); background: var(--steps-p1-bar); }
@@ -261,7 +257,7 @@
 .s1__chart > * { position: absolute; }
 .s1__amount {
   left: calc(11.994 * var(--p)); top: calc(9.595 * var(--p));
-  font-family: var(--font-label); font-weight: 400; font-size: calc(10 * var(--p));
+  font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
   line-height: normal; color: var(--ink); white-space: nowrap;
 }
 .s1__bars {

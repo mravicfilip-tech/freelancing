@@ -1,4 +1,4 @@
-/* Hero slide 2 — "One account. Every market." illustration.
+/* Hero slide 2 — "One account. Your keys." illustration.
    Figma: file aczG8te17zRGoK5wvirB92, node 365:346 (the right-hand cluster).
 
    Only the illustration lives here. The nav, eyebrow, headline, lede and CTA

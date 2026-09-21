@@ -155,7 +155,7 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   // language. Parked, they are at zero opacity, so nothing leaks past the
   // blur before its turn. clearProps hands everything back to CSS afterwards,
   // otherwise the inline matrix GSAP leaves behind outranks the hover lift.
-  const cards = all(hero, '.hero__snapshot-note, .hero__foot > *');
+  const cards = all(hero, '.hero__foot > *');
   if (cards.length) {
     tl.from(cards, {
       opacity: 0,
@@ -188,9 +188,9 @@ export function heroIdle(hero: HTMLElement): () => void {
   const up = tok('--hero-tick-up', '#4ade80');
   const down = tok('--hero-tick-down', '#f87171');
 
-  // The contract cards were frozen, which is the wrong look for a live market.
+  // The market cards were frozen, which is the wrong look for a trading product.
   const priceTimer = window.setInterval(() => {
-    // Not while the reader is somewhere else. A tick rewrites a quote and runs
+    // Not while the reader is somewhere else. A tick rewrites a price and runs
     // a 1.1s colour tween over it -- a style write a frame, on a card nobody
     // can see, every 2.6 seconds for as long as the page is open. The loop is a
     // story beat about the product working, and a beat nobody is watching is
@@ -203,30 +203,13 @@ export function heroIdle(hero: HTMLElement): () => void {
     const priceEl = one<HTMLElement>(live[Math.floor(Math.random() * live.length)], '.ticker__price');
     if (!priceEl) return;
 
-    // A contract quote is a whole number of cents, so it moves in cents. The
-    // old walk multiplied a dollar price by 1 +/- 0.08%, which is the right
-    // gesture for a five-figure spot quote and no gesture at all here: 0.08% of
-    // 62 is 0.05, and the figure carries no decimals to show it. One cent a
-    // turn is both the smallest move the market can make and a visible one.
-    const value = Number((priceEl.textContent ?? '').replace(/[^0-9]/g, ''));
+    const raw = priceEl.textContent ?? '';
+    const value = Number(raw.replace(/[^0-9.]/g, ''));
     if (!Number.isFinite(value) || value === 0) return;
 
-    // Tethered to where the card was authored. An untethered one-cent walk is a
-    // random walk: left open, it takes a 62c contract to 20c or to 95c, and the
-    // card stops describing the market it names -- and a quote that has drifted
-    // to 3c is a contract the copy would not put in a shop window. Five cents
-    // either side, then it turns back. The base is written on the element on
-    // the first tick rather than passed in, because the carousel owns this DOM
-    // and the loop is handed whatever is on screen when it fires.
-    if (!priceEl.dataset.base) priceEl.dataset.base = String(value);
-    const base = Number(priceEl.dataset.base);
-
-    const step = Math.random() < 0.5 ? -1 : 1;
-    let next = value + step;
-    if (next < base - 5 || next > base + 5) next = value - step;
-    if (next === value) return;
-
-    priceEl.textContent = `${next}¢`;
+    const next = value * (1 + (Math.random() - 0.5) * 0.0016);
+    const decimals = (raw.split('.')[1] ?? '').length || 2;
+    priceEl.textContent = `$${next.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
     gsap.fromTo(priceEl, { color: next > value ? up : down }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
   }, PRICE_EVERY);
 

@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import envelope from '../../../assets/steps/s1-envelope.svg';
-import walletGlyph from '../../../assets/bento/icon-wallet.svg';
+import cardGlyph from '../../../assets/steps/s1-card-glyph.svg';
 import userGlyph from '../../../assets/steps/s1-user-glyph.svg';
 import divider from '../../../assets/steps/s1-divider.svg';
 import bracket from '../../../assets/steps/s1-bracket.svg';
@@ -118,7 +118,7 @@ function useRegisterLoop() {
     const pillRest = tok('--steps-p1-pill-rest', 'rgba(229, 51, 30, 0.22)');
     const pillLit = tok('--steps-p1-pill-lit', 'rgb(229, 51, 30)');
 
-    const innardsA = [q('.s1__glyph--wallet'), q('.s1__card--a .s1__rule'), q('.s1__digits'), q('.s1__card--a .s1__bar--pill')]
+    const innardsA = [q('.s1__glyph--card'), q('.s1__card--a .s1__rule'), q('.s1__digits'), q('.s1__card--a .s1__bar--pill')]
       .filter((el): el is HTMLElement => !!el);
     const innardsB = [q('.s1__glyph--user'), q('.s1__card--b .s1__rule'), q('.s1__bar--wide'), q('.s1__card--b .s1__bar--pill')]
       .filter((el): el is HTMLElement => !!el);
@@ -143,7 +143,7 @@ function useRegisterLoop() {
         .set([q('.s1__card--a .s1__rule'), q('.s1__card--b .s1__rule')], { scaleX: 0, transformOrigin: '0% 50%' }, 0)
         .set([q('.s1__card--a .s1__bar--pill'), q('.s1__card--b .s1__bar--pill'), q('.s1__bar--wide')],
           { scaleX: 0, transformOrigin: '0% 50%' }, 0)
-        .set([q('.s1__glyph--wallet'), q('.s1__glyph--user')], { scale: 0.5, transformOrigin: '50% 50%' }, 0)
+        .set([q('.s1__glyph--card'), q('.s1__glyph--user')], { scale: 0.5, transformOrigin: '50% 50%' }, 0)
         .set(q('.s1__digits'), { y: 6 * p }, 0)
         .set([...chrome, ...trim, chart], { opacity: 0 }, 0)
         .set(block, { opacity: 0 }, 0)
@@ -220,16 +220,9 @@ export function PanelRegister() {
         <span className="s1__diamond s1__diamond--orange"><i /></span>
         <img src={connector} alt="" className="s1__connector" width={91.157} height={107.948} />
         <div className="s1__card s1__card--a">
-          {/* A wallet and a deposit key, where this card carried a payment
-              card's glyph and a masked PAN. There are no card rails in the
-              product: what the three signup routes have in common with each
-              other is an account, and the one of them this card can draw is
-              the wallet. The glyph is the bento band's own wallet asset --
-              flat, so it masks and takes --ink-muted like the one it
-              replaces. */}
-          <Icon src={walletGlyph} w={18} h={18} className="s1__glyph--wallet" style={CSS_SIZED} />
+          <Icon src={cardGlyph} w={28} h={18} className="s1__glyph--card" style={CSS_SIZED} />
           <Icon src={divider} w={193.108} h={1.199} className="s1__rule" style={CSS_SIZED} />
-          <p className="s1__digits">0x7F3A…4C2B</p>
+          <p className="s1__digits">000 000 000 ****</p>
           <span className="s1__bar s1__bar--pill" />
         </div>
         <div className="s1__card s1__card--b">

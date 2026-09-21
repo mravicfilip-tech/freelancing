@@ -28,19 +28,7 @@
 .icon.ticker__icon { color: var(--ticker-glyph); }
 .ticker__symbol { font-weight: 700; font-size: 12px; line-height: 1.2; white-space: nowrap; }
 .ticker__trend { width: 20px; height: 11.56px; margin-top: 4px; }
-/* The contract line. It was the asset's name, which the symbol above it already
-   said; it now says which contract the figure below it prices and when that
-   contract settles, which is the difference between a quote and a position.
-   Nowrap because it is two clauses joined by a middot and a break between them
-   reads as two lines of nothing in particular -- the strings are authored short
-   enough to fit the 168px card interior at every width. */
-.ticker__contract {
-  margin-top: 2px;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.2;
-  white-space: nowrap;
-}
+.ticker__name { margin-top: 2px; font-weight: 400; font-size: 12px; line-height: 1.2; }
 .ticker__price { margin-top: 12px; font-weight: 500; font-size: 20px; line-height: 1.2; }
 .ticker__pill {
   display: flex;

@@ -49,16 +49,6 @@ import tileBitcoin from '../../../assets/bento/tile-bitcoin.svg';
 import tileTesla from '../../../assets/bento/tile-tesla.svg';
 import fxPairUsd from '../../../assets/bento/markets/fx-pair-usd.svg';
 import fxPairAlt from '../../../assets/bento/markets/fx-pair-alt.svg';
-/* SPORT, WHICH HAS NO INSTRUMENT MARK AND IS NOT A FILE.
-   The band's copy names sports as a market category now, and the field had no
-   way to say so. There is no sports asset under assets/bento: the only one in
-   the repo is the fan band's category sign, which is three fragments composed
-   into a figure (see SportIcon in components/fan/Fan.tsx). They are imported
-   from where they live rather than copied here -- one mark, one set of files,
-   and the fan band and this card cannot drift apart. */
-import iconSportA from '../../../assets/fan/icon-sport-a.svg';
-import iconSportB from '../../../assets/fan/icon-sport-b.svg';
-import iconSportC from '../../../assets/fan/icon-sport-c.svg';
 import './BoxMarkets.css';
 
 /** Design pixels -> the card's container unit, so every number below can be
@@ -135,39 +125,6 @@ const OIL: Tile = { left: 604.82, top: 450.68, size: 67.016, radius: 11.967, bor
 const SOLANA: Tile = { left: 415, top: 256, size: 40, radius: 12.202, border: 1.367 };
 const BITCOIN: Tile = { left: 328.38, top: 442.3, size: 93.822, radius: 16.754, border: 1.675 };
 const TESLA: Tile = { left: 73, top: 226, size: 56, radius: 10, border: 1.4 };
-/* THE ONE TILE IN THIS FIELD WITH NO FIGMA NODE BEHIND IT.
-   Every constant above is read off 365:1102. Sports became a market category
-   after that frame was drawn, so there is no 14th node to read and the numbers
-   here are BORROWED rather than invented: the plate is Apple's exactly (36,
-   corner 6.607, ring 0.74, a light plate), and the mark is set in a 20 box
-   centred in it, which is Apple's glyph ratio too. Only the place is this
-   file's own -- a clear patch of the card's visible window, measured against
-   every other tile in it, with the tooltip's right edge at x 553 and the
-   accent tint's left at x 653 on either side of it.
-
-   It needs a designer's eye, and it is the one thing in this box that does. */
-const SPORT: Tile = { left: 566, top: 336, size: 36, radius: 6.607, border: 0.74 };
-
-/* The fan band composes the sport figure from three pieces in a 16 box, each
-   placed by a percentage inset and sized by its own file (Fan.css
-   .fan__sport-a/b/c). Percentages scale, file sizes do not, so the whole
-   composition is scaled here by ONE factor -- box and pieces together -- which
-   is what keeps the racket, the figure and the ball in the relationship the
-   export draws. Checked by eye at 16, 20, 24, 32 and 44: it is vector all the
-   way down and holds its geometry at every one of them.
-
-   The three files bake #9D9D9D, which is the fan band's glyph grey and far too
-   faint for a plate here, so they are drawn as MASKS and take a colour. The
-   colour is --mk-tip-ink, the one ink on this card that stays dark in both
-   themes: the plate under it is --mk-tile-light, which does not flip either
-   (see the light block in BoxMarkets.css -- light plates keep their marks). */
-const SPORT_BOX = 20;
-const SPORT_K = SPORT_BOX / 16;
-const SPORT_PIECES = [
-  { src: iconSportA, w: 10.8535, h: 15.8064, top: '0.85%', left: '8.34%' },
-  { src: iconSportB, w: 3.12615, h: 3.12615, top: '12.15%', left: '36.91%' },
-  { src: iconSportC, w: 1.96923, h: 1.96923, top: '2%', left: '79.38%' },
-] as const;
 
 /* 365:1153 – 365:1159 plus 365:1168. Unbadged tiles that carry the field on
    past the card's clip. Arbitrary warm tints — not the brand orange — except
@@ -278,14 +235,6 @@ export function BoxMarkets() {
           <span className="mk__tile mk__tile--light mk__tile--tesla" data-market="Tesla" style={shell(TESLA)}>
             <img src={tileTesla} alt="" style={leaf(8.135 + 1.4, 8.013 + 1.4, 36.4, 36.241)} />
           </span>
-          <span className="mk__tile mk__tile--light mk__tile--sport" data-market="Sport" style={shell(SPORT)}>
-            <span className="mk__sport" style={centred(SPORT, SPORT_BOX, SPORT_BOX)}>
-              {SPORT_PIECES.map((p) => (
-                <Icon key={p.src} src={p.src} w={p.w * SPORT_K} h={p.h * SPORT_K}
-                  style={{ top: p.top, left: p.left }} />
-              ))}
-            </span>
-          </span>
 
           {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the
               arrow 7.55% inside a 20 box; that is folded into the offsets. */}
@@ -310,12 +259,9 @@ export function BoxMarkets() {
         </div>
 
         {/* 365:1093 */}
-        {/* The body names the six categories the product sells now, sports
-            included. Sports is in the field above as well -- see SPORT, the
-            one tile there with no Figma node behind it. */}
         <div className="bcard__text">
           <h3 className="bcard__title">Trade every market from one account</h3>
-          <p className="bcard__body">Crypto, stocks, indices, commodities, forex and sports.</p>
+          <p className="bcard__body">Crypto, forex, commodities, indices and equities.</p>
         </div>
 
         {/* 365:1096 */}

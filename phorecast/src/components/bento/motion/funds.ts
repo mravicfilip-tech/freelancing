@@ -1,28 +1,17 @@
 /**
- * Card B — "You can never lose more than you stake".
+ * Card B — "Your funds leave whenever you want".
  *
- * The diagram reads right to left as a settlement chain: four market tiles hung
- * on the orange ring, two claim chips, two orange nodes sitting on the strokes,
- * and the balance ring at the end of it. The motion walks that chain in the
- * direction the card describes — out of the markets, past the two things that
- * cannot happen to you, into your balance — and then stops.
- *
- * IT USED TO WALK A CUSTODY CHAIN. The card argued self-custody: "Your funds
- * leave whenever you want" over "Collateral sits in contracts we never touch",
- * with the chips reading Smart Contracts and Withdraw anytime and the node at
- * the end reading Wallet. None of that survives the repositioning — there is no
- * collateral in contracts, and a large withdrawal may be held up to 24 hours —
- * so the card's premise is bounded risk now and the four labels say so. The
- * BEATS are unchanged: nothing in this file moves, because what the beats
- * depict (a market resolving, a chip answering, a value landing) is true of a
- * settlement as it was of a withdrawal. See BoxCustody.tsx for the one part of
- * the drawing that a relabel cannot fully fix.
+ * The diagram reads right to left as a custody chain: four market tiles hung on
+ * the orange ring, a smart-contract chip, two orange nodes sitting on the
+ * strokes, a withdraw chip, and the wallet ring with your wallet inside it. The
+ * motion walks that chain in the direction the copy promises — out of the
+ * markets, through the contracts, into your wallet — and then stops.
  *
  * LOAD-IN (1.5s, after the band's entrance has landed the card)
  *   The three circles and the glow arrive with the card; they are the diagram's
- *   frame. The balance is the lead and holds the stage alone for a third of a
- *   second, because it is what the sentence is about. Then the two claim chips,
- *   then the four assets each with its label, then the two nodes.
+ *   frame. The wallet is the lead and holds the stage alone for a third of a
+ *   second, because it is what the sentence is about. Then the two contract
+ *   chips, then the four assets each with its label, then the two nodes.
  *
  *   It was 2.0s, behind the band's own entrance, which on a phone put the last
  *   node past four seconds from the scroll. Same beats, same order, same eases,
@@ -30,13 +19,13 @@
  *
  * LOOP (5.8s of story, then 4.2s of nothing — 10.0s end to end)
  *   The four markets hand over in turn, each tile brightening and sliding a step
- *   toward the balance. The upper chip lifts to answer. The node on the orbit
- *   flares and releases a packet, which travels the whole 226 design pixels of
- *   the diagram — from that node, through the corridor between the two chips,
- *   into the balance — while the lower chip lifts under it. The node on the
- *   balance ring flares as the packet lands, that ring closes round in orange
- *   from the node, and the disc takes one pulse. Then the card is still for four
- *   seconds.
+ *   toward the wallet. The smart-contract chip lifts to answer. The node on the
+ *   orbit flares and releases a packet, which travels the whole 226 design pixels
+ *   of the diagram — from that node, through the corridor between the two chips,
+ *   into the wallet — while "Withdraw anytime" lifts under it. The node on the
+ *   wallet ring flares as the packet lands, the wallet ring closes round in
+ *   orange from that node, and the disc takes one pulse. Then the card is still
+ *   for four seconds.
  *
  * Distances are written as percentages of each element's own box, never pixels,
  * so one build of the timeline is correct at every breakpoint — see `pct` in
@@ -46,7 +35,7 @@
  * phone's card is the same diagram turned a quarter-turn (Figma 526:305). The
  * two things a quarter-turn moves are directions and paths, and both are
  * re-derived rather than reused: a market tile hands its value on DOWNWARD
- * instead of leftward, a claim chip answers LEFTWARD instead of upward —
+ * instead of leftward, a contract chip answers LEFTWARD instead of upward —
  * still the perpendicular of the packet's travel, which is what that step
  * means — and the packet's curve, the wallet ring's radius and the angle it
  * closes from are each mapped through the one rotation the layout applies. The
@@ -248,7 +237,7 @@ export function funds(card: HTMLElement): () => void {
        load-in had a chance to animate away from it. */
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.2 });
 
-    // 1 — the four markets hand over, each sliding a step toward the balance
+    // 1 — the four markets hand over, each sliding a step toward the wallet
     tiles.forEach((tile, i) => {
       const label = labels[i];
       const at = i * 0.16;
@@ -271,7 +260,7 @@ export function funds(card: HTMLElement): () => void {
     // 3 — the node on the orbit flares and lets the packet go
     pulse(loop, nodes[1], 1.3, { scale: 2 }, { scale: 1 }, 0.3, 0.7, 'transform');
 
-    // 4 — 226 design pixels of travel, from that node into the balance
+    // 4 — 226 design pixels of travel, from that node into the wallet
     const packet = { p: 0 };
     const ridePacket = () => {
       const pt = wire.getPointAtLength(packet.p * WIRE_LEN);

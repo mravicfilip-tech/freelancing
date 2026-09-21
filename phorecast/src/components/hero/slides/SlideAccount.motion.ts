@@ -1,4 +1,4 @@
-/* Hero slide 2 — the "One account. Your keys." cluster, in motion.
+/* Hero slide 2 — the "One account. Every market." cluster, in motion.
  *
  * The hero's shared entrance (entrance.ts → slideIn) fades and pops the whole
  * illustration as one block. This module is the detail inside that block: the

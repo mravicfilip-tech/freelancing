@@ -14,10 +14,14 @@
  *
  *   0.30s  "You" answers. The dot takes one pulse and the word under it warms.
  *   0.55s  The light leaves. It is one scalar — distance along a route that
- *          runs from the smear already lit on the line, out along the line, and
- *          then round the market — and everything in the card answers to it.
- *          A short head is painted ON the line with `stroke-dashoffset`, and
- *          the design's own warm smear rides with it as its soft tail.
+ *          runs out along the line and then round the market — and everything
+ *          in the card answers to it. A short head is painted ON the line with
+ *          `stroke-dashoffset`. WHERE it leaves from is measured, not stated:
+ *          the route starts at the design's own lit smear where the node parks
+ *          that smear near the beginning (1600, where the light then carries it
+ *          as its soft tail) and at the line's own start where the node parks
+ *          it past halfway (the phone, where the smear instead flares as the
+ *          light goes through it). See `rides` in start().
  *   1.70s  It reaches the lit ring at exactly the point the line ends on. The
  *          smear is absorbed; the coin answers.
  *   1.70s  The wrap. The same light splits and runs both ways round the ring —
@@ -48,29 +52,44 @@
  * `w.r` every frame, so the ring that closes is the ring that then expands;
  * there is no handoff between a closing element and a rippling one to line up.
  *
- * TWO ORIENTATIONS, ONE BEAT
- * --------------------------
- * Below 700px Built.css re-lays this card into a portrait frame: "You" sits
- * above its market rather than beside it, the line stands up, and the light
- * therefore arrives at the ring's NORTH point rather than its west one. Three
- * numbers used to assume the landscape frame and each has been re-derived
- * rather than special-cased:
+ * ANY ANGLE, ONE BEAT
+ * -------------------
+ * Below 700px Built.css re-lays this card into the frame Figma draws for the
+ * phone (node 526:2503): the rings move to the card's centre, "You" to its
+ * lower right, and the run between them crosses the card DIAGONALLY, at
+ * -124.31 degrees. The light therefore arrives at the ring's south-east, which
+ * is not a point any earlier version of this file could name.
  *
- *   the overlay's viewBox   was the literal `0 0 299 135`. It is now `--bt1-w`
- *                           from the stylesheet and a height taken from the
- *                           live aspect ratio, so the coordinate system this
- *                           file works in is whatever box it was handed.
- *   the route               was "the line's left edge, along x, to CX - R". It
- *                           is now the line's starting end, along whichever
- *                           axis the line's own rect says it runs, to the point
- *                           (CX + R*EX, CY + R*EY) where it meets the ring.
- *   the head and its trail  were 30 and 20 design px, which is a third of the
- *                           portrait line. They are fractions of the measured
- *                           run, equal to the old numbers at 1600.
+ * It could name two: the ring's west point and its north point, chosen by
+ * `DOWN = rect.height > rect.width`. That boolean is the thing this file had to
+ * lose, and losing it quietly is exactly the failure it would have produced —
+ * the diagonal line's bounding rect IS taller than it is wide, so `DOWN` would
+ * have come out true, the wrap would have started at the north point, and the
+ * light would have arrived somewhere else. No error, just a wrong picture.
  *
- * `DOWN` is a measurement, not a breakpoint: the stylesheet turns the line a
- * quarter turn and a rotated element's client rect is the rotated one, so the
- * question "which way does this line run" is answered by the line.
+ * So the orientation is a unit vector read off the line's own computed matrix,
+ * and every distance in this file is a projection onto it:
+ *
+ *   the overlay's viewBox   `--bt1-w` from the stylesheet and a height taken
+ *                           from the live aspect ratio, so the coordinate
+ *                           system is whatever box this file was handed.
+ *   which way it runs       (UX, UY), the first column of the line's computed
+ *                           transform, normalised. (1, 0) untransformed and
+ *                           (0, 1) at `rotate(90deg)`, so the two cases the
+ *                           boolean used to cover come back unchanged.
+ *   the route               the line's starting end — its centre less half its
+ *                           OWN width along (UX, UY), which is a corner of the
+ *                           rect and not an edge of it once the angle is not a
+ *                           right angle — to (CX + R*EX, CY + R*EY).
+ *   the head and its trail  fractions of the measured run, equal to the old 30
+ *                           and 20 design px at 1600.
+ *   where the light leaves  the smear if the smear is still near the start of
+ *                           the run, the line's own start if it is not. See
+ *                           `LEAD` and `rides` in start().
+ *
+ * None of these is a breakpoint. Every one of them is a measurement taken each
+ * time the loop is built, so a frame that turns the line again needs nothing
+ * here.
  *
  * THE TRAP IN `.bt1__ring-disc`
  * -----------------------------
@@ -91,7 +110,9 @@
  * No shadow, no bloom, no halo, no `filter` is written anywhere in this file.
  * The vocabulary is colour, position, scale and opacity. The one blurred thing
  * that moves — `.bt1__smear` — is the design's own element, travelling along
- * the line it already sits on; nothing soft is added to the card.
+ * the line it already sits on at 1600 and stretching along it on the phone;
+ * its blur is the one the stylesheet ships and nothing soft is added to the
+ * card in either frame.
  *
  * Nothing floats, bobs, drifts or breathes, nothing reads the pointer, every
  * value the loop touches returns to the one the design ships, and reduced
@@ -268,13 +289,23 @@ export function bt1Loop(root: HTMLElement): () => void {
   let TRAIL = 20;
 
   /** WHICH WAY THE LIGHT RUNS, and it is the only thing about this beat that
-   *  the layout decides. `DOWN` is true when the line stands up — the portrait
-   *  frame, where "You" is above its market rather than beside it. Everything
-   *  below is written once and reads these two numbers: (EX, EY) is the unit
-   *  vector from the ring's centre to the point the light ARRIVES at, which is
-   *  the ring's west point when the line runs across and its north point when
-   *  the line runs down. */
-  let DOWN = false;
+   *  the layout decides. (UX, UY) is the line's OWN +x in the card's space,
+   *  read off its computed matrix; (EX, EY) is the reverse of it, which is the
+   *  unit vector from the ring's centre to the point the light ARRIVES at.
+   *
+   *  THIS USED TO BE A BOOLEAN, and the boolean is what would have broken.
+   *  `DOWN = rect.height > rect.width` has exactly two answers — the ring's
+   *  west point or its north point — and the mobile frame's line runs at
+   *  -124.31deg, whose rect is taller than it is wide. It would have picked
+   *  north, silently, and wrapped the ring from the wrong quarter while the
+   *  light arrived at the south-east. Nothing would have errored.
+   *
+   *  A unit vector has no such gap and reproduces both old answers exactly:
+   *  an untransformed line gives (1, 0) -> (-1, 0), a `rotate(90deg)` one
+   *  gives (0, 1) -> (0, -1). Every distance below is a projection onto it
+   *  rather than a difference on x or y, for the same reason. */
+  let UX = 1;
+  let UY = 0;
   let EX = -1;
   let EY = 0;
 
@@ -339,35 +370,68 @@ export function bt1Loop(root: HTMLElement): () => void {
     OUT_R = outer ? (box(outer).width / u) * OUTER_RF : 66.875;
     ARC0 = Math.PI * DISC_R;
 
-    // The line's OWN box says which way it runs. In the portrait frame the
-    // stylesheet turns it a quarter turn, and a rotated element's client rect
-    // is the rotated one, so this is a measurement rather than a breakpoint
-    // test -- and it is taken every time the loop is built.
-    const l = box(line);
-    DOWN = l.height > l.width;
-    EX = DOWN ? 0 : -1;
-    EY = DOWN ? -1 : 0;
+    /** A TURNED BOX'S TWO ENDS, and the only honest way to find them.
+     *
+     *  A rotated element's client rect is its rotated BOUNDING box, so at 90
+     *  degrees its corners are still its ends but at 124 they are not: the
+     *  ends are two opposite corners and the rect cannot say which two. The
+     *  rotation itself can. `transform` on a pure rotation about the default
+     *  50% 50% leaves the centre exactly where the rect's centre is, `offset-
+     *  Width` is the untransformed length, and the matrix's first column is
+     *  where the element's own +x now points. Those three give both ends at
+     *  any angle, and at 0 and 90 degrees they give back precisely the left
+     *  edge and the top edge the two earlier cases read off the rect. */
+    const spine = (el: HTMLElement) => {
+      const r = box(el);
+      const t = getComputedStyle(el).transform;
+      const m = t && t !== 'none' ? new DOMMatrixReadOnly(t) : new DOMMatrixReadOnly();
+      const k = Math.hypot(m.a, m.b) || 1;
+      const ux = m.a / k;
+      const uy = m.b / k;
+      const half = el.offsetWidth / 2 / u;
+      return {
+        cx: X(r.left + r.width / 2), cy: Y(r.top + r.height / 2),
+        ux, uy, half, len: half * 2,
+      };
+    };
+
+    // Which way the line runs, and where its two ends are. `UX, UY` is the
+    // line's own +x, which is the direction the design's `to right` gradient
+    // and the entrance's `scaleX` both run down, so "the end the light leaves
+    // from" is the same end for all three without any of them agreeing on a
+    // number.
+    const ln = spine(line);
+    UX = ln.ux;
+    UY = ln.uy;
+    EX = -UX;
+    EY = -UY;
 
     // The route: from the line's starting end, along the line, to the point on
-    // the lit ring the line runs into. The line's own cross-axis and the ring's
-    // centre are about one design px apart, so the wire is drawn as the shallow
-    // ramp between them -- it sits on the line for its whole length and still
-    // meets the ring exactly.
-    const p0 = DOWN
-      ? { x: X(l.left + l.width / 2), y: Y(l.top) }
-      : { x: X(l.left), y: Y(l.top + l.height / 2) };
+    // the lit ring the line runs into. The line's own axis and the ring's
+    // centre are a design px or two apart in both frames, so the wire is drawn
+    // as the shallow ramp between them -- it sits on the line for its whole
+    // length and still meets the ring exactly.
+    const p0 = { x: ln.cx - ln.ux * ln.half, y: ln.cy - ln.uy * ln.half };
     const p1 = { x: CX + DISC_R * EX, y: CY + DISC_R * EY };
 
-    // Where the light starts: the far edge of the smear the design already has
-    // lit on the line, so it emerges from it rather than beside it. "Far" is
-    // the smear's right edge when the light runs across and its bottom edge
-    // when it runs down.
-    const sb = smear ? box(smear) : null;
-    const s0 = sb
-      ? (DOWN ? Y(sb.bottom) : X(sb.right))
-      : (DOWN ? p0.y : p0.x) + 57.5;
+    /** How far a point is from p0 ALONG THE LINE. One projection replaces the
+     *  "x when it runs across, y when it runs down" pair, and agrees with it
+     *  to the last decimal in both of those cases. */
+    const along = (x: number, y: number) => (x - p0.x) * UX + (y - p0.y) * UY;
 
-    return { p0, p1, s0, u, smearBox: sb };
+    // Where the light starts: the far edge of the smear the design already has
+    // lit on the line, so it emerges from it rather than beside it. The smear
+    // turns with the line, so "far" is whichever of its own two ends is
+    // further along the run -- not its right edge or its bottom edge.
+    const sm = smear ? spine(smear) : null;
+    const s0 = sm
+      ? Math.max(
+        along(sm.cx + sm.ux * sm.half, sm.cy + sm.uy * sm.half),
+        along(sm.cx - sm.ux * sm.half, sm.cy - sm.uy * sm.half),
+      )
+      : 57.5;
+
+    return { p0, p1, s0, u, smear: sm, along };
   };
 
   /* ------------------------------------------------------------- the cycle */
@@ -416,14 +480,30 @@ export function bt1Loop(root: HTMLElement): () => void {
     svg.appendChild(group);
     bt1.appendChild(svg);
 
-    // The route's own length, and where along it the light starts and stops.
-    // Solved on the axis the line runs down rather than on x, so the portrait
-    // frame needs no second arithmetic -- only the axis to project onto.
-    const a0 = DOWN ? g.p0.y : g.p0.x;
-    const a1 = DOWN ? g.p1.y : g.p1.x;
-    LEN = wire.getTotalLength() || Math.abs(a1 - a0);
-    const span = Math.max(Math.abs(a1 - a0), 1);
-    LEAD = (LEN * Math.abs(g.s0 - a0)) / span;
+    /* The route's own length, and where along it the light starts.
+     *
+     *  `g.s0` is already a distance from p0 along the line, so there is no
+     *  axis to divide back out any more: the two used to be an x (or a y) and
+     *  a span, and the ratio between them only meant anything while the line
+     *  was square to the card.
+     *
+     *  WHERE THE LIGHT LEAVES FROM IS A MEASUREMENT NOW TOO, and it has to be,
+     *  because the two frames park the smear in different places. At 1600 it
+     *  sits at 57.5 of a 173.5 run — a third of the way along, right beside
+     *  "You", and the light plainly leaves IT. The phone's node puts it at 82
+     *  of a 97 run: halfway between the dot and the market as a distance, but
+     *  five sixths of the way along a line that is itself much shorter than
+     *  the gap it spans. Starting the light there would leave it fifteen design
+     *  px to travel, which is not a journey, and no amount of easing would make
+     *  it read as one.
+     *
+     *  So the smear is the source only while it is still near the start. Past
+     *  the halfway mark it is not something the light comes out of, it is
+     *  something already lit that the light passes, and the light leaves from
+     *  the line's own beginning — the dot, which is where the entrance draws
+     *  the line out of as well. One threshold, measured, no breakpoint. */
+    LEN = wire.getTotalLength() || Math.hypot(g.p1.x - g.p0.x, g.p1.y - g.p0.y);
+    LEAD = g.s0 < LEN / 2 ? Math.max(g.s0, 0) : 0;
     TRAVEL = Math.max(LEN - LEAD, 1);
     HEAD = LEN * HEAD_F;
     TRAIL = LEN * TRAIL_F;
@@ -437,17 +517,49 @@ export function bt1Loop(root: HTMLElement): () => void {
     const youRest = css(you, 'color');
     const noteRest = css(note, 'color');
 
-    /* The smear rides `TRAIL` design px behind the head's tip. */
-    // On the axis the light runs down: the smear's own length along that axis,
-    // its resting centre, and how far it has to travel written as a percentage
-    // of its own box. A percentage of the element's own box is the only
-    // distance here that survives a resize untouched, because the element
-    // scales with the card exactly as the distance does.
-    const smearLen = g.smearBox
-      ? (DOWN ? g.smearBox.height : g.smearBox.width) / g.u
-      : 0;
-    const rideTo = (DOWN ? g.p1.y : g.p1.x) - TRAIL;
-    const ride = smearLen > 0 ? ((rideTo - (g.s0 - smearLen / 2)) / smearLen) * 100 : 0;
+    /* WHAT THE SMEAR DOES, and the design decides it rather than this file.
+     *
+     *  The smear is the design's own soft bar of light already lying on the
+     *  line, and there are two honest things it can be depending on where the
+     *  node parks it:
+     *
+     *    IT RIDES WHEN IT IS THE SOURCE. At 1600 the light leaves it, so it is
+     *    the head's own tail and travels with it: 57.5 of a 173.5 run out to
+     *    153.5, which is 117 design px, and it is absorbed at the ring.
+     *
+     *    IT FLARES WHEN IT IS NOT. On the phone the node parks it past the
+     *    halfway mark, `LEAD` is 0 and the light leaves the dot behind it — so
+     *    a tail is exactly what it cannot be. Riding it anyway would put it
+     *    AHEAD of the head for four fifths of the run: both would ease
+     *    `power1.in` over the same leg, and the head only catches a smear
+     *    starting at 60 of 97 at 85% of the way through. It stays where the
+     *    design puts it and takes a scale pulse along its own axis as the head
+     *    passes through it, then is absorbed at the ring exactly as at 1600.
+     *
+     *  `LEAD > 0` is the whole test, and it is the same measurement that
+     *  decided where the light starts. Not a breakpoint, and not a second
+     *  opinion about the geometry.
+     *
+     *  RIDE IS TWO PERCENTAGES, not one. A percentage of the element's own box
+     *  is the only distance here that survives a resize untouched, because the
+     *  element scales with the card exactly as the distance does — but GSAP's
+     *  translate lands OUTSIDE the element's rotation, in the card's own axes,
+     *  so a turned smear needs both components. They are the same one distance
+     *  projected onto x and y, each divided by the box it is a percentage of.
+     *  At 1600 `UY` is 0 and `yPct` is 0 with it, which is the old single
+     *  `xPercent` back again. */
+    const smearLen = g.smear ? g.smear.len : 0;
+    const smearMid = g.smear ? g.along(g.smear.cx, g.smear.cy) : 0;
+    const rideDist = LEN - TRAIL - smearMid;
+    const rides = !!smear && smearLen > 0 && LEAD > 0 && rideDist > 0;
+    const xPct = rides && smear ? (rideDist * UX * g.u * 100) / smear.offsetWidth : 0;
+    const yPct = rides && smear ? (rideDist * UY * g.u * 100) / smear.offsetHeight : 0;
+    /* When it flares instead, the frame it flares ON: the head's tip reaches
+       the smear's centre `smearMid - LEAD` into a `power1.in` leg, solved back
+       through the ease rather than guessed, so the pulse is under the light
+       and not beside it. */
+    const flareAt = T_GO + LEG1 * invEase('power1.in',
+      Math.min(Math.max((smearMid - LEAD) / Math.max(TRAVEL, 1), 0), 1));
 
     ctx = gsap.context(() => {
       const tl = gsap.timeline({ repeat: -1, paused: true });
@@ -496,16 +608,29 @@ export function bt1Loop(root: HTMLElement): () => void {
           opacity: 1, duration: 0.22, ease: 'sine.out', immediateRender: false,
         }, T_GO);
 
-      /* 3 — the design's own smear is the light's soft tail, and is absorbed at
-         the ring. Its transform is reset while it is invisible, so the return
-         is a fade at home rather than a slide back. */
-      if (smear && ride > 0) {
-        tl.fromTo(smear, DOWN ? { yPercent: 0 } : { xPercent: 0 }, {
-          [DOWN ? 'yPercent' : 'xPercent']: ride,
-          duration: LEG1, ease: 'power1.in', immediateRender: false,
-        }, T_GO)
-          .to(smear, { opacity: 0, duration: 0.32, ease: 'sine.in' }, T_HIT - 0.26)
-          .set(smear, DOWN ? { yPercent: 0 } : { xPercent: 0 }, T_HIT + 0.4)
+      /* 3 — the design's own smear. It is the light's soft tail where it is the
+         light's source and a lit patch the light goes through where it is not;
+         see the note over `rides`. Either way it is absorbed at the ring, its
+         transform is reset while it is invisible so the return is a fade at
+         home rather than a slide back, and the stylesheet gets its own
+         `transform` — the turn, on the phone — handed back at T_TIDY. */
+      if (smear) {
+        if (rides) {
+          tl.fromTo(smear, { xPercent: 0, yPercent: 0 }, {
+            xPercent: xPct, yPercent: yPct,
+            duration: LEG1, ease: 'power1.in', immediateRender: false,
+          }, T_GO);
+        } else {
+          /* A pulse along its own length. `scaleX` composes INSIDE the
+             rotation GSAP reads off the element, so this stretches the bar
+             along the line it lies on rather than across the card, and it is
+             the same vocabulary the coin and the three rings already use.
+             Nothing soft is added: the blur is the one the design ships. */
+          tl.to(smear, { scaleX: 1.22, duration: 0.24, ease: 'sine.out' }, flareAt)
+            .to(smear, { scaleX: 1, duration: 0.5, ease: 'sine.inOut' }, flareAt + 0.24);
+        }
+        tl.to(smear, { opacity: 0, duration: 0.32, ease: 'sine.in' }, T_HIT - 0.26)
+          .set(smear, { xPercent: 0, yPercent: 0, scaleX: 1 }, T_HIT + 0.4)
           .to(smear, { opacity: 1, duration: 0.55, ease: 'sine.out' }, T_BACK)
           .set(smear, { clearProps: 'transform,opacity' }, T_TIDY);
       }

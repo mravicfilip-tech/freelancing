@@ -254,7 +254,7 @@ export function Familiar() {
 
         <div className="fam__copy fam__copy--right">
           <h3 className="fam__sub-title">Phorcast Trading</h3>
-          <p className="fam__sub-body">Trade crypto, forex, stocks, commodities and indices through one simple, intuitive platform.</p>
+          <p className="fam__sub-body">Trade crypto, forex, stocks, commodities, indices and sports through one simple, intuitive platform.</p>
           <a href="#signup" className="btn btn--primary fam__cta"><Roll>Start Trading</Roll></a>
         </div>
 

@@ -614,13 +614,10 @@
      between "02 Days" and "14 Hours" would be punctuating the wrong join;
      between two pairs of words a dot is the separator that fits, and it keeps
      the "the clock is running" pulse it was carrying. */
-  .sl3-countdown__colon {
-    /* The glyph itself goes; what is left is a box the ::before gives size to.
-       `align-self` rather than the row's own centring, because the dot wants
-       the FIGURES' optical middle and the row is 12 units taller than they are. */
-    font-size: 0;
-    align-self: center;
-  }
+  /* The glyph goes; what is left is a box the ::before gives size to. No
+     alignment of its own -- the row already centres, and the figures are
+     centred in the same row, so a centred dot is on their optical middle. */
+  .sl3-countdown__colon { font-size: 0; }
   .sl3-countdown__colon::before {
     content: '';
     display: block;

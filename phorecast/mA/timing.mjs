@@ -24,11 +24,11 @@ import { chromium } from 'playwright-core';
 // builds a scene. That isolates the entrance's own wall-clock cost from the
 // main-thread block the scene build imposes on it -- under software GL that
 // block is enormous and swamps every other number.
-const [, , URL, LABEL = 'run', MODE = 'gl'] = process.argv;
+const [, , URL, LABEL = 'run', MODE = 'gl', WIDTH = '390', HEIGHT = '844'] = process.argv;
 if (!URL) { console.error('usage: node mA/timing.mjs <url> [label]'); process.exit(2); }
 
 const CONTROL = '.fan';
-const VIEWPORT = { width: 390, height: 844 };
+const VIEWPORT = { width: Number(WIDTH), height: Number(HEIGHT) };
 
 const INIT = (noGL) => {
   const W = window;
@@ -128,7 +128,8 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--use-gl=swiftshader'],
 });
 const page = await browser.newPage({
-  colorScheme: 'dark', viewport: VIEWPORT, deviceScaleFactor: 1, isMobile: true, hasTouch: true,
+  colorScheme: 'dark', viewport: VIEWPORT, deviceScaleFactor: 1,
+  isMobile: VIEWPORT.width <= 720, hasTouch: VIEWPORT.width <= 720,
 });
 await page.addInitScript(INIT, MODE === 'nogl');
 
@@ -169,5 +170,5 @@ const control = await page.evaluate(async ({ sel }) => {
   return watching;
 }, { sel: CONTROL });
 
-console.log(JSON.stringify({ label: LABEL, mode: MODE, url: URL, hero, heroExtra, control: { selector: CONTROL, ...control } }, null, 2));
+console.log(JSON.stringify({ label: LABEL, mode: MODE, viewport: VIEWPORT, url: URL, hero, heroExtra, control: { selector: CONTROL, ...control } }, null, 2));
 await browser.close();

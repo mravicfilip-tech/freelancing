@@ -53,6 +53,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .container--wide { --content-max: 1800px; --page-pad: clamp(20px, 3.125vw, 60px); }
 
 /* Type scale --------------------------------------------------------------- */
+/* The eyebrow IS the client's subtitle spec, line for line -- Galano Grotesque,
+   16px, weight 500, 120% line height, uppercase. The one thing in the Figma
+   inspector panel not reproduced here is its `color: #626262`, which is Figma's
+   own local value for the single layer that happened to be selected and not a
+   token: this site has a real light/dark set and that flat grey belongs to
+   neither. --ink-muted is the ink this label already used and it keeps working
+   in both themes.
+
+   `letter-spacing: 0` is now a decision rather than a default. It was the right
+   value under a monospace because Geist Mono is loose to begin with, and it is
+   still the right value here because it is what the client's spec asks for --
+   the panel states no tracking. Left explicit so nobody adds a tenth of an em
+   to "fix" uppercase and quietly walks away from the spec. */
 .eyebrow {
   display: inline-flex;
   align-items: center;

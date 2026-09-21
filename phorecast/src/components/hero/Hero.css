@@ -317,21 +317,43 @@
 @media (max-width: 720px) {
   .hero { padding-top: 24px; }
 
-  /* The eyebrow is a 29-character mono string set at a flat 16px with
-     `white-space: nowrap` (global.css), so it has ONE width -- 302.4px,
-     measured -- and it does not care how narrow the screen is. The hero column
-     at 320 is 280px between the 20px gutters, so the line ran 22.4px past the
-     right edge and the last word was cut off by the section's clip. Nothing
-     scrolled, which is why it survived: `scrollWidth` still read 320.
+  /* The eyebrow is a 29-character string set at a flat 16px with
+     `white-space: nowrap` (global.css), so it has ONE width and does not care
+     how narrow the screen is. The hero column at 320 is 280px between the 20px
+     gutters, so the line ran past the right edge and the last word was cut off
+     by the section's clip. Nothing scrolled, which is why it survived:
+     `scrollWidth` still read 320. That is the fault class to remember here --
+     it does not show up in an overflow check.
 
-     The same fault, and the same fix, as `.fam .eyebrow` in Familiar.css: give
-     the flat size a floor-and-ceiling against the viewport instead. 4.45vw is
-     chosen so the clamp is INERT from 360 up -- 360 x 0.0445 = 16.02, over the
-     16px ceiling -- and the phone widths that were already measured and
-     balanced do not move a pixel. Below 360 it takes over: 14.24px at 320,
-     which puts the line at 264.8px inside 280. The dot rides down with it on
-     the same arithmetic (12 / 359.98 = 3.34vw) so the mark keeps its
-     proportion to the words instead of growing into them. */
+     The same fix as `.fam .eyebrow` in Familiar.css: give the flat size a
+     floor-and-ceiling against the viewport. 4.45vw is chosen so the clamp is
+     INERT from 360 up -- 360 x 0.0445 = 16.02, over the 16px ceiling -- and
+     the phone widths that were already measured and balanced do not move a
+     pixel. The dot rides down on the same arithmetic (12 / 359.98 = 3.34vw) so
+     the mark keeps its proportion to the words rather than growing into them.
+
+     RE-MEASURED FOR GALANO GROTESQUE. The numbers this paragraph used to quote
+     were Geist Mono's: 29 glyphs on a 0.6em advance at 16px is 278.4, plus the
+     12 dot and the 12 gap, which is where the old 302.4 came from. None of that
+     arithmetic survives a proportional face -- there is no advance to multiply
+     by -- so these are measured on the rendered page instead:
+
+         1100 / 720 / 390 / 360   307.61   (clamp inert, 16px)
+         320                      273.69   (clamp live, 14.24px)
+
+     and the columns they sit in are 320 at 360 and 280 at 320. So the line
+     clears its column by 12.39px at 360 and by 6.31px at 320, and 320 is the
+     tight one, as it was before.
+
+     THAT 6.31px IS A THRESHOLD, and it is measured against the FALLBACK, not
+     against Galano -- the licensed files are not in the repo yet (see
+     styles/fonts.css). Uppercase in a geometric sans can set either side of a
+     Helvetica-metric fallback. If the real face sets this line more than about
+     2.3% wider, 320 is clipped again, silently, exactly as before. Re-measure
+     this one line when the fonts land; it is the narrowest margin on the page.
+     The coefficient cannot simply be lowered to buy room, because 4.45 is
+     already the smallest value that leaves 360 untouched (16 / 360 = 0.04445);
+     buying more means a `max-width: 359px` block rather than a smaller ramp. */
   .hero .eyebrow { font-size: clamp(13px, 4.45vw, 16px); gap: clamp(8px, 3.34vw, 12px); }
   .hero .eyebrow__dot { width: clamp(10px, 3.34vw, 12px); height: clamp(10px, 3.34vw, 12px); }
 

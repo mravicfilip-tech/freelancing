@@ -329,9 +329,19 @@
 
    TYPE STOPS SCALING WITH THE PICTURE. Every label here is `clamp(floor, N *
    var(--c), ceiling)`: the artwork still scales with the card, the type stops
-   at 11px (the mono corner labels and CAPPED RISK) and 10px ("You") on the way
-   down and at 13px / 12px on the way up. That floor is why the packing above is
-   solved at 320px -- it is the width where the two scales diverge most.
+   at 11px (the corner labels and CAPPED RISK, which are label type) and 10px
+   ("You") on the way down and at 13px / 12px on the way up. That floor is why
+   the packing above is solved at 320px -- it is the width where the two scales
+   diverge most.
+
+   Those corner labels were mono when this was written and are Galano Grotesque
+   now, which set them 1.9% to 10.2% wider -- uppercase in a geometric sans is
+   wider than the same string in a monospace, which is the opposite of what the
+   CTAs on this page did. Re-measured at 320, where the pair on one row is
+   worst: "Five markets" and "Familiar from day one" together with their two
+   30-unit insets come to 244 of the card's 280, so the row still clears by 36
+   and nothing collides. The 11px floor is unchanged -- it is a legibility
+   floor, not a packing one.
 
    NOTHING NEW GLOWS. Both card washes are the ones already here, re-aimed at
    the edge each node actually draws it on -- card one's at the LEFT edge, card

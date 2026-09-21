@@ -152,7 +152,18 @@ function MoreMenu({ path }: { path: string }) {
   const onButtonKey = (e: ReactKeyboardEvent<HTMLButtonElement>) => {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     e.preventDefault();
-    wantFocus.current = e.key === 'ArrowDown' ? 'first' : 'last';
+    const end = e.key === 'ArrowDown' ? 'first' : 'last';
+    /* Already open -- which happens when it was opened by a mouse click and
+       the reader then reached for the keyboard -- means `setOpen(true)` is a
+       no-op, the effect below never re-runs, and a deferred focus request
+       would sit in the ref unhonoured. So focus moves here instead of being
+       handed to the effect. */
+    if (open) {
+      const list = items();
+      (end === 'first' ? list[0] : list[list.length - 1])?.focus({ preventScroll: true });
+      return;
+    }
+    wantFocus.current = end;
     setOpen(true);
   };
 

@@ -137,11 +137,18 @@
   color: var(--ink);
 }
 .step__n { color: inherit; }
+/* The site's paragraph setting; see tokens.css. The `clamp(17px, 1.15vw,
+   20px)` that was here was one of three different ramps on the page all
+   claiming to mean "20px at 1920" -- 1.15vw reaches 20 at 1739, so it was
+   already at its ceiling across most of the desktop range and read 18.40 at
+   1600 where the frame asks for 16.67. The 414px measure stays: it is a line
+   length, not a size, and the desktop rail height is built on it. */
 .step__body {
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: clamp(17px, 1.15vw, 20px);
-  line-height: 1.2;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  letter-spacing: normal;
   color: var(--ink-2);
   max-width: 414px;
 }

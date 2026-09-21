@@ -355,12 +355,12 @@
     font-size: calc(24 * var(--u));
     text-wrap: balance;
   }
-  /* 526:191, with Figma's 0.16px of tracking at 16px. As an em it survives the
-     card scaling. */
-  .box-onboard .bcard__body {
-    font-size: calc(16 * var(--u));
-    letter-spacing: 0.01em;
-  }
+  /* 526:191 is 16 design px with 0.16px of tracking. Both are now gone from
+     here: the size is `--body-size` in tokens.css, whose 16px floor IS this
+     frame's 16, reached as a real 16 rather than as `16 * --u` -- which
+     divided by the DESKTOP column (474) and so rendered 12.9-14.1 on a phone,
+     below the frame it was quoting. The tracking goes with it: the client's
+     panel says 0%, i.e. the font's own metrics. */
 
   /* Frame 526:1163 — the illustration column, whose origin is the desktop
      column's less (87, 89). Its box stays the desktop 474 x 327; see the note

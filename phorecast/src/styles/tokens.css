@@ -163,6 +163,61 @@
   --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
   --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;
 
+  /* --- Paragraph copy -----------------------------------------------------
+     The client's Figma type panel, restated: Inter Tight / Light 300 / 20 /
+     120% / 0% tracking, and "should scale equally based on device". Those two
+     sentences together mean 20px is the value AT THE 1920 DESIGN FRAME, not a
+     flat size, so the size is a proportion of the viewport and 20px is its
+     ceiling:
+
+         1.0417vw x 1920 = 20.0004    -> 20px at the design width
+
+     This is the same ramp `--ab-body` already carries on `.about-page`, to the
+     digit. It is a SIBLING rather than a rename because `--ab-body` is a
+     page-scoped design-frame token that also drives GAPS (About.css 698, 702,
+     703) next to `--ab-gap` and `--ab-h3`; folding it into a site-wide "body
+     size" would drag those gap call sites into a paragraph decision the client
+     has not made for that page yet. When About is decided, `--ab-body` should
+     collapse into this token -- the values are already identical, so that
+     migration moves no pixels.
+
+     THE FLOOR IS 16px, and it is a real choice, so here is the arithmetic.
+     A clamp has exactly one knee, at `floor / 0.010417`:
+
+         floor   20px    17px    16px    15px    14px    13px
+         knee   1920px  1632px  1536px  1440px  1344px  1248px
+
+     No floor on this slope scales on a phone: 1.0417vw at 390 is 4.06px and at
+     360 it is 3.75px. The ramp is a DESKTOP ramp by construction, because its
+     slope is set by the 1920 frame. So the floor is not choosing "where
+     scaling stops" -- it stops on every tablet and phone whatever we pick --
+     it is choosing WHAT VALUE IS HELD below the knee. Three things pick 16:
+
+       1. It is Figma's own mobile number. Bento.css:364 records the mobile
+          card frame as "30px padding, 24/16 type". 16 design px on a 394-wide
+          mobile frame is ~16 real px on a 390 phone.
+       2. Everything currently rendering below 16 is arithmetic drift, not a
+          specified value. The bento bodies read 12.90-15.63 on a phone because
+          their `--u` divides by a DESKTOP column (474 or 774) while the card
+          is phone-sized. BoxMarkets.css:447 had already caught this -- "16
+          design px is 12.5 real ones on a 390 phone, which is below the floor
+          this site sets for body copy anywhere else" -- and patched it with a
+          `max(14px, ...)`. This token does properly what that max() did
+          approximately.
+       3. 16px is the browser's own default body size and the conventional
+          floor for body copy; below ~14 it starts to hurt to read on a phone.
+
+     Line-height is a UNITLESS RATIO on purpose: 1.2 of whatever the size
+     resolves to, so the leading scales with the type instead of being pinned
+     in px at one width. 120% is the client's restated decision.
+
+     Letter-spacing at the call sites goes to `normal`, not `0px`: 0% in Figma
+     means "no tracking applied", which is the font's own metrics, and that is
+     what `normal` asks for. `0px` would instead pin the tracking and defeat
+     the metrics. */
+  --body-size: clamp(16px, 1.0417vw, 20px);
+  --body-leading: 1.2;
+
   --spacing-xs: 8px;
   --spacing-sm: 12px;
   --spacing-md: 16px;

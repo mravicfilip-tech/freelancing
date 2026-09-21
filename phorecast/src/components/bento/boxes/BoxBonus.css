@@ -122,9 +122,11 @@
   font-size: calc(24 * var(--u));
   white-space: nowrap;
 }
-.box-bonus .box-bonus__body {
-  font-size: calc(20 * var(--u));
-}
+/* Sized by `--body-size` on `.bcard__body` (Bento.css), NOT by `--u`. This
+   card's unit is uncapped -- `calc(100cqw / 774)` -- so at 1100, where the
+   grid collapses to one column and the card balloons to ~854, `20 * --u` was
+   rendering 23.93, and at 1280, where the cell is narrow, 13.85. The artwork
+   still rides the unit; only the paragraph has been taken off it. */
 
 /* Carries `.bento__cta bento__cta--orange` so the motion pass finds it with the
    same selector it uses on every other card; the fixed px sizing and the gap
@@ -357,11 +359,8 @@
     text-wrap: balance;
     font-size: calc(24 * var(--u));
   }
-  .box-bonus .box-bonus__body {
-    font-size: calc(16 * var(--u));
-    /* Figma's 0.16px at 16px. As an em it survives the card scaling. */
-    letter-spacing: 0.01em;
-  }
+  /* Size and tracking both come from `--body-size` / `normal` now; see the
+     desktop rule above and tokens.css. */
 
   /* Button Container, the foot of that same column: (30, 410) -> (29, 409). */
   .box-bonus .box-bonus__cta {

@@ -198,7 +198,21 @@
 .bcard__text { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; position: relative; z-index: 1; }
 .bcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--ink); }
 .bcard__title--dark { color: var(--mk-ink); }
-.bcard__body { font-family: var(--font-body); font-weight: 300; font-size: 20px; color: var(--ink-2); }
+/* The client's paragraph setting, from tokens.css: Inter Tight 300, a size
+   that is 20px at the 1920 frame and rides down to a 16px floor, 120% leading
+   as a unitless ratio, and the font's own tracking. All four card bodies read
+   it from here -- the per-card font-size overrides that used to sit in the
+   four box files are gone, so this is the only place a bento paragraph is
+   sized. `letter-spacing` is restated rather than left to inherit because two
+   of the cards were setting their own. */
+.bcard__body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  letter-spacing: normal;
+  color: var(--ink-2);
+}
 /* The copy on card A, which is a red plate in both themes: --on-accent, not
    --ink. --ink would take it to #1a1512 on #ff632a on paper. */
 .bcard__body--light { color: var(--on-accent); }

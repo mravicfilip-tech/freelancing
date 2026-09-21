@@ -13,15 +13,20 @@
  * and the pairs are spaced far enough apart to be counted: EIGHT BEATS, one per
  * depth per half, upper then lower.
  *
- * THE SEQUENCE (3.25s end to end)
+ * THE SEQUENCE (2.4s end to end)
+ *   0.00  THE HEADING, and the sub-line 0.12s behind it, resolving out of a
+ *         14px blur. It opens the band rather than closing it: the arcs are
+ *         what the section is made of, but the sentence is what it says, and a
+ *         reader who has just arrived should not have to wait two seconds for
+ *         a line of type. The rest of the sequence is unchanged around it.
  *   0.00  Beat 1. The innermost pair of the upper halves is drawn, left and
- *         right together, 0.95s of travel each.
- *   0.24  Beat 2, the lower halves at the same depth. Then a beat every 0.24s
- *         through all four depths — beats 3 to 8 at 0.48 … 1.68.
- *   0.55  The twelve diamonds, outermost first, 0.09s apart: they are on the
+ *         right together, 0.8s of travel each.
+ *   0.17  Beat 2, the lower halves at the same depth. Then a beat every 0.17s
+ *         through all four depths — beats 3 to 8 at 0.34 … 1.19.
+ *   0.42  The twelve diamonds, outermost first, 0.07s apart: they are on the
  *         path the heads are running, so they light in the order it reaches
  *         them.
- *   1.73  The six category pills, also outermost first, ending with the last
+ *   1.24  The six category pills, also outermost first, ending with the last
  *         pair of arcs.
  *
  *         Both of those counts are the wide band's. Below 900 the stylesheet
@@ -30,11 +35,17 @@
  *         is eight beats of arcs, three pills, the copy and the tile — the
  *         same shape and the same timings, with nothing tweening a box that is
  *         not on the page.
- *   2.13  The heading, then the sub-line 0.12s behind it, resolving out of a
- *         14px blur.
- *   2.28  THE TILE IGNITES. It arrives on the last pair landing and flashes to
- *         brightness 2.6, falling back to 1 over 0.9s. The band's one moment of
- *         real light, and it is the thing the arcs have been converging on.
+ *   1.64  THE TILE IGNITES. It arrives on the last pair landing and flashes to
+ *         brightness 2.6, falling back to 1 over 0.75s. The band's one moment
+ *         of real light, and it is the thing the arcs have been converging on.
+ *
+ * WHAT CHANGED, AND WHY. This used to run 3.25s from the first beat, with the
+ * copy at 2.13 and the tile at 2.28 — and, before any of it, three quarters of
+ * a second of main thread spent measuring the arcs (see COARSE). Scrolled to
+ * on a phone, the band therefore held an empty frame for ~0.9s, drew lines for
+ * two seconds more, and only then said anything. The eight beats are still
+ * eight beats and still counted inward from the edges; they are simply quicker
+ * (0.17 apart, 0.8 of travel), and the sentence no longer waits behind them.
  *
  * WHY NOT `draw()` FROM lib/motion.ts. Each of these paths is a whole ellipse
  * roughly 2100 user units across, and the band shows one sliver of it through
@@ -64,21 +75,50 @@ import { gsap } from 'gsap';
 import { tok } from '../../lib/theme';
 
 /** One beat. Eight of them, and they have to be countable. */
-const BEAT = 0.24;
+const BEAT = 0.17;
 /** How long one head takes to cross its own visible stretch. */
-const DRAW = 0.95;
-/** The last pair finishes here; the tile and the copy hang off it. */
+const DRAW = 0.8;
+/** The last pair finishes here; the tile hangs off it. */
 const LAST = 7 * BEAT + DRAW;
 
-const DIAMOND_AT = 0.55;
-const DIAMOND_STEP = 0.09;
-const PILLS_AT = LAST - 0.9;
-const PILL_STEP = 0.07;
-const TILE_AT = LAST - 0.35;
-const COPY_AT = LAST - 0.5;
+/** The heading opens the band, so there is something to read at once. */
+const COPY_AT = 0;
+const COPY_STEP = 0.12;
+const COPY_DUR = 0.75;
 
-/** Samples per path when looking for the stretch inside the window. */
-const SAMPLES = 220;
+const DIAMOND_AT = 0.42;
+const DIAMOND_STEP = 0.07;
+const PILLS_AT = LAST - 0.75;
+const PILL_STEP = 0.06;
+const TILE_AT = LAST - 0.35;
+/** The ignition's fall back to rest. */
+const FLASH = 0.75;
+
+/**
+ * Bracketing the visible stretch: coarse steps first, then the two boundaries
+ * walked down by bisection.
+ *
+ * `getPointAtLength` is the whole cost of building this band, and it used to be
+ * paid 221 times per path across sixteen paths. Measured at 390 wide on the dev
+ * server that was a 764ms block of main thread between the scroll and the
+ * section revealing itself -- three quarters of a second in which the band is
+ * still `visibility: hidden` and the reader is looking at nothing. It is also
+ * the one part of the entrance that no amount of timeline tuning can reach,
+ * because it happens before the timeline exists.
+ *
+ * Every one of these arcs is on screen over a contiguous 13-20% of its own
+ * length (measured, all sixteen, at 390), so a 48-step walk always lands
+ * several samples inside it, and bisecting the two crossings costs nine calls
+ * each. 67 calls a path instead of 221, and the boundary it returns is more
+ * accurate than the dense scan's rather than less: the dense scan could only
+ * ever report the first SAMPLE that was inside, up to a full step late.
+ */
+/** Coarse steps when bracketing. */
+const COARSE = 48;
+/** Bisection steps per boundary. */
+const REFINE = 9;
+/** A dense fallback, for a path the coarse walk finds nothing on. */
+const DENSE = 220;
 /** How far outside the window a sample still counts, in CSS pixels. */
 const PAD = 6;
 
@@ -98,13 +138,14 @@ interface Arc {
  * The stretch of one path that the band actually shows, as a pair of lengths
  * along it.
  *
- * The path is walked at `SAMPLES` even steps, each point pushed through
+ * The path is walked at `COARSE` even steps, each point pushed through
  * `getScreenCTM` — which carries the viewBox scale and every CSS transform
  * above the path, including the `rotate(180deg)` and `rotate(-179.01deg)` that
  * Figma's mirrors are built from, so no mirroring has to be reasoned about
- * here — and tested against the window's own client rect. First hit to last
- * hit, padded by one sample either side so the draw starts and ends just
- * outside the window rather than popping into existence on its edge.
+ * here — and tested against the window's own client rect. The two crossings
+ * are then bisected to a fraction of a step and padded a whisker either side,
+ * so the draw starts and ends just outside the window rather than popping into
+ * existence on its edge.
  *
  * A line with no hits at all is drawn over its whole length: it cannot be seen
  * either way, and a zero-length span would divide by nothing downstream.
@@ -113,21 +154,57 @@ function visibleSpan(path: SVGPathElement, win: DOMRect, len: number): [number, 
   const m = path.getScreenCTM();
   if (!m) return [0, len];
 
-  let first = -1;
-  let last = -1;
-  for (let i = 0; i <= SAMPLES; i++) {
-    const l = (len * i) / SAMPLES;
+  const inside = (l: number) => {
     const p = path.getPointAtLength(l);
     const x = p.x * m.a + p.y * m.c + m.e;
     const y = p.x * m.b + p.y * m.d + m.f;
-    if (x >= win.left - PAD && x <= win.right + PAD && y >= win.top - PAD && y <= win.bottom + PAD) {
-      if (first < 0) first = l;
-      last = l;
-    }
-  }
-  if (first < 0) return [0, len];
+    return x >= win.left - PAD && x <= win.right + PAD && y >= win.top - PAD && y <= win.bottom + PAD;
+  };
 
-  const pad = len / SAMPLES;
+  /** First and last step index that is inside the window, at `n` steps. */
+  const bracket = (n: number): [number, number] | null => {
+    let first = -1;
+    let last = -1;
+    for (let i = 0; i <= n; i++) {
+      if (inside((len * i) / n)) {
+        if (first < 0) first = i;
+        last = i;
+      }
+    }
+    return first < 0 ? null : [first, last];
+  };
+
+  let n = COARSE;
+  let hit = bracket(n);
+  if (!hit) {
+    // A stretch narrower than a coarse step. Not a case any of the sixteen
+    // arcs is in at any width measured, but a fan drawn differently might be,
+    // and the alternative -- returning the whole length -- spends the tween
+    // drawing off-frame, which is the exact fault this file was written to
+    // avoid.
+    n = DENSE;
+    hit = bracket(n);
+  }
+  if (!hit) return [0, len];
+
+  const step = len / n;
+  /** The crossing between a length known outside and one known inside. */
+  const edge = (out: number, into: number) => {
+    let lo = out;
+    let hi = into;
+    for (let i = 0; i < REFINE; i++) {
+      const mid = (lo + hi) / 2;
+      if (inside(mid)) hi = mid; else lo = mid;
+    }
+    return hi;
+  };
+
+  const first = hit[0] === 0 ? 0 : edge((hit[0] - 1) * step, hit[0] * step);
+  const last = hit[1] === n ? len : edge((hit[1] + 1) * step, hit[1] * step);
+
+  // A whisker either side, so the draw starts and ends just outside the window
+  // rather than popping into existence on its edge.
+  const pad = len / DENSE;
   return [Math.max(0, first - pad), Math.min(len, last + pad)];
 }
 
@@ -313,24 +390,24 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     tl.to(p, {
       opacity: pillOp,
       scale: 1,
-      duration: 0.42,
+      duration: 0.36,
       ease: 'power3.out',
       clearProps: 'transform',
     }, PILLS_AT + i * PILL_STEP);
   });
 
-  /* 4 — the copy, out of blur. The inner spans, never the blocks: both are
-     centred with `translateX(-50%)` and GSAP would resolve that centring to a
-     pixel value for the length of the tween. */
+  /* 4 — the copy, out of blur, on the opening beat. The inner spans, never the
+     blocks: both are centred with `translateX(-50%)` and GSAP would resolve
+     that centring to a pixel value for the length of the tween. */
   copy.forEach((c, i) => {
     tl.to(c, {
       opacity: 1,
       y: 0,
       filter: 'blur(0px)',
-      duration: 1,
+      duration: COPY_DUR,
       ease: 'expo.out',
       clearProps: 'transform,filter,opacity',
-    }, COPY_AT + i * 0.12);
+    }, COPY_AT + i * COPY_STEP);
   });
 
   /* 5 — THE TILE IGNITES, on the last pair of arcs landing. Two tweens: it
@@ -351,7 +428,7 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     }, TILE_AT);
     tl.fromTo(tile,
       { filter: igniteFrom },
-      { filter: igniteTo, duration: 0.9, ease: 'power2.out', immediateRender: false, clearProps: 'filter' },
+      { filter: igniteTo, duration: FLASH, ease: 'power2.out', immediateRender: false, clearProps: 'filter' },
       TILE_AT);
   }
 

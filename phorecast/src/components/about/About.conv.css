@@ -23,40 +23,21 @@
    land on the same thing -- the settled sentence, at full strength, exactly as
    About.css paints it. */
 
-/* The lead run -- the words before `.ab-conv__rest` -- has to paint ITSELF.
-   -------------------------------------------------------------------------
-   `.ab-conv__statement` clips a gradient to its text, and in Chromium a
-   descendant with its own paint layer is excluded from that clip: give one of
-   these spans an opacity and the word does not dim, it disappears. The
-   animated word therefore carries the block's gradient rather than borrowing
-   it, and carries it AT THE BLOCK'S SCALE: `--ab-conv-gw` is the block's
-   content width and `--ab-conv-gx` is minus the word's own offset inside it,
-   both measured by `anchorLead` on every ScrollTrigger refresh. The stops are
-   the block's own 38.293% / 41.217%, so the ramp is the same ramp, sampled
-   through the word's glyphs -- same ink, same turnover on the last letter of
-   "FOUNDED", both themes, because both ends are tokens and neither is a hex.
+/* THE STATEMENT IS ONE INK NOW, and this file used to be where that was not
+   true. The block painted a gradient clipped to its text, turning bright ink
+   into the accent partway through the first line, and a run after it sat at a
+   muted ink -- so an animated word, which composites and therefore drops out
+   of its parent's text clip in Chromium, had to carry the block's gradient
+   itself at the block's scale, re-measured on every refresh.
 
-   IT IS ONE PAINT WRITTEN TWICE, so the two have to move together: if the
-   ramp on `.ab-conv__statement` in About.css ever changes -- its stops, its
-   angle, either token -- this rule is the copy the reader actually sees for
-   the opening words and has to change with it.
+   The client asked for the gradient dropped and the fill taken to full white,
+   which is what their own reference does: every word rests dim and brightens
+   to the SAME colour, so there is nothing per-word to reproduce. All of that
+   machinery is gone -- the @supports block that re-painted each lead word, the
+   two custom properties it was driven by, and the measurement pass that kept
+   them true across resize and font load. A word is now a span with an opacity
+   on it and nothing else, which is what the reference's words are. */
 
-   Inside `@supports`, like the rule it mirrors in About.css: a browser without
-   `background-clip: text` never sees this block and the words inherit the
-   statement's own opaque `color`, which is bright ink on nothing rather than
-   nothing on nothing. */
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .ab-conv__statement .ab-conv__w--lead {
-    background-image: linear-gradient(90deg, var(--ink) 38.293%, var(--accent) 41.217%);
-    background-size: var(--ab-conv-gw, 100%) 100%;
-    background-position: var(--ab-conv-gx, 0px) 0;
-    background-repeat: no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
-}
 
 /* REDUCED MOTION: THE SENTENCE, FULLY LEGIBLE, FULL STOP.
    -------------------------------------------------------------------------

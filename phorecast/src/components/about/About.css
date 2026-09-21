@@ -669,20 +669,23 @@
   text-transform: uppercase;
   color: var(--ink);
 }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .ab-conv__statement {
-    background-image: linear-gradient(90deg, var(--ink) 38.293%, var(--accent) 41.217%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-}
-/* The rest of the sentence sits back. It paints its own opaque colour over the
-   clipped background, which is exactly how the frame's later runs override the
-   fills on the node they belong to. #626262 is --ink-muted's dark value. */
+/* The statement used to paint a gradient clipped to its text here -- bright
+   ink turning over into the accent at 38-41% of the block, with the run after
+   it set back in a muted ink. The client asked for the gradient dropped and
+   the fill taken to full white, so the block is one `--ink` and the scroll
+   reveal is the only thing that separates what has been read from what has
+   not. That removed a `color: transparent` under a `background-clip: text`,
+   which is worth knowing: while it was there, every word the scroll animation
+   wrapped had to repaint the gradient itself, because a compositing descendant
+   drops out of its parent's text clip in Chromium. */
+/* The rest of the sentence no longer sits back; see below. */
+/* Kept as an element because About.tsx writes it, but it no longer changes
+   the paint: the statement is one ink, and the scroll fill is what separates
+   what has been read from what has not. It used to hold `--ink-muted` against
+   the gradient-painted run before it. */
 .ab-conv__rest {
-  color: var(--ink-muted);
-  -webkit-text-fill-color: var(--ink-muted);
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
 }
 .ab-conv__goal {
   max-width: calc(1768 * var(--u));

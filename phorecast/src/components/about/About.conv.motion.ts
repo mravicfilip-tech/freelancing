@@ -69,38 +69,33 @@ gsap.registerPlugin(ScrollTrigger);
  * advances in the unit the reader is actually consuming. It is also the grain
  * the reference uses.
  *
- * WHY THE WORDS CARRY THEIR OWN PAINT, and this is the one piece of machinery
- * the reference does not need. Their words fill toward their own designed
- * colour, so plain opacity on a SplitText word is enough. Ours cannot:
- * `.ab-conv__statement` paints its type with a gradient clipped to the text
- * (About.css), and in Chromium a descendant that gets its own paint layer --
- * anything with an opacity, a filter or a transform -- is EXCLUDED from that
- * text clip. Measured on this page: wrapping the words and putting
- * `opacity: 0.2` on every other one does not dim "WE", "FOUNDED" and the rest
- * of the gradient-painted run, it DELETES them; only the words inside
- * `.ab-conv__rest`, which carry an opaque `-webkit-text-fill-color` of their
- * own, survive. So a word that is going to be animated has to paint itself.
- * `.ab-conv__w--lead` in About.conv.css reproduces the block's gradient per
- * word from `--ab-conv-gw` and `--ab-conv-gx`, which is what `anchorLead`
- * below measures: same stops, same block-width ramp, same last-letter
- * turnover, one element down.
+ * WHY THE WORDS DO NOT CARRY THEIR OWN PAINT ANY MORE. They used to, and it
+ * was the hard part of this band. `.ab-conv__statement` painted its type with
+ * a gradient clipped to the text, and in Chromium a descendant that gets its
+ * own paint layer -- anything with an opacity, a filter or a transform -- is
+ * EXCLUDED from that text clip. Measured on this page: wrapping the words and
+ * putting `opacity: 0.2` on every other one did not dim the gradient-painted
+ * run, it DELETED it. So every word had to reproduce the block's gradient at
+ * the block's scale, offset to its own position, re-measured on every refresh.
  *
- * WHY NOT ANIMATE THE GRADIENT'S OWN STOPS, which is the obvious move: the
- * stops are percentages of the BLOCK, so the same pair of numbers is a
- * different word at every viewport, and a 90deg gradient has no idea where the
- * lines break -- it can sweep a rectangle and never a sentence.
+ * The client asked for the gradient dropped and the fill taken to full white,
+ * which is what their own reference does: every word rests dim and brightens
+ * to the same ink. With one colour there is nothing per-word to reproduce, so
+ * a word is now a span with an opacity on it and nothing else -- and the
+ * anchoring pass, the two custom properties driving it and the font-load
+ * re-measure that kept it true all went with the gradient. Plain opacity on a
+ * plain span is exactly what the reference animates.
  *
  * WHY `intoLines` IS NOT USED, and why SplitText is not either: `intoLines`
  * rebuilds an element from its `textContent`, which throws away the
- * `<span class="ab-conv__rest">` that carries the second half of the sentence
- * in a dimmer ink -- and SplitText would flatten it the same way, which is why
+ * `<span class="ab-conv__rest">` that About.tsx writes into the sentence --
+ * and SplitText would flatten it the same way, which is why
  * the reference can author its emphasis as an injected HTML string and we
  * cannot. `intoWords` below walks the tree instead, so the span -- and the two
  * colour regimes either side of it -- is still there afterwards.
  */
 
 const WORD = 'ab-conv__w';
-const LEAD = `${WORD}--lead`;
 
 /* THE REFERENCE'S NUMBERS. Changing one of these changes the feel of the fill,
    which is settled; they are here as named constants so that is obvious. */
@@ -188,15 +183,14 @@ const ANCHOR_OFF = 0.1;
  * band that mounts, unmounts and mounts again under the client-side router
  * meets its own spans on the way back in.
  *
- * `lead` tracks whether the walk is still outside `.ab-conv__rest`, which is
- * the boundary between the two colour regimes: bright ink turning over into
- * the accent before it, one flat muted ink after.
+ * Every word is the same ink now, so the walk no longer has to know where
+ * `.ab-conv__rest` starts -- it used to mark the boundary between a
+ * gradient-painted run and a muted one.
  */
 function intoWords(p: HTMLElement): HTMLElement[] {
   if (p.dataset.words) return all(p, `.${WORD}`);
 
-  const rest = p.querySelector('.ab-conv__rest');
-  const walk = (node: Node, lead: boolean) => {
+  const walk = (node: Node) => {
     for (const n of Array.from(node.childNodes)) {
       if (n.nodeType === Node.TEXT_NODE) {
         const frag = document.createDocumentFragment();
@@ -210,51 +204,22 @@ function intoWords(p: HTMLElement): HTMLElement[] {
             continue;
           }
           const span = document.createElement('span');
-          span.className = lead ? `${WORD} ${LEAD}` : WORD;
+          span.className = WORD;
           span.textContent = token;
           frag.appendChild(span);
         }
         (n as ChildNode).replaceWith(frag);
       } else if (n.nodeType === Node.ELEMENT_NODE) {
-        walk(n, lead && n !== rest);
+        walk(n);
       }
     }
   };
-  walk(p, true);
+  walk(p);
 
   p.dataset.words = 'true';
   return all(p, `.${WORD}`);
 }
 
-/**
- * Hand each lead word the block's gradient, offset to its own position in the
- * block, so that a word painting itself paints exactly the pixels the block
- * would have painted for it.
- *
- * Differences of rects, never absolutes: the statement carries a translate for
- * the length of its entrance, and the block and the words inside it are
- * carried by it equally, so a difference is unaffected while either absolute
- * would be 24px out.
- *
- * Re-run on every ScrollTrigger refresh, which is what resize and font-load
- * both end in.
- */
-function anchorLead(p: HTMLElement) {
-  const leads = all(p, `.${LEAD}`);
-  if (!leads.length) return;
-
-  const cs = getComputedStyle(p);
-  const box = p.getBoundingClientRect();
-  const padLeft = parseFloat(cs.paddingLeft) || 0;
-  const inner = box.width - padLeft - (parseFloat(cs.paddingRight) || 0);
-  if (inner <= 0) return;
-
-  p.style.setProperty('--ab-conv-gw', `${inner}px`);
-  for (const w of leads) {
-    const x = w.getBoundingClientRect().left - box.left - padLeft;
-    w.style.setProperty('--ab-conv-gx', `${-x}px`);
-  }
-}
 
 /**
  * 0.00  The band names itself.
@@ -289,7 +254,6 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
   if (!statement) return;
   const words = intoWords(statement);
   if (!words.length) return;
-  anchorLead(statement);
 
   /* The reference's tween, and then its empty tween -- the hold at full while
    * the band is still pinned.
@@ -500,10 +464,6 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
     scrub: SCRUB,
     invalidateOnRefresh: true,
     onRefresh: (self) => {
-      // The lead words' gradient is measured, so it is re-measured whenever
-      // anything that could move them has happened. A refresh is what a resize
-      // and a font load both end in.
-      anchorLead(statement);
       // A reveal that cannot complete is worse than one that completes at
       // once: if the page is ever too short to scroll to this trigger's end,
       // fill the sentence rather than strand it part-read.
@@ -530,17 +490,4 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
   // but raises no update for it, so ask once.
   if (fillST.progress >= LATCH_AT) latch(fillST, atEnd(fillST));
 
-  /* The lead words' offsets are measured from laid-out text, so they are wrong
-   * if they were taken against the fallback face. The reference splits after
-   * `document.fonts.ready` for the same reason; we split before it -- the
-   * split moves no text -- and re-measure after. Guarded, because the promise
-   * can settle after the band has been unmounted and reverted, which is
-   * StrictMode's discarded first mount and every route change. */
-  if (document.fonts && document.fonts.status !== 'loaded') {
-    document.fonts.ready.then(() => {
-      if (!statement.isConnected) return;
-      anchorLead(statement);
-      ScrollTrigger.refresh();
-    });
-  }
 }

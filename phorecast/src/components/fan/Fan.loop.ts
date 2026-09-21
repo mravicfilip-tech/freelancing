@@ -171,8 +171,24 @@ const HEAD = 132;
 const HEAD_FADE = 70;
 /** How much thicker the lit head is than the `.fan__spark` attribute's 2.4. */
 const HEAD_WEIGHT = 1.5;
-/** Samples per spark when the (length, x) table is built. */
-const SAMPLES = 220;
+/**
+ * Samples per spark when the (length, x) table is built, in two passes.
+ *
+ * One flat pass at 220 was 3536 `getPointAtLength` calls across the sixteen
+ * sparks, and it is paid in one block the moment the loop opens -- 1.2s after
+ * the entrance lands, i.e. exactly while the band is being read. Measured at
+ * 390 wide on the dev server: a 770ms long task, a visible stall on the frame
+ * the loop starts.
+ *
+ * Five sixths of each of these ellipses is off screen, so five sixths of those
+ * calls were spent sampling arc nobody can see, and the table they fed had
+ * only about 38 usable entries. So the path is walked coarsely once to bracket
+ * the visible run, and then sampled densely over that run alone: 114 calls a
+ * path instead of 221, and 65 entries in the table instead of 38. Cheaper and
+ * finer at the same time.
+ */
+const COARSE = 48;
+const FINE = 64;
 
 const px = (n: number) => `${n}px`;
 /**
@@ -325,34 +341,55 @@ export function fanLoop(root: HTMLElement): () => void {
         const m = el.getScreenCTM();
         if (!len || !m) return;
 
-        const ls: number[] = [];
-        const xs: number[] = [];
-        const ys: boolean[] = [];
-        for (let i = 0; i <= SAMPLES; i += 1) {
-          const l = (len * i) / SAMPLES;
-          const p = el.getPointAtLength(l);
-          const sx = p.x * m.a + p.y * m.c + m.e;
-          const sy = p.x * m.b + p.y * m.d + m.f;
-          ls.push(l);
-          xs.push((sx - box.left) / f);
-          ys.push(sx >= win.left && sx <= win.right && sy >= win.top && sy <= win.bottom);
-        }
-
-        // Longest unbroken visible run, one sample either side so the head
-        // enters and leaves just outside the window instead of on its edge.
-        let best: [number, number] | null = null;
-        let run: [number, number] | null = null;
-        for (let i = 0; i <= SAMPLES; i += 1) {
-          if (ys[i]) run = run ? [run[0], i] : [i, i];
-          else {
-            if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
-            run = null;
+        /** `n + 1` even samples of this path between two lengths along it. */
+        const walk = (from: number, to: number, n: number) => {
+          const ls: number[] = [];
+          const xs: number[] = [];
+          const ys: boolean[] = [];
+          for (let i = 0; i <= n; i += 1) {
+            const l = from + ((to - from) * i) / n;
+            const p = el.getPointAtLength(l);
+            const sx = p.x * m.a + p.y * m.c + m.e;
+            const sy = p.x * m.b + p.y * m.d + m.f;
+            ls.push(l);
+            xs.push((sx - box.left) / f);
+            ys.push(sx >= win.left && sx <= win.right && sy >= win.top && sy <= win.bottom);
           }
-        }
-        if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+          return { ls, xs, ys };
+        };
+
+        /** Longest unbroken visible run in a walk, as a pair of indices. */
+        const longest = (ys: boolean[]) => {
+          let best: [number, number] | null = null;
+          let run: [number, number] | null = null;
+          for (let i = 0; i < ys.length; i += 1) {
+            if (ys[i]) run = run ? [run[0], i] : [i, i];
+            else {
+              if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+              run = null;
+            }
+          }
+          if (run && (!best || run[1] - run[0] > best[1] - best[0])) best = run;
+          return best;
+        };
+
+        // Coarse pass: where along this path is the window, roughly.
+        const rough = walk(0, len, COARSE);
+        const bracket = longest(rough.ys);
+        if (!bracket || bracket[1] === bracket[0]) return;
+        // A step either side, so the dense pass cannot start inside the run
+        // and miss its own edge.
+        const from = rough.ls[Math.max(0, bracket[0] - 1)];
+        const to = rough.ls[Math.min(COARSE, bracket[1] + 1)];
+
+        // Dense pass, over that stretch only.
+        const { ls, xs, ys } = walk(from, to, FINE);
+        const best = longest(ys);
         if (!best || best[1] === best[0]) return;
+        // One sample either side so the head enters and leaves just outside
+        // the window instead of on its edge.
         const lo = Math.max(0, best[0] - 1);
-        const hi = Math.min(SAMPLES, best[1] + 1);
+        const hi = Math.min(FINE, best[1] + 1);
 
         const rl = ls.slice(lo, hi + 1);
         const rx = xs.slice(lo, hi + 1);

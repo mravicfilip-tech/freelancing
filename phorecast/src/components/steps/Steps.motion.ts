@@ -27,6 +27,13 @@
  * over a swipeable track, so the last two beats become two objects instead of
  * four — the tab row on the cards' cue, the track on the panel's. See PHONE.
  *
+ * That same breakpoint also cues those beats tighter: every offset below is
+ * taken at 0.42 of its stated value and every stagger at 0.7, so the band
+ * lands in about 1.9s rather than 2.9 and the track — which is the only
+ * content on the phone — is readable at 1.2s rather than 3.0. Nothing about
+ * the composition, the order, the eases or the durations changes; only the
+ * waiting between the beats does. See CUE and STEP.
+ *
  * Every tween is a `from`: the resting markup is the finished state, so a build
  * that never runs leaves the section simply present. There is no `fromTo` here
  * at all, delayed or otherwise — see the note on `immediateRender` in
@@ -104,6 +111,33 @@ const STACKED = '(max-width: 1080px)';
 const PHONE = '(max-width: 700px)';
 
 /**
+ * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER.
+ *
+ * Not a second design: the same beats, in the same order, out of the same
+ * blur, on the same eases and over the same durations. What changes is the
+ * SCHEDULE, and it changes because the band is read differently. At 1600 the
+ * whole section is on screen at once and the spread is a composition the eye
+ * follows across a held frame. At 390 the reader arrives at the top of the
+ * band mid-scroll and keeps going, so a beat cued at a second and a half is a
+ * beat played to an empty seat — and on this band that beat is the TRACK,
+ * which is the only thing on the phone anyone came here to read.
+ *
+ * Two numbers, because the two kinds of gap answer to different things. CUE
+ * scales where a BEAT starts, which is the wait worth cutting because nothing
+ * is happening during it. STEP scales the gap between things INSIDE one beat,
+ * and is barely cut at all: that gap is the "one object comes out, the rest
+ * follow" the band is built on, and squeezed to a frame and a half it stops
+ * being a stagger. Durations are untouched, so the beats simply overlap more.
+ *
+ * The stepper's first dwell is unaffected in length and only moves earlier:
+ * Steps.tsx arms its 6s timer on `motion:done`, so a shorter entrance hands
+ * over sooner and the first card still gets a whole turn with its progress
+ * bar starting from zero. See the `armed` state there.
+ */
+const CUE = 0.42;
+const STEP = 0.7;
+
+/**
  * Already arrived once, on this very element, and the timeline ran to its end.
  *
  * The mark is added by the LAST item on the timeline, so a build that is
@@ -151,8 +185,14 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
   const panels = q('.steps__panels')[0];
   const phone = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
   const stacked = typeof matchMedia !== 'undefined' && matchMedia(STACKED).matches;
-  const cardsAt = stacked ? FOLLOW_AT : LEAD_AT;
-  const panelAt = stacked ? LEAD_AT : FOLLOW_AT;
+  // The held lead-in is a fixed cost, not a cue -- it buys back the expensive
+  // first frame, which is no cheaper on a phone -- so it is added AFTER the
+  // scaling rather than scaled with it. Everything measured from the end of it
+  // is composition, and that is what compresses. See CUE and STEP.
+  const cue = (t: number) => LEAD + (phone ? (t - LEAD) * CUE : t - LEAD);
+  const step = (t: number) => (phone ? t * STEP : t);
+  const cardsAt = cue(stacked ? FOLLOW_AT : LEAD_AT);
+  const panelAt = cue(stacked ? LEAD_AT : FOLLOW_AT);
 
   /* 1 — the band names itself. */
   rise(tl, q('.eyebrow'), LEAD, { y: 16, duration: 0.8, clearProps: 'transform,opacity' });
@@ -170,8 +210,8 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
       duration: 1.15,
       ease: 'power4.out',
       clearProps: 'filter',
-    }, TITLE_AT);
-    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, TITLE_AT);
+    }, cue(TITLE_AT));
+    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, cue(TITLE_AT));
   }
 
   /* 3p — the phone. Two objects, in reading order: the row that chooses, then
@@ -183,8 +223,8 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
   if (phone) {
     const tabs = q('.steps__tabs')[0];
     const track = q('.steps__track')[0];
-    if (tabs) outOfBlur(tl, tabs, LEAD_AT, { y: 16, blur: 7, duration: 0.85, fade: 0.35 });
-    if (track) outOfBlur(tl, track, FOLLOW_AT, { y: 30, blur: 12, duration: 1.2, fade: 0.5 });
+    if (tabs) outOfBlur(tl, tabs, cue(LEAD_AT), { y: 16, blur: 7, duration: 0.85, fade: 0.35 });
+    if (track) outOfBlur(tl, track, cue(FOLLOW_AT), { y: 30, blur: 12, duration: 1.2, fade: 0.5 });
     tl.call(() => { LANDED.add(el); });
     return;
   }
@@ -193,7 +233,7 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
      card arrives as one thing; nothing inside them is staggered separately.
      The active card's orange rail and its progress bar are pseudo-elements and
      ride the card's own transform. */
-  outOfBlur(tl, cards, cardsAt, { y: 24, blur: 9, duration: 0.95, stagger: CARD_STEP, fade: 0.4 });
+  outOfBlur(tl, cards, cardsAt, { y: 24, blur: 9, duration: 0.95, stagger: step(CARD_STEP), fade: 0.4 });
 
   /* 4 — the panel, last and largest, as a single object. `expo.out` is 99%
      travelled at 70% of its duration, so it is effectively standing still well

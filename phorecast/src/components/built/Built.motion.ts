@@ -33,6 +33,14 @@
  *   2.24  The left column's copy and CTA, a beat behind its illustration.
  *   3.12  The right column's copy and CTA. Lands at 3.85.
  *
+ * Under 700px the band's own cues — head, cards, copy — are taken at 0.42 of
+ * those times, and every offset INSIDE an illustration keeps 0.7 of its gap
+ * from the card it belongs to, so the two pictures still assemble in the order
+ * they are read. The band lands in about 2.5s rather than 4.0 and the first
+ * illustration is readable at about 0.9s rather than 2.5. Nothing about the
+ * order, the direction, the eases or the durations changes; only the waiting
+ * between the beats does. See CUE and STEP.
+ *
  * THE TIMELINE IS THE SAME IN BOTH FRAMES. Below 700px Built.css re-lays both
  * cards into a portrait 320 x 356 -- "You" above its line rather than beside
  * it, the five markets in a row above the padlock rather than spread to its
@@ -95,28 +103,67 @@ const SUB_AT = LEAD + 0.6;
 const CARD1_AT = LEAD + 1.0;
 const CARD2_AT = LEAD + 1.72;
 
-/* Card one's artwork, in the order the picture is read. */
-const C1_LABELS = LEAD + 1.42;
-const C1_DOT = LEAD + 1.45;
-const C1_YOU = LEAD + 1.52;
-const C1_LINE = LEAD + 1.6;
-const C1_SMEAR = LEAD + 1.78;
-const C1_RINGS = LEAD + 1.95;
+/* Card one's artwork, in the order the picture is read — stated as the gap
+   from the card it stands on rather than as an absolute time, because that gap
+   IS the picture: "You", then the line out of it, then what the line arrives
+   at. Move the card and the artwork moves with it, still in order. */
+const LABEL_STEP = 0.08;
+const C1_LABELS = 0.42;
+const C1_DOT = 0.45;
+const C1_YOU = 0.52;
+const C1_LINE = 0.6;
+const C1_SMEAR = 0.78;
+const C1_RINGS = 0.95;
 const C1_RING_STEP = 0.08;
-const C1_TEXT = LEAD + 2.28;
+const C1_TEXT = 1.28;
 
-/* Card two's artwork: markets, then wires, then the thing they converge on. */
-const C2_LABELS = LEAD + 2.14;
-const C2_NODES = LEAD + 2.15;
+/* Card two's artwork: markets, then wires, then the thing they converge on.
+   Same rule — each is a gap from card two's own arrival. */
+const C2_LABELS = 0.42;
+const C2_NODES = 0.43;
 const C2_NODE_STEP = 0.1;
-const C2_FAN = LEAD + 2.42;
-const C2_MAIN = LEAD + 2.5;
-const C2_SMEAR = LEAD + 2.8;
-const C2_LOCK = LEAD + 3.05;
+const C2_FAN = 0.7;
+const C2_MAIN = 0.78;
+const C2_SMEAR = 1.08;
+const C2_LOCK = 1.33;
 
-/* Each column's copy, a beat behind its own illustration. */
-const COPY_AT = [LEAD + 2.24, LEAD + 3.12];
+/* Each column's copy, a beat behind its own illustration — again as a gap from
+   that column's card. */
+const COPY_IN = [1.24, 1.4];
 const COPY_STEP = 0.09;
+
+/**
+ * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER.
+ *
+ * Not a second design: the same beats, in the same order, out of the same
+ * blur, on the same eases and over the same durations. What changes is the
+ * SCHEDULE, and it changes because the band is read differently. At 1600 the
+ * two cards stand side by side on one screen and the four-second spread is a
+ * composition the eye follows across a held frame. At 390 they are stacked and
+ * the band is three screens tall: the reader arrives at the top mid-scroll and
+ * keeps going, so the right-hand card's whole argument — five markets, five
+ * wires, the padlock they converge on, and the copy under it — was arriving
+ * between three and a half and five seconds after being scrolled to, which on
+ * a phone means arriving after being scrolled past.
+ *
+ * Two numbers, because the two kinds of gap answer to different things. CUE
+ * scales where a BEAT starts — the head, the two cards, the two columns of
+ * copy — and that is the wait worth cutting, because nothing is happening
+ * during it. STEP scales the gaps WITHIN a beat: the offsets that hold each
+ * illustration's reading order, the 0.08 between rings and the 0.1 between
+ * markets. Those are barely cut at all, because they are the picture. Cut them
+ * as hard as the cues and "You" would land three hundredths of a second after
+ * its own dot — the two would simply appear together and the left card would
+ * stop saying anything.
+ *
+ * Durations are untouched, so the beats overlap more rather than running
+ * faster. The lead-in hold is a fixed cost rather than a cue — it buys back
+ * the expensive first frame, which is no cheaper on a phone — so it is added
+ * after the scaling rather than scaled with it.
+ */
+const PHONE = '(max-width: 700px)';
+const CUE = 0.42;
+const STEP = 0.7;
 
 /**
  * The lit ring's box centre is not its visual centre.
@@ -232,6 +279,17 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   const inside = (card: HTMLElement | undefined, sel: string) =>
     card ? Array.from(card.querySelectorAll<HTMLElement>(sel)) : [];
 
+  // Asked here rather than read at module scope: a module-scope `matchMedia`
+  // is answered once, when the bundle is parsed, and never again — so a
+  // rotation or a resize would keep whichever schedule the page happened to
+  // load under. `useSectionMotion` rebuilds this band on a theme switch and
+  // React rebuilds it on a remount; both come back through this line.
+  const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
+  const cue = (t: number) => LEAD + (tight ? (t - LEAD) * CUE : t - LEAD);
+  const step = (t: number) => (tight ? t * STEP : t);
+  const card1At = cue(CARD1_AT);
+  const card2At = cue(CARD2_AT);
+
   /* 1 — the band names itself. */
   rise(tl, q('.eyebrow'), LEAD, { y: 16, duration: 0.8, clearProps: 'transform,opacity' });
 
@@ -248,34 +306,34 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
       duration: 1.15,
       ease: 'power4.out',
       clearProps: 'filter',
-    }, TITLE_AT);
-    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, TITLE_AT);
+    }, cue(TITLE_AT));
+    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, cue(TITLE_AT));
   }
 
   /* 3 — the sub-line. Set much smaller than the heading, so a shallower blur:
      the same 10px would wash the whole line out rather than soften it. */
-  if (sub) outOfBlur(tl, sub, SUB_AT, { y: 14, blur: 6, duration: 0.85, fade: 0.32 });
+  if (sub) outOfBlur(tl, sub, cue(SUB_AT), { y: 14, blur: 6, duration: 0.85, fade: 0.32 });
 
   /* 4 — the two cards, each as one object, out of blur. The card is the panel
      its artwork stands in, so it arrives whole and empty; everything inside it
      is held until the panel has all but settled. `expo.out` is 99% travelled at
      70% of its duration, so the artwork never assembles on a moving ground. */
-  if (card1) outOfBlur(tl, card1, CARD1_AT, { y: 28, blur: 12, duration: 1.1, fade: 0.45 });
-  if (card2) outOfBlur(tl, card2, CARD2_AT, { y: 28, blur: 12, duration: 1.1, fade: 0.45 });
+  if (card1) outOfBlur(tl, card1, card1At, { y: 28, blur: 12, duration: 1.1, fade: 0.45 });
+  if (card2) outOfBlur(tl, card2, card2At, { y: 28, blur: 12, duration: 1.1, fade: 0.45 });
 
   /* 5 — card one's artwork, in the order the picture is read: you, the line you
      run along, then what it arrives at. */
   const labels1 = inside(card1, '.bt-label');
-  if (labels1.length) rise(tl, labels1, C1_LABELS, { y: 10, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
+  if (labels1.length) rise(tl, labels1, card1At + step(C1_LABELS), { y: 10, duration: 0.6, stagger: step(LABEL_STEP), clearProps: 'transform,opacity' });
 
   const dot = inside(card1, '.bt1__dot');
-  if (dot.length) bloom(tl, dot, C1_DOT, { scale: 0.4, y: 6, duration: 0.6, fade: 0.26 });
+  if (dot.length) bloom(tl, dot, card1At + step(C1_DOT), { scale: 0.4, y: 6, duration: 0.6, fade: 0.26 });
 
   const you = inside(card1, '.bt1__you');
   // 10px, not the 6 this started at: measured on its own, away from the card's
   // rise underneath it, 6px of travel on a 12px word is under the 8px this
   // project counts as visible.
-  if (you.length) rise(tl, you, C1_YOU, { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
+  if (you.length) rise(tl, you, card1At + step(C1_YOU), { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
 
   /* The line runs out of the dot toward the rings, so it is drawn from its
      starting end: `scaleX` about `0% 50%` is the same movement `draw()` makes on
@@ -298,38 +356,40 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
       duration: 0.75,
       ease: 'power2.inOut',
       clearProps: 'transform,transformOrigin',
-    }, C1_LINE);
-    tl.from(lineImg, { opacity: 0, duration: 0.25, ease: 'none', clearProps: 'opacity' }, C1_LINE);
+    }, card1At + step(C1_LINE));
+    tl.from(lineImg, { opacity: 0, duration: 0.25, ease: 'none', clearProps: 'opacity' }, card1At + step(C1_LINE));
   }
 
   /* The smear is light under the line, not an object: it only lifts. */
   const smear1 = inside(card1, '.bt1__smear');
-  if (smear1.length) tl.from(smear1, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, C1_SMEAR);
+  if (smear1.length) tl.from(smear1, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, card1At + step(C1_SMEAR));
 
   /* The rings bloom outward from the coin — coin first, then the lit disc, the
      mid ring and the outer ring — so the target reads as opening around the
      market rather than three circles fading up together. The lit ring scales
      about the circle it draws, not about its own box; see DISC_ORIGIN. */
+  const ringsAt = card1At + step(C1_RINGS);
+  const ringStep = step(C1_RING_STEP);
   const coin = inside(card1, '.bt1__coin');
-  if (coin.length) bloom(tl, coin, C1_RINGS, { scale: 0.45, duration: 0.7, fade: 0.28 });
+  if (coin.length) bloom(tl, coin, ringsAt, { scale: 0.45, duration: 0.7, fade: 0.28 });
 
   const disc = inside(card1, '.bt1__ring-disc');
-  if (disc.length) bloom(tl, disc, C1_RINGS + C1_RING_STEP, { scale: 0.5, duration: 0.8, fade: 0.3, origin: DISC_ORIGIN });
+  if (disc.length) bloom(tl, disc, ringsAt + ringStep, { scale: 0.5, duration: 0.8, fade: 0.3, origin: DISC_ORIGIN });
 
   const mid = inside(card1, '.bt1__ring-mid');
-  if (mid.length) bloom(tl, mid, C1_RINGS + C1_RING_STEP * 2, { scale: 0.5, duration: 0.8, fade: 0.3 });
+  if (mid.length) bloom(tl, mid, ringsAt + ringStep * 2, { scale: 0.5, duration: 0.8, fade: 0.3 });
 
   const outer = inside(card1, '.bt1__ring-outer');
-  if (outer.length) bloom(tl, outer, C1_RINGS + C1_RING_STEP * 3, { scale: 0.5, duration: 0.8, fade: 0.3 });
+  if (outer.length) bloom(tl, outer, ringsAt + ringStep * 3, { scale: 0.5, duration: 0.8, fade: 0.3 });
 
   /* The pair the whole left card is about, last, beside the settled rings. */
   const text1 = inside(card1, '.bt1__text');
-  if (text1.length) outOfBlur(tl, text1, C1_TEXT, { y: 10, blur: 5, duration: 0.75, fade: 0.3 });
+  if (text1.length) outOfBlur(tl, text1, card1At + step(C1_TEXT), { y: 10, blur: 5, duration: 0.75, fade: 0.3 });
 
   /* 6 — card two's artwork: the markets exist, the wires run from them, the
      padlock is what they run to. */
   const labels2 = inside(card2, '.bt-label');
-  if (labels2.length) rise(tl, labels2, C2_LABELS, { y: 10, duration: 0.6, stagger: 0.08, clearProps: 'transform,opacity' });
+  if (labels2.length) rise(tl, labels2, card2At + step(C2_LABELS), { y: 10, duration: 0.6, stagger: step(LABEL_STEP), clearProps: 'transform,opacity' });
 
   /* Left to right across the constellation, by where each node actually sits
      rather than by source order — the markup lists them BTC, TSLA, DAX, EUR,
@@ -338,7 +398,7 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   const nodes = inside(card2, '.bt2__node:not(.bt2__node--lock)')
     .sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
   if (nodes.length) {
-    bloom(tl, nodes, C2_NODES, { scale: 0.5, y: 10, duration: 0.8, stagger: C2_NODE_STEP, fade: 0.32, blur: 5 });
+    bloom(tl, nodes, card2At + step(C2_NODES), { scale: 0.5, y: 10, duration: 0.8, stagger: step(C2_NODE_STEP), fade: 0.32, blur: 5 });
   }
 
   /* The wires, drawn from the markets toward the padlock.
@@ -360,17 +420,17 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   const fan = inside(card2, '.bt2__fan')[0];
   const main = inside(card2, '.bt2__main')[0];
   const mainOff = !main || getComputedStyle(main).display === 'none';
-  if (fan) wipeIn(tl, fan, C2_FAN, mainOff ? (C2_MAIN - C2_FAN) + 0.75 : 0.85, 0.32, mainOff);
-  if (main && !mainOff) wipeIn(tl, main, C2_MAIN, 0.75, 0.3);
+  if (fan) wipeIn(tl, fan, card2At + step(C2_FAN), mainOff ? step(C2_MAIN - C2_FAN) + 0.75 : 0.85, 0.32, mainOff);
+  if (main && !mainOff) wipeIn(tl, main, card2At + step(C2_MAIN), 0.75, 0.3);
 
   const smear2 = inside(card2, '.bt2__smear');
-  if (smear2.length) tl.from(smear2, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, C2_SMEAR);
+  if (smear2.length) tl.from(smear2, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, card2At + step(C2_SMEAR));
 
   /* SELF-CUSTODY, last on the card and at the point the wires converge. It is
      what the right-hand argument is for, so it lands alone, after everything
      that points at it. */
   const lock = inside(card2, '.bt2__node--lock');
-  if (lock.length) bloom(tl, lock, C2_LOCK, { scale: 0.55, duration: 0.85, fade: 0.34, blur: 6 });
+  if (lock.length) bloom(tl, lock, card2At + step(C2_LOCK), { scale: 0.55, duration: 0.85, fade: 0.34, blur: 6 });
 
   /* 7 — each column's copy and CTA, tightly staggered, a beat behind its own
      illustration. Only the `<a>` is moved; the `Roll` spans inside it own their
@@ -378,10 +438,10 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   q('.built__col').forEach((col, i) => {
     const parts = Array.from(col.querySelectorAll<HTMLElement>('.built__copy > *'));
     if (!parts.length) return;
-    rise(tl, parts, COPY_AT[i] ?? COPY_AT[COPY_AT.length - 1], {
+    rise(tl, parts, (i === 0 ? card1At : card2At) + step(COPY_IN[i] ?? COPY_IN[COPY_IN.length - 1]), {
       y: 12,
       duration: 0.55,
-      stagger: COPY_STEP,
+      stagger: step(COPY_STEP),
       clearProps: 'transform,opacity',
     });
   });

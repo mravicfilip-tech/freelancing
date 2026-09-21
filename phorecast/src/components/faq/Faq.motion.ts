@@ -25,6 +25,12 @@
  *         wide enough that seven rows read as seven arrivals rather than one
  *         column sliding. Lands at 3.60.
  *
+ * Under 700px those cues are taken at 0.42 of the times above and the stagger
+ * at 0.7, so the band lands in about 2.2s rather than 3.6 and the first
+ * question is readable at 1.2s rather than 3.2. The mark is not on the page at
+ * that width at all. Nothing about the order, the eases or the durations
+ * changes; only the waiting between the beats does. See CUE and STEP.
+ *
  * Every tween is a `from`, so the resting markup is the finished state and a
  * build that never runs leaves the section simply present. There is no `fromTo`
  * here at all, delayed or otherwise — see the note on `immediateRender` in
@@ -93,6 +99,36 @@ const ROWS_AT = LEAD + 1.85;
 const ROW_STEP = 0.13;
 
 /**
+ * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER.
+ *
+ * Not a second design: the same beats, in the same order, out of the same
+ * blur, on the same eases and over the same durations. What changes is the
+ * SCHEDULE, and it changes because the band is read differently. At 1600 the
+ * rail and the seven questions stand side by side on one screen and the spread
+ * is a composition the eye follows across a held frame. At 390 the rail is a
+ * screen of its own and the questions are two more below it: the reader
+ * arrives at the top of the band mid-scroll and keeps going, so the rows —
+ * which ARE the section — were arriving between three and four seconds after
+ * being scrolled to, which on a phone means arriving after being scrolled
+ * past.
+ *
+ * Two numbers, because the two kinds of gap answer to different things. CUE
+ * scales where a BEAT starts, which is the wait worth cutting because nothing
+ * is happening during it. STEP scales the gap between things INSIDE one beat,
+ * and is barely cut at all: 0.13s between rows becomes 0.091, still five and a
+ * half frames, so seven questions still read as seven arrivals rather than one
+ * column switching on. Durations are untouched, so the beats simply overlap
+ * more — the lede begins while the heading is still resolving.
+ *
+ * The lead-in hold is a fixed cost rather than a cue — it buys back the
+ * expensive first frame, which is no cheaper on a phone — so it is added after
+ * the scaling rather than scaled with it.
+ */
+const PHONE = '(max-width: 700px)';
+const CUE = 0.42;
+const STEP = 0.7;
+
+/**
  * Already arrived once, on this very element, and the timeline ran to its end.
  *
  * The mark is added by the LAST item on the timeline, so a build that is
@@ -141,6 +177,15 @@ export function buildFaq({ el, q, tl }: SectionMotion) {
   const mark = q('.faq__mark')[0];
   const rows = q('.faq__row');
 
+  // Asked here rather than read at module scope: a module-scope `matchMedia`
+  // is answered once, when the bundle is parsed, and never again — so a
+  // rotation or a resize would keep whichever schedule the page happened to
+  // load under. `useSectionMotion` rebuilds this band on a theme switch and
+  // React rebuilds it on a remount; both come back through this line.
+  const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
+  const cue = (t: number) => LEAD + (tight ? (t - LEAD) * CUE : t - LEAD);
+  const step = (t: number) => (tight ? t * STEP : t);
+
   /* 1 — the band names itself. */
   if (eyebrow.length) {
     rise(tl, eyebrow, LEAD, { y: 16, duration: 0.8, clearProps: 'transform,opacity' });
@@ -149,11 +194,11 @@ export function buildFaq({ el, q, tl }: SectionMotion) {
   /* 2 — the heading. The largest single movement in the band and the thing the
      eye should land on; it holds the screen on its own until the lede. See the
      header for why this is one object rather than a mask reveal. */
-  if (title.length) outOfBlur(tl, title, TITLE_AT, { y: 26, blur: 10, duration: 1.15, fade: 0.4 });
+  if (title.length) outOfBlur(tl, title, cue(TITLE_AT), { y: 26, blur: 10, duration: 1.15, fade: 0.4 });
 
   /* 3 — the lede, out of a shallower blur: three short lines at 20px, where the
      heading's 10px would wash the whole block out rather than soften it. */
-  if (lede.length) outOfBlur(tl, lede, LEDE_AT, { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
+  if (lede.length) outOfBlur(tl, lede, cue(LEDE_AT), { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
 
   /* 4 — THE MARK, as one object and one object only.
      `.faq__mark` hosts a WebGL scene (HeroLogo). Compiling its shaders and
@@ -171,7 +216,7 @@ export function buildFaq({ el, q, tl }: SectionMotion) {
      Skipped outright under 1180px, where `.faq__mark` is `display: none` and a
      tween on it would be 1.25s of the sequence spent on nothing. */
   if (mark && getComputedStyle(mark).display !== 'none') {
-    outOfBlur(tl, mark, MARK_AT, { y: 30, blur: 14, duration: 1.25, fade: 0.5 });
+    outOfBlur(tl, mark, cue(MARK_AT), { y: 30, blur: 14, duration: 1.25, fade: 0.5 });
   }
 
   /* 5 — the seven rows, top to bottom. Each row is one whole question, so the
@@ -179,7 +224,7 @@ export function buildFaq({ el, q, tl }: SectionMotion) {
      separately — which is also what keeps the open row's answer panel out of
      this entirely. See the header. */
   if (rows.length) {
-    outOfBlur(tl, rows, ROWS_AT, { y: 20, blur: 8, duration: 0.85, stagger: ROW_STEP, fade: 0.36 });
+    outOfBlur(tl, rows, cue(ROWS_AT), { y: 20, blur: 8, duration: 0.85, stagger: step(ROW_STEP), fade: 0.36 });
   }
 
   // The last item on the timeline: reached only by a build that performed the

@@ -25,6 +25,12 @@
  *   2.65  THE WORDMARK, last and largest, rising out of the crop it sits in.
  *         The band's closing accent. Lands at 4.07.
  *
+ * Under 700px those cues are taken at 0.42 of the times above and the staggers
+ * inside them at 0.7, so the band lands in about 2.5s rather than 4.07 and the
+ * link columns — which are what a footer is for — are readable at about 0.9s
+ * rather than 2.5. Nothing about the order, the eases or the durations
+ * changes; only the waiting between the beats does. See CUE and STEP.
+ *
  * Every tween is a `from`, so the resting markup is the finished state and a
  * build that never runs leaves the footer simply present. There is no `fromTo`
  * here at all, delayed or otherwise — see the note on `immediateRender` in
@@ -101,7 +107,37 @@ const LINK_STEP = 0.05;
 const SOCIAL_AT = LEAD + 2.05;
 const SOCIAL_STEP = 0.09;
 const LEGAL_AT = LEAD + 2.45;
+const LEGAL_IN = 0.12;
+const LEGAL_STEP = 0.06;
 const WORD_AT = LEAD + 2.65;
+
+/**
+ * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER.
+ *
+ * Not a second design: the same beats, in the same order, out of the same
+ * blur, on the same eases and over the same durations. What changes is the
+ * SCHEDULE, and it changes because the band is read differently. At 1600 the
+ * whole footer is one screen and the four-second spread is a composition the
+ * eye follows across a held frame. At 390 it is the better part of three
+ * screens, reached at the end of a long scroll and usually still moving, so a
+ * beat cued at two and a half seconds — the social row, the rule, the
+ * wordmark that closes the page — is a beat played to an empty seat.
+ *
+ * Two numbers, because the two kinds of gap answer to different things. CUE
+ * scales where a BEAT starts, which is the wait worth cutting because nothing
+ * is happening during it. STEP scales the gap between things INSIDE one beat,
+ * and is barely cut at all: it is what makes a column fill top down rather
+ * than switch on, and the four columns arrive 0.112s apart rather than 0.16,
+ * which is still nearly seven frames. Durations are untouched, so the beats
+ * simply overlap more.
+ *
+ * The lead-in hold is a fixed cost rather than a cue — it buys back the
+ * expensive first frame, which is no cheaper on a phone — so it is added after
+ * the scaling rather than scaled with it.
+ */
+const PHONE = '(max-width: 700px)';
+const CUE = 0.42;
+const STEP = 0.7;
 
 /**
  * Already arrived once, on this very element, and the timeline ran to its end.
@@ -155,6 +191,15 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
   const meta = q('.footer__meta > p, .footer__legal-links li');
   const word = q('.footer__wordmark span')[0];
 
+  // Asked here rather than read at module scope: a module-scope `matchMedia`
+  // is answered once, when the bundle is parsed, and never again — so a
+  // rotation or a resize would keep whichever schedule the page happened to
+  // load under. `useSectionMotion` rebuilds this band on a theme switch and
+  // React rebuilds it on a remount; both come back through this line.
+  const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
+  const cue = (t: number) => LEAD + (tight ? (t - LEAD) * CUE : t - LEAD);
+  const step = (t: number) => (tight ? t * STEP : t);
+
   /* 1 — light. The glow band sits on the bottom edge and spills upward through
      a mask, so it blooms from that edge rather than from its own middle. The
      `from` ends wherever the element already is, which is the stylesheet's
@@ -167,16 +212,16 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
       ease: 'power2.out',
       transformOrigin: '50% 100%',
       clearProps: 'transform,transformOrigin,opacity',
-    }, GLOW_AT);
+    }, cue(GLOW_AT));
   }
 
   /* 2 — the logo. The one object the band leads with, out of the deepest blur
      in the brand block and alone on screen for a beat before its copy. */
-  if (logo) outOfBlur(tl, logo, LOGO_AT, { y: 22, blur: 10, duration: 1.05, fade: 0.4 });
+  if (logo) outOfBlur(tl, logo, cue(LOGO_AT), { y: 22, blur: 10, duration: 1.05, fade: 0.4 });
 
   /* 3 — the claim under it, out of a shallower blur: two short lines at 16px,
      where the logo's 10px would wash them out rather than soften them. */
-  if (tagline) outOfBlur(tl, tagline, TAG_AT, { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
+  if (tagline) outOfBlur(tl, tagline, cue(TAG_AT), { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
 
   /* 4 — the four columns, left to right. Each one fills top down rather than
      arriving whole: the heading, then its links on a tight step, which is the
@@ -185,11 +230,11 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
   cols.forEach((col, i) => {
     const parts = Array.from(col.querySelectorAll<HTMLElement>('.footer__col-title, .footer__links li'));
     if (!parts.length) return;
-    outOfBlur(tl, parts, COLS_AT + i * COL_STEP, {
+    outOfBlur(tl, parts, cue(COLS_AT) + i * step(COL_STEP), {
       y: 16,
       blur: 6,
       duration: 0.8,
-      stagger: LINK_STEP,
+      stagger: step(LINK_STEP),
       fade: 0.3,
     });
   });
@@ -198,7 +243,7 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
      the page but arrive after them: the columns are what the footer is for and
      these are its accent, so they land on a band that has already filled. */
   if (socials.length) {
-    outOfBlur(tl, socials, SOCIAL_AT, { y: 14, blur: 5, duration: 0.75, stagger: SOCIAL_STEP, fade: 0.3 });
+    outOfBlur(tl, socials, cue(SOCIAL_AT), { y: 14, blur: 5, duration: 0.75, stagger: step(SOCIAL_STEP), fade: 0.3 });
   }
 
   /* 6 — the legal line. The rule draws out from the left, the way a rule is
@@ -213,11 +258,11 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
       duration: 0.9,
       ease: 'power2.inOut',
       clearProps: 'transform,transformOrigin',
-    }, LEGAL_AT);
-    tl.from(rule, { opacity: 0, duration: 0.3, ease: 'none', clearProps: 'opacity' }, LEGAL_AT);
+    }, cue(LEGAL_AT));
+    tl.from(rule, { opacity: 0, duration: 0.3, ease: 'none', clearProps: 'opacity' }, cue(LEGAL_AT));
   }
   if (meta.length) {
-    outOfBlur(tl, meta, LEGAL_AT + 0.12, { y: 12, blur: 5, duration: 0.75, stagger: 0.06, fade: 0.3 });
+    outOfBlur(tl, meta, cue(LEGAL_AT) + step(LEGAL_IN), { y: 12, blur: 5, duration: 0.75, stagger: step(LEGAL_STEP), fade: 0.3 });
   }
 
   /* 7 — the wordmark, last and largest. It is set at up to 230px inside a crop
@@ -226,7 +271,7 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
      transform are cleared by name so the settled type is sharp and CSS owns it
      again — no `will-change` is ever set on it, and GSAP's own promotion is
      dropped when the tween ends. */
-  if (word) outOfBlur(tl, word, WORD_AT, { y: 60, blur: 16, duration: 1.3, fade: 0.5 });
+  if (word) outOfBlur(tl, word, cue(WORD_AT), { y: 60, blur: 16, duration: 1.3, fade: 0.5 });
 
   // The last item on the timeline: reached only by a build that performed the
   // whole entrance. A reverted build never gets here. See LANDED.

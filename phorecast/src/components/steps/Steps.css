@@ -271,9 +271,9 @@
    So below 700 the three cards become three SLIDES, the card the reader is on
    becomes the one they can see, and the choosing moves up into a row of three
    tabs with an underline that slides between them. The graphic takes the whole
-   width of the screen, edge to edge, and each panel is scaled to ITS OWN
-   artwork rather than all three to the same 886-wide frame — see the geometry
-   block below, which is where the size actually comes from.
+   width of the screen inside the page gutter, and each panel is scaled to ITS
+   OWN artwork rather than all three to the same 886-wide frame — see the
+   geometry block below, which is where the size actually comes from.
 
    Everything the band already did, it still does. The 6s timer advances the
    step; the step is what the track scrolls to; the underline follows the step;
@@ -362,8 +362,13 @@
   @keyframes steps-dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
   /* The track -------------------------------------------------------------- */
-  /* Full width of the screen, out through the container's gutter, so the
-     graphic can go edge to edge. `margin-inline` rather than 100vw on purpose:
+  /* Full width of the screen, out through the container's gutter, so that a
+     slide is one screen wide and the swipe travels a screen at a time. The
+     gutter is given back INSIDE each slide, as `padding-inline` below, which
+     is what keeps the snap positions exact multiples of the track width while
+     the plate and the copy still line up with the heading.
+
+     `margin-inline` rather than 100vw on purpose:
      a viewport unit counts a classic scrollbar that the element does not have,
      which is a horizontal overflow on every desktop browser that still draws
      one, and this rule is one resize away from those.
@@ -394,12 +399,39 @@
     scroll-snap-stop: always;
   }
   .steps__slide:focus-visible { outline-offset: -3px; }
-  /* The graphic goes edge to edge; the copy keeps the page's gutter, so it
-     still lines up with the eyebrow, the heading and the tabs above it.
+  /* THE GRAPHIC KEEPS THE PAGE GUTTER, like everything else in the band.
+     It used to cancel the slide's padding and run edge to edge, and that is
+     the one case where a full bleed can be right -- a horizontal slider often
+     wants the next panel showing past the edge, because that peek is the only
+     thing telling a reader it scrolls at all.
+
+     This slider has no peek to protect. Every slide is exactly the width of
+     the track and snaps to `start`, so a bleeding panel does not reveal its
+     neighbour by a single pixel: what it bought was not an affordance, it was
+     just the absence of a gutter. And measured against the section's own copy
+     -- eyebrow, heading and tab strip all begin at `--page-pad`, 20px at phone
+     widths -- a plate touching both screen edges under them read as unpadded
+     rather than as deliberate, the same way the bento band did before it was
+     given its gutter back.
+
+     So the panel sits in the slide's padding and gives up ~10% of its width
+     for it (350 of 390 at an iPhone 12). Nothing had to be told the new size:
+     `.panel` is `container-type: inline-size` and each variant's `--p` is
+     `100cqw / <its artwork's width>`, so the design pixel every rule in these
+     three stylesheets is written in re-measures itself from the plate's real
+     width, and the panels' own getBoundingClientRect measurement agrees with
+     it for free.
+
+     The TRACK stays full-bleed. Only the plate inside each slide is inset, so
+     the snap geometry is untouched -- slides remain one track-width each and
+     the snap positions are still exact multiples of it -- and a swipe now runs
+     a clean 40px channel between one plate and the next instead of butting
+     them together.
+
      `order` is restated because the 1080 block lifts `.steps__panels` above
      the list with `order: 1`, and inside a slide that would put the copy
      first -- here the graphic leads and its sentence follows it. */
-  .steps__slide .steps__panels { order: 0; margin-inline: calc(-1 * var(--page-pad)); }
+  .steps__slide .steps__panels { order: 0; }
   .steps__slide .step { order: 1; }
 
   /* The card, which is no longer a card. Its title and body belong to the
@@ -448,13 +480,15 @@
      fighting. Nothing here scales, so the measured design pixel stays true. */
   .panel {
     aspect-ratio: 4 / 3;
-    border-radius: 0;
     --fx: calc(50cqw - var(--cx) * var(--p));
     --fy: calc(37.5cqw - var(--cy) * var(--p));
   }
-  /* Edge to edge, so the side edges are off the screen rather than drawn on
-     it. The top and bottom edges stay: they are what makes the band a plate. */
-  .panel--2, .panel--3 { border-left: 0; border-right: 0; }
+  /* The corner radius and the side edges come back with the gutter. Both were
+     removed for the bleed -- a radius on a corner that is off the screen is
+     nothing, and a left border drawn at x=0 is a stripe down the edge of the
+     phone rather than the edge of a plate. Now that all four sides are on the
+     screen the plate is drawn the way the desktop draws it: 10px corners, and
+     panels 2 and 3 carrying the full border their variant is defined with. */
 
   /* 63..823 x 141..470 in the field: the pill, the wire, the two cards and
      the phone, 760 x 329, centred on (443, 305.5). */

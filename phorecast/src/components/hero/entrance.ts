@@ -25,7 +25,7 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   const cta = one(slide, '.hero__cta');
   const visual = one(slide, '.hero__visual');
 
-  if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -10, duration: 0.75 });
+  if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -10, duration: 0.55 });
 
   // The line rises out of its mask and resolves from soft as it arrives. The
   // blur is cleared afterwards so the settled type is sharp and CSS owns it
@@ -39,8 +39,8 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   // means the reveal itself looks exactly as it did.
   if (title) {
     const lines = intoLines(title);
-    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 1.15, stagger: 0.22, ease: 'power4.out', clearProps: 'filter' }, at + 0.14)
-      .from(lines, { opacity: 0, duration: 0.3, stagger: 0.22, ease: 'none' }, at + 0.14);
+    tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 0.8, stagger: 0.13, ease: 'power4.out', clearProps: 'filter' }, at + 0.08)
+      .from(lines, { opacity: 0, duration: 0.3, stagger: 0.13, ease: 'none' }, at + 0.08);
   }
 
   // The illustration is the largest thing on screen; leaving it out of the
@@ -49,7 +49,7 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     const kids = Array.from(visual.children) as HTMLElement[];
     const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
     const parts = kids.length > 1 ? kids : nested;
-    if (parts.length > 1) pop(tl, parts, at + 0.3, { scale: 0.92, y: 12, duration: 0.85, stagger: 0.1, ease: EASE });
+    if (parts.length > 1) pop(tl, parts, at + 0.22, { scale: 0.92, y: 12, duration: 0.7, stagger: 0.08, ease: EASE });
     // Explicitly fromTo, and never `rise`, which is a `from`. `.hero__visual`
     // carries its own CSS `transition: transform 800ms` toward `transform:
     // none` on `.is-active`, and a `from` tween reads its END value off the
@@ -65,16 +65,16 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     // in lib/motion.ts records against the hero's Get Started button.
     else tl.fromTo(visual,
       { y: 16, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.0, ease: EASE, clearProps: 'transform,opacity' },
-      at + 0.3);
+      { y: 0, opacity: 1, duration: 0.8, ease: EASE, clearProps: 'transform,opacity' },
+      at + 0.22);
   }
 
   // Less blur on the lede: it is set much smaller, so the same 12px would wash
   // a whole line out rather than soften its edges.
   if (lede) {
-    rise(tl, intoLines(lede), at + 0.72, { y: 0, yPercent: 108, filter: 'blur(7px)', duration: 0.85, clearProps: 'filter' });
+    rise(tl, intoLines(lede), at + 0.5, { y: 0, yPercent: 108, filter: 'blur(7px)', duration: 0.62, clearProps: 'filter' });
   }
-  if (cta) pop(tl, cta, at + 0.98, { scale: 0.94, duration: 0.7, ease: EASE });
+  if (cta) pop(tl, cta, at + 0.72, { scale: 0.94, duration: 0.55, ease: EASE });
 }
 
 /** The load-in. The nav drops in, light ignites, everything else overlaps it. */
@@ -114,8 +114,8 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
       {
         y: 0,
         opacity: 1,
-        duration: 0.85,
-        stagger: 0.075,
+        duration: 0.6,
+        stagger: 0.055,
         ease: EASE,
         clearProps: 'transform,opacity',
       }, 0.1);
@@ -132,7 +132,7 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
     tl.from(mark, { scale: 0.94, duration: 1.0, transformOrigin: '50% 50%', ease: EASE }, 0.08);
   }
 
-  if (slide) slideIn(slide, tl, 0.3);
+  if (slide) slideIn(slide, tl, 0.2);
 
   // The point past which a stutter no longer costs anything. The headline's
   // mask reveal is the one beat that must not drop frames -- it is the largest
@@ -140,11 +140,11 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   // landed, the rest is copy and cards fading, and something expensive can
   // start compiling under them. The 3D mark waits for this rather than for the
   // whole sequence, which had it arriving seconds after everything else.
-  // slideIn runs from 0.3; its lines start at +0.14, stagger 0.22 and run 1.15,
-  // so the last one lands at 1.81. This sits just past that.
-  tl.call(() => hero.dispatchEvent(new CustomEvent('motion:ready', { bubbles: true })), undefined, 1.9);
+  // slideIn runs from 0.2; its lines start at +0.08, stagger 0.13 and run 0.8,
+  // so the last one lands at 1.21. This sits just past that.
+  tl.call(() => hero.dispatchEvent(new CustomEvent('motion:ready', { bubbles: true })), undefined, 1.3);
 
-  rise(tl, all(hero, '.hero__position'), 1.3, { y: 8, duration: 0.6 });
+  rise(tl, all(hero, '.hero__position'), 0.95, { y: 8, duration: 0.55 });
 
   // The market cards resolve one at a time, left to right: each fades out of its
   // own blur with a fifth of a second between them, which is long enough that
@@ -160,11 +160,11 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
     tl.from(cards, {
       opacity: 0,
       filter: 'blur(14px)',
-      duration: 0.95,
-      stagger: 0.2,
+      duration: 0.8,
+      stagger: 0.14,
       ease: EASE,
       clearProps: 'transform,opacity,filter',
-    }, 1.25);
+    }, 0.95);
   }
 }
 

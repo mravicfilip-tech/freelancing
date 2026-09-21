@@ -20,13 +20,17 @@
 // for a few microseconds instead of the seconds a software-GL screenshot costs.
 import { chromium } from 'playwright-core';
 
-const [, , URL, LABEL = 'run'] = process.argv;
+// `nogl` blocks WebGL outright, so the mark takes its static fallback and never
+// builds a scene. That isolates the entrance's own wall-clock cost from the
+// main-thread block the scene build imposes on it -- under software GL that
+// block is enormous and swamps every other number.
+const [, , URL, LABEL = 'run', MODE = 'gl'] = process.argv;
 if (!URL) { console.error('usage: node mA/timing.mjs <url> [label]'); process.exit(2); }
 
 const CONTROL = '.fan';
 const VIEWPORT = { width: 390, height: 844 };
 
-const INIT = () => {
+const INIT = (noGL) => {
   const W = window;
   W.__mA = { marks: {} };
   const mark = (k) => { if (W.__mA.marks[k] === undefined) W.__mA.marks[k] = Math.round(performance.now()); };
@@ -43,10 +47,19 @@ const INIT = () => {
   wrap(W.WebGL2RenderingContext && W.WebGL2RenderingContext.prototype);
   const getContext = HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+    if (noGL && /webgl/.test(String(type))) return null;
     const ctx = getContext.call(this, type, ...rest);
     if (ctx && /webgl/.test(String(type)) && this.closest && this.closest('.heroLogo')) mark('glContext');
     return ctx;
   };
+
+  // The hero raises this partway through its own timeline (entrance.ts), so it
+  // is a fixed point: how long it takes in wall time says how much the timeline
+  // is being stretched by whatever else is holding the main thread.
+  addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('motion:ready', () => mark('heroReady'), { once: true });
+    document.addEventListener('motion:done', () => mark('heroDone'), { once: true });
+  });
 
   W.__mAParts = {
     // `.hero__lede` itself is not content: it is a box whose masked `.line__in`
@@ -117,12 +130,15 @@ const browser = await chromium.launch({
 const page = await browser.newPage({
   colorScheme: 'dark', viewport: VIEWPORT, deviceScaleFactor: 1, isMobile: true, hasTouch: true,
 });
-await page.addInitScript(INIT);
+await page.addInitScript(INIT, MODE === 'nogl');
 
 // ---- Hero: the clock starts at navigation.
 await page.goto(URL, { waitUntil: 'commit' });
 const hero = await page.evaluate(() => window.__mAWatch('.hero', 0, 12000));
-await page.waitForFunction(() => window.__mA.marks.glFirstDraw !== undefined, null, { timeout: 25000 }).catch(() => {});
+await page.waitForFunction(
+  () => window.__mA.marks.glFirstDraw !== undefined || window.__mA.marks.heroDone !== undefined,
+  null, { timeout: 25000 },
+).catch(() => {});
 const heroExtra = await page.evaluate(() => {
   const paint = Object.fromEntries(performance.getEntriesByType('paint').map((e) => [e.name, Math.round(e.startTime)]));
   const res = performance.getEntriesByType('resource')
@@ -153,5 +169,5 @@ const control = await page.evaluate(async ({ sel }) => {
   return watching;
 }, { sel: CONTROL });
 
-console.log(JSON.stringify({ label: LABEL, url: URL, hero, heroExtra, control: { selector: CONTROL, ...control } }, null, 2));
+console.log(JSON.stringify({ label: LABEL, mode: MODE, url: URL, hero, heroExtra, control: { selector: CONTROL, ...control } }, null, 2));
 await browser.close();

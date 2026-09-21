@@ -1,0 +1,743 @@
+/* About — Figma 531:148, a 1920 x 3660 frame with a 1800 content column in
+   60px gutters. That column is `.container--wide`, which is exactly what the
+   landing hero uses, so the page needed no new measurement to sit on.
+
+   THE UNIT. Every band declares `--u: calc(100cqw / 1800)` against a
+   container-query root whose width IS the content column, so the internals
+   below are written in the design's own pixel numbers and the whole band
+   scales as one piece. That is the pattern Bento, Familiar, Built and the
+   hero already use; the divisor is the column's design width and not the
+   viewport's, because above 1920 the column stops tracking the viewport and a
+   viewport-derived unit runs away (Hero.css records that measurement).
+
+   TYPE IS NOT ON THE UNIT. Copy is clamped against vw the way every other
+   band clamps it, so a 20px paragraph does not become 4px on a phone. The
+   unit carries geometry -- gutters, card padding, image windows, table
+   columns -- which is the split Built.css draws between `--c` and its
+   `clamp()`ed column titles.
+
+   COLOUR LIVES IN TWO LAYERS, the same split Pillars.css uses. Role tokens
+   (--ink, --ink-2, --ink-muted, --panel, --accent, --veil-line) for anything
+   whose job the rest of the page already names, and the handful of --ab-*
+   locals below for what this page introduces. The locals are declared with
+   today's dark values as pass-throughs where a role already matches, so the
+   dark rendering is provably what the design says, and the light block at the
+   foot of this file is the ONLY place they move.
+
+   NO GLOW ANYWHERE BUT THE GROUND. The frame draws a shader ember behind the
+   ABOUT PHORCAST card (531:234) and a second ellipse cluster behind CAST YOUR
+   CONVICTION (531:158). Neither is here. The one light field on this page is
+   the hero's, and it is the landing hero's own -- same five discs, same
+   horizon, same tokens, re-anchored below. */
+
+.about-page {
+  position: relative;
+
+  /* 80 design px between bands at 1920, which is 4.1667vw. */
+  --ab-gap: clamp(56px, 4.1667vw, 80px);
+
+  /* Body copy is 20px at 1920 and headings inside cards are 24. */
+  --ab-body: clamp(16px, 1.0417vw, 20px);
+  --ab-h3: clamp(19px, 1.25vw, 24px);
+
+  /* THE PANEL WASH. The frame calls it `white-06` and uses it for two
+     different jobs: the fill of the three big panels (ABOUT PHORCAST, the
+     table, the two primer cards) and the hairline around the CHOOSE AN EVENT
+     cards. It sits between --veil (0.04) and --veil-line (0.12), so it is
+     this page's own value rather than either role, and it is named once. */
+  --ab-veil: rgba(255, 255, 255, 0.06);
+  --ab-veil-line: var(--veil-line);
+
+  /* The CHOOSE AN EVENT card is a SOLID plate (#1c1c1c in the frame) and not
+     a wash. #1c1c1c is --surface to within one unit of 255 on each channel,
+     so it is --panel, which also hands light #f7f0ea for free. */
+  --ab-card: var(--panel);
+  --ab-card-line: var(--ab-veil);
+
+  /* --ab-veil flattened over --page. The comparison table's first column goes
+     `position: sticky` on a phone and a sticky cell has to be opaque or the
+     rows slide through it; it cannot be `var(--panel)`, which is a different
+     colour from the card it would be sitting in. */
+  --ab-solid: #1d1d1c;
+}
+
+/* The query root for every band. `.container--wide`'s content box IS the 1800
+   column, so 100cqw inside it is the column and `--u` on the child below is
+   one design pixel. */
+.ab-col { container-type: inline-size; }
+.ab-hero__copy,
+.ab-choose__inner,
+.ab-brand__inner,
+.ab-conv__inner,
+.ab-cmp__inner,
+.ab-why__inner { --u: calc(100cqw / 1800); }
+
+/* Every band opens with the site's eyebrow: `.eyebrow` and <LiveDot>, which is
+   what the frame's `Ellipses` + `Section Title` pair is. 20 design px of air
+   under it, per the 20px gap on each Title Block. */
+.ab-choose__inner > .eyebrow,
+.ab-brand__inner > .eyebrow,
+.ab-cmp__inner > .eyebrow,
+.ab-why__inner > .eyebrow { margin-bottom: calc(20 * var(--u)); }
+
+/* ── 1. Hero ──────────────────────────────────────────────────────────────── */
+
+.ab-hero {
+  position: relative;
+  /* The query root the ground measures itself against. It is the section's
+     own width -- the document's, without the scrollbar -- which is the basis
+     `.hero__bg`'s `--u: calc(100cqw / 1920)` expects. */
+  container-type: inline-size;
+  padding-top: 40px;          /* the nav sits 40 from the top, as on the landing page */
+}
+
+/* The ground's box. `.hero` on this element is a deliberate borrow -- see the
+   note at its call site in About.tsx -- so these four declarations are the
+   whole of undoing what `.hero` means as a LAYOUT and keeping only what it
+   means as a PALETTE. It also keeps `.hero`'s `container-type: inline-size`,
+   which is what makes `.hero__bg`'s own `--u: calc(100cqw / 1920)` resolve
+   against the viewport exactly as it does on the landing page, and its
+   `overflow: hidden`, which clips the field to its 1154. */
+.ab-hero__ground {
+  position: absolute;
+  inset: 0 0 auto 0;
+  min-height: 0;
+  padding-top: 0;
+  background: none;
+  pointer-events: none;
+  height: calc(1154 * 100cqw / 1920);
+}
+
+/* THE GROUND, REUSED. `.hero__bg` and its five `.hero__glow--*` children are
+   the landing hero's, imported from Hero.css by About.tsx: same discs, same
+   radii, same blur, same gradients, same tokens, same light-mode inversion.
+   Only the anchoring is this page's.
+
+   TWO CHANGES AND NO THIRD. (1) The field is top-anchored and 1154 design px
+   tall, because on this frame the light starts at the top of the document
+   rather than rising into the bottom of a 1080 hero. (2) The group is
+   translated by (-638, -194) and the horizon dropped 108 -- one rigid
+   translation of a ramp that was tuned as a unit, plus a lower cut, which is
+   the same move Hero.css already makes per slide (`.hero__bg--account`,
+   `.hero__bg--future`). Nothing about the ramp itself is touched, so the
+   light block in Hero.css inverts this page exactly as it inverts that one.
+
+   It is allowed to spill past the hero into CHOOSE AN EVENT -- that is where
+   the frame puts it -- which is why `.ab-hero` does not clip and the bands
+   below carry a z-index. */
+.hero__bg--about {
+  top: 0;
+  bottom: auto;
+  height: calc(1154 * var(--u));
+}
+.hero__bg--about .hero__glow--ember  { left: calc(150 * var(--u)); top: calc(180 * var(--u)); }
+.hero__bg--about .hero__glow--peach  { left: calc(-152 * var(--u)); top: calc(638 * var(--u)); }
+.hero__bg--about .hero__glow--orange { left: calc(164 * var(--u)); top: calc(507 * var(--u)); }
+.hero__bg--about .hero__glow--core   { left: calc(362 * var(--u)); top: calc(546 * var(--u)); }
+.hero__bg--about .hero__glow--cream  { left: calc(148 * var(--u)); top: calc(795 * var(--u)); }
+.hero__bg--about .hero__horizon      { top: calc(1060 * var(--u)); }
+
+.ab-hero__inner { position: relative; z-index: 1; }
+.ab-hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(28px, 2.5vw, 48px);
+  margin-top: var(--ab-gap);
+}
+.ab-hero__title {
+  max-width: calc(1344 * var(--u));
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(32px, 3.75vw, 72px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.ab-hero__lede { max-width: calc(1400 * var(--u)); }
+.ab-hero__cta { margin-top: calc(-1 * clamp(4px, 0.4vw, 8px)); }
+
+/* ── 2. Choose an event ───────────────────────────────────────────────────── */
+
+.ab-choose,
+.ab-brand,
+.ab-conv,
+.ab-cmp,
+.ab-why { position: relative; z-index: 1; padding-top: var(--ab-gap); }
+.ab-why { padding-bottom: var(--ab-gap); }
+
+.ab-choose__row {
+  display: flex;
+  align-items: stretch;
+  gap: calc(14 * var(--u));
+}
+
+/* The card. Right corners rounded and left corners square, because the accent
+   bar runs the full height of the left edge and a radius there would leave it
+   floating off the corner -- which is what the frame draws (rounded-tr /
+   rounded-br only). The bar is a pseudo-element rather than a <div>: it is
+   decoration on an <li> that already has content, and the frame's `Accent`
+   rectangle carries no meaning of its own.
+
+   ALL THREE CARDS CARRY IT. 531:187, 531:196 and 531:205 are the same 3px
+   orange rectangle on the same inset, and the render shows three red edges. */
+.ab-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(436 * var(--u));
+  padding: calc(32 * var(--u));
+  border: 1px solid var(--ab-card-line);
+  border-radius: 0 10px 10px 0;
+  background: var(--ab-card);
+  overflow: hidden;
+}
+.ab-card::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: var(--accent);
+}
+/* The screenshot window: 524 x 238 in a 590-wide card, right corners rounded
+   at 6, and the image inside it larger than the window and offset. The three
+   offsets are on the elements themselves (About.tsx's CARDS) because they are
+   three different crops of three different captures. */
+.ab-card__shot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 524 / 238;
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+}
+.ab-card__img { position: absolute; max-width: none; }
+.ab-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(14 * var(--u));
+  margin-top: calc(46 * var(--u));
+}
+.ab-card__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--ab-h3);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.ab-card__body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--ab-body);
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+
+/* ── 3. About Phorcast ────────────────────────────────────────────────────── */
+
+.ab-brand__card {
+  position: relative;
+  min-height: calc(440 * var(--u));
+  padding: calc(32 * var(--u));
+  padding-bottom: calc(40 * var(--u));
+  border: 1px solid var(--ab-veil-line);
+  border-radius: 10px;
+  background: var(--ab-veil);
+  overflow: hidden;
+}
+.ab-brand__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(40 * var(--u));
+  min-height: calc(366 * var(--u));
+  width: calc(759 * var(--u));
+  max-width: 100%;
+}
+/* The mark is `brand/mark.svg` through <Icon>, so the file's baked #E5331E is
+   discarded and the paint is this declaration. --accent is the token that hex
+   IS in dark, which is what keeps the conversion honest, and on paper it
+   becomes #a21605 rather than staying a dark-theme red on a light card. */
+.ab-brand__mark {
+  flex: none;
+  width: calc(33.827 * var(--u));
+  height: calc(39.432 * var(--u));
+  min-width: 24px;
+  min-height: 28px;
+  color: var(--accent);
+}
+.ab-brand__prose {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(16px, 1.25vw, 24px);
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+/* "Phorcast" opens the first paragraph in the display face at full ink, which
+   is the frame's one emphasis in this block. <strong> rather than a span: it
+   is the subject of the sentence and the emphasis is semantic. */
+.ab-brand__prose strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* The product shot. Three exports of the frame's own nodes, each already
+   clipped by Figma to the part of it the card shows, stacked in the frame's
+   paint order and positioned in design pixels. The layer starts at the card's
+   871 mark and runs to the card's right edge, so the composition bleeds off
+   that edge exactly as it does in the frame. */
+.ab-brand__visual {
+  position: absolute;
+  z-index: 0;
+  left: calc(871 * var(--u));
+  right: 0;
+  top: 0;
+  height: calc(440 * var(--u));
+  pointer-events: none;
+  overflow: hidden;
+}
+.ab-brand__visual img { position: absolute; max-width: none; }
+.ab-brand__laptop { left: 0; top: 0; width: calc(929.33 * var(--u)); height: calc(440 * var(--u)); }
+.ab-brand__panel--lower {
+  left: calc(13.26 * var(--u));
+  top: calc(211.3 * var(--u));
+  width: calc(915.74 * var(--u));
+  height: calc(228.7 * var(--u));
+}
+.ab-brand__panel--upper {
+  left: calc(19.54 * var(--u));
+  top: 0;
+  width: calc(909.46 * var(--u));
+  height: calc(320.07 * var(--u));
+}
+
+/* ── 4. Cast your conviction ──────────────────────────────────────────────── */
+
+.ab-conv__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: calc(20 * var(--u));
+  min-height: calc(722 * var(--u));
+  padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(40 * var(--u));
+}
+
+/* THE STATEMENT, and the one piece of paint that is not a flat colour.
+   -------------------------------------------------------------------------
+   531:251 is one text node carrying three fills: a horizontal gradient that
+   is --ink up to 38.293% of the BLOCK's width and --accent from 41.217%, a
+   vertical fade over the first line, and a flat --ink under both. The runs
+   after "We were founded" then override all of it with a solid dim ink.
+
+   The effect that survives is the one the render shows: the opening reads
+   bright and its last letter turns over into the brand red, because "We were
+   founded" ends at about 40% of the 1224-wide block -- right where the
+   gradient switches. So the gradient is on the BLOCK, not on the span: a span
+   is only as wide as its own text and 38% of that would recolour half the
+   phrase. The vertical fade is dropped; it only ever revealed the horizontal
+   gradient on line one, which is the only line the phrase occupies anyway.
+
+   `color` is stated before the clip so a browser without `background-clip:
+   text` renders bright ink on nothing rather than nothing on nothing. */
+.ab-conv__statement {
+  /* The block's width has to scale with the type or the gradient stops land
+     on different letters at different widths: the design's switch sits at
+     38-41% of a 1224-wide block holding 48px type, and both halves of that
+     ratio are one design pixel times the unit. */
+  max-width: calc(1224 * var(--u));
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 2.5vw, 48px);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .ab-conv__statement {
+    background-image: linear-gradient(90deg, var(--ink) 38.293%, var(--accent) 41.217%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+/* The rest of the sentence sits back. It paints its own opaque colour over the
+   clipped background, which is exactly how the frame's later runs override the
+   fills on the node they belong to. #626262 is --ink-muted's dark value. */
+.ab-conv__rest {
+  color: var(--ink-muted);
+  -webkit-text-fill-color: var(--ink-muted);
+}
+.ab-conv__goal {
+  max-width: calc(1768 * var(--u));
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--ab-body);
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+
+/* ── 5. How it works: price and profit ────────────────────────────────────── */
+
+.ab-cmp__card {
+  padding: calc(40 * var(--u)) calc(32 * var(--u));
+  border: 1px solid var(--ab-veil-line);
+  border-radius: 10px;
+  background: var(--ab-veil);
+}
+.ab-cmp__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ab-cmp__table th,
+.ab-cmp__table td { padding: 0; font-weight: inherit; text-align: center; vertical-align: middle; }
+
+/* The criterion column takes what the five 200-wide brand columns leave.
+   `.ab-cmp__table` is in the selector because the centring rule above is
+   `.ab-cmp__table th` -- two classes to this one, so a bare `.ab-cmp__crit`
+   loses the cascade and the labels sit in the middle of a 736px column. */
+.ab-cmp__table .ab-cmp__crit {
+  width: auto;
+  padding-right: calc(24 * var(--u));
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(14px, 1.0417vw, 20px);
+  line-height: 1.2;
+  text-align: left;
+  color: var(--ink-2);
+}
+.ab-cmp__table .ab-cmp__crit--head {
+  /* Level with the logos, which are at the top of their own cells. */
+  vertical-align: top;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(12px, 0.8333vw, 16px);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.ab-cmp__brand {
+  width: calc(200 * var(--u));
+  padding-inline: calc(5 * var(--u));
+}
+.ab-cmp__brand,
+.ab-cmp__table tbody td { padding-bottom: calc(26 * var(--u)); }
+.ab-cmp__table tbody tr:last-child td,
+.ab-cmp__table tbody tr:last-child th { padding-bottom: 0; }
+.ab-cmp__table tbody th { padding-bottom: calc(26 * var(--u)); }
+
+/* Header cell: the mark over the name, 46 design px apart. The five logos are
+   different shapes at a shared 30px cap height, so the box is fixed and the
+   image is fitted inside it rather than each one being sized by hand. */
+.ab-cmp__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(30 * var(--u));
+  min-height: 18px;
+  margin-bottom: calc(46 * var(--u));
+}
+.ab-cmp__logo img { max-height: 100%; width: auto; object-fit: contain; }
+.ab-cmp__logo--kalshi img { width: calc(97 * var(--u)); min-width: 58px; }
+.ab-cmp__logo--polymarket img { width: calc(25 * var(--u)); min-width: 15px; }
+.ab-cmp__logo--predictfun img { width: calc(75 * var(--u)); min-width: 45px; }
+.ab-cmp__logo--magicmarkets img { width: calc(30 * var(--u)); min-width: 18px; }
+.ab-cmp__mark {
+  width: calc(26 * var(--u));
+  height: calc(30 * var(--u));
+  min-width: 16px;
+  min-height: 18px;
+  color: var(--accent);
+}
+.ab-cmp__name {
+  display: block;
+  margin-bottom: calc(46 * var(--u));
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(11px, 0.8333vw, 16px);
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-muted);
+}
+/* The verdict. NOT an <Icon>: both files are a coloured plate with a white
+   glyph on it, and a mask would keep the plate and lose the glyph. They carry
+   their own colour and need none from a token, in either theme. */
+.ab-cmp__vote {
+  width: calc(38.5 * var(--u));
+  height: calc(38.5 * var(--u));
+  min-width: 22px;
+  min-height: 22px;
+  margin-inline: auto;
+}
+
+/* ── 6. Why is it better than bets or crypto/stocks? ──────────────────────── */
+
+.ab-why__row { display: flex; align-items: stretch; gap: calc(20 * var(--u)); }
+.ab-why__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(32 * var(--u));
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(440 * var(--u));
+  padding: calc(32 * var(--u));
+  border: 1px solid var(--ab-veil-line);
+  border-radius: 10px;
+  background: var(--ab-veil);
+}
+.ab-why__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--ab-h3);
+  line-height: 1.2;
+  color: var(--ink);
+}
+.ab-why__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--ab-body);
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+.ab-why__body strong,
+.ab-why__lead,
+.ab-why__close {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.ab-why__lead { font-weight: 600; }
+.ab-why__close,
+.ab-why__body strong { font-weight: 500; }
+/* The frame's own `list-disc` with a 30px indent. `ul` is stripped of markers
+   in global.css, so the list type is stated back here rather than assumed. */
+.ab-why__list {
+  list-style: disc;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+/* ── Motion holds ─────────────────────────────────────────────────────────── */
+
+/* Each band renders `data-motion="pending"`, which hides only the parts the
+   entrance moves; the boxes, the grid and the spacing stay, so nothing about
+   the layout pops in. `[data-js]` gates the whole rule on main.tsx having run:
+   if the script never arrives the page renders plainly rather than blank.
+   Reduced motion reveals everything, because `useSectionMotion` treats that
+   case as a no-op and nothing would ever come back. */
+[data-js] .ab-hero[data-motion='pending'] .nav .logo,
+[data-js] .ab-hero[data-motion='pending'] .nav__links > *,
+[data-js] .ab-hero[data-motion='pending'] .nav__actions > *,
+[data-js] .ab-hero[data-motion='pending'] .nav__burger,
+[data-js] .ab-hero[data-motion='pending'] .ab-hero__title .line,
+[data-js] .ab-hero[data-motion='pending'] .ab-hero__lede,
+[data-js] .ab-hero[data-motion='pending'] .ab-hero__cta,
+[data-js] .ab-choose[data-motion='pending'] .eyebrow,
+[data-js] .ab-choose[data-motion='pending'] .ab-card,
+[data-js] .ab-brand[data-motion='pending'] .eyebrow,
+[data-js] .ab-brand[data-motion='pending'] .ab-brand__card,
+[data-js] .ab-conv[data-motion='pending'] .eyebrow,
+[data-js] .ab-conv[data-motion='pending'] .ab-conv__statement,
+[data-js] .ab-conv[data-motion='pending'] .ab-conv__goal,
+[data-js] .ab-cmp[data-motion='pending'] .eyebrow,
+[data-js] .ab-cmp[data-motion='pending'] .ab-cmp__card,
+[data-js] .ab-why[data-motion='pending'] .eyebrow,
+[data-js] .ab-why[data-motion='pending'] .ab-why__card {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-js] .about-page [data-motion='pending'] * { visibility: visible; }
+}
+
+/* Masked line reveal, the hero's treatment. The wrapper clips, the inner span
+   moves. The padding/margin pair is descender room and cancels out, so the
+   settled layout is unchanged. */
+.ab-hero__title .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
+}
+.ab-hero__title .line__in { display: block; position: relative; }
+
+/* ── Narrow ───────────────────────────────────────────────────────────────── */
+
+/* 1100 and below: the three CHOOSE cards and the two primer cards are the
+   first things to run out of room. The cards wrap to a column rather than
+   being squeezed -- at 1100 a third of 1060px is 340px holding a 524-wide
+   screenshot and two lines of 20px copy, which is a card that has stopped
+   working. */
+@media (max-width: 1100px) {
+  .ab-choose__row { flex-wrap: wrap; }
+  .ab-choose__row .ab-card { flex: 1 1 calc(50% - 14 * var(--u)); min-height: 0; }
+  .ab-card { padding: clamp(20px, 2.6vw, 32px); }
+  .ab-card__text { margin-top: clamp(20px, 3vw, 46px); }
+
+  /* The product shot stops bleeding off the card and becomes the card's
+     bottom half, because at this width the 759-wide copy column and the
+     871-mark visual cannot both be on the row. */
+  .ab-brand__card { min-height: 0; padding: clamp(20px, 2.6vw, 32px); overflow: hidden; }
+  .ab-brand__copy { width: 100%; min-height: 0; }
+  .ab-brand__visual {
+    position: relative;
+    left: auto;
+    right: auto;
+    height: calc(300 * var(--u));
+    margin-top: clamp(20px, 3vw, 40px);
+    /* The frame bleeds the composition off the card's right edge; keeping
+       that is what stops it reading as a picture pasted into a box. The
+       negative margins take it back out to the card's padding. */
+    margin-right: calc(-1 * clamp(20px, 2.6vw, 32px));
+  }
+  .ab-brand__laptop { width: calc(634 * var(--u)); height: calc(300 * var(--u)); }
+  .ab-brand__panel--lower {
+    left: calc(9 * var(--u));
+    top: calc(144 * var(--u));
+    width: calc(624 * var(--u));
+    height: calc(156 * var(--u));
+  }
+  .ab-brand__panel--upper {
+    left: calc(13 * var(--u));
+    width: calc(620 * var(--u));
+    height: calc(218 * var(--u));
+  }
+
+  .ab-conv__inner { min-height: 0; padding-block: clamp(24px, 4vw, 60px); }
+  .ab-why__row { flex-wrap: wrap; }
+  .ab-why__card { flex: 1 1 100%; min-height: 0; padding: clamp(20px, 2.6vw, 32px); }
+  .ab-cmp__card { padding: clamp(20px, 2.6vw, 32px); }
+}
+
+/* 960 and below: one column everywhere. */
+@media (max-width: 960px) {
+  .ab-choose__row .ab-card { flex: 1 1 100%; }
+}
+
+/* THE TABLE ON A PHONE.
+   -------------------------------------------------------------------------
+   Six columns do not fit in 320px of content: the criterion labels need about
+   110px to stay on two lines and five venues then have 42px each, which is
+   not enough for "MAGICMARKETS" at any size anybody can read. Shrinking until
+   it fits produces a table that is present and useless.
+
+   So below 720 the table keeps its real column widths and the CARD scrolls
+   sideways, with the criterion column pinned. That is a pattern a reader
+   already knows, it keeps every label and every logo legible, and it does not
+   put a horizontal scrollbar on the DOCUMENT -- the scroller is the element,
+   and `scrollWidth === clientWidth` still holds for the page.
+
+   The pinned cells need an opaque fill or the rows slide through them, which
+   is what --ab-solid is: --ab-veil flattened over --page, in both themes. */
+@media (max-width: 720px) {
+  .ab-cmp__scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ab-cmp__table { min-width: 560px; table-layout: auto; }
+  .ab-cmp__table .ab-cmp__crit {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 150px;
+    min-width: 150px;
+    padding-right: 14px;
+    background: var(--ab-solid);
+  }
+  .ab-cmp__table .ab-cmp__brand { width: 82px; padding-inline: 4px; }
+  .ab-cmp__logo { margin-bottom: 18px; }
+  .ab-cmp__name { margin-bottom: 18px; font-size: 10px; }
+  .ab-cmp__brand,
+  .ab-cmp__table tbody td,
+  .ab-cmp__table tbody th { padding-bottom: 16px; }
+  .ab-cmp__vote { width: 24px; height: 24px; }
+}
+
+@media (max-width: 560px) {
+  /* The hero's headline is one long sentence; at this width its 0.9 leading
+     is too tight to read as paragraph-sized type. */
+  .ab-hero__title { line-height: 1.02; }
+  .ab-brand__visual { height: calc(360 * var(--u)); }
+  .ab-brand__laptop { width: calc(761 * var(--u)); height: calc(360 * var(--u)); }
+  .ab-brand__panel--lower {
+    left: calc(11 * var(--u));
+    top: calc(173 * var(--u));
+    width: calc(749 * var(--u));
+    height: calc(187 * var(--u));
+  }
+  .ab-brand__panel--upper {
+    left: calc(16 * var(--u));
+    width: calc(744 * var(--u));
+    height: calc(262 * var(--u));
+  }
+  .ab-why__list { padding-left: 22px; }
+}
+
+/* ── Light ────────────────────────────────────────────────────────────────────
+   Written twice, because a media query cannot go in a selector list -- the
+   shape tokens.css uses, for the reason it gives. The two blocks MUST stay
+   identical; only their conditions differ.
+
+     1. the system preference leads, but only while nothing has been chosen;
+     2. an explicit choice wins at any system setting.
+
+   WHAT THIS PAGE ACTUALLY NEEDED, and it is four values, because everything
+   else on it already reads a role token that flips.
+
+   --ab-veil is the frame's `white-06`. On paper the same job -- "raise this
+   slightly" -- is done by SETTLING rather than lifting, so it becomes
+   ink-alpha, and the alpha goes UP rather than down: dark ink on paper is
+   less visible per unit alpha than white on black. 0.06 white becomes 0.05
+   ink, which lands at the same one-step remove from the page that dark's does
+   (1.06x against the ground in dark, 0.97x in light).
+
+   --ab-card-line is the CHOOSE card's hairline. In dark it is that same 6%
+   white, which is a sensible edge on a #1c1c1c plate sitting on a near-black
+   page. On paper the plate is #f7f0ea on #fffbf8 and a 6% ink edge is
+   invisible -- the card stops being a card. It becomes --line (#e3d6cb), the
+   token the whole light theme already uses for a hairline, which is the same
+   decision Pillars.css made and recorded for its own cards.
+
+   --ab-solid is --ab-veil flattened over --page and has to be recomputed for
+   the other ground: 5% of #1a1512 over #fffbf8 is #f4f1ee.
+
+   NOTHING WAS INVERTED. The ticks and crosses keep their own colours, because
+   a filled badge with a white glyph reads the same on either ground. The
+   ember field inverts through Hero.css's own light block, which this page
+   inherits by using that file's classes. The one thing that could not be
+   inherited is the statement's gradient, and it did not need to be: it is
+   written as var(--ink) -> var(--accent) rather than as two hexes, so on
+   paper it runs near-black into #a21605 by itself. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .about-page {
+  --ab-veil: rgba(26, 21, 18, 0.05);
+  --ab-card-line: var(--line);
+  --ab-solid: #f4f1ee;
+  }
+}
+:root[data-theme='light'] .about-page {
+  --ab-veil: rgba(26, 21, 18, 0.05);
+  --ab-card-line: var(--line);
+  --ab-solid: #f4f1ee;
+}

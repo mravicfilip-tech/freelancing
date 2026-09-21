@@ -4,3 +4,9 @@ dist
 *.log
 .vercel
 dist-*
+
+# Agent scratch. Briefs ask agents to namespace their probes and verification
+# builds under a short prefix; when the brief does not spell out the scratchpad
+# path they land here instead. Transient either way -- probe scripts, preview
+# logs and throwaway builds, not deliverables.
+m[A-Z]/

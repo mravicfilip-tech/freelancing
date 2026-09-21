@@ -333,10 +333,11 @@
    the packing above is solved at 320px -- it is the width where the two scales
    diverge most.
 
-   NOTHING NEW GLOWS. The two card washes are the ones already here, re-aimed at
-   the foot of a portrait card and with their blur put into design units so it
-   stays the same fraction of the card it was (8.6% -> 8.75%). No shadow, no
-   halo, no filter is added to any mark. -------------------------------------- */
+   NOTHING NEW GLOWS. Both card washes are the ones already here: card two's is
+   re-aimed at the foot of a portrait card, with its blur put into design units
+   so it stays the same fraction of the card it was (8.6% -> 8.75%), and card
+   one's is re-aimed at the left edge and re-blurred in its own block below. No
+   shadow, no halo, no filter is added to any mark. --------------------------- */
 @media (max-width: 700px) {
   .bt-card {
     --c: calc(100cqw / 320);

@@ -767,10 +767,14 @@
    glyph on it, and a mask would keep the plate and lose the glyph. They carry
    their own colour and need none from a token, in either theme. */
 .ab-cmp__vote {
-  width: calc(38.5 * var(--u));
-  height: calc(38.5 * var(--u));
-  min-width: 22px;
-  min-height: 22px;
+  /* 20px is a ceiling the client set, not the frame's number: 531:321 and its
+     twenty-four siblings are drawn at 38.5, which is 34px at 1600 and reads as
+     the loudest thing in a band whose job is five words of criterion and a
+     verdict. Capped rather than restated so the badge still scales with the
+     design unit at every width below the cap and the floor still stops it
+     disappearing on a phone. */
+  width: clamp(18px, calc(38.5 * var(--u)), 20px);
+  height: clamp(18px, calc(38.5 * var(--u)), 20px);
   margin-inline: auto;
 }
 
@@ -1041,7 +1045,8 @@
   .ab-cmp__brand,
   .ab-cmp__table tbody td,
   .ab-cmp__table tbody th { padding-bottom: 16px; }
-  .ab-cmp__vote { width: 24px; height: 24px; }
+  /* No vote size here any more -- the clamp above governs at every width, and
+     24 was over the cap. */
 }
 
 @media (max-width: 560px) {

@@ -258,6 +258,12 @@
   top: 0;
   height: calc(1154 * var(--ground-u));
   pointer-events: none;
+  /* 531:149 is exactly as wide as the frame, so the page's own edges are
+     where this field ends. Stated here rather than left to the `overflow-x:
+     hidden` on <body>, because below 720 the clip inside it is 1190px wide
+     by design and would otherwise be a 400px reason for a phone to scroll
+     sideways. */
+  overflow: hidden;
 }
 .ab-ground__clip {
   position: absolute;
@@ -528,7 +534,6 @@
 /* ── 4. Cast your conviction ──────────────────────────────────────────────── */
 
 .ab-conv__inner {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -914,7 +919,19 @@
 
   /* The product shot stops bleeding off the card and becomes the card's
      bottom half, because at this width the 759-wide copy column and the
-     871-mark visual cannot both be on the row. */
+     871-mark visual cannot both be on the row.
+
+     AND 531:234 GOES WITH IT -- off, not moved, and that is a decision
+     rather than a shortcut. On the row, the whole of that field's visible
+     contribution is the left shoulder of one disc showing in the GAP beside
+     the photograph; the photograph is opaque from the 871 mark rightward and
+     covers every other part of it. Stacked, there is no gap: the shot spans
+     the card, so the only parts of the field that could show are parts the
+     frame never shows. And left where the row put it, the 871 mark is now
+     the middle of a full-width copy column -- measured at 1100 and at 390,
+     a solid orange slab across four lines of body copy. There is nothing
+     here for it to do, so it does not draw. */
+  .ab-brand__field { display: none; }
   .ab-brand__card { min-height: 0; padding: clamp(20px, 2.6vw, 32px); overflow: hidden; }
   .ab-brand__copy { width: 100%; min-height: 0; }
   .ab-brand__visual {

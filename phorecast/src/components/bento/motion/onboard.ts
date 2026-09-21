@@ -1,14 +1,18 @@
 /**
  * Card A — "Open an account in 60 seconds".
  *
- * LOAD-IN (1.6s, after the band's entrance has landed the card)
+ * LOAD-IN (1.2s, after the band's entrance has landed the card)
  *   The phone and the circuit grid behind it arrive with the card itself, as
  *   part of the section's own entrance — they are context, and the card should
  *   never appear as an empty orange rectangle. What this module holds back is
  *   the interface drawn on top of them. The 60s ring is the lead and takes the
- *   stage alone for 0.45s: ten pixels of rise and a hair of scale on `expo.out`,
- *   no overshoot. The three promises follow it, 0.14s apart so you can count
- *   them, and "You're in." lands last.
+ *   stage alone for 0.32s: ten pixels of rise and a hair of scale on `expo.out`,
+ *   no overshoot. The three promises follow it, 0.11s apart so you can still
+ *   count them, and "You're in." lands last.
+ *
+ *   It was 1.6s, and it is fourth in a queue: the band's entrance has to finish
+ *   first, and on a phone that put the last of this card's interface past four
+ *   seconds from the scroll. Same beats, same order, same eases, 30% quicker.
  *
  * LOOP (7.9s of story, then 3.6s of nothing — 11.5s end to end)
  *   One beat, and it is the card's own claim acted out: the dial runs. The arc
@@ -124,9 +128,9 @@ export function onboard(card: HTMLElement): () => void {
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to(ring, { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: 'expo.out' }, 0)
-      .to(pills, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', stagger: 0.14 }, 0.45)
-      .to(inLabel, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 1.0)
+      .to(ring, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'expo.out' }, 0)
+      .to(pills, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.11 }, 0.32)
+      .to(inLabel, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out' }, 0.72)
       // Hand the three back to CSS the moment they have landed: an inline
       // `opacity: 1` and identity transform are not visually free on a chip that
       // paints with `backdrop-filter` — measured at 818 differing pixels against

@@ -6,13 +6,16 @@
  * resting on Solana. The card's claim is that the one mark in the middle reaches
  * all of them, so that is what the motion says and nothing else.
  *
- * LOAD-IN (2.2s, after the band's entrance has landed the card)
+ * LOAD-IN (1.8s, after the band's entrance has landed the card)
  *   The measure grid, the two orbit ellipses and the ghost tiles arrive with the
  *   card — it must never read as blank cream. The hub is the lead and has the
- *   stage alone for half a second. The badged tiles then dock in order of their
- *   distance from it, nearest first: thirteen arrivals inside three quarters of a
- *   second, a wave rather than a list. The diamonds on the orbit paths, the
+ *   stage alone for a third of a second. The badged tiles then dock in order of
+ *   their distance from it, nearest first: thirteen arrivals inside two thirds
+ *   of a second, a wave rather than a list. The diamonds on the orbit paths, the
  *   cursor and the tooltip close it out.
+ *
+ *   It was 2.2s, behind the band's own entrance. Same beats, same order, same
+ *   eases, 20% quicker.
  *
  * LOOP (5.8s of story, then 3.9s of nothing — 9.7s end to end)
  *   The hub pulses and the pulse travels out through the field in the same
@@ -236,16 +239,16 @@ function attach(card: HTMLElement): () => void {
     /* ------------------------------------------------------------- load-in */
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
-    intro.to(hub, { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: 'expo.out' }, 0);
+    intro.to(hub, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'expo.out' }, 0);
     byDistance.forEach((tile, i) => {
       intro.to(tile, {
-        opacity: settled.get(tile) ?? 1, y: 0, scale: 1, duration: 0.7, ease: 'expo.out',
-      }, 0.45 + i * 0.055);
+        opacity: settled.get(tile) ?? 1, y: 0, scale: 1, duration: 0.6, ease: 'expo.out',
+      }, 0.34 + i * 0.05);
     });
     intro
-      .to(diamonds, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 1.25)
-      .to(cursor, { opacity: 1, x: 0, y: 0, duration: 0.8, ease: 'expo.out' }, 1.45)
-      .to(tooltip, { opacity: 1, clipPath: 'inset(0 0% 0 0)', duration: 0.55, ease: 'power2.out' }, 1.7)
+      .to(diamonds, { opacity: 1, scale: 1, duration: 0.45, ease: 'power3.out', stagger: 0.1 }, 0.95)
+      .to(cursor, { opacity: 1, x: 0, y: 0, duration: 0.7, ease: 'expo.out' }, 1.1)
+      .to(tooltip, { opacity: 1, clipPath: 'inset(0 0% 0 0)', duration: 0.5, ease: 'power2.out' }, 1.3)
       // The wipe was only a way in; the pill's own corner radius owns its shape.
       .set(tooltip, { clearProps: 'clipPath' });
 

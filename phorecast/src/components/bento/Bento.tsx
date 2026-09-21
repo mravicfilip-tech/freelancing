@@ -24,9 +24,19 @@ import './Bento.css';
    four arrivals rather than one block appearing. Every tween is a `from`, which
    leaves the resting markup as the finished state: if the script never runs the
    section is simply there. Illustration-level motion is chosen separately in
-   the /lab pages and is not part of this timeline. */
-const CARDS_AT = 0.3;
-const CARD_STEP = 0.09;
+   the /lab pages and is not part of this timeline.
+
+   The band is the gate on everything below it: each card module waits for this
+   timeline's `onComplete` before it plays its own load-in (see motion/shared.ts),
+   so every tenth of a second here is a tenth of a second added to all four
+   illustrations. It used to end at 1.42s. It ends at 1.24s, with the same
+   beats in the same order -- the header is a touch earlier, the four shells a
+   touch quicker, and each card's copy follows its own shell by 0.12s instead
+   of 0.16s. */
+const CARDS_AT = 0.22;
+const CARD_STEP = 0.08;
+/** How far each card's copy and artwork trail its own shell. */
+const CARD_FILL = 0.12;
 
 function buildBento({ q, tl }: SectionMotion) {
   const glow = q('.bento__glow')[0];
@@ -40,19 +50,19 @@ function buildBento({ q, tl }: SectionMotion) {
   });
 
   if (glow) {
-    tl.from(glow, { opacity: 0, scale: 1.08, duration: 1, ease: 'power2.out', clearProps: 'transform' }, 0);
+    tl.from(glow, { opacity: 0, scale: 1.08, duration: 0.8, ease: 'power2.out', clearProps: 'transform' }, 0);
   }
   // The frame fades with everything else. Left out of the sequence it was the
   // one part that painted immediately, so on the way in there was a moment of
   // empty outlined box waiting for its contents -- which reads as the section
   // failing to load rather than as it arriving.
-  rise(tl, q('.bento__card'), 0, { y: 0, duration: 0.7 });
-  rise(tl, q('.bento__title'), 0.08);
-  rise(tl, q('.bento__sub'), 0.18);
-  rise(tl, cards, CARDS_AT, { y: 14, duration: 0.8, stagger: CARD_STEP });
+  rise(tl, q('.bento__card'), 0, { y: 0, duration: 0.55 });
+  rise(tl, q('.bento__title'), 0.05, { duration: 0.6 });
+  rise(tl, q('.bento__sub'), 0.12, { duration: 0.6 });
+  rise(tl, cards, CARDS_AT, { y: 14, duration: 0.7, stagger: CARD_STEP });
 
   cards.forEach((card, i) => {
-    const at = CARDS_AT + i * CARD_STEP + 0.16;
+    const at = CARDS_AT + i * CARD_STEP + CARD_FILL;
     const copy = Array.from(card.querySelectorAll<HTMLElement>('.bcard__title, .bcard__body, .bento__cta'));
     // Every box names its own artwork root, so this list has to carry all of
     // them. A card whose root is missing here is not an error -- the entrance
@@ -62,8 +72,8 @@ function buildBento({ q, tl }: SectionMotion) {
       '.onb__art, .custody__art, .box-bonus__art, .mk__stage',
     );
 
-    if (art) pop(tl, art, at - 0.04, { scale: 0.94, duration: 0.8, transformOrigin: '50% 60%' });
-    if (copy.length) rise(tl, copy, at, { y: 8, duration: 0.55, stagger: 0.07 });
+    if (art) pop(tl, art, at - 0.04, { scale: 0.94, duration: 0.7, transformOrigin: '50% 60%' });
+    if (copy.length) rise(tl, copy, at, { y: 8, duration: 0.5, stagger: 0.06 });
   });
 }
 

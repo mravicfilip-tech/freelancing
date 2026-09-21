@@ -1,13 +1,19 @@
 /**
  * Card C — "Double your capital on first deposit".
  *
- * LOAD-IN (3.0s, after the band's entrance has landed the card)
+ * LOAD-IN (2.5s, after the band's entrance has landed the card)
  *   The measure grid arrives with the card. Everything else is held back so the
- *   chart line can be the lead, and drawing it is the longest tween here: 1.3s
+ *   chart line can be the lead, and drawing it is the longest tween here: 1.0s
  *   tip to tail on `power2.inOut`, the house draw. The marker catches the
  *   drawing edge as it passes, the pie and lightning badges follow, the pill
  *   rises last and both figures tally to $200.00 — the money is the point of
  *   the sentence.
+ *
+ *   This was the longest of the four at 3.0s, and it is queued behind the
+ *   band's own entrance: on a phone the figures were still counting past five
+ *   seconds from the scroll. The draw loses 0.3s, the badges and the pill close
+ *   up behind it, and the two tallies overlap by the same 0.12s they always
+ *   did. Same beats, same order, same eases.
  *
  * LOOP (5.3s of story, then 4.4s of nothing — 9.7s end to end)
  *   The card's whole claim is growth, so the loop is the line growing. After a
@@ -56,6 +62,8 @@ const money = (v: number) => `+$${v.toFixed(2)}`;
  *  wrong with it. A phone loses 20% at one end and 11% at the other. Three per
  *  cent sits an order of magnitude clear of both. */
 const EDGE_TOL = 0.03;
+/** How long the line takes to draw itself on the way in. */
+const INTRO_DRAW = 1.0;
 
 /** The arc length at which the path crosses `x`. The curve is monotonic left to
  *  right, so a bisection is exact to within a twentieth of a design pixel. */
@@ -223,14 +231,14 @@ export function bonus(card: HTMLElement): () => void {
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to(line, { strokeDashoffset: OFF_SHOWN, duration: 1.3, ease: 'power2.inOut' }, 0)
+      .to(line, { strokeDashoffset: OFF_SHOWN, duration: INTRO_DRAW, ease: 'power2.inOut' }, 0)
       // The drawing edge reaches the marker at markerAt of the tween.
-      .to(marker, { opacity: 1, duration: 0.45, ease: 'expo.out' }, 1.3 * markerAt)
-      .to(pie, { opacity: 1, scale: pieScale, duration: 0.65, ease: 'expo.out' }, 1.4)
-      .to(bolt, { opacity: 1, scale: 1, duration: 0.65, ease: 'expo.out' }, 1.56)
-      .to(pill, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, 1.75)
-      .to(tally, { deposit: 200, duration: 1.1, ease: 'power2.out', onUpdate: paintDeposit }, 1.9)
-      .to(tally, { bonus: 200, duration: 1.1, ease: 'power2.out', onUpdate: paintBonus }, 2.05);
+      .to(marker, { opacity: 1, duration: 0.4, ease: 'expo.out' }, INTRO_DRAW * markerAt)
+      .to(pie, { opacity: 1, scale: pieScale, duration: 0.55, ease: 'expo.out' }, 1.05)
+      .to(bolt, { opacity: 1, scale: 1, duration: 0.55, ease: 'expo.out' }, 1.18)
+      .to(pill, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 1.32)
+      .to(tally, { deposit: 200, duration: 0.95, ease: 'power2.out', onUpdate: paintDeposit }, 1.42)
+      .to(tally, { bonus: 200, duration: 0.95, ease: 'power2.out', onUpdate: paintBonus }, 1.54);
 
     if (staged) stopReady = onSectionReady(card, () => intro.play());
     else { intro.progress(1, true); runLoop(); }

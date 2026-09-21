@@ -7,11 +7,15 @@
  * motion walks that chain in the direction the copy promises — out of the
  * markets, through the contracts, into your wallet — and then stops.
  *
- * LOAD-IN (2.0s, after the band's entrance has landed the card)
+ * LOAD-IN (1.5s, after the band's entrance has landed the card)
  *   The three circles and the glow arrive with the card; they are the diagram's
- *   frame. The wallet is the lead and holds the stage alone for half a second,
- *   because it is what the sentence is about. Then the two contract chips, then
- *   the four assets each with its label, then the two nodes.
+ *   frame. The wallet is the lead and holds the stage alone for a third of a
+ *   second, because it is what the sentence is about. Then the two contract
+ *   chips, then the four assets each with its label, then the two nodes.
+ *
+ *   It was 2.0s, behind the band's own entrance, which on a phone put the last
+ *   node past four seconds from the scroll. Same beats, same order, same eases,
+ *   25% quicker.
  *
  * LOOP (5.8s of story, then 4.2s of nothing — 10.0s end to end)
  *   The four markets hand over in turn, each tile brightening and sliding a step
@@ -296,11 +300,11 @@ export function funds(card: HTMLElement): () => void {
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });
     intro
-      .to([disc, ...icons], { opacity: 1, scale: 1, duration: 0.95, ease: 'expo.out' }, 0)
-      .to(walletLabel, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, 0.12)
-      .to(chips, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', stagger: 0.14 }, 0.45)
-      .to(assets, { opacity: 1, y: 0, duration: 0.65, ease: 'expo.out', stagger: 0.05 }, 0.72)
-      .to(nodes, { opacity: 1, scale: 1, duration: 0.45, ease: 'power3.out', stagger: 0.12 }, 1.35);
+      .to([disc, ...icons], { opacity: 1, scale: 1, duration: 0.8, ease: 'expo.out' }, 0)
+      .to(walletLabel, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 0.1)
+      .to(chips, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.11 }, 0.34)
+      .to(assets, { opacity: 1, y: 0, duration: 0.55, ease: 'expo.out', stagger: 0.04 }, 0.55)
+      .to(nodes, { opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out', stagger: 0.09 }, 0.95);
 
     if (staged) stopReady = onSectionReady(card, () => intro.play());
     else { intro.progress(1, true); runLoop(); }

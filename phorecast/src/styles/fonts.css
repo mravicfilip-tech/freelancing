@@ -24,6 +24,15 @@
        600 SemiBold  GalanoGrotesque-SemiBold.woff2  / .woff
        200 ExtraLight GalanoGrotesque-ExtraLight.woff2 / .woff
 
+   UNTIL THEY ARRIVE THESE FOUR RULES 404, and that is the intended interim
+   state rather than a bug to paper over. Vite leaves an unresolvable url()
+   alone instead of failing the build (checked: `vite build` exits 0 with this
+   directory empty), the browser cannot load the face, and `font-display: swap`
+   means the fallback is already on screen. Four 404s in the console are the
+   cost of making the drop-in a pure file copy, which is the trade this file is
+   making on purpose. Dropping real files in -- checked the same way -- emits
+   them as ordinary fingerprinted assets with no config change.
+
    Those are the four the site asks for, not the four the family happens to
    have -- 500 is the client's spec and most of the labels, 600 is every button
    and CTA, 400 is the Steps panel micro-copy, and 200 is the one number in the

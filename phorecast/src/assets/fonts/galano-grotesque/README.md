@@ -13,6 +13,10 @@ Drop them in here under exactly these names:
     GalanoGrotesque-Medium.woff2       GalanoGrotesque-Medium.woff       (500)
     GalanoGrotesque-SemiBold.woff2     GalanoGrotesque-SemiBold.woff     (600)
 
+Until they arrive the four `@font-face` rules 404 and the page renders on the
+fallback. That is expected, not a bug: `font-display: swap` means the fallback
+is on screen either way, and `vite build` exits 0 with this directory empty.
+
 Nothing else needs to change: the rules already reference these paths and Vite
 picks them up on the next build. Until then the page renders on the fallback
 stack documented on `--font-label` in `src/styles/tokens.css`.

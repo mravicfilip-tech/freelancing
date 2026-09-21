@@ -9,9 +9,13 @@ import telegram from '../../assets/social/telegram.svg';
 import tiktok from '../../assets/social/tiktok.svg';
 import './Footer.css';
 
+// Sports is a market category now, alongside the five instrument classes that
+// were already here. The footer's MARKETS column is plain text, so it just
+// takes another entry -- unlike the icon rows elsewhere on the page, which
+// would need an asset that does not exist in src/assets.
 const COLUMNS = [
   { title: 'Product', links: ['Markets', 'Fees', 'How it works', 'Security'] },
-  { title: 'Markets', links: ['Crypto', 'Forex', 'Stocks', 'Commodities', 'Indices'] },
+  { title: 'Markets', links: ['Crypto', 'Forex', 'Stocks', 'Commodities', 'Indices', 'Sports'] },
   { title: 'Company', links: ['About', 'Careers', 'Blog', 'Brand'] },
   { title: 'Resources', links: ['Docs', 'API', 'Status', 'Support', 'FAQs'] },
 ];
@@ -43,7 +47,17 @@ export function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <Logo />
-            <p className="footer__tagline">Off-chain execution, on-chain settlement.<br />Every position, fill and liquidation is independently verifiable.</p>
+            {/* The strapline used to read "Off-chain execution, on-chain settlement.
+                Every position, fill and liquidation is independently verifiable."
+                All three claims went with the repositioning: there are no
+                liquidations, the off-chain/on-chain framing is not the product's
+                framing any more, and the verifiability claim was built on top of
+                it -- there is no collateral in contracts to inspect and no
+                liquidation to re-derive, so nothing is left for a reader to
+                verify. Its job was reassurance, and the reassurance the new copy
+                DOES support is bounded risk: the stake is the whole of the
+                downside. Same two lines, same length, a premise that is true. */}
+            <p className="footer__tagline">A prediction market for real-world events.<br />Your maximum loss is always what you stake.</p>
             <ul className="footer__socials">
               {SOCIALS.map((s) => (
                 <li key={s.name}>

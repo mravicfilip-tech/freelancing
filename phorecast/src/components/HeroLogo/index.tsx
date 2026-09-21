@@ -42,27 +42,6 @@ function supportsWebGL(): boolean {
   }
 }
 
-/**
- * Hold the 3D scene back until the section's opening has finished.
- *
- * Compiling shaders and building the geometry blocks the main thread for long
- * enough to starve an animation of frames. At the old 800ms ceiling that landed
- * squarely inside the hero's entrance, which then advanced in one visible jump
- * rather than playing: nothing, nothing, then everything at once. The mark is
- * decorative and fades itself in, so arriving a beat later costs nothing.
- */
-const SETTLE_MS = 2200;
-
-function idle(): Promise<void> {
-  return new Promise<void>((resolve) => {
-    if (typeof window.requestIdleCallback === 'function') {
-      window.requestIdleCallback(() => resolve(), { timeout: SETTLE_MS });
-    } else {
-      window.setTimeout(resolve, SETTLE_MS);
-    }
-  });
-}
-
 function afterLoad(): Promise<void> {
   return document.readyState === 'complete'
     ? Promise.resolve()
@@ -98,11 +77,7 @@ function afterHostEntrance(host: HTMLElement, cap = 6000): Promise<void> {
   });
 }
 
-/**
- * A short breath after the gate, not the long one. SETTLE_MS exists to keep the
- * scene away from the entrance; once the section has said the entrance is past
- * its delicate part, waiting the full window again just delays the mark.
- */
+/** A short breath, taken twice: before the fetch, and after the gate. */
 function shortIdle(): Promise<void> {
   return new Promise<void>((resolve) => {
     if (typeof window.requestIdleCallback === 'function') {
@@ -147,22 +122,40 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
     const reducedMotion = forceStatic || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const touch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-    // Three.js + GSAP load on demand, after the page has loaded and the main thread is idle.
     let scene: LogoScene | null = null;
     let cancelled = false;
-    // Load, then the host's entrance, then one idle callback. The idle that
-    // used to sit between load and the scene is gone: waiting for the entrance
-    // covers everything it was guarding against and does it on the real signal,
-    // so keeping both only pushed the mark up to two seconds later for nothing.
-    afterLoad()
-      .then(() => afterHostEntrance(host))
+
+    // FETCHING the scene and BUILDING it are two different costs and they were
+    // being paid one after the other, both behind the entrance gate. Nothing --
+    // not a byte of Three.js -- was even requested until the hero said its
+    // headline had landed, and only then did a 165KB gzipped module graph go
+    // over the wire. Measured at 390 wide: the first request left at 2560ms and
+    // the mark's first frame was drawn at 2667ms, on localhost, where the
+    // network is free. On a phone on mobile data the fetch is another second on
+    // top of that, and the reader is looking at an empty box for all of it.
+    //
+    // Only the BUILD has to wait. Compiling shaders and building the geometry
+    // blocks the main thread long enough to starve the entrance of frames --
+    // that is what the gate is for, and it stays. The fetch blocks nothing: it
+    // is the network, and it can happen while the copy is still arriving. So
+    // the two are split. The warm-up starts one idle callback after load, which
+    // in practice is before the entrance has begun, and by the time the gate
+    // opens the modules are already parsed and waiting.
+    //
+    // The catch on `warm` is not decoration: if the gate path settles first the
+    // warm promise would be an unhandled rejection with nothing attached to it.
+    const warm = afterLoad()
       .then(shortIdle)
       .then(() => {
         if (!supportsWebGL()) throw new NoWebGLError();
-        return import('./LogoScene');
-      })
-      .then((mod) => idle().then(() => mod))
-      .then(async (mod) => ({ mod, treatment: await (await import('./treatments')).loadTreatment(variant) }))
+        return Promise.all([import('./LogoScene'), import('./treatments')] as const);
+      });
+    warm.catch(() => {});
+
+    const gate = afterLoad().then(() => afterHostEntrance(host)).then(shortIdle);
+
+    Promise.all([warm, gate])
+      .then(async ([[mod, treatments]]) => ({ mod, treatment: await treatments.loadTreatment(variant) }))
       .then(({ mod: { LogoScene }, treatment }) => {
         if (cancelled) return;
         try {

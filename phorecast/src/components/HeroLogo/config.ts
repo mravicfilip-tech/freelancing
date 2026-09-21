@@ -50,8 +50,18 @@ export const LOGO_CONFIG = {
   scrollPitch: 0.55,
   scrollRise: 0.12,
   fadeStart: 0.55,
-  /** Entrance after fonts are ready. 'rise' treatments also turn in from `entranceYaw` and lift by `entranceDrop` × height. */
-  entranceSec: 2.2,
+  /**
+   * Entrance after fonts are ready. 'rise' treatments also turn in from
+   * `entranceYaw` and lift by `entranceDrop` × height.
+   *
+   * 1.5 and not the 2.2 it was. The mark cannot start this until its scene
+   * exists, which is the far end of a load-gate-fetch-build chain, so every
+   * tenth here is a tenth added to the longest wait on the page rather than
+   * one overlapping something else. The turn, the lift and the scale it ends
+   * on are all unchanged -- it is the same arrival, taken at a pace that does
+   * not read as the mark turning up after everyone has left.
+   */
+  entranceSec: 1.5,
   entranceScaleFrom: 0.94,
   entranceYaw: -0.9,
   entranceDrop: 0.22,

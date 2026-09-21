@@ -1,41 +1,77 @@
+/* The footer, rebuilt to the client's supplied design.
+   ---------------------------------------------------------------------------
+   Three columns and a brand block between two hairlines, closed by a two-ended
+   bottom bar. What it replaced was four columns (Product / Markets / Company /
+   Resources), a row of four bare social icon buttons, a Terms/Privacy/Cookies
+   legal row, and a giant cropped PHORCAST wordmark over a four-disc glow.
+
+   THREE THINGS THE DESIGN SAYS THAT THIS FILE DOES NOT DO, each raised rather
+   than decided:
+
+   1. THE SPELLING. The supplied screenshot sets the brand as "Phorecast",
+      with an e, and the domain is phorecast.io. Every other surface in this
+      codebase -- the wordmark in <Logo>, the FAQ copy, the About page, the
+      <title> -- and the Figma file say "Phorcast". Introducing a second
+      spelling in the one place the brand is stated twice (the wordmark and
+      the copyright line) would be the worst of both, so this keeps the
+      codebase's spelling and the question goes to the client.
+
+   2. THE ABOUT LINK IS GONE. It lived in the Company column, which the new
+      design does not have, and pointed at /about -- a real route. Nothing
+      here links to it any more. The page is NOT orphaned: <Nav>'s MORE menu
+      carries it on both surfaces (src/components/Nav.tsx, MORE_LINKS), which
+      is the only reason implementing the design as drawn was safe to do.
+
+   3. THE DESCRIPTION IS PREDICTION-MARKET COPY. "A prediction platform and
+      event markets" is the client's own wording from the screenshot, and this
+      band renders on the landing page, whose copy was deliberately moved away
+      from that story (commit 24fbbc1). The design is implemented as given;
+      the tension is the client's to resolve.
+
+   MOTION lives in Footer.motion.ts and the `data-motion="pending"` hold that
+   goes with it is at the foot of Footer.css. */
 import { Icon } from '../Icon';
 import { Logo } from '../Logo';
 import { Roll } from '../Roll';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFooter } from './Footer.motion';
-import x from '../../assets/social/x.svg';
-import discord from '../../assets/social/discord.svg';
-import telegram from '../../assets/social/telegram.svg';
-import tiktok from '../../assets/social/tiktok.svg';
+/* NOT src/assets/social/telegram.svg, which is a 44x44 export that draws its
+   own rounded-SQUARE plate and border inside the file, under the glyph. <Icon>
+   is a mask, so every opaque pixel in the file is painted -- that plate
+   included -- and the design's badge is a CIRCLE. This is the same glyph path,
+   byte for byte, on a 24x24 viewBox with the plate left out; the badge is now
+   drawn in CSS where the theme can reach it. It sits beside the component
+   rather than in src/assets because it exists for this one band, which is the
+   arrangement HeroLogo/logo-outline.svg already uses.
+
+   The three icons that fall out of the design -- x, discord, tiktok -- are
+   left on disk untouched. They were only ever imported here (checked), so they
+   are now unreferenced, but deleting an asset is not this job. */
+import telegram from './telegram-glyph.svg';
 import './Footer.css';
 
-/* A column entry is usually just its label, and its href is that label
-   slugged -- every one of these is a placeholder pointing at a fragment that
-   does not exist yet. About is the exception: that page is real now and lives
-   at a route, so the entry carries its own href rather than being slugged into
-   a dead `#about`. Written as a union so the other fifteen stay one string
-   each and only the ones with somewhere to go grow a second field. */
-type Link = string | { label: string; href: string };
-
-const label = (l: Link) => (typeof l === 'string' ? l : l.label);
-const href = (l: Link) =>
-  typeof l === 'string' ? `#${l.toLowerCase().replace(/\s+/g, '-')}` : l.href;
+/* A link is usually just its label, and its href is that label slugged. Every
+   one of these is a placeholder pointing at a fragment that does not exist
+   yet, exactly as the four columns before them were; the union that let a
+   single entry carry a real href went with the About link it existed for. */
+const slug = (label: string) =>
+  `#${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 
 const COLUMNS = [
-  { title: 'Product', links: ['Markets', 'Fees', 'How it works', 'Security'] },
-  { title: 'Markets', links: ['Crypto', 'Forex', 'Stocks', 'Commodities', 'Indices'] },
-  { title: 'Company', links: [{ label: 'About', href: '/about' }, 'Careers', 'Blog', 'Brand'] },
-  { title: 'Resources', links: ['Docs', 'API', 'Status', 'Support', 'FAQs'] },
+  { title: 'Product', links: ['Markets', 'Portfolio', 'Leaderboard', 'Deposit', 'Withdraw'] },
+  {
+    title: 'Legal',
+    links: ['Terms of Service', 'Privacy Policy', 'Risk Disclosure', 'Deposit & Withdrawal Policy'],
+  },
 ];
 
-const SOCIALS = [
-  { name: 'X', icon: x },
-  { name: 'Discord', icon: discord },
-  { name: 'Telegram', icon: telegram },
-  { name: 'TikTok', icon: tiktok },
-];
+const SOCIALS = ['Telegram channel', 'Telegram chat'];
 
-const LEGAL = ['Terms of Service', 'Privacy Policy', 'Cookie Preferences'];
+/* The glyph is geometry, so it rides the band's design pixel like the badge
+   around it. <Icon> writes width/height inline from `w`/`h`, and spreads
+   `style` after them, so this is the supported way to hand the box to CSS;
+   the 20/20 stays as the value a styleless render would land on. */
+const GLYPH = { width: 'calc(20 * var(--u))', height: 'calc(20 * var(--u))' };
 
 export function Footer() {
   // The band arrives when it is scrolled to; see Footer.motion.ts. `data-motion`
@@ -44,26 +80,22 @@ export function Footer() {
 
   return (
     <footer ref={ref} className="footer" data-motion="pending">
-      <div className="footer__glow glow-fade--top" aria-hidden="true">
-        <span className="footer__g footer__g--red" />
-        <span className="footer__g footer__g--orange" />
-        <span className="footer__g footer__g--peach" />
-        <span className="footer__g footer__g--cream" />
-      </div>
-
       <div className="container footer__inner">
+        <hr className="footer__rule footer__rule--top" />
+
         <div className="footer__top">
           <div className="footer__brand">
             <Logo />
-            <p className="footer__tagline">Off-chain execution, on-chain settlement.<br />Every position, fill and liquidation is independently verifiable.</p>
-            <ul className="footer__socials">
-              {SOCIALS.map((s) => (
-                <li key={s.name}>
-                  <a href={`#${s.name.toLowerCase()}`} className="footer__social" aria-label={s.name}>
-                    <Icon src={s.icon} w={20} h={20} />
-                  </a>
-                </li>
-              ))}
+            <p className="footer__desc">
+              A prediction platform and event markets.<br />
+              Analytics, portfolio and convenient deposit options.
+            </p>
+            {/* One link, in a list, carrying `.footer__links` -- which is what
+                global.css's roll-hover selectors address and what paints a
+                footer link. A bare <a> here would be the only link in the band
+                without the hover. */}
+            <ul className="footer__links footer__contacts">
+              <li><a href="#contacts"><Roll>Contacts</Roll></a></li>
             </ul>
           </div>
 
@@ -73,26 +105,37 @@ export function Footer() {
                 <h2 className="footer__col-title">{c.title}</h2>
                 <ul className="footer__links">
                   {c.links.map((l) => (
-                    <li key={label(l)}><a href={href(l)}><Roll>{label(l)}</Roll></a></li>
+                    <li key={l}><a href={slug(l)}><Roll>{l}</Roll></a></li>
                   ))}
                 </ul>
               </div>
             ))}
+
+            <div className="footer__col footer__col--social">
+              <h2 className="footer__col-title">Social</h2>
+              <ul className="footer__links footer__socials">
+                {SOCIALS.map((s) => (
+                  <li key={s}>
+                    <a href={slug(s)}>
+                      <span className="footer__badge">
+                        <Icon src={telegram} w={20} h={20} style={GLYPH} />
+                      </span>
+                      <Roll>{s}</Roll>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </nav>
         </div>
 
-        <div className="footer__legal">
-          <hr className="footer__rule" />
-          <div className="footer__meta">
-            <p>© 2026 Phorcast Labs. All rights reserved.</p>
-            <ul className="footer__legal-links">
-              {LEGAL.map((l) => <li key={l}><a href={`#${l.toLowerCase().replace(/\s+/g, '-')}`}><Roll>{l}</Roll></a></li>)}
-            </ul>
-          </div>
+        <hr className="footer__rule footer__rule--bottom" />
+
+        <div className="footer__meta">
+          <p>© 2026 Phorcast. All rights reserved.</p>
+          <p>Information on this site does not constitute investment advice.</p>
         </div>
       </div>
-
-      <div className="footer__wordmark" aria-hidden="true"><span>Phorcast</span></div>
     </footer>
   );
 }

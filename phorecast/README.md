@@ -32,7 +32,7 @@ Node 22 or newer.
 | `components/built` | 255:3449 | "Built for the Way You Trade" feature cards |
 | `components/faq` | 297:140 | "Answers you can verify" accordion |
 | `components/HeroLogo` | — | Animated 3D mark, used by the hero and the FAQ |
-| `components/footer` | 302:140 | Footer with the cropped wordmark |
+| `components/footer` | client screenshot (supersedes 302:140) | Brand block, Product / Legal / Social columns, bottom bar |
 
 Nodes 255:2705 and 255:2862 are background-glow frames with no content; their
 treatment lives in the hero and section glows rather than in a component.

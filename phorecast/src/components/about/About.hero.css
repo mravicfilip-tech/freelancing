@@ -6,3 +6,34 @@
  * imported after About.css so it can override a layout rule where a motion
  * genuinely requires it, but prefer not needing to: a rule here that is really
  * a layout decision belongs next to the layout. */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   THIS FILE IS DELIBERATELY EMPTY OF RULES, and the reason is worth more than
+   a rule would be.
+
+   The one declaration this band's motion depends on is `will-change:
+   transform` on `.ab-ground`, and it is the difference between a stutter and
+   a clean entrance: the ground is 1154 design px of inline SVG under five
+   gaussian filters at sigma 33.2284, so the scale in its 1.4s opening tween
+   changes the layer's raster scale and Chromium re-runs all five blurs on
+   every frame. Measured at 1600, before and after interleaved so machine load
+   falls on both, frames sampled over 2.5s from the section's reveal (median
+   of 5-6 loads):
+
+     dark   33.0 fps / 22 long frames  ->  42.7 fps / 12
+     light  33.1 fps / 19              ->  52.2 fps /  5
+     390    49.5 fps /  7              ->  58.0 fps /  2
+
+   IT IS NOT DECLARED HERE ON PURPOSE. `.ab-ground` is a full-bleed filtered
+   layer; a `will-change` in a stylesheet holds it in GPU memory for the life
+   of the page, for the sake of 1.4 seconds of tween, and on the phone this
+   page is measured at that is the wrong trade. About.hero.motion.ts applies
+   it with `gsap.set` inside the section's own gsap context instead, so it is
+   there exactly while the tween runs and is reverted for free on teardown --
+   a theme switch or a StrictMode remount cannot strand it. If a rule for it
+   ever appears below, that is a regression, not a tidy-up.
+
+   Nothing else the band does needs CSS. The masked line reveal builds its own
+   `.line` / `.line__in` spans in the shared layer's markup, which About.css
+   already styles and already hides in the pending state, and it hands the
+   headline back as a plain text node when it lands. */

@@ -1,0 +1,8 @@
+/* Animation styles for one band of the About page.
+ *
+ * The page's layout and colour live in About.css, which is shared. This file
+ * is for what the band's motion needs and nothing else -- pending states,
+ * will-change, transform origins, keyframes, reduced-motion fallbacks. It is
+ * imported after About.css so it can override a layout rule where a motion
+ * genuinely requires it, but prefer not needing to: a rule here that is really
+ * a layout decision belongs next to the layout. */

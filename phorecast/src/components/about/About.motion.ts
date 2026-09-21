@@ -34,7 +34,7 @@
  * out of blur, which reads the same on either ground.
  */
 
-import { EASE, intoLines, rise } from '../../lib/motion';
+import { EASE, rise } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';
 
 /**
@@ -52,7 +52,7 @@ const STEP = 0.7;
 /* Asked per build rather than read at module scope: a module-scope matchMedia
  * is answered once, when the bundle is parsed, so a rotation or a resize would
  * keep whichever schedule the page happened to load under. */
-function schedule() {
+export function schedule() {
   const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
   return {
     cue: (t: number) => (tight ? t * CUE : t),
@@ -71,7 +71,7 @@ function schedule() {
  * it is at its softest and has resolved most of its blur by the time it is
  * fully opaque.
  */
-function outOfBlur(
+export function outOfBlur(
   tl: Timeline,
   targets: gsap.TweenTarget,
   at: number,
@@ -92,57 +92,6 @@ function outOfBlur(
 
 /* ── 1. Hero ──────────────────────────────────────────────────────────────── */
 
-/**
- * 0.00  The ground lights, from the bottom of its own field so the ember
- *       grows up out of the page rather than switching on whole.
- * 0.10  The nav, left to right. It is furniture: it arrives quickly and
- *       quietly and is finished before the headline starts.
- * 0.30  THE HEADLINE, rising out of its own mask and sharpening on the way.
- *       The one object the page leads with, and the largest single movement
- *       on it. It has the frame to itself for 0.65s.
- * 0.95  The description.
- * 1.15  Get Started, last, so the eye ends on the thing to press.
- */
-export function buildAboutHero({ q, tl }: SectionMotion) {
-  const { cue, step } = schedule();
-  const glow = q('.ab-ground')[0];
-  const title = q('.ab-hero__title')[0];
-
-  if (glow) {
-    tl.from(glow, {
-      opacity: 0,
-      scale: 1.05,
-      duration: 1.4,
-      ease: 'power2.out',
-      transformOrigin: '50% 100%',
-      clearProps: 'transform',
-    }, 0);
-  }
-
-  const nav = q('.nav .logo, .nav__links > *, .nav__actions > *, .nav__burger');
-  if (nav.length) {
-    rise(tl, nav, cue(0.1), { y: 8, duration: 0.55, stagger: step(0.05), clearProps: 'transform,opacity' });
-  }
-
-  if (title) {
-    // `intoLines` rewrites the element in place and is idempotent, so a
-    // StrictMode remount reuses the spans that are already there. Safe here
-    // because the headline is plain text; the statement in band 4 is NOT, and
-    // is deliberately animated as one block instead.
-    const lines = intoLines(title);
-    tl.from(lines, {
-      yPercent: 108,
-      filter: 'blur(10px)',
-      duration: 1.15,
-      ease: 'power4.out',
-      clearProps: 'filter',
-    }, cue(0.3));
-    tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, cue(0.3));
-  }
-
-  outOfBlur(tl, q('.ab-hero__lede'), cue(0.95), { y: 14, blur: 6, duration: 0.8, fade: 0.32 });
-  rise(tl, q('.ab-hero__cta'), cue(1.15), { y: 12, duration: 0.7, clearProps: 'transform,opacity' });
-}
 
 /* ── 2. Choose an event ───────────────────────────────────────────────────── */
 
@@ -186,83 +135,12 @@ export function buildChoose({ q, tl }: SectionMotion) {
 
 /* ── 3. About Phorcast ────────────────────────────────────────────────────── */
 
-/**
- * 0.00  The band names itself.
- * 0.24  The card, out of blur. One object, and a wide one.
- * 0.62  The mark — the brand's own glyph, alone, before a word of the copy.
- * 0.78  The two paragraphs.
- * 0.86  The product shot, sliding in from the edge it bleeds off. It is the
- *       one thing on the page that moves horizontally, and it moves the way
- *       the composition already points.
- */
-export function buildBrand({ q, tl }: SectionMotion) {
-  const { cue, step } = schedule();
-
-  rise(tl, q('.eyebrow'), 0, { y: 14, duration: 0.8, clearProps: 'transform,opacity' });
-  outOfBlur(tl, q('.ab-brand__card'), cue(0.24), { y: 20, blur: 9, duration: 0.95, fade: 0.4 });
-  rise(tl, q('.ab-brand__mark'), cue(0.62), { y: 10, duration: 0.6, clearProps: 'transform,opacity' });
-  rise(tl, q('.ab-brand__prose > *'), cue(0.78), {
-    y: 10, duration: 0.6, stagger: step(0.1), clearProps: 'transform,opacity',
-  });
-  outOfBlur(tl, q('.ab-brand__visual'), cue(0.86), { y: 0, x: 44, blur: 6, duration: 1.1, fade: 0.45 });
-}
 
 /* ── 4. Cast your conviction ──────────────────────────────────────────────── */
 
-/**
- * 0.00  The band names itself.
- * 0.24  THE STATEMENT, out of the deepest blur on the page and travelling
- *       furthest. It is the only thing in the band and it is the band.
- * 1.10  The goal line, quieter and shallower, after the statement has settled.
- *
- * The statement is animated AS ONE BLOCK and is never split into lines.
- * `intoLines` rebuilds an element from its `textContent`, which would throw
- * away the `<span class="ab-conv__rest">` that carries the second half of the
- * sentence in a dimmer ink — the type would animate correctly and come to rest
- * one flat colour. Whether the mask is worth that is not a close call.
- */
-export function buildConviction({ q, tl }: SectionMotion) {
-  const { cue } = schedule();
-
-  rise(tl, q('.eyebrow'), 0, { y: 14, duration: 0.8, clearProps: 'transform,opacity' });
-  outOfBlur(tl, q('.ab-conv__statement'), cue(0.24), { y: 24, blur: 12, duration: 1.2, fade: 0.4 });
-  outOfBlur(tl, q('.ab-conv__goal'), cue(1.1), { y: 12, blur: 5, duration: 0.75, fade: 0.3 });
-}
 
 /* ── 5. How it works: price and profit ────────────────────────────────────── */
 
-/**
- * 0.00  The band names itself.
- * 0.24  The card, out of blur.
- * 0.62  The five column heads, left to right — the venues being compared are
- *       named before anything is said about them.
- * 0.95  The five rows, top to bottom, each row's criterion and its five
- *       verdicts arriving together. A row is one statement; splitting the
- *       verdicts out of it would make the reader watch a table fill in
- *       thirty pieces.
- */
-export function buildCompare({ q, tl }: SectionMotion) {
-  const { cue, step } = schedule();
-
-  rise(tl, q('.eyebrow'), 0, { y: 14, duration: 0.8, clearProps: 'transform,opacity' });
-  outOfBlur(tl, q('.ab-cmp__card'), cue(0.24), { y: 20, blur: 9, duration: 0.95, fade: 0.4 });
-
-  const heads = q('.ab-cmp__brand');
-  if (heads.length) {
-    rise(tl, heads, cue(0.62), { y: 10, duration: 0.6, stagger: step(0.07), clearProps: 'transform,opacity' });
-  }
-
-  const rows = q('.ab-cmp__table tbody tr');
-  if (rows.length) {
-    rows.forEach((row, i) => {
-      const cells = Array.from(row.querySelectorAll<HTMLElement>('.ab-cmp__crit, .ab-cmp__vote'));
-      if (!cells.length) return;
-      rise(tl, cells, cue(0.95) + i * step(0.09), {
-        y: 8, duration: 0.5, stagger: step(0.02), clearProps: 'transform,opacity',
-      });
-    });
-  }
-}
 
 /* ── 6. Why is it better than bets or crypto/stocks? ──────────────────────── */
 
@@ -281,3 +159,10 @@ export function buildPrimer({ q, tl }: SectionMotion) {
   outOfBlur(tl, cards, at, { y: 22, blur: 9, duration: 0.95, stagger: cardStep, fade: 0.4 });
   fillCards(tl, cards, at, cardStep, step, '.ab-why__title, .ab-why__body > *');
 }
+
+/* The four bands that live in their own files now. Re-exported here so that
+   About.tsx keeps importing every builder from one place. */
+export { buildAboutHero } from './About.hero.motion';
+export { buildBrand } from './About.brand.motion';
+export { buildConviction } from './About.conv.motion';
+export { buildCompare } from './About.cmp.motion';

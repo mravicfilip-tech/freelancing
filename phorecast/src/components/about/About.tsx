@@ -55,6 +55,12 @@ import logoPolymarket from '../../assets/about/logo-polymarket.png';
 import logoPredictfun from '../../assets/about/logo-predictfun.png';
 import logoMagicmarkets from '../../assets/about/logo-magicmarkets.png';
 import './About.css';
+/* One per band, imported after About.css so a motion rule can override a
+   layout one where it has to. See the header in any of them. */
+import './About.hero.css';
+import './About.brand.css';
+import './About.conv.css';
+import './About.cmp.css';
 
 /* <Icon> writes `w`/`h` inline, which beats any stylesheet rule without
    `!important` -- so a mark given a box in `--u` would sit at a hard 26 x 30

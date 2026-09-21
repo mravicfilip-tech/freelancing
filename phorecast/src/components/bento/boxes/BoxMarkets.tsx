@@ -259,9 +259,16 @@ export function BoxMarkets() {
         </div>
 
         {/* 365:1093 */}
+        {/* SPORTS IS IN THE LIST BUT NOT IN THE FIELD. The body below names the
+            six categories the product now sells, sports included. The field
+            above is a row of instrument marks -- Gold, Apple, DAX, Doge, Oil,
+            Solana, Tesla and the rest -- and there is no sports mark anywhere
+            in src/assets. Inventing one here would be inventing a product
+            fact, so the list is text-complete and the artwork is knowingly one
+            category short until a mark is supplied. */}
         <div className="bcard__text">
           <h3 className="bcard__title">Trade every market from one account</h3>
-          <p className="bcard__body">Crypto, forex, commodities, indices and equities.</p>
+          <p className="bcard__body">Crypto, stocks, indices, commodities, forex and sports.</p>
         </div>
 
         {/* 365:1096 */}

@@ -10,9 +10,9 @@ import type { SectionMotion } from '../../lib/motion';
 import './Bento.css';
 
 
-/* Card A — Open an account in 60 seconds */
+/* Card A — Open an account in under two minutes */
 
-/* Card B — Your funds leave whenever you want */
+/* Card B — You can never lose more than you stake */
 
 /* Card C — Double your capital on first deposit */
 
@@ -229,7 +229,7 @@ export function Bento() {
         <div className="bento__card">
           <header className="bento__head">
             <h2 id="why-title" className="bento__title">Why Traders Move to Phorcast</h2>
-            <p className="bento__sub">The tools incumbents can't give you, on infrastructure that never holds your funds.</p>
+            <p className="bento__sub">The tools incumbents can't give you, on prediction markets for real-world events.</p>
           </header>
           <div className="bento__grid">
             <div className="bento__col bento__col--left">

@@ -52,8 +52,28 @@ import { schedule, outOfBlur } from './About.motion';
  * memory for the life of the page, and the tween is 1.4s long. gsap.set
  * inside the section's context is also reverted for free on teardown, so a
  * theme switch or a StrictMode remount cannot strand the promotion.
+ *
+ * AND IT IS scaleY, NOT scale, WHICH IS A CORRECTNESS FIX AND NOT A TASTE
+ * ONE. `.ab-ground` is `left: 0; right: 0` -- exactly as wide as the
+ * document -- so a uniform 1.05 about a horizontal centre hangs 2.5% of the
+ * viewport off EACH edge and the document's scrollWidth grows by 5% of its
+ * own width for the length of the tween. Measured per frame at scroll top:
+ * 40px at 1600, 9.75 at 390, 9 at 360, from the frame the section mounts
+ * until the tween resolves, at every width and in both themes; with the
+ * scale removed it is zero on every frame of four seconds. `body` carries
+ * `overflow-x: hidden`, which propagates to the viewport and is why no
+ * scrollbar was ever drawn -- but a page that reports a wider document than
+ * it has is one stylesheet change away from drawing one, and the About page
+ * is clean at every width otherwise.
+ *
+ * Nothing is lost by dropping the horizontal half. The beat is "the ember
+ * grows up out of the page", the origin is the bottom edge, and 2.5% of
+ * horizontal travel on a field whose every shape is a sigma-33 gaussian is
+ * not a thing anyone can see. The vertical half is the whole of it, and it
+ * cannot overflow: the growth is upward from the bottom edge, and a document
+ * does not scroll into the space above its own top.
  */
-const GROUND = { opacity: 0, scale: 1.05, duration: 1.4, ease: 'power2.out' } as const;
+const GROUND = { opacity: 0, scaleY: 1.05, duration: 1.4, ease: 'power2.out' } as const;
 
 /* Up to this many visual lines get their own mask; past it the headline is
  * revealed as one. Three, because that is where the phone starts: the title
@@ -161,8 +181,8 @@ function unmask(el: HTMLElement) {
 }
 
 /**
- * 0.00  THE GROUND. The frame's light field, opacity and scale together from
- *       the bottom of its own box, 1.4s -- slow, because it is a light
+ * 0.00  THE GROUND. The frame's light field, opacity and height together
+ *       from the bottom of its own box, 1.4s -- slow, because it is a light
  *       coming up and not an element arriving, and because everything else
  *       in the band plays over it.
  *

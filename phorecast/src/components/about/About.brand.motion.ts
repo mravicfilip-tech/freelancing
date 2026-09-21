@@ -59,6 +59,14 @@
  * smoothing is on (src/lib/motion.ts says why), so the cost would not show up
  * as a dropped entrance; it would show up as a late one.
  *
+ * Measured, by running this exact travel on the real layer with and without
+ * the filter, six times each, interleaved: the blurred slide dropped 33 of 299
+ * frames past 24ms against 12 of 319 without it, and one blurred run held a
+ * median frame of 30.3ms -- the whole slide at half rate. On a quiet machine
+ * the gap narrows and does not change sign: p95 22.1-22.7ms against
+ * 17.3-20.0ms. The median frame is 16.7ms either way; what the filter costs is
+ * the tail, which is the part anyone sees.
+ *
  * There is a second reason, and it is the light-mode mask. CSS resolves
  * `filter` BEFORE `mask`, and `mask-clip` is border-box by default -- so on a
  * masked element a blur's bleed is clipped at the layer's own edges, and on an

@@ -32,7 +32,9 @@
  * `clearProps`. Faq.motion.ts refuses standing promotion for text because it
  * costs subpixel antialiasing; this refuses it for a raster because it costs
  * the memory permanently and buys nothing GSAP is not already doing. Measured
- * either way at 1600: median frame 16.7ms through the slide, no long tasks.
+ * with and without it at 1600: median frame 16.7ms through the slide either
+ * way, which is the whole point -- the promotion GSAP already makes for the
+ * length of the tween is the promotion that was wanted.
  *
  * NO `transform-origin`. Nothing in this band scales or rotates -- the shot
  * travels on one axis and the type rises -- so the default is never consulted.

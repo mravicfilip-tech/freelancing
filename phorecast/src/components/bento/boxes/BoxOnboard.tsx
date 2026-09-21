@@ -125,10 +125,16 @@ export function BoxOnboard() {
             <img className="onb__arc" src={ringArc} alt="" width={90.8153} height={64.3651} />
           </span>
           {/* The resting numerals, and what motion/onboard.ts winds down from.
-              Four glyphs now rather than three; Geist Mono is monospaced, so
-              the box is 120 design pixels wide at every count the dial paints
-              and BoxOnboard.css re-centres it once. */}
-          <span className="onb__seconds">2:00</span>
+              m:ss, and one element per DIGIT rather than one string: the face
+              is proportional now and the fallback has no tabular figures, so a
+              plain string re-measures itself on every tick and the count
+              crawls. Each digit gets a 1ch cell instead. See BoxOnboard.css. */}
+          <span className="onb__seconds">
+            <i className="onb__digit">2</i>
+            <i className="onb__colon">:</i>
+            <i className="onb__digit">0</i>
+            <i className="onb__digit">0</i>
+          </span>
         </span>
 
         <span className="onb__in">You&rsquo;re in.</span>

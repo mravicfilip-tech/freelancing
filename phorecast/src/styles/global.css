@@ -112,6 +112,56 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   html { scroll-behavior: auto; }
 }
 
+/* Tabular figures on every number that MOVES -------------------------------
+   This list is here, in one place, rather than spread over the eight section
+   files that own these elements, because it is one rule with one reason and a
+   reader needs to be able to audit it as a set. It is also a list that only
+   grows: anything new that counts, ticks or walks belongs on it.
+
+   The reason. The label face used to be Geist Mono, where every glyph is one
+   advance, so a digit rolling from 8 to 1 moved nothing. Galano Grotesque is a
+   geometric sans and is proportional, as is every face in its fallback stack
+   and as are Manrope and Inter Tight, which is what several of these figures
+   are actually set in. A counter animating through values in a proportional
+   face re-measures its own string on every frame: the digits shuffle
+   sideways, a centred figure breathes in and out, and a right-aligned one
+   walks. `tabular-nums` locks the ten digits to a single advance and the
+   string stops moving.
+
+   Three of these were ALREADY proportional before the font change -- the
+   ticker price, the slide-3 countdown and the two Steps balances are display
+   and body type, not label type -- so they were already jittering and this
+   fixes them too. The rest are new exposure from the swap.
+
+   `font-feature-settings: 'tnum'` repeats the request for engines that predate
+   `font-variant-numeric`. Both are no-ops on a face without the feature, which
+   is the one thing here that cannot be confirmed until the real Galano files
+   land: see the note on --font-label in tokens.css. Nothing on this list is
+   width-critical enough to break without it -- the tightest, .s1__amount, has
+   room measured at every width -- but .onb__seconds would visibly crawl again,
+   and the answer there would be a stated width rather than a feature.
+
+   .onb__seconds is NOT in this list. It states the same two properties itself,
+   next to the centring it depends on, because there the argument is local. */
+.ticker__price,                          /* hero contract strip, random walk  */
+.sl3-countdown__value,                   /* hero slide 3, the rolling digits  */
+.s1__amount,                             /* Steps 1, counts 0 -> $3,280       */
+.s2__balance-amt,                        /* Steps 2, counts up the balance    */
+.s3__price-int, .s3__price-dec,          /* Steps 3, the live price           */
+.s3__delta,                              /* Steps 3, the percentage beside it */
+.box-bonus__amt--deposit strong,         /* bento C, deposit tally            */
+.box-bonus__amt--bonus strong,           /* bento C, bonus tally              */
+.fam__mkt-value,                         /* Familiar, NVDA price ticks        */
+.fam__mkt-foot,                          /* Familiar, its day percentage      */
+.fam__row-pct,                           /* Familiar, the leaderboard walk    */
+.fam__gauge,                             /* Familiar, the ring percentage     */
+.fam__pred-bar span,                     /* Familiar, prediction percentages  */
+.fam__pred-meta,                         /* Familiar, prediction volumes      */
+.fam__event-meta {                       /* Familiar, the m:ss event clock    */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
 /* Swap hover ---------------------------------------------------------------
    Direction 03 from hover-lab.html, applied to every button, menu link and
    footer link. The label rolls: the live copy leaves through the top of its

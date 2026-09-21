@@ -75,7 +75,11 @@ export function onboard(card: HTMLElement): () => void {
     flare0: tok('--bento-onb-flare-0', '0 0 0px rgba(255, 251, 248, 0)'),
   };
 
-  const restingSeconds = seconds.textContent ?? '2:00';
+  // One cell per digit -- see BoxOnboard.css. The colon is not a cell, so the
+  // three digits are all this has to paint, and the resting value is what the
+  // markup shipped rather than a literal restated here.
+  const digits = Array.from(seconds.querySelectorAll<HTMLElement>('.onb__digit'));
+  const restingSeconds = digits.map((d) => d.textContent ?? '0');
   const staged = bandStaged(card);
   let stopReady: () => void = () => {};
   let stopVisible: () => void = () => {};
@@ -103,13 +107,18 @@ export function onboard(card: HTMLElement): () => void {
        rotate, defaulting to 0deg, so the resting render is untouched. */
     const dial = { deg: 0, s: DIAL_SECONDS };
     const paintArc = () => arcBox.style.setProperty('--onb-spin', `${dial.deg.toFixed(2)}deg`);
-    // Geist Mono is monospaced and the colon advances like a digit, so m:ss is
-    // the same four-glyph box at every count and the numerals never shift under
-    // themselves. The pad is on the seconds for the same reason the old
-    // seconds-only dial had one.
+    // m:ss has to be the same width at every count, or the numerals crawl
+    // sideways as the dial winds down. That used to be free: the old face was
+    // monospaced and its colon advanced like a digit. It is bought deliberately
+    // now -- three fixed cells in BoxOnboard.css, one digit written into each,
+    // and the element centred on the ring rather than anchored by a left offset
+    // computed from a glyph width. The pad is on the seconds for the same
+    // reason the old seconds-only dial had one; it is what makes m:ss always
+    // exactly three digits and so always exactly three cells.
     const paintCount = () => {
       const t = Math.round(dial.s);
-      seconds.textContent = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+      const s = `${Math.floor(t / 60)}${String(t % 60).padStart(2, '0')}`;
+      for (let i = 0; i < digits.length; i++) digits[i].textContent = s[i] ?? '0';
     };
 
     /* ---------------------------------------------------------------- loop */
@@ -164,7 +173,7 @@ export function onboard(card: HTMLElement): () => void {
     stopVisible();
     ctx.revert();
     // `revert` puts the inline styles back; the text content is ours to undo.
-    seconds.textContent = restingSeconds;
+    digits.forEach((d, i) => { d.textContent = restingSeconds[i] ?? '0'; });
     arcBox.style.removeProperty('--onb-spin');
   };
 }

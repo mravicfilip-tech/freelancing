@@ -1163,14 +1163,28 @@
    fades in over its first eighth, which is what the dark card was doing for
    free. The composition still bleeds off the right, the image is untouched,
    and the geometry does not move. It is stated only for light because in dark
-   it would remove nothing that is visible. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) .ab-brand__visual {
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+   it would remove nothing that is visible.
+
+   AND ONLY ABOVE 1100, WHICH IS THE WHOLE POINT OF IT. The edge this dissolves
+   is an artifact -- the seam where the composite stops, halfway across the card
+   and with nothing there to end on. That only exists while the shot is the
+   card's right-hand half. At 1100 and below the card stacks, the shot becomes
+   full width, and its left edge stops being a seam and starts being the left
+   edge of the laptop, which is a real edge of an intentional photograph.
+   Fading it there washes out the first eighth of the picture for no reason:
+   measured at 390 the layer starts at x41 inside a card starting at x20, so
+   the mask was dissolving 43px of a 328px photograph into the plate, while the
+   right-hand side bled crisply. Stated unconditionally it fixed one
+   arrangement and damaged the other. */
+@media (min-width: 1101px) {
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .ab-brand__visual {
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+      mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+    }
   }
-}
-:root[data-theme='light'] .ab-brand__visual {
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  :root[data-theme='light'] .ab-brand__visual {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  }
 }

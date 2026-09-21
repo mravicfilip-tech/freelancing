@@ -306,7 +306,15 @@
   .footer__col { width: calc(50% - 16px); }
   .footer__meta { flex-direction: column; gap: 12px; font-size: 14px; }
   .footer__legal-links { gap: 16px; }
-  .footer__wordmark { height: 90px; margin-top: 16px; }
+  /* The wordmark's height and margin are NOT restated here. They used to be
+     -- `height: 90px; margin-top: 16px` -- and because this block sits after
+     the one at the top of the file at the same specificity and the same
+     breakpoint, it silently won, and the phone fix above only half applied:
+     `--fw` sized the glyphs, so the wordmark stopped running off the screen,
+     but the box stayed 90px instead of following the size, so the bottom
+     crop that is the whole device drifted with the viewport. Measured at 360
+     the box was 90px where the rule above asks for 58.2px. Size and box are
+     set together up there; nothing about them belongs down here. */
 }
 
 /* Pending state, the same contract as the bento and the pillars. `gsap.from()`

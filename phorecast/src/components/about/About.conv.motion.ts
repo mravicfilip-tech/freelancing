@@ -35,6 +35,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* THE STATEMENT FILLS AS YOU SCROLL, AND THE GRAIN IS THE WORD.
  * ---------------------------------------------------------------------------
+ * THE CHOREOGRAPHY IS THE CLIENT'S OWN, from `src/components/Manifesto.jsx` in
+ * their portfolio, and the numbers below are theirs as written: the band pins,
+ * the scroll it absorbs drives the fill, every word rests at 15% and brightens
+ * to full in sequence with each word's fade overlapping its neighbour by half,
+ * and the paragraph is FINISHED about three quarters of the way through and
+ * holds at full while the band is still pinned. They are not re-tuned here.
+ * One of them did not survive contact with this page and it is called out
+ * where it is changed, with the measurement that forced it.
+ *
+ * THE PIN IS THE EFFECT. Without it the copy fills while travelling past the
+ * reader, which is a different thing and is what the client rejected: the
+ * band locks to the viewport, the paragraph fills IN PLACE, and the page moves
+ * on only once it has been read.
+ *
  * Per LINE is the other defensible grain and it was rejected on a measurement.
  * Counted on the page, the statement wraps to 6 lines at 1600 and at 1100, 8
  * at 720, 18 at 390 and 21 at 360 -- so a per-line reveal is a six-step move
@@ -52,110 +66,101 @@ gsap.registerPlugin(ScrollTrigger);
  * The word is the only grain that is width-invariant. Forty words is forty
  * words at 1600 and at 360, so the reveal has the same texture on a phone as
  * on a desktop while the line count triples underneath it, and the wave
- * advances in the unit the reader is actually consuming.
+ * advances in the unit the reader is actually consuming. It is also the grain
+ * the reference uses.
  *
- * WHY THE WORDS CARRY THEIR OWN PAINT. `.ab-conv__statement` paints its type
- * with a gradient clipped to the text (About.css), and in Chromium a
- * descendant that gets its own paint layer -- anything with an opacity, a
- * filter or a transform -- is EXCLUDED from that text clip. Measured on this
- * page: wrapping the words and putting `opacity: 0.2` on every other one does
- * not dim "WE", "FOUNDED" and the rest of the gradient-painted run, it deletes
- * them; only the words inside `.ab-conv__rest`, which carry an opaque
- * `-webkit-text-fill-color` of their own, survive. So a word that is going to
- * be animated has to paint itself. `.ab-conv__w--lead` in About.conv.css
- * reproduces the block's gradient per word from `--ab-conv-gw` and
- * `--ab-conv-gx`, which is what `anchorLead` below measures: same stops, same
- * block-width ramp, same last-letter turnover, one element down.
+ * WHY THE WORDS CARRY THEIR OWN PAINT, and this is the one piece of machinery
+ * the reference does not need. Their words fill toward their own designed
+ * colour, so plain opacity on a SplitText word is enough. Ours cannot:
+ * `.ab-conv__statement` paints its type with a gradient clipped to the text
+ * (About.css), and in Chromium a descendant that gets its own paint layer --
+ * anything with an opacity, a filter or a transform -- is EXCLUDED from that
+ * text clip. Measured on this page: wrapping the words and putting
+ * `opacity: 0.2` on every other one does not dim "WE", "FOUNDED" and the rest
+ * of the gradient-painted run, it DELETES them; only the words inside
+ * `.ab-conv__rest`, which carry an opaque `-webkit-text-fill-color` of their
+ * own, survive. So a word that is going to be animated has to paint itself.
+ * `.ab-conv__w--lead` in About.conv.css reproduces the block's gradient per
+ * word from `--ab-conv-gw` and `--ab-conv-gx`, which is what `anchorLead`
+ * below measures: same stops, same block-width ramp, same last-letter
+ * turnover, one element down.
  *
  * WHY NOT ANIMATE THE GRADIENT'S OWN STOPS, which is the obvious move: the
  * stops are percentages of the BLOCK, so the same pair of numbers is a
  * different word at every viewport, and a 90deg gradient has no idea where the
  * lines break -- it can sweep a rectangle and never a sentence.
  *
- * WHY `intoLines` IS NOT USED, restated because the reason survived the
- * rewrite: it rebuilds an element from its `textContent`, which throws away
- * the `<span class="ab-conv__rest">` that carries the second half of the
- * sentence in a dimmer ink. `intoWords` below walks the tree instead, so the
- * span -- and the two colour regimes either side of it -- is still there
- * afterwards.
+ * WHY `intoLines` IS NOT USED, and why SplitText is not either: `intoLines`
+ * rebuilds an element from its `textContent`, which throws away the
+ * `<span class="ab-conv__rest">` that carries the second half of the sentence
+ * in a dimmer ink -- and SplitText would flatten it the same way, which is why
+ * the reference can author its emphasis as an injected HTML string and we
+ * cannot. `intoWords` below walks the tree instead, so the span -- and the two
+ * colour regimes either side of it -- is still there afterwards.
  */
 
 const WORD = 'ab-conv__w';
 const LEAD = `${WORD}--lead`;
 
-/** Where a word sits before the fill reaches it. Alpha over the band's own
- *  ground, so it is the same move on paper as on black and inverts nothing. */
-const DIM = 0.22;
-/** How long one word takes, and how far apart the first and last words start.
- *  The wave that travels through the sentence is `WORD_IN / SPREAD` of it --
- *  0.3 against 1 is twelve of the forty words in transition at any moment.
- *  Long enough that no single word pops on, short enough that the opening has
- *  resolved while the last line is still a ghost, which is the whole reading
- *  of the move. */
-const WORD_IN = 0.3;
-const SPREAD = 1;
+/* THE REFERENCE'S NUMBERS. Changing one of these changes the feel of the fill,
+   which is settled; they are here as named constants so that is obvious. */
 
-/* THE TRIGGER'S GEOMETRY, and the reason it is stated against the STATEMENT
- * rather than against the band.
+/** Where a word rests before the fill reaches it. Alpha over the band's own
+ *  ground, so it is the same move on paper as on black and inverts nothing. */
+const DIM = 0.15;
+/** With a scrub the absolute values are irrelevant; `duration: 2` against
+ *  `stagger: 1` just means each word's fade overlaps its neighbour by half --
+ *  a soft wave rather than a hard word-by-word step. The reference's comment,
+ *  and the half of the effect that is not the pin. */
+const WORD_IN = 2;
+const SPREAD = 1;
+/** The empty tween after the fill: the hold at full, while still pinned.
+ *  Sized from the word count rather than written down, because the reference's
+ *  20 is 20 for ITS word count -- their fill runs `1 x (words - 1) + 2` = 57
+ *  units and 20 of those is the last quarter. Ours is 41 units for 40 words,
+ *  so the same last quarter is 41/3. */
+const holdFor = (words: number) => (SPREAD * (words - 1) + WORD_IN) / 3;
+
+/* THE TRIGGER'S GEOMETRY.
  *
- * `.ab-conv__inner` is `justify-content: center` in a 722-unit min-height and
- * the statement's wrap changes with width, so where the copy sits inside the
- * band is not a fixed fraction of it: the eyebrow falls 110px below the band
- * top at 1600, 44 at 1100 and 24 at 390 (About.css records the measurement).
- * Any start/end phrased as a fraction of the BAND therefore means a different
- * place in the copy at every width. Phrased against the statement's own box it
- * means the same thing everywhere.
+ * `start` and `end` are the reference's: the band's top meets the top of the
+ * screen, and the pin then absorbs 170% of a screen of scrolling. Stated
+ * against the VIEWPORT rather than against anything inside the band, which is
+ * what makes the pin immune to this band's one awkward property -- it is
+ * `justify-content: center` in a 722-unit min-height and the statement's wrap
+ * changes with width, so the eyebrow falls 110px below the band top at 1600,
+ * 44 at 1100 and 24 at 390. Under a pin none of that reaches the trigger.
  *
- * THE END IS TWO RULES AND THE EARLIER ONE WINS, and it is two because the
- * statement is not the same shape at both ends of the range: measured, it is
- * 288px tall in a 900 viewport at 1600 -- a third of the screen -- and 605 in
- * a 780 viewport at 360, which is more than three quarters of it.
+ * THE ONE NUMBER THAT DID NOT SURVIVE CONTACT, and only at one width. Their
+ * section is `100svh`, so `top top` always shows the whole of it. Ours is not
+ * viewport-height: measured, the band is 668px tall in a 900 viewport at 1600,
+ * 430 in 900 at 720 and 727 in 844 at 390 -- all comfortably inside -- but 813
+ * in a 780 viewport at 360. Pinned at `top top` the bottom 33px of it are
+ * below the fold for the whole 170%, and the inner's bottom padding at that
+ * width is 24px, so 9px of the goal line is cut off and STAYS cut off while
+ * the reader is held there.
  *
- * CENTRED reads best and is the rule that governs at the wide widths: finish
- * when the sentence's own centre reaches 45% of the screen, and it comes to
- * rest a little above the middle with room above and below. Applied to the
- * phone it is too late -- a sentence that is 78% of the screen tall, centred,
- * has 87px of headroom and 250ms of the reader's own scrolling eats most of
- * it, so the first line is grazing the top edge as the last word lands.
+ * `bottom bottom` where the band is taller than the screen moves that 33px to
+ * the TOP of the band, where it is the band's own `--ab-gap` padding -- 56px
+ * of empty space at 360 -- so nothing that is drawn is lost. At every width
+ * where the band fits, the two are the same pin and this reads exactly as the
+ * reference's `top top`.
  *
- * So the second rule is a ceiling on that: never later than the point where
- * the first line has climbed to 12% of the screen. At 1600 the centre rule is
- * the earlier of the two and wins by 153px; at 360 the ceiling is. Both are
- * stated against the statement's own box, so both mean the same thing at every
- * width.
- *
- * DRIVEN AND MEASURED, in both themes, at the moment the last word lands --
- * the statement's top and bottom against the viewport, and the scroll spent
- * getting there:
- *
- *   1600 x 900   6 lines, 288 tall    213..501 of 900    625px
- *   1100 x 850   6 lines, 198 tall    218..441 of 850    600px
- *    720 x 900   8 lines, 230 tall    238..468 of 900    600px
- *    390 x 844  18 lines, 518 tall     81..599 of 844    700px
- *    360 x 780  21 lines, 605 tall     41..646 of 780    675px
- *
- * Every line of the sentence is on screen at every one of them, and the fill
- * is spent over two thirds to four fifths of a screen of scrolling wherever it
- * runs. The numbers sit inside the trigger's own end because the reader keeps
- * scrolling through the quarter-second the latch takes to finish the last
- * words; at 360 the end itself puts the top line 94px clear and what is
- * measured is 41.
- *
- * `end` is therefore a function returning a scroll position rather than one of
- * ScrollTrigger's strings -- a string can say one of these and not the lesser
- * of them -- and being a function it is re-evaluated on every refresh, which
- * is what resize and font-load both end in.
- */
-const START = 'top 88%';
-/** Where the sentence's centre has got to when the fill is done. */
-const END_CENTRE = 0.45;
-/** ...unless its first line has got this high first. */
-const END_CEILING = 0.12;
-/** A little smoothing, so a trackpad's jitter does not read in the type. Kept
- *  short: what the scrub lags by is what the reader scrolls past before the
- *  last words land, and on the phone that is headroom at the top of the
- *  sentence. */
-const SCRUB = 0.3;
+ * THE OTHER CONSEQUENCE OF NOT BEING 100vh, which is left alone because the
+ * measurement says it costs nothing. Where the band is SHORTER than the screen
+ * -- 669 in 900 at 1600 -- the strip below it is not part of the pinned
+ * element, so the next band climbs into the bottom of the frame over the last
+ * stretch of the pin. Measured at 1600 x 900: the pin runs 1340 to 2870, the
+ * statement is full at 2552 (79% of it) and the first pixel of HOW IT WORKS
+ * appears at 2638 (85%). The paragraph is finished before anything else is on
+ * screen, which is what the hold quarter is for, so the fill is never competing
+ * with it. Closing the strip would mean either cutting the reference's 170% or
+ * giving the band a viewport height, and the second is a layout decision in
+ * About.css rather than a motion one. */
+const START_FITS = 'top top';
+const START_TALL = 'bottom bottom';
+const END = '+=170%';
+const SCRUB = 1;
 
 /**
  * Split a statement into per-word spans WITHOUT flattening it.
@@ -238,23 +243,25 @@ function anchorLead(p: HTMLElement) {
  * 0.00  The band names itself.
  * 0.24  THE STATEMENT, out of the deepest blur on the page and travelling
  *       furthest. It is the only thing in the band and it is the band. It
- *       arrives at 22% -- present, legible as a shape, not yet read.
+ *       arrives at 15% -- present, legible as a shape, not yet read.
  * 1.10  The goal line, quieter and shallower, after the statement has settled.
  *
- * ...and then, ON SCROLL AND NOT ON THE CLOCK, the statement fills word by
- * word from the first to the last, and stays filled.
+ * ...and then the band PINS, and the scroll it absorbs fills the statement
+ * word by word, in place, and holds it full for the last quarter before the
+ * page is allowed to move on.
  *
  * The fill is not a second arrival. The band's one arrival is still the
- * statement's, on the timeline above, and the fill cannot overlap it: the
- * entrance is over long before the reader has scrolled the statement up to
- * where the trigger starts. Nothing else in the band moves while the fill
- * runs, and it only runs while the reader is the one moving.
+ * statement's, on the timeline above, and the two cannot overlap: the entrance
+ * fires as the band crosses the shared -5% gate, which is most of a screen of
+ * scrolling before its top reaches the top of the screen and the pin engages.
+ * Nothing else in the band moves while the fill runs, and it only runs while
+ * the reader is the one moving.
  *
  * The statement is animated AS ONE BLOCK for the entrance -- the travel, the
  * blur and the fade are on the <p>, unchanged -- and only the fill reaches
  * inside it.
  */
-export function buildConviction({ q, tl }: SectionMotion) {
+export function buildConviction({ el, q, tl }: SectionMotion) {
   const { cue } = schedule();
   const statement = q('.ab-conv__statement')[0];
 
@@ -267,71 +274,114 @@ export function buildConviction({ q, tl }: SectionMotion) {
   if (!words.length) return;
   anchorLead(statement);
 
-  /* THE DIM STATE IS SET ON EVERY WORD UP FRONT, and that is not belt and
-   * braces -- a staggered `fromTo` does not do it. Measured here: with the
-   * words in one `fromTo`, only the FIRST target had its start value written;
-   * every later word had no inline opacity at all and computed to 1 until its
-   * own turn in the stagger came round. The sentence therefore read as fully
-   * lit from the moment the band arrived, and what travelled through it on
-   * scroll was a wave of words DIMMING to 22% and coming back -- the exact
-   * inverse of the move. Setting first and tweening `to` states both ends the
-   * way the house rule about `from` asks for, and it cannot be undone by a
-   * stagger's render order. */
+  /* The reference's tween, and then its empty tween -- the hold at full while
+   * the band is still pinned.
+   *
+   * `fromTo` and not `from`, per the house rule, and per the reference. The
+   * `gsap.set` in front of it is this page's own and is NOT redundant: a
+   * staggered tween whose later targets have not started yet can be left with
+   * no inline value at all until their turn comes round, and a word of this
+   * statement with no inline opacity computes to 1, not to DIM. Measured on an
+   * earlier build of this band with an object stagger: the sentence read fully
+   * lit from the moment it arrived and what travelled through it on scroll was
+   * a wave of words DIMMING and coming back, the exact inverse of the move.
+   * One `set` costs nothing and makes the resting state true of every word
+   * from the first painted frame. */
   const fill = gsap.timeline({ paused: true });
   gsap.set(words, { opacity: DIM });
-  fill.to(words, { opacity: 1, duration: WORD_IN, ease: 'none', stagger: { amount: SPREAD, ease: 'none' } });
+  fill
+    .fromTo(words,
+      { opacity: DIM },
+      { opacity: 1, ease: 'none', duration: WORD_IN, stagger: SPREAD })
+    .to({}, { duration: holdFor(words.length), ease: 'none' });
+
+  /* THE PIN AND THE FILL ARE TWO TRIGGERS ON THE SAME GEOMETRY, and that is
+   * this page's decision rather than the reference's shape.
+   *
+   * The reference carries both on one trigger because it has nothing that
+   * needs to retire the fill. We do: this band's brief is that the statement
+   * HOLDS at full once it has been read, including on the way back up, which
+   * the reference's scrub does not do -- scroll back into its pinned section
+   * and the paragraph un-fills. The only way to stop a scrub reversing is to
+   * kill the trigger driving it, and killing a PINNED trigger removes its
+   * spacer: the document would lose 170% of a screen under the reader's
+   * thumb, mid-scroll, which is a page jump and not a hold.
+   *
+   * So the pin is its own trigger and is never killed, and the fill is its
+   * own and is killed by the latch. Same trigger element, same start, same
+   * end, so they pin and scrub over exactly the same stretch.
+   */
+  const start = () => (el.offsetHeight > window.innerHeight ? START_TALL : START_FITS);
+
+  ScrollTrigger.create({
+    trigger: el,
+    start,
+    end: END,
+    pin: el,
+    anticipatePin: 1,
+    invalidateOnRefresh: true,
+    /* REFRESH ORDER, and why this is not the reference's 2.
+     *
+     * Pins change document height, so they have to be measured top-down or a
+     * pin inserted above another one leaves every position the lower one
+     * computed stale. Theirs is 2 because their pinned section comes FIRST and
+     * has a second pin below it to beat.
+     *
+     * Ours is the fourth of six bands and, measured, the only ScrollTrigger on
+     * this page at all -- the landing hero's mark is the only other one in the
+     * app and it lives on the other route. So there is nothing above this to
+     * be ordered against and the reference's number has no counterpart here.
+     * What 1 buys is local and real: it puts the pin ahead of the fill trigger
+     * below, which reads the same start and end, and it leaves 2 and up free
+     * for a band EARLIER in the document if this page ever gains a second pin.
+     * A pin added above this one must take a higher number than this. */
+    refreshPriority: 1,
+  });
 
   /* ONCE FULL, IT STAYS FULL. Up to that point the fill follows the scroll in
-   * both directions, which is what "follows the scroll" means; past it the
-   * trigger is killed and the timeline is finished off, so scrolling back up
-   * into the band and down again finds a sentence that has already been read
-   * rather than one that un-reads itself. The finishing tween rather than a
-   * bare `progress(1)` is for the smoothing: at the moment the end is crossed
-   * the scrub is still a few words behind, and snapping those on would be the
-   * one visible discontinuity in the whole move.
+   * both directions; past the end the fill's trigger is killed -- the pin's is
+   * not -- and the timeline is finished off, so scrolling back up into the
+   * band and down again finds a sentence that has already been read.
    *
-   * It takes the trigger from its own callback rather than closing over the
-   * variable holding it, because the first `onRefresh` fires from INSIDE
-   * `ScrollTrigger.create` -- before that variable has been assigned. Closing
+   * The finishing tween rather than a bare `progress(1)` is for the smoothing:
+   * at the moment the end is crossed the scrub is still behind, and snapping
+   * the remainder on would be the one visible discontinuity in the move. With
+   * the reference's hold quarter in front of it there is normally nothing left
+   * to finish, which is the hold doing exactly what its comment says it does:
+   * absorbing the scrub lag.
+   *
+   * `latch` takes the trigger from its own callback rather than closing over
+   * the variable holding it, because the first `onRefresh` fires from INSIDE
+   * `ScrollTrigger.create`, before that variable has been assigned. Closing
    * over it would be a temporal-dead-zone throw on the one path that matters
    * most: a band built when the reader is already past it. */
   let latched = false;
   const latch = (self: ScrollTrigger) => {
     if (latched) return;
     latched = true;
-    // `kill(revert, allowAnimation)`, and the second argument is the load-
-    // bearing one: left off, ScrollTrigger kills the timeline it was driving
-    // as well, and the finishing tween below would then be pushing progress
-    // into something already dead.
+    // `kill(revert, allowAnimation)`, and the second argument is load-bearing:
+    // left off, ScrollTrigger kills the timeline it was driving as well, and
+    // the finishing tween below would be pushing progress into something
+    // already dead.
     self.kill(false, true);
     gsap.to(fill, { progress: 1, duration: 0.25, ease: 'none', overwrite: true });
   };
 
-  const st = ScrollTrigger.create({
+  const fillST = ScrollTrigger.create({
     animation: fill,
-    trigger: statement,
-    start: START,
-    // The lesser of the two rules argued above, as an absolute scroll
-    // position. Read from the live rect every refresh; differences of the
-    // element's own box, so the entrance's translate cancels out of it.
-    end: () => {
-      const r = statement.getBoundingClientRect();
-      const top = r.top + window.scrollY;
-      const vh = window.innerHeight;
-      return Math.min(top + r.height / 2 - vh * END_CENTRE, top - vh * END_CEILING);
-    },
+    trigger: el,
+    start,
+    end: END,
     scrub: SCRUB,
-    // Deliberately NOT `invalidateOnRefresh`. A refresh recomputes start and
-    // end whatever this says; all the flag adds is `invalidate()` on the
-    // animation, which would re-record each word's start value from whatever
-    // opacity it is wearing at that instant. Resize the window halfway through
-    // the fill and every word in the wave would take its own half-lit state as
-    // its beginning and never be able to go back.
+    invalidateOnRefresh: true,
     onRefresh: (self) => {
+      // The lead words' gradient is measured, so it is re-measured whenever
+      // anything that could move them has happened. A refresh is what a resize
+      // and a font load both end in.
       anchorLead(statement);
       // A reveal that cannot complete is worse than one that completes at
-      // once: if the page is too short to scroll to this trigger's end, fill
-      // the sentence rather than strand it part-read.
+      // once: if the page is ever too short to scroll to this trigger's end,
+      // fill the sentence rather than strand it part-read.
       if (self.end > ScrollTrigger.maxScroll(self.scroller as Window)) latch(self);
     },
     /* TWO WAYS IN, because one of them is not reliable on its own. `onUpdate`
@@ -351,5 +401,19 @@ export function buildConviction({ q, tl }: SectionMotion) {
   // switch rebuilds every section wherever the page happens to be sitting, and
   // the router can land mid-page. ScrollTrigger sets the progress on creation
   // but raises no update for it, so ask once.
-  if (st.progress >= 1) latch(st);
+  if (fillST.progress >= 1) latch(fillST);
+
+  /* The lead words' offsets are measured from laid-out text, so they are wrong
+   * if they were taken against the fallback face. The reference splits after
+   * `document.fonts.ready` for the same reason; we split before it -- the
+   * split moves no text -- and re-measure after. Guarded, because the promise
+   * can settle after the band has been unmounted and reverted, which is
+   * StrictMode's discarded first mount and every route change. */
+  if (document.fonts && document.fonts.status !== 'loaded') {
+    document.fonts.ready.then(() => {
+      if (!statement.isConnected) return;
+      anchorLead(statement);
+      ScrollTrigger.refresh();
+    });
+  }
 }

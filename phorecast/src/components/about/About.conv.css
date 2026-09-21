@@ -65,10 +65,16 @@
    the words are never split and never dimmed, and the statement is the static
    one About.css paints.
 
+   That fallback covers the PIN as well, and deliberately: with no build there
+   is no ScrollTrigger, so the band does not pin, the page is 170% of a screen
+   shorter, and a reader who asked for less motion is never held in place while
+   something animates. Scroll-jacking is the part of this effect they are most
+   likely to have meant.
+
    This rule is for the path the shared layer cannot reach. `REDUCED` is read
    once, at module scope, so a reader who turns the preference on with the band
    already built would otherwise be left with whatever fraction of the fill the
-   scroll had reached -- a sentence permanently at 22%. The media query is live
+   scroll had reached -- a sentence permanently at 15%. The media query is live
    where the constant is not. `!important` because what it is overriding is an
    inline style written by a timeline, and there is no other way over one. */
 @media (prefers-reduced-motion: reduce) {
@@ -77,3 +83,18 @@
     filter: none !important;
   }
 }
+
+/* THE PIN'S SPACER, and the one thing it has to be told.
+   -------------------------------------------------------------------------
+   ScrollTrigger pins by wrapping `.ab-conv` in a `.pin-spacer` div and taking
+   the band `position: fixed` for the stretch it absorbs. The spacer inherits
+   nothing from the band, and the band is the only thing on this page that
+   sits ABOVE the page's ground field -- `.ab-conv` is `z-index: 1` in
+   About.css precisely so the 1154 field at the top of the page cannot paint
+   over it. A new box between the two would put the band back underneath, so
+   the spacer takes the same z-index and the same stacking context.
+
+   Nothing else here: the spacer's size, padding and position are
+   ScrollTrigger's to compute, and a rule of ours that guessed at them would be
+   wrong at the first resize. */
+.about-page .pin-spacer { position: relative; z-index: 1; }

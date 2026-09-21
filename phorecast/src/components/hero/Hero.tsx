@@ -37,9 +37,24 @@ import './Hero.css';
  * The rungs are the two the client's copy names -- five minutes and monthly --
  * and not an invented one in between.
  *
- * SPORTS IS MISSING and is not an oversight: it is a market category now, but
- * this strip identifies a market by its instrument icon and `src/assets` has
- * no sports mark. A fifth card would need artwork nobody has supplied.
+ * SPORTS IS MISSING, and NOT for want of a glyph. `src/assets/fan/
+ * icon-sport-{a,b,c}.svg` exist, `Fan.tsx` composes them as `SportIcon`, and
+ * because the three pieces are placed on percentage insets inside a square box
+ * the composite does scale: rendered into this card's icon slot at 32px and at
+ * the phone's 26px it holds its proportions and stays legible, and being masks
+ * painted by `color` it themes itself.
+ *
+ * What is missing is the CONTRACT. Every card here names the type of contract
+ * it prices, and the client's copy names exactly two -- Up/Down, "will the
+ * price close higher or lower", and Price Hit, "will the price touch a level
+ * before expiry". Both are questions about a price. Neither can be asked of a
+ * tennis match, and no third type is named anywhere. Slide 2's artwork prices
+ * its sports markets as Yes/No, which is the shape the answer will take, but
+ * "Yes/No" is a chip in an illustration and not a contract type the copy
+ * states -- and writing one here would be inventing the product's range rather
+ * than showing it. Sports is named in the lede instead, which is a text list
+ * and takes text. One fact unblocks the fifth card: what the sports contract
+ * type is called.
  */
 const TICKERS: Ticker[] = [
   { symbol: 'AAPL', contract: 'Up/Down · 5 min', price: '62¢', change: '+3¢', up: true, icon: apple, mono: true },

@@ -26,6 +26,30 @@ export const LOGO_CONFIG = {
   /** Slow frames required alongside the overrun, so one hiccup cannot trip it. */
   slowFramesBeforeDegrade: 4,
   slowFramesBeforeFallback: 8,
+  /**
+   * The mark's share of the main thread, once a frame is costing more than
+   * `costlyFrameMs`.
+   *
+   * A draw does not only cost the draw. Where the canvas cannot be composited
+   * as a texture -- a software rasteriser, a headless browser, a phone that has
+   * fallen back to SwiftShader -- the compositor reads the canvas back on the
+   * MAIN thread on the commit after each new frame: traced at 390 wide, four
+   * `GLES2::ReadPixels` calls inside `LayerTreeHost::DoUpdateLayers` blocking
+   * the main thread for 1230ms of a 1.1s window. The loop had no reason not to
+   * ask for another frame immediately, so it ran at 100% duty and there was
+   * never an idle moment for anything else -- and the band BELOW the hero,
+   * whose entrance is gated on an IntersectionObserver, waited ~1080ms for a
+   * callback that can only be delivered in a rendering step the mark was
+   * eating. Every other band on the page opened in ~190ms.
+   *
+   * So a frame that costs this much buys the rest of the page this much quiet
+   * before the next one. The mark animates more slowly on a device that cannot
+   * afford it, which is the correct trade and the same one `idleFps` already
+   * makes; on anything that draws a frame in less than `costlyFrameMs` neither
+   * number is ever consulted.
+   */
+  costlyFrameMs: 50,
+  frameShare: 5,
   /** Per breakpoint: the mark's height as a fraction of the host's height and width (the smaller wins), and its centre. */
   layouts: {
     desktop: { heightFraction: 0.6, widthFraction: 0.34, cx: 0.72, cy: 0.42 },

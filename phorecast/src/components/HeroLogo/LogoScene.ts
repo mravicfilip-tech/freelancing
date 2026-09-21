@@ -101,6 +101,12 @@ export class LogoScene {
   /** Set when the draw-in has landed; until then the loop runs uncapped. */
   private entranceDone = false;
   private lastDraw = 0;
+  /** What the last frame actually cost: how long the browser took to come back. */
+  private frameCost = 0;
+  /** Set between a draw and the first tick after it, which is when the cost can be read. */
+  private costPending = false;
+  /** When the page last scrolled. Only consulted when a frame is costing too much. */
+  private lastScroll = 0;
   /** Set while the first frame after a start would measure the pause, not a frame. */
   private resumed = true;
   /** The idle rate we are currently asking for; halved once if the device cannot hold it. */
@@ -234,6 +240,7 @@ export class LogoScene {
     this.intersection = new IntersectionObserver(() => this.updateRunning(), { threshold: 0 });
     this.intersection.observe(this.markBox);
     document.addEventListener('visibilitychange', this.onVisibility);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
 
     if (!touch) {
       host.addEventListener('pointermove', this.onPointerMove);
@@ -261,6 +268,8 @@ export class LogoScene {
   }
 
   private readonly onVisibility = () => this.updateRunning();
+
+  private readonly onScroll = () => { this.lastScroll = performance.now(); };
 
   /** The box the mark is drawn into -- the same one `layout()` sizes the renderer to. */
   private get markBox(): HTMLElement {
@@ -315,6 +324,7 @@ export class LogoScene {
     this.running = true;
     this.resumed = true;
     this.lastDraw = 0;
+    this.costPending = false;
     this.timer.update(); // so the first frame's delta is not the whole pause
     cancelAnimationFrame(this.raf);
     this.raf = requestAnimationFrame(this.tick);
@@ -348,16 +358,48 @@ export class LogoScene {
     // half the draw. Skipped frames still advance time, so the motion keeps
     // wall-clock pace rather than slowing down.
     const now = performance.now();
-    const budget = this.entranceDone ? 1000 / this.fpsCap : 1000 / 60;
-    if (this.entranceDone && now - this.lastDraw < budget - 1) return; // -1ms so a 30Hz display is not halved
+
+    // What the last frame cost, read where it can be read. `renderer.render()`
+    // queues GL commands and returns, so timing the call reports near zero
+    // however long the draw and the composite that follows it actually take;
+    // the browser coming back for another frame is the receipt. On a healthy
+    // device this reads as one vsync and nothing below ever looks at it.
+    if (this.costPending && this.lastDraw) {
+      this.costPending = false;
+      this.frameCost = now - this.lastDraw;
+    }
+
+    const rate = this.entranceDone ? 1000 / this.fpsCap : 1000 / 60;
+    // A frame that costs this much is not sharing the thread, it is holding it
+    // (see costlyFrameMs). Hand the rest of the page the gap it needs.
+    const budget = this.frameCost >= C.costlyFrameMs
+      ? Math.max(rate, this.frameCost * C.frameShare)
+      : rate;
+    const costly = budget > rate;
+    const capped = this.entranceDone || costly;
+    if (capped && now - this.lastDraw < budget - 1) return; // -1ms so a 30Hz display is not halved
+
+    // And yield outright while the reader is moving. A draw this expensive
+    // lands on the main thread as one indivisible block, and a block that
+    // lands mid-scroll is a block the scroll, the entrance of whatever is
+    // arriving, and the observer callbacks that gate it all wait behind. The
+    // mark is the least urgent thing on the page at that moment: it is
+    // decorative, the reader is looking elsewhere, and its own sway has a
+    // fifteen-second period. Nothing here runs on a device that draws a frame
+    // in under `costlyFrameMs`.
+    if (costly && now - this.lastScroll < this.frameCost) return;
 
     // How late this frame is, measured from the last one we drew. This is the
     // only honest number available: renderer.render() queues GL commands and
     // returns, so timing the call itself reports near zero however long the
     // draw actually takes -- the cost lands at swap, and only the gap to the
     // next frame shows it.
-    const gap = this.lastDraw ? now - this.lastDraw : budget;
+    // What watchCost is asked to judge is the frame's own cost, not the gap --
+    // the gap now includes whatever quiet the throttle above bought, and the
+    // ladder must not read its own restraint as the device getting faster.
+    const cost = this.frameCost || (this.lastDraw ? now - this.lastDraw : rate);
     this.lastDraw = now;
+    this.costPending = true;
 
     this.timer.update();
     const dt = Math.min(this.timer.getDelta(), 0.1);
@@ -366,7 +408,7 @@ export class LogoScene {
     this.frame.pointer.lerp(this.pointerTarget, k);
     this.applyPose();
     this.renderer.render(this.scene, this.camera);
-    this.watchCost(gap, budget);
+    this.watchCost(cost, rate);
   };
 
   /**
@@ -383,12 +425,12 @@ export class LogoScene {
    * frames when frames are catastrophic and never when they are merely
    * imperfect, because good frames pay it back faster than bad ones add to it.
    */
-  private watchCost(gap: number, budget: number) {
+  private watchCost(cost: number, budget: number) {
     if (this.drawn++ < C.warmupFrames) return; // shader compile, not the steady cost
     if (this.resumed) { this.resumed = false; return; } // first frame back spans the pause
 
     // 60% headroom over the rate we asked for, so ordinary jitter is not a verdict.
-    const over = gap - budget * 1.6;
+    const over = cost - budget * 1.6;
     if (over <= 0) {
       this.overrun = Math.max(0, this.overrun + over * 2);
       this.slowFrames = Math.max(0, this.slowFrames - 1);
@@ -470,6 +512,7 @@ export class LogoScene {
     this.resizeObserver?.disconnect();
     this.intersection?.disconnect();
     document.removeEventListener('visibilitychange', this.onVisibility);
+    window.removeEventListener('scroll', this.onScroll);
     this.opts.host.removeEventListener('pointermove', this.onPointerMove);
     this.opts.host.removeEventListener('pointerleave', this.onPointerLeave);
     this.opts.canvas.style.opacity = '';

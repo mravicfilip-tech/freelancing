@@ -82,7 +82,7 @@
   background: var(--steps-p1-pill-bg);
   border: calc(1.199 * var(--p)) solid var(--accent);
   backdrop-filter: blur(calc(32.804 * var(--p)));
-  font-family: var(--font-mono); font-weight: 500; font-size: calc(14 * var(--p));
+  font-family: var(--font-label); font-weight: 500; font-size: calc(14 * var(--p));
   line-height: normal; color: var(--steps-p1-pill-ink); white-space: nowrap;
 }
 /* The envelope sits in its own 23.989-wide column with 2.399 of vertical
@@ -159,7 +159,7 @@
 .s1__glyph--user { left: calc(21.301 * var(--p)); top: calc(13.134 * var(--p)); width: calc(21 * var(--p)); height: calc(23.333 * var(--p)); }
 .s1__digits {
   left: calc(15.594 * var(--p)); top: calc(62.37 * var(--p));
-  font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
+  font-family: var(--font-label); font-weight: 400; font-size: calc(10 * var(--p));
   line-height: normal; color: var(--ink-muted); white-space: nowrap;
 }
 .s1__bar { border-radius: calc(35.983 * var(--p)); background: var(--steps-p1-bar); }
@@ -257,7 +257,7 @@
 .s1__chart > * { position: absolute; }
 .s1__amount {
   left: calc(11.994 * var(--p)); top: calc(9.595 * var(--p));
-  font-family: var(--font-mono); font-weight: 400; font-size: calc(10 * var(--p));
+  font-family: var(--font-label); font-weight: 400; font-size: calc(10 * var(--p));
   line-height: normal; color: var(--ink); white-space: nowrap;
 }
 .s1__bars {

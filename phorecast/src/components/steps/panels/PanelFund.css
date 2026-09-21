@@ -203,7 +203,7 @@
 .s2__balance-text { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
 .s2__balance-label {
   margin: 0; width: 100%;
-  font-family: var(--font-mono); font-weight: 400; font-size: calc(14 * var(--p));
+  font-family: var(--font-label); font-weight: 400; font-size: calc(14 * var(--p));
   line-height: normal; color: var(--ink-muted);
 }
 .s2__balance-amt {

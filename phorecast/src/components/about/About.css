@@ -1042,7 +1042,7 @@
      1. the system preference leads, but only while nothing has been chosen;
      2. an explicit choice wins at any system setting.
 
-   WHAT THIS PAGE ACTUALLY NEEDED, and it is four values, because everything
+   WHAT THIS PAGE ACTUALLY NEEDED, and it is nine values, because everything
    else on it already reads a role token that flips.
 
    --ab-veil is the frame's `white-06`. On paper the same job -- "raise this
@@ -1062,19 +1062,63 @@
    --ab-solid is --ab-veil flattened over --page and has to be recomputed for
    the other ground: 5% of #1a1512 over #fffbf8 is #f4f1ee.
 
+   --ab-eyebrow is this page's label ink; the note beside its dark value says
+   why the page has one at all. On paper it is #6f6560, which is --ink-muted's
+   own warm grey taken DOWN rather than up, because paper's ink gets darker
+   where black's gets lighter.
+
+   AND THE GROUND, which is the part that used to be somebody else's problem.
+   While the page borrowed `.hero`, the ember field turned over through
+   Hero.css's own light block and this file inherited it for free. It does not
+   any more, so the five paints are derived here, and they are derived by
+   Hero.css's method rather than by a new one:
+
+     LIGHT ON BLACK IS SHADOW ON PAPER. Read literally, #d1541c on #fffbf8 is
+     not a glow, it is a bruise -- the trap this file's --ab-veil note already
+     names and the one the footer found. So each paint becomes a warm tint
+     BELOW the page rather than a saturated colour on it, and the intensity
+     is preserved while the direction flips: the hotter the dark value, the
+     DEEPER the paper tint. That is exactly the ordering Hero.css uses, and
+     three of the five values below are its own answers for the same job.
+
+       --ab-g-blood  #7e0202 -> #fdf3ec   Hero.css's own answer for this hex.
+       --ab-g-rust   #6b2b0e -> #fbeee4   the same job one step deeper; it is
+                                          drawn at 47% and would otherwise
+                                          vanish.
+       --ab-g-ember  #d1541c -> #f6decf   Hero.css's answer for the main
+                                          orange. It does most of the work on
+                                          all three backgrounds.
+       --ab-g-peach  #f99e57 -> #f2cfba   Hero.css's answer for the brightest
+                                          disc: brightest in dark, deepest on
+                                          paper.
+
+     --ab-g-night needed nothing: it is var(--page) in both themes, because it
+     is not a dark colour, it is the ground an ellipse dissolves into. Same
+     call Hero.css makes about the same hex.
+
+     --ab-g-flare IS UNCHANGED, and it is the one paint here that does not
+     follow the rule. It is not a field, it is four 1.36px strokes under a
+     sigma-5 blur, which spreads a one-pixel line across thirty and lands it
+     at roughly a tenth of its own strength: measured on paper, #ff632a
+     reaches the page as about rgb(255,234,225), a peach hairline on cream.
+     It is already a wash. Given a tint instead it would not settle, it would
+     disappear -- there is nothing left to take away from 10% of a colour.
+
    NOTHING WAS INVERTED. The ticks and crosses keep their own colours, because
-   a filled badge with a white glyph reads the same on either ground. The
-   ember field inverts through Hero.css's own light block, which this page
-   inherits by using that file's classes. The one thing that could not be
-   inherited is the statement's gradient, and it did not need to be: it is
-   written as var(--ink) -> var(--accent) rather than as two hexes, so on
-   paper it runs near-black into #a21605 by itself. */
+   a filled badge with a white glyph reads the same on either ground. The one
+   thing the ground could not hand over is the statement's gradient, and it
+   did not need to: it is written as var(--ink) -> var(--accent) rather than
+   as two hexes, so on paper it runs near-black into #a21605 by itself. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .about-page {
   --ab-veil: rgba(26, 21, 18, 0.05);
   --ab-card-line: var(--line);
   --ab-solid: #f4f1ee;
   --ab-eyebrow: #6f6560;
+  --ab-g-blood: #fdf3ec;
+  --ab-g-rust: #fbeee4;
+  --ab-g-ember: #f6decf;
+  --ab-g-peach: #f2cfba;
   }
 }
 :root[data-theme='light'] .about-page {
@@ -1082,6 +1126,10 @@
   --ab-card-line: var(--line);
   --ab-solid: #f4f1ee;
   --ab-eyebrow: #6f6560;
+  --ab-g-blood: #fdf3ec;
+  --ab-g-rust: #fbeee4;
+  --ab-g-ember: #f6decf;
+  --ab-g-peach: #f2cfba;
 }
 
 /* THE FIFTH THING, and it is a mask rather than a colour.

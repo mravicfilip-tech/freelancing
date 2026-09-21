@@ -7,7 +7,7 @@
  * rather than simply fading.
  *
  * The section's argument is the two illustrations — one market to start, versus
- * five markets wired into self-custody — so neither card merely fades in. Each
+ * five markets wired into one capped risk — so neither card merely fades in. Each
  * one's artwork assembles in the order the picture is read: on the left, "You",
  * then the line running right, then the rings blooming outward around the coin;
  * on the right, the markets appear left to right, the wires draw toward the
@@ -28,7 +28,7 @@
  *   1.72  THE RIGHT CARD, while the left one's artwork is still assembling, so
  *         the two read as a pair rather than two separate arrivals. Its own
  *         artwork from 2.14: the five market nodes left to right (2.15), the
- *         wires drawing from them toward the padlock (2.42), and SELF-CUSTODY
+ *         wires drawing from them toward the padlock (2.42), and CAPPED RISK
  *         arriving last at the point they converge (3.05).
  *   2.24  The left column's copy and CTA, a beat behind its illustration.
  *   3.12  The right column's copy and CTA. Lands at 3.85.
@@ -462,12 +462,12 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   const smear2 = inside(card2, '.bt2__smear');
   if (smear2.length) tl.from(smear2, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, card2At + step(C2_SMEAR));
 
-  /* SELF-CUSTODY, last on the card and at the point the wires converge. It is
+  /* CAPPED RISK, last on the card and at the point the wires converge. It is
      what the right-hand argument is for, so it lands alone, after everything
      that points at it. */
   const lock = inside(card2, '.bt2__node--lock');
   if (lock.length) {
-    /* TWO OBJECTS ON THE RING, NOT ONE, once the frame is portrait. SELF-CUSTODY
+    /* TWO OBJECTS ON THE RING, NOT ONE, once the frame is portrait. CAPPED RISK
        is the padlock's own child in the markup and in the landscape frame it
        sits directly under the disc, so blooming the node carries the pair
        together and reads as one arrival. On the ring the pill is 90 design

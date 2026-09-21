@@ -1,5 +1,5 @@
 /**
- * "Your Funds Stay in Your Control" — the ambient loop.
+ * "You Can Never Lose More Than You Stake" — the ambient loop.
  *
  * The section's load-in belongs to `Fan.motion.ts`. This file owns what happens
  * *after* it has landed: it reads the markup the component ships, adds one

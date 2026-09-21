@@ -1,4 +1,4 @@
-/* "Your Funds Stay in Your Control" — the band's load-in.
+/* "You Can Never Lose More Than You Stake" — the band's load-in.
  *
  * 02 TRACE, chosen from the five in `fan-loadin-lab.html`:
  *

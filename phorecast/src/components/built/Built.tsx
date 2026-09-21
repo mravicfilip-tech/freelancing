@@ -150,7 +150,7 @@ type Node = {
  * The five markets sit at 84 - 92 units from the ring's centre, which is the
  * scatter the design has and not a mistake to correct: clockwise from twelve
  * they are TSLA (-1.4 degrees), DAX (61.7), XAU (116.9), EUR (259.2) and BTC
- * (299.4). The 142-degree gap between XAU and EUR is where the SELF-CUSTODY
+ * (299.4). The 142-degree gap between XAU and EUR is where the CAPPED RISK
  * pill sits, at 179.4 degrees and at exactly r=89 — it is ON the ring, not
  * under it, which is why the markets are not evenly spaced.
  *
@@ -184,7 +184,7 @@ function CardTwo() {
       <span className="bt-card__glow bt-card__glow--left" aria-hidden="true" />
       <span className="bt-label bt-label--tl bt-label--grey">Five markets</span>
       <span className="bt-label bt-label--tr bt-label--grey">Fast onboarding</span>
-      <span className="bt-label bt-label--bl">Transparent execution</span>
+      <span className="bt-label bt-label--bl">No leverage</span>
       <div className="bt2" aria-hidden="true">
         <Icon src={linkFan} w={336.203125} h={122.484375} className="bt2__fan" style={cssBox} />
         <Icon src={linkMain} w={436.78125} h={23.40625} className="bt2__main" style={cssBox} />
@@ -226,7 +226,7 @@ function CardTwo() {
           }}
         >
           <img src={nodeLock} alt="" className="bt2__whole" />
-          <span className="bt2__label bt2__label--lock">Self-custody</span>
+          <span className="bt2__label bt2__label--lock">Capped risk</span>
         </span>
       </div>
     </div>
@@ -244,7 +244,7 @@ const COLUMNS = [
   {
     card: <CardTwo />,
     title: 'Experienced Trader?',
-    body: 'Trade crypto, forex, stocks, commodities and indices with fast onboarding, non-custodial settlement and transparent execution.',
+    body: 'Trade crypto, forex, stocks, commodities, indices and sports with fast onboarding and no leverage.',
     cta: 'Explore Markets',
     href: '#markets',
   },

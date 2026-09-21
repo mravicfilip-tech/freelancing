@@ -2,8 +2,8 @@
  * Card two — "Experienced Trader?" — the ambient loop.
  *
  * The illustration is a constellation: five market nodes (BTC / USD, TSLA,
- * DAX 40, EUR / USD, XAU / USD) wired to one self-custody padlock on the right.
- * The card's argument is *many markets, one settlement you hold*, so that is
+ * DAX 40, EUR / USD, XAU / USD) wired to one capped-risk padlock on the right.
+ * The card's argument is *many markets, one capped downside*, so that is
  * the only thing this beat says.
  *
  * THE STORY — one delivery, every 8.5s
@@ -20,7 +20,7 @@
  *          and it is solved, not staggered by eye — the departures are
  *          `arrival − distance / speed`.
  *   2.63s  The lock answers as they touch its rim: it leans into the delivery,
- *          takes it, and seats. SELF-CUSTODY goes brand red for a beat.
+ *          takes it, and seats. CAPPED RISK goes brand red for a beat.
  *   3.45 → The circuit cools outward from the lock, nearest market first, and
  *   4.3s   every label, node and bead is back to the Figma frame.
  *   4.3 →  Nothing moves. The card is the design again for four seconds, and
@@ -30,14 +30,14 @@
  * --------------------------------------
  * Below 700px Built.css re-lays this card into the 334 x 392 orbit Figma
  * 526:2656 draws: one ring, the five markets spaced around it, the padlock
- * alone at its centre, and SELF-CUSTODY seated on the ring's lower arc. There
+ * alone at its centre, and CAPPED RISK seated on the ring's lower arc. There
  * are no wires, so there is no wave of departures solved from wire lengths --
  * the five markets are all the same distance from the hub, and a beat built on
  * "the farthest leaves first" says nothing at all on a circle.
  *
  * So the portrait beat is a CIRCUIT, and its order is the ring's own:
  *
- *   0.82s  A head appears where SELF-CUSTODY sits and starts round the ring
+ *   0.82s  A head appears where CAPPED RISK sits and starts round the ring
  *          clockwise, at a constant rate. It is the only travelling thing.
  *   1.40 → It reaches EUR / USD, BTC, TSLA, DAX 40 and XAU / USD in that order
  *   2.97s  -- which is not a schedule, it is where they are: each touch is
@@ -49,12 +49,12 @@
  *          its own radius to the padlock. Every radius is the same length, so
  *          the five arrivals keep the order of the five touches rather than
  *          converging: on a ring, sequence is the only thing distance can say.
- *   3.42s  The head closes the circuit back at SELF-CUSTODY and goes out.
+ *   3.42s  The head closes the circuit back at CAPPED RISK and goes out.
  *   3.53s  The padlock answers the last delivery. It SEATS WITHOUT LEANING --
  *          the landscape lock leans along the mean of the wires, and the mean
  *          of five directions spread round a circle is a number with no
  *          meaning in it. The faint inner circle it sits in seats with it, so
- *          the centre answers as one object. SELF-CUSTODY goes brand red.
+ *          the centre answers as one object. CAPPED RISK goes brand red.
  *   4.35 → The pill cools and the card is the design again.
  *   5.2s
  *   5.2 →  Nothing moves.
@@ -67,7 +67,7 @@
  *   the ring           centre and radius are read from `--bt2-ring-x/-y/-r`,
  *                      declared next to the mask that draws it in Built.css so
  *                      the two cannot move apart.
- *   the stations       every angle, including SELF-CUSTODY's, is measured off
+ *   the stations       every angle, including CAPPED RISK's, is measured off
  *                      the live rects. Nothing here knows the ring's order.
  *   the leans          12 and 6 design px are a PROPORTION of the card, scaled
  *                      by the frame.
@@ -205,7 +205,7 @@ const DROP = 0.5;
    dark card, 4.78:1 on the light one. It needs no flip, only the token.
 
    SEALED is --bt-seal, and it is the one value here that a role token could
-   not carry. SELF-CUSTODY rests at --ink and goes brand red for the length of
+   not carry. CAPPED RISK rests at --ink and goes brand red for the length of
    the settlement. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1. Read
    as --accent in light it would be #1a1512 -> #a21605, a step of 2.29:1 --
    both ends are dark on paper, so 46% of the beat goes missing while the loop
@@ -377,7 +377,7 @@ export function bt2Loop(root: HTMLElement): () => void {
      in design units -- which is the one place both can be kept in step. The
      fallbacks are the frame's values and are what a missing property yields.
 
-     Every ANGLE below is measured, including SELF-CUSTODY's: this file does
+     Every ANGLE below is measured, including CAPPED RISK's: this file does
      not know which market is at the top of the ring or that the pill is at the
      bottom, and it must not, or the beat goes back to being a schedule that
      happens to agree with a drawing. */
@@ -575,7 +575,7 @@ export function bt2Loop(root: HTMLElement): () => void {
        card answers as one object rather than as a disc twitching inside a
        static ring.
 
-       IT SEATS THE MARK, NOT THE NODE, in the portrait frame. SELF-CUSTODY is
+       IT SEATS THE MARK, NOT THE NODE, in the portrait frame. CAPPED RISK is
        a CHILD of `.bt2__node--lock` in the markup -- it is the padlock's own
        label -- and in the landscape frame it sits directly under the disc, so
        scaling the node carries the two together and that is right. On the ring
@@ -610,7 +610,7 @@ export function bt2Loop(root: HTMLElement): () => void {
     /* 4 — the circuit cools outward from the lock, nearest market first, so the
        beat closes in the same measured order it opened in, reversed. The
        portrait card has no market names to cool: its markets have already
-       returned on their own `BACK` tweens and SELF-CUSTODY is the last thing
+       returned on their own `BACK` tweens and CAPPED RISK is the last thing
        still lit, so the loop above is simply empty there rather than gated. */
     [...markets]
       .sort((a, b) => a.d - b.d)

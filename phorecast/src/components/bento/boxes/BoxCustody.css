@@ -30,7 +30,7 @@
   --custody-pill: #2f110c;          /* the two contract pills */
   --custody-pill-line: color-mix(in srgb, var(--accent) 17%, transparent);
   --custody-ink: var(--ink);        /* the labels, which sit on the card */
-  --custody-glyph: #a6a6a6;         /* the seven masked glyphs bake this hex */
+  --custody-glyph: #9d9d9d;         /* the seven masked glyphs bake this hex */
   --custody-ring: #d9d9d9;          /* the wallet ring, at the file's own 20% */
   --custody-ring-market: #ff632a;   /* the market ring, at the file's own 22% */
 }
@@ -73,7 +73,7 @@
   height: calc(93 * var(--u));
 }
 
-/* Wallet: a 37px gradient disc with the 18px glyph centred on it. ---------- */
+/* Wallet: a 37px gradient disc with the 16px glyph centred on it. ---------- */
 .custody__wallet-disc {
   /* The plate named above. It is `transparent` in dark, where the file's own
      18% lift is the whole effect and a plate would be a second disc. */
@@ -84,12 +84,14 @@
   width: calc(37 * var(--u));
   height: calc(37 * var(--u));
 }
+/* fi_6839980, at Figma's own 16 x 16. The 18px box here was the line-art
+   wallet this replaced; the frame kept the origin and shrank the glyph. */
 .custody__wallet-icon {
   color: var(--custody-glyph);
   left: calc(46 * var(--u));
   top: calc(99 * var(--u));
-  width: calc(18 * var(--u));
-  height: calc(18 * var(--u));
+  width: calc(16 * var(--u));
+  height: calc(16 * var(--u));
 }
 
 /* Labels -------------------------------------------------------------------
@@ -110,8 +112,8 @@
 
 /* Market tiles -------------------------------------------------------------
    A shared 36 x 36 outer box. The glyph is placed, not stretched: Figma gives
-   each icon its own leaf inside the 16px slot at 10, 10, and three of the four
-   are not square. */
+   each icon its own leaf inside the 16px slot at 10, 10, and they do not all
+   fill it. */
 .custody__tile {
   left: calc(var(--x) * var(--u));
   top: calc(var(--y) * var(--u));
@@ -131,22 +133,19 @@
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
 }
-/* fi_5314711 — the bars sit at inset 4.17% of their 16px slot. */
+/* Only two of the four are inset inside the 16px slot; crypto (fi_12379305)
+   and forex (fi_17433031) fill it, so they need nothing said. */
+/* fi_9155737 — inset 5.21% of the slot. */
 .custody__glyph--stocks {
-  left: calc(10.667 * var(--u));
-  top: calc(10.667 * var(--u));
-  width: calc(14.666 * var(--u));
-  height: calc(14.666 * var(--u));
+  left: calc(10.834 * var(--u));
+  top: calc(10.834 * var(--u));
+  width: calc(14.333 * var(--u));
+  height: calc(14.333 * var(--u));
 }
-/* fi_12468092 — inset 2.56% top and bottom, full width. */
+/* fi_12468105 — inset 1.71% top and bottom, full width. */
 .custody__glyph--commodities {
-  top: calc(10.41 * var(--u));
-  height: calc(15.181 * var(--u));
-}
-/* fi_4691630 — inset 2.39% top and bottom, full width. */
-.custody__glyph--forex {
-  top: calc(10.382 * var(--u));
-  height: calc(15.235 * var(--u));
+  top: calc(10.274 * var(--u));
+  height: calc(15.453 * var(--u));
 }
 
 /* Chips --------------------------------------------------------------------
@@ -172,11 +171,9 @@
   color: var(--custody-ink);
   white-space: nowrap;
 }
-/* fi_9716066 — one 16px slot, and the flex item the pill lays out. It used to
-   be a bare <Icon> at this box; it is a wrapper at the same box now, because
-   the phone's filled document arrives as two leaves and has to live somewhere.
-   The desktop leaf inside it is absolutely placed at 0, 0 at the same 16 x 16,
-   so nothing about the pill's layout or its painting moves. */
+/* fi_9716066 — the document is TWO leaves, a body and a separately folded
+   corner, so it needs a wrapper to be the 16px flex item the pill lays out.
+   Body at inset 7.14% 15.46%, fold at inset 10.71% 19.04% 74.75% 66.39%. */
 .custody__doc {
   position: relative;
   flex: none;
@@ -184,48 +181,26 @@
   height: calc(16 * var(--u));
 }
 .custody__doc > * { position: absolute; display: block; color: var(--custody-glyph); }
-.custody__doc-line {
-  left: 0;
-  top: 0;
-  width: calc(16 * var(--u));
-  height: calc(16 * var(--u));
+.custody__doc-body {
+  left: calc(2.474 * var(--u));
+  top: calc(1.142 * var(--u));
+  width: calc(11.051 * var(--u));
+  height: calc(13.714 * var(--u));
 }
-/* fi_747305 — a 16px slot holding two leaves of its own: the shackle+body at
-   inset 0 10.16%, and the keyhole at inset 55.86% 42.77% 18.36% 42.77%. */
+.custody__doc-fold {
+  left: calc(10.622 * var(--u));
+  top: calc(1.714 * var(--u));
+  width: calc(2.331 * var(--u));
+  height: calc(2.326 * var(--u));
+}
+/* fi_17508481 — the padlock is one piece filling the whole slot, so this IS
+   the flex item rather than a wrapper round one. */
 .custody__lock {
-  position: relative;
   flex: none;
+  color: var(--custody-glyph);
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
 }
-/* `> *` rather than `img`: the two leaves are masks now, and a mask is a
-   <span>. Both rules computed the same thing for the <img> pair, so this is a
-   no-op on the dark render. */
-.custody__lock > * { position: absolute; display: block; color: var(--custody-glyph); }
-.custody__lock-body {
-  left: calc(1.626 * var(--u));
-  top: 0;
-  width: calc(12.749 * var(--u));
-  height: calc(16 * var(--u));
-}
-.custody__lock-hole {
-  left: calc(6.843 * var(--u));
-  top: calc(8.938 * var(--u));
-  width: calc(2.313 * var(--u));
-  height: calc(4.125 * var(--u));
-}
-
-/* The phone's solid set, parked ------------------------------------------- */
-/* Seven files the desktop frame never asks for. They ship in the markup so the
-   swap is a breakpoint rather than a second component, and they cost the
-   desktop nothing but a `display: none` -- no request is made for a mask image
-   on an element that is not laid out. The mobile block at the foot of this
-   file turns these on and the `--line` set off, together, once. */
-.custody__glyph--solid,
-.custody__doc-body,
-.custody__doc-fold,
-.custody__lock-solid,
-.custody__wallet-icon--solid { display: none; }
 
 /* Ellipse 35 — 8px dot inside a 22px glow, placed by the glow's own box. */
 .custody__node {
@@ -255,7 +230,7 @@
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
   --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #a6a6a6 is 1.9:1 on paper. The glyph has to keep its RATIO against the
+  /* #9d9d9d is 1.8:1 on paper. The glyph has to keep its RATIO against the
      chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
      than the label beside it by the same step in both. --ink-muted was the
      first guess and reads at 3.4:1 -- a glyph you have to look for. */
@@ -317,7 +292,7 @@
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
   --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #a6a6a6 is 1.9:1 on paper. The glyph has to keep its RATIO against the
+  /* #9d9d9d is 1.8:1 on paper. The glyph has to keep its RATIO against the
      chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
      than the label beside it by the same step in both. --ink-muted was the
      first guess and reads at 3.4:1 -- a glyph you have to look for. */
@@ -460,12 +435,7 @@
      same stack a pixel off that (a 38px wrapper around a 37px disc); being
      concentric with the ring the loop closes matters more than the pixel. */
   .custody__wallet-disc { left: calc(89 * var(--u)); top: calc(391 * var(--u)); }
-  .custody__wallet-icon--solid {
-    left: calc(99.5 * var(--u));
-    top: calc(401.5 * var(--u));
-    width: calc(16 * var(--u));
-    height: calc(16 * var(--u));
-  }
+  .custody__wallet-icon { left: calc(99.5 * var(--u)); top: calc(401.5 * var(--u)); }
 
   /* Everything the frame re-places rather than turns ------------------------
      The four labels, the four tiles, the wallet's own label, the two pills and
@@ -492,58 +462,11 @@
     border: calc(1 * var(--u)) solid var(--custody-chip-line);
   }
 
-  /* The glyph swap, in one place ------------------------------------------
-     The desktop half is named by exclusion rather than by a class of its own,
-     so that turning the phone's set on does not rewrite the class string of
-     seven elements the desktop already ships -- a change that renders
-     identically and still reads as a difference in every snapshot taken of
-     this page. */
-  .custody__glyph:not(.custody__glyph--solid),
-  .custody__wallet-icon:not(.custody__wallet-icon--solid),
-  .custody__doc-line,
-  .custody__lock-body,
-  .custody__lock-hole { display: none; }
-
-  .custody__glyph--solid,
-  .custody__doc-body,
-  .custody__doc-fold,
-  .custody__lock-solid,
-  .custody__wallet-icon--solid { display: block; }
-
-  /* Each solid leaf at its own inset inside the 16px slot, exactly as the four
-     line glyphs are placed above. Only the two that are not a full 16 need
-     saying; the others inherit the slot. */
-  /* fi_9155737 — inset 5.21% of the slot. */
-  .custody__glyph--solid-stocks {
-    left: calc(10.834 * var(--u));
-    top: calc(10.834 * var(--u));
-    width: calc(14.333 * var(--u));
-    height: calc(14.333 * var(--u));
-  }
-  /* fi_12468105 — inset 1.71% top and bottom, full width. */
-  .custody__glyph--solid-commodities {
-    top: calc(10.274 * var(--u));
-    height: calc(15.453 * var(--u));
-  }
-  /* fi_9716066 — the body at inset 7.14% 15.46%, the folded corner at
-     inset 10.71% 19.04% 74.75% 66.39%. */
-  .custody__doc-body {
-    left: calc(2.474 * var(--u));
-    top: calc(1.142 * var(--u));
-    width: calc(11.051 * var(--u));
-    height: calc(13.714 * var(--u));
-  }
-  .custody__doc-fold {
-    left: calc(10.622 * var(--u));
-    top: calc(1.714 * var(--u));
-    width: calc(2.331 * var(--u));
-    height: calc(2.326 * var(--u));
-  }
-  /* fi_17508481 — one piece, the whole slot. */
-  .custody__lock-solid {
-    left: 0;
-    top: 0;
-    width: calc(16 * var(--u));
-    height: calc(16 * var(--u));
-  }
+  /* NO GLYPH SWAP ANY MORE. This block used to hide the desktop's line-art set
+     and show a parked solid one, with the solid set's insets restated here.
+     Both frames now draw the SAME seven leaves (see BoxCustody.tsx), so the
+     one set the desktop rules above place is already the one the phone wants,
+     at the same insets -- and the swap, together with the five rules that
+     repeated those insets, would now be dead selectors. They are deleted
+     rather than left tweening nothing. */
 }

@@ -20,12 +20,25 @@
  * geometry lands at (y, 464 - x) in the portrait box, so the mobile block in
  * BoxCustody.css is this same markup re-placed through that one map.
  *
- * What the phone does need is a second GLYPH SET. The mobile design does not
- * reuse the line art — it swaps all seven icons for solid ones, and they are
- * different files, not restyled versions of the same ones: XRP for Bitcoin, a
- * filled bar chart for an outlined one, a filled padlock in one piece where
- * the desktop lock is a shackle and a keyhole. So both sets ship, each marked
- * `--line` or `--solid`, and the breakpoint shows one and hides the other.
+ * ONE GLYPH SET, AND WHY THERE USED TO BE TWO.
+ * This card shipped two: a line-art set for the desktop and a solid set for the
+ * phone, each marked `--line` or `--solid`, with the breakpoint showing one and
+ * hiding the other. That was true of the design when it was built and is not
+ * true of it now. Re-exported 2026-09-21, both frames name the SAME seven
+ * leaves — `fi_9155737` (stocks), `fi_12379305` (crypto), `fi_12468105`
+ * (commodities), `fi_17433031` (forex), `fi_9716066` (the document, in two
+ * pieces), `fi_17508481` (the padlock) and `fi_6839980` (the wallet) — so the
+ * desktop frame has simply adopted the solid set and the line art is drawn
+ * nowhere. The parked `--solid` half and the `display` swap that chose between
+ * them are therefore gone, and the files that were under `custody/mobile/` are
+ * now `custody/` itself, because they are no longer the phone's set: they are
+ * the set.
+ *
+ * Nothing was newly downloaded for this. Every asset the frame references was
+ * already in the tree — the seven glyphs above under `custody/mobile/`, and the
+ * rings, the disc, the node and the arrow under `custody/`, all byte-identical
+ * to the fresh export once Figma's generated clip and gradient ids are
+ * normalised.
  *
  * No motion lives here: this file is the resting state only. `motion/funds.ts`
  * owns the card's load-in and loop, at both orientations.
@@ -35,8 +48,9 @@ import { Roll } from '../../Roll';
 import { Icon } from '../../Icon';
 // The same 430x236 export the bento already ships as funds-glow.png -- checked
 // pixel for pixel, not by name -- so this points at the existing file rather
-// than a second 116 KB copy of it. The mobile frame re-exports the same raster
-// (max delta 5/255 over the card's ground, nothing above 24), so the phone
+// than a second 116 KB copy of it. Re-checked against Ellipse 57 of the current
+// frame: alpha identical everywhere, premultiplied colour within 6/255 of
+// re-encoding noise. The mobile frame re-exports the same raster, so the phone
 // rotates this one rather than adding a third.
 import glow from '../../../assets/bento/funds-glow.png';
 import ringMarket from '../../../assets/bento/custody/ring-market.svg';
@@ -48,20 +62,9 @@ import iconCrypto from '../../../assets/bento/custody/icon-crypto.svg';
 import iconCommodities from '../../../assets/bento/custody/icon-commodities.svg';
 import iconForex from '../../../assets/bento/custody/icon-forex.svg';
 import iconContract from '../../../assets/bento/custody/icon-contract.svg';
-import iconLockBody from '../../../assets/bento/custody/icon-lock-body.svg';
-import iconLockHole from '../../../assets/bento/custody/icon-lock-hole.svg';
+import iconContractFold from '../../../assets/bento/custody/icon-contract-fold.svg';
+import iconLock from '../../../assets/bento/custody/icon-lock.svg';
 import nodeDot from '../../../assets/bento/custody/node-dot.svg';
-// The phone's solid set (Figma 526:305). Byte-for-byte what that frame names;
-// the four rings, the wallet plate, the two nodes and the arrow are shared with
-// the desktop frame and are imported once, above.
-import solidStocks from '../../../assets/bento/custody/mobile/icon-stocks.svg';
-import solidCrypto from '../../../assets/bento/custody/mobile/icon-crypto.svg';
-import solidCommodities from '../../../assets/bento/custody/mobile/icon-commodities.svg';
-import solidForex from '../../../assets/bento/custody/mobile/icon-forex.svg';
-import solidContract from '../../../assets/bento/custody/mobile/icon-contract.svg';
-import solidContractFold from '../../../assets/bento/custody/mobile/icon-contract-fold.svg';
-import solidLock from '../../../assets/bento/custody/mobile/icon-lock.svg';
-import solidWallet from '../../../assets/bento/custody/mobile/icon-wallet.svg';
 import './BoxCustody.css';
 
 type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
@@ -82,19 +85,20 @@ type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
  *      Commodities centre (146.5, 39)  label, gap 11, tile
  *      Forex       centre (187.5, 123) label, gap 9,  tile
  *
- *  `leaf` is the icon's own class: the tiles share an outer box, the glyphs
- *  inside them do not share a size (Figma gives each its own inset), and the
- *  phone's solid glyph has an inset of its own again — `sw`/`sh` are its root
- *  width and height, which BoxCustody.css places at the mobile breakpoint. */
+ *  `leaf` is the icon's own class. The four tiles share an outer box and the
+ *  glyphs inside them do not share a size, so two of the four carry an inset
+ *  of their own in BoxCustody.css and the other two fill the 16px slot; the
+ *  class is emitted for all four either way, because it says which market the
+ *  glyph belongs to rather than how big it is. */
 const MARKETS = [
   { label: 'Stocks',      lx: 348, ly: 12,  tx: 394, ty: 0,   mlx: 37,  mly: 142, mtx: -8,  mty: 132,
-    icon: iconStocks,      leaf: 'stocks',      bordered: true,  solid: solidStocks,      sw: 14.3333, sh: 14.3331 },
+    icon: iconStocks,      leaf: 'stocks',      bordered: true  },
   { label: 'Crypto',      lx: 386, ly: 62,  tx: 432, ty: 55,  mlx: 40,  mly: 69,  mtx: -5,  mty: 59,
-    icon: iconCrypto,      leaf: 'crypto',      bordered: false, solid: solidCrypto,      sw: 16,      sh: 16 },
+    icon: iconCrypto,      leaf: 'crypto',      bordered: false },
   { label: 'Commodities', lx: 349, ly: 129, tx: 432, ty: 124, mlx: 87,  mly: 31,  mtx: 170, mty: 21,
-    icon: iconCommodities, leaf: 'commodities', bordered: false, solid: solidCommodities, sw: 16,      sh: 15.453 },
+    icon: iconCommodities, leaf: 'commodities', bordered: false },
   { label: 'Forex',       lx: 350, ly: 187, tx: 389, ty: 182, mlx: 150, mly: 115, mtx: 189, mty: 105,
-    icon: iconForex,       leaf: 'forex',       bordered: false, solid: solidForex,       sw: 16,      sh: 16 },
+    icon: iconForex,       leaf: 'forex',       bordered: false },
 ] as const;
 
 /** Ellipse 35 — the two orange nodes sitting on the strokes. Figma's 8px layer
@@ -102,7 +106,7 @@ const MARKETS = [
  *  asset is placed at the layer origin minus 7 at both sizes. These two DO
  *  follow the quarter-turn map, being artwork rather than type: the dot on the
  *  wallet ring at (22, 67) becomes (60, 427) and the one on the orbit at
- *  (298, 104) becomes (97, 151). Order is the order the loop flares them in —
+ *  (298, 104) becomes (97, 151). Order is the order the loop uses them in —
  *  the orbit lets a packet go, the wallet catches it. */
 const NODES = [
   { key: 'wallet', x: 22 - 7,  y: 67 - 7,  mx: 60, my: 427 },
@@ -119,15 +123,27 @@ export function BoxCustody() {
 
       <div className="custody__art" aria-hidden="true">
         <img src={glow} alt="" className="custody__glow" width={215} height={118} />
-        {/* The two rings and the glyphs below are masks, not images.
-            Every one of them is a single flat colour on transparent, and every
-            one of them is drawn LIGHT: the market ring is #FF632A at the file's
-            own 22%, the wallet ring #D9D9D9 at 20%, the desktop glyphs #A6A6A6
-            and the phone's #9D9D9D. On the dark card that is how they reach the
-            eye; on paper it is how they disappear. As a mask the file keeps its
-            own alpha -- the 0.2 and the 0.22 survive as mask alpha -- and the
-            colour under it becomes `color`, i.e. a token. See --custody-ring /
+        {/* The two rings and the glyphs below are masks, not images, and that
+            choice is per file rather than per element: `Icon` paints through
+            `background: currentColor`, which is right for a file that is ONE
+            flat colour on transparent and wrong for anything else, because a
+            coloured plate masks down to a solid rectangle.
+
+            Checked, file by file, before converting. Every one of these is a
+            single flat fill on transparent and every one of them is drawn
+            LIGHT: the market ring is #FF632A at the file's own 22%, the wallet
+            ring #D9D9D9 at 20%, and all seven glyphs #9D9D9D. Three of the
+            glyphs also carry a `fill="white"` rect, and in all three it is the
+            `<clipPath>`'s own rect, which is never painted -- so they are flat
+            too. On the dark card that is how they reach the eye; on paper it is
+            how they would disappear. As a mask the file keeps its own alpha --
+            the 0.2 and the 0.22 survive as mask alpha -- and the colour under
+            it becomes `color`, i.e. a token. See --custody-ring /
             --custody-glyph.
+
+            The two that are NOT masked are the ones a mask would destroy: the
+            glow is a 430x236 raster of warm bloom and dotted ellipse, and the
+            wallet disc is a two-stop gradient at 18%. Both stay <img>.
 
             `width`/`height` are passed as undefined because BoxCustody.css
             sizes all of these in the card's container unit; Icon's own w/h
@@ -145,7 +161,7 @@ export function BoxCustody() {
           </span>
         ))}
 
-        {MARKETS.map(({ label, tx, ty, mtx, mty, icon, leaf, bordered, solid, sw, sh }) => (
+        {MARKETS.map(({ label, tx, ty, mtx, mty, icon, leaf, bordered }) => (
           <span
             key={label}
             className={`custody__tile${bordered ? ' custody__tile--bordered' : ''}`}
@@ -153,9 +169,6 @@ export function BoxCustody() {
           >
             <Icon src={icon} w={16} h={16}
               className={`custody__glyph custody__glyph--${leaf}`}
-              style={{ width: undefined, height: undefined }} />
-            <Icon src={solid} w={sw} h={sh}
-              className={`custody__glyph custody__glyph--solid custody__glyph--solid-${leaf}`}
               style={{ width: undefined, height: undefined }} />
           </span>
         ))}
@@ -166,35 +179,25 @@ export function BoxCustody() {
             Forex's tile hangs off the right. */}
         <span className="custody__pill"
           style={{ '--x': 133, '--y': 31, '--w': 133, '--mx': -17.5, '--my': 245.5, '--mw': 135 } as Vars}>
-          {/* One 16px slot, three leaves, one of which is ever painted: the
-              desktop's outlined document, and the phone's filled one, which
-              Figma splits into a body and the folded corner (fi_9716066). The
-              wrapper is the flex item the single <Icon> used to be, at the same
-              16 x 16 box, so the pill's own layout does not know the
-              difference. */}
+          {/* fi_9716066 — one 16px slot holding two leaves, because Figma draws
+              the document as a body and a separately folded corner. The wrapper
+              is the flex item the pill lays out; both leaves are placed inside
+              it at their own insets. */}
           <span className="custody__doc">
-            <Icon src={iconContract} w={16} h={16} className="custody__doc-line"
+            <Icon src={iconContract} w={11.0514} h={13.7143} className="custody__doc-body"
               style={{ width: undefined, height: undefined }} />
-            <Icon src={solidContract} w={11.0514} h={13.7143} className="custody__doc-body"
-              style={{ width: undefined, height: undefined }} />
-            <Icon src={solidContractFold} w={2.33144} h={2.32572} className="custody__doc-fold"
+            <Icon src={iconContractFold} w={2.33144} h={2.32572} className="custody__doc-fold"
               style={{ width: undefined, height: undefined }} />
           </span>
           Smart Contracts
         </span>
         <span className="custody__pill"
           style={{ '--x': 115, '--y': 144, '--w': 146, '--mx': 95, '--my': 295, '--mw': 143 } as Vars}>
-          {/* fi_747305 — shackle and keyhole are two layers with their own boxes.
-              The phone's padlock (fi_17508481) is one solid layer instead, so it
-              is a third leaf in the same slot rather than a restyling of these. */}
-          <span className="custody__lock">
-            <Icon src={iconLockBody} w={12.749} h={16} className="custody__lock-body"
-              style={{ width: undefined, height: undefined }} />
-            <Icon src={iconLockHole} w={2.313} h={4.125} className="custody__lock-hole"
-              style={{ width: undefined, height: undefined }} />
-            <Icon src={solidLock} w={16} h={16} className="custody__lock-solid"
-              style={{ width: undefined, height: undefined }} />
-          </span>
+          {/* fi_17508481 — the padlock is one solid leaf filling the whole 16px
+              slot, so it is the pill's flex item itself rather than something
+              inside a wrapper. */}
+          <Icon src={iconLock} w={16} h={16} className="custody__lock"
+            style={{ width: undefined, height: undefined }} />
           Withdraw anytime
         </span>
 
@@ -204,11 +207,11 @@ export function BoxCustody() {
         ))}
 
         <img src={walletDisc} alt="" className="custody__wallet-disc" width={37} height={37} />
-        {/* Masked like its siblings. The clipPath's `fill="white"` rect is not
-            painted, so both of these files are the single flat grey they look. */}
-        <Icon src={iconWallet} w={18} h={18} className="custody__wallet-icon"
-          style={{ width: undefined, height: undefined }} />
-        <Icon src={solidWallet} w={16} h={16} className="custody__wallet-icon custody__wallet-icon--solid"
+        {/* fi_6839980, 16 x 16 at (46, 99) — the frame shrank this from the 18px
+            line-art wallet it replaced and left the origin alone. Masked like
+            its siblings; the clipPath's `fill="white"` rect is not painted, so
+            the file is the single flat grey it looks. */}
+        <Icon src={iconWallet} w={16} h={16} className="custody__wallet-icon"
           style={{ width: undefined, height: undefined }} />
       </div>
 

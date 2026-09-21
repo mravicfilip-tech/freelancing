@@ -10,3 +10,4 @@ dist-*
 # path they land here instead. Transient either way -- probe scripts, preview
 # logs and throwaway builds, not deliverables.
 m[A-Z]/
+.env*

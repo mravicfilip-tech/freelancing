@@ -514,7 +514,16 @@
     background: var(--panel);
     font-family: var(--font-body);
     font-weight: 400;
-    font-size: clamp(11px, calc(12 * var(--c)), 13px);
+    /* 10px, NOT the 11 the corner labels take, and the floor is load-bearing
+       rather than a taste. This label sizes a BOX: the pill is its text plus
+       20 units of padding, and the pill has to pass between EUR / USD's faint
+       rim on the left and XAU / USD's on the right. At 320px the card is 280
+       and 12 units is 10.06px, so an 11px floor inflates the pill by 9px --
+       4.4 of them on the left, where the design leaves only 7.2 units of
+       clearance. The pill then arrives 1.6px from EUR's rim instead of 6.
+       At 10px the floor never engages above 320 and the pill is the design's
+       own 106 x 34 at every width. */
+    font-size: clamp(10px, calc(12 * var(--c)), 13px);
     line-height: 1.2;
     color: var(--ink-2);
   }

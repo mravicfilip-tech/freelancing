@@ -45,9 +45,7 @@ import mark from '../../assets/brand/mark.svg';
 import cardPick from '../../assets/about/card-pick.png';
 import cardSide from '../../assets/about/card-side.png';
 import cardExit from '../../assets/about/card-exit.png';
-import laptop from '../../assets/about/laptop.png';
-import panelLower from '../../assets/about/panel-lower.png';
-import panelUpper from '../../assets/about/panel-upper.png';
+import productShot from '../../assets/about/product-shot.png';
 import tick from '../../assets/about/tick.svg';
 import cross from '../../assets/about/cross.svg';
 import logoKalshi from '../../assets/about/logo-kalshi.png';
@@ -386,9 +384,7 @@ function Brand() {
                 says why). Measured at 1600 before this, the CHOOSE band's
                 sampler saw 16 frames in five seconds. */}
             <div className="ab-brand__visual" aria-hidden="true">
-              <img src={laptop} alt="" className="ab-brand__laptop" loading="lazy" decoding="async" />
-              <img src={panelLower} alt="" className="ab-brand__panel ab-brand__panel--lower" loading="lazy" decoding="async" />
-              <img src={panelUpper} alt="" className="ab-brand__panel ab-brand__panel--upper" loading="lazy" decoding="async" />
+              <img src={productShot} alt="" className="ab-brand__shot" loading="lazy" decoding="async" />
             </div>
           </div>
         </div>

@@ -531,10 +531,29 @@
    relative to each other whatever the layer is sized to. Stated in `--u` they
    did not: at 390 the unit is a fifth of a design pixel, so the layer became a
    70px strip with three correctly-proportioned slivers in it. */
-.ab-brand__visual img { position: absolute; max-width: none; }
-.ab-brand__laptop { left: 0; top: 0; width: 100%; height: 100%; }
-.ab-brand__panel--lower { left: 1.427%; top: 48.02%; width: 98.54%; height: 51.98%; }
-.ab-brand__panel--upper { left: 2.102%; top: 0; width: 97.86%; height: 72.74%; }
+/* ONE EXPORT, NOT THREE PNGs COMPOSITED BY HAND.
+   531:233 used to be rebuilt here out of its three children -- the laptop
+   stretched to the box with `width: 100%; height: 100%`, and the two dashboard
+   panels laid over it at percentages of it. Two things were wrong with that.
+   The laptop is 2.456:1 and the box is 2.111:1, so filling both axes squashed
+   it ~14% horizontally; and once it was squashed the panels, positioned as
+   percentages of the BOX rather than of the photograph, no longer sat on the
+   screen they belong to. The client drew a box round the result.
+
+   Figma exports the whole node as one image, already composited and cropped to
+   its visible content, so there is nothing to reassemble and nothing to keep
+   in register. `cover` because the export is wider than the box, and
+   `object-position: left` because the laptop enters from the left and it is
+   the right-hand edge the card is meant to crop. */
+.ab-brand__visual img {
+  position: absolute;
+  inset: 0;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+}
 
 /* ── 4. Cast your conviction ──────────────────────────────────────────────── */
 
@@ -1235,13 +1254,20 @@
    right-hand side bled crisply. Stated unconditionally it fixed one
    arrangement and damaged the other. */
 @media (min-width: 1101px) {
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme='dark']) .ab-brand__visual {
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
-      mask-image: linear-gradient(to right, transparent 0%, #000 13%);
-    }
-  }
-  :root[data-theme='light'] .ab-brand__visual {
+  /* THE LEFT EDGE IS A CROP, NOT AN EDGE, AND IT SHOWS IN BOTH THEMES NOW.
+     Figma's export of 531:233 is cut to the node's visible content, so the
+     photograph simply stops at its left side with the warm wash still lit.
+     While the laptop was stretched to fill this box that edge sat off the
+     card and only paper made it visible, so the fade was stated for light
+     alone. The export sits at its true ratio now and the cut lands inside the
+     card, where it reads as a vertical seam against the plate on either
+     ground. So the layer fades in over its first eighth in both themes.
+
+     Still only above 1100: below that the card stacks, the shot goes full
+     width, and its left edge stops being a crop and becomes the left edge of
+     the laptop -- a real edge of an intentional photograph, which fading
+     would wash out for nothing. */
+  .ab-brand__visual {
     -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
     mask-image: linear-gradient(to right, transparent 0%, #000 13%);
   }

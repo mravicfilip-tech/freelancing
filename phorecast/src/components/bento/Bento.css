@@ -363,6 +363,10 @@
     width: 100%;
     max-width: 394px;
     margin-inline: auto;
+    /* The card's top edge is the band's first line of type, so the heading
+       cannot start on it. Measured before: the h2's box began 1px below the
+       card, which put the ascenders against the rounded corner. */
+    padding-top: 12px;
     /* `min()`, not a bare percentage: percentage padding resolves against the
        CONTAINING BLOCK, not against this element's own capped width. Below the
        cap the wrapper and the card are the same width so 7.614% is the card's

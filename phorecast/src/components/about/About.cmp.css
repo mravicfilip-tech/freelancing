@@ -6,3 +6,37 @@
  * imported after About.css so it can override a layout rule where a motion
  * genuinely requires it, but prefer not needing to: a rule here that is really
  * a layout decision belongs next to the layout. */
+
+/* TRAVEL ROOM UNDER THE LAST ROW, and nothing else in this file.
+   -------------------------------------------------------------------------
+   Below 720 the card scrolls sideways: `.ab-cmp__scroll` is `overflow-x: auto`
+   and CSS therefore computes its `overflow-y` to `auto` as well, because the
+   two axes cannot disagree about being visible. That is normally invisible --
+   the table exactly fills the box, since the last row's cells drop their
+   `padding-bottom` so the grid sits flush with the scroller's bottom edge.
+
+   The entrance takes that slack away. Every structural cell in this band
+   begins its rise 8px low and `from` tweens write their start value the moment
+   they are BUILT, so the bottom row sits 8px below the scroller's box from the
+   first painted frame until the spine's beat lands -- measured at 390: 8px of
+   scrollable overflow from +98ms, gone by +731ms. On a browser drawing classic
+   rather than overlay scrollbars that is a vertical scrollbar appearing inside
+   the card for two thirds of a second, and 15px coming off the width the
+   horizontal scroller had to work with, for a tween that moves eight pixels.
+
+   So the scroller is given the eight pixels as padding and takes them straight
+   back as a negative margin. Padding is inside the scrollable area, so the
+   overflow is now room the box already has; the margin is on the last in-flow
+   child of the card, so the card's content height is the child's MARGIN box
+   and is unchanged to the pixel -- measured identical before and after. It is
+   the same self-cancelling pair `.ab-hero__title .line` uses for descender
+   room in About.css, and for the same reason: make space for something that
+   moves without moving anything that has settled.
+
+   Clipping instead would have been one property, and wrong: `overflow-y: clip`
+   would cut the descenders off the bottom criterion label for exactly the
+   stretch of time it is travelling, which is the only stretch of time anyone
+   would be looking at it. */
+@media (max-width: 720px) {
+  .ab-cmp__scroll { padding-bottom: 8px; margin-bottom: -8px; }
+}

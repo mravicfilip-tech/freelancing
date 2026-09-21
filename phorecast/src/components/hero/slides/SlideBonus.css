@@ -564,10 +564,13 @@
      ink left, so they take the room the boxes were holding: 36 -> 44 units
      (27px -> 33px), against a unit label that does not move from 16 units
      (12px). 2.25:1 becomes 2.75:1 -- the numbers read from further away and the
-     words sit under them as annotation, which is the reading order the block
-     wanted in the first place. Nothing is dimmed to make it quiet; quiet is
-     bought with size and weight, so the 12px unit labels keep full --ink and
-     the block's contrast is exactly what it was. */
+     word beside each one reads as its annotation, which is the reading order
+     the block wanted in the first place.
+
+     NOTHING IS DIMMED TO MAKE IT QUIET. Quiet is bought with size and weight,
+     so the 12px unit labels keep full --ink, and losing the tile's own wash
+     takes their contrast UP rather than down: measured on the page they are
+     painted on, 16.89:1 -> 18.74:1 in dark and 15.17:1 -> 17.59:1 in light. */
   .sl3-countdown {
     /* 16 + 12 + 45 = 73, the height the boxes cost. */
     gap: calc(16 * var(--u));
@@ -612,9 +615,11 @@
      between two pairs of words a dot is the separator that fits, and it keeps
      the "the clock is running" pulse it was carrying. */
   .sl3-countdown__colon {
+    /* The glyph itself goes; what is left is a box the ::before gives size to.
+       `align-self` rather than the row's own centring, because the dot wants
+       the FIGURES' optical middle and the row is 12 units taller than they are. */
     font-size: 0;
     align-self: center;
-    line-height: 0;
   }
   .sl3-countdown__colon::before {
     content: '';

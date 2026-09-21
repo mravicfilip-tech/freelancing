@@ -1226,49 +1226,129 @@
   --ab-g-peach: #f2cfba;
 }
 
-/* THE FIFTH THING, and it is a mask rather than a colour.
+/* THE FIFTH THING, and it is the product shot's LEFT EDGE.
    -------------------------------------------------------------------------
-   The product shot is a photograph of a dark product on a dark desk, and its
-   left edge is where Figma happened to stop compositing -- at the card's 871
-   mark, with nothing there to end on. On the dark card that edge is invisible
-   because both sides of it are near-black. On paper the same photograph is a
-   BLACK SLAB with a hard vertical edge down the middle of a #f7f0ea card, and
-   the eye reads the edge before it reads the laptop.
+   WHAT IS ACTUALLY THERE. Figma exports 531:233 cropped to the node's visible
+   content, and the node is a plate with a photograph on it: measured off
+   `product-shot.png`, columns 0-55 are a single flat colour, rgb(29,28,27),
+   every row identical, with the node's 2px rgb(56,56,55) stroke along the top
+   and bottom. The laptop's own warm wash does not begin until about column
+   60 and the bezel not until about 320. So the first 23 CSS px of this layer
+   at 1600 are not photograph at all -- they are the plate, cut off mid-air
+   where the export stopped.
 
-   Nothing can re-tint a raster photograph, and inverting one is exactly the
-   move this project has banned. So the edge is dissolved instead: the layer
-   fades in over its first eighth, which is what the dark card was doing for
-   free. The composition still bleeds off the right, the image is untouched,
-   and the geometry does not move. It is stated only for light because in dark
-   it would remove nothing that is visible.
+   IN DARK that cut is invisible and the mask below is why. 531:234 sits
+   behind the layer and in dark it is LIT -- blood, rust, ember, peach -- so
+   the plate does not fade to the card, it fades into a warm light source and
+   reads as the glow spilling out from behind the laptop. Dark is not solving
+   a seam; it is drawing the frame's composition, and nothing here touches it.
 
-   AND ONLY ABOVE 1100, WHICH IS THE WHOLE POINT OF IT. The edge this dissolves
-   is an artifact -- the seam where the composite stops, halfway across the card
-   and with nothing there to end on. That only exists while the shot is the
-   card's right-hand half. At 1100 and below the card stacks, the shot becomes
-   full width, and its left edge stops being a seam and starts being the left
-   edge of the laptop, which is a real edge of an intentional photograph.
-   Fading it there washes out the first eighth of the picture for no reason:
-   measured at 390 the layer starts at x41 inside a card starting at x20, so
-   the mask was dissolving 43px of a 328px photograph into the plate, while the
-   right-hand side bled crisply. Stated unconditionally it fixed one
-   arrangement and damaged the other. */
+   IN LIGHT the same mask fails, and not by a margin that a different width or
+   easing could close. The light block above converts that field by the house
+   rule -- light on black is shadow on paper -- so on paper it is #f6decf and
+   #f2cfba, a tint a couple of steps under #fffbf8. There is no longer a light
+   source for the plate to fade INTO. A flat rgb(29,28,27) dissolving to
+   transparent over a #f7f0ea card is, by definition, a 100px ramp through
+   every mid grey, with straight vertical isophotes running the full height of
+   the card and no image content anywhere in it to explain them. Nothing in
+   the world makes a perfectly vertical 100px gradient, so the eye reads the
+   band as dirt on the card rather than as a photograph ending. That is what
+   the client boxed, and it is a consequence of what is BEHIND the fade, not
+   of the fade.
+
+   WHICH MEANS THE FADE IS THE WRONG INSTRUMENT ON PAPER, because both of its
+   outcomes are already rejected. Ramp a near-black into cream and the result
+   is the grey band. Stop ramping and the result is a flat rgb(29,28,27) slab
+   with one hard vertical edge halfway down a cream card -- the state the
+   client boxed BEFORE the mask existed. A boundary between a dark photograph
+   and a light ground cannot be softened out of existence; it can only be
+   given a reason to be there.
+
+   SO IT IS GIVEN ONE, AND THE PAGE ALREADY HAD THE ANSWER IN IT. Below 1100
+   this shot is a bounded rectangle on the same cream card -- crisp left, top
+   and bottom edges, bleeding off the right -- and it has never been a problem
+   there, which is exactly why the mask is off below the breakpoint. The
+   difference above 1100 is not the ground and not the colour: it is that the
+   layer runs top:0 to the card's full 440 height, so its top and bottom edges
+   COINCIDE with the card's and disappear, leaving one unexplained vertical.
+   One edge alone reads as a cut. Three edges and a radius read as a picture.
+
+   So on paper, above 1100, the layer is inset into the card's own padding box
+   -- 32 top and 40 bottom, the card's padding, the same box the copy column
+   sits in -- and takes the card's 10px radius on the two corners that are now
+   inside the card. It still bleeds off the right edge, which About.css's note
+   on the stacked arrangement calls the thing that stops it reading as a
+   picture pasted into a box. The mask goes, because there is nothing left for
+   it to dissolve: the plate's flat rgb(29,28,27) is now the picture's own
+   left edge, the same edge the stacked layout has always shown.
+
+   AND THE PHOTOGRAPH DOES NOT MOVE. `object-fit: cover` derives its scale
+   from the box, so insetting the box would shrink the laptop -- at the 32/40
+   inset, cover flips to scaling by WIDTH and draws the whole 2161px export at
+   0.357 instead of 0.417, a 14% smaller laptop than dark's and the frame's
+   right-hand bleed gone with it. So the IMG keeps the layer's full 440 design
+   height and is centred in the inset box, which the layer's existing
+   `overflow: hidden` then crops. Cover therefore still scales by height, to
+   the same 0.4167 it uses in dark, off the same anchor: the two themes draw
+   the identical crop of the identical photograph at the identical size, and
+   light loses only 36 design px off the top and bottom of it.
+
+   NOTHING IS INVERTED, RE-TINTED OR FILTERED, and nothing is added behind the
+   shot. The pixels are the export's. What changed is the box.
+
+   THE ENTRANCE IS UNAFFECTED. About.brand.motion.ts tweens
+   `.ab-brand__visual` and only ever x, y and opacity; the 52px overhang is
+   still eaten by `.ab-brand__card { overflow: hidden }`, and the `transform`
+   below is on the IMG, which no tween touches and no `clearProps` reaches.
+   The warning in About.brand.css stands and gets shorter: there is no mask on
+   paper for a `clip-path` to cut through, and there is still one in dark.
+
+   AND BELOW 1100 NOTHING HERE APPLIES. Every rule is inside the same
+   min-width the mask is, so the stacked card keeps the full-width photograph
+   it already had, with no inset, no radius and no mask. */
 @media (min-width: 1101px) {
-  /* THE LEFT EDGE IS A CROP, NOT AN EDGE, AND IT SHOWS IN BOTH THEMES NOW.
-     Figma's export of 531:233 is cut to the node's visible content, so the
-     photograph simply stops at its left side with the warm wash still lit.
-     While the laptop was stretched to fill this box that edge sat off the
-     card and only paper made it visible, so the fade was stated for light
-     alone. The export sits at its true ratio now and the cut lands inside the
-     card, where it reads as a vertical seam against the plate on either
-     ground. So the layer fades in over its first eighth in both themes.
-
-     Still only above 1100: below that the card stacks, the shot goes full
-     width, and its left edge stops being a crop and becomes the left edge of
-     the laptop -- a real edge of an intentional photograph, which fading
-     would wash out for nothing. */
+  /* DARK'S ANSWER, UNCHANGED. The layer fades in over its first eighth into
+     531:234's lit field, which is the frame's own composition. Stated
+     unconditionally because paper overrides it below rather than opting out
+     of it -- one rule to find, not two conditions to keep in agreement. */
   .ab-brand__visual {
     -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
     mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  }
+}
+
+/* PAPER'S ANSWER. Written twice for the reason the light block above gives --
+   a media query cannot go in a selector list. The two bodies MUST stay
+   identical; only their conditions differ. */
+@media (min-width: 1101px) and (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .about-page .ab-brand__visual {
+    top: calc(32 * var(--u));
+    bottom: calc(40 * var(--u));
+    height: auto;
+    border-radius: 10px 0 0 10px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  :root:not([data-theme='dark']) .about-page .ab-brand__visual img {
+    top: 50%;
+    bottom: auto;
+    height: calc(440 * var(--u));
+    transform: translateY(-50%);
+  }
+}
+@media (min-width: 1101px) {
+  :root[data-theme='light'] .about-page .ab-brand__visual {
+    top: calc(32 * var(--u));
+    bottom: calc(40 * var(--u));
+    height: auto;
+    border-radius: 10px 0 0 10px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  :root[data-theme='light'] .about-page .ab-brand__visual img {
+    top: 50%;
+    bottom: auto;
+    height: calc(440 * var(--u));
+    transform: translateY(-50%);
   }
 }

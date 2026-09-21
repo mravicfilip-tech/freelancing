@@ -364,10 +364,12 @@
 
   /* The label rail. Two lines -- the left column stacked, the right column
      single -- so three labels fit across 245px of usable card at the 320px
-     worst case: FIVE MARKETS 90.5 + FAST ONBOARDING 113.1 on the first line,
-     TRANSPARENT EXECUTION 158.4 on the second, in design units. The bottom-left
-     label becomes the rail's second line rather than staying at the foot of the
-     card, because the foot of a portrait card is where the padlock now is. */
+     worst case: FIVE MARKETS 90.5 + FAST ONBOARDING 113.1 on the first line and
+     the bottom-left label on the second, in design units. That label was
+     TRANSPARENT EXECUTION at 158.4 and is NO LEVERAGE at 79.1, so the second
+     line has only got shorter. The bottom-left label becomes the rail's second
+     line rather than staying at the foot of the card, because the foot of a
+     portrait card is where the padlock now is. */
   .bt-label { font-size: clamp(11px, calc(11 * var(--c)), 13px); }
   .bt-label--tl { left: calc(20 * var(--c)); top: calc(18 * var(--c)); }
   .bt-label--tr { right: calc(20 * var(--c)); top: calc(18 * var(--c)); }
@@ -550,12 +552,15 @@
   /* THE THREE LABELS GO BACK TO THREE CORNERS. The rail above stacks them
      because a row of five markets owned the top of the card; a ring owns the
      middle instead, and the design puts FIVE MARKETS top-left, FAST ONBOARDING
-     top-right and TRANSPARENT EXECUTION bottom-left, all at 30 units of inset
-     at 12 units of type. That also retires the crowding the rail had, where
-     its second line ended 11.8 units above the market-name row.
+     top-right and the third label bottom-left, all at 30 units of inset at 12
+     units of type. That also retires the crowding the rail had, where its
+     second line ended 11.8 units above the market-name row.
 
-     THE FIGMA LABEL READS "TRANSPARENT EXRCUTION". That is a typo in the
-     design file. The markup says EXECUTION and keeps saying EXECUTION. */
+     THE THIRD LABEL IS NOT THE FRAME'S ANY MORE. Figma draws it as
+     "TRANSPARENT EXRCUTION" -- a typo in the design file for TRANSPARENT
+     EXECUTION, which is a claim the product no longer makes. The markup says
+     NO LEVERAGE, which is 79.1 design units against the frame's 158.4, so the
+     corner has more room than the design allows for, never less. */
   .bt-card--two .bt-label { font-size: clamp(11px, calc(12 * var(--c)), 13px); }
   .bt-card--two .bt-label--tl { left: calc(30 * var(--c)); top: calc(30 * var(--c)); }
   .bt-card--two .bt-label--tr { right: calc(30 * var(--c)); top: calc(30 * var(--c)); }

@@ -8,8 +8,8 @@
  *
  * THE STORY — 05 CROSSFEED, one band straight through, twice, every 13s
  * ---------------------------------------------------------------------
- * The chosen loop is not an arrival. It is a pass: settlement going *through*
- * your custody rather than stopping at it.
+ * The chosen loop is not an arrival. It is a pass: one front crossing the band
+ * and going out the far side rather than landing in it.
  *
  *   0.60s  A front enters past the left edge of the band and starts across.
  *          It is one x, moving, and everything in the section answers to it.

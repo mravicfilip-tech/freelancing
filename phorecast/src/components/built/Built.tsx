@@ -278,7 +278,7 @@ export function Built() {
             Better Infrastructure
           </p>
           <h2 id="built-title" className="built__title">Built for the Way You Trade</h2>
-          <p className="built__sub">A familiar trading experience, rebuilt with faster access, greater transparency and more control.</p>
+          <p className="built__sub">A familiar trading experience, rebuilt with faster access.</p>
         </header>
 
         <div className="built__cols">

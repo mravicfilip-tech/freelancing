@@ -162,6 +162,23 @@ const START_TALL = 'bottom bottom';
 const END = '+=170%';
 const SCRUB = 1;
 
+/** How far past the end counts as "read it". A float comparison at the end of
+ *  a scrub does not reliably land on exactly 1: measured over ten runs of the
+ *  width sweep, an exact `=== 1` missed three times -- every word above 0.995
+ *  at a progress of 0.9997 -- and the trigger stayed alive, so scrolling back
+ *  up emptied the sentence again. */
+const LATCH_AT = 0.999;
+/** How long the latch waits between samples of the scroll position, and how
+ *  many times it will wait. Two samples the same is what "the reader chose
+ *  this position" means, so a reader who scrolls past and stops latches after
+ *  about 0.4s; three seconds of a position that will not stop moving is given
+ *  up on rather than spun on, because the next scroll calls the latch again. */
+const SETTLE = 0.2;
+const SETTLE_TRIES = 15;
+/** How long scroll anchoring stays off around the pin's creation. Two frames
+ *  at 60fps is 0.033; a tenth of a second is that with room for a slow one. */
+const ANCHOR_OFF = 0.1;
+
 /**
  * Split a statement into per-word spans WITHOUT flattening it.
  *
@@ -317,6 +334,38 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
   // branch for one that does not, over nothing a reader could see.
   const start = () => (el.offsetHeight > window.innerHeight + 1 ? START_TALL : START_FITS);
 
+  /* SCROLL ANCHORING MUST NOT COMPENSATE FOR THE SPACER, and it is switched
+   * off for the two frames that takes and no longer.
+   *
+   * Creating the pin inserts ScrollTrigger's spacer, which grows the document
+   * by the pin distance -- measured, 4704 to 6234 at 1600 x 900, which is
+   * 1530 and is 170% of the viewport. If the reader is ALREADY inside what is
+   * about to become the pinned range, every browser with scroll anchoring
+   * moves them by exactly that amount to keep what is under their eye where
+   * it was. Measured: ask for 1731, land at 3261, which is past the whole
+   * band -- so the reader who jumped into the middle of the statement is put
+   * out the other side of it and never sees the reveal at all. It is not a
+   * rare path: a fast flick, a back-navigation, a restored scroll position and
+   * a link into the middle of the page all arrive that way.
+   *
+   * Disabling anchoring for the insertion is the whole fix -- measured drift
+   * goes from 1530 to 0 at every fraction of the pin -- and doing it for two
+   * frames rather than for the life of the page is what keeps the cost at
+   * nothing: anchoring is back on before anything else could need it.
+   *
+   * Narrower scopes do not work, and that was measured rather than assumed:
+   * `overflow-anchor: none` on the spacer alone, or on the band alone, still
+   * drifts 1530, because the node the browser anchors to is neither of them.
+   * It has to be the scrolling element.
+   *
+   * `gsap.set` rather than touching `style` directly, so that both the switch
+   * and its removal belong to the surrounding `gsap.context` and cannot be
+   * stranded by an unmount landing between them. */
+  gsap.set(document.documentElement, { overflowAnchor: 'none' });
+  gsap.delayedCall(ANCHOR_OFF, () => {
+    gsap.set(document.documentElement, { clearProps: 'overflowAnchor' });
+  });
+
   ScrollTrigger.create({
     trigger: el,
     start,
@@ -342,17 +391,63 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
     refreshPriority: 1,
   });
 
-  /* ONCE FULL, IT STAYS FULL. Up to that point the fill follows the scroll in
-   * both directions; past the end the fill's trigger is killed -- the pin's is
-   * not -- and the timeline is finished off, so scrolling back up into the
-   * band and down again finds a sentence that has already been read.
+  /* ONCE FULL, IT STAYS FULL -- BUT ONLY FROM A SCROLL POSITION THE READER
+   * ACTUALLY CHOSE, and that qualification is the whole of this block.
+   *
+   * THE DEFECT IT FIXES, because it was intermittent and it looked exactly
+   * like "the effect does not run". When the band builds, ScrollTrigger
+   * inserts the pin's spacer and the document grows by the pin distance --
+   * measured here, 4704 to 6234, which is 1530 and is 170% of a 900 viewport.
+   * If that happens while the reader is already below the band's top, the
+   * browser moves the scroll position by the same amount to keep what is
+   * under their eye where it was. ScrollTrigger's next update samples THAT
+   * position: measured, scrollY 3699 against a trigger ending at 2878, so it
+   * reports a progress of 1. The latch believed it, killed the fill and forced
+   * the statement to full -- at 25% of the pin, before the reader had scrolled
+   * a pixel of it. The scroll then settled back to 1731 and the fill trigger
+   * was already gone, so the sentence sat fully lit and the reveal never
+   * happened. One run in ten of the instant-arrival sweep, and in the wild it
+   * fires whenever the band builds with the reader already inside what is
+   * about to become the pinned range: a fast flick, a back-navigation, a
+   * restored scroll position, a link into the middle of the page.
+   *
+   * WHAT MAKES IT LAST LONG ENOUGH TO MATTER is `scroll-behavior: smooth` on
+   * `html` in global.css. Measured both ways: with it, the adjustment becomes
+   * an ANIMATED excursion -- scrollY runs out to 3699 and takes about two
+   * seconds to come back to 1731, so for most of that time every sample says
+   * "past the end". With `scroll-behavior: auto` the document still grows but
+   * the scroll does not move at all: peak scrollY equals the target, and there
+   * is no excursion to misread. GSAP warns against smooth scrolling with
+   * ScrollTrigger and this is why; it is a global rule and not this band's to
+   * change, so the latch is built to survive it.
+   *
+   * THE FIX IS NOT A LONGER WAIT, because two seconds is not a number worth
+   * guessing at and the excursion's length is the browser's business. It is
+   * to ask what "a position the reader chose" actually means, and the answer
+   * is: a position that has STOPPED MOVING. So the latch samples the scroll
+   * twice, 0.2s apart, and only acts when the two agree and the reason it was
+   * called still holds. Through the excursion the scroll moves every frame, so
+   * it keeps waiting; when it settles back at 1731 the progress is no longer
+   * past the end and it simply declines. A reader who scrolls past and stops
+   * satisfies it in about 0.4s.
+   *
+   * Nothing is wrong on screen during the wait -- the scrub goes on doing its
+   * job and self-corrects when the position settles, which is why the fill was
+   * right in every run where the latch did not fire.
+   *
+   * Each caller hands in the condition that justified it, so the re-check is
+   * the same question and not a proxy for it.
+   *
+   * `gsap.delayedCall` and not `setTimeout`: the delayed call is owned by the
+   * surrounding `gsap.context` and is reverted with everything else when the
+   * band unmounts. A bare timeout would outlive the band under the router,
+   * and would then be holding a killed trigger.
    *
    * The finishing tween rather than a bare `progress(1)` is for the smoothing:
-   * at the moment the end is crossed the scrub is still behind, and snapping
-   * the remainder on would be the one visible discontinuity in the move. With
-   * the reference's hold quarter in front of it there is normally nothing left
-   * to finish, which is the hold doing exactly what its comment says it does:
-   * absorbing the scrub lag.
+   * at the moment the end is crossed the scrub can still be behind, and
+   * snapping the remainder on would be the one visible discontinuity in the
+   * move. With the reference's hold quarter in front of it there is normally
+   * nothing left to finish.
    *
    * `latch` takes the trigger from its own callback rather than closing over
    * the variable holding it, because the first `onRefresh` fires from INSIDE
@@ -360,16 +455,42 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
    * over it would be a temporal-dead-zone throw on the one path that matters
    * most: a band built when the reader is already past it. */
   let latched = false;
-  const latch = (self: ScrollTrigger) => {
-    if (latched) return;
-    latched = true;
-    // `kill(revert, allowAnimation)`, and the second argument is load-bearing:
-    // left off, ScrollTrigger kills the timeline it was driving as well, and
-    // the finishing tween below would be pushing progress into something
-    // already dead.
-    self.kill(false, true);
-    gsap.to(fill, { progress: 1, duration: 0.25, ease: 'none', overwrite: true });
+  let watching: gsap.core.Tween | null = null;
+
+  const latch = (self: ScrollTrigger, stillTrue: () => boolean) => {
+    if (latched || watching) return;
+    let lastY = -1;
+    let tries = 0;
+    const check = () => {
+      watching = null;
+      if (latched) return;
+      // The reason it was called has to still hold. A transient that has since
+      // settled somewhere else fails here and nothing happens.
+      if (!stillTrue()) return;
+      const y = self.scroll();
+      if (y !== lastY) {
+        // Still moving, so this is not a position anybody has chosen yet.
+        // Wait for it to stop -- but not forever: give up rather than spin,
+        // because the next scroll will call this again anyway.
+        if (tries >= SETTLE_TRIES) return;
+        lastY = y;
+        tries += 1;
+        watching = gsap.delayedCall(SETTLE, check);
+        return;
+      }
+      latched = true;
+      // `kill(revert, allowAnimation)`, and the second argument is load-
+      // bearing: left off, ScrollTrigger kills the timeline it was driving as
+      // well, and the finishing tween below would be pushing progress into
+      // something already dead. Only the FILL's trigger is killed -- the pin's
+      // is untouched, because killing a pinned trigger removes its spacer and
+      // the document would lose 170% of a screen under the reader's thumb.
+      self.kill(false, true);
+      gsap.to(fill, { progress: 1, duration: 0.25, ease: 'none', overwrite: true });
+    };
+    watching = gsap.delayedCall(SETTLE, check);
   };
+  const atEnd = (self: ScrollTrigger) => () => self.progress >= LATCH_AT;
 
   const fillST = ScrollTrigger.create({
     animation: fill,
@@ -386,7 +507,9 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
       // A reveal that cannot complete is worse than one that completes at
       // once: if the page is ever too short to scroll to this trigger's end,
       // fill the sentence rather than strand it part-read.
-      if (self.end > ScrollTrigger.maxScroll(self.scroller as Window)) latch(self);
+      if (self.end > ScrollTrigger.maxScroll(self.scroller as Window)) {
+        latch(self, () => self.end > ScrollTrigger.maxScroll(self.scroller as Window));
+      }
     },
     /* TWO WAYS IN, because one of them is not reliable on its own. `onUpdate`
      * with an exact `progress === 1` is a float comparison at the end of a
@@ -397,15 +520,15 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
      * end" and does not depend on a number landing exactly; the epsilon on
      * `onUpdate` catches the case where the reader stops ON the end and never
      * leaves. `latch` is idempotent, so both firing is free. */
-    onUpdate: (self) => { if (self.progress >= 0.999) latch(self); },
-    onLeave: (self) => latch(self),
+    onUpdate: (self) => { if (self.progress >= LATCH_AT) latch(self, atEnd(self)); },
+    onLeave: (self) => latch(self, atEnd(self)),
   });
 
   // The band can be built when it is already above the reader -- a theme
   // switch rebuilds every section wherever the page happens to be sitting, and
   // the router can land mid-page. ScrollTrigger sets the progress on creation
   // but raises no update for it, so ask once.
-  if (fillST.progress >= 1) latch(fillST);
+  if (fillST.progress >= LATCH_AT) latch(fillST, atEnd(fillST));
 
   /* The lead words' offsets are measured from laid-out text, so they are wrong
    * if they were taken against the fallback face. The reference splits after

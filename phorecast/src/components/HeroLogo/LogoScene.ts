@@ -229,13 +229,9 @@ export class LogoScene {
 
     if (reducedMotion) return;
 
-    this.intersection = new IntersectionObserver(
-      (entries) => {
-        this.hostVisible = entries.some((e) => e.isIntersecting);
-        this.updateRunning();
-      },
-      { threshold: 0 },
-    );
+    // The wake-up, not the gate: `updateRunning` re-reads the box itself, so
+    // this only has to say "something changed, look again". See hostOnScreen().
+    this.intersection = new IntersectionObserver(() => this.updateRunning(), { threshold: 0 });
     this.intersection.observe(host);
     document.addEventListener('visibilitychange', this.onVisibility);
 
@@ -263,6 +259,31 @@ export class LogoScene {
 
   private readonly onVisibility = () => this.updateRunning();
 
+  /**
+   * Is the host on screen RIGHT NOW? Read from the box, not from the
+   * IntersectionObserver.
+   *
+   * The observer is the correct thing to wake the scene up and the wrong thing
+   * to shut it down, because its callback is delivered in the rendering
+   * lifecycle -- the same lifecycle a frame that costs more than its budget
+   * starves. The mark is ~18,800 blended line quads (see config.ts) and without
+   * a GPU one draw can take a quarter of a second, so the news that the hero
+   * had scrolled away arrived three or four draws late: measured at 390 wide,
+   * the loop was still drawing 1.0s after the hero left the screen, and those
+   * draws landed on top of the section the reader had actually scrolled to --
+   * whose own entrance is gated by an IntersectionObserver and so was waiting
+   * behind exactly the frames the mark was eating. The bento band opened in
+   * ~1080ms instead of ~130ms, two sections below a mark nobody could see.
+   *
+   * One rect read per frame is cheaper than any single one of those draws, and
+   * it cannot be starved by them.
+   */
+  private hostOnScreen(): boolean {
+    const r = this.opts.host.getBoundingClientRect();
+    const h = window.innerHeight || document.documentElement.clientHeight;
+    return r.bottom > 0 && r.top < h && r.width > 0 && r.height > 0;
+  }
+
   private readonly onPointerMove = (e: PointerEvent) => {
     const r = this.opts.host.getBoundingClientRect();
     this.pointerTarget.set(((e.clientX - r.left) / r.width) * 2 - 1, ((e.clientY - r.top) / r.height) * 2 - 1);
@@ -271,6 +292,12 @@ export class LogoScene {
   private readonly onPointerLeave = () => this.pointerTarget.set(0, 0);
 
   private updateRunning() {
+    // Ask the box rather than trusting `hostVisible`. The observer's entry is a
+    // snapshot of whenever the callback was queued, and `hostVisible` starts
+    // life as `true` -- so a scene that finished building while the reader was
+    // already past the hero used to start drawing anyway, and kept drawing
+    // until an observation could be delivered.
+    if (!this.opts.reducedMotion) this.hostVisible = this.hostOnScreen();
     const shouldRun = !this.disposed && !this.opts.reducedMotion && this.hostVisible && document.visibilityState === 'visible';
     if (shouldRun && !this.running) this.start();
     else if (!shouldRun && this.running) this.stop();
@@ -297,6 +324,15 @@ export class LogoScene {
   private readonly tick = () => {
     if (!this.running || this.disposed) return;
     this.raf = requestAnimationFrame(this.tick);
+
+    // Off screen, stop here -- before the draw, not after an observation has
+    // managed to get through. See hostOnScreen(). The observer stays wired and
+    // is what starts the loop again when the hero comes back.
+    if (!this.hostOnScreen()) {
+      this.hostVisible = false;
+      this.stop();
+      return;
+    }
 
     // Cap the idle loop. The entrance runs at whatever the display gives it,
     // because that is the part anyone watches closely; once it has landed the

@@ -270,14 +270,25 @@ export function Familiar() {
         <Phone />
 
         {PREDICTIONS.map((p) => <Prediction key={p.mod} {...p} />)}
-      </div>
 
-      <div className="fam__band" aria-hidden="true">
-        <span className="fam__horizon" />
-        <div className="fam__chips">
-          <span className="fam__chip-dot" />
-          {CHIPS.map((c) => <span key={c} className="fam__chip-pill">{c}</span>)}
-          <span className="fam__chip-dot" />
+        {/* THE BOTTOM BAND IS A CHILD OF THE STAGE, and was a sibling of it.
+            On a phone the stage is an ordinary column and the Figma mobile
+            frame (538:4601) puts the category strip BETWEEN the handset and
+            the "Phorcast Trading" copy — so the strip has to be orderable
+            against the stage's own children, and `order` only reaches
+            siblings. Nothing about the desktop composition moves: the band is
+            `position: absolute; inset: auto 0 0` and `.fam` has no in-flow
+            child but the stage, so `.fam`'s content box and the stage's are
+            the same rectangle and `bottom: 0` resolves to the same line
+            against either. It is still the last thing painted, since the stage
+            is the only other child of the section. */}
+        <div className="fam__band" aria-hidden="true">
+          <span className="fam__horizon" />
+          <div className="fam__chips">
+            <span className="fam__chip-dot" />
+            {CHIPS.map((c) => <span key={c} className="fam__chip-pill">{c}</span>)}
+            <span className="fam__chip-dot" />
+          </div>
         </div>
       </div>
     </section>

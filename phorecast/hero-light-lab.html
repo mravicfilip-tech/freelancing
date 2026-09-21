@@ -13,204 +13,274 @@
 
    Six candidate grounds for the hero in light mode -- the one on the branch
    today, and five replacements -- all painted with the REAL tokens and the
-   REAL geometry: the same DOM, the same five discs, the same horizon, the same
-   per-slide offsets the carousel applies. Nothing here is a mock-up of the
-   values. The block in <style id="vcss">
-.hero[data-hero-variant='0'] {
-  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf3ec 60%);
-  --hero-g-peach: #fae8dd;
-  --hero-g-orange: #f6decf;
-  --hero-g-core: #f4d7c5;
+   REAL geometry: the same DOM, the same five discs, the same horizon, the
+   same per-slide offsets the carousel applies. Nothing here is a mock-up of
+   the values. Everything from here down to the `vcss` block is the lab's own
+   chrome plus the hero rules lifted out of Hero.css unchanged; the candidates
+   themselves live in the `vcss` style block below and are generated from the same
+   source as the text beside them, so the panel and the picture cannot drift.
+
+   WHAT A CANDIDATE MAY TOUCH: paint, and the placement of what is already
+   there. It may move, reshape, unblur, switch off or blend any of the five
+   discs, repaint the band's own paper and the horizon that cuts it, and use
+   the two spare pseudo-elements on the band. It may NOT add an element, and
+   it may NOT set `left` on a disc -- that would freeze the carousel's three
+   ground anchorings, which are the whole reason the slide buttons exist.
+
+   WHY MOST OF THE DISCS APPEAR TO DO NOTHING in the shipped ground: measured
+   on the built page at 1600, the horizon is an ellipse of paper 2223 design
+   px tall starting at y972, and peach (y1022) and cream (y1153) start
+   underneath it. Hiding either moves the darkest pixel in the band by a
+   single unit. Ember is 1283 tall from y641, so its visible slice is its TOP
+   quarter -- which the shipped gradient fills with its var(--page) stop,
+   which is why that layer reads as nothing. The orange disc, and the core
+   behind it, are what a person actually sees.
+
+   The dark reference at the top of the bar is a reference, not a candidate:
+   dark is frozen and none of these touch it.
+   =========================================================================== */
+
+/* --- Real tokens, light ---------------------------------------------------- */
+:root {
+  --page: #fffbf8;
+  --panel: #f7f0ea;
+  --panel-2: #ece1d9;
+  --line: #e3d6cb;
+  --ink: #1a1512;
+  --ink-2: #5e5651;
+  --ink-muted: #7a716c;
+  --accent: #a21605;
+  --accent-deep: #7e0202;
+  --accent-lift: #c4361c;
+  --on-accent: #fffbf8;
+  --pos: #0b6e37;
+  --neg: #b01309;
+  --veil: rgba(26, 21, 18, 0.045);
+  --veil-line: rgba(26, 21, 18, 0.14);
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-body: 'Inter Tight', system-ui, sans-serif;
+  --radius-pill: 400px;
+
+  --lab-bg: #f2ece6;
+  --lab-ink: #1a1512;
+  --lab-quiet: #7a716c;
+  --lab-line: #d9cec4;
+  --lab-card: #fffbf8;
+}
+/* The dark reference. Only the tokens the hero reads, and only the values the
+   theme already ships -- this switch is a mirror, never a design. */
+:root[data-ref='dark'] {
+  --page: #0f0e0d;
+  --panel: #1b1b1a;
+  --panel-2: #2b2928;
+  --line: #313131;
+  --ink: #fffbf8;
+  --ink-2: #9d9d9d;
+  --ink-muted: #626262;
+  --accent: #e5331e;
+  --accent-deep: #c02816;
+  --accent-lift: #e9513f;
+  --on-accent: #fffbf8;
+  --pos: #00c950;
+  --neg: #e7000b;
+  --veil: rgba(255, 251, 248, 0.06);
+  --veil-line: rgba(255, 251, 248, 0.12);
+}
+:root[data-ref='dark'] .hero {
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #7e0202 60%);
+  --hero-g-orange: #c23a26;
+  --hero-g-core: #f15034;
   --hero-g-core-op: 0.55;
-  --hero-g-cream: #f2cfba;
-  --hero-halftone: rgba(150, 95, 70, 0.9);
+  --hero-g-peach: #ec7850;
+  --hero-g-peach-op: 0.85;
+  --hero-g-cream: #fbd6ca;
+  --hero-halftone: rgba(250, 203, 185, 0.9);
+  --hero-halftone-blend: soft-light;
   --hero-halftone-op: 0.7;
-}
-/* ============================================================== 1. PLOT ====
-   Structure, not light. The ground is a ruled field whose rhythm tightens as
-   it falls, the way a chart's grid does toward its axis, and it ends on one
-   drawn baseline. The sunrise is switched off; the only colour is a low warm
-   plate the ruling is drawn across. */
-.hero[data-hero-variant='1'] {
   --hero-page: var(--page);
   --hero-horizon: var(--page);
-  --hero-g-ember: transparent;
-  --hero-g-peach: transparent;
-  --hero-g-cream: transparent;
-  --hero-g-orange: #ebc4a2;
-  --hero-g-core: #d98d59;
-  --hero-g-core-op: 0.6;
-  --hero-halftone-op: 0;
-  --v-rule: rgba(88, 48, 30, 0.15);
-  --v-rule-2: rgba(88, 48, 30, 0.19);
-  --v-rule-3: rgba(88, 48, 30, 0.24);
-  --v-tick: rgba(88, 48, 30, 0.13);
-  --v-base: rgba(88, 48, 30, 0.55);
 }
-.hero[data-hero-variant='1'] .hero__bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    /* the baseline the rest converges on */
-    linear-gradient(to bottom, var(--v-base) 0 100%),
-    /* three zones, each period shorter than the one above it */
-    repeating-linear-gradient(to bottom, var(--v-rule-3) 0 1px, transparent 1px calc(26 * var(--u))),
-    repeating-linear-gradient(to bottom, var(--v-rule-2) 0 1px, transparent 1px calc(44 * var(--u))),
-    repeating-linear-gradient(to bottom, var(--v-rule) 0 1px, transparent 1px calc(72 * var(--u))),
-    /* sparse verticals: ticks, not a mesh */
-    repeating-linear-gradient(to right, var(--v-tick) 0 1px, transparent 1px calc(128 * var(--u)));
-  background-size: 100% 2px, 100% 12%, 100% 15%, 100% 18%, 100% 44%;
-  background-position: 0 83%, 0 71%, 0 56%, 0 38%, 0 39%;
-  background-repeat: no-repeat;
-  mask-image: linear-gradient(to bottom, transparent 40%, #000 55%, #000 82%, rgba(0, 0, 0, 0.55) 84%, rgba(0, 0, 0, 0.25) 92%, transparent 100%);
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--lab-bg);
+  color: var(--lab-ink);
+  font-family: var(--font-display);
+  padding: 32px 28px 96px;
 }
-/* ============================================================= 2. PRESS ====
-   Material, not light. The ground is printed: two flat spot inks pulled out of
-   register and overprinted through a dot screen you can actually see. A
-   risograph, not a photograph of a sunrise. */
-.hero[data-hero-variant='2'] {
+.head { max-width: 860px; margin-bottom: 28px; }
+.head h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+.head p { margin-top: 10px; color: var(--lab-quiet); font-size: 14px; line-height: 1.55; font-family: var(--font-body); }
+.head code { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); }
+
+.bar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 12px 14px; margin-bottom: 22px;
+  background: var(--lab-card); border: 1px solid var(--lab-line); border-radius: 12px;
+}
+.bar__t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--lab-quiet); margin-right: 4px; }
+.bar .sp { flex: 1; }
+button.pick {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  padding: 7px 13px; border-radius: 400px; cursor: pointer;
+  background: transparent; color: var(--lab-ink);
+  border: 1px solid var(--lab-line);
+}
+button.pick:hover { border-color: var(--accent); }
+button.pick[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #fffbf8; }
+
+/* --- The stage ------------------------------------------------------------- */
+.stage { border: 1px solid var(--lab-line); border-radius: 14px; overflow: hidden; background: var(--page); }
+
+/* ===========================================================================
+   Everything below this line is lifted from src/components/hero/Hero.css and
+   from the light block of src/styles/tokens.css. Geometry unchanged.
+   =========================================================================== */
+.hero {
+  position: relative;
+  container-type: inline-size;
+  min-height: 1080px;
+  padding-top: 40px;
+  overflow: hidden;
+  background: var(--hero-page);
+  isolation: isolate;
+
+  --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #7e0202 60%);
+  --hero-g-orange: #c23a26;
+  --hero-g-core: #f15034;
+  --hero-g-core-op: 0.55;
+  --hero-g-peach: #ec7850;
+  --hero-g-peach-op: 0.85;
+  --hero-g-cream: #fbd6ca;
+  --hero-halftone: rgba(150, 95, 70, 0.9);
+  --hero-halftone-blend: soft-light;
+  --hero-halftone-op: 0.7;
   --hero-page: var(--page);
   --hero-horizon: var(--page);
-  --hero-g-ember: transparent;
-  --hero-g-peach: transparent;
-  --hero-g-cream: transparent;
-  --hero-g-orange: #ef9f6b;
-  --hero-g-core: #cf3a1e;
-  --hero-g-core-op: 0.5;
-  --hero-halftone-op: 0;
 }
-.hero[data-hero-variant='2'] .hero__glow--orange {
-  filter: blur(calc(11 * var(--u)));
-  margin-left: calc(380 * var(--u));
-}
-.hero[data-hero-variant='2'] .hero__glow--core {
-  mix-blend-mode: multiply;
-  filter: blur(calc(9 * var(--u)));
-  margin-left: calc(280 * var(--u));
-  margin-top: calc(-64 * var(--u));
-  width: calc(1060 * var(--u));
-  height: calc(620 * var(--u));
-}
-.hero[data-hero-variant='2'] .hero__bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle at center, rgba(176, 44, 18, 0.55) 0 1.7px, transparent 2.1px),
-    radial-gradient(circle at center, rgba(108, 56, 30, 0.34) 0 1.35px, transparent 1.8px);
-  background-size: 8px 8px;
-  background-position: 0 0, 4px 4px;
-  mask-image: radial-gradient(104% 74% at 80% 104%, #000 0%, rgba(0, 0, 0, 0.82) 34%, rgba(0, 0, 0, 0.26) 64%, transparent 82%);
-}
-/* ======================================================== 3. COLD FRONT ====
-   Colour, not depth. Two masses of opposite temperature meet in the band: an
-   ash-slate front standing low on the left, a clay one coming in from the
-   right, and the seam between them is the whole picture. The only cool note
-   anywhere on the page. */
-.hero[data-hero-variant='3'] {
-  --hero-page: var(--page);
-  --hero-horizon: var(--page);
-  --hero-g-ember: #b9c1d4;
-  --hero-g-peach: transparent;
-  --hero-g-cream: transparent;
-  --hero-g-orange: #d86c40;
-  --hero-g-core: #bf3a15;
-  --hero-g-core-op: 0.4;
-  --hero-halftone-op: 0.5;
-  --hero-halftone: rgba(80, 60, 90, 0.9);
-}
-.hero[data-hero-variant='3'] .hero__glow--ember {
-  margin-left: calc(-700 * var(--u));
-  margin-top: calc(-40 * var(--u));
-  width: calc(1760 * var(--u));
-  height: calc(1160 * var(--u));
-  filter: blur(calc(98 * var(--u)));
-}
-.hero[data-hero-variant='3'] .hero__glow--orange {
-  margin-left: calc(190 * var(--u));
-  margin-top: calc(-70 * var(--u));
-}
-.hero[data-hero-variant='3'] .hero__glow--core {
-  margin-left: calc(150 * var(--u));
-  margin-top: calc(-40 * var(--u));
-}
-/* ========================================================== 4. SKYLIGHT ====
-   The source moves. The light enters at the top right, above the nav, and the
-   page settles into shade at the bottom left -- the exact inverse of the
-   sunrise's anchoring. Nothing rises out of the floor, so the horizon stops
-   cutting anything and the band's only mass is the shade. */
-.hero[data-hero-variant='4'] {
-  --hero-page:
-    radial-gradient(116% 84% at 97% -12%, #f2c193 0%, #f9dcc2 22%, #fdeee2 46%, rgba(255, 251, 248, 0) 72%),
-    linear-gradient(198deg, rgba(255, 251, 248, 0) 34%, #e6ddd7 72%, #d4c9c2 100%);
-  --hero-horizon: transparent;
-  --hero-g-ember: transparent;
-  --hero-g-peach: transparent;
-  --hero-g-cream: transparent;
-  --hero-g-orange: #c3b8b2;
-  --hero-g-core: transparent;
-  --hero-g-core-op: 0;
-  --hero-halftone-op: 0;
-}
-.hero[data-hero-variant='4'] .hero__glow--orange {
-  margin-left: calc(-1180 * var(--u));
-  margin-top: calc(120 * var(--u));
-  width: calc(1900 * var(--u));
+.hero__bg {
+  --u: calc(100cqw / 1920);
+  position: absolute; left: 0; right: 0; bottom: 0;
   height: calc(1080 * var(--u));
-  filter: blur(calc(120 * var(--u)));
+  z-index: 0; pointer-events: none; overflow: hidden;
 }
-/* THE ONE LINE WITH NO HEADROOM, and the one variant that has to answer for it.
-   --ink-muted is 4.63:1 on bare paper -- AA at 16px with about a hundredth of a
-   stop to spare -- so any tint at all behind the eyebrow fails it, and this is
-   the only ground here whose light reaches the top of the section. Measured, the
-   warmest pixel the wash puts behind that line is #f6f1ed, where --ink-muted
-   falls to 4.25:1. The eyebrow's ink therefore moves, inside .hero and inside
-   this variant only: #6f6661 is 4.99:1 on that pixel and 5.44:1 on bare paper,
-   and its luminance (0.138) is still well above the lede's --ink-2 (0.096), so
-   the eyebrow stays the quieter of the two. THIS IS PART OF THE VARIANT: promote
-   Skylight and this line is promoted with it. */
-.hero[data-hero-variant='4'] .eyebrow { color: #6f6661; }
-/* ============================================================== 5. FOLD ====
-   No light at all. The sheet is made of three papers of slightly different
-   tone, stacked, and the only events on the page are the two crisp curved
-   edges where they meet. The restrained answer -- and the one that makes the
-   entrance's existing beat visible, because the horizon rising from
-   scaleY 0.35 has always been a curve arriving and has never been a curve you
-   could see. */
-.hero[data-hero-variant='5'] {
-  --hero-page: var(--page);
-  /* The horizon stops being paper on paper. It is the second sheet, and it
-     keeps the ellipse, the position and the entrance it already had. */
-  --hero-horizon: #f9eee3;
-  --hero-g-ember: #fdf4ec;
-  --hero-g-peach: transparent;
-  --hero-g-orange: transparent;
-  --hero-g-core: transparent;
-  --hero-g-core-op: 0;
-  --hero-g-cream: #efd9c5;
-  --hero-halftone-op: 0;
+.hero__glow {
+  position: absolute; border-radius: 50%;
+  width: calc(1539 * var(--u)); height: calc(1539 * var(--u));
+  filter: blur(calc(110 * var(--u)));
 }
-/* Two units of blur, not a hundred and ten: enough that the edge is not
-   aliased, far too little for it to read as light. */
-.hero[data-hero-variant='5'] .hero__glow--ember {
-  filter: blur(calc(2.5 * var(--u)));
-  margin-top: calc(-60 * var(--u));
-  width: calc(1760 * var(--u));
-  height: calc(1760 * var(--u));
+.hero__glow--ember  { left: calc(788 * var(--u));  top: calc(494 * var(--u));  background: var(--hero-g-ember); }
+.hero__glow--orange { left: calc(802 * var(--u));  top: calc(821 * var(--u));  background: var(--hero-g-orange); }
+.hero__glow--core {
+  left: calc(1000 * var(--u)); top: calc(860 * var(--u));
+  width: calc(1200 * var(--u)); height: calc(700 * var(--u));
+  background: var(--hero-g-core); opacity: var(--hero-g-core-op);
+  filter: blur(calc(90 * var(--u)));
 }
-.hero[data-hero-variant='5'] .hero__glow--cream {
-  filter: blur(calc(2.5 * var(--u)));
-  margin-top: calc(-420 * var(--u));
-  margin-left: calc(-380 * var(--u));
-  width: calc(2240 * var(--u));
-  height: calc(2240 * var(--u));
+.hero__glow--orange::after {
+  content: ''; position: absolute; inset: -6%; border-radius: inherit;
+  background-image: radial-gradient(circle at center, var(--hero-halftone) 0.9px, transparent 1.7px);
+  background-size: 6px 6px;
+  mix-blend-mode: var(--hero-halftone-blend);
+  opacity: var(--hero-halftone-op);
 }
-.hero[data-hero-variant='5'] .hero__horizon {
-  filter: blur(calc(2.5 * var(--u)));
+.hero__glow--peach { left: calc(486 * var(--u)); top: calc(952 * var(--u)); background: var(--hero-g-peach); opacity: var(--hero-g-peach-op); }
+.hero__glow--cream { left: calc(786 * var(--u)); top: calc(1109 * var(--u)); background: var(--hero-g-cream); }
+.hero__horizon {
+  position: absolute; left: calc(50% - 36 * var(--u)); top: calc(892 * var(--u));
+  width: calc(6036 * var(--u)); height: calc(2668 * var(--u));
+  transform: translateX(-50%); border-radius: 50%;
+  background: var(--hero-horizon); filter: blur(calc(50 * var(--u)));
 }
+.hero__bg--account .hero__glow--ember  { left: calc(-285 * var(--u)); }
+.hero__bg--account .hero__glow--orange { left: calc(-271 * var(--u)); }
+.hero__bg--account .hero__glow--core   { left: calc(-120 * var(--u)); }
+.hero__bg--account .hero__glow--peach  { left: calc(-587 * var(--u)); }
+.hero__bg--account .hero__glow--cream  { left: calc(-287 * var(--u)); }
+.hero__bg--future .hero__glow--ember  { left: calc(566 * var(--u)); }
+.hero__bg--future .hero__glow--orange { left: calc(580 * var(--u)); }
+.hero__bg--future .hero__glow--core   { left: calc(760 * var(--u)); }
+.hero__bg--future .hero__glow--peach  { left: calc(264 * var(--u)); }
+.hero__bg--future .hero__glow--cream  { left: calc(564 * var(--u)); }
+
+/* --- Enough foreground to judge legibility against -------------------------
+   The frame is 1600 wide, which is the width the screenshots and every number
+   in the report were taken at, and every size below is the size the built page
+   actually computes there -- an 83.3px headline from clamp(52px, 5.2vw, 100px),
+   a 17px lede, a copy column that starts 224px down. So the box positions the
+   ground has to sit behind are the real ones, not an approximation of them.
+   The container query unit does the rest: 100cqw / 1920 is 0.8333 at this
+   width, exactly as in the build. */
+.hero { min-height: 1129px; }
+.hero__inner { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: inherit; padding: 0 50px; }
+.nav { display: flex; align-items: center; gap: 32px; height: 50px; }
+.nav__logo { font-weight: 700; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+.nav__links { display: flex; gap: 28px; margin-left: 120px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-2); }
+.nav__cta { margin-left: auto; display: flex; gap: 12px; }
+.chip { border: 1px solid var(--veil-line); border-radius: 400px; padding: 9px 22px; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+.chip--a { color: var(--accent); }
+.copy { margin-top: 134px; display: flex; flex-direction: column; align-items: flex-start; gap: 48px; }
+.heading { display: flex; flex-direction: column; gap: 28px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-weight: 500; font-size: 16px; text-transform: uppercase; color: var(--ink-muted); }
+.eyebrow i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); display: inline-block; }
+.title { font-family: var(--font-display); font-weight: 500; font-size: 83.2px; line-height: 0.9; letter-spacing: 0.02em; color: var(--ink); white-space: pre; }
+.lede { font-family: var(--font-body); font-weight: 300; font-size: 17px; line-height: 1.2; color: var(--ink-2); max-width: 508px; }
+.cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 12px; padding: 0 40px; height: 50px; border-radius: 400px;
+  background: var(--accent); color: var(--on-accent);
+  font-family: var(--font-mono); font-weight: 500; font-size: 15px;
+}
+.foot { display: flex; justify-content: center; gap: 12px; margin-top: auto; padding: 0 0 70px; }
+.ticker {
+  display: flex; flex-direction: column; justify-content: center;
+  width: 200px; height: 160px; padding: 16px; border-radius: 10px;
+  background: var(--veil); border: 1px solid var(--veil-line);
+  backdrop-filter: blur(12.25px); -webkit-backdrop-filter: blur(12.25px);
+  color: var(--ink);
+}
+.ticker b { font-weight: 700; font-size: 12px; }
+.ticker span { font-weight: 400; font-size: 12px; margin-top: 2px; }
+.ticker em { font-style: normal; font-weight: 500; font-size: 20px; margin-top: 12px; }
+.ticker u {
+  text-decoration: none; display: flex; align-items: center; justify-content: center;
+  height: 34px; margin-top: 12px; border-radius: 6px;
+  font-weight: 700; font-size: 12px; color: var(--on-accent);
+}
+.ticker u.up { background: var(--pos); } .ticker u.dn { background: var(--neg); }
+/* Stand-in for the slide illustration: the right-hand column is glass on every
+   slide but the first, and glass is the thing that tracks the ground. */
+.panelart { position: absolute; right: 50px; top: 300px; width: 700px; height: 340px; border-radius: 12px; background: var(--veil); border: 1px solid var(--veil-line); }
+
+/* --- Scaling: one design frame, shown at whatever the column allows -------- */
+.frame { width: 1600px; transform-origin: top left; }
+.stage { position: relative; }
+
+/* --- Contact sheet --------------------------------------------------------- */
+.sheet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.cell { border: 1px solid var(--lab-line); border-radius: 12px; overflow: hidden; background: var(--lab-card); cursor: pointer; }
+.cell[aria-pressed='true'] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.cell__t { display: flex; align-items: baseline; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--lab-line); }
+.cell__t b { font-size: 14px; }
+.cell__t span { font-family: var(--font-mono); font-size: 11px; color: var(--lab-quiet); margin-left: auto; }
+.cell__v { position: relative; overflow: hidden; background: var(--page); }
+
+/* --- Readout --------------------------------------------------------------- */
+.read { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; margin-top: 24px; }
+.box { border: 1px solid var(--lab-line); border-radius: 12px; background: var(--lab-card); padding: 16px 18px; }
+.box h2 { font-size: 15px; margin-bottom: 8px; }
+.box p { font-family: var(--font-body); font-size: 14px; line-height: 1.55; color: var(--lab-quiet); }
+.box p + p { margin-top: 8px; }
+.box p b { color: var(--lab-ink); font-family: var(--font-display); }
+pre { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; color: var(--lab-ink); }
+pre .k { color: var(--accent); }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--veil-line); vertical-align: -1px; margin-right: 6px; }
+pre .c { color: var(--lab-quiet); }
+.box--tok { max-height: 720px; overflow: auto; }
+
+@media (max-width: 1100px) { .sheet { grid-template-columns: repeat(2, 1fr); } .read { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <style id="vcss">
 .hero[data-hero-variant='0'] {

@@ -502,22 +502,48 @@
 .ab-cmp__table tbody tr:last-child th { padding-bottom: 0; }
 .ab-cmp__table tbody th { padding-bottom: calc(26 * var(--u)); }
 
-/* Header cell: the mark over the name, 46 design px apart. The five logos are
-   different shapes at a shared 30px cap height, so the box is fixed and the
-   image is fitted inside it rather than each one being sized by hand. */
+/* Header cell: the mark over the name, 46 design px apart.
+   -------------------------------------------------------------------------
+   EACH LOGO IS A WINDOW ONTO ITS FILE, NOT THE FILE SCALED TO FIT, and that
+   is the difference between the frame's header row and a squashed one. Two of
+   the four are crops in Figma and reproducing them as `object-fit: contain`
+   gets both wrong:
+
+     Kalshi   350 x 350 with the wordmark in the middle third. The frame draws
+              it at 97 x 95.45 inside a 97 x 30 window offset -32.7 up, so the
+              window holds rows 120-230 -- the wordmark, with its padding
+              cropped off. Fitted whole it becomes a 30 x 30 square with the
+              name three pixels tall.
+     Polymarket  925 x 238, the icon then the word. The frame draws it 462.5%
+              wide in a 25 x 30 window, so what shows is the leftmost 21.6%:
+              the icon alone, which is what the render has. Fitted whole it
+              was measured at 25 x 6.4 -- the entire wordmark squeezed into
+              the width of its own icon.
+
+   So each window is its own box and the image is positioned inside it in
+   percentages OF THAT WINDOW, which is the same construction the CHOOSE
+   cards' screenshots use and is scale-invariant: every window keeps the
+   frame's ratio through its min-width/min-height pair, so the crop holds at
+   any size. The other two are honest `cover` fills at their own ratios. */
 .ab-cmp__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  display: block;
+  margin-inline: auto;
+  margin-bottom: calc(46 * var(--u));
   height: calc(30 * var(--u));
   min-height: 18px;
-  margin-bottom: calc(46 * var(--u));
+  overflow: hidden;
 }
-.ab-cmp__logo img { max-height: 100%; width: auto; object-fit: contain; }
-.ab-cmp__logo--kalshi img { width: calc(97 * var(--u)); min-width: 58px; }
-.ab-cmp__logo--polymarket img { width: calc(25 * var(--u)); min-width: 15px; }
-.ab-cmp__logo--predictfun img { width: calc(75 * var(--u)); min-width: 45px; }
-.ab-cmp__logo--magicmarkets img { width: calc(30 * var(--u)); min-width: 18px; }
+.ab-cmp__logo img { position: absolute; max-width: none; }
+.ab-cmp__logo--phorcast { width: calc(26 * var(--u)); min-width: 15.6px; }
+.ab-cmp__logo--kalshi { width: calc(97 * var(--u)); min-width: 58.2px; }
+.ab-cmp__logo--kalshi img { left: 0; top: -109.09%; width: 100%; height: 318.18%; }
+.ab-cmp__logo--polymarket { width: calc(25 * var(--u)); min-width: 15px; }
+.ab-cmp__logo--polymarket img { left: 0; top: 0; width: 462.5%; height: 100%; }
+.ab-cmp__logo--predictfun { width: calc(75 * var(--u)); min-width: 45px; }
+.ab-cmp__logo--magicmarkets { width: calc(30 * var(--u)); min-width: 18px; }
+.ab-cmp__logo--predictfun img,
+.ab-cmp__logo--magicmarkets img { inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ab-cmp__mark {
   width: calc(26 * var(--u));
   height: calc(30 * var(--u));

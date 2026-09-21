@@ -202,14 +202,31 @@
 /* Text 365:923. Figma leaves the line height on auto, which for Geist Mono is
    1.2476 — its own 62.381px box at 50px — so the box is stated rather than left
    to the browser's idea of `normal`, and the glyphs land where Figma puts
-   them. Measured against Figma's render the digit tops agree to within 1px. */
+   them. Measured against Figma's render the digit tops agree to within 1px.
+
+   THE DIAL IS FOUR GLYPHS NOW, NOT THREE, AND IS SET SMALLER FOR IT. The card
+   stopped claiming 60 seconds, so the count is "2:00".."0:00" — m:ss, which is
+   four glyphs where "60s" was three. Geist Mono advances 0.6em a glyph, and the
+   colon advances like a digit, so the count is a fixed box at every value the
+   loop paints and the numerals never shift under themselves.
+
+   At the design's 50px that box is 120 wide. It fits the 128.008 disc with 4
+   either side, but the open arc crosses the disc's right shoulder and the last
+   glyph lands on the stroke — measured, they overlap. 42px puts the box at
+   100.8, which restores the ~14 of air "60s" had at 90, and clears the arc.
+
+   Both offsets follow from that rather than being re-measured: the design
+   centres the count in the 157.87 x 158.841 ring box, so left is
+   (157.87 - 100.8) / 2 and top keeps the same optical centre, 79.42 down the
+   box, with the line height scaled by the same ratio (Geist Mono's auto line
+   height is 1.2476). */
 .onb__seconds {
-  left: calc(32.928 * var(--u));
-  top: calc(48.23 * var(--u));
+  left: calc(28.535 * var(--u));
+  top: calc(53.221 * var(--u));
   font-family: var(--font-mono);
   font-weight: 200;
-  font-size: calc(50 * var(--u));
-  line-height: calc(62.381 * var(--u));
+  font-size: calc(42 * var(--u));
+  line-height: calc(52.4 * var(--u));
   color: var(--on-accent);
   white-space: nowrap;
 }

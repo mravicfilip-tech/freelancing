@@ -1,6 +1,30 @@
 /**
- * Bento card A — "Open an account in 60 seconds" (Figma 365:866 desktop,
- * 526:184 mobile).
+ * Bento card A — "Open an account in under two minutes" (Figma 365:866
+ * desktop, 526:184 mobile).
+ *
+ * THE TWO CLAIMS ON THIS CARD BOTH MOVED, AND BOTH ARE DRAWN AS WELL AS
+ * WRITTEN, so the artwork moved with them.
+ *
+ *   60 seconds -> under two minutes. The title said it, and the ring said it
+ *   too: a dial reading "60s" with motion/onboard.ts winding it down to 00.
+ *   The dial is now a two-minute one reading "2:00", which is why
+ *   `.onb__seconds` is four glyphs wide and re-centred in BoxOnboard.css.
+ *
+ *   "No KYC" -> "No KYC to trade". The claim is only unqualified while it is
+ *   about opening an account and trading; verification may be required on
+ *   large withdrawals or where the law requires it. A 76px glass chip has no
+ *   room for that sentence, so the chip does not make the unqualified claim
+ *   in the first place: it states the scope the qualification leaves intact
+ *   ("to trade"), and the full sentence with the exception in it is carried
+ *   by the card body directly above, which is where a reader looks for it.
+ *   The middle chip said "No documents", which is the same claim again in the
+ *   same unqualified form, and restating it twice doubled the thing that had
+ *   to be qualified; it now names a signup method instead, which is its own
+ *   true fact ("Email or wallet" — email, social login or a crypto wallet).
+ *
+ * The three chips keep their designed right edge at x 187 and the 30px height,
+ * pad and blur Figma gives them; only their widths and their left edges move,
+ * by exactly the change in each label's own max-content width.
  *
  * ONE MARKUP, TWO FRAMES. The mobile design is not a second drawing: every one
  * of the eight illustration nodes sits at its desktop coordinate less exactly
@@ -55,8 +79,8 @@ type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
  *  of the phone. Each carries its own width and its own background blur; Figma
  *  gives the bottom one no blur at all, so `blur` is per pill, not shared. */
 const PILLS = [
-  { label: 'No KYC', x: 111, y: 149, w: 76, blur: 2 },
-  { label: 'No documents', x: 87, y: 187, w: 100, blur: 11.3 },
+  { label: 'No KYC to trade', x: 79, y: 149, w: 108, blur: 2 },
+  { label: 'Email or wallet', x: 87, y: 187, w: 100, blur: 11.3 },
   { label: 'No waiting', x: 111, y: 225, w: 76, blur: 0 },
 ] as const;
 
@@ -64,8 +88,8 @@ export function BoxOnboard() {
   return (
     <article className="bcard bcard--onboard box-onboard">
       <div className="bcard__text">
-        <h3 className="bcard__title">Open an account in 60 seconds</h3>
-        <p className="bcard__body bcard__body--light">No KYC, no documents, no waiting.</p>
+        <h3 className="bcard__title">Open an account in under two minutes</h3>
+        <p className="bcard__body bcard__body--light">No KYC to sign up or trade. Verification may be required on large withdrawals or where required by law.</p>
       </div>
 
       <div className="onb__art" aria-hidden="true">
@@ -100,7 +124,11 @@ export function BoxOnboard() {
           <span className="onb__arc-box">
             <img className="onb__arc" src={ringArc} alt="" width={90.8153} height={64.3651} />
           </span>
-          <span className="onb__seconds">60s</span>
+          {/* The resting numerals, and what motion/onboard.ts winds down from.
+              Four glyphs now rather than three; Geist Mono is monospaced, so
+              the box is 120 design pixels wide at every count the dial paints
+              and BoxOnboard.css re-centres it once. */}
+          <span className="onb__seconds">2:00</span>
         </span>
 
         <span className="onb__in">You&rsquo;re in.</span>

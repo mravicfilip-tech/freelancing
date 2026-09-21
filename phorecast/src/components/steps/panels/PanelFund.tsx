@@ -4,11 +4,6 @@ import s2Lines from '../../../assets/steps/s2-lines.svg';
 import s2Node from '../../../assets/steps/s2-node.svg';
 import s2Lock from '../../../assets/steps/s2-lock.svg';
 import s2Progress from '../../../assets/steps/s2-progress.svg';
-import s2Tile1 from '../../../assets/steps/s2-tile1.svg';
-import s2Tile2 from '../../../assets/steps/s2-tile2.svg';
-import s2Tile3 from '../../../assets/steps/s2-tile3.svg';
-import s2Tile4 from '../../../assets/steps/s2-tile4.svg';
-import s2Tile5 from '../../../assets/steps/s2-tile5.svg';
 import { REDUCED, all, count, one } from '../../../lib/motion';
 import { tok, useThemeEpoch } from '../../../lib/theme';
 import { Icon } from '../../Icon';
@@ -40,23 +35,42 @@ const RAILS: { d: string; reverse: boolean }[] = [
 const LINES_X = 123.937;
 const LINES_Y = 151.094;
 
-const TILES = [s2Tile1, s2Tile2, s2Tile3, s2Tile4, s2Tile5];
-const TILE_ICON = [
-  { w: 34, h: 34 }, { w: 34, h: 23.3755 }, { w: 34, h: 34 }, { w: 34, h: 34 }, { w: 23.75, h: 25.9281 },
-];
+/* The deposit card's code block --------------------------------------------
+ *
+ * Nine rows of nine, three of them the finder rings a scanner looks for. It is
+ * DRAWN rather than fetched, for the same reason the glow is: there is no
+ * asset for it, and a diagram of an address does not need one. There is no
+ * payload in it and it is not meant to be scanned -- it is the same kind of
+ * stand-in as the $18,800 beside it and the you@phorcast.io on panel 1.
+ *
+ * Nine cells each way rather than a real QR's 21 because the block is 106
+ * design pixels wide: at 21 a cell is 5 design px, which is under two CSS
+ * pixels at the width this panel is drawn on a phone, and a grid that fine
+ * renders as grey mush. */
+const QR = [
+  'XXX.X.XXX',
+  'X.X...X.X',
+  'XXX.XXXXX',
+  '...X.X...',
+  'X.XXX..X.',
+  '..X...XX.',
+  'XXX.X.X.X',
+  'X.X.XXX..',
+  'XXX.X..XX',
+].join('').split('');
 
 /* The loop ------------------------------------------------------------------
  *
- * One beat, and it is the step's own sentence acted out: money arrives down
- * every rail at once, lands on a node that is locked, and the balance is
- * credited.
+ * One beat, and it is the step's own sentence acted out: a deposit leaves the
+ * address, travels, and the balance is credited when it confirms.
  *
- *   0.00  the five tiles fire in turn, 0.13 apart -- each brightens its border
- *         and its glyph and leans 10 design px toward the node
- *   0.12  each tile's comet leaves its resting place and rides its own rail all
+ *   0.00  the deposit card wakes -- its edge comes up to the lit value and the
+ *         code block goes with it, the one beat the five payment tiles used to
+ *         play in turn
+ *   0.12  a charge leaves each rail's resting place and rides that rail all
  *         the way to the junction, following the curve the artwork draws and
- *         turning with its tangent. The longest run is the straight rail from
- *         the phone tile, 300 design px; the shortest is comet 4, already most
+ *         turning with its tangent, 0.13 apart. The longest run is the
+ *         straight rail, 300 design px; the shortest is comet 4, already most
  *         of the way in at rest, at 93. Each fades out over its last 0.30s.
  *   1.62  the disc under the padlock takes the arrivals -- one swell to 1.45
  *   1.66  the beam behind it, which is a real part of the design and rests at
@@ -65,7 +79,7 @@ const TILE_ICON = [
  *         behind its own fade, and rolls back in; the progress indicator
  *         drains right to left at the same moment
  *   2.08  $12,400 counts to $18,800 over 1.45s while the indicator refills
- *   2.30  the padlock lifts 6 design px and slams shut: the balance is yours
+ *   2.30  the padlock lifts 6 design px and slams shut over the credited figure
  *   3.35  the comets return to their design positions behind an opacity fade,
  *         0.06 apart, and are back at full by 4.10
  *   4.10  every inline style the loop wrote is handed back to CSS
@@ -130,18 +144,18 @@ function headingAt(pts: Pt[], u: number): number {
 
 function useFundLoop() {
   const ref = useRef<HTMLDivElement>(null);
-  /* Three colour values and each tile's resting border are read once, at build
+  /* Three colour values and the card's resting border are read once, at build
      time, so the build has to be redone when the theme changes -- otherwise the
-     tiles would go on firing to the palette that was live when the panel
-     mounted, and cooling back to a border that is no longer theirs. */
+     card would go on firing to the palette that was live when the panel
+     mounted, and cooling back to a border that is no longer its own. */
   const epoch = useThemeEpoch();
 
   useLayoutEffect(() => {
     const root = ref.current;
     if (!root || REDUCED) return;
 
-    const tiles = all(root, '.s2__tile');
-    const glyphs = all(root, '.s2__tile-icon');
+    const card = one(root, '.s2__addr');
+    const qr = one(root, '.s2__qr');
     const comets = all(root, '.s2__comet');
     const paths = all<SVGPathElement>(root, '.s2__geom path');
     const disc = one(root, '.s2__disc');
@@ -149,8 +163,8 @@ function useFundLoop() {
     const beam = one(root, '.s2__beam');
     const amount = one(root, '.s2__balance-amt');
     const progress = one(root, '.s2__progress');
-    if (tiles.length !== 5 || comets.length !== 5 || paths.length !== 5) return;
-    if (!disc || !lock || !beam || !amount || !progress) return;
+    if (comets.length !== 5 || paths.length !== 5) return;
+    if (!card || !qr || !disc || !lock || !beam || !amount || !progress) return;
 
     // The design pixel, read off the rendered box rather than out of `--p`:
     // the unit is written in container-query units and computes to an
@@ -159,13 +173,13 @@ function useFundLoop() {
     const p = box.width / 886;
     if (p <= 0) return;
     const restAmount = amount.textContent ?? money(END_AMOUNT);
-    const restBorder = tiles.map((t) => getComputedStyle(t).borderTopColor);
-    /* A tile firing, as a pair per property. The glyph's lift is a `filter`,
-       and GSAP interpolates filters STRUCTURALLY, so the two values have to
-       list the same functions in the same order -- which is why the rest value
-       is named here rather than written as the identity `brightness(1)` at the
-       call site. Today's values are the fallbacks. */
-    const tileLit = tok('--steps-p2-tile-lit', 'rgba(255, 128, 96, 0.55)');
+    const restBorder = getComputedStyle(card).borderTopColor;
+    /* The card firing, as a pair per property. The code block's lift is a
+       `filter`, and GSAP interpolates filters STRUCTURALLY, so the two values
+       have to list the same functions in the same order -- which is why the
+       rest value is named here rather than written as the identity
+       `brightness(1)` at the call site. Today's values are the fallbacks. */
+    const cardLit = tok('--steps-p2-addr-lit', 'rgba(255, 128, 96, 0.55)');
     const glyphRest = tok('--steps-p2-glyph-rest', 'brightness(1)');
     const glyphLit = tok('--steps-p2-glyph-lit', 'brightness(2.1)');
 
@@ -220,7 +234,7 @@ function useFundLoop() {
       });
     };
 
-    const everything = [...tiles, ...glyphs, ...comets, disc, lock, beam, amount, progress];
+    const everything = [card, qr, ...comets, disc, lock, beam, amount, progress];
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ repeat: -1, repeatDelay: REST, paused: true });
@@ -231,14 +245,14 @@ function useFundLoop() {
         .set(beam, { scaleX: 0.08, opacity: 0.25, transformOrigin: '0% 50%' }, 0)
         .call(() => { amount.textContent = restAmount; }, undefined, 0);
 
-      /* ---- 1. the rails fire, and each one lets its charge go */
+      /* ---- 1. the address wakes, and the rails let their charges go */
+      tl.to(card, { borderColor: cardLit, duration: 0.3, ease: 'power2.out' }, 0)
+        .to(card, { borderColor: restBorder, duration: 0.62, ease: 'power2.inOut' }, 0.3)
+        .to(qr, { filter: glyphLit, duration: 0.3, ease: 'power2.out' }, 0)
+        .to(qr, { filter: glyphRest, duration: 0.62, ease: 'power2.inOut' }, 0.3);
+
       rides.forEach((ride, i) => {
         const at = i * 0.13;
-        tl.to(tiles[i], { x: 10 * p, borderColor: tileLit, duration: 0.3, ease: 'power2.out' }, at)
-          .to(tiles[i], { x: 0, borderColor: restBorder[i], duration: 0.62, ease: 'power2.inOut' }, at + 0.3)
-          .to(glyphs[i], { filter: glyphLit, duration: 0.3, ease: 'power2.out' }, at)
-          .to(glyphs[i], { filter: glyphRest, duration: 0.62, ease: 'power2.inOut' }, at + 0.3);
-
         const flight = { u: ride.u0 };
         tl.set(flight, { u: ride.u0 }, at + 0.12)
           .to(flight, {
@@ -292,7 +306,7 @@ function useFundLoop() {
   return ref;
 }
 
-/* Panel 2 — funding rails converge on a locked balance ------------------- */
+/* Panel 2 — a deposit address, and the balance it credits ----------------- */
 export function PanelFund() {
   const ref = useFundLoop();
 
@@ -306,14 +320,22 @@ export function PanelFund() {
           {RAILS.map((rail) => <path key={rail.d} d={rail.d} />)}
         </svg>
 
-        <div className="s2__rails">
-          {TILES.map((icon, i) => (
-            <span key={icon} className={`s2__tile s2__tile--${i + 1}`}>
-              <span className="s2__tile-icon">
-                <img src={icon} alt="" width={TILE_ICON[i].w} height={TILE_ICON[i].h} />
-              </span>
-            </span>
-          ))}
+        {/* Where the five payment tiles were. Funding is one thing now -- crypto
+            sent to your own deposit address -- so what stands at the head of
+            the rails is that address: the network it is on, the key, and the
+            minimum. It keeps the tiles' box exactly (65,129 to 205,482), which
+            is what holds the phone layout's `--cx`/`--cy` centring true and
+            keeps every rail end tucked behind something. */}
+        <div className="s2__addr">
+          <span className="s2__qr">
+            {QR.map((cell, i) => <i key={i} className={cell === 'X' ? 'is-on' : undefined} />)}
+          </span>
+          <span className="s2__addr-id">
+            <p className="s2__addr-net">USDC · ARBITRUM</p>
+            <p className="s2__addr-key">0x7F3A…4C2B</p>
+          </span>
+          <span className="s2__addr-rule" />
+          <p className="s2__addr-min">MIN $10</p>
         </div>
 
         {[1, 2, 3, 4, 5].map((i) => <span key={i} className={`s2__comet s2__comet--${i}`} />)}

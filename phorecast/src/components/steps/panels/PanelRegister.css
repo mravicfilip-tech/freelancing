@@ -150,9 +150,13 @@
    past both edges and is clipped by the card. */
 .s1__rule, .s1__phone-rule { color: var(--steps-p1-rule); }
 .s1__rule { left: calc(-3.598 * var(--p)); top: calc(46.178 * var(--p)); width: calc(193.108 * var(--p)); height: calc(1.199 * var(--p)); }
-/* Both card glyphs bake #626262, which is --ink-muted exactly. */
-.s1__glyph--card, .s1__glyph--user { color: var(--ink-muted); }
-.s1__glyph--card { left: calc(15.678 * var(--p)); top: calc(13.197 * var(--p)); width: calc(28 * var(--p)); height: calc(18 * var(--p)); }
+/* The user glyph bakes #626262, which is --ink-muted exactly; the wallet is
+   masked to the same token, so the pair still reads as one set.
+   18 square rather than the payment card's 28 x 18 box: the wallet asset is
+   square and `preserveAspectRatio="none"` would stretch it across the wider
+   slot. It keeps the slot's top-left, which is where the design anchors it. */
+.s1__glyph--wallet, .s1__glyph--user { color: var(--ink-muted); }
+.s1__glyph--wallet { left: calc(15.678 * var(--p)); top: calc(13.197 * var(--p)); width: calc(18 * var(--p)); height: calc(18 * var(--p)); }
 /* Figma's slot resolves to 20.987 x 23.216, a hair off the exported glyph's own
    21 x 23.333. Use the asset's ratio and keep it on the slot's centre, so it is
    placed exactly where the design puts it without being squashed. */

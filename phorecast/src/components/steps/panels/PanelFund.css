@@ -16,29 +16,33 @@
 /* The panel's colour, in two layers -- the same split Steps.css uses.
    -------------------------------------------------------------------------
    ROLE TOKENS where the page already names the job: BALANCE is --ink-muted,
-   the figure is --ink, the five comets are --accent.
+   the figure and the address key are --ink, the five comets are --accent.
 
    PANEL LOCALS (--steps-p2-*) for what belongs to this illustration -- the
-   five rail tiles, the converging lines and their correction, the beam, and
-   the whole of the balance card. Declared on :root because `tok()` in
-   lib/theme.ts reads document.documentElement and the loop takes its lit tile
-   edge and its two glyph filters from here.
+   deposit card and its code block, the converging lines and their correction,
+   the beam, and the whole of the balance card. Declared on :root because
+   `tok()` in lib/theme.ts reads document.documentElement and the loop takes
+   its lit card edge and its two filters from here.
 
    Two of them are PAIRS, and that is the point of naming them at all: in dark
-   a tile fires by going pale and its glyph fires by getting brighter. On paper
-   both of those climb towards the page and the beat stops being visible, so
-   light supplies its own pair pointing the other way.
+   the card fires by going pale and the code block fires by getting brighter.
+   On paper both of those climb towards the page and the beat stops being
+   visible, so light supplies its own pair pointing the other way.
 
    Dark is exactly what the panel shipped with, so this block is a no-op. */
 :root {
-  /* The five payment rails. Tile 1 carries a stronger edge in the design. */
-  --steps-p2-tile: #1d1c1b;
-  --steps-p2-tile-edge: rgba(212, 212, 212, 0.13);
-  --steps-p2-tile-edge-1: rgba(212, 212, 212, 0.4);
-  /* A tile firing: its edge for 0.3s, read by the loop through `tok()`. */
-  --steps-p2-tile-lit: rgba(255, 128, 96, 0.55);
-  /* And its glyph, as a matched pair -- GSAP interpolates `filter`
-     structurally, so both values have to list the same function. */
+  /* The deposit card, on the ground and at the edge the strongest of the five
+     payment tiles used to carry -- it is one object now where there were five,
+     so it takes the firmest of their edges rather than the faintest. */
+  --steps-p2-addr-bg: #1d1c1b;
+  --steps-p2-addr-edge: rgba(212, 212, 212, 0.4);
+  /* The card firing: its edge for 0.3s, read by the loop through `tok()`. */
+  --steps-p2-addr-lit: rgba(255, 128, 96, 0.55);
+  /* The code block's ink, and its lift as a matched pair -- GSAP interpolates
+     `filter` structurally, so both values have to list the same function. The
+     pair is the one the five tile glyphs used, unchanged; what it is applied
+     to is now a single element. */
+  --steps-p2-qr: #6f6c68;
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(2.1);
 
@@ -64,43 +68,58 @@
 /* Panel 2 ------------------------------------------------------------------- */
 .s2 { position: absolute; inset: 0; }
 
-/* The five payment rails ----------------------------------------------------
-   Figma stacks them at local y 0.5 / 75.5 / 150.5 / 225.5 / 301.5 -- four gaps
-   of 23, 23, 23 and 24, not the even gap a flex column would give -- and the
-   first tile is 92 wide where the other four are 90. Absolute tops, therefore,
-   rather than `gap`. */
-.s2__rails { position: absolute; left: calc(64.999 * var(--p)); top: calc(129 * var(--p)); }
-.s2__tile {
-  position: absolute; left: 0; overflow: hidden;
-  width: calc(90 * var(--p)); height: calc(52 * var(--p));
-  background: var(--steps-p2-tile);
-  border: calc(1.255 * var(--p)) solid var(--steps-p2-tile-edge);
+/* The deposit card ----------------------------------------------------------
+   It stands exactly where the five payment tiles stood -- left 65, top 129 --
+   and it is as tall as the whole stack was (353), which is not a coincidence:
+   those numbers are the artwork's own bounding box, the one `.panel--2` centres
+   the phone layout on with `--cx: 455; --cy: 305.5`, and every rail in
+   s2-lines.svg ends inside it. A shorter card would leave the topmost and
+   bottommost rails starting in open air.
+
+   140 wide, where a tile was 90: the card has to hold a monospace key, and 140
+   still stops 15 design px clear of the leftmost comet's resting box at 220. */
+.s2__addr {
+  position: absolute; left: calc(64.999 * var(--p)); top: calc(129 * var(--p));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(16 * var(--p));
+  width: calc(140 * var(--p)); height: calc(353 * var(--p));
+  padding: calc(16 * var(--p));
+  background: var(--steps-p2-addr-bg);
+  border: calc(1.255 * var(--p)) solid var(--steps-p2-addr-edge);
   border-radius: calc(14 * var(--p));
 }
-.s2__tile--1 { top: 0; width: calc(92 * var(--p)); border-color: var(--steps-p2-tile-edge-1); }
-.s2__tile--2 { top: calc(75 * var(--p)); }
-.s2__tile--3 { top: calc(150 * var(--p)); }
-.s2__tile--4 { top: calc(225 * var(--p)); }
-.s2__tile--5 { top: calc(301 * var(--p)); }
 
-/* Each glyph sits in its own clipped box centred in the tile. The box is 34
-   square for four of them and 30 for the bank, and the SVG inside keeps its
-   own root width/height -- two of these are not square and stretching them to
-   fill the box is what squashed the card and the bank in the first build.
-   Tiles 3 and 4 carry `opacity: 0.5` inside the asset itself; tiles 2 and 5
-   carry it on the wrapper, which is where Figma puts it. */
-.s2__tile-icon {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: calc(34 * var(--p)); height: calc(34 * var(--p)); overflow: hidden;
+/* The code block. A 9 x 9 grid of cells, `1fr` each so the block divides
+   exactly however the design pixel lands, with no seam between neighbours and
+   nothing to round. The identity `brightness(1)` is not decoration: the loop
+   tweens this filter to `--steps-p2-glyph-lit` and GSAP interpolates filters
+   structurally, so the resting value has to name the same function. */
+.s2__qr {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  width: calc(106 * var(--p)); height: calc(106 * var(--p));
+  filter: var(--steps-p2-glyph-rest);
 }
-.s2__tile-icon img { position: absolute; display: block; }
-.s2__tile--1 .s2__tile-icon img { left: 0; top: 0; width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
-.s2__tile--2 .s2__tile-icon { opacity: 0.5; }
-.s2__tile--2 .s2__tile-icon img { left: 0; top: calc(5.311 * var(--p)); width: calc(34 * var(--p)); height: calc(23.3755 * var(--p)); }
-.s2__tile--3 .s2__tile-icon img,
-.s2__tile--4 .s2__tile-icon img { left: 0; top: 0; width: calc(34 * var(--p)); height: calc(34 * var(--p)); }
-.s2__tile--5 .s2__tile-icon { width: calc(30 * var(--p)); height: calc(30 * var(--p)); opacity: 0.5; }
-.s2__tile--5 .s2__tile-icon img { left: calc(2.499 * var(--p)); top: calc(1.572 * var(--p)); width: calc(23.75 * var(--p)); height: calc(25.9281 * var(--p)); }
+.s2__qr i { display: block; }
+.s2__qr i.is-on { background: var(--steps-p2-qr); }
+
+/* The address itself. `nowrap` on all three: these are one string each -- a
+   network name, a key and a minimum -- and a key broken over two lines is not
+   a key. It also makes any width regression fail loudly as an overflow rather
+   than quietly as a second line. */
+.s2__addr-id { display: flex; flex-direction: column; align-items: center; gap: calc(4 * var(--p)); width: 100%; }
+.s2__addr-net,
+.s2__addr-key,
+.s2__addr-min {
+  margin: 0; width: 100%;
+  font-family: var(--font-mono); font-weight: 400; line-height: normal;
+  text-align: center; white-space: nowrap;
+}
+.s2__addr-net { font-size: calc(10 * var(--p)); letter-spacing: 0.04em; color: var(--ink-muted); }
+.s2__addr-key { font-size: calc(15 * var(--p)); color: var(--ink); }
+.s2__addr-min { font-size: calc(10 * var(--p)); letter-spacing: 0.04em; color: var(--ink-muted); }
+.s2__addr-rule { width: 100%; height: calc(1 * var(--p)); background: var(--steps-p2-addr-edge); }
 
 /* The converging lines ------------------------------------------------------
    Figma hangs this asset off the 25.106 square "Profile Picture Container" at
@@ -231,27 +250,27 @@
    untouched. ------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* The five rails, at the card ratios panel 1 uses. */
-  --steps-p2-tile: #f0e7de;
-  --steps-p2-tile-edge: var(--veil-line);
-  --steps-p2-tile-edge-1: rgba(26, 21, 18, 0.38);
-  /* A TILE FIRING -- the first flip. Dark pushes the edge to a pale warm at
+  /* The deposit card, at the card ratios panel 1 uses. */
+  --steps-p2-addr-bg: #f0e7de;
+  --steps-p2-addr-edge: rgba(26, 21, 18, 0.38);
+  /* THE CARD FIRING -- the first flip. Dark pushes the edge to a pale warm at
      55%; on cream a pale warm edge is the page, so it presses to the brand red
      instead. The ALPHA is not arrived at by the x 1.125 rule, which reproduces
      a resting density and is the wrong question for a lit value: what has to
      match is the SIZE OF THE STEP away from rest. Dark travels 2.14:1 from its
      resting edge to its lit one. 0.75 travelled 4.04:1 -- nearly twice the
      beat, which is as wrong as half of it. 0.51 travels 2.15:1. */
-  --steps-p2-tile-lit: rgba(162, 22, 5, 0.51);
-  /* ITS GLYPH -- the second flip, and the one that has to stay a matched pair
-     because GSAP interpolates `filter` structurally. #4b4b4b brightened 2.1x
-     is #9e9e9e, which on a light tile is the glyph FADING, so it presses down
-     instead. This is the one beat in the section that CANNOT match its dark
-     step: dark travels 3.24:1 upward, and #4b4b4b is only 2.41:1 above pure
-     black, so downward has a hard ceiling. brightness(0) would spend all of it
-     and flatten the two-tone marks on tiles 1 and 3 into solid blobs; 0.25
-     travels 2.12:1, keeps the marks readable, and matches the tile edge beside
-     it. The 10 design px lean carries the rest of the beat, unchanged. */
+  --steps-p2-addr-lit: rgba(162, 22, 5, 0.51);
+  /* THE CODE BLOCK -- the second flip, and the one that has to stay a matched
+     pair because GSAP interpolates `filter` structurally. The ink brightened
+     2.1x is a pale grey, which on a cream card is the block FADING, so it
+     presses down instead. This is the one beat in the section that CANNOT
+     match its dark step: dark travels 3.24:1 upward, and #4b4b4b is only
+     2.41:1 above pure black, so downward has a hard ceiling. 0.25 travels
+     2.12:1 and keeps the finder rings readable at the bottom of it. The ink
+     itself is darker on paper than in dark, for the same reason every other
+     mark in this panel is. */
+  --steps-p2-qr: #4b4b4b;
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 
@@ -287,27 +306,27 @@
 }
 
 :root[data-theme='light'] {
-  /* The five rails, at the card ratios panel 1 uses. */
-  --steps-p2-tile: #f0e7de;
-  --steps-p2-tile-edge: var(--veil-line);
-  --steps-p2-tile-edge-1: rgba(26, 21, 18, 0.38);
-  /* A TILE FIRING -- the first flip. Dark pushes the edge to a pale warm at
+  /* The deposit card, at the card ratios panel 1 uses. */
+  --steps-p2-addr-bg: #f0e7de;
+  --steps-p2-addr-edge: rgba(26, 21, 18, 0.38);
+  /* THE CARD FIRING -- the first flip. Dark pushes the edge to a pale warm at
      55%; on cream a pale warm edge is the page, so it presses to the brand red
      instead. The ALPHA is not arrived at by the x 1.125 rule, which reproduces
      a resting density and is the wrong question for a lit value: what has to
      match is the SIZE OF THE STEP away from rest. Dark travels 2.14:1 from its
      resting edge to its lit one. 0.75 travelled 4.04:1 -- nearly twice the
      beat, which is as wrong as half of it. 0.51 travels 2.15:1. */
-  --steps-p2-tile-lit: rgba(162, 22, 5, 0.51);
-  /* ITS GLYPH -- the second flip, and the one that has to stay a matched pair
-     because GSAP interpolates `filter` structurally. #4b4b4b brightened 2.1x
-     is #9e9e9e, which on a light tile is the glyph FADING, so it presses down
-     instead. This is the one beat in the section that CANNOT match its dark
-     step: dark travels 3.24:1 upward, and #4b4b4b is only 2.41:1 above pure
-     black, so downward has a hard ceiling. brightness(0) would spend all of it
-     and flatten the two-tone marks on tiles 1 and 3 into solid blobs; 0.25
-     travels 2.12:1, keeps the marks readable, and matches the tile edge beside
-     it. The 10 design px lean carries the rest of the beat, unchanged. */
+  --steps-p2-addr-lit: rgba(162, 22, 5, 0.51);
+  /* THE CODE BLOCK -- the second flip, and the one that has to stay a matched
+     pair because GSAP interpolates `filter` structurally. The ink brightened
+     2.1x is a pale grey, which on a cream card is the block FADING, so it
+     presses down instead. This is the one beat in the section that CANNOT
+     match its dark step: dark travels 3.24:1 upward, and #4b4b4b is only
+     2.41:1 above pure black, so downward has a hard ceiling. 0.25 travels
+     2.12:1 and keeps the finder rings readable at the bottom of it. The ink
+     itself is darker on paper than in dark, for the same reason every other
+     mark in this panel is. */
+  --steps-p2-qr: #4b4b4b;
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 

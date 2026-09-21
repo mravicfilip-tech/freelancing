@@ -335,6 +335,22 @@
     max-width: none;
     margin-inline: calc(-1 * var(--page-pad));
   }
+  /* The band goes full-bleed above so the cards can reach the 394 they are
+     drawn at, which means the heading lost the wrapper padding that used to
+     hold it in. The cards got their margin back from `max-width: 394px` and
+     the 30 design px of padding inside each frame; the heading had neither, so
+     it ran to the screen edge while the cards below it did not.
+
+     It takes the same two rules the cards take, so the heading's first
+     character sits on the same vertical as the card copy under it at every
+     width: capped at the design frame, centred once the screen outgrows it,
+     and inset by the frame's own 30px scaled the way the cards scale it
+     (30/394 = 7.614% of the frame). */
+  .bento__head {
+    max-width: 394px;
+    margin-inline: auto;
+    padding-inline: calc(30 * min(1px, 100vw / 394));
+  }
   .bento__title { font-size: 26px; }
   .bento__sub { font-size: 17px; }
 

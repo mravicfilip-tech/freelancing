@@ -49,7 +49,7 @@
   --bt-lit: #ff8f63;
   --bt-warm: rgb(222, 214, 208);
 
-  /* READ BY loops/bt2.ts: CAPPED RISK at the moment it takes the delivery.
+  /* READ BY loops/bt2.ts: SELF-CUSTODY at the moment it takes the delivery.
      It is --accent in dark and cannot simply be --accent in light; see the
      light block. */
   --bt-seal: #e5331e;
@@ -334,7 +334,7 @@
    two paragraphs above describe a pass made without 526:2656 in hand, which
    re-laid this card as a row of five markets over a padlock with five wires
    between them. The design draws an ORBIT instead: one large ring, the five
-   markets spaced around it, the padlock alone at its centre and CAPPED RISK
+   markets spaced around it, the padlock alone at its centre and SELF-CUSTODY
    seated on the lower arc. Where the two disagree the design wins, so card
    two takes its own 334 x 392 frame below and every number in it is re-derived
    from that drawing -- see `.bt-card--two` and NODES in Built.tsx. Card one is
@@ -342,7 +342,7 @@
 
    TYPE STOPS SCALING WITH THE PICTURE. Every label here is `clamp(floor, N *
    var(--c), ceiling)`: the artwork still scales with the card, the type stops
-   at 11px (the corner labels and CAPPED RISK, which are label type) and 10px
+   at 11px (the corner labels and SELF-CUSTODY, which are label type) and 10px
    ("You") on the way down and at 13px / 12px on the way up. That floor is why
    the packing above is solved at 320px -- it is the width where the two scales
    diverge most.
@@ -554,7 +554,7 @@
 
      WHAT THIS CARD IS NOW. A large ring with the five markets spaced around
      it, the padlock alone at its centre inside a faint inner circle, and the
-     CAPPED RISK pill sitting ON the ring's lower arc. It is not the row of
+     SELF-CUSTODY pill sitting ON the ring's lower arc. It is not the row of
      five over a padlock that stood here before, and none of that layout's
      numbers survive: a pitch, a wire length and a converging fan all describe
      a picture this card no longer draws. The derivation is over NODES in
@@ -621,7 +621,7 @@
      leaning and nothing is timed against a label nobody can see. */
   .bt2__node:not(.bt2__node--lock) > .bt2__label { display: none; }
 
-  /* CAPPED RISK BECOMES A PILL ON THE RING. It is still the padlock's own
+  /* SELF-CUSTODY BECOMES A PILL ON THE RING. It is still the padlock's own
      label and still the element loops/bt2.ts turns brand red when the
      settlement seats; what changes is that the design seats it ON the lower
      arc rather than under the lock. 90 units below the lock's centre is
@@ -880,7 +880,7 @@
   --bt-warm: #362a25;
 
   /* THE SEAL, and the one beat in this band that --accent could not carry.
-     CAPPED RISK rests at --ink and goes brand red while the settlement is
+     SELF-CUSTODY rests at --ink and goes brand red while the settlement is
      open. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1, because dark's
      ink is white and dark's accent is a hot red at the other end of the range.
      On paper both ends are dark: #1a1512 -> #a21605 is a step of only 2.29:1,
@@ -1048,7 +1048,7 @@
   --bt-warm: #362a25;
 
   /* THE SEAL, and the one beat in this band that --accent could not carry.
-     CAPPED RISK rests at --ink and goes brand red while the settlement is
+     SELF-CUSTODY rests at --ink and goes brand red while the settlement is
      open. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1, because dark's
      ink is white and dark's accent is a hot red at the other end of the range.
      On paper both ends are dark: #1a1512 -> #a21605 is a step of only 2.29:1,

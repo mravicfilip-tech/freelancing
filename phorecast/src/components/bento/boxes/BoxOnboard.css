@@ -199,44 +199,45 @@
   height: calc(64.3651 * var(--u));
 }
 
-/* Text 365:923. The stated line height is kept: Figma leaves it on auto, an
-   auto line height is a property of whichever face is loaded, and this one is
-   centred against a drawn ring rather than flowing in a column. 52.4 at 42px
-   is the box the design draws and it no longer depends on a font metric.
+/* Text 365:923. Figma leaves the line height on auto, which for the face this
+   was drawn in was 1.2476 -- its own 62.381px box at 50px -- so the box is
+   stated rather than left to the browser's idea of `normal`, and the glyphs
+   land where Figma puts them whatever face is actually loaded.
 
-   THE DIAL IS FOUR GLYPHS, "2:00".."0:00" — m:ss. It used to be positioned by
-   arithmetic on Geist Mono's advance: that face put every glyph on 0.6em and
-   the colon on a digit's width, so the count was a fixed 100.8-wide box at
-   every value, and `left` was simply (157.87 - 100.8) / 2.
+   THE DIAL IS THREE GLYPHS, "60s".."00s". It used to be POSITIONED by
+   arithmetic on Geist Mono's advance: that face put every glyph on 0.6em, so
+   the count was a fixed-width box at every value and `left` was that box
+   subtracted from the ring's and halved.
 
    NONE OF THAT SURVIVES A PROPORTIONAL FACE. Measured on the fallback the same
-   string sets 81.8 rather than 100.8, so the old left offset put the count 9.5
-   off the ring's centre — and worse, a proportional colon is roughly half a
-   digit, so the box changed width as the loop counted and the numerals crawled
-   sideways under themselves on the way down.
+   string sets narrower than the arithmetic assumed, so the old left offset put
+   the count 9.5 off the ring's centre -- and worse, the box changed width as
+   the loop counted, so the numerals crawled sideways under themselves on the
+   way down.
 
    So the count is centred the way its two siblings in this ring already are,
    on 50% and a translate, and the width it happens to have stopped mattering.
    `top` is the design's optical centre (79.42 down the 158.841 box) instead of
-   that centre minus half a line box; the rendered position is unchanged.
+   that centre minus half a line box -- which at this line height is the same
+   48.23 the design shipped, so the rendered position is unchanged.
 
    AND THE COUNT IS ONE CELL PER DIGIT, not one string. `tabular-nums` is
    asked for and is the right answer when the face has the feature -- but it is
    only ever a request, and measured here it is a NO-OP: the fallback the site
    renders on until the Galano files arrive has no `tnum` table at all, and its
-   digits run 0.5em to 0.556em. Driven through a full 2:00 -> 0:00 cycle on a
-   single string the dial moved 7.2px, half of it sideways off the centre,
-   which is precisely the crawl the monospaced face used to make impossible.
+   digits run 0.5em to 0.556em. Driven through a full cycle on a single string
+   the dial moved 7.2px, half of it sideways off the centre, which is precisely
+   the crawl the monospaced face used to make impossible.
 
    So each digit sits in its own cell of `1ch`. `ch` is the advance of "0" in
    whatever face is actually loaded, so the cell calibrates itself: it is exact
    for any face with tabular figures (every digit is then 1ch), and for one
    without it the digit centres in the cell and can be out by at most half the
-   spread -- 0.028em, which is a quarter of a pixel here. Either way the four
-   cells add up to the same width at every count, so the string cannot move.
-   It costs nothing when the real font lands and it is not something to undo.
+   spread -- 0.028em, which is a quarter of a pixel here. Either way the cells
+   add up to the same width at every count, so the string cannot move. It costs
+   nothing when the real font lands and it is not something to undo.
 
-   The colon is deliberately NOT given a cell: it is one glyph that never
+   The "s" is deliberately NOT given a cell: it is one glyph that never
    changes, so its natural advance is already constant. */
 .onb__seconds {
   left: 50%;
@@ -247,14 +248,14 @@
   justify-content: center;
   font-family: var(--font-label);
   font-weight: 200;
-  font-size: calc(42 * var(--u));
-  line-height: calc(52.4 * var(--u));
+  font-size: calc(50 * var(--u));
+  line-height: calc(62.381 * var(--u));
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
   color: var(--on-accent);
   white-space: nowrap;
 }
-.onb__digit, .onb__colon { display: block; font-style: normal; }
+.onb__digit, .onb__unit { display: block; font-style: normal; }
 .onb__digit { width: 1ch; text-align: center; }
 
 /* Text 365:924. Figma places this by its cap box, so the line box is trimmed to

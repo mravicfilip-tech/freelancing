@@ -325,32 +325,39 @@
      The wrapper goes edge to edge by cancelling the gutter it sits inside
      rather than by removing it from `.container`, which is shared with eight
      other sections. */
-  .bento__card {
-    padding: 0;
-    gap: 24px;
-    /* `width: 1386px; max-width: 100%` caps this box at the container's content
-       box, so a negative margin alone widens nothing -- measured 350 at a 390
-       phone with the margin already applied. The cap has to go with it. */
-    width: auto;
-    max-width: none;
-    margin-inline: calc(-1 * var(--page-pad));
-  }
-  /* The band goes full-bleed above so the cards can reach the 394 they are
-     drawn at, which means the heading lost the wrapper padding that used to
-     hold it in. The cards got their margin back from `max-width: 394px` and
-     the 30 design px of padding inside each frame; the heading had neither, so
-     it ran to the screen edge while the cards below it did not.
+  /* The four cards are drawn as 394-wide Figma frames whose own 30px padding is
+     their margin, so the design has no page gutter -- at 394 the card IS the
+     screen. Taking that literally and running the band edge to edge did give
+     the cards their drawn size, and it read as a mistake: the cards touched
+     both screen edges while every other section on the page kept its 20px, so
+     the band looked unpadded rather than full-bleed.
 
-     It takes the same two rules the cards take, so the heading's first
-     character sits on the same vertical as the card copy under it at every
-     width: capped at the design frame, centred once the screen outgrows it,
-     and inset by the frame's own 30px scaled the way the cards scale it
-     (30/394 = 7.614% of the frame). */
+     So the band sits in the page gutter like everything else and the cards give
+     up the last 11% of their design size for it. What matters is that the
+     heading and the card copy still share one vertical: the wrapper's padding
+     is zero, the card fills it, and the heading is inset by the same 30/394 =
+     7.614% of that width the card insets its own contents by. A percentage,
+     not a length, so it tracks the card at every width without being told
+     what the card is. */
+  .bento__card { padding: 0; gap: 24px; }
+
+  /* Capped and centred exactly as the card is, so the two share one box before
+     the inset is applied -- otherwise at 720, where the card stops growing at
+     394 and centres, the heading would keep spanning the full band and the two
+     would diverge (measured 86.2 against the copy's 193 before this line). */
   .bento__head {
+    width: 100%;
     max-width: 394px;
     margin-inline: auto;
-    padding-inline: calc(30 * min(1px, 100vw / 394));
+    /* `min()`, not a bare percentage: percentage padding resolves against the
+       CONTAINING BLOCK, not against this element's own capped width. Below the
+       cap the wrapper and the card are the same width so 7.614% is the card's
+       own 30/394 inset; above it the wrapper keeps growing while the card stops
+       at 394, so the percentage overshoots and 30px is the answer. Measured at
+       720 the bare percentage put the heading at 212.2 against the copy's 193. */
+    padding-inline: min(30px, 7.614%);
   }
+
   .bento__title { font-size: 26px; }
   .bento__sub { font-size: 17px; }
 

@@ -317,27 +317,35 @@
    padlock. Read down the page they are the same picture at two densities,
    which is the argument the section is making.
 
-   ALL FIVE MARKETS SURVIVE, and the packing that proves it is solved at 320px
-   -- where the card is 280 and --c is 0.875, the one place the px-floored
-   labels are largest relative to the artwork. The row's pitch is bounded above
-   by the frame (BTC's rim leaves it past 63.6) and below by BTC's and TSLA's
-   rims touching (59.1); 62 sits in that window, and every market name fits its
-   own column with 9.4 units to spare on the tightest pair. Nothing had to be
-   dropped. The full derivation, including why the five nodes are not all the
-   same `ms`, is over NODES in Built.tsx.
+   CARD TWO NO LONGER TAKES THAT SHAPE, and the mobile Figma frame is why. The
+   two paragraphs above describe a pass made without 526:2656 in hand, which
+   re-laid this card as a row of five markets over a padlock with five wires
+   between them. The design draws an ORBIT instead: one large ring, the five
+   markets spaced around it, the padlock alone at its centre and SELF-CUSTODY
+   seated on the lower arc. Where the two disagree the design wins, so card
+   two takes its own 334 x 392 frame below and every number in it is re-derived
+   from that drawing -- see `.bt-card--two` and NODES in Built.tsx. Card one is
+   untouched by this and still reads top to bottom.
 
    TYPE STOPS SCALING WITH THE PICTURE. Every label here is `clamp(floor, N *
    var(--c), ceiling)`: the artwork still scales with the card, the type stops
-   at 11px (the mono corner labels and SELF-CUSTODY) and 10px (market names,
-   "You") on the way down and at 13px / 12px on the way up. That floor is why
-   the packing above is solved at 320px -- it is the width where the two scales
-   diverge most.
+   at 11px (the mono corner labels and SELF-CUSTODY) and 10px ("You") on the way
+   down and at 13px / 12px on the way up. That floor is why the packing above is
+   solved at 320px -- it is the width where the two scales diverge most.
 
-   NOTHING NEW GLOWS. Both card washes are the ones already here: card two's is
-   re-aimed at the foot of a portrait card, with its blur put into design units
-   so it stays the same fraction of the card it was (8.6% -> 8.75%), and card
-   one's is re-aimed at the left edge and re-blurred in its own block below. No
-   shadow, no halo, no filter is added to any mark. --------------------------- */
+   NOTHING NEW GLOWS. Both card washes are the ones already here, re-aimed at
+   the edge each node actually draws it on -- card one's at the LEFT edge, card
+   two's at the RIGHT -- and re-blurred in design units so each stays the same
+   fraction of the card it was. Card one's is refitted in its own block below,
+   because a ramp built to fill a 640-wide card reads as a flat plate on a
+   334-wide one. No shadow, no halo, no filter is added to any mark, and card
+   two's ring, marks and padlock light nothing.
+
+   (Both sides of this paragraph arrived describing the OTHER card's wash from
+   before it moved, because the two frames were built in parallel against one
+   comment. The two rules below are the authority: `.bt-card--one
+   .bt-card__glow--right` sets `left`, and card two's block sets the right
+   edge.) ---------------------------------------------------------------- */
 @media (max-width: 700px) {
   .bt-card {
     --c: calc(100cqw / 320);
@@ -510,9 +518,51 @@
   .bt1__note { font-size: clamp(11px, calc(12 * var(--c)), 14px); text-align: left; }
 
 
-  /* Card two: the five markets in one row across the top, the padlock 194 units
-     below them. `--mx`/`--my`/`--ms`/`--mi` are the portrait placement Built.tsx
-     ships beside the landscape one; this is the only thing that chooses it. */
+  /* --- Card two: the orbit ------------------------------------------------
+     Figma 526:2656, 334 x 392. THE FRAME IS THIS CARD'S OWN, and it is stated
+     here rather than on `.bt-card` because it is card two's design frame and
+     not the band's: the design file draws this illustration as a 392 x 334
+     container turned a quarter turn, so its portrait aspect is 334/392 and not
+     the 320/364 the block above hands both cards. Everything downstream --
+     `--c`, the loop's design-unit division, the beads' percentages -- reads
+     `--fw`/`--fh`, so restating the three together is the whole change.
+
+     WHAT THIS CARD IS NOW. A large ring with the five markets spaced around
+     it, the padlock alone at its centre inside a faint inner circle, and the
+     SELF-CUSTODY pill sitting ON the ring's lower arc. It is not the row of
+     five over a padlock that stood here before, and none of that layout's
+     numbers survive: a pitch, a wire length and a converging fan all describe
+     a picture this card no longer draws. The derivation is over NODES in
+     Built.tsx. */
+  .bt-card--two {
+    --c: calc(100cqw / 334);
+    --fw: 334;
+    --fh: 392;
+    aspect-ratio: 334 / 392;
+  }
+  /* The bloom crosses the card, and in this frame it crosses the RIGHT edge.
+     Figma draws it as four blurred discs whose centres all sit off the card to
+     the right and above it, clipped by the card; only their left shoulders are
+     ever on it. The wash itself is the one already declared for this card --
+     same gradient, same blur, re-aimed -- so nothing new glows here. */
+  .bt-card--two .bt-card__glow--left { left: auto; right: -55%; top: 12%; width: 90%; height: 64%; }
+
+  /* THE THREE LABELS GO BACK TO THREE CORNERS. The rail above stacks them
+     because a row of five markets owned the top of the card; a ring owns the
+     middle instead, and the design puts FIVE MARKETS top-left, FAST ONBOARDING
+     top-right and TRANSPARENT EXECUTION bottom-left, all at 30 units of inset
+     at 12 units of type. That also retires the crowding the rail had, where
+     its second line ended 11.8 units above the market-name row.
+
+     THE FIGMA LABEL READS "TRANSPARENT EXRCUTION". That is a typo in the
+     design file. The markup says EXECUTION and keeps saying EXECUTION. */
+  .bt-card--two .bt-label { font-size: clamp(11px, calc(12 * var(--c)), 13px); }
+  .bt-card--two .bt-label--tl { left: calc(30 * var(--c)); top: calc(30 * var(--c)); }
+  .bt-card--two .bt-label--tr { right: calc(30 * var(--c)); top: calc(30 * var(--c)); }
+  .bt-card--two .bt-label--bl { left: calc(30 * var(--c)); top: auto; bottom: calc(30 * var(--c)); }
+
+  /* `--mx`/`--my`/`--ms`/`--mi` are the portrait placement Built.tsx ships
+     beside the landscape one; this is the only thing that chooses it. */
   .bt2__node {
     left: calc(50% + var(--mx) * var(--c));
     top: calc(50% + var(--my) * var(--c));
@@ -520,57 +570,123 @@
     height: calc(var(--ms) * var(--c));
   }
   /* The marks scale with the card here. `--i` is a fixed px box, which is right
-     at 1600 and much too big once the plate under it is 40px across -- on the
-     shipped phone layout the Bitcoin B and the Tesla wordmark very nearly fill
-     their own discs. `--mi` holds each mark at the fraction of its own PLATE it
-     has at 1600 -- 0.284, 0.312, 0.325 of the plate's diameter -- rather than of
-     its node box, because the node box changed proportion here and the plate is
-     what the mark is actually drawn on. */
+     at 1600 and much too big once the plate under it is 34px across. `--mi` is
+     the mark's own box in this frame's design units, straight off Figma: 11.76
+     for the Bitcoin B, 19 for the Tesla wordmark, 16 for the gold bar. */
   .bt2__icon { width: calc(var(--mi) * var(--c)); height: calc(var(--mi) * var(--c)); }
-  /* Market names go ABOVE their marks. Every wire now runs downward out of a
-     mark, so anything under one is in a wire's way and anything above one is
-     not. 36 units clears the widest faint rim (BTC's, at 31.6) by 4.4, and
-     leaves 7 between the name and the second line of the rail above it. */
-  .bt2__label { top: auto; bottom: calc(50% + 36 * var(--c)); font-size: clamp(10px, calc(10 * var(--c)), 12px); }
-  .bt2__label--lock { top: calc(50% + 36 * var(--c)); bottom: auto; font-size: clamp(11px, calc(11 * var(--c)), 13px); }
-  /* THE FIVE WIRES, REDRAWN. link-fan.svg is four strokes converging on a point
-     to the RIGHT and link-main.svg is a 436px horizontal run; neither describes
-     anything in this frame, and the second is the element that overflows the
-     card today. `.bt2__fan` keeps its job -- one element, ordered before the
-     beads loops/bt2.ts flies along the wires and before the marks, so a bead
-     rides over its wire and under a disc at both ends -- and is given a mask
-     drawn for this frame: five lines from (36,112), (98,112), (160,112),
-     (222,112) and (284,112) down to the padlock at (160,306). Those are exactly
-     NODES' `mx`/`my` in Built.tsx, re-expressed from the frame's top-left
-     instead of its centre; if one moves the other has to move with it.
+  /* THE RIM GROWS TO MATCH THE FILES THAT DRAW THEIR OWN. A ringed node is a
+     plate (node-disc.svg, a circle at 0.9857 of its box) plus a rim
+     (node-ring-*.svg, a circle at 0.9875 of its box), and the landscape value
+     puts the second at 136% of the first -- a drawn ratio of 1.360. The three
+     composite files in this band, which carry both circles inside one export,
+     draw theirs at 1.431 (r 24.6875 over r 17.25), and this frame stands the
+     two kinds side by side on one ring. 142.86% is the box ratio that makes
+     the drawn ratio 1.431, so EUR's rim and TSLA's are the same rim.
+     `--ms` is the plate for a ringed node and the frame for a whole one; see
+     NODES in Built.tsx. */
+  .bt2__ring { left: -21.43%; top: -21.43%; width: 142.86%; height: 142.86%; }
+  /* NO MARKET NAMES. The design carries none -- five marks spaced around a
+     ring have no column to stand a name in, and the copy beneath the card
+     already names what they are. They go out of the ambient loop with them:
+     loops/bt2.ts asks the stylesheet whether a name is drawn before it
+     schedules a colour on one, so in this frame a market acknowledges by
+     leaning and nothing is timed against a label nobody can see. */
+  .bt2__node:not(.bt2__node--lock) > .bt2__label { display: none; }
 
-     THE FADE MOVED FROM THE PAINT INTO THE MASK. In the landscape frame BTC has
-     its own wire and its own two-stop gradient -- pale at the market, dense at
-     the padlock, so the wire gains presence as it arrives -- and the other four
-     are flat. In portrait the five are peers in one row and there is no odd one
-     out to carry that, so every line's ALPHA ramps 0.32 -> 1 toward the padlock
-     instead. The paint stays `--bt-wire`, which is what makes the gain read the
-     right way round in both themes without inventing a second pair of colours:
-     on the dark card a whisper grows to 1.5:1, on paper the same whisper grows
-     to 1.42:1. `.bt2__main` then has nothing left to draw and is taken off the
-     card -- and out of the entrance; see Built.motion.ts. */
+  /* SELF-CUSTODY BECOMES A PILL ON THE RING. It is still the padlock's own
+     label and still the element loops/bt2.ts turns brand red when the
+     settlement seats; what changes is that the design seats it ON the lower
+     arc rather than under the lock. 90 units below the lock's centre is
+     r = 89 from the ring's centre, to within the unit the lock is offset by,
+     which is why the five markets leave a 142-degree gap at the bottom.
+
+     Colour goes through roles, not through the export's hex: --panel for the
+     ground (#1b1b1a against Figma's #1b1a1a), --accent for the 1px rim, and
+     --ink-2 for the type, which IS the #9d9d9d the frame names. All three
+     already carry light values. */
+  .bt2__label--lock {
+    left: calc(50% + 1 * var(--c));
+    top: calc(50% + 90 * var(--c));
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    padding: calc(9 * var(--c)) calc(10 * var(--c));
+    border: 1px solid var(--accent);
+    border-radius: calc(10 * var(--c));
+    background: var(--panel);
+    font-family: var(--font-body);
+    font-weight: 400;
+    /* 10px, NOT the 11 the corner labels take, and the floor is load-bearing
+       rather than a taste. This label sizes a BOX: the pill is its text plus
+       20 units of padding, and the pill has to pass between EUR / USD's faint
+       rim on the left and XAU / USD's on the right. At 320px the card is 280
+       and 12 units is 10.06px, so an 11px floor inflates the pill by 9px --
+       4.4 of them on the left, where the design leaves only 7.2 units of
+       clearance. The pill then arrives 1.6px from EUR's rim instead of 6.
+       At 10px the floor never engages above 320 and the pill is the design's
+       own 106 x 34 at every width. */
+    font-size: clamp(10px, calc(12 * var(--c)), 13px);
+    line-height: 1.2;
+    color: var(--ink-2);
+  }
+
+  /* THE RING AND THE INNER CIRCLE, and they are the two wires.
+     -----------------------------------------------------------------------
+     link-fan.svg is four strokes converging to the right and link-main.svg a
+     436px horizontal run; neither describes anything in this frame, and the
+     second is the element that used to overflow the card. Rather than add two
+     more files, the two wire elements keep their jobs and are given masks
+     drawn for this frame -- which is what the previous portrait pass already
+     did for the fan, and for the same reasons: one element each, ordered
+     before the beads loops/bt2.ts flies and before the marks, and NO new
+     asset whose colour would be baked dark.
+
+       .bt2__main  the ring. r 89 about (167, 197), and the one stroke on this
+                   card that is a two-stop fade -- Figma runs it #A4411E at the
+                   left of the circle to #9B9895 at 96% of its span. That is
+                   exactly what --bt-main-a / --bt-main-b already name, and
+                   they already have a light pair. The stops move from 0/96.11%
+                   to 23.35/74.65% because the element is now the whole card
+                   and the ring only crosses the middle half of it.
+       .bt2__fan   the faint inner circle the padlock sits in. r 47.5 about
+                   (166, 197), painted --bt-wire with 0.55 of alpha in the
+                   mask: #353433 at 0.55 over --panel is #2a2928, which is
+                   Figma's #626262 at 0.2 over the same ground to within a
+                   value on each channel. On paper the same construction puts
+                   it at 1.23:1 against the card, a whisper either way.
+
+     `!important` because <Icon> writes `--icon` into the style attribute and
+     an inline declaration beats every selector without it. The alternative --
+     a second Icon hidden at one breakpoint -- would put more elements into a
+     section the theme gate walks by index, at every width. */
   .bt2__fan {
     inset: 0; width: 100%; height: 100%;
-    /* `!important` because <Icon> writes `--icon` into the style attribute,
-       and an inline declaration beats every selector without it. This is the
-       one place in the band where a stylesheet has to overrule the component,
-       and the alternative -- a second Icon in the markup, hidden at one
-       breakpoint or the other -- would put five more elements into a section
-       the theme gate walks by index, at every width. */
-    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 364' fill='none' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='bf1' gradientUnits='userSpaceOnUse' x1='36' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf2' gradientUnits='userSpaceOnUse' x1='98' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf3' gradientUnits='userSpaceOnUse' x1='160' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf4' gradientUnits='userSpaceOnUse' x1='222' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3ClinearGradient id='bf5' gradientUnits='userSpaceOnUse' x1='284' y1='112' x2='160' y2='306'%3E%3Cstop stop-color='%23fff' stop-opacity='.32'/%3E%3Cstop offset='1' stop-color='%23fff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M36 112L160 306' stroke='url(%23bf1)'/%3E%3Cpath d='M98 112L160 306' stroke='url(%23bf2)'/%3E%3Cpath d='M160 112L160 306' stroke='url(%23bf3)'/%3E%3Cpath d='M222 112L160 306' stroke='url(%23bf4)'/%3E%3Cpath d='M284 112L160 306' stroke='url(%23bf5)'/%3E%3C/g%3E%3C/svg%3E") !important;
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 334 392' fill='none' preserveAspectRatio='none'%3E%3Ccircle cx='166' cy='197' r='47.5' stroke='%23fff' stroke-opacity='.55' stroke-width='1'/%3E%3C/svg%3E") !important;
   }
-  .bt2__main { display: none; }
-  /* The one lit bar on the card moves onto the centre wire and stands up with
-     it, at the same fifth of the way along the run it sat at before. */
+  /* THE RING, ONCE, FOR TWO READERS. The mask below draws it and loops/bt2.ts
+     runs its head round it, and a circle stated twice in two files is a circle
+     that drifts. These three -- centre as an offset from the card's own centre,
+     radius in design units -- are what the loop reads; the mask's cx/cy/r are
+     the same numbers with DW/2 = 167 and DH/2 = 196 added back. Move one, move
+     all four, and they are adjacent so that is one edit. */
+  .bt-card--two {
+    --bt2-ring-x: 0;
+    --bt2-ring-y: 1;
+    --bt2-ring-r: 89;
+  }
+  .bt2__main {
+    display: block;
+    inset: 0; width: 100%; height: 100%;
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 334 392' fill='none' preserveAspectRatio='none'%3E%3Ccircle cx='167' cy='197' r='89' stroke='%23fff' stroke-width='1'/%3E%3C/svg%3E") !important;
+  }
+  .bt2 .bt2__main { background: linear-gradient(to right, var(--bt-main-a) 23.35%, var(--bt-main-b) 74.65%); }
+  /* The one already-lit bar on the card. Figma draws it at (93.75, 256), a
+     41 x 4 bar turned 30 degrees -- 120 inside a container the design file has
+     turned -90 -- which lays it along the ring's lower-left arc, five units
+     outside the stroke. Same bar, same blur, in design units. */
   .bt2__smear {
-    left: calc(158 * var(--c)); top: calc(146 * var(--c));
-    width: calc(4 * var(--c)); height: calc(34 * var(--c));
-    transform: none;
+    left: calc(73.25 * var(--c)); top: calc(254 * var(--c));
+    width: calc(41 * var(--c)); height: calc(4 * var(--c));
+    transform: rotate(30deg);
   }
 }
 

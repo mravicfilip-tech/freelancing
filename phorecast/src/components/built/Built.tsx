@@ -117,11 +117,12 @@ function CardOne() {
  * card, five markets spread left to right, one padlock on the right-hand edge.
  *
  * `mx`/`my`/`ms`/`mis` are the SAME five markets in the portrait frame the
- * card takes below 700px — 320 x 364, the markets in one row across the top
- * and the padlock beneath them. Built.css picks one set or the other; nothing
- * here decides, so a node cannot be half-moved. The five wires are drawn from
- * these same portrait coordinates, once, inside .bt2__fan's mobile mask —
- * Built.css names them there so the two cannot drift apart.
+ * card takes below 700px — Figma 526:2656, 334 x 392, the markets spaced
+ * around one large ring with the padlock at its centre. Built.css picks one
+ * set or the other; nothing here decides, so a node cannot be half-moved. The
+ * ring and the faint inner circle are drawn from the SAME centre, once, inside
+ * .bt2__main's and .bt2__fan's mobile masks — Built.css names them there so
+ * the two cannot drift apart.
  *
  * Both sets ride in the style attribute as custom properties. That attribute
  * is load-bearing for the motion layer — see the `clearProps` notes in
@@ -132,39 +133,49 @@ type Node = {
   ms: number; mx: number; my: number; mis?: number;
 };
 
-/* THE PORTRAIT ROW: five columns at a pitch of 62, and every number solved.
+/* THE PORTRAIT ORBIT, read straight off Figma 526:2656 rather than solved.
  *
- * `ms` IS NOT THE MARK. Each node's painted rim is a fixed fraction of `ms`,
- * and the fraction is not the same for all five: a ringed node (BTC, TSLA, XAU
- * = a disc plus node-ring-*.svg at 136%) paints its faint rim at 0.6715 * ms
- * and its solid plate at 0.4929 * ms, while a whole node (DAX, EUR, and the
- * padlock = one file at 136%) paints 0.4974 and 0.3476. Carrying the landscape
- * sizes across would have put DAX's and EUR's plates at two thirds of TSLA's
- * in a row where they sit side by side. So the sizes below are solved from the
- * PLATE instead: 20.2 design units of radius for the four supporting markets
- * (41 ringed, 58 whole) and 23.2 for BTC (47), which keeps the featured market
- * a step larger exactly as it is at 1600. The rims land within 1.3 units of
- * each other as a result.
+ * That frame is the landscape card turned a quarter turn in the design file —
+ * a 392 x 334 container rotated -90 inside a 334 x 392 card — so every
+ * coordinate below is the Figma node's own placement pushed through
+ * `cardX = v`, `cardY = 392 - u` and then re-expressed as an offset from the
+ * card's centre (167, 196). Nothing here is eyeballed, and nothing is carried
+ * over from the row this card used to be: a radius, an angle or a size tuned
+ * to five markets standing side by side is silently wrong on a ring.
  *
- * THE PITCH is bounded from both sides. Adjacent rims must clear: BTC and TSLA
- * are the tightest at 31.6 + 27.5, so nothing under 59.1 works. The outermost
- * rim must stay inside the frame: BTC sits at 160 - 2p and needs p <= 63.6.
- * 62 sits in that window with 2.9 units of rim clearance and 4.4 units of
- * frame, and every market name fits its column at the 320px worst case, where
- * the widest (XAU / USD, 26.6 half-width) has 9.4 units to spare against its
- * neighbour. That is the whole reason all five markets survive the phone.
+ *   ring        centre (167, 197), r 89      .bt2__main's mask
+ *   inner disc  centre (166, 197), r 47.5    .bt2__fan's mask
+ *   padlock     centre (167, 196)            the ring's middle
  *
- * The padlock sits 194 units below the row, which is the closest it can come
- * before BTC's wire starts grazing TSLA's rim on the way down (24.8 units of
- * clearance at 194). */
+ * The five markets sit at 84 - 92 units from the ring's centre, which is the
+ * scatter the design has and not a mistake to correct: clockwise from twelve
+ * they are TSLA (-1.4 degrees), DAX (61.7), XAU (116.9), EUR (259.2) and BTC
+ * (299.4). The 142-degree gap between XAU and EUR is where the SELF-CUSTODY
+ * pill sits, at 179.4 degrees and at exactly r=89 — it is ON the ring, not
+ * under it, which is why the markets are not evenly spaced.
+ *
+ * `ms` IS THE PLATE for a ringed node and THE FRAME for a whole one, because
+ * that is what each kind of file draws. A ringed node is node-disc.svg at 100%
+ * of `ms` (a circle at 0.9857 of its own box) plus node-ring-*.svg at 142.86%
+ * (a circle at 0.9875 of its box) — so its plate is 0.986 * ms and its rim
+ * 1.411 * ms. A whole node is one file at 136% whose plate and rim are 0.511
+ * and 0.731 of the file — 0.695 * ms and 0.995 * ms. Both kinds therefore land
+ * at the design's own rim/plate ratio of 1.431, which is the number the three
+ * composite exports (EUR, DAX, the padlock) carry inside them. 142.86% is the
+ * mobile value of .bt2__ring in Built.css and it exists for exactly this: at
+ * the landscape 136% the three ringed markets would wear a rim 5% tight
+ * against the two that draw their own.
+ *
+ * `mis` is the mark, in design units, straight from the frame: 11.76 for the
+ * Bitcoin B, 19 for the Tesla wordmark, 16 for the gold bar. */
 const HUB_MX = 0;
-const HUB_MY = 124;   /* the padlock, from the card's centre */
+const HUB_MY = 0;   /* the padlock, from the card's centre — the ring's middle */
 const NODES: Node[] = [
-  { key: 'btc', label: 'BTC / USD', size: 64, x: -215, y: -23, ring: nodeRingC, icon: nodeBtc, iconSize: 17.9, ms: 47, mx: -124, my: -70, mis: 13.2 },
-  { key: 'tsla', label: 'TSLA', size: 50, x: -74, y: -72, ring: nodeRingA, icon: tesla, iconSize: 15.4, ms: 41, mx: -62, my: -70, mis: 12.6 },
-  { key: 'dax', label: 'DAX 40', size: 60, x: 85, y: -72, ring: '', whole: nodeDax, wholeSize: 81, ms: 58, mx: 0, my: -70 },
-  { key: 'eur', label: 'EUR / USD', size: 50, x: -106, y: 28, ring: '', whole: nodeEur, wholeSize: 67.5, ms: 58, mx: 62, my: -70 },
-  { key: 'xau', label: 'XAU / USD', size: 50, x: 28, y: 48, ring: nodeRingB, icon: gold, iconSize: 16, ms: 41, mx: 124, my: -70, mis: 13.1 },
+  { key: 'btc', label: 'BTC / USD', size: 64, x: -215, y: -23, ring: nodeRingC, icon: nodeBtc, iconSize: 17.9, ms: 29.4, mx: -80, my: -44, mis: 11.76 },
+  { key: 'tsla', label: 'TSLA', size: 50, x: -74, y: -72, ring: nodeRingA, icon: tesla, iconSize: 15.4, ms: 35, mx: -2, my: -83, mis: 19 },
+  { key: 'dax', label: 'DAX 40', size: 60, x: 85, y: -72, ring: '', whole: nodeDax, wholeSize: 81, ms: 34, mx: 78, my: -41 },
+  { key: 'eur', label: 'EUR / USD', size: 50, x: -106, y: 28, ring: '', whole: nodeEur, wholeSize: 67.5, ms: 50, mx: -84, my: 17 },
+  { key: 'xau', label: 'XAU / USD', size: 50, x: 28, y: 48, ring: nodeRingB, icon: gold, iconSize: 16, ms: 35, mx: 77, my: 40, mis: 16 },
 ];
 
 function CardTwo() {
@@ -211,7 +222,7 @@ function CardTwo() {
           data-k="lock"
           style={{
             ['--x' as string]: 226, ['--y' as string]: 0, ['--s' as string]: 70,
-            ['--mx' as string]: HUB_MX, ['--my' as string]: HUB_MY, ['--ms' as string]: 66,
+            ['--mx' as string]: HUB_MX, ['--my' as string]: HUB_MY, ['--ms' as string]: 50,
           }}
         >
           <img src={nodeLock} alt="" className="bt2__whole" />

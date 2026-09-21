@@ -21,7 +21,10 @@
 # upload partway through without them.
 set -euo pipefail
 
-DOMAIN="${DEPLOY_DOMAIN:-phorcast-app.vercel.app}"
+# phorcast-app.vercel.app was the domain while this site was on the old
+# account, and it is still held there, so asking for it now fails with
+# "already in use". The site lives at phorcast-markets on cleavegfx.
+DOMAIN="${DEPLOY_DOMAIN:-phorcast-markets.vercel.app}"
 cd "$(dirname "$0")/.."
 
 # THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. This
@@ -63,17 +66,36 @@ npx tsc --noEmit
 
 echo "==> deploy to production"
 # --yes skips the link prompt; the project is already linked in .vercel/.
-URL=$(npx vercel deploy --prod --yes --token "$VERCEL_TOKEN" 2>/dev/null \
-      | grep -oE 'https://[a-z0-9.-]+\.vercel\.app' | tail -1)
+#
+# The output goes to a FILE and is grepped afterwards, rather than being piped
+# straight into a command substitution. Piped, this step kept coming back empty
+# on long uploads -- the url never arrived, the script exited, and the alias was
+# left pointing at the previous build while the deploy itself had succeeded.
+# That is how a bare `vercel deploy` started being run by hand, which skips the
+# account check above and is the one thing this file exists to prevent.
+LOG=$(mktemp)
+trap 'rm -f "$LOG"' EXIT
+npx vercel deploy --prod --yes --token "$VERCEL_TOKEN" > "$LOG" 2>&1 || true
+URL=$(grep -oE 'https://[a-z0-9.-]+\.vercel\.app' "$LOG" | tail -1)
 
 if [ -z "$URL" ]; then
-  echo "could not read a deployment url from the vercel output" >&2
+  echo "could not read a deployment url from the vercel output:" >&2
+  tail -20 "$LOG" >&2
   exit 1
 fi
 echo "    $URL"
 
 echo "==> point $DOMAIN at it"
 npx vercel alias set "${URL#https://}" "$DOMAIN" --token "$VERCEL_TOKEN"
+
+# And read the alias back, because the one failure this script cannot see is the
+# one that matters: a deploy that worked, an alias set that reported success,
+# and the domain still serving the previous build.
+echo "==> confirm"
+npx vercel alias ls --token "$VERCEL_TOKEN" 2>/dev/null | grep -F "$DOMAIN" || {
+  echo "alias $DOMAIN is not in the table" >&2
+  exit 1
+}
 
 echo
 echo "live: https://$DOMAIN"

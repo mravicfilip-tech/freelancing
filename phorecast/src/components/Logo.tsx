@@ -1,4 +1,5 @@
 import { Icon } from './Icon';
+import { home, useRoute } from '../lib/router';
 import mark from '../assets/brand/mark.svg';
 import './Logo.css';
 
@@ -10,6 +11,13 @@ import './Logo.css';
  * becomes `color`, set in Logo.css. Nothing else in this file changed — the
  * anchor, the label and the box are what they were.
  *
+ * The href is the one thing that moved when the site gained a second route.
+ * `#top` is an id in the LANDING page's document, so from /about it was a
+ * fragment with no target and the wordmark -- labelled "Phorcast home" -- did
+ * nothing at all. `home()` hands back `#top` on "/" and "/" anywhere else, so
+ * the landing page's markup is exactly the string it has always been and the
+ * About page's wordmark goes home.
+ *
  * On `#f03725` specifically: it is NOT a stray, and it is not `--orange-100`
  * gone wrong. It is the artwork red — the value Figma exports throughout
  * `src/assets` (the fan arcs, the Built smear, the Familiar dots and gauges,
@@ -18,8 +26,9 @@ import './Logo.css';
  * token rather than by joining `--accent`.
  */
 export function Logo({ className = '' }: { className?: string }) {
+  const { path } = useRoute();
   return (
-    <a href="#top" className={`logo ${className}`} aria-label="Phorcast home">
+    <a href={home(path)} className={`logo ${className}`} aria-label="Phorcast home">
       <Icon src={mark} w={30.5} h={35.6} className="logo__mark" />
       <span className="logo__word">Phorcast</span>
     </a>

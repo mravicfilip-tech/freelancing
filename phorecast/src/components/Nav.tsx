@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { Logo } from './Logo';
 import { Roll } from './Roll';
 import { Icon } from './Icon';
 import { ThemeToggle, ThemeSwitch } from './ThemeToggle';
+import { ABOUT, landing, useRoute } from '../lib/router';
 import chevron from '../assets/icons/chevron-down.svg';
 import './Nav.css';
 
@@ -13,14 +15,25 @@ const LINKS = [
   { label: 'Leaderboard', href: '#leaderboard' },
 ];
 
-/* What MORE opens. There was nothing to mirror: the desktop bar's More is a
-   `<button aria-haspopup="menu">` with a chevron and no menu behind it, so the
-   sheet was reproducing a stub faithfully. These four are not invented either
-   -- they are the page's own remaining sections, and every href here is an id
-   that exists in the document (#why, #how, #built, #faq), so the disclosure
-   goes somewhere. Desktop's More stays a stub because desktop must not move;
-   this is the list to give it when someone is allowed to. */
-const MORE_LINKS = [
+/* What MORE opens, on both surfaces.
+   ---------------------------------------------------------------------------
+   The note that used to stand here said the desktop bar's More was a
+   `<button aria-haspopup="menu">` with a chevron and NOTHING behind it, that
+   the sheet's disclosure was therefore reproducing a stub faithfully, and that
+   this was the list to give desktop when someone was allowed to. Someone is
+   now allowed to, so there is one list and both surfaces read it.
+
+   About is a route. The other four are ids in the LANDING page's document
+   (#why, #how, #built, #faq) and they are written here bare, which is correct
+   only while the landing page is the page showing. `landing()` in lib/router.ts
+   is what resolves them: bare on "/", "/#why" anywhere else, so from /about the
+   item loads the landing page and goes to the section rather than firing a
+   fragment at a document that has no such id. #faq is the one that would
+   half-work if it were left bare -- the About page mounts <Faq /> too, so it
+   would silently scroll to the wrong page's FAQ -- which is exactly why the
+   rule is applied to all four and not to the three that fail loudly. */
+const MORE_LINKS: { label: string; href: string; route?: string }[] = [
+  { label: 'About', href: ABOUT, route: ABOUT },
   { label: 'Why Phorcast', href: '#why' },
   { label: 'How it works', href: '#how' },
   { label: 'Infrastructure', href: '#built' },
@@ -32,7 +45,174 @@ const MOBILE = '(max-width: 960px)';
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]';
 
+/**
+ * The desktop bar's MORE, which is now a menu rather than a promise of one.
+ *
+ * THE ARIA IS HONEST OR IT IS NOT THERE. The button already said
+ * `aria-haspopup="menu"`, which tells a screen reader user to expect a menu
+ * and to expect arrow keys to work in it. Half of that -- the popup attribute
+ * with no `role="menu"` behind it, or a menu role whose items cannot be
+ * reached with the arrows -- is worse than a plain list of links, because it
+ * advertises an interaction that then does not happen. So: `aria-expanded` on
+ * the button, `role="menu"` on the list, `role="menuitem"` on each link,
+ * `role="none"` on the <li> that would otherwise contribute a list semantic
+ * the menu role does not want, and Up/Down/Home/End actually implemented.
+ *
+ * IT DOES NOT OPEN ON HOVER, and that is a standing rule on this project
+ * rather than an oversight. A hover menu has no state a touch screen can
+ * express, it opens when the pointer is merely passing through, and it cannot
+ * be closed except by leaving. Click to open, Escape, an outside press, or choosing an item closes it.
+ *
+ * FOCUS ON OPEN depends on how it was opened, which `event.detail` answers:
+ * a click from a real pointer reports a click count of 1 or more, a click
+ * synthesised by Enter or Space on a focused button reports 0. Keyboard opens
+ * land on the first item, because a keyboard user has no other way in; mouse
+ * opens leave focus on the button, because moving it would put a focus ring
+ * somewhere nobody asked for. Arrow Down from the button gets in either way.
+ *
+ * ESCAPE RETURNS FOCUS TO THE BUTTON, with `preventScroll` for the same
+ * reason the sheet's teardown uses it: the nav is not sticky, so a focus()
+ * that scrolls the trigger into view throws a scrolled reader back to the top
+ * of the page.
+ */
+function MoreMenu({ path }: { path: string }) {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const wantFocus = useRef<'first' | 'last' | null>(null);
+  const menuId = useId();
+
+  const items = useCallback(
+    () => Array.from(listRef.current?.querySelectorAll<HTMLAnchorElement>('[role="menuitem"]') ?? []),
+    [],
+  );
+
+  const close = useCallback((toButton: boolean) => {
+    setOpen(false);
+    if (toButton) btnRef.current?.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      close(true);
+    };
+    /* pointerdown, not click: a menu that survives until mouseup is a menu
+       that flickers when you press on the page to dismiss it. The check is
+       against the WRAPPER, so a press on the button itself falls through to
+       the button's own toggle instead of being closed here and re-opened
+       there. */
+    const onDown = (e: PointerEvent) => {
+      if (!(e.target instanceof Node) || !wrapRef.current?.contains(e.target)) setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onDown);
+    };
+  }, [open, close]);
+
+  useEffect(() => {
+    if (!open) { wantFocus.current = null; return; }
+    const want = wantFocus.current;
+    wantFocus.current = null;
+    if (!want) return;
+    const list = items();
+    (want === 'first' ? list[0] : list[list.length - 1])?.focus({ preventScroll: true });
+  }, [open, items]);
+
+  const move = (from: HTMLElement, delta: number) => {
+    const list = items();
+    if (!list.length) return;
+    const i = list.indexOf(from as HTMLAnchorElement);
+    const next = i < 0 ? 0 : (i + delta + list.length) % list.length;
+    list[next]?.focus({ preventScroll: true });
+  };
+
+  const onListKey = (e: ReactKeyboardEvent<HTMLUListElement>) => {
+    const el = e.target;
+    if (!(el instanceof HTMLElement)) return;
+    switch (e.key) {
+      case 'ArrowDown': e.preventDefault(); move(el, 1); break;
+      case 'ArrowUp': e.preventDefault(); move(el, -1); break;
+      case 'Home': e.preventDefault(); items()[0]?.focus({ preventScroll: true }); break;
+      case 'End': e.preventDefault(); items().at(-1)?.focus({ preventScroll: true }); break;
+      // Tab out is not trapped. A menu bar in a page header is not a dialog,
+      // and the next thing after MORE is Login, which is where Tab should go.
+      case 'Tab': setOpen(false); break;
+      default: break;
+    }
+  };
+
+  const onButtonKey = (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    wantFocus.current = e.key === 'ArrowDown' ? 'first' : 'last';
+    setOpen(true);
+  };
+
+  return (
+    <div className="nav__more-wrap" ref={wrapRef}>
+      <button
+        type="button"
+        ref={btnRef}
+        className="nav__link nav__more"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-controls={menuId}
+        onClick={(e) => {
+          wantFocus.current = open ? null : (e.detail === 0 ? 'first' : null);
+          setOpen((o) => !o);
+        }}
+        onKeyDown={onButtonKey}
+      >
+        <Roll>More</Roll>
+        {/* The mask primitive's proof case: the chevron used to be an
+            <img> baked #fffbf8, so it could only ever be that colour. As a
+            mask it is `color`, which means it follows --ink, inherits the
+            nav link's hover to --accent for free, and needs no light
+            variant on disk. */}
+        <Icon src={chevron} w={13.73} h={7.49} />
+      </button>
+
+      <ul
+        id={menuId}
+        ref={listRef}
+        className="nav__menu"
+        role="menu"
+        aria-label="More"
+        hidden={!open}
+        onKeyDown={onListKey}
+      >
+        {MORE_LINKS.map((l) => (
+          <li key={l.label} role="none">
+            <a
+              href={l.route ? l.href : landing(path, l.href)}
+              role="menuitem"
+              tabIndex={-1}
+              className="nav__menu-link"
+              aria-current={l.route && l.route === path ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Nav() {
+  // Subscribed, not read off the module: this is what re-renders the nav (and
+  // with it every `landing()` href and the About item's aria-current) when the
+  // route changes under a pushState that never reloaded the document.
+  const { path } = useRoute();
   const [open, setOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const burgerRef = useRef<HTMLButtonElement>(null);
@@ -161,7 +341,7 @@ export function Nav() {
 
         <nav className="nav__sheet-nav" aria-label="Primary">
           {LINKS.map((l) => (
-            <a key={l.label} href={l.href} className="sheet-link" onClick={close}>{l.label}</a>
+            <a key={l.label} href={landing(path, l.href)} className="sheet-link" onClick={close}>{l.label}</a>
           ))}
 
           {/* The disclosure. `aria-expanded` on the control, `aria-controls`
@@ -184,7 +364,14 @@ export function Nav() {
           <div className="sheet-sub" data-open={moreOpen}>
             <ul id={moreId} className="sheet-sub__list" inert={!moreOpen} aria-hidden={!moreOpen}>
               {MORE_LINKS.map((l) => (
-                <li key={l.label}><a href={l.href} className="sheet-sub__link" onClick={close}>{l.label}</a></li>
+                <li key={l.label}>
+                  <a
+                    href={l.route ? l.href : landing(path, l.href)}
+                    className="sheet-sub__link"
+                    aria-current={l.route && l.route === path ? 'page' : undefined}
+                    onClick={close}
+                  >{l.label}</a>
+                </li>
               ))}
             </ul>
           </div>
@@ -212,17 +399,9 @@ export function Nav() {
         <Logo />
         <nav className="nav__links" aria-label="Primary">
           {LINKS.map((l) => (
-            <a key={l.label} href={l.href} className="nav__link"><Roll>{l.label}</Roll></a>
+            <a key={l.label} href={landing(path, l.href)} className="nav__link"><Roll>{l.label}</Roll></a>
           ))}
-          <button type="button" className="nav__link nav__more" aria-haspopup="menu">
-            <Roll>More</Roll>
-            {/* The mask primitive's proof case: the chevron used to be an
-                <img> baked #fffbf8, so it could only ever be that colour. As a
-                mask it is `color`, which means it follows --ink, inherits the
-                nav link's hover to --accent for free, and needs no light
-                variant on disk. */}
-            <Icon src={chevron} w={13.73} h={7.49} />
-          </button>
+          <MoreMenu path={path} />
         </nav>
         <div className="nav__actions">
           <ThemeToggle />

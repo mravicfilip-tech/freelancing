@@ -85,8 +85,18 @@ export function Faq() {
           </p>
           <h2 id="faq-title" className="faq__title">Answers<br />before you start</h2>
           <p className="faq__lede">
-            Everything below is how Phorcast actually works.<br className="br-wide" />
-            What you can trade, what it costs to start,<br className="br-wide" />
+            {/* The `{' '}` after each break is load-bearing, and is NOT what JSX
+                gives you for free. A JSXText node that begins with a newline has
+                that whole first (empty) line dropped and the next line trimmed,
+                so the text after a `<br />` arrives with no leading space at all.
+                Above 720 that is invisible -- the break supplies the gap. Below
+                720 `.br-wide` is `display: none` and the two sentences fuse:
+                "works.What you can trade" and "to start,and how quickly". An
+                explicit space node survives the break being hidden, and costs
+                nothing above it, because CSS drops a space that lands at the
+                start of a line after a forced break. */}
+            Everything below is how Phorcast actually works.<br className="br-wide" />{' '}
+            What you can trade, what it costs to start,<br className="br-wide" />{' '}
             and how quickly money moves in and out.
           </p>
           <div className="faq__mark" ref={markRef} aria-hidden="true">

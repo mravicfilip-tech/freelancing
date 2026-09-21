@@ -342,9 +342,14 @@
      Dropping them lets the paragraph wrap once, to its own width.
 
      They are hidden rather than deleted because they are right where they were
-     written, above this breakpoint. JSX collapses the newline and indentation
-     between the segments into a single space, so the sentences still separate
-     correctly with the breaks gone. */
+     written, above this breakpoint. What separates the sentences once they are
+     gone is an explicit `{' '}` after each break in Faq.tsx, NOT the newline
+     and indentation between the segments: JSX drops a text node's empty first
+     line and trims the next, so the copy after a `<br />` carries no leading
+     space of its own and the sentences fused here ("works.What you can
+     trade"). Above this breakpoint the break supplies the gap and the extra
+     space costs nothing, since CSS drops a space that starts a line after a
+     forced break. */
   .faq__lede .br-wide { display: none; }
 
   .faq { padding: 56px 0; }

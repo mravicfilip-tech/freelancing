@@ -13,44 +13,59 @@ type Item = { q: string; a: string; chips?: Chip[] };
 
 const ITEMS: Item[] = [
   {
+    q: 'What is Phorcast?',
+    a: 'Phorcast is a prediction market platform built for traders. You take a position on what happens next, from where Bitcoin is in five minutes to where gold closes this month, and if you’re right, each contract pays $1. No leverage, no liquidations. Your maximum loss is always what you stake.',
+  },
+  {
     q: 'What markets can I trade on Phorcast?',
-    a: 'Crypto, forex, stocks, commodities and indices sit behind one account and one balance. You move between them without opening a second venue or funding a second wallet.',
+    a: 'Crypto, stocks, indices, commodities, forex and sports, across timeframes from 5 minutes to monthly. Contract types include Up/Down (will the price close higher or lower?) and Price Hit (will the price touch a level before expiry?). New markets and contract types are added regularly.',
   },
   {
-    q: 'How quickly can I start trading?',
-    a: 'Registration takes about a minute. Create the account with an email or a wallet, fund it, and the markets are open to you straight away.',
+    q: 'Do I need to KYC to open an account?',
+    a: 'No. You can sign up with an email address, social login or by connecting a crypto wallet, and start trading straight away. We may ask for verification on large withdrawals or where required by law.',
   },
   {
-    q: 'Does Phorcast hold my funds?',
-    a: 'No. Collateral sits in smart contracts we never touch, so a withdrawal is something you execute rather than something you request.',
+    q: 'How quickly can I get started?',
+    a: 'Under two minutes. Create an account, send crypto to your personal deposit address, and your balance is credited as soon as the transaction confirms — around two seconds for USDC on Arbitrum.',
   },
   {
-    q: 'How does on-chain trading work?',
-    a: 'Execution happens off-chain, settlement happens on-chain. Positions, P&L, liquidations and settlement are all independently verifiable — you never have to take our word for the number.',
+    q: 'What is the minimum deposit?',
+    a: '$10 in any supported currency. Minimum deposit amounts vary slightly by network to cover confirmation costs and are shown on the deposit screen for each coin.',
+  },
+  {
+    q: 'How long do withdrawals take?',
+    a: 'Most withdrawals are processed within minutes. Larger withdrawals may be held for a security review and can take up to 24 hours. You’ll see the transaction hash as soon as it’s sent.',
+    // THE ONE ITEM THAT CARRIES CHIPS, AND WHY IT IS THIS ONE.
+    //
+    // The chips used to sit on "How does on-chain trading work?" and read
+    // Execution / Off-chain, Settlement / On-chain, Verifiable on-chain. That
+    // question is gone and so is the claim under it: this is a prediction
+    // market now, with no collateral in contracts to inspect and no
+    // liquidation to re-derive, so a "verifiable on-chain" seal would be
+    // asserting something the copy above no longer supports.
+    //
+    // Withdrawals is the one answer left that both states numbers worth
+    // pinning next to the prose -- the two timings a reader is actually here
+    // for -- and hands over something checkable for them: the transaction
+    // hash, which the copy promises by name. So the pair of label/value chips
+    // and the seal move here together, and the seal's claim is cut down to
+    // exactly what the sentence promises.
     chips: [
-      { label: 'Execution', value: 'Off-chain' },
-      { label: 'Settlement', value: 'On-chain' },
-      { verify: 'Verifiable on-chain' },
+      { label: 'Most withdrawals', value: 'Minutes' },
+      { label: 'Security review', value: 'Up to 24 hours' },
+      { verify: 'Transaction hash on send' },
     ],
   },
   {
-    q: 'How do deposits and withdrawals work?',
-    a: 'Fund with crypto, card, Apple Pay, Google Pay or bank transfer. Withdrawals settle on-chain to the address you control, with no queue and no approval step.',
-  },
-  {
-    q: 'Do I need to complete KYC?',
-    a: 'Not to open an account or to trade. Some fiat rails ask for identity checks of their own, and we tell you before you start one rather than after.',
-  },
-  {
-    q: 'What happens when a position is liquidated?',
-    a: 'The liquidation runs against the same on-chain collateral you can inspect yourself. Every step, from the mark price to the close, is written where you can check it.',
+    q: 'Do you plan to launch a Phorcast token?',
+    a: 'Yes. A native token is part of our roadmap, with early users and active traders in mind. No date or details yet — announcements will come through our official channels only, so be wary of anything claiming otherwise.',
   },
 ];
 
 const pad = (n: number) => String(n + 1).padStart(2, '0');
 
 export function Faq() {
-  const [open, setOpen] = useState(3);
+  const [open, setOpen] = useState(5);
   const markRef = useRef<HTMLDivElement>(null);
   // Centred in its own square box, so it needs its own placement rather than the hero's.
   const markPlacement = useMemo(() => ({ heightFraction: 0.86, widthFraction: 0.86, cx: 0.5, cy: 0.5 }), []);
@@ -68,11 +83,11 @@ export function Faq() {
             <LiveDot />
             Frequently asked
           </p>
-          <h2 id="faq-title" className="faq__title">Answers<br />you can verify</h2>
+          <h2 id="faq-title" className="faq__title">Answers<br />before you start</h2>
           <p className="faq__lede">
             Everything below is how Phorcast actually works.<br className="br-wide" />
-            Where a claim can be checked on-chain, we show<br className="br-wide" />
-            you where to check it.
+            What you can trade, what it costs to start,<br className="br-wide" />
+            and how quickly money moves in and out.
           </p>
           <div className="faq__mark" ref={markRef} aria-hidden="true">
             <HeroLogo hostRef={markRef} variant="lined" placement={markPlacement} scroll={false} />

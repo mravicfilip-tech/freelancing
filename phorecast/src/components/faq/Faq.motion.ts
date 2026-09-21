@@ -45,7 +45,7 @@
  *
  * WHAT THIS DELIBERATELY DOES NOT TOUCH
  *
- * The accordion. Row four is open on load and every row expands and collapses
+ * The accordion. Row six is open on load and every row expands and collapses
  * on click, which React drives by adding `is-open` to the `<li>` and dropping
  * `hidden` from the answer. The entrance moves the `<li>` and nothing else:
  * only `transform`, `filter` and `opacity`, all of them cleared by name when

@@ -149,7 +149,7 @@ function Choose() {
             {CARDS.map((c) => (
               <li key={c.key} className="ab-card">
                 <div className="ab-card__shot">
-                  <img src={c.img} alt="" className="ab-card__img" style={c.crop} />
+                  <img src={c.img} alt="" className="ab-card__img" style={c.crop} decoding="async" />
                 </div>
                 <div className="ab-card__text">
                   <h3 className="ab-card__title">{c.title}</h3>
@@ -196,10 +196,19 @@ function Brand() {
                 are the visible part at 1.5x and not three multi-megabyte
                 source photographs cropped again in the browser. Paint order
                 is the design's: body, lower panel, upper panel. */}
+            {/* `loading="lazy"` and `decoding="async"` on all three, and this
+                is the one performance decision on the page. They are the only
+                large rasters here -- 82, 132 and 173 KB -- and they sit a
+                screen and a half down. Decoded eagerly on the main thread they
+                land in the middle of the bands above them building their
+                entrances, and a blocked main thread does not advance a GSAP
+                timeline (lag smoothing is on, deliberately; src/lib/motion.ts
+                says why). Measured at 1600 before this, the CHOOSE band's
+                sampler saw 16 frames in five seconds. */}
             <div className="ab-brand__visual" aria-hidden="true">
-              <img src={laptop} alt="" className="ab-brand__laptop" />
-              <img src={panelLower} alt="" className="ab-brand__panel ab-brand__panel--lower" />
-              <img src={panelUpper} alt="" className="ab-brand__panel ab-brand__panel--upper" />
+              <img src={laptop} alt="" className="ab-brand__laptop" loading="lazy" decoding="async" />
+              <img src={panelLower} alt="" className="ab-brand__panel ab-brand__panel--lower" loading="lazy" decoding="async" />
+              <img src={panelUpper} alt="" className="ab-brand__panel ab-brand__panel--upper" loading="lazy" decoding="async" />
             </div>
           </div>
         </div>
@@ -279,7 +288,7 @@ function Compare() {
                       <th key={b.name} scope="col" className="ab-cmp__brand">
                         <span className={`ab-cmp__logo ${b.box}`}>
                           {b.logo
-                            ? <img src={b.logo} alt="" />
+                            ? <img src={b.logo} alt="" loading="lazy" decoding="async" />
                             : <Icon src={mark} w={26} h={30} className="ab-cmp__mark" />}
                         </span>
                         <span className="ab-cmp__name">{b.name}</span>
@@ -299,6 +308,7 @@ function Compare() {
                             alt={b.yes[row] ? 'Yes' : 'No'}
                             width={38.5}
                             height={38.5}
+                            decoding="async"
                           />
                         </td>
                       ))}

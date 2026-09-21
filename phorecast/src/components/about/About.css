@@ -182,6 +182,18 @@
    at every width, which is the frame's own relationship rather than one that
    is only true at one size. */
 .ab-hero__ground { top: auto; bottom: calc(-674 * var(--ground-u)); }
+/* THE DISCS DO NOT NEED A COMPOSITOR PROMOTION HERE, and taking it off is
+   worth more than it sounds. `.hero__glow` carries `will-change: transform`
+   in Hero.css, which puts each of the five 1539px discs on its own layer so
+   the landing hero's entrance can move them cheaply. Nothing moves them on
+   this page: the entrance tweens `.hero__bg`, the wrapper, as one object, and
+   there is no loop at all. A standing promotion with nothing to promote is
+   five blurred layers the renderer re-rasterises for free -- measured at 1600
+   in headless Chromium, 3fps with the promotion against 11 without it, on a
+   page that runs at 59 with the field off screen. GSAP promotes the wrapper
+   for the length of its own tween by itself. */
+.hero__bg--about .hero__glow { will-change: auto; }
+
 .hero__bg--about .hero__glow--ember  { left: calc(150 * var(--u)); top: calc(180 * var(--u)); }
 .hero__bg--about .hero__glow--peach  { left: calc(-152 * var(--u)); top: calc(638 * var(--u)); }
 .hero__bg--about .hero__glow--orange { left: calc(164 * var(--u)); top: calc(507 * var(--u)); }

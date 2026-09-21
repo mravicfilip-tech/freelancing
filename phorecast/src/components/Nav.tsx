@@ -428,7 +428,8 @@ export function Nav() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((o) => !o)}
         >
-          <span /><span /><span />
+          {/* Two bars, not three: the long one over a short one. See Nav.css. */}
+          <span /><span />
         </button>
       </div>
       {/* Portalled to <body>, and not for tidiness. .hero sets

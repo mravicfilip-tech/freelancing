@@ -125,24 +125,39 @@
 
 @media (max-width: 960px) {
   .nav__links, .nav__actions { display: none; }
+  /* TWO BARS, A LONG ONE OVER A SHORT ONE, both centred on the same axis.
+     Three even bars is the default every framework ships and it reads as one;
+     dropping to two and cutting the lower one to ~60% gives the mark a
+     direction and a bit of asymmetry to look at, which is the whole idea in
+     the reference the client sent.
+
+     The stroke stays 2px. The reference draws a heavier bar, but it draws it
+     on a 36px icon inside a pill; ours is 22px wide beside 16px nav type, and
+     at 3px the mark starts out-weighing the wordmark it sits opposite.
+     2px against 22 is the same ratio the reference strikes at its own size. */
   .nav__burger {
     display: grid;
-    gap: 5px;
+    gap: 6px;
     margin-left: auto;
     width: 40px;
     height: 40px;
     place-content: center;
+    justify-items: center;
   }
   .nav__burger span {
     display: block;
     width: 22px;
     height: 2px;
     background: var(--ink);
-    transition: transform 200ms ease, opacity 200ms ease;
+    transition: width 200ms ease, transform 200ms ease;
   }
-  .nav__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav__burger.is-open span:nth-child(2) { opacity: 0; }
-  .nav__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav__burger span:nth-child(2) { width: 13px; }
+  /* Open, the short bar grows to meet the long one and the two cross. The
+     sheet carries its own close button and covers the viewport, so this is
+     rarely seen -- it exists so the button is never caught mid-thought if the
+     sheet is slow to paint. */
+  .nav__burger.is-open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+  .nav__burger.is-open span:nth-child(2) { width: 22px; transform: translateY(-4px) rotate(-45deg); }
 
   /* The sheet ---------------------------------------------------------------
      It used to be an in-flow block inside the header, so it pushed the page

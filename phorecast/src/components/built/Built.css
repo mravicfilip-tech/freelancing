@@ -487,9 +487,10 @@
   .bt2__ring { left: -21.43%; top: -21.43%; width: 142.86%; height: 142.86%; }
   /* NO MARKET NAMES. The design carries none -- five marks spaced around a
      ring have no column to stand a name in, and the copy beneath the card
-     already names what they are. They are removed from the ambient loop with
-     them: loops/bt2.ts acknowledges the MARK in this frame rather than a label
-     that is not on the card. */
+     already names what they are. They go out of the ambient loop with them:
+     loops/bt2.ts asks the stylesheet whether a name is drawn before it
+     schedules a colour on one, so in this frame a market acknowledges by
+     leaning and nothing is timed against a label nobody can see. */
   .bt2__node:not(.bt2__node--lock) > .bt2__label { display: none; }
 
   /* SELF-CUSTODY BECOMES A PILL ON THE RING. It is still the padlock's own

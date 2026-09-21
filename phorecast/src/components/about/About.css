@@ -74,7 +74,31 @@
 
 /* Every band opens with the site's eyebrow: `.eyebrow` and <LiveDot>, which is
    what the frame's `Ellipses` + `Section Title` pair is. 20 design px of air
-   under it, per the 20px gap on each Title Block. */
+   under it, per the 20px gap on each Title Block.
+
+   IT HAS TO BE ALLOWED TO WRAP HERE, which is the one thing this page needs
+   from `.eyebrow` that the landing page does not. `.eyebrow` is `inline-flex`
+   and `white-space: nowrap`, which is right for the six labels on the landing
+   page -- the longest is "Global Markets. One Platform." -- but this page's
+   last band is labelled "Why is it better than bets or crypto/stocks?", which
+   is 466px of 16px mono. At 390 that was the one thing on the page pushing
+   the document wider than the viewport, measured as scrollWidth 466 against a
+   clientWidth of 390.
+
+   `flex` rather than `inline-flex` so the label is a block that fills the
+   column and the text can break inside it, and the dot aligns to the FIRST
+   line rather than to the middle of two. The margin reproduces exactly what
+   `align-items: center` gave a single line: half the difference between the
+   19.2px line box and the 12px dot. */
+.about-page .eyebrow {
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+  white-space: normal;
+  text-wrap: balance;
+}
+.about-page .eyebrow__dot { margin-top: calc((1.2em - 12px) / 2); }
+
 .ab-choose__inner > .eyebrow,
 .ab-brand__inner > .eyebrow,
 .ab-cmp__inner > .eyebrow,
@@ -88,6 +112,14 @@
      own width -- the document's, without the scrollbar -- which is the basis
      `.hero__bg`'s `--u: calc(100cqw / 1920)` expects. */
   container-type: inline-size;
+
+  /* ONE UNIT FOR THE GROUND, and both the box and the field read it. They
+     have to: the box carries `overflow: hidden` (it is `.hero`), so a field
+     sized on a different basis is simply clipped to whatever the box came
+     out as. That is what happened on a phone -- the field was pinned to
+     0.62px and the box was still on 100cqw/1920, so 715px of light was cut
+     to 234 and what reached the screen was a smear in one corner. */
+  --ground-u: calc(100cqw / 1920);
   padding-top: 40px;          /* the nav sits 40 from the top, as on the landing page */
 }
 
@@ -105,7 +137,7 @@
   padding-top: 0;
   background: none;
   pointer-events: none;
-  height: calc(1154 * 100cqw / 1920);
+  height: calc(1154 * var(--ground-u));
 }
 
 /* THE GROUND, REUSED. `.hero__bg` and its five `.hero__glow--*` children are
@@ -126,10 +158,30 @@
    the frame puts it -- which is why `.ab-hero` does not clip and the bands
    below carry a z-index. */
 .hero__bg--about {
+  --u: var(--ground-u);
   top: 0;
   bottom: auto;
-  height: calc(1154 * var(--u));
+  height: 100%;
 }
+/* THE FIELD IS ANCHORED TO THE COPY, not to the top of the document, and it
+   is worth saying why because `top: 0` is the obvious thing and it is wrong.
+
+   The frame has the hero's copy ending at 480 and the sun opening at 507, so
+   the light begins just under the Get Started button and the CHOOSE AN EVENT
+   eyebrow -- which is --ink-muted, and --ink-muted on a lit ground is about
+   1.5:1 -- sits in the dark left shoulder of the composition. Reproduce that
+   with a top-anchored field and the relationship only holds at 1920: the
+   field scales with the viewport but the copy does NOT, because type is
+   clamped and the gaps have floors. Measured at 1100, the eyebrow had climbed
+   from 49% of the field's height to 29% of it and was sitting in the middle
+   of the sun.
+
+   So the field hangs off the bottom of the hero section instead. 1154 - 480
+   is the distance from the copy's end to the field's end in design pixels;
+   stating it as the `bottom` inset puts the sun 27 design px under the button
+   at every width, which is the frame's own relationship rather than one that
+   is only true at one size. */
+.ab-hero__ground { top: auto; bottom: calc(-674 * var(--ground-u)); }
 .hero__bg--about .hero__glow--ember  { left: calc(150 * var(--u)); top: calc(180 * var(--u)); }
 .hero__bg--about .hero__glow--peach  { left: calc(-152 * var(--u)); top: calc(638 * var(--u)); }
 .hero__bg--about .hero__glow--orange { left: calc(164 * var(--u)); top: calc(507 * var(--u)); }
@@ -307,20 +359,18 @@
   pointer-events: none;
   overflow: hidden;
 }
+/* The three inside the layer are stated as PERCENTAGES of it rather than in
+   design pixels, and that is the whole of what makes this composition
+   survive a phone. The layer's own box is 929.33 x 440 design px, so every
+   offset folds into a fraction of it -- panel-lower's 211.3 is 48.02% of 440,
+   its 915.74 is 98.54% of 929.33 -- and the three then hold their positions
+   relative to each other whatever the layer is sized to. Stated in `--u` they
+   did not: at 390 the unit is a fifth of a design pixel, so the layer became a
+   70px strip with three correctly-proportioned slivers in it. */
 .ab-brand__visual img { position: absolute; max-width: none; }
-.ab-brand__laptop { left: 0; top: 0; width: calc(929.33 * var(--u)); height: calc(440 * var(--u)); }
-.ab-brand__panel--lower {
-  left: calc(13.26 * var(--u));
-  top: calc(211.3 * var(--u));
-  width: calc(915.74 * var(--u));
-  height: calc(228.7 * var(--u));
-}
-.ab-brand__panel--upper {
-  left: calc(19.54 * var(--u));
-  top: 0;
-  width: calc(909.46 * var(--u));
-  height: calc(320.07 * var(--u));
-}
+.ab-brand__laptop { left: 0; top: 0; width: 100%; height: 100%; }
+.ab-brand__panel--lower { left: 1.427%; top: 48.02%; width: 98.54%; height: 51.98%; }
+.ab-brand__panel--upper { left: 2.102%; top: 0; width: 97.86%; height: 72.74%; }
 
 /* ── 4. Cast your conviction ──────────────────────────────────────────────── */
 
@@ -589,8 +639,16 @@
    screenshot and two lines of 20px copy, which is a card that has stopped
    working. */
 @media (max-width: 1100px) {
-  .ab-choose__row { flex-wrap: wrap; }
-  .ab-choose__row .ab-card { flex: 1 1 calc(50% - 14 * var(--u)); min-height: 0; }
+  /* A grid rather than a wrapped flex row, and the difference is the third
+     card. Wrapped, it grows to the full 1040 on its own line, which blows the
+     524 x 238 screenshot window up to 1040 x 472 -- a 2x enlargement of a
+     capture that has no pixels for it, sitting next to two at half the size.
+     Two tracks and one empty cell keeps every card the same shape. */
+  .ab-choose__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ab-choose__row .ab-card { min-height: 0; }
   .ab-card { padding: clamp(20px, 2.6vw, 32px); }
   .ab-card__text { margin-top: clamp(20px, 3vw, 46px); }
 
@@ -603,24 +661,15 @@
     position: relative;
     left: auto;
     right: auto;
-    height: calc(300 * var(--u));
+    height: auto;
+    /* The layer's own design box, so the three images inside keep their
+       proportions without a single number changing. */
+    aspect-ratio: 929.33 / 440;
     margin-top: clamp(20px, 3vw, 40px);
     /* The frame bleeds the composition off the card's right edge; keeping
        that is what stops it reading as a picture pasted into a box. The
-       negative margins take it back out to the card's padding. */
+       negative margin takes it back out through the card's padding. */
     margin-right: calc(-1 * clamp(20px, 2.6vw, 32px));
-  }
-  .ab-brand__laptop { width: calc(634 * var(--u)); height: calc(300 * var(--u)); }
-  .ab-brand__panel--lower {
-    left: calc(9 * var(--u));
-    top: calc(144 * var(--u));
-    width: calc(624 * var(--u));
-    height: calc(156 * var(--u));
-  }
-  .ab-brand__panel--upper {
-    left: calc(13 * var(--u));
-    width: calc(620 * var(--u));
-    height: calc(218 * var(--u));
   }
 
   .ab-conv__inner { min-height: 0; padding-block: clamp(24px, 4vw, 60px); }
@@ -631,7 +680,59 @@
 
 /* 960 and below: one column everywhere. */
 @media (max-width: 960px) {
-  .ab-choose__row .ab-card { flex: 1 1 100%; }
+  .ab-choose__row { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* THE GROUND ON A PHONE.
+   -------------------------------------------------------------------------
+   Hero.css pins `--u` to 0.45px below 720 so the landing hero keeps a glow at
+   all rather than a 234px smudge, and pinning the unit is the right idea
+   here too. What does not carry over is the horizontal anchoring: the discs
+   are placed from the LEFT EDGE of a 1920 frame, and once the unit stops
+   being viewport/1920 those left offsets stop meaning "centre of the
+   composition". Measured at 390 with the landing's own 0.45px: the sun's
+   centre landed 478px from the left of a 390px screen, i.e. off the side, and
+   what reached the page was the disc's left shoulder in the top-right corner.
+
+   So the five are re-anchored from the GROUP's centre instead of the frame's
+   edge. 933.5 is the sun's own centre in design pixels (its left 164 plus
+   half its 1539), every disc keeps its exact offset from that, and the whole
+   ramp is simply translated so the sun sits at 50%. Nothing about the ramp
+   itself changes -- same discs, same radii, same blur, same order.
+
+   0.62px rather than 0.45: the About hero is a five-line headline, a lede and
+   a button, which is about 700px of content at 390, and a 519px field would
+   have stopped halfway down the lede. At 0.62 the field is 715px, which is
+   the same relationship the desktop frame has between its light and its
+   copy. */
+@media (max-width: 720px) {
+  .ab-hero { --ground-u: 0.62px; }
+  /* AND THE FIELD MOVES DOWN, anchored to the bottom of the copy rather than
+     to the top of the document.
+
+     On the 1920 frame the hero's copy is 300 of the field's 1154 and the sun
+     opens at 507, so the light begins well below the Get Started button. At
+     390 the same copy is five lines of headline and four of lede -- about 560
+     of a 715 field -- so a top-anchored field puts the sun's core straight
+     through the lede, and grey body copy on a lit ground is not body copy any
+     more. It was measured at three units and washed out at all three.
+
+     `bottom` places the field so the sun opens 188px BELOW the hero section --
+     that is, below the Get Started button AND below the CHOOSE AN EVENT
+     eyebrow, which is the other thing the light can eat. The eyebrow is
+     --ink-muted, and --ink-muted on a lit ground is about 1.5:1. 188px of
+     clearance is 120 more than the 68px the disc's own blur spills upward,
+     so the label is on paper-dark ground and the light begins on the first
+     card. The same relationship the frame has at 1920, restated against
+     content that is two and a half times taller. */
+  .ab-hero__ground { top: auto; bottom: calc(-950 * var(--ground-u)); }
+  .hero__bg--about .hero__glow--ember  { left: calc(50% - 783.5 * var(--u)); }
+  .hero__bg--about .hero__glow--peach  { left: calc(50% - 1085.5 * var(--u)); }
+  .hero__bg--about .hero__glow--orange { left: calc(50% - 769.5 * var(--u)); }
+  .hero__bg--about .hero__glow--core   { left: calc(50% - 571.5 * var(--u)); }
+  .hero__bg--about .hero__glow--cream  { left: calc(50% - 785.5 * var(--u)); }
+  /* The horizon is already centred on the viewport in Hero.css and needs no
+     translation; only its cut follows the field down. */
 }
 
 /* THE TABLE ON A PHONE.
@@ -678,19 +779,6 @@
   /* The hero's headline is one long sentence; at this width its 0.9 leading
      is too tight to read as paragraph-sized type. */
   .ab-hero__title { line-height: 1.02; }
-  .ab-brand__visual { height: calc(360 * var(--u)); }
-  .ab-brand__laptop { width: calc(761 * var(--u)); height: calc(360 * var(--u)); }
-  .ab-brand__panel--lower {
-    left: calc(11 * var(--u));
-    top: calc(173 * var(--u));
-    width: calc(749 * var(--u));
-    height: calc(187 * var(--u));
-  }
-  .ab-brand__panel--upper {
-    left: calc(16 * var(--u));
-    width: calc(744 * var(--u));
-    height: calc(262 * var(--u));
-  }
   .ab-why__list { padding-left: 22px; }
 }
 
@@ -740,4 +828,30 @@
   --ab-veil: rgba(26, 21, 18, 0.05);
   --ab-card-line: var(--line);
   --ab-solid: #f4f1ee;
+}
+
+/* THE FIFTH THING, and it is a mask rather than a colour.
+   -------------------------------------------------------------------------
+   The product shot is a photograph of a dark product on a dark desk, and its
+   left edge is where Figma happened to stop compositing -- at the card's 871
+   mark, with nothing there to end on. On the dark card that edge is invisible
+   because both sides of it are near-black. On paper the same photograph is a
+   BLACK SLAB with a hard vertical edge down the middle of a #f7f0ea card, and
+   the eye reads the edge before it reads the laptop.
+
+   Nothing can re-tint a raster photograph, and inverting one is exactly the
+   move this project has banned. So the edge is dissolved instead: the layer
+   fades in over its first eighth, which is what the dark card was doing for
+   free. The composition still bleeds off the right, the image is untouched,
+   and the geometry does not move. It is stated only for light because in dark
+   it would remove nothing that is visible. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .ab-brand__visual {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  }
+}
+:root[data-theme='light'] .ab-brand__visual {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 13%);
 }

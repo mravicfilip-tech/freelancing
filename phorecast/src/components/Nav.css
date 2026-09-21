@@ -39,9 +39,9 @@
   top: calc(100% + 14px);
   left: -18px;
   z-index: 20;
-  min-width: 214px;
-  padding: 10px;
-  border-radius: 10px;
+  min-width: 218px;
+  padding: 6px;
+  border-radius: 14px;
   border: 1px solid var(--veil-line);
   /* Opaque, not the --veil wash the cards use: this panel is over the hero's
      glow field and over whatever section the reader has scrolled to, and a
@@ -59,14 +59,18 @@
 .nav__menu-link {
   display: flex;
   align-items: center;
-  min-height: 38px;
+  min-height: 36px;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: 9px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.2;
-  letter-spacing: 0.04em;
+  /* 0.02em, not the 0.04 this had. That tracking was chosen to loosen Geist
+     Mono, whose glyphs already sit on a wide fixed advance; Galano is a
+     geometric sans that sets its own spacing, and the same value on it reads
+     as a list that has been pulled apart. */
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--ink-2);
@@ -74,12 +78,22 @@
 }
 .nav__menu-link:hover,
 .nav__menu-link:focus-visible { color: var(--ink); background: var(--veil); }
-/* The current page. A left rule rather than a tint, so it is still legible
-   for anyone who cannot see the colour, and it reads the same in both
-   themes. */
+/* The current page is a FILLED ROW, not a rule down its left edge.
+   The rule was there to be a second, non-colour cue -- the right instinct,
+   the wrong shape: a 2px accent stripe butted against the panel's own 6px
+   padding read as a rendering artefact rather than a state, and it was the
+   only stripe anywhere in this interface. A filled row is the same redundancy
+   done with the element's own box: the shape changes, not just the hue, so it
+   survives being unable to see the colour, and it is the shape every other
+   selected thing on this site uses. */
 .nav__menu-link[aria-current='page'] {
   color: var(--accent);
-  box-shadow: inset 2px 0 0 var(--accent);
+  background: var(--veil);
+}
+.nav__menu-link[aria-current='page']:hover,
+.nav__menu-link[aria-current='page']:focus-visible {
+  color: var(--accent);
+  background: var(--veil-line);
 }
 /* The chevron is a mask now, so it takes its colour from `color` rather than
    from the #9D9D9D Figma baked into the file. That hex is exactly

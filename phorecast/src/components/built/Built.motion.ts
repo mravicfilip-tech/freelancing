@@ -42,17 +42,19 @@
  * between the beats does. See CUE and STEP.
  *
  * THE TIMELINE IS THE SAME IN BOTH FRAMES. Below 700px Built.css re-lays both
- * cards into a portrait 320 x 356 -- "You" above its line rather than beside
- * it, the five markets in a row above the padlock rather than spread to its
- * left. Every cue above still has something to play, at the same second, and
- * only two of them read the layout rather than assuming it: the line's draw
- * composes with the quarter-turn the stylesheet gives it, and the wire draw
- * asks which wires are actually on the card and which way they run. Neither is
- * a breakpoint test; both are questions about the element in front of them.
+ * cards into portrait -- "You" above its line rather than beside it, and card
+ * two into the ring Figma 526:2656 draws, the five markets spaced around it
+ * and the padlock at its centre. Every cue above still has something to play,
+ * at the same second. Three of them read the layout rather than assuming it:
+ * the line's draw composes with the quarter-turn the stylesheet gives it, the
+ * market nodes are ordered by where they sit (left to right in a row, clockwise
+ * from the top on a ring), and the two wires ask what SHAPE they are before
+ * choosing between an edge wipe and a radial open. None is a breakpoint test;
+ * all three are questions about the element in front of them.
  *
  * Every tween is a `from`, so the resting markup is the finished state and a
- * build that never runs leaves the section simply present. The two wire draws
- * are the only `fromTo`s — a clip-path has no interpolable resting value to
+ * build that never runs leaves the section simply present. The landscape wire
+ * draws are the only `fromTo`s — a clip-path has no interpolable resting value to
  * infer a `from` against — and they carry `immediateRender: false`, because a
  * `fromTo` writes its start value when the timeline is BUILT, not when the
  * playhead arrives; without the flag both wires would be clipped away at build
@@ -391,37 +393,71 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   const labels2 = inside(card2, '.bt-label');
   if (labels2.length) rise(tl, labels2, card2At + step(C2_LABELS), { y: 10, duration: 0.6, stagger: step(LABEL_STEP), clearProps: 'transform,opacity' });
 
-  /* Left to right across the constellation, by where each node actually sits
-     rather than by source order — the markup lists them BTC, TSLA, DAX, EUR,
-     XAU, which is not the order the eye crosses the picture. Measured, not
-     read off `--x`, so the order survives any later edit to the layout. */
-  const nodes = inside(card2, '.bt2__node:not(.bt2__node--lock)')
-    .sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+  /* BY WHERE EACH NODE ACTUALLY SITS, never by source order — the markup lists
+     them BTC, TSLA, DAX, EUR, XAU, which is not the order the eye crosses
+     either picture. Measured, so the order survives any later edit to the
+     layout, and it has to be: the two frames are crossed differently.
+
+     Landscape is a constellation read left to right, so `left` is the order.
+     Portrait is a RING, and left-to-right on a ring is meaningless — it reads
+     EUR, BTC, TSLA, XAU, DAX, which crosses the circle twice. The eye goes
+     ROUND, so the nodes are sorted by bearing about the card's centre, walked
+     clockwise from whichever station stands highest. That is TSLA, DAX, XAU,
+     EUR, BTC on today's layout, and it would still be clockwise from the top
+     if every market moved. */
+  let nodes = inside(card2, '.bt2__node:not(.bt2__node--lock)');
+  if (tight && card2 && nodes.length) {
+    const cb = card2.getBoundingClientRect();
+    const cx = cb.left + cb.width / 2;
+    const cy = cb.top + cb.height / 2;
+    const bear = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      return ((Math.atan2(r.left + r.width / 2 - cx, cy - (r.top + r.height / 2)) * 180) / Math.PI + 360) % 360;
+    };
+    const top = nodes.reduce((a, b) => (b.getBoundingClientRect().top < a.getBoundingClientRect().top ? b : a));
+    const from = bear(top);
+    const turn = (el: HTMLElement) => (bear(el) - from + 360) % 360;
+    nodes = [...nodes].sort((a, b) => turn(a) - turn(b));
+  } else {
+    nodes = [...nodes].sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+  }
   if (nodes.length) {
     bloom(tl, nodes, card2At + step(C2_NODES), { scale: 0.5, y: 10, duration: 0.8, stagger: step(C2_NODE_STEP), fade: 0.32, blur: 5 });
   }
 
-  /* The wires, drawn from the markets toward the padlock.
+  /* The wires.
      -----------------------------------------------------------------------
-     Landscape: the fan first, since it carries four of the five markets, and
-     BTC's own link a beat behind it, both opening from the left.
+     Landscape: four strokes drawn from the markets toward the padlock, the fan
+     first since it carries four of the five markets, and BTC's own link a beat
+     behind it, both opening from the left.
 
-     Portrait: there is no second wire. Built.css gives `.bt2__fan` a mask drawn
-     for that frame which carries all five lines, and takes `.bt2__main` off the
-     card entirely -- so this reads `display` rather than a width, and the cue
-     that has nothing left to draw is not queued at all. A `fromTo` on a
-     `display: none` element would still write its start value at build time,
-     still hold a `clearProps` to run, and still read as a wire being drawn in
-     the timeline while moving no pixels: a dead selector with a schedule. The
-     one wire that IS there takes both slots' worth of the beat -- it starts at
-     the fan's cue and runs to where the main link's would have ended -- so the
-     portrait card spends the same time drawing its circuit as the landscape
-     one does. */
+     `mainOff` stays because a wire CAN still be taken off a card, and a
+     `fromTo` on a `display: none` element would write its start value at build
+     time, hold a `clearProps` to run, and read as a wire being drawn in the
+     timeline while moving no pixels: a dead selector with a schedule. Nothing
+     is off the portrait card today, so the branch below simply finds both. */
   const fan = inside(card2, '.bt2__fan')[0];
   const main = inside(card2, '.bt2__main')[0];
   const mainOff = !main || getComputedStyle(main).display === 'none';
-  if (fan) wipeIn(tl, fan, card2At + step(C2_FAN), mainOff ? step(C2_MAIN - C2_FAN) + 0.75 : 0.85, 0.32, mainOff);
-  if (main && !mainOff) wipeIn(tl, main, card2At + step(C2_MAIN), 0.75, 0.3);
+  if (tight) {
+    /* A CIRCLE IS NOT UNCOVERED FROM AN EDGE. Both of the portrait card's wires
+       are rings -- `.bt2__main` the large one the markets stand on,
+       `.bt2__fan` the faint one the padlock sits in -- and a clip-path opening
+       from the top reveals a circle as two horns closing into a hoop, which is
+       a wipe pretending to be a draw. They open RADIALLY instead, which is the
+       direction a circle has, on the same cues and the same durations.
+
+       The large ring takes the earlier slot, because in this frame it is the
+       structure the five markets have just bloomed onto; the faint circle takes
+       the later one, immediately before the padlock that sits inside it. The
+       card therefore builds inward and finishes on the lock, which is the same
+       reading order the landscape frame has running left to right. */
+    if (main && !mainOff) bloom(tl, main, card2At + step(C2_FAN), { scale: 0.72, duration: 0.85, fade: 0.32 });
+    if (fan) bloom(tl, fan, card2At + step(C2_MAIN), { scale: 0.7, duration: 0.75, fade: 0.3 });
+  } else {
+    if (fan) wipeIn(tl, fan, card2At + step(C2_FAN), mainOff ? step(C2_MAIN - C2_FAN) + 0.75 : 0.85, 0.32, mainOff);
+    if (main && !mainOff) wipeIn(tl, main, card2At + step(C2_MAIN), 0.75, 0.3);
+  }
 
   const smear2 = inside(card2, '.bt2__smear');
   if (smear2.length) tl.from(smear2, { opacity: 0, duration: 0.5, ease: 'none', clearProps: 'opacity' }, card2At + step(C2_SMEAR));
@@ -430,7 +466,22 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
      what the right-hand argument is for, so it lands alone, after everything
      that points at it. */
   const lock = inside(card2, '.bt2__node--lock');
-  if (lock.length) bloom(tl, lock, card2At + step(C2_LOCK), { scale: 0.55, duration: 0.85, fade: 0.34, blur: 6 });
+  if (lock.length) {
+    /* TWO OBJECTS ON THE RING, NOT ONE, once the frame is portrait. SELF-CUSTODY
+       is the padlock's own child in the markup and in the landscape frame it
+       sits directly under the disc, so blooming the node carries the pair
+       together and reads as one arrival. On the ring the pill is 90 design
+       units away on the lower arc and is a separate object in the drawing --
+       blooming the node from 0.55 would fly it in from near the centre. So the
+       padlock's MARK and the pill bloom as two targets a step apart, each about
+       its own centre: the lock lands, then its name does. */
+    const mark = tight ? lock[0].querySelector<HTMLElement>('.bt2__whole') : null;
+    const pill = tight ? lock[0].querySelector<HTMLElement>('.bt2__label--lock') : null;
+    const last = mark && pill ? [mark, pill] : lock;
+    bloom(tl, last, card2At + step(C2_LOCK), {
+      scale: 0.55, duration: 0.85, fade: 0.34, blur: 6, stagger: step(C2_NODE_STEP),
+    });
+  }
 
   /* 7 — each column's copy and CTA, tightly staggered, a beat behind its own
      illustration. Only the `<a>` is moved; the `Roll` spans inside it own their

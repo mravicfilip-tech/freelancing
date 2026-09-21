@@ -278,9 +278,14 @@ function buildCountdown(root: HTMLElement): () => void {
   const label = one<HTMLElement>(root, '.sl3-countdown__label');
   const gift = one<HTMLElement>(root, '.sl3-countdown__gift');
   const tiles = all<HTMLElement>(root, '.sl3-countdown__tile');
-  // A tile is 100 design px wide; the block's own --u is clamped against the
-  // viewport, so read it back rather than assume one CSS px.
-  const u = tiles.length ? tiles[0].getBoundingClientRect().width / 100 || 1 : 1;
+  // The block's own --u is clamped against the viewport, so read it back rather
+  // than assume one CSS px. The GIFT is the ruler, not a tile: it is 16 design
+  // px in both compositions, whereas the tile is a 100-unit box on desktop and
+  // sizes to its own words on a phone. Same answer as before at every desktop
+  // width -- 16 * (w/1920) / 16 is (100 * (w/1920)) / 100 -- and a true one on
+  // a phone, where the old divisor would have been reading a width nothing
+  // states any more.
+  const u = gift ? gift.getBoundingClientRect().width / 16 || 1 : 1;
   const colons = all<HTMLElement>(root, '.sl3-countdown__colon');
   const values = all<HTMLElement>(root, '.sl3-countdown__value');
   const settled = values.map((el) => el.textContent ?? '');

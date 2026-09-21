@@ -536,13 +536,94 @@
   .sl3__diamond,
   .sl3__spark { display: none; }
 
-  /* The countdown is the other half of why this slide is the tallest: it is the
-     only one carrying a block between the lede and the button, and whatever it
-     costs, the stage reserves for all four. 43.5px of its own padding and tile
-     height come off; none of its type does. */
-  .sl3-countdown { gap: calc(10 * var(--u)); padding-top: 0; }
+  /* THE COUNTDOWN, ON A PHONE -------------------------------------------------
+     It is the other half of why this slide is the tallest: it is the only one
+     carrying a block between the lede and the button, and whatever it costs,
+     the stage reserves for all four. A previous pass took 43.5px of padding and
+     tile height off to bring the four slides onto one bottom line, deliberately
+     without touching type. THAT HEIGHT IS NOW A FIXED BUDGET: 73px at every
+     phone width (--u is clamped to 0.75px below 1440, so this block is the same
+     absolute size at 320 as at 414). Everything below spends 73px differently;
+     it does not spend more or less. 16px of label + 12px of gap + a 45px
+     figures row, measured, is the same 73 the boxes cost.
+
+     WHAT WAS WRONG WITH THE BOXES. Three bordered, blurred tiles with a figure
+     over a label and a colon in each seam is five pieces of chrome around six
+     words. It reads as the subject of the slide; it is an urgency cue under it.
+     It was also too wide to exist: 3 x 75px of fixed tile plus gaps and colons
+     is 301.8px in a column that is 280px at 320, so the "38 Minutes" tile was
+     drawn off the right edge of a 320px screen.
+
+     WHAT IT IS INSTEAD. One line. The figure and its unit sit side by side on a
+     shared baseline rather than stacked in a window, the three pairs are parted
+     by a small accent dot instead of a colon, and no border, fill or backdrop
+     blur is drawn at all. The line sizes itself to its words, so it fits every
+     width from 320 up with room to spare.
+
+     THE PROPORTION IS THE POINT. With the boxes gone the figures are the only
+     ink left, so they take the room the boxes were holding: 36 -> 44 units
+     (27px -> 33px), against a unit label that does not move from 16 units
+     (12px). 2.25:1 becomes 2.75:1 -- the numbers read from further away and the
+     words sit under them as annotation, which is the reading order the block
+     wanted in the first place. Nothing is dimmed to make it quiet; quiet is
+     bought with size and weight, so the 12px unit labels keep full --ink and
+     the block's contrast is exactly what it was. */
+  .sl3-countdown {
+    /* 16 + 12 + 45 = 73, the height the boxes cost. */
+    gap: calc(16 * var(--u));
+    padding-top: 0;
+  }
   .sl3-countdown__label { padding: calc(2 * var(--u)) 0; }
-  .sl3-countdown__tile { height: calc(66 * var(--u)); }
+
+  /* The row owns the height, not the tiles -- so the figures are centred in a
+     box of known size rather than the box being whatever the type happens to
+     measure. This is the single number that holds the stage balance. */
+  .sl3-countdown__tiles {
+    height: calc(60 * var(--u));
+    gap: calc(11 * var(--u));
+  }
+
+  /* No longer a tile: a figure and its unit on one baseline. */
+  .sl3-countdown__tile {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: calc(6 * var(--u));
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    text-align: left;
+  }
+  .sl3-countdown__tile,
+  /* The first tile carries its own lighter blur on desktop; both go here. */
+  .sl3-countdown__tile:first-child {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .sl3-countdown__value { font-size: calc(44 * var(--u)); line-height: 1; }
+
+  /* The colon becomes a dot. Same element, so the entrance still staggers it in
+     and the loop still breathes it -- see SlideBonus.motion's `colons`. A colon
+     between "02 Days" and "14 Hours" would be punctuating the wrong join;
+     between two pairs of words a dot is the separator that fits, and it keeps
+     the "the clock is running" pulse it was carrying. */
+  .sl3-countdown__colon {
+    font-size: 0;
+    align-self: center;
+    line-height: 0;
+  }
+  .sl3-countdown__colon::before {
+    content: '';
+    display: block;
+    width: calc(4 * var(--u));
+    height: calc(4 * var(--u));
+    border-radius: 50%;
+    background: var(--accent);
+  }
 }
 
 /* --- Light -------------------------------------------------------------------

@@ -364,57 +364,150 @@
   .bt-label--tr { right: calc(20 * var(--c)); top: calc(18 * var(--c)); }
   .bt-label--bl { left: calc(20 * var(--c)); top: calc(40 * var(--c)); bottom: auto; }
 
-  /* Card one: You at the top, the line straight down, the market at the foot.
-     `.bt1` stops being a 299 x 135 sub-box and becomes the card, so every
-     coordinate below is in the card's own 320 x 356 frame. */
-  .bt1 { --bt1-w: 320; left: 0; top: 0; width: 100%; height: 100%; transform: none; }
-  .bt1__dot { left: calc(148 * var(--c)); top: calc(100 * var(--c)); }
+  /* ===== CARD ONE — the 394 x 452 mobile frame, node 526:2503 ==============
+     Everything from here to the end of this card's block is measured off that
+     frame at 1:1 and is card-one-only: the selectors are all `.bt-card--one`
+     or `.bt1__*`, so card two keeps the 320 x 364 frame declared above.
+
+     THE FRAME IS THE DESKTOP CARD TURNED A QUARTER TURN. Figma's mobile node
+     is a 392 x 334 landscape container rotated -90deg inside a 334 x 392 slot,
+     30 in from a 394 x 452 artboard. That is not a new picture: it is the same
+     rings, the same coin, the same dot and the same line, re-laid so the run
+     from "You" to the market crosses the card diagonally instead of along it.
+     Every number below is `portrait = (inner_y, 392 - inner_x)` applied to the
+     Figma node, then checked against the 1:1 PNG render pixel by pixel.
+
+         rings, 135 box    centre (167.5, 195.5)   coin bbox measured 184..211
+         lit ring r 34.5, mid r 49.5, outer r 66.5  scanned off the render
+         "You" dot, 24     centre (242.5, 317)
+         the line          97.6 long, from the dot's rim at (239.3, 305.6) to
+                           (184.3, 225.0), 33.9 out from the rings' centre
+         the smear         43 x 5 centred (205.2, 255.7), halfway along the run
+         BTC / USD         a 108-wide block at (206, 64)
+
+     THE RING STACK IS 135 DESIGN UNITS AGAIN, exactly as it is at 1600, so
+     `.bt1__ring-mid`, `.bt1__ring-disc` and `.bt1__coin` need no restating
+     here: their `calc(N * var(--c))` offsets are already relative to this
+     frame's own `--c`. The percentage overrides a previous portrait rebuild
+     needed for a 108 box are gone rather than re-tuned.
+
+     NOTHING NEW GLOWS. The warm bloom on the left edge is the card's own wash,
+     re-aimed from the right edge to the left because that is where Figma puts
+     it; no shadow, halo or filter is added to any mark. ==================== */
+  .bt-card--one {
+    --c: calc(100cqw / 334);
+    --fw: 334;
+    --fh: 392;
+    aspect-ratio: 334 / 392;
+  }
+  /* THE BLOOM MOVES TO THE LEFT EDGE, which is where the node draws it. Same
+     wash, same ramp, same element -- `right` is simply given back and the box
+     re-aimed. Nothing is added: the token is the one card one already uses at
+     1600 and the light block already redefines.
+
+     THE BLUR IS THE SHAPE. The node's own bloom is four stacked blurred
+     circles and falls off much faster than this ramp does on its own: --bt-
+     card-glow-r holds 178 -> 124 in warmth (R-B) across the middle half of its
+     radius, which is right for a glow that fills a 640-wide card and reads as
+     a flat red wash across a 334-wide one. Blurring a SMALLER box harder
+     convolves that plateau away and leaves the Gaussian corner the node
+     actually draws, so the box is 80% x 90% at 55 units of blur rather than
+     92% x 66% at 28.
+
+     Fitted against the 1:1 render's warmth, sampled down the left edge and
+     across the top, and it is a fit rather than a copy -- the best this ramp
+     reaches is RMSE 38 on a 0-160 scale:
+
+       down x=2    146 141 129 108  79 47 22  7  2   (node: 156 150 137 114
+                                                       81 43 15  4  2)
+       across y=42 146 138 119  90  60 33 14  5  2   (node: 156 141 115  82
+                                                       56 37 23 13  7  4)
+
+     Which is the part that matters: it is warm and strongest at the top-left
+     corner, half gone by a third of the way across, and under 10 by the foot
+     of the card where ONE MARKET sits -- where the previous portrait rebuild
+     had it still at 44. */
+  .bt-card--one .bt-card__glow--right {
+    right: auto; left: -50%; top: -24%; width: 80%; height: 90%;
+    opacity: 1;
+    filter: blur(calc(55 * var(--c)));
+  }
+  /* The two corner labels turn over with the frame: Figma's single label row
+     across the top of the landscape container becomes a column down the left
+     edge once it is turned, so FAMILIAR FROM DAY ONE is the top one and ONE
+     MARKET the bottom one. The markup is unchanged -- only where the two
+     existing labels land. */
+  .bt-card--one .bt-label { font-size: clamp(11px, calc(12 * var(--c)), 14px); }
+  .bt-card--one .bt-label--tr { left: calc(30 * var(--c)); right: auto; top: calc(30 * var(--c)); }
+  .bt-card--one .bt-label--tl { left: calc(30 * var(--c)); top: auto; bottom: calc(30 * var(--c)); }
+
+  /* `.bt1` stops being a 299 x 135 sub-box and becomes the card, so every
+     coordinate below is in the card's own 334 x 392 frame. `--bt1-w` is what
+     loops/bt1.ts builds its overlay's viewBox from. */
+  .bt1 { --bt1-w: 334; left: 0; top: 0; width: 100%; height: 100%; transform: none; }
+  .bt1__dot { left: calc(230.5 * var(--c)); top: calc(305 * var(--c)); }
   /* THE LINE IS ROTATED, NOT RESHAPED. line.svg is a 174 x 3 stroke drawn at
-     `mask-size: 100% 100%`, so squashing its box into 3 x 96 would stretch the
-     stroke's ends rather than stand it up. The box keeps its proportions
-     (96 x 3, centred on 160, 168) and turns a quarter turn, which takes the
-     `to right` gradient with it: the accent stays at the dot and the fade still
-     arrives at the ring. Built.motion.ts's `scaleX` draw composes with this
-     rotation rather than replacing it, and loops/bt1.ts reads the rotated rect,
-     so neither needs to know which way round the line is drawn -- only which
-     end the light leaves from. */
+     `mask-size: 100% 100%`; its box is scaled along its own length to the 97.6
+     Figma draws here, which leaves a straight stroke of the same weight, and
+     then turned to the angle of the run. Both ends are in the table above; the
+     centre is (211.8, 265.3) and the angle atan2(-81.6, -55.0) = -124.31deg.
+
+     THE TURN IS WHAT KEEPS THE MOTION LAYER OUT OF THIS. Built.motion.ts draws
+     the line with `scaleX` about `0% 50%` and GSAP composes that scale AFTER
+     the rotation, so local +x is still the element's own x: rightward out of
+     the dot at 1600, up the diagonal out of the dot here. loops/bt1.ts reads
+     the rotation off the computed matrix for the same reason. Reshaping the
+     box instead of turning it would have broken both. */
   .bt1__line {
-    left: calc(110 * var(--c)); top: calc(172.5 * var(--c));
-    width: calc(100 * var(--c)); height: calc(3 * var(--c));
-    transform: rotate(90deg);
+    left: calc(163.03 * var(--c)); top: calc(263.76 * var(--c));
+    width: calc(97.6 * var(--c)); height: calc(3 * var(--c));
+    transform: rotate(-124.31deg);
   }
-  /* The smear stands up with it: 4 x 30 rather than 42 x 4, at the same 2.1x
-     blur, so it is the same soft bar lying along the same line. */
+  /* THE LINE DOES NOT FADE OUT HERE, and that is the export talking. The
+     landscape line.svg is a 174-long stroke running #e5331e -> #1D1C1B, so its
+     far end dissolves into the card at the ring. The mobile node's own export
+     is a 97.6-long stroke running #F55E22 -> #E5331E: it stays lit the whole
+     way and lands ON the ring. Same silhouette, so the same file is reused as
+     the mask; only the paint behind it changes, and it changes to the two
+     tokens whose job this already is -- --accent-lift is the accent moved off
+     its resting value (#e9513f dark, #c4361c light) and --accent is the
+     resting value. No new hex, and light converts with the right sign: the
+     near end stays the lighter of the two on paper as it is on the card. */
+  .bt1 .bt1__line { background: linear-gradient(to right, var(--accent-lift), var(--accent)); }
+  /* The smear lies along the line and turns with it: 43 x 5 at Figma's own
+     -31.04deg + the frame's quarter turn, blurred 8.4 units as at 1600. It is
+     the design's own element and keeps the design's own place -- halfway along
+     the run rather than beside the dot, which is what loops/bt1.ts re-derives
+     its beat from. */
   .bt1__smear {
-    left: calc(158 * var(--c)); top: calc(142 * var(--c));
-    width: calc(4 * var(--c)); height: calc(30 * var(--c));
+    left: calc(183.73 * var(--c)); top: calc(253.21 * var(--c));
+    width: calc(43 * var(--c)); height: calc(5 * var(--c));
+    transform: rotate(-121.04deg);
   }
-  /* "You" goes above its dot, on the same baseline card two's market names take
-     above theirs -- 82 units down the frame on both cards. */
+  /* "You" sits beside its dot, vertically centred on it, 4.5 units clear of
+     the rim -- Figma's `gap: 4` once the label's counter-rotation is undone. */
   .bt1__you {
-    left: 0; right: 0; top: auto; bottom: calc(100% - 76 * var(--c));
-    width: 100%; text-align: center;
-    font-size: clamp(10px, calc(10 * var(--c)), 12px);
+    left: calc(259 * var(--c)); right: auto; top: calc(309.8 * var(--c)); bottom: auto;
+    width: auto; text-align: left;
+    font-size: clamp(10px, calc(12 * var(--c)), 14px);
   }
-  /* The ring stack shrinks from 135 to 108, so its children are restated as
-     fractions of it rather than in design units: 17.5/135, 100/135, -29.4/135,
-     -25.4/135, 193.8/135, 53.5/135, 28/135. The asymmetry in the lit disc is
-     ring-disc.svg's drop-shadow room and is preserved exactly -- see the note
-     above .bt1__ring-disc. The light-mode plate under the coin is already a
-     percentage of this same box and needs no restating. */
+  /* The ring stack is 135 again, centred on (167.5, 195.5): left 167.5 - 67.5,
+     top 195.5 - 67.5. Its children are left to the rules at the top of this
+     file. */
   .bt1__rings {
-    left: calc(106 * var(--c)); top: calc(198 * var(--c));
-    width: calc(108 * var(--c)); height: calc(108 * var(--c));
+    left: calc(100 * var(--c)); top: calc(128 * var(--c));
+    width: calc(135 * var(--c)); height: calc(135 * var(--c));
   }
-  .bt1__ring-mid { left: 12.963%; top: 12.963%; width: 74.074%; height: 74.074%; }
-  .bt1__ring-disc { left: -21.778%; top: -18.815%; width: 143.556%; height: 143.556%; }
-  .bt1__coin { left: 39.63%; top: 39.63%; width: 20.741%; height: 20.741%; }
+  /* A 108-wide block at the card's upper right. The pair is centred in it and
+     the sentence is flush left, which is what the node does -- the sentence is
+     the wider of the two and sets the block's edge. */
   .bt1__text {
-    left: 0; right: auto; top: calc(314 * var(--c)); transform: none;
-    width: 100%; align-items: center; text-align: center; gap: calc(6 * var(--c));
+    left: calc(206 * var(--c)); right: auto; top: calc(64 * var(--c)); transform: none;
+    width: calc(108 * var(--c)); align-items: stretch; gap: calc(4 * var(--c));
   }
-  .bt1__pair { font-size: clamp(14px, calc(15 * var(--c)), 17px); }
-  .bt1__note { font-size: clamp(11px, calc(11 * var(--c)), 13px); }
+  .bt1__pair { font-size: clamp(14px, calc(16 * var(--c)), 18px); text-align: center; }
+  .bt1__note { font-size: clamp(11px, calc(12 * var(--c)), 14px); text-align: left; }
+
 
   /* Card two: the five markets in one row across the top, the padlock 194 units
      below them. `--mx`/`--my`/`--ms`/`--mi` are the portrait placement Built.tsx

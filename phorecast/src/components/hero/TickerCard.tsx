@@ -6,9 +6,11 @@ import './TickerCard.css';
 
 export type Ticker = {
   symbol: string;
-  name: string;
+  /** The contract and its expiry, e.g. "Up/Down · 5 min". */
+  contract: string;
+  /** What one contract costs, in cents: "62¢". A winning one pays $1. */
   price: string;
-  change: string;   // "+3.57%"
+  change: string;   // "+3¢"
   up: boolean;
   icon: string;
   /** The icon is one flat colour and must follow the page, not keep its own.
@@ -24,13 +26,19 @@ export function TickerCard({ t }: { t: Ticker }) {
       <div className="ticker__head">
         <div className="ticker__id">
           {t.mono
-            ? <Icon src={t.icon} w={32} h={32} className="ticker__icon" />
+            /* `style` empties the inline width/height `Icon` writes, so
+               `.ticker__icon` owns the box -- the same hand-off SlideBonus makes
+               for its badges. Without it the phone rule that takes the glyphs
+               down to 26px could not reach this one: the inline 32px outranks a
+               class, so Apple's mark alone stayed 32 and stood the first row of
+               the wrapped strip 6px taller than the second. */
+            ? <Icon src={t.icon} w={32} h={32} className="ticker__icon" style={{ width: undefined, height: undefined }} />
             : <img src={t.icon} alt="" width={32} height={32} className="ticker__icon" />}
           <span className="ticker__symbol">{t.symbol}</span>
         </div>
         <img src={t.up ? trendUp : trendDown} alt="" width={20} height={11.56} className="ticker__trend" />
       </div>
-      <p className="ticker__name">{t.name}</p>
+      <p className="ticker__contract">{t.contract}</p>
       <p className="ticker__price">{t.price}</p>
       <div className={`ticker__pill ${t.up ? 'ticker__pill--up' : 'ticker__pill--down'}`}>
         <img src={triangle} alt="" width={12} height={10} className={t.up ? '' : 'is-flipped'} />

@@ -17,11 +17,35 @@ import bitcoin from '../../assets/icons/bitcoin.svg';
 import gold from '../../assets/icons/gold.svg';
 import './Hero.css';
 
+/**
+ * The strip's four cards.
+ *
+ * WHAT A CARD IS NOW. It was a spot quote -- an asset, a dollar price and a
+ * percentage move -- which is the furniture of an exchange, and it framed the
+ * page as somewhere you buy the asset and keep the move. You do not buy the
+ * asset here. You buy a contract on an outcome, and a winning contract pays
+ * $1, so the only number a reader can act on is what that contract costs right
+ * now. The four slots the card already had take it without being rebuilt:
+ *
+ *   symbol   the market                          AAPL
+ *   contract the contract, and when it settles   Up/Down . 5 min
+ *   price    what one contract costs             62c
+ *   change   what that cost has done             +3c
+ *
+ * Two contract types over two rungs of the ladder, each pair once, so the
+ * strip states the product's range rather than repeating one corner of it.
+ * The rungs are the two the client's copy names -- five minutes and monthly --
+ * and not an invented one in between.
+ *
+ * SPORTS IS MISSING and is not an oversight: it is a market category now, but
+ * this strip identifies a market by its instrument icon and `src/assets` has
+ * no sports mark. A fifth card would need artwork nobody has supplied.
+ */
 const TICKERS: Ticker[] = [
-  { symbol: 'AAPL', name: 'Apple', price: '$326.57', change: '+3.57%', up: true, icon: apple, mono: true },
-  { symbol: 'TSLA', name: 'Tesla', price: '$363.56', change: '-1.13%', up: false, icon: tesla },
-  { symbol: 'BTC/USD', name: 'Bitcoin', price: '$77,603.00', change: '+0.87%', up: true, icon: bitcoin },
-  { symbol: 'XAU/USD', name: 'Gold', price: '$4,308.24', change: '−0.90%', up: false, icon: gold },
+  { symbol: 'AAPL', contract: 'Up/Down · 5 min', price: '62¢', change: '+3¢', up: true, icon: apple, mono: true },
+  { symbol: 'TSLA', contract: 'Price Hit · 5 min', price: '41¢', change: '−2¢', up: false, icon: tesla },
+  { symbol: 'BTC/USD', contract: 'Price Hit · monthly', price: '58¢', change: '+1¢', up: true, icon: bitcoin },
+  { symbol: 'XAU/USD', contract: 'Up/Down · monthly', price: '47¢', change: '−3¢', up: false, icon: gold },
 ];
 
 type Slide = {
@@ -38,7 +62,7 @@ type Slide = {
 };
 
 /**
- * The market snapshot strip, below the pager.
+ * The contract strip, below the pager.
  *
  * WHOSE CONTENT IS THIS? It is rendered outside `.hero__stage`, as a sibling of
  * the pager, and the slides that do not carry it fall back to an EMPTY box of
@@ -51,11 +75,20 @@ type Slide = {
  *
  * So on a phone it is hero furniture and is shown on every slide (see
  * `compact` below). Nothing changes at 721px and up.
+ *
+ * THE NOTE ABOVE THE CARDS carries the one fact that makes four two-digit cent
+ * figures mean anything: the contract they price pays $1. Stated once, over the
+ * row, rather than four times inside cards that have no room for it -- and it
+ * has to be on the strip rather than in slide 1's lede, because on a phone the
+ * strip is under all four slides and only one of them has that lede.
  */
 const MARKET_SNAPSHOT = (
-  <ul className="hero__foot" aria-label="Market snapshot">
-    {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
-  </ul>
+  <div className="hero__snapshot">
+    <p className="hero__snapshot-note">Each winning contract pays $1.</p>
+    <ul className="hero__foot" aria-label="Contract snapshot">
+      {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
+    </ul>
+  </div>
 );
 
 const SLIDES: Slide[] = [
@@ -63,7 +96,7 @@ const SLIDES: Slide[] = [
     id: 'mark',
     eyebrow: 'Global Markets. One Platform.',
     title: 'The Future\nof Trading',
-    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
+    lede: 'Phorcast is a prediction market for crypto, stocks, indices, commodities, forex and sports. No leverage, no liquidations.',
     cta: 'Get Started',
     href: '#signup',
     visual: null,
@@ -72,8 +105,8 @@ const SLIDES: Slide[] = [
   {
     id: 'account',
     eyebrow: 'Global Markets. One Platform.',
-    title: 'One account.\nYour keys.',
-    lede: 'Open Phorcast in minutes and trade every asset class without handing anyone custody of your funds.',
+    title: 'One account.\nEvery market.',
+    lede: 'Open Phorcast in under two minutes and take a position on any market we list. Your maximum loss is always what you stake.',
     cta: 'Create account',
     href: '#signup',
     visual: <SlideAccount />,
@@ -92,7 +125,7 @@ const SLIDES: Slide[] = [
     id: 'future',
     eyebrow: 'Global Markets. One Platform.',
     title: 'The Future\nof Trading',
-    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
+    lede: 'Phorcast is a prediction market for crypto, stocks, indices, commodities, forex and sports. No leverage, no liquidations.',
     cta: 'Get Started',
     href: '#signup',
     visual: <SlideFuture />,
@@ -350,7 +383,7 @@ export function Hero() {
           />
         </div>
 
-        {compact ? MARKET_SNAPSHOT : active.foot ?? <div className="hero__foot" />}
+        {compact ? MARKET_SNAPSHOT : active.foot ?? <div className="hero__snapshot" />}
       </div>
     </section>
   );

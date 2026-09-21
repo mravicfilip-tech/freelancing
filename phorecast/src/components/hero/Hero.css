@@ -226,12 +226,43 @@
 
 .hero__position { position: relative; z-index: 2; margin-top: 60px; }
 
+/* The strip is a note over a row now, so the bottom-of-the-hero job -- the auto
+   margin that pushes it there and the floor padding under it -- moves up to the
+   wrapper. `.hero__foot` keeps only the row, which is what the entrance and the
+   quote loop still select through (`.hero__foot > *` is still four cards and
+   nothing else). The empty box slides 2 to 4 fall back to on desktop is the
+   WRAPPER, so both states occupy the same slot. */
+.hero__snapshot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: auto;
+  padding: 0 0 70px;
+}
+/* Mono, because it is a legend for the row under it and not a second lede --
+   the same voice the eyebrow uses for a label.
+
+   --ink-2 and NOT --ink-muted, which every other quiet label on the page takes.
+   In dark --ink-muted is #626262 on #0f0e0d: 3.16:1, a documented AA failure
+   that LIGHTMODE.md deliberately leaves standing on the eyebrow rather than fix
+   half a theme (§1.2). Reproducing it on a new line would be choosing to ship
+   that defect a second time, and this line in particular cannot afford it: it
+   is the only thing on the strip that says what the four cent figures are the
+   price OF. --ink-2 is the body-copy token `.lede` already uses, 6.36:1 on
+   paper, and it keeps the note quieter than the cards without hiding it. */
+.hero__snapshot-note {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--ink-2);
+  text-align: center;
+}
 .hero__foot {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: auto;
-  padding: 0 0 70px;
   flex-wrap: wrap;
 }
 
@@ -285,6 +316,25 @@
 }
 @media (max-width: 720px) {
   .hero { padding-top: 24px; }
+
+  /* The eyebrow is a 29-character mono string set at a flat 16px with
+     `white-space: nowrap` (global.css), so it has ONE width -- 302.4px,
+     measured -- and it does not care how narrow the screen is. The hero column
+     at 320 is 280px between the 20px gutters, so the line ran 22.4px past the
+     right edge and the last word was cut off by the section's clip. Nothing
+     scrolled, which is why it survived: `scrollWidth` still read 320.
+
+     The same fault, and the same fix, as `.fam .eyebrow` in Familiar.css: give
+     the flat size a floor-and-ceiling against the viewport instead. 4.45vw is
+     chosen so the clamp is INERT from 360 up -- 360 x 0.0445 = 16.02, over the
+     16px ceiling -- and the phone widths that were already measured and
+     balanced do not move a pixel. Below 360 it takes over: 14.24px at 320,
+     which puts the line at 264.8px inside 280. The dot rides down with it on
+     the same arithmetic (12 / 359.98 = 3.34vw) so the mark keeps its
+     proportion to the words instead of growing into them. */
+  .hero .eyebrow { font-size: clamp(13px, 4.45vw, 16px); gap: clamp(8px, 3.34vw, 12px); }
+  .hero .eyebrow__dot { width: clamp(10px, 3.34vw, 12px); height: clamp(10px, 3.34vw, 12px); }
+
   .hero__title { white-space: pre-line; width: auto; }
   /* 52px was the floor of a scale whose ceiling is a 1920 frame. On a 390px
      screen it puts "Half this stack" onto three lines and leaves the headline
@@ -320,14 +370,23 @@
      symbol goes (AAPL already says Apple), the figure and the change pill come
      down, and the card sizes to its content instead of a 160px desktop box.
      332px of reflow every seven seconds becomes none. */
-  .hero__foot { margin-top: 28px; gap: 10px; padding-bottom: 32px; }
+  .hero__snapshot { margin-top: 28px; gap: 10px; padding-bottom: 32px; }
+  .hero__snapshot-note { font-size: 12px; }
+  .hero__foot { gap: 10px; }
   .hero__foot .ticker {
     width: calc(50% - 5px);
     height: auto;
     padding: 12px;
   }
   .hero__foot .ticker__icon { width: 26px; height: 26px; }
-  .hero__foot .ticker__name { display: none; }
+  /* The name line used to be dropped here, because AAPL already said Apple.
+     That line is the contract now -- which type, and when it settles -- and it
+     is the only thing on the card that says the figure under it is the price of
+     a position rather than the price of a share. It costs 16px a card and stays
+     on the phone, where this strip is under every slide. It sets 11px so the
+     longest string, "Price Hit . monthly", still clears the card interior at
+     360 and at 320. */
+  .hero__foot .ticker__contract { font-size: 11px; }
   .hero__foot .ticker__price { margin-top: 8px; font-size: 18px; }
   .hero__foot .ticker__pill { height: 28px; margin-top: 8px; }
 }
@@ -382,6 +441,7 @@
 .hero[data-motion='pending'] .hero__lede,
 .hero[data-motion='pending'] .hero__cta,
 .hero[data-motion='pending'] .hero__position,
+.hero[data-motion='pending'] .hero__snapshot-note,
 .hero[data-motion='pending'] .hero__foot > *,
 .hero[data-motion='pending'] .hero__visual {
   visibility: hidden;

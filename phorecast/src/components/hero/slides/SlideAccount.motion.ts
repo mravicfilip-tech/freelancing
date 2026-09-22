@@ -18,6 +18,21 @@
  *                                    rolls to a new figure with a flash
  *   then ~4.4s of stillness before it happens again.
  *
+ * TWO COMPOSITIONS, TWO SEQUENCES
+ *   Below 720px SlideAccount.css does not shrink the illustration, it drops
+ *   most of it: the prediction card, the two event cards and the action bar go
+ *   (the argument is written out over THE PHONE COMPOSITION in that file), and
+ *   what is left is the two market cards, the two connector curves, the
+ *   diamond and the pill. The dropped parts are dropped with `display: none`,
+ *   so they are still IN THE DOM and every `querySelector` here still finds
+ *   them -- which is exactly how this module came to be timing beats nothing
+ *   could see. Measured at 390 before the phone branch existed: the first
+ *   visible movement was 768ms after the sequence started, the two market
+ *   cards never moved at all, and the loop spent its first 1435ms on a toast
+ *   swap and a bolt pop that are not on the page. So the cast is asked of the
+ *   layout (see `onPhone`) and each timeline is built for the cast that is
+ *   actually there. The desktop beats are untouched; the phone gets its own.
+ *
  * GATING
  *   All four hero slides are mounted at once; only `.hero__slide.is-active` is
  *   visible. Playing on mount would spend the whole load-in behind an invisible
@@ -73,6 +88,38 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   const disc = one(root, '.sl2__pill-disc');
   const price = one(root, '.sl2-mc--xau .sl2-mc__price');
 
+  /* The two market cards. They are in BOTH compositions, and on a phone they
+     are the largest thing left, so that is where the phone's entrance starts.
+     The desktop never tweens them — its lead is the prediction card's odds —
+     and nothing below changes that. */
+  const cardNfl = one(root, '.sl2-mc--nfl');
+  const cardXau = one(root, '.sl2-mc--xau');
+
+  /* The three groups the phone drops, held so the question below can be put to
+     the layout instead of to a copy of the breakpoint. */
+  const pred = one(root, '.sl2-pred');
+  const minisWrap = one(root, '.sl2__minis');
+  const actions = one(root, '.sl2__toasts');
+
+  /* Does this element have boxes? `display: none` is the only thing that takes
+     them away, and it is exactly what the phone block uses; the inactive slide
+     is `visibility: hidden` and the hero's pending gate is `visibility: hidden`
+     too, so both keep their boxes and neither can be mistaken for a drop. */
+  const shown = (el: Element | null) => !!el && el.getClientRects().length > 0;
+
+  /* WHICH COMPOSITION, asked of the layout rather than of a media query. A
+     `matchMedia('(max-width: 720px)')` here would be a second copy of
+     SlideAccount.css's breakpoint, free to drift from it the day the
+     breakpoint moves; whether the parts are on the page cannot drift from the
+     stylesheet, because it IS the stylesheet's answer.
+
+     The `shown(cardXau)` clause is not decoration. Without it an illustration
+     hidden wholesale — a display:none ancestor, a detached subtree, a browser
+     that has not laid out yet — reads as "the dropped parts are missing" and a
+     desktop would be handed the phone's beats. The market cards survive both
+     compositions, so they are the proof that there is a composition at all. */
+  const onPhone = () => shown(cardXau) && !shown(pred) && !shown(minisWrap) && !shown(actions);
+
   /* The ticking price. Only the leading text node moves — the dim decimals in
      the <span> are left as designed — and the original figure is kept so
      teardown can hand the verified number back. */
@@ -99,7 +146,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   /* Everything this module may write an inline style to, so teardown can hand
      all of it back to CSS in one call. */
   const parts = ([] as (Element | null)[])
-    .concat(odds, charts, minis, bars, tiles, conns, [toast, diamond, pill, disc, price])
+    .concat(odds, charts, minis, bars, tiles, conns, [toast, diamond, pill, disc, price, cardNfl, cardXau])
     .filter(Boolean) as Element[];
 
   /* The settled ink of the price, read before anything is tweened, so the
@@ -128,11 +175,80 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     pillRise: 22,
     pillLift: 12,
     diamondRide: 58,
+    /* The phone's lead. A market card is 200 design units wide and renders
+       around 188px there, so 22px is the same proportion of its own body that
+       oddsRise is of a row of odds — short travel over a long duration, the
+       house's whole point. */
+    cardRise: 22,
   };
+
+  /* --------------------------------------------------- load-in, the phone
+     The desktop's lead — the prediction card's odds — is not on the page here,
+     and neither are the minis, the bars, the toast or the tiles, so five of its
+     ten beats animate nothing. This is the same arrival re-cast for the six
+     objects that remain, in the order the eye reads them: the left card, the
+     right card, their two sparklines, the two curves that fall away from them,
+     and the account they fall into.
+
+       0.00  NFL card rises            1.25s   ← the lead, alone on the stage
+       0.38  XAU card rises            1.10s   ← the pause MOTION.md asks for
+       0.60  NFL sparkline sweeps      1.15s
+       0.84  XAU sparkline sweeps      1.15s
+       1.30  left curve draws down     1.00s
+       1.40  right curve draws down    1.00s
+       1.62  One Account pill rises    1.00s
+       1.70  its disc settles open     0.90s
+       2.20  the diamond lands         0.50s   ends 2.70
+
+     2.7s end to end, inside the 2.5–4s the house asks for, and every one of
+     its beats is on something the phone can actually show. */
+  function phoneIn(tl: gsap.core.Timeline): gsap.core.Timeline {
+    // One object arrives and is allowed to land. The NFL card is leftmost, so
+    // it is read first, and on a phone it is half the illustration — the
+    // largest single thing the slide has left. It leads; the gold card follows
+    // it a third of a second later rather than beside it.
+    if (cardNfl) tl.from(cardNfl, { y: D.cardRise, opacity: 0, duration: 1.25, clearProps: 'transform,opacity' }, 0);
+    if (cardXau) tl.from(cardXau, { y: D.cardRise, opacity: 0, duration: 1.1, clearProps: 'transform,opacity' }, 0.38);
+
+    // Then each card's own line draws inside it, in the order the cards
+    // arrived. `charts` is [NFL, XAU], which is that order.
+    charts.forEach((c, i) => {
+      tl.fromTo(c,
+        { clipPath: 'inset(0% 100% 0% 0%)' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.15, ease: 'power2.inOut', clearProps: 'clipPath' },
+        0.6 + i * 0.24);
+    });
+
+    // The curves fall away from the cards, left one first — it hangs under the
+    // NFL card, the right one under the gold card, so the pair carries the
+    // same left-to-right reading down to the pill.
+    conns.forEach((c, i) => {
+      tl.fromTo(c,
+        { clipPath: 'inset(0% 0% 100% 0%)' },
+        { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.0, ease: 'power2.inOut', clearProps: 'clipPath' },
+        1.3 + i * 0.1);
+    });
+
+    // The destination. Same three beats as the desktop, and the same values —
+    // only their places in the cycle differ.
+    if (pill) tl.from(pill, { y: D.pillRise, opacity: 0, duration: 1.0, clearProps: 'transform,opacity' }, 1.62);
+    if (disc) tl.from(disc, { scale: 0.84, duration: 0.9, transformOrigin: '50% 50%', clearProps: 'transform' }, 1.7);
+    // 6px of accent, which is the only place back.out belongs.
+    if (diamond) {
+      tl.fromTo(diamond,
+        { opacity: 0, scale: 0.4 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)', transformOrigin: '50% 50%', clearProps: 'opacity,scale' },
+        2.2);
+    }
+
+    return tl;
+  }
 
   /* ------------------------------------------------------------- load-in */
   function buildIn(): gsap.core.Timeline {
     const tl = gsap.timeline({ paused: true, defaults: { ease: EASE } });
+
+    if (onPhone()) return phoneIn(tl);
 
     // The prediction card's odds resolve first: it is the one card a person
     // reads, so it gets the stage before anything else moves.
@@ -204,17 +320,33 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     // actually animating through.
     const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: EASE } });
 
+    /* WHERE THE BEATS SIT, per composition. Beat 1 is the action bar, which
+       the phone does not have, so the phone column is the desktop column minus
+       1.45 — the length of the toast swap and the bolt pop — and nothing else
+       about the loop changes. The desktop numbers are the ones that were
+       written inline here before there were two columns to keep apart; leaving
+       them as literals rather than deriving them from the phone's is what
+       keeps a desktop beat from drifting by a float's last bits. */
+    const phone = onPhone();
+    const at = phone
+      ? { conn: 0, diamond: 0.05, lift: 0.9, settle: 1.35, chart: 1.55, priceOut: 1.7, tick: 1.96, priceIn: 1.98 }
+      : { conn: 1.45, diamond: 1.5, lift: 2.35, settle: 2.8, chart: 3.0, priceOut: 3.15, tick: 3.41, priceIn: 3.43 };
+
     // 1 — a trade executes. The old notification drops away and the new one
     //     arrives. 0.4s of the 9s cycle is the only time the toast is not
     //     sitting exactly where the design puts it.
-    if (toast) {
+    //
+    //     Skipped on a phone: the action bar is dropped there, so this beat
+    //     and the bolt's below used to open every cycle with 1.45s in which
+    //     nothing on the page moved. The route beat leads instead.
+    if (!phone && toast) {
       tl.to(toast, { y: D.toastSwap, opacity: 0, duration: 0.42, ease: 'power2.in' }, 0)
         .fromTo(toast,
           { y: D.toastSwap, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.95, ease: EASE, immediateRender: false, clearProps: 'transform,opacity' },
           0.5);
     }
-    if (bolt) {
+    if (!phone && bolt) {
       tl.fromTo(bolt,
         { scale: 0.86 },
         { scale: 1, duration: 0.6, ease: EASE, transformOrigin: '50% 50%', immediateRender: false, clearProps: 'transform' },
@@ -227,23 +359,23 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
       tl.fromTo(c,
         { clipPath: 'inset(0% 0% 100% 0%)' },
         { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.85, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
-        1.45 + i * 0.06);
+        at.conn + i * 0.06);
     });
     if (diamond) {
       tl.fromTo(diamond,
         { y: -D.diamondRide, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.9, ease: 'power2.inOut', immediateRender: false, clearProps: 'transform,opacity' },
-        1.5);
+        at.diamond);
     }
 
     // 3 — the account acknowledges: one lift, then back down to rest.
     if (pill) {
-      tl.to(pill, { y: -D.pillLift, duration: 0.45, ease: 'power2.out' }, 2.35)
-        .to(pill, { y: 0, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, 2.8);
+      tl.to(pill, { y: -D.pillLift, duration: 0.45, ease: 'power2.out' }, at.lift)
+        .to(pill, { y: 0, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, at.settle);
     }
     if (disc) {
-      tl.to(disc, { scale: 1.08, duration: 0.45, ease: 'power2.out', transformOrigin: '50% 50%' }, 2.35)
-        .to(disc, { scale: 1, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, 2.8);
+      tl.to(disc, { scale: 1.08, duration: 0.45, ease: 'power2.out', transformOrigin: '50% 50%' }, at.lift)
+        .to(disc, { scale: 1, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, at.settle);
     }
 
     // 4 — and the market moves on it. The gold sparkline redraws and the price
@@ -252,27 +384,37 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
       tl.fromTo(chartXau,
         { clipPath: 'inset(0% 100% 0% 0%)' },
         { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.15, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
-        3.0);
+        at.chart);
     }
     if (price && priceNode) {
       tl.fromTo(price,
         { yPercent: 0, opacity: 1 },
         { yPercent: -60, opacity: 0, duration: 0.26, ease: 'power2.in', immediateRender: false },
-        3.15)
+        at.priceOut)
         // The flash is spawned rather than written into the timeline: which way
         // the price went is decided in this callback, and a tween built once
         // would replay the first cycle's colour for ever.
         .call(() => {
           const flash = tickPrice();
           if (flash) spawn(gsap.fromTo(price, { color: flash }, { color: priceInk, duration: 0.9, ease: 'power2.out', clearProps: 'color' }));
-        }, undefined, 3.41)
+        }, undefined, at.tick)
         .fromTo(price,
           { yPercent: 60, opacity: 0 },
           { yPercent: 0, opacity: 1, duration: 0.5, ease: 'power3.out', immediateRender: false, clearProps: 'transform,opacity' },
-          3.43);
+          at.priceIn);
     }
 
-    // Rest fills the cycle out to its full period.
+    /* Rest fills the cycle out to its full period. Both compositions keep the
+       same 9s period, so the phone — whose beats run 2.70s against the
+       desktop's 4.15 — rests 6.30s where the desktop rests 4.85. Neither
+       reaches the end of that rest while the carousel is running: it moves on
+       after 7s (AUTOPLAY_MS in Hero.tsx) and leaving the slide stops the loop,
+       so what a phone actually shows is its beats finishing 6.25s into the
+       slide's 7s and a breath of stillness before the slide changes. The full
+       6.30s rest is only ever seen by a reader holding the hero, which is
+       where a long rest belongs. Shorten the phone's period deliberately if
+       that ever needs to match the desktop's rest; do not shorten LOOP_PERIOD,
+       which both compositions read. */
     tl.repeatDelay(Math.max(0, LOOP_PERIOD - tl.duration()));
     return tl;
   }
@@ -345,12 +487,39 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     io.observe(root);
   }
 
+  /* Which cast exists is decided when each timeline is BUILT, so a composition
+     that changes under a running sequence — a phone turned on its side, a
+     desktop window dragged past 720, a zoom — has to rebuild or it goes on
+     playing the other composition's beats. The thing that changes is the
+     illustration's own box, so that is what is watched: a ResizeObserver on
+     `.sl2` cannot disagree with the breakpoint the way a `matchMedia` list
+     could. It fires on every width, not only on a crossing, so the flip is
+     what is compared and a plain resize costs one `getClientRects` and
+     nothing else.
+     `stop()` then `sync()` is the same restart the carousel's class toggle
+     takes, so the new composition gets its entrance from the top exactly as it
+     would have on a fresh load. */
+  let cast = onPhone();
+  let ro: ResizeObserver | undefined;
+  if (typeof ResizeObserver !== 'undefined') {
+    ro = new ResizeObserver(() => {
+      const now = onPhone();
+      if (now === cast) return;
+      cast = now;
+      if (!running) return;
+      stop();
+      sync();
+    });
+    ro.observe(root);
+  }
+
   sync();
 
   return () => {
     dead = true;
     mo?.disconnect();
     io?.disconnect();
+    ro?.disconnect();
     stop();
   };
 }

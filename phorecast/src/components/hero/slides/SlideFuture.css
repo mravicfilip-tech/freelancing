@@ -388,19 +388,48 @@
 
    THE CROP. The composition is a hub on the left -- BTC/USD, the order diamond,
    SPORT and ELECTIONS, three orbit rings and their nodes -- and five market
-   tiles strung along two dashed routes to the right, with a 370-unit hole in
-   between that holds nothing at all (`.sl4__mark-slot`; the mark is never
-   rendered here). So the phone is shown the hub and the first two tiles: a
+   tiles strung along two dashed routes to the right, with the 370-unit mark
+   slot in among them. So the phone is shown the hub and the first two tiles: a
    690 x 623 window, which is 1.11:1, fills the slot exactly, and draws
    everything 1.45x larger. The window's right edge falls in empty space between
    the tiles, which end at 667, and the next ones, which start at 887, so
    NOTHING IS CUT except the two routes, which is what a route running off the
    edge of a diagram is for.
 
-   Then the labels are promoted, the same rule slide 3 uses: everything that
-   stays is sized to clear 9px at this scale. SPORT, ELECTIONS and BTC/USD go
-   from 13 and 16 units to 18 -- 9.5px -- with their padding and dot brought in
-   so the pills keep their proportions. */
+   AND THE MARK STAYS OUT, which is now a decision rather than a coincidence.
+   Hero.tsx draws the live mark on `.sl4__mark-slot` above 1180 (Figma 390:3609)
+   and the window was chosen while that hole was empty, so the trade is worth
+   re-stating with the numbers:
+
+     * The window would have to reach the mark. The drawn mark is 232 x 268 in
+       the middle of its 370 square, so it runs x 670..902 in frame units and
+       begins THREE UNITS past this window's right edge. Keeping the 23-unit
+       margins, the window becomes 948 wide: everything else is drawn 0.728x.
+     * SPORT and ELECTIONS would fall to 6.75px at 360 and 7.38px at 390,
+       against the 9px bar below. Holding 9px would take them to 26.7 units,
+       a third larger against every other part -- the promotion eating the
+       illustration rather than rescuing it.
+     * The slide would get 86px shorter at 390. The window is 948 x 623, which
+       is 1.52:1 against 1.11:1, so `.sl4` goes from 316.0px tall to 230.1px --
+       and the four slide bottoms, balanced to 624.563 / 624.594 / 624.641 /
+       624.766, a spread of 0.203, would spread by 86.
+     * The mark itself would be drawn 99.0px tall at 390 and 90.5px at 360, a
+       third of the 301px it gets as slide 1's own phone visual, on a
+       silhouette made of 13 slices and 56 ribs.
+
+   There is no narrower window either: the two tiles this keeps sit at 720 in
+   stage units and the mark at 734..1104, so no crop holds the hub and the mark
+   without holding everything between them. The hub is the slide's sentence and
+   it stays legible. The mark is not lost on a phone -- it is slide 1's whole
+   illustration, on the same carousel, seven seconds away.
+
+   What DOES stay is the mark's feed dot at 730.97, the accent node the loop
+   walks an order to. On a phone it sits 3 units inside the right edge and
+   reads as the circuit leaving the frame, which is what the two cut routes
+   already do.
+
+   Then the labels are sized, the same rule slide 3 uses: everything that stays
+   clears 9px at the scale it ends up drawn at. */
 @media (max-width: 720px) {
   .sl4 {
     --u: calc(100cqw / 690);
@@ -413,29 +442,60 @@
      window instead of flush against three of its edges. */
   .sl4__frame { left: calc(23 * var(--u)); top: calc(26 * var(--u)); }
 
-  /* 20 UNITS, AND THE NUMBER IS A FLOOR RATHER THAN A RATIO. The house bar on
-     the phone is the one slide 3 sets: everything that stays clears 9px at the
-     scale it ends up drawn at. This block opened at 18 units, which measures
-     9.13px at 390 and passes -- but --u here is a 690th of the CONTENT COLUMN,
-     and the column is not a fixed fraction of the viewport, so the same 18
-     units measure 8.35px at 360 and 10.10px at 430. 360 is the width that
-     decides it. At 20 units the three read 9.28 / 10.14 / 11.30px and the
-     smallest phone clears the bar rather than missing it by two thirds of a
-     pixel. Nothing is clipped by the promotion: scrollWidth equals clientWidth
-     on the pill and on both labels at all three widths, and ELECTIONS, the
-     widest thing in the window, ends at 445.65 with 244 units of window still
-     to its right. */
-  .sl4__pill { font-size: calc(20 * var(--u)); }
+  /* A FLOOR, AND THIS TIME IT IS ONE. The house bar on the phone is the one
+     slide 3 sets: everything that stays clears 9px at the scale it ends up
+     drawn at. This block opened at 18 units, which measures 9.13px at 390 and
+     passes -- but --u here is a 690th of the CONTENT COLUMN, and the column is
+     not a fixed fraction of the viewport, so the same 18 units measure 8.35px
+     at 360 and 10.10px at 430. 360 is the width that decides it, and 20 units
+     put the three at 9.28 / 10.14 / 11.30px.
+
+     20 UNITS IS A RATIO THOUGH, and a ratio does not stop. This block runs to
+     720, where the column is 675px and --u is 0.978: the illustration is drawn
+     at 0.978 of design size and the labels at 19.57px, HALF AGAIN the 12.72px
+     the design draws them at, on artwork that needed no rescuing at all. The
+     previous pass measured 360, 390 and 430 and stated a floor; what it wrote
+     was a multiplier that happened to be right at 360.
+
+     So the design's own 13 and 16 units are stated, with 9.3px under them --
+     which is what 20 units measures at 360, so the smallest phone does not
+     move. SPORT and ELECTIONS now read 9.3 / 9.3 / 9.3 / 9.80 / 12.72px at
+     360 / 390 / 430 / 560 / 720 and never exceed the design; BTC/USD reads
+     9.3 / 9.3 / 9.3 / 12.06 / 15.65. Nothing grows, so nothing that fitted at
+     20 units can overflow: scrollWidth still equals clientWidth on the pill
+     and on both labels at every width in the range.
+
+     The letter-spacing follows the type rather than the unit for the same
+     reason -- -0.02em is the -0.4 of 20 units this block used to carry, and it
+     stays that fraction of whatever the floor hands it. */
+  .sl4__pill { font-size: max(9.3px, calc(16 * var(--u))); }
   .sl4__tag {
     padding: calc(12 * var(--u));
-    font-size: calc(20 * var(--u));
-    letter-spacing: calc(-0.4 * var(--u));
+    font-size: max(9.3px, calc(13 * var(--u)));
+    letter-spacing: -0.02em;
   }
   /* `.icon` and not `img`: the label dot is a masked glyph (SlideFuture.tsx),
      so an `img` selector here matched nothing and the dot kept its desktop 16
      units while the type around it went to 18 -- the one rule in this block
      that was silently doing nothing. */
   .sl4__tag .icon { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+
+  /* ONE NODE IS DROPPED, and it is the promotion above that drops it. The
+     ELECTIONS chip is anchored at 406 and the white node at 534, 544 sits 128
+     units to its right; at the 9.3px floor the chip is 140.6 units wide at 390
+     and 150.1 at 360, so it overruns that node by 12.6 and 22.1 units and the
+     dot lands on the final S. It is not a clip, which is why the pass that
+     promoted this type did not catch it: scrollWidth equals clientWidth and
+     the chip has 244 units of window to its right. It is a collision.
+
+     No legible size clears it. The chip's chrome -- 12 units of padding either
+     side, the 14-unit dot, the 2-unit gap -- is 40 units before a letter is
+     set, leaving 88 for the word, and ELECTIONS at the 9px bar is 100.6 units
+     at 390 and 110.1 at 360. So the node goes, the way the three off-frame
+     market tiles go: fewer parts, and the reason written down. Five of the six
+     ring nodes stay, including the one directly above it at 534, 297, which
+     SPORT is short enough to clear. */
+  .sl4__node--under-elections { display: none; }
 }
 
 /* --- Light -------------------------------------------------------------------

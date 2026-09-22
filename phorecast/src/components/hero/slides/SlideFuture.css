@@ -413,11 +413,23 @@
      window instead of flush against three of its edges. */
   .sl4__frame { left: calc(23 * var(--u)); top: calc(26 * var(--u)); }
 
-  .sl4__pill { font-size: calc(18 * var(--u)); }
+  /* 20 UNITS, AND THE NUMBER IS A FLOOR RATHER THAN A RATIO. The house bar on
+     the phone is the one slide 3 sets: everything that stays clears 9px at the
+     scale it ends up drawn at. This block opened at 18 units, which measures
+     9.13px at 390 and passes -- but --u here is a 690th of the CONTENT COLUMN,
+     and the column is not a fixed fraction of the viewport, so the same 18
+     units measure 8.35px at 360 and 10.10px at 430. 360 is the width that
+     decides it. At 20 units the three read 9.28 / 10.14 / 11.22px and the
+     smallest phone clears the bar rather than missing it by two thirds of a
+     pixel. The pills are 161 and 84+ units wide with the type set nowrap
+     inside them, so there is room: measured after the change, BTC/USD sits in
+     a pill with units to spare and ELECTIONS, the widest thing here, still
+     ends well inside the window. */
+  .sl4__pill { font-size: calc(20 * var(--u)); }
   .sl4__tag {
     padding: calc(12 * var(--u));
-    font-size: calc(18 * var(--u));
-    letter-spacing: calc(-0.36 * var(--u));
+    font-size: calc(20 * var(--u));
+    letter-spacing: calc(-0.4 * var(--u));
   }
   /* `.icon` and not `img`: the label dot is a masked glyph (SlideFuture.tsx),
      so an `img` selector here matched nothing and the dot kept its desktop 16

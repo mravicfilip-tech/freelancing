@@ -35,6 +35,15 @@ import './PanelFund.css';
  * two offsets below or the charge flies down geometry that is no longer under
  * it, and nothing throws.
  *
+ * HOW TO CHECK IT, since nothing here will tell you. Shoot the panel twice,
+ * once with `.s2__lines` in and once with it `display: none`; the difference
+ * is exactly the ink the asset lays down. Then walk these paths with
+ * `getPointAtLength`, put each point through the svg's `getScreenCTM`, and ask
+ * the difference image what is at that pixel. Every point has to land on ink.
+ * Run against this export: 1505 points over the five rails, all five 100% on
+ * ink, mean offset 0.00-0.01px, worst 1px. A stale transcription shows up as a
+ * whole rail sitting several pixels off the paint.
+ *
  * They are shipped as invisible geometry in the markup (`.s2__geom`) rather
  * than built at runtime, because a sampler that captures the element list once
  * cannot see anything the loop creates mid-flight. */
@@ -141,6 +150,17 @@ const TILE_ICON = [
  *   own width, it is the same question on both casts, because the two have
  *   different bases (886 and 442).
  * - No hover, no pointer, no idle drift. Reduced motion never builds anything.
+ * - Which cast is playing follows a resize because it has to: `usePhone()` in
+ *   Steps.tsx watches the same `(max-width: 700px)` the stylesheet does and
+ *   swaps the markup, so crossing the breakpoint remounts the panel and this
+ *   effect asks the question again. That query is written in three places --
+ *   there, the phone block in Steps.css, and the one at the foot of
+ *   PanelFund.css -- and they have to stay the same number.
+ *
+ * Measured off the running page, sampling every frame for three periods:
+ * the desktop cycle is 5916ms with 1796 / 1780 / 1729ms of it completely
+ * still, the phone cycle 5800ms with 3082ms still, and at no point in either
+ * is there an inline style left on anything at rest. Both inside the 6s dwell.
  */
 const STORY = 4.1;
 const REST = 1.8;

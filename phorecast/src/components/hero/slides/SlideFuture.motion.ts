@@ -166,8 +166,10 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   const stub = one<HTMLElement>(root, '.sl4__stub');
   const diamond = one<HTMLElement>(root, '.sl4__diamond');
   const tags = all<HTMLElement>(root, '.sl4__tag');
+  /* `.icon` and not `img`: the label dots are masked glyphs now, so they can
+     take --accent from CSS like the rest of the brand red on this slide. */
   const tagDots = tags
-    .map((t) => one<HTMLElement>(t, 'img'))
+    .map((t) => one<HTMLElement>(t, '.icon'))
     .filter((el): el is HTMLElement => !!el);
   const nodes = all<HTMLElement>(root, '.sl4__node');
   const feed = nodes[nodes.length - 1]; // the orange dot at 731,419 — the mark's input
@@ -183,9 +185,13 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   pulse.setAttribute('aria-hidden', 'true');
   stage.appendChild(pulse);
 
-  const glows = badges.map((b) => {
+  /* The light each market tile wears while the order is at it: a hairline and
+     a tint step, both stated in CSS so nothing here ever holds a colour. The
+     element this replaces was a radial --accent bloom, which is the one thing
+     this project does not do. */
+  const lits = badges.map((b) => {
     const g = document.createElement('i');
-    g.className = 'sl4__badge-glow';
+    g.className = 'sl4__badge-lit';
     b.insertBefore(g, b.firstChild);
     return g;
   });
@@ -214,7 +220,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     const dx = HUB.x - c.x;
     const dy = HUB.y - c.y;
     const m = Math.hypot(dx, dy) || 1;
-    return { el, glow: glows[i], s: nearestS(circuit, c), lean: { x: (dx / m) * BADGE_LEAN, y: (dy / m) * BADGE_LEAN } };
+    return { el, lit: lits[i], s: nearestS(circuit, c), lean: { x: (dx / m) * BADGE_LEAN, y: (dy / m) * BADGE_LEAN } };
   });
 
   const tagInfo = tagDots.map((dot, i) => ({ dot, tag: tags[i], s: nearestS(circuit, centre(dot)) }));
@@ -229,9 +235,9 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   const fireBadge = (b: (typeof badgeInfo)[number]) => spawn((tl) => {
     tl.fromTo(b.el, { x: 0, y: 0, scale: 1 }, { x: b.lean.x * u, y: b.lean.y * u, scale: 1.06, duration: 0.26, ease: 'power2.out' }, 0)
-      .fromTo(b.glow, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0)
+      .fromTo(b.lit, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0)
       .to(b.el, { x: 0, y: 0, scale: 1, duration: 0.78, ease: 'power2.out' }, 0.26)
-      .to(b.glow, { opacity: 0, duration: 0.72, ease: 'power2.out' }, 0.3);
+      .to(b.lit, { opacity: 0, duration: 0.72, ease: 'power2.out' }, 0.3);
   });
 
   const fireTag = (t: (typeof tagInfo)[number]) => spawn((tl) => {
@@ -461,7 +467,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     // through the whole of the next load-in, until its own turn came round
     // again. Both are put out by hand.
     gsap.set(pulse, { opacity: 0 });
-    if (glows.length) gsap.set(glows, { opacity: 0 });
+    if (lits.length) gsap.set(lits, { opacity: 0 });
     settleProps();
   };
 
@@ -513,6 +519,6 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     settleProps();
     disposeCircuit();
     pulse.remove();
-    glows.forEach((g) => g.remove());
+    lits.forEach((g) => g.remove());
   };
 }

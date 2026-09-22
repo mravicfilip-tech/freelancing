@@ -14,7 +14,7 @@
  */
 import { useEffect, useRef } from 'react';
 import { Icon } from '../../Icon';
-import { useTheme } from '../../../lib/theme';
+import { useTheme, useThemeEpoch } from '../../../lib/theme';
 import { slideFutureMotion } from './SlideFuture.motion';
 import ringLg from '../../../assets/hero/slide4/circle-lg.svg';
 import ringMd from '../../../assets/hero/slide4/circle-md.svg';
@@ -68,11 +68,23 @@ export function SlideFuture() {
   // active (all four slides are mounted at once) and kills itself on unmount.
   const ref = useRef<HTMLDivElement>(null);
   const light = useTheme() === 'light';
+  /* `useTheme` above already re-renders this component on a theme change, so
+     the two routes swap their `src` the moment the switcher is touched rather
+     than only at mount -- that part was never the problem. The epoch is here
+     for the MODULE, which is built from a useEffect and would otherwise never
+     be rebuilt: it holds references to the two <img> elements, samples the
+     circuit off their geometry, and caches `u`. Rebuilding on a flip is the
+     same thing every other section does (lib/motion.ts reads this epoch for
+     exactly this reason) and it means the illustration re-arrives in the theme
+     the reader chose instead of finishing a beat begun in the other one.
+     `epoch` changes only when the theme actually does, so this is inert
+     unless somebody touches the switcher. */
+  const epoch = useThemeEpoch();
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     return slideFutureMotion(el);
-  }, []);
+  }, [epoch]);
 
   return (
     <div className="sl4" aria-hidden="true" ref={ref}>
@@ -110,17 +122,19 @@ export function SlideFuture() {
               GONE and ADDED, which is exactly the noise that keying exists to
               remove. The value is still a token, not a literal. */}
           <Icon src={dotGrey} w={7} h={7} className="sl4__node" style={{ '--x': 278, '--y': 421, '--s': 7, color: 'var(--sl4-node-2)', ...NO_BOX } as Vars} />
-          <img src={dotAccent} alt="" className="sl4__node" style={{ '--x': 730.97, '--y': 419, '--s': 6 } as Vars} />
+          {/* The mark's feed dot. Same reasoning as the grey node above: the
+              colour is inline so the class and its ordinal do not move. */}
+          <Icon src={dotAccent} w={6} h={6} className="sl4__node" style={{ '--x': 730.97, '--y': 419, '--s': 6, color: 'var(--accent)', ...NO_BOX } as Vars} />
 
-          <img src={btcCircle} alt="" className="sl4__coin" />
-          <img src={btcGlyph} alt="" className="sl4__coin-glyph" />
+          <Icon src={btcCircle} w={50} h={50} className="sl4__coin" style={NO_BOX} />
+          <Icon src={btcGlyph} w={15.307} h={20.262} className="sl4__coin-glyph" style={NO_BOX} />
           <span className="sl4__pill">BTC/USD</span>
 
-          <img src={stubLine} alt="" className="sl4__stub" />
+          <Icon src={stubLine} w={23} h={1} className="sl4__stub" style={NO_BOX} />
           <span className="sl4__diamond" />
 
-          <span className="sl4__tag sl4__tag--sport"><img src={tagDot} alt="" />Sport</span>
-          <span className="sl4__tag sl4__tag--elections"><img src={tagDot} alt="" />Elections</span>
+          <span className="sl4__tag sl4__tag--sport"><Icon src={tagDot} w={16} h={16} style={NO_BOX} />Sport</span>
+          <span className="sl4__tag sl4__tag--elections"><Icon src={tagDot} w={16} h={16} style={NO_BOX} />Elections</span>
         </div>
       </div>
     </div>

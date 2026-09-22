@@ -50,6 +50,13 @@
   --sl4-node-2: #d9d9d9;
   /* 13% white glass under each market badge. */
   --sl4-badge-bg: rgba(255, 255, 255, 0.13);
+  /* How much --accent washes a market tile's glass while the order is at it
+     (.sl4__badge-lit). A percentage, not a colour, and it is themed because
+     the same percentage is not the same STEP: --accent is lighter than the
+     glass on the dark page and darker than it on paper, so 12% moves the tile
+     from 1.37:1 to 2.05:1 here and would only reach 1.66:1 on paper. See the
+     light block. */
+  --sl4-lit-tint: 12%;
 }
 
 .sl4__frame {
@@ -137,9 +144,11 @@
 }
 
 /* Nodes -------------------------------------------------------------------- */
-/* Six white nodes, one grey, one accent. The white six bake #FFFBF8, which is
-   --ink exactly; the grey one bakes #D9D9D9 and carries --sl4-node-2 inline;
-   the accent one is still an <img> and ignores `color` entirely. */
+/* Six white nodes, one grey, one accent -- all eight masked glyphs now. The
+   white six bake #FFFBF8, which is --ink exactly; the grey one bakes #D9D9D9
+   and carries --sl4-node-2 inline; the accent one bakes #E5331E and carries
+   --accent inline, which is what stopped it being the one red on this slide
+   that never moved for light (see THE TWO REDS at the foot of the file). */
 .sl4__node {
   color: var(--ink);
   position: absolute;
@@ -151,7 +160,13 @@
 }
 
 /* BTC/USD pill ------------------------------------------------------------- */
+/* The disc bakes #E5331E and the glyph on it bakes pure white; both are one
+   flat colour on transparent, so both are masked glyphs and both follow a
+   token. The glyph's is --on-accent, which is #fffbf8 rather than #ffffff --
+   a 4/255 difference on a 15 x 20 mark, taken deliberately so the glyph is
+   tied to the disc it sits on rather than to a literal. */
 .sl4__coin {
+  color: var(--accent);
   position: absolute;
   display: block;
   left: calc(133 * var(--u));
@@ -160,6 +175,7 @@
   height: calc(50 * var(--u));
 }
 .sl4__coin-glyph {
+  color: var(--on-accent);
   position: absolute;
   display: block;
   left: calc(152 * var(--u));
@@ -191,6 +207,7 @@
 
 /* Short connector between pill and diamond (Vector 77) --------------------- */
 .sl4__stub {
+  color: var(--accent);
   position: absolute;
   display: block;
   left: calc(343 * var(--u));
@@ -227,7 +244,10 @@
   color: var(--ink);
   white-space: nowrap;
 }
-.sl4__tag img {
+/* The label's dot is the brand red, not the label's ink, so it names --accent
+   rather than inheriting `color` from the chip it sits in. */
+.sl4__tag .icon {
+  color: var(--accent);
   display: block;
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));
@@ -264,7 +284,7 @@
 
 /* ── Motion only ──────────────────────────────────────────────────────────
    Nothing below changes the settled Figma design. `.sl4__pulse` and
-   `.sl4__badge-glow` are created and removed by SlideFuture.motion.ts and are
+   `.sl4__badge-lit` are created and removed by SlideFuture.motion.ts and are
    invisible (`opacity: 0`) until it animates them, so if the script never runs
    the illustration still reads exactly as drawn. The rest is compositor hints
    and the transform origins the load-in needs. */
@@ -277,34 +297,46 @@
 .sl4__diamond { transform-origin: 50% 50%; }
 .sl4__stub { transform-origin: 0% 50%; }
 
+/* NO BLOOM. Both elements below used to be one: a 12-unit disc wearing two
+   box-shadow halos, and a radial --accent gradient washing the inside of each
+   market tile. They are gone, and nothing replaces them in kind. The house
+   answer to "this is lit" is a hairline and a tint step, and that is what the
+   tile gets; the order simply is the accent, so it needs nothing at all.
+   On paper the difference is not subtle -- the halo rendered as an orange
+   smudge four times the diameter of the thing it was attached to, the one
+   effect on this slide that could not be read as artwork. */
+
 /* The order travelling the dashed circuit. Positioned by transform in design
-   units, so its own box is centred on the origin. */
+   units, so its own box is centred on the origin. 10 units and not the old 12:
+   the extra two existed to hold up a glow that no longer exists, and at 10 it
+   is still unmistakably larger than the 6-unit nodes it passes. */
 .sl4__pulse {
   position: absolute;
   left: 0;
   top: 0;
-  width: calc(12 * var(--u));
-  height: calc(12 * var(--u));
-  margin: calc(-6 * var(--u)) 0 0 calc(-6 * var(--u));
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  margin: calc(-5 * var(--u)) 0 0 calc(-5 * var(--u));
   border-radius: 50%;
   background: var(--accent);
-  box-shadow:
-    0 0 calc(7 * var(--u)) calc(1.5 * var(--u)) color-mix(in srgb, var(--accent) 70%, transparent),
-    0 0 calc(20 * var(--u)) calc(5 * var(--u)) color-mix(in srgb, var(--accent) 38%, transparent);
   opacity: 0;
   pointer-events: none;
 }
 
-/* Lights inside a badge as the order reaches it. Clipped by the badge's own
-   overflow: hidden, and sits under the mark so the leaf stays legible. */
-.sl4__badge-glow {
+/* A market tile lighting as the order reaches it: the tile's own 30% --accent
+   hairline brought up to full, and one step of --accent tint across its glass.
+   Sits at inset 0, which is the badge's padding box, so its rim lands exactly
+   inside the badge's own -- the rim reads as thickening and brightening rather
+   than as a second ring. Radius is the badge's 10.179 less that 1 unit.
+   Only `opacity` is ever animated, so every colour here is resolved by CSS at
+   paint time and a theme flip mid-beat cannot strand it on the other theme's
+   red -- which is what any colour captured in the motion module would do. */
+.sl4__badge-lit {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 50% 50%,
-    color-mix(in srgb, var(--accent) 88%, transparent) 0%,
-    transparent 74%
-  );
+  border-radius: calc(9.179 * var(--u));
+  border: calc(1 * var(--u)) solid var(--accent);
+  background: color-mix(in srgb, var(--accent) var(--sl4-lit-tint), transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -370,26 +402,71 @@
 
      The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
      that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page, and a 1px stroke is
-     then antialiased on top of that. What matters is the RENDERED weight, and
-     it was measured on the rendered pixels rather than computed: dark draws
-     these rings at 1.51:1 against its own ground, and #9b8e85 draws them at
-     1.47:1 against paper. Left unconverted they would have been 1.05:1 -- so
-     the conversion was worth its nine gate rows per ring, but only just, and
-     only because the colour was chosen against the measurement. */
-  --sl4-ring: #9b8e85;
+     stroke is attenuated before it ever meets the page, and a 0.73px stroke is
+     then antialiased on top of that. What matters is the RENDERED weight, so
+     it is measured on the rendered pixels -- a one-pixel cut across the top of
+     the 274 ring, at deviceScaleFactor 2, where the stroke's best-covered
+     device pixel reads its true blend.
+
+     THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
+     possibly make on paper is a black one, and that is 2.10:1; on the dark
+     page a white one is 2.66:1. Matching dark's measured 2.09:1 outright is
+     therefore not available at any value -- it would need a stroke darker than
+     black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
+     sits 66% of the way from 1.00 to its ceiling. #3f3630 measures 1.70:1 on
+     paper, which is 64%.
+
+     The predecessor here was #9b8e85, chosen against a reading of 1.47:1 taken
+     at a lower device pixel ratio. Measured the same way as dark at dsf 2 it
+     is 1.30:1 -- 27% of the range against dark's 66% -- which is why the
+     skeleton still read as nearly absent on paper. Same method, better
+     measurement. */
+  --sl4-ring: #3f3630;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
      has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' 1.51:1. At --sl4-ring it came out 2.63:1 on paper, a
-     node visibly quieter than the six white ones beside it where dark has it
-     only slightly quieter. --ink-2 restores the relationship: 6.97:1 against
-     the white nodes' 17.6:1. */
+     against the rings' measured 2.09:1. Handing it --sl4-ring would put it at
+     11.5:1 on paper, and the earlier ring value put it at 2.63:1 -- the same
+     token giving a node that shouts and a node that whispers, which is the
+     whole argument for not sharing one. It reads --ink-2: 6.97:1 against the
+     white nodes' 17.6:1.
+
+     Left alone deliberately, and the reason is worth writing down because the
+     two obvious methods disagree. Dark's grey node is 13.7:1 where its white
+     ones are 18.7:1, so matching the CONTRAST RATIO would ask for about
+     #302a26 here, while matching its POSITION IN LUMINANCE between page and
+     node ink would ask for about #918780 -- one clearly darker than --ink-2,
+     one clearly lighter. There is no measurement that picks between them, the
+     node is legible either way, and a token beats a number nobody can defend.
+     The rings were changed because they were failing legibility outright; this
+     one is not. */
   --sl4-node-2: var(--ink-2);
-  /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
-     --accent hairline and the radial --accent bloom the order lights it with
-     both flip on their own, and both stay DARKER than the page, so "lit" still
-     means "further from the page" here without a single rule reversed. */
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
+     are the same rendered weight rather than the same number -- measured on
+     the pixels, dark draws the glass at 1.37:1 against the ground beside the
+     tile and this draws it at 1.36:1 against paper. What lights a tile when the order
+     reaches it is its own --accent hairline coming up to full plus one step of
+     --accent tint (.sl4__badge-lit), and --accent is DARKER than paper where
+     it is lighter than the dark page, so "lit" still means "further from the
+     page" here with not one rule reversed. There is no bloom to flip: the
+     radial one that used to be here is gone from both themes.
+
+     THE TWO REDS. Until now five pieces of this illustration baked #E5331E
+     into the file and painted it whatever the theme -- the BTC disc, the wire,
+     the two label dots and the mark's feed dot -- while the diamond and the
+     pill's rim read --accent and became #a21605. On paper that is 4.23:1 next
+     to 7.69:1, two different brand reds a centimetre apart. All five are one
+     flat colour on transparent, so all five are masked glyphs now and all five
+     name --accent. No second set of light artwork, no inversion: the same file
+     painted by the token the rest of the slide already used. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
+  /* The lit step, matched on the RENDERED step rather than on the number.
+     A market tile's glass measures 1.37:1 against the ground beside it in dark
+     and 1.36:1 here, and lighting it moves dark to 2.05:1; 12% of --accent on
+     paper reaches only 1.66:1, because the light accent is darker than the
+     glass it washes where the dark one is lighter. 22% lands at 1.95:1. The
+     tile's hairline goes 2.48 -> 4.42 in dark and 3.24 -> 6.77 here on its
+     own, with no value stated for either. */
+  --sl4-lit-tint: 22%;
   }
 }
 
@@ -400,24 +477,69 @@
 
      The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
      that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page, and a 1px stroke is
-     then antialiased on top of that. What matters is the RENDERED weight, and
-     it was measured on the rendered pixels rather than computed: dark draws
-     these rings at 1.51:1 against its own ground, and #9b8e85 draws them at
-     1.47:1 against paper. Left unconverted they would have been 1.05:1 -- so
-     the conversion was worth its nine gate rows per ring, but only just, and
-     only because the colour was chosen against the measurement. */
-  --sl4-ring: #9b8e85;
+     stroke is attenuated before it ever meets the page, and a 0.73px stroke is
+     then antialiased on top of that. What matters is the RENDERED weight, so
+     it is measured on the rendered pixels -- a one-pixel cut across the top of
+     the 274 ring, at deviceScaleFactor 2, where the stroke's best-covered
+     device pixel reads its true blend.
+
+     THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
+     possibly make on paper is a black one, and that is 2.10:1; on the dark
+     page a white one is 2.66:1. Matching dark's measured 2.09:1 outright is
+     therefore not available at any value -- it would need a stroke darker than
+     black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
+     sits 66% of the way from 1.00 to its ceiling. #3f3630 measures 1.70:1 on
+     paper, which is 64%.
+
+     The predecessor here was #9b8e85, chosen against a reading of 1.47:1 taken
+     at a lower device pixel ratio. Measured the same way as dark at dsf 2 it
+     is 1.30:1 -- 27% of the range against dark's 66% -- which is why the
+     skeleton still read as nearly absent on paper. Same method, better
+     measurement. */
+  --sl4-ring: #3f3630;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
      has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' 1.51:1. At --sl4-ring it came out 2.63:1 on paper, a
-     node visibly quieter than the six white ones beside it where dark has it
-     only slightly quieter. --ink-2 restores the relationship: 6.97:1 against
-     the white nodes' 17.6:1. */
+     against the rings' measured 2.09:1. Handing it --sl4-ring would put it at
+     11.5:1 on paper, and the earlier ring value put it at 2.63:1 -- the same
+     token giving a node that shouts and a node that whispers, which is the
+     whole argument for not sharing one. It reads --ink-2: 6.97:1 against the
+     white nodes' 17.6:1.
+
+     Left alone deliberately, and the reason is worth writing down because the
+     two obvious methods disagree. Dark's grey node is 13.7:1 where its white
+     ones are 18.7:1, so matching the CONTRAST RATIO would ask for about
+     #302a26 here, while matching its POSITION IN LUMINANCE between page and
+     node ink would ask for about #918780 -- one clearly darker than --ink-2,
+     one clearly lighter. There is no measurement that picks between them, the
+     node is legible either way, and a token beats a number nobody can defend.
+     The rings were changed because they were failing legibility outright; this
+     one is not. */
   --sl4-node-2: var(--ink-2);
-  /* Badge glass settles instead of lifting: 13% white -> 15% ink. The badge's
-     --accent hairline and the radial --accent bloom the order lights it with
-     both flip on their own, and both stay DARKER than the page, so "lit" still
-     means "further from the page" here without a single rule reversed. */
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
+     are the same rendered weight rather than the same number -- measured on
+     the pixels, dark draws the glass at 1.37:1 against the ground beside the
+     tile and this draws it at 1.36:1 against paper. What lights a tile when the order
+     reaches it is its own --accent hairline coming up to full plus one step of
+     --accent tint (.sl4__badge-lit), and --accent is DARKER than paper where
+     it is lighter than the dark page, so "lit" still means "further from the
+     page" here with not one rule reversed. There is no bloom to flip: the
+     radial one that used to be here is gone from both themes.
+
+     THE TWO REDS. Until now five pieces of this illustration baked #E5331E
+     into the file and painted it whatever the theme -- the BTC disc, the wire,
+     the two label dots and the mark's feed dot -- while the diamond and the
+     pill's rim read --accent and became #a21605. On paper that is 4.23:1 next
+     to 7.69:1, two different brand reds a centimetre apart. All five are one
+     flat colour on transparent, so all five are masked glyphs now and all five
+     name --accent. No second set of light artwork, no inversion: the same file
+     painted by the token the rest of the slide already used. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
+  /* The lit step, matched on the RENDERED step rather than on the number.
+     A market tile's glass measures 1.37:1 against the ground beside it in dark
+     and 1.36:1 here, and lighting it moves dark to 2.05:1; 12% of --accent on
+     paper reaches only 1.66:1, because the light accent is darker than the
+     glass it washes where the dark one is lighter. 22% lands at 1.95:1. The
+     tile's hairline goes 2.48 -> 4.42 in dark and 3.24 -> 6.77 here on its
+     own, with no value stated for either. */
+  --sl4-lit-tint: 22%;
 }

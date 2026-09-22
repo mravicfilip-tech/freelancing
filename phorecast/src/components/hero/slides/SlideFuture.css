@@ -419,12 +419,12 @@
      9.13px at 390 and passes -- but --u here is a 690th of the CONTENT COLUMN,
      and the column is not a fixed fraction of the viewport, so the same 18
      units measure 8.35px at 360 and 10.10px at 430. 360 is the width that
-     decides it. At 20 units the three read 9.28 / 10.14 / 11.22px and the
+     decides it. At 20 units the three read 9.28 / 10.14 / 11.30px and the
      smallest phone clears the bar rather than missing it by two thirds of a
-     pixel. The pills are 161 and 84+ units wide with the type set nowrap
-     inside them, so there is room: measured after the change, BTC/USD sits in
-     a pill with units to spare and ELECTIONS, the widest thing here, still
-     ends well inside the window. */
+     pixel. Nothing is clipped by the promotion: scrollWidth equals clientWidth
+     on the pill and on both labels at all three widths, and ELECTIONS, the
+     widest thing in the window, ends at 445.65 with 244 units of window still
+     to its right. */
   .sl4__pill { font-size: calc(20 * var(--u)); }
   .sl4__tag {
     padding: calc(12 * var(--u));

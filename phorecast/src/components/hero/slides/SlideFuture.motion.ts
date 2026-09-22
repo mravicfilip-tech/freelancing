@@ -2,20 +2,40 @@
  * Slide 4 — "The Future of Trading": the orbit/network illustration's own motion.
  *
  * The slide's argument is that many markets route through one place. The motion
- * makes that argument once, then rests:
+ * makes that argument once, then rests.
  *
- *   LOAD-IN  the three rings expand out of the hub, the dashed track draws
- *            itself around the circuit from the diamond clockwise (both halves
- *            starting at their own seam), the five market badges arrive in the
- *            order the circuit reaches them, and the BTC/USD pill slides in
- *            from the left to plug into the diamond.
+ * THE LEAD IS THE BTC/USD DESK, and it is alone on the stage for 0.8s. That is
+ * the whole shape of the load-in: an order is placed at a desk, a wire reaches
+ * out of it, and only then does the network it reaches exist. The previous pass
+ * opened eight groups inside 800ms with staggers of 0.05 and 0.07 and was over
+ * in 1.75s, which is the "everything at once with a spreadsheet stagger" that
+ * MOTION.md exists to rule out.
+ *
+ *   LOAD-IN  3.45s end to end, read in this order:
+ *
+ *     0.25  the BTC/USD desk slides in from the left, alone    1.05s  x0.15
+ *     1.05  the wire reaches out of it                         0.45s
+ *     1.23  the order settles on the wire                      0.55s
+ *     1.40  the three rings breathe open around the hub        0.95s  x0.16
+ *     1.62  the top route draws itself out of the diamond      1.05s
+ *     1.84  the bottom route follows, back toward it           1.05s
+ *     2.05  the five markets arrive as the route reaches them  0.80s  x0.15
+ *     2.35  the nodes light along the rings                    0.50s  x0.07
+ *     2.55  SPORT and ELECTIONS rise                           0.75s  x0.14
  *
  *   LOOP     one deterministic beat, 8.0s. The diamond fires, the rings ripple
  *            outward from it, a single order travels the whole circuit
- *            clockwise — leaning each badge toward the hub and lighting it as
+ *            clockwise — leaning each market toward the hub and lighting it as
  *            it is reached, ticking SPORT on the way up and ELECTIONS on the
  *            way back — reaches the mark's feed dot, and settles back into the
  *            diamond. Then 2.7s of rest.
+ *
+ *            Every amplitude in it is small enough that a still taken at any
+ *            moment of it still reads as the approved design: the diamond grows
+ *            by 5.5 design px at its widest, a market tile by 3.4, the feed dot
+ *            by 2.4. They used to be 12.5, 9.1 and 9.6 — at which a frame
+ *            grabbed mid-beat showed a diamond half again as large as the one
+ *            Figma draws, which is the single-frame rule in MOTION.md.
  *
  * CONSTRAINT: every part of the illustration is an `<img src="*.svg">`, so
  * there is no `<path>` in the document to put a `stroke-dashoffset` on. The
@@ -208,14 +228,14 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   };
 
   const fireBadge = (b: (typeof badgeInfo)[number]) => spawn((tl) => {
-    tl.fromTo(b.el, { x: 0, y: 0, scale: 1 }, { x: b.lean.x * u, y: b.lean.y * u, scale: 1.16, duration: 0.26, ease: 'power2.out' }, 0)
+    tl.fromTo(b.el, { x: 0, y: 0, scale: 1 }, { x: b.lean.x * u, y: b.lean.y * u, scale: 1.06, duration: 0.26, ease: 'power2.out' }, 0)
       .fromTo(b.glow, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' }, 0)
       .to(b.el, { x: 0, y: 0, scale: 1, duration: 0.78, ease: 'power2.out' }, 0.26)
       .to(b.glow, { opacity: 0, duration: 0.72, ease: 'power2.out' }, 0.3);
   });
 
   const fireTag = (t: (typeof tagInfo)[number]) => spawn((tl) => {
-    tl.fromTo(t.dot, { scale: 1 }, { scale: 2.1, duration: 0.24, ease: 'power2.out' }, 0)
+    tl.fromTo(t.dot, { scale: 1 }, { scale: 1.6, duration: 0.24, ease: 'power2.out' }, 0)
       .to(t.dot, { scale: 1, duration: 0.8, ease: 'power2.out' }, 0.24);
   });
 
@@ -228,7 +248,24 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   /** Hand every design element back to CSS, exactly as it is drawn in Figma. */
   const moved = [...rings, ...badges, ...pillGroup, ...tags, ...tagDots, ...nodes, stub, diamond, trackTop, trackBottom]
     .filter((el): el is HTMLElement => !!el);
-  const settleProps = () => { gsap.set(moved, { clearProps: 'transform,opacity,clipPath' }); };
+  /* `transform,opacity,clipPath` is not the whole list, and the three missing
+     names were each left behind on the settled illustration:
+
+       transformOrigin    written by every `transformOrigin: '50% 50%'` in the
+                          entrance, and never removed, so five badges and eight
+                          nodes carried an inline origin forever;
+       translate/rotate/scale
+                          GSAP 3.13 writes the individual transform properties
+                          to `none` alongside the matrix, and clearing
+                          `transform` does not take them with it.
+
+     None of them moved a pixel -- the values written are the values CSS
+     already holds -- but "a full cycle leaves no residual inline styles" is
+     either true or it is not, and a stray inline origin is exactly the thing a
+     later edit to the CSS would silently lose to. */
+  const settleProps = () => {
+    gsap.set(moved, { clearProps: 'transform,translate,rotate,scale,opacity,clipPath,transformOrigin' });
+  };
 
   // Before anything is built. An earlier instance killed part-way through its
   // load-in -- StrictMode's mount/cleanup/mount, or a hot reload -- can leave an
@@ -257,11 +294,11 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 1. The diamond fires — the order is placed at the BTC/USD desk.
   if (diamond) {
-    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.5, rotation: 45, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.22, rotation: 45, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 0.26);
   }
   if (coin) {
-    loop.fromTo(coin, { scale: 1 }, { scale: 1.12, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.06)
+    loop.fromTo(coin, { scale: 1 }, { scale: 1.08, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0.06)
         .to(coin, { scale: 1, duration: 0.5, ease: 'power2.out' }, 0.32);
   }
 
@@ -293,11 +330,11 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 4. It reaches the mark's feed, then settles back into the diamond.
   if (feed) {
-    loop.fromTo(feed, { scale: 1 }, { scale: 2.6, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.45)
+    loop.fromTo(feed, { scale: 1 }, { scale: 1.8, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.45)
         .to(feed, { scale: 1, duration: 0.55, ease: 'power2.out' }, 4.67);
   }
   if (diamond) {
-    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.35, rotation: 45, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.55)
+    loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.16, rotation: 45, duration: 0.22, ease: 'power2.out', immediateRender: false }, 4.55)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 4.77);
   }
 
@@ -309,7 +346,10 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   loop.to({}, { duration: 0.01 }, 8.0);
 
   const loadIn = gsap.timeline({ paused: true, onComplete: () => { settleProps(); loop.restart(true); } });
-  const B = 0.3; // the shared hero entrance is still fading the visual up until ~1.6s
+  /* `.hero__slide.is-active` crossfades over 600ms and `.hero__visual` settles
+     its own transform over 800ms (Hero.css), so the first quarter second of any
+     slide change belongs to the slide, not to the illustration. */
+  const B = 0.25;
 
   // Every tween below is `immediateRender: false`, and the start states are
   // parked by these `set`s at position 0 instead. A delayed `fromTo` renders
@@ -320,43 +360,62 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   // the load-in holds it there on screen. Parking at frame 0 means the
   // illustration is untouched until the load-in actually runs, and each part
   // is hidden for exactly its own tween.
-  if (rings.length) loadIn.set(rings, { scale: 0.88, opacity: 0, transformOrigin: '50% 50%' }, 0);
-  if (pillGroup.length) loadIn.set(pillGroup, { x: -22 * u, opacity: 0 }, 0);
-  if (badges.length) loadIn.set(badges, { scale: 0.72, opacity: 0, transformOrigin: '50% 50%' }, 0);
-  if (tags.length) loadIn.set(tags, { y: 12 * u, opacity: 0 }, 0);
-  if (nodes.length) loadIn.set(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  // Travel is stated in DESIGN units and multiplied by `u`, so the rise is the
+  // same fraction of the artwork at 1920 as it is on a phone. MOTION.md's band
+  // is 16-28px and these are read at u = 1, i.e. at the 1920 design frame.
+  const PILL_X = -18;   // the desk slides in from the left
+  const TAG_Y = 14;     // SPORT / ELECTIONS rise
+
+  if (rings.length) loadIn.set(rings, { scale: 0.96, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  if (pillGroup.length) loadIn.set(pillGroup, { x: PILL_X * u, opacity: 0 }, 0);
+  if (badges.length) loadIn.set(badges, { scale: 0.96, opacity: 0, transformOrigin: '50% 50%' }, 0);
+  if (tags.length) loadIn.set(tags, { y: TAG_Y * u, opacity: 0 }, 0);
+  if (nodes.length) loadIn.set(nodes, { scale: 0.7, opacity: 0, transformOrigin: '50% 50%' }, 0);
   if (stub) loadIn.set(stub, { scaleX: 0, transformOrigin: '0% 50%' }, 0);
-  if (diamond) loadIn.set(diamond, { scale: 0, rotation: 45 }, 0);
+  if (diamond) loadIn.set(diamond, { scale: 0.9, opacity: 0, rotation: 45 }, 0);
   if (trackTop) loadIn.set(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, 0);
   if (trackBottom) loadIn.set(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, 0);
 
+  /* 1. THE LEAD. The BTC/USD desk arrives on an empty stage and is given 0.8s
+        before anything else moves. Position and opacity are two tweens rather
+        than one because opacity has to finish first -- nothing should still be
+        fading while it is still travelling (MOTION.md, Distance). */
+  if (pillGroup.length) {
+    loadIn.fromTo(pillGroup, { x: PILL_X * u }, { x: 0, duration: 1.05, stagger: 0.15, ease: 'expo.out', immediateRender: false }, B);
+    loadIn.fromTo(pillGroup, { opacity: 0 }, { opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out', immediateRender: false }, B);
+  }
+
+  /* 2. The wire reaches out of the desk, and the order settles onto it. Both
+        are accents under 3 design px of travel; they follow the lead rather
+        than competing with it. */
+  if (stub) loadIn.fromTo(stub, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power2.out', immediateRender: false }, B + 0.8);
+  if (diamond) loadIn.fromTo(diamond, { scale: 0.9, opacity: 0, rotation: 45 }, { scale: 1, opacity: 1, rotation: 45, duration: 0.55, ease: 'expo.out', immediateRender: false }, B + 0.98);
+
+  /* 3. Only now does the network the order is routed into exist. */
   if (rings.length) {
     loadIn.fromTo(rings,
-      { scale: 0.88, opacity: 0, transformOrigin: '50% 50%' },
-      { scale: 1, opacity: 1, duration: 1.0, stagger: 0.14, ease: 'expo.out', immediateRender: false }, B);
+      { scale: 0.96, opacity: 0, transformOrigin: '50% 50%' },
+      { scale: 1, opacity: 1, duration: 0.95, stagger: 0.16, ease: 'expo.out', immediateRender: false }, B + 1.15);
   }
   // The track is an <img>, so it cannot be drawn with a dash offset. A clip
   // wipe from each half's own seam reads the same way: the circuit traces
   // itself clockwise, top half left-to-right, bottom half right-to-left.
-  if (trackTop) loadIn.fromTo(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 0.1);
-  if (trackBottom) loadIn.fromTo(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 0.35);
+  if (trackTop) loadIn.fromTo(trackTop, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 1.37);
+  if (trackBottom) loadIn.fromTo(trackBottom, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power2.inOut', immediateRender: false }, B + 1.59);
 
-  if (pillGroup.length) {
-    loadIn.fromTo(pillGroup,
-      { x: -22 * u, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.85, stagger: 0.07, ease: 'expo.out', immediateRender: false }, B + 0.2);
-  }
-  // Badges arrive in the order the circuit reaches them, not in document order.
+  /* 4. The markets arrive in the order the route reaches them, not in document
+        order. */
   const arrivalOrder = [...badgeInfo].sort((a, b) => a.s - b.s).map((b) => b.el);
   if (arrivalOrder.length) {
     loadIn.fromTo(arrivalOrder,
-      { scale: 0.72, opacity: 0, transformOrigin: '50% 50%' },
-      { scale: 1, opacity: 1, duration: 0.7, stagger: 0.13, ease: 'expo.out', immediateRender: false }, B + 0.45);
+      { scale: 0.96, opacity: 0, transformOrigin: '50% 50%' },
+      { scale: 1, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'expo.out', immediateRender: false }, B + 1.8);
   }
-  if (tags.length) loadIn.fromTo(tags, { y: 12 * u, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'expo.out', immediateRender: false }, B + 0.55);
-  if (stub) loadIn.fromTo(stub, { scaleX: 0, transformOrigin: '0% 50%' }, { scaleX: 1, duration: 0.45, ease: 'expo.out', immediateRender: false }, B + 0.62);
-  if (diamond) loadIn.fromTo(diamond, { scale: 0, rotation: 45 }, { scale: 1, rotation: 45, duration: 0.6, ease: 'expo.out', immediateRender: false }, B + 0.8);
-  if (nodes.length) loadIn.fromTo(nodes, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'expo.out', immediateRender: false }, B + 0.7);
+  /* 5. The eight nodes are the smallest things here, so they are the last and
+        the quietest: 1.8 design px of travel and a stagger tight enough that
+        they read as one shimmer down the rings rather than eight events. */
+  if (nodes.length) loadIn.fromTo(nodes, { scale: 0.7, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'expo.out', immediateRender: false }, B + 2.1);
+  if (tags.length) loadIn.fromTo(tags, { y: TAG_Y * u, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, stagger: 0.14, ease: 'expo.out', immediateRender: false }, B + 2.3);
 
   /* ── when it runs: the slide is active AND the hero is on screen ────────── */
 
@@ -395,7 +454,14 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     loop.pause();
     spawned.forEach((tl) => tl.kill());
     spawned.clear();
+    // The order and the market lights are this module's own elements, so
+    // `settleProps` -- which hands the DESIGN back to CSS -- does not reach
+    // them. Killing the spawned timelines stops them where they stood, which
+    // left a market lit at full strength for as long as the slide was away and
+    // through the whole of the next load-in, until its own turn came round
+    // again. Both are put out by hand.
     gsap.set(pulse, { opacity: 0 });
+    if (glows.length) gsap.set(glows, { opacity: 0 });
     settleProps();
   };
 

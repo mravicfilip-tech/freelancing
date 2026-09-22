@@ -430,6 +430,20 @@
      hidden geometry is worse than no beat. The loop asks the STYLESHEET which
      cast is on stage (`display: none` on the tiles) rather than the viewport,
      so there is one source of truth and no beat can fire at a hidden element.
+   * The ghosted wordmark, and this one is the basis's own fault rather than
+     the design's. It hangs in the FIELD at x 462..885, so moving the field to
+     centre the card on the window drags it across the plate: measured at 390,
+     it goes from 180 CSS px wide starting at x 178 -- a faint stepped shape
+     tucked into the right corner -- to 333 px wide starting at x 34, which is
+     95% of a 350-wide plate. It is also the one element here whose asset is
+     known to be the wrong crop (the note at .steps__mark--right in Steps.css:
+     panel 2 is served the shared slices export, which is why it draws as ruled
+     vertical lines instead of the node's faint arcs). At a sixth of the
+     desktop's area that reads as architecture behind the card; at full bleed
+     behind the only legible thing on the plate it reads as a fault, and in
+     light it is eight hard grey rules straight through the figure. The GLOW
+     stays -- it is what lights the card, it is a soft radial with no edges to
+     rule the plate with, and node 365:1393 puts it exactly where the card is.
 
    THE BASIS
    What is left is painted from the disc's left edge at 437.69 to the card's
@@ -459,4 +473,10 @@
   .panel--2 .s2__geom,
   .panel--2 .s2__rails,
   .panel--2 .s2__comet { display: none; }
+
+  /* Scoped to this panel on purpose: `.steps__mark--right` is the section's
+     element and Steps.css is its home, so what is written here is one panel
+     opting its own copy out of its own phone composition, not a change to the
+     shared rule. Panels 1 and 3 keep theirs. */
+  .panel--2 .steps__mark--right { display: none; }
 }

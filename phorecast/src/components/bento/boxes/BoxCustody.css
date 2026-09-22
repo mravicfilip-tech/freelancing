@@ -360,9 +360,13 @@
    each of those is read from its own wrapper in 526:1588 -- see the MARKETS
    table in BoxCustody.tsx, which carries both sets of coordinates.
 
-   Two things the phone genuinely redraws rather than moves: the glyph set,
-   which is solid where the desktop is line art (see BoxCustody.tsx), and the
-   market tiles, which all four carry a border here where only Stocks did. */
+   ONE thing the phone genuinely redraws rather than moves, and there used to
+   be two. The market tiles all four carry a border here, where the desktop
+   borders Stocks alone. The other was the glyph set -- solid on the phone
+   against the desktop's line art -- and the re-export of 365:925 ended that:
+   both frames now name the same seven leaves, so the phone draws the desktop's
+   set at the desktop's own insets and this block says nothing about glyphs at
+   all. The note at the foot of the block is where that is recorded. */
 @media (max-width: 720px) {
   .box-custody {
     /* 334 design pixels, not 474. The phone frame is 394 wide with the same
@@ -433,7 +437,17 @@
   /* Wallet: concentric with the ring at (107.5, 409.5), which is where the map
      puts the landscape wallet's own centre. Figma's mobile frame states the
      same stack a pixel off that (a 38px wrapper around a 37px disc); being
-     concentric with the ring the loop closes matters more than the pixel. */
+     concentric with the ring the loop closes matters more than the pixel.
+
+     Both origins are that centre less half the box, so a box that changes size
+     moves its own origin and nothing else's. The disc is 37: 107.5 - 18.5 = 89
+     and 409.5 - 18.5 = 391. The glyph is 16, not the 18 of the line-art wallet
+     it replaced: 107.5 - 8 = 99.5 and 409.5 - 8 = 401.5. The arithmetic is
+     written out because the re-export shrank that glyph and a pair carried
+     over from 18 would sit a pixel high and a pixel left of the ring -- 98.5,
+     400.5 -- which is small enough to survive a reading and not a measurement.
+     These two came off the phone's own 16px rule and are correct as they
+     stand; re-measured concentric to (107.5, 409.5) at 360, 390 and 430. */
   .custody__wallet-disc { left: calc(89 * var(--u)); top: calc(391 * var(--u)); }
   .custody__wallet-icon { left: calc(99.5 * var(--u)); top: calc(401.5 * var(--u)); }
 
@@ -446,9 +460,21 @@
      numbers rather than a rule per market, and it is why nothing here needs a
      class the desktop does not already have.
 
-     One of the eight is worth stating: Forex's tile ends 10 past the right of
-     the art box and Smart Contracts starts 17.5 off the left, both on purpose
-     -- the frame hangs them off its edges too, and the card has the room. */
+     FIVE of them hang off the 215-wide art box, not the two this used to
+     name, and a reader checking the claim against the render finds three it
+     does not account for. Measured, in design units from the box's left edge:
+     Stocks' tile starts at -8, Crypto's at -5, Smart Contracts at -17.5,
+     Forex's tile ends at 225 and Withdraw anytime at 238. Every one of the
+     five comes off its own wrapper in 526:1588 by way of the MARKETS table,
+     the same way the ones that sit inside the box do, so none of them is a
+     number that drifted. The card has the room at its tightest, which is 360,
+     where the column really is 334 units: the box is 215 of them, so the auto
+     margin is 59.5 a side, and Withdraw's 23 of overhang still stops 36.5
+     short of the card's edge. Every wider phone has more room, because --u
+     caps at 1px and the column goes on growing in units after the artwork has
+     stopped. Nothing is clipped and the page does not scroll sideways at 360,
+     390 or 430 -- scrollWidth equals clientWidth at all three. The box is the
+     artwork's frame and not the card's -- do not pull them back inside it. */
   .custody__label,
   .custody__tile,
   .custody__pill,

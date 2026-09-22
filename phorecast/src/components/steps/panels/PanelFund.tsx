@@ -9,6 +9,7 @@ import s2Tile2 from '../../../assets/steps/s2-tile2.svg';
 import s2Tile3 from '../../../assets/steps/s2-tile3.svg';
 import s2Tile4 from '../../../assets/steps/s2-tile4.svg';
 import s2Tile5 from '../../../assets/steps/s2-tile5.svg';
+import type { Timeline } from '../../../lib/motion';
 import { REDUCED, all, count, one } from '../../../lib/motion';
 import { tok, useThemeEpoch } from '../../../lib/theme';
 import { Icon } from '../../Icon';
@@ -63,9 +64,16 @@ const TILE_ICON = [
 
 /* The loop ------------------------------------------------------------------
  *
- * One beat, and it is the step's own sentence acted out: money arrives down
- * every rail at once, lands on a node that is locked, and the balance is
- * credited.
+ * One beat, and it is the step's own sentence acted out: money arrives, lands
+ * on a node that is locked, and the balance is credited.
+ *
+ * There are TWO casts, because the phone has two thirds fewer parts on stage --
+ * see THE PHONE COMPOSITION in PanelFund.css for what is dropped and why. Which
+ * one is playing is asked of the STYLESHEET, not of the viewport: the media
+ * query that hides the tiles is the single source of truth, so a beat can never
+ * fire at something that is `display: none`.
+ *
+ * THE DESKTOP BEAT SHEET -- five rails, five comets, the node and the card
  *
  *   0.00  the five tiles fire in turn, 0.13 apart -- each brightens its border
  *         and its glyph and leans 10 design px toward the node
@@ -90,6 +98,27 @@ const TILE_ICON = [
  *         the panel sits perfectly still for 1.80s before going again.
  *         Period 5.90s in GSAP time, inside the stepper's 6s dwell.
  *
+ * THE PHONE BEAT SHEET -- the locked node and the card, and nothing else
+ *
+ * The cast is five elements, so the law is easy to keep: the disc has the
+ * stage on its own for half a second, and everything else arrives in its wake.
+ *
+ *   0.00  the disc under the padlock takes the arrival -- one swell to 1.45
+ *         over 0.24s, settling back over 0.50s. Nothing else is moving.
+ *   0.55  the beam behind it, which is a real part of the design and rests at
+ *         full, drives out from the node into the card
+ *   0.80  the figure drops out downward, is reset to the pre-deposit $12,400
+ *         behind its own fade, and rolls back in; the progress indicator
+ *         drains right to left at the same moment
+ *   1.08  $12,400 counts to $18,800 over 1.60s -- slower than the desktop's
+ *         1.45, because on the phone it is the only thing left to watch --
+ *         while the indicator refills behind it
+ *   1.50  the padlock lifts 6 design px and slams shut: the balance is yours
+ *   2.70  every inline style the loop wrote is handed back to CSS, the figure
+ *         is restored to the design's $18,800, and the panel sits perfectly
+ *         still for 3.10s before going again.
+ *         Period 5.80s in GSAP time, inside the stepper's 6s dwell.
+ *
  * Mechanics worth keeping:
  * - There is not one delayed `fromTo` here, which is the only construct that
  *   writes its start value at build time and strands elements in it. Start
@@ -98,17 +127,25 @@ const TILE_ICON = [
  *   repeat re-arms without a second code path, and the mid-timeline `set`s
  *   (the figure's roll) render only when the playhead reaches them. Where a
  *   `to` needs an explicit landing value it is stated, never inferred.
- * - Rest is the design: one `clearProps: 'all'` at STORY removes everything
- *   the loop wrote, including the comets' flight transforms, so the resting
- *   frame is the stylesheet's and nothing is left inline. The counted text is
- *   put back by hand, on the last frame of the story and again on teardown,
- *   because text content is not a style.
+ * - Rest is the design: one `clearProps: 'all'` at the end of the story removes
+ *   everything the loop wrote, including the comets' flight transforms, so the
+ *   resting frame is the stylesheet's and nothing is left inline. It is handed
+ *   the cast that is actually on stage, so the phone never writes to a hidden
+ *   element even to clear it. The counted text is put back by hand, on the last
+ *   frame of the story and again on teardown, because text content is not a
+ *   style.
  * - Distances that have to look the same at every width are read off the
- *   rendered box as design pixels (`p`), not hardcoded in CSS pixels.
+ *   rendered box as design pixels (`p`), not hardcoded in CSS pixels. It is
+ *   measured off the balance card, whose 346 design px is the widest thing in
+ *   the panel and so the least sensitive to rounding -- and, unlike the panel's
+ *   own width, it is the same question on both casts, because the two have
+ *   different bases (886 and 442).
  * - No hover, no pointer, no idle drift. Reduced motion never builds anything.
  */
 const STORY = 4.1;
 const REST = 1.8;
+const STORY_PHONE = 2.7;
+const REST_PHONE = 3.1;
 const START_AMOUNT = 12400;
 const END_AMOUNT = 18800;
 const money = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
@@ -166,62 +203,97 @@ function useFundLoop() {
     const beam = one(root, '.s2__beam');
     const amount = one(root, '.s2__balance-amt');
     const progress = one(root, '.s2__progress');
+    const card = one(root, '.s2__balance');
     if (tiles.length !== 5 || comets.length !== 5 || paths.length !== 5) return;
-    if (!disc || !lock || !beam || !amount || !progress) return;
+    if (!disc || !lock || !beam || !amount || !progress || !card) return;
 
     // The design pixel, read off the rendered box rather than out of `--p`:
     // the unit is written in container-query units and computes to an
-    // unresolved token, so it can only be measured.
+    // unresolved token, so it can only be measured. The card is what it is
+    // measured on: it is 346 design px on both casts, where the panel's own
+    // width means 886 on the desktop and 442 on the phone.
     const box = root.getBoundingClientRect();
-    const p = box.width / 886;
+    const p = card.getBoundingClientRect().width / 346;
     if (p <= 0) return;
-    const restAmount = amount.textContent ?? money(END_AMOUNT);
-    const restBorder = tiles.map((t) => getComputedStyle(t).borderTopColor);
-    /* A tile firing, as a pair per property. The glyph's lift is a `filter`,
-       and GSAP interpolates filters STRUCTURALLY, so the two values have to
-       list the same functions in the same order -- which is why the rest value
-       is named here rather than written as the identity `brightness(1)` at the
-       call site. Today's values are the fallbacks. */
-    const tileLit = tok('--steps-p2-tile-lit', 'rgba(255, 128, 96, 0.55)');
-    const glyphRest = tok('--steps-p2-glyph-rest', 'brightness(1)');
-    const glyphLit = tok('--steps-p2-glyph-lit', 'brightness(2.1)');
 
-    /* Which rail is each comet resting on, and how far along it?
-       Asked of the geometry rather than assumed, so the answer stays right if
-       an asset is ever re-exported with the curves in another order. */
-    const rails = paths.map((path, i) => sampleRail(path, RAILS[i].reverse));
-    const rides = comets.map((el) => {
-      const r = el.getBoundingClientRect();
-      // Rotation is about the centre, so the centre of the axis-aligned box the
-      // browser reports is still the element's own centre.
-      const rest: Pt = {
-        x: (r.left + r.width / 2 - box.left) / p - LINES_X,
-        y: (r.top + r.height / 2 - box.top) / p - LINES_Y,
-      };
-      let best = { pts: rails[0], u: 0, d: Infinity };
-      rails.forEach((pts) => {
-        pts.forEach((pt, i) => {
-          const d = (pt.x - rest.x) ** 2 + (pt.y - rest.y) ** 2;
-          if (d < best.d) best = { pts, u: i / (pts.length - 1), d };
+    /* WHICH CAST IS ON STAGE. The phone drops the tiles, the rails, the lines
+       and the comets in CSS -- see THE PHONE COMPOSITION in PanelFund.css --
+       so this asks the stylesheet rather than the viewport: one source of
+       truth, and nothing here can then fire at a hidden element.
+
+       It asks the RENDER and not the element's own `display`, which is the
+       trap this walked into once already. The rule hides the rails CONTAINER,
+       and an element inside a `display: none` ancestor still reports its own
+       computed display -- `block` for an absolutely positioned span -- so the
+       obvious test came back false on a phone and the desktop cast went on
+       animating five tiles and five comets that were not on the screen.
+       `getClientRects()` is empty for anything that is not laid out at all,
+       whichever ancestor took it off stage. */
+    const phone = tiles[0].getClientRects().length === 0;
+
+    const restAmount = amount.textContent ?? money(END_AMOUNT);
+    /* The cast on stage. `clearProps` is only ever handed this, so the phone
+       never writes to an element the stylesheet has taken out. */
+    const cast = phone
+      ? [disc, lock, beam, amount, progress]
+      : [...tiles, ...glyphs, ...comets, disc, lock, beam, amount, progress];
+
+    type Ride = { el: HTMLElement; pts: Pt[]; u0: number; rest: Pt; rot0: number; tan0: number };
+    const rides: Ride[] = [];
+    let restBorder: string[] = [];
+    let tileLit = '';
+    let glyphRest = '';
+    let glyphLit = '';
+
+    if (!phone) {
+      restBorder = tiles.map((t) => getComputedStyle(t).borderTopColor);
+      /* A tile firing, as a pair per property. The glyph's lift is a `filter`,
+         and GSAP interpolates filters STRUCTURALLY, so the two values have to
+         list the same functions in the same order -- which is why the rest
+         value is named here rather than written as the identity
+         `brightness(1)` at the call site. Today's values are the fallbacks. */
+      tileLit = tok('--steps-p2-tile-lit', 'rgba(255, 128, 96, 0.55)');
+      glyphRest = tok('--steps-p2-glyph-rest', 'brightness(1)');
+      glyphLit = tok('--steps-p2-glyph-lit', 'brightness(2.1)');
+
+      /* Which rail is each comet resting on, and how far along it?
+         Asked of the geometry rather than assumed, so the answer stays right if
+         an asset is ever re-exported with the curves in another order -- which
+         is exactly what the 2026 re-export of 365:1345 did to the box these
+         curves live in. */
+      const rails = paths.map((path, i) => sampleRail(path, RAILS[i].reverse));
+      comets.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        // Rotation is about the centre, so the centre of the axis-aligned box
+        // the browser reports is still the element's own centre.
+        const rest: Pt = {
+          x: (r.left + r.width / 2 - box.left) / p - LINES_X,
+          y: (r.top + r.height / 2 - box.top) / p - LINES_Y,
+        };
+        let best = { pts: rails[0], u: 0, d: Infinity };
+        rails.forEach((pts) => {
+          pts.forEach((pt, i) => {
+            const d = (pt.x - rest.x) ** 2 + (pt.y - rest.y) ** 2;
+            if (d < best.d) best = { pts, u: i / (pts.length - 1), d };
+          });
+        });
+        // `DOMMatrix` is fed the computed transform, which is the string
+        // `none` for the one comet the design does not rotate; not every
+        // engine parses that, so identity is the fallback.
+        const css = getComputedStyle(el).transform;
+        let rot = new DOMMatrixReadOnly();
+        if (css && css !== 'none') { try { rot = new DOMMatrixReadOnly(css); } catch { /* identity */ } }
+        rides.push({
+          el,
+          pts: best.pts,
+          u0: best.u,
+          rest,
+          rot0: (Math.atan2(rot.b, rot.a) * 180) / Math.PI,
+          tan0: headingAt(best.pts, best.u),
         });
       });
-      // `DOMMatrix` is fed the computed transform, which is the string
-      // `none` for the one comet the design does not rotate; not every
-      // engine parses that, so identity is the fallback.
-      const css = getComputedStyle(el).transform;
-      let rot = new DOMMatrixReadOnly();
-      if (css && css !== 'none') { try { rot = new DOMMatrixReadOnly(css); } catch { /* identity */ } }
-      return {
-        el,
-        pts: best.pts,
-        u0: best.u,
-        rest,
-        rot0: (Math.atan2(rot.b, rot.a) * 180) / Math.PI,
-        tan0: headingAt(best.pts, best.u),
-      };
-    });
+    }
 
-    type Ride = (typeof rides)[number];
     const place = (ride: Ride, u: number) => {
       const pt = pointAt(ride.pts, u);
       const run = Math.max(1e-3, 1 - ride.u0);
@@ -237,64 +309,81 @@ function useFundLoop() {
       });
     };
 
-    const everything = [...tiles, ...glyphs, ...comets, disc, lock, beam, amount, progress];
+    /* The beats BOTH casts play: the node takes the arrival, drives it into
+       the card, the figure is credited and the lock closes. Only the times and
+       the length of the count differ between desktop and phone, so they are
+       arguments rather than a second copy that can drift out of step. */
+    const credit = (
+      tl: Timeline,
+      at: { disc: number; beam: number; figure: number; lock: number },
+      countFor: number,
+    ) => {
+      /* the node takes the arrival, and pushes it into the card */
+      tl.to(disc, { scale: 1.45, duration: 0.24, ease: 'back.out(2.4)' }, at.disc)
+        .to(disc, { scale: 1, duration: 0.5, ease: 'power2.out' }, at.disc + 0.24)
+        .to(beam, { scaleX: 1, opacity: 1, duration: 0.55, ease: 'power3.out' }, at.beam);
+
+      /* the deposit is credited. The figure leaves before it is reset, so the
+         drop from $18,800 back to the pre-deposit $12,400 happens behind its
+         own fade and is never a visible step backwards. */
+      tl.to(amount, { yPercent: -32, opacity: 0, duration: 0.22, ease: 'power2.in' }, at.figure)
+        .set(amount, { yPercent: 32 }, at.figure + 0.24)
+        .call(() => { amount.textContent = money(START_AMOUNT); }, undefined, at.figure + 0.24)
+        .to(amount, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, at.figure + 0.24)
+        .to(progress, { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.2, ease: 'power2.in' }, at.figure)
+        .to(progress, { clipPath: 'inset(0% 0% 0% 0%)', duration: countFor, ease: 'power2.out' }, at.figure + 0.25);
+      count(tl, amount, START_AMOUNT, END_AMOUNT, at.figure + 0.28, countFor, money);
+
+      /* and it is locked */
+      tl.to(lock, { y: -6 * p, scale: 1.3, duration: 0.2, ease: 'power2.out' }, at.lock)
+        .to(lock, { y: 0, scale: 1, duration: 0.42, ease: 'back.out(3)' }, at.lock + 0.2);
+    };
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: REST, paused: true });
+      const story = phone ? STORY_PHONE : STORY;
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: phone ? REST_PHONE : REST, paused: true });
 
       /* ---- the panel at the start of the story, re-applied on every repeat */
-      tl.set(everything, { clearProps: 'all' }, 0)
+      tl.set(cast, { clearProps: 'all' }, 0)
         .set([disc, lock], { transformOrigin: '50% 50%' }, 0)
         .set(beam, { scaleX: 0.08, opacity: 0.25, transformOrigin: '0% 50%' }, 0)
         .call(() => { amount.textContent = restAmount; }, undefined, 0);
 
-      /* ---- 1. the rails fire, and each one lets its charge go */
-      rides.forEach((ride, i) => {
-        const at = i * 0.13;
-        tl.to(tiles[i], { x: 10 * p, borderColor: tileLit, duration: 0.3, ease: 'power2.out' }, at)
-          .to(tiles[i], { x: 0, borderColor: restBorder[i], duration: 0.62, ease: 'power2.inOut' }, at + 0.3)
-          .to(glyphs[i], { filter: glyphLit, duration: 0.3, ease: 'power2.out' }, at)
-          .to(glyphs[i], { filter: glyphRest, duration: 0.62, ease: 'power2.inOut' }, at + 0.3);
+      if (phone) {
+        /* Five elements on stage, so the law is easy to keep: the disc has the
+           first half second on its own and everything else arrives in its
+           wake. Nothing here touches a tile, a rail or a comet. */
+        credit(tl, { disc: 0, beam: 0.55, figure: 0.8, lock: 1.5 }, 1.6);
+      } else {
+        /* ---- the rails fire, and each one lets its charge go */
+        rides.forEach((ride, i) => {
+          const at = i * 0.13;
+          tl.to(tiles[i], { x: 10 * p, borderColor: tileLit, duration: 0.3, ease: 'power2.out' }, at)
+            .to(tiles[i], { x: 0, borderColor: restBorder[i], duration: 0.62, ease: 'power2.inOut' }, at + 0.3)
+            .to(glyphs[i], { filter: glyphLit, duration: 0.3, ease: 'power2.out' }, at)
+            .to(glyphs[i], { filter: glyphRest, duration: 0.62, ease: 'power2.inOut' }, at + 0.3);
 
-        const flight = { u: ride.u0 };
-        tl.set(flight, { u: ride.u0 }, at + 0.12)
-          .to(flight, {
-            u: 1,
-            duration: 1.3,
-            ease: 'power2.in',
-            onUpdate: () => place(ride, flight.u),
-          }, at + 0.12)
-          .to(ride.el, { opacity: 0, duration: 0.3, ease: 'power1.in' }, at + 1.12)
-          // Back to the design's spot while it is invisible, so the return is
-          // a fade and never a slide backwards along the rail.
-          .set(ride.el, { clearProps: 'transform' }, at + 1.42)
-          .to(ride.el, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 3.35 + i * 0.06);
-      });
+          const flight = { u: ride.u0 };
+          tl.set(flight, { u: ride.u0 }, at + 0.12)
+            .to(flight, {
+              u: 1,
+              duration: 1.3,
+              ease: 'power2.in',
+              onUpdate: () => place(ride, flight.u),
+            }, at + 0.12)
+            .to(ride.el, { opacity: 0, duration: 0.3, ease: 'power1.in' }, at + 1.12)
+            // Back to the design's spot while it is invisible, so the return is
+            // a fade and never a slide backwards along the rail.
+            .set(ride.el, { clearProps: 'transform' }, at + 1.42)
+            .to(ride.el, { opacity: 1, duration: 0.45, ease: 'power2.out' }, 3.35 + i * 0.06);
+        });
 
-      /* ---- 2. the node takes the arrivals, and pushes them into the card */
-      tl.to(disc, { scale: 1.45, duration: 0.24, ease: 'back.out(2.4)' }, 1.62)
-        .to(disc, { scale: 1, duration: 0.5, ease: 'power2.out' }, 1.86)
-        .to(beam, { scaleX: 1, opacity: 1, duration: 0.55, ease: 'power3.out' }, 1.66);
+        credit(tl, { disc: 1.62, beam: 1.66, figure: 1.8, lock: 2.3 }, 1.45);
+      }
 
-      /* ---- 3. the deposit is credited
-         The figure leaves before it is reset, so the drop from $18,800 back to
-         the pre-deposit $12,400 happens behind its own fade and is never a
-         visible step backwards. */
-      tl.to(amount, { yPercent: -32, opacity: 0, duration: 0.22, ease: 'power2.in' }, 1.8)
-        .set(amount, { yPercent: 32 }, 2.04)
-        .call(() => { amount.textContent = money(START_AMOUNT); }, undefined, 2.04)
-        .to(amount, { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, 2.04)
-        .to(progress, { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.2, ease: 'power2.in' }, 1.8)
-        .to(progress, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.45, ease: 'power2.out' }, 2.05);
-      count(tl, amount, START_AMOUNT, END_AMOUNT, 2.08, 1.45, money);
-
-      /* ---- 4. and it is locked */
-      tl.to(lock, { y: -6 * p, scale: 1.3, duration: 0.2, ease: 'power2.out' }, 2.3)
-        .to(lock, { y: 0, scale: 1, duration: 0.42, ease: 'back.out(3)' }, 2.5);
-
-      /* ---- 5. hand it all back to CSS and hold still */
-      tl.set(everything, { clearProps: 'all' }, STORY)
-        .call(() => { amount.textContent = restAmount; }, undefined, STORY);
+      /* ---- hand it all back to CSS and hold still */
+      tl.set(cast, { clearProps: 'all' }, story)
+        .call(() => { amount.textContent = restAmount; }, undefined, story);
 
       tl.play(0);
     }, root);

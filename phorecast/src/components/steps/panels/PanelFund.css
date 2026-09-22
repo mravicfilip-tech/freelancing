@@ -386,3 +386,77 @@
     rgba(126, 2, 2, 0.18) 84.624%,
     rgba(255, 251, 248, 0.5) 105.21%);
 }
+
+/* THE PHONE COMPOSITION -------------------------------------------------------
+   Above 700 this panel is the whole 886 x 610 frame scaled to the column. Below
+   it, Steps.css hands every panel `--p: calc(100cqw / <its own artwork>)` --
+   822 for this one -- and at a 390 viewport that is 0.423 design pixels per CSS
+   pixel. Measured at 390 off a freshly started server: the card's 14px BALANCE
+   renders at 5.93px, the 40px figure at 16.93px, the progress indicator at
+   29.6 x 3, and a tile's 34px glyph at 14.4. A faithful reproduction of the
+   design at two fifths of its size is not a small illustration, it is noise.
+   This is the same ruling SlideAccount.css already made for the hero: FEWER
+   PARTS, LARGER, not the same parts smaller.
+
+   WHAT THE STEP'S SENTENCE IS
+   Money arrives, and the balance grows. What says that is the locked node and
+   the card it feeds -- and those two are welded together by the design itself:
+   the beam starts inside the node at 465 and ends at 521.8, which is 23 design
+   px INSIDE the card's left edge at 499. They cannot be stacked or separated
+   without redrawing the one element that carries the arrival.
+
+   WHAT GOES, AND WHY
+   * The five rail tiles. Five 90 x 52 plates plus the fan they anchor occupy
+     x 65..429, which is 364 design px -- more than the balance card itself.
+     They are also the part of the sentence the phone does not need: the step
+     says money arrives, not that it arrives from five named places.
+   * The converging lines. 342.7 x 305.1, a five-way fan whose five ends ARE
+     the tiles. With the tiles gone it fans out of nothing, and it is wider
+     than the whole field at any basis that keeps the card legible.
+   * All five comets, and with them the sampled charge. This is the one that
+     was argued hardest, because a comet is the only thing in the panel that
+     literally arrives. The arithmetic refuses it: the card is 346 design px
+     and the house floor for a retained micro-label on a phone is about 10px
+     (measured on the hero's phone composition, whose smallest surviving type
+     is 10.1px), which caps the basis at 14 x 348 / 10 = 487. The disc sits
+     just 42 design px left of the card, so at a basis of 487 the runway
+     between the plate's left edge and the disc is 44 design px -- barely more
+     than the comet's own 37.7 length. A charge that travels one body length
+     is a twitch, not an arrival. The fan and the card are the same rectangle
+     on a phone, and the card wins, because the card is the only part of this
+     step with a number in it.
+   * .s2__geom with them. It is the invisible geometry the flight is sampled
+     off; with no flight there is nothing to sample, and a sampler pointed at
+     hidden geometry is worse than no beat. The loop asks the STYLESHEET which
+     cast is on stage (`display: none` on the tiles) rather than the viewport,
+     so there is one source of truth and no beat can fire at a hidden element.
+
+   THE BASIS
+   What is left is painted from the disc's left edge at 437.69 to the card's
+   right edge at 845, and from the card's top at 226 to its foot at 384: a
+   407.3 x 158 group centred on (641.35, 305). The basis is 442, which is that
+   width plus 17 design px of gutter each side -- 13.7 CSS px at 390, the same
+   air the page gutter gives the plate itself. At 390 that is 0.787 design
+   pixels per CSS pixel, 1.86x what the panel had: BALANCE goes 5.93 -> 11.02px,
+   the figure 16.93 -> 31.49px, the indicator 29.6 x 3 -> 55.1 x 5.5, and the
+   padlock 6.8 -> 12.6px. At the 360 floor the label still reads 10.07px, and
+   at 430 it is 12.2px.
+
+   `--cy` is 305 and not the 305.5 the desktop uses: 305 is the card's own
+   centre, ((226 + 384) / 2), and with the tiles gone the card is what the
+   field is balanced on.
+
+   SPECIFICITY. Steps.tsx imports the panels before ./Steps.css, so Steps.css
+   wins at equal specificity and its own `.panel--2 { --p }` would beat a bare
+   `.panel--2` written here. `.panel.panel--2` is one class heavier and lands.
+   A transform is NOT an option for any of this: the loop measures its travel
+   off the rendered design pixel, so a scaled panel overshoots every beat by
+   the scale factor. --p is the knob. ------------------------------------- */
+@media (max-width: 700px) {
+  .panel.panel--2 { --p: calc(100cqw / 442); --cx: 641.35; --cy: 305; }
+
+  .panel--2 .s2__lines,
+  .panel--2 .s2__geom,
+  .panel--2 .s2__rails,
+  .panel--2 .s2__comet { display: none; }
+}

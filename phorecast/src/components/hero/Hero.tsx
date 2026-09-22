@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { gsap } from 'gsap';
 import { REDUCED, useSectionMotion } from '../../lib/motion';
 import { heroBuild, heroIdle, slideIn } from './entrance';
@@ -143,8 +143,47 @@ function initialSlide() {
   return n >= 1 && n <= SLIDES.length ? n - 1 : 0;
 }
 
+/**
+ * Which slides show the 3D mark, and where.
+ *
+ * Two of the four do: slide 1, where it is the whole illustration, and slide 4,
+ * where it is one part of the network diagram (Figma 390:3609, a 370 x 370
+ * square at 734, 242 inside group 365:803 -- `.sl4__mark-slot`). There is one
+ * scene, not two, so the fourth slide is not a second mark: it is the same one,
+ * moved.
+ *
+ * Slide 4's mark belongs to the two-column layout only. Below `STACKED` the
+ * mark is slide 1's own visual (see the render below) and cannot be in two
+ * slides at once, and slide 4's phone crop is chosen so the slot falls outside
+ * the window anyway (SlideFuture.css).
+ */
+const SLOT_SLIDE = 3;
+
+/**
+ * How tall the mark is drawn inside its slot, as a fraction of the slot.
+ *
+ * Figma's render of 390:3609 puts a 232 x 268 mark in the middle of its 370
+ * square, so this is 268/370. Measured on the rendered pixels, both numbers:
+ * the design's render and the page are diffed against the same page with the
+ * layer hidden, and the bounding box of what differs is the mark.
+ */
+const MARK_IN_SLOT = 268 / 370;
+
+/**
+ * The mark's drawn height over the `size` LogoScene is given.
+ *
+ * `placement` is not the mark's drawn size -- the silhouette is taller than the
+ * number it is handed, because `size` is the height of the pivot and the mark
+ * is turned inside it. Measured at 1440 on slide 1: a 507px mark from a size of
+ * 475.2. Together with the fraction above it lands a 202px mark in a 277.5px
+ * slot, against the design's 201.
+ */
+const MARK_DRAWN_OVER_SIZE = 1.0669;
+
 export function Hero() {
-  const [index, setIndex] = useState(initialSlide);
+  // `from` is the slide being left, kept because the mark's two homes are one
+  // object: see `markOnSlot` below.
+  const [{ index, from }, setSlide] = useState(() => ({ index: initialSlide(), from: initialSlide() }));
   const [paused, setPaused] = useState(() => initialSlide() !== 0);
   const reduced = useRef(false);
 
@@ -162,11 +201,14 @@ export function Hero() {
 
   useEffect(() => {
     if (paused || !onScreen || reduced.current) return;
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), AUTOPLAY_MS);
+    const id = window.setInterval(() => setSlide((s) => ({ from: s.index, index: (s.index + 1) % SLIDES.length })), AUTOPLAY_MS);
     return () => window.clearInterval(id);
   }, [paused, onScreen, index]);
 
-  const go = useCallback((i: number) => setIndex(((i % SLIDES.length) + SLIDES.length) % SLIDES.length), []);
+  const go = useCallback(
+    (i: number) => setSlide((s) => ({ from: s.index, index: ((i % SLIDES.length) + SLIDES.length) % SLIDES.length })),
+    [],
+  );
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight') go(index + 1);
@@ -174,7 +216,8 @@ export function Hero() {
   };
 
   const active = SLIDES[index];
-  // Slide 1 is the only one that shows the mark; it sits where the static SVG did.
+  // Slides 1 and 4 show the mark: slide 1 where the static SVG used to sit, and
+  // slide 4 on `.sl4__mark-slot` (see SLOT_SLIDE above). One scene serves both.
   // The hero is above the fold, so the observer in useSectionMotion fires at
   // once; the hook still holds the timeline until the browser has painted.
   const heroRef = useSectionMotion<HTMLElement>(
@@ -269,12 +312,109 @@ export function Hero() {
     [stacked, compact],
   );
 
+  /**
+   * Slide 4 puts the mark on `.sl4__mark-slot`, and it is MOVED there rather
+   * than re-placed.
+   *
+   * `placement` is a dependency of the effect in HeroLogo that constructs the
+   * scene, so handing slide 4 a placement of its own would dispose the
+   * WebGLRenderer and build a fresh one on every carousel advance -- eight
+   * rebuilds a minute, for the life of the page, none of it visible in a
+   * screenshot. Measured, three full carousel cycles at 1440 driven by the
+   * pager: 13 scene constructions with `markPlacement` keyed on `index`, one
+   * for the build and one for each of the twelve changes. With the transform
+   * below, 1 -- and 1 again under live autoplay.
+   *
+   * So the layer keeps its box and its placement, and the canvas inside it
+   * wears a transform instead (see Hero.css for why the canvas and not the
+   * layer). A transform raises no ResizeObserver, so LogoScene does not even
+   * re-lay-out, let alone rebuild; nothing about the scene knows this happened.
+   *
+   * The numbers have to be measured because none of them is expressible in CSS.
+   * The scale is a ratio of two lengths, which calc() cannot divide, and the
+   * slot's position depends on the nav's height -- so this reads the boxes and
+   * writes custom properties that Hero.css spends.
+   */
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || stacked) return;
+    const logo = hero.querySelector<HTMLElement>('.hero__logo');
+    const stage = hero.querySelector<HTMLElement>('.hero__stage');
+    const slot = hero.querySelector<HTMLElement>('.sl4__mark-slot');
+    const visual = slot?.closest<HTMLElement>('.hero__visual');
+    if (!logo || !stage || !slot || !visual) return;
+
+    const place = () => {
+      // The slot's SETTLED box. `.hero__visual` carries the slide's entrance
+      // (translateY(18px) scale(0.985) until the slide is active, then 800ms
+      // back to none), so its rect is whatever that transition is holding right
+      // now and the slot's rect is the same lie. `.hero__stage` is the visual's
+      // containing block and is never transformed, so the visual's own scale
+      // is the ratio of the two widths -- divide it out and the slot is back on
+      // the coordinates CSS states for it, whenever this is asked.
+      const heroBox = hero.getBoundingClientRect();
+      const stageBox = stage.getBoundingClientRect();
+      const visualBox = visual.getBoundingClientRect();
+      const slotBox = slot.getBoundingClientRect();
+      const settling = visualBox.width / stageBox.width;
+      const side = slotBox.width / settling;
+      const cx = stageBox.left + (slotBox.left - visualBox.left) / settling + side / 2 - heroBox.left;
+      const cy = stageBox.top + (slotBox.top - visualBox.top) / settling + side / 2 - heroBox.top;
+
+      // `.hero__logo` is `inset: 0` on the hero, so the layer's box is the
+      // hero's box -- and the same box LogoScene measures the mark against.
+      const { width: w, height: h } = heroBox;
+      const P = markPlacement;
+      const size = Math.min(P.heightFraction * h, P.widthFraction * w); // LogoScene.layout()
+      const drawn = side * MARK_IN_SLOT;
+      const k = drawn / MARK_DRAWN_OVER_SIZE / size;
+      hero.style.setProperty('--mark-k', String(k));
+      hero.style.setProperty('--mark-tx', `${cx - k * P.cx * w}px`);
+      hero.style.setProperty('--mark-ty', `${cy - k * P.cy * h}px`);
+      // The static fallback is an <img> and is placed rather than scaled: see
+      // Hero.css. Its centre and its drawn height, in the layer's own box.
+      hero.style.setProperty('--mark-cx', `${cx}px`);
+      hero.style.setProperty('--mark-cy', `${cy}px`);
+      hero.style.setProperty('--mark-h', `${drawn}px`);
+    };
+
+    place();
+    // BOTH boxes, and the slot is not the redundant one. The hero is 148px
+    // taller on slide 1 than on slide 4 at 1440 -- the market snapshot -- so
+    // the layer's height, and with it the mark's place in it, is a per-slide
+    // number; that is the hero's to report. The slot's size comes from `--u`,
+    // which is `100cqw` of `.sl4`, and container units are resolved from the
+    // container's size at the last layout rather than the current one. Measured
+    // at 1440: the first pass read a 1350px stage and a 274.2px slot in the
+    // same frame -- a slot still sized against the 1334px column the page had
+    // while it was reserving room for a scrollbar -- and the hero's own resize
+    // fired while that lag was still in force, so watching the hero alone left
+    // the mark 1.2% small for the life of the page. The slot's box settling is
+    // its own event and this waits for it.
+    const ro = new ResizeObserver(place);
+    ro.observe(hero);
+    ro.observe(slot);
+    return () => ro.disconnect();
+  }, [heroRef, stacked, markPlacement, index]);
+
+  // Below STACKED the mark IS slide 1's visual and cannot also be slide 4's.
+  const markOnSlot = !stacked && index === SLOT_SLIDE;
   const mark = (
     <HeroLogo
       hostRef={heroRef}
       variant="lined"
       placement={markPlacement}
-      className={`hero__logo${index === 0 ? ' is-visible' : ''}`}
+      className={[
+        'hero__logo',
+        index === 0 || markOnSlot ? 'is-visible' : '',
+        markOnSlot ? 'is-onSlot' : '',
+        // The move is transitioned only when the mark was already on screen
+        // when the slide changed -- which is to say, only when somebody could
+        // see it move. Every other change to the transform happens at opacity
+        // 0, where a jump is not a jump, and a 600ms glide into a slide that is
+        // still arriving would be one more thing competing with its load-in.
+        from === 0 || from === SLOT_SLIDE ? 'is-moving' : '',
+      ].filter(Boolean).join(' ')}
     />
   );
 

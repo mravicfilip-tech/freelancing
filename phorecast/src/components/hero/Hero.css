@@ -235,15 +235,60 @@
   flex-wrap: wrap;
 }
 
-/* Slide 1 visual: the animated 3D mark. It stays mounted across the whole
-   carousel and cross-fades, so the WebGL context is built once. */
+/* The animated 3D mark. It stays mounted across the whole carousel and
+   cross-fades, so the WebGL context is built once.
+
+   TWO SLIDES, ONE MARK. Slide 1 shows it as the whole right-hand illustration;
+   slide 4 shows it inside the network diagram, on `.sl4__mark-slot`. The layer
+   is a single scene either way, so slide 4 does not get a placement of its own
+   -- that would rebuild the scene on every advance (see Hero.tsx) -- it gets a
+   transform, off custom properties Hero.tsx measures and writes.
+
+   The transform is not transitioned by default. Every change to it but one
+   happens while the layer is at opacity 0, where a jump cannot be seen; the
+   exception is a change straight between the two slides that show the mark,
+   and `is-moving` is set for exactly that case, so the mark travels between its
+   two homes in step with the copy's own 600ms cross-fade. */
 .hero__logo {
   z-index: 0;
   opacity: 0;
   transition: opacity 600ms ease;
 }
 .hero__logo.is-visible { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .hero__logo { transition: none; } }
+/* ON THE CANVAS, NOT ON THE LAYER. `.hero__logo`'s own transform belongs to the
+   entrance -- entrance.ts tweens it from scale 0.94 and GSAP writes that inline,
+   where a stylesheet cannot reach it. The canvas fills the layer, so its own
+   coordinates ARE the layer's: a translate of `--mark-tx` moves the mark that
+   many layer pixels, which is what those numbers mean. */
+.hero__logo.is-onSlot canvas {
+  transform-origin: 0 0;
+  transform: translate(var(--mark-tx, 0px), var(--mark-ty, 0px)) scale(var(--mark-k, 1));
+}
+.hero__logo.is-moving canvas { transition: transform 600ms ease; }
+
+/* The static fallback, where there is no WebGL to draw the live one. It is
+   PLACED on the slot rather than carried there by the transform above: the
+   image is laid out at 72%/12% of the layer, not at its origin, so a layer
+   space translate applied to it starts from that offset and lands it 412px off
+   the layer's right edge, where `overflow: hidden` eats it. Measured before
+   this: the slot was empty in every `--disable-webgl` capture.
+
+   The two numbers are the ones the live mark uses -- the slot's centre and the
+   design's drawn height inside it -- so the outline arrives at the size and
+   place the scene would have drawn, which is what the 72/12/60 above already
+   does for slide 1. */
+.hero__logo.is-onSlot img {
+  left: var(--mark-cx);
+  top: var(--mark-cy);
+  height: var(--mark-h);
+  transform: translate(-50%, -50%);
+}
+.hero__logo.is-moving img { transition: left 600ms ease, top 600ms ease, height 600ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  .hero__logo,
+  .hero__logo.is-moving canvas,
+  .hero__logo.is-moving img { transition: none; }
+}
 
 /* Per-slide glow anchoring: slide 2 sits bottom-left, slide 4 bottom-right. */
 .hero__bg--account .hero__glow--ember  { left: calc(-285 * var(--u)); }

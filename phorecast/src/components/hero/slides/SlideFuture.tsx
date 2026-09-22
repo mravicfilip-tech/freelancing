@@ -9,8 +9,10 @@
  * `.sl4__frame` is the painted 999 x 570 box, anchored from the right.
  *
  * The 3D Phorcast mark is NOT rendered here — the hero mounts it as a live
- * WebGL scene (components/HeroLogo). `.sl4__mark-slot` is the empty 370 x 370
- * box it belongs in, at 734, 242 in these same group coordinates.
+ * WebGL scene (components/HeroLogo) and moves that one scene onto this slide.
+ * `.sl4__mark-slot` is the 370 x 370 box it lands in, at 734, 242 in these same
+ * group coordinates. The slot stays empty on a phone, where the crop leaves it
+ * off-frame and the mark is slide 1's own visual (see SlideFuture.css).
  */
 import { useEffect, useRef } from 'react';
 import { Icon } from '../../Icon';
@@ -58,9 +60,19 @@ const BADGES: ReadonlyArray<readonly [number, number]> = [
   [997, 645],   // 474:901  — bottom right
 ];
 
-/** Ellipse 78 — 6px white nodes strung along the circles. */
-const WHITE_NODES: ReadonlyArray<readonly [number, number]> = [
-  [491, 331], [534, 297], [534, 544], [491, 511], [457, 427], [457, 415],
+/**
+ * Ellipse 78 — 6px white nodes strung along the circles.
+ *
+ * The third carries a modifier because the phone composition drops it: the
+ * promoted ELECTIONS chip lands on it and no legible chip clears it (see
+ * SlideFuture.css). It is the one node that has to be nameable, and naming it
+ * costs a one-off GONE-plus-ADDED row in theme-diff.mjs, which keys an element
+ * by its class plus its ordinal -- the same cost the grey node below is
+ * written to avoid, paid here because there is no other way to reach one of
+ * six identical dots from a stylesheet.
+ */
+const WHITE_NODES: ReadonlyArray<readonly [number, number, string?]> = [
+  [491, 331], [534, 297], [534, 544, 'sl4__node--under-elections'], [491, 511], [457, 427], [457, 415],
 ];
 
 export function SlideFuture() {
@@ -106,13 +118,13 @@ export function SlideFuture() {
           {/* Reserved for <HeroLogo /> — the live 3D lined mark. */}
           <div className="sl4__mark-slot" />
 
-          {WHITE_NODES.map(([x, y]) => (
+          {WHITE_NODES.map(([x, y, mod]) => (
             <Icon
               key={`${x}-${y}`}
               src={dotWhite}
               w={6}
               h={6}
-              className="sl4__node"
+              className={mod ? `sl4__node ${mod}` : 'sl4__node'}
               style={{ '--x': x, '--y': y, '--s': 6, ...NO_BOX } as Vars}
             />
           ))}

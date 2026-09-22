@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import envelope from '../../../assets/steps/s1-envelope.svg';
@@ -26,6 +26,8 @@ import './PanelRegister.css';
  * One beat, and it is the step's own sentence acted out: an email address
  * becomes an account becomes a working app.
  *
+ * DESKTOP -- all three acts.
+ *
  *   0.00  the pill's stroke comes up to full orange and the envelope lands
  *   0.30  the address types itself in -- the text is revealed by a clip and the
  *         caret rides the reveal's leading edge, so it travels the whole string
@@ -40,6 +42,24 @@ import './PanelRegister.css';
  *   4.35  everything is handed back to CSS (`clearProps`), and the panel sits
  *         perfectly still for 1.55s before going again. Period 5.90s in GSAP
  *         time, inside the stepper's 6s dwell.
+ *
+ * PHONE (below 700, where PanelRegister.css recomposes the panel) -- two acts,
+ * because the third is not drawn there. Same opening, to the frame; the cards
+ * then rise from under the diamond instead of sliding in off a wire that no
+ * longer exists, and the story simply ends when they have filled.
+ *
+ *   0.00  the pill's stroke comes up to full orange and the envelope lands
+ *   0.30  the address types itself in, caret on the reveal's leading edge
+ *   1.15  the orange diamond fires and the caret blinks twice
+ *   1.70  card A rises 18 design px out from under the diamond and fills:
+ *         glyph, rule, digits, bar
+ *   1.92  card B follows, 0.22 behind it, the same four beats
+ *   2.80  handed back to CSS, then 3.10s of rest. Period 5.90s -- the SAME
+ *         period as the desktop, so both layouts breathe alike inside the
+ *         stepper's 6s dwell; the phone simply spends more of it at rest.
+ *
+ * Nothing below animates an element the phone stylesheet has set to
+ * `display: none`: the cast is built from the composition, not from the DOM.
  *
  * Mechanics worth keeping:
  * - The hidden state is a `tl.set(..., 0)`. A timeline `set` at position 0
@@ -67,9 +87,38 @@ const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
 const STORY = 4.35;
 const REST = 1.55;
+/* The phone's two acts, and the rest that keeps the period at the desktop's
+   5.90s. See the beat sheet above. */
+const STORY_PHONE = 2.8;
+const REST_PHONE = 3.1;
+
+/* The same breakpoint Steps.tsx reads for its own layout switch, and the same
+   one PanelRegister.css recomposes at. Written out here rather than inferred
+   from a computed style: a cast built by asking each element whether it is
+   currently displayed would be a different cast on a frame where the
+   stylesheet has not applied yet, and this runs in a layout effect. */
+const PHONE = '(max-width: 700px)';
+
+function usePhoneComposition() {
+  const [phone, setPhone] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(PHONE).matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(PHONE);
+    const onChange = () => setPhone(mq.matches);
+    onChange();
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return phone;
+}
 
 function useRegisterLoop() {
   const ref = useRef<HTMLDivElement>(null);
+  /* Which composition is on screen. It is a dependency of the build below,
+     so crossing the breakpoint rebuilds the timeline rather than leaving
+     beats aimed at parts the stylesheet has just removed. */
+  const phone = usePhoneComposition();
   /* The loop reads the pill's two stroke colours once, at build time, exactly
      where it already measures the box -- so it has to be rebuilt when the
      theme changes or it would keep tweening to the palette that was live when
@@ -108,8 +157,10 @@ function useRegisterLoop() {
 
     // The design pixel, read off the rendered box rather than out of `--p`:
     // the unit is written in container-query units and computes to an
-    // unresolved token, so it can only be measured.
-    const p = root.getBoundingClientRect().width / 760;
+    // unresolved token, so it can only be measured. The divisor is the width
+    // of `.s1` in design units, and the phone gives it a narrower box: 362,
+    // the two cards and the 10 between them.
+    const p = root.getBoundingClientRect().width / (phone ? 362 : 760);
     const restAmount = amount.textContent ?? '$3,280';
     // How far the caret has to come back from: the full width of the address.
     const run = addr.getBoundingClientRect().width;
@@ -123,33 +174,51 @@ function useRegisterLoop() {
     const innardsB = [q('.s1__glyph--user'), q('.s1__card--b .s1__rule'), q('.s1__bar--wide'), q('.s1__card--b .s1__bar--pill')]
       .filter((el): el is HTMLElement => !!el);
 
+    /* The third act: the wire, the bracket, its diamond and the whole phone.
+       Drawn on the desktop, not drawn on the phone -- so on the phone this is
+       empty and nothing below can reach it, including the `clearProps` at the
+       end, which is the one place a hidden element would otherwise still be
+       written to. */
+    const act3 = phone
+      ? []
+      : [dWhite, wire, arm, chart, amount, delta, block, ...cols, ...chrome, ...trim];
+
     const everything = [
-      pill, env, addr, caret, dOrange, dWhite, wire, arm, cardA, cardB, chart, amount, delta,
-      block, ...cols, ...chrome, ...trim, ...innardsA, ...innardsB,
+      pill, env, addr, caret, dOrange, cardA, cardB, ...innardsA, ...innardsB, ...act3,
     ];
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: REST, paused: true });
+      const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: phone ? REST_PHONE : REST,
+        paused: true,
+      });
 
-      /* ---- the panel at the start of the story, re-applied on every repeat */
+      /* ---- the panel at the start of the story, re-applied on every repeat.
+             The cards come in off the wire on the desktop and up from under
+             the diamond on the phone, which is where the flow now runs. */
       tl.set(pill, { borderColor: pillRest }, 0)
         .set(env, { opacity: 0, scale: 0.55, transformOrigin: '50% 50%' }, 0)
         .set(addr, { clipPath: 'inset(0% 100% 0% 0%)' }, 0)
         .set(caret, { x: -run }, 0)
-        .set([dOrange, dWhite], { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, 0)
-        .set([wire, arm], { clipPath: 'inset(0% 100% 0% 0%)' }, 0)
-        .set([cardA, cardB], { opacity: 0, x: -22 * p }, 0)
+        .set(dOrange, { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, 0)
+        .set([cardA, cardB], phone ? { opacity: 0, y: 18 * p } : { opacity: 0, x: -22 * p }, 0)
         .set([...innardsA, ...innardsB], { opacity: 0 }, 0)
         .set([q('.s1__card--a .s1__rule'), q('.s1__card--b .s1__rule')], { scaleX: 0, transformOrigin: '0% 50%' }, 0)
         .set([q('.s1__card--a .s1__bar--pill'), q('.s1__card--b .s1__bar--pill'), q('.s1__bar--wide')],
           { scaleX: 0, transformOrigin: '0% 50%' }, 0)
         .set([q('.s1__glyph--card'), q('.s1__glyph--user')], { scale: 0.5, transformOrigin: '50% 50%' }, 0)
-        .set(q('.s1__digits'), { y: 6 * p }, 0)
-        .set([...chrome, ...trim, chart], { opacity: 0 }, 0)
-        .set(block, { opacity: 0 }, 0)
-        .set(cols, { scaleY: 0, transformOrigin: '50% 100%' }, 0)
-        .set(delta, { opacity: 0, scale: 0.5, y: 4 * p, transformOrigin: '50% 100%' }, 0)
-        .call(() => { amount.textContent = '$0'; }, undefined, 0);
+        .set(q('.s1__digits'), { y: 6 * p }, 0);
+
+      if (!phone) {
+        tl.set(dWhite, { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, 0)
+          .set([wire, arm], { clipPath: 'inset(0% 100% 0% 0%)' }, 0)
+          .set([...chrome, ...trim, chart], { opacity: 0 }, 0)
+          .set(block, { opacity: 0 }, 0)
+          .set(cols, { scaleY: 0, transformOrigin: '50% 100%' }, 0)
+          .set(delta, { opacity: 0, scale: 0.5, y: 4 * p, transformOrigin: '50% 100%' }, 0)
+          .call(() => { amount.textContent = '$0'; }, undefined, 0);
+      }
 
       /* ---- 1. the pill wakes and the address types itself */
       tl.to(pill, { borderColor: pillLit, duration: 0.5, ease: 'power2.out' }, 0)
@@ -158,35 +227,61 @@ function useRegisterLoop() {
         .to(caret, { x: 0, duration: 0.95, ease: 'power2.inOut' }, 0.3)
         .to(caret, { opacity: 0.12, duration: 0.16, repeat: 3, yoyo: true }, 1.25);
 
-      /* ---- 2. the packet leaves, the wire carries it */
-      tl.to(dOrange, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(3)' }, 1.15)
-        .to(wire, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power1.inOut' }, 1.35);
+      /* ---- 2. the packet leaves. On the desktop the wire then carries it;
+             on the phone the diamond IS the carry, and the cards answer it. */
+      tl.to(dOrange, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(3)' }, 1.15);
+      if (!phone) {
+        tl.to(wire, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power1.inOut' }, 1.35);
+      }
 
-      /* ---- 3. the account cards arrive off the wire and fill in */
-      ([[cardA, innardsA, 1.95], [cardB, innardsB, 2.1]] as const).forEach(([card, kids, at]) => {
-        tl.to(card, { opacity: 1, x: 0, duration: 0.55, ease: 'expo.out' }, at);
+      /* ---- 3. the account cards arrive and fill in. The phone's pair starts
+             0.25 earlier, because there is no wire to wait out, and is 0.22
+             apart rather than 0.15 -- a pair stacked side by side wants to be
+             counted, and a pair arriving off a wire wants to look carried. */
+      const cardAt: readonly (readonly [HTMLElement, HTMLElement[], number])[] = phone
+        ? [[cardA, innardsA, 1.7], [cardB, innardsB, 1.92]]
+        : [[cardA, innardsA, 1.95], [cardB, innardsB, 2.1]];
+      cardAt.forEach(([card, kids, at]) => {
+        tl.to(card, phone
+          ? { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }
+          : { opacity: 1, x: 0, duration: 0.55, ease: 'expo.out' }, at);
         tl.to(kids[0], { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2)' }, at + 0.2);
         tl.to(kids[1], { opacity: 1, scaleX: 1, duration: 0.45, ease: 'power2.out' }, at + 0.25);
         tl.to(kids[2], { opacity: 1, scaleX: 1, y: 0, duration: 0.4, ease: 'power2.out' }, at + 0.35);
         tl.to(kids[3], { opacity: 1, scaleX: 1, duration: 0.4, ease: 'power2.out' }, at + 0.43);
       });
 
-      /* ---- 4. on to the phone */
-      tl.to(arm, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.6, ease: 'power1.inOut' }, 2.55)
-        .to(dWhite, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(3)' }, 3.05);
+      if (!phone) {
+        /* ---- 4. on to the phone */
+        tl.to(arm, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.6, ease: 'power1.inOut' }, 2.55)
+          .to(dWhite, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(3)' }, 3.05);
 
-      /* ---- 5. the app comes up */
-      tl.to(chrome, { opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out' }, 3.2)
-        .to(chart, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 3.35)
-        .to(cols, { scaleY: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out' }, 3.5)
-        .to(block, { opacity: 0.4, duration: 0.4, ease: 'power2.out' }, 3.95)
-        .to(trim, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 3.95)
-        .to(delta, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 4);
-      count(tl, amount, 0, 3280, 3.55, 0.7, (n) => `$${Math.round(n).toLocaleString('en-US')}`);
+        /* ---- 5. the app comes up */
+        tl.to(chrome, { opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out' }, 3.2)
+          .to(chart, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 3.35)
+          .to(cols, { scaleY: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out' }, 3.5)
+          .to(block, { opacity: 0.4, duration: 0.4, ease: 'power2.out' }, 3.95)
+          .to(trim, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 3.95)
+          .to(delta, { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 4);
+        count(tl, amount, 0, 3280, 3.55, 0.7, (n) => `$${Math.round(n).toLocaleString('en-US')}`);
+      }
 
-      /* ---- 6. hand it all back to CSS and hold still */
-      tl.set(everything, { clearProps: 'all' }, STORY)
-        .call(() => { amount.textContent = restAmount; }, undefined, STORY);
+      /* ---- 6. hand it all back to CSS and hold still.
+             The list is EXPLICIT, and `all` is a bug it is worth naming. Eight
+             of the elements below are <Icon>s, and an Icon is a mask whose
+             `--icon` url is written INLINE by the component. `clearProps:
+             'all'` strips inline styles, which includes that custom property:
+             the mask becomes `none`, `background: currentColor` then paints
+             the element's whole box, and the panel spent every rest with the
+             bracket as a solid 80 x 183 red rectangle and both card glyphs as
+             grey blocks. Measured at 1440: 12,493 pixels of the settled panel
+             differed from the same panel under reduced motion, all of it
+             there. Clearing the five properties this loop actually writes
+             hands the elements back to CSS and leaves the mask alone. */
+      const WROTE = 'transform,transformOrigin,opacity,clipPath,borderColor';
+      const end = phone ? STORY_PHONE : STORY;
+      tl.set(everything, { clearProps: WROTE }, end);
+      if (!phone) tl.call(() => { amount.textContent = restAmount; }, undefined, end);
 
       tl.play(0);
     }, root);
@@ -194,9 +289,12 @@ function useRegisterLoop() {
     return () => {
       ctx.revert();
       // `revert` restores inline styles; the counted text is ours to undo.
+      // Unconditional: the phone never counts it, so this is a no-op there,
+      // and a build that crossed the breakpoint mid-story still lands on the
+      // design's own figure.
       amount.textContent = restAmount;
     };
-  }, [epoch]);
+  }, [epoch, phone]);
 
   return ref;
 }

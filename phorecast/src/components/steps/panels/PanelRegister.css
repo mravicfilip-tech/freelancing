@@ -319,6 +319,135 @@
   color: var(--steps-p1-bar);
 }
 
+
+/* THE PHONE COMPOSITION -------------------------------------------------------
+   Below 700 the band becomes a swipeable stepper and each panel is scaled to
+   its own artwork rather than to the shared 886 frame -- Steps.css gives this
+   one `--p: calc(100cqw / 801)`, which is the full 760-wide desktop group made
+   to fit the phone's panel. At a 390 viewport the panel is 350 wide, so that
+   is 0.437 of a design pixel: the address renders at 6.12px, the masked digits
+   at 4.37px, the balance at 4.37px, the +2.41% flag at 2.62px and the phone's
+   clock at 3.00px. Measured, in this band, against a switcher whose smallest
+   type is a 13px ordinal and a body set at 16px. That is not a small
+   illustration, it is noise -- the same finding SlideAccount.css records, and
+   the same answer applies: FEWER PARTS, LARGER, not the same parts smaller.
+
+   THE SENTENCE. Step 1 is "register with email". The illustration says it in
+   three acts: an address, the account it becomes, and the working app. The
+   phone keeps the first two. What arrives is an account, and an account is
+   what the copy promises; the app is step 3's subject and has its own panel.
+
+   WHAT GOES, AND WHY
+   * The phone (172 x 339). It cannot be kept at any basis. At the basis below
+     the panel holds 292.5 design units of height and the phone alone is 339 of
+     them, before the pill it is meant to follow. Side by side instead of
+     stacked it needs a 452 basis, which puts the address at 10.8px and the
+     phone's own type -- a 6.87 clock, a 6 flag, a 4.21 battery figure -- at
+     5.3, 4.6 and 3.8px. It is the densest type in the node relative to its
+     area and there is no phone-width arrangement that rescues it.
+   * The bracket and the white diamond. They exist only to carry the cards to
+     the phone. With the phone gone they point at nothing.
+   * The connector wire (91 wide, horizontal). The two cards now sit UNDER the
+     pill rather than beside it, so a horizontal fan would cross the flow
+     rather than describe it. Keeping the horizontal chain is also what makes
+     the group 506 units wide, and 506 is the number that forces the address
+     down to 8.9px at 360. The orange diamond stays and does the wire's job:
+     it is the design's own token for the address leaving the pill.
+
+   WHAT STAYS, AT WHAT SIZE. The pill, the orange diamond and both account
+   cards, in a 362 x 178.174 group: the two 176 cards and the 10 the design
+   already puts between them when it stacks them, the 228 pill centred over
+   them, and the diamond on the pill's centre line 0.8 clear of its edge --
+   which is exactly the clearance the design gives it against the pill's right
+   edge on the desktop.
+
+   THE BASIS is 390, and it is set by one rule: THE PHONE NEVER DRAWS THIS
+   ILLUSTRATION LARGER THAN ITS DESIGN SIZE. 390 is the smallest basis that
+   keeps `--p` at or under 1 at the widest phone this is checked at (430, where
+   the panel is 387 and --p is 0.9923). What that buys, measured:
+
+       viewport   panel    --p      address    masked digits
+       360        320      0.8205   11.49px    8.21px
+       390        350      0.8974   12.56px    8.97px
+       430        387      0.9923   13.89px    9.92px
+       (1440      816      0.9210   12.89px    9.21px)
+
+   The last row is the shipping desktop. The phone band brackets it: every part
+   kept renders within 11% of the size a desktop reader is already being shown,
+   and the address sits either side of the 13px tab ordinal and always under
+   the 16px body. The masked digits are the one thing under 10px, and they are
+   under 10px on a 1440 desktop too -- they are texture, not text, and they are
+   not asked to be read in either place.
+
+   The group fills the panel slightly MORE than the desktop group fills its
+   own: 92.8% of the width against 85.8%, and 60.9% of the height against
+   53.9%. The air around it is the band's air, not slack left over.
+
+   Nothing is deleted from inside a part that stays. Every drop above is a
+   whole element. ------------------------------------------------------------- */
+@media (max-width: 700px) {
+  /* A doubled class, and it has to be. Steps.tsx imports the panels BEFORE
+     ./Steps.css, so Steps.css wins at equal specificity, and `.panel--1` is
+     exactly where its own `--p: calc(100cqw / 801)` is declared. (0,2,0) beats
+     that (0,1,0) without anything in this file reaching into that one.
+
+     `--cx` / `--cy` are read by Steps.css's `--fx` / `--fy`, which centre the
+     artwork in the panel; they are the new group's own centre. `--pm` is the
+     unit the BACKGROUND keeps -- see the note on the mark and the glow. */
+  .panel--1.panel--1 {
+    --p: calc(100cqw / 390);
+    --cx: 181;
+    --cy: 89.087;
+    --pm: calc(100cqw / 801);
+  }
+
+  /* The group, at its own origin. Steps.css translates this box so that
+     (--cx, --cy) lands on the panel's centre. */
+  .s1 {
+    left: 0; top: 0;
+    width: calc(362 * var(--p));
+    height: calc(178.174 * var(--p));
+  }
+
+  .s1__email { left: calc(67 * var(--p)); top: 0; }
+  .s1__diamond--orange { left: calc(173.93 * var(--p)); top: calc(46.035 * var(--p)); }
+  .s1__card--a { left: 0; top: calc(70.174 * var(--p)); }
+  .s1__card--b { left: calc(186 * var(--p)); top: calc(70.174 * var(--p)); }
+
+  /* The four drops. PanelRegister.tsx reads the same 700 breakpoint and builds
+     a different timeline below it, so nothing here is animated at a hidden
+     element. */
+  .s1__connector,
+  .s1__bracket,
+  .s1__diamond--white,
+  .s1__phone { display: none; }
+
+  /* The mark and the glow are the SECTION's furniture, not this composition's,
+     and they are held exactly where they render today. Both are sized and
+     placed off `--p` in Steps.css, so changing that knob would have blown the
+     mark up to 795 x 547 inside a 350 x 262 panel and pushed the glow's core
+     off the left edge. Restated against `--pm`, which is the unit they had,
+     with the `translate` Steps.css applies folded into the offsets -- so the
+     background is pixel-identical to what shipped and the whole phone diff is
+     the artwork. Three-class specificity because `.panel .steps__mark` and
+     `.panel .steps__glow` in Steps.css are (0,2,0) and load after this file. */
+  .panel--1.panel--1 .steps__mark--full {
+    left: calc(50cqw - 443 * var(--pm));
+    top: calc(37.5cqw - 305.5 * var(--pm));
+    width: calc(886 * var(--pm));
+    height: calc(610 * var(--pm));
+    filter: blur(calc(2 * var(--pm)));
+    translate: none;
+  }
+  .panel--1.panel--1 .steps__glow--left {
+    left: calc(50cqw - 1033 * var(--pm));
+    top: calc(37.5cqw - 395.5 * var(--pm));
+    width: calc(944 * var(--pm));
+    height: calc(944 * var(--pm));
+    translate: none;
+  }
+}
+
 /* --- Light -------------------------------------------------------------------
    Written twice; the two blocks MUST stay identical, only their conditions
    differ. The section's device decision is stated in Steps.css: this panel

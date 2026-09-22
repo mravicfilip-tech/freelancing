@@ -124,17 +124,26 @@
 .s1__diamond--white i { background: var(--ink); transform: rotate(60deg); }
 
 /* Wires -------------------------------------------------------------------- */
-/* Both wires are stroked paths whose 1.2 stroke overhangs the frame by 0.6 at
-   top and bottom, which is why the asset is taller than the Figma frame and
-   why the top is offset by -0.6. */
+/* Both wires are stroked paths whose stroke overhangs the Figma frame, which is
+   why each asset is taller than the frame it is placed in and why the top is
+   offset back by the overhang.
+
+   THE STROKE IS 1, NOT 1.199. The node draws both of these at a 1-unit stroke;
+   the build shipped 1.199, which is the weight of the three DIVIDER rules and
+   is still correct for them (s1-divider.svg is byte-identical to the node's
+   export). So the halves are 0.5 rather than 0.5997, the connector's asset is
+   107.749 rather than 107.948 and the bracket's 182.813 rather than 182.913 --
+   and both centre lines land exactly where they did: the bracket's crossbar
+   stays at y 154.127 and the connector's upper branch at y 147.531. Only the
+   weight moved. */
 .s1__connector {
-  left: calc(241.086 * var(--p)); top: calc(94.157 * var(--p));
-  width: calc(91.157 * var(--p)); height: calc(107.948 * var(--p));
+  left: calc(241.086 * var(--p)); top: calc(94.257 * var(--p));
+  width: calc(91.157 * var(--p)); height: calc(107.749 * var(--p));
 }
 .s1__bracket {
   color: var(--accent);
-  left: calc(509.758 * var(--p)); top: calc(67.768 * var(--p));
-  width: calc(80.362 * var(--p)); height: calc(182.913 * var(--p));
+  left: calc(509.758 * var(--p)); top: calc(67.868 * var(--p));
+  width: calc(80.362 * var(--p)); height: calc(182.813 * var(--p));
 }
 
 /* Account cards ------------------------------------------------------------ */
@@ -266,16 +275,21 @@
 }
 .s1__bars > * { position: absolute; }
 /* All five columns share a baseline, so height alone places them. */
+/* Each grey column carries its OWN gradient angle in the node -- they are four
+   separate fills, not one repeated -- so each is written out rather than
+   averaged to a single -2.7deg. The angle is small enough that the difference
+   is under a pixel across a 19.19 column, which is precisely why it costs
+   nothing to be exact. Column 4 is the accent and is flat. */
 .s1__col {
   bottom: 0; width: calc(19.191 * var(--p));
   border-radius: calc(2.399 * var(--p)) calc(2.399 * var(--p)) 0 0;
   background: linear-gradient(-2.7deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%);
 }
-.s1__col:nth-child(1) { left: calc(3.598 * var(--p)); height: calc(50.376 * var(--p)); }
-.s1__col:nth-child(2) { left: calc(27.586 * var(--p)); height: calc(34.783 * var(--p)); }
-.s1__col:nth-child(3) { left: calc(51.574 * var(--p)); height: calc(59.971 * var(--p)); }
+.s1__col:nth-child(1) { left: calc(3.598 * var(--p)); height: calc(50.376 * var(--p)); background: linear-gradient(-2.6968deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%); }
+.s1__col:nth-child(2) { left: calc(27.586 * var(--p)); height: calc(34.783 * var(--p)); background: linear-gradient(-1.8628deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%); }
+.s1__col:nth-child(3) { left: calc(51.574 * var(--p)); height: calc(59.971 * var(--p)); background: linear-gradient(-3.2095deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%); }
 .s1__col:nth-child(4) { left: calc(75.563 * var(--p)); height: calc(43.179 * var(--p)); background: var(--accent); }
-.s1__col:nth-child(5) { left: calc(99.553 * var(--p)); height: calc(21.59 * var(--p)); }
+.s1__col:nth-child(5) { left: calc(99.553 * var(--p)); height: calc(21.59 * var(--p)); background: linear-gradient(-1.1565deg, var(--steps-p1-col-head) 0.88%, var(--steps-p1-bar-2) 106.33%); }
 .s1__axis { left: 0; top: calc(59.971 * var(--p)); width: calc(125.94 * var(--p)); height: calc(1.199 * var(--p)); background: var(--steps-p1-axis); }
 .s1__delta {
   left: calc(74.012 * var(--p)); top: calc(5.861 * var(--p));

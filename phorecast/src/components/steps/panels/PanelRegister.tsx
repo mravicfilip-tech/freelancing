@@ -218,7 +218,7 @@ export function PanelRegister() {
           </span>
         </div>
         <span className="s1__diamond s1__diamond--orange"><i /></span>
-        <img src={connector} alt="" className="s1__connector" width={91.157} height={107.948} />
+        <img src={connector} alt="" className="s1__connector" width={91.157} height={107.749} />
         <div className="s1__card s1__card--a">
           <Icon src={cardGlyph} w={28} h={18} className="s1__glyph--card" style={CSS_SIZED} />
           <Icon src={divider} w={193.108} h={1.199} className="s1__rule" style={CSS_SIZED} />
@@ -231,7 +231,7 @@ export function PanelRegister() {
           <span className="s1__bar s1__bar--wide" />
           <span className="s1__bar s1__bar--pill" />
         </div>
-        <Icon src={bracket} w={80.362} h={182.913} className="s1__bracket" style={CSS_SIZED} />
+        <Icon src={bracket} w={80.362} h={182.813} className="s1__bracket" style={CSS_SIZED} />
         <span className="s1__diamond s1__diamond--white"><i /></span>
         <div className="s1__phone">
           <div className="s1__status">

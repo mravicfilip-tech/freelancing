@@ -7,7 +7,7 @@
    `--p` is the panel's design-pixel unit and is declared on `.panel` in
    Steps.css, so it resolves here through the cascade.
 
-   Every number below is a design pixel taken off Figma node 365:1314, the
+   Every number below is a design pixel taken off Figma node 365:1345, the
    886 x 610 "Account Overview" frame. The artwork lives in a "Side Panel"
    group 755.702 x 354 whose centre is pinned to the frame's centre, which puts
    its origin at (64.929, 128.5); the children's own local coordinates are
@@ -19,7 +19,7 @@
    the figure is --ink, the five comets are --accent.
 
    PANEL LOCALS (--steps-p2-*) for what belongs to this illustration -- the
-   five rail tiles, the converging lines and their correction, the beam, and
+   five rail tiles, the converging lines and their tint, the beam, and
    the whole of the balance card. Declared on :root because `tok()` in
    lib/theme.ts reads document.documentElement and the loop takes its lit tile
    edge and its two glyph filters from here.
@@ -42,8 +42,9 @@
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(2.1);
 
-  /* The converging lines. See the note on the brightness correction below. */
-  --steps-p2-lines: brightness(2.4);
+  /* The converging lines. Nothing: the node's own arithmetic lands on the
+     node's own render. See the note on .s2__lines. */
+  --steps-p2-lines: none;
 
   /* The beam behind the node, driving into the card. */
   --steps-p2-beam-a: #f55e22;
@@ -103,20 +104,35 @@
 .s2__tile--5 .s2__tile-icon img { left: calc(2.499 * var(--p)); top: calc(1.572 * var(--p)); width: calc(23.75 * var(--p)); height: calc(25.9281 * var(--p)); }
 
 /* The converging lines ------------------------------------------------------
-   Figma hangs this asset off the 25.106 square "Profile Picture Container" at
-   (446.549, 261.56) with insets -440% / 0 / -717.45% / -1285%, which lands its
-   top-left at (123.937, 151.094) at its natural 347.723 x 315.7. The first
-   build read the anchor box as the node itself and put the asset 25 design px
-   right and 7 down of where it belongs.
+   Figma hangs this asset off the 25.10638 square "Profile Picture Container"
+   at (446.549, 261.56) with insets -418.98% / 0 / -696.43% / -1265%, which
+   lands its top-left at (128.954, 156.372) at its natural 342.702 x 305.147.
 
-   `brightness` is a deliberate correction, not drift: the asset is a single
-   stroke at opacity 0.2 under an feGaussianBlur of stdDeviation 2.51, and a
-   browser renders that measurably fainter than Figma's own compositor. Sampled
-   at (224, 308) on the straight rail, Figma peaks 10/255 above the panel
-   ground; the raw asset gives 4. */
+   THE RE-EXPORT. The asset that shipped before was the design's previous
+   revision and it drew a different thing: a 2.51064-wide stroke under an
+   feGaussianBlur of stdDeviation 2.51064, in a 347.723 x 315.7 box at
+   (123.937, 151.094). The node now draws a 2-wide stroke with NO blur at all.
+   The path itself is untouched -- every coordinate in it moved by exactly
+   (-5.02127, -5.2766), which is the blur padding coming out of the box, and
+   the asset's origin moved by the same amount the other way -- so the rails
+   land where they always landed, to within 0.005 design px. What changed is
+   the paint: sampled at (224, 308) on the straight rail, the old build drew a
+   soft band nine rows deep peaking 11/255 over the panel ground, where the
+   node draws a hairline two rows deep peaking 10/255. Same ink, a ninth of the
+   width.
+
+   And that is why there is no `brightness` correction here any more. The 2.4
+   that used to sit on this element was compensating for the BLUR: a browser
+   composites Figma's feGaussianBlur measurably fainter than Figma's own
+   renderer, and the raw blurred asset arrived at 4/255 where the design wanted
+   10. With the blur gone the arithmetic is direct -- the stroke is grey 72 at
+   the sample point, at opacity 0.2, over a panel ground of 20, which is
+   20 + (72-20) x 0.2 = 30.4, and the node's own export reads 30. Nothing to
+   correct, so dark passes `none`. Light still has a decision to make and it is
+   argued at --steps-p2-lines in the light block. */
 .s2__lines {
-  position: absolute; left: calc(123.937 * var(--p)); top: calc(151.094 * var(--p));
-  width: calc(347.723 * var(--p)); height: calc(315.7 * var(--p));
+  position: absolute; left: calc(128.9542 * var(--p)); top: calc(156.372 * var(--p));
+  width: calc(342.702 * var(--p)); height: calc(305.147 * var(--p));
   filter: var(--steps-p2-lines);
 }
 
@@ -125,8 +141,8 @@
    draws. Shipped in the markup rather than built at runtime so there is
    nothing on this panel a DOM sampler cannot see. */
 .s2__geom {
-  position: absolute; left: calc(123.937 * var(--p)); top: calc(151.094 * var(--p));
-  width: calc(347.723 * var(--p)); height: calc(315.7 * var(--p));
+  position: absolute; left: calc(128.9542 * var(--p)); top: calc(156.372 * var(--p));
+  width: calc(342.702 * var(--p)); height: calc(305.147 * var(--p));
   opacity: 0; pointer-events: none;
 }
 
@@ -255,14 +271,29 @@
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 
-  /* THE CONVERGING LINES -- the third flip, and the least obvious. The 2.4
-     here is not a beat, it is a standing correction: the asset is one stroke
-     at opacity 0.2 under a blur and a browser renders it measurably fainter
-     than Figma's compositor, so dark lifts it from 4/255 above the ground to
-     10. On paper the same multiplier washes those greys towards white and the
-     rails disappear. 0.5 pushes them the other way and lands the same 9/255
-     departure from the ground, downward. */
-  --steps-p2-lines: brightness(0.5);
+  /* THE CONVERGING LINES -- the third flip, and the one the re-export
+     changed the mechanism of. It used to be a brightness, and a brightness no
+     longer works here: with the blur gone the stroke arrives at its full
+     opacity 0.2 and the asset's own gradient runs grey 50 -> 105 -> a warm 99
+     across the visible span, so ANY multiplier big enough to lift the dark end
+     towards cream clips the 105 stop at 255 and that third of every rail goes
+     to nothing. Measured: the brightness(2.39) that would land the step below
+     puts the mid stop at 251, which over cream is a departure of +0.8 -- the
+     rails would fade out in the middle and nowhere else.
+
+     What the light mode actually has to decide is HOW MUCH INK LANDS, and the
+     knob for that is opacity, which scales the whole gradient without
+     flattening any part of it. Dark departs from its ground by +10/255
+     (20 -> 30, a 1.12:1 contrast). Paper departs downward, and 0.35 lands
+     -12 at the sample point, -10 at the mid stop and -14 at the dark end:
+     247 + (72 - 247) x 0.2 x 0.35 = 234.7, and the same sum at the other two
+     stops. That is a 1.09:1 contrast against the page, against dark's 1.12:1,
+     with the gradient's own modulation intact end to end.
+
+     Raw -- no filter at all -- the same sum gives 212, a departure of -35 and
+     a 1.36:1 contrast: three and a half times dark's step, which on cream
+     reads as five ruled pencil lines rather than as light. */
+  --steps-p2-lines: opacity(0.35);
 
   /* The beam into the card: deepest at the node, dissolving into the panel. */
   --steps-p2-beam-a: #7e0202;
@@ -311,14 +342,29 @@
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 
-  /* THE CONVERGING LINES -- the third flip, and the least obvious. The 2.4
-     here is not a beat, it is a standing correction: the asset is one stroke
-     at opacity 0.2 under a blur and a browser renders it measurably fainter
-     than Figma's compositor, so dark lifts it from 4/255 above the ground to
-     10. On paper the same multiplier washes those greys towards white and the
-     rails disappear. 0.5 pushes them the other way and lands the same 9/255
-     departure from the ground, downward. */
-  --steps-p2-lines: brightness(0.5);
+  /* THE CONVERGING LINES -- the third flip, and the one the re-export
+     changed the mechanism of. It used to be a brightness, and a brightness no
+     longer works here: with the blur gone the stroke arrives at its full
+     opacity 0.2 and the asset's own gradient runs grey 50 -> 105 -> a warm 99
+     across the visible span, so ANY multiplier big enough to lift the dark end
+     towards cream clips the 105 stop at 255 and that third of every rail goes
+     to nothing. Measured: the brightness(2.39) that would land the step below
+     puts the mid stop at 251, which over cream is a departure of +0.8 -- the
+     rails would fade out in the middle and nowhere else.
+
+     What the light mode actually has to decide is HOW MUCH INK LANDS, and the
+     knob for that is opacity, which scales the whole gradient without
+     flattening any part of it. Dark departs from its ground by +10/255
+     (20 -> 30, a 1.12:1 contrast). Paper departs downward, and 0.35 lands
+     -12 at the sample point, -10 at the mid stop and -14 at the dark end:
+     247 + (72 - 247) x 0.2 x 0.35 = 234.7, and the same sum at the other two
+     stops. That is a 1.09:1 contrast against the page, against dark's 1.12:1,
+     with the gradient's own modulation intact end to end.
+
+     Raw -- no filter at all -- the same sum gives 212, a departure of -35 and
+     a 1.36:1 contrast: three and a half times dark's step, which on cream
+     reads as five ruled pencil lines rather than as light. */
+  --steps-p2-lines: opacity(0.35);
 
   /* The beam into the card: deepest at the node, dissolving into the panel. */
   --steps-p2-beam-a: #7e0202;

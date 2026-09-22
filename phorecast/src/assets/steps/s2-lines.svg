@@ -1,18 +1,11 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="347.723" height="315.7" viewBox="0 0 347.723 315.7" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="342.702" height="305.147" viewBox="0 0 342.702 305.147" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Profile Picture Container">
-<g id="Vector 42" opacity="0.2" filter="url(#filter0_f_0_33)">
-<path d="M326.383 156.822H310.064M5.02127 156.822H305.043M310.064 156.822H305.043M310.064 156.822C310.064 156.822 254.83 166.211 161.936 254.622C107.871 306.078 19.4574 309.424 19.4574 309.424M310.064 156.822C310.064 156.822 236.698 132.936 150.638 54.3287C77.8298 -12.1746 18.3824 9.73208 18.3824 9.73208M305.043 156.822C305.043 156.822 216.543 127.874 168.213 107.532C119.408 86.9892 17.2711 80.1477 17.2711 80.1477M305.043 156.822C305.043 156.822 223.447 176.382 168.213 204.549C120.486 228.887 21.4756 229.585 21.4756 229.585" stroke="url(#paint0_linear_0_33)" stroke-width="2.51064"/>
-</g>
+<path id="Vector 42" opacity="0.2" d="M321.362 151.546H305.043M0 151.546H300.021M305.043 151.546H300.021M305.043 151.546C305.043 151.546 249.809 160.935 156.915 249.345C102.85 300.801 14.4362 304.148 14.4362 304.148M305.043 151.546C305.043 151.546 231.677 127.659 145.617 49.0521C72.8085 -17.4512 13.3611 4.45548 13.3611 4.45548M300.021 151.546C300.021 151.546 211.521 122.597 163.191 102.255C114.386 81.7126 12.2498 74.8711 12.2498 74.8711M300.021 151.546C300.021 151.546 218.426 171.106 163.191 199.272C115.465 223.61 16.4544 224.309 16.4544 224.309" stroke="url(#paint0_linear_0_33)" stroke-width="2"/>
 <g id="Profile Picture">
 </g>
 </g>
 <defs>
-<filter id="filter0_f_0_33" x="-5.72205e-06" y="1.90735e-06" width="331.404" height="315.7" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="2.51064" result="effect1_foregroundBlur_0_33"/>
-</filter>
-<linearGradient id="paint0_linear_0_33" x1="346.468" y1="155.258" x2="18.8191" y2="152.74" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_0_33" x1="341.447" y1="149.981" x2="13.7978" y2="147.463" gradientUnits="userSpaceOnUse">
 <stop stop-color="#632812"/>
 <stop offset="0.378376" stop-color="#696969"/>
 <stop offset="1" stop-color="#323232"/>

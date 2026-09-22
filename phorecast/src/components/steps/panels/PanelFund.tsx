@@ -15,30 +15,46 @@ import { Icon } from '../../Icon';
 import { Mark, Glow } from './shared';
 import './PanelFund.css';
 
-/* The rails, in the lines asset's own 347.723 x 315.7 user space ------------
+/* The rails, in the lines asset's own 342.702 x 305.147 user space ----------
  *
  * s2-lines.svg is one path made of seven subpaths: five real rails and two
- * stubs a couple of pixels long either side of the junction. These are the
- * five, each written so its FIRST point is the tile end and its last is the
- * junction under the node -- the direction a charge travels. The straight one
- * is already drawn that way; the four curves are drawn junction-first in the
- * asset and are reversed when they are sampled.
+ * stubs either side of the junction. These are the five, each written so its
+ * FIRST point is the tile end and its last is the junction under the node --
+ * the direction a charge travels. The straight one is already drawn that way;
+ * the four curves are drawn junction-first in the asset and are reversed when
+ * they are sampled. (Re-checked against the 2026 export: still four of five.)
+ *
+ * THESE ARE A TRANSCRIPTION AND THEY GO STALE SILENTLY. The 2026 re-export of
+ * node 365:1345 dropped the asset's Gaussian blur, which shrank its viewBox
+ * from 347.723 x 315.7 to 342.702 x 305.147 and moved every coordinate in it
+ * by (-5.02127, -5.2766). The path SHAPE did not move at all -- the asset's
+ * origin moved by exactly the same amount the other way, so the junction still
+ * lands on (428.98, 307.92) in the panel's own field, within 0.005 of where it
+ * was. If the asset is re-exported again, re-derive both these strings and the
+ * two offsets below or the charge flies down geometry that is no longer under
+ * it, and nothing throws.
  *
  * They are shipped as invisible geometry in the markup (`.s2__geom`) rather
  * than built at runtime, because a sampler that captures the element list once
  * cannot see anything the loop creates mid-flight. */
 const RAILS: { d: string; reverse: boolean }[] = [
-  { d: 'M5.02127 156.822H305.043', reverse: false },
-  { d: 'M310.064 156.822C310.064 156.822 254.83 166.211 161.936 254.622C107.871 306.078 19.4574 309.424 19.4574 309.424', reverse: true },
-  { d: 'M310.064 156.822C310.064 156.822 236.698 132.936 150.638 54.3287C77.8298 -12.1746 18.3824 9.73208 18.3824 9.73208', reverse: true },
-  { d: 'M305.043 156.822C305.043 156.822 216.543 127.874 168.213 107.532C119.408 86.9892 17.2711 80.1477 17.2711 80.1477', reverse: true },
-  { d: 'M305.043 156.822C305.043 156.822 223.447 176.382 168.213 204.549C120.486 228.887 21.4756 229.585 21.4756 229.585', reverse: true },
+  { d: 'M0 151.546H300.021', reverse: false },
+  { d: 'M305.043 151.546C305.043 151.546 249.809 160.935 156.915 249.345C102.85 300.801 14.4362 304.148 14.4362 304.148', reverse: true },
+  { d: 'M305.043 151.546C305.043 151.546 231.677 127.659 145.617 49.0521C72.8085 -17.4512 13.3611 4.45548 13.3611 4.45548', reverse: true },
+  { d: 'M300.021 151.546C300.021 151.546 211.521 122.597 163.191 102.255C114.386 81.7126 12.2498 74.8711 12.2498 74.8711', reverse: true },
+  { d: 'M300.021 151.546C300.021 151.546 218.426 171.106 163.191 199.272C115.465 223.61 16.4544 224.309 16.4544 224.309', reverse: true },
 ];
 
-/** Where `.s2__lines` (and so the rail geometry above) sits in the panel's own
- *  886 x 610 design pixels. Kept in step with the same numbers in the CSS. */
-const LINES_X = 123.937;
-const LINES_Y = 151.094;
+/** The lines asset's own size, and where it sits in the panel's 886 x 610
+ *  design pixels. All four are Figma's: the asset is hung off the 25.10638
+ *  square "Profile Picture Container" at (446.549, 261.56), and node 365:1398
+ *  reports its geometry box at (128.954, 157.372) sized 321.362 x 303.148,
+ *  which places the asset's own origin at the two numbers below. Kept in step
+ *  with the same numbers in the CSS. */
+const LINES_W = 342.702;
+const LINES_H = 305.147;
+const LINES_X = 128.9542;
+const LINES_Y = 156.372;
 
 const TILES = [s2Tile1, s2Tile2, s2Tile3, s2Tile4, s2Tile5];
 const TILE_ICON = [
@@ -55,9 +71,10 @@ const TILE_ICON = [
  *         and its glyph and leans 10 design px toward the node
  *   0.12  each tile's comet leaves its resting place and rides its own rail all
  *         the way to the junction, following the curve the artwork draws and
- *         turning with its tangent. The longest run is the straight rail from
- *         the phone tile, 300 design px; the shortest is comet 4, already most
- *         of the way in at rest, at 93. Each fades out over its last 0.30s.
+ *         turning with its tangent. The runs, measured off the shipped
+ *         geometry rather than guessed: comet 5 covers 237 design px of rail,
+ *         comet 3 207, comet 1 169, comet 2 153, and comet 4 only 78 -- it
+ *         rests most of the way in. Each fades out over its last 0.30s.
  *   1.62  the disc under the padlock takes the arrivals -- one swell to 1.45
  *   1.66  the beam behind it, which is a real part of the design and rests at
  *         full, drives out from the node into the card
@@ -301,8 +318,8 @@ export function PanelFund() {
       <Mark className="steps__mark--right" />
       <Glow className="steps__glow--right" />
       <div className="s2" ref={ref} aria-hidden="true">
-        <img src={s2Lines} alt="" className="s2__lines" width={347.723} height={315.7} />
-        <svg className="s2__geom" viewBox="0 0 347.723 315.7" fill="none" aria-hidden="true" focusable="false">
+        <img src={s2Lines} alt="" className="s2__lines" width={LINES_W} height={LINES_H} />
+        <svg className="s2__geom" viewBox={`0 0 ${LINES_W} ${LINES_H}`} fill="none" aria-hidden="true" focusable="false">
           {RAILS.map((rail) => <path key={rail.d} d={rail.d} />)}
         </svg>
 

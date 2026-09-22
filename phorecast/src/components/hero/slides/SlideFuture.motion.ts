@@ -60,7 +60,7 @@ const TRACK_D =
 
 const STAGE_W = 1264;
 const TRACK_X = 373.5;          // .sl4__track left
-const TRACK_SX = 731 / 731.5;   // painted width / viewBox width (preserveAspectRatio: none)
+const TRACK_SX = 731.5 / 731.5; // painted width / viewBox width (preserveAspectRatio: none)
 const TRACK_TOP = 170;          // .sl4__track--top top
 /** .sl4__track--bottom is the same export at top 430 with scaleY(-1), so local y maps to 430 + 248.5 - y. */
 const TRACK_BOTTOM_FLIP = 678.5;

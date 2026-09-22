@@ -94,13 +94,25 @@
 .sl4__ring--md { left: calc(381 * var(--u));    top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
 .sl4__ring--sm { left: calc(282 * var(--u));    top: calc(352 * var(--u)); width: calc(143 * var(--u)); height: calc(143 * var(--u)); }
 
-/* Dashed track (Vector 75, exported 731 x 248.5). The bottom half is the same
-   asset mirrored, exactly as Figma does it (365:811 wraps 365:810 in -scale-y). */
+/* Dashed track (Vector 75, exported 731.5 x 248.5). The bottom half is the same
+   asset mirrored, exactly as Figma does it (365:811 wraps 365:810 in -scale-y).
+
+   731.5 AND NOT 731. Figma reports the node's width as 731 because that is the
+   GEOMETRY's width -- the path runs x 0..731 -- while the export is 731.5 wide
+   because it also carries the half of the 1-unit stroke that falls outside the
+   right end. Painting a 731.5 viewBox into a 731 box with
+   preserveAspectRatio="none" squeezes it by 0.0684%, which is nothing on a
+   solid line and is not nothing on a dashed one: the error accumulates along
+   the path, so the far end of the route sat 0.5 units short of the design and
+   its 3/3 dash was most of a dash out of phase by the time it got there.
+   At 731.5 the scale is exactly 1 and geometry x=731 lands on 1104.5 where
+   the design puts it. SlideFuture.motion.ts samples the same path and carries
+   the same factor -- see TRACK_SX. */
 .sl4__track {
   position: absolute;
   display: block;
   left: calc(373.5 * var(--u));
-  width: calc(731 * var(--u));
+  width: calc(731.5 * var(--u));
   height: calc(248.5 * var(--u));
 }
 .sl4__track--top { top: calc(170 * var(--u)); }
@@ -115,10 +127,28 @@
   height: calc(57 * var(--u));
   border-radius: calc(10.179 * var(--u));
   background: var(--sl4-badge-bg);
-  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   backdrop-filter: blur(calc(11.905 * var(--u)));
   -webkit-backdrop-filter: blur(calc(11.905 * var(--u)));
   overflow: hidden;
+}
+/* The tile's hairline, drawn as an overlay rather than as a real `border`.
+   Figma's 57 x 57 Icon frame carries its stroke without moving the mark
+   inside it, and a CSS border does move it: the mark is absolutely positioned,
+   so its 14.277 / 10.992 are measured from the PADDING box, which a 1-unit
+   border pushes in by a unit. Measured against the node's own export at one
+   design unit per pixel, all five marks sat at 15.0, 12.0 where the design
+   draws them at 14.0, 11.0 -- one unit down and right, on every tile. With the
+   hairline as an overlay the padding box is the border box again and they land
+   on the design's numbers.
+   This is a rim, not a glow: one unit wide, on the tile's own edge, no blur
+   and no spread. */
+.sl4__badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
+  pointer-events: none;
 }
 /* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
    optical nudge the design carries — not stretched to the 57px badge. */
@@ -325,16 +355,18 @@
 
 /* A market tile lighting as the order reaches it: the tile's own 30% --accent
    hairline brought up to full, and one step of --accent tint across its glass.
-   Sits at inset 0, which is the badge's padding box, so its rim lands exactly
-   inside the badge's own -- the rim reads as thickening and brightening rather
-   than as a second ring. Radius is the badge's 10.179 less that 1 unit.
+   Sits at inset 0 with the badge's own radius, which since the hairline became
+   an ::after overlay is the SAME rectangle the hairline occupies -- so the rim
+   brightens in place rather than drawing a second ring inside the first. The
+   overlay paints over it, but 30% of --accent over 100% of --accent is --accent,
+   so the composite is exactly the lit rim.
    Only `opacity` is ever animated, so every colour here is resolved by CSS at
    paint time and a theme flip mid-beat cannot strand it on the other theme's
    red -- which is what any colour captured in the motion module would do. */
 .sl4__badge-lit {
   position: absolute;
   inset: 0;
-  border-radius: calc(9.179 * var(--u));
+  border-radius: calc(10.179 * var(--u));
   border: calc(1 * var(--u)) solid var(--accent);
   background: color-mix(in srgb, var(--accent) var(--sl4-lit-tint), transparent);
   opacity: 0;
@@ -385,7 +417,11 @@
     font-size: calc(18 * var(--u));
     letter-spacing: calc(-0.36 * var(--u));
   }
-  .sl4__tag img { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+  /* `.icon` and not `img`: the label dot is a masked glyph (SlideFuture.tsx),
+     so an `img` selector here matched nothing and the dot kept its desktop 16
+     units while the type around it went to 18 -- the one rule in this block
+     that was silently doing nothing. */
+  .sl4__tag .icon { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
 }
 
 /* --- Light -------------------------------------------------------------------

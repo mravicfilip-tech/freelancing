@@ -440,53 +440,49 @@
 
      The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
      that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page, and a 0.73px stroke is
-     then antialiased on top of that. What matters is the RENDERED weight, so
-     it is measured on the rendered pixels -- a one-pixel cut across the top of
-     the 274 ring, at deviceScaleFactor 2, where the stroke's best-covered
-     device pixel reads its true blend.
+     stroke is attenuated before it ever meets the page. What matters is the
+     RENDERED weight, so it is measured on the rendered pixels -- the
+     illustration drawn at one design unit per pixel at deviceScaleFactor 2, a
+     column cut down through the top of the 274 ring, and the device pixel the
+     stroke covers best taken as its true blend.
 
      THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
      possibly make on paper is a black one, and that is 2.10:1; on the dark
-     page a white one is 2.66:1. Matching dark's measured 2.09:1 outright is
+     page a white one is 2.64:1. Matching dark's measured 2.21:1 outright is
      therefore not available at any value -- it would need a stroke darker than
      black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
-     sits 66% of the way from 1.00 to its ceiling. #3f3630 measures 1.70:1 on
-     paper, which is 64%.
+     sits 73.6% of the way from 1.00 to its ceiling. #332c27 measures 1.81:1 on
+     paper, which is also 73.6%.
 
-     The predecessor here was #9b8e85, chosen against a reading of 1.47:1 taken
-     at a lower device pixel ratio. Measured the same way as dark at dsf 2 it
-     is 1.30:1 -- 27% of the range against dark's 66% -- which is why the
-     skeleton still read as nearly absent on paper. Same method, better
-     measurement. */
-  --sl4-ring: #3f3630;
+     Two predecessors here, and the method is what improved rather than the
+     idea. #9b8e85 was chosen against a reading taken at a lower device pixel
+     ratio and lands at 1.30:1, 27% of the range. #3f3630 was measured the
+     right way but against a ring reading of 2.09:1 rather than the 2.21:1 the
+     same cut gives, and lands at 1.75:1, 68% of the range. */
+  --sl4-ring: #332c27;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
      has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' measured 2.09:1. Handing it --sl4-ring would put it at
-     11.5:1 on paper, and the earlier ring value put it at 2.63:1 -- the same
-     token giving a node that shouts and a node that whispers, which is the
-     whole argument for not sharing one. It reads --ink-2: 6.97:1 against the
-     white nodes' 17.6:1.
+     against the rings' measured 2.21:1. Handing it --sl4-ring would put it at
+     12.9:1 on paper -- the same token giving a node that shouts and a ring
+     that whispers, which is the whole argument for not sharing one. It reads
+     --ink-2 instead.
 
-     Left alone deliberately, and the reason is worth writing down because the
-     two obvious methods disagree. Dark's grey node is 13.7:1 where its white
-     ones are 18.7:1, so matching the CONTRAST RATIO would ask for about
-     #302a26 here, while matching its POSITION IN LUMINANCE between page and
-     node ink would ask for about #918780 -- one clearly darker than --ink-2,
-     one clearly lighter. There is no measurement that picks between them, the
-     node is legible either way, and a token beats a number nobody can defend.
-     The rings were changed because they were failing legibility outright; this
-     one is not. */
+     Worth knowing before anyone spends time on it: in the design this node is
+     painted UNDER the BTC/USD pill (365:829 sits below 365:830 in 365:803, and
+     278,421 is inside the pill's 183..344 by 398..448), and the code stacks it
+     the same way, so not one pixel of it is visible in either theme. Sampled
+     at its centre both themes return the pill's fill. The value is kept
+     correct rather than argued over. */
   --sl4-node-2: var(--ink-2);
   /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
      are the same rendered weight rather than the same number -- measured on
-     the pixels, dark draws the glass at 1.37:1 against the ground beside the
-     tile and this draws it at 1.36:1 against paper. What lights a tile when the order
-     reaches it is its own --accent hairline coming up to full plus one step of
-     --accent tint (.sl4__badge-lit), and --accent is DARKER than paper where
-     it is lighter than the dark page, so "lit" still means "further from the
-     page" here with not one rule reversed. There is no bloom to flip: the
-     radial one that used to be here is gone from both themes.
+     the pixels, dark draws the glass at 1.40:1 against the ground beside the
+     tile and this draws it at 1.39:1 against paper. What lights a tile when
+     the order reaches it is its own --accent hairline coming up to full plus
+     one step of --accent tint (.sl4__badge-lit), and --accent is DARKER than
+     paper where it is lighter than the dark page, so "lit" still means
+     "further from the page" here with not one rule reversed. There is no bloom
+     to flip: the radial one that used to be here is gone from both themes.
 
      THE TWO REDS. Until now five pieces of this illustration baked #E5331E
      into the file and painted it whatever the theme -- the BTC disc, the wire,
@@ -497,14 +493,17 @@
      name --accent. No second set of light artwork, no inversion: the same file
      painted by the token the rest of the slide already used. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
-  /* The lit step, matched on the RENDERED step rather than on the number.
-     A market tile's glass measures 1.37:1 against the ground beside it in dark
-     and 1.36:1 here, and lighting it moves dark to 2.05:1; 12% of --accent on
-     paper reaches only 1.66:1, because the light accent is darker than the
-     glass it washes where the dark one is lighter. 22% lands at 1.95:1. The
-     tile's hairline goes 2.48 -> 4.42 in dark and 3.24 -> 6.77 here on its
-     own, with no value stated for either. */
-  --sl4-lit-tint: 22%;
+  /* The lit step, matched on the RENDERED step rather than on the number, and
+     the number is the surprise here: it goes DOWN, 12% to 6%.
+     Measured on the pixels, a tile's glass reads 1.40:1 against the ground
+     beside it in dark and 1.39:1 here, and 12% of --accent moves dark to
+     1.53:1. The same 12% on paper would reach 1.69:1 and the 22% this block
+     used to carry reached 2.01:1 -- a third again the step dark takes, because
+     the light accent is a far bigger drop from the glass it washes than the
+     dark accent is a rise. 6% lands at 1.53:1, which is dark's step exactly.
+     The tile's hairline goes 1.81 -> 2.89 against the glass in dark and
+     2.30 -> 3.85 here on its own, with no value stated for either. */
+  --sl4-lit-tint: 6%;
   }
 }
 
@@ -515,53 +514,49 @@
 
      The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
      that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page, and a 0.73px stroke is
-     then antialiased on top of that. What matters is the RENDERED weight, so
-     it is measured on the rendered pixels -- a one-pixel cut across the top of
-     the 274 ring, at deviceScaleFactor 2, where the stroke's best-covered
-     device pixel reads its true blend.
+     stroke is attenuated before it ever meets the page. What matters is the
+     RENDERED weight, so it is measured on the rendered pixels -- the
+     illustration drawn at one design unit per pixel at deviceScaleFactor 2, a
+     column cut down through the top of the 274 ring, and the device pixel the
+     stroke covers best taken as its true blend.
 
      THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
      possibly make on paper is a black one, and that is 2.10:1; on the dark
-     page a white one is 2.66:1. Matching dark's measured 2.09:1 outright is
+     page a white one is 2.64:1. Matching dark's measured 2.21:1 outright is
      therefore not available at any value -- it would need a stroke darker than
      black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
-     sits 66% of the way from 1.00 to its ceiling. #3f3630 measures 1.70:1 on
-     paper, which is 64%.
+     sits 73.6% of the way from 1.00 to its ceiling. #332c27 measures 1.81:1 on
+     paper, which is also 73.6%.
 
-     The predecessor here was #9b8e85, chosen against a reading of 1.47:1 taken
-     at a lower device pixel ratio. Measured the same way as dark at dsf 2 it
-     is 1.30:1 -- 27% of the range against dark's 66% -- which is why the
-     skeleton still read as nearly absent on paper. Same method, better
-     measurement. */
-  --sl4-ring: #3f3630;
+     Two predecessors here, and the method is what improved rather than the
+     idea. #9b8e85 was chosen against a reading taken at a lower device pixel
+     ratio and lands at 1.30:1, 27% of the range. #3f3630 was measured the
+     right way but against a ring reading of 2.09:1 rather than the 2.21:1 the
+     same cut gives, and lands at 1.75:1, 68% of the range. */
+  --sl4-ring: #332c27;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
      has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' measured 2.09:1. Handing it --sl4-ring would put it at
-     11.5:1 on paper, and the earlier ring value put it at 2.63:1 -- the same
-     token giving a node that shouts and a node that whispers, which is the
-     whole argument for not sharing one. It reads --ink-2: 6.97:1 against the
-     white nodes' 17.6:1.
+     against the rings' measured 2.21:1. Handing it --sl4-ring would put it at
+     12.9:1 on paper -- the same token giving a node that shouts and a ring
+     that whispers, which is the whole argument for not sharing one. It reads
+     --ink-2 instead.
 
-     Left alone deliberately, and the reason is worth writing down because the
-     two obvious methods disagree. Dark's grey node is 13.7:1 where its white
-     ones are 18.7:1, so matching the CONTRAST RATIO would ask for about
-     #302a26 here, while matching its POSITION IN LUMINANCE between page and
-     node ink would ask for about #918780 -- one clearly darker than --ink-2,
-     one clearly lighter. There is no measurement that picks between them, the
-     node is legible either way, and a token beats a number nobody can defend.
-     The rings were changed because they were failing legibility outright; this
-     one is not. */
+     Worth knowing before anyone spends time on it: in the design this node is
+     painted UNDER the BTC/USD pill (365:829 sits below 365:830 in 365:803, and
+     278,421 is inside the pill's 183..344 by 398..448), and the code stacks it
+     the same way, so not one pixel of it is visible in either theme. Sampled
+     at its centre both themes return the pill's fill. The value is kept
+     correct rather than argued over. */
   --sl4-node-2: var(--ink-2);
   /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
      are the same rendered weight rather than the same number -- measured on
-     the pixels, dark draws the glass at 1.37:1 against the ground beside the
-     tile and this draws it at 1.36:1 against paper. What lights a tile when the order
-     reaches it is its own --accent hairline coming up to full plus one step of
-     --accent tint (.sl4__badge-lit), and --accent is DARKER than paper where
-     it is lighter than the dark page, so "lit" still means "further from the
-     page" here with not one rule reversed. There is no bloom to flip: the
-     radial one that used to be here is gone from both themes.
+     the pixels, dark draws the glass at 1.40:1 against the ground beside the
+     tile and this draws it at 1.39:1 against paper. What lights a tile when
+     the order reaches it is its own --accent hairline coming up to full plus
+     one step of --accent tint (.sl4__badge-lit), and --accent is DARKER than
+     paper where it is lighter than the dark page, so "lit" still means
+     "further from the page" here with not one rule reversed. There is no bloom
+     to flip: the radial one that used to be here is gone from both themes.
 
      THE TWO REDS. Until now five pieces of this illustration baked #E5331E
      into the file and painted it whatever the theme -- the BTC disc, the wire,
@@ -572,12 +567,15 @@
      name --accent. No second set of light artwork, no inversion: the same file
      painted by the token the rest of the slide already used. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
-  /* The lit step, matched on the RENDERED step rather than on the number.
-     A market tile's glass measures 1.37:1 against the ground beside it in dark
-     and 1.36:1 here, and lighting it moves dark to 2.05:1; 12% of --accent on
-     paper reaches only 1.66:1, because the light accent is darker than the
-     glass it washes where the dark one is lighter. 22% lands at 1.95:1. The
-     tile's hairline goes 2.48 -> 4.42 in dark and 3.24 -> 6.77 here on its
-     own, with no value stated for either. */
-  --sl4-lit-tint: 22%;
+  /* The lit step, matched on the RENDERED step rather than on the number, and
+     the number is the surprise here: it goes DOWN, 12% to 6%.
+     Measured on the pixels, a tile's glass reads 1.40:1 against the ground
+     beside it in dark and 1.39:1 here, and 12% of --accent moves dark to
+     1.53:1. The same 12% on paper would reach 1.69:1 and the 22% this block
+     used to carry reached 2.01:1 -- a third again the step dark takes, because
+     the light accent is a far bigger drop from the glass it washes than the
+     dark accent is a rise. 6% lands at 1.53:1, which is dark's step exactly.
+     The tile's hairline goes 1.81 -> 2.89 against the glass in dark and
+     2.30 -> 3.85 here on its own, with no value stated for either. */
+  --sl4-lit-tint: 6%;
 }

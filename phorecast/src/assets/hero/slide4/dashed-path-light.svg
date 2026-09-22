@@ -1,15 +1,21 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="731.5" height="248.5" viewBox="0 0 731.5 248.5" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- Light variant of dashed-path.svg. Geometry, ids, viewBox and
      preserveAspectRatio are byte for byte the original's; only paint differs.
-     The three stop warm ramp inverts: deepest where it was palest. The
-     stroke-opacity goes 0.37 to 0.55 because 37% of dark ink on paper is a fainter
-     line than 37% of pale peach on near black, and this is the circuit the order
-     travels. The path data is UNCHANGED: SlideFuture.motion.ts samples a verbatim
+     The three stop warm ramp runs the other way round, deepest where the dark
+     file is palest, because the end that carries the most contrast has to stay
+     the same end: on near black that is the palest stop, on paper it is the
+     deepest.
+     The stroke opacity is 0.45, and it is measured rather than reasoned. On the
+     rendered pixels, at one design unit per pixel and deviceScaleFactor 2, the
+     strongest pixel of the dark route reads 2.18:1 against its page. At 0.55,
+     where this started, the light route read 2.67:1, a noticeably heavier line
+     than the one it stands in for; 0.45 reads 2.18:1.
+     The path data is UNCHANGED: SlideFuture.motion.ts samples a verbatim
      copy of it to place the pulse frame by frame.
      No double hyphen may appear in this comment: it is illegal inside an XML
      comment, the file then fails to parse, and an <img> pointing at it shows a
      broken image rather than throwing. -->
-<path id="Vector 75" d="M0 248H101.807C119.911 248 135.758 235.84 140.444 218.353L190.873 30.1472C195.559 12.6599 211.406 0.5 229.511 0.5H642.431C653.04 0.5 663.214 4.71427 670.716 12.2157L719.284 60.7843C726.786 68.2857 731 78.4599 731 89.0685V248" stroke="url(#paint0_linear_0_65)" stroke-opacity="0.55" stroke-dasharray="3 3"/>
+<path id="Vector 75" d="M0 248H101.807C119.911 248 135.758 235.84 140.444 218.353L190.873 30.1472C195.559 12.6599 211.406 0.5 229.511 0.5H642.431C653.04 0.5 663.214 4.71427 670.716 12.2157L719.284 60.7843C726.786 68.2857 731 78.4599 731 89.0685V248" stroke="url(#paint0_linear_0_65)" stroke-opacity="0.45" stroke-dasharray="3 3"/>
 <defs>
 <linearGradient id="paint0_linear_0_65" x1="439.439" y1="20.9123" x2="6.53968" y2="173.43" gradientUnits="userSpaceOnUse">
 <stop stop-color="#7e2b06"/>

@@ -16,7 +16,39 @@
  *   3. the account acknowledges    → the "One Account" pill lifts and settles
  *   4. the market moves            → the XAU sparkline redraws and the price
  *                                    rolls to a new figure with a flash
- *   then ~4.4s of stillness before it happens again.
+ *   then 5.40s of stillness before it happens again (desktop; the phone's
+ *   shorter beats rest 6.30s).
+ *
+ * THE DESKTOP BEAT SHEET, in seconds from the slide going live
+ *   The carousel leaves every slide at 7.00 (AUTOPLAY_MS in Hero.tsx), and
+ *   leaving stops the loop and snaps whatever is mid-flight back to rest in
+ *   full view of the cross-fade. So the first cycle has to land, all of it,
+ *   with a breath to spare. It used to run to 7.55: the chart was half drawn
+ *   and the new price a third of the way in when the slide left.
+ *
+ *     0.55        the detail entrance starts (slideIn's block pop has 0.55)
+ *     2.70–3.12   the old toast drops away   ← the first cycle opens 0.35s
+ *                                              before the entrance ends, as
+ *                                              the diamond lands
+ *     3.05        the entrance's last beat (the diamond) is down
+ *     3.20–4.15   the fresh toast rises
+ *     3.42–4.02   the bolt pops
+ *     3.80–4.71   the curves redraw downward
+ *     3.85–4.75   the diamond rides them into the pill
+ *     4.70–5.15   the pill lifts
+ *     5.15–5.95   the pill settles
+ *     5.15–6.30   the XAU sparkline redraws  ← the market moves at the top
+ *                                              of the lift
+ *     5.30–5.56   the price rolls out, the new figure at 5.56
+ *     5.58–6.08   the price rolls in
+ *     6.30–7.00   still: 0.70s of rest before the slide changes
+ *
+ *   It was fitted by closing gaps, not by speeding anything up: every beat
+ *   keeps the duration and ease it had. The settle between the entrance and
+ *   the loop became an overlap (-0.70), the curves leave once the fresh toast
+ *   has landed rather than when its tween formally ends (-0.35), and the chart
+ *   starts at the top of the pill's lift rather than 0.2s into its settle
+ *   (-0.20).
  *
  * TWO COMPOSITIONS, TWO SEQUENCES
  *   Below 720px SlideAccount.css does not shrink the illustration, it drops
@@ -31,7 +63,8 @@
  *   cards never moved at all, and the loop spent its first 1435ms on a toast
  *   swap and a bolt pop that are not on the page. So the cast is asked of the
  *   layout (see `onPhone`) and each timeline is built for the cast that is
- *   actually there. The desktop beats are untouched; the phone gets its own.
+ *   actually there. The phone got its own beats rather than a trimmed copy
+ *   of the desktop's, and the two timetables are kept apart below.
  *
  * GATING
  *   All four hero slides are mounted at once; only `.hero__slide.is-active` is
@@ -54,14 +87,22 @@ import { tok } from '../../../lib/theme';
 /** One full cycle of the loop, in seconds: the beats, then a long rest. The
  *  rest is whatever is left of this after the beats, measured off the built
  *  timeline rather than written down twice — a hand-kept figure had the cycle
- *  running 0.7s short of what this constant claimed. */
+ *  running 0.7s short of what this constant claimed. Only a held slide (the
+ *  pause control, keyboard focus in the carousel) ever sees a second cycle;
+ *  the running carousel leaves at 7s, inside the first one's rest. */
 const LOOP_PERIOD = 9;
 
 /** How long after the slide goes live the detail starts, in seconds. The block
  *  entrance (slideIn) has the stage until then. */
 const LEAD_IN = 0.55;
-/** Quiet between the detail landing and the first loop cycle. */
-const SETTLE = 0.35;
+/** Where the first loop cycle starts, in seconds from the END of the detail's
+ *  entrance, per composition. The phone rests a beat first. The desktop
+ *  cannot afford to: its cycle is 0.9s longer, and resting here pushed its
+ *  last beats past the carousel's 7s. So its first beat, the old toast
+ *  dropping away, starts under the entrance's last one instead. That exit is
+ *  power2.in, so it has barely moved 0.15s in, which puts the toast visibly
+ *  leaving just as the diamond lands at the entrance's end, not beside it. */
+const SETTLE = { phone: 0.35, desktop: -0.35 };
 
 type Cleanup = () => void;
 
@@ -321,16 +362,28 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: EASE } });
 
     /* WHERE THE BEATS SIT, per composition. Beat 1 is the action bar, which
-       the phone does not have, so the phone column is the desktop column minus
-       1.45 — the length of the toast swap and the bolt pop — and nothing else
-       about the loop changes. The desktop numbers are the ones that were
-       written inline here before there were two columns to keep apart; leaving
-       them as literals rather than deriving them from the phone's is what
-       keeps a desktop beat from drifting by a float's last bits. */
+       the phone does not have, so the phone opens on the route beat at 0.
+
+       The desktop column is its own, not the phone's plus an offset, and it
+       is tighter in two places, both to fit the first cycle inside the
+       carousel's 7s (the beat sheet at the top of this file):
+         - the curves leave at 1.10, not when the fresh toast's tween formally
+           ends at 1.45. It is expo.out: within 2px of home by 0.90 and 0.4px
+           by 1.10, so the last 0.35s of that tween moves nothing anyone can
+           see, and the curves still wait a beat after the toast reads as
+           landed.
+         - the chart starts at the top of the pill's lift (settle), not 0.2s
+           into its way back down. The account acknowledges and the market
+           moves on it; the sweep is power2.inOut, so its first 0.2s draws
+           only a sliver and the move reads as following the lift.
+       Everything between keeps its spacing: the diamond 0.05 behind the
+       curves, the lift 0.05 before the diamond lands, the price 0.15 into
+       the chart. The phone column is untouched: its first cycle already ends
+       inside the 7s, and it is the phone's own. */
     const phone = onPhone();
     const at = phone
       ? { conn: 0, diamond: 0.05, lift: 0.9, settle: 1.35, chart: 1.55, priceOut: 1.7, tick: 1.96, priceIn: 1.98 }
-      : { conn: 1.45, diamond: 1.5, lift: 2.35, settle: 2.8, chart: 3.0, priceOut: 3.15, tick: 3.41, priceIn: 3.43 };
+      : { conn: 1.1, diamond: 1.15, lift: 2.0, settle: 2.45, chart: 2.45, priceOut: 2.6, tick: 2.86, priceIn: 2.88 };
 
     // 1 — a trade executes. The old notification drops away and the new one
     //     arrives. 0.4s of the 9s cycle is the only time the toast is not
@@ -406,15 +459,16 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
 
     /* Rest fills the cycle out to its full period. Both compositions keep the
        same 9s period, so the phone — whose beats run 2.70s against the
-       desktop's 4.15 — rests 6.30s where the desktop rests 4.85. Neither
+       desktop's 3.60 — rests 6.30s where the desktop rests 5.40. Neither
        reaches the end of that rest while the carousel is running: it moves on
        after 7s (AUTOPLAY_MS in Hero.tsx) and leaving the slide stops the loop,
-       so what a phone actually shows is its beats finishing 6.25s into the
-       slide's 7s and a breath of stillness before the slide changes. The full
-       6.30s rest is only ever seen by a reader holding the hero, which is
-       where a long rest belongs. Shorten the phone's period deliberately if
-       that ever needs to match the desktop's rest; do not shorten LOOP_PERIOD,
-       which both compositions read. */
+       so what either shows is its beats finishing about 6.3s into the slide's
+       7s and a breath of stillness before the slide changes. The full rest is
+       only ever seen by a reader holding the hero, which is where a long rest
+       belongs. Tightening the desktop's first cycle did not shorten its
+       period: the cycle after it still starts 9s after it did. Shorten the
+       phone's period deliberately if that ever needs to match the desktop's
+       rest; do not shorten LOOP_PERIOD, which both compositions read. */
     tl.repeatDelay(Math.max(0, LOOP_PERIOD - tl.duration()));
     return tl;
   }
@@ -454,13 +508,17 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     root.dataset.sl2Motion = 'on';
 
     tlIn = buildIn();
+    // Asked when the entrance is built, the same moment buildIn asks. A
+    // composition that flips later restarts the whole run (see the
+    // ResizeObserver below), so the two answers cannot disagree.
+    const settle = onPhone() ? SETTLE.phone : SETTLE.desktop;
     startTimer = window.setTimeout(() => {
       tlIn?.play(0);
       loopTimer = window.setTimeout(() => {
         if (dead) return;
         tlLoop = buildLoop();
         tlLoop.play(0);
-      }, ((tlIn?.duration() ?? 0) + SETTLE) * 1000);
+      }, Math.max(0, (tlIn?.duration() ?? 0) + settle) * 1000);
     }, LEAD_IN * 1000);
   }
 

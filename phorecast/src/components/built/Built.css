@@ -83,7 +83,7 @@
 .built__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 640px)); justify-content: space-between; gap: 60px 160px; }
 .built__col { display: flex; flex-direction: column; gap: 30px; }
 .built__copy { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
-.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
+.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--h3-leading); color: var(--ink); }
 /* The site's paragraph setting; see tokens.css. `.built__sub` above reads
    the same two tokens: a section lede is paragraph text too. */
 .built__col-body {

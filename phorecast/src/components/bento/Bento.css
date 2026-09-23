@@ -199,7 +199,7 @@
 /* One card-heading size for all four cards, from tokens.css. The Bonus and
    Markets cards used to scale their titles with their artwork (`--u`), which
    put them at 18.85px against the other two cards' 24 at 1440. */
-.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
+.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--h3-leading); color: var(--ink); }
 .bcard__title--dark { color: var(--mk-ink); }
 /* The site's paragraph setting, from tokens.css: Inter Tight 300, a flat
    18px at every width, 120% leading as a unitless ratio, and the font's own

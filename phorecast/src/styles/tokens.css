@@ -173,14 +173,13 @@
        role              token            size                 face / weight
        display           --display-size   fluid, see below     Manrope 500
        section heading   --h2-size        32 (28 on a phone)   Manrope 500
-       card heading      --h3-size        24                   Manrope 500
+       card heading      --h3-size        18                   Manrope 500
        paragraph         --body-size      18                   Inter Tight 300
        label             --label-size     16                   Galano 500 / 600
        small             --small-size     14                   per call site
 
-     Each step is clearly above the next: 18 -> 24 -> 32 is 1.33x and 1.33x,
-     so a card title never reads as a bold paragraph and a section heading
-     never reads as a card title.
+     A card title shares the paragraph's 18 and is told apart by face and
+     weight; the section heading at 32 is the size step above both.
 
      ILLUSTRATION TEXT IS NOT ON THIS SCALE, and must not be put on it. Text
      drawn inside an artwork (the bento art, the hero slides, the Steps
@@ -211,10 +210,18 @@
      LABEL is eyebrows, buttons and CTAs, the nav and the MORE menu, tab
      labels and the footer's column headings and links. SMALL is the fine
      print: the footer's legal line, the hero's terms line, the FAQ's index
-     numbers and chips, and the comparison table's column heads. */
+     numbers and chips, and the comparison table's column heads.
+
+
+     CARD HEADING IS 18, the paragraph's size: the user's call, made card by
+     card (FAQ, Steps, Built, About) and applied to the whole role. It keeps
+     the heading face (Manrope 500) and a 1.3 line-height (--h3-leading), so
+     face and weight, not size, set a card title apart from its body. The
+     section heading at 32 stays the step above it. */
   --display-size: clamp(32px, 3.375cqw, 100px);
   --h2-size: 32px;
-  --h3-size: 24px;
+  --h3-size: 18px;
+  --h3-leading: 1.3;
   --body-size: 18px;
   --body-leading: 1.2;
   --label-size: 16px;

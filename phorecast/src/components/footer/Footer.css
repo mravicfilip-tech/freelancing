@@ -126,11 +126,15 @@
    paragraph here and two lines at 1.2 close up. The <br/> in the markup is
    what keeps the two sentences from fusing into one line at wide widths; below
    the brand column's width they wrap on their own, which is a wrap and not a
-   fuse -- each sentence still starts its own line. */
+   fuse -- each sentence still starts its own line.
+
+   The SIZE is the site's paragraph size, --body-size in tokens.css, like every
+   other paragraph on the site. The weight and the leading stay this block's
+   own, for the reasons above. */
 .footer__desc {
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: clamp(15px, 1.0417vw, 16px);
+  font-size: var(--body-size);
   line-height: 1.4;
   color: var(--ink);
 }

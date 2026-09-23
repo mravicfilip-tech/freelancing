@@ -547,6 +547,13 @@
      it does not spend more or less. 16px of label + 12px of gap + a 45px
      figures row, measured, is the same 73 the boxes cost.
 
+     LESS 1.275px SINCE THE LEDES WENT TO 16px. The paragraph size came down
+     from 17px to the site-wide 16 (tokens.css), which takes 1.2px off every
+     lede line. This slide's lede is two lines at 390 and the other three are
+     three, so the others lost 3.6px and this one 2.4, and this slide stood
+     1.281px proud of the line the other three bottom out on. The figures row
+     gives that back: 58.3 units rather than 60, so the budget is 71.725px.
+
      WHAT WAS WRONG WITH THE BOXES. Three bordered, blurred tiles with a figure
      over a label and a colon in each seam is five pieces of chrome around six
      words. It reads as the subject of the slide; it is an urgency cue under it.
@@ -580,9 +587,10 @@
 
   /* The row owns the height, not the tiles -- so the figures are centred in a
      box of known size rather than the box being whatever the type happens to
-     measure. This is the single number that holds the stage balance. */
+     measure. This is the single number that holds the stage balance; see the
+     note above for why it is 58.3 and not 60. */
   .sl3-countdown__tiles {
-    height: calc(60 * var(--u));
+    height: calc(58.3 * var(--u));
     gap: calc(11 * var(--u));
   }
 

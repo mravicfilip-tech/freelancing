@@ -90,11 +90,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: var(--ink);
 }
 
+/* The hero ledes, landing and About. Paragraph text, so the site's paragraph
+   size and leading from tokens.css, the same as every other paragraph. */
 .lede {
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: clamp(17px, 1.05vw, 20px);
-  line-height: 1.2;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
   color: var(--ink-2);
 }
 
@@ -141,10 +143,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
    walks. `tabular-nums` locks the ten digits to a single advance and the
    string stops moving.
 
-   Three of these were ALREADY proportional before the font change -- the
-   ticker price, the slide-3 countdown and the two Steps balances are display
-   and body type, not label type -- so they were already jittering and this
-   fixes them too. The rest are new exposure from the swap.
+   Some of these were ALREADY proportional before the font change -- the
+   slide-3 countdown and the two Steps balances are display and body type,
+   not label type -- so they were already jittering and this fixes them too. The rest are new exposure from the swap.
 
    `font-feature-settings: 'tnum'` repeats the request for engines that predate
    `font-variant-numeric`. Both are no-ops on a face without the feature, which
@@ -156,7 +157,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
    .onb__seconds is NOT in this list. It states the same two properties itself,
    next to the centring it depends on, because there the argument is local. */
-.ticker__price,                          /* hero contract strip, random walk  */
 .sl3-countdown__value,                   /* hero slide 3, the rolling digits  */
 .s1__amount,                             /* Steps 1, counts 0 -> $3,280       */
 .s2__balance-amt,                        /* Steps 2, counts up the balance    */

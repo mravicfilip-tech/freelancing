@@ -107,10 +107,11 @@ export function Footer() {
                 sentence never ends on "one place." or "place." alone (it did
                 at 1280, 600 and 320 without it). */}
             <p className="footer__desc">
-              Trade the outcome, not the asset.<br />
-              Live markets, portfolio tracking, analytics and{' '}
-              <span className="footer__nowrap">one-step</span> crypto deposits,{' '}
-              <span className="footer__nowrap">all in one place.</span>
+              <span className="footer__line">Trade the outcome, not the asset.</span>{' '}
+              <span className="footer__line">
+                Live markets, portfolio tracking, analytics and{' '}
+                <span className="footer__nowrap">one-step</span> crypto deposits, all in one place.
+              </span>
             </p>
           </div>
 

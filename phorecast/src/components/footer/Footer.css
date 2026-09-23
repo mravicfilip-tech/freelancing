@@ -137,9 +137,11 @@
   font-size: var(--body-size);
   line-height: 1.4;
   color: var(--ink);
+  text-wrap: balance;
 }
 /* The two phrases in the description that must not break; see Footer.tsx. */
 .footer__nowrap { white-space: nowrap; }
+.footer__line { display: block; }
 
 /* Four equal columns -- Product, Company, Legal, Social -- with every heading
    on the first row of one grid, so the four headings share a baseline by

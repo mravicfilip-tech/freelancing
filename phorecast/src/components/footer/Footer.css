@@ -61,13 +61,14 @@
        `clamp(88px, 12vw, 230px)`, and the `--fw: min(16.5vw, 88px)` phone rule
        that had just been added to stop it reading as "PHORCAS" at 360. That
        fix is moot rather than wrong; nothing of it is left behind.
-     - `.footer__social` as a 44px square icon button, and `.footer__legal` /
+     - `.footer__social` as a 44px SQUARE icon button (the name is back, on
+       the circular badge the four social icons now sit in), and `.footer__legal` /
        `.footer__legal-links`, whose row is now the Legal column plus the
        disclaimer in the bottom bar.
    Every selector listed above is gone from this file and from
    Footer.motion.ts. `global.css` still addresses `.footer__links a` for the
    roll hover, which is why that class name is kept and why the Contacts link
-   and the two social rows are `.footer__links` lists too. */
+   and the social icons are `.footer__links` lists too. */
 .footer {
   --u: clamp(0.8px, 100vw / 1600, 1px);
   /* No `position: relative`, no `overflow: hidden`, no `isolation: isolate`.
@@ -168,32 +169,53 @@
 .footer__links a:hover,
 .footer__links a:focus-visible { color: var(--ink); }
 
-/* The two social rows: a circular badge holding the Telegram glyph, with the
-   label beside it. The anchor is the whole row, so the badge and the label lit
-   together and the roll runs on the label -- `.footer__links a` is what
-   global.css addresses, and these are `.footer__links` lists. */
-.footer__socials { gap: calc(20 * var(--u)); }
-.footer__socials a { display: inline-flex; align-items: center; gap: calc(12 * var(--u)); }
-.footer__badge {
-  display: grid; place-items: center; flex: none;
+/* The Social column: a row of four circular badges, X, TikTok, Discord and
+   Telegram, each holding its mark. The client asked for "socials icons", so
+   there are no labels; each anchor carries its name in `aria-label`.
+
+   The badge is the one the design drew round the Telegram glyph, unchanged --
+   40 design pixels, the same plate and edge, the glyph at 20 -- now drawn on
+   the ANCHOR rather than on a span inside it, so the global `:focus-visible`
+   ring (2px --accent, 3px out) is a circle round the circle rather than a
+   rectangle round a row. The row starts on the column's left edge, under the
+   "Social" heading, the way the Legal links start under theirs.
+
+   Colour is the Legal links' own: `.footer__links a` paints --ink-2 at rest
+   and --ink on hover and focus, and the glyph is a mask on `currentColor`, so
+   the four marks are exactly the links' grey and light exactly as they do.
+   The only other hover is the plate stepping up one tint, as it did before.
+   Nothing moves or scales. */
+.footer__socials { flex-direction: row; flex-wrap: wrap; gap: calc(12 * var(--u)); }
+.footer__social {
+  --glyph: calc(20 * var(--u));
+  display: grid; place-items: center;
   width: calc(40 * var(--u)); height: calc(40 * var(--u));
   border-radius: 50%;
   background: var(--footer-badge);
   border: 1px solid var(--footer-badge-line);
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
-.footer__socials a:hover .footer__badge,
-.footer__socials a:focus-visible .footer__badge {
+.footer__social:hover,
+.footer__social:focus-visible {
   background: var(--veil-line);
   border-color: var(--footer-badge-line-hover);
 }
-/* The glyph is a MASK (see Icon.tsx and footer/telegram-glyph.svg), so it takes
-   its paint from `color` on the anchor -- which is --ink-2 at rest and --ink
-   lit, set once on `.footer__links a` above. There is no filter here and there
-   never will be again: `brightness(0) invert(1)` has exactly one setting,
-   white, and white on paper is the page. */
+/* A finger gets 44x44, the house minimum, which the 40-unit badge is not once
+   the unit has reached its 0.8px floor (32px from 1280 down). On a phone, and
+   on any touch screen at any width, the badge itself grows to 44 and the mark
+   inside keeps its half-of-the-badge proportion (`--glyph`, which the
+   <Icon>'s inline width and height read -- see GLYPH in Footer.tsx). A visible 44 rather than an
+   invisible hit area round a 32: at these widths the column is the full width
+   of the band, so there is room for the real thing. */
+@media (max-width: 720px), (pointer: coarse) {
+  .footer__social { --glyph: 22px; width: 44px; height: 44px; }
+}
+/* The glyph is a MASK (see Icon.tsx), so it takes its paint from `color` on
+   the anchor. There is no filter here and there never will be again:
+   `brightness(0) invert(1)` has exactly one setting, white, and white on paper
+   is the page. */
 @media (prefers-reduced-motion: reduce) {
-  .footer__badge { transition: none; }
+  .footer__social { transition: none; }
 }
 
 /* The bottom bar. `flex-wrap` rather than a breakpoint for the first failure:
@@ -220,8 +242,8 @@
           on its own row and the three columns share the whole column.
 
    ≤720   Two columns rather than three. Product and Legal pair up; Social
-          spans both, because its rows are a 40px badge plus a label and it is
-          the widest of the three. The bottom bar stops trying to be a bar.
+          spans both, because its row of four 44px badges is the widest thing
+          in the three and does not fit half the column. The bottom bar stops trying to be a bar.
 
    Nothing restates the unit: `--u` is at its 0.8px floor from 1280 down, so
    both of these blocks are written in the same design pixels as the rules

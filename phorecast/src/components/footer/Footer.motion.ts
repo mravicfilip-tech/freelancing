@@ -24,10 +24,11 @@
  *   0.80  The Contacts link.
  *   1.00  The three link columns, left to right, 0.16s apart — and each column
  *         fills top down, its heading then its rows on a tight 0.05s stagger,
- *         so a column reads as filling rather than switching on. The two
- *         social rows are rows of the third column and arrive as part of it;
- *         they are not a separate beat, because in this design they are not a
- *         separate object.
+ *         so a column reads as filling rather than switching on. The four
+ *         social icons are the `<li>` of the third column's list and arrive
+ *         as part of it, left to right on the same step; they are not a
+ *         separate beat, because in this design they are not a separate
+ *         object.
  *   1.90  The bottom hairline draws out, and the two ends of the bottom bar
  *         resolve under it. Lands at 2.83.
  *
@@ -38,8 +39,8 @@
  * changes; only the waiting between the beats does. See CUE and STEP.
  *
  * WHAT WENT WITH THE OLD MARKUP. The glow bloom at 0.00 (there is no glow any
- * more), the four social buttons' own beat at 2.05 (they are two labelled rows
- * inside a column now), and the wordmark's long rise at 2.65 that used to
+ * more), the four social buttons' own beat at 2.05 (they are a row inside the
+ * Social column now), and the wordmark's long rise at 2.65 that used to
  * close the band. Nothing below queries a selector that no longer exists —
  * `.footer__glow`, `.footer__socials li` as a top-level beat, `.footer__meta >
  * p, .footer__legal-links li`, `.footer__wordmark span` are all gone rather
@@ -67,12 +68,18 @@
  * anchor would have outranked nothing but would have promoted the span; an
  * inline transform on the span itself would have frozen the roll outright.
  *
- * The social rows' hover, which is a `color` move on the anchor (the glyph is
- * a mask and takes its paint from `color`) plus a background and border move
- * on `.footer__badge`. The tween below moves the `<li>` and clears `transform`,
- * `filter` and `opacity` from THAT element by name; it has never touched
- * `color`, `background-color` or `border-color` on anything, so nothing inline
- * is left sitting on the anchor or the badge for the hover rules to fight.
+ * The social icons' hover, which is a `color`, background and border move on
+ * the `.footer__social` anchor (the glyph is a mask and takes its paint from
+ * `color`). The tween below moves the `<li>` and clears `transform`, `filter`
+ * and `opacity` from THAT element by name; it has never touched `color`,
+ * `background-color` or `border-color` on anything, so nothing inline is left
+ * sitting on the anchor for the hover rules to fight.
+ *
+ * The icons' masks. Each glyph is an <Icon>, whose mask URL lives in an INLINE
+ * custom property, `--icon`, on its span. `clearProps: 'all'` would empty that
+ * style attribute and leave a solid square where each mark was. Nothing here
+ * targets the span, and the `<li>` above it is cleared by name, so the four
+ * masks are never in reach.
  *
  * COLOUR, AT ALL. This module reads no colour and sets none: every tween here
  * is y, blur, opacity or scaleX. That is why there is no `tok()` call in it and
@@ -252,11 +259,11 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
 
   /* 5 — the three columns, left to right. Each one fills top down rather than
      arriving whole: the heading, then its rows on a tight step, which is the
-     treatment the pillars' cards use. The social column's two rows are `<li>`
+     treatment the pillars' cards use. The social column's four icons are `<li>`
      of a `.footer__links` list like every other row, so they are picked up by
      the same query and need no beat of their own. Only the `<li>` moves — see
-     the header for why the anchor, the badge and the `Roll` spans inside it
-     are left alone. */
+     the header for why the anchor, the icon's mask and the `Roll` spans inside
+     it are left alone. */
   cols.forEach((col, i) => {
     const parts = Array.from(col.querySelectorAll<HTMLElement>('.footer__col-title, .footer__links li'));
     if (!parts.length) return;

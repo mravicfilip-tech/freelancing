@@ -35,20 +35,50 @@ import { Logo } from '../Logo';
 import { Roll } from '../Roll';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFooter } from './Footer.motion';
-/* NOT src/assets/social/telegram.svg, which is a 44x44 export that draws its
-   own rounded-SQUARE plate and border inside the file, under the glyph. <Icon>
-   is a mask, so every opaque pixel in the file is painted -- that plate
-   included -- and the design's badge is a CIRCLE. This is the same glyph path,
-   byte for byte, on a 24x24 viewBox with the plate left out; the badge is now
-   drawn in CSS where the theme can reach it. It sits beside the component
-   rather than in src/assets because it exists for this one band, which is the
-   arrangement HeroLogo/logo-outline.svg already uses.
+/* The four marks are simple-icons 16.32.0 (CC0-1.0), copied byte for byte
+   from the package's icons/ directory so nothing here depends on it at run
+   time: the current X mark, TikTok, Discord's Clyde and Telegram's plane in
+   its disc. Each is one flat path on transparent on a 24x24 viewBox, which is
+   the only kind of file <Icon> can paint -- it is a mask, and every opaque
+   pixel is painted.
 
-   The three icons that fall out of the design -- x, discord, tiktok -- are
-   left on disk untouched. They were only ever imported here (checked), so they
-   are now unreferenced, but deleting an asset is not this job. */
-import telegram from './telegram-glyph.svg';
+   The Telegram file is the same path the single glyph here was drawn from
+   before (footer/telegram-glyph.svg, now deleted): that file was this path
+   translated by 10,10 inside a 44x44 Figma frame. So the Telegram badge is
+   unchanged in drawing, and the other three now come from the same source.
+
+   NOT src/assets/social/*. Those are 44x44 Figma exports that draw their own
+   rounded-SQUARE plate and border inside the file, under the glyph, and a mask
+   paints the plate too. They are unreferenced and left on disk untouched. */
+import x from '../../assets/footer/social/x.svg';
+import tiktok from '../../assets/footer/social/tiktok.svg';
+import discord from '../../assets/footer/social/discord.svg';
+import telegram from '../../assets/footer/social/telegram.svg';
 import './Footer.css';
+
+/* WHERE THE FOUR ICONS GO. TODO(client): none of these is a Phorcast account.
+   ---------------------------------------------------------------------------
+   No social URL exists anywhere in this repository or its history -- the two
+   Telegram rows this replaced pointed at `#telegram-channel` and
+   `#telegram-chat`, placeholder fragments like every other link in the band.
+   So nothing here is a handle, and none is invented. Until the client sends
+   the real ones, each icon opens that network's own front page in a new tab:
+   a real destination that cannot 404 and cannot jump the page to the top the
+   way `href="#"` does, and `placeholder: true` marks which ones still need
+   replacing (it is rendered as `data-placeholder` so the page can be checked).
+
+   Replace `href` and delete `placeholder` as each arrives.
+
+   TELEGRAM IS THE CHANNEL. The design had two Telegram rows, a channel and a
+   chat; the client's list names Telegram once, so the one icon is the channel
+   and the chat link is dropped. If they want the chat back it is a fifth
+   entry here. */
+const SOCIAL_LINKS: Record<'x' | 'tiktok' | 'discord' | 'telegram', { href: string; placeholder?: true }> = {
+  x: { href: 'https://x.com', placeholder: true },
+  tiktok: { href: 'https://www.tiktok.com', placeholder: true },
+  discord: { href: 'https://discord.com', placeholder: true },
+  telegram: { href: 'https://telegram.org', placeholder: true },
+};
 
 /* A link is usually just its label, and its href is that label slugged. Every
    one of these is a placeholder pointing at a fragment that does not exist
@@ -65,13 +95,21 @@ const COLUMNS = [
   },
 ];
 
-const SOCIALS = ['Telegram channel', 'Telegram chat'];
+/* In the client's order: "X, TikTok, Discord, Telegram". */
+const SOCIALS = [
+  { name: 'X', icon: x, ...SOCIAL_LINKS.x },
+  { name: 'TikTok', icon: tiktok, ...SOCIAL_LINKS.tiktok },
+  { name: 'Discord', icon: discord, ...SOCIAL_LINKS.discord },
+  { name: 'Telegram', icon: telegram, ...SOCIAL_LINKS.telegram },
+];
 
 /* The glyph is geometry, so it rides the band's design pixel like the badge
-   around it. <Icon> writes width/height inline from `w`/`h`, and spreads
-   `style` after them, so this is the supported way to hand the box to CSS;
-   the 20/20 stays as the value a styleless render would land on. */
-const GLYPH = { width: 'calc(20 * var(--u))', height: 'calc(20 * var(--u))' };
+   around it: `--glyph` is 20 design pixels on `.footer__social`, and 22px where
+   the badge grows to a 44px tap target (Footer.css). <Icon> writes
+   width/height inline from `w`/`h`, and spreads `style` after them, so this is
+   the supported way to hand the box to CSS; the 20/20 stays as the value a
+   styleless render would land on. */
+const GLYPH = { width: 'var(--glyph, 20px)', height: 'var(--glyph, 20px)' };
 
 export function Footer() {
   // The band arrives when it is scrolled to; see Footer.motion.ts. `data-motion`
@@ -113,14 +151,23 @@ export function Footer() {
 
             <div className="footer__col footer__col--social">
               <h2 className="footer__col-title">Social</h2>
+              {/* A row of four badges, the anchor IS the badge: the focus
+                  ring then follows the circle rather than a square round it.
+                  Still a `.footer__links` list, so the anchor takes the band's
+                  link colour and its hover, and the columns' entrance picks
+                  the four <li> up with no beat of its own. */}
               <ul className="footer__links footer__socials">
                 {SOCIALS.map((s) => (
-                  <li key={s}>
-                    <a href={slug(s)}>
-                      <span className="footer__badge">
-                        <Icon src={telegram} w={20} h={20} style={GLYPH} />
-                      </span>
-                      <Roll>{s}</Roll>
+                  <li key={s.name}>
+                    <a
+                      className="footer__social"
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Phorcast on ${s.name}`}
+                      data-placeholder={s.placeholder}
+                    >
+                      <Icon src={s.icon} w={20} h={20} style={GLYPH} />
                     </a>
                   </li>
                 ))}

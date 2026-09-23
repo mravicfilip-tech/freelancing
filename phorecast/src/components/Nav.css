@@ -48,12 +48,17 @@
      4%-white plate on top of the ember sun is unreadable. --panel is the
      token for "a raised surface", and it flips to #f7f0ea on paper. */
   background: var(--panel);
-  /* The one shadow in the file, and it is separation rather than decoration:
-     a plate floating over the page needs an edge the page cannot supply. It
-     is flat black at low alpha with no spread and no colour, so it is a
-     shadow and not a glow. */
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  /* No shadow: the user's call. The 1px --veil-line border is the plate's
+     only edge. */
 }
+/* Light: the plate is pure white, the user's call, so it lifts off the
+   paper by tint alone. Written twice, as tokens.css does, because a media
+   query cannot go in a selector list: the system preference leads while
+   nothing is chosen, an explicit choice wins at any system setting. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .nav__menu { background: #fff; }
+}
+:root[data-theme='light'] .nav__menu { background: #fff; }
 /* One column: MORE carries a short list (MORE_MENU in lib/sitemap.ts, About
    only for now). The full sitemap is the footer's. */
 .nav__menu:not([hidden]) {

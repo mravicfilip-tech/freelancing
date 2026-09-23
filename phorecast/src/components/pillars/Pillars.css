@@ -98,11 +98,19 @@
 
 /* Cards ---------------------------------------------------------------------- */
 .pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }
+/* TOP-ALIGNED, so the three titles share a line whatever the copy under them
+   does. It was `space-between` over a 254px floor, which parked each body at
+   its card's foot: a body one line longer than its neighbours then lifted its
+   own icon and title by that line (23px at 1440, where "On-Chain Settlement"
+   runs to three lines at 18px). The 41px gap is the space-between's own
+   result at the floor, stated, so a card of design length is unchanged; any
+   extra line now grows the card downward, and the row's stretch evens the
+   three heights. */
 .pcard {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 32px;
+  justify-content: flex-start;
+  gap: 41px;
   flex: 1 1 0;
   min-width: 0;
   min-height: 254px;

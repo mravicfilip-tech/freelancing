@@ -200,11 +200,13 @@
      `.eyebrow` is nowrap (global.css), so at 390 it ran 4px past its column,
      at 360 it reached the screen edge and at 320 the section's clip cut 19px
      off the end -- invisibly to any scrollWidth check, because a clipped line
-     scrolls nothing. Wrapping, it breaks only where it has to. The dot keeps
-     to the first line rather than centring on the pair: 0.6em is half the
-     1.2 line, less half the 12px dot. */
-  .pillars .eyebrow { white-space: normal; align-items: flex-start; text-align: center; }
-  .pillars .eyebrow .eyebrow__dot { margin-top: calc(0.6em - 6px); }
+     scrolls nothing. Wrapping, it breaks only where it has to, and `balance`
+     evens the two lines. This eyebrow is centred, so it becomes a block with
+     the dot INLINE, leading the first line: as a flex row, the wrapped text
+     took the full column and left the dot stranded at the column's left edge,
+     well clear of the words it marks. */
+  .pillars .eyebrow { display: block; white-space: normal; text-align: center; text-wrap: balance; }
+  .pillars .eyebrow .eyebrow__dot { display: inline-block; vertical-align: -0.05em; margin-right: 12px; }
 }
 
 /* Pending state, the same contract as the bento. `gsap.from()` writes its start

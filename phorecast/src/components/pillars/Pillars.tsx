@@ -107,7 +107,8 @@ const CARDS = [
        whole reason two near-identical exports of the same path exist. */
     markAccent: true,
     title: 'On-Chain Settlement',
-    body: 'Outcomes settle transparently on-chain, with your funds available whenever you need them.',
+    // U+2011, a non-breaking hyphen: "on-chain" is one word and must not split.
+    body: 'Outcomes settle transparently on\u2011chain, with your funds available whenever you need them.',
     fixed: true,
   },
 ];

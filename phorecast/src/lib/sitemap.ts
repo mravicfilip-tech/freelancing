@@ -94,11 +94,12 @@ export const SITEMAP: SitemapGroup[] = [
   },
 ];
 
-/** TODO(client): the footer's four social icons, in the client's order. */
+/** The footer's four social icons, in the client's order. TODO(client):
+ *  TikTok and Telegram are still to come. */
 export const SOCIAL_URLS = {
-  x: '',
+  x: 'https://x.com/PhorcastHQ',
   tiktok: '',
-  discord: '',
+  discord: 'https://discord.gg/phorcast',
   telegram: '',
 };
 

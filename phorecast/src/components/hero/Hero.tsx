@@ -1,28 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { gsap } from 'gsap';
 import { REDUCED, useSectionMotion } from '../../lib/motion';
-import { heroBuild, heroIdle, slideIn } from './entrance';
+import { heroBuild, slideIn } from './entrance';
 import { Nav } from '../Nav';
 import { Roll } from '../Roll';
 import { Position } from './Position';
-import { TickerCard, type Ticker } from './TickerCard';
 import { SlideAccount } from './slides/SlideAccount';
 import { SlideBonus, BonusCountdown } from './slides/SlideBonus';
 import { SlideFuture } from './slides/SlideFuture';
 import { HeroLogo } from '../HeroLogo';
 import { LiveDot } from '../LiveDot';
-import apple from '../../assets/icons/apple.svg';
-import tesla from '../../assets/icons/tesla.svg';
-import bitcoin from '../../assets/icons/bitcoin.svg';
-import gold from '../../assets/icons/gold.svg';
 import './Hero.css';
-
-const TICKERS: Ticker[] = [
-  { symbol: 'AAPL', name: 'Apple', price: '$326.57', change: '+3.57%', up: true, icon: apple, mono: true },
-  { symbol: 'TSLA', name: 'Tesla', price: '$363.56', change: '-1.13%', up: false, icon: tesla },
-  { symbol: 'BTC/USD', name: 'Bitcoin', price: '$77,603.00', change: '+0.87%', up: true, icon: bitcoin },
-  { symbol: 'XAU/USD', name: 'Gold', price: '$4,308.24', change: '−0.90%', up: false, icon: gold },
-];
 
 type Slide = {
   id: string;
@@ -34,29 +22,19 @@ type Slide = {
   visual: ReactNode;
   /** Extra copy-column content, between the lede and the CTA. */
   aside?: ReactNode;
-  foot?: ReactNode;
 };
 
-/**
- * The market snapshot strip, below the pager.
- *
- * WHOSE CONTENT IS THIS? It is rendered outside `.hero__stage`, as a sibling of
- * the pager, and the slides that do not carry it fall back to an EMPTY box of
- * the same class -- an admission in the markup itself that the strip's slot
- * belongs to the hero rather than to slide 1. Desktop can afford to treat it as
- * slide 1's alone, because `min-height: 1080px` swallows the difference. A
- * phone cannot: four cards wrapped 2 x 2 are 332px taller than the empty box,
- * so the document grew and shrank by 332px every seven seconds, moving
- * everything below the hero under the reader's thumb.
- *
- * So on a phone it is hero furniture and is shown on every slide (see
- * `compact` below). Nothing changes at 721px and up.
+/*
+ * There is no market snapshot under the pager any more. The client asked for
+ * the row to go: at a laptop's 1280 x 800 it started flush on the pager, 0px
+ * under it, with the AAPL card running 114px under the rail and the next arrow,
+ * and the whole row sat below the fold. It also held the hero 148px taller on
+ * slide 1 than on the other three at 1440 x 900, where `min(1080px, 100svh)` is
+ * 900 and swallows nothing, so the page under the hero jumped by that much at
+ * every change to or from slide 1. The slot it reserved on every slide was an
+ * empty box whose only job was 70px of floor; that floor is now the hero's own
+ * (`.hero__inner`'s padding in Hero.css), so slides 2 to 4 did not move.
  */
-const MARKET_SNAPSHOT = (
-  <ul className="hero__foot" aria-label="Market snapshot">
-    {TICKERS.map((t) => <TickerCard key={t.symbol} t={t} />)}
-  </ul>
-);
 
 const SLIDES: Slide[] = [
   {
@@ -67,7 +45,6 @@ const SLIDES: Slide[] = [
     cta: 'Get Started',
     href: '#signup',
     visual: null,
-    foot: MARKET_SNAPSHOT,
   },
   {
     id: 'account',
@@ -108,8 +85,8 @@ const STACKED = '(max-width: 1180px)';
 
 /* The phone range. Hero.css's own `@media (max-width: 720px)` block, read from
    script: below it the hero is a single narrow column whose vertical budget is
-   a viewport rather than a 1080px frame, and two things have to know it --
-   where the market snapshot lives, and how large the mark is drawn. */
+   a viewport rather than a 1080px frame, and the mark has to know it to size
+   itself. */
 const COMPACT = '(max-width: 720px)';
 
 /**
@@ -195,8 +172,8 @@ export function Hero() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // Is any of the hero on screen? The carousel and the market-price loop both
-  // ask, and neither should run for a reader who is three bands further down.
+  // Is any of the hero on screen? The carousel asks, and should not run for a
+  // reader who is three bands further down.
   const [onScreen, setOnScreen] = useState(true);
 
   useEffect(() => {
@@ -215,14 +192,13 @@ export function Hero() {
     if (e.key === 'ArrowLeft') go(index - 1);
   };
 
-  const active = SLIDES[index];
   // Slides 1 and 4 show the mark: slide 1 where the static SVG used to sit, and
   // slide 4 on `.sl4__mark-slot` (see SLOT_SLIDE above). One scene serves both.
   // The hero is above the fold, so the observer in useSectionMotion fires at
   // once; the hook still holds the timeline until the browser has painted.
   const heroRef = useSectionMotion<HTMLElement>(
     useCallback(({ el, tl }) => heroBuild(el, tl), []),
-    { immediate: true, idle: heroIdle },
+    { immediate: true },
   );
 
   // Off screen, the carousel holds. It was advancing every seven seconds
@@ -379,10 +355,9 @@ export function Hero() {
     };
 
     place();
-    // BOTH boxes, and the slot is not the redundant one. The hero is 148px
-    // taller on slide 1 than on slide 4 at 1440 -- the market snapshot -- so
-    // the layer's height, and with it the mark's place in it, is a per-slide
-    // number; that is the hero's to report. The slot's size comes from `--u`,
+    // BOTH boxes, and the slot is not the redundant one. The layer's height,
+    // and with it the mark's place in it, is the hero's to report whenever the
+    // viewport moves it. The slot's size comes from `--u`,
     // which is `100cqw` of `.sl4`, and container units are resolved from the
     // container's size at the last layout rather than the current one. Measured
     // at 1440: the first pass read a 1350px stage and a 274.2px slot in the
@@ -489,8 +464,6 @@ export function Hero() {
             cycleKey={onScreen}
           />
         </div>
-
-        {compact ? MARKET_SNAPSHOT : active.foot ?? <div className="hero__foot" />}
       </div>
     </section>
   );

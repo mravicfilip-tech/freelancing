@@ -42,16 +42,9 @@
   --hero-halftone-op: 0.7;
 }
 
-/* Two pairs the motion layer reads back through tok(), which is
+/* A pair the motion layer reads back through tok(), which is
    getComputedStyle(document.documentElement) and therefore sees :root and
-   nothing else. The --hero- prefix keeps them out of eight other sections' way.
-
-   --hero-tick-* is entrance.ts's price flash on the market cards. Tailwind's
-   green-400 and red-400, which are a THIRD up/down pair -- different again from
-   --pos/--neg and from slide 2's own #00c950/#e7000b. Dark keeps them exactly,
-   because changing a dark colour is not this job; light collapses all three
-   pairs onto --pos and --neg, since #4ade80 is 1.9:1 on paper and a rise nobody
-   can see is the same as no flash at all.
+   nothing else. The --hero- prefix keeps it out of eight other sections' way.
 
    --hero-sl2-* is slide 2's own price flash, read by SlideAccount.motion.ts.
    Literal values, not var(--pos): a custom property holding var() does resolve
@@ -69,8 +62,6 @@
    The up flash needed nothing: dark travels 2.15:1, light already travels
    2.84:1. */
 :root {
-  --hero-tick-up: #4ade80;
-  --hero-tick-down: #f87171;
   --hero-sl2-up: #00c950;
   --hero-sl2-down: #e7000b;
 }
@@ -160,6 +151,13 @@
   display: flex;
   flex-direction: column;
   min-height: inherit;
+  /* The hero's floor. It used to be the padding of an empty `.hero__foot` box
+     that every slide but the first carried to hold the market snapshot's slot
+     open; the snapshot is gone and the floor is stated here, at the same 70px,
+     so slides 2 to 4 sit exactly where they did. Any height `min-height` adds
+     still lands between the pager and this, as the box's `margin-top: auto`
+     put it. */
+  padding-bottom: 70px;
 }
 .hero__stage {
   position: relative;
@@ -225,15 +223,6 @@
 .is-active .hero__visual { transform: none; }
 
 .hero__position { position: relative; z-index: 2; margin-top: 60px; }
-
-.hero__foot {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: auto;
-  padding: 0 0 70px;
-  flex-wrap: wrap;
-}
 
 /* The animated 3D mark. It stays mounted across the whole carousel and
    cross-fades, so the WebGL context is built once.
@@ -405,38 +394,10 @@
   .hero__position { margin-top: 24px; }
   .hero__stack { --s: 0.45; margin-left: -10px; }
 
-  /* The market snapshot. On a phone it is on EVERY slide (see Hero.tsx), so it
-     is a band the hero always carries rather than a block that appears and
-     disappears -- and it is compacted to earn that place: the name under the
-     symbol goes (AAPL already says Apple), the figure and the change pill come
-     down, and the card sizes to its content instead of a 160px desktop box.
-     332px of reflow every seven seconds becomes none. */
-  .hero__foot { margin-top: 28px; gap: 10px; padding-bottom: 32px; }
-  .hero__foot .ticker {
-    width: calc(50% - 5px);
-    height: auto;
-    padding: 12px;
-  }
-  /* The card head is a flex row of `.ticker__id` (glyph + symbol) against the
-     trend arrow, spaced apart. `.ticker__symbol` is nowrap, so when the row
-     runs out of width the symbol does not wrap or shrink -- it overflows its
-     own box and slides under the arrow. Measured at 320: XAU/USD and BTC/USD
-     crossed the arrow by 3.1px and 2.2px, and `.ticker__id` was overflowing by
-     3px. The four-letter symbols had 20px of air at the same width, so this is
-     a fault of the LONGEST string in a 111px card interior and not of the
-     layout.
-
-     So the head's three fixed sizes take clamps below 360, on the same
-     arithmetic as the eyebrow above: 26 / 360 = 7.23vw and 12 / 360 = 3.34vw,
-     which puts every one of them at its ceiling from 360 up. 390 and 360 do
-     not move a pixel; 320 gets 23.1px of glyph, a 10.7px gap and a 10.7px
-     symbol, and the worst pair clears the arrow by 7.0px. */
-  .hero__foot .ticker__icon { width: clamp(22px, 7.23vw, 26px); height: clamp(22px, 7.23vw, 26px); }
-  .hero__foot .ticker__id { gap: clamp(8px, 3.34vw, 12px); }
-  .hero__foot .ticker__symbol { font-size: clamp(10px, 3.34vw, 12px); }
-  .hero__foot .ticker__name { display: none; }
-  .hero__foot .ticker__price { margin-top: 8px; font-size: 18px; }
-  .hero__foot .ticker__pill { height: 28px; margin-top: 8px; }
+  /* The floor under the pager. 32px is the phone's own, the one the market
+     snapshot band closed on when it was carried here on every slide; the band
+     is gone, so the pager is the last thing in the hero. */
+  .hero__inner { padding-bottom: 32px; }
 }
 
 /* Masked line reveal. The wrapper clips, the inner span moves, so type rises out
@@ -489,7 +450,6 @@
 .hero[data-motion='pending'] .hero__lede,
 .hero[data-motion='pending'] .hero__cta,
 .hero[data-motion='pending'] .hero__position,
-.hero[data-motion='pending'] .hero__foot > *,
 .hero[data-motion='pending'] .hero__visual {
   visibility: hidden;
   animation: hero-motion-failsafe 0s linear 4s forwards;
@@ -1244,19 +1204,15 @@
 
 /* === end hero light variants === */
 
-/* The two motion pairs, on :root because that is the only place tok() looks. */
+/* The motion pair, on :root because that is the only place tok() looks. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-    --hero-tick-up: #0b6e37;
-    --hero-tick-down: #b01309;
     --hero-sl2-up: #0b6e37;
     --hero-sl2-down: #d6392a;
   }
 }
 
 :root[data-theme='light'] {
-  --hero-tick-up: #0b6e37;
-  --hero-tick-down: #b01309;
   --hero-sl2-up: #0b6e37;
   --hero-sl2-down: #d6392a;
 }

@@ -1,18 +1,15 @@
-// The hero's opening, its per-slide choreography, and the one beat it keeps.
+// The hero's opening and its per-slide choreography.
 //
 // Written in the Remittix motion language (see src/lib/motion.ts): entrances
 // rise a few pixels on expo.out, staggered tightly; nothing overshoots, rotates
-// for effect, or floats while idle. The loop is one deterministic story beat
-// that shows the product doing its job, then rests -- here, the market prices
-// moving and flashing.
+// for effect, or floats while idle.
 //
-// Two triggers only: the load-in, and that loop. Nothing listens to the pointer.
+// The hero keeps no idle loop of its own. Its one beat was the market prices
+// moving and flashing on the snapshot cards under the pager, and those cards
+// are gone; the slides' own loops (slides/*.motion.ts) are the story now.
+// Nothing listens to the pointer.
 
-import { gsap } from 'gsap';
 import { EASE, all, intoLines, one, pop, rise } from '../../lib/motion';
-import { tok } from '../../lib/theme';
-
-const PRICE_EVERY = 2600;
 
 /**
  * Builds one slide's copy and illustration. Used by the load-in and again on
@@ -137,7 +134,7 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   // The point past which a stutter no longer costs anything. The headline's
   // mask reveal is the one beat that must not drop frames -- it is the largest
   // moving thing on the page and half-formed type reads as a fault. Once it has
-  // landed, the rest is copy and cards fading, and something expensive can
+  // landed, the rest is copy and the pager fading, and something expensive can
   // start compiling under them. The 3D mark waits for this rather than for the
   // whole sequence, which had it arriving seconds after everything else.
   // slideIn runs from 0.2; its lines start at +0.08, stagger 0.13 and run 0.8,
@@ -145,73 +142,4 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   tl.call(() => hero.dispatchEvent(new CustomEvent('motion:ready', { bubbles: true })), undefined, 1.3);
 
   rise(tl, all(hero, '.hero__position'), 0.95, { y: 8, duration: 0.55 });
-
-  // The market cards resolve one at a time, left to right: each fades out of its
-  // own blur with a fifth of a second between them, which is long enough that
-  // four cards read as four arrivals rather than one block. They do not travel
-  // -- the card resolves where it already sits, so the row never shifts. The
-  // blur is
-  // the headline's treatment applied to a card, so the section speaks one
-  // language. Parked, they are at zero opacity, so nothing leaks past the
-  // blur before its turn. clearProps hands everything back to CSS afterwards,
-  // otherwise the inline matrix GSAP leaves behind outranks the hover lift.
-  const cards = all(hero, '.hero__foot > *');
-  if (cards.length) {
-    tl.from(cards, {
-      opacity: 0,
-      filter: 'blur(14px)',
-      duration: 0.8,
-      stagger: 0.14,
-      ease: EASE,
-      clearProps: 'transform,opacity,filter',
-    }, 0.95);
-  }
-}
-
-/**
- * The loop. It looks the active slide up when it fires -- bound to the elements
- * present at mount it would stop silently after the first slide change, because
- * the carousel replaces that DOM.
- */
-export function heroIdle(hero: HTMLElement): () => void {
-  // The flash, read here rather than written down. Inside heroIdle and not at
-  // module scope, which is the whole contract of tok(): useSectionMotion rebuilds
-  // this section when the theme epoch changes, so the pair is re-read then and a
-  // loop left running cannot keep flashing the other theme's colours. The
-  // hardcoded values stay as the fallbacks, so a missing property yields today's
-  // dark value -- the safest failure mode for the regression gate.
-  //
-  // These two were a THIRD up/down pair: Tailwind's green-400 and red-400,
-  // different again from --pos/--neg and from slide 2's own #00c950/#e7000b.
-  // Dark keeps them exactly. Light collapses all three onto --pos and --neg,
-  // because #4ade80 is 1.9:1 on paper -- a rise nobody can see is no flash.
-  const up = tok('--hero-tick-up', '#4ade80');
-  const down = tok('--hero-tick-down', '#f87171');
-
-  // The market cards were frozen, which is the wrong look for a trading product.
-  const priceTimer = window.setInterval(() => {
-    // Not while the reader is somewhere else. A tick rewrites a price and runs
-    // a 1.1s colour tween over it -- a style write a frame, on a card nobody
-    // can see, every 2.6 seconds for as long as the page is open. The loop is a
-    // story beat about the product working, and a beat nobody is watching is
-    // not one worth paying for; it picks up again when the hero comes back.
-    const box = hero.getBoundingClientRect();
-    if (box.bottom <= 0 || box.top >= (window.innerHeight || document.documentElement.clientHeight)) return;
-
-    const live = all<HTMLElement>(hero, '.hero__foot > *');
-    if (!live.length) return;
-    const priceEl = one<HTMLElement>(live[Math.floor(Math.random() * live.length)], '.ticker__price');
-    if (!priceEl) return;
-
-    const raw = priceEl.textContent ?? '';
-    const value = Number(raw.replace(/[^0-9.]/g, ''));
-    if (!Number.isFinite(value) || value === 0) return;
-
-    const next = value * (1 + (Math.random() - 0.5) * 0.0016);
-    const decimals = (raw.split('.')[1] ?? '').length || 2;
-    priceEl.textContent = `$${next.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
-    gsap.fromTo(priceEl, { color: next > value ? up : down }, { color: '', duration: 1.1, ease: 'power2.out', clearProps: 'color' });
-  }, PRICE_EVERY);
-
-  return () => window.clearInterval(priceTimer);
 }

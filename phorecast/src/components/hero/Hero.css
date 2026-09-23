@@ -244,7 +244,13 @@
    The value itself lives in tokens.css as `--display-size`, which `.display`
    reads, so that the About page's h1 is drawn from the same rule. Change it
    there, and re-measure the four slides against the numbers above. */
-.hero__lede { max-width: 508px; }
+/* The lede's measure is the design's 508px, capped at the same share of the
+   column the titles are drawn to (37.9cqw, see above), because at 18px the
+   lede's longest line reaches the artwork where a 508px measure is wider than
+   that share: at 1280 slide 2's lede ran under the first market card. The cap
+   binds from about 1340 down to the 1180 break, below which the artwork is
+   under the copy and the measure goes back to 508. */
+.hero__lede { max-width: min(508px, 37.9cqw); }
 .hero__cta { margin-top: 12px; }
 /* Slide 3's small print, "Terms and eligibility apply." It sits 12px under the
    button: `.hero__copy` spaces its children 48px apart (28px on a phone, see
@@ -387,6 +393,7 @@
 }
 @media (max-width: 1180px) {
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
+  .hero__lede { max-width: 508px; }
   /* One column: the artwork moves under the copy, so a title line only has to
      fit the column, and the design's own ramp does that with room to spare --
      at 1180 the widest line, 11.239em at 61.4px, is 690px of a 1106px column;

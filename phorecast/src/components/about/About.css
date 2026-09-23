@@ -1074,6 +1074,11 @@
   .ab-ground { top: auto; bottom: calc(-986 * var(--ground-u)); }
 }
 @media (max-width: 720px) {
+  /* The statement takes the full column on a phone. Its desktop measure is
+     1224 design px, which is 238px at 390; at the section-heading size (28)
+     that ran the statement to 21 lines, taller than the screen it is pinned
+     in. The full column brings it back to about the height it had at 24px. */
+  .ab-conv__statement { max-width: none; }
   /* Same line as the menu sheet's top, and as the landing hero's. */
   .ab-hero { padding-top: 20px; }
   .ab-hero { --ground-u: 0.62px; }

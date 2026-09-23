@@ -147,15 +147,15 @@
    organised block, and the Social column's row of badges is narrower than
    any of them anyway.
 
-   From about 1370 down to the 1180 break the Legal column is narrower than
-   "Deposit & Withdrawal Policy" (183px at 15px) and that one link wraps to a
-   second line. Measured and allowed: the alternatives were stacking the brand
-   block at laptop widths, or narrowing it until the description ran to five
-   lines, and both change the design's composition more than one wrapped
-   link does. Across the same range the brand block gives up a few pixels to
-   the columns (flex-shrink, 304 -> 295 at 1280, 271 at 1181), which is what
-   keeps the four badges on one row down to the break; the description's
-   line count does not change. */
+   From about 1400 down to the 1180 break the Legal column is narrower than
+   "Deposit & Withdrawal Policy" (about 195px at the 16px label size) and that
+   one link wraps to a second line. Measured and allowed: the alternatives
+   were stacking the brand block at laptop widths, or narrowing it further,
+   and both change the design's composition more than one wrapped link does.
+   Across the same range the brand block gives up a few pixels to the columns
+   (flex-shrink, 304 -> 295 at 1280, 271 at 1181), which is what keeps the
+   four badges on one row down to the break. At the 18px paragraph size the
+   description is four lines from 1440 down to 1280 and five at 1181. */
 .footer__columns {
   flex: 1 1 auto;
   min-width: 0;

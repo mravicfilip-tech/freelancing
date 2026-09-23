@@ -78,6 +78,22 @@ const SLIDES: Slide[] = [
 
 const AUTOPLAY_MS = 7000;
 
+/* Where keyboard focus holds the carousel: its own parts, the slides and the
+   pager. The nav shares the section but is not the carousel, and tabbing
+   through it should not stop the slides. The play control is left out on
+   purpose, as the APG carousel pattern does: a keyboard reader standing on
+   "Play" has to be able to press it and watch the slides move. */
+const HOLDS_FOCUS = '.hero__stage, .hero__position';
+const PLAY_CONTROL = '.hero__play';
+
+/** True when `el` is a keyboard focus inside the carousel that should hold it.
+ *  `:focus-visible` is how a pointer's focus is told apart from a keyboard's:
+ *  clicking a pager segment focuses the rail, and that click is a request to
+ *  go to a slide, not to stop the carousel on it. */
+function holdsFocus(el: Element | null) {
+  return !!el && !!el.closest(HOLDS_FOCUS) && !el.closest(PLAY_CONTROL) && el.matches(':focus-visible');
+}
+
 /* Below this the slide collapses to one column (see Hero.css), so the mark has
    to come down with it. It is the SAME number as the stacking rule on purpose:
    the mark and the illustration it replaces are the same slot. */
@@ -114,7 +130,9 @@ function useMedia(query: string) {
   );
 }
 
-/** `?slide=3` opens on a given slide (handy for review) and pauses autoplay. */
+/** `?slide=3` opens on a given slide (handy for review). It used to pause
+ *  autoplay as well; it no longer does, so a shared link to a slide behaves
+ *  like the page does. To hold a slide for review, press the play control. */
 function initialSlide() {
   const n = Number(new URLSearchParams(window.location.search).get('slide'));
   return n >= 1 && n <= SLIDES.length ? n - 1 : 0;
@@ -161,26 +179,59 @@ export function Hero() {
   // `from` is the slide being left, kept because the mark's two homes are one
   // object: see `markOnSlot` below.
   const [{ index, from }, setSlide] = useState(() => ({ index: initialSlide(), from: initialSlide() }));
-  const [paused, setPaused] = useState(() => initialSlide() !== 0);
-  const reduced = useRef(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    reduced.current = mq.matches;
-    const onChange = () => { reduced.current = mq.matches; };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
+  /*
+   * WHAT HOLDS THE CAROUSEL, and what no longer does.
+   *
+   * It used to hold on `mouseenter` and on any focus inside the section. On a
+   * laptop the hero IS the viewport -- 940px tall at 1440 x 900 -- so a cursor
+   * resting anywhere on the page's first screen stopped it, and it never moved:
+   * measured with the cursor parked mid-hero, 0 advances in 30s. A click on a
+   * pager segment focused the rail and held it there too, and `?slide=` opened
+   * paused. Hover no longer holds it and a pointer's focus no longer holds it.
+   *
+   * What does:
+   *   - the reader, with the play control beside the pager (WCAG 2.2.2);
+   *   - keyboard focus on the slides or the pager (see `holdsFocus`), which is
+   *     the standard carousel behaviour and lets a keyboard reader read;
+   *   - the hero being off screen (see the observer below);
+   *   - reduced motion, where it never advances and has no control to show.
+   */
+  const [userPaused, setUserPaused] = useState(false);
+  const [focusHeld, setFocusHeld] = useState(false);
+  const reducedMotion = useMedia('(prefers-reduced-motion: reduce)');
 
   // Is any of the hero on screen? The carousel asks, and should not run for a
   // reader who is three bands further down.
   const [onScreen, setOnScreen] = useState(true);
 
+  const held = userPaused || focusHeld || !onScreen || reducedMotion;
+
+  /*
+   * THE CLOCK. One run per slide: a slide change, however it happened, starts
+   * a fresh 7s from the slide it lands on, so a click never lands on a slide
+   * that moves on a moment later. A hold BANKS the time already spent and a
+   * release spends only what is left, which is exactly what Position's track
+   * does with the same `paused` and the same reset keys -- so the track filling
+   * and the slide changing stay the same moment. (The old interval restarted a
+   * full 7s on every release while the track resumed where it stood, so after
+   * any hold the track ran out seconds before the slide changed.)
+   *
+   * The reset is its own effect, declared first: on a change React runs every
+   * cleanup and then every effect in order, so the timer below always reads
+   * the run that belongs to the slide now showing.
+   */
+  const run = useRef({ start: 0, banked: 0 });
+  useEffect(() => { run.current = { start: performance.now(), banked: 0 }; }, [index, onScreen]);
   useEffect(() => {
-    if (paused || !onScreen || reduced.current) return;
-    const id = window.setInterval(() => setSlide((s) => ({ from: s.index, index: (s.index + 1) % SLIDES.length })), AUTOPLAY_MS);
-    return () => window.clearInterval(id);
-  }, [paused, onScreen, index]);
+    if (held) return;
+    const r = run.current;
+    r.start = performance.now() - r.banked;
+    const id = window.setTimeout(
+      () => setSlide((s) => ({ from: s.index, index: (s.index + 1) % SLIDES.length })),
+      Math.max(0, AUTOPLAY_MS - r.banked),
+    );
+    return () => { window.clearTimeout(id); r.banked = performance.now() - r.start; };
+  }, [held, index, onScreen]);
 
   const go = useCallback(
     (i: number) => setSlide((s) => ({ from: s.index, index: ((i % SLIDES.length) + SLIDES.length) % SLIDES.length })),
@@ -190,6 +241,9 @@ export function Hero() {
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight') go(index + 1);
     if (e.key === 'ArrowLeft') go(index - 1);
+    // A rail focused by a click and then driven from the keyboard is keyboard
+    // focus from here on, and holds like any other.
+    setFocusHeld(holdsFocus(document.activeElement));
   };
 
   // Slides 1 and 4 show the mark: slide 1 where the static SVG used to sit, and
@@ -208,7 +262,7 @@ export function Hero() {
   // of blur across the display type and 7px across the lede, plus the
   // illustration's pop.
   //
-  // Holding, not stopping. The interval is cleared and a new one is started
+  // Holding, not stopping. The timer is cleared and a fresh run is started
   // when the hero comes back, so the reader who scrolls up finds the slide they
   // left on, given a full seven seconds before it moves -- rather than the
   // slide the page would have reached, or a run of catch-up changes, or slide
@@ -411,10 +465,8 @@ export function Hero() {
       id="top"
       aria-roledescription="carousel"
       aria-label="Phorcast highlights"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onFocus={(e) => setFocusHeld(holdsFocus(e.target))}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setFocusHeld(false); }}
       onKeyDown={onKey}
     >
       <div className={`hero__bg hero__bg--${SLIDES[index].id}`} aria-hidden="true">
@@ -465,14 +517,35 @@ export function Hero() {
             count={SLIDES.length}
             onSelect={go}
             periodMs={AUTOPLAY_MS}
-            paused={paused || !onScreen || reduced.current}
-            // The hero leaving or returning starts a fresh interval above, so
+            paused={held}
+            // The hero leaving or returning starts a fresh run above, so
             // the track has to start a fresh run with it. Without this it
             // resumed the elapsed time it had banked when the reader scrolled
             // away and filled to the end several seconds before the slide it
             // is describing actually changed.
             cycleKey={onScreen}
           />
+          {/* The pause the carousel owes a reader (WCAG 2.2.2): it advances
+              every 7s for as long as the page is open, and no longer stops for
+              a resting cursor. Drawn in the pager's own vocabulary -- the
+              arrows' circle, border, ink and 1.6 stroke -- and without their
+              hover, since nothing new here moves under the pointer. The label
+              names what a press will do, and swaps with it. Not rendered under
+              reduced motion, where there is no rotation to stop. */}
+          {reducedMotion ? null : (
+            <button
+              type="button"
+              className="hero__play"
+              aria-label={userPaused ? 'Play slide rotation' : 'Pause slide rotation'}
+              onClick={() => setUserPaused((p) => !p)}
+            >
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                {userPaused
+                  ? <path d="M5.5 3.6 L12 8 L5.5 12.4 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                  : <path d="M6 3.5 V12.5 M10 3.5 V12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />}
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </section>

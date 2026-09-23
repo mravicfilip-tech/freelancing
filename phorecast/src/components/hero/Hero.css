@@ -222,7 +222,38 @@
 }
 .is-active .hero__visual { transform: none; }
 
-.hero__position { position: relative; z-index: 2; margin-top: 60px; }
+.hero__position {
+  position: relative;
+  z-index: 2;
+  margin-top: 60px;
+  /* The pager and the play control, on one line. 24px and not the pager's own
+     16 between its arrows, so the control reads as a neighbour of the pager
+     rather than a third arrow. */
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* The play / pause control. The pager's arrow (Position.css), restated rather
+   than shared: the same 42px circle, --line border, --ink glyph and focus
+   ring, and the same 15px glyph drawn at a 1.6 stroke. Those three tokens are
+   the arrow's own and already carry their light values, so the control
+   re-tints with the page and inverts nothing. What it does NOT take is the
+   arrow's hover -- no colour shift, no lean, no transition -- because nothing
+   new on this page answers the pointer. */
+.hero__play {
+  display: grid;
+  place-content: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  cursor: pointer;
+}
+.hero__play svg { width: 15px; height: 15px; display: block; }
+.hero__play:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 3px; }
 
 /* The animated 3D mark. It stays mounted across the whole carousel and
    cross-fades, so the WebGL context is built once.
@@ -398,6 +429,16 @@
      snapshot band closed on when it was carried here on every slide; the band
      is gone, so the pager is the last thing in the hero. */
   .hero__inner { padding-bottom: 32px; }
+}
+
+/* Position.css turns the pager full width at 640, with 38px arrows and a 12px
+   gap. Beside the play control it takes the width the control leaves, and the
+   control follows it down to 38 and 12. Same breakpoint as that file, not this
+   one's 720, so the four circles are never two sizes. */
+@media (max-width: 640px) {
+  .hero__position { gap: 12px; }
+  .hero__position .position { flex: 1; min-width: 0; }
+  .hero__play { width: 38px; height: 38px; }
 }
 
 /* Masked line reveal. The wrapper clips, the inner span moves, so type rises out

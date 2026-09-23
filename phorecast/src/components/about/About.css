@@ -1109,18 +1109,29 @@
    The pinned cells need an opaque fill or the rows slide through them, which
    is what --ab-solid is: --ab-veil flattened over --page, in both themes. */
 @media (max-width: 720px) {
+  /* The scroller's right edge fades out over 32px, so a column cut by the edge
+     reads as "more this way" rather than as a sliver of a clipped letter; the
+     last column carries the same 32px as padding, so at the end of the scroll
+     nothing it holds sits under the fade. */
   .ab-cmp__scroll {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
   }
+  .ab-cmp__table tr > :last-child { padding-right: 32px; }
   .ab-cmp__table { min-width: 560px; table-layout: auto; }
+  /* 190 rather than 150: at the 18px paragraph size three of the five
+     criteria ("Own Native Token", "Offer Sign-up Bonus", "Multi-chain
+     Access") fit one line again, which takes back most of the height the
+     larger type added. */
   .ab-cmp__table .ab-cmp__crit {
     position: sticky;
     left: 0;
     z-index: 1;
-    width: 150px;
-    min-width: 150px;
+    width: 190px;
+    min-width: 190px;
     padding-right: 14px;
     background: var(--ab-solid);
   }

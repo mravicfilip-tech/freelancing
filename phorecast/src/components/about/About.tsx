@@ -268,7 +268,7 @@ function AboutHero() {
       <div className="container container--wide ab-col ab-hero__inner">
         <Nav />
         <div className="ab-hero__copy">
-          <h1 className="ab-hero__title">A prediction market for real-world events — simple and transparent</h1>
+          <h1 className="ab-hero__title">A prediction market for real-world events, simple and transparent</h1>
           <p className="lede ab-hero__lede">
             You buy an “opinion” (YES/NO) like a stock: you can hold it until the event resolves or sell earlier and lock in profit while market expectations shift.
           </p>
@@ -308,7 +308,7 @@ const CARDS = [
     key: 'exit',
     img: cardExit,
     title: 'Exit when you want',
-    body: ['Hold to resolution or sell early to lock in profit or cut a loss — just like trading a stock.'],
+    body: ['Hold to resolution or sell early to lock in profit or cut a loss, just like trading a stock.'],
     crop: { left: '-4.641%', top: '0.13%', width: '115.76%', height: '114.29%' },
   },
 ] as const;
@@ -525,7 +525,7 @@ function Primer() {
                 <ul className="ab-why__list">
                   <li>Every outcome trades at a price between 1¢ and 99¢.</li>
                   <li>That price is the market&apos;s probability. YES at 70¢ means the market puts a 70% chance on it happening.</li>
-                  <li>If you&apos;re right, each contract pays out $1. Buy at 70¢, win, collect $1 — your profit is 30¢ per contract.</li>
+                  <li>If you&apos;re right, each contract pays out $1. Buy at 70¢, win, collect $1. Your profit is 30¢ per contract.</li>
                   <li>Prices move as traders buy and sell. When new information hits, the price hits with it.</li>
                 </ul>
               </div>
@@ -534,10 +534,10 @@ function Primer() {
             <article className="ab-why__card">
               <h3 className="ab-why__title">Example</h3>
               <div className="ab-why__body">
-                <p>YES is trading at 70¢ — the market gives this outcome a 70% chance.</p>
+                <p>YES is trading at 70¢: the market gives this outcome a 70% chance.</p>
                 <p>
                   <strong>You back YES with $1,000.</strong><br />
-                  That buys you 1,428 contracts. If the event happens, each one pays $1 — you collect $1,428. Profit: $428 (+43%).
+                  That buys you 1,428 contracts. If the event happens, each one pays $1. You collect $1,428. Profit: $428 (+43%).
                 </p>
                 <p>
                   <strong>You think the market&apos;s wrong and back NO at 30¢.</strong><br />

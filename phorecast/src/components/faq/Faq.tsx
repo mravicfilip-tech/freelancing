@@ -26,7 +26,7 @@ const ITEMS: Item[] = [
   },
   {
     q: 'How quickly can I get started?',
-    a: 'Under two minutes. Create an account, send crypto to your personal deposit address, and your balance is credited as soon as the transaction confirms — around two seconds for USDC on Arbitrum.',
+    a: 'Under two minutes. Create an account, send crypto to your personal deposit address, and your balance is credited as soon as the transaction confirms (around two seconds for USDC on Arbitrum).',
   },
   {
     q: 'What is the minimum deposit?',
@@ -58,7 +58,7 @@ const ITEMS: Item[] = [
   },
   {
     q: 'Do you plan to launch a Phorcast token?',
-    a: 'Yes. A native token is part of our roadmap, with early users and active traders in mind. No date or details yet — announcements will come through our official channels only, so be wary of anything claiming otherwise.',
+    a: 'Yes. A native token is part of our roadmap, with early users and active traders in mind. No date or details yet. Announcements will come through our official channels only, so be wary of anything claiming otherwise.',
   },
 ];
 

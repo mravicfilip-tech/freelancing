@@ -12,7 +12,7 @@ import './Steps.css';
    so each is the one verb that separates it from the other two. The full title
    and the body stay with the slide, where they are read one at a time. */
 const STEPS = [
-  { tab: 'Register', title: 'Register with email', body: 'Create your account with an email or wallet — no mandatory KYC.', panel: <PanelRegister /> },
+  { tab: 'Register', title: 'Register with email', body: 'Create your account with an email or wallet. No mandatory KYC.', panel: <PanelRegister /> },
   { tab: 'Fund', title: 'Fund your account', body: 'Add funds with crypto, card, Apple Pay, Google Pay or bank transfer.', panel: <PanelFund /> },
   { tab: 'Trade', title: 'Start trading', body: 'Access crypto, forex, stocks, commodities and indices from one simple platform.', panel: <PanelTrade /> },
 ];

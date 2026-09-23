@@ -67,8 +67,8 @@
        disclaimer in the bottom bar.
    Every selector listed above is gone from this file and from
    Footer.motion.ts. `global.css` still addresses `.footer__links a` for the
-   roll hover, which is why that class name is kept and why the Contacts link
-   and the social icons are `.footer__links` lists too. */
+   roll hover, which is why that class name is kept and why the social icons
+   are a `.footer__links` list too. */
 .footer {
   --u: clamp(0.8px, 100vw / 1600, 1px);
   /* No `position: relative`, no `overflow: hidden`, no `isolation: isolate`.
@@ -134,6 +134,8 @@
   line-height: 1.4;
   color: var(--ink);
 }
+/* The two phrases in the description that must not break; see Footer.tsx. */
+.footer__nowrap { white-space: nowrap; }
 
 .footer__columns {
   flex: 1 1 auto;
@@ -342,7 +344,6 @@
 [data-js] .footer[data-motion='pending'] .footer__rule,
 [data-js] .footer[data-motion='pending'] .footer__brand .logo,
 [data-js] .footer[data-motion='pending'] .footer__desc,
-[data-js] .footer[data-motion='pending'] .footer__contacts,
 [data-js] .footer[data-motion='pending'] .footer__col,
 [data-js] .footer[data-motion='pending'] .footer__meta {
   visibility: hidden;

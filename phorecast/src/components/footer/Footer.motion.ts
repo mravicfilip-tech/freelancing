@@ -21,7 +21,6 @@
  *         band to paint, which is why it leads.
  *   0.22  THE LOGO. The one object the footer leads with, alone for a beat.
  *   0.55  The description under it, out of a shallower blur.
- *   0.80  The Contacts link.
  *   1.00  The three link columns, left to right, 0.16s apart — and each column
  *         fills top down, its heading then its rows on a tight 0.05s stagger,
  *         so a column reads as filling rather than switching on. The four
@@ -118,7 +117,6 @@ const LEAD = 0.12;
 const RULE_TOP_AT = LEAD;
 const LOGO_AT = LEAD + 0.22;
 const DESC_AT = LEAD + 0.55;
-const CONTACT_AT = LEAD + 0.8;
 
 /* The three columns, left to right; each fills top down on its own tight step. */
 const COLS_AT = LEAD + 1.0;
@@ -224,7 +222,6 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
   const ruleTop = q('.footer__rule--top')[0];
   const logo = q('.footer__brand .logo')[0];
   const desc = q('.footer__desc')[0];
-  const contacts = q('.footer__contacts li');
   const cols = q('.footer__col');
   const ruleBottom = q('.footer__rule--bottom')[0];
   const meta = q('.footer__meta p');
@@ -246,18 +243,11 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
      in the brand block and alone on screen for a beat before its copy. */
   if (logo) outOfBlur(tl, logo, cue(LOGO_AT), { y: 22, blur: 10, duration: 1.05, fade: 0.4 });
 
-  /* 3 — the claim under it, out of a shallower blur: two short lines at 16px,
+  /* 3 — the claim under it, out of a shallower blur: a few short lines at 16px,
      where the logo's 10px would wash them out rather than soften them. */
   if (desc) outOfBlur(tl, desc, cue(DESC_AT), { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
 
-  /* 4 — Contacts, which closes the brand block. A list of one, addressed as a
-     list so it moves the `<li>` and leaves the `Roll` inside the anchor alone,
-     exactly as the columns do. */
-  if (contacts.length) {
-    outOfBlur(tl, contacts, cue(CONTACT_AT), { y: 12, blur: 5, duration: 0.75, fade: 0.3 });
-  }
-
-  /* 5 — the three columns, left to right. Each one fills top down rather than
+  /* 4 — the three columns, left to right. Each one fills top down rather than
      arriving whole: the heading, then its rows on a tight step, which is the
      treatment the pillars' cards use. The social column's four icons are `<li>`
      of a `.footer__links` list like every other row, so they are picked up by
@@ -276,7 +266,7 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
     });
   });
 
-  /* 6 — the close. The bottom rule draws out on the same curve as the top one,
+  /* 5 — the close. The bottom rule draws out on the same curve as the top one,
      and the bar's two ends resolve under it on a step slow enough to read as
      left-then-right rather than as one line. */
   if (ruleBottom) drawRule(tl, ruleBottom, cue(META_AT));

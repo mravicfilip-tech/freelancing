@@ -5,8 +5,8 @@
    Resources), a row of four bare social icon buttons, a Terms/Privacy/Cookies
    legal row, and a giant cropped PHORCAST wordmark over a four-disc glow.
 
-   THREE THINGS THE DESIGN SAYS THAT THIS FILE DOES NOT DO, each raised rather
-   than decided:
+   TWO THINGS THE DESIGN SAYS THAT THIS FILE DOES NOT DO, each raised rather
+   than decided, and one the client has since settled:
 
    1. THE SPELLING. The supplied screenshot sets the brand as "Phorecast",
       with an e, and the domain is phorecast.io. Every other surface in this
@@ -22,11 +22,13 @@
       carries it on both surfaces (src/components/Nav.tsx, MORE_LINKS), which
       is the only reason implementing the design as drawn was safe to do.
 
-   3. THE DESCRIPTION IS PREDICTION-MARKET COPY. "A prediction platform and
-      event markets" is the client's own wording from the screenshot, and this
-      band renders on the landing page, whose copy was deliberately moved away
-      from that story (commit 24fbbc1). The design is implemented as given;
-      the tension is the client's to resolve.
+   3. THE DESCRIPTION, SETTLED. The screenshot's "A prediction platform and
+      event markets" was prediction-market copy on a landing page whose copy
+      had moved away from that story (commit 24fbbc1). The client has since
+      replaced it, word for word, with the two sentences under the logo, and
+      removed the Contacts link that stood under them. There was never a
+      Contacts page or route -- the link pointed at `#contacts`, a fragment
+      nothing on either page carries -- so the link was all there was to go.
 
    MOTION lives in Footer.motion.ts and the `data-motion="pending"` hold that
    goes with it is at the foot of Footer.css. */
@@ -127,17 +129,19 @@ export function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <Logo />
+            {/* The client's copy, character for character. The <br/> gives
+                the short first sentence a line of its own, as the design's
+                two sentences had; the second then wraps inside the brand
+                column. Two phrases are held together: "one-step", so the line
+                can never break at its hyphen, and "all in one place.", so the
+                sentence never ends on "one place." or "place." alone (it did
+                at 1280, 600 and 320 without it). */}
             <p className="footer__desc">
-              A prediction platform and event markets.<br />
-              Analytics, portfolio and convenient deposit options.
+              Trade the outcome, not the asset.<br />
+              Live markets, portfolio tracking, analytics and{' '}
+              <span className="footer__nowrap">one-step</span> crypto deposits,{' '}
+              <span className="footer__nowrap">all in one place.</span>
             </p>
-            {/* One link, in a list, carrying `.footer__links` -- which is what
-                global.css's roll-hover selectors address and what paints a
-                footer link. A bare <a> here would be the only link in the band
-                without the hover. */}
-            <ul className="footer__links footer__contacts">
-              <li><a href="#contacts"><Roll>Contacts</Roll></a></li>
-            </ul>
           </div>
 
           <nav className="footer__columns" aria-label="Footer">

@@ -394,6 +394,62 @@
    which is the trade Card A makes at the same width. Bounding that is the
    GRID's call (two columns above some width would halve it), and the grid is
    not this file's to set. */
+/* THE ARTWORK FOLLOWS THE COPY (above the phone layout).
+   -------------------------------------------------------------------------
+   The heading and the paragraph are page type on the site's scale (24 and 18,
+   tokens.css), not design pixels: at 1280 the card is 0.69 of its design size
+   and its artwork shrinks with it, but the words do not. Left as it was, the
+   copy ran into the art: the heading's one line reached under the Apple tile
+   from 1440 down, and the paragraph's extra lines onto the diamond and the
+   target tile. The card was also shorter than its own column from 1181 to
+   1440 before this, which clipped the heading's top and the link's foot.
+
+   So three things, and none of them resizes anything in the artwork:
+     1. The heading wraps before the Apple tile (520 design px) instead of
+        running under it, and balances onto two lines when it has to.
+     2. The two artwork layers move down by exactly as much as the copy is
+        taller than the design's copy, so the space between the paragraph and
+        the art is the design's at every width. They stay where they are in
+        the flex column's flow but take no room in it (a negative margin the
+        size of the box), sit after the copy (`order`), and are offset from
+        there by their design position less the design copy height, 69.2 --
+        the baseline copy at 1920 (28.8 heading, 2 gap, 2 x 19.2 paragraph).
+        The copy's min-height is that same 69.2, so the art never rides UP
+        into it where the card is wider than its design.
+     3. The card may grow past 776 x 440 to hold its content, and only then:
+        `min-height: auto` on a box with an aspect ratio is its content, and
+        `overflow: clip` rather than `hidden` is what lets that minimum apply
+        (a scroll container gets no content minimum). `min-width: 0` puts
+        back the one minimum `hidden` was giving for free: without it the
+        grid sizes the column from the card's content, whose width is in the
+        card's own unit, and the two chase each other (measured: the card
+        flipped between 610 and 649 wide at 1440 every few frames).
+   The faint mesh (`.mk__grid`) is parented to the card, not the stage, and
+   stays where the design puts it. */
+@media (min-width: 721px) {
+  .bcard.box-markets { min-height: auto; overflow: clip; min-width: 0; }
+  /* The design's own inset round the column (the heading sits 28.8 in),
+     stated so that a card which has grown to hold its copy keeps it. */
+  .box-markets .mk__stage { gap: 0; margin-block: calc(28.8 * var(--u)); }
+  .box-markets .bcard__text { min-height: calc(69.2 * var(--u)); }
+  .box-markets .bcard__title { max-width: calc(520 * var(--u)); text-wrap: balance; }
+  .bcard.box-markets .mk__orbits {
+    position: relative;
+    order: 1;
+    flex: none;
+    top: calc(-69.2 * var(--u));
+    margin-bottom: calc(-380 * var(--u));
+  }
+  .bcard.box-markets .mk__field {
+    position: relative;
+    order: 2;
+    flex: none;
+    top: calc((-27 - 69.2) * var(--u));
+    margin-bottom: calc(-765 * var(--u));
+  }
+  .box-markets .bento__cta { order: 3; margin-top: calc(310 * var(--u)); }
+}
+
 @media (max-width: 720px) {
   /* The design pixel, now measured against the phone frame. 392 and not 394:
      `100cqw` is the card's content box and the card carries a 1px border on
@@ -402,8 +458,9 @@
     --u: calc(100cqw / 392);
   }
 
+  /* 712 is the phone frame's height; the extra 48 is the drop below. */
   .bcard.box-markets {
-    aspect-ratio: 394 / 712;
+    aspect-ratio: 394 / 760;
 
     /* THE SUB-HEAD, AND WHY IT IS NOT --ink-2 HERE.
        -------------------------------------------------------------------
@@ -434,6 +491,21 @@
     margin-inline: 0;
     gap: 0;
     justify-content: space-between;
+  }
+
+  /* THE ARTWORK DROPS 48 DESIGN PX, AS ONE PIECE, and the card grows by the
+     same 48 (the aspect ratio above), so nothing inside the illustration moves
+     relative to anything else and the bottom row still shows as a sliver at
+     the card's edge. The reason is the paragraph: at the site's 18px it runs to
+     three lines in the 334-unit column from 360 to 430, and its third line
+     ("commodities, and more.") ran under the Tesla tile, whose top sits at a
+     fixed design y. The copy is flat pixels and the art is `--u`, so the drop
+     is sized for the narrowest phone that matters (360, where the overlap was
+     39px) and is a little generous above it. */
+  .bcard.box-markets .mk__grid,
+  .box-markets .mk__orbits,
+  .box-markets .mk__field {
+    margin-top: calc(48 * var(--u));
   }
 
   /* 526:798 — 18 between the heading and the description, where desktop has 2 */

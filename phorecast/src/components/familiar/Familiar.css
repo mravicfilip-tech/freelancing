@@ -218,8 +218,27 @@
   backdrop-filter: blur(calc(12.25 * var(--u)));
   font-family: var(--font-display); color: var(--ink);
 }
-.fam__mkt--ecb { left: calc(338 * var(--u)); top: calc(529 * var(--u)); }
-.fam__mkt--nvda { left: calc(552 * var(--u)); top: calc(529 * var(--u)); }
+/* THE CARD ROW DROPS WHEN THE COPY NEEDS IT. The right-hand copy is page type
+   on the site's scale (24 / 18 / the 50px button) in a column that is 400
+   design px wide, so below about 1440 it is taller in design units than the
+   design's copy, and from 1280 down its button ran under the two prediction
+   cards (measured: 75px under them at 1181). The row -- all four cards, so the
+   two sides stay level -- takes whichever is lower: the design's y, or the
+   copy's top (240) plus its two 30-unit gaps less the body's -14 pull (46),
+   plus the copy block's real height and 24px of air. The copy's height is
+   stated, not measured: one 28.8px claim line, four 21.6px body lines and
+   the 50px button, from 1272 up; below that the claim wraps and the body
+   runs to five lines (`--fam-copy-h` below). From about 1520 up the design's
+   own y wins and nothing moves. */
+.fam__stage {
+  --fam-copy-h: calc(28.8px + 4 * 21.6px + 50px);
+  --fam-drop: max(0px, calc(286 * var(--u) + var(--fam-copy-h) + 24px - 532 * var(--u)));
+}
+@media (max-width: 1271px) {
+  .fam__stage { --fam-copy-h: calc(2 * 28.8px + 5 * 21.6px + 50px); }
+}
+.fam__mkt--ecb { left: calc(338 * var(--u)); top: calc(529 * var(--u) + var(--fam-drop)); }
+.fam__mkt--nvda { left: calc(552 * var(--u)); top: calc(529 * var(--u) + var(--fam-drop)); }
 .fam__mkt-head { display: flex; align-items: center; gap: calc(12 * var(--u)); }
 .fam__mkt-icon { width: calc(32 * var(--u)); height: calc(32 * var(--u)); flex: none; }
 .fam__mkt-icon--nvda { width: calc(28 * var(--u)); height: calc(22.4 * var(--u)); }
@@ -366,7 +385,7 @@
    it where the file puts it, with no wrapper elements for the loop to reach
    through. */
 .fam__pred {
-  top: calc(532 * var(--u));
+  top: calc(532 * var(--u) + var(--fam-drop));
   width: calc(206 * var(--u)); height: calc(160 * var(--u));
   display: flex; flex-direction: column;
   padding: calc(8.034 * var(--u)); border-radius: calc(10 * var(--u));
@@ -467,7 +486,13 @@
      what cut "Start Trading" to "Start Tradi". */
   .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; border-radius: var(--radius-pill); }
   .fam__copy--left { left: calc(60 * var(--u)); top: calc(60 * var(--u)); width: calc(600 * var(--u)); }
-  .fam__copy--right { left: calc(60 * var(--u)); top: calc(250 * var(--u)); width: calc(560 * var(--u)); }
+  /* The claim column starts under the heading column, and the heading is page
+     type (a 16px eyebrow over two 32px lines, 96px, plus the column's 28-unit
+     gap), so its top is whichever is lower: the design's 250, or the heading's
+     foot plus 24 of air. Below about 1000 the heading is the lower one; at 768
+     the design's 250 put "Your View Has a Market" on "One Place.". */
+  .fam__stage { --fam-right-top: max(calc(250 * var(--u)), calc(88 * var(--u) + 120px)); }
+  .fam__copy--right { left: calc(60 * var(--u)); top: var(--fam-right-top); width: calc(560 * var(--u)); }
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
   /* The cards sit under the copy, and the copy is flat pixels while the cards
      are `--u`: the words do not shrink with the stage, so the narrower the
@@ -478,12 +503,13 @@
      the Explore Markets button ran 9 to 13px under both cards.
 
      So the cards take whichever is lower: the design's 560, or the copy's top
-     plus what the copy block measures at its tallest in this range -- 20px of
-     sub-title, five 19.2px body lines, the 50px button and two 30-unit gaps
-     is 199px at 701 -- plus 24 of air. The design's own number wins from
-     about 1050 up, so the wide end of the range is untouched. */
-  .fam__mkt--ecb { left: calc(60 * var(--u)); top: max(calc(560 * var(--u)), calc(250 * var(--u) + 224px)); }
-  .fam__mkt--nvda { left: calc(290 * var(--u)); top: max(calc(560 * var(--u)), calc(250 * var(--u) + 224px)); }
+     plus what the copy block measures at its tallest in this range, plus
+     air. Re-measured on the site's type scale (a 24px claim, 18px body): the
+     block is 195px at 701, so 224 leaves 29 of air there and more above it.
+     The design's own number wins from about 1050 up, so the wide end of the
+     range is untouched. */
+  .fam__mkt--ecb { left: calc(60 * var(--u)); top: max(calc(560 * var(--u)), calc(var(--fam-right-top) + 224px)); }
+  .fam__mkt--nvda { left: calc(290 * var(--u)); top: max(calc(560 * var(--u)), calc(var(--fam-right-top) + 224px)); }
   /* Both cards, together: below this width the stage re-bases to a
      1400-wide design and there is no room to the right of the handset. */
   .fam__pred { display: none; }

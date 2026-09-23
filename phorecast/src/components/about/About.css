@@ -1079,6 +1079,15 @@
   .ab-hero { --ground-u: 0.62px; }
 }
 
+/* THE TABLE ON A TABLET. The venue names are the site's small size, 14px,
+   nowrap, and "MAGICMARKETS" at 14 is about 115px -- wider than a 200-unit
+   column below about 1180 (80px at 768), where the fixed layout let each name
+   run into the next. `auto` lets the five venue columns take the width their
+   names need and gives the criterion column the rest, which it wraps into. */
+@media (max-width: 1180px) {
+  .ab-cmp__table { table-layout: auto; }
+}
+
 /* THE TABLE ON A PHONE.
    -------------------------------------------------------------------------
    Six columns do not fit in 320px of content: the criterion labels need about

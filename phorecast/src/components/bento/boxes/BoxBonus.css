@@ -121,6 +121,14 @@
 .box-bonus .box-bonus__title {
   white-space: nowrap;
 }
+/* The paragraph stops short of the bolt badge (629 design px in). It is 18px
+   type in a card that is 0.64 of its design size at 1181, where its one line
+   ran under the badge; it wraps to a second line there instead, which clears
+   the pie badge below it because that line is short. Desktop only: the phone
+   column is its own 334-unit box. */
+@media (min-width: 721px) {
+  .box-bonus .box-bonus__body { max-width: calc(585 * var(--u)); }
+}
 /* The title and the paragraph are sized by `--h3-size` and `--body-size` on
    `.bcard__title` / `.bcard__body` (Bento.css), NOT by `--u`, and so is the
    link's label (`--label-size` on `.bento__cta`). This

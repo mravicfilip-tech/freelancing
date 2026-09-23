@@ -77,7 +77,7 @@
   padding: 0 12px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: var(--small-size);
+  font-size: var(--label-size);
   line-height: 1.2;
   color: var(--ink);
   white-space: nowrap;
@@ -92,7 +92,7 @@
   border-radius: 9px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: var(--small-size);
+  font-size: var(--label-size);
   line-height: 1.2;
   /* No tracking, as on every uppercase label on the site: the client's label
      spec states none (see `.eyebrow` in global.css). */
@@ -383,7 +383,7 @@
     min-height: 44px;
     font-family: var(--font-label);
     font-weight: 500;
-    font-size: var(--small-size);
+    font-size: var(--label-size);
     line-height: 1.2;
     letter-spacing: 0;
     text-transform: uppercase;
@@ -404,7 +404,7 @@
     min-height: 32px;
     font-family: var(--font-label);
     font-weight: 500;
-    font-size: var(--small-size);
+    font-size: var(--label-size);
     line-height: 1.2;
     color: var(--ink);
   }

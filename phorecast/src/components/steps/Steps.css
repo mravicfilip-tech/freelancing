@@ -308,7 +308,7 @@
     padding: 12px 6px;
     background: none;
     border: 0;
-    font-family: var(--font-display);
+    font-family: var(--font-label);
     font-weight: 500;
     font-size: var(--label-size);
     line-height: 1.2;

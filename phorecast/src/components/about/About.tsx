@@ -536,14 +536,14 @@ function Primer() {
               <div className="ab-why__body">
                 <p>YES is trading at 70¢: the market gives this outcome a 70% chance.</p>
                 <p>
-                  <strong>You back YES with $1,000.</strong><br />
+                  You back YES with $1,000.<br />
                   That buys you 1,428 contracts. If the event happens, each one pays $1. You collect $1,428. Profit: $428 (+43%).
                 </p>
                 <p>
-                  <strong>You think the market&apos;s wrong and back NO at 30¢.</strong><br />
+                  You think the market&apos;s wrong and back NO at 30¢.<br />
                   That buys you 3,333 contracts. If the event doesn&apos;t happen, you collect $3,333. Profit: $2,333 (+233%).
                 </p>
-                <p className="ab-why__close">Either way, your maximum loss is the $1,000 you put in.</p>
+                <p>Either way, your maximum loss is the $1,000 you put in.</p>
               </div>
             </article>
           </div>

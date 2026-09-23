@@ -875,16 +875,14 @@
   color: var(--ink-2);
 }
 /* The lead is the list's own heading, so it keeps the display face. The
-   run-in sentences and the closing line are paragraph text, and paragraph
-   text is one family site-wide (tokens.css): they stay in the body face and
-   carry their emphasis by weight alone. */
+   example's sentences, its run-in lines and its closing line included, are
+   plain paragraph text: the user asked for no bold sentences, so nothing in
+   the body carries a weight of its own. */
 .ab-why__lead {
   font-family: var(--font-display);
   font-weight: 600;
   color: var(--ink-2);
 }
-.ab-why__close,
-.ab-why__body strong { font-weight: 500; color: var(--ink-2); }
 /* The frame's own `list-disc` with a 30px indent. `ul` is stripped of markers
    in global.css, so the list type is stated back here rather than assumed. */
 .ab-why__list {

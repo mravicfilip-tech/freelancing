@@ -179,9 +179,9 @@
 
      WHY 16 AND NOT 14. Both were rendered against the real sections at 1440
      and 390 in both themes. At 14 the Light 300 strokes go thin on the dark
-     ground (#9d9d9d on #0f0e0d), the bento and About cards open up empty
-     space under their copy, and the ledes stop reading as ledes under 32-54px
-     headings. 16 is also the browser's own body size and the value Figma's
+     ground (#9d9d9d on #0f0e0d), the About primer cards open up a band of
+     empty space above their copy, and the ledes stop reading as ledes under
+     32-54px headings. On a 390 phone 14px is plainly too small to read. 16 is also the browser's own body size and the value Figma's
      mobile frames already used (the card frames' "24/16 type").
 
      EVERY PARAGRAPH READS THESE TWO TOKENS, and no component sets its own

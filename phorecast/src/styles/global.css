@@ -18,6 +18,10 @@ body {
 }
 
 h1, h2, h3, p { margin: 0; }
+/* Line breaking by role (tokens.css). The longhand, not `text-wrap`, which
+   would also reset the wrap MODE and undo every `white-space: nowrap`. */
+h1, h2, h3 { text-wrap-style: var(--heading-wrap); }
+p, li { text-wrap-style: var(--body-wrap); }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 img, svg { display: block; }

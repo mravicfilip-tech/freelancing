@@ -220,6 +220,12 @@
   --label-size: 16px;
   --small-size: 14px;
   --heading-leading: 1.2;
+  /* How each role breaks its lines. Headings balance their lines; paragraphs
+     avoid a one-word last line. global.css applies them to h1-h3 and to p/li,
+     as the wrap STYLE only, so nothing that is deliberately `nowrap` or
+     `pre` starts wrapping. */
+  --heading-wrap: balance;
+  --body-wrap: pretty;
 
   --spacing-xs: 8px;
   --spacing-sm: 12px;

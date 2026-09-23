@@ -325,6 +325,24 @@
    720px, not 394px: it is the breakpoint Bento.css already treats as mobile,
    and the card between 720 and 1100 is a full-width single column that the
    landscape frame still fits. ------------------------------------------- */
+/* THE ROW IS BALANCED FROM 1101 TO 1500, where this card and the Markets card
+   sit side by side in one grid row. The Markets card holds page type (24 / 18)
+   over artwork in design px, so it is the taller of the two, and at its own
+   aspect ratio this card left a band of empty page under itself -- 178px of
+   it at 1440. So here the card stretches to the row, and everything the
+   design hangs on its artwork is measured from the card's FOOT instead of its
+   top: `100%` less the design's distance from the bottom (299 less the top),
+   so it all lands exactly where it did at the design height and travels with
+   the bottom-anchored artwork when the card is taller. The copy stays at the
+   top; the spare height opens between it and the chart. */
+@media (min-width: 1101px) and (max-width: 1500px) {
+  .bcard.box-bonus { align-self: stretch; aspect-ratio: auto; }
+  .box-bonus__badge--bolt { top: calc(100% - (299 - 73.5) * var(--u)); }
+  .box-bonus__badge--pie { top: calc(100% - (299 - 143.5) * var(--u)); }
+  .box-bonus__pill { top: calc(100% - (299 - 206) * var(--u)); }
+  .box-bonus .box-bonus__cta { top: calc(100% - (299 - 246) * var(--u)); }
+}
+
 @media (max-width: 720px) {
   .bcard--bonus.box-bonus {
     --u: calc(100cqw / 392);

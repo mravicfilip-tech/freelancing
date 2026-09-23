@@ -428,9 +428,11 @@
    stays where the design puts it. */
 @media (min-width: 721px) {
   .bcard.box-markets { min-height: auto; overflow: clip; min-width: 0; }
-  /* The design's own inset round the column (the heading sits 28.8 in),
-     stated so that a card which has grown to hold its copy keeps it. */
-  .box-markets .mk__stage { gap: 0; margin-block: calc(28.8 * var(--u)); }
+  /* The design's own inset round the column: its 398-unit column centred in
+     the 440-unit card leaves 21 above and below. Stated, so that a card which
+     has grown to hold its copy keeps it rather than running the heading into
+     its top edge. */
+  .box-markets .mk__stage { gap: 0; margin-block: calc(21 * var(--u)); }
   .box-markets .bcard__text { min-height: calc(69.2 * var(--u)); }
   .box-markets .bcard__title { max-width: calc(520 * var(--u)); text-wrap: balance; }
   .bcard.box-markets .mk__orbits {

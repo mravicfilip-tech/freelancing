@@ -232,7 +232,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .btn--outline:hover { border-color: var(--accent-lift); color: var(--accent-lift); }
 .nav__link:hover { color: var(--accent); }
 
+/* Reduced motion: the label stays put. Hiding the duplicate is not enough on
+   its own, because the hover and focus rules above still send the live label
+   up and out of its clip, and with the duplicate gone nothing arrives to
+   replace it: the link went blank on hover and on keyboard focus. The
+   transform is cancelled here for every host at once rather than restated
+   per selector list, which is what `!important` is for; the colour half of
+   the hover still marks the state. */
 @media (prefers-reduced-motion: reduce) {
-  .roll__in { transition: none; }
+  .roll__in { transition: none; transform: none !important; }
   .roll__in + .roll__in { display: none; }
 }

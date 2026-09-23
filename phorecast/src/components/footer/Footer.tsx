@@ -30,6 +30,7 @@
 
    MOTION lives in Footer.motion.ts and the `data-motion="pending"` hold that
    goes with it is at the foot of Footer.css. */
+import type { MouseEvent } from 'react';
 import { Icon } from '../Icon';
 import { Logo } from '../Logo';
 import { Roll } from '../Roll';
@@ -56,28 +57,27 @@ import discord from '../../assets/footer/social/discord.svg';
 import telegram from '../../assets/footer/social/telegram.svg';
 import './Footer.css';
 
-/* WHERE THE FOUR ICONS GO. TODO(client): none of these is a Phorcast account.
+/* WHERE THE FOUR ICONS GO. TODO(client): send the four URLs.
    ---------------------------------------------------------------------------
-   No social URL exists anywhere in this repository or its history -- the two
-   Telegram rows this replaced pointed at `#telegram-channel` and
-   `#telegram-chat`, placeholder fragments like every other link in the band.
-   So nothing here is a handle, and none is invented. Until the client sends
-   the real ones, each icon opens that network's own front page in a new tab:
-   a real destination that cannot 404 and cannot jump the page to the top the
-   way `href="#"` does, and `placeholder: true` marks which ones still need
-   replacing (it is rendered as `data-placeholder` so the page can be checked).
+   Empty on purpose, and nothing here is a guess: no social URL exists in this
+   repository, and the brief is "put empty links for now". Paste each URL in
+   as it arrives; that is the whole change, one line each.
 
-   Replace `href` and delete `placeholder` as each arrives.
+   An empty href still has to behave. The anchor keeps `href=""`, so it is a
+   real, focusable link with its accessible name and the markup is already
+   final; but an empty href means "this page", so a click would reload it.
+   `stayPut` below cancels the click (and the middle click) for exactly the
+   entries that are still empty, and nothing else. NOT `href="#"`, which jumps
+   the page to the top, and not a missing href, which stops it being a link or
+   a tab stop.
 
-   TELEGRAM IS THE CHANNEL. The design had two Telegram rows, a channel and a
-   chat; the client's list names Telegram once, so the one icon is the channel
-   and the chat link is dropped. If they want the chat back it is a fifth
-   entry here. */
-const SOCIAL_LINKS: Record<'x' | 'tiktok' | 'discord' | 'telegram', { href: string; placeholder?: true }> = {
-  x: { href: 'https://x.com', placeholder: true },
-  tiktok: { href: 'https://www.tiktok.com', placeholder: true },
-  discord: { href: 'https://discord.com', placeholder: true },
-  telegram: { href: 'https://telegram.org', placeholder: true },
+   One Telegram icon: the design's two Telegram rows (channel and chat) are
+   now the client's single "Telegram". */
+const SOCIAL_URLS = {
+  x: '',
+  tiktok: '',
+  discord: '',
+  telegram: '',
 };
 
 /* A link is usually just its label, and its href is that label slugged. Every
@@ -97,11 +97,14 @@ const COLUMNS = [
 
 /* In the client's order: "X, TikTok, Discord, Telegram". */
 const SOCIALS = [
-  { name: 'X', icon: x, ...SOCIAL_LINKS.x },
-  { name: 'TikTok', icon: tiktok, ...SOCIAL_LINKS.tiktok },
-  { name: 'Discord', icon: discord, ...SOCIAL_LINKS.discord },
-  { name: 'Telegram', icon: telegram, ...SOCIAL_LINKS.telegram },
+  { name: 'X', icon: x, href: SOCIAL_URLS.x },
+  { name: 'TikTok', icon: tiktok, href: SOCIAL_URLS.tiktok },
+  { name: 'Discord', icon: discord, href: SOCIAL_URLS.discord },
+  { name: 'Telegram', icon: telegram, href: SOCIAL_URLS.telegram },
 ];
+
+/* See SOCIAL_URLS: an empty link stays where it is. */
+const stayPut = (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault();
 
 /* The glyph is geometry, so it rides the band's design pixel like the badge
    around it: `--glyph` is 20 design pixels on `.footer__social`, and 22px where
@@ -165,7 +168,8 @@ export function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Phorcast on ${s.name}`}
-                      data-placeholder={s.placeholder}
+                      onClick={s.href ? undefined : stayPut}
+                      onAuxClick={s.href ? undefined : stayPut}
                     >
                       <Icon src={s.icon} w={20} h={20} style={GLYPH} />
                     </a>

@@ -279,6 +279,16 @@ export function Hero() {
   // drawn from a size of 221.4, measured). At 0.96 the mark rendered 328px in
   // a 315.8px box and `.heroLogo`'s `overflow: hidden` took 6px off the top
   // and the bottom. 0.88 draws it at 301 with 7px of air either side.
+  //
+  // Two columns, `cy` is a fraction of the hero, and the hero on slide 1 lost
+  // the market snapshot's 148px at 1440 x 900 (1088 to 940). 0.42 is kept on
+  // purpose rather than raised to hold the old spot. The old spot was set
+  // against a hero carrying the snapshot, and it hung the mark 54 to 65px below
+  // the middle of the copy at every laptop size. At 0.42 on the shorter hero
+  // the mark rose 62px and its middle lands on the copy's middle: -2.9, -7.6,
+  // -6.9 and +18.8px at 1280, 1366, 1440 and 1512, with 52 to 75px of clear
+  // air under the nav. Its SIZE is unmoved, because at every one of those
+  // widths the width fraction is the one that binds.
   const markPlacement = useMemo(
     () => (compact
       ? { heightFraction: 0.88, widthFraction: 0.94, cx: 0.5, cy: 0.5 }

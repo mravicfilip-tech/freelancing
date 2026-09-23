@@ -449,7 +449,7 @@
   /* This rule had already found the bug the token now fixes properly: 16
      design px came out 12.5 real ones on a 390 phone because `--u` divides by
      the desktop column, so a `max(14px, ...)` was bolted on. `--body-size`'s
-     16px floor lands the mobile frame's 16 as an actual 16. The flat 0.16px of
+     flat 16px lands the mobile frame's 16 as an actual 16. The flat 0.16px of
      tracking goes too -- a px tracking cannot "scale equally" by definition,
      and the panel asks for 0%. */
   .box-markets .bento__cta {

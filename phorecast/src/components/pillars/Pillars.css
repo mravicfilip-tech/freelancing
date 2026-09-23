@@ -128,7 +128,7 @@
 .pcard__mark--accent { color: var(--accent); }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
 .pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--ink); }
-.pcard__text { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--ink-2); }
+.pcard__text { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 
 /* The glyphs. Every one of them is a mask now (src/components/Icon.tsx), so
    the colour is `color` on the element and the token is chosen to match the
@@ -192,7 +192,6 @@
   .pillars__title { font-size: 22px; }
   .pcard { padding: 24px; min-height: 0; gap: 24px; }
   .pcard__title { font-size: 21px; }
-  .pcard__text { font-size: 17px; }
   .prow { height: 64px; padding: 18px; }
   .prow__label { font-size: 17px; }
 }

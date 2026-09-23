@@ -357,7 +357,7 @@
     text-wrap: balance;
   }
   /* 526:191 is 16 design px with 0.16px of tracking. Both are now gone from
-     here: the size is `--body-size` in tokens.css, whose 16px floor IS this
+     here: the size is `--body-size` in tokens.css, whose flat 16px IS this
      frame's 16, reached as a real 16 rather than as `16 * --u` -- which
      divided by the DESKTOP column (474) and so rendered 12.9-14.1 on a phone,
      below the frame it was quoting. The tracking goes with it: the client's

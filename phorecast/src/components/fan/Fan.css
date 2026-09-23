@@ -215,7 +215,7 @@
 .fan__sub {
   position: absolute; left: 50%; top: calc(411 * var(--f)); transform: translateX(-50%);
   width: calc(1440 * var(--f)); text-align: center;
-  font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--f)); line-height: 1.2;
+  font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading);
   color: var(--ink-2);
 }
 
@@ -385,8 +385,6 @@
     grid-area: 3 / 1;
     width: min(100% - 32px, 36ch);
     margin-top: 10px;
-    font-size: clamp(14px, 4vw, 17px);
-    line-height: 1.45;
   }
 }
 

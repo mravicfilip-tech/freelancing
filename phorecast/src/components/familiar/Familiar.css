@@ -202,7 +202,7 @@
 .fam__stage { --fam-col-right: calc(1680 * var(--u)); }
 .fam__copy--right { left: calc(1280 * var(--u)); top: calc(240 * var(--u)); width: calc(400 * var(--u)); gap: calc(30 * var(--u)); align-items: flex-start; }
 .fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: calc(24 * var(--u)); line-height: 1.2; color: var(--ink); }
-.fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: calc(20 * var(--u)); line-height: 1.2; color: var(--ink); margin-top: calc(-14 * var(--u)); }
+.fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink); margin-top: calc(-14 * var(--u)); }
 .fam__cta { width: calc(254 * var(--u)); height: calc(56 * var(--u)); font-size: calc(16 * var(--u)); border-radius: calc(30 * var(--u)); }
 
 /* Market cards ----------------------------------------------------------------- */
@@ -462,7 +462,7 @@
   .fam .eyebrow__dot { width: clamp(9px, 1vw, 12px); height: clamp(9px, 1vw, 12px); }
   .fam__title { font-size: clamp(26px, 3vw, 32px); line-height: 1.15; }
   .fam__sub-title { font-size: clamp(17px, 2vw, 22px); }
-  .fam__sub-body { font-size: clamp(15px, 1.6vw, 18px); line-height: 1.4; margin-top: 0; }
+  .fam__sub-body { margin-top: 0; }
   /* And the button hands its three `--u` overrides back to `.btn`, which is
      already drawn in flat pixels: 48px of fixed padding inside a `--u` box is
      what cut "Start Trading" to "Start Tradi". */
@@ -621,7 +621,7 @@
   .fam .eyebrow__dot { width: 9px; height: 9px; }
   .fam__title { font-size: 28px; line-height: 1.15; }
   .fam__sub-title { font-size: 24px; line-height: 1.2; }
-  .fam__sub-body { font-size: 20px; line-height: 1.2; margin-top: 0; color: var(--ink-2); }
+  .fam__sub-body { margin-top: 0; color: var(--ink-2); }
 
   /* The button hands every one of its `--u` overrides back to `.btn`, which is
      already drawn in flat pixels and already knows how to hold its own label.

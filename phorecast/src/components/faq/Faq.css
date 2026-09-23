@@ -56,7 +56,7 @@
   line-height: 1.2;
   color: var(--ink);
 }
-.faq__lede { font-family: var(--font-body); font-weight: 300; font-size: 20px; line-height: 1.2; color: var(--ink-2); }
+.faq__lede { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 .faq__mark { position: relative; width: 354px; max-width: 100%; aspect-ratio: 354 / 356; margin-top: 8px; }
 /* The logo layer fills this box; its fallback image is centred rather than
    placed for a hero, so override the module's hero-tuned positioning. */
@@ -129,7 +129,7 @@
 
 .faq__answer[hidden] { display: none; }
 .faq__answer { display: flex; flex-direction: column; gap: 16px; padding: 0 48px 24px; }
-.faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: 18px; line-height: 1.35; color: var(--ink-2); }
+.faq__a-text { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 .faq__chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .faq__chip {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
@@ -356,7 +356,6 @@
   .faq__q { padding: 18px 20px; gap: 12px; }
   .faq__index { width: 26px; font-size: 12px; letter-spacing: 1.6px; }
   .faq__answer { padding: 0 20px 20px; }
-  .faq__lede { font-size: 17px; }
 }
 
 /* Pending state, the same contract as the bento and the pillars. `gsap.from()`

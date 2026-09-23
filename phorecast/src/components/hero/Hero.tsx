@@ -214,7 +214,10 @@ export function Hero() {
    * does with the same `paused` and the same reset keys -- so the track filling
    * and the slide changing stay the same moment. (The old interval restarted a
    * full 7s on every release while the track resumed where it stood, so after
-   * any hold the track ran out seconds before the slide changed.)
+   * any hold the track ran out seconds before the slide changed.) Measured at
+   * 1440: paused with the track 0.715 full and released 12s later, the slide
+   * changed 2011ms after the release, against the 1995 the track had left, and
+   * the track read 0.97 to 1.0 full at every change it made on its own.
    *
    * The reset is its own effect, declared first: on a change React runs every
    * cleanup and then every effect in order, so the timer below always reads

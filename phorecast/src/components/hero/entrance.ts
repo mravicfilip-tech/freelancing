@@ -20,6 +20,7 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   const title = one<HTMLElement>(slide, '.hero__title');
   const lede = one<HTMLElement>(slide, '.hero__lede');
   const cta = one(slide, '.hero__cta');
+  const terms = one(slide, '.hero__terms');
   const visual = one(slide, '.hero__visual');
 
   if (eyebrow) rise(tl, eyebrow, at, { y: 0, x: -10, duration: 0.55 });
@@ -72,6 +73,9 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
     rise(tl, intoLines(lede), at + 0.5, { y: 0, yPercent: 108, filter: 'blur(7px)', duration: 0.62, clearProps: 'filter' });
   }
   if (cta) pop(tl, cta, at + 0.72, { scale: 0.94, duration: 0.55, ease: EASE });
+  // Slide 3's small print follows its button, a beat behind, the way the
+  // lede follows the title: it belongs to the button and arrives after it.
+  if (terms) rise(tl, terms, at + 0.82, { y: 6, duration: 0.5 });
 }
 
 /** The load-in. The nav drops in, light ignites, everything else overlaps it. */

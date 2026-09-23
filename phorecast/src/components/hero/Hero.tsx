@@ -10,6 +10,7 @@ import { SlideBonus, BonusCountdown } from './slides/SlideBonus';
 import { SlideFuture } from './slides/SlideFuture';
 import { HeroLogo } from '../HeroLogo';
 import { LiveDot } from '../LiveDot';
+import { ctaProps, type CtaKey } from '../../lib/cta';
 import './Hero.css';
 
 type Slide = {
@@ -18,7 +19,10 @@ type Slide = {
   title: string;
   lede: string;
   cta: string;
-  href: string;
+  /** Where the button goes: a key into lib/cta.ts, not an href. */
+  link: CtaKey;
+  /** Small print under the button (slide 3's bonus terms). */
+  terms?: string;
   visual: ReactNode;
   /** Extra copy-column content, between the lede and the CTA. */
   aside?: ReactNode;
@@ -39,39 +43,40 @@ type Slide = {
 const SLIDES: Slide[] = [
   {
     id: 'mark',
-    eyebrow: 'Global Markets. One Platform.',
-    title: 'The Future\nof Trading',
-    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
-    cta: 'Get Started',
-    href: '#signup',
+    eyebrow: 'FINANCIAL MARKETS. FUTURE OUTCOMES.',
+    title: 'Put Your Market\nView in Play.',
+    lede: 'Take a position on price targets, market milestones, and the events shaping stocks, crypto, commodities, and the wider economy.',
+    cta: 'Explore Markets',
+    link: 'heroMarkets',
     visual: null,
   },
   {
     id: 'account',
-    eyebrow: 'Global Markets. One Platform.',
-    title: 'One account.\nYour keys.',
-    lede: 'Open Phorcast in minutes and trade every asset class without handing anyone custody of your funds.',
-    cta: 'Create account',
-    href: '#signup',
+    eyebrow: 'SPORTS MARKETS. BUILT FOR FANS.',
+    title: 'Your Sports Knowledge\nHas a Market.',
+    lede: 'Take a position on match winners, tournament champions, player milestones, and the moments that define every season.',
+    cta: 'Explore Sports Markets',
+    link: 'heroSports',
     visual: <SlideAccount />,
   },
   {
     id: 'bonus',
-    eyebrow: 'Global Markets. One Platform.',
-    title: 'Half this stack\nis on us.',
-    lede: 'Fund your account and Phorcast matches it,\ndollar for dollar, up to $200.',
-    cta: 'Get your bonus',
-    href: '#signup',
+    eyebrow: 'LIMITED-TIME WELCOME BONUS',
+    title: 'Your First Deposit.\nDoubled.',
+    lede: 'Open your Phorcast account and get a 100% match on your first deposit, up to $200.',
+    cta: 'Claim Your Bonus',
+    link: 'heroBonus',
+    terms: 'Terms and eligibility apply.',
     visual: <SlideBonus />,
     aside: <BonusCountdown />,
   },
   {
     id: 'future',
-    eyebrow: 'Global Markets. One Platform.',
-    title: 'The Future\nof Trading',
-    lede: 'Phorcast combines global market access with fast onboarding, non-custodial trading, and transparent on-chain execution.',
-    cta: 'Get Started',
-    href: '#signup',
+    eyebrow: 'INTRODUCING THE PHORCAST TOKEN',
+    title: 'Built for the Future\nof Prediction Markets.',
+    lede: 'Discover the token at the heart of the Phorcast ecosystem, connecting our markets, community, and vision for what comes next.',
+    cta: 'Explore the Token',
+    link: 'heroToken',
     visual: <SlideFuture />,
   },
 ];
@@ -301,7 +306,7 @@ export function Hero() {
     // then cleared props from a hand-written list of selectors, which left
     // every element not on that list -- the illustration's parts, above all --
     // frozen at the start values `from` had written: an illustration stuck at
-    // 92% and, when a change landed mid-flight, a Get Started button stranded
+    // 92% and, when a change landed mid-flight, a slide button stranded
     // at opacity 0. revert() restores what GSAP set, all of it, by construction.
     let guard = 0;
     const ctx = gsap.context(() => {
@@ -506,7 +511,8 @@ export function Hero() {
                 </div>
                 <p className="lede hero__lede">{s.lede}</p>
                 {s.aside}
-                <a href={s.href} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}><Roll>{s.cta}</Roll></a>
+                <a {...ctaProps(s.link)} className="btn btn--primary hero__cta" tabIndex={i === index ? 0 : -1}><Roll>{s.cta}</Roll></a>
+                {s.terms && <p className="hero__terms">{s.terms}</p>}
               </div>
               {/* Slide 1's visual IS the mark once the slide is one column. */}
               <div className="hero__visual">{stacked && i === 0 ? mark : s.visual}</div>

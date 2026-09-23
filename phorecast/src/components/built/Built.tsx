@@ -25,6 +25,7 @@ import nodeLock from '../../assets/built/node-lock.svg';
 import gold from '../../assets/built/gold.svg';
 import arrow from '../../assets/built/arrow.svg';
 import tesla from '../../assets/built/tesla.svg';
+import { ctaProps, type CtaKey } from '../../lib/cta';
 import './Built.css';
 
 /* FOUR OF THIS BAND'S TWENTY-SIX IMAGES ARE <Icon>, AND NOT ONE MORE.
@@ -90,7 +91,7 @@ function CardOne() {
     <div className="bt-card bt-card--one">
       <span className="bt-card__glow bt-card__glow--right" aria-hidden="true" />
       <span className="bt-label bt-label--tl">One market</span>
-      <span className="bt-label bt-label--tr">Familiar from day one</span>
+      <span className="bt-label bt-label--tr">ONE CLEAR QUESTION</span>
       <div className="bt1" aria-hidden="true">
         <Icon src={youDot} w={24} h={24} className="bt1__dot" style={cssBox} />
         <Icon src={line} w={174} h={3} className="bt1__line" style={cssBox} />
@@ -104,8 +105,8 @@ function CardOne() {
         </div>
       </div>
       <div className="bt1__text" aria-hidden="true">
-        <p className="bt1__pair">BTC / USD</p>
-        <p className="bt1__note">One market to start.</p>
+        <p className="bt1__pair">BTC UP OR DOWN?</p>
+        <p className="bt1__note">A simple place to begin.</p>
       </div>
     </div>
   );
@@ -182,9 +183,9 @@ function CardTwo() {
   return (
     <div className="bt-card bt-card--two">
       <span className="bt-card__glow bt-card__glow--left" aria-hidden="true" />
-      <span className="bt-label bt-label--tl bt-label--grey">Five markets</span>
-      <span className="bt-label bt-label--tr bt-label--grey">Fast onboarding</span>
-      <span className="bt-label bt-label--bl">Transparent execution</span>
+      <span className="bt-label bt-label--tl bt-label--grey">MORE MARKETS</span>
+      <span className="bt-label bt-label--tr bt-label--grey">FAST ACCESS</span>
+      <span className="bt-label bt-label--bl">TRANSPARENT SETTLEMENT</span>
       <div className="bt2" aria-hidden="true">
         <Icon src={linkFan} w={336.203125} h={122.484375} className="bt2__fan" style={cssBox} />
         <Icon src={linkMain} w={436.78125} h={23.40625} className="bt2__main" style={cssBox} />
@@ -236,17 +237,17 @@ function CardTwo() {
 const COLUMNS = [
   {
     card: <CardOne />,
-    title: 'New to Trading?',
-    body: 'Start with a simple, intuitive platform designed to make accessing global markets feel familiar from day one.',
-    cta: 'Start Trading',
-    href: '#signup',
+    title: 'Start With What You Know',
+    body: 'Choose one clear question, take your position, and watch the probability change as the market responds.',
+    cta: 'Find Your First Market',
+    link: 'builtFirstMarket' as CtaKey,
   },
   {
     card: <CardTwo />,
-    title: 'Experienced Trader?',
-    body: 'Trade crypto, forex, stocks, commodities and indices with fast onboarding, non-custodial settlement and transparent execution.',
-    cta: 'Explore Markets',
-    href: '#markets',
+    title: 'Expand Your Market View',
+    body: 'Follow outcomes across crypto, equities, currencies, commodities, and indices, with fast access, self-custody, and transparent settlement.',
+    cta: 'Explore Financial Markets',
+    link: 'builtFinancial' as CtaKey,
   },
 ];
 
@@ -275,10 +276,10 @@ export function Built() {
         <header className="built__head">
           <p className="eyebrow">
             <LiveDot />
-            Better Infrastructure
+            BUILT TO GROW WITH YOU
           </p>
-          <h2 id="built-title" className="built__title">Built for the Way You Trade</h2>
-          <p className="built__sub">A familiar trading experience, rebuilt with faster access, greater transparency and more control.</p>
+          <h2 id="built-title" className="built__title">Start With One Question. Explore Every Possibility.</h2>
+          <p className="built__sub">Begin with a single forecast, then expand your view across the financial outcomes that matter to you.</p>
         </header>
 
         <div className="built__cols">
@@ -288,7 +289,7 @@ export function Built() {
               <div className="built__copy">
                 <h3 className="built__col-title">{c.title}</h3>
                 <p className="built__col-body">{c.body}</p>
-                <a href={c.href} className="built__cta"><Roll>{c.cta}</Roll><Icon src={arrow} w={12} h={6} style={cssBox} /></a>
+                <a {...ctaProps(c.link)} className="built__cta"><Roll>{c.cta}</Roll><Icon src={arrow} w={12} h={6} style={cssBox} /></a>
               </div>
             </div>
           ))}

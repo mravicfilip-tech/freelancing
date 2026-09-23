@@ -1,4 +1,4 @@
-/* Bento box D — "Trade every market from one account" (Figma 365:1063).
+/* Bento box D — "Forecast Global Markets in One Place" (Figma 365:1063).
  *
  * The one light card in the grid: a 776 x 440 cream surface carrying dark type,
  * inverted from its three dark siblings. Everything below is the approved
@@ -30,6 +30,7 @@
    mesh has to be ink, which is what Figma exports for this node (#343434). */
 import grid from '../../../assets/bento/markets/grid.svg';
 import { Roll } from '../../Roll';
+import { ctaProps } from '../../../lib/cta';
 import { Icon } from '../../Icon';
 import orbitRing from '../../../assets/bento/orbit-ring.svg';
 import arrowOrange from '../../../assets/bento/arrow-orange.svg';
@@ -260,12 +261,12 @@ export function BoxMarkets() {
 
         {/* 365:1093 */}
         <div className="bcard__text">
-          <h3 className="bcard__title">Trade every market from one account</h3>
-          <p className="bcard__body">Crypto, forex, commodities, indices and equities.</p>
+          <h3 className="bcard__title">Forecast Global Markets in One Place</h3>
+          <p className="bcard__body">Take a view on the outcomes shaping equities, indices, crypto, commodities, and more.</p>
         </div>
 
         {/* 365:1096 */}
-        <a href="#markets" className="bento__cta bento__cta--orange">
+        <a {...ctaProps('bentoMarkets')} className="bento__cta bento__cta--orange">
           <Roll>Explore Markets</Roll>
           <span className="mk__arrow">
             <img src={arrowOrange} alt="" width={12} height={6} />

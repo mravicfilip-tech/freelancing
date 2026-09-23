@@ -470,8 +470,21 @@
   .fam__copy--left { left: calc(60 * var(--u)); top: calc(60 * var(--u)); width: calc(600 * var(--u)); }
   .fam__copy--right { left: calc(60 * var(--u)); top: calc(250 * var(--u)); width: calc(560 * var(--u)); }
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
-  .fam__mkt--ecb { left: calc(60 * var(--u)); top: calc(560 * var(--u)); }
-  .fam__mkt--nvda { left: calc(290 * var(--u)); top: calc(560 * var(--u)); }
+  /* The cards sit under the copy, and the copy is flat pixels while the cards
+     are `--u`: the words do not shrink with the stage, so the narrower the
+     stage the lower the copy's foot lands in design units. The client's copy
+     is one body line longer ("Explore live prediction markets across
+     politics, sports, crypto, and finance. Make your forecast and see where
+     the world stands." is four lines at 720, five at 701), and at 701 to 770
+     the Explore Markets button ran 9 to 13px under both cards.
+
+     So the cards take whichever is lower: the design's 560, or the copy's top
+     plus what the copy block measures at its tallest in this range -- 20px of
+     sub-title, five 19.2px body lines, the 50px button and two 30-unit gaps
+     is 199px at 701 -- plus 24 of air. The design's own number wins from
+     about 1050 up, so the wide end of the range is untouched. */
+  .fam__mkt--ecb { left: calc(60 * var(--u)); top: max(calc(560 * var(--u)), calc(250 * var(--u) + 224px)); }
+  .fam__mkt--nvda { left: calc(290 * var(--u)); top: max(calc(560 * var(--u)), calc(250 * var(--u) + 224px)); }
   /* Both cards, together: below this width the stage re-bases to a
      1400-wide design and there is no room to the right of the handset. */
   .fam__pred { display: none; }

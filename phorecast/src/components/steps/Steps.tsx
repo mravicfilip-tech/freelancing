@@ -12,9 +12,9 @@ import './Steps.css';
    so each is the one verb that separates it from the other two. The full title
    and the body stay with the slide, where they are read one at a time. */
 const STEPS = [
-  { tab: 'Register', title: 'Register with email', body: 'Create your account with an email or wallet. No mandatory KYC.', panel: <PanelRegister /> },
-  { tab: 'Fund', title: 'Fund your account', body: 'Add funds with crypto, card, Apple Pay, Google Pay or bank transfer.', panel: <PanelFund /> },
-  { tab: 'Trade', title: 'Start trading', body: 'Access crypto, forex, stocks, commodities and indices from one simple platform.', panel: <PanelTrade /> },
+  { tab: 'Register', title: 'Create Your Account', body: 'Sign up with your email or connect a wallet. No mandatory KYC.', panel: <PanelRegister /> },
+  { tab: 'Fund', title: 'Add Funds Your Way', body: 'Deposit using crypto, card, Apple Pay, Google Pay, or bank transfer.', panel: <PanelFund /> },
+  { tab: 'Forecast', title: 'Make Your First Forecast', body: 'Explore live markets, choose an outcome, and take a position on what happens next.', panel: <PanelTrade /> },
 ];
 
 const DWELL_MS = 6000;
@@ -192,9 +192,9 @@ export function Steps() {
       <div className="container steps__inner">
         <p className="eyebrow">
           <LiveDot />
-          Registration
+          GET STARTED
         </p>
-        <h2 id="steps-title" className="steps__title">Open an account in 3 simple steps</h2>
+        <h2 id="steps-title" className="steps__title">Make Your First Forecast in 3 Simple Steps</h2>
 
         {phone ? (
           /* THE PHONE LAYOUT. A tablist, and three slides under it.

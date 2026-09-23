@@ -1,5 +1,5 @@
 /**
- * Bento card B — "Your funds leave whenever you want" (Figma 365:925 desktop,
+ * Bento card B — "Your Funds Stay Yours" (Figma 365:925 desktop,
  * 526:305 mobile).
  *
  * The card is 534 x 355 in desktop design pixels and 394 x 669 on the phone.
@@ -45,6 +45,7 @@
  */
 import arrow from '../../../assets/bento/custody/arrow.svg';
 import { Roll } from '../../Roll';
+import { ctaProps } from '../../../lib/cta';
 import { Icon } from '../../Icon';
 // The same 430x236 export the bento already ships as funds-glow.png -- checked
 // pixel for pixel, not by name -- so this points at the existing file rather
@@ -117,8 +118,8 @@ export function BoxCustody() {
   return (
     <article className="bcard bcard--funds box-custody">
       <div className="bcard__text">
-        <h3 className="bcard__title">Your funds leave whenever you want</h3>
-        <p className="bcard__body">Collateral sits in contracts we never touch.</p>
+        <h3 className="bcard__title">Your Funds Stay Yours</h3>
+        <p className="bcard__body">Take positions through smart contracts and withdraw your funds whenever you choose.</p>
       </div>
 
       <div className="custody__art" aria-hidden="true">
@@ -215,7 +216,7 @@ export function BoxCustody() {
           style={{ width: undefined, height: undefined }} />
       </div>
 
-      <a href="#how" className="bento__cta bento__cta--orange">
+      <a {...ctaProps('bentoHow')} className="bento__cta bento__cta--orange">
         <Roll>See How It Works</Roll>
         {/* Masked so the arrow follows the link. The file bakes #E5331E, which
             is what this link's `color` already resolves to in dark, so the

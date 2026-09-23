@@ -1,5 +1,5 @@
 /**
- * Slide 4 — "The Future of Trading".
+ * Slide 4 — "Built for the Future of Prediction Markets." (the token slide).
  *
  * The right-hand network/orbit diagram from Figma frame 365:762, group 365:803.
  * Every coordinate below is the raw Figma number inside that 1264 x 955 group;

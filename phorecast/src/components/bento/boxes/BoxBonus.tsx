@@ -1,4 +1,4 @@
-/* Bento card C — "Double your capital on first deposit".
+/* Bento card C — "Your First Deposit, Doubled".
    Figma: frame 365:988 (776 x 299 design px) and, on a phone, frame 526:261
    (394 x 460), file aczG8te17zRGoK5wvirB92.
 
@@ -27,6 +27,7 @@
 
 import chartMarker from '../../../assets/bento/bonus/marker.svg';
 import { Roll } from '../../Roll';
+import { ctaProps } from '../../../lib/cta';
 import { Icon } from '../../Icon';
 import chartGrid from '../../../assets/bento/bonus/grid.svg';
 import arrowOrange from '../../../assets/bento/bonus/arrow.svg';
@@ -97,14 +98,14 @@ export function BoxBonus() {
       </div>
 
       <div className="bcard__text box-bonus__text">
-        {/* One text node, deliberately. The phone frame breaks this title after
-            "capital", and the obvious way to say so -- a <br> switched off above
-            720 -- splits the string into two shaping runs, which moved the
-            DESKTOP title by a subpixel: 160 pixels over 3 rows on pixel-diff,
-            from markup that renders the same characters. The break is done in
-            CSS instead; see .box-bonus__title in the mobile block. */}
-        <h3 className="bcard__title box-bonus__title">Double your capital on first deposit</h3>
-        <p className="bcard__body box-bonus__body">Up to $200 on your first deposit.</p>
+        {/* One text node, deliberately. When a phone break is wanted, the
+            obvious way to say so -- a <br> switched off above 720 -- splits
+            the string into two shaping runs, which moved the DESKTOP title by
+            a subpixel: 160 pixels over 3 rows on pixel-diff, from markup that
+            renders the same characters. Any break is done in CSS instead; see
+            .box-bonus__title in the mobile block. */}
+        <h3 className="bcard__title box-bonus__title">Your First Deposit, Doubled</h3>
+        <p className="bcard__body box-bonus__body">Get a 100% match on your first deposit, up to $200.</p>
       </div>
 
       {/* Frame 2085662868 — lightning badge, top right of the chart. */}
@@ -138,8 +139,8 @@ export function BoxBonus() {
         </div>
       </div>
 
-      <a className="bento__cta bento__cta--orange box-bonus__cta" href="#bonus">
-        <span className="box-bonus__cta-label"><Roll>Get Your Bonus</Roll></span>
+      <a className="bento__cta bento__cta--orange box-bonus__cta" {...ctaProps('bentoBonus')}>
+        <span className="box-bonus__cta-label"><Roll>Claim Your Bonus</Roll></span>
         <span className="box-bonus__cta-arrow" aria-hidden="true">
           {/* Masked so the arrow follows the link; see BoxCustody.tsx.
 

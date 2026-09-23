@@ -1,5 +1,5 @@
 /**
- * Bento card A — "Open an account in 60 seconds" (Figma 365:866 desktop,
+ * Bento card A — "Make Your First Forecast in 60 Seconds" (Figma 365:866 desktop,
  * 526:184 mobile).
  *
  * ONE MARKUP, TWO FRAMES. The mobile design is not a second drawing: every one
@@ -43,6 +43,7 @@
    this card carries its own current export. */
 import grid from '../../../assets/bento/grid.svg';
 import { Roll } from '../../Roll';
+import { ctaProps } from '../../../lib/cta';
 import ringArc from '../../../assets/bento/ring-arc.svg';
 import arrow from '../../../assets/bento/arrow-white.svg';
 import logoWatermark from '../../../assets/bento/onboard/logo-watermark.svg';
@@ -64,8 +65,8 @@ export function BoxOnboard() {
   return (
     <article className="bcard bcard--onboard box-onboard">
       <div className="bcard__text">
-        <h3 className="bcard__title">Open an account in 60 seconds</h3>
-        <p className="bcard__body bcard__body--light">No KYC, no documents, no waiting.</p>
+        <h3 className="bcard__title">Make Your First Forecast in 60 Seconds</h3>
+        <p className="bcard__body bcard__body--light">No KYC. No documents. No waiting.</p>
       </div>
 
       <div className="onb__art" aria-hidden="true">
@@ -117,8 +118,8 @@ export function BoxOnboard() {
         <span className="onb__in">You&rsquo;re in.</span>
       </div>
 
-      <a className="bento__cta bento__cta--white" href="#signup">
-        <Roll>Open an Account</Roll>
+      <a className="bento__cta bento__cta--white" {...ctaProps('bentoStart')}>
+        <Roll>Start Forecasting</Roll>
         <img src={arrow} alt="" width={12} height={6} />
       </a>
     </article>

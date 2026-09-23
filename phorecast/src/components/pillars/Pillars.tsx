@@ -87,15 +87,15 @@ const CARDS = [
     eyebrow: '0.05%',
     icon: <Icon src={iconFee} w={20} h={20} className="pillars__icon" style={cssBox} />,
     mark: markWhite,
-    title: 'Trading Fee',
-    body: 'A simple commission per side on every executed trade.',
+    title: 'Low, Transparent Fees',
+    body: 'One clear fee whenever you take a position. No hidden costs.',
   },
   {
     eyebrow: 'Seconds',
     icon: <Icon src={iconClock} w={20} h={20} className="pillars__icon" style={cssBox} />,
     mark: markWhite,
-    title: 'Fast Onboarding',
-    body: 'Get started with just an email or wallet.',
+    title: 'Start Forecasting Fast',
+    body: 'Join with an email or wallet and go straight to the markets.',
   },
   {
     eyebrow: 'Instant withdrawals',
@@ -106,8 +106,8 @@ const CARDS = [
        siblings follow --ink. The distinction between the three cards is the
        whole reason two near-identical exports of the same path exist. */
     markAccent: true,
-    title: 'On-Chain',
-    body: 'A simple commission per side on every executed trade.',
+    title: 'On-Chain Settlement',
+    body: 'Outcomes settle transparently on-chain, with your funds available whenever you need them.',
     fixed: true,
   },
 ];
@@ -115,8 +115,8 @@ const CARDS = [
 const ROWS = [
   { label: 'Fast Access', icon: <Icon src={pill1} w={20} h={20} className="pillars__icon" style={cssBox} /> },
   { label: 'Full Control', icon: <Icon src={pill2} w={20} h={20} className="pillars__icon" style={cssBox} /> },
-  { label: 'Familiar Experience', icon: <MultiIcon parts={PILL3_PARTS} map={pill3} prefix="pill3" /> },
-  { label: 'Transparent Execution', icon: <Icon src={pill4} w={20} h={20} className="pillars__icon" style={cssBox} /> },
+  { label: 'Intuitive Markets', icon: <MultiIcon parts={PILL3_PARTS} map={pill3} prefix="pill3" /> },
+  { label: 'Transparent Settlement', icon: <Icon src={pill4} w={20} h={20} className="pillars__icon" style={cssBox} /> },
 ];
 
 export function Pillars() {
@@ -137,10 +137,10 @@ export function Pillars() {
       <div className="pillars__inner">
         <p className="eyebrow">
           <LiveDot />
-          Built for Better Trading
+          BUILT FOR BETTER PREDICTION MARKETS
         </p>
         <h2 id="pillars-title" className="pillars__title">
-          Modern infrastructure designed around speed, transparency and trader control.
+          Fast to enter. Clear to follow. Yours to control.
         </h2>
 
         <ul className="pillars__cards">

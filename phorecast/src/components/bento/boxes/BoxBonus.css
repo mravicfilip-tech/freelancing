@@ -1,4 +1,4 @@
-/* Bento card C — "Double your capital on first deposit" (Figma 365:988).
+/* Bento card C — "Your First Deposit, Doubled" (Figma 365:988).
 
    Design frame: 776 x 299, 1px border, so the padding box every absolute child
    is measured against is 774 x 297. `.bcard` already declares
@@ -302,8 +302,9 @@
        pixel of the NEW frame: 392 is the 394 border box less the 1px border
        the band gives every card, which is what 100cqw resolves to (padding is
        0 on this card). Figma's root coordinates are therefore design - 1.
-     * The title breaks after "capital" -- the design sets that break by hand,
-       and `text-wrap: balance` reproduces it without touching the markup.
+     * The title may take two lines, and `text-wrap: balance` evens them if it
+       does, without touching the markup. With the client's current copy it is
+       one line from 320 up.
      * The copy is 24 / 16 with 18 between, not 24 / 20 with 2.
      * The artwork well hangs 110 design px off the LEFT edge and 61 off the
        right (desktop hangs it off the right only), which crops the line's
@@ -339,21 +340,17 @@
     width: calc(334 * var(--u));
     gap: calc(18 * var(--u));
   }
-  /* The phone frame breaks this title after "capital" (526:263), and `balance`
-     is how that is asked for without touching the markup. A <br> switched off
-     above 720 was tried first and rejected: splitting the string into two
-     shaping runs moved the DESKTOP title by a subpixel, 160 pixels over three
-     rows, for markup that renders identical characters.
+  /* The phone frame (526:263) set the old title, "Double your capital on
+     first deposit", on two lines broken after "capital", and `balance` was how
+     that was asked for without touching the markup. A <br> switched off above
+     720 was tried first and rejected: splitting the string into two shaping
+     runs moved the DESKTOP title by a subpixel, 160 pixels over three rows, for
+     markup that renders identical characters.
 
-     `balance` earns it on the numbers rather than by luck. Measured at 390:
-     the title box is 334 design px, "Double your capital" is 216 and "Double
-     your capital on" is 250, so the natural wrap is 4 + 2 and balancing to
-     3 + 3 takes the widest line from 250 to 216. That is the minimum, so it is
-     the split the algorithm returns -- and where it is unsupported or declines,
-     the fallback is the natural 4 + 2 wrap: a different break, still two lines,
-     still inside the box. A max-width tuned between 216 and 250 would force the
-     right break too, and fail into a THREE-line title the moment the webfont
-     did not arrive. */
+     The client's current title, "Your First Deposit, Doubled", is one line in
+     the 334-unit box from 320 up (266px at 390), so `balance` has nothing to do
+     today. It stays: it costs nothing on one line and evens the break if the
+     copy ever grows back to two. */
   .box-bonus .box-bonus__title {
     white-space: normal;
     text-wrap: balance;

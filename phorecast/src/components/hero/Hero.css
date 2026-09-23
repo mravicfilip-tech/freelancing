@@ -207,8 +207,57 @@
 .is-active .hero__copy { transform: none; }
 .hero__heading { display: flex; flex-direction: column; gap: 28px; }
 .hero__title { white-space: pre; width: max-content; max-width: none; }
+/* THE HEADLINE SIZE: ONE SIZE FOR ALL FOUR SLIDES, SET BY THE ONE THAT NEEDS
+   THE MOST ROOM.
+
+   The titles are the client's, with the client's own line breaks, and a line
+   is never wrapped (`white-space: pre` above), so a line is exactly as wide as
+   its words. At the old `.display` size, clamp(52px, 5.2vw, 100px), the
+   client's longer lines ran into the artwork beside them: "Your Sports
+   Knowledge" (slide 2) 314px into the market cards at 1440, and "of Prediction
+   Markets." (slide 4) across the orbit rings at 1920 and over the BTC/USD pill
+   at 1440. The client's instruction: scale the headlines down, equally, so
+   they sit clear.
+
+   So the size is a fraction of the content column, in `cqw` of
+   `.hero__stage`, and it is the same fraction on every slide. Measured on the
+   rendered page, as a share of the column, at 1181 / 1280 / 1440 / 1600 /
+   1920 (all identical, because both the type and the artwork scale with the
+   column):
+
+       slide   widest line               line, em   artwork starts at
+       2       Your Sports Knowledge      11.239     0.3993 of the column
+       4       of Prediction Markets.     10.731     0.4458
+       3       Your First Deposit.         8.817     0.4956
+       1       Put Your Market             7.687     (the mark, far right)
+
+   Slide 2 is the tightest: 0.3993 / 11.239 = 3.553cqw would put the line's
+   last glyph ON the first card. 3.375cqw draws it at 37.93% of the column and
+   leaves 2% clear -- 27px at 1440, 36px at 1920, 22px at 1181 -- and every
+   other slide clears by more. The column stops growing at 1800 above 1920,
+   so the size tops out at 60.75px; the 32px floor is never reached above
+   1181, where the column is 1107px and the title 37.4px.
+
+   The phone and the one-column range below 1180 have the artwork under the
+   copy rather than beside it, and set their own sizes further down.
+   `.hero .hero__title` and not `.hero__title` for the reason given there:
+   `.display` is bundled after this file at the same specificity. */
+.hero .hero__title { font-size: clamp(32px, 3.375cqw, 100px); }
 .hero__lede { max-width: 508px; }
 .hero__cta { margin-top: 12px; }
+/* Slide 3's small print, "Terms and eligibility apply." It sits 12px under the
+   button: `.hero__copy` spaces its children 48px apart (28px on a phone, see
+   below), and small print that far from the offer it qualifies reads as a
+   separate paragraph. The size is the site's one paragraph size, as every
+   paragraph is (tokens.css); what makes it small print is the quieter ink. */
+.hero__terms {
+  margin-top: -36px;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  color: var(--ink-muted);
+}
 
 .hero__visual {
   position: absolute;
@@ -337,6 +386,12 @@
 }
 @media (max-width: 1180px) {
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
+  /* One column: the artwork moves under the copy, so a title line only has to
+     fit the column, and the design's own ramp does that with room to spare --
+     at 1180 the widest line, 11.239em at 61.4px, is 690px of a 1106px column;
+     at 721, 584px of 657. Restated here because the rule above would
+     otherwise shrink the titles to fit a neighbour that is no longer there. */
+  .hero .hero__title { font-size: clamp(52px, 5.2vw, 100px); }
   /* Pack the two rows to the top. `.hero__slide` is a grid item at 1/1 of
      `.hero__stage`, so it is stretched to the height of the TALLEST slide --
      and its own rows, being auto, then shared that slack out between them.
@@ -395,22 +450,40 @@
      buying more means a `max-width: 359px` block rather than a smaller ramp. */
   .hero .eyebrow { font-size: clamp(13px, 4.45vw, 16px); gap: clamp(8px, 3.34vw, 12px); }
   .hero .eyebrow__dot { width: clamp(10px, 3.34vw, 12px); height: clamp(10px, 3.34vw, 12px); }
+  /* AND NOW IT MAY WRAP. The client's eyebrows are longer than the one this
+     note was measured on: "FINANCIAL MARKETS. FUTURE OUTCOMES." is 364px on
+     one line, past a 350px column at 390 and cut off by the hero's clip at 360
+     and below (with `scrollWidth` still reading clean, as above). The client's
+     answer is a second line on a phone, and only on a phone. The line breaks
+     only where it has to, so the other three stay on one line from 360 up; the
+     dot keeps to the first line (0.6em is half the 1.2 line, less half the dot)
+     instead of centring on the pair. */
+  .hero .eyebrow { white-space: normal; align-items: flex-start; }
+  .hero .eyebrow__dot { margin-top: calc(0.6em - clamp(5px, 1.67vw, 6px)); }
 
   .hero__title { white-space: pre-line; width: auto; }
-  /* 52px was the floor of a scale whose ceiling is a 1920 frame. On a 390px
-     screen it puts "Half this stack" onto three lines and leaves the headline
-     almost touching the lede. The floor comes down and the phone range is
-     driven by vw, so the type grows with the screen instead of stepping.
+  /* The same rule as the desktop, against the column the phone has: the
+     client's two lines stay two lines, and all four slides share one size,
+     set by the widest line. That is still slide 2's "Your Sports Knowledge" at
+     11.239em, so 8.7cqw draws it at 97.8% of the column -- 30.5px at 390,
+     27.8px at 360 is floored to 28px and still fits (315 of 320). Only at 320
+     does the 28px floor bind and let that one line wrap. The old ramp,
+     clamp(38px, 10.6vw, 52px), put slides 2 to 4 onto three and four lines at
+     390 with the client's copy, which is what held the four slide bottoms
+     apart.
+
+     `.hero .hero__title`, not `.hero__title`: `.display` in global.css carries
 
      `.hero .hero__title`, not `.hero__title`: `.display` in global.css carries
      the same specificity and is bundled after this file, so a bare class here
      loses the cascade by source order and the headline stayed at 52px. */
-  .hero .hero__title { font-size: clamp(38px, 10.6vw, 52px); }
+  .hero .hero__title { font-size: clamp(28px, 8.7cqw, 52px); }
   .hero__bg { --u: 0.45px; }
   /* Tighter than the desktop 162/48/28, because a phone reads these as one
      block and the desktop rhythm spreads them over most of the viewport. */
   .hero__stage { margin-top: 40px; }
   .hero__copy { gap: 28px; }
+  .hero__terms { margin-top: -16px; } /* 12px under the button, as above */
   .hero__heading { gap: 16px; }
   /* The copy and its illustration are one block on a phone; the desktop
      clamp's 32px floor was set against a 560px column standing beside the
@@ -490,6 +563,7 @@
 .hero[data-motion='pending'] .hero__lede .line,
 .hero[data-motion='pending'] .hero__lede,
 .hero[data-motion='pending'] .hero__cta,
+.hero[data-motion='pending'] .hero__terms,
 .hero[data-motion='pending'] .hero__position,
 .hero[data-motion='pending'] .hero__visual {
   visibility: hidden;

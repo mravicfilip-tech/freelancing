@@ -531,11 +531,18 @@
   /* A 108-wide block at the card's upper right. The pair is centred in it and
      the sentence is flush left, which is what the node does -- the sentence is
      the wider of the two and sets the block's edge. */
+  /* Widened leftward, and the pair a step smaller, for the client's copy:
+     "BTC UP OR DOWN?" is 15 capitals where "BTC / USD" was 9, and at 390 it
+     ran 34px out of the old 108-unit block and 13px past the card's content
+     edge. The block's right edge stays at 314; it grows left over empty card
+     (the ring stack starts at y 128, below this block, and the top-left label
+     ends above it at y ~45). Measured to fit, pair and sentence both, from 320
+     to 720. */
   .bt1__text {
-    left: calc(206 * var(--c)); right: auto; top: calc(64 * var(--c)); transform: none;
-    width: calc(108 * var(--c)); align-items: stretch; gap: calc(4 * var(--c));
+    left: calc(166 * var(--c)); right: auto; top: calc(64 * var(--c)); transform: none;
+    width: calc(148 * var(--c)); align-items: stretch; gap: calc(4 * var(--c));
   }
-  .bt1__pair { font-size: clamp(14px, calc(16 * var(--c)), 18px); text-align: center; }
+  .bt1__pair { font-size: clamp(13px, calc(15 * var(--c)), 17px); text-align: center; }
   .bt1__note { font-size: clamp(11px, calc(12 * var(--c)), 14px); text-align: left; }
 
 

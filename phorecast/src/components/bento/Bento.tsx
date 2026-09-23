@@ -10,13 +10,13 @@ import type { SectionMotion } from '../../lib/motion';
 import './Bento.css';
 
 
-/* Card A — Open an account in 60 seconds */
+/* Card A — Make Your First Forecast in 60 Seconds */
 
-/* Card B — Your funds leave whenever you want */
+/* Card B — Your Funds Stay Yours */
 
-/* Card C — Double your capital on first deposit */
+/* Card C — Your First Deposit, Doubled */
 
-/* Card D — Trade every market from one account */
+/* Card D — Forecast Global Markets in One Place */
 
 /* Entrance -------------------------------------------------------------------
    The glow blooms, the header rises, then the four cards arrive one after
@@ -228,8 +228,8 @@ export function Bento() {
       <div className="container">
         <div className="bento__card">
           <header className="bento__head">
-            <h2 id="why-title" className="bento__title">Why Traders Move to Phorcast</h2>
-            <p className="bento__sub">The tools incumbents can't give you, on infrastructure that never holds your funds.</p>
+            <h2 id="why-title" className="bento__title">Why Forecasters Choose Phorcast</h2>
+            <p className="bento__sub">The future of prediction markets: faster to enter, easier to explore, and built around your control.</p>
           </header>
           <div className="bento__grid">
             <div className="bento__col bento__col--left">

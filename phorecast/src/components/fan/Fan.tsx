@@ -246,10 +246,10 @@ export function Fan() {
             resolve to a pixel value the moment it touched the block. The inner
             span is what the entrance moves and blurs; the block itself is never
             a tween target. */}
-        <h2 id="fan-title" className="fan__title"><span className="fan__in">Your Funds Stay in Your Control</span></h2>
+        <h2 id="fan-title" className="fan__title"><span className="fan__in">Where Every Outcome Connects</span></h2>
         <p className="fan__sub">
           <span className="fan__in">
-            Your assets stay under your control through non-custodial infrastructure and transparent on-chain settlement.
+            Explore prediction markets across sports, finance, crypto, elections, technology, and geopolitics, all brought together in one place.
           </span>
         </p>
       </div>

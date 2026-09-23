@@ -194,6 +194,17 @@
   .pcard__title { font-size: 21px; }
   .prow { height: 64px; padding: 18px; }
   .prow__label { font-size: 17px; }
+
+  /* The eyebrow is allowed a second line on a phone, and only there.
+     "BUILT FOR BETTER PREDICTION MARKETS" is 359px of type on one line, and
+     `.eyebrow` is nowrap (global.css), so at 390 it ran 4px past its column,
+     at 360 it reached the screen edge and at 320 the section's clip cut 19px
+     off the end -- invisibly to any scrollWidth check, because a clipped line
+     scrolls nothing. Wrapping, it breaks only where it has to. The dot keeps
+     to the first line rather than centring on the pair: 0.6em is half the
+     1.2 line, less half the 12px dot. */
+  .pillars .eyebrow { white-space: normal; align-items: flex-start; text-align: center; }
+  .pillars .eyebrow .eyebrow__dot { margin-top: calc(0.6em - 6px); }
 }
 
 /* Pending state, the same contract as the bento. `gsap.from()` writes its start

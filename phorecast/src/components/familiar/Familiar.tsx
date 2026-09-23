@@ -24,6 +24,7 @@ import trendTab from '../../assets/familiar/trend-tab.svg';
 import { useSectionMotion } from '../../lib/motion';
 import { buildFamiliar } from './Familiar.motion';
 import { familiarLoop } from './Familiar.loop';
+import { ctaProps } from '../../lib/cta';
 import './Familiar.css';
 
 const CANDIDATES = [
@@ -247,15 +248,15 @@ export function Familiar() {
         <div className="fam__copy fam__copy--left">
           <p className="eyebrow">
             <LiveDot />
-            Built for Traders
+            BUILT FOR FORECASTERS
           </p>
-          <h2 id="fam-title" className="fam__title">Familiar Trading.<br />Better Infrastructure.</h2>
+          <h2 id="fam-title" className="fam__title">Every Outcome.<br />One Place.</h2>
         </div>
 
         <div className="fam__copy fam__copy--right">
-          <h3 className="fam__sub-title">Phorcast Trading</h3>
-          <p className="fam__sub-body">Trade crypto, forex, stocks, commodities and indices through one simple, intuitive platform.</p>
-          <a href="#signup" className="btn btn--primary fam__cta"><Roll>Start Trading</Roll></a>
+          <h3 className="fam__sub-title">Your View Has a Market</h3>
+          <p className="fam__sub-body">Explore live prediction markets across politics, sports, crypto, and finance. Make your forecast and see where the world stands.</p>
+          <a {...ctaProps('familiarMarkets')} className="btn btn--primary fam__cta"><Roll>Explore Markets</Roll></a>
         </div>
 
         <MarketCard
@@ -274,7 +275,7 @@ export function Familiar() {
         {/* THE BOTTOM BAND IS A CHILD OF THE STAGE, and was a sibling of it.
             On a phone the stage is an ordinary column and the Figma mobile
             frame (538:4601) puts the category strip BETWEEN the handset and
-            the "Phorcast Trading" copy — so the strip has to be orderable
+            the "Your View Has a Market" copy — so the strip has to be orderable
             against the stage's own children, and `order` only reaches
             siblings. Nothing about the desktop composition moves: the band is
             `position: absolute; inset: auto 0 0` and `.fam` has no in-flow

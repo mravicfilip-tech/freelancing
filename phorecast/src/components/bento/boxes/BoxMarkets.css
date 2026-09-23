@@ -131,7 +131,16 @@
    was two departures from the spec at once: 18 design px where the panel says
    20, on an uncapped unit that ran to 21.53 at 1100 and down to its 13px floor
    at 1280. */
+/* The measure is capped at 500 design px. The client's paragraph ("Take a
+   view on the outcomes shaping equities, indices, crypto, commodities, and
+   more.") is 85 characters where the old one was 49, and on one long first
+   line it ran under the Apple and DAX tiles, whose left edges sit about 563
+   design px in: measured 13 x 3px of glyph over the DAX tile at 1280 and 1181.
+   500 wraps it before the tiles at every desktop width. On a phone the unit
+   is re-based to the 392 frame, so 500 is wider than the card and does not
+   bind. */
 .box-markets .bcard__body {
+  max-width: calc(500 * var(--u));
   color: var(--mk-ink-2);
 }
 

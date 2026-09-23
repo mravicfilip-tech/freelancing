@@ -27,7 +27,7 @@ import { bonusCountdownMotion, slideBonusMotion } from './SlideBonus.motion';
 import './SlideBonus.css';
 
 /**
- * Hero slide 3 — "Half this stack is on us."
+ * Hero slide 3 — "Your First Deposit. Doubled."
  *
  * The illustration is the Figma frame 464:309: a 964 × 822 design box that sits
  * 64 design px in from the right edge of the 1800px content column. Everything
@@ -119,7 +119,7 @@ function GiftIcon() {
 
 /**
  * The limited-time bonus block that sits in slide 3's copy column, under the
- * lede and above the "Get your bonus" button (Figma 474:857).
+ * lede and above the "Claim Your Bonus" button (Figma 474:857).
  */
 export function BonusCountdown() {
   const ref = useRef<HTMLDivElement>(null);
@@ -130,7 +130,7 @@ export function BonusCountdown() {
     <div className="sl3-countdown" ref={ref}>
       <p className="sl3-countdown__label">
         <GiftIcon />
-        Limited-time bonus
+        OFFER ENDS IN
       </p>
       <div className="sl3-countdown__tiles">
         {COUNTDOWN.map((item, i) => (

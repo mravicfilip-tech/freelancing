@@ -123,10 +123,12 @@
    600 is the claim the design is making.
 
    1.4 leading rather than the 1.2 the links take: it is the only multi-line
-   paragraph here and two lines at 1.2 close up. The <br/> in the markup is
-   what keeps the two sentences from fusing into one line at wide widths; below
-   the brand column's width they wrap on their own, which is a wrap and not a
-   fuse -- each sentence still starts its own line.
+   paragraph here and two lines at 1.2 close up. Each sentence is a block line
+   of its own (.footer__line) and is balanced on its own, so no line of either
+   is a lone word or a stub: at 360 through 1440 the second sentence breaks
+   "Live markets, portfolio tracking, / analytics and one-step crypto /
+   deposits, all in one place." The first keeps one line down to 1182 and
+   splits evenly at 1181, where it is a pixel wider than the column.
 
    The SIZE is the site's paragraph size, --body-size in tokens.css, like every
    other paragraph on the site. The weight and the leading stay this block's
@@ -139,7 +141,7 @@
   color: var(--ink);
   text-wrap: balance;
 }
-/* The two phrases in the description that must not break; see Footer.tsx. */
+/* "one-step" must not break at its hyphen; see Footer.tsx. */
 .footer__nowrap { white-space: nowrap; }
 .footer__line { display: block; }
 

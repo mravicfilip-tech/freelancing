@@ -99,13 +99,17 @@ export function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <Logo />
-            {/* The client's copy, character for character. The <br/> gives
-                the short first sentence a line of its own, as the design's
-                two sentences had; the second then wraps inside the brand
-                column. Two phrases are held together: "one-step", so the line
-                can never break at its hyphen, and "all in one place.", so the
-                sentence never ends on "one place." or "place." alone (it did
-                at 1280, 600 and 320 without it). */}
+            {/* The client's copy, character for character. Each sentence is
+                its own block line, so the short first one keeps a line of its
+                own as the design's two sentences had, and each is balanced
+                separately (`text-wrap: balance` in Footer.css; Chromium will
+                not balance across a <br/>, which is why this is not one).
+                Balancing is what keeps "place." or "all in one place." from
+                ending up alone, at every width, without holding a phrase
+                together. The one span left keeps "one-step" from breaking at
+                its hyphen. At 1181 the first sentence is a pixel wider than the
+                brand column and balances to "Trade the outcome, / not the
+                asset." rather than leaving "asset." alone. */}
             <p className="footer__desc">
               <span className="footer__line">Trade the outcome, not the asset.</span>{' '}
               <span className="footer__line">

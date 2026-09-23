@@ -109,6 +109,11 @@ export const page = (label: string): SitemapLink => {
   throw new Error(`sitemap: no page called "${label}"`);
 };
 
+/** What the nav's MORE opens, on the desktop bar and in the phone sheet. The
+ *  user's call: About only, for now. The full sitemap lives in the footer; add
+ *  a page here by label when MORE should carry it too. */
+export const MORE_MENU: SitemapLink[] = [page('About')];
+
 export const isPlaceholder = (href: string) => href === '';
 
 /** The href to render, from the page we are on. See the header. */

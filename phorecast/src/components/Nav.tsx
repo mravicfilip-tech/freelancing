@@ -6,7 +6,7 @@ import { Roll } from './Roll';
 import { Icon } from './Icon';
 import { ThemeToggle, ThemeSwitch } from './ThemeToggle';
 import { useRoute } from '../lib/router';
-import { SITEMAP, isPlaceholder, linkProps, page, stayPut } from '../lib/sitemap';
+import { MORE_MENU, isPlaceholder, linkProps, page, stayPut } from '../lib/sitemap';
 import chevron from '../assets/icons/chevron-down.svg';
 import './Nav.css';
 
@@ -19,19 +19,11 @@ const LINKS = [
   page('Leaderboard'),
 ];
 
-/* What MORE opens, on both surfaces: the sitemap.
+/* What MORE opens, on both surfaces: MORE_MENU in lib/sitemap.ts.
    ---------------------------------------------------------------------------
-   The same three groups the footer shows -- Product, Company, Legal -- read
-   from the same list (lib/sitemap.ts), so every page the site names is
-   reachable from the nav as well as from the footer, and the two cannot drift.
-   On the desktop bar the groups sit side by side as three columns under their
-   headings; in the sheet they stack.
-
-   The old list (About, Why Phorcast, How it works, Infrastructure, FAQ) is all
-   still here, now under the sitemap's groups: About, Why Phorcast, How it
-   works and Infrastructure in Company, FAQ as the client's "FAQs" in Product.
-   Section links are resolved through `landing()` as before -- bare on "/",
-   "/#why" anywhere else -- and About is a route with `aria-current`.
+   About only, for now: the user's call. The full sitemap (Product, Company,
+   Legal) is the footer's; MORE is a short list, one column on the bar and one
+   stack in the sheet. About is a route with `aria-current`.
 
    A placeholder item (TODO(client), href '') is still a menu item and still
    reachable by the arrows, but choosing it does nothing: the click is
@@ -138,19 +130,9 @@ function MoreMenu({ path }: { path: string }) {
     list[next]?.focus({ preventScroll: true });
   };
 
-  const across = (from: HTMLElement, delta: number) => {
-    const groups = Array.from(listRef.current?.querySelectorAll<HTMLElement>('[role="group"]') ?? []);
-    const g = groups.findIndex((x) => x.contains(from));
-    if (g < 0 || !groups.length) return;
-    const row = Array.from(groups[g].querySelectorAll('[role="menuitem"]')).indexOf(from);
-    const next = Array.from(groups[(g + delta + groups.length) % groups.length].querySelectorAll<HTMLElement>('[role="menuitem"]'));
-    next[Math.min(row, next.length - 1)]?.focus({ preventScroll: true });
-  };
-
-  /* Three columns are wider than the space right of MORE at most desktop
-     widths, so the panel is kept inside the nav row: it hangs from MORE's left
-     edge as it always did and slides left only by as much as it would
-     overflow. Measured on open and on resize, before paint. */
+  /* The panel is kept inside the nav row: it hangs from MORE's left edge and
+     slides left only by as much as it would overflow. Measured on open and on
+     resize, before paint. */
   useLayoutEffect(() => {
     const list = listRef.current;
     const row = wrapRef.current?.closest('.nav__row');
@@ -174,10 +156,6 @@ function MoreMenu({ path }: { path: string }) {
     switch (e.key) {
       case 'ArrowDown': e.preventDefault(); move(el, 1); break;
       case 'ArrowUp': e.preventDefault(); move(el, -1); break;
-      // Left and Right cross between the three columns, landing on the same
-      // row of the next one, or its last item if that column is shorter.
-      case 'ArrowRight': e.preventDefault(); across(el, 1); break;
-      case 'ArrowLeft': e.preventDefault(); across(el, -1); break;
       case 'Home': e.preventDefault(); items()[0]?.focus({ preventScroll: true }); break;
       case 'End': e.preventDefault(); items().at(-1)?.focus({ preventScroll: true }); break;
       // Tab out is not trapped. A menu bar in a page header is not a dialog,
@@ -238,27 +216,16 @@ function MoreMenu({ path }: { path: string }) {
         hidden={!open}
         onKeyDown={onListKey}
       >
-        {/* One menu, three groups. The heading is for the eye and is hidden
-            from the accessibility tree; the group's own `aria-label` says the
-            same thing to a screen reader, which is the pattern `role="group"`
-            inside `role="menu"` expects. */}
-        {SITEMAP.map((g) => (
-          <li key={g.title} role="none" className="nav__menu-group">
-            <span className="nav__menu-heading" aria-hidden="true">{g.title}</span>
-            <ul role="group" aria-label={g.title}>
-              {g.links.map((l) => (
-                <li key={l.label} role="none">
-                  <a
-                    {...itemProps(l.href, path, () => setOpen(false))}
-                    role="menuitem"
-                    tabIndex={-1}
-                    className="nav__menu-link"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+        {MORE_MENU.map((l) => (
+          <li key={l.label} role="none">
+            <a
+              {...itemProps(l.href, path, () => setOpen(false))}
+              role="menuitem"
+              tabIndex={-1}
+              className="nav__menu-link"
+            >
+              {l.label}
+            </a>
           </li>
         ))}
       </ul>
@@ -421,16 +388,9 @@ export function Nav() {
           </button>
           <div className="sheet-sub" data-open={moreOpen}>
             <ul id={moreId} className="sheet-sub__list" inert={!moreOpen} aria-hidden={!moreOpen}>
-              {SITEMAP.map((g) => (
-                <li key={g.title} className="sheet-sub__group">
-                  <p className="sheet-sub__heading" id={`${moreId}-${g.title}`}>{g.title}</p>
-                  <ul aria-labelledby={`${moreId}-${g.title}`}>
-                    {g.links.map((l) => (
-                      <li key={l.label}>
-                        <a {...itemProps(l.href, path, close)} className="sheet-sub__link">{l.label}</a>
-                      </li>
-                    ))}
-                  </ul>
+              {MORE_MENU.map((l) => (
+                <li key={l.label}>
+                  <a {...itemProps(l.href, path, close)} className="sheet-sub__link">{l.label}</a>
                 </li>
               ))}
             </ul>

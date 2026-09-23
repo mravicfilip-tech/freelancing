@@ -103,10 +103,10 @@
 .footer__rule--top { margin-bottom: calc(64 * var(--u)); }
 .footer__rule--bottom { margin-top: calc(56 * var(--u)); }
 
-/* The brand block beside the columns. Flex rather than a four-track grid
-   because the brand column and the three link columns are two different
+/* The brand block beside the columns. Flex rather than a five-track grid
+   because the brand column and the four columns are two different
    rhythms -- the brand is a stated width the description is measured against,
-   the other three share what is left equally -- and because the ≤1180 change
+   the other four share what is left equally -- and because the ≤1180 change
    is "put the brand on its own row", which is one property here. */
 .footer__top { display: flex; align-items: flex-start; gap: calc(48 * var(--u)); }
 
@@ -137,11 +137,23 @@
 /* The two phrases in the description that must not break; see Footer.tsx. */
 .footer__nowrap { white-space: nowrap; }
 
+/* Four equal columns -- Product, Company, Legal, Social -- with every heading
+   on the first row of one grid, so the four headings share a baseline by
+   construction. Equal rather than sized to content: the sitemap reads as one
+   organised block, and the Social column's row of badges is narrower than
+   any of them anyway.
+
+   From about 1365 down to the 1180 break the Legal column is narrower than
+   "Deposit & Withdrawal Policy" (183px at 15px) and that one link wraps to a
+   second line. Measured and allowed: the alternatives were stacking the brand
+   block at laptop widths, or narrowing it until the description ran to five
+   lines, and both change the design's composition more than one wrapped
+   link does. */
 .footer__columns {
   flex: 1 1 auto;
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: calc(48 * var(--u));
 }
 .footer__col { display: flex; flex-direction: column; gap: calc(24 * var(--u)); min-width: 0; }
@@ -235,34 +247,43 @@
 }
 
 /* --- Widths ---------------------------------------------------------------
-   Two changes of shape, and each is stated once.
+   Four changes of shape, and each is stated once.
 
-   ≤1180  The brand block leaves the row. Four things across a 990px column
-          leaves the Legal column under 200px, which is where "Deposit &
-          Withdrawal Policy" starts wrapping to three lines while the brand
-          description is wrapping to four beside it. The brand goes full width
-          on its own row and the three columns share the whole column.
+   ≤1180  The brand block leaves the row. Five things across a 990px column
+          leaves the Legal column far under the 183px "Deposit & Withdrawal
+          Policy" needs, while the brand description wraps to four lines
+          beside it. The brand goes full width on its own row and the four
+          columns share the whole column.
 
-   ≤720   Two columns rather than three. Product and Legal pair up; Social
-          spans both, because its row of four 44px badges is the widest thing
-          in the three and does not fit half the column. The bottom bar stops trying to be a bar.
+   ≤900   Two by two: Product and Company, then Legal and Social. Below 900
+          a quarter of the column is under 183px again, and a 2x2 keeps every
+          heading on a shared baseline with its neighbour.
+
+   ≤720   The bottom bar stops trying to be a bar.
+
+   ≤480   The Social column is half a phone, too narrow for four 44px badges
+          in a row, so they sit two by two rather than three and an orphan.
 
    Nothing restates the unit: `--u` is at its 0.8px floor from 1280 down, so
-   both of these blocks are written in the same design pixels as the rules
+   all of these blocks are written in the same design pixels as the rules
    above and simply ask for less of them. */
 @media (max-width: 1180px) {
   .footer__top { flex-direction: column; gap: calc(48 * var(--u)); }
   .footer__brand { flex: 0 0 auto; width: 100%; }
   .footer__columns { width: 100%; gap: calc(32 * var(--u)); }
 }
+@media (max-width: 900px) {
+  .footer__columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(36 * var(--u)) calc(24 * var(--u)); }
+}
 @media (max-width: 720px) {
   .footer { padding: calc(32 * var(--u)) 0 calc(40 * var(--u)); }
   .footer__rule--top { margin-bottom: calc(40 * var(--u)); }
   .footer__rule--bottom { margin-top: calc(40 * var(--u)); }
   .footer__top { gap: calc(40 * var(--u)); }
-  .footer__columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(36 * var(--u)) calc(24 * var(--u)); }
-  .footer__col--social { grid-column: 1 / -1; }
   .footer__meta { flex-direction: column; align-items: flex-start; gap: calc(10 * var(--u)); }
+}
+@media (max-width: 480px) {
+  .footer__socials { display: grid; grid-template-columns: repeat(2, max-content); }
 }
 
 /* --- Light ------------------------------------------------------------------

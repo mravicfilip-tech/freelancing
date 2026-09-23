@@ -1,12 +1,14 @@
 /* The footer, rebuilt to the client's supplied design.
    ---------------------------------------------------------------------------
-   Three columns and a brand block between two hairlines, closed by a two-ended
-   bottom bar. What it replaced was four columns (Product / Markets / Company /
+   A brand block and four columns -- Product, Company, Legal, Social -- between
+   two hairlines, closed by a two-ended bottom bar. The first three are the
+   client's sitemap and are rendered from lib/sitemap.ts, which the nav's MORE
+   menu renders too. What it replaced was four columns (Product / Markets / Company /
    Resources), a row of four bare social icon buttons, a Terms/Privacy/Cookies
    legal row, and a giant cropped PHORCAST wordmark over a four-disc glow.
 
-   TWO THINGS THE DESIGN SAYS THAT THIS FILE DOES NOT DO, each raised rather
-   than decided, and one the client has since settled:
+   ONE THING THE DESIGN SAYS THAT THIS FILE DOES NOT DO, raised rather than
+   decided, and two the client has since settled:
 
    1. THE SPELLING. The supplied screenshot sets the brand as "Phorecast",
       with an e, and the domain is phorecast.io. Every other surface in this
@@ -16,11 +18,10 @@
       the copyright line) would be the worst of both, so this keeps the
       codebase's spelling and the question goes to the client.
 
-   2. THE ABOUT LINK IS GONE. It lived in the Company column, which the new
-      design does not have, and pointed at /about -- a real route. Nothing
-      here links to it any more. The page is NOT orphaned: <Nav>'s MORE menu
-      carries it on both surfaces (src/components/Nav.tsx, MORE_LINKS), which
-      is the only reason implementing the design as drawn was safe to do.
+   2. THE COLUMNS, SETTLED. The screenshot drew Product, Legal and Social; the
+      client's sitemap since adds Company (About is back, in it) and reorders
+      the rest. See lib/sitemap.ts for the list, its order, and what each link
+      points at.
 
    3. THE DESCRIPTION, SETTLED. The screenshot's "A prediction platform and
       event markets" was prediction-market copy on a landing page whose copy
@@ -32,11 +33,12 @@
 
    MOTION lives in Footer.motion.ts and the `data-motion="pending"` hold that
    goes with it is at the foot of Footer.css. */
-import type { MouseEvent } from 'react';
 import { Icon } from '../Icon';
 import { Logo } from '../Logo';
 import { Roll } from '../Roll';
 import { useSectionMotion } from '../../lib/motion';
+import { useRoute } from '../../lib/router';
+import { SITEMAP, SOCIAL_URLS, linkProps } from '../../lib/sitemap';
 import { buildFooter } from './Footer.motion';
 /* The four marks are simple-icons 16.32.0 (CC0-1.0), copied byte for byte
    from the package's icons/ directory so nothing here depends on it at run
@@ -59,44 +61,12 @@ import discord from '../../assets/footer/social/discord.svg';
 import telegram from '../../assets/footer/social/telegram.svg';
 import './Footer.css';
 
-/* WHERE THE FOUR ICONS GO. TODO(client): send the four URLs.
-   ---------------------------------------------------------------------------
-   Empty on purpose, and nothing here is a guess: no social URL exists in this
-   repository, and the brief is "put empty links for now". Paste each URL in
-   as it arrives; that is the whole change, one line each.
-
-   An empty href still has to behave. The anchor keeps `href=""`, so it is a
-   real, focusable link with its accessible name and the markup is already
-   final; but an empty href means "this page", so a click would reload it.
-   `stayPut` below cancels the click (and the middle click) for exactly the
-   entries that are still empty, and nothing else. NOT `href="#"`, which jumps
-   the page to the top, and not a missing href, which stops it being a link or
-   a tab stop.
-
-   One Telegram icon: the design's two Telegram rows (channel and chat) are
-   now the client's single "Telegram". */
-const SOCIAL_URLS = {
-  x: '',
-  tiktok: '',
-  discord: '',
-  telegram: '',
-};
-
-/* A link is usually just its label, and its href is that label slugged. Every
-   one of these is a placeholder pointing at a fragment that does not exist
-   yet, exactly as the four columns before them were; the union that let a
-   single entry carry a real href went with the About link it existed for. */
-const slug = (label: string) =>
-  `#${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
-
-const COLUMNS = [
-  { title: 'Product', links: ['Markets', 'Portfolio', 'Leaderboard', 'Deposit', 'Withdraw'] },
-  {
-    title: 'Legal',
-    links: ['Terms of Service', 'Privacy Policy', 'Risk Disclosure', 'Deposit & Withdrawal Policy'],
-  },
-];
-
+/* The social icons' URLs are in lib/sitemap.ts (SOCIAL_URLS), beside every
+   other TODO(client) link, and behave the same way while empty: a real,
+   focusable link with its accessible name whose click is cancelled, so it
+   neither reloads the page nor jumps to the top. One Telegram icon: the
+   design's two Telegram rows (channel and chat) are now the client's single
+   "Telegram". */
 /* In the client's order: "X, TikTok, Discord, Telegram". */
 const SOCIALS = [
   { name: 'X', icon: x, href: SOCIAL_URLS.x },
@@ -104,9 +74,6 @@ const SOCIALS = [
   { name: 'Discord', icon: discord, href: SOCIAL_URLS.discord },
   { name: 'Telegram', icon: telegram, href: SOCIAL_URLS.telegram },
 ];
-
-/* See SOCIAL_URLS: an empty link stays where it is. */
-const stayPut = (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault();
 
 /* The glyph is geometry, so it rides the band's design pixel like the badge
    around it: `--glyph` is 20 design pixels on `.footer__social`, and 22px where
@@ -120,6 +87,9 @@ export function Footer() {
   // The band arrives when it is scrolled to; see Footer.motion.ts. `data-motion`
   // below holds the animated parts in CSS until this takes over.
   const ref = useSectionMotion<HTMLElement>(buildFooter);
+  // Subscribed, so the FAQs link re-resolves ('#faq' on "/", '/#faq' on
+  // /about) when the route changes under a pushState.
+  const { path } = useRoute();
 
   return (
     <footer ref={ref} className="footer" data-motion="pending">
@@ -145,12 +115,12 @@ export function Footer() {
           </div>
 
           <nav className="footer__columns" aria-label="Footer">
-            {COLUMNS.map((c) => (
-              <div key={c.title} className="footer__col">
-                <h2 className="footer__col-title">{c.title}</h2>
+            {SITEMAP.map((g) => (
+              <div key={g.title} className="footer__col">
+                <h2 className="footer__col-title">{g.title}</h2>
                 <ul className="footer__links">
-                  {c.links.map((l) => (
-                    <li key={l}><a href={slug(l)}><Roll>{l}</Roll></a></li>
+                  {g.links.map((l) => (
+                    <li key={l.label}><a {...linkProps(l.href, path)}><Roll>{l.label}</Roll></a></li>
                   ))}
                 </ul>
               </div>
@@ -168,12 +138,10 @@ export function Footer() {
                   <li key={s.name}>
                     <a
                       className="footer__social"
-                      href={s.href}
+                      {...linkProps(s.href, path)}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Phorcast on ${s.name}`}
-                      onClick={s.href ? undefined : stayPut}
-                      onAuxClick={s.href ? undefined : stayPut}
                     >
                       <Icon src={s.icon} w={20} h={20} style={GLYPH} />
                     </a>

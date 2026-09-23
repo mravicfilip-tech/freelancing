@@ -1,44 +1,48 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { Logo } from './Logo';
 import { Roll } from './Roll';
 import { Icon } from './Icon';
 import { ThemeToggle, ThemeSwitch } from './ThemeToggle';
-import { ABOUT, landing, useRoute } from '../lib/router';
+import { useRoute } from '../lib/router';
+import { SITEMAP, isPlaceholder, linkProps, page, stayPut } from '../lib/sitemap';
 import chevron from '../assets/icons/chevron-down.svg';
 import './Nav.css';
 
+/* The bar. Markets and Leaderboard take their hrefs from the sitemap, so the
+   bar, the footer and MORE all point at the same place and fill in together;
+   today both are TODO(client) placeholders (see lib/sitemap.ts). */
 const LINKS = [
   { label: 'Home', href: '#top' },
-  { label: 'Markets', href: '#markets' },
-  { label: 'Leaderboard', href: '#leaderboard' },
+  page('Markets'),
+  page('Leaderboard'),
 ];
 
-/* What MORE opens, on both surfaces.
+/* What MORE opens, on both surfaces: the sitemap.
    ---------------------------------------------------------------------------
-   The note that used to stand here said the desktop bar's More was a
-   `<button aria-haspopup="menu">` with a chevron and NOTHING behind it, that
-   the sheet's disclosure was therefore reproducing a stub faithfully, and that
-   this was the list to give desktop when someone was allowed to. Someone is
-   now allowed to, so there is one list and both surfaces read it.
+   The same three groups the footer shows -- Product, Company, Legal -- read
+   from the same list (lib/sitemap.ts), so every page the site names is
+   reachable from the nav as well as from the footer, and the two cannot drift.
+   On the desktop bar the groups sit side by side as three columns under their
+   headings; in the sheet they stack.
 
-   About is a route. The other four are ids in the LANDING page's document
-   (#why, #how, #built, #faq) and they are written here bare, which is correct
-   only while the landing page is the page showing. `landing()` in lib/router.ts
-   is what resolves them: bare on "/", "/#why" anywhere else, so from /about the
-   item loads the landing page and goes to the section rather than firing a
-   fragment at a document that has no such id. #faq is the one that would
-   half-work if it were left bare -- the About page mounts <Faq /> too, so it
-   would silently scroll to the wrong page's FAQ -- which is exactly why the
-   rule is applied to all four and not to the three that fail loudly. */
-const MORE_LINKS: { label: string; href: string; route?: string }[] = [
-  { label: 'About', href: ABOUT, route: ABOUT },
-  { label: 'Why Phorcast', href: '#why' },
-  { label: 'How it works', href: '#how' },
-  { label: 'Infrastructure', href: '#built' },
-  { label: 'FAQ', href: '#faq' },
-];
+   The old list (About, Why Phorcast, How it works, Infrastructure, FAQ) is all
+   still here, now under the sitemap's groups: About, Why Phorcast, How it
+   works and Infrastructure in Company, FAQ as the client's "FAQs" in Product.
+   Section links are resolved through `landing()` as before -- bare on "/",
+   "/#why" anywhere else -- and About is a route with `aria-current`.
+
+   A placeholder item (TODO(client), href '') is still a menu item and still
+   reachable by the arrows, but choosing it does nothing: the click is
+   cancelled and the menu stays open, because closing it would look like
+   something had happened. */
+
+/** A menu item's props: the sitemap's link, plus closing the menu on a real one. */
+const itemProps = (href: string, path: string, close: () => void) => ({
+  ...linkProps(href, path),
+  onClick: isPlaceholder(href) ? stayPut : close,
+});
 
 /** The breakpoint the sheet exists below. Kept in step with Nav.css by hand. */
 const MOBILE = '(max-width: 960px)';
@@ -134,12 +138,46 @@ function MoreMenu({ path }: { path: string }) {
     list[next]?.focus({ preventScroll: true });
   };
 
+  const across = (from: HTMLElement, delta: number) => {
+    const groups = Array.from(listRef.current?.querySelectorAll<HTMLElement>('[role="group"]') ?? []);
+    const g = groups.findIndex((x) => x.contains(from));
+    if (g < 0 || !groups.length) return;
+    const row = Array.from(groups[g].querySelectorAll('[role="menuitem"]')).indexOf(from);
+    const next = Array.from(groups[(g + delta + groups.length) % groups.length].querySelectorAll<HTMLElement>('[role="menuitem"]'));
+    next[Math.min(row, next.length - 1)]?.focus({ preventScroll: true });
+  };
+
+  /* Three columns are wider than the space right of MORE at most desktop
+     widths, so the panel is kept inside the nav row: it hangs from MORE's left
+     edge as it always did and slides left only by as much as it would
+     overflow. Measured on open and on resize, before paint. */
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    const row = wrapRef.current?.closest('.nav__row');
+    if (!open || !list || !row) return;
+    const fit = () => {
+      list.style.left = '';
+      const r = list.getBoundingClientRect();
+      const bounds = row.getBoundingClientRect();
+      const over = Math.max(0, r.right - bounds.right);
+      const room = Math.max(0, r.left - bounds.left);
+      if (over) list.style.left = `${parseFloat(getComputedStyle(list).left) - Math.min(over, room)}px`;
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [open]);
+
   const onListKey = (e: ReactKeyboardEvent<HTMLUListElement>) => {
     const el = e.target;
     if (!(el instanceof HTMLElement)) return;
     switch (e.key) {
       case 'ArrowDown': e.preventDefault(); move(el, 1); break;
       case 'ArrowUp': e.preventDefault(); move(el, -1); break;
+      // Left and Right cross between the three columns, landing on the same
+      // row of the next one, or its last item if that column is shorter.
+      case 'ArrowRight': e.preventDefault(); across(el, 1); break;
+      case 'ArrowLeft': e.preventDefault(); across(el, -1); break;
       case 'Home': e.preventDefault(); items()[0]?.focus({ preventScroll: true }); break;
       case 'End': e.preventDefault(); items().at(-1)?.focus({ preventScroll: true }); break;
       // Tab out is not trapped. A menu bar in a page header is not a dialog,
@@ -200,18 +238,27 @@ function MoreMenu({ path }: { path: string }) {
         hidden={!open}
         onKeyDown={onListKey}
       >
-        {MORE_LINKS.map((l) => (
-          <li key={l.label} role="none">
-            <a
-              href={l.route ? l.href : landing(path, l.href)}
-              role="menuitem"
-              tabIndex={-1}
-              className="nav__menu-link"
-              aria-current={l.route && l.route === path ? 'page' : undefined}
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </a>
+        {/* One menu, three groups. The heading is for the eye and is hidden
+            from the accessibility tree; the group's own `aria-label` says the
+            same thing to a screen reader, which is the pattern `role="group"`
+            inside `role="menu"` expects. */}
+        {SITEMAP.map((g) => (
+          <li key={g.title} role="none" className="nav__menu-group">
+            <span className="nav__menu-heading" aria-hidden="true">{g.title}</span>
+            <ul role="group" aria-label={g.title}>
+              {g.links.map((l) => (
+                <li key={l.label} role="none">
+                  <a
+                    {...itemProps(l.href, path, () => setOpen(false))}
+                    role="menuitem"
+                    tabIndex={-1}
+                    className="nav__menu-link"
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>
@@ -352,7 +399,7 @@ export function Nav() {
 
         <nav className="nav__sheet-nav" aria-label="Primary">
           {LINKS.map((l) => (
-            <a key={l.label} href={landing(path, l.href)} className="sheet-link" onClick={close}>{l.label}</a>
+            <a key={l.label} {...itemProps(l.href, path, close)} className="sheet-link">{l.label}</a>
           ))}
 
           {/* The disclosure. `aria-expanded` on the control, `aria-controls`
@@ -374,14 +421,16 @@ export function Nav() {
           </button>
           <div className="sheet-sub" data-open={moreOpen}>
             <ul id={moreId} className="sheet-sub__list" inert={!moreOpen} aria-hidden={!moreOpen}>
-              {MORE_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a
-                    href={l.route ? l.href : landing(path, l.href)}
-                    className="sheet-sub__link"
-                    aria-current={l.route && l.route === path ? 'page' : undefined}
-                    onClick={close}
-                  >{l.label}</a>
+              {SITEMAP.map((g) => (
+                <li key={g.title} className="sheet-sub__group">
+                  <p className="sheet-sub__heading" id={`${moreId}-${g.title}`}>{g.title}</p>
+                  <ul aria-labelledby={`${moreId}-${g.title}`}>
+                    {g.links.map((l) => (
+                      <li key={l.label}>
+                        <a {...itemProps(l.href, path, close)} className="sheet-sub__link">{l.label}</a>
+                      </li>
+                    ))}
+                  </ul>
                 </li>
               ))}
             </ul>
@@ -410,7 +459,7 @@ export function Nav() {
         <Logo />
         <nav className="nav__links" aria-label="Primary">
           {LINKS.map((l) => (
-            <a key={l.label} href={landing(path, l.href)} className="nav__link"><Roll>{l.label}</Roll></a>
+            <a key={l.label} {...linkProps(l.href, path)} className="nav__link"><Roll>{l.label}</Roll></a>
           ))}
           <MoreMenu path={path} />
         </nav>

@@ -10,7 +10,7 @@
  * the footer opens when the footer is reached.
  *
  * THE SHAPE: ONE THING, THEN THE REST. The design opens with a rule and a
- * logo and then fills three columns, and the sequence says exactly that. The
+ * logo and then fills four columns, and the sequence says exactly that. The
  * logo is alone on screen for a third of a second; after it, everything is a
  * stagger and nothing gets a solo again.
  *
@@ -21,10 +21,10 @@
  *         band to paint, which is why it leads.
  *   0.22  THE LOGO. The one object the footer leads with, alone for a beat.
  *   0.55  The description under it, out of a shallower blur.
- *   1.00  The three link columns, left to right, 0.16s apart — and each column
+ *   1.00  The four columns, left to right, 0.16s apart — and each column
  *         fills top down, its heading then its rows on a tight 0.05s stagger,
  *         so a column reads as filling rather than switching on. The four
- *         social icons are the `<li>` of the third column's list and arrive
+ *         social icons are the `<li>` of the fourth column's list and arrive
  *         as part of it, left to right on the same step; they are not a
  *         separate beat, because in this design they are not a separate
  *         object.
@@ -118,7 +118,7 @@ const RULE_TOP_AT = LEAD;
 const LOGO_AT = LEAD + 0.22;
 const DESC_AT = LEAD + 0.55;
 
-/* The three columns, left to right; each fills top down on its own tight step. */
+/* The four columns, left to right; each fills top down on its own tight step. */
 const COLS_AT = LEAD + 1.0;
 const COL_STEP = 0.16;
 const LINK_STEP = 0.05;
@@ -144,7 +144,7 @@ const META_STEP = 0.08;
  * scales where a BEAT starts, which is the wait worth cutting because nothing
  * is happening during it. STEP scales the gap between things INSIDE one beat,
  * and is barely cut at all: it is what makes a column fill top down rather
- * than switch on, and the three columns arrive 0.112s apart rather than 0.16,
+ * than switch on, and the four columns arrive 0.112s apart rather than 0.16,
  * which is still nearly seven frames. Durations are untouched, so the beats
  * simply overlap more.
  *
@@ -247,7 +247,7 @@ export function buildFooter({ el, q, tl }: SectionMotion) {
      where the logo's 10px would wash them out rather than soften them. */
   if (desc) outOfBlur(tl, desc, cue(DESC_AT), { y: 16, blur: 6, duration: 0.9, fade: 0.34 });
 
-  /* 4 — the three columns, left to right. Each one fills top down rather than
+  /* 4 — the four columns, left to right. Each one fills top down rather than
      arriving whole: the heading, then its rows on a tight step, which is the
      treatment the pillars' cards use. The social column's four icons are `<li>`
      of a `.footer__links` list like every other row, so they are picked up by

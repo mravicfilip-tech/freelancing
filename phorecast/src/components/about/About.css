@@ -705,8 +705,10 @@
   color: inherit;
   -webkit-text-fill-color: currentColor;
 }
+/* No wider than the statement above it (the same 1224 design px): at 18px the
+   goal line on one 1768-unit line ran past both ends of the 32px statement. */
 .ab-conv__goal {
-  max-width: calc(1768 * var(--u));
+  max-width: calc(1224 * var(--u));
   font-family: var(--font-body);
   font-weight: 300;
   font-size: var(--body-size);
@@ -842,14 +844,19 @@
 /* ── 6. Why is it better than bets or crypto/stocks? ──────────────────────── */
 
 .ab-why__row { display: flex; align-items: stretch; gap: calc(20 * var(--u)); }
+/* The body starts under the title, at the same title-to-body spacing as the
+   Choose an event cards, and the card ends after its content: the client's
+   "the paragraph needs to start from top down". It was `space-between` over a
+   440-unit floor, which parked the body at the card's foot under a band of
+   empty card. The two cards still match in height -- the row stretches them --
+   and any spare height is at the bottom of the shorter one. */
 .ab-why__card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: calc(32 * var(--u));
+  justify-content: flex-start;
+  gap: calc(14 * var(--u));
   flex: 1 1 0;
   min-width: 0;
-  min-height: calc(440 * var(--u));
   padding: calc(32 * var(--u));
   border: 1px solid var(--ab-veil-line);
   border-radius: 10px;
@@ -872,16 +879,11 @@
   line-height: var(--body-leading);
   color: var(--ink-2);
 }
-/* The lead is the list's own heading, so it keeps the display face, at the
-   headings' one weight (500) and the paragraph size it sits in. The
-   example's sentences, its run-in lines and its closing line included, are
-   plain paragraph text: the user asked for no bold sentences, so nothing in
-   the body carries a weight of its own. */
-.ab-why__lead {
-  font-family: var(--font-display);
-  font-weight: 500;
-  color: var(--ink-2);
-}
+/* Everything in the body is plain paragraph text, the lead line ("Price =
+   what the market thinks will happen") included: it is a sentence, and the
+   user asked for no bold sentences in this section, so `.ab-why__lead` carries
+   no face or weight of its own. The example's run-in lines and closing line
+   are the same. */
 /* The frame's own `list-disc` with a 30px indent. `ul` is stripped of markers
    in global.css, so the list type is stated back here rather than assumed. */
 .ab-why__list {
@@ -967,7 +969,7 @@
   .ab-brand__copy { gap: clamp(20px, 2.0833vw, 40px); }
   .ab-conv__inner { gap: clamp(14px, 1.0417vw, 20px); }
   .ab-why__row { gap: clamp(16px, 1.0417vw, 20px); }
-  .ab-why__card { gap: clamp(18px, 1.6667vw, 32px); }
+  .ab-why__card { gap: clamp(10px, 0.729vw, 14px); }
 
   /* A grid rather than a wrapped flex row, and the difference is the third
      card. Wrapped, it grows to the full 1040 on its own line, which blows the
@@ -1078,7 +1080,7 @@
      1224 design px, which is 238px at 390; at the section-heading size (28)
      that ran the statement to 21 lines, taller than the screen it is pinned
      in. The full column brings it back to about the height it had at 24px. */
-  .ab-conv__statement { max-width: none; }
+  .ab-conv__statement, .ab-conv__goal { max-width: none; }
   /* Same line as the menu sheet's top, and as the landing hero's. */
   .ab-hero { padding-top: 20px; }
   .ab-hero { --ground-u: 0.62px; }

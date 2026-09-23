@@ -177,7 +177,7 @@
   overflow: hidden;
 }
 .bento__head { display: flex; flex-direction: column; gap: 8px; max-width: 788px; line-height: 1.2; }
-.bento__title { font-family: var(--font-display); font-weight: 500; font-size: 32px; color: var(--ink); }
+.bento__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h2-size); line-height: var(--heading-leading); color: var(--ink); }
 .bento__sub { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 
 .bento__grid { display: flex; gap: 14px; align-items: stretch; }
@@ -196,10 +196,13 @@
   container-type: inline-size;
 }
 .bcard__text { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; position: relative; z-index: 1; }
-.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--ink); }
+/* One card-heading size for all four cards, from tokens.css. The Bonus and
+   Markets cards used to scale their titles with their artwork (`--u`), which
+   put them at 18.85px against the other two cards' 24 at 1440. */
+.bcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
 .bcard__title--dark { color: var(--mk-ink); }
 /* The site's paragraph setting, from tokens.css: Inter Tight 300, a flat
-   16px at every width, 120% leading as a unitless ratio, and the font's own
+   18px at every width, 120% leading as a unitless ratio, and the font's own
    tracking. All four card bodies read
    it from here -- the per-card font-size overrides that used to sit in the
    four box files are gone, so this is the only place a bento paragraph is
@@ -226,7 +229,7 @@
   margin-top: auto;
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--label-size);
   line-height: 1.2;
   white-space: nowrap;
   width: max-content;
@@ -374,8 +377,6 @@
        720 the bare percentage put the heading at 212.2 against the copy's 193. */
     padding-inline: min(30px, 7.614%);
   }
-
-  .bento__title { font-size: 26px; }
 
   /* Figma's own values for the mobile card: 30px padding, 24/16 type with 18px
      between heading and body. What was here (24px padding, 21/17, 2px gap) was

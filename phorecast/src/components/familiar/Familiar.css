@@ -193,7 +193,10 @@
 /* Copy ------------------------------------------------------------------------ */
 .fam__copy { display: flex; flex-direction: column; }
 .fam__copy--left { left: calc(240 * var(--u)); top: calc(240 * var(--u)); width: calc(420 * var(--u)); gap: calc(28 * var(--u)); }
-.fam__title { font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--u)); line-height: 1.2; color: var(--ink); }
+/* The heading, the claim, the body and the button are page type, not
+   artwork: they read the site's type scale (tokens.css) at every width, and
+   only their POSITIONS ride the stage's `--u`. */
+.fam__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h2-size); line-height: var(--heading-leading); color: var(--ink); }
 /* THE COLUMN'S RIGHT EDGE, as a name. The copy column is placed by `left` plus
    a width, which says nothing about where it ENDS — and where it ends is what
    the two floating prediction cards are now aligned to. Written once here so
@@ -201,9 +204,9 @@
    to match it today. 1280 + 400. */
 .fam__stage { --fam-col-right: calc(1680 * var(--u)); }
 .fam__copy--right { left: calc(1280 * var(--u)); top: calc(240 * var(--u)); width: calc(400 * var(--u)); gap: calc(30 * var(--u)); align-items: flex-start; }
-.fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: calc(24 * var(--u)); line-height: 1.2; color: var(--ink); }
+.fam__sub-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
 .fam__sub-body { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink); margin-top: calc(-14 * var(--u)); }
-.fam__cta { width: calc(254 * var(--u)); height: calc(56 * var(--u)); font-size: calc(16 * var(--u)); border-radius: calc(30 * var(--u)); }
+.fam__cta { width: calc(254 * var(--u)); height: calc(56 * var(--u)); border-radius: calc(30 * var(--u)); }
 
 /* Market cards ----------------------------------------------------------------- */
 .fam__mkt {
@@ -458,15 +461,11 @@
      `clamp` rather than a size per breakpoint, so the ratio holds continuously
      across the whole range instead of at three chosen widths. The title leads
      the eyebrow by 2.3x or better everywhere from 320 to 1100. */
-  .fam .eyebrow { font-size: clamp(12px, 1.25vw, 14px); }
-  .fam .eyebrow__dot { width: clamp(9px, 1vw, 12px); height: clamp(9px, 1vw, 12px); }
-  .fam__title { font-size: clamp(26px, 3vw, 32px); line-height: 1.15; }
-  .fam__sub-title { font-size: clamp(17px, 2vw, 22px); }
   .fam__sub-body { margin-top: 0; }
   /* And the button hands its three `--u` overrides back to `.btn`, which is
      already drawn in flat pixels: 48px of fixed padding inside a `--u` box is
      what cut "Start Trading" to "Start Tradi". */
-  .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; font-size: 16px; border-radius: var(--radius-pill); }
+  .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; border-radius: var(--radius-pill); }
   .fam__copy--left { left: calc(60 * var(--u)); top: calc(60 * var(--u)); width: calc(600 * var(--u)); }
   .fam__copy--right { left: calc(60 * var(--u)); top: calc(250 * var(--u)); width: calc(560 * var(--u)); }
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
@@ -622,18 +621,10 @@
   .fam__copy--right { order: 5; margin-top: 43px; width: 100%; gap: 12px; align-items: center; }
   .fam__sub-title, .fam__sub-body { width: 100%; }
 
-  /* Type, in real pixels, sized against each other rather than against a
-     design width. The eyebrow is a label again.
-
-     The claim and the body are the frame's own sizes — 24 and 20 — which are
-     also the desktop design's, because the artboard sets them in the same
-     design pixels rather than shrinking them. The body takes `--ink-2`, the
+  /* The type is the site's scale at every width (see the note on
+     `.fam__title`), so nothing is resized here. The body takes `--ink-2`, the
      `--color-nre-body` the frame names for it; desktop's white is left where
      it is, since nothing here should reach a width this block does not own. */
-  .fam .eyebrow { font-size: 12px; gap: 8px; }
-  .fam .eyebrow__dot { width: 9px; height: 9px; }
-  .fam__title { font-size: 28px; line-height: 1.15; }
-  .fam__sub-title { font-size: 24px; line-height: 1.2; }
   .fam__sub-body { margin-top: 0; color: var(--ink-2); }
 
   /* The button hands every one of its `--u` overrides back to `.btn`, which is
@@ -650,7 +641,7 @@
      it restated `--btn-w`, the value it was failing to override. */
   .fam__copy--right .fam__cta {
     width: 100%; max-width: none; height: auto;
-    font-size: 16px; border-radius: var(--radius-pill); margin-top: 18px;
+    border-radius: var(--radius-pill); margin-top: 18px;
   }
 
   /* THE HANDSET GETS ITS OWN `--u`. Every rule inside the phone — the bezel,

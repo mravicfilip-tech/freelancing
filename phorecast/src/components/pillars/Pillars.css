@@ -70,8 +70,8 @@
   margin-top: 28px;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(24px, 1.9vw, 32px);
-  line-height: 1.2;
+  font-size: var(--h2-size);
+  line-height: var(--heading-leading);
   color: var(--ink);
 }
 
@@ -114,7 +114,7 @@
 .pcard--fixed { flex: 0 0 478px; }
 .pcard__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .pcard__eyebrow {
-  font-family: var(--font-label); font-weight: 500; font-size: 16px; line-height: 1.2;
+  font-family: var(--font-label); font-weight: 500; font-size: var(--label-size); line-height: 1.2;
   text-transform: uppercase; color: var(--ink);
 }
 /* The mark, and the two exports that are the same path in two colours. Masked,
@@ -127,7 +127,7 @@
 .pcard__mark { width: 31.13px; height: 36.29px; flex: none; color: var(--ink); }
 .pcard__mark--accent { color: var(--accent); }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
-.pcard__title { font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; color: var(--ink); }
+.pcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
 .pcard__text { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 
 /* The glyphs. Every one of them is a mask now (src/components/Icon.tsx), so
@@ -175,9 +175,13 @@
   transition: background-color 160ms ease, border-color 160ms ease;
 }
 .prow:hover { background: var(--pillars-row-hover); border-color: var(--pillars-row-line-hover); }
+/* The four feature rows. Not headings -- they head nothing -- and too long to
+   take the card-heading size on one nowrap line in a quarter of the band
+   ("Transparent Settlement" at 24 is wider than its 314px row at 1440), so
+   they sit on the paragraph step of the scale, in the display face. */
 .prow__label {
   display: inline-flex; align-items: center; gap: 12px; min-width: 0;
-  font-family: var(--font-display); font-weight: 500; font-size: 20px; line-height: 1.2;
+  font-family: var(--font-display); font-weight: 500; font-size: var(--body-size); line-height: 1.2;
   color: var(--ink-2); white-space: nowrap;
 }
 
@@ -189,11 +193,8 @@
 }
 @media (max-width: 720px) {
   .pillars { min-height: 0; padding: 56px 0; }
-  .pillars__title { font-size: 22px; }
   .pcard { padding: 24px; min-height: 0; gap: 24px; }
-  .pcard__title { font-size: 21px; }
   .prow { height: 64px; padding: 18px; }
-  .prow__label { font-size: 17px; }
 
   /* The eyebrow is allowed a second line on a phone, and only there.
      "BUILT FOR BETTER PREDICTION MARKETS" is 359px of type on one line, and

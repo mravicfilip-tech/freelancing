@@ -353,15 +353,12 @@
      lines onto the design's break; where it is unsupported the fallback is
      still two lines inside the box. */
   .box-onboard .bcard__title {
-    font-size: calc(24 * var(--u));
     text-wrap: balance;
   }
-  /* 526:191 is 16 design px with 0.16px of tracking. Both are now gone from
-     here: the size is `--body-size` in tokens.css, whose flat 16px IS this
-     frame's 16, reached as a real 16 rather than as `16 * --u` -- which
-     divided by the DESKTOP column (474) and so rendered 12.9-14.1 on a phone,
-     below the frame it was quoting. The tracking goes with it: the client's
-     panel says 0%, i.e. the font's own metrics. */
+  /* The heading, the paragraph and the link's label take the site's type
+     scale (tokens.css) through the shared card rules in Bento.css, never
+     `N * --u`: this card's unit divides by the DESKTOP column (474), so a
+     `16 * --u` rendered 12.9-14.1 on a phone. The tracking is the font's own. */
 
   /* Frame 526:1163 — the illustration column, whose origin is the desktop
      column's less (87, 89). Its box stays the desktop 474 x 327; see the note
@@ -383,9 +380,7 @@
     left: calc(30 * var(--u));
     top: calc(410 * var(--u));
     margin-top: 0;
-    height: calc(20 * var(--u));
     gap: calc(6 * var(--u));
-    font-size: calc(16 * var(--u));
   }
   .box-onboard .bento__cta:hover { gap: calc(10 * var(--u)); }
   /* 526:1094. The arrow's 12 x 6 is written as an attribute rather than an

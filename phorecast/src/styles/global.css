@@ -72,7 +72,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   gap: 12px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: 16px;
+  font-size: var(--label-size);
   line-height: 1.2;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -81,10 +81,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .eyebrow__dot { width: 12px; height: 12px; flex: none; }
 
+/* Both pages' h1s: the four hero titles and the About title. The size is the
+   display token, which carries the hero's collision rule (tokens.css). */
 .display {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(52px, 5.2vw, 100px);
+  font-size: var(--display-size);
   line-height: 0.9;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -112,7 +114,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: var(--radius-pill);
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--label-size);
   line-height: 1.2;
   white-space: nowrap;
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;

@@ -14,7 +14,7 @@
 .nav__link {
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: 16px;
+  font-size: var(--label-size);
   line-height: 1.2;
   text-transform: uppercase;
   color: var(--ink);
@@ -67,8 +67,8 @@
 .nav__menu-group { display: flex; flex-direction: column; }
 /* The group heading is the footer's column heading, scaled to the menu: the
    label face at 500, sentence case, in --ink, above rows in --ink-2 -- the
-   footer's own heading-over-links relationship at the menu's 13px, the size
-   of the rows under it. It shares the rows' 12px inset and 36px height, so a
+   footer's own heading-over-links relationship at the site's small size
+   (--small-size), the size of the rows under it. It shares the rows' 12px inset and 36px height, so a
    heading lines up with its items and the three headings share a baseline. */
 .nav__menu-heading {
   display: flex;
@@ -77,7 +77,7 @@
   padding: 0 12px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: 13px;
+  font-size: var(--small-size);
   line-height: 1.2;
   color: var(--ink);
   white-space: nowrap;
@@ -92,13 +92,11 @@
   border-radius: 9px;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: 13px;
+  font-size: var(--small-size);
   line-height: 1.2;
-  /* 0.02em, not the 0.04 this had. That tracking was chosen to loosen Geist
-     Mono, whose glyphs already sit on a wide fixed advance; Galano is a
-     geometric sans that sets its own spacing, and the same value on it reads
-     as a list that has been pulled apart. */
-  letter-spacing: 0.02em;
+  /* No tracking, as on every uppercase label on the site: the client's label
+     spec states none (see `.eyebrow` in global.css). */
+  letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--ink-2);
@@ -334,9 +332,10 @@
     padding-block: 4px;
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: clamp(30px, 9vw, 40px);
+    /* The section-heading size: the sheet's first level is the largest type
+       on screen while it is open, and 28 on a phone is that role's size. */
+    font-size: var(--h2-size);
     line-height: 1.1;
-    letter-spacing: -0.02em;
     text-align: left;
     color: var(--ink);
     transition: color 160ms ease;
@@ -384,9 +383,9 @@
     min-height: 44px;
     font-family: var(--font-label);
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--small-size);
     line-height: 1.2;
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--ink-2);
     transition: color 160ms ease;
@@ -405,7 +404,7 @@
     min-height: 32px;
     font-family: var(--font-label);
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--small-size);
     line-height: 1.2;
     color: var(--ink);
   }
@@ -422,16 +421,16 @@
     padding-top: 18px;
     border-top: 1px solid var(--line);
   }
-  /* --ink-2, not --ink-muted. At 13px on a tinted ground --ink-muted is under
+  /* --ink-2, not --ink-muted. At 14px on a tinted ground --ink-muted is under
      AA in light (4.63:1 is its figure on #fffbf8 flat, and it only goes down
      from there); --ink-2 is 6.97:1 in light and 7.11:1 in dark and is the
      token that means "quiet but read". */
   .nav__sheet-caption {
     font-family: var(--font-label);
     font-weight: 500;
-    font-size: 13px;
+    font-size: var(--small-size);
     line-height: 1;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--ink-2);
   }
@@ -475,7 +474,7 @@
    scroller takes the remainder. */
 @media (max-width: 960px) and (max-height: 560px) {
   .nav__sheet-nav { gap: 2px; padding-block: 6px; }
-  .sheet-link { min-height: 46px; font-size: 26px; }
+  .sheet-link { min-height: 46px; font-size: var(--h3-size); }
   .sheet-sub__link { min-height: 40px; }
   .nav__sheet-actions { margin-top: 18px; padding-top: 16px; }
 }

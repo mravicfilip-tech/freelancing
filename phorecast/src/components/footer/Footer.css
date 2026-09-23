@@ -167,21 +167,21 @@
 
 /* The headings. White and slightly heavier than the links under them, which is
    the whole of the design's hierarchy here: --font-label at 500 against
-   --font-body at 300, both at 16px.
+   --font-body at 300, both at the site's label size, 16px.
 
    NOT uppercase. The old headings were `text-transform: uppercase`; the
    supplied design sets "Product", "Legal" and "Social" as written, and the
    band has no eyebrow for the uppercase to rhyme with. */
 .footer__col-title {
   font-family: var(--font-label); font-weight: 500;
-  font-size: clamp(15px, 1.0417vw, 16px); line-height: 1.2;
+  font-size: var(--label-size); line-height: 1.2;
   color: var(--ink);
 }
 
 .footer__links { display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
 .footer__links a {
   font-family: var(--font-body); font-weight: 300;
-  font-size: clamp(15px, 1.0417vw, 16px); line-height: 1.25;
+  font-size: var(--label-size); line-height: 1.2;
   color: var(--ink-2);
   transition: color 160ms ease;
 }
@@ -249,7 +249,7 @@
   gap: calc(8 * var(--u)) calc(24 * var(--u));
   margin-top: calc(32 * var(--u));
   font-family: var(--font-body); font-weight: 300;
-  font-size: clamp(13px, 0.9722vw, 14px); line-height: 1.3;
+  font-size: var(--small-size); line-height: 1.2;
   color: var(--ink-2);
 }
 

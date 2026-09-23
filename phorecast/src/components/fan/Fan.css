@@ -209,11 +209,16 @@
 .fan__title {
   position: absolute; left: 50%; top: calc(360 * var(--f)); transform: translateX(-50%);
   width: calc(1440 * var(--f)); text-align: center;
-  font-family: var(--font-display); font-weight: 500; font-size: calc(32 * var(--f)); line-height: 1.2;
+  font-family: var(--font-display); font-weight: 500; font-size: var(--h2-size); line-height: var(--heading-leading);
   color: var(--ink);
 }
+/* The heading and the sub-head are page type on the site's scale, so they do
+   not shrink with the frame; only their positions are design px. The sub-head
+   therefore hangs off the heading's real height -- the design's 13 between
+   the two, on the frame's unit -- rather than off a fixed design y, which at
+   1440 put it on the heading's descenders. */
 .fan__sub {
-  position: absolute; left: 50%; top: calc(411 * var(--f)); transform: translateX(-50%);
+  position: absolute; left: 50%; top: calc(360 * var(--f) + var(--h2-size) * var(--heading-leading) + 13 * var(--f)); transform: translateX(-50%);
   width: calc(1440 * var(--f)); text-align: center;
   font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading);
   color: var(--ink-2);
@@ -378,8 +383,6 @@
     grid-area: 2 / 1;
     width: min(100% - 32px, 21ch);
     margin-top: clamp(18px, 5vw, 30px);
-    font-size: clamp(25px, 7.2vw, 34px);
-    line-height: 1.16;
   }
   .fan__sub {
     grid-area: 3 / 1;

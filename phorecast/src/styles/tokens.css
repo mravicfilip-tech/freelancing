@@ -163,41 +163,63 @@
   --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
   --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;
 
-  /* --- Paragraph copy -----------------------------------------------------
-     ONE setting for every paragraph on the site: section ledes and intros,
-     card and feature bodies, step bodies, FAQ answers and the FAQ intro, the
-     About page's prose and card bullets, the hero ledes and the footer
-     strapline. Inter Tight / Light 300 / 16px / 120% / the font's own
-     tracking, and the same 16px at every width.
+  /* --- The type scale ------------------------------------------------------
+     SIX SIZES FOR THE WHOLE SITE, one token per role, and every piece of page
+     typography on both pages reads one of them. No component sets its own
+     size for a role; a per-component `font-size` is how the site drifted to
+     twenty-odd sizes (card titles alone were 18.85, 19, 19.44, 20, 20.16,
+     21.6 and 24 at 1440) and the client's "too many different sizes".
 
-     This replaces the earlier "20px at the 1920 frame, scaling with the
-     device" ramp. The client then compared two paragraphs that sat one above
-     the other (the About card bullets and the FAQ intro) and ruled that all
-     paragraph text is one size and one family everywhere, 14px or 16px at
-     most. A ramp cannot satisfy "the same size" and neither can a phone
-     step-down, so the size is flat.
+       role              token            size                 face / weight
+       display           --display-size   fluid, see below     Manrope 500
+       section heading   --h2-size        32 (28 on a phone)   Manrope 500
+       card heading      --h3-size        24                   Manrope 500
+       paragraph         --body-size      18                   Inter Tight 300
+       label             --label-size     16                   Galano 500 / 600
+       small             --small-size     14                   per call site
 
-     WHY 16 AND NOT 14. Both were rendered against the real sections at 1440
-     and 390 in both themes. At 14 the Light 300 strokes go thin on the dark
-     ground (#9d9d9d on #0f0e0d), the About primer cards open up a band of
-     empty space above their copy, and the ledes stop reading as ledes under
-     32-54px headings. On a 390 phone 14px is plainly too small to read. 16 is also the browser's own body size and the value Figma's
-     mobile frames already used (the card frames' "24/16 type").
+     Each step is clearly above the next: 18 -> 24 -> 32 is 1.33x and 1.33x,
+     so a card title never reads as a bold paragraph and a section heading
+     never reads as a card title.
 
-     EVERY PARAGRAPH READS THESE TWO TOKENS, and no component sets its own
-     paragraph size, at any width. A per-component `font-size` on body copy is
-     how the drift the client spotted happened in the first place: 20px, 18px,
-     17px, `calc(20 * var(--u))` and three different vw ramps were all
-     standing in for "the paragraph size".
+     ILLUSTRATION TEXT IS NOT ON THIS SCALE, and must not be put on it. Text
+     drawn inside an artwork (the bento art, the hero slides, the Steps
+     panels, the Built cards, Familiar's phone, the Fan pills, the About
+     product shot) is sized in its own design unit, `calc(N * var(--u))` and
+     friends, because it is part of a picture that scales as one piece.
 
-     Line-height is a UNITLESS RATIO on purpose: 1.2 of whatever the size
-     resolves to. 120% is the client's restated decision.
+     DISPLAY. The four hero titles share one size, set as a fraction of the
+     content column so the widest line clears the artwork beside it; Hero.css
+     gives the measurements. The About hero title reads the same token, so the
+     two pages' h1s are the same size at every width. It is a `cqw` value, so
+     it resolves against the element's own query container: `.hero__stage` on
+     the landing page and `.ab-col` on About, which have the same content
+     width. The three values are the three layouts the hero has: artwork beside
+     the copy, artwork under it (<= 1180), and the phone (<= 720).
 
-     Letter-spacing at the call sites goes to `normal`, not `0px`: 0% in Figma
-     means "no tracking applied", which is the font's own metrics, and that is
-     what `normal` asks for. */
-  --body-size: 16px;
+     SECTION HEADING is the one role that steps down on a phone. At 32 the
+     longer headings ("Start With One Question. Explore Every Possibility.")
+     run to four lines in a 350px column; 28 holds them to three.
+
+     PARAGRAPH. Inter Tight / Light 300 / 18px / 120% / the font's own
+     tracking, and the same 18px at every width, phones included. The client
+     earlier asked for "14px or 16px max" and the site was at 16; the user
+     has since set 18 as the one paragraph size, for both pages. Line-height
+     is a UNITLESS RATIO on purpose: 1.2 of whatever the size resolves to.
+     Letter-spacing at the call sites is `normal`, the font's own metrics.
+
+     LABEL is eyebrows, buttons and CTAs, the nav, tab labels and the footer's
+     column headings and links. SMALL is the fine print: the footer's legal
+     line, the hero's terms line, the MORE menu, the FAQ's index numbers and
+     chips, and the comparison table's column heads. */
+  --display-size: clamp(32px, 3.375cqw, 100px);
+  --h2-size: 32px;
+  --h3-size: 24px;
+  --body-size: 18px;
   --body-leading: 1.2;
+  --label-size: 16px;
+  --small-size: 14px;
+  --heading-leading: 1.2;
 
   --spacing-xs: 8px;
   --spacing-sm: 12px;
@@ -212,6 +234,14 @@
   --radius-pill: 400px;
   --btn-w: 254px;
   --btn-h: 50px;
+}
+
+/* The two roles that change with the layout. See "The type scale" above. */
+@media (max-width: 1180px) {
+  :root { --display-size: clamp(52px, 5.2vw, 100px); }
+}
+@media (max-width: 720px) {
+  :root { --display-size: clamp(28px, 8.7cqw, 52px); --h2-size: 28px; }
 }
 
 /* --- Light -----------------------------------------------------------------

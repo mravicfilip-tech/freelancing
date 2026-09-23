@@ -64,7 +64,7 @@
 }
 .built__inner { display: flex; flex-direction: column; gap: 130px; }
 .built__head { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
-.built__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(25px, 1.9vw, 32px); line-height: 1.2; color: var(--ink); }
+.built__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h2-size); line-height: var(--heading-leading); color: var(--ink); }
 /* The mask the heading rises out of, the same one the pillars and the steps
    use. `intoLines` (src/lib/motion.ts) wraps the line in `.line > .line__in` at
    build time and only the inner span moves, so the heading rises out of nothing
@@ -83,7 +83,7 @@
 .built__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 640px)); justify-content: space-between; gap: 60px 160px; }
 .built__col { display: flex; flex-direction: column; gap: 30px; }
 .built__copy { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
-.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: clamp(21px, 1.5vw, 24px); line-height: 1.2; color: var(--ink); }
+.built__col-title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--heading-leading); color: var(--ink); }
 /* The site's paragraph setting; see tokens.css. `.built__sub` above reads
    the same two tokens: a section lede is paragraph text too. */
 .built__col-body {
@@ -96,7 +96,7 @@
 }
 .built__cta {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-label); font-weight: 600; font-size: 16px; line-height: 1.2; color: var(--accent);
+  font-family: var(--font-label); font-weight: 600; font-size: var(--label-size); line-height: 1.2; color: var(--accent);
   transition: gap 160ms ease;
 }
 .built__cta:hover { gap: 10px; }

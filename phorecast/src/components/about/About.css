@@ -58,10 +58,6 @@
   /* 80 design px between bands at 1920, which is 4.1667vw. */
   --ab-gap: clamp(56px, 4.1667vw, 80px);
 
-  /* Headings inside cards are 24 at 1920. Body copy is the site-wide
-     paragraph token, --body-size in tokens.css. */
-  --ab-h3: clamp(19px, 1.25vw, 24px);
-
   /* THE PANEL WASH. The frame calls it `white-06` and uses it for two
      different jobs: the fill of the three big panels (ABOUT PHORCAST, the
      table, the two primer cards) and the hairline around the CHOOSE AN EVENT
@@ -327,7 +323,10 @@
   max-width: calc(1344 * var(--u));
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(32px, 3.75vw, 72px);
+  /* The landing hero's display size, from the same token, so both pages'
+     h1s match at every width. `.ab-col` is the query container its `cqw`
+     resolves against, the same content width as the landing `.hero__stage`. */
+  font-size: var(--display-size);
   line-height: 0.9;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -402,9 +401,8 @@
 .ab-card__title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: var(--ab-h3);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: var(--h3-size);
+  line-height: var(--heading-leading);
   color: var(--ink);
 }
 .ab-card__body {
@@ -683,8 +681,8 @@
   max-width: calc(1224 * var(--u));
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(24px, 2.5vw, 48px);
-  line-height: 1.2;
+  font-size: var(--h2-size);
+  line-height: var(--heading-leading);
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--ink);
@@ -741,8 +739,8 @@
   padding-right: calc(24 * var(--u));
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: clamp(14px, 1.0417vw, 20px);
-  line-height: 1.2;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
   text-align: left;
   color: var(--ink-2);
 }
@@ -751,7 +749,7 @@
   vertical-align: top;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: clamp(12px, 0.8333vw, 16px);
+  font-size: var(--small-size);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -820,7 +818,7 @@
   margin-bottom: calc(46 * var(--u));
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: clamp(11px, 0.8333vw, 16px);
+  font-size: var(--small-size);
   line-height: 1.2;
   text-transform: uppercase;
   white-space: nowrap;
@@ -860,8 +858,8 @@
 .ab-why__title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: var(--ab-h3);
-  line-height: 1.2;
+  font-size: var(--h3-size);
+  line-height: var(--heading-leading);
   color: var(--ink);
 }
 .ab-why__body {
@@ -874,13 +872,14 @@
   line-height: var(--body-leading);
   color: var(--ink-2);
 }
-/* The lead is the list's own heading, so it keeps the display face. The
+/* The lead is the list's own heading, so it keeps the display face, at the
+   headings' one weight (500) and the paragraph size it sits in. The
    example's sentences, its run-in lines and its closing line included, are
    plain paragraph text: the user asked for no bold sentences, so nothing in
    the body carries a weight of its own. */
 .ab-why__lead {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-2);
 }
 /* The frame's own `list-disc` with a 30px indent. `ul` is stripped of markers
@@ -1113,7 +1112,7 @@
   }
   .ab-cmp__table .ab-cmp__brand { width: 82px; padding-inline: 4px; }
   .ab-cmp__logo { margin-bottom: 18px; }
-  .ab-cmp__name { margin-bottom: 18px; font-size: 10px; }
+  .ab-cmp__name { margin-bottom: 18px; }
   .ab-cmp__brand,
   .ab-cmp__table tbody td,
   .ab-cmp__table tbody th { padding-bottom: 16px; }

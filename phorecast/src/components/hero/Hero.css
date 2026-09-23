@@ -239,22 +239,23 @@
    1181, where the column is 1107px and the title 37.4px.
 
    The phone and the one-column range below 1180 have the artwork under the
-   copy rather than beside it, and set their own sizes further down.
-   `.hero .hero__title` and not `.hero__title` for the reason given there:
-   `.display` is bundled after this file at the same specificity. */
-.hero .hero__title { font-size: clamp(32px, 3.375cqw, 100px); }
+   copy rather than beside it, and take their own values further down.
+
+   The value itself lives in tokens.css as `--display-size`, which `.display`
+   reads, so that the About page's h1 is drawn from the same rule. Change it
+   there, and re-measure the four slides against the numbers above. */
 .hero__lede { max-width: 508px; }
 .hero__cta { margin-top: 12px; }
 /* Slide 3's small print, "Terms and eligibility apply." It sits 12px under the
    button: `.hero__copy` spaces its children 48px apart (28px on a phone, see
    below), and small print that far from the offer it qualifies reads as a
-   separate paragraph. The size is the site's one paragraph size, as every
-   paragraph is (tokens.css); what makes it small print is the quieter ink. */
+   separate paragraph. It is the site's small size, the same as the footer's
+   legal line, and the quieter ink. */
 .hero__terms {
   margin-top: -36px;
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: var(--body-size);
+  font-size: var(--small-size);
   line-height: var(--body-leading);
   color: var(--ink-muted);
 }
@@ -389,9 +390,9 @@
   /* One column: the artwork moves under the copy, so a title line only has to
      fit the column, and the design's own ramp does that with room to spare --
      at 1180 the widest line, 11.239em at 61.4px, is 690px of a 1106px column;
-     at 721, 584px of 657. Restated here because the rule above would
-     otherwise shrink the titles to fit a neighbour that is no longer there. */
-  .hero .hero__title { font-size: clamp(52px, 5.2vw, 100px); }
+     at 721, 584px of 657. `--display-size` takes this ramp at this width in
+     tokens.css; otherwise the titles would shrink to fit a neighbour that is
+     no longer there. */
   /* Pack the two rows to the top. `.hero__slide` is a grid item at 1/1 of
      `.hero__stage`, so it is stretched to the height of the TALLEST slide --
      and its own rows, being auto, then shared that slack out between them.
@@ -470,14 +471,7 @@
      does the 28px floor bind and let that one line wrap. The old ramp,
      clamp(38px, 10.6vw, 52px), put slides 2 to 4 onto three and four lines at
      390 with the client's copy, which is what held the four slide bottoms
-     apart.
-
-     `.hero .hero__title`, not `.hero__title`: `.display` in global.css carries
-
-     `.hero .hero__title`, not `.hero__title`: `.display` in global.css carries
-     the same specificity and is bundled after this file, so a bare class here
-     loses the cascade by source order and the headline stayed at 52px. */
-  .hero .hero__title { font-size: clamp(28px, 8.7cqw, 52px); }
+     apart. The value is `--display-size` at this width, in tokens.css. */
   .hero__bg { --u: 0.45px; }
   /* Tighter than the desktop 162/48/28, because a phone reads these as one
      block and the desktop rhythm spreads them over most of the viewport. */

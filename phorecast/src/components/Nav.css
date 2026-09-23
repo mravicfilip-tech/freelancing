@@ -65,11 +65,12 @@
   column-gap: 4px;
 }
 .nav__menu-group { display: flex; flex-direction: column; }
-/* The group heading is the footer's column heading, scaled to the menu: the
-   label face at 500, sentence case, in --ink, above rows in --ink-2 -- the
-   footer's own heading-over-links relationship at the site's small size
-   (--small-size), the size of the rows under it. It shares the rows' 12px inset and 36px height, so a
-   heading lines up with its items and the three headings share a baseline. */
+/* The group heading is the footer's column heading: the label face at 500,
+   sentence case, in --ink, above rows in --ink-2 -- the footer's own
+   heading-over-links relationship at the footer's own size, the label role
+   (--label-size), which is also the size of the rows under it. It shares the
+   rows' 12px inset and 36px height, so a heading lines up with its items and
+   the three headings share a baseline. */
 .nav__menu-heading {
   display: flex;
   align-items: center;
@@ -82,8 +83,11 @@
   color: var(--ink);
   white-space: nowrap;
 }
-/* Mono, uppercase, quiet: the same voice the sheet's second level speaks in,
-   so the two MOREs read as the same menu at two sizes. */
+/* The label face, uppercase, quiet: the same voice the sheet's second level
+   speaks in, and the same 16px label the footer sets these links in, so the
+   MORE panel, the phone sheet and the footer read as one sitemap. At 16 the
+   three columns are 650px wide, which still fits the 960px nav row at 1024;
+   Nav.tsx slides the panel left to keep its right edge on the row's. */
 .nav__menu-link {
   display: flex;
   align-items: center;
@@ -375,8 +379,9 @@
     border-left: 1px solid var(--line);
     padding-left: 20px;
   }
-  /* Mono where the parents are display face: the two levels are told apart by
-     which typeface they are set in, not by being the same thing smaller. */
+  /* The label face where the parents are display face: the two levels are
+     told apart by which typeface they are set in, not by being the same thing
+     smaller. Both are the label role's 16px, as in the footer. */
   .sheet-sub__link {
     display: flex;
     align-items: center;

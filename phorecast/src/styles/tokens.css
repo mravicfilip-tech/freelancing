@@ -208,10 +208,10 @@
      is a UNITLESS RATIO on purpose: 1.2 of whatever the size resolves to.
      Letter-spacing at the call sites is `normal`, the font's own metrics.
 
-     LABEL is eyebrows, buttons and CTAs, the nav, tab labels and the footer's
-     column headings and links. SMALL is the fine print: the footer's legal
-     line, the hero's terms line, the MORE menu, the FAQ's index numbers and
-     chips, and the comparison table's column heads. */
+     LABEL is eyebrows, buttons and CTAs, the nav and the MORE menu, tab
+     labels and the footer's column headings and links. SMALL is the fine
+     print: the footer's legal line, the hero's terms line, the FAQ's index
+     numbers and chips, and the comparison table's column heads. */
   --display-size: clamp(32px, 3.375cqw, 100px);
   --h2-size: 32px;
   --h3-size: 24px;

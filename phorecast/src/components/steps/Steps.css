@@ -308,6 +308,8 @@
     padding: 12px 6px;
     background: none;
     border: 0;
+    /* The label role, face and size, like every other 16px label; sentence
+       case is kept. At 320 "Forecast" still has 4px spare in a 93px tab. */
     font-family: var(--font-label);
     font-weight: 500;
     font-size: var(--label-size);

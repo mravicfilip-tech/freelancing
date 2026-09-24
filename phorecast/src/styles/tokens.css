@@ -1,42 +1,32 @@
-/* Phorcast brand tokens — single source of truth for colour, type and spacing.
+/* Phorcast brand tokens: the single source of truth for colour, type and spacing.
 
    Two layers, and the distinction is load-bearing:
 
    1. VALUE tokens (--white-font, --orange-100, …) name a colour. They come
-      straight from the Figma variables and they DO NOT CHANGE BETWEEN THEMES —
+      straight from the Figma variables and they DO NOT CHANGE BETWEEN THEMES:
       `--white-font` is `#fffbf8` on paper too, because that is what it is
       named after. Anything still reading one of these is, by definition, not
       yet themed.
    2. ROLE tokens (--ink, --page, --accent, …) name a job. A theme can only
       flip a job, never a value, so every themed call site reads a role.
 
-   The distinction exists because `--white-font` is used 67 times for four
-   different jobs: page ink, the label on the red button, the white plate of
-   the Markets card, and literal white inside dark artwork. Flipping it in
-   place would make the primary CTA's label 2.29:1 on red and paint the
-   Markets card black on black. The roles below separate those jobs so that
-   the light values in §Light can be applied to exactly one of them.
+   The split exists because one value can do several jobs: `#fffbf8` is page
+   ink, the label on the red button and literal white inside dark artwork.
+   Flipping the value would break the last two; the roles let §Light change
+   exactly one job. New call sites should read a role, not a value.
 
-   Migrating a section is therefore: swap its value tokens for role tokens,
-   prove the dark snapshot is IDENTICAL, and only then look at light. */
+   GOTCHA: a custom property set inline by script (Icon's `--icon`) is
+   deleted by GSAP `clearProps: 'all'`, which breaks the mask. Clear named
+   properties instead. */
 :root {
-  /* The counterpart of the `color-scheme: light` in the two blocks below, and
-     it has to be here or that pair does nothing: with only one side declared,
-     `color-scheme` resolves to `normal` in dark, which renders the native UI
-     in the LIGHT scheme in BOTH themes. Measured on the built page --
-     `getComputedStyle(documentElement).colorScheme` read `normal` in dark and
-     `light` in light, i.e. the same rendering either way.
-
-     This is the one change in the light-mode job that alters dark, and it is
-     deliberate. It moves the scrollbar, the text-selection default, the
-     spellcheck underline and the canvas fallback to the dark scheme; there are
-     no form controls on the page to move. Nothing in the element model
-     changes, so `theme-snapshot.mjs` cannot see it and the dark diff is still
-     IDENTICAL -- which is exactly why LIGHTMODE.md §1.4 says to say it out
-     loud rather than let it turn up as a surprise. */
+  /* The counterpart of `color-scheme: light` in the light blocks below. With
+     only one side declared, dark resolves to `normal` and native UI renders
+     in the light scheme in both themes. This does change dark on purpose: the
+     scrollbar, selection default, spellcheck underline and canvas fallback
+     use the dark scheme. There are no form controls on the page. */
   color-scheme: dark;
 
-  /* --- Value tokens — Figma variables, fixed in both themes ---------------- */
+  /* --- Value tokens: Figma variables, fixed in both themes ----------------- */
   --bg: #0f0e0d;                 /* page ground */
   --white-font: #fffbf8;         /* headlines, primary text */
   --orange-100: #e5331e;         /* brand accent, primary button */
@@ -52,7 +42,7 @@
   --green: #15a456;
   --red: #a21605;
 
-  /* --- Role tokens — dark values, expressed as the values above ------------
+  /* --- Role tokens: dark values, expressed as the values above -------------
      Defined as `var(--value)` rather than as literals so that this block is
      provably a no-op: the dark theme cannot drift from the Figma variables. */
 
@@ -77,12 +67,12 @@
   --on-accent: #fffbf8;
 
   /* Semantic. --neg must stay distinguishable from --accent: in light the
-     brand red IS #a21605, which is today's --red, so loss and brand would be
+     brand red IS #a21605, which is dark's --red, so loss and brand would be
      the same colour on a trading page. See §Light. */
   --pos: var(--green);
   --neg: var(--red);
 
-  /* Glass — the dark theme's idiom for "raise this slightly". On paper the
+  /* Glass: the dark theme's idiom for "raise this slightly". On paper the
      same job is done by settling, i.e. ink-alpha rather than white-alpha. */
   --veil: var(--glass);
   --veil-line: var(--glass-border);
@@ -100,49 +90,32 @@
   --btn-primary-hover-bg: var(--ink);
   --btn-primary-hover-ink: var(--accent);
 
-  /* The label face. Eyebrows, buttons, tab labels, chips, column headings and
-     the numbers inside the illustrations -- everything the client's spec calls
-     a subtitle. It was Geist Mono; the client has ruled Geist Mono out, and
-     this token is now Galano Grotesque per the Figma inspector (500 / 120% /
-     uppercase). It is NOT called --font-mono any more because nothing
-     monospaced is left in it.
+  /* The label face: eyebrows, buttons, tab labels, chips, column headings and
+     the numbers inside the illustrations. Galano Grotesque per the Figma
+     inspector (500 / 120% / uppercase). There is no --font-mono token: nothing
+     on the site is set in a monospace.
 
-     THE FILES ARE NOT SHIPPED YET (see styles/fonts.css). Everything after the
-     first name is therefore what actually renders today, and will still be
-     what renders on any machine where the webfont fails. That makes the order
-     below a real design decision rather than boilerplate:
+     The Galano files are not shipped yet (see styles/fonts.css), so the
+     fallback order is a real design decision, chosen for close widths:
 
-       Avenir Next / Avenir   macOS and iOS. Geometric-humanist, a large family
-                              of the same genus as Galano; by far the closest
-                              fit anybody gets for free.
-       Futura                 macOS's other geometric, and on Windows machines
-                              that have Office. Only ever reached if Avenir is
-                              somehow absent.
-       Segoe UI               Windows. Humanist rather than geometric, so the
-                              genre is wrong, but the WIDTHS are close and this
-                              site is measured on widths.
+       Avenir Next / Avenir   macOS and iOS; the closest geometric match.
+       Futura                 macOS, and Windows machines with Office.
+       Segoe UI               Windows. Wrong genre, but close widths.
        Roboto                 Android and ChromeOS, same argument.
-       Liberation Sans /      Linux desktops, and the headless Chromium every
-       DejaVu Sans            script in scripts/ runs in. Naming them is what
-                              makes the measurements in this repo reproducible
-                              instead of resolving to whatever the box has.
+       Liberation Sans /      Linux, and the headless Chromium the scripts in
+       DejaVu Sans            scripts/ run in, so measurements reproduce.
        system-ui, sans-serif  the floor.
 
-     DELIBERATELY NOT IN THE STACK:
+     Deliberately NOT in the stack:
 
-       ui-monospace et al     what was here. A monospace behind a grotesque is
-                              not a fallback, it is a different design.
-       Century Gothic         the obvious geometric on Windows, and the trap.
-                              It is anomalously wide -- uppercase strings set
-                              10-15% longer than any other name on this list --
-                              and it arrives with Office rather than with the
-                              OS, so including it would make the same page
-                              measurably wider on an arbitrary subset of
-                              Windows machines. Every nowrap width budget in
-                              this repo would have to be cut to its worst case
-                              to protect a fallback almost nobody reaches.
-       Poppins / Montserrat   closer in genus, but web-only: naming a font
-                              nobody has installed is naming nothing. */
+       ui-monospace et al     a monospace behind a grotesque is a different
+                              design, not a fallback.
+       Century Gothic         anomalously wide (uppercase sets 10-15% longer)
+                              and only present with Office, so it would widen
+                              the page on an arbitrary subset of Windows
+                              machines and break nowrap width budgets.
+       Poppins / Montserrat   web-only; naming a font nobody has installed
+                              does nothing. */
   --font-label:
     'Galano Grotesque',
     'Avenir Next', 'Avenir',
@@ -157,22 +130,21 @@
   --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;
 
   /* --- The type scale ------------------------------------------------------
-     SIX SIZES FOR THE WHOLE SITE, one token per role, and every piece of page
-     typography on both pages reads one of them. No component sets its own
-     size for a role; a per-component `font-size` is how the site drifted to
-     twenty-odd sizes (card titles alone were 18.85, 19, 19.44, 20, 20.16,
-     21.6 and 24 at 1440) and the client's "too many different sizes".
+     Six sizes for the whole site, one token per role. Every piece of page
+     typography on both pages reads one of them; no component sets its own
+     size for a role, which is how per-component sizes drifted before.
 
        role              token            size                 face / weight
        display           --display-size   fluid, see below     Manrope 500
        section heading   --h2-size        32 (28 on a phone)   Manrope 500
-       card heading      --h3-size        18                   Manrope 500
-       paragraph         --body-size      18                   Inter Tight 300
+       card heading      --h3-size        18, leading 1.3      Manrope 500
+       paragraph         --body-size      18, leading 1.2      Inter Tight 300
        label             --label-size     16                   Galano 500 / 600
        small             --small-size     14                   per call site
 
-     A card title shares the paragraph's 18 and is told apart by face and
-     weight; the section heading at 32 is the size step above both.
+     A card heading shares the paragraph's 18 and is told apart by face,
+     weight and its 1.3 leading (--h3-leading); the section heading at 32 is
+     the step above both.
 
      ILLUSTRATION TEXT IS NOT ON THIS SCALE, and must not be put on it. Text
      drawn inside an artwork (the bento art, the hero slides, the Steps
@@ -180,37 +152,26 @@
      product shot) is sized in its own design unit, `calc(N * var(--u))` and
      friends, because it is part of a picture that scales as one piece.
 
-     DISPLAY. The four hero titles share one size, set as a fraction of the
-     content column so the widest line clears the artwork beside it; Hero.css
-     gives the measurements. The About hero title reads the same token, so the
-     two pages' h1s are the same size at every width. It is a `cqw` value, so
-     it resolves against the element's own query container: `.hero__stage` on
-     the landing page and `.ab-col` on About, which have the same content
-     width. The three values are the three layouts the hero has: artwork beside
-     the copy, artwork under it (<= 1180), and the phone (<= 720).
+     DISPLAY. The four hero titles and the About title share one size, set as
+     a fraction of the content column so the widest line clears the artwork
+     beside it (Hero.css has the details). The desktop and phone values are
+     `cqw`, resolved against `.hero__stage` on the landing page and `.ab-col`
+     on About, which have the same content width; the middle one is `vw`. The
+     three values match the hero's three
+     layouts: artwork beside the copy, artwork under it (<= 1180), and the
+     phone (<= 720).
 
-     SECTION HEADING is the one role that steps down on a phone. At 32 the
-     longer headings ("Start With One Question. Explore Every Possibility.")
-     run to four lines in a 350px column; 28 holds them to three.
+     SECTION HEADING is the one role that steps down on a phone: at 32 the
+     longer headings run to four lines in a 350px column; 28 holds them to
+     three.
 
-     PARAGRAPH. Inter Tight / Light 300 / 18px / 120% / the font's own
-     tracking, and the same 18px at every width, phones included. The client
-     earlier asked for "14px or 16px max" and the site was at 16; the user
-     has since set 18 as the one paragraph size, for both pages. Line-height
-     is a UNITLESS RATIO on purpose: 1.2 of whatever the size resolves to.
-     Letter-spacing at the call sites is `normal`, the font's own metrics.
+     PARAGRAPH is 18px at every width, phones included. Line-height is a
+     UNITLESS RATIO on purpose; letter-spacing at the call sites is `normal`.
 
      LABEL is eyebrows, buttons and CTAs, the nav and the MORE menu, tab
      labels and the footer's column headings and links. SMALL is the fine
      print: the footer's legal line, the hero's terms line, the FAQ's index
-     numbers and chips, and the comparison table's column heads.
-
-
-     CARD HEADING IS 18, the paragraph's size: the user's call, made card by
-     card (FAQ, Steps, Built, About) and applied to the whole role. It keeps
-     the heading face (Manrope 500) and a 1.3 line-height (--h3-leading), so
-     face and weight, not size, set a card title apart from its body. The
-     section heading at 32 stays the step above it. */
+     numbers and chips, and the comparison table's column heads. */
   --display-size: clamp(32px, 3.375cqw, 100px);
   --h2-size: 32px;
   --h3-size: 18px;
@@ -261,41 +222,32 @@
   :root:not([data-theme='dark']) {
   color-scheme: light;
 
-  /* Grounds. Raised panels read by tint, not by shadow — the same grammar as
-     dark, with the same step sizes: 1.10 and 1.25 against the page where dark
-     is 1.12 and 1.33. */
+  /* Grounds. Raised panels read by tint, not by shadow, with contrast steps
+     close to dark's. */
   --page: #fffbf8;          /* the dark theme's own ink, reused as paper */
   --panel: #f7f0ea;
   --panel-2: #ece1d9;
   --line: #e3d6cb;
 
-  /* Ink. Matched to dark's contrast ratios rather than to its luminance, so
-     light reproduces the legibility HIERARCHY and not the palette:
-     18.74 -> 17.59, 7.11 -> 6.97. */
+  /* Ink. Matched to dark's contrast ratios rather than its luminance, so
+     light reproduces the legibility hierarchy, not the palette. */
   --ink: #1a1512;
   --ink-2: #5e5651;
-  /* The one deliberate divergence. Dark's eyebrow (#626262 on #0f0e0d) is
-     3.16:1 and fails AA at 16px today. Reproducing that on paper would be a
-     choice to ship a known defect twice, so light is 4.63:1 — still visibly
-     quieter than body copy, and readable. Dark is left exactly as it is;
-     fixing it there is a separate decision and would fail the dark gate. */
+  /* The one deliberate divergence. Dark's --ink-muted (#626262 on #0f0e0d,
+     3.16:1) fails AA; light does not copy that and is 4.63:1, still quieter
+     than body copy. Dark's value is unchanged. */
   --ink-muted: #7a716c;
 
-  /* Brand. #a21605 is given, and is a stronger text colour on paper (7.69:1)
-     than #e5331e is on the dark ground (4.43:1). */
+  /* Brand. #a21605 is the design's light brand red (7.69:1 on paper). */
   --accent: #a21605;
   --accent-deep: #7e0202;
   --accent-lift: #c4361c;
   --accent-soft: rgba(162, 22, 5, 0.08);
-  --on-accent: #fffbf8;     /* unchanged: 4.23:1 on dark red, 7.69:1 on light */
+  --on-accent: #fffbf8;     /* unchanged from dark */
 
-  /* #a21605 is already --red in the dark tokens — the price-DOWN colour — and
-     in light it becomes the brand. Loss and brand cannot be the same colour on
-     a trading page, so they are split: brand keeps the given value and loss
-     moves to #b01309 (6.93:1). They stay close enough to read as the same
-     family and far enough apart to read as different things.
-     #15a456 on paper is 3.15:1 and #00c950 is 2.15:1 — a price rise nobody can
-     see — so --pos moves too, to 6.18:1. */
+  /* #a21605 is dark's --red (price down) and light's brand. Loss and brand
+     cannot share a colour on a trading page, so loss moves to #b01309. Dark's
+     green is too faint on paper (3.15:1), so --pos darkens too. */
   --pos: #0b6e37;
   --neg: #b01309;
 
@@ -318,41 +270,32 @@
 :root[data-theme='light'] {
   color-scheme: light;
 
-  /* Grounds. Raised panels read by tint, not by shadow — the same grammar as
-     dark, with the same step sizes: 1.10 and 1.25 against the page where dark
-     is 1.12 and 1.33. */
+  /* Grounds. Raised panels read by tint, not by shadow, with contrast steps
+     close to dark's. */
   --page: #fffbf8;          /* the dark theme's own ink, reused as paper */
   --panel: #f7f0ea;
   --panel-2: #ece1d9;
   --line: #e3d6cb;
 
-  /* Ink. Matched to dark's contrast ratios rather than to its luminance, so
-     light reproduces the legibility HIERARCHY and not the palette:
-     18.74 -> 17.59, 7.11 -> 6.97. */
+  /* Ink. Matched to dark's contrast ratios rather than its luminance, so
+     light reproduces the legibility hierarchy, not the palette. */
   --ink: #1a1512;
   --ink-2: #5e5651;
-  /* The one deliberate divergence. Dark's eyebrow (#626262 on #0f0e0d) is
-     3.16:1 and fails AA at 16px today. Reproducing that on paper would be a
-     choice to ship a known defect twice, so light is 4.63:1 — still visibly
-     quieter than body copy, and readable. Dark is left exactly as it is;
-     fixing it there is a separate decision and would fail the dark gate. */
+  /* The one deliberate divergence. Dark's --ink-muted (#626262 on #0f0e0d,
+     3.16:1) fails AA; light does not copy that and is 4.63:1, still quieter
+     than body copy. Dark's value is unchanged. */
   --ink-muted: #7a716c;
 
-  /* Brand. #a21605 is given, and is a stronger text colour on paper (7.69:1)
-     than #e5331e is on the dark ground (4.43:1). */
+  /* Brand. #a21605 is the design's light brand red (7.69:1 on paper). */
   --accent: #a21605;
   --accent-deep: #7e0202;
   --accent-lift: #c4361c;
   --accent-soft: rgba(162, 22, 5, 0.08);
-  --on-accent: #fffbf8;     /* unchanged: 4.23:1 on dark red, 7.69:1 on light */
+  --on-accent: #fffbf8;     /* unchanged from dark */
 
-  /* #a21605 is already --red in the dark tokens — the price-DOWN colour — and
-     in light it becomes the brand. Loss and brand cannot be the same colour on
-     a trading page, so they are split: brand keeps the given value and loss
-     moves to #b01309 (6.93:1). They stay close enough to read as the same
-     family and far enough apart to read as different things.
-     #15a456 on paper is 3.15:1 and #00c950 is 2.15:1 — a price rise nobody can
-     see — so --pos moves too, to 6.18:1. */
+  /* #a21605 is dark's --red (price down) and light's brand. Loss and brand
+     cannot share a colour on a trading page, so loss moves to #b01309. Dark's
+     green is too faint on paper (3.15:1), so --pos darkens too. */
   --pos: #0b6e37;
   --neg: #b01309;
 

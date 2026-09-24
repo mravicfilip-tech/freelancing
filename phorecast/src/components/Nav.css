@@ -25,8 +25,7 @@
    -------------------------------------------------------------------------
    The wrapper is the positioning context and nothing else: `display: flex`
    with one inline-flex child is the same box the button was on its own, so
-   `.nav__links`'s row is unmoved and the desktop landing page stays where the
-   pixel gate left it.
+   `.nav__links`'s row does not move.
 
    The panel hangs from the button's left edge rather than centring on it,
    because MORE is the last item in the row and a centred panel would sit
@@ -43,18 +42,16 @@
   padding: 6px;
   border-radius: 14px;
   border: 1px solid var(--veil-line);
-  /* Opaque, not the --veil wash the cards use: this panel is over the hero's
-     glow field and over whatever section the reader has scrolled to, and a
-     4%-white plate on top of the ember sun is unreadable. --panel is the
-     token for "a raised surface", and it flips to #f7f0ea on paper. */
+  /* Opaque, not the --veil wash the cards use: this panel sits over the
+     hero's glow and over whatever section is scrolled to, where a 4%-white
+     plate is unreadable. --panel is the "raised surface" token. */
   background: var(--panel);
-  /* No shadow: the user's call. The 1px --veil-line border is the plate's
+  /* Design decision: no shadow. The 1px --veil-line border is the plate's
      only edge. */
 }
-/* Light: the plate is pure white, the user's call, so it lifts off the
-   paper by tint alone. Written twice, as tokens.css does, because a media
-   query cannot go in a selector list: the system preference leads while
-   nothing is chosen, an explicit choice wins at any system setting. */
+/* Design decision: in light the plate is pure white and lifts off the paper
+   by tint alone. Written twice because a media query cannot go in a selector
+   list (see tokens.css). */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .nav__menu { background: #fff; }
 }
@@ -65,9 +62,8 @@
   display: flex;
   flex-direction: column;
 }
-/* The label face, uppercase, quiet: the same voice the sheet's second level
-   speaks in, and the same 16px label the footer sets these links in, so the
-   MORE panel, the phone sheet and the footer read as one sitemap. */
+/* The label face at the label size, uppercase and quiet, matching the
+   sheet's second level and the footer's links. */
 .nav__menu-link {
   display: flex;
   align-items: center;
@@ -78,8 +74,7 @@
   font-weight: 500;
   font-size: var(--label-size);
   line-height: 1.2;
-  /* No tracking, as on every uppercase label on the site: the client's label
-     spec states none (see `.eyebrow` in global.css). */
+  /* No tracking, as on every uppercase label (see `.eyebrow` in global.css). */
   letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
@@ -88,14 +83,9 @@
 }
 .nav__menu-link:hover,
 .nav__menu-link:focus-visible { color: var(--ink); background: var(--veil); }
-/* The current page is a FILLED ROW, not a rule down its left edge.
-   The rule was there to be a second, non-colour cue -- the right instinct,
-   the wrong shape: a 2px accent stripe butted against the panel's own 6px
-   padding read as a rendering artefact rather than a state, and it was the
-   only stripe anywhere in this interface. A filled row is the same redundancy
-   done with the element's own box: the shape changes, not just the hue, so it
-   survives being unable to see the colour, and it is the shape every other
-   selected thing on this site uses. */
+/* The current page is a filled row, not only a colour change, so the state
+   survives for readers who cannot see the colour. A filled row is the shape
+   every other selected thing on the site uses. */
 .nav__menu-link[aria-current='page'] {
   color: var(--accent);
   background: var(--veil);
@@ -105,17 +95,9 @@
   color: var(--accent);
   background: var(--veil-line);
 }
-/* The chevron is a mask now, so it takes its colour from `color` rather than
-   from the #9D9D9D Figma baked into the file. That hex is exactly
-   --color-nre-body, i.e. --ink-2, so naming the role here reproduces dark mode
-   to the byte and gives light mode #5e5651 for free.
-
-   Stating it on the icon rather than inheriting is deliberate: the link turns
-   --accent on hover and the <img> never did, so an inherited colour would be a
-   new behaviour dressed as a conversion. Note that NEITHER of these is visible
-   to theme-diff.mjs -- a mask's paint is `background-color: currentColor`,
-   which the gate reads as a change from transparent either way. Every masked
-   glyph has to be given the token matching the hex it used to bake. */
+/* The chevron is a mask, so its colour is stated here: --ink-2, which is the
+   #9D9D9D the Figma file carries in dark. It is set on the icon rather than
+   inherited so it does not turn --accent with the link on hover. */
 .nav__more .icon { color: var(--ink-2); }
 .nav__actions {
   display: flex;
@@ -135,16 +117,11 @@
 
 @media (max-width: 960px) {
   .nav__links, .nav__actions { display: none; }
-  /* TWO BARS, A LONG ONE OVER A SHORT ONE, both centred on the same axis.
-     Three even bars is the default every framework ships and it reads as one;
-     dropping to two and cutting the lower one to ~60% gives the mark a
-     direction and a bit of asymmetry to look at, which is the whole idea in
-     the reference the client sent.
+  /* Two bars, a long one over a short one (~60%), centred on one axis, so the
+     mark has a direction rather than the default three even bars.
 
-     The stroke stays 2px. The reference draws a heavier bar, but it draws it
-     on a 36px icon inside a pill; ours is 22px wide beside 16px nav type, and
-     at 3px the mark starts out-weighing the wordmark it sits opposite.
-     2px against 22 is the same ratio the reference strikes at its own size. */
+     The stroke stays 2px: at 3px a 22px mark out-weighs the wordmark it sits
+     opposite. */
   .nav__burger {
     display: grid;
     gap: 6px;
@@ -170,18 +147,13 @@
   .nav__burger.is-open span:nth-child(2) { width: 22px; transform: translateY(-4px) rotate(-45deg); }
 
   /* The sheet ---------------------------------------------------------------
-     It used to be an in-flow block inside the header, so it pushed the page
-     down and opened as a panel over the top half of the screen with the hero
-     still scrolling behind it. It is now a surface: it covers the viewport,
-     the page behind it is locked, and the sheet is the only thing that
-     scrolls — and only if its own content ever outgrows the screen, which at
-     360x640 it very nearly does.
+     A full-viewport surface: the page behind it is locked and the sheet is the
+     only thing that scrolls, and only if its content outgrows the screen
+     (at 360x640 it very nearly does).
 
-     `position: fixed` rather than a height on a static box, because the two
-     things that have to be true are "starts at the top of the viewport" and
-     "ends at the bottom of it", and inset is the one declaration that says
-     both without asking what the document is doing. The portal in Nav.tsx is
-     what makes it safe to say. */
+     `position: fixed; inset: 0` states both "starts at the top of the
+     viewport" and "ends at the bottom" without depending on the document.
+     The portal in Nav.tsx is what makes that safe. */
   .nav__sheet.is-open {
     position: fixed;
     inset: 0;
@@ -191,39 +163,22 @@
     overflow-y: auto;
     overscroll-behavior: contain;
 
-    /* The device insets, named once. They are read through custom properties
-       rather than called inline so that the padding below has a seam a test
-       can reach: headless Chromium reports every env() as 0 and would happily
-       pass a sheet that puts Sign Up under a home indicator. Set these four to
-       a notch's worth and the layout can be measured as it lands on a phone
-       with one. */
+    /* The device insets, named once. Read through custom properties so a
+       test can set them: headless Chromium reports every env() as 0 and
+       would pass a sheet that puts Sign Up under a home indicator. */
     --sheet-safe-t: env(safe-area-inset-top, 0px);
     --sheet-safe-r: env(safe-area-inset-right, 0px);
     --sheet-safe-b: env(safe-area-inset-bottom, 0px);
     --sheet-safe-l: env(safe-area-inset-left, 0px);
   }
-  /* THE CENTRING, and it is three lines rather than any measuring.
-     -------------------------------------------------------------------------
-     The links have to sit in the middle of the SCREEN, not in the middle of
-     whatever is left between the wordmark and the dock — and those two are
-     nothing like the same height, so a flex column with `justify-content:
-     center` puts the menu about 70px high of where it belongs.
+  /* The centring. The links sit in the middle of the SCREEN, not of the
+     space between the wordmark and the dock, which differ in height. Three
+     rows, `1fr auto 1fr`: the two flexible tracks are equal, so the middle
+     track's centre is the viewport's.
 
-     Three rows, `1fr auto 1fr`. The two flexible tracks are equal by
-     definition, so whatever the wordmark and the dock cost, the middle track's
-     centre IS the sheet's centre, which is the viewport's. The wordmark parks
-     at the start of the top track and the dock at the end of the bottom one,
-     so neither is what the centring is measured against.
-
-     It degrades because `1fr` is `minmax(auto, 1fr)`: a track can never go
-     below its own content. Expand More on a 640px screen and the two tracks
-     stop at the height of the wordmark and the dock, the column grows past the
-     viewport, and the sheet's own scroller takes it. The menu stops being
-     centred at exactly the point where centring would have meant overlapping
-     something — which grid guarantees it cannot do.
-
-     min-height, not height, for the same reason: fill the screen when it fits,
-     grow past it when it does not. A fixed height would clip. */
+     `1fr` is `minmax(auto, 1fr)`, so a track never shrinks below its
+     content: on a short screen the column grows and the sheet scrolls rather
+     than overlapping. min-height, not height, for the same reason. */
   .nav__sheet-inner {
     display: grid;
     grid-template-rows: 1fr auto 1fr;
@@ -233,24 +188,15 @@
     padding-left: max(var(--sheet-safe-l, 0px), var(--page-pad));
     padding-right: max(var(--sheet-safe-r, 0px), var(--page-pad));
   }
-  /* max(), not the inset PLUS the padding, and measured rather than assumed:
-     adding them put 93px of padding on an iPhone 14 where 44px was intended,
-     which was enough to tip the collapsed sheet 5px into scrolling. An inset
-     is already an offset from the edge; all the padding has to do is provide a
-     floor for the devices that report none.
+  /* max(), not inset plus padding: an inset is already an offset from the
+     edge, so the padding only needs to be a floor for devices that report
+     none. Adding them over-pads on notched phones and can tip the sheet into
+     scrolling. The bottom inset matters most: a control under the home
+     indicator cannot be pressed. */
 
-     The bottom one is the reason the dock is worth doing at all: a control
-     parked under a home indicator is further out of reach than one at the top,
-     because you cannot press it. The top inset matters less — nothing is flush
-     to the top edge — but a notch would otherwise eat the wordmark in
-     landscape, so it is stated too. */
-
-  /* With More open there is a 176px panel in the middle track, and centring
-     that on the viewport costs twice the dock again — which pushes Sign Up
-     below the fold on a phone where the collapsed menu fitted comfortably.
-     So the disclosure trades the centring for the fit: rows pack, the menu
-     centres in what is left, and at 390x844 the expanded sheet still does not
-     scroll. Centred when it fits is the rule; this is the same rule. */
+  /* With More open, centring on the viewport can push Sign Up below the fold,
+     so the rows pack and the menu centres in the space that is left. Centred
+     when it fits is the rule. */
   .nav__sheet[data-more='true'] .nav__sheet-inner { grid-template-rows: auto 1fr auto; }
 
   .nav__sheet-top {
@@ -278,27 +224,20 @@
   }
   .nav__sheet-close:hover { color: var(--accent); }
 
-  /* THE MENU. Three decisions, and the brief for all three was "premium",
-     which on this page reads as fewer and better-judged rather than more.
-     -------------------------------------------------------------------------
-     1. It is set in the display face, sentence case. Mono uppercase is right
-        at 16px in the bar, where it is a label; blown up to 35px with a rule
-        under every item it stopped being navigation and became a table of
-        contents. The hero's own headline is Manrope 500 — at this size the
-        menu is nearer a headline than a bar label, so it takes the headline's
-        voice and the sheet reads as one composition with the page behind it.
+  /* The menu. Three design decisions:
 
-     2. The four rules are gone. A divider per item is a divider doing nothing:
-        four words in 35px type at this spacing are already four things. One
-        hairline survives, above the dock, because that is the surface's one
-        real boundary — what you read above it, what you press below it.
+     1. The display face, sentence case, at the section-heading size. At this
+        size the menu is nearer a headline than a bar label, so it takes the
+        headline's voice.
 
-     3. The rhythm is tight, not even. 8px between 44px lines sets the menu as
-        a block of type rather than a list of rows; the air is around the
-        block, which is what the centring is for.
+     2. No divider per item. One hairline, above the dock, marks the sheet's
+        one real boundary: what you read above it, what you press below it.
 
-     The 52px floor is the tap target, and it is the floor rather than the
-     height so that the type, not a fixed row, decides how tall a line is. */
+     3. Tight rhythm (7px between lines) so the menu reads as a block of type;
+        the air is around the block.
+
+     Each link's 48px min-height is the tap target, a floor so the type
+     decides how tall a line is. */
   .nav__sheet-nav {
     grid-row: 2;
     align-self: center;   /* only bites in the short-screen fallback below */
@@ -316,8 +255,8 @@
     padding-block: 4px;
     font-family: var(--font-display);
     font-weight: 500;
-    /* The section-heading size: the sheet's first level is the largest type
-       on screen while it is open, and 28 on a phone is that role's size. */
+    /* The section-heading size (28 on a phone): the largest type on screen
+       while the sheet is open. */
     font-size: var(--h2-size);
     line-height: 1.1;
     text-align: left;
@@ -328,7 +267,7 @@
   .sheet-link--more { justify-content: flex-start; }
   .sheet-link__chev {
     width: 18px;
-    height: 9.8px;          /* the file's own 13.73:7.49, scaled to the type */
+    height: 9.8px;          /* the file's own 13.73:7.49, scaled to 18 wide */
     flex: none;
     margin-top: 0.14em;     /* optically level with the x-height, not the box */
     color: var(--ink-2);
@@ -336,12 +275,12 @@
   }
   .sheet-link--more[aria-expanded='true'] .sheet-link__chev { transform: rotate(180deg); }
   /* Not an entrance target: entrance.ts collects `.nav .logo, .nav__links > *,
-     .nav__actions > *, .nav__burger` with `all(hero, ...)`, and the sheet is
-     portalled out of .hero entirely. So a transform transition here cannot
-     repeat the fault 21b499c fixed. */
+     .nav__actions > *, .nav__burger` inside .hero, and the sheet is
+     portalled out of .hero. So this transform transition cannot repeat the
+     fault fixed in 21b499c. */
 
   /* The panel animates by row track, 0fr to 1fr, because the alternative is
-     `hidden` — which would take the children out of the focus order for free
+     `hidden`, which would take the children out of the focus order for free
      and make the height unanimatable. The list carries `inert` and
      `aria-hidden` instead, so it is out of both the tab order and the
      accessibility tree while shut, and still has a box to grow. */
@@ -353,8 +292,8 @@
   .sheet-sub[data-open='true'] { grid-template-rows: 1fr; }
   .sheet-sub__list {
     overflow: hidden;
-    /* One short rule, marking four items as a branch of the one above them.
-       It is the second and last divider in the sheet. */
+    /* One short rule marks the list as a branch of the item above it. It is
+       the second and last divider in the sheet. */
     margin-left: 3px;
     border-left: 1px solid var(--line);
     padding-left: 20px;
@@ -389,10 +328,8 @@
     padding-top: 18px;
     border-top: 1px solid var(--line);
   }
-  /* --ink-2, not --ink-muted. At 14px on a tinted ground --ink-muted is under
-     AA in light (4.63:1 is its figure on #fffbf8 flat, and it only goes down
-     from there); --ink-2 is 6.97:1 in light and 7.11:1 in dark and is the
-     token that means "quiet but read". */
+  /* --ink-2, not --ink-muted: at 14px on a tinted ground --ink-muted falls
+     under AA in light. --ink-2 is the token for "quiet but read". */
   .nav__sheet-caption {
     font-family: var(--font-label);
     font-weight: 500;
@@ -403,36 +340,20 @@
     color: var(--ink-2);
   }
 
-  /* Stacked and full width, as asked. They keep the exact classes the desktop
-     bar gives them — --ghost is the quiet one, --outline carries the ink
-     border and is therefore the emphatic one — so the hierarchy on a phone is
-     the hierarchy on a desktop rather than a second one invented for mobile.
-     Stacked, that difference has to do all the work the widths were doing
-     before, which is the trade the stack costs. */
+  /* Stacked and full width. They keep the desktop bar's classes (--ghost is
+     the quiet one, --outline the emphatic one), so the phone has the same
+     hierarchy as the desktop. */
   .nav__sheet-auth { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   .nav__sheet-auth .btn { width: 100%; }
 }
 
-/* SHORT SCREENS, and the one place the exact centring has to give.
-   -------------------------------------------------------------------------
-   `1fr auto 1fr` centres on the viewport by making the two flexible tracks
-   equal, which means the BOTTOM one is never shorter than the dock — so the
-   sheet is at least twice the dock plus the menu, and below that height it
-   scrolls rather than centres. Measured, with the dock and menu at the sizes
-   above, that floor is just under 780px: every current iPhone (844, 852, 896, 932) and
-   the common 360x800 Android clear it; a 736 Plus, a 667 SE and a 360x640 do
-   not. The switch is set at 779 rather than at the measured 756 so the branch
-   with no margin for error is the one that cannot overflow.
-
-   Under the floor the rows become `auto 1fr auto` and the menu centres in what
-   is left between the wordmark and the dock instead. It is a few tens of
-   pixels high of the true centre, and it FITS — which matters more, because
-   the alternative is a phone whose Sign Up button is below the fold the moment
-   the menu opens. Everything else about the sheet is unchanged.
-
-   The threshold is stated once, here, and it is a measurement rather than a
-   guess: scripts/… no, this one is measured by hand with the sheet open at a
-   range of heights. If the dock gains a row, re-measure it. */
+/* SHORT SCREENS. `1fr auto 1fr` keeps the bottom track at least as tall as
+   the dock, so the sheet needs roughly twice the dock plus the menu. Below
+   about 780px of height (a 736 Plus, a 667 SE, a 360x640) it would scroll
+   rather than centre, so the rows become `auto 1fr auto` and the menu centres
+   between the wordmark and the dock instead. A few tens of pixels off centre,
+   but it fits. The 779px threshold was found by hand with the sheet open at a
+   range of heights; re-measure it if the dock gains a row. */
 @media (max-width: 960px) and (max-height: 779px) {
   .nav__sheet-inner { grid-template-rows: auto 1fr auto; }
 }

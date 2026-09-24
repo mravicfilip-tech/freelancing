@@ -1,6 +1,5 @@
-/* Sized to sit level with the nav's pill buttons without being one of them:
-   same 50px height as --btn-h at full width, square, so it reads as a control
-   rather than a third call to action. */
+/* A 44px square: the minimum tap target, and square so it reads as a control
+   rather than a third call to action beside the pill buttons. */
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -20,8 +19,7 @@
 }
 
 /* Both glyphs occupy the same cell so the button cannot change size when the
-   theme does — a control that resizes as you click it is a control you cannot
-   click twice. */
+   theme does. */
 .theme-toggle__glyphs {
   display: grid;
   width: 18px;
@@ -47,18 +45,14 @@
    the current one is filled, so "which mode am I in" is answered by looking
    rather than by reading a sentence about what will happen next.
 
-   Deliberately MONOCHROME. --ink/--page, never --accent: the brand red on this
-   page means "do something" (Get Started, Login's label), and the whole defect
-   being fixed is a mode control that read as an account action. A filled
-   near-black chip in light and a filled near-white chip in dark is the same
-   inversion grammar --btn-primary-hover-bg already uses, so it is not a new
-   idiom either.
+   Deliberately monochrome (--ink/--page, never --accent): the brand red means
+   "do something" on this page, and a mode control must not read as an
+   account action. The filled chip is the same inversion --btn-primary-hover-bg
+   uses.
 
-   Nothing here is on an entrance target: entrance.ts animates
-   `.nav .logo, .nav__links > *, .nav__actions > *, .nav__burger`, and the
-   switch is rendered only into the sheet, which is portalled out of .hero
-   altogether. So the thumb may carry a transform transition without repeating
-   the fault commit 21b499c fixed. */
+   Not an entrance target: entrance.ts animates only the nav bar's parts, and
+   the sheet is portalled out of .hero, so the thumb's transform transition
+   cannot fight a GSAP tween (the fault fixed in commit 21b499c). */
 .theme-seg {
   position: relative;
   display: grid;
@@ -79,8 +73,7 @@
   transition: transform 260ms var(--ease-out);
 }
 /* 100% of the thumb's own width is (50% - 4px), and the right segment's box
-   starts at exactly 50% of the track — so one translate lands it, at any
-   width, with no second measurement to drift. */
+   starts at exactly 50% of the track, so one translate lands it at any width. */
 .theme-seg[data-mode='dark'] .theme-seg__thumb { transform: translateX(100%); }
 
 .theme-seg__opt {

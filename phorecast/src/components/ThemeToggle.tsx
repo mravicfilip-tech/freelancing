@@ -2,11 +2,8 @@ import { useRef, type KeyboardEvent } from 'react';
 import { setTheme, toggleTheme, useTheme, type Theme } from '../lib/theme';
 import './ThemeToggle.css';
 
-/* The glyphs are inline rather than imported because the whole point is that
-   they follow `currentColor`, and because an asset file would be a shared
-   file, and shared asset files are the one thing the light-mode work is not
-   allowed to touch. They are lifted out of ThemeToggle only so the segmented
-   switch below can draw the same sun and the same moon. */
+/* The glyphs are inline so they follow `currentColor`. They are shared by
+   the nav button and the segmented switch below. */
 const Sun = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 20 20" width="18" height="18" fill="none">
     <circle cx="10" cy="10" r="3.6" stroke="currentColor" strokeWidth="1.5" />
@@ -33,19 +30,12 @@ const Moon = ({ className }: { className?: string }) => (
 /**
  * The theme switcher, desktop form: one 44px square in the nav bar.
  *
- * `aria-pressed` would be wrong: this is not one state being turned on and
- * off, it is a choice between two. So it is a plain button whose accessible
- * name states the DESTINATION — "Switch to light mode" — and changes when the
- * theme does. That name change is the announcement; there is no live region.
+ * `aria-pressed` would be wrong: this is a choice between two, not one state
+ * turned on and off. So it is a plain button whose accessible name states the
+ * DESTINATION ("Switch to light mode") and changes with the theme. That name
+ * change is the announcement; there is no live region.
  *
- * That reasoning is why this component is UNTOUCHED rather than reshaped for
- * the mobile sheet: the sheet's control is a different control (see
- * `ThemeSwitch`), not this one restyled, so the desktop bar renders from the
- * same code path it always did and cannot move by a pixel.
- *
- * The dead `theme-toggle__label` span is gone with the sheet variant that was
- * its only consumer. It was `display: none` on desktop, so it contributed
- * neither pixels nor an accessible name.
+ * The mobile sheet uses `ThemeSwitch` instead, a separate control.
  */
 export function ThemeToggle({ className = '' }: { className?: string }) {
   const theme = useTheme();
@@ -79,29 +69,19 @@ const OPTIONS: { value: Theme; label: string }[] = [
  * The theme switcher, sheet form: a two-segment track with the current theme
  * filled in.
  *
- * WHY A DIFFERENT CONTROL, not a restyled `ThemeToggle`. In the bar the
- * toggle is one of three things competing for 44px and the icon carries it.
- * In a full-screen sheet it became a full-width pill reading "SWITCH TO DARK
- * MODE", identical in size and shape to Login and Sign Up beside it — so a
- * mode control looked like a third account action, and the one thing it never
- * said was which mode you were in. A segment per option fixes both: it is
- * visibly not a button-stack, and the answer to "what am I in" is the filled
- * half, present without touching anything.
+ * Why a different control. In the sheet a full-width button reading "SWITCH
+ * TO DARK MODE" would look like a third account action beside Login and Sign
+ * Up, and would never say which mode is current. A segment per option fixes
+ * both: the filled half answers "what am I in" without any interaction.
  *
- * WHY role=radiogroup, and why that does NOT contradict the note above on
- * `aria-pressed`. That note rejects `aria-pressed` because this is a choice
- * between two, not one state toggled on and off — and a radio group is
- * exactly the role for "choose one of N". So this is the same argument
- * carried to its conclusion, not a reversal of it: the DOM now really does
- * offer two options, so the markup names two options and marks one checked.
- * `role="switch"` would be the wrong one for the same reason `aria-pressed`
- * was: it means on/off.
+ * `role="radiogroup"` is the role for "choose one of N", which is the same
+ * reasoning that rules out `aria-pressed` above. `role="switch"` would be
+ * wrong for the same reason: it means on/off.
  *
  * The group takes its accessible name from the visible "Appearance" caption
  * in the sheet, so the caption is not read twice. Each option's name is its
  * own label; its state is `aria-checked`, which AT announces on arrival and
- * on change — the same job the destination-naming label did for the button,
- * done by the role instead of by a sentence.
+ * on change.
  *
  * Roving tabindex, per the radio-group pattern: Tab enters the group once and
  * lands on the checked option, arrows move between options and select as they

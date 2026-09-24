@@ -22,20 +22,14 @@
    --------
    Every length here is a Figma design pixel multiplied by --u.
 
-   The ambient `--u` from `.hero__slide` is derived from `100cqw`, and the query
-   container is `.hero` — the *full-bleed* section — so it measures the viewport,
-   not the 1800px content column the design is drawn against. The two only track
-   each other while `.container--wide`'s padding is in its linear range; past
-   1920px the column stops growing at 1800px while the viewport does not, so the
-   group runs off the right of the column.
+   `.sl2` makes *itself* the query container and redefines --u against it, so
+   every descendant's `calc(N * var(--u))` measures the content column `.sl2`
+   spans (one design px is one 1800th of it), and each breakpoint below can
+   re-base the unit on the part of the group it shows.
 
-   So `.sl2` makes *itself* the query container and redefines --u against it.
-   Custom properties are substituted at the use site, so every descendant's
-   `calc(N * var(--u))` now measures the real content column: one design px is
-   exactly one 1800th of the column at every width.
-
-   `.sl2`'s own declarations must NOT use var(--u) — an element is never its
-   own query container, so `100cqw` would fall back to `.hero` there.
+   `.sl2`'s own declarations must NOT use var(--u): an element is never its
+   own query container, so `100cqw` there resolves against the parent
+   container.
 
    Colours: brand/neutral values come from tokens.css. The market chips keep
    their literal Figma hexes (they are chart semantics, not the brand green and
@@ -47,9 +41,9 @@
   container-type: inline-size;
   pointer-events: none;
 
-  /* One design pixel of the REAL padded content column. `.sl2` is the
-     query container, so every `100cqw` a descendant resolves through this
-     variable measures `.sl2` (= the column), not the full-bleed `.hero`. */
+  /* One design pixel of the padded content column. `.sl2` is the query
+     container, so every `100cqw` a descendant resolves through this variable
+     measures `.sl2` (= the column). */
   --u: calc(100cqw / 1800);
 
   /* chart / market semantics, straight from the Figma node */

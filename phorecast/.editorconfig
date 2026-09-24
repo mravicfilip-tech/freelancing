@@ -1,0 +1,22 @@
+# Matches the code as it is: two-space indent, LF, UTF-8, a final newline, no
+# trailing whitespace. Quotes are single in TS, TSX and JS (JSX attributes use
+# double); that is not an EditorConfig setting, so it is noted here instead.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Exported artwork: several icons have no final newline, and an editor should
+# not rewrite them on save.
+[*.svg]
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+# Two trailing spaces are a hard line break in Markdown.
+[*.md]
+trim_trailing_whitespace = false

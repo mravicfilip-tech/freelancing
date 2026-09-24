@@ -1,25 +1,14 @@
-/* One band of the About page, in its own file.
+/* Entrance and scroll fill for the CAST YOUR CONVICTION band.
  *
- * The six entrances were written as one module. They are split per band so
- * that several people can work on the page at once without editing the same
- * file -- the house language, the phone split and the shared helpers all
- * still live in About.motion.ts, which every one of these imports from.
+ * The page's entrances are split one file per band. The shared schedule and
+ * helpers live in About.motion.ts.
  *
- * WHAT THIS BAND IS. One sentence, in 40px uppercase display type, with the
- * band's four arcs above it and a quiet goal line under it. The sentence is
- * the band: it is the only thing in it that carries an argument, and the
- * whole of the band's 722-unit min-height exists to give it a frame.
- *
- * THE ONE THING THIS BAND DOES THAT THE OTHERS DO NOT: the sentence FILLS AS
- * THE READER SCROLLS, word by word, and stays filled. That is a scroll-linked
- * scrub and not an entrance, so it is the only ScrollTrigger on this page
- * outside the landing hero's mark. Everything about why it is per-word, why
- * the words carry their own paint, and where the trigger starts and ends is
- * argued below, next to the thing it decides.
- *
- * NO LOOP. Nothing in this band is a thing doing its job over time -- a
- * sentence and four arcs are not that -- and the fill is not a loop either:
- * it runs once, in one direction, and the reader drives it.
+ * The band is one statement in uppercase display type at `--h2-size` (32px,
+ * 28px on a phone), with the four arcs above it and a quieter goal line
+ * below. After its entrance the band PINS and the scroll it absorbs fills the
+ * statement word by word; once full it stays full. This band is the page's
+ * only use of ScrollTrigger. No loop: the fill runs once, driven by the
+ * reader.
  */
 
 import { gsap } from 'gsap';
@@ -28,164 +17,89 @@ import { all, rise } from '../../lib/motion';
 import type { SectionMotion } from '../../lib/motion';
 import { schedule, outOfBlur } from './About.motion';
 
-// LogoScene.ts's pattern: named import from the plugin's own entry point, and
-// registered at module scope. Registering twice is a no-op in GSAP, so the two
-// call sites do not have to know about each other.
+// Registered at module scope, as in HeroLogo/LogoScene.ts. Registering twice
+// is a no-op in GSAP, so the two call sites need not know about each other.
 gsap.registerPlugin(ScrollTrigger);
 
-/* THE STATEMENT FILLS AS YOU SCROLL, AND THE GRAIN IS THE WORD.
- * ---------------------------------------------------------------------------
- * THE CHOREOGRAPHY IS THE CLIENT'S OWN, from `src/components/Manifesto.jsx` in
- * their portfolio, and the numbers below are theirs as written: the band pins,
- * the scroll it absorbs drives the fill, every word rests at 15% and brightens
- * to full in sequence with each word's fade overlapping its neighbour by half,
- * and the paragraph is FINISHED about three quarters of the way through and
- * holds at full while the band is still pinned. They are not re-tuned here.
- * One of them did not survive contact with this page and it is called out
- * where it is changed, with the measurement that forced it.
+/* THE STATEMENT FILLS AS YOU SCROLL, ONE WORD AT A TIME.
  *
- * THE PIN IS THE EFFECT. Without it the copy fills while travelling past the
- * reader, which is a different thing and is what the client rejected: the
- * band locks to the viewport, the paragraph fills IN PLACE, and the page moves
- * on only once it has been read.
+ * The timing values follow the reference animation the design was approved
+ * against and are not re-tuned here: the band pins, every word rests at 15%
+ * and brightens to full in sequence with each fade overlapping the next by
+ * half, and the fill finishes about three quarters of the way through the
+ * pin and holds while the band is still pinned. The pin is the effect: the
+ * paragraph fills in place rather than while travelling past the reader.
  *
- * Per LINE is the other defensible grain and it was rejected on a measurement.
- * Counted on the page, the statement wraps to 6 lines at 1600 and at 1100, 8
- * at 720, 18 at 390 and 21 at 360 -- so a per-line reveal is a six-step move
- * on a desktop and a twenty-one-step one on a phone, from one piece of copy,
- * and the reader who sees both sees two different animations. It is also the
- * coarsest thing the copy can be cut into: nothing happens until a whole
- * line's worth of scroll has been spent, and then a whole line of 40px display
- * type switches on at once, which is a block appearing and not a fill.
+ * Why the word: per line gives a different number of steps at every width
+ * (6 lines on a desktop, around 20 on a phone) and switches whole lines on at
+ * once; per character means ~250 composited spans for no visible gain. The
+ * word count is the same at every width.
  *
- * Per CHARACTER is the opposite failure: ~250 spans on a sentence set in 24 to
- * 40px uppercase, where the eye is reading the front of the wave and not the
- * letters inside it. It buys nothing over the word and costs six times the
- * elements, each of them composited.
+ * All words share one ink, so each word is a span with an opacity and nothing
+ * else. Note for future changes: in Chromium a descendant with its own paint
+ * layer (opacity, filter, transform) drops out of a parent's
+ * `background-clip: text`, so a gradient-clipped statement would need every
+ * word to repaint the gradient itself.
  *
- * The word is the only grain that is width-invariant. Forty words is forty
- * words at 1600 and at 360, so the reveal has the same texture on a phone as
- * on a desktop while the line count triples underneath it, and the wave
- * advances in the unit the reader is actually consuming. It is also the grain
- * the reference uses.
- *
- * WHY THE WORDS DO NOT CARRY THEIR OWN PAINT ANY MORE. They used to, and it
- * was the hard part of this band. `.ab-conv__statement` painted its type with
- * a gradient clipped to the text, and in Chromium a descendant that gets its
- * own paint layer -- anything with an opacity, a filter or a transform -- is
- * EXCLUDED from that text clip. Measured on this page: wrapping the words and
- * putting `opacity: 0.2` on every other one did not dim the gradient-painted
- * run, it DELETED it. So every word had to reproduce the block's gradient at
- * the block's scale, offset to its own position, re-measured on every refresh.
- *
- * The client asked for the gradient dropped and the fill taken to full white,
- * which is what their own reference does: every word rests dim and brightens
- * to the same ink. With one colour there is nothing per-word to reproduce, so
- * a word is now a span with an opacity on it and nothing else -- and the
- * anchoring pass, the two custom properties driving it and the font-load
- * re-measure that kept it true all went with the gradient. Plain opacity on a
- * plain span is exactly what the reference animates.
- *
- * WHY `intoLines` IS NOT USED, and why SplitText is not either: `intoLines`
- * rebuilds an element from its `textContent`, which throws away the
- * `<span class="ab-conv__rest">` that About.tsx writes into the sentence --
- * and SplitText would flatten it the same way, which is why
- * the reference can author its emphasis as an injected HTML string and we
- * cannot. `intoWords` below walks the tree instead, so the span -- and the two
- * colour regimes either side of it -- is still there afterwards.
+ * `intoLines` and SplitText both rebuild from `textContent` and would drop
+ * the `<span class="ab-conv__rest">` in the markup; `intoWords` walks the
+ * tree instead and keeps it.
  */
 
 const WORD = 'ab-conv__w';
 
-/* THE REFERENCE'S NUMBERS. Changing one of these changes the feel of the fill,
-   which is settled; they are here as named constants so that is obvious. */
+/* The fill's timing. Changing any of these changes the feel of the fill. */
 
-/** Where a word rests before the fill reaches it. Alpha over the band's own
- *  ground, so it is the same move on paper as on black and inverts nothing. */
+/** Where a word rests before the fill reaches it. Plain alpha, so it works
+ *  the same on either theme. */
 const DIM = 0.15;
-/** With a scrub the absolute values are irrelevant; `duration: 2` against
- *  `stagger: 1` just means each word's fade overlaps its neighbour by half --
- *  a soft wave rather than a hard word-by-word step. The reference's comment,
- *  and the half of the effect that is not the pin. */
+/** Under a scrub only the ratio matters: `duration: 2` against `stagger: 1`
+ *  overlaps each word's fade with its neighbour's by half, a soft wave rather
+ *  than a hard word-by-word step. */
 const WORD_IN = 2;
 const SPREAD = 1;
-/** The empty tween after the fill: the hold at full, while still pinned.
- *  Sized from the word count rather than written down, because the reference's
- *  20 is 20 for ITS word count -- their fill runs `1 x (words - 1) + 2` = 57
- *  units and 20 of those is the last quarter. Ours is 41 units for 40 words,
- *  so the same last quarter is 41/3. */
+/** The empty tween after the fill: the hold at full while still pinned.
+ *  Derived from the word count so the hold is always the last quarter of the
+ *  timeline (a third of the fill's length). */
 const holdFor = (words: number) => (SPREAD * (words - 1) + WORD_IN) / 3;
 
 /* THE TRIGGER'S GEOMETRY.
  *
- * `start` and `end` are the reference's: the band's top meets the top of the
- * screen, and the pin then absorbs 170% of a screen of scrolling. Stated
- * against the VIEWPORT rather than against anything inside the band, which is
- * what makes the pin immune to this band's one awkward property -- it is
- * `justify-content: center` in a 722-unit min-height and the statement's wrap
- * changes with width, so the eyebrow falls 110px below the band top at 1600,
- * 44 at 1100 and 24 at 390. Under a pin none of that reaches the trigger.
+ * The band's top meets the top of the screen, and the pin absorbs 170% of a
+ * screen of scrolling. Both are stated against the viewport, so the band's
+ * centred content and width-dependent wrap never reach the trigger.
  *
- * THE ONE NUMBER THAT DID NOT SURVIVE CONTACT, and only at one width. Their
- * section is `100svh`, so `top top` always shows the whole of it. Ours is not
- * viewport-height: measured, the band is 668px tall in a 900 viewport at 1600,
- * 430 in 900 at 720 and 727 in 844 at 390 -- all comfortably inside -- but 813
- * in a 780 viewport at 360. Pinned at `top top` the bottom 33px of it are
- * below the fold for the whole 170%, and the inner's bottom padding at that
- * width is 24px, so 9px of the goal line is cut off and STAYS cut off while
- * the reader is held there.
- *
- * `bottom bottom` where the band is taller than the screen moves that 33px to
- * the TOP of the band, where it is the band's own `--ab-gap` padding -- 56px
- * of empty space at 360 -- so nothing that is drawn is lost. At every width
- * where the band fits, the two are the same pin and this reads exactly as the
- * reference's `top top`.
- *
- * THE OTHER CONSEQUENCE OF NOT BEING 100vh, which is left alone because the
- * measurement says it costs nothing. Where the band is SHORTER than the screen
- * -- 669 in 900 at 1600 -- the strip below it is not part of the pinned
- * element, so the next band climbs into the bottom of the frame over the last
- * stretch of the pin. Measured at 1600 x 900: the pin runs 1340 to 2870, the
- * statement is full at 2552 (79% of it) and the first pixel of HOW IT WORKS
- * appears at 2638 (85%). The paragraph is finished before anything else is on
- * screen, which is what the hold quarter is for, so the fill is never competing
- * with it. Closing the strip would mean either cutting the reference's 170% or
- * giving the band a viewport height, and the second is a layout decision in
- * About.css rather than a motion one. */
+ * About.css makes the band at least a screen tall, so at most widths it fits
+ * and `top top` shows all of it. Where the statement wraps taller than the
+ * screen (around 360px wide) `top top` would leave the goal line below the
+ * fold for the whole pin, so `bottom bottom` is used instead; the overflow
+ * then falls on the band's top padding.
+ */
 const START_FITS = 'top top';
 const START_TALL = 'bottom bottom';
 const END = '+=170%';
 const SCRUB = 1;
 
-/** How far past the end counts as "read it". A float comparison at the end of
- *  a scrub does not reliably land on exactly 1: measured over ten runs of the
- *  width sweep, an exact `=== 1` missed three times -- every word above 0.995
- *  at a progress of 0.9997 -- and the trigger stayed alive, so scrolling back
- *  up emptied the sentence again. */
+/** How far past the end counts as "read it". A scrub does not reliably land
+ *  on exactly 1 (0.9997 is common), and a missed latch leaves the trigger
+ *  alive, so scrolling back up would empty the sentence again. */
 const LATCH_AT = 0.999;
-/** How long the latch waits between samples of the scroll position, and how
- *  many times it will wait. Two samples the same is what "the reader chose
- *  this position" means, so a reader who scrolls past and stops latches after
- *  about 0.4s; three seconds of a position that will not stop moving is given
- *  up on rather than spun on, because the next scroll calls the latch again. */
+/** How long the latch waits between scroll samples, and how many times.
+ *  Two equal samples mean the reader chose this position (about 0.4s after
+ *  stopping). After three seconds of movement it gives up; the next scroll
+ *  calls the latch again. */
 const SETTLE = 0.2;
 const SETTLE_TRIES = 15;
-/** How long scroll anchoring stays off around the pin's creation. Two frames
- *  at 60fps is 0.033; a tenth of a second is that with room for a slow one. */
+/** How long scroll anchoring stays off around the pin's creation: two frames
+ *  at 60fps with room for a slow one. */
 const ANCHOR_OFF = 0.1;
 
 /**
- * Split a statement into per-word spans WITHOUT flattening it.
+ * Split a statement into per-word spans WITHOUT flattening its markup.
  *
- * Idempotent, like `intoLines`: called again on an element it has already
- * split it hands back the spans that are there. It has to be, because
- * `gsap.context().revert()` on unmount undoes inline styles and not DOM, so a
- * band that mounts, unmounts and mounts again under the client-side router
- * meets its own spans on the way back in.
- *
- * Every word is the same ink now, so the walk no longer has to know where
- * `.ab-conv__rest` starts -- it used to mark the boundary between a
- * gradient-painted run and a muted one.
+ * Idempotent, like `intoLines`: `gsap.context().revert()` undoes inline
+ * styles but not DOM, so a band that remounts under the client-side router
+ * meets its own spans again and gets them back.
  */
 function intoWords(p: HTMLElement): HTMLElement[] {
   if (p.dataset.words) return all(p, `.${WORD}`);
@@ -223,25 +137,13 @@ function intoWords(p: HTMLElement): HTMLElement[] {
 
 /**
  * 0.00  The band names itself.
- * 0.24  THE STATEMENT, out of the deepest blur on the page and travelling
- *       furthest. It is the only thing in the band and it is the band. It
- *       arrives at 15% -- present, legible as a shape, not yet read.
- * 1.10  The goal line, quieter and shallower, after the statement has settled.
+ * 0.24  THE STATEMENT, as one block, out of the deepest blur on the page. Its
+ *       words are already at 15%: present, not yet read.
+ * 1.10  The goal line, quieter, after the statement has settled.
  *
- * ...and then the band PINS, and the scroll it absorbs fills the statement
- * word by word, in place, and holds it full for the last quarter before the
- * page is allowed to move on.
- *
- * The fill is not a second arrival. The band's one arrival is still the
- * statement's, on the timeline above, and the two cannot overlap: the entrance
- * fires as the band crosses the shared -5% gate, which is most of a screen of
- * scrolling before its top reaches the top of the screen and the pin engages.
- * Nothing else in the band moves while the fill runs, and it only runs while
- * the reader is the one moving.
- *
- * The statement is animated AS ONE BLOCK for the entrance -- the travel, the
- * blur and the fade are on the <p>, unchanged -- and only the fill reaches
- * inside it.
+ * Then the band pins and the scroll fills the statement word by word, holding
+ * it full for the last quarter. The entrance fires at the shared -5% gate,
+ * most of a screen before the pin engages, so the two never overlap.
  */
 export function buildConviction({ el, q, tl }: SectionMotion) {
   const { cue } = schedule();
@@ -255,19 +157,12 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
   const words = intoWords(statement);
   if (!words.length) return;
 
-  /* The reference's tween, and then its empty tween -- the hold at full while
-   * the band is still pinned.
+  /* The fill, then the empty hold tween.
    *
-   * `fromTo` and not `from`, per the house rule, and per the reference. The
-   * `gsap.set` in front of it is this page's own and is NOT redundant: a
-   * staggered tween whose later targets have not started yet can be left with
-   * no inline value at all until their turn comes round, and a word of this
-   * statement with no inline opacity computes to 1, not to DIM. Measured on an
-   * earlier build of this band with an object stagger: the sentence read fully
-   * lit from the moment it arrived and what travelled through it on scroll was
-   * a wave of words DIMMING and coming back, the exact inverse of the move.
-   * One `set` costs nothing and makes the resting state true of every word
-   * from the first painted frame. */
+   * The `gsap.set` is NOT redundant: in a staggered tween, words whose turn
+   * has not come may have no inline value yet, and a word with no inline
+   * opacity computes to 1, not DIM. Without it the sentence reads fully lit
+   * on arrival and the scroll sends a wave of dimming through it. */
   const fill = gsap.timeline({ paused: true });
   gsap.set(words, { opacity: DIM });
   fill
@@ -276,55 +171,34 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
       { opacity: 1, ease: 'none', duration: WORD_IN, stagger: SPREAD })
     .to({}, { duration: holdFor(words.length), ease: 'none' });
 
-  /* THE PIN AND THE FILL ARE TWO TRIGGERS ON THE SAME GEOMETRY, and that is
-   * this page's decision rather than the reference's shape.
+  /* THE PIN AND THE FILL ARE TWO TRIGGERS ON THE SAME GEOMETRY.
    *
-   * The reference carries both on one trigger because it has nothing that
-   * needs to retire the fill. We do: this band's brief is that the statement
-   * HOLDS at full once it has been read, including on the way back up, which
-   * the reference's scrub does not do -- scroll back into its pinned section
-   * and the paragraph un-fills. The only way to stop a scrub reversing is to
-   * kill the trigger driving it, and killing a PINNED trigger removes its
-   * spacer: the document would lose 170% of a screen under the reader's
-   * thumb, mid-scroll, which is a page jump and not a hold.
-   *
-   * So the pin is its own trigger and is never killed, and the fill is its
-   * own and is killed by the latch. Same trigger element, same start, same
-   * end, so they pin and scrub over exactly the same stretch.
+   * Design decision: once read, the statement stays full, including on the
+   * way back up. The only way to stop a scrub reversing is to kill its
+   * trigger, and killing a PINNED trigger removes its spacer, which would
+   * drop 170% of a screen out of the document mid-scroll. So the pin is its
+   * own trigger and is never killed; the fill is separate and the latch
+   * kills it. Same element, start and end, so they cover the same stretch.
    */
-  // A pixel of tolerance, because the band is now sized to be exactly a screen
-  // and "exactly" is a subpixel question: `100svh` resolving to 900.4 against
-  // an `innerHeight` of 900 would otherwise flip a band that fits into the
-  // branch for one that does not, over nothing a reader could see.
+  // A pixel of tolerance: the band is sized to be exactly a screen, and a
+  // subpixel difference (`100svh` at 900.4 against an `innerHeight` of 900)
+  // must not flip a band that fits into the tall branch.
   const start = () => (el.offsetHeight > window.innerHeight + 1 ? START_TALL : START_FITS);
 
-  /* SCROLL ANCHORING MUST NOT COMPENSATE FOR THE SPACER, and it is switched
-   * off for the two frames that takes and no longer.
+  /* SCROLL ANCHORING IS SWITCHED OFF WHILE THE PIN IS CREATED.
    *
-   * Creating the pin inserts ScrollTrigger's spacer, which grows the document
-   * by the pin distance -- measured, 4704 to 6234 at 1600 x 900, which is
-   * 1530 and is 170% of the viewport. If the reader is ALREADY inside what is
-   * about to become the pinned range, every browser with scroll anchoring
-   * moves them by exactly that amount to keep what is under their eye where
-   * it was. Measured: ask for 1731, land at 3261, which is past the whole
-   * band -- so the reader who jumped into the middle of the statement is put
-   * out the other side of it and never sees the reveal at all. It is not a
-   * rare path: a fast flick, a back-navigation, a restored scroll position and
-   * a link into the middle of the page all arrive that way.
+   * The pin is inserted lazily, when the band builds. Its spacer grows the
+   * document by the pin distance (170% of the viewport), and if the reader
+   * is already inside what becomes the pinned range, Chromium's scroll
+   * anchoring moves them by that same amount to keep the content under their
+   * eye in place. That relocates them past the whole band, so they never see
+   * the fill. It happens on fast flicks, back navigation, restored scroll
+   * positions and in-page links.
    *
-   * Disabling anchoring for the insertion is the whole fix -- measured drift
-   * goes from 1530 to 0 at every fraction of the pin -- and doing it for two
-   * frames rather than for the life of the page is what keeps the cost at
-   * nothing: anchoring is back on before anything else could need it.
-   *
-   * Narrower scopes do not work, and that was measured rather than assumed:
-   * `overflow-anchor: none` on the spacer alone, or on the band alone, still
-   * drifts 1530, because the node the browser anchors to is neither of them.
-   * It has to be the scrolling element.
-   *
-   * `gsap.set` rather than touching `style` directly, so that both the switch
-   * and its removal belong to the surrounding `gsap.context` and cannot be
-   * stranded by an unmount landing between them. */
+   * `overflow-anchor: none` on the root for about two frames stops it; it has
+   * to be the scrolling element, as the spacer or band alone still drift.
+   * `gsap.set` keeps both the switch and its removal inside the surrounding
+   * `gsap.context`, so an unmount cannot strand it. */
   gsap.set(document.documentElement, { overflowAnchor: 'none' });
   gsap.delayedCall(ANCHOR_OFF, () => {
     gsap.set(document.documentElement, { clearProps: 'overflowAnchor' });
@@ -337,87 +211,34 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
     pin: el,
     anticipatePin: 1,
     invalidateOnRefresh: true,
-    /* REFRESH ORDER, and why this is not the reference's 2.
-     *
-     * Pins change document height, so they have to be measured top-down or a
-     * pin inserted above another one leaves every position the lower one
-     * computed stale. Theirs is 2 because their pinned section comes FIRST and
-     * has a second pin below it to beat.
-     *
-     * Ours is the fourth of six bands and, measured, the only ScrollTrigger on
-     * this page at all -- the landing hero's mark is the only other one in the
-     * app and it lives on the other route. So there is nothing above this to
-     * be ordered against and the reference's number has no counterpart here.
-     * What 1 buys is local and real: it puts the pin ahead of the fill trigger
-     * below, which reads the same start and end, and it leaves 2 and up free
-     * for a band EARLIER in the document if this page ever gains a second pin.
-     * A pin added above this one must take a higher number than this. */
+    /* REFRESH ORDER. Pins change document height, so they are refreshed top
+     * down. This is currently the page's only pin; 1 puts it ahead of the
+     * fill trigger below, which shares its start and end. A pin added above
+     * this band must take a higher number. */
     refreshPriority: 1,
   });
 
-  /* ONCE FULL, IT STAYS FULL -- BUT ONLY FROM A SCROLL POSITION THE READER
-   * ACTUALLY CHOSE, and that qualification is the whole of this block.
+  /* ONCE FULL, IT STAYS FULL, BUT ONLY FROM A SCROLL POSITION THE READER
+   * CHOSE.
    *
-   * THE DEFECT IT FIXES, because it was intermittent and it looked exactly
-   * like "the effect does not run". When the band builds, ScrollTrigger
-   * inserts the pin's spacer and the document grows by the pin distance --
-   * measured here, 4704 to 6234, which is 1530 and is 170% of a 900 viewport.
-   * If that happens while the reader is already below the band's top, the
-   * browser moves the scroll position by the same amount to keep what is
-   * under their eye where it was. ScrollTrigger's next update samples THAT
-   * position: measured, scrollY 3699 against a trigger ending at 2878, so it
-   * reports a progress of 1. The latch believed it, killed the fill and forced
-   * the statement to full -- at 25% of the pin, before the reader had scrolled
-   * a pixel of it. The scroll then settled back to 1731 and the fill trigger
-   * was already gone, so the sentence sat fully lit and the reveal never
-   * happened. One run in ten of the instant-arrival sweep, and in the wild it
-   * fires whenever the band builds with the reader already inside what is
-   * about to become the pinned range: a fast flick, a back-navigation, a
-   * restored scroll position, a link into the middle of the page.
+   * When the pin's spacer is inserted with the reader already inside the
+   * range, the browser's scroll adjustment can briefly report a position past
+   * the trigger's end. `scroll-behavior: smooth` on `html` (global.css) turns
+   * that adjustment into an animated excursion lasting a couple of seconds,
+   * so an immediate latch would kill the fill before the reader had scrolled
+   * any of it. GSAP advises against smooth scrolling with ScrollTrigger, but
+   * that rule is global, so the latch is built to survive it.
    *
-   * WHAT MAKES IT LAST LONG ENOUGH TO MATTER is `scroll-behavior: smooth` on
-   * `html` in global.css. Measured both ways: with it, the adjustment becomes
-   * an ANIMATED excursion -- scrollY runs out to 3699 and takes about two
-   * seconds to come back to 1731, so for most of that time every sample says
-   * "past the end". With `scroll-behavior: auto` the document still grows but
-   * the scroll does not move at all: peak scrollY equals the target, and there
-   * is no excursion to misread. GSAP warns against smooth scrolling with
-   * ScrollTrigger and this is why; it is a global rule and not this band's to
-   * change, so the latch is built to survive it.
+   * So the latch samples the scroll position 0.2s apart and acts only when two
+   * samples agree AND the caller's condition still holds. During the
+   * excursion the position keeps moving, so it waits, and when it settles
+   * back inside the pin the condition fails and nothing happens.
    *
-   * THE FIX IS NOT A LONGER WAIT, because two seconds is not a number worth
-   * guessing at and the excursion's length is the browser's business. It is
-   * to ask what "a position the reader chose" actually means, and the answer
-   * is: a position that has STOPPED MOVING. So the latch samples the scroll
-   * twice, 0.2s apart, and only acts when the two agree and the reason it was
-   * called still holds. Through the excursion the scroll moves every frame, so
-   * it keeps waiting; when it settles back at 1731 the progress is no longer
-   * past the end and it simply declines. A reader who scrolls past and stops
-   * satisfies it in about 0.4s.
-   *
-   * Nothing is wrong on screen during the wait -- the scrub goes on doing its
-   * job and self-corrects when the position settles, which is why the fill was
-   * right in every run where the latch did not fire.
-   *
-   * Each caller hands in the condition that justified it, so the re-check is
-   * the same question and not a proxy for it.
-   *
-   * `gsap.delayedCall` and not `setTimeout`: the delayed call is owned by the
-   * surrounding `gsap.context` and is reverted with everything else when the
-   * band unmounts. A bare timeout would outlive the band under the router,
-   * and would then be holding a killed trigger.
-   *
-   * The finishing tween rather than a bare `progress(1)` is for the smoothing:
-   * at the moment the end is crossed the scrub can still be behind, and
-   * snapping the remainder on would be the one visible discontinuity in the
-   * move. With the reference's hold quarter in front of it there is normally
-   * nothing left to finish.
-   *
-   * `latch` takes the trigger from its own callback rather than closing over
-   * the variable holding it, because the first `onRefresh` fires from INSIDE
-   * `ScrollTrigger.create`, before that variable has been assigned. Closing
-   * over it would be a temporal-dead-zone throw on the one path that matters
-   * most: a band built when the reader is already past it. */
+   * `gsap.delayedCall`, not `setTimeout`, so the wait is reverted with the
+   * band's context on unmount. The finishing tween (rather than a bare
+   * `progress(1)`) avoids a visible snap if the scrub is still catching up.
+   * `latch` takes the trigger as an argument because the first `onRefresh`
+   * fires inside `ScrollTrigger.create`, before `fillST` is assigned. */
   let latched = false;
   let watching: gsap.core.Tween | null = null;
 
@@ -433,9 +254,8 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
       if (!stillTrue()) return;
       const y = self.scroll();
       if (y !== lastY) {
-        // Still moving, so this is not a position anybody has chosen yet.
-        // Wait for it to stop -- but not forever: give up rather than spin,
-        // because the next scroll will call this again anyway.
+        // Still moving. Wait for it to stop, but not forever: the next
+        // scroll will call this again anyway.
         if (tries >= SETTLE_TRIES) return;
         lastY = y;
         tries += 1;
@@ -443,12 +263,9 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
         return;
       }
       latched = true;
-      // `kill(revert, allowAnimation)`, and the second argument is load-
-      // bearing: left off, ScrollTrigger kills the timeline it was driving as
-      // well, and the finishing tween below would be pushing progress into
-      // something already dead. Only the FILL's trigger is killed -- the pin's
-      // is untouched, because killing a pinned trigger removes its spacer and
-      // the document would lose 170% of a screen under the reader's thumb.
+      // `kill(revert, allowAnimation)`: without the second argument the
+      // timeline dies too and the finishing tween below has nothing to drive.
+      // Only the fill's trigger is killed; the pin's must survive (see above).
       self.kill(false, true);
       gsap.to(fill, { progress: 1, duration: 0.25, ease: 'none', overwrite: true });
     };
@@ -471,15 +288,9 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
         latch(self, () => self.end > ScrollTrigger.maxScroll(self.scroller as Window));
       }
     },
-    /* TWO WAYS IN, because one of them is not reliable on its own. `onUpdate`
-     * with an exact `progress === 1` is a float comparison at the end of a
-     * scrub, and measured over ten runs of the width sweep it missed three
-     * times -- the sentence read as full (every word above 0.995 at a progress
-     * of 0.9997) while the trigger was still alive, so scrolling back up
-     * emptied it again. `onLeave` is the event for "the scroll has passed the
-     * end" and does not depend on a number landing exactly; the epsilon on
-     * `onUpdate` catches the case where the reader stops ON the end and never
-     * leaves. `latch` is idempotent, so both firing is free. */
+    /* TWO WAYS IN. `onLeave` covers scrolling past the end; the epsilon on
+     * `onUpdate` covers a reader who stops ON the end and never leaves.
+     * `latch` is idempotent, so both firing is harmless. */
     onUpdate: (self) => { if (self.progress >= LATCH_AT) latch(self, atEnd(self)); },
     onLeave: (self) => latch(self, atEnd(self)),
   });

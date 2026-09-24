@@ -14,9 +14,13 @@
     "landmask": "node scripts/generate-land-mask.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/archivo-narrow": "^5.3.0",
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/onest": "^5.3.1",
     "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "@fontsource-variable/syne": "^5.3.0",
     "gsap": "^3.15.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

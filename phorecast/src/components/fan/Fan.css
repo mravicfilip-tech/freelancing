@@ -17,7 +17,7 @@
      transparent head, #f03725 at the middle, a transparent tail. Only the
      middle one is ever visible; the other two carry stop-opacity="0" and exist
      to fade it out at both ends. Driven from CSS rather than from a per-theme
-     copy of the raw string — see `inlineArcs` in Fan.tsx. */
+     copy of the raw string; see `inlineArcs` in Fan.tsx. */
   --fan-arc: #f03725;
   --fan-arc-in: #f9f0e8;
   --fan-arc-out: #d5d2d0;
@@ -225,7 +225,7 @@
 @media (max-width: 900px) {
   .fan__frame {
     --fan-dw: 1440;
-    /* Height is the content's now, not a slab cut to a fixed ratio. */
+    /* Height follows the content rather than a fixed ratio. */
     aspect-ratio: auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr);

@@ -288,14 +288,6 @@
   background: var(--mk-plate);
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-51);
 }
-/* The sport mark's 20 box. Its three pieces are placed by percentage insets of
-   this box, exactly as Fan.css places them in the fan band's 16 one, and are
-   masks rather than images so the grey the files bake does not reach the plate:
-   --mk-tip-ink is the card's one ink that stays dark in both themes, which is
-   what a mark on a plate that does not flip needs. See BoxMarkets.tsx. */
-.box-markets .mk__sport { display: block; color: var(--mk-tip-ink); }
-.box-markets .mk__sport .icon { position: absolute; }
-
 /* 365:1141 — Figma object-covers the raster mark */
 .box-markets .mk__cover { object-fit: cover; }
 /* 365:1121 — the currency-pair window */
@@ -607,11 +599,6 @@
   .box-markets .mk__tile--apple { --mx: 330; --my: 362; }
   .box-markets .mk__tile--dax { --mx: 303; --my: 444; }
   .box-markets .mk__tile--sp500 { --mx: 200; --my: 467; }
-  /* No 526:* node either; see BoxMarkets.tsx. The phone keeps only the light
-     plates, so this one survives the crop and has to be given a place like the
-     eight above: the gap on the right between gold at (232, 159) and apple at
-     (330, 362), which is the largest clear patch the phone field has. */
-  .box-markets .mk__tile--sport { --mx: 300; --my: 150; }
 
   /* 526:1055 / 526:1058 — the pointer and its label. Figma insets the arrow
      7.55% inside its 20 box, which is folded in as it is on desktop. */

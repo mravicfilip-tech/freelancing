@@ -60,9 +60,7 @@
  *   `funds-glow.png` is drawn decor that came out of the frame, and it is not a
  *   licence to add light in script. The landing is carried by the ring closing
  *   and the disc's single pulse instead, which are both transforms. The two
- *   tokens it read, `--bento-fd-flare` and `--bento-fd-flare-0`, now have no
- *   reader anywhere in the app; they are declared in Bento.css, which this
- *   change does not own.
+ *   tokens it read, `--bento-fd-flare` and `--bento-fd-flare-0`, went with it.
  *
  * Distances are written as percentages of each element's own box, never pixels,
  * so one build of the timeline is correct at every breakpoint — see `pct` in

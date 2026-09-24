@@ -21,14 +21,12 @@
   --bento-onb-flare-0: 0 0 0px rgba(255, 251, 248, 0);
 
   /* Card B: the wallet ring closing, the packet's wire and its head, the
-     brightening of a market chip, the lit chip stroke, the wallet flare. */
+     brightening of a market chip, the lit chip stroke. */
   --bento-fd-ring: #ff632a;
   --bento-fd-wire: #f26246;
   --bento-fd-head: #ff8a5c;
   --bento-fd-tile-lit: brightness(1.7);
   --bento-fd-chip-lit: rgba(255, 138, 92, 0.75);
-  --bento-fd-flare: 0 0 12px rgba(255, 251, 248, 0.9);
-  --bento-fd-flare-0: 0 0 0px rgba(255, 251, 248, 0);
 
   /* Card C: the dot riding the drawing edge, the pill stroke as the money
      lands, the marker's bloom. */
@@ -200,7 +198,6 @@
    Markets cards used to scale their titles with their artwork (`--u`), which
    put them at 18.85px against the other two cards' 24 at 1440. */
 .bcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--h3-leading); color: var(--ink); }
-.bcard__title--dark { color: var(--mk-ink); }
 /* The site's paragraph setting, from tokens.css: Inter Tight 300, a flat
    18px at every width, 120% leading as a unitless ratio, and the font's own
    tracking. All four card bodies read
@@ -219,7 +216,7 @@
 /* The copy on card A, which is a red plate in both themes: --on-accent, not
    --ink. --ink would take it to #1a1512 on #ff632a on paper. */
 .bcard__body--light { color: var(--on-accent); }
-.bento__cta, .bcard__cta {
+.bento__cta {
   position: relative;
   z-index: 1;
   display: inline-flex;
@@ -239,7 +236,6 @@
 .bento__cta img { width: 12px; height: 6px; }
 .bento__cta--white { color: var(--on-accent); }   /* card A's link, on red */
 .bento__cta--orange { color: var(--accent); }
-.bento__cta--orange-light { color: var(--accent-lift); }
 
 /* Card A ------------------------------------------------------------------ */
 /* 534 x 387 in Figma. The card grows to whatever the left column comes to --
@@ -311,7 +307,6 @@
 }
 @media (max-width: 1100px) {
   .bento__col { grid-template-columns: 1fr; }
-  .bcard { --k: calc(100cqw / 474); }
   .mk__field, .mk__orbits, .mk__grid { transform-origin: top left; }
   .bcard--markets .mk__field { transform: scale(0.85); }
 }
@@ -487,11 +482,6 @@
      across -- would have given 2.55x: a beat measurably weaker on paper while
      passing every check there is. */
   --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
-  /* A glow around ink on paper is a smudge unless it is warm and tight; this
-     is the same 12px radius reading as a bloom under the word rather than
-     around it. */
-  --bento-fd-flare: 0 0 12px rgba(126, 2, 2, 0.5);
-  --bento-fd-flare-0: 0 0 0px rgba(126, 2, 2, 0);
 
   /* Card C. The dot riding the drawing edge is the one thing on the card that
      must read at 560px of travel, so it goes to the deepest value in the
@@ -592,11 +582,6 @@
      across -- would have given 2.55x: a beat measurably weaker on paper while
      passing every check there is. */
   --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
-  /* A glow around ink on paper is a smudge unless it is warm and tight; this
-     is the same 12px radius reading as a bloom under the word rather than
-     around it. */
-  --bento-fd-flare: 0 0 12px rgba(126, 2, 2, 0.5);
-  --bento-fd-flare-0: 0 0 0px rgba(126, 2, 2, 0);
 
   /* Card C. The dot riding the drawing edge is the one thing on the card that
      must read at 560px of travel, so it goes to the deepest value in the

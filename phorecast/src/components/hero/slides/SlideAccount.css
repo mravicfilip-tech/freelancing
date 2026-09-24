@@ -80,8 +80,8 @@
      together when the screenshot is re-tinted and nowhere else. */
   --sl2-lakers: #ffad00;          /* the club's own gold, behind its crest */
   --sl2-pill-bg: #1d1c1b;         /* the "One Account" pill's plate */
-  /* The toast is glass: 13% white is this file's own step, between --veil and
-     --veil-strong, so it is named here rather than forced onto either. */
+  /* The toast is glass: 13% white is this file's own step, above --veil, so
+     it is named here rather than forced onto it. */
   --sl2-toast-bg: rgba(255, 255, 255, 0.13);
   /* The two 48px icon tiles. A deep brand plate in both themes -- the white
      pie and bolt inside them are --on-accent by another name. */

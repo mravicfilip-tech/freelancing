@@ -86,7 +86,6 @@
      same job is done by settling, i.e. ink-alpha rather than white-alpha. */
   --veil: var(--glass);
   --veil-line: var(--glass-border);
-  --veil-strong: rgba(255, 255, 255, 0.28);
 
   /* Artwork ink: literal white INSIDE a dark illustration (a phone screen, a
      device panel). Whether it flips is a per-illustration decision, so it is
@@ -106,7 +105,7 @@
      a subtitle. It was Geist Mono; the client has ruled Geist Mono out, and
      this token is now Galano Grotesque per the Figma inspector (500 / 120% /
      uppercase). It is NOT called --font-mono any more because nothing
-     monospaced is left in it; --font-mono survives below as an alias only.
+     monospaced is left in it.
 
      THE FILES ARE NOT SHIPPED YET (see styles/fonts.css). Everything after the
      first name is therefore what actually renders today, and will still be
@@ -153,12 +152,6 @@
     'Liberation Sans', 'DejaVu Sans',
     system-ui, sans-serif;
 
-  /* Deprecated alias. src/components/Nav.css and src/components/about/About.css
-     still say var(--font-mono) at six call sites; they are owned by another
-     branch in flight and could not be rewritten here without a collision. This
-     keeps them rendering the right face through the cascade. Retire it, and
-     this line, once those six are moved to --font-label. */
-  --font-mono: var(--font-label);
   --font-display: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
   --font-body: 'Inter Tight Variable', 'Inter Tight', system-ui, sans-serif;
   --font-wordmark: 'Darker Grotesque Variable', 'Darker Grotesque', sans-serif;
@@ -233,11 +226,6 @@
      `pre` starts wrapping. */
   --heading-wrap: balance;
   --body-wrap: pretty;
-
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
 
   --page-pad: clamp(20px, 5vw, 96px);       /* 96px at 1920 */
   --content-max: 1440px;                    /* Figma's content column */
@@ -315,7 +303,6 @@
      ink on paper is less visible per unit alpha than white on black. */
   --veil: rgba(26, 21, 18, 0.045);
   --veil-line: rgba(26, 21, 18, 0.14);
-  --veil-strong: rgba(26, 21, 18, 0.32);
 
   /* --art-ink does NOT flip. It is white inside a dark illustration, and
      whether a given illustration re-tints for light is that section's
@@ -373,7 +360,6 @@
      ink on paper is less visible per unit alpha than white on black. */
   --veil: rgba(26, 21, 18, 0.045);
   --veil-line: rgba(26, 21, 18, 0.14);
-  --veil-strong: rgba(26, 21, 18, 0.32);
 
   /* --art-ink does NOT flip. It is white inside a dark illustration, and
      whether a given illustration re-tints for light is that section's

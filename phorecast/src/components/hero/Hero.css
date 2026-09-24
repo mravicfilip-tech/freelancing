@@ -378,19 +378,6 @@
 .hero__bg--future .hero__glow--peach  { left: calc(264 * var(--u)); }
 .hero__bg--future .hero__glow--cream  { left: calc(564 * var(--u)); }
 
-/* Slide 3 visual: stack diagram (784 × 571 at 855,175) */
-.hero__stack {
-  --s: 1;
-  position: absolute;
-  left: calc(795 * var(--u));
-  top: calc(-76 * var(--u));
-  transform: scale(var(--s));
-  transform-origin: top left;
-}
-
-@media (max-width: 1500px) {
-  .hero__stack { --s: 0.85; left: 10%; }
-}
 @media (max-width: 1180px) {
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
   .hero__lede { max-width: 508px; }
@@ -409,7 +396,6 @@
      instead of being dealt into the middle of every slide. */
   .hero__slide { align-content: start; }
   .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
-  .hero__stack { --s: 0.7; position: relative; left: 0; height: calc(571px * var(--s)); }
 }
 @media (max-width: 720px) {
   /* 20, not 24, because on a phone this is the SAME BAR the menu sheet
@@ -497,7 +483,6 @@
   .hero__slide { gap: 20px; }
   .hero__visual { margin-top: 0; }
   .hero__position { margin-top: 24px; }
-  .hero__stack { --s: 0.45; margin-left: -10px; }
 
   /* The floor under the pager. 32px is the phone's own, the one the market
      snapshot band closed on when it was carried here on every slide; the band

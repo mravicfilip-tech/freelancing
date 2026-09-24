@@ -253,7 +253,7 @@
   position: absolute;
   inset: 0 0 0 0;
   /* It spans the whole slide and paints over the copy, so without this it
-     swallows every click meant for the Get Started button underneath. The
+     swallows every click meant for the slide's button underneath. The
      illustrations are decorative and nothing in them is interactive. */
   pointer-events: none;
   transform: translateY(18px) scale(0.985);

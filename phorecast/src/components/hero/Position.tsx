@@ -21,10 +21,9 @@ const clamp = (n: number, a: number, z: number) => Math.min(z, Math.max(a, n));
  * The hero's slider control: prev and next either side of a segmented track
  * that fills as the autoplay interval runs down.
  *
- * It replaced an "01 / 04" counter over a row of four dashes. The digits said
- * nothing the four segments do not, and nothing in the old control showed that
- * the hero advances by itself every seven seconds -- so the carousel looked
- * like it changed on its own. The fill is the whole point of the redesign.
+ * The fill is the point of the control: it shows that the hero advances by
+ * itself every seven seconds, so the carousel does not appear to change at
+ * random.
  *
  * The track is draggable as well as clickable, and commits on release rather
  * than while the pointer moves: following the drag live would replay the slide
@@ -59,8 +58,8 @@ export function Position({ index, count, onSelect, periodMs, paused, cycleKey, l
     };
     if (REDUCED) { paint(1); return; }
 
-    // Paint only when the number moves. Held -- hovered, or the hero scrolled
-    // away -- the elapsed time is a constant, and writing the same four
+    // Paint only when the number moves. Held (for example with the hero
+    // scrolled away) the elapsed time is a constant, and writing the same four
     // transforms every frame is a style recalculation a frame for a bar that
     // is not moving and may not even be on screen.
     let last = -1;

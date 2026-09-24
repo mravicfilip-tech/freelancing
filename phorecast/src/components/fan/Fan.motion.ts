@@ -1,74 +1,43 @@
-/* "Your Funds Stay in Your Control" — the band's load-in.
+/* "Where Every Outcome Connects." The band's load-in.
  *
- * 02 TRACE, chosen from the five in `fan-loadin-lab.html`:
- *
- *   "Nothing slides; the lines are drawn. A bright head runs the length of each
- *    arc and leaves the line behind it, one mirrored pair at a time, so you can
- *    follow the order. The tile ignites on the last pair."
- *
- * Nothing in this band translates. The sixteen arcs are already in their final
- * places from the first frame; what arrives is the ink. A short bright dash
+ * Nothing slides; the lines are drawn. The sixteen arcs are in their final
+ * places from the first frame and what arrives is the ink: a short bright dash
  * enters from the outer edge of each fan, runs inward along the line, and the
- * stroke exists behind it. The two fans are mirrors, so a pair fires together
- * and the pairs are spaced far enough apart to be counted: EIGHT BEATS, one per
- * depth per half, upper then lower.
+ * stroke exists behind it. The fans are mirrors, so a pair fires together, and
+ * the pairs are spaced to be countable: EIGHT BEATS, one per depth per half,
+ * upper then lower. The tile ignites on the last pair.
  *
  * THE SEQUENCE (2.4s end to end)
- *   0.00  THE HEADING, and the sub-line 0.12s behind it, resolving out of a
- *         14px blur. It opens the band rather than closing it: the arcs are
- *         what the section is made of, but the sentence is what it says, and a
- *         reader who has just arrived should not have to wait two seconds for
- *         a line of type. The rest of the sequence is unchanged around it.
- *   0.00  Beat 1. The innermost pair of the upper halves is drawn, left and
- *         right together, 0.8s of travel each.
- *   0.17  Beat 2, the lower halves at the same depth. Then a beat every 0.17s
- *         through all four depths — beats 3 to 8 at 0.34 … 1.19.
- *   0.42  The twelve diamonds, outermost first, 0.07s apart: they are on the
- *         path the heads are running, so they light in the order it reaches
- *         them.
- *   1.24  The six category pills, also outermost first, ending with the last
- *         pair of arcs.
+ *   0.00  The heading, and the sub-line 0.12s behind it, out of a 14px blur.
+ *         The copy opens the band so a reader is not kept waiting for type.
+ *   0.00  Beat 1: the innermost upper pair, left and right, 0.8s of travel.
+ *   0.17  Beat 2: the lower pair at the same depth. Then a beat every 0.17s,
+ *         beats 3 to 8 at 0.34 to 1.19.
+ *   0.42  The twelve diamonds, outermost first, 0.07s apart, in the order the
+ *         heads reach them.
+ *   1.24  The six category pills, outermost first, ending with the last pair.
+ *   1.64  THE TILE IGNITES as the last pair lands: a brightness flash falling
+ *         back to rest over 0.75s.
  *
- *         Both of those counts are the wide band's. Below 900 the stylesheet
- *         drops the diamonds outright and keeps three pills, and `shown()`
- *         below takes them out of the timeline with it, so the sequence there
- *         is eight beats of arcs, three pills, the copy and the tile — the
- *         same shape and the same timings, with nothing tweening a box that is
- *         not on the page.
- *   1.64  THE TILE IGNITES. It arrives on the last pair landing and flashes to
- *         brightness 2.6, falling back to 1 over 0.75s. The band's one moment
- *         of real light, and it is the thing the arcs have been converging on.
+ * Below 900 the stylesheet drops the diamonds and three pills, and `shown()`
+ * takes them out of the timeline; the timings are otherwise the same.
  *
- * WHAT CHANGED, AND WHY. This used to run 3.25s from the first beat, with the
- * copy at 2.13 and the tile at 2.28 — and, before any of it, three quarters of
- * a second of main thread spent measuring the arcs (see COARSE). Scrolled to
- * on a phone, the band therefore held an empty frame for ~0.9s, drew lines for
- * two seconds more, and only then said anything. The eight beats are still
- * eight beats and still counted inward from the edges; they are simply quicker
- * (0.17 apart, 0.8 of travel), and the sentence no longer waits behind them.
+ * WHY NOT `draw()` FROM lib/motion.ts. Each path is a whole ellipse about 2100
+ * user units across, seen through an 863-wide `overflow: hidden` window, so a
+ * full-perimeter sweep spends about four fifths of its duration off-frame.
+ * Each path is sampled once for the stretch inside its window (`visibleSpan`)
+ * and the whole tween is spent on that.
  *
- * WHY NOT `draw()` FROM lib/motion.ts. Each of these paths is a whole ellipse
- * roughly 2100 user units across, and the band shows one sliver of it through
- * an 863-wide `overflow: hidden` window. A tip-to-tail `stroke-dashoffset`
- * sweep over the full perimeter therefore spends about four fifths of its
- * duration drawing off-frame: the head crosses the visible piece in a fraction
- * of the tween and the line then sits there while the tween finishes. So each
- * path is sampled once for the stretch that is actually inside its window
- * (`visibleSpan`) and the whole tween is spent on that.
+ * WHY IT DRAWS BACKWARDS. All four files are traversed inward to outward (the
+ * halves Figma rotated 180deg mirror the direction too), so a forward draw
+ * would start at the tile. Backwards sends the head in from the edge. See
+ * `drawArc`.
  *
- * AND WHY IT DRAWS BACKWARDS. All four of these files are traversed
- * inward-to-outward — the two halves Figma rotated 180deg mirror the direction
- * along with the geometry, so it holds for all sixteen lines — which means a
- * forward draw would start at the tile and run out to the edge. Backwards is
- * what sends the head IN from the edge. See `drawArc`.
+ * Start states are written with `gsap.set` and everything animates with
+ * `.to()`, so the `immediateRender` trap cannot apply. The one `fromTo`, the
+ * tile's flash, carries `immediateRender: false` for that reason.
  *
- * DISCIPLINE. Start states are written with `gsap.set` and everything is
- * animated with `.to()`, so the `immediateRender` trap — a `fromTo` writing its
- * start values when the timeline is BUILT rather than when the playhead arrives
- * — structurally cannot apply. The one `fromTo` here, the tile's brightness
- * flash, carries `immediateRender: false` for exactly that reason.
- *
- * No hover, no pointer tracking, nothing here listens to the mouse.
+ * Nothing here listens to the pointer.
  */
 import type { SectionMotion, Timeline } from '../../lib/motion';
 import { gsap } from 'gsap';
@@ -96,22 +65,13 @@ const FLASH = 0.75;
 
 /**
  * Bracketing the visible stretch: coarse steps first, then the two boundaries
- * walked down by bisection.
+ * found by bisection.
  *
- * `getPointAtLength` is the whole cost of building this band, and it used to be
- * paid 221 times per path across sixteen paths. Measured at 390 wide on the dev
- * server that was a 764ms block of main thread between the scroll and the
- * section revealing itself -- three quarters of a second in which the band is
- * still `visibility: hidden` and the reader is looking at nothing. It is also
- * the one part of the entrance that no amount of timeline tuning can reach,
- * because it happens before the timeline exists.
- *
- * Every one of these arcs is on screen over a contiguous 13-20% of its own
- * length (measured, all sixteen, at 390), so a 48-step walk always lands
- * several samples inside it, and bisecting the two crossings costs nine calls
- * each. 67 calls a path instead of 221, and the boundary it returns is more
- * accurate than the dense scan's rather than less: the dense scan could only
- * ever report the first SAMPLE that was inside, up to a full step late.
+ * `getPointAtLength` is the main cost of building this band, and it runs before
+ * the timeline exists while the section is still hidden. Each arc is visible
+ * over a contiguous 13 to 20% of its length, so a 48-step walk always lands
+ * inside it, and bisecting each crossing costs nine calls: 67 calls a path
+ * rather than 221 for a dense scan, and a more accurate boundary.
  */
 /** Coarse steps when bracketing. */
 const COARSE = 48;
@@ -177,11 +137,8 @@ function visibleSpan(path: SVGPathElement, win: DOMRect, len: number): [number, 
   let n = COARSE;
   let hit = bracket(n);
   if (!hit) {
-    // A stretch narrower than a coarse step. Not a case any of the sixteen
-    // arcs is in at any width measured, but a fan drawn differently might be,
-    // and the alternative -- returning the whole length -- spends the tween
-    // drawing off-frame, which is the exact fault this file was written to
-    // avoid.
+    // A stretch narrower than a coarse step. None of the sixteen arcs is, but
+    // returning the whole length instead would spend the tween off-frame.
     n = DENSE;
     hit = bracket(n);
   }
@@ -260,48 +217,33 @@ function fromEdges(el: HTMLElement, els: HTMLElement[]): HTMLElement[] {
 }
 
 /**
- * Sections whose arrival has already been performed, start to finish, in this
- * page's life.
+ * Sections whose arrival has already been performed in this page's life.
  *
- * `useSectionMotion` rebuilds whenever its effect re-runs, and that is right:
- * React mounts, tears down and mounts again inside a single frame, and the
- * first build is reverted before a paint, so refusing to rebuild would leave
- * the band settled and silent. But a rebuild also arrives when vite hot-updates
- * this component, and `Fan.tsx` imports `Fan.loop.ts` for the `idle` option —
- * which puts the loop's module on this component's import path, so saving that
- * file re-mounts the section on the same DOM node with the band still on
- * screen, the observer fires at once, and the entrance performs itself a second
- * time in front of someone who has already watched it. That fault was diagnosed
- * and fixed on the familiar band; `Familiar.motion.ts` carries the measurements.
+ * `useSectionMotion` rebuilds whenever its effect re-runs. Under StrictMode the
+ * first build is reverted before a paint, so rebuilding must stay allowed. But a
+ * rebuild also arrives on a hot update to `Fan.loop.ts` (on this component's
+ * import path) with the band still on screen, and the entrance would play a
+ * second time. Same mechanism as `Familiar.motion.ts`.
  *
- * The two cases are told apart by whether the previous timeline actually
- * reached its end. The mark below is the LAST thing on the timeline, so a build
- * reverted mid-flight — StrictMode's, always — never sets it and the next build
- * plays in full. One that ran to completion does, and the next build adds no
- * tweens at all: the hook reveals the section, the empty timeline completes on
- * the next tick, and the loop is handed the band exactly as it would have been.
+ * The mark below is the last thing on the timeline, so only a build that ran to
+ * completion sets it. A reverted build never does and the next one plays in
+ * full; after a completed one the next build adds no tweens.
  *
- * Keyed on the element, so a genuinely new section node performs its arrival
- * properly. Editing this file resets the set with the module, which is what you
- * want while working on the motion itself.
+ * Keyed on the element, so a new section node performs its arrival properly.
  */
 const LANDED = new WeakSet<HTMLElement>();
 
 /**
  * Only the elements the stylesheet is actually rendering.
  *
- * Below 900 the band drops the twelve diamonds and three of the six pills with
- * `display: none` — a mobile composition, not a rescale of the 1920 one. A
- * tween aimed at a box that does not exist is dead motion: it costs a beat of
- * the stagger, it holds a slot in `fromEdges`, and it reads as a pause in a
- * sequence whose whole point is that it can be counted. Asking the layout
- * rather than repeating the media query here means the two cannot drift: hide
- * anything in `Fan.css` at any width and it leaves the entrance with it.
+ * Below 900 the band hides the twelve diamonds and three of the six pills with
+ * `display: none`. A tween on a box that does not exist costs a slot in the
+ * stagger and reads as a pause in a sequence meant to be counted. Asking the
+ * layout rather than repeating the media query keeps the two in step.
  *
- * `getClientRects()`, not `offsetParent` or a visibility read, because the
- * band is `visibility: hidden` while `data-motion="pending"` — which is
- * exactly when this runs. A `visibility: hidden` element still has boxes; a
- * `display: none` one has none.
+ * `getClientRects()`, not a visibility read: the band is `visibility: hidden`
+ * while pending, which is exactly when this runs, and a hidden element still
+ * has boxes. A `display: none` one has none.
  */
 const shown = (els: HTMLElement[]) => els.filter((e) => e.getClientRects().length > 0);
 
@@ -309,12 +251,9 @@ export function buildFan({ el, q, tl }: SectionMotion) {
   // Already landed once and still on screen: settle, do not re-perform.
   if (LANDED.has(el)) return;
 
-  /* The tile's ignition, read from the document rather than baked, and read
-     HERE — inside the build — because `useSectionMotion` takes the theme epoch
-     as a dependency and runs this again when the theme changes. In dark the
-     flash is `brightness(2.6)`: the band's one moment of real light. On paper
-     that washes a 100px plate to nothing, so light supplies the other
-     direction from `Fan.css` and this line does not care which it gets. */
+  /* The tile's ignition, read from the document inside the build, since
+     `useSectionMotion` re-runs this on a theme change. The light block in
+     `Fan.css` does not redefine these, so both themes use the same flash. */
   const igniteFrom = tok('--fan-tile-lit', 'brightness(2.6)');
   const igniteTo = tok('--fan-tile-rest', 'brightness(1)');
   /* Where the pills land. The stylesheet's own resting value, read rather than
@@ -362,17 +301,16 @@ export function buildFan({ el, q, tl }: SectionMotion) {
   gsap.set(copy, { opacity: 0, y: 10, filter: 'blur(14px)' });
   if (tile) gsap.set(tile, { opacity: 0, scale: 0.8 });
 
-  /* 1 — THE EIGHT BEATS. Both sides of one half at one depth per beat, upper
-     then lower, so what is read is eight separate events rather than sixteen
-     overlapping ones. Left and right share a beat because the band is a mirror
-     and opening one side ahead of the other would tip it. */
+  /* 1. THE EIGHT BEATS. Both sides of one half at one depth per beat, upper
+     then lower, so eight separate events are read rather than sixteen
+     overlapping ones. Left and right share a beat because the band is a
+     mirror. */
   arcs.forEach((a) => drawArc(tl, a, (a.depth * 2 + (a.half === 'lower' ? 1 : 0)) * BEAT));
 
-  /* 2 — the diamonds, outermost first. They sit along the arcs, so they come up
-     roughly with the heads that are passing them. Six design pixels across, so
-     the scale is what makes them readable as arriving at all; it settles rather
-     than overshoots. `clearProps` hands the transform back to the stylesheet,
-     which is where their `rotate(135deg)` lives. */
+  /* 2. The diamonds, outermost first, coming up roughly with the heads that
+     pass them. They are six design pixels across, so the scale is what makes
+     them read as arriving. `clearProps` hands the transform back to the
+     stylesheet, where their `rotate(135deg)` lives. */
   fromEdges(el, diamonds).forEach((d, i) => {
     tl.to(d, {
       opacity: 1,
@@ -383,9 +321,8 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     }, DIAMOND_AT + i * DIAMOND_STEP);
   });
 
-  /* 3 — the category pills, outermost first as well, finishing under the last
-     pair of arcs. They are the labels on the field, not a fourth statement, so
-     they arrive quietly and at their stylesheet's 0.7. */
+  /* 3. The category pills, outermost first, finishing under the last pair of
+     arcs, and arriving at the stylesheet's `--fan-pill-op`. */
   fromEdges(el, pills).forEach((p, i) => {
     tl.to(p, {
       opacity: pillOp,
@@ -396,9 +333,9 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     }, PILLS_AT + i * PILL_STEP);
   });
 
-  /* 4 — the copy, out of blur, on the opening beat. The inner spans, never the
-     blocks: both are centred with `translateX(-50%)` and GSAP would resolve
-     that centring to a pixel value for the length of the tween. */
+  /* 4. The copy, out of blur, on the opening beat. The inner spans only: the
+     blocks are centred with `translateX(-50%)`, which GSAP would resolve to a
+     pixel value for the length of the tween. */
   copy.forEach((c, i) => {
     tl.to(c, {
       opacity: 1,
@@ -410,14 +347,10 @@ export function buildFan({ el, q, tl }: SectionMotion) {
     }, COPY_AT + i * COPY_STEP);
   });
 
-  /* 5 — THE TILE IGNITES, on the last pair of arcs landing. Two tweens: it
-     comes up to size, and it flashes.
-
-     The flash is the only `fromTo` in this file, and it carries
-     `immediateRender: false` because a `fromTo` writes its start values the
-     moment the tween is BUILT rather than when the playhead arrives — without
-     it the tile would sit at brightness 2.6 from build time, through every beat
-     before this one, which is the whole entrance. */
+  /* 5. THE TILE IGNITES on the last pair of arcs landing: it comes up to size,
+     and it flashes. The flash is a `fromTo` with `immediateRender: false`;
+     without it the tile would sit at the lit value from build time through
+     the whole entrance. */
   if (tile) {
     tl.to(tile, {
       opacity: 1,

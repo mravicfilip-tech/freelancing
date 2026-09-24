@@ -1,10 +1,8 @@
-// Raw, not a URL. The band's entrance draws its sixteen arcs one at a time with
-// `stroke-dashoffset`, and nothing inside an `<img>` is addressable: the file is
-// one opaque bitmap to the document that embeds it. Hero slide 3 took the same
-// route for the same reason -- see `SlideBonus.tsx` -- and the arcs paint
-// identically either way, because the SVG already carries
-// `preserveAspectRatio="none"` and so stretches into whatever box the CSS gives
-// it exactly as the image did.
+// Raw, not a URL. The entrance draws the sixteen arcs one at a time with
+// `stroke-dashoffset`, and nothing inside an `<img>` is addressable. Hero slide 3
+// does the same (see `SlideBonus.tsx`). The arcs paint identically either way,
+// because the SVG carries `preserveAspectRatio="none"` and stretches into
+// whatever box the CSS gives it.
 import type { CSSProperties } from 'react';
 import fanLowerRaw from '../../assets/fan/fan-lower.svg?raw';
 import fanUpperRaw from '../../assets/fan/fan-upper.svg?raw';
@@ -39,37 +37,23 @@ const DIAMONDS = [
 /**
  * A pill glyph, masked rather than painted.
  *
- * All eight of these files are one flat #9d9d9d on transparent, which is why
- * the loop had to whiten them with `brightness(0) invert(1)`: `color` could
- * not reach inside an <img>. As a mask they are ordinary CSS colour, the
- * filter is deleted outright, and the lit state becomes the same plain colour
- * transition the label next to it already makes.
+ * All eight files are one flat #9d9d9d on transparent. As masks they take
+ * ordinary CSS colour, so the lit state is the same plain colour transition
+ * the label beside it makes, with no filter.
  *
- * SIZE, which is the one place a mask conversion can move geometry and did.
- * `Icon` writes a width and a height inline, and there are two different
- * answers here:
+ * Sizing has two cases, because `Icon` writes a width and height inline:
  *
- *  - The six pill glyphs are sized by the stylesheet, `calc(16 * var(--f))`,
- *    so they scale with the band. An inline pixel size would freeze them at
- *    one width. `undefined` in `style` overrides Icon's own width/height and
- *    hands the box straight back to the stylesheet.
- *  - The three sport pieces are NOT. They are absolutely positioned with all
- *    four insets, and an <img> is a replaced element: `width: auto` resolves
- *    to the file's intrinsic size and the over-constrained `right`/`bottom`
- *    are dropped. So they ship at a fixed 10.85 x 15.81, 3.13 and 1.97 CSS px
- *    at every width, and a <span> — not replaced — would have taken its box
- *    from the insets instead and shrunk by a third at 1100. Passing the
- *    intrinsic numbers reproduces the <img> exactly. (That they do not scale
- *    with the band is how this shipped; it is not something to fix here.)
+ *  - The six pill glyphs are sized by the stylesheet (`calc(16 * var(--f))`),
+ *    so they scale with the band. `undefined` in `style` overrides Icon's
+ *    inline size and hands the box back to the stylesheet.
+ *  - The three sport pieces are absolutely positioned with all four insets.
+ *    As <img> elements, `width: auto` resolved to the file's intrinsic size, so
+ *    they render at a fixed 10.85 x 15.81, 3.13 and 1.97 CSS px at every width;
+ *    passing those numbers reproduces that. They do not scale with the band.
  *
- * The one thing the conversion does cost, and it is worth knowing about
- * before this is done 129 more times: a masked element is composited, and a
- * pill with one inside it renders its label with greyscale antialiasing
- * rather than subpixel. Measured over GEOPOLITICS at 1600, the label's mean
- * luminance moves 32.2 -> 30.8 of 255 — the type reads a hair lighter. It is
- * the same effect `Fan.css` records against `will-change` on the copy, it is
- * invisible to `theme-diff.mjs` (antialiasing is not a computed property),
- * and there is no way to keep both the mask and the subpixel rendering.
+ * Gotcha: a masked element is composited, so a pill containing one renders
+ * its label with greyscale rather than subpixel antialiasing, a hair lighter.
+ * There is no way to keep both the mask and subpixel text.
  */
 const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
@@ -108,30 +92,23 @@ const RAW = { upper: fanUpperRaw, lower: fanLowerRaw } as const;
 /**
  * One instance of an arc file, ready to be dropped into the document.
  *
- * Three things happen on the way past, and the first is not optional:
- *
- * IDS. Each file names its gradients `paint0_linear_0_17` and so on, and this
- * band puts four copies of the two files into one document. Duplicate ids all
+ * IDS. Each file names its gradients `paint0_linear_0_17` and so on, and the
+ * band puts four copies of the two files into one document. Duplicate ids
  * resolve to whichever came first, and these gradients are `userSpaceOnUse`
- * with per-path coordinates, so the collision does not merely repeat one fade —
- * it re-aims the fade of fifteen arcs onto a sixteenth's geometry, silently and
- * without an error anywhere. Every id and every `url(#…)` therefore takes a
- * per-instance prefix. (Spaces go too: `id="Group 2"` is legal in SVG and not a
- * legal CSS identifier, which matters the moment anything selects on it.)
+ * with per-path coordinates, so a collision silently re-aims fifteen arcs'
+ * fades onto a sixteenth's geometry. Every id and `url(#…)` therefore takes a
+ * per-instance prefix. Spaces are replaced too: `id="Group 2"` is valid SVG
+ * but not a valid CSS identifier.
  *
- * THE SPARK TWIN. The entrance runs a bright head along each arc, which is a
- * second copy of the same path with a short dash pinned to the leading edge.
- * The twins are emitted here, in the markup, rather than cloned into the DOM by
- * the motion: a module that mutates the tree it animates accumulates a fresh
- * set of clones on every hot rebuild, and a clone left behind by a reverted
- * timeline paints as a solid bright ellipse. Shipped in the markup they are
- * exactly four per file, always, and `.fan__spark` holds them at opacity 0 so
- * the band at rest is unchanged whether the entrance ever runs or not.
+ * THE SPARK TWIN. The entrance runs a bright head along each arc: a second copy
+ * of the path with a short dash. The twins are emitted in the markup rather
+ * than cloned by the motion, because cloning into the tree it animates piles up
+ * clones on every hot rebuild, and a clone left by a reverted timeline paints
+ * as a solid bright ellipse. `.fan__spark` holds them at opacity 0, so the band
+ * at rest is the same whether the entrance runs or not.
  *
- * THE NO-OP BLUR. Figma wraps each group in a filter whose only operation is a
- * `stdDeviation="0"` gaussian — it paints nothing and costs a full filter pass
- * per frame on sixteen paths that are being redrawn every frame. Dropped, with
- * the resting render compared at 6x to confirm it is genuinely a no-op.
+ * THE NO-OP BLUR. Figma wraps each group in a `stdDeviation="0"` gaussian
+ * filter, which paints nothing but costs a filter pass per frame. Dropped.
  */
 function inlineArcs(half: 'upper' | 'lower', instance: string): string {
   const n = `fan-${instance}-${half}-`;
@@ -146,20 +123,15 @@ function inlineArcs(half: 'upper' | 'lower', instance: string): string {
 
 /**
  * COLOUR. Both files carry the same three stops, four times over: a
- * transparent head, `#f03725` at the middle, a transparent tail. The middle
- * one is the only paint anybody ever sees; the other two are there to fade it
- * out at each end and carry `stop-opacity="0"`.
+ * transparent head, `#f03725` at the middle, a transparent tail. Only the
+ * middle one is ever visible.
  *
  * `stop-color` is a CSS property as well as a presentation attribute, and CSS
- * wins over the attribute — so a class per stop is enough to put the whole
- * gradient under the theme. That is worth stating plainly, because the
- * strategy's class-F recipe is a per-theme transform of the raw string: this
- * needs no second copy of the string at module scope, no re-render of the
- * arcs when the theme flips, and it leaves the id-prefix pipeline above
- * completely alone. The baked attribute stays underneath as the fallback.
+ * wins, so a class per stop puts the whole gradient under the theme with no
+ * per-theme copy of the string and no re-render when the theme flips. The
+ * baked attribute stays underneath as the fallback.
  *
- * Figma exports `#f03725` lowercase here and `#F9F0E8` / `#D5D2D0` uppercase
- * in the same file, so the lookup is case-insensitive on principle.
+ * Figma exports these hexes in mixed case, so the lookup is case-insensitive.
  */
 const STOP_ROLE: Record<string, string> = {
   '#f9f0e8': 'fan__stop--in',
@@ -176,15 +148,10 @@ function classStop(stop: string): string {
 /**
  * The bright head's path: the same geometry, flat colour, no gradient, no id.
  *
- * The peach stays baked here as the fallback and `.fan__spark` sets `stroke`
- * from a token on top of it — CSS beats a presentation attribute, so the head
- * follows the theme with nothing about this string changing. `currentColor`
- * would have done the same job, but it also rewrites the element's computed
- * `color`, and with it the four currentColor-derived border colours the
- * regression gate records on all thirty-two twins. Setting `stroke` directly
- * moves exactly the one property that paints.
- *
- * On paper this head has to be DARK. A pale head on cream is nothing at all.
+ * The peach stays baked as the fallback and `.fan__spark` sets `stroke` from a
+ * token over it, so the head follows the theme. `currentColor` would also work
+ * but rewrites the element's computed `color` too; setting `stroke` moves only
+ * the property that paints. On paper the head has to be dark.
  */
 function sparkTwin(path: string): string {
   return path
@@ -210,12 +177,9 @@ function Arcs({ side }: { side: 'left' | 'right' }) {
 }
 
 export function Fan() {
-  // Scroll-gated on the default margin: the band has to climb a quarter of the
-  // screen before it opens, so the sliver showing under the section above is
-  // not enough to spend the entrance on.
-  //
-  // The ambient loop is handed the band on the entrance's `onComplete`, so the
-  // two never read as one continuous movement.
+  // Scroll-gated on the default margin (a quarter of the screen), so the sliver
+  // showing under the section above does not trigger the entrance. The ambient
+  // loop is handed the band on the entrance's `onComplete`.
   const ref = useSectionMotion<HTMLElement>(buildFan, { idle: fanLoop });
 
   return (

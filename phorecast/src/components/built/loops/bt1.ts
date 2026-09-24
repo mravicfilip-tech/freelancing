@@ -1,122 +1,41 @@
 /**
- * "New to Trading? / One market to start." — the left card's ambient loop.
+ * The left card's ambient loop ("One market").
  *
- * The section's scroll-gated entrance belongs to `Built.motion.ts`. This file
- * owns what happens *after* it has landed on the left card only: it reads the
- * markup the component ships, adds one SVG overlay of its own — the light on
- * the wire and the ring that closes around the market — and takes it away
- * again on teardown.
+ * The entrance belongs to Built.motion.ts. This file runs after it has
+ * landed, on the left card only: it adds one SVG overlay (the light on the
+ * wire and the ring closing around the market) and removes it on teardown.
  *
- * THE STORY — one person, one market, every 9.6s
- * ----------------------------------------------
- * The card's argument is a single trader connecting to a single market, so the
- * beat is one connection being made, end to end, and then nothing.
+ * THE BEAT, every 9.6s: one trader connecting to one market.
+ *   0.30s  The dot pulses and "You" warms.
+ *   0.55s  The light leaves along the line (from the smear or the line's
+ *          start; see `rides` in start()).
+ *   1.70s  It reaches the lit ring where the line ends; the coin answers.
+ *          The light splits and runs both ways round the ring.
+ *   2.65s  The ring closes and the note warms.
+ *   2.70s  The closed ring expands through the mid and outer rings; each
+ *          ring ripples when the wavefront reaches its radius (solved through
+ *          the ease). Gone by 3.45s.
+ *   4.45s  Back to the Figma frame, at rest until 9.6s.
  *
- *   0.30s  "You" answers. The dot takes one pulse and the word under it warms.
- *   0.55s  The light leaves. It is one scalar — distance along a route that
- *          runs out along the line and then round the market — and everything
- *          in the card answers to it. A short head is painted ON the line with
- *          `stroke-dashoffset`. WHERE it leaves from is measured, not stated:
- *          the route starts at the design's own lit smear where the node parks
- *          that smear near the beginning (1600, where the light then carries it
- *          as its soft tail) and at the line's own start where the node parks
- *          it past halfway (the phone, where the smear instead flares as the
- *          light goes through it). See `rides` in start().
- *   1.70s  It reaches the lit ring at exactly the point the line ends on. The
- *          smear is absorbed; the coin answers.
- *   1.70s  The wrap. The same light splits and runs both ways round the ring —
- *          two half arcs filling from the point it arrived at — and meets on
- *          the far side at 2.65s. The market is connected.
- *   2.65s  "One market to start." warms as the ring closes.
- *   2.70s  The closed ring lets go: its radius grows from the lit ring's 34.5
- *          out through the mid ring's 49.4 to the outer ring's 66.9, and each
- *          of the three rings takes its own short ripple at the frame the
- *          wavefront's radius is its radius — solved back through the ease, not
- *          staggered by eye, and measured off the live boxes rather than
- *          assumed. The wave thins as it spreads and is gone by 3.45s.
- *   4.45s  Everything is the Figma frame again, and stays there to 9.6s.
+ * One scalar drives the light: `w.s` is distance along the route in design
+ * px and `w.r` is the wavefront's radius. `paint()` is the only writer of the
+ * overlay, so the head, the wrap and the wave cannot disagree. The legs are
+ * eased so speeds match at the junction (`power1.in` then `sine.out`). The
+ * wrap and the wave are the same two paths, so there is no handoff.
  *
- * So 4.45s of story and 5.15s of rest — 54% of the cycle is the design, still.
+ * Orientation is measured, not assumed. Below 700px Built.css re-lays the
+ * card (Figma 526:2503) and the line runs diagonally at -124.31 deg, so the
+ * direction is a unit vector read off the line's computed matrix and every
+ * distance is a projection onto it. Do not replace it with a
+ * width-vs-height test: the diagonal line's bounding rect is taller than
+ * wide, which would pick the wrong point on the ring without any error.
  *
- * ONE SCALAR, TWO PATHS, NO SECOND CLOCK
- * --------------------------------------
- * `w.s` is distance travelled along the route in design px; `w.r` is the
- * wavefront's radius. `paint()` is the only thing that writes the overlay, so
- * the head on the line, the arc filling round the ring and the wave leaving it
- * cannot disagree about where the light is. The two legs are eased so the
- * speeds match at the junction — `power1.in` leaves the line at 2x its average,
- * `sine.out` enters the wrap at pi/2 x its own — and the light therefore does
- * not stall at the moment it arrives.
+ * `.bt1__ring-disc` draws its circle off-centre in its box (see DISC_ORIGIN),
+ * so every scale on it uses `transform-origin: 50% 47.936%`.
  *
- * The wrap and the wave are the SAME two paths. Their `d` is rewritten from
- * `w.r` every frame, so the ring that closes is the ring that then expands;
- * there is no handoff between a closing element and a rippling one to line up.
- *
- * ANY ANGLE, ONE BEAT
- * -------------------
- * Below 700px Built.css re-lays this card into the frame Figma draws for the
- * phone (node 526:2503): the rings move to the card's centre, "You" to its
- * lower right, and the run between them crosses the card DIAGONALLY, at
- * -124.31 degrees. The light therefore arrives at the ring's south-east, which
- * is not a point any earlier version of this file could name.
- *
- * It could name two: the ring's west point and its north point, chosen by
- * `DOWN = rect.height > rect.width`. That boolean is the thing this file had to
- * lose, and losing it quietly is exactly the failure it would have produced —
- * the diagonal line's bounding rect IS taller than it is wide, so `DOWN` would
- * have come out true, the wrap would have started at the north point, and the
- * light would have arrived somewhere else. No error, just a wrong picture.
- *
- * So the orientation is a unit vector read off the line's own computed matrix,
- * and every distance in this file is a projection onto it:
- *
- *   the overlay's viewBox   `--bt1-w` from the stylesheet and a height taken
- *                           from the live aspect ratio, so the coordinate
- *                           system is whatever box this file was handed.
- *   which way it runs       (UX, UY), the first column of the line's computed
- *                           transform, normalised. (1, 0) untransformed and
- *                           (0, 1) at `rotate(90deg)`, so the two cases the
- *                           boolean used to cover come back unchanged.
- *   the route               the line's starting end — its centre less half its
- *                           OWN width along (UX, UY), which is a corner of the
- *                           rect and not an edge of it once the angle is not a
- *                           right angle — to (CX + R*EX, CY + R*EY).
- *   the head and its trail  fractions of the measured run, equal to the old 30
- *                           and 20 design px at 1600.
- *   where the light leaves  the smear if the smear is still near the start of
- *                           the run, the line's own start if it is not. See
- *                           `LEAD` and `rides` in start().
- *
- * None of these is a breakpoint. Every one of them is a measurement taken each
- * time the loop is built, so a frame that turns the line again needs nothing
- * here.
- *
- * THE TRAP IN `.bt1__ring-disc`
- * -----------------------------
- * Its SVG draws the circle at (96.9, 92.9) inside a 193.8 square viewBox —
- * centred across, four units high, because the export reserves room for a drop
- * shadow — and `Built.css` offsets the box asymmetrically (left -29.4, top
- * -25.4) so the drawn circle lands concentric with the coin. Its box centre is
- * therefore NOT its visual centre, and a scale about `50% 50%` swings the lit
- * ring downward off the coin. Every scale on it here uses
- * `transform-origin: 50% 47.936%` — 92.9/193.8 — which holds the drawn circle
- * still while it grows. Measured in a browser over 1795 frames of the running
- * loop: the disc's drawn centre sits at (351.5078, 126.5079) in the card's own
- * box and never leaves it, 0.008px from the coin's (351.5, 126.5) at rest and
- * 0.0001px of drift through every ripple.
- *
- * NOTHING HERE GLOWS
- * ------------------
- * No shadow, no bloom, no halo, no `filter` is written anywhere in this file.
- * The vocabulary is colour, position, scale and opacity. The one blurred thing
- * that moves — `.bt1__smear` — is the design's own element, travelling along
- * the line it already sits on at 1600 and stretching along it on the phone;
- * its blur is the one the stylesheet ships and nothing soft is added to the
- * card in either frame.
- *
- * Nothing floats, bobs, drifts or breathes, nothing reads the pointer, every
- * value the loop touches returns to the one the design ships, and reduced
- * motion runs none of it.
+ * No `filter`, glow or shadow is written here; only colour, position, scale
+ * and opacity, and every value returns to the stylesheet's. Nothing reads the
+ * pointer, and reduced motion runs none of it.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -132,7 +51,7 @@ const SETTLE = 0.9;
 
 /* The beat, in seconds from the top of a cycle. */
 const T_SEND = 0.3;   /* the dot pulses and "You" warms */
-const T_GO = 0.55;    /* the light leaves the smear */
+const T_GO = 0.55;    /* the light leaves */
 const LEG1 = 1.15;    /* along the line */
 const T_HIT = T_GO + LEG1;
 const LEG2 = 0.95;    /* round the ring */
@@ -140,45 +59,29 @@ const T_CLOSE = T_HIT + LEG2;
 const T_WAVE = T_CLOSE + 0.05;
 const WAVE = 0.75;    /* the closed ring expanding out through the other two */
 const WAVE_EASE = 'power2.out';
-const T_BACK = 3.3;   /* the line re-lights at the dot, behind the wave */
+const T_BACK = 3.3;   /* the smear fades back in, behind the wave */
 const T_TIDY = 3.95;  /* and is handed back to the stylesheet */
 
-/** The lit head, and its soft tail, AS FRACTIONS OF THE RUN THEY RIDE.
- *
- *  They were 30 and 20 design px, which is right for exactly one line: the
- *  173.5px one in the landscape frame. The portrait frame's line is 96 long, so
- *  a 30px head would be a third of it and a 20px trail would put the smear's
- *  centre outside the line it is supposed to be lying on. 0.17291 and 0.11527
- *  are 30/173.5 and 20/173.5 — the same head and the same trail at 1600, to
- *  three decimals, and a head and a trail that mean the same thing anywhere
- *  else. Both are resolved against the measured path length in `start()`. */
+/** The lit head and its soft tail, as fractions of the run: 30 and 20 design
+ *  px of the 173.5px landscape line, so they scale to the shorter portrait
+ *  line. Resolved against the measured path length in `start()`. */
 const HEAD_F = 30 / 173.5;
 const TRAIL_F = 20 / 173.5;
 
-/** The lit stroke, and the DARK FALLBACK for --bt-lit.
- *
- *  Flat brand warm, a shade above the ring's own #e5331e -- light on a line.
- *  That is the one thing a light theme cannot copy: nothing on paper reads as
- *  lit by being paler than what it sits on. So the real value is read from
- *  --bt-lit inside start() (see LIT_TOK there), where dark keeps this exact
- *  hex and light supplies a stroke DARKER than the ring instead. This constant
- *  stays as the fallback: a missing custom property then yields today's dark
- *  value, which is the safest failure mode for the regression gate. */
+/** The lit stroke's dark fallback for --bt-lit (read in start()). In dark it
+ *  is a shade above the ring's #e5331e; on paper the token supplies a stroke
+ *  darker than the ring instead. */
 const LIT = '#ff8f63';
 /** Stroke weight of the wrap at the ring, and of the wave as it dissolves. */
 const W_NEAR = 1.6;
 const W_FAR = 1;
 
-/** What the two grey lines warm to, and the DARK FALLBACK for --bt-warm.
- *
- *  Same flip: in dark the lift is towards white, 6.2:1 -> 11.7:1 against the
- *  card. On paper the same lift has to go the other way, towards ink, and
- *  Built.css supplies it. Rest is read off the element either way, so only the
- *  lit end needed a token. */
+/** The dark fallback for --bt-warm, the colour "You" and the note warm to.
+ *  The resting colour is read off the element. */
 const WARM = 'rgb(222, 214, 208)';
 
-/* The drawn circle's centre inside `ring-disc.svg`, as a fraction of its own
-   box — the whole point of the trap above. 96.9/193.8 across, 92.9/193.8 down. */
+/* The drawn circle's centre inside ring-disc.svg, as a fraction of its box:
+   96.9/193.8 across, 92.9/193.8 down. */
 const DISC_ORIGIN = `50% ${((92.9 / 193.8) * 100).toFixed(3)}%`;
 /** Drawn radius of each ring, as a fraction of that ring's own box. */
 const DISC_RF = 34.5 / 193.8;
@@ -217,8 +120,8 @@ export function bt1Loop(root: HTMLElement): () => void {
   const mid = q('.bt1__ring-mid');
   const outer = q('.bt1__ring-outer');
   const note = q('.bt1__note');
-  /* The overlay needs the line to sit on and the coin to turn about; without
-     either there is no beat to run. Everything else costs its own accent. */
+  /* Without the line or the coin there is no beat; any other missing piece
+     only drops its own accent. */
   if (!bt1 || !line || !coin) return () => {};
 
   let ctx: gsap.Context | undefined;
@@ -232,10 +135,9 @@ export function bt1Loop(root: HTMLElement): () => void {
   let offscreen = false;
   let svg: SVGSVGElement | null = null;
 
-  /* The entrance leaves an explicit `transform-origin` in the style attribute
-     of the dot, the line, the three rings and the coin. This file overwrites it
-     while it scales something and puts back exactly what it found, rather than
-     clearing it and quietly deciding the entrance's business for it. */
+  /* The entrance may leave an inline `transform-origin` on the dot, the line,
+     the rings and the coin. This file overwrites it while scaling and then
+     restores what it found. */
   const origins = new Map<HTMLElement, string>();
   const keepOrigin = (el: HTMLElement) => {
     if (!origins.has(el)) origins.set(el, el.style.transformOrigin);
@@ -246,10 +148,9 @@ export function bt1Loop(root: HTMLElement): () => void {
     else el.style.removeProperty('transform-origin');
   };
 
-  /* Every inline value this file writes, taken off again BY NAME. A blanket
-     `clearProps: 'all'` is not safe in this band: it empties the style
-     attribute, and that attribute is where the right card's nodes keep their
-     `--x`/`--y` and where this card's entrance leaves its transform-origin. */
+  /* Every inline value this file writes, cleared by name. Never
+     `clearProps: 'all'`: it empties the style attribute, where the right
+     card's nodes keep `--x`/`--y` and the entrance leaves transform-origin. */
   const clearInline = () => {
     if (smear) gsap.set(smear, { clearProps: 'transform,opacity' });
     for (const el of [dot, coin, disc, mid, outer]) {
@@ -265,15 +166,10 @@ export function bt1Loop(root: HTMLElement): () => void {
   let wire: SVGPathElement | null = null;
   const arcs: SVGPathElement[] = [];
 
-  /** Geometry, in the design px of the `.bt1` box. Measured off live rects,
-   *  because the card is laid out in container units and a pixel read is the
-   *  only honest source of truth at any breakpoint.
-   *
-   *  DW is that box's own design width, read from `--bt1-w`: 299 in the
-   *  landscape frame, where `.bt1` is a sub-box of the card, and 320 in the
-   *  portrait one, where it IS the card. DH is derived from the live aspect
-   *  ratio rather than stated, so the overlay cannot be stretched by a frame
-   *  that is no longer 299 x 135. */
+  /** Geometry, in design px of the `.bt1` box, measured off live rects
+   *  because the card is laid out in container units. DW is read from
+   *  `--bt1-w` (299 landscape, 334 portrait); DH follows the live aspect
+   *  ratio, so the overlay is never stretched. */
   let DW = 299;
   let DH = 135;
   let CX = 231.5;
@@ -288,22 +184,10 @@ export function bt1Loop(root: HTMLElement): () => void {
   let HEAD = 30;     /* resolved from HEAD_F once LEN is known */
   let TRAIL = 20;
 
-  /** WHICH WAY THE LIGHT RUNS, and it is the only thing about this beat that
-   *  the layout decides. (UX, UY) is the line's OWN +x in the card's space,
-   *  read off its computed matrix; (EX, EY) is the reverse of it, which is the
-   *  unit vector from the ring's centre to the point the light ARRIVES at.
-   *
-   *  THIS USED TO BE A BOOLEAN, and the boolean is what would have broken.
-   *  `DOWN = rect.height > rect.width` has exactly two answers — the ring's
-   *  west point or its north point — and the mobile frame's line runs at
-   *  -124.31deg, whose rect is taller than it is wide. It would have picked
-   *  north, silently, and wrapped the ring from the wrong quarter while the
-   *  light arrived at the south-east. Nothing would have errored.
-   *
-   *  A unit vector has no such gap and reproduces both old answers exactly:
-   *  an untransformed line gives (1, 0) -> (-1, 0), a `rotate(90deg)` one
-   *  gives (0, 1) -> (0, -1). Every distance below is a projection onto it
-   *  rather than a difference on x or y, for the same reason. */
+  /** Which way the light runs. (UX, UY) is the line's own +x in the card's
+   *  space, read off its computed matrix; (EX, EY) is the reverse, the unit
+   *  vector from the ring's centre to where the light arrives. An
+   *  untransformed line gives (1, 0); a `rotate(90deg)` one gives (0, 1). */
   let UX = 1;
   let UY = 0;
   let EX = -1;
@@ -325,9 +209,8 @@ export function bt1Loop(root: HTMLElement): () => void {
     const rad = w.r;
 
     if (wire) {
-      // The head occupies path length [l - HEAD, l], so it walks off the end of
-      // the line by itself as the light moves onto the ring — no second rule
-      // for when to switch it off.
+      // The head occupies path length [l - HEAD, l], so it walks off the end
+      // of the line by itself as the light moves onto the ring.
       const l = LEAD + s;
       wire.setAttribute('stroke-dashoffset', (HEAD - l).toFixed(2));
       wire.style.opacity = l - HEAD < LEN ? '1' : '0';
@@ -370,17 +253,10 @@ export function bt1Loop(root: HTMLElement): () => void {
     OUT_R = outer ? (box(outer).width / u) * OUTER_RF : 66.875;
     ARC0 = Math.PI * DISC_R;
 
-    /** A TURNED BOX'S TWO ENDS, and the only honest way to find them.
-     *
-     *  A rotated element's client rect is its rotated BOUNDING box, so at 90
-     *  degrees its corners are still its ends but at 124 they are not: the
-     *  ends are two opposite corners and the rect cannot say which two. The
-     *  rotation itself can. `transform` on a pure rotation about the default
-     *  50% 50% leaves the centre exactly where the rect's centre is, `offset-
-     *  Width` is the untransformed length, and the matrix's first column is
-     *  where the element's own +x now points. Those three give both ends at
-     *  any angle, and at 0 and 90 degrees they give back precisely the left
-     *  edge and the top edge the two earlier cases read off the rect. */
+    /** A rotated element's two ends. Its client rect is the rotated bounding
+     *  box, which cannot say which corners are the ends. With a rotation
+     *  about the centre, the rect's centre, `offsetWidth` (the untransformed
+     *  length) and the matrix's first column give both ends at any angle. */
     const spine = (el: HTMLElement) => {
       const r = box(el);
       const t = getComputedStyle(el).transform;
@@ -395,34 +271,25 @@ export function bt1Loop(root: HTMLElement): () => void {
       };
     };
 
-    // Which way the line runs, and where its two ends are. `UX, UY` is the
-    // line's own +x, which is the direction the design's `to right` gradient
-    // and the entrance's `scaleX` both run down, so "the end the light leaves
-    // from" is the same end for all three without any of them agreeing on a
-    // number.
+    // The line's own +x is also the direction of its `to right` gradient and
+    // of the entrance's `scaleX`, so all three agree on the starting end.
     const ln = spine(line);
     UX = ln.ux;
     UY = ln.uy;
     EX = -UX;
     EY = -UY;
 
-    // The route: from the line's starting end, along the line, to the point on
-    // the lit ring the line runs into. The line's own axis and the ring's
-    // centre are a design px or two apart in both frames, so the wire is drawn
-    // as the shallow ramp between them -- it sits on the line for its whole
-    // length and still meets the ring exactly.
+    // The route: from the line's starting end to the point on the lit ring
+    // the line runs into. The line's axis and the ring's centre are a design
+    // px or two apart, so the wire is the shallow ramp between them.
     const p0 = { x: ln.cx - ln.ux * ln.half, y: ln.cy - ln.uy * ln.half };
     const p1 = { x: CX + DISC_R * EX, y: CY + DISC_R * EY };
 
-    /** How far a point is from p0 ALONG THE LINE. One projection replaces the
-     *  "x when it runs across, y when it runs down" pair, and agrees with it
-     *  to the last decimal in both of those cases. */
+    /** Distance of a point from p0 along the line. */
     const along = (x: number, y: number) => (x - p0.x) * UX + (y - p0.y) * UY;
 
-    // Where the light starts: the far edge of the smear the design already has
-    // lit on the line, so it emerges from it rather than beside it. The smear
-    // turns with the line, so "far" is whichever of its own two ends is
-    // further along the run -- not its right edge or its bottom edge.
+    // Candidate start: the smear's far end along the run (the smear turns
+    // with the line, so this is a projection, not a right or bottom edge).
     const sm = smear ? spine(smear) : null;
     const s0 = sm
       ? Math.max(
@@ -441,18 +308,14 @@ export function bt1Loop(root: HTMLElement): () => void {
 
     const g = measure();
 
-    /* The two colours this file writes, read here rather than at module scope.
-       `tok()` is getComputedStyle(documentElement), so it must run after the
-       theme is on the document and inside the build -- which is also what
-       makes it re-read when useSectionMotion rebuilds the band on a theme
-       change. Both are direction flips; see the notes on LIT and WARM. */
+    /* Read here rather than at module scope: `tok()` reads the document's
+       computed style, so it must run after the theme is applied, and it
+       re-reads when useSectionMotion rebuilds the band on a theme change. */
     const litTok = tok('--bt-lit', LIT);
     const warmTok = tok('--bt-warm', WARM);
 
-    /* One overlay, built here rather than shipped in the markup because it is
-       the beat and not the design. It is sized in percentages of `.bt1`, whose
-       aspect ratio the viewBox matches exactly, so it needs no resize handling
-       and no `will-change`. */
+    /* The overlay is sized in percentages of `.bt1` and its viewBox matches
+       that box's aspect ratio, so it needs no resize handling. */
     svg = document.createElementNS(NS, 'svg');
     svg.setAttribute('viewBox', `0 0 ${DW.toFixed(3)} ${DH.toFixed(3)}`);
     svg.setAttribute('aria-hidden', 'true');
@@ -480,28 +343,11 @@ export function bt1Loop(root: HTMLElement): () => void {
     svg.appendChild(group);
     bt1.appendChild(svg);
 
-    /* The route's own length, and where along it the light starts.
-     *
-     *  `g.s0` is already a distance from p0 along the line, so there is no
-     *  axis to divide back out any more: the two used to be an x (or a y) and
-     *  a span, and the ratio between them only meant anything while the line
-     *  was square to the card.
-     *
-     *  WHERE THE LIGHT LEAVES FROM IS A MEASUREMENT NOW TOO, and it has to be,
-     *  because the two frames park the smear in different places. At 1600 it
-     *  sits at 57.5 of a 173.5 run — a third of the way along, right beside
-     *  "You", and the light plainly leaves IT. The phone's node puts it at 82
-     *  of a 97 run: halfway between the dot and the market as a distance, but
-     *  five sixths of the way along a line that is itself much shorter than
-     *  the gap it spans. Starting the light there would leave it fifteen design
-     *  px to travel, which is not a journey, and no amount of easing would make
-     *  it read as one.
-     *
-     *  So the smear is the source only while it is still near the start. Past
-     *  the halfway mark it is not something the light comes out of, it is
-     *  something already lit that the light passes, and the light leaves from
-     *  the line's own beginning — the dot, which is where the entrance draws
-     *  the line out of as well. One threshold, measured, no breakpoint. */
+    /* Where the light leaves from. At 1600 the smear sits a third of the way
+       along the run, so the light leaves the smear. In the portrait frame it
+       sits past halfway, which would leave too short a journey, so the light
+       leaves from the line's start (the dot) instead. One measured threshold,
+       no breakpoint. */
     LEN = wire.getTotalLength() || Math.hypot(g.p1.x - g.p0.x, g.p1.y - g.p0.y);
     LEAD = g.s0 < LEN / 2 ? Math.max(g.s0, 0) : 0;
     TRAVEL = Math.max(LEN - LEAD, 1);
@@ -510,54 +356,30 @@ export function bt1Loop(root: HTMLElement): () => void {
     wire.setAttribute('stroke-dasharray', `${HEAD.toFixed(3)} ${LEN.toFixed(3)}`);
     rest();
 
-    /* Resting values are read now, with the entrance finished and its own
-       clears already run, so every lift has something true to return to. */
+    /* Resting colours, read after the entrance has finished and cleared. */
     const css = (el: HTMLElement | null, prop: string) =>
       (el ? getComputedStyle(el).getPropertyValue(prop) : '') || '';
     const youRest = css(you, 'color');
     const noteRest = css(note, 'color');
 
-    /* WHAT THE SMEAR DOES, and the design decides it rather than this file.
+    /* The smear either rides or flares, decided by the same `LEAD > 0` test.
      *
-     *  The smear is the design's own soft bar of light already lying on the
-     *  line, and there are two honest things it can be depending on where the
-     *  node parks it:
+     *  Rides: when it is the source (landscape), it travels with the head as
+     *  its soft tail and is absorbed at the ring.
+     *  Flares: when the light starts behind it (portrait), riding would put
+     *  it ahead of the head, so it stays put and takes a scale pulse along
+     *  its own axis as the head passes.
      *
-     *    IT RIDES WHEN IT IS THE SOURCE. At 1600 the light leaves it, so it is
-     *    the head's own tail and travels with it: 57.5 of a 173.5 run out to
-     *    153.5, which is 117 design px, and it is absorbed at the ring.
-     *
-     *    IT FLARES WHEN IT IS NOT. On the phone the node parks it past the
-     *    halfway mark, `LEAD` is 0 and the light leaves the dot behind it — so
-     *    a tail is exactly what it cannot be. Riding it anyway would put it
-     *    AHEAD of the head for four fifths of the run: both would ease
-     *    `power1.in` over the same leg, and the head only catches a smear
-     *    starting at 60 of 97 at 85% of the way through. It stays where the
-     *    design puts it and takes a scale pulse along its own axis as the head
-     *    passes through it, then is absorbed at the ring exactly as at 1600.
-     *
-     *  `LEAD > 0` is the whole test, and it is the same measurement that
-     *  decided where the light starts. Not a breakpoint, and not a second
-     *  opinion about the geometry.
-     *
-     *  RIDE IS TWO PERCENTAGES, not one. A percentage of the element's own box
-     *  is the only distance here that survives a resize untouched, because the
-     *  element scales with the card exactly as the distance does — but GSAP's
-     *  translate lands OUTSIDE the element's rotation, in the card's own axes,
-     *  so a turned smear needs both components. They are the same one distance
-     *  projected onto x and y, each divided by the box it is a percentage of.
-     *  At 1600 `UY` is 0 and `yPct` is 0 with it, which is the old single
-     *  `xPercent` back again. */
+     *  The ride is two percentages because GSAP's translate is applied in
+     *  the card's axes, outside the element's rotation; at 1600 `yPct` is 0. */
     const smearLen = g.smear ? g.smear.len : 0;
     const smearMid = g.smear ? g.along(g.smear.cx, g.smear.cy) : 0;
     const rideDist = LEN - TRAIL - smearMid;
     const rides = !!smear && smearLen > 0 && LEAD > 0 && rideDist > 0;
     const xPct = rides && smear ? (rideDist * UX * g.u * 100) / smear.offsetWidth : 0;
     const yPct = rides && smear ? (rideDist * UY * g.u * 100) / smear.offsetHeight : 0;
-    /* When it flares instead, the frame it flares ON: the head's tip reaches
-       the smear's centre `smearMid - LEAD` into a `power1.in` leg, solved back
-       through the ease rather than guessed, so the pulse is under the light
-       and not beside it. */
+    /* The flare time: when the head reaches the smear's centre, solved back
+       through the `power1.in` ease. */
     const flareAt = T_GO + LEG1 * invEase('power1.in',
       Math.min(Math.max((smearMid - LEAD) / Math.max(TRAVEL, 1), 0), 1));
 
@@ -589,15 +411,13 @@ export function bt1Loop(root: HTMLElement): () => void {
           }, at + up);
       };
 
-      /* 1 — "You" answers: the dot takes one pulse and the word warms. */
+      /* 1. "You" answers: the dot pulses and the word warms. */
       ripple(dot, T_SEND, 1.22, '50% 50%', 0.26, 0.62);
       warm(you, T_SEND, youRest, 0.26, 0.8);
 
-      /* 2 — the light leaves, along the line and then round the ring. Both legs
-         are `fromTo` with `immediateRender: false`: a delayed `fromTo` writes
-         its start value when the timeline is BUILT, not when the playhead
-         arrives, so without the flag the wrap would slam the light back to the
-         ring at t=0 and hold it there through the whole outbound leg. */
+      /* 2. The light leaves, along the line and round the ring. Both legs are
+         `fromTo` with `immediateRender: false`: a delayed `fromTo` writes its
+         start value at build time, which would park the light on the ring. */
       tl.fromTo(w, { s: 0 }, {
         s: TRAVEL, duration: LEG1, ease: 'power1.in', immediateRender: false, onUpdate: paint,
       }, T_GO)
@@ -608,12 +428,9 @@ export function bt1Loop(root: HTMLElement): () => void {
           opacity: 1, duration: 0.22, ease: 'sine.out', immediateRender: false,
         }, T_GO);
 
-      /* 3 — the design's own smear. It is the light's soft tail where it is the
-         light's source and a lit patch the light goes through where it is not;
-         see the note over `rides`. Either way it is absorbed at the ring, its
-         transform is reset while it is invisible so the return is a fade at
-         home rather than a slide back, and the stylesheet gets its own
-         `transform` — the turn, on the phone — handed back at T_TIDY. */
+      /* 3. The design's own smear (see `rides`). It is absorbed at the ring,
+         reset while invisible so it fades back in place, and its stylesheet
+         `transform` is handed back at T_TIDY. */
       if (smear) {
         if (rides) {
           tl.fromTo(smear, { xPercent: 0, yPercent: 0 }, {
@@ -621,11 +438,8 @@ export function bt1Loop(root: HTMLElement): () => void {
             duration: LEG1, ease: 'power1.in', immediateRender: false,
           }, T_GO);
         } else {
-          /* A pulse along its own length. `scaleX` composes INSIDE the
-             rotation GSAP reads off the element, so this stretches the bar
-             along the line it lies on rather than across the card, and it is
-             the same vocabulary the coin and the three rings already use.
-             Nothing soft is added: the blur is the one the design ships. */
+          /* `scaleX` composes inside the element's rotation, so the pulse
+             stretches the bar along the line it lies on. */
           tl.to(smear, { scaleX: 1.22, duration: 0.24, ease: 'sine.out' }, flareAt)
             .to(smear, { scaleX: 1, duration: 0.5, ease: 'sine.inOut' }, flareAt + 0.24);
         }
@@ -635,15 +449,14 @@ export function bt1Loop(root: HTMLElement): () => void {
           .set(smear, { clearProps: 'transform,opacity' }, T_TIDY);
       }
 
-      /* 4 — the market answers as the light lands, and the sentence beside it
-         as the ring closes. */
+      /* 4. The coin answers as the light lands, the note as the ring
+         closes. */
       ripple(coin, T_HIT, 1.18, '50% 50%', 0.24, 0.62);
       warm(note, T_CLOSE, noteRest);
 
-      /* 5 — the closed ring lets go. `w.r` is the wavefront's radius; each ring
-         fires at the frame that radius is its own, solved back through the ease
-         rather than staggered by eye. The disc is where the wave starts, so it
-         goes with the closure itself. */
+      /* 5. The closed ring expands. Each ring ripples at the frame the
+         wavefront reaches its radius, solved through the ease. The disc is
+         where the wave starts, so it goes with the closure. */
       tl.fromTo(w, { r: DISC_R }, {
         r: OUT_R, duration: WAVE, ease: WAVE_EASE, immediateRender: false, onUpdate: paint,
       }, T_WAVE)
@@ -659,24 +472,14 @@ export function bt1Loop(root: HTMLElement): () => void {
       ripple(mid, when(MID_R), 1.1, '50% 50%');
       ripple(outer, when(OUT_R), 1.08, '50% 50%');
 
-      /* A repeating timeline rewinds by rendering every tween it has passed at
-         progress 0, which WRITES their start values inline: an identity
-         `transform: translate(0px, 0px)` on the rings and the resting colour on
-         the two grey lines. Identical to the design to look at, and still this
-         file's inline style sitting on an element the stylesheet owns -- and it
-         would sit there until each pulse's own clear came round again, up to
-         four seconds later. `onRepeat` is too early to help, because GSAP does
-         that render after it; a call two frames in is the first point at which
-         they can be taken off, and nothing here has moved by then.
-
-         The rest band itself is measured clean either way: 600 frames of it
-         hold exactly one value per element and no inline style at all. */
+      /* On repeat, GSAP renders every passed tween at progress 0, which
+         writes identity transforms and resting colours inline. `onRepeat`
+         runs before that render, so the clear runs slightly into the cycle,
+         before anything has moved. */
       tl.call(clearInline, undefined, 0.04);
 
-      /* The rest of the cycle is rest. Off screen the loop stops here rather
-         than wherever the scroll happened to leave it, so the card is never
-         parked with a half-drawn ring round the coin for as long as it takes
-         someone to come back. A beat is four seconds; it is allowed to finish. */
+      /* Off screen the loop pauses here, at rest, rather than wherever the
+         scroll left it; a beat in progress is allowed to finish. */
       tl.call(() => {
         rest();
         clearInline();
@@ -698,13 +501,12 @@ export function bt1Loop(root: HTMLElement): () => void {
   /** Is the playhead inside the beat rather than in the rest band? */
   const inBeat = (t: number) => t > T_SEND - 0.1 && t < STORY_END;
 
-  /* ---------------------------------------------------------------- the gate
-     `useSectionMotion` passes this as its `idle` option and calls it from the
-     entrance's `onComplete`, one line after the section's `done()` — so
-     `data-motion-done` is already set and the first branch fires at once.
-     Called any earlier (a direct call, a harness) the `motion:done` event is
-     still ahead of us and is the best signal there is; under both sits the
-     question that is true either way: is anything still animating in here? */
+  /* ----------------------------------------------------------- the start
+     `useSectionMotion` calls this as its `idle` from the entrance's
+     `onComplete`, after `done()`, so `data-motion-done` is already set and
+     the first branch fires. Called earlier, the `motion:done` event is still
+     ahead; failing both, it polls until nothing in the section is
+     animating. */
   const heard = () => open();
   const open = () => {
     if (stopped || ready) return;
@@ -749,14 +551,11 @@ export function bt1Loop(root: HTMLElement): () => void {
     watcher?.disconnect();
     io?.disconnect();
     cycle?.kill();
-    // Reverts every transform, colour and opacity this loop tweened, whatever
-    // the playhead was in the middle of.
+    // Reverts every value this loop tweened, wherever the playhead was.
     ctx?.revert();
 
-    /* Then each target again, by name. A blanket `clearProps: 'all'` is not
-       safe in this band: it empties the style attribute, and that attribute is
-       where the right card's nodes keep their `--x`/`--y` — and where this
-       card's entrance leaves its `transform-origin`. */
+    /* Then each target by name. Never `clearProps: 'all'` (see
+       clearInline). */
     for (const el of [smear, dot, you, coin, disc, mid, outer, note]) {
       if (el) gsap.killTweensOf(el);
     }

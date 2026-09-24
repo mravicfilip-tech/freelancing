@@ -1,142 +1,65 @@
 /**
- * Card two — "Experienced Trader?" — the ambient loop.
+ * The right card's ambient loop ("More markets").
  *
- * The illustration is a constellation: five market nodes (BTC / USD, TSLA,
- * DAX 40, EUR / USD, XAU / USD) wired to one self-custody padlock on the right.
- * The card's argument is *many markets, one settlement you hold*, so that is
- * the only thing this beat says.
+ * Five market nodes (BTC / USD, TSLA, DAX 40, EUR / USD, XAU / USD) wired to
+ * one self-custody padlock. The beat says one thing: many markets, one
+ * settlement you hold.
  *
- * THE STORY — one delivery, every 8.5s
- * ------------------------------------
- *   0.82s  BTC leans a dozen design pixels along its own wire and, at 1.00s,
- *          lets a bead of value go. It is the farthest market out, 441 design
- *          px from the padlock, so it goes first.
- *   1.43 → EUR / USD, TSLA, XAU / USD and DAX 40 follow, each at the moment its
- *   2.12s  own distance says it must leave. Every bead travels the wire at the
- *          same speed, so the five departures are a wave whose shape is the
- *          field's real geometry — nearest market last, 1.12s behind BTC.
- *   2.75s  All five arrive at the padlock *together*. Five separate markets
- *          resolving into a single place: that convergence is the whole point,
- *          and it is solved, not staggered by eye — the departures are
- *          `arrival − distance / speed`.
- *   2.63s  The lock answers as they touch its rim: it leans into the delivery,
- *          takes it, and seats. SELF-CUSTODY goes brand red for a beat.
- *   3.45 → The circuit cools outward from the lock, nearest market first, and
- *   4.3s   every label, node and bead is back to the Figma frame.
- *   4.3 →  Nothing moves. The card is the design again for four seconds, and
- *   8.5s   for the 0.8s lead of the next cycle — 5.0s of an 8.5s period still.
+ * LANDSCAPE, every 8.5s
+ *   0.82s  BTC, the farthest market, leans along its wire and at 1.00s lets
+ *          a bead of value go.
+ *   1.43 to 2.12s  The other four follow. Every bead travels at one speed and
+ *          departures are `arrival - distance / speed`, so the wave's shape
+ *          is the real geometry.
+ *   2.75s  All five arrive at the padlock together.
+ *   2.63s  The lock leans into the delivery as the beads touch its rim and
+ *          seats; SELF-CUSTODY goes brand red.
+ *   3.45 to 4.3s  The circuit cools outward from the lock, nearest first.
+ *   Then rest until 8.5s.
  *
- * A DIFFERENT BEAT IN THE PORTRAIT FRAME
- * --------------------------------------
- * Below 700px Built.css re-lays this card into the 334 x 392 orbit Figma
- * 526:2656 draws: one ring, the five markets spaced around it, the padlock
- * alone at its centre, and SELF-CUSTODY seated on the ring's lower arc. There
- * are no wires, so there is no wave of departures solved from wire lengths --
- * the five markets are all the same distance from the hub, and a beat built on
- * "the farthest leaves first" says nothing at all on a circle.
+ * PORTRAIT (below 700px; Figma 526:2656)
+ * The markets sit round a ring with the padlock at its centre, all the same
+ * distance from it, so "farthest leaves first" means nothing. The beat is a
+ * circuit instead:
+ *   0.82s  A head starts at SELF-CUSTODY and runs clockwise round the ring at
+ *          a constant rate. Each market's cue is
+ *          `LEAD + (angle travelled / 360) * ORBIT`, measured off live rects.
+ *   +0.18s Each touched market leans inward and drops a bead to the padlock;
+ *          the arrivals keep the order of the touches.
+ *   3.42s  The head closes the circuit and fades.
+ *   3.53s  The padlock seats without leaning (the mean of five directions
+ *          round a circle has no meaning), with its inner circle;
+ *          SELF-CUSTODY goes brand red. Rest from 5.2s.
  *
- * So the portrait beat is a CIRCUIT, and its order is the ring's own:
+ * Asked, not assumed: the frame (`--fw`/`--fh`), the ring (`--bt2-ring-*`,
+ * declared beside its mask in Built.css), every station's angle, and the
+ * leans and bead size (scaled by the frame, the bead with a floor).
  *
- *   0.82s  A head appears where SELF-CUSTODY sits and starts round the ring
- *          clockwise, at a constant rate. It is the only travelling thing.
- *   1.40 → It reaches EUR / USD, BTC, TSLA, DAX 40 and XAU / USD in that order
- *   2.97s  -- which is not a schedule, it is where they are: each touch is
- *          `LEAD + (angle travelled / 360) * ORBIT`, measured off the live
- *          rects. The five gaps are 79.8, 40.2, 59.2, 63.1 and 55.2 degrees,
- *          so the wave opens wide and then tightens, exactly as the drawing
- *          spaces them.
- *   +0.18s Each market leans INWARD as it is touched and lets a bead go down
- *          its own radius to the padlock. Every radius is the same length, so
- *          the five arrivals keep the order of the five touches rather than
- *          converging: on a ring, sequence is the only thing distance can say.
- *   3.42s  The head closes the circuit back at SELF-CUSTODY and goes out.
- *   3.53s  The padlock answers the last delivery. It SEATS WITHOUT LEANING --
- *          the landscape lock leans along the mean of the wires, and the mean
- *          of five directions spread round a circle is a number with no
- *          meaning in it. The faint inner circle it sits in seats with it, so
- *          the centre answers as one object. SELF-CUSTODY goes brand red.
- *   4.35 → The pill cools and the card is the design again.
- *   5.2s
- *   5.2 →  Nothing moves.
- *   8.5s
+ * Beads. The wires are masked spans, so there is no stroke to put light on.
+ * This module creates five beads behind the nodes and flies them along the
+ * real lines, positioned in percent of the card and moved in
+ * `xPercent`/`yPercent` of a `var(--c)` box, so the beat survives a resize.
+ * The portrait head hangs at the ring's radius off a zero-sized rotator at
+ * the ring's centre; one `rotation` tween carries it round, tangent to the
+ * arc.
  *
- * WHAT IS ASKED RATHER THAN ASSUMED, because this frame proves the cost of the
- * alternative -- the numbers below were all true of the landscape card only:
+ * Nodes move in pixels (`x`/`y` scaled by the design unit) on top of an
+ * explicit centring; see CENTRED.
  *
- *   the frame          was `const DW = 640, DH = 254`. Read from `--fw`/`--fh`.
- *   the ring           centre and radius are read from `--bt2-ring-x/-y/-r`,
- *                      declared next to the mask that draws it in Built.css so
- *                      the two cannot move apart.
- *   the stations       every angle, including SELF-CUSTODY's, is measured off
- *                      the live rects. Nothing here knows the ring's order.
- *   the leans          12 and 6 design px are a PROPORTION of the card, scaled
- *                      by the frame.
- *   the bead           scaled too, with a floor: proportion alone would put it
- *                      under two device pixels tall on a phone.
- *
- * WHAT THE BEADS ARE, AND WHY
- * ---------------------------
- * The wires ship as two masked spans — `.bt2__fan` (four straight paths in the
- * landscape frame, the faint inner circle in the portrait one) and
- * `.bt2__main` (BTC's link, the large ring in portrait) — so nothing inside
- * them is addressable and
- * `stroke-dashoffset` is off the table: there is no way to put light *on* the
- * stroke the way the fan section does. Rather than fake it with something that
- * moves no pixels (a clip-path window, a mask-position or a background-position
- * all animate a zero-travel bounding box and read as static on this project's
- * own check), this module creates five beads and flies them along the real
- * lines. Each is positioned as a percentage of the card and travels in
- * `xPercent`/`yPercent` of its own box, which is sized in `var(--c)`; both are
- * pure ratios, so the whole beat survives a resize without being rebuilt.
- *
- * They are inserted *behind* the nodes, so a bead leaves from under its market's
- * disc and is taken under the padlock's — it rides the full wire, occluded at
- * both ends, instead of docking at a rim.
- *
- * THE ORBIT HEAD IS THE SAME OBJECT ON A ROTATOR. In the portrait frame the
- * path is a circle, and a capsule tweened along one in x/y would have to be
- * resolved every frame in pixels and rebuilt on every resize. Instead a zero-
- * sized span is parked at the RING's centre and the head hangs off it at the
- * ring's radius, both in `var(--c)`; GSAP turns the parent. One `rotation`
- * tween then carries the head round at a constant rate AND keeps it tangent to
- * the arc, because the head turns with its parent. Nothing about it is in
- * pixels, so it survives a resize like the beads do.
- *
- * THE NODES MOVE IN PIXELS, AND THE BEADS IN PERCENT
- * --------------------------------------------------
- * Not an oversight. `.bt2__node` is centred on its mark by a stylesheet
- * `transform: translate(-50%, -50%)`, and a tween that writes `xPercent` to
- * move it REPLACES that centring rather than adding to it: measured, a 12px
- * lean asked for in percent moved BTC 41.7px across and 32px down, which is
- * the 32px half-width of a 64px disc plus the lean. So the nodes lean in
- * `x`/`y`, scaled by the measured design unit, ON TOP of a centring this file
- * states for itself -- see CENTRED, and the width-dependent GSAP bug it exists
- * to close. The beads carry no stylesheet transform of their own and so keep
- * the resize-proof percentages.
- *
- * WHAT THIS MUST NOT DO
- * ---------------------
- * 1. No glow, bloom, halo or drop-shadow — standing rule for this site. A bead
- *    is a flat warm capsule; the answer at the lock is scale, position and
- *    colour and nothing else. `filter` is never written here.
- * 2. No `clearProps: 'all'`. Every `.bt2__node` carries BOTH of its positions in
- *    inline custom properties (`--x`/`--y`/`--s` landscape, `--mx`/`--my`/`--ms`
- *    portrait, plus the two mark sizes); emptying the style attribute drops all
- *    of them and collapses the constellation onto the card's centre. Only
- *    `transform` and `color` are ever cleared, by name.
- * 3. No pointer response of any kind, nothing that floats or breathes between
- *    beats, and no motion at all under `prefers-reduced-motion`.
+ * Do not:
+ * 1. Write `filter`, glow or shadow. A bead is a flat capsule.
+ * 2. Use `clearProps: 'all'`. Each `.bt2__node` carries both placements in
+ *    inline custom properties; emptying the style attribute collapses the
+ *    constellation onto the centre. Only `transform` and `color` are cleared,
+ *    by name.
+ * 3. React to the pointer, move between beats, or run under reduced motion.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
 import { tok } from '../../../lib/theme';
 
-/** The card's design frame, as a FALLBACK. Its `aspect-ratio` locks both axes
- *  to one scale, and below 700px that frame is 320 x 356 rather than 640 x 254
- *  -- so these two numbers are read from `--fw` / `--fh` on the card itself
- *  (Built.css) and these constants are only what a missing property yields.
- *  They are integers in both frames, so the division back into design units
- *  stays exact. */
+/** Fallback design frame, used only if `--fw`/`--fh` are missing on the
+ *  card (Built.css). */
 const DW_FALLBACK = 640;
 const DH_FALLBACK = 254;
 
@@ -147,104 +70,50 @@ const LEAD = 0.82;
 /** How long the longest wire takes; every other journey is that speed. */
 const RUN = 1.75;
 
-/** The send: design px a node leans along its own wire, and the pulse's halves.
- *  A lean is a proportion of the card, not an absolute distance, so it is
- *  scaled by the frame below: 12 units of 640 and 6 units of 320 are the same
- *  1.9% of the card either way. */
+/** The send: design px a node leans along its own wire (scaled by the
+ *  frame), and the pulse's two halves. */
 const LUNGE = 12;
 const UP = 0.18;
 const BACK = 0.62;
-/** Design px the padlock leans into the delivery as the beads reach it. Scaled
- *  the same way, and aimed by the wires rather than assumed to point left. */
+/** Design px the padlock leans into the delivery, scaled the same way and
+ *  aimed along the wires. */
 const LEAN_IN = 6;
 
-/** The bead, in design px of the 640-wide frame, and the smallest it is allowed
- *  to become in design px of whatever frame it lands in.
- *
- *  Scaling it with the frame like the leans above would give a 7 x 1.3 capsule
- *  on the phone -- proportionally identical and, at roughly one and a half
- *  device pixels tall, not a thing anyone would see travelling. A lean that
- *  small is still a lean; a mark that small is gone. So the bead scales and
- *  then stops: 14 x 2.6 at 640, 9 x 1.9 at 320. */
+/** The bead, in design px of the 640-wide frame, and its floor in the
+ *  frame it lands in: scaled alone it would be about 1.5 device pixels tall
+ *  on a phone, too small to see travelling. */
 const BEAD_W = 14;
 const BEAD_H = 2.6;
 const BEAD_W_MIN = 9;
 const BEAD_H_MIN = 1.9;
 
-/* ---- the portrait circuit, and nothing here is used by the landscape one ---
-   ORBIT is one lap of the ring. It sets every touch time on the card, because
-   a station's cue is the fraction of the lap that reaches it -- so this is the
-   only pace in the beat and the five gaps are the drawing's own.
-
-   HEAD_W is stated as ARC, not as a bead length. The closest two stations on
-   the ring are 40.2 degrees apart, which at r=89 is 62 design units of arc; a
-   16-unit head is a quarter of that, so it is clear of one market before it
-   reaches the next and never reads as touching two at once. Over 16 units the
-   straight capsule departs from the arc by 16^2 / (8 * 89) = 0.36 units, which
-   is a third of the ring's own stroke -- there is nothing to gain from bending
-   it. HEAD_H matches the bead's floor so the two are one object seen twice.
-
-   DROP is the fall from a market to the padlock. Every radius on this card is
-   the same length, so one duration covers all five and the arrivals keep the
-   order of the touches. */
+/* The portrait circuit only. ORBIT is one lap of the ring and sets every
+   touch time. HEAD_W is 16 units of arc, a quarter of the closest station
+   gap (40.2 deg at r 89), so the head never touches two markets at once; a
+   straight capsule departs from the arc by only 0.36 units. HEAD_H matches
+   the bead's floor. DROP is the fall from any market to the padlock (all
+   radii are equal). */
 const ORBIT = 2.6;
 const HEAD_W = 16;
 const HEAD_H = 1.9;
 const DROP = 0.5;
 
-/* THE THREE COLOURS THIS FILE WRITES, as dark fallbacks. Each is read from its
-   role token inside the build below, where `tok()` can see the theme that is
-   actually on the document; each constant here is the exact hex the token
-   resolves to in dark, so a missing property yields today's value.
+/* The three colours this file writes, as dark fallbacks; each is read from
+   its token in the build, where `tok()` sees the current theme.
 
-   Only one of the three is a direction flip, and it is worth saying which,
-   because "lit" does not mean the same thing twice on this card:
-
-   BEAD_BG is --accent-lift, the same warm the gradient's light stop uses. It
-   is a chromatic object on a neutral wire, not a brightness -- 4.57:1 on the
-   dark card, 4.78:1 on the light one. It needs no flip, only the token.
-
-   SEALED is --bt-seal, and it is the one value here that a role token could
-   not carry. SELF-CUSTODY rests at --ink and goes brand red for the length of
-   the settlement. In dark that is #fffbf8 -> #e5331e, a step of 4.23:1. Read
-   as --accent in light it would be #1a1512 -> #a21605, a step of 2.29:1 --
-   both ends are dark on paper, so 46% of the beat goes missing while the loop
-   still runs and every check still passes. --bt-seal is #e5331e in dark, the
-   same hex --accent resolves to, and --accent-lift's #c4361c in light, which
-   puts the step back at 3.36:1. Built.css carries the reasoning.
-
-   LIT is the flip. A market's label goes from --ink-2 to --ink while its value
-   is in flight, and --ink is "as far from the page as ink goes" -- #fffbf8 on
-   the dark card and #1a1512 on the light one. Taking the literal #fffbf8 into
-   light would have moved the label from 6.4:1 to 1.02:1: the loop would still
-   run, the gate would still pass, and the label would simply vanish at the
-   moment it was meant to answer. */
-/* THE CENTRING, WRITTEN OUT, and it is a bug fix rather than a flourish.
-   -------------------------------------------------------------------------
-   `.bt2__node` is centred on its mark by a stylesheet `transform:
-   translate(-50%, -50%)`, and GSAP has to recover that -50% from a COMPUTED
-   matrix, which is in pixels. Its test for "this is a half-width translate"
-   rounds against `offsetWidth`, which is an integer, so it only holds when the
-   node's real width rounds the same way its half does. At 1600 a market node
-   is exactly 50px and it holds: GSAP stores xPercent/yPercent -50 and the lean
-   below is added on top of it, which is what this file has always assumed.
-
-   At 390 the same node is 44.84px. `offsetWidth` is 45, half of that is 22.5,
-   and the matrix says 22.42 -- the two round to 23 and 22, the test fails,
-   GSAP takes -22.42 as a plain `x`, and the first `to({x})` tweens the node
-   OFF ITS OWN CENTRE by half its width. Measured on the shipped build: the
-   TSLA node travelled 18.3px across and 18.3 down on a lean asked for as 0.2
-   across and 6.6 down. It is not visible as a jump because it happens on the
-   same tween as the lean, so it reads as a market sliding a long way sideways
-   for no reason -- which is exactly what a phone shows today.
-
-   Stating xPercent/yPercent on every tween takes the recovery away from GSAP:
-   the centring becomes a value this file owns and `x`/`y` are unambiguously on
-   top of it at every width. At 1600 it writes the matrix GSAP already inferred,
-   so the landscape beat is byte-identical; below that it is the difference
-   between a lean and a lurch. `clearProps: 'transform'` still hands the
-   element back to the stylesheet at the end of each beat, so nothing here
-   outlives it. */
+   BEAD_BG is --accent-lift: a chromatic accent, no flip needed.
+   SEALED is --bt-seal: SELF-CUSTODY's lit colour. On paper --accent would
+   give too small a step from --ink, so Built.css supplies a lighter red.
+   LIT is --ink: a market label lifts from --ink-2 to --ink. A literal
+   #fffbf8 would vanish on paper. */
+/* The node centring, stated explicitly to work around GSAP. `.bt2__node` is
+   centred by a stylesheet `translate(-50%, -50%)`. GSAP recovers that from
+   the computed pixel matrix and only recognises it as -50% when rounding
+   against the integer `offsetWidth` agrees; at some widths (e.g. a 44.84px
+   node at 390) it does not, GSAP stores the offset as `x`, and the lean
+   tweens the node off its centre by half its width. Stating xPercent and
+   yPercent on every tween makes `x`/`y` purely the lean at every width.
+   `clearProps: 'transform'` still hands the element back afterwards. */
 const CENTRED = { xPercent: -50, yPercent: -50 } as const;
 
 const BEAD_BG = '#e9513f';
@@ -259,10 +128,8 @@ const SEAL = ARRIVE - 0.12;
 const COOL = SEAL + 0.82;
 const STORY = COOL + 0.85;
 
-/** The same three, for the circuit. The last market is touched at
- *  LEAD + (297.5 / 360) * ORBIT and its bead lands DROP + UP after that, which
- *  is when the padlock answers -- so the portrait beat closes at 5.2s against
- *  the landscape one's 4.3s and both sit inside the same 8.5s period. */
+/** End of the portrait head's lap. The portrait beat closes around 5.2s
+ *  against landscape's 4.3s; both fit in PERIOD. */
 const ORBIT_END = LEAD + ORBIT;
 
 export function bt2Loop(root: HTMLElement): () => void {
@@ -275,18 +142,14 @@ export function bt2Loop(root: HTMLElement): () => void {
   const lock = card.querySelector<HTMLElement>('.bt2__node--lock');
   const lockLabel = lock?.querySelector<HTMLElement>('.bt2__label');
   const nodes = Array.from(card.querySelectorAll<HTMLElement>('.bt2__node:not(.bt2__node--lock)'));
-  /* The faint circle the padlock sits inside. It is `.bt2__fan` in both frames
-     -- four converging wires in the landscape one, this circle in the portrait
-     one -- and only the circle has anything to answer with, so the tween that
-     uses it is portrait-gated rather than this query. */
+  /* `.bt2__fan`: four wires in landscape, the faint inner circle in
+     portrait. Only the circle answers, so its tween is portrait-gated. */
   const inner = card.querySelector<HTMLElement>('.bt2__fan');
   if (!stage || !lock || !lockLabel || nodes.length === 0) return () => {};
 
   /* ------------------------------------------------------------- geometry
-     Measured, never assumed: the illustration is laid out in the card's own
-     container unit, so live rects are the only honest source at any width.
-     Everything is divided back into the 640 x 254 design frame, where the
-     numbers are the ones in Figma and are the same at every breakpoint. */
+     Measured off live rects (the card is laid out in container units) and
+     divided back into design units of the current frame. */
   const cb = card.getBoundingClientRect();
   const cs = getComputedStyle(card);
   const DW = Number(cs.getPropertyValue('--fw')) || DW_FALLBACK;
@@ -294,18 +157,12 @@ export function bt2Loop(root: HTMLElement): () => void {
   const u = cb.width / DW;
   if (!(u > 0)) return () => {};
 
-  /* WHICH BEAT, asked of the frame rather than of a media query. The landscape
-     card is wider than it is tall and its markets are wired to a padlock off to
-     one side; the portrait card is taller than it is wide and its markets are
-     spaced round a ring. `matchMedia` would be a second copy of Built.css's
-     breakpoint, free to drift from it; the shape of the frame cannot drift from
-     the layout it IS. */
+  /* Which beat: asked of the frame's shape rather than a media query, so it
+     cannot drift from Built.css's breakpoint. */
   const portrait = DH > DW;
 
-  /* Every distance this file states in design px is stated for the 640-wide
-     frame, so anything that is a PROPORTION of the card is scaled here. The
-     distances it MEASURES -- the five wire lengths, the directions they run --
-     are already in the frame's own units and need nothing. */
+  /* Stated distances are for the 640-wide frame, so proportions are scaled
+     here. Measured distances are already in the frame's units. */
   const S = DW / 640;
   const lunge = LUNGE * S;
   const leanIn = LEAN_IN * S;
@@ -326,17 +183,14 @@ export function bt2Loop(root: HTMLElement): () => void {
     const dx = hub.x - c.x;
     const dy = hub.y - c.y;
     const d = Math.hypot(dx, dy) || 1;
-    /* The portrait card carries no market names -- the design has none, and
-       Built.css takes them off. Asked of the stylesheet rather than of the
-       frame, so a label that is not drawn is not lit either and this file
-       never schedules a colour on something nobody can see. */
+    /* Portrait hides the market names (Built.css). Asked of the stylesheet,
+       so a hidden label is never lit. */
     const named = el.querySelector<HTMLElement>('.bt2__label');
     const label = named && getComputedStyle(named).display !== 'none' ? named : null;
     return {
       el,
       label,
-      // Read, not assumed: a label cools back to the colour the stylesheet gives
-      // it, so a token change carries through without this file being touched.
+      // Cools back to the stylesheet's colour, read rather than assumed.
       cool: label ? getComputedStyle(label).color : '',
       c,
       dx,
@@ -348,9 +202,8 @@ export function bt2Loop(root: HTMLElement): () => void {
   });
   const lockCool = getComputedStyle(lockLabel).color;
 
-  /* The mean direction the delivery arrives from, as a unit vector. See the
-     lock's lean below. Normalised after averaging, so a market that is nearly
-     opposite another cancels rather than dominating. */
+  /* The mean direction the delivery arrives from, as a unit vector, for the
+     lock's lean. */
   const aim = (() => {
     const sx = markets.reduce((a, m) => a + m.ux, 0) / markets.length;
     const sy = markets.reduce((a, m) => a + m.uy, 0) / markets.length;
@@ -358,29 +211,20 @@ export function bt2Loop(root: HTMLElement): () => void {
     return { x: sx / len, y: sy / len };
   })();
 
-  /* Read beside the rest colours above, for the same reason they are read
-     here: this function is the build, so it runs after the theme is on the
-     document and runs again when useSectionMotion rebuilds on a theme flip. */
+  /* Read in the build, so a theme switch rebuild picks up the new values. */
   const beadBg = tok('--accent-lift', BEAD_BG);
   const litInk = tok('--ink', LIT);
   const sealed = tok('--bt-seal', SEALED);
 
-  /* One speed for every wire, set by the longest of them. The departures fall
-     out of it: a market leaves early exactly in proportion to how far it is. */
+  /* One speed for every wire, set by the longest. */
   const longest = markets.reduce((m, n) => Math.max(m, n.d), 0);
   const speed = longest / RUN;
 
   /* ------------------------------------------------------------ the circuit
-     The ring is a mask in Built.css, so there is nothing in the document to
-     measure it off. It is READ instead, from three custom properties declared
-     beside that mask -- centre as an offset from the card's own centre, radius
-     in design units -- which is the one place both can be kept in step. The
-     fallbacks are the frame's values and are what a missing property yields.
-
-     Every ANGLE below is measured, including SELF-CUSTODY's: this file does
-     not know which market is at the top of the ring or that the pill is at the
-     bottom, and it must not, or the beat goes back to being a schedule that
-     happens to agree with a drawing. */
+     The ring is a mask, so its centre and radius are read from the custom
+     properties declared beside it in Built.css (fallbacks are the frame's
+     values). Every angle, including SELF-CUSTODY's, is measured, so the order
+     round the ring is never hardcoded. */
   const ringX = DW / 2 + (Number(cs.getPropertyValue('--bt2-ring-x')) || 0);
   const ringY = DH / 2 + (Number(cs.getPropertyValue('--bt2-ring-y')) || 0);
   const ringR = Number(cs.getPropertyValue('--bt2-ring-r')) || Math.min(DW, DH) / 2;
@@ -395,9 +239,8 @@ export function bt2Loop(root: HTMLElement): () => void {
   const lastTurn = turns.reduce((a, b) => Math.max(a, b), 0);
 
   /* ---------------------------------------------------------------- beads
-     Created here, removed in the teardown. Sized in `var(--c)` so the box
-     scales with the card, and centred by negative margins rather than a
-     translate, which keeps the transform GSAP writes purely the animation. */
+     Removed on teardown. Sized in `var(--c)` and centred by negative
+     margins, so the GSAP transform is purely the animation. */
   const beads: HTMLElement[] = [];
   const firstNode = nodes[0];
   for (const m of markets) {
@@ -421,13 +264,10 @@ export function bt2Loop(root: HTMLElement): () => void {
   }
 
   /* ------------------------------------------------------------- the head
-     A zero-sized rotator parked at the RING's centre -- not the card's, and
-     not the padlock's; the design offsets the ring by a unit from both -- with
-     the head hanging off it at the ring's radius, at twelve o'clock. GSAP
-     turns the rotator and the head goes round with it, staying tangent for
-     free. Both boxes are in `var(--c)`, so a resize moves the whole orbit
-     without this module being rebuilt. Behind the marks, like the beads: the
-     head passes UNDER each market rather than over it. */
+     A zero-sized rotator at the ring's centre (offset a unit from both the
+     card's and the padlock's), with the head at the ring's radius at twelve
+     o'clock. All in `var(--c)`, so a resize needs no rebuild. Inserted
+     behind the marks, like the beads. */
   let orbit: HTMLElement | undefined;
   let head: HTMLElement | undefined;
   if (portrait) {
@@ -460,9 +300,8 @@ export function bt2Loop(root: HTMLElement): () => void {
     stage.insertBefore(orbit, firstNode);
   }
 
-  /* The beat's own clock, which is not the same length in the two frames: the
-     landscape wave is solved from wire lengths, the circuit from one lap and
-     the fall that follows the last touch. Both fit inside PERIOD. */
+  /* The beat's length differs by frame: landscape from wire lengths, portrait
+     from one lap plus the last fall. Both fit inside PERIOD. */
   const lastLand = LEAD + lastTurn * ORBIT + UP + DROP;
   const sealAt = portrait ? lastLand - 0.12 : SEAL;
   const coolAt = sealAt + 0.82;
@@ -488,11 +327,8 @@ export function bt2Loop(root: HTMLElement): () => void {
       });
     });
 
-    /* 0 — the head goes round, and there is only one of it. Constant rate, so
-       every station's cue below is simply where that station is: a lap is
-       ORBIT seconds and a market at a third of the way round is touched a
-       third of the way through. Portrait only; the landscape card has a fan of
-       wires and no ring to run. */
+    /* 0. Portrait only: the head goes round at a constant rate, so each
+       station's cue is simply its fraction of the lap. */
     if (portrait && orbit && head) {
       tl.set(orbit, { rotation: startA, transformOrigin: '0 0' }, 0)
         .to(orbit, { rotation: startA + 360, duration: ORBIT, ease: 'none' }, LEAD)
@@ -504,20 +340,15 @@ export function bt2Loop(root: HTMLElement): () => void {
 
     markets.forEach((m, i) => {
       const bead = beads[i];
-      /* WHEN a market moves, and how long its value is in flight. Landscape:
-         every bead travels at one speed and they are timed BACKWARD from a
-         single arrival, so five different wire lengths become five departures
-         and one convergence. Portrait: every radius is the same length, so
-         there is nothing to solve backward from -- the head's passage is the
-         cue and the fall is one duration for all five. */
+      /* Landscape: one speed, timed backward from a single arrival. Portrait:
+         the head's passage is the cue and the fall is one duration. */
       const travel = portrait ? DROP : m.d / speed;
       const lean = portrait ? LEAD + turns[i] * ORBIT : ARRIVE - travel - UP;
       const depart = lean + UP;
 
-      /* 1 — the market leans along its own wire and lets the value go. Both
-         ends of the lean are stated, and the transform goes back to the
-         stylesheet afterwards: an inline identity transform still promotes the
-         node to its own layer, and these discs carry a backdrop filter. */
+      /* 1. The market leans along its wire and lets the value go. The
+         transform goes back to the stylesheet afterwards: an inline identity
+         transform would keep the node on its own layer. */
       tl.to(m.el, {
         ...CENTRED,
         x: lunge * m.ux * u,
@@ -535,11 +366,9 @@ export function bt2Loop(root: HTMLElement): () => void {
         tl.to(m.label, { color: litInk, duration: 0.26, ease: 'sine.out' }, lean);
       }
 
-      /* 2 — the bead rides the wire. `fromTo` states both ends so a stranded
-         value from an earlier cycle cannot poison it, and `immediateRender` is
-         off because GSAP writes a fromTo's start the moment it is BUILT, not
-         when the playhead arrives — without it every bead would sit parked at
-         the padlock from the first frame. */
+      /* 2. The bead rides the wire. `fromTo` states both ends so a stranded
+         value cannot leak between cycles, with `immediateRender: false` so
+         beads are not parked at the padlock from build time. */
       tl.set(bead, { xPercent: 0, yPercent: 0, scaleX: 0.55, opacity: 0 }, depart)
         .fromTo(bead,
           { xPercent: 0, yPercent: 0 },
@@ -556,36 +385,16 @@ export function bt2Loop(root: HTMLElement): () => void {
         .set(bead, { xPercent: 0, yPercent: 0, scaleX: 1, opacity: 0 }, depart + travel + 0.02);
     });
 
-    /* 3 — the lock takes the delivery: it seats, and its label goes brand red
-       for the length of the settlement.
+    /* 3. The lock takes the delivery: it seats and its label goes brand red.
 
-       IT LEANS ALONG THE WIRES, AND ONLY WHERE THERE ARE WIRES. `x: -LEAN_IN`
-       was true of exactly one layout -- the landscape frame, where all five
-       markets are away to the left and the mean of their directions is
-       (0.996, 0.087). `aim` replaced that with the mean of the wires that are
-       actually on the card, which reproduces the old cue to within half a
-       design pixel at 1600.
+       Landscape: it leans along `aim`, the mean of the wires. Portrait: the
+       mean of directions round a circle is meaningless, so it scales only,
+       and the inner circle seats with it at a third of the step.
 
-       On the ring there is no such direction, and averaging is not the way to
-       find one: five unit vectors spread round a circle sum to (0.02, 0.26),
-       a residue of where the markets happen to bunch rather than a heading the
-       delivery arrives on. The padlock in that frame is arrived at from every
-       side at once, so it answers with scale alone -- and the faint circle it
-       sits inside seats with it, at a third of the step, so the centre of the
-       card answers as one object rather than as a disc twitching inside a
-       static ring.
-
-       IT SEATS THE MARK, NOT THE NODE, in the portrait frame. SELF-CUSTODY is
-       a CHILD of `.bt2__node--lock` in the markup -- it is the padlock's own
-       label -- and in the landscape frame it sits directly under the disc, so
-       scaling the node carries the two together and that is right. On the ring
-       the same element is a pill 90 design units away on the lower arc, a
-       separate object in the drawing; scaling the node about its centre swung
-       the pill 11.7 units down the card and grew it 13% every beat. So the
-       portrait seat is applied to `.bt2__whole` -- the padlock image itself,
-       centred on the same point -- and the pill, its sibling, does not move.
-       It has no stylesheet transform of its own, so CENTRED is not its
-       business either. */
+       In portrait the seat applies to `.bt2__whole` (the padlock image), not
+       the node: SELF-CUSTODY is the node's child but sits as a pill on the
+       lower arc, and scaling the node would swing and grow it. The image has
+       no stylesheet transform, so CENTRED does not apply. */
     const mark = portrait ? lock.querySelector<HTMLElement>('.bt2__whole') : null;
     const seat: HTMLElement = mark ?? lock;
     const seats: gsap.TweenVars = mark
@@ -607,11 +416,8 @@ export function bt2Loop(root: HTMLElement): () => void {
         .set(inner, { clearProps: 'transform' }, sealAt + 0.2 + BACK + 0.02);
     }
 
-    /* 4 — the circuit cools outward from the lock, nearest market first, so the
-       beat closes in the same measured order it opened in, reversed. The
-       portrait card has no market names to cool: its markets have already
-       returned on their own `BACK` tweens and SELF-CUSTODY is the last thing
-       still lit, so the loop above is simply empty there rather than gated. */
+    /* 4. The labels cool outward from the lock, nearest first. Portrait has
+       no market names, so this loop does nothing there. */
     [...markets]
       .sort((a, b) => a.d - b.d)
       .forEach((m, i) => {
@@ -623,15 +429,14 @@ export function bt2Loop(root: HTMLElement): () => void {
         }, coolAt + i * 0.09);
       });
 
-    /* Off screen the loop stops here rather than wherever the scroll left it,
-       so the card is never parked mid-delivery. A beat is under four seconds;
-       it is allowed to finish. */
+    /* Off screen the loop pauses here, at rest; a beat in progress is
+       allowed to finish. */
     tl.call(() => { if (offscreen) tl.pause(); }, undefined, storyEnd + 0.1);
     tl.to({}, { duration: 0.01 }, PERIOD - 0.01);
   }, card);
 
-  /* Pause the moment the card leaves the screen, wake when it comes back. The
-     margin is generous so the beat is not caught half-open on the way in. */
+  /* Pause off screen, wake on return. The margin keeps a beat from being
+     caught half-open on the way in. */
   const io = new IntersectionObserver(([entry]) => {
     offscreen = !entry.isIntersecting;
     if (!offscreen) loop?.play();
@@ -641,8 +446,8 @@ export function bt2Loop(root: HTMLElement): () => void {
 
   return () => {
     io.disconnect();
-    // Reverts every tween this module built, which hands each element's style
-    // attribute back exactly as it was found — mid-beat included.
+    // Reverts every tween this module built, restoring each style attribute
+    // as it was found, mid-beat included.
     ctx.revert();
     for (const bead of beads) bead.remove();
     beads.length = 0;

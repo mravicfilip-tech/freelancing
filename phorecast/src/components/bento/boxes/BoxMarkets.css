@@ -10,11 +10,6 @@
  * resolve against the viewport), and the divisor is 774 (776 less two 1px
  * borders), with the card's padding moved onto `.mk__stage`.
  *
- * Selectors are written at `.bcard.box-markets` / `.box-markets <x>` so they
- * beat Bento.css's shared `.bcard--markets` and `.mk__*` rules, including its
- * media queries, in any stylesheet order. This box scales as a whole, so those
- * breakpoint transforms are explicitly cleared.
- *
  * Resting state only; motion lives in bento/motion/markets.ts.
  */
 
@@ -23,7 +18,6 @@
      Figma's inset is carried by .mk__stage: a container's own `cqw` resolves
      against the next container out, so the card cannot be sized in its own
      unit. Zero padding makes the content box the full 774. */
-  height: auto;
   min-height: 0;
   aspect-ratio: 776 / 440;
   padding: 0;
@@ -147,7 +141,6 @@
   width: calc(488.255 * var(--u));
   height: calc(312 * var(--u));
   opacity: 0.2;
-  transform: none;
   pointer-events: none;
 }
 .box-markets .mk__grid img {
@@ -163,7 +156,6 @@
   top: 0;
   width: calc(716 * var(--u));
   height: calc(380 * var(--u));
-  transform: none;
   pointer-events: none;
 }
 .box-markets .mk__orbit {
@@ -189,7 +181,6 @@
   top: calc(-27 * var(--u));
   width: calc(727.454 * var(--u));
   height: calc(765 * var(--u));
-  transform: none;
   pointer-events: none;
 }
 
@@ -206,7 +197,6 @@
   position: absolute;
   display: block;
   overflow: hidden;
-  border: 0;
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge);
   /* `--x`/`--y`/`--s`/`--r` are the tile's own design pixels, written inline by
      BoxMarkets.tsx as plain numbers and resolved here so the phone layout can
@@ -292,14 +282,11 @@
   top: calc(var(--my, var(--y)) * var(--u));
   width: calc(10 * var(--u));
   height: calc(10 * var(--u));
-  margin: 0; /* Bento.css puts 2px here; on an absolute box that is a 2px shift */
   background: var(--mk-accent);
   transform: rotate(45deg);
 }
 
-/* Breakpoints ------------------------------------------------------------
-   Bento.css scales `.mk__*` artwork down at 1100 and 720. This card is tied
-   to its container unit, so those transforms are cleared above. */
+/* Breakpoints ------------------------------------------------------------ */
 
 /* The phone card: Figma 526:394, 394 x 712 --------------------------------
    Figma stands the artwork on its end: the illustration frame is authored
@@ -428,14 +415,6 @@
   .box-markets .bcard__title {
     text-wrap: balance;
   }
-  /* Bento.css puts a scrim plate behind this link below 720. Not needed here
-     (the artwork is clipped well above the link), so it is undone. */
-  .bcard.box-markets .bento__cta {
-    padding: 0;
-    margin-left: 0;
-    border-radius: 0;
-    background: none;
-  }
 
   /* 526:1062: the mesh, turned with the illustration. Its box is stated
      unrotated and turned about its own centre, so the two numbers below are the
@@ -445,9 +424,6 @@
     left: calc(-35.128 * var(--u));
     top: calc(260.13 * var(--u));
     transform: rotate(90deg);
-    /* Bento.css pins this layer's origin to its top-left below 1100. The turn
-       must be about the centre the numbers above are measured to. */
-    transform-origin: 50% 50%;
   }
 
   /* 526:1024 / 526:1025: the two ellipses, also turned with the illustration,

@@ -35,21 +35,10 @@ const ITEMS: Item[] = [
   {
     q: 'How long do withdrawals take?',
     a: 'Most withdrawals are processed within minutes. Larger withdrawals may be held for a security review and can take up to 24 hours. You’ll see the transaction hash as soon as it’s sent.',
-    // THE ONE ITEM THAT CARRIES CHIPS, AND WHY IT IS THIS ONE.
-    //
-    // The chips used to sit on "How does on-chain trading work?" and read
-    // Execution / Off-chain, Settlement / On-chain, Verifiable on-chain. That
-    // question is gone and so is the claim under it: this is a prediction
-    // market now, with no collateral in contracts to inspect and no
-    // liquidation to re-derive, so a "verifiable on-chain" seal would be
-    // asserting something the copy above no longer supports.
-    //
-    // Withdrawals is the one answer left that both states numbers worth
-    // pinning next to the prose -- the two timings a reader is actually here
-    // for -- and hands over something checkable for them: the transaction
-    // hash, which the copy promises by name. So the pair of label/value chips
-    // and the seal move here together, and the seal's claim is cut down to
-    // exactly what the sentence promises.
+    // The only item with chips: it is the one answer that states timings
+    // worth pinning beside the prose, and the seal claims only what the copy
+    // promises (the transaction hash). Chips must never assert more than the
+    // answer text does.
     chips: [
       { label: 'Most withdrawals', value: 'Minutes' },
       { label: 'Security review', value: 'Up to 24 hours' },
@@ -85,16 +74,11 @@ export function Faq() {
           </p>
           <h2 id="faq-title" className="faq__title">Answers<br />before you start</h2>
           <p className="faq__lede">
-            {/* The `{' '}` after each break is load-bearing, and is NOT what JSX
-                gives you for free. A JSXText node that begins with a newline has
-                that whole first (empty) line dropped and the next line trimmed,
-                so the text after a `<br />` arrives with no leading space at all.
-                Above 720 that is invisible -- the break supplies the gap. Below
-                720 `.br-wide` is `display: none` and the two sentences fuse:
-                "works.What you can trade" and "to start,and how quickly". An
-                explicit space node survives the break being hidden, and costs
-                nothing above it, because CSS drops a space that lands at the
-                start of a line after a forced break. */}
+            {/* The `{' '}` after each break is load-bearing. JSX trims the
+                newline and indentation after a `<br />`, so the next text has no
+                leading space. Below 720px `.br-wide` is hidden and the sentences
+                would fuse ("works.What you can trade"). Above 720px the extra
+                space is harmless: CSS drops a space at the start of a line. */}
             Everything below is how Phorcast actually works.<br className="br-wide" />{' '}
             What you can trade, what it costs to start,<br className="br-wide" />{' '}
             and how quickly money moves in and out.
@@ -128,15 +112,11 @@ export function Faq() {
                   {item.chips && (
                     <div className="faq__chips">
                       {item.chips.map((c, ci) =>
-                        /* The seal is a mask, not a picture: seal.svg is one flat
-                           #e5331e path, which is exactly --accent in dark, and the
-                           chip already sets `color: var(--accent)`. So it inherits
-                           currentColor and follows the brand red to #a21605 on paper
-                           without a light variant of the file existing. The eyebrow's
-                           live-dot above is NOT convertible -- it is three stacked
-                           ellipses at three alphas, and a mask would flatten them
-                           into one disc -- so it stays an <img> and swaps the whole
-                           file per theme. See src/components/LiveDot.tsx. */
+                        /* The seal is drawn as a mask (Icon) in currentColor, so it
+                           follows the chip's `--accent` in both themes with no
+                           light variant of the file. The eyebrow's live dot cannot
+                           work this way (three ellipses at three alphas), so it
+                           swaps files per theme instead; see LiveDot.tsx. */
                         'verify' in c ? (
                           <span key={ci} className="faq__chip faq__chip--verify">
                             <Icon src={seal} w={16} h={16} />{c.verify}

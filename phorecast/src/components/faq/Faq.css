@@ -1,45 +1,35 @@
-/* "Answers you can verify" — the band's colour, in two layers.
-   -------------------------------------------------------------------------
-   ROLE TOKENS (--ink, --ink-2, --accent, --panel) for everything whose job the
-   rest of the page already names: the heading, the lede, the questions, the
-   answers, the row numbers and the plus/minus. They flip with the theme for
-   free, and the FAQ does not get to have an opinion about them.
+/* FAQ band colour, in two layers.
 
-   FAQ LOCALS (--faq-*) for the values that are this band's own: the closed
-   row's ground, the open row's shadow, the chip's hairline, and the two
-   halves of the verify chip. They are declared here with today's dark values,
-   and the light block further down redefines those names -- plus two the
-   light block alone needs, --faq-row-open and --faq-row-stroke, for the
-   client's white-cards-with-an-8%-stroke brief (light only; dark's states are
-   still exactly the five above). Nothing else in this file mentions a
-   colour, so "what does the FAQ do in light?" is answerable by reading one
-   block.
+   Role tokens (--ink, --ink-2, --accent, --panel) for everything the rest of
+   the page already names: heading, lede, questions, answers, row numbers and
+   the plus/minus. They flip with the theme on their own.
 
-   The accordion's three states are made of these and nothing else:
+   FAQ locals (--faq-*) for values that belong to this band: the closed row's
+   ground, the open row's shadow, the chip hairline and the verify chip. They
+   are declared here with the dark values; the light blocks below redefine
+   them, plus two that only light uses (--faq-row-open, --faq-row-stroke).
+   No other rule in this file names a colour.
 
-     closed row   --faq-row (+ --faq-row-stroke in light), number and
+     closed row   --faq-row (+ --faq-row-stroke in light); number and
                   plus/minus --ink-2
      open row     --panel in dark / --faq-row-open in light, + --faq-row-shadow
-                  (dark only -- zeroed in light, see that block), number and
-                  minus --accent
+                  (dark only); number and minus --accent
      chips        --panel behind --faq-chip-line, or the verify pair
 
-   None of which the entrance touches -- see Faq.motion.ts. */
+   The entrance (Faq.motion.ts) touches none of these. */
 .faq {
   padding: 120px 0;
 
-  /* The closed row: barely off the page (1.04:1), so seven of them read as one
-     list rather than as seven cards. The open one steps up to --panel (1.12:1)
-     and gains the shadow below. */
+  /* The closed row sits barely off the page so the rows read as one list,
+     not seven cards. The open row steps up to --panel and gains the shadow. */
   --faq-row: #141312;
 
-  /* The open row's lift. In dark this is very nearly nothing -- 35% black over
-     a near-black page is 1.03:1 -- because the tint is doing all the work. */
+  /* The open row's lift. Nearly invisible in dark; the tint does the work. */
   --faq-row-shadow: rgba(0, 0, 0, 0.35);
 
-  /* The chip's hairline. A chip's ground is --panel, which is also the open
-     row it sits in, so this edge is the entire shape of the chip. Deliberately
-     not --veil-line: that token is 12% white and this is 10%. */
+  /* The chip's hairline. The chip and the open row are both --panel, so this
+     edge is the whole shape of the chip. 10% white, deliberately not
+     --veil-line (12%). */
   --faq-chip-line: rgba(255, 255, 255, 0.1);
 
   /* The verify chip: the accent at a wash, with a lit edge drawn over it. */
@@ -68,50 +58,30 @@
 .faq__list { grid-column: 3; display: flex; flex-direction: column; gap: 12px; }
 .faq__row {
   background: var(--faq-row);
-  /* Dark has no card edge: --faq-row-stroke is only ever declared inside the
-     light blocks below, so here the custom property is unset and this falls
-     back to `none` -- literally no border, not a zero-alpha one. A `none`
-     fallback keeps dark's box model untouched to the pixel; a 1px transparent
-     one would not, even invisibly, because box-sizing: border-box still takes
-     the width out of the content box. */
-  /* An inset ring, not a border. A border on an auto-height row adds its two
-     edges to the row's outer height -- `box-sizing: border-box` does not save
-     you when the height comes from the content -- so declaring it in light and
-     leaving dark at `none` made the band 977px tall in dark and 991px in light
-     at 1600. A theme must not change layout, and giving dark a transparent 1px
-     border to match would have moved dark instead, which is the one thing that
-     cannot move here.
-     `box-shadow: inset` paints the same hairline and takes no space at all, so
-     both themes keep the height they already had. It is a stroke, not a cast:
-     no offset, no blur, no spread. */
+  /* The light-theme edge is an inset ring, not a border. A border on an
+     auto-height row adds to its height, so the band would be taller in light
+     than in dark; a theme must not change layout. --faq-row-stroke is only
+     declared in the light blocks, so dark falls back to `none`. */
   box-shadow: var(--faq-row-stroke, none);
   border-radius: 10px;
   overflow: hidden;
   transition: background-color 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
-/* The open row's own ground, same fallback trick: unset in dark, so it stays
-   --panel exactly as before; the light blocks point it at the same white as
-   the closed row, so the two states share one surface and only the stroke,
-   the shadow and the content tell them apart. */
-/* The open row states its own box-shadow, so it has to restate the ring or it
-   would be the one row in the band without an edge -- and it is the row most
-   likely to be looked at. The ring is listed first so it paints over the lift
-   rather than under it. The lift itself is pre-existing and untouched. */
+/* --faq-row-open is unset in dark, so the open row falls back to --panel; in
+   light it is the same white as the closed row. The open row sets its own
+   box-shadow, so it must restate the ring; the ring is listed first so it
+   paints over the lift. */
 .faq__row.is-open {
   background: var(--faq-row-open, var(--panel));
   box-shadow: var(--faq-row-stroke, none), 0 12px 32px var(--faq-row-shadow);
 }
-/* The question is set at the paragraph size, 18, in its heading face and
-   weight (Manrope 500), so it is the same size as the answer under it and
-   still reads as the question against the answer's Inter Tight 300. 1.3
-   leading rather than the 1.2 of the heading roles: at 18 a two-line question
-   closes up at 1.2.
+/* The question uses --h3-size (18px, the same as the answer); the heading
+   face and weight are what mark it as the question.
 
-   The number, the question and the plus/minus sit on the question's FIRST
-   line, not on the middle of the block: a question that wraps would otherwise
-   carry its number and toggle down between its two lines. The number shares
-   the question's first baseline; the toggle is centred on the first line box
-   (--faq-q-line), which it overhangs by a fraction of a pixel. */
+   The number and the plus/minus align to the question's FIRST line, not the
+   middle of the block, so a wrapped question keeps them at the top. The
+   number shares the first baseline; the toggle is centred on the first line
+   box (--faq-q-line). */
 .faq__q {
   --faq-q-line: calc(var(--h3-size) * var(--h3-leading));
   display: flex; align-items: flex-start; gap: 16px; width: 100%;
@@ -154,190 +124,71 @@
 .faq__chip--verify { background: var(--faq-verify-bg); border-color: var(--faq-verify-line); color: var(--accent); }
 
 /* --- Light ------------------------------------------------------------------
-   Written twice, exactly as tokens.css and Footer.css write theirs, because a
-   media query cannot go in a selector list. The two blocks MUST stay
-   identical; only their conditions differ.
+   Written twice, as tokens.css and Footer.css do, because a media query cannot
+   go in a selector list. The two blocks MUST stay identical.
 
-     1. the system preference leads, but only while nothing has been chosen;
-     2. an explicit choice wins at any system setting.
+     1. the system preference applies while no theme has been chosen;
+     2. an explicit data-theme wins at any system setting.
 
-   In practice (2) always applies -- index.html resolves both into data-theme
-   before first paint. (1) is what a stripped page or a prerender falls back
-   to, and leaving it out is how a band ends up drawing its dark rows on a
-   light page.
+   index.html sets data-theme before first paint, so (2) normally applies;
+   (1) is the fallback for a page without that script.
 
-   Only the five --faq-* locals are redefined. Everything else in this file
-   reads a role token and has already flipped, including all four of the
-   accordion's state colours: the number and the plus/minus go --ink-2 ->
-   --accent on open in both themes, which on paper is #5e5651 -> #a21605.
-
-   There is no glow in this band and none is introduced. -------------------- */
+   Only the --faq-* locals are redefined; everything else reads a role token.
+   ------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .faq {
-  /* THE ROW LADDER, AS BUILT -- AND WHY THIS SECTION NO LONGER READS IT.
-
-     In dark the ladder climbs away from the page: page #0f0e0d, closed row
-     #141312 at 1.04:1, open row --panel at 1.12:1. On paper the same ladder
-     used to run the other way -- down from #fffbf8 through a beige #fcf6f1
-     tint to --panel #f7f0ea -- with the open row as the deepest tint rather
-     than the palest.
-
-     The client's brief for light supersedes that tint for these rows
-     specifically: white, both states, with an 8% black stroke as the only
-     separation from the page and from each other (see --faq-row-stroke,
-     below). So --faq-row no longer carries the ladder's #fcf6f1 -- it carries
-     the same white --faq-row-open uses, and the stroke does the job the tint
-     used to. A white closed row under a beige open one would read as a bug,
-     so both states share this one value; nothing else in the band still asks
-     the ladder a question. */
+  /* Light rows are white in both states, separated from the page and from
+     each other only by the 8% stroke (--faq-row-stroke). */
   --faq-row: #ffffff;
 
-  /* THE SHADOW IS DROPPED IN LIGHT, NOT TRANSLATED.
-
-     Dark keeps its own cast: 35% black over a near-black page is 1.03:1 --
-     decoration on top of a tint that already says everything, see Faq.css's
-     header. That was already brought down to a tenth of the alpha once for
-     paper, landing at 1.23:1 against the ladder's beige panel -- soft, but a
-     real cast underneath a raised card.
-
-     This section's cards are white now (below) and the client's own framing
-     gives the 8% stroke the separation job, not a shadow: "a soft black
-     stroke around it" is the whole brief. A cast that was soft against beige
-     reads as a cast against white, and this page has had glow pulled three
-     times and a hover shadow pulled off the hero ticker cards earlier today
-     for reading as a heavy smudge on paper -- the standing reason not to
-     pair a new edge with one here. So the open row's elevation shadow is
-     zeroed for light; the token stays wired to the rule below it, in case
-     dark's box-shadow declaration ever needs a light counterpart again, but
-     it casts nothing. */
+  /* No elevation shadow in light: the stroke is the only separation, and a
+     cast reads as a smudge on white. The token stays wired so the rule does
+     not need a light-only override. */
   --faq-row-shadow: transparent;
 
-  /* White-alpha becomes ink-alpha, which flips the direction for free: more
-     alpha on a dark page is brighter, more on paper is darker, and both mean
-     "there is an edge here". 10% -> 11% is the same eighth-up step the footer
-     took for its own 10% plate line, and for the same reason -- dark ink on
-     paper is less visible per unit alpha. The chip has no ground of its own
-     (it is --panel inside an open row that is also --panel), so this hairline
-     is still the entire shape of the chip in both themes. */
+  /* White-alpha becomes ink-alpha. Slightly higher (11% vs 10%) because dark
+     ink on paper reads fainter per unit alpha, the same step the footer's
+     plate line takes. */
   --faq-chip-line: rgba(26, 21, 18, 0.11);
 
-  /* The verify chip, rebuilt rather than recoloured.
-
-     In dark it is the accent at 24% over the panel, which lands BRIGHTER than
-     the panel (1.26:1) with a lit brick edge over it (1.36:1) -- the chip
-     glows faintly, the way everything that means "yes, check this" does in
-     this design. Recoloured literally on paper that is a pale pink that lifts
-     off nothing and an edge that has vanished.
-
-     So the wash goes down instead of up: --accent at 12% over --panel is
-     1.23:1 DARKER, which is dark's 1.26:1 read in the only direction paper
-     has, and the edge at 18% is 1.35:1 against that wash against dark's
-     1.36:1. Both steps survive at their own weight. The text is --accent and
-     is already handled: 3.15:1 on the dark chip, 5.70:1 on the light one, the
-     chip being the one place in the band where light is plainly the better
-     of the two. */
+  /* The verify chip, rebuilt rather than recoloured. In dark the accent wash
+     lifts the chip above the panel; on paper the wash darkens it instead, so
+     it still stands off the row. */
   --faq-verify-bg: rgba(162, 22, 5, 0.12);
   --faq-verify-line: rgba(162, 22, 5, 0.18);
 
-  /* THE OPEN ROW'S GROUND, AND THE STROKE THE CLIENT ASKED FOR.
-
-     --faq-row-open just points at the same white --faq-row carries above --
-     one surface for both states, so the pair stays coherent instead of a
-     white closed row sitting under a beige open one.
-
-     The stroke is its own token, `--faq-row-stroke`, and not `--veil-line`:
-     the page's existing hairline is a warm 14% near-black
-     (rgba(26, 21, 18, 0.14)) tuned for edges drawn on --panel; the client
-     asked for a neutral black at 8%, a different colour and a different
-     weight on purpose, so it gets its own name here rather than bending a
-     token five other sections share. It is the ONLY separation these cards
-     get in light -- see --faq-row-shadow just above, zeroed for the same
-     reason: the client gave the edge this job, not a cast. */
+  /* Both row states share one white surface. The stroke is a neutral 8%
+     black with its own token rather than --veil-line (a warm 14% hairline
+     shared by other sections), so it can change without affecting them. */
   --faq-row-open: var(--faq-row);
   --faq-row-stroke: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
   }
 }
 
 :root[data-theme='light'] .faq {
-  /* THE ROW LADDER, AS BUILT -- AND WHY THIS SECTION NO LONGER READS IT.
-
-     In dark the ladder climbs away from the page: page #0f0e0d, closed row
-     #141312 at 1.04:1, open row --panel at 1.12:1. On paper the same ladder
-     used to run the other way -- down from #fffbf8 through a beige #fcf6f1
-     tint to --panel #f7f0ea -- with the open row as the deepest tint rather
-     than the palest.
-
-     The client's brief for light supersedes that tint for these rows
-     specifically: white, both states, with an 8% black stroke as the only
-     separation from the page and from each other (see --faq-row-stroke,
-     below). So --faq-row no longer carries the ladder's #fcf6f1 -- it carries
-     the same white --faq-row-open uses, and the stroke does the job the tint
-     used to. A white closed row under a beige open one would read as a bug,
-     so both states share this one value; nothing else in the band still asks
-     the ladder a question. */
+  /* Light rows are white in both states, separated from the page and from
+     each other only by the 8% stroke (--faq-row-stroke). */
   --faq-row: #ffffff;
 
-  /* THE SHADOW IS DROPPED IN LIGHT, NOT TRANSLATED.
-
-     Dark keeps its own cast: 35% black over a near-black page is 1.03:1 --
-     decoration on top of a tint that already says everything, see Faq.css's
-     header. That was already brought down to a tenth of the alpha once for
-     paper, landing at 1.23:1 against the ladder's beige panel -- soft, but a
-     real cast underneath a raised card.
-
-     This section's cards are white now (below) and the client's own framing
-     gives the 8% stroke the separation job, not a shadow: "a soft black
-     stroke around it" is the whole brief. A cast that was soft against beige
-     reads as a cast against white, and this page has had glow pulled three
-     times and a hover shadow pulled off the hero ticker cards earlier today
-     for reading as a heavy smudge on paper -- the standing reason not to
-     pair a new edge with one here. So the open row's elevation shadow is
-     zeroed for light; the token stays wired to the rule below it, in case
-     dark's box-shadow declaration ever needs a light counterpart again, but
-     it casts nothing. */
+  /* No elevation shadow in light: the stroke is the only separation, and a
+     cast reads as a smudge on white. The token stays wired so the rule does
+     not need a light-only override. */
   --faq-row-shadow: transparent;
 
-  /* White-alpha becomes ink-alpha, which flips the direction for free: more
-     alpha on a dark page is brighter, more on paper is darker, and both mean
-     "there is an edge here". 10% -> 11% is the same eighth-up step the footer
-     took for its own 10% plate line, and for the same reason -- dark ink on
-     paper is less visible per unit alpha. The chip has no ground of its own
-     (it is --panel inside an open row that is also --panel), so this hairline
-     is still the entire shape of the chip in both themes. */
+  /* White-alpha becomes ink-alpha. Slightly higher (11% vs 10%) because dark
+     ink on paper reads fainter per unit alpha, the same step the footer's
+     plate line takes. */
   --faq-chip-line: rgba(26, 21, 18, 0.11);
 
-  /* The verify chip, rebuilt rather than recoloured.
-
-     In dark it is the accent at 24% over the panel, which lands BRIGHTER than
-     the panel (1.26:1) with a lit brick edge over it (1.36:1) -- the chip
-     glows faintly, the way everything that means "yes, check this" does in
-     this design. Recoloured literally on paper that is a pale pink that lifts
-     off nothing and an edge that has vanished.
-
-     So the wash goes down instead of up: --accent at 12% over --panel is
-     1.23:1 DARKER, which is dark's 1.26:1 read in the only direction paper
-     has, and the edge at 18% is 1.35:1 against that wash against dark's
-     1.36:1. Both steps survive at their own weight. The text is --accent and
-     is already handled: 3.15:1 on the dark chip, 5.70:1 on the light one, the
-     chip being the one place in the band where light is plainly the better
-     of the two. */
+  /* The verify chip, rebuilt rather than recoloured. In dark the accent wash
+     lifts the chip above the panel; on paper the wash darkens it instead, so
+     it still stands off the row. */
   --faq-verify-bg: rgba(162, 22, 5, 0.12);
   --faq-verify-line: rgba(162, 22, 5, 0.18);
 
-  /* THE OPEN ROW'S GROUND, AND THE STROKE THE CLIENT ASKED FOR.
-
-     --faq-row-open just points at the same white --faq-row carries above --
-     one surface for both states, so the pair stays coherent instead of a
-     white closed row sitting under a beige open one.
-
-     The stroke is its own token, `--faq-row-stroke`, and not `--veil-line`:
-     the page's existing hairline is a warm 14% near-black
-     (rgba(26, 21, 18, 0.14)) tuned for edges drawn on --panel; the client
-     asked for a neutral black at 8%, a different colour and a different
-     weight on purpose, so it gets its own name here rather than bending a
-     token five other sections share. It is the ONLY separation these cards
-     get in light -- see --faq-row-shadow just above, zeroed for the same
-     reason: the client gave the edge this job, not a cast. */
+  /* Both row states share one white surface. The stroke is a neutral 8%
+     black with its own token rather than --veil-line (a warm 14% hairline
+     shared by other sections), so it can change without affecting them. */
   --faq-row-open: var(--faq-row);
   --faq-row-stroke: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
@@ -348,21 +199,9 @@
   .faq__mark { display: none; }
 }
 @media (max-width: 720px) {
-  /* The lede's line breaks are typography, not content. They were placed for a
-     desktop measure -- three balanced lines -- and a phone is narrower than the
-     shortest of them, so each authored break landed mid-thought on top of the
-     wrapping the browser was already doing: "we show / you where to check it."
-     Dropping them lets the paragraph wrap once, to its own width.
-
-     They are hidden rather than deleted because they are right where they were
-     written, above this breakpoint. What separates the sentences once they are
-     gone is an explicit `{' '}` after each break in Faq.tsx, NOT the newline
-     and indentation between the segments: JSX drops a text node's empty first
-     line and trims the next, so the copy after a `<br />` carries no leading
-     space of its own and the sentences fused here ("works.What you can
-     trade"). Above this breakpoint the break supplies the gap and the extra
-     space costs nothing, since CSS drops a space that starts a line after a
-     forced break. */
+  /* The lede's breaks are set for the desktop measure; on a phone they would
+     land mid-line, so they are hidden and the paragraph wraps naturally. The
+     explicit `{' '}` after each break in Faq.tsx keeps the sentences apart. */
   .faq__lede .br-wide { display: none; }
 
   .faq { padding: 56px 0; }
@@ -371,22 +210,14 @@
   .faq__answer { padding: 0 20px 20px; }
 }
 
-/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
-   writes its start values the moment a tween is built, and this band is not
-   built until it has been scrolled to, so without this the whole section would
-   sit finished in the sliver showing under the one above and only then animate.
+/* Pending state, the same contract as the bento and the pillars. The band is
+   built only when scrolled to, so without this hold it would show finished
+   and then animate. Gated on [data-js] (set by main.tsx) so the hold only
+   exists when script can release it; there is deliberately no timed
+   failsafe. Only the animated parts are hidden, so layout never shifts.
 
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it, and there is deliberately no timed failsafe -- for
-   a band that waits to be scrolled to the wait is legitimate and can last
-   minutes, so the guarantee has to be that the hold never applies when nothing
-   will undo it. Only the animated parts are held; the section's own box, the
-   grid and the rows' spacing stay, so nothing about the layout pops in.
-
-   The rows are held as whole `<li>`s, which is also what the entrance moves.
-   The open row's answer panel is inside one of them and is never addressed
-   separately -- by this rule or by any tween -- so the accordion cannot be
-   caught half open by a hold that is lifted mid-click. */
+   Rows are held as whole `<li>`s; the answer panel is never addressed on its
+   own, so the accordion cannot be caught half open. */
 [data-js] .faq[data-motion='pending'] .faq__rail .eyebrow,
 [data-js] .faq[data-motion='pending'] .faq__title,
 [data-js] .faq[data-motion='pending'] .faq__lede,

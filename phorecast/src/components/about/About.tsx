@@ -1,36 +1,22 @@
-/* The About page — Figma 531:148, a 1920 x 3660 frame.
-   ---------------------------------------------------------------------------
-   Six bands, top to bottom: the hero over the ember ground, CHOOSE AN EVENT,
-   ABOUT PHORCAST, CAST YOUR CONVICTION, the comparison table, and the two
-   primer cards. <Faq /> and <Footer /> are appended by App.tsx, so this file
-   is the page's own content and nothing else.
+/* The About page: Figma 531:148, a 1920 x 3660 frame.
 
-   WHAT WAS REUSED RATHER THAN REBUILT
-     - <Nav>, which brings the MORE menu with it.
-     - <LiveDot> for every eyebrow. Six bands on the landing page draw that
-       dot; the design's `Ellipses` + `Section Title` pair IS that pattern, so
-       it is `.eyebrow` + <LiveDot> here too, not a new circle.
-     - <Icon> for the two marks, which are the same Union path the wordmark
-       already ships as `brand/mark.svg` -- see MARK below.
-     - `.btn--primary`, `.container--wide`, `.eyebrow`, `.lede`.
+   Six bands, top to bottom: the hero over its own ground, CHOOSE AN EVENT,
+   ABOUT PHORCAST, CAST YOUR CONVICTION, the comparison table and the two
+   primer cards. <Faq /> and <Footer /> are appended by App.tsx.
 
-   THE ONE ASSET DECISION WORTH READING. The table's ticks and crosses are NOT
-   <Icon>s, and could not be. <Icon> is a CSS mask, and a mask keeps an alpha
-   channel and throws the colour away -- Icon.tsx says so itself: "Use it ONLY
-   for a file that is one flat colour on transparent." tick.svg is a green
-   rounded square with a WHITE check on top of it and cross.svg is a red square
-   with a white X; both are opaque across their whole box, so masking either
-   one yields a solid rounded rectangle and the symbol disappears. They stay
-   <img>, which is also why they need no light-mode work: a filled badge with a
-   white glyph reads the same on paper as on black.
+   Reused rather than rebuilt: <Nav>, <LiveDot> for every eyebrow (the
+   design's `Ellipses` + `Section Title` pair), <Icon> for the two marks, and
+   `.btn--primary`, `.container--wide`, `.eyebrow`, `.lede`.
 
-   THE MARK, twice. 531:231 (33.83 x 39.43) and 531:277 (26 x 30) are the same
-   artwork as `src/assets/brand/mark.svg` -- proportional to five decimal
-   places, checked by scaling the path's first coordinate against the viewBox
-   -- differing only in the hex they bake, #E5331E where the wordmark bakes the
-   artwork red #f03725. Through <Icon> that hex is discarded and the paint is
-   `color`, so the codebase file is an exact match and two more near-duplicate
-   SVGs did not need to land in src/assets. */
+   THE TABLE'S TICKS AND CROSSES ARE <img>, NOT <Icon>. <Icon> is a CSS mask,
+   which keeps alpha and discards colour. tick.svg and cross.svg are coloured
+   plates with a white glyph, so masking them would leave a solid rectangle.
+   As images they also need no light-mode work.
+
+   THE MARK. 531:231 (33.83 x 39.43) and 531:277 (26 x 30) are the same
+   artwork as `src/assets/brand/mark.svg`, differing only in the baked hex.
+   Through <Icon> the hex is discarded and the paint is `color`, so no extra
+   SVGs were needed. */
 
 import type { CSSProperties } from 'react';
 import { LiveDot } from '../LiveDot';
@@ -53,62 +39,41 @@ import logoPolymarket from '../../assets/about/logo-polymarket.png';
 import logoPredictfun from '../../assets/about/logo-predictfun.png';
 import logoMagicmarkets from '../../assets/about/logo-magicmarkets.png';
 import './About.css';
-/* One per band, imported after About.css so a motion rule can override a
-   layout one where it has to. See the header in any of them. */
+/* Per-band motion styles, imported after About.css so a motion rule can
+   override a layout one where it has to. */
 import './About.hero.css';
 import './About.brand.css';
 import './About.conv.css';
 import './About.cmp.css';
 
-/* <Icon> writes `w`/`h` inline, which beats any stylesheet rule without
-   `!important` -- so a mark given a box in `--u` would sit at a hard 26 x 30
-   at every width while the table around it scaled, and clip against its own
-   window. Passing the two properties back as `undefined` erases the inline
-   values and hands the box to About.css, which is the same `cssBox` Pillars.tsx
-   uses and for the same reason. */
+/* <Icon> writes `w`/`h` inline, which beats any stylesheet rule. Passing both
+   back as `undefined` removes the inline size and hands the box to About.css,
+   so the mark scales with `--u` (the same `cssBox` Pillars.tsx uses). */
 const cssBox = { width: undefined, height: undefined } as CSSProperties;
 
 /* ── The page's own ground ────────────────────────────────────────────────────
-   The frame draws THREE backgrounds and all three are below. They are this
-   frame's, not the landing hero's: every centre, radius, rotation, gradient
-   endpoint, stop offset, fill opacity and gaussian sigma below is copied out
-   of Figma's export of the node named on it, and nothing here is estimated
-   from a render.
+   The frame's three backgrounds. Every centre, radius, rotation, gradient
+   endpoint, stop, opacity and blur sigma is copied from Figma's export of
+   the node named on it.
 
-   WHY INLINE SVG RATHER THAN BLURRED BOXES. The landing hero paints its ground
-   as five `border-radius: 50%` divs under `filter: blur()`, which is the right
-   shape for what that is -- five upright discs at five offsets. This is not
-   that. Three of the nine ellipses here are ROTATED and four carry linear
-   gradients whose endpoints are nowhere near the shape's centre, and a CSS
-   gradient is anchored to its box centre: every stop would have to be
-   re-derived as a percentage of a rotated gradient line, which is arithmetic
-   with nowhere to check itself. Four more are 1.36px STROKES, which a box
-   cannot be at all. Inline SVG states the design's own numbers, and a viewBox
-   scales all of them together -- geometry, stroke width and blur sigma -- from
-   a single `width` in `--u`, which is the same responsive behaviour the rest
-   of this page gets from its unit.
+   INLINE SVG RATHER THAN BLURRED BOXES. Several ellipses are rotated, carry
+   linear gradients with off-centre endpoints, or are 1.36px strokes, none of
+   which CSS boxes express cleanly. A viewBox scales geometry, stroke width
+   and blur together from one `width` in `--u`.
 
-   NO HEX IS WRITTEN HERE. Every fill, stroke and stop below is a class and
-   About.css holds the colour, beside the light block that moves it. So "what
-   colour is this page" is still answered in one file, and paper is derived
-   there rather than inverted here.
+   NO HEX IS WRITTEN HERE. Fills, strokes and stops are classes; About.css
+   holds the colours and their light-theme values.
 
-   WHAT COULD NOT BE REPRODUCED. 531:236 carries three Figma custom effects --
-   Halftone (CMYK, dot 20, scale 1, softness 0), Lens distortion (lateral,
-   distortion 0.5, aberration 0.2) and Dither (Bayer 16x16, pixel 2, 6 levels).
-   Those are WebGPU shaders; there is no CSS that computes them, and the
-   honest thing is to say so rather than to stand a dot pattern in for them.
-   Nothing was substituted: the circle below is the same fill at the same blur
-   the shader stack takes as its INPUT. That is defensible here and would not
-   be everywhere -- the effects are running on a single flat #d1541c disc
-   already blurred by sigma 75.6, so there is no detail in the source for a
-   halftone screen or a 6-level dither to bite on, and Figma's own render of
-   531:234 shows a smooth field with no visible dots, banding or fringe. */
+   NOT REPRODUCED: 531:236's Figma custom effects (Halftone, Lens distortion,
+   Dither) are WebGPU shaders with no CSS equivalent. The circle below is the
+   shader stack's input, a flat #d1541c disc at sigma 75.6; the source has no
+   detail for those effects to act on, and Figma's own render shows a smooth
+   field. */
 
 /** 531:149 "Background Container" -> 531:151 "Circle": five ellipses, sigma
- *  33.2284, exported as one 1057.05 x 1626.06 drawing that the frame then
- *  rotates -90deg. The rotation stays in CSS (`.ab-ground__spin`) so the
- *  drawing below is the export's own coordinate system, unedited. */
+ *  33.2284, exported as one 1057.05 x 1626.06 drawing that the frame rotates
+ *  -90deg. The rotation is in CSS (`.ab-ground__spin`) so the drawing keeps
+ *  the export's own coordinates. */
 function GroundCircles() {
   return (
     <svg className="ab-ground__art" viewBox="0 0 1057.05 1626.06" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -161,11 +126,11 @@ function GroundCircles() {
   );
 }
 
-/** 531:158 "Container" -> 531:160..163: four concentric ellipse OUTLINES,
- *  1.35988px, blurred at sigma 5, each stroked with the same transparent ->
- *  #ff632a -> transparent ramp across its own width. The export is 1250 x 744
- *  for a 1170 x 664 box (the blur's own bleed), and the frame mirrors it
- *  vertically -- `.ab-conv__field` does the mirror. */
+/** 531:158 "Container" -> 531:160..163: four concentric ellipse outlines,
+ *  1.35988px, blurred at sigma 5, each stroked with a transparent -> #ff632a
+ *  -> transparent ramp. The export is 1250 x 744 for a 1170 x 664 box (the
+ *  blur's bleed). The frame mirrors it vertically; `.ab-conv__field` does
+ *  the mirror. */
 function ConvictionArcs() {
   return (
     <svg className="ab-conv__art" viewBox="0 0 1250 744" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -200,25 +165,20 @@ function ConvictionArcs() {
   );
 }
 
-/** 531:233 "root" -> 531:234 "Ellipses": three r=532.138 discs at sigma
- *  75.585, drawn here in the 1282.8 x 1381 box 531:234 occupies inside the
- *  ABOUT PHORCAST card. The three sit at the card's 871 mark -- the same mark
- *  `.ab-brand__visual` starts at -- and the card's `overflow: hidden` is what
- *  crops them, exactly as the frame's does. */
+/** 531:234 "Ellipses": three r=532.138 discs at sigma 75.585 in the
+ *  1282.8 x 1381 box they occupy inside the ABOUT PHORCAST card, starting at
+ *  the card's 871 mark (where `.ab-brand__visual` also starts). The card's
+ *  `overflow: hidden` crops them, as the frame does. */
 function BrandEllipses() {
   return (
     <svg className="ab-brand__art" viewBox="0 0 1282.801 1381" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <defs>
-        {/* THREE SIGMA, NOT TWO, and this is the one number below that is
-            not Figma's own. Figma's SVG export states each filter region as
-            the circle's box plus exactly 2 sigma -- 151.17 here -- and cuts
-            the gaussian there. At 2 sigma the curve is still at 13.5% of
-            peak, so the cut is a visible straight edge, and on THIS field it
-            lands on the only part the card ever shows: the disc's left
-            shoulder beside the product shot. Figma's canvas does not cut
-            there; its own export does. 226.755 is 3 sigma, where the curve
-            is at 1.1% and the edge is gone. Nothing else about the blur
-            moves -- same sigma, same centres, same radii. */}
+        {/* THREE SIGMA, NOT TWO: the one number here that is not Figma's.
+            Figma's export cuts each filter region at 2 sigma (151.17), where
+            the gaussian is still at 13.5% of peak, leaving a visible straight
+            edge on the disc's left shoulder beside the product shot. 226.755
+            is 3 sigma, where the edge disappears. Sigma, centres and radii are
+            unchanged. */}
         <filter id="ab-b-f0" x="-217.075" y="-226.755" width="1517.786" height="1517.786" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
           <feGaussianBlur stdDeviation="75.585" />
         </filter>
@@ -238,7 +198,7 @@ function BrandEllipses() {
       </defs>
       {/* 531:235 Ellipse 39 */}
       <g filter="url(#ab-b-f0)"><circle cx="541.818" cy="532.138" r="532.138" fill="url(#ab-b-p0)" /></g>
-      {/* 531:236 Ellipse 40 — the shader stack's input; see the note above */}
+      {/* 531:236 Ellipse 40: the shader stack's input; see the note above */}
       <g filter="url(#ab-b-f1)"><circle cx="532.138" cy="758.268" r="532.138" className="ab-fill--ember" /></g>
       {/* 531:237 Ellipse 41 */}
       <g filter="url(#ab-b-f2)"><circle cx="750.658" cy="848.858" r="532.138" className="ab-fill--peach" /></g>
@@ -249,16 +209,14 @@ function BrandEllipses() {
 /* ── 1. Hero ──────────────────────────────────────────────────────────────── */
 
 function AboutHero() {
-  // Above the fold by definition, so it does not go through the observer —
-  // the same call the landing hero makes, and for the same reason.
+  // Above the fold, so it skips the observer, as the landing hero does.
   const ref = useSectionMotion<HTMLElement>(buildAboutHero, { immediate: true });
   return (
     <section ref={ref} className="ab-hero" id="top" data-motion="pending">
-      {/* 531:149 "Background Container": 1920 x 1154 at the very top of the
+      {/* 531:149 "Background Container": 1920 x 1154 at the top of the
           frame, clipping a 1920 x 1140 window over the rotated Circle group.
-          It is anchored to the top of this section because that is where the
-          frame anchors it -- frame y 0 is this element's top edge, the nav
-          sitting 40 below it in both. */}
+          Anchored to the top of this section because frame y 0 is this
+          element's top edge; the nav sits 40 below it in both. */}
       <div className="ab-ground" aria-hidden="true">
         <div className="ab-ground__clip">
           <div className="ab-ground__spin"><GroundCircles /></div>
@@ -283,12 +241,10 @@ function AboutHero() {
 
 /** The three cards' copy, and the crop each screenshot sits at in its window.
  *
- *  The three images are placed the way 531:190 / 531:199 / 531:208 place them:
- *  a 524 x 238 window with the right corners rounded, and a screenshot larger
- *  than the window offset inside it. The numbers below are those offsets
- *  restated as percentages OF THE WINDOW, which is the only form that survives
- *  the window becoming fluid — Figma states them as a box inside a box inside
- *  a box, and three nested percentage bases do not fold into a stylesheet. */
+ *  531:190 / 531:199 / 531:208 place each screenshot, larger than its
+ *  524 x 238 window, at an offset inside it. The numbers below restate those
+ *  offsets as percentages OF THE WINDOW, the only form that survives the
+ *  window becoming fluid. */
 const CARDS = [
   {
     key: 'pick',
@@ -369,20 +325,12 @@ function Brand() {
               </div>
             </div>
 
-            {/* 531:238 / 531:239 / 531:240. Each one is the node's own export,
-                which Figma already clipped to the card — so the three files
-                are the visible part at 1.5x and not three multi-megabyte
-                source photographs cropped again in the browser. Paint order
-                is the design's: body, lower panel, upper panel. */}
-            {/* `loading="lazy"` and `decoding="async"` on all three, and this
-                is the one performance decision on the page. They are the only
-                large rasters here -- 82, 132 and 173 KB -- and they sit a
-                screen and a half down. Decoded eagerly on the main thread they
-                land in the middle of the bands above them building their
-                entrances, and a blocked main thread does not advance a GSAP
-                timeline (lag smoothing is on, deliberately; src/lib/motion.ts
-                says why). Measured at 1600 before this, the CHOOSE band's
-                sampler saw 16 frames in five seconds. */}
+            {/* 531:233, exported by Figma as one image already composited
+                and cropped to the part the card shows.
+                `loading="lazy"` and `decoding="async"`: it is the page's
+                largest raster and sits well below the fold, and an eager
+                main-thread decode would stall the entrances of the bands
+                above it (GSAP lag smoothing is on; src/lib/motion.ts). */}
             <div className="ab-brand__visual" aria-hidden="true">
               <img src={productShot} alt="" className="ab-brand__shot" loading="lazy" decoding="async" />
             </div>
@@ -401,19 +349,16 @@ function Conviction() {
     <section ref={ref} className="ab-conv" aria-labelledby="ab-conv-title" data-motion="pending">
       <div className="container container--wide ab-col">
         <div className="ab-conv__inner">
-          {/* 531:158's arc ARCS OVER THE LABEL -- that is what the band is,
-              and it is the one relationship in this field worth holding. So
-              the field hangs off the eyebrow rather than off the top of the
-              band: `.ab-conv__crown` in About.css says why the band's own top
-              is the wrong thing to measure from. */}
+          {/* 531:158's arc sits over the label, so the field hangs off the
+              eyebrow rather than the top of the band. `.ab-conv__crown` in
+              About.css explains why. */}
           <div className="ab-conv__crown">
             <div className="ab-conv__field" aria-hidden="true"><ConvictionArcs /></div>
             <h2 className="eyebrow" id="ab-conv-title"><LiveDot />Cast your conviction</h2>
           </div>
-          {/* The opening runs bright and turns over to the accent on its last
-              letter; the rest sits back. See the note on `.ab-conv__statement`
-              in About.css for how the design does that and why it is a
-              background on the whole block rather than a span. */}
+          {/* The statement is one ink; the scroll fill in
+              About.conv.motion.ts is what marks read from unread. The span is
+              kept as a hook, and the word split preserves it. */}
           <p className="ab-conv__statement">
             We were founded{' '}
             <span className="ab-conv__rest">
@@ -457,12 +402,10 @@ function Compare() {
         <div className="ab-cmp__inner">
           <h2 className="eyebrow" id="ab-cmp-title"><LiveDot />How it works: price and profit</h2>
           <div className="ab-cmp__card">
-            {/* A real <table>, because this is a real table: five criteria
-                against five venues, and a screen reader should be able to ask
-                "what does Kalshi do about KYC" and be answered by the row and
-                column headers rather than by reading order. The scroller is
-                what the phone block below turns on; at desktop widths it
-                never scrolls. */}
+            {/* A real <table>: five criteria against five venues, so a screen
+                reader can answer "what does Kalshi do about KYC" from the row
+                and column headers. The wrapper only scrolls below 720 (see
+                About.css). */}
             <div className="ab-cmp__scroll">
               <table className="ab-cmp__table">
                 <thead>

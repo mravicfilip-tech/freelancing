@@ -295,10 +295,10 @@ export function buildConviction({ el, q, tl }: SectionMotion) {
     onLeave: (self) => latch(self, atEnd(self)),
   });
 
-  // The band can be built when it is already above the reader -- a theme
-  // switch rebuilds every section wherever the page happens to be sitting, and
-  // the router can land mid-page. ScrollTrigger sets the progress on creation
-  // but raises no update for it, so ask once.
+  // The band can be built when it is already above the reader: a theme
+  // switch rebuilds every section wherever the page is, and the router can
+  // land mid-page. ScrollTrigger sets the progress on creation but raises no
+  // update for it, so ask once.
   if (fillST.progress >= LATCH_AT) latch(fillST, atEnd(fillST));
 
 }

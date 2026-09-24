@@ -113,7 +113,7 @@ that list.
 
 **Why every light block is written twice.** A media query cannot be part of a
 selector list, so "light because the system says so and nothing was chosen"
-and "light because the user chose it" need two separate blocks:
+and "light because the visitor chose it" need two separate blocks:
 
 ```css
 @media (prefers-color-scheme: light) {
@@ -135,8 +135,10 @@ for the life of the loop. That is why a theme change rebuilds every section
 (`useThemeEpoch` in `useSectionMotion`, and in `HeroLogo`). Read colours inside
 the build function, never at module scope.
 
-`LIGHTMODE.md` at the project root is the full strategy behind all of this;
-see [README.md](README.md) in this folder for when you need it.
+`LIGHTMODE.md` at the project root is the light-mode reference: the full
+palette with contrast ratios, how artwork is themed, how to add a light value,
+and each section's light decisions. See [README.md](README.md) in this folder
+for when you need it.
 
 ## 4. The design-pixel unit (`--u`, `--c`, `--p`, `--f`)
 

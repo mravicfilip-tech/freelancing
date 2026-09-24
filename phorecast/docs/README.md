@@ -12,7 +12,7 @@ Start with [../HANDOVER.md](../HANDOVER.md). Then, by topic:
 | [TESTING.md](TESTING.md) | You need to prove a change: typecheck, lint, build, pixel diff, screenshots, Playwright notes, manual pass. |
 | [KNOWN-ISSUES.md](KNOWN-ISSUES.md) | Before planning work: open client questions, layout nits, accessibility, behaviour to know about. |
 
-## The two design-history documents at the project root
+## The two reference documents at the project root
 
 ### [`MOTION.md`](../MOTION.md): the motion direction
 
@@ -27,19 +27,18 @@ approved design, animated parts are hidden only while script is running, never
 `clearProps: 'all'`, reduced motion shows everything. Read it before designing
 new motion so the site keeps one language.
 
-### [`LIGHTMODE.md`](../LIGHTMODE.md): the light-mode strategy (58 KB)
+### [`LIGHTMODE.md`](../LIGHTMODE.md): the light-mode reference (about 20 KB)
 
-The analysis written before light mode was built: why it was structural rather
-than a palette swap, the split of tokens into value and role tokens (section
-1.1), the light palette and its contrast reasoning (1.2, 1.3), how the theme is
-applied before first paint (1.4), why a theme change must rebuild every motion
-module (1.5), the classification of every SVG into mask-able, locked,
-gradient and multi-colour classes (2.3), hardcoded colours by section (3, 4),
-and where the dark design's meaning is at risk on paper (6). Sections 5 (the
-snapshot regression gate) and 7 (the implementation work plan) are history: the
-`theme-snapshot` / `theme-diff` scripts they describe are gone, and
-`scripts/pixel-diff.mjs` is the current check. You do not need to read it to
-work on the site day to day. Open it when you add a new SVG and need to decide
-between `<img>`, `<Icon>` and a `-light` twin; when a colour misbehaves in
-light mode; when a loop shows dark colours after a theme switch; or when a
-source comment cites "LIGHTMODE.md" with a section number, which many do.
+How the light theme works and why it looks the way it does: value tokens
+versus role tokens and the full light palette with contrast ratios (section 1),
+theme selection, first paint and the doubled light blocks (1.4), why a theme
+switch rebuilds motion (1.5), and a step-by-step for adding a light value
+(1.6); how artwork is themed, by class: masked glyphs following `color`,
+locked third-party marks, gradients restyled from CSS, and `-light` twins
+(2.3); colour literals in CSS and TypeScript and how motion modules read
+tokens with `tok()` (3, 4.3); how to measure contrast on rendered pixels (5);
+the per-section decisions, including the glows, the inverted Markets card,
+which device mock-ups re-tint, and the re-blended 3D mark (6); and the
+gotchas (7). Read it before changing a colour in light mode, adding an SVG, or
+painting a colour from script. Many source comments cite its sections by
+number.

@@ -128,7 +128,7 @@ list of pre-existing layout nits and one contrast issue.
 | Point a button at a page | `src/lib/cta.ts` |
 | Add or fill a footer / nav / MORE link | `src/lib/sitemap.ts` |
 | Change a colour, size or font | `src/styles/tokens.css`; [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) |
-| Fix something in light mode only | The file's two light blocks (keep them identical) |
+| Fix something in light mode only | The file's two light blocks (keep them identical); `LIGHTMODE.md` |
 | Change an entrance animation | `src/components/<band>/<Band>.motion.ts`; house rules in `MOTION.md` |
 | Change an ambient loop | `<Band>.loop.ts`, `built/loops/`, `bento/motion/`, `hero/slides/*.motion.ts` |
 | Change the hero carousel | `src/components/hero/Hero.tsx`, `Position.tsx` |

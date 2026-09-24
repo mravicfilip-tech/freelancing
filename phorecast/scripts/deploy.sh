@@ -54,22 +54,21 @@
 # check: it is the only thing standing between a stray token and the wrong
 # account.
 #
-# The two NODE_ settings are for machines behind an egress proxy (the sandbox
-# this was built in): Vercel's uploader uses Node's built-in fetch, which
-# ignores HTTPS_PROXY and aborts large uploads partway through without them.
-# They are harmless elsewhere.
+# The two NODE_ settings are for machines behind an egress proxy: Vercel's
+# uploader uses Node's built-in fetch, which ignores HTTPS_PROXY and aborts
+# large uploads partway through without them. They are harmless elsewhere.
 set -euo pipefail
 
-# phorcast-app.vercel.app was the domain while this site was on the old
-# account, and it is still held there, so asking for it now fails with
-# "already in use". The site lives at phorcast-markets on cleavegfx.
+# The public alias. phorcast-app.vercel.app is held by a different Vercel
+# account and cannot be used ("already in use"), so the site lives at
+# phorcast-markets.vercel.app.
 DOMAIN="${DEPLOY_DOMAIN:-phorcast-markets.vercel.app}"
 cd "$(dirname "$0")/.."
 
-# THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. The
-# sandbox this site was built in carries a VERCEL_TOKEN for a DIFFERENT account, and
-# reading the environment first is exactly how this project was deployed to the
-# wrong one. The file is the account this site belongs to.
+# THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. A
+# machine can carry a VERCEL_TOKEN for a different account, and reading the
+# environment first is how a deploy lands on the wrong one. The file holds the
+# token for the account this site belongs to.
 TOKEN_FILE="${VERCEL_TOKEN_FILE:-$HOME/.vercel-token}"
 if [ -r "$TOKEN_FILE" ]; then
   VERCEL_TOKEN=$(tr -d '\r\n' < "$TOKEN_FILE")

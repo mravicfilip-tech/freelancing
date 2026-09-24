@@ -168,7 +168,6 @@ normal use unless the note says so. Each was checked against the current code.
 | Bento C, arrow | `bento/boxes/BoxBonus.css`, phone block: the CTA arrow is sized with `!important` to beat `<Icon>`'s inline width and height. Passing `style={{ width: undefined, height: undefined }}` (the `cssBox` pattern) would remove the need. |
 | Nav, chevron | `Nav.css`: `.sheet-link__chev` has a hard-coded `height: 9.8px` derived from its 18px width and the file's ratio. Change both together. |
 | Live dot | `assets/icons/live-dot-light.svg` bakes `#a21605`, the light theme's `--accent`. If the light accent changes, update the file. |
-| Fan, light | `fan/Fan.css`: `--fan-tile-lit: brightness(2.6)` is not overridden in the light blocks, so the tile flash brightens on paper too. Possibly intended; confirm with design. |
 | Hero slide 4 | `hero/slides/SlideFuture.motion.ts` treats the last `.sl4__node` as the mark's feed dot. Reordering the nodes in `SlideFuture.tsx` breaks the loop (noted in both files). |
 | Hero slides | `.sl2` and `.sl4` redefine `--u: calc(100cqw / 1800)`, the same value `.hero__slide` already sets. Redundant, harmless. |
 | FAQ | `faq/Faq.css`: `.faq__row` transitions `border-color` but has no border (the light edge is a `box-shadow`). Harmless. |

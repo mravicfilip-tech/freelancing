@@ -351,9 +351,11 @@ themes, in the hero and in the FAQ.
   Kept as-is on paper, each beat brightens toward the page and stops being
   visible while the motion still "works". Every lit value is therefore a token
   pair (rest and lit) and light supplies a pair pointing the other way (for
-  example, the Fan spark head is dark on paper). A few lifts are kept where
-  they still read, such as `--fan-tile-lit`, which brightens the tile's own
-  photograph; confirm any such case by eye.
+  example, the Fan spark head is dark on paper). Lifts inside dark artwork
+  keep their direction: the Fan's centre tile is a dark photograph in both
+  themes and clips its contents, so its glass, bar, photograph lift and
+  ignition (`--fan-tile-lit`) stay as in dark, and only its rim, which meets
+  the paper, flips (`Fan.css` light block).
 
 ---
 

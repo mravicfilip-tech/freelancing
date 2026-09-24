@@ -68,7 +68,7 @@ src/
   assets/<band>/        exported artwork, one folder per band
 docs/                   developer documentation (below)
 MOTION.md               motion direction: the rules entrances and loops follow
-LIGHTMODE.md            light-mode strategy (design history)
+LIGHTMODE.md            light-mode reference: theming model, tokens, section decisions
 ```
 
 A band is usually `X.tsx` (markup and copy), `X.css` (layout, colour, light

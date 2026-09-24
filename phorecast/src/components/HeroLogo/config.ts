@@ -15,7 +15,7 @@ export const LOGO_CONFIG = {
   warmupFrames: 4,
   /**
    * Budget overrun, in milliseconds, before dropping resolution and before
-   * giving up entirely, accumulated, not counted. Counting frames cannot tell
+   * giving up entirely: accumulated, not counted. Counting frames cannot tell
    * a device that is slightly late from one taking 480ms a frame, and on the
    * second the count takes half a minute to reach any threshold worth setting
    * for the first. Overrun crosses these in a few frames when frames are
@@ -53,7 +53,7 @@ export const LOGO_CONFIG = {
     mobile: { heightFraction: 0.86, widthFraction: 0.7, cx: 0.5, cy: 0.5 },
   },
 
-  // ---------- Motion (radians, seconds), the contract every treatment shares ----------
+  // ---------- Motion (radians, seconds): the contract every treatment shares ----------
   restYaw: -0.32,
   restPitch: 0.1,
   idleYawAmp: 0.16,

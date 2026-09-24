@@ -120,7 +120,7 @@
   --pos-track-hover: #e5d9cd;
   /* A segment already seen: the track, stepped away from itself to say "this
      one is done". White-alpha becomes ink-alpha, which flips the direction for
-     free, more alpha on a dark page is brighter, more on paper is darker,
+     free: more alpha on a dark page is brighter, more on paper is darker,
      and both mean done.
 
      The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST
@@ -140,7 +140,7 @@
   --pos-track-hover: #e5d9cd;
   /* A segment already seen: the track, stepped away from itself to say "this
      one is done". White-alpha becomes ink-alpha, which flips the direction for
-     free, more alpha on a dark page is brighter, more on paper is darker,
+     free: more alpha on a dark page is brighter, more on paper is darker,
      and both mean done.
 
      The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST

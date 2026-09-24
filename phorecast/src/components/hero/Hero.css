@@ -278,7 +278,7 @@
    ring, and the same 15px glyph drawn at a 1.6 stroke. Those three tokens are
    the arrow's own and already carry their light values, so the control
    re-tints with the page and inverts nothing. What it does NOT take is the
-   arrow's hover, no colour shift, no lean, no transition, because nothing
+   arrow's hover (no colour shift, no lean, no transition), because nothing
    new on this page answers the pointer. */
 .hero__play {
   display: grid;
@@ -315,7 +315,7 @@
 }
 .hero__logo.is-visible { opacity: 1; }
 /* ON THE CANVAS, NOT ON THE LAYER. `.hero__logo`'s own transform belongs to the
-   entrance, entrance.ts tweens it from scale 0.94 and GSAP writes that inline,
+   entrance: entrance.ts tweens it from scale 0.94 and GSAP writes that inline,
    where a stylesheet cannot reach it. The canvas fills the layer, so its own
    coordinates ARE the layer's: a translate of `--mark-tx` moves the mark that
    many layer pixels, which is what those numbers mean. */
@@ -331,8 +331,8 @@
    space translate applied to it starts from that offset and lands it off the
    layer's right edge, where `overflow: hidden` clips it.
 
-   The two numbers are the ones the live mark uses, the slot's centre and the
-   design's drawn height inside it, so the outline arrives at the size and
+   The two numbers are the ones the live mark uses (the slot's centre and the
+   design's drawn height inside it), so the outline arrives at the size and
    place the scene would have drawn, which is what the 72/12/60 above already
    does for slide 1. */
 .hero__logo.is-onSlot img {

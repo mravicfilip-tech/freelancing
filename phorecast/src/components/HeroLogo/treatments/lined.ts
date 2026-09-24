@@ -23,7 +23,7 @@ interface Pass {
  * The outline extruded into a stack of slices joined by ribs: one instanced quad per segment,
  * widened in screen space.
  *
- * Dark draws it as emitted orange light, a thin core pass under a wide glow pass, both
+ * Dark draws it as emitted orange light: a thin core pass under a wide glow pass, both
  * additive, so crossings brighten. Light draws it as red ink: one core pass composited OVER
  * the page, no glow pass at all. See LINED.lightInk in ../config for why that is a change of
  * medium rather than a change of colour.

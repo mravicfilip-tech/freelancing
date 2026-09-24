@@ -72,7 +72,7 @@
   /* The toast is glass: 13% white is this file's own step, above --veil, so
      it is named here rather than forced onto it. */
   --sl2-toast-bg: rgba(255, 255, 255, 0.13);
-  /* The two 48px icon tiles. A deep brand plate in both themes, the white
+  /* The two 48px icon tiles. A deep brand plate in both themes; the white
      pie and bolt inside them are --on-accent by another name. */
   --sl2-tile-bg: #6a2626;
 }
@@ -396,7 +396,7 @@
 
 /* ------------------------------------------- two 206 × 124 event cards, at
    x 815 of the 963 row. They overhang the row by 58 units, which is the node's
-   own arrangement, "Stats Details" does not clip. */
+   own arrangement: "Stats Details" does not clip. */
 .sl2__minis {
   position: absolute;
   left: calc(815 * var(--u));
@@ -544,7 +544,7 @@
   line-height: 1.2;
 }
 .sl2-mini__btns .is-yes { background: var(--sl2-up-bg); color: var(--sl2-up-ink); }
-/* The "No" on an event card is the brand red, not the loss red, it is a
+/* The "No" on an event card is the brand red, not the loss red: it is a
    side of the market, not a fall. The prediction card's chips are the pair
    that carry the up/down semantics. */
 .sl2-mini__btns .is-no { background: var(--sl2-down-bg); color: var(--accent); }
@@ -682,8 +682,8 @@
 }
 
 /* ------------------------------------------------------------------ motion
-   Nothing here changes the settled design, see SlideAccount.motion.ts, which
-   animates from a visible baseline and clears every property it writes. These
+   Nothing here changes the settled design (see SlideAccount.motion.ts, which
+   animates from a visible baseline and clears every property it writes). These
    are compositor hints on the handful of elements that actually move, and they
    are only live while the module says it is running (`data-sl2-motion`), so a
    resting slide keeps no extra layers. */

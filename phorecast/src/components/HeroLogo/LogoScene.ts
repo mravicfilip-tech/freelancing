@@ -469,7 +469,7 @@ export class LogoScene {
       && this.slowFrames >= C.slowFramesBeforeDegrade) {
       this.degraded = true;
       // Give back the cheapest thing first. Where there is no resolution to
-      // give back, a 1x display, which is most desktops, halve the rate
+      // give back (a 1x display, which is most desktops) halve the rate
       // instead, which halves the draw outright. On a device that is merely
       // short of the budget that is often enough to keep the mark, and keeping
       // it degraded is a better outcome than losing it.

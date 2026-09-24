@@ -15,7 +15,7 @@
    COORDINATE SYSTEM
    -----------------
    `.sl4__frame` is the painted box. The group's box is 1264 x 955, but its
-   painted content only spans x 133..1132 and y 139..709, 999 x 570, the rest
+   painted content only spans x 133..1132 and y 139..709 (999 x 570); the rest
    is empty padding Figma left around it. The frame is anchored flush to the
    column's right edge (see `.sl4__frame`). `.sl4__stage` then
    shifts the Figma origin back by (133, 139) so every child below keeps its
@@ -133,7 +133,7 @@
 /* Leaf geometry is the mark's own 32.827 x 35.015, centred with the +2.19px
    optical nudge the design carries, not stretched to the 57px badge. */
 /* The mark inside each badge bakes #FFFBF8, which is --ink. It inherited that
-   already, this states it, so the next edit to an ancestor cannot move it. */
+   already; this states it, so the next edit to an ancestor cannot move it. */
 .sl4__badge .icon {
   color: var(--ink);
   position: absolute;

@@ -49,7 +49,7 @@
 
 import { useEffect, useSyncExternalStore } from 'react';
 
-export const HOME = '/';
+const HOME = '/';
 export const ABOUT = '/about';
 
 export interface Route {
@@ -89,7 +89,7 @@ const subscribe = (fn: () => void) => {
 const snapshot = () => current;
 
 /** Go to `to` the way a click on a link to it would. */
-export function navigate(to: string) {
+function navigate(to: string) {
   const url = new URL(to, location.href);
   if (url.origin !== location.origin) { location.href = to; return; }
 

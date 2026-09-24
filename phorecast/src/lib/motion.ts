@@ -35,23 +35,12 @@ gsap.ticker.lagSmoothing(250, 20);
 
 /** The band's entrance ease, and the small rise every element makes as it appears. */
 export const EASE = 'expo.out';
-export const RISE = { y: 10, opacity: 0, duration: 0.7, ease: EASE } as const;
+const RISE = { y: 10, opacity: 0, duration: 0.7, ease: EASE } as const;
 
 export const one = <T extends Element = HTMLElement>(root: Element, sel: string) =>
   root.querySelector<T>(sel);
 export const all = <T extends Element = HTMLElement>(root: Element, sel: string) =>
   Array.from(root.querySelectorAll<T>(sel));
-
-/** Draw stroked paths tip to tail. Elements with no length are skipped. */
-export function draw(tl: Timeline, paths: SVGGeometryElement[], at: number, duration: number, stagger = 0) {
-  paths
-    .filter((p) => typeof p.getTotalLength === 'function' && p.getTotalLength() > 0)
-    .forEach((p, i) => {
-      const len = p.getTotalLength();
-      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-      tl.to(p, { strokeDashoffset: 0, duration, ease: 'power2.inOut' }, at + i * stagger);
-    });
-}
 
 /**
  * Pop in from small. `vars` carries both the start offsets (scale, opacity and
@@ -96,46 +85,6 @@ export function rise(tl: Timeline, targets: gsap.TweenTarget, at: number, vars: 
 export function count(tl: Timeline, el: HTMLElement, from: number, to: number, at: number, duration: number, fmt: (n: number) => string) {
   const o = { v: from };
   tl.to(o, { v: to, duration, ease: 'power2.out', onUpdate: () => { el.textContent = fmt(o.v); } }, at);
-}
-
-/** Reveal with a clip-path wipe from `from` (an `inset(...)` value) to fully visible. */
-export function wipe(tl: Timeline, el: Element, at: number, duration: number, from: string) {
-  // `immediateRender: false` because this is a fromTo, and a fromTo writes its
-  // START value the moment the tween is BUILT rather than when the playhead
-  // reaches it. Called at a non-zero `at`, the element would therefore sit
-  // clipped from the first painted frame and only un-clip when its turn came --
-  // invisible for the whole run-up while every "does it animate" check passes.
-  // Clearing the property at the end hands the settled element back to CSS.
-  tl.fromTo(
-    el,
-    { clipPath: from },
-    { clipPath: 'inset(0% 0% 0% 0%)', duration, ease: 'power2.inOut', immediateRender: false, clearProps: 'clipPath' },
-    at,
-  );
-}
-
-/** A gentle bob, out of phase with its neighbours. */
-export function bob(el: Element | null, amplitude = 3, seconds = 3, delay = 0) {
-  if (el) gsap.to(el, { y: -amplitude, duration: seconds, delay, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-}
-
-/**
- * Roll a figure to a new value: the old slides up and out, the new one in.
- *
- * `immediateRender: false` is load-bearing. A `fromTo` writes its START values
- * the moment the tween is BUILT, not when the playhead reaches it -- and this
- * one is built at the same instant as the departure tween that is supposed to
- * run first. Without the flag the outgoing figure is parked 45% down at opacity
- * 0 before it has moved at all, so the departure plays on something already
- * invisible and only the second half of the roll is ever seen.
- */
-export function roll(el: HTMLElement, next: string) {
-  gsap.timeline()
-    .to(el, { yPercent: -45, opacity: 0, duration: 0.24, ease: 'power2.in' })
-    .add(() => { el.textContent = next; })
-    .fromTo(el,
-      { yPercent: 45, opacity: 0 },
-      { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out', immediateRender: false });
 }
 
 /**

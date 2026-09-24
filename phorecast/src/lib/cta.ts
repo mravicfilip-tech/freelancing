@@ -13,7 +13,7 @@
 import { linkProps } from './sitemap';
 
 /** TODO(client): every `''` below is a page still to come. */
-export const CTA = {
+const CTA = {
   /** Hero slide 1, "Explore Markets". */
   heroMarkets: '',
   /** Hero slide 2, "Explore Sports Markets". */

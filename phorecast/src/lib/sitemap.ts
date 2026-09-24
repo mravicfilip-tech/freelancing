@@ -99,11 +99,11 @@ export const MORE_MENU: SitemapLink[] = [page('About')];
 export const isPlaceholder = (href: string) => href === '';
 
 /** The href to render, from the page we are on. See the header. */
-export const resolveHref = (href: string, path: string) =>
+const resolveHref = (href: string, path: string) =>
   href.startsWith('#') ? landing(path, href) : href;
 
 /** `aria-current="page"` for a route we are on, and nothing for anything else. */
-export const currentPage = (href: string, path: string) =>
+const currentPage = (href: string, path: string) =>
   href.startsWith('/') && href === path ? ('page' as const) : undefined;
 
 /** A placeholder's click (and middle click): cancelled, so nothing happens. */

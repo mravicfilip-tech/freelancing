@@ -338,8 +338,8 @@ export function buildBuilt({ el, q, tl }: SectionMotion) {
   if (you.length) rise(tl, you, card1At + step(C1_YOU), { y: 10, duration: 0.55, clearProps: 'transform,opacity' });
 
   /* The line runs out of the dot toward the rings, so it is drawn from its
-     starting end: `scaleX` about `0% 50%` is the same movement `draw()` makes on
-     a path, and unlike a clip-path it is a plain `from`. The line is a mask over
+     starting end: `scaleX` about `0% 50%` is the same movement a dash-offset draw
+     makes on a path, and unlike a clip-path it is a plain `from`. The line is a mask over
      a gradient now rather than a `preserveAspectRatio="none"` <img>, and a
      transform scales both together, so this reads exactly as it did.
 

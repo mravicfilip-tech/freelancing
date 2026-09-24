@@ -620,72 +620,27 @@
 }
 
 :root[data-theme='light'] {
-  /* The glows. Same geometry, blur and opacity; the ramp is rebuilt rather
-     than recoloured, on two rules:
-
-     1. The page stop is the page. Each gradient ends in its own ground at
-        zero alpha (rgba(15,14,13,0) = --page for the band, rgba(29,28,27,0)
-        = --panel for the cards), so on paper it is paper. Zero alpha
-        renders the same either way; it is written out so the dark hex is
-        not mistaken for a bug.
-     2. The luminance ramp inverts; the spatial ramp does not. Nothing on
-        paper is brighter than the page, so a pale core would read as a
-        hole. Stop order and positions are kept; the core is now the
-        deepest tint.
-
-     Design decision: a blush, slightly quieter than the footer's, since
-     these sit under labels. */
+  /* Identical to the media-query block above; see the notes there. */
   --bt-glow: radial-gradient(circle at 42% 42%, #d07a50 0%, #e29a72 14%, #efc0a3 30%, #f9dfd0 50%, rgba(255, 251, 248, 0) 66%);
   --bt-card-glow-r: radial-gradient(ellipse at 66% 26%, #ecb49a 0%, #f1c4ae 14%, #f6d7c6 32%, #fae6da 52%, rgba(247, 240, 234, 0) 72%);
   --bt-card-glow-l: radial-gradient(ellipse at 38% 22%, #f0bda6 0%, #f4cbb7 14%, #f8dbcc 34%, #fbe9de 54%, rgba(247, 240, 234, 0) 74%);
 
-  /* A hair quieter than --ink, as in dark, to set card two's top labels
-     apart. */
   --bt-label-2: #262020;
 
-  /* The smear. A warm bloom on near-black would be a pale scratch on cream,
-     so it darkens instead (--accent-deep's value). It stays quieter than
-     --bt-lit, which it trails, keeping the dark pair's contrast order. */
   --bt-smear: #ca3e21;
 
-  /* The wires. #353433 is a whisper on the dark card but would be near-black
-     lines on paper; #d8cabf restores the whisper. The main link's fade
-     gains presence toward the padlock, and on paper presence is darkness, so
-     the pair turns over (pale at BTC, deep at the padlock). Card one's line
-     follows the tokens; only --bt-line-fade needs the new ground. */
   --bt-wire: #d8cabf;
   --bt-main-a: #d9a091;
   --bt-main-b: #655d58;
   --bt-line-fade: #f7f0ea;
 
-  /* The two values loops/bt1.ts reads, both direction flips. --bt-lit is the
-     head on the line and the arc round the ring: in dark a shade above the
-     #e5331e ring, on paper a shade below it, chosen so the step against the
-     ring and against the card matches dark's within a few percent (#7e0202
-     was too heavy). --bt-warm is what "You" and the note warm to: the same
-     lift from --ink-2, made of ink instead of light. */
   --bt-lit: #8f2418;
   --bt-warm: #362a25;
 
-  /* The seal: the colour SELF-CUSTODY takes during the delivery. It rests at
-     --ink; on paper --accent would give only about half dark's step, so it
-     uses --accent-lift's value, the largest step the palette allows while
-     staying readable against the card. */
   --bt-seal: #c4361c;
 }
 
-/* The plate under the coin. ring-disc.svg fills its circle with #22201D at
-   63% opacity: on the dark card that reads as a hole, on cream as a flat
-   grey disc, the second-loudest object on the card. It cannot be lightened
-   at the call site without losing the ring, and the asset is not edited.
-   btc-coin.svg is a locked mark drawn for a dark ground, so, as with card
-   two's nodes, the fix is a dark chip under it: an opaque #1d1c1b disc
-   painted behind the image, matching card two's BTC node.
-
-   17.5% is 34/193.8, the ring's inner edge, so no dark edge shows outside
-   the stroke. 47.936% is 92.9/193.8, the circle's centre (see
-   .bt1__ring-disc), so the chip stays concentric through every transform.
-   Dark declares no background at all. */
+/* The coin plate; see the notes in the media-query block above. */
 :root[data-theme='light'] .bt1__ring-disc {
   background: radial-gradient(ellipse 17.5% 17.5% at 50% 47.936%, #1d1c1b 0 100%, transparent 100%);
 }

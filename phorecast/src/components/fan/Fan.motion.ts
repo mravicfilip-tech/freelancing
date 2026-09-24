@@ -99,10 +99,10 @@ interface Arc {
  * along it.
  *
  * The path is walked at `COARSE` even steps, each point pushed through
- * `getScreenCTM` — which carries the viewBox scale and every CSS transform
+ * `getScreenCTM` (which carries the viewBox scale and every CSS transform
  * above the path, including the `rotate(180deg)` and `rotate(-179.01deg)` that
  * Figma's mirrors are built from, so no mirroring has to be reasoned about
- * here — and tested against the window's own client rect. The two crossings
+ * here) and tested against the window's own client rect. The two crossings
  * are then bisected to a fraction of a step and padded a whisker either side,
  * so the draw starts and ends just outside the window rather than popping into
  * existence on its edge.
@@ -168,16 +168,16 @@ function visibleSpan(path: SVGPathElement, win: DOMRect, len: number): [number, 
 /**
  * Draw one arc, head first, inward from the edge of the band.
  *
- * With `stroke-dasharray: len` — one value, so the pattern is the whole line on
- * and the whole line off — a `stroke-dashoffset` of `-t` paints exactly the
+ * With `stroke-dasharray: len` (one value, so the pattern is the whole line on
+ * and the whole line off), a `stroke-dashoffset` of `-t` paints exactly the
  * stretch from `t` to the end and nothing before it. Start with `t` at the
  * span's far end and walk it down to the near end, and the line fills in
  * backwards: the head enters at the outer edge and the stroke follows it in.
  * The remainder, `[0, span0]`, is entirely off-frame, so it is completed in one
  * invisible `set` at the end rather than given any of the tween.
  *
- * The spark is the same path again carrying a short dash — `h` on, everything
- * else off — walked on the identical offset, so it sits pinned to the head with
+ * The spark is the same path again carrying a short dash (`h` on, everything
+ * else off), walked on the identical offset, so it sits pinned to the head with
  * the drawn stroke behind it. It fades out before the line lands.
  */
 function drawArc(tl: Timeline, a: Arc, at: number) {
@@ -263,7 +263,7 @@ export function buildFan({ el, q, tl }: SectionMotion) {
 
   /* The sixteen lines, read out of the inlined SVGs. Each file is four whole
      ellipses in DOM order innermost to outermost, and `Fan.tsx` ships a
-     `.fan__spark` twin immediately after each one — hence `:not()` here and
+     `.fan__spark` twin immediately after each one, hence `:not()` here and
      `nextElementSibling` for the head. */
   const arcs: Arc[] = [];
   q('.fan__arcs').forEach((group) => {

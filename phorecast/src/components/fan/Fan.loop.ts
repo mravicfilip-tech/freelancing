@@ -1,112 +1,41 @@
 /**
- * "Your Funds Stay in Your Control" — the ambient loop.
+ * "Where Every Outcome Connects." The ambient loop.
  *
- * The section's load-in belongs to `Fan.motion.ts`. This file owns what happens
- * *after* it has landed: it reads the markup the component ships, adds one
- * overlay of its own — a clip inside the glass and the bar of light in it — and
- * removes it on teardown.
+ * The load-in belongs to `Fan.motion.ts`. This file owns what happens after it
+ * lands: it reads the shipped markup, adds one overlay of its own (a clip
+ * inside the glass holding a bar of light) and removes it on teardown.
  *
- * THE STORY — 05 CROSSFEED, one band straight through, twice, every 13s
- * ---------------------------------------------------------------------
- * The chosen loop is not an arrival. It is a pass: settlement going *through*
- * your custody rather than stopping at it.
+ * THE STORY: one front crossing the band, twice, every 13s
+ *   0.6s   A front enters past the left edge. It is one x, moving, and
+ *          everything in the section answers to it.
+ *   ~1.0s  On the left fan, a short bright head rides each arc at the point of
+ *          the curve under the front.
+ *   ~1.8s  Pills and diamonds fire as the front reaches them, timed by solving
+ *          the ease for each one's x rather than by a stagger.
+ *   ~2.5s  It crosses the tile: a bar of light runs across the mark, the glass
+ *          fills, the photograph under it lifts and the rim warms.
+ *   ~3.3s  The right fan and its pills, then out past the right edge at 4.4s.
+ *   7.0s   The return pass, mirrored.
+ *   ~11.4s Everything is the design again, and stays there to 13s.
+ * Below 900 the diamonds and three pills are hidden and drop out of the pass.
  *
- *   0.60s  A front enters past the left edge of the band and starts across.
- *          It is one x, moving, and everything in the section answers to it.
- *   ~1.0s  It is on the left fan: a short bright head rides each of the eight
- *          arcs there, ON the line, at exactly the point of the curve that
- *          stands at the front's x.
- *   ~1.8s  SPORT, then CRYPTO, then FINANCE turn over as the front reaches
- *          them — each diamond and each pill fires at the frame the front's
- *          centre is at its x, solved back through the ease, not staggered by
- *          eye. The diamonds on the path flare; the pills change colour.
+ * THE LIGHT IS ON THE CURVE. Each arc has a `.fan__spark` twin (see Fan.tsx).
+ * The head is a short `stroke-dasharray` placed by `stroke-dashoffset`, so the
+ * lit region is the stroke itself and nothing box-shaped can show. That needs
+ * a map from screen x to length along each path: each spark is sampled once
+ * over its visible run into a (length, design x) table, monotonic in x
+ * because the run is a single quadrant, and `sAt(x)` inverts it.
  *
- *          Below 900 the band keeps three pills and no diamonds at all, and
- *          `shown()` takes the rest out of the pass with them. The three that
- *          are left still span most of the width, so they still turn over one
- *          after another as the front reaches each one; the pass is shorter by
- *          the beats whose elements are not on the page, and nothing else
- *          about it changes.
- *   ~2.5s  It crosses the tile. A bar of light runs across the mark's face in
- *          the direction of travel, the frosted panel behind it fills, the
- *          photograph under the glass lifts, and the hairline rim goes warm —
- *          the light goes through the vault.
- *   ~3.3s  The right fan, ELECTIONS, GEOPOLITICS, TECH, and out past the right
- *          edge at 4.4s. The tile lets go over two seconds behind it.
- *   7.00s  The return pass, mirrored: in at the right, out at the left.
- *   11.4s  Everything is the Figma frame again, and stays there to 13s.
+ * Also taking part: each fan group's opacity lifts 0.70 to 0.82 while the
+ * front is inside it, and the sub-head warms as it passes.
  *
- * THE LIGHT IS ON THE CURVE, NOT IN A BOX ACROSS IT
- * -------------------------------------------------
- * The arcs ship inlined now, sixteen addressable paths with a `.fan__spark`
- * twin beside each one — same geometry, flat `#ffc0a4`, held at opacity 0 by
- * the stylesheet. So the band of light is not a travelling window holding a
- * brightened clone of the arcs, as it had to be while they were `<img>`: each
- * spark carries a short `stroke-dasharray` head and the head is placed by
- * `stroke-dashoffset`, so the light is genuinely painted along the wire.
+ * Design decision: nothing in this band glows. No box-shadow, bloom, halo or
+ * drop-shadow on the tile, the mark or the pills. A lit pill is a flat chip of
+ * `--accent` with `--on-accent` contents, and `filter` is never written on a
+ * pill or anything inside one.
  *
- * Which needs the inverse of the map the entrance uses. The entrance walks the
- * dash by arc length; this has to walk it by *screen x*, because x is what the
- * whole section shares. Each spark is therefore sampled once — its longest
- * unbroken run inside its group's `overflow: hidden` window, the same problem
- * `Fan.motion.ts` solves for the draw — and that run is stored as a paired
- * (length, design-x) table. The visible run of each of these ellipses is a
- * single quadrant, so x along it is monotonic and the table inverts cleanly:
- * `sAt(x)` is a binary search and a lerp, evaluated sixteen times a frame.
- *
- * It also has no rectangle to leak. The window it replaces was a box holding a
- * brightened clone of the arcs, screened over the originals, and on a near-black
- * ground a `brightness()` multiplier lifts the whole box rather than only the
- * strokes inside it — which is what was showing as three maroon panels over the
- * left fan. A dash on a path cannot do that: the lit region IS the stroke.
- *
- * The cost is that a dash offset moves no bounding box, so
- * `scripts/amplitude.mjs` reads the arcs as static however bright they are, and
- * the one element this file creates is created too late for it to see. The lit
- * point's travel is measured directly instead; the figures are in the report.
- *
- * WHAT ELSE TAKES PART
- * --------------------
- * Four things in this band used to sit out the whole cycle, and now do not:
- *
- *   the sparks    The sixteen `.fan__spark` twins are lit once by the entrance
- *                 and then dead for the rest of the page's life. They now carry
- *                 the whole beat, which is also what makes the light line-shaped
- *                 rather than box-shaped.
- *   the fans      Each group's own opacity lifts 0.70 → 0.82 while the front
- *                 is inside it and falls again behind it. The group conducts;
- *                 it does not breathe, and it is flat whenever nothing is
- *                 crossing it.
- *   the tile art  `.fan__tile-bg` lifts as the front passes through, so the
- *                 light is transmitted by the vault rather than applied to its
- *                 front face. It is also, now, most of the tile's beat: there
- *                 is no shadow ramp and no bloom on the tile or its glass, by
- *                 standing instruction — nothing in this band gets a halo.
- *   the sub-head  The one line of copy with headroom in it (#9d9d9d) warms as
- *                 the front crosses and cools behind it — the same plain
- *                 colour transition the pills make, nothing else.
- *
- * NOTHING IN THIS BAND GLOWS
- * --------------------------
- * A standing preference, and the one place this departs from the lab twice
- * over. The lab's 05 ramps the tile's red `box-shadow` alpha and blur as its
- * landing beat and hangs a drop-shadow on the mark; both are gone, along with
- * the stylesheet's own two red shadows. What is left of the arrival is the
- * shine crossing the mark's face, the glass filling, the photograph under it
- * lifting and the rim changing colour — a light passing through a thing, with
- * no aura around it anywhere.
- *
- * The pills are the same instruction one element down. A pill is
- * a flat chip of the brand red for as long as the front is on it: background
- * to `--accent`, contents to `--on-accent`, and back. No halo, no bloom, no
- * drop-shadow, no scale, and `filter` is never written anywhere on a pill or
- * on anything inside one. It used to be: the glyphs were <img> elements and
- * the only way to whiten a baked-grey SVG through one was
- * `brightness(0) invert(1)`. They are masks now, so the glyph is a plain
- * `color` like the label beside it, and the filter is gone.
- *
- * Nothing here floats, breathes, drifts, or reacts to the pointer. Reduced
- * motion runs none of it.
+ * Nothing floats, drifts or reacts to the pointer. Reduced motion runs none
+ * of it.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
@@ -127,30 +56,17 @@ const EASE = 'power1.inOut';
 const OVERRUN = 250;
 
 /**
- * Every colour and every lift this loop applies, read from the document at
- * BUILD time — which is to say inside `start()` below, beside the
- * `getComputedStyle` rest reads that were already there, and never at module
- * scope. `useSectionMotion` takes the theme epoch as a dependency, so a theme
- * change tears this loop down and builds it again and these run afresh; read
- * once at module scope they would freeze to whichever palette happened to be
- * live when the bundle evaluated, and the band would cool to dark-mode
- * colours on paper for the life of the page.
+ * Every colour and lift this loop applies, read inside `start()` and never at
+ * module scope: a theme change tears the loop down and rebuilds it, so these
+ * re-read the live palette. Fallbacks are the dark values.
  *
- * The fallbacks are the literals this file shipped with, so a missing custom
- * property yields today's dark value — the safest failure mode there is for
- * the regression gate.
- *
- * DIRECTION. Five of these are lifts, and in dark every one of them means
- * BRIGHTER: the diamonds flare, the photograph under the glass lifts, the rim
- * and the frosted panel go pale, the sub-head warms towards white, and the
- * bar that crosses the mark is very nearly white. On paper brighter is less —
- * each of those would climb towards the page and the beat would stop being
- * visible without a single thing stopping working. The inversion is in the
- * light half of `Fan.css`; what matters here is only that nothing is baked.
+ * In dark every lift means brighter. Light turns around the ones that meet the
+ * page (diamonds, rim, sub-head) in `Fan.css`; the ones inside the tile keep
+ * their direction because they sit over the photograph.
  */
 const read = () => ({
   /* The lit pill: a flat chip of the brand red carrying its own label colour.
-     --on-accent does not flip — it is read against --accent, which is dark in
+     --on-accent does not flip: it is read against --accent, which is dark in
      both themes. */
   pillLitBg: tok('--accent', '#e5331e'),
   pillLitFg: tok('--on-accent', '#fffbf8'),
@@ -174,18 +90,11 @@ const HEAD_WEIGHT = 1.5;
 /**
  * Samples per spark when the (length, x) table is built, in two passes.
  *
- * One flat pass at 220 was 3536 `getPointAtLength` calls across the sixteen
- * sparks, and it is paid in one block the moment the loop opens -- 1.2s after
- * the entrance lands, i.e. exactly while the band is being read. Measured at
- * 390 wide on the dev server: a 770ms long task, a visible stall on the frame
- * the loop starts.
- *
- * Five sixths of each of these ellipses is off screen, so five sixths of those
- * calls were spent sampling arc nobody can see, and the table they fed had
- * only about 38 usable entries. So the path is walked coarsely once to bracket
- * the visible run, and then sampled densely over that run alone: 114 calls a
- * path instead of 221, and 65 entries in the table instead of 38. Cheaper and
- * finer at the same time.
+ * Most of each ellipse is off screen, so the path is walked coarsely once to
+ * bracket the visible run and then sampled densely over that run alone. This
+ * runs in one block as the loop opens, while the band is being read, so it is
+ * kept cheap: 114 calls a path rather than 221 for one flat pass, and a finer
+ * table.
  */
 const COARSE = 48;
 const FINE = 64;
@@ -194,17 +103,11 @@ const px = (n: number) => `${n}px`;
 /**
  * Only the elements the stylesheet is actually rendering.
  *
- * Below 900 the band is a different composition rather than a scaled one: the
- * twelve diamonds go and three of the six pills go with them, in CSS, so the
- * removal reverses itself above the breakpoint on its own. A pass that still
- * schedules them is scheduling beats nobody can see — and worse, a
- * `display: none` element's rect is all zeros, so `cx()` would place every one
- * of them at the left edge of the band and fire them together on the frame the
- * front enters. Asking the layout rather than repeating the media query keeps
- * the loop and the stylesheet in step by construction.
- *
- * `getClientRects()`, not a `visibility` read: the band is `visibility: hidden`
- * until its entrance runs, and a hidden element still has boxes.
+ * Below 900 the diamonds and three pills are `display: none`. Their rects are
+ * all zeros, so `cx()` would place them at the left edge and fire them together
+ * as the front enters. Asking the layout keeps the loop and the stylesheet in
+ * step. `getClientRects()`, not a visibility read: the band is
+ * `visibility: hidden` until its entrance runs, and hidden elements have boxes.
  */
 const shown = (els: HTMLElement[]) => els.filter((e) => e.getClientRects().length > 0);
 /** 0..1 with both ends flat, for presence curves that must not have corners. */
@@ -279,32 +182,23 @@ export function fanLoop(root: HTMLElement): () => void {
   const heard = () => open();
 
   /* --------------------------------------------------------------- the frame
-     Everything below is in design px — the 1920-wide screenshot space the
-     stylesheet's `--f` scales from, or the 1600-wide one it rebases to below
-     900, where the band is re-laid out as a column. Live rects are divided
-     back into it, so a pill's x is the same number at every width and only a
-     breakpoint crossing invalidates the timeline. */
+     Everything below is in design px: the 1920-wide space `--f` scales from,
+     or 1440 below 900 where the band is re-laid out as a column. Live rects
+     are divided back into it, so only a breakpoint crossing invalidates the
+     timeline. */
   let DW = 1920;
   let f = 1;
   let box = frame.getBoundingClientRect();
-  /* The mark's face, in CSS px. Everything else here is resolution-independent
-     design px; the bar that crosses the tile cannot be, because below 900 the
-     tile stops being 100 design px and takes a real size instead — 100 design
-     px is 24 CSS px at 390, and a bar cut to it would be a quarter of the
-     width of the thing it is meant to cross. So the bar is a fraction of the
-     glass it lives inside. On desktop the glass IS 65.12 * f, so nothing about
-     the wide band moves. */
+  /* The mark's face, in CSS px. Below 900 the tile has a real size rather than
+     100 design px, so the bar that crosses it is sized as a fraction of the
+     glass it lives in. On desktop the glass is 65.12 * f. */
   let face = 65.12;
 
   const measureFrame = () => {
     box = frame.getBoundingClientRect();
-    /* Read, not branched on. `Fan.css` owns the design width — 1920 wide, and
-       1440 below 900 where the artwork is re-placed from its own painted
-       extent — and this file has to work in the same space or every baked time
-       in the timeline is wrong by the ratio between the two. It used to carry
-       its own copy of the number and its own copy of the media query, and the
-       copy was stale: the stylesheet said 1000 and the picture was 1543 wide.
-       One value, in one place, asked for here. */
+    /* Read, not branched on: `Fan.css` owns the design width (1920, or 1440
+       below 900), and every baked time in the timeline depends on it. Keep it
+       in one place. */
     DW = Number(getComputedStyle(frame).getPropertyValue('--fan-dw')) || 1920;
     f = box.width / DW || 1;
     face = (glass?.getBoundingClientRect().width || 0) || 65.12 * f;
@@ -316,13 +210,11 @@ export function fanLoop(root: HTMLElement): () => void {
   };
 
   /* -------------------------------------------------------------- the sparks
-     The table is (length along the path, design x), over the longest unbroken
-     run of the path that its group's window actually shows. Sampling is the
-     only way in: these are whole ellipses about 2100 units across, seen through
-     an 863-wide clip, so five sixths of each path is off screen and a dash
-     walked over the whole perimeter would be invisible for most of its travel.
-     Because the visible run is a single quadrant, x along it is monotonic, and
-     the table inverts. */
+     The table is (length along the path, design x) over the longest unbroken
+     run of the path its group's window shows. These are whole ellipses about
+     2100 units across seen through an 863-wide clip, so sampling is the only
+     way in. The visible run is a single quadrant, so x is monotonic along it
+     and the table inverts. */
   const sparks: Spark[] = [];
   const fans: Fan[] = [];
 
@@ -440,15 +332,9 @@ export function fanLoop(root: HTMLElement): () => void {
   };
 
   /* ---------------------------------------------------------------- overlay
-     One, and it lives inside the glass, which clips it to the mark's face.
-
-     There is deliberately nothing else. An earlier draft of this loop carried a
-     wide soft warm wash travelling with the front under the whole band, to keep
-     the pass alive over the 330 design px between the two fans where there are
-     no arcs. It went, with the tile's shadows and the pills' halo: any element
-     that fills an area of the background reads as a maroon patch on this ground
-     however soft its edges are, and this band is not to glow anywhere. The gap
-     is the tile's, and the tile takes the light as the front reaches it. */
+     One, inside the glass, which clips it to the mark's face. Deliberately
+     nothing else: any element that fills an area of the background reads as a
+     maroon patch on this ground, however soft its edges. */
   let bar: HTMLElement | null = null;
 
   const buildOverlays = (barEdge: string, barCore: string) => {
@@ -554,11 +440,8 @@ export function fanLoop(root: HTMLElement): () => void {
     buildOverlays(C.barEdge, C.barCore);
     sizeOverlays();
     buildTables();
-    // The entrance leaves each `.fan__spark` holding its own `opacity: 0` and a
-    // dash pair. Invisible either way, but the rest band is meant to be one
-    // value per element and that is two, so the sixteen are handed back to the
-    // stylesheet before the first pass rather than on the frame the front first
-    // reaches each of them.
+    // The entrance leaves each `.fan__spark` with an inline opacity and dash
+    // pair. Hand them back to the stylesheet before the first pass.
     rest();
 
     // Resting values are read now, with the entrance finished and its
@@ -576,7 +459,7 @@ export function fanLoop(root: HTMLElement): () => void {
     const diaXs = diamonds.map(cx);
     const tileX = tile ? cx(tile) : DW / 2;
     const subX = sub ? cx(sub) : DW / 2;
-    // `.icon`, not `img`: the glyphs are masked spans now.
+    // `.icon`, not `img`: the glyphs are masked spans.
     const pillIcons = pills.map((p) => Array.from(p.querySelectorAll<HTMLElement>('.icon')));
     // One read for all eight; they are the same grey in every pill, and it is
     // their own colour rather than the label's, so the pill's `color` tween
@@ -590,7 +473,7 @@ export function fanLoop(root: HTMLElement): () => void {
       /**
        * One pass. `dir` 1 runs left to right, -1 right to left. Everything in
        * the band is scheduled off `when`, which asks the ease when the front's
-       * centre is at a given design x — so a pill turns over on the frame the
+       * centre is at a given design x, so a pill turns over on the frame the
        * light is on it and not a frame either side, at any duration.
        */
       const pass = (at: number, dir: 1 | -1) => {
@@ -603,11 +486,10 @@ export function fanLoop(root: HTMLElement): () => void {
           return at + DUR * invEase(EASE, v);
         };
 
-        /* 1 — the front crosses, and the arcs, the fans and the ground with it.
+        /* 1. The front crosses, and the arcs and fans with it.
            `immediateRender: false` on both: a delayed `fromTo` writes its start
-           values when the timeline is BUILT, not when the playhead arrives, and
-           without it the second pass would slam the front back to its own start
-           at t=0 and hold it there through the first. */
+           values when the timeline is built, and without it the second pass
+           would snap the front to its own start and hold it through the first. */
         tl.fromTo(front, { x: a }, {
           x: b, duration: DUR, ease: EASE, immediateRender: false, onUpdate: paint,
         }, at)
@@ -621,9 +503,8 @@ export function fanLoop(root: HTMLElement): () => void {
             onComplete: rest,
           }, at + DUR - 0.7);
 
-        /* 2 — the diamonds on the path catch the front as it reaches them.
-           They are six design px across, so size is what makes one readable as
-           having fired at all. */
+        /* 2. The diamonds catch the front as it reaches them. At six design
+           px across, size is what makes one read as having fired. */
         diamonds.forEach((d, i) => {
           const t = when(diaXs[i]);
           tl.fromTo(d, { scale: 1, filter: C.diaRest }, {
@@ -636,11 +517,10 @@ export function fanLoop(root: HTMLElement): () => void {
             }, t + 0.26);
         });
 
-        /* 3 — the pills turn over. A flat chip of the brand red and back: no
-           halo, no bloom, no shadow, no scale, and no filter on the pill. The
-           opacity goes with the colour because it is part of it — at the
-           stylesheet's 0.7 over this ground #e5331e renders as rgb(167,42,27),
-           which is not the brand colour but 70% of it. */
+        /* 3. The pills turn over: a flat chip of the brand red and back, with
+           no halo, shadow, scale or filter. Opacity goes to 1 with the colour,
+           because at the stylesheet's resting opacity #e5331e would render as
+           a dimmed red rather than the brand colour. */
         pills.forEach((el, i) => {
           const t = when(pillXs[i]) - 0.14;
           tl.to(el, {
@@ -667,14 +547,12 @@ export function fanLoop(root: HTMLElement): () => void {
           }
         });
 
-        /* 4 — the tile transmits. It takes the light in, carries it across the
-           mark in the direction of travel, and lets it out the far side; the
-           fall is two seconds, because a vault is not a strobe. */
+        /* 4. The tile transmits: the light comes in, crosses the mark in the
+           direction of travel and leaves; the fall takes about two seconds. */
         const hit = when(tileX);
         if (tile && tileBorder) {
-          // The rim only. No shadow, no bloom and nothing outside the tile's own
-          // 100 design px: the rim is a hairline changing colour, the same plain
-          // transition the pills make, and the light itself is the bar below.
+          // The rim only: a hairline changing colour, nothing outside the
+          // tile's own box.
           tl.to(tile, {
             borderColor: C.rimLit, duration: 0.35, ease: 'power2.out',
           }, hit - 0.3)
@@ -693,8 +571,7 @@ export function fanLoop(root: HTMLElement): () => void {
             }, hit + 0.45);
         }
         if (tileArt) {
-          // The photograph under the glass, lifting as the light goes through
-          // it — the one part of the tile that used to sit out the whole cycle.
+          // The photograph under the glass lifts as the light goes through.
           tl.fromTo(tileArt, { filter: C.artRest }, {
             filter: C.artLit, duration: 0.3, ease: 'power2.out', immediateRender: false,
           }, hit - 0.3)
@@ -714,9 +591,8 @@ export function fanLoop(root: HTMLElement): () => void {
             .to(bar, { opacity: 0, duration: 0.2, ease: 'none' }, hit + 0.34);
         }
 
-        /* 5 — the sub-head warms as the front crosses it. The only line of copy
-           in the band with headroom in it, and the same plain colour change the
-           pills make. Nothing moves; the type is not touched otherwise. */
+        /* 5. The sub-head warms as the front crosses it: a plain colour
+           change, nothing moves. */
         if (sub && subFg) {
           const t = when(subX) - 0.2;
           tl.to(sub, { color: C.subLit, duration: 0.35, ease: 'sine.out' }, t)
@@ -730,11 +606,9 @@ export function fanLoop(root: HTMLElement): () => void {
       pass(PASS_A, 1);
       pass(PASS_B, -1);
 
-      /* The rest of the cycle is rest. Two hooks sit in it: off screen the loop
-         stops here rather than wherever the scroll happened to leave it, so the
-         section is never parked on a lit pill with a bright head halfway down a
-         fan for as long as it takes someone to come back. A beat is four
-         seconds; it is allowed to finish. */
+      /* The rest of the cycle is rest. Off screen, the loop pauses at one of
+         these two points rather than mid-pass, so the band is never left on a
+         lit pill or a head halfway down a fan. A pass is allowed to finish. */
       const settle = () => {
         rest();
         // Deferred: this runs inside the timeline's own tick, and `remeasure`
@@ -782,7 +656,7 @@ export function fanLoop(root: HTMLElement): () => void {
     sizeOverlays();
     buildTables();
     // The baked times are wrong at the new design width, so the cycle is thrown
-    // away and rebuilt — from rest, which `settle` has just established.
+    // away and rebuilt from rest, which `settle` has just established.
     ctx?.revert();
     ctx = undefined;
     cycle = undefined;
@@ -793,13 +667,11 @@ export function fanLoop(root: HTMLElement): () => void {
   };
 
   /* -------------------------------------------------------------- the gate
-     `useSectionMotion` passes this function as its `idle` option and calls it
-     from the entrance's `onComplete`, one line after `done()` — so
-     `data-motion-done` is already set by the time this runs and the first
-     branch below fires at once. Called any earlier (a direct call, a lab
-     harness) the `motion:done` event is still ahead of us and is the best
-     signal there is, and under both sits the question that is true either way:
-     is anything still animating inside this section? */
+     `useSectionMotion` calls this as its `idle` option from the entrance's
+     `onComplete`, after `done()`, so `data-motion-done` is already set and
+     the first branch below fires at once. If called earlier (directly, for
+     example) the `motion:done` event is still ahead and is listened for.
+     Under both sits a fallback: is anything still animating in this section? */
   const open = () => {
     if (stopped || ready) return;
     window.clearInterval(probe);
@@ -852,16 +724,15 @@ export function fanLoop(root: HTMLElement): () => void {
     ctx?.revert();
 
     // The sparks and the fan groups are written straight to `style` rather than
-    // through GSAP — sixteen dash offsets a frame is the hot path here — so
+    // through GSAP (sixteen dash offsets a frame is the hot path here), so
     // `revert` has never heard of them and they are handed back by name.
     sparks.forEach(clearSpark);
     fans.forEach(clearFan);
 
-    // Then each tweened target, and only the properties this file ever wrote. A
-    // blanket `clearProps: 'all'` is not safe here: it empties the style
-    // attribute, and that attribute is where `Fan.tsx` puts each pill's and
-    // diamond's `--x` / `--y` / `--w` — clearing it collapses every one of them
-    // onto 0,0. The glyphs keep their `--icon` there for the same reason.
+    // Then each tweened target, only the properties this file wrote. Do not use
+    // `clearProps: 'all'`: it empties the style attribute, which holds each
+    // pill's and diamond's `--x` / `--y` / `--w` and each glyph's `--icon`,
+    // and collapses them all onto 0,0.
     const give = (el: Element | null, props: string) => {
       if (!el) return;
       gsap.killTweensOf(el);

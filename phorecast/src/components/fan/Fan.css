@@ -1,23 +1,17 @@
-/* "Your Funds Stay in Your Control" — Figma frame 1920 x 675.
+/* "Where Every Outcome Connects." Figma frame 1920 x 675.
    --f is one design pixel at the current width. */
 
 /* The band's own theme tokens.
    -------------------------------------------------------------------------
-   Declared on :root rather than on .fan, and that is not a style choice.
-   `tok()` in lib/theme.ts is `getComputedStyle(document.documentElement)`, so
-   a custom property the loop has to read is only visible to it from the root.
-   Everything a motion module reads therefore lives here; the `--fan-` prefix
-   is what keeps it out of everyone else's way.
+   Declared on :root rather than on .fan, because `tok()` in lib/theme.ts reads
+   `getComputedStyle(document.documentElement)`. Everything a motion module
+   reads lives here; the `--fan-` prefix keeps it out of other sections' way.
 
-   Dark is exactly what the section shipped with, written out rather than
-   inlined, so this block is provably a no-op. Light is at the foot of the
-   file, and its job is not to lighten these values — it is to turn every one
-   of them around. In dark, "lit" means brighter: the diamonds flare to
-   brightness 2.4, the tile photograph to 1.5, the spark head is a pale peach
-   on black, the rim and the glass go pale, the sub-head warms towards white.
-   On paper every one of those brightens towards the page and the beat simply
-   stops existing. So each lift below is a PAIR — a rest value and a lit value
-   — and light supplies its own pair pointing the other way. */
+   Light is at the foot of the file, and its job is to turn values around, not
+   to lighten them. In dark, "lit" means brighter (the diamonds flare, the
+   photograph lifts, the spark is pale peach, the rim and glass go pale, the
+   sub-head warms). On paper those would vanish into the page, so each lift is
+   a PAIR, rest and lit, and light supplies a pair pointing the other way. */
 :root {
   /* The arcs. Both files are the same three stops four times over: a
      transparent head, #f03725 at the middle, a transparent tail. Only the
@@ -33,9 +27,8 @@
   /* The category pills: a near-black chip carrying --ink at 0.7. */
   --fan-pill-bg: #000;
   --fan-pill-op: 0.7;
-  /* The pill glyphs. #9d9d9d is the grey Figma baked into all eight files, and
-     it is named here so that masking them changes nothing about how they look
-     — only about what can reach them. */
+  /* The pill glyphs. #9d9d9d is the grey Figma baked into all eight files, so
+     masking them changes nothing about how they look. */
   --fan-icon: #9d9d9d;
   /* The two quiet diamonds. The other ten are --accent and --ink. */
   --fan-dia-mute: #5b5b5a;
@@ -71,13 +64,9 @@
   background: var(--page);
 }
 .fan__frame {
-  /* The design width this band is drawn in, and one design pixel at the
-     current width. They are one variable and one derivation rather than two
-     literals because `Fan.loop.ts` has to work in the SAME space -- it reads
-     `--fan-dw` off this element and divides the live box by it, so the front's
-     x, the pills' x and the sixteen arc tables are all in design px whatever
-     the breakpoint has done to the frame. Two copies of the number drifted
-     apart once already: see the narrow block. */
+  /* The design width, and one design pixel at the current width. One variable
+     because `Fan.loop.ts` reads `--fan-dw` off this element and works in the
+     same space; keep it the single source. */
   --fan-dw: 1920;
   --f: calc(100cqw / var(--fan-dw));
   position: relative;
@@ -102,10 +91,8 @@
 .fan__arcs--right { left: calc(1055 * var(--f)); top: calc(-4 * var(--f)); }
 .fan__lines { position: absolute; }
 /* `stop-color` is a CSS property as well as a presentation attribute, and CSS
-   wins — so the gradients re-colour with the theme without the raw string
-   being transformed twice, without a second copy of it at module scope and
-   without the arcs' markup being re-rendered when the theme flips. The baked
-   attribute stays put underneath as the fallback. */
+   wins, so the gradients re-colour with the theme with no second copy of the
+   markup and no re-render. The baked attribute stays as the fallback. */
 .fan__stop--in { stop-color: var(--fan-arc-in); }
 .fan__stop--core { stop-color: var(--fan-arc); }
 .fan__stop--out { stop-color: var(--fan-arc-out); }
@@ -169,10 +156,8 @@
   opacity: var(--fan-pill-op);
 }
 .fan__pill > .icon, .fan__sport { width: calc(16 * var(--f)); height: calc(16 * var(--f)); flex: none; }
-/* The glyphs are masks filled with `color`, so they take a colour of their
-   own rather than the label's: #9d9d9d is exactly the grey Figma baked into
-   all eight files, and naming it here is what keeps the conversion invisible
-   in dark. The loop tweens this `color` where it used to tween a filter. */
+/* The glyphs are masks filled with `color`, taking their own colour rather
+   than the label's. The loop tweens this `color`. */
 .fan__pill .icon { color: var(--fan-icon); }
 .fan__sport { position: relative; }
 .fan__sport .icon { position: absolute; }
@@ -190,11 +175,9 @@
   border-radius: calc(17.86 * var(--f));
   border: 1px solid var(--fan-rim);
   overflow: hidden;
-  /* No box-shadow. The tile carried two red shadows that bloomed either side of
-     it; asked for and removed. Nothing in this band glows any more -- the pills
-     changed to a plain colour transition for the same reason. The entrance's
-     one flash is `filter: brightness()` on the tile itself, which lights the
-     plate and does not spread past its own edge. */
+  /* Design decision: no box-shadow and no glow anywhere in this band. The
+     entrance's one flash is `filter: brightness()` on the tile itself, which
+     does not spread past its edge. */
 }
 .fan__tile-bg { position: absolute; left: -15.34%; top: -42%; width: 130.5%; height: 174%; object-fit: cover; }
 .fan__glass {
@@ -226,37 +209,19 @@
 
 /* --- Narrow ------------------------------------------------------------------
    Below 900 the band stops being a 1920-wide picture and becomes a column: the
-   fan converging on the vault, the markets it carries, then the claim. Three
-   things in that order, each with its own space, and nothing on top of
-   anything else.
+   fan converging on the vault, the markets it carries, then the claim, each in
+   its own space.
 
-   WHAT ACTUALLY BROKE, and why the fix is one line rather than a dozen
-   offsets. `--f` is one design pixel. The block that used to be here set it to
-   `100cqw / 1000` -- a design width this artwork has never had. Each arc
-   window is 863 design px wide and the right one was placed at 560, so what
-   the band PAINTS ran from -120 to 1423: 1543 design px of picture measured in
-   a unit cut for 1000. Every absolute position in the section was therefore
-   about 1.5x too far from the middle. At 390 that put both fans half off the
-   screen, CRYPTO on top of the heading, SPORT on a line bundle and the
-   right-hand three pills past the right edge entirely -- not a positioning
-   bug per element, one unit that did not describe the thing it was measuring.
+   `--f` is rebased to the painted extent rather than an arbitrary width:
+   `--fan-dw` is the extent, the two arc windows are placed from it, so the
+   picture is exactly as wide as the frame at every width. 1440 puts each outer
+   tail on its edge and carries the inner tips 286 design px past each other,
+   so the fans cross and the vault sits on the crossing. (`.sl3__frame` in the
+   hero makes the same kind of move.)
 
-   `.sl3__frame` makes the same move when the hero stops sitting side by side:
-   it drops `--u` from the column's 1800 to the artwork's own 964. Here the
-   painted extent is REBASED rather than measured, because it is ours to
-   choose: `--fan-dw` is the extent, the two windows are placed FROM it, and so
-   the picture is exactly as wide as the frame by construction at every width.
-   1440 puts the left tail on the left edge, the right tail on the right edge,
-   and carries the two inner tips 286 design px past each other in the middle,
-   so the fans genuinely cross and the vault sits on the crossing -- which is
-   the one thing this band has to say, and it says it better at 390 than the
-   1920 composition does, where they fade out short of each other.
-
-   AND WHAT STOPS SCALING. A design pixel at 390 is a quarter of a CSS pixel.
-   Anything that has to be READ -- the tile, the chips, the type -- comes off
-   real units here; only the arcs, which are abstract curve, still ride `--f`.
-   That is the other half of why the old block failed: it scaled a 14px label
-   to 3.4px and called it a breakpoint. */
+   Anything that has to be read (the tile, the chips, the type) comes off real
+   units here; only the arcs still ride `--f`. A design pixel at 390 is a
+   quarter of a CSS pixel. */
 @media (max-width: 900px) {
   .fan__frame {
     --fan-dw: 1440;
@@ -268,14 +233,10 @@
     padding-bottom: clamp(28px, 8vw, 48px);
   }
 
-  /* The artwork, as one block. `Fan.tsx` wraps the arcs, the diamonds and the
-     pills in an un-classed `<div aria-hidden>`; it is selected on that rather
-     than given a class of its own because the regression fingerprint records
-     every element's class attribute at 1600, and a rename there would move
-     desktop's record for a change that only ever happens below 900.
-
-     The two arc groups are absolute, so the band they occupy is reserved as
-     padding and the surviving pills flow underneath it in one centred row. */
+  /* The artwork, as one block: the un-classed `<div aria-hidden>` in
+     `Fan.tsx`, selected structurally so the desktop markup stays unchanged.
+     The arc groups are absolute, so their band is reserved as padding and the
+     surviving pills flow underneath in one centred row. */
   .fan__frame > div:not([class]) {
     grid-area: 1 / 1;
     position: relative;
@@ -293,40 +254,28 @@
      half of what makes the two halves mirror. */
   .fan__arcs--right { left: calc((var(--fan-dw) - 863) * var(--f)); }
 
-  /* AND THE ONE THING THAT MUST NOT SCALE WITH THEM. Figma exports these lines
-     at stroke-width 1.35988 in a viewBox about 2187 units wide shown in
-     2126.9 * --f px, so the stroke is drawn at roughly 1.36 * --f * 0.97: 1.1
-     CSS px at 1600, and 0.29 px at 390. A third of a pixel is not a thin line,
-     it is a line the rasteriser spreads over one pixel at a third of its
-     alpha, which is why the fans read as grey haze in the collapse rather than
-     as fans. `non-scaling-stroke` takes the width out of the transform
-     entirely, so 1.05px is 1.05px at every width and the band keeps the weight
-     it has on a desktop. The twin is named separately because the loop writes
-     `stroke-width` on it inline sixteen times a frame and its resting value
-     has to stay proportionate to the line underneath. */
+  /* The stroke must not scale with the arcs. At Figma's 1.36 stroke width it
+     would render at 0.29 CSS px at 390, which the rasteriser spreads into grey
+     haze. `non-scaling-stroke` holds it at 1.05px at every width. The spark is
+     named separately because the loop writes its `stroke-width` inline and its
+     resting value must stay in proportion to the line. */
   .fan__lines path { vector-effect: non-scaling-stroke; stroke-width: 1.05px; }
   .fan__lines path.fan__spark { stroke-width: 2px; }
 
-  /* THE DIAMONDS GO. Six design px is 1.5 CSS px at 390. At that size they are
-     not accents, they are dust, and twelve of them scattered over a 390-wide
-     frame was most of what read as noise in the collapse. Dropped in CSS so
-     the removal reverses itself above 900 on its own; both motion modules skip
-     anything with no box, so this leaves nothing animating a hidden element. */
+  /* The diamonds go: six design px is 1.5 CSS px at 390, which reads as dust.
+     Dropped in CSS so it reverses above 900 on its own; both motion modules
+     skip elements with no box. */
   .fan__diamond { display: none; }
 
-  /* THREE MARKETS, NOT SIX. At a legible chip size six wrap into three rows of
-     tag cloud and stop reading as labels the fan is carrying in; three name
-     three genuinely different markets and still say "many". The three that go
-     are the last three spans in the artwork -- GEOPOLITICS, TECH, ELECTIONS --
-     and they are selected by position because the pills carry no per-label
-     class, for the same fingerprint reason as the wrapper above.
-     `nth-last-of-type` rather than `nth-of-type(n+16)`: it counts from the end
-     of the pills, so it does not depend on there being twelve diamonds. */
+  /* Three markets, not six. Six at a legible size wrap into a tag cloud;
+     three still say "many". The last three spans (GEOPOLITICS, TECH,
+     ELECTIONS) are hidden by position, since the pills carry no per-label
+     class. `nth-last-of-type` counts from the end, so it does not depend on
+     the number of diamonds. */
   .fan__pill:nth-last-of-type(-n + 3) { display: none; }
 
-  /* What is left is a chip, at a chip's size. Everything here was `--f` and is
-     not any more. 11px uppercase mono on the chip measures 9.9:1 in dark and
-     7.7:1 on paper -- both well clear of AA at this size. */
+  /* A chip at a chip's size, in real units. 11px uppercase on the chip is
+     9.9:1 in dark and 7.7:1 on paper. */
   .fan__pill {
     position: static;
     width: auto;
@@ -392,20 +341,18 @@
 }
 
 /* The copy's inner span. Both blocks are centred with `translateX(-50%)`, so
-   the entrance never touches the block itself -- GSAP would resolve that
+   the entrance never touches the block itself; GSAP would resolve that
    centring to a pixel value for the length of the tween. The span is what
    rises and sharpens out of blur.
 
-   No mask here, unlike the hero: 02 Trace resolves the copy out of a blur
-   rather than sliding it out of a slot, and an `overflow: hidden` mask would
-   cut the blur's halo off on a hard line at the top and bottom of the text. */
+   No `overflow: hidden` mask (unlike the hero): the copy resolves out of a
+   blur, and a mask would cut the blur's halo off on a hard line. */
 .fan__title .fan__in,
 .fan__sub .fan__in { display: block; }
-/* No `will-change` on these. It is a standing promotion to a compositor layer,
-   and text on its own layer loses subpixel antialiasing for good: measured, the
-   settled sub-line came back 19 levels darker than the same band with motion
-   off. GSAP promotes the span for the length of the tween anyway -- it is
-   animating `filter` -- and drops it again with `clearProps`. */
+/* No `will-change` on these. A standing compositor layer costs text its
+   subpixel antialiasing for good (the settled sub-line renders visibly
+   lighter). GSAP promotes the span while it animates `filter` and
+   `clearProps` drops it. */
 
 /* The bright head that runs along each arc while it is being drawn: a second
    copy of every path, emitted in the markup by `Fan.tsx` so nothing has to be
@@ -428,115 +375,90 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list — the same
-   shape `tokens.css` uses, and for the same reason. The two blocks MUST stay
-   identical; only their conditions differ.
+   Written twice, because a media query cannot go in a selector list (the same
+   shape `tokens.css` uses). The two blocks MUST stay identical; only their
+   conditions differ.
 
-   Nothing below is a lighter version of the block at the top of this file.
-   Six of these values are LIFTS, and in dark every one of them means brighter:
-   the spark head is a pale peach on black, the diamonds flare to brightness
-   2.4, the rim and the frosted panel go pale, the sub-head warms towards
-   white, the tile ignites at 2.6. Carried across unchanged, each one would
-   climb towards the paper and the beat would stop being visible without a
-   single thing having stopped working — which is the exact failure this band
-   is the proof case for. Each is turned around here.
-
-   The one place the rule does NOT apply is inside the tile, and it is worth
-   saying why: the photograph under the glass is dark saturated artwork, the
-   same object in both themes, and `.fan__tile` clips everything to it. A bar
-   of light crossing it is crossing a photograph, not the page. So the glass,
-   the bar and the photograph's own lift keep their direction, and the rim —
-   the only part of the tile that meets the paper — turns around. -------- */
+   The lifts that meet the page (the spark, the diamonds, the rim, the
+   sub-head) are turned around here, or they would climb towards the paper and
+   the beat would vanish. Inside the tile the rule does not apply: the
+   photograph under the glass is dark artwork in both themes and `.fan__tile`
+   clips to it, so the glass, the bar, the photograph's lift and the tile's
+   ignition keep their direction. Only the rim meets the paper. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* THE ARCS. #f03725 at 0.7 group opacity over near-black is a warm hairline
-     that glows; the same value over cream is a pale scratch. The brand red
-     itself is what reads on paper, and the two transparent end stops move with
-     it so the fade is pure alpha with no hue drift through cream. */
+  /* THE ARCS. #f03725 over cream is a pale scratch; the deeper brand red
+     reads on paper. The transparent end stops take the same hue so the fade
+     is pure alpha, with no hue drift. */
   --fan-arc: #b8300f;
   --fan-arc-in: #b8300f;
   --fan-arc-out: #b8300f;
-  /* THE SPARK — the first direction flip, and the one the whole beat rests on.
-     In dark the head riding each arc is a pale peach, brighter than the line
-     it sits on. On paper a pale head on a coral line is nothing at all, so the
-     head becomes the darkest thing in the band. It keeps its 1.5x weight, so
-     what reads is a dense dark segment travelling along a soft one. */
+  /* THE SPARK: the first direction flip. In dark the head is a pale peach,
+     brighter than its line; on paper that would vanish, so the head becomes
+     the darkest thing in the band, a dense dark segment on a soft line. */
   --fan-spark: #23100a;
 
-  /* THE PILLS. In dark the chip is BLACK on a near-black page — a hole, quieter
-     than the ground. On paper a hole is still a hole, so the chip settles
-     rather than lifts, and the opacity goes up rather than down: at 0.7 a dark
-     label on a light chip loses more than white on black does. 0.8 puts the
-     label at 7.1:1 against its own chip; 0.7 would be 5.4:1. */
+  /* THE PILLS. In dark the chip is black on a near-black page, quieter than
+     the ground. On paper it settles rather than lifts, and the opacity goes
+     up: 0.8 puts the label at 7.1:1 against its chip, where 0.7 would be
+     5.4:1. */
   --fan-pill-bg: #e7dbd1;
   --fan-pill-op: 0.8;
   --fan-icon: #7d736c;
   --fan-dia-mute: #9a908a;
   --fan-dia-mute-2: #80766f;
-  /* THE DIAMONDS — the second direction flip. brightness(2.4) on ink is a
-     smudge; the flare has to press the six-pixel diamond DOWN into the paper
-     instead, and saturate carries the six accent ones with it. The doubling in
-     size is what makes one readable as having fired, and it is unchanged. */
+  /* THE DIAMONDS: the second flip. brightness(2.4) on ink is a smudge, so the
+     flare presses the diamond down into the paper instead, with saturate
+     carrying the accent ones. The doubling in size is unchanged. */
   --fan-dia-rest: brightness(1) saturate(1);
   --fan-dia-lit: brightness(0.42) saturate(1.5);
 
-  /* THE TILE. Its photograph is a hot orange plate — dark, saturated artwork
-     that is the same object in both themes — so only the rim touches the page,
-     and it is the rim that has to turn around: white-alpha on black becomes
-     ink-alpha on paper, and the lit rim goes to a deep brand red rather than
-     to near-white. Inside the tile the light still passes as light, because
-     what it passes over is the photograph and not the page. */
+  /* THE TILE. The photograph is dark, saturated artwork in both themes, so
+     only the rim meets the page and turns around: ink-alpha at rest, a deep
+     brand red when lit. Inside the tile the light still passes as light. */
   --fan-rim: rgba(26, 21, 18, 0.32);
   --fan-rim-lit: rgba(126, 2, 2, 0.9);
 
-  /* The sub-head — the third flip. In dark it warms towards white; there is no
-     headroom above --ink-2 on paper, so it deepens towards --ink instead. */
+  /* The sub-head: the third flip. There is no headroom above --ink-2 on
+     paper, so it deepens towards --ink instead. */
   --fan-sub-lit: #2f2926;
   }
 }
 
 :root[data-theme='light'] {
-  /* THE ARCS. #f03725 at 0.7 group opacity over near-black is a warm hairline
-     that glows; the same value over cream is a pale scratch. The brand red
-     itself is what reads on paper, and the two transparent end stops move with
-     it so the fade is pure alpha with no hue drift through cream. */
+  /* THE ARCS. #f03725 over cream is a pale scratch; the deeper brand red
+     reads on paper. The transparent end stops take the same hue so the fade
+     is pure alpha, with no hue drift. */
   --fan-arc: #b8300f;
   --fan-arc-in: #b8300f;
   --fan-arc-out: #b8300f;
-  /* THE SPARK — the first direction flip, and the one the whole beat rests on.
-     In dark the head riding each arc is a pale peach, brighter than the line
-     it sits on. On paper a pale head on a coral line is nothing at all, so the
-     head becomes the darkest thing in the band. It keeps its 1.5x weight, so
-     what reads is a dense dark segment travelling along a soft one. */
+  /* THE SPARK: the first direction flip. In dark the head is a pale peach,
+     brighter than its line; on paper that would vanish, so the head becomes
+     the darkest thing in the band, a dense dark segment on a soft line. */
   --fan-spark: #23100a;
 
-  /* THE PILLS. In dark the chip is BLACK on a near-black page — a hole, quieter
-     than the ground. On paper a hole is still a hole, so the chip settles
-     rather than lifts, and the opacity goes up rather than down: at 0.7 a dark
-     label on a light chip loses more than white on black does. 0.8 puts the
-     label at 7.1:1 against its own chip; 0.7 would be 5.4:1. */
+  /* THE PILLS. In dark the chip is black on a near-black page, quieter than
+     the ground. On paper it settles rather than lifts, and the opacity goes
+     up: 0.8 puts the label at 7.1:1 against its chip, where 0.7 would be
+     5.4:1. */
   --fan-pill-bg: #e7dbd1;
   --fan-pill-op: 0.8;
   --fan-icon: #7d736c;
   --fan-dia-mute: #9a908a;
   --fan-dia-mute-2: #80766f;
-  /* THE DIAMONDS — the second direction flip. brightness(2.4) on ink is a
-     smudge; the flare has to press the six-pixel diamond DOWN into the paper
-     instead, and saturate carries the six accent ones with it. The doubling in
-     size is what makes one readable as having fired, and it is unchanged. */
+  /* THE DIAMONDS: the second flip. brightness(2.4) on ink is a smudge, so the
+     flare presses the diamond down into the paper instead, with saturate
+     carrying the accent ones. The doubling in size is unchanged. */
   --fan-dia-rest: brightness(1) saturate(1);
   --fan-dia-lit: brightness(0.42) saturate(1.5);
 
-  /* THE TILE. Its photograph is a hot orange plate — dark, saturated artwork
-     that is the same object in both themes — so only the rim touches the page,
-     and it is the rim that has to turn around: white-alpha on black becomes
-     ink-alpha on paper, and the lit rim goes to a deep brand red rather than
-     to near-white. Inside the tile the light still passes as light, because
-     what it passes over is the photograph and not the page. */
+  /* THE TILE. The photograph is dark, saturated artwork in both themes, so
+     only the rim meets the page and turns around: ink-alpha at rest, a deep
+     brand red when lit. Inside the tile the light still passes as light. */
   --fan-rim: rgba(26, 21, 18, 0.32);
   --fan-rim-lit: rgba(126, 2, 2, 0.9);
 
-  /* The sub-head — the third flip. In dark it warms towards white; there is no
-     headroom above --ink-2 on paper, so it deepens towards --ink instead. */
+  /* The sub-head: the third flip. There is no headroom above --ink-2 on
+     paper, so it deepens towards --ink instead. */
   --fan-sub-lit: #2f2926;
 }

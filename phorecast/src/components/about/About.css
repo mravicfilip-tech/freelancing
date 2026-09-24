@@ -1,106 +1,65 @@
-/* About — Figma 531:148, a 1920 x 3660 frame with a 1800 content column in
-   60px gutters. That column is `.container--wide`, which is exactly what the
-   landing hero uses, so the page needed no new measurement to sit on.
+/* About: Figma 531:148, a 1920 x 3660 frame with an 1800 content column in
+   60px gutters (`.container--wide`, as on the landing hero).
 
    THE UNIT. Every band declares `--u: calc(100cqw / 1800)` against a
-   container-query root whose width IS the content column, so the internals
-   below are written in the design's own pixel numbers and the whole band
-   scales as one piece. That is the pattern Bento, Familiar, Built and the
-   hero already use; the divisor is the column's design width and not the
-   viewport's, because above 1920 the column stops tracking the viewport and a
-   viewport-derived unit runs away (Hero.css records that measurement).
+   container-query root whose width is the content column, so internals are
+   written in design pixels and each band scales as one piece. The divisor is
+   the column's width, not the viewport's, because above 1920 the column stops
+   tracking the viewport.
 
-   TYPE IS NOT ON THE UNIT. Copy is clamped against vw the way every other
-   band clamps it, so a 20px paragraph does not become 4px on a phone. The
-   unit carries geometry -- gutters, card padding, image windows, table
-   columns -- which is the split Built.css draws between `--c` and its
-   `clamp()`ed column titles.
+   TYPE IS NOT ON THE UNIT. Copy uses the shared type tokens and clamps, so
+   text does not shrink to nothing on a phone. The unit carries geometry:
+   gutters, padding, image windows, table columns.
 
-   COLOUR LIVES IN TWO LAYERS, the same split Pillars.css uses. Role tokens
-   (--ink, --ink-2, --ink-muted, --panel, --accent, --veil-line) for anything
-   whose job the rest of the page already names, and the handful of --ab-*
-   locals below for what this page introduces. The locals are declared with
-   today's dark values as pass-throughs where a role already matches, so the
-   dark rendering is provably what the design says, and the light block at the
-   foot of this file is the ONLY place they move.
+   COLOUR. Role tokens (--ink, --ink-2, --ink-muted, --panel, --accent,
+   --veil-line) where the site already names the job, plus a few --ab-*
+   locals for what this page introduces. The locals hold the dark values
+   from Figma; the light block near the end of this file is the only place
+   they change.
 
-   THE PAGE'S GROUND IS ITS OWN, and that is the one thing that changed here.
-   It used to be the landing hero's: `.hero` on the ground wrapper, so that
-   Hero.css's `--hero-g-*` ramp and its light block applied, with the four box
-   properties undone below. That borrow is GONE. The reason is not style, it
-   is that they are different drawings. The landing frame's ground is five
-   upright 1539px discs cut by a 6036px black horizon; this frame's, 531:149,
-   is five ellipses -- two of them 255 x 519 and rotated, none of them a
-   circle, no horizon at all -- and no amount of re-anchoring turns one into
-   the other. Painting this page with that one is what the client saw as a
-   broad wash flattening the middle of the page.
-
-   So all three of the frame's backgrounds are built here and the page states
-   its own palette:
-
+   THE GROUND. The page draws the frame's three backgrounds itself rather
+   than borrowing the landing hero's, which is a different composition:
      531:149  Background Container, 1920 x 1154 at the top, five ellipses.
      531:158  Container, 1170 x 664, four ellipse outlines behind CAST YOUR
               CONVICTION.
      531:234  Ellipses, three discs inside the ABOUT PHORCAST card.
-
-   The second and third were left out before under this project's standing
-   no-glow rule. That rule is lifted for this page's ground and for nothing
-   else: these are the frame's own fields at the frame's own values, not a
-   bloom invented to fill space.
-
-   WHAT THE BORROW WAS CARRYING, restated below rather than inherited:
-   `position: relative`, `container-type: inline-size` and `overflow: hidden`
-   on the ground box, and the ramp itself, which is now `--ab-g-*` here. */
+   The site's no-glow rule is lifted for these three only: they are the
+   frame's own fields at the frame's own values. */
 
 .about-page {
   position: relative;
 
-  /* 80 design px between bands at 1920, which is 4.1667vw. */
+  /* 80 design px between bands at 1920 (4.1667vw). */
   --ab-gap: clamp(56px, 4.1667vw, 80px);
 
-  /* THE PANEL WASH. The frame calls it `white-06` and uses it for two
-     different jobs: the fill of the three big panels (ABOUT PHORCAST, the
-     table, the two primer cards) and the hairline around the CHOOSE AN EVENT
-     cards. It sits between --veil (0.04) and --veil-line (0.12), so it is
-     this page's own value rather than either role, and it is named once. */
+  /* The frame's `white-06`: the fill of the three big panels and the hairline
+     around the CHOOSE cards. It sits between --veil (0.04) and --veil-line
+     (0.12), so it is a local. */
   --ab-veil: rgba(255, 255, 255, 0.06);
   --ab-veil-line: var(--veil-line);
 
-  /* The CHOOSE AN EVENT card is a SOLID plate (#1c1c1c in the frame) and not
-     a wash. #1c1c1c is --surface to within one unit of 255 on each channel,
-     so it is --panel, which also hands light #f7f0ea for free. */
+  /* The CHOOSE card is a solid plate (#1c1c1c in the frame), within a unit
+     of --surface, so it uses --panel and gets the light value for free. */
   --ab-card: var(--panel);
   --ab-card-line: var(--ab-veil);
 
-  /* --ab-veil flattened over --page. The comparison table's first column goes
-     `position: sticky` on a phone and a sticky cell has to be opaque or the
-     rows slide through it; it cannot be `var(--panel)`, which is a different
-     colour from the card it would be sitting in. */
+  /* --ab-veil flattened over --page. The table's first column is sticky on a
+     phone and must be opaque or rows slide through it; --panel is a
+     different colour from the card it sits in. */
   --ab-solid: #1d1d1c;
 
-  /* THE GROUND'S PALETTE, and it is the frame's own six hexes.
-     -----------------------------------------------------------------------
-     531:149, 531:158 and 531:234 between them use six paints and no more, so
-     they are named once here and referenced by class from the three drawings
-     in About.tsx. Dark is what Figma states, character for character, so this
-     block is provably the design; the light block at the foot of this file is
-     the only place any of it moves.
-
-       --ab-g-night  #0f0e0d  the stop an ellipse dissolves INTO. It is --bg
-                              exactly, i.e. the page: not a dark colour but
-                              "no light here", which is why it is var(--page)
-                              and follows the ground on paper. Hero.css makes
-                              the same call about the same hex and says so.
+  /* THE GROUND'S PALETTE: the six paints 531:149, 531:158 and 531:234 use,
+     referenced by class from the drawings in About.tsx.
+       --ab-g-night  #0f0e0d  the stop an ellipse dissolves into. It is the
+                              page colour, so it is var(--page) and follows
+                              the ground in light mode.
        --ab-g-blood  #7e0202  the deep red half of the top ellipse.
        --ab-g-rust   #6b2b0e  the dim end of the second ellipse's ramp.
-       --ab-g-ember  #d1541c  the field's main orange. The one that does most
-                              of the work on all three backgrounds.
+       --ab-g-ember  #d1541c  the main orange on all three backgrounds.
        --ab-g-peach  #f99e57  the warm highlight.
        --ab-g-flare  #ff632a  the arcs' stroke in 531:158.
-     and two that are only ever drawn at zero alpha -- the ramps' outer stops
-     -- which is why they are here as themselves and need nothing on paper:
-       --ab-g-paper  #f9f0e8
-       --ab-g-ash    #d5d2d0  */
+     Two more are only ever drawn at zero alpha (ramp ends), so they need no
+     light value: --ab-g-paper #f9f0e8 and --ab-g-ash #d5d2d0. */
   --ab-g-night: var(--page);
   --ab-g-blood: #7e0202;
   --ab-g-rust: #6b2b0e;
@@ -110,53 +69,25 @@
   --ab-g-paper: #f9f0e8;
   --ab-g-ash: #d5d2d0;
 
-  /* THE EYEBROW'S INK, and it is this page's own rather than --ink-muted.
-     -----------------------------------------------------------------------
-     Every band here opens with one, and --ink-muted does not carry them. In
-     dark it is #626262, which is 3.16:1 on the flat page before any light
-     reaches it -- the documented AA failure LIGHTMODE.md 1.2 leaves standing
-     on the landing page -- and this page then puts a lit field under three of
-     the six. In light it is #7a716c, which is 4.63:1 on paper and drops to
-     4.37 where the CAST YOUR CONVICTION arcs warm the ground beneath it.
-     Both measured against the ground each label is ACTUALLY painted on, with
-     the type hidden, at 1600, 1100, 720, 390 and 360.
-
-     --ink-muted itself is not touched. It is the eyebrow ink on six landing
-     bands, every quiet label in the nav, the footer and the FAQ, and the
-     table's column names; moving it would be a site-wide type change made
-     from an About-page defect, and the landing page is held pixel-identical.
-     It is also, in dark, a deliberate decision recorded elsewhere. This is
-     the About page's ground, so this is the About page's token.
-
-     THE VALUES, and both are the SAME COLOUR moved, not a new one. Dark's
-     #626262 is neutral grey and light's #7a716c is warm grey; each keeps its
-     own family and travels along it -- lighter on black, darker on paper.
-
-       dark   #8d8d8d   5.81:1 on the page, 5.21:1 on the warmest ground any
-                        eyebrow sits on. Between --ink-muted and --ink-2, so
-                        it is still a step below body copy and four steps
-                        below the #fffbf8 heading under it.
+  /* THE EYEBROW'S INK. --ink-muted (#626262 dark) is 3.16:1 on the page, the
+     AA failure LIGHTMODE.md 1.2 records, and three eyebrows here sit on a
+     lit field. So this page has its own label ink, measured against the
+     ground each label is actually painted on:
+       dark   #8d8d8d   5.81:1 on the page, 5.21:1 on the warmest ground.
        light  #6f6560   5.57:1 on paper, 5.26:1 on the arc-warmed ground.
-                        Below --ink-2's #5e5651 in weight of colour, so the
-                        label still reads quieter than the copy beside it.
-
-     NOTHING WAS BOUGHT WITH SIZE OR WEIGHT, because nothing had to be. The
-     eyebrow is 16px/500 uppercase against a display heading of 24 to 72px at
-     full ink: the hierarchy is carried by the 3x size difference and the
-     case, and both inks above leave the heading 3x further from the ground
-     than the label is. */
+     Each is --ink-muted's own grey moved along its family, and each stays
+     quieter than body copy. --ink-muted itself is untouched, because it is
+     shared site-wide and the landing page must not change. */
   --ab-eyebrow: #8d8d8d;
 }
 
-/* It reaches the FAQ's eyebrow too, and that is deliberate: App.tsx mounts
-   <Faq /> INSIDE `.about-page`, so "Frequently asked" is the sixth label on
-   this page and sits on this page's ground. The selector is scoped to
-   `.about-page`, so the same component on the landing page is untouched. */
+/* This also reaches the FAQ's eyebrow, deliberately: App.tsx mounts <Faq />
+   inside `.about-page`, so it sits on this page's ground. The landing page's
+   FAQ is untouched. */
 .about-page .eyebrow { color: var(--ab-eyebrow); }
 
-/* The six paints reaching the three drawings. Classes rather than `fill=`
-   attributes so the hex stays in this file, next to the block that moves it
-   for paper. */
+/* The paints reaching the three drawings. Classes rather than `fill=`
+   attributes so the colours stay in this file beside their light values. */
 .ab-stop--night { stop-color: var(--ab-g-night); }
 .ab-stop--blood { stop-color: var(--ab-g-blood); }
 .ab-stop--rust { stop-color: var(--ab-g-rust); }
@@ -168,9 +99,8 @@
 .ab-fill--ember { fill: var(--ab-g-ember); }
 .ab-fill--peach { fill: var(--ab-g-peach); }
 
-/* The query root for every band. `.container--wide`'s content box IS the 1800
-   column, so 100cqw inside it is the column and `--u` on the child below is
-   one design pixel. */
+/* The query root for every band. `.container--wide`'s content box is the
+   1800 column, so `--u` below is one design pixel. */
 .ab-col { container-type: inline-size; }
 .ab-hero__copy,
 .ab-choose__inner,
@@ -179,24 +109,15 @@
 .ab-cmp__inner,
 .ab-why__inner { --u: calc(100cqw / 1800); }
 
-/* Every band opens with the site's eyebrow: `.eyebrow` and <LiveDot>, which is
-   what the frame's `Ellipses` + `Section Title` pair is. 20 design px of air
-   under it, per the 20px gap on each Title Block.
+/* Every band opens with `.eyebrow` + <LiveDot>, with 20 design px under it
+   (the frame's Title Block gap).
 
-   IT HAS TO BE ALLOWED TO WRAP HERE, which is the one thing this page needs
-   from `.eyebrow` that the landing page does not. `.eyebrow` is `inline-flex`
-   and `white-space: nowrap`, which is right for the six labels on the landing
-   page -- the longest is "Global Markets. One Platform." -- but this page's
-   last band is labelled "Why is it better than bets or crypto/stocks?", which
-   is 466px of 16px mono. At 390 that was the one thing on the page pushing
-   the document wider than the viewport, measured as scrollWidth 466 against a
-   clientWidth of 390.
-
-   `flex` rather than `inline-flex` so the label is a block that fills the
-   column and the text can break inside it, and the dot aligns to the FIRST
-   line rather than to the middle of two. The margin reproduces exactly what
-   `align-items: center` gave a single line: half the difference between the
-   19.2px line box and the 12px dot. */
+   HERE IT MUST WRAP. `.eyebrow` is `inline-flex` and `nowrap` site-wide, but
+   "Why is it better than bets or crypto/stocks?" is about 466px and would
+   widen the document on a 390 phone. `flex` makes it a block that can break,
+   and the dot aligns to the first line; its margin reproduces what
+   `align-items: center` gives a single line (half of 19.2px line minus the
+   12px dot). */
 .about-page .eyebrow {
   display: flex;
   align-items: flex-start;
@@ -215,43 +136,31 @@
 
 .ab-hero {
   position: relative;
-  /* The query root the ground measures itself against. It is the section's
-     own width -- the document's, without the scrollbar -- which is the basis
+  /* The query root for the ground: the section's own width, which is what
      `--ground-u: 100cqw / 1920` expects. */
   container-type: inline-size;
 
-  /* ONE UNIT FOR THE GROUND, and the box, the clip and the drawing all read
-     it. They have to: the clip carries `overflow: hidden`, so a drawing sized
-     on a different basis is simply cut to whatever the clip came out as. */
+  /* One unit for the ground's box, clip and drawing. The clip is
+     `overflow: hidden`, so anything sized on another basis gets cut. */
   --ground-u: calc(100cqw / 1920);
   padding-top: 40px;          /* the nav sits 40 from the top, as on the landing page */
-  /* ...but only on a desktop. The landing hero drops to 20 below 720 and
-     this band never got that rule, so on a phone the About nav started
-     40 from the top against the landing's 24 and the menu sheet's 20 --
-     measured at 390, logo top 40 closed against 20 open, so opening the
-     menu moved the wordmark 20px up the screen. See the phone block. */
+  /* 20 below 720, in the phone block, to match the landing hero and the menu
+     sheet so opening the menu does not move the wordmark. */
 }
 
-/* THE GROUND — 531:149 "Background Container".
-   -------------------------------------------------------------------------
-   1920 x 1154 at frame y 0, and frame y 0 is the top of this section: the
-   navbar sits at 40 in the frame and `.ab-hero` pads 40 before it here, so
-   the two origins are the same edge and the field can simply be top-anchored.
-   That is the whole anchoring rule, and it is the frame's, which is the point
-   -- the ground the old borrow needed was re-anchored twice (once for
-   desktop, once again under 720) to keep its light off the CHOOSE AN EVENT
-   eyebrow, because that ground's sun opened where this frame's does not.
-   This one does not need the correction: the Circle group starts at x 320 and
-   its light is centred right of the middle, and the eyebrow is at x 0.
+/* THE GROUND: 531:149 "Background Container".
+   1920 x 1154 at frame y 0, which is the top of this section (the nav sits
+   40 below it in both), so the field is simply top-anchored. The Circle
+   group starts at x 320 with its light right of centre, clear of the CHOOSE
+   eyebrow at x 0.
 
-   Three boxes, because the frame is three boxes and each does one job:
-     .ab-ground        the 1154 band, which is what spills past the hero into
-                       CHOOSE AN EVENT -- the frame puts the light there, so
-                       `.ab-hero` does not clip and the bands below carry a
-                       z-index.
+   Three boxes, as in the frame:
+     .ab-ground        the 1154 band. It spills past the hero into CHOOSE AN
+                       EVENT, as the frame does, so `.ab-hero` does not clip
+                       and the bands below carry a z-index.
      .ab-ground__clip  531:150, the 1920 x 1140 window that cuts the drawing.
-     .ab-ground__spin  531:152's -90deg. The rotation lives here so the SVG in
-                       About.tsx stays in the export's own coordinates. */
+     .ab-ground__spin  531:152's -90deg, so the SVG keeps the export's own
+                       coordinates. */
 .ab-ground {
   position: absolute;
   left: 0;
@@ -259,11 +168,8 @@
   top: 0;
   height: calc(1154 * var(--ground-u));
   pointer-events: none;
-  /* 531:149 is exactly as wide as the frame, so the page's own edges are
-     where this field ends. Stated here rather than left to the `overflow-x:
-     hidden` on <body>, because below 720 the clip inside it is 1190px wide
-     by design and would otherwise be a 400px reason for a phone to scroll
-     sideways. */
+  /* Clip at the page edges explicitly. Below 720 the clip inside is 1190px
+     wide by design and would otherwise make a phone scroll sideways. */
   overflow: hidden;
 }
 .ab-ground__clip {
@@ -276,10 +182,8 @@
   overflow: hidden;
 }
 /* 531:151's box is 1543.058 x 1057.047 at (320, 222.52) in the clip, and
-   531:152 centres an unrotated 1057.047 x 1543.058 drawing in it before
-   turning it a quarter turn. Stating the unrotated box and letting the
-   transform do the quarter turn is the same two steps the frame takes, so
-   the numbers below are the frame's and not a rotation worked out by hand:
+   531:152 centres an unrotated 1057.047 x 1543.058 drawing in it before a
+   quarter turn. Same two steps here, so the numbers are the frame's:
      left  1091.529 - 1057.047/2 = 563.0055
      top    751.0435 - 1543.058/2 = -20.4855 */
 .ab-ground__spin {
@@ -290,11 +194,9 @@
   height: calc(1543.058 * var(--ground-u));
   transform: rotate(-90deg);
 }
-/* The export is 1626.06 tall for a 1543.058 box -- the blur's own bleed,
-   which Figma states as inset -4.31% / -1.07% and which is 66.51 above the
-   box and 16.51 below it. `preserveAspectRatio="none"` on the element plus
-   this box is what makes the viewBox scale: one width in --ground-u carries
-   the ellipse radii, the rotations AND the gaussian sigma with it. */
+/* The export is 1626.06 tall for a 1543.058 box: the blur's bleed, 66.51
+   above and 16.51 below. With `preserveAspectRatio="none"` one width in
+   --ground-u scales radii, rotations and blur sigma together. */
 .ab-ground__art {
   position: absolute;
   left: 0;
@@ -303,12 +205,9 @@
   height: calc(1626.06 * var(--ground-u));
   display: block;
 }
-/* NO COMPOSITOR PROMOTION ON THE DRAWING. The old ground carried
-   `will-change: transform` on five separately-blurred divs, inherited from
-   Hero.css, where the landing entrance needs it. Nothing moves these: the
-   entrance tweens `.ab-ground`, the wrapper, as one object, and there is no
-   loop on this page at all. GSAP promotes the wrapper for the length of its
-   own tween by itself. */
+/* No standing compositor promotion on the drawing: the entrance tweens
+   `.ab-ground` as one object and sets `will-change` only for that tween
+   (About.hero.motion.ts). */
 
 .ab-hero__inner { position: relative; z-index: 1; }
 .ab-hero__copy {
@@ -323,9 +222,8 @@
   max-width: calc(1344 * var(--u));
   font-family: var(--font-display);
   font-weight: 500;
-  /* The landing hero's display size, from the same token, so both pages'
-     h1s match at every width. `.ab-col` is the query container its `cqw`
-     resolves against, the same content width as the landing `.hero__stage`. */
+  /* The landing hero's display size from the same token, so both h1s match.
+     `.ab-col` is the query container its `cqw` resolves against. */
   font-size: var(--display-size);
   line-height: 0.9;
   letter-spacing: 0.02em;

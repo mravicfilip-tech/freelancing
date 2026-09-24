@@ -1,7 +1,6 @@
-// Shared motion language, carried over from the Remittix build so the two sites
-// move the same way.
+// Shared motion language for every section.
 //
-// The house style, in its words: entrances rise a few pixels on `expo.out`,
+// The house style: entrances rise a few pixels on `expo.out`,
 // staggered tightly; nothing overshoots, rotates for effect, or floats while
 // idle. Each loop is one deterministic story beat that shows the product doing
 // its job, then rests.

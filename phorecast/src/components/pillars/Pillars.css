@@ -1,22 +1,13 @@
-/* "Modern infrastructure…" — Figma frame 1920 x 774. The content is a fixed
-   1474-wide column, vertically centred, not a padded block.
+/* "Built for better prediction markets": Figma frame 1920 x 774. The content
+   is a fixed 1474-wide column, vertically centred.
 
-   COLOUR LIVES IN TWO LAYERS, and the split is the point.
-
-   ROLE TOKENS (--ink, --ink-2, --panel, --accent, --veil-line) for anything
-   whose job the rest of the page already names. They flip with the theme for
-   free, and the band does not get to have its own opinion about them.
-
-   PILLARS LOCALS (--pillars-*) for the handful of values that are this band's
-   own: the four glow discs, the three white-alpha steps of the pill rows
-   that are not --veil-line already, and the card/chip surface and edge
-   (--pillars-card, --pillars-card-line, --pillars-row-line) that on paper
-   need to move independently of --panel and --veil-line elsewhere on the
-   page. They are declared here with today's dark values -- pass-throughs onto
-   the roles they already used, so dark is provably a no-op -- and the light
-   block at the foot of this file redefines exactly those names. Nothing else
-   in the file mentions a colour, so "what does this band do on paper?" is
-   answerable by reading one block. */
+   Colour lives in two layers. Role tokens (--ink, --ink-2, --panel, --accent,
+   --veil-line) cover anything the rest of the page already names and flip
+   with the theme. Band locals (--pillars-*) cover this band's own values: the
+   four glow discs, the pill-row alphas, and the card/row surface and edge,
+   which need to move independently of --panel and --veil-line on paper. The
+   locals are declared here with their dark values and the light block at the
+   foot of the file redefines exactly those names. */
 .pillars {
   position: relative;
   min-height: 774px;
@@ -25,34 +16,25 @@
   overflow: hidden;
   isolation: isolate;
 
-  /* The glow. Dark's four discs, verbatim: a deep red wash across the whole
-     band, tightening through brick and peach to a pale hot core that sits
-     almost entirely above the top edge and reaches the page only as blur.
-
-     The red disc's first stop is var(--page) rather than #0f0e0d because that
-     is what it is — not a dark colour but the ground the disc dissolves into.
-     Identical in dark; on paper it has to be paper, or it is a grey bruise
-     under the headline. */
+  /* The glow: a deep red wash tightening through brick and peach to a pale
+     core that sits almost entirely above the top edge and reaches the band
+     only as blur. The red disc's first stop is var(--page), the ground it
+     dissolves into, so on paper it is paper rather than a grey bruise. */
   --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #7e0202 100%);
   --pillars-g-orange: #b43725;
   --pillars-g-peach: #ec7850;
   --pillars-g-cream: #fbd6ca;
 
-  /* White-alpha: the dark theme's idiom for "raise this slightly". Three steps
-     the pill rows own — the plate, and the plate and edge once hovered. The
-     resting edge is not here because --veil-line already IS
-     rgba(255,255,255,.12) in dark, and the ink-alpha equivalent on paper. */
+  /* White-alpha steps for the pill rows: the plate, and the plate and edge on
+     hover. The resting edge is --veil-line, which already is
+     rgba(255,255,255,.12) in dark. */
   --pillars-row: rgba(255, 255, 255, 0.02);
   --pillars-row-hover: rgba(255, 255, 255, 0.06);
   --pillars-row-line-hover: rgba(255, 255, 255, 0.2);
 
-  /* Card and chip surface + edge. Declared as pass-throughs onto the roles
-     the rules already read (--panel, --veil-line), so this block is provably
-     a no-op in dark -- the same discipline the role tokens themselves use in
-     tokens.css. The light block at the foot of this file is the only place
-     these three move, and it moves them together: a white card needs a
-     stronger edge than --veil-line gives it, or it is not a card at all. See
-     that block for the measured reason. */
+  /* Card and row surface and edge. Pass-throughs onto --panel and
+     --veil-line in dark; the light block moves all three together, since a
+     white card needs a stronger edge than --veil-line gives it. */
   --pillars-card: var(--panel);
   --pillars-card-line: var(--veil-line);
   --pillars-row-line: var(--veil-line);
@@ -75,11 +57,10 @@
   color: var(--ink);
 }
 
-/* Masked line reveal, the hero's treatment applied here: the wrapper clips, the
-   inner span moves, so the headline rises out of nothing instead of fading. The
-   padding/margin pair is descender room -- at line-height 1.2 the "p" and "y"
-   of "speed, transparency" sit below the box the mask would otherwise clip to
-   -- and cancels out, so the settled layout is unchanged. */
+/* Masked line reveal, as in the hero: the wrapper clips and the inner span
+   moves, so the headline rises out of nothing. The padding/margin pair is
+   descender room at line-height 1.2 and cancels out, so the settled layout is
+   unchanged. */
 .pillars__title .line {
   display: block;
   overflow: hidden;
@@ -98,14 +79,11 @@
 
 /* Cards ---------------------------------------------------------------------- */
 .pillars__cards { display: flex; gap: 12px; align-items: stretch; width: 100%; margin-top: 60px; text-align: left; }
-/* TOP-ALIGNED, so the three titles share a line whatever the copy under them
-   does. It was `space-between` over a 254px floor, which parked each body at
-   its card's foot: a body one line longer than its neighbours then lifted its
-   own icon and title by that line (23px at 1440, where "On-Chain Settlement"
-   runs to three lines at 18px). The 41px gap is the space-between's own
-   result at the floor, stated, so a card of design length is unchanged; any
-   extra line now grows the card downward, and the row's stretch evens the
-   three heights. */
+/* Top-aligned, so the three titles share a line whatever the copy under them
+   does (space-between would let a longer body lift its own icon and title).
+   The 41px gap is what space-between gave at the 254px design height, so a
+   card of design length matches Figma; any extra line grows the card
+   downward and the row's stretch evens the three heights. */
 .pcard {
   display: flex;
   flex-direction: column;
@@ -125,39 +103,26 @@
   font-family: var(--font-label); font-weight: 500; font-size: var(--label-size); line-height: 1.2;
   text-transform: uppercase; color: var(--ink);
 }
-/* The mark, and the two exports that are the same path in two colours. Masked,
-   the file gives the silhouette and `color` gives the paint, so the difference
-   between the three cards is a token rather than a second file: --ink for the
-   two neutral marks (#FFFBF8 in the file, so dark does not move) and --accent
-   for the on-chain one (#e5331e, likewise). The paired exports are kept rather
-   than collapsed onto one src, because the file name is where a reader finds
-   out that the third card is meant to be different. */
+/* The mark. Masked, so the file gives the silhouette and `color` the paint:
+   --ink for the two neutral marks (#FFFBF8 in the file) and --accent for the
+   on-chain one (#e5331e). The paired exports are kept, rather than collapsed
+   onto one src, because the file name signals that the third card differs. */
 .pcard__mark { width: 31.13px; height: 36.29px; flex: none; color: var(--ink); }
 .pcard__mark--accent { color: var(--accent); }
 .pcard__body { display: flex; flex-direction: column; gap: 12px; max-width: 414px; }
 .pcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--h3-leading); color: var(--ink); }
 .pcard__text { font-family: var(--font-body); font-weight: 300; font-size: var(--body-size); line-height: var(--body-leading); color: var(--ink-2); }
 
-/* The glyphs. Every one of them is a mask now (src/components/Icon.tsx), so
-   the colour is `color` on the element and the token is chosen to match the
-   hex the export bakes -- which is what keeps dark mode still across the
-   conversion and is the whole reason a masked glyph does not silently change
-   colour when the theme flips.
-
-   In the cards the files bake #FFFBF8, which is --ink exactly; the cards
-   already inherit --ink from `body`, so this rule says out loud what was true
-   by accident. In the pill rows the files bake #9D9D9D, which is --ink-2
-   exactly, and .prow__label is already --ink-2 -- so those glyphs are left to
-   inherit, and they travel with their label rather than beside it.
-
-   Both tokens flip direction for free: on the dark page the glyph is pale
-   because pale is far from the ground, and on paper it is dark for the same
-   reason. */
+/* The glyphs are masks (src/components/Icon.tsx), so the colour is `color`
+   on the element, chosen to match the hex the export bakes. The card files
+   bake #FFFBF8, which is --ink; the pill-row files bake #9D9D9D, which is
+   --ink-2, and inherit it from .prow__label. Both tokens flip with the
+   theme. */
 .pillars__icon { position: relative; display: block; width: 20px; height: 20px; flex: none; }
 .pcard__body .pillars__icon { color: var(--ink); }
 /* The chain and the pill3 star are several files stacked in one 20x20 box;
-   `.icon` is the class <Icon> always carries. They inherit their wrapper's
-   colour, so the rule above covers the chain and .prow__label covers pill3. */
+   `.icon` is the class <Icon> always carries. The parts inherit their
+   wrapper's colour. */
 .pillars__icon--multi .icon { position: absolute; }
 
 /* Collapsed accordion rows ---------------------------------------------------- */
@@ -166,15 +131,12 @@
 .prow {
   display: flex;
   align-items: center;
-  /* One child now the chevron is gone, so the label is the whole content and
-     sits in the middle of the box; the icon travels with the text. */
+  /* The label is the only child, centred; the icon travels with the text. */
   justify-content: center;
   width: 100%;
   height: 72px;
-  /* Was 24px all round when the padding was shared with a chevron on the right.
-     The label is `nowrap`, so on a wrapped row the widest of them --
-     "Transparent Execution" -- is what decides whether the box can hold its
-     text at all; 16px inline leaves it the room the chevron used to take. */
+  /* 16px inline: the label is `nowrap`, so on a wrapped row the widest label
+     ("Transparent Settlement") decides whether the box can hold its text. */
   padding: 24px 16px;
   border-radius: 10px;
   background: var(--pillars-row);
@@ -183,10 +145,8 @@
   transition: background-color 160ms ease, border-color 160ms ease;
 }
 .prow:hover { background: var(--pillars-row-hover); border-color: var(--pillars-row-line-hover); }
-/* The four feature rows. Not headings -- they head nothing -- and too long to
-   take the card-heading size on one nowrap line in a quarter of the band
-   ("Transparent Settlement" at 24 is wider than its 314px row at 1440), so
-   they sit on the paragraph step of the scale, in the display face. */
+/* The four feature rows. Not headings (they head nothing), so they sit on
+   the paragraph step of the type scale, in the display face. */
 .prow__label {
   display: inline-flex; align-items: center; gap: 12px; min-width: 0;
   font-family: var(--font-display); font-weight: 500; font-size: var(--body-size); line-height: 1.2;
@@ -204,35 +164,28 @@
   .pcard { padding: 24px; min-height: 0; gap: 24px; }
   .prow { height: 64px; padding: 18px; }
 
-  /* The eyebrow is allowed a second line on a phone, and only there.
-     "BUILT FOR BETTER PREDICTION MARKETS" is 359px of type on one line, and
-     `.eyebrow` is nowrap (global.css), so at 390 it ran 4px past its column,
-     at 360 it reached the screen edge and at 320 the section's clip cut 19px
-     off the end -- invisibly to any scrollWidth check, because a clipped line
-     scrolls nothing. Wrapping, it breaks only where it has to, and `balance`
-     evens the two lines. This eyebrow is centred, so it becomes a block with
-     the dot INLINE, leading the first line: as a flex row, the wrapped text
-     took the full column and left the dot stranded at the column's left edge,
-     well clear of the words it marks. */
+  /* The eyebrow may wrap on a phone, and only there. It is 359px of type on
+     one line and `.eyebrow` is nowrap (global.css), so at 390px and below it
+     overflows its column and is clipped by the section, invisibly to a
+     scrollWidth check. Wrapped, `balance` evens the two lines. As a flex row
+     the wrapped text would strand the dot at the column's left edge, so the
+     eyebrow becomes a block with the dot inline, leading the first line. */
   .pillars .eyebrow { display: block; white-space: normal; text-align: center; text-wrap: balance; }
   .pillars .eyebrow .eyebrow__dot { display: inline-block; vertical-align: -0.05em; margin-right: 12px; }
 }
 
-/* Pending state, the same contract as the bento. `gsap.from()` writes its start
-   values the moment a tween is built, and this band is not built until it has
-   been scrolled to, so without this the whole section would sit finished in the
-   sliver showing under the one above and only then animate.
+/* Pending state, the same contract as the bento. `gsap.from()` writes its
+   start values when a tween is built, and this band is built only when
+   scrolled to, so without this hold the section would sit finished in view
+   and then animate.
 
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it, and there is deliberately no timed failsafe -- for
-   a band that waits to be scrolled to the wait is legitimate and can last
-   minutes, so the guarantee has to be that the hold never applies when nothing
-   will undo it. Only the animated parts are held; the section's own box and its
-   spacing stay, so nothing about the layout pops in.
+   Gated on [data-js], which main.tsx sets, so the hold exists only while
+   script is present to release it. There is deliberately no timed failsafe:
+   the wait for a scroll can legitimately last minutes. Only the animated
+   parts are held; the section's box and spacing stay.
 
-   The title is held as a whole rather than by its `.line` masks: the masks only
-   exist once the build has split it, so hiding those alone would leave the
-   headline painted plainly through the entire wait. */
+   The title is held whole rather than by its `.line` masks, which only exist
+   once the build has split it. */
 [data-js] .pillars[data-motion='pending'] .pillars__glow,
 [data-js] .pillars[data-motion='pending'] .eyebrow,
 [data-js] .pillars[data-motion='pending'] .pillars__title,
@@ -245,102 +198,48 @@
 }
 
 /* --- Light ------------------------------------------------------------------
-   The same palette written twice, because a media query cannot go in a
-   selector list: the system preference leads while nothing has been chosen,
-   and an explicit choice wins at any system setting. In practice (2) always
-   applies -- index.html resolves both into data-theme before first paint --
-   and (1) is what a stripped page or a prerender falls back to. Leaving it out
-   is how a section ends up drawing its dark glow on a light page.
+   Written twice because a media query cannot go in a selector list: (1) the
+   system preference, while nothing has been chosen; (2) an explicit choice.
+   In practice (2) applies, since index.html resolves both into data-theme
+   before first paint; (1) is the fallback for a stripped page or a prerender.
+   The two blocks must stay identical.
 
-   Only the --pillars-* locals are redefined. Everything else in this file
-   reads a role token and has already flipped. -------------------------------- */
+   Only the --pillars-* locals are redefined. ------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .pillars {
-    /* THE GLOW ON PAPER.
+    /* The glow on paper. Same four discs, positions, radii, blur, paint
+       order and .glow-fade mask; only the colours change. A literal recolour
+       gives a dark red smear with a grey corner, so the ramp is rebuilt:
 
-       Geometry byte-for-byte: same four discs, same left/top, same 1539px radii,
-       same blur(109px), same paint order, same .glow-fade mask over the lot. The
-       gate stays quiet and the two themes agree about where the band's energy
-       is. What changes is what the layer DOES.
+       1. The page stop is the page (already var(--page) in both themes).
+       2. The luminance ramp inverts; the spatial ramp does not. Nothing on
+          paper can be brighter than the page, so a pale core would read as a
+          hole. The order is kept and the ramp reversed: cream, still last and
+          still the core, is now the deepest tint; red, the broad outer
+          falloff, is the faintest.
 
-       In dark this is a sunrise coming in over the top-right corner: it climbs
-       from the page's own near-black, through brick and peach, to a pale hot
-       core that sits almost entirely above the section and reaches it only as
-       blur. Recoloured literally that is a dark red smear across the headline
-       with a grey corner in it, which is exactly what it looks like before this
-       block exists.
-
-       So the ramp is rebuilt rather than translated, on two rules:
-
-       1. THE PAGE STOP IS THE PAGE -- already done a commit earlier, because it
-          is true in both themes. #0f0e0d was never a dark colour there.
-
-       2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. In dark the disc
-          painted LAST is the palest, because the core of a light source is the
-          brightest thing in it. Nothing on paper can be brighter than the page,
-          so a pale core is a hole and the band would read as a halo around
-          nothing. The order is kept and the ramp reversed: cream, still last and
-          still the core, is now the DEEPEST tint; red, still the broad outer
-          falloff that covers the whole band, is the faintest. Warmth peaks where
-          light peaked.
-
-       The four are spaced by contrast against paper rather than by hue --
-       1.22, 1.44, 1.71 and 2.18:1 as source colours -- and those numbers are a
-       good deal larger than the band ever draws, because three of the four discs
-       sit above the section and reach it only as blur, and .glow-fade then empties
-       the top 16% where they are strongest.
-
-       Measured on the rendered page, the densest pixel in the band is 1.37:1
-       against paper, which is where the footer landed and is the number to match:
-       a blush, not a stain. The same measurement in dark is 2.53:1, so paper
-       carries the glow at about half dark's weight. That is deliberate, not a
-       shortfall -- a warm tint on cream reads at a distance that the same tint on
-       black does not.
-
-       LIGHTMODE.md 6.1 is right that this is not the sunrise in another key, and
-       asks for it to be seen before the whole page is built on it.
-
-       No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
-       multiply a no-op against the page. The colours do the work. */
+       Design decision: paper carries the glow at about half dark's weight (a
+       blush, not a stain), because a warm tint on cream reads further than
+       the same tint on black. No mix-blend-mode: `isolation: isolate` on
+       .pillars would make multiply a no-op. */
     --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fae0d2 100%);
     --pillars-g-orange: #f6cbb5;
     --pillars-g-peach: #f2b697;
     --pillars-g-cream: #ec996e;
 
-    /* White-alpha becomes ink-alpha, and that one move flips the direction of
-       all three of these states without reversing a rule: more alpha on a dark
-       page is brighter, more alpha on paper is darker, and both mean "raised".
-       The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
-       step tokens.css takes for --veil and --veil-line -- because dark ink on
-       paper is less visible per unit alpha than white on black. */
+    /* White-alpha becomes ink-alpha: more alpha is "raised" on either
+       ground. The alphas go up about an eighth, as tokens.css does for --veil
+       and --veil-line, because dark ink on paper is less visible per unit
+       alpha than white on black. */
     --pillars-row-hover: rgba(26, 21, 18, 0.068);
 
-    /* CARD AND CHIP SURFACE, i.e. what "white" resolved to.
-
-       White, not paper's own #fffbf8: a card painted the page colour vanishes
-       -- measured, card-vs-page is 1.03:1, effectively a rendering artifact --
-       so the fill goes all the way to white and the SEPARATION is left to the
-       edge, not the fill. That is also why the chips take the same plate
-       rather than keep their own near-invisible ink-alpha wash: that wash can
-       only ever sit at or below the page's own luminance (it is ink over
-       paper), so it can never actually reach white, and three white cards
-       over four still-beige chips would read as a mistake, which is the thing
-       this change is for.
-
-       The edge has to be strengthened to carry a fill that pale. --veil-line
-       is 0.14 ink-alpha; blended onto white that lands the border at 1.30:1
-       against the page -- WEAKER than the beige plate's own edge is today
-       (1.46:1), which is backwards for a card that now depends on its edge
-       for all of its separation. --pillars-card-line reuses 0.225, the same
-       ink-alpha this file already trusted for the row's hover edge, and lands
-       at 1.58:1 against the page: the beige plate's separation, restored, on
-       a fill three times paler. The row's own hover edge is bumped in turn,
-       0.225 -> 0.3, so hovering still reads as a step past the new resting
-       edge instead of arriving already there.
-
-       Text is unaffected -- --ink and --ink-2 are card contrast already, at
-       18.1:1 and 7.18:1 on white, both stronger than they were on the beige
-       plate (16.0:1 / 6.36:1) because the fill only got paler. */
+    /* Card and row surface. White rather than the page's #fffbf8, which
+       would make the card vanish (about 1.03:1), so separation comes from the
+       edge. The rows take the same plate so white cards do not sit over beige
+       rows. --veil-line on white would be a weaker edge than before, so the
+       card edge uses 0.225 ink-alpha and the row hover edge steps up to 0.3
+       to stay a step past it. --ink and --ink-2 only gain contrast on
+       white. */
     --pillars-card: #fff;
     --pillars-card-line: rgba(26, 21, 18, 0.225);
     --pillars-row: var(--pillars-card);
@@ -350,91 +249,14 @@
 }
 
 :root[data-theme='light'] .pillars {
-  /* THE GLOW ON PAPER.
-
-     Geometry byte-for-byte: same four discs, same left/top, same 1539px radii,
-     same blur(109px), same paint order, same .glow-fade mask over the lot. The
-     gate stays quiet and the two themes agree about where the band's energy
-     is. What changes is what the layer DOES.
-
-     In dark this is a sunrise coming in over the top-right corner: it climbs
-     from the page's own near-black, through brick and peach, to a pale hot
-     core that sits almost entirely above the section and reaches it only as
-     blur. Recoloured literally that is a dark red smear across the headline
-     with a grey corner in it, which is exactly what it looks like before this
-     block exists.
-
-     So the ramp is rebuilt rather than translated, on two rules:
-
-     1. THE PAGE STOP IS THE PAGE -- already done a commit earlier, because it
-        is true in both themes. #0f0e0d was never a dark colour there.
-
-     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. In dark the disc
-        painted LAST is the palest, because the core of a light source is the
-        brightest thing in it. Nothing on paper can be brighter than the page,
-        so a pale core is a hole and the band would read as a halo around
-        nothing. The order is kept and the ramp reversed: cream, still last and
-        still the core, is now the DEEPEST tint; red, still the broad outer
-        falloff that covers the whole band, is the faintest. Warmth peaks where
-        light peaked.
-
-     The four are spaced by contrast against paper rather than by hue --
-     1.22, 1.44, 1.71 and 2.18:1 as source colours -- and those numbers are a
-     good deal larger than the band ever draws, because three of the four discs
-     sit above the section and reach it only as blur, and .glow-fade then empties
-     the top 16% where they are strongest.
-
-     Measured on the rendered page, the densest pixel in the band is 1.37:1
-     against paper, which is where the footer landed and is the number to match:
-     a blush, not a stain. The same measurement in dark is 2.53:1, so paper
-     carries the glow at about half dark's weight. That is deliberate, not a
-     shortfall -- a warm tint on cream reads at a distance that the same tint on
-     black does not.
-
-     LIGHTMODE.md 6.1 is right that this is not the sunrise in another key, and
-     asks for it to be seen before the whole page is built on it.
-
-     No mix-blend-mode: .pillars sets `isolation: isolate`, which makes
-     multiply a no-op against the page. The colours do the work. */
+  /* Identical to the media-query block above; see the notes there. */
   --pillars-g-red: linear-gradient(168deg, var(--page) 30%, #fae0d2 100%);
   --pillars-g-orange: #f6cbb5;
   --pillars-g-peach: #f2b697;
   --pillars-g-cream: #ec996e;
 
-  /* White-alpha becomes ink-alpha, and that one move flips the direction of
-     all three of these states without reversing a rule: more alpha on a dark
-     page is brighter, more alpha on paper is darker, and both mean "raised".
-     The alphas go up by an eighth -- the same 0.04 -> 0.045 and 0.12 -> 0.14
-     step tokens.css takes for --veil and --veil-line -- because dark ink on
-     paper is less visible per unit alpha than white on black. */
   --pillars-row-hover: rgba(26, 21, 18, 0.068);
 
-  /* CARD AND CHIP SURFACE, i.e. what "white" resolved to.
-
-     White, not paper's own #fffbf8: a card painted the page colour vanishes
-     -- measured, card-vs-page is 1.03:1, effectively a rendering artifact --
-     so the fill goes all the way to white and the SEPARATION is left to the
-     edge, not the fill. That is also why the chips take the same plate
-     rather than keep their own near-invisible ink-alpha wash: that wash can
-     only ever sit at or below the page's own luminance (it is ink over
-     paper), so it can never actually reach white, and three white cards
-     over four still-beige chips would read as a mistake, which is the thing
-     this change is for.
-
-     The edge has to be strengthened to carry a fill that pale. --veil-line
-     is 0.14 ink-alpha; blended onto white that lands the border at 1.30:1
-     against the page -- WEAKER than the beige plate's own edge is today
-     (1.46:1), which is backwards for a card that now depends on its edge
-     for all of its separation. --pillars-card-line reuses 0.225, the same
-     ink-alpha this file already trusted for the row's hover edge, and lands
-     at 1.58:1 against the page: the beige plate's separation, restored, on
-     a fill three times paler. The row's own hover edge is bumped in turn,
-     0.225 -> 0.3, so hovering still reads as a step past the new resting
-     edge instead of arriving already there.
-
-     Text is unaffected -- --ink and --ink-2 are card contrast already, at
-     18.1:1 and 7.18:1 on white, both stronger than they were on the beige
-     plate (16.0:1 / 6.36:1) because the fill only got paler. */
   --pillars-card: #fff;
   --pillars-card-line: rgba(26, 21, 18, 0.225);
   --pillars-row: var(--pillars-card);

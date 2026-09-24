@@ -17,37 +17,26 @@ const pill3 = import.meta.glob('../../assets/pillars/pill3-*.svg', { eager: true
 const byName = (m: Record<string, string>, prefix: string, n: number) =>
   m[`../../assets/pillars/${prefix}-${n}.svg`];
 
-/* Every glyph in this band is one flat colour on transparent -- #FFFBF8 for
-   the card icons, the chain and the white mark, #9D9D9D for the four pill
-   rows, #e5331e for the on-chain mark -- so they are <Icon>s rather than
-   <img>s: the file becomes a CSS mask and the paint becomes `color`, set in
-   Pillars.css against the token that matches the hex the file bakes. See
-   src/components/Icon.tsx. The eyebrow dot is deliberately NOT an <Icon>: it
-   is three tinted ellipses, and a mask would flatten it to one disc. It is
-   <LiveDot> instead, which picks between two files by theme -- one decision,
-   made once, for the six bands that share it. See src/components/LiveDot.tsx.
+/* Every glyph in this band is one flat colour on transparent (#FFFBF8 for
+   the card icons, the chain and the white mark, #9D9D9D for the pill rows,
+   #e5331e for the on-chain mark), so each is an <Icon>: the file becomes a
+   CSS mask and the paint becomes `color`, set in Pillars.css to the token
+   that matches the baked hex (see src/components/Icon.tsx). The eyebrow dot
+   is three tinted ellipses, which a mask would flatten, so it is <LiveDot>
+   instead (see src/components/LiveDot.tsx).
 
-   THE BOX, which is where a geometry regression hides. <Icon> writes
-   width/height inline from `w`/`h`, but the four single-file glyphs and the
-   three marks are sized by the stylesheet instead -- .pillars__icon is 20x20,
-   .pcard__mark is 31.13x36.29 -- so they get `cssBox`, which hands the box
-   back to the rule by writing the inline values away again.
+   Sizing. <Icon> writes width/height inline from `w`/`h`. The single-file
+   glyphs and the marks are sized by the stylesheet (.pillars__icon 20x20,
+   .pcard__mark 31.13x36.29), so they pass `cssBox`, which removes the inline
+   size again.
 
-   The chain and pill3 parts are the opposite case and needed measuring. They
-   are absolutely positioned inside a 20x20 wrapper with all four insets set,
-   and an <img> is a REPLACED element: with `width: auto` it ignores the
-   over-constrained inset, takes its height from the export, and then derives
-   its width from that used height and the intrinsic ratio -- all of it
-   quantised to 1/64px on the way. A <span> is not replaced and would solve its
-   box from the insets instead, which lands up to a thirtieth of a pixel out
-   and, on the three star points, across a rounding boundary the theme gate
-   reads as movement.
-
-   So the numbers below are neither the insets nor the file's own width and
-   height: they are the box each <img> actually occupied, measured in the
-   browser, to 1/64px. They are what keeps `geometry` at 0 across the
-   conversion. Nothing moves; the box is simply now stated rather than
-   derived. */
+   The chain and pill3 parts are absolutely positioned in a 20x20 wrapper
+   with all four insets set. A <span> would solve its box from those insets
+   and land up to 1/30px away from the box an <img> of the export occupies
+   (an <img> sizes from the file, quantised to 1/64px), which is enough to
+   cross a rounding boundary on the star points. The w/h values below are
+   those <img> boxes, measured to 1/64px, so the geometry is stated rather
+   than derived. */
 const cssBox = { width: undefined, height: undefined };
 
 /* Inset from the Figma export, then the used width and height in px. */
@@ -102,9 +91,8 @@ const CARDS = [
     icon: <MultiIcon parts={CHAIN_PARTS} map={chain} prefix="chain" />,
     mark: markOrange,
     /* The one accent mark in the band: #e5331e in the file, --accent on the
-       element, so it follows the brand red to #a21605 on paper while its two
-       siblings follow --ink. The distinction between the three cards is the
-       whole reason two near-identical exports of the same path exist. */
+       element, so it follows the brand red on paper while its two siblings
+       follow --ink. This is why two exports of the same path exist. */
     markAccent: true,
     title: 'On-Chain Settlement',
     // U+2011, a non-breaking hyphen: "on-chain" is one word and must not split.

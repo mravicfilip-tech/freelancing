@@ -1,12 +1,18 @@
-// A live server that also keeps itself up to date.
+// A dev server that keeps itself up to date with the remote branch.
 //
-// Runs Vite, and every POLL_SECONDS checks the remote branch for new commits.
-// When it finds some it fast-forwards, reinstalls if the dependencies moved,
-// and lets Vite's watcher hot-reload the page. Nothing to type after start-up.
+//   npm run dev:sync                  (SYNC_SECONDS=30 npm run dev:sync to poll less)
 //
-//   npm run dev:sync
+// Runs Vite, and every SYNC_SECONDS (default 15) fetches the branch this
+// checkout tracks. When there are new commits it fast-forwards, reinstalls if
+// package-lock.json moved, and lets Vite's watcher hot-reload the page. Useful
+// for keeping a review screen current while someone else pushes. Ctrl+C stops
+// both the server and the polling.
 //
-// Ctrl+C stops both the server and the polling.
+// Needs git and a branch with an upstream; without one it just runs Vite. It
+// never touches work in progress: a dirty checkout, or history that cannot be
+// fast-forwarded, is left alone and reported. Works whether this app is the
+// repository root or a folder inside a larger one. For plain development,
+// `npm run dev` is all you need.
 
 import { spawn, execFile } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -17,15 +23,15 @@ import { fileURLToPath } from 'node:url';
 
 const run = promisify(execFile);
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const repoDir = resolve(appDir, '..');
 const POLL_SECONDS = Number(process.env.SYNC_SECONDS ?? 15);
 
 const stamp = () => new Date().toLocaleTimeString();
 const say = (msg) => console.log(`\x1b[38;5;209m[sync ${stamp()}]\x1b[0m ${msg}`);
 
-const git = async (...args) => (await run('git', args, { cwd: repoDir })).stdout.trim();
+// Run from the app folder: git finds the repository above it, wherever that is.
+const git = async (...args) => (await run('git', args, { cwd: appDir })).stdout.trim();
 
-/** The branch this checkout tracks, e.g. origin/claude/sweet-volta-5i0ubl. */
+/** The branch this checkout tracks, e.g. origin/main. */
 async function upstream() {
   try {
     return await git('rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}');
@@ -62,9 +68,12 @@ async function pullOnce(tracking) {
     return false;
   }
 
-  const lockBefore = await git('rev-parse', `HEAD:phorecast/package-lock.json`).catch(() => '');
+  // The lock file's path from the repository root: `phorecast/` when the app
+  // is a folder inside a larger repository, nothing when it is the root.
+  const lock = `HEAD:${await git('rev-parse', '--show-prefix')}package-lock.json`;
+  const lockBefore = await git('rev-parse', lock).catch(() => '');
   await git('merge', '--ff-only', tracking);
-  const lockAfter = await git('rev-parse', `HEAD:phorecast/package-lock.json`).catch(() => '');
+  const lockAfter = await git('rev-parse', lock).catch(() => '');
 
   const subject = await git('log', '-1', '--pretty=%s');
   say(`pulled ${remote.slice(0, 7)} — ${subject}`);

@@ -1,24 +1,63 @@
 #!/usr/bin/env bash
-# Ship the site to production and point the project's domain at it.
+# Ship the site to Vercel production and point the public domain at it.
 #
 #   ./scripts/deploy.sh
 #
-# Two steps, and the second one is the reason this file exists. A .vercel.app
-# alias is bound to a DEPLOYMENT, not to the project, so it does not follow a
-# new production build the way a custom domain would -- deploy alone and
-# phorcast-app.vercel.app keeps serving whatever it was last pointed at. The
-# alias has to be re-set every time, so it is scripted rather than remembered.
+# Always deploy with this script, never with a bare `vercel deploy`, which
+# skips the account check below. In order, it:
 #
-# The token comes from VERCEL_TOKEN, or from the file named by VERCEL_TOKEN_FILE
-# (default ~/.vercel-token). The file is the one to use: it lives outside the
-# repository, so the token is never a candidate for being committed, and the
-# environment's own VERCEL_TOKEN may belong to a different account than the one
-# this site ships from. Never write a token into this file or anywhere else
-# under the repo.
+#   1. reads a Vercel token (see TOKEN below),
+#   2. asks Vercel whose account that token opens, and REFUSES TO CONTINUE
+#      unless it is the account this site ships from,
+#   3. typechecks, then runs `vercel deploy --prod` (Vercel builds with
+#      `npm run build`, per vercel.json),
+#   4. points DEPLOY_DOMAIN at the new deployment and reads the alias table
+#      back to confirm it took.
 #
-# The two NODE_ vars are this sandbox's egress proxy: Vercel's uploader uses
-# Node's built-in fetch, which ignores HTTPS_PROXY and will abort a large
-# upload partway through without them.
+# Step 4 is why the script exists. A .vercel.app alias is bound to a
+# DEPLOYMENT, not to the project, so it does not follow a new production build
+# the way a custom domain would: deploy alone and the domain keeps serving the
+# previous build. It has to be re-pointed every time, so it is scripted rather
+# than remembered. Check `npx vercel alias ls` afterwards if in doubt.
+#
+# NEEDS: bash, curl, python3, Node 22 with this project's dependencies
+# installed, and a project link in .vercel/ (created by `npx vercel link`; it
+# is gitignored). The Vercel CLI is fetched by npx on first use.
+#
+# SETTINGS, all optional, all environment variables:
+#
+#   VERCEL_TOKEN_FILE  file holding the token.        default ~/.vercel-token
+#   VERCEL_TOKEN       the token itself, used only when that file is missing
+#   VERCEL_ACCOUNT     email of the account the token must belong to.
+#                                                    default cleavegfx@gmail.com
+#   DEPLOY_DOMAIN      alias to point at the build.
+#                                          default phorcast-markets.vercel.app
+#
+# TOKEN. The file wins over the environment on purpose: a machine can carry a
+# VERCEL_TOKEN for some other account, and reading the environment first is
+# exactly how this project was once deployed to the wrong account. Keep the
+# token in a file outside the repository, readable only by you
+# (chmod 600 ~/.vercel-token). Never write a token into this script, a
+# tracked file or a commit.
+#
+# DEPLOYING FROM YOUR OWN VERCEL ACCOUNT. The guard is not a bug to route
+# around; tell it deliberately which account is now correct:
+#
+#   npx vercel login && npx vercel link        # links .vercel/ to your project
+#   # create a token at vercel.com/account/tokens, save it as the only line
+#   # of ~/.vercel-token (in an editor, not on the command line), then:
+#   chmod 600 ~/.vercel-token
+#   VERCEL_ACCOUNT=you@example.com DEPLOY_DOMAIN=your-site.vercel.app \
+#     ./scripts/deploy.sh
+#
+# If the move is permanent, change the two defaults below. Do not delete the
+# check: it is the only thing standing between a stray token and the wrong
+# account.
+#
+# The two NODE_ settings are for machines behind an egress proxy (the sandbox
+# this was built in): Vercel's uploader uses Node's built-in fetch, which
+# ignores HTTPS_PROXY and aborts large uploads partway through without them.
+# They are harmless elsewhere.
 set -euo pipefail
 
 # phorcast-app.vercel.app was the domain while this site was on the old
@@ -27,8 +66,8 @@ set -euo pipefail
 DOMAIN="${DEPLOY_DOMAIN:-phorcast-markets.vercel.app}"
 cd "$(dirname "$0")/.."
 
-# THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. This
-# sandbox ships with a VERCEL_TOKEN belonging to a DIFFERENT account, and
+# THE FILE WINS OVER THE ENVIRONMENT, and that order is the whole point. The
+# sandbox this site was built in carries a VERCEL_TOKEN for a DIFFERENT account, and
 # reading the environment first is exactly how this project was deployed to the
 # wrong one. The file is the account this site belongs to.
 TOKEN_FILE="${VERCEL_TOKEN_FILE:-$HOME/.vercel-token}"
@@ -59,7 +98,9 @@ if [ "$ACTUAL_ACCOUNT" != "$EXPECT_ACCOUNT" ]; then
 fi
 echo "==> account $ACTUAL_ACCOUNT"
 export NODE_USE_ENV_PROXY=1
-export NODE_EXTRA_CA_CERTS="${NODE_EXTRA_CA_CERTS:-/root/.ccr/ca-bundle.crt}"
+if [ -z "${NODE_EXTRA_CA_CERTS:-}" ] && [ -r /root/.ccr/ca-bundle.crt ]; then
+  export NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt
+fi
 
 echo "==> typecheck"
 npx tsc --noEmit

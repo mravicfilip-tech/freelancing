@@ -159,8 +159,8 @@ export function fanLoop(root: HTMLElement): () => void {
      nothing else; the rest of the pass still crosses the band. */
   const frame = q('.fan__frame') ?? root;
   const groups = qa('.fan__arcs');
-  const pills = shown(qa('.fan__pill'));
-  const diamonds = shown(qa('.fan__diamond'));
+  let pills = shown(qa('.fan__pill'));
+  let diamonds = shown(qa('.fan__diamond'));
   const tile = q('.fan__tile');
   const tileArt = q('.fan__tile-bg');
   const glass = q('.fan__glass');
@@ -666,6 +666,9 @@ export function fanLoop(root: HTMLElement): () => void {
     started = false;
     mine.splice(0).forEach((el) => el.remove());
     bar = null;
+    // The breakpoint also changes which pills and diamonds are displayed.
+    pills = shown(qa('.fan__pill'));
+    diamonds = shown(qa('.fan__diamond'));
     start();
   };
 

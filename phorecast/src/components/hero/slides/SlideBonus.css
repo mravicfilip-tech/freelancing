@@ -145,7 +145,7 @@
 }
 
 /* The bracket's stroke overflows its layer box, so the image is a shade larger
-   than the box and sits half a pixel above it — Figma's own offsets, kept so the
+   than the box and sits half a pixel above it, Figma's own offsets, kept so the
    rounded corners are not shaved off. */
 .sl3__bracket {
   position: absolute;
@@ -282,7 +282,7 @@
   width: calc(70 * var(--u));
   height: calc(50 * var(--u));
   border-radius: calc(12 * var(--u));
-  /* Figma: rgba(27,27,26,.3) over rgba(229,51,30,.3) — the surface and brand
+  /* Figma: rgba(27,27,26,.3) over rgba(229,51,30,.3), the surface and brand
      tokens at 30%, so the brand red is never written out by hand. */
   background: color-mix(in srgb, var(--panel) 30%, transparent);
   border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
@@ -431,8 +431,8 @@
    The desktop diagram is 964 x 822 design units and its smallest type is 13.
    Dropped whole into a 350px column that is a scale of 0.363, which puts
    "TRANSFER", "STOCK", "You deposit", "You trade with", "Phorcast adds" and the
-   two index chips between 4.2px and 5.8px. The stacks survive it -- isometric
-   slabs are shape, and shape scales -- but every word in the picture does not,
+   two index chips between 4.2px and 5.8px. The stacks survive it, isometric
+   slabs are shape, and shape scales, but every word in the picture does not,
    and a diagram whose labels cannot be read is a texture.
 
    So: THE NUMBERS ARE PROMOTED OVER THE GEOMETRY. The stacks keep exactly the
@@ -572,12 +572,12 @@
   .sl3-countdown__value { font-size: calc(44 * var(--u)); line-height: 1; }
 
   /* The colon becomes a dot. Same element, so the entrance still staggers it in
-     and the loop still breathes it -- see SlideBonus.motion's `colons`. A colon
+     and the loop still breathes it, see SlideBonus.motion's `colons`. A colon
      between "02 Days" and "14 Hours" would be punctuating the wrong join;
      between two pairs of words a dot is the separator that fits, and it keeps
      the "the clock is running" pulse it was carrying. */
   /* The glyph goes; what is left is a box the ::before gives size to. No
-     alignment of its own -- the row already centres, and the figures are
+     alignment of its own, the row already centres, and the figures are
      centred in the same row, so a centred dot is on their optical middle. */
   .sl3-countdown__colon { font-size: 0; }
   .sl3-countdown__colon::before {
@@ -591,7 +591,7 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list -- the same
+   Written twice, because a media query cannot go in a selector list, the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay
    identical; only their conditions differ: the system preference leads while
    nothing has been chosen, an explicit choice wins at any system setting.
@@ -601,7 +601,7 @@
   :root:not([data-theme='dark']) .sl3-countdown {
   /* THE STACKS. Three solid faces per plate, plus the wireframes and the seams
      between faces. This is a shading ramp on a 3D object, not a "lit versus
-     rest" beat, so the ramp does not invert -- a lit top face is lighter than a
+     rest" beat, so the ramp does not invert, a lit top face is lighter than a
      side face under any lighting. What moves is the whole ramp: on cream every
      one of the three has to be dark enough to read, so they land exactly on the
      three brand tokens in shading order, which also puts the artwork on the
@@ -637,7 +637,7 @@
 :root[data-theme='light'] .sl3-countdown {
   /* THE STACKS. Three solid faces per plate, plus the wireframes and the seams
      between faces. This is a shading ramp on a 3D object, not a "lit versus
-     rest" beat, so the ramp does not invert -- a lit top face is lighter than a
+     rest" beat, so the ramp does not invert, a lit top face is lighter than a
      side face under any lighting. What moves is the whole ramp: on cream every
      one of the three has to be dark enough to read, so they land exactly on the
      three brand tokens in shading order, which also puts the artwork on the

@@ -1,30 +1,22 @@
-/* "Familiar Trading. Better Infrastructure." — Figma frame 1920 x 1080.
+/* "Every Outcome. One Place." Figma frame 1920 x 1080.
    Everything but the two copy blocks is absolutely placed, so --u (one design
    pixel) drives the whole stage. */
 
 /* The band's own theme tokens.
    -------------------------------------------------------------------------
-   Declared on :root rather than on .fam, because `tok()` in lib/theme.ts is
-   `getComputedStyle(document.documentElement)` — a custom property the loop
-   has to read is only visible to it from the root. The `--fam-` prefix is
-   what keeps them out of the other eight sections' way.
-
-   The block is split in two, and the split IS this section's decision.
+   Declared on :root rather than on .fam, because `tok()` in lib/theme.ts reads
+   `getComputedStyle(document.documentElement)`. The `--fam-` prefix keeps them
+   out of other sections' way.
 
    PAGE CHROME (--fam-g-*, --fam-foot-*, --fam-card-*, --fam-tick-*,
-   --fam-dot, --fam-pred-shadow, the lifts) is the marketing page: the glow,
-   the two glass market cards, the category strip, and the contact shadow the
-   floating cards cast on it. It is drawn from the page it
-   sits on and it flips, and the light block at the foot of this file
-   redefines exactly these names.
+   --fam-trend-*, --fam-dot, --fam-pred-shadow, the lifts) is the marketing
+   page: the glow, the glass market cards, the category strip and the shadow
+   the floating cards cast. It flips, and the light block at the foot of this
+   file redefines exactly these names.
 
-   THE DEVICE (--fam-app-*) is the product's own dark UI, and it DOES NOT
-   FLIP. See the note over `.fam__phone` for why. Every one of these values
-   is what the section shipped with, written out rather than inlined, and
-   light never redefines any of them — which is also why every "lit means
-   brighter" beat inside the handset keeps working untouched on paper: it is
-   still a bright thing on a dark ground. Only the three lifts that meet the
-   paper turn around. */
+   THE DEVICE (--fam-app-*) is the product's own dark UI and does not flip (see
+   the light block). Light never redefines these, so every "lit means brighter"
+   beat inside the handset still works on paper. */
 :root {
   /* --- Page chrome ------------------------------------------------------ */
 
@@ -99,9 +91,8 @@
   --fam-app-tab-icon: #cacaca;    /* the Trending chevron                  */
   --fam-app-search-icon: #71717b; /* the magnifier                         */
   --fam-app-live: #00c950;        /* the location arrow and the battery tip*/
-  /* The filter glyph, and the glint the feed switch gives it. Still a filter
-     pair rather than a colour: the glyph is white, so brightness clips and
-     the beat is the hairline one the section shipped. */
+  /* The filter glyph and its glint. A filter pair rather than a colour: the
+     glyph is white, so brightness clips and the glint is a hairline one. */
   --fam-app-filter: var(--art-ink);
   --fam-app-filter-lit: brightness(1.9);
 
@@ -120,20 +111,13 @@
   --fam-app-ring-lit: brightness(1.55);
 
   /* THE TWO FLOATING PREDICTION CARDS, right of the handset. Same app, off
-     the device: Figma 365:1807 and 474:913, re-exported together. Every value
-     below is the flat colour the file bakes in, named here rather than
-     inlined, and none of them is redefined in the light block -- they are the
-     product's own dark UI, exactly like the handset above.
+     the device (Figma 365:1807 and 474:913). Flat colours from the file, none
+     redefined in light: they are the product's dark UI, like the handset.
 
-     THE YES/NO PAIR IS THE ARGUABLE ONE and is called out on purpose. Out on
-     the page, up/down joins --pos / --neg in light (--fam-tick-* and
-     --fam-trend-* just above). These two do not, for the same reason the
-     handset's leaderboard chips do not: the chip is a dark green plate inside
-     a #1d1d20 card in BOTH themes, and light's --pos (#0b6e37) on #1a3a2c is
-     a dark green label on a dark green plate -- the control would stop being
-     legible rather than start being correct. They are a picture of a control,
-     not a control: the whole card is aria-hidden and nothing in it is
-     focusable. */
+     The Yes/No pair stays too, unlike the page's up/down colours. The plate is
+     dark green inside a #1d1d20 card in both themes, and light's --pos on it
+     would be dark green on dark green. The card is aria-hidden and nothing in
+     it is focusable; it is a picture of a control. */
   --fam-app-pred: #1d1d20;
   --fam-app-pred-line: rgba(255, 255, 255, 0.28);
   --fam-app-pred-meta: rgba(113, 113, 123, 0.7);
@@ -181,9 +165,8 @@
 .fam__g--orange { left: calc(425 * var(--u)); top: calc(411 * var(--u)); background: var(--fam-g-orange); }
 .fam__g--peach { left: calc(109 * var(--u)); top: calc(532 * var(--u)); background: var(--fam-g-peach); }
 .fam__g--cream { left: calc(411 * var(--u)); top: calc(689 * var(--u)); background: var(--fam-g-cream); }
-/* A tighter core so the band just above the horizon reads as bright as the design. */
-/* The design's brightest point hugs the horizon crest, near the top of this
-   disc rather than its centre. */
+/* A tighter core near the top of this disc, so the band just above the horizon
+   crest reads as bright as the design. */
 .fam__g--cream::after {
   content: '';
   position: absolute; left: 16%; top: 0.5%; width: 58%; height: 11%;
@@ -197,11 +180,8 @@
    artwork: they read the site's type scale (tokens.css) at every width, and
    only their POSITIONS ride the stage's `--u`. */
 .fam__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h2-size); line-height: var(--heading-leading); color: var(--ink); }
-/* THE COLUMN'S RIGHT EDGE, as a name. The copy column is placed by `left` plus
-   a width, which says nothing about where it ENDS — and where it ends is what
-   the two floating prediction cards are now aligned to. Written once here so
-   the cards are derived from the column rather than from a number that happens
-   to match it today. 1280 + 400. */
+/* The copy column's right edge, named so the prediction cards derive from the
+   column rather than a matching number. 1280 + 400. */
 .fam__stage { --fam-col-right: calc(1680 * var(--u)); }
 .fam__copy--right { left: calc(1280 * var(--u)); top: calc(240 * var(--u)); width: calc(400 * var(--u)); gap: calc(30 * var(--u)); align-items: flex-start; }
 /* The claim is the heading's partner across the band, not a card title under
@@ -220,17 +200,15 @@
   backdrop-filter: blur(calc(12.25 * var(--u)));
   font-family: var(--font-display); color: var(--ink);
 }
-/* THE CARD ROW DROPS WHEN THE COPY NEEDS IT. The right-hand copy is page type
-   on the site's scale (the 32px claim, 18px body, the 50px button) in a
-   column that is 400 design px wide, so below about 1700 it is taller in
-   design units than the design's copy, and its button ran under the two
-   prediction cards. The row -- all four cards, so the two sides stay level --
-   takes whichever is lower: the design's y, or the copy's top (240) plus its
-   two 30-unit gaps less the body's -14 pull (46), plus the copy block's real
-   height and 36px of air. The copy's height is stated, not measured, from the
-   line counts the copy actually sets at: the claim is two 38.4px lines below
-   1680 and the body four 21.6px lines, five below 1260 (`--fam-copy-h`).
-   From about 1650 up the design's own y wins and nothing moves. */
+/* The card row drops when the copy needs it. The right-hand copy is page type
+   (32px claim, 18px body, 50px button) in a 400-unit column, so below about
+   1700 it is taller in design units than the design's copy and the button
+   would run under the prediction cards. The row (all four cards, so both
+   sides stay level) takes the lower of the design's y and the copy's top
+   (240) plus its gaps less the body's pull (46), its height, and 36px of air.
+   The height is stated from the line counts the copy sets at: two 38.4px claim
+   lines and four 21.6px body lines, five below 1260 (`--fam-copy-h`). From
+   about 1650 up the design's y wins. */
 .fam__stage {
   --fam-copy-h: calc(2 * 38.4px + 4 * 21.6px + 50px);
   --fam-drop: max(0px, calc(286 * var(--u) + var(--fam-copy-h) + 36px - 532 * var(--u)));
@@ -277,23 +255,15 @@
 .fam__status { display: flex; align-items: center; gap: calc(4 * var(--u)); font-size: calc(11 * var(--u)); font-weight: 600; }
 .fam__status-right { display: flex; align-items: center; gap: calc(4 * var(--u)); margin-left: auto; }
 
-/* The status bar's five glyphs, and the one place in this file where a mask
-   conversion can move geometry.
-   -------------------------------------------------------------------------
-   Every one of them is sized on ONE axis and left `auto` on the other. An
-   <img> is a REPLACED element, so `auto` resolves against the ratio baked
-   into the file; a <span> is not replaced, and the same rule would collapse
-   it to zero. Stating each file's own viewBox as `aspect-ratio` reproduces
-   the <img> exactly -- and stating it here, while they are still <img>
-   elements, is what proves the four ratios are right independently of the
-   mask that comes later. The numbers are the files' width/height attributes,
-   not a measurement.
+/* The status bar glyphs are sized on one axis and left `auto` on the other.
+   An <img> resolves `auto` from its intrinsic ratio; a masked <span> would
+   collapse to zero, so each carries its file's own width/height ratio as
+   `aspect-ratio`. The selectors admit `.icon` alongside `img` for the same
+   reason.
 
-   The selectors admit `.icon` alongside `img` for the same reason. */
-/* Each masked glyph is given the token whose dark value is the hex its own
-   file baked, so `color` reaching the glyph is the ONLY thing the conversion
-   changed. The three inside the handset never flip; the two on the market
-   cards and the one on the ECB plate do. */
+   Each masked glyph takes the token whose dark value is its file's baked hex,
+   so the mask is invisible in dark. The handset's glyphs never flip; the two
+   trend arrows and the ECB plate icon do. */
 .fam__loc, .fam__batt-tip { color: var(--fam-app-live); }
 .fam__signal, .fam__data, .fam__batt-cell { color: var(--fam-app-status); }
 .fam__mark { color: var(--fam-app-mark); }
@@ -312,10 +282,8 @@
 .fam__batt { display: inline-flex; align-items: center; }
 .fam__brand { display: flex; align-items: center; gap: calc(9 * var(--u)); margin-top: calc(24 * var(--u)); }
 .fam__brand :is(img, .icon) { width: calc(22 * var(--u)); height: calc(26 * var(--u)); }
-/* `:not(.icon)` because the mark beside this wordmark is a masked <span> now,
-   and an untyped `span` here handed it a font size and weight it has no text
-   to use — two gate rows for nothing, and a selector waiting to do something
-   visual the day it grows a rule that matters. */
+/* `:not(.icon)` because the mark beside this wordmark is a masked <span>, and
+   an untyped `span` selector would hand it font styles it has no text for. */
 .fam__brand span:not(.icon) { font-family: var(--font-display); font-weight: 600; font-size: calc(24 * var(--u)); letter-spacing: calc(-0.4 * var(--u)); }
 .fam__tabs {
   display: flex; align-items: center; gap: calc(12 * var(--u));
@@ -364,25 +332,14 @@
 }
 
 /* The two floating prediction cards ---------------------------------------------
-   Figma 365:1807 and 474:913, re-exported together: two 206 x 160 cards of the
-   product's dark UI, side by side at y 532 with a 14px gutter.
+   Figma 365:1807 and 474:913: two 206 x 160 cards of the product's dark UI,
+   side by side at y 532 with a 14px gutter.
 
-   WHAT WAS HERE BEFORE. One of these two cards, at 1264 / 566, plus a pair of
-   `.fam__ghost` spans -- 220 x 162 boxes each showing a blurred crop of
-   `familiar/ghost.png`, a 1449 x 366 bitmap of three UNRELATED product cards
-   (an XRP market, a BTC round, a BNB market). They stood where the second card
-   stands, out of focus, and the frame they were taken from does not contain
-   them: it has two crisp cards and nothing behind them. So they were a
-   stand-in, not a backdrop, and they are gone, along with the bitmap.
-
-   The vertical rhythm is pinned rather than distributed. Figma runs
+   The vertical rhythm is pinned, not distributed. Figma runs
    meta(10) -> 16.07 -> head(24.10) -> [slack] -> bar(14) -> 10.71 -> btns(26)
-   inside a 143.93 content box, with the slack falling in ONE place, between
-   the head and the bar, because the file splits the card into two groups and
-   spaces them apart. A flat `space-between` over four children would share that
-   slack three ways and put ~7 design pixels under the meta row and under the
-   bar that the design does not have; `margin-top: auto` on the bar puts all of
-   it where the file puts it, with no wrapper elements for the loop to reach
+   inside a 143.93 content box, with all the slack between the head and the
+   bar. `space-between` would share it three ways; `margin-top: auto` on the
+   bar puts it where the file does, with no wrapper for the loop to reach
    through. */
 .fam__pred {
   top: calc(532 * var(--u) + var(--fam-drop));
@@ -393,17 +350,13 @@
   box-shadow: 0 calc(5.356 * var(--u)) calc(10.712 * var(--u)) var(--fam-pred-shadow);
   font-family: var(--font-display); color: var(--art-ink);
 }
-/* RIGHT-ALIGNED TO THE COPY COLUMN, which is a deliberate departure from the
-   file and not a bug fix — worth saying, because the obvious diagnosis is
-   wrong. The cards and the column are NOT anchored to different things: both
-   are absolute children of the same stage, both are placed in `--u`, and the
-   frame itself draws the pair ending at 1588 while the column ends at 1680.
-   The 92-pixel inset is Figma's, not the implementation's. The pair is moved
-   the full 92 so the section's right edge reads as one line.
+/* Right-aligned to the copy column: a deliberate departure from the file.
+   Figma draws the pair ending at 1588 while the column ends at 1680; the pair
+   is moved the full 92 so the section's right edge reads as one line.
 
-   Placed from the right edge inward, so the 14px gutter between the cards and
-   their 206 widths are stated once and the arithmetic cannot drift: the outer
-   card ends at the column's edge, the inner one a card and a gutter before it. */
+   Placed from the right edge inward, so the 14px gutter and 206 widths are
+   stated once: the outer card ends at the column's edge, the inner one a card
+   and a gutter before it. */
 .fam__pred--b { left: calc(var(--fam-col-right) - 206 * var(--u)); }
 .fam__pred--a { left: calc(var(--fam-col-right) - 426 * var(--u)); }
 
@@ -469,44 +422,28 @@
 @media (max-width: 1100px) {
   .fam__stage { --u: calc(100cqw / 1400); aspect-ratio: 1400 / 1180; }
 
-  /* TYPE LEAVES `--u` HERE, at the width the stage re-bases, because this is
-     where the fault starts and not 400px lower. Every size in this band is a
-     design pixel scaled by the stage, which is right for artwork and wrong for
-     words: `.eyebrow` and `.btn` in global.css are flat 16px and do not scale
-     with it, so from about 900px down the label overtakes the heading it
-     introduces, and at 700 the two are exactly equal. Measured: 25.1px title
-     against a 16px eyebrow at 1100, 16.0 against 16.0 at 701.
-
-     `clamp` rather than a size per breakpoint, so the ratio holds continuously
-     across the whole range instead of at three chosen widths. The title leads
-     the eyebrow by 2.3x or better everywhere from 320 to 1100. */
+  /* Type is on the site's scale (tokens.css) at every width, so only
+     positions change here. */
   .fam__sub-body { margin-top: 0; }
-  /* And the button hands its three `--u` overrides back to `.btn`, which is
-     already drawn in flat pixels: 48px of fixed padding inside a `--u` box is
-     what cut "Start Trading" to "Start Tradi". */
+  /* The button hands its `--u` overrides back to `.btn`, which is drawn in
+     flat pixels: 48px of fixed padding inside a `--u` box would clip the
+     label. */
   .fam__cta { width: var(--btn-w); max-width: 100%; height: auto; border-radius: var(--radius-pill); }
   .fam__copy--left { left: calc(60 * var(--u)); top: calc(60 * var(--u)); width: calc(600 * var(--u)); }
-  /* The claim column starts under the heading column, and the heading is page
-     type (a 16px eyebrow over two 32px lines, 96px, plus the column's 28-unit
-     gap), so its top is whichever is lower: the design's 250, or the heading's
-     foot plus 24 of air. Below about 1000 the heading is the lower one; at 768
-     the design's 250 put "Your View Has a Market" on "One Place.". */
+  /* The claim column starts under the heading, which is page type, so its top
+     is the lower of the design's 250 and the heading's foot plus 24 of air.
+     Below about 1000 the heading's foot wins. */
   .fam__stage { --fam-right-top: max(calc(250 * var(--u)), calc(88 * var(--u) + 120px)); }
   .fam__copy--right { left: calc(60 * var(--u)); top: var(--fam-right-top); width: calc(560 * var(--u)); }
   .fam__phone { left: calc(760 * var(--u)); top: calc(120 * var(--u)); }
   /* The cards sit under the copy, and the copy is flat pixels while the cards
-     are `--u`: the words do not shrink with the stage, so the narrower the
-     stage the lower the copy's foot lands in design units. The client's copy
-     is one body line longer ("Explore live prediction markets across
-     politics, sports, crypto, and finance. Make your forecast and see where
-     the world stands." is four lines at 720, five at 701), and at 701 to 770
-     the Explore Markets button ran 9 to 13px under both cards.
+     are `--u`, so the narrower the stage the lower the copy's foot lands in
+     design units. The body is four lines at 720 and five at 701.
 
-     So the cards take whichever is lower: the design's 560, or the copy's top
-     plus what the copy block measures at its tallest in this range, plus 36
-     of air. On the site's type scale (a 32px claim, 18px body) the block is
-     246px where the claim wraps to two lines (below about 880) and 200 above
-     that, hence 282 and 236. */
+     So the cards take the lower of the design's 560 and the copy's top plus
+     its tallest height in this range plus 36 of air. On the site's type scale
+     the block is 246px where the claim wraps to two lines (below about 880)
+     and 200 above, hence 282 and 236. */
   .fam__stage { --fam-copy-foot: 236px; }
   .fam__mkt--ecb { left: calc(60 * var(--u)); top: max(calc(560 * var(--u)), calc(var(--fam-right-top) + var(--fam-copy-foot))); }
   .fam__mkt--nvda { left: calc(290 * var(--u)); top: max(calc(560 * var(--u)), calc(var(--fam-right-top) + var(--fam-copy-foot))); }
@@ -521,101 +458,29 @@
 }
 
 /* --- Phone --------------------------------------------------------------------
-   THE FAULT THIS BLOCK EXISTS TO FIX, AND WHY IT IS ONE FAULT AND NOT SIX.
+   Below 700 the stage stops being an absolute composition and becomes a column.
+   Type is page type and does not ride `--u`; `--u` keeps only the artwork, and
+   the handset and the ECB card get their own values.
 
-   Everything in this band is drawn on a stage whose whole geometry is `--u`,
-   one design pixel. The block above re-bases `--u` to a 1400-wide design under
-   1100px, which is right for the artwork and wrong for the type, because type
-   is the one thing here that is NOT the artwork. At 390px `--u` is 0.279, so
-   the title set at `calc(32 * var(--u))` renders at 8.9px — while `.eyebrow`
-   in global.css is a flat `font-size: 16px` and does not move. The label meant
-   to introduce the heading came out nearly twice its size, and the whole
-   hierarchy read upside down.
+   The order and contents follow Figma frame `538:4601`, the section's mobile
+   artboard (394 x 1081): the ECB card, the handset (cropped), the category
+   strip as a 2 x 2 grid flanked by the two live dots, the claim, the body and
+   a full-width button. NVDA and both prediction cards are not in the frame
+   and are hidden.
 
-   The same mismatch is what clipped the button. `.fam__cta` overrides `.btn`'s
-   width, height and font-size in `--u` — 71 x 16px at this width — while
-   `.btn` keeps its flat `padding: 16px 24px` and `white-space: nowrap`. Forty-
-   eight pixels of padding inside a 71px box left 23px for "Start Trading", and
-   `Roll`'s overflow cut it to "Start Tradi".
+   The eyebrow and heading are not in the frame either but are kept above the
+   card, so the section keeps a heading on a phone and `aria-labelledby`
+   still points at something.
 
-   So the fix is one decision, not a table of sizes: BELOW THIS WIDTH, TYPE
-   STOPS BEING DRAWN IN `--u`. The eyebrow, the title, the body and the button
-   are set in real pixels and sized against each other; `--u` keeps only the
-   job it is good at, which is the handset, and gets its own value there so the
-   mockup can be large while the stage around it is not.
+   The gutter is 20px, not the frame's 30, to align with every other section's
+   phone gutter. The card and strip are centred and unaffected.
 
-   The breakpoint is 700 rather than 640 because that is where the inversion
-   actually starts: `calc(32 * var(--u))` at 1400-base crosses under 16px at
-   exactly 700px wide.
-
-   WHAT THIS BLOCK NOW DRAWS, AND WHERE IT CAME FROM.
-
-   The order and the contents below are Figma frame `538:4601`, the section's
-   own mobile artboard: 394 x 1081, named "Familiar Trading. Better
-   Infrastructure.", 30px gutters round a 334-wide column. Top to bottom it is
-   THE ECB CARD, THE HANDSET (cropped), THE CATEGORY STRIP AS A 2 x 2 GRID
-   with the two live dots flanking it, "PHORCAST TRADING", the body copy, and a
-   FULL-WIDTH "Start Trading" button.
-
-   An earlier pass built this breakpoint without a mobile frame to build it
-   from. Three of its calls the frame overrules, and they are worth naming
-   because none of them was careless:
-
-   - THE ECB CARD IS BACK. The argument against it was that a 200 x 160 card
-     carrying four type sizes cannot sit TWO-UP in a 350px column without
-     every label falling under 10px. That is true and the frame agrees with
-     it — it drops NVDA and keeps ECB alone, centred, at its full 200 x 160.
-     One card at full size was the third option, and it is the one the design
-     takes. It gets `--u: 1px` below, which is the card's design pixel at 1:1.
-
-   - "PHORCAST TRADING" IS BACK. The argument against it was that stacked, it
-     lands two lines under the main heading and reads as a second section
-     starting. In the frame it does not land under the heading at all: the
-     card, the handset and the strip stand between them, which is most of a
-     screen, and by then a second title is a new subject rather than a
-     restatement.
-
-   - THE BUTTON RUNS THE FULL COLUMN, rather than sitting at `--btn-w` in the
-     middle of it. Same 16px label, same padding, same pill; only the width
-     changes, and it is the frame's.
-
-   STILL GONE, unchanged: the NVDA card and both floating prediction cards.
-   The frame contains neither.
-
-   WHAT THE FRAME DOES NOT CONTAIN, and is kept anyway: the eyebrow and
-   "Familiar Trading. Better Infrastructure.". The artboard is NAMED for that
-   heading and starts at the ECB card, so the heading is the one thing the
-   file leaves ambiguous — omitted, or simply not drawn on an artboard that
-   was cut to the part that changes. Dropping it would leave the section with
-   no heading at all on a phone, and `aria-labelledby="fam-title"` pointing at
-   nothing. So it stays, above the card, at the sizes this block already gave
-   it. Judgement call, recorded here rather than silently made.
-
-   THE GUTTER IS 20px, NOT THE FRAME'S 30. Every other section on this page
-   sets its phone gutter to 20 — measured: hero, pillars, steps, faq and the
-   footer all start their copy at x=20 at 390 wide. A section that alone
-   indents to 30 reads as misaligned with the two it sits between, and the
-   frame's 30 is artboard padding rather than a page rule. The card and the
-   strip are centred and do not notice; the copy and the button gain 10px of
-   measure each side.
-
-   THE ORDER, then: eyebrow, title, ECB CARD, HANDSET, CATEGORY STRIP, claim,
-   body, button. The gaps between them are the frame's, measured off it in its
-   own pixels: 38 to the card, 17 to the handset, 38 to the strip, 43 to the
-   copy. */
+   The gaps are the frame's: 38 to the card, 17 to the handset, 38 to the strip,
+   43 to the copy. */
 @media (max-width: 700px) {
-  /* The stage stops being a fixed-ratio absolute composition and becomes an
-     ordinary column. `position: static` on the children is what releases the
-     `left`/`top` pairs every rule above states in `--u`; nothing has to be
-     unset one property at a time. */
-  /* The stage stops being a fixed-ratio absolute composition and becomes an
-     ordinary column. `position: static` on the children is what releases the
-     `left`/`top` pairs every rule above states in `--u`; nothing has to be
-     unset one property at a time.
-
-     `gap: 0` and a margin per block, rather than one gap for all of them: the
-     frame's four gaps are 38, 17, 38 and 43, and a single figure would be
-     four compromises. Each margin sits on the block it introduces. */
+  /* `position: static` on the children releases every `left`/`top` pair above
+     at once. `gap: 0` and a margin per block, because the frame's four gaps
+     differ; each margin sits on the block it introduces. */
   .fam__stage {
     aspect-ratio: auto;
     display: flex; flex-direction: column; align-items: center;

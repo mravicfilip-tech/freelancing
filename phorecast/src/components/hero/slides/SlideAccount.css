@@ -64,15 +64,15 @@
   --sl2-grid-op: 0.2;
 
   /* The rest of the slide's literals, named so the light block at the foot of
-     the file redefines exactly these. Every one is INSIDE the product UI --
-     this cluster is a screenshot of the app, not page chrome -- so they move
+     the file redefines exactly these. Every one is INSIDE the product UI
+     (this cluster is a screenshot of the app, not page chrome), so they move
      together when the screenshot is re-tinted and nowhere else. */
   --sl2-lakers: #ffad00;          /* the club's own gold, behind its crest */
   --sl2-pill-bg: #1d1c1b;         /* the "One Account" pill's plate */
   /* The toast is glass: 13% white is this file's own step, above --veil, so
      it is named here rather than forced onto it. */
   --sl2-toast-bg: rgba(255, 255, 255, 0.13);
-  /* The two 48px icon tiles. A deep brand plate in both themes -- the white
+  /* The two 48px icon tiles. A deep brand plate in both themes, the white
      pie and bolt inside them are --on-accent by another name. */
   --sl2-tile-bg: #6a2626;
 }
@@ -396,7 +396,7 @@
 
 /* ------------------------------------------- two 206 × 124 event cards, at
    x 815 of the 963 row. They overhang the row by 58 units, which is the node's
-   own arrangement -- "Stats Details" does not clip. */
+   own arrangement, "Stats Details" does not clip. */
 .sl2__minis {
   position: absolute;
   left: calc(815 * var(--u));
@@ -427,7 +427,7 @@
    with their stops in descending order, which CSS cannot express and which
    renders as a flat plate. These are the rendered node measured instead: the
    light end of the ramp sits far outside the card, so only a slice of it
-   shows -- 32% of the way to --sl2-card-c in the first card and 64% in the
+   shows, 32% of the way to --sl2-card-c in the first card and 64% in the
    second, at the bottom-right corner, falling to the card ground at the top
    left. Written as a mix of the same two tokens so the light block still
    re-tints both ends. */
@@ -544,7 +544,7 @@
   line-height: 1.2;
 }
 .sl2-mini__btns .is-yes { background: var(--sl2-up-bg); color: var(--sl2-up-ink); }
-/* The "No" on an event card is the brand red, not the loss red -- it is a
+/* The "No" on an event card is the brand red, not the loss red, it is a
    side of the market, not a fall. The prediction card's chips are the pair
    that carry the up/down semantics. */
 .sl2-mini__btns .is-no { background: var(--sl2-down-bg); color: var(--accent); }
@@ -682,7 +682,7 @@
 }
 
 /* ------------------------------------------------------------------ motion
-   Nothing here changes the settled design — see SlideAccount.motion.ts, which
+   Nothing here changes the settled design, see SlideAccount.motion.ts, which
    animates from a visible baseline and clears every property it writes. These
    are compositor hints on the handful of elements that actually move, and they
    are only live while the module says it is running (`data-sl2-motion`), so a
@@ -731,15 +731,15 @@
 
    So the phone is given FEWER PARTS, LARGER, not the same parts smaller. What
    stays is the pair of 200px market cards and the node they converge on, which
-   is the slide's whole sentence: two different markets -- a sports book and a
-   commodity -- one account.
+   is the slide's whole sentence: two different markets, a sports book and a
+   commodity, one account.
 
    WHAT GOES, AND WHY
    * The 390 prediction card. It is 390 wide on its own, so keeping it costs
      more than the rest of the composition put together; at any basis that
      still fits it, the market cards are pushed below legibility.
    * The two 206 event cards. They are the densest type in the node relative to
-     their area -- 8px volume lines and 9.4px buttons -- and they are the third
+     their area, 8px volume lines and 9.4px buttons, and they are the third
      column of a three-column idea the phone has no width for.
    * The action bar. Not for size: at this scale its 12/10 type is the most
      legible thing left. It is dropped because it CANNOT COEXIST with the
@@ -786,7 +786,7 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list -- the same
+   Written twice, because a media query cannot go in a selector list, the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay
    identical; only their conditions differ: the system preference leads while
    nothing has been chosen, an explicit choice wins at any system setting.
@@ -805,7 +805,7 @@
 
   /* Grounds. The card gradients keep their angles and their stop positions;
      only the ends move. Dark steps 1.065 / 1.034 / 1.44 off the page, light
-     steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by tint, not by
+     steps 1.05 / 1.10 / 1.22, the same grammar of "raised by tint, not by
      shadow" that tokens.css uses for --panel and --panel-2. */
   --sl2-card-a: #fbf5f0;
   --sl2-card-b: #f8ece0;
@@ -858,7 +858,7 @@
 
   /* Grounds. The card gradients keep their angles and their stop positions;
      only the ends move. Dark steps 1.065 / 1.034 / 1.44 off the page, light
-     steps 1.05 / 1.10 / 1.22 -- the same grammar of "raised by tint, not by
+     steps 1.05 / 1.10 / 1.22, the same grammar of "raised by tint, not by
      shadow" that tokens.css uses for --panel and --panel-2. */
   --sl2-card-a: #fbf5f0;
   --sl2-card-b: #f8ece0;

@@ -28,61 +28,28 @@ import tesla from '../../assets/built/tesla.svg';
 import { ctaProps, type CtaKey } from '../../lib/cta';
 import './Built.css';
 
-/* FOUR OF THIS BAND'S TWENTY-SIX IMAGES ARE <Icon>, AND NOT ONE MORE.
+/* Which images are <Icon>. <Icon> turns an SVG into a CSS mask and hands the
+ * paint to `color`, so the colour becomes a token. A mask is one alpha
+ * channel, so only files that draw a single colour can convert:
  *
- * <Icon> turns an SVG file into a CSS mask and hands the paint to `color`, so
- * the colour stops being whatever Figma baked and starts being a token. The
- * cost is that a mask is one alpha channel: any file with two colours in it
- * loses one. That is the whole of the selection rule here.
+ *   you-dot.svg     one #e5331e circle and ring  -> --accent
+ *   line.svg,       a stroke under a two-stop    -> a CSS gradient behind the
+ *   link-main.svg   fade                            mask (Built.css)
+ *   link-fan.svg    four #353433 strokes         -> --bt-wire
+ *   arrow.svg (x2)  one #e5331e path             -> inherits the CTA colour
  *
- *   converted   you-dot.svg     one #e5331e circle and ring     -> --accent
- *               line.svg        a stroke under a two-stop fade  -> a CSS
- *               link-main.svg   a stroke under a two-stop fade     gradient
- *               link-fan.svg    four #353433 strokes            -> --bt-wire
- *               arrow.svg (x2)  one #e5331e path                -> inherits
- *                                                                  the CTA
+ * Everything else stays an <img>: ring-disc.svg (disc, ring and drop
+ * shadow); the faint rings, which land at a similar contrast on paper; the
+ * node plates carrying third-party marks; and the eyebrow dot, which is
+ * swapped per theme by <LiveDot>.
  *
- * The gradient pair convert because a mask does not have to be painted flat:
- * the silhouette comes from the file and the fade comes from a `background`
- * in Built.css, matched to the linearGradient the export carries. Everything
- * the file draws is still drawn.
- *
- *   not converted  ring-disc.svg     disc + ring + drop shadow
- *                  ring-mid/outer, node-ring-a/b/c   already near-invisible,
- *                                                    and land at the same
- *                                                    ratio on paper
- *                  node-disc(-soft), node-dax/eur/lock, btc-coin, tesla,
- *                  gold, node-btc   dark plates carrying locked marks
- *                  live-dot.svg      three tinted ellipses; the eyebrow dot
- *                                    is shared with five other bands, and all
- *                                    six swap the whole file through <LiveDot>
- *                                    rather than masking it flat
- *
- * THE BOX is where a mask conversion can move geometry, and there are two
- * different answers in this file.
- *
- *  - The dot, the line and the two CTA arrows are sized by Built.css, in
- *    container units for the first two and 12x6 for the arrows. An inline
- *    pixel size would freeze them, so `cssBox` writes Icon's own width and
- *    height away again and hands the box back to the stylesheet.
- *  - The two wires are NOT. They are absolutely positioned with all four
- *    insets and `width: auto`, and an <img> is a replaced element: `auto`
- *    resolves to the file's intrinsic size and the over-constrained `right`
- *    and `bottom` are dropped. Both therefore ship at a fixed size at every
- *    width -- confirmed identical at 1600, 1100 and 720 in the dark baseline.
- *    A <span> is not replaced and would have solved its box from the insets
- *    instead, shrinking by a third at 720, so both are given a size.
- *
- *    THE SIZE IS NOT THE ONE IN THE FILE. link-fan.svg says 336.243 x 122.496
- *    and link-main.svg says 436.869 x 23.4105, but a replaced element's
- *    intrinsic size lands on Chromium's 1/64px layout grid and does not simply
- *    round to it: the two <img> measured 336.203125 x 122.484375 and
- *    436.78125 x 23.40625. The numbers below are those, because what has to be
- *    reproduced is the box that shipped rather than the box the export claims.
- *    Asking for 436.869 left the wire 0.078px wide of the <img>, which the
- *    gate saw as w: 436.8 -> 436.9 and called geometry, correctly.
- *    (That the wires do not scale with the band is how this shipped; it is
- *    not something to fix here.)
+ * Sizing. The dot, the line and the two CTA arrows are sized by Built.css, so
+ * `cssBox` removes <Icon>'s inline width and height. The two wires are
+ * absolutely positioned with all four insets; as <img>s they took the file's
+ * intrinsic size, and a <span> would instead solve its box from the insets.
+ * So they get an explicit size: the box the <img> occupied on Chromium's
+ * 1/64px layout grid (336.203125 x 122.484375 and 436.78125 x 23.40625), not
+ * the viewBox size the export claims. The wires do not scale with the band.
  */
 const cssBox = { width: undefined, height: undefined };
 
@@ -112,65 +79,48 @@ function CardOne() {
   );
 }
 
-/* A market node carries TWO placements.
+/* A market node carries two placements.
  *
- * `x`/`y`/`size`/`iconSize` are the landscape frame Figma drew: a 640 x 254
- * card, five markets spread left to right, one padlock on the right-hand edge.
+ * `x`/`y`/`size`/`iconSize` are the landscape frame Figma draws: a 640 x 254
+ * card, five markets spread left to right, the padlock on the right.
  *
- * `mx`/`my`/`ms`/`mis` are the SAME five markets in the portrait frame the
- * card takes below 700px — Figma 526:2656, 334 x 392, the markets spaced
- * around one large ring with the padlock at its centre. Built.css picks one
- * set or the other; nothing here decides, so a node cannot be half-moved. The
- * ring and the faint inner circle are drawn from the SAME centre, once, inside
- * .bt2__main's and .bt2__fan's mobile masks — Built.css names them there so
- * the two cannot drift apart.
+ * `mx`/`my`/`ms`/`mis` are the portrait frame below 700px (Figma 526:2656,
+ * 334 x 392): the markets spaced around one ring with the padlock at its
+ * centre. Built.css picks one set, so a node cannot be half-moved.
  *
  * Both sets ride in the style attribute as custom properties. That attribute
- * is load-bearing for the motion layer — see the `clearProps` notes in
- * Built.motion.ts and loops/bt2.ts — and this only adds names to it. */
+ * is load-bearing for the motion layer; see the `clearProps` notes in
+ * Built.motion.ts and loops/bt2.ts. */
 type Node = {
   key: string; label: string; ring: string; icon?: string; whole?: string;
   size: number; x: number; y: number; iconSize?: number; wholeSize?: number;
   ms: number; mx: number; my: number; mis?: number;
 };
 
-/* THE PORTRAIT ORBIT, read straight off Figma 526:2656 rather than solved.
- *
- * That frame is the landscape card turned a quarter turn in the design file —
- * a 392 x 334 container rotated -90 inside a 334 x 392 card — so every
- * coordinate below is the Figma node's own placement pushed through
- * `cardX = v`, `cardY = 392 - u` and then re-expressed as an offset from the
- * card's centre (167, 196). Nothing here is eyeballed, and nothing is carried
- * over from the row this card used to be: a radius, an angle or a size tuned
- * to five markets standing side by side is silently wrong on a ring.
+/* The portrait orbit, read off Figma 526:2656. That frame is the landscape
+ * card turned a quarter turn (a 392 x 334 container rotated -90 inside a
+ * 334 x 392 card), so each coordinate is the node's placement pushed through
+ * `cardX = v`, `cardY = 392 - u`, then expressed as an offset from the card's
+ * centre (167, 196).
  *
  *   ring        centre (167, 197), r 89      .bt2__main's mask
  *   inner disc  centre (166, 197), r 47.5    .bt2__fan's mask
- *   padlock     centre (167, 196)            the ring's middle
+ *   padlock     centre (167, 196)
  *
- * The five markets sit at 84 - 92 units from the ring's centre, which is the
- * scatter the design has and not a mistake to correct: clockwise from twelve
- * they are TSLA (-1.4 degrees), DAX (61.7), XAU (116.9), EUR (259.2) and BTC
- * (299.4). The 142-degree gap between XAU and EUR is where the SELF-CUSTODY
- * pill sits, at 179.4 degrees and at exactly r=89 — it is ON the ring, not
- * under it, which is why the markets are not evenly spaced.
+ * The markets sit 84 to 92 units from the ring's centre, as drawn; clockwise
+ * from twelve: TSLA (-1.4 deg), DAX (61.7), XAU (116.9), EUR (259.2), BTC
+ * (299.4). The gap between XAU and EUR holds the SELF-CUSTODY pill, which
+ * sits on the ring at 179.4 deg.
  *
- * `ms` IS THE PLATE for a ringed node and THE FRAME for a whole one, because
- * that is what each kind of file draws. A ringed node is node-disc.svg at 100%
- * of `ms` (a circle at 0.9857 of its own box) plus node-ring-*.svg at 142.86%
- * (a circle at 0.9875 of its box) — so its plate is 0.986 * ms and its rim
- * 1.411 * ms. A whole node is one file at 136% whose plate and rim are 0.511
- * and 0.731 of the file — 0.695 * ms and 0.995 * ms. Both kinds therefore land
- * at the design's own rim/plate ratio of 1.431, which is the number the three
- * composite exports (EUR, DAX, the padlock) carry inside them. 142.86% is the
- * mobile value of .bt2__ring in Built.css and it exists for exactly this: at
- * the landscape 136% the three ringed markets would wear a rim 5% tight
- * against the two that draw their own.
+ * `ms` is the plate for a ringed node and the frame for a whole one, because
+ * that is what each kind of file draws. With the portrait .bt2__ring at
+ * 142.86%, both kinds land at the design's rim/plate ratio of 1.431 (see
+ * Built.css).
  *
- * `mis` is the mark, in design units, straight from the frame: 11.76 for the
- * Bitcoin B, 19 for the Tesla wordmark, 16 for the gold bar. */
+ * `mis` is the mark size in design units: 11.76 for the Bitcoin B, 19 for the
+ * Tesla wordmark, 16 for the gold bar. */
 const HUB_MX = 0;
-const HUB_MY = 0;   /* the padlock, from the card's centre — the ring's middle */
+const HUB_MY = 0;   /* the padlock, from the card's centre */
 const NODES: Node[] = [
   { key: 'btc', label: 'BTC / USD', size: 64, x: -215, y: -23, ring: nodeRingC, icon: nodeBtc, iconSize: 17.9, ms: 29.4, mx: -80, my: -44, mis: 11.76 },
   { key: 'tsla', label: 'TSLA', size: 50, x: -74, y: -72, ring: nodeRingA, icon: tesla, iconSize: 15.4, ms: 35, mx: -2, my: -83, mis: 19 },
@@ -208,10 +158,8 @@ function CardTwo() {
                 <img src={nodeDisc} alt="" className="bt2__disc" />
                 <img src={nodeDiscSoft} alt="" className="bt2__disc bt2__disc--soft" />
                 <img src={n.ring} alt="" className="bt2__ring" />
-                {/* Sized from `--i` in Built.css rather than inline, because the
-                    portrait frame has to be able to say a different number. The
-                    landscape value is the same 17.9 / 15.4 / 16 it always was
-                    and resolves to the same used width. */}
+                {/* Sized from `--i` in Built.css rather than inline, so the
+                    portrait frame can override it. */}
                 <img src={n.icon} alt="" className="bt2__icon" />
               </>
             )}
@@ -253,10 +201,9 @@ const COLUMNS = [
 
 /**
  * The two cards loop independently, but `useSectionMotion` takes a single
- * `idle`, so they are started together and torn down together here. Module
- * scope, not inline: `idle` is one of the layout effect's dependencies, and a
- * new function identity on every render would tear the entrance down and
- * replay it -- which is exactly what happened on the familiar section.
+ * `idle`, so they start and stop together here. Module scope, not inline:
+ * `idle` is a dependency of the layout effect, and a new function identity on
+ * every render would tear the entrance down and replay it.
  */
 function builtIdle(root: HTMLElement) {
   const stops = [bt1Loop(root), bt2Loop(root)];
@@ -265,8 +212,8 @@ function builtIdle(root: HTMLElement) {
 
 export function Built() {
   // The band arrives when it is scrolled to; see Built.motion.ts. `pending`
-  // holds the animated parts until GSAP takes over in the same frame — the CSS
-  // for it is at the end of Built.css.
+  // holds the animated parts until GSAP takes over in the same frame (the CSS
+  // is at the end of Built.css).
   const ref = useSectionMotion<HTMLElement>(buildBuilt, { idle: builtIdle });
 
   return (

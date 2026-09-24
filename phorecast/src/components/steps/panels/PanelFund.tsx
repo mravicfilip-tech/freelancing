@@ -18,35 +18,21 @@ import './PanelFund.css';
 
 /* The rails, in the lines asset's own 342.702 x 305.147 user space ----------
  *
- * s2-lines.svg is one path made of seven subpaths: five real rails and two
- * stubs either side of the junction. These are the five, each written so its
- * FIRST point is the tile end and its last is the junction under the node --
- * the direction a charge travels. The straight one is already drawn that way;
- * the four curves are drawn junction-first in the asset and are reversed when
- * they are sampled. (Re-checked against the 2026 export: still four of five.)
+ * s2-lines.svg is one path of seven subpaths: five rails and two stubs at the
+ * junction. These are the five, each run from the tile end to the junction
+ * (the direction a charge travels); the four curves are drawn junction-first
+ * in the asset, so they are reversed when sampled.
  *
- * THESE ARE A TRANSCRIPTION AND THEY GO STALE SILENTLY. The 2026 re-export of
- * node 365:1345 dropped the asset's Gaussian blur, which shrank its viewBox
- * from 347.723 x 315.7 to 342.702 x 305.147 and moved every coordinate in it
- * by (-5.02127, -5.2766). The path SHAPE did not move at all -- the asset's
- * origin moved by exactly the same amount the other way, so the junction still
- * lands on (428.98, 307.92) in the panel's own field, within 0.005 of where it
- * was. If the asset is re-exported again, re-derive both these strings and the
- * two offsets below or the charge flies down geometry that is no longer under
- * it, and nothing throws.
+ * THESE ARE A TRANSCRIPTION AND GO STALE SILENTLY. If node 365:1345 is
+ * re-exported, re-derive these strings and LINES_X / LINES_Y, or the comets
+ * fly along geometry that is no longer under them and nothing throws.
  *
- * HOW TO CHECK IT, since nothing here will tell you. Shoot the panel twice,
- * once with `.s2__lines` in and once with it `display: none`; the difference
- * is exactly the ink the asset lays down. Then walk these paths with
- * `getPointAtLength`, put each point through the svg's `getScreenCTM`, and ask
- * the difference image what is at that pixel. Every point has to land on ink.
- * Run against this export: 1505 points over the five rails, all five 100% on
- * ink, mean offset 0.00-0.01px, worst 1px. A stale transcription shows up as a
- * whole rail sitting several pixels off the paint.
+ * To check: screenshot the panel with and without `.s2__lines`, walk these
+ * paths with `getPointAtLength` through the svg's `getScreenCTM`, and confirm
+ * every point lands on ink in the difference image.
  *
- * They are shipped as invisible geometry in the markup (`.s2__geom`) rather
- * than built at runtime, because a sampler that captures the element list once
- * cannot see anything the loop creates mid-flight. */
+ * Shipped as invisible geometry in the markup (`.s2__geom`), not built at
+ * runtime. */
 const RAILS: { d: string; reverse: boolean }[] = [
   { d: 'M0 151.546H300.021', reverse: false },
   { d: 'M305.043 151.546C305.043 151.546 249.809 160.935 156.915 249.345C102.85 300.801 14.4362 304.148 14.4362 304.148', reverse: true },
@@ -55,12 +41,8 @@ const RAILS: { d: string; reverse: boolean }[] = [
   { d: 'M300.021 151.546C300.021 151.546 218.426 171.106 163.191 199.272C115.465 223.61 16.4544 224.309 16.4544 224.309', reverse: true },
 ];
 
-/** The lines asset's own size, and where it sits in the panel's 886 x 610
- *  design pixels. All four are Figma's: the asset is hung off the 25.10638
- *  square "Profile Picture Container" at (446.549, 261.56), and node 365:1398
- *  reports its geometry box at (128.954, 157.372) sized 321.362 x 303.148,
- *  which places the asset's own origin at the two numbers below. Kept in step
- *  with the same numbers in the CSS. */
+/** The lines asset's size, and its origin in the panel's 886 x 610 design
+ *  pixels, from Figma (node 365:1398). Keep in step with PanelFund.css. */
 const LINES_W = 342.702;
 const LINES_H = 305.147;
 const LINES_X = 128.9542;
@@ -73,28 +55,20 @@ const TILE_ICON = [
 
 /* The loop ------------------------------------------------------------------
  *
- * One beat, and it is the step's own sentence acted out: money arrives, lands
- * on a node that is locked, and the balance is credited.
+ * Money arrives, lands on a locked node, and the balance is credited.
  *
- * There are TWO casts, because the phone has two thirds fewer parts on stage --
- * see THE PHONE COMPOSITION in PanelFund.css for what is dropped and why. Which
- * one is playing is asked of the STYLESHEET, not of the viewport: the media
- * query that hides the tiles is the single source of truth, so a beat can never
- * fire at something that is `display: none`.
+ * There are TWO casts: the phone drops the tiles, rails and comets (see THE
+ * PHONE COMPOSITION in PanelFund.css). Which cast plays is read from the
+ * rendered layout, not the viewport, so no beat fires at a hidden element.
  *
- * THE DESKTOP BEAT SHEET -- five rails, five comets, the node and the card
+ * DESKTOP: five rails, five comets, the node and the card
  *
- *   0.00  the five tiles fire in turn, 0.13 apart -- each brightens its border
+ *   0.00  the five tiles fire in turn, 0.13 apart: each brightens its border
  *         and its glyph and leans 10 design px toward the node
- *   0.12  each tile's comet leaves its resting place and rides its own rail all
- *         the way to the junction, following the curve the artwork draws and
- *         turning with its tangent. The runs, measured off the shipped
- *         geometry rather than guessed: comet 5 covers 237 design px of rail,
- *         comet 3 207, comet 1 169, comet 2 153, and comet 4 only 78 -- it
- *         rests most of the way in. Each fades out over its last 0.30s.
- *   1.62  the disc under the padlock takes the arrivals -- one swell to 1.45
- *   1.66  the beam behind it, which is a real part of the design and rests at
- *         full, drives out from the node into the card
+ *   0.12  each comet rides its own rail to the junction, turning with the
+ *         curve's tangent, and fades out over its last 0.30s
+ *   1.62  the disc under the padlock takes the arrivals: one swell to 1.45
+ *   1.66  the beam (which rests at full) drives from the node into the card
  *   1.80  the figure drops out downward, is reset to the pre-deposit $12,400
  *         behind its own fade, and rolls back in; the progress indicator
  *         drains right to left at the same moment
@@ -102,65 +76,38 @@ const TILE_ICON = [
  *   2.30  the padlock lifts 6 design px and slams shut: the balance is yours
  *   3.35  the comets return to their design positions behind an opacity fade,
  *         0.06 apart, and are back at full by 4.10
- *   4.10  every inline style the loop wrote is handed back to CSS
- *         (`clearProps`), the figure is restored to the design's $18,800, and
- *         the panel sits perfectly still for 1.80s before going again.
- *         Period 5.90s in GSAP time, inside the stepper's 6s dwell.
+ *   4.10  inline styles are handed back to CSS (`clearProps`), the figure is
+ *         restored to $18,800, then 1.80s of rest. Period 5.90s, inside the
+ *         stepper's 6s dwell.
  *
- * THE PHONE BEAT SHEET -- the locked node and the card, and nothing else
+ * PHONE: the locked node and the card only
  *
- * The cast is five elements, so the law is easy to keep: the disc has the
- * stage on its own for half a second, and everything else arrives in its wake.
- *
- *   0.00  the disc under the padlock takes the arrival -- one swell to 1.45
- *         over 0.24s, settling back over 0.50s. Nothing else is moving.
- *   0.55  the beam behind it, which is a real part of the design and rests at
- *         full, drives out from the node into the card
+ *   0.00  the disc swells to 1.45 over 0.24s and settles over 0.50s, alone
+ *   0.55  the beam drives from the node into the card
  *   0.80  the figure drops out downward, is reset to the pre-deposit $12,400
  *         behind its own fade, and rolls back in; the progress indicator
  *         drains right to left at the same moment
- *   1.08  $12,400 counts to $18,800 over 1.60s -- slower than the desktop's
- *         1.45, because on the phone it is the only thing left to watch --
- *         while the indicator refills behind it
- *   1.50  the padlock lifts 6 design px and slams shut: the balance is yours
- *   2.70  every inline style the loop wrote is handed back to CSS, the figure
- *         is restored to the design's $18,800, and the panel sits perfectly
- *         still for 3.10s before going again.
- *         Period 5.80s in GSAP time, inside the stepper's 6s dwell.
+ *   1.08  $12,400 counts to $18,800 over 1.60s (slower than desktop, as it is
+ *         the only thing moving) while the indicator refills
+ *   1.50  the padlock lifts 6 design px and slams shut
+ *   2.70  handed back to CSS, figure restored, then 3.10s of rest.
+ *         Period 5.80s, inside the stepper's 6s dwell.
  *
- * Mechanics worth keeping:
- * - There is not one delayed `fromTo` here, which is the only construct that
- *   writes its start value at build time and strands elements in it. Start
- *   states are `tl.set(..., 0)`: a timeline `set` at position 0 renders when
- *   the timeline is built AND every time the playhead returns to 0, so each
- *   repeat re-arms without a second code path, and the mid-timeline `set`s
- *   (the figure's roll) render only when the playhead reaches them. Where a
- *   `to` needs an explicit landing value it is stated, never inferred.
- * - Rest is the design: one `clearProps: 'all'` at the end of the story removes
- *   everything the loop wrote, including the comets' flight transforms, so the
- *   resting frame is the stylesheet's and nothing is left inline. It is handed
- *   the cast that is actually on stage, so the phone never writes to a hidden
- *   element even to clear it. The counted text is put back by hand, on the last
- *   frame of the story and again on teardown, because text content is not a
- *   style.
- * - Distances that have to look the same at every width are read off the
- *   rendered box as design pixels (`p`), not hardcoded in CSS pixels. It is
- *   measured off the balance card, whose 346 design px is the widest thing in
- *   the panel and so the least sensitive to rounding -- and, unlike the panel's
- *   own width, it is the same question on both casts, because the two have
- *   different bases (886 and 442).
+ * Mechanics:
+ * - No delayed `fromTo` (it writes its start value at build time and can
+ *   strand elements). Start states are `tl.set(..., 0)`, which renders at
+ *   build time and on every repeat.
+ * - Rest is the design: `clearProps: 'all'` at the end of the story removes
+ *   everything the loop wrote. It is safe ONLY because no cast member is an
+ *   <Icon>: an Icon's mask URL is its inline `--icon` property, which 'all'
+ *   would delete (the progress Icon sits inside `.s2__progress`, untouched).
+ *   The counted text is restored by hand, at the end and on teardown.
+ * - Distances are in design pixels (`p`), measured off the balance card:
+ *   346 design px on both casts, unlike the panel (886 vs 442).
  * - No hover, no pointer, no idle drift. Reduced motion never builds anything.
- * - Which cast is playing follows a resize because it has to: `usePhone()` in
- *   Steps.tsx watches the same `(max-width: 700px)` the stylesheet does and
- *   swaps the markup, so crossing the breakpoint remounts the panel and this
- *   effect asks the question again. That query is written in three places --
- *   there, the phone block in Steps.css, and the one at the foot of
- *   PanelFund.css -- and they have to stay the same number.
- *
- * Measured off the running page, sampling every frame for three periods:
- * the desktop cycle is 5916ms with 1796 / 1780 / 1729ms of it completely
- * still, the phone cycle 5800ms with 3082ms still, and at no point in either
- * is there an inline style left on anything at rest. Both inside the 6s dwell.
+ * - Crossing the 700px breakpoint swaps the markup in Steps.tsx, which
+ *   remounts the panel and re-evaluates the cast. The same query appears in
+ *   Steps.tsx, Steps.css and PanelFund.css; keep them in step.
  */
 const STORY = 4.1;
 const REST = 1.8;
@@ -204,10 +151,8 @@ function headingAt(pts: Pt[], u: number): number {
 
 function useFundLoop() {
   const ref = useRef<HTMLDivElement>(null);
-  /* Three colour values and each tile's resting border are read once, at build
-     time, so the build has to be redone when the theme changes -- otherwise the
-     tiles would go on firing to the palette that was live when the panel
-     mounted, and cooling back to a border that is no longer theirs. */
+  /* Colours and each tile's resting border are read at build time, so the
+     loop must rebuild on a theme change. */
   const epoch = useThemeEpoch();
 
   useLayoutEffect(() => {
@@ -227,33 +172,25 @@ function useFundLoop() {
     if (tiles.length !== 5 || comets.length !== 5 || paths.length !== 5) return;
     if (!disc || !lock || !beam || !amount || !progress || !card) return;
 
-    // The design pixel, read off the rendered box rather than out of `--p`:
-    // the unit is written in container-query units and computes to an
-    // unresolved token, so it can only be measured. The card is what it is
-    // measured on: it is 346 design px on both casts, where the panel's own
-    // width means 886 on the desktop and 442 on the phone.
+    // The design pixel, measured from the rendered box (`--p` is in
+    // container-query units and cannot be read as a number). Measured on the
+    // card, which is 346 design px on both casts.
     const box = root.getBoundingClientRect();
     const p = card.getBoundingClientRect().width / 346;
     if (p <= 0) return;
 
-    /* WHICH CAST IS ON STAGE. The phone drops the tiles, the rails, the lines
-       and the comets in CSS -- see THE PHONE COMPOSITION in PanelFund.css --
-       so this asks the stylesheet rather than the viewport: one source of
-       truth, and nothing here can then fire at a hidden element.
+    /* WHICH CAST IS ON STAGE, asked of the stylesheet (which hides the rails
+       on the phone) rather than the viewport.
 
-       It asks the RENDER and not the element's own `display`, which is the
-       trap this walked into once already. The rule hides the rails CONTAINER,
-       and an element inside a `display: none` ancestor still reports its own
-       computed display -- `block` for an absolutely positioned span -- so the
-       obvious test came back false on a phone and the desktop cast went on
-       animating five tiles and five comets that were not on the screen.
-       `getClientRects()` is empty for anything that is not laid out at all,
-       whichever ancestor took it off stage. */
+       Use `getClientRects()`, not the element's computed `display`: CSS hides
+       the rails CONTAINER, and a child of a `display: none` ancestor still
+       reports its own display (`block`). `getClientRects()` is empty for
+       anything not laid out. */
     const phone = tiles[0].getClientRects().length === 0;
 
     const restAmount = amount.textContent ?? money(END_AMOUNT);
-    /* The cast on stage. `clearProps` is only ever handed this, so the phone
-       never writes to an element the stylesheet has taken out. */
+    /* The cast on stage. `clearProps` only ever gets this list, so nothing
+       hidden is written to. */
     const cast = phone
       ? [disc, lock, beam, amount, progress]
       : [...tiles, ...glyphs, ...comets, disc, lock, beam, amount, progress];
@@ -267,20 +204,16 @@ function useFundLoop() {
 
     if (!phone) {
       restBorder = tiles.map((t) => getComputedStyle(t).borderTopColor);
-      /* A tile firing, as a pair per property. The glyph's lift is a `filter`,
-         and GSAP interpolates filters STRUCTURALLY, so the two values have to
-         list the same functions in the same order -- which is why the rest
-         value is named here rather than written as the identity
-         `brightness(1)` at the call site. Today's values are the fallbacks. */
+      /* A tile firing, as a pair per property. GSAP interpolates `filter`
+         STRUCTURALLY, so rest and lit must list the same functions in the same
+         order; hence a named rest value. Fallbacks are the dark values. */
       tileLit = tok('--steps-p2-tile-lit', 'rgba(255, 128, 96, 0.55)');
       glyphRest = tok('--steps-p2-glyph-rest', 'brightness(1)');
       glyphLit = tok('--steps-p2-glyph-lit', 'brightness(2.1)');
 
-      /* Which rail is each comet resting on, and how far along it?
-         Asked of the geometry rather than assumed, so the answer stays right if
-         an asset is ever re-exported with the curves in another order -- which
-         is exactly what the 2026 re-export of 365:1345 did to the box these
-         curves live in. */
+      /* Which rail each comet rests on, and how far along: found from the
+         geometry rather than assumed, so it survives a re-export that reorders
+         or shifts the curves. */
       const rails = paths.map((path, i) => sampleRail(path, RAILS[i].reverse));
       comets.forEach((el) => {
         const r = el.getBoundingClientRect();
@@ -329,10 +262,8 @@ function useFundLoop() {
       });
     };
 
-    /* The beats BOTH casts play: the node takes the arrival, drives it into
-       the card, the figure is credited and the lock closes. Only the times and
-       the length of the count differ between desktop and phone, so they are
-       arguments rather than a second copy that can drift out of step. */
+    /* The beats BOTH casts play: node, beam, credit, lock. Only the times and
+       the count length differ, so they are arguments. */
     const credit = (
       tl: Timeline,
       at: { disc: number; beam: number; figure: number; lock: number },
@@ -343,9 +274,8 @@ function useFundLoop() {
         .to(disc, { scale: 1, duration: 0.5, ease: 'power2.out' }, at.disc + 0.24)
         .to(beam, { scaleX: 1, opacity: 1, duration: 0.55, ease: 'power3.out' }, at.beam);
 
-      /* the deposit is credited. The figure leaves before it is reset, so the
-         drop from $18,800 back to the pre-deposit $12,400 happens behind its
-         own fade and is never a visible step backwards. */
+      /* the deposit is credited. The figure is reset to $12,400 while faded
+         out, so it never visibly steps backwards. */
       tl.to(amount, { yPercent: -32, opacity: 0, duration: 0.22, ease: 'power2.in' }, at.figure)
         .set(amount, { yPercent: 32 }, at.figure + 0.24)
         .call(() => { amount.textContent = money(START_AMOUNT); }, undefined, at.figure + 0.24)
@@ -370,9 +300,8 @@ function useFundLoop() {
         .call(() => { amount.textContent = restAmount; }, undefined, 0);
 
       if (phone) {
-        /* Five elements on stage, so the law is easy to keep: the disc has the
-           first half second on its own and everything else arrives in its
-           wake. Nothing here touches a tile, a rail or a comet. */
+        /* The disc has the first half second alone. No tile, rail or comet is
+           touched. */
         credit(tl, { disc: 0, beam: 0.55, figure: 0.8, lock: 1.5 }, 1.6);
       } else {
         /* ---- the rails fire, and each one lets its charge go */
@@ -418,7 +347,7 @@ function useFundLoop() {
   return ref;
 }
 
-/* Panel 2 — funding rails converge on a locked balance ------------------- */
+/* Panel 2: funding rails converge on a locked balance ------------------- */
 export function PanelFund() {
   const ref = useFundLoop();
 
@@ -458,11 +387,8 @@ export function PanelFund() {
                 <p className="s2__balance-amt">$18,800</p>
               </div>
               <span className="s2__progress">
-                {/* Four #e5331e bars on transparent: one flat brand colour, so
-                    a mask, and --accent carries it to #a21605 on paper rather
-                    than leaving one stray dark-theme red inside a light card.
-                    Sized by PanelFund.css in design pixels, like every other
-                    glyph here. */}
+                {/* One flat brand colour, so a mask that follows --accent in
+                    both themes. Sized by PanelFund.css in design pixels. */}
                 <Icon src={s2Progress} w={70.2991} h={7.53191} style={{ width: undefined, height: undefined }} />
               </span>
             </div>

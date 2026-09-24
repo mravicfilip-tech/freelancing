@@ -23,7 +23,7 @@ interface Pass {
  * The outline extruded into a stack of slices joined by ribs: one instanced quad per segment,
  * widened in screen space.
  *
- * Dark draws it as emitted orange light — a thin core pass under a wide glow pass, both
+ * Dark draws it as emitted orange light, a thin core pass under a wide glow pass, both
  * additive, so crossings brighten. Light draws it as red ink: one core pass composited OVER
  * the page, no glow pass at all. See LINED.lightInk in ../config for why that is a change of
  * medium rather than a change of colour.
@@ -126,12 +126,12 @@ export class LinedTreatment implements Treatment {
         // The fragment shader writes premultiplied colour, so `One` on the source
         // is right either way and the medium is the one factor that changes:
         //
-        //   dark  rgb: src + dst            — additive; light adds to light
-        //   light rgb: src + dst*(1 - srcA) — "over"; ink covers what is under it
+        //   dark  rgb: src + dst, additive; light adds to light
+        //   light rgb: src + dst*(1 - srcA), "over"; ink covers what is under it
         //
         // Alpha is "over" in both, so a lone faded line composites like a normal one.
         //
-        // `depthTest` is off, so draw order decides what wins — except that it
+        // `depthTest` is off, so draw order decides what wins, except that it
         // cannot here. One colour composited over itself is idempotent, and the
         // accumulated alpha 1 - prod(1 - aᵢ) does not depend on the order of the
         // terms, so crossings are order-independent and can only get denser, never

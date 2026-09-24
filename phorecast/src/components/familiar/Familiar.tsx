@@ -36,26 +36,18 @@ const CANDIDATES = [
 const CHIPS = ['Politics', 'Sports', 'Crypto', 'Finance'];
 
 /**
- * The two prediction cards that float to the RIGHT OF THE HANDSET.
+ * The two prediction cards to the right of the handset.
  *
- * Figma `365:1807` and `474:913` — two 206 x 160 cards of the product's own
- * dark UI, side by side at y 532 with a 14px gutter, the second one 220 design
- * pixels right of the first. Both were re-exported from the file on the same
- * pass; before it there was one real card here and two blurred bitmap crops of
- * `familiar/ghost.png` standing in beside it, which the current frame does not
- * contain at all. See the note over `.fam__pred` in `Familiar.css`.
+ * Figma `365:1807` and `474:913`: two 206 x 160 cards of the product's dark UI,
+ * side by side at y 532 with a 14px gutter. See `.fam__pred` in `Familiar.css`.
  *
- * `lines` rather than one string because the design breaks the first card's
- * title by hand (a nowrap block with an explicit break after "sever") and lets
- * the second wrap inside its own 143px measure. `titleW` is that measure, in
- * design pixels; the first card takes the width Figma's nowrap block measures
- * so the break lands where the file puts it rather than wherever the flex row
- * happens to run out.
+ * `lines` because the design breaks the first card's title by hand (after
+ * "sever") and lets the second wrap. `titleW` is each title's measure in design
+ * pixels, so the breaks land where Figma puts them.
  *
- * `fill` is the green run of the bar as a percentage of the track, read off the
- * file: the first card's is the whole track — which is why its label is dark,
- * it sits ON the green — and the second's stops at 23.69%, leaving the label
- * over the bare track where it has to be light instead.
+ * `fill` is the green run of the bar as a share of the track. The first card's
+ * fills the whole track, so its label sits on the green and is dark; the
+ * second stops at 23.69%, so its label sits on the bare track and is light.
  */
 const PREDICTIONS = [
   {
@@ -85,35 +77,27 @@ const PREDICTIONS = [
 /**
  * Every glyph in this band is sized by `Familiar.css`, not by the file.
  *
- * `Icon` writes a width and a height inline, which would freeze each one at
- * whatever the stage measured when it rendered — the whole band is laid out
- * in `--u`, one design pixel, so a pixel size is wrong at every width but one.
- * `undefined` overrides Icon's own width/height and hands the box straight
- * back to the stylesheet. Six of these are also sized on ONE axis, and the
- * `aspect-ratio` the previous commit put beside each of them is what replaces
- * the intrinsic ratio an <img> resolved `auto` from; a <span> is not a
- * replaced element and would otherwise collapse.
+ * `Icon` writes a width and height inline, which would freeze each glyph at one
+ * pixel size, while the band is laid out in `--u` (one design pixel).
+ * `undefined` overrides Icon's own width/height and hands the box back to the
+ * stylesheet. Glyphs sized on one axis carry an `aspect-ratio` in the CSS,
+ * because a <span> is not a replaced element and would otherwise collapse.
  */
 const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
 /**
  * A flat single-colour glyph, masked rather than painted.
  *
- * Eleven of the band's <img> glyphs are one colour on transparent, and as an
- * <img> that colour is unreachable: `color` cannot get inside. As a mask it is
- * ordinary CSS, so each one takes a token — which is how the location arrow
- * and the battery tip keep their #00C950 inside the handset while the market
- * cards' trend arrows follow --pos / --neg out on the page. Every one of them
- * is given an EXPLICIT token whose dark value is the hex Figma baked into the
- * file, so the conversion changes what can reach the glyph and nothing about
- * how it looks.
+ * As an <img>, a one-colour glyph cannot be reached by `color`. As a mask it
+ * takes a token, which is how the location arrow and battery tip keep #00C950
+ * inside the handset while the market cards' trend arrows follow --pos / --neg.
+ * Each token's dark value is the hex Figma baked into the file, so the mask
+ * looks identical in dark.
  *
- * Not converted, deliberately: the ECB and NVIDIA marks (two-colour
- * third-party logos), the BTC coin (an orange disc with a white glyph on it),
- * the down-arrow on the red footer plate (white on --neg in both themes, and
- * --on-accent is what it already inherits), and the eyebrow's live dot, which
- * is three stacked ellipses at three alphas with a white core — flattening it
- * to a silhouette would lose the construction.
+ * Deliberately not masked: the ECB and NVIDIA marks (two-colour third-party
+ * logos), the BTC coin (orange disc with a white glyph), the down-arrow on the
+ * red footer plate (white on --neg in both themes), and the eyebrow's live dot
+ * (layered ellipses that a silhouette would flatten).
  */
 function Glyph({ src, className }: { src: string; className: string }) {
   return <Icon src={src} w={0} h={0} className={className} style={CSS_SIZED} />;
@@ -222,17 +206,13 @@ function Prediction(props: (typeof PREDICTIONS)[number]) {
 }
 
 export function Familiar() {
-  // The band has to climb a quarter of the screen before it opens — the default
-  // gate — which is late enough that the sliver showing under the bento is not
-  // treated as "scrolled to", and early enough that the phone is never caught
-  // half-landed on the way in.
+  // Opens on the default gate (a quarter of the screen), so the sliver showing
+  // under the bento does not trigger it.
   //
-  // The ambient loop is a separate module, `Familiar.loop.ts`, and is wired in
-  // here as the `idle` option: useSectionMotion hands it this section element
-  // once the entrance timeline completes, and calls the teardown it returns on
-  // unmount. Both arguments have to be stable module-scope references, since
-  // they are the effect's dependencies.
-  //
+  // The ambient loop (`Familiar.loop.ts`) is the `idle` option: the hook hands
+  // it the section once the entrance completes and calls its teardown on
+  // unmount. Both arguments must be stable module-scope references, since they
+  // are the effect's dependencies.
   const ref = useSectionMotion<HTMLElement>(buildFamiliar, { idle: familiarLoop });
 
   return (
@@ -272,17 +252,11 @@ export function Familiar() {
 
         {PREDICTIONS.map((p) => <Prediction key={p.mod} {...p} />)}
 
-        {/* THE BOTTOM BAND IS A CHILD OF THE STAGE, and was a sibling of it.
-            On a phone the stage is an ordinary column and the Figma mobile
-            frame (538:4601) puts the category strip BETWEEN the handset and
-            the "Your View Has a Market" copy — so the strip has to be orderable
-            against the stage's own children, and `order` only reaches
-            siblings. Nothing about the desktop composition moves: the band is
-            `position: absolute; inset: auto 0 0` and `.fam` has no in-flow
-            child but the stage, so `.fam`'s content box and the stage's are
-            the same rectangle and `bottom: 0` resolves to the same line
-            against either. It is still the last thing painted, since the stage
-            is the only other child of the section. */}
+        {/* The bottom band is a child of the stage so that, on a phone, it can
+            be ordered between the handset and the copy, as the Figma mobile
+            frame (538:4601) does; `order` only reaches siblings. On desktop it
+            is `position: absolute; inset: auto 0 0` and the stage fills `.fam`,
+            so `bottom: 0` lands on the same line either way. */}
         <div className="fam__band" aria-hidden="true">
           <span className="fam__horizon" />
           <div className="fam__chips">

@@ -53,7 +53,7 @@ import pie3 from '../../../assets/hero/slide2/pie-3.svg';
 import toastBolt from '../../../assets/hero/slide2/toast-bolt.svg';
 import pillDisc from '../../../assets/hero/slide2/pill-disc.svg';
 /* The Union inside the disc is the brand mark, the same path Logo.tsx paints
-   in the nav -- one flat glyph, so it is the shared asset through <Icon> and
+   in the nav, one flat glyph, so it is the shared asset through <Icon> and
    the colour comes from `color`, not from a second copy of the artwork with a
    white fill baked in. */
 import brandMark from '../../../assets/brand/mark.svg';
@@ -92,7 +92,7 @@ export function SlideAccount() {
      prevent. The epoch changes only when the theme actually does. */
   const epoch = useThemeEpoch();
 
-  /* The cluster's own choreography — the detail inside the hero's block
+  /* The cluster's own choreography, the detail inside the hero's block
      entrance, and the one loop it keeps. It gates itself on this slide being
      the active one, so nothing is spent behind a hidden slide.
      `.sl2` must keep exactly one child (`.sl2__box`): the hero's shared
@@ -109,7 +109,7 @@ export function SlideAccount() {
       <div className="sl2__box">
         <div className="sl2__group">
           <div className="sl2__row">
-            {/* 390 × 258 prediction card — 365:352 ---------------------- */}
+            {/* 390 × 258 prediction card, 365:352 ---------------------- */}
             <article className="sl2-pred">
               <div className="sl2-pred__meta">
                 <span>3.2m Vol</span>
@@ -133,7 +133,7 @@ export function SlideAccount() {
               </ul>
             </article>
 
-            {/* 200 × 258 market card — NFL Super Bowl, 365:407 ---------- */}
+            {/* 200 × 258 market card, NFL Super Bowl, 365:407 ---------- */}
             <article className="sl2-mc sl2-mc--nfl">
               <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid" />
               <div className="sl2-mc__head">
@@ -168,7 +168,7 @@ export function SlideAccount() {
               <Ranges />
             </article>
 
-            {/* 200 × 258 market card — XAU/USD Gold, 365:474 ------------ */}
+            {/* 200 × 258 market card, XAU/USD Gold, 365:474 ------------ */}
             <article className="sl2-mc sl2-mc--xau">
               <img src={light ? cardGridLight : cardGrid} alt="" className="sl2-mc__grid sl2-mc__grid--xau" />
               <div className="sl2-mc__head">
@@ -246,7 +246,7 @@ export function SlideAccount() {
             </div>
           </div>
 
-          {/* Action Container 538:4465 — toast + two 48px tiles --------- */}
+          {/* Action Container 538:4465, toast + two 48px tiles --------- */}
           <div className="sl2__toasts">
             <div className="sl2-toast">
               <Icon src={toastGlobe} w={22} h={22} className="sl2-toast__globe" style={NO_BOX} />
@@ -266,7 +266,7 @@ export function SlideAccount() {
           </div>
         </div>
 
-        {/* connector curves down to the pill — 365:294 / 365:295 ------- */}
+        {/* connector curves down to the pill, 365:294 / 365:295 ------- */}
         <img src={light ? connectorLeftLight : connectorLeft} alt="" className="sl2__conn sl2__conn--l" />
         <img src={light ? connectorRightLight : connectorRight} alt="" className="sl2__conn sl2__conn--r" />
         <span className="sl2__diamond" />

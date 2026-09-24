@@ -8,12 +8,9 @@ import s3Sp500 from '../../../assets/steps/s3-sp500.svg';
 import s3Apple from '../../../assets/steps/s3-apple.svg';
 import s3GridTall from '../../../assets/steps/s3-grid-tall.svg';
 import s3GridShort from '../../../assets/steps/s3-grid-short.svg';
-// Raw, not a URL. The graph is one exported vector layer and the loop has to
-// reach the line inside it -- nothing inside an <img> is addressable, so there
-// is no `stroke-dashoffset` and no per-path access. It paints exactly as the
-// <img> did: the export already carries its own 371 x 191 viewBox and
-// `preserveAspectRatio="none"`, and PanelTrade.css gives it a box of exactly
-// those design pixels.
+// Raw, not a URL: the loop needs the paths inside the graph, which an <img>
+// would hide. The export keeps its own 371 x 191 viewBox and
+// `preserveAspectRatio="none"`, and PanelTrade.css sizes the box to match.
 import chartMarkup from '../../../assets/steps/s3-chart.svg?raw';
 import { REDUCED } from '../../../lib/motion';
 import { Icon } from '../../Icon';
@@ -23,12 +20,11 @@ import './PanelTrade.css';
 /**
  * Namespace the export's internal ids.
  *
- * An inlined SVG's ids are document-global, and Figma numbers them per export
- * session (`paint0_linear_0_17`, `clip0_0_17`, ...), so two panels inlining two
- * exports can collide and silently steal each other's gradients. Only the ids
- * something actually points at with `url(#...)` are renamed, which leaves the
- * layer names -- `Vector 60`, `Detail Point` -- alone for the motion to find.
- * The file on disk stays exactly as Figma exported it.
+ * An inlined SVG's ids are document-global, and Figma's generated ids
+ * (`paint0_linear_0_17`, `clip0_0_17`, ...) can collide across exports and
+ * silently swap gradients. Only ids referenced by `url(#...)` are renamed, so
+ * layer names (`Vector 60`, `Detail Point`) stay findable. PanelTrade.css
+ * targets the `s3-` prefixed ids. The file on disk is unchanged.
  */
 const CHART_MARKUP = (() => {
   const refs = new Set<string>();
@@ -43,7 +39,7 @@ const CHART_MARKUP = (() => {
   return out;
 })();
 
-/* Panel 3 -- market picker and price chart (Figma 365:1532) ----------------- */
+/* Panel 3: market picker and price chart (Figma 365:1532) ------------------ */
 const TILES = [
   { mod: 'btc', icon: s3Btc, w: 28, h: 28, active: true },
   { mod: 'gold', icon: s3Target, w: 28, h: 28, active: false },
@@ -55,13 +51,10 @@ const TILES = [
 /** The measure lines drawn over the graph (365:1573-1580), in Figma's order.
  *  Their x, y and height live in PanelTrade.css as `.s3__grid--<key>`.
  *
- *  Seven of the eight are one white stroke on transparent, so they are masks:
- *  white at a twentieth of an opacity is the page on paper and they would
- *  simply stop existing. The eighth, `c`, is the price marker's drop line and
- *  is a two-stop GRADIENT -- a mask keeps only a silhouette and would throw
- *  the fade away -- so it carries no file at all and PanelTrade.css draws it,
- *  which is also what lets it turn around: in dark it runs pale at the marker
- *  down into the card, and on paper it has to run dark. */
+ *  Seven are one faint white stroke, drawn as masks so their colour can flip
+ *  to ink in light. The eighth, `c`, is the price marker's drop line: a
+ *  two-stop gradient that a mask would flatten, so it has no file here and
+ *  PanelTrade.css paints it (and reverses it in light). */
 const GRID: { key: string; src: string | null; h: number }[] = [
   { key: 'a', src: s3GridTall, h: 116 },
   { key: 'b', src: s3GridShort, h: 71 },
@@ -116,21 +109,16 @@ export function PanelTrade() {
 /* The loop                                                                    */
 /* -------------------------------------------------------------------------- */
 /**
- * The panel's story is "pick a market, watch its price move", so the loop is
- * exactly that and nothing else: the BTC tile lifts as though it had just been
- * chosen, the curve winds back to nothing and grows again left to right with a
- * lit dot on its drawing edge, the fill follows the dot, and the figure counts
- * up from the -2.41% base to the price the design ships. Then it rests on the
- * design for a second and a half and goes round again.
+ * "Pick a market, watch its price move": the BTC tile lifts as if just
+ * chosen, the curve winds back and redraws left to right with a lit dot on its
+ * edge, the fill follows the dot, and the figure counts up from 2.41% below
+ * the design price. Then it rests on the design and repeats.
  *
- * Timing is quoted in GSAP seconds. `gsap.ticker.lagSmoothing` is on (see
- * lib/motion.ts), so on a slow machine a turn takes longer in wall time than
- * the numbers below; the sequence is the same either way. The turn is 5.8s, so
- * a whole beat fits inside the stepper's 6s dwell.
+ * Times are GSAP seconds (`lagSmoothing` in lib/motion.ts can stretch wall
+ * time on a slow machine). One turn is 5.8s, inside the stepper's 6s dwell.
  *
- * Nothing here listens to the pointer, nothing floats, and the design's
- * `62,894.00` is written back verbatim at the end of every count so the figure
- * cannot drift. `prefers-reduced-motion` returns before a single value is set.
+ * No pointer handling. The design's `62,894.00` is written back verbatim after
+ * every count. Reduced motion returns before anything is set.
  */
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -169,10 +157,9 @@ function tradeMotion(root: HTMLElement): () => void {
   const line = svg?.querySelector<SVGPathElement>('[id="Vector 60"]') ?? null;
   const area = svg?.querySelector<SVGPathElement>('[id="Vector 6"]') ?? null;
   const marker = svg?.querySelector<SVGGElement>('[id="Detail Point"]') ?? null;
-  /* The marker's drop line is drawn twice in the design: once inside the graph
-     export, once as a separate layer over it (365:1575). The loose one has to
-     come and go with the rest of the marker, or it is left hanging over an
-     empty card while the curve is redrawn. */
+  /* The marker's drop line exists twice: inside the graph export and as a
+     separate layer over it (365:1575). The separate one must fade with the
+     marker. */
   const markerRule = root.querySelector<HTMLElement>('.s3__grid--c');
   const tile = root.querySelector<HTMLElement>('.s3__tile.is-active');
   const price = root.querySelector<HTMLElement>('.s3__price');
@@ -184,17 +171,15 @@ function tradeMotion(root: HTMLElement): () => void {
     return () => {};
   }
 
-  /* One design pixel in real CSS pixels. `--p` is written in container-query
-     units and cannot be read back as a length, so it comes off the box: the
-     price card is 424 design px wide. */
+  /* One design pixel in CSS pixels, measured from the 424 design px price
+     card (`--p` is in container-query units and cannot be read back). */
   const u = card.getBoundingClientRect().width / 424 || 1;
 
   const restInt = intEl.textContent ?? '';
   const restDec = decEl.textContent ?? '';
 
-  /* The wipe that carries the fill's right edge along with the drawing line.
-     A clipPath, because the fill is one closed path and there is no honest way
-     to grow it otherwise; the dot below is what actually travels. */
+  /* A clipPath wipe that carries the fill's right edge with the drawing line;
+     the fill is one closed path and cannot be grown otherwise. */
   const wipeId = `s3-wipe-${(wipeSeq += 1)}`;
   const defs = svg.querySelector('defs') ?? svg.insertBefore(document.createElementNS(NS, 'defs'), svg.firstChild);
   const clip = document.createElementNS(NS, 'clipPath');
@@ -207,16 +192,13 @@ function tradeMotion(root: HTMLElement): () => void {
   clip.appendChild(rect);
   defs.appendChild(clip);
 
-  /* The lit dot that rides the drawing edge. Inside the same <svg>, last in the
-     graph group so it paints over the fill, and a flat colour so it depends on
-     none of the export's gradients. It belongs to the motion, so if this module
-     never runs the artwork has no stray dot sitting on the curve.
+  /* The lit dot on the drawing edge: last in the graph group so it paints
+     over the fill, and created here so it only exists while the motion runs.
 
-     Its colour is a class, not a `fill` attribute and not `tok()`: this panel
-     is built on mount and never rebuilt, so a value read in JS here would
-     freeze against whichever palette was live at the time, where a CSS rule
-     re-resolves the moment the theme changes. `.s3__head` is in
-     PanelTrade.css, which this module imports. */
+     Its colour comes from the `.s3__head` class in PanelTrade.css, not a
+     `fill` attribute or `tok()`: this panel is not rebuilt on a theme change,
+     so a value read in JS would go stale, whereas a CSS rule follows the
+     theme. */
   const head = document.createElementNS(NS, 'circle');
   head.setAttribute('r', '4.2');
   head.setAttribute('class', 's3__head');
@@ -226,8 +208,8 @@ function tradeMotion(root: HTMLElement): () => void {
   group.appendChild(head);
 
   const total = line.getTotalLength();
-  /* Where the design's own marker sits on the curve, so it can come back the
-     instant the drawing edge reaches it rather than on a guessed cue. */
+  /* Where the design's marker sits on the curve, so it returns exactly when
+     the drawing edge reaches it. */
   const markerAt = lengthAtX(line, total, 253.8) / total;
 
   const edge = { p: 1 };
@@ -248,13 +230,12 @@ function tradeMotion(root: HTMLElement): () => void {
     intEl.textContent = s.slice(0, dot + 1);
     decEl.textContent = s.slice(dot + 1);
   };
-  /* The design's figure, written back verbatim rather than re-derived, so a
-     rounding difference can never leave the panel resting on 62,893.99. */
+  /* The design's figure, written back verbatim so rounding can never leave
+     it at 62,893.99. */
   const restMoney = () => { intEl.textContent = restInt; decEl.textContent = restDec; };
 
-  /* The dash and the clip exist only while the curve is being drawn. Outside the
-     beat the export is handed back untouched, so the long rest at the end of
-     every turn is the shipped artwork and not a styled copy of it. */
+  /* The dash and the clip exist only while the curve is drawn; at rest the
+     export is untouched. */
   const arm = () => {
     line.style.strokeDasharray = String(total);
     area.setAttribute('clip-path', `url(#${wipeId})`);
@@ -282,11 +263,9 @@ function tradeMotion(root: HTMLElement): () => void {
 
     loop.call(arm, undefined, 0.02);
 
-    /* The curve winds back right to left, then grows again. Both are `fromTo`
-       with `immediateRender: false`: a fromTo writes its START value when the
-       timeline is BUILT, not when the playhead arrives, so without the flag the
-       panel would paint its very first frame with the curve already erased and
-       sit there until the beat came round. */
+    /* The curve winds back, then grows again. These `fromTo`s need
+       `immediateRender: false`: otherwise the start value is written when the
+       timeline is BUILT and the first frame shows the curve already erased. */
     loop
       .fromTo(edge, { p: 1 },
         { p: 0, duration: RETRACT, ease: 'power2.in', onUpdate: paintEdge, immediateRender: false }, LEAD)
@@ -296,8 +275,8 @@ function tradeMotion(root: HTMLElement): () => void {
         { opacity: 1, duration: 0.3, ease: 'sine.out', immediateRender: false }, DRAW_AT)
       .to(head, { opacity: 0, duration: 0.35, ease: 'sine.in' }, DRAW_END - 0.35);
 
-    /* The price flag leaves with the curve and lands back on it the instant the
-       drawing edge reaches its x -- measured off the path, not cued by guess. */
+    /* The price flag leaves with the curve and lands when the drawing edge
+       reaches its x (measured off the path). */
     const LAND = DRAW_AT + DRAW * markerAt;
     loop
       .to(marker, { opacity: 0, y: -10, duration: 0.3, ease: 'power2.in' }, LEAD)
@@ -313,20 +292,15 @@ function tradeMotion(root: HTMLElement): () => void {
 
     loop.call(disarm, undefined, DRAW_END + 0.02);
 
-    /* The readout is stacked with no gaps by design -- the label sits directly
-       on the price's ascenders -- so nothing in that column can be lifted
-       without colliding with the line above it. The figure's answer is the
-       count itself, which swings its own box more than twenty pixels wide as
-       the digits change, and the tile and the flag carry the travel. */
+    /* The readout column has no gaps (the label sits on the price's
+       ascenders), so nothing in it is lifted; the count itself is its motion. */
 
-    // Whatever the beats add up to, a turn is a fixed 5.8s, so the rest at the
-    // end of it is real rest rather than an accident of timing -- and the whole
-    // beat lands inside the stepper's six-second dwell.
+    // A turn is a fixed PERIOD (5.8s) whatever the beats add up to, so the
+    // rest is deliberate and the beat fits the stepper's 6s dwell.
     loop.repeatDelay(Math.max(0, PERIOD - loop.duration()));
 
-    /* A loop below the fold costs nothing. The panel is unmounted on every step
-       change anyway, but the stepper stops advancing the moment anyone touches
-       the section, and a paused panel should not keep painting off screen. */
+    /* Pause while the panel is off screen. On desktop the panel remounts on
+       each step change, but on the phone all three slides stay mounted. */
     io = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) loop.play(); else loop.pause(); },
       { rootMargin: '150px' },
@@ -339,8 +313,7 @@ function tradeMotion(root: HTMLElement): () => void {
     ctx.revert();
     head.remove();
     clip.remove();
-    // revert() puts the values back but leaves the properties it wrote behind on
-    // SVG nodes; the export is handed back exactly as it was found.
+    // revert() leaves the properties it wrote on SVG nodes, so clean them up.
     disarm();
     marker.removeAttribute('transform');
     marker.style.removeProperty('opacity');

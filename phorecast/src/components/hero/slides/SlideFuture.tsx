@@ -1,5 +1,5 @@
 /**
- * Slide 4 — "Built for the Future of Prediction Markets." (the token slide).
+ * Slide 4, "Built for the Future of Prediction Markets." (the token slide).
  *
  * The right-hand network/orbit diagram from Figma frame 365:762, group 365:803.
  * Every coordinate below is the raw Figma number inside that 1264 x 955 group;
@@ -8,7 +8,7 @@
  * `.sl4` is the container-query container that defines `--u` (see the CSS);
  * `.sl4__frame` is the painted 999 x 570 box, anchored from the right.
  *
- * The 3D Phorcast mark is NOT rendered here — the hero mounts it as a live
+ * The 3D Phorcast mark is NOT rendered here, the hero mounts it as a live
  * WebGL scene (components/HeroLogo) and moves that one scene onto this slide.
  * `.sl4__mark-slot` is the 370 x 370 box it lands in, at 734, 242 in these same
  * group coordinates. The slot stays empty on a phone, where the crop leaves it
@@ -23,7 +23,7 @@ import ringMd from '../../../assets/hero/slide4/circle-md.svg';
 import ringSm from '../../../assets/hero/slide4/circle-sm.svg';
 import track from '../../../assets/hero/slide4/dashed-path.svg';
 /* The circuit on paper. Gradient artwork, so a light variant rather than a
-   mask or an inline -- see SlideAccount.tsx. Its `d` is untouched, which
+   mask or an inline, see SlideAccount.tsx. Its `d` is untouched, which
    matters here more than anywhere: SlideFuture.motion.ts samples a verbatim
    copy of that path to place the travelling order frame by frame. */
 import trackLight from '../../../assets/hero/slide4/dashed-path-light.svg';
@@ -53,15 +53,15 @@ const NO_BOX = { width: undefined, height: undefined } as const;
 
 /** Badge top-left corners. Figma centres them on the track with a translate. */
 const BADGES: ReadonlyArray<readonly [number, number]> = [
-  [720, 139],   // 365:820  — top left
-  [997, 146],   // 474:909  — top right
-  [1075, 395],  // 474:905  — right
-  [720, 652],   // 474:897  — bottom left
-  [997, 645],   // 474:901  — bottom right
+  [720, 139],   // 365:820, top left
+  [997, 146],   // 474:909, top right
+  [1075, 395],  // 474:905, right
+  [720, 652],   // 474:897, bottom left
+  [997, 645],   // 474:901, bottom right
 ];
 
 /**
- * Ellipse 78 — 6px white nodes strung along the circles.
+ * Ellipse 78, 6px white nodes strung along the circles.
  *
  * The third carries a modifier because the phone composition drops it: the
  * promoted ELECTIONS chip lands on it and no legible chip clears it (see
@@ -111,7 +111,7 @@ export function SlideFuture() {
             </span>
           ))}
 
-          {/* Reserved for <HeroLogo /> — the live 3D lined mark. */}
+          {/* Reserved for <HeroLogo />, the live 3D lined mark. */}
           <div className="sl4__mark-slot" />
 
           {WHITE_NODES.map(([x, y, mod]) => (

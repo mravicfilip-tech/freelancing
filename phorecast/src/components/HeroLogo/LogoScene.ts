@@ -139,7 +139,7 @@ export class LogoScene {
       powerPreference: 'high-performance',
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, C.maxPixelRatio, t.maxPixelRatio));
-    this.renderer.setClearColor(0x000000, 0); // transparent — the hero's ground shows through
+    this.renderer.setClearColor(0x000000, 0); // transparent, the hero's ground shows through
     this.renderer.outputColorSpace = t.physical ? SRGBColorSpace : LinearSRGBColorSpace;
     this.renderer.toneMapping = t.physical ? ACESFilmicToneMapping : NoToneMapping;
     this.renderer.toneMappingExposure = 1.05;
@@ -274,7 +274,7 @@ export class LogoScene {
 
   private readonly onScroll = () => { this.lastScroll = performance.now(); };
 
-  /** The box the mark is drawn into -- the same one `layout()` sizes the renderer to. */
+  /** The box the mark is drawn into, the same one `layout()` sizes the renderer to. */
   private get markBox(): HTMLElement {
     return this.opts.canvas.parentElement ?? this.opts.host;
   }
@@ -369,7 +369,7 @@ export class LogoScene {
     if (!this.running || this.disposed) return;
     this.raf = requestAnimationFrame(this.tick);
 
-    // Off screen, stop here -- before the draw, not after an observation has
+    // Off screen, stop here, before the draw, not after an observation has
     // managed to get through. See markOnScreen(). The observer stays wired and
     // is what starts the loop again when the hero comes back.
     if (!this.markOnScreen()) {
@@ -469,7 +469,7 @@ export class LogoScene {
       && this.slowFrames >= C.slowFramesBeforeDegrade) {
       this.degraded = true;
       // Give back the cheapest thing first. Where there is no resolution to
-      // give back -- a 1x display, which is most desktops -- halve the rate
+      // give back, a 1x display, which is most desktops, halve the rate
       // instead, which halves the draw outright. On a device that is merely
       // short of the budget that is often enough to keep the mark, and keeping
       // it degraded is a better outcome than losing it.

@@ -6,7 +6,7 @@
  *
  * Written in the house language (src/lib/motion.ts, MOTION.md): entrances rise
  * on expo.out, tightly staggered; nothing overshoots, nothing rotates for
- * effect, nothing floats while idle. Two triggers only — the load-in and the
+ * effect, nothing floats while idle. Two triggers only, the load-in and the
  * loop. Nothing here listens to the pointer.
  *
  * THE STORY THE LOOP TELLS (one beat, 9s, then it rests)
@@ -69,8 +69,8 @@
  *
  * REST IS THE DESIGN
  *   Every tween is a `from`/`fromTo` that ends on the value CSS already holds,
- *   and clears its props afterwards. If this module never runs — reduced
- *   motion, a throw, an unmount — the illustration reads exactly as the Figma
+ *   and clears its props afterwards. If this module never runs, reduced
+ *   motion, a throw, an unmount, the illustration reads exactly as the Figma
  *   node does. Teardown puts the ticked price back to its design figure too.
  */
 
@@ -124,7 +124,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
 
   /* The two market cards. They are in BOTH compositions, and on a phone they
      are the largest thing left, so that is where the phone's entrance starts.
-     The desktop never tweens them — its lead is the prediction card's odds —
+     The desktop never tweens them (its lead is the prediction card's odds),
      and nothing below changes that. */
   const cardNfl = one(root, '.sl2-mc--nfl');
   const cardXau = one(root, '.sl2-mc--xau');
@@ -148,14 +148,14 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
      stylesheet, because it IS the stylesheet's answer.
 
      The `shown(cardXau)` clause is not decoration. Without it an illustration
-     hidden wholesale — a display:none ancestor, a detached subtree, a browser
-     that has not laid out yet — reads as "the dropped parts are missing" and a
+     hidden wholesale, a display:none ancestor, a detached subtree, a browser
+     that has not laid out yet, reads as "the dropped parts are missing" and a
      desktop would be handed the phone's beats. The market cards survive both
      compositions, so they are the proof that there is a composition at all. */
   const onPhone = () => shown(cardXau) && !shown(pred) && !shown(minisWrap) && !shown(actions);
 
-  /* The ticking price. Only the leading text node moves — the dim decimals in
-     the <span> are left as designed — and the original figure is kept so
+  /* The ticking price. Only the leading text node moves, the dim decimals in
+     the <span> are left as designed, and the original figure is kept so
      teardown can hand the verified number back. */
   const priceNode = price?.firstChild?.nodeType === Node.TEXT_NODE ? (price.firstChild as Text) : null;
   const priceBase = priceNode?.nodeValue ?? '';
@@ -188,7 +188,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   const priceInk = price ? getComputedStyle(price).color : '';
 
   /* Tweens started from inside a callback, which no timeline owns, held so
-     teardown can kill them. Finished ones are dropped as new ones arrive —
+     teardown can kill them. Finished ones are dropped as new ones arrive,
      otherwise a page left open all day collects one per cycle. */
   const spawned: gsap.core.Tween[] = [];
   const spawn = (t: gsap.core.Tween) => {
@@ -211,13 +211,13 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     diamondRide: 58,
     /* The phone's lead. A market card is 200 design units wide and renders
        around 188px there, so 22px is the same proportion of its own body that
-       oddsRise is of a row of odds — short travel over a long duration, the
+       oddsRise is of a row of odds, short travel over a long duration, the
        house's whole point. */
     cardRise: 22,
   };
 
   /* --------------------------------------------------- load-in, the phone
-     The desktop's lead — the prediction card's odds — is not on the page here,
+     The desktop's lead, the prediction card's odds, is not on the page here,
      and neither are the minis, the bars, the toast or the tiles, so five of its
      ten beats animate nothing. This is the same arrival re-cast for the six
      objects that remain, in the order the eye reads them: the left card, the
@@ -238,7 +238,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
      its beats is on something the phone can actually show. */
   function phoneIn(tl: gsap.core.Timeline): gsap.core.Timeline {
     // One object arrives and is allowed to land. The NFL card is leftmost, so
-    // it is read first, and on a phone it is half the illustration — the
+    // it is read first, and on a phone it is half the illustration, the
     // largest single thing the slide has left. It leads; the gold card follows
     // it a third of a second later rather than beside it.
     if (cardNfl) tl.from(cardNfl, { y: D.cardRise, opacity: 0, duration: 1.25, clearProps: 'transform,opacity' }, 0);
@@ -253,7 +253,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
         0.6 + i * 0.24);
     });
 
-    // The curves fall away from the cards, left one first — it hangs under the
+    // The curves fall away from the cards, left one first, it hangs under the
     // NFL card, the right one under the gold card, so the pair carries the
     // same left-to-right reading down to the pill.
     conns.forEach((c, i) => {
@@ -291,7 +291,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     }
 
     // Sparklines draw left to right. They are <img> SVGs, so there is no path
-    // to dash — a clip-path sweep is the same gesture without inlining the
+    // to dash, a clip-path sweep is the same gesture without inlining the
     // artwork.
     charts.forEach((c, i) => {
       tl.fromTo(c,
@@ -320,7 +320,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
       tl.from(tiles, { scale: 0.72, opacity: 0, duration: 0.7, stagger: 0.12, transformOrigin: '50% 50%', clearProps: 'transform,opacity' }, 1.1);
     }
 
-    // The link to the account draws downward, tip to tail — both curves run
+    // The link to the account draws downward, tip to tail, both curves run
     // from the cards at the top to the pill at the bottom, so a vertical wipe
     // is the direction the ink travels.
     conns.forEach((c, i) => {
@@ -382,7 +382,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
       ? { conn: 0, diamond: 0.05, lift: 0.9, settle: 1.35, chart: 1.55, priceOut: 1.7, tick: 1.96, priceIn: 1.98 }
       : { conn: 1.1, diamond: 1.15, lift: 2.0, settle: 2.45, chart: 2.4, priceOut: 2.45, tick: 2.71, priceIn: 2.73 };
 
-    // 1 — a trade executes. The old notification drops away and the new one
+    // 1, a trade executes. The old notification drops away and the new one
     //     arrives. 0.4s of the 9s cycle is the only time the toast is not
     //     sitting exactly where the design puts it.
     //
@@ -403,7 +403,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
         0.72);
     }
 
-    // 2 — it routes into the account. The curves redraw downward and the
+    // 2, it routes into the account. The curves redraw downward and the
     //     diamond rides them the last stretch into the pill.
     conns.forEach((c, i) => {
       tl.fromTo(c,
@@ -418,7 +418,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
         at.diamond);
     }
 
-    // 3 — the account acknowledges: one lift, then back down to rest.
+    // 3, the account acknowledges: one lift, then back down to rest.
     if (pill) {
       tl.to(pill, { y: -D.pillLift, duration: 0.45, ease: 'power2.out' }, at.lift)
         .to(pill, { y: 0, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, at.settle);
@@ -428,7 +428,7 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
         .to(disc, { scale: 1, duration: 0.8, ease: 'sine.inOut', clearProps: 'transform' }, at.settle);
     }
 
-    // 4 — and the market moves on it. The gold sparkline redraws and the price
+    // 4, and the market moves on it. The gold sparkline redraws and the price
     //     rolls to a new figure, flashed in the direction it went.
     if (chartXau) {
       tl.fromTo(chartXau,
@@ -455,8 +455,8 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     }
 
     /* Rest fills the cycle out to its full period. Both compositions keep the
-       same 9s period, so the phone — whose timeline runs 2.70s against the
-       desktop's 3.55 — repeats after 6.30s where the desktop waits 5.45. (The
+       same 9s period, so the phone, whose timeline runs 2.70s against the
+       desktop's 3.55, repeats after 6.30s where the desktop waits 5.45. (The
        price flash outlives each timeline by a little: 0.06s on the desktop,
        0.16s on the phone.) Neither reaches the end of that rest while the
        carousel is running: it moves on after 7s (AUTOPLAY_MS in Hero.tsx) and
@@ -542,8 +542,8 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   }
 
   /* Which cast exists is decided when each timeline is BUILT, so a composition
-     that changes under a running sequence — a phone turned on its side, a
-     desktop window dragged past 720, a zoom — has to rebuild or it goes on
+     that changes under a running sequence, a phone turned on its side, a
+     desktop window dragged past 720, a zoom, has to rebuild or it goes on
      playing the other composition's beats. The thing that changes is the
      illustration's own box, so that is what is watched: a ResizeObserver on
      `.sl2` cannot disagree with the breakpoint the way a `matchMedia` list

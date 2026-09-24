@@ -1,63 +1,22 @@
-/* Animation styles for one band of the About page.
+/* Animation styles for the CAST YOUR CONVICTION band. Layout and colour live
+ * in About.css; this file is imported after it and holds motion-only rules.
  *
- * The page's layout and colour live in About.css, which is shared. This file
- * is for what the band's motion needs and nothing else -- pending states,
- * will-change, transform origins, keyframes, reduced-motion fallbacks. It is
- * imported after About.css so it can override a layout rule where a motion
- * genuinely requires it, but prefer not needing to: a rule here that is really
- * a layout decision belongs next to the layout. */
+ * `intoWords` in About.conv.motion.ts wraps each word of the statement in an
+ * `.ab-conv__w` span. The spans are plain inline boxes with no layout of their
+ * own, and the whitespace stays as text nodes, so the statement wraps exactly
+ * as it did before the split.
+ *
+ * THE RESTING STATE IS FILLED. A word is dimmed only by the timeline, as an
+ * inline style; CSS never hides one. Without the build (no JavaScript,
+ * reduced motion, a reverted context) the sentence renders at full strength.
+ */
 
-/* THE SCROLLING REVEAL'S WORDS.
-   ---------------------------------------------------------------------------
-   `intoWords` in About.conv.motion.ts wraps every word of the statement in one
-   of these, keeping `.ab-conv__rest` and the two colour regimes either side of
-   it. The spans are plain inline boxes and carry no layout of their own: no
-   display, no padding, no margin, and the whitespace between them is left as
-   its own text node, so the statement wraps exactly where it wrapped before it
-   was split.
-
-   THE RESTING STATE IS FILLED, and that is the important half of this file. A
-   word is dimmed only by the timeline, as an inline style; nothing in CSS ever
-   hides one. So a build that never ran, a context that was reverted on
-   unmount, a browser with no JavaScript and a reader with reduced motion all
-   land on the same thing -- the settled sentence, at full strength, exactly as
-   About.css paints it. */
-
-/* THE STATEMENT IS ONE INK NOW, and this file used to be where that was not
-   true. The block painted a gradient clipped to its text, turning bright ink
-   into the accent partway through the first line, and a run after it sat at a
-   muted ink -- so an animated word, which composites and therefore drops out
-   of its parent's text clip in Chromium, had to carry the block's gradient
-   itself at the block's scale, re-measured on every refresh.
-
-   The client asked for the gradient dropped and the fill taken to full white,
-   which is what their own reference does: every word rests dim and brightens
-   to the SAME colour, so there is nothing per-word to reproduce. All of that
-   machinery is gone -- the @supports block that re-painted each lead word, the
-   two custom properties it was driven by, and the measurement pass that kept
-   them true across resize and font load. A word is now a span with an opacity
-   on it and nothing else, which is what the reference's words are. */
-
-
-/* REDUCED MOTION: THE SENTENCE, FULLY LEGIBLE, FULL STOP.
-   -------------------------------------------------------------------------
-   The shared layer already gets this right on the normal path -- `REDUCED` in
-   src/lib/motion.ts short-circuits `useSectionMotion` before `build` runs, so
-   the words are never split and never dimmed, and the statement is the static
-   one About.css paints.
-
-   That fallback covers the PIN as well, and deliberately: with no build there
-   is no ScrollTrigger, so the band does not pin, the page is 170% of a screen
-   shorter, and a reader who asked for less motion is never held in place while
-   something animates. Scroll-jacking is the part of this effect they are most
-   likely to have meant.
-
-   This rule is for the path the shared layer cannot reach. `REDUCED` is read
-   once, at module scope, so a reader who turns the preference on with the band
-   already built would otherwise be left with whatever fraction of the fill the
-   scroll had reached -- a sentence permanently at 15%. The media query is live
-   where the constant is not. `!important` because what it is overriding is an
-   inline style written by a timeline, and there is no other way over one. */
+/* REDUCED MOTION. The shared layer's `REDUCED` check skips the build, so
+   normally the words are never split or dimmed and the band never pins. But
+   `REDUCED` is read once at module scope, so a reader who turns the
+   preference on after the band is built would be left with a partly filled
+   sentence. The media query is live. `!important` is the only way over the
+   timeline's inline style. */
 @media (prefers-reduced-motion: reduce) {
   .ab-conv__statement .ab-conv__w {
     opacity: 1 !important;
@@ -65,17 +24,9 @@
   }
 }
 
-/* THE PIN'S SPACER, and the one thing it has to be told.
-   -------------------------------------------------------------------------
-   ScrollTrigger pins by wrapping `.ab-conv` in a `.pin-spacer` div and taking
-   the band `position: fixed` for the stretch it absorbs. The spacer inherits
-   nothing from the band, and the band is the only thing on this page that
-   sits ABOVE the page's ground field -- `.ab-conv` is `z-index: 1` in
-   About.css precisely so the 1154 field at the top of the page cannot paint
-   over it. A new box between the two would put the band back underneath, so
-   the spacer takes the same z-index and the same stacking context.
-
-   Nothing else here: the spacer's size, padding and position are
-   ScrollTrigger's to compute, and a rule of ours that guessed at them would be
-   wrong at the first resize. */
+/* THE PIN'S SPACER. ScrollTrigger wraps the pinned `.ab-conv` in a
+   `.pin-spacer`, which inherits nothing from it. The bands are `z-index: 1`
+   in About.css so the hero's ground field cannot paint over them, and the
+   spacer needs the same or the band drops back underneath. Its size and
+   position are left to ScrollTrigger. */
 .about-page .pin-spacer { position: relative; z-index: 1; }

@@ -7,14 +7,14 @@
 // House rules (src/lib/motion.ts, MOTION.md): entrances rise on expo.out and are
 // allowed to land before the next thing starts; the loop is one deterministic
 // story beat followed by a long rest; `prefers-reduced-motion` reveals
-// everything and runs nothing. Two triggers only — the load-in and the loop.
+// everything and runs nothing. Two triggers only, the load-in and the loop.
 // Nothing here listens to the pointer.
 //
 // The stacks ship from Figma as one vector layer. It is inlined by SlideBonus
 // rather than dropped in an <img> so the individual plates are addressable:
 // #deposit-block-01..06 (the left wireframe, bottom first), #balance-block-01..12
 // (the right wireframe) and twelve #Vector* paths that make up the four solid
-// matched plates — three faces each, grouped in PLATES below. Inside the SVG a
+// matched plates, three faces each, grouped in PLATES below. Inside the SVG a
 // unit of translation is one viewBox unit, which is 0.9993 CSS px at the 1800px
 // content column, so the numbers below read as design pixels either side.
 
@@ -36,7 +36,7 @@ const SPARK = 11;
 /**
  * The crossing, as a percentage of the spark's own width. Everything in this
  * illustration is laid out in design px times `--u`, and `--u` is a fraction of
- * the content column -- one CSS px at 1920, three quarters of one at 1440. A
+ * the content column, one CSS px at 1920, three quarters of one at 1440. A
  * travel written as 331px would therefore overshoot the connector by a third at
  * any narrower width. The spark is 11 design px wide, so `xPercent` carries the
  * same scaling the layout has and lands on the far diamond at every width.
@@ -59,8 +59,8 @@ const byId = <T extends Element>(scope: ParentNode, id: string) =>
 
 /**
  * Runs `run` whenever the slide this element sits in is the active one, and
- * tears it down again when it is not. Every slide stays mounted — the inactive
- * ones are `visibility: hidden` — so without this the sequence would play
+ * tears it down again when it is not. Every slide stays mounted, the inactive
+ * ones are `visibility: hidden`, so without this the sequence would play
  * unseen at page load and the loop would run forever behind another slide.
  * An IntersectionObserver cannot answer this; it does not see `visibility`.
  */
@@ -95,7 +95,7 @@ function build(root: HTMLElement): () => void {
   // One design pixel as the frame is currently drawn: the frame is 964 design px
   // wide. Offsets on the HTML parts are written in design px and multiplied by
   // it, so they keep their proportion to the artwork at every width. The offsets
-  // inside the SVG need no such thing -- a viewBox unit already scales with it.
+  // inside the SVG need no such thing, a viewBox unit already scales with it.
   const u = frame.getBoundingClientRect().width / 964 || 1;
 
   const svg = one<SVGSVGElement>(frame, '.sl3__stacks svg');
@@ -230,7 +230,7 @@ function build(root: HTMLElement): () => void {
 }
 
 /**
- * The value crossing the connector — the one long move in the slide.
+ * The value crossing the connector, the one long move in the slide.
  *
  * `immediateRender: false` on both fromTos, because a fromTo writes its start
  * values the moment the timeline is built rather than when the playhead reaches
@@ -300,7 +300,7 @@ function buildCountdown(root: HTMLElement): () => void {
     // would then be scheduled past the end of time.
     const intro = tl.duration();
 
-    // The colons keep time. Zero travel by design — the roll below is the beat,
+    // The colons keep time. Zero travel by design, the roll below is the beat,
     // this only says the clock is running.
     if (colons.length) {
       tl.to(colons, { opacity: 0.35, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: -1 }, intro);
@@ -345,7 +345,7 @@ function buildCountdown(root: HTMLElement): () => void {
 }
 
 /**
- * The house roll — the old figure leaves upward, the new one arrives from below.
+ * The house roll, the old figure leaves upward, the new one arrives from below.
  *
  * `immediateRender: false` for the reason above: without it the arrival's start
  * values land the instant the timeline is built, so the figure is already 45%

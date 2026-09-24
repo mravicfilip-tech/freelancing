@@ -1,57 +1,43 @@
-/* The About page's six entrances.
+/* The About page's entrances: the shared schedule and helpers, plus the
+ * CHOOSE and primer bands. The other four bands have their own files and are
+ * re-exported at the foot of this one.
  *
- * Written in the house language (src/lib/motion.ts): entrances rise a few
- * pixels on `expo.out`, staggered tightly, nothing overshoots, rotates for
- * effect or floats while idle. The page's own accent is the soft-to-sharp
- * resolve the hero, the pillars, the steps, the built band and the FAQ already
- * use, so type and cards arrive OUT OF BLUR rather than simply fading.
+ * House language (src/lib/motion.ts): entrances rise a few pixels on
+ * `expo.out` with tight staggers, and nothing overshoots, rotates or floats.
+ * This page's accent is the soft-to-sharp resolve: type and cards arrive out
+ * of blur rather than simply fading.
  *
- * THE SHAPE OF EVERY BAND HERE IS THE SAME, because the brief for it is one
- * sentence: first one object comes out, the rest follow. So each band names
- * itself with its eyebrow, then the one thing it is about arrives alone and
- * has the frame to itself for the better part of a second, and only then does
- * everything else come after it on a tight stagger. Nothing on this page is
- * ever two things arriving at once.
+ * Design decision: every band has the same shape. The eyebrow names the band,
+ * then the one thing the band is about arrives alone and holds the frame for
+ * the better part of a second, then everything else follows on a tight
+ * stagger. Nothing arrives at the same moment as something else.
  *
- * NOTHING DELAYS CONTENT. Two things guarantee that and both were paid for:
- * the shared gate is a -5% bottom margin rather than -25% (see GATE in
- * src/lib/motion.ts for the measurement that forced it), and the longest cue
- * in any band below is 1.15s, with the phone schedule taking all of them at
- * 0.42. There is no canvas on this page -- the hero's WebGL mark is the
- * landing page's and stays there -- so nothing here can repeat the
- * ReadPixels stall that held the main thread for a second on load.
+ * NOTHING DELAYS CONTENT. The shared gate triggers at a -5% bottom margin
+ * (see GATE in src/lib/motion.ts), cues are kept short, and the phone
+ * schedule scales every cue by 0.42. There is no canvas on this page.
  *
- * NO HOVER ANIMATION ANYWHERE AND NOTHING LISTENS TO THE POINTER. The product
- * shots and the table icons are load-in only; there is no loop on this page at
- * all, because nothing on it is a thing doing its job over time.
+ * No hover animation, no pointer listeners and no idle loops anywhere.
  *
- * THIS MODULE HAS NO COLOUR IN IT, which is why it needed nothing for light
- * mode. It tweens y, x, opacity, scale and filter: blur() and nothing else, so
- * there is no resting colour read out of getComputedStyle at build time to
- * freeze against whichever palette happened to be live (src/lib/theme.ts
- * explains that hazard). Nor is there a beat that lifts something by making it
- * BRIGHTER -- the move that has to invert on paper. Everything here resolves
- * out of blur, which reads the same on either ground.
+ * No colour is tweened or read from getComputedStyle, so nothing can freeze a
+ * palette at build time (src/lib/theme.ts explains the hazard). Blur, travel
+ * and opacity read the same on either theme.
  */
 
 import { EASE, rise } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';
 
 /**
- * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER — the argument is Pillars.motion's
- * and is not repeated here. CUE scales where a BEAT starts, which is the wait
- * worth cutting because nothing is happening during it. STEP scales the gap
- * between things INSIDE a beat, and is barely cut at all: that gap is the "one
- * object comes out, the rest follow" the whole page is built on, and squeezed
- * to a frame and a half it stops being a stagger.
+ * The phone plays the same sequence, tighter (Pillars.motion.ts argues the
+ * approach). CUE scales where a beat starts, which is dead time worth cutting.
+ * STEP scales the gap inside a beat and is barely cut: squeezed much further,
+ * a stagger stops reading as one thing followed by the rest.
  */
 const PHONE = '(max-width: 700px)';
 const CUE = 0.42;
 const STEP = 0.7;
 
-/* Asked per build rather than read at module scope: a module-scope matchMedia
- * is answered once, when the bundle is parsed, so a rotation or a resize would
- * keep whichever schedule the page happened to load under. */
+/* Read per build, not at module scope: a module-scope matchMedia is answered
+ * once, at parse time, so a rotation or resize would keep the old schedule. */
 export function schedule() {
   const tight = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
   return {
@@ -61,15 +47,13 @@ export function schedule() {
 }
 
 /**
- * Rise out of blur: the travel and the softening on one tween, the opacity on
- * its own much shorter one starting at the same moment.
+ * Rise out of blur: travel and blur on one tween, opacity on a much shorter
+ * one starting at the same moment.
  *
- * The pairing is not cosmetic. An element parked at full opacity while still
- * blurred paints a visible smudge of itself before its turn — recorded in
- * src/components/hero/entrance.ts and re-learned in three bands since. Opacity
- * therefore never rides the whole blur duration: the thing is invisible while
- * it is at its softest and has resolved most of its blur by the time it is
- * fully opaque.
+ * An element at full opacity while still blurred paints a visible smudge of
+ * itself before its turn (see also src/components/hero/entrance.ts). So the
+ * element is invisible while softest and mostly sharp by the time it is fully
+ * opaque.
  */
 export function outOfBlur(
   tl: Timeline,
@@ -101,8 +85,8 @@ const CARD_STEP = 0.16;
 const PARTS_IN = 0.22;
 const PART_STEP = 0.07;
 
-/** The shell arrives, then fills: screenshot, title, copy, on a tight stagger,
- *  so a card reads as being built rather than as switching on whole. */
+/** The shell arrives, then fills (screenshot, title, copy) on a tight
+ *  stagger, so a card reads as being built rather than switching on whole. */
 function fillCards(tl: Timeline, cards: HTMLElement[], at: number, cardStep: number, step: (t: number) => number, inner: string) {
   cards.forEach((card, i) => {
     const parts = Array.from(card.querySelectorAll<HTMLElement>(inner));
@@ -118,8 +102,8 @@ function fillCards(tl: Timeline, cards: HTMLElement[], at: number, cardStep: num
 
 /**
  * 0.00  The band names itself.
- * 0.30  The three cards, 0.16s apart — far enough that three cards read as
- *       three arrivals rather than one row sliding.
+ * 0.30  The three cards, 0.16s apart: far enough that they read as three
+ *       arrivals rather than one row sliding.
  * 0.52  Each card's contents, a beat behind its own shell.
  */
 export function buildChoose({ q, tl }: SectionMotion) {
@@ -160,8 +144,8 @@ export function buildPrimer({ q, tl }: SectionMotion) {
   fillCards(tl, cards, at, cardStep, step, '.ab-why__title, .ab-why__body > *');
 }
 
-/* The four bands that live in their own files now. Re-exported here so that
-   About.tsx keeps importing every builder from one place. */
+/* The four bands with their own files, re-exported so About.tsx imports
+   every builder from one place. */
 export { buildAboutHero } from './About.hero.motion';
 export { buildBrand } from './About.brand.motion';
 export { buildConviction } from './About.conv.motion';

@@ -23,9 +23,9 @@
  *
  *   LOOP     one deterministic beat, 8.0s. The diamond fires, the rings ripple
  *            outward from it, a single order travels the whole circuit
- *            clockwise — leaning each market toward the hub and lighting it as
+ *            clockwise, leaning each market toward the hub and lighting it as
  *            it is reached, ticking SPORT on the way up and ELECTIONS on the
- *            way back — reaches the mark's feed dot, and settles back into the
+ *            way back, reaches the mark's feed dot, and settles back into the
  *            diamond. Then 2.7s of rest.
  *
  *            Every amplitude in it is small enough that a still taken at any
@@ -61,7 +61,7 @@ const TRACK_TOP = 170;          // .sl4__track--top top
 /** .sl4__track--bottom is the same export at top 430 with scaleY(-1), so local y maps to 430 + 248.5 - y. */
 const TRACK_BOTTOM_FLIP = 678.5;
 
-/** Centre of the 370 x 370 mark slot — the hub every badge leans toward. */
+/** Centre of the 370 x 370 mark slot, the hub every badge leans toward. */
 const HUB = { x: 919, y: 427 };
 
 const SAMPLE = 2;               // viewBox units between samples
@@ -75,7 +75,7 @@ interface Circuit {
   total: number;
 }
 
-/** Sample the track's own path twice — once as the top half, once mirrored as the bottom — into one closed circuit. */
+/** Sample the track's own path twice, once as the top half, once mirrored as the bottom, into one closed circuit. */
 function buildCircuit(host: HTMLElement): { circuit: Circuit; dispose: () => void } {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -162,13 +162,13 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   const stub = one<HTMLElement>(root, '.sl4__stub');
   const diamond = one<HTMLElement>(root, '.sl4__diamond');
   const tags = all<HTMLElement>(root, '.sl4__tag');
-  /* `.icon` and not `img`: the label dots are masked glyphs now, so they can
+  /* `.icon` and not `img`: the label dots are masked glyphs, so they can
      take --accent from CSS like the rest of the brand red on this slide. */
   const tagDots = tags
     .map((t) => one<HTMLElement>(t, '.icon'))
     .filter((el): el is HTMLElement => !!el);
   const nodes = all<HTMLElement>(root, '.sl4__node');
-  const feed = nodes[nodes.length - 1]; // the orange dot at 731,419 — the mark's input
+  const feed = nodes[nodes.length - 1]; // the orange dot at 731,419, the mark's input
   const pillGroup = [coin, glyph, pill].filter((el): el is HTMLElement => !!el);
 
   // Everything the illustration is made of is already visible in CSS; reduced
@@ -289,7 +289,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   loop.call(rearm, undefined, 0);
 
-  // 1. The diamond fires — the order is placed at the BTC/USD desk.
+  // 1. The diamond fires, the order is placed at the BTC/USD desk.
   if (diamond) {
     loop.fromTo(diamond, { scale: 1, rotation: 45 }, { scale: 1.22, rotation: 45, duration: 0.26, ease: 'power2.out', immediateRender: false }, 0)
         .to(diamond, { scale: 1, rotation: 45, duration: 0.5, ease: 'power2.out' }, 0.26);
@@ -299,7 +299,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
         .to(coin, { scale: 1, duration: 0.5, ease: 'power2.out' }, 0.32);
   }
 
-  // 2. The rings ripple outward from it — smallest first.
+  // 2. The rings ripple outward from it, smallest first.
   rings.forEach((ring, i) => {
     const at = 0.1 + i * 0.14;
     loop.fromTo(ring, { scale: 1 }, { scale: 1.055, duration: 0.5, ease: 'sine.inOut', immediateRender: false }, at)
@@ -337,7 +337,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   // 5. Rest, so the beat reads as one event rather than a conveyor belt. The
   //    props are handed back to CSS first, so a still taken during the rest is
-  //    byte-identical to the design with no script running at all -- no inline
+  //    byte-identical to the design with no script running at all, no inline
   //    `matrix(1,0,0,1,0,0)` left behind to re-rasterise a hairline stroke.
   loop.call(() => settleProps(), undefined, 5.7);
   loop.to({}, { duration: 0.01 }, 8.0);
@@ -374,7 +374,7 @@ export function slideFutureMotion(root: HTMLElement): () => void {
 
   /* 1. THE LEAD. The BTC/USD desk arrives on an empty stage and is given 0.8s
         before anything else moves. Position and opacity are two tweens rather
-        than one because opacity has to finish first -- nothing should still be
+        than one because opacity has to finish first, nothing should still be
         fading while it is still travelling (MOTION.md, Distance). */
   if (pillGroup.length) {
     loadIn.fromTo(pillGroup, { x: PILL_X * u }, { x: 0, duration: 1.05, stagger: 0.15, ease: 'expo.out', immediateRender: false }, B);
@@ -420,8 +420,8 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   let onScreen = true;
   let running = false;
 
-  // If the load-in stalls -- a blocked main thread while the WebGL mark
-  // compiles, a tab throttled in the background -- settle it rather than leave
+  // If the load-in stalls, a blocked main thread while the WebGL mark
+  // compiles, a tab throttled in the background, settle it rather than leave
   // the illustration half assembled on screen. A fixed deadline cannot tell
   // "stuck" from "slow", because lag smoothing makes an honest sequence take
   // longer in wall time than its own duration, so sample past the deadline and

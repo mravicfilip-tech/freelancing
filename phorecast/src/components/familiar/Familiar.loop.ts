@@ -1,48 +1,26 @@
 /**
- * "Familiar Trading. Better Infrastructure." — the ambient loop.
+ * "Every Outcome. One Place." The ambient loop.
  *
- * The section's load-in belongs to `Familiar.motion.ts`. This file owns what
- * happens *after* it has landed, and it owns nothing else: it reads the markup
- * the component already ships, writes text, colour and transform into it, and
+ * The load-in belongs to `Familiar.motion.ts`. This file owns what happens after
+ * it lands: it writes text, colour and transform into the shipped markup and
  * puts every one of them back on teardown.
  *
- * THE STORY — three acts, 13.5s, then 3.6s of nothing
- * --------------------------------------------------
- * A live screen doing its job, in the order it would really do it.
+ * THE STORY: 9.9s of motion, then 3.6s of rest (PERIOD 13.5s)
+ *   I.   The book moves (0.0 to 3.4s). NVDA prints twice and its card lights;
+ *        the ECB card acknowledges the same refresh with its rate unchanged. In
+ *        the phone, Cazeneuve climbs 55% to 57% and swaps places with Hollande.
+ *   II.  The round is ending (3.3 to 7.9s). The feed switches to Ending Soon,
+ *        the BTC round climbs above the French election, its ring advances
+ *        63% to 66%, both prediction cards take a trade and a category pill is
+ *        tapped while the live dots light.
+ *   III. Back to default (7.9 to 9.9s). All events again; the rest is the design.
  *
- * I. THE BOOK MOVES (0.0 – 3.4s)
- *   NVDA prints twice, $218.36 -> $218.31 -> $218.29, the card lighting under
- *   each print and the day following to -2.40%. (NVDA is not drawn below
- *   700px; the ECB card beside it is, and the rest of this act runs there.)
- *   The same refresh reaches the ECB card, whose policy rate is honestly
- *   unmoved, so only the card and its chip acknowledge it. In the phone, the French election re-sorts: Cazeneuve
- *   counts 55% -> 57%, crosses Hollande — the two rows physically exchange
- *   places — and the Yes chip on the row that gained brightens.
+ * Alternate cycles play the figures backwards, so after two cycles every number
+ * is the Figma value again and nothing drifts. The BTC round's clock is the one
+ * thing that never rests: it ticks while on screen and restarts at 5:00.
  *
- * II. THE ROUND IS ENDING (3.3 – 7.9s)
- *   The feed switches to Ending Soon. The tab moves, the filter glints, and the
- *   two market cards trade places: the 5-minute BTC round climbs 242px over the
- *   French election, which will not resolve for seven months. With BTC at the
- *   top its ring advances 63% -> 66%, the two floating prediction cards each
- *   take a trade, 0.25s apart, and a category is tapped in the filter row while
- *   the live dots at either end light.
- *
- * III. BACK TO DEFAULT (7.9 – 9.9s)
- *   All events again, and the feed returns. Every frame of the rest window is
- *   the design exactly.
- *
- * The next cycle plays the figures backwards — Cazeneuve gives second place
- * back, NVDA prints up to where it started, the ring returns to 63% — so after
- * two cycles every number on the screen is the one in the Figma frame. Nothing
- * drifts, and nothing structural is ever left displaced: the sort is undone
- * inside the cycle that made it.
- *
- * The one thing that never rests is the 5-minute round's clock, which ticks a
- * second at a time while the section is on screen and restarts at 5:00 when it
- * runs out. A countdown that freezes is a screenshot.
- *
- * Nothing here floats, breathes, drifts, overshoots, rotates, or reacts to the
- * pointer. Reduced motion runs none of it.
+ * Nothing floats, drifts, overshoots or reacts to the pointer. Reduced motion
+ * runs none of it.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../lib/motion';
@@ -55,20 +33,14 @@ const PERIOD = 13.5;
 const SETTLE = 1.2;
 
 /**
- * Every colour and every lift this loop writes, read off the document.
+ * Every colour and lift this loop writes, read off the document.
  *
- * It is called from `start()`, next to the `getComputedStyle` rest reads that
- * were already there, and never at module scope — a theme change rebuilds the
- * section, so this re-runs and the loop cools to the palette that is actually
- * on the page. The fallbacks are the values the file shipped with, so a
- * missing property yields today's dark colour rather than nothing.
+ * Called from `start()`, never at module scope: a theme change rebuilds the
+ * section, so this re-reads the live palette. Fallbacks are the dark values.
  *
- * Read the two halves against `Familiar.css`. The `--fam-app-*` half is the
- * handset, which is a dark app in both themes and therefore has no light
- * value at all: "lit means brighter" is still true inside it, and those beats
- * are untouched. The rest is page chrome, and every one of those DOES flip —
- * the two white-alphas invert direction for free by becoming ink-alpha, and
- * the two brightness pairs and the tick colours are turned around by hand.
+ * The `--fam-app-*` tokens are the handset, a dark app in both themes, so they
+ * have no light value. The rest is page chrome and flips in light (see the
+ * light block in `Familiar.css`).
  */
 const palette = () => ({
   /* The NVDA card's print. On the page, so it is --pos / --neg. */
@@ -81,11 +53,9 @@ const palette = () => ({
   /* The odds chips the re-sort lights, on the handset's leaderboard. */
   chipYesLit: tok('--fam-app-yes-lit', '#17482e'),
   chipNoLit: tok('--fam-app-no-lit', '#4a1f23'),
-  /* The same beat on the two floating prediction cards. Their plates rest at a
-     different colour from the handset's (#1a3a2c against #10281d — the file
-     draws the card and the phone differently), so the lit value is its own
-     token rather than the chip's; both are the same 1.49x step in relative
-     luminance, so the acknowledgement is the same size on both objects. */
+  /* The same beat on the two prediction cards. Their plates rest at a
+     different colour from the handset's (#1a3a2c against #10281d), so the lit
+     value is its own token, taking the same 1.49x step in relative luminance. */
   predYesLit: tok('--fam-app-pred-yes-lit', '#21583c'),
   /* The ECB card's footer plate. Lit is LIGHTER than rest on a dark page and
      has to be DARKER than rest on paper; both are "the plate acknowledged it". */
@@ -139,28 +109,13 @@ export function familiarLoop(root: HTMLElement): () => void {
   /**
    * `q` and `qa`, but only what this width actually draws.
    *
-   * Below 700px the band drops the NVDA card, and below 1100 both floating
-   * prediction cards — see the media blocks in `Familiar.css`. They stay in
-   * the DOM, so an unfiltered selector still finds them and the loop would
-   * spend a third of its cycle printing prices onto `display: none` boxes,
-   * reading resting colours off them, and holding their text for a teardown
-   * that has nothing to put back.
+   * Below 700px the band drops the NVDA card, and below 1100 both prediction
+   * cards. They stay in the DOM, so unfiltered selectors would animate
+   * `display: none` boxes and hold their text for nothing.
    *
-   * WHAT EACH ACT HAS TO WORK WITH ON A PHONE, now that Figma frame 538:4601
-   * has put the ECB card back at that width:
-   *
-   *   I.   The refresh lights the ECB card and its policy-rate plate, the
-   *        section's own live dot answers it, and the leaderboard inside the
-   *        handset re-sorts. Only NVDA's two prints are missing, and they are
-   *        the one beat that has no card to print onto.
-   *   II.  Entirely inside the handset and the strip — the tab switch, the
-   *        filter glint, the two feed cards trading places, the 5-minute
-   *        round's ring — plus the live dots at either end of the strip. The
-   *        two floating prediction cards' trades are the only part that does
-   *        not run, and they have not been drawn here since 1100.
-   *   III. The feed returns. Nothing in it is width-dependent.
-   *
-   * So every act still has a subject, and Act I has a card again.
+   * On a phone every act still has a subject: Act I runs on the ECB card and
+   * the handset (only NVDA's prints are skipped), Act II is inside the handset
+   * and the strip, and Act III is width-independent.
    */
   const box = (el: HTMLElement | null) => {
     if (!el) return null;
@@ -171,9 +126,8 @@ export function familiarLoop(root: HTMLElement): () => void {
   const qa = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel)).filter((e) => box(e));
 
   /* ------------------------------------------------------------- handles
-     Every one of these is optional and separately guarded. A sibling agent is
-     still editing this section's markup; a hook that moves costs its own beat
-     and nothing else. */
+     Every one of these is optional and separately guarded, so a markup change
+     costs only its own beat. */
   const nvdaCard = q('.fam__mkt--nvda');
   const nvdaValue = q('.fam__mkt--nvda .fam__mkt-value');
   const nvdaPct = lastText(q('.fam__mkt--nvda .fam__mkt-foot'));
@@ -199,32 +153,22 @@ export function familiarLoop(root: HTMLElement): () => void {
   const pills = qa('.fam__chips .fam__chip-pill');
   const dots = qa('.fam__chip-dot');
   const eyebrowDot = q('.fam__copy--left .eyebrow__dot');
-  /* THE TWO FLOATING PREDICTION CARDS, as a list rather than a pair of single
-     handles. There was one card here and two blurred bitmap stand-ins beside
-     it; the re-export replaced the lot with two real cards, and a `q()` that
-     takes the first match would have animated one of them and left its
-     neighbour sitting still — which is the specific way a beat half-covers new
-     markup and nobody notices. Everything below is per-card. */
+  /* The two prediction cards, as a list: every beat below runs per card, so
+     neither is left still. */
   const preds = qa('.fam__pred').map((card) => {
     const label = card.querySelector<HTMLElement>('.fam__pred-bar span');
     const text = label?.textContent ?? '';
-    // The two cards print their odds differently — "95,70%" and "27%" — and a
-    // tween that rounded both to two places would leave the second sitting at
-    // "27.00%" for the rest of the page's life. So each card keeps the
-    // separator and the number of decimals the design gave it, and the step is
-    // sized to be visible at that precision: 0.2 of a point where there are
-    // decimals to show it, a whole point where there are not.
+    // The cards print their odds differently ("95,70%" and "27%"), so each
+    // keeps its own separator and decimals. The step is visible at that
+    // precision: 0.2 of a point with decimals, a whole point without.
     const dp = /[.,](\d+)%?\s*$/.exec(text)?.[1].length ?? 0;
-    // The volume figure, "$112.5K Vol" and "$95.8K Vol": split so the number
-    // can move and everything around it — currency, magnitude, the word — is
-    // put back untouched.
+    // The volume figure ("$112.5K Vol"), split so only the number moves.
     const vol = card.querySelector<HTMLElement>('.fam__pred-meta span');
     const volText = vol?.textContent ?? '';
     const volParts = /^(\D*)([\d.]+)(.*)$/.exec(volText);
     const volDp = volParts?.[2].split('.')[1]?.length ?? 0;
-    // The bar's green run, as the stylesheet's own inline percentage. The first
-    // card's is the whole track, so it has nowhere to advance to and is left
-    // alone; the second's is a quarter full and follows its figure.
+    // The bar's green run, from its inline percentage. The first card's is the
+    // whole track and is left alone; the second follows its figure.
     const fill = card.querySelector<HTMLElement>('.fam__pred-bar i');
     const fill0 = Number.parseFloat(fill?.style.width ?? '') || 0;
     return {
@@ -285,15 +229,10 @@ export function familiarLoop(root: HTMLElement): () => void {
     const valueRest = css(nvdaValue, 'color');
     const pctRest = css(rowPct(1), 'color');
     const ecbFootRest = css(ecbFoot, 'backgroundColor');
-    /* THE GLASS CARDS' RESTING FILL AND EDGE, read off WHICHEVER OF THE TWO
-       this width draws. It used to be read off NVDA alone, which was right
-       while the two cards were either both drawn or both gone — and stopped
-       being right the moment the phone layout kept ECB and dropped NVDA: the
-       read returned '' and the `&& cardBgRest` guard below then skipped the
-       ECB card's own refresh, silently, on every phone. The card sat through
-       the whole cycle with its plate lighting underneath it and nothing
-       happening to the card. The two cards carry the same `.fam__mkt` rule, so
-       either one answers for both. */
+    /* The glass cards' resting fill and edge, read off whichever card this
+       width draws. Both share the `.fam__mkt` rule. Reading NVDA alone would
+       return '' on a phone, where only ECB is drawn, and the `&& cardBgRest`
+       guard below would silently skip the ECB card's pulse. */
     const cardBgRest = css(nvdaCard ?? ecbCard, 'backgroundColor');
     const cardEdgeRest = css(nvdaCard ?? ecbCard, 'borderColor');
     const pillBg = css(pills[0] ?? null, 'backgroundColor');
@@ -303,8 +242,8 @@ export function familiarLoop(root: HTMLElement): () => void {
     const predYesRest = preds.map((p) => css(p.yes, 'backgroundColor'));
     // Read from the document in the same breath, and for the same reason.
     const C = palette();
-    // The two states each figure ping-pongs between, all read off the design so
-    // the resting frame is whatever the component ships today.
+    // The two states each figure alternates between, read off the markup so
+    // the resting frame is the design.
     const price0 = num(nvdaValue?.textContent);
     const day0 = num(nvdaPct?.nodeValue);
     const gauge0 = num(gauge?.textContent);
@@ -476,19 +415,10 @@ export function familiarLoop(root: HTMLElement): () => void {
           pulse(tl, gauge, 4.9, { filter: C.ringLit }, { filter: C.liftRest }, 0.35, 0.95);
         }
 
-        /* THE TWO FLOATING PREDICTION CARDS EACH TAKE A TRADE: the odds move
-           and the Yes plate acknowledges it, exactly the beat the single card
-           here has always played, now played twice.
-
-           The first card keeps its old cue to the frame — 5.45, a 0.7s
-           `sine.inOut` on the figure, a 0.3s/0.9s pulse on the plate. The
-           second is 0.25s behind it, which is the stagger the pair of blurred
-           stand-ins that used to sit here played on, so the region's beats
-           still land across the same window they always did.
-
-           Each card's figure ping-pongs between its own two states, at its own
-           precision, and `down` alternates the direction per cycle — so after
-           two cycles both cards print the number in the Figma frame again. */
+        /* The two prediction cards each take a trade: the odds move and the
+           Yes plate acknowledges it. The second card runs 0.25s behind the
+           first. `down` alternates direction per cycle, so after two cycles
+           both cards show the Figma figures again. */
         preds.forEach((p, i) => {
           const at = 5.45 + i * 0.25;
 
@@ -501,10 +431,8 @@ export function familiarLoop(root: HTMLElement): () => void {
             }, at);
           }
 
-          /* Then the odds move, and the bar moves with them — the green run is
-             the figure, so it would be a lie for one to travel without the
-             other. The first card's bar is already the whole track and has
-             nowhere to go, which is why `fill` is null there; its figure still
+          /* Then the odds move, and the bar with them. The first card's bar
+             is already full, so `fill` is null there and only its figure
              ticks. */
           if (p.label && Number.isFinite(p.from)) {
             const to = p.from + p.step;
@@ -517,10 +445,8 @@ export function familiarLoop(root: HTMLElement): () => void {
               },
             }, at + 0.12);
             if (p.fill) {
-              // `fromTo`, not `to` — both ends stated, so the bar cannot be
-              // handed a stale inline width by a teardown that landed mid-tween
-              // and then animate from it to itself. Same reason the entrance
-              // states both ends on the CTA.
+              // `fromTo` with both ends stated, so a stale inline width left by
+              // a mid-tween teardown cannot become the start value.
               const w = (n: number) => `${(p.fill0 * (n / p.from)).toFixed(2)}%`;
               tl.fromTo(p.fill,
                 { width: down ? w(p.from) : w(to) },
@@ -575,11 +501,9 @@ export function familiarLoop(root: HTMLElement): () => void {
     };
     const stopClock = () => { window.clearInterval(tick); tick = 0; };
 
-    /* Off screen the loop costs nothing — but only the clock between beats is
-       stopped, never a beat halfway through. Pausing the story timeline would
-       strand the section on a lit pill or a re-sorted feed for as long as it
-       took someone to scroll back, and a still of that is not the design. The
-       story is ten seconds; it is allowed to finish. */
+    /* Off screen only the driver and the clock stop, never a beat in
+       progress: pausing mid-story would leave a lit pill or a re-sorted feed
+       on screen. The story is about ten seconds and is allowed to finish. */
     io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { driver?.play(); runClock(); }
       else { driver?.pause(); stopClock(); }
@@ -589,22 +513,16 @@ export function familiarLoop(root: HTMLElement): () => void {
   };
 
   /* -------------------------------------------------------------- the gate
-     The loop must not open over the entrance, and it is wired in two ways that
-     look different from in here. `useSectionMotion` passes this function as its
-     `idle` option, which it calls from the entrance timeline's `onComplete` —
-     one line *after* it has dispatched `motion:done`, so a listener attached
-     here would wait for an event that has already gone by. Called any earlier
-     (a direct call, a lab harness) the event is still ahead of us and is the
-     best signal there is.
+     The loop must not open over the entrance. `useSectionMotion` calls this as
+     its `idle` option from the entrance's `onComplete`, after `motion:done`
+     has already been dispatched, so `data-motion-done` is checked first. If
+     called earlier (directly, for example) the `motion:done` event is still
+     ahead and is listened for.
 
-     So both are watched, and under them sits the question that is true either
-     way: is anything still animating inside this section? Once the band has
-     dropped `data-motion="pending"` — i.e. is demonstrably running rather than
-     waiting to be scrolled to — the section is sampled four times a second and
-     counted quiet only after three consecutive still samples, which is longer
-     than the 0.25–0.4s pause the house entrance takes after its lead element.
-     Whichever answers first opens the loop, and the first beat lands SETTLE
-     later. */
+     Under both sits a fallback: once `data-motion="pending"` is dropped, the
+     section is sampled four times a second and counted quiet after three
+     consecutive samples with no active tween inside it. Whichever answers
+     first opens the loop; the first beat lands SETTLE later. */
   const open = () => {
     if (stopped || ready) return;
     window.clearInterval(probe);

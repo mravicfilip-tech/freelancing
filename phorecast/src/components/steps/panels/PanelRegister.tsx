@@ -35,7 +35,7 @@ import './PanelRegister.css';
  *   1.95  the two account cards slide in off the wire, 0.15 apart, and each one
  *         fills: glyph, rule, then its fields
  *   2.55  the bracket to the phone draws, and the white diamond pops at its end
- *   3.20  the phone wakes -- chrome, then the chart, then the five columns grow
+ *   3.20  the phone wakes: chrome, then the chart, then the five columns grow
  *         from the axis with the balance counting up beside them
  *   4.00  the +2.41% flag lands on the orange column
  *   4.35  everything is handed back to CSS (`clearProps`), then 1.55s of rest.

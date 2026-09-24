@@ -1,10 +1,10 @@
 /* The hero's slider control. Two round arrows and a segmented track, sitting
-   together as one object: variant 01 from slider-lab.html. */
+   together as one object. */
 .position {
   /* This control's own two colours, named here so the light block at the foot
-     of the file redefines exactly these. Dark is what it shipped with. */
+     of the file redefines exactly these. These are the dark values. */
   --pos-track-hover: #3a3837;
-  /* A segment already seen. rgba(255,251,248,.3) is --ink at 30% -- the dark
+  /* A segment already seen. rgba(255,251,248,.3) is --ink at 30%, the dark
      theme's "raise this slightly", which on paper has to settle instead. */
   --pos-seen: rgba(255, 251, 248, 0.3);
 
@@ -100,7 +100,7 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list -- the same
+   Written twice, because a media query cannot go in a selector list, the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay
    identical; only their conditions differ.
 
@@ -120,16 +120,14 @@
   --pos-track-hover: #e5d9cd;
   /* A segment already seen: the track, stepped away from itself to say "this
      one is done". White-alpha becomes ink-alpha, which flips the direction for
-     free -- more alpha on a dark page is brighter, more on paper is darker,
+     free, more alpha on a dark page is brighter, more on paper is darker,
      and both mean done.
 
      The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST
      colour's density against its own page, and this is not a rest colour, it
-     is the size of a STEP away from one. Measured: dark's 30% white over
-     --panel-2 is 2.62:1 against the track it sits in; 0.34 ink gave only
-     2.11:1 -- a state visibly weaker on paper while passing every check that
-     looks at the value instead of the swing. 0.42 puts it at 2.59:1, which is
-     dark's own step. */
+     is the size of a STEP away from one. 0.42 ink makes the same visible step
+     from the track on paper as dark's 30% white does (about 2.6:1); a smaller
+     alpha reads visibly weaker. */
   --pos-seen: rgba(26, 21, 18, 0.42);
   }
 }
@@ -142,15 +140,13 @@
   --pos-track-hover: #e5d9cd;
   /* A segment already seen: the track, stepped away from itself to say "this
      one is done". White-alpha becomes ink-alpha, which flips the direction for
-     free -- more alpha on a dark page is brighter, more on paper is darker,
+     free, more alpha on a dark page is brighter, more on paper is darker,
      and both mean done.
 
      The alpha is 0.42, NOT 0.3 x 1.125. That eighth-up step reproduces a REST
      colour's density against its own page, and this is not a rest colour, it
-     is the size of a STEP away from one. Measured: dark's 30% white over
-     --panel-2 is 2.62:1 against the track it sits in; 0.34 ink gave only
-     2.11:1 -- a state visibly weaker on paper while passing every check that
-     looks at the value instead of the swing. 0.42 puts it at 2.59:1, which is
-     dark's own step. */
+     is the size of a STEP away from one. 0.42 ink makes the same visible step
+     from the track on paper as dark's 30% white does (about 2.6:1); a smaller
+     alpha reads visibly weaker. */
   --pos-seen: rgba(26, 21, 18, 0.42);
 }

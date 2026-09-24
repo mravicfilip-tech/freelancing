@@ -1,52 +1,31 @@
 /* Self-hosted faces that do not come from a package -------------------------
-   Everything else on this site is a `@fontsource-variable/*` dependency, which
-   ships its own @font-face and its own woff2 and is imported from main.tsx.
-   Galano Grotesque cannot be: it is a commercial licence from The Northern
-   Block, it is not on Google Fonts and there is no fontsource package for it.
-   So it is the one face this project hosts by hand, and this file is the hand.
+   Every other face is a `@fontsource-variable/*` dependency imported from
+   main.tsx. Galano Grotesque is a commercial licence (The Northern Block) with
+   no package, so it is hosted by hand here.
 
-   THE FILES ARE NOT HERE YET. The client is sending them. Until they land the
-   stack in --font-label falls through to the geometric sans faces named there
-   and the page renders correctly but not in the client's face -- see the note
-   on that token in tokens.css, which is where the fallback decision is argued.
-
-   To finish the job, drop the licensed webfonts into
+   THE FILES ARE NOT IN THE REPO YET. Until they are, --font-label falls
+   through to the fallback stack argued in tokens.css. To finish, drop the
+   licensed webfonts into
 
        src/assets/fonts/galano-grotesque/
 
-   under exactly the names below and delete nothing else. Vite fingerprints
-   them through these url() references on build; no config change is needed.
+   under exactly these names; Vite fingerprints them on build with no config
+   change:
 
-   WHAT TO ASK THE CLIENT FOR. Four static weights, woff2 and woff each:
-
+       200 ExtraLight GalanoGrotesque-ExtraLight.woff2 / .woff
        400 Regular   GalanoGrotesque-Regular.woff2   / .woff
        500 Medium    GalanoGrotesque-Medium.woff2    / .woff
        600 SemiBold  GalanoGrotesque-SemiBold.woff2  / .woff
-       200 ExtraLight GalanoGrotesque-ExtraLight.woff2 / .woff
 
-   UNTIL THEY ARRIVE THESE FOUR RULES 404, and that is the intended interim
-   state rather than a bug to paper over. Vite leaves an unresolvable url()
-   alone instead of failing the build (checked: `vite build` exits 0 with this
-   directory empty), the browser cannot load the face, and `font-display: swap`
-   means the fallback is already on screen. Four 404s in the console are the
-   cost of making the drop-in a pure file copy, which is the trade this file is
-   making on purpose. Dropping real files in -- checked the same way -- emits
-   them as ordinary fingerprinted assets with no config change.
+   Until then these four rules 404 in the console, by design: Vite leaves an
+   unresolvable url() alone rather than failing the build, and the fallback is
+   already on screen. If the licence ships a variable font instead, one
+   @font-face with `font-weight: 200 600` replaces all four; the token does not
+   change.
 
-   Those are the four the site asks for, not the four the family happens to
-   have -- 500 is the client's spec and most of the labels, 600 is every button
-   and CTA, 400 is the Steps panel micro-copy, and 200 is the one number in the
-   bento ring dial. Anything else in the family can wait. If the licence ships
-   a variable font instead, one @font-face with `font-weight: 200 600` replaces
-   all four and the src filename becomes GalanoGrotesque-Variable.woff2; the
-   token does not change either way.
-
-   font-display: swap on all four, deliberately. These are labels, buttons and
-   eyebrows -- short strings whose job is to be readable immediately. A block
-   period would leave the eyebrow and every CTA invisible on a cold load, and
-   the fallback is close enough in width (that is the whole point of how the
-   stack is ordered) that the swap is a reflow of a few pixels rather than a
-   relayout. ---------------------------------------------------------------- */
+   font-display: swap, because these are labels, buttons and eyebrows that
+   must be readable immediately, and the fallback stack is ordered to be close
+   in width, so the swap is a small reflow. -------------------------------- */
 
 @font-face {
   font-family: 'Galano Grotesque';

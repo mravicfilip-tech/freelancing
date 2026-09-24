@@ -1,26 +1,26 @@
 /* The single-colour glyph primitive.
    -------------------------------------------------------------------------
-   129 of the live SVGs are one flat colour on transparent — 76 neutral, 53
-   brand. Inlining them would move a third of a megabyte out of individually
-   cached image requests and into the critical JS bundle, and baking a light
-   variant of each would double an already 264-file asset set. So the file
-   stays on disk, stays an ordinary cached request, and stops carrying its own
-   colour: it becomes a MASK, and the colour becomes `color` — which means an
-   ordinary CSS token, inheritance, `:hover`, and a GSAP tween on `color`
-   instead of one on `filter`.
+   Many of the site's SVGs are one flat colour on transparent. Rather than
+   inline them (moving them into the JS bundle) or bake a light variant of
+   each, the file stays an ordinary cached request and becomes a MASK, and the
+   colour becomes `color`: a CSS token, inheritance, `:hover`, and GSAP tweens
+   on `color` all just work.
 
    Three details are load-bearing:
 
    `mask-size: 100% 100%`, never `contain`. Every one of these files carries
-   `preserveAspectRatio="none"`, so the <img> this replaces stretches to its
-   box today. `100% 100%` reproduces that exactly; `contain` would letterbox
-   and move geometry, which the theme gate would (correctly) reject.
+   `preserveAspectRatio="none"`, so as an <img> it stretches to its box.
+   `100% 100%` reproduces that exactly; `contain` would letterbox and move
+   geometry.
 
    `mask-mode` is left at its default, `match-source`, which for an SVG image
    source means alpha. These files draw glyph-on-transparent, so the alpha
    channel IS the silhouette.
 
-   The `-webkit-` prefixes ship. Safari still needs them. */
+   The `-webkit-` prefixes ship. Safari still needs them.
+
+   `--icon` is set inline by Icon.tsx, so GSAP `clearProps: 'all'` on an .icon
+   deletes it and the mask paints a solid box. */
 .icon {
   display: block;
   -webkit-mask-image: var(--icon);

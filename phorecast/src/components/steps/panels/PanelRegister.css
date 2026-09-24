@@ -9,7 +9,7 @@
    and the phone are bordered, clipped frames, so children are laid out
    against the PADDING box (Figma's absolute coordinates are 1.199 larger). */
 
-/* The panel's colour, in two layers -- the same split Steps.css uses.
+/* The panel's colour, in two layers (the same split Steps.css uses).
    -------------------------------------------------------------------------
    Role tokens where the page already names the job: the typed address and
    the balance are --ink, the masked digits --ink-muted, the pill's stroke and
@@ -34,7 +34,7 @@
   --steps-p1-card: #1d1c1b;
   --steps-p1-card-edge: rgba(212, 212, 212, 0.13);
 
-  /* The skeleton bars. Two weights -- the quiet pills and the heavier rows --
+  /* The skeleton bars. Two weights (the quiet pills and the heavier rows),
      plus the chart plate, which is the quiet one again. */
   --steps-p1-bar: #323232;
   --steps-p1-bar-2: #4b4b4b;
@@ -190,7 +190,7 @@
 .s1__batt { width: calc(10.335 * var(--p)); }
 .s1__batt img, .s1__batt .icon { left: 0; top: 0; height: calc(5.359 * var(--p)); }
 .s1__batt-shell { width: calc(10.335 * var(--p)); }
-/* Not a tip on the right -- it is the charge level, inset 0 63.41% 0 0. */
+/* Not a tip on the right: it is the charge level, inset 0 63.41% 0 0. */
 .s1__batt-fill { width: calc(3.782 * var(--p)); }
 .s1__batt i {
   position: absolute; left: calc(4.98 * var(--p)); top: calc(2.68 * var(--p));

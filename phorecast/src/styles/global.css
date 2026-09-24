@@ -53,19 +53,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .container--wide { --content-max: 1800px; --page-pad: clamp(20px, 3.125vw, 60px); }
 
 /* Type scale --------------------------------------------------------------- */
-/* The eyebrow IS the client's subtitle spec, line for line -- Galano Grotesque,
-   16px, weight 500, 120% line height, uppercase. The one thing in the Figma
-   inspector panel not reproduced here is its `color: #626262`, which is Figma's
-   own local value for the single layer that happened to be selected and not a
-   token: this site has a real light/dark set and that flat grey belongs to
-   neither. --ink-muted is the ink this label already used and it keeps working
-   in both themes.
+/* The eyebrow is the design's subtitle style: Galano Grotesque, 16px, weight
+   500, 120% line height, uppercase. Figma's inspector also shows
+   `color: #626262`, a local value on one layer rather than a token; the
+   themed --ink-muted is used instead.
 
-   `letter-spacing: 0` is now a decision rather than a default. It was the right
-   value under a monospace because Geist Mono is loose to begin with, and it is
-   still the right value here because it is what the client's spec asks for --
-   the panel states no tracking. Left explicit so nobody adds a tenth of an em
-   to "fix" uppercase and quietly walks away from the spec. */
+   `letter-spacing: 0` is stated on purpose: the spec has no tracking, so
+   do not add some to "fix" the uppercase. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -130,35 +124,20 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* Tabular figures on every number that MOVES -------------------------------
-   This list is here, in one place, rather than spread over the eight section
-   files that own these elements, because it is one rule with one reason and a
-   reader needs to be able to audit it as a set. It is also a list that only
-   grows: anything new that counts, ticks or walks belongs on it.
+   One list, in one place, so it can be audited as a set. Anything new that
+   counts, ticks or walks belongs on it.
 
-   The reason. The label face used to be Geist Mono, where every glyph is one
-   advance, so a digit rolling from 8 to 1 moved nothing. Galano Grotesque is a
-   geometric sans and is proportional, as is every face in its fallback stack
-   and as are Manrope and Inter Tight, which is what several of these figures
-   are actually set in. A counter animating through values in a proportional
-   face re-measures its own string on every frame: the digits shuffle
-   sideways, a centred figure breathes in and out, and a right-aligned one
-   walks. `tabular-nums` locks the ten digits to a single advance and the
-   string stops moving.
+   Galano Grotesque, its fallbacks, Manrope and Inter Tight are all
+   proportional, so a counter animating through values re-measures itself
+   every frame: digits shuffle sideways and a centred figure breathes.
+   `tabular-nums` locks the digits to one advance.
 
-   Some of these were ALREADY proportional before the font change -- the
-   slide-3 countdown and the two Steps balances are display and body type,
-   not label type -- so they were already jittering and this fixes them too. The rest are new exposure from the swap.
+   `font-feature-settings: 'tnum'` repeats the request for older engines.
+   Both are no-ops on a face without the feature, which cannot be confirmed
+   for Galano until its files land (see --font-label in tokens.css).
 
-   `font-feature-settings: 'tnum'` repeats the request for engines that predate
-   `font-variant-numeric`. Both are no-ops on a face without the feature, which
-   is the one thing here that cannot be confirmed until the real Galano files
-   land: see the note on --font-label in tokens.css. Nothing on this list is
-   width-critical enough to break without it -- the tightest, .s1__amount, has
-   room measured at every width -- but .onb__seconds would visibly crawl again,
-   and the answer there would be a stated width rather than a feature.
-
-   .onb__seconds is NOT in this list. It states the same two properties itself,
-   next to the centring it depends on, because there the argument is local. */
+   .onb__seconds is NOT in this list: it states the same two properties itself,
+   next to the centring it depends on. */
 .sl3-countdown__value,                   /* hero slide 3, the rolling digits  */
 .s1__amount,                             /* Steps 1, counts 0 -> $3,280       */
 .s2__balance-amt,                        /* Steps 2, counts up the balance    */
@@ -178,9 +157,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* Swap hover ---------------------------------------------------------------
-   Direction 03 from hover-lab.html, applied to every button, menu link and
-   footer link. The label rolls: the live copy leaves through the top of its
-   own box while the duplicate arrives from below.
+   Applied to every button, menu link and footer link (markup in Roll.tsx).
+   The label rolls: the live copy leaves through the top of its own box while
+   the duplicate arrives from below.
 
    The padding gives descenders room inside the clip -- without it the tails of
    g, p and y are shaved off -- and the matching negative margin takes that room
@@ -227,8 +206,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .footer__links a:focus-visible .roll__in:first-child,
 .built__cta:focus-visible .roll__in:first-child { transform: translateY(-100%); }
 
-/* The colour half of direction 03. The roll carries the movement; these carry
-   the state, so a control still reads as hovered with motion turned off. */
+/* The colour half of the swap hover. The roll carries the movement; these
+   carry the state, so a control still reads as hovered with motion off. */
 .btn--primary:hover { background: var(--btn-primary-hover-bg); color: var(--btn-primary-hover-ink); }
 .btn--ghost:hover { border-color: var(--accent); background: var(--accent-soft); }
 .btn--outline:hover { border-color: var(--accent-lift); color: var(--accent-lift); }
@@ -237,8 +216,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 /* Reduced motion: the label stays put. Hiding the duplicate is not enough on
    its own, because the hover and focus rules above still send the live label
    up and out of its clip, and with the duplicate gone nothing arrives to
-   replace it: the link went blank on hover and on keyboard focus. The
-   transform is cancelled here for every host at once rather than restated
+   replace it, so the link would go blank. The transform is cancelled here for every host at once rather than restated
    per selector list, which is what `!important` is for; the colour half of
    the hover still marks the state. */
 @media (prefers-reduced-motion: reduce) {

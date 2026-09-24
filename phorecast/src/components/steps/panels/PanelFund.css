@@ -1,8 +1,5 @@
-/* PanelFund -- extracted from Steps.css so each step panel owns its own stylesheet.
-   Three agents rebuild these panels from Figma in parallel, and a single shared
-   file is a single file for them to clobber. The shared shell -- `.panel`, the
-   3D wordmark and the glow -- stays in Steps.css, because it is the section's,
-   not any one panel's.
+/* PanelFund. Each step panel owns its stylesheet; the shared shell
+   (`.panel`, the 3D wordmark and the glow) stays in Steps.css.
 
    `--p` is the panel's design-pixel unit and is declared on `.panel` in
    Steps.css, so it resolves here through the cascade.
@@ -13,23 +10,19 @@
    its origin at (64.929, 128.5); the children's own local coordinates are
    folded into that origin here so each rule is a plain frame coordinate. */
 
-/* The panel's colour, in two layers -- the same split Steps.css uses.
+/* The panel's colour, in two layers (the same split Steps.css uses).
    -------------------------------------------------------------------------
-   ROLE TOKENS where the page already names the job: BALANCE is --ink-muted,
-   the figure is --ink, the five comets are --accent.
+   Role tokens where the page already names the job: BALANCE is --ink-muted,
+   the figure --ink, the comets --accent.
 
-   PANEL LOCALS (--steps-p2-*) for what belongs to this illustration -- the
-   five rail tiles, the converging lines and their tint, the beam, and
-   the whole of the balance card. Declared on :root because `tok()` in
-   lib/theme.ts reads document.documentElement and the loop takes its lit tile
-   edge and its two glyph filters from here.
+   Panel locals (--steps-p2-*) for this illustration: the rail tiles, the
+   converging lines, the beam and the balance card. Declared on :root because
+   `tok()` in lib/theme.ts reads document.documentElement, and the loop reads
+   the lit tile edge and the two glyph filters from here.
 
-   Two of them are PAIRS, and that is the point of naming them at all: in dark
-   a tile fires by going pale and its glyph fires by getting brighter. On paper
-   both of those climb towards the page and the beat stops being visible, so
-   light supplies its own pair pointing the other way.
-
-   Dark is exactly what the panel shipped with, so this block is a no-op. */
+   The tile and glyph values are rest/lit PAIRS: in dark a tile fires by going
+   paler, which would vanish on paper, so light supplies pairs pointing the
+   other way. */
 :root {
   /* The five payment rails. Tile 1 carries a stronger edge in the design. */
   --steps-p2-tile: #1d1c1b;
@@ -37,13 +30,12 @@
   --steps-p2-tile-edge-1: rgba(212, 212, 212, 0.4);
   /* A tile firing: its edge for 0.3s, read by the loop through `tok()`. */
   --steps-p2-tile-lit: rgba(255, 128, 96, 0.55);
-  /* And its glyph, as a matched pair -- GSAP interpolates `filter`
+  /* And its glyph, as a matched pair: GSAP interpolates `filter`
      structurally, so both values have to list the same function. */
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(2.1);
 
-  /* The converging lines. Nothing: the node's own arithmetic lands on the
-     node's own render. See the note on .s2__lines. */
+  /* The converging lines: no filter in dark (see .s2__lines). */
   --steps-p2-lines: none;
 
   /* The beam behind the node, driving into the card. */
@@ -66,10 +58,8 @@
 .s2 { position: absolute; inset: 0; }
 
 /* The five payment rails ----------------------------------------------------
-   Figma stacks them at local y 0.5 / 75.5 / 150.5 / 225.5 / 301.5 -- four gaps
-   of 23, 23, 23 and 24, not the even gap a flex column would give -- and the
-   first tile is 92 wide where the other four are 90. Absolute tops, therefore,
-   rather than `gap`. */
+   Figma stacks them at uneven gaps (23, 23, 23, 24) and tile 1 is 92 wide
+   where the others are 90, so tops are absolute rather than a flex `gap`. */
 .s2__rails { position: absolute; left: calc(64.999 * var(--p)); top: calc(129 * var(--p)); }
 .s2__tile {
   position: absolute; left: 0; overflow: hidden;
@@ -84,12 +74,10 @@
 .s2__tile--4 { top: calc(225 * var(--p)); }
 .s2__tile--5 { top: calc(301 * var(--p)); }
 
-/* Each glyph sits in its own clipped box centred in the tile. The box is 34
-   square for four of them and 30 for the bank, and the SVG inside keeps its
-   own root width/height -- two of these are not square and stretching them to
-   fill the box is what squashed the card and the bank in the first build.
-   Tiles 3 and 4 carry `opacity: 0.5` inside the asset itself; tiles 2 and 5
-   carry it on the wrapper, which is where Figma puts it. */
+/* Each glyph sits in its own clipped box centred in the tile (34 square, 30
+   for the bank). The SVG keeps its own width/height; two are not square and
+   must not be stretched. Tiles 3 and 4 carry `opacity: 0.5` inside the asset;
+   tiles 2 and 5 carry it on the wrapper, as Figma does. */
 .s2__tile-icon {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: calc(34 * var(--p)); height: calc(34 * var(--p)); overflow: hidden;
@@ -108,54 +96,30 @@
    at (446.549, 261.56) with insets -418.98% / 0 / -696.43% / -1265%, which
    lands its top-left at (128.954, 156.372) at its natural 342.702 x 305.147.
 
-   THE RE-EXPORT. The asset that shipped before was the design's previous
-   revision and it drew a different thing: a 2.51064-wide stroke under an
-   feGaussianBlur of stdDeviation 2.51064, in a 347.723 x 315.7 box at
-   (123.937, 151.094). The node now draws a 2-wide stroke with NO blur at all.
-   The path itself is untouched -- every coordinate in it moved by exactly
-   (-5.02127, -5.2766), which is the blur padding coming out of the box, and
-   the asset's origin moved by the same amount the other way -- so the rails
-   land where they always landed, to within 0.005 design px. What changed is
-   the paint: sampled at (224, 308) on the straight rail, the old build drew a
-   soft band nine rows deep peaking 11/255 over the panel ground, where the
-   node draws a hairline two rows deep peaking 10/255. Same ink, a ninth of the
-   width.
-
-   And that is why there is no `brightness` correction here any more. The 2.4
-   that used to sit on this element was compensating for the BLUR: a browser
-   composites Figma's feGaussianBlur measurably fainter than Figma's own
-   renderer, and the raw blurred asset arrived at 4/255 where the design wanted
-   10. With the blur gone the arithmetic is direct -- the stroke is grey 72 at
-   the sample point, at opacity 0.2, over a panel ground of 20, which is
-   20 + (72-20) x 0.2 = 30.4, and the node's own export reads 30. Nothing to
-   correct, so dark passes `none`. Light still has a decision to make and it is
-   argued at --steps-p2-lines in the light block. */
+   The current export is a 2-wide stroke with no blur, and it renders at the
+   design's value directly, so dark needs no correction filter. Light's
+   treatment is at --steps-p2-lines in the light block. */
 .s2__lines {
   position: absolute; left: calc(128.9542 * var(--p)); top: calc(156.372 * var(--p));
   width: calc(342.702 * var(--p)); height: calc(305.147 * var(--p));
   filter: var(--steps-p2-lines);
 }
 
-/* The same five rails again, with no paint on them at all: the loop reads
-   `getPointAtLength` off these to fly the comets down the curves the artwork
-   draws. Shipped in the markup rather than built at runtime so there is
-   nothing on this panel a DOM sampler cannot see. */
+/* The same five rails, unpainted: the loop reads `getPointAtLength` off these
+   to fly the comets along the curves the artwork draws. */
 .s2__geom {
   position: absolute; left: calc(128.9542 * var(--p)); top: calc(156.372 * var(--p));
   width: calc(342.702 * var(--p)); height: calc(305.147 * var(--p));
   opacity: 0; pointer-events: none;
 }
 
-/* Five orange streaks, each on the rail it belongs to. Figma wraps each one in
-   a flex box that centres the rotated rectangle, so the numbers here are the
-   un-rotated box's own top-left, recovered from that box's centre.
+/* Five orange streaks, one per rail. Figma centres each rotated rectangle in
+   a flex box, so these are the un-rotated box's top-left, recovered from that
+   centre.
 
-   The blur is Figma's layer blur of 8.411, which is not a CSS blur radius. The
-   profile of the un-rotated streak (comet 2) was sampled out of the Figma
-   render and fitted: a 6.277 tall bar of #e5331e over the panel ground, peak
-   154/255, half-max 9.1px wide. That is a Gaussian of sigma 3.4, so
-   `blur(3.4px)` in design pixels -- the literal 8.411 the first build used is
-   two and a half times too soft and drops the peak from 154 to 85. */
+   Figma's layer blur of 8.411 is not a CSS blur radius: fitted against the
+   Figma render it matches a Gaussian of sigma 3.4, so `blur(3.4px)` in design
+   pixels. Using 8.411 directly is far too soft. */
 .s2__comet {
   position: absolute; height: calc(6.068 * var(--p));
   background: var(--accent);
@@ -169,11 +133,9 @@
 .s2__comet--5 { left: calc(224.662 * var(--p)); top: calc(433.675 * var(--p)); width: calc(24.46 * var(--p)); transform: rotate(-19.42deg); }
 
 /* The locked node ----------------------------------------------------------
-   Figma's "Notification Icon" group at (443.999, 295): a blurred progress
-   streak running right into the card, the glowing disc, and the padlock. The
-   first build hung the disc off the lines' anchor box instead, 9 design px
-   left and 27 up of the group, which is why the lock floated above the rails
-   rather than sitting on their junction. */
+   Figma's "Notification Icon" group at (443.999, 295): a blurred beam running
+   right into the card, the glowing disc, and the padlock. Positioned from this
+   group, not the lines' anchor box, so the lock sits on the rails' junction. */
 .s2__node { position: absolute; left: calc(443.999 * var(--p)); top: calc(295 * var(--p)); width: calc(76 * var(--p)); height: calc(26 * var(--p)); }
 .s2__beam {
   position: absolute; left: calc(21.34 * var(--p)); top: calc(8.79 * var(--p));
@@ -202,9 +164,8 @@
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   width: 100%; height: calc(130.553 * var(--p));
   padding: calc(20.085 * var(--p));
-  /* Sampled off the Figma render either side of the stroke: the light edge is
-     carrying roughly a fifth of #f4f2f2, not the full value the exported
-     markup implies. */
+  /* The Figma render shows this edge at roughly a fifth of #f4f2f2, not the
+     full value the exported markup implies. */
   border: calc(1.255 * var(--p)) solid var(--steps-p2-inner-edge);
   border-radius: calc(15.064 * var(--p));
   background: var(--steps-p2-inner-bg);
@@ -227,88 +188,53 @@
   font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--p));
   line-height: normal; color: var(--ink);
 }
-/* Figma ships this as one 70.299 x 7.532 asset hung on a 70 x 7 slot, not as a
-   row of hand-built dots: the bar is 40.17 long with 2.51 gaps, where the first
-   build drew 34 with 4. */
+/* Figma ships this as one 70.299 x 7.532 asset on a 70 x 7 slot, not a row of
+   hand-built dots. */
 .s2__progress { position: relative; display: block; width: calc(70 * var(--p)); height: calc(7 * var(--p)); }
 .s2__progress .icon { color: var(--accent); }
 .s2__progress img, .s2__progress .icon { position: absolute; left: 0; top: 0; display: block; width: calc(70.2991 * var(--p)); height: calc(7.53191 * var(--p)); }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice; the two blocks MUST stay identical, only their conditions
-   differ. The section's device decision is in Steps.css.
+   Written twice; the two blocks MUST stay identical. The panel re-tints (see
+   Steps.css).
 
-   Three of the values below are LIFTS, and this panel is where the "brighter
-   means lit" idiom is thickest: a tile fires by going pale, its glyph fires by
-   brightening, and the whole converging-lines asset is held up by a
-   brightness(2.4). Every one of those climbs towards the page on paper and the
-   beat stops being visible without anything having stopped working. Each is
-   turned around here, and the geometry, the timing and the easing are
-   untouched. ------------------------------------------------------------- */
+   In dark a tile fires by going pale and its glyph by brightening; on paper
+   that would vanish into the page, so each is reversed here. Geometry, timing
+   and easing are unchanged. ---------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
   /* The five rails, at the card ratios panel 1 uses. */
   --steps-p2-tile: #f0e7de;
   --steps-p2-tile-edge: var(--veil-line);
   --steps-p2-tile-edge-1: rgba(26, 21, 18, 0.38);
-  /* A TILE FIRING -- the first flip. Dark pushes the edge to a pale warm at
-     55%; on cream a pale warm edge is the page, so it presses to the brand red
-     instead. The ALPHA is not arrived at by the x 1.125 rule, which reproduces
-     a resting density and is the wrong question for a lit value: what has to
-     match is the SIZE OF THE STEP away from rest. Dark travels 2.14:1 from its
-     resting edge to its lit one. 0.75 travelled 4.04:1 -- nearly twice the
-     beat, which is as wrong as half of it. 0.51 travels 2.15:1. */
+  /* A tile firing presses to the brand red instead of going pale. The alpha
+     is tuned so the rest-to-lit contrast step matches dark's. */
   --steps-p2-tile-lit: rgba(162, 22, 5, 0.51);
-  /* ITS GLYPH -- the second flip, and the one that has to stay a matched pair
-     because GSAP interpolates `filter` structurally. #4b4b4b brightened 2.1x
-     is #9e9e9e, which on a light tile is the glyph FADING, so it presses down
-     instead. This is the one beat in the section that CANNOT match its dark
-     step: dark travels 3.24:1 upward, and #4b4b4b is only 2.41:1 above pure
-     black, so downward has a hard ceiling. brightness(0) would spend all of it
-     and flatten the two-tone marks on tiles 1 and 3 into solid blobs; 0.25
-     travels 2.12:1, keeps the marks readable, and matches the tile edge beside
-     it. The 10 design px lean carries the rest of the beat, unchanged. */
+  /* Its glyph darkens instead of brightening (still a matched filter pair,
+     see the :root block). It cannot fully match dark's step, and
+     brightness(0) would flatten the two-tone marks on tiles 1 and 3, so 0.25
+     is the compromise; the 10 design px lean carries the rest of the beat. */
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 
-  /* THE CONVERGING LINES -- the third flip, and the one the re-export
-     changed the mechanism of. It used to be a brightness, and a brightness no
-     longer works here: with the blur gone the stroke arrives at its full
-     opacity 0.2 and the asset's own gradient runs grey 50 -> 105 -> a warm 99
-     across the visible span, so ANY multiplier big enough to lift the dark end
-     towards cream clips the 105 stop at 255 and that third of every rail goes
-     to nothing. Measured: the brightness(2.39) that would land the step below
-     puts the mid stop at 251, which over cream is a departure of +0.8 -- the
-     rails would fade out in the middle and nowhere else.
-
-     What the light mode actually has to decide is HOW MUCH INK LANDS, and the
-     knob for that is opacity, which scales the whole gradient without
-     flattening any part of it. Dark departs from its ground by +10/255
-     (20 -> 30, a 1.12:1 contrast). Paper departs downward, and 0.35 lands
-     -12 at the sample point, -10 at the mid stop and -14 at the dark end:
-     247 + (72 - 247) x 0.2 x 0.35 = 234.7, and the same sum at the other two
-     stops. That is a 1.09:1 contrast against the page, against dark's 1.12:1,
-     with the gradient's own modulation intact end to end.
-
-     Raw -- no filter at all -- the same sum gives 212, a departure of -35 and
-     a 1.36:1 contrast: three and a half times dark's step, which on cream
-     reads as five ruled pencil lines rather than as light. */
+  /* The converging lines are toned down with opacity, not brightness. A
+     brightness large enough to lift the dark end clips the gradient's light
+     stop and makes the middle of every rail vanish; opacity scales the whole
+     gradient evenly. 0.35 gives about dark's contrast against the page; raw,
+     the rails read as heavy ruled lines. */
   --steps-p2-lines: opacity(0.35);
 
   /* The beam into the card: deepest at the node, dissolving into the panel. */
   --steps-p2-beam-a: #7e0202;
   --steps-p2-beam-b: #f2e5d9;
 
-  /* The balance card. White at 2% over dark is glass; ink at 2.5% over paper
-     is the same glass seen from the other side. */
+  /* The balance card: a faint ink wash is the paper equivalent of dark's
+     2% white glass. */
   --steps-p2-card-bg: rgba(26, 21, 18, 0.025);
   --steps-p2-card-edge: rgba(162, 22, 5, 0.28);
   --steps-p2-inner-edge: rgba(26, 21, 18, 0.2);
-  /* Its lit face. In dark the two end stops darken towards black and a hot
-     band crosses the middle -- the card is glass and the light comes THROUGH
-     it. On paper that reads inside out: the ends go pale towards the page and
-     the middle carries the warmth as ink. The four stop positions and the
-     angle are the design's, untouched; only what sits at them changes. */
+  /* Its lit face, inverted: ends go pale towards the page and the middle
+     carries the warmth as ink. Stop positions and angle are the design's. */
   --steps-p2-inner-bg: linear-gradient(134.615deg,
     rgba(255, 251, 248, 0.5) 42.237%,
     rgba(162, 22, 5, 0.22) 70.091%,
@@ -322,64 +248,34 @@
   --steps-p2-tile: #f0e7de;
   --steps-p2-tile-edge: var(--veil-line);
   --steps-p2-tile-edge-1: rgba(26, 21, 18, 0.38);
-  /* A TILE FIRING -- the first flip. Dark pushes the edge to a pale warm at
-     55%; on cream a pale warm edge is the page, so it presses to the brand red
-     instead. The ALPHA is not arrived at by the x 1.125 rule, which reproduces
-     a resting density and is the wrong question for a lit value: what has to
-     match is the SIZE OF THE STEP away from rest. Dark travels 2.14:1 from its
-     resting edge to its lit one. 0.75 travelled 4.04:1 -- nearly twice the
-     beat, which is as wrong as half of it. 0.51 travels 2.15:1. */
+  /* A tile firing presses to the brand red instead of going pale. The alpha
+     is tuned so the rest-to-lit contrast step matches dark's. */
   --steps-p2-tile-lit: rgba(162, 22, 5, 0.51);
-  /* ITS GLYPH -- the second flip, and the one that has to stay a matched pair
-     because GSAP interpolates `filter` structurally. #4b4b4b brightened 2.1x
-     is #9e9e9e, which on a light tile is the glyph FADING, so it presses down
-     instead. This is the one beat in the section that CANNOT match its dark
-     step: dark travels 3.24:1 upward, and #4b4b4b is only 2.41:1 above pure
-     black, so downward has a hard ceiling. brightness(0) would spend all of it
-     and flatten the two-tone marks on tiles 1 and 3 into solid blobs; 0.25
-     travels 2.12:1, keeps the marks readable, and matches the tile edge beside
-     it. The 10 design px lean carries the rest of the beat, unchanged. */
+  /* Its glyph darkens instead of brightening (still a matched filter pair,
+     see the :root block). It cannot fully match dark's step, and
+     brightness(0) would flatten the two-tone marks on tiles 1 and 3, so 0.25
+     is the compromise; the 10 design px lean carries the rest of the beat. */
   --steps-p2-glyph-rest: brightness(1);
   --steps-p2-glyph-lit: brightness(0.25);
 
-  /* THE CONVERGING LINES -- the third flip, and the one the re-export
-     changed the mechanism of. It used to be a brightness, and a brightness no
-     longer works here: with the blur gone the stroke arrives at its full
-     opacity 0.2 and the asset's own gradient runs grey 50 -> 105 -> a warm 99
-     across the visible span, so ANY multiplier big enough to lift the dark end
-     towards cream clips the 105 stop at 255 and that third of every rail goes
-     to nothing. Measured: the brightness(2.39) that would land the step below
-     puts the mid stop at 251, which over cream is a departure of +0.8 -- the
-     rails would fade out in the middle and nowhere else.
-
-     What the light mode actually has to decide is HOW MUCH INK LANDS, and the
-     knob for that is opacity, which scales the whole gradient without
-     flattening any part of it. Dark departs from its ground by +10/255
-     (20 -> 30, a 1.12:1 contrast). Paper departs downward, and 0.35 lands
-     -12 at the sample point, -10 at the mid stop and -14 at the dark end:
-     247 + (72 - 247) x 0.2 x 0.35 = 234.7, and the same sum at the other two
-     stops. That is a 1.09:1 contrast against the page, against dark's 1.12:1,
-     with the gradient's own modulation intact end to end.
-
-     Raw -- no filter at all -- the same sum gives 212, a departure of -35 and
-     a 1.36:1 contrast: three and a half times dark's step, which on cream
-     reads as five ruled pencil lines rather than as light. */
+  /* The converging lines are toned down with opacity, not brightness. A
+     brightness large enough to lift the dark end clips the gradient's light
+     stop and makes the middle of every rail vanish; opacity scales the whole
+     gradient evenly. 0.35 gives about dark's contrast against the page; raw,
+     the rails read as heavy ruled lines. */
   --steps-p2-lines: opacity(0.35);
 
   /* The beam into the card: deepest at the node, dissolving into the panel. */
   --steps-p2-beam-a: #7e0202;
   --steps-p2-beam-b: #f2e5d9;
 
-  /* The balance card. White at 2% over dark is glass; ink at 2.5% over paper
-     is the same glass seen from the other side. */
+  /* The balance card: a faint ink wash is the paper equivalent of dark's
+     2% white glass. */
   --steps-p2-card-bg: rgba(26, 21, 18, 0.025);
   --steps-p2-card-edge: rgba(162, 22, 5, 0.28);
   --steps-p2-inner-edge: rgba(26, 21, 18, 0.2);
-  /* Its lit face. In dark the two end stops darken towards black and a hot
-     band crosses the middle -- the card is glass and the light comes THROUGH
-     it. On paper that reads inside out: the ends go pale towards the page and
-     the middle carries the warmth as ink. The four stop positions and the
-     angle are the design's, untouched; only what sits at them changes. */
+  /* Its lit face, inverted: ends go pale towards the page and the middle
+     carries the warmth as ink. Stop positions and angle are the design's. */
   --steps-p2-inner-bg: linear-gradient(134.615deg,
     rgba(255, 251, 248, 0.5) 42.237%,
     rgba(162, 22, 5, 0.22) 70.091%,
@@ -388,84 +284,35 @@
 }
 
 /* THE PHONE COMPOSITION -------------------------------------------------------
-   Above 700 this panel is the whole 886 x 610 frame scaled to the column. Below
-   it, Steps.css hands every panel `--p: calc(100cqw / <its own artwork>)` --
-   822 for this one -- and at a 390 viewport that is 0.423 design pixels per CSS
-   pixel. Measured at 390 off a freshly started server: the card's 14px BALANCE
-   renders at 5.93px, the 40px figure at 16.93px, the progress indicator at
-   29.6 x 3, and a tile's 34px glyph at 14.4. A faithful reproduction of the
-   design at two fifths of its size is not a small illustration, it is noise.
-   This is the same ruling SlideAccount.css already made for the hero: FEWER
-   PARTS, LARGER, not the same parts smaller.
+   Below 700px Steps.css scales each panel to its own artwork, but at phone
+   widths the full illustration's type is too small to read. So, as in
+   SlideAccount.css: FEWER PARTS, LARGER.
 
-   WHAT THE STEP'S SENTENCE IS
-   Money arrives, and the balance grows. What says that is the locked node and
-   the card it feeds -- and those two are welded together by the design itself:
-   the beam starts inside the node at 465 and ends at 521.8, which is 23 design
-   px INSIDE the card's left edge at 499. They cannot be stacked or separated
-   without redrawing the one element that carries the arrival.
+   What stays is the locked node and the balance card: money arrives and the
+   balance grows. The two are joined in the design (the beam ends inside the
+   card's left edge), so they cannot be separated.
 
-   WHAT GOES, AND WHY
-   * The five rail tiles. Five 90 x 52 plates plus the fan they anchor occupy
-     x 65..429, which is 364 design px -- more than the balance card itself.
-     They are also the part of the sentence the phone does not need: the step
-     says money arrives, not that it arrives from five named places.
-   * The converging lines. 342.7 x 305.1, a five-way fan whose five ends ARE
-     the tiles. With the tiles gone it fans out of nothing, and it is wider
-     than the whole field at any basis that keeps the card legible.
-   * All five comets, and with them the sampled charge. This is the one that
-     was argued hardest, because a comet is the only thing in the panel that
-     literally arrives. The arithmetic refuses it: the card is 346 design px
-     and the house floor for a retained micro-label on a phone is about 10px
-     (measured on the hero's phone composition, whose smallest surviving type
-     is 10.1px), which caps the basis at 14 x 348 / 10 = 487. The disc sits
-     just 42 design px left of the card, so at a basis of 487 the runway
-     between the plate's left edge and the disc is 44 design px -- barely more
-     than the comet's own 37.7 length. A charge that travels one body length
-     is a twitch, not an arrival. The fan and the card are the same rectangle
-     on a phone, and the card wins, because the card is the only part of this
-     step with a number in it.
-   * .s2__geom with them. It is the invisible geometry the flight is sampled
-     off; with no flight there is nothing to sample, and a sampler pointed at
-     hidden geometry is worse than no beat. The loop asks the STYLESHEET which
-     cast is on stage (`display: none` on the tiles) rather than the viewport,
-     so there is one source of truth and no beat can fire at a hidden element.
-   * The ghosted wordmark, and this one is the basis's own fault rather than
-     the design's. It hangs in the FIELD at x 462..885, so moving the field to
-     centre the card on the window drags it across the plate: measured at 390,
-     it goes from 180 CSS px wide starting at x 178 -- a faint stepped shape
-     tucked into the right corner -- to 333 px wide starting at x 34, which is
-     95% of a 350-wide plate. It is also the one element here whose asset is
-     known to be the wrong crop (the note at .steps__mark--right in Steps.css:
-     panel 2 is served the shared slices export, which is why it draws as ruled
-     vertical lines instead of the node's faint arcs). At a sixth of the
-     desktop's area that reads as architecture behind the card; at full bleed
-     behind the only legible thing on the plate it reads as a fault, and in
-     light it is eight hard grey rules straight through the figure. The GLOW
-     stays -- it is what lights the card, it is a soft radial with no edges to
-     rule the plate with, and node 365:1393 puts it exactly where the card is.
+   Dropped:
+   * The five rail tiles: wider than the balance card, and the step only needs
+     "money arrives", not its five sources.
+   * The converging lines: their ends are the tiles.
+   * The comets and `.s2__geom`: with the card at a legible size there is no
+     runway left for a comet to travel more than its own length. The loop
+     checks the rendered layout, so no beat targets hidden elements.
+   * This panel's ghosted wordmark: re-centring the field drags it across the
+     whole plate, behind the figure (its asset is also the wrong crop; see
+     .steps__mark--right in Steps.css). The glow stays: it lights the card.
 
-   THE BASIS
-   What is left is painted from the disc's left edge at 437.69 to the card's
-   right edge at 845, and from the card's top at 226 to its foot at 384: a
-   407.3 x 158 group centred on (641.35, 305). The basis is 442, which is that
-   width plus 17 design px of gutter each side -- 13.7 CSS px at 390, the same
-   air the page gutter gives the plate itself. At 390 that is 0.787 design
-   pixels per CSS pixel, 1.86x what the panel had: BALANCE goes 5.93 -> 11.02px,
-   the figure 16.93 -> 31.49px, the indicator 29.6 x 3 -> 55.1 x 5.5, and the
-   padlock 6.8 -> 12.6px. At the 360 floor the label still reads 10.07px, and
-   at 430 it is 12.2px.
+   The basis: the kept group (disc left edge 437.69 to card right edge 845,
+   card top 226 to foot 384) is 407.3 x 158, centred on (641.35, 305). The
+   basis 442 adds 17 design px of gutter each side, which keeps the BALANCE
+   label at about 10px or more down to a 360px viewport. `--cy` is the card's
+   own centre, 305.
 
-   `--cy` is 305 and not the 305.5 the desktop uses: 305 is the card's own
-   centre, ((226 + 384) / 2), and with the tiles gone the card is what the
-   field is balanced on.
-
-   SPECIFICITY. Steps.tsx imports the panels before ./Steps.css, so Steps.css
-   wins at equal specificity and its own `.panel--2 { --p }` would beat a bare
-   `.panel--2` written here. `.panel.panel--2` is one class heavier and lands.
-   A transform is NOT an option for any of this: the loop measures its travel
-   off the rendered design pixel, so a scaled panel overshoots every beat by
-   the scale factor. --p is the knob. ------------------------------------- */
+   Specificity: Steps.tsx imports the panels before ./Steps.css, so
+   `.panel.panel--2` is one class heavier to beat Steps.css's `.panel--2`.
+   Change `--p`, never add a scale transform: the loop measures travel from the
+   rendered design pixel. --------------------------------------------------- */
 @media (max-width: 700px) {
   .panel.panel--2 { --p: calc(100cqw / 442); --cx: 641.35; --cy: 305; }
 
@@ -474,9 +321,6 @@
   .panel--2 .s2__rails,
   .panel--2 .s2__comet { display: none; }
 
-  /* Scoped to this panel on purpose: `.steps__mark--right` is the section's
-     element and Steps.css is its home, so what is written here is one panel
-     opting its own copy out of its own phone composition, not a change to the
-     shared rule. Panels 1 and 3 keep theirs. */
+  /* Scoped to this panel: panels 1 and 3 keep their wordmark. */
   .panel--2 .steps__mark--right { display: none; }
 }

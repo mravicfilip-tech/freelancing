@@ -10,14 +10,12 @@
   isolation: isolate;
 
   /* The band's own colour, named here so the light block at the foot of the
-     file redefines exactly these and nothing has to be hunted for. Dark is
-     what the section shipped with, written out rather than inlined, so this
-     block is provably a no-op.
+     file redefines exactly these and nothing has to be hunted for. These are
+     the dark values.
 
-     The first stop of --hero-g-ember was #0f0e0d, which is --bg. It was never
-     a dark colour there: it is the ground the disc dissolves into, so it is
-     var(--page) in both themes. Read literally on paper it would be a grey
-     bruise across the middle of the hero -- the same trap the footer found. */
+     The first stop of --hero-g-ember is not a dark colour: it is the ground
+     the disc dissolves into, so it is var(--page) in both themes. A literal
+     dark hex there would read as a grey bruise across the hero on paper. */
   --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #7e0202 60%);
   --hero-g-orange: #c23a26;
   --hero-g-core: #f15034;
@@ -26,9 +24,8 @@
   --hero-g-peach-op: 0.85;
   --hero-g-cream: #fbd6ca;
   /* The two surfaces that are NOT discs: the band's own paper and the planet
-     that cuts it. Both were literal var(--page) and both stay literal
-     var(--page) here, so dark and today's light are provably unmoved. They are
-     named so a future light ground can be washed with a gradient without
+     that cuts it. Both are var(--page) in both themes. They are named so a
+     future light ground can be washed with a gradient without
      reaching for .hero's `background` shorthand or the horizon's fill. A wash
      needs BOTH: the horizon paints over the discs last, so a flat paper ellipse
      on a washed ground is a bright flat shape rather than the ground showing
@@ -44,7 +41,7 @@
 
 /* A pair the motion layer reads back through tok(), which is
    getComputedStyle(document.documentElement) and therefore sees :root and
-   nothing else. The --hero- prefix keeps it out of eight other sections' way.
+   nothing else. The --hero- prefix keeps it clear of other sections' names.
 
    --hero-sl2-* is slide 2's own price flash, read by SlideAccount.motion.ts.
    Literal values, not var(--pos): a custom property holding var() does resolve
@@ -52,15 +49,13 @@
    depend on that.
 
    A FLASH IS A STEP, NOT A COLOUR, which is why --hero-sl2-down is #d6392a in
-   light and not --neg's #b01309 like the resting loss ink beside it. Dark's
-   flash travels 4.64:1 from the settled white figure; #b01309 travels only
-   2.54:1 from the settled near-black one, because dark's rest ink is white and
-   has the whole range below it while paper's is near-black and has very little
-   above it. #d6392a gets the swing back to 3.86:1 and still sits at 4.34:1 on
-   the card, which a 20px figure flashed for 0.9s can carry. The resting loss
-   ink beside it keeps 6.60:1, which is why the two are separate tokens at all.
-   The up flash needed nothing: dark travels 2.15:1, light already travels
-   2.84:1. */
+   light and not --neg's #b01309 like the resting loss ink beside it. What
+   reads is the swing away from the settled figure's ink. Dark's settled ink is
+   white, with the whole range below it; paper's is near-black, with very
+   little above it, so #b01309 barely moves from it. #d6392a restores most of
+   the swing while staying legible on the card for a 20px figure flashed for
+   0.9s. The resting loss ink needs full label contrast, which is why the two
+   are separate tokens. The up flash needs no special value. */
 :root {
   --hero-sl2-up: #00c950;
   --hero-sl2-down: #e7000b;
@@ -151,25 +146,17 @@
   display: flex;
   flex-direction: column;
   min-height: inherit;
-  /* The hero's floor. It used to be the padding of an empty `.hero__foot` box
-     that every slide but the first carried to hold the market snapshot's slot
-     open; the snapshot is gone and the floor is stated here, at the same 70px,
-     so slides 2 to 4 sit exactly where they did. Any height `min-height` adds
-     still lands between the pager and this, as the box's `margin-top: auto`
-     put it. */
+  /* The hero's floor, under the pager. */
   padding-bottom: 70px;
 }
 .hero__stage {
   position: relative;
   /* The query container the slides measure themselves against. It sits inside
-     `.container--wide`, so its width IS the content column -- which is the only
+     `.container--wide`, so its width IS the content column, which is the only
      basis that stays true at every viewport. Deriving the unit from `.hero`
-     instead, as this did, works only while the column is a fixed fraction of
-     the viewport: above 1920 the container's max-width pins the column at
-     1800px while `100cqw` keeps growing, and the unit runs away. Measured
-     before this: the 1800px column read 1570.9 design units at 2200, 1350 at
-     2560 and 1152 at 3000, so illustrations rendered up to a third too small on
-     an ordinary wide monitor. */
+     would work only while the column is a fixed fraction of the viewport:
+     above 1920 the container's max-width pins the column at 1800px while
+     `100cqw` of `.hero` keeps growing, and illustrations render too small. */
   container-type: inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -210,20 +197,15 @@
 /* THE HEADLINE SIZE: ONE SIZE FOR ALL FOUR SLIDES, SET BY THE ONE THAT NEEDS
    THE MOST ROOM.
 
-   The titles are the client's, with the client's own line breaks, and a line
-   is never wrapped (`white-space: pre` above), so a line is exactly as wide as
-   its words. At the old `.display` size, clamp(52px, 5.2vw, 100px), the
-   client's longer lines ran into the artwork beside them: "Your Sports
-   Knowledge" (slide 2) 314px into the market cards at 1440, and "of Prediction
-   Markets." (slide 4) across the orbit rings at 1920 and over the BTC/USD pill
-   at 1440. The client's instruction: scale the headlines down, equally, so
-   they sit clear.
+   The titles keep their authored line breaks and a line is never wrapped
+   (`white-space: pre` above), so a line is exactly as wide as its words. At
+   the site-wide `.display` size the longer lines run into the artwork beside
+   them. Requirement: scale all four headlines down equally so they sit clear.
 
    So the size is a fraction of the content column, in `cqw` of
-   `.hero__stage`, and it is the same fraction on every slide. Measured on the
-   rendered page, as a share of the column, at 1181 / 1280 / 1440 / 1600 /
-   1920 (all identical, because both the type and the artwork scale with the
-   column):
+   `.hero__stage`, and it is the same fraction on every slide. As a share of
+   the column (identical at every width, because both the type and the artwork
+   scale with the column):
 
        slide   widest line               line, em   artwork starts at
        2       Your Sports Knowledge      11.239     0.3993 of the column
@@ -233,21 +215,22 @@
 
    Slide 2 is the tightest: 0.3993 / 11.239 = 3.553cqw would put the line's
    last glyph ON the first card. 3.375cqw draws it at 37.93% of the column and
-   leaves 2% clear -- 27px at 1440, 36px at 1920, 22px at 1181 -- and every
-   other slide clears by more. The column stops growing at 1800 above 1920,
-   so the size tops out at 60.75px; the 32px floor is never reached above
-   1181, where the column is 1107px and the title 37.4px.
+   leaves 2% clear, and every other slide clears by more. The column stops
+   growing at 1800 above 1920, so the size tops out at 60.75px; the 32px floor
+   is never reached above the 1180 break.
 
    The phone and the one-column range below 1180 have the artwork under the
    copy rather than beside it, and take their own values further down.
 
    The value itself lives in tokens.css as `--display-size`, which `.display`
    reads, so that the About page's h1 is drawn from the same rule. Change it
-   there, and re-measure the four slides against the numbers above. */
+   there, and re-check the four slides against the numbers above (and update
+   the table if a title changes). */
 /* The lede's measure is the design's 508px, capped at the same share of the
    column the titles are drawn to (37.9cqw, see above), because at 18px the
    lede's longest line reaches the artwork where a 508px measure is wider than
-   that share: at 1280 slide 2's lede ran under the first market card. The cap
+   that share (at 1280 slide 2's lede would run under the first market card).
+   The cap
    binds from about 1340 down to the 1180 break, below which the artwork is
    under the copy and the measure goes back to 508. */
 .hero__lede { max-width: min(508px, 37.9cqw); }
@@ -295,7 +278,7 @@
    ring, and the same 15px glyph drawn at a 1.6 stroke. Those three tokens are
    the arrow's own and already carry their light values, so the control
    re-tints with the page and inverts nothing. What it does NOT take is the
-   arrow's hover -- no colour shift, no lean, no transition -- because nothing
+   arrow's hover, no colour shift, no lean, no transition, because nothing
    new on this page answers the pointer. */
 .hero__play {
   display: grid;
@@ -317,7 +300,7 @@
    TWO SLIDES, ONE MARK. Slide 1 shows it as the whole right-hand illustration;
    slide 4 shows it inside the network diagram, on `.sl4__mark-slot`. The layer
    is a single scene either way, so slide 4 does not get a placement of its own
-   -- that would rebuild the scene on every advance (see Hero.tsx) -- it gets a
+   (that would rebuild the scene on every advance, see Hero.tsx); it gets a
    transform, off custom properties Hero.tsx measures and writes.
 
    The transform is not transitioned by default. Every change to it but one
@@ -332,7 +315,7 @@
 }
 .hero__logo.is-visible { opacity: 1; }
 /* ON THE CANVAS, NOT ON THE LAYER. `.hero__logo`'s own transform belongs to the
-   entrance -- entrance.ts tweens it from scale 0.94 and GSAP writes that inline,
+   entrance, entrance.ts tweens it from scale 0.94 and GSAP writes that inline,
    where a stylesheet cannot reach it. The canvas fills the layer, so its own
    coordinates ARE the layer's: a translate of `--mark-tx` moves the mark that
    many layer pixels, which is what those numbers mean. */
@@ -345,12 +328,11 @@
 /* The static fallback, where there is no WebGL to draw the live one. It is
    PLACED on the slot rather than carried there by the transform above: the
    image is laid out at 72%/12% of the layer, not at its origin, so a layer
-   space translate applied to it starts from that offset and lands it 412px off
-   the layer's right edge, where `overflow: hidden` eats it. Measured before
-   this: the slot was empty in every `--disable-webgl` capture.
+   space translate applied to it starts from that offset and lands it off the
+   layer's right edge, where `overflow: hidden` clips it.
 
-   The two numbers are the ones the live mark uses -- the slot's centre and the
-   design's drawn height inside it -- so the outline arrives at the size and
+   The two numbers are the ones the live mark uses, the slot's centre and the
+   design's drawn height inside it, so the outline arrives at the size and
    place the scene would have drawn, which is what the 72/12/60 above already
    does for slide 1. */
 .hero__logo.is-onSlot img {
@@ -382,89 +364,62 @@
   .hero__slide { grid-template-columns: minmax(0, 1fr); --u: calc(100cqw / 1000); }
   .hero__lede { max-width: 508px; }
   /* One column: the artwork moves under the copy, so a title line only has to
-     fit the column, and the design's own ramp does that with room to spare --
+     fit the column, and the design's own ramp does that with room to spare:
      at 1180 the widest line, 11.239em at 61.4px, is 690px of a 1106px column;
      at 721, 584px of 657. `--display-size` takes this ramp at this width in
      tokens.css; otherwise the titles would shrink to fit a neighbour that is
      no longer there. */
   /* Pack the two rows to the top. `.hero__slide` is a grid item at 1/1 of
-     `.hero__stage`, so it is stretched to the height of the TALLEST slide --
-     and its own rows, being auto, then shared that slack out between them.
-     That is the gap the phone shows between the button and the illustration:
-     not spacing anybody chose, just a stretched grid distributing space it had
-     no use for. The slack now stays at the bottom of the stage, in one piece,
-     instead of being dealt into the middle of every slide. */
+     `.hero__stage`, so it is stretched to the height of the TALLEST slide,
+     and its auto rows would share that slack out between them, opening an
+     unintended gap between the button and the illustration. Packed, the
+     slack stays at the bottom of the stage, in one piece. */
   .hero__slide { align-content: start; }
   .hero__visual { position: relative; inset: auto; width: auto; margin-top: 8px; }
 }
 @media (max-width: 720px) {
   /* 20, not 24, because on a phone this is the SAME BAR the menu sheet
      draws when it opens, and the sheet's own top is
-     `max(var(--sheet-safe-t, 0px), 20px)` (Nav.css). At 24 the logo
-     jumped 4px up the moment the sheet opened and back down when it
-     closed. Closed and open now start the row on the same line. */
+     `max(var(--sheet-safe-t, 0px), 20px)` (Nav.css). Any other value makes
+     the logo jump when the sheet opens and closes. */
   .hero { padding-top: 20px; }
 
-  /* The eyebrow is a 29-character string set at a flat 16px with
-     `white-space: nowrap` (global.css), so it has ONE width and does not care
-     how narrow the screen is. The hero column at 320 is 280px between the 20px
-     gutters, so the line ran past the right edge and the last word was cut off
-     by the section's clip. Nothing scrolled, which is why it survived:
-     `scrollWidth` still read 320. That is the fault class to remember here --
-     it does not show up in an overflow check.
+  /* The eyebrow is set at a flat 16px with `white-space: nowrap` (global.css),
+     so it has ONE width however narrow the screen is, and a long one runs past
+     the column and is cut off by the section's clip. Nothing scrolls, so this
+     does not show up in an overflow check; re-check it by eye at 320 when the
+     copy or the font changes.
 
-     The same fix as `.fam .eyebrow` in Familiar.css: give the flat size a
-     floor-and-ceiling against the viewport. 4.45vw is chosen so the clamp is
-     INERT from 360 up -- 360 x 0.0445 = 16.02, over the 16px ceiling -- and
-     the phone widths that were already measured and balanced do not move a
-     pixel. The dot rides down on the same arithmetic (12 / 359.98 = 3.34vw) so
-     the mark keeps its proportion to the words rather than growing into them.
+     As with `.fam .eyebrow` in Familiar.css, the flat size gets a floor and
+     ceiling against the viewport. 4.45vw keeps the clamp INERT from 360 up
+     (360 x 0.0445 = 16.02, over the 16px ceiling), so only the smallest phones
+     scale. The dot rides down on the same arithmetic (12 / 359.98 = 3.34vw) so
+     it keeps its proportion to the words.
 
-     RE-MEASURED FOR GALANO GROTESQUE. The numbers this paragraph used to quote
-     were Geist Mono's: 29 glyphs on a 0.6em advance at 16px is 278.4, plus the
-     12 dot and the 12 gap, which is where the old 302.4 came from. None of that
-     arithmetic survives a proportional face -- there is no advance to multiply
-     by -- so these are measured on the rendered page instead:
-
-         1100 / 720 / 390 / 360   307.61   (clamp inert, 16px)
-         320                      273.69   (clamp live, 14.24px)
-
-     and the columns they sit in are 320 at 360 and 280 at 320. So the line
-     clears its column by 12.39px at 360 and by 6.31px at 320, and 320 is the
-     tight one, as it was before.
-
-     THAT 6.31px IS A THRESHOLD, and it is measured against the FALLBACK, not
-     against Galano -- the licensed files are not in the repo yet (see
-     styles/fonts.css). Uppercase in a geometric sans can set either side of a
-     Helvetica-metric fallback. If the real face sets this line more than about
-     2.3% wider, 320 is clipped again, silently, exactly as before. Re-measure
-     this one line when the fonts land; it is the narrowest margin on the page.
-     The coefficient cannot simply be lowered to buy room, because 4.45 is
-     already the smallest value that leaves 360 untouched (16 / 360 = 0.04445);
-     buying more means a `max-width: 359px` block rather than a smaller ramp. */
+     The label face is Galano Grotesque, whose files are not in the repo yet
+     (see styles/fonts.css); the page currently renders the fallback. Uppercase
+     in a geometric sans can set wider than the fallback, so re-check this line
+     at 320 once the licensed fonts land. The coefficient cannot be lowered to
+     buy room without moving 360; that would need a `max-width: 359px` block. */
   .hero .eyebrow { font-size: clamp(13px, 4.45vw, 16px); gap: clamp(8px, 3.34vw, 12px); }
   .hero .eyebrow__dot { width: clamp(10px, 3.34vw, 12px); height: clamp(10px, 3.34vw, 12px); }
-  /* AND NOW IT MAY WRAP. The client's eyebrows are longer than the one this
-     note was measured on: "FINANCIAL MARKETS. FUTURE OUTCOMES." is 364px on
-     one line, past a 350px column at 390 and cut off by the hero's clip at 360
-     and below (with `scrollWidth` still reading clean, as above). The client's
-     answer is a second line on a phone, and only on a phone. The line breaks
-     only where it has to, so the other three stay on one line from 360 up; the
-     dot keeps to the first line (0.6em is half the 1.2 line, less half the dot)
-     instead of centring on the pair. */
+  /* AND IT MAY WRAP. Some eyebrows ("FINANCIAL MARKETS. FUTURE OUTCOMES.") are
+     wider than a phone column even at 16px, so on a phone, and only on a
+     phone, the line may break onto a second line. It breaks only where it has
+     to; the dot keeps to the first line (0.6em is half the 1.2 line, less half
+     the dot) instead of centring on the pair. */
   .hero .eyebrow { white-space: normal; align-items: flex-start; }
   .hero .eyebrow__dot { margin-top: calc(0.6em - clamp(5px, 1.67vw, 6px)); }
 
   .hero__title { white-space: pre-line; width: auto; }
   /* The same rule as the desktop, against the column the phone has: the
-     client's two lines stay two lines, and all four slides share one size,
-     set by the widest line. That is still slide 2's "Your Sports Knowledge" at
-     11.239em, so 8.7cqw draws it at 97.8% of the column -- 30.5px at 390,
-     27.8px at 360 is floored to 28px and still fits (315 of 320). Only at 320
-     does the 28px floor bind and let that one line wrap. The old ramp,
-     clamp(38px, 10.6vw, 52px), put slides 2 to 4 onto three and four lines at
-     390 with the client's copy, which is what held the four slide bottoms
-     apart. The value is `--display-size` at this width, in tokens.css. */
+     authored two lines stay two lines, and all four slides share one size,
+     set by the widest line. That is slide 2's "Your Sports Knowledge" at
+     11.239em, so 8.7cqw draws it at 97.8% of the column (30.5px at 390; at
+     360 it is floored to 28px and still fits). Only at 320 does the 28px floor
+     bind and let that one line wrap. Keeping every title on two lines also
+     keeps the four slide bottoms level. The value is `--display-size` at this
+     width, in tokens.css. */
   .hero__bg { --u: 0.45px; }
   /* Tighter than the desktop 162/48/28, because a phone reads these as one
      block and the desktop rhythm spreads them over most of the viewport. */
@@ -473,20 +428,15 @@
   .hero__terms { margin-top: -16px; } /* 12px under the button, as above */
   .hero__heading { gap: 16px; }
   /* The copy and its illustration are one block on a phone; the desktop
-     clamp's 32px floor was set against a 560px column standing beside the
-     artwork, not under it.
-
-     20px and not 24px because the 1180 block also gives `.hero__visual` an 8px
-     top margin, so what the phone actually measured between the Get Started
-     button and the artwork was 32px -- two spacings stacked, neither of them
-     chosen for this width. One spacing, stated once. */
+     clamp's 32px floor is meant for a 560px column standing beside the
+     artwork, not under it. The 1180 block's 8px top margin on `.hero__visual`
+     is removed here, so the gap between the button and the artwork is one
+     spacing, stated once. */
   .hero__slide { gap: 20px; }
   .hero__visual { margin-top: 0; }
   .hero__position { margin-top: 24px; }
 
-  /* The floor under the pager. 32px is the phone's own, the one the market
-     snapshot band closed on when it was carried here on every slide; the band
-     is gone, so the pager is the last thing in the hero. */
+  /* The floor under the pager, which is the last thing in the hero. */
   .hero__inner { padding-bottom: 32px; }
 }
 
@@ -504,25 +454,23 @@
    of nothing instead of fading. Both are block-level and add no spacing, so the
    settled layout is unchanged. */
 /* The mask clips to the line box, and at these line-heights the descenders of
-   g, y and p hang below it -- "of Trading" lost the tail of its g. The padding
-   gives the mask that room back and the negative margin takes it out of the
-   layout again, so the descender is inside the clip while the spacing between
-   lines is unchanged.
+   g, y and p hang below it and would be clipped. The padding gives the mask
+   that room back and the negative margin takes it out of the layout again, so
+   the descender is inside the clip while the spacing between lines is
+   unchanged.
 
    No `will-change` here. It is a standing compositor promotion, and text on its
-   own layer loses subpixel antialiasing permanently -- measured on the fan
-   section today as 5,744 differing pixels against the same type unpromoted.
-   GSAP promotes for the length of the tween by itself. */
+   own layer loses subpixel antialiasing permanently. GSAP promotes for the
+   length of the tween by itself. */
 .hero__title .line,
 .hero__lede .line {
   display: block;
   overflow: hidden;
-  /* 0.26em, sized from the font rather than guessed. Manrope's `g` puts 21px
-     of ink below the baseline at this size, while `line-height: 0.9` ends the
-     inner box only 5.43px below it -- the line box is SHORTER than the glyphs
-     it holds. 0.16em still left the tail 2.27px outside the clip; 0.26em
-     clears it by about 4px at every size the headline uses. The negative
-     margin takes the room back out of the layout, so nothing shifts. */
+  /* 0.26em, sized from the font rather than guessed. With `line-height: 0.9`
+     the line box is SHORTER than the glyphs it holds, and Manrope's `g`
+     descends well below it; 0.16em still clips the tail, 0.26em clears it at
+     every size the headline uses. The negative margin takes the room back out
+     of the layout, so nothing shifts. */
   padding-bottom: 0.26em;
   margin-bottom: -0.26em;
 }
@@ -560,7 +508,7 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list -- the same
+   Written twice, because a media query cannot go in a selector list, the same
    shape tokens.css uses, and for the same reason. The two blocks MUST stay
    identical; only their conditions differ.
 
@@ -577,35 +525,32 @@
 
      Geometry byte-for-byte: same five discs, same positions, same radii, same
      blur, same opacities, same paint order, and the halftone still sits on the
-     sun. What changes is what the layer DOES, on the two rules the footer
-     proved:
+     sun. What changes is what the layer DOES, on two rules (shared with the
+     footer):
 
      1. THE PAGE STOP IS THE PAGE. --hero-g-ember's first stop is var(--page) in
-        both themes and needed no light value at all. #0f0e0d was never a dark
-        colour there; it is the ground the disc dissolves into.
+        both themes and needs no light value at all: it is the ground the disc
+        dissolves into.
 
      2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
-        painted LAST is the palest -- cream #fbd6ca at 14.3:1 -- because the core
+        painted LAST is the palest, cream #fbd6ca at 14.3:1, because the core
         of a light source is its brightest part. Nothing on paper can be brighter
         than the page, so a pale core is a hole and the band reads as a halo
         around nothing. The order is kept and the ramp reversed: cream is still
-        last and still the core, and is now the DEEPEST tint at 1.42:1; the ember
-        disc is still the outer falloff and is now the faintest at 1.06:1.
+        last and still the core, and in light is the DEEPEST tint at 1.42:1; the
+        ember disc is still the outer falloff and is the faintest at 1.06:1.
         Warmth still peaks where light peaked.
 
-     THE HORIZON NEEDED NOTHING. .hero__horizon was already var(--bg), so the
-     alias pass made it var(--page) and it flips for free -- which is the whole
-     composition surviving intact. In dark it is a black planet cutting a
-     sunrise; on paper it is the paper itself cutting the blush, and the light
-     still rises out of the ground rather than floating over it.
+     THE HORIZON NEEDS NOTHING. .hero__horizon is var(--page), so it flips for
+     free and the composition survives intact. In dark it is a black planet
+     cutting a sunrise; on paper it is the paper itself cutting the blush, and
+     the light still rises out of the ground rather than floating over it.
+     This is a different idea from the dark sunrise (see LIGHTMODE.md 6.1).
 
-     It is a good light-mode idea and it is NOT the same idea as the sunrise.
-     LIGHTMODE 6.1 asks for that to be seen before the rest of the page copies
-     it; the footer has already asked once, and this is the section the question
-     was really about. 6.1 also suggests dropping the core disc entirely in
-     light. It is kept: the core sits between the orange disc and the cream one
-     spatially, and removing it leaves a step in a ramp whose whole point is to
-     stay monotonic. It is simply no longer the brightest thing in the stack. */
+     The core disc is kept in light: it sits between the orange disc and the
+     cream one spatially, and removing it would leave a step in a ramp whose
+     whole point is to stay monotonic. It is simply no longer the brightest
+     thing in the stack. */
   --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf3ec 60%);
   --hero-g-peach: #fae8dd;
   --hero-g-orange: #f6decf;
@@ -615,7 +560,7 @@
   /* The halftone dither keeps its blend mode and its opacity and turns its
      colour around. soft-light lightens its backdrop where the source is above
      mid-grey and darkens it where the source is below, so a pale peach dot
-     lifts the sun on black and a deep one settles it into paper -- the same
+     lifts the sun on black and a deep one settles it into paper, the same
      texture, the opposite direction, with no blend-mode change to go wrong
      inside .hero's `isolation: isolate`. (It is academic either way: the parent
      carries blur(110 * u), which smears a 6px dot grid into an even tint.) */
@@ -628,35 +573,32 @@
 
      Geometry byte-for-byte: same five discs, same positions, same radii, same
      blur, same opacities, same paint order, and the halftone still sits on the
-     sun. What changes is what the layer DOES, on the two rules the footer
-     proved:
+     sun. What changes is what the layer DOES, on two rules (shared with the
+     footer):
 
      1. THE PAGE STOP IS THE PAGE. --hero-g-ember's first stop is var(--page) in
-        both themes and needed no light value at all. #0f0e0d was never a dark
-        colour there; it is the ground the disc dissolves into.
+        both themes and needs no light value at all: it is the ground the disc
+        dissolves into.
 
      2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the disc
-        painted LAST is the palest -- cream #fbd6ca at 14.3:1 -- because the core
+        painted LAST is the palest, cream #fbd6ca at 14.3:1, because the core
         of a light source is its brightest part. Nothing on paper can be brighter
         than the page, so a pale core is a hole and the band reads as a halo
         around nothing. The order is kept and the ramp reversed: cream is still
-        last and still the core, and is now the DEEPEST tint at 1.42:1; the ember
-        disc is still the outer falloff and is now the faintest at 1.06:1.
+        last and still the core, and in light is the DEEPEST tint at 1.42:1; the
+        ember disc is still the outer falloff and is the faintest at 1.06:1.
         Warmth still peaks where light peaked.
 
-     THE HORIZON NEEDED NOTHING. .hero__horizon was already var(--bg), so the
-     alias pass made it var(--page) and it flips for free -- which is the whole
-     composition surviving intact. In dark it is a black planet cutting a
-     sunrise; on paper it is the paper itself cutting the blush, and the light
-     still rises out of the ground rather than floating over it.
+     THE HORIZON NEEDS NOTHING. .hero__horizon is var(--page), so it flips for
+     free and the composition survives intact. In dark it is a black planet
+     cutting a sunrise; on paper it is the paper itself cutting the blush, and
+     the light still rises out of the ground rather than floating over it.
+     This is a different idea from the dark sunrise (see LIGHTMODE.md 6.1).
 
-     It is a good light-mode idea and it is NOT the same idea as the sunrise.
-     LIGHTMODE 6.1 asks for that to be seen before the rest of the page copies
-     it; the footer has already asked once, and this is the section the question
-     was really about. 6.1 also suggests dropping the core disc entirely in
-     light. It is kept: the core sits between the orange disc and the cream one
-     spatially, and removing it leaves a step in a ramp whose whole point is to
-     stay monotonic. It is simply no longer the brightest thing in the stack. */
+     The core disc is kept in light: it sits between the orange disc and the
+     cream one spatially, and removing it would leave a step in a ramp whose
+     whole point is to stay monotonic. It is simply no longer the brightest
+     thing in the stack. */
   --hero-g-ember: linear-gradient(170deg, var(--page) 20%, #fdf3ec 60%);
   --hero-g-peach: #fae8dd;
   --hero-g-orange: #f6decf;
@@ -666,7 +608,7 @@
   /* The halftone dither keeps its blend mode and its opacity and turns its
      colour around. soft-light lightens its backdrop where the source is above
      mid-grey and darkens it where the source is below, so a pale peach dot
-     lifts the sun on black and a deep one settles it into paper -- the same
+     lifts the sun on black and a deep one settles it into paper, the same
      texture, the opposite direction, with no blend-mode change to go wrong
      inside .hero's `isolation: isolate`. (It is academic either way: the parent
      carries blur(110 * u), which smears a 6px dot grid into an even tint.) */

@@ -373,8 +373,7 @@
    (an XRP market, a BTC round, a BNB market). They stood where the second card
    stands, out of focus, and the frame they were taken from does not contain
    them: it has two crisp cards and nothing behind them. So they were a
-   stand-in, not a backdrop, and they are gone. `familiar/ghost.png` is left on
-   disk unreferenced -- src/assets is not ours to delete from.
+   stand-in, not a backdrop, and they are gone, along with the bitmap.
 
    The vertical rhythm is pinned rather than distributed. Figma runs
    meta(10) -> 16.07 -> head(24.10) -> [slack] -> bar(14) -> 10.71 -> btns(26)

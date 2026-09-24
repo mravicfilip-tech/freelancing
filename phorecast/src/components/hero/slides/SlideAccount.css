@@ -164,9 +164,7 @@
    crops it to (left -36.9%, top -8.68%, 172.58% x 107.86% of a 39.345 box) and
    resampled to 160px. The raw export is a 1920 x 1200 PNG: 3.5MB inside the
    hero for a 39px slot. The crop is exact, so `object-fit: cover` on the
-   square renders the same pixels the node does. The project's older
-   `hero/pred-real-madrid.jpg` is a DIFFERENT, tighter crop of the same photo
-   and is no longer used here. */
+   square renders the same pixels the node does. */
 .sl2-pred__avatar img {
   display: block;
   width: 100%;

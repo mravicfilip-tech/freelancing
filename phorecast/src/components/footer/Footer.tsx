@@ -50,11 +50,7 @@ import { buildFooter } from './Footer.motion';
    The Telegram file is the same path the single glyph here was drawn from
    before (footer/telegram-glyph.svg, now deleted): that file was this path
    translated by 10,10 inside a 44x44 Figma frame. So the Telegram badge is
-   unchanged in drawing, and the other three now come from the same source.
-
-   NOT src/assets/social/*. Those are 44x44 Figma exports that draw their own
-   rounded-SQUARE plate and border inside the file, under the glyph, and a mask
-   paints the plate too. They are unreferenced and left on disk untouched. */
+   unchanged in drawing, and the other three now come from the same source. */
 import x from '../../assets/footer/social/x.svg';
 import tiktok from '../../assets/footer/social/tiktok.svg';
 import discord from '../../assets/footer/social/discord.svg';

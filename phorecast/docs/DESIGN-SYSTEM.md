@@ -127,7 +127,8 @@ and "light because the user chose it" need two separate blocks:
 In practice the second always applies, because the inline script resolves
 `data-theme` before first paint; the first is the fallback for a page where
 that script did not run. **The two blocks must stay identical.** The same
-pattern appears in `tokens.css` and in 23 component CSS files. When you change
+pattern appears in `tokens.css` and in most component CSS files
+(`grep -rl "prefers-color-scheme: light" src`). When you change
 one block, change its twin and diff them.
 
 **Colours read by JavaScript.** Several motion modules read resting colours
@@ -168,7 +169,9 @@ Breakpoints that recur: **720** (phone; also where `--h2-size` drops to 28),
 phone sheet), **700** (Steps becomes a tablist), **767 / 1279** (HeroLogo
 layouts).
 
-## 5. The `Icon` mask primitive (`src/components/Icon.tsx`, `src/styles/icon.css`)
+## 5. The Icon mask primitive
+
+`src/components/Icon.tsx`, `src/styles/icon.css`.
 
 Most single-colour SVGs are painted as a CSS mask so their colour comes from
 `color` (a token, inheritance, `:hover`, a GSAP tween on `color`) instead of

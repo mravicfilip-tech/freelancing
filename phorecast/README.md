@@ -1,107 +1,89 @@
-# Phorcast — landing page
+# Phorcast website
 
-Vite + React 19 + TypeScript, built from the Phorcast Figma file
-(`aczG8te17zRGoK5wvirB92`). No CSS framework: plain CSS with design tokens in
-`src/styles/tokens.css`.
+Marketing site for Phorcast: a landing page (`/`) and an About page (`/about`),
+both ending in the same FAQ and footer. Vite 8, React 19 and TypeScript, plain
+CSS with design tokens, GSAP for motion and three.js for the animated logo.
+Built from the Figma file `aczG8te17zRGoK5wvirB92`.
 
-```
-npm install
-npm run dev        # http://localhost:5173, reloads on local edits
-npm run dev:sync   # the same, and pulls new commits from the branch as they land
-npm run build      # typecheck + production build -> dist/
-npm run preview    # serve dist/
-```
+Live at https://phorcast-markets.vercel.app.
 
-`dev:sync` is for reviewing work pushed from elsewhere: it polls the tracked
-branch every 15s (`SYNC_SECONDS` to change that), fast-forwards, and lets Vite
-hot-reload the page. It installs any dependency that is missing from
-`node_modules` — at start-up and after each pull — so a commit that adds a
-package doesn't leave you with a Vite resolve error. It never touches a dirty
-checkout, so your own uncommitted edits are safe.
+**New to the project? Read [HANDOVER.md](HANDOVER.md) first.**
 
-Node 22 or newer.
+## Quickstart
 
-## Sections
-
-| Component | Figma node | What it is |
-|---|---|---|
-| `components/hero` | 244:1030, 313:12332, 280:4184, 289:5879 | Four-slide hero carousel |
-| `components/bento` | 244:1325 | "Why Traders Move to Phorcast" bento grid |
-| `components/fan` | 270:6297 | Decorative arc band with category pills |
-| `components/steps` | 280:4547, 251:2055, 280:4816 | "Open an account in 3 simple steps" slider |
-| `components/built` | 255:3449 | "Built for the Way You Trade" feature cards |
-| `components/faq` | 297:140 | "Answers you can verify" accordion |
-| `components/HeroLogo` | — | Animated 3D mark, used by the hero and the FAQ |
-| `components/footer` | client screenshot (supersedes 302:140) | Brand block, Product / Legal / Social columns, bottom bar |
-
-Nodes 255:2705 and 255:2862 are background-glow frames with no content; their
-treatment lives in the hero and section glows rather than in a component.
-
-## Conventions
-
-- **Scaling.** Sections that place elements at exact Figma coordinates declare a
-  unit custom property (`--u`, `--p`, `--c`, `--f`) equal to one design pixel at
-  the current width, so `calc(330 * var(--u))` reads as "330px in the design".
-  Containers use `container-type: inline-size` and `cqw` so the unit tracks the
-  element rather than the viewport.
-- **Glows.** Figma renders several glows through a WebGPU shader stack
-  (halftone, lens distortion, Bayer dithering). Those are approximated with
-  blurred radial gradients; the hero adds a dot pattern over the sun for grain.
-- **Assets.** Every icon and illustration is the exported file from Figma, kept
-  under `src/assets/`. Figma's asset URLs expire after about a week, so the
-  committed copies are the source of truth.
-- **Motion.** The hero autoplays every 7s and pauses on hover or focus; the
-  steps slider advances every 6s and stops for good on hover, focus or click.
-  Both respect `prefers-reduced-motion`.
-- **The animated mark.** `components/HeroLogo` is a Three.js scene ported from
-  the `claude/intelligent-sagan-5bxpqc` branch. It loads after the page is idle,
-  probes for WebGL and falls back to `logo-outline.svg` when there is none. Five
-  treatments exist in `variants.ts`; both placements use `lined`. `placement`
-  overrides the breakpoint layout, which is how the same scene serves a full
-  hero and the small FAQ rail. The hero instance stays mounted across the
-  carousel and cross-fades, so its WebGL context is built once.
-- **Section seams.** Glows are clipped by their section's `overflow: hidden`,
-  which leaves a hard line where two sections meet. The `glow-fade` utility in
-  `global.css` masks each glow layer so it dissolves into the next section.
-
-## Motion labs
-
-`http://localhost:5173/motion-lab.html` — five interaction-motion directions for
-buttons, links and social icons, side by side, to pick from. Lab pages live at
-the project root rather than in `public/` so they can `import` gsap and three
-from `node_modules`; they are dev-only and are not part of `npm run build`.
-
-## Review helpers
-
-`?slide=1..4` opens the hero on a given slide and pauses autoplay.
+Node 22 or newer (`.nvmrc`).
 
 ```
-node scripts/screenshot.mjs <url> <out.png> [w] [h] [fullPage]
-node scripts/shot-el.mjs <url> <selector> <out.png> [w]
-node scripts/shot-steps.mjs      # panels 2 and 3 of the steps slider
-node scripts/shot-mobile.mjs     # 390px overflow report + section shots
-node scripts/capture-all.mjs     # every section at 1920, for diffing against Figma
-node scripts/probe.mjs           # measured geometry of the Familiar Trading band
-node scripts/assets-probe.mjs    # rendered vs natural size of each exported asset
-node scripts/shot-lab.mjs        # drives every motion-lab direction and shoots it
+npm ci
+npm run dev        # http://localhost:5173
 ```
 
-To check a section against its frame, capture it and stack the two images:
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Vite dev server with hot reload |
+| `npm run dev:sync` | The same, and fast-forwards from the tracked remote branch every 15s (`SYNC_SECONDS`); leaves a dirty checkout alone |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint over `src`, `scripts` and the config files |
+| `npm run build` | Typecheck, then production build to `dist/` |
+| `npm run check` | Typecheck, lint and build: run before committing |
+| `npm run preview` | Serve `dist/` |
+| `node scripts/screenshot.mjs` | Screenshot a page, the full page or one element, in either theme |
+| `node scripts/pixel-diff.mjs` | Section-by-section visual diff of two running builds |
+| `./scripts/deploy.sh` | Deploy to Vercel production with the account check and alias re-point |
+
+Review URL: `/?slide=N` (1 to 4) opens the hero on that slide.
+
+## Folder map
 
 ```
-node scripts/capture-all.mjs
-python3 -c "
-from PIL import Image
-a, b = Image.open('figma.png'), Image.open('/tmp/mine-bento.png')
-W = 1500
-r = lambda i: i.resize((W, round(i.height * W / i.width)), Image.LANCZOS)
-a, b = r(a.convert('RGB')), r(b.convert('RGB'))
-c = Image.new('RGB', (W, a.height + b.height + 16), (40, 40, 40))
-c.paste(a, (0, 0)); c.paste(b, (0, a.height + 16)); c.save('cmp.png')"
+index.html              entry; inline script sets the theme before first paint
+vercel.json             build settings, SPA rewrite, asset cache headers
+eslint.config.js        lint config
+scripts/                deploy, dev-sync, screenshot, pixel-diff
+public/favicon.svg
+src/
+  main.tsx              bootstraps fonts, theme, global CSS, <App/>
+  App.tsx               the two pages and their section order
+  lib/
+    router.ts           two-route client router
+    motion.ts           useSectionMotion (scroll-gated entrances) and helpers
+    theme.ts            light/dark store, useTheme, useThemeEpoch
+    cta.ts              where every landing-page button points
+    sitemap.ts          footer columns, MORE menu, social URLs
+  styles/
+    tokens.css          colours, type scale, spacing: the single source
+    global.css          reset, utilities, buttons, hover roll
+    fonts.css           Galano Grotesque @font-face (files pending)
+    icon.css            the .icon mask class
+  components/
+    Nav, Logo, Icon, LiveDot, Roll, ThemeToggle     shared pieces
+    HeroLogo/           three.js mark with static fallback
+    hero/               carousel, pager, slides/ (one illustration per slide)
+    bento/              four cards (boxes/) and their lazy motion (motion/)
+    familiar/  pillars/  fan/  steps/  built/       landing bands
+    faq/  footer/       on both pages
+    about/              the About page, one CSS and motion file per band
+  assets/<band>/        exported artwork, one folder per band
+docs/                   developer documentation (below)
+MOTION.md               motion direction (design history)
+LIGHTMODE.md            light-mode strategy (design history)
 ```
 
-## Deploying to Vercel
+A band is usually `X.tsx` (markup and copy), `X.css` (layout, colour, light
+blocks), `X.motion.ts` (entrance) and sometimes `X.loop.ts` (ambient loop).
 
-`vercel.json` sets the framework, output directory, SPA rewrite and long cache
-headers for hashed assets. Import the repo at vercel.com/new and pick this
-branch, or run `npx vercel` for a preview and `npx vercel --prod` to ship.
+## Documentation
+
+| | |
+|---|---|
+| [HANDOVER.md](HANDOVER.md) | Start here: state, open items, first-day checklist, feedback history |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Shell, routing, sections, motion gating, 3D logo, carousel |
+| [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) | Tokens, type scale, theming, design-pixel unit, `Icon` |
+| [docs/CONTENT.md](docs/CONTENT.md) | Where copy and links live; every placeholder link |
+| [docs/ASSETS.md](docs/ASSETS.md) | Asset folders, Figma node map, export rules, fonts |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Vercel, `deploy.sh`, moving to your own account |
+| [docs/TESTING.md](docs/TESTING.md) | Checks, pixel diff, Playwright notes, manual pass |
+| [docs/KNOWN-ISSUES.md](docs/KNOWN-ISSUES.md) | Open questions, layout nits, gotchas |
+| [docs/README.md](docs/README.md) | Index, with summaries of `MOTION.md` and `LIGHTMODE.md` |

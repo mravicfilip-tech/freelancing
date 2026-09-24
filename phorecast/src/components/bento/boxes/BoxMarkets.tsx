@@ -1,14 +1,13 @@
-/* Bento box D — "Forecast Global Markets in One Place" (Figma 365:1063).
+/* Bento card D: "Forecast Global Markets in One Place" (Figma 365:1063).
  *
- * The one light card in the grid: a 776 x 440 cream surface carrying dark type,
- * inverted from its three dark siblings. Everything below is the approved
- * static design at 1:1 design pixels — no motion of any kind lives here. The
- * `motion/markets.ts` module owns the load-in and the orbiting loop; it reads
- * this markup through the class names and `data-market` attributes below.
+ * The one light card in the grid (in dark mode): a 776 x 440 cream surface
+ * carrying dark type. Resting state only, at 1:1 design pixels.
+ * `motion/markets.ts` owns the load-in and the orbiting loop; it reads this
+ * markup through the class names and `data-market` attributes below.
  *
  * Layout note. Figma's card is `flex items-center justify-between` around a
  * single flex child (365:1090) whose two text rows sit 310 apart. That column
- * is 382.4 tall inside a 378 content box, so it overflows 2.2 top and bottom —
+ * is 382.4 tall inside a 378 content box, so it overflows 2.2 top and bottom,
  * which is why the heading starts at y 28.8 rather than 31, and why the link
  * ends 28.8 above the bottom edge rather than flush with the padding. Pinning
  * those offsets by hand would be brittle, so `.box-markets` centres a real
@@ -19,7 +18,7 @@
  * Coordinate note. Every offset here is a design pixel scaled by `--u`, the
  * card's own container unit (see BoxMarkets.css), so the box scales with the
  * grid cell it is handed rather than with the viewport. Tile offsets are the
- * ones Figma reports, measured from each tile's OUTER edge — which works only
+ * ones Figma reports, measured from each tile's outer edge, which works only
  * because the tile rings are painted as inset shadows rather than borders (see
  * BoxMarkets.css: Chrome snaps a 0.56 border to 1px and would drag every glyph
  * off by the difference). The tiles genuinely differ in outer size, corner,
@@ -69,21 +68,15 @@ interface Tile {
   background?: string;
 }
 
-/** The tile's own box, handed to CSS as four design-pixel NUMBERS rather than
- *  as four resolved lengths.
+/** The tile's own box, handed to CSS as four design-pixel numbers rather than
+ *  resolved lengths.
  *
- *  Why: the card has two layouts now. On a phone the artwork is recomposed --
- *  Figma 526:394 turns the field on its side and drops the dark half of it --
- *  and every surviving tile keeps its size, corner, ring and glyph and moves to
- *  a new place. `left`/`top` written here as inline styles could only be moved
- *  from CSS with `!important` on every one of them; written as `--x`/`--y` the
- *  breakpoint simply restates two numbers and BoxMarkets.css does the calc.
+ *  On a phone (Figma 526:394) the artwork is recomposed: each surviving tile
+ *  keeps its size, corner, ring and glyph and moves. Inline `left`/`top` could
+ *  only be overridden with `!important`; as `--x`/`--y` the breakpoint just
+ *  restates two numbers and BoxMarkets.css does the calc.
  *
- *  The desktop render does not move: `left: calc(var(--x) * var(--u))` with
- *  `--x: 191` resolves to exactly what `left: calc(191 * var(--u))` did.
- *
- *  `--ring` stays a length because it is a shadow spread, not a coordinate, and
- *  it is identical in both layouts. */
+ *  `--ring` stays a length: it is a shadow spread, identical in both layouts. */
 const shell = (t: Tile) => ({
   ['--x' as string]: t.left,
   ['--y' as string]: t.top,
@@ -127,16 +120,12 @@ const SOLANA: Tile = { left: 415, top: 256, size: 40, radius: 12.202, border: 1.
 const BITCOIN: Tile = { left: 328.38, top: 442.3, size: 93.822, radius: 16.754, border: 1.675 };
 const TESLA: Tile = { left: 73, top: 226, size: 56, radius: 10, border: 1.4 };
 
-/* 365:1153 – 365:1159 plus 365:1168. Unbadged tiles that carry the field on
-   past the card's clip. Arbitrary warm tints — not the brand orange — except
-   the last, which Figma binds to the token and which the CSS paints.
+/* 365:1153 to 365:1159 plus 365:1168. Unbadged tiles that carry the field on
+   past the card's clip. Warm tints (not the brand orange) except the last,
+   which Figma binds to the token and which the CSS paints.
 
-   The seven tints are named rather than spelled, because this is a GEOMETRY
-   table and colour in it cannot follow a theme: what the card's ground is
-   decides what a 10%-opacity warm smudge on it has to be. The values live
-   beside the rest of the card's palette in BoxMarkets.css; only the names are
-   here. `background` still goes through `shell()` and still lands as an inline
-   style, so nothing about the layout or the paint order moves. */
+   The tints are named, not spelled, so they can follow the theme; the values
+   live with the card's palette in BoxMarkets.css. */
 const GHOSTS: Array<Tile & { edged?: boolean; accent?: boolean }> = [
   { left: -20.71, top: 435.91, size: 42.704, radius: 7.626, border: 0, opacity: 0.1, background: 'var(--mk-ghost-1)' },
   { left: 53.61, top: 462.41, size: 67.016, radius: 11.967, border: 0, opacity: 0.2, background: 'var(--mk-ghost-2)' },
@@ -151,20 +140,20 @@ const ACCENT: Tile = { left: 653.22, top: 350.19, size: 48.904, radius: 11.967, 
 export function BoxMarkets() {
   return (
     <article className="bcard bcard--markets box-markets">
-      {/* 365:1064 — the faint measure grid, parented to the card itself */}
+      {/* 365:1064: the faint measure grid, parented to the card itself */}
       <div className="mk__grid" aria-hidden="true">
         <img src={grid} alt="" width={488.255} height={312} />
       </div>
 
-      {/* 365:1090 — the centred column the design hangs everything off */}
+      {/* 365:1090: the centred column the design hangs everything off */}
       <div className="mk__stage">
-        {/* 365:1091 / 365:1092 — one ellipse drawn twice, each on its own tilt */}
+        {/* 365:1091 / 365:1092: one ellipse drawn twice, each on its own tilt */}
         <div className="mk__orbits" aria-hidden="true">
           <img src={orbitRing} alt="" className="mk__orbit mk__orbit--a" width={498.296} height={186.446} />
           <img src={orbitRing} alt="" className="mk__orbit mk__orbit--b" width={498.296} height={186.446} />
         </div>
 
-        {/* 365:1102 — the market field. 727 x 765, so its lower half sits below
+        {/* 365:1102: the market field. 727 x 765, so its lower half sits below
             the card's clip by design: the bottom row of dark tiles is only ever
             meant to show as a sliver at the card's edge. */}
         <div className="mk__field" aria-hidden="true">
@@ -182,13 +171,13 @@ export function BoxMarkets() {
             <img src={tileDax} alt="" style={centred(DAX, 18, 7.35, 0, -0.32)} />
           </span>
 
-          {/* 365:1118 — the Phorcast mark, ringed. The mark is deliberately
+          {/* 365:1118: the Phorcast mark, ringed. The mark is deliberately
               off-centre in its disc (1.7 left, 1.2 up), so it is placed. */}
           <span className="mk__hub" style={shell(HUB)}>
             <img src={tilePhorecast} alt="" className="mk__mark" style={leaf(21.91 + 1.64, 19.47 + 1.64, 34.823, 40.594)} />
           </span>
 
-          {/* 365:1120 — a currency-pair mark: two 25.131 discs side by side in a
+          {/* 365:1120: a currency-pair mark: two 25.131 discs side by side in a
               50.262 window that Figma insets 23.33%/26.67% inside the tile. */}
           <span className="mk__tile mk__tile--dark mk__tile--fx" data-market="Forex" style={shell(FX)}>
             <span className="mk__pair" style={leaf(15.08 + 1.675, 15.08 + 1.675 + 11.727, 50.262, 25.131)}>
@@ -218,15 +207,15 @@ export function BoxMarkets() {
             />
           ))}
 
-          {/* 365:1160 — Brent oil. Figma nests the glyph one level deeper and
+          {/* 365:1160: Brent oil. Figma nests the glyph one level deeper and
               insets it inside that, so both steps are folded in here. */}
           <span className="mk__tile mk__tile--dark mk__tile--oil" data-market="Brent Oil" style={shell(OIL)}>
             <img src={tileOil} alt="" style={leaf(18.43 + 1.675 + 1.885, 18.43 + 1.675 + 0.147, 23.004, 26.482)} />
           </span>
-          {/* 365:1168 — the one tint Figma binds to the brand token */}
+          {/* 365:1168: the one tint Figma binds to the brand token */}
           <span className="mk__tile mk__tile--ghost mk__tile--accent" style={shell(ACCENT)} />
 
-          {/* 365:1169 — Solana, the tile the cursor has picked */}
+          {/* 365:1169: Solana, the tile the cursor has picked */}
           <span className="mk__tile mk__tile--solana" data-market="Solana" style={shell(SOLANA)}>
             <img src={tileSolana} alt="" style={leaf(8.234 + 1.367, 10.63 + 1.367, 20.798, 16.306)} />
           </span>
@@ -237,24 +226,20 @@ export function BoxMarkets() {
             <img src={tileTesla} alt="" style={leaf(8.135 + 1.4, 8.013 + 1.4, 36.4, 36.241)} />
           </span>
 
-          {/* 365:1182 / 365:1185 — the pointer and its label. Figma insets the
+          {/* 365:1182 / 365:1185: the pointer and its label. Figma insets the
               arrow 7.55% inside a 20 box; that is folded into the offsets. */}
-          {/* A mask, not an image: the file is one solid black arrow, which is
-              --mk-ink exactly, so on the inverted card it follows the card's
-              ink instead of staying black on black. `leaf` still supplies the
-              box in the card's own unit and lands after Icon's w/h, so the
-              geometry is the <img>'s to the pixel. */}
+          {/* A mask, not an image, so the solid black arrow follows --mk-ink
+              on the inverted light-theme card. The explicit width/height
+              override Icon's w/h with the card's own unit. */}
           <Icon src={cursorArrow} w={16.974} h={16.988} className="mk__cursor"
             style={{ ...at(461.51, 292.506), width: u(16.974), height: u(16.988) }} />
           <span className="mk__tooltip" style={at(477, 300)}>Solana</span>
 
-          {/* 365:1187 / 365:1188 — orange markers sitting on the orbit paths.
+          {/* 365:1187 / 365:1188: orange markers sitting on the orbit paths.
               Figma centres a 10 square in a 14.142 box; 2.071 is that inset. */}
-          {/* `data-diamond`, not a modifier class, for the reason `data-market`
-              exists on the tiles: it names WHICH of two identical marks this is
-              so the phone block can place each one, without changing what the
-              element IS. A class here would also rewrite the key theme-diff
-              identifies these two by, and report a rename as a disappearance. */}
+          {/* `data-diamond`, like `data-market` on the tiles, names which of
+              two identical marks this is so the phone block can place each
+              one, without changing what the element is. */}
           <span className="mk__diamond" data-diamond="a" style={at(309.501, 124.791)} />
           <span className="mk__diamond" data-diamond="b" style={at(151.071, 344.071)} />
         </div>

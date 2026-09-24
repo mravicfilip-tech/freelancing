@@ -1,10 +1,10 @@
 /**
- * Bento card B — "Your Funds Stay Yours" (Figma 365:925 desktop,
+ * Bento card B: "Your Funds Stay Yours" (Figma 365:925 desktop,
  * 526:305 mobile).
  *
  * The card is 534 x 355 in desktop design pixels and 394 x 669 on the phone.
- * `.bcard` (Bento.css) already supplies the shell — padding, radius,
- * background, min-height — and makes itself an inline-size query container, so
+ * `.bcard` (Bento.css) supplies the shell (padding, radius, background,
+ * min-height) and makes itself an inline-size query container, so
  * the diagram is laid out in raw Figma numbers multiplied by `--u`, one design
  * pixel of the card's content column. See BoxCustody.css for the unit, which is
  * the one thing that is measured differently at the two sizes.
@@ -20,39 +20,20 @@
  * geometry lands at (y, 464 - x) in the portrait box, so the mobile block in
  * BoxCustody.css is this same markup re-placed through that one map.
  *
- * ONE GLYPH SET, AND WHY THERE USED TO BE TWO.
- * This card shipped two: a line-art set for the desktop and a solid set for the
- * phone, each marked `--line` or `--solid`, with the breakpoint showing one and
- * hiding the other. That was true of the design when it was built and is not
- * true of it now. Re-exported 2026-09-21, both frames name the SAME seven
- * leaves — `fi_9155737` (stocks), `fi_12379305` (crypto), `fi_12468105`
- * (commodities), `fi_17433031` (forex), `fi_9716066` (the document, in two
- * pieces), `fi_17508481` (the padlock) and `fi_6839980` (the wallet) — so the
- * desktop frame has simply adopted the solid set and the line art is drawn
- * nowhere. The parked `--solid` half and the `display` swap that chose between
- * them are therefore gone, and the files that were under `custody/mobile/` are
- * now `custody/` itself, because they are no longer the phone's set: they are
- * the set.
+ * One glyph set serves both frames. Both name the same seven solid leaves:
+ * `fi_9155737` (stocks), `fi_12379305` (crypto), `fi_12468105` (commodities),
+ * `fi_17433031` (forex), `fi_9716066` (the document, in two pieces),
+ * `fi_17508481` (the padlock) and `fi_6839980` (the wallet).
  *
- * Nothing was newly downloaded for this. Every asset the frame references was
- * already in the tree — the seven glyphs above under `custody/mobile/`, and the
- * rings, the disc, the node and the arrow under `custody/`, all byte-identical
- * to the fresh export once Figma's generated clip and gradient ids are
- * normalised.
- *
- * No motion lives here: this file is the resting state only. `motion/funds.ts`
- * owns the card's load-in and loop, at both orientations.
+ * Resting state only; `motion/funds.ts` owns the load-in and loop, at both
+ * orientations.
  */
 import arrow from '../../../assets/bento/custody/arrow.svg';
 import { Roll } from '../../Roll';
 import { ctaProps } from '../../../lib/cta';
 import { Icon } from '../../Icon';
-// The same 430x236 export the bento already ships as funds-glow.png -- checked
-// pixel for pixel, not by name -- so this points at the existing file rather
-// than a second 116 KB copy of it. Re-checked against Ellipse 57 of the current
-// frame: alpha identical everywhere, premultiplied colour within 6/255 of
-// re-encoding noise. The mobile frame re-exports the same raster, so the phone
-// rotates this one rather than adding a third.
+// Ellipse 57, a 430x236 raster. The mobile frame uses the same raster, so the
+// phone rotates this one rather than shipping a second copy.
 import glow from '../../../assets/bento/funds-glow.png';
 import ringMarket from '../../../assets/bento/custody/ring-market.svg';
 import ringWallet from '../../../assets/bento/custody/ring-wallet.svg';
@@ -75,11 +56,10 @@ type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
  *
  *  `lx`/`ly` and `tx`/`ty` are the label's and the tile's raw Figma
  *  coordinates in the desktop group; `mlx`/`mly` and `mtx`/`mty` are the
- *  phone's. The phone's are NOT the desktop's run through the quarter-turn
- *  map: 526:305 re-lays the four pairs out around the ring rather than
- *  rotating them, so each pair is read from its own wrapper in that frame and
- *  placed from its centre — tile at centre minus 18, label at centre minus 8,
- *  with Figma's own gap between them.
+ *  phone's. The phone's are not the desktop's run through the quarter-turn
+ *  map: 526:305 re-lays the four pairs around the ring, so each pair is read
+ *  from its own wrapper in that frame and placed from its centre (tile at
+ *  centre minus 18, label at centre minus 8, with Figma's own gap).
  *
  *      Stocks      centre (33, 150)    tile, gap 9,  label
  *      Crypto      centre (36, 77)     tile, gap 9,  label
@@ -102,13 +82,12 @@ const MARKETS = [
     icon: iconForex,       leaf: 'forex',       bordered: false },
 ] as const;
 
-/** Ellipse 35 — the two orange nodes sitting on the strokes. Figma's 8px layer
+/** Ellipse 35: the two orange nodes sitting on the strokes. Figma's 8px layer
  *  carries a glow that overflows it by 7px a side, so the exported 22 x 22
- *  asset is placed at the layer origin minus 7 at both sizes. These two DO
- *  follow the quarter-turn map, being artwork rather than type: the dot on the
- *  wallet ring at (22, 67) becomes (60, 427) and the one on the orbit at
- *  (298, 104) becomes (97, 151). Order is the order the loop uses them in —
- *  the orbit lets a packet go, the wallet catches it. */
+ *  asset is placed at the layer origin minus 7 at both sizes. These two do
+ *  follow the quarter-turn map, being artwork rather than type: (22, 67)
+ *  becomes (60, 427) and (298, 104) becomes (97, 151). The loop relies on this
+ *  order: the orbit releases a packet, the wallet catches it. */
 const NODES = [
   { key: 'wallet', x: 22 - 7,  y: 67 - 7,  mx: 60, my: 427 },
   { key: 'orbit',  x: 298 - 7, y: 104 - 7, mx: 97, my: 151 },
@@ -124,32 +103,19 @@ export function BoxCustody() {
 
       <div className="custody__art" aria-hidden="true">
         <img src={glow} alt="" className="custody__glow" width={215} height={118} />
-        {/* The two rings and the glyphs below are masks, not images, and that
-            choice is per file rather than per element: `Icon` paints through
-            `background: currentColor`, which is right for a file that is ONE
-            flat colour on transparent and wrong for anything else, because a
-            coloured plate masks down to a solid rectangle.
+        {/* The two rings and the glyphs below are masks, not images, so their
+            colour can follow the theme (--custody-ring / --custody-glyph).
+            `Icon` paints through `background: currentColor`, which only works
+            for a file that is one flat colour on transparent; each of these is
+            (the `fill="white"` rects in three glyphs are clipPath rects and
+            never painted). The file's own alpha survives as mask alpha.
 
-            Checked, file by file, before converting. Every one of these is a
-            single flat fill on transparent and every one of them is drawn
-            LIGHT: the market ring is #FF632A at the file's own 22%, the wallet
-            ring #D9D9D9 at 20%, and all seven glyphs #9D9D9D. Three of the
-            glyphs also carry a `fill="white"` rect, and in all three it is the
-            `<clipPath>`'s own rect, which is never painted -- so they are flat
-            too. On the dark card that is how they reach the eye; on paper it is
-            how they would disappear. As a mask the file keeps its own alpha --
-            the 0.2 and the 0.22 survive as mask alpha -- and the colour under
-            it becomes `color`, i.e. a token. See --custody-ring /
-            --custody-glyph.
+            The glow raster and the gradient wallet disc would be destroyed by
+            a mask, so they stay <img>.
 
-            The two that are NOT masked are the ones a mask would destroy: the
-            glow is a 430x236 raster of warm bloom and dotted ellipse, and the
-            wallet disc is a two-stop gradient at 18%. Both stay <img>.
-
-            `width`/`height` are passed as undefined because BoxCustody.css
-            sizes all of these in the card's container unit; Icon's own w/h
-            would freeze them at one breakpoint. The numbers are still handed
-            over, so the intrinsic box is on record. */}
+            `width`/`height` are cleared because BoxCustody.css sizes these in
+            the card's container unit; Icon's own w/h would freeze them at one
+            size. The numbers are still passed as the intrinsic box. */}
         <Icon src={ringMarket} w={215} h={215} className="custody__ring-market"
           style={{ width: undefined, height: undefined }} />
         <Icon src={ringWallet} w={93} h={93} className="custody__ring-wallet"
@@ -180,7 +146,7 @@ export function BoxCustody() {
             Forex's tile hangs off the right. */}
         <span className="custody__pill"
           style={{ '--x': 133, '--y': 31, '--w': 133, '--mx': -17.5, '--my': 245.5, '--mw': 135 } as Vars}>
-          {/* fi_9716066 — one 16px slot holding two leaves, because Figma draws
+          {/* fi_9716066: one 16px slot holding two leaves, because Figma draws
               the document as a body and a separately folded corner. The wrapper
               is the flex item the pill lays out; both leaves are placed inside
               it at their own insets. */}
@@ -194,7 +160,7 @@ export function BoxCustody() {
         </span>
         <span className="custody__pill"
           style={{ '--x': 115, '--y': 144, '--w': 146, '--mx': 95, '--my': 295, '--mw': 143 } as Vars}>
-          {/* fi_17508481 — the padlock is one solid leaf filling the whole 16px
+          {/* fi_17508481: the padlock is one solid leaf filling the whole 16px
               slot, so it is the pill's flex item itself rather than something
               inside a wrapper. */}
           <Icon src={iconLock} w={16} h={16} className="custody__lock"
@@ -208,21 +174,17 @@ export function BoxCustody() {
         ))}
 
         <img src={walletDisc} alt="" className="custody__wallet-disc" width={37} height={37} />
-        {/* fi_6839980, 16 x 16 at (46, 99) — the frame shrank this from the 18px
-            line-art wallet it replaced and left the origin alone. Masked like
-            its siblings; the clipPath's `fill="white"` rect is not painted, so
-            the file is the single flat grey it looks. */}
+        {/* fi_6839980, 16 x 16 at (46, 99). Masked like its siblings; the
+            clipPath's `fill="white"` rect is not painted, so the file is a
+            single flat grey. */}
         <Icon src={iconWallet} w={16} h={16} className="custody__wallet-icon"
           style={{ width: undefined, height: undefined }} />
       </div>
 
       <a {...ctaProps('bentoHow')} className="bento__cta bento__cta--orange">
         <Roll>See How It Works</Roll>
-        {/* Masked so the arrow follows the link. The file bakes #E5331E, which
-            is what this link's `color` already resolves to in dark, so the
-            conversion changes nothing there -- and on paper --accent moves to
-            #a21605 and the arrow moves with it instead of staying the dark
-            theme's red beside light theme's text. */}
+        {/* Masked so the arrow follows the link's `color` (--accent) in both
+            themes rather than keeping the red baked into the file. */}
         <Icon src={arrow} w={12} h={6} />
       </a>
     </article>

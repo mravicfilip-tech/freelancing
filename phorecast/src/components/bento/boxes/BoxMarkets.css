@@ -1,35 +1,28 @@
-/* Bento box D — "Trade every market from one account" (Figma 365:1063).
+/* Bento card D: "Forecast Global Markets in One Place" (Figma 365:1063).
  *
- * The light card. Its three siblings are dark, so nothing here may lean on the
- * dark-card palette: the surface is --white-font, the heading is ink, the sub
- * is --color-nre-body and the link is --orange-100.
+ * The light card among dark siblings, so it carries its own palette (--mk-*,
+ * below) rather than the dark-card one.
  *
  * `--u` is the design pixel, the same idiom as Hero.css's `--u` and Built.css's
- * `--c`. `.bcard` already declares `container-type: inline-size`, so inside the
- * card `100cqw` measures the card rather than the viewport — but only from a
- * DESCENDANT, and only across the card's CONTENT box. Both matter: `--u` is
- * declared on the card's children, not on the card, and the divisor is 774
- * (776 less its two 1px borders) with the card's own padding moved onto
- * `.mk__stage` so the content box is the full width. Declared on the card, the
- * unit silently resolved against the viewport instead and came out at 0.81
- * where it should have been 1.
+ * `--c`. `.bcard` declares `container-type: inline-size`, so `100cqw` measures
+ * the card, but only from a descendant and only across the content box. So
+ * `--u` is declared on the card's children, not the card (on the card it would
+ * resolve against the viewport), and the divisor is 774 (776 less two 1px
+ * borders), with the card's padding moved onto `.mk__stage`.
  *
- * Selectors here are written at `.bcard.box-markets` / `.box-markets <x>` so
- * they beat Bento.css's shared `.bcard--markets` and `.mk__*` rules — including
- * the ones inside its media queries — whichever order the two stylesheets land
- * in. This box scales as a whole instead, so those breakpoint transforms are
- * explicitly cleared rather than left to fight.
+ * Selectors are written at `.bcard.box-markets` / `.box-markets <x>` so they
+ * beat Bento.css's shared `.bcard--markets` and `.mk__*` rules, including its
+ * media queries, in any stylesheet order. This box scales as a whole, so those
+ * breakpoint transforms are explicitly cleared.
  *
- * Nothing in this file animates. Motion for the card lives in
- * bento/motion/markets.ts and is added on top of this resting state.
+ * Resting state only; motion lives in bento/motion/markets.ts.
  */
 
 .bcard.box-markets {
   /* 776 x 440 as a ratio, so the card keeps its proportions in any cell.
-     The inset that Figma puts on the card is carried by .mk__stage instead:
-     a container's own `cqw` resolves against the NEXT container out, never
-     against itself, so the card cannot be sized in its own unit. Zero padding
-     also makes the content box the full 774 the unit below is derived from. */
+     Figma's inset is carried by .mk__stage: a container's own `cqw` resolves
+     against the next container out, so the card cannot be sized in its own
+     unit. Zero padding makes the content box the full 774. */
   height: auto;
   min-height: 0;
   aspect-ratio: 776 / 440;
@@ -38,30 +31,18 @@
   background: var(--mk-surface);
   color: var(--mk-ink);
 
-  /* THE CARD'S OWN PALETTE, and the reason it is stated here rather than
-     taken from the page.
-     ---------------------------------------------------------------------
-     This is the one surface in the design that is NOT the page: on the dark
-     page it is paper. Its fill is --white-font used as a FILL, not as ink,
-     which is why --white-font cannot simply be flipped -- doing that and
-     leaving --mk-ink at #000 paints black type on a black card, the single
-     most likely silent breakage in the whole job (LIGHTMODE.md 6.2).
+  /* The card's own palette. It is the one surface that is not the page (paper
+     on the dark page), so it cannot simply follow the page tokens
+     (LIGHTMODE.md 6.2). The light block at the foot of this file redefines
+     these names. Two groups:
 
-     So the card is given a palette of its own, in one block, and the light
-     block at the foot of this file answers 6.2 by redefining exactly these
-     names. Two groups, and the split is what makes the decision cheap:
+       Surface and type (--mk-surface, --mk-ink, --mk-ink-2, --mk-line,
+       --mk-accent) belong to the card and are the ones that flip.
 
-       SURFACE + TYPE (--mk-surface, --mk-ink, --mk-ink-2, --mk-line,
-       --mk-accent) belong to the card as a surface. They are the ones that
-       flip.
-
-       THE TILE FIELD (--mk-tile-light, --mk-tile-dark, --mk-plate,
-       --mk-edge, --mk-ring-*, --mk-tip-*) is artwork sitting ON that
-       surface: plates carrying third-party marks, their rings, the tooltip.
-       Several of those marks are locked (Apple, S&P 500, DAX, Nikkei,
-       Solana, Bitcoin, Tesla) and are drawn near-black for a light plate, so
-       the plate under them stays light in both themes and the mark itself is
-       never touched. */
+       The tile field (--mk-tile-light, --mk-tile-dark, --mk-plate, --mk-edge,
+       --mk-ring-*, --mk-tip-*) is artwork on that surface. Several marks are
+       locked third-party logos drawn near-black for a light plate, so the
+       plates stay light in both themes. */
   --mk-surface: #fffbf8;          /* the fill, deliberately NOT --white-font */
   --mk-ink: #000;                 /* Figma's --black-100; no token behind it */
   --mk-ink-2: var(--ink-2);       /* the sub-head, #9d9d9d in dark */
@@ -77,8 +58,8 @@
   --mk-ring-26: color-mix(in srgb, var(--mk-accent) 26%, transparent);
   --mk-tip-line: #d9d9d9;
   --mk-tip-ink: #0f0e0d;
-  /* The raster Dow plate, and the seven unbadged ghost tiles whose tints the
-     geometry table in BoxMarkets.tsx names but no longer spells. */
+  /* The raster Dow plate, and the tints of the seven unbadged ghost tiles
+     named in BoxMarkets.tsx. */
   --mk-dow: #2c2c2c;
   --mk-ghost-1: #853b1e;
   --mk-ghost-2: #542c1c;
@@ -91,22 +72,20 @@
   justify-content: center;
 }
 
-/* The design pixel. `.bcard` declares `container-type: inline-size`, so on a
-   DESCENDANT `100cqw` is this card's content box — 776 minus its two 1px
-   borders — which is why the divisor is 774 and not 776. Everything inside
-   inherits it from here. */
+/* The design pixel. On a descendant `100cqw` is this card's content box (776
+   less its two 1px borders), hence 774. Everything inside inherits it. */
 .box-markets > * {
   --u: calc(100cqw / 774);
 }
 
-/* 365:1090 — the column that overflows its 378 content box by 2.2 each side */
+/* 365:1090: the column that overflows its 378 content box by 2.2 each side */
 .box-markets .mk__stage {
   position: relative;
   flex: none;
   display: flex;
   flex-direction: column;
   gap: calc(310 * var(--u));
-  /* 365:1063's 30px padding, now that the card itself has none */
+  /* 365:1063's 30px padding; the card itself has none */
   width: calc(714 * var(--u));
   margin-inline: calc(30 * var(--u));
 }
@@ -120,51 +99,28 @@
 .box-markets .bcard__title {
   color: var(--mk-ink);
 }
-/* Only the INK is this card's business. The face, size and leading are the
-   site's paragraph setting (Bento.css -> tokens.css); this card is the one
-   surface that is the opposite of the page in both themes, so it keeps its own
-   --mk-ink-2 and nothing else. The `max(13px, calc(18 * --u))` that was here
-   was two departures from the spec at once: 18 design px where the panel says
-   20, on an uncapped unit that ran to 21.53 at 1100 and down to its 13px floor
-   at 1280. */
-/* The measure is capped at 500 design px. The client's paragraph ("Take a
-   view on the outcomes shaping equities, indices, crypto, commodities, and
-   more.") is 85 characters where the old one was 49, and on one long first
-   line it ran under the Apple and DAX tiles, whose left edges sit about 563
-   design px in: measured 13 x 3px of glyph over the DAX tile at 1280 and 1181.
-   500 wraps it before the tiles at every desktop width. On a phone the unit
-   is re-based to the 392 frame, so 500 is wider than the card and does not
-   bind. */
+/* Only the colour is set here; face, size and leading are the site's
+   paragraph setting (Bento.css, tokens.css).
+   The measure is capped at 500 design px so the paragraph wraps before the
+   Apple and DAX tiles (about 563 design px in) at every desktop width. On a
+   phone the unit is re-based to the 392 frame, so the cap does not bind. */
 .box-markets .bcard__body {
   max-width: calc(500 * var(--u));
   color: var(--mk-ink-2);
 }
 
-/* 365:1096 — the link. Its gap, height and label size are left on Bento.css's
+/* 365:1096: the link. Its gap, height and label size are left on Bento.css's
    shared rule, so the site-wide hover affordance and the one label size hold. */
 .box-markets .bento__cta {
   margin-top: 0;
   z-index: 2;
   color: var(--mk-accent);
 }
-/* THE FOCUS RING FOLLOWS THE CARD, not the page.
-
-   global.css:26 is `:focus-visible { outline: 2px solid var(--accent) }`, and
-   --accent is read against the PAGE. This card is the one surface on the site
-   that is the opposite of the page in both themes, so the page's ring lands on
-   the wrong ground here and only here.
-
-   Measured, by focusing the link and reading the pixels the ring painted
-   against what was under them: in dark the card is #fffbf8 and #e5331e on it is
-   4.23:1, which is fine and is why nobody saw this. In light the card inverts
-   to #1a1512 and --accent is #a21605, which is 2.29:1 -- under the 3:1 WCAG 2.2
-   asks of a focus indicator, on the only keyboard target inside the card.
-
-   --mk-accent is the token the card already keeps for exactly this reason: it
-   is var(--accent) in dark, so this rule resolves to the identical colour the
-   global rule was already producing and dark cannot move, and it is
-   --orange-100 in light, where #e5331e on #1a1512 is 4.43:1. Same reasoning,
-   same token, as the link text one rule above. */
+/* The focus ring follows the card, not the page. The global
+   `:focus-visible` outline uses --accent, which is chosen against the page;
+   on this inverted card the light --accent falls below the 3:1 WCAG asks of a
+   focus indicator. --mk-accent is --accent in dark (no change) and
+   --orange-100 in light. */
 .box-markets :focus-visible { outline-color: var(--mk-accent); }
 
 /* Figma gives the arrow a 13 box and centres the 12 x 6 glyph one pixel low. */
@@ -183,7 +139,7 @@
 }
 
 /* Artwork ---------------------------------------------------------------- */
-/* 365:1064 — parented to the card, not the stage */
+/* 365:1064: parented to the card, not the stage */
 .bcard.box-markets .mk__grid {
   position: absolute;
   left: calc(215 * var(--u));
@@ -237,16 +193,14 @@
   pointer-events: none;
 }
 
-/* Tiles. Size, corner, ring weight and inner inset all come from the markup,
-   because they genuinely differ tile to tile — only the shared chrome is here.
-   A single global sizing rule for the glyphs would be wrong.
+/* Tiles. Size, corner, ring weight and inner inset come from the markup,
+   because they differ tile to tile; only the shared chrome is here.
 
    The ring is an inset shadow, not a border. Figma's weights run 0.56 to 1.675
-   and Chrome snaps a used border-width to a whole pixel, which would both
-   thicken every hairline and — because `left`/`top` measure from the padding
-   edge — drag each glyph off its mark by the rounding error. An inset shadow
-   keeps its sub-pixel weight, follows the corner radius, and leaves the
-   padding box equal to the outer box, so the offsets below are Figma's own. */
+   and Chrome snaps border widths to whole pixels, which would thicken every
+   hairline and (since `left`/`top` measure from the padding edge) drag each
+   glyph off its mark. An inset shadow keeps its sub-pixel weight and leaves
+   the padding box equal to the outer box, so the offsets are Figma's own. */
 .box-markets .mk__tile,
 .box-markets .mk__hub {
   position: absolute;
@@ -255,16 +209,13 @@
   border: 0;
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge);
   /* `--x`/`--y`/`--s`/`--r` are the tile's own design pixels, written inline by
-     BoxMarkets.tsx as plain numbers. Resolving them here rather than there is
-     what lets the phone layout move a tile; the used value on desktop is
-     unchanged, since `calc(var(--x) * var(--u))` with `--x: 191` is the
-     `calc(191 * var(--u))` this rule replaced.
+     BoxMarkets.tsx as plain numbers and resolved here so the phone layout can
+     move a tile.
 
-     `--mx`/`--my` is how the phone block restates a point, and the indirection
-     is not decoration: `--x` arrives as an INLINE custom property, which no
-     stylesheet rule can outrank without `!important` on every one of them. A
-     second name, set only inside the breakpoint, wins by simply existing —
-     `left` and `top` themselves live here and nowhere else. */
+     `--mx`/`--my` is how the phone block restates a point. `--x` is an inline
+     custom property, which no stylesheet rule can outrank without
+     `!important`; a second name set only inside the breakpoint wins simply by
+     existing. `left` and `top` live here and nowhere else. */
   left: calc(var(--mx, var(--x)) * var(--u));
   top: calc(var(--my, var(--y)) * var(--u));
   width: calc(var(--s) * var(--u));
@@ -283,26 +234,25 @@
 .box-markets .mk__tile--edged { box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-edge); }
 .box-markets .mk__tile--accent { background: var(--mk-accent); }
 
-/* 365:1169 — white, ringed in the brand orange at 51% */
+/* 365:1169: white, ringed in the brand orange at 51% */
 .box-markets .mk__tile--solana {
   background: var(--mk-plate);
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-51);
 }
-/* 365:1141 — Figma object-covers the raster mark */
+/* 365:1141: Figma object-covers the raster mark */
 .box-markets .mk__cover { object-fit: cover; }
-/* 365:1121 — the currency-pair window */
+/* 365:1121: the currency-pair window */
 .box-markets .mk__pair { display: block; overflow: hidden; }
 .box-markets .mk__pair img { position: absolute; }
 
-/* 365:1118 — the hub, ringed in the brand orange at 26% */
+/* 365:1118: the hub, ringed in the brand orange at 26% */
 .box-markets .mk__hub {
   background: var(--mk-plate);
   box-shadow: inset 0 0 0 var(--ring, 0px) var(--mk-ring-26);
 }
 
-/* 365:1182 — the pointer, a mask rather than an image: the file is a solid
-   black arrow, which is --mk-ink exactly in dark and would be an invisible
-   black arrow on an inverted card. As a mask it is the card's ink in both. */
+/* 365:1182: the pointer, a mask rather than an image, so it takes the card's
+   ink in both themes (the file is a solid black arrow). */
 .box-markets .mk__cursor {
   position: absolute;
   color: var(--mk-ink);
@@ -310,7 +260,7 @@
   top: calc(var(--my, var(--y)) * var(--u));
 }
 
-/* 365:1185 — 76 x 30 in Figma, 10 padding around an 8px cap box. Figma places
+/* 365:1185: 76 x 30 in Figma, 10 padding around an 8px cap box. Figma places
    the label by that cap box, so the line box is trimmed to it; the outer height
    is stated as well so the pill is 30 even where `text-box` is unsupported. */
 .box-markets .mk__tooltip {
@@ -335,7 +285,7 @@
   text-box: trim-both cap alphabetic;
 }
 
-/* 365:1187 / 365:1188 — a 10 square turned 45, inset 2.071 in its 14.142 box */
+/* 365:1187 / 365:1188: a 10 square turned 45, inset 2.071 in its 14.142 box */
 .box-markets .mk__diamond {
   position: absolute;
   left: calc(var(--mx, var(--x)) * var(--u));
@@ -348,55 +298,35 @@
 }
 
 /* Breakpoints ------------------------------------------------------------
-   Bento.css scales this card's artwork down at 1100 and 720 because the old
-   version was fixed-pixel inside a shrinking card. This one is already tied to
-   its container, so those transforms are cleared above. */
+   Bento.css scales `.mk__*` artwork down at 1100 and 720. This card is tied
+   to its container unit, so those transforms are cleared above. */
 
-/* The phone card — Figma 526:394, 394 x 712 --------------------------------
-   THE MOBILE DESIGN IS NOT THE DESKTOP CARD RESIZED. Figma stands the artwork
-   on its end: the illustration frame is authored 540 x 394 and dropped into the
-   card rotated 90deg, with every tile, the cursor and the label counter-rotated
-   -90deg so their contents stay upright. Only the grid mesh and the two orbit
-   ellipses turn with it.
+/* The phone card: Figma 526:394, 394 x 712 --------------------------------
+   Figma stands the artwork on its end: the illustration frame is authored
+   540 x 394, rotated 90deg into the card, with every tile, the cursor and the
+   label counter-rotated so they stay upright. Only the grid mesh and the two
+   orbit ellipses turn with it.
 
-   None of that rotation is reproduced here, and deliberately. A rotated
-   container would put every tile in a rotated LOCAL coordinate space, and the
-   loop in motion/markets.ts pushes each tile out along its own radius with
-   `xPercent`/`yPercent` — which GSAP applies in local space, so a push that
-   should read as "right" would come out as "down". The rotation is Figma's
-   construction, not the result, so what is stated below is the result: every
-   design coordinate mapped through (x, y) -> (394 - y - h, x) once, by hand,
-   into an upright field. The tiles then need no transform at all and the loop
-   measures the truth with getBoundingClientRect.
+   That rotation is deliberately not reproduced. motion/markets.ts pushes each
+   tile along its radius with `xPercent`/`yPercent`, which GSAP applies in
+   local space, so inside a rotated container "right" would come out as
+   "down". Instead every design coordinate is mapped once, by hand, through
+   (x, y) -> (394 - y - h, x) into an upright field.
 
-   Three other things the phone design changes, none of them a resize:
-     - it keeps only the LIGHT plates (gold, NIKKEI, Apple, DAX, S&P 500,
-       Tesla), the Solana plate and the hub. The six dark tiles and the eight
-       unbadged tints are gone, which is why the rule below can hide them by
-       their two existing class names rather than one by one;
-     - the second orbit is a DIFFERENT ellipse — 432.711 x 183.649, not the
-       498.296 x 186.446 one drawn twice on desktop — so it is its own asset;
-     - the sub-head is --color-body, not --ink-2. See the note on it below.
+   The phone design also:
+     - keeps only the light plates (gold, NIKKEI, Apple, DAX, S&P 500, Tesla),
+       the Solana plate and the hub; the dark tiles and the unbadged tints are
+       hidden by their two class names;
+     - uses a different second orbit (432.711 x 183.649), its own asset;
+     - sets the sub-head in --color-body, not --ink-2 (see below).
 
-   The breakpoint is the band's own 720, which is where Cards A, B and C take
-   their phone frames too: four cards in one grid have to change shape at one
-   width or the band is half portrait and half landscape for 160px of viewport.
-   The cost is that the card is a uniform scale of the design all the way up to
-   720, so at the top of the range it is around 640 x 1150 -- big, but composed,
-   which is the trade Card A makes at the same width. Bounding that is the
-   GRID's call (two columns above some width would halve it), and the grid is
-   not this file's to set. */
-/* THE ARTWORK FOLLOWS THE COPY (above the phone layout).
+   The breakpoint is the band's 720, where cards A, B and C switch to their
+   phone frames too, so the band never mixes portrait and landscape cards. */
+/* Above the phone layout, the artwork follows the copy.
    -------------------------------------------------------------------------
-   The heading and the paragraph are page type on the site's scale (24 and 18,
-   tokens.css), not design pixels: at 1280 the card is 0.69 of its design size
-   and its artwork shrinks with it, but the words do not. Left as it was, the
-   copy ran into the art: the heading's one line reached under the Apple tile
-   from 1440 down, and the paragraph's extra lines onto the diamond and the
-   target tile. The card was also shorter than its own column from 1181 to
-   1440 before this, which clipped the heading's top and the link's foot.
-
-   So three things, and none of them resizes anything in the artwork:
+   The heading and paragraph use the site's type scale (tokens.css), not
+   design pixels, so below 1920 the artwork shrinks but the words do not.
+   Three things keep the copy clear of the art, none of which resizes it:
      1. The heading wraps before the Apple tile (520 design px) instead of
         running under it, and balances onto two lines when it has to.
      2. The two artwork layers move down by exactly as much as the copy is
@@ -404,18 +334,18 @@
         the art is the design's at every width. They stay where they are in
         the flex column's flow but take no room in it (a negative margin the
         size of the box), sit after the copy (`order`), and are offset from
-        there by their design position less the design copy height, 69.2 --
-        the baseline copy at 1920 (28.8 heading, 2 gap, 2 x 19.2 paragraph).
+        there by their design position less the design copy height, 69.2
+        (the copy at 1920: 28.8 heading, 2 gap, 2 x 19.2 paragraph).
         The copy's min-height is that same 69.2, so the art never rides UP
         into it where the card is wider than its design.
      3. The card may grow past 776 x 440 to hold its content, and only then:
         `min-height: auto` on a box with an aspect ratio is its content, and
         `overflow: clip` rather than `hidden` is what lets that minimum apply
         (a scroll container gets no content minimum). `min-width: 0` puts
-        back the one minimum `hidden` was giving for free: without it the
-        grid sizes the column from the card's content, whose width is in the
-        card's own unit, and the two chase each other (measured: the card
-        flipped between 610 and 649 wide at 1440 every few frames).
+        back the one minimum `hidden` gave for free: without it the grid
+        sizes the column from the card's content, whose width is in the
+        card's own unit, and the two chase each other (the card's width
+        oscillates).
    The faint mesh (`.mk__grid`) is parented to the card, not the stage, and
    stays where the design puts it. */
 @media (min-width: 721px) {
@@ -456,24 +386,14 @@
   .bcard.box-markets {
     aspect-ratio: 394 / 760;
 
-    /* THE SUB-HEAD, AND WHY IT IS NOT --ink-2 HERE.
-       -------------------------------------------------------------------
-       The desktop node binds the description to --ink-2 (#9d9d9d), which on
-       this card's cream is 2.6:1 — the defect the light block at the foot of
-       this file records and improves on. The phone node binds the SAME line
-       to --color-body (#626262) instead, which on the same cream is 5.9:1.
-       That is the design's own token, not a correction invented here, and it
-       is taken as written.
-
-       It is set on the card rather than on the paragraph so it goes through
-       --mk-ink-2 like everything else, and so the light blocks below — which
-       are more specific and come later — still win. On the inverted card
-       #626262 would be 2.9:1, i.e. exactly backwards, and #9d9d9d at 6.6:1 is
-       what stays there. Read the light block before touching this. */
+    /* The phone node binds the sub-head to --color-body (#626262) rather than
+       the desktop's --ink-2; it reads better on the cream card. Set on the
+       card through --mk-ink-2 so the light blocks below (more specific, later)
+       still win: on the inverted card #626262 would be too dark. */
     --mk-ink-2: var(--color-body);
   }
 
-  /* 526:1218 — 334 x 652, inset 30 from the card's edge, heading at the top and
+  /* 526:1218: 334 x 652, inset 30 from the card's edge, heading at the top and
      the link at the foot. Taken out of flow so the card's height comes from the
      aspect ratio alone and the stage is an exact box rather than the sum of
      three intrinsic ones; 29 and not 30 because the inset is measured from the
@@ -487,35 +407,29 @@
     justify-content: space-between;
   }
 
-  /* THE ARTWORK DROPS 48 DESIGN PX, AS ONE PIECE, and the card grows by the
-     same 48 (the aspect ratio above), so nothing inside the illustration moves
-     relative to anything else and the bottom row still shows as a sliver at
-     the card's edge. The reason is the paragraph: at the site's 18px it runs to
-     three lines in the 334-unit column from 360 to 430, and its third line
-     ("commodities, and more.") ran under the Tesla tile, whose top sits at a
-     fixed design y. The copy is flat pixels and the art is `--u`, so the drop
-     is sized for the narrowest phone that matters (360, where the overlap was
-     39px) and is a little generous above it. */
+  /* The artwork drops 48 design px as one piece, and the card grows by the
+     same 48 (the aspect ratio above), so the illustration is unchanged
+     relative to itself. At 18px the paragraph runs to three lines on narrow
+     phones and would otherwise run under the Tesla tile. The copy is flat
+     pixels and the art is `--u`, so the drop is sized for a 360 phone and is a
+     little generous above it. */
   .bcard.box-markets .mk__grid,
   .box-markets .mk__orbits,
   .box-markets .mk__field {
     margin-top: calc(48 * var(--u));
   }
 
-  /* 526:798 — 18 between the heading and the description, where desktop has 2 */
+  /* 526:798: 18 between the heading and the description, where desktop has 2 */
   .box-markets .bcard__text {
     gap: calc(18 * var(--u));
   }
-  /* The design sets the heading in two lines, breaking after "market". The
-     break is asked for rather than typed: an inserted <br> would be one more
-     node in the desktop DOM for no desktop reason. Two lines of 18 and 16
-     characters is what `balance` arrives at. */
+  /* The design sets the heading on two lines. `balance` produces the break
+     without adding a <br> to the desktop DOM. */
   .box-markets .bcard__title {
     text-wrap: balance;
   }
-  /* Bento.css puts a scrim plate behind this link below 720, for the old card
-     where the field ran under it. It does not here -- the artwork is clipped
-     well above the link -- so the plate is undone rather than inherited. */
+  /* Bento.css puts a scrim plate behind this link below 720. Not needed here
+     (the artwork is clipped well above the link), so it is undone. */
   .bcard.box-markets .bento__cta {
     padding: 0;
     margin-left: 0;
@@ -523,7 +437,7 @@
     background: none;
   }
 
-  /* 526:1062 — the mesh, turned with the illustration. Its box is stated
+  /* 526:1062: the mesh, turned with the illustration. Its box is stated
      unrotated and turned about its own centre, so the two numbers below are the
      centre Figma lands it on (210, 417.13 from the card's edge) less half the
      box, less the one border the coordinate space starts inside. */
@@ -531,14 +445,12 @@
     left: calc(-35.128 * var(--u));
     top: calc(260.13 * var(--u));
     transform: rotate(90deg);
-    /* Bento.css pins this layer's origin to its top-left below 1100, for the
-       scale() it applies there. A quarter turn about a corner is a 121px throw
-       off the card; the turn has to be about the centre the numbers above are
-       measured to. */
+    /* Bento.css pins this layer's origin to its top-left below 1100. The turn
+       must be about the centre the numbers above are measured to. */
     transform-origin: 50% 50%;
   }
 
-  /* 526:1024 / 526:1025 — the two ellipses, also turned with the illustration,
+  /* 526:1024 / 526:1025: the two ellipses, also turned with the illustration,
      so each carries its own tilt plus the frame's 90. The box is re-hung on the
      card's own coordinates (the stage sits 30 in, hence the negative origin)
      so the numbers below can be read straight off the node. */
@@ -553,12 +465,10 @@
     top: calc(311.462 * var(--u));
     transform: rotate(69.22deg);
   }
-  /* Ellipse 45 is not Ellipse 44: 432.711 x 183.649 against 498.296 x 186.446,
-     a rounder ellipse that the desktop card does not contain. It is painted on
-     a pseudo-element rather than swapped into the <img>, because an <img> can
-     only change its source from the markup and the desktop DOM has no reason to
-     carry a second one. `preserveAspectRatio="none"` in the file makes the
-     100% 100% sizing below exact rather than a fit. */
+  /* Ellipse 45 is a rounder ellipse (432.711 x 183.649) than the desktop's
+     Ellipse 44. It is painted on a pseudo-element because an <img> can only
+     change its source from the markup. `preserveAspectRatio="none"` in the
+     file makes the 100% 100% sizing exact. */
   .box-markets .mk__orbit--b {
     display: none;
   }
@@ -573,7 +483,7 @@
     transform: rotate(225deg);
   }
 
-  /* 526:1023 — the illustration frame: 394 x 540, hung 125 below the card's top
+  /* 526:1023: the illustration frame: 394 x 540, hung 125 below the card's top
      edge. The stage is 30 in on both axes, so the field starts 30 back and 95
      down from it. Every tile coordinate below is inside THIS box. */
   .bcard.box-markets .mk__field {
@@ -589,8 +499,8 @@
     display: none;
   }
 
-  /* 526:1026 – 526:1061. Size, corner, ring and the glyph inside each tile are
-     unchanged from the desktop node — only the place is new. */
+  /* 526:1026 to 526:1061. Size, corner, ring and glyph are unchanged from the
+     desktop node; only the position is new. */
   .box-markets .mk__tile--tesla { --mx: 147; --my: 41; }
   .box-markets .mk__tile--gold { --mx: 232; --my: 159; }
   .box-markets .mk__tile--nikkei { --mx: 51; --my: 187; }
@@ -600,12 +510,12 @@
   .box-markets .mk__tile--dax { --mx: 303; --my: 444; }
   .box-markets .mk__tile--sp500 { --mx: 200; --my: 467; }
 
-  /* 526:1055 / 526:1058 — the pointer and its label. Figma insets the arrow
+  /* 526:1055 / 526:1058: the pointer and its label. Figma insets the arrow
      7.55% inside its 20 box, which is folded in as it is on desktop. */
   .box-markets .mk__cursor { --mx: 133.51; --my: 401.506; }
   .box-markets .mk__tooltip { --mx: 149; --my: 409; }
 
-  /* 526:1060 / 526:1061 — the 10 square inset 2.071 in its 14.142 box, as above */
+  /* 526:1060 / 526:1061: the 10 square inset 2.071 in its 14.142 box, as above */
   .box-markets .mk__diamond[data-diamond='a'] { --mx: 286.209; --my: 266.501; }
   .box-markets .mk__diamond[data-diamond='b'] { --mx: 66.069; --my: 123.071; }
 }
@@ -614,58 +524,31 @@
    Written twice; see the note in Bento.css. -------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .bcard.box-markets {
-  /* 6.2, ANSWERED: THE CARD INVERTS.
-     ---------------------------------------------------------------------
-     Read what this card is rather than what colour it is. In the dark grid it
-     is the one surface that is NOT the page: three near-black cards, one red
-     one, and this -- a lit window in a dark composition, and the biggest block
-     on the band. That step change IS the card's argument. "Every market, one
-     account" is the offer that is different, drawn as the card that is
-     different.
+  /* The card inverts (LIGHTMODE.md 6.2). In dark it is the one surface that
+     is not the page, and that contrast is the point of the card. On paper,
+     staying pale would make it vanish into the page, so the surface and type
+     invert and the artwork does not:
 
-     On paper, keeping it pale does not keep that. --page is #fffbf8, which is
-     this card's exact fill today, so "stay white" means the card stops being a
-     surface at all -- a hole with a hairline round it. Tinting it to --panel
-     instead makes it the third pale panel in a row of pale panels, and the
-     band loses its diagonal: card A red at top left, card D loud at bottom
-     right, in both themes.
+       --mk-surface   the page's ink
+       --mk-ink       the page's paper
+       --mk-ink-2     #9d9d9d
+       --mk-accent    --orange-100, not --accent (the light --accent is too
+                      dark to read on a dark card)
+       --mk-tile-dark lifted a step so a dark chip still reads as a chip
 
-     So the surface and the type invert and the artwork does not. The card
-     carries the palette the page is not carrying -- which is precisely what it
-     does in dark, only the other way round. Five values move:
-
-       --mk-surface  the page's ink
-       --mk-ink      the page's paper
-       --mk-ink-2    #9d9d9d, and this is the one place the flip IMPROVES on
-                     dark: the sub-head is 2.6:1 on today's cream card, a known
-                     defect, and 7.1:1 here
-       --mk-accent   --orange-100, NOT --accent. #a21605 on #1a1512 is 1.5:1;
-                     the brand red that reads on a dark ground is the dark
-                     theme's brand red, and this card is a dark ground.
-       --mk-tile-dark lifted a step so a dark chip on a dark card is still a
-                     chip -- 1.6:1 against the surface where #313131 has 4.9:1
-                     against cream.
-
-     --mk-line does NOT move: a mid grey is the step between the card and the
-     page whichever of the two is darker. Neither do the plates, the rings, the
-     edges or the tooltip: every one of them is a plate carrying a mark, and
-     seven of those marks are LOCKED third-party property (Apple, DAX, Nikkei,
-     S&P 500, Tesla, Gold, Solana). They are drawn near-black for a light
-     plate, so the plate stays light and the mark is never touched
-     (LIGHTMODE.md 2.3, class L). The tooltip is a white pill with dark type in
-     both themes, which is what a tooltip is.
-
-     What this costs is three pieces of artwork drawn FOR cream, handled below:
-     the measure grid, the two orbit ellipses and the cursor. */
+     --mk-line, the plates, rings, edges and tooltip do not move: the plates
+     carry locked third-party marks drawn for a light plate (LIGHTMODE.md 2.3,
+     class L). The grid and the orbits are adjusted below; the cursor is a
+     mask (see BoxMarkets.tsx). */
   --mk-surface: var(--ink);
   --mk-ink: var(--page);
   --mk-ink-2: #9d9d9d;
   --mk-accent: var(--orange-100);
   --mk-tile-dark: #3a3533;
 
-  /* The seven unbadged ghosts are smudges DARKER than the cream card. On ink
-     they would be smudges on a smudge, so each one is lifted toward the page
-     by the same amount and keeps its own hue and its own inline opacity. */
+  /* The ghost tints are darker than the cream card; on ink they would vanish,
+     so each is lifted toward the page by the same amount, keeping its hue and
+     its inline opacity. */
   --mk-ghost-1: color-mix(in srgb, #853b1e 45%, var(--page));
   --mk-ghost-2: color-mix(in srgb, #542c1c 45%, var(--page));
   --mk-ghost-3: color-mix(in srgb, #46271b 45%, var(--page));
@@ -675,102 +558,53 @@
   --mk-ghost-7: color-mix(in srgb, #a74620 45%, var(--page));
   }
   :root:not([data-theme='dark']) .box-markets .mk__grid img {
-  /* THE MEASURE GRID. Its file is the one exported for THIS card -- the shared
-     bento/grid.svg has its mid-stops flipped to white so the mesh reads on the
-     dark cards, and this copy keeps Figma's ink (#343434), fading to white at
-     both ends of every line. On an inverted card that is ink on ink through
-     the middle and page at the ends: the mesh is simply gone.
-
-     `invert(1)` is the whole fix, and it is the right tool rather than a hack:
-     the file is a 24-gradient mesh, so it is not a mask candidate, and what
-     has to happen to it is exactly what invert does -- swap the ink for the
-     page and the page for the ink, at every alpha, leaving the fade untouched.
-     Scoped to the light selector, so the dark render never evaluates it. */
+  /* The measure grid is an ink (#343434) gradient mesh, invisible on the
+     inverted card. It is not a mask candidate (24 gradients), and invert(1)
+     is exactly the swap needed, leaving the fades intact. */
   filter: invert(1);
   }
   :root:not([data-theme='dark']) .bcard.box-markets .mk__grid {
-  /* Inverted, the mesh lands at 1.51:1 against the card where Figma's ink mesh
-     has 1.17:1 against cream -- brighter than it has ever been. The layer's
-     own opacity is what carries that back: 0.12 puts it at 1.25:1, texture you
-     notice only once you look for it. It is on the LAYER, not on the image,
-     because the two multiply. */
+  /* Inverted, the mesh is stronger than in dark; the layer's opacity brings it
+     back to faint texture. On the layer, not the image, as the two multiply. */
   opacity: 0.12;
   }
   :root:not([data-theme='dark']) .box-markets .mk__orbit,
 :root:not([data-theme='dark']) .box-markets .mk__orbits::after {
-  /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
-     guide you can only just see, and 12.8:1 on ink -- two blazing white
-     ellipses across the card. The colour is right and the WEIGHT is wrong, so
-     the weight is what moves. 0.17 lands at 1.49:1 against the inverted
-     surface where the stroke has 1.40:1 against cream -- a shade over parity
-     on purpose, because the path is 0.76px wide and a sub-pixel stroke
-     antialiases toward its ground, so the same ratio buys less line. Cheaper
-     than a mask, and it keeps the two ellipses byte-identical to the shared
-     asset.
-
-     The pseudo-element in the selector is the phone card's second ellipse --
-     526:1025, a rounder one the desktop node does not contain, painted as a
-     background rather than as a second <img> (see the breakpoint above). It is
-     the SAME #D9D9D9 stroke at the same 0.759 weight, so it takes the same
-     answer. Outside that breakpoint it has no `content` and is not generated,
-     which is why this costs the desktop render nothing. */
+  /* The orbits: a #D9D9D9 stroke that is faint on cream would blaze on ink,
+     so the opacity drops to match the dark contrast (slightly over, as the
+     sub-pixel stroke antialiases toward its ground). The pseudo-element is the
+     phone card's second ellipse (526:1025, see the breakpoint above), the same
+     stroke, so it takes the same value. */
   opacity: 0.17;
   }
 }
 
 :root[data-theme='light'] .bcard.box-markets {
-  /* 6.2, ANSWERED: THE CARD INVERTS.
-     ---------------------------------------------------------------------
-     Read what this card is rather than what colour it is. In the dark grid it
-     is the one surface that is NOT the page: three near-black cards, one red
-     one, and this -- a lit window in a dark composition, and the biggest block
-     on the band. That step change IS the card's argument. "Every market, one
-     account" is the offer that is different, drawn as the card that is
-     different.
+  /* The card inverts (LIGHTMODE.md 6.2). In dark it is the one surface that
+     is not the page, and that contrast is the point of the card. On paper,
+     staying pale would make it vanish into the page, so the surface and type
+     invert and the artwork does not:
 
-     On paper, keeping it pale does not keep that. --page is #fffbf8, which is
-     this card's exact fill today, so "stay white" means the card stops being a
-     surface at all -- a hole with a hairline round it. Tinting it to --panel
-     instead makes it the third pale panel in a row of pale panels, and the
-     band loses its diagonal: card A red at top left, card D loud at bottom
-     right, in both themes.
+       --mk-surface   the page's ink
+       --mk-ink       the page's paper
+       --mk-ink-2     #9d9d9d
+       --mk-accent    --orange-100, not --accent (the light --accent is too
+                      dark to read on a dark card)
+       --mk-tile-dark lifted a step so a dark chip still reads as a chip
 
-     So the surface and the type invert and the artwork does not. The card
-     carries the palette the page is not carrying -- which is precisely what it
-     does in dark, only the other way round. Five values move:
-
-       --mk-surface  the page's ink
-       --mk-ink      the page's paper
-       --mk-ink-2    #9d9d9d, and this is the one place the flip IMPROVES on
-                     dark: the sub-head is 2.6:1 on today's cream card, a known
-                     defect, and 7.1:1 here
-       --mk-accent   --orange-100, NOT --accent. #a21605 on #1a1512 is 1.5:1;
-                     the brand red that reads on a dark ground is the dark
-                     theme's brand red, and this card is a dark ground.
-       --mk-tile-dark lifted a step so a dark chip on a dark card is still a
-                     chip -- 1.6:1 against the surface where #313131 has 4.9:1
-                     against cream.
-
-     --mk-line does NOT move: a mid grey is the step between the card and the
-     page whichever of the two is darker. Neither do the plates, the rings, the
-     edges or the tooltip: every one of them is a plate carrying a mark, and
-     seven of those marks are LOCKED third-party property (Apple, DAX, Nikkei,
-     S&P 500, Tesla, Gold, Solana). They are drawn near-black for a light
-     plate, so the plate stays light and the mark is never touched
-     (LIGHTMODE.md 2.3, class L). The tooltip is a white pill with dark type in
-     both themes, which is what a tooltip is.
-
-     What this costs is three pieces of artwork drawn FOR cream, handled below:
-     the measure grid, the two orbit ellipses and the cursor. */
+     --mk-line, the plates, rings, edges and tooltip do not move: the plates
+     carry locked third-party marks drawn for a light plate (LIGHTMODE.md 2.3,
+     class L). The grid and the orbits are adjusted below; the cursor is a
+     mask (see BoxMarkets.tsx). */
   --mk-surface: var(--ink);
   --mk-ink: var(--page);
   --mk-ink-2: #9d9d9d;
   --mk-accent: var(--orange-100);
   --mk-tile-dark: #3a3533;
 
-  /* The seven unbadged ghosts are smudges DARKER than the cream card. On ink
-     they would be smudges on a smudge, so each one is lifted toward the page
-     by the same amount and keeps its own hue and its own inline opacity. */
+  /* The ghost tints are darker than the cream card; on ink they would vanish,
+     so each is lifted toward the page by the same amount, keeping its hue and
+     its inline opacity. */
   --mk-ghost-1: color-mix(in srgb, #853b1e 45%, var(--page));
   --mk-ghost-2: color-mix(in srgb, #542c1c 45%, var(--page));
   --mk-ghost-3: color-mix(in srgb, #46271b 45%, var(--page));
@@ -780,44 +614,22 @@
   --mk-ghost-7: color-mix(in srgb, #a74620 45%, var(--page));
 }
 :root[data-theme='light'] .box-markets .mk__grid img {
-  /* THE MEASURE GRID. Its file is the one exported for THIS card -- the shared
-     bento/grid.svg has its mid-stops flipped to white so the mesh reads on the
-     dark cards, and this copy keeps Figma's ink (#343434), fading to white at
-     both ends of every line. On an inverted card that is ink on ink through
-     the middle and page at the ends: the mesh is simply gone.
-
-     `invert(1)` is the whole fix, and it is the right tool rather than a hack:
-     the file is a 24-gradient mesh, so it is not a mask candidate, and what
-     has to happen to it is exactly what invert does -- swap the ink for the
-     page and the page for the ink, at every alpha, leaving the fade untouched.
-     Scoped to the light selector, so the dark render never evaluates it. */
+  /* The measure grid is an ink (#343434) gradient mesh, invisible on the
+     inverted card. It is not a mask candidate (24 gradients), and invert(1)
+     is exactly the swap needed, leaving the fades intact. */
   filter: invert(1);
 }
 :root[data-theme='light'] .bcard.box-markets .mk__grid {
-  /* Inverted, the mesh lands at 1.51:1 against the card where Figma's ink mesh
-     has 1.17:1 against cream -- brighter than it has ever been. The layer's
-     own opacity is what carries that back: 0.12 puts it at 1.25:1, texture you
-     notice only once you look for it. It is on the LAYER, not on the image,
-     because the two multiply. */
+  /* Inverted, the mesh is stronger than in dark; the layer's opacity brings it
+     back to faint texture. On the layer, not the image, as the two multiply. */
   opacity: 0.12;
 }
 :root[data-theme='light'] .box-markets .mk__orbit,
 :root[data-theme='light'] .box-markets .mk__orbits::after {
-  /* THE ORBITS. One #D9D9D9 stroke at full alpha: 1.4:1 on cream, a printed
-     guide you can only just see, and 12.8:1 on ink -- two blazing white
-     ellipses across the card. The colour is right and the WEIGHT is wrong, so
-     the weight is what moves. 0.17 lands at 1.49:1 against the inverted
-     surface where the stroke has 1.40:1 against cream -- a shade over parity
-     on purpose, because the path is 0.76px wide and a sub-pixel stroke
-     antialiases toward its ground, so the same ratio buys less line. Cheaper
-     than a mask, and it keeps the two ellipses byte-identical to the shared
-     asset.
-
-     The pseudo-element in the selector is the phone card's second ellipse --
-     526:1025, a rounder one the desktop node does not contain, painted as a
-     background rather than as a second <img> (see the breakpoint above). It is
-     the SAME #D9D9D9 stroke at the same 0.759 weight, so it takes the same
-     answer. Outside that breakpoint it has no `content` and is not generated,
-     which is why this costs the desktop render nothing. */
+  /* The orbits: a #D9D9D9 stroke that is faint on cream would blaze on ink,
+     so the opacity drops to match the dark contrast (slightly over, as the
+     sub-pixel stroke antialiases toward its ground). The pseudo-element is the
+     phone card's second ellipse (526:1025, see the breakpoint above), the same
+     stroke, so it takes the same value. */
   opacity: 0.17;
 }

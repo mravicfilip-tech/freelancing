@@ -1,21 +1,14 @@
 /* Bento: 1386 × 916 card inside a 1920 × 1080 frame (design coordinates). */
-/* What the four card loops read, and why it is on :root.
-   -------------------------------------------------------------------------
-   `tok()` (src/lib/theme.ts) resolves a custom property against
-   document.documentElement and nothing else, so a value a motion module has to
-   read cannot be declared on `.bento`. These thirteen are exactly the colours
-   the loops write -- nothing that only CSS paints is here, and nothing here is
-   read by CSS.
-
-   Each is the module's current hardcoded value, so `tok(name, fallback)` with
-   the old literal as the fallback cannot change dark mode even if a property
-   goes missing. What they are FOR is in the light block at the foot of this
-   file: eight of the thirteen mean "lit", and in this codebase lit means
-   brighter, which on paper means invisible. */
+/* Colours the card loops read, and why they are on :root.
+   `tok()` (src/lib/theme.ts) resolves custom properties against
+   document.documentElement only, so anything a motion module reads cannot be
+   declared on `.bento`. These are only the colours the loops write; CSS does
+   not read them. Each module passes the same literal as its `tok()` fallback,
+   so dark mode is unchanged if a property goes missing. The light block at the
+   foot of this file explains the light values. */
 :root {
   /* Card A's pill stroke and the "You're in." flare. Both sit on a red plate
-     that does not flip, so both are the same in both themes -- they are here
-     to be stated, not to be changed. */
+     that does not flip, so they are the same in both themes. */
   --bento-onb-lit: rgba(255, 251, 248, 0.95);
   --bento-onb-flare: 0 0 16px rgba(255, 251, 248, 0.9);
   --bento-onb-flare-0: 0 0 0px rgba(255, 251, 248, 0);
@@ -41,18 +34,12 @@
   overflow: hidden;
   isolation: isolate;
 
-  /* The band's colours live in two layers, and the split is the point.
-     ---------------------------------------------------------------------
-     ROLE TOKENS (--ink, --ink-2, --accent, --on-accent) for anything whose
-     job the rest of the page already names: they flip with the theme for
-     free and the bento does not get to have an opinion about them.
-
-     --bento-* LOCALS for the values that are this band's own -- the three
-     glow discs and the three card grounds. They are declared here with
-     today's dark values and redefined, by name, in the light block at the
-     foot of this file. Each card that carries its own palette states it the
-     same way in its own file (--onb-*, --custody-*, --bonus-*, --mk-*), so
-     "what does this card do on paper?" is always one block to read. */
+  /* Two layers of colour. Role tokens (--ink, --ink-2, --accent,
+     --on-accent) for anything the rest of the page already names; they flip
+     with the theme. --bento-* locals for this band's own values (glow discs,
+     card grounds): dark values here, redefined in the light block at the
+     foot of this file. Each card states its own palette the same way in its
+     own file (--onb-*, --custody-*, --bonus-*, --mk-*). */
   --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #7e0202 31.55%);
   --bento-g-orange: #d1541c;
   --bento-g-peach: #f99e57;
@@ -61,9 +48,9 @@
      edge a shade stronger than --line. */
   --bento-wash: rgba(12, 12, 12, 0.3);
   --bento-line: var(--ink-muted);
-  /* Cards B and C. Both are near-PAGE surfaces rather than raised panels:
-     the funds card is the page at 70% cutting the glow behind it, the bonus
-     card is a hair under the page with an edge of its own. */
+  /* Cards B and C are near-page surfaces rather than raised panels: the funds
+     card is the page at 70% over the glow, the bonus card a hair under the
+     page with an edge of its own. */
   --bento-funds: rgba(15, 14, 13, 0.7);
   --bento-bonus: #0e0e0d;
   --bento-bonus-line: #323232;
@@ -72,21 +59,16 @@
    Figma frame 365:857, background node 365:858 -> the `Circle` group 487:1729.
    Not a shader and not one disc: three 1539 x 1539 circles, each blurred by
    109.3, painted bottom-up at (-689, 323), (-675, 660) and (-991, 781) inside
-   the 1920 x 1080 frame. Only their top arcs reach the frame, which is what
-   makes the light climb the left edge and spread along the floor instead of
-   reading as a disc. Figma clips the group to x <= 1114, but the widest disc
-   plus its blur bleed reaches only 1083, so the clip never bites and there is
-   nothing to model.
+   the 1920 x 1080 frame. Only their top arcs reach the frame, so the light
+   climbs the left edge and spreads along the floor. Figma's clip at x <= 1114
+   never bites (the widest disc plus blur reaches 1083), so it is not modelled.
 
    `.bento__glows` clips to the band and carries the unit; `.bento__glow-frame`
-   is the design's own 1080-tall frame, pinned to the floor of the band. That
-   second box is what makes the light survive a narrow viewport. The band is
-   1080 design px tall only at 1920 -- below that the cards keep their own type
-   sizes while --u shrinks, so at 900 the section runs past 1800px. A glow laid
-   out against the whole band would sit in its bottom eighth, entirely inside
-   the stretch `.glow-fade` masks away, and the background would simply vanish.
-   Pinned to a 1080 * --u frame instead, the glow and the fade shrink together
-   and the band reads the same at every width. Same shape as .hero__bg. */
+   is the design's 1080-tall frame, pinned to the band's floor. On narrow
+   viewports the band grows much taller than 1080 * --u (the cards keep their
+   type sizes while --u shrinks); a glow laid out against the whole band would
+   fall inside the area `.glow-fade` masks away. Pinned to the frame, glow and
+   fade scale together. Same structure as .hero__bg. */
 .bento__glows {
   --u: calc(100cqw / 1920);
   position: absolute;
@@ -95,27 +77,14 @@
   overflow: hidden;
   container-type: inline-size;
   pointer-events: none;
-  /* The band's own top fade, and it has to live HERE rather than on the frame.
-     ---------------------------------------------------------------------
-     `.glow-fade` on `.bento__glow-frame` measures its 16% against the frame,
-     which is `1080 * --u` tall and pinned to the floor. The band is 1082px
-     tall once the cards stop growing, so above 1080 * --u = 1082 -- that is,
-     from about 1923px of viewport -- the frame is TALLER than the band and its
-     top, with the whole fade-in ramp, is pushed above the band and thrown away
-     by the `overflow: hidden` two lines up. The glow then meets the band's top
-     edge at full strength and that clip cuts it as a hard horizontal line:
-     measured at 1px of step at 2100, 6px at 2560 and 26px at 3000, and nothing
-     at all at 1920 and below. So the guard on the band's top edge has to be
-     measured against the BAND, which is exactly this box.
-
-     Top only. The frame's bottom is the band's bottom at every width, so
-     `.glow-fade` already guards the floor correctly and is left alone; adding
-     a second bottom ramp here would darken it twice. Below 1923 this ramp runs
-     over bare page -- the glow's first light is hundreds of pixels lower -- so
-     it costs those widths nothing.
-
-     Nested inside the frame's mask, not replacing it, and outside the element
-     the entrance scales, so the fade still never rides along with the bloom. */
+  /* The band's own top fade. It must live here, not on the frame: above about
+     1923px of viewport the frame (1080 * --u) is taller than the band, so the
+     frame's own fade-in ramp is pushed above the band and clipped, and the
+     glow meets the top edge as a hard line. Top only: the frame's bottom is
+     the band's bottom at every width, so `.glow-fade` already handles the
+     floor, and a second ramp would darken it twice. This sits outside the
+     element the entrance scales, so the fade never rides along with the
+     bloom. */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
 }
@@ -126,17 +95,16 @@
   bottom: 0;
   height: calc(1080 * var(--u));
 }
-/* The group the entrance blooms. One wrapper around the three discs is what
-   lets `buildBento` go on tweening a single `.bento__glow`, so the light still
-   arrives as one thing and the timeline is untouched. It blooms from the
-   bottom-left corner, where the light comes from; scaling about the middle of a
-   full-width box would slide the whole glow up and right instead. The mask sits
-   on the frame above, so the fade never rides along with the scale. */
+/* The group the entrance blooms. One wrapper around the three discs lets
+   `buildBento` tween a single `.bento__glow`, so the light arrives as one
+   thing. It blooms from the bottom-left corner, where the light comes from;
+   scaling about the middle would slide the glow up and right. The mask sits on
+   the frame above, so the fade never rides along with the scale. */
 .bento__glow {
   position: absolute;
   inset: 0;
   transform-origin: 0% 100%;
-  /* Three 109px blurs re-rasterising under that scale is the one expensive
+  /* Three 109px blurs re-rasterising under that scale are the most expensive
      frame in this section; the hint keeps it on the compositor. */
   will-change: transform;
 }
@@ -147,10 +115,10 @@
   border-radius: 50%;
   filter: blur(calc(109.3 * var(--u)));
 }
-/* Ellipse 39 -- the dark red halo that stops the glow meeting the ground as a
-   flat orange. Its fill is a gradient, and these are Figma's two stops
-   projected onto the CSS gradient line of a 1539 box: the vector runs from
-   (1290.1, 218.6) to (1376.1, 626.1) in the export's own coordinates. */
+/* Ellipse 39: the dark red halo that stops the glow meeting the ground as a
+   flat orange. The gradient is Figma's two stops projected onto the CSS
+   gradient line of a 1539 box (the vector runs from (1290.1, 218.6) to
+   (1376.1, 626.1) in the export's coordinates). */
 .bento__g--ember {
   left: calc(-689 * var(--u));
   top: calc(323 * var(--u));
@@ -158,7 +126,7 @@
 }
 /* Ellipse 40 */
 .bento__g--orange { left: calc(-675 * var(--u)); top: calc(660 * var(--u)); background: var(--bento-g-orange); }
-/* Ellipse 41 -- the peach core, and the last one painted. */
+/* Ellipse 41: the peach core, painted last. */
 .bento__g--peach  { left: calc(-991 * var(--u)); top: calc(781 * var(--u)); background: var(--bento-g-peach); }
 
 .bento__card {
@@ -194,17 +162,13 @@
   container-type: inline-size;
 }
 .bcard__text { display: flex; flex-direction: column; gap: 2px; line-height: 1.2; position: relative; z-index: 1; }
-/* One card-heading size for all four cards, from tokens.css. The Bonus and
-   Markets cards used to scale their titles with their artwork (`--u`), which
-   put them at 18.85px against the other two cards' 24 at 1440. */
+/* One card-heading size for all four cards, from tokens.css (--h3-size).
+   Don't scale card titles with the artwork's `--u`; the four must match. */
 .bcard__title { font-family: var(--font-display); font-weight: 500; font-size: var(--h3-size); line-height: var(--h3-leading); color: var(--ink); }
 /* The site's paragraph setting, from tokens.css: Inter Tight 300, a flat
-   18px at every width, 120% leading as a unitless ratio, and the font's own
-   tracking. All four card bodies read
-   it from here -- the per-card font-size overrides that used to sit in the
-   four box files are gone, so this is the only place a bento paragraph is
-   sized. `letter-spacing` is restated rather than left to inherit because two
-   of the cards were setting their own. */
+   18px at every width, 1.2 leading, the font's own tracking. This is the only
+   place a bento paragraph is sized. `letter-spacing` is restated so no card
+   can inherit a tracking of its own. */
 .bcard__body {
   font-family: var(--font-body);
   font-weight: 300;
@@ -238,16 +202,10 @@
 .bento__cta--orange { color: var(--accent); }
 
 /* Card A ------------------------------------------------------------------ */
-/* 534 x 387 in Figma. The card grows to whatever the left column comes to --
-   387 + 14 + the funds card's 355 -- so the height here is a floor rather than
-   a size, but it has to be the design's floor: at 385 the bottom-anchored link
-   sat two pixels high, because `margin-top: auto` measures from the padding box
-   and the padding box was two pixels short.
-
-   The fill lives in BoxOnboard.css with the rest of the card's geometry. It used
-   to be stated here as well, in the previous palette, and only lost because the
-   box overrides it at higher specificity -- a stop nobody could edit safely,
-   since changing it did nothing. */
+/* 534 x 387 in Figma. The card grows with the left column, so the height is
+   a floor, but it must be the design's floor: the bottom-anchored link
+   (`margin-top: auto`) sits high if the padding box is short. The fill lives
+   in BoxOnboard.css with the rest of the card's geometry. */
 .bcard--onboard {
   flex: 1 0 0;
   min-height: 387px;
@@ -256,13 +214,11 @@
 /* Card B ------------------------------------------------------------------ */
 .bcard--funds { min-height: 355px; background: var(--bento-funds); }
 .bcard--funds .bcard__text { max-width: 474px; }
-/* The diagram itself is BoxCustody.css; the rules that used to live here were
-   written for markup the rebuilt box replaced and matched nothing. */
+/* The diagram itself is styled in BoxCustody.css. */
 
 /* Card C ------------------------------------------------------------------ */
 .bcard--bonus { min-height: 297px; background: var(--bento-bonus); border: 1px solid var(--bento-bonus-line); }
-/* The chart, the pill and the badges are BoxBonus.css; the rules that used to
-   live here were written for markup the rebuilt box replaced. */
+/* The chart, the pill and the badges are styled in BoxBonus.css. */
 
 /* Card D ------------------------------------------------------------------ */
 .bcard--markets {
@@ -320,97 +276,53 @@
     border-radius: 8px;
     background: color-mix(in srgb, var(--mk-surface) 92%, transparent);
   }
-  /* The four cards are drawn in Figma as 394-wide frames whose own 30px
-     padding IS their margin -- there is no page gutter in the mobile design,
-     because at 394 the card is the screen. Every chain of outer chrome we add
-     comes straight off the artwork: the page gutter (20px a side) plus this
-     wrapper's padding (20px a side) left a 390 phone with a 308px card and a
-     260px content column against a designed 334, so the whole diagram drew at
-     78% and 12px chip labels landed at 9.3px.
-
-     Three of the four card agents measured that independently and each asked
-     for the same thing, so it is fixed here once rather than four times. The
-     cards' own `--u` is `min(1px, 100cqw / 334)`, which picks the design up the
-     moment the width arrives -- no card file changes.
-
-     The wrapper goes edge to edge by cancelling the gutter it sits inside
-     rather than by removing it from `.container`, which is shared with eight
-     other sections. */
-  /* The four cards are drawn as 394-wide Figma frames whose own 30px padding is
-     their margin, so the design has no page gutter -- at 394 the card IS the
-     screen. Taking that literally and running the band edge to edge did give
-     the cards their drawn size, and it read as a mistake: the cards touched
-     both screen edges while every other section on the page kept its 20px, so
-     the band looked unpadded rather than full-bleed.
-
-     So the band sits in the page gutter like everything else and the cards give
-     up the last 11% of their design size for it. What matters is that the
-     heading and the card copy still share one vertical: the wrapper's padding
-     is zero, the card fills it, and the heading is inset by the same 30/394 =
-     7.614% of that width the card insets its own contents by. A percentage,
-     not a length, so it tracks the card at every width without being told
-     what the card is. */
+  /* The cards are 394-wide Figma frames whose own 30px padding is their
+     margin, so the design has no page gutter. Running the band edge to edge
+     reads as unpadded next to every other section, so the band keeps the page
+     gutter and the cards give up a little of their design size. The wrapper's
+     padding is zero and the heading is inset by the card's own 30/394 =
+     7.614%, so heading and card copy share one vertical at every width. */
   .bento__card { padding: 0; gap: 24px; }
 
-  /* Capped and centred exactly as the card is, so the two share one box before
-     the inset is applied -- otherwise at 720, where the card stops growing at
-     394 and centres, the heading would keep spanning the full band and the two
-     would diverge (measured 86.2 against the copy's 193 before this line). */
+  /* Capped and centred exactly as the card is, so the two share one box
+     before the inset is applied; otherwise, once the card stops growing at
+     394, the heading would span the full band and the two would diverge. */
   .bento__head {
     width: 100%;
     max-width: 394px;
     margin-inline: auto;
-    /* The card's top edge is the band's first line of type, so the heading
-       cannot start on it. Measured before: the h2's box began 1px below the
-       card, which put the ascenders against the rounded corner. */
+    /* The card has no top padding here, so without this the heading's
+       ascenders sit against the rounded corner. */
     padding-top: 12px;
     /* `min()`, not a bare percentage: percentage padding resolves against the
-       CONTAINING BLOCK, not against this element's own capped width. Below the
-       cap the wrapper and the card are the same width so 7.614% is the card's
-       own 30/394 inset; above it the wrapper keeps growing while the card stops
-       at 394, so the percentage overshoots and 30px is the answer. Measured at
-       720 the bare percentage put the heading at 212.2 against the copy's 193. */
+       containing block, not this element's capped width. Below the cap 7.614%
+       is the card's own 30/394 inset; above it the percentage overshoots, and
+       30px is correct. */
     padding-inline: min(30px, 7.614%);
   }
 
-  /* Figma's own values for the mobile card: 30px padding, 24/16 type with 18px
-     between heading and body. What was here (24px padding, 21/17, 2px gap) was
-     a guess made before the mobile frames existed, and every card that has been
-     exported since has had to override it locally. */
-  /* Each exported card is a 394-wide frame that scales itself through
-     `--u: min(1px, 100cqw / 394)`, so it must never be given MORE than 394 or
-     it draws above its design size: measured at a 720 viewport the card came
-     out 646 wide and set its 24px title at 39px, which is the uncapped-unit
-     seam. Capping the card rather than the wrapper keeps the band full-bleed
-     on a phone and centres the cards once the screen outgrows the design.
-
-     Padding and type are the cards' own business now -- each exported frame
-     positions its contents in `--u` from its own edge -- so the values that
-     used to be set here are gone rather than left to be overridden four
-     times. */
+  /* Each card is a 394-wide frame that scales itself through
+     `--u: min(1px, 100cqw / 394)`, so it must never be wider than 394 or it
+     draws above its design size. Capping the card rather than the wrapper
+     centres the cards once the screen outgrows the design. Padding and type
+     are each card's own business: every frame positions its contents in `--u`
+     from its own edge. */
   .bcard { padding: 0; width: 100%; max-width: 394px; margin-inline: auto; }
 
-  /* The min-heights were floors for cards that had no mobile frame. Each
-     exported card now sizes itself from its own aspect-ratio or its content,
-     and these sit below that -- dead, and misleading to leave. --markets keeps
-     its floor until that card's rebuild lands. */
+  /* Cards size themselves from their own aspect-ratio or content on a phone,
+     so the desktop floors are reset. --markets keeps a floor. */
   .bcard--funds { min-height: 0; }
   .bcard--markets { min-height: 460px; }
   .mk__field { left: -20px; top: 24px; transform: scale(0.5); }
   .mk__orbits { left: -40px; transform: scale(0.6); }
 }
 
-/* Pending state, the same contract as the hero. Without it the band painted
-   settled from the very first frame and merely animated later, so the top of it
-   sat finished in the sliver below the hero before anyone had scrolled. The
-   attribute is removed in the same frame GSAP takes over.
-
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it. A timed failsafe cannot work for a band that waits
-   to be scrolled to -- the wait is legitimate and can last minutes -- so the
-   guarantee has to come from the hold never applying in the first place when
-   nothing will undo it. Only the animated parts are held; the card's frame and
-   background stay, so nothing about the layout pops in. */
+/* Pending state, the same contract as the hero: the animated parts stay
+   hidden until the entrance starts, so the band never shows settled in the
+   sliver below the hero. The attribute is removed in the same frame GSAP takes
+   over. Gated on [data-js] (set by main.tsx), so the hold only applies when
+   script exists to release it; a timed failsafe cannot work for a band that
+   legitimately waits to be scrolled to. */
 [data-js] .bento[data-motion='pending'] .bento__card,
 [data-js] .bento[data-motion='pending'] .bento__glow,
 [data-js] .bento[data-motion='pending'] .bento__title,
@@ -425,217 +337,132 @@
 
 /* --- Light ------------------------------------------------------------------
    Written twice, as tokens.css writes the palette twice, because a media query
-   cannot go inside a selector list and the custom-property indirection that
-   would avoid the duplication is the one thing LIGHTMODE.md 1.4 says not to be
-   clever about. The blocks MUST stay identical; only their conditions differ.
+   cannot go inside a selector list (see LIGHTMODE.md 1.4). The two blocks must
+   stay identical; only their conditions differ:
 
-     1. the system preference leads, but only while nothing has been chosen;
+     1. the system preference applies while nothing has been chosen;
      2. an explicit choice wins at any system setting.
 
-   In practice (2) always applies -- index.html resolves both into data-theme
-   before first paint. (1) is what a stripped page or a prerender falls back
-   to, and leaving it out is how a band ends up drawing its dark glow on a
-   light page.
+   index.html normally resolves both into data-theme before first paint; (1) is
+   the fallback for a stripped page or a prerender.
 
-   The band's own four cards are answered in their own files; only what
-   Bento.css owns is here -- the glow, the wash, the two card grounds, and the
-   thirteen values the loops read off :root. ---------------------------- */
+   Each card's light palette is in its own file. Only what Bento.css owns is
+   here: the glow, the wash, the two card grounds and the loop colours on
+   :root. ---------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* THE DIRECTION FLIP, which is the whole of this block.
-     Eight of these eleven values mean "this just fired", and in dark every one
-     of them says so by getting brighter: a near-white pill stroke, two white
-     text-shadows, a peach packet head hotter than the wire it rides, a market
-     chip at brightness 1.7, a marker at 1.5. On paper nothing can be brighter
-     than the page, so each of those would fire and be invisible -- the loop
-     would run, amplitude.mjs would measure the same 563px of travel, and
-     nobody would see a thing. Each one therefore turns around and reaches the
-     eye by DARKENING instead.
+  /* The direction flip. In dark, "lit" means brighter; on paper nothing can be
+     brighter than the page, so each lit value here darkens instead.
+     --bento-onb-* is deliberately absent: card A's plate is the same red
+     gradient in both themes, so white is still the lit colour on it. */
 
-     Card A is the exception and keeps its values: its plate is a saturated
-     red-to-peach gradient in both themes, so white on it is still the lit
-     thing. Only --bento-onb-* is absent from this block, and that absence is
-     the decision. */
-
-  /* Card B. The ring, the wire and the head are one ramp and it inverts as a
-     ramp: in dark the head is the hottest thing on the card and the ring the
-     coolest, so on paper the head is the DEEPEST and the ring the lightest,
-     with the wire between them exactly as before. */
+  /* Card B. Ring, wire and head are one ramp and invert as a ramp: the head is
+     the hottest value in dark and the deepest on paper. */
   --bento-fd-ring: #c4361c;
   --bento-fd-wire: #a21605;
   --bento-fd-head: #7e0202;
-  /* The market chip firing, and the one beat in this band that changes which
-     ELEMENT carries it. In dark, brightness(1.7) moves the #0f0e0d chip by
-     1.03:1 and nothing at all would be visible -- what fires is the #a6a6a6
-     glyph inside it, which clips to white and takes its contrast against the
-     chip from 7.5:1 to 17.8:1. Below 1, brightness cannot clip: it scales the
-     glyph and its chip together and their mutual contrast barely moves. So on
-     paper the CHIP is what fires, against the card: 1.27:1 at rest to 2.24:1
-     at 0.72, a swing of 1.76x where dark's glyph swings 2.37x. Pushing the
-     multiplier further only crushes the glyph. One filter function either
-     side, so GSAP interpolates the list structurally. */
+  /* The market chip firing. In dark, brightness(1.7) makes the grey glyph clip
+     to white; below 1 brightness cannot clip, so on paper the whole chip
+     darkens against the card instead. Going lower than 0.72 only crushes the
+     glyph. Keep one filter function on each side so GSAP can interpolate it. */
   --bento-fd-tile-lit: brightness(0.72);
-  /* A lit edge is a STEP, not a density, so this is matched by the swing it
-     produces rather than by converting the alpha. Dark: the chip's edge runs
-     1.21:1 at rest to 4.81:1 lit, 3.97x. Ink at 80% over the light pill runs
-     1.49:1 to 5.58:1, 3.75x. rgba(162,22,5,.75) -- the literal alpha carried
-     across -- would have given 2.55x: a beat measurably weaker on paper while
-     passing every check there is. */
+  /* A lit edge is matched by the contrast swing it produces (about 3.8x in
+     both themes), not by carrying the dark alpha across, which would give a
+     visibly weaker beat on paper. */
   --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
 
-  /* Card C. The dot riding the drawing edge is the one thing on the card that
-     must read at 560px of travel, so it goes to the deepest value in the
-     palette rather than to the accent -- it has to beat the line it is drawing
-     the whole way. */
+  /* Card C. The dot riding the drawing edge takes the deepest value in the
+     palette, not the accent, so it stays ahead of the line it draws. */
   --bento-bn-head: #7e0202;
-  /* Same step-matching as --bento-fd-chip-lit: 1.28:1 -> 4.72:1 in dark, a
-     3.69x swing; 1.52:1 -> 5.94:1 here, 3.90x. */
+  /* Same swing-matching as --bento-fd-chip-lit. */
   --bento-bn-pill-lit: rgba(126, 2, 2, 0.8);
-  /* The marker is a white dot in a warm halo -- a chart handle, which is what
-     a chart handle looks like on paper too, so it is NOT inverted. Only its
-     bloom turns around: 1.5 lifts the halo off a dark card, 0.74 presses it
-     into a light one. */
+  /* The marker (a white dot in a warm halo) is not inverted; only its bloom
+     turns around: 1.5 lifts it off a dark card, 0.74 presses it into a light
+     one. */
   --bento-bn-marker-lit: brightness(0.74);
   }
   :root:not([data-theme='dark']) .bento {
-  /* THE GLOW: same three discs, same positions, same radii, same 109px blur,
-     same paint order -- geometry byte-for-byte, so the two themes agree about
-     where the band's light is and the gate stays quiet. What changes is what
-     the layer does.
-
-     1. THE PAGE STOP IS THE PAGE. The ember disc's first stop was #0f0e0d,
-        which was never a dark colour: it is the ground the disc dissolves
-        into. It is var(--page) in both themes. Read literally on paper it is a
-        grey bruise across the bottom-left corner of the band.
-     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. Figma paints
-        these bottom-up as ember, orange, peach -- coolest first, the pale core
-        last, because the core of a light source is its brightest part. Nothing
-        on paper is brighter than the page, so a pale core is a hole. The order
-        is kept and the ramp reversed: peach is still last and still the core,
-        and is now the DEEPEST tint; ember is still the outer falloff and is
-        now the faintest. Warmth peaks exactly where light peaked.
-
-     1.19:1, 1.30:1 and 1.45:1 against the page -- warm paper with a blush.
-     The same recipe the footer proved. */
+  /* The glow keeps its geometry and paint order; only the colours change.
+     1. The ember disc's first stop is var(--page) in both themes: it is the
+        ground the disc dissolves into, not a dark colour.
+     2. The luminance ramp inverts, the spatial one does not. Peach is still
+        painted last as the core, but is now the deepest tint and ember the
+        faintest, so warmth peaks where the light did. Same approach as the
+        footer. */
   --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #fbe7d9 31.55%);
   --bento-g-orange: #f7d8c4;
   --bento-g-peach: #f1c3a8;
 
-  /* The wash is PAGE-alpha, not ink-alpha, and that is the one white-alpha
-     rule in this repo that does not apply here: rgba(12,12,12,.3) is not
-     "raise this slightly", it is the page laid over the glow to settle it so
-     four cards can sit on it. The page does that job in either theme, so the
-     colour follows the page and only the alpha is tuned -- .55 rather than
-     .3, because a warm tint on cream needs more covering than a warm tint on
-     black. Card B's ground is the same move at the same alpha it always had. */
+  /* The wash is the page colour laid over the glow to settle it, so it
+     follows the page (not the ink) in both themes. The alpha is higher on
+     paper because a warm tint on cream needs more covering. Card B's ground
+     is the same idea at its own alpha. */
   --bento-wash: rgba(255, 251, 248, 0.55);
   --bento-funds: rgba(255, 251, 248, 0.7);
-  /* 2.8:1 against the page, matching the 3.0:1 that #626262 has against
-     #0f0e0d. The edge is what tells you the outer card is there at all once
-     the wash stops being darker than what is behind it. */
+  /* About 3:1 against the page, matching the dark edge. On paper the edge is
+     what shows the outer card at all. */
   --bento-line: #a1958c;
-  /* The bonus card is a hair off the page with an edge of its own: 1.01:1 in
-     dark, 1.01:1 here, and its rule at 1.49:1 in both. */
+  /* The bonus card is a hair off the page with an edge of its own, at the
+     same contrast in both themes. */
   --bento-bonus: #fdf8f4;
   --bento-bonus-line: #ddcec2;
   }
 }
 
 :root[data-theme='light'] {
-  /* THE DIRECTION FLIP, which is the whole of this block.
-     Eight of these eleven values mean "this just fired", and in dark every one
-     of them says so by getting brighter: a near-white pill stroke, two white
-     text-shadows, a peach packet head hotter than the wire it rides, a market
-     chip at brightness 1.7, a marker at 1.5. On paper nothing can be brighter
-     than the page, so each of those would fire and be invisible -- the loop
-     would run, amplitude.mjs would measure the same 563px of travel, and
-     nobody would see a thing. Each one therefore turns around and reaches the
-     eye by DARKENING instead.
+  /* The direction flip. In dark, "lit" means brighter; on paper nothing can be
+     brighter than the page, so each lit value here darkens instead.
+     --bento-onb-* is deliberately absent: card A's plate is the same red
+     gradient in both themes, so white is still the lit colour on it. */
 
-     Card A is the exception and keeps its values: its plate is a saturated
-     red-to-peach gradient in both themes, so white on it is still the lit
-     thing. Only --bento-onb-* is absent from this block, and that absence is
-     the decision. */
-
-  /* Card B. The ring, the wire and the head are one ramp and it inverts as a
-     ramp: in dark the head is the hottest thing on the card and the ring the
-     coolest, so on paper the head is the DEEPEST and the ring the lightest,
-     with the wire between them exactly as before. */
+  /* Card B. Ring, wire and head are one ramp and invert as a ramp: the head is
+     the hottest value in dark and the deepest on paper. */
   --bento-fd-ring: #c4361c;
   --bento-fd-wire: #a21605;
   --bento-fd-head: #7e0202;
-  /* The market chip firing, and the one beat in this band that changes which
-     ELEMENT carries it. In dark, brightness(1.7) moves the #0f0e0d chip by
-     1.03:1 and nothing at all would be visible -- what fires is the #a6a6a6
-     glyph inside it, which clips to white and takes its contrast against the
-     chip from 7.5:1 to 17.8:1. Below 1, brightness cannot clip: it scales the
-     glyph and its chip together and their mutual contrast barely moves. So on
-     paper the CHIP is what fires, against the card: 1.27:1 at rest to 2.24:1
-     at 0.72, a swing of 1.76x where dark's glyph swings 2.37x. Pushing the
-     multiplier further only crushes the glyph. One filter function either
-     side, so GSAP interpolates the list structurally. */
+  /* The market chip firing. In dark, brightness(1.7) makes the grey glyph clip
+     to white; below 1 brightness cannot clip, so on paper the whole chip
+     darkens against the card instead. Going lower than 0.72 only crushes the
+     glyph. Keep one filter function on each side so GSAP can interpolate it. */
   --bento-fd-tile-lit: brightness(0.72);
-  /* A lit edge is a STEP, not a density, so this is matched by the swing it
-     produces rather than by converting the alpha. Dark: the chip's edge runs
-     1.21:1 at rest to 4.81:1 lit, 3.97x. Ink at 80% over the light pill runs
-     1.49:1 to 5.58:1, 3.75x. rgba(162,22,5,.75) -- the literal alpha carried
-     across -- would have given 2.55x: a beat measurably weaker on paper while
-     passing every check there is. */
+  /* A lit edge is matched by the contrast swing it produces (about 3.8x in
+     both themes), not by carrying the dark alpha across, which would give a
+     visibly weaker beat on paper. */
   --bento-fd-chip-lit: rgba(126, 2, 2, 0.8);
 
-  /* Card C. The dot riding the drawing edge is the one thing on the card that
-     must read at 560px of travel, so it goes to the deepest value in the
-     palette rather than to the accent -- it has to beat the line it is drawing
-     the whole way. */
+  /* Card C. The dot riding the drawing edge takes the deepest value in the
+     palette, not the accent, so it stays ahead of the line it draws. */
   --bento-bn-head: #7e0202;
-  /* Same step-matching as --bento-fd-chip-lit: 1.28:1 -> 4.72:1 in dark, a
-     3.69x swing; 1.52:1 -> 5.94:1 here, 3.90x. */
+  /* Same swing-matching as --bento-fd-chip-lit. */
   --bento-bn-pill-lit: rgba(126, 2, 2, 0.8);
-  /* The marker is a white dot in a warm halo -- a chart handle, which is what
-     a chart handle looks like on paper too, so it is NOT inverted. Only its
-     bloom turns around: 1.5 lifts the halo off a dark card, 0.74 presses it
-     into a light one. */
+  /* The marker (a white dot in a warm halo) is not inverted; only its bloom
+     turns around: 1.5 lifts it off a dark card, 0.74 presses it into a light
+     one. */
   --bento-bn-marker-lit: brightness(0.74);
 }
 :root[data-theme='light'] .bento {
-  /* THE GLOW: same three discs, same positions, same radii, same 109px blur,
-     same paint order -- geometry byte-for-byte, so the two themes agree about
-     where the band's light is and the gate stays quiet. What changes is what
-     the layer does.
-
-     1. THE PAGE STOP IS THE PAGE. The ember disc's first stop was #0f0e0d,
-        which was never a dark colour: it is the ground the disc dissolves
-        into. It is var(--page) in both themes. Read literally on paper it is a
-        grey bruise across the bottom-left corner of the band.
-     2. THE LUMINANCE RAMP INVERTS; THE SPATIAL RAMP DOES NOT. Figma paints
-        these bottom-up as ember, orange, peach -- coolest first, the pale core
-        last, because the core of a light source is its brightest part. Nothing
-        on paper is brighter than the page, so a pale core is a hole. The order
-        is kept and the ramp reversed: peach is still last and still the core,
-        and is now the DEEPEST tint; ember is still the outer falloff and is
-        now the faintest. Warmth peaks exactly where light peaked.
-
-     1.19:1, 1.30:1 and 1.45:1 against the page -- warm paper with a blush.
-     The same recipe the footer proved. */
+  /* The glow keeps its geometry and paint order; only the colours change.
+     1. The ember disc's first stop is var(--page) in both themes: it is the
+        ground the disc dissolves into, not a dark colour.
+     2. The luminance ramp inverts, the spatial one does not. Peach is still
+        painted last as the core, but is now the deepest tint and ember the
+        faintest, so warmth peaks where the light did. Same approach as the
+        footer. */
   --bento-g-ember: linear-gradient(168.08deg, var(--page) 8.71%, #fbe7d9 31.55%);
   --bento-g-orange: #f7d8c4;
   --bento-g-peach: #f1c3a8;
 
-  /* The wash is PAGE-alpha, not ink-alpha, and that is the one white-alpha
-     rule in this repo that does not apply here: rgba(12,12,12,.3) is not
-     "raise this slightly", it is the page laid over the glow to settle it so
-     four cards can sit on it. The page does that job in either theme, so the
-     colour follows the page and only the alpha is tuned -- .55 rather than
-     .3, because a warm tint on cream needs more covering than a warm tint on
-     black. Card B's ground is the same move at the same alpha it always had. */
+  /* The wash is the page colour laid over the glow to settle it, so it
+     follows the page (not the ink) in both themes. The alpha is higher on
+     paper because a warm tint on cream needs more covering. Card B's ground
+     is the same idea at its own alpha. */
   --bento-wash: rgba(255, 251, 248, 0.55);
   --bento-funds: rgba(255, 251, 248, 0.7);
-  /* 2.8:1 against the page, matching the 3.0:1 that #626262 has against
-     #0f0e0d. The edge is what tells you the outer card is there at all once
-     the wash stops being darker than what is behind it. */
+  /* About 3:1 against the page, matching the dark edge. On paper the edge is
+     what shows the outer card at all. */
   --bento-line: #a1958c;
-  /* The bonus card is a hair off the page with an edge of its own: 1.01:1 in
-     dark, 1.01:1 here, and its rule at 1.49:1 in both. */
+  /* The bonus card is a hair off the page with an edge of its own, at the
+     same contrast in both themes. */
   --bento-bonus: #fdf8f4;
   --bento-bonus-line: #ddcec2;
 }

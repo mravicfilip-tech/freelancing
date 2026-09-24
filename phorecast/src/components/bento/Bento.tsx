@@ -10,29 +10,25 @@ import type { SectionMotion } from '../../lib/motion';
 import './Bento.css';
 
 
-/* Card A — Make Your First Forecast in 60 Seconds */
+/* Card A: Make Your First Forecast in 60 Seconds (BoxOnboard) */
 
-/* Card B — Your Funds Stay Yours */
+/* Card B: Your Funds Stay Yours (BoxCustody) */
 
-/* Card C — Your First Deposit, Doubled */
+/* Card C: Your First Deposit, Doubled (BoxBonus) */
 
-/* Card D — Forecast Global Markets in One Place */
+/* Card D: Forecast Global Markets in One Place (BoxMarkets) */
 
 /* Entrance -------------------------------------------------------------------
    The glow blooms, the header rises, then the four cards arrive one after
    another with their copy and artwork trailing each shell, so the grid reads as
    four arrivals rather than one block appearing. Every tween is a `from`, which
    leaves the resting markup as the finished state: if the script never runs the
-   section is simply there. Illustration-level motion is chosen separately in
-   the /lab pages and is not part of this timeline.
+   section is simply there. Illustration motion lives in `motion/<x>.ts`, not in
+   this timeline.
 
-   The band is the gate on everything below it: each card module waits for this
-   timeline's `onComplete` before it plays its own load-in (see motion/shared.ts),
-   so every tenth of a second here is a tenth of a second added to all four
-   illustrations. It used to end at 1.42s. It ends at 1.24s, with the same
-   beats in the same order -- the header is a touch earlier, the four shells a
-   touch quicker, and each card's copy follows its own shell by 0.12s instead
-   of 0.16s. */
+   Each card module waits for this timeline to finish before it plays its own
+   load-in (see motion/shared.ts), so every tenth of a second added here delays
+   all four illustrations. Keep the band short (about 1.24s). */
 const CARDS_AT = 0.22;
 const CARD_STEP = 0.08;
 /** How far each card's copy and artwork trail its own shell. */
@@ -52,10 +48,8 @@ function buildBento({ q, tl }: SectionMotion) {
   if (glow) {
     tl.from(glow, { opacity: 0, scale: 1.08, duration: 0.8, ease: 'power2.out', clearProps: 'transform' }, 0);
   }
-  // The frame fades with everything else. Left out of the sequence it was the
-  // one part that painted immediately, so on the way in there was a moment of
-  // empty outlined box waiting for its contents -- which reads as the section
-  // failing to load rather than as it arriving.
+  // The frame fades with everything else. If it painted immediately, an empty
+  // outlined box would show before its contents and read as a failed load.
   rise(tl, q('.bento__card'), 0, { y: 0, duration: 0.55 });
   rise(tl, q('.bento__title'), 0.05, { duration: 0.6 });
   rise(tl, q('.bento__sub'), 0.12, { duration: 0.6 });
@@ -64,10 +58,8 @@ function buildBento({ q, tl }: SectionMotion) {
   cards.forEach((card, i) => {
     const at = CARDS_AT + i * CARD_STEP + CARD_FILL;
     const copy = Array.from(card.querySelectorAll<HTMLElement>('.bcard__title, .bcard__body, .bento__cta'));
-    // Every box names its own artwork root, so this list has to carry all of
-    // them. A card whose root is missing here is not an error -- the entrance
-    // simply skips it, which looks exactly like broken animation rather than a
-    // selector that missed, so it is worth stating the full set explicitly.
+    // Every box names its own artwork root, so this list must carry all of
+    // them. A root missing here fails silently: the entrance just skips it.
     const art = card.querySelector<HTMLElement>(
       '.onb__art, .custody__art, .box-bonus__art, .mk__stage',
     );
@@ -84,25 +76,18 @@ function buildBento({ q, tl }: SectionMotion) {
    loaded on demand so the section costs nothing until it is reached. */
 type CardMotion = Record<string, ((card: HTMLElement) => () => void) | undefined>;
 /**
- * `motion/<x>.ts` exporting `<x>(card) => teardown`, matched to `.bcard--<x>`:
  * onboard, funds, bonus, markets. `motion/shared.ts` sits under the same glob
- * and is simply skipped — there is no `.bcard--shared` — which keeps the four
- * card modules importing their common plumbing from a file the loader already
- * warms rather than four copies of it.
+ * and is skipped (there is no `.bcard--shared`), so the shared plumbing is
+ * warmed by the same prefetch as the four card modules.
  */
 const CARD_MOTION = import.meta.glob<CardMotion>('./motion/*.ts');
 
 /**
- * Fetch the illustration modules well before anyone reaches the band, and hand
- * back the same promises when it is.
- *
- * They used to be imported at the moment the section came into view, which put
- * a network round trip on the critical path: measured on a scroll from the top,
- * the section revealed itself and then sat with empty artwork for 4.2 seconds
- * while five modules were fetched. Warming them at idle costs nothing anyone
- * can see -- the page has already settled -- and turns the arrival into a cache
- * read. The map is module-scoped, so a second mount reuses the warm promises
- * rather than starting again.
+ * Fetch the illustration modules at idle, well before the band is reached, and
+ * hand back the same promises when it is. Importing them on intersection puts a
+ * network round trip on the critical path and leaves the revealed cards with
+ * empty artwork for seconds. The map is module-scoped, so a second mount reuses
+ * the warm promises.
  */
 const warmed = new Map<string, Promise<CardMotion>>();
 
@@ -125,16 +110,11 @@ function prefetchCardMotion() {
 }
 
 function useCardMotion(ref: RefObject<HTMLElement | null>) {
-  /* The card loops read their colours from resolved custom properties at BUILD
-     time and cache them for the life of the loop -- the packet head, the lit
-     chip stroke, the brightness a market tile fires at. `useSectionMotion` has
-     its own epoch dependency for the band's entrance, but these four modules
-     are attached here, by an observer, with an effect of their own: without
-     this they would keep cooling to the palette that was live when the section
-     was first reached. Flip the theme at the bento and the wallet would go on
-     flaring white on paper, forever, with nothing thrown and nothing to see in
-     a still. The teardown below is the same one StrictMode runs on every load,
-     so the rebuild path is the best-tested in the file. */
+  /* The card loops read their colours from resolved custom properties at build
+     time and cache them for the life of the loop (the packet head, the lit chip
+     stroke, a market tile's brightness). These modules are attached by an
+     observer in their own effect, so they need the theme epoch as a dependency
+     too; without it a theme change leaves them animating the old palette. */
   const themeEpoch = useThemeEpoch();
   // Start warming as soon as the hero says the delicate part of its entrance is
   // over, so the fetches share the same quiet window the 3D mark waits for.
@@ -181,18 +161,13 @@ function useCardMotion(ref: RefObject<HTMLElement | null>) {
             .catch((err) => console.error(`bento: ${name} motion failed to load`, err));
         }
       },
-      // Deliberately EARLIER than the section's own entrance, which waits for
-      // the band to climb a quarter of the screen. A card module's first act is
-      // to park its illustration at a start state -- a chart line with no dash
-      // drawn, a ring with no numerals on it -- and that is only safe while the
-      // band is still held hidden by `data-motion="pending"`. Firing on the
-      // same margin as the entrance is a race the module loses about as often
-      // as it wins, and losing it means one painted frame of settled artwork
-      // before the module hides it again. Attaching a quarter of a screen early
-      // removes the race: the modules are warm by then, so the promises resolve
-      // in the microtask checkpoint after this callback, and the entrance has
-      // not started. Each module then waits for the band's `motion:done` before
-      // it plays anything -- see motion/shared.ts.
+      // Deliberately earlier than the section's own entrance. A card module's
+      // first act is to park its illustration at a start state (an undrawn
+      // chart line, an empty ring), which is only safe while the band is still
+      // hidden by `data-motion="pending"`. On the same margin as the entrance
+      // this races, and losing shows one frame of settled artwork. Attaching a
+      // quarter of a screen early removes the race. Each module then waits for
+      // the band's `motion:done` before it plays (see motion/shared.ts).
       { threshold: 0, rootMargin: '0px 0px 25% 0px' },
     );
     io.observe(root);

@@ -1,9 +1,9 @@
-/* Bento card C — "Your First Deposit, Doubled" (Figma 365:988).
+/* Bento card C: "Your First Deposit, Doubled" (Figma 365:988).
 
    Design frame: 776 x 299, 1px border, so the padding box every absolute child
    is measured against is 774 x 297. `.bcard` already declares
    `container-type: inline-size`, which means `100cqw` inside this card is that
-   774-wide content box — so `--u` below is exactly one design pixel and the
+   774-wide content box, so `--u` below is exactly one design pixel and the
    whole box tracks its bento column instead of the viewport.
 
    --u is declared here but never consumed here: an element cannot query itself,
@@ -14,20 +14,17 @@
    to beat a `.bcard__*` rule in Bento.css, because that file's responsive block
    matches at the same specificity and bundle order is not guaranteed.
 
-   Static only — the motion pass owns every transition, hover and load-in here,
+   Resting state only; motion/bonus.ts owns every transition and load-in,
    including drawing `.box-bonus__line`. */
 
 .bcard--bonus.box-bonus {
   --u: calc(100cqw / 774);
 
-  /* The card's own colours. Its SURFACE and its type belong to the page and
-     flip with it (Bento.css, --bento-bonus); the two badges and the deposit
-     pill are objects drawn on that surface. The chart line is the exception
-     and the interesting one: its gradient ends IN the card, so its last stop
-     is the card's ground in whichever theme is live, and its lit end is a
-     pale salmon that has to deepen rather than brighten on paper. The four
-     stops are painted from CSS for that reason -- see .box-bonus__stop-* and
-     the light block at the foot of this file. */
+  /* The card's own colours. Its surface and type follow the page (Bento.css,
+     --bento-bonus); the badges and the deposit pill are objects drawn on it.
+     The chart line's gradient ends in the card's ground and its lit end must
+     deepen on paper, so its four stops are painted from CSS (see
+     .box-bonus__stop-* and the light block at the foot of this file). */
   --bonus-plate: #e6e6e6;                  /* the two badge chips */
   --bonus-plate-line: rgba(0, 0, 0, 0.09);
   --bonus-pill: #1d1c1b;                   /* the deposit / bonus pill */
@@ -90,15 +87,14 @@
   overflow: visible;
 }
 
-/* The four stops of the stroke's gradient (BoxBonus.tsx). `stop-color` from a
-   stylesheet computes to exactly what the `stopColor` attribute computed to,
-   so this is a no-op today and a theme hook tomorrow. */
+/* The four stops of the stroke's gradient (BoxBonus.tsx), set from CSS so
+   they can follow the theme. */
 .box-bonus__stop-a { stop-color: var(--bonus-line-a); }
 .box-bonus__stop-b { stop-color: var(--bonus-line-b); }
 .box-bonus__stop-c { stop-color: var(--bonus-line-c); }
 .box-bonus__stop-d { stop-color: var(--bonus-line-d); }
 
-/* Frame 2085662609 — the halo dot sitting on the line plus its drop line down
+/* Frame 2085662609: the halo dot sitting on the line plus its drop line down
    to the pill. */
 .box-bonus__marker {
   position: absolute;
@@ -121,26 +117,22 @@
 .box-bonus .box-bonus__title {
   white-space: nowrap;
 }
-/* The paragraph stops short of the bolt badge (629 design px in). It is 18px
-   type in a card that is 0.64 of its design size at 1181, where its one line
-   ran under the badge; it wraps to a second line there instead, which clears
-   the pie badge below it because that line is short. Desktop only: the phone
+/* The paragraph stops short of the bolt badge (629 design px in). The type is
+   a flat 18px while the card scales down, so on narrower desktops it wraps to
+   a short second line that clears the pie badge. Desktop only: the phone
    column is its own 334-unit box. */
 @media (min-width: 721px) {
   .box-bonus .box-bonus__body { max-width: calc(585 * var(--u)); }
 }
-/* The title and the paragraph are sized by `--h3-size` and `--body-size` on
-   `.bcard__title` / `.bcard__body` (Bento.css), NOT by `--u`, and so is the
-   link's label (`--label-size` on `.bento__cta`). This
-   card's unit is uncapped -- `calc(100cqw / 774)` -- so at 1100, where the
-   grid collapses to one column and the card balloons to ~854, `20 * --u` was
-   rendering 23.93, and at 1280, where the cell is narrow, 13.85. The artwork
-   still rides the unit; only the paragraph has been taken off it. */
+/* The title, the paragraph and the link's label are sized by `--h3-size`,
+   `--body-size` and `--label-size` in Bento.css, not by `--u`: this card's
+   unit is uncapped, so type in `--u` would swing with the column width. Only
+   the artwork rides the unit. */
 
-/* Carries `.bento__cta bento__cta--orange` so the motion pass finds it with the
-   same selector it uses on every other card; the fixed px sizing and the gap
-   transition that class brings are replaced here, because this box is static
-   and scales with --u. */
+/* Carries `.bento__cta bento__cta--orange` so the shared entrance finds it
+   with the same selector as every other card; the fixed px sizing and the gap
+   transition that class brings are replaced here, because this link is placed
+   and scaled in --u. */
 .box-bonus .box-bonus__cta {
   position: absolute;
   left: calc(30 * var(--u));
@@ -162,8 +154,7 @@
   width: calc(13 * var(--u));
   height: calc(13 * var(--u));
 }
-/* `> *`, not `img`: the arrow is a mask now, and the two rules compute the
-   same box for the <img> they both matched. */
+/* `> *`, not `img`: the arrow is a mask (<Icon>), not an <img>. */
 .box-bonus__cta-arrow > * {
   position: absolute;
   left: 0;
@@ -194,8 +185,8 @@
 .box-bonus__badge--bolt { left: calc(629 * var(--u)); top: calc(73.5 * var(--u)); }
 /* The pie badge sits 30% smaller than its Figma box at rest, scaled about its
    own centre so it stays on the same point of the chart line. Scaling rather
-   than restating the geometry keeps the three wedges' leaf boxes -- which are
-   Figma's own resolved insets -- correct relative to each other. */
+   than restating the geometry keeps the three wedges' leaf boxes (Figma's own
+   resolved insets) correct relative to each other. */
 .box-bonus__badge--pie {
   left: calc(345 * var(--u));
   top: calc(143.5 * var(--u));
@@ -300,20 +291,17 @@
 
 /* --- Mobile (Figma 526:261, 394 x 460) -------------------------------------
 
-   The phone card is not the desktop card reflowed; it is a second frame, and
-   the two agree on exactly one thing -- the artwork. The 563 x 208 chart well,
-   the line inside it, the marker, the grid: same layers, same numbers, so
-   everything under .box-bonus__art below is left alone and only the well's own
-   anchor moves. What changes is the frame around it:
+   The phone card is a second frame, not the desktop card reflowed, but the
+   artwork (the 563 x 208 chart well, its line, the marker, the grid) has the
+   same layers and numbers. So everything under .box-bonus__art is left alone
+   and only the well's own anchor moves. What changes is the frame around it:
 
      * 394 x 460 portrait instead of 776 x 299 landscape, so --u is one design
-       pixel of the NEW frame: 392 is the 394 border box less the 1px border
-       the band gives every card, which is what 100cqw resolves to (padding is
-       0 on this card). Figma's root coordinates are therefore design - 1.
-     * The title may take two lines, and `text-wrap: balance` evens them if it
-       does, without touching the markup. With the client's current copy it is
-       one line from 320 up.
-     * The copy is 24 / 16 with 18 between, not 24 / 20 with 2.
+       pixel of the new frame: 392 is the 394 border box less the 1px border
+       (padding is 0 on this card). Figma's root coordinates are therefore
+       design - 1.
+     * The title may take two lines; `text-wrap: balance` evens them.
+     * 18 between heading and body, instead of 2.
      * The artwork well hangs 110 design px off the LEFT edge and 61 off the
        right (desktop hangs it off the right only), which crops the line's
        first 110 and last 61 units. motion/bonus.ts measures that crop and
@@ -322,19 +310,16 @@
      * The pill is centred, the badges swap corners, and the link sits at the
        foot of a 400-tall text column rather than 51px above the card's edge.
 
-   720px, not 394px: it is the breakpoint Bento.css already treats as mobile,
-   and the card between 720 and 1100 is a full-width single column that the
-   landscape frame still fits. ------------------------------------------- */
-/* THE ROW IS BALANCED FROM 1101 TO 1500, where this card and the Markets card
-   sit side by side in one grid row. The Markets card holds page type (24 / 18)
-   over artwork in design px, so it is the taller of the two, and at its own
-   aspect ratio this card left a band of empty page under itself -- 178px of
-   it at 1440. So here the card stretches to the row, and everything the
-   design hangs on its artwork is measured from the card's FOOT instead of its
-   top: `100%` less the design's distance from the bottom (299 less the top),
-   so it all lands exactly where it did at the design height and travels with
-   the bottom-anchored artwork when the card is taller. The copy stays at the
-   top; the spare height opens between it and the chart. */
+   720px, not 394px: the band's shared mobile breakpoint. Between 720 and
+   1100 the card is a full-width single column that the landscape frame still
+   fits. ------------------------------------------------------------------ */
+/* From 1101 to 1500 this card and the Markets card share a grid row. The
+   Markets card is taller (page type over design-px artwork), so this card
+   stretches to the row, and everything hung on its artwork is measured from
+   the card's foot: `100%` less the design's distance from the bottom (299
+   less the top). It then lands where it did at the design height and travels
+   with the bottom-anchored artwork. The spare height opens between the copy
+   and the chart. */
 @media (min-width: 1101px) and (max-width: 1500px) {
   .bcard.box-bonus { align-self: stretch; aspect-ratio: auto; }
   .box-bonus__badge--bolt { top: calc(100% - (299 - 73.5) * var(--u)); }
@@ -352,7 +337,7 @@
   /* Frame 2085662983 holds the well at (-109, 171) of the root frame, i.e.
      (-110, 170) of the padding box; 563 x 208 is unchanged, so the right and
      bottom anchors are 392 - (-110) - 563 and 458 - 170 - 208. Its own clip is
-     redundant -- the chart container clips the grid first -- so the wrapper is
+     redundant (the chart container clips the grid first), so the wrapper is
      not rebuilt here. */
   .box-bonus__art {
     right: calc(-61 * var(--u));
@@ -366,34 +351,24 @@
     width: calc(334 * var(--u));
     gap: calc(18 * var(--u));
   }
-  /* The phone frame (526:263) set the old title, "Double your capital on
-     first deposit", on two lines broken after "capital", and `balance` was how
-     that was asked for without touching the markup. A <br> switched off above
-     720 was tried first and rejected: splitting the string into two shaping
-     runs moved the DESKTOP title by a subpixel, 160 pixels over three rows, for
-     markup that renders identical characters.
-
-     The client's current title, "Your First Deposit, Doubled", is one line in
-     the 334-unit box from 320 up (266px at 390), so `balance` has nothing to do
-     today. It stays: it costs nothing on one line and evens the break if the
-     copy ever grows back to two. */
+  /* The current title fits on one line in the 334-unit box; `balance` evens
+     the break if the copy grows to two. Don't use a <br> for this; see
+     BoxBonus.tsx. */
   .box-bonus .box-bonus__title {
     white-space: normal;
     text-wrap: balance;
   }
-  /* Size and tracking both come from `--body-size` / `normal` now; see the
-     desktop rule above and tokens.css. */
+  /* Size and tracking come from `--body-size` / `normal`; see the desktop
+     rule above and tokens.css. */
 
   /* Button Container, the foot of that same column: (30, 410) -> (29, 409). */
   .box-bonus .box-bonus__cta {
     left: calc(29 * var(--u));
     top: calc(409 * var(--u));
   }
-  /* The one !important in this file, and it is answering an inline style.
-     <Icon> writes width/height onto the element (see BoxBonus.tsx), which
-     outranks any selector; on desktop that is right, because --u is ~1 there
-     and the flat 12 x 6 is the design. On a 308-wide card it is a 12px glyph
-     in a 10px frame. */
+  /* The one !important in this file, answering an inline style: <Icon>
+     writes width/height onto the element (see BoxBonus.tsx). The flat 12 x 6
+     is right on desktop, but on a phone the glyph must scale with its frame. */
   .box-bonus .box-bonus__cta-arrow > * {
     width: calc(12 * var(--u)) !important;
     height: calc(6 * var(--u)) !important;
@@ -401,7 +376,7 @@
 
   /* Both badges are 42 x 42 chips here. fi_1829261 at (294, 17) and fi_617333
      at (78, 67) of the artwork frame, so (293, 149) and (77, 199) of the
-     padding box -- and the pie is NOT scaled down on a phone. */
+     padding box. The pie is not scaled down on a phone. */
   .box-bonus__badge--bolt {
     left: calc(293 * var(--u));
     top: calc(149 * var(--u));
@@ -423,34 +398,17 @@
    Written twice; see the note in Bento.css. -------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .box-bonus {
-  /* The card on paper. Its two chips are holes in dark -- a #e6e6e6 badge is
-     bright BECAUSE the card is near-black, and a #1d1c1b pill is a darker step
-     down from it -- so on paper both settle onto --panel-2, one step under the
-     card, and everything they carry (a red glyph, an --ink figure, an --accent
-     figure) is legible on that step without being restated.
-
-     The edge on the badge is left alone on purpose: rgba(0,0,0,.09) is ink at
-     9% over a LIGHT plate in both themes, so it is one of the few white-alpha
-     inversions this band does not have to make. */
+  /* On paper both the badge chips and the pill settle onto --panel-2, one
+     step under the card; everything they carry stays legible without being
+     restated. The badge edge (ink at 9% over a light plate) is unchanged. */
   --bonus-plate: var(--panel-2);
   --bonus-pill: var(--panel-2);
 
-  /* THE CHART STROKE, and the one ramp in the section that had to be rebuilt
-     rather than recoloured.
-
-     The gradient runs from the top right (offset 0, where the line ends high
-     and the money has landed) to the bottom left (offset 1, where it fades
-     out). In dark it goes transparent, then PALE salmon, then a deeper orange,
-     then #1c1b1a -- the card itself, a hair off the ground so the tail does not
-     quite vanish. The lit end is the pale one, because on a near-black card
-     pale is lit.
-
-     Inverted, keeping the spatial ramp exactly: the lit end is now the DEEPEST
-     and the tail still dissolves into the card. 0.14 is #8e1b06 at 9.4:1, 0.48
-     is --accent-lift at 5.2:1, and the last stop is a hair darker than the
-     card's own #fdf8f4 -- the same relationship #1c1b1a has to #0e0e0d, with
-     its sign flipped. The first stop is only ever seen at alpha 0; it carries
-     the deep value so the fade is pure alpha with no hue drift through cream. */
+  /* The chart stroke. The gradient runs from the top right (offset 0, the
+     lit end) to the bottom left (offset 1, where it fades into the card). On
+     paper the ramp keeps its shape but inverts: the lit end is the deepest,
+     and the last stop is a hair darker than the card. The first stop is only
+     seen at alpha 0; it carries the deep value so the fade has no hue drift. */
   --bonus-line-a: #7e0202;
   --bonus-line-b: #8e1b06;
   --bonus-line-c: #c4361c;
@@ -459,34 +417,17 @@
 }
 
 :root[data-theme='light'] .box-bonus {
-  /* The card on paper. Its two chips are holes in dark -- a #e6e6e6 badge is
-     bright BECAUSE the card is near-black, and a #1d1c1b pill is a darker step
-     down from it -- so on paper both settle onto --panel-2, one step under the
-     card, and everything they carry (a red glyph, an --ink figure, an --accent
-     figure) is legible on that step without being restated.
-
-     The edge on the badge is left alone on purpose: rgba(0,0,0,.09) is ink at
-     9% over a LIGHT plate in both themes, so it is one of the few white-alpha
-     inversions this band does not have to make. */
+  /* On paper both the badge chips and the pill settle onto --panel-2, one
+     step under the card; everything they carry stays legible without being
+     restated. The badge edge (ink at 9% over a light plate) is unchanged. */
   --bonus-plate: var(--panel-2);
   --bonus-pill: var(--panel-2);
 
-  /* THE CHART STROKE, and the one ramp in the section that had to be rebuilt
-     rather than recoloured.
-
-     The gradient runs from the top right (offset 0, where the line ends high
-     and the money has landed) to the bottom left (offset 1, where it fades
-     out). In dark it goes transparent, then PALE salmon, then a deeper orange,
-     then #1c1b1a -- the card itself, a hair off the ground so the tail does not
-     quite vanish. The lit end is the pale one, because on a near-black card
-     pale is lit.
-
-     Inverted, keeping the spatial ramp exactly: the lit end is now the DEEPEST
-     and the tail still dissolves into the card. 0.14 is #8e1b06 at 9.4:1, 0.48
-     is --accent-lift at 5.2:1, and the last stop is a hair darker than the
-     card's own #fdf8f4 -- the same relationship #1c1b1a has to #0e0e0d, with
-     its sign flipped. The first stop is only ever seen at alpha 0; it carries
-     the deep value so the fade is pure alpha with no hue drift through cream. */
+  /* The chart stroke. The gradient runs from the top right (offset 0, the
+     lit end) to the bottom left (offset 1, where it fades into the card). On
+     paper the ramp keeps its shape but inverts: the lit end is the deepest,
+     and the last stop is a hair darker than the card. The first stop is only
+     seen at alpha 0; it carries the deep value so the fade has no hue drift. */
   --bonus-line-a: #7e0202;
   --bonus-line-b: #8e1b06;
   --bonus-line-c: #c4361c;

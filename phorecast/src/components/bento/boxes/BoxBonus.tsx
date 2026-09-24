@@ -1,19 +1,17 @@
-/* Bento card C — "Your First Deposit, Doubled".
+/* Bento card C: "Your First Deposit, Doubled".
    Figma: frame 365:988 (776 x 299 design px) and, on a phone, frame 526:261
    (394 x 460), file aczG8te17zRGoK5wvirB92.
 
-   ONE set of markup serves both frames. The two designs are the same objects
-   in different places -- and the artwork well is not even that: the chart, the
-   grid and the marker carry identical numbers in both, so only the well's
-   anchor, the badges, the pill and the copy move. All of that is geometry, so
-   it all lives in BoxBonus.css and nothing below is conditional -- including
-   the title's hand-set line break, which is the one thing here that looks like
-   content and turned out to be geometry after all. See .box-bonus__title.
+   One set of markup serves both frames. The chart, the grid and the marker
+   carry identical numbers in both; only the well's anchor, the badges, the
+   pill and the copy move. That is all geometry, so it lives in BoxBonus.css and
+   nothing below is conditional, including the title's phone line break (see
+   .box-bonus__title).
 
-   Everything is laid out in design pixels multiplied by --u, the house pattern
-   used by Hero.css / SlideBonus.css / Familiar.css. `.bcard` already declares
+   Everything is laid out in design pixels multiplied by --u, the same pattern
+   as Hero.css / SlideBonus.css / Familiar.css. `.bcard` declares
    `container-type: inline-size`, so 100cqw is this card's own content box and
-   --u is one design pixel of it — the box scales with its bento column, never
+   --u is one design pixel of it: the box scales with its bento column, never
    with the viewport.
 
    Coordinates come straight out of Figma and are measured from the card's
@@ -22,8 +20,8 @@
    carries 1px of vertical padding, so the y of everything that lived inside it
    is its Figma y + 1.
 
-   Static by design: no transitions, no load-in, no hover. The chart stroke is a
-   real <path class="box-bonus__line"> so the motion pass can draw it. */
+   Resting state only; motion/bonus.ts owns the load-in and loop. The chart
+   stroke is a real <path class="box-bonus__line"> so that module can draw it. */
 
 import chartMarker from '../../../assets/bento/bonus/marker.svg';
 import { Roll } from '../../Roll';
@@ -48,7 +46,7 @@ const LINE_D =
 export function BoxBonus() {
   return (
     <article className="bcard bcard--bonus box-bonus">
-      {/* Frame 2085662610 — the artwork well, hung off the bottom-right corner
+      {/* Frame 2085662610: the artwork well, hung off the bottom-right corner
           and clipped by the card. */}
       <div className="box-bonus__art" aria-hidden="true">
         <div className="box-bonus__grid">
@@ -65,18 +63,11 @@ export function BoxBonus() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            {/* The stroke's ramp, painted from CSS rather than from four
-                `stopColor` attributes.
-
-                It is the one gradient in this card that cannot be a fixed set
-                of tints: its last stop is not a colour at all, it is THE CARD
-                -- the point where the stroke dissolves into its own ground --
-                and the three before it are a lit end that is pale on a dark
-                card and has to be deep on a pale one. A presentation attribute
-                cannot follow a theme; a class can, and CSS beats the attribute,
-                so one class per stop themes the whole ramp with no string
-                transform and no change to what the browser computes today.
-                See --bonus-line-a..d in BoxBonus.css. */}
+            {/* The stroke's ramp is coloured from CSS rather than `stopColor`
+                attributes, so it can follow the theme: the last stop is the
+                card ground the stroke dissolves into, and the lit end is pale
+                on a dark card but deep on a light one. See --bonus-line-a..d in
+                BoxBonus.css. */}
             <linearGradient
               id="box-bonus-stroke"
               x1="545.087"
@@ -98,22 +89,20 @@ export function BoxBonus() {
       </div>
 
       <div className="bcard__text box-bonus__text">
-        {/* One text node, deliberately. When a phone break is wanted, the
-            obvious way to say so -- a <br> switched off above 720 -- splits
-            the string into two shaping runs, which moved the DESKTOP title by
-            a subpixel: 160 pixels over 3 rows on pixel-diff, from markup that
-            renders the same characters. Any break is done in CSS instead; see
+        {/* One text node, deliberately. A <br> hidden above 720 splits the
+            string into two shaping runs and shifts the desktop title by a
+            subpixel. The phone break is done in CSS instead; see
             .box-bonus__title in the mobile block. */}
         <h3 className="bcard__title box-bonus__title">Your First Deposit, Doubled</h3>
         <p className="bcard__body box-bonus__body">Get a 100% match on your first deposit, up to $200.</p>
       </div>
 
-      {/* Frame 2085662868 — lightning badge, top right of the chart. */}
+      {/* Frame 2085662868: lightning badge, top right of the chart. */}
       <span className="box-bonus__badge box-bonus__badge--bolt" aria-hidden="true">
         <img className="box-bonus__glyph" src={iconBolt} alt="" width={28} height={28} />
       </span>
 
-      {/* Frame 2085662871 — pie badge sitting on the line. Its three wedges are
+      {/* Frame 2085662871: pie badge sitting on the line. Its three wedges are
           separate vector layers in Figma; each keeps its own leaf box. */}
       <span className="box-bonus__badge box-bonus__badge--pie" aria-hidden="true">
         <span className="box-bonus__pie">
@@ -123,7 +112,7 @@ export function BoxBonus() {
         </span>
       </span>
 
-      {/* Frame 2085662870 — deposit / bonus pill. */}
+      {/* Frame 2085662870: deposit / bonus pill. */}
       <div className="box-bonus__pill" aria-hidden="true">
         <div className="box-bonus__row">
           <img className="box-bonus__wallet" src={walletBadge} alt="" width={42} height={42} />
@@ -144,14 +133,11 @@ export function BoxBonus() {
         <span className="box-bonus__cta-arrow" aria-hidden="true">
           {/* Masked so the arrow follows the link; see BoxCustody.tsx.
 
-              w/h are NOT cleared here, and that is the gate's finding rather
-              than a preference: two rules match this glyph at the same
-              specificity -- `.bento__cta img` at a flat 12x6 and
-              `.box-bonus__cta-arrow img` in the card's container unit -- and
-              the flat one wins the tie, so the <img> has always been 12x6 at
-              every width. Clearing the inline box handed the element to the
-              --u rule and moved it to 9.4 at 720 and 14.3 at 1100. The inline
-              pair reproduces what the image actually rendered. */}
+              w/h are deliberately not cleared. Two rules match this glyph at
+              the same specificity (`.bento__cta img` at a flat 12x6 and
+              `.box-bonus__cta-arrow img` in the card's unit) and the flat one
+              wins, so the arrow is 12x6 at every width. The inline pair keeps
+              that size; clearing it would let the --u rule rescale it. */}
           <Icon src={arrowOrange} w={12} h={6} />
         </span>
       </a>

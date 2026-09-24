@@ -1,30 +1,23 @@
-/* Bento card B — "Your funds leave whenever you want" (Figma 365:925).
+/* Bento card B: "Your Funds Stay Yours" (Figma 365:925).
    534 x 355 design box, dark; the shell (padding, radius, background,
-   min-height) and the copy/link chrome come from Bento.css — this file is the
+   min-height) and the copy/link chrome come from Bento.css; this file is the
    diagram only.
 
    Unit: `.bcard` sets `container-type: inline-size`, so 100cqw is the card's
-   *content* box — 474 design pixels wide at the 534px design width (534 less
-   the 30px padding a side). `--u` is therefore one design pixel of that column
-   and every number below is the raw Figma coordinate times --u.
+   content box: 474 design pixels at the 534px design width (534 less the 30px
+   padding a side). Every number below is the raw Figma coordinate times --u.
 
    The unit is capped at 1px. Between 1100px and 1500px the grid puts two cards
-   on a full-width row, which makes this card wider than its 534px design; left
-   uncapped the diagram would grow past the designed size and run into the copy
-   and the link above and below it. Capping keeps the artwork at its drawn size
-   in a card that is bigger than the design — which is what the other bento
-   cards do by being laid out in fixed pixels — and still scales it down, with
-   the card, everywhere the card is narrower. */
+   on a full-width row, making this card wider than its design; uncapped, the
+   diagram would outgrow its drawn size and run into the copy and the link.
+   Below the design width it still scales down with the card. */
 .box-custody {
   --u: min(1px, 100cqw / 474);
 
-  /* The diagram's own colours. The card's SURFACE belongs to the page and
-     flips with it (Bento.css, --bento-funds); the objects drawn on it -- the
-     four market chips, the two contract pills, the rings, the nodes, the
-     wallet -- are artwork, and artwork is the same object in both themes.
-     What has to move is only what would stop being legible or visible
-     against the new surface, which is the labels (role tokens, already) and
-     the wallet ring. See the light block at the foot of this file. */
+  /* The diagram's own colours. The card's surface follows the page
+     (Bento.css, --bento-funds); the objects drawn on it are artwork. Only what
+     would stop being legible on the light surface moves; see the light block
+     at the foot of this file. */
   --custody-chip: var(--bg);        /* the four 36px market chips */
   --custody-chip-line: color-mix(in srgb, var(--accent) 10%, transparent);
   --custody-pill: #2f110c;          /* the two contract pills */
@@ -35,7 +28,7 @@
   --custody-ring-market: #ff632a;   /* the market ring, at the file's own 22% */
 }
 
-/* Group 365:936 — the 464 x 215 diagram, centred on the card the way Figma
+/* Group 365:936: the 464 x 215 diagram, centred on the card the way Figma
    centres it (half a card plus 5 across, plus 23 down). */
 .custody__art {
   position: absolute;
@@ -84,8 +77,7 @@
   width: calc(37 * var(--u));
   height: calc(37 * var(--u));
 }
-/* fi_6839980, at Figma's own 16 x 16. The 18px box here was the line-art
-   wallet this replaced; the frame kept the origin and shrank the glyph. */
+/* fi_6839980, at Figma's own 16 x 16. */
 .custody__wallet-icon {
   color: var(--custody-glyph);
   left: calc(46 * var(--u));
@@ -135,14 +127,14 @@
 }
 /* Only two of the four are inset inside the 16px slot; crypto (fi_12379305)
    and forex (fi_17433031) fill it, so they need nothing said. */
-/* fi_9155737 — inset 5.21% of the slot. */
+/* fi_9155737: inset 5.21% of the slot. */
 .custody__glyph--stocks {
   left: calc(10.834 * var(--u));
   top: calc(10.834 * var(--u));
   width: calc(14.333 * var(--u));
   height: calc(14.333 * var(--u));
 }
-/* fi_12468105 — inset 1.71% top and bottom, full width. */
+/* fi_12468105: inset 1.71% top and bottom, full width. */
 .custody__glyph--commodities {
   top: calc(10.274 * var(--u));
   height: calc(15.453 * var(--u));
@@ -171,7 +163,7 @@
   color: var(--custody-ink);
   white-space: nowrap;
 }
-/* fi_9716066 — the document is TWO leaves, a body and a separately folded
+/* fi_9716066: the document is two leaves, a body and a separately folded
    corner, so it needs a wrapper to be the 16px flex item the pill lays out.
    Body at inset 7.14% 15.46%, fold at inset 10.71% 19.04% 74.75% 66.39%. */
 .custody__doc {
@@ -193,7 +185,7 @@
   width: calc(2.331 * var(--u));
   height: calc(2.326 * var(--u));
 }
-/* fi_17508481 — the padlock is one piece filling the whole slot, so this IS
+/* fi_17508481: the padlock is one piece filling the whole slot, so this is
    the flex item rather than a wrapper round one. */
 .custody__lock {
   flex: none;
@@ -202,7 +194,7 @@
   height: calc(16 * var(--u));
 }
 
-/* Ellipse 35 — 8px dot inside a 22px glow, placed by the glow's own box. */
+/* Ellipse 35: 8px dot inside a 22px glow, placed by the glow's own box. */
 .custody__node {
   left: calc(var(--x) * var(--u));
   top: calc(var(--y) * var(--u));
@@ -214,126 +206,68 @@
    Written twice; see the note in Bento.css. -------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .box-custody {
-  /* The diagram on paper. Everything in it is drawn LIGHT ON DARK today: a
-     #d9d9d9 wallet ring at 20%, a #ff632a market ring at 22%, seven #a6a6a6
-     glyphs, white labels on near-black chips. Carried across unchanged, the
-     two rings disappear into the page and the glyphs drop to 1.9:1 -- the card
-     would keep its layout and lose its diagram.
-
-     So the chips settle instead of lifting (a hole in dark is still a hole on
-     paper -- --panel-2, one step under the card rather than one step over the
-     page), the two pills become the warm chips they already are at 17% of the
-     accent, and the three baked greys become tokens through <Icon>. The
-     objects that are genuinely artwork -- the wallet's gradient disc, the two
-     orange nodes, the glow behind them -- do not move at all. */
+  /* The diagram on paper. It is drawn light on dark, so carried across
+     unchanged the rings and glyphs would disappear. The chips settle onto
+     --panel-2 (one step under the card), the pills become warm chips, and the
+     masked greys become tokens through <Icon>. The genuine artwork (the
+     wallet's gradient disc, the two orange nodes, the glow) does not move. */
   --custody-chip: var(--panel-2);
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
   --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #9d9d9d is 1.8:1 on paper. The glyph has to keep its RATIO against the
-     chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
-     than the label beside it by the same step in both. --ink-muted was the
-     first guess and reads at 3.4:1 -- a glyph you have to look for. */
+  /* The glyph keeps its contrast against the chip rather than its colour,
+     staying one step quieter than the label beside it. --ink-muted is too
+     faint here. */
   --custody-glyph: var(--ink-2);
-  /* THE WALLET DISC, and the trap under it. The file is ONE circle at
-     `opacity="0.18"`, filled with a #D9D9D9 -> #2E100B gradient. Eighteen per
-     cent of anything over near-black is a lift, so on the dark card it reads
-     as a disc; eighteen per cent of the same gradient over cream is 1.02:1 at
-     the top and 1.15:1 at the bottom -- the card's subject, gone. A
-     partial-alpha fill does not survive the ground changing under it.
-     The fix is a plate BEHIND the image rather than a change to it: the disc
-     settles onto --panel-2 like the four market chips, and the file's own
-     gradient still shades it. */
+  /* The wallet disc file is one circle at 18% opacity: a lift on near-black,
+     invisible on cream. A plate behind the image (--panel-2, like the market
+     chips) fixes that while the file's own gradient still shades it. */
   --custody-disc: var(--panel-2);
-  /* Both rings keep their file's own alpha -- 0.2 and 0.22 survive the mask as
-     mask alpha -- so only the colour under it moves. Left alone they would be
-     1.08:1 and 1.31:1 against paper, which for the wallet ring is no ring at
-     all. Ink at 20% puts it at 1.53:1, against 1.60:1 in dark.
-
-     The market ring goes to --accent-deep rather than --accent, and that is
-     the sub-pixel finding rather than a preference: its stroke is 0.76px, so
-     it antialiases toward whatever it sits on and the same contrast ratio buys
-     less line on cream than on near-black. --accent measures 1.44:1 and still
-     reads pink; --accent-deep measures 1.56:1 and reads as a ring. */
+  /* Both rings keep their file's own alpha (it survives as mask alpha), so
+     only the colour moves. The market ring uses --accent-deep, not --accent:
+     its 0.76px stroke antialiases toward the cream, and --accent reads pink. */
   --custody-ring: var(--ink);
   --custody-ring-market: var(--accent-deep);
   }
   :root:not([data-theme='dark']) .box-custody .custody__glow {
-  /* The one raster in the diagram, and it carries two things: the warm bloom
-     behind the wallet AND the dotted ellipse the packet travels along. Both
-     are drawn LIGHT -- pale dots, a glow that works by adding light -- so on
-     paper the dots disappear and the bloom turns into a pale smear on a pale
-     card. The path the whole loop is about stops being visible.
-
-     `invert(1) hue-rotate(180deg)` is the direction flip written as a filter:
-     invert turns the luminance around and hue-rotate puts the hue back, so the
-     pale dots become ink dots at the same alpha and the bloom stays warm and
-     becomes a tint instead of a light. It is the honest translation of an
-     additive raster that cannot be recoloured any other way -- and it is
-     scoped to light, so the dark render never evaluates it. */
+  /* The one raster: the warm bloom and the dotted ellipse the packet travels
+     along, both drawn light and invisible on paper. `invert(1)
+     hue-rotate(180deg)` flips the luminance and restores the hue, so the dots
+     become ink and the bloom stays warm. */
   filter: invert(1) hue-rotate(180deg);
   }
 }
 
 :root[data-theme='light'] .box-custody {
-  /* The diagram on paper. Everything in it is drawn LIGHT ON DARK today: a
-     #d9d9d9 wallet ring at 20%, a #ff632a market ring at 22%, seven #a6a6a6
-     glyphs, white labels on near-black chips. Carried across unchanged, the
-     two rings disappear into the page and the glyphs drop to 1.9:1 -- the card
-     would keep its layout and lose its diagram.
-
-     So the chips settle instead of lifting (a hole in dark is still a hole on
-     paper -- --panel-2, one step under the card rather than one step over the
-     page), the two pills become the warm chips they already are at 17% of the
-     accent, and the three baked greys become tokens through <Icon>. The
-     objects that are genuinely artwork -- the wallet's gradient disc, the two
-     orange nodes, the glow behind them -- do not move at all. */
+  /* The diagram on paper. It is drawn light on dark, so carried across
+     unchanged the rings and glyphs would disappear. The chips settle onto
+     --panel-2 (one step under the card), the pills become warm chips, and the
+     masked greys become tokens through <Icon>. The genuine artwork (the
+     wallet's gradient disc, the two orange nodes, the glow) does not move. */
   --custody-chip: var(--panel-2);
   --custody-chip-line: color-mix(in srgb, var(--accent) 16%, transparent);
   --custody-pill: #f2d2c3;
   --custody-pill-line: color-mix(in srgb, var(--accent) 24%, transparent);
-  /* #9d9d9d is 1.8:1 on paper. The glyph has to keep its RATIO against the
-     chip it sits in rather than its colour: 7.5:1 in dark, 5.2:1 here, quieter
-     than the label beside it by the same step in both. --ink-muted was the
-     first guess and reads at 3.4:1 -- a glyph you have to look for. */
+  /* The glyph keeps its contrast against the chip rather than its colour,
+     staying one step quieter than the label beside it. --ink-muted is too
+     faint here. */
   --custody-glyph: var(--ink-2);
-  /* THE WALLET DISC, and the trap under it. The file is ONE circle at
-     `opacity="0.18"`, filled with a #D9D9D9 -> #2E100B gradient. Eighteen per
-     cent of anything over near-black is a lift, so on the dark card it reads
-     as a disc; eighteen per cent of the same gradient over cream is 1.02:1 at
-     the top and 1.15:1 at the bottom -- the card's subject, gone. A
-     partial-alpha fill does not survive the ground changing under it.
-     The fix is a plate BEHIND the image rather than a change to it: the disc
-     settles onto --panel-2 like the four market chips, and the file's own
-     gradient still shades it. */
+  /* The wallet disc file is one circle at 18% opacity: a lift on near-black,
+     invisible on cream. A plate behind the image (--panel-2, like the market
+     chips) fixes that while the file's own gradient still shades it. */
   --custody-disc: var(--panel-2);
-  /* Both rings keep their file's own alpha -- 0.2 and 0.22 survive the mask as
-     mask alpha -- so only the colour under it moves. Left alone they would be
-     1.08:1 and 1.31:1 against paper, which for the wallet ring is no ring at
-     all. Ink at 20% puts it at 1.53:1, against 1.60:1 in dark.
-
-     The market ring goes to --accent-deep rather than --accent, and that is
-     the sub-pixel finding rather than a preference: its stroke is 0.76px, so
-     it antialiases toward whatever it sits on and the same contrast ratio buys
-     less line on cream than on near-black. --accent measures 1.44:1 and still
-     reads pink; --accent-deep measures 1.56:1 and reads as a ring. */
+  /* Both rings keep their file's own alpha (it survives as mask alpha), so
+     only the colour moves. The market ring uses --accent-deep, not --accent:
+     its 0.76px stroke antialiases toward the cream, and --accent reads pink. */
   --custody-ring: var(--ink);
   --custody-ring-market: var(--accent-deep);
 }
 
 :root[data-theme='light'] .box-custody .custody__glow {
-  /* The one raster in the diagram, and it carries two things: the warm bloom
-     behind the wallet AND the dotted ellipse the packet travels along. Both
-     are drawn LIGHT -- pale dots, a glow that works by adding light -- so on
-     paper the dots disappear and the bloom turns into a pale smear on a pale
-     card. The path the whole loop is about stops being visible.
-
-     `invert(1) hue-rotate(180deg)` is the direction flip written as a filter:
-     invert turns the luminance around and hue-rotate puts the hue back, so the
-     pale dots become ink dots at the same alpha and the bloom stays warm and
-     becomes a tint instead of a light. It is the honest translation of an
-     additive raster that cannot be recoloured any other way -- and it is
-     scoped to light, so the dark render never evaluates it. */
+  /* The one raster: the warm bloom and the dotted ellipse the packet travels
+     along, both drawn light and invisible on paper. `invert(1)
+     hue-rotate(180deg)` flips the luminance and restores the hue, so the dots
+     become ink and the bloom stays warm. */
   filter: invert(1) hue-rotate(180deg);
 }
 
@@ -342,72 +276,47 @@
 
    Figma 526:1588 places this identical 464 x 215 group at -90deg inside a
    215 x 464 box and counter-rotates each label, chip, pill and the wallet so
-   the words stay level. Rotating the container in CSS and un-rotating eight
-   descendants would reproduce that, and would then put every tween in a frame
-   whose axes are not the screen's -- so instead the rotation is applied once,
-   on paper, and the result is written out as ordinary coordinates:
+   the words stay level. Rotating the container in CSS would put every tween
+   in a frame whose axes are not the screen's, so the rotation is applied once,
+   by hand, and written out as ordinary coordinates:
 
        a point (x, y) of the landscape group  ->  (y, 464 - x) here
 
-   The artwork follows that map exactly, and it is worth keeping in view
-   because `motion/funds.ts` runs its packet path and its closing ring through
-   the same one. Three spot checks: the market ring at (242, 0) becomes
-   (0, 7); the wallet ring at (8, 61) becomes (61, 363); the node on the orbit
-   at (298, 104) becomes (104, 158).
+   The artwork follows that map exactly, and `motion/funds.ts` runs its packet
+   path and closing ring through the same one. Spot checks: the market ring at
+   (242, 0) becomes (0, 7); the wallet ring at (8, 61) becomes (61, 363).
 
-   The type does NOT follow it. The frame re-lays the four labels, the four
-   tiles and the two pills out around the ring rather than turning them, so
-   each of those is read from its own wrapper in 526:1588 -- see the MARKETS
-   table in BoxCustody.tsx, which carries both sets of coordinates.
+   The type does not follow it. The frame re-lays the labels, tiles and pills
+   around the ring, so each is read from its own wrapper in 526:1588 (see the
+   MARKETS table in BoxCustody.tsx, which carries both sets of coordinates).
 
-   ONE thing the phone genuinely redraws rather than moves, and there used to
-   be two. The market tiles all four carry a border here, where the desktop
-   borders Stocks alone. The other was the glyph set -- solid on the phone
-   against the desktop's line art -- and the re-export of 365:925 ended that:
-   both frames now name the same seven leaves, so the phone draws the desktop's
-   set at the desktop's own insets and this block says nothing about glyphs at
-   all. The note at the foot of the block is where that is recorded. */
+   The one thing the phone redraws: all four market tiles carry a border,
+   where the desktop borders Stocks alone. Both frames use the same glyphs at
+   the same insets. */
 @media (max-width: 720px) {
   .box-custody {
-    /* 334 design pixels, not 474. The phone frame is 394 wide with the same
-       30px padding, so its content column is 334, and the diagram is 215 of
-       those -- 54.6% of the card, whatever the card comes to. Capped at 1px
-       for the reason the desktop unit is capped: past roughly 465px of
-       viewport the card is wider than the frame was ever drawn, and the
-       artwork should stop growing rather than follow it up to 720. */
+    /* 334 design pixels, not 474: the phone frame is 394 wide with the same
+       30px padding. Capped at 1px like the desktop unit, so the artwork stops
+       growing once the card is wider than the frame was drawn. */
     --u: min(1px, 100cqw / 334);
   }
 
-  /* THE COPY'S GUTTER, WHICH THIS CARD WAS MISSING.
-     Bento.css takes the cards' padding to zero on a phone and leaves each
-     exported frame to place its own contents; the three sibling cards do,
-     and this one never did, so its heading, body and link sat flush on the
-     card's edge while everything else in the band -- including the band's own
-     `.bento__head` -- was inset by the design's 30 of 394. Measured at a 390
-     viewport: 21.0 against the heading's and the other three cards' 47.484.
+  /* The copy's gutter. Bento.css zeroes card padding on a phone, so the copy
+     is inset here by the design's 30/394 of the card, the same percentage as
+     the band's heading and the sibling cards (`30 * var(--u)` would not
+     match: this unit divides by 334, not 394).
 
-     The inset is a PERCENTAGE OF THE CARD, 30/394, and not `30 * var(--u)`,
-     for two separate reasons. The band's heading is inset by that same
-     percentage, so a percentage is what agrees with it by construction rather
-     than by coincidence. And `--u` here is capped at 1px and divides by 334,
-     the content column, not by 394, the frame -- so below the cap it is a
-     different number from the sibling cards' unit and `30 * var(--u)` would
-     land 3.5px wide of them at 390.
-
-     Padding on the card would have been the obvious way to do this and is the
-     wrong one: `container-type: inline-size` makes 100cqw the CONTENT box, so
-     padding would feed back into `--u` and shrink the diagram by 14%. Margins
-     on the two flow children leave the unit, and therefore the artwork,
-     exactly where they are. The art itself is already `margin-inline: auto`
-     and is centred on the card at any width, so it is not in this rule. */
+     Not padding on the card: 100cqw is the content box, so padding would feed
+     back into `--u` and shrink the diagram. Margins on the two flow children
+     leave the unit alone. The art is centred by `margin-inline: auto`. */
   .box-custody .bcard__text { margin-inline: 7.614%; }
   .box-custody .bento__cta { margin-inline-start: 7.614%; }
 
-  /* 526:1588 sits at a flat 145px from the card's top edge, which works in a
-     frame whose heading is known to be two lines. Ours is two at 390 and three
-     at 360, so the art becomes a flow item between the copy and the link
-     instead and the card takes its own height. The 20 above and the 10 below
-     are Figma's own gaps (heading block ends at 125, art 145..609, link 619). */
+  /* 526:1588 sits at a flat 145px from the card's top, which assumes a
+     fixed number of heading lines. The copy wraps differently across phones,
+     so the art is a flow item between the copy and the link and the card
+     takes its own height. The 20 above and the 10 below are Figma's own gaps
+     (heading block ends at 125, art 145..609, link 619). */
   .box-custody .custody__art {
     position: relative;
     left: auto;
@@ -421,11 +330,9 @@
 
   /* Circles ---------------------------------------------------------------
      The two rings are circles, so the quarter-turn only moves them. The glow
-     is the one raster and it is 215 x 118 of dotted ellipse and warm bloom:
-     it has to TURN, not just move. Left at its own box and rotated about its
-     centre, which the map puts at (108, 269.5) -- hence a 215-wide box parked
-     at 0.5, 210.5. The light block above sets `filter` on this same element;
-     the two are separate properties and compose. */
+     raster has to turn, not just move: it keeps its own box and rotates about
+     its centre, which the map puts at (108, 269.5), hence a 215-wide box at
+     (0.5, 210.5). The light block's `filter` composes with this. */
   .custody__glow {
     left: calc(0.5 * var(--u));
     top: calc(210.5 * var(--u));
@@ -434,47 +341,26 @@
   .custody__ring-market { left: 0; top: calc(7 * var(--u)); }
   .custody__ring-wallet { left: calc(61 * var(--u)); top: calc(363 * var(--u)); }
 
-  /* Wallet: concentric with the ring at (107.5, 409.5), which is where the map
-     puts the landscape wallet's own centre. Figma's mobile frame states the
-     same stack a pixel off that (a 38px wrapper around a 37px disc); being
-     concentric with the ring the loop closes matters more than the pixel.
+  /* Wallet: concentric with the ring at (107.5, 409.5), where the map puts
+     the landscape wallet's centre. Figma's mobile frame is a pixel off that;
+     staying concentric with the ring the loop closes matters more.
 
-     Both origins are that centre less half the box, so a box that changes size
-     moves its own origin and nothing else's. The disc is 37: 107.5 - 18.5 = 89
-     and 409.5 - 18.5 = 391. The glyph is 16, not the 18 of the line-art wallet
-     it replaced: 107.5 - 8 = 99.5 and 409.5 - 8 = 401.5. The arithmetic is
-     written out because the re-export shrank that glyph and a pair carried
-     over from 18 would sit a pixel high and a pixel left of the ring -- 98.5,
-     400.5 -- which is small enough to survive a reading and not a measurement.
-     These two came off the phone's own 16px rule and are correct as they
-     stand; re-measured concentric to (107.5, 409.5) at 360, 390 and 430. */
+     Each origin is that centre less half the box: the 37px disc at
+     (89, 391), the 16px glyph at (99.5, 401.5). */
   .custody__wallet-disc { left: calc(89 * var(--u)); top: calc(391 * var(--u)); }
   .custody__wallet-icon { left: calc(99.5 * var(--u)); top: calc(401.5 * var(--u)); }
 
   /* Everything the frame re-places rather than turns ------------------------
-     The four labels, the four tiles, the wallet's own label, the two pills and
-     the two nodes all carry their phone coordinates beside their desktop ones,
-     as `--mx`/`--my` beside `--x`/`--y` -- see the MARKETS table in
-     BoxCustody.tsx, which is where the desktop pair already lives and so the
-     only honest place for its twin. That is what makes this a swap of two
-     numbers rather than a rule per market, and it is why nothing here needs a
-     class the desktop does not already have.
+     The labels, tiles, pills and nodes carry their phone coordinates beside
+     their desktop ones, as `--mx`/`--my` beside `--x`/`--y` (see the MARKETS
+     table in BoxCustody.tsx), so this is a swap of two numbers rather than a
+     rule per market.
 
-     FIVE of them hang off the 215-wide art box, not the two this used to
-     name, and a reader checking the claim against the render finds three it
-     does not account for. Measured, in design units from the box's left edge:
-     Stocks' tile starts at -8, Crypto's at -5, Smart Contracts at -17.5,
-     Forex's tile ends at 225 and Withdraw anytime at 238. Every one of the
-     five comes off its own wrapper in 526:1588 by way of the MARKETS table,
-     the same way the ones that sit inside the box do, so none of them is a
-     number that drifted. The card has the room at its tightest, which is 360,
-     where the column really is 334 units: the box is 215 of them, so the auto
-     margin is 59.5 a side, and Withdraw's 23 of overhang still stops 36.5
-     short of the card's edge. Every wider phone has more room, because --u
-     caps at 1px and the column goes on growing in units after the artwork has
-     stopped. Nothing is clipped and the page does not scroll sideways at 360,
-     390 or 430 -- scrollWidth equals clientWidth at all three. The box is the
-     artwork's frame and not the card's -- do not pull them back inside it. */
+     Five of them hang off the 215-wide art box by design (Stocks' and
+     Crypto's tiles, Smart Contracts, Forex's tile, Withdraw anytime). The auto
+     margin around the box leaves room for them even at 360, so nothing is
+     clipped. Don't pull them back inside the box: it is the artwork's frame,
+     not the card's. */
   .custody__label,
   .custody__tile,
   .custody__pill,
@@ -488,11 +374,6 @@
     border: calc(1 * var(--u)) solid var(--custody-chip-line);
   }
 
-  /* NO GLYPH SWAP ANY MORE. This block used to hide the desktop's line-art set
-     and show a parked solid one, with the solid set's insets restated here.
-     Both frames now draw the SAME seven leaves (see BoxCustody.tsx), so the
-     one set the desktop rules above place is already the one the phone wants,
-     at the same insets -- and the swap, together with the five rules that
-     repeated those insets, would now be dead selectors. They are deleted
-     rather than left tweening nothing. */
+  /* No glyph rules here: both frames draw the same seven leaves at the same
+     insets (see BoxCustody.tsx). */
 }

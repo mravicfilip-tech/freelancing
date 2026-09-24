@@ -1,11 +1,11 @@
-/* Bento card A — "Open an account in 60 seconds" (Figma 365:866).
+/* Bento card A: "Make Your First Forecast in 60 Seconds" (Figma 365:866).
    534 x 387 design box, the only orange-filled card in the grid. The shell
-   (padding, radius, min-height) and the copy/link chrome come from Bento.css —
+   (padding, radius, min-height) and the copy/link chrome come from Bento.css;
    this file is the fill and the diagram.
 
    Unit: `.bcard` sets `container-type: inline-size`, so 100cqw is the card's
-   *content* box — 474 design pixels wide at the 534px design width (534 less
-   the 30px padding a side). `--u` is therefore one design pixel of that column
+   content box: 474 design pixels at the 534px design width (534 less the 30px
+   padding a side). `--u` is therefore one design pixel of that column
    and every number below is the raw Figma coordinate times --u.
 
    The unit is capped at 1px, the same as the sibling cards. Between 1100px and
@@ -18,22 +18,13 @@
 .box-onboard {
   --u: min(1px, 100cqw / 474);
 
-  /* THIS CARD DOES NOT FLIP, and that is a decision rather than an omission.
-     ---------------------------------------------------------------------
-     Every colour below sits on a saturated red-to-peach plate that is the
-     same object on either page -- the gradient, the phone drawn into it, the
-     three glass pills, the countdown disc. A pill is white glass over ORANGE,
-     not over the page, so ink-alpha would only make it a grey smudge on a hot
-     plate; the copy on it is --on-accent, the token that exists precisely
-     because it is read against the brand red and not against the page. The
-     card is the fan's photograph case (LIGHTMODE.md 6.5): light crossing
-     artwork is still light.
-
-     The values are named here anyway so the claim is checkable in one place,
-     and so nothing in this card is left reading a token whose job is the
-     page's rather than the plate's. */
-  --onb-grad-top: #a21605;    /* was var(--red); this is a gradient stop, not
-                                 the loss colour, and must not follow --neg */
+  /* This card deliberately does not flip with the theme. Everything sits on
+     a saturated red-to-peach plate that is the same in both themes, so the
+     glass pills stay white glass and the copy uses --on-accent, which is read
+     against the brand red, not the page (LIGHTMODE.md 6.5). The values are
+     named here so none of them reads a page token. */
+  --onb-grad-top: #a21605;    /* a gradient stop, deliberately not var(--red),
+                                 which is the loss colour (--neg) */
   --onb-grad-mid: #ff632a;
   --onb-grad-end: #f8a361;
   --onb-pill-bg: rgba(255, 255, 255, 0.16);
@@ -41,35 +32,21 @@
   --onb-disc: rgba(242, 109, 74, 0.58);
 }
 
-/* The fill. Figma paints the card with a vertical three-stop gradient; the
-   first stop is the --red token exactly, the other two are one-off gradient
-   stops with no variable behind them. Sampling Figma's render of the card down
-   the left edge, clear of the artwork, reproduces this to within 1/255 at every
-   row — the stops in Bento.css are the previous palette and read noticeably
-   redder through the middle of the card. */
+/* The fill: Figma's vertical three-stop gradient. The first stop matches the
+   dark --red value; the other two have no variable behind them. */
 .bcard--onboard.box-onboard {
   background: linear-gradient(180deg, var(--onb-grad-top) 0%, var(--onb-grad-mid) 86.058%, var(--onb-grad-end) 100%);
 }
 
-/* The heading, and the one thing on this card that was still reading the page.
-   ------------------------------------------------------------------------
-   `.bcard__title` is shared chrome and is --ink, which is right for the three
-   cards whose ground IS the page and wrong for this one: --ink flips to
-   #1a1512 and the heading lands on #a21605 at 2.15:1, the same failure
-   LIGHTMODE.md 1.1 describes for the primary button's label. Every other piece
-   of type on this card was already on --on-accent -- the body copy, the link,
-   the three pills, "60s", "You're in." -- and the heading is the same job: it
-   is read against the brand red, not against the page.
-
-   Identical in dark, where --ink and --on-accent are both #fffbf8. It was
-   caught by comparing the card's pixels BETWEEN THEMES rather than across the
-   change: a card that does not flip must render the same in both, and 3189
-   pixels of it did not. */
+/* The shared `.bcard__title` is --ink, which is right for cards on the page
+   ground but not on this red plate: in light, --ink is dark on dark red.
+   Like all type on this card, the heading uses --on-accent (identical to
+   --ink in dark). */
 .bcard--onboard.box-onboard .bcard__title {
   color: var(--on-accent);
 }
 
-/* Frame 365:868 — the 474 x 327 content column. Absolute positioning resolves
+/* Frame 365:868: the 474 x 327 content column. Absolute positioning resolves
    against the card's padding box, so the column is placed at the padding
    itself; every child below is a raw Figma coordinate inside it. */
 .onb__art {
@@ -86,7 +63,7 @@
   display: block;
 }
 
-/* 365:867 — the watermark instance. Figma parents it to the card, not to the
+/* 365:867: the watermark instance. Figma parents it to the card, not to the
    column, so its (84, 107.5) sits at (54, 77.5) here. The export is an empty
    group, so it draws nothing; the box is kept so the layer is accounted for. */
 .onb__logo {
@@ -96,7 +73,7 @@
   height: calc(215 * var(--u));
 }
 
-/* 365:878 — the phone outline. 420 tall inside a 327 column: the foot runs off
+/* 365:878: the phone outline. 420 tall inside a 327 column: the foot runs off
    the bottom of the card, which `overflow: hidden` on `.bcard` cuts. */
 .onb__phone {
   left: calc(210 * var(--u));
@@ -105,7 +82,7 @@
   height: calc(420 * var(--u));
 }
 
-/* 365:889 — the grid. The 196px frame it sits in does not clip in Figma, so the
+/* 365:889: the grid. The 196px frame it sits in does not clip in Figma, so the
    asset is placed at its true origin: the frame's x 219 plus the image's own
    x -87.003. It then runs past the card's right edge, which the card clips. */
 .onb__grid {
@@ -118,7 +95,7 @@
 
 /* The three pills. Figma gives each a fixed width with the label centred in it,
    a 10px pad, and a 30px height that is 2px more than the pad plus the label's
-   cap box — so the height is set, not derived. `text-box` trims the line box to
+   cap box, so the height is set, not derived. `text-box` trims the line box to
    that cap box, which is what Figma measures and centres. */
 .onb__pill {
   left: calc(var(--x) * var(--u));
@@ -143,7 +120,7 @@
   text-box: trim-both cap alphabetic;
 }
 
-/* Group 365:920 — the ring. -------------------------------------------------
+/* Group 365:920: the ring. -------------------------------------------------
    The disc and the arc are two 128 x 128.8 ellipses sharing one centre inside a
    157.87 x 158.84 box; the box is that size because each ellipse is rotated and
    Figma reports their union. Both are therefore centred and then turned. */
@@ -157,14 +134,11 @@
   position: absolute;
 }
 
-/* Ellipse 60. Figma exports this one as a PNG because it carries a background
-   blur, but that export is the layer rendered against a transparent backdrop:
-   composited normally it is a dark brown disc, nothing like the design. Reading
-   Figma's own render of the card at twelve points inside the disc gives a flat
-   translucent tint over the gradient instead — rgba(242,109,74,0.58) reproduces
-   every one of them to an RMSE of 0.57/255, against 4.35 for the closest the
-   PNG can be made to sit (screen at 0.6) and far worse for a plain draw. So the
-   disc is that fill, at the ellipse's designed box and rotation. */
+/* Ellipse 60. Figma exports it as a PNG because of its background blur, but
+   that export is rendered against a transparent backdrop and composites as a
+   dark brown disc. A flat translucent fill, rgba(242,109,74,0.58), matches
+   Figma's render of the card closely, so the disc is that fill at the
+   ellipse's designed box and rotation. */
 .onb__disc {
   left: 50%;
   top: 50%;
@@ -175,7 +149,7 @@
   transform: translate(-50%, -50%) rotate(5.72deg);
 }
 
-/* Ellipse 61 — the open arc. The stroke only covers the top-right quadrant of
+/* Ellipse 61: the open arc. The stroke only covers the top-right quadrant of
    its ellipse, so it turns about the ellipse's centre, not its own: the box is
    the full 128 x 128.73 ellipse, rotated, with the 90.82 x 64.37 asset pinned
    to its top right. */
@@ -199,46 +173,20 @@
   height: calc(64.3651 * var(--u));
 }
 
-/* Text 365:923. Figma leaves the line height on auto, which for the face this
-   was drawn in was 1.2476 -- its own 62.381px box at 50px -- so the box is
-   stated rather than left to the browser's idea of `normal`, and the glyphs
-   land where Figma puts them whatever face is actually loaded.
+/* Text 365:923. Figma's auto line height was 1.2476 (a 62.381px box at 50px)
+   in the face it was drawn in, so the box is stated rather than left to
+   `normal`, and the glyphs land where Figma puts them in any face.
 
-   THE DIAL IS THREE GLYPHS, "60s".."00s". It used to be POSITIONED by
-   arithmetic on Geist Mono's advance: that face put every glyph on 0.6em, so
-   the count was a fixed-width box at every value and `left` was that box
-   subtracted from the ring's and halved.
+   The count ("60s" to "00s") is centred on 50% and a translate, like its two
+   siblings in the ring, so its width does not matter. `top` is the design's
+   optical centre (79.42 down the 158.841 box).
 
-   NONE OF THAT SURVIVES A PROPORTIONAL FACE. Measured on the fallback the same
-   string sets narrower than the arithmetic assumed, so the old left offset put
-   the count 9.5 off the ring's centre -- and worse, the box changed width as
-   the loop counted, so the numerals crawled sideways under themselves on the
-   way down.
-
-   So the count is centred the way its two siblings in this ring already are,
-   on 50% and a translate, and the width it happens to have stopped mattering.
-   `top` is the design's optical centre (79.42 down the 158.841 box) instead of
-   that centre minus half a line box -- which at this line height is the same
-   48.23 the design shipped, so the rendered position is unchanged.
-
-   AND THE COUNT IS ONE CELL PER DIGIT, not one string. `tabular-nums` is
-   asked for and is the right answer when the face has the feature -- but it is
-   only ever a request, and measured here it is a NO-OP: the fallback the site
-   renders on until the Galano files arrive has no `tnum` table at all, and its
-   digits run 0.5em to 0.556em. Driven through a full cycle on a single string
-   the dial moved 7.2px, half of it sideways off the centre, which is precisely
-   the crawl the monospaced face used to make impossible.
-
-   So each digit sits in its own cell of `1ch`. `ch` is the advance of "0" in
-   whatever face is actually loaded, so the cell calibrates itself: it is exact
-   for any face with tabular figures (every digit is then 1ch), and for one
-   without it the digit centres in the cell and can be out by at most half the
-   spread -- 0.028em, which is a quarter of a pixel here. Either way the cells
-   add up to the same width at every count, so the string cannot move. It costs
-   nothing when the real font lands and it is not something to undo.
-
-   The "s" is deliberately NOT given a cell: it is one glyph that never
-   changes, so its natural advance is already constant. */
+   Each digit sits in its own `1ch` cell. The face is proportional and
+   `tabular-nums` is only a request (the fallback face has no `tnum`), so a
+   single string changes width as it counts and shifts sideways. `ch` is the
+   advance of "0" in whatever face is loaded, so the cells always add up to the
+   same width. Don't undo this when the real font lands. The "s" never
+   changes, so it needs no cell. */
 .onb__seconds {
   left: 50%;
   top: calc(79.42 * var(--u));
@@ -259,7 +207,7 @@
 .onb__digit { width: 1ch; text-align: center; }
 
 /* Text 365:924. Figma places this by its cap box, so the line box is trimmed to
-   match — otherwise the caption sits a few pixels low. */
+   match; otherwise the caption sits a few pixels low. */
 .onb__in {
   left: calc(295 * var(--u));
   top: calc(311 * var(--u));
@@ -274,9 +222,8 @@
 
 /* --- MOBILE (Figma 526:184, 394 x 460) -------------------------------------
 
-   The phone card is a SECOND FRAME, not the desktop card reflowed, and the two
-   agree on exactly one thing: the illustration. Reading 526:184 against
-   365:866 node by node, in each frame's own column coordinates --
+   The phone card is a second frame, not the desktop card reflowed, but the
+   illustration is identical. In each frame's own column coordinates:
 
      phone       mobile (123,   9)  desktop (210,  98)
      grid        mobile ( 45,  20)  desktop (132, 109)
@@ -286,44 +233,31 @@
      ring        mobile (151,  69)  desktop (238, 158)
      You're in.  mobile (208, 222)  desktop (295, 311)
 
-   -- every one is the desktop coordinate less (87, 89), to the pixel, at an
-   unchanged size, and the five assets are the same five exports. So nothing
-   under `.onb__art` is restated here: the column's own origin moves to
-   (30 - 87, 152 - 89) = (-57, 63) and the drawing rides along. The mobile frame
-   crops that column tighter -- 364 x 308 at (30, 152) against 474 x 327 at
-   (30, 30) -- but the crop is empty in both directions, because the grid still
-   ends at card x 563 and the phone's foot still runs off the card's floor in
-   both frames, and `.bcard`'s own `overflow: hidden` already cuts exactly where
-   526:1163's `overflow-clip` does. `.onb__art` therefore keeps its 474 x 327
-   box, which also means `unitOf(art, 474)` in motion/onboard.ts goes on
-   returning the right unit with nothing to change.
+   Every node is the desktop coordinate less (87, 89), at the same size, with
+   the same assets. So nothing under `.onb__art` is restated: the column's
+   origin moves to (30 - 87, 152 - 89) = (-57, 63) and the drawing rides along.
+   The mobile frame's tighter crop is not restated either, because `.bcard`'s
+   own `overflow: hidden` already cuts where 526:1163 clips, and it keeps
+   `unitOf(art, 474)` in motion/onboard.ts correct.
 
-   Leaving it unclipped is load-bearing rather than lazy: the loop slides the
-   "No documents" pill 16 design px to its left, and on THIS frame that pill
-   starts at column x 0. A clip on the frame would eat the beat; the card still
-   stops it, 30 design px further out.
+   Leave `.onb__art` unclipped: the loop slides the "No documents" pill 16
+   design px left, and on this frame that pill starts at column x 0.
 
    What changes is the frame around the drawing:
 
-     * 394 x 460 portrait instead of 534 x 387, so `--u` becomes one design
-       pixel of the NEW frame and the whole card is that frame to scale. The
-       card has no border and its padding is dropped to zero here, so 100cqw is
-       the full 394 and Figma's root coordinates are used unshifted.
-     * The copy is 24 / 16 with 18 between, not 24 / 20 with 2 -- the heading
-       does NOT shrink on a phone, which is the opposite of what Bento.css's
-       shared mobile block does to it.
-     * The title breaks after "account". The design sets that break by hand and
-       `text-wrap: balance` reproduces it without touching the markup; a <br>
-       switched off above the breakpoint was rejected on the sibling card,
-       because splitting the string into two shaping runs moved the DESKTOP
-       title by a subpixel.
+     * 394 x 460 portrait, so `--u` becomes one design pixel of the new frame.
+       The card has no border and zero padding here, so 100cqw is the full 394
+       and Figma's root coordinates are used unshifted.
+     * 18 between heading and body.
+     * The title is balanced onto two lines with `text-wrap: balance` rather
+       than a <br> (see BoxBonus.tsx for why not a <br>).
      * The copy column, the link and the artwork are all placed from the frame
        rather than stacked, because in the design they overlap: the artwork
        runs from y 152 to the floor and the link sits at 410, on top of it.
      * 365:867, the watermark, has no counterpart in this frame.
 
-   720px, not 394px: it is the breakpoint Bento.css already treats as mobile and
-   the one the sibling cards use, so the four of them change frame together.
+   720px, not 394px: the band's shared mobile breakpoint, so all four cards
+   change frame together.
    ------------------------------------------------------------------------- */
 @media (max-width: 720px) {
   .bcard--onboard.box-onboard {
@@ -333,12 +267,12 @@
        Figma's own. The copy's 30px inset comes back as a scaled offset on the
        text column itself. */
     padding: 0;
-    /* Bento.css floors this card at 420px on a phone, which would outrank the
-       aspect ratio and stretch the frame. The frame is the size now. */
+    /* Bento.css floors this card's height, which would outrank the aspect
+       ratio and stretch the frame. */
     min-height: auto;
   }
 
-  /* Container 526:189 — the 334-wide copy column at (30, 30). */
+  /* Container 526:189: the 334-wide copy column at (30, 30). */
   .box-onboard .bcard__text {
     position: absolute;
     left: calc(30 * var(--u));
@@ -346,21 +280,16 @@
     width: calc(334 * var(--u));
     gap: calc(18 * var(--u));
   }
-  /* 526:190. Still --on-accent via the rule further up this file: this card is
-     a red plate in both themes, and --ink would put the heading at 2.15:1 on
-     it in light. `balance` is asked for on the numbers, not on luck -- the
-     natural wrap fills line one past "account" and balancing evens the two
-     lines onto the design's break; where it is unsupported the fallback is
-     still two lines inside the box. */
+  /* 526:190. Still --on-accent via the rule further up this file. Where
+     `balance` is unsupported the fallback is still two lines in the box. */
   .box-onboard .bcard__title {
     text-wrap: balance;
   }
   /* The heading, the paragraph and the link's label take the site's type
      scale (tokens.css) through the shared card rules in Bento.css, never
-     `N * --u`: this card's unit divides by the DESKTOP column (474), so a
-     `16 * --u` rendered 12.9-14.1 on a phone. The tracking is the font's own. */
+     `N * --u`. The tracking is the font's own. */
 
-  /* Frame 526:1163 — the illustration column, whose origin is the desktop
+  /* Frame 526:1163: the illustration column, whose origin is the desktop
      column's less (87, 89). Its box stays the desktop 474 x 327; see the note
      above for why the tighter mobile crop is not restated. */
   .box-onboard .onb__art {

@@ -12,7 +12,7 @@ import './Nav.css';
 
 /* The bar. Markets and Leaderboard take their hrefs from the sitemap, so the
    bar, the footer and MORE all point at the same place and fill in together;
-   today both are TODO(client) placeholders (see lib/sitemap.ts). */
+   currently both are TODO(client) placeholders (see lib/sitemap.ts). */
 const LINKS = [
   { label: 'Home', href: '#top' },
   page('Markets'),
@@ -21,7 +21,7 @@ const LINKS = [
 
 /* What MORE opens, on both surfaces: MORE_MENU in lib/sitemap.ts.
    ---------------------------------------------------------------------------
-   About only, for now: the user's call. The full sitemap (Product, Company,
+   Design decision: About only, for now. The full sitemap (Product, Company,
    Legal) is the footer's; MORE is a short list, one column on the bar and one
    stack in the sheet. About is a route with `aria-current`.
 
@@ -42,34 +42,24 @@ const MOBILE = '(max-width: 960px)';
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]';
 
 /**
- * The desktop bar's MORE, which is now a menu rather than a promise of one.
+ * The desktop bar's MORE menu.
  *
- * THE ARIA IS HONEST OR IT IS NOT THERE. The button already said
- * `aria-haspopup="menu"`, which tells a screen reader user to expect a menu
- * and to expect arrow keys to work in it. Half of that -- the popup attribute
- * with no `role="menu"` behind it, or a menu role whose items cannot be
- * reached with the arrows -- is worse than a plain list of links, because it
- * advertises an interaction that then does not happen. So: `aria-expanded` on
- * the button, `role="menu"` on the list, `role="menuitem"` on each link,
- * `role="none"` on the <li> that would otherwise contribute a list semantic
- * the menu role does not want, and Up/Down/Home/End actually implemented.
+ * THE ARIA IS HONEST OR IT IS NOT THERE. `aria-haspopup="menu"` tells a
+ * screen reader to expect a menu with working arrow keys, and half of that is
+ * worse than a plain list of links. So: `aria-expanded` on the button,
+ * `role="menu"` on the list, `role="menuitem"` on each link, `role="none"` on
+ * each <li>, and Up/Down/Home/End implemented.
  *
- * IT DOES NOT OPEN ON HOVER, and that is a standing rule on this project
- * rather than an oversight. A hover menu has no state a touch screen can
- * express, it opens when the pointer is merely passing through, and it cannot
- * be closed except by leaving. Click to open, Escape, an outside press, or choosing an item closes it.
+ * IT DOES NOT OPEN ON HOVER, by design: a hover menu has no touch state, opens
+ * when the pointer merely passes, and closes only by leaving. Click opens it;
+ * Escape, an outside press or choosing an item closes it.
  *
- * FOCUS ON OPEN depends on how it was opened, which `event.detail` answers:
- * a click from a real pointer reports a click count of 1 or more, a click
- * synthesised by Enter or Space on a focused button reports 0. Keyboard opens
- * land on the first item, because a keyboard user has no other way in; mouse
- * opens leave focus on the button, because moving it would put a focus ring
- * somewhere nobody asked for. Arrow Down from the button gets in either way.
+ * FOCUS ON OPEN depends on how it was opened. `event.detail` is 0 for a click
+ * synthesised by Enter or Space, so keyboard opens land on the first item and
+ * pointer opens leave focus on the button. Arrow Down gets in either way.
  *
- * ESCAPE RETURNS FOCUS TO THE BUTTON, with `preventScroll` for the same
- * reason the sheet's teardown uses it: the nav is not sticky, so a focus()
- * that scrolls the trigger into view throws a scrolled reader back to the top
- * of the page.
+ * ESCAPE RETURNS FOCUS TO THE BUTTON with `preventScroll`: the nav is not
+ * sticky, so a scrolling focus() would throw a scrolled reader back to the top.
  */
 function MoreMenu({ path }: { path: string }) {
   const [open, setOpen] = useState(false);
@@ -199,11 +189,8 @@ function MoreMenu({ path }: { path: string }) {
         onKeyDown={onButtonKey}
       >
         <Roll>More</Roll>
-        {/* The mask primitive's proof case: the chevron used to be an
-            <img> baked #fffbf8, so it could only ever be that colour. As a
-            mask it is `color`, which means it follows --ink, inherits the
-            nav link's hover to --accent for free, and needs no light
-            variant on disk. */}
+        {/* A mask (see Icon), so the chevron follows `color`: --ink at rest,
+            the nav link's --accent on hover, with no light variant on disk. */}
         <Icon src={chevron} w={13.73} h={7.49} />
       </button>
 
@@ -255,7 +242,7 @@ export function Nav() {
     const burger = burgerRef.current;
 
     /* The background goes inert. The sheet is portalled to <body>, so "the
-       background" is every other child of <body> — which on this page is the
+       background" is every other child of <body>, which on this page is the
        single React root, nav bar and all. `inert` alone is enough in every
        browser that has it; `aria-hidden` is the belt for the ones that do not,
        and the Tab handler below is the braces. Only attributes this effect
@@ -328,18 +315,10 @@ export function Nav() {
          the floor, and whether React has flushed this cleanup by the time a
          microtask queued in the handler runs is not something to bet on.
 
-         `preventScroll`, and this is the interesting half. The nav bar is not
-         sticky, so the burger is off screen for anyone who had scrolled
-         before opening the menu — and a plain focus() scrolls it into view,
-         which means closing the menu silently threw the reader back to the
-         top of the page. Measured: 240 -> 0 on Escape. Holding the viewport
-         still costs a keyboard user a focus ring they cannot see until they
-         press Tab; teleporting the page costs every user their place. The
-         second is worse, so the ring loses.
-
-         Closing on a menu link is the same call for a different reason: those
-         hrefs are in-page anchors whose targets mostly do not exist yet, so
-         there is nothing better to land on than the control that opened this. */
+         `preventScroll`: the nav bar is not sticky, so for anyone who had
+         scrolled, a plain focus() would scroll the burger into view and throw
+         the reader back to the top of the page. Keeping their place matters
+         more than showing the focus ring before the next Tab. */
       burger?.focus({ preventScroll: true });
     };
   }, [open, close]);
@@ -372,7 +351,7 @@ export function Nav() {
 
           {/* The disclosure. `aria-expanded` on the control, `aria-controls`
               pointing at the list it opens, and the list itself `inert` and
-              `aria-hidden` while shut -- which takes its four links out of
+              `aria-hidden` while shut -- which takes its links out of
               both the focus order and the accessibility tree without taking
               them out of the DOM, so the panel still has a height to animate
               between. `hidden` would do the first two jobs and make the third

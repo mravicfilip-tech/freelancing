@@ -321,7 +321,7 @@ export function Hero() {
     }, slide);
 
     return () => { window.clearTimeout(guard); ctx.revert(); };
-  }, [index]);
+  }, [index, heroRef]);
 
   const stacked = useMedia(STACKED);
   const compact = useMedia(COMPACT);

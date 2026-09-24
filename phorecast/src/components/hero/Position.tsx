@@ -36,8 +36,9 @@ export function Position({ index, count, onSelect, periodMs, paused, cycleKey, l
   const [dragTo, setDragTo] = useState<number | null>(null);
 
   // The clock, kept out of React: it is read every frame and nothing else in
-  // the hero needs to re-render for it.
-  const startRef = useRef(performance.now());
+  // the hero needs to re-render for it. The effect below sets the start on
+  // mount, before the first frame reads it.
+  const startRef = useRef(0);
   const heldRef = useRef(0);
   const pausedRef = useRef(paused);
 

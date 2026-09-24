@@ -335,7 +335,7 @@ export function useSectionMotion<T extends HTMLElement = HTMLElement>(
       // the next mount; one that did will reveal again when it rebuilds.
       rehide();
     };
-  }, [build, threshold, idle, immediate, themeEpoch]);
+  }, [build, threshold, rootMargin, idle, immediate, themeEpoch]);
 
   return ref;
 }

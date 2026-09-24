@@ -252,6 +252,7 @@ export function Nav() {
     if (!open) return;
     const sheet = sheetRef.current;
     if (!sheet) return;
+    const burger = burgerRef.current;
 
     /* The background goes inert. The sheet is portalled to <body>, so "the
        background" is every other child of <body> — which on this page is the
@@ -339,7 +340,7 @@ export function Nav() {
          Closing on a menu link is the same call for a different reason: those
          hrefs are in-page anchors whose targets mostly do not exist yet, so
          there is nothing better to land on than the control that opened this. */
-      burgerRef.current?.focus({ preventScroll: true });
+      burger?.focus({ preventScroll: true });
     };
   }, [open, close]);
 

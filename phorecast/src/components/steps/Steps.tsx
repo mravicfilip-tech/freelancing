@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LiveDot } from '../LiveDot';
 import { PanelRegister } from './panels/PanelRegister';
 import { PanelFund } from './panels/PanelFund';
@@ -36,6 +36,7 @@ const DWELL_MS = 6000;
  * swipe to have anywhere to go, and the desktop must not pay for two panels it
  * never shows -- nor have its DOM disturbed at all. */
 const PHONE = '(max-width: 700px)';
+const REDUCE = '(prefers-reduced-motion: reduce)';
 
 function usePhone() {
   const [phone, setPhone] = useState(
@@ -53,7 +54,9 @@ function usePhone() {
 
 export function Steps() {
   const [active, setActive] = useState(0);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(
+    () => !(typeof window !== 'undefined' && window.matchMedia(REDUCE).matches),
+  );
   const reduced = useRef(false);
   const phone = usePhone();
 
@@ -85,9 +88,9 @@ export function Steps() {
   }, [ref]);
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // `playing` already starts false under reduced motion; this follows changes.
+    const mq = window.matchMedia(REDUCE);
     reduced.current = mq.matches;
-    if (mq.matches) setPlaying(false);
     const onChange = () => { reduced.current = mq.matches; setPlaying(!mq.matches); };
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
@@ -125,7 +128,8 @@ export function Steps() {
   const trackRef = useRef<HTMLDivElement>(null);
   const driving = useRef(0);
   const activeRef = useRef(active);
-  activeRef.current = active;
+  // Synced at commit, before any frame the scroll reader below could run in.
+  useLayoutEffect(() => { activeRef.current = active; }, [active]);
 
   useEffect(() => {
     const el = trackRef.current;

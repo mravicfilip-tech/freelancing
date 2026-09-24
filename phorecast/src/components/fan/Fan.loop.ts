@@ -623,6 +623,9 @@ export function fanLoop(root: HTMLElement): () => void {
       tl.play();
     }, root);
 
+    // `remeasure` comes back through here: drop the previous pair first.
+    io?.disconnect();
+    ro?.disconnect();
     io = new IntersectionObserver(([entry]) => {
       offscreen = !entry.isIntersecting;
       if (!offscreen) cycle?.play();

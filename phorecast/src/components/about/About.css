@@ -514,9 +514,8 @@
 .ab-cmp__table td { padding: 0; font-weight: inherit; text-align: center; vertical-align: middle; }
 
 /* The criterion column takes what the five 200-wide brand columns leave.
-   `.ab-cmp__table` is in the selector because the centring rule above is
-   `.ab-cmp__table th` -- two classes to this one, so a bare `.ab-cmp__crit`
-   loses the cascade and the labels sit in the middle of a 736px column. */
+   `.ab-cmp__table` is in the selector to outrank the centring rule above
+   (`.ab-cmp__table th`). */
 .ab-cmp__table .ab-cmp__crit {
   width: auto;
   padding-right: calc(24 * var(--u));
@@ -547,29 +546,18 @@
 .ab-cmp__table tbody tr:last-child th { padding-bottom: 0; }
 .ab-cmp__table tbody th { padding-bottom: calc(26 * var(--u)); }
 
-/* Header cell: the mark over the name, 46 design px apart.
-   -------------------------------------------------------------------------
-   EACH LOGO IS A WINDOW ONTO ITS FILE, NOT THE FILE SCALED TO FIT, and that
-   is the difference between the frame's header row and a squashed one. Two of
-   the four are crops in Figma and reproducing them as `object-fit: contain`
-   gets both wrong:
+/* Header cell: the logo over the name, 46 design px apart.
 
-     Kalshi   350 x 350 with the wordmark in the middle third. The frame draws
-              it at 97 x 95.45 inside a 97 x 30 window offset -32.7 up, so the
-              window holds rows 120-230 -- the wordmark, with its padding
-              cropped off. Fitted whole it becomes a 30 x 30 square with the
-              name three pixels tall.
-     Polymarket  925 x 238, the icon then the word. The frame draws it 462.5%
-              wide in a 25 x 30 window, so what shows is the leftmost 21.6%:
-              the icon alone, which is what the render has. Fitted whole it
-              was measured at 25 x 6.4 -- the entire wordmark squeezed into
-              the width of its own icon.
-
-   So each window is its own box and the image is positioned inside it in
-   percentages OF THAT WINDOW, which is the same construction the CHOOSE
-   cards' screenshots use and is scale-invariant: every window keeps the
-   frame's ratio through its min-width/min-height pair, so the crop holds at
-   any size. The other two are honest `cover` fills at their own ratios. */
+   EACH LOGO IS A WINDOW ONTO ITS FILE, NOT THE FILE SCALED TO FIT. Two are
+   crops in Figma:
+     Kalshi      350 x 350 with the wordmark in the middle third, drawn at
+                 97 x 95.45 in a 97 x 30 window offset upward.
+     Polymarket  925 x 238 (icon then word), drawn 462.5% wide in a 25 x 30
+                 window so only the icon shows.
+   The image is positioned in percentages of its window (as the CHOOSE
+   screenshots are), and each window keeps the frame's ratio through its
+   min-width/min-height pair, so the crop holds at any size. The other two
+   are plain `cover` fills. */
 .ab-cmp__logo {
   position: relative;
   display: block;
@@ -607,16 +595,12 @@
   white-space: nowrap;
   color: var(--ink-muted);
 }
-/* The verdict. NOT an <Icon>: both files are a coloured plate with a white
-   glyph on it, and a mask would keep the plate and lose the glyph. They carry
-   their own colour and need none from a token, in either theme. */
+/* The verdict. Not an <Icon>: both files are a coloured plate with a white
+   glyph, which a mask would lose. They need no token in either theme. */
 .ab-cmp__vote {
-  /* 20px is a ceiling the client set, not the frame's number: 531:321 and its
-     twenty-four siblings are drawn at 38.5, which is 34px at 1600 and reads as
-     the loudest thing in a band whose job is five words of criterion and a
-     verdict. Capped rather than restated so the badge still scales with the
-     design unit at every width below the cap and the floor still stops it
-     disappearing on a phone. */
+  /* Design decision: capped at 20px. The frame draws the badges at 38.5,
+     which made them the loudest thing in the band. The clamp still scales
+     with the unit below the cap, with an 18px floor for phones. */
   width: clamp(18px, calc(38.5 * var(--u)), 20px);
   height: clamp(18px, calc(38.5 * var(--u)), 20px);
   margin-inline: auto;
@@ -625,12 +609,9 @@
 /* ── 6. Why is it better than bets or crypto/stocks? ──────────────────────── */
 
 .ab-why__row { display: flex; align-items: stretch; gap: calc(20 * var(--u)); }
-/* The body starts under the title, at the same title-to-body spacing as the
-   Choose an event cards, and the card ends after its content: the client's
-   "the paragraph needs to start from top down". It was `space-between` over a
-   440-unit floor, which parked the body at the card's foot under a band of
-   empty card. The two cards still match in height -- the row stretches them --
-   and any spare height is at the bottom of the shorter one. */
+/* The body starts directly under the title, at the same title-to-body gap
+   as the CHOOSE cards. The row stretches both cards to equal height, so any
+   spare height falls at the bottom of the shorter one. */
 .ab-why__card {
   display: flex;
   flex-direction: column;
@@ -660,11 +641,8 @@
   line-height: var(--body-leading);
   color: var(--ink-2);
 }
-/* Everything in the body is plain paragraph text, the lead line ("Price =
-   what the market thinks will happen") included: it is a sentence, and the
-   user asked for no bold sentences in this section, so `.ab-why__lead` carries
-   no face or weight of its own. The example's run-in lines and closing line
-   are the same. */
+/* Design decision: everything in the body is plain paragraph text, with no
+   bold sentences. `.ab-why__lead` has no face or weight of its own. */
 /* The frame's own `list-disc` with a 30px indent. `ul` is stripped of markers
    in global.css, so the list type is stated back here rather than assumed. */
 .ab-why__list {
@@ -678,11 +656,9 @@
 /* ── Motion holds ─────────────────────────────────────────────────────────── */
 
 /* Each band renders `data-motion="pending"`, which hides only the parts the
-   entrance moves; the boxes, the grid and the spacing stay, so nothing about
-   the layout pops in. `[data-js]` gates the whole rule on main.tsx having run:
-   if the script never arrives the page renders plainly rather than blank.
-   Reduced motion reveals everything, because `useSectionMotion` treats that
-   case as a no-op and nothing would ever come back. */
+   entrance moves, so layout never pops in. `[data-js]` (set by main.tsx)
+   means the page renders plainly if the script never runs. Reduced motion
+   reveals everything, because `useSectionMotion` skips the build. */
 [data-js] .ab-hero[data-motion='pending'] .nav .logo,
 [data-js] .ab-hero[data-motion='pending'] .nav__links > *,
 [data-js] .ab-hero[data-motion='pending'] .nav__actions > *,
@@ -720,27 +696,12 @@
 
 /* ── Narrow ───────────────────────────────────────────────────────────────── */
 
-/* 1100 and below: the three CHOOSE cards and the two primer cards are the
-   first things to run out of room. The cards wrap to a column rather than
-   being squeezed -- at 1100 a third of 1060px is 340px holding a 524-wide
-   screenshot and two lines of 20px copy, which is a card that has stopped
-   working. */
+/* 1100 and below: the CHOOSE and primer cards wrap rather than squeeze. */
 @media (max-width: 1100px) {
-  /* THE GAPS GET A FLOOR, and this is the one thing the design unit cannot do
-     on its own. Every space between two things on this page is written in the
-     frame's own pixels -- 14 between the cards, 14 between a card's title and
-     its copy, 20 under an eyebrow, 32 inside a primer card -- and `--u` is one
-     eighteen-hundredth of the content column, so at 360 those become 2.5, 2.5,
-     3.6 and 5.7px. That is correct scaling and it is unreadable: a heading
-     five pixels off its own paragraph is not a heading with a gap, it is two
-     lines of the same block. Type is clamped for exactly this reason and the
-     spacing between type has to be clamped with it.
-
-     Each ceiling below is the frame's number and each vw is that number at
-     1920, so at every width above this breakpoint the value is identical to
-     the `--u` expression it replaces -- the column is a fixed fraction of the
-     viewport there, so the two agree to the tenth of a pixel. Only the floor
-     is new. */
+  /* THE GAPS GET A FLOOR. Spacing in `--u` shrinks to 2-6px at 360, which
+     merges a heading into its paragraph. Each ceiling is the frame's number
+     and each vw is that number at 1920, so above this breakpoint the value
+     matches the `--u` expression it replaces; only the floor is new. */
   .ab-choose__inner > .eyebrow,
   .ab-brand__inner > .eyebrow,
   .ab-cmp__inner > .eyebrow,
@@ -752,11 +713,9 @@
   .ab-why__row { gap: clamp(16px, 1.0417vw, 20px); }
   .ab-why__card { gap: clamp(10px, 0.729vw, 14px); }
 
-  /* A grid rather than a wrapped flex row, and the difference is the third
-     card. Wrapped, it grows to the full 1040 on its own line, which blows the
-     524 x 238 screenshot window up to 1040 x 472 -- a 2x enlargement of a
-     capture that has no pixels for it, sitting next to two at half the size.
-     Two tracks and one empty cell keeps every card the same shape. */
+  /* A grid rather than a wrapped flex row: wrapped, the third card would
+     grow to full width and blow its screenshot up 2x. Two tracks and an empty
+     cell keep every card the same shape. */
   .ab-choose__row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -765,20 +724,12 @@
   .ab-card { padding: clamp(20px, 2.6vw, 32px); }
   .ab-card__text { margin-top: clamp(20px, 3vw, 46px); }
 
-  /* The product shot stops bleeding off the card and becomes the card's
-     bottom half, because at this width the 759-wide copy column and the
-     871-mark visual cannot both be on the row.
+  /* The shot becomes the card's bottom half: the 759-wide copy and the
+     871-mark visual no longer fit on one row.
 
-     AND 531:234 GOES WITH IT -- off, not moved, and that is a decision
-     rather than a shortcut. On the row, the whole of that field's visible
-     contribution is the left shoulder of one disc showing in the GAP beside
-     the photograph; the photograph is opaque from the 871 mark rightward and
-     covers every other part of it. Stacked, there is no gap: the shot spans
-     the card, so the only parts of the field that could show are parts the
-     frame never shows. And left where the row put it, the 871 mark is now
-     the middle of a full-width copy column -- measured at 1100 and at 390,
-     a solid orange slab across four lines of body copy. There is nothing
-     here for it to do, so it does not draw. */
+     531:234 is turned off, not moved. On the row its only visible part is
+     the disc's shoulder in the gap beside the shot; stacked there is no gap,
+     and left in place it would sit as an orange slab behind the copy. */
   .ab-brand__field { display: none; }
   .ab-brand__card { min-height: 0; padding: clamp(20px, 2.6vw, 32px); overflow: hidden; }
   .ab-brand__copy { width: 100%; min-height: 0; }
@@ -787,20 +738,16 @@
     left: auto;
     right: auto;
     height: auto;
-    /* The layer's own design box, so the three images inside keep their
-       proportions without a single number changing. */
+    /* The layer's design box, so the image keeps the desktop crop. */
     aspect-ratio: 929.33 / 440;
     margin-top: clamp(20px, 3vw, 40px);
-    /* The frame bleeds the composition off the card's right edge; keeping
-       that is what stops it reading as a picture pasted into a box. The
-       negative margin takes it back out through the card's padding. */
+    /* Still bleeds off the card's right edge, which stops it reading as a
+       picture pasted into a box. The negative margin undoes the padding. */
     margin-right: calc(-1 * clamp(20px, 2.6vw, 32px));
   }
 
-  /* The design height goes, because below 1100 the unit makes 722 of it a
-     number this copy has outgrown -- but the pin's floor stays, for the same
-     reason it exists at all. Content still wins over it: at 360 the statement
-     alone is taller than the screen and this resolves to less than it. */
+  /* The 722-unit design height goes, but the pin's screen-tall floor stays.
+     Taller content still wins. */
   .ab-conv__inner {
     min-height: 0;
     min-height: calc(100svh - var(--ab-gap));
@@ -816,86 +763,43 @@
   .ab-choose__row { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* THE GROUND BELOW 1100, and this is the correction the frame cannot make
-   for itself.
-   -------------------------------------------------------------------------
-   531:149 is anchored to the top of the document because that is where the
-   frame anchors it, and at 1920 that is right twice over: the light opens
-   below the hero's copy AND it opens at x 254, which is 194 design px right
-   of the content column's left edge, so the CHOOSE AN EVENT label -- which
-   starts AT that edge -- sits in the dark left shoulder of the composition.
+/* THE GROUND BELOW 1100. The ground scales with the viewport but the hero
+   copy does not, so top-anchored the field's brightest part would land
+   behind the CHOOSE eyebrow on narrower screens. Below 1100 the field hangs
+   from the BOTTOM of the hero instead, which keeps the frame's relationship:
+   986 puts the light opening on the first CHOOSE card, just below the
+   eyebrow, as at 1920.
 
-   Neither half of that survives a narrow viewport, because the ground scales
-   and the copy does not. The headline is clamped type and the gaps have
-   floors, so the hero grows from 409px tall at 1600 to 544 at 360 while the
-   field shrinks from 962 to 715. Measured with the type hidden, the eyebrow's
-   own ground went from rgb(15,14,13) at 1600 to rgb(203,92,40) at 720 -- the
-   centre of the sun -- which is 1.24:1 under any ink an eyebrow can carry.
-   Horizontally it is just as bad: pinning the unit at 0.62 makes the clip
-   1190px wide on a 390px screen, so the group that starts 320 into a 1920
-   frame starts 202px OFF THE LEFT of the phone, and the whole label is inside
-   it.
-
-   So below 1100 the field hangs from the BOTTOM of the hero section instead
-   of the top of the document, which restores the relationship the frame has
-   rather than the coordinate it states. 986 is measured: it puts the field's
-   top 104px above the hero's bottom edge, and the field's own light does not
-   become perceptible until 377 design px into it, so the light opens 55px
-   below the eyebrow's last line and 30 below the top of the first card --
-   which is exactly where the frame opens it at 1920, on the cards and not on
-   the label. One number, and it holds at 1100, 900, 720, 500, 390 and 360
-   because the hero's bottom is what it is measured from.
-
-   THE UNIT IS PINNED BELOW 720 as well. At 390 a viewport-derived unit is
-   0.203px, which makes the Circle group 313 x 215 -- a thumbnail of a field
-   on a page whose hero copy is seven lines tall. Hero.css pins its own to
-   0.45 below 720 for the same reason and records the measurement; 0.62 is
-   this page's number, because at 0.62 the 1154 band is 715px against about
-   700px of hero copy, which is the same relationship the 1920 frame has
-   between its light and its copy. */
+   Below 720 the unit is also pinned at 0.62px (Hero.css pins its own at
+   0.45 for the same reason); a viewport-derived unit would shrink the field
+   to a thumbnail behind seven lines of hero copy. */
 @media (max-width: 1100px) {
   .ab-ground { top: auto; bottom: calc(-986 * var(--ground-u)); }
 }
 @media (max-width: 720px) {
-  /* The statement takes the full column on a phone. Its desktop measure is
-     1224 design px, which is 238px at 390; at the section-heading size (28)
-     that ran the statement to 21 lines, taller than the screen it is pinned
-     in. The full column brings it back to about the height it had at 24px. */
+  /* Full column on a phone. The 1224-unit measure is only 238px at 390,
+     which ran the statement taller than the screen it is pinned in. */
   .ab-conv__statement, .ab-conv__goal { max-width: none; }
   /* Same line as the menu sheet's top, and as the landing hero's. */
   .ab-hero { padding-top: 20px; }
   .ab-hero { --ground-u: 0.62px; }
 }
 
-/* THE TABLE ON A TABLET. The venue names are the site's small size, 14px,
-   nowrap, and "MAGICMARKETS" at 14 is about 115px -- wider than a 200-unit
-   column below about 1180 (80px at 768), where the fixed layout let each name
-   run into the next. `auto` lets the five venue columns take the width their
-   names need and gives the criterion column the rest, which it wraps into. */
+/* THE TABLE ON A TABLET. "MAGICMARKETS" at 14px is about 115px, wider than
+   a 200-unit column below about 1180. `auto` layout lets the venue columns
+   take the width their names need; the criterion column wraps. */
 @media (max-width: 1180px) {
   .ab-cmp__table { table-layout: auto; }
 }
 
-/* THE TABLE ON A PHONE.
-   -------------------------------------------------------------------------
-   Six columns do not fit in 320px of content: the criterion labels need about
-   110px to stay on two lines and five venues then have 42px each, which is
-   not enough for "MAGICMARKETS" at any size anybody can read. Shrinking until
-   it fits produces a table that is present and useless.
-
-   So below 720 the table keeps its real column widths and the CARD scrolls
-   sideways, with the criterion column pinned. That is a pattern a reader
-   already knows, it keeps every label and every logo legible, and it does not
-   put a horizontal scrollbar on the DOCUMENT -- the scroller is the element,
-   and `scrollWidth === clientWidth` still holds for the page.
-
-   The pinned cells need an opaque fill or the rows slide through them, which
-   is what --ab-solid is: --ab-veil flattened over --page, in both themes. */
+/* THE TABLE ON A PHONE. Six columns do not fit in 320px, so below 720 the
+   table keeps real column widths and the CARD scrolls sideways with the
+   criterion column pinned. The document itself never scrolls sideways. The
+   pinned cells use --ab-solid so rows do not show through. */
 @media (max-width: 720px) {
-  /* The scroller's right edge fades out over 32px, so a column cut by the edge
-     reads as "more this way" rather than as a sliver of a clipped letter; the
-     last column carries the same 32px as padding, so at the end of the scroll
-     nothing it holds sits under the fade. */
+  /* The right edge fades over 32px so a cut column reads as "more this way";
+     the last column has 32px of padding so nothing sits under the fade at
+     the end of the scroll. */
   .ab-cmp__scroll {
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -905,10 +809,8 @@
   }
   .ab-cmp__table tr > :last-child { padding-right: 32px; }
   .ab-cmp__table { min-width: 560px; table-layout: auto; }
-  /* 190 rather than 150: at the 18px paragraph size three of the five
-     criteria ("Own Native Token", "Offer Sign-up Bonus", "Multi-chain
-     Access") fit one line again, which takes back most of the height the
-     larger type added. */
+  /* 190px lets three of the five criteria fit on one line at the 18px body
+     size. */
   .ab-cmp__table .ab-cmp__crit {
     position: sticky;
     left: 0;
@@ -924,92 +826,41 @@
   .ab-cmp__brand,
   .ab-cmp__table tbody td,
   .ab-cmp__table tbody th { padding-bottom: 16px; }
-  /* No vote size here any more -- the clamp above governs at every width, and
-     24 was over the cap. */
 }
 
 @media (max-width: 560px) {
-  /* The hero's headline is one long sentence; at this width its 0.9 leading
-     is too tight to read as paragraph-sized type. */
+  /* At this width the headline's 0.9 leading is too tight to read. */
   .ab-hero__title { line-height: 1.02; }
   .ab-why__list { padding-left: 22px; }
 }
 
 /* ── Light ────────────────────────────────────────────────────────────────────
-   Written twice, because a media query cannot go in a selector list -- the
-   shape tokens.css uses, for the reason it gives. The two blocks MUST stay
-   identical; only their conditions differ.
-
-     1. the system preference leads, but only while nothing has been chosen;
+   Written twice because a media query cannot go in a selector list (the
+   shape tokens.css uses). The two blocks MUST stay identical:
+     1. the system preference applies while no theme has been chosen;
      2. an explicit choice wins at any system setting.
 
-   WHAT THIS PAGE ACTUALLY NEEDED, and it is nine values, because everything
-   else on it already reads a role token that flips.
+   Everything else on the page reads a role token that already flips. These
+   locals need their own light values:
+     --ab-veil       0.05 ink rather than 0.06 white: on paper "raise this
+                     slightly" is done by settling, at the same one-step
+                     remove from the page.
+     --ab-card-line  --line (#e3d6cb). A 6% ink edge vanishes on paper.
+     --ab-solid      --ab-veil flattened over --page: #f4f1ee.
+     --ab-eyebrow    #6f6560 (see its dark value for why it exists).
 
-   --ab-veil is the frame's `white-06`. On paper the same job -- "raise this
-   slightly" -- is done by SETTLING rather than lifting, so it becomes
-   ink-alpha, and the alpha goes UP rather than down: dark ink on paper is
-   less visible per unit alpha than white on black. 0.06 white becomes 0.05
-   ink, which lands at the same one-step remove from the page that dark's does
-   (1.06x against the ground in dark, 0.97x in light).
+   THE GROUND: light on black becomes shadow on paper. Each paint becomes a
+   warm tint BELOW the page, and the hotter the dark value, the deeper the
+   tint (Hero.css's method, and several of its values):
+     --ab-g-blood  #7e0202 -> #fdf3ec
+     --ab-g-rust   #6b2b0e -> #fbeee4   one step deeper; it is drawn at 47%
+     --ab-g-ember  #d1541c -> #f6decf
+     --ab-g-peach  #f99e57 -> #f2cfba   brightest in dark, deepest on paper
+   --ab-g-night is var(--page) in both themes. --ab-g-flare is unchanged:
+   four 1.36px strokes under a sigma-5 blur already land as a faint peach
+   hairline on paper, and a tint would make them disappear.
 
-   --ab-card-line is the CHOOSE card's hairline. In dark it is that same 6%
-   white, which is a sensible edge on a #1c1c1c plate sitting on a near-black
-   page. On paper the plate is #f7f0ea on #fffbf8 and a 6% ink edge is
-   invisible -- the card stops being a card. It becomes --line (#e3d6cb), the
-   token the whole light theme already uses for a hairline, which is the same
-   decision Pillars.css made and recorded for its own cards.
-
-   --ab-solid is --ab-veil flattened over --page and has to be recomputed for
-   the other ground: 5% of #1a1512 over #fffbf8 is #f4f1ee.
-
-   --ab-eyebrow is this page's label ink; the note beside its dark value says
-   why the page has one at all. On paper it is #6f6560, which is --ink-muted's
-   own warm grey taken DOWN rather than up, because paper's ink gets darker
-   where black's gets lighter.
-
-   AND THE GROUND, which is the part that used to be somebody else's problem.
-   While the page borrowed `.hero`, the ember field turned over through
-   Hero.css's own light block and this file inherited it for free. It does not
-   any more, so the five paints are derived here, and they are derived by
-   Hero.css's method rather than by a new one:
-
-     LIGHT ON BLACK IS SHADOW ON PAPER. Read literally, #d1541c on #fffbf8 is
-     not a glow, it is a bruise -- the trap this file's --ab-veil note already
-     names and the one the footer found. So each paint becomes a warm tint
-     BELOW the page rather than a saturated colour on it, and the intensity
-     is preserved while the direction flips: the hotter the dark value, the
-     DEEPER the paper tint. That is exactly the ordering Hero.css uses, and
-     three of the five values below are its own answers for the same job.
-
-       --ab-g-blood  #7e0202 -> #fdf3ec   Hero.css's own answer for this hex.
-       --ab-g-rust   #6b2b0e -> #fbeee4   the same job one step deeper; it is
-                                          drawn at 47% and would otherwise
-                                          vanish.
-       --ab-g-ember  #d1541c -> #f6decf   Hero.css's answer for the main
-                                          orange. It does most of the work on
-                                          all three backgrounds.
-       --ab-g-peach  #f99e57 -> #f2cfba   Hero.css's answer for the brightest
-                                          disc: brightest in dark, deepest on
-                                          paper.
-
-     --ab-g-night needed nothing: it is var(--page) in both themes, because it
-     is not a dark colour, it is the ground an ellipse dissolves into. Same
-     call Hero.css makes about the same hex.
-
-     --ab-g-flare IS UNCHANGED, and it is the one paint here that does not
-     follow the rule. It is not a field, it is four 1.36px strokes under a
-     sigma-5 blur, which spreads a one-pixel line across thirty and lands it
-     at roughly a tenth of its own strength: measured on paper, #ff632a
-     reaches the page as about rgb(255,234,225), a peach hairline on cream.
-     It is already a wash. Given a tint instead it would not settle, it would
-     disappear -- there is nothing left to take away from 10% of a colour.
-
-   NOTHING WAS INVERTED. The ticks and crosses keep their own colours, because
-   a filled badge with a white glyph reads the same on either ground. The one
-   thing the ground could not hand over is the statement's gradient, and it
-   did not need to: it is written as var(--ink) -> var(--accent) rather than
-   as two hexes, so on paper it runs near-black into #a21605 by itself. */
+   The table's ticks and crosses keep their own colours on both grounds. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .about-page {
   --ab-veil: rgba(26, 21, 18, 0.05);
@@ -1033,100 +884,40 @@
   --ab-g-peach: #f2cfba;
 }
 
-/* THE FIFTH THING, and it is the product shot's LEFT EDGE.
-   -------------------------------------------------------------------------
-   WHAT IS ACTUALLY THERE. Figma exports 531:233 cropped to the node's visible
-   content, and the node is a plate with a photograph on it: measured off
-   `product-shot.png`, columns 0-55 are a single flat colour, rgb(29,28,27),
-   every row identical, with the node's 2px rgb(56,56,55) stroke along the top
-   and bottom. The laptop's own warm wash does not begin until about column
-   60 and the bezel not until about 320. So the first 23 CSS px of this layer
-   at 1600 are not photograph at all -- they are the plate, cut off mid-air
-   where the export stopped.
+/* THE PRODUCT SHOT'S LEFT EDGE, above 1100.
+   Figma's export of 531:233 begins with about 55 columns of flat plate
+   colour, rgb(29,28,27), before the laptop starts, so the layer's left edge
+   is a straight cut.
 
-   IN DARK that cut is invisible and the mask below is why. 531:234 sits
-   behind the layer and in dark it is LIT -- blood, rust, ember, peach -- so
-   the plate does not fade to the card, it fades into a warm light source and
-   reads as the glow spilling out from behind the laptop. Dark is not solving
-   a seam; it is drawing the frame's composition, and nothing here touches it.
+   DARK: a mask fades the layer's first 13% into 531:234's lit field behind
+   it, which reads as the glow spilling from behind the laptop, as in the
+   frame.
 
-   IN LIGHT the same mask fails, and not by a margin that a different width or
-   easing could close. The light block above converts that field by the house
-   rule -- light on black is shadow on paper -- so on paper it is #f6decf and
-   #f2cfba, a tint a couple of steps under #fffbf8. There is no longer a light
-   source for the plate to fade INTO. A flat rgb(29,28,27) dissolving to
-   transparent over a #f7f0ea card is, by definition, a 100px ramp through
-   every mid grey, with straight vertical isophotes running the full height of
-   the card and no image content anywhere in it to explain them. Nothing in
-   the world makes a perfectly vertical 100px gradient, so the eye reads the
-   band as dirt on the card rather than as a photograph ending. That is what
-   the client boxed, and it is a consequence of what is BEHIND the fade, not
-   of the fade.
+   LIGHT: the field is a pale tint, so there is nothing to fade into. A fade
+   reads as a grey smudge and no fade leaves a hard dark slab. Instead the
+   layer is inset into the card's padding box (32 top, 40 bottom) with a 10px
+   radius on its left corners, so it reads as a picture that still bleeds off
+   the right edge, as the stacked layout below 1100 already does. The mask is
+   removed.
 
-   WHICH MEANS THE FADE IS THE WRONG INSTRUMENT ON PAPER, because both of its
-   outcomes are already rejected. Ramp a near-black into cream and the result
-   is the grey band. Stop ramping and the result is a flat rgb(29,28,27) slab
-   with one hard vertical edge halfway down a cream card -- the state the
-   client boxed BEFORE the mask existed. A boundary between a dark photograph
-   and a light ground cannot be softened out of existence; it can only be
-   given a reason to be there.
+   The photograph does not shrink: the IMG keeps the full 440 design px
+   height, centred in the inset box and cropped by the layer's `overflow:
+   hidden`, so `cover` scales it exactly as in dark.
 
-   SO IT IS GIVEN ONE, AND THE PAGE ALREADY HAD THE ANSWER IN IT. Below 1100
-   this shot is a bounded rectangle on the same cream card -- crisp left, top
-   and bottom edges, bleeding off the right -- and it has never been a problem
-   there, which is exactly why the mask is off below the breakpoint. The
-   difference above 1100 is not the ground and not the colour: it is that the
-   layer runs top:0 to the card's full 440 height, so its top and bottom edges
-   COINCIDE with the card's and disappear, leaving one unexplained vertical.
-   One edge alone reads as a cut. Three edges and a radius read as a picture.
-
-   So on paper, above 1100, the layer is inset into the card's own padding box
-   -- 32 top and 40 bottom, the card's padding, the same box the copy column
-   sits in -- and takes the card's 10px radius on the two corners that are now
-   inside the card. It still bleeds off the right edge, which About.css's note
-   on the stacked arrangement calls the thing that stops it reading as a
-   picture pasted into a box. The mask goes, because there is nothing left for
-   it to dissolve: the plate's flat rgb(29,28,27) is now the picture's own
-   left edge, the same edge the stacked layout has always shown.
-
-   AND THE PHOTOGRAPH DOES NOT MOVE. `object-fit: cover` derives its scale
-   from the box, so insetting the box would shrink the laptop -- at the 32/40
-   inset, cover flips to scaling by WIDTH and draws the whole 2161px export at
-   0.357 instead of 0.417, a 14% smaller laptop than dark's and the frame's
-   right-hand bleed gone with it. So the IMG keeps the layer's full 440 design
-   height and is centred in the inset box, which the layer's existing
-   `overflow: hidden` then crops. Cover therefore still scales by height, to
-   the same 0.4167 it uses in dark, off the same anchor: the two themes draw
-   the identical crop of the identical photograph at the identical size, and
-   light loses only 36 design px off the top and bottom of it.
-
-   NOTHING IS INVERTED, RE-TINTED OR FILTERED, and nothing is added behind the
-   shot. The pixels are the export's. What changed is the box.
-
-   THE ENTRANCE IS UNAFFECTED. About.brand.motion.ts tweens
-   `.ab-brand__visual` and only ever x, y and opacity; the 52px overhang is
-   still eaten by `.ab-brand__card { overflow: hidden }`, and the `transform`
-   below is on the IMG, which no tween touches and no `clearProps` reaches.
-   The warning in About.brand.css stands and gets shorter: there is no mask on
-   paper for a `clip-path` to cut through, and there is still one in dark.
-
-   AND BELOW 1100 NOTHING HERE APPLIES. Every rule is inside the same
-   min-width the mask is, so the stacked card keeps the full-width photograph
-   it already had, with no inset, no radius and no mask. */
+   The entrance is unaffected. About.brand.motion.ts tweens only the layer's
+   x, y and opacity; the `transform` below is on the IMG, which no tween or
+   `clearProps` touches. */
 @media (min-width: 1101px) {
-  /* DARK'S ANSWER, UNCHANGED. The layer fades in over its first eighth into
-     531:234's lit field, which is the frame's own composition. Stated
-     unconditionally because paper overrides it below rather than opting out
-     of it -- one rule to find, not two conditions to keep in agreement. */
+  /* Dark: fade the first 13% into the lit field. Stated unconditionally;
+     the light rules below override it. */
   .ab-brand__visual {
     -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 13%);
     mask-image: linear-gradient(to right, transparent 0%, #000 13%);
   }
 }
 
-/* PAPER'S ANSWER. Written twice for the reason the light block above gives --
-   a media query cannot go in a selector list. The two bodies MUST stay
-   identical; only their conditions differ. */
+/* Light: written twice, like the light block above. The two bodies MUST stay
+   identical. */
 @media (min-width: 1101px) and (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .about-page .ab-brand__visual {
     top: calc(32 * var(--u));

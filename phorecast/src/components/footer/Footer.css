@@ -1,94 +1,47 @@
-/* The footer's geometry and its colour.
+/* The footer's geometry and colour.
    ===========================================================================
 
-   THE UNIT. Geometry is written in the design's own pixel numbers against
-   `--u`, the way Bento, Familiar, Built, the hero and About write theirs, so
-   the whole band scales as one piece instead of being a pile of literals that
-   agree at exactly one width.
+   THE UNIT. Geometry is written in design pixels against `--u`, as Bento,
+   Familiar, Built, the hero and About do, so the band scales as one piece.
 
      --u: clamp(0.8px, 100vw / 1600, 1px)
 
-   and the 1600 is arithmetic, not a round number. `.container` is
-   `max-width: calc(1440 + 2 * var(--page-pad))` with `--page-pad:
-   clamp(20px, 5vw, 96px)`, so:
+   The 1600 follows from `.container` (1440 content + 2 * --page-pad, with
+   --page-pad at 5vw): between 400 and 1632 the content column is 90vw, so one
+   design pixel is 90vw / 1440 = 100vw / 1600. Above 1632 the column caps at
+   1440, so the unit caps at 1px. Below 1280 it holds at 0.8px and the layout
+   changes shape at the breakpoints below instead of shrinking further.
 
-     above 1632   the max-width caps the box and the content column is 1440
-                  exactly, at every width, forever -- so the unit must stop
-                  tracking the viewport, which is what the 1px ceiling does.
-                  (Hero.css records the same measurement: a viewport-derived
-                  unit runs away above the frame.)
-     400 - 1632   the column is 100vw - 2*5vw = 90vw, so the design pixel is
-                  90vw / 1440 = 100vw / 1600. That is the slope.
-     below 1280   0.8px, the floor. Below the floor the layout changes shape
-                  rather than shrinking -- see the two breakpoints at the foot
-                  of this file -- and a footer whose 16px links sit in 60%-size
-                  gutters reads as a bug, not as a smaller footer.
+   `vw`, not `cqw`: container units resolve against an ANCESTOR container, so
+   they would need an extra wrapper. The column width is a pure function of
+   the viewport, so vw gives the same number with no extra DOM.
 
-   `vw` and not `cqw`, and therefore no `container-type` anywhere in this
-   file: container query units resolve against the nearest ANCESTOR container,
-   never the element declaring them, so the unit would have had to live on a
-   wrapper inside `.footer__inner` purely to be measured. `.footer` is
-   full-bleed and the column's width is a pure function of the viewport, so
-   the arithmetic above gives the same number with nothing added to the DOM.
-   SlideBonus.css uses the same `clamp(_, 100vw / _, 1px)` shape.
-
-   TYPE IS NOT ON THE UNIT. Copy is clamped against vw the way every other
-   band clamps it -- the split About.css draws and Built.css before it -- so a
-   16px link does not become 4px on a phone. The unit carries gutters,
-   padding, column gaps and the social badge; nothing else.
+   TYPE IS NOT ON THE UNIT. Copy uses the shared type tokens, so a 16px link
+   does not shrink on a phone. The unit carries gutters, padding, gaps and the
+   social badge only.
 
    ---------------------------------------------------------------------------
-   COLOUR LIVES IN TWO LAYERS, and the split survived the redesign intact.
+   COLOUR, IN TWO LAYERS.
 
-   ROLE TOKENS (--ink, --ink-2, --veil-line) for anything whose job the rest of
-   the page already names: the column headings, the description, the links, the
-   glyphs. They flip with the theme for free and the footer does not get to
-   have an opinion.
+   Role tokens (--ink, --ink-2, --veil-line) for column headings, description,
+   links and glyphs; they flip with the theme on their own.
 
-   FOOTER LOCALS (--footer-*) for the four values that are this band's own --
-   the two hairlines and the three states of the circular social badge. They
-   are declared here with dark values and the light block near the foot of the
-   file redefines exactly those names. Nothing else in this file mentions a
-   colour, so "what does the footer do on paper?" is answerable by reading one
-   block.
+   Footer locals (--footer-*) for this band's own values: the hairlines and the
+   social badge's plate, edge and hovered edge. They are declared here with
+   dark values and redefined in the light block near the foot of the file. No
+   other rule here names a colour.
 
-   WHAT WENT, AND WHAT WENT WITH IT
-     - `.footer__glow` and its four discs. The new design has no glow, so
-       `--footer-g-red/orange/peach/cream` are gone from both themes, and with
-       them the `overflow: hidden` and `isolation: isolate` that existed only
-       to clip and un-blend that layer, and the `.glow-fade--top` mask on it.
-     - The giant cropped PHORCAST wordmark, `.footer__wordmark`, its
-       `clamp(88px, 12vw, 230px)`, and the `--fw: min(16.5vw, 88px)` phone rule
-       that had just been added to stop it reading as "PHORCAS" at 360. That
-       fix is moot rather than wrong; nothing of it is left behind.
-     - `.footer__social` as a 44px SQUARE icon button (the name is back, on
-       the circular badge the four social icons now sit in), and `.footer__legal` /
-       `.footer__legal-links`, whose row is now the Legal column plus the
-       disclaimer in the bottom bar.
-   Every selector listed above is gone from this file and from
-   Footer.motion.ts. `global.css` still addresses `.footer__links a` for the
-   roll hover, which is why that class name is kept and why the social icons
-   are a `.footer__links` list too. */
+   `global.css` addresses `.footer__links a` for the roll hover, which is why
+   the social icons are a `.footer__links` list too. */
 .footer {
   --u: clamp(0.8px, 100vw / 1600, 1px);
-  /* No `position: relative`, no `overflow: hidden`, no `isolation: isolate`.
-     All three were here for the glow -- a positioning context for four
-     absolutely placed discs, a crop for them, and an isolation boundary so
-     nothing below could blend through -- and the glow is gone. Nothing in the
-     band is positioned against the footer any more. */
   padding: calc(40 * var(--u)) 0 calc(48 * var(--u));
 
-  /* The two hairlines. 10% white on the dark ground, which is what the rule
-     under the old legal row already was -- the design draws the same line
-     twice, so it is one token used twice. */
+  /* Both hairlines: one token used twice. */
   --footer-rule: rgba(255, 255, 255, 0.1);
 
-  /* The circular social badge: plate, edge, and that edge lit. White-alpha is
-     the dark theme's entire idiom for "raise this slightly", and these are the
-     same three steps the square icon buttons carried before -- the shape
-     changed, the value system did not. The hovered PLATE is not here because
-     --veil-line already IS rgba(255,255,255,.12) in dark and the ink-alpha
-     equivalent on paper. */
+  /* The circular social badge: plate, edge and hovered edge. The hovered
+     plate uses --veil-line, which already has the right value in each theme. */
   --footer-badge: rgba(255, 255, 255, 0.06);
   --footer-badge-line: rgba(255, 255, 255, 0.1);
   --footer-badge-line-hover: rgba(255, 255, 255, 0.24);
@@ -96,18 +49,15 @@
 
 .footer__inner { display: flex; flex-direction: column; }
 
-/* Both rules are the same element with the same paint; only their air differs,
-   and it is stated on the rule rather than as a margin on its neighbours so
-   the two gaps can be read side by side. */
+/* Both rules share one paint; their spacing is set on the rule itself so the
+   two gaps can be read side by side. */
 .footer__rule { height: 1px; margin: 0; border: 0; background: var(--footer-rule); }
 .footer__rule--top { margin-bottom: calc(64 * var(--u)); }
 .footer__rule--bottom { margin-top: calc(56 * var(--u)); }
 
-/* The brand block beside the columns. Flex rather than a five-track grid
-   because the brand column and the four columns are two different
-   rhythms -- the brand is a stated width the description is measured against,
-   the other four share what is left equally -- and because the ≤1180 change
-   is "put the brand on its own row", which is one property here. */
+/* Flex rather than a five-track grid: the brand has a stated width and the
+   columns share the rest, and at ≤1180 moving the brand to its own row is a
+   single property change. */
 .footer__top { display: flex; align-items: flex-start; gap: calc(48 * var(--u)); }
 
 .footer__brand {
@@ -116,23 +66,11 @@
   flex: 0 1 calc(380 * var(--u));
 }
 
-/* The description, and the one piece of copy in the band that is NOT quiet.
-   The design sets it bold, which on a page where the column headings are the
-   loudest thing in the footer means it has to be ink rather than body grey:
-   600 weight at --ink-2 reads as a heavier grey, i.e. as an accident. --ink at
-   600 is the claim the design is making.
-
-   1.4 leading rather than the 1.2 the links take: it is the only multi-line
-   paragraph here and two lines at 1.2 close up. Each sentence is a block line
-   of its own (.footer__line) and is balanced on its own, so no line of either
-   is a lone word or a stub: at 360 through 1440 the second sentence breaks
-   "Live markets, portfolio tracking, / analytics and one-step crypto /
-   deposits, all in one place." The first keeps one line down to 1182 and
-   splits evenly at 1181, where it is a pixel wider than the column.
-
-   The SIZE is the site's paragraph size, --body-size in tokens.css, like every
-   other paragraph on the site. The weight and the leading stay this block's
-   own, for the reasons above. */
+/* The description is set bold (600) per the design, so it uses --ink: 600 at
+   --ink-2 reads as an accidental heavier grey. Size is --body-size like every
+   paragraph; 1.4 leading because it is the band's only multi-line paragraph.
+   Each sentence is its own balanced block line (.footer__line), so neither
+   ends on a lone word. */
 .footer__desc {
   font-family: var(--font-body);
   font-weight: 600;
@@ -145,17 +83,9 @@
 .footer__nowrap { white-space: nowrap; }
 .footer__line { display: block; }
 
-/* Four equal columns -- Product, Company, Legal, Social -- with every heading
-   on the first row of one grid, so the four headings share a baseline by
-   construction. Equal rather than sized to content: the sitemap reads as one
-   organised block, and the Social column's row of badges is narrower than
-   any of them anyway.
-
-   From about 1400 down to the 1180 break the brand block gives up a few
-   pixels to the columns
-   (flex-shrink, 304 -> 295 at 1280, 271 at 1181), which is what keeps the
-   four badges on one row down to the break. At the 18px paragraph size the
-   description is four lines from 1440 down to 1280 and five at 1181. */
+/* Four equal columns (Product, Company, Legal, Social) in one grid, so the
+   headings share a baseline by construction. Near the 1180 break the brand
+   block flex-shrinks slightly, which keeps the four badges on one row. */
 .footer__columns {
   flex: 1 1 auto;
   min-width: 0;
@@ -165,13 +95,8 @@
 }
 .footer__col { display: flex; flex-direction: column; gap: calc(24 * var(--u)); min-width: 0; }
 
-/* The headings. White and slightly heavier than the links under them, which is
-   the whole of the design's hierarchy here: --font-label at 500 against
-   --font-body at 300, both at the site's label size, 16px.
-
-   NOT uppercase. The old headings were `text-transform: uppercase`; the
-   supplied design sets "Product", "Legal" and "Social" as written, and the
-   band has no eyebrow for the uppercase to rhyme with. */
+/* Headings: --ink in --font-label 500 against the links' --font-body 300,
+   both at --label-size (16px). Sentence case, not uppercase, per the design. */
 .footer__col-title {
   font-family: var(--font-label); font-weight: 500;
   font-size: var(--label-size); line-height: 1.2;
@@ -185,27 +110,18 @@
   color: var(--ink-2);
   transition: color 160ms ease;
 }
-/* :focus-visible alongside :hover, the way global.css does it for the roll, so
-   the pointer is not the only way to see a link light up. */
+/* :focus-visible alongside :hover, as global.css does for the roll. */
 .footer__links a:hover,
 .footer__links a:focus-visible { color: var(--ink); }
 
-/* The Social column: a row of four circular badges, X, TikTok, Discord and
-   Telegram, each holding its mark. The client asked for "socials icons", so
-   there are no labels; each anchor carries its name in `aria-label`.
+/* The Social column: a row of four circular badges (X, TikTok, Discord,
+   Telegram). Icons only, so each anchor carries its name in `aria-label`.
 
-   The badge is the one the design drew round the Telegram glyph, unchanged --
-   40 design pixels, the same plate and edge, the glyph at 20 -- now drawn on
-   the ANCHOR rather than on a span inside it, so the global `:focus-visible`
-   ring (2px --accent, 3px out) is a circle round the circle rather than a
-   rectangle round a row. The row starts on the column's left edge, under the
-   "Social" heading, the way the Legal links start under theirs.
-
-   Colour is the Legal links' own: `.footer__links a` paints --ink-2 at rest
-   and --ink on hover and focus, and the glyph is a mask on `currentColor`, so
-   the four marks are exactly the links' grey and light exactly as they do.
-   The only other hover is the plate stepping up one tint, as it did before.
-   Nothing moves or scales. */
+   The badge is 40 design pixels with the glyph at 20, drawn on the ANCHOR so
+   the global `:focus-visible` ring is a circle round the circle. Colour comes
+   from `.footer__links a` (--ink-2 at rest, --ink on hover and focus) because
+   the glyph is a mask on `currentColor`. On hover the plate also steps up one
+   tint; nothing moves or scales. */
 .footer__socials { flex-direction: row; flex-wrap: wrap; gap: calc(12 * var(--u)); }
 .footer__social {
   --glyph: calc(20 * var(--u));
@@ -221,28 +137,22 @@
   background: var(--veil-line);
   border-color: var(--footer-badge-line-hover);
 }
-/* A finger gets 44x44, the house minimum, which the 40-unit badge is not once
-   the unit has reached its 0.8px floor (32px from 1280 down). On a phone, and
-   on any touch screen at any width, the badge itself grows to 44 and the mark
-   inside keeps its half-of-the-badge proportion (`--glyph`, which the
-   <Icon>'s inline width and height read -- see GLYPH in Footer.tsx). A visible 44 rather than an
-   invisible hit area round a 32: at these widths the column is the full width
-   of the band, so there is room for the real thing. */
+/* Touch targets are at least 44x44. At the 0.8px unit floor the badge is only
+   32px, so on phones and any coarse pointer the badge itself grows to 44px
+   and the glyph to 22px (`--glyph`, read by GLYPH in Footer.tsx). */
 @media (max-width: 720px), (pointer: coarse) {
   .footer__social { --glyph: 22px; width: 44px; height: 44px; }
 }
-/* The glyph is a MASK (see Icon.tsx), so it takes its paint from `color` on
-   the anchor. There is no filter here and there never will be again:
-   `brightness(0) invert(1)` has exactly one setting, white, and white on paper
-   is the page. */
+/* The glyph is a MASK (see Icon.tsx) painted from `color`. Do not recolour it
+   with a filter such as `brightness(0) invert(1)`: that only produces white,
+   which vanishes on the light theme. */
 @media (prefers-reduced-motion: reduce) {
   .footer__social { transition: none; }
 }
 
-/* The bottom bar. `flex-wrap` rather than a breakpoint for the first failure:
-   the two strings simply stop fitting somewhere in the low 800s and the
-   disclaimer drops to its own line, left-aligned, which is the same shape the
-   phone rule states outright. Without the wrap they meet in the middle. */
+/* The bottom bar wraps rather than using a breakpoint: when the two strings
+   stop fitting, the disclaimer drops to its own line, the same shape the
+   phone rule sets explicitly. */
 .footer__meta {
   display: flex; justify-content: space-between; align-items: baseline;
   flex-wrap: wrap;
@@ -254,26 +164,17 @@
 }
 
 /* --- Widths ---------------------------------------------------------------
-   Four changes of shape, and each is stated once.
+   ≤1180  The brand block moves to its own full-width row, and the four
+          columns share the full width; five across would crush the link
+          columns.
+   ≤900   Two by two: Product and Company, then Legal and Social. Headings
+          still share a baseline with their neighbour.
+   ≤720   The bottom bar stacks.
+   ≤480   The Social column is too narrow for four 44px badges in a row, so
+          they sit two by two rather than three and an orphan.
 
-   ≤1180  The brand block leaves the row. Five things across a 990px column
-          leaves the Legal column far under the 183px "Deposit & Withdrawal
-          Policy" needs, while the brand description wraps to four lines
-          beside it. The brand goes full width on its own row and the four
-          columns share the whole column.
-
-   ≤900   Two by two: Product and Company, then Legal and Social. Below 900
-          a quarter of the column is under 183px again, and a 2x2 keeps every
-          heading on a shared baseline with its neighbour.
-
-   ≤720   The bottom bar stops trying to be a bar.
-
-   ≤480   The Social column is half a phone, too narrow for four 44px badges
-          in a row, so they sit two by two rather than three and an orphan.
-
-   Nothing restates the unit: `--u` is at its 0.8px floor from 1280 down, so
-   all of these blocks are written in the same design pixels as the rules
-   above and simply ask for less of them. */
+   `--u` is at its 0.8px floor throughout, so these blocks use the same
+   design pixels as the rules above. */
 @media (max-width: 1180px) {
   .footer__top { flex-direction: column; gap: calc(48 * var(--u)); }
   .footer__brand { flex: 0 0 auto; width: 100%; }
@@ -294,45 +195,24 @@
 }
 
 /* --- Light ------------------------------------------------------------------
-   DERIVED, NOT INVERTED, and there are only four values to derive because the
-   band's whole hierarchy -- white headings, grey links, bold ink description,
-   grey bottom bar -- is role tokens that have already flipped in tokens.css.
-   What is left is the two hairlines and the badge, and all four are the SAME
-   MOVE: white-alpha becomes ink-alpha.
+   Derived, not inverted. Everything else in the band is role tokens that have
+   already flipped; the four locals make one move: white-alpha becomes
+   ink-alpha, which keeps "more alpha = more raised" in both themes. Alphas go
+   up slightly because dark ink on paper reads fainter per unit alpha, the same
+   step tokens.css takes for --veil and --veil-line.
 
-   That one substitution flips the direction of every state for free. More
-   alpha on a dark page is brighter; more alpha on paper is darker; both mean
-   "raised", so no rule is reversed and only a colour is replaced. This is the
-   cheap half of the light-mode job and it is exactly the half that does NOT
-   apply to a brightness() or to a literal picked lighter than its rest value.
+   The badge is a light plate on paper, not a dark disc: it is a plate one
+   step off the ground in each theme, not a fixed colour.
 
-   The alphas go up by an eighth, because dark ink on paper is less visible per
-   unit alpha than white on black -- the same 0.04 -> 0.045 and 0.12 -> 0.14
-   step tokens.css takes for --veil and --veil-line. The four ratios land
-   within half a percent of dark's own, against each theme's own page: the
-   plate 1.168 -> 1.161, the edges and the two rules 1.272 -> 1.265. These are
-   the values the old square icon buttons and the old legal rule already
-   carried, kept because the derivation did not change when the shape did.
+   Written twice, as tokens.css does, because a media query cannot go in a
+   selector list. The two blocks MUST stay identical.
 
-   THE BADGE IS "A CIRCULAR DARK BADGE" IN THE SCREENSHOT, and that is a
-   description of the dark page rather than an instruction. Painting a dark
-   disc on paper would be the inversion this block exists to avoid: the badge's
-   job is to be a plate the glyph sits in, one step off the ground, and on
-   paper a plate settles rather than lifts. The glyph reaches for --ink from
-   --ink-2 either way, so on the dark page it brightens to be lit and on paper
-   it darkens to do the same thing.
+     1. the system preference applies while no theme has been chosen;
+     2. an explicit data-theme wins at any system setting.
 
-   Written twice, exactly as tokens.css writes the palette twice, because a
-   media query cannot go in a selector list. The two blocks MUST stay
-   identical; only the conditions differ.
-
-     1. the system preference leads, but only while nothing has been chosen;
-     2. an explicit choice wins at any system setting.
-
-   In practice (2) always applies -- index.html resolves both into data-theme
-   before first paint. (1) is what a stripped page or a prerender falls back
-   to, and leaving it out is how a band ends up drawing dark values on a light
-   page. ---------------------------------------------------------------- */
+   index.html sets data-theme before first paint, so (2) normally applies;
+   (1) is the fallback for a page without that script.
+   ------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .footer {
     --footer-rule: rgba(26, 21, 18, 0.11);
@@ -348,27 +228,16 @@
   --footer-badge-line-hover: rgba(26, 21, 18, 0.27);
 }
 
-/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
-   writes its start values the moment a tween is built, and this band is not
-   built until it has been scrolled to, so without this the whole footer would
-   sit finished in the sliver showing under the FAQ and only then animate.
+/* Pending state, the same contract as the bento and the pillars. The band is
+   built only when scrolled to, so without this hold it would show finished
+   and then animate. Gated on [data-js] (set by main.tsx) so the hold only
+   exists when script can release it; there is deliberately no timed
+   failsafe. Only the animated parts are hidden, so layout never shifts.
 
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it, and there is deliberately no timed failsafe --
-   for a band that waits to be scrolled to the wait is legitimate and can last
-   minutes, so the guarantee has to be that the hold never applies when nothing
-   will undo it. Only the animated parts are held; the footer's own box and all
-   of its spacing stay, so nothing about the layout pops in and the page does
-   not change height when the band arrives.
+   `.footer__col` is held as a whole; the entrance animates its children, which
+   GSAP has already set to opacity 0 when the hold lifts.
 
-   `.footer__col` is held as a container, which hides what is inside it, and
-   the entrance moves those children -- so the hold is lifted onto elements
-   GSAP has already parked at opacity 0. Nothing addresses `.roll__in`: the
-   hover's two spans are inside a held `<li>` and come back exactly as the
-   stylesheet left them.
-
-   This list and the selectors in Footer.motion.ts are the same list. If one
-   grows a name the other has to. */
+   Keep this list in step with the selectors in Footer.motion.ts. */
 [data-js] .footer[data-motion='pending'] .footer__rule,
 [data-js] .footer[data-motion='pending'] .footer__brand .logo,
 [data-js] .footer[data-motion='pending'] .footer__desc,

@@ -527,12 +527,6 @@ export class LogoScene {
     this.applyPose();
   }
 
-  /** Counters for the leak / motion checks in scripts/. */
-  info() {
-    const { render, memory } = this.renderer.info;
-    return { calls: render.calls, triangles: render.triangles, points: render.points, geometries: memory.geometries, textures: memory.textures };
-  }
-
   dispose() {
     if (this.disposed) return;
     this.disposed = true;

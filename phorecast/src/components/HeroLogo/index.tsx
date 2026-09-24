@@ -22,11 +22,6 @@ export interface HeroLogoProps {
 
 type Mode = 'pending' | 'webgl' | 'fallback';
 
-/** `?devtools` exposes the live scene on window for the checks in scripts/. */
-const PARAMS = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
-const DEV_TOOLS = PARAMS.has('devtools');
-type DevWindow = Window & { __heroLogo?: LogoScene; __heroLogoDisposed?: ReturnType<LogoScene['info']> };
-
 class NoWebGLError extends Error {}
 
 function supportsWebGL(): boolean {
@@ -189,10 +184,6 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
           return;
         }
         setMode('webgl');
-        const live = scene;
-        live.ready.then(() => {
-          if (!cancelled && DEV_TOOLS) (window as DevWindow).__heroLogo = live;
-        });
       })
       .catch((err) => {
         if (!(err instanceof NoWebGLError)) console.warn('[HeroLogo] failed to load, using static fallback', err);
@@ -202,10 +193,6 @@ export function HeroLogo({ hostRef, forceStatic = false, scroll = true, variant,
     return () => {
       cancelled = true;
       scene?.dispose();
-      if (DEV_TOOLS && scene) {
-        (window as DevWindow).__heroLogoDisposed = scene.info();
-        delete (window as DevWindow).__heroLogo;
-      }
       scene = null;
     };
   }, [hostRef, forceStatic, scroll, variant, placement, epoch, themeEpoch]);

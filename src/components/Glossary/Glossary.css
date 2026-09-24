@@ -1,0 +1,508 @@
+/* Glossary — Figma "Remittix Redesign" › Glossary (node 2113:4), design frame 1920 wide.
+   Set on the home page's grid rather than the frame's own chrome: the 1560 dashed rails, the two
+   light bands in alternation, Onest with NewBlack for display, pills for anything you press. The
+   frame's yellow is the brand lime here — the same accent the footer spends. */
+
+.gl {
+  --gl-band-a: #e6e9ed;
+  --gl-band-b: #edeff1;
+  --gl-rail: #c5cbd1;
+  --gl-line: #dadee2;
+  --gl-surface: #fff;
+  --gl-ink: #122433;
+  --gl-body: #7c858d;
+  --gl-label: #a2a6aa;
+  /* the frame's #f9ff38; the site's lime is the brand's own */
+  --gl-accent: var(--d-lime);
+  --gl-accent-ink: #122433;
+  --gl-dash-v: repeating-linear-gradient(180deg, var(--gl-rail) 0 8px, transparent 8px 16px);
+  --gl-dash-h: repeating-linear-gradient(90deg, var(--gl-rail) 0 8px, transparent 8px 16px);
+  --gl-rule-h: repeating-linear-gradient(90deg, var(--gl-line) 0 4px, transparent 4px 8px);
+  /* how far the content sits in from the rails */
+  --gl-inset: clamp(0px, 3.85%, 60px);
+  /* what a jump has to stop clear of: the fixed bar */
+  --gl-clear: calc(var(--fh-nav-top) + var(--fh-nav-h) + 16px);
+
+  color: var(--gl-ink);
+  font-family: var(--fh-sans);
+  background: var(--gl-band-a);
+}
+
+.gl__visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Each band's content sits between the same two rails. */
+.gl__heroFrame,
+.gl__alphaFrame,
+.gl__mainFrame,
+.gl__ctaFrame {
+  width: min(1560px, 100% - 48px);
+  margin: 0 auto;
+  background-image: var(--gl-dash-v), var(--gl-dash-v);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Intro ---------- */
+.gl__hero {
+  background: var(--gl-band-b);
+}
+.gl__heroFrame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  /* the fixed bar stands over the top of the band */
+  padding: calc(var(--fh-nav-top) + var(--fh-nav-h) + 72px) var(--gl-inset) 96px;
+  text-align: center;
+}
+/* The hero's dot field, fading out toward the copy so the words sit on clean ground. */
+.gl__heroFrame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, color-mix(in srgb, var(--gl-ink) 10%, transparent) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  background-position: 14px 14px;
+  mask-image: radial-gradient(ellipse 60% 70% at 50% 55%, transparent 35%, #000 90%);
+  pointer-events: none;
+}
+.gl__intro,
+.gl__search {
+  position: relative;
+}
+.gl__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.gl__title {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(48px, 5vw, 72px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--gl-ink);
+}
+.gl__lede {
+  margin: 0;
+  max-width: 800px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--gl-body);
+}
+
+.gl__search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(750px, 100%);
+  height: 60px;
+  padding: 0 24px;
+  background: var(--gl-surface);
+  border: 1px solid var(--gl-line);
+  border-radius: 400px;
+  cursor: text;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.gl__search:focus-within {
+  border-color: var(--gl-ink);
+  box-shadow: 0 8px 28px rgba(18, 36, 51, 0.1);
+}
+.gl__search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  color: var(--gl-ink);
+}
+.gl__search input::placeholder {
+  color: var(--gl-label);
+}
+.gl__search input:focus {
+  outline: none;
+}
+.gl__search input::-webkit-search-decoration {
+  appearance: none;
+}
+.gl__searchIcon {
+  flex: 0 0 auto;
+  fill: none;
+  stroke: var(--gl-body);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ---------- Alphabet bar ---------- */
+.gl__alpha {
+  background: var(--gl-band-a);
+}
+.gl__alphaFrame {
+  position: relative;
+  padding: 24px var(--gl-inset);
+}
+.gl__alphaFrame::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-image: var(--gl-dash-h);
+}
+.gl__alphaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* the design's 20 at 1920, drawn in so all 27 hold one row down to a laptop */
+  gap: 4px clamp(2px, 0.6vw, 12px);
+}
+.gl__pill {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 400px;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--gl-body);
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.gl__pill--all {
+  padding: 0 18px;
+  margin-right: 4px;
+  font-weight: 600;
+}
+.gl__pill:hover:not(:disabled) {
+  color: var(--gl-ink);
+  background: var(--gl-surface);
+}
+.gl__pill[aria-pressed='true'] {
+  background: var(--gl-accent);
+  color: var(--gl-accent-ink);
+  font-weight: 600;
+}
+.gl__pill:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.gl__pill:focus-visible,
+.gl__sideItem:focus-visible,
+.gl__more a:focus-visible,
+.gl__reset:focus-visible {
+  outline: 2px solid var(--gl-ink);
+  outline-offset: 2px;
+}
+
+/* ---------- Sidebar + terms ---------- */
+.gl__mainFrame {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 60px;
+  padding: 80px var(--gl-inset) 100px;
+}
+.gl__side {
+  position: sticky;
+  /* below the fixed bar */
+  top: var(--gl-clear);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.gl__sideTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--gl-ink);
+}
+.gl__sideList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gl__sideItem {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 400px;
+  font-size: 17px;
+  color: var(--gl-ink);
+  text-decoration: none;
+  transition: background-color 200ms ease;
+}
+.gl__sideItem:hover {
+  background: var(--gl-surface);
+}
+.gl__sideItem[aria-current] {
+  background: var(--gl-accent);
+  color: var(--gl-accent-ink);
+  font-weight: 600;
+}
+
+.gl__list {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  scroll-margin-top: var(--gl-clear);
+}
+.gl__letter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 36px;
+  font-family: var(--fh-display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.2;
+  color: var(--gl-ink);
+}
+.gl__letter i {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gl-line);
+}
+.gl__entries {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.gl__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 36px;
+  background-image: var(--gl-rule-h);
+  background-size: 100% 1px;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  scroll-margin-top: var(--gl-clear);
+  outline: none;
+}
+.gl__term {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--gl-ink);
+}
+.gl__def {
+  margin: 0;
+  max-width: 88ch;
+  font-size: 17px;
+  line-height: 28px;
+  color: var(--gl-body);
+}
+.gl__more {
+  margin: 0;
+}
+.gl__more a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gl-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border-radius: 4px;
+}
+.gl__arrow {
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.gl__more a:hover .gl__arrow {
+  transform: translateX(3px);
+}
+
+.gl__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.gl__emptyTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.gl__reset {
+  padding: 8px 18px;
+  border: 1px solid var(--gl-line);
+  border-radius: 400px;
+  background: var(--gl-surface);
+  font: inherit;
+  font-size: 15px;
+  color: var(--gl-ink);
+  cursor: pointer;
+}
+
+/* ---------- Want to go deeper? ---------- */
+.gl__cta {
+  background: var(--gl-band-b);
+}
+.gl__ctaFrame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 90px var(--gl-inset);
+  text-align: center;
+}
+.gl__ctaFrame::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background-image: var(--gl-dash-h);
+}
+.gl__ctaTitle {
+  margin: 0;
+  font-family: var(--fh-display);
+  font-weight: 500;
+  font-size: clamp(34px, 3.4vw, 48px);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--gl-ink);
+}
+.gl__ctaBody {
+  margin: 0 0 44px;
+  max-width: 60ch;
+  font-size: clamp(17px, 1.2vw, 22px);
+  line-height: 1.5;
+  color: var(--gl-body);
+}
+
+/* ---------- Narrower ---------- */
+@media (max-width: 1024px) {
+  .gl__mainFrame {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding: 48px var(--gl-inset) 80px;
+  }
+  /* The sidebar becomes a row of chips that scrolls sideways, above the list. */
+  .gl__side {
+    position: static;
+    gap: 14px;
+  }
+  .gl__sideList {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(var(--gl-inset) * -1);
+    padding: 0 var(--gl-inset);
+  }
+  .gl__sideList::-webkit-scrollbar {
+    display: none;
+  }
+  .gl__sideItem {
+    white-space: nowrap;
+    background: var(--gl-surface);
+    border: 1px solid var(--gl-line);
+  }
+  .gl__sideItem[aria-current] {
+    border-color: transparent;
+  }
+}
+
+@media (max-width: 1100px) {
+  /* Below a laptop the 27 don't fit: one row that scrolls sideways, not two or four that wrap. */
+  .gl__alphaFrame {
+    padding: 12px 0;
+  }
+  .gl__alphaRow {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 var(--gl-inset);
+  }
+  .gl__alphaRow::-webkit-scrollbar {
+    display: none;
+  }
+  .gl__pill {
+    flex: 0 0 auto;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .gl {
+    --gl-inset: 16px;
+  }
+  .gl__heroFrame,
+  .gl__alphaFrame,
+  .gl__mainFrame,
+  .gl__ctaFrame {
+    width: calc(100% - 32px);
+  }
+  .gl__heroFrame {
+    gap: 32px;
+    padding: calc(var(--fh-nav-top) + var(--fh-nav-h) + 40px) var(--gl-inset) 56px;
+  }
+  .gl__title {
+    letter-spacing: -1.4px;
+  }
+  .gl__lede {
+    font-size: 16px;
+  }
+  .gl__search {
+    height: 54px;
+    padding: 0 20px;
+  }
+  .gl__search input {
+    font-size: 16px;
+  }
+  .gl__list {
+    gap: 48px;
+  }
+  .gl__letter {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+  .gl__entries {
+    gap: 28px;
+  }
+  .gl__entry {
+    padding-bottom: 28px;
+  }
+  .gl__term {
+    font-size: 21px;
+  }
+  .gl__def {
+    font-size: 16px;
+    line-height: 26px;
+  }
+  .gl__ctaFrame {
+    padding: 64px var(--gl-inset);
+  }
+}

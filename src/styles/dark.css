@@ -53,7 +53,8 @@
 }
 
 /* ---------- Hero + nav (.fh) ---------- */
-[data-theme='dark'] .fh {
+[data-theme='dark'] .fh,
+[data-theme='dark'] .fh-scope {
   --fh-bg: var(--d-band-b);
   --fh-surface: var(--d-surface);
   --fh-stripe: #46525f;
@@ -895,6 +896,20 @@
   --fq-ink: var(--d-ink);
   --fq-body: var(--d-body);
   --fq-indigo: var(--d-indigo);
+}
+
+/* ---------- Glossary page (.gl) ----------
+   The same two bands as the home page; the lime keeps its dark ink, since it is a light chip. */
+[data-theme='dark'] .gl {
+  --gl-band-a: var(--d-band-a);
+  --gl-band-b: var(--d-band-b);
+  --gl-rail: var(--d-rail);
+  --gl-line: var(--d-rail);
+  --gl-surface: var(--d-surface);
+  --gl-ink: var(--d-ink);
+  --gl-body: var(--d-body);
+  --gl-label: var(--d-label);
+  --gl-accent-ink: #0c1219;
 }
 
 /* ---------- Footer (.ft) ----------

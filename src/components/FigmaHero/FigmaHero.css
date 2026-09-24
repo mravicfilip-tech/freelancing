@@ -11,7 +11,10 @@
   font-display: swap;
 }
 
-.fh {
+/* The hero's tokens. They also colour the shared nav (SiteNav), so a page without the hero puts
+   `.fh-scope` on its root to carry them. */
+.fh,
+.fh-scope {
   --fh-bg: #edeff1;
   /* the ground, and the things that sit raised off it: the nav pill, the sheet, the chips */
   --fh-surface: #fff;
@@ -32,6 +35,8 @@
   /* The design's dash rhythm: a 1px stroke, 8 on and 8 off (Figma dashPattern [8,8]). */
   --fh-dash-v: repeating-linear-gradient(180deg, var(--fh-line) 0 8px, transparent 8px 16px);
   --fh-dash-h: repeating-linear-gradient(90deg, var(--fh-line) 0 8px, transparent 8px 16px);
+}
+.fh {
   position: relative;
   /* No isolation here: it would make .fh a stacking context and trap the fixed nav inside the
      hero, letting every later section paint over it. */

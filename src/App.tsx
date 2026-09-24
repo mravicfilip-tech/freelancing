@@ -25,6 +25,8 @@ const BENTO_PICKS = picksFromParam(params.get('bento'));
 // Review page for the tokenomics motion variants; `?tok=` alone applies a choice to the real page.
 const TOK_PICKER = params.has('tok-picker');
 const TOK_VARIANT = tokFromParam(params.get('tok'));
+/* Pages of their own, by path. vercel.json rewrites every path to index.html, so this is the router. */
+const PATH = window.location.pathname.replace(/\/+$/, '').toLowerCase();
 
 /**
  * Everything below is reachable only by putting a parameter on the URL: the capture stage, the two
@@ -43,6 +45,7 @@ const PlanetSwitcher = named('PlanetSwitcher', () => import('./components/Planet
 const ChestSwitcher = named('ChestSwitcher', () => import('./components/ChestSwitcher'));
 const Nav = named('Nav', () => import('./components/Nav'));
 const Hero = named('Hero', () => import('./components/Hero'));
+const Glossary = named('Glossary', () => import('./components/Glossary/Glossary'));
 
 /** These mount over a page that is already drawn, so there is nothing to show while they arrive. */
 const Deferred = ({ children }: { children: ReactNode }) => <Suspense fallback={null}>{children}</Suspense>;
@@ -54,6 +57,7 @@ export function App() {
   if (CAPTURE_MODE) return <Deferred><CaptureStage /></Deferred>;
   if (BENTO_PICKER) return <Deferred><BentoPicker /></Deferred>;
   if (TOK_PICKER) return <Deferred><TokPicker /></Deferred>;
+  if (PATH === '/glossary') return <Deferred><Glossary /></Deferred>;
 
   const figma = HERO_VARIANT === 'figma';
   return (

@@ -247,15 +247,10 @@
   gap: calc(14 * var(--u));
 }
 
-/* The card. Right corners rounded and left corners square, because the accent
-   bar runs the full height of the left edge and a radius there would leave it
-   floating off the corner -- which is what the frame draws (rounded-tr /
-   rounded-br only). The bar is a pseudo-element rather than a <div>: it is
-   decoration on an <li> that already has content, and the frame's `Accent`
-   rectangle carries no meaning of its own.
-
-   ALL THREE CARDS CARRY IT. 531:187, 531:196 and 531:205 are the same 3px
-   orange rectangle on the same inset, and the render shows three red edges. */
+/* The card. Right corners rounded, left square, because the 3px accent bar
+   runs the full height of the left edge (rounded-tr / rounded-br only in the
+   frame). All three cards carry the bar (531:187, 531:196, 531:205). It is a
+   pseudo-element because it is pure decoration. */
 .ab-card {
   position: relative;
   display: flex;
@@ -278,10 +273,9 @@
   width: 3px;
   background: var(--accent);
 }
-/* The screenshot window: 524 x 238 in a 590-wide card, right corners rounded
-   at 6, and the image inside it larger than the window and offset. The three
-   offsets are on the elements themselves (About.tsx's CARDS) because they are
-   three different crops of three different captures. */
+/* The screenshot window: 524 x 238 in a 590-wide card, right corners at 6,
+   with a larger image offset inside it. The offsets are inline (About.tsx's
+   CARDS) because each is a different crop. */
 .ab-card__shot {
   position: relative;
   width: 100%;
@@ -323,22 +317,11 @@
   background: var(--ab-veil);
   overflow: hidden;
 }
-/* 531:234 "Ellipses" — the field behind the product shot.
-   -------------------------------------------------------------------------
-   Three r=532.138 discs at sigma 75.585 in a 1282.8 x 1381 box that starts at
-   the card's 871 mark and runs from 420.3 ABOVE the card to 960.7 below it.
-   Those four numbers are the frame's; the card's own `overflow: hidden` is
-   what crops them, which is exactly what crops them in Figma, so the visible
-   sliver is the design's and not a re-composition of it.
-
-   871 is the same mark `.ab-brand__visual` starts at, and that is not a
-   coincidence: 531:233 "root" -- the three rounded rectangles that ARE the
-   laptop and the two panels -- starts there too. The field is first in the
-   card's DOM and both layers sit at z-index 0, so paint order is DOM order
-   and the discs land under the photograph exactly as the frame stacks them.
-
-   It is the reason the right half of this card is no longer a dark
-   photograph on a dark plate. */
+/* 531:234 "Ellipses": the field behind the product shot. Three discs in a
+   1282.8 x 1381 box starting at the card's 871 mark and running from 420.3
+   above the card to 960.7 below it. The card's `overflow: hidden` crops them,
+   as in Figma. The field comes first in the DOM and shares z-index 0 with
+   the shot, so it paints underneath, matching the frame's stacking. */
 .ab-brand__field {
   position: absolute;
   z-index: 0;
@@ -348,18 +331,10 @@
   height: calc(1381 * var(--u));
   pointer-events: none;
 }
-/* `overflow: visible`, and it is the difference between this field reading
-   as the frame's and reading as a rectangle of orange.
-
-   531:234's box is the BBOX OF ITS THREE CIRCLES and nothing more -- Figma
-   does not clip it, so each disc's sigma-75.6 blur bleeds 151.17 past every
-   edge, and the left bleed is the only part of this field the card ever shows:
-   the product shot is opaque from the 871 mark rightward, so what the eye
-   gets is the disc's left shoulder in the gap beside it. Clipped to the
-   viewBox that shoulder is a hard vertical edge at 871 instead of a fade, and
-   the glow disappears behind the photograph entirely. Visible, the card's own
-   `overflow: hidden` does the cropping -- which is exactly what crops it in
-   Figma. */
+/* `overflow: visible`: 531:234's box is just the circles' bounding box and
+   Figma does not clip it, so each blur bleeds 151.17 past every edge. The
+   left bleed beside the shot is the only part the card shows; clipped to the
+   viewBox it would be a hard vertical edge at 871. */
 .ab-brand__art { display: block; width: 100%; height: 100%; overflow: visible; }
 
 .ab-brand__copy {
@@ -373,10 +348,9 @@
   width: calc(759 * var(--u));
   max-width: 100%;
 }
-/* The mark is `brand/mark.svg` through <Icon>, so the file's baked #E5331E is
-   discarded and the paint is this declaration. --accent is the token that hex
-   IS in dark, which is what keeps the conversion honest, and on paper it
-   becomes #a21605 rather than staying a dark-theme red on a light card. */
+/* The mark is `brand/mark.svg` through <Icon>, so its baked hex is discarded
+   and the paint is `color`. --accent matches that hex in dark and becomes
+   #a21605 in light. */
 .ab-brand__mark {
   flex: none;
   width: calc(33.827 * var(--u));
@@ -395,21 +369,17 @@
   line-height: var(--body-leading);
   color: var(--ink-2);
 }
-/* "Phorcast" opens the first paragraph at full ink, which is the frame's one
-   emphasis in this block. It stays in the body face, since paragraph text is
-   one family site-wide (tokens.css), and is marked by weight and ink.
-   <strong> rather than a span: it is the subject of the sentence and the
-   emphasis is semantic. */
+/* "Phorcast" opens the first paragraph at full ink, the frame's one emphasis
+   in this block. It stays in the body face (paragraph text is one family
+   site-wide) and is marked by weight and ink. <strong> because the emphasis
+   is semantic. */
 .ab-brand__prose strong {
   font-weight: 500;
   color: var(--ink);
 }
 
-/* The product shot. Three exports of the frame's own nodes, each already
-   clipped by Figma to the part of it the card shows, stacked in the frame's
-   paint order and positioned in design pixels. The layer starts at the card's
-   871 mark and runs to the card's right edge, so the composition bleeds off
-   that edge exactly as it does in the frame. */
+/* The product shot layer: from the card's 871 mark to its right edge, so the
+   shot bleeds off that edge as in the frame. */
 .ab-brand__visual {
   position: absolute;
   z-index: 0;
@@ -420,28 +390,11 @@
   pointer-events: none;
   overflow: hidden;
 }
-/* The three inside the layer are stated as PERCENTAGES of it rather than in
-   design pixels, and that is the whole of what makes this composition
-   survive a phone. The layer's own box is 929.33 x 440 design px, so every
-   offset folds into a fraction of it -- panel-lower's 211.3 is 48.02% of 440,
-   its 915.74 is 98.54% of 929.33 -- and the three then hold their positions
-   relative to each other whatever the layer is sized to. Stated in `--u` they
-   did not: at 390 the unit is a fifth of a design pixel, so the layer became a
-   70px strip with three correctly-proportioned slivers in it. */
-/* ONE EXPORT, NOT THREE PNGs COMPOSITED BY HAND.
-   531:233 used to be rebuilt here out of its three children -- the laptop
-   stretched to the box with `width: 100%; height: 100%`, and the two dashboard
-   panels laid over it at percentages of it. Two things were wrong with that.
-   The laptop is 2.456:1 and the box is 2.111:1, so filling both axes squashed
-   it ~14% horizontally; and once it was squashed the panels, positioned as
-   percentages of the BOX rather than of the photograph, no longer sat on the
-   screen they belong to. The client drew a box round the result.
-
-   Figma exports the whole node as one image, already composited and cropped to
-   its visible content, so there is nothing to reassemble and nothing to keep
-   in register. `cover` because the export is wider than the box, and
-   `object-position: left` because the laptop enters from the left and it is
-   the right-hand edge the card is meant to crop. */
+/* One image: Figma's export of 531:233, already composited and cropped to its
+   visible content. Rebuilding it from the laptop and panel layers distorted
+   it, because the laptop's ratio (2.456:1) does not match the box (2.111:1).
+   `cover` because the export is wider than the box; `object-position: left`
+   so the card crops the right-hand side. */
 .ab-brand__visual img {
   position: absolute;
   inset: 0;
@@ -463,74 +416,33 @@
   gap: calc(20 * var(--u));
   padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(40 * var(--u));
 
-  /* THE BAND IS A SCREEN TALL, BECAUSE IT PINS.
-     -----------------------------------------------------------------------
-     722 design units is the frame's own height for this band and it is still
-     the floor, but it is no longer the whole story: About.conv.motion.ts pins
-     this band and spends 170% of a screen of scrolling on filling the
-     statement, and while it is pinned whatever the band does not occupy is
-     dead space held under the reader's eye. Measured at 1600 x 900 before
-     this: the band was 668px, so a third of the screen under the goal line
-     was empty for the whole pin, and the next band climbed into it over the
-     last stretch. The client drew a box round exactly that.
-
-     A screen LESS THE GAP the band opens with, because the pinned element is
-     `.ab-conv` and that carries `--ab-gap` above this box -- the two together
-     are what has to come to 100svh.
-
-     `max()` and not a replacement, so the CONTENT still wins: where the copy
-     is taller than the screen this floor is the smaller of the two and does
-     nothing. That is the case at 360, where the statement wraps to 21 lines
-     and the band is 813px against a 780 viewport, and it must stay the case
-     or the goal line would be clipped by its own band.
-
-     `svh` and not `vh`, matching the client's reference: the small viewport
-     is the one with the browser's chrome showing, so the band is a screen
-     tall in the state where a phone has the least room rather than the most.
-
-     Two declarations, and the first is the fallback: a browser without `svh`
-     drops the second as invalid and keeps the frame's own height. */
+  /* THE BAND IS AT LEAST A SCREEN TALL, BECAUSE IT PINS.
+     722 design units is the frame's height and stays the floor. But
+     About.conv.motion.ts pins this band for 170% of a screen, and any part
+     of the screen the band does not fill would sit empty under the reader
+     for the whole pin, with the next band climbing into it.
+     - A screen less `--ab-gap`, because the pinned element is `.ab-conv`,
+       which carries that gap above this box.
+     - `max()`, so taller content still wins (e.g. at 360 the statement
+       wraps taller than the screen) and the goal line is never clipped.
+     - `svh`, so the band fits with the browser chrome showing.
+     - The first declaration is the fallback for browsers without `svh`. */
   min-height: calc(722 * var(--u));
   min-height: max(calc(722 * var(--u)), calc(100svh - var(--ab-gap)));
 }
 
-/* 531:158 "Container" — the four arcs behind this band.
-   -------------------------------------------------------------------------
-   1170 x 664 at frame (375, 1772.87). The band itself (531:241) is 1800 x 722
-   at frame (60, 1676.31), so in the band's own box the field is 630 narrower
-   -- 315 each side, i.e. dead centre of the column -- and starts 96.56 down
-   it. It is four ellipse OUTLINES, 1.36px, each stroked with the same clear
-   -> #ff632a -> clear ramp across its own width and blurred at sigma 5, and
-   the frame mirrors the drawing vertically. What reaches the page is one fine
-   bright arc across the TOP, apex over the eyebrow, and a broad soft one at
-   the bottom of the band.
+/* 531:158 "Container": the four arcs behind this band. 1170 x 664, centred
+   in the column, four 1.36px ellipse outlines each stroked clear -> #ff632a
+   -> clear and blurred at sigma 5, mirrored vertically. What shows is a fine
+   bright arc over the eyebrow and a broad soft one at the bottom.
 
-   IT IS ANCHORED TO THE LABEL, NOT TO THE BAND, and that is the whole reason
-   `.ab-conv__crown` exists. 96.56 from the band's top is the frame's number
-   and it is only the frame's number at the frame's proportions: this band is
-   `justify-content: center` inside a 722-unit min-height, so where the
-   eyebrow falls inside it depends on how tall the statement has wrapped.
-   Measured after the band was taken to a screen tall, the eyebrow sits 292px
-   below the band top at 1600, 321 at 1100 and 138 at 390 -- three numbers that
-   share no pattern, because each is the leftover of a different wrap centred
-   in a different viewport. They were 110 / 44 / 24 when the band was sized to
-   the frame's 722 units; the rule did not change and did not need to, which is
-   the whole argument for hanging the field off the eyebrow rather than off the
-   band. A number stated from the band goes stale when the band is resized. One
-   stated from the label does not.
-   Stated from the band, the arc lands 31px above the label at 1600, 10px
-   BELOW it at 1100 and 6 above at 390. It crossed the type at 1100 and at
-   720, where the label measured 3.40:1 in dark and 3.82:1 in light on the lit
-   stroke.
-
-   So the crown is the eyebrow's own box and the field hangs off it at the
-   frame's own 35.4 design px -- WITH A FLOOR. The gap has to have one,
-   because it is the only distance in this band that is negotiating with type
-   rather than with geometry: the eyebrow is a fixed 16px at every width and
-   the arc's blur is +/-15 design px, so below about 1400 the unit shrinks the
-   clearance faster than the type it has to clear. 44px is that clearance
-   measured at the tightest width, and above it the frame's own number is the
-   larger of the two and wins. */
+   ANCHORED TO THE LABEL, NOT THE BAND. The band centres its content in a
+   min-height, so where the eyebrow falls depends on how the statement wraps
+   at each width; an offset from the band's top put the arc across the label
+   at some widths. `.ab-conv__crown` is the eyebrow's own box, and the field
+   hangs 35.4 design px above it with a 44px floor: the eyebrow is a fixed
+   16px while the arc's blur scales with the unit, so below about 1400 the
+   design number alone would not clear the type. */
 .ab-conv__crown { position: relative; }
 .ab-conv__field {
   position: absolute;
@@ -542,9 +454,8 @@
   transform: translateX(-50%) scaleY(-1);
   pointer-events: none;
 }
-/* The export is 1250 x 744 for a 1170 x 664 box: Figma states the blur's
-   bleed as inset -3.42% / -6.02%, which is 40 each side and 39.97 top and
-   bottom. */
+/* The export is 1250 x 744 for a 1170 x 664 box: the blur's bleed, 40 each
+   side and 39.97 top and bottom. */
 .ab-conv__art {
   position: absolute;
   left: calc(-40 * var(--u));
@@ -554,28 +465,12 @@
   display: block;
 }
 
-/* THE STATEMENT, and the one piece of paint that is not a flat colour.
-   -------------------------------------------------------------------------
-   531:251 is one text node carrying three fills: a horizontal gradient that
-   is --ink up to 38.293% of the BLOCK's width and --accent from 41.217%, a
-   vertical fade over the first line, and a flat --ink under both. The runs
-   after "We were founded" then override all of it with a solid dim ink.
-
-   The effect that survives is the one the render shows: the opening reads
-   bright and its last letter turns over into the brand red, because "We were
-   founded" ends at about 40% of the 1224-wide block -- right where the
-   gradient switches. So the gradient is on the BLOCK, not on the span: a span
-   is only as wide as its own text and 38% of that would recolour half the
-   phrase. The vertical fade is dropped; it only ever revealed the horizontal
-   gradient on line one, which is the only line the phrase occupies anyway.
-
-   `color` is stated before the clip so a browser without `background-clip:
-   text` renders bright ink on nothing rather than nothing on nothing. */
+/* THE STATEMENT (531:251): one `--ink`, uppercase display type at
+   `--h2-size`. The scroll fill in About.conv.motion.ts is what separates read
+   from unread. Avoid `color: transparent` + `background-clip: text` here: in
+   Chromium each animated word would drop out of the text clip. */
 .ab-conv__statement {
-  /* The block's width has to scale with the type or the gradient stops land
-     on different letters at different widths: the design's switch sits at
-     38-41% of a 1224-wide block holding 48px type, and both halves of that
-     ratio are one design pixel times the unit. */
+  /* The frame's 1224 design px measure, scaled with the unit. */
   max-width: calc(1224 * var(--u));
   font-family: var(--font-display);
   font-weight: 500;
@@ -585,26 +480,14 @@
   text-transform: uppercase;
   color: var(--ink);
 }
-/* The statement used to paint a gradient clipped to its text here -- bright
-   ink turning over into the accent at 38-41% of the block, with the run after
-   it set back in a muted ink. The client asked for the gradient dropped and
-   the fill taken to full white, so the block is one `--ink` and the scroll
-   reveal is the only thing that separates what has been read from what has
-   not. That removed a `color: transparent` under a `background-clip: text`,
-   which is worth knowing: while it was there, every word the scroll animation
-   wrapped had to repaint the gradient itself, because a compositing descendant
-   drops out of its parent's text clip in Chromium. */
-/* The rest of the sentence no longer sits back; see below. */
-/* Kept as an element because About.tsx writes it, but it no longer changes
-   the paint: the statement is one ink, and the scroll fill is what separates
-   what has been read from what has not. It used to hold `--ink-muted` against
-   the gradient-painted run before it. */
+/* Kept as a hook because About.tsx writes it; it does not change the paint.
+   The statement is one ink. */
 .ab-conv__rest {
   color: inherit;
   -webkit-text-fill-color: currentColor;
 }
-/* No wider than the statement above it (the same 1224 design px): at 18px the
-   goal line on one 1768-unit line ran past both ends of the 32px statement. */
+/* No wider than the statement (the same 1224 design px), so the 18px goal
+   line does not run past both ends of it. */
 .ab-conv__goal {
   max-width: calc(1224 * var(--u));
   font-family: var(--font-body);

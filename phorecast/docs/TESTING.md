@@ -13,10 +13,15 @@ browser.
 | `npm run build` | Typecheck, then `vite build` into `dist/` |
 | `npm run check` | Typecheck, lint and `vite build` in one go. Run it before every commit and deploy |
 
+At handover `npm run check` passes and `npm run lint` reports 0 errors and
+0 warnings. Keep it that way: a lint warning is cheaper to fix the day it
+appears.
+
 Expected output that is not a failure:
 - Eight `didn't resolve at build time` warnings for the Galano Grotesque files
   (see ASSETS.md section 5).
-- Vite's "Some chunks are larger than 500 kB" warning for the main bundle.
+- Vite's "Some chunks are larger than 500 kB" warning for the main bundle
+  (about 804 KB, 264 KB gzipped).
 
 ## 2. Visual regression: `scripts/pixel-diff.mjs`
 
@@ -65,14 +70,16 @@ pending state (see below).
 
 ## 4. Playwright notes
 
-The scripts use `playwright-core` (a dev dependency) without a bundled browser.
-Run `npx playwright-core install chromium` once, or point `CHROMIUM_PATH` at
-any Chrome or Chromium.
+The scripts use `playwright-core` (a dev dependency), which ships no browser of
+its own. Both scripts launch `process.env.CHROMIUM_PATH` if it is set, and
+otherwise the Chromium that `npx playwright-core install chromium` downloads
+(run it once).
 
 - **WebGL.** Headless Chromium on a machine without a GPU needs
-  `--use-gl=swiftshader` to draw the 3D mark. Do not pass `--disable-webgl`
-  unless you want the static logo fallback (`pixel-diff.mjs` passes it on
-  purpose, for determinism).
+  `--use-gl=swiftshader` to draw the 3D mark. `screenshot.mjs` launches with
+  `--no-sandbox` only, so add the flag to its `args` if the mark comes out as
+  the static fallback. Do not pass `--disable-webgl` unless you want that
+  fallback (`pixel-diff.mjs` passes it on purpose, for determinism).
 - **`data-motion="pending"` means scroll first.** Each band hides its animated
   parts until it has scrolled into view and its entrance has run. A
   full-page screenshot taken straight after load shows empty bands below the

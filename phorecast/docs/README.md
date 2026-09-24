@@ -16,18 +16,16 @@ Start with [../HANDOVER.md](../HANDOVER.md). Then, by topic:
 
 ### [`MOTION.md`](../MOTION.md): the motion direction
 
-The standard every entrance and loop was built to, written after the client
-rejected a first pass as "too fast, too jumpy, not premium". Its core rule is
-"one object arrives, is allowed to land, then the rest follow", with pacing,
-easing, distance and loop tables, the accent / support / context hierarchy, and
-a list of what made the first pass fail. Read it before designing new motion
-so the site keeps one language. Some of its operational details are out of
-date and the code wins where they disagree: the site now uses the
-ScrollTrigger plugin (the 3D logo's scroll turn and the About conviction pin);
-entrances start from a CSS `visibility: hidden` pending state, released by
-script, rather than from a visible baseline; the 3D logo's pointer tilt is kept
-at the client's request despite the "no tilt toward the cursor" rule; and the
-verification scripts and the motion lab page it names have been removed.
+The rules every entrance and loop follows, first written after the client
+rejected an early pass as "too fast, too jumpy, not premium" and since updated
+to match the code. Its core rule is "one object arrives, is allowed to land,
+then the rest follow". It gives pacing, easing, travel and loop guidance; the
+accent / support / context hierarchy; the pointer rule (no hover or pointer
+tracking on artwork, with the 3D logo's tilt as the one approved exception);
+where ScrollTrigger is used; and the invariants: the settled design is the
+approved design, animated parts are hidden only while script is running, never
+`clearProps: 'all'`, reduced motion shows everything. Read it before designing
+new motion so the site keeps one language.
 
 ### [`LIGHTMODE.md`](../LIGHTMODE.md): the light-mode strategy (58 KB)
 

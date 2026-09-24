@@ -98,7 +98,27 @@ list of pre-existing layout nits and one contrast issue.
 | Which "bar" the early feedback meant | Client: confirm | KNOWN-ISSUES 1.6 |
 | "Phorecast" spelling in the footer design | Client: confirm | KNOWN-ISSUES 1.7 |
 | Six layout nits (phones, 768 to 1440, 720/721) | Developer | [KNOWN-ISSUES 2](docs/KNOWN-ISSUES.md#2-layout-nits-pre-existing) |
-| White link on the orange bento card, about 2.5:1 | Design and developer | [KNOWN-ISSUES 3](docs/KNOWN-ISSUES.md#3-accessibility) |
+| Accessibility: white link on the orange bento card (about 2.5:1), no pause control on Steps (WCAG 2.2.2), Pillars rows are buttons with no action | Design and developer | [KNOWN-ISSUES 3](docs/KNOWN-ISSUES.md#3-accessibility) |
+| Low-priority code notes (dead CSS branches, a breakpoint mismatch, fragile sizing) | Developer | [KNOWN-ISSUES 6](docs/KNOWN-ISSUES.md#6-code-notes) |
+
+## What was cleaned for handover
+
+- **Removed**: the design lab pages and one-off probe and measurement scripts.
+  `scripts/` now holds only `deploy.sh`, `dev-sync.mjs`, `pixel-diff.mjs` and
+  `screenshot.mjs`. Unused 3D-logo treatments and helpers went too; the logo
+  has one treatment, `lined`.
+- **Removed**: unused assets (every file left in `src/assets/` is imported),
+  CSS no markup reaches, and tokens nothing reads.
+- **Rewritten**: source comments now state technical rationale (why the code
+  is the way it is) rather than project history.
+- **Added**: ESLint (`eslint.config.js`), `npm run lint` (clean: 0 errors,
+  0 warnings) and `npm run check` (typecheck, lint, build), `.nvmrc` and
+  `.editorconfig`.
+- **Checked**: a secrets scan of the whole git history came back clean. No
+  token, key or project link is committed.
+- **Not in the package**: `.env*`, `.vercel/` and `node_modules/` are
+  excluded (and gitignored). `npm ci` restores dependencies; `npx vercel link`
+  creates your own `.vercel/`.
 
 ## Where to look for what
 

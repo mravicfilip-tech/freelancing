@@ -93,18 +93,27 @@ fonts. See [ASSETS.md](ASSETS.md#5-fonts).
   Needs a design decision (darker link, darker stop, or a backing).
 - **Dark eyebrow grey** `--ink-muted` in dark is 3.16:1 on the page, as
   designed; light mode was raised to 4.63:1. Documented in `tokens.css`.
-- **Steps auto-advances without a pause control.** It moves every 6 seconds
-  for as long as it is on the page (`steps/Steps.tsx`, `DWELL_MS`); only
-  reduced motion stops it. The hero carousel has a pause button for WCAG 2.2.2;
-  Steps may need the same.
-- **Dead anchors** `#login` and `#signup` are announced as links that go
-  nowhere.
+- **Steps auto-advances without a pause control: a WCAG 2.2.2 question.** It
+  moves to the next step every 6 seconds for as long as it is on the page
+  (`steps/Steps.tsx`, `DWELL_MS`); choosing a step restarts the dwell rather
+  than stopping it, and only reduced motion stops it. The hero carousel has a
+  pause button for 2.2.2 (`.hero__play`); Steps may need the same.
+- **Dead anchors.** Login and Sign Up (`components/Nav.tsx`, bar and phone
+  sheet) and the About hero's "Get Started" (`about/About.tsx`) point at
+  `#login` and `#signup`, which exist on neither page. They are announced as
+  links and do nothing but change the URL hash.
+- **Pillars rows are buttons with no action.** The four rows under the
+  Pillars cards (Fast Access, Full Control, Intuitive Markets, Transparent
+  Settlement) render as `<button type="button" class="prow">` with no handler
+  and no `aria-expanded` (`pillars/Pillars.tsx`). They are focusable, have a
+  hover state, and do nothing. Either give them a job or render them as plain
+  list items.
 
 ## 4. Behaviour to know about
 
 - **The 3D logo tilts toward the pointer.** Kept on purpose: the client asked
-  to keep it. `MOTION.md`'s "no tilt toward the cursor" rule applies to the
-  illustrations and does not override this. Tilt is off on touch devices
+  to keep it, and `MOTION.md` lists it as the one exception to "no pointer
+  tracking on artwork". Tilt is off on touch devices
   (`HeroLogo/LogoScene.ts`, strength in `HeroLogo/config.ts`).
 - **`scroll-behavior: smooth` on `html` (`styles/global.css`) is a
   ScrollTrigger hazard.** GSAP advises against it. It turns scroll anchoring
@@ -123,7 +132,7 @@ fonts. See [ASSETS.md](ASSETS.md#5-fonts).
   inline styles on. See DESIGN-SYSTEM.md section 5.
 - **Reduced motion is read once** for section entrances (`REDUCED` in
   `lib/motion.ts`); changing the OS setting mid-session takes effect on reload.
-- **Bundle size.** The main chunk is about 800 KB (about 265 KB gzipped) and
+- **Bundle size.** The main chunk is about 804 KB (264 KB gzipped) and
   triggers Vite's size warning. three.js and the logo scene are already a
   separate lazy chunk; the main chunk is the app, GSAP, React and the small
   SVGs Vite inlines as `data:` URIs.
@@ -134,3 +143,34 @@ Every empty link renders as a real, focusable link whose click is cancelled,
 so the markup is final and only the target string changes. Nothing on the site
 is lorem ipsum; the remaining placeholders are the links in 1.8, the static
 countdown in 1.4, and the fallback label font in 1.9.
+
+## 6. Code notes
+
+Small things found while cleaning the code for handover. None is visible in
+normal use unless the note says so. Each was checked against the current code.
+
+**Resolved during the cleanup**
+
+| Note | Status |
+|---|---|
+| `fan/Fan.loop.ts`: `remeasure()` created a new IntersectionObserver and ResizeObserver each time the band crossed a breakpoint, without disconnecting the previous pair. | Fixed: the old pair is disconnected first. |
+| `bento/Bento.css` carried `.mk__*` and `.bcard--markets` rules that `bento/boxes/BoxMarkets.css` overrides. | Removed. |
+
+**Open**
+
+| Area | Note |
+|---|---|
+| Built, layout | `built/Built.css`, `@media (max-width: 700px)`: the shared portrait defaults (`.bt-card__glow--right/--left` offsets, `.bt-label--tl/--tr/--bl` positions, the shared label size) are restated by each card's own block below them, so most of them never apply. |
+| Built, motion | `built/Built.motion.ts`: `wipeIn(..., down = true)` runs only in landscape when `.bt2__main` is missing or `display: none`. The stylesheet never hides it, so the downward wipe is a dead branch. |
+| Built, loops | `built/loops/bt1.ts` and `bt2.ts` measure the card once when the loop starts, in design units, so a proportional resize is fine. Crossing the 700px portrait/landscape breakpoint while the page is open (a rotation, a window resize) is not re-measured; sections rebuild only on a theme change. A reload corrects it. |
+| About, motion | `about/About.motion.ts` switches to the tighter phone schedule at `(max-width: 700px)`, while the About CSS switches to the phone layout at 720px. Between 701 and 720px the phone layout plays the desktop timing. |
+| Familiar, button | `familiar/Familiar.css`: the desktop `.fam__cta` rule (254 x 56 design units) has the same specificity as `.btn` in `styles/global.css`, which comes later in the bundle, so it never applies; the button renders at `.btn`'s 254 x 50px. The phone rule uses two classes and does apply. |
+| Bento C, arrow | `bento/boxes/BoxBonus.css`, phone block: the CTA arrow is sized with `!important` to beat `<Icon>`'s inline width and height. Passing `style={{ width: undefined, height: undefined }}` (the `cssBox` pattern) would remove the need. |
+| Nav, chevron | `Nav.css`: `.sheet-link__chev` has a hard-coded `height: 9.8px` derived from its 18px width and the file's ratio. Change both together. |
+| Live dot | `assets/icons/live-dot-light.svg` bakes `#a21605`, the light theme's `--accent`. If the light accent changes, update the file. |
+| Fan, light | `fan/Fan.css`: `--fan-tile-lit: brightness(2.6)` is not overridden in the light blocks, so the tile flash brightens on paper too. Possibly intended; confirm with design. |
+| Hero slide 4 | `hero/slides/SlideFuture.motion.ts` treats the last `.sl4__node` as the mark's feed dot. Reordering the nodes in `SlideFuture.tsx` breaks the loop (noted in both files). |
+| Hero slides | `.sl2` and `.sl4` redefine `--u: calc(100cqw / 1800)`, the same value `.hero__slide` already sets. Redundant, harmless. |
+| FAQ | `faq/Faq.css`: `.faq__row` transitions `border-color` but has no border (the light edge is a `box-shadow`). Harmless. |
+| About, statement | `about/About.css`: `.ab-conv__rest` still sets `-webkit-text-fill-color: currentColor`, left from the removed gradient fill. Harmless. |
+| About, product shot | `about/About.css`, phone block: `.ab-brand__visual` keeps `aspect-ratio: 929.33 / 440` (2.11:1) while `assets/about/product-shot.png` is 2161 x 880 (2.46:1); `object-fit: cover` crops the sides. Check the crop against the design. |

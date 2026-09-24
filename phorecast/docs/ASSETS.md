@@ -31,6 +31,7 @@ next to the component rather than in `src/assets/`.
 | `import url from './x.svg'` then `<img src={url} alt="">` | Multi-colour artwork, rasters, anything whose own colours must survive | `about/tick.svg`, `about/product-shot.png` |
 | `import url from './x.svg'` then `<Icon src={url} w h />` | One flat colour on transparent; the colour comes from CSS `color` | `brand/mark.svg`, `footer/social/*.svg`, most glyphs. See DESIGN-SYSTEM.md section 5 |
 | `import markup from './x.svg?raw'` then inlined | The SVG's inner parts are animated or restyled | `fan/fan-upper.svg`, `fan/fan-lower.svg`, `hero/slide3/stacks.svg`, `steps/s3-chart.svg` |
+| `import.meta.glob('.../chain-*.svg', { eager: true, import: 'default' })` | A glyph drawn as several positioned parts, each masked separately | `pillars/chain-*.svg`, `pillars/pill3-*.svg` (`Pillars.tsx`) |
 | `*-light.svg` twin, picked with `useTheme()` | Artwork that needs a different drawing in light mode and cannot be a mask | `hero/slide2/connector-left-light.svg`, `icons/live-dot-light.svg` |
 
 Notes:

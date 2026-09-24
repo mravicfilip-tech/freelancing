@@ -14,8 +14,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 
 export default defineConfig(
-  // m[A-Z]/ is gitignored agent scratch (see .gitignore): probes, not source.
-  { ignores: ['dist', 'dist-*', 'node_modules', 'm[A-Z]/'] },
+  { ignores: ['dist', 'dist-*', 'node_modules'] },
 
   js.configs.recommended,
   tseslint.configs.recommended,

@@ -21,19 +21,10 @@
    THE ORDER. Each group opens with the client's own list, in the client's
    order: Product "Markets, Leaderboard, Trading Hours, FAQs"; Company "About,
    Partner Program, Blog, Brand Kit"; Legal "Terms of Service, Privacy Policy,
-   Cookies, Contact". After those come the pages the site already linked to
-   that the client's list did not name -- nothing is dropped:
-
-     Product   Portfolio, Deposit, Withdraw        (the old footer's Product)
-     Company   Why Phorcast, How it works,
-               Infrastructure                      (the old MORE menu; real
-                                                    landing-page sections)
-     Legal     Risk Disclosure,
-               Deposit & Withdrawal Policy         (the old footer's Legal)
-
-   None of the old footer links was a page: every one was a slugged fragment
-   (`#risk-disclosure`, ...) with no element to land on. So they are empty here
-   exactly as the client's new ones are.
+   Cookies, Contact". That is the whole list: the extra pages that once
+   followed it (Portfolio, Deposit, Withdraw; Why Phorcast, How it works,
+   Infrastructure; Risk Disclosure, Deposit & Withdrawal Policy) were removed
+   at the user's request.
 
    "Contact" is the client's Legal item and is a placeholder like the rest.
    The "Contacts" link that stood under the footer's brand block is gone at the
@@ -64,9 +55,6 @@ export const SITEMAP: SitemapGroup[] = [
       { label: 'Leaderboard', href: '' },
       { label: 'Trading Hours', href: '' },
       { label: 'FAQs', href: '#faq' },
-      { label: 'Portfolio', href: '' },
-      { label: 'Deposit', href: '' },
-      { label: 'Withdraw', href: '' },
     ],
   },
   {
@@ -76,9 +64,6 @@ export const SITEMAP: SitemapGroup[] = [
       { label: 'Partner Program', href: '' },
       { label: 'Blog', href: '' },
       { label: 'Brand Kit', href: '' },
-      { label: 'Why Phorcast', href: '#why' },
-      { label: 'How it works', href: '#how' },
-      { label: 'Infrastructure', href: '#built' },
     ],
   },
   {
@@ -88,19 +73,16 @@ export const SITEMAP: SitemapGroup[] = [
       { label: 'Privacy Policy', href: '' },
       { label: 'Cookies', href: '' },
       { label: 'Contact', href: '' },
-      { label: 'Risk Disclosure', href: '' },
-      { label: 'Deposit & Withdrawal Policy', href: '' },
     ],
   },
 ];
 
-/** The footer's four social icons, in the client's order. TODO(client):
- *  TikTok and Telegram are still to come. */
+/** The footer's four social icons, in the client's order. */
 export const SOCIAL_URLS = {
   x: 'https://x.com/PhorcastHQ',
-  tiktok: '',
+  tiktok: 'https://www.tiktok.com/@phorcast',
   discord: 'https://discord.gg/phorcast',
-  telegram: '',
+  telegram: 'https://t.me/phorcast',
 };
 
 /** One entry by label, for the few places that name a page outside a list. */

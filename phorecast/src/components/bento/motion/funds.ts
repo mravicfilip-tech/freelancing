@@ -1,86 +1,49 @@
 /**
- * Card B — "Your funds leave whenever you want".
+ * Card B: "Your Funds Stay Yours".
  *
- * The diagram reads right to left as a custody chain: four market tiles hung on
- * the orange ring, a smart-contract chip, two orange nodes sitting on the
- * strokes, a withdraw chip, and the wallet ring with your wallet inside it. The
- * motion walks that chain in the direction the copy promises — out of the
- * markets, through the contracts, into your wallet — and then stops.
+ * The diagram reads right to left as a custody chain: four market tiles on the
+ * orange ring, a smart-contract chip, two orange nodes on the strokes, a
+ * withdraw chip, and the wallet ring with the wallet inside it. The motion
+ * walks that chain the way the copy reads: out of the markets, through the
+ * contracts, into the wallet.
  *
- * THE BAND'S RULE, WHICH IS WHY THIS WAS REBUILT
- * ----------------------------------------------
- * "First one object comes out, the rest follow." The loop used to open with all
- * four market tiles handing over in a 0.16 stagger and only let the packet go at
- * 1.3s — four things happening first, and the one object coming out fourth. That
- * is the rule backwards, and it also spent the card's accent on the wrong
- * objects: four chips brightening and jumping 16% larger, in front of the packet
- * the card is actually about.
+ * Design rule for the band: one object comes out first, the rest follow. The
+ * node on the orbit releases the packet alone, with nothing else moving for
+ * half a second; everything after answers it (the markets in turn, the chips as
+ * the packet reaches them, the wallet as it lands). The tiles step and light
+ * but do not scale, so they don't compete with the packet. Inside the market
+ * beat the first tile answers alone, then the other three closer together
+ * (T_LEAD / T_GAP / T_STEP).
  *
- * So the order is inverted. The node on the orbit flares and releases the packet
- * FIRST, alone, with nothing else moving for half a second. Everything after
- * that is an answer to it: the four markets in turn, the two contract chips as
- * the packet reaches them, and the wallet as it lands. The tiles keep their step
- * and their lit filter and lose their scale entirely, so they read as handing
- * value on rather than as competing for the eye.
+ * LOAD-IN (about 1.55s, after the band's entrance has landed the card)
+ *   The circles and the glow arrive with the card. The wallet leads alone for
+ *   a third of a second, then the two contract chips, then the four assets with
+ *   their labels, then the two nodes. Keep it short: it plays only after the
+ *   band's entrance has finished.
  *
- * The same rule is applied INSIDE the market beat, the way Pillars and Familiar
- * do it: the first tile answers, then a beat, then the other three closer
- * together — see T_LEAD / T_GAP / T_STEP.
+ * LOOP (6.25s of motion, then 4.75s still: 11.0s end to end)
+ *   The orbit node flares and releases a packet, which travels 226 design px
+ *   through the corridor between the chips into the wallet over 2.8s. The
+ *   markets hand over in turn behind it, each tile stepping 9 design px toward
+ *   the wallet; each chip lifts as the packet passes. On landing the wallet
+ *   node flares, the wallet ring closes in orange from that node, and the disc
+ *   pulses once.
  *
- * LOAD-IN (1.55s, after the band's entrance has landed the card)
- *   The three circles and the glow arrive with the card; they are the diagram's
- *   frame. The wallet is the lead and holds the stage alone for a third of a
- *   second, because it is what the sentence is about. Then the two contract
- *   chips, then the four assets each with its label, then the two nodes.
+ * No glow or text-shadow halo here by design; the landing is carried by the
+ * ring closing and the disc's pulse.
  *
- *   Its total length is deliberately unchanged. It was cut from 2.0s to 1.5s
- *   because on a phone the last node was landing past four seconds from the
- *   scroll, and that finding has not expired. What changed is the shape inside
- *   the same budget: the wallet's solo went from 0.1s to 0.34s and the four
- *   following beats were pulled tighter to pay for it, so the lead reads as a
- *   lead rather than as the first item of a list.
+ * Distances are percentages of each element's own box, never pixels, so one
+ * build of the timeline is correct at every breakpoint (see `pct` in
+ * shared.ts).
  *
- * LOOP (6.25s of story, then 4.75s of nothing — 11.0s end to end)
- *   The node on the orbit flares and lets a packet go. It travels the whole 226
- *   design pixels of the diagram — from that node, through the corridor between
- *   the two chips, into the wallet — over 2.8 seconds. Behind it the four
- *   markets hand over in turn, each tile stepping nine design pixels toward the
- *   wallet; the smart-contract chip lifts as the packet reaches it and
- *   "Withdraw anytime" lifts as it passes. The node on the wallet ring flares as
- *   the packet lands, the wallet ring closes round in orange from that node, and
- *   the disc takes one pulse. Then the card is still for nearly five seconds.
- *
- *   It was 5.8s of story on a 10.0s cycle. Slower: the travel is 2.8s rather
- *   than 2.0, the ring closes over 1.8s rather than 1.5, and the rest at the end
- *   is half a second longer.
- *
- * WHAT THIS FILE NO LONGER DOES, ON PURPOSE
- *   The old closing beat put `textShadow: 0 0 12px rgba(255,251,248,0.9)` on the
- *   "Wallet" label. That is a halo, which the band does not allow — the card's
- *   `funds-glow.png` is drawn decor that came out of the frame, and it is not a
- *   licence to add light in script. The landing is carried by the ring closing
- *   and the disc's single pulse instead, which are both transforms. The two
- *   tokens it read, `--bento-fd-flare` and `--bento-fd-flare-0`, went with it.
- *
- * Distances are written as percentages of each element's own box, never pixels,
- * so one build of the timeline is correct at every breakpoint — see `pct` in
- * shared.ts.
- *
- * ON THE PHONE it is the same beats at the same times, because the phone's card
- * is the same diagram turned a quarter-turn (Figma 526:305). The two things a
- * quarter-turn moves are directions and paths, and both are re-derived rather
- * than reused: a market tile hands its value on DOWNWARD instead of leftward, a
- * contract chip answers LEFTWARD instead of upward — still the perpendicular of
- * the packet's travel, which is what that step means — and the packet's curve,
- * the wallet ring's radius and the angle it closes from are each mapped through
- * the one rotation the layout applies. The numbers are in `LANDSCAPE` and
- * `PORTRAIT` below with the map beside them. The orientation is measured off the
- * artwork's own box, not a media query.
- *
- * The one beat that reads differently is the packet's: the phone has no corridor
- * to send it down, because it stacks the two chips across the line of travel
- * rather than along it, so the packet crosses over them instead. They still
- * answer as it passes, on the beats they always did.
+ * On the phone the card is the same diagram turned a quarter-turn (Figma
+ * 526:305), with the same beats at the same times. Directions and paths are
+ * re-derived: tiles hand on downward instead of leftward, chips answer
+ * leftward instead of upward (still perpendicular to the packet), and the
+ * packet curve, ring centre and start angle are mapped through the layout's
+ * rotation (see `LANDSCAPE` and `PORTRAIT`). The orientation is measured from
+ * the artwork's own box, not a media query. The phone has no corridor between
+ * the chips, so the packet crosses over them.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -94,32 +57,26 @@ const NS = 'http://www.w3.org/2000/svg';
    ---------------------------------------------------------------------------
    LANDSCAPE (464 x 215, Figma 365:936)
    Wallet ring: Ellipse 56 of ring-wallet.svg is r 46 about (46.5, 46.5) in a 93
-   box BoxCustody.css parks at (8, 61) — so (54.5, 107.5) here.
+   box BoxCustody.css parks at (8, 61), so (54.5, 107.5) here.
    Node A's dot centre is (26, 71), which is 232 degrees round that circle the
    way an SVG circle is drawn (from three o'clock, clockwise), so the fill can
    start under the node and close back onto it.
    Node B's dot centre is (302, 108), on the right extreme of the dotted orbit.
-   The corridor between the two chips — "Smart Contracts" ends at y 67, "Withdraw
-   anytime" begins at y 144 — is clear, so the packet's curve is drawn to stay
-   inside y 96..120 the whole way across.
+   The corridor between the two chips ("Smart Contracts" ends at y 67, "Withdraw
+   anytime" begins at y 144) is clear, so the packet's curve stays inside
+   y 96..120 the whole way across.
 
    PORTRAIT (215 x 464, Figma 526:305)
    The phone draws that same group at -90deg, so every number above is re-derived
-   through the one map BoxCustody.css states: (x, y) -> (y, 464 - x). Nothing
-   here is reused blind and nothing is re-measured by hand — the wallet centre
-   (54.5, 107.5) becomes (107.5, 409.5), the start angle loses the same quarter
-   turn the frame did (232 - 90 = 142), and each of the packet path's four
-   points is mapped in place, which is why the two `d` strings are the same
-   curve twice.
+   through the map BoxCustody.css states: (x, y) -> (y, 464 - x). The wallet
+   centre (54.5, 107.5) becomes (107.5, 409.5), the start angle loses a quarter
+   turn (232 - 90 = 142), and each of the packet path's four points is mapped,
+   so the two `d` strings are the same curve.
 
-   What does NOT survive the map is the corridor. The phone re-lays the two
-   pills out around the ring rather than rotating them, and on screen they end
-   up stacked ACROSS the packet's new line of travel — Smart Contracts at
-   y 245..282 reaching to x 117, Withdraw at y 295..332 from x 95 — with no
-   gap to thread. The packet therefore crosses them instead of dodging, painted
-   over the top: the overlay is inserted before the wallet disc, which is after
-   both pills in the markup. The two chips still answer under it on the same
-   beats, which is what carries "through the contracts" either way. */
+   The corridor does not survive the map: the phone re-lays the two pills
+   around the ring, stacked across the packet's line of travel. The packet
+   crosses over them instead, painted on top (the overlay is inserted before
+   the wallet disc, which follows both pills in the markup). */
 type Geometry = {
   w: number; h: number;
   wx: number; wy: number;
@@ -140,15 +97,15 @@ const PORTRAIT: Geometry = {
   packet: 'M108 162 C 84 216 132 332 107.5 386',
 };
 
-/* The market beat, as the band's own rule: one answers, then a beat, then the
-   rest closer together. The gap after the first is nearly twice the gap between
-   the other three, which is what stops the four reading as a single stagger. */
+/* The market beat: one answers, then a pause, then the rest closer together.
+   The gap after the first is nearly twice the step between the other three, so
+   the four don't read as a single stagger. */
 const T_LEAD = 0.72;
 const T_GAP = 0.34;
 const T_STEP = 0.18;
 
 /** The travel, and the two beats pinned to its ends. */
-const T_RELEASE = 0;      // the node on the orbit lets go — nothing else moves
+const T_RELEASE = 0;      // the node on the orbit lets go; nothing else moves
 const T_WIRE_IN = 0.5;
 const T_TRAVEL = 0.6;
 const TRAVEL_DUR = 2.8;
@@ -157,16 +114,11 @@ const T_LAND = T_TRAVEL + TRAVEL_DUR; // 3.4
 export function funds(card: HTMLElement): () => void {
   if (REDUCED) return () => {};
 
-  /* Every colour this loop writes, read once, here, at BUILD time -- beside
-     the two `getComputedStyle(...).borderTopColor` reads further down, which
-     is the place LIGHTMODE.md 4.3 names and the place the rest of the repo
-     already uses. Never at module scope: the theme is not known there, and a
-     value cached there could never be re-read.
-     Re-reading on a theme change is Bento.tsx's job: its card-motion effect
-     takes the theme epoch as a dependency, which tears these four modules down
-     and builds them again, exactly as useSectionMotion does for the band.
-     The fallbacks are the literals this file shipped with, so a missing
-     property yields today's dark value rather than nothing. */
+  /* Every colour this loop writes, read once at build time (LIGHTMODE.md 4.3).
+     Never at module scope: the theme is not known there and the value could
+     never be re-read. On a theme change Bento.tsx tears the card modules down
+     and rebuilds them (its effect depends on the theme epoch). The fallbacks
+     are the dark values, used if a property goes missing. */
   const C = {
     ring: tok('--bento-fd-ring', '#ff632a'),
     wire: tok('--bento-fd-wire', '#f26246'),
@@ -177,11 +129,7 @@ export function funds(card: HTMLElement): () => void {
 
   const art = q1(card, '.custody__art');
   const disc = q1(card, '.custody__wallet-disc');
-  /* One wallet glyph now. The card used to ship two — a line-art one for the
-     desktop and a solid one for the phone — and this looked both up so that
-     whichever the breakpoint drew was in the load-in. Both frames draw the same
-     `fi_6839980` since the 2026-09-21 re-export, so there is one element and
-     `q1` says so. */
+  /* One wallet glyph (`fi_6839980`), shared by both frames. */
   const walletIcon = q1(card, '.custody__wallet-icon');
   const walletLabel = q1(card, '.custody__label--wallet');
   const tiles = qa(card, '.custody__tile');
@@ -193,20 +141,16 @@ export function funds(card: HTMLElement): () => void {
   }
   const wallet = [disc, walletIcon];
 
-  /* Which way up is the card? Measured rather than matched against a media
-     query, because the geometry is the thing that has to agree and the box is
-     the geometry: the landscape group is 464 x 215 and the portrait one is
-     215 x 464, so a card taller than it is wide is the phone. A card that has
-     not been laid out reads 0 x 0 and falls to landscape, which is the
-     orientation whose start state is already on the page. */
+  /* Which way up is the card? Measured from the artwork box rather than a
+     media query, so it always agrees with the geometry: taller than wide is
+     the phone. An unlaid-out box reads 0 x 0 and falls to landscape. */
   const box = art.getBoundingClientRect();
   const portrait = box.height > box.width;
   const G = portrait ? PORTRAIT : LANDSCAPE;
 
-  /* One overlay for both added layers. Neither exists in the resting design —
-     they are the beat — so they are built here rather than shipped in the
-     markup, sized in the card's own `--u`, which a descendant resolves normally
-     even though the card that declares it cannot read it back. */
+  /* One overlay for the added layers (ring, wire, packet head). They are not
+     part of the resting design, so they are built here rather than shipped in
+     the markup, sized in the card's `--u`. */
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', `0 0 ${G.w} ${G.h}`);
   svg.setAttribute('aria-hidden', 'true');
@@ -229,9 +173,8 @@ export function funds(card: HTMLElement): () => void {
   wire.setAttribute('stroke-width', '1.6');
   wire.setAttribute('stroke-linecap', 'round');
 
-  /* A flat filled disc, and it stays flat: the head is the one thing on this
-     card that could tempt a blur or a drop-shadow, and the band does not allow
-     one. It reads because it moves, not because it glows. */
+  /* A flat filled disc. No blur or drop-shadow by design: it reads because it
+     moves, not because it glows. */
   const head = document.createElementNS(NS, 'circle');
   head.setAttribute('r', '4.2');
   head.setAttribute('fill', C.head);
@@ -245,14 +188,11 @@ export function funds(card: HTMLElement): () => void {
 
   const u = unitOf(art, G.w);
 
-  /* The two directions every beat below is written in, once, in whichever axis
-     points that way at this orientation. `toward` is the step a market tile
-     takes handing its value on -- toward the wallet, which is to the LEFT along
-     the landscape group and, after the quarter turn, DOWN the phone. `aside` is
-     the step a contract chip takes to answer, which is the perpendicular of the
-     packet's travel in both cases: up on the desktop, left on the phone. Nine
-     design pixels for a tile and ten for a chip, as a percentage of the
-     element's own box, so the tween survives a resize (see `pct` in shared.ts). */
+  /* The two directions every beat uses, in whichever axis points that way at
+     this orientation. `toward`: a market tile's step toward the wallet (left on
+     desktop, down on the phone). `aside`: a contract chip's answer,
+     perpendicular to the packet (up on desktop, left on the phone). 9 design px
+     for a tile and 10 for a chip, as a percentage of the element's own box. */
   const toward = (el: HTMLElement) => (portrait
     ? { yPercent: pct(el, 9, u) }
     : { xPercent: pct(el, -9, u, 'x') });
@@ -282,17 +222,15 @@ export function funds(card: HTMLElement): () => void {
 
     /* ---------------------------------------------------------------- loop
        Every `fromTo` here states `immediateRender: false`. A `fromTo` writes its
-       FROM value the moment it is created, even inside a paused timeline, and
-       this loop is built in the same call that parks the artwork at its start
-       state — so without it the loop would overwrite that start state before the
-       load-in had a chance to animate away from it. */
+       from value on creation, even inside a paused timeline, which would
+       overwrite the start state parked above before the load-in runs. */
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 4.75 });
 
-    // 1 — THE ONE OBJECT COMES OUT. The node on the orbit flares and lets go,
-    //     with nothing else on the card moving until the wire appears.
+    // 1. The node on the orbit flares and lets go, with nothing else on the
+    //    card moving until the wire appears.
     pulse(loop, nodes[1], T_RELEASE, { scale: 2 }, { scale: 1 }, 0.34, 0.76, 'transform');
 
-    // 2 — 226 design pixels of travel, from that node into the wallet
+    // 2. 226 design pixels of travel, from that node into the wallet
     const packet = { p: 0 };
     const ridePacket = () => {
       const pt = wire.getPointAtLength(packet.p * WIRE_LEN);
@@ -308,34 +246,32 @@ export function funds(card: HTMLElement): () => void {
         { strokeDashoffset: -WIRE_LEN, duration: TRAVEL_DUR, ease: 'power1.inOut', immediateRender: false }, T_TRAVEL)
       .to([wire, head], { opacity: 0, duration: 0.5, ease: 'sine.inOut' }, T_LAND + 0.15);
 
-    // 3 — THE REST FOLLOW. The four markets hand over behind the packet, the
-    //     first answering alone and the other three closer together. No scale:
-    //     the step and the lit filter say "handed on" without taking the accent
-    //     off the thing crossing the card.
+    // 3. The four markets hand over behind the packet, the first alone and the
+    //    other three closer together. No scale, so they don't take the focus
+    //    off the packet.
     tiles.forEach((tile, i) => {
       const at = i === 0 ? T_LEAD : T_LEAD + T_GAP + (i - 1) * T_STEP;
       pulse(loop, tile, at,
-        // One filter FUNCTION either side, so GSAP interpolates the list
-        // structurally instead of swapping it. In light `--bento-fd-tile-lit`
-        // is brightness(0.72): a chip that has settled, not one gone white.
+        // One filter function on each side, so GSAP interpolates rather than
+        // swaps. In light `--bento-fd-tile-lit` darkens (see Bento.css).
         { ...toward(tile), filter: C.tileLit },
         { ...TOWARD_BACK, filter: 'brightness(1)' }, 0.4, 0.78, 'transform');
       const label = labels[i];
       if (label) pulse(loop, label, at, toward(label), TOWARD_BACK, 0.4, 0.78, 'transform');
     });
 
-    // 4 — the contract chip answers as the packet reaches it
+    // 4. The contract chip answers as the packet reaches it
     pulse(loop, chips[0], 1.7,
       { ...aside(chips[0]), borderColor: C.chipLit },
       { ...ASIDE_BACK, borderColor: getComputedStyle(chips[0]).borderTopColor }, 0.46, 0.86, 'transform,borderColor');
 
-    // 5 — the withdrawal, as it passes
+    // 5. The withdrawal chip, as it passes
     pulse(loop, chips[1], 2.62,
       { ...aside(chips[1]), borderColor: C.chipLit },
       { ...ASIDE_BACK, borderColor: getComputedStyle(chips[1]).borderTopColor }, 0.46, 0.86, 'transform,borderColor');
 
-    // 6 — it lands: the node on the wallet ring, the ring closing onto it from
-    //     under that node, and one pulse of the disc.
+    // 6. It lands: the node on the wallet ring flares, the ring closes from
+    //    under that node, and the disc pulses once.
     pulse(loop, nodes[0], T_LAND, { scale: 2 }, { scale: 1 }, 0.34, 0.76, 'transform');
     loop
       .to(ring, { opacity: 1, duration: 0.3, ease: 'sine.out' }, T_LAND + 0.1)
@@ -350,16 +286,10 @@ export function funds(card: HTMLElement): () => void {
     const assets: HTMLElement[] = [];
     tiles.forEach((tile, i) => { assets.push(tile); if (labels[i]) assets.push(labels[i]); });
 
-    /* Every one of these clears `transform,opacity` when it lands, and that is
-       not tidiness. The load-in is the only thing that touches the wallet glyph
-       and the "Wallet" label -- neither has a beat in the loop -- so whatever it
-       leaves inline on them stays there for as long as the page is open. It was
-       leaving `transform: translate(0px, 0px)`, and an inline identity transform
-       is not the same as no transform: it promotes the element to its own
-       compositing layer, which is the antialiasing shift `pulse` in shared.ts
-       was written to avoid. The other three tweens are cleared for the same
-       reason a beat later, so nothing carries one even between the load-in
-       landing and that element's first turn in the loop. */
+    /* Every tween clears `transform,opacity` when it lands. The wallet glyph and
+       "Wallet" label have no loop beat, so anything left inline would stay for
+       good, and an inline identity transform changes text antialiasing (see
+       `pulse` in shared.ts). */
     const CLEAR = 'transform,opacity';
     const runLoop = () => { stopVisible = whileVisible(card, loop); };
     const intro = gsap.timeline({ paused: true, onComplete: runLoop });

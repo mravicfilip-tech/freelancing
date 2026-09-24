@@ -1,76 +1,50 @@
 /**
- * Card D — "Trade every market from one account".
+ * Card D: "Forecast Global Markets in One Place".
  *
- * The artwork is an orbit field: thirteen badged logo tiles and a drift of
- * unbadged ghost tiles arranged around the ringed Phorcast mark, with a cursor
- * resting on Solana. The card's claim is that the one mark in the middle reaches
- * all of them, so that is what the motion says and nothing else.
+ * The artwork is an orbit field: thirteen badged logo tiles and unbadged ghost
+ * tiles around the ringed Phorcast mark, with a cursor resting on Solana. The
+ * motion says one thing: the mark in the middle reaches all of them.
  *
- * LOAD-IN (1.8s, after the band's entrance has landed the card)
- *   The measure grid, the two orbit ellipses and the ghost tiles arrive with the
- *   card — it must never read as blank cream. The hub is the lead and has the
- *   stage alone for a third of a second. The badged tiles then dock in order of
- *   their distance from it, nearest first: thirteen arrivals inside two thirds
- *   of a second, a wave rather than a list. The diamonds on the orbit paths, the
- *   cursor and the tooltip close it out.
+ * LOAD-IN (about 1.8s, after the band's entrance has landed the card)
+ *   The grid, the orbit ellipses and the ghost tiles arrive with the card, so
+ *   it never reads as blank. The hub leads alone for a third of a second, then
+ *   the badged tiles dock in order of distance from it, nearest first (a wave,
+ *   not a list). The diamonds, the cursor and the tooltip close it out.
  *
- *   It was 2.2s, behind the band's own entrance. Same beats, same order, same
- *   eases, 20% quicker.
- *
- * LOOP (5.8s of story, then 3.9s of nothing — 9.7s end to end)
- *   The hub pulses and the pulse travels out through the field in the same
- *   distance order, each tile pushed sixteen design pixels straight out along its
- *   own radius and drawn back — a ring expanding through the orbit rather than a
- *   row of things blinking. Then the cursor does the card's job: it leaves Solana,
- *   crosses two hundred and thirty six design pixels of the field to Gold, the
- *   tooltip re-labels itself and Gold answers; then it comes back and Solana
- *   answers. The card is then completely still for nearly four seconds.
+ * LOOP (about 6.2s of motion, then 3.9s still)
+ *   The hub pulses and the pulse travels out through the field in distance
+ *   order, each tile pushed 16 design px out along its own radius and back: a
+ *   ring expanding through the orbit. Then the cursor leaves Solana, crosses
+ *   the field to Gold, the tooltip relabels and Gold answers; then it returns
+ *   and Solana answers.
  *
  * Two things this module must not do
  * ----------------------------------
  * 1. Write `boxShadow` on a tile. The tiles paint their sub-pixel rings with an
- *    INSET box-shadow, because Chrome snaps a used `border-width` to a whole
- *    pixel and would both thicken every hairline and drag the glyphs off their
- *    marks. A previous version of this file wrote a lift shadow on every frame
- *    and silently replaced the rings: measured `rgba(0,0,0,0.09) 0 0 0 0.74px
- *    inset` at 1.2s had become `rgba(22,12,9,0.14) 0 4px 11px -8px` by 6s. Every
- *    displacement here is a transform, which is a paint operation and leaves the
- *    computed shadow untouched.
- * 2. Look tiles up by index. DOM order changed when the box was rebuilt and it
- *    can change again; every badged tile carries `data-market`, so that is the
- *    key, and the ordering below is computed from measured geometry.
+ *    inset box-shadow (see BoxMarkets.css); writing a shadow replaces the ring.
+ *    Every displacement here is a transform.
+ * 2. Look tiles up by index. DOM order can change; every badged tile carries
+ *    `data-market`, which is the key, and the ordering below is computed from
+ *    measured geometry.
  *
- * Nothing here reads the pointer. The cursor is a drawn object following a
- * scripted path, the same on every machine.
+ * Nothing here reads the pointer. The cursor follows a scripted path.
  *
  * TWO LAYOUTS, ONE TIMELINE
  * -------------------------
  * At 720 and under the card is Figma 526:394: the field is recomposed
- * portrait, the six dark plates and the eight unbadged tints are
- * `display: none`, and eight
- * badged tiles sit somewhere else entirely. Nothing about the beats changes --
- * the hub still leads, the ring still expands out through the field in distance
- * order, the cursor still leaves Solana at 2.25 and is back by 3.95, and the
- * loop is still 5.8s of story on a 9.7s cycle. What changes is what those beats
- * are measured AGAINST, and all three places that could have been hard-coded to
- * the desktop field are named here because getting any of them wrong is silent:
+ * portrait, the dark plates and unbadged tints are `display: none`, and the
+ * remaining badged tiles move. The beats and timings are unchanged; what
+ * changes is what they are measured against. Three places where a desktop
+ * assumption would fail silently:
  *
- *   1. WHICH TILES. `display: none` is not "a tile that happens to be
- *      invisible": its rect is 0 x 0 at the origin, so it sorts as though it
- *      were on top of the hub, it takes a slot in the wave that then plays to
- *      an empty stage, and `radial()` divides its push by a zero width and
- *      hands GSAP an Infinity. Hidden tiles are dropped before anything is
- *      measured.
- *   2. THE DESIGN PIXEL. It used to come from the field's own width over
- *      727.454, which is the DESKTOP field's design width. On the phone the
- *      field is 394 wide, so the same expression under-read the unit by 46%
- *      and every radial push came out a little under half the size it was
- *      written as. It is taken off the hub instead: 82 design pixels in both
- *      layouts, and the one element guaranteed to be present.
- *   3. WHEN THE LAYOUT CHANGES. Percentages survive a resize; they do not
- *      survive a tile moving 200 pixels because a media query started matching.
- *      Crossing the breakpoint -- turning a phone on its side is the real case
- *      -- rebuilds, and nothing else does.
+ *   1. Which tiles. A `display: none` tile measures 0 x 0 at the origin: it
+ *      would sort as if on the hub, take a slot in the wave, and make
+ *      `radial()` divide by zero. Hidden tiles are dropped before measuring.
+ *   2. The design pixel. It is taken from the hub (82 design px in both
+ *      layouts), not from the field, whose design width differs per layout.
+ *   3. Layout changes. Percentages survive a resize but not a tile moving
+ *      because a media query started matching, so crossing the breakpoint
+ *      rebuilds the timeline (and nothing else does).
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -124,7 +98,7 @@ function attach(card: HTMLElement): () => void {
   const restingTip = tooltip.textContent ?? HOME;
 
   /* Several tiles are dimmed in the design (0.3 to 0.8 inline), so each one has
-     to come back to its own resting opacity rather than to 1 — and that value
+     to come back to its own resting opacity rather than to 1, and that value
      lives in the style attribute React wrote, which is why it is never handed to
      `clearProps`: clearing it would delete the design's own dimming. */
   const restOpacity = new Map<HTMLElement, string>();
@@ -169,15 +143,13 @@ function attach(card: HTMLElement): () => void {
     /* ---------------------------------------------------------------- loop */
     const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 3.9 });
 
-    // 1 — the hub, then a ring expanding out through the field
+    // 1. The hub, then a ring expanding out through the field
     pulse(loop, hub, 0, { yPercent: -10, scale: 1.09 }, { yPercent: 0, scale: 1 }, 0.5, 0.9, 'transform');
     // Design pixels, straight out along each tile's own radius. The tiles keep
     // their design sizes in both layouts, so the same 16 is the same fraction
     // of a tile on a phone as it is on a desktop.
     const OUT = 16;
-    // One design pixel, off the hub. See note 2 in the header: the field's own
-    // width is 727.454 design pixels on a desktop and 394 on a phone, so
-    // dividing by either one is right in one layout and wrong in the other.
+    // One design pixel, measured from the hub (see note 2 in the header).
     const u = box(hub).width / 82;
     const radial = (el: HTMLElement, px: number) => {
       const c = mid(el);
@@ -197,7 +169,7 @@ function attach(card: HTMLElement): () => void {
         { ...radial(d, 14), scale: 1.8 }, { xPercent: 0, yPercent: 0, scale: 1 }, 0.34, 0.66, 'transform');
     });
 
-    // 2 — the cursor works: Solana, across the field to Gold, and back
+    // 2. The cursor: Solana, across the field to Gold, and back
     if (home && visit) {
       const target = box(visit);
       const from = box(cursor);

@@ -18,21 +18,14 @@
                 neither reloads the page (what an empty href means) nor jumps to
                 the top (what `href="#"` does).
 
-   THE ORDER. Each group opens with the client's own list, in the client's
-   order: Product "Markets, Leaderboard, Trading Hours, FAQs"; Company "About,
-   Partner Program, Blog, Brand Kit"; Legal "Terms of Service, Privacy Policy,
-   Cookies, Contact". That is the whole list: the extra pages that once
-   followed it (Portfolio, Deposit, Withdraw; Why Phorcast, How it works,
-   Infrastructure; Risk Disclosure, Deposit & Withdrawal Policy) were removed
-   at the user's request.
+   THE ORDER is the design order: Product "Markets, Leaderboard, Trading
+   Hours, FAQs"; Company "About, Partner Program, Blog, Brand Kit"; Legal
+   "Terms of Service, Privacy Policy, Cookies, Contact". "Contact" is a
+   placeholder like the rest; there is no contact page or route.
 
-   "Contact" is the client's Legal item and is a placeholder like the rest.
-   The "Contacts" link that stood under the footer's brand block is gone at the
-   client's request, and there has never been a contact page or route.
-
-   NOT HERE, deliberately: Home (the logo and the bar already carry it), Login
-   and Sign Up (actions, in the bar and the sheet's dock), and the in-page
-   calls to action (`#signup`, `#markets`, `#bonus`) that live inside bands. */
+   NOT HERE, deliberately: Home (the logo already carries it), Login and Sign
+   Up (actions, in the bar and the sheet's dock), and the landing page's
+   in-band calls to action, which live in lib/cta.ts. */
 import { ABOUT, landing } from './router';
 
 export interface SitemapLink {
@@ -77,7 +70,7 @@ export const SITEMAP: SitemapGroup[] = [
   },
 ];
 
-/** The footer's four social icons, in the client's order. */
+/** The footer's four social icons, in design order. */
 export const SOCIAL_URLS = {
   x: 'https://x.com/PhorcastHQ',
   tiktok: 'https://www.tiktok.com/@phorcast',
@@ -91,9 +84,9 @@ export const page = (label: string): SitemapLink => {
   throw new Error(`sitemap: no page called "${label}"`);
 };
 
-/** What the nav's MORE opens, on the desktop bar and in the phone sheet. The
- *  user's call: About only, for now. The full sitemap lives in the footer; add
- *  a page here by label when MORE should carry it too. */
+/** What the nav's MORE opens, on the desktop bar and in the phone sheet.
+ *  Design decision: About only, for now. The full sitemap lives in the footer;
+ *  add a page here by label when MORE should carry it too. */
 export const MORE_MENU: SitemapLink[] = [page('About')];
 
 export const isPlaceholder = (href: string) => href === '';

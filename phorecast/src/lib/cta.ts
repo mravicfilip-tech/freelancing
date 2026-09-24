@@ -3,13 +3,11 @@
    Every button and arrow link inside a landing band reads its target from
    here, so pointing one at a real page is one edit, in this file.
 
-   Only four ids exist on the landing page: #why (the bento), #how (the steps),
+   The landing page's section ids are #why (the bento), #how (the steps),
    #built and #faq. A CTA whose page does not exist yet is '' -- TODO(client)
-   -- and renders through the sitemap's own placeholder behaviour (`linkProps`
-   in lib/sitemap.ts): a real, focusable link with its label whose click and
-   middle click are cancelled, so it neither reloads the page nor jumps to the
-   top. The bands used to point these at #signup, #markets and #bonus, which
-   are not ids on this page and landed nowhere. */
+   -- and renders through the sitemap's placeholder behaviour (`linkProps` in
+   lib/sitemap.ts): a real, focusable link whose click and middle click are
+   cancelled, so it neither reloads the page nor jumps to the top. */
 import { linkProps } from './sitemap';
 
 /** TODO(client): every `''` below is a page still to come. */

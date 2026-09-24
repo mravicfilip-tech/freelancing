@@ -1,7 +1,7 @@
 // Which theme the page is in, who is allowed to change it, and the one thing
 // that has to happen when it does.
 //
-// The store is deliberately not React state. Two of its three consumers are
+// The store is deliberately not React state. Two of its consumers are
 // imperative: the inline script in index.html sets the theme before React
 // exists, and the motion modules read resolved token values inside
 // `gsap.context`, nowhere near a component. So the truth lives here, on the
@@ -19,12 +19,10 @@ const root = document.documentElement;
 /**
  * Read a resolved custom property.
  *
- * Call this INSIDE a motion module's build/start function, next to the
- * `getComputedStyle` rest-colour reads it already does — never at module
- * scope, where it would run before the theme is known and would never re-read
- * when the theme changes. Keep the module's current hardcoded value as the
- * fallback: a missing property then yields today's dark value, which is the
- * safest possible failure mode for the regression gate.
+ * Call this INSIDE a motion module's build/start function, never at module
+ * scope, where it would run before the theme is known and never re-read when
+ * the theme changes. Pass the dark value as the fallback, so a missing
+ * property degrades to the dark theme.
  */
 export const tok = (name: string, fallback = ''): string =>
   getComputedStyle(root).getPropertyValue(name).trim() || fallback;
@@ -46,9 +44,9 @@ const systemTheme = (): Theme =>
 // reading it back rather than recomputing it means the two can never disagree.
 let theme: Theme = root.dataset.theme === 'light' ? 'light' : 'dark';
 
-// Bumped once per ACTUAL change of theme, and never otherwise — a section
-// rebuild is keyed off this number, so a spurious bump replays nine entrances
-// for nothing. See `useSectionMotion`.
+// Bumped once per ACTUAL change of theme, and never otherwise: section
+// rebuilds are keyed off this number, so a spurious bump replays every
+// section's entrance. See `useSectionMotion`.
 let epoch = 0;
 
 const subscribers = new Set<() => void>();
@@ -92,7 +90,7 @@ matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
   if (!stored()) apply(systemTheme());
 });
 
-// The inline script is the one that matters — it runs before first paint. This
+// The inline script is the one that matters: it runs before first paint. This
 // is the recovery path for the case where it did not run at all (a stripped
 // index.html, a test harness mounting the app directly), so the attribute and
 // this module still agree.
@@ -107,14 +105,11 @@ export const useTheme = (): Theme =>
 /**
  * A number that changes when, and only when, the theme does.
  *
- * `useSectionMotion` takes it as a layout-effect dependency, which is the whole
- * reason this module exists. Ten call sites across six motion modules read
- * their resting colours from `getComputedStyle` at BUILD time and cache them
- * for the life of the loop; `useSectionMotion` builds a section once and
- * refuses to rebuild. Without this, flipping the theme after a section has
- * built leaves its loop cooling to dark-mode colours on a light page — the fan
- * pills settling to near-black on paper — permanently, with nothing thrown and
- * nothing to see in a static screenshot.
+ * `useSectionMotion` takes it as a layout-effect dependency. Several motion
+ * modules read their resting colours from `getComputedStyle` at build time and
+ * cache them for the life of the loop, and `useSectionMotion` otherwise builds
+ * a section once. Without this, a theme flip after a section has built leaves
+ * its loop settling to dark-mode colours on a light page, silently.
  */
 export const useThemeEpoch = (): number =>
   useSyncExternalStore(subscribe, () => epoch, () => epoch);

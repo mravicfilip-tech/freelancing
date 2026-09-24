@@ -43,9 +43,8 @@
    `#faq` are ids in the landing page's document. Written bare in the nav they
    would resolve against whatever page is showing -- from /about, `#why` is a
    fragment with no target and the click does nothing at all. `landing()`
-   below is the one place that is fixed: it hands back the bare hash on "/" so
-   the landing page is byte-for-byte what it was, and "/" + hash anywhere
-   else. */
+   below is the one place that is fixed: it hands back the bare hash on "/",
+   and "/" + hash anywhere else. */
 
 import { useEffect, useSyncExternalStore } from 'react';
 
@@ -106,8 +105,7 @@ function navigate(to: string) {
 /**
  * The href for a landing-page section, from wherever we happen to be.
  *
- * On "/" it is the bare hash, so every anchor on the landing page is exactly
- * the string it has always been and rule 3's first case applies. Anywhere else
+ * On "/" it is the bare hash, so rule 3's first case applies. Anywhere else
  * it is an absolute "/#…", which rule 3's second case turns into "render the
  * landing page, then go to that section".
  *
@@ -141,15 +139,16 @@ function interceptable(e: MouseEvent): string | null {
   return url.pathname + url.search + url.hash;
 }
 
+/** The live route, for any component whose output depends on it. */
+export const useRoute = (): Route => useSyncExternalStore(subscribe, snapshot, snapshot);
+
 /**
  * Installs the two listeners, runs the scroll rule, and returns the live route.
  *
- * Mounted once, at the top of the tree. React's StrictMode double-mount adds
- * and removes both listeners in the same commit, which is why they are
- * attached in an effect rather than at module scope.
+ * Mounted once, at the top of the tree. The listeners are attached in an
+ * effect rather than at module scope so they are removed on unmount,
+ * including StrictMode's development double-mount.
  */
-export const useRoute = (): Route => useSyncExternalStore(subscribe, snapshot, snapshot);
-
 export function useRouter(): Route {
   const route = useRoute();
 
@@ -176,9 +175,8 @@ export function useRouter(): Route {
     if (route.kind !== 'push') return;
     if (route.hash) {
       // The other page has just rendered, so the target exists now. `auto`
-      // rather than the sheet's smooth: this is a jump between documents as
-      // far as the reader is concerned, and smoothly sliding a whole new page
-      // past them is disorienting.
+      // rather than smooth: to the reader this is a jump between documents,
+      // and smoothly sliding a whole new page past them is disorienting.
       document.getElementById(decodeURIComponent(route.hash.slice(1)))
         ?.scrollIntoView({ behavior: 'auto', block: 'start' });
       return;

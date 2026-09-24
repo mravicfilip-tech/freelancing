@@ -22,7 +22,7 @@
 
   /* The glow: four blurred discs and a tighter core, the sunrise recipe the
      footer and the hero share. The red disc's first stop is THE PAGE, not a
-     dark colour — it is the ground the disc dissolves into. */
+     dark colour; it is the ground the disc dissolves into. */
   --fam-g-red: linear-gradient(168deg, var(--page) 20%, #7e0202 100%);
   --fam-g-orange: #b43725;
   --fam-g-peach: #ec7850;
@@ -61,7 +61,7 @@
      the page rather than an object laid on it. */
   --fam-pred-shadow: rgba(0, 0, 0, 0.04);
 
-  /* The lifts that meet the paper, as MATCHED filter pairs — GSAP
+  /* The lifts that meet the paper, as MATCHED filter pairs: GSAP
      interpolates `filter` structurally, so both ends must list the same
      functions. Both of these mean "brighter" in dark and have to mean
      "deeper" in light, or the beat stops existing on paper. */
@@ -85,7 +85,7 @@
 
   /* The app's glyphs. Every one of these is the flat colour Figma baked into
      the file, named here so that masking it changes nothing about how it
-     looks — only about what can reach it. */
+     looks, only about what can reach it. */
   --fam-app-mark: #f03725;        /* the Phorcast mark in the app header   */
   --fam-app-status: #b5b5b5;      /* signal, data, battery                 */
   --fam-app-tab-icon: #cacaca;    /* the Trending chevron                  */
@@ -489,175 +489,101 @@
   .fam__stage > * { position: static; }
 
   .fam__copy--left { order: 1; width: 100%; gap: 14px; }
-  /* THE ECB CARD, ALONE AND AT FULL SIZE — see the note above this block.
-     `--u: 1px` is the whole re-size: every rule in the card is written in
-     design pixels, so one declaration gives it the frame's 200 x 160 with its
-     16px padding, 20px figure and 12px labels intact, and nothing inside the
-     card is touched. `flex: none` because a 160px box in a column that also
-     holds a 370px handset would otherwise be a candidate for shrinking. */
+  /* The ECB card, alone and at full size. `--u: 1px` is the whole resize:
+     every rule in the card is in design pixels, so this gives it the frame's
+     200 x 160 with nothing inside touched. `flex: none` so it cannot shrink
+     beside the taller handset. */
   .fam__mkt--ecb { order: 2; --u: 1px; flex: none; margin-top: 38px; }
   .fam__phone { order: 3; margin-top: 17px; }
   .fam__band { order: 4; margin-top: 38px; }
-  /* `align-items` is the bug, and the button is only where it shows.
-     `.fam__copy--right` is `align-items: flex-start` for the desktop layout,
-     where it is a left-aligned column standing beside the artwork — and that
-     rule was never restated for the stacked one. Every child of this column is
-     shrink-to-fit under it, so the button, which is the one child with a fixed
-     width (`--btn-w`, the site's button width, the same in every section),
-     parks against the left edge between a full-width paragraph and a centred
-     chip row and reads as a mistake. The paragraph only looks unaffected
-     because at this width its text happens to fill the column.
-
-     So the column centres its children, and the paragraph is given the full
-     width back explicitly rather than being left to shrink-to-fit — its lines
-     stay left-aligned and its measure stays the column's. Every child of it is
-     now `width: 100%` — the claim included — so the centring is inert and the
-     three of them set flush left, which is where the frame puts them. */
+  /* `.fam__copy--right` is `align-items: flex-start` for desktop. Stacked,
+     that would park the fixed-width button against the left edge, so the
+     column centres its children. Every child is then `width: 100%`, so the
+     centring is inert and all three sit flush left, as in the frame. */
   .fam__copy--right { order: 5; margin-top: 43px; width: 100%; gap: 12px; align-items: center; }
   .fam__sub-title, .fam__sub-body { width: 100%; }
 
-  /* The type is the site's scale at every width (see the note on
-     `.fam__title`), so nothing is resized here. The body takes `--ink-2`, the
-     `--color-nre-body` the frame names for it; desktop's white is left where
-     it is, since nothing here should reach a width this block does not own. */
+  /* Type is the site's scale at every width, so nothing is resized here. The
+     body takes `--ink-2`, the body colour the frame names for it. */
   .fam__sub-body { margin-top: 0; color: var(--ink-2); }
 
-  /* The button hands every one of its `--u` overrides back to `.btn`, which is
-     already drawn in flat pixels and already knows how to hold its own label.
-     The frame runs it the full width of the column, so `--btn-w` goes too —
-     and with it the last thing that could fight `.btn`'s own `padding: 16px
-     24px` and `white-space: nowrap` for room. `height: auto` leaves that
-     padding to set the height, which lands on the frame's 51px exactly.
-     `margin-top` is the frame's 30 less the column's own 12 gap. */
-  /* TWO CLASSES, because `.btn` in global.css states `width` and `height` at
-     the same specificity and is loaded after this file — so the single-class
-     form of this rule set the margin and lost the size, and the button stayed
-     254px wide. The rule it replaced looked like it was winning only because
-     it restated `--btn-w`, the value it was failing to override. */
+  /* The button hands its `--u` overrides back to `.btn` and runs the full
+     column width, as in the frame. `height: auto` lets `.btn`'s padding set
+     the height (the frame's 51px). `margin-top` is the frame's 30 less the
+     column's 12 gap.
+
+     Two classes, because `.btn` in global.css sets `width` and `height` at the
+     same specificity and loads after this file; a single-class rule loses. */
   .fam__copy--right .fam__cta {
     width: 100%; max-width: none; height: auto;
     border-radius: var(--radius-pill); margin-top: 18px;
   }
 
-  /* THE HANDSET GETS ITS OWN `--u`. Every rule inside the phone — the bezel,
-     the screen, the status bar, both market panels, the leaderboard, the BTC
-     ring — is written in `--u`, so one declaration here resizes all of it and
-     no rule inside the device is touched. 240px wide is the 348-wide design at
-     0.69, which is the scale the frame places it at; the vw cap keeps it off
-     the gutters at 360 and 320.
+  /* The handset gets its own `--u`, so one declaration resizes everything
+     inside the device. 240px is the 348-wide design at 0.69, the frame's
+     scale; the vw cap keeps it off the gutters at 360 and 320.
 
-     AND IT IS CROPPED, which is the frame's doing and not a shortening of the
-     device. `.fam__phone` is already `overflow: hidden` over a screen whose
-     contents run past it — that is how the desktop composition ends the phone
-     on the stage's bottom edge, with the band's horizon under it. The frame
-     does the same thing higher up: the handset ends a few pixels into the BTC
-     card, with no bottom bezel, and the strip follows. So the crop is this
-     section's existing language restated at a phone's height, and the height
-     below is where the frame cuts it — just past the foot of the BTC panel,
-     which is also where the screen's content ends. Measured: the BTC panel's
-     own bottom edge is 540 design pixels down, and the crop is eight above
-     it — enough to take the card's bottom corners off, which is what makes it
-     read as a screen continuing rather than a short device. Without any of it
-     the phone carries 90px of empty screen and then a bezel, which is what
-     shipped. */
+     It is cropped, as in the frame: `.fam__phone` is `overflow: hidden`, and
+     the height cuts the screen eight design pixels above the BTC panel's
+     bottom edge (540), which takes the card's bottom corners off so it reads
+     as a screen continuing rather than a short device. */
   .fam__phone { --u: calc(min(240px, 64vw) / 348); flex: none; height: calc(532 * var(--u)); }
 
-  /* NVDA only. The frame keeps ECB and drops this one — see the note above. */
+  /* NVDA only. The frame keeps ECB and drops this one; see the note above. */
   .fam__mkt--nvda { display: none; }
 
-  /* THE GLOW, RE-ANCHORED. Its discs are positioned in its own `--u` against a
-     1920-wide frame, so in a column three times taller than it is wide they
-     bunch into the top corner and the band's brightest point — which belongs
-     just above the horizon — ends up halfway up the copy. A 900-wide crop of
-     the same field puts the sunrise back where the frame has it: behind the
-     handset, ending at the strip. Same four discs, same core, same order.
+  /* THE GLOW, RE-ANCHORED. The discs are placed against a 1920-wide frame,
+     so in a tall column they bunch into the top corner. A 900-wide crop of the
+     same field puts the sunrise behind the handset, ending at the strip.
 
-     It used to hang off the foot of the section, which was right while the
-     strip was the last thing in the column. It is now fourth of five, and the
-     frame draws the copy under it on flat ground, so the field is anchored
-     from the top instead.
+     Fixed top, clamped field. The glow is absolute in `.fam` and the handset is
+     in the column's flow, so no length relates the two, but the column above
+     the handset is the same height at every width here (the handset's top is
+     364 from 320 to 700). 250 puts the field's masked edge on it.
 
-     A FIXED TOP AND A CLAMPED FIELD, both for the same reason. The glow is
-     absolutely placed in `.fam` and the handset it belongs behind is in the
-     column's flow, so no length can relate the two — but at this breakpoint
-     the column above the handset is the same height at every width it serves:
-     56 of padding, a heading the markup breaks into exactly two lines, 38, a
-     160px card, 17. The handset's top measures 364 at 320 and at 700 alike,
-     and 250 puts the field's masked-in edge on it.
-
-     A PERCENTAGE OF THE SECTION WAS TRIED FIRST AND IS WRONG, which is worth
-     recording. The field's height is `1080 * --u` against `100cqw`, so it
-     grows with the VIEWPORT while the column above it does not: 468px tall at
-     390 and 840 at 700. Any share of the section's height that framed the
-     handset at one of those widths ran the light down over the copy at the
-     other, and the horizon then cut a hard page-coloured bar across the
-     category strip. Clamping the field's own unit to 360–430 holds it between
-     432 and 516 tall across the whole range instead, which is the handset and
-     a little.
-
-     Its top 20% is masked away by `.glow-fade--top` and its foot by the stop
-     added below; the discs under both are blurred by 109px, so a few pixels
-     either way is not a thing that can be seen. */
+     Do not size it as a percentage of the section: the field grows with the
+     viewport while the column does not, so the light runs down over the copy
+     at one width or the other. Clamping its unit to 360 to 430 holds it
+     between 432 and 516 tall. */
   .fam__bg { --u: calc(clamp(360px, 100cqw, 430px) / 900); top: 250px; bottom: auto; height: calc(1080 * var(--u)); }
-  /* TWO CLASSES, for the same reason `.fam__copy--right .fam__cta` above has
-     two: `.glow-fade--top` is a single class in global.css, which is loaded
-     after this file, so a single-class mask here loses the cascade outright
-     and the hard edge stays. */
+  /* Two classes, because `.glow-fade--top` is a single class in global.css
+     and loads after this file; a single-class mask here would lose. */
   .fam .fam__bg {
-    /* AND IT FADES OUT AT THE FOOT, which `.glow-fade--top` in global.css does
-       not do — that utility softens the top edge only, because until now this
-       field ended at the bottom of the section where the next band took over.
-       It now ends in the middle of one, forty-odd pixels under the handset,
-       and an unmasked edge there is a hard horizontal line drawn across the
-       category strip. The stops are the utility's own 20% at the top and the
-       last twelfth at the bottom, which lands on the handset's crop: the two
-       strips of light either side of the device fade out level with it, which
-       is where the frame ends them. Both properties are restated because a mask is one shorthand: a
-       bottom stop cannot be added to the top one from here. */
+    /* The field also fades out at the foot, which `.glow-fade--top` does not
+       do. It ends mid-section here, and an unmasked edge would draw a hard line
+       across the category strip. Stops: the utility's 20% at the top, the last
+       twelfth at the bottom, level with the handset's crop. Both properties are
+       restated because a mask is one shorthand. */
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 92%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 92%, transparent 100%);
   }
 
-  /* `relative`, NOT `static`. The band has to leave its `bottom: 0` corner and
-     join the column, and the reflex is `position: static` — but `.fam__horizon`
-     is absolute INSIDE it, so static hands the horizon's containing block to
-     `.fam` itself and a 487 x 215 blurred ellipse painted in the PAGE colour
-     lands on the heading. It cost an hour: the eyebrow vanished and "Familiar
-     Trading." faded out along the arc, which reads as a font or a compositing
-     fault and is neither. `relative` is in flow and still a containing block.
-
-     No padding of its own any more: the frame's gaps above and below the strip
-     are carried by the margins on the blocks either side, where the other
-     three gaps in this column are. */
+  /* `relative`, not `static`. `.fam__horizon` is absolute inside the band, so
+     `static` would hand its containing block to `.fam` and a page-coloured
+     ellipse would paint over the heading. `relative` is in flow and still a
+     containing block. The gaps either side are margins on the neighbouring
+     blocks, so the band has no padding. */
   .fam__band {
     position: relative; width: 100%; height: auto; padding: 0;
     display: flex; justify-content: center;
   }
   /* Three viewport-widths across and 520 tall, so what crosses the band is a
-     shallow arc rather than the top of a small circle — the same relationship
+     shallow arc rather than the top of a small circle, the same relationship
      the 6036 x 2668 ellipse has to the 1920 frame, restated at this width. It
      is page-coloured, so everything it covers below the strip is simply the
-     page — including the hard bottom edge of the glow field above it. */
+     page, including the hard bottom edge of the glow field above it. */
   .fam__horizon { top: 10px; width: 300vw; height: 520px; }
 
-  /* THE CATEGORY STRIP, AS THE FRAME DRAWS IT: a 2 x 2 grid of pills at the
-     desktop's own size — 10 / 30 of padding round 12px type — with the two
-     live dots flanking the block rather than book-ending a row.
-     It was one row of four shrunk to 7 / 13 round 11px type to fit; the frame
-     fits them by stacking instead, and keeps the type readable.
+  /* THE CATEGORY STRIP, as the frame draws it: a 2 x 2 grid of pills at the
+     desktop's size (10 / 30 padding, 12px type), with the two live dots
+     flanking the block.
 
-     `grid-template-columns: auto auto` rather than two equal tracks: each
-     column takes the wider of the two pills in it and both pills stretch to
-     fill it, so the four meet with no gaps and the seam runs straight down.
-     That is what makes the small four-cornered negative space in the middle of
-     the block, which is the shape the frame has there. Equal fractions would
-     have squeezed "Finance" — it is the widest of the four — against its own
-     padding.
+     `grid-template-columns: auto auto` so each column takes its wider pill and
+     both pills stretch to fill it; the seam runs straight down. Equal
+     fractions would squeeze "Finance", the widest.
 
-     `position: relative` on the strip was already here, and for a painting
-     reason: `.fam__horizon` is an absolutely-positioned sibling BEFORE it in
-     the band, so a static strip paints under the page-coloured ellipse and the
-     pills disappear. It now also gives the two dots something to hang off. */
+     `position: relative` keeps the strip painting above the page-coloured
+     `.fam__horizon` (an absolute sibling before it), and anchors the dots. */
   .fam__chips {
     position: relative; inset: auto; transform: none;
     display: grid; grid-template-columns: auto auto; gap: 0;
@@ -685,18 +611,14 @@
 .fam__phone { will-change: transform, opacity; transform-origin: 50% 72%; }
 .fam__mkt, .fam__pred { will-change: transform, opacity; }
 
-/* Pending state, the same contract as the hero and the bento. Without it the
-   band painted settled from its very first frame and merely animated later, so
-   the top of it sat finished in the sliver below the bento before anyone had
-   scrolled to it. The attribute is removed in the same frame GSAP takes over.
+/* Pending state, the same contract as the hero and the bento: the animated
+   parts stay hidden until the entrance takes over, so the band is not seen
+   settled in the sliver below the bento before it is scrolled to.
 
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it. A timed failsafe cannot work for a band that waits
-   to be scrolled to -- the wait is legitimate and can last minutes -- so the
-   guarantee has to come from the hold never applying in the first place when
-   nothing will undo it. Only the animated parts are held; the glow, the horizon
-   and the bottom band itself stay, so nothing about the layout pops in. The
-   phone's screen contents are covered by the phone. */
+   Gated on [data-js], which main.tsx sets, so the hold only exists when there
+   is script to release it. A timed failsafe cannot work for a band that waits
+   to be scrolled to. The glow, the horizon and the band stay visible so the
+   layout does not pop; the phone covers its own screen contents. */
 [data-js] .fam[data-motion='pending'] .fam__copy--left .eyebrow,
 [data-js] .fam[data-motion='pending'] .fam__title,
 [data-js] .fam[data-motion='pending'] .fam__phone,
@@ -713,111 +635,57 @@
 }
 
 /* --- Light ------------------------------------------------------------------
-   THE DECISION THIS BLOCK IS SHORT BECAUSE OF.
+   Design decision: a deliberate dark inset.
    -------------------------------------------------------------------------
-   LIGHTMODE.md 6.3 calls the device mockups the biggest decision in the brief
-   and records the user's preference: re-tint them, do not leave them as dark
-   panels. This section does not, and the reason is a file nobody is allowed
-   to touch.
+   The handset is drawn as hardware (a #000 body, an 8px rim, a 40px radius,
+   the screen inset inside it), and a photograph of a phone does not change
+   its screen because the website changed palette. The two prediction cards
+   are the same app off the device, so they stay dark with it; re-tinting one
+   and not the other would put a light app and a dark app side by side. On
+   paper they gain a contact shadow so they read as lying on the page.
 
-   The phone here is the one of the four mockups that is genuinely drawn as
-   HARDWARE: a #000 body, an 8px rim catching light, a 40px corner radius,
-   with the screen inset inside it. The Steps panels and the hero's account
-   slide are flat UI with no device around them, which is a different object
-   and can honestly take a different answer. A photograph of a handset does
-   not change what is on its screen because the website changed its palette.
+   So everything below is page chrome: the glow, the glass market cards, the
+   ECB plate, the category strip, the shadows and the two lifts that meet the
+   paper. No --fam-app-* value appears.
 
-   And the two prediction cards floating beside it are the SAME APP, off the
-   device -- close enough to be read in one glance with it. Re-tinting them
-   and not the handset, or the handset and not them, would put a light app and
-   a dark app side by side inside one section; a contradiction a reader sees
-   immediately, and a worse one than a page whose product screens are all
-   dark.
-
-   (An earlier version of this note rested the argument on `familiar/ghost.png`
-   -- a bitmap of dark product cards that had no light variant and lived in
-   src/assets, which no agent may edit, LIGHTMODE.md 2.2. That file is no
-   longer used by this section: the re-export of the two cards replaced the
-   blurred crops it was standing in for. The conclusion is unchanged, but it
-   now rests on what the artwork IS rather than on what could not be edited.)
-
-   So: A DELIBERATE DARK INSET. The handset and the two floating prediction
-   cards are the product's own dark theme, identical in both themes, and the
-   band gains what 6.3 asks a dark inset to gain -- a contact shadow that
-   makes it read as a screen lying on paper. This contradicts the brief's
-   stated preference and is flagged as such.
-
-   The consequence is the shape of the block below. Everything here is PAGE
-   CHROME: the glow, the two glass market cards, the ECB plate, the category
-   strip, the contact shadow, and the two lifts that meet the paper. Not one
-   --fam-app-* value appears, and because of that every "lit means brighter"
-   beat inside the handset -- the ring advancing, the filter glyph glinting,
-   the odds chips lighting, the leaderboard's green tick -- is still a bright
-   thing on a dark ground and needed no direction flip at all.
-
-   Written twice, exactly as tokens.css writes the palette twice, because a
-   media query cannot go in a selector list. The two blocks MUST stay
-   identical; only their conditions differ.
+   Written twice, as tokens.css writes the palette, because a media query cannot
+   go in a selector list. The two blocks MUST stay identical:
 
      1. the system preference leads, but only while nothing has been chosen;
      2. an explicit choice wins at any system setting.
    -------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* THE GLOW. Same four discs and the same tighter core, at the same
-     positions, the same radii, the same blur and the same paint order -- the
-     geometry is byte-for-byte what dark draws, so the gate stays quiet and
-     the two themes agree about where the band's energy is. What changes is
-     what the layer DOES.
+  /* THE GLOW. Same discs, core, positions, radii, blur and paint order as
+     dark; only the colours change.
 
-     1. THE PAGE STOP IS THE PAGE. The red disc's first stop was never a dark
-        colour; it is the ground the disc dissolves into. It is var(--page) in
-        both themes and needs no light value at all.
+     1. The red disc's first stop is var(--page) in both themes, the ground
+        the disc dissolves into, so it needs no light value.
+     2. The luminance ramp inverts, the spatial ramp does not. In dark the
+        last-painted core is the brightest point; on paper nothing can be
+        brighter than the page, so the core becomes the deepest tint and the
+        red falloff the faintest. Warmth still peaks where light peaked.
 
-     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
-        ramp climbs 1.74 -> 3.23 -> 6.77 -> 14.3 -> 18.31 against the page,
-        with the last-painted core the brightest thing in the band, because
-        the core of a light source is. Nothing on paper can be brighter than
-        the page, so a pale core would be a hole and the band would read as a
-        halo around nothing. The order is kept and the ramp reversed: the core
-        is still painted last and is now the DEEPEST tint, the red falloff is
-        still the outermost and is now the faintest. Warmth peaks where light
-        peaked.
-
-     These discs are opaque and carry no opacity multiplier of their own --
-     unlike the footer's -- so each token IS its rendered density. The ramp is
-     therefore written directly at 1.06 / 1.13 / 1.20 / 1.28 / 1.37 against
-     the page, landing at the footer's measured 1.37:1 at its densest. */
+     The discs are opaque, so each token is its rendered density: 1.06 / 1.13 /
+     1.20 / 1.28 / 1.37 against the page, matching the footer at its densest. */
   --fam-g-red: linear-gradient(168deg, var(--page) 20%, #fff3ed 100%);
   --fam-g-orange: #ffeae1;
   --fam-g-peach: #fde2d6;
   --fam-g-cream: #fbd9cb;
   --fam-g-core: #f9d1c0;
 
-  /* THE ECB PLATE. In dark it is an inset: 1.08 darker than the glass card it
-     sits in, with the refresh lighting it 1.23 lighter again. On paper an
-     inset is still darker than its card, so the plate keeps its job and only
-     its colour moves -- and the lift has to turn around, because 1.23
-     LIGHTER on cream is 1.23 nearer invisible. Ratios preserved, direction
-     reversed, which is the whole light-mode job in four lines. */
+  /* THE ECB PLATE. An inset is darker than its card in both themes, but the
+     refresh lift turns around: lighter on cream would be closer to invisible.
+     Ratios kept, direction reversed. */
   --fam-foot: #ece2d9;
   --fam-foot-ink: var(--ink);
   --fam-foot-lit: #dbcabc;
 
-  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
-     inverts for free: more alpha is brighter on black and darker on cream,
-     and both mean "this card just took a print".
-
-     The fill takes the usual alpha x 1.125 -- dark ink on paper is less
-     visible per unit alpha than white on black -- and lands at a 1.19:1 swing
-     against dark's 1.22:1, measured on the rendered page.
-
-     The EDGE does not, and this is where the x 1.125 rule stops applying. It
-     is a rule for reproducing a resting colour's density; a lit value's job
-     is the size of the STEP it takes from rest, and .34 -> .383 reproduces
-     the wrong thing. Dark's edge travels 2.25:1 from its resting .12, and on
-     paper the same journey from a resting .14 needs .46. Measured both ways
-     rather than derived. */
+  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha, so the direction
+     inverts for free. The fill uses alpha x 1.125 (dark ink on paper reads
+     weaker per unit alpha than white on black). The edge is set by the size of
+     its step from rest instead: .46 from a resting .14 matches dark's 2.25:1
+     travel, where x 1.125 would not. */
   --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
   --fam-card-lit-line: rgba(26, 21, 18, 0.46);
 
@@ -839,84 +707,52 @@
      on a near-black page, which is why dark's is 4%. */
   --fam-pred-shadow: rgba(26, 21, 18, 0.16);
 
-  /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
-     have to mean "deeper" here, or the beat runs, moves nothing anyone can
-     see, and gets reported as a missing animation. The pair lists one
-     function at both ends in both themes so GSAP has a matching structure to
-     interpolate. The two lifts INSIDE the handset are absent from this block
-     on purpose: they are still bright things on a dark ground. */
+  /* THE TWO LIFTS THAT MEET THE PAPER. "Brighter" in dark, "deeper" here, or
+     the beat would be invisible. Each pair lists the same function at both ends
+     so GSAP can interpolate. The handset's lifts are absent on purpose. */
   --fam-lift-eyebrow: brightness(0.62);
   --fam-lift-dot: brightness(0.62);
   }
-  /* The handset gains the one thing a dark inset needs on paper: a contact
-     shadow. Without it a near-black slab on cream reads as a hole punched
-     through the page rather than an object lying on it. It is cast in --u, so
-     it is the same shadow proportionally at every breakpoint, and it exists
-     only here: dark declares no box-shadow on the phone at all, which is why
-     this is a light-only RULE and not a token. A token would have to resolve
-     to something in dark, and `transparent` computes as
-     `rgba(0, 0, 0, 0) 0px Npx Npx` rather than `none` -- a dark difference
-     for nothing. */
+  /* The handset's contact shadow, so a near-black slab on cream reads as an
+     object lying on the page rather than a hole. Cast in --u so it scales with
+     the stage. A light-only rule rather than a token, because dark has no
+     shadow and a `transparent` token would still compute to a shadow value. */
   :root:not([data-theme='dark']) .fam__phone {
     box-shadow: 0 calc(20 * var(--u)) calc(48 * var(--u)) rgba(26, 21, 18, 0.16);
   }
 }
 
 :root[data-theme='light'] {
-  /* THE GLOW. Same four discs and the same tighter core, at the same
-     positions, the same radii, the same blur and the same paint order -- the
-     geometry is byte-for-byte what dark draws, so the gate stays quiet and
-     the two themes agree about where the band's energy is. What changes is
-     what the layer DOES.
+  /* THE GLOW. Same discs, core, positions, radii, blur and paint order as
+     dark; only the colours change.
 
-     1. THE PAGE STOP IS THE PAGE. The red disc's first stop was never a dark
-        colour; it is the ground the disc dissolves into. It is var(--page) in
-        both themes and needs no light value at all.
+     1. The red disc's first stop is var(--page) in both themes, the ground
+        the disc dissolves into, so it needs no light value.
+     2. The luminance ramp inverts, the spatial ramp does not. In dark the
+        last-painted core is the brightest point; on paper nothing can be
+        brighter than the page, so the core becomes the deepest tint and the
+        red falloff the faintest. Warmth still peaks where light peaked.
 
-     2. THE LUMINANCE RAMP INVERTS, THE SPATIAL RAMP DOES NOT. In dark the
-        ramp climbs 1.74 -> 3.23 -> 6.77 -> 14.3 -> 18.31 against the page,
-        with the last-painted core the brightest thing in the band, because
-        the core of a light source is. Nothing on paper can be brighter than
-        the page, so a pale core would be a hole and the band would read as a
-        halo around nothing. The order is kept and the ramp reversed: the core
-        is still painted last and is now the DEEPEST tint, the red falloff is
-        still the outermost and is now the faintest. Warmth peaks where light
-        peaked.
-
-     These discs are opaque and carry no opacity multiplier of their own --
-     unlike the footer's -- so each token IS its rendered density. The ramp is
-     therefore written directly at 1.06 / 1.13 / 1.20 / 1.28 / 1.37 against
-     the page, landing at the footer's measured 1.37:1 at its densest. */
+     The discs are opaque, so each token is its rendered density: 1.06 / 1.13 /
+     1.20 / 1.28 / 1.37 against the page, matching the footer at its densest. */
   --fam-g-red: linear-gradient(168deg, var(--page) 20%, #fff3ed 100%);
   --fam-g-orange: #ffeae1;
   --fam-g-peach: #fde2d6;
   --fam-g-cream: #fbd9cb;
   --fam-g-core: #f9d1c0;
 
-  /* THE ECB PLATE. In dark it is an inset: 1.08 darker than the glass card it
-     sits in, with the refresh lighting it 1.23 lighter again. On paper an
-     inset is still darker than its card, so the plate keeps its job and only
-     its colour moves -- and the lift has to turn around, because 1.23
-     LIGHTER on cream is 1.23 nearer invisible. Ratios preserved, direction
-     reversed, which is the whole light-mode job in four lines. */
+  /* THE ECB PLATE. An inset is darker than its card in both themes, but the
+     refresh lift turns around: lighter on cream would be closer to invisible.
+     Ratios kept, direction reversed. */
   --fam-foot: #ece2d9;
   --fam-foot-ink: var(--ink);
   --fam-foot-lit: #dbcabc;
 
-  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha and the direction
-     inverts for free: more alpha is brighter on black and darker on cream,
-     and both mean "this card just took a print".
-
-     The fill takes the usual alpha x 1.125 -- dark ink on paper is less
-     visible per unit alpha than white on black -- and lands at a 1.19:1 swing
-     against dark's 1.22:1, measured on the rendered page.
-
-     The EDGE does not, and this is where the x 1.125 rule stops applying. It
-     is a rule for reproducing a resting colour's density; a lit value's job
-     is the size of the STEP it takes from rest, and .34 -> .383 reproduces
-     the wrong thing. Dark's edge travels 2.25:1 from its resting .12, and on
-     paper the same journey from a resting .14 needs .46. Measured both ways
-     rather than derived. */
+  /* THE GLASS UNDER A PRINT. White-alpha becomes ink-alpha, so the direction
+     inverts for free. The fill uses alpha x 1.125 (dark ink on paper reads
+     weaker per unit alpha than white on black). The edge is set by the size of
+     its step from rest instead: .46 from a resting .14 matches dark's 2.25:1
+     travel, where x 1.125 would not. */
   --fam-card-lit-bg: rgba(26, 21, 18, 0.124);
   --fam-card-lit-line: rgba(26, 21, 18, 0.46);
 
@@ -938,17 +774,14 @@
      on a near-black page, which is why dark's is 4%. */
   --fam-pred-shadow: rgba(26, 21, 18, 0.16);
 
-  /* THE TWO LIFTS THAT MEET THE PAPER. Both mean "brighter" in dark and both
-     have to mean "deeper" here, or the beat runs, moves nothing anyone can
-     see, and gets reported as a missing animation. The pair lists one
-     function at both ends in both themes so GSAP has a matching structure to
-     interpolate. The two lifts INSIDE the handset are absent from this block
-     on purpose: they are still bright things on a dark ground. */
+  /* THE TWO LIFTS THAT MEET THE PAPER. "Brighter" in dark, "deeper" here, or
+     the beat would be invisible. Each pair lists the same function at both ends
+     so GSAP can interpolate. The handset's lifts are absent on purpose. */
   --fam-lift-eyebrow: brightness(0.62);
   --fam-lift-dot: brightness(0.62);
 }
 
-/* The handset's contact shadow — see the note on the block above. */
+/* The handset's contact shadow; see the note on the block above. */
 :root[data-theme='light'] .fam__phone {
   box-shadow: 0 calc(20 * var(--u)) calc(48 * var(--u)) rgba(26, 21, 18, 0.16);
 }

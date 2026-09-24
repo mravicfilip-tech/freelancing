@@ -67,7 +67,7 @@ const palette = () => ({
   /* The tapped category pill: the brand red, and the label that rides it. */
   pillOnBg: tok('--accent', '#e5331e'),
   pillOnFg: tok('--on-accent', '#fffbf8'),
-  /* Lifts, as matched pairs — GSAP interpolates `filter` structurally, so
+  /* Lifts, as matched pairs: GSAP interpolates `filter` structurally, so
      both ends must list the same functions. The two that meet the paper
      (the eyebrow dot, the strip's live dots) turn around in light; the two
      inside the handset (the ring, the filter glyph) do not. */
@@ -85,7 +85,7 @@ function pulse(tl: Timeline, target: gsap.TweenTarget, at: number, out: gsap.Twe
     .to(target, { ...back, duration: down, ease: 'sine.inOut' }, at + up);
 }
 
-/** The last non-empty text node inside `el` — the NVDA footer's `-2.37%` sits
+/** The last non-empty text node inside `el`. The NVDA footer's `-2.37%` sits
  *  beside an `<img>` with no element of its own to hold it. */
 function lastText(el: HTMLElement | null): Text | null {
   if (!el) return null;
@@ -141,7 +141,7 @@ export function familiarLoop(root: HTMLElement): () => void {
   const gauge = q('.fam__gauge');
   const filterIcon = q('.fam__filter');
   const tabAll = q('.fam__tabs .is-active');
-  // Anchored, because `/ending/` also matches "Tr-ending" — which is styled
+  // Anchored, because `/ending/` also matches "Tr-ending", which is styled
   // white already, so the tab switch silently tweened white to white.
   const tabSoon = qa('.fam__tabs span').find((s) => /^ending\s/i.test((s.textContent ?? '').trim())) ?? null;
   const btcMeta = q('.fam__event--btc .fam__event-meta');
@@ -347,7 +347,7 @@ export function familiarLoop(root: HTMLElement): () => void {
               // The rows are transparent text on the card, so at the halfway
               // point the two lines sit on top of each other and read as a
               // collision. Dipping both through the pass turns that into a
-              // dissolve — the travel is unchanged, only the overlap is.
+              // dissolve; the travel is unchanged, only the overlap is.
               const fade = 1 - 0.62 * Math.sin(Math.PI * cross.v);
               gsap.set(rows[1], { yPercent: pitch * cross.v, opacity: fade });
               gsap.set(rows[2], { yPercent: -pitch * cross.v, opacity: fade });

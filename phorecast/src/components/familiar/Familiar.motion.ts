@@ -152,15 +152,15 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
   const phone = shown(q('.fam__phone')[0]);
   const ecb = shown(q('.fam__mkt--ecb')[0]);
   const nvda = shown(q('.fam__mkt--nvda')[0]);
-  // Both floating prediction cards, outermost first — see step 5.
+  // Both floating prediction cards, outermost first; see step 5.
   const predOuter = shown(q('.fam__pred--b')[0]);
   const predInner = shown(q('.fam__pred--a')[0]);
 
-  /* 1 — the band names itself. */
+  /* 1. The band names itself. */
   rise(tl, q('.fam__copy--left .eyebrow'), cue(LEAD), { y: d(44), duration: 0.6, clearProps: 'transform,opacity' });
   rise(tl, q('.fam__title'), cue(LEAD + 0.1), { y: d(52), duration: 0.75, clearProps: 'transform,opacity' });
 
-  /* 2 — the lead. Origin low on the handset so the small amount of scale reads
+  /* 2. The lead. Origin low on the handset so the small amount of scale reads
      as it settling onto the stage rather than growing out of its own middle. */
   if (phone) {
     tl.from(phone, {
@@ -173,7 +173,7 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
       clearProps: 'transform,opacity',
     }, cue(LEAD + 0.34));
 
-    /* 3 — the app fills in once the handset has landed. At 1.10s the phone
+    /* 3. The app fills in once the handset has landed. At 1.10s the phone
        has under three design pixels of its 140 left to travel. */
     rise(tl, Array.from(phone.querySelectorAll<HTMLElement>('.fam__event')), cue(LEAD + 1.1), {
       y: d(28),
@@ -183,7 +183,7 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     });
   }
 
-  /* 4 — the floating cards come in from the left, towards the phone. Different
+  /* 4. The floating cards come in from the left, towards the phone. Different
      vectors so the pair does not read as one block sliding. */
   if (ecb) {
     tl.from(ecb, { x: d(-110), y: d(40), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.15));
@@ -192,7 +192,7 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     tl.from(nvda, { x: d(-82), y: d(64), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.28));
   }
 
-  /* 5 — the two prediction cards, in from the right, towards the phone. The
+  /* 5. The two prediction cards, in from the right, towards the phone. The
      mirror of step 4: outer card first on the longer vector, inner card 0.13s
      behind on a shorter one, so the pair reads as two cards rather than one
      block sliding. */
@@ -203,7 +203,7 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
     tl.from(predInner, { x: d(62), y: d(26), opacity: 0, duration: 0.85, ease: EASE, clearProps: 'transform,opacity' }, cue(LEAD + 1.33));
   }
 
-  /* 6 — the claim, then its button. */
+  /* 6. The claim, then its button. */
   rise(tl, q('.fam__sub-title, .fam__sub-body'), cue(COPY_AT), {
     y: d(48),
     duration: 0.7,
@@ -225,7 +225,7 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
       cue(CTA_AT));
   }
 
-  /* 7 — the category strip closes the band out, left to right. */
+  /* 7. The category strip closes the band out, left to right. */
   rise(tl, q('.fam__chips > *'), cue(CHIPS_AT), { y: d(40), duration: 0.55, stagger: step(0.06), clearProps: 'transform,opacity' });
 
   // Last on the timeline, so it is only reached if the arrival was actually
@@ -235,6 +235,6 @@ export function buildFamiliar({ el, q, tl }: SectionMotion) {
 
 /* Ambient loop -----------------------------------------------------------------
  * Deliberately empty here. The band's continuing motion lives in
- * `Familiar.loop.ts` and is wired in as the `idle` option on `useSectionMotion`
- * — it is handed the section element once this entrance has finished and
- * returns its own teardown. Nothing in this file loops. */
+ * `Familiar.loop.ts`, wired in as the `idle` option on `useSectionMotion`: it is
+ * handed the section once this entrance finishes and returns its own teardown.
+ * Nothing in this file loops. */

@@ -283,11 +283,9 @@ export class LogoScene {
    * Is the mark faded out?
    *
    * `.hero__logo` is a cross-fading layer: the hero mounts the scene once and
-   * shows it on slide one only, holding it at `opacity: 0` for the other three
-   * (Hero.css). Nothing in the carousel unmounts it, so the loop went on
-   * drawing every frame of a mark at zero opacity for three of every four
-   * slides -- twenty-one seconds out of every twenty-eight, forever, for a
-   * reader sitting on the hero.
+   * shows it on slide one (and on slide four in the two-column layout), holding
+   * it at `opacity: 0` otherwise (Hero.css). Nothing in the carousel unmounts
+   * it, so without this check the loop would keep drawing an invisible mark.
    *
    * Polled, not read per frame: `getComputedStyle` against a hero whose styles
    * are dirty every frame of an entrance is a style recalculation, and the
@@ -296,9 +294,9 @@ export class LogoScene {
    *
    * This skips the DRAW and leaves the loop ticking, deliberately. Stopping
    * would need something to start it again, and an opacity that changes under
-   * a CSS transition raises no event the IntersectionObserver can hear -- a
-   * mark that stopped here would have every chance of never coming back. An
-   * idle rAF callback costs nothing; the draw is the whole cost.
+   * a CSS transition raises no event the IntersectionObserver can hear, so a
+   * mark that stopped here might never come back. An idle rAF callback costs
+   * nothing; the draw is the whole cost.
    */
   private markFaded(now: number): boolean {
     if (now - this.fadeChecked >= 250) {
@@ -314,15 +312,11 @@ export class LogoScene {
    *
    * The observer is the correct thing to wake the scene up and the wrong thing
    * to shut it down, because its callback is delivered in the rendering
-   * lifecycle -- the same lifecycle a frame that costs more than its budget
-   * starves. The mark is ~18,800 blended line quads (see config.ts) and without
-   * a GPU one draw can take a quarter of a second, so the news that the hero
-   * had scrolled away arrived three or four draws late: measured at 390 wide,
-   * the loop was still drawing 1.0s after the hero left the screen, and those
-   * draws landed on top of the section the reader had actually scrolled to --
-   * whose own entrance is gated by an IntersectionObserver and so was waiting
-   * behind exactly the frames the mark was eating. The bento band opened in
-   * ~1080ms instead of ~130ms, two sections below a mark nobody could see.
+   * lifecycle, the same lifecycle an over-budget frame starves. The mark is
+   * ~18,800 blended line quads (see config.ts) and without a GPU one draw can
+   * take a quarter of a second, so news that the hero has scrolled away can
+   * arrive several draws late. Those draws then delay the next section, whose
+   * own entrance waits on an IntersectionObserver callback of its own.
    *
    * One rect read per frame is cheaper than any single one of those draws, and
    * it cannot be starved by them.
@@ -343,9 +337,9 @@ export class LogoScene {
   private updateRunning() {
     // Ask the box rather than trusting `markVisible`. The observer's entry is a
     // snapshot of whenever the callback was queued, and `markVisible` starts
-    // life as `true` -- so a scene that finished building while the reader was
-    // already past the hero used to start drawing anyway, and kept drawing
-    // until an observation could be delivered.
+    // life as `true`, so a scene that finished building while the reader was
+    // already past the hero would otherwise start drawing anyway and keep
+    // drawing until an observation could be delivered.
     if (!this.opts.reducedMotion) this.markVisible = this.markOnScreen();
     const shouldRun = !this.disposed && !this.opts.reducedMotion && this.markVisible && document.visibilityState === 'visible';
     if (shouldRun && !this.running) this.start();
@@ -424,14 +418,10 @@ export class LogoScene {
     // And nothing at all while the hero is holding the mark at zero opacity.
     if (this.markFaded(now)) return;
 
-    // How late this frame is, measured from the last one we drew. This is the
-    // only honest number available: renderer.render() queues GL commands and
-    // returns, so timing the call itself reports near zero however long the
-    // draw actually takes -- the cost lands at swap, and only the gap to the
-    // next frame shows it.
-    // What watchCost is asked to judge is the frame's own cost, not the gap --
-    // the gap now includes whatever quiet the throttle above bought, and the
-    // ladder must not read its own restraint as the device getting faster.
+    // watchCost judges the frame's own cost (measured above), falling back to
+    // the gap since the last draw only before a cost has been read. The gap
+    // includes whatever quiet the throttle above bought, and the ladder must
+    // not read its own restraint as the device getting faster.
     const cost = this.frameCost || (this.lastDraw ? now - this.lastDraw : rate);
     this.lastDraw = now;
     this.costPending = true;

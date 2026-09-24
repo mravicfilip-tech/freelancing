@@ -1,4 +1,4 @@
-// One quad per line segment, widened in screen space to a pixel width (see LogoScene.ts).
+// One quad per line segment, widened in screen space to a pixel width (see treatments/lined.ts).
 attribute vec3 aStart;
 attribute vec3 aEnd;
 attribute vec2 aT;         // path parameter (0-1) at the start / end of the segment

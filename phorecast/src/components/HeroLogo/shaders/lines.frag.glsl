@@ -34,6 +34,6 @@ void main() {
 
   float f = clamp(vIntensity * dim * (1.0 + uPulse * pulse), 0.0, 1.0);
   float alpha = cover * drawn * f * uOpacity;
-  // Premultiplied output; the material blends rgb additively and alpha with "over".
+  // Premultiplied output; the material blends rgb additively in dark and with "over" in light (see treatments/lined.ts).
   gl_FragColor = vec4(uColor * alpha, alpha);
 }

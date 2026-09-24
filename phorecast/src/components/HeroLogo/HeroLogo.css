@@ -31,13 +31,12 @@
 /* The stacked slide (Hero.css collapses it to one column at 1180). Hero.tsx
    moves the mark into slide 1's visual slot there, so this is no longer a layer
    over the hero: it is a normal block under the copy and states its own height.
-   The breakpoint is 1180 and not 767 because 1180 is where the column that the
-   mark used to sit beside stops existing -- at 768..1180 the old rule left the
-   mark absolutely positioned inside a flow box with no height, i.e. nowhere.
+   The breakpoint is 1180 and not 767 because 1180 is where the column the mark
+   sits beside stops existing; an absolutely positioned mark inside a flow box
+   with no height would be drawn nowhere.
 
-   66vw keeps it a little under two thirds of the screen rather than the
-   near-full-bleed 300px a 360px phone was giving it, and 300px is the ceiling
-   it had, so nothing between 455px and 1180px wide grows. */
+   66vw keeps it a little under two thirds of a small screen, and 300px caps it
+   from 455px up. */
 @media (max-width: 1180px) {
   .heroLogo {
     position: relative;
@@ -52,11 +51,9 @@
   }
 }
 
-/* The phone. `min(300px, 66vw)` was a box sized to be safe, not to be filled:
-   at 390 it reserved 257px, the mark inside it was width-limited to 221px, and
-   the 189px the hero had left over sat under it as a void. The box now takes
-   the height the stage reserves for it (see Hero.css), and Hero.tsx widens the
-   mark's fractions so the mark fills the box rather than floating in it. */
+/* The phone. The box takes the height the stage reserves for the art (see
+   Hero.css) rather than `min(300px, 66vw)`, and Hero.tsx widens the mark's
+   fractions (COMPACT) so the mark fills the box rather than floating in it. */
 @media (max-width: 720px) {
   /* 0.9023 of the content column, which is the hero's shared phone art slot --
      the same 315.8px at 390 that slide 2's cards and slide 4's window fill. The

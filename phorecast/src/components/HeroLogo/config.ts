@@ -31,16 +31,12 @@ export const LOGO_CONFIG = {
    * `costlyFrameMs`.
    *
    * A draw does not only cost the draw. Where the canvas cannot be composited
-   * as a texture -- a software rasteriser, a headless browser, a phone that has
-   * fallen back to SwiftShader -- the compositor reads the canvas back on the
-   * MAIN thread on the commit after each new frame: traced at 390 wide, four
-   * `GLES2::ReadPixels` calls inside `LayerTreeHost::DoUpdateLayers` blocking
-   * the main thread for 1230ms of a 1.1s window. The loop had no reason not to
-   * ask for another frame immediately, so it ran at 100% duty and there was
-   * never an idle moment for anything else -- and the band BELOW the hero,
-   * whose entrance is gated on an IntersectionObserver, waited ~1080ms for a
-   * callback that can only be delivered in a rendering step the mark was
-   * eating. Every other band on the page opened in ~190ms.
+   * as a texture (a software rasteriser, a headless browser, a phone that has
+   * fallen back to SwiftShader) the compositor reads the canvas back on the
+   * MAIN thread after each new frame (`GLES2::ReadPixels` in a trace). A loop
+   * that asks for the next frame immediately then runs at 100% duty, and the
+   * band below the hero, whose entrance waits on an IntersectionObserver
+   * callback, is starved of the rendering step that would deliver it.
    *
    * So a frame that costs this much buys the rest of the page this much quiet
    * before the next one. The mark animates more slowly on a device that cannot
@@ -78,12 +74,9 @@ export const LOGO_CONFIG = {
    * Entrance after fonts are ready. 'rise' treatments also turn in from
    * `entranceYaw` and lift by `entranceDrop` × height.
    *
-   * 1.5 and not the 2.2 it was. The mark cannot start this until its scene
-   * exists, which is the far end of a load-gate-fetch-build chain, so every
-   * tenth here is a tenth added to the longest wait on the page rather than
-   * one overlapping something else. The turn, the lift and the scale it ends
-   * on are all unchanged -- it is the same arrival, taken at a pace that does
-   * not read as the mark turning up after everyone has left.
+   * Kept short on purpose. The mark cannot start this until its scene exists,
+   * which is the far end of a load-gate-fetch-build chain, so every tenth here
+   * is added to the longest wait on the page rather than overlapping anything.
    */
   entranceSec: 1.5,
   entranceScaleFrom: 0.94,
@@ -117,8 +110,7 @@ export const LINED = {
    * near-black ground, so crossings brighten and the wide feathered pass reads
    * as a glow. Neither survives a move to `#fffbf8`. Additive light over paper
    * can only push channels toward white, so the slices and ribs wash out to a
-   * ~1.5:1 haze and only the very densest strokes survive — measured, 0.2% of
-   * the mark's pixels cleared 3:1 before this existed. And a *dark* 11px
+   * ~1.5:1 haze and only the very densest strokes survive. And a *dark* 11px
    * feathered pass is not a glow inverted, it is a smudge: a halo, which this
    * page does not get.
    *

@@ -1,41 +1,32 @@
-/* PanelRegister -- extracted from Steps.css so each step panel owns its own stylesheet.
-   Three agents rebuild these panels from Figma in parallel, and a single shared
-   file is a single file for them to clobber. The shared shell -- `.panel`, the
-   3D wordmark and the glow -- stays in Steps.css, because it is the section's,
-   not any one panel's.
+/* PanelRegister. Each step panel owns its stylesheet; the shared shell
+   (`.panel`, the 3D wordmark and the glow) stays in Steps.css.
 
    `--p` is the panel's design-pixel unit and is declared on `.panel` in
    Steps.css, so it resolves here through the cascade.
 
    Every number below is the Figma value for node 365:1668 ("Detail Content
-   Container"), taken from get_design_context rather than the raw node x/y --
-   the cards and the phone are bordered, overflow-clipped frames, so their
-   children are laid out against the PADDING box and Figma's absolute
-   coordinates are all 1.199 larger than what CSS wants. */
+   Container"), from the design context rather than raw node x/y: the cards
+   and the phone are bordered, clipped frames, so children are laid out
+   against the PADDING box (Figma's absolute coordinates are 1.199 larger). */
 
 /* The panel's colour, in two layers -- the same split Steps.css uses.
    -------------------------------------------------------------------------
-   ROLE TOKENS where the page already names the job: the typed address and the
-   balance are --ink, the masked digits are --ink-muted, the pill's stroke and
-   the one orange column are --accent.
+   Role tokens where the page already names the job: the typed address and
+   the balance are --ink, the masked digits --ink-muted, the pill's stroke and
+   the orange column --accent.
 
-   PANEL LOCALS (--steps-p1-*) for everything that belongs to the app drawn
-   inside this panel -- the two account cards, the phone's ground, its grey
-   skeleton bars, the status-bar glyphs. Declared on :root because `tok()` in
-   lib/theme.ts reads document.documentElement and the loop below takes its two
-   pill-stroke values from here; the --steps- prefix keeps the file out of
-   everyone else's way.
-
-   Dark is exactly what the panel shipped with, so this block is a no-op. The
-   light block at the foot of the file redefines exactly these names. */
+   Panel locals (--steps-p1-*) for the app drawn inside the panel: cards, the
+   phone's ground, skeleton bars, status-bar glyphs. Declared on :root because
+   `tok()` in lib/theme.ts reads document.documentElement, and the loop reads
+   the pill-stroke pair from here. The light block at the foot of the file
+   redefines the same names. */
 :root {
   /* The email pill: a frosted grey chip behind a --accent stroke, carrying the
      address in white. */
   --steps-p1-pill-bg: rgba(146, 146, 146, 0.17);
   --steps-p1-pill-ink: #fff;
-  /* The pill's stroke, as a pair: it comes up from a wash to the full brand
-     red over the first half-second of the story. Read by the loop through
-     `tok()`, so both values live here rather than in the module. */
+  /* The pill's stroke pair: it rises from a wash to the full brand red at the
+     start of the story. Read by the loop through `tok()`. */
   --steps-p1-pill-rest: rgba(229, 51, 30, 0.22);
   --steps-p1-pill-lit: rgb(229, 51, 30);
 
@@ -56,8 +47,8 @@
   --steps-p1-time: #cacaca;
   --steps-p1-batt: #b5b5b5;
   --steps-p1-tile: rgba(255, 255, 255, 0.13);
-  /* The three rules inside the cards and under the status bar, and the
-     battery's charge level -- both masks now, so both need a colour. */
+  /* The three rules (cards and status bar) and the battery's charge level;
+     both are masks, so both need a colour. */
   --steps-p1-rule: #353434;
   --steps-p1-batt-fill: #f7ce45;
 }
@@ -90,26 +81,21 @@
 .s1__envelope {
   flex: none; display: block; width: calc(23.989 * var(--p)); padding: calc(2.399 * var(--p)) 0;
 }
-/* On the glyph itself, not on this wrapper. `color` is the initial value of
-   border-*-color, so setting it on a wrapper moves four computed border
-   colours on an element that paints no border -- twenty spurious rows across
-   three widths in the theme gate, for a colour nothing reads. #9d9d9d is what
-   the file bakes, and --ink-2 IS #9d9d9d in dark. */
+/* Colour goes on the glyph, not the wrapper: `color` also sets the initial
+   border colours, so a wrapper would change computed styles for no visible
+   effect. --ink-2 matches the file's baked #9d9d9d in dark. */
 .s1__envelope .icon { color: var(--ink-2); }
-/* No display override: global.css already blocks every <img>, so this glyph
-   was never in a line box and Icon's own `display: block` reproduces it. An
-   inline-block here made the wrapper 3px taller at 720 and moved the glyph
-   1.5px up, which is exactly the kind of row the theme gate exists to catch. */
+/* No display override: Icon's own `display: block` is correct. Inline-block
+   here makes the wrapper taller and shifts the glyph up. */
 .s1__envelope img, .s1__envelope .icon { width: calc(23.989 * var(--p)); height: calc(18.848 * var(--p)); }
 .s1__addr { flex: none; display: inline-flex; }
 .s1__addr-in { display: inline-block; }
 .s1__caret { display: inline-block; font-style: normal; color: var(--ink); }
 
 /* Diamonds ----------------------------------------------------------------- */
-/* Figma's frame is the ROTATED square's bounding box, so the 10x10 is centred
-   inside it -- the old build used the bbox corner as the square's corner and
-   pushed both diamonds up and left by ~2px. The wrapper also keeps the rotation
-   off the element the loop scales. */
+/* Figma's frame is the ROTATED square's bounding box, so the 10x10 square is
+   centred inside it (not placed at its corner). The wrapper also keeps the
+   rotation off the element the loop scales. */
 .s1__diamond { display: grid; place-items: center; }
 .s1__diamond i { display: block; width: calc(10 * var(--p)); height: calc(10 * var(--p)); }
 .s1__diamond--orange {
@@ -124,18 +110,9 @@
 .s1__diamond--white i { background: var(--ink); transform: rotate(60deg); }
 
 /* Wires -------------------------------------------------------------------- */
-/* Both wires are stroked paths whose stroke overhangs the Figma frame, which is
-   why each asset is taller than the frame it is placed in and why the top is
-   offset back by the overhang.
-
-   THE STROKE IS 1, NOT 1.199. The node draws both of these at a 1-unit stroke;
-   the build shipped 1.199, which is the weight of the three DIVIDER rules and
-   is still correct for them (s1-divider.svg is byte-identical to the node's
-   export). So the halves are 0.5 rather than 0.5997, the connector's asset is
-   107.749 rather than 107.948 and the bracket's 182.813 rather than 182.913 --
-   and both centre lines land exactly where they did: the bracket's crossbar
-   stays at y 154.127 and the connector's upper branch at y 147.531. Only the
-   weight moved. */
+/* Both wires are stroked paths whose stroke overhangs the Figma frame, so each
+   asset is taller than its frame and the top is offset back by the overhang.
+   The wire stroke is 1 (per the node); the divider rules are 1.199. */
 .s1__connector {
   left: calc(241.086 * var(--p)); top: calc(94.257 * var(--p));
   width: calc(91.157 * var(--p)); height: calc(107.749 * var(--p));
@@ -155,16 +132,14 @@
 .s1__card--a { top: calc(43 * var(--p)); }
 .s1__card--b { top: calc(161 * var(--p)); }
 .s1__card > * { position: absolute; }
-/* The rule is 193.1 wide inside a 173.6 content box: it deliberately runs out
-   past both edges and is clipped by the card. */
+/* The rule is wider than the card's content box on purpose; the card clips it. */
 .s1__rule, .s1__phone-rule { color: var(--steps-p1-rule); }
 .s1__rule { left: calc(-3.598 * var(--p)); top: calc(46.178 * var(--p)); width: calc(193.108 * var(--p)); height: calc(1.199 * var(--p)); }
 /* Both card glyphs bake #626262, which is --ink-muted exactly. */
 .s1__glyph--card, .s1__glyph--user { color: var(--ink-muted); }
 .s1__glyph--card { left: calc(15.678 * var(--p)); top: calc(13.197 * var(--p)); width: calc(28 * var(--p)); height: calc(18 * var(--p)); }
-/* Figma's slot resolves to 20.987 x 23.216, a hair off the exported glyph's own
-   21 x 23.333. Use the asset's ratio and keep it on the slot's centre, so it is
-   placed exactly where the design puts it without being squashed. */
+/* Uses the asset's own 21 x 23.333 (Figma's slot is a hair smaller), centred
+   on the slot so it is not squashed. */
 .s1__glyph--user { left: calc(21.301 * var(--p)); top: calc(13.134 * var(--p)); width: calc(21 * var(--p)); height: calc(23.333 * var(--p)); }
 .s1__digits {
   left: calc(15.594 * var(--p)); top: calc(62.37 * var(--p));
@@ -196,19 +171,16 @@
 /* The location arrow bakes #cacaca, the clock's own colour. */
 .s1__loc { width: calc(4.851 * var(--p)); height: calc(4.851 * var(--p)); color: var(--steps-p1-time); }
 
-/* Figma parks the three status glyphs bottom-aligned in a 43.18 x 17.99 box at
-   x 124.74; resolved, their row starts at 131.21 and its baseline is 14.60 down
-   from the phone's top. The old build hung them off the status bar's right edge
-   at 158.8 instead, 3.8 short. */
+/* Figma bottom-aligns the three status glyphs in a 43.18 x 17.99 box at
+   x 124.74; resolved, the row starts at 131.21 with its baseline 14.60 down. */
 .s1__status-right {
   left: calc(131.209 * var(--p)); top: calc(9.238 * var(--p));
   display: flex; align-items: flex-end; gap: calc(3.062 * var(--p));
 }
 .s1__status-right > span { position: relative; display: block; height: calc(5.359 * var(--p)); }
 .s1__status-right img, .s1__status-right .icon { position: absolute; }
-/* Signal, data and the battery shell all bake #b5b5b5 -- the same grey as the
-   charge figure beside them, which already reads this token. Each colour goes
-   on the glyph, never on its wrapper: see the note on .s1__envelope. */
+/* Signal, data and the battery shell bake #b5b5b5, the charge figure's grey.
+   Colour goes on the glyph, not the wrapper (see .s1__envelope). */
 .s1__signal .icon, .s1__data .icon, .s1__batt-shell { color: var(--steps-p1-batt); }
 .s1__batt-fill { color: var(--steps-p1-batt-fill); }
 .s1__signal { width: calc(6.89 * var(--p)); }
@@ -275,11 +247,8 @@
 }
 .s1__bars > * { position: absolute; }
 /* All five columns share a baseline, so height alone places them. */
-/* Each grey column carries its OWN gradient angle in the node -- they are four
-   separate fills, not one repeated -- so each is written out rather than
-   averaged to a single -2.7deg. The angle is small enough that the difference
-   is under a pixel across a 19.19 column, which is precisely why it costs
-   nothing to be exact. Column 4 is the accent and is flat. */
+/* Each grey column has its own gradient angle in the node, so each is written
+   out. Column 4 is the accent and is flat. */
 .s1__col {
   bottom: 0; width: calc(19.191 * var(--p));
   border-radius: calc(2.399 * var(--p)) calc(2.399 * var(--p)) 0 0;
@@ -304,15 +273,9 @@
   width: calc(143.931 * var(--p)); height: calc(62.37 * var(--p));
   opacity: 0.4; border-radius: calc(10 * var(--p));
 }
-/* The app indicators. Three #323232 dots on a 6% white plate: two colours, so
-   masking it does cost something -- the plate stops being a lift and becomes a
-   6% wash of the dot colour, which in dark takes a faint rounded rectangle at
-   43/255 down to 30/255 against a phone at 29. That is the whole of the dark
-   change, and it buys the light one: unmasked, #323232 on a cream phone is
-   three near-black blobs, by a distance the loudest thing inside a device
-   whose every other element is a quiet skeleton. Masked, the dots are
-   --steps-p1-bar -- which IS #323232 in dark, so they do not move -- and on
-   paper they join the skeletons they belong with. */
+/* The app indicators: three dots on a faint plate. Drawn as a mask in
+   --steps-p1-bar so the dots match the skeletons in both themes; the plate
+   becomes a faint wash of the same colour, a negligible change in dark. */
 .s1__nav {
   left: calc(50.378 * var(--p)); top: calc(291.461 * var(--p));
   width: calc(69.567 * var(--p)); height: calc(21.59 * var(--p));
@@ -321,79 +284,34 @@
 
 
 /* THE PHONE COMPOSITION -------------------------------------------------------
-   Below 700 the band becomes a swipeable stepper and each panel is scaled to
-   its own artwork rather than to the shared 886 frame -- Steps.css gives this
-   one `--p: calc(100cqw / 801)`, which is the full 760-wide desktop group made
-   to fit the phone's panel. At a 390 viewport the panel is 350 wide, so that
-   is 0.437 of a design pixel: the address renders at 6.12px, the masked digits
-   at 4.37px, the balance at 4.37px, the +2.41% flag at 2.62px and the phone's
-   clock at 3.00px. Measured, in this band, against a switcher whose smallest
-   type is a 13px ordinal and a body set at 16px. That is not a small
-   illustration, it is noise -- the same finding SlideAccount.css records, and
-   the same answer applies: FEWER PARTS, LARGER, not the same parts smaller.
+   Below 700px the panel is scaled to its own artwork. Scaling the full
+   760-wide desktop group to a phone makes its type unreadably small, so the
+   phone shows FEWER PARTS, LARGER (the same approach as SlideAccount.css).
 
-   THE SENTENCE. Step 1 is "register with email". The illustration says it in
-   three acts: an address, the account it becomes, and the working app. The
-   phone keeps the first two. What arrives is an account, and an account is
-   what the copy promises; the app is step 3's subject and has its own panel.
+   It keeps the first two acts (address, then the account it becomes); the
+   app is step 3's subject.
 
-   WHAT GOES, AND WHY
-   * The phone (172 x 339). It cannot be kept at any basis. At the basis below
-     the panel holds 292.5 design units of height and the phone alone is 339 of
-     them, before the pill it is meant to follow. Side by side instead of
-     stacked it needs a 452 basis, which puts the address at 10.8px and the
-     phone's own type -- a 6.87 clock, a 6 flag, a 4.21 battery figure -- at
-     5.3, 4.6 and 3.8px. It is the densest type in the node relative to its
-     area and there is no phone-width arrangement that rescues it.
-   * The bracket and the white diamond. They exist only to carry the cards to
-     the phone. With the phone gone they point at nothing.
-   * The connector wire (91 wide, horizontal). The two cards now sit UNDER the
-     pill rather than beside it, so a horizontal fan would cross the flow
-     rather than describe it. Keeping the horizontal chain is also what makes
-     the group 506 units wide, and 506 is the number that forces the address
-     down to 8.9px at 360. The orange diamond stays and does the wire's job:
-     it is the design's own token for the address leaving the pill.
+   Dropped (whole elements only):
+   * The phone (172 x 339): too tall to fit, and its type is the densest in
+     the node; no phone-width arrangement keeps it legible.
+   * The bracket and white diamond: they only lead to the phone.
+   * The connector wire: the cards now sit UNDER the pill, so a horizontal
+     wire would cross the flow. The orange diamond stands in for it.
 
-   WHAT STAYS, AT WHAT SIZE. The pill, the orange diamond and both account
-   cards, in a 362 x 178.174 group: the two 176 cards and the 10 the design
-   already puts between them when it stacks them, the 228 pill centred over
-   them, and the diamond on the pill's centre line 0.8 clear of its edge --
-   which is exactly the clearance the design gives it against the pill's right
-   edge on the desktop.
+   Kept: the pill, the orange diamond and both cards, in a 362 x 178.174
+   group: the two 176 cards with the design's 10 gap, the 228 pill centred
+   above, and the diamond on the pill's centre line.
 
-   THE BASIS is 390, and it is set by one rule: THE PHONE NEVER DRAWS THIS
-   ILLUSTRATION LARGER THAN ITS DESIGN SIZE. 390 is the smallest basis that
-   keeps `--p` at or under 1 at the widest phone this is checked at (430, where
-   the panel is 387 and --p is 0.9923). What that buys, measured:
-
-       viewport   panel    --p      address    masked digits
-       360        320      0.8205   11.49px    8.21px
-       390        350      0.8974   12.56px    8.97px
-       430        387      0.9923   13.89px    9.92px
-       (1440      816      0.9210   12.89px    9.21px)
-
-   The last row is the shipping desktop. The phone band brackets it: every part
-   kept renders within 11% of the size a desktop reader is already being shown,
-   and the address sits either side of the 13px tab ordinal and always under
-   the 16px body. The masked digits are the one thing under 10px, and they are
-   under 10px on a 1440 desktop too -- they are texture, not text, and they are
-   not asked to be read in either place.
-
-   The group fills the panel slightly MORE than the desktop group fills its
-   own: 92.8% of the width against 85.8%, and 60.9% of the height against
-   53.9%. The air around it is the band's air, not slack left over.
-
-   Nothing is deleted from inside a part that stays. Every drop above is a
-   whole element. ------------------------------------------------------------- */
+   The basis is 390 design units, chosen so the artwork is never drawn larger
+   than its design size (`--p` stays at or under 1 up to a 430px viewport).
+   Parts render close to their desktop size. ------------------------------- */
 @media (max-width: 700px) {
-  /* A doubled class, and it has to be. Steps.tsx imports the panels BEFORE
-     ./Steps.css, so Steps.css wins at equal specificity, and `.panel--1` is
-     exactly where its own `--p: calc(100cqw / 801)` is declared. (0,2,0) beats
-     that (0,1,0) without anything in this file reaching into that one.
+  /* A doubled class on purpose: Steps.tsx imports the panels BEFORE
+     ./Steps.css, so Steps.css's `.panel--1 { --p }` wins at equal
+     specificity. (0,2,0) beats it.
 
-     `--cx` / `--cy` are read by Steps.css's `--fx` / `--fy`, which centre the
-     artwork in the panel; they are the new group's own centre. `--pm` is the
-     unit the BACKGROUND keeps -- see the note on the mark and the glow. */
+     `--cx` / `--cy` (the group's centre) feed Steps.css's `--fx` / `--fy`.
+     `--pm` is the unit the background keeps; see the mark and glow below. */
   .panel--1.panel--1 {
     --p: calc(100cqw / 390);
     --cx: 181;
@@ -414,23 +332,19 @@
   .s1__card--a { left: 0; top: calc(70.174 * var(--p)); }
   .s1__card--b { left: calc(186 * var(--p)); top: calc(70.174 * var(--p)); }
 
-  /* The four drops. PanelRegister.tsx reads the same 700 breakpoint and builds
-     a different timeline below it, so nothing here is animated at a hidden
-     element. */
+  /* The four drops. PanelRegister.tsx builds a different timeline below the
+     same breakpoint, so none of these is animated while hidden. */
   .s1__connector,
   .s1__bracket,
   .s1__diamond--white,
   .s1__phone { display: none; }
 
-  /* The mark and the glow are the SECTION's furniture, not this composition's,
-     and they are held exactly where they render today. Both are sized and
-     placed off `--p` in Steps.css, so changing that knob would have blown the
-     mark up to 795 x 547 inside a 350 x 262 panel and pushed the glow's core
-     off the left edge. Restated against `--pm`, which is the unit they had,
-     with the `translate` Steps.css applies folded into the offsets -- so the
-     background is pixel-identical to what shipped and the whole phone diff is
-     the artwork. Three-class specificity because `.panel .steps__mark` and
-     `.panel .steps__glow` in Steps.css are (0,2,0) and load after this file. */
+  /* The mark and the glow belong to the section, not this composition, so
+     they must not follow this panel's larger `--p` (the mark would overflow
+     the panel). They are restated against `--pm` (the shared phone unit),
+     with Steps.css's `translate` folded into the offsets. Three-class
+     specificity because Steps.css's `.panel .steps__mark` / `.steps__glow`
+     are (0,2,0) and load after this file. */
   .panel--1.panel--1 .steps__mark--full {
     left: calc(50cqw - 443 * var(--pm));
     top: calc(37.5cqw - 305.5 * var(--pm));
@@ -449,101 +363,75 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice; the two blocks MUST stay identical, only their conditions
-   differ. The section's device decision is stated in Steps.css: this panel
-   re-tints, so the phone and the two account cards are a LIGHT app on a light
-   page and nothing here reaches for --art-ink.
+   Written twice; the two blocks MUST stay identical. The panel re-tints (see
+   Steps.css), so nothing here uses --art-ink.
 
-   Everything in this panel except the pill's stroke is a neutral, and every
-   one of them is derived the same way: take what the value is worth against
-   the surface it sits on in dark, and reproduce that RATIO on paper. Dark's
-   hierarchy survives; dark's luminance does not, because it cannot. ------- */
+   Each neutral is derived by keeping its dark contrast RATIO against the
+   surface it sits on, so the hierarchy survives the flip. ----------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* The email pill. Grey at 17% over near-black lifts the chip off the panel;
-     ink at 7% settles it into the paper, which is the same gesture read the
-     other way. */
+  /* The email pill settles into the paper rather than lifting off it. */
   --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
   --steps-p1-pill-ink: var(--ink);
-  /* The stroke's pair, and the value in this panel that is NOT the x 1.125
-     rule. That rule reproduces a resting density; this is half of a lit pair,
-     so what has to match is the step. Dark travels 2.78:1 from its 22% wash to
-     the full brand red. On paper the lit end is fixed -- it has to be the brand
-     red -- so the rest end is the only lever, and a faint rest makes the step
-     LARGER here, not smaller: 22% gave 5.10:1 and 30% gave 3.62:1, both beats
-     louder than dark's. 0.44 lands 2.78:1 exactly. */
+  /* The stroke pair. The lit end must be the brand red, so the rest alpha is
+     tuned to reproduce dark's rest-to-lit contrast step. A fainter rest would
+     make the step louder than dark's. */
   --steps-p1-pill-rest: rgba(162, 22, 5, 0.44);
   --steps-p1-pill-lit: rgb(162, 22, 5);
 
-  /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper
-     settles them by 1.08, because raised reads as darker on paper. */
+  /* Cards and phone: slightly darker than the panel, since raised reads as
+     darker on paper. */
   --steps-p1-card: #f0e7de;
   --steps-p1-card-edge: var(--veil-line);
 
-  /* The skeleton bars, at their two dark ratios against the card: 1.33 and
-     1.95. #d7c8bb is 1.32, #b9a493 is 2.00. */
+  /* The skeleton bars, at their dark contrast ratios against the card. */
   --steps-p1-bar: #d7c8bb;
   --steps-p1-bar-2: #b9a493;
   --steps-p1-col-head: rgba(185, 164, 147, 0);
-  /* The chart's baseline, 2.10 against its plate where dark is 2.10. */
+  /* The chart's baseline, at its dark ratio against the plate. */
   --steps-p1-axis: #9a8574;
 
-  /* The status bar. #cacaca and #b5b5b5 are quiet greys on a dark phone but
-     they are still 10.2:1 and 8.1:1 against it -- the clock is meant to be
-     read. Reproduced against the light phone at 10.3 and 8.2, which on paper
-     means dark, not pale. */
+  /* The status bar is meant to be read, so it keeps its high dark contrast:
+     on paper that means dark greys. */
   --steps-p1-time: #3d352f;
   --steps-p1-batt: #4e453e;
   --steps-p1-tile: rgba(26, 21, 18, 0.15);
   --steps-p1-rule: #d2c2b4;
-  /* The battery's charge level. #f7ce45 is 11.2:1 on the dark phone and 1.5:1
-     on the light one -- the one value here where keeping the hue at its own
-     lightness would simply delete it. A dark amber holds both the hue and the
-     9:1 it is worth, which is also what every light-mode phone does. */
+  /* The battery charge: the dark theme's yellow vanishes on paper, so a
+     dark amber keeps the hue and the contrast. */
   --steps-p1-batt-fill: #4c3a04;
   }
 }
 
 :root[data-theme='light'] {
-  /* The email pill. Grey at 17% over near-black lifts the chip off the panel;
-     ink at 7% settles it into the paper, which is the same gesture read the
-     other way. */
+  /* The email pill settles into the paper rather than lifting off it. */
   --steps-p1-pill-bg: rgba(26, 21, 18, 0.07);
   --steps-p1-pill-ink: var(--ink);
-  /* The stroke's pair, and the value in this panel that is NOT the x 1.125
-     rule. That rule reproduces a resting density; this is half of a lit pair,
-     so what has to match is the step. Dark travels 2.78:1 from its 22% wash to
-     the full brand red. On paper the lit end is fixed -- it has to be the brand
-     red -- so the rest end is the only lever, and a faint rest makes the step
-     LARGER here, not smaller: 22% gave 5.10:1 and 30% gave 3.62:1, both beats
-     louder than dark's. 0.44 lands 2.78:1 exactly. */
+  /* The stroke pair. The lit end must be the brand red, so the rest alpha is
+     tuned to reproduce dark's rest-to-lit contrast step. A fainter rest would
+     make the step louder than dark's. */
   --steps-p1-pill-rest: rgba(162, 22, 5, 0.44);
   --steps-p1-pill-lit: rgb(162, 22, 5);
 
-  /* The cards and the phone. Dark raises them 1.09:1 off the panel; paper
-     settles them by 1.08, because raised reads as darker on paper. */
+  /* Cards and phone: slightly darker than the panel, since raised reads as
+     darker on paper. */
   --steps-p1-card: #f0e7de;
   --steps-p1-card-edge: var(--veil-line);
 
-  /* The skeleton bars, at their two dark ratios against the card: 1.33 and
-     1.95. #d7c8bb is 1.32, #b9a493 is 2.00. */
+  /* The skeleton bars, at their dark contrast ratios against the card. */
   --steps-p1-bar: #d7c8bb;
   --steps-p1-bar-2: #b9a493;
   --steps-p1-col-head: rgba(185, 164, 147, 0);
-  /* The chart's baseline, 2.10 against its plate where dark is 2.10. */
+  /* The chart's baseline, at its dark ratio against the plate. */
   --steps-p1-axis: #9a8574;
 
-  /* The status bar. #cacaca and #b5b5b5 are quiet greys on a dark phone but
-     they are still 10.2:1 and 8.1:1 against it -- the clock is meant to be
-     read. Reproduced against the light phone at 10.3 and 8.2, which on paper
-     means dark, not pale. */
+  /* The status bar is meant to be read, so it keeps its high dark contrast:
+     on paper that means dark greys. */
   --steps-p1-time: #3d352f;
   --steps-p1-batt: #4e453e;
   --steps-p1-tile: rgba(26, 21, 18, 0.15);
   --steps-p1-rule: #d2c2b4;
-  /* The battery's charge level. #f7ce45 is 11.2:1 on the dark phone and 1.5:1
-     on the light one -- the one value here where keeping the hue at its own
-     lightness would simply delete it. A dark amber holds both the hue and the
-     9:1 it is worth, which is also what every light-mode phone does. */
+  /* The battery charge: the dark theme's yellow vanishes on paper, so a
+     dark amber keeps the hue and the contrast. */
   --steps-p1-batt-fill: #4c3a04;
 }

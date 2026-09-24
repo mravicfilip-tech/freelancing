@@ -1,13 +1,11 @@
 // The hero's opening and its per-slide choreography.
 //
-// Written in the Remittix motion language (see src/lib/motion.ts): entrances
-// rise a few pixels on expo.out, staggered tightly; nothing overshoots, rotates
-// for effect, or floats while idle.
+// Follows the shared motion language in src/lib/motion.ts: entrances rise a few
+// pixels on expo.out, staggered tightly; nothing overshoots, rotates for
+// effect, or floats while idle.
 //
-// The hero keeps no idle loop of its own. Its one beat was the market prices
-// moving and flashing on the snapshot cards under the pager, and those cards
-// are gone; the slides' own loops (slides/*.motion.ts) are the story now.
-// Nothing listens to the pointer.
+// The hero keeps no idle loop of its own; the slides' loops
+// (slides/*.motion.ts) carry the idle motion. Nothing listens to the pointer.
 
 import { EASE, all, intoLines, one, pop, rise } from '../../lib/motion';
 
@@ -30,37 +28,33 @@ export function slideIn(slide: HTMLElement, tl: gsap.core.Timeline, at: number):
   // again.
   //
   // The opacity is a second, much shorter tween rather than part of the first.
-  // A blur bleeds past its mask: parked 84px below the clip at full opacity,
-  // 12px of blur leaked a faint grey smudge of the headline into the hero
-  // before anything had arrived. Starting at zero stops the leak, and ramping
-  // back in 0.3s -- while the line is still deep in the mask and still soft --
-  // means the reveal itself looks exactly as it did.
+  // A blur bleeds past its mask: parked below the clip at full opacity, the
+  // blurred line leaks a faint grey smudge of the headline into the hero before
+  // anything has arrived. Starting at zero stops the leak, and ramping in over
+  // 0.3s (while the line is still deep in the mask and still soft) leaves the
+  // reveal itself unchanged.
   if (title) {
     const lines = intoLines(title);
     tl.from(lines, { yPercent: 112, filter: 'blur(12px)', duration: 0.8, stagger: 0.13, ease: 'power4.out', clearProps: 'filter' }, at + 0.08)
       .from(lines, { opacity: 0, duration: 0.3, stagger: 0.13, ease: 'none' }, at + 0.08);
   }
 
-  // The illustration is the largest thing on screen; leaving it out of the
-  // sequence made the copy look like it was arriving beside a static page.
+  // The illustration is the largest thing on screen, so it joins the sequence;
+  // without it the copy looks like it is arriving beside a static page.
   if (visual) {
     const kids = Array.from(visual.children) as HTMLElement[];
     const nested = Array.from(visual.firstElementChild?.children ?? []) as HTMLElement[];
     const parts = kids.length > 1 ? kids : nested;
     if (parts.length > 1) pop(tl, parts, at + 0.22, { scale: 0.92, y: 12, duration: 0.7, stagger: 0.08, ease: EASE });
-    // Explicitly fromTo, and never `rise`, which is a `from`. `.hero__visual`
-    // carries its own CSS `transition: transform 800ms` toward `transform:
-    // none` on `.is-active`, and a `from` tween reads its END value off the
-    // element when the tween is built -- which is mid-transition, so GSAP
-    // recorded whatever the transition happened to be passing through as the
-    // place to finish. The illustration then stayed there: measured settling at
-    // top 245.0 with `matrix(0.985, ..., 16.31)` against 224.4 and `none` under
-    // reduced motion, on every slide, and landing on a different sub-pixel
-    // every load (16.2487 / 16.3103 / 16.347 across three runs) so the
-    // hairlines in the artwork rasterised differently run to run. Stating both
-    // ends cannot be poisoned by a transform in flight, and clearing the props
-    // hands the settled element back to CSS. Same fault the `pop()` docstring
-    // in lib/motion.ts records against the hero's Get Started button.
+    // Explicitly fromTo, never `rise` (which is a `from`). `.hero__visual`
+    // carries a CSS `transition: transform 800ms` toward `transform: none` on
+    // `.is-active`, and a `from` tween reads its end value off the element when
+    // it is built, which is mid-transition. The illustration then settles
+    // wherever the transition happened to be, slightly off and on a different
+    // sub-pixel each load, so its hairlines rasterise inconsistently. Stating
+    // both ends cannot be poisoned by a transform in flight, and clearing the
+    // props hands the settled element back to CSS. See also the `pop()`
+    // docstring in lib/motion.ts.
     else tl.fromTo(visual,
       { y: 16, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: EASE, clearProps: 'transform,opacity' },
@@ -87,28 +81,18 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   const mark = all(hero, '.hero__logo');
   const slide = one<HTMLElement>(hero, '.hero__slide.is-active');
 
-  // The nav assembles rather than arriving. Dropping the whole bar and then
-  // dropping its contents again was two movements on the same pixels: the
-  // logo fell twice, the fades multiplied, and the result read as a flop
-  // rather than a sequence. The bar itself now never moves. Its pieces come
-  // in left to right on one clean stagger -- logo, then each link, then the
-  // buttons -- so the eye is led across the top of the page once.
+  // The nav assembles rather than arriving. The bar itself never moves (moving
+  // both the bar and its contents makes the logo fall twice and reads as a
+  // flop). Its pieces come in left to right on one stagger, logo, then each
+  // link, then the buttons, so the eye is led across the top of the page once.
   //
-  // fromTo, never from, for the third time in this file: `.btn` carries
-  // `transition: ... transform 160ms ease` in global.css so its `:active`
-  // press can ease, and a `from` tween reads its end value off the element
-  // when it first renders. Setting the start here handed that transition a
-  // target, so by the time the staggered button tweens took their reading the
-  // element had already transitioned to -14 -- and GSAP built them to animate
-  // -14 to -14. They ran, reported complete, and left both nav buttons parked
-  // 14px above the logo, the links and the theme toggle, which carry no
-  // transform transition and so landed correctly. Same fault the pop()
-  // docstring in lib/motion.ts records against the hero's Get Started button
-  // and the .hero__visual comment above records against the illustration.
-  // Stating both ends cannot be poisoned by a transition in flight, and
-  // clearing the props hands the settled bar back to CSS -- which is also what
-  // gives the buttons their :active press back, an inline identity transform
-  // having outranked it.
+  // fromTo, never from, as with `.hero__visual` above: `.btn` carries
+  // `transition: ... transform 160ms ease` in global.css for its `:active`
+  // press. With a `from` tween, the staggered buttons read their end value
+  // after the transition had already moved them to -14, animate -14 to -14,
+  // and stay parked 14px above the rest of the nav. Stating both ends avoids
+  // that, and clearing the props hands the bar back to CSS, which also
+  // restores the buttons' :active press (an inline transform would outrank it).
   if (navParts.length) {
     tl.fromTo(navParts,
       { y: -14, opacity: 0 },
@@ -136,13 +120,14 @@ export function heroBuild(hero: HTMLElement, tl: gsap.core.Timeline): void {
   if (slide) slideIn(slide, tl, 0.2);
 
   // The point past which a stutter no longer costs anything. The headline's
-  // mask reveal is the one beat that must not drop frames -- it is the largest
+  // mask reveal is the one beat that must not drop frames: it is the largest
   // moving thing on the page and half-formed type reads as a fault. Once it has
   // landed, the rest is copy and the pager fading, and something expensive can
-  // start compiling under them. The 3D mark waits for this rather than for the
-  // whole sequence, which had it arriving seconds after everything else.
+  // start compiling under them. The 3D mark waits for this event rather than
+  // for the whole sequence, which would delay it by seconds.
   // slideIn runs from 0.2; its lines start at +0.08, stagger 0.13 and run 0.8,
-  // so the last one lands at 1.21. This sits just past that.
+  // so the second line of a two-line title lands at 1.21. This sits just past
+  // that.
   tl.call(() => hero.dispatchEvent(new CustomEvent('motion:ready', { bubbles: true })), undefined, 1.3);
 
   rise(tl, all(hero, '.hero__position'), 0.95, { y: 8, duration: 0.55 });

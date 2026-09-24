@@ -1,97 +1,59 @@
-/* "Open an account in 3 simple steps" — the section's load-in.
+/* Steps band entrance.
  *
- * Written in the house language (src/lib/motion.ts): entrances rise a few
- * pixels on `expo.out`, staggered tightly, nothing overshoots or rotates for
- * effect. The band's accent is the soft-to-sharp resolve the hero and the
- * pillars already use, so the type and the cards arrive out of blur rather than
- * simply fading.
+ * House language (src/lib/motion.ts): entrances rise a few pixels on
+ * `expo.out`, staggered tightly, and resolve out of blur like the hero and
+ * the pillars.
  *
- * THE SEQUENCE (2.87s end to end; times below are measured from the end of the
- * held lead-in beat that every cue is offset by — see LEAD)
- *   0.00  The eyebrow — the label on the band, small and quiet, so the section
- *         is named before anything stands in it.
- *   0.18  THE HEADING, rising out of its own mask and resolving from soft. The
- *         one object the section leads with; everything else follows it.
- *   0.95  The three step cards down the left, 0.18s apart. Reading order, top
- *         to bottom, and the gap is wide enough that three cards read as three
- *         arrivals rather than one column sliding.
- *   1.50  THE PANEL, as a single object, while the third card is still
- *         settling. It is the largest thing in the band, so it travels
- *         furthest, out of the deepest blur, over the longest tween — it is
- *         what the three cards have been pointing at. Lands at 2.75.
+ * Sequence (seconds, after LEAD):
+ *   0.00  eyebrow
+ *   0.18  heading, rising out of its own line mask and sharpening
+ *   0.95  the three step cards, 0.18s apart, top to bottom
+ *   1.50  the panel, as one object: the largest travel, deepest blur and
+ *         longest tween. The timeline ends at about 2.9s.
  *
- * Under 1080px the grid stacks and the panel sits above the list, so those last
- * two beats swap and the band still fills top to bottom. See LEAD_AT.
+ * Under 1080px the grid stacks with the panel above the list, so the last two
+ * beats swap (see LEAD_AT). Under 700px the band is a tab row over a
+ * swipeable track, so those beats become two objects: the tabs, then the
+ * track (see PHONE). At that width cues are also scaled by CUE and staggers by
+ * STEP; order, eases and durations are unchanged.
  *
- * Under 700px there is no list and no single panel: the band is a row of tabs
- * over a swipeable track, so the last two beats become two objects instead of
- * four — the tab row on the cards' cue, the track on the panel's. See PHONE.
+ * Every tween is a `from`, so the resting markup is the finished state and a
+ * build that never runs leaves the section simply present.
  *
- * That same breakpoint also cues those beats tighter: every offset below is
- * taken at 0.42 of its stated value and every stagger at 0.7, so the band
- * lands in about 1.9s rather than 2.9 and the track — which is the only
- * content on the phone — is readable at 1.2s rather than 3.0. Nothing about
- * the composition, the order, the eases or the durations changes; only the
- * waiting between the beats does. See CUE and STEP.
- *
- * Every tween is a `from`: the resting markup is the finished state, so a build
- * that never runs leaves the section simply present. There is no `fromTo` here
- * at all, delayed or otherwise — see the note on `immediateRender` in
- * src/lib/motion.ts for what that construct costs.
- *
- * The blur carries its own lesson, recorded in src/components/hero/entrance.ts:
- * an element parked at full opacity while still blurred paints a visible smudge
- * of itself before its turn. So opacity is always a second, much shorter tween
- * rather than riding the whole blur duration — the thing is invisible while it
- * is at its softest, and has resolved most of its blur by the time it is fully
- * opaque.
+ * Opacity is always a separate, much shorter tween than the blur: an element
+ * at full opacity while still blurred paints a visible smudge (see
+ * src/components/hero/entrance.ts).
  *
  * WHAT THIS DELIBERATELY DOES NOT TOUCH
  *
- * The panel. Each of the three panels mounts with its own story loop that runs
- * inside the stepper's 6s dwell, and the slot it lives in carries a CSS
- * `steps-fade` on every slide change. Nothing inside `.steps__panel-slot` is
- * animated here, and the slot itself is not either: the entrance moves
- * `.steps__panels`, the grid that holds the slot, so the panel arrives as one
- * object and its own beat — and the slot's fade — are left completely alone. A
- * CSS animation with `animation-fill-mode: both` outranks inline style anyway,
- * so a GSAP tween on the slot would have been silently swallowed.
+ * The panel's contents. Each panel runs its own story loop inside the
+ * stepper's 6s dwell, and `.steps__panel-slot` plays a CSS `steps-fade` on
+ * every change. Only `.steps__panels` (the grid holding the slot) is tweened.
+ * A CSS animation with `animation-fill-mode: both` outranks inline style, so a
+ * tween on the slot itself would be silently ignored.
  *
- * The progress bar. `.step.is-active.is-playing::after` is a CSS animation on a
- * pseudo-element and cannot be reached from here; the card's own transform and
- * blur carry it, which is right, because it is part of the card. It is not
- * started until the entrance is over — see the `armed` state in Steps.tsx.
+ * The progress bar (`.step.is-active.is-playing::after`) is a pseudo-element
+ * and rides the card's transform. It does not start until the entrance ends;
+ * see the `armed` state in Steps.tsx.
  *
- * No hover animation and nothing listens to the pointer; the only hover in this
- * band is the card's CSS background, which is not ours.
+ * No hover animation; the card's hover is plain CSS.
  */
 import { EASE, intoLines, rise } from '../../lib/motion';
 import type { SectionMotion, Timeline } from '../../lib/motion';
 
 /**
- * A held beat before the first element moves.
- *
- * The section is revealed and the timeline starts in the same frame, and that
- * frame is an expensive one: the pending hold comes off four held elements at
- * once, including an 886x610 panel that has never been painted. Anything
- * scheduled at zero spends that frame travelling unseen — measured here, the
- * eyebrow was already a third of the way through its rise by the first frame
- * the browser actually put on screen, so only 9.6px of its 16px was ever
- * visible. An eighth of a second of nothing costs the sequence nothing and
- * hands the first beat back whole.
+ * A held beat before the first element moves. The reveal frame is expensive
+ * (the large panel paints for the first time), so anything scheduled at zero
+ * would be partly through its motion before the first visible frame.
  */
 const LEAD = 0.12;
 
 /** The heading, a beat after the eyebrow that names the band. */
 const TITLE_AT = LEAD + 0.18;
 /**
- * The cards and the panel, and the gap between one card and the next.
- *
- * Whichever of the two the layout puts first goes first: the grid stacks under
- * 1080px and the panel moves ABOVE the list there, so running the desktop order
- * on a phone would fill the band bottom-up and leave the topmost thing on screen
- * arriving last. The times are a mirror image, not a second design — the leader
- * opens, the follower overlaps its tail.
+ * Cue times for the cards and the panel. Whichever the layout puts first goes
+ * first: under 1080px the panel sits ABOVE the list, so the order swaps to
+ * keep the band filling top down.
  */
 const LEAD_AT = LEAD + 0.95;
 const FOLLOW_AT = LEAD + 1.5;
@@ -99,64 +61,38 @@ const CARD_STEP = 0.18;
 /** Where the stack puts the panel first. Matches `.steps__panels { order: 1 }`. */
 const STACKED = '(max-width: 1080px)';
 /**
- * Where the band is a switcher and a slider instead of a graphic and a list.
- *
- * Matches PHONE in Steps.tsx and the `max-width: 700px` block in Steps.css,
- * and it has to: below it the three cards do not exist as cards at all, so
- * there is nothing for beat 3 to stagger. The phone gets two objects instead of
- * four -- the tab row, then the track with the graphic and its copy inside it --
- * and they arrive in the order they are read, top down, on the same two cues
- * the desktop uses for its own leader and follower.
+ * Where the band becomes a tab switcher and a slider. Must match PHONE in
+ * Steps.tsx and the `max-width: 700px` block in Steps.css: below it there are
+ * no step cards to stagger, so the tab row and the track take the two cues.
  */
 const PHONE = '(max-width: 700px)';
 
 /**
- * THE PHONE PLAYS THE SAME SEQUENCE, TIGHTER.
+ * On a phone the same sequence plays on a tighter schedule, because the reader
+ * usually arrives mid-scroll and the track is the only content.
  *
- * Not a second design: the same beats, in the same order, out of the same
- * blur, on the same eases and over the same durations. What changes is the
- * SCHEDULE, and it changes because the band is read differently. At 1600 the
- * whole section is on screen at once and the spread is a composition the eye
- * follows across a held frame. At 390 the reader arrives at the top of the
- * band mid-scroll and keeps going, so a beat cued at a second and a half is a
- * beat played to an empty seat — and on this band that beat is the TRACK,
- * which is the only thing on the phone anyone came here to read.
+ * CUE scales where each beat starts. STEP scales the gaps inside a beat and is
+ * cut much less, so a stagger still reads as one. Durations are unchanged.
  *
- * Two numbers, because the two kinds of gap answer to different things. CUE
- * scales where a BEAT starts, which is the wait worth cutting because nothing
- * is happening during it. STEP scales the gap between things INSIDE one beat,
- * and is barely cut at all: that gap is the "one object comes out, the rest
- * follow" the band is built on, and squeezed to a frame and a half it stops
- * being a stagger. Durations are untouched, so the beats simply overlap more.
- *
- * The stepper's first dwell is unaffected in length and only moves earlier:
- * Steps.tsx arms its 6s timer on `motion:done`, so a shorter entrance hands
- * over sooner and the first card still gets a whole turn with its progress
- * bar starting from zero. See the `armed` state there.
+ * The stepper arms its 6s timer on `motion:done` (the `armed` state in
+ * Steps.tsx), so a shorter entrance just starts the first dwell sooner.
  */
 const CUE = 0.42;
 const STEP = 0.7;
 
 /**
- * Already arrived once, on this very element, and the timeline ran to its end.
- *
- * The mark is added by the LAST item on the timeline, so a build that is
- * reverted part-way — StrictMode's first pass, always — never sets it and the
- * next build performs the entrance in full. One that completed does, and a
- * later rebuild on the same node adds no tweens: the hook reveals the section,
- * the empty timeline completes on the next tick, and the band is simply there,
- * already landed, with the stepper carrying on over it. Without this the
- * section could re-perform its arrival under a live panel loop.
- *
- * Keyed on the element, so a genuinely new section node arrives properly.
+ * Elements whose entrance has run to the end. Set by the LAST item on the
+ * timeline, so a build reverted part-way (StrictMode's first pass) does not
+ * count. A later rebuild on the same node adds no tweens, so the entrance is
+ * never replayed under a live panel loop. Keyed on the element, so a new
+ * section node still animates.
  */
 const LANDED = new WeakSet<HTMLElement>();
 
 /**
- * Rise out of blur: the travel and the softening on one tween, the opacity on
- * its own much shorter one starting at the same moment. See the note above —
- * this pairing is the whole reason the blur does not smear. Lifted from
- * Pillars.motion.ts so the two bands resolve the same way.
+ * Rise out of blur: travel and blur on one tween, opacity on a much shorter
+ * one starting at the same moment (see the header). Same helper as
+ * Pillars.motion.ts, so the bands resolve the same way.
  */
 function outOfBlur(
   tl: Timeline,
@@ -185,21 +121,16 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
   const panels = q('.steps__panels')[0];
   const phone = typeof matchMedia !== 'undefined' && matchMedia(PHONE).matches;
   const stacked = typeof matchMedia !== 'undefined' && matchMedia(STACKED).matches;
-  // The held lead-in is a fixed cost, not a cue -- it buys back the expensive
-  // first frame, which is no cheaper on a phone -- so it is added AFTER the
-  // scaling rather than scaled with it. Everything measured from the end of it
-  // is composition, and that is what compresses. See CUE and STEP.
+  // LEAD is a fixed cost, so it is added AFTER scaling rather than scaled.
   const cue = (t: number) => LEAD + (phone ? (t - LEAD) * CUE : t - LEAD);
   const step = (t: number) => (phone ? t * STEP : t);
   const cardsAt = cue(stacked ? FOLLOW_AT : LEAD_AT);
   const panelAt = cue(stacked ? LEAD_AT : FOLLOW_AT);
 
-  /* 1 — the band names itself. */
+  /* 1: the eyebrow. */
   rise(tl, q('.eyebrow'), LEAD, { y: 16, duration: 0.8, clearProps: 'transform,opacity' });
 
-  /* 2 — the heading. One sentence, so one mask: the whole line rises out of it
-     as a unit and sharpens on the way. It is the first real movement in the
-     band and the thing the eye should land on. */
+  /* 2: the heading, rising out of its line mask and sharpening. */
   if (title) {
     // `intoLines` rewrites the element in place and is idempotent, so a
     // StrictMode remount reuses the spans that are already there.
@@ -214,12 +145,9 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
     tl.from(lines, { opacity: 0, duration: 0.3, ease: 'none' }, cue(TITLE_AT));
   }
 
-  /* 3p — the phone. Two objects, in reading order: the row that chooses, then
-     the track that answers it. The track is taken as ONE thing rather than as
-     three slides, because two of the three are off the side of the screen and
-     a stagger nobody can see is a stagger that has to finish before the band is
-     settled. Its own children -- the plate, the title, the body -- ride it, the
-     way the desktop panel's contents ride the panel. */
+  /* 3p: the phone. The tab row, then the track as ONE object: two of its
+     three slides are off screen, so staggering them would only delay the
+     settle. */
   if (phone) {
     const tabs = q('.steps__tabs')[0];
     const track = q('.steps__track')[0];
@@ -229,16 +157,13 @@ export function buildSteps({ el, q, tl }: SectionMotion) {
     return;
   }
 
-  /* 3 — the three cards, top to bottom. Each is a whole statement, so the whole
-     card arrives as one thing; nothing inside them is staggered separately.
-     The active card's orange rail and its progress bar are pseudo-elements and
-     ride the card's own transform. */
+  /* 3: the three cards, top to bottom, each as one object. The active card's
+     rail and progress bar are pseudo-elements and ride its transform. */
   outOfBlur(tl, cards, cardsAt, { y: 24, blur: 9, duration: 0.95, stagger: step(CARD_STEP), fade: 0.4 });
 
-  /* 4 — the panel, last and largest, as a single object. `expo.out` is 99%
-     travelled at 70% of its duration, so it is effectively standing still well
-     before the tween formally ends and the story loop inside it is never
-     playing against a moving frame. */
+  /* 4: the panel, as one object. `expo.out` has nearly finished travelling
+     well before the tween ends, so the story loop inside never plays against
+     a moving frame. */
   if (panels) {
     outOfBlur(tl, panels, panelAt, { y: 34, blur: 14, duration: 1.25, fade: 0.5 });
   }

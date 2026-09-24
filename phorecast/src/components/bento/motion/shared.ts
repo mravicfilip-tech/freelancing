@@ -8,9 +8,9 @@
  *
  * The contract every card module keeps
  * ------------------------------------
- * A module is attached *before* the section's entrance reveals the band — the
- * loader's observer is deliberately armed a quarter of a viewport earlier than
- * the entrance's (see Bento.tsx) — so a module may safely park its illustration
+ * A module is attached *before* the section's entrance reveals the band (the
+ * loader's observer is armed a quarter of a viewport earlier than the
+ * entrance's; see Bento.tsx), so a module may safely park its illustration
  * at a start state with `gsap.set`. The card is still `visibility: hidden` under
  * `[data-motion='pending']` at that point, so nothing can flash. The start state
  * is written with `set`, never `from`: a `from` tween would fix the end value at
@@ -27,25 +27,19 @@ import type { Timeline } from '../../../lib/motion';
 export const q1 = (root: Element, sel: string) => root.querySelector<HTMLElement>(sel);
 export const qa = (root: Element, sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
-/* A note the card modules all depend on: never read `--u` to get a number out of
-   it. It is written in container-query units, `getComputedStyle` hands back the
-   unresolved `calc(100cqw / 774)` token stream rather than a length, and the
-   card that declares it is itself the query container, so it could not resolve
-   its own `cqw` in any case. Geometry comes off `getBoundingClientRect`, which
-   is correct at every breakpoint and needs no knowledge of the unit. */
+/* Never read `--u` to get a number out of it: `getComputedStyle` returns the
+   unresolved `calc(100cqw / 774)` rather than a length. Geometry comes from
+   `getBoundingClientRect` (see `unitOf` below). */
 
 /**
  * Is the band still held hidden, i.e. may this module park its illustration at a
  * start state?
  *
- * Normally yes: the loader arms a quarter of a screen before the entrance does,
- * and the modules are warm, so the import resolves in the microtask checkpoint
- * after that callback and well before a paint. But a cold cache turns the import
- * into a real fetch, and the band can reveal itself while it is in flight. A
- * module that hid its artwork at that point would blank something a person has
- * already seen. So the question is asked at the moment of truth rather than
- * assumed, and a module that has missed its window simply skips its load-in and
- * goes straight to its loop -- less motion, never a flash.
+ * Normally yes: the loader attaches early and the modules are prefetched. But
+ * on a cold cache the import is a real fetch, and the band can reveal itself
+ * while it is in flight; hiding the artwork then would blank something already
+ * seen. So this is checked at attach time, and a module that has missed its
+ * window skips its load-in and goes straight to its loop.
  */
 export function bandStaged(card: HTMLElement): boolean {
   const section = card.closest<HTMLElement>('.bento');
@@ -58,11 +52,10 @@ export function bandStaged(card: HTMLElement): boolean {
  * Three ways in, in order of preference: the `motion:done` event the section
  * dispatches when its timeline completes; the `data-motion-done` flag it sets
  * instead when motion is reduced or the build threw; and, last, a timer armed
- * only once the section has dropped `data-motion="pending"` — i.e. once it is
- * demonstrably animating rather than waiting to be scrolled to. A plain timeout
- * would be wrong here: a band that has not been reached yet may legitimately sit
- * pending for minutes, and starting a load-in behind it would burn the whole
- * sequence unseen.
+ * only once the section has dropped `data-motion="pending"`, i.e. once it is
+ * animating rather than waiting to be scrolled to. A plain timeout would be
+ * wrong: a band not yet reached may sit pending for minutes, and the load-in
+ * would play unseen.
  */
 export function onSectionReady(card: HTMLElement, start: () => void): () => void {
   const section = card.closest<HTMLElement>('.bento');
@@ -116,11 +109,8 @@ export function whileVisible(card: HTMLElement, tl: Timeline): () => void {
 /**
  * One design pixel of the box `el` belongs to, in real CSS pixels.
  *
- * `designWidth` is that box's width in the Figma frame. Measuring it beats
- * reading `--u`, which is written in container-query units: `getComputedStyle`
- * hands back the unresolved `calc(100cqw / 774)` token stream rather than a
- * length, and the card that declares it is the query container, so it could not
- * resolve its own `cqw` anyway.
+ * `designWidth` is that box's width in the Figma frame. Measured, because `--u`
+ * cannot be read as a length (see the note above).
  */
 export const unitOf = (el: Element, designWidth: number) =>
   el.getBoundingClientRect().width / designWidth;
@@ -128,12 +118,10 @@ export const unitOf = (el: Element, designWidth: number) =>
 /**
  * `designPx` of travel, expressed as a percentage of the element's own box.
  *
- * `xPercent`/`yPercent` are the only distances in this section that survive a
- * resize. A tween written in pixels is correct at the width it was measured at
- * and wrong at every other; a percentage of the element's own box scales with
- * the card, because the element scales with the card too. The tween is built
- * once and stays true, with no ResizeObserver rebuilding timelines underneath
- * a loop that is halfway through its beat.
+ * `xPercent`/`yPercent` survive a resize: a percentage of the element's own
+ * box scales with the card, so a tween built once stays correct without
+ * rebuilding timelines mid-loop. A tween in pixels is right only at the width
+ * it was built at.
  */
 export function pct(el: Element, designPx: number, u: number, axis: 'x' | 'y' = 'y'): number {
   const r = el.getBoundingClientRect();
@@ -145,17 +133,13 @@ export function pct(el: Element, designPx: number, u: number, axis: 'x' | 'y' = 
  * A pulse that leaves nothing behind: out on `out`, back on `back`, ending on
  * the value the tween started from, so the loop's resting frame is the design.
  *
- * `clear` names the properties CSS owns and hands them back to it once the pulse
- * has landed. It matters more than it looks. Ending a tween on the same *value*
- * CSS would have produced is not the same as ending with no inline style at all:
- * an inline `transform`, even the identity one, promotes the element to its own
- * compositing layer, and inside a `backdrop-filter` chip that switches Chrome
- * from subpixel to greyscale text antialiasing. Measured on the three onboard
- * chips: 799 pixels differing from the static render, up to 185/255 on the glyph
- * edges, purely from `transform: translate(0px, 0px) scale(1)` being present.
- * Clearing also restores the transforms the design itself carries -- the pie
- * badge's `scale(0.7)`, the diamonds' `rotate(45deg)` -- rather than leaving
- * GSAP's decomposition of them inline to outrank the stylesheet.
+ * `clear` names the properties CSS owns and hands them back once the pulse has
+ * landed. Ending on the same value is not the same as no inline style: even an
+ * identity `transform` promotes the element to its own compositing layer, and
+ * inside a `backdrop-filter` chip Chrome then switches to greyscale text
+ * antialiasing. Clearing also restores transforms the design carries (the pie
+ * badge's `scale(0.7)`, the diamonds' `rotate(45deg)`) instead of leaving
+ * GSAP's inline decomposition to outrank the stylesheet.
  */
 export function pulse(
   tl: Timeline,

@@ -23,14 +23,13 @@ import './PanelRegister.css';
 
 /* The loop ------------------------------------------------------------------
  *
- * One beat, and it is the step's own sentence acted out: an email address
- * becomes an account becomes a working app.
+ * An email address becomes an account becomes a working app.
  *
- * DESKTOP -- all three acts.
+ * DESKTOP: all three acts.
  *
  *   0.00  the pill's stroke comes up to full orange and the envelope lands
- *   0.30  the address types itself in -- the text is revealed by a clip and the
- *         caret rides the reveal's leading edge, so it travels the whole string
+ *   0.30  the address types itself in (a clip reveal, with the caret on its
+ *         leading edge)
  *   1.15  the orange diamond fires and the caret blinks twice
  *   1.35  the wire between pill and cards energises left to right
  *   1.95  the two account cards slide in off the wire, 0.15 apart, and each one
@@ -38,15 +37,13 @@ import './PanelRegister.css';
  *   2.55  the bracket to the phone draws, and the white diamond pops at its end
  *   3.20  the phone wakes -- chrome, then the chart, then the five columns grow
  *         from the axis with the balance counting up beside them
- *   4.00  the +2.41% flag lands on the orange column. Story ends at 4.35.
- *   4.35  everything is handed back to CSS (`clearProps`), and the panel sits
- *         perfectly still for 1.55s before going again. Period 5.90s in GSAP
- *         time, inside the stepper's 6s dwell.
+ *   4.00  the +2.41% flag lands on the orange column
+ *   4.35  everything is handed back to CSS (`clearProps`), then 1.55s of rest.
+ *         Period 5.90s, inside the stepper's 6s dwell.
  *
- * PHONE (below 700, where PanelRegister.css recomposes the panel) -- two acts,
- * because the third is not drawn there. Same opening, to the frame; the cards
- * then rise from under the diamond instead of sliding in off a wire that no
- * longer exists, and the story simply ends when they have filled.
+ * PHONE (below 700px, where PanelRegister.css recomposes the panel): two acts,
+ * since the third is not drawn there. The cards rise from under the diamond
+ * instead of sliding in off the wire.
  *
  *   0.00  the pill's stroke comes up to full orange and the envelope lands
  *   0.30  the address types itself in, caret on the reveal's leading edge
@@ -54,49 +51,37 @@ import './PanelRegister.css';
  *   1.70  card A rises 18 design px out from under the diamond and fills:
  *         glyph, rule, digits, bar
  *   1.92  card B follows, 0.22 behind it, the same four beats
- *   2.80  handed back to CSS, then 3.10s of rest. Period 5.90s -- the SAME
- *         period as the desktop, so both layouts breathe alike inside the
- *         stepper's 6s dwell; the phone simply spends more of it at rest.
+ *   2.80  handed back to CSS, then 3.10s of rest. Same 5.90s period as the
+ *         desktop.
  *
- * Nothing below animates an element the phone stylesheet has set to
- * `display: none`: the cast is built from the composition, not from the DOM.
+ * Nothing animates an element the phone stylesheet hides: the cast is chosen
+ * by composition (`phone`), not by querying the DOM.
  *
- * Mechanics worth keeping:
- * - The hidden state is a `tl.set(..., 0)`. A timeline `set` at position 0
- *   renders when the timeline is built (so nothing flashes at its design value
- *   before the first frame -- this is a layout effect) AND every time the
- *   playhead returns to 0, so each repeat re-hides without a second code path.
- *   Nothing here is a delayed `fromTo`, which is the only construct that writes
- *   its start value at build time and strands elements in it; where a `to`
- *   needs an explicit landing value it is stated, never inferred.
- * - Rest is the design: a single `clearProps` at STORY removes every inline
- *   style the loop wrote, and the counted balance is put back by hand on
- *   teardown because text content is not a style.
+ * Mechanics:
+ * - The hidden state is a `tl.set(..., 0)`, which renders at build time (this
+ *   is a layout effect, so nothing flashes) and again on every repeat.
+ *   No delayed `fromTo`: it writes its start value at build time and can
+ *   strand elements in it.
+ * - Rest is the design: one `clearProps` at the end of the story removes every
+ *   inline style the loop wrote. The counted balance is text, not a style, so
+ *   it is restored by hand.
  * - No hover, no pointer, no idle drift. Reduced motion never builds anything.
  */
-/* Every glyph in this panel is sized by PanelRegister.css, in design pixels
-   off `--p`, so none of them wants Icon's own width/height: an <img> ignores
-   its width attribute once CSS gives it a length, and a <span> would take that
-   length too, but writing both invites them to disagree at some width. The
-   attribute numbers are still passed, because they are the asset's own and are
-   worth having in the markup; this clears the box they would otherwise set.
-   The one exception is s1-connector: a two-stop gradient wire, which a mask
-   would flatten to a silhouette. It stays an <img>, and both of its ends -- a
-   warm #ff632a and a mid grey -- still read on paper. */
+/* Every glyph here is sized by PanelRegister.css in design pixels, so this
+   clears Icon's inline width/height. The `w`/`h` numbers are still passed as
+   the asset's own size. The exception is s1-connector, a two-stop gradient
+   that a mask would flatten, so it stays an <img>. */
 const CSS_SIZED: CSSProperties = { width: undefined, height: undefined };
 
 const STORY = 4.35;
 const REST = 1.55;
-/* The phone's two acts, and the rest that keeps the period at the desktop's
-   5.90s. See the beat sheet above. */
+/* The phone's two acts, with rest that keeps the desktop's 5.90s period. */
 const STORY_PHONE = 2.8;
 const REST_PHONE = 3.1;
 
-/* The same breakpoint Steps.tsx reads for its own layout switch, and the same
-   one PanelRegister.css recomposes at. Written out here rather than inferred
-   from a computed style: a cast built by asking each element whether it is
-   currently displayed would be a different cast on a frame where the
-   stylesheet has not applied yet, and this runs in a layout effect. */
+/* Same breakpoint as Steps.tsx and PanelRegister.css. Read from a media query
+   rather than computed styles, which may not have applied yet in a layout
+   effect. */
 const PHONE = '(max-width: 700px)';
 
 function usePhoneComposition() {
@@ -115,15 +100,11 @@ function usePhoneComposition() {
 
 function useRegisterLoop() {
   const ref = useRef<HTMLDivElement>(null);
-  /* Which composition is on screen. It is a dependency of the build below,
-     so crossing the breakpoint rebuilds the timeline rather than leaving
-     beats aimed at parts the stylesheet has just removed. */
+  /* A dependency of the build, so crossing the breakpoint rebuilds the
+     timeline. */
   const phone = usePhoneComposition();
-  /* The loop reads the pill's two stroke colours once, at build time, exactly
-     where it already measures the box -- so it has to be rebuilt when the
-     theme changes or it would keep tweening to the palette that was live when
-     the panel mounted. The stepper does remount this panel every six seconds,
-     but a six-second window of the wrong red is still the wrong red. */
+  /* The pill's stroke colours are read once at build time, so the loop must
+     rebuild on a theme change. */
   const epoch = useThemeEpoch();
 
   useLayoutEffect(() => {
@@ -155,17 +136,14 @@ function useRegisterLoop() {
     if (!pill || !env || !addr || !caret || !dOrange || !dWhite || !wire || !arm) return;
     if (!cardA || !cardB || !chart || !amount || !delta || !block || cols.length !== 5) return;
 
-    // The design pixel, read off the rendered box rather than out of `--p`:
-    // the unit is written in container-query units and computes to an
-    // unresolved token, so it can only be measured. The divisor is the width
-    // of `.s1` in design units, and the phone gives it a narrower box: 362,
-    // the two cards and the 10 between them.
+    // The design pixel, measured from the rendered box: `--p` is in
+    // container-query units and cannot be read as a number. The divisor is
+    // the width of `.s1` in design units (362 in the phone composition).
     const p = root.getBoundingClientRect().width / (phone ? 362 : 760);
     const restAmount = amount.textContent ?? '$3,280';
     // How far the caret has to come back from: the full width of the address.
     const run = addr.getBoundingClientRect().width;
-    // The pill's stroke, as a pair. Today's values are the fallbacks, so a
-    // missing custom property yields exactly what the panel shipped with.
+    // The pill's stroke pair; the fallbacks are the dark values.
     const pillRest = tok('--steps-p1-pill-rest', 'rgba(229, 51, 30, 0.22)');
     const pillLit = tok('--steps-p1-pill-lit', 'rgb(229, 51, 30)');
 
@@ -174,11 +152,9 @@ function useRegisterLoop() {
     const innardsB = [q('.s1__glyph--user'), q('.s1__card--b .s1__rule'), q('.s1__bar--wide'), q('.s1__card--b .s1__bar--pill')]
       .filter((el): el is HTMLElement => !!el);
 
-    /* The third act: the wire, the bracket, its diamond and the whole phone.
-       Drawn on the desktop, not drawn on the phone -- so on the phone this is
-       empty and nothing below can reach it, including the `clearProps` at the
-       end, which is the one place a hidden element would otherwise still be
-       written to. */
+    /* The third act: wire, bracket, white diamond and the phone. Empty in the
+       phone composition, so nothing (including the final `clearProps`) writes
+       to hidden elements. */
     const act3 = phone
       ? []
       : [dWhite, wire, arm, chart, amount, delta, block, ...cols, ...chrome, ...trim];
@@ -194,9 +170,8 @@ function useRegisterLoop() {
         paused: true,
       });
 
-      /* ---- the panel at the start of the story, re-applied on every repeat.
-             The cards come in off the wire on the desktop and up from under
-             the diamond on the phone, which is where the flow now runs. */
+      /* ---- the start state, re-applied on every repeat. Cards come in off
+             the wire on desktop and up from under the diamond on the phone. */
       tl.set(pill, { borderColor: pillRest }, 0)
         .set(env, { opacity: 0, scale: 0.55, transformOrigin: '50% 50%' }, 0)
         .set(addr, { clipPath: 'inset(0% 100% 0% 0%)' }, 0)
@@ -227,17 +202,14 @@ function useRegisterLoop() {
         .to(caret, { x: 0, duration: 0.95, ease: 'power2.inOut' }, 0.3)
         .to(caret, { opacity: 0.12, duration: 0.16, repeat: 3, yoyo: true }, 1.25);
 
-      /* ---- 2. the packet leaves. On the desktop the wire then carries it;
-             on the phone the diamond IS the carry, and the cards answer it. */
+      /* ---- 2. the diamond fires; on desktop the wire then carries it. */
       tl.to(dOrange, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(3)' }, 1.15);
       if (!phone) {
         tl.to(wire, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power1.inOut' }, 1.35);
       }
 
-      /* ---- 3. the account cards arrive and fill in. The phone's pair starts
-             0.25 earlier, because there is no wire to wait out, and is 0.22
-             apart rather than 0.15 -- a pair stacked side by side wants to be
-             counted, and a pair arriving off a wire wants to look carried. */
+      /* ---- 3. the account cards arrive and fill in. On the phone there is no
+             wire to wait for, so they start earlier and sit further apart. */
       const cardAt: readonly (readonly [HTMLElement, HTMLElement[], number])[] = phone
         ? [[cardA, innardsA, 1.7], [cardB, innardsB, 1.92]]
         : [[cardA, innardsA, 1.95], [cardB, innardsB, 2.1]];
@@ -267,17 +239,10 @@ function useRegisterLoop() {
       }
 
       /* ---- 6. hand it all back to CSS and hold still.
-             The list is EXPLICIT, and `all` is a bug it is worth naming. Eight
-             of the elements below are <Icon>s, and an Icon is a mask whose
-             `--icon` url is written INLINE by the component. `clearProps:
-             'all'` strips inline styles, which includes that custom property:
-             the mask becomes `none`, `background: currentColor` then paints
-             the element's whole box, and the panel spent every rest with the
-             bracket as a solid 80 x 183 red rectangle and both card glyphs as
-             grey blocks. Measured at 1440: 12,493 pixels of the settled panel
-             differed from the same panel under reduced motion, all of it
-             there. Clearing the five properties this loop actually writes
-             hands the elements back to CSS and leaves the mask alone. */
+             Never `clearProps: 'all'`: several targets are <Icon>s, whose mask
+             URL is the inline `--icon` property. Clearing it turns each icon
+             into a solid block of `currentColor`. Clear only what the loop
+             writes. */
       const WROTE = 'transform,transformOrigin,opacity,clipPath,borderColor';
       const end = phone ? STORY_PHONE : STORY;
       tl.set(everything, { clearProps: WROTE }, end);
@@ -288,10 +253,8 @@ function useRegisterLoop() {
 
     return () => {
       ctx.revert();
-      // `revert` restores inline styles; the counted text is ours to undo.
-      // Unconditional: the phone never counts it, so this is a no-op there,
-      // and a build that crossed the breakpoint mid-story still lands on the
-      // design's own figure.
+      // `revert` restores inline styles; the counted text is restored here.
+      // Unconditional, so a rebuild across the breakpoint mid-story is safe.
       amount.textContent = restAmount;
     };
   }, [epoch, phone]);
@@ -299,7 +262,7 @@ function useRegisterLoop() {
   return ref;
 }
 
-/* Panel 1 — email → account cards → phone -------------------------------- */
+/* Panel 1: email, account cards, phone ------------------------------------ */
 export function PanelRegister() {
   const ref = useRegisterLoop();
 

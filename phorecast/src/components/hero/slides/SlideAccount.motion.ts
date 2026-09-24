@@ -1,4 +1,4 @@
-/* Hero slide 2 — the "One account. Your keys." cluster, in motion.
+/* Hero slide 2 (sports markets): the account cluster, in motion.
  *
  * The hero's shared entrance (entrance.ts → slideIn) fades and pops the whole
  * illustration as one block. This module is the detail inside that block: the
@@ -23,9 +23,7 @@
  *   The carousel leaves every slide at 7.00 (AUTOPLAY_MS in Hero.tsx), and
  *   leaving stops the loop and snaps whatever is mid-flight back to rest in
  *   full view of the cross-fade. So the first cycle has to land, all of it,
- *   with a breath to spare. It used to run to 7.71 (7.55 for the tweens,
- *   and the price's flash fading after them): the chart was half drawn and
- *   the new price a third of the way in when the slide left.
+ *   with a breath to spare.
  *
  *     0.55        the detail entrance starts (slideIn's block pop has 0.55)
  *     2.70–3.12   the old toast drops away   ← the first cycle opens 0.35s
@@ -45,29 +43,22 @@
  *     5.43–5.93   the price rolls in
  *     6.31–7.00   still: 0.69s of rest before the slide changes
  *
- *   It was fitted by closing gaps, not by speeding anything up: every beat
- *   keeps the duration and ease it had, and the order is the story's. The
- *   settle between the entrance and the loop became an overlap (-0.70), the
- *   curves leave once the fresh toast has landed rather than when its tween
- *   formally ends (-0.35), the chart starts at the top of the pill's lift
- *   rather than 0.25s into its way down (-0.25), and the price rolls as the
- *   line starts to redraw rather than 0.15s after (-0.10). 7.71 to 6.31.
+ *   The fit comes from overlapping beats, not from speeding them up: the loop
+ *   starts under the entrance's last beat (SETTLE.desktop), the curves leave
+ *   once the fresh toast has visibly landed, and the market moves at the top
+ *   of the pill's lift. Change a timing below and this sheet needs re-checking.
  *
  * TWO COMPOSITIONS, TWO SEQUENCES
  *   Below 720px SlideAccount.css does not shrink the illustration, it drops
  *   most of it: the prediction card, the two event cards and the action bar go
- *   (the argument is written out over THE PHONE COMPOSITION in that file), and
- *   what is left is the two market cards, the two connector curves, the
- *   diamond and the pill. The dropped parts are dropped with `display: none`,
- *   so they are still IN THE DOM and every `querySelector` here still finds
- *   them -- which is exactly how this module came to be timing beats nothing
- *   could see. Measured at 390 before the phone branch existed: the first
- *   visible movement was 768ms after the sequence started, the two market
- *   cards never moved at all, and the loop spent its first 1435ms on a toast
- *   swap and a bolt pop that are not on the page. So the cast is asked of the
+ *   (see THE PHONE COMPOSITION in that file), and what is left is the two
+ *   market cards, the two connector curves, the diamond and the pill. The
+ *   dropped parts use `display: none`, so they are still in the DOM and every
+ *   `querySelector` here still finds them; one shared timeline would spend
+ *   its opening beats on parts nobody can see. So the cast is asked of the
  *   layout (see `onPhone`) and each timeline is built for the cast that is
- *   actually there. The phone got its own beats rather than a trimmed copy
- *   of the desktop's, and the two timetables are kept apart below.
+ *   actually there. The phone has its own beats rather than a trimmed copy of
+ *   the desktop's, and the two timetables are kept apart below.
  *
  * GATING
  *   All four hero slides are mounted at once; only `.hero__slide.is-active` is
@@ -89,10 +80,9 @@ import { tok } from '../../../lib/theme';
 
 /** One full cycle of the loop, in seconds: the beats, then a long rest. The
  *  rest is whatever is left of this after the beats, measured off the built
- *  timeline rather than written down twice — a hand-kept figure had the cycle
- *  running 0.7s short of what this constant claimed. Only a held slide (the
- *  pause control, keyboard focus in the carousel) ever sees a second cycle;
- *  the running carousel leaves at 7s, inside the first one's rest. */
+ *  timeline rather than written down twice. Only a held slide (the pause
+ *  control, keyboard focus in the carousel) ever sees a second cycle; the
+ *  running carousel leaves at 7s, inside the first one's rest. */
 const LOOP_PERIOD = 9;
 
 /** How long after the slide goes live the detail starts, in seconds. The block
@@ -100,8 +90,8 @@ const LOOP_PERIOD = 9;
 const LEAD_IN = 0.55;
 /** Where the first loop cycle starts, in seconds from the END of the detail's
  *  entrance, per composition. The phone rests a beat first. The desktop
- *  cannot afford to: its cycle is 0.85s longer, and resting here pushed its
- *  last beats past the carousel's 7s. So its first beat, the old toast
+ *  cannot afford to: its cycle is 0.85s longer, and resting here would push
+ *  its last beats past the carousel's 7s. So its first beat, the old toast
  *  dropping away, starts under the entrance's last one instead. That exit is
  *  power2.in, so it has barely moved 0.15s in, which puts the toast visibly
  *  leaving just as the diamond lands at the entrance's end, not beside it. */
@@ -174,9 +164,9 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   /* The flash, read from :root at build time next to the priceInk read below,
      which is what tok() is for. SlideAccount re-runs this module when the theme
      epoch changes (see SlideAccount.tsx), so both are re-read together and the
-     flash can never be the other theme's colour. The hardcoded values stay as
-     the fallbacks. On paper #00c950 is 2.15:1 -- a price rise nobody can see --
-     so light collapses the pair onto --pos and --neg. */
+     flash can never be the other theme's colour. The hardcoded values are the
+     dark fallbacks; light overrides the pair with darker values in Hero.css,
+     because #00c950 barely registers on the pale card. */
   const flashUp = tok('--hero-sl2-up', '#00c950');
   const flashDown = tok('--hero-sl2-down', '#e7000b');
 
@@ -357,9 +347,9 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
   function buildLoop(): gsap.core.Timeline {
     // Every fromTo here carries immediateRender: false. Without it GSAP writes
     // each tween's start value the instant the timeline is built, not when the
-    // playhead reaches it: the cycle opened with the connectors clipped to
-    // nothing, the sparkline erased and the diamond parked 58px high, all of it
-    // holding for seconds before its turn came. A still of the illustration has
+    // playhead reaches it, so the connectors would sit clipped to nothing, the
+    // sparkline erased and the diamond parked 58px high for seconds before
+    // their turn. A still of the illustration has
     // to read as the approved design at every moment except the one it is
     // actually animating through.
     const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: EASE } });
@@ -385,9 +375,8 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
            not the timeline's own duration.
        Everything else keeps its spacing: the diamond 0.05 behind the
        curves, the lift 0.05 before the diamond lands, the price's roll out,
-       tick and roll in 0.26 and 0.02 apart. The phone column is untouched:
-       its first cycle already ends inside the 7s, and it is the phone's
-       own. */
+       tick and roll in 0.26 and 0.02 apart. The phone column needs no
+       tightening: its first cycle already ends inside the 7s. */
     const phone = onPhone();
     const at = phone
       ? { conn: 0, diamond: 0.05, lift: 0.9, settle: 1.35, chart: 1.55, priceOut: 1.7, tick: 1.96, priceIn: 1.98 }
@@ -398,8 +387,8 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
     //     sitting exactly where the design puts it.
     //
     //     Skipped on a phone: the action bar is dropped there, so this beat
-    //     and the bolt's below used to open every cycle with 1.45s in which
-    //     nothing on the page moved. The route beat leads instead.
+    //     and the bolt's below would open every cycle with 1.45s in which
+    //     nothing visible moves. The route beat leads instead.
     if (!phone && toast) {
       tl.to(toast, { y: D.toastSwap, opacity: 0, duration: 0.42, ease: 'power2.in' }, 0)
         .fromTo(toast,
@@ -474,11 +463,8 @@ export function slideAccountMotion(root: HTMLElement): Cleanup {
        leaving the slide stops the loop, so what a reader sees is the last
        beat landing at 6.31 on the desktop and 6.46 on the phone, then
        stillness until the slide changes. The full rest is only ever seen by a
-       reader holding the hero, which is where a long rest belongs. Fitting
-       the desktop's first cycle into the 7s did not touch the period: the
-       second cycle still starts a full 9s after the first. Shorten the phone's
-       period deliberately if that ever needs to match the desktop's rest; do
-       not shorten LOOP_PERIOD, which both compositions read. */
+       reader holding the hero, which is where a long rest belongs. Do not
+       shorten LOOP_PERIOD to adjust one composition's rest: both read it. */
     tl.repeatDelay(Math.max(0, LOOP_PERIOD - tl.duration()));
     return tl;
   }

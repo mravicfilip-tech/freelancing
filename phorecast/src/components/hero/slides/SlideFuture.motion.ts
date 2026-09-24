@@ -1,15 +1,13 @@
 /**
- * Slide 4 — "The Future of Trading": the orbit/network illustration's own motion.
+ * Slide 4 (the Phorcast token): the orbit/network illustration's own motion.
  *
  * The slide's argument is that many markets route through one place. The motion
  * makes that argument once, then rests.
  *
  * THE LEAD IS THE BTC/USD DESK, and it is alone on the stage for 0.8s. That is
  * the whole shape of the load-in: an order is placed at a desk, a wire reaches
- * out of it, and only then does the network it reaches exist. The previous pass
- * opened eight groups inside 800ms with staggers of 0.05 and 0.07 and was over
- * in 1.75s, which is the "everything at once with a spreadsheet stagger" that
- * MOTION.md exists to rule out.
+ * out of it, and only then does the network it reaches exist. Opening every
+ * group at once on a tight stagger is what MOTION.md rules out.
  *
  *   LOAD-IN  3.45s end to end, read in this order:
  *
@@ -31,11 +29,9 @@
  *            diamond. Then 2.7s of rest.
  *
  *            Every amplitude in it is small enough that a still taken at any
- *            moment of it still reads as the approved design: the diamond grows
- *            by 5.5 design px at its widest, a market tile by 3.4, the feed dot
- *            by 2.4. They used to be 12.5, 9.1 and 9.6 — at which a frame
- *            grabbed mid-beat showed a diamond half again as large as the one
- *            Figma draws, which is the single-frame rule in MOTION.md.
+ *            moment of it still reads as the approved design (the single-frame
+ *            rule in MOTION.md): the diamond grows by 5.5 design px at its
+ *            widest, a market tile by 3.4, the feed dot by 4.8.
  *
  * CONSTRAINT: every part of the illustration is an `<img src="*.svg">`, so
  * there is no `<path>` in the document to put a `stroke-dashoffset` on. The
@@ -186,9 +182,8 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   stage.appendChild(pulse);
 
   /* The light each market tile wears while the order is at it: a hairline and
-     a tint step, both stated in CSS so nothing here ever holds a colour. The
-     element this replaces was a radial --accent bloom, which is the one thing
-     this project does not do. */
+     a tint step, both stated in CSS so nothing here ever holds a colour.
+     Deliberately not a radial --accent bloom, which the design avoids. */
   const lits = badges.map((b) => {
     const g = document.createElement('i');
     g.className = 'sl4__badge-lit';
@@ -254,27 +249,23 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   /** Hand every design element back to CSS, exactly as it is drawn in Figma. */
   const moved = [...rings, ...badges, ...pillGroup, ...tags, ...tagDots, ...nodes, stub, diamond, trackTop, trackBottom]
     .filter((el): el is HTMLElement => !!el);
-  /* `transform,opacity,clipPath` is not the whole list, and the three missing
-     names were each left behind on the settled illustration:
+  /* `transform,opacity,clipPath` is not the whole list:
 
        transformOrigin    written by every `transformOrigin: '50% 50%'` in the
-                          entrance, and never removed, so five badges and eight
-                          nodes carried an inline origin forever;
+                          entrance, and otherwise never removed;
        translate/rotate/scale
-                          GSAP 3.13 writes the individual transform properties
-                          to `none` alongside the matrix, and clearing
-                          `transform` does not take them with it.
+                          GSAP writes the individual transform properties to
+                          `none` alongside the matrix, and clearing `transform`
+                          does not take them with it.
 
-     None of them moved a pixel -- the values written are the values CSS
-     already holds -- but "a full cycle leaves no residual inline styles" is
-     either true or it is not, and a stray inline origin is exactly the thing a
-     later edit to the CSS would silently lose to. */
+     None of them moves a pixel, but a full cycle must leave no residual inline
+     styles: a stray inline origin would silently override a later CSS edit. */
   const settleProps = () => {
     gsap.set(moved, { clearProps: 'transform,translate,rotate,scale,opacity,clipPath,transformOrigin' });
   };
 
   // Before anything is built. An earlier instance killed part-way through its
-  // load-in -- StrictMode's mount/cleanup/mount, or a hot reload -- can leave an
+  // load-in (StrictMode's mount/cleanup/mount, or a hot reload) can leave an
   // inline `scale(0.72)` behind, and a `from` tween built against that reads it
   // as the element's natural value and strands it there forever (the same trap
   // lib/motion.ts documents on `pop`). Every entrance below states both ends
@@ -360,10 +351,9 @@ export function slideFutureMotion(root: HTMLElement): () => void {
   // Every tween below is `immediateRender: false`, and the start states are
   // parked by these `set`s at position 0 instead. A delayed `fromTo` renders
   // its FROM value the moment the timeline is BUILT, not when the playhead
-  // reaches it -- so with the default the illustration would be parked half
-  // assembled from mount until slide 4 is first shown, which on this carousel
-  // can be twenty seconds of a slide nobody is looking at yet, and any lag in
-  // the load-in holds it there on screen. Parking at frame 0 means the
+  // reaches it, so with the default the illustration would be parked half
+  // assembled from mount until slide 4 is first shown, and any lag in the
+  // load-in would hold it there on screen. Parking at frame 0 means the
   // illustration is untouched until the load-in actually runs, and each part
   // is hidden for exactly its own tween.
   // Travel is stated in DESIGN units and multiplied by `u`, so the rise is the
@@ -461,11 +451,9 @@ export function slideFutureMotion(root: HTMLElement): () => void {
     spawned.forEach((tl) => tl.kill());
     spawned.clear();
     // The order and the market lights are this module's own elements, so
-    // `settleProps` -- which hands the DESIGN back to CSS -- does not reach
-    // them. Killing the spawned timelines stops them where they stood, which
-    // left a market lit at full strength for as long as the slide was away and
-    // through the whole of the next load-in, until its own turn came round
-    // again. Both are put out by hand.
+    // `settleProps` (which hands the DESIGN back to CSS) does not reach them.
+    // Killing the spawned timelines stops them where they stood, which would
+    // leave a market lit through the next load-in. Both are put out by hand.
     gsap.set(pulse, { opacity: 0 });
     if (lits.length) gsap.set(lits, { opacity: 0 });
     settleProps();

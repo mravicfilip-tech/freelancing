@@ -1,31 +1,23 @@
 /**
- * Card A — "Open an account in 60 seconds".
+ * Card A: "Make Your First Forecast in 60 Seconds".
  *
- * LOAD-IN (1.2s, after the band's entrance has landed the card)
- *   The phone and the circuit grid behind it arrive with the card itself, as
- *   part of the section's own entrance — they are context, and the card should
- *   never appear as an empty orange rectangle. What this module holds back is
- *   the interface drawn on top of them. The 60s ring is the lead and takes the
- *   stage alone for 0.32s: ten pixels of rise and a hair of scale on `expo.out`,
- *   no overshoot. The three promises follow it, 0.11s apart so you can still
- *   count them, and "You're in." lands last.
+ * LOAD-IN (about 1.2s, after the band's entrance has landed the card)
+ *   The phone and the grid arrive with the card as part of the section's
+ *   entrance, so the card never appears as an empty orange rectangle. This
+ *   module holds back the interface on top: the 60s ring leads alone for
+ *   0.32s (a small rise and scale on `expo.out`, no overshoot), the three
+ *   pills follow 0.11s apart, and "You're in." lands last. Keep it short: it
+ *   plays only after the band's entrance has finished.
  *
- *   It was 1.6s, and it is fourth in a queue: the band's entrance has to finish
- *   first, and on a phone that put the last of this card's interface past four
- *   seconds from the scroll. Same beats, same order, same eases, 30% quicker.
- *
- * LOOP (7.9s of story, then 3.6s of nothing — 11.5s end to end)
- *   One beat, and it is the card's own claim acted out: the dial runs. The arc
- *   the design already draws on the ring is the hand — it turns one full
- *   revolution on `none`, which is the one place linear belongs, because it is
- *   a clock — while the numerals wind 60 down to 00. Each promise lights as the
- *   count reaches it, a third of the way apart. At zero "You're in." flares and
+ * LOOP (about 8.6s of motion, then 3.6s still)
+ *   The dial runs: the arc on the ring turns one full revolution on `none`
+ *   (linear, because it is a clock) while the numerals count 60 down to 00.
+ *   Each pill lights in turn as the count runs. At zero "You're in." flares and
  *   the ring breathes once; then the dial recharges to 60 over 1.2s and the
- *   whole card sits perfectly still for three and a half seconds before going
- *   again.
+ *   card rests for 3.6s.
  *
  * Nothing here responds to the pointer, and every value the loop touches is
- * returned to the one the design ships, so the resting frame is the design.
+ * returned to the design's, so the resting frame is the design.
  */
 import { gsap } from 'gsap';
 import { REDUCED } from '../../../lib/motion';
@@ -49,23 +41,17 @@ export function onboard(card: HTMLElement): () => void {
 
   const u = unitOf(art, 474);
 
-  /* Build-time colour reads; see the note in funds.ts. This card is the one
-     that does NOT flip, and these three values are why it is worth saying so
-     out loud: a lit pill stroke and a flare around "You're in." are white
-     because the plate under them is a saturated red-to-peach gradient, in both
-     themes. White on that plate is still the lit thing on paper, so
-     --bento-onb-* is absent from the light block in Bento.css and these three
-     resolve to the same values on either page. Read through `tok` anyway, so
-     the claim is checkable in one place rather than buried as a literal. */
+  /* Build-time colour reads; see the note in funds.ts. These do not change
+     with the theme (the plate is the same red gradient in both), but are read
+     through `tok` so every loop colour is declared in one place (Bento.css). */
   const C = {
     pillLit: tok('--bento-onb-lit', 'rgba(255, 251, 248, 0.95)'),
     flare: tok('--bento-onb-flare', '0 0 16px rgba(255, 251, 248, 0.9)'),
     flare0: tok('--bento-onb-flare-0', '0 0 0px rgba(255, 251, 248, 0)'),
   };
 
-  // One cell per digit -- see BoxOnboard.css. The "s" is not a cell, so the two
-  // digits are all this has to paint, and the resting value is what the markup
-  // shipped rather than a literal restated here.
+  // One cell per digit (see BoxOnboard.css); the "s" is not a cell. The resting
+  // value is read from the markup rather than restated here.
   const digits = Array.from(seconds.querySelectorAll<HTMLElement>('.onb__digit'));
   const restingSeconds = digits.map((d) => d.textContent ?? '0');
   const staged = bandStaged(card);
@@ -76,10 +62,8 @@ export function onboard(card: HTMLElement): () => void {
     /* -------------------------------------------------------- start state
        Written while the band is still held at `data-motion="pending"`, so none
        of it is ever painted. `set`, not `from`: see shared.ts. */
-    /* Transform origins live in the pulses that need them rather than being
-       parked here, because a resting element must carry NO inline style of ours
-       at all -- see `pulse` in shared.ts for what a stray inline transform does
-       to text inside a `backdrop-filter` chip. */
+    /* Transform origins live in the pulses that need them, not here: a resting
+       element must carry no inline style of ours (see `pulse` in shared.ts). */
     if (staged) {
       gsap.set(ring, { opacity: 0, y: 10, scale: 0.965 });
       gsap.set(pills, { opacity: 0, y: 8 });
@@ -92,16 +76,12 @@ export function onboard(card: HTMLElement): () => void {
        centring translate and the design's 15.8 degree tilt; overwriting it
        would resolve those percentages to pixels and freeze them against the
        card's container unit. BoxOnboard.css folds `--onb-spin` into the same
-       rotate, defaulting to 0deg, so the resting render is untouched. */
+       rotate, defaulting to 0deg. */
     const dial = { deg: 0, s: 60 };
     const paintArc = () => arcBox.style.setProperty('--onb-spin', `${dial.deg.toFixed(2)}deg`);
-    // The count has to be the same width at every value, or the numerals crawl
-    // sideways as the dial winds down. That used to be free: the old face was
-    // monospaced. It is bought deliberately now -- two fixed cells in
-    // BoxOnboard.css, one digit written into each, and the element centred on
-    // the ring rather than anchored by a left offset computed from a glyph
-    // width. The pad is what makes the count always exactly two digits and so
-    // always exactly two cells.
+    // The count must be the same width at every value, or the numerals shift
+    // sideways. BoxOnboard.css gives each digit a fixed cell; the pad keeps the
+    // count at exactly two digits, so always exactly two cells.
     const paintCount = () => {
       const s = String(Math.round(dial.s)).padStart(2, '0');
       for (let i = 0; i < digits.length; i++) digits[i].textContent = s[i] ?? '0';
@@ -114,7 +94,7 @@ export function onboard(card: HTMLElement): () => void {
       .to(dial, { s: 0, duration: RUN, ease: 'none', onUpdate: paintCount }, 0.3)
       .to(dial, { deg: 360, duration: RUN, ease: 'none', onUpdate: paintArc }, 0.3);
 
-    // One promise ticks off per third of the count: it slides a step out of the
+    // Each pill ticks off in turn during the count: it slides a step out of the
     // phone and its stroke lights, then settles back.
     pills.slice(0, 3).forEach((pill, i) => {
       pulse(loop, pill, 1.5 + i * (RUN / 3.4),
@@ -144,10 +124,9 @@ export function onboard(card: HTMLElement): () => void {
       .to(ring, { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'expo.out' }, 0)
       .to(pills, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.11 }, 0.32)
       .to(inLabel, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out' }, 0.72)
-      // Hand the three back to CSS the moment they have landed: an inline
-      // `opacity: 1` and identity transform are not visually free on a chip that
-      // paints with `backdrop-filter` — measured at 818 differing pixels against
-      // the static render before this line existed.
+      // Hand these back to CSS once they have landed: an inline `opacity: 1`
+      // and identity transform change text rendering on a `backdrop-filter`
+      // chip (see `pulse` in shared.ts).
       .set([ring, ...pills, inLabel], { clearProps: 'transform,transformOrigin,opacity' });
 
     if (staged) stopReady = onSectionReady(card, () => intro.play());

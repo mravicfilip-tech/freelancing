@@ -4,25 +4,17 @@
 
 /* The band's colour, in two layers.
    -------------------------------------------------------------------------
-   ROLE TOKENS (--ink, --ink-2, --panel, --accent, --veil-line) for anything
-   whose job the rest of the page already names: the heading, the step cards
-   and their copy, the active card's accent rail. They flip with the theme for
-   free and the band does not get to have an opinion about them.
+   Role tokens (--ink, --ink-2, --panel, --accent, --veil-line) for the
+   heading, the step cards and their copy, and the active card's rail. They
+   flip with the theme on their own.
 
-   STEPS LOCALS (--steps-*) for the four values that are this band's own: the
-   dwell bar, the card hover, and the two panel grounds with their edges.
-   Declared on :root rather than on .steps, and that is not a style choice --
-   `tok()` in lib/theme.ts is getComputedStyle(document.documentElement), so a
-   custom property a loop has to read is only visible to it from the root, and
-   the three panels all read from here. The --steps- prefix is what keeps this
-   file out of everyone else's way.
-
-   Dark is exactly what the section shipped with, written out rather than
-   inlined, so this block is provably a no-op. The light block at the foot of
-   the file redefines exactly these names. */
+   Steps locals (--steps-*) for this band's own values: the dwell bar, the
+   card hover, the panel grounds and edges, the wordmark and the glow.
+   Declared on :root, not .steps, because `tok()` in lib/theme.ts reads
+   getComputedStyle(document.documentElement), and the panel loops read these.
+   The light block at the foot of the file redefines the same names. */
 :root {
-  /* The active card's dwell bar. A pale coral over the rail's own accent --
-     the one thing in the band that says "time is passing". */
+  /* The active card's dwell bar, drawn over the accent rail. */
   --steps-progress: #f69179;
   /* The card's hover plate: one step warmer than --panel. */
   --steps-card-hover: #211f1e;
@@ -34,15 +26,14 @@
   --steps-panel-edge-2: rgba(255, 99, 42, 0.2);
   --steps-panel-edge-3: #2c2b2a;
 
-  /* The 3D wordmark behind every panel, and the two opacities Figma gives it
-     per slide. It is a mask now, so this is the only place its colour lives. */
+  /* The 3D wordmark behind every panel, and its two per-slide opacities from
+     Figma. It is a mask, so this is the only place its colour lives. */
   --steps-mark: #fffbf8;
   --steps-mark-op: 0.1;
   --steps-mark-op-2: 0.21;
 
-  /* The warm disc behind every panel's artwork. In dark it is the exported
-     file, painted as a background so that a stylesheet can reach it at all;
-     light replaces it outright. See the note on .steps__glow. */
+  /* The warm disc behind every panel's artwork: the exported file in dark,
+     replaced outright in light. See .steps__glow. */
   --steps-glow: url('../../assets/steps/glow.svg');
   --steps-glow-mask: none;
 }
@@ -56,16 +47,12 @@
   line-height: var(--heading-leading);
   color: var(--ink);
 }
-/* Masked line reveal for the heading, the hero's treatment applied here: the
-   wrapper clips, the inner span moves, so the heading rises out of nothing
-   instead of fading. The padding/margin pair is descender room -- at
-   line-height 1.2 the "p" of "simple steps" sits below the box the mask would
-   otherwise clip to -- and cancels out, so the settled layout is unchanged.
+/* Masked line reveal for the heading (the hero's treatment): the wrapper
+   clips, the inner span moves. The padding/margin pair gives descenders room
+   inside the clip and cancels out, so the settled layout is unchanged.
 
-   No `will-change` on the inner span. A standing compositor promotion costs the
-   type its subpixel antialiasing permanently, which was measured on this site
-   at 5,744 differing pixels; GSAP promotes for the length of the tween anyway,
-   which is the only time it is moving. */
+   No `will-change` on the inner span: a standing compositor promotion costs
+   the type its subpixel antialiasing, and GSAP promotes during the tween. */
 .steps__title .line {
   display: block;
   overflow: hidden;
@@ -137,8 +124,8 @@
   color: var(--ink);
 }
 .step__n { color: inherit; }
-/* The site's paragraph setting; see tokens.css. The 414px measure is a line
-   length, not a size, and the desktop rail height is built on it. */
+/* The site's paragraph setting (tokens.css). The 414px max-width is a line
+   length, and the desktop card height depends on it. */
 .step__body {
   font-family: var(--font-body);
   font-weight: 300;
@@ -171,10 +158,8 @@
 
 .steps__mark { position: absolute; pointer-events: none; color: var(--steps-mark); }
 .steps__mark-clip { position: relative; width: 100%; height: 100%; }
-/* The two layers are masks now (see shared.tsx), so this addresses them by
-   name rather than by tag. `width: auto` went with the <img>: Icon writes the
-   intrinsic size inline, which is what `auto` resolved to on a replaced
-   element with four insets. */
+/* The two layers are masks (see shared.tsx); Icon writes their intrinsic
+   size inline. */
 .steps__mark-ribs, .steps__mark-slices { position: absolute; }
 
 /* Slide 1: the mark fills the panel. */
@@ -183,49 +168,33 @@
 .steps__mark--full .steps__mark-slices { inset: -8.87% 21.74% -50% -16.68%; }
 
 /* Slide 2: a narrow box on the right, at higher opacity. */
-/* Figma gives this slide opacity 0.21, no blur, and a single slices layer --
-   there is no ribs layer on it at all. With ribs showing and a 7px blur it read
-   as two big rounded rectangles where the design has thin faint arcs. */
+/* Per Figma: opacity 0.21, no blur, and only the slices layer (no ribs). */
 .steps__mark--right { left: calc(462 * var(--p)); top: calc(-1 * var(--p)); width: calc(423 * var(--p)); height: calc(610 * var(--p)); opacity: var(--steps-mark-op-2); }
 .steps__mark--right .steps__mark-clip { overflow: hidden; }
-/* Figma's node for this slide has no ribs layer. Its slices inset is held at
-   the existing crop deliberately: the measured inset resolves to a box sized
-   for panel 2's own export of that artwork, and the shared mark-slices.svg is
-   a different crop, so applying it would stretch the asset out of proportion.
-   Correcting it properly means panel 2 owning its own export. */
+/* The slices inset is deliberately not Figma's: Figma's inset is sized for a
+   panel-2-specific export, and the shared mark-slices.svg is a different crop,
+   so using it would stretch the asset. A proper fix needs panel 2 to have its
+   own export. */
 .steps__mark--right .steps__mark-ribs { display: none; }
 .steps__mark--right .steps__mark-slices { inset: 5.85% -56.92% -25.31% 8.51%; }
 
 /* Slide 3: a 1352 square hung off the top-left, so only its lower right shows. */
-/* Panel 3's mark. The offsets are panel-relative, not node-relative: in Figma
-   the mark sits at -252,-631 inside a container that is itself at 520,-1 in the
-   panel, so the sum is what CSS wants. Taking the node's own coordinates swept
-   the arcs across the whole panel instead of confining them to the right-hand
-   side. The node carries no blur in Figma either. */
+/* Offsets are panel-relative: in Figma the mark sits at -252,-631 inside a
+   container at 520,-1, so CSS uses the sum. No blur, per Figma. */
 .steps__mark--corner { left: calc(268 * var(--p)); top: calc(-632 * var(--p)); width: calc(1352 * var(--p)); height: calc(1352 * var(--p)); opacity: var(--steps-mark-op); }
 .steps__mark--corner .steps__mark-clip { overflow: hidden; }
 .steps__mark--corner .steps__mark-ribs { inset: 14.42% 19.32% 13.99% 18.66%; }
 .steps__mark--corner .steps__mark-slices { inset: 14.42% 19.13% 13.9% 18.66%; }
 
-/* The glow disc.
+/* The glow disc. In dark it is glow.svg as a background image (the export is
+   `preserveAspectRatio="none"`, so 100% 100% paints it exactly). A background
+   rather than an <img> so the light theme can replace it.
 
-   It stays the file in dark -- a background-image of glow.svg at
-   `background-size: 100% 100%` paints exactly what the <img> it replaces
-   painted, because the export carries `preserveAspectRatio="none"` and this
-   box is its box. What changes is that a BACKGROUND is addressable from a
-   stylesheet where an <img> is a separate document, so light can swap it.
-
-   It has to swap, because the far stop of that gradient IS the panel ground:
-   the disc is drawn to dissolve into the surface it sits on, and #1a1918 over
-   cream is a grey bruise. Light therefore rebuilds it rather than recolouring
-   it -- the colour ramp as the background, the blurred circle as a mask. The
-   obvious `clip-path` + `filter: blur()` does NOT work: CSS applies the filter
-   first and clips the RESULT, which gives a hard-edged circle of blurred
-   gradient rather than a blurred circle. Measured against the dark render that
-   was 215k differing pixels.
-
-   A <span> rather than an <img> so the element count is unchanged; see Glow()
-   in panels/shared.tsx. */
+   Light must rebuild it: the gradient's far stop is the dark panel ground, so
+   recoloured on paper it reads as a grey smudge. Light uses the colour ramp as
+   the background and the blurred circle as a mask. `clip-path` plus
+   `filter: blur()` does NOT work: CSS blurs first and then clips, giving a
+   hard-edged circle. See Glow() in panels/shared.tsx. */
 .steps__glow {
   position: absolute; pointer-events: none;
   width: calc(944 * var(--p)); height: calc(944 * var(--p));
@@ -236,10 +205,9 @@
   mask-image: var(--steps-glow-mask);
 }
 .steps__glow--left { left: calc(-590 * var(--p)); top: calc(-90 * var(--p)); }
-/* Panel 2's glow, placed from Figma's image insets rather than eyeballed. This
-   one is load-bearing: the balance card is translucent over a backdrop blur, so
-   almost all of its interior brightness is this glow read through it. 186 design
-   px too low put the card's hotspot bottom-right instead of centre-right. */
+/* Panel 2's glow, placed from Figma's image insets. Load-bearing: the balance
+   card is translucent over a backdrop blur, so most of its brightness is this
+   glow showing through. */
 .steps__glow--right { left: calc(468.2 * var(--p)); top: calc(-125.8 * var(--p)); }
 .steps__glow--corner { right: calc(-420 * var(--p)); top: calc(-408 * var(--p)); }
 
@@ -264,28 +232,19 @@
 }
 
 
-/* The phone — a switcher and a slider ---------------------------------------
-   THE PHONE LAYOUT IS NOT THE STACK AT A SMALLER SIZE. Above 700 the band is a
-   graphic with a list of three cards under it: all three steps on screen at
-   once, the current one marked by a 4px rail, and 900px of section to scroll
-   past. That is a list, not a stepper, and the graphic it is meant to explain
-   was 350 wide with 20px of page gutter either side of it.
+/* The phone: a switcher and a slider ----------------------------------------
+   Below 700px the three cards become three SLIDES in a scroll-snap track, and
+   selection moves to a row of three tabs with a sliding underline. Each panel
+   is scaled to its own artwork rather than the full 886-wide field (see the
+   geometry block below).
 
-   So below 700 the three cards become three SLIDES, the card the reader is on
-   becomes the one they can see, and the choosing moves up into a row of three
-   tabs with an underline that slides between them. The graphic takes the whole
-   width of the screen inside the page gutter, and each panel is scaled to ITS
-   OWN artwork rather than all three to the same 886-wide frame — see the
-   geometry block below, which is where the size actually comes from.
+   Behaviour is the same as desktop: the 6s timer advances the step, the track
+   scrolls to the step, and the dwell fills the underline using the same
+   `is-playing` + `--dwell` mechanism as the desktop card's bar (restarted on
+   each change because Steps.tsx keys the fill on `active`). Nothing listens
+   to the pointer; Steps.tsx reads back only the scroll offset.
 
-   Everything the band already did, it still does. The 6s timer advances the
-   step; the step is what the track scrolls to; the underline follows the step;
-   the dwell fills the underline on the same `is-playing` + `--dwell` mechanism
-   that fills the desktop card's bar, and re-starts on every change because
-   Steps.tsx keys the fill on `active`. Nothing here listens to the pointer:
-   the swipe is scroll-snap, and the only thing read back is a scroll offset.
-
-   700 rather than 720: see the note on PHONE in Steps.tsx. ------------------ */
+   700 rather than 720: see PHONE in Steps.tsx. ---------------------------- */
 @media (max-width: 700px) {
   .steps__body { display: flex; flex-direction: column; gap: 16px; }
 
@@ -302,33 +261,26 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-    /* 48, not the 44 floor: three of them make the one horizontal row in the
-       band, and a thumb arriving at a row aims at its middle. */
+    /* 48px, above the 44px touch minimum, for a comfortable thumb target. */
     min-height: 48px;
     padding: 12px 6px;
     background: none;
     border: 0;
-    /* The label role, face and size, like every other 16px label; sentence
-       case is kept. At 320 "Forecast" still has 4px spare in a 93px tab. */
+    /* The label role (face and --label-size), in sentence case. "Forecast"
+       still fits a tab at 320px. */
     font-family: var(--font-label);
     font-weight: 500;
     font-size: var(--label-size);
     line-height: 1.2;
-    /* Both states are role ink, so both are AA in both themes and neither is
-       --ink-muted, which is the token this page has a hundredth of a stop of
-       headroom on. Selected is --ink (18.74:1 dark, 17.59:1 light), unselected
-       is --ink-2 (7.11 / 6.97). The accent is spent on the underline instead:
-       as 16px type #e5331e is 4.43:1 on dark and would be the one label in the
-       band that fails. */
+    /* Both states use role ink (--ink selected, --ink-2 not) so both pass AA
+       in both themes. The accent goes on the underline instead: as 16px text
+       on the dark ground it falls just short of AA. */
     color: var(--ink-2);
     transition: color 200ms ease;
   }
   .steps__tab.is-active { color: var(--ink); }
-  /* The ordinal follows its label rather than going accent, which is what the
-     desktop card does too (`.step__n { color: inherit }`). Measured: --accent
-     at 13px is 4.43:1 on the dark ground, a hundredth under AA, and a number
-     that names which step this is is not decoration that may fail it. The
-     brand red is spent on the underline, where nothing has to be read. */
+  /* The ordinal inherits its label's colour, as on the desktop card: --accent
+     at this size is just under AA on the dark ground. */
   .steps__tab-n {
     font-family: var(--font-label);
     font-weight: 500;
@@ -336,11 +288,9 @@
     color: inherit;
   }
 
-  /* The underline. ONE element for three positions -- it travels between them
-     rather than appearing and disappearing, which is the whole difference
-     between one control and three. `--i` is the selected index, written by
-     Steps.tsx, so the travel is a single transform and the transition does not
-     care which direction it is going. */
+  /* The underline: ONE element that travels between the three positions, so
+     the row reads as one control. `--i` is the selected index, set by
+     Steps.tsx. */
   .steps__ind {
     position: absolute;
     left: 0;
@@ -351,11 +301,9 @@
     transform: translateX(calc(var(--i, 0) * 100%));
     transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* The dwell, which used to be the card's left-hand bar: the same
-     --steps-progress over the same accent, filling over the same --dwell, held
-     off until the entrance arms it by the same `is-playing`. Horizontal now,
-     because the thing it is drawn on is. scaleX rather than width so the fill
-     is one composited transform and not a layout every frame. */
+  /* The dwell fill, the horizontal twin of the desktop card's bar (same
+     --steps-progress, --dwell and `is-playing`). scaleX rather than width so
+     it is a composited transform, not a layout every frame. */
   .steps__ind-fill {
     position: absolute;
     inset: 0;
@@ -367,20 +315,14 @@
   @keyframes steps-dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
   /* The track -------------------------------------------------------------- */
-  /* Full width of the screen, out through the container's gutter, so that a
-     slide is one screen wide and the swipe travels a screen at a time. The
-     gutter is given back INSIDE each slide, as `padding-inline` below, which
-     is what keeps the snap positions exact multiples of the track width while
-     the plate and the copy still line up with the heading.
+  /* Full-bleed through the container's gutter, so each slide is one screen
+     wide. The gutter is given back inside each slide (`padding-inline`), which
+     keeps snap positions at exact multiples of the track width.
 
-     `margin-inline` rather than 100vw on purpose:
-     a viewport unit counts a classic scrollbar that the element does not have,
-     which is a horizontal overflow on every desktop browser that still draws
-     one, and this rule is one resize away from those.
+     Negative `margin-inline` rather than 100vw: vw includes a classic
+     scrollbar and would overflow horizontally where one is drawn.
 
-     The swipe is scroll-snap and nothing else. No drag handler, no pointer
-     maths, no transform driven from a touch delta: the browser does the
-     physics, and Steps.tsx reads back only the offset it settled on. */
+     The swipe is scroll-snap only; there is no drag or pointer handling. */
   .steps__track {
     display: grid;
     grid-auto-flow: column;
@@ -404,44 +346,19 @@
     scroll-snap-stop: always;
   }
   .steps__slide:focus-visible { outline-offset: -3px; }
-  /* THE GRAPHIC KEEPS THE PAGE GUTTER, like everything else in the band.
-     It used to cancel the slide's padding and run edge to edge, and that is
-     the one case where a full bleed can be right -- a horizontal slider often
-     wants the next panel showing past the edge, because that peek is the only
-     thing telling a reader it scrolls at all.
+  /* The graphic keeps the page gutter (the slide's padding) like the rest of
+     the band; only the TRACK is full-bleed, so snap geometry is unaffected. No
+     resizing is needed: `.panel` is `container-type: inline-size` and each
+     `--p` is `100cqw / <artwork width>`, so it re-measures from the plate's
+     real width.
 
-     This slider has no peek to protect. Every slide is exactly the width of
-     the track and snaps to `start`, so a bleeding panel does not reveal its
-     neighbour by a single pixel: what it bought was not an affordance, it was
-     just the absence of a gutter. And measured against the section's own copy
-     -- eyebrow, heading and tab strip all begin at `--page-pad`, 20px at phone
-     widths -- a plate touching both screen edges under them read as unpadded
-     rather than as deliberate, the same way the bento band did before it was
-     given its gutter back.
-
-     So the panel sits in the slide's padding and gives up ~10% of its width
-     for it (350 of 390 at an iPhone 12). Nothing had to be told the new size:
-     `.panel` is `container-type: inline-size` and each variant's `--p` is
-     `100cqw / <its artwork's width>`, so the design pixel every rule in these
-     three stylesheets is written in re-measures itself from the plate's real
-     width, and the panels' own getBoundingClientRect measurement agrees with
-     it for free.
-
-     The TRACK stays full-bleed. Only the plate inside each slide is inset, so
-     the snap geometry is untouched -- slides remain one track-width each and
-     the snap positions are still exact multiples of it -- and a swipe now runs
-     a clean 40px channel between one plate and the next instead of butting
-     them together.
-
-     `order` is restated because the 1080 block lifts `.steps__panels` above
-     the list with `order: 1`, and inside a slide that would put the copy
-     first -- here the graphic leads and its sentence follows it. */
+     `order` is restated because the 1080 block puts `.steps__panels` first
+     with `order: 1`; inside a slide the graphic leads and the copy follows. */
   .steps__slide .steps__panels { order: 0; }
   .steps__slide .step { order: 1; }
 
-  /* The card, which is no longer a card. Its title and body belong to the
-     slide they describe; the plate, the rail, the hover and the dwell bar were
-     all the job of being a chooser, and the tabs do that now. */
+  /* Inside a slide the card is just its title and body; the plate, rail,
+     hover and dwell bar belong to choosing, which the tabs do here. */
   .steps__slide .step {
     min-height: 0;
     padding: 0;
@@ -455,45 +372,24 @@
   .steps__slide .step:hover { background: none; }
 
   /* The graphic, and where its size comes from -----------------------------
-     Each panel is an 886 x 610 field with its artwork somewhere inside it, and
-     on desktop the field IS the plate. On a phone that is the wrong bargain:
-     panel 3's artwork is a 424-wide card in the middle of that field, so
-     fitting the field to the screen spends 52% of the width on empty ground.
+     On desktop the plate is the whole 886 x 610 field. On a phone that wastes
+     width (panel 3's artwork is a small card in the middle), so the plate
+     becomes a 4:3 window and each panel redefines `--p` so that ITS OWN
+     artwork fills the width with a small margin. `--cx`/`--cy` are the
+     artwork's centre in field coordinates; `--fx`/`--fy` shift the field so
+     that centre lands mid-window. The artwork, wordmark and glow move as one.
 
-     So the plate stops being the field. It becomes a 4:3 window onto it, and
-     each panel redefines `--p` -- the design pixel every rule in these three
-     stylesheets is written in -- so that ITS OWN artwork, not the field,
-     fills the screen with a 10px margin. `--cx`/`--cy` are that artwork's
-     centre in field coordinates, and `--fx`/`--fy` move the field so that
-     centre lands in the middle of the window. Everything hung in the field --
-     the artwork, the ghosted wordmark, the warm disc -- moves with it as one,
-     which is what keeps panel 2's balance card lit through the middle of the
-     glow rather than off its edge.
+     Change `--p`, never add a scale transform: the panels measure their design
+     pixel with getBoundingClientRect to drive loop travel, and a scaled panel
+     would overshoot every beat.
 
-     `--p` is the supported knob, and a transform is not: the panels measure
-     their own design pixel with getBoundingClientRect and drive the loop's
-     travel from it, so a scaled panel would have every beat overshoot by the
-     scale factor. Changing `--p` keeps CSS and the measurement agreeing.
-
-     The measured result at 390: --p goes 0.395 -> 0.487 (panel 1), 0.474
-     (panel 2) and 0.873 (panel 3), and the artwork goes from 300 wide to 370
-     in all three. See the report; panel 3 is the one that gains most, because
-     it is the one with the most air to give back.
-
-     `translate` rather than `transform`: the loops write `transform` on
-     elements inside the field, and the two properties compose instead of
-     fighting. Nothing here scales, so the measured design pixel stays true. */
+     `translate` rather than `transform`, because the loops write `transform`
+     on elements inside the field and the two compose. */
   .panel {
     aspect-ratio: 4 / 3;
     --fx: calc(50cqw - var(--cx) * var(--p));
     --fy: calc(37.5cqw - var(--cy) * var(--p));
   }
-  /* The corner radius and the side edges come back with the gutter. Both were
-     removed for the bleed -- a radius on a corner that is off the screen is
-     nothing, and a left border drawn at x=0 is a stripe down the edge of the
-     phone rather than the edge of a plate. Now that all four sides are on the
-     screen the plate is drawn the way the desktop draws it: 10px corners, and
-     panels 2 and 3 carrying the full border their variant is defined with. */
 
   /* 63..823 x 141..470 in the field: the pill, the wire, the two cards and
      the phone, 760 x 329, centred on (443, 305.5). */
@@ -501,18 +397,15 @@
   /* 65..845 x 129..482: the five rails, the arcs, the locked node and the
      balance card, 780 x 353, centred on (455, 305.5). */
   .panel--2 { --p: calc(100cqw / 822); --cx: 455; --cy: 305.5; }
-  /* One 424 x 274 card on the field's own centre. It is width-limited like
-     the other two, so it gets the same 370 of artwork -- at 1.8x their
-     scale, because it is 1.8x smaller in the design. */
+  /* One 424 x 274 card on the field's centre, width-limited like the others. */
   .panel--3 { --p: calc(100cqw / 447); --cx: 443; --cy: 305; }
 
   .panel .steps__mark,
   .panel .steps__glow,
   .panel .s1,
   .panel .s2 { translate: var(--fx) var(--fy); }
-  /* .s3 is not in the list: it is already placed on the field's centre with
-     left/top 50%, which is the window's centre too, so the offset would move
-     it off the middle it is meant to sit on. */
+  /* .s3 is excluded: it is already centred with left/top 50%, which is also
+     the window's centre. */
 
   @media (prefers-reduced-motion: reduce) {
     .steps__ind { transition: none; }
@@ -521,92 +414,46 @@
 }
 
 /* --- Light -------------------------------------------------------------------
-   Written twice, because a media query cannot go in a selector list -- the same
-   shape tokens.css uses, and for the same reason. The two blocks MUST stay
-   identical; only their conditions differ.
+   Written twice, as tokens.css does, because a media query cannot go in a
+   selector list. The two blocks MUST stay identical.
 
-   THE DEVICE DECISION, which this block is, is stated once here and followed by
-   all three panels. The panels RE-TINT: the app drawn inside each one follows
-   the website onto paper rather than staying a dark screen photographed on a
-   light page. Three reasons, in order of weight.
+   The panels RE-TINT in light rather than staying dark insets (LIGHTMODE.md
+   §6.3). They are diagrams on a raised surface, not device screenshots, and
+   three dark plates would dominate a light page. So --art-ink and --art-ink-2
+   (for artwork that stays dark) are deliberately NOT used in this section.
 
-   1. Only one of the three is a device at all. Panel 2 is a funding diagram --
-      rails, a locked node, a balance card -- and panel 3 is a price card. Panel
-      1 has a phone, but it is a rounded rectangle with no bezel, no chrome and
-      no shadow: a diagram of a phone, not a photograph of one. `.panel` is not
-      a screen. It is the surface the section stands its artwork on, which makes
-      it a raised panel of the marketing page, and a raised panel is --panel.
-   2. It is 55% of the band. Three 886x610 plates at #141312 would be the
-      largest dark objects on the page by a wide margin and would read as dark
-      mode with a cream margin around it.
-   3. LIGHTMODE.md section 6.3 records the user asking for these illustrations
-      to be re-tinted rather than left dark, and says the dark-inset fallback
-      must be arrived at by decision rather than by accident. Nothing here made
-      it too expensive to do what was asked.
-
-   So --art-ink and --art-ink-2 are deliberately NOT used anywhere in this
-   section. They exist for artwork that stays dark; this artwork does not.
-
-   Nothing below is a lighter version of the block at the top of this file. Four
-   of these values are lifts, and in dark every lift means brighter -- the dwell
-   bar is paler than the rail it covers, the glow's core is a hot orange, a
-   funding tile fires by going pale and its glyph by brightening. Each is turned
-   around here, and where the direction matters the note says so. ----------- */
+   Several values are lifts, which mean "brighter" in dark; each is reversed
+   here, not simply lightened. ------------------------------------------------ */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  /* THE DWELL BAR, and the first direction flip. In dark it is a pale coral
-     running down over the card's own --accent rail: 1.92 times as bright as
-     the thing it covers. On paper a paler red over a dark red is nothing at
-     all, so it goes the other way and becomes the densest red in the band --
-     1.96 times darker than the rail, which is the same step measured from the
-     other end. */
+  /* The dwell bar flips direction: pale over the rail in dark, the darkest
+     red in the band on paper. */
   --steps-progress: #4d0700;
-  /* The card hover. Dark lifts the plate 1.07:1 off --panel; paper settles it
-     by the same 1.07, because on paper raised and touched read as darker. */
+  /* The card hover darkens on paper, as dark's lightens. */
   --steps-card-hover: #f1e8e0;
 
-  /* THE PANEL GROUNDS -- the device decision, in two values. In dark the panel
-     is 1.02:1 against the page, which is almost nothing: it is allowed to be,
-     because everything standing on it is luminous. On paper nothing on it is
-     luminous, so it has to be a card, and --panel is the page's own word for
-     that. Panel 3 keeps the extra step dark gives it and keeps its edge. */
+  /* Panel grounds: on paper nothing on the panel is luminous, so it becomes a
+     card (--panel). Panel 3 keeps its extra step and its edge. */
   --steps-panel: var(--panel);
   --steps-panel-3: #f2eae2;
   --steps-panel-edge-2: rgba(162, 22, 5, 0.22);
   --steps-panel-edge-3: #e2d2c5;
 
-  /* THE WORDMARK. White at a tenth of an opacity is the page on paper, so the
-     mark is ink and the opacity goes UP rather than down -- 0.10 -> 0.12 and
-     0.21 -> 0.25, which is the alpha x 1.125 rule, and lands the ghost at
-     1.28:1 against its panel where dark has it at 1.28:1 against its own. */
+  /* The wordmark becomes ink, with its opacities raised slightly so the ghost
+     keeps the same contrast against its panel as in dark. */
   --steps-mark: var(--ink);
   --steps-mark-op: 0.12;
   --steps-mark-op-2: 0.25;
 
-  /* THE GLOW, and the second direction flip. Dark's disc runs a hot #f03725
-     into the panel ground; carried across, a hot orange blurred over cream is
-     a stain and the ground stop is a grey bruise. So the ramp inverts its
-     luminance while keeping its geometry exactly: same angle, same two stop
-     positions, same centre, same radius, same blur. The core becomes the
-     DEEPEST tint rather than the brightest, and the far stop becomes the
-     panel, so the disc still dissolves into whatever it is lying on.
+  /* The glow inverts its luminance with the same geometry (angle, stops,
+     centre, radius, blur): the core becomes the deepest tint and the far stop
+     is the panel, so the disc still dissolves into its ground. Its strength
+     matches dark's, since panel 2's balance card is lit through it.
 
-     The density is dark's own, measured rather than assumed. The blurred disc
-     peaks at 0.689 opacity, so #f03725 arrives at the centre as (172,44,31)
-     over a panel of (20,19,18) -- 2.78:1. A first pass at #efcab5 gave 1.35:1,
-     which is the figure the page-level glows settled on and is half of what
-     this one is worth: those wash a whole band, this one lights a single
-     illustration and is what panel 2's balance card is lit THROUGH. #b8432a
-     arrives at (204,121,102) over (247,240,234) -- 2.88:1, and keeps more of
-     dark stop's chroma than a paler tint does once it is mixed into cream.
-
-     The mask is what the blur was. glow.svg carries its own feGaussianBlur and
-     arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
-     `filter: blur()` cannot stand in for it because CSS applies the filter
-     first and clips the RESULT -- a hard-edged circle of blurred gradient.
-     These thirteen stops are the radial profile of a disc of radius 204.5
-     convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
-     with the disc's own 0.689 peak folded into the alphas. */
+     glow.svg is pre-blurred and a CSS gradient is not, so the blur is a mask.
+     The thirteen stops are the radial profile of a disc of radius 204.5
+     convolved with a Gaussian of sigma 133.9, with the disc's 0.689 peak
+     folded into the alphas. */
   --steps-glow: linear-gradient(233.08deg, #b8432a 36.68%, var(--steps-panel) 72.68%);
   --steps-glow-mask: radial-gradient(circle closest-side,
     rgba(0, 0, 0, 0.689) 0%,
@@ -626,59 +473,34 @@
 }
 
 :root[data-theme='light'] {
-  /* THE DWELL BAR, and the first direction flip. In dark it is a pale coral
-     running down over the card's own --accent rail: 1.92 times as bright as
-     the thing it covers. On paper a paler red over a dark red is nothing at
-     all, so it goes the other way and becomes the densest red in the band --
-     1.96 times darker than the rail, which is the same step measured from the
-     other end. */
+  /* The dwell bar flips direction: pale over the rail in dark, the darkest
+     red in the band on paper. */
   --steps-progress: #4d0700;
-  /* The card hover. Dark lifts the plate 1.07:1 off --panel; paper settles it
-     by the same 1.07, because on paper raised and touched read as darker. */
+  /* The card hover darkens on paper, as dark's lightens. */
   --steps-card-hover: #f1e8e0;
 
-  /* THE PANEL GROUNDS -- the device decision, in two values. In dark the panel
-     is 1.02:1 against the page, which is almost nothing: it is allowed to be,
-     because everything standing on it is luminous. On paper nothing on it is
-     luminous, so it has to be a card, and --panel is the page's own word for
-     that. Panel 3 keeps the extra step dark gives it and keeps its edge. */
+  /* Panel grounds: on paper nothing on the panel is luminous, so it becomes a
+     card (--panel). Panel 3 keeps its extra step and its edge. */
   --steps-panel: var(--panel);
   --steps-panel-3: #f2eae2;
   --steps-panel-edge-2: rgba(162, 22, 5, 0.22);
   --steps-panel-edge-3: #e2d2c5;
 
-  /* THE WORDMARK. White at a tenth of an opacity is the page on paper, so the
-     mark is ink and the opacity goes UP rather than down -- 0.10 -> 0.12 and
-     0.21 -> 0.25, which is the alpha x 1.125 rule, and lands the ghost at
-     1.28:1 against its panel where dark has it at 1.28:1 against its own. */
+  /* The wordmark becomes ink, with its opacities raised slightly so the ghost
+     keeps the same contrast against its panel as in dark. */
   --steps-mark: var(--ink);
   --steps-mark-op: 0.12;
   --steps-mark-op-2: 0.25;
 
-  /* THE GLOW, and the second direction flip. Dark's disc runs a hot #f03725
-     into the panel ground; carried across, a hot orange blurred over cream is
-     a stain and the ground stop is a grey bruise. So the ramp inverts its
-     luminance while keeping its geometry exactly: same angle, same two stop
-     positions, same centre, same radius, same blur. The core becomes the
-     DEEPEST tint rather than the brightest, and the far stop becomes the
-     panel, so the disc still dissolves into whatever it is lying on.
+  /* The glow inverts its luminance with the same geometry (angle, stops,
+     centre, radius, blur): the core becomes the deepest tint and the far stop
+     is the panel, so the disc still dissolves into its ground. Its strength
+     matches dark's, since panel 2's balance card is lit through it.
 
-     The density is dark's own, measured rather than assumed. The blurred disc
-     peaks at 0.689 opacity, so #f03725 arrives at the centre as (172,44,31)
-     over a panel of (20,19,18) -- 2.78:1. A first pass at #efcab5 gave 1.35:1,
-     which is the figure the page-level glows settled on and is half of what
-     this one is worth: those wash a whole band, this one lights a single
-     illustration and is what panel 2's balance card is lit THROUGH. #b8432a
-     arrives at (204,121,102) over (247,240,234) -- 2.88:1, and keeps more of
-     dark stop's chroma than a paler tint does once it is mixed into cream.
-
-     The mask is what the blur was. glow.svg carries its own feGaussianBlur and
-     arrives pre-blurred; a CSS gradient does not, and `clip-path` plus
-     `filter: blur()` cannot stand in for it because CSS applies the filter
-     first and clips the RESULT -- a hard-edged circle of blurred gradient.
-     These thirteen stops are the radial profile of a disc of radius 204.5
-     convolved with a Gaussian of sigma 133.9, computed rather than eyeballed,
-     with the disc's own 0.689 peak folded into the alphas. */
+     glow.svg is pre-blurred and a CSS gradient is not, so the blur is a mask.
+     The thirteen stops are the radial profile of a disc of radius 204.5
+     convolved with a Gaussian of sigma 133.9, with the disc's 0.689 peak
+     folded into the alphas. */
   --steps-glow: linear-gradient(233.08deg, #b8432a 36.68%, var(--steps-panel) 72.68%);
   --steps-glow-mask: radial-gradient(circle closest-side,
     rgba(0, 0, 0, 0.689) 0%,
@@ -696,25 +518,15 @@
     rgba(0, 0, 0, 0.013) 100%);
 }
 
-/* Pending state, the same contract as the bento and the pillars. `gsap.from()`
-   writes its start values the moment a tween is built, and this band is not
-   built until it has been scrolled to, so without this the whole section would
-   sit finished in the sliver showing under the one above and only then animate.
+/* Pending state, the same contract as the bento and the pillars. The band is
+   built only when scrolled to, so without this hold it would show finished
+   and then animate. Gated on [data-js] (set by main.tsx) so the hold only
+   exists when script can release it; there is deliberately no timed
+   failsafe. Only the animated parts are hidden, so layout never shifts.
 
-   Gated on [data-js], which main.tsx sets: the hold only exists while there is
-   script here to release it, and there is deliberately no timed failsafe -- for
-   a band that waits to be scrolled to the wait is legitimate and can last
-   minutes, so the guarantee has to be that the hold never applies when nothing
-   will undo it. Only the animated parts are held; the section's own box, the
-   grid and the list keep their space, so nothing about the layout pops in.
-
-   `.steps__panels` rather than `.steps__panel-slot`: the entrance moves the
-   grid, not the slot, so that the slot's own `steps-fade` and the panel's story
-   loop are left alone. Holding the grid holds the panel inside it either way.
-
-   The heading is held as a whole rather than by its `.line` masks: the masks
-   only exist once the build has split it, so hiding those alone would leave the
-   heading painted plainly through the entire wait. */
+   `.steps__panels`, not `.steps__panel-slot`, matching what the entrance
+   moves. The heading is held whole, because its `.line` masks only exist
+   after the build splits it. */
 [data-js] .steps[data-motion='pending'] .eyebrow,
 [data-js] .steps[data-motion='pending'] .steps__title,
 [data-js] .steps[data-motion='pending'] .step,

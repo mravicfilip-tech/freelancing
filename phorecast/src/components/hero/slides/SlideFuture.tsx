@@ -65,11 +65,8 @@ const BADGES: ReadonlyArray<readonly [number, number]> = [
  *
  * The third carries a modifier because the phone composition drops it: the
  * promoted ELECTIONS chip lands on it and no legible chip clears it (see
- * SlideFuture.css). It is the one node that has to be nameable, and naming it
- * costs a one-off GONE-plus-ADDED row in theme-diff.mjs, which keys an element
- * by its class plus its ordinal -- the same cost the grey node below is
- * written to avoid, paid here because there is no other way to reach one of
- * six identical dots from a stylesheet.
+ * SlideFuture.css). A class is the only way to reach one of six identical dots
+ * from a stylesheet.
  */
 const WHITE_NODES: ReadonlyArray<readonly [number, number, string?]> = [
   [491, 331], [534, 297], [534, 544, 'sl4__node--under-elections'], [491, 511], [457, 427], [457, 415],
@@ -81,10 +78,9 @@ export function SlideFuture() {
   const ref = useRef<HTMLDivElement>(null);
   const light = useTheme() === 'light';
   /* `useTheme` above already re-renders this component on a theme change, so
-     the two routes swap their `src` the moment the switcher is touched rather
-     than only at mount -- that part was never the problem. The epoch is here
-     for the MODULE, which is built from a useEffect and would otherwise never
-     be rebuilt: it holds references to the two <img> elements, samples the
+     the two routes swap their `src` the moment the switcher is touched. The
+     epoch is here for the MODULE, which is built from a useEffect and would
+     otherwise never be rebuilt: it holds references to the two <img> elements, samples the
      circuit off their geometry, and caches `u`. Rebuilding on a flip is the
      same thing every other section does (lib/motion.ts reads this epoch for
      exactly this reason) and it means the illustration re-arrives in the theme
@@ -128,14 +124,12 @@ export function SlideFuture() {
               style={{ '--x': x, '--y': y, '--s': 6, ...NO_BOX } as Vars}
             />
           ))}
-          {/* The one grey node. Its colour is carried inline rather than by a
-              modifier class because theme-diff.mjs keys an element by its class
-              plus its ordinal: renaming the class would report this node as
-              GONE and ADDED, which is exactly the noise that keying exists to
-              remove. The value is still a token, not a literal. */}
+          {/* The one grey node. Its colour is carried inline, as a token, rather
+              than by a modifier class. */}
           <Icon src={dotGrey} w={7} h={7} className="sl4__node" style={{ '--x': 278, '--y': 421, '--s': 7, color: 'var(--sl4-node-2)', ...NO_BOX } as Vars} />
-          {/* The mark's feed dot. Same reasoning as the grey node above: the
-              colour is inline so the class and its ordinal do not move. */}
+          {/* The mark's feed dot, coloured inline like the grey node above. It
+              must stay the LAST `.sl4__node`: SlideFuture.motion.ts takes the
+              last node as the feed. */}
           <Icon src={dotAccent} w={6} h={6} className="sl4__node" style={{ '--x': 730.97, '--y': 419, '--s': 6, color: 'var(--accent)', ...NO_BOX } as Vars} />
 
           <Icon src={btcCircle} w={50} h={50} className="sl4__coin" style={NO_BOX} />

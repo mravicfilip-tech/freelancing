@@ -1,27 +1,22 @@
-/* Hero slide 2 illustration — Figma node 365:346 ("Stats Container"), inside
-   slide 365:293. Re-exported from the node; the connectors (365:294/365:295)
-   are the slide's own siblings and are drawn here because they belong to this
-   cluster, not to the hero's ground.
+/* Hero slide 2 illustration: Figma node 365:346 ("Stats Container"), inside
+   slide 365:293. The connectors (365:294/365:295) are the slide's own siblings
+   and are drawn here because they belong to this cluster, not to the hero's
+   ground.
 
    THE EXPORT
    ----------
-   What the previous pass had wrong, recorded here because "it was wrong" is
-   the whole of the brief:
-     * The right-hand column was three 140-wide cards, the third a live match
-       score (Genoa CFC / FC Sudtirol). The node has TWO cards, 206 x 124, at
-       x 815 -- and 815 + 206 = 1021 runs 58 units PAST the 963-wide frame, so
-       the group is 1021 wide and the design's 137px right gutter is real after
-       all. The live card does not exist anywhere in the file.
-     * Both remaining cards carried the wrong copy and the wrong figures.
-     * Every card is 258 tall, not 248, bottom-aligned in a 248 row, so the
-       row's top ten units are overhang.
-     * The row gap is 8, not 11.
-     * The action bar's tiles are 48 with 30px glyphs, not 44 with 28; its gap
-       is 6, not 7; and the toast is set at 12/10, not 8/8.
+   Details of the node that are easy to get wrong:
+     * The right-hand column is TWO event cards, 206 x 124, at x 815, and
+       815 + 206 = 1021 runs 58 units PAST the 963-wide frame. The group is
+       1021 wide, which is why the design's 137px right gutter holds.
+     * Every card is 258 tall, bottom-aligned in a 248 row, so the row's top
+       ten units are overhang. The row gap is 8.
+     * The action bar's tiles are 48 with 30px glyphs, its gap is 6, and the
+       toast is set at 12/10.
      * The 1D chip sits at a different height in each of the two market cards
-       (207 and 215) -- it was pinned 16 off the bottom of both.
-     * The figure written across a market bar is --white-font, not black, and
-       the "No" button beside it is the brand red, not the loss red.
+       (207 and 215), so it is not pinned to the card's foot.
+     * The figure written across a market bar is --white-font, and the "No"
+       button beside it is the brand red, not the loss red.
 
    THE UNIT
    --------
@@ -52,7 +47,7 @@
   container-type: inline-size;
   pointer-events: none;
 
-  /* One design pixel of the REAL padded content column. `.sl2` is now the
+  /* One design pixel of the REAL padded content column. `.sl2` is the
      query container, so every `100cqw` a descendant resolves through this
      variable measures `.sl2` (= the column), not the full-bleed `.hero`. */
   --u: calc(100cqw / 1800);
@@ -64,7 +59,7 @@
   /* Resting loss ink: the "No" chips on the prediction card and the -0.20%
      delta. Deliberately NOT var(--hero-sl2-down): that token is the price
      FLASH, and in light the two want different values (see the light block).
-     In dark both are #e7000b, which is what this was. */
+     In dark both are #e7000b. */
   --sl2-down-ink: #e7000b;
   --sl2-down-bg: #302325;
   --sl2-card-a: #161615;
@@ -91,12 +86,9 @@
 /* `.sl2__box` IS the node's "Stats Details" frame (963 x 310 at 6,247 in the
    cluster) extended down to the foot of the One Account pill: 963 x 365.
 
-   It is anchored on the design's own 137-unit right gutter. That gutter was
-   dropped by the previous pass because its 963-wide group stopped short of the
-   column edge and looked unanchored -- but the group is 1021 wide once the two
-   event cards are the size the node actually draws them, so honouring the
-   gutter puts the painted right edge at 1721 of the 1800 column, which is
-   where the node puts it. */
+   It is anchored on the design's own 137-unit right gutter. The painted group
+   is 1021 wide once the two event cards overhang the frame, so the gutter puts
+   the painted right edge at 1721 of the 1800 column, where the node puts it. */
 .sl2__box {
   position: absolute;
   top: calc(170 * var(--u));
@@ -162,8 +154,8 @@
 }
 /* madrid.jpg is the node's own source photo cropped to the window the node
    crops it to (left -36.9%, top -8.68%, 172.58% x 107.86% of a 39.345 box) and
-   resampled to 160px. The raw export is a 1920 x 1200 PNG: 3.5MB inside the
-   hero for a 39px slot. The crop is exact, so `object-fit: cover` on the
+   resampled to 160px (the raw export is a multi-megabyte 1920 x 1200 PNG for
+   a 39px slot). The crop is exact, so `object-fit: cover` on the
    square renders the same pixels the node does. */
 .sl2-pred__avatar img {
   display: block;
@@ -404,7 +396,7 @@
   border-radius: calc(6 * var(--u));
   background: var(--accent);
   /* A label on the brand red, not on the card: --on-accent, which does not
-     flip. In dark it is #fffbf8, exactly what --white-font gave it here. */
+     flip. In dark it is #fffbf8, the same as --white-font. */
   color: var(--on-accent);
 }
 
@@ -525,9 +517,9 @@
    depends on the number: 27% leaves the centre on the empty track, 77% puts it
    on the fill. The node writes both in --white-font, which works in dark
    because the track is #161414 and the fill is --pos. On paper the track
-   becomes #e8ddd2 and white on it is gone, while the fill is STILL --pos and
-   dark. So each card takes the token that is right for what is under it, and
-   both resolve to #fffbf8 in dark -- exactly the node's value. */
+   becomes #e8ddd2 and white on it disappears, while the fill stays dark. So
+   each card takes the token that is right for what is under it, and both
+   resolve to #fffbf8 in dark, the node's value. */
 .sl2-mini__bar i {
   position: absolute;
   inset: 0;
@@ -771,10 +763,7 @@
 
    The reserved height is 375.4 and not 375: the four tenths are slack under
    the pill, and they are what puts this slide's foot on the same line as the
-   other three. Measured at 390, off a freshly started server, the four slide
-   bottoms are 624.56 / 624.59 / 624.64 / 624.77 against a 624.77 stage --
-   a 0.21px spread, which is the balance this hero was already holding. At 375
-   flat the slide bottomed at 624.27 and the spread was 0.50.
+   other three (to within a fraction of a pixel).
 
    The box keeps its 365-unit height, so the connectors' 231..315 run and the
    pill's 315 baseline are untouched; only the horizontal anchors move, from
@@ -829,12 +818,9 @@
   --sl2-card-c: #eee4db;
   --sl2-track: #e8ddd2;
 
-  /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
-     reads, so the tick flash and the figure it lands on cannot disagree.
-     #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
-     rise had to move and the fall went with it, to --pos and --neg. The chip
-     plates invert with them: a dark green wash under green ink becomes a pale
-     green wash under it. */
+  /* Up and down. The dark inks are too faint on a light card, so the resting
+     inks take --pos's and --neg's values. The chip plates invert with them: a
+     dark green wash under green ink becomes a pale green wash under it. */
   --sl2-up-ink: #0b6e37;
   /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
      a label has to be. The price FLASH is a different token and a lighter red,
@@ -857,10 +843,10 @@
      inside them stay right without being touched. */
   --sl2-tile-bg: var(--accent-deep);
 
-  /* The grid plate behind each market card. The hairlines are ink now (see
-     card-grid-light.svg), and ink at 20% over a paper card is a fainter line
-     than white at 20% over a near-black one -- 1.25:1 against 2.6:1 -- so the
-     layer opacity comes up to put the texture back at its own weight. */
+  /* The grid plate behind each market card. The hairlines are ink in light
+     (see card-grid-light.svg), and ink at 20% over a paper card is a fainter
+     line than white at 20% over a near-black one, so the layer opacity comes
+     up to put the texture back at its own weight. */
   --sl2-grid-op: 0.34;
   }
 }
@@ -885,12 +871,9 @@
   --sl2-card-c: #eee4db;
   --sl2-track: #e8ddd2;
 
-  /* Up and down. --sl2-up/-down-ink follow the :root pair the motion module
-     reads, so the tick flash and the figure it lands on cannot disagree.
-     #00c950 is 2.15:1 on paper and #e7000b is 4.1:1 on a light card, so the
-     rise had to move and the fall went with it, to --pos and --neg. The chip
-     plates invert with them: a dark green wash under green ink becomes a pale
-     green wash under it. */
+  /* Up and down. The dark inks are too faint on a light card, so the resting
+     inks take --pos's and --neg's values. The chip plates invert with them: a
+     dark green wash under green ink becomes a pale green wash under it. */
   --sl2-up-ink: #0b6e37;
   /* Resting loss ink stays at --neg's value: 6.60:1 on the card, which is what
      a label has to be. The price FLASH is a different token and a lighter red,
@@ -913,9 +896,9 @@
      inside them stay right without being touched. */
   --sl2-tile-bg: var(--accent-deep);
 
-  /* The grid plate behind each market card. The hairlines are ink now (see
-     card-grid-light.svg), and ink at 20% over a paper card is a fainter line
-     than white at 20% over a near-black one -- 1.25:1 against 2.6:1 -- so the
-     layer opacity comes up to put the texture back at its own weight. */
+  /* The grid plate behind each market card. The hairlines are ink in light
+     (see card-grid-light.svg), and ink at 20% over a paper card is a fainter
+     line than white at 20% over a near-black one, so the layer opacity comes
+     up to put the texture back at its own weight. */
   --sl2-grid-op: 0.34;
 }

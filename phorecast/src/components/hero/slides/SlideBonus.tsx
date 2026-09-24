@@ -1,9 +1,8 @@
 import { Fragment, useEffect, useRef } from 'react';
 // Raw, not a URL: the two stacks are one exported vector layer, and the plates
 // inside it have to be addressable for SlideBonus.motion to move them. In an
-// <img> they are not reachable at all. Everything about how it paints is
-// unchanged -- the SVG already carries `preserveAspectRatio="none"`, so it
-// stretches to the same box the image was given.
+// <img> they are not reachable at all. The SVG carries
+// `preserveAspectRatio="none"`, so it stretches to its box like an image would.
 import stacksMarkup from '../../../assets/hero/slide3/stacks.svg?raw';
 import bracket from '../../../assets/hero/slide3/bracket.svg';
 import dashed from '../../../assets/hero/slide3/dashed.svg';
@@ -19,15 +18,15 @@ import { Icon } from '../../Icon';
 import { useTheme } from '../../../lib/theme';
 /* Light variants of the two gradient strokes. See SlideAccount.tsx for why a
    second file rather than an inline or a mask. stacks.svg needs neither: it is
-   already inlined, so SlideBonus.css themes its stops directly -- and swapping
-   THAT string would replace the element graph under the motion module's feet. */
+   already inlined, so SlideBonus.css themes its stops directly (swapping that
+   string would replace the element graph under the motion module's feet). */
 import bracketLight from '../../../assets/hero/slide3/bracket-light.svg';
 import dashedLight from '../../../assets/hero/slide3/dashed-light.svg';
 import { bonusCountdownMotion, slideBonusMotion } from './SlideBonus.motion';
 import './SlideBonus.css';
 
 /**
- * Hero slide 3 — "Your First Deposit. Doubled."
+ * Hero slide 3: "Your First Deposit. Doubled."
  *
  * The illustration is the Figma frame 464:309: a 964 × 822 design box that sits
  * 64 design px in from the right edge of the 1800px content column. Everything

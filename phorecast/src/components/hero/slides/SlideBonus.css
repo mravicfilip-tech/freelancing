@@ -1,19 +1,17 @@
-/* Hero slide 3 — "Your First Deposit. Doubled."
+/* Hero slide 3: "Your First Deposit. Doubled."
    Figma: frame 464:284, illustration 464:309, countdown 474:857.
 
-   Everything is laid out in design pixels and multiplied by --u, exactly as
-   visuals.css does for slides 2 and 4. The two blocks define --u differently
-   because they live in two different boxes:
+   Everything is laid out in design pixels and multiplied by --u, as slides 2
+   and 4 do. The two blocks define --u differently because they live in two
+   different boxes:
 
    - .sl3 is the illustration. It makes itself the query container, so 100cqw
      is the width of the padded 1800px content column it is dropped into and
-     --u is one design pixel of that column. Slide 3 therefore cannot inherit
-     the slide-level --u, which is measured against the *unpadded* hero width
-     and is what pushes the slide 2 and 4 illustrations past the right edge.
+     --u is one design pixel of that column, re-based per breakpoint below.
    - .sl3-countdown sits in the copy column, whose type is sized off the
      viewport (`clamp(52px, 5.2vw, 100px)` and friends in global.css). Its --u
-     tracks the same basis — 1px at the 1920 design width — so the tiles stay in
-     proportion with the headline instead of drifting away from it. */
+     tracks the same basis (1px at the 1920 design width, clamped to 0.75px
+     below 1440) so the tiles stay in proportion with the headline. */
 
 /* ---------------------------------------------------------------- illustration */
 
@@ -25,10 +23,9 @@
 
   /* The two stacks' own paint. stacks.svg is inlined (see SlideBonus.tsx), so
      its stops are reachable from here and CSS outranks a presentation
-     attribute -- which means one rule per stop themes the whole export with
-     no per-theme copy of the raw string and no change to the id pipeline the
-     motion module walks. Dark is the exact hex the file bakes, so naming them
-     changes nothing. */
+     attribute, so one rule per stop themes the whole export with no
+     per-theme copy of the raw string and no change to the ids the motion
+     module walks. The dark values are the exact hexes the file bakes. */
   --sl3-wire: #e5331e;        /* the two wireframe stacks */
   --sl3-plate-top: #e5331e;   /* the lit top face of the topmost plate */
   --sl3-plate-a: #93190a;     /* the matched plates' shadowed faces */
@@ -37,12 +34,12 @@
   --sl3-plate-edge-hi: #ffffff; /* three 0.009px highlight seams */
 
   /* The connector, the bracket and the dashed rule are gradient artwork and
-     cannot be reached from CSS at all; they carry a light variant instead --
-     see SlideBonus.tsx. */
+     cannot be reached from CSS at all; they carry a light variant instead
+     (see SlideBonus.tsx). */
 }
 
-/* One rule per stop. Listing ids rather than adding classes, because no agent
-   edits a file under src/assets -- and the ids are already load-bearing:
+/* One rule per stop. Listing ids rather than adding classes keeps the
+   exported asset untouched, and the ids are already load-bearing:
    SlideBonus.motion.ts addresses these same nodes by name. */
 .sl3__stacks [id^='deposit-block-'],
 .sl3__stacks [id^='balance-block-'] { stroke: var(--sl3-wire); }
@@ -81,10 +78,9 @@
   position: absolute;
   top: calc(-176 * var(--u));
   /* Flush with the content column's right edge, which is where the nav's Sign
-     Up button ends -- the illustration and the header line up on the same rule.
-     Figma leaves a gutter here, but its frame is wider than its visible content,
-     so honouring that gutter left the artwork floating short of the column edge
-     rather than aligned to anything on the page. */
+     Up button ends, so the illustration and the header line up on the same
+     rule. Figma's gutter here is measured from a frame wider than its visible
+     content, and would leave the artwork floating short of the column edge. */
   right: 0;
   width: calc(964 * var(--u));
   height: calc(822 * var(--u));
@@ -104,9 +100,9 @@
   height: calc(540.952 * var(--u));
 }
 /* The layer is inlined rather than dropped in an <img> so SlideBonus.motion can
-   move the plates inside it; this hands the inline root the box the image was
-   given, which with the export's own `preserveAspectRatio="none"` paints it
-   identically. `overflow: visible` is the export's, and is kept: the topmost
+   move the plates inside it; this gives the inline root the box an image would
+   have, which with the export's own `preserveAspectRatio="none"` paints the
+   same. `overflow: visible` is the export's, and is kept: the topmost
    matched plate lifts past the top of the viewBox during the loop. */
 .sl3__stacks > svg {
   display: block;
@@ -292,12 +288,10 @@
   border: calc(1 * var(--u)) solid color-mix(in srgb, var(--accent) 30%, transparent);
   overflow: hidden;
 }
-/* NIKKEI and S&P 500 bake #9D9D9D, which is --ink-2 exactly. Without this they
-   inherit .sl3__frame's --ink and render #fffbf8: two index marks that went
-   from grey to white IN DARK the moment they were masked, which is precisely
-   the silent colour change a conversion must not cause. On paper --ink-2 is
-   #5e5651, 6.4:1 on the chip, and LIGHTMODE 2.3's "keep a dark chip under a
-   light-drawn mark" is no longer needed -- the mark follows the page instead. */
+/* NIKKEI and S&P 500 bake #9D9D9D, which is --ink-2 exactly. Without this the
+   masked glyphs would inherit .sl3__frame's --ink and render white. On paper
+   --ink-2 keeps them legible on the chip, so the mark follows the page and no
+   dark chip is needed under it. */
 .sl3__badge .icon {
   color: var(--ink-2);
   position: absolute;
@@ -449,10 +443,10 @@
    corner, each is captioned directly underneath with its own figure, and the
    bracket and "Phorcast adds +$200" take the column freed on the right.
 
-   Every word that stays is re-sized to clear 9px at this scale -- 25 units --
+   Every word that stays is re-sized to clear 9px at this scale (25 units),
    and the figures go further, because they are the sentence: $400 at 48 units
    is 17.4px, +$200 at 44 is 16px, $200 at 40 is 14.5px, the captions at 26 are
-   9.4px. Two to four times what they were.
+   9.4px.
 
    Four things go, in the order the hero drops things: decoration first
    (TRANSFER and STOCK are tags on a line nobody can follow at this size, and
@@ -468,32 +462,15 @@
      during the loop and `overflow` here is the export's `visible`. */
   .sl3__stacks { left: 0; top: calc(4 * var(--u)); }
 
-  /* THE WIREFRAME'S REAL PROBLEM IS ITS WIDTH, NOT ITS HUE. stacks.svg strokes
-     the two wireframes at 0.422647 user units in a 599.854 viewBox; on a 390px
-     phone that box is drawn 217.6px wide, so the stroke lands at 0.153 DEVICE
-     PIXELS and what reaches the screen is whatever a sixth of a line survives
-     antialiasing. Measured over the deposit stack at 390 (mean luminance delta
-     from the page, over the pixels the stack inks):
+  /* THE WIREFRAME'S PROBLEM ON A PHONE IS ITS WIDTH, NOT ITS HUE. stacks.svg
+     strokes the two wireframes at 0.422647 user units in a 599.854 viewBox; on
+     a 390px phone that box is drawn about 218px wide, so the stroke lands at
+     about 0.15 device pixels and nearly vanishes in antialiasing (and reads
+     brown-grey, since a stroke that thin is mostly page colour).
 
-                            light            dark
-       as shipped           13.65            4.44   (dark: nothing at all above
-       0.45px               36.92           12.64    a delta of 16 -- the stack
-       0.60px               48.01           16.39    is a rumour on a phone)
-       0.75px               59.53           20.57
-
-     0.60px, non-scaling so it is a screen width rather than a design one. It is
-     3.5x the ink in light and 3.7x in dark, and it is the same fix in both --
-     which is the tell that this was never a colour problem.
-
-     ON THE COLOUR, since it was asked: at 0.60px --accent-deep measures 48.01
-     delta / 31.96 chroma and --accent 43.59 / 39.60. So --accent buys 24% more
-     chroma for 9% less contrast. The earlier reading that the hairline "reads
-     brown-grey rather than red" is real, but it is a consequence of the width:
-     at 0.153px every stroke is mostly page, so its chroma is mostly the page's.
-     Widening it alone takes the chroma from 14.05 to 31.96 -- 2.3x -- without
-     spending any contrast. --accent-deep stays; the comment above it, written
-     when --accent "left the deposit stack reading pink", still holds, and it
-     holds more easily now that the stroke has ink to be red with. */
+     0.60px, non-scaling so it is a screen width rather than a design one,
+     gives the stacks roughly 3.5x the ink in both themes. The light colour
+     stays --accent-deep (see the light block). */
   .sl3__stacks [id^='deposit-block-'],
   .sl3__stacks [id^='balance-block-'] {
     vector-effect: non-scaling-stroke;
@@ -537,64 +514,41 @@
   .sl3__spark { display: none; }
 
   /* THE COUNTDOWN, ON A PHONE -------------------------------------------------
-     It is the other half of why this slide is the tallest: it is the only one
-     carrying a block between the lede and the button, and whatever it costs,
-     the stage reserves for all four. A previous pass took 43.5px of padding and
-     tile height off to bring the four slides onto one bottom line, deliberately
-     without touching type. THAT HEIGHT IS NOW A FIXED BUDGET: 73px at every
-     phone width (--u is clamped to 0.75px below 1440, so this block is the same
-     absolute size at 320 as at 414). Everything below spends 73px differently;
-     it does not spend more or less. 16px of label + 12px of gap + a 45px
-     figures row, measured, is the same 73 the boxes cost.
+     This is the only slide carrying a block between the lede and the button,
+     and whatever it costs, the stage reserves for all four slides. So its
+     height is a FIXED BUDGET, sized so this slide bottoms out on the same line
+     as the other three: --u is clamped to 0.75px below 1440, so the block is
+     the same absolute size at every phone width, and the figures row
+     (58.3 units) is the number that holds the balance.
 
-     LESS 1.275px SINCE THE LEDES WENT TO 16px. The paragraph size came down
-     from 17px to the site-wide 16 (tokens.css), which takes 1.2px off every
-     lede line. This slide's lede is two lines at 390 and the other three are
-     three, so the others lost 3.6px and this one 2.4, and this slide stood
-     1.281px proud of the line the other three bottom out on. The figures row
-     gives that back: 58.3 units rather than 60, so the budget is 71.725px.
+     THE TILES GO. Three bordered, blurred tiles are too much chrome for an
+     urgency cue under the slide, and at 320 they are wider than the column.
+     Instead: one line. Each figure and its unit sit side by side on a shared
+     baseline, the three pairs are parted by a small accent dot instead of a
+     colon, and no border, fill or backdrop blur is drawn. The line sizes itself
+     to its words, so it fits every width from 320 up.
 
-     WHAT WAS WRONG WITH THE BOXES. Three bordered, blurred tiles with a figure
-     over a label and a colon in each seam is five pieces of chrome around six
-     words. It reads as the subject of the slide; it is an urgency cue under it.
-     It was also too wide to exist: 3 x 75px of fixed tile plus gaps and colons
-     is 301.8px in a column that is 280px at 320, so the "38 Minutes" tile was
-     drawn off the right edge of a 320px screen.
-
-     WHAT IT IS INSTEAD. One line. The figure and its unit sit side by side on a
-     shared baseline rather than stacked in a window, the three pairs are parted
-     by a small accent dot instead of a colon, and no border, fill or backdrop
-     blur is drawn at all. The line sizes itself to its words, so it fits every
-     width from 320 up with room to spare.
-
-     THE PROPORTION IS THE POINT. With the boxes gone the figures are the only
-     ink left, so they take the room the boxes were holding: 36 -> 44 units
-     (27px -> 33px), against a unit label that does not move from 16 units
-     (12px). 2.25:1 becomes 2.75:1 -- the numbers read from further away and the
-     word beside each one reads as its annotation, which is the reading order
-     the block wanted in the first place.
-
-     NOTHING IS DIMMED TO MAKE IT QUIET. Quiet is bought with size and weight,
-     so the 12px unit labels keep full --ink, and losing the tile's own wash
-     takes their contrast UP rather than down: measured on the page they are
-     painted on, 16.89:1 -> 18.74:1 in dark and 15.17:1 -> 17.59:1 in light. */
+     With the boxes gone the figures are the only ink left, so they take the
+     room: 44 units against a 16-unit label, so the numbers read first and each
+     word reads as its annotation. Nothing is dimmed to make it quiet: the unit
+     labels keep full --ink. */
   .sl3-countdown {
-    /* 16 + 12 + 45 = 73, the height the boxes cost. */
+    /* Label, this gap and the figures row make up the height budget above. */
     gap: calc(16 * var(--u));
     padding-top: 0;
   }
   .sl3-countdown__label { padding: calc(2 * var(--u)) 0; }
 
-  /* The row owns the height, not the tiles -- so the figures are centred in a
+  /* The row owns the height, not the tiles, so the figures are centred in a
      box of known size rather than the box being whatever the type happens to
-     measure. This is the single number that holds the stage balance; see the
-     note above for why it is 58.3 and not 60. */
+     measure. This is the single number that holds the stage balance (see the
+     note above); retune it if the lede size or line count changes. */
   .sl3-countdown__tiles {
     height: calc(58.3 * var(--u));
     gap: calc(11 * var(--u));
   }
 
-  /* No longer a tile: a figure and its unit on one baseline. */
+  /* Not a tile here: a figure and its unit on one baseline. */
   .sl3-countdown__tile {
     flex-direction: row;
     align-items: baseline;
@@ -658,8 +612,8 @@
        shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
   /* The wireframes are 0.42px strokes. A sub-pixel stroke antialiases toward
      whatever it sits on, so the SAME contrast ratio buys less line on paper
-     than on black: --accent left the deposit stack reading pink. --accent-deep
-     puts it back at the weight dark draws it. */
+     than on black: --accent reads pink there. --accent-deep puts it back at
+     the weight dark draws it. */
   --sl3-wire: var(--accent-deep);
   --sl3-plate-top: var(--accent-lift);
   --sl3-plate-b: var(--accent);
@@ -694,8 +648,8 @@
        shadow side    #93190a -> --accent-deep  #7e0202 10.76:1 */
   /* The wireframes are 0.42px strokes. A sub-pixel stroke antialiases toward
      whatever it sits on, so the SAME contrast ratio buys less line on paper
-     than on black: --accent left the deposit stack reading pink. --accent-deep
-     puts it back at the weight dark draws it. */
+     than on black: --accent reads pink there. --accent-deep puts it back at
+     the weight dark draws it. */
   --sl3-wire: var(--accent-deep);
   --sl3-plate-top: var(--accent-lift);
   --sl3-plate-b: var(--accent);

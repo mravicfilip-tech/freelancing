@@ -1,4 +1,4 @@
-// Hero slide 3 — "Half this stack is on us."
+// Hero slide 3: the welcome bonus ("Your First Deposit. Doubled.").
 //
 // The slide makes one argument: you put in $200, Phorcast matches it, you trade
 // with $400. So the motion tells that, once, and then stops: value leaves the
@@ -49,9 +49,8 @@ const LOOP_PERIOD = 9;
 /**
  * Hand the element back to CSS once it has landed. Without it every part the
  * entrance touched keeps an inline identity transform, and Chromium rasterises
- * a hairline stroke differently with one than without: the settled illustration
- * came out 5.6% of its pixels away from the pre-animation capture, all of it on
- * the stacks' 0.42px strokes. With it the settled state is pixel-identical.
+ * a hairline stroke differently with one than without, visibly so on the
+ * stacks' 0.42px strokes. With it the settled state is pixel-identical.
  */
 const SETTLE = { clearProps: 'transform,transformOrigin,opacity' } as const;
 
@@ -236,11 +235,10 @@ function build(root: HTMLElement): () => void {
  * `immediateRender: false` on both fromTos, because a fromTo writes its start
  * values the moment the timeline is built rather than when the playhead reaches
  * it. In a repeating timeline that means the start state is re-applied at the
- * top of every turn and held until the tween's own turn comes round — the loop
+ * top of every turn and held until the tween's own turn comes round, so the loop
  * would spend its first quarter-second with the spark already parked at the left
  * end. It reads as rest here only because the spark rests invisible; it is still
- * the wrong thing to ask for, and it is what put slide 2's connectors in the
- * wrong state for a third of its cycle.
+ * the wrong thing to ask for.
  */
 function travel(tl: gsap.core.Timeline, spark: HTMLElement, at: number, duration: number) {
   tl.fromTo(
@@ -281,10 +279,7 @@ function buildCountdown(root: HTMLElement): () => void {
   // The block's own --u is clamped against the viewport, so read it back rather
   // than assume one CSS px. The GIFT is the ruler, not a tile: it is 16 design
   // px in both compositions, whereas the tile is a 100-unit box on desktop and
-  // sizes to its own words on a phone. Same answer as before at every desktop
-  // width -- 16 * (w/1920) / 16 is (100 * (w/1920)) / 100 -- and a true one on
-  // a phone, where the old divisor would have been reading a width nothing
-  // states any more.
+  // sizes to its own words on a phone.
   const u = gift ? gift.getBoundingClientRect().width / 16 || 1 : 1;
   const colons = all<HTMLElement>(root, '.sl3-countdown__colon');
   const values = all<HTMLElement>(root, '.sl3-countdown__value');
@@ -355,7 +350,7 @@ function buildCountdown(root: HTMLElement): () => void {
  * `immediateRender: false` for the reason above: without it the arrival's start
  * values land the instant the timeline is built, so the figure is already 45%
  * down and invisible before the departure has run, and the old figure vanishes
- * instead of leaving. Only the second half of the roll was visible.
+ * instead of leaving.
  */
 function rollDigit(el: HTMLElement, next: string): gsap.core.Timeline {
   return gsap.timeline()

@@ -1,29 +1,23 @@
-/* Slide 4 — the token slide's network/orbit illustration.
+/* Slide 4: the token slide's network/orbit illustration.
    Figma: 1-4 frame 365:762, illustration group 365:803 (1264 x 955).
 
    THE UNIT
    --------
-   `container-type: inline-size` is declared on `.hero`, which is full-bleed,
-   so the `--u` that `.hero__slide` derives from `100cqw` is one 1800th of the
-   *viewport*, not of the padded 1800px content column — 1.067px at 1920. Laid
-   out with that unit, `1800 * var(--u)` paints 1920px of space inside an
-   1800px column and everything on the right is sliced off. Slide 4 loses the
-   most, because its badges sit furthest right.
-
-   So `.sl4` makes itself the container and redefines `--u` against its own
-   width. `.sl4` spans exactly the padded column (`inset: 0` on `.hero__visual`),
-   so for every descendant `100cqw` *is* the column and `--u` is a true design
-   pixel. Note `.sl4` itself must never use `var(--u)`: container units on the
-   container resolve against its parent container, i.e. the broken one. Its own
-   box is therefore stated in `inset`/`aspect-ratio` only.
+   `.sl4` makes itself the query container and defines `--u` against its own
+   width. `.sl4` spans exactly the padded content column (`inset: 0` on
+   `.hero__visual`), so for every descendant `100cqw` *is* the column and
+   `--u` is a true design pixel, and each breakpoint below can re-base it on
+   the part of the artwork it shows. Note `.sl4` itself must never use
+   `var(--u)`: an element is never its own query container, so container units
+   there resolve against the parent container. Its own box is therefore stated
+   in `inset`/`aspect-ratio` only.
 
    COORDINATE SYSTEM
    -----------------
    `.sl4__frame` is the painted box. The group's box is 1264 x 955, but its
    painted content only spans x 133..1132 and y 139..709 — 999 x 570 — the rest
-   is empty padding Figma left around it. The frame is anchored from the right
-   the way the design does: the design leaves 1800 - 1713 = 87 design px
-   between the last badge and the column's right edge. `.sl4__stage` then
+   is empty padding Figma left around it. The frame is anchored flush to the
+   column's right edge (see `.sl4__frame`). `.sl4__stage` then
    shifts the Figma origin back by (133, 139) so every child below keeps its
    raw 365:803 coordinate and can be checked against the design one-to-one.
    Nothing is painted outside `.sl4__frame`, so its right edge is the
@@ -37,35 +31,30 @@
   pointer-events: none;
 
   /* The illustration's own colour, named so the light block at the foot of the
-     file redefines exactly these. Dark is what it shipped with. */
-  /* The three orbit rings and the grey node: #d9d9d9 is 12:1 on the dark page
-     and 1.29:1 on paper, which is the whole skeleton of this slide going
-     missing. They are masked glyphs now (see SlideFuture.tsx) so this token
-     reaches them. */
+     file redefines exactly these. These are the dark values. */
+  /* The three orbit rings. #d9d9d9 all but disappears on paper, so it is a
+     token; the rings are masked glyphs (see SlideFuture.tsx) so it reaches
+     them. */
   --sl4-ring: #d9d9d9;
-  /* The one grey node, at 278,421. Same hex, and in dark it IS the same value
-     -- but the rings carry opacity="0.3" inside the file and this dot does not,
-     so the two were never the same rendered weight and cannot share one light
-     value. See the light block. */
+  /* The one grey node, at 278,421. Same hex as the rings in dark, but the
+     rings carry opacity="0.3" inside the file and this dot does not, so the two
+     render at different weights and cannot share one light value. */
   --sl4-node-2: #d9d9d9;
   /* 13% white glass under each market badge. */
   --sl4-badge-bg: rgba(255, 255, 255, 0.13);
   /* How much --accent washes a market tile's glass while the order is at it
-     (.sl4__badge-lit). A percentage, not a colour, and it is themed because
-     the same percentage is not the same STEP: --accent is lighter than the
-     glass on the dark page and darker than it on paper, so 12% moves the tile
-     from 1.37:1 to 2.05:1 here and would only reach 1.66:1 on paper. See the
-     light block. */
+     (.sl4__badge-lit). A percentage, not a colour, and themed because the same
+     percentage is not the same visible step in both themes. See the light
+     block. */
   --sl4-lit-tint: 12%;
 }
 
 .sl4__frame {
   position: absolute;
   /* Flush with the content column's right edge, which is where the nav's Sign
-     Up button ends -- the illustration and the header line up on the same rule.
-     Figma leaves a gutter here, but its frame is wider than its visible content,
-     so honouring that gutter left the artwork floating short of the column edge
-     rather than aligned to anything on the page. */
+     Up button ends, so the illustration and the header line up on the same
+     rule. Figma's gutter here is measured from a frame wider than its visible
+     content, and would leave the artwork floating short of the column edge. */
   right: 0;
   /* Design: the group's top is 99px from the frame top and the copy block
      starts at 262.3px, so the painted box begins 163.3 - 139 = 24.3 design px
@@ -84,11 +73,9 @@
 }
 
 /* Three overlapping hairline circles (Ellipse 75/76/77) ------------------- */
-/* A masked glyph paints in `color`, so a converted glyph that is given no
-   `color` silently takes whatever it inherits -- here --ink, which is #fffbf8
-   and NOT the #d9d9d9 these files bake. That is a dark-mode colour change, in
-   dark mode, caused by a conversion that was supposed to be invisible there.
-   Naming the token is not documentation; it is the fix. */
+/* A masked glyph paints in `color`, so without one it silently inherits
+   --ink (#fffbf8) rather than the #d9d9d9 these files bake. The token must be
+   named here. */
 .sl4__ring { position: absolute; display: block; color: var(--sl4-ring); }
 .sl4__ring--lg { left: calc(460.05 * var(--u)); top: calc(287 * var(--u)); width: calc(274 * var(--u)); height: calc(274 * var(--u)); }
 .sl4__ring--md { left: calc(381 * var(--u));    top: calc(331 * var(--u)); width: calc(186 * var(--u)); height: calc(186 * var(--u)); }
@@ -98,18 +85,11 @@
    asset mirrored, exactly as Figma does it (365:811 wraps 365:810 in -scale-y).
 
    731.5 AND NOT 731. Figma reports the node's width as 731 because that is the
-   GEOMETRY's width -- the path runs x 0..731 -- while the export is 731.5 wide
+   GEOMETRY's width (the path runs x 0..731), while the export is 731.5 wide
    because it also carries the half of the 1-unit stroke that falls outside the
-   right end. Painting that viewBox into a 731 box with
-   preserveAspectRatio="none" squeezed it by 0.0684%, so the path's own
-   coordinates and the box they were painted in disagreed by half a unit at the
-   far end. Honesty about the size of this: the raster is byte for byte
-   identical either way in Chrome -- captured at one design unit per pixel,
-   both put the route's right edge on 1105.0, which is where the node's export
-   puts it -- so this is not a visible fix. It is stated at the export's own
-   width so the number the layout uses and the number
-   SlideFuture.motion.ts samples the circuit with are the same number, which is
-   why TRACK_SX beside it is now exactly 1. */
+   right end. It is stated at the export's own width so the layout and
+   SlideFuture.motion.ts, which samples the circuit from the same path, use the
+   same number (TRACK_SX there is exactly 1). */
 .sl4__track {
   position: absolute;
   display: block;
@@ -137,11 +117,9 @@
    Figma's 57 x 57 Icon frame carries its stroke without moving the mark
    inside it, and a CSS border does move it: the mark is absolutely positioned,
    so its 14.277 / 10.992 are measured from the PADDING box, which a 1-unit
-   border pushes in by a unit. Measured against the node's own export at one
-   design unit per pixel, all five marks sat at 15.0, 12.0 where the design
-   draws them at 14.0, 11.0 -- one unit down and right, on every tile. With the
-   hairline as an overlay the padding box is the border box again and they land
-   on the design's numbers.
+   border would push in by a unit, down and right. With the hairline as an
+   overlay the padding box is the border box and the marks land on the
+   design's numbers.
    This is a rim, not a glow: one unit wide, on the tile's own edge, no blur
    and no spread. */
 .sl4__badge::after {
@@ -176,11 +154,11 @@
 }
 
 /* Nodes -------------------------------------------------------------------- */
-/* Six white nodes, one grey, one accent -- all eight masked glyphs now. The
-   white six bake #FFFBF8, which is --ink exactly; the grey one bakes #D9D9D9
-   and carries --sl4-node-2 inline; the accent one bakes #E5331E and carries
-   --accent inline, which is what stopped it being the one red on this slide
-   that never moved for light (see THE TWO REDS at the foot of the file). */
+/* Six white nodes, one grey, one accent, all eight masked glyphs. The white
+   six bake #FFFBF8, which is --ink exactly; the grey one bakes #D9D9D9 and
+   carries --sl4-node-2 inline; the accent one bakes #E5331E and carries
+   --accent inline, so it follows the theme (see THE TWO REDS in the light
+   block). */
 .sl4__node {
   color: var(--ink);
   position: absolute;
@@ -289,20 +267,18 @@
 .sl4__tag--elections { left: calc(406 * var(--u)); top: calc(539 * var(--u)); }
 
 /* Narrow layouts: Hero.css turns .hero__visual into a normal flow box, so
-   .sl4 can no longer take its size from `inset: 0`. It stays the container —
-   full column width, height from the frame's own 1800:570 ratio — and the
-   frame centres itself under the copy. */
+   .sl4 can no longer take its size from `inset: 0`. It stays the container,
+   full column width with its height from the frame's own 999:570 ratio, and
+   the frame sits at the column's left edge. */
 @media (max-width: 1180px) {
   .sl4 {
     position: relative;
     inset: auto;
     width: 100%;
-    /* The FRAME's ratio, not the column's. `1800 / 570` sized this box to the
-       whole 1800-wide content column while only 999 of those units are ever
-       painted, so the illustration was drawn at 0.19x on a 390px phone -- a
-       350 x 111 sliver with 5px badges. The frame is the painted box (999 x
-       570, see the header), so once it is the one that fills the column the
-       artwork is drawn at 0.35x and the ratio below is its own. */
+    /* The FRAME's ratio, not the column's. Only 999 of the 1800 column units
+       are ever painted, so sizing the box to the whole column would draw the
+       artwork at about half the scale. The frame is the painted box (999 x
+       570, see the header), and it is the one that fills the column. */
     aspect-ratio: 999 / 570;
     --u: calc(100cqw / 999);
   }
@@ -329,19 +305,14 @@
 .sl4__diamond { transform-origin: 50% 50%; }
 .sl4__stub { transform-origin: 0% 50%; }
 
-/* NO BLOOM. Both elements below used to be one: a 12-unit disc wearing two
-   box-shadow halos, and a radial --accent gradient washing the inside of each
-   market tile. They are gone, and nothing replaces them in kind. The house
+/* NO BLOOM. No box-shadow halos and no radial --accent gradients: the house
    answer to "this is lit" is a hairline and a tint step, and that is what the
-   tile gets; the order simply is the accent, so it needs nothing at all.
-   On paper the difference is not subtle -- the halo rendered as an orange
-   smudge four times the diameter of the thing it was attached to, the one
-   effect on this slide that could not be read as artwork. */
+   tile gets; the order simply is the accent, so it needs nothing at all. A
+   halo would also render as an orange smudge on paper. */
 
 /* The order travelling the dashed circuit. Positioned by transform in design
-   units, so its own box is centred on the origin. 10 units and not the old 12:
-   the extra two existed to hold up a glow that no longer exists, and at 10 it
-   is still unmistakably larger than the 6-unit nodes it passes. */
+   units, so its own box is centred on the origin. 10 units: clearly larger
+   than the 6-unit nodes it passes. */
 .sl4__pulse {
   position: absolute;
   left: 0;
@@ -357,14 +328,14 @@
 
 /* A market tile lighting as the order reaches it: the tile's own 30% --accent
    hairline brought up to full, and one step of --accent tint across its glass.
-   Sits at inset 0 with the badge's own radius, which since the hairline became
-   an ::after overlay is the SAME rectangle the hairline occupies -- so the rim
-   brightens in place rather than drawing a second ring inside the first. The
+   Sits at inset 0 with the badge's own radius, which is the SAME rectangle the
+   ::after hairline occupies, so the rim brightens in place rather than
+   drawing a second ring inside the first. The
    overlay paints over it, but 30% of --accent over 100% of --accent is --accent,
    so the composite is exactly the lit rim.
    Only `opacity` is ever animated, so every colour here is resolved by CSS at
    paint time and a theme flip mid-beat cannot strand it on the other theme's
-   red -- which is what any colour captured in the motion module would do. */
+   red, which any colour captured in the motion module would do. */
 .sl4__badge-lit {
   position: absolute;
   inset: 0;
@@ -377,56 +348,29 @@
 
 /* THE PHONE COMPOSITION -------------------------------------------------------
    999 design units of circuit in a 350px column is a scale of 0.35, at which
-   the SPORT and ELECTIONS labels are 4.6px, the BTC/USD pill is 5.6px and the
-   dotted routes are a grey speckle. The box is also the wrong shape for a
-   phone: 999 x 570 is 1.75:1, so filling the column's width left 250px of the
-   slot empty underneath -- and the frame is exactly 999 units while the
-   rightmost badge sits at 942 and is 57 wide, so that badge's right edge landed
-   ON the content column's edge, measured at 390: L350.0 R370.0 against a column
-   that ends at 370.0. Not a clip, but no gutter either, which is the same thing
-   to look at. The window below gives it 11.7px.
+   the labels and the BTC/USD pill fall to 5px and the dotted routes become a
+   grey speckle, and the 1.75:1 box leaves the slot half empty underneath.
 
-   THE CROP. The composition is a hub on the left -- BTC/USD, the order diamond,
-   SPORT and ELECTIONS, three orbit rings and their nodes -- and five market
+   THE CROP. The composition is a hub on the left (BTC/USD, the order diamond,
+   SPORT and ELECTIONS, three orbit rings and their nodes) and five market
    tiles strung along two dashed routes to the right, with the 370-unit mark
    slot in among them. So the phone is shown the hub and the first two tiles: a
    690 x 623 window, which is 1.11:1, fills the slot exactly, and draws
-   everything 1.45x larger. The window's right edge falls in empty space between
-   the tiles, which end at 667, and the next ones, which start at 887, so
-   NOTHING IS CUT except the two routes, which is what a route running off the
-   edge of a diagram is for.
+   everything about 1.45x larger. The window's right edge falls in empty space
+   between the tiles, which end at 667, and the next ones, which start at 887,
+   so NOTHING IS CUT except the two routes, which read as leaving the frame.
 
-   AND THE MARK STAYS OUT, which is now a decision rather than a coincidence.
-   Hero.tsx draws the live mark on `.sl4__mark-slot` above 1180 (Figma 390:3609)
-   and the window was chosen while that hole was empty, so the trade is worth
-   re-stating with the numbers:
-
-     * The window would have to reach the mark. The drawn mark is 232 x 268 in
-       the middle of its 370 square, so it runs x 670..902 in frame units and
-       begins THREE UNITS past this window's right edge. Keeping the 23-unit
-       margins, the window becomes 948 wide: everything else is drawn 0.728x.
-     * SPORT and ELECTIONS would fall to 6.75px at 360 and 7.38px at 390,
-       against the 9px bar below. Holding 9px would take them to 26.7 units,
-       a third larger against every other part -- the promotion eating the
-       illustration rather than rescuing it.
-     * The slide would get 86px shorter at 390. The window is 948 x 623, which
-       is 1.52:1 against 1.11:1, so `.sl4` goes from 316.0px tall to 230.1px --
-       and the four slide bottoms, balanced to 624.563 / 624.594 / 624.641 /
-       624.766, a spread of 0.203, would spread by 86.
-     * The mark itself would be drawn 99.0px tall at 390 and 90.5px at 360, a
-       third of the 301px it gets as slide 1's own phone visual, on a
-       silhouette made of 13 slices and 56 ribs.
-
-   There is no narrower window either: the two tiles this keeps sit at 720 in
-   stage units and the mark at 734..1104, so no crop holds the hub and the mark
-   without holding everything between them. The hub is the slide's sentence and
-   it stays legible. The mark is not lost on a phone -- it is slide 1's whole
-   illustration, on the same carousel, seven seconds away.
+   AND THE MARK STAYS OUT, deliberately. Hero.tsx draws the live mark on
+   `.sl4__mark-slot` above 1180 (Figma 390:3609). Reaching it would mean a
+   window about 948 units wide: every part drawn at roughly 0.73x, the labels
+   well under the 9px bar, the slide much shorter than the other three, and
+   the mark itself under 100px tall. No narrower window holds both the hub and
+   the mark. The hub is the slide's sentence and it stays legible; on a phone
+   the mark is slide 1's whole illustration instead.
 
    What DOES stay is the mark's feed dot at 730.97, the accent node the loop
    walks an order to. On a phone it sits 3 units inside the right edge and
-   reads as the circuit leaving the frame, which is what the two cut routes
-   already do.
+   reads as the circuit leaving the frame, as the two cut routes do.
 
    Then the labels are sized, the same rule slide 3 uses: everything that stays
    clears 9px at the scale it ends up drawn at. */
@@ -442,32 +386,15 @@
      window instead of flush against three of its edges. */
   .sl4__frame { left: calc(23 * var(--u)); top: calc(26 * var(--u)); }
 
-  /* A FLOOR, AND THIS TIME IT IS ONE. The house bar on the phone is the one
-     slide 3 sets: everything that stays clears 9px at the scale it ends up
-     drawn at. This block opened at 18 units, which measures 9.13px at 390 and
-     passes -- but --u here is a 690th of the CONTENT COLUMN, and the column is
-     not a fixed fraction of the viewport, so the same 18 units measure 8.35px
-     at 360 and 10.10px at 430. 360 is the width that decides it, and 20 units
-     put the three at 9.28 / 10.14 / 11.30px.
+  /* A FLOOR, not a multiplier. The phone bar (slide 3's rule) is that
+     everything that stays clears 9px. --u here is a 690th of the content
+     column, which is not a fixed fraction of the viewport, so a scaled-up unit
+     count would be right at one width and oversized at another (up to half
+     again the design size by 720). Instead the design's own 13 and 16 units
+     are stated with a 9.3px floor under them: the labels never fall below
+     9.3px on the smallest phone and never exceed the design size.
 
-     20 UNITS IS A RATIO THOUGH, and a ratio does not stop. This block runs to
-     720, where the column is 675px and --u is 0.978: the illustration is drawn
-     at 0.978 of design size and the labels at 19.57px, HALF AGAIN the 12.72px
-     the design draws them at, on artwork that needed no rescuing at all. The
-     previous pass measured 360, 390 and 430 and stated a floor; what it wrote
-     was a multiplier that happened to be right at 360.
-
-     So the design's own 13 and 16 units are stated, with 9.3px under them --
-     which is what 20 units measures at 360, so the smallest phone does not
-     move. SPORT and ELECTIONS now read 9.3 / 9.3 / 9.3 / 9.80 / 12.72px at
-     360 / 390 / 430 / 560 / 720 and never exceed the design; BTC/USD reads
-     9.3 / 9.3 / 9.3 / 12.06 / 15.65. Nothing grows, so nothing that fitted at
-     20 units can overflow: scrollWidth still equals clientWidth on the pill
-     and on both labels at every width in the range.
-
-     The letter-spacing follows the type rather than the unit for the same
-     reason -- -0.02em is the -0.4 of 20 units this block used to carry, and it
-     stays that fraction of whatever the floor hands it. */
+     The letter-spacing is in em so it follows the type, not the unit. */
   .sl4__pill { font-size: max(9.3px, calc(16 * var(--u))); }
   .sl4__tag {
     padding: calc(12 * var(--u));
@@ -475,26 +402,20 @@
     letter-spacing: -0.02em;
   }
   /* `.icon` and not `img`: the label dot is a masked glyph (SlideFuture.tsx),
-     so an `img` selector here matched nothing and the dot kept its desktop 16
-     units while the type around it went to 18 -- the one rule in this block
-     that was silently doing nothing. */
+     so an `img` selector would match nothing. */
   .sl4__tag .icon { width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
 
-  /* ONE NODE IS DROPPED, and it is the promotion above that drops it. The
-     ELECTIONS chip is anchored at 406 and the white node at 534, 544 sits 128
-     units to its right; at the 9.3px floor the chip is 140.6 units wide at 390
-     and 150.1 at 360, so it overruns that node by 12.6 and 22.1 units and the
-     dot lands on the final S. It is not a clip, which is why the pass that
-     promoted this type did not catch it: scrollWidth equals clientWidth and
-     the chip has 244 units of window to its right. It is a collision.
+  /* ONE NODE IS DROPPED, because of the label floor above. The ELECTIONS chip
+     is anchored at 406 and the white node at 534, 544 sits 128 units to its
+     right; at the 9.3px floor the chip is wider than that and the dot lands on
+     the final S. It is a collision, not a clip, so overflow checks do not
+     catch it.
 
-     No legible size clears it. The chip's chrome -- 12 units of padding either
-     side, the 14-unit dot, the 2-unit gap -- is 40 units before a letter is
-     set, leaving 88 for the word, and ELECTIONS at the 9px bar is 100.6 units
-     at 390 and 110.1 at 360. So the node goes, the way the three off-frame
-     market tiles go: fewer parts, and the reason written down. Five of the six
-     ring nodes stay, including the one directly above it at 534, 297, which
-     SPORT is short enough to clear. */
+     No legible size clears it: the chip's chrome (padding, dot and gap) takes
+     40 units before a letter is set, leaving 88 for the word, and ELECTIONS at
+     the 9px bar needs more. So the node goes. Five of the six ring nodes stay,
+     including the one directly above it at 534, 297, which SPORT is short
+     enough to clear. */
   .sl4__node--under-elections { display: none; }
 }
 
@@ -506,148 +427,82 @@
    ---------------------------------------------------------------------------- */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) .sl4 {
-  /* THE THREE ORBIT RINGS. The skeleton of this slide, and #d9d9d9 on paper is
-     1.29:1 -- it simply goes missing, which is the failure LIGHTMODE 6.5 is
-     about. They are masked glyphs now, so this token reaches them.
+  /* THE THREE ORBIT RINGS, the skeleton of this slide. #d9d9d9 all but
+     disappears on paper (see LIGHTMODE.md).
 
-     The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
-     that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page. What matters is the
-     RENDERED weight, so it is measured on the rendered pixels -- the
-     illustration drawn at one design unit per pixel at deviceScaleFactor 2, a
-     column cut down through the top of the 274 ring, and the device pixel the
-     stroke covers best taken as its true blend.
-
-     THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
-     possibly make on paper is a black one, and that is 2.10:1; on the dark
-     page a white one is 2.64:1. Matching dark's measured 2.21:1 outright is
-     therefore not available at any value -- it would need a stroke darker than
-     black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
-     sits 73.6% of the way from 1.00 to its ceiling. #332c27 measures 1.81:1 on
-     paper, which is also 73.6%.
-
-     Two predecessors here, and the method is what improved rather than the
-     idea. #9b8e85 was chosen against a reading taken at a lower device pixel
-     ratio and lands at 1.30:1, 27% of the range. #3f3630 was measured the
-     right way but against a ring reading of 2.09:1 rather than the 2.21:1 the
-     same cut gives, and lands at 1.75:1, 68% of the range. */
+     circle-*.svg carries opacity="0.3", so the value is matched on RENDERED
+     weight, not on the hex. At 30% opacity even a black ring on paper cannot
+     reach the contrast dark's rings have, so what is matched is the ring's
+     position within its own possible range: #332c27 sits at the same fraction
+     (about 74%) of the way from invisible to the strongest possible ring as
+     dark's rings do. */
   --sl4-ring: #332c27;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
-     has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' measured 2.21:1. Handing it --sl4-ring would put it at
-     12.9:1 on paper -- the same token giving a node that shouts and a ring
-     that whispers, which is the whole argument for not sharing one. It reads
-     --ink-2 instead.
+     has no opacity attribute, so it renders at full strength; --sl4-ring would
+     make it far heavier than the rings on paper. It reads --ink-2 instead.
 
-     Worth knowing before anyone spends time on it: in the design this node is
-     painted UNDER the BTC/USD pill (365:829 sits below 365:830 in 365:803, and
-     278,421 is inside the pill's 183..344 by 398..448), and the code stacks it
-     the same way, so not one pixel of it is visible in either theme. Sampled
-     at its centre both themes return the pill's fill. The value is kept
-     correct rather than argued over. */
+     Worth knowing: in the design this node is painted UNDER the BTC/USD pill
+     (365:829 sits below 365:830 in 365:803, and 278,421 is inside the pill's
+     183..344 by 398..448), and the code stacks it the same way, so it is not
+     visible in either theme. */
   --sl4-node-2: var(--ink-2);
-  /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
-     are the same rendered weight rather than the same number -- measured on
-     the pixels, dark draws the glass at 1.40:1 against the ground beside the
-     tile and this draws it at 1.39:1 against paper. What lights a tile when
-     the order reaches it is its own --accent hairline coming up to full plus
-     one step of --accent tint (.sl4__badge-lit), and --accent is DARKER than
-     paper where it is lighter than the dark page, so "lit" still means
-     "further from the page" here with not one rule reversed. There is no bloom
-     to flip: the radial one that used to be here is gone from both themes.
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink, matched on
+     rendered weight against the page rather than on the number. What lights a
+     tile when the order reaches it is its own --accent hairline coming up to
+     full plus one step of --accent tint (.sl4__badge-lit), and --accent is
+     DARKER than paper where it is lighter than the dark page, so "lit" still
+     means "further from the page" with no rule reversed.
 
-     THE TWO REDS. Until now five pieces of this illustration baked #E5331E
-     into the file and painted it whatever the theme -- the BTC disc, the wire,
-     the two label dots and the mark's feed dot -- while the diamond and the
-     pill's rim read --accent and became #a21605. On paper that is 4.23:1 next
-     to 7.69:1, two different brand reds a centimetre apart. All five are one
-     flat colour on transparent, so all five are masked glyphs now and all five
-     name --accent. No second set of light artwork, no inversion: the same file
-     painted by the token the rest of the slide already used. */
+     THE TWO REDS. The BTC disc, the wire, the two label dots and the mark's
+     feed dot bake #E5331E into their files; the diamond and the pill's rim
+     read --accent. All five baked pieces are one flat colour on transparent,
+     so they are masked glyphs that name --accent too, and the slide shows one
+     brand red in each theme. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
-  /* The lit step, matched on the RENDERED step rather than on the number, and
-     the number is the surprise here: it goes DOWN, 12% to 6%.
-     Measured on the pixels, a tile's glass reads 1.40:1 against the ground
-     beside it in dark and 1.39:1 here, and 12% of --accent moves dark to
-     1.53:1. The same 12% on paper would reach 1.69:1 and the 22% this block
-     used to carry reached 2.01:1 -- a third again the step dark takes, because
-     the light accent is a far bigger drop from the glass it washes than the
-     dark accent is a rise. 6% lands at 1.53:1, which is dark's step exactly.
-     The tile's hairline goes 1.81 -> 2.89 against the glass in dark and
-     2.30 -> 3.85 here on its own, with no value stated for either. */
+  /* The lit step, matched on the RENDERED step rather than on the number: it
+     goes DOWN, 12% to 6%. The light accent is a much bigger drop from the
+     glass it washes than the dark accent is a rise, so 6% on paper gives the
+     same visible step as 12% in dark. */
   --sl4-lit-tint: 6%;
   }
 }
 
 :root[data-theme='light'] .sl4 {
-  /* THE THREE ORBIT RINGS. The skeleton of this slide, and #d9d9d9 on paper is
-     1.29:1 -- it simply goes missing, which is the failure LIGHTMODE 6.5 is
-     about. They are masked glyphs now, so this token reaches them.
+  /* THE THREE ORBIT RINGS, the skeleton of this slide. #d9d9d9 all but
+     disappears on paper (see LIGHTMODE.md).
 
-     The value is NOT derived from #d9d9d9's 13.7:1 on the dark page, because
-     that is not what the rings are: circle-*.svg carries opacity="0.3", so the
-     stroke is attenuated before it ever meets the page. What matters is the
-     RENDERED weight, so it is measured on the rendered pixels -- the
-     illustration drawn at one design unit per pixel at deviceScaleFactor 2, a
-     column cut down through the top of the 274 ring, and the device pixel the
-     stroke covers best taken as its true blend.
-
-     THE CEILING IS THE POINT. At 30% opacity the strongest mark this ring can
-     possibly make on paper is a black one, and that is 2.10:1; on the dark
-     page a white one is 2.64:1. Matching dark's measured 2.21:1 outright is
-     therefore not available at any value -- it would need a stroke darker than
-     black -- so what is matched is the ring's POSITION IN ITS OWN RANGE. Dark
-     sits 73.6% of the way from 1.00 to its ceiling. #332c27 measures 1.81:1 on
-     paper, which is also 73.6%.
-
-     Two predecessors here, and the method is what improved rather than the
-     idea. #9b8e85 was chosen against a reading taken at a lower device pixel
-     ratio and lands at 1.30:1, 27% of the range. #3f3630 was measured the
-     right way but against a ring reading of 2.09:1 rather than the 2.21:1 the
-     same cut gives, and lands at 1.75:1, 68% of the range. */
+     circle-*.svg carries opacity="0.3", so the value is matched on RENDERED
+     weight, not on the hex. At 30% opacity even a black ring on paper cannot
+     reach the contrast dark's rings have, so what is matched is the ring's
+     position within its own possible range: #332c27 sits at the same fraction
+     (about 74%) of the way from invisible to the strongest possible ring as
+     dark's rings do. */
   --sl4-ring: #332c27;
   /* THE GREY NODE, which shares nothing with the rings but a hex. dot-grey.svg
-     has no opacity attribute, so it renders at full strength: 13.7:1 in dark
-     against the rings' measured 2.21:1. Handing it --sl4-ring would put it at
-     12.9:1 on paper -- the same token giving a node that shouts and a ring
-     that whispers, which is the whole argument for not sharing one. It reads
-     --ink-2 instead.
+     has no opacity attribute, so it renders at full strength; --sl4-ring would
+     make it far heavier than the rings on paper. It reads --ink-2 instead.
 
-     Worth knowing before anyone spends time on it: in the design this node is
-     painted UNDER the BTC/USD pill (365:829 sits below 365:830 in 365:803, and
-     278,421 is inside the pill's 183..344 by 398..448), and the code stacks it
-     the same way, so not one pixel of it is visible in either theme. Sampled
-     at its centre both themes return the pill's fill. The value is kept
-     correct rather than argued over. */
+     Worth knowing: in the design this node is painted UNDER the BTC/USD pill
+     (365:829 sits below 365:830 in 365:803, and 278,421 is inside the pill's
+     183..344 by 398..448), and the code stacks it the same way, so it is not
+     visible in either theme. */
   --sl4-node-2: var(--ink-2);
-  /* Badge glass settles instead of lifting: 13% white -> 15% ink, and the two
-     are the same rendered weight rather than the same number -- measured on
-     the pixels, dark draws the glass at 1.40:1 against the ground beside the
-     tile and this draws it at 1.39:1 against paper. What lights a tile when
-     the order reaches it is its own --accent hairline coming up to full plus
-     one step of --accent tint (.sl4__badge-lit), and --accent is DARKER than
-     paper where it is lighter than the dark page, so "lit" still means
-     "further from the page" here with not one rule reversed. There is no bloom
-     to flip: the radial one that used to be here is gone from both themes.
+  /* Badge glass settles instead of lifting: 13% white -> 15% ink, matched on
+     rendered weight against the page rather than on the number. What lights a
+     tile when the order reaches it is its own --accent hairline coming up to
+     full plus one step of --accent tint (.sl4__badge-lit), and --accent is
+     DARKER than paper where it is lighter than the dark page, so "lit" still
+     means "further from the page" with no rule reversed.
 
-     THE TWO REDS. Until now five pieces of this illustration baked #E5331E
-     into the file and painted it whatever the theme -- the BTC disc, the wire,
-     the two label dots and the mark's feed dot -- while the diamond and the
-     pill's rim read --accent and became #a21605. On paper that is 4.23:1 next
-     to 7.69:1, two different brand reds a centimetre apart. All five are one
-     flat colour on transparent, so all five are masked glyphs now and all five
-     name --accent. No second set of light artwork, no inversion: the same file
-     painted by the token the rest of the slide already used. */
+     THE TWO REDS. The BTC disc, the wire, the two label dots and the mark's
+     feed dot bake #E5331E into their files; the diamond and the pill's rim
+     read --accent. All five baked pieces are one flat colour on transparent,
+     so they are masked glyphs that name --accent too, and the slide shows one
+     brand red in each theme. */
   --sl4-badge-bg: rgba(26, 21, 18, 0.15);
-  /* The lit step, matched on the RENDERED step rather than on the number, and
-     the number is the surprise here: it goes DOWN, 12% to 6%.
-     Measured on the pixels, a tile's glass reads 1.40:1 against the ground
-     beside it in dark and 1.39:1 here, and 12% of --accent moves dark to
-     1.53:1. The same 12% on paper would reach 1.69:1 and the 22% this block
-     used to carry reached 2.01:1 -- a third again the step dark takes, because
-     the light accent is a far bigger drop from the glass it washes than the
-     dark accent is a rise. 6% lands at 1.53:1, which is dark's step exactly.
-     The tile's hairline goes 1.81 -> 2.89 against the glass in dark and
-     2.30 -> 3.85 here on its own, with no value stated for either. */
+  /* The lit step, matched on the RENDERED step rather than on the number: it
+     goes DOWN, 12% to 6%. The light accent is a much bigger drop from the
+     glass it washes than the dark accent is a rise, so 6% on paper gives the
+     same visible step as 12% in dark. */
   --sl4-lit-tint: 6%;
 }

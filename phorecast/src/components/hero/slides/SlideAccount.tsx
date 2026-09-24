@@ -1,10 +1,10 @@
-/* Hero slide 2 — "One account. Your keys." illustration.
+/* Hero slide 2 (sports markets): the account cluster illustration.
    Figma: file aczG8te17zRGoK5wvirB92, slide 365:293, cluster 365:346
-   ("Stats Container"). Re-exported from the node; see SlideAccount.css for the
-   geometry and THE EXPORT note there for what the previous pass had wrong.
+   ("Stats Container"). Exported from the node; see SlideAccount.css for the
+   geometry and THE EXPORT note there.
 
    Only the illustration lives here. The nav, eyebrow, headline, lede and CTA
-   are the slide's own markup (Hero.tsx) and are untouched.
+   are the slide's own markup (Hero.tsx).
 
    Geometry is laid out in Figma design pixels scaled by --u (see the CSS), so
    one design px is one 1800th of the hero's content column at any width. */
@@ -22,10 +22,9 @@ import connectorRight from '../../../assets/hero/slide2/connector-right.svg';
 import cardGrid from '../../../assets/hero/slide2/card-grid.svg';
 /* Light variants. These are gradient artwork: a mask would flatten the
    gradient to its alpha and throw the colour away, and inlining them would add
-   elements to .hero -- which theme-diff.mjs compares by array index, so every
-   later element would report as changed. A second file swapped by `src` is the
-   one mechanism that leaves the dark DOM, the dark bytes and the dark gate
-   untouched. Each is the original with its stops changed and nothing else. */
+   elements to the DOM. A second file swapped by `src` leaves the dark DOM and
+   the dark assets untouched. Each is the original with its stops changed and
+   nothing else. */
 import connectorLeftLight from '../../../assets/hero/slide2/connector-left-light.svg';
 import connectorRightLight from '../../../assets/hero/slide2/connector-right-light.svg';
 import cardGridLight from '../../../assets/hero/slide2/card-grid-light.svg';
@@ -88,7 +87,7 @@ export function SlideAccount() {
   /* The motion module reads the price's settled ink out of getComputedStyle
      when it builds, so that the flash has somewhere exact to return to. It is
      built from a useEffect here rather than through useSectionMotion, so
-     nothing else would ever rebuild it -- and a flash that cooled to the dark
+     nothing else would ever rebuild it, and a flash that cooled to the dark
      page's ink on paper is the frozen-cool-down failure lib/theme.ts exists to
      prevent. The epoch changes only when the theme actually does. */
   const epoch = useThemeEpoch();

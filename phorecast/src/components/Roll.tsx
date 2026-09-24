@@ -1,7 +1,7 @@
 /**
  * The Swap hover: the live label leaves upward while a duplicate arrives from
- * below. Direction 03 from hover-lab.html, chosen for buttons, menu links and
- * footer links, so all three families move the same way.
+ * below. Used by buttons, menu links and footer links, so all three families
+ * move the same way. The CSS is the "Swap hover" block in styles/global.css.
  *
  * The duplicate is the animation, which is why it lives here rather than in a
  * pseudo-element: `content` cannot carry a React child, and reading the label

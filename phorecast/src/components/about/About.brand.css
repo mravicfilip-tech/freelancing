@@ -1,82 +1,27 @@
-/* Animation styles for one band of the About page.
+/* Animation styles for the ABOUT PHORCAST band.
  *
- * The page's layout and colour live in About.css, which is shared. This file
- * is for what the band's motion needs and nothing else -- pending states,
- * will-change, transform origins, keyframes, reduced-motion fallbacks. It is
- * imported after About.css so it can override a layout rule where a motion
- * genuinely requires it, but prefer not needing to: a rule here that is really
- * a layout decision belongs next to the layout.
+ * Layout and colour live in About.css. This file is imported after it and is
+ * for motion-only rules: pending states, will-change, transform origins,
+ * keyframes, reduced-motion fallbacks.
  *
- * ===========================================================================
- * ABOUT PHORCAST DECLARES NOTHING, AND THAT IS THE RESULT RATHER THAN THE
- * STARTING POINT. Four rules were considered and each one was dropped for a
- * reason worth keeping, because the next person to feel the same itch should
- * not have to re-derive them.
+ * It is deliberately empty:
+ *   - No pending hold. About.css already hides `.eyebrow` and
+ *     `.ab-brand__card` while pending, and everything else is inside the card.
+ *   - No `will-change` on `.ab-brand__visual`. GSAP promotes the layer for the
+ *     length of the tween; a standing promotion would hold a large raster in
+ *     GPU memory for the life of the page.
+ *   - No `transform-origin`. Nothing in the band scales or rotates, and the
+ *     product shot must never be resampled.
+ *   - No keyframes or reduced-motion block. There is no loop, and reduced
+ *     motion is handled by `useSectionMotion` plus About.css's reduce block.
  *
- * NO PENDING HOLD OF ITS OWN. About.css already hides `.eyebrow` and
- * `.ab-brand__card` while the band is pending, and the shot, the mark and the
- * two paragraphs are all inside the card -- a `visibility: hidden` ancestor
- * hides them with it. Their own start states are written by GSAP `from`
- * tweens, which render immediately at build time, in the same frame the
- * attribute is removed. Listing them here as well would hide them twice and
- * add a second place to remember when the markup moves.
- *
- * NO `will-change` ON THE PRODUCT SHOT, even though it is the one large bitmap
- * on the page and standing promotion is the obvious thing to reach for.
- * `will-change: transform` is a promise, not a hint: it keeps
- * `.ab-brand__visual` -- 772 x 367 CSS px of three stacked PNGs at 1600, and
- * 1001 x 474 at 1100 where the card stacks -- on its own compositor layer for
- * the whole life of the page, for the sake of one second of travel. GSAP
- * promotes for exactly the length of the tween by itself (force3D defaults to
- * 'auto') and drops the promotion with the rest of the transform on
- * `clearProps`. Faq.motion.ts refuses standing promotion for text because it
- * costs subpixel antialiasing; this refuses it for a raster because it costs
- * the memory permanently and buys nothing GSAP is not already doing. Measured
- * with and without it at 1600: median frame 16.7ms through the slide either
- * way, which is the whole point -- the promotion GSAP already makes for the
- * length of the tween is the promotion that was wanted.
- *
- * NO `transform-origin`. Nothing in this band scales or rotates -- the shot
- * travels on one axis and the type rises -- so the default is never consulted.
- * Stating it would imply a scale that is not there, and a scale is the one
- * thing the three-image composite must never be given: the two dashboard
- * panels are positioned as percentages of the layer precisely so that they
- * hold their places inside it, and anything that resamples the layer resamples
- * a photograph.
- *
- * NO KEYFRAMES AND NO REDUCED-MOTION BLOCK. There is no loop in this band --
- * a photograph of a dashboard is not a dashboard doing its job over time -- so
- * there is no CSS animation to hold still. Reduced motion is handled where it
- * has to be, in `useSectionMotion`, which reveals the section and settles it
- * without building a timeline; About.css's own reduce block then makes every
- * pending-hidden part visible. A fallback here would be a third answer to a
- * question that already has two agreeing ones.
- *
- * ===========================================================================
- * WHAT THE ENTRANCE NOW LEANS ON IN About.css. Two rules over there are
- * load-bearing for the motion in About.brand.motion.ts, and neither of them
- * looks like a motion rule from where it is written. If either changes, the
- * entrance has to change with it.
- *
- *   `.ab-brand__card { overflow: hidden }` -- stated twice, once at full width
- *   and once again inside the 1100 breakpoint. The shot starts its beat 52px
- *   to the RIGHT of where it rests, so for the length of the slide it overhangs
- *   the card's right edge; the card's clip is the only thing between that
- *   overhang and a horizontal scrollbar on the document. Verified at 1600,
- *   1100, 720, 390 and 360 in both themes: `scrollWidth - clientWidth` is 0
- *   throughout the entrance. The clip also keeps the overhang inside the card's
- *   10px radius while the layer is promoted -- checked at 4x on the top-right
- *   corner mid-slide, which is where a promoted layer escaping a rounded clip
- *   would show first.
- *
- *   The light-mode `mask-image` on `.ab-brand__visual` -- the fade that
- *   dissolves the shot's hard left edge on paper. The entrance is built so the
- *   mask keeps working through every frame of the beat and not merely at rest:
- *   the tween's target is the masked element itself, so the fade travels with
- *   it, and the beat touches only transform and opacity -- never `clip-path`,
- *   which CSS resolves BEFORE the mask and which would therefore cut its own
- *   hard edge straight through it. About.brand.motion.ts's header carries the
- *   measurement. This is also why nothing in this file sets `mask`,
- *   `-webkit-mask` or `clip-path` on `.ab-brand__visual`: an override here,
- *   or an inline one from a tween, would take the stylesheet's mask with it.
+ * Two rules in About.css are load-bearing for About.brand.motion.ts:
+ *   - `.ab-brand__card { overflow: hidden }` (stated at full width and again
+ *     at 1100). The shot starts 52px right of its rest position, and the
+ *     card's clip is what stops that overhang widening the document.
+ *   - The dark-theme `mask-image` on `.ab-brand__visual` above 1100px, which
+ *     softens the shot's left edge. Do not set `mask`, `-webkit-mask` or
+ *     `clip-path` on `.ab-brand__visual` here or from a tween: an override
+ *     would remove the stylesheet's mask, and a clip-path is applied before
+ *     the mask and would cut a hard edge through it.
  */

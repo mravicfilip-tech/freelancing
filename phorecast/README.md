@@ -67,7 +67,7 @@ src/
     about/              the About page, one CSS and motion file per band
   assets/<band>/        exported artwork, one folder per band
 docs/                   developer documentation (below)
-MOTION.md               motion direction (design history)
+MOTION.md               motion direction: the rules entrances and loops follow
 LIGHTMODE.md            light-mode strategy (design history)
 ```
 

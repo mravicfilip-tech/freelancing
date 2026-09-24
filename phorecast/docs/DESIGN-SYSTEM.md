@@ -33,7 +33,7 @@ Two layers, and the distinction matters:
 | `--accent-soft` | `rgba(229,51,30,.1)` | `rgba(162,22,5,.08)` | tinted hovers |
 | `--on-accent` | `#fffbf8` | `#fffbf8` | label on the red; never flips |
 | `--pos` / `--neg` | `--green` / `--red` | `#0b6e37` / `#b01309` | price up / down |
-| `--veil`, `--veil-line`, `--veil-strong` | white alphas | ink alphas | glass |
+| `--veil`, `--veil-line` | white alphas | ink alphas | glass |
 | `--art-ink`, `--art-ink-2` | `#fffbf8`, `#9d9d9d` | not flipped | white inside dark artwork |
 | `--btn-primary-hover-bg` / `-ink` | `--ink` / `--accent` | `--accent-deep` / `--on-accent` | primary button hover |
 
@@ -47,7 +47,6 @@ Other tokens:
 
 | Token | Value |
 |---|---|
-| `--spacing-xs/sm/md/lg` | 8 / 12 / 16 / 24px |
 | `--page-pad` | `clamp(20px, 5vw, 96px)` |
 | `--content-max` | 1440px (Figma content column). `.container--wide` sets 1800px and a 60px max gutter for the hero and About. |
 | `--radius-pill` | 400px |
@@ -96,7 +95,6 @@ Font families (`tokens.css`):
 | `--font-body` | Inter Tight Variable (npm `@fontsource-variable/inter-tight`) |
 | `--font-label` | Galano Grotesque, then Avenir Next, Avenir, Futura, Segoe UI, Roboto, Liberation Sans, DejaVu Sans, system-ui. **Galano files are not in the repo**; see ASSETS.md. The fallback order is chosen for similar widths; Century Gothic is excluded on purpose (too wide). |
 | `--font-wordmark` | Darker Grotesque Variable (the "Phorcast" wordmark) |
-| `--font-mono` | Deprecated alias of `--font-label` (the label face used to be Geist Mono). If `grep -r font-mono src` finds only `tokens.css`, delete it. |
 
 Numbers that animate use tabular figures: the selector list at the bottom of
 `global.css` sets `font-variant-numeric: tabular-nums`. Add any new counter to

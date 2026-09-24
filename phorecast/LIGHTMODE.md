@@ -2,7 +2,7 @@
 
 Analysis only. No source file was changed to produce this document.
 
-Measured against `claude/sweet-volta-5i0ubl` at the time of writing: 266 SVG files
+Measured at the time of writing: 266 SVG files
 (264 under `src/assets`, plus `HeroLogo/logo-outline.svg` and `public/favicon.svg`),
 221 of them actually referenced from source, 45 dead. 243 literal colour
 declarations in CSS against 207 token references. 17 TypeScript modules carrying

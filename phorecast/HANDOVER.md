@@ -99,7 +99,6 @@ list of pre-existing layout nits and one contrast issue.
 | "Phorecast" spelling in the footer design | Client: confirm | KNOWN-ISSUES 1.7 |
 | Six layout nits (phones, 768 to 1440, 720/721) | Developer | [KNOWN-ISSUES 2](docs/KNOWN-ISSUES.md#2-layout-nits-pre-existing) |
 | White link on the orange bento card, about 2.5:1 | Design and developer | [KNOWN-ISSUES 3](docs/KNOWN-ISSUES.md#3-accessibility) |
-| Lint findings in `src`, if `npm run lint` still reports any | Developer | [TESTING.md](docs/TESTING.md) |
 
 ## Where to look for what
 

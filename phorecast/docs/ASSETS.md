@@ -98,8 +98,10 @@ About page comments say exactly what was left out.
   (`hero/slide3/gift-1.svg`). Light variants end in `-light`.
 - **Editor settings**: `.editorconfig` leaves SVG line endings and final
   newlines alone so an editor does not rewrite exported files on save.
-- **Remove unreferenced files.** Before adding, check nothing already covers
-  it: `grep -rn "<name>" src`.
+- **No unreferenced files.** Every file in `src/assets/` is imported
+  somewhere (unused ones were removed for handover). Delete a file when its
+  last import goes, and check `grep -rn "<name>" src` before adding one that
+  may already exist.
 
 ## 5. Fonts
 

@@ -7,10 +7,8 @@ import { useSectionMotion } from '../../lib/motion';
 import { buildSteps } from './Steps.motion';
 import './Steps.css';
 
-/* `tab` is the switcher's label, and it is not the title abbreviated for want
-   of room: three tabs across 350px have to be read at a glance and in parallel,
-   so each is the one verb that separates it from the other two. The full title
-   and the body stay with the slide, where they are read one at a time. */
+/* `tab` is the phone switcher's label: one distinguishing word per step, so
+   three tabs read at a glance. The full title and body stay with the slide. */
 const STEPS = [
   { tab: 'Register', title: 'Create Your Account', body: 'Sign up with your email or connect a wallet. No mandatory KYC.', panel: <PanelRegister /> },
   { tab: 'Fund', title: 'Add Funds Your Way', body: 'Deposit using crypto, card, Apple Pay, Google Pay, or bank transfer.', panel: <PanelFund /> },
@@ -19,22 +17,15 @@ const STEPS = [
 
 const DWELL_MS = 6000;
 
-/* The phone layout, and the one place its width is written.
+/* The phone layout breakpoint. 700 rather than the band's 720: down to about
+ * 700 the stacked layout (panel above a list of three cards) still reads well;
+ * below it the panel gets too small and the section too tall, so the phone
+ * switches to tabs and a swipeable track. Keep in step with Steps.css,
+ * Steps.motion.ts and the panels' phone blocks.
  *
- * 700 rather than the band's own 720. Above it the stacked layout still works:
- * at 720 the panel is 672 wide, which is 0.76 of a design pixel per CSS pixel,
- * and the three cards under it are a readable list. Below 700 that falls away
- * fast -- at 390 the panel was 350 wide, 0.40 of a design pixel, with the whole
- * section 900px tall because all three cards are listed under one graphic. The
- * switcher is a phone control, not a tablet one, so it starts where the phone
- * does. It also leaves every width the shipped gates fingerprint -- 1600, 1100
- * and 720 -- provably untouched, so what those report is only the desktop this
- * change is not allowed to move.
- *
- * Read in JS as well as in CSS because the two layouts are different MARKUP,
- * not one markup restyled: the phone needs three slides mounted at once for a
- * swipe to have anywhere to go, and the desktop must not pay for two panels it
- * never shows -- nor have its DOM disturbed at all. */
+ * Read in JS as well as CSS because the two layouts are different MARKUP: the
+ * phone mounts all three slides so a swipe has somewhere to go, while the
+ * desktop mounts only the active panel. */
 const PHONE = '(max-width: 700px)';
 const REDUCE = '(prefers-reduced-motion: reduce)';
 
@@ -63,20 +54,14 @@ export function Steps() {
   // The band arrives when it is scrolled to; see Steps.motion.ts.
   const ref = useSectionMotion<HTMLElement>(buildSteps);
 
-  // The stepper does not start counting until the band has finished arriving.
+  // The stepper does not start counting until the band has finished arriving
+  // (`motion:done`), so the first card lands with its progress bar at zero
+  // rather than part-spent after a long wait off screen. Once armed, the timer
+  // runs continuously.
   //
-  // It is not a pause -- once armed the timer runs continuously, exactly as
-  // before, and selection stays click-only. It is about where the first dwell
-  // begins: the entrance can be waited on for minutes, and a stepper counting
-  // through that wait meant the band could arrive on step three with step one's
-  // progress bar already spent, or worse, arrive with that bar frozen half
-  // drawn. Arming on `motion:done` starts the first dwell, the `is-playing`
-  // class and therefore the bar's CSS animation in the same frame the entrance
-  // hands over, so the first card lands and its bar starts from zero.
-  //
-  // The flag is read before the listener is attached because the hook fires the
-  // event once and only once: when motion is reduced, or a build throws, it has
-  // already fired during the layout effect above this one.
+  // `data-motion-done` is checked before listening because the event fires
+  // only once: under reduced motion, or if a build throws, it has already
+  // fired during the layout effect above.
   const [armed, setArmed] = useState(false);
   useEffect(() => {
     const el = ref.current;
@@ -102,29 +87,23 @@ export function Steps() {
     return () => window.clearTimeout(id);
   }, [playing, armed, active]);
 
-  // Choosing a step jumps to it and hands it a full turn -- the dwell effect is
-  // keyed on `active`, so changing it restarts the timer rather than stopping
-  // it. The carousel keeps progressing either way; `playing` now answers only
-  // "is motion allowed", which is reduced-motion's business alone.
+  // Choosing a step jumps to it and gives it a full dwell: the timer effect is
+  // keyed on `active`, so it restarts rather than stops. `playing` only
+  // reflects whether motion is allowed (reduced motion).
   const select = useCallback((i: number) => { setActive(i); }, []);
 
-  /* The slider, in two halves that must not chase each other.
+  /* The phone slider, in two halves that must not chase each other.
    *
-   * OUT: the step changing scrolls the track to it -- the timer, a tab, an
-   * arrow key and a swipe all arrive as a change to `active`, so there is one
-   * way in and the track is never a second source of truth.
+   * OUT: a change to `active` (timer, tab, arrow key or swipe) scrolls the
+   * track to it, so `active` is the single source of truth.
    *
-   * IN: the track reports where a swipe left it. No pointer maths and no
-   * listeners on the pointer at all -- scroll-snap does the physics, and what
-   * is read here is the scroll offset the browser settled on. The rounding is
-   * exact because every slide is the width of the track.
+   * IN: the track reports where a swipe settled. Scroll-snap does the
+   * physics; only the scroll offset is read (every slide is one track width).
    *
-   * `driving` is what keeps the two apart. A programmed scroll from slide 3 to
-   * slide 1 passes over slide 2, and slide 2 reported mid-flight would select
-   * itself, restart the dwell and re-aim the scroll it is standing in. So the
-   * reader is deaf while a scroll of ours is in flight, and hears again the
-   * moment the track is where `active` says it should be -- or after 700ms, in
-   * case a thumb interrupted the smooth scroll and it never arrives. */
+   * `driving` keeps them apart: a programmed scroll from slide 3 to slide 1
+   * passes slide 2, which must not select itself mid-flight. The reader
+   * ignores scrolls until the track reaches `active`, or for at most 700ms in
+   * case a touch interrupts the smooth scroll. */
   const trackRef = useRef<HTMLDivElement>(null);
   const driving = useRef(0);
   const activeRef = useRef(active);
@@ -168,9 +147,8 @@ export function Steps() {
   const onKey = (e: React.KeyboardEvent) => {
     const go = (i: number) => {
       select(i);
-      // Keyboard selection moves focus with it, but only when a tab is what was
-      // being driven: an arrow pressed anywhere else in the band still steps the
-      // carousel, exactly as it did, and does not snatch focus.
+      // Focus follows the selection only when a tab had focus; arrows pressed
+      // elsewhere in the band step the carousel without moving focus.
       const from = (e.target as HTMLElement | null)?.closest?.('[role="tab"]');
       if (from) {
         const next = ref.current?.querySelector<HTMLElement>(`#steps-tab-${i}`);
@@ -201,17 +179,12 @@ export function Steps() {
         <h2 id="steps-title" className="steps__title">Make Your First Forecast in 3 Simple Steps</h2>
 
         {phone ? (
-          /* THE PHONE LAYOUT. A tablist, and three slides under it.
-             `role="tab"` rather than the desktop cards' `aria-expanded`: what is
-             on screen is one control with three positions and a moving
-             underline, and "tab 2 of 3, selected" is that in one hop, where
-             three separate expandable buttons is three. The section keeps
-             `aria-roledescription="carousel"`, which is the shape APG calls a
-             carousel with a tablist picker.
-             The slides that are not selected stay in the accessibility tree --
-             they are on the page, a thumb away, and `aria-hidden` on something
-             a swipe reaches is a lie. They are out of the TAB ORDER instead,
-             which is what a roving tabindex is for. */
+          /* THE PHONE LAYOUT: a tablist and three slides (the APG carousel
+             with a tablist picker). `role="tab"` rather than the desktop
+             cards' `aria-expanded`, because on screen it is one control with
+             three positions. Unselected slides stay in the accessibility tree
+             (a swipe reaches them, so `aria-hidden` would be wrong) but leave
+             the tab order via a roving tabindex. */
           <div className="steps__body">
             <div
               className="steps__tabs"
@@ -235,12 +208,10 @@ export function Steps() {
                   {s.tab}
                 </button>
               ))}
-              {/* The underline. One element for all three positions -- it slides
-                  between them rather than appearing and disappearing, which is
-                  what makes the row read as one control. The dwell rides on top
-                  of it, keyed on `active` so that each turn re-mounts the fill
-                  and its CSS animation starts from zero, the same mechanism the
-                  desktop card's bar uses and driven by the same `is-playing`. */}
+              {/* The underline: one element that slides between positions, so
+                  the row reads as one control. The dwell fill is keyed on
+                  `active`, so each turn remounts it and its CSS animation
+                  restarts; same `is-playing` mechanism as the desktop bar. */}
               <span className={`steps__ind${playing && armed ? ' is-playing' : ''}`} aria-hidden="true">
                 <span className="steps__ind-fill" key={active} style={{ ['--dwell' as string]: `${DWELL_MS}ms` }} />
               </span>

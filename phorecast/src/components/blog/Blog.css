@@ -95,8 +95,8 @@
   color: var(--ink-2);
 }
 
-/* The card, in About's CHOOSE card style: a panel with square left corners
-   and the 3px accent bar down the left edge. */
+/* The card: a panel with a hairline edge, every corner rounded the same
+   (10px, and 6px on the cover inside it). */
 .blog-card-wrap { display: flex; }
 .blog-card {
   position: relative;
@@ -105,20 +105,11 @@
   width: 100%;
   padding: 20px;
   border: 1px solid var(--line);
-  border-radius: 0 10px 10px 0;
+  border-radius: 10px;
   background: var(--panel);
   overflow: hidden;
 }
-.blog-card::before {
-  content: '';
-  position: absolute;
-  left: -1px;
-  top: -1px;
-  bottom: -1px;
-  width: 3px;
-  background: var(--accent);
-}
-.blog-card__cover { aspect-ratio: 16 / 9; border-radius: 0 6px 6px 0; }
+.blog-card__cover { aspect-ratio: 16 / 9; border-radius: 6px; }
 .blog-card__text {
   display: flex;
   flex-direction: column;

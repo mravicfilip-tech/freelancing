@@ -57,7 +57,7 @@
 }
 :root[data-theme='light'] .nav__menu { background: #fff; }
 /* One column: MORE carries a short list (MORE_MENU in lib/sitemap.ts, About
-   only for now). The full sitemap is the footer's. */
+   and Blog for now). The full sitemap is the footer's. */
 .nav__menu:not([hidden]) {
   display: flex;
   flex-direction: column;

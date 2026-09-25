@@ -181,4 +181,4 @@ internally rather than by the client. All items are live.
 | 10 | Remove em dashes from sentences | Client | Ten fixed; none left in the copy. |
 | 11 | No bold sentences on About | Project lead | Done. |
 | 12 | Unify font sizes: paragraphs 18px, one size per heading level, both pages, illustrations untouched | Project lead | Paragraph 18, card heading 18, section heading 32 (28 on phones), label 16 (menus included), small 14. Checked in both themes. The FAQ title at 1920 and the About statement stay at the section-heading size by decision. |
-| 13 | MORE menu too big: About only | Project lead | Desktop and phone. Footer keeps the full sitemap. No drop shadow, pure white panel in light. |
+| 13 | MORE menu too big: About only (Blog added later, with the blog) | Project lead | Desktop and phone. Footer keeps the full sitemap. No drop shadow, pure white panel in light. |

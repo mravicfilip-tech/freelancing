@@ -21,9 +21,9 @@ const LINKS = [
 
 /* What MORE opens, on both surfaces: MORE_MENU in lib/sitemap.ts.
    ---------------------------------------------------------------------------
-   Design decision: About only, for now. The full sitemap (Product, Company,
-   Legal) is the footer's; MORE is a short list, one column on the bar and one
-   stack in the sheet. About is a route with `aria-current`.
+   Design decision: About and Blog, for now. The full sitemap (Product,
+   Company, Legal) is the footer's; MORE is a short list, one column on the bar
+   and one stack in the sheet. Both are routes with `aria-current`.
 
    A placeholder item (TODO(client), href '') is still a menu item and still
    reachable by the arrows, but choosing it does nothing: the click is

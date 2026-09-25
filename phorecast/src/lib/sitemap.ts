@@ -85,9 +85,9 @@ export const page = (label: string): SitemapLink => {
 };
 
 /** What the nav's MORE opens, on the desktop bar and in the phone sheet.
- *  Design decision: About only, for now. The full sitemap lives in the footer;
- *  add a page here by label when MORE should carry it too. */
-export const MORE_MENU: SitemapLink[] = [page('About')];
+ *  Design decision: About and Blog, for now. The full sitemap lives in the
+ *  footer; add a page here by label when MORE should carry it too. */
+export const MORE_MENU: SitemapLink[] = [page('About'), page('Blog')];
 
 export const isPlaceholder = (href: string) => href === '';
 

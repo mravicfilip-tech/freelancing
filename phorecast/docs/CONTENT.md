@@ -81,7 +81,7 @@ filling an entry fills every surface that shows it.
 | Company | About (`/about`), Partner Program (`''`), Blog (`/blog`), Brand Kit (`''`) |
 | Legal | Terms of Service (`''`), Privacy Policy (`''`), Cookies (`''`), Contact (`''`) |
 
-`MORE_MENU = [page('About')]` is what the nav's MORE opens, on the desktop bar
+`MORE_MENU = [page('About'), page('Blog')]` is what the nav's MORE opens, on the desktop bar
 and in the phone sheet. To add an entry, add `page('<label>')`; the label must
 exist in `SITEMAP` or `page()` throws at load.
 

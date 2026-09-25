@@ -78,14 +78,14 @@ filling an entry fills every surface that shows it.
 | Column | Links (target) |
 |---|---|
 | Product | Markets (`''`), Leaderboard (`''`), Trading Hours (`''`), FAQs (`#faq`) |
-| Company | About (`/about`), Partner Program (`''`), Blog (`''`), Brand Kit (`''`) |
+| Company | About (`/about`), Partner Program (`''`), Blog (`/blog`), Brand Kit (`''`) |
 | Legal | Terms of Service (`''`), Privacy Policy (`''`), Cookies (`''`), Contact (`''`) |
 
 `MORE_MENU = [page('About')]` is what the nav's MORE opens, on the desktop bar
 and in the phone sheet. To add an entry, add `page('<label>')`; the label must
 exist in `SITEMAP` or `page()` throws at load.
 
-Href kinds: `'/about'` is a route; `'#faq'` is a landing-page section and is
+Href kinds: `'/about'` and `'/blog'` are routes; `'#faq'` is a landing-page section and is
 rewritten to `'/#faq'` from other pages; `''` is a placeholder.
 
 **How placeholders behave.** `linkProps` renders `''` as a real, focusable link
@@ -140,7 +140,7 @@ grep -rn 'href="#login"\|href="#signup"' src     # unmarked dead anchors
   `bentoStart`, `bentoBonus`, `bentoMarkets`, `familiarMarkets`,
   `builtFirstMarket`, `builtFinancial` (10).
 - `src/lib/sitemap.ts`: Markets, Leaderboard, Trading Hours, Partner Program,
-  Blog, Brand Kit, Terms of Service, Privacy Policy, Cookies, Contact (10).
+  Brand Kit, Terms of Service, Privacy Policy, Cookies, Contact (9).
   Markets and Leaderboard also appear in the nav bar.
 
 **Not marked, and not handled by the placeholder system:** these are bare
@@ -153,3 +153,30 @@ nothing else.
   (`#signup`).
 
 Move these into `sitemap.ts` or `cta.ts` when the app URLs are known.
+
+## 7. Blog posts
+
+Every post is one object in `POSTS` in `src/content/blog.ts`; the pages
+(`src/components/blog/Blog.tsx`) only render them. The file's header comment
+is the full reference. In short:
+
+| Field | Notes |
+|---|---|
+| `slug` | The URL, `/blog/<slug>`. Lowercase and hyphens, unique. |
+| `title`, `excerpt` | The h1 and card title; one or two sentences for the card and the post's lede. |
+| `category` | One of `CATEGORIES` (Announcements, Learn, Guides, Markets). Adding a category is one entry there; the filter buttons follow. |
+| `date` | ISO `YYYY-MM-DD`. Posts sort newest first. |
+| `author` | The byline. |
+| `cover` | Optional imported image. Without it the branded placeholder cover is shown. |
+| `body` | Blocks: `{ type: 'h2' }` starts a section (and an "On this page" entry), `'p'` a paragraph, `'ul'` a list. Plain text only. |
+
+The read time is computed from the body (200 words a minute).
+
+**TODO(client):** the six posts are placeholder copy, written to realistic
+lengths and without product claims. Replace them, and the index page's lede in
+`Blog.tsx`, with the client's own articles before launch. The site's copy
+rules apply: no long dashes, no bold sentences.
+
+If the blog outgrows a file (many posts, or non-developers editing), the
+natural next step is a headless CMS feeding the same `Post` shape; the pages
+would not need to change.

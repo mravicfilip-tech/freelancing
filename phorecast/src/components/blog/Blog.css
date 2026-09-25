@@ -1,0 +1,402 @@
+/* The blog: /blog and /blog/<slug>. Markup in Blog.tsx.
+
+   TYPE. Every size is a type-scale token (tokens.css), so the blog reads as
+   the same site:
+     display          the page title and the post title (`.display`)
+     section heading  the article's section headings, "More articles"
+     card heading     the card titles
+     paragraph        excerpts, ledes and the article text
+     label            filters, the eyebrow, share, "On this page"
+     small            meta lines, dates, the breadcrumb
+
+   THE ONE EXCEPTION: the article's paragraphs keep the paragraph size (18px)
+   but set a 1.5 line height instead of the site's 1.2. The 1.2 is right for
+   the short blocks on the product pages; for several screens of continuous
+   reading it is cramped. It applies inside `.blog-prose` only.
+
+   COLOUR. Role tokens only (--page, --panel, --line, --ink, --ink-2,
+   --ink-muted, --accent, --on-accent), so light mode needs no block of its
+   own here: every value flips with the theme in tokens.css.
+
+   NO GLOW, and no motion on the covers. */
+
+.blog-page {
+  /* Between the page's big blocks: 80px at 1920, as on About. */
+  --blog-gap: clamp(56px, 4.1667vw, 80px);
+  padding-bottom: clamp(80px, 6.25vw, 120px);
+}
+
+/* The nav's column and offset, as on the landing and About heroes. */
+.blog-top { padding-top: 40px; }
+
+/* The query container `--display-size` resolves against (its `cqw`), so the
+   blog's h1s scale with the 1440 content column. */
+.blog-col { container-type: inline-size; }
+
+/* ── Page head ────────────────────────────────────────────────────────────── */
+
+.blog-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding-top: var(--blog-gap);
+}
+.blog-head__title { max-width: 18ch; }
+.blog-head__lede { max-width: 760px; }
+.blog-head--missing .btn { margin-top: 8px; }
+
+/* ── Filters and grid ─────────────────────────────────────────────────────── */
+
+.blog-list { padding-top: var(--blog-gap); }
+.blog-list__title {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: var(--label-size);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.blog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.blog-filter {
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: var(--label-size);
+  line-height: 1.2;
+  color: var(--ink-2);
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+.blog-filter:hover { color: var(--ink); border-color: var(--ink-muted); }
+.blog-filter[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.blog-list .blog-grid { margin-top: 32px; }
+.blog-empty {
+  margin-top: 32px;
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  color: var(--ink-2);
+}
+
+/* The card, in About's CHOOSE card style: a panel with square left corners
+   and the 3px accent bar down the left edge. */
+.blog-card-wrap { display: flex; }
+.blog-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 0 10px 10px 0;
+  background: var(--panel);
+  overflow: hidden;
+}
+.blog-card::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: var(--accent);
+}
+.blog-card__cover { aspect-ratio: 16 / 9; border-radius: 0 6px 6px 0; }
+.blog-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  margin-top: 24px;
+}
+.blog-card__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--h3-size);
+  line-height: var(--h3-leading);
+  color: var(--ink);
+  transition: color 160ms ease;
+}
+.blog-card:hover .blog-card__title,
+.blog-card:focus-visible .blog-card__title { color: var(--accent); }
+.blog-card__excerpt {
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  color: var(--ink-2);
+}
+/* The date sits at the foot of the card, so a row of cards with different
+   excerpt lengths still lines its dates up. */
+.blog-card__date {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: var(--small-size);
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--small-size);
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+
+/* ── The cover ────────────────────────────────────────────────────────────── */
+
+.blog-cover {
+  position: relative;
+  overflow: hidden;
+  background: var(--page);
+}
+.blog-cover__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The placeholder: the mark in the accent on the page colour, with a faint
+   grid of hairlines so the panel reads as a picture frame rather than a hole.
+   The grid is two linear gradients, not a glow. */
+.blog-cover__art {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+}
+.blog-cover__mark {
+  width: clamp(28px, 12%, 64px);
+  aspect-ratio: 33.83 / 39.43;
+  color: var(--accent);
+}
+
+/* ── The post ─────────────────────────────────────────────────────────────── */
+
+/* The article is a centred 1060 column (rail 260 + gap 80 + text 720), so
+   the cover, the head and the text share one left edge and the reading
+   column does not drift to the side of a wide screen. */
+.blog-post {
+  max-width: 1060px;
+  margin-inline: auto;
+  padding-top: var(--blog-gap);
+}
+.blog-post__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 1000px;
+}
+.blog-post__title { max-width: 24ch; }
+.blog-post__lede { max-width: 760px; }
+.blog-post__byline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--small-size);
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+.blog-post__cover {
+  margin-top: 48px;
+  aspect-ratio: 21 / 9;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.blog-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.blog-crumbs li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--small-size);
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+.blog-crumbs li + li::before { content: '›'; color: var(--ink-muted); }
+.blog-crumbs a { transition: color 160ms ease; }
+.blog-crumbs a:hover { color: var(--ink); }
+.blog-crumbs [aria-current] { color: var(--ink-2); }
+
+/* The contents rail and the reading column. The article column is held to
+   about 70 characters a line; the rail sits in the space to its left. */
+.blog-post__layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 720px);
+  gap: 80px;
+  margin-top: 56px;
+}
+.blog-toc {
+  position: sticky;
+  top: 40px;
+  align-self: start;
+}
+.blog-toc__title {
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: var(--label-size);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.blog-toc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+.blog-toc__list a {
+  display: block;
+  font-size: var(--small-size);
+  line-height: 1.3;
+  color: var(--ink-2);
+  transition: color 160ms ease;
+}
+.blog-toc__list a:hover { color: var(--accent); }
+
+/* The article text. Headings are the section-heading role; see the header
+   for the paragraph leading. */
+.blog-prose { grid-column: 2; }
+.blog-prose > * + * { margin-top: 20px; }
+.blog-prose h2 {
+  margin-top: 48px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--h2-size);
+  line-height: var(--heading-leading);
+  color: var(--ink);
+  /* Clear the page top when reached from "On this page". */
+  scroll-margin-top: 32px;
+}
+.blog-prose > h2:first-child { margin-top: 0; }
+.blog-prose p,
+.blog-prose li {
+  font-size: var(--body-size);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.blog-prose ul { display: flex; flex-direction: column; gap: 10px; }
+.blog-prose li { position: relative; padding-left: 22px; }
+.blog-prose li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: calc(0.75em - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.blog-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.blog-share__label {
+  margin-right: 4px;
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: var(--label-size);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.blog-share__btn,
+.blog-share__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--ink-2);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.blog-share__btn { width: 44px; }
+.blog-share__copy {
+  padding: 0 18px;
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: var(--label-size);
+  line-height: 1.2;
+}
+.blog-share__btn:hover,
+.blog-share__copy:hover { color: var(--accent); border-color: var(--accent); }
+
+.blog-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── More articles ────────────────────────────────────────────────────────── */
+
+.blog-more { padding-top: clamp(80px, 6.25vw, 120px); }
+.blog-more__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.blog-more__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--h2-size);
+  line-height: var(--heading-leading);
+  color: var(--ink);
+}
+.blog-more__all { width: auto; }
+
+/* ── Smaller screens ──────────────────────────────────────────────────────── */
+
+/* The rail goes first: at this width the reading column needs the room. */
+@media (max-width: 1180px) {
+  .blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .blog-post__layout { grid-template-columns: minmax(0, 720px); }
+  .blog-toc { display: none; }
+  .blog-prose { grid-column: 1; }
+}
+
+@media (max-width: 720px) {
+  .blog-top { padding-top: 20px; }  /* as the landing and About heroes */
+  .blog-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .blog-head, .blog-post__head { gap: 20px; }
+  .blog-post__cover { margin-top: 32px; aspect-ratio: 16 / 9; }
+  .blog-post__layout { margin-top: 40px; }
+  .blog-prose h2 { margin-top: 40px; }
+  .blog-more__all { width: 100%; }
+}

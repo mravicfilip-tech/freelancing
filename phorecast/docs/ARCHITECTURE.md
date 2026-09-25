@@ -1,6 +1,6 @@
 # Architecture
 
-How the app is put together: the shell, the two pages, the file anatomy of a
+How the app is put together: the shell, the pages, the file anatomy of a
 band, the shared libraries, the motion system, the 3D logo and the hero
 carousel. For tokens and CSS conventions see [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
 
@@ -9,7 +9,7 @@ carousel. For tokens and CSS conventions see [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md
 ```
 index.html          inline theme script (sets data-theme before first paint), #root
 src/main.tsx        sets data-js="on", imports lib/theme, fonts, global.css, renders <App/> in StrictMode
-src/App.tsx         useRouter(); renders <Landing/> or <AboutPage/>, then <Footer/>
+src/App.tsx         useRouter(); renders <Landing/>, <AboutPage/>, <BlogIndex/> or <BlogPost/>, then <Footer/>
 ```
 
 - `main.tsx` imports the three `@fontsource-variable/*` packages (Manrope,
@@ -23,8 +23,10 @@ src/App.tsx         useRouter(); renders <Landing/> or <AboutPage/>, then <Foote
 
 ## 2. Routing (`src/lib/router.ts`)
 
-Hand-rolled, no dependency. Two routes: `/` and `/about` (`ABOUT`). Any other
-path renders the landing page, which is the 404.
+Hand-rolled, no dependency. Four routes: `/`, `/about` (`ABOUT`), `/blog`
+(`BLOG`) and `/blog/<slug>` (`blogSlug(path)` reads the slug). Any other path
+renders the landing page, which is the 404; a `/blog/<slug>` whose slug names
+no post renders the blog's own "Post not found" state.
 
 `vercel.json` rewrites every path to `/index.html`, so routing has to be client
 side; a multi-page Vite build would not work under that rewrite.
@@ -40,8 +42,10 @@ The four rules, as implemented:
    `scroll-behavior: smooth` from `global.css`). A hash on another path
    (`/#faq` from `/about`) renders the other page first, then scrolls to the id
    with `behavior: 'auto'`.
-4. A push scrolls to the top unless it carries a hash. Back and Forward never
-   touch scroll.
+4. A push scrolls to the top unless it carries a hash, as an instant jump
+   (`behavior: 'instant'`, which overrides the smooth scrolling `global.css`
+   sets; a smooth scroll could be cut short while the new page laid out).
+   Back and Forward never touch scroll.
 
 API used by components:
 
@@ -52,6 +56,7 @@ API used by components:
 | `landing(path, '#faq')` | `#faq` on `/`, `/#faq` elsewhere. Use for any landing-page anchor. |
 | `home(path)` | `#top` on `/`, `/` elsewhere. Used by the logo. |
 | `ABOUT` | `'/about'`. |
+| `BLOG`, `blogPost(slug)`, `blogSlug(path)` | `'/blog'`; the href of one post; the slug in a post's path, or `null`. |
 
 Landing-page anchors that exist: `#top` (hero), `#why` (bento), `#how`
 (steps), `#built`, `#faq`. The About page also has `#top` and `#faq`.
@@ -88,6 +93,21 @@ it. It is not sticky.
 | 6 | `Primer` | `About.css`, `About.motion.ts` (`buildPrimer`) | Why is it better than bets or crypto/stocks? |
 | 7 | `<Faq/>` (`id="faq"`) | | same component as the landing page |
 | 8 | `<Footer/>` | | |
+
+**Blog, `/blog` and `/blog/<slug>`** (all in `blog/Blog.tsx` and `blog/Blog.css`)
+
+The posts are data in `src/content/blog.ts`; see
+[CONTENT.md](CONTENT.md#7-blog-posts). The nav is rendered in a `.blog-top`
+header, at the same column and offset as on the other pages.
+
+| Page | Function | Contents |
+|---|---|---|
+| `/blog` | `BlogIndex` | Eyebrow, title and lede; category filter buttons (`aria-pressed`); the grid of cards (`BlogCard`, 3 / 2 / 1 columns at desktop / 1180 / 720). |
+| `/blog/<slug>` | `BlogPost` | Breadcrumb, category eyebrow, title, lede, byline; the cover; an "On this page" rail built from the post's `h2` blocks (desktop only, hidden at 1180 and below); the article; Share (X, Telegram, copy link); "More articles" (`relatedPosts`). An unknown slug renders `NotFound`. |
+
+The blog has no entrance motion and no FAQ. Each page sets the tab title
+(`useDocumentTitle`) and restores it on leaving. A post without a `cover`
+image shows the branded placeholder (`BlogCover`).
 
 `About.css` holds the page's layout and colour for every band; the per-band
 CSS files hold motion-specific rules and are imported after it so they can

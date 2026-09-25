@@ -1,7 +1,7 @@
 # Phorcast website
 
-Marketing site for Phorcast: a landing page (`/`) and an About page (`/about`),
-both ending in the same FAQ and footer. Vite 8, React 19 and TypeScript, plain
+Marketing site for Phorcast: a landing page (`/`), an About page (`/about`),
+both ending in the same FAQ and footer, and a blog (`/blog`, `/blog/<slug>`). Vite 8, React 19 and TypeScript, plain
 CSS with design tokens, GSAP for motion and three.js for the animated logo.
 Built from the Figma file `aczG8te17zRGoK5wvirB92`.
 
@@ -45,9 +45,9 @@ scripts/                deploy, dev-sync, screenshot, pixel-diff
 public/favicon.svg
 src/
   main.tsx              bootstraps fonts, theme, global CSS, <App/>
-  App.tsx               the two pages and their section order
+  App.tsx               the pages and their section order
   lib/
-    router.ts           two-route client router
+    router.ts           the client router (/, /about, /blog, /blog/<slug>)
     motion.ts           useSectionMotion (scroll-gated entrances) and helpers
     theme.ts            light/dark store, useTheme, useThemeEpoch
     cta.ts              where every landing-page button points
@@ -65,6 +65,9 @@ src/
     familiar/  pillars/  fan/  steps/  built/       landing bands
     faq/  footer/       on both pages
     about/              the About page, one CSS and motion file per band
+    blog/               the blog index and post pages
+  content/
+    blog.ts             the blog's posts, as data
   assets/<band>/        exported artwork, one folder per band
 docs/                   developer documentation (below)
 MOTION.md               motion direction: the rules entrances and loops follow

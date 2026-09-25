@@ -6,12 +6,14 @@ finished, what is open, and where to look. The detail is in [`docs/`](docs/READM
 ## What the site is
 
 The marketing site for Phorcast, a prediction-market platform. It is a static
-single-page app with two routes:
+single-page app with four routes:
 
 | Route | Content |
 |---|---|
 | `/` | Landing page: hero carousel (4 slides), Bento, Familiar, Pillars, Fan, Steps, Built, FAQ, footer |
 | `/about` | About page: hero, Choose an event, About Phorcast, Cast your conviction, comparison table, primer cards, FAQ, footer |
+| `/blog` | Blog: every post, filterable by category. Posts are data in `src/content/blog.ts`; the six current posts are placeholder copy, TODO(client) |
+| `/blog/<slug>` | One post: breadcrumb, title, cover, article with an "On this page" rail, share links, more articles |
 
 Both pages carry the same FAQ and footer. Any other path renders the landing
 page. The site has a dark theme (default) and a light theme; it follows the
@@ -30,7 +32,7 @@ system setting until the visitor picks one with the toggle in the nav.
 | Styling | Plain CSS per component, design tokens as custom properties in `src/styles/tokens.css`. No framework, no CSS-in-JS |
 | Motion | GSAP 3.15 and ScrollTrigger |
 | 3D | three.js 0.185, only for the animated logo (lazy-loaded, static SVG fallback) |
-| Routing | Hand-rolled, `src/lib/router.ts` (two routes) |
+| Routing | Hand-rolled, `src/lib/router.ts` (four routes, including the blog's slug) |
 | Fonts | Manrope, Inter Tight, Darker Grotesque from `@fontsource-variable`; Galano Grotesque self-hosted (files not yet supplied) |
 | Tooling | ESLint (flat config), `playwright-core` for screenshot and pixel-diff scripts |
 | Hosting | Vercel, static output, deployed with `scripts/deploy.sh` |
@@ -46,7 +48,7 @@ npm ci
 npm run dev             # http://localhost:5173
 ```
 
-Then open `/` and `/about`, switch theme with the nav toggle, and try
+Then open `/`, `/about` and `/blog`, switch theme with the nav toggle, and try
 `/?slide=3` (opens the hero on slide 3).
 
 ```
@@ -88,7 +90,8 @@ list of pre-existing layout nits and one contrast issue.
 
 | Item | Needs | Details |
 |---|---|---|
-| 20 placeholder links, plus Login, Sign Up and About "Get Started" | Client: target URLs | [CONTENT.md](docs/CONTENT.md#6-every-placeholder-link) |
+| Placeholder blog posts (six) and their cover images | Client: real articles | [CONTENT.md](docs/CONTENT.md#7-blog-posts) |
+| 19 placeholder links, plus Login, Sign Up and About "Get Started" | Client: target URLs | [CONTENT.md](docs/CONTENT.md#6-every-placeholder-link) |
 | Galano Grotesque webfonts (8 files) | Client: licensed files | [ASSETS.md](docs/ASSETS.md#5-fonts) |
 | Token slide vs FAQ 7 ("no date or details yet") | Client: answer | [KNOWN-ISSUES 1.1](docs/KNOWN-ISSUES.md#1-open-client-questions) |
 | Product claims vs FAQ: KYC, withdrawal speed, onboarding time, custody | Client: answer | KNOWN-ISSUES 1.2 |
@@ -142,7 +145,7 @@ Full index with summaries of `MOTION.md` and `LIGHTMODE.md`:
 
 ## First-day checklist
 
-- [ ] Node 22, `npm ci`, `npm run dev`. Load `/` and `/about` in both themes.
+- [ ] Node 22, `npm ci`, `npm run dev`. Load `/`, `/about`, `/blog` and a post in both themes.
 - [ ] Run `npm run check` and note the baseline (warnings above are expected).
 - [ ] Turn on reduced motion (DevTools, Rendering) and reload: everything
       visible, carousel still, no pause button.

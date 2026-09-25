@@ -67,9 +67,14 @@ site, and the Figma file, says "Phorcast"; the footer keeps "Phorcast"
 name and the `localStorage` key use the "phorecast" spelling; none of those is
 visible to users.
 
-**1.8 Placeholder links.** 20 links marked `TODO(client)` and three unmarked
+**1.8 Placeholder links.** 19 links marked `TODO(client)` and three unmarked
 dead anchors (Login, Sign Up, About "Get Started"). Full list in
 [CONTENT.md](CONTENT.md#6-every-placeholder-link).
+
+**1.8a Placeholder blog posts.** The six posts in `src/content/blog.ts`, and
+the `/blog` lede in `components/blog/Blog.tsx`, are placeholder copy
+(`TODO(client)`). They have no cover images, so the branded placeholder cover
+shows. See [CONTENT.md](CONTENT.md#7-blog-posts).
 
 **1.9 Galano Grotesque files.** Not supplied yet; labels render in fallback
 fonts. See [ASSETS.md](ASSETS.md#5-fonts).

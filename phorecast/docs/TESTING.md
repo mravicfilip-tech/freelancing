@@ -108,6 +108,10 @@ Before handing a change back:
 - Reduced motion on (DevTools, Rendering panel): everything visible, the hero
   does not rotate and has no pause control, Steps does not advance.
 - `/about`, including a direct load of `/about` and Back/Forward between pages.
+- `/blog`: the category filters, a card through to its post, "On this page"
+  links, the breadcrumb, a direct load of a post URL, an unknown slug
+  (`/blog/nope` shows "Post not found"), and that every page change lands at
+  the top.
 - Keyboard: Tab through the nav, MORE menu (arrows, Escape), phone sheet,
   hero pager and play control, Steps tabs, FAQ accordion.
 - WebGL off (`chrome://flags` or `--disable-webgl`): the static mark appears

@@ -11,7 +11,7 @@ environment variable the app reads, and no secret in the repository.
 | `framework` | `vite` | |
 | `buildCommand` | `npm run build` | `tsc --noEmit && vite build`; a type error fails the deploy |
 | `outputDirectory` | `dist` | |
-| `rewrites` | `/(.*)` to `/index.html` | Client-side routing: `/about` and any unknown path are served the app, and `src/lib/router.ts` decides what to render |
+| `rewrites` | `/(.*)` to `/index.html` | Client-side routing: `/about`, `/blog`, `/blog/<slug>` and any unknown path are served the app, and `src/lib/router.ts` decides what to render |
 | `headers` | `/assets/(.*)`: `Cache-Control: public, max-age=31536000, immutable` | Vite fingerprints everything in `dist/assets/`, so it can be cached forever |
 
 Vercel builds on its own machines from the uploaded source, using Node from

@@ -7,7 +7,7 @@
 
    Three kinds of href:
 
-     '/about'   a route (see lib/router.ts)
+     '/about'   a route (see lib/router.ts); '/blog' likewise
      '#faq'     a section of the LANDING page. `resolveHref` passes it through
                 `landing()`, so from /about it becomes '/#faq' and loads the
                 landing page first rather than firing a fragment at a document
@@ -26,7 +26,7 @@
    NOT HERE, deliberately: Home (the logo already carries it), Login and Sign
    Up (actions, in the bar and the sheet's dock), and the landing page's
    in-band calls to action, which live in lib/cta.ts. */
-import { ABOUT, landing } from './router';
+import { ABOUT, BLOG, landing } from './router';
 
 export interface SitemapLink {
   label: string;
@@ -55,7 +55,7 @@ export const SITEMAP: SitemapGroup[] = [
     links: [
       { label: 'About', href: ABOUT },
       { label: 'Partner Program', href: '' },
-      { label: 'Blog', href: '' },
+      { label: 'Blog', href: BLOG },
       { label: 'Brand Kit', href: '' },
     ],
   },

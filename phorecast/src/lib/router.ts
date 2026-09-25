@@ -1,10 +1,12 @@
-/* Two routes, hand rolled.
+/* The site's routes, hand rolled.
    ---------------------------------------------------------------------------
    There is no router dependency and there is not going to be one: the whole
-   job is "/" and "/about", and the rules below fit in a file you can read in
-   one sitting. What it is NOT is a general router -- no params, no nesting, no
-   loaders. An unknown path renders the landing page, which is the only
-   sensible 404 for a two-page marketing site.
+   job is "/", "/about", "/blog" and "/blog/<slug>", and the rules below fit in
+   a file you can read in one sitting. What it is NOT is a general router -- no
+   nesting, no loaders, and one parameter only (the blog slug, read by
+   `blogSlug`). An unknown path renders the landing page, which is the only
+   sensible 404 for a small marketing site; an unknown blog slug renders the
+   blog's own "not found" state instead (components/blog).
 
    WHY CLIENT ROUTING AND NOT A MULTI-PAGE BUILD. `vercel.json` already
    rewrites `/(.*)` to `/index.html`. Under that rewrite a Vite MPA cannot
@@ -50,6 +52,17 @@ import { useEffect, useSyncExternalStore } from 'react';
 
 const HOME = '/';
 export const ABOUT = '/about';
+export const BLOG = '/blog';
+
+/** The href of one blog post. */
+export const blogPost = (slug: string) => `${BLOG}/${slug}`;
+
+/** The slug in "/blog/<slug>", or null for any other path (including "/blog"). */
+export function blogSlug(path: string): string | null {
+  if (!path.startsWith(BLOG + '/')) return null;
+  const slug = path.slice(BLOG.length + 1);
+  return slug && !slug.includes('/') ? decodeURIComponent(slug) : null;
+}
 
 export interface Route {
   /** `location.pathname`, with any trailing slash removed (except for "/"). */
@@ -181,7 +194,12 @@ export function useRouter(): Route {
         ?.scrollIntoView({ behavior: 'auto', block: 'start' });
       return;
     }
-    window.scrollTo(0, 0);
+    // 'instant', not the default: global.css sets `scroll-behavior: smooth`
+    // on <html>, which a bare scrollTo(0, 0) inherits. The smooth version
+    // slides the new page past the reader (the same reason as `auto` above)
+    // and can be cut short while the new page lays out, leaving the reader
+    // part way down it.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [route]);
 
   return route;

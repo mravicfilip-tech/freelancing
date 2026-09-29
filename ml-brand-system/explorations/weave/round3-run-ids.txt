@@ -1,0 +1,16 @@
+# Round 3, from user references (refs/). Text prompts only; reference logos not fed as images to avoid copying.
+# Shared prompt suffix in each run: flat Signal #E5261A on Carbon #0E0E0F, heavy even stroke, soft rounded bends, flat cut ends, one idea, 16px.
+# GPT Image 2.5 (8 credits each)
+a-gpt lever M on a fulcrum dot            f0157059-3ac3-4580-b6ca-964f0ff132f5
+b-gpt mane arcs M                         b565bfa5-3b41-4a41-83ea-c176a6fdff9d
+c-gpt continuous ribbon M                 820f942d-5c51-4866-a104-8aaec1d611cb
+d-gpt locked ML monogram                  feda0dc8-af84-4d32-86e7-5f18903fe62b
+e-gpt forward M with arrow                0a597d78-92db-41e7-9c74-42409aec7824
+f-gpt M. with full stop                   98c506e5-22fb-4c46-b2c7-5880e17b6396
+g-gpt M cut from circle, arrow V          fa7289be-560e-4441-a815-b8327a11bc16
+h-gpt M trailing momentum pixels          bc612104-76c2-44af-8864-ea1e01ced5ec
+# Nano Banana Pro (11 credits each)
+a-nb  lever M on a fulcrum dot            260c5def-6fe8-4974-84bb-08fca68c8359
+b-nb  mane arcs M                         bc506ae8-90c5-4a03-b8b9-e574bc8c4ac7
+d-nb  locked ML monogram                  8f3c1cac-6889-492b-8be8-e84672920fb9
+g-nb  M cut from circle, arrow V          4d4d7161-8859-4e36-91cf-d54622e7f9f2

@@ -66,5 +66,5 @@ State of the symbol work, so a new session can resume.
   Fonts: Michroma (wordmark and tagline, from the existing brand tokens), Host Grotesk (text), Geist Mono (labels).
 - **Type rule from the user: never use a mono font.** Labels and data use Host Grotesk 500 in small uppercase with tabular figures.
   The presentation no longer loads Geist Mono. Older exploration boards still use it; they are archive only.
-- Intro animation rebuilt with springs (script-driven): dots pop, bars spring up, the lever swings in and lands,
-  the tall bar tips back and settles, the name rises letter by letter.
+- Intro animation (script-driven springs): three upright bars grow like a chart, tilt forward together to 60°,
+  the lever grows out of its foot into the tallest bar (which gives a little and settles), the name rises letter by letter.

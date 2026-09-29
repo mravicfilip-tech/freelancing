@@ -55,8 +55,6 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .lockup-row .mark { width: 3.1em; height: auto }
 
 /* Intro animation is driven by script (springs), see the bottom of the page. */
-.intro .ground { stroke: var(--chalk); stroke-width: 2; stroke-linecap: round; opacity: .28 }
-.intro-glow { position: absolute; left: 50%; top: 42%; width: 60%; aspect-ratio: 1; transform: translate(-50%, -50%) scale(.6); border-radius: 50%; background: radial-gradient(circle, rgba(229,38,26,.28), rgba(229,38,26,0) 62%); opacity: 0; pointer-events: none }
 .wm .ch { display: inline-block; white-space: pre }
 
 /* ---------- 01 Cover ---------- */
@@ -293,9 +291,8 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 <section class="slide cover" id="cover">
   <div class="inner">
     <div class="kicker"><b>01</b> Identity presentation · Maximum Leverage</div>
-    <div class="lockup-stack" id="hero-lockup" style="position:relative"><div class="intro-glow" aria-hidden="true"></div>
+    <div class="lockup-stack" id="hero-lockup" style="position:relative">
       <svg class="mark intro" data-intro="once" viewBox="0 0 344 215" role="img" aria-label="Maximum Leverage symbol">
-        <line class="ground" x1="0" y1="214.8" x2="0" y2="214.8"/>
         <line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/>
         <line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
         <line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
@@ -429,12 +426,11 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
     </div>
     <div class="motion-grid">
       <div class="m-card"><div class="m-stage"><svg class="mark intro" data-intro="loop" viewBox="0 0 344 215" role="img" aria-label="Intro animation">
-        <line class="ground" x1="0" y1="214.8" x2="0" y2="214.8"/>
         <line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/>
         <line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
         <line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
         <g class="clipwrap"><g clip-path="url(#legclip)"><g class="counter"><g class="lever"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4"/></g></g></g></g>
-      </svg></div><h3>Intro</h3><p>Video opens, site load, presentations.</p><div class="m-spec">Dots pop 110ms apart · bars spring up · lever swings in and lands · name rises letter by letter</div></div>
+      </svg></div><h3>Intro</h3><p>Video opens, site load, presentations.</p><div class="m-spec">Bars grow upright, 90ms apart · tilt to 60° together · lever grows into the tall bar · name rises</div></div>
       <div class="m-card"><div class="m-stage"><svg class="mark loader" viewBox="0 0 344 215" aria-label="Loading animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><h3>Loading</h3><p>Strokes light in reading order, left to right.</p><div class="m-spec">1.4s cycle · 200ms step · linear</div></div>
       <div class="m-card"><div class="m-stage"><svg class="mark pulse" viewBox="0 0 344 215" aria-label="Result animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g></svg></div><h3>Result</h3><p>A booked call, a new review. The lever pushes and the top bar lifts.</p><div class="m-spec">2.4s cycle · lever −7° · bar +6%</div></div>
     </div>
@@ -527,39 +523,42 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var D = [0.5, -0.8660254], N = [0.8660254, 0.5];
   var BASE = [[26,188.8],[109.9,188.8],[193.8,188.8]], LEN = [94.5,141,188];
-  var W = 52, LEVER_FROM = 78;
+  var W = 52, LEVER_FROM = 0, LEVER_LEN = 200, U = [-0.388, -0.922];
+  (function () { var m = Math.hypot(U[0], U[1]); U[0] /= m; U[1] /= m })();
   function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x }
   function spring(ms, z, w) { var t = ms / 1000; if (t <= 0) return 0; var wd = w * Math.sqrt(1 - z*z); return 1 - Math.exp(-z*w*t) * (Math.cos(wd*t) + (z*w/wd) * Math.sin(wd*t)) }
   function outCubic(x) { x = clamp(x); return 1 - Math.pow(1 - x, 3) }
   function inCubic(x) { x = clamp(x); return x * x * x }
   function inOut(x) { x = clamp(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2 }
 
-  // Pure state of the mark at time t (ms). Intro, then (loop only) hold and outro.
+  // Pure state of the mark at time t (ms).
+  // Story: three upright bars grow like a chart, tilt forward together into the 60 degree mark,
+  // then the lever swings in and lands against the tallest bar, which gives a little and settles.
+  var TILT = 30;          // degrees from upright to the final 60 degree lean
   function state(t, loop) {
-    var st = { ground: 0, groundOp: 1, bars: [], lever: LEVER_FROM, leverW: 0, glow: 0 };
-    st.ground = outCubic(t / 380);
-    st.groundOp = 1 - clamp((t - 1700) / 450);
+    var st = { bars: [], lever: 0, leverLen: 0, leverW: 0, glow: 0 };
+    var tiltStart = 620;
     for (var i = 0; i < 3; i++) {
-      var p0 = 160 + i * 110;
-      st.bars.push({ w: W * Math.max(0, spring(t - p0, .5, 24)), len: LEN[i] * spring(t - p0 - 110, .6, 12.5), push: 0 });
+      var g0 = 80 + i * 90;
+      var grow = spring(t - g0, .78, 15);
+      var tilt = TILT * (1 - spring(t - tiltStart - i * 35, .58, 11));
+      st.bars.push({ w: t > g0 ? W : 0, len: LEN[i] * Math.max(0, grow), push: tilt });
     }
-    var l0 = 880;
-    var a = spring(t - l0, .5, 12);
-    st.lever = LEVER_FROM * (1 - a);
-    st.leverW = W * outCubic((t - l0) / 140);
-    if (st.lever < 0) st.bars[2].push = -st.lever * 0.55;  /* degrees the tall bar tips back */
-    st.glow = Math.max(0, 1 - Math.abs(t - 1120) / 520);
+    var l0 = 1000;
+    var a = spring(t - l0, .5, 13);
+    st.lever = 0;
+    st.leverLen = LEVER_LEN * Math.max(0, a);
+    st.leverW = t > l0 ? W : 0;
+    st.bars[2].push += Math.max(0, a - 1) * 26;   /* the tall bar gives a little on impact, then settles */
+    st.glow = 0;
     if (loop) {
-      var u = t - 3500;
+      var u = t - 3400;
       if (u > 0) {
-        st.lever = LEVER_FROM * inCubic(u / 360); st.leverW = W * (1 - clamp((u - 260) / 140));
-        for (var k = 2; k >= 0; k--) {
-          var s0 = 180 + (2 - k) * 80;
-          st.bars[k].len = LEN[k] * (1 - inOut((u - s0) / 340));
-          st.bars[k].w = W * (1 - inCubic((u - s0 - 300) / 180));
-          st.bars[k].push = 0;
+        st.leverLen = LEVER_LEN * (1 - inOut(u / 320));
+        for (var k = 0; k < 3; k++) {
+          st.bars[k].push = TILT * inOut((u - 240 - k * 30) / 380);
+          st.bars[k].len = LEN[k] * (1 - inOut((u - 600 - (2 - k) * 60) / 340));
         }
-        st.ground = 1 - inOut((u - 500) / 300); st.groundOp = clamp((u - 200) / 200) * (1 - clamp((u - 700) / 150));
       }
     }
     return st;
@@ -573,17 +572,19 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
       ln.setAttribute('x1', ox.toFixed(2)); ln.setAttribute('y1', oy.toFixed(2));
       ln.setAttribute('x2', (ox + dx * b.len).toFixed(2)); ln.setAttribute('y2', (oy + dy * b.len).toFixed(2));
       ln.style.strokeWidth = Math.max(0, b.w).toFixed(2);
-      ln.style.visibility = b.w > .5 ? 'visible' : 'hidden';
+      ln.style.visibility = (b.w > .5 && b.len > .5) ? 'visible' : 'hidden';
+      ln.style.opacity = clamp(b.len / 26).toFixed(3);
     }
-    var lev = svg.querySelector('.lever'), leg = svg.querySelector('.leg');
-    lev.setAttribute('transform', 'rotate(' + st.lever.toFixed(3) + ' 318 188.8)');
-    var tip = st.bars[2].push.toFixed(3);
+    var leg = svg.querySelector('.leg');
+    leg.setAttribute('x2', (318 + U[0] * st.leverLen).toFixed(2)); leg.setAttribute('y2', (188.8 + U[1] * st.leverLen).toFixed(2));
+    leg.style.strokeWidth = W;
+    leg.style.visibility = st.leverLen > .5 ? 'visible' : 'hidden';
+    leg.style.opacity = clamp(st.leverLen / 26).toFixed(3);
+    var tip = (st.leverLen > .5 ? st.bars[2].push : 0).toFixed(3);
     svg.querySelector('.clipwrap').setAttribute('transform', 'rotate(' + (-tip) + ' 193.8 188.8)');
     svg.querySelector('.counter').setAttribute('transform', 'rotate(' + tip + ' 193.8 188.8)');
     leg.style.strokeWidth = Math.max(0, st.leverW).toFixed(2);
     leg.style.visibility = st.leverW > .5 ? 'visible' : 'hidden';
-    var g = svg.querySelector('.ground');
-    if (g) { g.setAttribute('x2', (344 * st.ground).toFixed(1)); g.style.opacity = (.28 * st.groundOp).toFixed(3); g.style.visibility = st.ground > 0.002 ? 'visible' : 'hidden' }
   }
   var FINAL = state(99999, false);
 
@@ -598,13 +599,12 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
     var chars = heroWm.querySelectorAll('.ch');
     chars.forEach(function (ch, i) {
       ch.animate([{ opacity: 0, transform: 'translateY(0.9em)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
-        { duration: 700, delay: 1080 + i * 34, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+        { duration: 700, delay: 1250 + i * 34, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
     });
-    heroWm.animate([{ letterSpacing: '.62em', marginRight: '-.62em' }, { letterSpacing: '.32em', marginRight: '-.32em' }], { duration: 1500, delay: 1000, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' });
+    heroWm.animate([{ letterSpacing: '.62em', marginRight: '-.62em' }, { letterSpacing: '.32em', marginRight: '-.32em' }], { duration: 1500, delay: 1150, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' });
     var tag = document.getElementById('hero-tag');
-    if (tag) tag.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 1900, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+    if (tag) tag.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 2050, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
   }
-  var heroGlow = document.querySelector('#hero-lockup .intro-glow');
 
   var players = [];
   document.querySelectorAll('svg[data-intro]').forEach(function (svg) {
@@ -618,10 +618,9 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
     players.forEach(function (p) {
       if (p.done || !p.visible) return;
       var t = now - p.t0;
-      if (p.loop) t = t % 4700;
+      if (p.loop) t = t % 4900;
       var st = state(t, p.loop);
       render(p.svg, st);
-      if (!p.loop && heroGlow) { heroGlow.style.opacity = st.glow.toFixed(3); heroGlow.style.transform = 'translate(-50%,-50%) scale(' + (.6 + .5 * st.glow).toFixed(3) + ')' }
       if (!p.loop && t > 3200) { render(p.svg, FINAL); p.done = true }
     });
     requestAnimationFrame(frame);

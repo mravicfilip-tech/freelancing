@@ -1,0 +1,179 @@
+<title>Bar-M Shortlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Symbol · Bar-M round</div>
+    <h1>Four marks survived. Pick one to take to vector.</h1>
+    <p>Twelve generations from batch 2, judged against the brief: reads as a capital M, keeps the bar graph, flat Signal on Carbon, holds at 16px. Every mark here is cut from the raw output and recoloured to exact Signal, so what you see at 16px is the real downsample, not a redraw.</p>
+  </header>
+
+  <!-- g1 -->
+  <section class="cand" id="g1">
+    <div class="cand-head"><h2><span>G1</span>Four bars, cut tops</h2><div class="src">GPT Image · c2b98601</div></div>
+    <div class="hero"><img src="bar-m/g1.png" alt="G1: four red bars, outer bars tallest, inner tops cut on diagonals"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="bar-m/g1-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="bar-m/g1-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="bar-m/g1-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="bar-m/g1.png" alt=""></div><div class="avatar av-sm"><img src="bar-m/g1-64.png" alt=""></div></div></div>
+      <div><div class="label">Brief check</div><div style="font-size:14px;color:var(--ink-2)">4 bars · diagonal inner tops · right leg tallest · gaps wider than bars</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="bar-m/g1.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="bar-m/g1.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>Closest to the agreed principles, and the most direct descendant of the old bar graph. Sits calmly next to the wordmark.</p></div>
+      <div><h3>Against</h3><p>The V is implied by the cut tops rather than drawn, and the centre gap is wide. At 16px it reads as bars first, M second.</p></div>
+    </div>
+  </section>
+
+  <!-- n1 -->
+  <section class="cand" id="n1">
+    <div class="cand-head"><h2><span>N1</span>Bars with a carved V</h2><div class="src">Nano Banana Pro · 15b8c521</div></div>
+    <div class="hero"><img src="bar-m/n1.png" alt="N1: four red bars, the inner two split by a V-shaped cut, right leg tallest"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="bar-m/n1-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="bar-m/n1-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="bar-m/n1-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="bar-m/n1.png" alt=""></div><div class="avatar av-sm"><img src="bar-m/n1-64.png" alt=""></div></div></div>
+      <div><div class="label">Brief check</div><div style="font-size:14px;color:var(--ink-2)">4 bars · V drawn, not implied · right leg tallest · gaps about a third of a bar</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="bar-m/n1.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="bar-m/n1.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The strongest M read of the bar builds, and the tallest, most confident silhouette. The outer legs still hold at 16px.</p></div>
+      <div><h3>Against</h3><p>The inner cut forms a Y as much as a V. The thin gaps close at 16px, so the middle turns into a solid block. Vectorising would need the gaps opened up to bar width.</p></div>
+    </div>
+  </section>
+
+  <!-- g6 -->
+  <section class="cand" id="g6">
+    <div class="cand-head"><h2><span>G6</span>M carved from a tile</h2><div class="src">GPT Image · 52c74b42</div></div>
+    <div class="hero"><img src="bar-m/g6.png" alt="G6: red rounded square with four bars knocked out forming an M"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="bar-m/g6-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="bar-m/g6-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="bar-m/g6-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="bar-m/g6.png" alt=""></div><div class="avatar av-sm"><img src="bar-m/g6-64.png" alt=""></div></div></div>
+      <div><div class="label">Brief check</div><div style="font-size:14px;color:var(--ink-2)">4 bars in negative · continuous V across all tops · needs its tile</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="bar-m/g6.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="bar-m/g6.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The M is unmistakable, because all four tops trace one V. The best-performing favicon and app icon in the set.</p></div>
+      <div><h3>Against</h3><p>It only works inside the red tile, so beside the wordmark it is the heaviest option. The rounded corners fight the square-cut bars. The positive version (red bars, no tile) is worth drawing if you like the geometry.</p></div>
+    </div>
+  </section>
+
+  <!-- g3 -->
+  <section class="cand" id="g3">
+    <div class="cand-head"><h2><span>G3</span>Rounded legs, drawn V</h2><div class="src">GPT Image · 5b15ba54</div></div>
+    <div class="hero"><img src="bar-m/g3.png" alt="G3: M built from rounded red bars, short left leg, tall right leg, two diagonal bars forming the V"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="bar-m/g3-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="bar-m/g3-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="bar-m/g3-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="bar-m/g3.png" alt=""></div><div class="avatar av-sm"><img src="bar-m/g3-64.png" alt=""></div></div></div>
+      <div><div class="label">Brief check</div><div style="font-size:14px;color:var(--ink-2)">2 legs + 2 diagonals · right leg tallest · rounded ends</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="bar-m/g3.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="bar-m/g3.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>Reads as M instantly at every size, and the rising legs still carry the growth idea. The friendliest of the four.</p></div>
+      <div><h3>Against</h3><p>It is the furthest from the old bar graph: the middle is a letter stroke, not a bar. The rounded ends are softer than Host Grotesk's cut terminals.</p></div>
+    </div>
+  </section>
+
+  <section class="cuts">
+    <h2>Cut</h2>
+    <ul class="cut-list">
+      <li><img src="bar-m/g2-64.png" alt=""><div><b>G2 · five bars</b>Reads as a chart with a dip. Five bars merge into a block at 16px.</div></li>
+      <li><img src="bar-m/g4-64.png" alt=""><div><b>G4 · three bars</b>Three rising bars is the signal-strength icon. No M.</div></li>
+      <li><img src="bar-m/g5-64.png" alt=""><div><b>G5 · stencil</b>Seven bars reads as an audio equaliser.</div></li>
+      <li><img src="bar-m/g7-64.png" alt=""><div><b>G7 · growth M</b>The floating centre chevron detaches and turns to noise at 16px.</div></li>
+      <li><img src="bar-m/g8-64.png" alt=""><div><b>G8 · thin rounded</b>Rising rounded bars read as a signal icon. You only see the M once told.</div></li>
+      <li><img src="bar-m/n2-64.png" alt=""><div><b>N2 · five bars</b>A chevron over bars echoes Gmail's red M, and the slits close at 16px.</div></li>
+      <li><img src="bar-m/n3-64.png" alt=""><div><b>N3 · rounded V</b>The broken V and short left leg read as ".vl", not M.</div></li>
+      <li><img src="bar-m/n4-64.png" alt=""><div><b>N4 · growth M</b>Best at 16px, but it is a typeset M with one tall leg. The bar graph is gone, so it could be anyone's M.</div></li>
+    </ul>
+  </section>
+
+  <footer>Next after the pick: vector master (Recraft Vectorizer, then hand clean-up to equal bar and gap widths), a dedicated 16px favicon cut, then the brand system files. No further generations are queued.</footer>
+</div>

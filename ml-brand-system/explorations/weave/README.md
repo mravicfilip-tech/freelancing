@@ -19,7 +19,15 @@ State of the symbol work, so a new session can resume.
   Run IDs in `bar-m-batch-run-ids.txt`. Fetch with `weave_get_model_run_output`.
 - Old logo uploaded to Weave: https://media.weavy.ai/image/upload/v1790690578/uploads/gB5uLAjZG4XEmoA6gk6KEM42IW22/ygmtbks6rlkeb3wtqljd.png
 
+## Batch 2 review (done)
+- All 12 outputs cut from the raw PNGs, recoloured to exact Signal on transparent: `bar-m/<id>.png` (512px),
+  `-64.png` and `-32.png` (the 32px and 16px favicon tests at 2x).
+- Survivors: **g1** (four bars, cut tops), **n1** (bars with carved V), **g6** (M carved from tile), **g3** (rounded legs, drawn V).
+- Cut: g2 (five bars, chart with a dip), g4 (signal icon), g5 (equaliser), g7 (floating chevron dies at 16px),
+  g8 (signal icon), n2 (Gmail echo, slits close), n3 (reads ".vl"), n4 (typeset M, bar graph gone).
+- Shortlist board: `bar-m-shortlist.html`, published at https://claude.ai/artifact/4qhkwrg4rcVVgAx1Ays4Az
+
 ## Next
-1. Fetch batch 2, cut marks that do not read as M or fail at 16px.
-2. Shortlist board: each survivor at size, 32/16px, round avatar, with wordmark on Carbon and Chalk.
-3. After the pick: vector master (Recraft Vectorizer, then clean-up), favicon cut, update brand system files.
+1. User picks one survivor.
+2. Vector master (Recraft Vectorizer, then clean-up to equal bar and gap widths), a dedicated 16px favicon cut, then update brand system files.
+3. No further Weave spend without an explicit Approve/Cancel prompt that shows the cost.

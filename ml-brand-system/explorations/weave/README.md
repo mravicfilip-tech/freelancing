@@ -50,3 +50,7 @@ State of the symbol work, so a new session can resume.
   run IDs in `mane-run-ids.txt`, cut marks in `mane/`. Recommended: m04 circle, m01 base bar, m10 heavy square, m08 upright.
   Board: `mane-variants.html`, published at https://claude.ai/artifact/XMnXKCX1BKrXoFV1tx6H4F
   Credits used this session: 108 (round 3) + 110 (mane variants). Weave balance after: 1,150.
+- **Mane wave dropped** by the user (none of the 10 variants worked).
+- **Round 4 (110 credits, Nano Banana Pro)**: 10 new directions, one move each from the refs. Run IDs in `round4-run-ids.txt`,
+  cut marks in `round4/`. Recommended: r01 heavy M with one cut, r03 folded strip, r04 layered ML, r10 brush M.
+  Board: `round4-symbols.html`, published at https://claude.ai/artifact/AiRTNr1VSSwSKQK6gMoQpt. Weave balance after: 1,040.

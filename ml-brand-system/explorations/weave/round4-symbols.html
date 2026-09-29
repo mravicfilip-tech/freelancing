@@ -1,0 +1,203 @@
+<title>Round 4 Symbols</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 24px; margin-bottom: 88px }
+.card { display: grid; gap: 2px; min-width: 0 }
+.card .hero { aspect-ratio: 4 / 3 }
+.card .hero img { width: min(52%, 240px) }
+.strip { background: var(--plate); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+.strip .row { gap: 16px; align-items: center }
+.mini { display: flex; align-items: center; gap: .4em; font-size: 17px; font-weight: 450; letter-spacing: -0.01em; padding: 10px 14px; white-space: nowrap }
+.mini img { height: 1.3em; width: auto }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 12px }
+.card-head h3 { margin: 0; font-weight: 450; font-size: 19px; letter-spacing: -0.01em }
+.card-head h3 span { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--signal); margin-right: 10px }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.tag.rec { color: var(--signal) }
+.card p { margin: 12px 0 0; color: var(--ink-2); font-size: 15px; max-width: 52ch }
+.group-title { font-weight: 450; font-size: 24px; letter-spacing: -0.01em; margin: 0 0 24px }
+.orig { display: flex; gap: 24px; align-items: center; margin-bottom: 72px; flex-wrap: wrap }
+.orig img { width: 96px; height: 96px; background: var(--carbon); border: 1px solid var(--rule) }
+.orig p { margin: 0; color: var(--ink-2); max-width: 60ch }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr } }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Symbol · Round 4</div>
+    <h1>Ten new directions from your inspiration. Four are worth a look.</h1>
+    <p>Each direction borrows one move from a reference you sent: Revolut's single cut, Brex's folded strip, PayPal's layered monogram, Alipay's character, HBO's ring, and so on. Nano Banana Pro drew each one from a written description, not from the logo images, so nothing is copied. Every mark is cut from the raw output and recoloured to exact Signal, so the 32px and 16px tests are real downsamples.</p>
+  </header>
+  <h2 class="group-title">Recommended</h2>
+  <div class="grid">
+    <div class="card" id="r01">
+      <div class="card-head"><h3><span>R01</span>Heavy M, one precise cut</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round4/r01.png" alt="Heavy M, one precise cut"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r01-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r01-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r01-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r01.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Revolut</span> · The strongest of the ten. A solid, confident M where one slit frees the right leg so it lifts like a slab. Simple, holds at 16px, and the cut is the single idea.</p>
+    </div>
+    <div class="card" id="r03">
+      <div class="card-head"><h3><span>R03</span>Folded strip</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round4/r03.png" alt="Folded strip"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r03-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r03-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r03-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r03.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Brex</span> · One band folding up and down into an M, with the folds shown by gaps. It has energy and a clear M. The italic slant may be too sporty for the wordmark.</p>
+    </div>
+    <div class="card" id="r04">
+      <div class="card-head"><h3><span>R04</span>Layered ML monogram</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round4/r04.png" alt="Layered ML monogram"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r04-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r04-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r04-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r04.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From PayPal</span> · The only one carrying both initials, and it reads as ML immediately. The L tucks under the M. Italic and fast, and it could look like a car or sports brand.</p>
+    </div>
+    <div class="card" id="r10">
+      <div class="card-head"><h3><span>R10</span>Brush-stroke M</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round4/r10.png" alt="Brush-stroke M"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r10-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r10-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r10-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r10.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Alipay</span> · The opposite of everything else: human, hand-made, a signature. It is the furthest from "AI-generated", but a script is harder to hold at 16px and softer than a fintech brand usually is.</p>
+    </div>
+  </div>
+  <h2 class="group-title">Also ran</h2>
+  <div class="grid">
+    <div class="card" id="r08">
+      <div class="card-head"><h3><span>R08</span>Heavy M with a ring</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r08.png" alt="Heavy M with a ring"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r08-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r08-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r08-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r08.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From HBO</span> · The ring in the V reads as a camera lens or a coin slot more than a precise detail.</p>
+    </div>
+    <div class="card" id="r09">
+      <div class="card-head"><h3><span>R09</span>Block carved by three cuts</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r09.png" alt="Block carved by three cuts"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r09-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r09-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r09-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r09.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Horse</span> · Reads well and holds at 16px, but it is the knocked-out tile again, the G6 family you already rejected.</p>
+    </div>
+    <div class="card" id="r05">
+      <div class="card-head"><h3><span>R05</span>Nested geometry</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r05.png" alt="Nested geometry"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r05-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r05-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r05-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r05.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Square</span> · A double frame around an M, like a metro sign. It turns to mush at 16px.</p>
+    </div>
+    <div class="card" id="r02">
+      <div class="card-head"><h3><span>R02</span>Block, circle, slash</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r02.png" alt="Block, circle, slash"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r02-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r02-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r02-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r02.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From TradingView</span> · No M at all, and too close to TradingView's own mark.</p>
+    </div>
+    <div class="card" id="r06">
+      <div class="card-head"><h3><span>R06</span>Rotated squares</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r06.png" alt="Rotated squares"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r06-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r06-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r06-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r06.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Binance / KuCoin</span> · The grid of diamonds reads as a heart or a knit pattern before it reads as an M.</p>
+    </div>
+    <div class="card" id="r07">
+      <div class="card-head"><h3><span>R07</span>Lever silhouette</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round4/r07.png" alt="Lever silhouette"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round4/r07-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round4/r07-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round4/r07-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round4/r07.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">From Robinhood</span> · The beam and triangle turn the M into an A with a seesaw. Too many parts.</p>
+    </div>
+  </div>
+  <footer>Nothing is queued. After your pick: a hand-drawn vector redraw that keeps the character of the generation, a 16px favicon cut, then the brand files.</footer>
+</div>

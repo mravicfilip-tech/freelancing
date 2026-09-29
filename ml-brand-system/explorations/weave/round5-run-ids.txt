@@ -1,0 +1,11 @@
+# Round 5: homage to the old logo, seeded from the old logo image (client's own mark). Nano Banana Pro, 11 credits each, 110 total.
+o01 bars + diagonal as M                  ccf8c9f0-d0cb-4123-a1cf-89b041777094
+o02 four rounded bars, inner lean to V    795fe5c0-f60d-4af9-a6d4-d2497bc3c10a
+o03 chunky bars, square footprint         bf25b95f-80ec-4524-b00b-0ccb4f410dca
+o04 bars knocked out of circle            42d92ef3-121f-4c1e-9927-738ef757758b
+o05 tallest bar tips like a lever         84b2a128-efd1-4cf8-80f3-f10d2f8b1d6f
+o06 line over bar tops traces M           006048fe-71ef-4e85-a224-3e78ccc23592
+o07 ML, last bar gets a foot              830e3276-371c-43c4-9bf9-b446daf0fb72
+o08 old two-line lockup modernised        f2802b3b-fba4-49fd-95ad-cdc77e3fa1ef
+o09 one-line sentence case, bars as M     dea42901-209e-48d9-a602-26ced74f7307
+o10 stacked: bars above name              2ced4597-3349-44bb-8dee-9e8bdf8b27f1

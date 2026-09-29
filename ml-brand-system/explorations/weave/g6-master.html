@@ -1,0 +1,203 @@
+<title>Bar-M Symbol Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column of Carbon specimen plates: masters, construction, source vs master, small sizes, lockups, files. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 72px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+section { display: grid; gap: 2px; margin-bottom: 88px }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.sec-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.sec-head .note { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.plate { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; gap: 20px; padding: 56px 24px 24px; min-width: 0 }
+.plate img { display: block; height: auto }
+.plate .cap { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); justify-self: start }
+.m-lg { width: min(56%, 260px) }
+
+.construct { background: var(--carbon); border: 1px solid var(--rule); padding: 24px; overflow-x: auto }
+.construct svg { display: block; width: 100%; max-width: 640px; min-width: 320px; height: auto; margin: 0 auto }
+.specs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px }
+.specs div { background: var(--plate); padding: 20px 24px; display: grid; gap: 4px; min-width: 0 }
+.specs b { font-weight: 450; font-size: 20px; font-variant-numeric: tabular-nums }
+.specs span { color: var(--ink-2); font-size: 14px }
+
+.sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px }
+.sizes > div { background: var(--plate); padding: 24px; display: grid; gap: 18px; align-content: space-between; min-height: 170px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); white-space: nowrap; max-width: 100%; overflow: hidden }
+.tab img { width: 16px; height: 16px; flex: none }
+.avatar { border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 0 0 1px var(--rule) }
+.avatar img { width: 100%; height: 100%; display: block }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 0.9em; width: auto; flex: none; position: relative; top: -0.02em }
+.lockup img.tile { height: 1.3em }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+.wide { grid-column: 1 / -1 }
+
+.prose { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.prose h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.prose p { margin: 0; max-width: 52ch }
+
+.files { border-top: 1px solid var(--rule); padding-top: 40px; display: grid; gap: 20px }
+.files h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.file-table { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 520px }
+td { padding: 10px 16px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-2) }
+td:first-child { font-family: var(--mono); font-size: 13px; color: var(--chalk); white-space: nowrap }
+
+@media (max-width: 760px) {
+  .pair, .sizes, .lockups, .prose { grid-template-columns: 1fr }
+  .specs { grid-template-columns: 1fr 1fr }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Symbol · Vector master</div>
+    <h1>The bar-M, drawn by hand from G6.</h1>
+    <p>Two masters from one grid. The tile carves the M out of Signal, for favicons, app icons and avatars. The untiled symbol is the same four bars in Signal, for use beside the wordmark. The 16px favicon is hinted separately to whole pixels.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><h2>Masters</h2><div class="note">flat Signal #E5261A · no gradients · square-cut bars</div></div>
+    <div class="pair">
+      <div class="plate"><img class="m-lg" src="symbol/ml-symbol-tile.svg" alt="Tile master: Signal rounded square with four bars cut out forming an M"><div class="cap">Tile · ml-symbol-tile.svg</div></div>
+      <div class="plate"><img class="m-lg" src="symbol/ml-symbol.svg" alt="Untiled master: four Signal bars whose tops trace a V, forming an M"><div class="cap">Untiled · ml-symbol.svg</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Construction</h2><div class="note">units on a 60 × 48 glyph box</div></div>
+    <div class="construct">
+      <svg viewBox="0 0 520 440" role="img" aria-label="Construction drawing: four bars 12 units wide with 4-unit gaps; all tops lie on one V that falls 3 units for every 4 across">
+        <g transform="translate(80 60) scale(6)">
+          <path fill="var(--signal)" d="M0 0 L12 9 L12 48 L0 48 Z M16 12 L28 21 L28 48 L16 48 Z M32 21 L44 12 L44 48 L32 48 Z M48 9 L60 0 L60 48 L48 48 Z"/>
+          <path d="M-4 -3 L30 22.5 L64 -3" fill="none" stroke="var(--chalk)" stroke-width=".18" stroke-dasharray=".8 .8"/>
+          <path d="M30 24 V54" fill="none" stroke="var(--ink-3)" stroke-width=".15" stroke-dasharray=".5 .7"/>
+        </g>
+        <g font-family="Geist Mono, ui-monospace, monospace" font-size="12" fill="var(--ink-2)" text-anchor="middle">
+          <path d="M80 390 V402 M152 390 V402 M80 396 H152" stroke="var(--ink-3)" fill="none"/>
+          <text x="116" y="420">bar 12</text>
+          <path d="M152 390 V402 M176 390 V402" stroke="var(--ink-3)" fill="none"/>
+          <text x="164" y="384">gap 4</text>
+          <path d="M80 30 H440 M80 24 V36 M440 24 V36" stroke="var(--ink-3)" fill="none"/>
+          <text x="260" y="20">60</text>
+          <path d="M470 60 V348 M464 60 H476 M464 348 H476" stroke="var(--ink-3)" fill="none"/>
+          <text x="492" y="208">48</text>
+          <text x="260" y="176" fill="var(--chalk)">V apex</text>
+          <text x="384" y="104" fill="var(--chalk)" text-anchor="end">fall 3 : 4</text>
+          <path d="M80 348 H440" stroke="var(--ink-3)" stroke-dasharray="3 4" fill="none"/>
+        </g>
+      </svg>
+    </div>
+    <div class="specs">
+      <div><b>3 : 1</b><span>Bar to gap. Equal widths were tried first and let the gaps overpower the bars.</span></div>
+      <div><b>3 : 4</b><span>Fall of the V. One straight line on each side runs through all four tops.</span></div>
+      <div><b>27 / 48</b><span>Inner bar height at the centre, 56% of the legs. That depth is what makes it read as an M.</span></div>
+      <div><b>16 / 80</b><span>Tile corner radius. The glyph sits 10 units in from the sides and 16 from top and bottom.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Source and master</h2><div class="note">G6 · GPT Image · 52c74b42</div></div>
+    <div class="pair">
+      <div class="plate"><img class="m-lg" src="bar-m/g6.png" alt="Original G6 generation, cut from the raw output"><div class="cap">Generated</div></div>
+      <div class="plate"><img class="m-lg" src="symbol/ml-symbol-tile.svg" alt="Hand-built tile master"><div class="cap">Hand-built</div></div>
+    </div>
+    <div class="prose">
+      <div><h3>Kept</h3><p>Four bars, the knockout, the rounded tile and G6's 3:1 bar to gap proportion.</p></div>
+      <div><h3>Changed</h3><p>The tops now sit on one continuous V instead of G6's stepped cuts. Bar corners are square to match Host Grotesk's cut terminals. Bar widths are equal, where G6's inner bars were slightly wider.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Small sizes</h2><div class="note">shown at 1:1</div></div>
+    <div class="sizes">
+      <div><div class="label">Favicon</div>
+        <div class="row">
+          <div class="px"><img src="symbol/ml-symbol-tile.svg" width="32" height="32" alt="Tile at 32px"><small>32</small></div>
+          <div class="px"><img src="symbol/ml-favicon-16.svg" width="16" height="16" alt="Hinted favicon at 16px"><small>16 hinted</small></div>
+          <div class="px"><img src="symbol/ml-symbol-tile.svg" width="16" height="16" alt="Tile master scaled to 16px"><small>16 scaled</small></div>
+        </div>
+        <div class="tab"><img src="symbol/ml-favicon-16.svg" alt="">Maximum Leverage</div>
+      </div>
+      <div><div class="label">Round avatar</div>
+        <div class="row">
+          <div class="px"><div class="avatar" style="width:88px;height:88px"><img src="symbol/ml-avatar.svg" alt="Untiled symbol on Carbon in a circle"></div><small>untiled</small></div>
+          <div class="px"><div class="avatar" style="width:40px;height:40px"><img src="symbol/ml-avatar.svg" alt=""></div><small>40</small></div>
+          <div class="px"><div class="avatar" style="width:88px;height:88px"><img src="symbol/ml-symbol-tile-carbon.svg" alt="Tile on Carbon cropped to a circle"></div><small>tile</small></div>
+        </div>
+      </div>
+      <div><div class="label">Untiled, small</div>
+        <div class="row">
+          <div class="px"><img src="symbol/ml-symbol.svg" width="40" alt="Untiled symbol at 40px"><small>40</small></div>
+          <div class="px"><img src="symbol/ml-symbol.svg" width="24" alt="Untiled symbol at 24px"><small>24</small></div>
+          <div class="px"><img src="symbol/ml-symbol.svg" width="16" alt="Untiled symbol at 16px"><small>16</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="prose">
+      <div><h3>Favicon</h3><p>Scaling the master down to 16px blurs the 0.8px gaps. The hinted cut uses 2px bars, 1px gaps, a 2px centre gap and 45° tops, so every edge lands on a pixel.</p></div>
+      <div><h3>Avatar</h3><p>For round avatars, use the untiled symbol on Carbon. The circle crops the tile's corners and leaves a red square inside a circle.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>With the wordmark</h2><div class="note">Host Grotesk 450 · sentence case</div></div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="symbol/ml-symbol.svg" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="symbol/ml-symbol.svg" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-carbon wide"><img class="tile" src="symbol/ml-symbol-tile.svg" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="prose">
+      <div><h3>Primary lockup</h3><p>Untiled symbol at cap height plus a little, with a gap of about 0.4 em. It works on Carbon and on Chalk without changes.</p></div>
+      <div><h3>Tile lockup</h3><p>The tile beside the wordmark is heavier. Keep it for app-style contexts where the icon and name appear together.</p></div>
+    </div>
+  </section>
+
+  <div class="files">
+    <h2>Files</h2>
+    <div class="file-table">
+      <table>
+        <tr><td>ml-symbol.svg</td><td>Untiled master, 60 × 48. Beside the wordmark, in video and anywhere on Carbon or Chalk.</td></tr>
+        <tr><td>ml-symbol-tile.svg</td><td>Tile master, 80 × 80, bars cut through to transparent.</td></tr>
+        <tr><td>ml-symbol-tile-carbon.svg</td><td>Tile on a Carbon square, for places that flatten transparency.</td></tr>
+        <tr><td>ml-favicon-16.svg / .png</td><td>Hand-hinted 16px favicon.</td></tr>
+        <tr><td>ml-favicon-32.png</td><td>32px favicon from the tile master.</td></tr>
+        <tr><td>ml-symbol-tile-180.png, -512.png</td><td>Apple touch icon and app or PWA icon.</td></tr>
+        <tr><td>ml-avatar.svg, -400.png</td><td>Untiled symbol centred on Carbon, safe for round crops.</td></tr>
+        <tr><td>build.py</td><td>Generates every SVG from the grid numbers above. Change a number there and rerun it; never edit the paths by hand.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>

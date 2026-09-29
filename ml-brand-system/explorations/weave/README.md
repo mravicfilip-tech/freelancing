@@ -29,5 +29,10 @@ State of the symbol work, so a new session can resume.
 
 ## Next
 1. **Picked: g6** (M carved from a red tile; run 52c74b42). Also worth drawing a positive version (red bars, no tile) for use beside the wordmark.
-2. Vector master (Recraft Vectorizer, then clean-up to equal bar and gap widths), a dedicated 16px favicon cut, then update brand system files.
+2. **Vector master done, hand-built (no Weave spend)** in `ml-brand-system/assets/logo/symbol/`:
+   tile and untiled SVG masters, a hinted 16px favicon, avatar, and PNG exports. `build.py` generates all SVGs from the grid
+   (bar 12, gap 4, V falls 3:4, 60 x 48 glyph, 80 tile with radius 16). Equal bar and gap widths were tried first and
+   rejected, because the gaps overpowered the bars. Board: `g6-master.html`, published at https://claude.ai/artifact/43AiKexStb9CjqffwZEsSf
+   (it references `symbol/` and `bar-m/` as published paths).
+   Next: swap the brand system over (`assets/logo/ml-icon.svg`, `ml-favicon-512.png`, wordmark lockups, tokens/brand docs). Not done yet; the old files are untouched.
 3. No further Weave spend without an explicit Approve/Cancel prompt that shows the cost.

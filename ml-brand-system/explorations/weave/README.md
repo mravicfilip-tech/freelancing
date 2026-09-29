@@ -68,3 +68,4 @@ State of the symbol work, so a new session can resume.
   The presentation no longer loads Geist Mono. Older exploration boards still use it; they are archive only.
 - Intro animation (script-driven springs): three upright bars grow like a chart, tilt forward together to 60°,
   the lever grows out of its foot into the tallest bar (which gives a little and settles), the name rises letter by letter.
+- Live on Vercel (project ml-brand-presentation, Vercel Authentication off): https://ml-brand-presentation.vercel.app. Redeploy with `explorations/deploy-presentation.sh`.

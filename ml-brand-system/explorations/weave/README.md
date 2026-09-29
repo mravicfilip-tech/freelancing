@@ -54,3 +54,7 @@ State of the symbol work, so a new session can resume.
 - **Round 4 (110 credits, Nano Banana Pro)**: 10 new directions, one move each from the refs. Run IDs in `round4-run-ids.txt`,
   cut marks in `round4/`. Recommended: r01 heavy M with one cut, r03 folded strip, r04 layered ML, r10 brush M.
   Board: `round4-symbols.html`, published at https://claude.ai/artifact/AiRTNr1VSSwSKQK6gMoQpt. Weave balance after: 1,040.
+- **Round 4 rejected by the client.** Direction now: homage to the old logo (`refs/ref-05-old-logo-full.png`).
+- **Round 5 (110 credits, Nano Banana Pro seeded from the old logo image)**: run IDs in `round5-run-ids.txt`, cut marks in `round5/`.
+  Recommended: o05 bars leading into an M, o07 bars into ML, o08 old lockup modernised, o02 rounded bar M.
+  Board: `round5-homage.html`, published at https://claude.ai/artifact/EKfugM7giXxk4DvDMJHYZv. Weave balance after: 930.

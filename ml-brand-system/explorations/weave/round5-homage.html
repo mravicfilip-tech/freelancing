@@ -1,0 +1,203 @@
+<title>Old Logo Homage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 24px; margin-bottom: 88px }
+.card { display: grid; gap: 2px; min-width: 0 }
+.card .hero { aspect-ratio: 4 / 3 }
+.card .hero img { width: min(52%, 240px) }
+.strip { background: var(--plate); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+.strip .row { gap: 16px; align-items: center }
+.mini { display: flex; align-items: center; gap: .4em; font-size: 17px; font-weight: 450; letter-spacing: -0.01em; padding: 10px 14px; white-space: nowrap }
+.mini img { height: 1.3em; width: auto }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 12px }
+.card-head h3 { margin: 0; font-weight: 450; font-size: 19px; letter-spacing: -0.01em }
+.card-head h3 span { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--signal); margin-right: 10px }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.tag.rec { color: var(--signal) }
+.card p { margin: 12px 0 0; color: var(--ink-2); font-size: 15px; max-width: 52ch }
+.group-title { font-weight: 450; font-size: 24px; letter-spacing: -0.01em; margin: 0 0 24px }
+.orig { display: flex; gap: 24px; align-items: center; margin-bottom: 72px; flex-wrap: wrap }
+.orig img { width: 96px; height: 96px; background: var(--carbon); border: 1px solid var(--rule) }
+.orig p { margin: 0; color: var(--ink-2); max-width: 60ch }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr } }
+.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr) } }
+.card .hero img, .chalk-plate img { max-width: 100% }
+.card .hero, .chalk-plate { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden }
+.card .hero img { width: 52%; max-width: 240px }
+.card .hero.wide img { width: 86%; max-width: 440px }
+.chalk-plate { background: var(--chalk); display: grid; place-items: center; padding: 20px }
+.chalk-plate img { width: 70%; height: auto }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Symbol · Round 5</div>
+    <h1>Ten ways to honour the old logo. Four keep its spirit.</h1>
+    <p>Each variant was drawn by Nano Banana Pro from the old logo itself. Kept: the rising bars standing in for the M, the rounded stroke ends and the wide, even-weight lettering. Dropped: the gradient, the gloss and the second colour, in favour of flat Signal. Every mark is cut from the raw output and recoloured to exact Signal. Symbols get favicon and avatar tests; lockups are shown on Carbon and Chalk.</p>
+  </header>
+  <div class="orig"><img src="round5/old-logo.png" alt="The old Maximum Leverage logo" style="width:240px;height:auto;background:#fff"><p><b style="font-weight:450;color:var(--chalk)">The old logo:</b> three rising bars stand in for the M of MAXIMUM, in rounded, wide capitals with a red to orange gradient.</p></div>
+  <h2 class="group-title">Recommended</h2>
+  <div class="grid">
+    <div class="card" id="o05">
+      <div class="card-head"><h3><span>O05</span>Bars leading into an M</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round5/o05.png" alt="Bars leading into an M"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o05-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o05-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o05-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o05.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · The truest homage. Two rising bars, then a clean M, all with the old logo's rounded ends, so it literally reads "ılM" the way the old logo read "ıl + AXIMUM". It holds at 16px.</p>
+    </div>
+    <div class="card" id="o07">
+      <div class="card-head"><h3><span>O07</span>Bars into ML</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round5/o07.png" alt="Bars into ML"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o07-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o07-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o07-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o07.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · Same idea as O05, with the last stroke turning into an L so the mark carries both initials. It is wider, so it works better as a lockup than as a favicon.</p>
+    </div>
+    <div class="card" id="o08">
+      <div class="card-head"><h3><span>O08</span>Old lockup, modernised</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero wide"><img src="round5/o08.png" alt="Old lockup, modernised"></div>
+      <div class="chalk-plate"><img src="round5/o08.png" alt="Old lockup, modernised on Chalk"></div>
+      <p><span class="tag">Lockup</span> · The old logo cleaned up: chunky rising bars, rounded techno capitals, one colour. The most recognisable to existing clients. The letterforms are the model's, so the final would need proper type.</p>
+    </div>
+    <div class="card" id="o02">
+      <div class="card-head"><h3><span>O02</span>Rounded bar M</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="round5/o02.png" alt="Rounded bar M"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o02-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o02-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o02-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o02.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · The bars become a single bold M with fully rounded ends. The clearest M and the friendliest, but the rising-bar step is gone, so the homage is only in the rounded stroke.</p>
+    </div>
+  </div>
+  <h2 class="group-title">Also ran</h2>
+  <div class="grid">
+    <div class="card" id="o01">
+      <div class="card-head"><h3><span>O01</span>Bars plus a peak</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round5/o01.png" alt="Bars plus a peak"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o01-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o01-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o01-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o01.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · The literal start of the old logo, but on its own it reads as a signal icon and an A, "ılΛ", not an M.</p>
+    </div>
+    <div class="card" id="o09">
+      <div class="card-head"><h3><span>O09</span>One line, sentence case</h3><span class="tag">Also ran</span></div>
+      <div class="hero wide"><img src="round5/o09.png" alt="One line, sentence case"></div>
+      <div class="chalk-plate"><img src="round5/o09.png" alt="One line, sentence case on Chalk"></div>
+      <p><span class="tag">Lockup</span> · The right concept (bars as the M, sentence case like the new brand type), but the model drew the M as an N, so it reads "ılNaximum". Fixable by hand.</p>
+    </div>
+    <div class="card" id="o10">
+      <div class="card-head"><h3><span>O10</span>Stacked lockup</h3><span class="tag">Also ran</span></div>
+      <div class="hero wide"><img src="round5/o10.png" alt="Stacked lockup"></div>
+      <div class="chalk-plate"><img src="round5/o10.png" alt="Stacked lockup on Chalk"></div>
+      <p><span class="tag">Lockup</span> · The letterspaced capitals are a nice nod to the old type, but the symbol became slanted slashes, the Mane-wave look you dropped.</p>
+    </div>
+    <div class="card" id="o06">
+      <div class="card-head"><h3><span>O06</span>Line tracing an M over bars</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round5/o06.png" alt="Line tracing an M over bars"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o06-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o06-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o06-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o06.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · The M outline above the bars reads as a house or an audio meter. Busy at small sizes.</p>
+    </div>
+    <div class="card" id="o03">
+      <div class="card-head"><h3><span>O03</span>Rising bars with a broken N</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round5/o03.png" alt="Rising bars with a broken N"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o03-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o03-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o03-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o03.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · Reads as "ılN". The M is lost.</p>
+    </div>
+    <div class="card" id="o04">
+      <div class="card-head"><h3><span>O04</span>Bars knocked out of a circle</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="round5/o04.png" alt="Bars knocked out of a circle"></div>
+      <div class="strip">
+        <div class="row"><div class="px"><img class="px32" src="round5/o04-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round5/o04-32.png" alt=""><small>16</small></div><div class="avatar av-sm"><img src="round5/o04-64.png" alt=""></div></div>
+        <div class="mini on-chalk"><img src="round5/o04.png" alt=""><span>Maximum Leverage</span></div>
+      </div>
+      <p><span class="tag">Symbol</span> · Good avatar shape, but the same "ılN" problem as O03.</p>
+    </div>
+  </div>
+  <footer>Nothing is queued. After your pick: a hand-drawn vector redraw that keeps the rounded ends and the rhythm of the bars, the wordmark set properly in Host Grotesk, a 16px favicon cut, then the brand files.</footer>
+</div>

@@ -36,3 +36,9 @@ State of the symbol work, so a new session can resume.
    (it references `symbol/` and `bar-m/` as published paths).
    Next: swap the brand system over (`assets/logo/ml-icon.svg`, `ml-favicon-512.png`, wordmark lockups, tokens/brand docs). Not done yet; the old files are untouched.
 3. No further Weave spend without an explicit Approve/Cancel prompt that shows the cost.
+
+## Round 3 (starting)
+- User feedback on the g6 vector master: too sharp, reads as AI-generated, not worth the credits spent. **G6 direction shelved**;
+  files stay in `assets/logo/symbol/` for reference only, brand system not switched.
+- Next: user sends reference examples. Upload them to Weave, generate from the references, quote the exact cost with an
+  Approve/Cancel prompt before every run.

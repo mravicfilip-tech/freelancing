@@ -1,0 +1,13 @@
+# Bar-M batch from old logo (reference: https://media.weavy.ai/image/upload/v1790690578/uploads/gB5uLAjZG4XEmoA6gk6KEM42IW22/ygmtbks6rlkeb3wtqljd.png)
+g1 four bars, diagonal inner tops         c2b98601-d81e-4484-adbe-c591cc4d91a3
+g2 five bars tracing M silhouette         f6dd7818-0500-4893-b3b1-4acac9062e45
+g3 rounded legs + rounded diagonal V      5b15ba54-3a25-4653-9c4a-17c4eb2a985e
+g4 three bars, diagonal slits             3e042fca-5590-41b4-8a4b-4c94c14389ef
+g5 stencil M of equal bars, rising        de156f88-1f35-4fd0-a0a7-a58be11311a6
+g6 app-icon, M carved from red squircle   52c74b42-6ca2-43a2-9947-f83ec2f400f0
+g7 growth M, right leg tallest            2e0fc2c0-6f7e-4ff0-b767-2585e0a74302
+g8 thin refined rounded bars              bbd99adb-0c49-440a-afe6-2bec419480c5
+n1 NB Pro four bars                       15b8c521-0e10-4899-9f76-712a8812dc03
+n2 NB Pro five bars                       929bef1b-0e8d-4c69-b95e-0d9a258bdea0
+n3 NB Pro rounded legs + V                e51ce035-8097-47de-ba35-5f27def32a55
+n4 NB Pro growth M                        5976a16f-3c18-4368-bf70-3cbb27bdd006

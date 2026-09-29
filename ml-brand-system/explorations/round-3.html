@@ -1,0 +1,488 @@
+<title>Maximum Leverage Round 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Layout: an identity presentation, not a dashboard. Full-bleed brand panels carry the mark at a calm size; chrome is quiet type on the page ground. Sequence: idea, story, construction, three drawings, motion, in use, judgement, what was killed. */
+:root {
+  --bg: #F3F2EF;
+  --surface: #FFFFFF;
+  --fg: #0E0E0F;
+  --muted: #5E5D62;
+  --line: #DEDCD7;
+  --carbon: #0E0E0F;
+  --graphite: #1B1B1D;
+  --signal: #E5261A;
+  --chalk: #F3F2EF;
+  --ash: #A5A4A0;
+  --f-sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0B0B0C; --surface: #141416; --fg: #F3F2EF; --muted: #9C9B97; --line: #262628; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0B0B0C; --surface: #141416; --fg: #F3F2EF; --muted: #9C9B97; --line: #262628; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 16px/1.55 var(--f-sans); padding-inline: 24px; padding-block: 0 96px; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1160px; margin-inline: auto; }
+h1, h2, h3 { margin: 0; font-weight: 450; text-wrap: balance; letter-spacing: -.025em; }
+p { margin: 0; }
+figure { margin: 0; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.spec { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .01em; color: var(--muted); }
+.mark { display: block; }
+.mark .w, .mark .p { transform-box: view-box; }
+
+header.top { padding-block: 64px 48px; display: grid; gap: 18px; }
+header.top h1 { font-size: clamp(40px, 6vw, 76px); line-height: 1; letter-spacing: -.04em; font-weight: 450; }
+header.top .lede { max-width: 58ch; font-size: 18px; color: var(--muted); }
+
+section { padding-block: 88px 0; }
+.label { display: flex; gap: 14px; align-items: baseline; margin-bottom: 28px; border-top: 1px solid var(--line); padding-top: 14px; }
+.label h2 { font-size: 15px; font-weight: 500; letter-spacing: 0; }
+.label span { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.intro { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; letter-spacing: -.02em; max-width: 30ch; margin-bottom: 36px; }
+
+/* hero */
+.hero { background: var(--carbon); border-radius: 4px; min-height: clamp(360px, 52vw, 600px); display: grid; place-items: center; position: relative; color: var(--chalk); }
+.hero .mark { width: clamp(120px, 17vw, 200px); color: var(--signal); }
+.hero .corner { position: absolute; font-family: var(--f-mono); font-size: 11px; color: var(--ash); }
+.hero .tl { top: 20px; left: 22px; } .hero .br { bottom: 20px; right: 22px; } .hero .bl { bottom: 20px; left: 22px; }
+
+/* story */
+.story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.story figure { display: grid; gap: 14px; }
+.story .tile { background: var(--carbon); aspect-ratio: 1; max-width: 100%; border-radius: 4px; display: grid; place-items: center; }
+.story .tile .mark { width: 44%; color: var(--signal); }
+.story figcaption { display: grid; gap: 4px; }
+.story figcaption b { font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.story figcaption span { color: var(--muted); font-size: 15px; max-width: 32ch; }
+
+/* why */
+.why { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; }
+.why div { display: grid; gap: 6px; align-content: start; }
+.why h3 { font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+.why p { color: var(--muted); font-size: 15.5px; max-width: 46ch; }
+
+/* construction */
+.construct { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px; }
+.construct .fig { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: clamp(16px, 3vw, 36px); display: grid; place-items: center; color: var(--fg); }
+.construct .fig svg { width: 100%; max-width: 460px; height: auto; }
+.construct dl { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 26px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px 18px; align-content: start; font-size: 15px; }
+.construct dt { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); padding-top: 3px; }
+.construct dd { margin: 0; }
+
+/* drawings */
+.drawings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.drawing { display: grid; gap: 0; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.drawing .big { background: var(--carbon); aspect-ratio: 4 / 3.4; max-width: 100%; display: grid; place-items: center; position: relative; }
+.drawing .big .mark { width: 38%; color: var(--signal); }
+.drawing .rec { position: absolute; top: 14px; left: 14px; font-family: var(--f-mono); font-size: 10.5px; color: var(--chalk); border: 1px solid #3A3A3E; border-radius: 999px; padding: 3px 9px; }
+.drawing .small { background: var(--chalk); color: var(--carbon); display: flex; align-items: flex-end; gap: 18px; padding: 18px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.drawing .small .av { width: 44px; height: 44px; border-radius: 50%; background: var(--carbon); color: var(--signal); display: grid; place-items: center; margin-left: auto; }
+.drawing .small .av .mark { width: 58%; }
+.drawing .txt { padding: 18px; display: grid; gap: 6px; }
+.drawing .txt h3 { font-size: 20px; font-weight: 500; }
+.drawing .txt p { color: var(--muted); font-size: 14.5px; }
+
+/* motion */
+.motion { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; align-items: stretch; }
+.endcard { background: var(--carbon); color: var(--chalk); aspect-ratio: 16 / 9; max-width: 100%; border-radius: 4px; display: grid; place-items: center; align-content: center; gap: 18px; overflow: hidden; }
+.endcard .lk { font-size: clamp(22px, 3.4vw, 40px); }
+.endcard small { color: var(--ash); font-size: clamp(12px, 1.3vw, 15px); letter-spacing: .01em; }
+.motion-copy { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 24px; display: grid; gap: 14px; align-content: start; }
+.motion-copy h3 { font-size: 20px; font-weight: 500; }
+.motion-copy p { color: var(--muted); font-size: 15px; }
+.motion-copy ol { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; }
+.play { justify-self: start; border: 1px solid var(--fg); background: var(--fg); color: var(--bg); border-radius: 999px; padding: 11px 20px; font: 500 14px var(--f-sans); cursor: pointer; }
+.play[disabled] { opacity: .5; cursor: default; }
+
+/* lockup */
+.lk { display: inline-flex; align-items: center; gap: .42em; font-weight: 450; letter-spacing: -.025em; white-space: nowrap; line-height: 1; }
+.lk .mark { width: 1.18em; height: 1.18em; color: var(--signal); flex: none; }
+
+/* in use */
+.use { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
+.use > figure { border-radius: 4px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; min-width: 0; }
+.use figcaption { font-family: var(--f-mono); font-size: 11px; color: var(--muted); padding: 10px 14px; border-top: 1px solid var(--line); margin-top: auto; }
+.u-site { grid-column: span 12; }
+.site { background: var(--carbon); color: var(--chalk); padding: clamp(22px, 4vw, 48px); display: grid; gap: 22px; position: relative; overflow: hidden; }
+.site nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.site nav .lk { font-size: 19px; }
+.site nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 24px; font-size: 14px; color: var(--ash); flex-wrap: wrap; }
+.site h2 { font-size: clamp(38px, 6vw, 80px); line-height: 1; letter-spacing: -.035em; font-weight: 450; max-width: 11ch; margin-top: clamp(28px, 6vw, 72px); }
+.site p { color: var(--ash); max-width: 42ch; font-size: 17px; }
+.site .btns { display: flex; gap: 12px; flex-wrap: wrap; padding-bottom: 12px; }
+.btn { border-radius: 999px; padding: 13px 22px; font: 450 15px var(--f-sans); border: 1px solid transparent; }
+.btn.primary { background: var(--signal); color: #FFFFFF; }
+.btn.ghost { border-color: #3A3A3E; color: var(--chalk); }
+.u-profile { grid-column: span 5; }
+.profile { padding: 24px; display: grid; gap: 16px; }
+.profile .head { display: flex; gap: 16px; align-items: center; }
+.profile .av { width: 76px; height: 76px; border-radius: 50%; background: var(--carbon); display: grid; place-items: center; flex: none; }
+.profile .av .mark { width: 56%; color: var(--signal); }
+.profile .name { font-weight: 500; font-size: 18px; letter-spacing: -.01em; }
+.profile .handle { color: var(--muted); font-size: 14px; }
+.profile .bio { font-size: 15px; }
+.profile .row { display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--line); padding-top: 14px; }
+.profile .row .av { width: 32px; height: 32px; }
+.profile .row p { font-size: 14px; color: var(--muted); }
+.profile .row b { color: var(--fg); font-weight: 500; }
+.u-icons { grid-column: span 4; }
+.icons { padding: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; justify-items: center; align-items: center; flex: 1; }
+.app { width: 100%; max-width: 84px; aspect-ratio: 1; border-radius: 22%; display: grid; place-items: center; }
+.app .mark { width: 56%; }
+.u-tab { grid-column: span 3; }
+.browser { background: color-mix(in srgb, var(--fg) 7%, var(--surface)); padding: 12px 12px 0; }
+.tab { background: var(--surface); border-radius: 8px 8px 0 0; padding: 10px 12px; display: flex; gap: 8px; align-items: center; font-size: 13px; max-width: 100%; }
+.tab .mark { width: 16px; height: 16px; color: var(--signal); flex: none; }
+.tab span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.url { padding: 12px 14px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.fav { display: flex; gap: 14px; align-items: flex-end; padding: 6px 14px 16px; color: var(--signal); }
+.u-lock { grid-column: span 6; }
+.lockstage { display: grid; grid-template-columns: 1fr 1fr; flex: 1; }
+.lockstage > div { min-height: 180px; display: grid; place-items: center; padding: 20px; }
+.lockstage .lk { font-size: clamp(16px, 1.9vw, 22px); }
+.stack { display: grid; justify-items: center; gap: 12px; }
+.stack .mark { width: 44px; height: 44px; color: var(--signal); }
+.stack span { font-size: 19px; font-weight: 450; letter-spacing: -.02em; line-height: 1.05; text-align: center; }
+
+/* judgement */
+.judge { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.tests { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.test { display: grid; grid-template-columns: 90px 64px minmax(0, 1fr); gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 14.5px; align-items: baseline; }
+.test:last-child { border-bottom: 0; }
+.test b { font-weight: 500; }
+.test .v { font-family: var(--f-mono); font-size: 11px; }
+.test .v.pass { color: #1F8A55; }
+.test .v.risk { color: #B8660B; }
+.test p { color: var(--muted); }
+.wrong { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 22px; display: grid; gap: 14px; align-content: start; }
+.wrong h3 { font-size: 20px; font-weight: 500; }
+.wrong ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--muted); font-size: 15px; }
+
+/* killed */
+.killed { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.killed figure { display: grid; gap: 8px; align-content: start; }
+.killed .k { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; }
+.killed .k svg { width: 46%; height: auto; color: var(--muted); }
+.killed figcaption { font-size: 13px; line-height: 1.4; }
+.killed figcaption b { font-weight: 500; display: block; }
+.killed figcaption span { color: var(--muted); }
+
+.next { margin-top: 72px; border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 10px; }
+.next h2 { font-size: 15px; font-weight: 500; letter-spacing: 0; }
+.next ol { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; max-width: 70ch; }
+
+@media (max-width: 980px) {
+  .construct, .motion, .judge { grid-template-columns: minmax(0, 1fr); }
+  .drawings { grid-template-columns: minmax(0, 1fr); }
+  .drawing .big { aspect-ratio: 16 / 10; }
+  .drawing .big .mark { width: 26%; }
+  .u-profile, .u-icons, .u-tab, .u-lock { grid-column: span 12; }
+  .killed { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  body { padding-inline: 16px; }
+  .story { grid-template-columns: minmax(0, 1fr); }
+  .story .tile { aspect-ratio: 16 / 10; }
+  .story .tile .mark { width: 26%; }
+  .why { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .construct dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .construct dd { margin-bottom: 10px; }
+  .lockstage { grid-template-columns: minmax(0, 1fr); }
+  .test { grid-template-columns: 80px minmax(0, 1fr); }
+  .test p { grid-column: 1 / -1; }
+  .killed { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+</style>
+
+<header class="top wrap">
+  <p class="spec">Maximum Leverage · Identity, round 3 · 29 Sep 2026</p>
+  <h1>Wedge.</h1>
+  <p class="lede">Round 2 was diagrams. This round goes deeper on one idea instead of wider on five, drawn with the same care as a typeface. Below it: what I killed on the way here, and why.</p>
+</header>
+
+<main class="wrap">
+  <figure class="hero" aria-label="The Wedge mark, Signal on Carbon">
+    <span class="corner tl">Primary mark</span>
+    <div id="heroMark"></div>
+    <span class="corner bl">Signal #E5261A on Carbon #0E0E0F</span>
+    <span class="corner br">Wedge, driven</span>
+  </figure>
+
+  <section>
+    <div class="label"><h2>The idea</h2><span>01</span></div>
+    <p class="intro">The wedge is the oldest machine there is. Drive it in, and a small push splits what muscle can't. Two posts and a wedge also happen to spell M.</p>
+    <div class="story" id="story"></div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Why it works</h2><span>02</span></div>
+    <div class="why">
+      <div><h3>It is a real machine, not a picture of one</h3><p>A wedge is a lever family member, the same physics the brand is named after. No arrows, no charts, no rising lines. The idea survives without the tagline next to it.</p></div>
+      <div><h3>The letter comes for free</h3><p>Nobody has to be told it is an M. Two verticals and a V is how the letter is built. The machine and the monogram are the same three shapes.</p></div>
+      <div><h3>One thing is out of line, on purpose</h3><p>The posts sit on the baseline and share a cap height. The wedge alone rises above them. That single break is the force in the mark, and the eye goes straight to it.</p></div>
+      <div><h3>The gaps do the drawing</h3><p>The two gaps taper from 4 units at the top to 21 at the tip. That taper is what makes it read as M. With parallel gaps the negative space takes over and it reads as V. I tested it, it is in the killed sketches.</p></div>
+      <div><h3>Three solid parts, nothing thin</h3><p>No strokes, no outlines, no detail smaller than the top gap. It holds at 16px and sits in a circle avatar with even margins, because its footprint is almost square.</p></div>
+      <div><h3>It animates as the story</h3><p>The wedge drops in, the posts give a little, everything settles. One second. That is the video sting, and it tells the idea without a voiceover.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Construction</h2><span>03</span></div>
+    <div class="construct">
+      <div class="fig" id="constructFig"></div>
+      <dl>
+        <dt>Grid</dt><dd>96 by 96 units, drawn on a 4-unit grid.</dd>
+        <dt>Posts</dt><dd>17 wide, 60 tall, flat tops at y 24. Outer edges at 10 and 86.</dd>
+        <dt>Wedge</dt><dd>38 wide at the top, set 12 units above the posts. The tip stops at y 70, 14 short of the baseline: driven, not finished.</dd>
+        <dt>Gaps</dt><dd>5.9 at the post tops, 21 at the tip. Always tapered, never parallel.</dd>
+        <dt>Clear space</dt><dd>One post width, 17 units, on every side.</dd>
+        <dt>Small sizes</dt><dd>Next step: a separate cut for 24px and below, with the tip blunted to 3 units and the top gaps widened to 7 so they stay open on screen.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Three ways to draw it</h2><span>04</span></div>
+    <p class="intro">Same idea, different temperature. Pick the one that sounds like the company.</p>
+    <div class="drawings" id="drawings"></div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Motion</h2><span>05</span></div>
+    <div class="motion">
+      <div class="endcard" id="endcard"></div>
+      <div class="motion-copy">
+        <h3>The one-second sting</h3>
+        <ol>
+          <li>Two posts on Carbon.</li>
+          <li>The wedge drops in from above.</li>
+          <li>The posts give 3 degrees, then settle.</li>
+          <li>The wordmark fades up beside it.</li>
+        </ol>
+        <p>Used at the end of every video and as the site's first paint.</p>
+        <button type="button" class="play" id="play">Play the sting</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Where it lives</h2><span>06</span></div>
+    <div class="use" id="use"></div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Judging it</h2><span>07</span></div>
+    <div class="judge">
+      <div class="tests" id="tests"></div>
+      <div class="wrong">
+        <h3>Where round 2 went wrong</h3>
+        <ul>
+          <li>I drew diagrams of the idea (a pie slice, a split circle) instead of marks. An idea is not a mark until it is drawn.</li>
+          <li>No construction. Knife-point tips, arbitrary coordinates, nothing optically centred.</li>
+          <li>I scored my own pick 27 out of 30. That was grading, not judging. The Sweep reads as a pie chart and I knew it.</li>
+          <li>Five shallow options instead of one deep one. You cannot judge a mark that has not been finished.</li>
+        </ul>
+        <h3>What could still go wrong with Wedge</h3>
+        <ul>
+          <li>At 12px or below it can read as "I▼I" or a download icon. The favicon cut helps. Below 12px, use the plain Signal square.</li>
+          <li>Stencil shapes can feel industrial. The Set drawing is the calm answer if that worries you.</li>
+          <li>A red M is a crowded space. It needs a trademark search before anything else happens.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label"><h2>Killed on the way here</h2><span>08</span></div>
+    <div class="killed" id="killed"></div>
+    <div class="next">
+      <h2>Next</h2>
+      <ol>
+        <li>Pick a drawing: Set, Driven or Splayed.</li>
+        <li>I draw the favicon cut, export the SVG set, and build the sting as a Lottie or MP4.</li>
+        <li>Wordmark: test Host Grotesk against Söhne and ABC Diatype at the lockup size, and tune spacing to the mark.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------- geometry ---------- */
+const f = (n) => +n.toFixed(2);
+const poly = (pts, cls = "") => `<path${cls ? ` class="${cls}"` : ""} d="M${pts.map((p) => p.map(f).join(" ")).join("L")}Z"/>`;
+
+/* Wedge M: two vertical posts and a driven wedge. Units on a 96 grid. */
+function wedge({ pw = 17, T = 24, B = 84, W = 38, wt = 12, tip = 70, splay = 0, x0 = 10, x1 = 86, cx = 48 } = {}) {
+  const lp = poly([[x0, B], [x0, T], [x0 + pw, T], [x0 + pw, B]], "p pl");
+  const rp = poly([[x1 - pw, B], [x1 - pw, T], [x1, T], [x1, B]], "p pr");
+  const wd = poly([[cx - W / 2, wt], [cx + W / 2, wt], [cx, tip]], "w");
+  const L = splay ? `<g transform="rotate(${-splay} ${x0} ${B})">${lp}</g>` : lp;
+  const R = splay ? `<g transform="rotate(${splay} ${x1} ${B})">${rp}</g>` : rp;
+  return L + R + wd;
+}
+const DRAWINGS = [
+  { id: "set", name: "Set", g: wedge({ T: 16, B: 80, W: 34, wt: 16, tip: 64 }),
+    note: "The wedge sits flush with the posts. Calm and architectural. The most corporate of the three, and the safest at small sizes." },
+  { id: "driven", name: "Driven", rec: true, g: wedge(),
+    note: "The wedge rises 12 units above the posts, mid-strike. One element out of line, which is where the energy comes from. Recommended." },
+  { id: "splayed", name: "Splayed", g: wedge({ T: 22, B: 84, W: 38, wt: 10, tip: 74, splay: 5 }),
+    note: "The posts lean out 5 degrees as the wedge goes in. The most dramatic and the most literal. Strong in motion, busier as a still." }
+];
+const PRIMARY = DRAWINGS[1].g;
+const svgMark = (g, attrs = "") => `<svg class="mark" viewBox="0 0 96 96" fill="currentColor" aria-hidden="true" ${attrs}>${g}</svg>`;
+const $ = (s) => document.querySelector(s);
+
+/* ---------- hero ---------- */
+$("#heroMark").innerHTML = svgMark(PRIMARY, 'style="width:clamp(120px,17vw,200px)"');
+
+/* ---------- story frames ---------- */
+const postsOnly = wedge().replace(/<path class="w"[^>]*>/, "");
+const wedgeOnly = `<path d="M29 12H67L48 70Z"/>`;
+$("#story").innerHTML = [
+  ["Two posts.", "A business that already works. Solid, but it will not move on its own.", postsOnly],
+  ["A wedge.", "The oldest machine there is. Small at the point, wide at the top.", wedgeOnly],
+  ["Drive it in.", "A small push does what muscle cannot. And now it reads M.", PRIMARY]
+].map(([b, s, g]) => `<figure><div class="tile">${svgMark(g)}</div><figcaption><b>${b}</b><span>${s}</span></figcaption></figure>`).join("");
+
+/* ---------- construction ---------- */
+(function () {
+  const grid = Array.from({ length: 25 }, (_, i) => i * 4).map((v) =>
+    `<line x1="${v}" y1="0" x2="${v}" y2="96" stroke="currentColor" stroke-width="${v % 16 ? .08 : .18}" opacity=".5"/><line x1="0" y1="${v}" x2="96" y2="${v}" stroke="currentColor" stroke-width="${v % 16 ? .08 : .18}" opacity=".5"/>`).join("");
+  const dim = (x1, y1, x2, y2, t, tx, ty, anchor = "middle") =>
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width=".25"/><text x="${tx}" y="${ty}" text-anchor="${anchor}">${t}</text>`;
+  $("#constructFig").innerHTML = `<svg viewBox="-6 -2 108 104" role="img" aria-label="Construction drawing of the Wedge mark on a 4 unit grid">
+    ${grid}
+    <g fill="#E5261A" opacity=".92">${PRIMARY}</g>
+    <g stroke="currentColor" stroke-width=".25" stroke-dasharray="1 1" fill="none">
+      <line x1="0" y1="24" x2="96" y2="24"/><line x1="0" y1="84" x2="96" y2="84"/><line x1="0" y1="12" x2="96" y2="12"/>
+      <line x1="29" y1="12" x2="48" y2="70"/><line x1="67" y1="12" x2="48" y2="70"/>
+    </g>
+    <g font-family="Geist Mono, monospace" font-size="2.6" fill="currentColor">
+      ${dim(10, 91, 27, 91, "17", 18.5, 95)}
+      ${dim(69, 91, 86, 91, "17", 77.5, 95)}
+      ${dim(29, 8, 67, 8, "38", 48, 6)}
+      ${dim(100, 12, 100, 24, "12", 101.5, 19, "start")}
+      <text x="-5" y="23">cap</text><text x="-5" y="83">base</text>
+      <text x="48" y="76" text-anchor="middle">tip y 70</text>
+    </g>
+    <circle cx="48" cy="70" r=".8" fill="currentColor"/>
+  </svg>`;
+})();
+
+/* ---------- drawings ---------- */
+$("#drawings").innerHTML = DRAWINGS.map((d) => `
+  <figure class="drawing">
+    <div class="big">${d.rec ? '<span class="rec">Recommended</span>' : ""}${svgMark(d.g)}</div>
+    <div class="small">
+      ${[48, 32, 24, 16].map((s) => svgMark(d.g, `width="${s}" height="${s}"`)).join("")}
+      <span class="av">${svgMark(d.g)}</span>
+    </div>
+    <figcaption class="txt"><h3>${d.name}</h3><p>${d.note}</p></figcaption>
+  </figure>`).join("");
+
+/* ---------- end card + motion ---------- */
+$("#endcard").innerHTML = `<span class="lk" id="endLk">${svgMark(PRIMARY, 'id="endMark"')}<span id="endWord">Maximum Leverage</span></span><small id="endTag">Less Effort. More Scale.</small>`;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function sting() {
+  const m = document.getElementById("endMark");
+  const w = m.querySelector(".w"), pl = m.querySelector(".pl"), pr = m.querySelector(".pr");
+  pl.style.transformOrigin = "10px 84px"; pr.style.transformOrigin = "86px 84px";
+  const ease = "cubic-bezier(.2,.8,.2,1)";
+  w.animate([{ transform: "translateY(-70px)", opacity: 0 }, { transform: "translateY(-70px)", opacity: 0, offset: .2 }, { transform: "translateY(3px)", opacity: 1, offset: .62 }, { transform: "translateY(0)", opacity: 1 }], { duration: 1100, easing: ease });
+  pl.animate([{ transform: "rotate(0)" }, { transform: "rotate(0)", offset: .55 }, { transform: "rotate(-3deg)", offset: .7 }, { transform: "rotate(0)" }], { duration: 1100, easing: ease });
+  pr.animate([{ transform: "rotate(0)" }, { transform: "rotate(0)", offset: .55 }, { transform: "rotate(3deg)", offset: .7 }, { transform: "rotate(0)" }], { duration: 1100, easing: ease });
+  [$("#endWord"), $("#endTag")].forEach((el, i) => el.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 0, offset: .6 }, { opacity: 1, transform: "none" }], { duration: 1300 + i * 200, easing: ease }));
+}
+if (reduce) { $("#play").disabled = true; $("#play").textContent = "Motion is off in your settings"; }
+else $("#play").addEventListener("click", sting);
+
+/* ---------- in use ---------- */
+const lk = (size = "") => `<span class="lk" ${size}>${svgMark(PRIMARY)}Maximum Leverage</span>`;
+$("#use").innerHTML = `
+  <figure class="u-site">
+    <div class="site">
+      <nav>${lk()}<ul><li>How it works</li><li>Results</li><li>About</li></ul></nav>
+      <h2>Your business grows. Your hours don't.</h2>
+      <p>We build and run the growth levers the big companies use, so you win more customers without working more hours.</p>
+      <div class="btns"><span class="btn primary">Book a strategy call</span><span class="btn ghost">See the levers</span></div>
+    </div>
+    <figcaption>Website. The mark stays small; the type does the talking.</figcaption>
+  </figure>
+  <figure class="u-profile">
+    <div class="profile">
+      <div class="head"><span class="av">${svgMark(PRIMARY)}</span><div><div class="name">Maximum Leverage</div><div class="handle">@maximumleverage</div></div></div>
+      <p class="bio">Less Effort. More Scale. Growth levers for local business owners.</p>
+      <div class="row"><span class="av">${svgMark(PRIMARY)}</span><p><b>Maximum Leverage</b> replied: One follow-up sequence. 31% more booked consults.</p></div>
+    </div>
+    <figcaption>Social profile, 76px and 32px avatars</figcaption>
+  </figure>
+  <figure class="u-icons">
+    <div class="icons">
+      <span class="app" style="background:var(--carbon);color:var(--signal)">${svgMark(PRIMARY)}</span>
+      <span class="app" style="background:var(--signal);color:var(--chalk)">${svgMark(PRIMARY)}</span>
+      <span class="app" style="background:var(--chalk);color:var(--carbon);box-shadow:inset 0 0 0 1px var(--line)">${svgMark(PRIMARY)}</span>
+    </div>
+    <figcaption>App and channel icons</figcaption>
+  </figure>
+  <figure class="u-tab">
+    <div class="browser"><div class="tab">${svgMark(PRIMARY)}<span>Maximum Leverage</span></div></div>
+    <div class="url">maximumleverage.com</div>
+    <div class="fav">${[32, 24, 16].map((s) => svgMark(PRIMARY, `width="${s}" height="${s}"`)).join("")}</div>
+    <figcaption>Favicon, 32 / 24 / 16</figcaption>
+  </figure>
+  <figure class="u-lock">
+    <div class="lockstage">
+      <div style="background:var(--carbon);color:var(--chalk)">${lk()}</div>
+      <div style="background:var(--chalk);color:var(--carbon)">${lk()}</div>
+    </div>
+    <figcaption>Horizontal lockup, Host Grotesk 450</figcaption>
+  </figure>
+  <figure class="u-lock">
+    <div class="lockstage">
+      <div style="background:var(--carbon);color:var(--chalk)"><span class="stack">${svgMark(PRIMARY)}<span>Maximum<br>Leverage</span></span></div>
+      <div style="background:var(--signal);color:var(--chalk)"><span class="stack">${svgMark(PRIMARY, 'style="color:var(--chalk)"')}<span>Maximum<br>Leverage</span></span></div>
+    </div>
+    <figcaption>Stacked lockup, for square and vertical video</figcaption>
+  </figure>`;
+
+/* ---------- judgement ---------- */
+$("#tests").innerHTML = [
+  ["Scale", "pass", "Holds at 16px and in a 32px circle. Below 12px it needs the favicon cut."],
+  ["Story", "pass", "Explains itself in one line, without the tagline: a small push splits what muscle can't."],
+  ["Premium", "pass", "Three solid parts, one break in alignment, no effects. Reads engineered, not decorated."],
+  ["Ownable", "risk", "The wedge-as-M is uncommon, but red M marks are a crowded space. Trademark search first."],
+  ["Motion", "pass", "The animation is the idea. No extra story needed for video."],
+  ["System", "pass", "The triangle and the tapered gap become the site's devices: dividers, bullets, image crops."]
+].map(([t, v, p]) => `<div class="test"><b>${t}</b><span class="v ${v}">${v === "pass" ? "Pass" : "Risk"}</span><p>${p}</p></div>`).join("");
+
+/* ---------- killed sketches ---------- */
+function Mpoly({ T = 14, B = 82, s1, s2, d1t, d1b, d2t, d2b }) {
+  return poly([[s1[0], B], [s1[0], T], [s1[1], T], [s1[1], B]]) + poly([[d1t[0], T], [d1t[1], T], [d1b[1], B], [d1b[0], B]]) +
+    poly([[d2t[0], T], [d2t[1], T], [d2b[1], B], [d2b[0], B]]) + poly([[s2[0], B], [s2[0], T], [s2[1], T], [s2[1], B]]);
+}
+function capsule(c1, r1, c2, r2) {
+  const dx = c2[0] - c1[0], dy = c2[1] - c1[1], d = Math.hypot(dx, dy), a = Math.atan2(dy, dx), o = Math.acos((r1 - r2) / d);
+  const p = (c, r, t) => [f(c[0] + r * Math.cos(t)), f(c[1] + r * Math.sin(t))];
+  const a1 = p(c1, r1, a + o), a2 = p(c2, r2, a + o), b2 = p(c2, r2, a - o), b1 = p(c1, r1, a - o);
+  return `<path d="M${a1}L${a2}A${r2} ${r2} 0 1 0 ${b2}L${b1}A${r1} ${r1} 0 0 0 ${a1}Z"/>`;
+}
+const KILLED = [
+  ["Ratio", "Round 1 pick. A stock icon. Needs the tagline to mean anything.", '<rect x="8" y="66" width="22" height="22"/><rect x="30" y="8" width="58" height="58"/>'],
+  ["Sweep", "Round 2 pick. A pie chart with a caption. Knife-point tips.", '<path d="M28 66H88A60 60 0 0 0 58 14.04Z"/><path d="M28 66H8A20 20 0 0 0 18 83.32Z"/>'],
+  ["Lift", "Elegant, but split circles are everywhere in fintech.", '<path d="M10.85 64.38L79.15 41.62A36 36 0 0 1 10.85 64.38Z"/><path transform="translate(6 -6)" d="M10.85 64.38L79.15 41.62A36 36 0 0 0 10.85 64.38Z"/>'],
+  ["Monolith", "Meant to be an M. Reads as a capital A, or a tent.", '<path d="M8 88V38L88 11.33V88H72L48 34 24 88Z"/>'],
+  ["Weighted M", "Stroke weight rising left to right. Looks like a rendering error.", Mpoly({ s1: [10, 18], s2: [65, 86], d1t: [10, 24], d1b: [37, 51], d2t: [66, 86], d2b: [35, 56] })],
+  ["Drive", "Two pulleys on one belt. Reads as a guitar pick.", capsule([24, 72], 7, [62, 34], 24)],
+  ["Archimedes", "A world on a lever. Reads as a person bowling.", '<circle cx="64" cy="36" r="24"/><rect x="4" y="70" width="70" height="10" transform="rotate(-20 40 75)"/><path d="M22 90 30 76 38 90Z"/>'],
+  ["Flywheel", "Momentum that builds. Reads as a beach ball.", `<mask id="kfw"><circle cx="48" cy="48" r="40" fill="#fff"/>${[0, 120, 240].map((r) => `<path transform="rotate(${r} 48 48)" d="M48 48 C48 30 62 14 84 12" fill="none" stroke="#000" stroke-width="5"/>`).join("")}<circle cx="48" cy="48" r="7" fill="#000"/></mask><rect width="96" height="96" mask="url(#kfw)"/>`],
+  ["Leverage point", "The one spot to push. Reads as a speech bubble.", '<circle cx="54" cy="44" r="32"/><circle cx="16" cy="82" r="7"/>'],
+  ["Balance", "Beam on a ball. A toy seesaw, not a company.", '<circle cx="40" cy="68" r="18"/><rect x="7.4" y="37" width="84" height="12" transform="rotate(-18.435 35 49)"/>'],
+  ["Split wedge", "Wedge with parallel gaps. The negative space wins and it reads V.", '<path d="M10 84L10 22L27.3 22L42.2 84Z"/><path d="M53.8 84L68.7 22L86 22L86 84Z"/><path d="M29 12L67 12L48 70Z"/>'],
+  ["Lever-top M", "An M with a sloped top. Looks like a stretched font, not an idea.", `<clipPath id="klt"><path d="M0 30L96 12L96 80L0 80Z"/></clipPath><polyline clip-path="url(#klt)" points="18.5,110 18.5,2 48,82 77.5,2 77.5,110" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="40"/>`]
+];
+$("#killed").innerHTML = KILLED.map(([n, r, g]) => `<figure><div class="k"><svg viewBox="0 0 96 96" fill="currentColor" aria-hidden="true">${g}</svg></div><figcaption><b>${n}</b><span>${r}</span></figcaption></figure>`).join("");
+</script>

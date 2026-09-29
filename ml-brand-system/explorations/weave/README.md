@@ -42,3 +42,7 @@ State of the symbol work, so a new session can resume.
   files stay in `assets/logo/symbol/` for reference only, brand system not switched.
 - Next: user sends reference examples. Upload them to Weave, generate from the references, quote the exact cost with an
   Approve/Cancel prompt before every run.
+- **Round 3 generated (108 credits)**: 8 GPT Image 2.5 + 4 Nano Banana Pro, text prompts distilled from `refs/`. Run IDs in
+  `round3-run-ids.txt`, cut marks in `round3/`. Shortlist (strongest first): f-gpt "M." with full stop, d-gpt locked ML
+  monogram, b-gpt rising arches, c-gpt continuous ribbon M, b-nb mane wave. Cut: a-gpt, a-nb, d-nb, e-gpt, g-gpt, g-nb, h-gpt.
+  Board: `round3-shortlist.html`, published at https://claude.ai/artifact/9P8gYirK3M3UMJ2w4M1i2G

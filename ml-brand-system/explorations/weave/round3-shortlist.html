@@ -1,0 +1,187 @@
+<title>Round 3 Shortlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Symbol · Round 3</div>
+    <h1>Five marks from your references. Pick one or two to develop.</h1>
+    <p>Twelve generations, prompted from the horse, the S taxi, HBO and the fintech moodboard: heavy even strokes, soft bends, one idea each. The reference logos were described in words, not fed in as images, so the models could not copy them. Every mark is cut from the raw output and recoloured to exact Signal, so the 16px tests are real downsamples. Ordered strongest first.</p>
+  </header>
+
+  <section class="cand" id="f-gpt">
+    <div class="cand-head"><h2><span>F</span>M with a full stop</h2><div class="src">GPT Image · 98c506e5</div></div>
+    <div class="hero"><img src="round3/f-gpt.png" alt="M with a full stop"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="round3/f-gpt-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round3/f-gpt-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="round3/f-gpt-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="round3/f-gpt.png" alt=""></div><div class="avatar av-sm"><img src="round3/f-gpt-64.png" alt=""></div></div></div>
+      <div><div class="label">What it is</div><div style="font-size:14px;color:var(--ink-2)">Heavy rounded M plus dot · holds at 16px best of the set</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="round3/f-gpt.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="round3/f-gpt.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The strongest mark in the batch. Heavy, soft and simple, and it survives 16px untouched. The dot gives it a point of view: a full stop, and a small fulcrum if we want the leverage story.</p></div>
+      <div><h3>Against</h3><p>The "letter plus dot" format is Klarna's move, so it needs its own detail before it is ours. The M itself is close to a stock rounded bold.</p></div>
+    </div>
+  </section>
+  <section class="cand" id="d-gpt">
+    <div class="cand-head"><h2><span>D</span>Locked ML monogram</h2><div class="src">GPT Image · feda0dc8</div></div>
+    <div class="hero"><img src="round3/d-gpt.png" alt="Locked ML monogram"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="round3/d-gpt-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round3/d-gpt-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="round3/d-gpt-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="round3/d-gpt.png" alt=""></div><div class="avatar av-sm"><img src="round3/d-gpt-64.png" alt=""></div></div></div>
+      <div><div class="label">What it is</div><div style="font-size:14px;color:var(--ink-2)">M and L share a stem · one thin cut · heavy</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="round3/d-gpt.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="round3/d-gpt.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The only mark that carries both initials. Heavy and compact like HBO, with one hairline cut as the detail. Reads well at 32px and holds its shape at 16px.</p></div>
+      <div><h3>Against</h3><p>The hairline cut disappears at 16px, and the rounded L foot is the only soft moment in a very square mark. It reads more as type than symbol.</p></div>
+    </div>
+  </section>
+  <section class="cand" id="b-gpt">
+    <div class="cand-head"><h2><span>B</span>Rising arches</h2><div class="src">GPT Image · b565bfa5</div></div>
+    <div class="hero"><img src="round3/b-gpt.png" alt="Rising arches"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="round3/b-gpt-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round3/b-gpt-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="round3/b-gpt-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="round3/b-gpt.png" alt=""></div><div class="avatar av-sm"><img src="round3/b-gpt-64.png" alt=""></div></div></div>
+      <div><div class="label">What it is</div><div style="font-size:14px;color:var(--ink-2)">Three arched strokes, rising · angled cut ends</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="round3/b-gpt.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="round3/b-gpt.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>Closest to the horse reference: one stroke weight, rhythm, angled cuts, momentum. It feels drawn by a person and is unlike anything on the moodboard.</p></div>
+      <div><h3>Against</h3><p>It reads as a lowercase m, or "rrr", more than a capital M. It needs a firmer first leg to anchor the letter.</p></div>
+    </div>
+  </section>
+  <section class="cand" id="c-gpt">
+    <div class="cand-head"><h2><span>C</span>Continuous ribbon M</h2><div class="src">GPT Image · 820f942d</div></div>
+    <div class="hero"><img src="round3/c-gpt.png" alt="Continuous ribbon M"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="round3/c-gpt-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round3/c-gpt-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="round3/c-gpt-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="round3/c-gpt.png" alt=""></div><div class="avatar av-sm"><img src="round3/c-gpt-64.png" alt=""></div></div></div>
+      <div><div class="label">What it is</div><div style="font-size:14px;color:var(--ink-2)">One unbroken stroke · rounded shoulders · soft V</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="round3/c-gpt.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="round3/c-gpt.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The friendliest option, and the clearest continuous curve. It has Nubank's softness and sits naturally beside Host Grotesk.</p></div>
+      <div><h3>Against</h3><p>Stroke is thin for a symbol and the idea is only "soft M", so it risks being generic. It would need more weight and one distinctive move.</p></div>
+    </div>
+  </section>
+  <section class="cand" id="b-nb">
+    <div class="cand-head"><h2><span>BN</span>Mane wave</h2><div class="src">Nano Banana Pro · bc506ae8</div></div>
+    <div class="hero"><img src="round3/b-nb.png" alt="Mane wave"></div>
+    <div class="tests">
+      <div><div class="label">Favicon</div><div class="row"><div class="px"><img class="px32" src="round3/b-nb-64.png" alt=""><small>32</small></div><div class="px"><img class="px16" src="round3/b-nb-32.png" alt=""><small>16</small></div><div class="tab"><img class="px16" src="round3/b-nb-32.png" alt="">Maximum Leverage</div></div></div>
+      <div><div class="label">Avatar</div><div class="row"><div class="avatar av-lg"><img src="round3/b-nb.png" alt=""></div><div class="avatar av-sm"><img src="round3/b-nb-64.png" alt=""></div></div></div>
+      <div><div class="label">What it is</div><div style="font-size:14px;color:var(--ink-2)">Four slanted strokes cresting into a wave · the most energy</div></div>
+    </div>
+    <div class="lockups">
+      <div class="lockup on-carbon"><img src="round3/b-nb.png" alt=""><span>Maximum Leverage</span></div>
+      <div class="lockup on-chalk"><img src="round3/b-nb.png" alt=""><span>Maximum Leverage</span></div>
+    </div>
+    <div class="verdict">
+      <div><h3>For</h3><p>The only mark with real motion, and the strongest echo of the horse mane. Distinctive at large sizes.</p></div>
+      <div><h3>Against</h3><p>The M is weak: it reads as a wave or a sports swoosh first. The stripes merge at 16px, and the original had a slight gradient, flattened here.</p></div>
+    </div>
+  </section>
+  <section class="cuts">
+    <h2>Cut</h2>
+    <ul class="cut-list">
+      <li><img src="round3/a-gpt-64.png" alt=""><div><b>A · lever M</b>The lever became a tick: reads as "M!" or a checkmark.</div></li>
+      <li><img src="round3/a-nb-64.png" alt=""><div><b>A NB · lever M</b>Reads as "MJ!" The hook and dot fight the letter.</div></li>
+      <li><img src="round3/d-nb-64.png" alt=""><div><b>D NB · ML monogram</b>The crossbar makes "M+L", and it came out with a gradient.</div></li>
+      <li><img src="round3/e-gpt-64.png" alt=""><div><b>E · forward arrow</b>The rising arrow is the stock-trading cliché.</div></li>
+      <li><img src="round3/g-gpt-64.png" alt=""><div><b>G · M in a circle</b>Too busy: the arrow inside the M is lost below 32px.</div></li>
+      <li><img src="round3/g-nb-64.png" alt=""><div><b>G NB · M in a circle</b>Reads as a metro or underground station sign.</div></li>
+      <li><img src="round3/h-gpt-64.png" alt=""><div><b>H · momentum pixels</b>The pixel trail disappears at 16px and the idea goes with it.</div></li>
+    </ul>
+  </section>
+
+  <footer>Nothing is queued. Next: refine the pick, by hand or with a small, costed Weave pass seeded from the chosen image, then vector master and favicon cut.</footer>
+</div>

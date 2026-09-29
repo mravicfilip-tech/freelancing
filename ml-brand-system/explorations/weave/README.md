@@ -46,3 +46,7 @@ State of the symbol work, so a new session can resume.
   `round3-run-ids.txt`, cut marks in `round3/`. Shortlist (strongest first): f-gpt "M." with full stop, d-gpt locked ML
   monogram, b-gpt rising arches, c-gpt continuous ribbon M, b-nb mane wave. Cut: a-gpt, a-nb, d-nb, e-gpt, g-gpt, g-nb, h-gpt.
   Board: `round3-shortlist.html`, published at https://claude.ai/artifact/9P8gYirK3M3UMJ2w4M1i2G
+- **User picked b-nb "Mane wave"** from round 3. 10 variants generated (110 credits, Nano Banana Pro seeded from the b-nb image):
+  run IDs in `mane-run-ids.txt`, cut marks in `mane/`. Recommended: m04 circle, m01 base bar, m10 heavy square, m08 upright.
+  Board: `mane-variants.html`, published at https://claude.ai/artifact/XMnXKCX1BKrXoFV1tx6H4F
+  Credits used this session: 108 (round 3) + 110 (mane variants). Weave balance after: 1,150.

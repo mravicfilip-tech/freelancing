@@ -1,0 +1,537 @@
+<title>Maximum Leverage Round 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@300..800&display=swap" rel="stylesheet">
+<style>
+/* Layout: a review board in the locked brand (Signal on Carbon, Host Grotesk 400/500). Rubric first, then five marks ranked by score, the scorecard, the winning mark told as a story, then the mark in the places it will live. */
+:root {
+  --bg: #F3F2EF;
+  --surface: #FFFFFF;
+  --fg: #0E0E0F;
+  --muted: #56555A;
+  --line: #DAD8D3;
+  --chip: #E7E5E0;
+  --accent: #E5261A;
+  --accent-text: #C21D12;
+  --carbon: #0E0E0F;
+  --graphite: #1B1B1D;
+  --chalk: #F3F2EF;
+  --ash: #A5A4A0;
+  --signal: #E5261A;
+  --f-sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E0E0F; --surface: #161618; --fg: #F3F2EF; --muted: #A5A4A0;
+    --line: #2A2A2D; --chip: #212124; --accent-text: #FF5745;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E0E0F; --surface: #161618; --fg: #F3F2EF; --muted: #A5A4A0;
+  --line: #2A2A2D; --chip: #212124; --accent-text: #FF5745;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 400 16px/1.55 var(--f-sans);
+  padding-inline: 20px; padding-block: 0 88px;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1200px; margin-inline: auto; }
+h1, h2, h3, h4 { margin: 0; font-weight: 500; text-wrap: balance; }
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .01em; }
+.muted { color: var(--muted); }
+
+/* header */
+.top { padding-block: 56px 44px; display: grid; gap: 22px; border-bottom: 1px solid var(--line); }
+.top .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); }
+.top h1 { font-size: clamp(36px, 5.6vw, 68px); line-height: 1.02; letter-spacing: -.035em; max-width: 15ch; }
+.top h1 span { color: var(--accent-text); }
+.top .lede { max-width: 62ch; font-size: 18px; color: var(--muted); }
+.locked { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.lock { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.lock h3 { font-size: 13px; color: var(--muted); font-weight: 500; }
+.lock .v { font-size: 20px; letter-spacing: -.02em; font-weight: 500; }
+.swatch-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+.swatch-row div { height: 40px; }
+.weights { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
+.weights span { font-size: 26px; letter-spacing: -.02em; }
+.weights small { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--muted); letter-spacing: 0; }
+.lock ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; display: grid; gap: 4px; }
+
+/* sections */
+.sec { padding-block: 72px 0; }
+.sec-head { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 6px 16px; margin-bottom: 30px; }
+.sec-head .num { font-family: var(--f-mono); font-size: 13px; color: var(--muted); padding-top: 12px; }
+.sec-head h2 { font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -.03em; line-height: 1.08; }
+.sec-head p { grid-column: 2; max-width: 66ch; color: var(--muted); }
+
+/* rubric */
+.rubric { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.rubric div { background: var(--surface); padding: 20px; display: grid; gap: 6px; align-content: start; }
+.rubric h3 { font-size: 18px; letter-spacing: -.01em; }
+.rubric p { font-size: 14.5px; color: var(--muted); }
+.rubric .w { font-family: var(--f-mono); font-size: 11px; color: var(--accent-text); }
+
+/* mark rows */
+.rows { display: grid; gap: 14px; }
+.mark-row { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; }
+.mark-row.win { border-color: var(--accent); }
+.specimens { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 10px; min-width: 0; }
+.big-tile { background: var(--carbon); border-radius: 8px; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; grid-row: span 2; }
+.big-tile svg { width: 62%; height: auto; color: var(--signal); }
+.side-tiles { display: grid; gap: 10px; grid-template-rows: 1fr 1fr; min-width: 0; }
+.chalk-tile { background: var(--chalk); border-radius: 8px; display: grid; place-items: center; border: 1px solid var(--line); min-height: 0; }
+.chalk-tile svg { width: 44%; height: auto; color: var(--carbon); }
+.avatar-tile { background: var(--graphite); border-radius: 8px; display: grid; place-items: center; gap: 8px; grid-auto-flow: column; padding: 10px; }
+.avatar { border-radius: 50%; display: grid; place-items: center; flex: none; }
+.avatar svg { width: 58%; height: 58%; }
+.ladder { grid-column: 1 / -1; display: flex; align-items: flex-end; gap: 20px; padding: 14px 16px; background: var(--carbon); border-radius: 8px; color: var(--signal); flex-wrap: wrap; }
+.ladder figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+.ladder figcaption { font-family: var(--f-mono); font-size: 10px; color: var(--ash); }
+.ladder .on-chalk { background: var(--chalk); color: var(--carbon); padding: 8px; border-radius: 6px; display: flex; gap: 14px; align-items: flex-end; margin-left: auto; }
+
+.mark-copy { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.mark-copy header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rank { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.mark-copy h3 { font-size: 30px; letter-spacing: -.03em; line-height: 1; }
+.badge { font-family: var(--f-mono); font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--accent); color: #FFFFFF; }
+.story { font-size: 19px; line-height: 1.4; letter-spacing: -.01em; max-width: 40ch; }
+.notes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.notes h4 { font-size: 12px; font-family: var(--f-mono); font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.notes p { font-size: 14.5px; }
+.scores { display: grid; gap: 7px; border-top: 1px solid var(--line); padding-top: 14px; }
+.score { display: grid; grid-template-columns: 96px minmax(0, 1fr) 20px; gap: 12px; align-items: center; font-size: 13px; }
+.pips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; max-width: 200px; }
+.pips i { height: 6px; border-radius: 1px; background: var(--chip); }
+.pips i.on { background: var(--fg); }
+.score b { font-family: var(--f-mono); font-weight: 500; font-size: 12px; text-align: right; }
+.total { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 13px; padding-top: 6px; border-top: 1px dashed var(--line); }
+
+/* scorecard */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+th { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+td.n, th.n { text-align: center; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+tr.win td { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+tr.old td { color: var(--muted); }
+td .cell-mark { display: inline-flex; align-items: center; gap: 10px; }
+td .cell-mark svg { width: 22px; height: 22px; color: var(--accent); }
+.verdict { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.verdict div { border-left: 2px solid var(--fg); padding: 2px 0 2px 16px; }
+.verdict h3 { font-size: 17px; margin-bottom: 4px; }
+.verdict p { font-size: 14.5px; color: var(--muted); }
+
+/* story frames */
+.frames { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.frame { background: var(--carbon); color: var(--chalk); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.frame svg { width: 100%; height: auto; aspect-ratio: 1; }
+.frame .step { font-family: var(--f-mono); font-size: 11px; color: var(--ash); }
+.frame p { font-size: 15px; line-height: 1.4; }
+.construct { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; }
+.construct-fig { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; place-items: center; color: var(--fg); }
+.construct-fig svg { width: 100%; max-width: 420px; height: auto; }
+.construct-copy { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: grid; gap: 14px; align-content: start; }
+.construct-copy dl { margin: 0; display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 10px 16px; font-size: 14.5px; }
+.construct-copy dt { font-family: var(--f-mono); font-size: 12px; color: var(--muted); padding-top: 2px; }
+.construct-copy dd { margin: 0; }
+.play { justify-self: start; border: 1px solid var(--fg); background: transparent; color: var(--fg); border-radius: 999px; padding: 10px 18px; font: 500 14px var(--f-sans); cursor: pointer; }
+.play:hover { background: var(--fg); color: var(--bg); }
+
+/* in use */
+.use { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.use > * { min-width: 0; }
+.panel { border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.cap { font-family: var(--f-mono); font-size: 11px; color: var(--muted); padding: 10px 14px; background: var(--surface); border-top: 1px solid var(--line); }
+.site { grid-column: span 6; }
+.site-hero { background: var(--carbon); color: var(--chalk); padding: clamp(22px, 4vw, 44px); display: grid; gap: 22px; position: relative; overflow: hidden; min-height: 420px; align-content: start; }
+.site-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; position: relative; }
+.site-nav nav { display: flex; gap: 22px; font-size: 14px; color: var(--ash); flex-wrap: wrap; }
+.lockup { display: inline-flex; align-items: center; gap: .45em; font-size: 20px; letter-spacing: -.02em; font-weight: 500; white-space: nowrap; }
+.lockup svg { width: 1.3em; height: 1.3em; color: var(--signal); flex: none; }
+.site-hero h2 { font-size: clamp(36px, 5.6vw, 72px); line-height: 1; letter-spacing: -.04em; max-width: 12ch; position: relative; margin-top: 36px; }
+.site-hero h2 span { color: #FF5745; }
+.site-hero p { max-width: 44ch; color: var(--ash); font-size: 17px; position: relative; }
+.site-hero .actions { display: flex; gap: 12px; flex-wrap: wrap; position: relative; }
+.btn { border-radius: 999px; padding: 13px 22px; font: 500 15px var(--f-sans); border: 1px solid transparent; }
+.btn.primary { background: var(--signal); color: #FFFFFF; }
+.btn.ghost { border-color: #3A3A3E; color: var(--chalk); }
+.site-hero .device { position: absolute; right: -4%; bottom: -18%; width: min(52%, 560px); color: var(--graphite); pointer-events: none; }
+.site-hero .device svg { width: 100%; height: auto; }
+
+.video { grid-column: span 4; }
+.endcard { aspect-ratio: 16 / 9; max-width: 100%; background: var(--carbon); color: var(--chalk); display: grid; place-items: center; align-content: center; gap: 14px; }
+.endcard .lockup { font-size: clamp(20px, 3.2vw, 36px); }
+.endcard small { font-size: 14px; color: var(--ash); letter-spacing: .01em; }
+.avatars { grid-column: span 2; }
+.avatar-stage { background: var(--surface); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; place-items: center; height: calc(100% - 38px); }
+.avatar-stage .avatar { width: 100%; max-width: 110px; aspect-ratio: 1; }
+.avatar-stage .row2 { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; }
+.tab { grid-column: span 3; }
+.browser { background: var(--chip); padding: 12px 12px 0; }
+.tabbar { display: flex; gap: 6px; }
+.tabitem { background: var(--surface); border-radius: 8px 8px 0 0; padding: 9px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; max-width: 260px; }
+.tabitem.dim { background: transparent; color: var(--muted); }
+.tabitem span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tabitem svg { color: var(--signal); flex: none; }
+.urlbar { background: var(--surface); padding: 10px 14px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.lockups { grid-column: span 3; }
+.lockup-stage { display: grid; grid-template-columns: 1fr 1fr; }
+.lockup-stage > div { padding: 26px 18px; display: grid; place-items: center; min-height: 150px; }
+.stacked { display: grid; justify-items: center; gap: 10px; }
+.stacked svg { width: 48px; height: 48px; color: var(--signal); }
+.stacked span { font-size: 18px; letter-spacing: -.02em; font-weight: 500; line-height: 1.05; text-align: center; }
+
+.next { margin-top: 64px; border-top: 1px solid var(--line); padding-top: 28px; display: grid; gap: 12px; }
+.next h2 { font-size: 22px; letter-spacing: -.02em; }
+.next ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 74ch; color: var(--muted); }
+
+@media (max-width: 960px) {
+  .mark-row { grid-template-columns: minmax(0, 1fr); }
+  .rubric { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .frames { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .construct, .verdict { grid-template-columns: minmax(0, 1fr); }
+  .video, .avatars, .tab, .lockups { grid-column: span 6; }
+  .locked { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  body { padding-inline: 16px; }
+  .rubric { grid-template-columns: minmax(0, 1fr); }
+  .sec-head { grid-template-columns: minmax(0, 1fr); }
+  .sec-head p { grid-column: 1; }
+  .mark-row { padding: 16px; }
+  .notes { grid-template-columns: minmax(0, 1fr); }
+  .specimens { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .big-tile { grid-row: auto; grid-column: 1 / -1; }
+  .side-tiles { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 1fr 1fr; }
+  .chalk-tile { aspect-ratio: 1; }
+  .construct-copy dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .construct-copy dd { margin-bottom: 8px; }
+  .lockup-stage { grid-template-columns: minmax(0, 1fr); }
+  .ladder .on-chalk { margin-left: 0; }
+}
+</style>
+
+<header class="top wrap">
+  <div class="meta mono"><span>Maximum Leverage</span><span>Identity, round 2</span><span>29 Sep 2026</span></div>
+  <h1>A new symbol, judged by <span>the same rules</span> as the last one.</h1>
+  <p class="lede">Palette and type are locked. This round is only the symbol: a clean break from the bars, built for social avatars, video and the website. Before drawing I set six tests the mark has to pass, scored every option against them, and scored my round 1 pick too. It failed.</p>
+  <div class="locked">
+    <div class="lock">
+      <h3>Palette, locked</h3>
+      <div class="v">Signal on Carbon</div>
+      <div class="swatch-row" aria-label="Carbon, Graphite, Signal, Chalk, Ash">
+        <div style="background:#0E0E0F"></div><div style="background:#1B1B1D"></div><div style="background:#E5261A"></div><div style="background:#F3F2EF"></div><div style="background:#A5A4A0"></div>
+      </div>
+      <p class="mono muted">#0E0E0F #1B1B1D #E5261A #F3F2EF #A5A4A0</p>
+    </div>
+    <div class="lock">
+      <h3>Type, locked</h3>
+      <div class="v">Host Grotesk, regular to medium</div>
+      <div class="weights">
+        <span style="font-weight:400">Aa<small>400 body</small></span>
+        <span style="font-weight:450">Aa<small>450 UI</small></span>
+        <span style="font-weight:500">Aa<small>500 headlines</small></span>
+      </div>
+      <p class="muted" style="font-size:14px">Paid faces to test against it in round 3: Söhne, ABC Diatype, Neue Montreal, Aeonik. This page can only load Google Fonts, so they are not rendered here.</p>
+    </div>
+    <div class="lock">
+      <h3>From your answers</h3>
+      <ul>
+        <li>No link to the five bars. Clean break.</li>
+        <li>Lives on social avatars, video and the website.</li>
+        <li>Wordmark in sentence case, not caps.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap sec" id="rules">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>The six tests</h2>
+      <p>What premium and modern mean for this brand, written as tests. They come from where the logo lives: a 40px circle in a comment thread, the last second of a video, a browser tab.</p>
+    </div>
+    <div class="rubric" id="rubric"></div>
+  </section>
+
+  <section class="wrap sec" id="marks">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>Five symbols, ranked</h2>
+      <p>Each one in Signal on Carbon, Carbon on Chalk, inside round avatars, and at 48, 32, 24 and 16 pixels. The story line is what you would say on stage or in a video voiceover. Scores are out of 5 per test.</p>
+    </div>
+    <div class="rows" id="markRows"></div>
+  </section>
+
+  <section class="wrap sec" id="scorecard">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Scorecard, with round 1 included</h2>
+      <p>Same six tests, same scale. The last row is Ratio, the mark I pushed forward in round 1.</p>
+    </div>
+    <div class="table-wrap"><table id="scoreTable"></table></div>
+    <div class="verdict">
+      <div>
+        <h3>Round 1 pick, Ratio: does not work</h3>
+        <p>It won on legibility and nothing else. Two squares are a stock icon, so it fails ownable. Its story needs the tagline next to it to make sense, it does nothing in motion, and it looks like a UI glyph rather than a premium mark. I was optimising for small sizes and forgot the brief was a brand.</p>
+      </div>
+      <div>
+        <h3>Round 2 pick, Sweep: works, with two things to watch</h3>
+        <p>It is the only option that scores 4 or more on every test. It can be misread as a pie chart or a speedometer, and the small wedge gets tight at 16px. Section 04 shows how the construction handles both.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="sweep">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>Sweep, told as a story</h2>
+      <p>The mark is not a picture of a lever. It is the trace a lever leaves when it moves. That is why it can carry a story and a motion at the same time.</p>
+    </div>
+    <div class="frames" id="frames"></div>
+    <div class="construct">
+      <div class="construct-fig" id="constructFig"></div>
+      <div class="construct-copy">
+        <h3 style="font-size:22px;letter-spacing:-.02em">Why it works, as a designer</h3>
+        <dl>
+          <dt>One idea</dt><dd>A lever turns 60 degrees. The short arm sweeps a small wedge, the long arm sweeps a large one. Less effort, more scale, drawn exactly rather than illustrated.</dd>
+          <dt>The ratio</dt><dd>The arms are 1 to 3. The small wedge is 20 units, the large one 60. The same ratio sets clear space and the layout grid, so the whole system shares one number.</dd>
+          <dt>The ground line</dt><dd>Both wedges start on one flat edge. That edge is the owner's hours. It does not move. Your business grows. Your hours don't.</dd>
+          <dt>Why it is premium</dt><dd>Two shapes, one angle, one pivot. Circles and straight lines only. No outline, no effect, nothing to simplify later.</dd>
+          <dt>Why it scales</dt><dd>A solid shape with no thin strokes. The arcs are circular, so the mark settles into round avatars instead of fighting them.</dd>
+          <dt>Why it moves</dt><dd>Its logo animation is the idea itself: the arm swings and the wedges fill in. It works as a one-second sting at the end of every video.</dd>
+          <dt>What could go wrong</dt><dd>Seen alone, the big wedge can read as a pie chart. The counter-wedge below the line is what stops that, so it is never dropped. Under 20px the small wedge thickens slightly in a separate favicon cut.</dd>
+        </dl>
+        <button type="button" class="play" id="playBtn">Play the sweep</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="use">
+    <div class="sec-head">
+      <span class="num">05</span>
+      <h2>Where it will live</h2>
+      <p>Website hero, video end card, social avatars, a browser tab and the two lockups. Wordmark in Host Grotesk 500, sentence case.</p>
+    </div>
+    <div class="use" id="useGrid"></div>
+
+    <div class="next">
+      <h2>For round 3</h2>
+      <ol>
+        <li>Confirm Sweep, or tell me which of the other four to push instead.</li>
+        <li>I will draw the favicon cut, the motion sting as a real file, and the wordmark spacing against the mark.</li>
+        <li>I will test Host Grotesk against Söhne and ABC Diatype in the lockup, since you are open to a paid face.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<script>
+const PIVOT = [28, 66], LONG = 60, SHORT = 20, SWING = 60;
+const rad = (d) => d * Math.PI / 180;
+const pt = (c, r, a) => [c[0] + r * Math.cos(rad(a)), c[1] - r * Math.sin(rad(a))];
+const f = (n) => +n.toFixed(2);
+function sector(c, r, a0, a1) {
+  if (a1 - a0 < 0.01) return "";
+  const [x0, y0] = pt(c, r, a0), [x1, y1] = pt(c, r, a1);
+  return `M${c[0]} ${c[1]}L${f(x0)} ${f(y0)}A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 0 ${f(x1)} ${f(y1)}Z`;
+}
+const sweepPaths = (t = 1) =>
+  `<path d="${sector(PIVOT, LONG, 0, SWING * t)}"/><path d="${sector(PIVOT, SHORT, 180, 180 + SWING * t)}"/>`;
+
+const MARKS = [
+  { id: "sweep", name: "Sweep", win: true, svg: sweepPaths(),
+    story: "Turn a lever. The short end moves a little, the long end moves a lot. That difference is our whole business.",
+    why: "It draws what a lever does, not what it looks like. The 1 to 3 ratio is the tagline in geometry, and the flat edge is the owner's hours staying put.",
+    breaks: "Alone, the big wedge can read as a pie chart. The counter-wedge fixes that and must always stay. The small wedge is tight at 16px.",
+    s: [4, 5, 4, 4, 5, 5] },
+  { id: "split", name: "Lift",
+    svg: '<path d="M10.85 64.38L79.15 41.62A36 36 0 0 1 10.85 64.38Z"/><path transform="translate(6 -6)" d="M10.85 64.38L79.15 41.62A36 36 0 0 0 10.85 64.38Z"/>',
+    story: "Same business, one cut along the lever line, and everything above it moves up.",
+    why: "The most premium silhouette here. A circle holds perfectly in avatars and at 16px, and the slide makes a clean motion.",
+    breaks: "Split circles are everywhere in fintech and crypto. The story needs telling, it does not tell itself.",
+    s: [5, 3, 5, 2, 4, 4] },
+  { id: "block", name: "Step",
+    svg: '<path d="M12 88V60.67L84 36.67V88Z"/><path transform="translate(6 -6)" d="M12 54.67V16H84V30.67Z"/>',
+    story: "A solid block, your business, cut on the lever line. The top half has already taken the step up.",
+    why: "Very solid and legible. The cut angle can become the crop for every photo and section edge on the site.",
+    breaks: "Reads as a Z, or as stacked layers, which is a common software icon. Loses a lot inside a circle.",
+    s: [5, 3, 4, 2, 4, 4] },
+  { id: "monolith", name: "Monolith",
+    svg: '<path d="M8 88V38L88 11.33V88H72L48 34 24 88Z"/>',
+    story: "A rising beam, and the fulcrum is the empty space underneath. We are the part you do not see.",
+    why: "The hidden fulcrum is a good idea in the FedEx arrow tradition. It is one bold shape and survives any size.",
+    breaks: "It reads as a capital A or a tent, not an M. It is heavy, and the sloped top looks like a shed roof.",
+    s: [5, 3, 3, 3, 2, 3] },
+  { id: "balance", name: "Balance",
+    svg: '<circle cx="40" cy="68" r="18"/><rect x="7.4" y="37" width="84" height="12" transform="rotate(-18.435 35 49)"/>',
+    story: "A beam on a round fulcrum, already tipped toward growth.",
+    why: "Instantly understood and it animates well: the beam tips, the ball holds.",
+    breaks: "Reads as a toy or a seesaw, not premium. The beam thins out at 16px and the pieces separate.",
+    s: [3, 4, 2, 3, 5, 2] }
+];
+const ROUND1 = { name: "Ratio (round 1)", svg: '<rect x="8" y="66" width="22" height="22"/><rect x="30" y="8" width="58" height="58"/>', s: [5, 2, 2, 2, 2, 3] };
+
+const TESTS = [
+  ["Scale", "Holds at 16px in a browser tab and inside a 40px round avatar. No thin strokes, no detail that closes up.", "Avatars, favicon"],
+  ["Story", "Can be explained in one sentence that is true to the brand, without the tagline next to it.", "Voiceover, pitch"],
+  ["Premium", "Few parts, one angle, pure geometry. Nothing that looks like clip art or an app glyph.", "Perception"],
+  ["Ownable", "Not already a stock icon, a category cliché or a well-known logo.", "Recall"],
+  ["Motion", "Has a natural one-second animation that shows the idea, for video intros and outros.", "Video"],
+  ["System", "Gives the site something to reuse: an angle, a crop, a shape for dividers and loaders.", "Website"]
+];
+
+const $ = (s) => document.querySelector(s);
+const svg = (inner, extra = "") => `<svg viewBox="0 0 96 96" fill="currentColor" aria-hidden="true" ${extra}>${inner}</svg>`;
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+
+$("#rubric").innerHTML = TESTS.map(([t, d, w]) => `<div><span class="w">${w}</span><h3>${t}</h3><p>${d}</p></div>`).join("");
+
+const ranked = [...MARKS].sort((a, b) => sum(b.s) - sum(a.s));
+$("#markRows").innerHTML = ranked.map((m, i) => `
+  <article class="mark-row${m.win ? " win" : ""}" aria-labelledby="h-${m.id}">
+    <div class="specimens">
+      <div class="big-tile">${svg(m.svg, `role="img" aria-label="${m.name} in Signal on Carbon"`)}</div>
+      <div class="side-tiles">
+        <div class="chalk-tile">${svg(m.svg)}</div>
+        <div class="avatar-tile">
+          <span class="avatar" style="width:56px;height:56px;background:var(--carbon);color:var(--signal)">${svg(m.svg)}</span>
+          <span class="avatar" style="width:40px;height:40px;background:var(--signal);color:#FFFFFF">${svg(m.svg)}</span>
+        </div>
+      </div>
+      <div class="ladder">
+        ${[48, 32, 24, 16].map((px) => `<figure>${svg(m.svg, `width="${px}" height="${px}"`)}<figcaption>${px}</figcaption></figure>`).join("")}
+        <div class="on-chalk">${[32, 16].map((px) => svg(m.svg, `width="${px}" height="${px}"`)).join("")}</div>
+      </div>
+    </div>
+    <div class="mark-copy">
+      <header><span class="rank">#${i + 1}</span><h3 id="h-${m.id}">${m.name}</h3>${m.win ? '<span class="badge">Recommended</span>' : ""}</header>
+      <p class="story">${m.story}</p>
+      <div class="notes">
+        <div><h4>Why it could work</h4><p>${m.why}</p></div>
+        <div><h4>Where it breaks</h4><p>${m.breaks}</p></div>
+      </div>
+      <div class="scores">
+        ${TESTS.map(([t], k) => `<div class="score"><span>${t}</span><span class="pips" role="img" aria-label="${m.s[k]} of 5">${[1,2,3,4,5].map((n) => `<i class="${n <= m.s[k] ? "on" : ""}"></i>`).join("")}</span><b>${m.s[k]}</b></div>`).join("")}
+        <div class="total"><span>Total</span><span>${sum(m.s)} / 30</span></div>
+      </div>
+    </div>
+  </article>`).join("");
+
+$("#scoreTable").innerHTML = `
+  <thead><tr><th>Symbol</th>${TESTS.map(([t]) => `<th class="n">${t}</th>`).join("")}<th class="n">Total</th><th class="n">Lowest</th></tr></thead>
+  <tbody>${[...ranked, ROUND1].map((m) => `
+    <tr class="${m.win ? "win" : m === ROUND1 ? "old" : ""}">
+      <td><span class="cell-mark">${svg(m.svg)}${m.name}</span></td>
+      ${m.s.map((v) => `<td class="n">${v}</td>`).join("")}
+      <td class="n"><b>${sum(m.s)}</b></td><td class="n">${Math.min(...m.s)}</td>
+    </tr>`).join("")}</tbody>`;
+
+/* story frames */
+const [px, py] = PIVOT;
+const armEnds = (a) => [pt(PIVOT, LONG, a), pt(PIVOT, SHORT, a + 180)];
+const lever = (a, op = 1) => {
+  const [l, s] = armEnds(a);
+  return `<line x1="${f(s[0])}" y1="${f(s[1])}" x2="${f(l[0])}" y2="${f(l[1])}" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity="${op}"/>`;
+};
+const ground = `<line x1="4" y1="${py}" x2="92" y2="${py}" stroke="#A5A4A0" stroke-width=".6" stroke-dasharray="2 2"/>`;
+const pivotDot = `<circle cx="${px}" cy="${py}" r="2.6" fill="#E5261A"/>`;
+const FRAMES = [
+  ["1", "A lever on the ground line. Short arm 1, long arm 3.", ground + lever(0) + pivotDot],
+  ["2", "Push the short end down. The long end swings up 60 degrees.", ground + lever(0, .25) + lever(SWING) + pivotDot],
+  ["3", "Trace what each end covered. A little below, a lot above.", ground + `<g fill="#E5261A" opacity=".35">${sweepPaths()}</g>` + lever(0, .25) + lever(SWING) + pivotDot],
+  ["4", "Keep only the trace. That is the mark.", `<g fill="#E5261A">${sweepPaths()}</g>`]
+];
+$("#frames").innerHTML = FRAMES.map(([n, t, g]) => `<figure class="frame" style="margin:0"><span class="step">Step ${n}</span><svg viewBox="0 0 96 96" aria-hidden="true">${g}</svg><p>${t}</p></figure>`).join("");
+
+/* construction */
+const [lEnd] = armEnds(SWING);
+$("#constructFig").innerHTML = `<svg viewBox="-4 0 104 96" role="img" aria-label="Construction of the Sweep mark">
+  ${Array.from({ length: 13 }, (_, i) => `<line x1="${i * 8}" y1="0" x2="${i * 8}" y2="96" stroke="currentColor" stroke-width=".15" opacity=".35"/><line x1="0" y1="${i * 8}" x2="96" y2="${i * 8}" stroke="currentColor" stroke-width=".15" opacity=".35"/>`).join("")}
+  <circle cx="${px}" cy="${py}" r="${LONG}" fill="none" stroke="currentColor" stroke-width=".3" stroke-dasharray="1.5 1.5" opacity=".6"/>
+  <circle cx="${px}" cy="${py}" r="${SHORT}" fill="none" stroke="currentColor" stroke-width=".3" stroke-dasharray="1.5 1.5" opacity=".6"/>
+  <g fill="#E5261A" opacity=".9">${sweepPaths()}</g>
+  <line x1="${px}" y1="${py}" x2="${f(lEnd[0])}" y2="${f(lEnd[1])}" stroke="currentColor" stroke-width=".4"/>
+  <path d="M${px + 12} ${py}A12 12 0 0 0 ${f(pt(PIVOT, 12, SWING)[0])} ${f(pt(PIVOT, 12, SWING)[1])}" fill="none" stroke="currentColor" stroke-width=".5"/>
+  <circle cx="${px}" cy="${py}" r="1.3" fill="currentColor"/>
+  <g font-family="Geist Mono, monospace" font-size="3.4" fill="currentColor">
+    <text x="${px + 14}" y="${py - 5}">60°</text>
+    <text x="${px + 30}" y="${py + 5}">r 60</text>
+    <text x="${px - 17}" y="${py - 2}">r 20</text>
+    <text x="${px - 5}" y="${py + 26}">pivot, 1 : 3</text>
+  </g>
+</svg>`;
+
+/* in use */
+const S = sweepPaths();
+$("#useGrid").innerHTML = `
+  <figure class="panel site" style="margin:0">
+    <div class="site-hero">
+      <div class="device">${svg(S)}</div>
+      <div class="site-nav"><span class="lockup">${svg(S)}Maximum Leverage</span><nav><span>How it works</span><span>Results</span><span>About</span></nav></div>
+      <h2>Your business grows. <span>Your hours don't.</span></h2>
+      <p>We build and run the growth levers the big companies use, so you win more customers without working more hours.</p>
+      <div class="actions"><span class="btn primary">Book a strategy call</span><span class="btn ghost">See the levers</span></div>
+    </div>
+    <figcaption class="cap">Website hero. The mark at 500px in Graphite is the only background device.</figcaption>
+  </figure>
+  <figure class="panel video" style="margin:0">
+    <div class="endcard" id="endcard"><span class="lockup">${svg(S, 'id="endMark"')}Maximum Leverage</span><small>Less Effort. More Scale.</small></div>
+    <figcaption class="cap">Video end card, 16:9. Press Play the sweep in section 04 to see the sting here too.</figcaption>
+  </figure>
+  <figure class="panel avatars" style="margin:0">
+    <div class="avatar-stage">
+      <span class="avatar" style="background:var(--carbon);color:var(--signal)">${svg(S)}</span>
+      <span class="avatar" style="background:var(--signal);color:#FFFFFF">${svg(S)}</span>
+      <div class="row2">
+        ${[40, 32, 24].map((d) => `<span class="avatar" style="width:${d}px;height:${d}px;background:var(--carbon);color:var(--signal)">${svg(S)}</span>`).join("")}
+      </div>
+    </div>
+    <figcaption class="cap">Social avatars, 110 to 24px</figcaption>
+  </figure>
+  <figure class="panel tab" style="margin:0">
+    <div class="browser">
+      <div class="tabbar">
+        <div class="tabitem">${svg(S, 'width="16" height="16"')}<span>Maximum Leverage</span></div>
+        <div class="tabitem dim"><span>Inbox</span></div>
+      </div>
+    </div>
+    <div class="urlbar">maximumleverage.com</div>
+    <figcaption class="cap">Favicon at 16px</figcaption>
+  </figure>
+  <figure class="panel lockups" style="margin:0">
+    <div class="lockup-stage">
+      <div style="background:var(--carbon);color:var(--chalk)"><span class="lockup">${svg(S)}Maximum Leverage</span></div>
+      <div style="background:var(--chalk);color:var(--carbon)"><span class="stacked">${svg(S)}<span>Maximum<br>Leverage</span></span></div>
+    </div>
+    <figcaption class="cap">Horizontal and stacked lockups</figcaption>
+  </figure>`;
+
+/* play the sweep */
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const animTargets = () => [...document.querySelectorAll("#frames .frame:last-child svg g, .construct-fig svg > g[opacity], #endMark")];
+$("#playBtn").addEventListener("click", () => {
+  if (reduce) return;
+  const targets = animTargets();
+  const t0 = performance.now(), dur = 1100;
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  const step = (now) => {
+    const t = Math.min(1, (now - t0) / dur);
+    const inner = sweepPaths(ease(t));
+    targets.forEach((el) => (el.innerHTML = inner));
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+});
+if (reduce) { $("#playBtn").textContent = "Motion is off in your system settings"; $("#playBtn").disabled = true; }
+</script>

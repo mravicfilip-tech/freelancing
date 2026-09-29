@@ -58,3 +58,9 @@ State of the symbol work, so a new session can resume.
 - **Round 5 (110 credits, Nano Banana Pro seeded from the old logo image)**: run IDs in `round5-run-ids.txt`, cut marks in `round5/`.
   Recommended: o05 bars leading into an M, o07 bars into ML, o08 old lockup modernised, o02 rounded bar M.
   Board: `round5-homage.html`, published at https://claude.ai/artifact/EKfugM7giXxk4DvDMJHYZv. Weave balance after: 930.
+
+## Picked: o10 stacked lockup (round 5)
+- Client chose o10: three rising rounded bars at 60°, a fourth stroke leaning on the tallest (the lever), MAXIMUM LEVERAGE in wide letterspaced capitals.
+- Working vector (hand-built, stroke based): `ml-brand-system/assets/logo/o10/`.
+- Identity presentation with motion and mockups: `explorations/brand-presentation.html`, published at https://claude.ai/artifact/L7JV5VUEaYZX2CT7GYe67B
+  Fonts: Michroma (wordmark and tagline, from the existing brand tokens), Host Grotesk (text), Geist Mono (labels).

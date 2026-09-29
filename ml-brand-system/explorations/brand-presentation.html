@@ -1,0 +1,553 @@
+<title>Maximum Leverage Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Host+Grotesk:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a presentation told in stacked full-bleed slides. Carbon is the stage; Chalk slides are the pauses. Signal appears only in the mark and one accent per slide. Single committed look (Carbon-first), colours set explicitly so it reads the same in any host theme. */
+:root {
+  --carbon: #0E0E0F;
+  --carbon-2: #161618;   /* raised surface on carbon */
+  --carbon-3: #222226;   /* rules and outlines on carbon */
+  --chalk: #F3F2EF;
+  --chalk-2: #E6E4DF;    /* rules on chalk */
+  --signal: #E5261A;
+  --ash: #8E8A84;        /* secondary text, warm grey biased to chalk */
+  --ash-dark: #5E5B57;   /* secondary text on chalk */
+  --wordmark: "Michroma", "Eurostile", "Microgramma", sans-serif;
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --ease-out: cubic-bezier(.2,.8,.2,1);
+  --ease-lever: cubic-bezier(.34,1.45,.5,1);
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html { scroll-behavior: smooth }
+body { margin: 0; background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important } }
+
+.slide { position: relative; padding-inline: 24px; padding-block: 112px; border-top: 1px solid var(--carbon-3) }
+.slide.light { background: var(--chalk); color: var(--carbon); border-top-color: var(--chalk-2) }
+.inner { max-width: 1160px; margin: 0 auto; display: grid; gap: 56px }
+@media (max-width: 640px) { .slide { padding-inline: 16px; padding-block: 72px } .inner { gap: 40px } }
+
+.slide-head { display: grid; gap: 18px; max-width: 62ch }
+.kicker { display: flex; gap: 14px; align-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
+.light .kicker { color: var(--ash-dark) }
+.kicker b { font-weight: 500; color: var(--signal) }
+h1, h2 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.04; margin: 0; text-wrap: balance }
+h2 { font-size: clamp(34px, 5.2vw, 60px) }
+h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
+.lede { margin: 0; font-size: 19px; color: var(--ash); max-width: 56ch }
+.light .lede { color: var(--ash-dark) }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
+.light .label { color: var(--ash-dark) }
+.accent { color: var(--signal) }
+
+/* ---------- The mark ---------- */
+.mark { display: block; overflow: visible }
+.mark .bar { fill: none; stroke: currentColor; stroke-width: 52; stroke-linecap: round }
+.mark .leg { fill: none; stroke: currentColor; stroke-width: 52; stroke-linecap: round }
+.wm { font-family: var(--wordmark); font-weight: 400; text-transform: uppercase; letter-spacing: .32em; white-space: nowrap; margin-right: -.32em; line-height: 1 }
+.lockup-stack { display: inline-grid; justify-items: center; gap: .9em }
+.lockup-stack .mark { width: 7.4em; height: auto }
+.lockup-stack .wm { font-size: 1em }
+.lockup-row { display: inline-flex; align-items: center; gap: 1.1em }
+.lockup-row .mark { width: 3.1em; height: auto }
+
+/* Intro animation: bars rise, the lever leans in, the name settles */
+.anim .bar { stroke-dasharray: 200; stroke-dashoffset: 200; animation: rise .8s var(--ease-out) forwards }
+.anim .b1 { animation-delay: .15s } .anim .b2 { animation-delay: .3s } .anim .b3 { animation-delay: .45s }
+.anim .leg-g { transform-box: view-box; transform-origin: 318px 188.8px; transform: rotate(28deg); opacity: 0; animation: lean .9s var(--ease-lever) 1.05s forwards }
+.anim + .wm, .anim ~ .wm { animation: settle 1.1s var(--ease-out) 1.35s both }
+@keyframes rise { to { stroke-dashoffset: 0 } }
+@keyframes lean { 0% { opacity: 0; transform: rotate(28deg) } 20% { opacity: 1 } 100% { opacity: 1; transform: rotate(0) } }
+@keyframes settle { from { opacity: 0; letter-spacing: .7em; margin-right: -.7em } to { opacity: 1; letter-spacing: .32em; margin-right: -.32em } }
+
+/* ---------- 01 Cover ---------- */
+.cover { border-top: 0; padding-block: 96px 88px; overflow: hidden }
+.cover .inner { justify-items: center; text-align: center; gap: 64px }
+.cover .lockup-stack { font-size: clamp(15px, 2.6vw, 28px); color: var(--signal) }
+.cover-foot { display: grid; gap: 14px; justify-items: center }
+.tagline { font-family: var(--wordmark); font-size: clamp(13px, 1.6vw, 17px); letter-spacing: .42em; margin-right: -.42em; text-transform: uppercase; color: var(--chalk) }
+.cover-meta { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--ash); text-transform: uppercase }
+.replay { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--chalk); background: transparent; border: 1px solid var(--carbon-3); border-radius: 999px; padding: 9px 16px; cursor: pointer }
+.replay:hover { border-color: var(--ash) }
+.replay:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px }
+.cover::after { content: ""; position: absolute; inset: auto -10% -60% -10%; height: 90%; background: radial-gradient(ellipse at 50% 100%, rgba(229,38,26,.16), rgba(229,38,26,0) 60%); pointer-events: none }
+
+/* ---------- 02 Idea ---------- */
+.idea-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center }
+.construct { background: var(--carbon-2); border: 1px solid var(--carbon-3); padding: 28px; overflow-x: auto }
+.construct svg { display: block; width: 100%; min-width: 300px; height: auto }
+.beats { display: grid; gap: 28px; margin: 0; padding: 0; list-style: none }
+.beats li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start }
+.beats .num { font-family: var(--mono); font-size: 12px; color: var(--signal); padding-top: 4px; letter-spacing: .08em }
+.beats p { margin: 6px 0 0; color: var(--ash); max-width: 44ch }
+.homage { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--carbon-3); padding-block: 28px 0 }
+.homage img { width: 220px; height: auto; border-radius: 6px; background: #fff; flex: none }
+.homage .arrow { font-family: var(--mono); color: var(--ash) }
+.homage .mini { color: var(--signal); width: 96px; flex: none }
+.homage p { margin: 0; color: var(--ash); max-width: 46ch; min-width: 0; flex: 1 1 260px }
+
+/* ---------- 03 Logo suite ---------- */
+.suite { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 2px }
+.tile { min-height: 260px; display: grid; place-items: center; position: relative; padding: 40px 20px; min-width: 0; overflow: hidden }
+.tile .label { position: absolute; left: 18px; bottom: 16px }
+.t-carbon { background: var(--carbon); border: 1px solid var(--chalk-2) }
+.t-chalk { background: #fff }
+.t-signal { background: var(--signal); color: var(--chalk) }
+.t-signal .label { color: rgba(243,242,239,.8) }
+.t-carbon .label { color: var(--ash) }
+.span-3 { grid-column: span 3 } .span-2 { grid-column: span 2 }
+.tile .lockup-stack { font-size: clamp(9px, 1.25vw, 14px) }
+.tile .lockup-row { font-size: clamp(9px, 1.2vw, 13px) }
+.tile .solo { width: 88px }
+.c-signal { color: var(--signal) } .c-chalk { color: var(--chalk) } .c-carbon { color: var(--carbon) }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 32px }
+.rules > div { display: grid; gap: 8px; align-content: start }
+.rules p { margin: 0; color: var(--ash-dark); font-size: 15px; max-width: 40ch }
+.space-demo { display: grid; place-items: center; padding: 26px; background: #fff; outline: 1px dashed rgba(229,38,26,.5); outline-offset: -14px; margin-bottom: 6px; justify-self: start }
+.space-demo .mark { width: 72px; color: var(--signal) }
+.min-row { display: flex; align-items: flex-end; gap: 18px; padding-bottom: 6px }
+.min-row .mark { color: var(--signal) }
+
+/* ---------- 04 Colour ---------- */
+.swatches { display: grid; grid-template-columns: 5fr 3fr 2fr; gap: 2px; min-height: 340px }
+.sw { padding: 24px; display: grid; align-content: space-between; gap: 40px; min-width: 0 }
+.sw h3 { font-size: 26px }
+.sw dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .04em }
+.sw dt { opacity: .6 } .sw dd { margin: 0; font-variant-numeric: tabular-nums }
+.sw-carbon { background: var(--carbon); border: 1px solid var(--carbon-3) }
+.sw-chalk { background: var(--chalk); color: var(--carbon) }
+.sw-signal { background: var(--signal); color: var(--chalk) }
+.ratio { display: flex; height: 10px; gap: 2px }
+.ratio span:nth-child(1) { flex: 70; background: var(--carbon-3) } .ratio span:nth-child(2) { flex: 22; background: var(--chalk) } .ratio span:nth-child(3) { flex: 8; background: var(--signal) }
+.ratio-cap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+
+/* ---------- 05 Type ---------- */
+.type-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2px }
+.spec { background: #fff; padding: 28px; display: grid; gap: 28px; align-content: space-between; min-height: 360px; min-width: 0 }
+.spec .big { line-height: 1; color: var(--carbon); overflow-wrap: anywhere }
+.spec p { margin: 0; color: var(--ash-dark); font-size: 15px }
+.big-wm { font-family: var(--wordmark); font-size: clamp(30px, 4vw, 46px); letter-spacing: .08em }
+.big-sans { font-family: var(--sans); font-weight: 500; font-size: clamp(44px, 6vw, 72px); letter-spacing: -0.03em }
+.big-mono { font-family: var(--mono); font-size: clamp(30px, 3.6vw, 42px); letter-spacing: -0.01em }
+.sample-line { font-family: var(--sans); font-size: clamp(26px, 3.4vw, 40px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; margin: 0; color: var(--carbon); max-width: 26ch; text-wrap: balance }
+
+/* ---------- 06 Motion ---------- */
+.motion-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2px }
+.m-card { background: var(--carbon-2); border: 1px solid var(--carbon-3); display: grid; gap: 20px; padding: 24px; min-width: 0 }
+.m-stage { height: 200px; display: grid; place-items: center; background: var(--carbon); border: 1px solid var(--carbon-3) }
+.m-stage .mark { width: 120px; color: var(--signal) }
+.m-card p { margin: 0; color: var(--ash); font-size: 15px }
+.m-spec { font-family: var(--mono); font-size: 12px; color: var(--chalk); letter-spacing: .02em }
+/* loop: intro on repeat */
+.loop-intro .bar { stroke-dasharray: 200; animation: rise-loop 3.6s var(--ease-out) infinite }
+.loop-intro .b2 { animation-delay: .12s } .loop-intro .b3 { animation-delay: .24s }
+.loop-intro .leg-g { transform-box: view-box; transform-origin: 318px 188.8px; animation: lean-loop 3.6s var(--ease-lever) infinite }
+@keyframes rise-loop { 0% { stroke-dashoffset: 200 } 25%, 88% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 200 } }
+@keyframes lean-loop { 0%, 22% { opacity: 0; transform: rotate(28deg) } 28% { opacity: 1 } 45%, 88% { opacity: 1; transform: rotate(0) } 100% { opacity: 0; transform: rotate(0) } }
+/* loader: bars light in sequence */
+.loader .bar, .loader .leg { stroke: var(--carbon-3) }
+.loader .b1 { animation: light 1.4s linear infinite } .loader .b2 { animation: light 1.4s linear .2s infinite } .loader .b3 { animation: light 1.4s linear .4s infinite } .loader .leg { animation: light 1.4s linear .6s infinite }
+@keyframes light { 0%, 100% { stroke: var(--carbon-3) } 15%, 45% { stroke: var(--signal) } 60% { stroke: var(--carbon-3) } }
+/* pulse: lever props up on a new result */
+.pulse .leg-g { transform-box: view-box; transform-origin: 318px 188.8px; animation: prop 2.4s var(--ease-lever) infinite }
+.pulse .b3 { transform-box: view-box; transform-origin: 193.8px 188.8px; animation: lift 2.4s var(--ease-lever) infinite }
+@keyframes prop { 0%, 55%, 100% { transform: rotate(0) } 30% { transform: rotate(-7deg) } }
+@keyframes lift { 0%, 55%, 100% { transform: scale(1) } 30% { transform: scale(1.06) } }
+
+/* ---------- 07 In use (mockups) ---------- */
+.use-grid { display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: 20px }
+.scene { position: relative; overflow: hidden; border-radius: 4px; min-height: 380px; display: grid; place-items: center; padding: 36px 20px; min-width: 0 }
+.scene-cap { position: absolute; left: 18px; top: 16px; z-index: 3 }
+.col-7 { grid-column: span 7 } .col-5 { grid-column: span 5 } .col-6 { grid-column: span 6 } .col-12 { grid-column: span 12 } .col-4 { grid-column: span 4 } .col-8 { grid-column: span 8 }
+
+/* business cards */
+.s-cards { background: radial-gradient(ellipse at 30% 20%, #3a3833, #1c1b19 70%); perspective: 1400px }
+.cards { position: relative; width: min(100%, 520px); aspect-ratio: 1.3; }
+.card { position: absolute; width: 62%; aspect-ratio: 85 / 55; border-radius: 6px; box-shadow: 0 30px 50px -18px rgba(0,0,0,.7), 0 4px 10px rgba(0,0,0,.35); display: grid; padding: 7%; }
+.card-back { left: 4%; top: 30%; background: var(--signal); color: var(--chalk); transform: rotate(-9deg); place-items: center; animation: floatA 7s ease-in-out infinite }
+.card-back .mark { width: 42% }
+.card-front { right: 2%; top: 6%; background: var(--carbon); transform: rotate(6deg); align-content: space-between; animation: floatB 7s ease-in-out infinite }
+.card-front .lockup-row { font-size: clamp(5px, 1.05vw, 9px); color: var(--signal) }
+.card-front .lockup-row .wm { color: var(--chalk) }
+.card-front .who { font-size: clamp(8px, 1.4vw, 12px); color: var(--chalk); line-height: 1.35 }
+.card-front .who span { display: block; font-family: var(--mono); color: var(--ash); font-size: .82em; letter-spacing: .06em }
+@keyframes floatA { 0%, 100% { transform: rotate(-9deg) translateY(0) } 50% { transform: rotate(-8deg) translateY(-6px) } }
+@keyframes floatB { 0%, 100% { transform: rotate(6deg) translateY(0) } 50% { transform: rotate(7deg) translateY(5px) } }
+
+/* phone */
+.s-phone { background: linear-gradient(160deg, #d9d6cf, #b9b5ad) }
+.phone { width: 250px; max-width: 100%; aspect-ratio: 9 / 19; background: #050505; border-radius: 38px; padding: 10px; box-shadow: 0 40px 60px -24px rgba(0,0,0,.55), inset 0 0 0 2px #2a2a2a; position: relative }
+.screen { width: 100%; height: 100%; border-radius: 30px; background: var(--carbon); overflow: hidden; position: relative; display: grid; grid-template-rows: auto auto 1fr; font-size: 11px }
+.island { position: absolute; top: 9px; left: 50%; width: 70px; height: 20px; margin-left: -35px; background: #000; border-radius: 12px; z-index: 2 }
+.p-head { padding: 44px 16px 12px; display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: center }
+.p-avatar { width: 58px; height: 58px; border-radius: 50%; background: var(--carbon-2); box-shadow: 0 0 0 2px var(--signal); display: grid; place-items: center }
+.p-avatar .mark { width: 34px; color: var(--signal) }
+.p-name { font-weight: 600; font-size: 13px; color: var(--chalk) }
+.p-bio { color: var(--ash); font-size: 10.5px; line-height: 1.4 }
+.p-stats { display: flex; gap: 14px; padding: 0 16px 12px; color: var(--chalk); font-size: 10px; font-variant-numeric: tabular-nums }
+.p-stats b { font-weight: 600 }
+.p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; align-content: start }
+.p-grid div { aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; padding: 8px; text-align: center }
+.pg-signal { background: var(--signal); color: var(--chalk) } .pg-chalk { background: var(--chalk); color: var(--carbon) } .pg-carbon { background: var(--carbon-2); color: var(--chalk) }
+.p-grid .mark { width: 60% }
+.p-grid .q { font-weight: 600; font-size: 8.5px; line-height: 1.15; letter-spacing: -0.01em }
+.p-grid .n { font-family: var(--sans); font-weight: 600; font-size: 20px; letter-spacing: -0.03em; line-height: 1 }
+.p-grid small { display: block; font-size: 6.5px; font-family: var(--mono); letter-spacing: .06em; margin-top: 3px; opacity: .8 }
+.notif { position: absolute; left: 8px; right: 8px; top: 38px; background: rgba(40,40,44,.92); border-radius: 14px; padding: 9px 10px; display: grid; grid-template-columns: 26px 1fr; gap: 9px; align-items: center; color: var(--chalk); z-index: 3; animation: notif 6s var(--ease-out) infinite; backdrop-filter: blur(8px) }
+.notif .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--carbon); display: grid; place-items: center }
+.notif .ic .mark { width: 16px; color: var(--signal) }
+.notif b { display: block; font-size: 10px; font-weight: 600 }
+.notif span { font-size: 10px; color: #c9c6c0 }
+@keyframes notif { 0%, 12% { transform: translateY(-140%); opacity: 0 } 20%, 70% { transform: translateY(0); opacity: 1 } 80%, 100% { transform: translateY(-140%); opacity: 0 } }
+
+/* browser */
+.s-web { background: var(--carbon-2); padding: 48px 28px 0; place-items: end center }
+.browser { width: min(100%, 860px); background: #1b1b1e; border-radius: 10px 10px 0 0; box-shadow: 0 -10px 60px rgba(0,0,0,.4); overflow: hidden; border: 1px solid #2b2b30; border-bottom: 0 }
+.chrome { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #1f1f23; border-bottom: 1px solid #2b2b30 }
+.dots { display: flex; gap: 6px } .dots i { width: 10px; height: 10px; border-radius: 50%; background: #3a3a40; display: block }
+.tabpill { display: flex; align-items: center; gap: 8px; background: var(--carbon); color: var(--chalk); font-size: 12px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; min-width: 0; overflow: hidden }
+.tabpill .mark { width: 14px; color: var(--signal); flex: none }
+.url { flex: 1; min-width: 0; background: var(--carbon); border-radius: 6px; padding: 6px 12px; font-family: var(--mono); font-size: 11px; color: var(--ash); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.site { background: var(--carbon); padding: 26px 34px 40px; display: grid; gap: 36px; position: relative; overflow: hidden }
+.site nav { display: flex; justify-content: space-between; align-items: center; gap: 16px }
+.site nav .lockup-row { font-size: 8px; color: var(--signal) }
+.site nav .lockup-row .wm { color: var(--chalk) }
+.site nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: 12px; color: var(--ash) }
+.site-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: end }
+.site-hero h4 { margin: 0; font-weight: 500; font-size: clamp(22px, 3.2vw, 38px); letter-spacing: -0.03em; line-height: 1.04; color: var(--chalk) }
+.site-hero p { margin: 14px 0 20px; color: var(--ash); font-size: 13px; max-width: 40ch }
+.btn { display: inline-block; background: var(--signal); color: var(--chalk); font-size: 12px; font-weight: 500; padding: 10px 16px; border-radius: 999px }
+.chart { display: flex; align-items: flex-end; gap: 10px; height: 150px; justify-content: flex-end }
+.chart i { display: block; width: 26px; border-radius: 14px; background: var(--carbon-3); transform-origin: bottom; animation: grow 4s var(--ease-out) infinite }
+.chart i:nth-child(1) { height: 30% } .chart i:nth-child(2) { height: 42%; animation-delay: .1s } .chart i:nth-child(3) { height: 55%; animation-delay: .2s } .chart i:nth-child(4) { height: 70%; animation-delay: .3s } .chart i:nth-child(5) { height: 100%; background: var(--signal); animation-delay: .4s }
+@keyframes grow { 0% { transform: scaleY(.15) } 30%, 85% { transform: scaleY(1) } 100% { transform: scaleY(.15) } }
+.site-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: var(--carbon-3); border: 1px solid var(--carbon-3) }
+.site-stats div { background: var(--carbon); padding: 14px 16px }
+.site-stats b { display: block; font-weight: 500; font-size: 22px; letter-spacing: -0.02em; color: var(--chalk); font-variant-numeric: tabular-nums }
+.site-stats span { font-size: 11px; color: var(--ash) }
+
+/* wall sign */
+.s-wall { background: linear-gradient(180deg, #1a1918, #0c0c0b 80%); min-height: 420px }
+.s-wall::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 90px), radial-gradient(ellipse at 50% 40%, rgba(229,38,26,.18), transparent 55%); animation: glow 5s ease-in-out infinite }
+.s-wall::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(180deg, #151413, #0a0a09); border-top: 1px solid #262422 }
+.sign { position: relative; z-index: 1; color: var(--signal); filter: drop-shadow(0 0 14px rgba(229,38,26,.55)) drop-shadow(0 0 40px rgba(229,38,26,.3)); margin-bottom: 8%; animation: flick 5s linear infinite }
+.sign .lockup-stack { font-size: clamp(10px, 1.6vw, 17px) }
+.sign .wm { color: var(--chalk); text-shadow: 0 0 10px rgba(243,242,239,.35) }
+@keyframes glow { 0%, 100% { opacity: .85 } 50% { opacity: 1 } }
+@keyframes flick { 0%, 7%, 9%, 100% { opacity: 1 } 8% { opacity: .7 } }
+
+/* app icons + lower third */
+.s-icons { background: linear-gradient(135deg, #2a2724, #121110); }
+.icons { display: grid; grid-template-columns: repeat(4, 64px); gap: 22px 26px; justify-content: center }
+.app { display: grid; justify-items: center; gap: 7px; font-size: 11px; color: #d8d5cf }
+.app i { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; background: rgba(255,255,255,.08); box-shadow: 0 8px 16px rgba(0,0,0,.35) }
+.app i.ml { background: var(--carbon); box-shadow: 0 8px 20px rgba(0,0,0,.5), inset 0 0 0 1px #2a2a2e }
+.app i.ml .mark { width: 38px; color: var(--signal) }
+.app i.ph { background: linear-gradient(160deg, #4a4642, #33302d) }
+.s-video { background: #000; padding: 0; place-items: stretch }
+.frame { position: relative; width: 100%; height: 100%; min-height: 380px; background: radial-gradient(ellipse at 70% 30%, #3c3934 0%, #1b1a18 55%, #0b0b0a 100%); overflow: hidden }
+.frame .bokeh { position: absolute; inset: 0; background: radial-gradient(circle at 78% 30%, rgba(229,38,26,.22) 0 7%, transparent 8%), radial-gradient(circle at 88% 58%, rgba(243,242,239,.08) 0 5%, transparent 6%), radial-gradient(circle at 64% 18%, rgba(243,242,239,.06) 0 4%, transparent 5%), radial-gradient(circle at 70% 66%, rgba(229,38,26,.1) 0 9%, transparent 10%); filter: blur(6px); animation: drift 12s ease-in-out infinite alternate }
+@keyframes drift { to { transform: translateX(-3%) scale(1.04) } }
+.lower { position: absolute; left: 6%; bottom: 12%; display: grid; grid-template-columns: auto 1fr; align-items: stretch; animation: lower 7s var(--ease-out) infinite }
+.lower .sq { background: var(--signal); display: grid; place-items: center; padding: 0 14px }
+.lower .sq .mark { width: 40px; color: var(--chalk) }
+.lower .tx { background: var(--carbon); padding: 12px 20px 12px 16px; display: grid; gap: 2px }
+.lower .tx b { font-weight: 500; font-size: 17px; color: var(--chalk); letter-spacing: -0.01em; white-space: nowrap }
+.lower .tx span { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ash); white-space: nowrap }
+.rec { position: absolute; top: 16px; right: 18px; font-family: var(--mono); font-size: 11px; color: var(--chalk); letter-spacing: .1em; display: flex; align-items: center; gap: 8px }
+.rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--signal); animation: blink 1.2s steps(2) infinite }
+@keyframes blink { 50% { opacity: 0 } }
+@keyframes lower { 0%, 8% { clip-path: inset(0 100% 0 0) } 20%, 80% { clip-path: inset(0 0 0 0) } 92%, 100% { clip-path: inset(0 100% 0 0) } }
+
+/* ---------- 08 Close ---------- */
+.close .inner { justify-items: center; text-align: center; gap: 36px }
+.close .lockup-stack { font-size: clamp(12px, 2vw, 20px); color: var(--signal) }
+.close h2 { font-size: clamp(30px, 4.6vw, 54px); max-width: 20ch }
+.close p { margin: 0; color: var(--ash); max-width: 52ch }
+
+/* nav dots */
+.progress { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); display: grid; gap: 10px; z-index: 10 }
+.progress a { width: 8px; height: 8px; border-radius: 50%; background: var(--carbon-3); display: block; box-shadow: 0 0 0 1px rgba(142,138,132,.4) }
+.progress a.on { background: var(--signal); box-shadow: none }
+@media (max-width: 900px) { .progress { display: none } }
+
+@media (max-width: 900px) {
+  .idea-grid { grid-template-columns: 1fr }
+  .suite { grid-template-columns: repeat(2, minmax(0,1fr)) }
+  .span-3, .span-2 { grid-column: span 2 }
+  .rules, .type-grid, .motion-grid { grid-template-columns: 1fr }
+  .swatches { grid-template-columns: 1fr; min-height: 0 }
+  .use-grid { grid-template-columns: 1fr }
+  .col-7, .col-5, .col-6, .col-12, .col-4, .col-8 { grid-column: auto }
+  .site-hero { grid-template-columns: 1fr }
+  .chart { justify-content: flex-start; height: 100px }
+  .site nav ul { display: none }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="legclip" clipPathUnits="userSpaceOnUse"><polygon points="401.4,-90.8 700,-90.8 700,398.7 118.8,398.7"/></clipPath>
+  </defs>
+</svg>
+
+<nav class="progress" aria-label="Slides">
+  <a href="#cover" aria-label="Cover"></a><a href="#idea" aria-label="The idea"></a><a href="#suite" aria-label="Logo suite"></a><a href="#colour" aria-label="Colour"></a><a href="#type" aria-label="Type"></a><a href="#motion" aria-label="Motion"></a><a href="#use" aria-label="In use"></a><a href="#close" aria-label="Close"></a>
+</nav>
+
+<!-- 01 Cover -->
+<section class="slide cover" id="cover">
+  <div class="inner">
+    <div class="kicker"><b>01</b> Identity presentation · Maximum Leverage</div>
+    <div class="lockup-stack" id="hero-lockup">
+      <svg class="mark anim" viewBox="0 0 344 215" role="img" aria-label="Maximum Leverage symbol">
+        <line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/>
+        <line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
+        <line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
+        <g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g>
+      </svg>
+      <div class="wm">Maximum Leverage</div>
+    </div>
+    <div class="cover-foot">
+      <div class="tagline">Less Effort. More Scale.</div>
+      <button class="replay" id="replay" type="button">Replay the intro</button>
+    </div>
+  </div>
+</section>
+
+<!-- 02 Idea -->
+<section class="slide" id="idea">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>02</b> The idea</div>
+      <h2>Three bars rise. <span class="accent">One holds them up.</span></h2>
+      <p class="lede">A lever moves what muscle can't. The mark shows the mechanic in four strokes: a business getting bigger, and the lever that carries it.</p>
+    </div>
+    <div class="idea-grid">
+      <div class="construct">
+        <svg viewBox="-60 -40 470 300" role="img" aria-label="Construction: three bars at 60 degrees rising in equal steps, a fourth stroke leaning on the tallest">
+          <g stroke="#3a3a40" stroke-width="1" fill="none">
+            <line x1="-40" y1="188.8" x2="400" y2="188.8" stroke-dasharray="4 5"/>
+            <line x1="-40" y1="107" x2="120" y2="107" stroke-dasharray="2 5"/>
+            <line x1="-40" y1="66.7" x2="200" y2="66.7" stroke-dasharray="2 5"/>
+            <line x1="-40" y1="26" x2="300" y2="26" stroke-dasharray="2 5"/>
+          </g>
+          <g class="mark" style="color:#E5261A">
+            <line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/>
+            <line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
+            <line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
+            <line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/>
+          </g>
+          <g font-family="Geist Mono, ui-monospace, monospace" font-size="11" fill="#8E8A84">
+            <text x="-52" y="111">2</text><text x="-52" y="71">3</text><text x="-52" y="30">4</text>
+            <text x="-52" y="232">Heights rise 2 : 3 : 4</text>
+            <path d="M26 188.8 m 40 0 a 40 40 0 0 0 -20 -34.6" stroke="#8E8A84" fill="none"/>
+            <text x="72" y="178">60°</text>
+            <text x="330" y="120" fill="#F3F2EF">the lever</text>
+            <path d="M326 116 L300 116" stroke="#F3F2EF" stroke-width="1"/>
+            <text x="150" y="232">One stroke weight. Rounded ends.</text>
+          </g>
+        </svg>
+      </div>
+      <ol class="beats">
+        <li><span class="num">Bars</span><div><h3>A business getting bigger</h3><p>Three bars climb in equal steps, read left to right. The same rising bars the old logo opened with.</p></div></li>
+        <li><span class="num">Lever</span><div><h3>What carries the growth</h3><p>The fourth stroke leans in and props up the tallest bar. That is the lever. It does the work so the owner doesn't have to.</p></div></li>
+        <li><span class="num">Peak</span><div><h3>Maximum</h3><p>Together they form a peak. The highest point sits on the right: the after, not the before.</p></div></li>
+      </ol>
+    </div>
+    <div class="homage">
+      <img src="old-logo.png" alt="The previous Maximum Leverage logo">
+      <span class="arrow" aria-hidden="true">→</span>
+      <svg class="mark mini" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg>
+      <p>A homage, not a restart. The rising bars, the rounded stroke ends and the wide lettering all come from the logo clients already know. The gradient and gloss are gone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 Logo suite -->
+<section class="slide light" id="suite">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>03</b> Logo suite</div>
+      <h2>One mark, three lockups.</h2>
+      <p class="lede">The stacked lockup leads. The horizontal lockup is for headers and tight spaces. The symbol alone is for avatars, icons and video.</p>
+    </div>
+    <div class="suite">
+      <div class="tile t-carbon span-3"><div class="lockup-stack c-signal"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div><span class="label">Primary · on Carbon</span></div>
+      <div class="tile t-chalk span-3"><div class="lockup-stack c-signal"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div><span class="label">Primary · on White</span></div>
+      <div class="tile t-carbon span-2"><div class="lockup-row"><svg class="mark c-signal" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm c-chalk">Maximum Leverage</div></div><span class="label">Horizontal</span></div>
+      <div class="tile t-signal span-2"><div class="lockup-stack c-chalk"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div><span class="label">Reverse · on Signal</span></div>
+      <div class="tile t-chalk span-2"><svg class="mark solo c-signal" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><span class="label">Symbol</span></div>
+    </div>
+    <div class="rules">
+      <div><div class="space-demo"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><h3>Clear space</h3><p>Keep one bar width free on every side. Nothing enters that margin.</p></div>
+      <div><div class="min-row"><svg class="mark" style="width:48px" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><svg class="mark" style="width:26px" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><svg class="mark" style="width:16px" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><h3>Minimum size</h3><p>The symbol holds down to 16px wide. Below 120px wide, drop the name and use the symbol alone.</p></div>
+      <div><div class="min-row" style="gap:10px"><span class="label" style="text-decoration:line-through">Gradient</span><span class="label" style="text-decoration:line-through">Outline</span><span class="label" style="text-decoration:line-through">Rotated</span></div><h3>Leave it alone</h3><p>One flat colour at a time. No gradients, no outlines, no shadows, no rotating or restacking the strokes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 Colour -->
+<section class="slide" id="colour">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>04</b> Colour</div>
+      <h2>Mostly Carbon. <span class="accent">Signal where it counts.</span></h2>
+      <p class="lede">Three colours, used in a fixed proportion. Carbon is the stage, Chalk gives it air, and Signal marks the one thing to look at.</p>
+    </div>
+    <div class="swatches">
+      <div class="sw sw-carbon"><h3>Carbon</h3><dl><dt>HEX</dt><dd>#0E0E0F</dd><dt>RGB</dt><dd>14 14 15</dd><dt>USE</dt><dd>Backgrounds, type on Chalk</dd></dl></div>
+      <div class="sw sw-chalk"><h3>Chalk</h3><dl><dt>HEX</dt><dd>#F3F2EF</dd><dt>RGB</dt><dd>243 242 239</dd><dt>USE</dt><dd>Type on Carbon, light pages</dd></dl></div>
+      <div class="sw sw-signal"><h3>Signal</h3><dl><dt>HEX</dt><dd>#E5261A</dd><dt>RGB</dt><dd>229 38 26</dd><dt>USE</dt><dd>The mark, one accent</dd></dl></div>
+    </div>
+    <div style="display:grid;gap:10px">
+      <div class="ratio" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="ratio-cap"><span class="label">Carbon 70%</span><span class="label">Chalk 22%</span><span class="label">Signal 8%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 Type -->
+<section class="slide light" id="type">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>05</b> Typography</div>
+      <h2>Three faces, three jobs.</h2>
+      <p class="lede">Michroma carries the name, wide and letterspaced like the old logo. Host Grotesk does the talking. Geist Mono labels the numbers.</p>
+    </div>
+    <div class="type-grid">
+      <div class="spec"><div class="label">Wordmark and tagline · Michroma</div><div class="big big-wm">MAXIMUM</div><p>Capitals only, tracked at 0.32 em. For the name and the tagline. Never for sentences.</p></div>
+      <div class="spec"><div class="label">Headlines and text · Host Grotesk 400 to 500</div><div class="big big-sans">Aa Gg 31%</div><p>Sentence case, tight headlines, relaxed body. Everything a client reads.</p></div>
+      <div class="spec"><div class="label">Labels and data · Geist Mono</div><div class="big big-mono">+31% / 24h</div><p>Small caps labels, figures, timestamps. Numbers over adjectives.</p></div>
+    </div>
+    <p class="sample-line">One follow-up sequence. <span class="accent">31% more booked consults.</span></p>
+  </div>
+</section>
+
+<!-- 06 Motion -->
+<section class="slide" id="motion">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>06</b> Motion</div>
+      <h2>Rise. Lean. Settle.</h2>
+      <p class="lede">The mark moves the way the idea works. The bars rise first, then the lever leans in and takes the weight, with a small overshoot as it lands.</p>
+    </div>
+    <div class="motion-grid">
+      <div class="m-card"><div class="m-stage"><svg class="mark loop-intro" viewBox="0 0 344 215" aria-label="Intro animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g></svg></div><h3>Intro</h3><p>Video opens, site load, presentations.</p><div class="m-spec">Bars 800ms, 120ms stagger · lever 900ms with overshoot</div></div>
+      <div class="m-card"><div class="m-stage"><svg class="mark loader" viewBox="0 0 344 215" aria-label="Loading animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><h3>Loading</h3><p>Strokes light in reading order, left to right.</p><div class="m-spec">1.4s cycle · 200ms step · linear</div></div>
+      <div class="m-card"><div class="m-stage"><svg class="mark pulse" viewBox="0 0 344 215" aria-label="Result animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g></svg></div><h3>Result</h3><p>A booked call, a new review. The lever pushes and the top bar lifts.</p><div class="m-spec">2.4s cycle · lever −7° · bar +6%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 In use -->
+<section class="slide" id="use">
+  <div class="inner">
+    <div class="slide-head">
+      <div class="kicker"><b>07</b> In use</div>
+      <h2>Where clients will meet it.</h2>
+      <p class="lede">Cards, the website, social, the office wall and video. Every mockup uses the same three colours and the same mark.</p>
+    </div>
+    <div class="use-grid">
+      <div class="scene s-web col-12"><span class="scene-cap label">Website</span>
+        <div class="browser">
+          <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="tabpill"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg>Maximum Leverage</div><div class="url">maximumleverage.com</div></div>
+          <div class="site">
+            <nav><div class="lockup-row"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div><ul><li>Levers</li><li>Results</li><li>About</li></ul></nav>
+            <div class="site-hero">
+              <div><h4>Proven levers that grow your local business <span class="accent">without you.</span></h4><p>We build and run the growth levers the big companies use, so you win more customers without working more hours.</p><span class="btn">Book a call</span></div>
+              <div class="chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="site-stats"><div><b>31%</b><span>more booked consults</span></div><div><b>24/7</b><span>every call answered</span></div><div><b>0</b><span>extra hours for you</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene s-cards col-7"><span class="scene-cap label" style="color:#bdb8b0">Business cards</span>
+        <div class="cards">
+          <div class="card card-back"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div>
+          <div class="card card-front"><div class="lockup-row"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div><div class="who">Founder<span>hello@maximumleverage.com</span></div></div>
+        </div>
+      </div>
+
+      <div class="scene s-phone col-5"><span class="scene-cap label" style="color:#5E5B57">Social</span>
+        <div class="phone"><div class="screen"><div class="island"></div>
+          <div class="notif"><div class="ic"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><div><b>New booked call</b><span>Missed call recovered at 9:42 pm</span></div></div>
+          <div class="p-head"><div class="p-avatar"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><div><div class="p-name">maximumleverage</div><div class="p-bio">Less effort. More scale.<br>Growth levers for local business.</div></div></div>
+          <div class="p-stats"><span><b>214</b> posts</span><span><b>18.2k</b> followers</span></div>
+          <div class="p-grid">
+            <div class="pg-carbon"><span class="q">Somebody called you last night. <span class="accent">Who answered?</span></span></div>
+            <div class="pg-signal"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div>
+            <div class="pg-chalk"><span><span class="n">31%</span><small>MORE CONSULTS</small></span></div>
+            <div class="pg-chalk"><span class="q">Your business grows. Your hours don't.</span></div>
+            <div class="pg-carbon"><span><span class="n accent">24/7</span><small>CALLS ANSWERED</small></span></div>
+            <div class="pg-signal"><span class="q">Less effort. More scale.</span></div>
+            <div class="pg-signal"><span><span class="n">0</span><small>EXTRA HOURS</small></span></div>
+            <div class="pg-carbon"><svg class="mark" style="color:var(--signal)" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div>
+            <div class="pg-chalk"><span class="q">One lever. More booked calls.</span></div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="scene s-wall col-8"><span class="scene-cap label">Office wall</span>
+        <div class="sign"><div class="lockup-stack"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div></div>
+      </div>
+
+      <div class="scene s-icons col-4"><span class="scene-cap label" style="color:#bdb8b0">App icon</span>
+        <div class="icons">
+          <div class="app"><i class="ph"></i>Calendar</div><div class="app"><i class="ph"></i>Mail</div><div class="app"><i class="ml"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></i>Leverage</div><div class="app"><i class="ph"></i>Phone</div>
+          <div class="app"><i class="ph"></i>Notes</div><div class="app"><i class="ph"></i>Maps</div><div class="app"><i class="ph"></i>Photos</div><div class="app"><i class="ph"></i>Clock</div>
+        </div>
+      </div>
+
+      <div class="scene s-video col-12"><span class="scene-cap label" style="color:#bdb8b0">Video</span>
+        <div class="frame">
+          <div class="bokeh" aria-hidden="true"></div>
+          <div class="rec">REC</div>
+          <div class="lower"><div class="sq"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><div class="tx"><b>Answer every call. Or keep paying for the ones you missed.</b><span>Maximum Leverage · Lever 03: call recovery</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 Close -->
+<section class="slide close" id="close">
+  <div class="inner">
+    <div class="kicker"><b>08</b> Next</div>
+    <div class="lockup-stack"><svg class="mark" viewBox="0 0 344 215" aria-hidden="true"><line class="bar" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg><div class="wm">Maximum Leverage</div></div>
+    <h2>Your business grows. <span class="accent">Your hours don't.</span></h2>
+    <p>On approval: final vector files, favicon and app icon set, social templates, and the updated brand system.</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  var btn = document.getElementById('replay');
+  var svg = document.querySelector('#hero-lockup .mark');
+  var wm = document.querySelector('#hero-lockup .wm');
+  if (btn && svg) btn.addEventListener('click', function () {
+    svg.classList.remove('anim'); void svg.getBoundingClientRect(); svg.classList.add('anim');
+    if (wm) { wm.style.animation = 'none'; void wm.offsetWidth; wm.style.animation = ''; }
+  });
+  var links = Array.prototype.slice.call(document.querySelectorAll('.progress a'));
+  var slides = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function mark() {
+    var mid = window.innerHeight * 0.45, idx = 0;
+    slides.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= mid) idx = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === idx); });
+  }
+  window.addEventListener('scroll', mark, { passive: true }); mark();
+  document.addEventListener('keydown', function (e) {
+    if (e.target.closest && e.target.closest('input,textarea,select')) return;
+    var cur = links.findIndex(function (a) { return a.classList.contains('on'); });
+    var next = null;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowRight') next = Math.min(cur + 1, slides.length - 1);
+    if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'ArrowLeft') next = Math.max(cur - 1, 0);
+    if (next !== null && slides[next]) { e.preventDefault(); slides[next].scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+})();
+</script>

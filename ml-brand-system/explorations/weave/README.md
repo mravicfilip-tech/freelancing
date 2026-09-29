@@ -64,3 +64,7 @@ State of the symbol work, so a new session can resume.
 - Working vector (hand-built, stroke based): `ml-brand-system/assets/logo/o10/`.
 - Identity presentation with motion and mockups: `explorations/brand-presentation.html`, published at https://claude.ai/artifact/L7JV5VUEaYZX2CT7GYe67B
   Fonts: Michroma (wordmark and tagline, from the existing brand tokens), Host Grotesk (text), Geist Mono (labels).
+- **Type rule from the user: never use a mono font.** Labels and data use Host Grotesk 500 in small uppercase with tabular figures.
+  The presentation no longer loads Geist Mono. Older exploration boards still use it; they are archive only.
+- Intro animation rebuilt with springs (script-driven): dots pop, bars spring up, the lever swings in and lands,
+  the tall bar tips back and settles, the name rises letter by letter.

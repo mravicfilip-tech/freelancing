@@ -1,7 +1,7 @@
 <title>Maximum Leverage Identity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Host+Grotesk:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Host+Grotesk:wght@400..600&display=swap">
 <style>
 /* Layout: a presentation told in stacked full-bleed slides. Carbon is the stage; Chalk slides are the pauses. Signal appears only in the mark and one accent per slide. Single committed look (Carbon-first), colours set explicitly so it reads the same in any host theme. */
 :root {
@@ -15,7 +15,7 @@
   --ash-dark: #5E5B57;   /* secondary text on chalk */
   --wordmark: "Michroma", "Eurostile", "Microgramma", sans-serif;
   --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --label: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
   --ease-out: cubic-bezier(.2,.8,.2,1);
   --ease-lever: cubic-bezier(.34,1.45,.5,1);
   color-scheme: dark;
@@ -31,7 +31,7 @@ body { margin: 0; background: var(--carbon); color: var(--chalk); font-family: v
 @media (max-width: 640px) { .slide { padding-inline: 16px; padding-block: 72px } .inner { gap: 40px } }
 
 .slide-head { display: grid; gap: 18px; max-width: 62ch }
-.kicker { display: flex; gap: 14px; align-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
+.kicker { display: flex; gap: 14px; align-items: center; font-family: var(--label); font-weight: 500; font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
 .light .kicker { color: var(--ash-dark) }
 .kicker b { font-weight: 500; color: var(--signal) }
 h1, h2 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.04; margin: 0; text-wrap: balance }
@@ -39,7 +39,7 @@ h2 { font-size: clamp(34px, 5.2vw, 60px) }
 h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .lede { margin: 0; font-size: 19px; color: var(--ash); max-width: 56ch }
 .light .lede { color: var(--ash-dark) }
-.label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
+.label { font-family: var(--label); font-weight: 500; font-variant-numeric: tabular-nums; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ash) }
 .light .label { color: var(--ash-dark) }
 .accent { color: var(--signal) }
 
@@ -54,14 +54,10 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .lockup-row { display: inline-flex; align-items: center; gap: 1.1em }
 .lockup-row .mark { width: 3.1em; height: auto }
 
-/* Intro animation: bars rise, the lever leans in, the name settles */
-.anim .bar { stroke-dasharray: 200; stroke-dashoffset: 200; animation: rise .8s var(--ease-out) forwards }
-.anim .b1 { animation-delay: .15s } .anim .b2 { animation-delay: .3s } .anim .b3 { animation-delay: .45s }
-.anim .leg-g { transform-box: view-box; transform-origin: 318px 188.8px; transform: rotate(28deg); opacity: 0; animation: lean .9s var(--ease-lever) 1.05s forwards }
-.anim + .wm, .anim ~ .wm { animation: settle 1.1s var(--ease-out) 1.35s both }
-@keyframes rise { to { stroke-dashoffset: 0 } }
-@keyframes lean { 0% { opacity: 0; transform: rotate(28deg) } 20% { opacity: 1 } 100% { opacity: 1; transform: rotate(0) } }
-@keyframes settle { from { opacity: 0; letter-spacing: .7em; margin-right: -.7em } to { opacity: 1; letter-spacing: .32em; margin-right: -.32em } }
+/* Intro animation is driven by script (springs), see the bottom of the page. */
+.intro .ground { stroke: var(--chalk); stroke-width: 2; stroke-linecap: round; opacity: .28 }
+.intro-glow { position: absolute; left: 50%; top: 42%; width: 60%; aspect-ratio: 1; transform: translate(-50%, -50%) scale(.6); border-radius: 50%; background: radial-gradient(circle, rgba(229,38,26,.28), rgba(229,38,26,0) 62%); opacity: 0; pointer-events: none }
+.wm .ch { display: inline-block; white-space: pre }
 
 /* ---------- 01 Cover ---------- */
 .cover { border-top: 0; padding-block: 96px 88px; overflow: hidden }
@@ -69,8 +65,8 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .cover .lockup-stack { font-size: clamp(15px, 2.6vw, 28px); color: var(--signal) }
 .cover-foot { display: grid; gap: 14px; justify-items: center }
 .tagline { font-family: var(--wordmark); font-size: clamp(13px, 1.6vw, 17px); letter-spacing: .42em; margin-right: -.42em; text-transform: uppercase; color: var(--chalk) }
-.cover-meta { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--ash); text-transform: uppercase }
-.replay { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--chalk); background: transparent; border: 1px solid var(--carbon-3); border-radius: 999px; padding: 9px 16px; cursor: pointer }
+.cover-meta { font-family: var(--label); font-size: 12px; letter-spacing: .1em; color: var(--ash); text-transform: uppercase }
+.replay { font-family: var(--label); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--chalk); background: transparent; border: 1px solid var(--carbon-3); border-radius: 999px; padding: 9px 16px; cursor: pointer }
 .replay:hover { border-color: var(--ash) }
 .replay:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px }
 .cover::after { content: ""; position: absolute; inset: auto -10% -60% -10%; height: 90%; background: radial-gradient(ellipse at 50% 100%, rgba(229,38,26,.16), rgba(229,38,26,0) 60%); pointer-events: none }
@@ -81,11 +77,11 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .construct svg { display: block; width: 100%; min-width: 300px; height: auto }
 .beats { display: grid; gap: 28px; margin: 0; padding: 0; list-style: none }
 .beats li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start }
-.beats .num { font-family: var(--mono); font-size: 12px; color: var(--signal); padding-top: 4px; letter-spacing: .08em }
+.beats .num { font-family: var(--label); font-size: 12px; color: var(--signal); padding-top: 4px; letter-spacing: .08em }
 .beats p { margin: 6px 0 0; color: var(--ash); max-width: 44ch }
 .homage { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--carbon-3); padding-block: 28px 0 }
 .homage img { width: 220px; height: auto; border-radius: 6px; background: #fff; flex: none }
-.homage .arrow { font-family: var(--mono); color: var(--ash) }
+.homage .arrow { font-family: var(--label); color: var(--ash) }
 .homage .mini { color: var(--signal); width: 96px; flex: none }
 .homage p { margin: 0; color: var(--ash); max-width: 46ch; min-width: 0; flex: 1 1 260px }
 
@@ -115,7 +111,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .swatches { display: grid; grid-template-columns: 5fr 3fr 2fr; gap: 2px; min-height: 340px }
 .sw { padding: 24px; display: grid; align-content: space-between; gap: 40px; min-width: 0 }
 .sw h3 { font-size: 26px }
-.sw dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .04em }
+.sw dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-family: var(--label); font-size: 12px; letter-spacing: .04em }
 .sw dt { opacity: .6 } .sw dd { margin: 0; font-variant-numeric: tabular-nums }
 .sw-carbon { background: var(--carbon); border: 1px solid var(--carbon-3) }
 .sw-chalk { background: var(--chalk); color: var(--carbon) }
@@ -131,7 +127,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .spec p { margin: 0; color: var(--ash-dark); font-size: 15px }
 .big-wm { font-family: var(--wordmark); font-size: clamp(30px, 4vw, 46px); letter-spacing: .08em }
 .big-sans { font-family: var(--sans); font-weight: 500; font-size: clamp(44px, 6vw, 72px); letter-spacing: -0.03em }
-.big-mono { font-family: var(--mono); font-size: clamp(30px, 3.6vw, 42px); letter-spacing: -0.01em }
+.big-mono { font-family: var(--label); font-weight: 500; font-variant-numeric: tabular-nums; font-size: clamp(34px, 4.4vw, 52px); letter-spacing: -0.02em }
 .sample-line { font-family: var(--sans); font-size: clamp(26px, 3.4vw, 40px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; margin: 0; color: var(--carbon); max-width: 26ch; text-wrap: balance }
 
 /* ---------- 06 Motion ---------- */
@@ -140,13 +136,8 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .m-stage { height: 200px; display: grid; place-items: center; background: var(--carbon); border: 1px solid var(--carbon-3) }
 .m-stage .mark { width: 120px; color: var(--signal) }
 .m-card p { margin: 0; color: var(--ash); font-size: 15px }
-.m-spec { font-family: var(--mono); font-size: 12px; color: var(--chalk); letter-spacing: .02em }
+.m-spec { font-family: var(--label); font-size: 12px; color: var(--chalk); letter-spacing: .02em }
 /* loop: intro on repeat */
-.loop-intro .bar { stroke-dasharray: 200; animation: rise-loop 3.6s var(--ease-out) infinite }
-.loop-intro .b2 { animation-delay: .12s } .loop-intro .b3 { animation-delay: .24s }
-.loop-intro .leg-g { transform-box: view-box; transform-origin: 318px 188.8px; animation: lean-loop 3.6s var(--ease-lever) infinite }
-@keyframes rise-loop { 0% { stroke-dashoffset: 200 } 25%, 88% { stroke-dashoffset: 0 } 100% { stroke-dashoffset: 200 } }
-@keyframes lean-loop { 0%, 22% { opacity: 0; transform: rotate(28deg) } 28% { opacity: 1 } 45%, 88% { opacity: 1; transform: rotate(0) } 100% { opacity: 0; transform: rotate(0) } }
 /* loader: bars light in sequence */
 .loader .bar, .loader .leg { stroke: var(--carbon-3) }
 .loader .b1 { animation: light 1.4s linear infinite } .loader .b2 { animation: light 1.4s linear .2s infinite } .loader .b3 { animation: light 1.4s linear .4s infinite } .loader .leg { animation: light 1.4s linear .6s infinite }
@@ -173,7 +164,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .card-front .lockup-row { font-size: clamp(5px, 1.05vw, 9px); color: var(--signal) }
 .card-front .lockup-row .wm { color: var(--chalk) }
 .card-front .who { font-size: clamp(8px, 1.4vw, 12px); color: var(--chalk); line-height: 1.35 }
-.card-front .who span { display: block; font-family: var(--mono); color: var(--ash); font-size: .82em; letter-spacing: .06em }
+.card-front .who span { display: block; font-family: var(--label); color: var(--ash); font-size: .82em; letter-spacing: .06em }
 @keyframes floatA { 0%, 100% { transform: rotate(-9deg) translateY(0) } 50% { transform: rotate(-8deg) translateY(-6px) } }
 @keyframes floatB { 0%, 100% { transform: rotate(6deg) translateY(0) } 50% { transform: rotate(7deg) translateY(5px) } }
 
@@ -195,7 +186,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .p-grid .mark { width: 60% }
 .p-grid .q { font-weight: 600; font-size: 8.5px; line-height: 1.15; letter-spacing: -0.01em }
 .p-grid .n { font-family: var(--sans); font-weight: 600; font-size: 20px; letter-spacing: -0.03em; line-height: 1 }
-.p-grid small { display: block; font-size: 6.5px; font-family: var(--mono); letter-spacing: .06em; margin-top: 3px; opacity: .8 }
+.p-grid small { display: block; font-size: 6.5px; font-family: var(--label); letter-spacing: .06em; margin-top: 3px; opacity: .8 }
 .notif { position: absolute; left: 8px; right: 8px; top: 38px; background: rgba(40,40,44,.92); border-radius: 14px; padding: 9px 10px; display: grid; grid-template-columns: 26px 1fr; gap: 9px; align-items: center; color: var(--chalk); z-index: 3; animation: notif 6s var(--ease-out) infinite; backdrop-filter: blur(8px) }
 .notif .ic { width: 26px; height: 26px; border-radius: 7px; background: var(--carbon); display: grid; place-items: center }
 .notif .ic .mark { width: 16px; color: var(--signal) }
@@ -210,7 +201,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .dots { display: flex; gap: 6px } .dots i { width: 10px; height: 10px; border-radius: 50%; background: #3a3a40; display: block }
 .tabpill { display: flex; align-items: center; gap: 8px; background: var(--carbon); color: var(--chalk); font-size: 12px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; min-width: 0; overflow: hidden }
 .tabpill .mark { width: 14px; color: var(--signal); flex: none }
-.url { flex: 1; min-width: 0; background: var(--carbon); border-radius: 6px; padding: 6px 12px; font-family: var(--mono); font-size: 11px; color: var(--ash); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.url { flex: 1; min-width: 0; background: var(--carbon); border-radius: 6px; padding: 6px 12px; font-family: var(--label); font-size: 11px; color: var(--ash); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .site { background: var(--carbon); padding: 26px 34px 40px; display: grid; gap: 36px; position: relative; overflow: hidden }
 .site nav { display: flex; justify-content: space-between; align-items: center; gap: 16px }
 .site nav .lockup-row { font-size: 8px; color: var(--signal) }
@@ -256,8 +247,8 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 .lower .sq .mark { width: 40px; color: var(--chalk) }
 .lower .tx { background: var(--carbon); padding: 12px 20px 12px 16px; display: grid; gap: 2px }
 .lower .tx b { font-weight: 500; font-size: 17px; color: var(--chalk); letter-spacing: -0.01em; white-space: nowrap }
-.lower .tx span { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ash); white-space: nowrap }
-.rec { position: absolute; top: 16px; right: 18px; font-family: var(--mono); font-size: 11px; color: var(--chalk); letter-spacing: .1em; display: flex; align-items: center; gap: 8px }
+.lower .tx span { font-family: var(--label); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ash); white-space: nowrap }
+.rec { position: absolute; top: 16px; right: 18px; font-family: var(--label); font-size: 11px; color: var(--chalk); letter-spacing: .1em; display: flex; align-items: center; gap: 8px }
 .rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--signal); animation: blink 1.2s steps(2) infinite }
 @keyframes blink { 50% { opacity: 0 } }
 @keyframes lower { 0%, 8% { clip-path: inset(0 100% 0 0) } 20%, 80% { clip-path: inset(0 0 0 0) } 92%, 100% { clip-path: inset(0 100% 0 0) } }
@@ -302,17 +293,18 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 <section class="slide cover" id="cover">
   <div class="inner">
     <div class="kicker"><b>01</b> Identity presentation · Maximum Leverage</div>
-    <div class="lockup-stack" id="hero-lockup">
-      <svg class="mark anim" viewBox="0 0 344 215" role="img" aria-label="Maximum Leverage symbol">
+    <div class="lockup-stack" id="hero-lockup" style="position:relative"><div class="intro-glow" aria-hidden="true"></div>
+      <svg class="mark intro" data-intro="once" viewBox="0 0 344 215" role="img" aria-label="Maximum Leverage symbol">
+        <line class="ground" x1="0" y1="214.8" x2="0" y2="214.8"/>
         <line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/>
         <line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
         <line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
-        <g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g>
+        <g class="clipwrap"><g clip-path="url(#legclip)"><g class="counter"><g class="lever"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4"/></g></g></g></g>
       </svg>
       <div class="wm">Maximum Leverage</div>
     </div>
     <div class="cover-foot">
-      <div class="tagline">Less Effort. More Scale.</div>
+      <div class="tagline" id="hero-tag">Less Effort. More Scale.</div>
       <button class="replay" id="replay" type="button">Replay the intro</button>
     </div>
   </div>
@@ -341,7 +333,7 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
             <line class="bar" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
             <line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/>
           </g>
-          <g font-family="Geist Mono, ui-monospace, monospace" font-size="11" fill="#8E8A84">
+          <g font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-size="11" fill="#8E8A84">
             <text x="-52" y="111">2</text><text x="-52" y="71">3</text><text x="-52" y="30">4</text>
             <text x="-52" y="232">Heights rise 2 : 3 : 4</text>
             <path d="M26 188.8 m 40 0 a 40 40 0 0 0 -20 -34.6" stroke="#8E8A84" fill="none"/>
@@ -415,13 +407,13 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
   <div class="inner">
     <div class="slide-head">
       <div class="kicker"><b>05</b> Typography</div>
-      <h2>Three faces, three jobs.</h2>
-      <p class="lede">Michroma carries the name, wide and letterspaced like the old logo. Host Grotesk does the talking. Geist Mono labels the numbers.</p>
+      <h2>Two faces, three jobs.</h2>
+      <p class="lede">Michroma carries the name, wide and letterspaced like the old logo. Host Grotesk does the talking, and in small capitals it labels the numbers.</p>
     </div>
     <div class="type-grid">
       <div class="spec"><div class="label">Wordmark and tagline · Michroma</div><div class="big big-wm">MAXIMUM</div><p>Capitals only, tracked at 0.32 em. For the name and the tagline. Never for sentences.</p></div>
       <div class="spec"><div class="label">Headlines and text · Host Grotesk 400 to 500</div><div class="big big-sans">Aa Gg 31%</div><p>Sentence case, tight headlines, relaxed body. Everything a client reads.</p></div>
-      <div class="spec"><div class="label">Labels and data · Geist Mono</div><div class="big big-mono">+31% / 24h</div><p>Small caps labels, figures, timestamps. Numbers over adjectives.</p></div>
+      <div class="spec"><div class="label">Labels and data · Host Grotesk 500, tabular figures</div><div class="big big-mono">+31% · 24/7</div><p>Small uppercase labels, tracked wide. Figures line up in columns. Numbers over adjectives.</p></div>
     </div>
     <p class="sample-line">One follow-up sequence. <span class="accent">31% more booked consults.</span></p>
   </div>
@@ -436,7 +428,13 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
       <p class="lede">The mark moves the way the idea works. The bars rise first, then the lever leans in and takes the weight, with a small overshoot as it lands.</p>
     </div>
     <div class="motion-grid">
-      <div class="m-card"><div class="m-stage"><svg class="mark loop-intro" viewBox="0 0 344 215" aria-label="Intro animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g></svg></div><h3>Intro</h3><p>Video opens, site load, presentations.</p><div class="m-spec">Bars 800ms, 120ms stagger · lever 900ms with overshoot</div></div>
+      <div class="m-card"><div class="m-stage"><svg class="mark intro" data-intro="loop" viewBox="0 0 344 215" role="img" aria-label="Intro animation">
+        <line class="ground" x1="0" y1="214.8" x2="0" y2="214.8"/>
+        <line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/>
+        <line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/>
+        <line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/>
+        <g class="clipwrap"><g clip-path="url(#legclip)"><g class="counter"><g class="lever"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4"/></g></g></g></g>
+      </svg></div><h3>Intro</h3><p>Video opens, site load, presentations.</p><div class="m-spec">Dots pop 110ms apart · bars spring up · lever swings in and lands · name rises letter by letter</div></div>
       <div class="m-card"><div class="m-stage"><svg class="mark loader" viewBox="0 0 344 215" aria-label="Loading animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></svg></div><h3>Loading</h3><p>Strokes light in reading order, left to right.</p><div class="m-spec">1.4s cycle · 200ms step · linear</div></div>
       <div class="m-card"><div class="m-stage"><svg class="mark pulse" viewBox="0 0 344 215" aria-label="Result animation"><line class="bar b1" x1="26" y1="188.8" x2="73.2" y2="107"/><line class="bar b2" x1="109.9" y1="188.8" x2="180.4" y2="66.7"/><line class="bar b3" x1="193.8" y1="188.8" x2="287.8" y2="26"/><g class="leg-g"><line class="leg" x1="318" y1="188.8" x2="240.4" y2="4.4" clip-path="url(#legclip)"/></g></svg></div><h3>Result</h3><p>A booked call, a new review. The lever pushes and the top bar lifts.</p><div class="m-spec">2.4s cycle · lever −7° · bar +6%</div></div>
     </div>
@@ -526,12 +524,116 @@ h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -0.01em }
 
 <script>
 (function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var D = [0.5, -0.8660254], N = [0.8660254, 0.5];
+  var BASE = [[26,188.8],[109.9,188.8],[193.8,188.8]], LEN = [94.5,141,188];
+  var W = 52, LEVER_FROM = 78;
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x }
+  function spring(ms, z, w) { var t = ms / 1000; if (t <= 0) return 0; var wd = w * Math.sqrt(1 - z*z); return 1 - Math.exp(-z*w*t) * (Math.cos(wd*t) + (z*w/wd) * Math.sin(wd*t)) }
+  function outCubic(x) { x = clamp(x); return 1 - Math.pow(1 - x, 3) }
+  function inCubic(x) { x = clamp(x); return x * x * x }
+  function inOut(x) { x = clamp(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2 }
+
+  // Pure state of the mark at time t (ms). Intro, then (loop only) hold and outro.
+  function state(t, loop) {
+    var st = { ground: 0, groundOp: 1, bars: [], lever: LEVER_FROM, leverW: 0, glow: 0 };
+    st.ground = outCubic(t / 380);
+    st.groundOp = 1 - clamp((t - 1700) / 450);
+    for (var i = 0; i < 3; i++) {
+      var p0 = 160 + i * 110;
+      st.bars.push({ w: W * Math.max(0, spring(t - p0, .5, 24)), len: LEN[i] * spring(t - p0 - 110, .6, 12.5), push: 0 });
+    }
+    var l0 = 880;
+    var a = spring(t - l0, .5, 12);
+    st.lever = LEVER_FROM * (1 - a);
+    st.leverW = W * outCubic((t - l0) / 140);
+    if (st.lever < 0) st.bars[2].push = -st.lever * 0.55;  /* degrees the tall bar tips back */
+    st.glow = Math.max(0, 1 - Math.abs(t - 1120) / 520);
+    if (loop) {
+      var u = t - 3500;
+      if (u > 0) {
+        st.lever = LEVER_FROM * inCubic(u / 360); st.leverW = W * (1 - clamp((u - 260) / 140));
+        for (var k = 2; k >= 0; k--) {
+          var s0 = 180 + (2 - k) * 80;
+          st.bars[k].len = LEN[k] * (1 - inOut((u - s0) / 340));
+          st.bars[k].w = W * (1 - inCubic((u - s0 - 300) / 180));
+          st.bars[k].push = 0;
+        }
+        st.ground = 1 - inOut((u - 500) / 300); st.groundOp = clamp((u - 200) / 200) * (1 - clamp((u - 700) / 150));
+      }
+    }
+    return st;
+  }
+  function render(svg, st) {
+    var bars = svg.querySelectorAll('.bar');
+    for (var i = 0; i < 3; i++) {
+      var b = st.bars[i], ox = BASE[i][0], oy = BASE[i][1];
+      var r = -b.push * Math.PI / 180, dx = D[0] * Math.cos(r) - D[1] * Math.sin(r), dy = D[0] * Math.sin(r) + D[1] * Math.cos(r);
+      var ln = bars[i];
+      ln.setAttribute('x1', ox.toFixed(2)); ln.setAttribute('y1', oy.toFixed(2));
+      ln.setAttribute('x2', (ox + dx * b.len).toFixed(2)); ln.setAttribute('y2', (oy + dy * b.len).toFixed(2));
+      ln.style.strokeWidth = Math.max(0, b.w).toFixed(2);
+      ln.style.visibility = b.w > .5 ? 'visible' : 'hidden';
+    }
+    var lev = svg.querySelector('.lever'), leg = svg.querySelector('.leg');
+    lev.setAttribute('transform', 'rotate(' + st.lever.toFixed(3) + ' 318 188.8)');
+    var tip = st.bars[2].push.toFixed(3);
+    svg.querySelector('.clipwrap').setAttribute('transform', 'rotate(' + (-tip) + ' 193.8 188.8)');
+    svg.querySelector('.counter').setAttribute('transform', 'rotate(' + tip + ' 193.8 188.8)');
+    leg.style.strokeWidth = Math.max(0, st.leverW).toFixed(2);
+    leg.style.visibility = st.leverW > .5 ? 'visible' : 'hidden';
+    var g = svg.querySelector('.ground');
+    if (g) { g.setAttribute('x2', (344 * st.ground).toFixed(1)); g.style.opacity = (.28 * st.groundOp).toFixed(3); g.style.visibility = st.ground > 0.002 ? 'visible' : 'hidden' }
+  }
+  var FINAL = state(99999, false);
+
+  // Wordmark: split into letters once
+  var heroWm = document.querySelector('#hero-lockup .wm');
+  if (heroWm) {
+    var txt = heroWm.textContent; heroWm.textContent = ''; heroWm.setAttribute('aria-label', txt);
+    for (var c = 0; c < txt.length; c++) { var sp = document.createElement('span'); sp.className = 'ch'; sp.setAttribute('aria-hidden', 'true'); sp.textContent = txt[c]; heroWm.appendChild(sp) }
+  }
+  function playWordmark() {
+    if (!heroWm || !heroWm.animate) return;
+    var chars = heroWm.querySelectorAll('.ch');
+    chars.forEach(function (ch, i) {
+      ch.animate([{ opacity: 0, transform: 'translateY(0.9em)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+        { duration: 700, delay: 1080 + i * 34, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+    });
+    heroWm.animate([{ letterSpacing: '.62em', marginRight: '-.62em' }, { letterSpacing: '.32em', marginRight: '-.32em' }], { duration: 1500, delay: 1000, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' });
+    var tag = document.getElementById('hero-tag');
+    if (tag) tag.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 1900, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+  }
+  var heroGlow = document.querySelector('#hero-lockup .intro-glow');
+
+  var players = [];
+  document.querySelectorAll('svg[data-intro]').forEach(function (svg) {
+    var loop = svg.getAttribute('data-intro') === 'loop';
+    var p = { svg: svg, loop: loop, t0: performance.now(), visible: true, done: false };
+    players.push(p);
+    if (reduce) { render(svg, FINAL); p.done = true }
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { p.visible = es[0].isIntersecting; if (p.visible && p.loop) p.t0 = performance.now() }).observe(svg);
+  });
+  function frame(now) {
+    players.forEach(function (p) {
+      if (p.done || !p.visible) return;
+      var t = now - p.t0;
+      if (p.loop) t = t % 4700;
+      var st = state(t, p.loop);
+      render(p.svg, st);
+      if (!p.loop && heroGlow) { heroGlow.style.opacity = st.glow.toFixed(3); heroGlow.style.transform = 'translate(-50%,-50%) scale(' + (.6 + .5 * st.glow).toFixed(3) + ')' }
+      if (!p.loop && t > 3200) { render(p.svg, FINAL); p.done = true }
+    });
+    requestAnimationFrame(frame);
+  }
+  if (!reduce) { playWordmark(); requestAnimationFrame(frame) }
   var btn = document.getElementById('replay');
-  var svg = document.querySelector('#hero-lockup .mark');
-  var wm = document.querySelector('#hero-lockup .wm');
-  if (btn && svg) btn.addEventListener('click', function () {
-    svg.classList.remove('anim'); void svg.getBoundingClientRect(); svg.classList.add('anim');
-    if (wm) { wm.style.animation = 'none'; void wm.offsetWidth; wm.style.animation = ''; }
+  if (btn) btn.addEventListener('click', function () {
+    if (reduce) return;
+    players.forEach(function (p) { if (!p.loop) { p.t0 = performance.now(); p.done = false } });
+    if (heroWm) heroWm.getAnimations && heroWm.getAnimations({ subtree: true }).forEach(function (a) { a.cancel() });
+    var tag = document.getElementById('hero-tag'); if (tag && tag.getAnimations) tag.getAnimations().forEach(function (a) { a.cancel() });
+    playWordmark();
   });
   var links = Array.prototype.slice.call(document.querySelectorAll('.progress a'));
   var slides = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });

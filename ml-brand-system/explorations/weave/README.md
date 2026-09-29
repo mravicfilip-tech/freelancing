@@ -28,6 +28,6 @@ State of the symbol work, so a new session can resume.
 - Shortlist board: `bar-m-shortlist.html`, published at https://claude.ai/artifact/4qhkwrg4rcVVgAx1Ays4Az
 
 ## Next
-1. User picks one survivor.
+1. **Picked: g6** (M carved from a red tile; run 52c74b42). Also worth drawing a positive version (red bars, no tile) for use beside the wordmark.
 2. Vector master (Recraft Vectorizer, then clean-up to equal bar and gap widths), a dedicated 16px favicon cut, then update brand system files.
 3. No further Weave spend without an explicit Approve/Cancel prompt that shows the cost.

@@ -1,0 +1,11 @@
+# Round 4: 10 new directions from refs/ moodboard moves not yet tried. Nano Banana Pro, 11 credits each, 110 total. Text prompts only.
+r01 heavy M, one precise cut (Revolut)            702830fd-9fa0-4665-b27b-d46d783bdb7d
+r02 M from block + circle + slant (TradingView)   69ec82a5-32c6-4a6a-a98e-6fd30425a9c6
+r03 folded strip M (Brex)                         7a96e792-7bfb-4b62-a589-e8ff9bda6ad9
+r04 layered ML monogram (PayPal)                  326dff16-2161-439a-b207-6c56c2bf7d45
+r05 nested geometry M (Square)                    4dd7d8e4-f414-488a-a977-d030a5a29972
+r06 M from rotated squares (Binance/KuCoin)       43a955f1-7ee8-495a-9e03-3825950559f9
+r07 lever M silhouette (Robinhood)                834adf54-986e-4169-acec-6c7808243045
+r08 heavy M with ring in V (HBO)                  9ad7fbf1-856e-4548-96cc-a1a87664e1c0
+r09 block carved by three cuts (horse)            8f865b0f-9306-4b2b-bf85-e513842e79ed
+r10 brush-stroke M (Alipay)                       1c98e5af-2877-49b9-96e4-7456400552d8

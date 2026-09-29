@@ -1,0 +1,11 @@
+# Mane wave variants, seeded from round 3 b-nb (bc506ae8) image. Nano Banana Pro edit, 11 credits each, 110 total.
+m01 base bar with gap              a0c686c1-bb24-4dcf-baa5-044f439c09ce
+m02 joined base, one shape         5f86ccfe-0177-43e0-9b44-9456579ccd66
+m03 rounded plinth                 fae48f29-9b14-4655-9c0f-393282c06b4a
+m04 cut from circle, circle base   7e34e71d-1827-4dc0-b3bd-af4b79764457
+m05 cut from rounded tile          8def3d7b-deeb-4e1a-ab32-3830e2280751
+m06 firmer M legs                  72887d7d-18e5-4b7f-991e-fb875100ff1f
+m07 three heavier strokes          8c851381-a1c6-4c01-a55c-451c1cb33039
+m08 upright strokes                0c2e0175-c886-4bb0-a0c7-6e2c60d9fedd
+m09 breaking-wave curl             5ee2ac7f-3ec9-4a0a-bed5-bef2d8d1daca
+m10 heavier, square footprint      09e8a2d1-b279-41b0-9734-7fb6f98f4e3e

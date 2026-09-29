@@ -1,0 +1,95 @@
+/* Maximum Leverage design tokens. Load before ml.css. Do not edit values; override on a scope if a page needs a variant. */
+
+:root {
+  /* Core palette */
+  --ml-night: #070c15;
+  --ml-navy: #0e1a2b;
+  --ml-panel: #0b1320;
+  --ml-line-dark: #1c2a40;
+  --ml-off: #f4f5f7;
+  --ml-off-2: #e9ecf0;
+  --ml-line-light: #d5d9df;
+  --ml-amber: #ffa000;
+  --ml-flame: #ff5a14;
+  --ml-signal: #e8101e;
+  --ml-silver: #d4d8de;
+  --ml-muted-dark: #9aa6b8;   /* body text on dark */
+  --ml-muted-light: #4a5566;  /* body text on light */
+  --ml-flame-text: #c2410c;   /* orange that passes 4.5:1 on white for small text */
+
+  /* Ignition gradient. Always bottom-left to top-right. Never reversed, never vertical. */
+  --ml-ignition: linear-gradient(35deg, #ffa000 0%, #ff5a14 55%, #e8101e 100%);
+  --ml-ignition-h: linear-gradient(90deg, #ffa000 0%, #ff5a14 55%, #e8101e 100%);
+
+  /* Backgrounds */
+  --ml-bg-night: linear-gradient(35deg, #03060c 0%, #07101b 55%, #12202f 100%);
+  --ml-glow-dark: radial-gradient(circle at 0% 100%, rgba(255,112,0,0.55) 0%, rgba(120,40,6,0.22) 26%, rgba(7,12,21,0) 50%);
+  --ml-bg-light: linear-gradient(35deg, #eef1f5 0%, #f7f8fa 55%, #ffffff 100%);
+  --ml-glow-light: radial-gradient(circle at 0% 100%, rgba(255,138,26,0.35) 0%, rgba(255,176,112,0.12) 30%, rgba(244,245,247,0) 55%);
+
+  /* Type */
+  --ml-font-display: "Michroma", "Eurostile", "Microgramma", sans-serif;
+  --ml-font-text: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ml-text-xs: 0.75rem;   /* 12 */
+  --ml-text-sm: 0.875rem;  /* 14 */
+  --ml-text-md: 1.0625rem; /* 17 body */
+  --ml-text-lg: 1.25rem;   /* 20 */
+  --ml-text-xl: 1.75rem;   /* 28 */
+  --ml-text-2xl: 2.5rem;   /* 40 */
+  --ml-text-3xl: 3.5rem;   /* 56 */
+  --ml-text-4xl: 4.5rem;   /* 72 */
+  --ml-text-5xl: 6.5rem;   /* 104 */
+  --ml-track-label: 0.32em;
+  --ml-track-tagline: 0.42em;
+  --ml-leading-tight: 1.02;
+  --ml-leading-body: 1.55;
+
+  /* Spacing (8pt grid) */
+  --ml-s1: 0.5rem;
+  --ml-s2: 1rem;
+  --ml-s3: 1.5rem;
+  --ml-s4: 2rem;
+  --ml-s5: 3rem;
+  --ml-s6: 4rem;
+  --ml-s7: 6rem;
+  --ml-s8: 8rem;
+  --ml-container: 1200px;
+  --ml-container-narrow: 760px;
+
+  /* Radius */
+  --ml-r-sm: 6px;   /* bar corners */
+  --ml-r-md: 14px;
+  --ml-r-lg: 22px;  /* cards */
+  --ml-r-pill: 999px;
+
+  /* Elevation and light */
+  --ml-shadow: 0 18px 40px rgba(14, 26, 43, 0.25);
+  --ml-glow-flame: 0 0 40px rgba(255, 90, 20, 0.45);
+
+  /* Motion */
+  --ml-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ml-fast: 160ms;
+  --ml-slow: 420ms;
+}
+
+/* Theme scopes. Put data-theme on <body> or any section. Dark is the brand default. */
+[data-theme="dark"], .ml-dark {
+  --ml-bg: var(--ml-night);
+  --ml-fg: var(--ml-off);
+  --ml-fg-muted: var(--ml-muted-dark);
+  --ml-surface: var(--ml-panel);
+  --ml-border: var(--ml-line-dark);
+  --ml-divider: var(--ml-silver);
+  --ml-accent-text: var(--ml-flame);
+  color-scheme: dark;
+}
+[data-theme="light"], .ml-light {
+  --ml-bg: var(--ml-off);
+  --ml-fg: var(--ml-navy);
+  --ml-fg-muted: var(--ml-muted-light);
+  --ml-surface: #ffffff;
+  --ml-border: var(--ml-line-light);
+  --ml-divider: var(--ml-navy);
+  --ml-accent-text: var(--ml-flame-text);
+  color-scheme: light;
+}

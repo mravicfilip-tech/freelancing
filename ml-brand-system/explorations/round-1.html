@@ -1,0 +1,556 @@
+<title>Maximum Leverage Rebrand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&family=Hanken+Grotesk:wght@400..800&family=Host+Grotesk:wght@400..800&family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
+<style>
+/* Layout: a working review board. Each ask is a numbered section of full-width rows (notes left, specimens right), then a mixer. Board chrome stays neutral so the variants carry all the color. */
+:root {
+  --bg: #EEF0F3;
+  --surface: #FFFFFF;
+  --fg: #0D121B;
+  --muted: #566072;
+  --line: #D6DAE1;
+  --chip: #E3E6EB;
+  --pass: #17784A;
+  --fail: #B42318;
+  --f-ui: "Geist", "Hanken Grotesk", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0D12; --surface: #11151C; --fg: #E7EAF0; --muted: #98A0AE;
+    --line: #252B35; --chip: #1A1F28; --pass: #4CC38A; --fail: #FF7A6B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A0D12; --surface: #11151C; --fg: #E7EAF0; --muted: #98A0AE;
+  --line: #252B35; --chip: #1A1F28; --pass: #4CC38A; --fail: #FF7A6B;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 400 15px/1.55 var(--f-ui);
+  padding-inline: 20px; padding-block: 0 80px;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1240px; margin-inline: auto; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .02em; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+/* header */
+.top { padding-block: 56px 40px; display: grid; gap: 20px; border-bottom: 1px solid var(--line); }
+.top .meta { color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.top h1 { font-size: clamp(34px, 5.4vw, 64px); line-height: 1.02; letter-spacing: -.035em; font-weight: 700; max-width: 16ch; }
+.top .lede { max-width: 64ch; color: var(--muted); font-size: 17px; }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+.jump a { text-decoration: none; border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 999px; font-size: 14px; }
+.jump a:hover { border-color: var(--fg); }
+.jump a b { font-family: var(--f-mono); font-weight: 500; font-size: 12px; color: var(--muted); margin-right: 6px; }
+.rec { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 14px; }
+.rec strong { font-weight: 600; }
+
+/* sections */
+.sec { padding-block: 64px 8px; }
+.sec-head { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 16px; margin-bottom: 28px; }
+.sec-head .num { font-family: var(--f-mono); font-size: 13px; color: var(--muted); padding-top: 10px; }
+.sec-head h2 { font-size: clamp(26px, 3.2vw, 38px); letter-spacing: -.03em; font-weight: 700; line-height: 1.1; }
+.sec-head p { grid-column: 2; color: var(--muted); max-width: 66ch; }
+
+.rows { display: grid; gap: 14px; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 28px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 24px;
+}
+.row-meta { display: grid; align-content: start; gap: 12px; min-width: 0; }
+.row-meta h3 { font-size: 22px; letter-spacing: -.02em; font-weight: 650; display: flex; align-items: center; gap: 10px; }
+.tag {
+  font-family: var(--f-mono); font-size: 12px; font-weight: 500;
+  display: inline-grid; place-items: center; min-width: 28px; height: 24px; padding-inline: 6px;
+  border-radius: 6px; background: var(--chip); color: var(--fg);
+}
+.row-meta .idea { font-size: 15px; }
+.row-meta dl { margin: 0; display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 6px 10px; font-size: 13.5px; }
+.row-meta dt { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-top: 3px; }
+.row-meta dd { margin: 0; color: var(--muted); }
+.row.is-rec { border-color: var(--fg); }
+.rec-badge { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--fg); border-radius: 999px; padding: 2px 8px; }
+
+/* symbol specimens */
+.sym-demo { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.15fr); gap: 10px; min-width: 0; }
+.tile { aspect-ratio: 1; max-width: 100%; border-radius: 8px; display: grid; place-items: center; }
+.tile svg { width: 58%; height: auto; }
+.sizes { display: grid; grid-template-rows: 1fr 1fr; gap: 10px; }
+.size-strip { border-radius: 8px; display: flex; align-items: flex-end; justify-content: space-around; gap: 8px; padding: 14px 12px 10px; }
+.size-strip figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+.size-strip figcaption { font-family: var(--f-mono); font-size: 10px; opacity: .6; }
+.lockup-cell { grid-column: 1 / -1; border-radius: 8px; padding: 28px 24px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; }
+.lockup { display: inline-flex; align-items: center; gap: .42em; font-size: clamp(22px, 3vw, 34px); }
+.lockup svg { width: 1.25em; height: 1.25em; flex: none; }
+.lockup .wm { font-family: "Hanken Grotesk", var(--f-ui); font-weight: 750; letter-spacing: -.035em; line-height: 1; white-space: nowrap; }
+
+/* palette specimens */
+.pal-demo { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; min-width: 0; }
+.swatches { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.sw { min-height: 112px; padding: 12px; display: grid; align-content: space-between; gap: 10px; min-width: 0; }
+.sw b { font-weight: 600; font-size: 14px; }
+.sw span { font-family: var(--f-mono); font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+.hero-mini { border-radius: 8px; padding: 22px; display: grid; gap: 14px; align-content: start; font-family: "Hanken Grotesk", var(--f-ui); min-width: 0; }
+.hero-mini .lockup { font-size: 17px; }
+.hero-mini h4 { margin: 6px 0 0; font-size: clamp(24px, 2.6vw, 32px); line-height: 1.02; letter-spacing: -.035em; font-weight: 800; text-wrap: balance; }
+.hero-mini p { font-size: 14px; line-height: 1.5; max-width: 38ch; }
+.btn-demo { justify-self: start; border: 0; border-radius: 999px; padding: 11px 20px; font: 700 14px/1 "Hanken Grotesk", var(--f-ui); cursor: default; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.check { font-family: var(--f-mono); font-size: 11px; padding: 3px 8px; border-radius: 999px; background: rgba(127,127,127,.16); }
+.theme-label { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; opacity: .65; }
+
+/* type specimens */
+.type-demo { display: grid; gap: 18px; min-width: 0; border-radius: 8px; padding: 26px; background: var(--bg); border: 1px solid var(--line); }
+.type-demo .wm-big { font-size: clamp(30px, 4.6vw, 56px); line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.type-demo .wm-line { display: flex; align-items: center; gap: .35em; min-width: 0; overflow-x: auto; }
+.type-demo .wm-line svg { width: .95em; height: .95em; flex: none; color: #FF5A14; }
+.type-demo .hl { font-size: clamp(24px, 2.8vw, 34px); line-height: 1.05; max-width: 22ch; text-wrap: balance; }
+.type-demo .body { font-size: 16px; line-height: 1.55; max-width: 60ch; color: var(--muted); }
+.type-demo .foot { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: baseline; border-top: 1px solid var(--line); padding-top: 14px; }
+.type-demo .label { font-size: 12px; text-transform: uppercase; letter-spacing: .32em; }
+.type-demo .figs { font-size: 20px; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.type-demo .figs em { font-style: normal; color: var(--muted); font-size: 13px; margin-left: 4px; }
+
+/* mixer */
+.mix { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 20px; }
+.controls { display: grid; gap: 18px; align-content: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+legend { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 0; margin-bottom: 8px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span { display: inline-block; border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; font-size: 13.5px; cursor: pointer; background: var(--surface); min-height: 36px; }
+.seg input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.seg input:focus-visible + span { outline: 2px solid var(--fg); outline-offset: 2px; }
+.copy-btn { border: 1px solid var(--fg); background: var(--fg); color: var(--bg); border-radius: 999px; padding: 11px 16px; font: 600 14px var(--f-ui); cursor: pointer; }
+.copy-out { font-family: var(--f-mono); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; user-select: all; }
+
+.stage { border-radius: var(--radius); overflow: hidden; display: grid; min-width: 0; border: 1px solid var(--line); }
+.stage-hero { padding: clamp(24px, 4vw, 48px); display: grid; gap: 22px; position: relative; overflow: hidden; }
+.stage-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.stage-nav .lockup { font-size: 20px; }
+.stage-nav .links { display: flex; gap: 20px; font-size: 14px; opacity: .8; flex-wrap: wrap; }
+.stage-hero .tagline { font-size: 12px; text-transform: uppercase; letter-spacing: .42em; margin-top: 28px; }
+.stage-hero h2 { font-size: clamp(34px, 5.2vw, 68px); line-height: 1.0; max-width: 13ch; }
+.stage-hero .body { font-size: 17px; max-width: 48ch; line-height: 1.55; }
+.stage-hero .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.stage-hero .ghost { border: 1px solid currentColor; background: transparent; border-radius: 999px; padding: 13px 22px; font-weight: 600; font-size: 15px; color: inherit; font-family: inherit; opacity: .85; }
+.stage-hero .primary { border: 0; border-radius: 999px; padding: 14px 24px; font-weight: 700; font-size: 15px; font-family: inherit; }
+.stage-hero .bg-mark { position: absolute; right: -6%; bottom: -14%; width: min(46%, 420px); opacity: .07; pointer-events: none; }
+.stage-assets { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--line); }
+.asset { background: var(--surface); padding: 18px; display: grid; gap: 10px; justify-items: center; align-content: center; min-height: 150px; }
+.asset .cap { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); text-align: center; }
+.app-icon { width: 72px; height: 72px; border-radius: 18px; display: grid; place-items: center; }
+.app-icon svg { width: 60%; height: 60%; }
+.fav-row { display: flex; align-items: flex-end; gap: 12px; }
+.card-demo { width: 100%; max-width: 180px; border-radius: 8px; padding: 12px; display: grid; gap: 18px; }
+.card-demo .lockup { font-size: 11px; }
+.card-demo small { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; opacity: .75; }
+
+.questions { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 28px; display: grid; gap: 14px; }
+.questions h2 { font-size: 22px; letter-spacing: -.02em; }
+.questions ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 72ch; color: var(--muted); }
+.questions li::marker { font-family: var(--f-mono); font-size: 12px; }
+
+@media (max-width: 900px) {
+  .row, .mix { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 18px; }
+  .mix { padding: 0; }
+  .stage-assets { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  body { padding-inline: 16px; }
+  .sym-demo { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .sizes { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 1fr 1fr; }
+  .pal-demo { grid-template-columns: minmax(0,1fr); }
+  .swatches { grid-template-columns: repeat(5, minmax(0,1fr)); }
+  .sw { min-height: 96px; padding: 8px; }
+  .sw b { font-size: 12px; }
+  .sw span { font-size: 9.5px; }
+  .sec-head { grid-template-columns: minmax(0,1fr); }
+  .sec-head p { grid-column: 1; }
+  .type-demo { padding: 18px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seg span, .jump a { transition: background .15s, border-color .15s, color .15s; }
+}
+</style>
+
+<header class="top wrap">
+  <div class="meta mono"><span>Maximum Leverage</span><span>Identity, round 1</span><span>29 Sep 2026</span></div>
+  <h1>Same idea. Simpler mark. Flat color. New type.</h1>
+  <p class="lede">Three asks: replace the five-bar symbol, drop the Ignition gradient for flat color, and move from Montserrat and Michroma to a modern grotesk. Five options for each. The idea underneath stays put: a lever moves what muscle can't, and everything rises from bottom-left to top-right.</p>
+  <nav class="jump" aria-label="Sections">
+    <a href="#symbol"><b>01</b>Symbol</a>
+    <a href="#color"><b>02</b>Flat color</a>
+    <a href="#type"><b>03</b>Typography</a>
+    <a href="#mix"><b>04</b>Mix and match</a>
+  </nav>
+  <div class="rec"><span class="rec-badge">Starting pick</span><strong id="recText"></strong></div>
+</header>
+
+<main>
+  <section id="symbol" class="wrap sec">
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Symbol</h2>
+      <p>Each mark is shown flat: Flame on Night, Navy on Off-white, then at 48, 32, 20 and 16 pixels, then next to a wordmark. All five come from the lever story in the brand kit, not from a chart icon.</p>
+    </div>
+    <div id="symbols" class="rows"></div>
+  </section>
+
+  <section id="color" class="wrap sec">
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>Flat color</h2>
+      <p>No gradients anywhere. One accent per palette, used on the mark, the primary button and one phrase per headline. Contrast figures are computed from the hex values: body text and button labels need 4.5:1, the mark needs 3:1.</p>
+    </div>
+    <div id="palettes" class="rows"></div>
+  </section>
+
+  <section id="type" class="wrap sec">
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Typography</h2>
+      <p>Each option is one grotesk family doing everything: wordmark, headlines, body and tracked labels. That retires Michroma and Montserrat together. All five are free on Google Fonts; the paid face with a similar feel is listed in case the budget allows.</p>
+    </div>
+    <div id="types" class="rows"></div>
+  </section>
+
+  <section id="mix" class="wrap sec">
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>Mix and match</h2>
+      <p>Pick one of each and see it on a hero, an app icon, a favicon and a business card. Copy the combination and paste it back into the chat to start round 2.</p>
+    </div>
+    <div class="mix">
+      <form class="controls" id="mixForm" onsubmit="return false">
+        <fieldset><legend>Symbol</legend><div class="seg" id="segSym"></div></fieldset>
+        <fieldset><legend>Palette</legend><div class="seg" id="segPal"></div></fieldset>
+        <fieldset><legend>Type</legend><div class="seg" id="segType"></div></fieldset>
+        <fieldset><legend>Ground</legend><div class="seg" id="segMode"></div></fieldset>
+        <button type="button" class="copy-btn" id="copyBtn">Copy this combination</button>
+        <p class="copy-out" id="copyOut" aria-live="polite"></p>
+      </form>
+      <div class="stage" id="stage"></div>
+    </div>
+
+    <div class="questions">
+      <h2>Questions before round 2</h2>
+      <ol>
+        <li>Does the new mark need to keep any link to the five bars, or is a clean break fine with existing customers?</li>
+        <li>Is orange staying, or are you open to leaving it (options 4 and 5)?</li>
+        <li>Where does the logo live most: social avatars and video, printed items like vans and signs, or the website?</li>
+        <li>Should the wordmark stay all caps and wide, or move to sentence case like the samples here?</li>
+        <li>Is there budget for a paid typeface, or should we stay on free Google Fonts?</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<script>
+const SYMBOLS = [
+  { id: "A", name: "Fulcrum",
+    svg: '<rect x="4" y="44" width="88" height="13" rx="1.5" transform="rotate(-18 48 50)"/><path d="M30 64 44 88H16Z"/>',
+    idea: "The lever itself. A beam on a pivot, the long arm rising to the right. It says leverage before anyone reads the name.",
+    keeps: "The lever line and the rise from bottom-left to top-right.",
+    watch: "Literal. If the angle flattens it reads as a seesaw." },
+  { id: "B", name: "Rising M",
+    svg: '<path d="M10 88V36H24L46 62 70 12H84V88H70V42L48.8 85.4 24 56V88Z"/>',
+    idea: "One M drawn as a chart line. The right peak sits higher than the left, the same before-and-after story the bars told, in one shape instead of five.",
+    keeps: "The M and the higher right peak.",
+    watch: "Letter marks are harder to own. The exact angles have to stay fixed or it drifts toward any M logo." },
+  { id: "C", name: "Ratio",
+    svg: '<rect x="8" y="66" width="22" height="22"/><rect x="30" y="8" width="58" height="58"/>',
+    idea: "The tagline as geometry. A small square and a large one meet at a corner on the lever diagonal. Less effort in, more scale out.",
+    keeps: "The rise and the tagline. Works as a favicon, a bullet, a sticker on a van.",
+    watch: "Abstract. Pair it with the tagline for the first months so people learn what it means." },
+  { id: "D", name: "Two Bars",
+    svg: '<path d="M14 88V60L40 41.6V88ZM56 88V30.4L82 12V88Z"/>',
+    idea: "The current mark cut down to its point. Two bars, before and after, their tops sliced by the lever line.",
+    keeps: "Most of the existing equity. Current customers will recognise it.",
+    watch: "Closest to a generic bar-chart icon. The slanted tops carry all of its character." },
+  { id: "E", name: "Pivot",
+    svg: '<circle cx="18" cy="78" r="10"/><path d="M18 78 70.1 34.3" fill="none" stroke="currentColor" stroke-width="12"/><path d="M86 78A68 68 0 0 0 70.1 34.3" fill="none" stroke="currentColor" stroke-width="5"/>',
+    idea: "A lever in motion. A pivot point, an arm lifting and the arc it sweeps. The moment effort turns into lift.",
+    keeps: "The lever and the rise, plus built-in movement for video and motion.",
+    watch: "The thin arc fades below 24px. The favicon would drop it and keep pivot and arm." }
+];
+
+const PALETTES = [
+  { id: "1", name: "Flame on Night",
+    idea: "Today's palette without the blend. Flame carries every accent on its own. Buttons take Night text, because white on Flame fails contrast.",
+    keeps: "All current equity. The smallest change.",
+    watch: "Without the gradient, Flame alone reads a little less premium. Lean on Night.",
+    swatches: [["Night","#070C15","Ground"],["Navy","#0E1A2B","Panels, ink"],["Flame","#FF5A14","Accent"],["Off-white","#F4F5F7","Light ground"],["Slate","#9AA6B8","Body on dark"]],
+    dark:  { bg:"#070C15", surface:"#0E1A2B", fg:"#F4F5F7", muted:"#9AA6B8", accent:"#FF5A14", text:"#FF6A2B", on:"#070C15", mark:"#FF5A14" },
+    light: { bg:"#F4F5F7", surface:"#FFFFFF", fg:"#0E1A2B", muted:"#4A5566", accent:"#FF5A14", text:"#C2410C", on:"#070C15", mark:"#FF5A14" } },
+  { id: "2", name: "Signal on Carbon",
+    idea: "Harder and louder. A true red on near-black and chalk. Reads urgent and confident, and cuts through in ads and short video.",
+    keeps: "The warm, hot end of the current gradient.",
+    watch: "Red can read as error or sale. Keep it off form messages.",
+    swatches: [["Carbon","#0E0E0F","Ground"],["Graphite","#1B1B1D","Panels"],["Signal","#E5261A","Accent"],["Chalk","#F3F2EF","Light ground"],["Ash","#A5A4A0","Body on dark"]],
+    dark:  { bg:"#0E0E0F", surface:"#1B1B1D", fg:"#F3F2EF", muted:"#A5A4A0", accent:"#E5261A", text:"#FF5745", on:"#FFFFFF", mark:"#E5261A" },
+    light: { bg:"#F3F2EF", surface:"#FFFFFF", fg:"#0E0E0F", muted:"#56555A", accent:"#E5261A", text:"#C21D12", on:"#FFFFFF", mark:"#E5261A" } },
+  { id: "3", name: "Amber on Graphite",
+    idea: "Worksite colors. Safety amber on graphite and concrete. Speaks to owners in trades, construction and home services.",
+    keeps: "The warm start of the current gradient.",
+    watch: "Amber fails on pale grounds, so in light mode the mark goes graphite and amber stays on buttons.",
+    swatches: [["Graphite","#121416","Ground"],["Iron","#1D2024","Panels"],["Amber","#FFAE00","Accent"],["Concrete","#EDEBE6","Light ground"],["Steel","#A2A5AA","Body on dark"]],
+    dark:  { bg:"#121416", surface:"#1D2024", fg:"#EDEBE6", muted:"#A2A5AA", accent:"#FFAE00", text:"#FFB81F", on:"#121416", mark:"#FFAE00" },
+    light: { bg:"#EDEBE6", surface:"#FFFFFF", fg:"#121416", muted:"#54575C", accent:"#FFAE00", text:"#8A5A00", on:"#121416", mark:"#121416" } },
+  { id: "4", name: "Cobalt on Paper",
+    idea: "A clean break from orange. Cobalt reads as finance and trust, closer to an advisory firm than a marketing agency.",
+    keeps: "The Night ground in dark mode. Nothing else.",
+    watch: "A big shift for anyone who knows the brand. Blue is a crowded color in B2B.",
+    swatches: [["Midnight","#0A0E1F","Ground"],["Deep","#131A33","Panels"],["Cobalt","#2B3FF0","Accent"],["Paper","#F4F4F1","Light ground"],["Haze","#A0A8C0","Body on dark"]],
+    dark:  { bg:"#0A0E1F", surface:"#131A33", fg:"#EEF0F7", muted:"#A0A8C0", accent:"#4F63FF", text:"#8A98FF", on:"#FFFFFF", mark:"#4F63FF" },
+    light: { bg:"#F4F4F1", surface:"#FFFFFF", fg:"#0A0E1F", muted:"#4E5468", accent:"#2B3FF0", text:"#2B3FF0", on:"#FFFFFF", mark:"#2B3FF0" } },
+  { id: "5", name: "Ledger Green",
+    idea: "Money green. Pine ground and mint accent on dark, ledger green on light. Growth without the hype.",
+    keeps: "The dark-first feel.",
+    watch: "Green sits close to finance and wellness brands. The mint must stay saturated to avoid looking medical.",
+    swatches: [["Pine","#07130F","Ground"],["Mint","#35D38A","Accent on dark"],["Ledger","#0B6B47","Accent on light"],["Chalk","#EEF2EE","Light ground"],["Sage","#93A89D","Body on dark"]],
+    dark:  { bg:"#07130F", surface:"#0F221B", fg:"#EAF1EC", muted:"#93A89D", accent:"#35D38A", text:"#4FE09C", on:"#07130F", mark:"#35D38A" },
+    light: { bg:"#EEF2EE", surface:"#FFFFFF", fg:"#07130F", muted:"#4A5B52", accent:"#0B6B47", text:"#0B6B47", on:"#FFFFFF", mark:"#0B6B47" } }
+];
+
+const TYPES = [
+  { id: "T1", name: "Hanken Grotesk", family: '"Hanken Grotesk", system-ui, sans-serif',
+    idea: "A neutral neo-grotesk, a little warmer than Helvetica. Clean at every size. The safe modern choice.",
+    analog: "Neue Haas Grotesk Display", weights: "400 body, 600 labels, 800 headlines",
+    display: { weight: 800, track: "-0.04em" }, wm: { weight: 750, track: "-0.035em", upper: false } },
+  { id: "T2", name: "Schibsted Grotesk", family: '"Schibsted Grotesk", system-ui, sans-serif',
+    idea: "Built for a Norwegian newsroom. Sturdy, slightly condensed, strong figures. Headlines hit hard without shouting.",
+    analog: "Graphik", weights: "400 body, 600 labels, 800 headlines",
+    display: { weight: 800, track: "-0.035em" }, wm: { weight: 800, track: "-0.03em", upper: false } },
+  { id: "T3", name: "Host Grotesk", family: '"Host Grotesk", system-ui, sans-serif',
+    idea: "Contemporary and open, round forms and wide apertures. Calm and friendly, very readable at body size.",
+    analog: "ABC Diatype", weights: "400 body, 500 labels, 700 headlines",
+    display: { weight: 700, track: "-0.035em" }, wm: { weight: 700, track: "-0.03em", upper: false } },
+  { id: "T4", name: "Bricolage Grotesque", family: '"Bricolage Grotesque", system-ui, sans-serif',
+    idea: "The most personality. Optical sizing tightens the display cut and adds ink-trap detail at large sizes.",
+    analog: "Cabinet Grotesk", weights: "400 body, 600 labels, 800 headlines",
+    display: { weight: 800, track: "-0.045em" }, wm: { weight: 800, track: "-0.04em", upper: false } },
+  { id: "T5", name: "Archivo, Expanded and Normal", family: '"Archivo", system-ui, sans-serif',
+    idea: "One family with a width axis. Expanded caps keep the wide, engineered feel of today's wordmark; the normal width does the reading.",
+    analog: "Monument Extended with Aktiv Grotesk", weights: "400 body, 700 expanded labels, 800 headlines",
+    display: { weight: 800, track: "-0.03em" }, wm: { weight: 800, track: "0.02em", upper: true, stretch: "125%" },
+    label: { stretch: "125%", weight: 700 } }
+];
+
+const REC = { sym: "C", pal: "1", type: "T1" };
+const INK = { dark: { bg: "#070C15", fg: "#FF5A14" }, light: { bg: "#F4F5F7", fg: "#0E1A2B" } };
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+const byId = (list, id) => list.find((x) => x.id === id);
+
+function mark(sym, color, size, label) {
+  const dim = size ? ` width="${size}" height="${size}"` : "";
+  const a11y = label ? ` role="img" aria-label="${esc(label)}"` : ` aria-hidden="true"`;
+  return `<svg viewBox="0 0 96 96"${dim} fill="currentColor" style="color:${color}"${a11y}>${sym.svg}</svg>`;
+}
+function wmStyle(t) {
+  const w = t.wm;
+  return `font-family:${t.family.replace(/"/g, "'")};font-weight:${w.weight};letter-spacing:${w.track};${w.upper ? "text-transform:uppercase;" : ""}${w.stretch ? "font-stretch:" + w.stretch + ";" : ""}`;
+}
+function lockup(sym, markColor, textColor, t, cls = "") {
+  const style = t ? wmStyle(t) : "";
+  return `<span class="lockup ${cls}">${mark(sym, markColor)}<span class="wm" style="color:${textColor};${style}">Maximum Leverage</span></span>`;
+}
+
+function lum(hex) {
+  const c = hex.slice(1).match(/../g).map((h) => {
+    const v = parseInt(h, 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+function ratio(a, b) {
+  const x = lum(a), y = lum(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+}
+function check(label, a, b, min) {
+  const r = ratio(a, b);
+  const ok = r >= min;
+  return `<span class="check" title="${ok ? "Passes" : "Below"} ${min}:1">${label} ${r.toFixed(1)}:1 ${ok ? "pass" : "low"}</span>`;
+}
+function headline(accent) {
+  return `Less Effort. <span style="color:${accent}">More Scale.</span>`;
+}
+function recTag(isRec) { return isRec ? ' <span class="rec-badge">Starting pick</span>' : ""; }
+
+/* 01 symbols */
+$("#symbols").innerHTML = SYMBOLS.map((s) => {
+  const sizes = (mode) => `<div class="size-strip" style="background:${INK[mode].bg};color:${INK[mode].fg}">` +
+    [48, 32, 20, 16].map((px) => `<figure>${mark(s, INK[mode].fg, px)}<figcaption>${px}</figcaption></figure>`).join("") + `</div>`;
+  const hanken = byId(TYPES, "T1");
+  return `<article class="row${s.id === REC.sym ? " is-rec" : ""}">
+    <div class="row-meta">
+      <h3><span class="tag">${s.id}</span>${esc(s.name)}${recTag(s.id === REC.sym)}</h3>
+      <p class="idea">${esc(s.idea)}</p>
+      <dl><dt>Keeps</dt><dd>${esc(s.keeps)}</dd><dt>Watch</dt><dd>${esc(s.watch)}</dd></dl>
+    </div>
+    <div class="sym-demo">
+      <div class="tile" style="background:${INK.dark.bg}">${mark(s, INK.dark.fg, 0, "Symbol " + s.id + " on Night")}</div>
+      <div class="tile" style="background:${INK.light.bg}">${mark(s, INK.light.fg, 0, "Symbol " + s.id + " on Off-white")}</div>
+      <div class="sizes">${sizes("dark")}${sizes("light")}</div>
+      <div class="lockup-cell" style="background:${INK.dark.bg}">
+        ${lockup(s, INK.dark.fg, "#F4F5F7", hanken)}
+      </div>
+    </div>
+  </article>`;
+}).join("");
+
+/* 02 palettes */
+$("#palettes").innerHTML = PALETTES.map((p) => {
+  const sym = byId(SYMBOLS, REC.sym);
+  const t1 = byId(TYPES, "T1");
+  const panel = (mode) => {
+    const c = p[mode];
+    return `<div class="hero-mini" style="background:${c.bg};color:${c.fg}">
+      <span class="theme-label">${mode === "dark" ? "Dark ground" : "Light ground"}</span>
+      ${lockup(sym, c.mark, c.fg, t1)}
+      <h4>${headline(c.text)}</h4>
+      <p style="color:${c.muted}">Proven levers that grow your local business without you.</p>
+      <span class="btn-demo" style="background:${c.accent};color:${c.on}">Book a call</span>
+      <div class="checks">${check("Body", c.muted, c.bg, 4.5)}${check("Button", c.on, c.accent, 4.5)}${check("Mark", c.mark, c.bg, 3)}</div>
+    </div>`;
+  };
+  return `<article class="row${p.id === REC.pal ? " is-rec" : ""}">
+    <div class="row-meta">
+      <h3><span class="tag">${p.id}</span>${esc(p.name)}${recTag(p.id === REC.pal)}</h3>
+      <p class="idea">${esc(p.idea)}</p>
+      <dl><dt>Keeps</dt><dd>${esc(p.keeps)}</dd><dt>Watch</dt><dd>${esc(p.watch)}</dd></dl>
+    </div>
+    <div class="pal-demo">
+      <div class="swatches">${p.swatches.map(([n, hex, role]) =>
+        `<div class="sw" style="background:${hex};color:${lum(hex) > 0.35 ? "#0D121B" : "#F4F5F7"}"><b>${esc(n)}</b><span>${hex}<br>${esc(role)}</span></div>`).join("")}</div>
+      ${panel("dark")}${panel("light")}
+    </div>
+  </article>`;
+}).join("");
+
+/* 03 type */
+$("#types").innerHTML = TYPES.map((t) => {
+  const sym = byId(SYMBOLS, REC.sym);
+  const lab = t.label || { weight: 600 };
+  const labStyle = `font-weight:${lab.weight};${lab.stretch ? "font-stretch:" + lab.stretch + ";" : ""}`;
+  return `<article class="row${t.id === REC.type ? " is-rec" : ""}">
+    <div class="row-meta">
+      <h3><span class="tag">${t.id}</span>${esc(t.name)}${recTag(t.id === REC.type)}</h3>
+      <p class="idea">${esc(t.idea)}</p>
+      <dl><dt>Weights</dt><dd>${esc(t.weights)}</dd><dt>Paid</dt><dd>${esc(t.analog)}</dd></dl>
+    </div>
+    <div class="type-demo" style="font-family:${t.family.replace(/"/g, "'")}">
+      <div class="wm-line">${mark(sym, "#FF5A14")}<span class="wm-big" style="${wmStyle(t)}">Maximum Leverage</span></div>
+      <div class="hl" style="font-weight:${t.display.weight};letter-spacing:${t.display.track}">Somebody called you last night. Who answered?</div>
+      <p class="body">We build and run the growth levers the big companies use, from offers to AI to automated follow-up, so local business owners win more customers without working more hours.</p>
+      <div class="foot">
+        <span class="label" style="${labStyle}">Less Effort. More Scale.</span>
+        <span class="figs" style="font-weight:${t.display.weight}">31%<em>more booked consults</em></span>
+        <span class="figs" style="font-weight:${t.display.weight}">$1.2M<em>revenue floor</em></span>
+      </div>
+    </div>
+  </article>`;
+}).join("");
+
+/* 04 mixer */
+const state = { ...REC, mode: "dark" };
+try {
+  const saved = JSON.parse(localStorage.getItem("ml-mix") || "null");
+  if (saved && byId(SYMBOLS, saved.sym) && byId(PALETTES, saved.pal) && byId(TYPES, saved.type)) Object.assign(state, saved);
+} catch (e) {}
+
+function seg(el, name, items, labelOf) {
+  el.innerHTML = items.map((it) =>
+    `<label><input type="radio" id="${name}-${it.id}" name="${name}" value="${it.id}"${state[name] === it.id ? " checked" : ""}><span>${labelOf(it)}</span></label>`).join("");
+}
+seg($("#segSym"), "sym", SYMBOLS, (s) => `${s.id} ${esc(s.name)}`);
+seg($("#segPal"), "pal", PALETTES, (p) => `${p.id} ${esc(p.name)}`);
+seg($("#segType"), "type", TYPES, (t) => `${t.id} ${esc(t.name.split(",")[0])}`);
+seg($("#segMode"), "mode", [{ id: "dark" }, { id: "light" }], (m) => m.id === "dark" ? "Dark" : "Light");
+
+function comboText() {
+  const s = byId(SYMBOLS, state.sym), p = byId(PALETTES, state.pal), t = byId(TYPES, state.type);
+  return `Symbol ${s.id} ${s.name} / Palette ${p.id} ${p.name} / Type ${t.id} ${t.name} / ${state.mode === "dark" ? "Dark" : "Light"} ground`;
+}
+
+function renderStage() {
+  const s = byId(SYMBOLS, state.sym), p = byId(PALETTES, state.pal), t = byId(TYPES, state.type);
+  const c = p[state.mode];
+  const fam = t.family.replace(/"/g, "'");
+  const lab = t.label || { weight: 600 };
+  const other = p[state.mode === "dark" ? "light" : "dark"];
+  $("#stage").innerHTML = `
+    <div class="stage-hero" style="background:${c.bg};color:${c.fg};font-family:${fam}">
+      <div class="bg-mark">${mark(s, c.fg)}</div>
+      <div class="stage-nav">
+        ${lockup(s, c.mark, c.fg, t)}
+        <div class="links" style="font-weight:500"><span>How it works</span><span>Results</span><span>About</span></div>
+      </div>
+      <p class="tagline" style="color:${c.text};font-weight:${lab.weight};${lab.stretch ? "font-stretch:" + lab.stretch : ""}">Less Effort. More Scale.</p>
+      <h2 style="font-weight:${t.display.weight};letter-spacing:${t.display.track}">Proven levers that grow your local business <span style="color:${c.text}">without you.</span></h2>
+      <p class="body" style="color:${c.muted}">We build and run the growth levers the big companies use, so you win more customers without working more hours.</p>
+      <div class="actions">
+        <span class="primary" style="background:${c.accent};color:${c.on}">Book a strategy call</span>
+        <span class="ghost">See the levers</span>
+      </div>
+    </div>
+    <div class="stage-assets">
+      <div class="asset">
+        <div class="fav-row">
+          <span class="app-icon" style="background:${p.dark.bg}">${mark(s, p.dark.mark)}</span>
+          <span class="app-icon" style="background:${p.dark.accent}">${mark(s, p.dark.on)}</span>
+        </div>
+        <span class="cap">App icons</span>
+      </div>
+      <div class="asset">
+        <div class="fav-row">${[32, 24, 16].map((px) => mark(s, p.light.mark, px)).join("")}</div>
+        <span class="cap">Favicon 32 / 24 / 16</span>
+      </div>
+      <div class="asset">
+        <div class="card-demo" style="background:${other.bg};color:${other.fg};font-family:${fam}">
+          ${lockup(s, other.mark, other.fg, t)}
+          <small style="font-weight:${lab.weight};${lab.stretch ? "font-stretch:" + lab.stretch : ""}">Less Effort. More Scale.</small>
+        </div>
+        <span class="cap">Card, ${state.mode === "dark" ? "light" : "dark"} side</span>
+      </div>
+      <div class="asset">
+        <span class="app-icon" style="background:${c.surface};border-radius:50%;width:84px;height:84px">${mark(s, c.mark)}</span>
+        <span class="cap">Social avatar</span>
+      </div>
+    </div>`;
+  $("#copyOut").textContent = comboText();
+  try { localStorage.setItem("ml-mix", JSON.stringify(state)); } catch (e) {}
+}
+
+$("#mixForm").addEventListener("change", (e) => {
+  if (e.target.name in state) { state[e.target.name] = e.target.value; renderStage(); }
+});
+$("#copyBtn").addEventListener("click", () => {
+  const text = comboText();
+  const done = () => { $("#copyBtn").textContent = "Copied"; setTimeout(() => ($("#copyBtn").textContent = "Copy this combination"), 1600); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents($("#copyOut"));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    $("#copyBtn").textContent = "Selected, press copy";
+  };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+});
+
+$("#recText").textContent = `Symbol ${REC.sym} ${byId(SYMBOLS, REC.sym).name}, Palette ${REC.pal} ${byId(PALETTES, REC.pal).name}, Type ${REC.type} ${byId(TYPES, REC.type).name}`;
+renderStage();
+</script>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+<g fill="none" stroke-width="1.4">
+<path d="M -60 1020 C 560 820, 980 640, 1640 440" stroke="#ff5a1f" stroke-opacity="0.16"/>
+<path d="M 20 1020 C 600 800, 990 630, 1640 460" stroke="#3a5a8a" stroke-opacity="0.18"/>
+<path d="M 100 1020 C 640 780, 1000 620, 1640 480" stroke="#ff5a1f" stroke-opacity="0.22"/>
+<path d="M 180 1020 C 680 760, 1010 610, 1640 500" stroke="#ff5a1f" stroke-opacity="0.26"/>
+<path d="M 260 1020 C 720 740, 1020 600, 1640 520" stroke="#3a5a8a" stroke-opacity="0.22"/>
+<path d="M 340 1020 C 760 720, 1030 590, 1640 540" stroke="#ff5a1f" stroke-opacity="0.24"/>
+<path d="M 420 1020 C 800 700, 1040 580, 1640 560" stroke="#ff5a1f" stroke-opacity="0.2"/>
+<path d="M 500 1020 C 840 680, 1050 570, 1640 580" stroke="#3a5a8a" stroke-opacity="0.16"/>
+<path d="M 580 1020 C 880 660, 1060 560, 1640 600" stroke="#ff5a1f" stroke-opacity="0.14"/>
+<path d="M 660 1020 C 920 640, 1070 550, 1640 620" stroke="#ff5a1f" stroke-opacity="0.1"/>
+</g>
+<path d="M 960 1010 C 1150 890, 1360 850, 1640 850" stroke="#ff6a1a" stroke-width="3" fill="none"/>
+</svg>

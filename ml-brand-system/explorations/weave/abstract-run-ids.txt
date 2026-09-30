@@ -1,0 +1,9 @@
+# Abstract pattern concepts (mark DNA only), seeded from the o10 image. Nano Banana Pro, 11 credits each, 88 total.
+a01 Bauhaus fragments       69dc9063-ec36-4be5-a543-4a129e460db3
+a02 flow field              9976c9bf-f51d-4475-aa14-5c782ab9b458
+a03 paper cut-outs          ae1463a2-21d5-4b28-b910-cc328680a552
+a04 arc geometry            fe234cfd-6b4d-44fa-972e-2dea6740b305
+a05 folded ribbon           ce2db65b-dbc7-4d23-a3d6-281611884590
+a06 signal glitch           e103ff24-853a-423f-ad0c-ac39db10d7a3
+a07 liquid bars             bba9a43d-4a1f-4bea-813e-6d229bdfc407
+a08 constellation           f6a51040-702e-4325-8018-47a364eb8cb1

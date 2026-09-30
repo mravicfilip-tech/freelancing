@@ -1,0 +1,171 @@
+<title>Industry Pattern Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--sans); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--sans); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--sans); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--sans); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--sans); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--sans); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 24px; margin-bottom: 88px }
+.card { display: grid; gap: 2px; min-width: 0 }
+.card .hero { aspect-ratio: 4 / 3 }
+.card .hero img { width: min(52%, 240px) }
+.strip { background: var(--plate); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+.strip .row { gap: 16px; align-items: center }
+.mini { display: flex; align-items: center; gap: .4em; font-size: 17px; font-weight: 450; letter-spacing: -0.01em; padding: 10px 14px; white-space: nowrap }
+.mini img { height: 1.3em; width: auto }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 12px }
+.card-head h3 { margin: 0; font-weight: 450; font-size: 19px; letter-spacing: -0.01em }
+.card-head h3 span { font-family: var(--sans); font-size: 12px; font-weight: 400; color: var(--signal); margin-right: 10px }
+.tag { font-family: var(--sans); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.tag.rec { color: var(--signal) }
+.card p { margin: 12px 0 0; color: var(--ink-2); font-size: 15px; max-width: 52ch }
+.group-title { font-weight: 450; font-size: 24px; letter-spacing: -0.01em; margin: 0 0 24px }
+.orig { display: flex; gap: 24px; align-items: center; margin-bottom: 72px; flex-wrap: wrap }
+.orig img { width: 96px; height: 96px; background: var(--carbon); border: 1px solid var(--rule) }
+.orig p { margin: 0; color: var(--ink-2); max-width: 60ch }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr } }
+.card .hero { aspect-ratio: 1; padding: 0; place-items: stretch; overflow: hidden }
+.card .hero img { width: 100% !important; height: 100%; object-fit: cover; display: block }
+.grid { grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0,1fr) } }
+</style><style>
+.card .hero{aspect-ratio:auto}
+.card .hero img{height:auto!important;object-fit:initial}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.grid.three,.grid{grid-template-columns:minmax(0,1fr)}}
+.tag{white-space:nowrap}
+.note{border:1px solid var(--rule);padding:20px 24px;color:var(--ink-2);font-size:15px;margin-bottom:72px;max-width:72ch}
+.note b,header b{color:var(--chalk);font-weight:500}
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Patterns · Industry concepts</div>
+    <h1>Proof, not decoration. Nine concepts from the research.</h1>
+    <p>Directions 1, 2 and 4 from the research brief: <b>Proof Bars</b> (the mark as a real results chart), <b>Lever Marker</b> (one Signal stroke over real owners at work) and <b>Tally Field</b> (every stroke is a call, booking or review). Drawn by Nano Banana Pro from the final logo.</p>
+  </header>
+  <div class="note"><b>Before judging:</b> the lettering and small logos in these images are AI drawn and slightly off. The pick gets redrawn from the real vector mark, Michroma and Host Grotesk. The numbers are the brand-doc examples, to be replaced with real client figures.</div>
+  <h2 class="group-title">Recommended</h2>
+  <div class="grid three">
+    <div class="card" id="i09">
+      <div class="card-head"><h3><span>I09</span>Tally Field · poster</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/i09.jpg" alt="Dark field of tally marks with a red diagonal run"></div>
+      <p>The strongest pattern. It's a wall of tally marks drawn with the mark's own strokes. The red run climbing at the lever's angle is the story: 312 calls won back. It holds type, works on Carbon, and every mark stands for something real.</p>
+    </div>
+    <div class="card" id="i01">
+      <div class="card-head"><h3><span>I01</span>Proof Bars · case study</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/i01.jpg" alt="Case study card where the logo bars form a chart"></div>
+      <p>The mark turned back into the chart it came from: before, month 3, month 6, with the lever carrying the +31% callout. It's the clearest way to show a result, and it becomes a template for every case study.</p>
+    </div>
+    <div class="card" id="i05">
+      <div class="card-head"><h3><span>I05</span>Lever Marker · salon owner</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/i05.jpg" alt="Photo of a salon owner with a red lever stroke"></div>
+      <p>One Signal stroke over a real owner at work, with a short line of copy. It's the most restrained option, and the lever acts as a stamp of proof rather than decoration. This is the photo system.</p>
+    </div>
+  </div>
+  <h2 class="group-title">Also ran</h2>
+  <div class="grid three">
+    <div class="card" id="i07">
+      <div class="card-head"><h3><span>I07</span>Tally Field · call grid</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i07.jpg" alt="Grid of tally marks with red cluster"></div>
+      <p>Same idea as I09 on Chalk, with red marking missed calls that were won back. It's good as a data texture, but it reads busier and the red shape is more random. I would fold it into I09 as the light colourway.</p>
+    </div>
+    <div class="card" id="i08">
+      <div class="card-head"><h3><span>I08</span>Tally Field · booked-jobs calendar</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i08.jpg" alt="Calendar filled with tally strokes"></div>
+      <p>A clever month view where each day fills with tally strokes. It works well as a report or social graphic, but it's more of an infographic than a pattern.</p>
+    </div>
+    <div class="card" id="i06">
+      <div class="card-head"><h3><span>I06</span>Lever Marker · social post</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i06.jpg" alt="Restaurant photo cut at 60 degrees"></div>
+      <p>A 60° cut between photo and Carbon, with the lever on the edge. It's a strong post template, and the angle comes from the mark. It's a good second layout for the I05 photo system.</p>
+    </div>
+    <div class="card" id="i04">
+      <div class="card-head"><h3><span>I04</span>Lever Marker · plumber van</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i04.jpg" alt="Plumber at van with red stroke"></div>
+      <p>Right idea, but the stroke covers the subject and the caption sits on a busy background. I05 does the same job better.</p>
+    </div>
+    <div class="card" id="i02">
+      <div class="card-head"><h3><span>I02</span>Proof Bars · hours vs customers</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i02.jpg" alt="Hours vs customers bar comparison"></div>
+      <p>The line “Your business grows. Your hours don’t.” is great, but the bars lose the 60° lean, so it stops being ours. I'd keep the copy and redo it in the I01 style.</p>
+    </div>
+    <div class="card" id="i03">
+      <div class="card-head"><h3><span>I03</span>Proof Bars · wall of results</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/i03.jpg" alt="Grid of logos with industry results"></div>
+      <p>Just the logo repeated nine times with captions. It says nothing the individual cards don't, so I'm cutting it.</p>
+    </div>
+  </div>
+  <footer>Round 8 · 9 runs · 99 credits · Nano Banana Pro. Run IDs are in industry-run-ids.txt.</footer>
+</div>

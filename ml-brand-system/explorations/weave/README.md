@@ -77,3 +77,14 @@ State of the symbol work, so a new session can resume.
 - **Abstract pattern round (88 credits)**: 8 concepts from the mark's DNA, run IDs in `abstract-run-ids.txt`, images `patterns/a01-a08.jpg`.
   Recommended: a01 Bauhaus fragments, a06 signal boost, a04 arc geometry, a05 folded ribbon.
   Board: `abstract-concepts.html`, published at https://claude.ai/artifact/7XrzTXoY7BBrSbi6xeosxu. Weave balance after: 732.
+
+## Round 8 — Industry pattern concepts (research directions 1, 2, 4)
+
+9 × Nano Banana Pro, 99 credits. Seeded with the o10 logo. Run IDs are in `industry-run-ids.txt`. Images are in `patterns/i01–i09.jpg`. Board: `industry-concepts.html` (https://claude.ai/artifact/DRnDeABHg8Z5PsuCApLSgM).
+
+- Recommended:
+  - I09 Tally Field poster (tally wall with a red run at the lever angle)
+  - I01 Proof Bars case study (the mark as a results chart)
+  - I05 Lever Marker salon owner (a Signal stroke over real photography)
+- Also ran: I07 call grid (a light I09), I08 calendar, I06 60° photo cut, I04 van, I02 hours vs customers (keep the copy), I03 logo wall (cut).
+- The AI lettering is off in all of them. The pick gets a vector redraw from geometry.py.

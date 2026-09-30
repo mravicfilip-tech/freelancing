@@ -1,0 +1,167 @@
+<title>Pattern Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Host+Grotesk:wght@400..500&display=swap">
+<style>
+/* Layout: one quiet column; each candidate is a wide Carbon specimen plate followed by a strip of real-use tests. Single dark theme by choice: the brand lives on Carbon. */
+:root {
+  --carbon: #0E0E0F;
+  --chalk: #F3F2EF;
+  --signal: #E5261A;
+  --ink-2: #A3A09B;      /* secondary text on carbon, warm grey biased to chalk */
+  --ink-3: #6B6964;
+  --rule: #25252A;
+  --plate: #141416;      /* one step up from carbon, for the test strip */
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 72px 120px }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 40px 80px } }
+
+header { display: grid; gap: 20px; max-width: 64ch; margin-bottom: 80px }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+h1 { font-weight: 450; font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--ink-2) }
+
+.cand { display: grid; gap: 2px; margin-bottom: 96px }
+.cand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding-bottom: 20px }
+.cand-head h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cand-head h2 span { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--signal); margin-right: 12px; letter-spacing: .04em }
+.cand-head .src { font-family: var(--mono); font-size: 12px; color: var(--ink-3) }
+
+.hero { background: var(--carbon); border: 1px solid var(--rule); display: grid; place-items: center; aspect-ratio: 16 / 8; max-width: 100% }
+.hero img { width: min(38%, 300px); height: auto; display: block }
+
+.tests { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px }
+.tests > div { background: var(--plate); padding: 24px; display: grid; gap: 16px; align-content: space-between; min-height: 150px; min-width: 0 }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 8px }
+.px small { font-family: var(--mono); font-size: 11px; color: var(--ink-3) }
+.px32 { width: 32px; height: 32px }
+.px16 { width: 16px; height: 16px }
+.tab { display: flex; align-items: center; gap: 8px; background: var(--carbon); border: 1px solid var(--rule); border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 12px; color: var(--ink-2); max-width: 100%; white-space: nowrap; overflow: hidden }
+.avatar { border-radius: 50%; background: var(--carbon); box-shadow: inset 0 0 0 1px var(--rule); display: grid; place-items: center; flex: none }
+.avatar img { width: 58%; height: auto }
+.av-lg { width: 88px; height: 88px }
+.av-sm { width: 36px; height: 36px }
+
+.lockups { display: grid; grid-template-columns: 1fr 1fr; gap: 2px }
+.lockup { display: flex; align-items: center; justify-content: center; gap: .42em; padding: 56px 24px; font-size: clamp(22px, 3.2vw, 34px); min-width: 0 }
+.lockup img { height: 1.25em; width: auto; flex: none }
+.lockup span { font-weight: 450; letter-spacing: -0.015em; white-space: nowrap }
+.on-carbon { background: var(--carbon); border: 1px solid var(--rule); color: var(--chalk) }
+.on-chalk { background: var(--chalk); color: var(--carbon) }
+
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 24px; color: var(--ink-2); font-size: 15px }
+.verdict h3 { margin: 0 0 6px; font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3) }
+.verdict p { margin: 0; max-width: 52ch }
+
+.cuts { border-top: 1px solid var(--rule); padding-top: 48px; display: grid; gap: 28px }
+.cuts h2 { margin: 0; font-weight: 450; font-size: 24px; letter-spacing: -0.01em }
+.cut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 32px; margin: 0; padding: 0; list-style: none }
+.cut-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; color: var(--ink-2); font-size: 14px }
+.cut-list img { width: 48px; height: 48px; opacity: .55 }
+.cut-list b { display: block; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--chalk); margin-bottom: 2px }
+
+footer { margin-top: 80px; color: var(--ink-3); font-size: 13px; max-width: 64ch }
+
+@media (max-width: 760px) {
+  .tests { grid-template-columns: 1fr }
+  .lockups { grid-template-columns: 1fr }
+  .verdict { grid-template-columns: 1fr; gap: 16px }
+  .hero { aspect-ratio: 4 / 3 }
+  .hero img { width: 52% }
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 24px; margin-bottom: 88px }
+.card { display: grid; gap: 2px; min-width: 0 }
+.card .hero { aspect-ratio: 4 / 3 }
+.card .hero img { width: min(52%, 240px) }
+.strip { background: var(--plate); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+.strip .row { gap: 16px; align-items: center }
+.mini { display: flex; align-items: center; gap: .4em; font-size: 17px; font-weight: 450; letter-spacing: -0.01em; padding: 10px 14px; white-space: nowrap }
+.mini img { height: 1.3em; width: auto }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 12px }
+.card-head h3 { margin: 0; font-weight: 450; font-size: 19px; letter-spacing: -0.01em }
+.card-head h3 span { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--signal); margin-right: 10px }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.tag.rec { color: var(--signal) }
+.card p { margin: 12px 0 0; color: var(--ink-2); font-size: 15px; max-width: 52ch }
+.group-title { font-weight: 450; font-size: 24px; letter-spacing: -0.01em; margin: 0 0 24px }
+.orig { display: flex; gap: 24px; align-items: center; margin-bottom: 72px; flex-wrap: wrap }
+.orig img { width: 96px; height: 96px; background: var(--carbon); border: 1px solid var(--rule) }
+.orig p { margin: 0; color: var(--ink-2); max-width: 60ch }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr } }
+.card .hero { aspect-ratio: 1; padding: 0; place-items: stretch; overflow: hidden }
+.card .hero img { width: 100% !important; height: 100%; object-fit: cover; display: block }
+.grid { grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0,1fr) } }
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Maximum Leverage · Patterns · Weave concepts</div>
+    <h1>Ten pattern directions from the mark. Four are worth building.</h1>
+    <p>Each concept was drawn by Nano Banana Pro from the final logo image, one idea per image. These are direction finders, not final files: the one you pick gets redrawn as a clean vector in Carbon, Chalk and Signal.</p>
+  </header>
+  <h2 class="group-title">Recommended</h2>
+  <div class="grid">
+    <div class="card" id="p02">
+      <div class="card-head"><h3><span>P02</span>Topographic summit</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/p02.jpg" alt="Topographic summit"></div>
+      <p>The mark sits at the top of a contour map, and every line climbs toward it. It tells the whole story in one image: the business is the mountain, the mark is the summit. Works full-bleed on Chalk and in reverse on Carbon.</p>
+    </div>
+    <div class="card" id="p01">
+      <div class="card-head"><h3><span>P01</span>Lever ripple</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/p01.jpg" alt="Lever ripple"></div>
+      <p>Op-art stripes at the mark's angle that bend and bunch where the lever pushes. It feels like force being applied, which is exactly what leverage is. Very bold, best for covers and large walls.</p>
+    </div>
+    <div class="card" id="p03">
+      <div class="card-head"><h3><span>P03</span>Woven levers</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/p03.jpg" alt="Woven levers"></div>
+      <p>Bars and levers going over and under each other like a basket weave. It reads as a textile and a structure at once, and it tiles cleanly. The strongest candidate for an all-over repeat.</p>
+    </div>
+    <div class="card" id="p04">
+      <div class="card-head"><h3><span>P04</span>Halftone mark</h3><span class="tag rec">Recommended</span></div>
+      <div class="hero"><img src="patterns/p04.jpg" alt="Halftone mark"></div>
+      <p>The mark built from halftone dots, cropped huge, fading out to the lower left. A print-shop feel that is rare in this category. A graphic device for posters and social, not an all-over repeat.</p>
+    </div>
+  </div>
+  <h2 class="group-title">Also ran</h2>
+  <div class="grid">
+    <div class="card" id="p08">
+      <div class="card-head"><h3><span>P08</span>Propped slabs</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p08.jpg" alt="Propped slabs"></div>
+      <p>A solid red field cut into slabs along the bar and lever angles. Minimal and confident, close to the supergraphic. It could work as a cover system, but it says less about the mark.</p>
+    </div>
+    <div class="card" id="p10">
+      <div class="card-head"><h3><span>P10</span>Growth score</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p10.jpg" alt="Growth score"></div>
+      <p>Rows of slanted bars in a rhythm, like data or a musical score, with red accents. Cleaner than my Signal code, but still closer to a chart than a pattern.</p>
+    </div>
+    <div class="card" id="p07">
+      <div class="card-head"><h3><span>P07</span>Isometric steps</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p07.jpg" alt="Isometric steps"></div>
+      <p>Bold staircases, but the 3D blocks feel like a generic isometric illustration and lose the rounded bars.</p>
+    </div>
+    <div class="card" id="p09">
+      <div class="card-head"><h3><span>P09</span>Blind emboss</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p09.jpg" alt="Blind emboss"></div>
+      <p>Beautiful as a print finish reference (debossed business cards, folders), but it is a rendering, not a pattern we can use flat.</p>
+    </div>
+    <div class="card" id="p05">
+      <div class="card-head"><h3><span>P05</span>Truchet tiles</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p05.jpg" alt="Truchet tiles"></div>
+      <p>Too many pieces. Reads as cross-stitch or a tribal print.</p>
+    </div>
+    <div class="card" id="p06">
+      <div class="card-head"><h3><span>P06</span>Motion trails</h3><span class="tag">Also ran</span></div>
+      <div class="hero"><img src="patterns/p06.jpg" alt="Motion trails"></div>
+      <p>Busy outline echoes. It looks like clip-art speed lines.</p>
+    </div>
+  </div>
+  <footer>Nothing is queued. Pick one or two and I will redraw them as vectors, in all three colourways, and replace the patterns in the asset kit.</footer>
+</div>

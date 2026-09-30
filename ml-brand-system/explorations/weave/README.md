@@ -69,3 +69,7 @@ State of the symbol work, so a new session can resume.
 - Intro animation (script-driven springs): three upright bars grow like a chart, tilt forward together to 60°,
   the lever grows out of its foot into the tallest bar (which gives a little and settles), the name rises letter by letter.
 - Live on Vercel (project ml-brand-presentation, Vercel Authentication off): https://ml-brand-presentation.vercel.app. Redeploy with `explorations/deploy-presentation.sh`.
+- **Patterns (kit v1 and v2 rejected as generic).** 10 Weave concepts seeded from the o10 image (110 credits, Nano Banana Pro):
+  run IDs in `patterns-run-ids.txt`, images in `patterns/`. Recommended: p02 topographic summit, p01 lever ripple,
+  p03 woven levers, p04 halftone mark. Board: `pattern-concepts.html`, published at https://claude.ai/artifact/UrPycui9eCA4TeD4u3tN31
+  Weave balance after: 820. Next: user picks, then vector redraw into the kit.

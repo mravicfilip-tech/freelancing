@@ -250,5 +250,89 @@
   "w": 1920,
   "h": 480,
   "type": "png"
+ },
+ {
+  "src": "patterns/tally-carbon-16x9.svg",
+  "out": "patterns/tally-carbon-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-carbon-4x5.svg",
+  "out": "patterns/tally-carbon-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-carbon-1x1.svg",
+  "out": "patterns/tally-carbon-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-carbon-band.svg",
+  "out": "patterns/tally-carbon-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-chalk-16x9.svg",
+  "out": "patterns/tally-chalk-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-chalk-4x5.svg",
+  "out": "patterns/tally-chalk-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-chalk-1x1.svg",
+  "out": "patterns/tally-chalk-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-chalk-band.svg",
+  "out": "patterns/tally-chalk-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-signal-16x9.svg",
+  "out": "patterns/tally-signal-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-signal-4x5.svg",
+  "out": "patterns/tally-signal-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-signal-1x1.svg",
+  "out": "patterns/tally-signal-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/tally-signal-band.svg",
+  "out": "patterns/tally-signal-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
  }
 ]

@@ -1,0 +1,58 @@
+[
+ {
+  "src": "templates/lever-post-template-4x5.svg",
+  "out": "templates/lever-post-template-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "templates/lever-post-example-4x5.svg",
+  "out": "templates/lever-post-example-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "templates/lever-post-template-1x1.svg",
+  "out": "templates/lever-post-template-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "templates/lever-post-example-1x1.svg",
+  "out": "templates/lever-post-example-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "templates/lever-post-template-9x16.svg",
+  "out": "templates/lever-post-template-9x16.png",
+  "w": 1080,
+  "h": 1920,
+  "type": "png"
+ },
+ {
+  "src": "templates/lever-post-example-9x16.svg",
+  "out": "templates/lever-post-example-9x16.png",
+  "w": 1080,
+  "h": 1920,
+  "type": "png"
+ },
+ {
+  "src": "templates/tally-poster-4x5.svg",
+  "out": "templates/tally-poster-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "templates/tally-poster-9x16.svg",
+  "out": "templates/tally-poster-9x16.png",
+  "w": 1080,
+  "h": 1920,
+  "type": "png"
+ }
+]

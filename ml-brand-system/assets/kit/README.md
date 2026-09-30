@@ -13,7 +13,13 @@ the single source of truth for the mark. `ml-asset-kit.zip` bundles the finished
   - Summit: contour lines climbing to the mark, which sits at the peak as a Signal outline.
   - Ripple: stripes at 60 degrees, bent and bunched where a hidden lever pushes.
   - Slabs: a field cut along the bar and lever angles in 2 : 3 : 4 widths, a few slabs pushed out of line.
-  `patterns/{summit,ripple,slabs}-{carbon,chalk,signal}-{16x9,4x5,1x1,band}.svg` plus PNGs (band is 1920 x 480).
+  - Tally (research round, concept I09): a count in the mark's strokes. 3 bars + lever = 4 calls; Signal strokes are calls
+    won back, on a 60 degree run. Set `TALLY_DATA` in build_patterns.py to the client's real numbers.
+  `patterns/{summit,ripple,slabs,tally}-{carbon,chalk,signal}-{16x9,4x5,1x1,band}.svg` plus PNGs (band is 1920 x 480).
+- `templates/` social templates (concepts I06 and I09), type outlined:
+  - `lever-post-template-{4x5,1x1,9x16}.svg` photo window cut at 60 degrees with a Signal bar beside it; replace the
+    grey `id="photo"` slot with a real owner at work. `lever-post-example-*` use the AI concept photo as a stand-in.
+  - `tally-poster-{4x5,9x16}.svg` Tally field plus the result in Host Grotesk.
 - `icons/svg` 12 service icons (24px grid, 2px round stroke, currentColor), `icons/ml-icons.svg` sprite.
 
 ## Colour versions
@@ -22,8 +28,8 @@ chalk: on Signal or photos · carbon: one-colour print · white: embroidery, foi
 
 ## Rebuild
 ```
-python3 build_logo.py && python3 build_app.py && python3 build_patterns.py && python3 build_icons.py
-node render.cjs logo/jobs.json logo/app/jobs.json patterns/jobs.json   # needs Playwright + Chromium
+python3 build_logo.py && python3 build_app.py && python3 build_patterns.py && python3 build_templates.py && python3 build_icons.py
+node render.cjs logo/jobs.json logo/app/jobs.json patterns/jobs.json templates/jobs.json   # needs Playwright + Chromium
 ```
 Then rebuild favicon.ico from the 16/32/48 PNGs (see git history) and re-zip.
 

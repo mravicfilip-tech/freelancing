@@ -88,3 +88,4 @@ State of the symbol work, so a new session can resume.
   - I05 Lever Marker salon owner (a Signal stroke over real photography)
 - Also ran: I07 call grid (a light I09), I08 calendar, I06 60° photo cut, I04 van, I02 hours vs customers (keep the copy), I03 logo wall (cut).
 - The AI lettering is off in all of them. The pick gets a vector redraw from geometry.py.
+- Client picked I06 and I09. Redrawn as vectors in the kit: the Tally pattern (`build_patterns.py`, 3 colourways × 4 sizes) and social templates (`build_templates.py`: Lever post 4x5/1x1/9x16, Tally poster 4x5/9x16).

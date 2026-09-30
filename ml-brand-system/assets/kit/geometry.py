@@ -65,14 +65,13 @@ def symbol_paths():
 
 
 # ---------- wordmark ----------
-_FONT = None
+_FONTS = {}
 
 
 def _font(path):
-    global _FONT
-    if _FONT is None:
-        _FONT = TTFont(path)
-    return _FONT
+    if path not in _FONTS:
+        _FONTS[path] = TTFont(path)
+    return _FONTS[path]
 
 
 def wordmark(text, font_path, cap_height, tracking_em=0.32):

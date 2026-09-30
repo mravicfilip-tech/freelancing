@@ -5,6 +5,9 @@ v1 (scattered motifs) and v2 (skyline, signal code) were retired as generic.
 2. Ripple   op-art stripes at the mark's 60 degree angle, bent and bunched where a hidden lever pushes into them.
 3. Slabs    a solid field cut into slabs along the bar angle (60 degrees) and the lever angle; a few slabs are pushed
             out of line, showing the ground underneath, like pieces being levered.
+4. Tally    (research round, Weave concept I09) a count drawn in the mark's strokes: three 60 degree bars and the
+            lever make one group of four. Every stroke is one call; the strokes nearest a 60 degree line are Signal,
+            the calls that were missed and then won back. Change TALLY_DATA to the client's real numbers.
 
 All three are fixed-size panels (they are compositions, not repeats) in Carbon, Chalk and Signal.
 Run: python3 build_patterns.py, then node render.cjs patterns/jobs.json
@@ -212,6 +215,46 @@ def slabs(w, h, ink, ground, unit=None, seed=11):
     return f'<g fill="{ink}">' + "".join(f'<path d="{d}"/>' for d in out) + "</g>"
 
 
+# ---------- 4. Tally ----------
+TALLY_LEN = 150.0                     # equal bars (a tally), same weight, spacing and lever as the mark
+TALLY_TOP = BASES[0][1] + D[1] * TALLY_LEN - R
+TALLY_BOX = (SYMBOL_W, SYMBOL_H - TALLY_TOP)
+
+
+def tally_strokes():
+    return [capsule(b, D, TALLY_LEN) for b in BASES] + [lever_path()]
+
+
+def tally(w, h, total, won, dim, hot, gap=(0.34, 0.34), line=(0.56, 0.5)):
+    """total strokes in groups of four, laid out to fit w x h; the won strokes nearest a 60 degree line are hot."""
+    n = math.ceil(total / 4)
+    cw, ch = TALLY_BOX[0] * (1 + gap[0]), TALLY_BOX[1] * (1 + gap[1])
+    best = None
+    for rows in range(1, n + 1):
+        cols = math.ceil(n / rows)
+        sc = min(w / (cols * cw), h / (rows * ch))
+        if best is None or sc > best[0]:
+            best = (sc, rows, cols)
+    sc, rows, cols = best
+    x0 = (w - cols * cw * sc) / 2 + TALLY_BOX[0] * gap[0] / 2 * sc
+    y0 = (h - rows * ch * sc) / 2 + TALLY_BOX[1] * gap[1] / 2 * sc - TALLY_TOP * sc
+    paths = tally_strokes()
+    # stroke centres in symbol space, used to rank strokes by distance from the run
+    centres = [(b[0] + D[0] * TALLY_LEN / 2, b[1] + D[1] * TALLY_LEN / 2) for b in BASES] + [(FOOT[0] + U[0] * 42, FOOT[1] + U[1] * 42)]
+    strokes = []
+    for k in range(total):
+        g, i = divmod(k, 4)
+        r, c = divmod(g, cols)
+        gx, gy = x0 + c * cw * sc, y0 + r * ch * sc
+        px, py = gx + centres[i][0] * sc, gy + centres[i][1] * sc
+        strokes.append((abs((px - w * line[0]) * N[0] + (py - h * line[1]) * N[1]), g, i, gx, gy))
+    hot_set = {(g, i) for _, g, i, _, _ in sorted(strokes)[:won]}
+    out = {dim: [], hot: []}
+    for _, g, i, gx, gy in strokes:
+        out[hot if (g, i) in hot_set else dim].append(f'<path transform="translate({gx:.1f} {gy:.1f}) scale({sc:.4f})" d="{paths[i]}"/>')
+    return "".join(f'<g fill="{col}">' + "".join(ps) + "</g>" for col, ps in out.items())
+
+
 # ---------- colourways and output ----------
 TOPO = {  # background, line, peak
     "chalk": (CHALK, CARBON, SIGNAL),
@@ -228,18 +271,28 @@ SLABS = {  # ground (shows through gaps), slabs
     "chalk": (CARBON, CHALK),
     "carbon": (CARBON, "#26262B"),
 }
+TALLY = {  # background, strokes, won-back strokes
+    "carbon": (CARBON, "#2A2A2E", SIGNAL),
+    "chalk": (CHALK, "#DCD9D3", SIGNAL),
+    "signal": (SIGNAL, "#B81A10", CHALK),
+}
+TALLY_DATA = (1284, 312)  # calls answered, calls won back (brand-doc example figures)
 PLACE = {"16x9": (0.66, 0.5, 0.26), "4x5": (0.5, 0.42, 0.52), "1x1": (0.5, 0.5, 0.46), "band": (0.72, 0.52, 0.44)}
 
-for way, (bg, line, peak) in TOPO.items():
-    for sname, (w, h) in SIZES.items():
-        fx, fy, frac = PLACE[sname]
-        save(f"summit-{way}-{sname}", w, h, summit(w, h, line, peak, (w * fx, h * fy), frac), bg)
-for way, (bg, ink) in RIPPLE.items():
-    for sname, (w, h) in SIZES.items():
-        save(f"ripple-{way}-{sname}", w, h, ripple(w, h, ink, bg), bg)
-for way, (ground, ink) in SLABS.items():
-    for sname, (w, h) in SIZES.items():
-        save(f"slabs-{way}-{sname}", w, h, slabs(w, h, ink, ground), ground)
+if __name__ == "__main__":
+    for way, (bg, line, peak) in TOPO.items():
+        for sname, (w, h) in SIZES.items():
+            fx, fy, frac = PLACE[sname]
+            save(f"summit-{way}-{sname}", w, h, summit(w, h, line, peak, (w * fx, h * fy), frac), bg)
+    for way, (bg, ink) in RIPPLE.items():
+        for sname, (w, h) in SIZES.items():
+            save(f"ripple-{way}-{sname}", w, h, ripple(w, h, ink, bg), bg)
+    for way, (ground, ink) in SLABS.items():
+        for sname, (w, h) in SIZES.items():
+            save(f"slabs-{way}-{sname}", w, h, slabs(w, h, ink, ground), ground)
+    for way, (bg, dim, hot) in TALLY.items():
+        for sname, (w, h) in SIZES.items():
+            save(f"tally-{way}-{sname}", w, h, tally(w, h, *TALLY_DATA, dim, hot), bg)
 
-json.dump(jobs, open(os.path.join(OUT, "jobs.json"), "w"), indent=1)
-print(len(jobs), "pattern panels")
+    json.dump(jobs, open(os.path.join(OUT, "jobs.json"), "w"), indent=1)
+    print(len(jobs), "pattern panels")

@@ -1,0 +1,122 @@
+{
+ "ml-symbol-signal.svg": {
+  "kind": "symbol",
+  "w": 344.0,
+  "h": 215.0,
+  "on": "Carbon, Chalk or white"
+ },
+ "ml-symbol-chalk.svg": {
+  "kind": "symbol",
+  "w": 344.0,
+  "h": 215.0,
+  "on": "Signal, photography, dark colour"
+ },
+ "ml-symbol-carbon.svg": {
+  "kind": "symbol",
+  "w": 344.0,
+  "h": 215.0,
+  "on": "One-colour print on light stock"
+ },
+ "ml-symbol-white.svg": {
+  "kind": "symbol",
+  "w": 344.0,
+  "h": 215.0,
+  "on": "Photography, embroidery, foil"
+ },
+ "ml-stacked-signal.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "Carbon, Chalk or white"
+ },
+ "ml-stacked-signal-chalk.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "Carbon"
+ },
+ "ml-stacked-signal-carbon.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "Chalk or white"
+ },
+ "ml-stacked-chalk.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "Signal, photography, dark colour"
+ },
+ "ml-stacked-carbon.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "One-colour print on light stock"
+ },
+ "ml-stacked-white.svg": {
+  "kind": "stacked",
+  "w": 939.9985219594595,
+  "h": 294.02702702702703,
+  "on": "Photography, embroidery, foil"
+ },
+ "ml-horizontal-signal.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "Carbon, Chalk or white"
+ },
+ "ml-horizontal-signal-chalk.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "Carbon"
+ },
+ "ml-horizontal-signal-carbon.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "Chalk or white"
+ },
+ "ml-horizontal-chalk.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "Signal, photography, dark colour"
+ },
+ "ml-horizontal-carbon.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "One-colour print on light stock"
+ },
+ "ml-horizontal-white.svg": {
+  "kind": "horizontal",
+  "w": 2709.931955645161,
+  "h": 215.0,
+  "on": "Photography, embroidery, foil"
+ },
+ "ml-wordmark-signal.svg": {
+  "kind": "wordmark",
+  "w": 2696.119791666667,
+  "h": 100,
+  "on": "Carbon, Chalk or white"
+ },
+ "ml-wordmark-chalk.svg": {
+  "kind": "wordmark",
+  "w": 2696.119791666667,
+  "h": 100,
+  "on": "Signal, photography, dark colour"
+ },
+ "ml-wordmark-carbon.svg": {
+  "kind": "wordmark",
+  "w": 2696.119791666667,
+  "h": 100,
+  "on": "One-colour print on light stock"
+ },
+ "ml-wordmark-white.svg": {
+  "kind": "wordmark",
+  "w": 2696.119791666667,
+  "h": 100,
+  "on": "Photography, embroidery, foil"
+ }
+}

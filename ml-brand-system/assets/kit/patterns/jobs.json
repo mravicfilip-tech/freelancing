@@ -1,0 +1,338 @@
+[
+ {
+  "src": "patterns/preview/momentum-carbon.svg",
+  "out": "patterns/preview/momentum-carbon.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/momentum-chalk.svg",
+  "out": "patterns/preview/momentum-chalk.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/momentum-signal.svg",
+  "out": "patterns/preview/momentum-signal.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/hatch-carbon.svg",
+  "out": "patterns/preview/hatch-carbon.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/hatch-chalk.svg",
+  "out": "patterns/preview/hatch-chalk.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/hatch-signal.svg",
+  "out": "patterns/preview/hatch-signal.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/steps-carbon.svg",
+  "out": "patterns/preview/steps-carbon.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/steps-chalk.svg",
+  "out": "patterns/preview/steps-chalk.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/steps-signal.svg",
+  "out": "patterns/preview/steps-signal.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/peaks-carbon.svg",
+  "out": "patterns/preview/peaks-carbon.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/peaks-chalk.svg",
+  "out": "patterns/preview/peaks-chalk.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/preview/peaks-signal.svg",
+  "out": "patterns/preview/peaks-signal.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-carbon-16x9.svg",
+  "out": "patterns/panels/dots-carbon-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-carbon-4x5.svg",
+  "out": "patterns/panels/dots-carbon-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-carbon-1x1.svg",
+  "out": "patterns/panels/dots-carbon-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-chalk-16x9.svg",
+  "out": "patterns/panels/dots-chalk-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-chalk-4x5.svg",
+  "out": "patterns/panels/dots-chalk-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-chalk-1x1.svg",
+  "out": "patterns/panels/dots-chalk-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-signal-16x9.svg",
+  "out": "patterns/panels/dots-signal-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-signal-4x5.svg",
+  "out": "patterns/panels/dots-signal-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/dots-signal-1x1.svg",
+  "out": "patterns/panels/dots-signal-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-16x9.svg",
+  "out": "patterns/panels/super-carbon-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-strong-16x9.svg",
+  "out": "patterns/panels/super-carbon-strong-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-4x5.svg",
+  "out": "patterns/panels/super-carbon-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-strong-4x5.svg",
+  "out": "patterns/panels/super-carbon-strong-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-1x1.svg",
+  "out": "patterns/panels/super-carbon-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-carbon-strong-1x1.svg",
+  "out": "patterns/panels/super-carbon-strong-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-16x9.svg",
+  "out": "patterns/panels/super-chalk-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-strong-16x9.svg",
+  "out": "patterns/panels/super-chalk-strong-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-4x5.svg",
+  "out": "patterns/panels/super-chalk-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-strong-4x5.svg",
+  "out": "patterns/panels/super-chalk-strong-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-1x1.svg",
+  "out": "patterns/panels/super-chalk-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-chalk-strong-1x1.svg",
+  "out": "patterns/panels/super-chalk-strong-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-16x9.svg",
+  "out": "patterns/panels/super-signal-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-strong-16x9.svg",
+  "out": "patterns/panels/super-signal-strong-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-4x5.svg",
+  "out": "patterns/panels/super-signal-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-strong-4x5.svg",
+  "out": "patterns/panels/super-signal-strong-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-1x1.svg",
+  "out": "patterns/panels/super-signal-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/super-signal-strong-1x1.svg",
+  "out": "patterns/panels/super-signal-strong-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-carbon-1920x240.svg",
+  "out": "patterns/panels/stepband-carbon-1920x240.png",
+  "w": 1920,
+  "h": 240,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-carbon-1500x500.svg",
+  "out": "patterns/panels/stepband-carbon-1500x500.png",
+  "w": 1500,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-carbon-600x120.svg",
+  "out": "patterns/panels/stepband-carbon-600x120.png",
+  "w": 600,
+  "h": 120,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-chalk-1920x240.svg",
+  "out": "patterns/panels/stepband-chalk-1920x240.png",
+  "w": 1920,
+  "h": 240,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-chalk-1500x500.svg",
+  "out": "patterns/panels/stepband-chalk-1500x500.png",
+  "w": 1500,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-chalk-600x120.svg",
+  "out": "patterns/panels/stepband-chalk-600x120.png",
+  "w": 600,
+  "h": 120,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-signal-1920x240.svg",
+  "out": "patterns/panels/stepband-signal-1920x240.png",
+  "w": 1920,
+  "h": 240,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-signal-1500x500.svg",
+  "out": "patterns/panels/stepband-signal-1500x500.png",
+  "w": 1500,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/stepband-signal-600x120.svg",
+  "out": "patterns/panels/stepband-signal-600x120.png",
+  "w": 600,
+  "h": 120,
+  "type": "png"
+ }
+]

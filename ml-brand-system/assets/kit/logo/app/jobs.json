@@ -1,0 +1,79 @@
+[
+ {
+  "src": "logo/app/src/favicon.svg",
+  "out": "logo/app/favicon-16.png",
+  "w": 16,
+  "h": 16,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/favicon.svg",
+  "out": "logo/app/favicon-32.png",
+  "w": 32,
+  "h": 32,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/favicon.svg",
+  "out": "logo/app/favicon-48.png",
+  "w": 48,
+  "h": 48,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/apple-touch-icon.svg",
+  "out": "logo/app/apple-touch-icon.png",
+  "w": 180,
+  "h": 180,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/android-chrome.svg",
+  "out": "logo/app/android-chrome-192.png",
+  "w": 192,
+  "h": 192,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/android-chrome.svg",
+  "out": "logo/app/android-chrome-512.png",
+  "w": 512,
+  "h": 512,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/maskable.svg",
+  "out": "logo/app/maskable-512.png",
+  "w": 512,
+  "h": 512,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/avatar-carbon.svg",
+  "out": "logo/app/avatar-carbon-1000.png",
+  "w": 1000,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/avatar-signal.svg",
+  "out": "logo/app/avatar-signal-1000.png",
+  "w": 1000,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/avatar-chalk.svg",
+  "out": "logo/app/avatar-chalk-1000.png",
+  "w": 1000,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "logo/app/src/og-image.svg",
+  "out": "logo/app/og-image-1200x630.png",
+  "w": 1200,
+  "h": 630,
+  "type": "png"
+ }
+]

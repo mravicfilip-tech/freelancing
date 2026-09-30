@@ -1,0 +1,282 @@
+[
+ {
+  "src": "logo/svg/ml-symbol-signal.svg",
+  "out": "logo/png/ml-symbol-signal.png",
+  "w": 1024,
+  "h": 640,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-symbol-signal.svg",
+  "out": "logo/pdf/ml-symbol-signal.pdf",
+  "w": 344.0,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-symbol-chalk.svg",
+  "out": "logo/png/ml-symbol-chalk.png",
+  "w": 1024,
+  "h": 640,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-symbol-chalk.svg",
+  "out": "logo/pdf/ml-symbol-chalk.pdf",
+  "w": 344.0,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-symbol-carbon.svg",
+  "out": "logo/png/ml-symbol-carbon.png",
+  "w": 1024,
+  "h": 640,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-symbol-carbon.svg",
+  "out": "logo/pdf/ml-symbol-carbon.pdf",
+  "w": 344.0,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-symbol-white.svg",
+  "out": "logo/png/ml-symbol-white.png",
+  "w": 1024,
+  "h": 640,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-symbol-white.svg",
+  "out": "logo/pdf/ml-symbol-white.pdf",
+  "w": 344.0,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal.svg",
+  "out": "logo/png/ml-stacked-signal.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal.svg",
+  "out": "logo/pdf/ml-stacked-signal.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal-chalk.svg",
+  "out": "logo/png/ml-stacked-signal-chalk.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal-chalk.svg",
+  "out": "logo/pdf/ml-stacked-signal-chalk.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal-carbon.svg",
+  "out": "logo/png/ml-stacked-signal-carbon.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-signal-carbon.svg",
+  "out": "logo/pdf/ml-stacked-signal-carbon.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-chalk.svg",
+  "out": "logo/png/ml-stacked-chalk.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-chalk.svg",
+  "out": "logo/pdf/ml-stacked-chalk.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-carbon.svg",
+  "out": "logo/png/ml-stacked-carbon.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-carbon.svg",
+  "out": "logo/pdf/ml-stacked-carbon.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-stacked-white.svg",
+  "out": "logo/png/ml-stacked-white.png",
+  "w": 1600,
+  "h": 500,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-stacked-white.svg",
+  "out": "logo/pdf/ml-stacked-white.pdf",
+  "w": 940.0,
+  "h": 294.03,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal.svg",
+  "out": "logo/png/ml-horizontal-signal.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal.svg",
+  "out": "logo/pdf/ml-horizontal-signal.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal-chalk.svg",
+  "out": "logo/png/ml-horizontal-signal-chalk.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal-chalk.svg",
+  "out": "logo/pdf/ml-horizontal-signal-chalk.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal-carbon.svg",
+  "out": "logo/png/ml-horizontal-signal-carbon.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-signal-carbon.svg",
+  "out": "logo/pdf/ml-horizontal-signal-carbon.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-chalk.svg",
+  "out": "logo/png/ml-horizontal-chalk.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-chalk.svg",
+  "out": "logo/pdf/ml-horizontal-chalk.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-carbon.svg",
+  "out": "logo/png/ml-horizontal-carbon.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-carbon.svg",
+  "out": "logo/pdf/ml-horizontal-carbon.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-white.svg",
+  "out": "logo/png/ml-horizontal-white.png",
+  "w": 2400,
+  "h": 190,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-horizontal-white.svg",
+  "out": "logo/pdf/ml-horizontal-white.pdf",
+  "w": 2709.93,
+  "h": 215.0,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-signal.svg",
+  "out": "logo/png/ml-wordmark-signal.png",
+  "w": 2400,
+  "h": 89,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-signal.svg",
+  "out": "logo/pdf/ml-wordmark-signal.pdf",
+  "w": 2696.12,
+  "h": 100,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-chalk.svg",
+  "out": "logo/png/ml-wordmark-chalk.png",
+  "w": 2400,
+  "h": 89,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-chalk.svg",
+  "out": "logo/pdf/ml-wordmark-chalk.pdf",
+  "w": 2696.12,
+  "h": 100,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-carbon.svg",
+  "out": "logo/png/ml-wordmark-carbon.png",
+  "w": 2400,
+  "h": 89,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-carbon.svg",
+  "out": "logo/pdf/ml-wordmark-carbon.pdf",
+  "w": 2696.12,
+  "h": 100,
+  "type": "pdf"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-white.svg",
+  "out": "logo/png/ml-wordmark-white.png",
+  "w": 2400,
+  "h": 89,
+  "type": "png"
+ },
+ {
+  "src": "logo/svg/ml-wordmark-white.svg",
+  "out": "logo/pdf/ml-wordmark-white.pdf",
+  "w": 2696.12,
+  "h": 100,
+  "type": "pdf"
+ }
+]

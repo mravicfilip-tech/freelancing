@@ -1,0 +1,268 @@
+<title>Maximum Leverage Asset Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Host+Grotesk:wght@400..600&display=swap">
+<style>
+/* Layout: one column of plates on Carbon, like the identity presentation. Each section is a kit part: logo, patterns, icons. Single committed dark look. */
+:root {
+  --carbon: #0E0E0F;
+  --carbon-2: #161618;
+  --carbon-3: #222226;
+  --chalk: #F3F2EF;
+  --chalk-2: #E6E4DF;
+  --signal: #E5261A;
+  --ash: #8E8A84;
+  --ash-dark: #5E5B57;
+  --wordmark: "Michroma", "Eurostile", sans-serif;
+  --sans: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+body { margin: 0; background: var(--carbon); color: var(--chalk); font-family: var(--sans); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: 24px; padding-block: 80px 120px; display: grid; gap: 104px }
+@media (max-width: 640px) { .wrap { padding-inline: 16px; padding-block: 48px 80px; gap: 72px } }
+header { display: grid; gap: 18px; max-width: 64ch }
+.kicker, .label { font-family: var(--sans); font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ash); font-variant-numeric: tabular-nums }
+.kicker b { color: var(--signal); font-weight: 500 }
+h1, h2 { font-weight: 500; letter-spacing: -0.025em; line-height: 1.05; margin: 0; text-wrap: balance }
+h1 { font-size: clamp(34px, 5vw, 56px) }
+h2 { font-size: clamp(28px, 3.6vw, 42px) }
+h3 { margin: 0; font-weight: 500; font-size: 18px; letter-spacing: -0.01em }
+p { margin: 0 }
+.lede { color: var(--ash); font-size: 18px; max-width: 60ch }
+.accent { color: var(--signal) }
+section { display: grid; gap: 40px }
+.sec-head { display: grid; gap: 14px; max-width: 64ch }
+.sub { display: grid; gap: 18px }
+.sub > .row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.note { color: var(--ash); font-size: 14px; max-width: 58ch }
+
+/* logo */
+.lockups { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 2px }
+.lk { min-height: 220px; display: grid; place-items: center; position: relative; padding: 40px 24px; min-width: 0 }
+.lk img { max-width: 100%; height: auto; display: block }
+.lk .label { position: absolute; left: 16px; bottom: 12px }
+.on-carbon { background: var(--carbon); border: 1px solid var(--carbon-3) }
+.on-chalk { background: var(--chalk) } .on-chalk .label { color: var(--ash-dark) }
+.on-signal { background: var(--signal) } .on-signal .label { color: rgba(243,242,239,.85) }
+.on-white { background: #fff } .on-white .label { color: var(--ash-dark) }
+.c3 { grid-column: span 3 } .c2 { grid-column: span 2 }
+.stack-img { width: min(62%, 300px) } .horiz-img { width: min(88%, 460px) } .sym-img { width: 110px } .wm-img { width: min(80%, 360px) }
+.variants { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: var(--carbon-3); border: 1px solid var(--carbon-3) }
+.variants div { background: var(--carbon); padding: 16px 18px; display: grid; grid-template-columns: 22px 1fr; gap: 4px 12px; align-items: center; min-width: 0 }
+.sw { width: 22px; height: 22px; border-radius: 50%; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; box-shadow: 0 0 0 1px var(--carbon-3) }
+.variants b { font-weight: 500; font-size: 14px } .variants span { grid-column: 2; color: var(--ash); font-size: 13px }
+.rules3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px }
+.plate { background: var(--carbon-2); border: 1px solid var(--carbon-3); padding: 24px; display: grid; gap: 16px; align-content: start; min-width: 0 }
+.plate p { color: var(--ash); font-size: 14px }
+.clear { background: var(--chalk); display: grid; place-items: center; padding: 22px 0; position: relative }
+.clear .box { position: relative; padding: 14px; outline: 1.5px dashed rgba(229,38,26,.7) }
+.clear img { width: 150px; display: block }
+.sizes-row { display: flex; align-items: flex-end; gap: 22px; flex-wrap: wrap }
+.px { display: grid; justify-items: center; gap: 6px } .px small { font-size: 11px; color: var(--ash); font-variant-numeric: tabular-nums }
+.tab { display: inline-flex; align-items: center; gap: 8px; background: #1f1f23; color: var(--chalk); font-size: 12px; padding: 7px 12px; border-radius: 8px 8px 0 0; white-space: nowrap }
+.tab img { width: 16px; height: 16px; image-rendering: auto }
+.apps { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap }
+.apps img { display: block; border-radius: 22%; box-shadow: 0 8px 18px rgba(0,0,0,.45) }
+.avatars { display: flex; gap: 16px; flex-wrap: wrap; align-items: center }
+.avatars img { width: 84px; height: 84px; border-radius: 50%; display: block; box-shadow: 0 0 0 1px var(--carbon-3) }
+.og { width: 100%; height: auto; display: block; border: 1px solid var(--carbon-3) }
+.files { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--carbon-3); border: 1px solid var(--carbon-3) }
+.files div { background: var(--carbon); padding: 16px 18px; min-width: 0 }
+.files b { display: block; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums }
+.files span { color: var(--ash); font-size: 13px }
+
+/* patterns */
+.pat { display: grid; grid-template-columns: 1fr 2.2fr; gap: 28px; align-items: start; padding-top: 28px; border-top: 1px solid var(--carbon-3) }
+.pat-copy { display: grid; gap: 10px; min-width: 0 }
+.pat-copy p { color: var(--ash); font-size: 14px }
+.pat-copy .use { color: var(--chalk); font-size: 14px }
+.swatches { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2px; min-width: 0 }
+.swatches div { height: 200px; background-repeat: repeat; position: relative }
+.swatches div .label { position: absolute; left: 12px; bottom: 10px; background: rgba(14,14,15,.8); color: var(--chalk); padding: 3px 7px; border-radius: 3px }
+.panels { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 2px; min-width: 0 }
+.panels img { width: 100%; height: auto; display: block }
+.bands { display: grid; gap: 2px }
+.bands img { width: 100%; height: auto; display: block }
+.dos { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px }
+.dos ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--ash); font-size: 14px }
+.dos h3 { margin-bottom: 10px }
+
+/* icons */
+.icon-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 2px }
+.ic { background: var(--carbon-2); padding: 24px 12px 16px; display: grid; justify-items: center; gap: 14px; text-align: center; min-width: 0 }
+.ic svg { width: 48px; height: 48px; color: var(--signal) }
+.ic span { font-size: 13px; color: var(--ash) }
+.icon-sizes { display: flex; gap: 26px; align-items: flex-end; flex-wrap: wrap; color: var(--chalk) }
+.service { background: var(--chalk); color: var(--carbon); padding: 28px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px 28px }
+.service div { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; min-width: 0 }
+.service i { width: 40px; height: 40px; border-radius: 10px; background: var(--carbon); color: var(--signal); display: grid; place-items: center }
+.service i svg { width: 22px; height: 22px }
+.service b { display: block; font-weight: 500; font-size: 15px }
+.service span { font-size: 13px; color: var(--ash-dark) }
+footer { color: var(--ash); font-size: 14px; max-width: 70ch; display: grid; gap: 8px }
+footer code { font-family: var(--sans); color: var(--chalk); background: var(--carbon-2); padding: 1px 6px; border-radius: 4px }
+
+@media (max-width: 900px) {
+  .lockups { grid-template-columns: repeat(2, minmax(0,1fr)) } .c3, .c2 { grid-column: span 2 }
+  .variants, .rules3, .files, .panels, .dos, .service { grid-template-columns: 1fr }
+  .pat { grid-template-columns: 1fr }
+  .icon-grid { grid-template-columns: repeat(3, minmax(0,1fr)) }
+  .swatches div { height: 140px }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kicker"><b>Kit</b> Maximum Leverage · supporting assets</div>
+    <h1>Logo files, patterns and icons. <span class="accent">All from one mark.</span></h1>
+    <p class="lede">Everything here is built from the same geometry as the symbol: 60° bars, heights rising 2 : 3 : 4, one stroke weight and the lever. Every file is a clean vector, generated from one script, so a change to the mark flows through the whole kit.</p>
+  </header>
+
+  <!-- 1 LOGO -->
+  <section id="logo">
+    <div class="sec-head">
+      <div class="kicker"><b>01</b> Logo package</div>
+      <h2>Final files, every lockup, every colour.</h2>
+      <p class="lede">Strokes are converted to filled shapes and the name is converted to outlines, so the files render the same in any tool, printer or browser without fonts installed.</p>
+    </div>
+
+    <div class="lockups">
+      <div class="lk on-carbon c3"><img class="stack-img" src="logo/svg/ml-stacked-signal.svg" alt="Stacked lockup in Signal"><span class="label">Stacked · Signal</span></div>
+      <div class="lk on-chalk c3"><img class="stack-img" src="logo/svg/ml-stacked-signal-carbon.svg" alt="Stacked lockup, Signal symbol with Carbon name"><span class="label">Stacked · Signal and Carbon</span></div>
+      <div class="lk on-carbon c3"><img class="horiz-img" src="logo/svg/ml-horizontal-signal-chalk.svg" alt="Horizontal lockup, Signal symbol with Chalk name"><span class="label">Horizontal · Signal and Chalk</span></div>
+      <div class="lk on-signal c3"><img class="horiz-img" src="logo/svg/ml-horizontal-chalk.svg" alt="Horizontal lockup in Chalk on Signal"><span class="label">Horizontal · Chalk on Signal</span></div>
+      <div class="lk on-white c2"><img class="sym-img" src="logo/svg/ml-symbol-signal.svg" alt="Symbol in Signal"><span class="label">Symbol</span></div>
+      <div class="lk on-carbon c2"><img class="sym-img" src="logo/svg/ml-symbol-white.svg" alt="Symbol in white"><span class="label">Symbol · White</span></div>
+      <div class="lk on-chalk c2"><img class="wm-img" src="logo/svg/ml-wordmark-carbon.svg" alt="Wordmark in Carbon"><span class="label">Wordmark · Carbon</span></div>
+    </div>
+
+    <div class="sub">
+      <div class="row-head"><h3>Colour versions</h3><span class="label">Each lockup comes in all six</span></div>
+      <div class="variants">
+        <div><i class="sw" style="background:#E5261A"></i><b>Signal</b><span>On Carbon, Chalk or white. The default.</span></div>
+        <div><i class="sw"><span style="background:#E5261A"></span><span style="background:#F3F2EF"></span></i><b>Signal and Chalk</b><span>On Carbon, when the name should be quieter.</span></div>
+        <div><i class="sw"><span style="background:#E5261A"></span><span style="background:#0E0E0F"></span></i><b>Signal and Carbon</b><span>On Chalk or white paper and pages.</span></div>
+        <div><i class="sw" style="background:#F3F2EF"></i><b>Chalk</b><span>On Signal, photos and dark colours.</span></div>
+        <div><i class="sw" style="background:#0E0E0F"></i><b>Carbon</b><span>One-colour print on light stock.</span></div>
+        <div><i class="sw" style="background:#FFFFFF"></i><b>White</b><span>Embroidery, foil, video over footage.</span></div>
+      </div>
+    </div>
+
+    <div class="rules3">
+      <div class="plate"><div class="clear"><div class="box"><img src="logo/svg/ml-symbol-signal.svg" alt="Symbol with its clear space"></div></div><h3>Clear space</h3><p>One bar width on every side, about 15% of the symbol's width. Nothing enters it: no text, no edges, no patterns.</p></div>
+      <div class="plate">
+        <div class="sizes-row">
+          <div class="px"><img src="logo/app/favicon-16.png" width="16" height="16" alt="16px favicon"><small>16</small></div>
+          <div class="px"><img src="logo/app/favicon-32.png" width="32" height="32" alt="32px favicon"><small>32</small></div>
+          <div class="px"><img src="logo/app/favicon-48.png" width="48" height="48" alt="48px favicon"><small>48</small></div>
+          <span class="tab"><img src="logo/app/favicon-32.png" alt="">Maximum Leverage</span>
+        </div>
+        <h3>Minimum size</h3><p>The symbol holds down to 16px wide. Below 120px wide, drop the name and use the symbol alone. The stacked lockup needs at least 90px of width for the name to stay readable.</p>
+      </div>
+      <div class="plate">
+        <div class="apps">
+          <img src="logo/app/apple-touch-icon.png" width="60" height="60" alt="iPhone app icon">
+          <img src="logo/app/android-chrome-192.png" width="48" height="48" alt="Android icon">
+          <img src="logo/app/maskable-512.png" width="40" height="40" alt="Maskable icon" style="border-radius:50%">
+        </div>
+        <h3>App icons</h3><p>Signal symbol on a full Carbon square. iPhone and Android round the corners themselves. The maskable version keeps the symbol inside the circular safe zone.</p>
+      </div>
+    </div>
+
+    <div class="rules3">
+      <div class="plate" style="grid-column: span 1"><div class="avatars"><img src="logo/app/avatar-carbon-1000.png" alt="Avatar on Carbon"><img src="logo/app/avatar-signal-1000.png" alt="Avatar on Signal"><img src="logo/app/avatar-chalk-1000.png" alt="Avatar on Chalk"></div><h3>Social avatars</h3><p>1000 × 1000, safe for circle crops. Carbon is the default. Use Signal where the feed is busy.</p></div>
+      <div class="plate" style="grid-column: span 2"><img class="og" src="logo/app/og-image-1200x630.png" alt="Link preview image"><h3>Link preview</h3><p>1200 × 630, shown when the website is shared in chats and on social.</p></div>
+    </div>
+
+    <div class="files">
+      <div><b>20</b><span>logo SVGs: 4 symbol, 6 stacked, 6 horizontal, 4 wordmark</span></div>
+      <div><b>20</b><span>matching PDFs for print, and 20 transparent PNGs</span></div>
+      <div><b>11</b><span>favicons, app icons, avatars, link preview, plus favicon.ico and site.webmanifest</span></div>
+      <div><b>1</b><span>script that rebuilds them all from the mark's geometry</span></div>
+    </div>
+  </section>
+
+  <!-- 2 PATTERNS -->
+  <section id="patterns">
+    <div class="sec-head">
+      <div class="kicker"><b>02</b> Patterns</div>
+      <h2>Four repeating patterns, three one-off graphics.</h2>
+      <p class="lede">Each comes in Carbon, Chalk and Signal. The repeating patterns are tonal, one step off the background, so they add texture without competing with the logo or the message.</p>
+    </div>
+
+    <div class="pat">
+      <div class="pat-copy"><h3>Momentum</h3><p>The three rising bars, staggered. The strongest link back to the mark.</p><p class="use">Website and slide backgrounds, business card backs, social backgrounds.</p></div>
+      <div class="swatches"><div style="background-image:url(patterns/tiles/momentum-carbon.svg);background-size:150px 130px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/momentum-chalk.svg);background-size:150px 130px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/momentum-signal.svg);background-size:150px 130px"><span class="label">Signal</span></div></div>
+    </div>
+    <div class="pat">
+      <div class="pat-copy"><h3>Lever hatch</h3><p>Fine lines at the mark's 60°, like an engineering drawing. The quietest pattern.</p><p class="use">Letterhead, envelopes, dividers, behind stat callouts.</p></div>
+      <div class="swatches"><div style="background-image:url(patterns/tiles/hatch-carbon.svg);background-size:12px 20.78px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/hatch-chalk.svg);background-size:12px 20.78px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/hatch-signal.svg);background-size:12px 20.78px"><span class="label">Signal</span></div></div>
+    </div>
+    <div class="pat">
+      <div class="pat-copy"><h3>Step rhythm</h3><p>Small staircases that rise in the mark's 2 : 3 : 4 steps. Growth in plain shapes.</p><p class="use">Report covers, results pages, email banners.</p></div>
+      <div class="swatches"><div style="background-image:url(patterns/tiles/steps-carbon.svg);background-size:240px 104px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/steps-chalk.svg);background-size:240px 104px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/steps-signal.svg);background-size:240px 104px"><span class="label">Signal</span></div></div>
+    </div>
+    <div class="pat">
+      <div class="pat-copy"><h3>Peaks</h3><p>The tall bar and the lever, repeated in offset rows. The most distinctive detail of the mark.</p><p class="use">Merch, packaging, event walls, the inside of folders.</p></div>
+      <div class="swatches"><div style="background-image:url(patterns/tiles/peaks-carbon.svg);background-size:96px 84px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/peaks-chalk.svg);background-size:96px 84px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/peaks-signal.svg);background-size:96px 84px"><span class="label">Signal</span></div></div>
+    </div>
+
+    <div class="pat">
+      <div class="pat-copy"><h3>Rising dots</h3><p>Dots that grow from bottom left to top right along the mark's diagonal. One graphic, not a repeat.</p><p class="use">Overlays on photos, social carousels, empty states. 16:9, 4:5 and 1:1.</p></div>
+      <div class="panels"><img src="patterns/panels/dots-carbon-16x9.svg" alt="Rising dots on Carbon"><img src="patterns/panels/dots-chalk-16x9.svg" alt="Rising dots on Chalk"><img src="patterns/panels/dots-signal-16x9.svg" alt="Rising dots on Signal"></div>
+    </div>
+    <div class="pat">
+      <div class="pat-copy"><h3>Supergraphic</h3><p>The mark cropped huge, bleeding off the bottom right, with the lever in view. Tonal or full strength.</p><p class="use">Covers, reel covers, trade show walls, the office wall. 16:9, 4:5 and 1:1.</p></div>
+      <div class="panels"><img src="patterns/panels/super-carbon-strong-16x9.svg" alt="Supergraphic, Signal on Carbon"><img src="patterns/panels/super-carbon-16x9.svg" alt="Supergraphic, tonal on Carbon"><img src="patterns/panels/super-signal-strong-16x9.svg" alt="Supergraphic, Chalk on Signal"></div>
+    </div>
+    <div class="pat">
+      <div class="pat-copy"><h3>Step band</h3><p>One continuous step line rising across a banner, the steps getting bigger to the right.</p><p class="use">Email headers, LinkedIn and YouTube banners, the bottom edge of video frames.</p></div>
+      <div class="bands"><img src="patterns/panels/stepband-carbon-1920x240.svg" alt="Step band on Carbon"><img src="patterns/panels/stepband-chalk-1920x240.svg" alt="Step band on Chalk"></div>
+    </div>
+
+    <div class="dos plate">
+      <div><h3>Do</h3><ul><li>Use one pattern per layout.</li><li>Keep repeating patterns tonal. They should be noticed second.</li><li>Use the Signal colourway for social posts and backgrounds, not for documents.</li><li>Let one supergraphic carry a page on its own, with the message in the empty corner.</li></ul></div>
+      <div><h3>Don't</h3><ul><li>Put any pattern behind the logo or its clear space.</li><li>Mix two patterns, or a pattern with a supergraphic.</li><li>Recolour patterns outside Carbon, Chalk and Signal.</li><li>Scale the repeating tiles below 50% or above 200%.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 3 ICONS -->
+  <section id="icons">
+    <div class="sec-head">
+      <div class="kicker"><b>03</b> Service icons</div>
+      <h2>Twelve icons, one per lever.</h2>
+      <p class="lede">24px grid, 2px rounded stroke, matching the mark's round ends. Reporting uses the mark's own 60° bars, and Leverage is a beam on a fulcrum. They take the colour of the text around them.</p>
+    </div>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" id="sprite-host"></svg>
+    <div class="icon-grid" id="icon-grid"></div>
+    <div class="plate">
+      <div class="icon-sizes" id="icon-sizes"></div>
+      <h3>Sizes</h3><p>Drawn at 24px. Use them at 16, 24, 32 or 48. At 16px the stroke thins to about 1.3px, so keep that size for dense lists. Don't thicken, fill or recolour parts of an icon.</p>
+    </div>
+    <div class="service" id="service"></div>
+  </section>
+
+  <footer>
+    <div class="kicker">Files</div>
+    <p>Everything lives in <code>ml-brand-system/assets/kit/</code>: <code>logo/</code> (svg, png, pdf, app), <code>patterns/</code> (tiles, panels, previews), <code>icons/</code> (svg and one sprite). A single zip of the kit sits beside them as <code>ml-asset-kit.zip</code>.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var ICONS = {"calls": ["M5.5 4h2.6l1.4 3.6-1.9 1.2a10 10 0 0 0 4.9 4.9l1.2-1.9 3.6 1.4v2.6a2 2 0 0 1-2.2 2A14.5 14.5 0 0 1 3.5 6.2a2 2 0 0 1 2-2.2z", "M20.5 3.5l-5 5", "M15.5 4.5v4h4"], "follow-up": ["M4 7.5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-5.5L6 19v-3.5a2 2 0 0 1-2-2z", "M8.5 3.5H18a2 2 0 0 1 2 2V12"], "reviews": ["M12.00 3.40 L14.41 9.08 L20.56 9.62 L15.90 13.67 L17.29 19.68 L12.00 16.50 L6.71 19.68 L8.10 13.67 L3.44 9.62 L9.59 9.08 Z"], "booking": ["M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z", "M8 3v4", "M16 3v4", "M4 10h16", "M9 15l2 2 4-4"], "ads": ["M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z", "M7 15l1 4.5", "M16.5 9.5a3.5 3.5 0 0 1 0 5", "M19 7a7 7 0 0 1 0 10"], "assistant": ["M4.5 14v-2a7.5 7.5 0 0 1 15 0v2", "M4.5 14h2.5v5H5.5a1 1 0 0 1-1-1z", "M19.5 14H17v5h1.5a1 1 0 0 0 1-1z", "M17 19a3 3 0 0 1-3 2h-2"], "automation": ["M4 12a8 8 0 0 1 13.6-5.7L20 8.5", "M20 3.5v5h-5", "M20 12a8 8 0 0 1-13.6 5.7L4 15.5", "M4 20.5v-5h5"], "offers": ["M3.5 12.2V5a1.5 1.5 0 0 1 1.5-1.5h7.2L21 12.3 12.3 21z", "M8.2 8.2h.01"], "reporting": ["M4 4v16h16", "M7.5 16.5 l2.00 -3.46", "M11.25 16.5 l3.50 -6.06", "M15 16.5 l5.00 -8.66"], "customers": ["M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z", "M3 20a6 6 0 0 1 12 0", "M16 4.2a3.5 3.5 0 0 1 0 6.6", "M21 20a6 6 0 0 0-3.5-5.4"], "hours": ["M4 12a8 8 0 1 0 2.3-5.7L4 8.5", "M4 3.5v5h5", "M12 8v4.5l3 2"], "leverage": ["M3 16.5l18-8", "M12 12.5l-3.8 7.5h7.6z"]};
+  var LABELS = {"calls": "Missed-call recovery", "follow-up": "Follow-up", "reviews": "Reviews", "booking": "Booking", "ads": "Ads", "assistant": "Always-on assistant", "automation": "Automation", "offers": "Offers", "reporting": "Reporting", "customers": "Customers", "hours": "Hours back", "leverage": "Leverage"};
+  var DESC = { "calls": "Every missed call gets a text back", "follow-up": "Sequences that book the consult", "reviews": "More five-star reviews, on autopilot", "booking": "Calls turn into booked visits", "ads": "Local ads that fill the calendar", "assistant": "Answers the phone, day and night" };
+  function svg(name, size) {
+    var p = ICONS[name].map(function (d) { return '<path d="' + d + '"/>'; }).join('');
+    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+  }
+  var grid = document.getElementById('icon-grid');
+  Object.keys(ICONS).forEach(function (n) { grid.insertAdjacentHTML('beforeend', '<div class="ic">' + svg(n, 48) + '<span>' + LABELS[n] + '</span></div>'); });
+  var sizes = document.getElementById('icon-sizes');
+  [16, 24, 32, 48].forEach(function (s) { sizes.insertAdjacentHTML('beforeend', '<div class="px">' + svg('leverage', s) + '<small>' + s + '</small></div>'); });
+  var svc = document.getElementById('service');
+  Object.keys(DESC).forEach(function (n) { svc.insertAdjacentHTML('beforeend', '<div><i>' + svg(n, 22) + '</i><p><b>' + LABELS[n] + '</b><span>' + DESC[n] + '</span></p></div>'); });
+})();
+</script>

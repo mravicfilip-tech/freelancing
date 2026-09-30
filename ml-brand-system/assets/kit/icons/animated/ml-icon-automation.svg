@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-automation" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Automation"><title>Automation</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-automation .a{transform-origin:12px 12px;animation:ml-au 3s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes ml-au{0%{transform:none}50%,100%{transform:rotate(360deg)}}</style><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8.5" class="a"/><path d="M20 3.5v5h-5" class="a"/><path d="M20 12a8 8 0 0 1-13.6 5.7L4 15.5" class="a"/><path d="M4 20.5v-5h5" class="a"/></svg>

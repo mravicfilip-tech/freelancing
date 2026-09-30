@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-reporting" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Reporting"><title>Reporting</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-reporting .b{transform-origin:7.5px 16.5px}
+.ml-reporting .c{transform-origin:11.25px 16.5px}
+.ml-reporting .e{transform-origin:15px 16.5px}
+.ml-reporting .b,.ml-reporting .c,.ml-reporting .e{animation:ml-rp 3s cubic-bezier(.3,.7,.2,1) infinite}
+.ml-reporting .c{animation-delay:.12s}
+.ml-reporting .e{animation-delay:.24s}
+@keyframes ml-rp{0%{transform:scale(0)}24%{transform:scale(1.1)}32%,100%{transform:none}}</style><path d="M4 4v16h16"/><path d="M7.5 16.5 l2.00 -3.46" class="b"/><path d="M11.25 16.5 l3.50 -6.06" class="c"/><path d="M15 16.5 l5.00 -8.66" class="e"/></svg>

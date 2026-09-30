@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-reminders" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Reminders"><title>Reminders</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-reminders .a{transform-origin:12px 4px;animation:ml-rm-a 3s ease-out infinite}
+.ml-reminders .b{animation:ml-rm-b 3s ease-out infinite}
+@keyframes ml-rm-a{0%,44%,100%{transform:none}8%{transform:rotate(14deg)}16%{transform:rotate(-12deg)}24%{transform:rotate(8deg)}32%{transform:rotate(-4deg)}}
+@keyframes ml-rm-b{0%,48%,100%{transform:none}11%{transform:translateX(-1.5px)}19%{transform:translateX(1.5px)}27%{transform:translateX(-1px)}35%{transform:translateX(.5px)}}</style><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z" class="a"/><path d="M12 3v2" class="a"/><path d="M10 20.5a2 2 0 0 0 4 0" class="b"/></svg>

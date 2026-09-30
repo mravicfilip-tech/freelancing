@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-leverage" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Leverage"><title>Leverage</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-leverage .a{transform-origin:12px 12.5px;animation:ml-lv 3s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes ml-lv{0%,100%{transform:none}14%,24%{transform:rotate(24deg)}44%{transform:rotate(-3deg)}54%{transform:none}}</style><path d="M3 16.5l18-8" class="a"/><path d="M12 12.5l-3.8 7.5h7.6z"/></svg>

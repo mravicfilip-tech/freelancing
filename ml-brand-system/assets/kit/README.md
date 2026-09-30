@@ -20,7 +20,10 @@ the single source of truth for the mark. `ml-asset-kit.zip` bundles the finished
   - `lever-post-template-{4x5,1x1,9x16}.svg` photo window cut at 60 degrees with a Signal bar beside it; replace the
     grey `id="photo"` slot with a real owner at work. `lever-post-example-*` use the AI concept photo as a stand-in.
   - `tally-poster-{4x5,9x16}.svg` Tally field plus the result in Host Grotesk.
-- `icons/svg` 12 service icons (24px grid, 2px round stroke, currentColor), `icons/ml-icons.svg` sprite.
+- `icons/` 24 service icons (24px grid, 1.5px round stroke, currentColor): 12 core services plus 12 for the wider
+  growth stack (website, local search, texts, email, quotes, payments, pipeline, referrals, reminders, social, growth, storefront).
+  `icons/svg` static, `icons/animated` self-contained animated SVGs (3s loop, CSS inside, respects reduced motion),
+  `icons/ml-icons.svg` static sprite, `icons/ml-icons-motion.css` + `icons/icons.json` for animated inline SVG on the web.
 
 ## Colour versions
 signal: on Carbon, Chalk or white · signal-chalk: on Carbon · signal-carbon: on Chalk or white ·

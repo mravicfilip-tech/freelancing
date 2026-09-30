@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-local-search" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Local search"><title>Local search</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-local-search .a{animation:ml-ls-a 3s cubic-bezier(.3,.7,.2,1) infinite}
+.ml-local-search .b{transform-origin:12px 21px;animation:ml-ls-b 3s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes ml-ls-a{0%{transform:translateY(-5px);opacity:0}18%{transform:none;opacity:1}26%{transform:translateY(-1.2px)}34%,100%{transform:none}}
+@keyframes ml-ls-b{0%,14%{transform:scaleX(.3)}20%{transform:scaleX(1.25)}32%,100%{transform:none}}</style><path d="M12 19.5s-6-5.2-6-10a6 6 0 0 1 12 0c0 4.8-6 10-6 10z" class="a"/><path d="M12 11.75a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z" class="a"/><path d="M8.5 21h7" class="b"/></svg>

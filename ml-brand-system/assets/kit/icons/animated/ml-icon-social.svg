@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-social" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Social"><title>Social</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-social .a{animation:ml-so 3s cubic-bezier(.3,.7,.2,1) infinite}
+@keyframes ml-so{0%,100%{transform:none}12%{transform:translateX(2px)}26%{transform:translateX(-.5px)}36%{transform:none}}</style><path d="M14 5l6 6-6 6" class="a"/><path d="M20 11h-8a7 7 0 0 0-7 7v1" class="a"/></svg>

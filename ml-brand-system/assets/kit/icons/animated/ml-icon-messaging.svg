@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-icon ml-messaging" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Text messaging"><title>Text messaging</title><style>.ml-icon *{transform-box:view-box}
+@media (prefers-reduced-motion:reduce){.ml-icon *{animation:none!important}}
+.ml-messaging .b,.ml-messaging .c,.ml-messaging .e{animation:ml-ms 1.5s cubic-bezier(.3,.7,.2,1) infinite}
+.ml-messaging .c{animation-delay:.12s}
+.ml-messaging .e{animation-delay:.24s}
+@keyframes ml-ms{0%,40%,100%{transform:none}14%{transform:translateY(-2px)}}</style><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4.5 3.5V17H6a2 2 0 0 1-2-2z"/><path d="M8.5 10.5h.01" class="b"/><path d="M12 10.5h.01" class="c"/><path d="M15.5 10.5h.01" class="e"/></svg>

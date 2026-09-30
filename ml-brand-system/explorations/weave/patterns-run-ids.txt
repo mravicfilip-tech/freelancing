@@ -1,0 +1,11 @@
+# Pattern concepts, seeded from the o10 image. Nano Banana Pro, 11 credits each, 110 total.
+p01 op-art stripes bending at the lever     ddcd472d-b537-4b0c-a6a5-dfcdd8d964ab
+p02 topographic contours to the peak        fe517372-dbd2-4347-bbf2-30f259e48d6b
+p03 woven textile, over and under           09fd1d45-8911-4132-bbbc-cb4ef11983ef
+p04 halftone dot print                      76abcbe5-f774-4fb9-b26f-787d861c0f67
+p05 modular Truchet tiles                   0a4555c2-b4e3-4024-b6ea-cc26b5f8a1a4
+p06 motion trails                           c8a7efd2-53fb-41d9-b695-e6c6a16185b2
+p07 stepped isometric blocks                3ef1a015-565b-4fe6-98d7-9a2df8131924
+p08 negative-space slabs                    faa1470d-d4e6-4dc7-8a10-7dcb3649626e
+p09 embossed tone-on-tone                   e58de097-f3d0-4fbc-aec7-d5652a6067b9
+p10 rhythmic score / barcode                cde79f45-cfed-4fe9-9b43-a90299e107de

@@ -9,13 +9,11 @@ the single source of truth for the mark. `ml-asset-kit.zip` bundles the finished
 - `logo/png` transparent PNGs, `logo/pdf` vector PDFs for print.
 - `logo/app` favicon-16/32/48 and favicon.ico, apple-touch-icon, android-chrome-192/512, maskable-512,
   social avatars (Carbon, Signal, Chalk, 1000px), og-image-1200x630, site.webmanifest.
-- Patterns v2 (v1's scattered motifs were retired as generic). Each follows a rule of the mark:
-  - Skyline: the full mark repeated on one baseline, one bar width apart, rising out of the bottom edge.
-    `patterns/tiles/skyline-*.svg` (repeat-x band tile) and panels (16:9, 1920x400, strong 1920x400).
-  - Signal code: each letter is three bars in the mark's three heights, counting in threes (A=001, Z=222); a full stop is the lever.
-    E (5 = 012) comes out short, medium, tall: the mark, so every E is in Signal. Band 1920x320 and posters 16:9, 4:5, 1:1.
-  - Supergraphic: the mark cropped huge, lever in view (16:9, 4:5, 1:1).
-  All in Carbon, Chalk and Signal.
+- Patterns v3, redrawn as vectors from the Weave concepts the client picked (p01, p02, p08). v1 and v2 were retired as generic.
+  - Summit: contour lines climbing to the mark, which sits at the peak as a Signal outline.
+  - Ripple: stripes at 60 degrees, bent and bunched where a hidden lever pushes.
+  - Slabs: a field cut along the bar and lever angles in 2 : 3 : 4 widths, a few slabs pushed out of line.
+  `patterns/{summit,ripple,slabs}-{carbon,chalk,signal}-{16x9,4x5,1x1,band}.svg` plus PNGs (band is 1920 x 480).
 - `icons/svg` 12 service icons (24px grid, 2px round stroke, currentColor), `icons/ml-icons.svg` sprite.
 
 ## Colour versions
@@ -31,5 +29,5 @@ Then rebuild favicon.ico from the 16/32/48 PNGs (see git history) and re-zip.
 
 ## Rules
 Clear space: one bar width on every side (about 15% of the symbol width). Symbol minimum 16px wide; drop the name below 120px.
-Patterns: one system per layout, never behind the logo, Skyline always on the bottom edge rising up, Signal code only for real words with the Es picked out.
+Patterns: one per layout, full-bleed, never behind the logo; leave the empty side for the message; Chalk for print, Carbon for screens, Signal for social.
 Type: Michroma for the name and tagline only, Host Grotesk for everything else. Never a mono font.

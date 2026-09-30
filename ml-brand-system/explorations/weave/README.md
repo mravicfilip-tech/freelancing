@@ -73,3 +73,4 @@ State of the symbol work, so a new session can resume.
   run IDs in `patterns-run-ids.txt`, images in `patterns/`. Recommended: p02 topographic summit, p01 lever ripple,
   p03 woven levers, p04 halftone mark. Board: `pattern-concepts.html`, published at https://claude.ai/artifact/UrPycui9eCA4TeD4u3tN31
   Weave balance after: 820. Next: user picks, then vector redraw into the kit.
+- **Patterns picked: p01 ripple, p02 summit, p08 slabs.** Redrawn as vectors in `ml-brand-system/assets/kit/patterns/` (build_patterns.py v3).

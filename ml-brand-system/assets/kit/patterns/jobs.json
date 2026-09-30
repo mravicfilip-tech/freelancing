@@ -1,233 +1,254 @@
 [
  {
-  "src": "patterns/preview/skyline-carbon.svg",
-  "out": "patterns/preview/skyline-carbon.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-carbon-16x9.svg",
-  "out": "patterns/panels/skyline-carbon-16x9.png",
+  "src": "patterns/summit-chalk-16x9.svg",
+  "out": "patterns/summit-chalk-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/skyline-carbon-1920x400.svg",
-  "out": "patterns/panels/skyline-carbon-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-carbon-strong-1920x400.svg",
-  "out": "patterns/panels/skyline-carbon-strong-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/skyline-chalk.svg",
-  "out": "patterns/preview/skyline-chalk.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-chalk-16x9.svg",
-  "out": "patterns/panels/skyline-chalk-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-chalk-1920x400.svg",
-  "out": "patterns/panels/skyline-chalk-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-chalk-strong-1920x400.svg",
-  "out": "patterns/panels/skyline-chalk-strong-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/skyline-signal.svg",
-  "out": "patterns/preview/skyline-signal.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-signal-16x9.svg",
-  "out": "patterns/panels/skyline-signal-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-signal-1920x400.svg",
-  "out": "patterns/panels/skyline-signal-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/skyline-signal-strong-1920x400.svg",
-  "out": "patterns/panels/skyline-signal-strong-1920x400.png",
-  "w": 1920,
-  "h": 400,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/code-band-carbon-1920x320.svg",
-  "out": "patterns/panels/code-band-carbon-1920x320.png",
-  "w": 1920,
-  "h": 320,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/code-poster-carbon-16x9.svg",
-  "out": "patterns/panels/code-poster-carbon-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/code-poster-carbon-4x5.svg",
-  "out": "patterns/panels/code-poster-carbon-4x5.png",
+  "src": "patterns/summit-chalk-4x5.svg",
+  "out": "patterns/summit-chalk-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-carbon-1x1.svg",
-  "out": "patterns/panels/code-poster-carbon-1x1.png",
+  "src": "patterns/summit-chalk-1x1.svg",
+  "out": "patterns/summit-chalk-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-band-chalk-1920x320.svg",
-  "out": "patterns/panels/code-band-chalk-1920x320.png",
+  "src": "patterns/summit-chalk-band.svg",
+  "out": "patterns/summit-chalk-band.png",
   "w": 1920,
-  "h": 320,
+  "h": 480,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-chalk-16x9.svg",
-  "out": "patterns/panels/code-poster-chalk-16x9.png",
+  "src": "patterns/summit-carbon-16x9.svg",
+  "out": "patterns/summit-carbon-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-chalk-4x5.svg",
-  "out": "patterns/panels/code-poster-chalk-4x5.png",
+  "src": "patterns/summit-carbon-4x5.svg",
+  "out": "patterns/summit-carbon-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-chalk-1x1.svg",
-  "out": "patterns/panels/code-poster-chalk-1x1.png",
+  "src": "patterns/summit-carbon-1x1.svg",
+  "out": "patterns/summit-carbon-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-band-signal-1920x320.svg",
-  "out": "patterns/panels/code-band-signal-1920x320.png",
+  "src": "patterns/summit-carbon-band.svg",
+  "out": "patterns/summit-carbon-band.png",
   "w": 1920,
-  "h": 320,
+  "h": 480,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-signal-16x9.svg",
-  "out": "patterns/panels/code-poster-signal-16x9.png",
+  "src": "patterns/summit-signal-16x9.svg",
+  "out": "patterns/summit-signal-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-signal-4x5.svg",
-  "out": "patterns/panels/code-poster-signal-4x5.png",
+  "src": "patterns/summit-signal-4x5.svg",
+  "out": "patterns/summit-signal-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/code-poster-signal-1x1.svg",
-  "out": "patterns/panels/code-poster-signal-1x1.png",
+  "src": "patterns/summit-signal-1x1.svg",
+  "out": "patterns/summit-signal-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-carbon-16x9.svg",
-  "out": "patterns/panels/super-carbon-16x9.png",
+  "src": "patterns/summit-signal-band.svg",
+  "out": "patterns/summit-signal-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/ripple-carbon-16x9.svg",
+  "out": "patterns/ripple-carbon-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-carbon-4x5.svg",
-  "out": "patterns/panels/super-carbon-4x5.png",
+  "src": "patterns/ripple-carbon-4x5.svg",
+  "out": "patterns/ripple-carbon-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-carbon-1x1.svg",
-  "out": "patterns/panels/super-carbon-1x1.png",
+  "src": "patterns/ripple-carbon-1x1.svg",
+  "out": "patterns/ripple-carbon-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-chalk-16x9.svg",
-  "out": "patterns/panels/super-chalk-16x9.png",
+  "src": "patterns/ripple-carbon-band.svg",
+  "out": "patterns/ripple-carbon-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/ripple-chalk-16x9.svg",
+  "out": "patterns/ripple-chalk-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-chalk-4x5.svg",
-  "out": "patterns/panels/super-chalk-4x5.png",
+  "src": "patterns/ripple-chalk-4x5.svg",
+  "out": "patterns/ripple-chalk-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-chalk-1x1.svg",
-  "out": "patterns/panels/super-chalk-1x1.png",
+  "src": "patterns/ripple-chalk-1x1.svg",
+  "out": "patterns/ripple-chalk-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-signal-16x9.svg",
-  "out": "patterns/panels/super-signal-16x9.png",
+  "src": "patterns/ripple-chalk-band.svg",
+  "out": "patterns/ripple-chalk-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/ripple-signal-16x9.svg",
+  "out": "patterns/ripple-signal-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-signal-4x5.svg",
-  "out": "patterns/panels/super-signal-4x5.png",
+  "src": "patterns/ripple-signal-4x5.svg",
+  "out": "patterns/ripple-signal-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-signal-1x1.svg",
-  "out": "patterns/panels/super-signal-1x1.png",
+  "src": "patterns/ripple-signal-1x1.svg",
+  "out": "patterns/ripple-signal-1x1.png",
   "w": 1080,
   "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/ripple-signal-band.svg",
+  "out": "patterns/ripple-signal-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-signal-16x9.svg",
+  "out": "patterns/slabs-signal-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-signal-4x5.svg",
+  "out": "patterns/slabs-signal-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-signal-1x1.svg",
+  "out": "patterns/slabs-signal-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-signal-band.svg",
+  "out": "patterns/slabs-signal-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-chalk-16x9.svg",
+  "out": "patterns/slabs-chalk-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-chalk-4x5.svg",
+  "out": "patterns/slabs-chalk-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-chalk-1x1.svg",
+  "out": "patterns/slabs-chalk-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-chalk-band.svg",
+  "out": "patterns/slabs-chalk-band.png",
+  "w": 1920,
+  "h": 480,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-carbon-16x9.svg",
+  "out": "patterns/slabs-carbon-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-carbon-4x5.svg",
+  "out": "patterns/slabs-carbon-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-carbon-1x1.svg",
+  "out": "patterns/slabs-carbon-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/slabs-carbon-band.svg",
+  "out": "patterns/slabs-carbon-band.png",
+  "w": 1920,
+  "h": 480,
   "type": "png"
  }
 ]

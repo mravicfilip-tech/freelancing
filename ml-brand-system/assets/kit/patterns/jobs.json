@@ -1,147 +1,168 @@
 [
  {
-  "src": "patterns/preview/momentum-carbon.svg",
-  "out": "patterns/preview/momentum-carbon.png",
+  "src": "patterns/preview/skyline-carbon.svg",
+  "out": "patterns/preview/skyline-carbon.png",
   "w": 1600,
   "h": 1000,
   "type": "png"
  },
  {
-  "src": "patterns/preview/momentum-chalk.svg",
-  "out": "patterns/preview/momentum-chalk.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/momentum-signal.svg",
-  "out": "patterns/preview/momentum-signal.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/hatch-carbon.svg",
-  "out": "patterns/preview/hatch-carbon.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/hatch-chalk.svg",
-  "out": "patterns/preview/hatch-chalk.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/hatch-signal.svg",
-  "out": "patterns/preview/hatch-signal.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/steps-carbon.svg",
-  "out": "patterns/preview/steps-carbon.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/steps-chalk.svg",
-  "out": "patterns/preview/steps-chalk.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/steps-signal.svg",
-  "out": "patterns/preview/steps-signal.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/peaks-carbon.svg",
-  "out": "patterns/preview/peaks-carbon.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/peaks-chalk.svg",
-  "out": "patterns/preview/peaks-chalk.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/preview/peaks-signal.svg",
-  "out": "patterns/preview/peaks-signal.png",
-  "w": 1600,
-  "h": 1000,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/dots-carbon-16x9.svg",
-  "out": "patterns/panels/dots-carbon-16x9.png",
+  "src": "patterns/panels/skyline-carbon-16x9.svg",
+  "out": "patterns/panels/skyline-carbon-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-carbon-4x5.svg",
-  "out": "patterns/panels/dots-carbon-4x5.png",
-  "w": 1080,
-  "h": 1350,
+  "src": "patterns/panels/skyline-carbon-1920x400.svg",
+  "out": "patterns/panels/skyline-carbon-1920x400.png",
+  "w": 1920,
+  "h": 400,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-carbon-1x1.svg",
-  "out": "patterns/panels/dots-carbon-1x1.png",
-  "w": 1080,
-  "h": 1080,
+  "src": "patterns/panels/skyline-carbon-strong-1920x400.svg",
+  "out": "patterns/panels/skyline-carbon-strong-1920x400.png",
+  "w": 1920,
+  "h": 400,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-chalk-16x9.svg",
-  "out": "patterns/panels/dots-chalk-16x9.png",
+  "src": "patterns/preview/skyline-chalk.svg",
+  "out": "patterns/preview/skyline-chalk.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/skyline-chalk-16x9.svg",
+  "out": "patterns/panels/skyline-chalk-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-chalk-4x5.svg",
-  "out": "patterns/panels/dots-chalk-4x5.png",
-  "w": 1080,
-  "h": 1350,
+  "src": "patterns/panels/skyline-chalk-1920x400.svg",
+  "out": "patterns/panels/skyline-chalk-1920x400.png",
+  "w": 1920,
+  "h": 400,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-chalk-1x1.svg",
-  "out": "patterns/panels/dots-chalk-1x1.png",
-  "w": 1080,
-  "h": 1080,
+  "src": "patterns/panels/skyline-chalk-strong-1920x400.svg",
+  "out": "patterns/panels/skyline-chalk-strong-1920x400.png",
+  "w": 1920,
+  "h": 400,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-signal-16x9.svg",
-  "out": "patterns/panels/dots-signal-16x9.png",
+  "src": "patterns/preview/skyline-signal.svg",
+  "out": "patterns/preview/skyline-signal.png",
+  "w": 1600,
+  "h": 1000,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/skyline-signal-16x9.svg",
+  "out": "patterns/panels/skyline-signal-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-signal-4x5.svg",
-  "out": "patterns/panels/dots-signal-4x5.png",
+  "src": "patterns/panels/skyline-signal-1920x400.svg",
+  "out": "patterns/panels/skyline-signal-1920x400.png",
+  "w": 1920,
+  "h": 400,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/skyline-signal-strong-1920x400.svg",
+  "out": "patterns/panels/skyline-signal-strong-1920x400.png",
+  "w": 1920,
+  "h": 400,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-band-carbon-1920x320.svg",
+  "out": "patterns/panels/code-band-carbon-1920x320.png",
+  "w": 1920,
+  "h": 320,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-carbon-16x9.svg",
+  "out": "patterns/panels/code-poster-carbon-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-carbon-4x5.svg",
+  "out": "patterns/panels/code-poster-carbon-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
  },
  {
-  "src": "patterns/panels/dots-signal-1x1.svg",
-  "out": "patterns/panels/dots-signal-1x1.png",
+  "src": "patterns/panels/code-poster-carbon-1x1.svg",
+  "out": "patterns/panels/code-poster-carbon-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-band-chalk-1920x320.svg",
+  "out": "patterns/panels/code-band-chalk-1920x320.png",
+  "w": 1920,
+  "h": 320,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-chalk-16x9.svg",
+  "out": "patterns/panels/code-poster-chalk-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-chalk-4x5.svg",
+  "out": "patterns/panels/code-poster-chalk-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-chalk-1x1.svg",
+  "out": "patterns/panels/code-poster-chalk-1x1.png",
+  "w": 1080,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-band-signal-1920x320.svg",
+  "out": "patterns/panels/code-band-signal-1920x320.png",
+  "w": 1920,
+  "h": 320,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-signal-16x9.svg",
+  "out": "patterns/panels/code-poster-signal-16x9.png",
+  "w": 1920,
+  "h": 1080,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-signal-4x5.svg",
+  "out": "patterns/panels/code-poster-signal-4x5.png",
+  "w": 1080,
+  "h": 1350,
+  "type": "png"
+ },
+ {
+  "src": "patterns/panels/code-poster-signal-1x1.svg",
+  "out": "patterns/panels/code-poster-signal-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
@@ -154,22 +175,8 @@
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-carbon-strong-16x9.svg",
-  "out": "patterns/panels/super-carbon-strong-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
   "src": "patterns/panels/super-carbon-4x5.svg",
   "out": "patterns/panels/super-carbon-4x5.png",
-  "w": 1080,
-  "h": 1350,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/super-carbon-strong-4x5.svg",
-  "out": "patterns/panels/super-carbon-strong-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
@@ -182,22 +189,8 @@
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-carbon-strong-1x1.svg",
-  "out": "patterns/panels/super-carbon-strong-1x1.png",
-  "w": 1080,
-  "h": 1080,
-  "type": "png"
- },
- {
   "src": "patterns/panels/super-chalk-16x9.svg",
   "out": "patterns/panels/super-chalk-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/super-chalk-strong-16x9.svg",
-  "out": "patterns/panels/super-chalk-strong-16x9.png",
   "w": 1920,
   "h": 1080,
   "type": "png"
@@ -210,22 +203,8 @@
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-chalk-strong-4x5.svg",
-  "out": "patterns/panels/super-chalk-strong-4x5.png",
-  "w": 1080,
-  "h": 1350,
-  "type": "png"
- },
- {
   "src": "patterns/panels/super-chalk-1x1.svg",
   "out": "patterns/panels/super-chalk-1x1.png",
-  "w": 1080,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/super-chalk-strong-1x1.svg",
-  "out": "patterns/panels/super-chalk-strong-1x1.png",
   "w": 1080,
   "h": 1080,
   "type": "png"
@@ -238,22 +217,8 @@
   "type": "png"
  },
  {
-  "src": "patterns/panels/super-signal-strong-16x9.svg",
-  "out": "patterns/panels/super-signal-strong-16x9.png",
-  "w": 1920,
-  "h": 1080,
-  "type": "png"
- },
- {
   "src": "patterns/panels/super-signal-4x5.svg",
   "out": "patterns/panels/super-signal-4x5.png",
-  "w": 1080,
-  "h": 1350,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/super-signal-strong-4x5.svg",
-  "out": "patterns/panels/super-signal-strong-4x5.png",
   "w": 1080,
   "h": 1350,
   "type": "png"
@@ -263,76 +228,6 @@
   "out": "patterns/panels/super-signal-1x1.png",
   "w": 1080,
   "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/super-signal-strong-1x1.svg",
-  "out": "patterns/panels/super-signal-strong-1x1.png",
-  "w": 1080,
-  "h": 1080,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-carbon-1920x240.svg",
-  "out": "patterns/panels/stepband-carbon-1920x240.png",
-  "w": 1920,
-  "h": 240,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-carbon-1500x500.svg",
-  "out": "patterns/panels/stepband-carbon-1500x500.png",
-  "w": 1500,
-  "h": 500,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-carbon-600x120.svg",
-  "out": "patterns/panels/stepband-carbon-600x120.png",
-  "w": 600,
-  "h": 120,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-chalk-1920x240.svg",
-  "out": "patterns/panels/stepband-chalk-1920x240.png",
-  "w": 1920,
-  "h": 240,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-chalk-1500x500.svg",
-  "out": "patterns/panels/stepband-chalk-1500x500.png",
-  "w": 1500,
-  "h": 500,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-chalk-600x120.svg",
-  "out": "patterns/panels/stepband-chalk-600x120.png",
-  "w": 600,
-  "h": 120,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-signal-1920x240.svg",
-  "out": "patterns/panels/stepband-signal-1920x240.png",
-  "w": 1920,
-  "h": 240,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-signal-1500x500.svg",
-  "out": "patterns/panels/stepband-signal-1500x500.png",
-  "w": 1500,
-  "h": 500,
-  "type": "png"
- },
- {
-  "src": "patterns/panels/stepband-signal-600x120.svg",
-  "out": "patterns/panels/stepband-signal-600x120.png",
-  "w": 600,
-  "h": 120,
   "type": "png"
  }
 ]

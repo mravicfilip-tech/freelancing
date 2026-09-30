@@ -88,6 +88,16 @@ section { display: grid; gap: 40px }
 .dos ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--ash); font-size: 14px }
 .dos h3 { margin-bottom: 10px }
 
+.sys { display: grid; grid-template-columns: 1fr 2fr; gap: 36px; align-items: start; padding-top: 32px; border-top: 1px solid var(--carbon-3) }
+.sys-copy { display: grid; gap: 12px; min-width: 0; position: sticky; top: 24px }
+.sys-copy p { color: var(--ash); font-size: 15px }
+.sys-copy p b { color: var(--chalk); font-weight: 500 }
+.sys-copy .use { color: var(--chalk); font-size: 14px; padding-top: 6px; border-top: 1px solid var(--carbon-3) }
+.sys-art { display: grid; gap: 2px; min-width: 0 }
+.sys-art img { width: 100%; height: auto; display: block; outline: 1px solid var(--carbon-3); outline-offset: -1px }
+.art-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2px } .art-row.three { grid-template-columns: repeat(3, minmax(0,1fr)) }
+.code-key { background: var(--carbon-2); border: 1px solid var(--carbon-3); padding: 28px 32px 20px }
+@media (max-width: 900px) { .sys { grid-template-columns: 1fr } .sys-copy { position: static } .art-row.three { grid-template-columns: 1fr } }
 /* icons */
 .icon-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 2px }
 .ic { background: var(--carbon-2); padding: 24px 12px 16px; display: grid; justify-items: center; gap: 14px; text-align: center; min-width: 0 }
@@ -187,43 +197,53 @@ footer code { font-family: var(--sans); color: var(--chalk); background: var(--c
   <section id="patterns">
     <div class="sec-head">
       <div class="kicker"><b>02</b> Patterns</div>
-      <h2>Four repeating patterns, three one-off graphics.</h2>
-      <p class="lede">Each comes in Carbon, Chalk and Signal. The repeating patterns are tonal, one step off the background, so they add texture without competing with the logo or the message.</p>
+      <h2>Two pattern systems and one graphic device. <span class="accent">Each follows a rule from the mark.</span></h2>
+      <p class="lede">No scattered motifs. Each pattern is built by a rule that only this mark has, so nobody else could own it.</p>
     </div>
 
-    <div class="pat">
-      <div class="pat-copy"><h3>Momentum</h3><p>The three rising bars, staggered. The strongest link back to the mark.</p><p class="use">Website and slide backgrounds, business card backs, social backgrounds.</p></div>
-      <div class="swatches"><div style="background-image:url(patterns/tiles/momentum-carbon.svg);background-size:150px 130px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/momentum-chalk.svg);background-size:150px 130px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/momentum-signal.svg);background-size:150px 130px"><span class="label">Signal</span></div></div>
-    </div>
-    <div class="pat">
-      <div class="pat-copy"><h3>Lever hatch</h3><p>Fine lines at the mark's 60°, like an engineering drawing. The quietest pattern.</p><p class="use">Letterhead, envelopes, dividers, behind stat callouts.</p></div>
-      <div class="swatches"><div style="background-image:url(patterns/tiles/hatch-carbon.svg);background-size:12px 20.78px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/hatch-chalk.svg);background-size:12px 20.78px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/hatch-signal.svg);background-size:12px 20.78px"><span class="label">Signal</span></div></div>
-    </div>
-    <div class="pat">
-      <div class="pat-copy"><h3>Step rhythm</h3><p>Small staircases that rise in the mark's 2 : 3 : 4 steps. Growth in plain shapes.</p><p class="use">Report covers, results pages, email banners.</p></div>
-      <div class="swatches"><div style="background-image:url(patterns/tiles/steps-carbon.svg);background-size:240px 104px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/steps-chalk.svg);background-size:240px 104px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/steps-signal.svg);background-size:240px 104px"><span class="label">Signal</span></div></div>
-    </div>
-    <div class="pat">
-      <div class="pat-copy"><h3>Peaks</h3><p>The tall bar and the lever, repeated in offset rows. The most distinctive detail of the mark.</p><p class="use">Merch, packaging, event walls, the inside of folders.</p></div>
-      <div class="swatches"><div style="background-image:url(patterns/tiles/peaks-carbon.svg);background-size:96px 84px"><span class="label">Carbon</span></div><div style="background-image:url(patterns/tiles/peaks-chalk.svg);background-size:96px 84px"><span class="label">Chalk</span></div><div style="background-image:url(patterns/tiles/peaks-signal.svg);background-size:96px 84px"><span class="label">Signal</span></div></div>
+    <div class="sys">
+      <div class="sys-copy">
+        <div class="kicker">System 1</div>
+        <h3>Skyline</h3>
+        <p><b>The rule:</b> the whole mark, repeated edge to edge on one baseline, one bar width apart, rising out of the bottom edge. The peaks run on like a skyline that keeps growing.</p>
+        <p class="use">Footer bands on slides and pages, borders on print and packaging, the bottom edge of social posts and video frames. Full strength as a border, tonal behind content.</p>
+      </div>
+      <div class="sys-art">
+        <img src="patterns/panels/skyline-chalk-strong-1920x400.svg" alt="Skyline band in Signal on Chalk">
+        <img src="patterns/panels/skyline-carbon-strong-1920x400.svg" alt="Skyline band in Signal on Carbon">
+        <img src="patterns/panels/skyline-carbon-16x9.svg" alt="Tonal skyline along the bottom of a Carbon slide">
+      </div>
     </div>
 
-    <div class="pat">
-      <div class="pat-copy"><h3>Rising dots</h3><p>Dots that grow from bottom left to top right along the mark's diagonal. One graphic, not a repeat.</p><p class="use">Overlays on photos, social carousels, empty states. 16:9, 4:5 and 1:1.</p></div>
-      <div class="panels"><img src="patterns/panels/dots-carbon-16x9.svg" alt="Rising dots on Carbon"><img src="patterns/panels/dots-chalk-16x9.svg" alt="Rising dots on Chalk"><img src="patterns/panels/dots-signal-16x9.svg" alt="Rising dots on Signal"></div>
+    <div class="sys">
+      <div class="sys-copy">
+        <div class="kicker">System 2</div>
+        <h3>Signal code</h3>
+        <p><b>The rule:</b> every letter is written as three bars in the mark's three heights, short, medium and tall, counting in threes (A is 001, Z is 222). A full stop is the lever. So a band of bars actually spells the tagline.</p>
+        <p><b>The hidden mark:</b> E is letter 5, which comes out as short, medium, tall. That is the logo. Every E is picked out in Signal.</p>
+        <p class="use">Posters, social covers, merch, office walls, and the band at the top of proposals and emails.</p>
+      </div>
+      <div class="sys-art">
+        <div class="code-key"><svg viewBox="0 -10 1165 330" role="img" aria-label="How the Signal code works: the word LESS, each letter written as three bars" style="width:100%;height:auto;display:block"><path fill="#5E5B57" d="M3.48 175.8 L73.98 53.69 A26 26 0 0 1 119.02 79.69 L48.52 201.8 A26 26 0 0 1 3.48 175.8 Z"/><path fill="#5E5B57" d="M87.38 175.8 L157.88 53.69 A26 26 0 0 1 202.92 79.69 L132.42 201.8 A26 26 0 0 1 87.38 175.8 Z"/><path fill="#5E5B57" d="M171.28 175.8 L218.53 93.96 A26 26 0 0 1 263.57 119.96 L216.32 201.8 A26 26 0 0 1 171.28 175.8 Z"/><path fill="#E5261A" d="M283.28 175.8 L330.53 93.96 A26 26 0 0 1 375.57 119.96 L328.32 201.8 A26 26 0 0 1 283.28 175.8 Z"/><path fill="#E5261A" d="M367.18 175.8 L437.68 53.69 A26 26 0 0 1 482.72 79.69 L412.22 201.8 A26 26 0 0 1 367.18 175.8 Z"/><path fill="#E5261A" d="M451.08 175.8 L545.08 12.99 A26 26 0 0 1 590.12 38.99 L496.12 201.8 A26 26 0 0 1 451.08 175.8 Z"/><path fill="#5E5B57" d="M563.08 175.8 L657.08 12.99 A26 26 0 0 1 702.12 38.99 L608.12 201.8 A26 26 0 0 1 563.08 175.8 Z"/><path fill="#5E5B57" d="M646.98 175.8 L694.23 93.96 A26 26 0 0 1 739.27 119.96 L692.02 201.8 A26 26 0 0 1 646.98 175.8 Z"/><path fill="#5E5B57" d="M730.88 175.8 L801.38 53.69 A26 26 0 0 1 846.42 79.69 L775.92 201.8 A26 26 0 0 1 730.88 175.8 Z"/><path fill="#5E5B57" d="M842.88 175.8 L936.88 12.99 A26 26 0 0 1 981.92 38.99 L887.92 201.8 A26 26 0 0 1 842.88 175.8 Z"/><path fill="#5E5B57" d="M926.78 175.8 L974.03 93.96 A26 26 0 0 1 1019.07 119.96 L971.82 201.8 A26 26 0 0 1 926.78 175.8 Z"/><path fill="#5E5B57" d="M1010.68 175.8 L1081.18 53.69 A26 26 0 0 1 1126.22 79.69 L1055.72 201.8 A26 26 0 0 1 1010.68 175.8 Z"/><text x="140" y="262" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="40" fill="#F3F2EF">L</text><text x="140" y="306" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#8E8A84">12 = 110</text><text x="420" y="262" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="40" fill="#E5261A">E</text><text x="420" y="306" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#8E8A84">5 = 012</text><text x="700" y="262" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="40" fill="#F3F2EF">S</text><text x="700" y="306" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#8E8A84">19 = 201</text><text x="979" y="262" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="40" fill="#F3F2EF">S</text><text x="979" y="306" text-anchor="middle" font-family="Host Grotesk, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#8E8A84">19 = 201</text></svg></div>
+        <img src="patterns/panels/code-poster-carbon-16x9.svg" alt="LESS EFFORT. MORE SCALE. written in Signal code, the Es in Signal">
+        <div class="art-row"><img src="patterns/panels/code-poster-chalk-4x5.svg" alt="Signal code poster on Chalk"><img src="patterns/panels/code-poster-signal-4x5.svg" alt="Signal code poster on Signal"></div>
+        <img src="patterns/panels/code-band-signal-1920x320.svg" alt="Signal code band on Signal">
+      </div>
     </div>
-    <div class="pat">
-      <div class="pat-copy"><h3>Supergraphic</h3><p>The mark cropped huge, bleeding off the bottom right, with the lever in view. Tonal or full strength.</p><p class="use">Covers, reel covers, trade show walls, the office wall. 16:9, 4:5 and 1:1.</p></div>
-      <div class="panels"><img src="patterns/panels/super-carbon-strong-16x9.svg" alt="Supergraphic, Signal on Carbon"><img src="patterns/panels/super-carbon-16x9.svg" alt="Supergraphic, tonal on Carbon"><img src="patterns/panels/super-signal-strong-16x9.svg" alt="Supergraphic, Chalk on Signal"></div>
-    </div>
-    <div class="pat">
-      <div class="pat-copy"><h3>Step band</h3><p>One continuous step line rising across a banner, the steps getting bigger to the right.</p><p class="use">Email headers, LinkedIn and YouTube banners, the bottom edge of video frames.</p></div>
-      <div class="bands"><img src="patterns/panels/stepband-carbon-1920x240.svg" alt="Step band on Carbon"><img src="patterns/panels/stepband-chalk-1920x240.svg" alt="Step band on Chalk"></div>
+
+    <div class="sys">
+      <div class="sys-copy">
+        <div class="kicker">Device</div>
+        <h3>Supergraphic</h3>
+        <p><b>The rule:</b> the mark cropped huge, bleeding off the bottom right, always with the lever in view. It carries a page on its own, with the message in the empty corner.</p>
+        <p class="use">Covers, reel and story covers, event walls, the office. 16:9, 4:5 and 1:1.</p>
+      </div>
+      <div class="sys-art"><div class="art-row three"><img src="patterns/panels/super-carbon-16x9.svg" alt="Supergraphic, Signal on Carbon"><img src="patterns/panels/super-chalk-16x9.svg" alt="Supergraphic, Signal on Chalk"><img src="patterns/panels/super-signal-16x9.svg" alt="Supergraphic, Chalk on Signal"></div></div>
     </div>
 
     <div class="dos plate">
-      <div><h3>Do</h3><ul><li>Use one pattern per layout.</li><li>Keep repeating patterns tonal. They should be noticed second.</li><li>Use the Signal colourway for social posts and backgrounds, not for documents.</li><li>Let one supergraphic carry a page on its own, with the message in the empty corner.</li></ul></div>
-      <div><h3>Don't</h3><ul><li>Put any pattern behind the logo or its clear space.</li><li>Mix two patterns, or a pattern with a supergraphic.</li><li>Recolour patterns outside Carbon, Chalk and Signal.</li><li>Scale the repeating tiles below 50% or above 200%.</li></ul></div>
+      <div><h3>Do</h3><ul><li>Use one system per layout.</li><li>Keep the Skyline on the bottom edge, rising up.</li><li>Only encode real words in the Signal code, and always pick out the Es.</li><li>Leave the supergraphic's empty corner for the message.</li></ul></div>
+      <div><h3>Don't</h3><ul><li>Put any pattern behind the logo or its clear space.</li><li>Flip, rotate or restack the Skyline.</li><li>Scatter the mark as a random motif or wallpaper.</li><li>Use colours outside Carbon, Chalk and Signal.</li></ul></div>
     </div>
   </section>
 
@@ -245,7 +265,7 @@ footer code { font-family: var(--sans); color: var(--chalk); background: var(--c
 
   <footer>
     <div class="kicker">Files</div>
-    <p>Everything lives in <code>ml-brand-system/assets/kit/</code>: <code>logo/</code> (svg, png, pdf, app), <code>patterns/</code> (tiles, panels, previews), <code>icons/</code> (svg and one sprite). A single zip of the kit sits beside them as <code>ml-asset-kit.zip</code>.</p>
+    <p>Everything lives in <code>ml-brand-system/assets/kit/</code>: <code>logo/</code> (svg, png, pdf, app), <code>patterns/</code> (Skyline tile, Skyline, Signal code and supergraphic panels as SVG and PNG), <code>icons/</code> (svg and one sprite). A single zip of the kit sits beside them as <code>ml-asset-kit.zip</code>.</p>
   </footer>
 </div>
 

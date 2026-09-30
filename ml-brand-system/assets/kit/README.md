@@ -9,8 +9,13 @@ the single source of truth for the mark. `ml-asset-kit.zip` bundles the finished
 - `logo/png` transparent PNGs, `logo/pdf` vector PDFs for print.
 - `logo/app` favicon-16/32/48 and favicon.ico, apple-touch-icon, android-chrome-192/512, maskable-512,
   social avatars (Carbon, Signal, Chalk, 1000px), og-image-1200x630, site.webmanifest.
-- `patterns/tiles` seamless tiles: momentum, hatch, steps, peaks, each in Carbon, Chalk, Signal.
-  `patterns/panels` one-off graphics: rising dots and supergraphic (16:9, 4:5, 1:1), step band (1920x240, 1500x500, 600x120).
+- Patterns v2 (v1's scattered motifs were retired as generic). Each follows a rule of the mark:
+  - Skyline: the full mark repeated on one baseline, one bar width apart, rising out of the bottom edge.
+    `patterns/tiles/skyline-*.svg` (repeat-x band tile) and panels (16:9, 1920x400, strong 1920x400).
+  - Signal code: each letter is three bars in the mark's three heights, counting in threes (A=001, Z=222); a full stop is the lever.
+    E (5 = 012) comes out short, medium, tall: the mark, so every E is in Signal. Band 1920x320 and posters 16:9, 4:5, 1:1.
+  - Supergraphic: the mark cropped huge, lever in view (16:9, 4:5, 1:1).
+  All in Carbon, Chalk and Signal.
 - `icons/svg` 12 service icons (24px grid, 2px round stroke, currentColor), `icons/ml-icons.svg` sprite.
 
 ## Colour versions
@@ -26,5 +31,5 @@ Then rebuild favicon.ico from the 16/32/48 PNGs (see git history) and re-zip.
 
 ## Rules
 Clear space: one bar width on every side (about 15% of the symbol width). Symbol minimum 16px wide; drop the name below 120px.
-Patterns: one per layout, tonal by default, never behind the logo, tiles at 50% to 200% scale.
+Patterns: one system per layout, never behind the logo, Skyline always on the bottom edge rising up, Signal code only for real words with the Es picked out.
 Type: Michroma for the name and tagline only, Host Grotesk for everything else. Never a mono font.

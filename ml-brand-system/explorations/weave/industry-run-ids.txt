@@ -1,0 +1,10 @@
+# Industry pattern concepts (Nano Banana Pro, 11 credits each, 99 total)
+i01 PB-a case-study card            2291b4f6-30a5-4c24-9754-bfa7c45309d1  4:5
+i02 PB-b same hours vs more customers 24132d74-85d4-4767-8e8a-2fb18be50114  4:5
+i03 PB-c wall of proof charts       daf4055d-47cc-4698-8f01-387ef39e6b5d  1:1
+i04 LM-a plumber van                36abf9a3-0a09-476e-ad8d-f779062ba1ac  4:5
+i05 LM-b salon owner                c808655f-98d6-41ae-9714-1a54f24dc734  4:5
+i06 LM-c social post system         2b0b5682-aa30-4ddd-ab56-78db6d89a978  4:5
+i07 TF-a call grid                  c9543e5a-7b19-4ea6-8d68-7bf19fdbad9a  1:1
+i08 TF-b booked-jobs calendar       78fdde11-e8a1-4f52-b0c6-3f273b66f490  1:1
+i09 TF-c poster background          30529643-7d81-49ff-a4bc-2e37b78ec160  4:5

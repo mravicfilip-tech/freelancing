@@ -74,3 +74,6 @@ State of the symbol work, so a new session can resume.
   p03 woven levers, p04 halftone mark. Board: `pattern-concepts.html`, published at https://claude.ai/artifact/UrPycui9eCA4TeD4u3tN31
   Weave balance after: 820. Next: user picks, then vector redraw into the kit.
 - **Patterns picked: p01 ripple, p02 summit, p08 slabs.** Redrawn as vectors in `ml-brand-system/assets/kit/patterns/` (build_patterns.py v3).
+- **Abstract pattern round (88 credits)**: 8 concepts from the mark's DNA, run IDs in `abstract-run-ids.txt`, images `patterns/a01-a08.jpg`.
+  Recommended: a01 Bauhaus fragments, a06 signal boost, a04 arc geometry, a05 folded ribbon.
+  Board: `abstract-concepts.html`, published at https://claude.ai/artifact/7XrzTXoY7BBrSbi6xeosxu. Weave balance after: 732.

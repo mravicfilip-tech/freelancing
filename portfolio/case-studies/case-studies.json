@@ -1,0 +1,191 @@
+[
+  {
+    "slug": "brp",
+    "cover": "cover.webp",
+    "intro": "BRP Marketing Center is the platform an entire dealer network runs its marketing through — every brand-approved asset, co-op claim, campaign and document, for dealers across North America, Europe and APAC, each in their own language and role. A decade of growth had left every module with its own conventions. I work across it screen by screen, modernising both the flows dealers live in and the admin tooling behind them on BRP 2.0 tokens, so it reads as one product rather than several sharing a login.",
+    "shots": [
+      {
+        "src": "shot-1.webp",
+        "caption": "Dealer dashboard — task-led entry points"
+      },
+      {
+        "src": "shot-2.webp",
+        "caption": "PA&A claims — scan, review, submit"
+      },
+      {
+        "src": "shot-3.webp",
+        "caption": "Asset library — filtered listing"
+      }
+    ],
+    "title": "BRP – Dealer Platform & Marketing Center",
+    "client": "BRP",
+    "logo": "brp.svg",
+    "region": "North America",
+    "tags": [
+      "#UX Design",
+      "#Enterprise",
+      "#Design System"
+    ],
+    "category": "Enterprise",
+    "impactLabel": "WHAT THE PLATFORM DOES",
+    "impact": [
+      "Dealer Asset Library — brand-approved creative filtered by brand, campaign, media type and size, with previews, favourites, cart downloads and approval states",
+      "Co-op fund management — upload invoices, auto-scan and review the line items, see estimated reimbursement, submit the claim",
+      "Info Center — document and video distribution with previews, per-document links that open without a login, and usage reporting",
+      "Region-, language- and role-aware CMS, so admins retarget landing tiles, banners and navigation without a developer",
+      "AdBuilder, marketing plans, SMS and PA&A rebates in one dealer workspace"
+    ],
+    "tone": "a"
+  },
+  {
+    "slug": "allstate",
+    "cover": "cover.webp",
+    "intro": "AMS is the marketing platform Allstate's agent network runs on — roughly 7,800 active agents enrolling in programs, ordering campaigns and pulling brand-approved creative. Its core is Blueprint: an annual catalogue of programs and direct-mail campaigns with eligibility, pricing and vendor fulfilment rules behind every line item. I design across the agent-facing flows and the admin tooling that governs them, on Allstate's own AMS design system.",
+    "shots": [
+      {
+        "src": "shot-1.webp",
+        "caption": "Admin dashboard — live preview of what agents see"
+      },
+      {
+        "src": "shot-2.webp",
+        "caption": "Customization — fields, templates, program assignments"
+      },
+      {
+        "src": "shot-3.webp",
+        "caption": "Marketing Storefront — guided order and checkout"
+      }
+    ],
+    "title": "Allstate – Agent Marketing Tooling on AMS",
+    "client": "Allstate",
+    "logo": "allstate-white.svg",
+    "region": "US",
+    "tags": [
+      "#UX Design",
+      "#Design System",
+      "#Front-End Build"
+    ],
+    "category": "Design System",
+    "impactLabel": "WHAT THE PLATFORM DOES",
+    "impact": [
+      "Blueprint enrollment — a program catalogue gated by role, state and permission list, with pay-now, deferred and prorated pricing per program",
+      "Marketing Storefront — a guided order: pick products, get recommendations, set budget, target areas, approve creative, pay",
+      "Admin dashboard that previews the live agent homepage, with editable zones and a view-as-agent switch",
+      "Customization — reusable custom fields with validation rules, behaviour flags and translations, grouped into templates and assigned per program",
+      "Enrollment reporting across roll-up, detail and program-coverage views, plus automated vendor enrollment files"
+    ],
+    "tone": "b"
+  },
+  {
+    "slug": "varntix",
+    "cover": "cover.webp",
+    "intro": "Varntix is a digital-asset investment platform: fixed-rate savings, tokenized bonds, a wallet with a spending card, and payouts settled in stablecoins. The design problem is that these are genuinely complicated products, and in fintech trust is the product — so structure, hierarchy and honest data visualisation carried more weight than surface styling. The brief was to make complex instruments legible enough to invest through with confidence. Designed end to end with a team of five at Diversify.",
+    "shots": [
+      {
+        "src": "shot-1.webp",
+        "caption": "Positioning — premium investment solutions"
+      },
+      {
+        "src": "shot-2.webp",
+        "caption": "Feature system — earn, manage, spend"
+      },
+      {
+        "src": "shot-3.webp",
+        "caption": "Investor dashboard — holdings, positions, markets"
+      }
+    ],
+    "title": "Varntix – Fintech Product Design",
+    "client": "Varntix",
+    "region": "EU",
+    "tags": [
+      "#Product Design",
+      "#Fintech",
+      "#Design System"
+    ],
+    "category": "Fintech",
+    "impactLabel": "WHAT THE PLATFORM DOES",
+    "impact": [
+      "Fixed and flexible savings plans with transparent APY, next-payout dates and interest settled in stablecoins",
+      "Tokenized bonds and fixed-term positions, tracked by product, status, amount and maturity date",
+      "Wallet and spending card — balances, cashback and card management alongside the investments funding them",
+      "Investor dashboard reading total holdings, unrealised interest and monthly APY at a glance, beside live market data",
+      "Verification, documents, transactions and referrals — the account plumbing an investment platform is judged on"
+    ],
+    "tone": "c",
+    "link": "https://www.behance.net/gallery/252327001/Varntix-Fintech-Product-Design-UX-Case-Study"
+  },
+  {
+    "slug": "hfdx",
+    "cover": "cover.webp",
+    "intro": "HFDX is a decentralised trading platform: crypto perpetuals, managed strategies and fixed-yield loan notes in one product. The hard problem in Web3 is rarely capability, it is legibility — a Sharpe ratio and a max drawdown mean nothing to someone deciding where to put money. The work was structuring those instruments so a deposit takes fewer steps and clearer ones, then carrying that structure across a marketing site, a full product and both themes.",
+    "shots": [
+      {
+        "src": "shot-1.webp",
+        "caption": "Landing — markets, open interest, volume"
+      },
+      {
+        "src": "shot-2.webp",
+        "caption": "Loan notes dashboard — fixed APY and term progress"
+      },
+      {
+        "src": "shot-3.webp",
+        "caption": "Mobile — onboarding and invest-in-strategy"
+      }
+    ],
+    "title": "HFDX – Decentralized Trading Platform",
+    "client": "HFDX",
+    "region": "EU",
+    "tags": [
+      "#Product Design",
+      "#Web3",
+      "#Trading"
+    ],
+    "category": "Web3",
+    "impactLabel": "WHAT THE PLATFORM DOES",
+    "impact": [
+      "Crypto perpetuals across 75 markets, with open interest and 24h volume surfaced up front",
+      "Managed strategies shown on the numbers that decide a deposit — APY, Sharpe ratio, share price, max drawdown",
+      "Fixed-yield loan notes tracked as portfolio value, monthly income, next payout and term progress to maturity",
+      "Invest flow reduced to percentage-of-balance presets, so sizing a position is one tap rather than a calculation",
+      "One system across 1920, 768 and 440px, in both light and dark themes"
+    ],
+    "tone": "d",
+    "link": "https://www.behance.net/gallery/252765973/HFDX-Decentralized-Trading-Platform"
+  },
+  {
+    "slug": "lyrie",
+    "cover": "cover.webp",
+    "intro": "Lyrie is an AI security platform built to replace a stack, not join one — the pitch it makes is against five vendors, five dashboards and five invoices. A WAF, endpoint protection, scanning and remediation sit behind one account, with SOC 2 and GDPR readiness as the buying trigger. That breadth is the design problem: it has to read premium and technical to an enterprise buyer while staying legible enough that a small team can deploy it in minutes. Brand identity and product were built together, so the dashboard and the marketing site make the same argument.",
+    "shots": [
+      {
+        "src": "shot-1.webp",
+        "caption": "Security & privacy suite — one account, every device"
+      },
+      {
+        "src": "shot-2.webp",
+        "caption": "AI WAF — hybrid-grade web protection"
+      },
+      {
+        "src": "shot-3.webp",
+        "caption": "Overview — plan usage, modules, threat trend"
+      }
+    ],
+    "title": "Lyrie – Cybersecurity Platform & Brand Identity",
+    "client": "Lyrie",
+    "region": "EU",
+    "tags": [
+      "#Brand Identity",
+      "#Product Design",
+      "#SaaS"
+    ],
+    "category": "Cybersecurity",
+    "impactLabel": "WHAT THE PLATFORM DOES",
+    "impact": [
+      "AI WAF covering 15+ attack vectors with sub-50ms decisions and multi-vector correlation — billed only once it is actually connected",
+      "Endpoint and privacy suite: anti-AI defence, stalkerware detection, breach monitoring, USB control, DLP and VPN across four platforms",
+      "Free scanner that takes a domain, server IP or code snippet and returns findings before anyone signs up",
+      "Threat feed, analytics, intel and a live threat map, with vulnerability scans, internal scans and an on-server agent",
+      "Credit-based plans metering domains, scans, breach checks and AI queries, with a security score and in-product changelog"
+    ],
+    "tone": "e"
+  }
+]

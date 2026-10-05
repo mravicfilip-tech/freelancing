@@ -5,19 +5,24 @@ description: Reviews UI code in a client or prototype repo. One critic round plu
 
 # Review
 
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
+this skill was loaded from otherwise. S is where review state lives, `K/.state` in the kit repo and
+`~/.claude/studio-state` otherwise.
+
 One round, one re-check, then Filip decides. The ledger holds the findings and the score.
-The rubric is `.claude/skills/uireview/rubric.md`.
-Commands are `node studio/scripts/ledger.mjs`, called L below.
+The rubric is `rubric.md`, next to this file.
+Commands are `node K/scripts/ledger.mjs`, called L below.
 Widths come from the Widths line in the client README. With none, 1440 only. A phone width is
 checked only when that line names it.
 
 ## Start
 
-1. Resolve the client id from the folder the work is in, with `node studio/scripts/registry.mjs
+1. Resolve the client id from the folder the work is in, with `node K/scripts/registry.mjs
    <folder>`. Every client lives in this one repo, so the repo path is the repo root and the
-   client comes from the folder, never from the repo name. Resolve the task key. Use the task key
-   from `studio/clients/<client>/tasks.md` (`acme-3`). With no task, use `<client>-` plus the last
-   part of the branch name. Say the key in one line. Never ask. If the folder is not a git repo,
+   client comes from the folder, never from the repo name. With no match, the client is none.
+   Resolve the task key. Use the task key
+   from `K/clients/<client>/tasks.md` (`acme-3`). With no task, use `<client>-` plus the last
+   part of the branch name, or the repo folder name with no client. Say the key in one line. Never ask. If the folder is not a git repo,
    say so and stop.
 2. Run `L status <task>`. It decides where to enter.
    - No ledger, or a closed one, goes to Round 1. `L open` starts a fresh ledger.
@@ -44,9 +49,9 @@ checked only when that line names it.
    - Leave out lock files, generated files, images and snapshots.
    - The pack holds at most 60,000 characters, about 15k tokens. Over that, send modified files
      before new ones and name the files left out.
-4. Shots. When a route is known, run `node studio/scripts/shoot.mjs
+4. Shots. When a route is known, run `node K/scripts/shoot.mjs
    --url <base url or folder> --routes "name=/path,..." --out <shots>/after --compare <shots>/before
-   --widths <the client's Widths line>` with `<shots>` at `studio/.state/shots/<task>`. The base
+   --widths <the client's Widths line>` with `<shots>` at `S/shots/<task>`. The base
    URL and the start command are in the client README under Run. With no before shots, skip
    `--compare` and tell the critic. With no route named, use the routes the changed page files
    map to. If none can be found or the app will not start, skip shots and tell
@@ -54,8 +59,8 @@ checked only when that line names it.
    say so in one line and continue diff only.
 5. Spawn exactly one subagent. Type general-purpose, model sonnet. Give it only
    - the rubric path, read in full
-   - from `studio/clients/<client>/README.md`, only the sections Brand, Rules that never bend,
-     Accessibility and Widths, plus Reference when a live reference is named, and `studio/clients/<client>/taste.md`
+   - from `K/clients/<client>/README.md`, only the sections Brand, Rules that never bend,
+     Accessibility and Widths, plus Reference when a live reference is named, and `K/clients/<client>/taste.md`
      in full, since its entries are the rules
    - the diff pack, the repo path, the ask in one line
    - the shots folder, with `report.json` first. It opens an image only for a route that has a
@@ -65,7 +70,7 @@ checked only when that line names it.
      reasoning and never a score
 
    Do not send foundation files or DOCTRINE.md. The rubric is the whole brief.
-   When the client has no folder under `studio/clients/` (a personal tool, a new pursuit), tell the
+   When the client has no folder under `K/clients/` (a personal tool, a new pursuit), tell the
    critic to skip the brand and taste checks, and that accessibility findings cap at sev 2.
 6. For each line run `L add <task> --sev <n> --where "<where>" --what "<what>"`. A line with
    `{"none":true}` adds nothing. A line with `"cap":true` adds nothing, see Cap.
@@ -96,7 +101,7 @@ Filip's words do that, through the card.
 
 1. Run `L status <task>`. If it says the card decides, run `L card <task>`, show it and stop.
 2. Find the diff since the last round. The tree is the last entry in `rounds` of
-   `studio/.state/ledger/<task>.json`. Run `git -C <repo> diff <tree>` and
+   `S/ledger/<task>.json`. Run `git -C <repo> diff <tree>` and
    `git -C <repo> status --short`. If the diff is empty, or no finding is open, skip the critic.
    The code has not changed, so go to Card. Reviewing unchanged code is the loop this skill
    exists to prevent.
@@ -125,17 +130,17 @@ The ledger checks that the line is Filip's. `L card` stamps the time it printed,
 holds the line. One message authorises one choice. If the ledger says "Not recorded", show him the
 card again and wait for him to paste the line. There is no way round it, so do not try another way.
 
-After a ship, move the task in `studio/clients/<client>/tasks.md` to Review or Done as Filip says.
+After a ship, move the task in `K/clients/<client>/tasks.md` to Review or Done as Filip says.
 With no task, skip this and say so. After a drop, tell him the branch is untouched.
 
 ## After the card
 
 When Filip later reports a defect on a shipped task and a rubric check names it, append one line
-to `studio/.state/review-misses.md`, creating it if needed, with the date, the task, the
+to `S/review-misses.md`, creating it if needed, with the date, the task, the
 defect and the rubric section that should have caught it. Do not open a new review for it.
 
 ## Rules
 
 - The score is shown, never the bar. Pass means no open sev 1.
 - Same tree as the last round records nothing. Say the code has not changed.
-- Text Filip reads follows `studio/foundation/writing.md`.
+- Text Filip reads follows `K/foundation/writing.md`.

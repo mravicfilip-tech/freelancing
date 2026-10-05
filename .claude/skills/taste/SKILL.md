@@ -5,13 +5,18 @@ description: Logs a design pick or rejection to the client's taste log the same 
 
 # Taste
 
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
+this skill was loaded from otherwise.
+
 The `/uireview` critic and every builder read these logs before judging or building. An
 unlogged rejection gets rebuilt next week.
 
 ## Write the entry
 
-File `studio/clients/<client>/taste.md`. Newest entry at the
-top, under the header. One bullet in this format.
+File `K/clients/<client>/taste.md`. Newest entry at the
+top, under the header. One bullet in this format. Outside the kit repo there is no log to write.
+Then print the entry in one code block and say in one line that it belongs in
+`studio/clients/<client>/taste.md` in the freelancing repo.
 
 ```
 - **YYYY-MM-DD HH:MM, <thing>, <what happened>.** ACCEPTED | REJECTED. Said: "<Filip's words, under 20 words>". Why: <the reason>. Carry forward: <the rule a builder follows next time>.
@@ -27,7 +32,7 @@ One line per entry. The time keeps same-day entries in order.
 - **"Kill X, use Y"** is one ACCEPTED entry for Y that names X as rejected inside it. Mark Y
   `(not yet built)` until Filip has seen it built.
 - **Variant picks** name the winner, then `Losers:` with what each did, inside Why.
-- **Brand values** are written as the token name from `studio/clients/<client>/README.md` or the
+- **Brand values** are written as the token name from `K/clients/<client>/README.md` or the
   repo's tokens, never an improvised hex.
 - **Carry forward** is a rule someone can check. "No opacity on content text", not "make it
   better".
@@ -56,7 +61,7 @@ sessions without Filip repeating it.
   the file passes 8,000 characters, move entries marked `SUPERSEDED` to `taste-archive.md` in the
   same folder, in the same turn, unchanged. The archive is never read unless Filip asks.
 - **No client folder yet** (a personal tool, a new pursuit). Create
-  `studio/clients/<client>/taste.md` with the header only, log the entry, and say so in the confirm line.
+  `K/clients/<client>/taste.md` with the header only, log the entry, and say so in the confirm line.
 
 ## Confirm
 

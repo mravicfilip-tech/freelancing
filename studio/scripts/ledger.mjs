@@ -31,7 +31,8 @@
 //   not-Filip blocks cut out, typed after the latest card print (cardAt), holding the line. One message
 //   uuid authorises one choice, kept as proof in the ledger. There is no bypass flag.
 //
-// State lives in studio/.state (override with STUDIO_STATE_DIR). Nothing is written in the repo.
+// State lives in studio/.state, or ~/.claude/studio-state outside the kit repo (override with
+// STUDIO_STATE_DIR). Nothing is written in the repo outside studio/.
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -41,7 +42,9 @@ import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const STATE = process.env.STUDIO_STATE_DIR || join(STUDIO, '.state');
+// In the kit repo, state sits in studio/.state. Packed into an account skill, the kit folder has no
+// DOCTRINE.md and may be read only, so state goes to the home folder instead.
+const STATE = process.env.STUDIO_STATE_DIR || (existsSync(join(STUDIO, 'DOCTRINE.md')) ? join(STUDIO, '.state') : join(homedir(), '.claude', 'studio-state'));
 const DIR = join(STATE, 'ledger');
 const STATUSES = ['open', 'fixed', 'partly', 'accepted'];
 const WEIGHT = { 1: 3, 2: 1, 3: 0.25 };

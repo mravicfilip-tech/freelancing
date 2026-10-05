@@ -1,8 +1,8 @@
 # Studio doctrine
 
-The light kit. It helps and never polices. Root is `studio/` in this repo, and every path in this
-file is relative to it unless it starts with `studio/` or `.claude/`. Commands run from the repo
-root. The root CLAUDE.md owns the operating agreement, the kickoff gate, scope discipline and the
+The light kit. It helps and never polices. Root is `studio/` in the freelancing repo, and
+`~/.claude/studio` anywhere else the kit is installed. Every path in this file is relative to the
+root unless it starts with `studio/` or `.claude/`. Commands run from the repo root. The root CLAUDE.md owns the operating agreement, the kickoff gate, scope discipline and the
 regression rule. This file adds to them and does not repeat them.
 
 ## Load
@@ -89,7 +89,7 @@ Brand values, accessibility and the two guards never break.
 
 Look up one client or repo with `node studio/scripts/registry.mjs <client|repo>`.
 It prints one line. The file behind it is `clients/registry.json`, which maps a client id to the
-folder names that hold its work and its preview project names. Every client lives in this repo, so
+folder names that hold its work and its preview project names. Every client lives in the freelancing repo, so
 the nearest registered folder above the work wins.
 
 ## Lookups, read only when needed

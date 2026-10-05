@@ -19,6 +19,28 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
 - `studio/scripts/` with the review ledger, the token report, the client registry and screenshots.
 - `studio/clients/` with a template, `registry.json` and one folder per client.
 
+## Everywhere you work
+
+- **Cloud sessions on this repo.** Nothing to do once the kit is on the default branch. The repo
+  carries the rules, skills, agents and guard.
+- **Every chat, Cowork and cloud sessions on other repos.** Run `node studio/scripts/pack.mjs`,
+  then upload each zip in `studio/dist/` in Claude settings under Capabilities, Skills. Account
+  skills reach every chat. Outside this repo a skill uses the scripts packed inside it, keeps review
+  state in `~/.claude/studio-state`, and prints taste entries for you to carry back here.
+- **The rules in every claude.ai chat.** Paste `studio/chat/preferences.md` into Settings,
+  Profile, under personal preferences.
+- **The rules and guard in cloud sessions on other repos.** In the cloud environment settings, add
+  this to the setup script.
+
+  ```
+  git clone --depth 1 https://github.com/mravicfilip-tech/freelancing /tmp/studio-kit && node /tmp/studio-kit/studio/install.mjs --cloud || true
+  ```
+
+  It does nothing when the session is on this repo, and `|| true` keeps a failed clone from
+  stopping the session.
+- **Claude Code on your own machine.** From a clone of this repo run
+  `node studio/install.mjs --skills`. Remove it with `node studio/install.mjs --uninstall`.
+
 ## Cloud sessions
 
 - Each session gets a fresh container. What is not committed is gone when it is reclaimed.
@@ -66,15 +88,11 @@ In the cloud it sees only the sessions this container ran.
 - `helpers` rows are the subagents. A high helper share means the review or the build fanned out.
 - Judge cost per finished job, not per call, since caches are per model.
 
-## Local use
-
-The same guard can run outside this repo. `node studio/hooks/wire.mjs add <settings.json> <path to
-studio>` adds it to a Claude Code settings file, and `remove` takes it out again.
-
 ## Tests
 
 ```
 node studio/scripts/lint.mjs
 node studio/scripts/test/ledger.test.mjs
 node studio/hooks/test/guard.test.mjs
+node studio/scripts/test/install.test.mjs
 ```

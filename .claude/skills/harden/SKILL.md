@@ -5,6 +5,9 @@ description: Self-review of words, meaning an answer, a plan, a doc or a drafted
 
 # Harden
 
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
+this skill was loaded from otherwise.
+
 One pass, in the main thread, no helpers.
 It runs when Filip asks, never by itself and never in a loop.
 
@@ -42,5 +45,5 @@ Keep the seven most serious. Cut each to two sentences.
 
 When the target was a plan, the hardened version is the revised plan. Do not start building it.
 
-All three sections follow `studio/foundation/writing.md` in full. No long dashes, no colons,
+All three sections follow `K/foundation/writing.md` in full. No long dashes, no colons,
 plain words, short. Never send anything. Filip sends.

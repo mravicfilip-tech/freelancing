@@ -20,9 +20,9 @@ apply to every client and every project.
   browser, clicked by the client, and deployed to a URL they can open themselves. Never a deck,
   never a projector mock-up, never a standalone HTML file, never a Figma frame presented as the
   deliverable.
-- **It is built in the client's folder in this repo**, on the session's branch, with real data
-  shapes and real interaction. Every client lives in this one repo. Cloud sessions are pinned to a
-  `claude/<name>` branch, so the concept is named in the task line in
+- **It is built in the client's folder in the freelancing repo**, on the session's branch, with
+  real data shapes and real interaction. Every client lives in that one repo. Cloud sessions are
+  pinned to a `claude/<name>` branch, so the concept is named in the task line in
   `studio/clients/<client>/tasks.md`, with the PR and the preview URL beside it. Scratch files
   are for settling one detail, never for the thing that gets shown.
 - **It is deployed before it is presented.** A prototype that only runs on localhost is not
@@ -86,9 +86,12 @@ Fixing a named defect must not change anything that was not named.
 ### Artifact hygiene
 
 - One concept, one session branch and one PR. The concept's name goes in the PR title and the
-  task line. `main` always holds the **accepted** work, so only an accepted concept is merged. A
-  rejected direction gets its PR closed or clearly marked, never left where someone would open it
-  first.
+  task line. The repo's default branch always holds the **accepted** work, so only an accepted
+  concept is merged.
+- A rejected direction never stays where someone would open it first. Revert its code on its
+  branch and merge the PR with only the `studio/` changes, so the REJECTED taste entry and the
+  task move still reach the default branch. Taste and task edits made on any branch reach the
+  default branch the same way.
 - Clean up worktrees when a line of work ends. A directory name must describe what is in it.
 - Keep the task's link in `studio/clients/<client>/tasks.md` pointing at the version Filip would
   want to show.

@@ -1,0 +1,9 @@
+{
+  "name": "studio-freelance",
+  "private": true,
+  "description": "A personal studio kit for Claude Code. Rules, skills, helpers and a small guard.",
+  "scripts": {
+    "lint": "node scripts/lint.mjs",
+    "test": "node scripts/test/ledger.test.mjs && node hooks/test/guard.test.mjs"
+  }
+}

@@ -1,0 +1,10 @@
+# Review state. Shots and temp files stay local. The ledgers and the misses log are committed so a
+# review survives the cloud container being reclaimed.
+.state/*
+!.state/ledger/
+.state/ledger/.lock/
+.state/ledger/*.tmp-*
+!.state/review-misses.md
+node_modules/
+*.log
+*.zip

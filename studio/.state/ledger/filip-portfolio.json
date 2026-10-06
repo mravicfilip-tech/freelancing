@@ -10,6 +10,12 @@
       "tree": "8463d00934417e823b47c9d709edc28b55d5cae0",
       "at": "2026-10-06T11:50:07.745Z",
       "score": 1
+    },
+    {
+      "n": 2,
+      "tree": "ce1f9539d7d3043251fcdcea30a0728d9bfbfb9f",
+      "at": "2026-10-06T12:24:44.167Z",
+      "score": 1
     }
   ],
   "findings": [
@@ -42,7 +48,7 @@
       "sev": 1,
       "where": "plate 3 Screens, public/projects/lyrie/shot-1..3",
       "what": "Title promises Brand Identity and Product Design, but 2 of 3 screens are the marketing site hero; no logo, palette, type, components, flows or process artefacts.",
-      "status": "open",
+      "status": "partly",
       "round": 1
     },
     {
@@ -146,7 +152,7 @@
       "sev": 3,
       "where": "report.json contrast",
       "what": "Tool flags 1:1 on hollow accents (stroke-only); readable in the shot; light theme not checked (unverified).",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -159,5 +165,5 @@
     }
   ],
   "cards": [],
-  "cardAt": "2026-10-06T12:24:03.669Z"
+  "cardAt": "2026-10-06T12:24:44.271Z"
 }

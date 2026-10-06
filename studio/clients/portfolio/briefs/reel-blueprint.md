@@ -73,3 +73,24 @@ Accent is the site orange (var(--accent), #FF4213), ground is the site black, la
 3. End card text. Default the site address and nothing else. Which address, the vercel one or a custom domain.
 4. Sound. Default none, Filip adds the music in Instagram.
 5. Opening line. Default a typed comment like clip 1, "/* legacy platforms → products", before the guides draw.
+
+## Timing sheet (built, 2026-10-07)
+
+Rule. One beat every 1.5 to 2 seconds, eased in and out. Every line holds at least 0.5 seconds after it finishes typing, so it can be read. Camera moves overlap the end of one beat and the start of the next, never a hard cut.
+
+| Time (s) | Beat | What moves | Camera |
+|---|---|---|---|
+| 0.0 to 2.3 | Opener | Guides draw on, flare at the cross, the comment types in 0.2 to 1.5, holds to 2.0, folds away 2.0 to 2.3 | Tilted plane, slow drift |
+| 2.1 to 2.8 | Hand-off | The orange dot flies to where the M. ends | Glides to the mark |
+| 2.3 to 4.6 | The M. | Box guides, crosshairs, sizes and the corner radius, the outline draws 2.5 to 4.2, fills 4.0 to 4.6 | Holds |
+| 4.3 to 6.0 | Name | I'M FILIP types 4.3 to 5.0, the stop lands, role and measure 5.0 to 5.7, holds to 6.0 | Holds |
+| 5.6 to 6.6 | Move | The mark leaves 6.0 to 6.8 | Glides to the turn line |
+| 5.7 to 10.6 | Turn | I TURN LEGACY, the outline PLATFORMS INTO, then five projects at 0.6 s each from 6.6 (the last holds to 10.1), leaves 10.1 to 10.6 | Holds on the panel |
+| 10.2 to 12.3 | Complex | Dots arrive scattered, the line types 10.5 to 11.3, holds to 12.0 | Glides into the dots |
+| 12.0 to 14.3 | Clear | Dots snap into the face 12.0 to 13.3, I MAKE IT CLEAR types 13.0 to 13.7, measured to 14.3 | Lifts to near flat |
+| 14.2 to 16.2 | Stats | Three placeholders scramble in 14.2 to 15.4, hold to 16.2 | Pans down onto them |
+| 16.2 to 17.8 | Move | Face and stats leave, the mark comes back | Long glide back to the mark |
+| 17.4 to 19.4 | End card | Orange glow, the address types 17.8 to 18.8, holds | Slow drift |
+| 19.4 to 20.0 | Loop | Fades to the empty plane the reel opens on | |
+
+What the audit changed against the first build. The opener held only 0.25 s after typing (now 0.5). The last project word showed for 0.3 s before leaving (now 1.1, swaps 0.75 to 0.6 s). The stats held 0.5 s (now 0.8 after the last settles). The glide back to the end card took 1.2 s across the whole plane (now 1.6).

@@ -1,0 +1,23 @@
+{
+  "_comment": "Maps a client id to the repo folder names and the preview hosting project names that belong to it. The guard and scripts/registry.mjs read this file. Names match exactly, ignoring case, and a trailing * matches a prefix. Add a client with  node scripts/registry.mjs add <id> --repo a,b --project x,y",
+  "_example": {
+    "id": "acme",
+    "repos": [
+      "acme-web",
+      "acme-portal"
+    ],
+    "previewProjects": [
+      "acme-web",
+      "acme-preview-*"
+    ]
+  },
+  "clients": [
+    {
+      "id": "remittix",
+      "repos": [
+        "freelancing"
+      ],
+      "previewProjects": []
+    }
+  ]
+}

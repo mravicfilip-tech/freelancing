@@ -1,0 +1,21 @@
+{
+  "_comment": "Severity based scoring for /uireview. scripts/ledger.mjs holds the same numbers in code and scripts/test/ledger.test.mjs checks them. Score is 10 minus the weights of open findings, floor 1, one decimal. It is shown, never the bar. Pass means no open sev 1.",
+  "severity": {
+    "1": { "weight": 3, "meaning": "blocks a client showing it. Accessibility fail, broken function, regression, brand violation, wrong client" },
+    "2": { "weight": 1, "meaning": "visible defect" },
+    "3": { "weight": 0.25, "meaning": "polish" }
+  },
+  "start": 10,
+  "floor": 1,
+  "decimals": 1,
+  "open_statuses": ["open", "partly"],
+  "pass": "no open sev 1",
+  "rubric": "skills/uireview/rubric.md",
+  "_caps_comment": "Cost limits for one critic run. No script reads this block. The numbers are written out in skills/uireview/SKILL.md, so change both together. At a cap the critic returns what it has and never restarts.",
+  "caps": {
+    "round1": { "tokens": 90000, "tool_calls": 30 },
+    "recheck": { "tokens": 30000, "tool_calls": 12 },
+    "diff_pack_chars": 60000,
+    "shot_images": 8
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "task": "filip-portfolio",
+  "repo": "/home/user/filip-portfolio",
+  "client": "none",
+  "trigger": "asked",
+  "openedAt": "2026-10-06T11:46:46.325Z",
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "8463d00934417e823b47c9d709edc28b55d5cae0",
+      "at": "2026-10-06T11:50:07.745Z",
+      "score": 1
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "CaseStudy.jsx:23-29, content.js lyrie",
+      "what": "No designer story: role, team, timeline, problem, outcome are optional and lyrie sets none, so the brief plate shows only Client, Region, Category, Scope. A reader cannot learn what Filip did or what changed.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 1,
+      "where": "plate 2 Overview, content.js:433-434",
+      "what": "The only prose is client-pitch copy about Lyrie; nothing first-person about the designer's contribution, constraints, trade-offs or results.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 1,
+      "where": "plate 4 'What the platform does', CaseStudy.jsx:168-190",
+      "what": "The impact slot holds product features, not design outcomes: no metrics, no before and after, no decisions with reasons. Reads as the client's brochure.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 1,
+      "where": "plate 3 Screens, public/projects/lyrie/shot-1..3",
+      "what": "Title promises Brand Identity and Product Design, but 2 of 3 screens are the marketing site hero; no logo, palette, type, components, flows or process artefacts.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 2,
+      "where": "plate 1 cover, CaseStudy.jsx:108-114",
+      "what": "p.lede (the one-line pitch) is never rendered on the case; the cover has a generic h1 with no thesis, role or outcome.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 2,
+      "where": "whole page, plates.css:14-22, CaseStudy.jsx:141-166",
+      "what": "Five unscrollable 100vh plates (~250 words) plus a second horizontal axis: no skimming, no jumping, the 3 screens never seen together.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 2,
+      "where": "plates 2 and 4",
+      "what": "Small top-weighted content blocks: ~40% of each plate is dead space; ragged column bottoms on plate 2.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 2,
+      "where": "plate 3 figure, case.css:78-88",
+      "what": "Mockup UI text renders at ~5-8px with no zoom/open-large; device mockup sliced at the bottom and left edges.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 2,
+      "where": "plate 1 cover",
+      "what": "Cover ShotFrame crops the marketing screenshot mid-sentence; its text is ~8px and unreadable.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 2,
+      "where": "plate 1, plate 2, address pill",
+      "what": "Same facts repeated (Lyrie x4, Cybersecurity / Brand Identity x3) while role and timeline are missing; Region and Client rows are filler.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F11",
+      "sev": 2,
+      "where": "CaseStudy.jsx:109,150-151,157-158,196",
+      "what": "Four competing numbering schemes ([003] WORK · 05/05, plate counter, slide counter, NEXT PROJECT · [01]); [003] means nothing to a visitor.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F12",
+      "sev": 2,
+      "where": "plate 5, CaseStudy.jsx:192-212",
+      "what": "Case ends on the next project only: no results summary, no get-in-touch step, no Behance link for lyrie.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F13",
+      "sev": 2,
+      "where": "case.css:28-33,119",
+      "what": "Heavy condensed uppercase display headlines (standing rejection 'bold display headlines'); the h1 omits the project name.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F14",
+      "sev": 2,
+      "where": "case.css:19,105; report.json",
+      "what": "Small targets and type: '<- ALL WORK' 83x19, counter 17x28; captions, spec labels and slide hint at 12px, address pill 11px.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F15",
+      "sev": 3,
+      "where": "plate 3, case.css:83",
+      "what": ".shot padding 8vw vs var(--pad) elsewhere: caption edge ragged against plates 1-2.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F16",
+      "sev": 3,
+      "where": "plate 5 counter",
+      "what": "'05 / 05' counter on the orange glare reads washed out (unverified).",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F17",
+      "sev": 3,
+      "where": "report.json contrast",
+      "what": "Tool flags 1:1 on hollow accents (stroke-only); readable in the shot; light theme not checked (unverified).",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F18",
+      "sev": 3,
+      "where": "case.css:35-44, CaseStudy.jsx:118",
+      "what": "Template has no slot for process images, annotated screens or before/after (unverified beyond code).",
+      "status": "open",
+      "round": 1
+    }
+  ],
+  "cards": []
+}

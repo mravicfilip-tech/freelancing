@@ -20,6 +20,27 @@ Status. Draft for Filip's yes. Nothing is built yet.
 - It cuts to a full-bleed brand orange slide ("MOTION REEL 2026") with dots falling, and the generated video opens on a typed code line, "/* Hello World", with a blinking caret.
 - Takeaway for Filip. Clip 1 gives the content (his own work, his brand, floating real screens, a typed opener), clip 2 gives the camera and the construction look. The plan below combines both.
 
+## Clip 1, second part (the generated reel itself, about 11 seconds)
+
+- White ground, black type, one green accent dot that travels through the whole piece.
+- "/* Hello World */" types in, collapses to the dot, the dot becomes the full stop of "I'm Ev." with a small role label under it.
+- "I make things that help others do their search / staking / chatting / research / cleanup / jumping / thing." The last word swaps every half second and a matching product tile (phone, dial, chat, dashboard) sits beside it.
+- "Even when it's complex," over an explosion of shapes, then the shapes snap into a calm grid for "I make it clear."
+- Three numbers scramble in (27%, 90%, 1.5M+), then everything falls back to the single dot.
+- Flat, no perspective. The writing does the work, short lines, one idea a beat.
+
+## Filip's script, clip 1's story told in clip 2's camera
+
+Same beats as clip 1, shot on clip 2's tilted blueprint plane, in the site's black, white and orange. The site's dot field plays clip 1's shapes, chaos for complex, the grid for clear.
+
+1. "/* legacy platforms → products */" types in on the tilted plane, collapses to the orange dot.
+2. The dot lands as the full stop of the M. while guides construct the mark, then "I'm Filip." with "UX & Product Designer" measured under it.
+3. "I turn legacy platforms into" then the last word swaps with a real project screen beside it, dealer portals (BRP), agent tools (Allstate), fintech (Varntix), trading (HFDX), security (Lyrie).
+4. "Even when it's complex," the dots scatter across the plane.
+5. "I make it clear." the dots snap into the site's grid and the halftone face assembles from them.
+6. Three facts that are true. Filip supplies them, nothing is invented (for example years, products shipped, sectors).
+7. End card, the M. with its glow and the site address, then back to the opening guides so it loops.
+
 ## The same idea for Filip, in his site's own language
 
 Accent is the site orange (var(--accent), #FF4213), ground is the site black, labels in the site mono, display type in Anton. About 20 seconds, so it loops on Reels.

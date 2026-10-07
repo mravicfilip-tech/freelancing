@@ -7,7 +7,7 @@
  },
  "source": "https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, Dashboard page 55-728, read only",
  "sitting": 2,
- "phase": "components, Sections 1 to 3 built, waiting on Filip to approve the pattern",
+ "phase": "components done, Sections 1 to 10, 39 sets and 320 components. Sitting 3 screens next",
  "updated": "2026-10-07",
  "rulings": "Dark only. Cover on the Diversify template. Defaults in briefs/audit.md section 8 accepted.",
  "pages": {
@@ -48,7 +48,7 @@
      "section": "15:2",
      "library": "15:3",
      "showcase": "15:145",
-     "components": "Logo/Lockup, Logo/Mark (16:419), 41 Icon/*, 5 Social/*, 7 Coin/*, Network/Arbitrum, 3 Wallet/*, 3 Pay/*, 2 Flag/*",
+     "components": "Logo/Lockup, Logo/Mark (16:419), 41 Icon/*, 5 Social/*, 7 Coin/*, Network/Arbitrum, 4 Wallet/* (Trust 62:1621 added), 5 Pay/* (Visa 62:1601, Apple Pay 62:1611 added), 2 Flag/*",
      "drawnToMatch": "Icon/Close, Chevron down, Chevron right, Plus, Share, Up, Down, Social/X, Social/Facebook"
     },
     "2 · Buttons": {
@@ -68,6 +68,114 @@
       "Status": "18:219",
       "Change": "18:229",
       "Verification": "18:247"
+     }
+    },
+    "4 · Inputs and selects": {
+     "section": "25:233",
+     "items": {
+      "Field": "25:298",
+      "Select": "25:345",
+      "Phone field": "27:370",
+      "Code box": "27:384",
+      "Code input": "27:390",
+      "Checkbox": "27:419",
+      "Menu item": "27:454",
+      "Menu": "27:459",
+      "Date trigger": "27:566"
+     }
+    },
+    "5 · Navigation": {
+     "section": "29:420",
+     "items": {
+      "Rail item": "29:437",
+      "Account card": "29:442",
+      "Icon button": "29:464",
+      "Top bar": "29:469",
+      "Rail": "29:507",
+      "Tab": "32:536",
+      "Tabs": "32:540",
+      "Segment": "32:550",
+      "Segmented": "32:554",
+      "Step": "32:574",
+      "Stepper": "32:579",
+      "Step badge": "32:601",
+      "Phone top bar": "32:606",
+      "Phone menu": "32:616"
+     }
+    },
+    "6 · Cards and tiles": {
+     "section": "34:633",
+     "items": {
+      "Card head": "34:638",
+      "Stat tile": "34:643",
+      "Balance row": "34:650",
+      "Summary row": "34:663",
+      "Document row": "34:685",
+      "Leaderboard row": "34:687",
+      "Media item": "34:696",
+      "Total tile": "34:721",
+      "Product card": "37:797",
+      "Method card": "37:893",
+      "Holdings gauge": "37:895",
+      "Promo banner": "37:901"
+     }
+    },
+    "7 · Tables": {
+     "section": "41:799",
+     "items": {
+      "Table/Header cell": "41:810",
+      "Table/Cell": "41:880",
+      "Table head": "41:1041",
+      "Table row": "41:1043",
+      "Table row/Stacked": "41:1093",
+      "Table/Scroll bar": "41:1095",
+      "Table footer": "41:1109",
+      "Table toolbar": "41:1111"
+     }
+    },
+    "8 · Dialogs": {
+     "section": "44:957",
+     "items": {
+      "Dialog/Corner button": "44:968",
+      "Dialog/Halo": "44:994",
+      "Dialog/Detail row": "44:1010",
+      "Dialog/Scrim": "44:1016",
+      "Dialog/Shell": "44:1018",
+      "Dialog/Order details": "47:1104",
+      "Dialog/Subscription done": "47:1106",
+      "Dialog/Order placed": "47:1161",
+      "Dialog/Payment successful": "47:1262",
+      "Dialog/Verify identity": "47:1295",
+      "Dialog/Finish setup": "47:1319",
+      "Dialog/Forgot password": "47:1346",
+      "Dialog/Withdrawal code": "47:1466",
+      "Dialog/Confirm early redemption": "47:1468"
+     }
+    },
+    "9 · Empty states and notices": {
+     "section": "51:1241",
+     "items": {
+      "Empty state": "51:1246",
+      "Notice": "63:1583",
+      "Showcase · Empty states in use": "51:1274"
+     }
+    },
+    "10 · Page blocks": {
+     "section": "59:1395",
+     "items": {
+      "Page/Ground": "59:1409",
+      "Page/Auth panel": "59:1417",
+      "Chart/Legend item": "59:1425",
+      "Chart/Growth": "59:1427",
+      "Scenario tile": "59:1496",
+      "Referral steps": "59:1536",
+      "Share button": "59:1540",
+      "Showcase · Share row": "59:1543",
+      "Template · App 1920": "61:1420",
+      "Template · App 1024": "61:1551",
+      "Template · App 440": "61:1568",
+      "Template · Auth 1920": "61:1585",
+      "Template · Auth 440": "61:1604"
      }
     }
    }
@@ -100,7 +208,7 @@
    "modes": {
     "Value": "1:0"
    },
-   "count": 42,
+   "count": 43,
    "scopes": "none (hidden)",
    "codeSyntax": "var(--vx-p-*)"
   },
@@ -109,9 +217,10 @@
    "modes": {
     "Dark": "1:1"
    },
-   "count": 49,
+   "count": 53,
    "codeSyntax": "var(--vx-*)",
-   "aliases": "every value aliases a primitive"
+   "aliases": "every value aliases a primitive",
+   "added": "chart/series-1, chart/series-2, chart/area-1, chart/area-2 in sitting 2 for the growth chart; primitive blue/400-a12"
   },
   "Spacing": {
    "id": "VariableCollectionId:1:15",
@@ -175,15 +284,34 @@
   "cover",
   "section 1 marks",
   "section 2 buttons",
-  "section 3 chips and tags"
+  "section 3 chips and tags",
+  "section 4 inputs and selects",
+  "section 5 navigation",
+  "section 6 cards and tiles",
+  "section 7 tables",
+  "section 8 dialogs",
+  "section 9 empty states and notices",
+  "section 10 page blocks and templates",
+  "Visa, Apple Pay and Trust Wallet marks"
  ],
  "audit": {
-  "sitting1": "0 ALL_SCOPES, 0 missing code syntax, 0 broken aliases. Foundations page 0 unbound fills or strokes outside the canvas Sections, 0 raw radius, gap or padding, 0 text without a style, 0 default names. Cover keeps raw Diversify brand colours on purpose"
+  "sitting1": "0 ALL_SCOPES, 0 missing code syntax, 0 broken aliases. Foundations page 0 unbound fills or strokes outside the canvas Sections, 0 raw radius, gap or padding, 0 text without a style, 0 default names. Cover keeps raw Diversify brand colours on purpose",
+  "sitting2": "Components page 0 unbound fills, 0 unbound strokes outside Section frames, 0 raw gaps or radius outside Sections, 0 text without a style, 0 components without a description, 0 default layer names after renaming 101 inside imported marks. Brand marks keep raw colours on purpose"
  },
  "notes": [
   "A paint bound to a variable on a VECTOR renders its base colour in screenshots unless the base colour matches the resolved token. Always create bound paints with the resolved colour as the base.",
   "Imported SVG art sits in a group, and groups ignore constraints. Set SCALE on the vectors inside so icon instances resize cleanly.",
   "Button labels share one TEXT property default, Continue. Set the label on each instance.",
-  "Pressed red and grey buttons use a white label, black fails on them (2.8 and 2.4 to 1)."
- ]
+  "Pressed red and grey buttons use a white label, black fails on them (2.8 and 2.4 to 1).",
+  "Button sets now hug the label with a 120 minimum. Instances set to FILL keep filling.",
+  "Hidden sublayers inside an instance are not returned by findOne. Guard for null.",
+  "A component set looked up once at the top of a script goes stale after combineAsVariants. Look sets up fresh each time.",
+  "A failed use_figma call rolls back everything it did."
+ ],
+ "decisions": {
+  "1024": "Tablet uses the phone top bar and menu sheet, no rail, content 976 wide in two columns. The source drew no tablet. Flagged to Filip",
+  "auth photo": "The woman at sunset (source Login fill) on both Login and Create account, as the source does",
+  "empty states": "Built from the dialog halo, the source drew none",
+  "dialog primary": "Action blue, except Confirm early redemption which keeps Action outline as drawn"
+ }
 }

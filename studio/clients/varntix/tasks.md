@@ -29,7 +29,7 @@ Task format
   - [x] Kickoff answers from Filip
   - [x] Audit the source file, read only
   - [x] New Figma file with foundations
-  - [ ] Components in numbered Sections
+  - [x] Components in numbered Sections
   - [ ] Screens from instances
   - [ ] File audit closed at zero
 

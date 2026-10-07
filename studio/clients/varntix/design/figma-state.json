@@ -1,0 +1,152 @@
+{
+ "file": {
+  "name": "Varntix Design System",
+  "key": "5y4Et7wUd7hDKHsswTpopX",
+  "url": "https://www.figma.com/design/5y4Et7wUd7hDKHsswTpopX",
+  "plan": "team::1001413975353689713"
+ },
+ "source": "https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, Dashboard page 55-728, read only",
+ "sitting": 1,
+ "phase": "foundations done, components next",
+ "updated": "2026-10-07",
+ "rulings": "Dark only. Cover on the Diversify template. Defaults in briefs/audit.md section 8 accepted.",
+ "pages": {
+  "📕 Cover": {
+   "id": "0:1",
+   "frame": "9:2",
+   "layout": "Remittix Markets cover template. Diversify logo and brand shape on #2563EB, Varntix title, Dashboard pill, letsdiversify.co, MacBook with the dashboard warped onto the screen (9:7)",
+   "todo": "swap the screen image for the rebuilt dashboard after sitting 3"
+  },
+  "🚀 Getting Started": {
+   "id": "1:2",
+   "frame": "10:2"
+  },
+  "🎨 Foundations": {
+   "id": "1:3",
+   "sections": {
+    "Colour": {
+     "section": "4:2",
+     "doc": "4:3"
+    },
+    "Type": {
+     "section": "5:2",
+     "doc": "5:3"
+    },
+    "Spacing radius elevation": {
+     "section": "6:2",
+     "doc": "6:3"
+    }
+   }
+  },
+  "———— COMPONENTS ————": {
+   "id": "1:4"
+  },
+  "🧩 Components": {
+   "id": "1:5"
+  },
+  "———— SCREENS ————": {
+   "id": "1:6"
+  },
+  "🖥️ Screens · Home and Savings": {
+   "id": "1:7"
+  },
+  "🖥️ Screens · Wallet": {
+   "id": "1:8"
+  },
+  "🖥️ Screens · Account": {
+   "id": "1:9"
+  },
+  "🖥️ Screens · Sign in": {
+   "id": "1:10"
+  },
+  "🖥️ Screens · Dialogs": {
+   "id": "1:11"
+  },
+  "📱 Screens · Tablet & mobile": {
+   "id": "1:12"
+  }
+ },
+ "collections": {
+  "Primitives": {
+   "id": "VariableCollectionId:1:13",
+   "modes": {
+    "Value": "1:0"
+   },
+   "count": 42,
+   "scopes": "none (hidden)",
+   "codeSyntax": "var(--vx-p-*)"
+  },
+  "Color": {
+   "id": "VariableCollectionId:1:14",
+   "modes": {
+    "Dark": "1:1"
+   },
+   "count": 49,
+   "codeSyntax": "var(--vx-*)",
+   "aliases": "every value aliases a primitive"
+  },
+  "Spacing": {
+   "id": "VariableCollectionId:1:15",
+   "count": 13,
+   "scopes": [
+    "GAP"
+   ]
+  },
+  "Radius": {
+   "id": "VariableCollectionId:1:16",
+   "count": 6,
+   "scopes": [
+    "CORNER_RADIUS"
+   ]
+  },
+  "Size": {
+   "id": "VariableCollectionId:1:17",
+   "count": 14,
+   "scopes": "WIDTH_HEIGHT, STROKE_FLOAT"
+  }
+ },
+ "textStyles": {
+  "count": 15,
+  "groups": [
+   "Display",
+   "Heading",
+   "Number",
+   "Body",
+   "Label",
+   "Nav",
+   "Caption"
+  ],
+  "family": "Noto Sans, Display Regular for Label/Button 18"
+ },
+ "effectStyles": [
+  "Glass/10",
+  "Glass/20",
+  "Elevation/Card",
+  "Edge/Glass",
+  "Edge/Panel depth",
+  "Glow/Live",
+  "Glow/Figure"
+ ],
+ "paintStyles": [
+  "Gradient/Card face",
+  "Gradient/Card dark",
+  "Gradient/Rim",
+  "Glow/Green",
+  "Glow/Grey",
+  "Glow/Gold"
+ ],
+ "completedSteps": [
+  "file",
+  "pages",
+  "variables",
+  "text styles",
+  "effect styles",
+  "paint styles",
+  "foundations page",
+  "getting started",
+  "cover"
+ ],
+ "audit": {
+  "sitting1": "0 ALL_SCOPES, 0 missing code syntax, 0 broken aliases. Foundations page 0 unbound fills or strokes outside the canvas Sections, 0 raw radius, gap or padding, 0 text without a style, 0 default names. Cover keeps raw Diversify brand colours on purpose"
+ }
+}

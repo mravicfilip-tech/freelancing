@@ -25,10 +25,10 @@ Task format
 
 ## In progress
 
-- varntix-1 Varntix design system pass. Figma https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix?node-id=42-2. Prompts in `briefs/design-system-prompts.md`
+- varntix-1 Varntix design system pass. New file https://www.figma.com/design/5y4Et7wUd7hDKHsswTpopX, source https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix?node-id=42-2. Prompts in `briefs/design-system-prompts.md`
   - [x] Kickoff answers from Filip
   - [x] Audit the source file, read only
-  - [ ] New Figma file with foundations
+  - [x] New Figma file with foundations
   - [ ] Components in numbered Sections
   - [ ] Screens from instances
   - [ ] File audit closed at zero

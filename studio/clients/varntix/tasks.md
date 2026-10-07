@@ -27,6 +27,8 @@ Task format
 
 ## In progress
 
+## Review
+
 - varntix-1 Varntix design system pass. New file https://www.figma.com/design/5y4Et7wUd7hDKHsswTpopX, source https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix?node-id=42-2. Prompts in `briefs/design-system-prompts.md`
   - [x] Kickoff answers from Filip
   - [x] Audit the source file, read only

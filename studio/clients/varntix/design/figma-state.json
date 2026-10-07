@@ -363,7 +363,8 @@
   "A failed use_figma call rolls back everything it did.",
   "Hiding a layer bound to a boolean property flips the property on the instance. The toolbar's first divider shares Type menu.",
   "Switching a horizontal auto layout to vertical keeps its old fixed height and its children's grow. Set the parent to hug and reset each child's grow.",
-  "Image fills on the source Login panel sit on a rectangle rotated 180 degrees. Export the rendered node instead of reusing the raw image."
+  "Image fills on the source Login panel sit on a rectangle rotated 180 degrees. Export the rendered node instead of reusing the raw image.",
+  "Every Screens page sits in Sections, one per flow, Screens caption, title and one line, states left to right with the label above each frame."
  ],
  "decisions": {
   "1024": "Tablet uses the phone top bar and menu sheet, no rail, one column 976 wide, rows inside a card keep their columns. The source drew no tablet. Flagged to Filip",
@@ -382,6 +383,11 @@
     "Savings · Plans": "75:1399",
     "Savings plan · Form": "78:1980",
     "Savings plan · Below minimum": "80:2287"
+   },
+   "sections": {
+    "Dashboard": "120:2583",
+    "Savings plans": "120:2588",
+    "Savings plan": "120:2593"
    }
   },
   "🖥️ Screens · Wallet": {
@@ -396,6 +402,10 @@
     "Deposit · Invalid promo code": "82:1592",
     "Withdraw · Invalid address": "82:1823",
     "Withdraw · Over the KYC limit": "82:2047"
+   },
+   "sections": {
+    "Deposit": "120:4597",
+    "Withdraw": "120:4602"
    }
   },
   "🖥️ Screens · Account": {
@@ -415,6 +425,14 @@
     "Documents · No match": "87:4449",
     "Profile · Invalid fields": "87:4661",
     "Profile · 2FA enabled": "87:5039"
+   },
+   "sections": {
+    "Assets": "120:8031",
+    "Transactions": "120:8036",
+    "Referrals": "120:8041",
+    "Documents": "120:8046",
+    "Profile": "120:8051",
+    "Coming soon": "120:8056"
    }
   },
   "🖥️ Screens · Sign in": {
@@ -428,6 +446,12 @@
     "Confirmation code · Wrong code": "88:472",
     "Final step · Default": "88:538",
     "Final step · Passwords differ": "88:702"
+   },
+   "sections": {
+    "Login": "120:8564",
+    "Create account": "120:8569",
+    "Confirmation code": "120:8574",
+    "Final step": "120:8579"
    }
   },
   "🖥️ Screens · Dialogs": {
@@ -444,6 +468,14 @@
     "Withdrawal code · Default": "91:4254",
     "Withdrawal code · Wrong code": "91:4511",
     "Confirm early redemption": "91:4768"
+   },
+   "sections": {
+    "Savings dialogs": "120:12316",
+    "Deposit dialogs": "120:12321",
+    "Withdraw dialogs": "120:12326",
+    "Account dialogs": "120:12331",
+    "Assets dialogs": "120:12336",
+    "Sign in dialogs": "120:12341"
    }
   },
   "📱 Screens · Tablet & mobile": {
@@ -470,6 +502,14 @@
     "Dashboard · Verified · 1024": "107:2837",
     "Savings · Plans · 1024": "107:3166",
     "Transactions · Table · 1024": "107:3324"
+   },
+   "sections": {
+    "Phone · Home and Savings": "120:16153",
+    "Phone · Wallet": "120:16158",
+    "Phone · Account": "120:16163",
+    "Phone · Sign in": "120:16168",
+    "Phone · Menu and dialogs": "120:16173",
+    "Tablet": "120:16178"
    }
   }
  },

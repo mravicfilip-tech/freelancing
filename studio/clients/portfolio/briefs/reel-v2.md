@@ -56,3 +56,24 @@ Status. Second cut, building. Filip's notes on v1 were more content (take the co
 ## Build
 
 video/reel2.js in filip-portfolio. Each shot draws on a 2D plane that WebGL projects through the tilted camera, the site's dot grid drawn in the shader, then one post pass for the effects. Each shot now carries its own hits at beats relative to its start, so shots can move on the grid without retiming by hand. Render is about 1.4 seconds a frame, so about 15 minutes for 619 frames.
+
+## Round 3, plan (hardened 2026-10-07)
+
+Filip's notes on the 20.6 second cut. Use the content of filip-portfolio-public.vercel.app for projects, logos and text, keep the styling, a better animation for the hundred screens, the 11 is cut off, a better animation for complex workflows.
+
+Source. The public site's own deployed code (production build of Aug 19, pulled through the Vercel API), checked file by file against main.
+- Projects. Three, Varntix, HFDX, Lyrie. No BRP, no Allstate.
+- Logos. Four, Ragebite, Art & Code, MadeTight, Diversify.
+- Experience. The current role is UI/UX & Visual Designer at Diversify, 2024 to now. No ChannelFusion.
+- Same as main. Hero line, manifesto, services, toolkit, statement, contact, and every project and tool image except the design systems visual.
+
+Constraint. The look stays as it is. Same type, colours, camera, grid, flashes, splits, blur, grain. Only the two named animations change, plus the 11 fix.
+
+Changes.
+1. Content. Work shows the three public projects, clients the four public logos, the years roll ends on Diversify. The public design systems visual is copied to video/assets, so the site's own file is untouched.
+2. Sectors line. The statement on the public site names channel marketing, insurance, powersports and enterprise SaaS, but none of its logos or projects show those. Filip to decide, keep it or drop it.
+3. Beats. Filip to pick. Option A keeps 44 beats (20.6 s), each project gets three beats with its cover, then its raised second screen, then the second screen swapping to its third, clients get two beats on a two by two grid, and the freed beats go to the manifesto (3 to 4) and complex to clear (4 to 5). Option B cuts to 40 beats (18.75 s), each project keeps two beats and the two animated shots still get their extra beat.
+4. The 11. Each digit is clipped to a box shorter than the glyph, which cuts the top of the 1 and its foot. The box takes the glyph's measured height plus a margin, and the ELEVEN measure follows the real glyph.
+5. A hundred screens. The tiles show real screens from the three public projects, each tile a different screen crop, flying in scattered, rotated and at different heights. On LIKE ONE PRODUCT they snap into the grid, the gaps close, and the tiles cross over into one product screen.
+6. Complex workflows. The dots run along tangled workflow paths, curves that cross and loop like a messy flowchart, then on the snap the paths pull straight and the dots settle into the face.
+7. Variants. 5 and 6 are motion details, so each gets three short clips (about 2 seconds, the shot alone) to pick from by number, about 10 minutes of render for all six. The full render waits for the picks.

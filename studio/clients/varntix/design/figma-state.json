@@ -6,8 +6,8 @@
   "plan": "team::1001413975353689713"
  },
  "source": "https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, Dashboard page 55-728, read only",
- "sitting": 1,
- "phase": "foundations done, components next",
+ "sitting": 2,
+ "phase": "components, Sections 1 to 3 built, waiting on Filip to approve the pattern",
  "updated": "2026-10-07",
  "rulings": "Dark only. Cover on the Diversify template. Defaults in briefs/audit.md section 8 accepted.",
  "pages": {
@@ -42,7 +42,35 @@
    "id": "1:4"
   },
   "🧩 Components": {
-   "id": "1:5"
+   "id": "1:5",
+   "sections": {
+    "1 · Marks": {
+     "section": "15:2",
+     "library": "15:3",
+     "showcase": "15:145",
+     "components": "Logo/Lockup, Logo/Mark (16:419), 41 Icon/*, 5 Social/*, 7 Coin/*, Network/Arbitrum, 3 Wallet/*, 3 Pay/*, 2 Flag/*",
+     "drawnToMatch": "Icon/Close, Chevron down, Chevron right, Plus, Share, Up, Down, Social/X, Social/Facebook"
+    },
+    "2 · Buttons": {
+     "section": "17:157",
+     "sets": {
+      "Button/Large": "17:342",
+      "Button/Medium": "17:535",
+      "Button/Small": "17:728"
+     },
+     "axes": "Style Action, Action outline, Fixed, Flexible, Neutral, Negative × State Default, Hover, Pressed, Focus, Disabled",
+     "properties": "Label, Leading icon, Leading icon swap, Trailing icon, Trailing icon swap"
+    },
+    "3 · Chips and tags": {
+     "section": "18:157",
+     "sets": {
+      "Tag": "18:202",
+      "Status": "18:219",
+      "Change": "18:229",
+      "Verification": "18:247"
+     }
+    }
+   }
   },
   "———— SCREENS ————": {
    "id": "1:6"
@@ -144,9 +172,18 @@
   "paint styles",
   "foundations page",
   "getting started",
-  "cover"
+  "cover",
+  "section 1 marks",
+  "section 2 buttons",
+  "section 3 chips and tags"
  ],
  "audit": {
   "sitting1": "0 ALL_SCOPES, 0 missing code syntax, 0 broken aliases. Foundations page 0 unbound fills or strokes outside the canvas Sections, 0 raw radius, gap or padding, 0 text without a style, 0 default names. Cover keeps raw Diversify brand colours on purpose"
- }
+ },
+ "notes": [
+  "A paint bound to a variable on a VECTOR renders its base colour in screenshots unless the base colour matches the resolved token. Always create bound paints with the resolved colour as the base.",
+  "Imported SVG art sits in a group, and groups ignore constraints. Set SCALE on the vectors inside so icon instances resize cleanly.",
+  "Button labels share one TEXT property default, Continue. Set the label on each instance.",
+  "Pressed red and grey buttons use a white label, black fails on them (2.8 and 2.4 to 1)."
+ ]
 }

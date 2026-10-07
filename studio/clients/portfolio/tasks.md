@@ -20,10 +20,10 @@ Rules
 - portfolio-2 Portfolio reel v2, faster and from the site copy. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio
   - [x] Harden the plan
   - [x] Grill the open slots (track, length, logos, end card)
-  - [ ] WebGL camera and post pass
-  - [ ] Build the eight shots on the 128 BPM grid
-  - [ ] 3 second test, measure render time
-  - [ ] Stills QA, then the full render
+  - [x] WebGL camera and post pass
+  - [x] Build the eight shots on the 128 BPM grid
+  - [x] 3 second test, measure render time
+  - [x] Stills QA, then the full render
   - [ ] Send the MP4
 
 ## Review

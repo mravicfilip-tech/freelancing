@@ -1,0 +1,6 @@
+# Taste archive, portfolio
+
+SUPERSEDED entries moved out of taste.md unchanged. Not read unless Filip asks.
+
+- **2026-10-06 15:40, toolkit plate cards, motion pick.** ACCEPTED, SUPERSEDED by 2026-10-06 17:20 toolkit scroll rain. Said: "For tool cards I like it as it is right now but could add more motion to it like tilt wise". Why: the scrubbed rain past the statement is the right idea; it only lacked life in flight. Losers: Deck (dealt from a pile), Float (cursor parallax drift), Shuffle (slots swap every 3.4s). Carry forward: the cards keep the scroll-scrubbed rain (ToolkitPlate.jsx) with 3D tilt in flight, rotateX about 24deg to minus 20deg across the pass, rotateY toward the centre, nearer cards tilting more, perspective 1100px.
+- **2026-10-06 15:30, hero head motion.** ACCEPTED, SUPERSEDED by 2026-10-06 16:20 hero head is the intro face. Said: "use the intro animation that I have and just don't make it 'tilt' but just apply shines on it". Why: the turn toward the cursor read as the head moving for no reason; light moving over a still head reads premium and calm (inferred). Carry forward: the hero head keeps its particle fly-in and scroll-out, faces forward with no turn or look-around, and only light moves over it (the shine in PortraitTilt.jsx; which shine is still being picked in the preview switcher).

@@ -16,8 +16,6 @@ Rules
 Task format
 
 ```
-## Review
-
 - varntix-1 Pricing page prototype. Link https://example.com/preview
   - [x] Capture the reference
   - [ ] Build the page

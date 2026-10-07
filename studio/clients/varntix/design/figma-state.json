@@ -217,7 +217,7 @@
    "modes": {
     "Dark": "1:1"
    },
-   "count": 54,
+   "count": 56,
    "codeSyntax": "var(--vx-*)",
    "aliases": "every value aliases a primitive",
    "added": "chart/series-1, chart/series-2, chart/area-1, chart/area-2 in sitting 2 for the growth chart; primitive blue/400-a12"
@@ -364,7 +364,8 @@
   "Hiding a layer bound to a boolean property flips the property on the instance. The toolbar's first divider shares Type menu.",
   "Switching a horizontal auto layout to vertical keeps its old fixed height and its children's grow. Set the parent to hug and reset each child's grow.",
   "Image fills on the source Login panel sit on a rectangle rotated 180 degrees. Export the rendered node instead of reusing the raw image.",
-  "Every Screens page sits in Sections, one per flow, Screens caption, title and one line, states left to right with the label above each frame."
+  "Every Screens page sits in Sections, one per flow, Screens caption, title and one line, states left to right with the label above each frame.",
+  "Sections fill with canvas/section (ink/300, #262626), not bg/deep. 34 Sections across Foundations, Components and the Screens pages."
  ],
  "decisions": {
   "1024": "Tablet uses the phone top bar and menu sheet, no rail, one column 976 wide, rows inside a card keep their columns. The source drew no tablet. Flagged to Filip",

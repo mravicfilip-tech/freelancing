@@ -77,3 +77,8 @@ Changes.
 5. A hundred screens. The tiles show real screens from the three public projects, each tile a different screen crop, flying in scattered, rotated and at different heights. On LIKE ONE PRODUCT they snap into the grid, the gaps close, and the tiles cross over into one product screen.
 6. Complex workflows. The dots run along tangled workflow paths, curves that cross and loop like a messy flowchart, then on the snap the paths pull straight and the dots settle into the face.
 7. Variants. 5 and 6 are motion details, so each gets three short clips (about 2 seconds, the shot alone) to pick from by number, about 10 minutes of render for all six. The full render waits for the picks.
+
+## Round 3, picks (2026-10-07)
+
+- Screens. Picked 3, the pile.
+- Dots. Six motions rejected (tangle, swarm, flowchart, shatter, static, type). Filip asked for the head's own particles as the transition, and picked the site's own head motion. The head sits whole under COMPLEX, drifts up and apart through WORKFLOWS like the hero scroll-out, and flies back in top first like the intro for MADE SO CLEAR.

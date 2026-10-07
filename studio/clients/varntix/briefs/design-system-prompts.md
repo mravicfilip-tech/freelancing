@@ -50,9 +50,11 @@ from the Remittix Dashboard session.
   (7004-7817 and 7004-8243) each exist twice, and nothing marks which one is current.
 - Phone frames are 440 wide, not 390.
 
-So the order is the Remittix order with two steps in front, audit the source file and build the
-app from it. The messy auto layout gets fixed by rebuilding cleanly, in code and then in the new
-file, never by editing the source file.
+Filip ruled on 2026-10-07 that the deliverable is the new Figma file, rebuilt fresh on design
+system rules. No app comes first. The source audit replaces the Remittix measuring scripts, so its
+approved scales are the single source of truth, and the messy auto layout gets fixed by
+rebuilding cleanly in the new file, never by editing the source file. A coded prototype can follow
+from the finished file as its own concept.
 
 ## Prompt 0, kickoff answers
 
@@ -83,93 +85,59 @@ Write it to studio/clients/varntix/briefs/audit.md. Then stop and send me only t
 questions.
 ```
 
-## Prompt 2, the Varntix dashboard in code
+## Prompt 2, sitting 1, the new file and foundations
 
 ```
-Varntix design system pass, phase 2. Build the dashboard as a running app.
-
-Folder varntix/ at the repo root, on this session's branch. Same shape as remittix-earn and the
-Remittix dashboard. React, Vite, TypeScript, one token layer of CSS custom properties under
-data-theme, shared parts in their own files, page sheets that never redefine a token, mock data
-in one file per module.
-
-Tokens come from the approved scales in audit.md, named --vx-*. Match the source frames for
-content, layout and brand. Where the source is inconsistent, take the scale value and list
-every place you snapped.
-
-Routes for every current frame in audit.md, with the states it listed, plus ?theme= and
-?empty=1 switches. Run the build, click every flow, shoot each route against its source frame
-with studio/scripts/shoot.mjs, deploy a Vercel preview and put the URL on varntix-1. Stop there
-so I can react before anything goes into Figma.
-```
-
-## Prompt 3, measure the app
-
-```
-Varntix design system pass, phase 3. Measure the running app the way we did for Remittix Earn.
-
-Port scripts/discover.mjs, measure-components.mjs and capture-screens.mjs from remittix-earn
-into varntix/scripts and point them at the Varntix routes. Run them in both themes at the
-client widths. Write design/discovery.json, design/components-measure.json and the reference
-screens under varntix/design/. Start design/figma-state.json with the same shape as
-remittix-earn/design/figma-state.json.
-
-Report what the scripts found that the token layer does not name, then stop.
-```
-
-## Prompt 4, sitting 1, the new file and foundations
-
-```
-Varntix design system pass, phase 4. Create a new Figma file, Varntix Design System, same
+Varntix design system pass, phase 2. Create a new Figma file, Varntix Design System, same
 manner and same principle as Remittix Earn and Remittix Markets.
 
 Pages Cover, Getting Started, Foundations, a COMPONENTS divider, Components, a SCREENS divider,
 one Screens page per area, and Tablet and mobile. Cover on the same template as the Remittix
 covers.
 
-Foundations from discovery.json only.
+Foundations from the approved scales in audit.md only.
 - Primitives, hidden from pickers.
 - Color with the agreed modes, every value an alias of a primitive.
 - Spacing, Radius and Size.
-- Code syntax on every variable naming its --vx-* property.
+- Code syntax on every variable naming a --vx-* property, so a later build can use the same names.
 - Text styles grouped Display, Heading, Body, Label, Number, Nav, Menu and Caption.
 - Effect styles for the elevation and glass actually used.
 - A Foundations page with a labelled row for each.
 
-Record every id in figma-state.json. Screenshot the Foundations page and stop.
+Record every id in studio/clients/varntix/design/figma-state.json, the same shape as the Remittix Earn one. Screenshot the Foundations page and stop.
 ```
 
-## Prompt 5, sitting 2, components
+## Prompt 3, sitting 2, components
 
 ```
-Varntix design system pass, phase 5. Components in numbered Sections, as in the Earn file.
+Varntix design system pass, phase 3. Components in numbered Sections, as in the Earn file.
 
-Each Section gets a library frame in Dark and showcases in Dark and Light beside it. Build from
-components-measure.json in this order. Marks and icons, buttons, chips and status, inputs and
+Each Section gets a library frame and a showcase beside it, both Dark. Build from
+the source frames listed in audit.md section 5, values snapped to the scales, in this order. Marks and icons, buttons, chips and status, inputs and
 selects, nav rail and top bar, cards and stat tiles, tables, tabs and stepper, dialogs, empty
 states, then page level blocks.
 
 Auto layout all the way down. Every fill, stroke, gap, padding, radius and text bound to a
-variable or a style. Variants only for states the app renders. A description on every
+variable or a style. Variants for the states the source draws, plus the missing states audit.md section 6 lists. A description on every
 component. Layer names that describe the layer.
 
 Stop after Marks, Buttons and Chips so I can approve the pattern, then finish the rest.
 ```
 
-## Prompt 6, sitting 3, screens
+## Prompt 4, sitting 3, screens
 
 ```
-Varntix design system pass, phase 6. Screens from instances.
+Varntix design system pass, phase 4. Screens from instances.
 
-One Screens page per area from audit.md. Each state a column, Dark above Light. Desktop at
+One Screens page per area from audit.md. Each state a column, Dark only by the 2026-10-07 ruling. Desktop at
 1920 with a 1080 minimum height, then tablet and phone on the Tablet and mobile page. Match the
-capture-screens references, and list every known difference with its cause.
+reference shots in briefs/source, and list every known difference with its cause, such as a snapped value.
 ```
 
-## Prompt 7, sitting 4, audit
+## Prompt 5, sitting 4, audit
 
 ```
-Varntix design system pass, phase 7. Audit the new file and close it.
+Varntix design system pass, phase 5. Audit the new file and close it.
 
 Target 0 raw fills, strokes, gaps, padding and radius, 0 text without a style, 0 default layer
 names, 0 detached instances, 0 components without a description, 0 clipped or overflowing text
@@ -178,8 +146,7 @@ Scan every text layer, layer name, variable and style description for code paths
 repo names and URLs. Check the file's memory and flatten anything that repeats thousands of
 layers, like the Earn dot grid.
 
-Fix drift back in the app, not only in Figma. Write the before and after counts to
-figma-state.json, then run /uireview on the app.
+Write the before and after counts to figma-state.json and stop for my review.
 ```
 
 ## Gotchas from the Remittix files

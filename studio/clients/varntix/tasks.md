@@ -28,12 +28,10 @@ Task format
 - varntix-1 Varntix design system pass. Figma https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix?node-id=42-2. Prompts in `briefs/design-system-prompts.md`
   - [x] Kickoff answers from Filip
   - [x] Audit the source file, read only
-  - [ ] Dashboard built in code and deployed to a preview URL
-  - [ ] Running app measured
   - [ ] New Figma file with foundations
   - [ ] Components in numbered Sections
   - [ ] Screens from instances
-  - [ ] File audit closed and /uireview with no open sev 1
+  - [ ] File audit closed at zero
 
 ## Review
 

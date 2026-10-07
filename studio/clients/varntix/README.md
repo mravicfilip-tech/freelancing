@@ -41,7 +41,9 @@ Figma https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, pages Website
 
 ## Widths
 
-Filip to add. The file draws desktop at 1920 and phone at 440.
+1920, 1024, 440
+
+Dark theme only, by Filip's ruling on 2026-10-07.
 
 ## Run
 

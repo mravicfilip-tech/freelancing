@@ -17,16 +17,16 @@ Rules
 
 ## In progress
 
-- portfolio-2 Portfolio reel v2, faster and from the site copy. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio
+## Review
+
+- portfolio-2 Portfolio reel v2, faster and from the site copy. 20.6 s cut sent as filip-reel-v2.mp4. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio
   - [x] Harden the plan
   - [x] Grill the open slots (track, length, logos, end card)
   - [x] WebGL camera and post pass
   - [x] Build the eight shots on the 128 BPM grid
   - [x] 3 second test, measure render time
   - [x] Stills QA, then the full render
-  - [ ] Send the MP4
-
-## Review
+  - [x] Send the MP4
 
 - portfolio-1 Portfolio reel v1, the blueprint reel. Plan briefs/reel-blueprint.md, sent as filip-reel-v1.mp4
 

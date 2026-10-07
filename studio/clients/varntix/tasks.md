@@ -30,7 +30,7 @@ Task format
   - [x] Audit the source file, read only
   - [x] New Figma file with foundations
   - [x] Components in numbered Sections
-  - [ ] Screens from instances
+  - [x] Screens from instances
   - [ ] File audit closed at zero
 
 ## Review

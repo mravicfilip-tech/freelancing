@@ -7,7 +7,7 @@
  },
  "source": "https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, Dashboard page 55-728, read only",
  "sitting": 3,
- "phase": "screens in progress. Home and Savings, Wallet and Account pages built at 1920",
+ "phase": "screens built on every page at 1920, phones at 440 and three tablets at 1024. Sitting 4 audit next",
  "updated": "2026-10-07",
  "rulings": "Dark only. Cover on the Diversify template. Defaults in briefs/audit.md section 8 accepted.",
  "pages": {
@@ -208,7 +208,7 @@
    "modes": {
     "Value": "1:0"
    },
-   "count": 43,
+   "count": 44,
    "scopes": "none (hidden)",
    "codeSyntax": "var(--vx-p-*)"
   },
@@ -217,7 +217,7 @@
    "modes": {
     "Dark": "1:1"
    },
-   "count": 53,
+   "count": 54,
    "codeSyntax": "var(--vx-*)",
    "aliases": "every value aliases a primitive",
    "added": "chart/series-1, chart/series-2, chart/area-1, chart/area-2 in sitting 2 for the growth chart; primitive blue/400-a12"
@@ -306,13 +306,17 @@
   "Button sets now hug the label with a 120 minimum. Instances set to FILL keep filling.",
   "Hidden sublayers inside an instance are not returned by findOne. Guard for null.",
   "A component set looked up once at the top of a script goes stale after combineAsVariants. Look sets up fresh each time.",
-  "A failed use_figma call rolls back everything it did."
+  "A failed use_figma call rolls back everything it did.",
+  "Hiding a layer bound to a boolean property flips the property on the instance. The toolbar's first divider shares Type menu.",
+  "Switching a horizontal auto layout to vertical keeps its old fixed height and its children's grow. Set the parent to hug and reset each child's grow.",
+  "Image fills on the source Login panel sit on a rectangle rotated 180 degrees. Export the rendered node instead of reusing the raw image."
  ],
  "decisions": {
-  "1024": "Tablet uses the phone top bar and menu sheet, no rail, content 976 wide in two columns. The source drew no tablet. Flagged to Filip",
+  "1024": "Tablet uses the phone top bar and menu sheet, no rail, one column 976 wide, rows inside a card keep their columns. The source drew no tablet. Flagged to Filip",
   "auth photo": "The woman at sunset (source Login fill) on both Login and Create account, as the source does",
   "empty states": "Built from the dialog halo, the source drew none",
-  "dialog primary": "Action blue, except Confirm early redemption which keeps Action outline as drawn"
+  "dialog primary": "Action blue, except Confirm early redemption which keeps Action outline as drawn",
+  "input border": "Field, Select, Phone field and Code box at rest take border/input, white 35%, 3.2 to 1 on surface/1. Filip asked for a small opacity border on 2026-10-07; 15% would be 1.5 to 1 and fail 1.4.11"
  },
  "screens": {
   "🖥️ Screens · Home and Savings": {
@@ -358,6 +362,61 @@
     "Profile · Invalid fields": "87:4661",
     "Profile · 2FA enabled": "87:5039"
    }
+  },
+  "🖥️ Screens · Sign in": {
+   "page": "1:10",
+   "frames": {
+    "Login · Default": "88:2",
+    "Login · Wrong details": "88:106",
+    "Create account · Default": "88:212",
+    "Create account · Invalid email": "88:307",
+    "Confirmation code · Default": "88:403",
+    "Confirmation code · Wrong code": "88:472",
+    "Final step · Default": "88:538",
+    "Final step · Passwords differ": "88:702"
+   }
+  },
+  "🖥️ Screens · Dialogs": {
+   "page": "1:11",
+   "frames": {
+    "Order details · Ready": "91:2",
+    "Order details · Agreement not ticked": "91:1445",
+    "Subscription done": "91:1905",
+    "Order placed · Crypto step 3": "91:2351",
+    "Payment successful · Card step 3": "91:2698",
+    "Verify identity": "91:3112",
+    "Finish setup": "91:3618",
+    "Forgot password": "91:4129",
+    "Withdrawal code · Default": "91:4254",
+    "Withdrawal code · Wrong code": "91:4511",
+    "Confirm early redemption": "91:4768"
+   }
+  },
+  "📱 Screens · Tablet & mobile": {
+   "page": "1:12",
+   "frames": {
+    "Dashboard · Verified · 440": "92:2",
+    "Savings · Plans · 440": "92:694",
+    "Savings plan · Form · 440": "92:1308",
+    "Deposit · Step 1, method · 440": "95:1048",
+    "Deposit · Step 2, Web3 wallet · 440": "95:1517",
+    "Deposit · Step 2, card · 440": "95:1751",
+    "Withdraw · Form · 440": "95:2129",
+    "Assets · Table · 440": "97:1623",
+    "Transactions · Table · 440": "97:2397",
+    "Referrals · Full · 440": "97:2774",
+    "Documents · Folders · 440": "97:3185",
+    "Profile · Setup · 440": "97:3382",
+    "Login · Default · 440": "97:3773",
+    "Create account · Default · 440": "97:3863",
+    "Confirmation code · Default · 440": "97:3952",
+    "Final step · Default · 440": "97:4032",
+    "Menu · 440": "107:3478",
+    "Confirm early redemption · 440": "107:3664",
+    "Dashboard · Verified · 1024": "107:2837",
+    "Savings · Plans · 1024": "107:3166",
+    "Transactions · Table · 1024": "107:3324"
+   }
   }
  },
  "differences": [
@@ -371,6 +430,10 @@
   "Running assets keep Redeem live in neutral (opens Confirm early redemption), the source showed a second Confirm",
   "Line heights 1.2 and 1.45 move text 1 to 3px against the source",
   "Promo banner art is the Varntix mark, the source 3D render is still to pull",
-  "No loading skeletons, no saved toast, no open document folder. The system has no skeleton or toast part yet"
+  "No loading skeletons, no saved toast, no open document folder. The system has no skeleton or toast part yet",
+  "Phone growth chart is the desktop chart scaled to 55%, so its labels sit near 8px. A phone variant of Chart/Growth is needed",
+  "Phone tables wider than 408 scroll sideways inside the card with a scroll bar under them; Assets stacks its actions",
+  "Phone media items drop the Insights tag to keep the headline readable",
+  "Invalid field edge is still red at 40%, 1.8 to 1, now fainter than the rest border. Open question to Filip"
  ]
 }

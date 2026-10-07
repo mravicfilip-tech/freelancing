@@ -19,7 +19,7 @@ Rules
 
 ## Review
 
-- portfolio-2 Portfolio reel v2, faster and from the site copy. Round 6 (public site content, screens pile, head motion, horizon glow, dot grid, toolkit as the site deck) sent as filip-reel-v6-hq.mp4. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio
+- portfolio-2 Portfolio reel v2, faster and from the site copy. Round 7 (public site content, screens pile, head motion, horizon glow, dot grid, toolkit deck on the grid) sent as filip-reel-v7-hq.mp4. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio
   - [x] Harden the plan
   - [x] Grill the open slots (track, length, logos, end card)
   - [x] WebGL camera and post pass

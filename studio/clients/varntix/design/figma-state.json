@@ -6,8 +6,8 @@
   "plan": "team::1001413975353689713"
  },
  "source": "https://www.figma.com/design/rzv5g0IB5v0RKTBwWjWxI4/Varntix, Dashboard page 55-728, read only",
- "sitting": 3,
- "phase": "screens built on every page at 1920, phones at 440 and three tablets at 1024. Sitting 4 audit next",
+ "sitting": 4,
+ "phase": "audit closed, waiting on Filip's review",
  "updated": "2026-10-07",
  "rulings": "Dark only. Cover on the Diversify template. Defaults in briefs/audit.md section 8 accepted.",
  "pages": {
@@ -292,11 +292,65 @@
   "section 8 dialogs",
   "section 9 empty states and notices",
   "section 10 page blocks and templates",
-  "Visa, Apple Pay and Trust Wallet marks"
+  "Visa, Apple Pay and Trust Wallet marks",
+  "screens",
+  "phone and tablet",
+  "audit"
  ],
  "audit": {
   "sitting1": "0 ALL_SCOPES, 0 missing code syntax, 0 broken aliases. Foundations page 0 unbound fills or strokes outside the canvas Sections, 0 raw radius, gap or padding, 0 text without a style, 0 default names. Cover keeps raw Diversify brand colours on purpose",
-  "sitting2": "Components page 0 unbound fills, 0 unbound strokes outside Section frames, 0 raw gaps or radius outside Sections, 0 text without a style, 0 components without a description, 0 default layer names after renaming 101 inside imported marks. Brand marks keep raw colours on purpose"
+  "sitting2": "Components page 0 unbound fills, 0 unbound strokes outside Section frames, 0 raw gaps or radius outside Sections, 0 text without a style, 0 components without a description, 0 default layer names after renaming 101 inside imported marks. Brand marks keep raw colours on purpose",
+  "sitting4": {
+   "before": {
+    "rawFills": 0,
+    "rawStrokes": 0,
+    "rawGaps": 0,
+    "rawPadding": 0,
+    "rawRadius": 0,
+    "textWithoutStyle": 3,
+    "defaultNames": 129,
+    "componentsWithoutDescription": 0,
+    "detachedInstances": 0,
+    "overflowAt440": 6,
+    "codeOrUrlInText": 2
+   },
+   "after": {
+    "rawFills": 0,
+    "rawStrokes": 0,
+    "rawGaps": 0,
+    "rawPadding": 0,
+    "rawRadius": 0,
+    "textWithoutStyle": 3,
+    "defaultNames": 0,
+    "componentsWithoutDescription": 0,
+    "detachedInstances": 0,
+    "overflowAt440": 0,
+    "overflowAt1024": 0,
+    "codeOrUrlInText": 1
+   },
+   "exceptions": [
+    "Cover keeps the Diversify template, so its 3 texts use the Diversify type and raw brand colours, and it shows www.letsdiversify.co on purpose",
+    "Brand marks (Icon, Coin, Social, Wallet, Pay, Flag, Logo) keep their own art colours",
+    "Phone tables wider than 408 are clipped on purpose, they scroll sideways"
+   ],
+   "contrastUnder4_5": [
+    "text/on-action on action/solid 4.66, passes, noted as the tightest pair",
+    "text/negative on surface/2 3.90. Error text sits on page or card (5.0), keep it off tiles",
+    "text/secondary on surface/3 4.09, text/accent 4.06, text/positive 3.69, text/link 2.81, text/negative 1.89. surface/3 only carries icons and the selected month pill, keep body text off it or lift it to text/primary",
+    "icon/secondary on surface/3 4.09 and icon/positive 3.69 pass the 3 to 1 for icons",
+    "text/disabled 2.55 to 3.82, exempt as disabled"
+   ],
+   "memory": "21,001 nodes, 5,005 instances, 322 components, no repeated texture layers to flatten",
+   "fixedThisSitting": [
+    "border/input white 35% on rest fields",
+    "border/invalid solid red on invalid fields",
+    "Chart/Growth Phone size",
+    "Stepper Stack layout",
+    "Total tile wraps its label row",
+    "129 default layer names renamed",
+    "Getting Started line no longer quotes code syntax"
+   ]
+  }
  },
  "notes": [
   "A paint bound to a variable on a VECTOR renders its base colour in screenshots unless the base colour matches the resolved token. Always create bound paints with the resolved colour as the base.",
@@ -431,9 +485,7 @@
   "Line heights 1.2 and 1.45 move text 1 to 3px against the source",
   "Promo banner art is the Varntix mark, the source 3D render is still to pull",
   "No loading skeletons, no saved toast, no open document folder. The system has no skeleton or toast part yet",
-  "Phone growth chart is the desktop chart scaled to 55%, so its labels sit near 8px. A phone variant of Chart/Growth is needed",
   "Phone tables wider than 408 scroll sideways inside the card with a scroll bar under them; Assets stacks its actions",
-  "Phone media items drop the Insights tag to keep the headline readable",
-  "Invalid field edge is still red at 40%, 1.8 to 1, now fainter than the rest border. Open question to Filip"
+  "Phone media items drop the Insights tag to keep the headline readable"
  ]
 }

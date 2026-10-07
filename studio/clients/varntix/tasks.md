@@ -16,6 +16,8 @@ Rules
 Task format
 
 ```
+## Review
+
 - varntix-1 Pricing page prototype. Link https://example.com/preview
   - [x] Capture the reference
   - [ ] Build the page
@@ -31,8 +33,6 @@ Task format
   - [x] New Figma file with foundations
   - [x] Components in numbered Sections
   - [x] Screens from instances
-  - [ ] File audit closed at zero
-
-## Review
+  - [x] File audit closed at zero
 
 ## Done

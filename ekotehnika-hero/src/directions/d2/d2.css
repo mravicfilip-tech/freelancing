@@ -1,0 +1,492 @@
+/* Direction 2, Rendgen. Every selector sits under .d2. Colours come from the global token variables. */
+
+.d2 {
+  --fg: var(--ink);
+  --lab: var(--linde-red);
+  --muted: var(--text-grey);
+  position: relative;
+  font-family: 'Inter Tight', system-ui, sans-serif;
+  color: var(--ink);
+}
+
+.d2[data-dark='1'] {
+  --fg: var(--white);
+  --lab: var(--shade-grey);
+  --muted: var(--shade-grey);
+}
+
+.d2-stage {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.d2-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.d2 a:focus-visible,
+.d2 button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* floating pill nav */
+.d2-nav {
+  position: absolute;
+  z-index: 8;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 66px;
+  padding: 0 9px 0 22px;
+  background: var(--white);
+  border: 1px solid var(--shade-grey);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.d2-logos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 8px;
+}
+
+.d2-logos img {
+  display: block;
+  width: auto;
+}
+
+.d2-links {
+  display: flex;
+  gap: 4px;
+}
+
+.d2-links a {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.d2-links a:hover {
+  background: var(--light-grey);
+}
+
+.d2-quote {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0 32px;
+  border-radius: 999px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.d2-quote:hover {
+  background: var(--dark-red);
+}
+
+.d2-quote-nav {
+  height: 48px;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+/* chapter copy */
+.d2-copy {
+  position: absolute;
+  z-index: 4;
+  top: 124px;
+  left: 0;
+  right: 0;
+  padding: 0 140px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.d2-copy a {
+  pointer-events: auto;
+}
+
+.d2-label {
+  margin: 0;
+  color: var(--lab);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  transition: color 0.4s;
+}
+
+.d2-statement {
+  max-width: 1120px;
+  margin: 18px auto 0;
+  color: var(--fg);
+  font-size: 64px;
+  font-weight: 300;
+  letter-spacing: -0.028em;
+  line-height: 1.06;
+  text-wrap: balance;
+  transition: color 0.4s;
+}
+
+.d2-statement-xl {
+  font-size: 76px;
+}
+
+.d2-w {
+  display: inline-block;
+  will-change: opacity, transform;
+}
+
+.d2-sub {
+  max-width: 760px;
+  text-wrap: balance;
+  margin: 24px auto 0;
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: color 0.4s;
+}
+
+.d2-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.d2-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 28px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 16px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.d2-call span {
+  color: var(--text-grey);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.d2-call strong {
+  font-weight: 600;
+}
+
+.d2-call:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.d2-call:hover span {
+  color: var(--shade-grey);
+}
+
+/* chapter 5 sits over a busy close up, so its copy gets a solid white ground */
+.d2-block {
+  display: block;
+}
+
+.d2-copy[data-solid] .d2-block {
+  display: inline-block;
+  max-width: 1020px;
+  padding: 26px 56px 34px;
+  background: var(--white);
+  border-radius: 40px;
+}
+
+.d2-copy[data-solid] .d2-label {
+  color: var(--linde-red);
+}
+
+.d2-copy[data-solid] .d2-statement {
+  color: var(--ink);
+  font-size: 54px;
+}
+
+/* labels pinned to the trucks in the x-ray */
+.d2-tag {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  padding: 6px 12px;
+  background: var(--ink);
+  border: 1px solid var(--toned-red);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the white panel with notched top corners */
+.d2-panel {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 504px;
+  background: var(--white);
+  clip-path: polygon(0 48px, 48px 0, calc(100% - 48px) 0, 100% 48px, 100% 100%, 0 100%);
+  visibility: hidden;
+  transform: translateY(104%);
+}
+
+.d2-panel-in {
+  height: 100%;
+  padding: 68px 88px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.d2-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.d2-panel-title {
+  margin: 14px 0 0;
+  font-size: 52px;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.d2-panel-cta {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.d2-service {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.d2-service span {
+  color: var(--text-grey);
+}
+
+.d2-service strong {
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--linde-red);
+}
+
+.d2-service:hover strong {
+  color: var(--linde-red);
+}
+
+.d2-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.d2-card {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 18px;
+  row-gap: 6px;
+  align-content: start;
+  min-height: 188px;
+  padding: 24px 26px 22px;
+  background: var(--light-grey);
+  border-radius: 22px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+}
+
+.d2-card-icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--linde-red);
+  transition: background 0.25s, color 0.25s;
+}
+
+.d2-card-name {
+  align-self: end;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.d2-card-line {
+  grid-column: 2;
+  color: var(--text-grey);
+  font-size: 16px;
+  line-height: 1.45;
+  transition: color 0.25s;
+}
+
+.d2-card-more {
+  grid-column: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.d2-card-more svg {
+  transition: transform 0.25s;
+}
+
+.d2-card:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.d2-card:hover .d2-card-line {
+  color: var(--shade-grey);
+}
+
+.d2-card:hover .d2-card-icon {
+  background: var(--linde-red);
+  color: var(--white);
+}
+
+.d2-card:hover .d2-card-more svg {
+  transform: translateX(5px);
+}
+
+.d2-card:focus-visible {
+  outline-offset: 4px;
+}
+
+/* chapter bar, bottom left, clear of the switcher */
+.d2-rail {
+  position: absolute;
+  z-index: 9;
+  left: 48px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  color: var(--fg);
+  transition: color 0.4s;
+}
+
+.d2-count {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.d2-count span + span {
+  opacity: 0.7;
+}
+
+.d2-ticks {
+  display: flex;
+}
+
+.d2-ticks button {
+  position: relative;
+  width: 30px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.d2-ticks button::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 21px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.35;
+  transition: opacity 0.25s, background 0.25s;
+}
+
+.d2-ticks button:hover::after {
+  opacity: 0.8;
+}
+
+.d2-ticks button[aria-current='step']::after {
+  opacity: 1;
+  background: var(--toned-red);
+  height: 3px;
+  top: 20.5px;
+}
+
+.d2-ticks button {
+  color: inherit;
+}
+
+.d2-failed {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  top: 50%;
+  margin: 0;
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-grey);
+}

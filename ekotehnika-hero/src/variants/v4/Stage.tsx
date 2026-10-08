@@ -2,7 +2,7 @@
 // white hotspot ring on the current stop.
 import { useMemo, useRef, type MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Environment, Html } from '@react-three/drei';
+import { Billboard, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { C } from '../../tokens';
 import { clamp01, range } from '../../scroll/useScrollStory';
@@ -122,15 +122,53 @@ function Rig({ progress, reduced }: { progress: MutableRefObject<number>; reduce
   );
 }
 
+// The stop markers, a white disc with a soft halo and a plus, drawn in the scene so they keep a
+// steady screen size and leave nothing behind when the canvas unmounts.
 function Hotspots({ idx }: { idx: number }) {
   return (
     <>
       {stops.map((s, i) => (
-        <Html key={i} position={s.spot} center zIndexRange={[2, 0]} style={{ pointerEvents: 'none' }}>
-          <span className={`v4-spot${i === idx ? ' on' : ''}`} aria-hidden="true" />
-        </Html>
+        <Spot key={i} position={s.spot} on={i === idx} />
       ))}
     </>
+  );
+}
+
+function Spot({ position, on }: { position: [number, number, number]; on: boolean }) {
+  const ref = useRef<THREE.Group>(null);
+  const k = useRef(0);
+  const p = useMemo(() => new THREE.Vector3(...position), [position]);
+  useFrame(({ camera }, dt) => {
+    const g = ref.current;
+    if (!g) return;
+    k.current += ((on ? 1 : 0) - k.current) * Math.min(1, dt * 6);
+    // about 30 css px across at 900px tall, whatever the camera distance
+    const persp = camera as THREE.PerspectiveCamera;
+    const h = 2 * camera.position.distanceTo(p) * Math.tan(THREE.MathUtils.degToRad(persp.fov ?? 30) / 2);
+    g.scale.setScalar(Math.max(0.0001, (h / 900) * 30 * (0.4 + 0.6 * k.current)));
+    g.visible = k.current > 0.01;
+  });
+  return (
+    <Billboard position={position}>
+      <group ref={ref}>
+        <mesh renderOrder={10}>
+          <circleGeometry args={[0.7, 40]} />
+          <meshBasicMaterial color={C.white} transparent opacity={0.35} depthTest={false} toneMapped={false} />
+        </mesh>
+        <mesh renderOrder={11}>
+          <circleGeometry args={[0.5, 40]} />
+          <meshBasicMaterial color={C.white} transparent opacity={0.92} depthTest={false} toneMapped={false} />
+        </mesh>
+        <mesh renderOrder={12}>
+          <planeGeometry args={[0.34, 0.05]} />
+          <meshBasicMaterial color={C.ink} depthTest={false} toneMapped={false} />
+        </mesh>
+        <mesh renderOrder={12} rotation={[0, 0, Math.PI / 2]}>
+          <planeGeometry args={[0.34, 0.05]} />
+          <meshBasicMaterial color={C.ink} depthTest={false} toneMapped={false} />
+        </mesh>
+      </group>
+    </Billboard>
   );
 }
 

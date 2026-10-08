@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { variants } from './variants';
 import { Placeholder } from './components/Placeholder';
-import { Gate } from './r3f/Gate';
 import { scrollToTop } from './scroll/useScrollStory';
+
+const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })));
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -12,7 +13,12 @@ const readVariant = () => {
 };
 
 export function App() {
-  if (new URLSearchParams(window.location.search).has('gate')) return <Gate />;
+  if (new URLSearchParams(window.location.search).has('gate'))
+    return (
+      <Suspense fallback={null}>
+        <Gate />
+      </Suspense>
+    );
   return <Variants />;
 }
 
@@ -56,7 +62,12 @@ function Variants() {
   return (
     <>
       <div className={`variant variant-${v}`}>
-        <Component key={v} reduced={reduced} />
+        {/* The pin wraps the stage in its own spacer, so React must remove a wrapper it owns. */}
+        <div key={v}>
+          <Suspense fallback={<div style={{ height: '100vh' }} aria-hidden="true" />}>
+            <Component reduced={reduced} />
+          </Suspense>
+        </div>
         <Placeholder />
       </div>
       {/* Review chrome for comparing the variants, not part of any design. */}

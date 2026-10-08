@@ -27,7 +27,7 @@ function Rig({ kind, still }: { kind: Kind; still: boolean }) {
     camera.position.set(...c.pos);
     camera.lookAt(...c.tgt);
     const t = still ? 2 : clock.elapsedTime;
-    if (kind === 'novi' && turn.current) turn.current.rotation.y = -0.5 + t * 0.32;
+    if (kind === 'novi' && turn.current) turn.current.rotation.y = -0.45 + Math.sin(t * 0.32) * 0.65;
     if (kind === 'najam') {
       setPose(api.current, { lift: 0.25, roll: t * 1.4 });
       if (floor.current) floor.current.position.x = -((t * 1.4) % 2);

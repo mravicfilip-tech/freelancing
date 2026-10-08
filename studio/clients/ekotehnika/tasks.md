@@ -34,6 +34,7 @@ Task format
   - [x] Animate the three variants on scroll
   - [x] Deploy a preview
   - [x] Run /uireview
+  - [ ] Agree a camera direction that changes perspective on scroll
 
 ## Review
 

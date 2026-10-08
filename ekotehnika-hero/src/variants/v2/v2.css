@@ -1,0 +1,424 @@
+/* V2 Linija. United Carriers illustrated scroll story 1:1, in Linde tokens. Scoped under .v2. */
+.v2 {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+  color: var(--ink);
+  font-family: 'Geist', system-ui, sans-serif;
+}
+
+.v2 .v2-frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1440px;
+  height: 900px;
+  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%);
+}
+
+.v2 svg.v2-layer {
+  position: absolute;
+  inset: 0;
+  width: 1440px;
+  height: 900px;
+  display: block;
+  overflow: visible;
+}
+
+.v2 .v2-map {
+  opacity: 0;
+}
+
+.v2 .v2-wide {
+  font-family: 'Archivo', sans-serif;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+  text-transform: uppercase;
+}
+
+.v2 .v2-tail {
+  color: var(--toned-red);
+}
+
+/* nav */
+.v2 .v2-nav {
+  position: absolute;
+  z-index: 5;
+  left: 40px;
+  right: 40px;
+  top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.v2 .v2-logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px 8px 8px;
+  background: var(--white);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.v2 .v2-logos img {
+  display: block;
+}
+
+.v2 .v2-navright {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.v2 .v2-sos {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  font: 500 14px/1 'Geist Mono', monospace;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--shade-grey);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.v2 .v2-sos span {
+  color: var(--text-grey);
+}
+
+.v2 .v2-sos:hover {
+  border-color: var(--ink);
+}
+
+.v2 .v2-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font: 600 14px/1 'Geist Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.v2 .v2-pill--red {
+  background: var(--linde-red);
+  color: var(--white);
+}
+
+.v2 .v2-pill--red:hover {
+  background: var(--dark-red);
+}
+
+.v2 .v2-pill--line {
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+}
+
+.v2 .v2-pill--line:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.v2 .v2-pill--dark {
+  border: 1px solid var(--white);
+  color: var(--white);
+}
+
+.v2 .v2-pill--dark:hover {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.v2 .v2-pill:focus-visible,
+.v2 .v2-sos:focus-visible,
+.v2 .v2-logos:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.v2 .v2-dark :focus-visible {
+  outline-color: var(--white);
+}
+
+.v2 .v2-navquote {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* hero at scroll zero */
+.v2 .v2-hero {
+  position: absolute;
+  z-index: 4;
+  left: 64px;
+  top: 150px;
+  width: 820px;
+}
+
+.v2 .v2-kicker {
+  margin: 0 0 18px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--linde-red);
+}
+
+.v2 .v2-hero h1 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+}
+
+.v2 .v2-hero h1 span.v2-l {
+  display: block;
+  min-height: 1.02em;
+  white-space: pre;
+}
+
+.v2 .v2-hero .v2-sub {
+  margin: 22px 0 0;
+  max-width: 470px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-grey);
+}
+
+.v2 .v2-ctas {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+/* black aisle chapter */
+.v2 .v2-dark {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 900px;
+  pointer-events: none;
+  color: var(--white);
+}
+
+.v2 .v2-dark a {
+  pointer-events: auto;
+}
+
+.v2 .v2-bh {
+  position: absolute;
+  left: 56px;
+  top: 498px;
+  margin: 0;
+  font-weight: 800;
+  font-size: 58px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.v2 .v2-bh span.v2-l {
+  display: block;
+  white-space: pre;
+  min-height: 1em;
+}
+
+.v2 .v2-dot {
+  color: var(--toned-red);
+}
+
+.v2 .v2-bp {
+  position: absolute;
+  left: 820px;
+  top: 506px;
+  width: 400px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--shade-grey);
+}
+
+.v2 .v2-bpill {
+  position: absolute;
+  left: 820px;
+  top: 628px;
+}
+
+.v2 .v2-ghost {
+  font-family: 'Archivo', sans-serif;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+  font-weight: 900;
+}
+
+/* service columns */
+.v2 .v2-svc {
+  position: absolute;
+  left: 56px;
+  top: 500px;
+  display: grid;
+  grid-template-columns: repeat(4, 300px);
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v2 .v2-svc a {
+  display: block;
+  color: var(--white);
+  text-decoration: none;
+  padding: 6px 0;
+}
+
+.v2 .v2-svc svg {
+  display: block;
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+}
+
+.v2 .v2-svc svg path,
+.v2 .v2-svc svg rect,
+.v2 .v2-svc svg circle {
+  stroke-dasharray: 1;
+}
+
+.v2 .v2-svc h3 {
+  margin: 22px 0 0;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  min-height: 1.2em;
+  white-space: pre;
+}
+
+.v2 .v2-rule {
+  display: block;
+  width: 36px;
+  height: 2px;
+  margin: 16px 0 14px;
+  background: var(--toned-red);
+  transform-origin: 0 50%;
+}
+
+.v2 .v2-svc p {
+  margin: 0;
+  max-width: 260px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--shade-grey);
+}
+
+.v2 .v2-svc a:hover h3 {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.v2 .v2-svc a:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
+/* closing over the top down yard */
+.v2 .v2-close {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 900px;
+  pointer-events: none;
+}
+
+.v2 .v2-close a {
+  pointer-events: auto;
+}
+
+.v2 .v2-ch {
+  position: absolute;
+  left: 64px;
+  top: 196px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+.v2 .v2-ch span.v2-l {
+  display: block;
+  min-height: 1.04em;
+  white-space: pre;
+}
+
+.v2 .v2-ch .v2-red {
+  color: var(--linde-red);
+}
+
+.v2 .v2-cfoot {
+  position: absolute;
+  left: 64px;
+  top: 468px;
+  width: 500px;
+}
+
+.v2 .v2-cfoot p {
+  margin: 0 0 24px;
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-grey);
+}
+
+.v2 .v2-cside {
+  position: absolute;
+  left: 960px;
+  top: 196px;
+  width: 300px;
+}
+
+.v2 .v2-cside svg {
+  display: block;
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+}
+
+.v2 .v2-cside h3 {
+  margin: 18px 0 10px;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.1;
+  white-space: pre;
+  min-height: 2.2em;
+}
+
+.v2 .v2-cside p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-grey);
+}
+
+.v2 .v2-hide {
+  visibility: hidden;
+}

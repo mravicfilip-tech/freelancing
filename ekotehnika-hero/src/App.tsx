@@ -39,6 +39,12 @@ export function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // A switch lands at the top even if the old story's snap was still scrolling when it unmounted.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    return () => cancelAnimationFrame(id);
+  }, [d]);
+
   const current = directions.find((x) => x.n === d)!;
   const { Component } = current;
 

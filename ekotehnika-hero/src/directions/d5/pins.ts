@@ -33,6 +33,7 @@ export type Pin = {
   paper?: boolean;
   // text sits left of a marker's dot
   flip?: boolean;
+  cut?: boolean;
 };
 
 export type Dim = {
@@ -65,6 +66,10 @@ export const pins: Pin[] = [
   { id: 'A', kind: 'marker', at: fixed(A_POINT), win: [0.4, 1.5, 0.25], dx: 0, dy: -72, letter: 'A', title: 'Novi viljuškari', sub: 'Salon' },
   { id: 'B', kind: 'marker', at: fixed(v(PICK.x, 0, PICK.z)), win: [0.65, 1.5, 0.25], dx: 80, dy: 62, letter: 'B', title: 'Polica', sub: 'Narudžbina čeka' },
   { id: 'C', kind: 'marker', at: fixed(C_POINT), win: [0.9, 1.5, 0.25], dx: 0, dy: -72, letter: 'C', title: 'Rampa', sub: 'Isporuka', flip: true },
+
+  // the section cut markers on the plan
+  { id: 'cut1', kind: 'marker', at: fixed(v(PICK.x, 0, -10.0)), win: [0.85, 1.5, 0.3, 0.25], dx: 0, dy: 0, letter: 'P', title: '', cut: true },
+  { id: 'cut2', kind: 'marker', at: fixed(v(PICK.x, 0, 4.4)), win: [0.85, 1.5, 0.3, 0.25], dx: 0, dy: 0, letter: 'P', title: '', cut: true },
 
   // chapter 2, notes on the section
   { id: 'rack', kind: 'note', at: fixed(v(PICK.x, 4.6, PICK.z)), win: [1.85, 2.7], dx: -250, dy: -40, w: 170, h: 60, fx: 1, fy: 0.5, title: 'Polica', sub: 'Najviši nivo' },
@@ -106,9 +111,9 @@ export const pins: Pin[] = [
   },
 
   // chapter 5, axis letters
-  { id: 'ax', kind: 'axis', at: fixed(v(22, 0.02, 4)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'X' },
-  { id: 'ay', kind: 'axis', at: fixed(v(17, 4.5, 4)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Y' },
-  { id: 'az', kind: 'axis', at: fixed(v(17, 0.02, -1)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Z' },
+  { id: 'ax', kind: 'axis', at: fixed(v(26, 0.02, 4.5)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'X' },
+  { id: 'ay', kind: 'axis', at: fixed(v(21, 4.5, 4.5)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Y' },
+  { id: 'az', kind: 'axis', at: fixed(v(21, 0.02, -0.5)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Z' },
 
   // chapter 6, a plain tag on the real dock
   { id: 'dock', kind: 'note', at: fixed(v(DOCK_X, 4.4, -2)), win: [5.95, 6.7], dx: -330, dy: -10, w: 236, h: 60, fx: 1, fy: 0.5, title: 'Rampa', sub: 'Isporuka za 24 sata', paper: true },
@@ -124,6 +129,4 @@ export const dims: Dim[] = [
   { id: 'rackH', ea: P(PICK.x, 0, PICK.z - 0.7), eb: P(PICK.x, 4.6, PICK.z - 0.7), a: P(PICK.x, 0, PICK.z - 1.5), b: P(PICK.x, 4.6, PICK.z - 1.5), label: 'POLICA', win: [1.95, 2.7] },
   // chapter 4, the two zones
   { id: 'zP', ea: P(ZONES.polovni[0], 0, ZONES.polovni[3]), eb: P(ZONES.polovni[1], 0, ZONES.polovni[3]), a: P(ZONES.polovni[0], 0, ZONES.polovni[3] + 1.3), b: P(ZONES.polovni[1], 0, ZONES.polovni[3] + 1.3), label: 'ZONA POLOVNIH', win: [3.95, 4.6] },
-  // chapter 5, a height on the racks
-  { id: 'H', ea: P(DOCK_X, 4.1, 0.15), eb: P(DOCK_X, 0, 0.15), a: P(DOCK_X, 4.1, 1.7), b: P(DOCK_X, 0, 1.7), label: 'VISINA RAMPE', win: [4.8, 5.3] },
 ];

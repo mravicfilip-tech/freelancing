@@ -47,8 +47,8 @@ const links: { label: string; href: string }[] = [
   { label: 'Polovni', href: pillars.find((p) => p.id === 'polovni')!.href },
   { label: 'Iznajmljivanje', href: najam.href },
   { label: 'Servis', href: pillars.find((p) => p.id === 'servis')!.href },
-  { label: 'Delovi', href: `${SITE}/delovi/` },
-  { label: 'O nama', href: `${SITE}/o-nama/` },
+  { label: 'Delovi', href: `${SITE}/?s=Delovi` },
+  { label: 'O nama', href: `${SITE}/o-kompaniji-linde/` },
   { label: 'Kontakt', href: `${SITE}/kontakt/` },
 ].filter((l) => nav.includes(l.label));
 
@@ -346,7 +346,7 @@ export default function Direction5({ reduced }: { reduced: boolean }) {
         {/* 2 Elevation */}
         <section className="cp cp2" ref={setPanel(2)} aria-label="Podizanje">
           <p className="kick" data-ln>
-            02 / Presek A-A
+            02 / Presek P-P
           </p>
           <h2 className="big" data-ln>
             Podizanje.
@@ -454,17 +454,19 @@ export default function Direction5({ reduced }: { reduced: boolean }) {
         {pins.map((p) => (
           <div
             key={p.id}
-            className={`pin pin-${p.kind}${p.paper ? ' pin-paper' : ''}${p.flip ? ' pin-flip' : ''}`}
+            className={`pin pin-${p.kind}${p.paper ? ' pin-paper' : ''}${p.flip ? ' pin-flip' : ''}${p.cut ? ' pin-cut' : ''}`}
             ref={(el) => void (pinRefs.current[p.id] = el)}
             style={p.kind === 'note' || p.kind === 'card' ? { width: p.w, minHeight: p.h } : undefined}
           >
             {p.kind === 'marker' && (
               <>
                 <span className="dot">{p.letter}</span>
-                <span className="txt">
-                  <b>{p.title}</b>
-                  <i>{p.sub}</i>
-                </span>
+                {p.title && (
+                  <span className="txt">
+                    <b>{p.title}</b>
+                    <i>{p.sub}</i>
+                  </span>
+                )}
               </>
             )}
             {p.kind === 'note' && (

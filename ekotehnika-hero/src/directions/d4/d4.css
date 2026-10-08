@@ -372,7 +372,7 @@
   border: 1px solid var(--shade-grey);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
   align-items: flex-end;
 }
 .d4 .d4-index:focus-within {
@@ -380,9 +380,10 @@
 }
 .d4 .d4-index button {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
-  padding: 4px 0;
+  min-height: 32px;
+  padding: 0;
   border: 0;
   background: none;
   cursor: pointer;

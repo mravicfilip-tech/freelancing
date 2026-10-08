@@ -63,7 +63,7 @@ const shots: Shot[] = [
   // 6 materialise, seen from outside the dock
   { cam: at(57, 8.5, 10), look: at(41, 2.2, -2.2), fov: 27, offset: 0.16, hold: 0.3 },
   // 7 finale on the real scene
-  { cam: at(-7, 3.4, 0.5), look: at(41, 2.0, -2.4), fov: 38, offset: 0.18, hold: 0.3 },
+  { cam: at(-7, 3.1, -1.2), look: at(41, 2.0, -2.4), fov: 38, offset: 0.18, hold: 0.3 },
 ];
 
 // The route as a polyline in two legs. Showroom to the rack, then the rack to the dock.
@@ -243,12 +243,18 @@ function build({ scene, truck, order }: BuildCtx) {
   const groundMat = new THREE.LineBasicMaterial({ color: white, transparent: true, opacity: 0 });
   scene.add(new THREE.LineSegments(groundGeo, groundMat));
 
+  // The cut line of the section, seen on the plan before the camera swings round to it.
+  const cutMat = new THREE.LineDashedMaterial({ color: white, transparent: true, opacity: 0, dashSize: 1.5, gapSize: 0.4 });
+  const cut = new THREE.Line(new THREE.BufferGeometry().setFromPoints([v(PICK.x, 0.03, -10.0), v(PICK.x, 0.03, 4.4)]), cutMat);
+  cut.computeLineDistances();
+  scene.add(cut);
+
   // Axis triad for the tilt.
   const axMat = new THREE.LineBasicMaterial({ color: white, transparent: true, opacity: 0 });
   const ax = new THREE.BufferGeometry().setFromPoints([
-    v(17, 0.02, 4), v(22, 0.02, 4),
-    v(17, 0.02, 4), v(17, 4.5, 4),
-    v(17, 0.02, 4), v(17, 0.02, -1),
+    v(21, 0.02, 4.5), v(26, 0.02, 4.5),
+    v(21, 0.02, 4.5), v(21, 4.5, 4.5),
+    v(21, 0.02, 4.5), v(21, 0.02, -0.5),
   ]);
   scene.add(new THREE.LineSegments(ax, axMat));
 
@@ -286,6 +292,7 @@ function build({ scene, truck, order }: BuildCtx) {
     dashMat.opacity = lo * (1 - sec);
     foot.visible = footMat.opacity > 0.01;
     groundMat.opacity = lo * sec;
+    cutMat.opacity = smooth(clamp01((b - 0.85) / 0.3)) * (1 - smooth(clamp01((b - 1.5) / 0.25))) * lo;
 
     // The route draws itself over the first chapter.
     const draw = smooth(clamp01((b - 0.35) / 0.7));

@@ -575,6 +575,14 @@
   font: 600 18px var(--mono);
 }
 
+.d5 .pin-cut .dot {
+  left: -15px;
+  top: -15px;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+}
+
 .d5 .pin-flip .txt {
   left: auto !important;
   right: 30px;

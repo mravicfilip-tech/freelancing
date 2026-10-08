@@ -51,7 +51,8 @@ Task format
   - [x] Plan the five variants and harden the plan
   - [x] Move to React Three Fiber with lighting and post processing
   - [x] Build the shared forklift model and lighting rig
-  - [ ] Build the five variants
+  - [x] Build the five variants
+  - [ ] Deploy, blocked by the Vercel daily deploy limit until it resets
   - [ ] Run /uireview and fix
   - [ ] Filip picks one by number
 

@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
-import { directions } from './directions';
+import { variants } from './variants';
 import { Placeholder } from './components/Placeholder';
+import { Gate } from './r3f/Gate';
+import { scrollToTop } from './scroll/useScrollStory';
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-const readDirection = () => {
-  const d = Number(new URLSearchParams(window.location.search).get('d'));
-  return directions.some((x) => x.n === d) ? d : 1;
+const readVariant = () => {
+  const v = Number(new URLSearchParams(window.location.search).get('v'));
+  return variants.some((x) => x.n === v) ? v : 1;
 };
 
 export function App() {
+  if (new URLSearchParams(window.location.search).has('gate')) return <Gate />;
+  return <Variants />;
+}
+
+function Variants() {
   const [reduced, setReduced] = useState(reducedQuery.matches);
-  const [d, setD] = useState(readDirection);
+  const [v, setV] = useState(readVariant);
 
   useEffect(() => {
     const on = () => setReduced(reducedQuery.matches);
@@ -19,13 +26,12 @@ export function App() {
     return () => reducedQuery.removeEventListener('change', on);
   }, []);
 
-  // Switching replays the picked direction from the top.
   const pick = (n: number) => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    scrollToTop();
     const url = new URL(window.location.href);
-    url.searchParams.set('d', String(n));
+    url.searchParams.set('v', String(n));
     window.history.replaceState(null, '', url);
-    setD(n);
+    setV(n);
   };
 
   useEffect(() => {
@@ -33,31 +39,30 @@ export function App() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return;
       const n = Number(e.key);
-      if (directions.some((x) => x.n === n)) pick(n);
+      if (variants.some((x) => x.n === n)) pick(n);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // A switch lands at the top even if the old story's snap was still scrolling when it unmounted.
+  // A switch always lands at the top.
   useEffect(() => {
-    const id = requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    const id = requestAnimationFrame(scrollToTop);
     return () => cancelAnimationFrame(id);
-  }, [d]);
+  }, [v]);
 
-  const current = directions.find((x) => x.n === d)!;
-  const { Component } = current;
+  const { Component } = variants.find((x) => x.n === v)!;
 
   return (
     <>
-      <div className={`direction direction-${d}`}>
-        <Component key={d} reduced={reduced} />
+      <div className={`variant variant-${v}`}>
+        <Component key={v} reduced={reduced} />
         <Placeholder />
       </div>
-      {/* Review chrome for comparing the directions, not part of any design. */}
-      <div className="dir-switch" role="group" aria-label="Pravci, tasteri 1 do 5">
-        {directions.map((x) => (
-          <button key={x.n} type="button" aria-pressed={x.n === d} onClick={() => pick(x.n)}>
+      {/* Review chrome for comparing the variants, not part of any design. */}
+      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 1 do 5">
+        {variants.map((x) => (
+          <button key={x.n} type="button" aria-pressed={x.n === v} onClick={() => pick(x.n)}>
             <span>{x.n}</span>
             {x.name}
           </button>

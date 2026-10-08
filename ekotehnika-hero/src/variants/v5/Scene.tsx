@@ -332,7 +332,7 @@ function Truck({ clock }: { clock: Clock }) {
     pu.uScatter.value = smooth(range(p, 0.26, 0.42));
     pu.uSwirl.value = smooth(range(p, 0.3, 0.52)) * 2.4;
     pu.uSettle.value = smooth(range(p, 0.43, 0.56));
-    pu.uOpacity.value = 1.35 * smooth(range(p, 0.16, 0.21)) * (1 - 0.45 * smooth(range(p, 0.5, 0.58))) * (1 - smooth(range(p, 0.66, 0.72)));
+    pu.uOpacity.value = 1.35 * smooth(range(p, 0.16, 0.21)) * (1 - 0.6 * smooth(range(p, 0.34, 0.42)) + 0.25 * smooth(range(p, 0.48, 0.56))) * (1 - smooth(range(p, 0.66, 0.72)));
     const gu = ghostPointMat.uniforms;
     gu.uTime.value = t;
     gu.uOpacity.value = band(p, 0.16, 0.23, 0.34, 0.42) * 0.6;
@@ -402,7 +402,7 @@ function Dust({ clock }: { clock: Clock }) {
     mat.uniforms.uTime.value = c.elapsedTime;
     mat.uniforms.uScatter.value = 1;
     mat.uniforms.uSwirl.value = p * 0.8;
-    mat.uniforms.uOpacity.value = band(p, 0.1, 0.22, 0.55, 0.68) * 0.7;
+    mat.uniforms.uOpacity.value = band(p, 0.1, 0.22, 0.4, 0.55) * 0.4;
   });
   return <points geometry={geo} material={mat} frustumCulled={false} />;
 }
@@ -432,6 +432,7 @@ function Tiles({ clock }: { clock: Clock }) {
           uTime: { value: 0 },
           uSweep: { value: new THREE.Vector2(-14, -2) },
           uSweepOn: { value: 0 },
+          uEdge: { value: 1 },
           uRed: { value: toned },
           uFace: { value: col(C.ink).multiplyScalar(0.62) },
         },
@@ -459,6 +460,7 @@ function Tiles({ clock }: { clock: Clock }) {
     const s = range(p, 0.42, 0.7);
     mat.uniforms.uSweep.value.set(THREE.MathUtils.lerp(-13, 13, smooth(s)) + Math.sin(t * 0.4) * 0.8, -2.4 + Math.sin(t * 0.3 + s * 4) * 1.6);
     mat.uniforms.uSweepOn.value = smooth(range(p, 0.38, 0.46));
+    mat.uniforms.uEdge.value = 0.5 + 0.5 * smooth(range(p, 0.46, 0.57));
     if (ref.current) ref.current.visible = p > 0.26;
   });
   return <instancedMesh ref={ref} args={[geo, mat, GRID * GRID]} frustumCulled={false} renderOrder={-4} />;
@@ -469,8 +471,8 @@ function Tiles({ clock }: { clock: Clock }) {
 const BEAM_Z = -8;
 // x and y in metres at that distance, the view is about 6.9 by 4.3 there.
 const BEAMS: { s: [number, number]; c: [number, number]; e: [number, number]; w: number; seed: number; red?: boolean; o?: number }[] = [
-  { s: [-3.6, 2.5], c: [-1.0, 1.9], e: [-0.22, 0.12], w: 0.75, seed: 0.1 },
-  { s: [3.4, 2.6], c: [1.5, 0.7], e: [0.24, 0.16], w: 0.7, seed: 2.3 },
+  { s: [-3.6, 2.5], c: [-1.0, 1.9], e: [-0.22, 0.12], w: 1.15, seed: 0.1 },
+  { s: [3.4, 2.6], c: [1.5, 0.7], e: [0.24, 0.16], w: 1.05, seed: 2.3 },
   { s: [-4.2, 0.4], c: [-2.2, 0.1], e: [-0.55, -0.05], w: 0.9, seed: 5.2, o: 0.45 },
   { s: [-1.5, -2.6], c: [-0.8, -1.3], e: [-0.3, -0.55], w: 0.45, seed: 4.1, red: true },
   { s: [1.3, -2.6], c: [0.5, -1.4], e: [0.32, -0.5], w: 0.4, seed: 6.7, o: 0.8 },
@@ -561,7 +563,7 @@ function Beams({ clock }: { clock: Clock }) {
             <mesh key={i} geometry={it.geo} material={it.mat} frustumCulled={false} renderOrder={20} />
           ))}
           <Glow colour={C.white} size={0.5} opacity={0.4} renderOrder={21} />
-          <Glow colour={C.tonedRed} size={1.6} opacity={0.14} renderOrder={21} />
+          <Glow colour={C.tonedRed} size={1.6} opacity={0.08} renderOrder={21} />
         </group>
       </group>
     </group>

@@ -13,9 +13,9 @@ import type { PillarId } from '../../content';
 type Kind = Extract<PillarId, 'novi' | 'najam' | 'servis'>;
 
 const CAMS: Record<Kind, { pos: [number, number, number]; tgt: [number, number, number]; fov: number }> = {
-  novi: { pos: [5.6, 2.6, 6.2], tgt: [0.3, 0.95, 0], fov: 26 },
+  novi: { pos: [5.0, 2.4, 5.6], tgt: [0.3, 0.95, 0], fov: 26 },
   najam: { pos: [1.2, 1.5, 8.6], tgt: [0.4, 0.9, 0], fov: 25 },
-  servis: { pos: [4.6, 2.2, 3.4], tgt: [0.9, 1.15, 0], fov: 30 },
+  servis: { pos: [5.6, 2.3, 4.4], tgt: [0.5, 1.15, 0], fov: 30 },
 };
 
 function Rig({ kind, still }: { kind: Kind; still: boolean }) {

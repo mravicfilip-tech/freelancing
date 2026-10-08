@@ -144,6 +144,19 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
     let main = true;
     let wells = false;
     let theme = 'dark';
+    // Offsets inside the panel, measured once and again on resize, never per frame.
+    let rv: { el: HTMLElement; top: number }[] = [];
+    let headTop = 0;
+    const measure = () => {
+      const inner = panelIn.current;
+      if (!inner) return;
+      rv = Array.from(inner.querySelectorAll<HTMLElement>('[data-rv]')).map((el) => ({ el, top: el.offsetTop }));
+      headTop = h2b.current?.offsetTop ?? 0;
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (panelIn.current) ro.observe(panelIn.current);
+    document.fonts?.ready.then(measure);
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const p = progress.current;
@@ -155,19 +168,16 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
       block(say2.current, 0.585, 0.625);
 
       // Panel rise, then the panel's own content scrolls up to the cards.
-      const inner = panelIn.current;
-      const head = h2b.current;
-      if (panel.current && inner && head) {
+      if (panel.current) {
         const rise = smooth(range(p, 0.6, 0.705));
-        const maxScroll = Math.max(0, head.offsetTop - 118);
+        const maxScroll = Math.max(0, headTop - 118);
         const scroll = smooth(range(p, 0.705, 0.93)) * maxScroll;
         const y = vh * (1 - rise) + 30 * (1 - rise) - scroll;
         panel.current.style.transform = `translate3d(0,${y.toFixed(1)}px,0)`;
-        inner.querySelectorAll<HTMLElement>('[data-rv]').forEach((el) => {
-          const top = y + el.offsetTop;
-          const l = clamp01((vh * 0.98 - top) / (vh * 0.28));
-          set(el, reveal(smooth(l), 1.2));
-        });
+        for (const r of rv) {
+          const l = clamp01((vh * 0.98 - (y + r.top)) / (vh * 0.28));
+          set(r.el, reveal(smooth(l), 1.2));
+        }
         const t = y + 10 < 104 ? 'light' : 'dark';
         if (t !== theme && navRef.current) {
           theme = t;
@@ -187,7 +197,10 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
       if (main) invalidate.current?.();
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, [reduced, progress]);
 
   const panelEl = (
@@ -254,9 +267,11 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
         <h1 className="v5-say" ref={say1}>
           <Words lines={SAY1} refs={w1} />
         </h1>
-        <p className="v5-say" ref={say2} aria-hidden={reduced ? 'true' : undefined}>
-          <Words lines={SAY2} refs={w2} />
-        </p>
+        {!reduced && (
+          <p className="v5-say" ref={say2}>
+            <Words lines={SAY2} refs={w2} />
+          </p>
+        )}
 
         {!reduced && panelEl}
 

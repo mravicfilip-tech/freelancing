@@ -158,6 +158,7 @@ uniform float uOpacity;
 uniform float uTime;
 uniform vec2 uSweep;
 uniform float uSweepOn;
+uniform float uEdge;
 uniform vec3 uRed;
 uniform vec3 uFace;
 varying vec2 vUv;
@@ -179,7 +180,7 @@ void main() {
   float sw = exp(-pow(distance(vW.xz, uSweep) / 2.6, 2.0)) * uSweepOn;
   float pulse = smoothstep(0.93, 1.0, sin(uTime * 0.5 + vPhase * 31.0) * 0.5 + 0.5);
   vec3 face = uFace * (0.26 + 0.08 * vPhase + 0.3 * pulse) + uRed * sw * 0.16;
-  vec3 edge = vec3(0.62) * lit + uRed * sw * 0.7;
+  vec3 edge = vec3(0.62) * lit * uEdge + uRed * sw * 0.7;
   vec3 col = mix(vec3(0.016), face, fill) + edge * line;
   float a = rev * fog * uOpacity;
   gl_FragColor = vec4(col, a);
@@ -214,7 +215,7 @@ void main() {
   float wisp = smoothstep(0.25, 0.85, fbm(vec2(t * 7.0 - uTime * 0.35 + uSeed * 3.0, a * 3.0)));
   float body = core * mix(0.2, 1.0, n) * mix(0.55, 1.0, wisp) * smoothstep(0.0, 0.35, tt) * mix(0.4, 1.0, tt);
   float tip = exp(-pow((tt - 1.0) * 14.0, 2.0)) * exp(-a * a * 5.0);
-  float alpha = (body * 0.7 + tip * 1.2) * uOpacity;
+  float alpha = (body * 1.15 + tip * 1.2) * uOpacity;
   gl_FragColor = vec4(uColor, alpha);
 }
 `;

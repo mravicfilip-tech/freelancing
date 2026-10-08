@@ -1,8 +1,8 @@
 // The V1 scroll story in one place, so the canvas and the DOM read the same clock.
-// Chapters by progress. 0 to 0.04 hero hold, 0.03 to 0.12 hero type leaves, 0.04 to 0.32 the
-// camera dives to Serbia, 0.26 to 0.40 the dots swell into a floor and flood white, 0.43 to 0.5 a
-// card opens on the dot floor, 0.44 to 0.6 the partner line, 0.54 to 0.97 the counters and the
-// statement.
+// Chapters by progress. 0 to 0.03 hero hold, 0.01 to 0.1 hero type leaves, 0.03 to 0.33 the
+// camera dives to Serbia and the arcs draw in, 0.22 to 0.43 the dots swell into a floor and the
+// page floods white, 0.43 to 0.59 a card opens on the dot floor beside the partner line, 0.55 to
+// 0.95 the statement and the counters.
 import { clamp01, range } from '../../scroll/useScrollStory';
 
 export const LENGTH = 7200;

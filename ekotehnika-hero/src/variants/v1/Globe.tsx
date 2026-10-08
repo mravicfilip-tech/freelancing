@@ -447,6 +447,7 @@ function Scene({ progress, reduced, start, tagEls, tags }: SceneProps) {
     // Drift on the card so the dot floor stays alive.
     const drift = card * (reduced ? 0 : Math.sin(t * 0.21) * 0.5);
     earth.current!.rotation.set(lat * DEG + drift * DEG, -(lon + drift * 0.8) * DEG, 0, 'XYZ');
+    earth.current!.updateMatrixWorld(true);
 
     // Camera distance and tilt. Dive in, skim the floor, then rise for the card.
     let D = lerp(D0, 1.16, dive);

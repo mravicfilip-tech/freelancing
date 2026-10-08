@@ -63,4 +63,8 @@ Live site ekotehnika.rs, captured 8 October 2026 at 1440 by 900. Captures are in
 
 ## Run
 
-Not set yet. The hero prototype's folder, commands and preview project go here once agreed.
+- Folder `ekotehnika-hero/`, its own React and Vite app, separate from the Remittix app at the repo root.
+- Install `npm install`, build `npm run build`, start `npm run preview` on http://localhost:4173.
+- Routes to shoot `v1=/?v=1,v2=/?v=2,v3=/?v=3`. Wait 2500ms so the V2 and V3 entrances finish.
+- Preview hosted on Vercel, project `ekotehnika-hero`, https://ekotehnika-hero.vercel.app.
+- Reduced motion in the browser freezes all motion and drops the scroll pin.

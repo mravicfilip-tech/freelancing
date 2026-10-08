@@ -25,12 +25,15 @@ Task format
 
 ## In progress
 
-- ekotehnika-1 Homepage hero rebuild with scroll animation. Brief in briefs/hero-rebuild
+- ekotehnika-1 Homepage hero rebuild with scroll animation. Brief in briefs/hero-rebuild. Link https://ekotehnika-hero.vercel.app
   - [x] File the brief and the competitive analysis
   - [x] Analyse the three reference reels
-  - [ ] Settle kickoff answers
-  - [ ] Build the hero
-  - [ ] Deploy a preview
+  - [x] Settle kickoff answers
+  - [x] Draw the forklift and the four stations
+  - [x] Build the hero
+  - [x] Animate the three variants on scroll
+  - [x] Deploy a preview
+  - [ ] Run /uireview
 
 ## Review
 

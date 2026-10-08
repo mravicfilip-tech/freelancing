@@ -18,9 +18,9 @@ Rules
 ## In progress
 
 - portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio
-  - [ ] /uireview round, accessibility and contrast, 1440 and 390, both themes
+  - [x] /uireview round, accessibility and contrast, 1440 and 390, both themes
   - [ ] Fix sev 1 and sev 2
-  - [ ] Mobile motion plan, content first
+  - [x] Mobile motion plan, content first, briefs/final-version.md
   - [ ] Build the mobile motion pass
   - [ ] Re-check, card, preview deploy
 

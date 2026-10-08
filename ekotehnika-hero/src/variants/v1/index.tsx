@@ -205,7 +205,6 @@ export default function Variant1({ reduced }: { reduced: boolean }) {
         labels[i].style.opacity = clamp01((k - 0.6) * 3).toFixed(3);
       });
     };
-    if (import.meta.env.DEV) (window as unknown as { __v1: typeof progress }).__v1 = progress;
     gsap.ticker.add(tick);
     tick();
     return () => gsap.ticker.remove(tick);

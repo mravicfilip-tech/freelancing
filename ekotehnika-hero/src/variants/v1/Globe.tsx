@@ -10,7 +10,6 @@ import { landDots, ll, VRCIN } from './land';
 import { cardAt, easeInOut, expoOut, lerp } from './timeline';
 
 const DEG = Math.PI / 180;
-const HIDE = import.meta.env.DEV ? new URLSearchParams(location.search).get('hide') ?? '' : '';
 const FOV = 30;
 
 // Raw token values for shaders, so the hues land exactly.
@@ -540,15 +539,15 @@ function Scene({ progress, reduced, start, tagEls, tags }: SceneProps) {
         <mesh renderOrder={0} material={mats.body}>
           <sphereGeometry args={[0.998, 96, 64]} />
         </mesh>
-        {!HIDE.includes('d') && <Dots uniforms={dotU} />}
-        {!HIDE.includes('f') && <Dots uniforms={fineU} fine />}
-        {!HIDE.includes('a') && arcs.map((a, k) => (
+        <Dots uniforms={dotU} />
+        <Dots uniforms={fineU} fine />
+        {arcs.map((a, k) => (
           <group key={k}>
             <mesh geometry={a.geo} material={a.halo} renderOrder={3} frustumCulled={false} />
             <mesh geometry={a.geo} material={a.core} renderOrder={4} frustumCulled={false} />
           </group>
         ))}
-        {!HIDE.includes('m') && <Marker groupRef={marker} ringRef={ring} />}
+        <Marker groupRef={marker} ringRef={ring} />
       </group>
       <mesh renderOrder={2} material={mats.atmo}>
         <sphereGeometry args={[1.004, 96, 64]} />

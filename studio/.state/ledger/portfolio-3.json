@@ -4,7 +4,103 @@
   "client": "portfolio",
   "trigger": "asked",
   "openedAt": "2026-10-08T19:35:29.135Z",
-  "rounds": [],
-  "findings": [],
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "67c801d5b556be168c8e1e6667e09d3aeb7450ad",
+      "at": "2026-10-08T19:57:37.769Z",
+      "score": 1
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "src/styles/nav.css:1-15 .nav, fixed nav on /work/* and home plates, both themes, 1440 and 390",
+      "what": "Nav has blur only, no scrim. Labels over scrolled shots measure 1.0 to 1.4 to 1 (need 4.5). /work/brp dark Toolkit 1.18, phone Menu 1.01, /work/allstate light Work 1.40, #work-allstate dark Work 1.04. Phone light logo 1.18.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 1,
+      "where": "src/styles/base.css html .headline .accent mask (0.35 right end), home plates and /work/lyrie, 1440 and 390",
+      "what": "Hollow headline words fade to 35% alpha at the right end, 2.24 to 1 light, 2.87 to 1 dark, under 3 to 1 for large text. 12 words fail. Formula from the accepted 2026-10-06 12:10 entry.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 1,
+      "where": "/ at 1440, Tab from the LinkedIn CTA, a.btn Open case study x5 and button.cplate__pill Start a project",
+      "what": "Tab lands on controls of inactive plates, rects at y -1375, -475, -447 in a 900px viewport, covered, no ring visible. Counter moves 03/09 to 07/09 but the screen shows another plate. Focus invisible for 6 stops.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 1,
+      "where": "nav links Work 37x23, Toolkit 46x23, Contact 56x23, chrome__counter 17x28, cplate__copy 214x19, contact links 17px tall, BACK TO TOP 102x19; 390 nav__brand 148x19",
+      "what": "Interactive targets under 24 by 24 (WCAG 2.5.8), heights 17 to 23px. Also under 32 tall, cplate__call 114x27, chrome__counter 65x28.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 1,
+      "where": "src/styles/hero.css, hero__clock, time, strong UX STRATEGY & PRODUCT DESIGN, 1440 and 390",
+      "what": "Hero clock, time and the positioning line are 11.52px, under the 12px floor for working text.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 1,
+      "where": "/ at 1440, console on every load, both themes",
+      "what": "Minified React error #418 (hydration mismatch), 10 per load at 1440, none at 390. Cause not traced.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 2,
+      "where": ".index-mark labels site wide, kickers, step numbers, dt labels, counts; hero strong 13.6px; case 13px kickers and dt",
+      "what": "Working labels at 12px, 13px and 13.6px, under the 14px working-text floor, on every plate and case page.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 2,
+      "where": "global :focus-visible ring #ff4213, light theme, theme toggle on /work/lyrie",
+      "what": "Ring 3.11 to 1 on paper #f4f2ee, 2.81 to 1 on the theme toggle over the blurred nav on /work/lyrie light.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 2,
+      "where": "/#toolkit deck card captions, 1440 and 390",
+      "what": "Tool numbers and names 11.2px, under 12px, in an aria-hidden layer.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "span.shot-frame__addr on every plate and case page",
+      "what": "Window address 11px at 1440, 10px at 390, aria-hidden decoration.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F11",
+      "sev": 3,
+      "where": "all routes",
+      "what": "No skip link; brand, 3 nav links, theme toggle and Telegram CTA precede content. A main landmark exists.",
+      "status": "open",
+      "round": 1
+    }
+  ],
   "cards": []
 }

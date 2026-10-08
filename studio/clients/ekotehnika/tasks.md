@@ -36,7 +36,8 @@ Task format
   - [x] Run /uireview
   - [x] Agree a camera direction that changes perspective on scroll
   - [x] Build the 3D forklift and showroom, camera beats 1 and 2, scene full width
-  - [ ] Filip checks beats 1 and 2
+  - [x] Filip checks beats 1 and 2
+  - [ ] Agree the reel style hero UI
   - [ ] Build beats 3 to 5, Najam, Servis, Polovni
   - [ ] Run /uireview on the 3D build
 

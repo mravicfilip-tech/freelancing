@@ -56,129 +56,18 @@ a {
   white-space: nowrap;
 }
 
-/* Header, rebuilt as is */
+/* Stage, the pinned full bleed story */
 .stage {
-  height: 100vh;
-  min-height: 773px;
-  display: flex;
-  flex-direction: column;
-  background: var(--white);
-}
-
-.site-header {
-  height: var(--header-h);
-  flex: none;
-  border-bottom: 1px solid var(--shade-grey);
-}
-
-.topbar {
-  height: 32px;
-  display: flex;
-  justify-content: flex-end;
-  font-size: 15px;
-  line-height: 1;
-}
-
-.tb {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 11px;
-  text-decoration: none;
-  color: var(--white);
-  transition: background-color 0.2s;
-}
-
-.tb-900 {
-  background: var(--primary-900);
-}
-.tb-900:hover {
-  background: var(--primary-700);
-}
-.tb-red {
-  background: var(--toned-red);
-}
-.tb-red:hover {
-  background: var(--linde-red);
-}
-.tb-line {
-  background: var(--white);
-  color: var(--toned-red);
-  box-shadow: inset 0 0 0 1px var(--toned-red);
-}
-.tb-line:hover {
-  background: var(--hover-light-grey);
-}
-.tb-search {
-  background: var(--light-grey);
-  color: var(--text-grey);
-}
-.tb-search:hover {
-  background: var(--shade-grey);
-}
-
-.mainbar {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  padding: 0 21px 0 10px;
-}
-
-.logos {
-  display: flex;
-  align-items: center;
-  gap: 29px;
-  margin-right: auto;
-}
-
-.logo-linde {
-  display: block;
-  margin-top: 3px;
-}
-
-.mainbar nav ul {
-  display: flex;
-  gap: 27px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.mainbar nav a {
-  display: inline-block;
-  padding: 12px 0;
-  font-size: 17px;
-  white-space: nowrap;
-  text-decoration: none;
-  color: var(--ink);
-  letter-spacing: 0.2px;
-  transition: color 0.2s;
-}
-
-.mainbar nav a:hover {
-  color: var(--linde-red);
-}
-
-/* Hero */
-.hero {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.hero-main {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  height: 100vh;
+  min-height: 720px;
   overflow: hidden;
-  /* Overlays get their own stacking context above the canvas. Without it Chrome left a promo
-     sized hole in the canvas at the bottom right. */
   isolation: isolate;
   background: var(--hover-light-grey);
 }
 
-.scene-canvas {
+.scene-canvas,
+.scene-fallback {
   position: absolute;
   inset: 0;
   display: block;
@@ -187,24 +76,119 @@ a {
 }
 
 .scene-fallback {
-  position: absolute;
-  inset: 0;
   display: grid;
   place-items: center;
   background: var(--shade-grey);
   color: var(--text-grey);
 }
 
-.copy-top {
+/* Floating nav */
+.nav {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
+  top: 16px;
+  left: 24px;
+  right: 24px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 12px 0 12px;
+  background: var(--white);
+  border: 1px solid var(--shade-grey);
+  border-radius: 5px;
+}
+
+.nav-logos {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-logos img {
+  display: block;
+}
+
+.nav ul {
+  display: flex;
+  gap: 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav nav a {
+  display: inline-block;
+  padding: 12px 0;
+  font-size: 16px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav nav a:hover {
+  color: var(--linde-red);
+}
+
+.nav-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-left: auto;
+  font-size: 15px;
+  color: var(--text-grey);
+  text-decoration: none;
+}
+
+.nav-call svg {
+  color: var(--linde-red);
+}
+
+.nav-call strong {
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.nav-call:hover strong {
+  color: var(--linde-red);
+}
+
+.nav-quote {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 5px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-family: var(--font-medi);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.nav-quote:hover {
+  background: var(--dark-red);
+}
+
+/* Story copy layers */
+.story > * {
+  position: absolute;
+  z-index: 2;
+}
+
+.intro {
   left: 64px;
-  top: 52px;
-  width: 500px;
+  bottom: 132px;
+  width: 640px;
 }
 
 .kicker {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-family: var(--font-medi);
   font-size: 18px;
   font-weight: 500;
@@ -214,19 +198,23 @@ a {
 .headline {
   margin: 0;
   font-family: var(--font-medi);
-  font-size: 48px;
-  line-height: 1.17;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-size: 76px;
+  line-height: 1.02;
+  font-weight: 500;
+  letter-spacing: -0.5px;
 }
 
 .hl-line {
   display: block;
 }
 
+.hl-line + .hl-line {
+  color: var(--text-grey);
+}
+
 .sub {
-  margin: 18px 0 0;
-  max-width: 470px;
+  margin: 22px 0 0;
+  max-width: 520px;
   font-size: 18px;
   line-height: 1.5;
   color: var(--text-grey);
@@ -236,16 +224,15 @@ a {
   display: flex;
   align-items: center;
   gap: 26px;
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 .btn-quote {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 268px;
   min-height: 52px;
-  padding: 15px 22px;
+  padding: 15px 28px;
   border-radius: 5px;
   background: var(--linde-red);
   color: var(--white);
@@ -268,7 +255,6 @@ a {
   color: var(--text-grey);
   text-decoration: none;
   font-size: 17px;
-  transition: color 0.2s;
 }
 
 .call svg {
@@ -286,139 +272,141 @@ a {
   color: var(--linde-red);
 }
 
-/* Bottom left dock, the station card over the pillar tabs, both solid white */
-.dock {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  bottom: 0;
-  width: 600px;
-}
-
-.card {
+.claims {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 22px 48px 6px 64px;
-  background: var(--white);
-  opacity: 0;
+  gap: 28px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.card .cta-row {
-  margin-top: 14px;
+.claims li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.card-line {
-  margin: 6px 0 0;
-  min-height: 54px;
-  font-size: 18px;
-  line-height: 1.5;
-  color: var(--text-grey);
+.claims svg {
+  color: var(--linde-red);
 }
 
-.station-step {
-  font-size: 14px;
+.chapter {
+  top: 50%;
+  width: 600px;
+  margin-top: -110px;
+}
+
+.chapter.left {
+  left: 64px;
+}
+
+.chapter.right {
+  right: 64px;
+}
+
+.ch-label {
+  margin: 0 0 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--linde-red);
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.station-name {
+.ch-label span {
+  margin-right: 10px;
+  color: var(--ink);
+}
+
+.ch-line {
+  margin: 0;
   font-family: var(--font-medi);
-  font-size: 24px;
-  font-weight: 600;
-  animation: station-in 0.22s ease-out;
+  font-size: 52px;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.3px;
 }
 
-.station-link {
+.w {
+  display: inline-block;
+  white-space: pre;
+}
+
+.ch-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 48px;
-  font-size: 16px;
+  margin-top: 14px;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--linde-red);
   text-decoration: none;
 }
 
-.station-link:hover {
+.ch-link:hover {
   color: var(--dark-red);
   text-decoration: underline;
 }
 
-@keyframes station-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
+.finale {
+  left: 64px;
+  bottom: 132px;
+  width: 760px;
 }
 
-.pillars {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  padding: 0 48px 0 64px;
-  background: var(--white);
+.fin-title {
+  margin: 0;
+  font-family: var(--font-medi);
+  font-size: 96px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -1px;
 }
 
-.pillar {
+.stats {
+  display: flex;
+  gap: 44px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stats li {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  min-height: 84px;
-  padding: 16px 10px 15px 0;
-  border: 0;
-  border-top: 1px solid var(--shade-grey);
-  background: none;
-  color: var(--text-grey);
-  font: inherit;
+  justify-content: flex-end;
+}
+
+.stat-num {
+  white-space: nowrap;
   font-family: var(--font-medi);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.25;
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.pillar svg {
-  color: var(--toned-text-grey);
-  transition: color 0.2s;
-}
-
-.pillar:hover,
-.pillar.is-active {
-  color: var(--ink);
-}
-
-.pillar:hover svg,
-.pillar.is-active svg {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 500;
   color: var(--linde-red);
+  font-variant-numeric: tabular-nums;
 }
 
-.indicator {
-  position: absolute;
-  left: 64px;
-  bottom: 0;
-  width: calc((100% - 112px) / 4);
-  height: 3px;
-  transition: transform 240ms var(--ease-indicator);
-  pointer-events: none;
+.stat-label,
+.stat-text {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.indicator-bar {
-  display: block;
-  width: calc(100% - 14px);
-  height: 100%;
-  background: var(--linde-red);
+.stat-text {
+  max-width: 150px;
+  line-height: 1.3;
 }
 
 .promo {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  right: 0;
-  padding: 12px 18px;
+  top: 100px;
+  right: 24px;
+  padding: 10px 16px;
+  border-radius: 5px;
   background: var(--linde-red);
   color: var(--white);
   font-size: 16px;
@@ -430,55 +418,73 @@ a {
   background: var(--dark-red);
 }
 
-/* Trust strip */
-.trust {
-  flex: 0 0 var(--trust-h);
+/* Story bar, the four services in the order the truck meets them */
+.storybar {
+  left: 50%;
+  bottom: 24px;
+  width: 640px;
+  margin-left: -320px;
+  padding: 0 8px 4px;
+  background: var(--white);
+  border: 1px solid var(--shade-grey);
+  border-radius: 5px;
+}
+
+.storybar-track {
+  display: block;
+  height: 3px;
+  margin: 0 -8px;
+  background: var(--shade-grey);
+  overflow: hidden;
+  border-radius: 5px 5px 0 0;
+}
+
+.storybar-fill {
+  display: block;
+  height: 100%;
+  background: var(--linde-red);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.storybar ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.storybar button {
   display: flex;
   align-items: center;
-  gap: 40px;
-  margin: 0;
-  padding: 0 21px 0 64px;
-  list-style: none;
-  border-top: 1px solid var(--shade-grey);
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.trust li {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.trust li > svg {
-  color: var(--linde-red);
-}
-
-.trust-call {
-  margin-left: auto;
-}
-
-
-
-.trust-call a {
-  display: inline-flex;
-  align-items: center;
+  justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 16px;
-  color: var(--toned-red);
-  text-decoration: none;
-  box-shadow: inset 0 0 0 1px var(--toned-red);
-  transition: background-color 0.2s;
-}
-
-.trust-call a:hover {
-  background: var(--hover-light-grey);
-}
-
-.trust-call strong {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  background: none;
+  color: var(--text-grey);
+  font: inherit;
+  font-size: 15px;
   font-weight: 600;
-  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.storybar button svg {
+  color: var(--toned-text-grey);
+  transition: color 0.2s;
+}
+
+.storybar button:hover,
+.storybar button.is-active {
+  color: var(--ink);
+}
+
+.storybar button:hover svg,
+.storybar button.is-active svg {
+  color: var(--linde-red);
 }
 
 /* Placeholder content below the hero */

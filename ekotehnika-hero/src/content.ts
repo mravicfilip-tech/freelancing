@@ -83,3 +83,36 @@ export const nav = [
   'O nama',
   'Kontakt',
 ];
+
+// The delivery story, one entry per camera chapter in src/three/journey.ts. side is where the
+// copy sits, opposite the subject. Lines marked dummy are placeholder copy for the prototype.
+export type Chapter = { label: string; line: string; side: 'left' | 'right'; pillar?: PillarId };
+
+export const chapters: Chapter[] = [
+  { label: '', line: '', side: 'left' },
+  { label: 'Novi viljuškari', line: '96 Linde modela, ponuda po vašoj meri.', side: 'right', pillar: 'novi' },
+  // dummy
+  { label: 'Vaša roba', line: 'Jedna paleta. Od police do rampe.', side: 'right' },
+  // dummy
+  { label: 'Podizanje', line: 'Mirno i precizno, i sa najviše police.', side: 'left' },
+  // dummy
+  { label: 'Bezbednost', line: 'Crvena tačka na podu upozorava pešake pre nego što viljuškar stigne.', side: 'right' },
+  { label: 'Servis', line: 'Redovno održavanje, hitne intervencije, ugovori o punom servisu.', side: 'right', pillar: 'servis' },
+  { label: 'Polovni', line: 'Linde Approved Trucks sa garancijom 6 meseci ili 500 radnih sati.', side: 'left', pillar: 'polovni' },
+  { label: 'Najam', line: 'Od nekoliko sati do godinu dana. Isporuka za 24 sata.', side: 'left', pillar: 'najam' },
+  { label: '', line: '', side: 'left' },
+];
+
+// The story bar runs in the order the truck meets each service.
+export const storyStops: { pillar: PillarId; chapter: number }[] = [
+  { pillar: 'novi', chapter: 1 },
+  { pillar: 'servis', chapter: 5 },
+  { pillar: 'polovni', chapter: 6 },
+  { pillar: 'najam', chapter: 7 },
+];
+
+export const finale = {
+  // dummy
+  title: 'Isporučeno.',
+  line: 'Linde viljuškari, prodaja, najam i servis na jednom mestu.',
+};

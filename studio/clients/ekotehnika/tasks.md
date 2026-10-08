@@ -37,8 +37,10 @@ Task format
   - [x] Agree a camera direction that changes perspective on scroll
   - [x] Build the 3D forklift and showroom, camera beats 1 and 2, scene full width
   - [x] Filip checks beats 1 and 2
-  - [ ] Agree the reel style hero UI
-  - [ ] Build beats 3 to 5, Najam, Servis, Polovni
+  - [x] Agree the reel style hero UI
+  - [x] Write the delivery story, nine chapters
+  - [x] Build the warehouse, the route and the order pallet
+  - [x] Build the reel style UI, floating nav, big copy per chapter, story bar
   - [ ] Run /uireview on the 3D build
 
 ## Review

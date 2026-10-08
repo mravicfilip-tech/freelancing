@@ -10,6 +10,10 @@ export type Forklift = {
   wheels: { g: THREE.Group; r: number }[];
   inner: THREE.Group;
   carriage: THREE.Group;
+  // where a carried pallet's bottom centre sits, inside the carriage
+  anchor: THREE.Object3D;
+  // the red warning spot projected on the floor ahead of the forks
+  spot: THREE.Group;
 };
 
 const WHITE: Tone = { top: C.white, front: C.white, side: C.white, back: C.white };
@@ -83,9 +87,24 @@ export function buildForklift({ load = true, tone = RED }: { load?: boolean; ton
     carriage.add(block(1.1, 0.05, 0.12, INK, 1.71, 0.03, z));
   }
   if (load) carriage.add(buildLoad(1.72, 0.08));
+  const anchor = new THREE.Object3D();
+  anchor.position.set(1.72, 0.08, 0);
+  carriage.add(anchor);
   group.add(carriage);
 
-  return { group, wheels, inner, carriage };
+  const spot = new THREE.Group();
+  const spotMat = new THREE.MeshBasicMaterial({ color: C.lindeRed, transparent: true, opacity: 0.85, depthWrite: false });
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(0.42, 28), spotMat);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.7, 36), spotMat);
+  for (const m of [disc, ring]) {
+    m.rotation.x = -Math.PI / 2;
+    spot.add(m);
+  }
+  spot.position.set(4.2, 0.03, 0);
+  spot.visible = false;
+  group.add(spot);
+
+  return { group, wheels, inner, carriage, anchor, spot };
 }
 
 // A pallet with one taped order on it, bottom at y.

@@ -318,7 +318,7 @@
   display: flex;
   justify-content: center;
   border-left: 1px solid transparent;
-  border-image: linear-gradient(to bottom, var(--shade-grey), rgba(230, 231, 235, 0)) 1;
+  border-image: linear-gradient(to bottom, rgba(94, 113, 117, 0.32), rgba(94, 113, 117, 0)) 1;
 }
 
 .v5-marks li:last-child {

@@ -60,16 +60,16 @@ function scramble(text: string, k: number) {
   return out;
 }
 
+// Counts up toward the value. Years run up the last stretch, the client count from zero.
 function tickYear(v: string, k: number) {
   if (k >= 1) return v;
+  const e = 1 - Math.pow(1 - k, 3);
   if (v.includes('.')) {
-    const n = Math.round(easeInOut(k) * 1000);
+    const n = Math.round(e * 1000);
     return n >= 1000 ? '1.000' : String(n);
   }
-  return v
-    .split('')
-    .map((c, j) => (k > 0.3 + j * 0.16 ? c : String(Math.floor(Math.random() * 10))))
-    .join('');
+  const y = Number(v);
+  return String(Math.round(y - 140 + e * 140));
 }
 
 export default function Variant1({ reduced }: { reduced: boolean }) {
@@ -142,7 +142,11 @@ export default function Variant1({ reduced }: { reduced: boolean }) {
 
       // Flood and the card.
       const fl = floodAt(p);
-      flood.style.opacity = fl.toFixed(3);
+      // The white rises from the floor to the top of the page, a soft edge in front of it.
+      const edge = fl * 140 - 20;
+      flood.style.setProperty('--m0', `${edge.toFixed(1)}%`);
+      flood.style.setProperty('--m1', `${(edge + 22).toFixed(1)}%`);
+      flood.style.opacity = Math.min(1, fl * 4).toFixed(3);
       flood.style.visibility = fl > 0.001 ? 'visible' : 'hidden';
       const c = cardAt(p, W, H);
       if (c.open > 0.001) {
@@ -159,7 +163,7 @@ export default function Variant1({ reduced }: { reduced: boolean }) {
       ch.style.visibility = p > 0.4 ? 'visible' : 'hidden';
 
       // Partner line, word by word out of a blur, as in the reel at 2.2s.
-      const pOut = easeInOut(range(p, 0.55, 0.6));
+      const pOut = easeInOut(range(p, 0.545, 0.585));
       words.forEach((w, i) => {
         const k = easeInOut(range(p, 0.44 + i * 0.0045, 0.475 + i * 0.0045));
         w.style.opacity = (k * (1 - pOut)).toFixed(3);
@@ -170,11 +174,11 @@ export default function Variant1({ reduced }: { reduced: boolean }) {
 
       // Statement. Lines rise in, then each fills from shade grey to its tone, left to right.
       stLines.forEach((s, i) => {
-        const k = expoOut(range(p, 0.54 + i * 0.018, 0.6 + i * 0.018));
+        const k = expoOut(range(p, 0.565 + i * 0.016, 0.62 + i * 0.016));
         s.style.transform = `translate3d(0, ${((1 - k) * 110).toFixed(1)}%, 0)`;
       });
       stFill.forEach((s, i) => {
-        const f = easeInOut(range(p, 0.58 + i * 0.03, 0.66 + i * 0.03));
+        const f = easeInOut(range(p, 0.6 + i * 0.026, 0.67 + i * 0.026));
         s.style.setProperty('--f', `${(f * 104).toFixed(1)}%`);
       });
       const ctaK = expoOut(range(p, 0.66, 0.72));
@@ -184,12 +188,12 @@ export default function Variant1({ reduced }: { reduced: boolean }) {
 
       // Counters. The column rides up, each number ticks and blurs while it counts.
       const s = W / 1440;
-      const y0 = (900 - range(p, 0.53, 0.97) * 1380) * s;
+      const y0 = (900 - range(p, 0.55, 0.95) * 1460) * s;
       col.style.transform = `translate3d(0, ${y0.toFixed(1)}px, 0)`;
       nums.forEach((n, i) => {
         const top = y0 + i * 300 * s;
-        const k = clamp01((760 * s - top) / (440 * s));
-        const v = tickYear(COUNTS[i].v, k) + (k >= 1 && COUNTS[i].v.endsWith('+') ? '+' : '');
+        const k = clamp01((780 * s - top) / (380 * s));
+        const v = tickYear(COUNTS[i].v, k);
         if (numCache[i] !== v) {
           numCache[i] = v;
           n.textContent = v;

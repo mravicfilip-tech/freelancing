@@ -289,11 +289,11 @@ function Bands({ a, floors, fh, y0 = 0, inset = 0.25, glassFrom = 0.9, seed = 1 
       const h = fh - glassFrom - 0.3;
       const run = r() < 0.5;
       for (let x = x0 + inset + 0.3; x + pw <= x1 - inset - 0.2; x += pw) {
-        (r() < (run ? 0.55 : 0.3) ? lit : dark).push([x + pw / 2, y + h / 2, z1 + 0.02, pw - 0.06, h, 0.1]);
+        (r() < (run ? 0.7 : 0.42) ? lit : dark).push([x + pw / 2, y + h / 2, z1 + 0.02, pw - 0.06, h, 0.1]);
         mull.push([x, y + h / 2, z1 + 0.09, 0.1, h, 0.08]);
       }
       for (let z = z0 + inset + 0.3; z + pw <= z1 - inset - 0.2; z += pw) {
-        (r() < (run ? 0.45 : 0.25) ? lit : dark).push([x0 - 0.02, y + h / 2, z + pw / 2, 0.1, h, pw - 0.06]);
+        (r() < (run ? 0.6 : 0.36) ? lit : dark).push([x0 - 0.02, y + h / 2, z + pw / 2, 0.1, h, pw - 0.06]);
         mull.push([x0 - 0.09, y + h / 2, z, 0.08, h, 0.1]);
       }
     }
@@ -329,6 +329,27 @@ function RoofKit({ a, y, seed = 1, n = 5 }: { a: Rect; y: number; seed?: number;
   );
 }
 
+// Rows of raised roof lights, like the reel's sheds.
+function Skylights({ a, y, rows = 3, gap = 4 }: { a: Rect; y: number; rows?: number; gap?: number }) {
+  const items = useMemo(() => {
+    const [x0, z0, x1, z1] = a;
+    const it: It[] = [];
+    const zc = (z0 + z1) / 2;
+    for (let r = 0; r < rows; r++) {
+      const z = zc + (r - (rows - 1) / 2) * gap;
+      for (let x = x0 + 3; x < x1 - 3; x += 3.4) it.push([x + 1.4, y + 0.25, z, 2.6, 0.5, 1.4]);
+    }
+    return it;
+  }, [a, y, rows, gap]);
+  const glass = useMemo(() => items.map(([x, yy, z, w, , d]) => [x, yy + 0.27, z, w - 0.3, 0.05, d - 0.3] as It), [items]);
+  return (
+    <>
+      <Inst mat={W.wall} items={items} />
+      <Inst mat={W.glass} items={glass} cast={false} />
+    </>
+  );
+}
+
 // A building block with a parapet roof.
 function Block({ a, h, m = W.wall, roof = W.roof, parapet = 0.7 }: { a: Rect; h: number; m?: THREE.Material; roof?: THREE.Material; parapet?: number }) {
   const [x0, z0, x1, z1] = a;
@@ -357,7 +378,8 @@ function Depot() {
   return (
     <group>
       <Block a={DEPOT} h={9} />
-      <RoofKit a={DEPOT} y={9} seed={3} n={6} />
+      <RoofKit a={[x0, -28, x1, -20]} y={9} seed={3} n={4} />
+      <Skylights a={[x0, -21, x1 - 4, -9]} y={9} rows={3} gap={3.6} />
       {/* red cladding over the dock row */}
       <Box a={[x0 - 0.3, z1 - 0.1, x1 + 0.2, z1 + 0.45]} y={3.9} h={5.9} m={W.red} />
       <SignWord h={2.5} position={[(x0 + x1) / 2 + 0.5, 5.3, z1 + 0.46]} />
@@ -538,7 +560,11 @@ function Workshop() {
       ].map(([x, z]) => (
         <Box key={`${x}${z}`} a={[x - 0.2, z - 0.2, x + 0.2, z + 0.2]} h={6.2} m={W.steel} />
       ))}
-      <RoofKit a={SHOP} y={H + 0.4} seed={19} n={3} />
+      <RoofKit a={[x0, z0, x1, z0 + 6]} y={H + 0.4} seed={19} n={2} />
+      <Skylights a={[x0, z0 + 6, x1, z1 - 2]} y={H + 0.4} rows={3} gap={3.6} />
+      {/* white band and lit opening on the fascia */}
+      <Box a={[x0 - 0.25, z1 + 0.34, x1 + 0.25, z1 + 0.42]} y={6.5} h={0.22} m={W.wall} cast={false} />
+      <Box a={[x0 + 1.3, z1 - 3, x0 + 7.1, z1 - 2.9]} y={0.1} h={5.2} m={W.glassLit} cast={false} />
     </group>
   );
 }
@@ -751,6 +777,10 @@ const stillForks: Placement[] = [
   [-8, 0, 2, 1.2],
   [37, 0, -13, 0.2],
   [16, 0, -9, Math.PI],
+  [45.5, 0.1, -12, -Math.PI / 2],
+  [49.5, 0, -4.5, -0.3],
+  [53.5, 0, -4.2, -0.5],
+  [36.5, 0, -2, 0.9],
 ];
 
 const parkedForks: Placement[] = [...fleetYard, ...lotYard, ...stillForks];

@@ -12,6 +12,9 @@ import { keys, stops, stopP, type IconId } from './story';
 import './v4.css';
 
 const LENGTH = 8000;
+// dev only, the shot script renders in software at a frame or two a second, so it asks for the
+// smoothing to settle at once
+const SHOT = import.meta.env.DEV && new URLSearchParams(window.location.search).has('v4shot');
 
 const Building = () => (
   <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
@@ -54,7 +57,7 @@ function Pill({ href, label, kind = 'line', cta, icon: ic }: { href: string; lab
 }
 
 export default function Variant4({ reduced }: { reduced: boolean }) {
-  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.06 });
+  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: SHOT ? 0.45 : 0.06 });
   const [idx, setIdx] = useState(0);
   const [shown, setShown] = useState(0);
   const [out, setOut] = useState(false);

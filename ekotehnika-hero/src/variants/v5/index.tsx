@@ -195,7 +195,9 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
       <div className="v5-panel-in" ref={panelIn}>
         {/* dummy, panel headline */}
         <h2 className="v5-h2" id="v5-panel-h" data-rv>
-          Pokrećemo skladišta širom Srbije, od 1997.
+          Pokrećemo skladišta
+          <br />
+          širom Srbije, od 1997.
         </h2>
         <ul className="v5-marks" aria-label="Usluge" data-rv>
           <li>

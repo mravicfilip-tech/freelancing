@@ -93,7 +93,7 @@ function Sky({ clock }: { clock: Clock }) {
     far.y = 0;
     far.project(camera);
     mat.uniforms.uHorizon.value = far.y;
-    mat.uniforms.uSky.value = 1 - smooth(range(p, 0.04, 0.17));
+    mat.uniforms.uSky.value = 1 - smooth(range(p, 0.09, 0.22));
   });
   return (
     <mesh frustumCulled={false} renderOrder={-10} material={mat}>
@@ -117,12 +117,12 @@ function Ground({ clock }: { clock: Clock }) {
     return new THREE.CanvasTexture(c);
   }, []);
   const mat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: C.ink, roughness: 0.92, metalness: 0, envMapIntensity: 0.15, transparent: true, alphaMap: alpha, depthWrite: false }),
+    () => new THREE.MeshLambertMaterial({ color: C.ink, transparent: true, alphaMap: alpha, depthWrite: false }),
     [alpha],
   );
   const ref = useRef<THREE.Mesh>(null);
   useFrame(() => {
-    const o = 1 - smooth(range(clock.p(), 0.17, 0.3));
+    const o = 1 - smooth(range(clock.p(), 0.19, 0.3));
     mat.opacity = o;
     mat.color.set(C.ink).multiplyScalar(0.16);
     if (ref.current) ref.current.visible = o > 0.001;
@@ -247,7 +247,7 @@ function pointMaterial(dpr: number) {
       uScatter: { value: 0 },
       uSwirl: { value: 0 },
       uSettle: { value: 0 },
-      uSize: { value: 30 },
+      uSize: { value: 40 },
       uDpr: { value: dpr },
       uOpacity: { value: 0 },
     },
@@ -258,6 +258,9 @@ const GHOSTS: { pos: [number, number, number]; rot: number }[] = [
   { pos: [-5.5, 0, -7.5], rot: 0.5 },
   { pos: [7.5, 0, -6.0], rot: -0.9 },
   { pos: [-9.0, 0, 1.5], rot: 1.6 },
+  { pos: [1.5, 0, -12.0], rot: 0.1 },
+  { pos: [-12.0, 0, -9.0], rot: 0.9 },
+  { pos: [12.5, 0, -1.5], rot: -1.4 },
 ];
 
 function Truck({ clock }: { clock: Clock }) {
@@ -318,22 +321,22 @@ function Truck({ clock }: { clock: Clock }) {
     sheetMat.uniforms.uOpacity.value = Math.sin(Math.PI * sw);
 
     lineMat.uniforms.uSweep.value = sw <= 0 ? 10 : sw >= 1 ? -10 : sweep;
-    lineMat.uniforms.uOpacity.value = smooth(range(p, 0.065, 0.09)) * (1 - smooth(range(p, 0.2, 0.27)));
+    lineMat.uniforms.uOpacity.value = smooth(range(p, 0.065, 0.09)) * (1 - 0.75 * smooth(range(p, 0.2, 0.26))) * (1 - smooth(range(p, 0.28, 0.34)));
     lineMat.uniforms.uTime.value = t;
     ghostLineMat.uniforms.uSweep.value = -10;
-    ghostLineMat.uniforms.uOpacity.value = band(p, 0.15, 0.22, 0.3, 0.38) * 0.22;
+    ghostLineMat.uniforms.uOpacity.value = band(p, 0.15, 0.22, 0.3, 0.38) * 0.3;
     ghostLineMat.uniforms.uTime.value = t;
 
     const pu = pointMat.uniforms;
     pu.uTime.value = t;
-    pu.uScatter.value = smooth(range(p, 0.21, 0.37));
-    pu.uSwirl.value = smooth(range(p, 0.26, 0.5)) * 2.4;
+    pu.uScatter.value = smooth(range(p, 0.26, 0.42));
+    pu.uSwirl.value = smooth(range(p, 0.3, 0.52)) * 2.4;
     pu.uSettle.value = smooth(range(p, 0.43, 0.56));
-    pu.uOpacity.value = smooth(range(p, 0.16, 0.21)) * (1 - 0.45 * smooth(range(p, 0.5, 0.58))) * (1 - smooth(range(p, 0.66, 0.72)));
+    pu.uOpacity.value = 1.35 * smooth(range(p, 0.16, 0.21)) * (1 - 0.45 * smooth(range(p, 0.5, 0.58))) * (1 - smooth(range(p, 0.66, 0.72)));
     const gu = ghostPointMat.uniforms;
     gu.uTime.value = t;
-    gu.uOpacity.value = band(p, 0.16, 0.23, 0.32, 0.4) * 0.45;
-    gu.uScatter.value = smooth(range(p, 0.28, 0.4)) * 0.6;
+    gu.uOpacity.value = band(p, 0.16, 0.23, 0.34, 0.42) * 0.6;
+    gu.uScatter.value = smooth(range(p, 0.3, 0.42)) * 0.7;
   });
 
   return (
@@ -461,16 +464,16 @@ function Tiles({ clock }: { clock: Clock }) {
   return <instancedMesh ref={ref} args={[geo, mat, GRID * GRID]} frustumCulled={false} renderOrder={-4} />;
 }
 
-// Smoke beams curving in from the four screen corners to one point on the grid.
-const BEAM_CAM = new THREE.Vector3(0.4, 11, 6.4);
-const BEAM_HEAD = new THREE.Vector3(0, 0.25, -0.6);
-// Angles are around the head on the floor, negative z is the top of the screen.
-const BEAMS = [
-  { a: -2.45, r: 12.5, y: 2.2, bend: 0.85, w: 2.2, seed: 0.1, red: false },
-  { a: -0.7, r: 12.0, y: 2.0, bend: -0.85, w: 2.1, seed: 2.3, red: false },
-  { a: 2.3, r: 6.2, y: 1.2, bend: -0.6, w: 1.2, seed: 4.1, red: true },
-  { a: 0.85, r: 6.4, y: 1.3, bend: 0.65, w: 1.3, seed: 6.7, red: false },
-  { a: -1.65, r: 15.0, y: 3.2, bend: 0.45, w: 1.6, seed: 8.2, red: false },
+// Smoke beams curving in from the screen corners to one point, composed in the camera's frame like
+// the reel. The group rides with the camera, eight metres ahead, so the X always reads.
+const BEAM_Z = -8;
+// x and y in metres at that distance, the view is about 6.9 by 4.3 there.
+const BEAMS: { s: [number, number]; c: [number, number]; e: [number, number]; w: number; seed: number; red?: boolean; o?: number }[] = [
+  { s: [-3.6, 2.5], c: [-1.0, 1.9], e: [-0.22, 0.12], w: 0.75, seed: 0.1 },
+  { s: [3.4, 2.6], c: [1.5, 0.7], e: [0.24, 0.16], w: 0.7, seed: 2.3 },
+  { s: [-4.2, 0.4], c: [-2.2, 0.1], e: [-0.55, -0.05], w: 0.9, seed: 5.2, o: 0.45 },
+  { s: [-1.5, -2.6], c: [-0.8, -1.3], e: [-0.3, -0.55], w: 0.45, seed: 4.1, red: true },
+  { s: [1.3, -2.6], c: [0.5, -1.4], e: [0.32, -0.5], w: 0.4, seed: 6.7, o: 0.8 },
 ];
 
 function ribbon(curve: THREE.Curve<THREE.Vector3>, w0: number, w1: number, segs = 72) {
@@ -479,16 +482,15 @@ function ribbon(curve: THREE.Curve<THREE.Vector3>, w0: number, w1: number, segs 
   const idx: number[] = [];
   const p = new THREE.Vector3();
   const tan = new THREE.Vector3();
-  const to = new THREE.Vector3();
+  const to = new THREE.Vector3(0, 0, 1);
   const side = new THREE.Vector3();
   for (let i = 0; i <= segs; i++) {
     const t = i / segs;
     curve.getPoint(t, p);
     curve.getTangent(t, tan);
-    to.copy(BEAM_CAM).sub(p).normalize();
     side.crossVectors(tan, to).normalize();
-    const w = THREE.MathUtils.lerp(w0, w1, Math.pow(t, 0.6));
-    pos.push(p.x + side.x * w, p.y + side.y * w, p.z + side.z * w, p.x - side.x * w, p.y - side.y * w, p.z - side.z * w);
+    const w = THREE.MathUtils.lerp(w0, w1, Math.pow(t, 0.7));
+    pos.push(p.x + side.x * w, p.y + side.y * w, p.z, p.x - side.x * w, p.y - side.y * w, p.z);
     uv.push(t, 0, t, 1);
     if (i < segs) {
       const a = i * 2;
@@ -503,20 +505,20 @@ function ribbon(curve: THREE.Curve<THREE.Vector3>, w0: number, w1: number, segs 
 }
 
 function Beams({ clock }: { clock: Clock }) {
-  const group = useRef<THREE.Group>(null);
+  const camera = useThree((s) => s.camera);
+  const rig = useRef<THREE.Group>(null);
+  const spin = useRef<THREE.Group>(null);
   const items = useMemo(
     () =>
       BEAMS.map((b) => {
-        const start = new THREE.Vector3(Math.cos(b.a) * b.r, b.y, Math.sin(b.a) * b.r - 0.6);
-        const ctrl = new THREE.Vector3(Math.cos(b.a + b.bend) * b.r * 0.5, b.y * 0.8, Math.sin(b.a + b.bend) * b.r * 0.5 - 0.6);
-        const end = BEAM_HEAD.clone().add(new THREE.Vector3(Math.cos(b.a) * 0.35, 0, Math.sin(b.a) * 0.35));
-        const curve = new THREE.QuadraticBezierCurve3(start, ctrl, end);
-        const geo = ribbon(curve, b.w, 0.05);
+        const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(...b.s, 0), new THREE.Vector3(...b.c, 0), new THREE.Vector3(...b.e, 0));
+        const geo = ribbon(curve, b.w, 0.018);
         const mat = new THREE.ShaderMaterial({
           vertexShader: S.beamVert,
           fragmentShader: S.beamFrag,
           transparent: true,
           depthWrite: false,
+          depthTest: false,
           side: THREE.DoubleSide,
           blending: THREE.AdditiveBlending,
           uniforms: {
@@ -524,46 +526,45 @@ function Beams({ clock }: { clock: Clock }) {
             uOpacity: { value: 0 },
             uGrow: { value: 0 },
             uSeed: { value: b.seed },
-            uColor: { value: b.red ? col(C.tonedRed) : new THREE.Color(0.92, 0.92, 0.94) },
+            uColor: { value: b.red ? col(C.tonedRed) : new THREE.Color(0.9, 0.9, 0.92) },
           },
         });
-        return { geo, mat, red: b.red };
+        return { geo, mat, k: (b.red ? 1.3 : 1) * (b.o ?? 1) };
       }),
     [],
   );
-  const glow = useRef<THREE.Group>(null);
   useFrame(({ clock: c }) => {
     const p = clock.p();
     const t = c.elapsedTime;
-    const on = band(p, 0.3, 0.4, 0.56, 0.66);
+    const on = band(p, 0.28, 0.36, 0.52, 0.6);
     items.forEach((it, i) => {
       it.mat.uniforms.uTime.value = t;
-      it.mat.uniforms.uOpacity.value = on * (it.red ? 1.25 : 1);
-      it.mat.uniforms.uGrow.value = 0.06 + 0.94 * smooth(range(p, 0.3 + i * 0.012, 0.43 + i * 0.012));
+      it.mat.uniforms.uOpacity.value = on * it.k;
+      it.mat.uniforms.uGrow.value = 0.08 + 0.92 * smooth(range(p, 0.28 + i * 0.014, 0.4 + i * 0.014));
     });
-    if (group.current) {
-      group.current.rotation.y = Math.sin(t * 0.12) * 0.08 + (p - 0.47) * 1.1;
-      group.current.visible = on > 0.001;
+    if (rig.current) {
+      rig.current.visible = on > 0.001;
+      rig.current.position.copy(camera.position);
+      rig.current.quaternion.copy(camera.quaternion);
     }
-    if (glow.current) {
-      glow.current.visible = on > 0.001;
-      glow.current.scale.setScalar(0.8 + 0.2 * Math.sin(t * 1.3));
+    if (spin.current) {
+      // The X turns slowly with the scroll and breathes with time, so the streaks cross.
+      spin.current.rotation.z = (p - 0.44) * 0.9 + Math.sin(t * 0.2) * 0.04;
+      spin.current.scale.setScalar(1 + (p - 0.44) * 0.5);
     }
   });
   return (
-    <>
-      <group ref={group} position={[0, 0, -0.6]}>
-        <group position={[0, 0, 0.6]}>
+    <group ref={rig} renderOrder={20}>
+      <group position={[0, 0.25, BEAM_Z]}>
+        <group ref={spin}>
           {items.map((it, i) => (
-            <mesh key={i} geometry={it.geo} material={it.mat} frustumCulled={false} />
+            <mesh key={i} geometry={it.geo} material={it.mat} frustumCulled={false} renderOrder={20} />
           ))}
+          <Glow colour={C.white} size={0.5} opacity={0.4} renderOrder={21} />
+          <Glow colour={C.tonedRed} size={1.6} opacity={0.14} renderOrder={21} />
         </group>
       </group>
-      <group ref={glow} position={BEAM_HEAD}>
-        <Glow colour={C.white} size={1.1} opacity={0.32} />
-        <Glow colour={C.tonedRed} size={3.2} opacity={0.18} />
-      </group>
-    </>
+    </group>
   );
 }
 

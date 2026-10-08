@@ -62,12 +62,16 @@
 }
 
 .v1-flood {
+  --m0: 0%;
+  --m1: 20%;
   position: absolute;
   inset: 0;
   z-index: 2;
   background: var(--hover-light-grey);
   opacity: 0;
   visibility: hidden;
+  -webkit-mask-image: linear-gradient(to top, #000 var(--m0), transparent var(--m1));
+  mask-image: linear-gradient(to top, #000 var(--m0), transparent var(--m1));
 }
 
 .v1-frame {

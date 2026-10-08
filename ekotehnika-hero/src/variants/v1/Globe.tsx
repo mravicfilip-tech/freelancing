@@ -435,7 +435,7 @@ function Scene({ progress, reduced, start, tagEls, tags }: SceneProps) {
     // Chapters.
     const dive = smooth(range(p, 0.025, 0.33));
     const floor = easeInOut(range(p, 0.22, 0.37));
-    const card = easeInOut(range(p, 0.42, 0.47));
+    const card = easeInOut(range(p, 0.41, 0.44));
     const c = cardAt(p, W, H);
 
     // Orientation. The hero faces the eastern Mediterranean with Serbia in the upper left quarter.
@@ -451,11 +451,11 @@ function Scene({ progress, reduced, start, tagEls, tags }: SceneProps) {
     // Camera distance and tilt. Dive in, skim the floor, then rise for the card.
     let D = lerp(D0, 1.16, dive);
     D = lerp(D, 1.05, floor);
-    D = lerp(D, 1.22, card);
-    const gamma = lerp(lerp(0, 13, floor), 5.5, card) * DEG;
+    D = lerp(D, 1.15, card);
+    const gamma = lerp(lerp(0, 13, floor), 0, card) * DEG;
     const m = Math.max(floor, card);
     const roll = (Math.sin(dive * Math.PI) * -7 + card * (reduced ? 0 : Math.sin(t * 0.3) * 1.5)) * DEG;
-    cam.position.set(0, -m * 0.02, D);
+    cam.position.set(0, -m * 0.02 - card * 0.13, D);
     v3.set(0, Math.sin(gamma), Math.cos(gamma)).multiplyScalar(m);
     vUp.set(Math.sin(roll), Math.cos(roll), 0).lerp(new THREE.Vector3(0, 0, 1), m).normalize();
     cam.up.copy(vUp);
@@ -500,7 +500,7 @@ function Scene({ progress, reduced, start, tagEls, tags }: SceneProps) {
       u.uHead.value = d < 1 ? d : reduced ? 0.8 : loop;
       u.uAlpha.value = 1 - easeInOut(range(p, 0.36, 0.4)) * (1 - card);
       u.uViewH.value = H;
-      u.uLift.value = lerp(0.45, 1.6, easeInOut(range(p, 0.08, 0.3)));
+      u.uLift.value = lerp(lerp(0.45, 1.6, easeInOut(range(p, 0.08, 0.3))), 0.55, card);
     });
 
     // Marker. The pulse ring grows and fades, the marker keeps a readable size near the floor.

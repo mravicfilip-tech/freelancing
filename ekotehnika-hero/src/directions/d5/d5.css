@@ -1,0 +1,784 @@
+/* Direction 5, Nacrt. Every selector sits under .d5. Colours come from the README tokens in styles.css. */
+
+.d5 {
+  --g: var(--linde-red);
+  --f: var(--white);
+  --panel: var(--linde-red);
+  --btn-bg: var(--white);
+  --btn-fg: var(--linde-red);
+  --btn-hover: var(--shade-grey);
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --head: 'Archivo', 'Fira Sans', system-ui, sans-serif;
+  --inset: 28px;
+  color: var(--f);
+  background: var(--g);
+}
+
+.d5[data-tone='paper'] {
+  --g: var(--hover-light-grey);
+  --f: var(--ink);
+  --panel: var(--white);
+  --btn-bg: var(--linde-red);
+  --btn-fg: var(--white);
+  --btn-hover: var(--dark-red);
+}
+
+.d5 .d5-stage {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--g);
+  transition: background-color 0.5s;
+}
+
+.d5 .d5-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.d5 .d5-fail {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font: 600 16px var(--mono);
+}
+
+.d5 :where(a, button):focus-visible {
+  outline: 2px solid var(--f);
+  outline-offset: 3px;
+}
+
+/* The overlay for leaders and dimension lines. */
+.d5 .d5-ov {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--f);
+}
+
+.d5 .d5-ov line,
+.d5 .d5-ov path {
+  stroke: var(--f);
+  stroke-width: 1;
+  fill: none;
+}
+
+.d5 .d5-ov .dim text {
+  font: 600 14px var(--mono);
+  letter-spacing: 0.08em;
+  fill: var(--f);
+  stroke: none;
+}
+
+.d5 .d5-ov .dim rect {
+  fill: var(--g);
+  stroke: none;
+}
+
+.d5 .d5-ov .dim path {
+  stroke-width: 1.5;
+}
+
+/* Frame, corner marks and the zone references in the margin. */
+.d5 .d5-frame {
+  position: absolute;
+  inset: var(--inset);
+  border: 1px solid var(--f);
+  box-shadow: 0 0 0 40px var(--g);
+  pointer-events: none;
+  transition: border-color 0.5s;
+}
+
+.d5 .zr {
+  position: absolute;
+  display: grid;
+  font-style: normal;
+  font: 400 14px/28px var(--mono);
+  color: var(--f);
+}
+
+.d5 .zr b {
+  position: relative;
+  font-weight: 400;
+  text-align: center;
+}
+
+.d5 .zr b::before {
+  content: '';
+  position: absolute;
+  background: var(--f);
+}
+
+.d5 .zr-t {
+  left: 0;
+  right: 0;
+  top: calc(var(--inset) * -1 - 1px);
+  height: var(--inset);
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.d5 .zr-t b + b::before {
+  left: -0.5px;
+  top: 16px;
+  width: 1px;
+  height: 12px;
+}
+
+.d5 .zr-l,
+.d5 .zr-r {
+  top: 0;
+  bottom: 0;
+  width: var(--inset);
+  grid-template-rows: repeat(5, 1fr);
+  align-content: stretch;
+}
+
+.d5 .zr-l {
+  left: calc(var(--inset) * -1 - 1px);
+}
+
+.d5 .zr-r {
+  right: calc(var(--inset) * -1 - 1px);
+}
+
+.d5 .zr-l b,
+.d5 .zr-r b {
+  display: grid;
+  place-items: center;
+}
+
+.d5 .zr-l b + b::before,
+.d5 .zr-r b + b::before {
+  top: -0.5px;
+  height: 1px;
+  width: 12px;
+}
+
+.d5 .zr-l b + b::before {
+  right: 0;
+}
+
+.d5 .zr-r b + b::before {
+  left: 0;
+}
+
+.d5 .tick {
+  position: absolute;
+  width: 17px;
+  height: 17px;
+}
+
+.d5 .tick::before,
+.d5 .tick::after {
+  content: '';
+  position: absolute;
+  background: var(--f);
+}
+
+.d5 .tick::before {
+  left: 0;
+  right: 0;
+  top: 8px;
+  height: 1px;
+}
+
+.d5 .tick::after {
+  top: 0;
+  bottom: 0;
+  left: 8px;
+  width: 1px;
+}
+
+.d5 .tick.tl {
+  left: -9px;
+  top: -9px;
+}
+
+.d5 .tick.tr {
+  right: -9px;
+  top: -9px;
+}
+
+.d5 .tick.bl {
+  left: -9px;
+  bottom: -9px;
+}
+
+/* Nav */
+.d5 .d5-nav {
+  position: absolute;
+  z-index: 5;
+  left: calc(var(--inset) + 1px);
+  right: calc(var(--inset) + 1px);
+  top: calc(var(--inset) + 1px);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-right: 8px;
+  background: var(--g);
+  border-bottom: 1px solid var(--f);
+}
+
+.d5 .tile {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  background: var(--white);
+}
+
+.d5 .tile img {
+  display: block;
+  height: auto;
+}
+
+.d5 .tile-sep {
+  width: 1px;
+  height: 30px;
+  background: var(--shade-grey);
+}
+
+.d5 .d5-nav nav {
+  display: flex;
+  margin-left: 22px;
+  flex: 1;
+}
+
+.d5 .d5-nav nav a {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 15px;
+  color: var(--f);
+  text-decoration: none;
+  text-transform: uppercase;
+  font: 600 14px var(--mono);
+  letter-spacing: 0.06em;
+  box-shadow: inset 0 0 0 var(--f);
+  transition: box-shadow 0.2s;
+}
+
+.d5 .d5-nav nav a:hover {
+  box-shadow: inset 0 -4px 0 var(--f);
+}
+
+.d5 .d5-nav nav a:focus-visible {
+  outline-offset: -4px;
+}
+
+/* Buttons and phones */
+.d5 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 22px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  text-decoration: none;
+  font: 800 15px var(--head);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+
+.d5 .btn svg {
+  transition: transform 0.2s;
+}
+
+.d5 .btn:hover {
+  background: var(--btn-hover);
+}
+
+.d5 .btn:hover svg {
+  transform: translateX(5px);
+}
+
+.d5 .btn-big {
+  min-height: 56px;
+  padding: 0 28px;
+  font-size: 16px;
+}
+
+.d5 .tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 12px;
+  color: var(--f);
+  text-decoration: none;
+  font: 400 16px var(--mono);
+  border-bottom: 1px solid var(--f);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.d5 .tel b {
+  font-weight: 600;
+}
+
+.d5 .tel:hover {
+  background: var(--f);
+  color: var(--g);
+}
+
+.d5 .tel-sm {
+  min-height: 36px;
+  padding: 0 0;
+  font-size: 14px;
+  border-bottom: 0;
+}
+
+.d5 .tel-sm:hover {
+  padding: 0 8px;
+}
+
+.d5 .more {
+  color: var(--f);
+  font: 600 14px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-underline-offset: 5px;
+}
+
+/* Chapter copy */
+.d5 .cp {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.d5 .cp a {
+  pointer-events: auto;
+}
+
+.d5 .cp-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--panel);
+  border: 1px solid var(--f);
+  opacity: 0;
+  z-index: -1;
+  transition: background-color 0.5s, border-color 0.5s;
+}
+
+.d5 .cp.solid {
+  padding: 26px 30px 30px;
+  isolation: isolate;
+}
+
+.d5 .kick {
+  margin: 0 0 14px;
+  font: 600 14px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.d5 .kick::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 12px;
+  background: var(--f);
+}
+
+.d5 .big {
+  margin: 0;
+  font: 800 76px/0.94 var(--head);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.d5 .line {
+  margin: 20px 0 0;
+  max-width: 470px;
+  font: 500 20px/1.45 var(--head);
+}
+
+.d5 .conv {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  margin-top: 28px;
+}
+
+/* 0 */
+.d5 .cp0 {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 400px;
+}
+
+.d5 .cp0 .kick {
+  position: absolute;
+  left: 64px;
+  top: 116px;
+  margin: 0;
+}
+
+.d5 .cp0 .head {
+  position: absolute;
+  left: 60px;
+  top: 142px;
+  margin: 0;
+  font: 800 112px/0.9 var(--head);
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}
+
+.d5 .cp0 .head span {
+  display: block;
+}
+
+.d5 .cp0-r {
+  position: absolute;
+  left: 980px;
+  top: 128px;
+  width: 340px;
+}
+
+.d5 .cp0 .lede {
+  margin: 0;
+  font: 700 22px/1.3 var(--head);
+}
+
+.d5 .cp0 .conv {
+  margin-top: 22px;
+  gap: 14px;
+}
+
+.d5 .cp0 .tel {
+  padding: 0 4px;
+}
+
+/* 1 */
+.d5 .cp1 {
+  left: 64px;
+  top: 128px;
+  width: 1100px;
+}
+
+.d5 .cp1 .big {
+  font-size: 84px;
+}
+
+/* 2 */
+.d5 .cp2 {
+  left: 64px;
+  top: 220px;
+  width: 560px;
+}
+
+.d5 .cp2 .big {
+  font-size: 104px;
+}
+
+/* 3 to 6 are boxes with their own ground */
+.d5 .cp3,
+.d5 .cp4,
+.d5 .cp5,
+.d5 .cp6,
+.d5 .cp7 {
+  left: 64px;
+  top: 150px;
+  width: 520px;
+}
+
+.d5 .cp5 .big {
+  font-size: 64px;
+}
+
+.d5 .cp3 {
+  width: 560px;
+}
+
+.d5 .cp3 .big {
+  font-size: 64px;
+}
+
+.d5 .cp4 {
+  width: 380px;
+}
+
+.d5 .cp4 .big {
+  font-size: 56px;
+}
+
+.d5 .cp6 .big {
+  font-size: 96px;
+}
+
+.d5 .cp7 {
+  top: 130px;
+  width: 560px;
+}
+
+.d5 .cp7 .big {
+  font-size: 88px;
+}
+
+.d5 .claims {
+  display: grid;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--f);
+}
+
+.d5 .claims li {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--f);
+  font: 600 16px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.d5 .claims b {
+  font-weight: 600;
+}
+
+/* Pins */
+.d5 .pin {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.d5 .pin-marker .dot {
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--f);
+  color: var(--g);
+  border-radius: 50%;
+  font: 600 18px var(--mono);
+}
+
+.d5 .pin-flip .txt {
+  left: auto !important;
+  right: 30px;
+  text-align: right;
+}
+
+.d5 .pin-marker .txt {
+  position: absolute;
+  left: 30px;
+  top: -24px;
+  display: grid;
+  width: max-content;
+  padding: 4px 12px 5px;
+  background: var(--g);
+}
+
+.d5 .pin-marker .txt b {
+  font: 800 17px/1.2 var(--head);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.d5 .pin i,
+.d5 .pin-marker .txt i {
+  font: 400 14px/1.3 var(--mono);
+  font-style: normal;
+}
+
+.d5 .pin-note,
+.d5 .pin-card {
+  padding: 8px 12px 9px;
+  background: var(--panel);
+  border: 1px solid var(--f);
+  display: grid;
+  align-content: center;
+}
+
+.d5 .pin-note b {
+  font: 600 14px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.d5 .pin-card {
+  padding: 18px 22px 20px;
+  align-content: start;
+  gap: 4px;
+}
+
+.d5 .pin-card .zl {
+  font: 600 14px var(--mono);
+  letter-spacing: 0.1em;
+}
+
+.d5 .pin-card b {
+  font: 800 34px/1 var(--head);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.d5 .pin-card i {
+  margin-top: 6px;
+  font: 500 16px/1.4 var(--head);
+  font-style: normal;
+}
+
+.d5 .pin-axis b {
+  font: 600 16px var(--mono);
+}
+
+/* Title block */
+.d5 .tb {
+  position: absolute;
+  z-index: 6;
+  right: calc(var(--inset) + 1px);
+  bottom: calc(var(--inset) + 1px);
+  width: 400px;
+  background: var(--g);
+  border-top: 1px solid var(--f);
+  border-left: 1px solid var(--f);
+  transition: background-color 0.5s, border-color 0.5s;
+}
+
+.d5 .tb > div {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--f);
+}
+
+.d5 .tb-1 {
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 14px;
+}
+
+.d5 .tb-1 b {
+  font: 800 20px var(--head);
+  letter-spacing: 0.06em;
+}
+
+.d5 .tb-1 span {
+  font: 600 16px var(--mono);
+  letter-spacing: 0.06em;
+}
+
+.d5 .tb-1 i {
+  font-style: normal;
+}
+
+.d5 .tb-2,
+.d5 .tb-3 {
+  height: 32px;
+  padding: 0 14px;
+  gap: 14px;
+  font: 600 14px var(--mono);
+}
+
+.d5 .tb .k {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  min-width: 56px;
+}
+
+.d5 .tb .co {
+  margin-left: auto;
+  font-weight: 400;
+}
+
+.d5 .tb-4 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 0 !important;
+}
+
+.d5 .tb-4 p {
+  display: grid;
+  margin: 0;
+  padding: 6px 14px 7px;
+}
+
+.d5 .tb-4 p + p {
+  border-left: 1px solid var(--f);
+}
+
+.d5 .tb-4 b {
+  font: 600 17px var(--mono);
+}
+
+.d5 .tb-4 span {
+  font: 400 14px var(--mono);
+}
+
+/* Chapter rail, right edge */
+.d5 .rail {
+  position: absolute;
+  z-index: 6;
+  right: calc(var(--inset) + 10px);
+  top: 130px;
+  display: grid;
+  gap: 2px;
+}
+
+.d5 .rail button {
+  position: relative;
+  display: block;
+  min-width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--f);
+  cursor: pointer;
+}
+
+.d5 .rail .ri {
+  font: 600 14px/30px var(--mono);
+}
+
+.d5 .rail .rn {
+  color: var(--f);
+  position: absolute;
+  right: 100%;
+  top: 0;
+  margin-right: 6px;
+  padding: 0 12px;
+  font: 400 14px/30px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--g);
+  border: 1px solid var(--f);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.d5 .rail button:hover .rn,
+.d5 .rail button:focus-visible .rn {
+  opacity: 1;
+}
+
+.d5 .rail button:hover {
+  border-color: var(--f);
+}
+
+.d5 .rail button[data-on='1'] {
+  background: var(--f);
+  color: var(--g);
+}

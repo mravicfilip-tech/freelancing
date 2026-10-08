@@ -33,7 +33,7 @@ Task format
   - [x] Build the hero
   - [x] Animate the three variants on scroll
   - [x] Deploy a preview
-  - [ ] Run /uireview
+  - [x] Run /uireview
 
 ## Review
 

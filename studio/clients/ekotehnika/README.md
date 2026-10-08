@@ -63,8 +63,9 @@ Live site ekotehnika.rs, captured 8 October 2026 at 1440 by 900. Captures are in
 
 ## Run
 
-- Folder `ekotehnika-hero/`, its own React and Vite app, separate from the Remittix app at the repo root.
-- Install `npm install`, build `npm run build`, start `npm run preview` on http://localhost:4173.
-- Routes to shoot `v1=/?v=1,v2=/?v=2,v3=/?v=3`. Wait 2500ms so the V2 and V3 entrances finish.
+- Folder `ekotehnika-hero/`, its own React and Vite app, separate from the Remittix app at the repo root. Node 22 or newer.
+- Install `npm install`. Dev server `npm run dev` on http://localhost:5173. Production build `npm run build`, then `npm run preview` on http://localhost:4173.
+- Variants at `/?v=1` to `/?v=5`, keys 1 to 5 switch between them. `/?gate=1` shows the forklift model gate.
+- Routes to shoot `v1=/?v=1,v2=/?v=2,v3=/?v=3,v4=/?v=4,v5=/?v=5`. WebGL renders in software in the cloud container, wait about 6000ms per shot.
 - Preview hosted on Vercel, project `ekotehnika-hero`, https://ekotehnika-hero.vercel.app.
 - Reduced motion in the browser freezes all motion and drops the scroll pin.

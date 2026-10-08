@@ -1,16 +1,18 @@
 // V2 Linija. The United Carriers illustrated scroll story, 1:1 in Linde tokens. Flat technical
 // vector drawings in side view on a pale ground. The forklift takes a pallet off the rack, turns
 // toward the camera, lowers it, drives right while the floor turns into a black aisle, headline and
-// service columns scramble in, then the view tips to top down and the truck follows the aisle to
-// the dock. SVG and GSAP only, the clock is useScrollStory.
+// service columns reveal word by word, then the view tips to top down and the truck follows the aisle to
+// the dock. SVG and GSAP only, the clock is useScrollStory. The shared nav sits on top, every word is
+// Geist in sentence case, and the camera keeps the drawing under about 60 percent of the screen.
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { useScrollStory, clamp01, range, band } from '../../scroll/useScrollStory';
-import { hero, pillars, SITE, trust } from '../../content';
+import { useScrollStory, clamp01, range } from '../../scroll/useScrollStory';
+import { hero, pillars, trust } from '../../content';
 import { C } from '../../tokens';
 import { ForkliftFront, ForkliftSide, LoadSide, RackSide, ServiceIcon } from './art';
 import { YardMap } from './map';
-import { makeLine, setLine } from './scramble';
+import { makeWords, setWords } from './reveal';
+import { Nav } from '../../ui/Nav';
 import './v2.css';
 
 const LENGTH = 9000;
@@ -43,12 +45,14 @@ const RACK_X = 300;
 const PICK_Y = 300;
 
 // Copy. Lines marked dummy are new and not from content.ts.
-const HERO_LINES = ['Linde viljuškari.', 'Prodaja, najam i servis', 'na jednom mestu.'];
-const DARK_LINES = ['Sve što vašem', 'skladištu treba', 'jedan partner']; // dummy
-const DARK_PILL = 'Naše usluge'; // dummy
-const CLOSE_LINES = ['Pouzdanost', 'na svakom', 'koraku']; // dummy
+// The content.ts headline, rebroken into two balanced lines.
+const HERO_LINES = ['Linde viljuškari. Prodaja,', 'najam i servis na jednom mestu.'];
+const SERVICES = pillars[2];
+const DARK_LINES = ['Sve što vašem skladištu', 'treba, jedan partner']; // dummy
+const DARK_LINK = 'Naše usluge'; // dummy
+const CLOSE_LINES = ['Pouzdanost', 'na svakom koraku']; // dummy
 const CLOSE_SUB = 'Od 1997. uz vaše viljuškare, od prve ponude do svakog servisa.'; // dummy
-const SIDE_TITLE = 'Servis na\nterenu'; // dummy
+const SIDE_TITLE = 'Servis na terenu'; // dummy
 
 type Els = Record<string, HTMLElement | SVGElement | null>;
 
@@ -77,12 +81,12 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
   useEffect(() => {
     const e = els.current as Record<string, any>;
     const q = (sel: string) => Array.from(stageRef.current?.querySelectorAll<HTMLElement>(sel) ?? []);
-    const heroLines = q('[data-l="hero"]').map((el, i) => makeLine(el, 11 + i * 7));
-    const darkLines = q('[data-l="dark"]').map((el, i) => makeLine(el, 31 + i * 7));
-    const darkPara = q('[data-l="darkp"]').map((el) => makeLine(el, 53));
-    const svcTitles = q('[data-l="svc"]').map((el, i) => makeLine(el, 61 + i * 5));
-    const closeLines = q('[data-l="close"]').map((el, i) => makeLine(el, 81 + i * 7));
-    const sideTitle = q('[data-l="side"]').map((el) => makeLine(el, 97));
+    const heroLines = q('[data-l="hero"]').map(makeWords);
+    const darkLines = q('[data-l="dark"]').map(makeWords);
+    const darkPara = q('[data-l="darkp"]').map(makeWords);
+    const svcTitles = q('[data-l="svc"]').map(makeWords);
+    const closeLines = q('[data-l="close"]').map(makeWords);
+    const sideTitle = q('[data-l="side"]').map(makeWords);
     const svcItems = q('.v2-svc li');
     const svcIcons = svcItems.map((li) => Array.from(li.querySelectorAll<SVGElement>('path, rect, circle')));
     const sideIcon = q('.v2-cside svg path, .v2-cside svg rect, .v2-cside svg circle');
@@ -120,10 +124,12 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       const sxWorld = p < 0.29 ? 1 : p < 0.31 ? 1 - ein(range(p, 0.29, 0.31)) : p < 0.42 ? 0 : -eout(range(p, 0.42, 0.44));
       const pivot = fx - 20;
 
-      // Side camera. World point (cx, cy) sits at the screen centre at scale s.
-      const s = kf(p, [[0, 0.96], [0.04, 0.96], [0.11, 1.3], [0.18, 1.25], [0.24, 1.25], [0.29, 1.3], [0.33, 3.0], [0.36, 2.8], [0.4, 1.6], [0.44, 1.25], [0.52, 1.15], [0.78, 1.1]]);
-      const cy = kf(p, [[0, -427], [0.04, -427], [0.11, -331], [0.18, -352], [0.24, -352], [0.29, -331], [0.33, -316], [0.36, -312], [0.4, -219], [0.44, -248], [0.52, 43], [0.78, 50], [0.84, 64]]);
-      const cxKF = kf(p, [[0, 150], [0.04, 150], [0.11, 300], [0.18, 330], [0.24, 330]]);
+      // Side camera. World point (cx, cy) sits at the screen centre at scale s. The scale stays low
+      // enough that the rack, about 530 units tall, and the raised front view stay under 60 percent
+      // of the screen, and every beat at rest frames the whole drawing inside the page margins.
+      const s = kf(p, [[0, 0.84], [0.04, 0.84], [0.11, 1.0], [0.18, 1.0], [0.24, 1.0], [0.29, 1.0], [0.33, 1.2], [0.36, 1.2], [0.4, 1.5], [0.44, 1.0], [0.52, 1.0], [0.78, 1.0]]);
+      const cy = kf(p, [[0, -431], [0.04, -431], [0.11, -340], [0.18, -340], [0.24, -340], [0.29, -330], [0.33, -212], [0.36, -212], [0.4, -113], [0.44, -310], [0.52, 50], [0.78, 55], [0.84, 70]]);
+      const cxKF = kf(p, [[0, 237], [0.04, 237], [0.11, 431], [0.18, 431], [0.24, 431]]);
       const offX = kf(p, [[0.44, 0], [0.52, 90]]);
       const cx = lerp(cxKF, pivot + offX / s, io(range(p, 0.24, 0.29)));
       const cam = `translate(720 450) scale(${s}) translate(${-cx} ${-cy})`;
@@ -134,7 +140,8 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       e.cam2.setAttribute('transform', cam);
       // The world turns about the spot where the truck turned, x 20, so the rack stays behind it.
       e.world.setAttribute('transform', `translate(20 0) scale(${Math.abs(sxWorld) < 1e-4 ? 1e-4 : sxWorld} 1) translate(-20 0)`);
-      e.world.style.opacity = String(Math.min(1, Math.abs(sxWorld) * 1.6));
+      // The rack and the parked truck dissolve as the truck drives off, so they never sit cut by the edge.
+      e.world.style.opacity = String(Math.min(1, Math.abs(sxWorld) * 1.6) * (1 - range(p, 0.445, 0.485)));
       e.truckTurn.setAttribute('transform', `translate(${pivot} 0) scale(${Math.max(1e-4, sxTruck)} 1) translate(${-pivot} 0)`);
       e.truckPos.setAttribute('transform', `translate(${fx} 0)`);
       e.front.setAttribute('transform', `translate(${pivot} 0) scale(${Math.max(1e-4, sFront)} 1)`);
@@ -192,11 +199,6 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       e.lane.setAttribute('stroke-dashoffset', String(fx * s));
       e.lane.style.opacity = String(0.5 * range(p, 0.51, 0.53) * (1 - range(p, 0.78, 0.8)));
 
-      // Ghost word behind the truck in the pale band.
-      const gh = band(p, 0.53, 0.58, 0.77, 0.8);
-      e.ghost.setAttribute('transform', `translate(${560 - (fx - 900) * 0.32} ${gy - 8})`);
-      e.ghost.style.opacity = String(gh);
-
       // Tip from side view to top down. The side truck folds flat onto the aisle.
       const fold = range(p, 0.8, 0.825);
       const py = gy - 110 * s;
@@ -232,25 +234,24 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
 
       // Hero copy at scroll zero.
       const heroT = Math.min(intro.v, 1 - range(p, 0.012, 0.045));
-      heroLines.forEach((l, i) => setLine(l, clamp01(heroT * 1.25 - i * 0.08)));
+      heroLines.forEach((l, i) => setWords(l, clamp01(heroT * 1.25 - i * 0.08)));
       const ho = Math.min(intro.v, 1 - range(p, 0.01, 0.035));
       vis(e.kicker, ho);
       vis(e.heroSub, ho, (1 - ho) * -10);
       vis(e.heroCtas, ho, (1 - ho) * -10);
-      vis(e.navQuote, band(p, 0.035, 0.05, 0.955, 0.97));
 
       // Black aisle headline, paragraph and pill.
       const dOut = 1 - range(p, 0.665, 0.69);
-      darkLines.forEach((l, i) => setLine(l, Math.min(range(p, 0.545 + i * 0.012, 0.6 + i * 0.012), dOut)));
+      darkLines.forEach((l, i) => setWords(l, Math.min(range(p, 0.545 + i * 0.012, 0.6 + i * 0.012), dOut)));
       e.darkDot.style.opacity = Math.min(range(p, 0.57, 0.625), dOut) >= 1 ? '1' : '0';
-      darkPara.forEach((l) => setLine(l, Math.min(range(p, 0.565, 0.62), dOut)));
-      vis(e.darkPill, Math.min(range(p, 0.6, 0.625), dOut));
+      darkPara.forEach((l) => setWords(l, Math.min(range(p, 0.565, 0.62), dOut)));
+      vis(e.darkLink, Math.min(range(p, 0.6, 0.625), dOut));
 
       // Service columns.
       const sOut = 1 - range(p, 0.775, 0.8);
       svcItems.forEach((li, i) => {
         const t = Math.min(range(p, 0.69 + i * 0.014, 0.745 + i * 0.014), sOut);
-        setLine(svcTitles[i], t);
+        setWords(svcTitles[i], t);
         svcIcons[i].forEach((n) => (n.style.strokeDashoffset = String(1 - Math.min(1, t * 1.6))));
         const rule = li.querySelector<HTMLElement>('.v2-rule');
         if (rule) rule.style.transform = `scaleX(${io(t)})`;
@@ -261,12 +262,12 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       vis(e.dark, p > 0.5 && p < 0.81 ? 1 : 0);
 
       // Closing over the yard.
-      closeLines.forEach((l, i) => setLine(l, range(p, 0.96 + i * 0.008, 0.984 + i * 0.008)));
+      closeLines.forEach((l, i) => setWords(l, range(p, 0.96 + i * 0.008, 0.984 + i * 0.008)));
       e.closeDot.style.opacity = range(p, 0.976, 0.998) >= 1 ? '1' : '0';
       const cf = range(p, 0.972, 0.995);
       vis(e.closeFoot, cf, (1 - cf) * 14);
       const ct = range(p, 0.966, 0.995);
-      sideTitle.forEach((l) => setLine(l, ct));
+      sideTitle.forEach((l) => setWords(l, ct));
       sideIcon.forEach((n) => (n.style.strokeDashoffset = String(1 - Math.min(1, ct * 1.5))));
       vis(e.sidePara, clamp01(ct * 2 - 1));
       vis(e.close, p > 0.955 ? 1 : 0);
@@ -309,6 +310,7 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
 
   return (
     <div className="v2" ref={stageRef} role="region" aria-label="Ekotehnika, Linde viljuškari">
+      <Nav theme="light" className="v2-topnav" />
       <div className="v2-frame" ref={frameRef}>
         <svg className="v2-layer" ref={r('side')} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
           <defs>
@@ -316,11 +318,6 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
               <feGaussianBlur ref={r('mb')} stdDeviation="0 0" />
             </filter>
           </defs>
-          <g ref={r('ghost')} className="v2-ghost">
-            <text x={0} y={0} fontSize={310} fill="none" stroke={C.shadeGrey} strokeWidth={1.6}>
-              USLUGE
-            </text>
-          </g>
           <line ref={r('ground')} x1={0} x2={1440} y1={860} y2={860} stroke={C.shadeGrey} strokeWidth={1} />
           <g ref={r('cam1')}>
             <g ref={r('world')}>
@@ -375,50 +372,32 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
           />
         </svg>
 
-        <header className="v2-nav">
-          <a className="v2-logos" href={SITE} aria-label="Ekotehnika, početna">
-            <img src="/brand/linde-mh.png" alt="Linde Material Handling" width={60} height={36} />
-            <img src="/brand/ekotehnika.png" alt="Ekotehnika" width={110} height={30} />
-          </a>
-          <div className="v2-navright">
-            <a ref={r('navQuote')} className="v2-pill v2-pill--red v2-navquote" href={hero.quote.href} data-cta="quote">
-              {hero.quote.label}
-            </a>
-            <a className="v2-sos" href={hero.service.tel} data-cta="call-service">
-              <span>{hero.service.label}</span>
-              {hero.service.number}
-            </a>
-          </div>
-        </header>
-
         <div className="v2-hero">
-          <p ref={r('kicker')} className="v2-kicker v2-wide">
+          <p ref={r('kicker')} className="v2-kicker">
             {hero.kicker}
           </p>
-          <h1 className="v2-wide" aria-label={hero.headline.join(' ')}>
+          <h1 aria-label={hero.headline.join(' ')}>
             {HERO_LINES.map((t) => (
-              <span key={t} className="v2-l" data-l="hero" data-text={t.toUpperCase()} />
+              <span key={t} className="v2-l" data-l="hero" data-text={t} aria-hidden="true" />
             ))}
           </h1>
           <p ref={r('heroSub')} className="v2-sub">
             {hero.sub}
           </p>
           <div ref={r('heroCtas')} className="v2-ctas">
-            <a className="v2-pill v2-pill--red" href={hero.quote.href} data-cta="quote">
-              {hero.quote.label}
-            </a>
-            <a className="v2-pill v2-pill--line" href={hero.sales.tel} data-cta="call-sales">
-              {hero.sales.label} {hero.sales.number}
+            <a className="v2-link" href={SERVICES.href}>
+              {SERVICES.more}
+              <Arrow />
             </a>
           </div>
         </div>
 
         <div ref={r('dark')} className="v2-dark" style={{ visibility: 'hidden' }}>
-          <h2 className="v2-bh v2-wide">
+          <h2 className="v2-bh" aria-label={DARK_LINES.join(' ')}>
             {DARK_LINES.map((t, i) => (
-              <span key={t} className="v2-l">
-                <span data-l="dark" data-text={t.toUpperCase()} />
-                {i === 2 && (
+              <span key={t} className="v2-l" aria-hidden="true">
+                <span data-l="dark" data-text={t} />
+                {i === DARK_LINES.length - 1 && (
                   <span ref={r('darkDot')} className="v2-dot" style={{ opacity: 0 }}>
                     .
                   </span>
@@ -429,8 +408,9 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
           <p className="v2-bp">
             <span data-l="darkp" data-text={hero.sub} />
           </p>
-          <a ref={r('darkPill')} className="v2-pill v2-pill--dark v2-bpill" href={SITE}>
-            {DARK_PILL}
+          <a ref={r('darkLink')} className="v2-link v2-link--dark v2-blink" href={SERVICES.href}>
+            {DARK_LINK}
+            <Arrow />
           </a>
           <ul className="v2-svc">
             {pillars.map((pl) => (
@@ -439,8 +419,8 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
                   <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
                     <ServiceIcon id={pl.id} />
                   </svg>
-                  <h3 className="v2-wide">
-                    <span data-l="svc" data-text={pl.name.toUpperCase()} />
+                  <h3 aria-label={pl.name}>
+                    <span data-l="svc" data-text={pl.name} aria-hidden="true" />
                   </h3>
                   <span className="v2-rule" />
                   <p>{pl.line}</p>
@@ -451,11 +431,11 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
         </div>
 
         <div ref={r('close')} className="v2-close" style={{ visibility: 'hidden' }}>
-          <h2 className="v2-ch v2-wide">
+          <h2 className="v2-ch" aria-label={CLOSE_LINES.join(' ')}>
             {CLOSE_LINES.map((t, i) => (
-              <span key={t} className={`v2-l${i === 0 ? ' v2-red' : ''}`}>
-                <span data-l="close" data-text={t.toUpperCase()} />
-                {i === 2 && (
+              <span key={t} className={`v2-l${i === 0 ? ' v2-red' : ''}`} aria-hidden="true">
+                <span data-l="close" data-text={t} />
+                {i === CLOSE_LINES.length - 1 && (
                   <span ref={r('closeDot')} className="v2-dot" style={{ opacity: 0 }}>
                     .
                   </span>
@@ -465,26 +445,31 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
           </h2>
           <div ref={r('closeFoot')} className="v2-cfoot">
             <p>{CLOSE_SUB}</p>
-            <div className="v2-ctas">
-              <a className="v2-pill v2-pill--red" href={hero.quote.href} data-cta="quote">
-                {hero.quote.label}
-              </a>
-              <a className="v2-pill v2-pill--line" href={hero.sales.tel} data-cta="call-sales">
-                {hero.sales.label} {hero.sales.number}
-              </a>
-            </div>
+            <a className="v2-link" href={SERVICES.href}>
+              {SERVICES.more}
+              <Arrow />
+            </a>
           </div>
           <div className="v2-cside">
             <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
               <ServiceIcon id="servis" color={C.ink} />
             </svg>
-            <h3 className="v2-wide">
-              <span data-l="side" data-text={SIDE_TITLE.toUpperCase()} />
+            <h3 aria-label={SIDE_TITLE}>
+              <span data-l="side" data-text={SIDE_TITLE} aria-hidden="true" />
             </h3>
             <p ref={r('sidePara')}>{trust[3].text}</p>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// Small line arrow for the text links.
+function Arrow() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M3 8 H13 M9 4 L13 8 L9 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

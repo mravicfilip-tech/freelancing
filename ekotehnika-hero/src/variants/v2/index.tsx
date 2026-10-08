@@ -1,21 +1,28 @@
 // V2 Linija. The United Carriers illustrated scroll story, 1:1 in Linde tokens. Flat technical
 // vector drawings in side view on a pale ground. The forklift takes a pallet off the rack, turns
-// toward the camera, lowers it, drives right while the floor turns into a black aisle, headline and
-// service columns reveal word by word, then the view tips to top down and the truck follows the aisle to
-// the dock. SVG and GSAP only, the clock is useScrollStory. The shared nav sits on top, every word is
-// Geist in sentence case, and the camera keeps the drawing under about 60 percent of the screen.
-import { useEffect, useLayoutEffect, useRef } from 'react';
+// toward the camera, lowers it, drives right while the floor turns into a black aisle, then the view
+// tips to top down and the truck follows the aisle to the dock. SVG and GSAP only, the clock is
+// useScrollStory. The UI around the drawing is a floating dashboard, one rounded panel on a grey
+// page with white cards on top. Every word is Geist in sentence case.
+import { useEffect, useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import { useScrollStory, clamp01, range } from '../../scroll/useScrollStory';
 import { hero, pillars, trust } from '../../content';
 import { C } from '../../tokens';
 import { ForkliftFront, ForkliftSide, LoadSide, RackSide, ServiceIcon } from './art';
 import { YardMap } from './map';
-import { makeWords, setWords } from './reveal';
 import { Nav } from '../../ui/Nav';
 import './v2.css';
 
 const LENGTH = 9000;
+// Frame units the black floor is carried below its old bottom edge, 930, so it reaches the panel edge.
+const SKIRT = 120;
+
+// The 1440 by 900 drawing sits in the panel as one scaled frame, so the active forklift stays clear of
+// the two card columns. Panel coordinates. The yard map starts on the same frame and slides to the
+// middle gap between the columns while the view tips.
+const FRAME = { x: 327, y: -18, k: 0.86 };
+const MAP_END = { x: -10, y: -18, k: 1 };
 
 const io = (t: number) => 0.5 - Math.cos(Math.PI * clamp01(t)) / 2;
 const ein = (t: number) => clamp01(t) ** 2;
@@ -45,65 +52,50 @@ const RACK_X = 300;
 const PICK_Y = 300;
 
 // Copy. Lines marked dummy are new and not from content.ts.
-// The content.ts headline, rebroken into two balanced lines.
-const HERO_LINES = ['Linde viljuškari. Prodaja,', 'najam i servis na jednom mestu.'];
 const SERVICES = pillars[2];
-const DARK_LINES = ['Sve što vašem skladištu', 'treba, jedan partner']; // dummy
-const DARK_LINK = 'Naše usluge'; // dummy
-const CLOSE_LINES = ['Pouzdanost', 'na svakom koraku']; // dummy
-const CLOSE_SUB = 'Od 1997. uz vaše viljuškare, od prve ponude do svakog servisa.'; // dummy
+const PROMO_TITLE = 'Linde MT15 C'; // from content.ts promo.text, without the price
+const STATUS = ['Na rafu', 'Utovar', 'Na putu', 'Isporučeno']; // dummy
+const STOPS = ['Ekotehnika, Vrčin', 'Vaše skladište']; // dummy
+const DELIVERY = 'Isporuka za 24 sata'; // dummy, from the najam line in content.ts
+const MODELS = { n: 96, label: 'Linde modela' }; // from the novi line in content.ts
+const WARRANTY = { n: 6, unit: 'meseci', line: 'ili 500 radnih sati garancije', title: 'Linde Approved Trucks' }; // from the polovni line in content.ts
 const SIDE_TITLE = 'Servis na terenu'; // dummy
+const CONTACT = 'Prodaja'; // dummy, label from content.ts hero.sales
+
+// The gauge, 270 degrees open at the bottom. Radius 78 around (100, 96).
+const GAUGE = 'M 44.85 151.15 A 78 78 0 1 1 155.15 151.15';
+// The route line in the service tile, 276 by 96.
+const ROUTE_LINE = 'M 10 74 C 46 74 58 30 96 38 S 148 82 184 56 S 238 14 266 24';
+
+// The story beat a progress value sits in, for the status chip and the pillar strip.
+const beatOf = (p: number) => (p < 0.2 ? 0 : p < 0.44 ? 1 : p < 0.97 ? 2 : 3);
+const pillarOf = (p: number) => Math.min(pillars.length - 1, Math.floor(p / 0.26));
 
 type Els = Record<string, HTMLElement | SVGElement | null>;
 
 export default function Variant2({ reduced }: { reduced: boolean }) {
   const { stageRef, progress } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.07 });
-  const frameRef = useRef<HTMLDivElement>(null);
   const els = useRef<Els>({});
   const r = (k: string) => (el: HTMLElement | SVGElement | null) => {
     els.current[k] = el;
   };
 
-  // Keeps the 1440 by 900 composition covering the stage at any desktop size.
-  useLayoutEffect(() => {
-    const fit = () => {
-      const f = frameRef.current;
-      const st = stageRef.current;
-      if (!f || !st) return;
-      const k = Math.max(st.clientWidth / 1440, st.clientHeight / 900);
-      f.style.transform = `translate(-50%, -50%) scale(${k})`;
-    };
-    fit();
-    window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
-  }, [stageRef]);
-
   useEffect(() => {
     const e = els.current as Record<string, any>;
-    const q = (sel: string) => Array.from(stageRef.current?.querySelectorAll<HTMLElement>(sel) ?? []);
-    const heroLines = q('[data-l="hero"]').map(makeWords);
-    const darkLines = q('[data-l="dark"]').map(makeWords);
-    const darkPara = q('[data-l="darkp"]').map(makeWords);
-    const svcTitles = q('[data-l="svc"]').map(makeWords);
-    const closeLines = q('[data-l="close"]').map(makeWords);
-    const sideTitle = q('[data-l="side"]').map(makeWords);
-    const svcItems = q('.v2-svc li');
-    const svcIcons = svcItems.map((li) => Array.from(li.querySelectorAll<SVGElement>('path, rect, circle')));
-    const sideIcon = q('.v2-cside svg path, .v2-cside svg rect, .v2-cside svg circle');
-    const frontRods = q('.v2-front .v2-frod') as unknown as SVGRectElement[];
-    const frontChains = q('.v2-front .v2-fchain') as unknown as SVGLineElement[];
+    const frontRods = Array.from(stageRef.current?.querySelectorAll<SVGRectElement>('.v2-front .v2-frod') ?? []);
+    const frontChains = Array.from(stageRef.current?.querySelectorAll<SVGLineElement>('.v2-front .v2-fchain') ?? []);
+    const pcards = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('.v2-pcard') ?? []);
 
     const route = e.route as SVGPathElement;
     const total = route.getTotalLength();
     e.reveal.setAttribute('stroke-dasharray', `${total} ${total}`);
+    const line = e.line as SVGPathElement;
+    const lineLen = line.getTotalLength();
+    line.setAttribute('stroke-dasharray', `${lineLen} ${lineLen}`);
 
     const intro = { v: reduced ? 1 : 0 };
-    const vis = (el: HTMLElement | null, o: number, y = 0) => {
-      if (!el) return;
-      el.style.opacity = String(o);
-      el.style.transform = y ? `translateY(${y}px)` : '';
-      el.style.visibility = o < 0.01 ? 'hidden' : 'visible';
-    };
+    let beat = -1;
+    let cur = -1;
 
     let last = -1;
     let lastIntro = -1;
@@ -232,45 +224,54 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
         e.reveal.setAttribute('stroke-dashoffset', String(total - Math.min(total, L + 650)));
       }
 
-      // Hero copy at scroll zero.
-      const heroT = Math.min(intro.v, 1 - range(p, 0.012, 0.045));
-      heroLines.forEach((l, i) => setWords(l, clamp01(heroT * 1.25 - i * 0.08)));
-      const ho = Math.min(intro.v, 1 - range(p, 0.01, 0.035));
-      vis(e.kicker, ho);
-      vis(e.heroSub, ho, (1 - ho) * -10);
-      vis(e.heroCtas, ho, (1 - ho) * -10);
+      // The map layer slides from the frame offset to the middle gap while the view tips.
+      const mt = io(range(p, 0.83, 0.9));
+      e.mapframe.style.transform = `translate(${lerp(FRAME.x, MAP_END.x, mt)}px, ${lerp(FRAME.y, MAP_END.y, mt)}px) scale(${lerp(FRAME.k, MAP_END.k, mt)})`;
+      // A panel coloured lane behind the right column hides scene bits in its gaps until the world is gone.
+      e.lane2.style.opacity = String(1 - range(p, 0.46, 0.5));
+      // A panel coloured band under the strip keeps yard doors out of the gaps between its cards.
+      e.foot.style.opacity = String(range(p, 0.9, 0.93));
 
-      // Black aisle headline, paragraph and pill.
-      const dOut = 1 - range(p, 0.665, 0.69);
-      darkLines.forEach((l, i) => setWords(l, Math.min(range(p, 0.545 + i * 0.012, 0.6 + i * 0.012), dOut)));
-      e.darkDot.style.opacity = Math.min(range(p, 0.57, 0.625), dOut) >= 1 ? '1' : '0';
-      darkPara.forEach((l) => setWords(l, Math.min(range(p, 0.565, 0.62), dOut)));
-      vis(e.darkLink, Math.min(range(p, 0.6, 0.625), dOut));
+      // The floor sits inside a panel and the frame is scaled, so a skirt under the floor carries
+      // the black down to the panel edge. It grows and retracts with the floor.
+      const skirt = SKIRT * k2 * (1 - io(range(p, 0.78, 0.82)));
+      e.skirt.setAttribute('x', e.floor.getAttribute('x'));
+      e.skirt.setAttribute('width', e.floor.getAttribute('width'));
+      e.skirt.setAttribute('y', String(bottom - 0.5));
+      e.skirt.setAttribute('height', String(Math.max(0, skirt)));
+      e.skirt.style.visibility = e.floor.style.visibility;
 
-      // Service columns.
-      const sOut = 1 - range(p, 0.775, 0.8);
-      svcItems.forEach((li, i) => {
-        const t = Math.min(range(p, 0.69 + i * 0.014, 0.745 + i * 0.014), sOut);
-        setWords(svcTitles[i], t);
-        svcIcons[i].forEach((n) => (n.style.strokeDashoffset = String(1 - Math.min(1, t * 1.6))));
-        const rule = li.querySelector<HTMLElement>('.v2-rule');
-        if (rule) rule.style.transform = `scaleX(${io(t)})`;
-        const para = li.querySelector<HTMLElement>('p');
-        vis(para, clamp01(t * 2 - 1), (1 - t) * 8);
-        li.style.visibility = t > 0.001 ? 'visible' : 'hidden';
-      });
-      vis(e.dark, p > 0.5 && p < 0.81 ? 1 : 0);
-
-      // Closing over the yard.
-      closeLines.forEach((l, i) => setWords(l, range(p, 0.96 + i * 0.008, 0.984 + i * 0.008)));
-      e.closeDot.style.opacity = range(p, 0.976, 0.998) >= 1 ? '1' : '0';
-      const cf = range(p, 0.972, 0.995);
-      vis(e.closeFoot, cf, (1 - cf) * 14);
-      const ct = range(p, 0.966, 0.995);
-      sideTitle.forEach((l) => setWords(l, ct));
-      sideIcon.forEach((n) => (n.style.strokeDashoffset = String(1 - Math.min(1, ct * 1.5))));
-      vis(e.sidePara, clamp01(ct * 2 - 1));
-      vis(e.close, p > 0.955 ? 1 : 0);
+      // UI layer. Cards follow the story. Reduced motion shows every gauge and line complete.
+      const done = reduced ? 1 : 0;
+      const bt = beatOf(p);
+      if (bt !== beat) {
+        beat = bt;
+        e.status.textContent = STATUS[bt];
+      }
+      const prog = range(p, 0, 0.985);
+      e.fill.style.transform = `scaleX(${prog})`;
+      e.marker.style.left = `${prog * 100}%`;
+      const n = Math.max(intro.v, range(p, 0, 0.1), done);
+      e.models.textContent = String(Math.round(MODELS.n * n));
+      e.warr.textContent = String(Math.round(WARRANTY.n * n));
+      const g = Math.max(done, io(range(p, 0.02, 0.5)));
+      e.gauge.setAttribute('stroke-dashoffset', String(1 - g));
+      const rl = Math.max(done, io(range(p, 0.04, 0.97)));
+      line.setAttribute('stroke-dashoffset', String(lineLen * (1 - rl)));
+      const tip = line.getPointAtLength(lineLen * rl);
+      const tipOn = clamp01((rl - 0.06) / 0.04);
+      e.tip.style.opacity = String(tipOn);
+      e.tip.setAttribute('cx', String(tip.x));
+      e.tip.setAttribute('cy', String(tip.y));
+      e.tipDrop.setAttribute('x1', String(tip.x));
+      e.tipDrop.setAttribute('x2', String(tip.x));
+      e.tipDrop.setAttribute('y1', String(tip.y));
+      e.tipDrop.style.opacity = String(tipOn);
+      const pc = pillarOf(p);
+      if (pc !== cur) {
+        cur = pc;
+        pcards.forEach((c, i) => c.toggleAttribute('data-current', i === pc));
+      }
     };
 
     if (reduced) {
@@ -310,158 +311,210 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
 
   return (
     <div className="v2" ref={stageRef} role="region" aria-label="Ekotehnika, Linde viljuškari">
-      <Nav theme="light" className="v2-topnav" />
-      <div className="v2-frame" ref={frameRef}>
-        <svg className="v2-layer" ref={r('side')} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="v2-mb" x="-20%" y="-5%" width="140%" height="110%">
-              <feGaussianBlur ref={r('mb')} stdDeviation="0 0" />
-            </filter>
-          </defs>
-          <line ref={r('ground')} x1={0} x2={1440} y1={860} y2={860} stroke={C.shadeGrey} strokeWidth={1} />
-          <g ref={r('cam1')}>
-            <g ref={r('world')}>
-              {rack1}
-              {rack2}
-              <g transform="translate(774 0) scale(-1 1)">
-                <ForkliftSide lift={0} load={<LoadSide x={66} y={10} kind="tall" />} />
-              </g>
-            </g>
-          </g>
-          <rect ref={r('floor')} x={0} y={900} width={0} height={0} fill={C.ink} />
-          <line ref={r('lane')} x1={-200} x2={1640} y1={0} y2={0} stroke={C.textGrey} strokeWidth={2} strokeDasharray="70 110" style={{ opacity: 0 }} />
-          <g ref={r('squash')}>
-            <g ref={r('cam2')}>
-              <g ref={r('truckTurn')}>
-                <g ref={r('truckPos')}>
-                  <ForkliftSide
-                    parts={{
-                      mast: r('mast') as never,
-                      inner: r('inner') as never,
-                      rod: r('rod') as never,
-                      chain: r('chain') as never,
-                      carriage: r('carriage') as never,
-                      wheelF: r('wheelF') as never,
-                      wheelR: r('wheelR') as never,
-                    }}
-                    load={
-                      <g ref={r('load')}>
-                        <LoadSide kind="cartons" />
-                      </g>
-                    }
-                  />
+      <div className="v2-panel">
+        <div className="v2-frame" style={{ transform: `translate(${FRAME.x}px, ${FRAME.y}px) scale(${FRAME.k})` }}>
+          <svg className="v2-layer" ref={r('side')} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="v2-mb" x="-20%" y="-5%" width="140%" height="110%">
+                <feGaussianBlur ref={r('mb')} stdDeviation="0 0" />
+              </filter>
+            </defs>
+            <line ref={r('ground')} x1={0} x2={1440} y1={860} y2={860} stroke={C.shadeGrey} strokeWidth={1} />
+            <g ref={r('cam1')}>
+              <g ref={r('world')}>
+                {rack1}
+                {rack2}
+                <g transform="translate(774 0) scale(-1 1)">
+                  <ForkliftSide lift={0} load={<LoadSide x={66} y={10} kind="tall" />} />
                 </g>
               </g>
-              <g ref={r('front')} className="v2-front" style={{ visibility: 'hidden' }}>
-                <ForkliftFront parts={{ inner: r('finner') as never, carriage: r('fcarriage') as never }} />
+            </g>
+            <rect ref={r('floor')} x={0} y={900} width={0} height={0} fill={C.ink} />
+            <rect ref={r('skirt')} x={0} y={900} width={0} height={0} fill={C.ink} />
+            <line ref={r('lane')} x1={-200} x2={1640} y1={0} y2={0} stroke={C.textGrey} strokeWidth={2} strokeDasharray="70 110" style={{ opacity: 0 }} />
+            <g ref={r('squash')}>
+              <g ref={r('cam2')}>
+                <g ref={r('truckTurn')}>
+                  <g ref={r('truckPos')}>
+                    <ForkliftSide
+                      parts={{
+                        mast: r('mast') as never,
+                        inner: r('inner') as never,
+                        rod: r('rod') as never,
+                        chain: r('chain') as never,
+                        carriage: r('carriage') as never,
+                        wheelF: r('wheelF') as never,
+                        wheelR: r('wheelR') as never,
+                      }}
+                      load={
+                        <g ref={r('load')}>
+                          <LoadSide kind="cartons" />
+                        </g>
+                      }
+                    />
+                  </g>
+                </g>
+                <g ref={r('front')} className="v2-front" style={{ visibility: 'hidden' }}>
+                  <ForkliftFront parts={{ inner: r('finner') as never, carriage: r('fcarriage') as never }} />
+                </g>
               </g>
             </g>
-          </g>
-        </svg>
+          </svg>
+        </div>
 
-        <svg className="v2-layer v2-map" ref={r('map')} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
-          <rect x={-100} y={-100} width={1640} height={1100} fill={C.hoverLightGrey} />
-          <YardMap
-            refs={{
-              cam: r('mapCam') as never,
-              truck: r('mapTruck') as never,
-              truckInner: r('mapTruckInner') as never,
-              route: r('route') as never,
-              reveal: r('reveal') as never,
-            }}
-          />
-        </svg>
+        <div className="v2-frame" ref={r('mapframe')} style={{ transform: `translate(${FRAME.x}px, ${FRAME.y}px) scale(${FRAME.k})` }}>
+          <svg className="v2-layer v2-map" ref={r('map')} viewBox="0 0 1440 900" aria-hidden="true" focusable="false">
+            <rect x={-3000} y={-3000} width={7500} height={7500} fill={C.hoverLightGrey} />
+            <YardMap
+              refs={{
+                cam: r('mapCam') as never,
+                truck: r('mapTruck') as never,
+                truckInner: r('mapTruckInner') as never,
+                route: r('route') as never,
+                reveal: r('reveal') as never,
+              }}
+            />
+          </svg>
+        </div>
 
-        <div className="v2-hero">
-          <p ref={r('kicker')} className="v2-kicker">
-            {hero.kicker}
-          </p>
-          <h1 aria-label={hero.headline.join(' ')}>
-            {HERO_LINES.map((t) => (
-              <span key={t} className="v2-l" data-l="hero" data-text={t} aria-hidden="true" />
-            ))}
-          </h1>
-          <p ref={r('heroSub')} className="v2-sub">
-            {hero.sub}
-          </p>
-          <div ref={r('heroCtas')} className="v2-ctas">
+        <div className="v2-lane" ref={r('lane2')} aria-hidden="true" />
+        <div className="v2-foot" ref={r('foot')} aria-hidden="true" />
+
+        <Nav theme="segment" className="v2-topnav" />
+
+        <div className="v2-col v2-left">
+          <section className="v2-card v2-herocard v2-rise" style={{ '--i': 1 } as CSSProperties}>
+            <p className="v2-chip">
+              <i className="v2-dot" />
+              {hero.kicker}
+            </p>
+            <h1>{hero.headline.join(' ')}</h1>
+            <p className="v2-sub">{hero.sub}</p>
             <a className="v2-link" href={SERVICES.href}>
               {SERVICES.more}
               <Arrow />
             </a>
-          </div>
-        </div>
+          </section>
 
-        <div ref={r('dark')} className="v2-dark" style={{ visibility: 'hidden' }}>
-          <h2 className="v2-bh" aria-label={DARK_LINES.join(' ')}>
-            {DARK_LINES.map((t, i) => (
-              <span key={t} className="v2-l" aria-hidden="true">
-                <span data-l="dark" data-text={t} />
-                {i === DARK_LINES.length - 1 && (
-                  <span ref={r('darkDot')} className="v2-dot" style={{ opacity: 0 }}>
-                    .
-                  </span>
-                )}
-              </span>
-            ))}
-          </h2>
-          <p className="v2-bp">
-            <span data-l="darkp" data-text={hero.sub} />
-          </p>
-          <a ref={r('darkLink')} className="v2-link v2-link--dark v2-blink" href={SERVICES.href}>
-            {DARK_LINK}
-            <Arrow />
-          </a>
-          <ul className="v2-svc">
-            {pillars.map((pl) => (
-              <li key={pl.id} style={{ visibility: 'hidden' }}>
-                <a href={pl.href}>
-                  <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
-                    <ServiceIcon id={pl.id} />
-                  </svg>
-                  <h3 aria-label={pl.name}>
-                    <span data-l="svc" data-text={pl.name} aria-hidden="true" />
-                  </h3>
-                  <span className="v2-rule" />
-                  <p>{pl.line}</p>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <section className="v2-card v2-delivery v2-rise" style={{ '--i': 2 } as CSSProperties} aria-label="Isporuka">
+            <div className="v2-row">
+              <h2>{PROMO_TITLE}</h2>
+              <p className="v2-chip v2-chip--sm">
+                <i className="v2-dot" />
+                <span ref={r('status')}>{STATUS[0]}</span>
+              </p>
+            </div>
+            <div className="v2-bar" aria-hidden="true">
+              <span ref={r('fill')} className="v2-bar-fill" />
+              <span ref={r('marker')} className="v2-bar-mark" />
+            </div>
+            <ul className="v2-stops">
+              {STOPS.map((t, i) => (
+                <li key={t} className={i === 1 ? 'v2-stop--end' : ''}>
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <p className="v2-note">{DELIVERY}</p>
+          </section>
 
-        <div ref={r('close')} className="v2-close" style={{ visibility: 'hidden' }}>
-          <h2 className="v2-ch" aria-label={CLOSE_LINES.join(' ')}>
-            {CLOSE_LINES.map((t, i) => (
-              <span key={t} className={`v2-l${i === 0 ? ' v2-red' : ''}`} aria-hidden="true">
-                <span data-l="close" data-text={t} />
-                {i === CLOSE_LINES.length - 1 && (
-                  <span ref={r('closeDot')} className="v2-dot" style={{ opacity: 0 }}>
-                    .
-                  </span>
-                )}
-              </span>
-            ))}
-          </h2>
-          <div ref={r('closeFoot')} className="v2-cfoot">
-            <p>{CLOSE_SUB}</p>
-            <a className="v2-link" href={SERVICES.href}>
-              {SERVICES.more}
-              <Arrow />
+          <section className="v2-card v2-contact v2-rise" style={{ '--i': 3 } as CSSProperties} aria-label="Kontakt">
+            <span className="v2-avatar" aria-hidden="true">
+              <Headset />
+            </span>
+            <div className="v2-who">
+              <h2>{CONTACT}</h2>
+              <p>{hero.sales.number}</p>
+            </div>
+            <a className="v2-icobtn" href={hero.sales.tel} aria-label={`Pozovite prodaju, ${hero.sales.number}`} title={hero.sales.number}>
+              <Icon d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" />
             </a>
-          </div>
-          <div className="v2-cside">
-            <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
-              <ServiceIcon id="servis" color={C.ink} />
+            <a className="v2-icobtn" href={hero.quote.href} aria-label="Pošaljite upit" title="Pošaljite upit">
+              <Icon d="M4 6.5h16v11H4z M4.5 7l7.5 6 7.5-6" />
+            </a>
+          </section>
+        </div>
+
+        <div className="v2-col v2-right">
+          <section className="v2-card v2-accent v2-rise" style={{ '--i': 4 } as CSSProperties} aria-label="Linde modeli">
+            <svg className="v2-wave" viewBox="0 0 324 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M0 0 H324 V16 C 270 36 230 2 170 14 S 70 36 0 14 Z" fill={C.primary700} />
             </svg>
-            <h3 aria-label={SIDE_TITLE}>
-              <span data-l="side" data-text={SIDE_TITLE} aria-hidden="true" />
-            </h3>
-            <p ref={r('sidePara')}>{trust[3].text}</p>
-          </div>
+            <svg className="v2-fork" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+              <ServiceIcon id="novi" color={C.white} />
+            </svg>
+            <p className="v2-big">
+              <span ref={r('models')}>{MODELS.n}</span>
+            </p>
+            <p className="v2-cap">{MODELS.label}</p>
+          </section>
+
+          <section className="v2-card v2-gauge v2-rise" style={{ '--i': 5 } as CSSProperties} aria-label={WARRANTY.title}>
+            <h2>{WARRANTY.title}</h2>
+            <div className="v2-arc">
+              <svg viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+                <path d={GAUGE} fill="none" stroke={C.shadeGrey} strokeWidth={14} strokeLinecap="round" />
+                <path ref={r('gauge')} d={GAUGE} pathLength={1} strokeDasharray={1} strokeDashoffset={0} fill="none" stroke={C.lindeRed} strokeWidth={14} strokeLinecap="round" />
+              </svg>
+              <p className="v2-big v2-big--md">
+                <span ref={r('warr')}>{WARRANTY.n}</span> {WARRANTY.unit}
+              </p>
+            </div>
+            <p className="v2-cap v2-cap--grey">{WARRANTY.line}</p>
+          </section>
+
+          <section className="v2-card v2-routecard v2-rise" style={{ '--i': 6 } as CSSProperties} aria-label={SIDE_TITLE}>
+            <h2>{SIDE_TITLE}</h2>
+            <p className="v2-cap v2-cap--grey">{trust[3].text}</p>
+            <svg className="v2-line" viewBox="0 0 276 96" aria-hidden="true" focusable="false">
+              <path d={ROUTE_LINE} fill="none" stroke={C.shadeGrey} strokeWidth={3} strokeLinecap="round" />
+              <path ref={r('line')} d={ROUTE_LINE} fill="none" stroke={C.lindeRed} strokeWidth={3} strokeLinecap="round" />
+              <line x1={10} x2={10} y1={74} y2={96} stroke={C.shadeGrey} strokeWidth={1.5} strokeDasharray="3 4" />
+              <line ref={r('tipDrop')} x1={266} x2={266} y1={24} y2={96} stroke={C.shadeGrey} strokeWidth={1.5} strokeDasharray="3 4" />
+              <circle cx={10} cy={74} r={6} fill={C.white} stroke={C.lindeRed} strokeWidth={2.5} />
+              <circle ref={r('tip')} cx={10} cy={74} r={6} fill={C.white} stroke={C.lindeRed} strokeWidth={2.5} />
+            </svg>
+          </section>
         </div>
+
+        <ul className="v2-strip" aria-label="Usluge">
+          {pillars.map((pl, i) => (
+            <li key={pl.id} className="v2-rise" style={{ '--i': 7 + i } as CSSProperties}>
+              <a className="v2-pcard" href={pl.href} data-current={i === 0 ? '' : undefined}>
+                <span className="v2-ptext">
+                  <strong>{pl.name}</strong>
+                  <span>{pl.more}</span>
+                </span>
+                <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+                  <ServiceIcon id={pl.id} color={C.ink} />
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
+  );
+}
+
+// A 24 unit line icon from one path.
+function Icon({ d }: { d: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d={d} />
+    </svg>
+  );
+}
+
+// The sales avatar, a headset line drawing, never a photo of a person.
+function Headset() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M4.5 14v-2a7.5 7.5 0 0 1 15 0v2" />
+      <rect x="3.5" y="13" width="3.8" height="5.5" rx="1.6" />
+      <rect x="16.7" y="13" width="3.8" height="5.5" rx="1.6" />
+      <path d="M18.5 18.5c0 1.6-1.6 2.5-4 2.5h-1.5" />
+    </svg>
   );
 }
 

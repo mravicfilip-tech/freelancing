@@ -27,8 +27,9 @@ Task format
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers
-  - [ ] Build the card UI over the existing motion
-  - [ ] Check before and after shots
+  - [x] Build the card UI over the existing motion
+  - [x] Check before and after shots
+  - [ ] Filip reacts to the card version
 
 - ekotehnika-1 Homepage hero rebuild with scroll animation. Brief in briefs/hero-rebuild. Link https://ekotehnika-hero.vercel.app
   - [x] File the brief and the competitive analysis

@@ -57,7 +57,8 @@ Task format
   - [x] Filip narrows to 2, 4 and 5
   - [x] Plan the clean up of 2, 4 and 5 and harden it
   - [x] Shared nav and Geist type for 2, 4 and 5
-  - [ ] Clean up 2, 4 and 5
+  - [x] Clean up 2, 4 and 5
+  - [x] Drop 1 and 3 from the app
   - [ ] Filip picks one by number
 
 ## Review

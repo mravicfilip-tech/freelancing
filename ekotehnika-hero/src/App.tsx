@@ -9,7 +9,7 @@ const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const readVariant = () => {
   const v = Number(new URLSearchParams(window.location.search).get('v'));
-  return variants.some((x) => x.n === v) ? v : 1;
+  return variants.some((x) => x.n === v) ? v : variants[0].n;
 };
 
 export function App() {
@@ -71,7 +71,7 @@ function Variants() {
         <Placeholder />
       </div>
       {/* Review chrome for comparing the variants, not part of any design. */}
-      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 1 do 5">
+      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 2, 4 i 5">
         {variants.map((x) => (
           <button key={x.n} type="button" aria-pressed={x.n === v} onClick={() => pick(x.n)}>
             <span>{x.n}</span>

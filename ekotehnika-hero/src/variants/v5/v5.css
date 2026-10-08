@@ -83,7 +83,7 @@
 
 .v5-kicker {
   margin: 0 0 18px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.78);
@@ -206,7 +206,7 @@
 
 .v5-kick {
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-grey);
 }

@@ -22,25 +22,32 @@ const WHITE: Tone = { top: C.white, front: C.white, side: C.white, back: C.white
 // White cladding and a red frame make the dock door read from outside, and keep copy legible on it.
 const DOCK: Tone = { top: C.shadeGrey, front: C.lightGrey, side: C.white, back: C.lightGrey };
 
-export function buildWarehouse() {
+export type WarehouseTheme = { floor: Tone; wall: Tone; dock: Tone; marking: Tone; safety: Tone };
+
+const DEFAULT_THEME: WarehouseTheme = { floor: FLOOR, wall: WALL, dock: DOCK, marking: WHITE_LINE, safety: RED_LINE };
+let T = DEFAULT_THEME;
+
+// A direction can recolour the building, floor, walls and markings, with README tokens only.
+export function buildWarehouse(theme: Partial<WarehouseTheme> = {}) {
+  T = { ...DEFAULT_THEME, ...theme };
   const g = new THREE.Group();
 
-  g.add(block(140, 0.1, 80, FLOOR, 20, -0.1, 0));
+  g.add(block(140, 0.1, 80, T.floor, 20, -0.1, 0));
 
   // back wall, and the dock wall with a door opening at z -4 to 0
-  g.add(block(50, 6, 0.3, WALL, 16, 0, -9.15));
-  g.add(block(0.3, 6, 5, DOCK, DOCK_X, 0, -6.5));
-  g.add(block(0.3, 6, 9, DOCK, DOCK_X, 0, 4.5));
-  g.add(block(0.3, 1.8, 4, DOCK, DOCK_X, 4.2, -2));
+  g.add(block(50, 6, 0.3, T.wall, 16, 0, -9.15));
+  g.add(block(0.3, 6, 5, T.dock, DOCK_X, 0, -6.5));
+  g.add(block(0.3, 6, 9, T.dock, DOCK_X, 0, 4.5));
+  g.add(block(0.3, 1.8, 4, T.dock, DOCK_X, 4.2, -2));
   g.add(block(0.4, 0.3, 4.6, RED, DOCK_X, 3.95, -2));
   for (const z of [-4.15, 0.15]) g.add(block(0.4, 4.1, 0.3, RED, DOCK_X, 0, z));
 
   // aisle edges and the safety line down the middle
   for (let x = 4; x < 40; x += 1.6) {
-    g.add(block(0.8, 0.012, 0.08, WHITE_LINE, x, 0, AISLE_Z - 1.35));
-    g.add(block(0.8, 0.012, 0.08, WHITE_LINE, x, 0, AISLE_Z + 1.35));
+    g.add(block(0.8, 0.012, 0.08, T.marking, x, 0, AISLE_Z - 1.35));
+    g.add(block(0.8, 0.012, 0.08, T.marking, x, 0, AISLE_Z + 1.35));
   }
-  for (let x = 12; x < 40.5; x += 0.9) g.add(block(0.5, 0.014, 0.06, RED_LINE, x, 0, AISLE_Z));
+  for (let x = 12; x < 40.5; x += 0.9) g.add(block(0.5, 0.014, 0.06, T.safety, x, 0, AISLE_Z));
 
   g.add(showroom());
   g.add(pickRack());
@@ -201,8 +208,8 @@ function serviceBay() {
 function approvedBay() {
   const g = new THREE.Group();
   const cx = 31.5;
-  for (const x of [cx - 3.6, cx, cx + 3.6]) g.add(block(0.08, 0.012, 4.2, WHITE_LINE, x, 0, 3.4));
-  g.add(block(7.28, 0.012, 0.08, WHITE_LINE, cx, 0, 1.3));
+  for (const x of [cx - 3.6, cx, cx + 3.6]) g.add(block(0.08, 0.012, 4.2, T.marking, x, 0, 3.4));
+  g.add(block(7.28, 0.012, 0.08, T.marking, cx, 0, 1.3));
   for (const x of [cx - 1.8, cx + 1.8]) {
     const t = buildForklift();
     t.group.position.set(x, 0, 3.6);

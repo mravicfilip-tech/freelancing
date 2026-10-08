@@ -17,7 +17,8 @@ export const WALL: Tone = { top: C.white, front: C.lightGrey, side: C.shadeGrey,
 export const WHITE_LINE: Tone = { top: C.white, front: C.white, side: C.white, back: C.white };
 export const RED_LINE: Tone = { top: C.lindeRed, front: C.lindeRed, side: C.lindeRed, back: C.lindeRed };
 
-const material = new THREE.MeshBasicMaterial({ vertexColors: true });
+// One material for every toned mesh, exported so a direction can fade all solids at once.
+export const material = new THREE.MeshBasicMaterial({ vertexColors: true });
 const colour = new THREE.Color();
 
 export function toned(source: THREE.BufferGeometry, tone: Tone) {

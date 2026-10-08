@@ -61,9 +61,9 @@ const shots: Shot[] = [
   // 5 the tilt, three quarter perspective of the lines
   { cam: at(20, 17, 22), look: at(28, 0.5, -3), fov: 30, hold: 0.25 },
   // 6 materialise, seen from outside the dock
-  { cam: at(57, 7.5, 9), look: at(41, 1.4, -2.2), fov: 26, offset: 0.16, hold: 0.3 },
+  { cam: at(57, 8.5, 10), look: at(41, 2.2, -2.2), fov: 27, offset: 0.16, hold: 0.3 },
   // 7 finale on the real scene
-  { cam: at(22, 18, 40), look: at(25, 1, -3), fov: 32, offset: 0.2, hold: 0.3 },
+  { cam: at(-7, 3.4, 0.5), look: at(41, 2.0, -2.4), fov: 38, offset: 0.18, hold: 0.3 },
 ];
 
 // The route as a polyline in two legs. Showroom to the rack, then the rack to the dock.
@@ -171,7 +171,10 @@ function build({ scene, truck, order }: BuildCtx) {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
       m.getWorldPosition(wp);
-      const isFar = wp.x > 12.9 || wp.x < 5.8;
+      // Floor markings join the far group, seen edge on in the section they only make noise.
+      m.geometry.computeBoundingBox();
+      const flat = m.geometry.boundingBox!.max.y - m.geometry.boundingBox!.min.y < 0.05;
+      const isFar = wp.x > 12.9 || wp.x < 5.8 || flat;
       const lines = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 20), isFar ? far : near);
       lines.renderOrder = 1;
       m.add(lines);
@@ -243,9 +246,9 @@ function build({ scene, truck, order }: BuildCtx) {
   // Axis triad for the tilt.
   const axMat = new THREE.LineBasicMaterial({ color: white, transparent: true, opacity: 0 });
   const ax = new THREE.BufferGeometry().setFromPoints([
-    v(12, 0.02, 8), v(17, 0.02, 8),
-    v(12, 0.02, 8), v(12, 5, 8),
-    v(12, 0.02, 8), v(12, 0.02, 3),
+    v(17, 0.02, 4), v(22, 0.02, 4),
+    v(17, 0.02, 4), v(17, 4.5, 4),
+    v(17, 0.02, 4), v(17, 0.02, -1),
   ]);
   scene.add(new THREE.LineSegments(ax, axMat));
 
@@ -285,14 +288,14 @@ function build({ scene, truck, order }: BuildCtx) {
     groundMat.opacity = lo * sec;
 
     // The route draws itself over the first chapter.
-    const draw = smooth(clamp01((b - 0.45) / 0.9));
+    const draw = smooth(clamp01((b - 0.35) / 0.7));
     dashes.count = Math.round(spots.length * draw);
 
     const zoneO = smooth(clamp01((b - 3.4) / 0.5)) * (1 - smooth(clamp01((b - 4.75) / 0.4)));
     zoneMat.opacity = zoneO;
     hatchMat.opacity = zoneO * 0.45;
 
-    axMat.opacity = smooth(clamp01((b - 4.6) / 0.4)) * lo * (1 - smooth(clamp01((b - 5.2) / 0.2)));
+    axMat.opacity = smooth(clamp01((b - 4.6) / 0.4)) * lo;
   };
 }
 

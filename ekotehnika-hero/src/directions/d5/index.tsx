@@ -202,7 +202,7 @@ export default function Direction5({ reduced }: { reduced: boolean }) {
     }
 
     // Title block, live position of the truck, and the rail.
-    const sheet = Math.min(LAST, Math.max(0, Math.round(b - 0.04)));
+    const sheet = Math.min(LAST, Math.max(0, Math.floor(b + 0.3)));
     if (sheet !== m.sheet) {
       m.sheet = sheet;
       if (sheetRef.current) sheetRef.current.textContent = String(sheet + 1).padStart(2, '0');
@@ -214,7 +214,7 @@ export default function Direction5({ reduced }: { reduced: boolean }) {
 
     // The client count ticks up as the finale lands.
     if (countRef.current) {
-      const n = Math.round(1000 * smooth(clamp01((b - 6.6) / 0.6)));
+      const n = Math.round(1000 * smooth(clamp01((b - 6.3) / 0.5)));
       countRef.current.textContent = n >= 1000 ? '1.000+' : String(n);
     }
   };

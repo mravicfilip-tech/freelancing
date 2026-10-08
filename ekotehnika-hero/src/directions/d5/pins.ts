@@ -62,16 +62,16 @@ const palletAt: At = (e) => {
 
 export const pins: Pin[] = [
   // chapter 1, the route markers. Titles and subs are dummy copy.
-  { id: 'A', kind: 'marker', at: fixed(A_POINT), win: [0.7, 1.5], dx: 0, dy: -72, letter: 'A', title: 'Novi viljuškari', sub: 'Salon' },
-  { id: 'B', kind: 'marker', at: fixed(v(PICK.x, 0, PICK.z)), win: [0.9, 1.5], dx: -64, dy: 70, letter: 'B', title: 'Polica', sub: 'Narudžbina čeka' },
-  { id: 'C', kind: 'marker', at: fixed(C_POINT), win: [1.1, 1.5], dx: 0, dy: -72, letter: 'C', title: 'Rampa', sub: 'Isporuka', flip: true },
+  { id: 'A', kind: 'marker', at: fixed(A_POINT), win: [0.4, 1.5, 0.25], dx: 0, dy: -72, letter: 'A', title: 'Novi viljuškari', sub: 'Salon' },
+  { id: 'B', kind: 'marker', at: fixed(v(PICK.x, 0, PICK.z)), win: [0.65, 1.5, 0.25], dx: 80, dy: 62, letter: 'B', title: 'Polica', sub: 'Narudžbina čeka' },
+  { id: 'C', kind: 'marker', at: fixed(C_POINT), win: [0.9, 1.5, 0.25], dx: 0, dy: -72, letter: 'C', title: 'Rampa', sub: 'Isporuka', flip: true },
 
   // chapter 2, notes on the section
-  { id: 'rack', kind: 'note', at: fixed(v(PICK.x, 4.6, PICK.z)), win: [1.85, 2.7], dx: -230, dy: -30, w: 170, h: 60, fx: 1, fy: 0.5, title: 'Polica', sub: 'Najviši nivo' },
-  { id: 'pal', kind: 'note', at: palletAt, win: [2.0, 2.75], dx: -250, dy: -120, w: 190, h: 60, fx: 1, fy: 0.5, title: 'Vilice', sub: 'Podižu narudžbinu' },
+  { id: 'rack', kind: 'note', at: fixed(v(PICK.x, 4.6, PICK.z)), win: [1.85, 2.7], dx: -250, dy: -40, w: 170, h: 60, fx: 1, fy: 0.5, title: 'Polica', sub: 'Najviši nivo' },
+  { id: 'pal', kind: 'note', at: palletAt, win: [2.0, 2.75], dx: -440, dy: 40, w: 190, h: 60, fx: 1, fy: 0.5, title: 'Vilice', sub: 'Podižu narudžbinu' },
 
   // chapter 3, the floor spot
-  { id: 'spot', kind: 'note', at: spotAt, win: [3.35, 4.0], dx: 26, dy: -126, w: 232, h: 60, fx: 0, fy: 1, title: 'Svetlosna tačka', sub: 'Upozorava pešake' },
+  { id: 'spot', kind: 'note', at: spotAt, win: [3.1, 4.0], dx: 26, dy: -126, w: 232, h: 60, fx: 0, fy: 1, title: 'Svetlosna tačka', sub: 'Upozorava pešake' },
 
   // chapter 4, the zones
   {
@@ -106,9 +106,9 @@ export const pins: Pin[] = [
   },
 
   // chapter 5, axis letters
-  { id: 'ax', kind: 'axis', at: fixed(v(17, 0.02, 8)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'X' },
-  { id: 'ay', kind: 'axis', at: fixed(v(12, 5, 8)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Y' },
-  { id: 'az', kind: 'axis', at: fixed(v(12, 0.02, 3)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Z' },
+  { id: 'ax', kind: 'axis', at: fixed(v(22, 0.02, 4)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'X' },
+  { id: 'ay', kind: 'axis', at: fixed(v(17, 4.5, 4)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Y' },
+  { id: 'az', kind: 'axis', at: fixed(v(17, 0.02, -1)), win: [4.7, 5.25], dx: 8, dy: -8, title: 'Z' },
 
   // chapter 6, a plain tag on the real dock
   { id: 'dock', kind: 'note', at: fixed(v(DOCK_X, 4.4, -2)), win: [5.95, 6.7], dx: -330, dy: -10, w: 236, h: 60, fx: 1, fy: 0.5, title: 'Rampa', sub: 'Isporuka za 24 sata', paper: true },
@@ -118,7 +118,7 @@ const P = (x: number, y: number, z: number) => v(x, y, z);
 
 export const dims: Dim[] = [
   // chapter 0 and 1, the length of the route
-  { id: 'len', ea: A_POINT, eb: C_POINT, a: P(2.2, 0, 0.7), b: P(DOCK_X - 0.7, 0, 0.7), label: 'PUT JEDNE PALETE', win: [0.7, 1.5, 0.3, 0.25] },
+  { id: 'len', ea: A_POINT, eb: C_POINT, a: P(2.2, 0, 0.7), b: P(DOCK_X - 0.7, 0, 0.7), label: 'PUT JEDNE PALETE', win: [0.6, 1.5, 0.3, 0.25] },
   // chapter 2, lift height and rack height on the section
   { id: 'lift', ea: P(PICK.x, 0, PICK.z - 0.7), eb: P(PICK.x, 2.92, PICK.z - 0.7), a: P(PICK.x, 0, PICK.z - 2.6), b: P(PICK.x, 2.92, PICK.z - 2.6), label: 'VISINA PODIZANJA', win: [1.95, 2.7] },
   { id: 'rackH', ea: P(PICK.x, 0, PICK.z - 0.7), eb: P(PICK.x, 4.6, PICK.z - 0.7), a: P(PICK.x, 0, PICK.z - 1.5), b: P(PICK.x, 4.6, PICK.z - 1.5), label: 'POLICA', win: [1.95, 2.7] },

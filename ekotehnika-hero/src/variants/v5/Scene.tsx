@@ -124,7 +124,7 @@ function Ground({ clock }: { clock: Clock }) {
   useFrame(() => {
     const o = 1 - smooth(range(clock.p(), 0.19, 0.3));
     mat.opacity = o;
-    mat.color.set(C.ink).multiplyScalar(0.16);
+    mat.color.set(C.ink).multiplyScalar(0.75);
     if (ref.current) ref.current.visible = o > 0.001;
   });
   return (
@@ -538,11 +538,11 @@ function Beams({ clock }: { clock: Clock }) {
   useFrame(({ clock: c }) => {
     const p = clock.p();
     const t = c.elapsedTime;
-    const on = band(p, 0.28, 0.36, 0.52, 0.6);
+    const on = band(p, 0.335, 0.39, 0.52, 0.6);
     items.forEach((it, i) => {
       it.mat.uniforms.uTime.value = t;
       it.mat.uniforms.uOpacity.value = on * it.k;
-      it.mat.uniforms.uGrow.value = 0.08 + 0.92 * smooth(range(p, 0.28 + i * 0.014, 0.4 + i * 0.014));
+      it.mat.uniforms.uGrow.value = 0.08 + 0.92 * smooth(range(p, 0.335 + i * 0.012, 0.44 + i * 0.012));
     });
     if (rig.current) {
       rig.current.visible = on > 0.001;

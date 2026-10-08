@@ -206,15 +206,18 @@ varying vec2 vUv;
 ${noise}
 void main() {
   float t = vUv.x;
-  if (t > uGrow) discard;
+  if (t > uGrow + 0.001) discard;
   float tt = t / max(uGrow, 0.001);
   float a = vUv.y * 2.0 - 1.0;
   float n = fbm(vec2(t * 3.2 - uTime * 0.18 + uSeed, a * 1.4 + uTime * 0.06 + uSeed));
   float bend = (n - 0.5) * 0.6 * (1.0 - tt);
-  float core = exp(-pow(a - bend, 2.0) * mix(1.6, 4.0, tt));
+  // While the beam grows, its head narrows to a point wherever it is along the ribbon.
+  float pinch = mix(1.6, 4.0, tt) + pow(tt, 6.0) * (1.0 - uGrow) * 40.0;
+  float core = exp(-pow(a - bend, 2.0) * pinch);
   float wisp = smoothstep(0.25, 0.85, fbm(vec2(t * 7.0 - uTime * 0.35 + uSeed * 3.0, a * 3.0)));
   float body = core * mix(0.2, 1.0, n) * mix(0.55, 1.0, wisp) * smoothstep(0.0, 0.35, tt) * mix(0.4, 1.0, tt);
-  float tip = exp(-pow((tt - 1.0) * 14.0, 2.0)) * exp(-a * a * 5.0);
+  body *= 1.0 - smoothstep(0.7, 1.0, tt) * (1.0 - uGrow);
+  float tip = exp(-pow((tt - 1.0) * 14.0, 2.0)) * exp(-a * a * mix(5.0, 60.0, 1.0 - uGrow));
   float alpha = (body * 1.15 + tip * 1.2) * uOpacity;
   gl_FragColor = vec4(uColor, alpha);
 }

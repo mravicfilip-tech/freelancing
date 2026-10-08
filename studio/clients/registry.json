@@ -21,8 +21,12 @@
     },
     {
       "id": "ekotehnika",
-      "repos": [],
-      "previewProjects": []
+      "repos": [
+        "ekotehnika-hero"
+      ],
+      "previewProjects": [
+        "ekotehnika-hero"
+      ]
     }
   ]
 }

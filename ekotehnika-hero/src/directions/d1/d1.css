@@ -298,7 +298,7 @@
   font-family: var(--display);
   font-weight: 400;
   font-size: 104px;
-  line-height: 0.94;
+  line-height: 1;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--fg);
@@ -316,7 +316,7 @@
 
 .d1-intro .d1-title {
   font-size: 156px;
-  line-height: 0.9;
+  line-height: 0.98;
 }
 
 .d1-body {

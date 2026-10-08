@@ -24,7 +24,7 @@ const DAY_FLOOR: Tone = { top: C.shadeGrey, front: C.lightGrey, side: C.lightGre
 const DAY_WALL: Tone = { top: C.white, front: C.lightGrey, side: C.shadeGrey, back: C.shadeGrey };
 const DAY_DOCK: Tone = { top: C.shadeGrey, front: C.lightGrey, side: C.white, back: C.lightGrey };
 const NIGHT_APRON: Tone = { top: C.textGrey, front: C.ink, side: C.ink, back: C.ink };
-const NIGHT_PLINTH: Tone = { top: C.tonedTextGrey, front: C.textGrey, side: C.ink, back: C.ink };
+const NIGHT_PLINTH: Tone = { top: C.textGrey, front: C.ink, side: C.ink, back: C.ink };
 const NIGHT_PALE: Tone = { top: C.tonedTextGrey, front: C.textGrey, side: C.ink, back: C.ink };
 const SIGN_RED: Tone = { top: C.tonedRed, front: C.tonedRed, side: C.tonedRed, back: C.tonedRed };
 const WHITE: Tone = { top: C.white, front: C.white, side: C.white, back: C.white };
@@ -210,7 +210,6 @@ export const STORY: StoryDef = {
   drop: 5.95,
   shutter: [2.2, 2.9],
   build: ({ scene, camera, truck, order }) => {
-    try {
     const house = scene.children[0] as THREE.Group;
     live.red = truck.group;
     live.pallet = order;
@@ -320,7 +319,7 @@ export const STORY: StoryDef = {
       // The service van arrives at first light.
       const vt = smooth(clamp01((b - 6.4) / 0.9));
       serviceVan.visible = b > 6.4;
-      serviceVan.position.set(lerp(84, 51, vt), 0, 7.4);
+      serviceVan.position.set(lerp(86, 51, vt), 0, -4.4);
 
       const d = dawnAt(b);
       if (d !== lastDawn) {
@@ -329,6 +328,5 @@ export const STORY: StoryDef = {
         (scene.background as THREE.Color).copy(night).lerp(day, d);
       }
     };
-    } catch (e) { console.error('D1BUILD', e); throw e; }
   },
 };

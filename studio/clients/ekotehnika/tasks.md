@@ -41,7 +41,10 @@ Task format
   - [x] Write the delivery story, nine chapters
   - [x] Build the warehouse, the route and the order pallet
   - [x] Build the reel style UI, floating nav, big copy per chapter, story bar
-  - [ ] Run /uireview on the 3D build
+  - [ ] Make the 3D engine story agnostic for five directions
+  - [ ] Build five directions, each with its own UI, type and story
+  - [ ] Shoot and compare the five, Filip picks one by number
+  - [ ] Run /uireview on the picked direction
 
 ## Review
 

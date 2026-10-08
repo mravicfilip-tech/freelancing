@@ -43,7 +43,7 @@ Use the image files, never redraw them.
 - No link in the hero goes to linde-mh.rs. Every CTA stays on ekotehnika.rs or is a `tel` link.
 - No text baked into images. The MT15 C promo price is live text.
 - No numbers, awards, client names or testimonials beyond the company's own claims in the brief.
-- Light look. No dark hero, no full bleed video, no auto rotating carousel.
+- No full bleed video, no auto rotating carousel. The brief's light only rule was opened by Filip on 2026-10-08, any token may be a ground in the hero exploration, see taste.md.
 
 ## Accessibility
 

@@ -33,7 +33,6 @@ export type Stop = {
   title: string;
   line: string;
   a: { label: string; href: string };
-  b: { label: string; href: string };
   // where the white hotspot ring sits in the scene
   spot: Vec;
 };
@@ -48,7 +47,6 @@ export const stops: Stop[] = [
     line: hero.sub,
     // dummy label, the link goes to the home page
     a: { label: 'Pregled usluga', href: SITE },
-    b: { label: hero.quote.label, href: hero.quote.href },
     spot: [-46, 6, -7.5],
   },
   {
@@ -58,7 +56,6 @@ export const stops: Stop[] = [
     title: 'Novi Linde viljuškari, po meri vašeg skladišta.',
     line: novi.line,
     a: { label: novi.more, href: novi.href },
-    b: { label: novi.cta, href: hero.quote.href },
     spot: [4, 6.2, -21],
   },
   {
@@ -68,7 +65,6 @@ export const stops: Stop[] = [
     title: 'Najam Linde viljuškara, bez čekanja.',
     line: najam.line,
     a: { label: najam.more, href: najam.href },
-    b: { label: najam.cta, href: hero.quote.href },
     spot: [-58, 3.4, 39],
   },
   {
@@ -78,7 +74,6 @@ export const stops: Stop[] = [
     title: 'Servis je srce Ekotehnike, od 1997.',
     line: servis.line,
     a: { label: servis.more, href: servis.href },
-    b: { label: servis.cta, href: servis.href },
     spot: [44, 4, -5],
   },
   {
@@ -88,7 +83,6 @@ export const stops: Stop[] = [
     title: 'Linde Approved Trucks, provereni polovni viljuškari.',
     line: polovni.line,
     a: { label: polovni.more, href: polovni.href },
-    b: { label: polovni.cta, href: hero.quote.href },
     spot: [46, 5, 38],
   },
   {
@@ -99,7 +93,6 @@ export const stops: Stop[] = [
     line: 'Servis od 1997, Linde viljuškari od 2000, zvanični partner od 2023.',
     // dummy label, the link goes to the home page
     a: { label: 'O nama', href: SITE },
-    b: { label: hero.quote.label, href: hero.quote.href },
     spot: [79, 16, -13.6],
   },
 ];

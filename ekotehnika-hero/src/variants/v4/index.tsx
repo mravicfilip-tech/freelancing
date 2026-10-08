@@ -1,12 +1,12 @@
 // Variant 4, Grad. The Emons hero 1:1 in Linde red. A bright soft lit miniature of Ekotehnika in
-// Vrčin, a frosted glass card on the left with thin Outfit type, red pills top right, and a camera
-// that flies stop to stop through the world on scroll.
+// Vrčin, the shared glass nav on top, a frosted card on the left in Geist with the stop icon row
+// inside it, and a camera that flies stop to stop through the world on scroll.
 import { Fragment, useEffect, useState, type JSX } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useScrollStory } from '../../scroll/useScrollStory';
-import { hero, pillars, SITE } from '../../content';
-import { Arrow, Phone, PillarIcon, Search, Van } from '../../components/Icons';
+import { Arrow, PillarIcon, Van } from '../../components/Icons';
+import { Nav } from '../../ui/Nav';
 import { Stage, keyParam } from './Stage';
 import { keys, stops, stopP, type IconId } from './story';
 import './v4.css';
@@ -42,18 +42,6 @@ function stopAt(p: number) {
     }
   });
   return best >= stops.length ? 0 : best;
-}
-
-function Pill({ href, label, kind = 'line', cta, icon: ic }: { href: string; label: string; kind?: 'line' | 'fill'; cta?: string; icon?: JSX.Element }) {
-  return (
-    <a className={`v4-pill v4-pill-${kind}`} href={href} data-cta={cta}>
-      {ic}
-      <span>{label}</span>
-      <i aria-hidden="true">
-        <Arrow size={15} />
-      </i>
-    </a>
-  );
 }
 
 export default function Variant4({ reduced }: { reduced: boolean }) {
@@ -130,29 +118,7 @@ export default function Variant4({ reduced }: { reduced: boolean }) {
         </Canvas>
       </div>
 
-      <header className="v4-top">
-        <a className="v4-logo" href={SITE} aria-label="Ekotehnika, Linde partner, početna">
-          <img src="/brand/linde-mh.png" alt="Linde Material Handling" width={67} height={40} />
-          <img src="/brand/ekotehnika.png" alt="Ekotehnika" width={110} height={30} />
-        </a>
-        <nav className="v4-nav" aria-label="Brze veze">
-          <Pill href={pillars[1].href} label={pillars[1].name} />
-          <Pill href={pillars[2].href} label={pillars[2].name} />
-          <a className="v4-pill v4-pill-line v4-phone" href={hero.sales.tel} data-cta="call-sales">
-            <Phone size={16} />
-            <span>
-              {hero.sales.label} {hero.sales.number}
-            </span>
-          </a>
-          <Pill href={hero.quote.href} label={hero.quote.label} kind="fill" cta="quote" />
-          <a className="v4-icon-btn" href={`${SITE}/?s=`} aria-label="Pretraga">
-            <Search size={18} />
-          </a>
-          <span className="v4-lang" aria-label="Jezik srpski">
-            SR
-          </span>
-        </nav>
-      </header>
+      <Nav theme="glass" />
 
       <div className="v4-card">
         <div className={`v4-copy${out ? ' out' : ''}`} key={shown}>
@@ -166,36 +132,25 @@ export default function Variant4({ reduced }: { reduced: boolean }) {
             ))}
           </h1>
           <p className="v4-line">{s.line}</p>
-          <div className="v4-actions">
-            <a className="v4-small" href={s.a.href}>
-              {s.a.label}
-            </a>
-            <a className="v4-small" href={s.b.href}>
-              {s.b.label}
-            </a>
-          </div>
+          <a className="v4-link" href={s.a.href}>
+            {s.a.label}
+            <Arrow size={16} />
+          </a>
         </div>
+
+        <ol className="v4-row" aria-label="Delovi priče">
+          {stops.map((st, i) => (
+            <li key={st.icon}>
+              <button type="button" className={i === idx ? 'on' : ''} aria-current={i === idx ? 'step' : undefined} onClick={() => goTo(stopP[i])} aria-label={st.label}>
+                {icon(st.icon)}
+                <span className="v4-row-label" aria-hidden="true">
+                  {st.label}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
-
-      <ol className="v4-row" aria-label="Delovi priče">
-        {stops.map((st, i) => (
-          <li key={st.icon}>
-            <button type="button" className={i === idx ? 'on' : ''} aria-current={i === idx ? 'step' : undefined} onClick={() => goTo(stopP[i])} aria-label={st.label}>
-              <b>{String(i + 1).padStart(2, '0')}</b>
-              {icon(st.icon)}
-              <span className="v4-row-label">{st.label}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-
-      {/* dummy label, the link goes to the home page */}
-      <a className="v4-pill v4-pill-line v4-all" href={SITE}>
-        <span>Sve usluge</span>
-        <i aria-hidden="true">
-          <Arrow size={15} />
-        </i>
-      </a>
     </section>
   );
 }

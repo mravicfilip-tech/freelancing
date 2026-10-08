@@ -1,0 +1,378 @@
+/* Variant 4, Grad. Emons chrome in Linde red. Token colours only, see src/styles.css. */
+.v4 {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+  color: var(--ink);
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.v4-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* the white hotspot ring on the current stop */
+.v4-spot {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: 0 0 0 6px rgb(255 255 255 / 0.35), 0 2px 10px rgb(34 34 34 / 0.18);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.2);
+  position: relative;
+}
+
+.v4-spot::before,
+.v4-spot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 1.5px;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+}
+
+.v4-spot::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.v4-spot.on {
+  opacity: 1;
+  transform: scale(1);
+  animation: v4-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes v4-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px rgb(255 255 255 / 0.35), 0 2px 10px rgb(34 34 34 / 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgb(255 255 255 / 0.12), 0 2px 10px rgb(34 34 34 / 0.18);
+  }
+}
+
+/* top bar */
+.v4-top {
+  position: absolute;
+  z-index: 3;
+  left: 40px;
+  right: 40px;
+  top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.v4-top > * {
+  pointer-events: auto;
+}
+
+.v4-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 14px 6px 6px;
+  background: var(--white);
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgb(34 34 34 / 0.08);
+}
+
+.v4-logo img {
+  display: block;
+}
+
+.v4-logo img:first-child {
+  border-radius: 2px;
+}
+
+.v4-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.v4-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 4px 0 18px;
+  border-radius: 999px;
+  font: 400 15px/1 'Outfit', system-ui, sans-serif;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.v4-pill i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.v4-pill:hover i {
+  transform: translateX(2px);
+}
+
+.v4-pill-line {
+  color: var(--linde-red);
+  background: rgb(255 255 255 / 0.78);
+  border: 1.5px solid var(--linde-red);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.v4-pill-line i {
+  background: var(--linde-red);
+  color: var(--white);
+}
+
+.v4-pill-line:hover {
+  background: var(--white);
+  color: var(--primary-700);
+}
+
+.v4-pill-fill {
+  height: 48px;
+  padding: 0 6px 0 22px;
+  color: var(--white);
+  background: var(--linde-red);
+  border: 1.5px solid var(--linde-red);
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: 0 8px 24px rgb(170 0 32 / 0.22);
+}
+
+.v4-pill-fill i {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-700);
+}
+
+.v4-pill-fill:hover {
+  background: var(--primary-700);
+  border-color: var(--primary-700);
+}
+
+.v4-pill-fill:hover i {
+  background: var(--primary-900);
+}
+
+.v4-phone {
+  padding: 0 18px 0 14px;
+  gap: 8px;
+}
+
+.v4-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background-color 0.2s;
+}
+
+.v4-icon-btn:hover {
+  background: rgb(255 255 255 / 0.7);
+}
+
+.v4-lang {
+  font: 500 14px/1 'Outfit', system-ui, sans-serif;
+  color: var(--ink);
+  padding-right: 2px;
+}
+
+.v4 :where(a, button):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* the frosted glass card */
+.v4-card {
+  position: absolute;
+  z-index: 3;
+  left: 40px;
+  bottom: 116px;
+  width: 446px;
+  padding: 30px 30px 28px;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.6);
+  backdrop-filter: blur(22px) saturate(1.1);
+  -webkit-backdrop-filter: blur(22px) saturate(1.1);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 20px 50px rgb(34 34 34 / 0.06);
+}
+
+.v4-copy {
+  transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
+}
+
+.v4-copy.out {
+  opacity: 0;
+  transform: translateY(-10px);
+  filter: blur(4px);
+}
+
+.v4-title {
+  margin: 0 0 18px;
+  font: 300 44px/1.12 'Outfit', system-ui, sans-serif;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+.v4-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.v4-w > span {
+  display: inline-block;
+  animation: v4-rise 0.9s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+}
+
+@keyframes v4-rise {
+  from {
+    transform: translateY(105%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.v4-line {
+  margin: 0 0 22px;
+  max-width: 36ch;
+  font: 300 16px/1.55 'Outfit', system-ui, sans-serif;
+  color: var(--text-grey);
+  animation: v4-fade 0.9s 0.25s ease both;
+}
+
+@keyframes v4-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.v4-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  animation: v4-fade 0.9s 0.35s ease both;
+}
+
+.v4-small {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--linde-red);
+  color: var(--white);
+  font: 400 14px/1 'Outfit', system-ui, sans-serif;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.v4-small:hover {
+  background: var(--primary-700);
+}
+
+/* the service icon row under the card */
+.v4-row {
+  position: absolute;
+  z-index: 3;
+  left: 40px;
+  bottom: 62px;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v4-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--linde-red);
+  font: 400 14px/1 'Outfit', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background-color 0.35s, color 0.35s;
+}
+
+.v4-row b {
+  font-weight: 400;
+  color: var(--primary-700);
+}
+
+.v4-row button:hover {
+  background: var(--white);
+}
+
+.v4-row-label {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s;
+}
+
+.v4-row button.on {
+  background: var(--linde-red);
+  color: var(--white);
+}
+
+.v4-row button.on b {
+  color: var(--white);
+}
+
+.v4-row button.on .v4-row-label {
+  max-width: 160px;
+  opacity: 1;
+}
+
+.v4-all {
+  position: absolute;
+  z-index: 3;
+  right: 40px;
+  bottom: 62px;
+}
+
+.v4-still .v4-w > span,
+.v4-still .v4-line,
+.v4-still .v4-actions,
+.v4-still .v4-spot.on {
+  animation: none;
+}

@@ -29,7 +29,8 @@ Task format
   - [x] Settle kickoff answers
   - [x] Build the card UI over the existing motion
   - [x] Check before and after shots
-  - [ ] Filip reacts to the card version
+  - [x] Filip reacts to the card version
+  - [ ] Cards change per chapter and animate in and out
 
 - ekotehnika-1 Homepage hero rebuild with scroll animation. Brief in briefs/hero-rebuild. Link https://ekotehnika-hero.vercel.app
   - [x] File the brief and the competitive analysis

@@ -41,9 +41,10 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
 
   const [active, setActive] = useState(0);
   const [shownSub, setShownSub] = useState(0);
-  const [lineGeom, setLineGeom] = useState({ w: 1440, split: 600, dots: [] as number[] });
+  const [lineGeom, setLineGeom] = useState({ w: 1440, h: 695, y: 679, split: 600, turn: 568, yCta: 520, btnX: 64, dots: [] as number[] });
 
-  // Measure the floor line, its split between panel and scene, and the dot under each pillar.
+  // Measure the V3 floor line. In the panel it runs under the pillars, turns up and ends under the
+  // primary button. In the scene it is the floor lane the truck rides.
   useLayoutEffect(() => {
     const measure = () => {
       const main = mainRef.current;
@@ -54,7 +55,18 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
         return r ? r.left + r.width / 2 - box.left : 0;
       });
       const scene = sceneRef.current?.getBoundingClientRect();
-      setLineGeom({ w: box.width, split: scene ? scene.left - box.left : box.width * 0.42, dots });
+      const quote = quoteRef.current?.getBoundingClientRect();
+      const split = scene ? scene.left - box.left : box.width * 0.42;
+      setLineGeom({
+        w: box.width,
+        h: box.height,
+        y: box.height - 16,
+        split,
+        turn: split - 32,
+        yCta: quote ? quote.bottom - box.top + 16 : box.height * 0.7,
+        btnX: quote ? quote.left - box.left : 64,
+        dots,
+      });
     };
     measure();
     window.addEventListener('resize', measure);
@@ -174,7 +186,7 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
         }
       }
 
-      if (variant === 3) {
+      if (variant === 3 && lineGeom.dots.length) {
         const mask = stage.querySelector('[data-part="floor-mask"]');
         const count = countRef.current;
         const clientsX = (() => {
@@ -182,7 +194,8 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
           const c = clientsRef.current?.getBoundingClientRect();
           return m && c ? c.left + 24 - m.left : 0;
         })();
-        const w = lineGeom.w;
+        const { turn, y, yCta, btnX } = lineGeom;
+        const total = turn + (y - yCta) + (turn - btnX);
         const lit = new Set<number>();
         let counted = false;
         if (count) count.textContent = '0+';
@@ -194,7 +207,8 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
           delay: 0.3,
           onUpdate: () => {
             mask?.setAttribute('stroke-dashoffset', String(1 - draw.q));
-            const x = draw.q * w;
+            // Distance along the first run, under the pillars and the trust strip
+            const x = Math.min(turn, draw.q * total);
             lineGeom.dots.forEach((dx, i) => {
               if (x >= dx && !lit.has(i)) {
                 lit.add(i);
@@ -268,6 +282,8 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
   };
 
   const p = pillars[active];
+  const { turn, y: lineY, yCta, btnX } = lineGeom;
+  const route = `M0 ${lineY} H${turn} V${yCta} H${btnX}`;
   const sub = variant === 1 ? pillars[shownSub].line : hero.sub;
   const quoteLabel = variant === 1 ? p.cta : hero.quote.label;
 
@@ -356,13 +372,14 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
 
           {variant === 3 && (
             <div className="floor-line" aria-hidden="true">
-              <svg ref={lineRef} width={lineGeom.w} height="24" viewBox={`0 0 ${lineGeom.w} 24`}>
+              <svg ref={lineRef} width={lineGeom.w} height={lineGeom.h} viewBox={`0 0 ${lineGeom.w} ${lineGeom.h}`}>
                 <defs>
-                  <mask id="floor-reveal" maskUnits="userSpaceOnUse" x="0" y="0" width={lineGeom.w} height="24">
+                  <mask id="floor-reveal" maskUnits="userSpaceOnUse" x="0" y="0" width={lineGeom.w} height={lineGeom.h}>
                     <path
                       data-part="floor-mask"
-                      d={`M0 12 H${lineGeom.w}`}
+                      d={route}
                       pathLength={1}
+                      fill="none"
                       stroke="#fff"
                       strokeWidth="8"
                       strokeDasharray="1 1"
@@ -370,9 +387,9 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
                     />
                   </mask>
                 </defs>
-                <g mask="url(#floor-reveal)" stroke="#aa0020" strokeWidth="2" strokeDasharray="10 8">
-                  <path d={`M0 12 H${lineGeom.split}`} />
-                  <path data-part="floor-dash" d={`M${lineGeom.split} 12 H${lineGeom.w}`} />
+                <g fill="none" stroke="#aa0020" strokeWidth="2" strokeDasharray="10 8">
+                  <path d={route} mask="url(#floor-reveal)" />
+                  <path data-part="floor-dash" d={`M${lineGeom.split} ${lineGeom.y} H${lineGeom.w}`} />
                 </g>
               </svg>
               {lineGeom.dots.map((x, i) => (
@@ -382,7 +399,7 @@ export function Stage({ variant, reduced }: { variant: Variant; reduced: boolean
                   ref={(el) => {
                     dotRefs.current[i] = el;
                   }}
-                  style={{ left: x - 5 }}
+                  style={{ left: x - 5, top: lineGeom.y - 5 }}
                 />
               ))}
             </div>

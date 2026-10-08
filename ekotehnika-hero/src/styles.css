@@ -454,10 +454,7 @@ a {
 /* V3 floor line */
 .floor-line {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
-  height: 24px;
+  inset: 0;
   pointer-events: none;
 }
 
@@ -467,7 +464,6 @@ a {
 
 .floor-dot {
   position: absolute;
-  top: 7px;
   width: 10px;
   height: 10px;
   border-radius: 50%;

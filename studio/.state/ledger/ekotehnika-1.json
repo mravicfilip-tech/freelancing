@@ -4,7 +4,110 @@
   "client": "ekotehnika",
   "trigger": "auto",
   "openedAt": "2026-10-08T16:43:34.823Z",
-  "rounds": [],
-  "findings": [],
-  "cards": []
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "3f3775cabbaebfabcf906c9454377d83acd9a50f",
+      "at": "2026-10-08T16:47:18.732Z",
+      "score": 4.3
+    },
+    {
+      "n": 2,
+      "tree": "50628906b06b3003373cba499a59b4213f87c17e",
+      "at": "2026-10-08T16:49:27.712Z",
+      "score": 6.5
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 2,
+      "where": "src/components/Placeholder.tsx, src/App.tsx:48",
+      "what": "Placeholder section below the hero with dummy copy and a footer line. Brief section 7 refuses any extra section below the hero. Renders at scrollHeight 4266 and is visible to the client.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "src/components/Stage.tsx, V3 floor line",
+      "what": "V3 floor line runs the full 1440px and ends at the right edge. Brief V3 says it ends under the primary button at x 64 to 332, then the glow fires. The glow fires from onComplete at the far right.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "src/components/Header.tsx navHref",
+      "what": "navHref maps 7 of 11 nav items. Delovi, Automatizacija, Bezbednost and Industrijski roboti fall back to the home page, four labels with one destination.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "hero sub and trust strip, header and CTA row, header and trust strip",
+      "what": "Od 1997. and both phone numbers, +381 63 282-050 and +381 60 300 20 50, are printed twice in one 900px viewport. Standing rejection, same number printed twice. Copy comes from the brief.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 3,
+      "where": "src/styles.css .headline",
+      "what": "Headline is 48px where the brand says about 52px at 1440. It wraps to 4 lines with mestu. alone on the last line.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "src/components/Stage.tsx V3 gsap.set",
+      "what": "Console warning GSAP target not found on every V3 load, gsap.set runs on empty dot refs before the measured re-run. No visible effect.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "src/App.tsx, src/components/Placeholder.tsx",
+      "what": "Hero and h1 sit outside any landmark. The only main is the placeholder block, which also holds the footer.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "scene top right, .promo over the ceiling lamp",
+      "what": "The red promo chip cuts off the top of a ceiling lamp in the scene, which reads as a clipped element.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "src/components/Switcher.tsx:9",
+      "what": "Switcher buttons carry a native title tooltip. Standing rejection, though it is review chrome.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "public/brand/linde-mh.png, public/brand/ekotehnika.png",
+      "what": "Both logos are 1x crops of the header capture, not the source files. Soft at 2x DPR, unverified, and the EKOTEHNIKA tagline is about 5px.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F11",
+      "sev": 3,
+      "where": "src/scene/Forklift.tsx:27",
+      "what": "Forklift ground shadow ellipse in ink at 0.08 opacity. The brand is flat with no shadows.",
+      "status": "open",
+      "round": 1
+    }
+  ],
+  "cards": [],
+  "cardAt": "2026-10-08T16:48:31.080Z"
 }

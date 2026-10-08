@@ -6,6 +6,8 @@ import { Mail, Mobile, Phone, Search } from './Icons';
 
 // Both logos are the live site's own files, cropped 1 to 1 from the header capture, because
 // ekotehnika.rs cannot be reached from the build machine to measure the hotlinked files.
+// Paths confirmed in the competitive analysis. The rest go to the site search for their label until
+// the live paths are known, so no two labels share a destination.
 const navHref: Record<string, string> = {
   Novi: '/viljuskari/',
   Polovni: '/polovni-linde-viljuskari/',
@@ -48,7 +50,7 @@ export function Header() {
           <ul>
             {nav.map((item) => (
               <li key={item}>
-                <a href={`${SITE}${navHref[item] ?? '/'}`}>{item}</a>
+                <a href={navHref[item] ? `${SITE}${navHref[item]}` : `${SITE}/?s=${encodeURIComponent(item)}`}>{item}</a>
               </li>
             ))}
           </ul>

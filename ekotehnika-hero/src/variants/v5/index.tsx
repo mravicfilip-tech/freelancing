@@ -150,7 +150,7 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
       const vh = window.innerHeight;
       block(kickRef.current, 0.0, 0.035);
       words(w1.current, 0.1, 0.215);
-      block(say1.current, 0.3, 0.345);
+      block(say1.current, 0.33, 0.37);
       words(w2.current, 0.405, 0.51);
       block(say2.current, 0.585, 0.625);
 

@@ -46,6 +46,15 @@ Task format
   - [ ] Shoot and compare the five, Filip picks one by number
   - [ ] Run /uireview on the picked direction
 
+- ekotehnika-2 Hero, five variants copying the reels 1:1 in style. Link https://ekotehnika-hero.vercel.app
+  - [x] Study the reels frame by frame
+  - [ ] Plan the five variants and harden the plan
+  - [ ] Move to React Three Fiber with lighting and post processing
+  - [ ] Build the shared forklift model and lighting rig
+  - [ ] Build the five variants
+  - [ ] Run /uireview and fix
+  - [ ] Filip picks one by number
+
 ## Review
 
 ## Done

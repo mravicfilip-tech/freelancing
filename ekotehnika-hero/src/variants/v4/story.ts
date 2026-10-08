@@ -8,9 +8,9 @@ export type Vec = [number, number, number];
 export type Key = { p: number; t: Vec; az: number; el: number; d: number; fov: number; stop?: number };
 
 export const keys: Key[] = [
-  { p: 0.0, t: [-56, 2, -1], az: 42, el: 31, d: 128, fov: 20, stop: 0 },
+  { p: 0.0, t: [-56, 2.5, -2], az: 40, el: 26, d: 120, fov: 20, stop: 0 },
   { p: 0.09, t: [-22, 4, -16], az: 30, el: 46, d: 153, fov: 20 },
-  { p: 0.17, t: [3, 0.5, -19], az: 36, el: 35, d: 112, fov: 20, stop: 1 },
+  { p: 0.17, t: [3, 0.5, -20], az: 38, el: 31, d: 108, fov: 20, stop: 1 },
   { p: 0.255, t: [-26, 0, 18], az: 18, el: 58, d: 195, fov: 20 },
   { p: 0.34, t: [-58, 0.5, 39], az: 40, el: 37, d: 109, fov: 20, stop: 2 },
   { p: 0.425, t: [-4, 1.5, 20], az: 62, el: 22, d: 125, fov: 22 },

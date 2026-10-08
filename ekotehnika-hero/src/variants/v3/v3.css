@@ -153,8 +153,9 @@
   gap: 8px;
   padding: 0 14px;
   border-radius: 12px;
-  background: rgb(255 255 255 / 0.13);
-  border: 1px solid rgb(255 255 255 / 0.16);
+  /* frosted glass, a light sheen over a smoked base so white text holds AA on the bright sky */
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.05)), rgb(34 34 34 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.18);
   -webkit-backdrop-filter: blur(22px) saturate(1.35);
   backdrop-filter: blur(22px) saturate(1.35);
   color: var(--white);
@@ -307,7 +308,7 @@
 
 /* Over the light page below the film the bar turns light, like the reel's. */
 .v3-nav[data-light='true'] {
-  background: rgb(245 246 250 / 0.78);
+  background: rgb(245 246 250 / 0.82);
   border-color: rgb(230 231 235 / 0.9);
   color: var(--ink);
 }

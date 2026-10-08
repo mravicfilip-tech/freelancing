@@ -57,7 +57,7 @@ export default function Variant3({ reduced }: { reduced: boolean }) {
       // the colour grade, warm over the lit chapters, gone in the dark
       const lit = 1 - smooth(range(p, 0.52, 0.62));
       const air = band(p, 0.12, 0.32, 0.5, 0.6);
-      const g = `${(lit * (0.22 + air * 0.38)).toFixed(3)}|${(lit * air * 0.7).toFixed(3)}`;
+      const g = `${(lit * (0.22 + air * 0.22)).toFixed(3)}|${(lit * air * 0.85).toFixed(3)}`;
       if (g !== lastGrade && gradeRef.current && hazeRef.current) {
         lastGrade = g;
         const [a, b] = g.split('|');

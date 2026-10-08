@@ -34,7 +34,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const KEYS = [
   { p: 0.0, pos: [0.7, 0.3, 11.5], tgt: [0.7, 1.12, 0], fov: 24 },
   { p: 0.16, pos: [1.6, 1.7, 13.5], tgt: [1.0, 0.95, -1], fov: 25 },
-  { p: 0.4, pos: [6.2, 8.2, 13.2], tgt: [1.0, 0.2, -3.4], fov: 32 },
+  { p: 0.4, pos: [6.5, 12.5, 15.0], tgt: [3.0, 0.0, -7.6], fov: 32 },
   { p: 0.52, pos: [5.0, 4.6, 8.2], tgt: [0.7, 0.7, -0.8], fov: 32 },
   { p: 0.68, pos: [4.0, 12.0, 13.5], tgt: [2.5, 0.0, -7], fov: 36 },
   { p: 0.86, pos: [0.6, 19.5, 3.4], tgt: [0.6, 0.0, -0.6], fov: 42 },
@@ -171,7 +171,7 @@ export function Film({ progress, reduced, u }: { progress: Prog; reduced: boolea
     u.cut.value = lerp(3.3, -2.2, smooth(range(p, 0.45, 0.565)));
     u.lineMain.value = smooth(range(p, 0.44, 0.47)) * (1 - smooth(range(p, 0.8, 0.88)));
     u.pointMain.value = smooth(range(p, 0.45, 0.49)) * (1 - 0.7 * smooth(range(p, 0.84, 0.95)));
-    u.lineWorld.value = smooth(range(p, 0.55, 0.63)) * (1 - smooth(range(p, 0.77, 0.86))) * 0.32;
+    u.lineWorld.value = smooth(range(p, 0.55, 0.63)) * (1 - smooth(range(p, 0.77, 0.86))) * 0.2;
     u.pointWorld.value = smooth(range(p, 0.53, 0.62)) * (1 - 0.75 * smooth(range(p, 0.82, 0.94)));
     u.drift.value = smooth(range(p, 0.64, 0.86)) * 2.2;
     u.grid.value = smooth(range(p, 0.73, 0.9));
@@ -249,14 +249,14 @@ export function Film({ progress, reduced, u }: { progress: Prog; reduced: boolea
 
 // The ground. Near black land, and the yard slab lighter so the raking sun reads on it.
 function Ground({ spill, land }: { spill: THREE.Texture; land: THREE.Material }) {
-  const slab = useMemo(() => new THREE.MeshPhysicalMaterial({ color: C.tonedTextGrey, roughness: 0.95, specularIntensity: 0.2 }), []);
+  const slab = useMemo(() => new THREE.MeshPhysicalMaterial({ color: new THREE.Color(C.lightGrey).multiplyScalar(0.3), roughness: 0.95, specularIntensity: 0.2 }), []);
   return (
     <>
       <mesh rotation-x={-Math.PI / 2} material={land} receiveShadow userData={{ noEdges: true }}>
         <planeGeometry args={[600, 600]} />
       </mesh>
-      <mesh rotation-x={-Math.PI / 2} position={[18, 0.005, -4]} material={slab} receiveShadow userData={{ noEdges: true }}>
-        <planeGeometry args={[60, 34]} />
+      <mesh rotation-x={-Math.PI / 2} position={[22, 0.005, -4]} material={slab} receiveShadow userData={{ noEdges: true }}>
+        <planeGeometry args={[52, 34]} />
       </mesh>
       {/* sun spill on the land behind the truck in the opening */}
       <mesh rotation-x={-Math.PI / 2} position={[-28, 0.01, -9]} userData={{ noEdges: true }}>
@@ -275,7 +275,7 @@ function useWire(ref: MutableRefObject<THREE.Group | null>, u: V3Uniforms, opts:
     if (!g) return;
     const seg = collectEdges(g, opts.angle ?? 28, g);
     const lines = new THREE.LineSegments(segmentsGeometry(seg), lineMaterial(C.white, u.lineWorld, u.noCut));
-    const pts = new THREE.Points(pointsAlong(seg, opts.step ?? 0.35, 0.05, opts.keep ?? 0.8), pointMaterial(C.white, u.pointWorld, u.noCut, u, 2.6));
+    const pts = new THREE.Points(pointsAlong(seg, opts.step ?? 0.35, 0.05, opts.keep ?? 0.8), pointMaterial(C.white, u.pointWorld, u.noCut, u, 3.4));
     lines.frustumCulled = false;
     pts.frustumCulled = false;
     lines.renderOrder = 5;
@@ -309,7 +309,7 @@ function rng(seed: number) {
 // blocks of pallet stacks. Repeated parts are instanced.
 function Yard({ u }: { u: V3Uniforms }) {
   const ref = useRef<THREE.Group>(null);
-  useWire(ref, u, { step: 0.22, keep: 1 });
+  useWire(ref, u, { step: 0.14, keep: 1 });
 
   const mats = useMemo(
     () => ({

@@ -18,6 +18,16 @@
         "freelancing"
       ],
       "previewProjects": []
+    },
+    {
+      "id": "portfolio",
+      "repos": [
+        "filip-portfolio"
+      ],
+      "previewProjects": [
+        "filip-portfolio",
+        "filip-portfolio-public"
+      ]
     }
   ]
 }

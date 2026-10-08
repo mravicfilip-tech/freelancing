@@ -17,6 +17,13 @@ Rules
 
 ## In progress
 
+- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio
+  - [ ] /uireview round, accessibility and contrast, 1440 and 390, both themes
+  - [ ] Fix sev 1 and sev 2
+  - [ ] Mobile motion plan, content first
+  - [ ] Build the mobile motion pass
+  - [ ] Re-check, card, preview deploy
+
 ## Review
 
 - portfolio-2 Portfolio reel v2, faster and from the site copy. Round 7 (public site content, screens pile, head motion, horizon glow, dot grid, toolkit deck on the grid) sent as filip-reel-v7-hq.mp4. Plan briefs/reel-v2.md, branch claude/halftone-slice in filip-portfolio

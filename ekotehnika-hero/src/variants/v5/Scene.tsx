@@ -25,7 +25,7 @@ const white = col(C.white);
 
 // Camera keys. Positions run through a Catmull Rom curve so the move never stops between keys.
 const KEYS: { p: number; pos: [number, number, number]; tgt: [number, number, number] }[] = [
-  { p: 0.0, pos: [0.9, 0.8, 10.2], tgt: [0.6, 1.5, 0] },
+  { p: 0.0, pos: [0.9, 0.8, 10.8], tgt: [0.6, 1.5, 0] },
   { p: 0.06, pos: [2.2, 1.25, 9.6], tgt: [0.5, 1.2, 0] },
   { p: 0.14, pos: [6.4, 3.4, 7.6], tgt: [0.4, 0.95, 0] },
   { p: 0.24, pos: [7.6, 5.0, 3.6], tgt: [0.2, 0.9, 0] },
@@ -44,11 +44,23 @@ function keyParam(p: number) {
   return 1;
 }
 
+// At scroll zero the lens shifts so the truck sits high and the headline has the floor below it.
+const LIFT = 0.18;
+
 function Rig({ clock }: { clock: Clock }) {
-  const camera = useThree((s) => s.camera);
-  const v = useMemo(() => ({ pos: new THREE.Vector3(), tgt: new THREE.Vector3() }), []);
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  const size = useThree((s) => s.size);
+  const v = useMemo(() => ({ pos: new THREE.Vector3(), tgt: new THREE.Vector3(), lift: -1, w: 0, h: 0 }), []);
   useFrame(({ clock: c }) => {
     const p = clock.p();
+    const lift = LIFT * (1 - smooth(range(p, 0.0, 0.08)));
+    if (Math.abs(lift - v.lift) > 1e-4 || size.width !== v.w || size.height !== v.h) {
+      v.lift = lift;
+      v.w = size.width;
+      v.h = size.height;
+      if (lift > 0) camera.setViewOffset(size.width, size.height, 0, lift * size.height, size.width, size.height);
+      else camera.clearViewOffset();
+    }
     const u = keyParam(clamp01(p));
     posCurve.getPoint(u, v.pos);
     tgtCurve.getPoint(u, v.tgt);

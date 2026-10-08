@@ -2,11 +2,12 @@
 // forklift at dusk is scanned into glowing edges, breaks into particles, and the particles settle
 // into a dark floor of rounded tiles under converging smoke beams, while white type is revealed
 // word by word. A frosted white panel with a notched top then slides up over the scene with a
-// light headline, a quiet row of service names and three frosted cards.
+// light headline, a quiet row of service names and three frosted cards. The shared nav sits on top.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useScrollStory, clamp01, range, smooth } from '../../scroll/useScrollStory';
-import { SITE, hero, pillars } from '../../content';
+import { hero, pillars } from '../../content';
+import { Nav, type NavTheme } from '../../ui/Nav';
 import { SceneContents, type Clock } from './Scene';
 import { Well } from './Well';
 import './v5.css';
@@ -23,15 +24,8 @@ const SAY2 = [
   ['za', 'celu', 'vašu', 'flotu.'],
 ];
 
-const LINKS = [
-  { label: 'Novi', href: pillars[0].href },
-  { label: 'Polovni', href: pillars[3].href },
-  { label: 'Najam', href: pillars[1].href },
-  { label: 'Servis', href: pillars[2].href },
-];
-
 // dummy, the card kickers
-const KICKERS: Record<string, string> = { novi: '01 Nova flota', najam: '02 Od jednog dana', servis: '03 Na terenu' };
+const KICKERS: Record<string, string> = { novi: 'Nova flota', najam: 'Od jednog dana', servis: 'Na terenu' };
 const CARDS = pillars.filter((p) => p.id !== 'polovni') as (typeof pillars)[number][];
 
 function Words({ lines, refs }: { lines: string[][]; refs: React.MutableRefObject<HTMLSpanElement[]> }) {
@@ -57,14 +51,6 @@ function Words({ lines, refs }: { lines: string[][]; refs: React.MutableRefObjec
         </span>
       ))}
     </>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 3.5h3.2l1.6 4.2-2.1 1.4a11 11 0 0 0 7.2 7.2l1.4-2.1 4.2 1.6V19a1.6 1.6 0 0 1-1.7 1.6A16.5 16.5 0 0 1 3.4 5.2 1.6 1.6 0 0 1 5 3.5z" />
-    </svg>
   );
 }
 
@@ -94,8 +80,8 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
   const { stageRef, progress } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.07 });
   // Reduced motion holds the reel's signature frame, the truck half lines and half particles.
   const clock = useMemo<Clock>(() => ({ p: () => (reduced ? REDUCED_P : progress.current) }), [reduced, progress]);
-  const navRef = useRef<HTMLElement>(null);
   const kickRef = useRef<HTMLParagraphElement>(null);
+  const subRef = useRef<HTMLParagraphElement>(null);
   const say1 = useRef<HTMLHeadingElement>(null);
   const say2 = useRef<HTMLParagraphElement>(null);
   const w1 = useRef<HTMLSpanElement[]>([]);
@@ -106,6 +92,7 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
   const invalidate = useRef<(() => void) | null>(null);
   const [mainOn, setMainOn] = useState(true);
   const [wellsOn, setWellsOn] = useState(false);
+  const [navTheme, setNavTheme] = useState<NavTheme>('dark');
 
   // Shape the notch to the panel's size.
   useLayoutEffect(() => {
@@ -143,7 +130,8 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
     };
     let main = true;
     let wells = false;
-    let theme = 'dark';
+    let theme: NavTheme = 'dark';
+    const t0 = performance.now();
     // Offsets inside the panel, measured once and again on resize, never per frame.
     let rv: { el: HTMLElement; top: number }[] = [];
     let headTop = 0;
@@ -161,8 +149,15 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
       raf = requestAnimationFrame(tick);
       const p = progress.current;
       const vh = window.innerHeight;
-      block(kickRef.current, 0.0, 0.035);
-      words(w1.current, 0.1, 0.215);
+      // The headline arrives word by word on load, then holds over the scan until it lifts away.
+      const since = (performance.now() - t0) / 1000;
+      w1.current.forEach((el, i) => set(el, reveal(smooth(clamp01((since - 0.35 - i * 0.07) / 0.7)))));
+      const lead = smooth(clamp01((since - 0.2) / 0.8));
+      const out = 1 - smooth(range(p, 0.0, 0.045));
+      const o = Math.min(lead, out);
+      const lift = `opacity:${o.toFixed(3)};transform:translateY(${((1 - out) * -16).toFixed(1)}px)`;
+      set(kickRef.current, o >= 1 ? 'opacity:1' : lift);
+      set(subRef.current, o >= 1 ? 'opacity:1' : lift);
       block(say1.current, 0.33, 0.37);
       words(w2.current, 0.405, 0.51);
       block(say2.current, 0.585, 0.625);
@@ -178,10 +173,10 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
           const l = clamp01((vh * 0.98 - (y + r.top)) / (vh * 0.28));
           set(r.el, reveal(smooth(l), 1.2));
         }
-        const t = y + 10 < 104 ? 'light' : 'dark';
-        if (t !== theme && navRef.current) {
+        const t: NavTheme = y + 10 < 104 ? 'glass' : 'dark';
+        if (t !== theme) {
           theme = t;
-          navRef.current.dataset.theme = t;
+          setNavTheme(t);
         }
       }
       const m = p < 0.735;
@@ -229,9 +224,6 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
           <br />
           Rastite svojim tempom.
         </h2>
-        <a className="v5-btn v5-btn-r v5-btn-lg" href={hero.quote.href} data-cta="quote" data-rv>
-          {hero.quote.label}
-        </a>
         <div className="v5-cards">
           {CARDS.map((c) => (
             <article className="v5-card" key={c.id} data-rv>
@@ -261,46 +253,26 @@ export default function Variant5({ reduced }: { reduced: boolean }) {
         </div>
         <div className="v5-shade" aria-hidden="true" />
 
-        <p className="v5-kicker" ref={kickRef}>
-          {hero.kicker}
-        </p>
-        <h1 className="v5-say" ref={say1}>
-          <Words lines={SAY1} refs={w1} />
-        </h1>
+        <div className="v5-intro">
+          <p className="v5-kicker" ref={kickRef}>
+            {hero.kicker}
+          </p>
+          <h1 className="v5-say" ref={say1}>
+            <Words lines={SAY1} refs={w1} />
+          </h1>
+          <p className="v5-sub" ref={subRef}>
+            {hero.sub}
+          </p>
+        </div>
         {!reduced && (
-          <p className="v5-say" ref={say2}>
+          <p className="v5-say v5-say2" ref={say2}>
             <Words lines={SAY2} refs={w2} />
           </p>
         )}
 
         {!reduced && panelEl}
 
-        <header className="v5-nav" ref={navRef} data-theme="dark">
-          <a className="v5-logo" href={SITE} aria-label="Ekotehnika, početna strana">
-            <img src="/brand/linde-mh.png" alt="Linde Material Handling" width={56} height={34} />
-            <img src="/brand/ekotehnika.png" alt="Ekotehnika" width={88} height={24} />
-          </a>
-          <nav aria-label="Glavna navigacija">
-            <ul>
-              {LINKS.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href}>{l.label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <a className="v5-phone" href={hero.sales.tel} data-cta="call-sales">
-            <PhoneIcon />
-            <span className="v5-phone-l">{hero.sales.label}</span>
-            <span>{hero.sales.number}</span>
-          </a>
-          <a className="v5-btn v5-btn-w" href={hero.service.tel} data-cta="call-service" aria-label={`${hero.service.label}, ${hero.service.number}`}>
-            {hero.service.label}
-          </a>
-          <a className="v5-btn v5-btn-r" href={hero.quote.href} data-cta="quote">
-            {hero.quote.label}
-          </a>
-        </header>
+        <Nav theme={navTheme} />
       </div>
       {reduced && panelEl}
     </div>

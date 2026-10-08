@@ -1,0 +1,135 @@
+/* Shared nav for variants 2, 4 and 5. Tokens only, see src/styles.css :root. */
+
+.ek-nav {
+  position: absolute;
+  z-index: 20;
+  top: 20px;
+  left: 32px;
+  right: 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 8px;
+  border-radius: 16px;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+}
+
+.ek-nav-light {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+  color: var(--ink);
+}
+
+.ek-nav-glass {
+  background: rgb(255 255 255 / 0.78);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.9);
+  color: var(--ink);
+}
+
+.ek-nav-dark {
+  background: rgb(34 34 34 / 0.62);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--white);
+}
+
+.ek-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 14px 0 7px;
+  border-radius: 11px;
+  background: var(--white);
+}
+
+.ek-nav-logo img {
+  display: block;
+}
+
+.ek-nav nav {
+  margin-left: 24px;
+}
+
+.ek-nav ul {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ek-nav ul a,
+.ek-nav-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.ek-nav-light ul a:hover,
+.ek-nav-glass ul a:hover,
+.ek-nav-light .ek-nav-phone:hover,
+.ek-nav-glass .ek-nav-phone:hover {
+  background: var(--light-grey);
+}
+
+.ek-nav-dark ul a:hover,
+.ek-nav-dark .ek-nav-phone:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.ek-nav-phone {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.ek-nav-phone svg {
+  color: var(--linde-red);
+}
+
+.ek-nav-dark .ek-nav-phone svg {
+  color: var(--white);
+}
+
+.ek-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 11px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.ek-nav-cta:hover {
+  background: var(--dark-red);
+}
+
+.ek-nav a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ek-nav-cta:focus-visible {
+  outline-color: var(--ink);
+}
+
+.ek-nav-dark .ek-nav-cta:focus-visible {
+  outline-color: var(--white);
+}

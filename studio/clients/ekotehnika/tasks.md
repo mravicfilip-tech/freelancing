@@ -54,6 +54,10 @@ Task format
   - [x] Build the five variants
   - [ ] Deploy, blocked by the Vercel daily deploy limit until it resets
   - [ ] Run /uireview and fix
+  - [x] Filip narrows to 2, 4 and 5
+  - [ ] Plan the clean up of 2, 4 and 5 and harden it
+  - [ ] Shared nav and Geist type for 2, 4 and 5
+  - [ ] Clean up 2, 4 and 5
   - [ ] Filip picks one by number
 
 ## Review

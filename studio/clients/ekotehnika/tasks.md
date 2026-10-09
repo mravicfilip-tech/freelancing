@@ -31,6 +31,7 @@ Task format
   - [x] Filip explains the process and motion
   - [x] Plan from the recording, the voice over and Figma, hardened
   - [x] Pull Filip's Drive media and convert the Linde 3D models
+  - [x] Add a strip of real delivery photos to Proizvodi
   - [x] Build the shell, copy, products, footer and Linija
   - [ ] Build the Grad scene
   - [ ] Build the Sistem scene

@@ -83,6 +83,13 @@ export const proizvodi = {
     { name: 'Linde D12 do D14', type: 'Komisioneri', icon: 'picker' }, // dummy type
     { name: 'Linde N20', type: 'Komisioneri', icon: 'picker' }, // brief, the order picker
   ],
+  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage.
+  photos: [
+    { src: '/photos/isporuka-1.webp', alt: 'Linde E20 EVO, oznaka na boku viljuškara' },
+    { src: '/photos/isporuka-2.webp', alt: 'Viljuškar se spušta sa kamiona pri isporuci' },
+    { src: '/photos/isporuka-3.webp', alt: 'Linde viljuškar na kamionu, pred istovar' },
+    { src: '/photos/isporuka-4.webp', alt: 'Linde viljuškar u kamionu, spreman za isporuku' },
+  ],
   cta: { label: pillars[0].more, href: pillars[0].href } satisfies Cta,
 };
 

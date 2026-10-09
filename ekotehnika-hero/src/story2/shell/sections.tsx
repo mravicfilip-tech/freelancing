@@ -1,5 +1,5 @@
 // The two normal sections after the pinned story. Proizvodi, a plain range of the main products in one row
-// with one call to action, then a classic footer. Copy from ../copy.ts, the contacts as text.
+// with a strip of Ekotehnika's own photos and one call to action, then a classic footer. Copy from ../copy.ts, the contacts as text.
 import { footer, proizvodi } from '../copy';
 import { SITE } from '../../content';
 import { TruckIcon } from './icons';
@@ -23,6 +23,13 @@ export function Products() {
               </div>
               <h3>{p.name}</h3>
               <p>{p.type}</p>
+            </li>
+          ))}
+        </ul>
+        <ul className="s2-photos">
+          {proizvodi.photos.map((ph) => (
+            <li key={ph.src}>
+              <img src={ph.src} alt={ph.alt} width={800} height={1000} loading="lazy" decoding="async" />
             </li>
           ))}
         </ul>

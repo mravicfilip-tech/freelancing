@@ -431,6 +431,25 @@ a.s2-tile:hover {
   color: inherit;
 }
 
+.s2-photos {
+  list-style: none;
+  margin: 0 0 48px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.s2-photos img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--light-grey);
+}
+
 /* Footer, classic */
 .s2-footer {
   padding: 88px 0 40px;

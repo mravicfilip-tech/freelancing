@@ -25,29 +25,6 @@ Task format
 
 ## In progress
 
-- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem
-  - [x] Bring back the three versions and prep localhost
-  - [x] Apply the bottom left headline layout to 2, 4 and 5
-  - [x] Filip explains the process and motion
-  - [x] Plan from the recording, the voice over and Figma, hardened
-  - [x] Pull Filip's Drive media and convert the Linde 3D models
-  - [x] Add a strip of real delivery photos to Proizvodi
-  - [x] Build the shell, copy, products, footer and Linija
-  - [x] Build the Grad scene
-  - [x] Build the Sistem scene
-  - [ ] Put storyline 2 on versions 2, 4 and 5 and check
-
-- ekotehnika-4 Storyboard the four services on scroll, Najam, Polovni, Novi and Servis. Link https://claude.ai/artifact/RWHBH6HdwFZ1VnTj8Rj6SE
-  - [x] Write the storyboard
-  - [x] Filip reviews the storyboard
-  - [x] Filip sends the UI references
-  - [x] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
-  - [x] Write the shared story clock and timeline
-  - [x] Build the shell with UI A, B and C and the Linija scene
-  - [x] Build the Grad scene in 3D
-  - [x] Build the Sistem scene in 3D
-  - [x] Wire the nine combinations into the switcher and check them
-
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers
   - [x] Build the card UI over the existing motion
@@ -94,4 +71,27 @@ Task format
 
 ## Review
 
+- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem
+  - [x] Bring back the three versions and prep localhost
+  - [x] Apply the bottom left headline layout to 2, 4 and 5
+  - [x] Filip explains the process and motion
+  - [x] Plan from the recording, the voice over and Figma, hardened
+  - [x] Pull Filip's Drive media and convert the Linde 3D models
+  - [x] Add a strip of real delivery photos to Proizvodi
+  - [x] Build the shell, copy, products, footer and Linija
+  - [x] Build the Grad scene
+  - [x] Build the Sistem scene
+  - [x] Put storyline 2 on versions 2, 4 and 5 and check
+
 ## Done
+
+- ekotehnika-4 Storyboard the four services on scroll, Najam, Polovni, Novi and Servis. Link https://claude.ai/artifact/RWHBH6HdwFZ1VnTj8Rj6SE
+  - [x] Write the storyboard
+  - [x] Filip reviews the storyboard
+  - [x] Filip sends the UI references
+  - [x] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
+  - [x] Write the shared story clock and timeline
+  - [x] Build the shell with UI A, B and C and the Linija scene
+  - [x] Build the Grad scene in 3D
+  - [x] Build the Sistem scene in 3D
+  - [x] Wire the nine combinations into the switcher and check them

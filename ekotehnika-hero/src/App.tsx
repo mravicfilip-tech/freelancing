@@ -6,6 +6,7 @@ import { scrollToTop } from './scroll/useScrollStory';
 const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })));
 const Board = lazy(() => import('./board/Board').then((m) => ({ default: m.Board })));
 const StoryHarness = lazy(() => import('./story/Harness').then((m) => ({ default: m.Harness })));
+const StoryHarness2 = lazy(() => import('./story2/Harness').then((m) => ({ default: m.Harness2 })));
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -19,6 +20,12 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <Gate />
+      </Suspense>
+    );
+  if (new URLSearchParams(window.location.search).has('story2'))
+    return (
+      <Suspense fallback={null}>
+        <StoryHarness2 />
       </Suspense>
     );
   if (new URLSearchParams(window.location.search).has('story'))

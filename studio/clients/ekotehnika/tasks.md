@@ -29,6 +29,7 @@ Task format
   - [x] Write the storyboard
   - [ ] Filip reviews the storyboard
   - [x] Filip sends the UI references
+  - [ ] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
   - [ ] Build the story and UI A, B and C, nine combinations
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp

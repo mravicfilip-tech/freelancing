@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Layout. A reading column for the thinking, then one band per segment with its frames in a grid, like a storyboard wall. */
+/* Layout. A reading column for the plan, then one band per service with its screens large enough to read the panel inside them. */
 :root {
   --bg: #f5f6fa;
   --paper: #ffffff;
@@ -11,226 +11,201 @@
   --muted: #4a595c;
   --line: #e6e7eb;
   --tile: #eeeff3;
-  --red: #aa0020;
-  --red-ink: #aa0020;
-  --sketch-bg: #ffffff;
-  --sketch-ground: #e6e7eb;
-  --sketch-ink: #222222;
-  --sketch-soft: #c9ccd3;
+  --note: #2f63c9;
   --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #17181b; --paper: #202226; --ink: #eeeff3; --muted: #aab3b6; --line: #33363c; --tile: #2a2d32;
-    --red: #cc132a; --red-ink: #ff6b7d; --sketch-bg: #f5f6fa; --sketch-ground: #e6e7eb; --sketch-ink: #222222; --sketch-soft: #c9ccd3;
-    color-scheme: dark;
-  }
+  :root:not([data-theme="light"]) { --bg: #17181b; --paper: #202226; --ink: #eeeff3; --muted: #aab3b6; --line: #33363c; --tile: #2a2d32; --note: #8fb0ff; color-scheme: dark; }
 }
-:root[data-theme="dark"] {
-  --bg: #17181b; --paper: #202226; --ink: #eeeff3; --muted: #aab3b6; --line: #33363c; --tile: #2a2d32;
-  --red: #cc132a; --red-ink: #ff6b7d; --sketch-bg: #f5f6fa; --sketch-ground: #e6e7eb; --sketch-ink: #222222; --sketch-soft: #c9ccd3;
-  color-scheme: dark;
-}
+:root[data-theme="dark"] { --bg: #17181b; --paper: #202226; --ink: #eeeff3; --muted: #aab3b6; --line: #33363c; --tile: #2a2d32; --note: #8fb0ff; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55; }
-.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 24px; padding-block: 48px 96px; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-inline: 24px; padding-block: 48px 96px; }
 @media (max-width: 520px) { .wrap { padding-inline: 16px; padding-block: 28px 64px; } }
 h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 500; letter-spacing: -0.015em; }
 h1 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.08; }
 h2 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; }
 h3 { font-size: 17px; line-height: 1.3; }
 p { margin: 0; }
-.kick { font-size: 14px; font-weight: 500; color: var(--red-ink); }
-.lede { max-width: 66ch; font-size: 18px; color: var(--muted); }
-.read { max-width: 70ch; display: grid; gap: 14px; }
-.stack { display: grid; gap: 18px; }
+.kick { font-size: 14px; font-weight: 500; color: var(--muted); }
+.lede { max-width: 68ch; font-size: 18px; color: var(--muted); }
+.read { max-width: 74ch; display: grid; gap: 14px; }
+.stack { display: grid; gap: 12px; }
 header.top { display: grid; gap: 18px; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
-.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); }
 .meta b { color: var(--ink); font-weight: 500; }
-
-/* The spine, scroll length drawn to scale. */
-.spine { margin-top: 40px; display: grid; gap: 12px; }
-.bar { display: flex; height: 54px; border-radius: 12px; overflow: hidden; background: var(--tile); }
-.bar a { display: flex; align-items: center; padding-inline: 12px; font-size: 14px; font-weight: 500; color: var(--ink); text-decoration: none; border-right: 2px solid var(--bg); min-width: 0; white-space: nowrap; overflow: hidden; }
-.bar a:last-child { border-right: 0; }
-.bar a.seg { background: var(--paper); }
-.bar a.seg i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--red); margin-right: 8px; flex: none; }
-.bar a:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-
 section { padding-top: 64px; }
-.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
 .box { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 8px; align-content: start; min-width: 0; }
 .box p { color: var(--muted); font-size: 15px; }
 .box .say { color: var(--ink); font-size: 16px; }
-
-/* Segment bands. */
-.seghead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 48px; align-items: end; padding-bottom: 24px; }
+.fig { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-top: 24px; overflow-x: auto; }
+.fig svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.figcap { font-size: 14px; color: var(--muted); margin-top: 12px; max-width: 82ch; }
+.seghead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; align-items: end; padding-bottom: 22px; }
 @media (max-width: 860px) { .seghead { grid-template-columns: 1fr; } }
-.seghead .range { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-.job { display: grid; gap: 6px; }
+.range { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.job { display: grid; gap: 4px; margin: 0; }
 .job dt { font-size: 13px; font-weight: 500; color: var(--muted); }
 .job dd { margin: 0 0 8px; font-size: 16px; }
-.frames { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-@media (max-width: 1080px) { .frames { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .frames { grid-template-columns: 1fr; } }
-.frames.solo { grid-template-columns: minmax(0, 600px); }
+.frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .frames { grid-template-columns: 1fr; } }
+.frames.solo { grid-template-columns: minmax(0, 760px); }
 .frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
-.frame svg { display: block; width: 100%; height: auto; background: var(--sketch-bg); border-bottom: 1px solid var(--line); }
+.frame svg { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--line); }
 .fbody { padding: 14px 16px 18px; display: grid; gap: 10px; align-content: start; }
-.fhead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.fid { font-family: var(--mono); font-size: 13px; color: var(--red-ink); font-weight: 500; }
-.fpct { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.frame h3 { font-size: 16px; }
+.fhead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.fid { font-family: var(--mono); font-size: 13px; color: var(--ink); font-weight: 500; }
+.mode { font-size: 13px; font-weight: 500; padding: 2px 9px; border-radius: 999px; background: var(--tile); color: var(--ink); }
+.mode.auto { background: var(--ink); color: var(--paper); }
 .row { display: grid; gap: 2px; }
 .row span { font-size: 13px; font-weight: 500; color: var(--muted); }
 .row p { font-size: 15px; }
-.copy { background: var(--tile); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
-.copy em { font-style: normal; font-size: 13px; color: var(--muted); display: block; margin-top: 4px; }
-.msg { border-left: 3px solid var(--red); padding-left: 10px; font-size: 15px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { font-size: 13px; padding: 3px 9px; border-radius: 999px; background: var(--tile); color: var(--ink); }
-.chip.new { background: transparent; border: 1px dashed var(--muted); }
-
-ol.q { display: grid; gap: 14px; padding-left: 22px; margin: 0; max-width: 78ch; }
-ol.q li { padding-left: 4px; }
+.msg { border-left: 3px solid var(--ink); padding-left: 10px; font-size: 15px; }
+ol.q { display: grid; gap: 14px; padding-left: 22px; margin: 0; max-width: 82ch; }
 ol.q b { font-weight: 500; }
 ol.q p { color: var(--muted); font-size: 15px; margin-top: 2px; }
-.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 14px; color: var(--muted); margin-top: 8px; }
-.legend span { display: inline-flex; align-items: center; gap: 8px; }
+ul.rules { display: grid; gap: 10px; padding-left: 20px; margin: 0; max-width: 82ch; }
+.key { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); margin-top: 14px; }
+.key i { display: inline-block; width: 22px; height: 0; border-top: 2px dashed var(--note); vertical-align: middle; margin-right: 8px; }
 footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <!-- Forklift, side view. The body takes currentColor so a worn grey or a new red is one attribute. -->
+    <!-- Linde style forklift facing right. Red only on the rear shell (currentColor), charcoal frame (var --frame), grey side panel (var --panel). -->
     <symbol id="fl" viewBox="0 0 64 52">
-      <rect x="4" y="20" width="32" height="20" rx="5" fill="currentColor"/>
-      <path d="M12 20 V8 H28 L32 20" fill="none" stroke="#222" stroke-width="2.4" stroke-linejoin="round"/>
-      <rect x="38" y="2" width="3.4" height="40" fill="#222"/>
-      <rect x="41" y="37" width="20" height="3.2" fill="#222"/>
-      <circle cx="13" cy="42" r="7" fill="#222"/><circle cx="13" cy="42" r="2.6" fill="#e6e7eb"/>
-      <circle cx="31" cy="42" r="7" fill="#222"/><circle cx="31" cy="42" r="2.6" fill="#e6e7eb"/>
+      <rect x="6" y="30" width="34" height="10" rx="2" fill="var(--frame, #222)"/>
+      <path d="M2 40 V24 C2 19 6 17 11 17 H22 V40 Z" fill="currentColor"/>
+      <rect x="22" y="23" width="15" height="13" rx="2" fill="var(--panel, #4a595c)"/>
+      <rect x="23" y="28" width="13" height="1.6" fill="#e6e7eb"/>
+      <path d="M14 18 V6 H31 L36 24" fill="none" stroke="var(--frame, #222)" stroke-width="2.6" stroke-linejoin="round"/>
+      <rect x="38" y="2" width="3.6" height="40" fill="var(--frame, #222)"/>
+      <rect x="41.6" y="37" width="20" height="3" fill="#4a595c"/>
+      <circle cx="13" cy="42" r="7" fill="#222"/><circle cx="13" cy="42" r="3" fill="#4a595c"/>
+      <circle cx="32" cy="42" r="7" fill="#222"/><circle cx="32" cy="42" r="3" fill="#4a595c"/>
     </symbol>
     <symbol id="reach" viewBox="0 0 64 80">
-      <rect x="4" y="50" width="26" height="20" rx="4" fill="currentColor"/>
+      <path d="M2 70 V54 C2 50 5 48 9 48 H22 V70 Z" fill="currentColor"/>
+      <rect x="22" y="52" width="10" height="16" rx="2" fill="#4a595c"/>
       <rect x="34" y="2" width="3.4" height="70" fill="#222"/><rect x="40" y="2" width="3.4" height="70" fill="#222"/>
-      <rect x="43" y="30" width="18" height="3.2" fill="#222"/>
+      <rect x="43.4" y="30" width="18" height="3" fill="#4a595c"/>
       <circle cx="12" cy="72" r="6" fill="#222"/><circle cx="52" cy="74" r="4" fill="#222"/>
     </symbol>
     <symbol id="pallettruck" viewBox="0 0 64 40">
-      <rect x="4" y="8" width="16" height="22" rx="4" fill="currentColor"/>
+      <path d="M2 30 V12 C2 9 4 8 7 8 H20 V30 Z" fill="currentColor"/>
       <path d="M12 8 L6 0" stroke="#222" stroke-width="2.6" stroke-linecap="round"/>
-      <rect x="20" y="26" width="42" height="4" fill="#222"/>
+      <rect x="20" y="26" width="42" height="4" fill="#4a595c"/>
       <circle cx="12" cy="33" r="5" fill="#222"/><circle cx="58" cy="33" r="3" fill="#222"/>
     </symbol>
     <symbol id="picker" viewBox="0 0 64 80">
-      <rect x="6" y="54" width="30" height="16" rx="4" fill="currentColor"/>
+      <path d="M4 70 V58 C4 55 6 54 9 54 H34 V70 Z" fill="currentColor"/>
       <rect x="10" y="22" width="20" height="30" rx="2" fill="none" stroke="#222" stroke-width="2.4"/>
-      <rect x="38" y="4" width="3.4" height="66" fill="#222"/><rect x="41" y="22" width="18" height="3.2" fill="#222"/>
+      <rect x="38" y="4" width="3.4" height="66" fill="#222"/><rect x="41.4" y="22" width="18" height="3" fill="#4a595c"/>
       <circle cx="14" cy="72" r="6" fill="#222"/><circle cx="54" cy="74" r="4" fill="#222"/>
     </symbol>
     <symbol id="pal" viewBox="0 0 30 26">
-      <rect x="1" y="1" width="28" height="19" rx="1.5" fill="#f5f6fa" stroke="#9aa2a6" stroke-width="1.4"/>
-      <path d="M1 10 H29 M15 1 V20" stroke="#c9ccd3" stroke-width="1.2"/>
+      <rect x="1" y="1" width="28" height="19" rx="1.5" fill="#ffffff" stroke="#9aa2a6" stroke-width="1.4"/>
+      <path d="M1 10 H29 M15 1 V20" stroke="#d5d8dd" stroke-width="1.2"/>
       <rect x="0" y="20" width="30" height="5" fill="#9aa2a6"/>
     </symbol>
-    <symbol id="truck" viewBox="0 0 150 60">
+    <symbol id="lorry" viewBox="0 0 150 60">
       <rect x="2" y="6" width="104" height="40" rx="3" fill="#ffffff" stroke="#222" stroke-width="2"/>
-      <rect x="2" y="30" width="104" height="5" fill="#aa0020"/>
+      <rect x="2" y="30" width="104" height="4" fill="#9aa2a6"/>
       <path d="M108 18 H130 L146 32 V46 H108 Z" fill="#ffffff" stroke="#222" stroke-width="2" stroke-linejoin="round"/>
       <path d="M114 22 H128 L138 32 H114 Z" fill="#c9ccd3"/>
       <circle cx="26" cy="50" r="8" fill="#222"/><circle cx="84" cy="50" r="8" fill="#222"/><circle cx="128" cy="50" r="8" fill="#222"/>
     </symbol>
-    <symbol id="van" viewBox="0 0 80 44">
-      <path d="M2 8 H52 L70 22 L78 24 V34 H2 Z" fill="#ffffff" stroke="#222" stroke-width="2" stroke-linejoin="round"/>
-      <rect x="2" y="22" width="50" height="4" fill="#aa0020"/>
-      <path d="M54 12 L66 22 H54 Z" fill="#c9ccd3"/>
-      <circle cx="18" cy="36" r="6.5" fill="#222"/><circle cx="62" cy="36" r="6.5" fill="#222"/>
-    </symbol>
     <symbol id="rack" viewBox="0 0 44 110">
       <rect x="2" y="2" width="3" height="106" fill="#5e7175"/><rect x="39" y="2" width="3" height="106" fill="#5e7175"/>
-      <rect x="2" y="36" width="40" height="3" fill="#aa0020"/><rect x="2" y="72" width="40" height="3" fill="#aa0020"/><rect x="2" y="105" width="40" height="3" fill="#aa0020"/>
+      <rect x="2" y="36" width="40" height="3" fill="#9aa2a6"/><rect x="2" y="72" width="40" height="3" fill="#9aa2a6"/><rect x="2" y="105" width="40" height="3" fill="#9aa2a6"/>
     </symbol>
     <symbol id="seal" viewBox="0 0 40 40">
-      <circle cx="20" cy="20" r="18" fill="#aa0020"/>
-      <circle cx="20" cy="20" r="13" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-dasharray="2 2.4"/>
+      <circle cx="20" cy="20" r="18" fill="#222"/>
+      <circle cx="20" cy="20" r="13" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-dasharray="2 2.4"/>
       <path d="M13 20.5 L18 25.5 L27.5 15" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     </symbol>
     <symbol id="warn" viewBox="0 0 30 28">
-      <path d="M15 2 L28 26 H2 Z" fill="#aa0020"/><rect x="13.6" y="10" width="2.8" height="8" fill="#fff"/><rect x="13.6" y="20.5" width="2.8" height="2.8" fill="#fff"/>
-    </symbol>
-    <symbol id="wrench" viewBox="0 0 24 24">
-      <path d="M14.6 5.2a4.2 4.2 0 0 0-5.1 5.4L4.4 15.7a2 2 0 0 0 2.9 2.9l5.1-5.1a4.2 4.2 0 0 0 5.4-5.1l-2.6 2.6-2.4-.5-.5-2.4z" fill="none" stroke="#222" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M15 2 L28 26 H2 Z" fill="#222"/><rect x="13.6" y="10" width="2.8" height="8" fill="#fff"/><rect x="13.6" y="20.5" width="2.8" height="2.8" fill="#fff"/>
     </symbol>
     <symbol id="pin" viewBox="0 0 20 26">
-      <path d="M10 25 C10 25 2 15 2 9.5 A8 8 0 0 1 18 9.5 C18 15 10 25 10 25 Z" fill="#aa0020"/><circle cx="10" cy="9.5" r="3" fill="#fff"/>
+      <path d="M10 25 C10 25 2 15 2 9.5 A8 8 0 0 1 18 9.5 C18 15 10 25 10 25 Z" fill="#ffffff"/><circle cx="10" cy="9.5" r="3" fill="#222"/>
     </symbol>
-    <symbol id="hall" viewBox="0 0 320 200">
-      <path d="M14 178 V70 L160 22 L306 70 V178" fill="none" stroke="#c9ccd3" stroke-width="2"/>
-    </symbol>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#2f63c9"/>
+    </marker>
   </defs>
 </svg>
 
 <div class="wrap">
 
 <header class="top">
-  <p class="kick">Ekotehnika hero, storyboard for versions 2, 4 and 5, for review</p>
+  <p class="kick">Ekotehnika hero, storyboard for versions 2, 4 and 5, version 3 after harden and Filip's wireframe</p>
   <h1>One warehouse, four ways Ekotehnika keeps it moving</h1>
-  <p class="lede">The current scroll shows one forklift moving one pallet, and the four services only appear as labels. This storyboard tells each service as something you can watch happen. Rent a forklift for a peak and send it back, buy a used one that comes out renewed with a warranty, buy the right new model for a growing hall, and get a stopped forklift back to work like a pit stop.</p>
+  <p class="lede">Each service is told as something you can watch happen on the right, while the tall panel on the left explains it in a few lines. Rent a forklift for a busy season and send it back, buy a used one that comes out renewed with a warranty, pick the right new model, and get a stopped truck back to work like a pit stop.</p>
   <div class="meta">
     <span><b>Order</b> Najam, Polovni, Novi, Servis</span>
-    <span><b>Length</b> about 18,000px of scroll, double today</span>
-    <span><b>Frames</b> 18</span>
-    <span><b>UI</b> three directions on each of 2, 4 and 5, nine in all</span>
-  </div>
-
-  <div class="spine" aria-label="Scroll length per part, to scale">
-    <nav class="bar">
-      <a href="#intro" style="flex:5">Uvod</a>
-      <a href="#najam" class="seg" style="flex:23"><i></i>Najam</a>
-      <a href="#polovni" class="seg" style="flex:22"><i></i>Polovni</a>
-      <a href="#novi" class="seg" style="flex:22"><i></i>Novi</a>
-      <a href="#servis" class="seg" style="flex:23"><i></i>Servis</a>
-      <a href="#kraj" style="flex:5">Kraj</a>
-    </nav>
-    <div class="scale" aria-hidden="true"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+    <span><b>Length</b> 9,000px, the same as today</span>
+    <span><b>Screens</b> 14, three beats per service</span>
+    <span><b>Motion</b> scroll to arrive, a short clip shows the service</span>
   </div>
 </header>
+
+<section aria-labelledby="t-wire">
+  <div class="read">
+    <p class="kick">The wireframe, for every UI direction</p>
+    <h2 id="t-wire">Pill nav in the middle, a tall panel on the left, the scene on the right</h2>
+    <p>Every screen below uses this frame. A, B and C only change how the panel, pills and chips look, never where they sit.</p>
+  </div>
+  <div class="fig">
+    <svg id="wire" viewBox="0 0 900 470" role="img" aria-label="Annotated hero wireframe"></svg>
+  </div>
+  <div class="key"><span><i></i>Blue dashed notes are motion and build notes, they are not in the design</span></div>
+</section>
+
+<section aria-labelledby="t-build">
+  <div class="read">
+    <p class="kick">How it runs</p>
+    <h2 id="t-build">Scroll to arrive, a clip shows the service</h2>
+    <p>Each service has three beats. Beat 1 arrives with scroll. Beat 2 is a clip of about 3 seconds that plays by itself once you stop, so the visitor watches instead of working the wheel. Beat 3 lands with scroll. Scrolling during a clip skips it to its end, scrolling back plays everything in reverse, and nothing ever holds the wheel.</p>
+  </div>
+  <div class="fig">
+    <svg id="map" viewBox="0 0 900 150" role="img" aria-label="Scroll map, 9,000 pixels to scale"></svg>
+  </div>
+  <p class="figcap">Dark blocks are the clips. The service rail is live from the first screen, so someone who only needs Servis clicks it and lands on S1 without passing the other three.</p>
+</section>
 
 <section aria-labelledby="t-why">
   <div class="read">
     <p class="kick">Product thinking</p>
-    <h2 id="t-why">What a visitor must be able to say after scrolling</h2>
-    <p>The visitor is a warehouse or logistics manager, a plant manager or a small business owner with one or two trucks. They do not buy online. They need to know which of the four doors is theirs, and then call or ask for a quote.</p>
-    <p>The test for every segment is one sentence a stranger can repeat without reading a card. If the animation alone does not carry that sentence, the segment fails.</p>
+    <h2 id="t-why">What a visitor must be able to say after each service</h2>
+    <p>The visitor is a warehouse or logistics manager, a plant manager or a small business owner with one or two trucks. Nothing is sold online, so each service ends on one call to action, a quote or a call. The test is one sentence a stranger repeats from the scene alone.</p>
   </div>
-  <div class="cols" style="margin-top:24px">
-    <div class="box"><span class="kick">Najam</span><p class="say">I can get a forklift tomorrow for my busy weeks, and they take it back when I am done.</p><p>Job to be done. Cover a peak without buying.</p></div>
-    <div class="box"><span class="kick">Polovni</span><p class="say">A used Linde comes back almost new, with a real warranty, for less than new.</p><p>Job to be done. Own a truck on a tight budget without the risk.</p></div>
-    <div class="box"><span class="kick">Novi</span><p class="say">Whatever my hall looks like, there is a Linde model built for it.</p><p>Job to be done. Pick the right tool as the operation grows.</p></div>
-    <div class="box"><span class="kick">Servis</span><p class="say">When my forklift stops, a van comes to me and gets it running again.</p><p>Job to be done. Keep the line moving.</p></div>
+  <div class="cols" style="margin-top:22px">
+    <div class="box"><span class="kick">Najam</span><p class="say">I can get a forklift within a day for my busy weeks, and they take it back when I am done.</p></div>
+    <div class="box"><span class="kick">Polovni</span><p class="say">A used Linde comes back renewed, with a real warranty, for less than new.</p></div>
+    <div class="box"><span class="kick">Novi</span><p class="say">Whatever my hall looks like, there is a Linde model built for it.</p></div>
+    <div class="box"><span class="kick">Servis</span><p class="say">When my forklift stops, a van comes to me and gets it running again.</p></div>
   </div>
 </section>
 
-<section aria-labelledby="t-grammar">
+<section aria-labelledby="t-rules">
   <div class="read">
-    <p class="kick">One grammar, four times</p>
-    <h2 id="t-grammar">Every segment runs the same four beats</h2>
-    <p>Repeating the shape makes the story learnable. By the second segment the visitor knows where to look. The scene changes, the rhythm does not.</p>
+    <p class="kick">Rules every screen follows</p>
+    <h2 id="t-rules">UX and brand rules</h2>
   </div>
-  <div class="cols" style="margin-top:24px">
-    <div class="box"><h3>1. The problem</h3><p>Something in the warehouse goes wrong or changes. A pile of pallets, a tight budget, a new high rack, a stopped truck. One short question card.</p></div>
-    <div class="box"><h3>2. Ekotehnika acts</h3><p>The service happens on screen. A truck arrives, a renewal line runs, a model changes shape, a van drives across Serbia.</p></div>
-    <div class="box"><h3>3. The proof</h3><p>Two or three facts appear as chips, only the company's own claims. These are the reasons to believe.</p></div>
-    <div class="box"><h3>4. The outcome</h3><p>The warehouse is moving again. One call to action for that service, plus the rail to jump to the next.</p></div>
-  </div>
-  <div class="legend">
-    <span><span class="chip">Fact chip</span> from the brief or the competitive analysis</span>
-    <span><span class="chip new">New copy</span> written for this storyboard, needs Filip's approval</span>
-  </div>
+  <ul class="rules" style="margin-top:18px">
+    <li>The first screen names all four services and shows the quote button and the sales phone, readable in five seconds, as the brief asks.</li>
+    <li>Red is for primary actions only, the quote button and the call to action in the panel. Everything else is ink and grey. Trucks look like real Linde trucks, red only on the rear shell.</li>
+    <li>The panel holds a headline, at most four short bullets, and one image, model card or number. Facts are only the company's own claims.</li>
+    <li>The call to action for the service stays at the bottom of the panel for all three beats, so it is always one click away.</li>
+    <li>A skip link, Preskoči animaciju, jumps past the hero for keyboard and screen reader users.</li>
+    <li>With reduced motion there is no pin and no clip. The four services show as four still panels, beat 3 of each, so nobody loses three of the four.</li>
+    <li>No made up tools. The quote goes to the contact page, never a fake configurator.</li>
+  </ul>
 </section>
 
 <div id="frames"></div>
@@ -239,16 +214,12 @@ footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line);
   <div class="read">
     <p class="kick">UI, three directions times three versions</p>
     <h2 id="t-ui">Nine combinations from one story</h2>
-    <p>The story above is the same in all nine. What changes is the UI layer on top, the cards, rail, chips and type. Versions 2 Linija, 4 Grad and 5 Sistem keep their own scene and motion. Each gets UI direction A, B and C, so the switcher offers 2A to 5C.</p>
-    <p>To keep nine affordable, the UI is built once as three themes of one shared card set fed by the same chapter content. Each version then mounts it over its own scene. Nine hand built UIs would be three times the work and would drift apart.</p>
+    <p>The story, the wireframe and the screens above stay the same in all nine. Versions 2 Linija, 4 Grad and 5 Sistem keep their own scene and motion, and each gets direction A, B and C. The panel and nav are built once as three themes, so the nine stay in step.</p>
   </div>
-  <div class="cols" style="margin-top:24px">
-    <div class="box"><span class="kick">A. Soft sheet</span><h3>Large white cards on a pale ground</h3><p>From the first and third references. Very rounded white cards, big light weight numbers with small units after a slash, like 24 h or 6 / 12 meseci, hairline square icon buttons, and the red forklift drawn large so it bleeds off the card edge the way the orange truck does. A dark bottom sheet with a notch tab holds the chapter rail. From the rental app reference, each Linde model gets a grey card with the truck centred and a four column spec row split by hairlines, using real figures from the product page, for the MT15 C nosivost 1,5 t, visina podizanja 115 mm, brzina 4 / 4,5 km/h, radijus okretanja 1.390 mm.</p></div>
-    <div class="box"><span class="kick">B. Glow cards</span><h3>Dark lower half, cards lit from inside</h3><p>From the program cards in the first reference and the bank card in the second. Cards carry a soft blurred glow in Linde reds on ink, white type on top, dotted matrix progress for steps like the seven renewal stations. From the Revora reference, fast moments get a motion blur with red light streaks, the delivery truck in Najam and the van in Servis, plus a row of round icon stats and list rows with an arrow.</p></div>
-    <div class="box"><span class="kick">C. Pills and dots</span><h3>Frosted cards, a black pill switcher</h3><p>From the second and fourth references. A very large tight headline per segment, a black active pill for the four services, a red pill call to action that ends in a round arrow button, and small dark status chips with a live dot that float beside the scene, like Hitan servis, aktivan. Dot rows show progress and term, and the Servis map sits in a dark rounded card with the van's route drawn on it.</p></div>
-  </div>
-  <div class="read" style="margin-top:20px">
-    <p>Two things change on the way from these phone screens to a 1440 desktop hero. The references use green and orange, and here every glow and badge is a Linde red or grey token. And the phone layout becomes a wide stage, so cards sit beside the scene instead of stacking.</p>
+  <div class="cols" style="margin-top:22px">
+    <div class="box"><span class="kick">A. Soft sheet</span><h3>Large white panel on a pale ground</h3><p>A very rounded white panel, big light weight numbers with a small unit after a slash, hairline square icon buttons, and model cards with a four column spec row of real figures. The closing screen borrows the warehouse dashboard's vehicle cards with a status dot and a progress line.</p></div>
+    <div class="box"><span class="kick">B. Glow cards</span><h3>Ink panel, lit from inside</h3><p>The panel is ink with a soft grey and white glow, white type, dot rows for steps like the seven renewal stations, a row of round icon stats, list rows with an arrow, and light streaks on the fast moments, the delivery truck and the service van.</p></div>
+    <div class="box"><span class="kick">C. Pills and dots</span><h3>Frosted panel, a very large headline</h3><p>A very large tight headline per service, a black active pill on the rail, the red call to action as a pill ending in a round arrow, small dark status chips with a live dot, and the Servis map inside a dark rounded card.</p></div>
   </div>
 </section>
 
@@ -259,264 +230,181 @@ footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line);
     <p>Reply with yes, or correct one line.</p>
   </div>
   <ol class="q" style="margin-top:20px">
-    <li><b>Order.</b> Najam, Polovni, Novi, Servis, as you said it. It also reads as one customer's life, try by renting, own a used one, grow into new, keep everything running.<p>Default, keep this order.</p></li>
-    <li><b>Which versions get the story.</b> You asked for nine, three UI directions on each of 2, 4 and 5. The story needs new scenes in each version, a delivery truck, a renewal line, model changes and a service van, which is the expensive part.<p>Default, build the story in 2 Linija first with UI A, B and C, you pick, then port the story to 4 and 5.</p></li>
-    <li><b>The seven renewal steps.</b> The site says Approved Trucks are renewed in seven steps in Linde centres, but does not name them on the pages we captured.<p>Default, show seven numbered stations with no names until Ekotehnika gives the real ones.</p></li>
-    <li><b>Length.</b> About 18,000px, so each service gets roughly 4,000px and four beats. The chapter rail lets people skip.<p>Default, yes.</p></li>
-    <li><b>New copy.</b> Segment headlines and a few lines are new and marked with a dashed chip. Facts are only the company's own claims.<p>Default, I write the rest the same way and you correct the Serbian.</p></li>
-    <li><b>Type in the Revora reference.</b> Its condensed italic all caps headlines break your Geist ruling from 8 October, sentence case and no condensed display.<p>Default, keep Geist and take only the blur streaks, icon stats and list rows from it.</p></li>
-    <li><b>UI references.</b> This storyboard fixes what each card says and when. The look comes from the three directions above.<p>Default, drop the two phone screenshots into briefs/hero-rebuild/refs so builders can study them, since they did not reach the repo.</p></li>
+    <li><b>Length.</b> 9,000px with a clip in the middle of each service. Your 12,000px works if the clips feel rushed, every number here scales by a third.<p>Default, 9,000px.</p></li>
+    <li><b>Order.</b> Najam, Polovni, Novi, Servis, as you said it. Servis is the core of the business and comes last, so the rail does the work for service customers.<p>Default, keep your order.</p></li>
+    <li><b>Build order.</b> Build the story in 2 Linija first with UI A, B and C, you pick, then port the story to 4 and 5.<p>Default, yes.</p></li>
+    <li><b>The rail.</b> Your wireframe keeps the four service bar along the bottom and the pill nav at the top links to the site pages.<p>Default, keep both, the bottom bar becomes a slim rail that jumps between services.</p></li>
+    <li><b>The seven renewal steps.</b> Ekotehnika says Approved Trucks are renewed in seven steps but does not name them.<p>Default, seven numbered stations with no names until Ekotehnika gives them.</p></li>
+    <li><b>Revora type.</b> Its condensed italic capitals break the Geist ruling from 8 October.<p>Default, keep Geist.</p></li>
+    <li><b>New copy.</b> Problem and outcome lines are new, facts are the company's own.<p>Default, you correct the Serbian before the build.</p></li>
   </ol>
 </section>
 
-<footer>Facts come from the hero brief and the competitive analysis in the client folder. Prices, durations and warranties are only those the company publishes. No people, testimonials or invented numbers.</footer>
-
+<footer>Facts come from the hero brief, the competitive analysis and the MT15 C product page in the client folder. No people, testimonials, rental prices or invented numbers.</footer>
 </div>
 
 <script>
-// Each frame is data. The sketch is a 320 by 200 drawing built from the symbols above, ground line at y 172.
-const G = '<rect width="320" height="200" fill="var(--sketch-bg)"/><rect x="0" y="172" width="320" height="28" fill="var(--sketch-ground)"/>';
-const fl = (x, y, w, colour = '#aa0020', flip = false) =>
-  `<use href="#fl" x="${x}" y="${y}" width="${w}" height="${w * 52 / 64}" style="color:${colour}"${flip ? ` transform="translate(${2 * x + w} 0) scale(-1 1)"` : ''}/>`;
-const pal = (x, y, w = 24) => `<use href="#pal" x="${x}" y="${y}" width="${w}" height="${w * 26 / 30}"/>`;
-const label = (x, y, t, c = '#222', s = 11, a = 'start') => `<text x="${x}" y="${y}" font-family="Geist, sans-serif" font-size="${s}" fill="${c}" text-anchor="${a}" font-weight="500">${t}</text>`;
-const tag = (x, y, t, w) => `<rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="#ffffff" stroke="#c9ccd3"/>` + label(x + w / 2, y + 14, t, '#222', 10.5, 'middle');
+// Screens are 360 by 225, the 1440 by 900 hero at a quarter. Panel x 12 to 140, scene x 148 to 352, ground at y 186.
+const F = 'Geist, sans-serif';
+const t = (x, y, s, size = 7, c = '#222', w = 400, a = 'start') => `<text x="${x}" y="${y}" font-family="${F}" font-size="${size}" fill="${c}" font-weight="${w}" text-anchor="${a}">${s}</text>`;
+const H = { fl: 52, reach: 80, picker: 80, pallettruck: 40 };
+const truck = (x, y, w, o = {}) => `<use href="#${o.kind || 'fl'}" x="${x}" y="${y}" width="${w}" height="${w * H[o.kind || 'fl'] / 64}" style="color:${o.shell || '#aa0020'};${o.worn ? '--frame:#9aa2a6;--panel:#c9ccd3' : ''}"/>`;
+const pal = (x, y, w = 16) => `<use href="#pal" x="${x}" y="${y}" width="${w}" height="${w * 26 / 30}"/>`;
+const bg = '<rect width="360" height="225" fill="#f5f6fa"/><rect x="148" y="186" width="212" height="39" fill="#e3e5ea"/>';
+const hall = (top = 64) => `<path d="M154 186 V${top + 26} L252 ${top} L350 ${top + 26} V186" fill="none" stroke="#d5d8dd" stroke-width="1.4"/>`;
+const nav = () => `<rect x="12" y="8" width="44" height="16" rx="5" fill="#ffffff" stroke="#dfe1e6"/><rect x="16" y="11" width="13" height="10" rx="1.6" fill="#aa0020"/><rect x="31" y="14" width="21" height="4" rx="1" fill="#222"/>`
+  + `<rect x="118" y="8" width="124" height="16" rx="8" fill="#ffffff" stroke="#dfe1e6"/><rect x="121" y="10.5" width="36" height="11" rx="5.5" fill="#222"/>${t(139, 18, 'Početna', 5.6, '#fff', 500, 'middle')}${['Novi','Polovni','Najam','Servis','Kontakt'].map((s, i) => t(170 + i * 15.5, 18, s, 4.6, '#4a595c', 400, 'middle')).join('')}`
+  + `<circle cx="294" cy="16" r="8" fill="#ffffff" stroke="#dfe1e6"/><path d="M291 13 q1 5 6 6" stroke="#222" stroke-width="1.2" fill="none"/><rect x="306" y="8" width="46" height="16" rx="8" fill="#aa0020"/>${t(329, 18.2, 'Zatražite ponudu', 5, '#fff', 500, 'middle')}`;
+const rail = (active) => ['Najam','Polovni','Novi','Servis'].map((s, i) => { const on = s === active; return `<rect x="${158 + i * 48}" y="202" width="44" height="13" rx="6.5" fill="${on ? '#222' : '#ffffff'}" stroke="${on ? '#222' : '#dfe1e6'}"/>${t(180 + i * 48, 210.6, s, 5.6, on ? '#fff' : '#4a595c', 500, 'middle')}`; }).join('');
+const btn = (x, y, s) => { const w = s.length * 3.05 + 14; return `<rect x="${x}" y="${y}" width="${w}" height="13" rx="6.5" fill="#aa0020"/>` + t(x + w / 2, y + 8.8, s, 5.6, '#fff', 500, 'middle'); };
+const chip = (x, y, s, dark = false) => `<rect x="${x}" y="${y}" width="${s.length * 3 + (dark ? 18 : 12)}" height="11" rx="5.5" fill="${dark ? '#222' : '#eeeff3'}"/>` + (dark ? `<circle cx="${x + 6.5}" cy="${y + 5.5}" r="1.8" fill="#fff"/>` : '') + t(x + (dark ? 12 : 6), y + 7.6, s, 5.4, dark ? '#fff' : '#222');
+// The left panel. kick, title lines, bullets, an optional block drawn by a function, the call to action at the bottom.
+const panel = (o) => {
+  let y = 44;
+  let s = `<rect x="12" y="30" width="128" height="166" rx="11" fill="#ffffff" stroke="#dfe1e6"/>` + t(22, y, o.kick, o.kick.length > 30 ? 5 : 5.8, '#5e7175', 500);
+  y += 13;
+  o.title.forEach((l) => { s += t(22, y, l, 9, '#222', 500); y += 10.5; });
+  y += 4;
+  if (o.block) { s += o.block(22, y); y += o.blockH || 0; }
+  (o.bullets || []).forEach((b) => { s += `<circle cx="24" cy="${y - 2}" r="1.3" fill="#222"/>` + t(29, y, b, 5.9, '#4a595c'); y += 9.5; });
+  if (o.chip) s += chip(22, y + 1, o.chip[0], o.chip[1]);
+  if (o.cta) s += btn(22, 176, o.cta);
+  if (o.under) s += t(22, 172, o.under, 5.4, '#4a595c');
+  return s;
+};
+const note = (x, y, s, a = 'start') => t(x, y, s, 5.8, '#2f63c9', 500, a);
+const arrow = (x1, y1, x2, y2) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="#2f63c9" stroke-width="1.2" stroke-dasharray="3 2.5" marker-end="url(#ah)"/>`;
+const dots7 = (done) => (x, y) => [0,1,2,3,4,5,6].map((i) => `<circle cx="${x + 5 + i * 13}" cy="${y + 4}" r="4.5" fill="${i < done ? '#222' : '#ffffff'}" stroke="${i < done ? '#222' : '#c9ccd3'}"/>` + t(x + 5 + i * 13, y + 6, String(i + 1), 4.6, i < done ? '#fff' : '#5e7175', 500, 'middle')).join('');
+const big = (num, unit) => (x, y) => t(x, y + 16, num, 20, '#222', 300) + t(x + num.length * 11 + 2, y + 16, unit, 7, '#5e7175');
 
 const parts = [
-  {
-    id: 'intro', name: 'Uvod', range: '0 to 5%', head: 'An ordinary warehouse, about to have four different weeks',
-    job: null,
-    frames: [
-      {
-        id: 'U1', pct: '0 to 5%', title: 'The hall, before anything happens',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + `<use href="#rack" x="190" y="66" width="34" height="106"/><use href="#rack" x="232" y="66" width="34" height="106"/>` + fl(70, 132, 50) + pal(132, 150) + label(160, 50, 'Vaše skladište', '#5e7175', 11, 'middle'),
-        scene: 'A clean drawn hall, racks at the back, one red forklift parked. The hall is the protagonist, it stays the same place for the whole story.',
-        camera: 'Wide and still, slightly above. A slow push in starts with the first scroll.',
-        copy: ['Linde viljuškari. Prodaja, najam i servis na jednom mestu.', 'Brief headline, with the kicker and the sales phone in the nav.'],
-        chips: [['Zvanični Linde partner'], ['Od 1997.']],
-        msg: 'One place, four services. The rail below names them before the story starts.',
-      },
-    ],
-  },
-  {
-    id: 'najam', name: 'Najam', range: '5 to 28%', head: 'Najam. A forklift for your busy weeks, gone when they end',
-    job: ['Cover a seasonal peak or a one off job without buying a truck.', 'I can get a forklift tomorrow, and they take it back when I am done.', 'Zatražite ponudu za najam'],
-    frames: [
-      {
-        id: 'N1', pct: '5 to 10%', title: 'The season hits',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + pal(150, 150) + pal(176, 150) + pal(202, 150) + pal(163, 128) + pal(189, 128) + pal(176, 106) + pal(228, 150) + pal(254, 150) + pal(241, 128) + `<g transform="translate(40 60)"><rect width="74" height="62" rx="6" fill="#fff" stroke="#222" stroke-width="1.6"/><rect width="74" height="16" rx="6" fill="#aa0020"/><rect y="10" width="74" height="6" fill="#aa0020"/>${[0,1,2,3,4].map(i => `<rect x="${8 + i * 12.5}" y="26" width="9" height="9" rx="1.5" fill="${i > 0 && i < 4 ? '#aa0020' : '#e6e7eb'}"/>`).join('')}${[0,1,2,3,4].map(i => `<rect x="${8 + i * 12.5}" y="42" width="9" height="9" rx="1.5" fill="#e6e7eb"/>`).join('')}</g>`,
-        scene: 'Pallets keep landing at the dock and stack up faster than one forklift can move them. A calendar fills its busy week in red.',
-        camera: 'Holds on the dock, the pile grows with scroll.',
-        copy: ['Sezona je počela. Treba vam još jedan viljuškar od sutra?', 'New copy, the problem card.'],
-        chips: [],
-        newChips: ['Problem card'],
-        msg: 'The visitor sees their own peak week.',
-      },
-      {
-        id: 'N2', pct: '10 to 16%', title: 'Delivered within 24 hours',
-        svg: G + '<use href="#truck" x="14" y="112" width="150" height="60"/>' + `<path d="M164 160 L196 172" stroke="#5e7175" stroke-width="3"/>` + fl(196, 134, 48) + `<g transform="translate(262 34)"><circle r="24" fill="none" stroke="#e6e7eb" stroke-width="6"/><circle r="24" fill="none" stroke="#aa0020" stroke-width="6" stroke-dasharray="125 151" transform="rotate(-90)" stroke-linecap="round"/>${label(0, 5, '24h', '#222', 13, 'middle')}</g>`,
-        scene: 'An Ekotehnika truck backs in, the ramp drops and a red forklift rolls off onto the floor. A 24 hour ring closes as it drives in.',
-        camera: 'Low side view following the truck in, then a tilt down as the forklift rolls off the ramp.',
-        copy: ['Isporuka za 24 sata, dostava i preuzimanje su besplatni.', 'From the rental page, via the competitive analysis.'],
-        chips: [['Isporuka za 24 sata'], ['Besplatna dostava i preuzimanje']],
-        msg: 'It comes to you, fast.',
-      },
-      {
-        id: 'N3', pct: '16 to 23%', title: 'For as long as you need it',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(60, 132, 50) + fl(150, 132, 50) + pal(112, 136) + pal(202, 136) + `<g transform="translate(30 30)"><rect width="260" height="6" rx="3" fill="#e6e7eb"/><rect width="170" height="6" rx="3" fill="#aa0020"/><circle cx="170" cy="3" r="7" fill="#aa0020"/>${['sati','dan','nedelja','mesec','godina'].map((t, i) => label(i * 65, 26, t, i === 3 ? '#aa0020' : '#5e7175', 10.5, i === 0 ? 'start' : i === 4 ? 'end' : 'middle')).join('')}</g>`,
-        scene: 'Two forklifts clear the pile side by side. Above them a term bar slides from hours to a year as you scroll.',
-        camera: 'Pulls back so both trucks and the shrinking pile sit in frame.',
-        copy: ['Od nekoliko sati do godinu dana.', 'Brief line for Najam.'],
-        chips: [['Održavanje uključeno'], ['Zamena viljuškara tokom najma']],
-        msg: 'Rent for the length of the job, maintenance is on them.',
-      },
-      {
-        id: 'N4', pct: '23 to 28%', title: 'The peak ends, it goes home',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(70, 132, 50) + pal(124, 150) + '<use href="#truck" x="176" y="112" width="150" height="60"/>' + `<path d="M150 90 h70" stroke="#aa0020" stroke-width="2.4" stroke-dasharray="6 6"/><path d="M216 84 l8 6 -8 6" fill="none" stroke="#aa0020" stroke-width="2.4"/>`,
-        scene: 'The pile is gone. The rented forklift drives back up the ramp, the truck pulls away, and your own forklift is left in a calm hall.',
-        camera: 'Static wide shot, the truck exits frame right.',
-        copy: ['Posao je gotov? Mi dolazimo po viljuškar.', 'New copy, the outcome card, with the rental call to action.'],
-        chips: [['Najam i za probu pre kupovine']],
-        newChips: ['Zatražite ponudu za najam'],
-        msg: 'No truck to own when the busy weeks are over.',
-      },
-    ],
-  },
-  {
-    id: 'polovni', name: 'Polovni', range: '28 to 50%', head: 'Polovni. A used Linde, renewed, with a warranty',
-    job: ['Own a forklift on a tight budget without buying someone else\'s problem.', 'A used Linde comes back almost new, with a real warranty, for less than new.', 'Zatražite ponudu za polovni'],
-    frames: [
-      {
-        id: 'P1', pct: '28 to 33%', title: 'Your own truck, on a budget',
-        svg: G + fl(120, 120, 64, '#9aa2a6') + `<path d="M132 132 l8 4 M150 128 l4 8 M140 142 l10 -2" stroke="#5e7175" stroke-width="1.6" stroke-linecap="round"/>` + label(152, 52, 'bivši najam ili lizing', '#5e7175', 11, 'middle') + `<path d="M152 60 V96" stroke="#c9ccd3" stroke-width="1.6" stroke-dasharray="3 3"/>`,
-        scene: 'A grey, worn forklift with scuffs rolls in. It is an ex rental or ex lease Linde, the kind that becomes an Approved Truck.',
-        camera: 'Close side view, the worn details are readable.',
-        copy: ['Hoćete svoj viljuškar, ali novi nije u budžetu?', 'New copy, the problem card.'],
-        chips: [['Bivši najam i lizing Linde vozila']],
-        msg: 'This is what polovni means here, a known Linde with a history.',
-      },
-      {
-        id: 'P2', pct: '33 to 42%', title: 'The renewal line',
-        svg: G + `<rect x="10" y="168" width="300" height="4" fill="#5e7175"/>` + [0,1,2,3,4,5,6].map(i => `<g transform="translate(${22 + i * 44} 30)"><circle r="12" fill="${i < 4 ? '#aa0020' : '#e6e7eb'}"/>${label(0, 4, String(i + 1), i < 4 ? '#fff' : '#5e7175', 11, 'middle')}<path d="M0 14 V124" stroke="#e6e7eb" stroke-width="1.4" stroke-dasharray="3 4"/></g>`).join('') + fl(168, 120, 64, '#c46a78'),
-        scene: 'The truck rides a line past seven numbered stations. At each one a part is renewed and the body colour fills from worn grey to Linde red, station by station.',
-        camera: 'Tracks sideways with the truck, steady speed, each station lights as it passes.',
-        copy: ['Obnovljen u 7 koraka u Linde centrima.', 'From the used trucks page, via the competitive analysis. Step names to come from Ekotehnika.'],
-        chips: [['7 koraka obnove'], ['Linde centri u Evropi']],
-        msg: 'Used does not mean as is. Every truck goes through the same renewal.',
-      },
-      {
-        id: 'P3', pct: '42 to 47%', title: 'The warranty seal',
-        svg: G + fl(96, 108, 80) + `<use href="#seal" x="196" y="40" width="64" height="64"/>` + label(228, 124, '6 meseci', '#222', 14, 'middle') + label(228, 140, 'ili 500 radnih sati', '#5e7175', 10.5, 'middle'),
-        scene: 'The renewed red truck stops, and a red seal stamps onto the frame next to it with the warranty terms.',
-        camera: 'A short push in on the truck as the seal lands, then hold.',
-        copy: ['Linde Approved Trucks sa garancijom 6 meseci ili 500 radnih sati.', 'Brief line for Polovni.'],
-        chips: [['Produživo do 12 meseci ili 1.000 sati']],
-        msg: 'The warranty is the reason to trust a used truck.',
-      },
-      {
-        id: 'P4', pct: '47 to 50%', title: 'In your hall, for less than new',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(120, 128, 56) + `<use href="#seal" x="168" y="112" width="22" height="22"/>` + pal(180, 150) + pal(206, 150),
-        scene: 'The renewed truck drives into the same hall and starts work, a small seal stays on it as a badge.',
-        camera: 'Back to the hall wide shot from the intro, so the visitor feels the story return home.',
-        copy: ['Polovni, ali proveren.', 'New copy, the outcome card, with the used truck call to action.'],
-        chips: [],
-        newChips: ['Zatražite ponudu za polovni'],
-        msg: 'A truck of your own, without the risk.',
-      },
-    ],
-  },
-  {
-    id: 'novi', name: 'Novi', range: '50 to 72%', head: 'Novi. The right Linde for the hall you have',
-    job: ['Choose the right truck as the operation grows, higher racks, narrow aisles, a busy dock.', 'Whatever my hall looks like, there is a Linde model built for it.', 'Zatražite ponudu'],
-    frames: [
-      {
-        id: 'V1', pct: '50 to 55%', title: 'The hall grows',
-        svg: G + `<path d="M14 178 V50 L160 10 L306 50 V178" fill="none" stroke="#c9ccd3" stroke-width="2"/>` + [0,1,2,3].map(i => `<use href="#rack" x="${150 + i * 38}" y="40" width="30" height="132"/>`).join('') + fl(40, 132, 50) + `<path d="M150 34 V20" stroke="#aa0020" stroke-width="2"/><path d="M144 26 l6 -6 6 6" fill="none" stroke="#aa0020" stroke-width="2"/>`,
-        scene: 'The hall stretches taller and new racks rise in narrow rows. The old forklift looks small next to them.',
-        camera: 'Tilts up with the racks as they grow.',
-        copy: ['Skladište raste. Da li vaš viljuškar raste s njim?', 'New copy, the problem card.'],
-        chips: [],
-        newChips: ['Problem card'],
-        msg: 'New is about fit, not just shine.',
-      },
-      {
-        id: 'V2', pct: '55 to 63%', title: 'One job, one model',
-        svg: G + `<use href="#fl" x="10" y="122" width="56" height="46" style="color:#aa0020"/><use href="#reach" x="84" y="96" width="50" height="72" style="color:#aa0020"/><use href="#pallettruck" x="152" y="138" width="56" height="34" style="color:#aa0020"/><use href="#picker" x="228" y="96" width="50" height="72" style="color:#aa0020"/>` + label(38, 188, 'dvorište', '#5e7175', 10, 'middle') + label(109, 188, 'visoki regali', '#5e7175', 10, 'middle') + label(180, 188, 'utovar', '#5e7175', 10, 'middle') + label(253, 188, 'uski prolaz', '#5e7175', 10, 'middle'),
-        scene: 'The camera moves through four zones of the hall. In each zone the forklift reshapes into the Linde type built for it, counterbalance in the yard, reach truck at high racks, pallet truck at the dock, order picker in a narrow aisle.',
-        camera: 'One continuous dolly through the zones, the morph happens as each zone centres.',
-        copy: ['96 Linde modela, ponuda po vašoj meri.', 'Brief line for Novi.'],
-        chips: [['96 Linde modela'], ['Elektro, dizel i TNG']],
-        msg: 'They have the right truck for each job.',
-      },
-      {
-        id: 'V3', pct: '63 to 69%', title: 'Built to your answers',
-        svg: G + `<g transform="translate(30 26)"><rect width="164" height="134" rx="12" fill="#fff" stroke="#c9ccd3"/>${['Teret','Visina','Prostor'].map((t, i) => `<g transform="translate(16 ${22 + i * 34})"><circle cx="8" cy="0" r="8" fill="#aa0020"/><path d="M4 0 l3 3 5 -6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>${label(24, 4, t, '#222', 12)}<rect x="88" y="-6" width="44" height="12" rx="6" fill="#eeeff3"/></g>`).join('')}<rect x="16" y="108" width="132" height="16" rx="8" fill="#aa0020"/>${label(82, 120, 'Ponuda po meri', '#fff', 10.5, 'middle')}</g>` + `<use href="#reach" x="220" y="92" width="58" height="80" style="color:#aa0020"/>`,
-        scene: 'A small card asks three questions, load, lift height, space. As each is answered the matching truck settles in beside it.',
-        camera: 'Holds, the UI card takes the stage for a moment.',
-        copy: ['Recite nam šta podižete, koliko visoko i gde. Mi predlažemo model.', 'New copy. The three questions are dummy until Ekotehnika confirms how they quote.'],
-        chips: [],
-        newChips: ['Tri pitanja, dummy'],
-        msg: 'Choosing is easy, they guide you.',
-      },
-      {
-        id: 'V4', pct: '69 to 72%', title: 'The new truck at work',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + `<use href="#rack" x="200" y="62" width="34" height="110"/><use href="#rack" x="240" y="62" width="34" height="110"/>` + `<use href="#reach" x="140" y="92" width="58" height="80" style="color:#aa0020"/>` + pal(206, 102, 22) + tag(30, 30, 'Akcija, MT15 C 1.390 €', 130),
-        scene: 'The new reach truck lifts a pallet to the top rack in one smooth move. A small promo chip for the MT15 C sits in the corner.',
-        camera: 'Low angle looking up the mast as it lifts.',
-        copy: ['Novi Linde, za vaš posao.', 'New copy, the outcome card. Promo line from the brief.'],
-        chips: [['Akcija. Linde MT15 C elektro paletar, 1.390 €']],
-        newChips: ['Zatražite ponudu'],
-        msg: 'New fits the job you have now.',
-      },
-    ],
-  },
-  {
-    id: 'servis', name: 'Servis', range: '72 to 95%', head: 'Servis. Like a pit stop, back to work fast',
-    job: ['Keep forklifts running, and get a stopped one moving again fast.', 'When my forklift stops, a van comes to me and gets it running again.', 'Zakažite servis'],
-    frames: [
-      {
-        id: 'S1', pct: '72 to 77%', title: 'The line stops',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(110, 128, 56, '#aa0020') + `<use href="#warn" x="128" y="84" width="26" height="24"/>` + pal(190, 150) + pal(216, 150) + pal(203, 128) + pal(242, 150) + pal(229, 128),
-        scene: 'Your forklift stops mid aisle. A warning sign pulses over it, pallets wait. Everything else in the hall dims.',
-        camera: 'Snaps in close on the stopped truck, a short hold.',
-        copy: ['Viljuškar je stao. Stao je i posao.', 'New copy, the problem card.'],
-        chips: [],
-        newChips: ['Problem card'],
-        msg: 'Downtime costs money, the visitor feels it.',
-      },
-      {
-        id: 'S2', pct: '77 to 84%', title: 'A van is already on the way',
-        svg: G.replace('<rect x="0" y="172" width="320" height="28" fill="var(--sketch-ground)"/>', '') + `<path d="M120 20 C150 14 190 26 206 46 C222 70 236 92 228 120 C222 148 206 170 180 182 C156 190 128 178 112 160 C96 140 86 112 92 84 C98 56 100 30 120 20 Z" fill="#eeeff3" stroke="#c9ccd3" stroke-width="1.6"/>` + `<use href="#pin" x="146" y="40" width="16" height="21"/>` + label(168, 52, 'Vrčin', '#222', 10.5) + `<use href="#pin" x="186" y="128" width="16" height="21"/>` + label(152, 160, 'vaše skladište', '#5e7175', 10.5) + `<path d="M154 62 C160 90 176 108 192 128" fill="none" stroke="#aa0020" stroke-width="2.4" stroke-dasharray="6 5"/>` + `<use href="#van" x="242" y="150" width="70" height="38"/>` + tag(14, 18, 'Hitan servis +381 60 300 20 50', 172),
-        scene: 'The view flips to a drawn map of Serbia. A service van leaves Vrčin and draws a route to your pin. The urgent service number sits on screen the whole time.',
-        camera: 'Top down over the map, a slow zoom toward your pin.',
-        copy: ['Servisna vozila širom Srbije. Hitne intervencije.', 'Trust strip and brief line for Servis.'],
-        chips: [['Servisna vozila širom Srbije'], ['Hitne intervencije']],
-        msg: 'They come to you, wherever you are.',
-      },
-      {
-        id: 'S3', pct: '84 to 91%', title: 'The pit stop',
-        svg: G + `<rect x="96" y="164" width="120" height="8" rx="2" fill="#5e7175"/>` + fl(116, 106, 76) + [[-60, 56], [-40, 26], [0, 12], [40, 26], [60, 56]].map(([dx, dy], i) => `<g transform="translate(${156 + dx * 1.7} ${dy + 6})"><circle r="15" fill="${i < 3 ? '#aa0020' : '#ffffff'}" stroke="${i < 3 ? 'none' : '#c9ccd3'}"/>${i < 3 ? '<path d="M-5 0 l3.5 3.5 6.5 -7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>' : '<use href="#wrench" x="-8" y="-8" width="16" height="16"/>'}</g>`).join(''),
-        scene: 'The truck rises on a short lift. Check marks tick around it one by one as the technician works through the visit, like a pit crew.',
-        camera: 'Circles a quarter turn around the truck while the checks tick.',
-        copy: ['Redovno održavanje, hitne intervencije, ugovori o punom servisu.', 'Brief line for Servis.'],
-        chips: [['300+ tipova vozila, i drugih marki'], ['Zakonski pregledi']],
-        msg: 'Expert hands, any brand, done on site.',
-      },
-      {
-        id: 'S4', pct: '91 to 95%', title: 'Running again, and on a plan',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(150, 128, 56) + pal(208, 150) + `<g transform="translate(26 30)"><rect width="110" height="70" rx="10" fill="#fff" stroke="#c9ccd3"/>${[0,1,2,3,4,5,6,7].map(i => `<rect x="${12 + (i % 4) * 23}" y="${14 + Math.floor(i / 4) * 24}" width="16" height="16" rx="3" fill="${i % 3 === 0 ? '#aa0020' : '#eeeff3'}"/>`).join('')}</g>` + `<path d="M74 160 h60" stroke="#aa0020" stroke-width="2.4"/><path d="M128 154 l8 6 -8 6" fill="none" stroke="#aa0020" stroke-width="2.4"/>`,
-        scene: 'The forklift drives off the lift and back to work. A small calendar marks the next planned visits, the full service contract.',
-        camera: 'Pulls back to the hall wide shot, the warning is gone.',
-        copy: ['Servis je srce Ekotehnike, od 1997.', 'New copy built on the company\'s own line, with the service call to action.'],
-        chips: [['Ugovor o punom servisu']],
-        newChips: ['Zakažite servis'],
-        msg: 'Planned service means fewer stops.',
-      },
-    ],
-  },
-  {
-    id: 'kraj', name: 'Kraj', range: '95 to 100%', head: 'The whole fleet, one partner',
-    job: null,
-    frames: [
-      {
-        id: 'K1', pct: '95 to 100%', title: 'Four trucks, four services',
-        svg: G + '<use href="#hall" x="0" y="0" width="320" height="200"/>' + fl(30, 132, 46) + `<use href="#seal" x="56" y="118" width="16" height="16"/>` + `<use href="#reach" x="96" y="106" width="46" height="66" style="color:#aa0020"/>` + fl(166, 132, 46) + `<use href="#wrench" x="186" y="116" width="16" height="16"/>` + fl(236, 132, 46) + tag(18, 40, 'Polovni', 62) + tag(92, 40, 'Novi', 50) + tag(156, 40, 'Servis', 58) + tag(226, 40, 'Najam', 58),
-        scene: 'The camera pulls back to the hall full of trucks, each tagged by how it got there. The four services light up one last time.',
-        camera: 'The widest shot of the story, then rest.',
-        copy: ['Najam, polovni, novi i servis. Jedan partner.', 'New copy, the closing card, with the quote button and both phones.'],
-        chips: [['Zatražite ponudu'], ['Prodaja +381 63 282-050'], ['Hitan servis +381 60 300 20 50']],
-        msg: 'Whatever the visitor needs, they now know who to call.',
-      },
-    ],
-  },
+  { id: 'intro', name: 'Uvod', range: '0 to 450px', head: 'The first screen does the brief\'s five second job', frames: [
+    { id: 'U1', px: '0 to 450px', mode: 'Plays on load, about 3 s', auto: true, title: 'The hall, and the four services',
+      svg: bg + hall() + `<use href="#rack" x="292" y="82" width="26" height="104"/><use href="#rack" x="322" y="82" width="26" height="104"/>` + truck(214, 142, 54) + pal(272, 172) + nav() + panel({ kick: 'Zvanični Linde partner za Srbiju i Crnu Goru', title: ['Linde viljuškari.', 'Prodaja, najam i servis', 'na jednom mestu.'], bullets: ['Novi i polovni viljuškari', 'Najam od jednog dana', 'Servis na terenu širom Srbije', 'Od 1997.'], under: 'Prodaja +381 63 282-050', cta: 'Zatražite ponudu' }) + rail('') + arrow(160, 160, 208, 160) + note(160, 154, 'truck drives in on load') + note(256, 198, 'rail, click to jump', 'middle'),
+      scene: 'On load the truck drives into a calm hall by itself and parks. Racks at the back, one pallet.',
+      ui: 'The panel carries the kicker, the brief headline, four bullets taken from the brief sub line, the sales phone and the quote button. The rail names the four services.',
+      msg: 'One place, four services, and how to call them.' },
+  ] },
+  { id: 'najam', name: 'Najam', range: '450 to 2,430px', head: 'Najam. A forklift for your busy weeks, gone when they end',
+    job: ['Cover a seasonal peak without buying a truck.', 'Zatražite ponudu za najam'], frames: [
+    { id: 'N1', px: '450 to 1,110px', mode: 'Scroll', title: 'The season hits',
+      svg: bg + hall() + truck(168, 144, 46) + [0,1,2,3,4].map((i) => pal(256 + i * 17, 172)).join('') + [0,1,2,3].map((i) => pal(264 + i * 17, 158)).join('') + [0,1,2].map((i) => pal(272 + i * 17, 144)).join('') + nav() + panel({ kick: 'Najam', title: ['Sezona je počela.', 'Treba vam još jedan', 'viljuškar?'], bullets: ['Za sezonske špiceve', 'Za jedan posao ili celu godinu', 'I za probu pre kupovine'], cta: 'Zatražite ponudu za najam' }) + rail('Najam') + arrow(300, 112, 300, 138) + note(300, 106, 'pallets drop in with scroll', 'middle'),
+      scene: 'Pallets land at the dock faster than one truck can move them. The pile grows as you scroll.',
+      ui: 'The panel switches to Najam. Problem headline, three bullets, the rental call to action.',
+      msg: 'The visitor sees their own peak week.' },
+    { id: 'N2', px: '1,110 to 1,770px', mode: 'Clip, about 3 s', auto: true, title: 'Delivered within a day',
+      svg: bg + `<use href="#lorry" x="228" y="134" width="124" height="50"/>` + `<path d="M228 178 L204 186" stroke="#5e7175" stroke-width="2.4"/>` + truck(156, 148, 44) + [0, 1, 2].map((i) => `<path d="M${330 + i * 4} ${144 + i * 10} h22" stroke="#c9ccd3" stroke-width="1.8" stroke-linecap="round"/>`).join('') + nav() + panel({ kick: 'Najam', title: ['Isporuka za 24 sata.'], block: big('24', 'h'), blockH: 28, bullets: ['Besplatna dostava i preuzimanje', 'Pregled pre isporuke', 'Održavanje uključeno'], cta: 'Zatražite ponudu za najam' }) + rail('Najam') + arrow(330, 126, 290, 126) + note(310, 120, 'truck backs in', 'middle') + arrow(212, 140, 190, 148) + note(214, 134, 'forklift rolls off'),
+      scene: 'An Ekotehnika truck backs in, the ramp drops and a forklift rolls off onto your floor. Light streaks trail the truck as it arrives.',
+      ui: 'The panel shows the 24 h number large, with three of the company\'s rental terms as bullets.',
+      msg: 'It comes to you, fast.' },
+    { id: 'N3', px: '1,770 to 2,430px', mode: 'Scroll', title: 'The peak ends, it goes home',
+      svg: bg + hall() + truck(168, 144, 46) + pal(224, 172) + `<use href="#lorry" x="252" y="134" width="124" height="50"/>` + nav() + panel({ kick: 'Najam', title: ['Posao je gotov?', 'Mi dolazimo', 'po viljuškar.'], bullets: ['Od nekoliko sati do godinu dana', 'Zamena viljuškara tokom najma', 'Obuka vozača na zahtev'], cta: 'Zatražite ponudu za najam' }) + rail('Najam') + arrow(280, 124, 350, 124) + note(300, 118, 'truck leaves with the rental', 'middle'),
+      scene: 'The pile is gone. The rented forklift drives back up the ramp, the truck pulls away, and your own truck stays in a calm hall.',
+      ui: 'Outcome headline and the remaining rental terms.',
+      msg: 'No truck to own when the busy weeks are over.' },
+  ] },
+  { id: 'polovni', name: 'Polovni', range: '2,430 to 4,410px', head: 'Polovni. A used Linde, renewed, with a warranty',
+    job: ['Own a forklift on a tight budget without buying someone else\'s problem.', 'Zatražite ponudu za polovni'], frames: [
+    { id: 'P1', px: '2,430 to 3,090px', mode: 'Scroll', title: 'Your own truck, on a budget',
+      svg: bg + truck(212, 124, 76, { shell: '#c9ccd3', worn: true }) + `<path d="M226 144 l8 4 M250 138 l4 8 M236 154 l10 -2" stroke="#9aa2a6" stroke-width="1.6" stroke-linecap="round"/>` + nav() + panel({ kick: 'Polovni', title: ['Hoćete svoj viljuškar,', 'a novi nije', 'u budžetu?'], bullets: ['Bivši najam i lizing Linde vozila', 'Linde Approved Trucks'], cta: 'Zatražite ponudu za polovni' }) + rail('Polovni') + note(250, 116, 'worn, faded, scuffed', 'middle'),
+      scene: 'A faded, scuffed ex rental Linde rolls in. Grey where the real truck is charcoal, dull where it should be red.',
+      ui: 'The panel switches to Polovni. Problem headline and where these trucks come from.',
+      msg: 'This is what polovni means here, a known Linde with a history.' },
+    { id: 'P2', px: '3,090 to 3,750px', mode: 'Clip, about 3 s', auto: true, title: 'Seven steps of renewal',
+      svg: bg + `<rect x="148" y="182" width="212" height="4" fill="#5e7175"/>` + [0,1,2,3,4,5,6].map((i) => `<g transform="translate(${164 + i * 29} 112)"><circle r="7" fill="${i < 4 ? '#222' : '#ffffff'}" stroke="${i < 4 ? '#222' : '#c9ccd3'}"/>${t(0, 2.4, String(i + 1), 6.4, i < 4 ? '#fff' : '#5e7175', 500, 'middle')}<path d="M0 9 V64" stroke="#d5d8dd" stroke-width="1.1" stroke-dasharray="2 3"/></g>`).join('') + truck(246, 146, 48, { shell: '#c46a78' }) + nav() + panel({ kick: 'Polovni', title: ['Obnovljen', 'u 7 koraka.'], block: dots7(4), blockH: 16, bullets: ['U Linde centrima u Evropi', 'Isti postupak za svaki'], cta: 'Zatražite ponudu za polovni' }) + rail('Polovni') + arrow(214, 166, 244, 166) + note(190, 160, 'colour returns per station', 'middle'),
+      scene: 'The truck rides past seven numbered stations. At each one it gets crisper, the charcoal frame and red rear shell coming back station by station.',
+      ui: 'The seven stations repeat as a dot row in the panel and fill in step with the scene.',
+      msg: 'Used does not mean as is. Every truck goes through the same renewal.' },
+    { id: 'P3', px: '3,750 to 4,410px', mode: 'Scroll', title: 'Sealed, and in your hall',
+      svg: bg + hall() + truck(196, 136, 62) + `<use href="#seal" x="266" y="100" width="32" height="32"/>` + nav() + panel({ kick: 'Polovni', title: ['Garancija.'], block: big('6/12', 'meseci'), blockH: 28, bullets: ['6 meseci ili 500 radnih sati', 'Produživo do 12 meseci', 'Paketi za bateriju, farbu, LED'], cta: 'Zatražite ponudu za polovni' }) + rail('Polovni') + note(282, 96, 'seal stamps on', 'middle'),
+      scene: 'A seal stamps onto the renewed truck, then it drives into the same hall as the intro and starts work.',
+      ui: 'The warranty as a large number, the extension and the add on packages as bullets.',
+      msg: 'The warranty is the reason to trust a used truck.' },
+  ] },
+  { id: 'novi', name: 'Novi', range: '4,410 to 6,390px', head: 'Novi. The right Linde for the hall you have',
+    job: ['Pick the right truck as the operation grows.', 'Zatražite ponudu'], frames: [
+    { id: 'V1', px: '4,410 to 5,070px', mode: 'Scroll', title: 'The hall grows',
+      svg: bg + hall(34) + [0,1,2,3].map((i) => `<use href="#rack" x="${236 + i * 28}" y="50" width="22" height="136"/>`).join('') + truck(166, 150, 40) + nav() + panel({ kick: 'Novi', title: ['Skladište raste.', 'Da li vaš viljuškar', 'raste s njim?'], bullets: ['Viši regali', 'Uži prolazi', 'Više paleta svaki dan'], cta: 'Zatražite ponudu' }) + rail('Novi') + arrow(222, 120, 222, 54) + note(220, 48, 'camera tilts up', 'end'),
+      scene: 'The hall stretches taller and new racks rise in narrow rows. The old truck looks small next to them.',
+      ui: 'The panel switches to Novi. Problem headline and three short signs of growth.',
+      msg: 'New is about the right fit for the job.' },
+    { id: 'V2', px: '5,070 to 5,730px', mode: 'Clip, about 3 s', auto: true, title: 'One job, one model',
+      svg: bg + truck(152, 146, 40) + `<use href="#reach" x="200" y="120" width="40" height="60"/><use href="#pallettruck" x="248" y="162" width="40" height="25"/><use href="#picker" x="300" y="120" width="40" height="60"/>` + t(172, 196, 'dvorište', 5.4, '#4a595c', 400, 'middle') + t(220, 196, 'regali', 5.4, '#4a595c', 400, 'middle') + t(268, 196, 'utovar', 5.4, '#4a595c', 400, 'middle') + t(320, 196, 'prolaz', 5.4, '#4a595c', 400, 'middle') + nav() + panel({ kick: 'Novi', title: ['96 Linde modela.', 'Ponuda po vašoj meri.'], bullets: ['Čeoni viljuškari', 'Retrak viljuškari', 'Paletari i slagači', 'Komisioneri'], chip: ['Elektro, dizel i TNG'], cta: 'Zatražite ponudu' }) + rail('Novi') + arrow(160, 104, 330, 104) + note(246, 98, 'dolly through four zones, truck reshapes in each', 'middle'),
+      scene: 'The camera moves through four zones. In each the truck reshapes into the Linde type built for it, counterbalance in the yard, reach truck at high racks, pallet truck at the dock, order picker in a narrow aisle.',
+      ui: 'The four types as bullets, the active one bold as its zone centres.',
+      msg: 'They have the right truck for each job.' },
+    { id: 'V3', px: '5,730 to 6,390px', mode: 'Scroll', title: 'A real model, a real spec',
+      svg: bg + hall() + `<use href="#pallettruck" x="226" y="156" width="52" height="32"/>` + pal(254, 145, 20) + nav() + panel({ kick: 'Novi, akcija', title: ['Linde MT15 C', 'elektro paletar.'], block: (x, y) => `<rect x="${x}" y="${y - 2}" width="108" height="58" rx="7" fill="#eeeff3"/>` + `<use href="#pallettruck" x="${x + 56}" y="${y + 2}" width="46" height="29" style="color:#aa0020"/>` + t(x + 6, y + 14, '1.390 €', 10, '#222', 400) + [['nosivost', '1,5 t'], ['podizanje', '115 mm'], ['brzina', '4/4,5 km/h'], ['radijus', '1.390 mm']].map(([l, v], i) => `<g transform="translate(${x + 6 + i * 26} ${y + 38})">${i ? '<path d="M-3 -2 V14" stroke="#d5d8dd"/>' : ''}${t(0, 2, l, 4.4, '#5e7175')}${t(0, 11, v, 5.2, '#222', 500)}</g>`).join(''), blockH: 64, bullets: [], cta: 'Zatražite ponudu' }) + rail('Novi') + note(252, 140, 'the promo truck moves a pallet', 'middle'),
+      scene: 'The MT15 C electric pallet truck, the brief\'s promo model, moves a pallet across the dock.',
+      ui: 'A model card in the panel with the price and the four real figures from the product page.',
+      msg: 'Real trucks with real numbers, ready to quote.' },
+  ] },
+  { id: 'servis', name: 'Servis', range: '6,390 to 8,370px', head: 'Servis. Like a pit stop, back to work fast',
+    job: ['Keep forklifts running, and get a stopped one moving again.', 'Zakažite servis'], frames: [
+    { id: 'S1', px: '6,390 to 7,050px', mode: 'Scroll', title: 'The line stops',
+      svg: bg + hall() + truck(200, 140, 54) + `<use href="#warn" x="216" y="104" width="20" height="18"/>` + [0,1,2].map((i) => pal(274 + i * 17, 172)).join('') + pal(282, 158) + pal(299, 158) + nav() + panel({ kick: 'Servis', title: ['Viljuškar je stao.', 'Stao je i posao.'], bullets: ['Hitne intervencije', 'Servisna vozila širom Srbije'], chip: ['Hitan servis +381 60 300 20 50', true], cta: 'Zakažite servis' }) + rail('Servis') + note(226, 98, 'warning pulses, hall dims', 'middle'),
+      scene: 'Your truck stops mid aisle. A warning pulses over it, pallets wait, the rest of the hall dims.',
+      ui: 'The panel switches to Servis. Problem headline and the urgent number as a dark live chip.',
+      msg: 'Downtime costs money, the visitor feels it.' },
+    { id: 'S2', px: '7,050 to 7,710px', mode: 'Clip, about 3 s', auto: true, title: 'A van is on the way',
+      svg: bg + `<rect x="156" y="34" width="194" height="160" rx="14" fill="#222"/>` + `<path d="M232 46 C258 42 282 52 292 68 C304 88 312 106 306 128 C300 152 288 170 266 180 C246 186 226 178 214 162 C202 146 196 122 200 100 C204 76 212 54 232 46 Z" fill="#33363c" stroke="#5e7175" stroke-width="1.2"/>` + `<use href="#pin" x="246" y="60" width="12" height="16"/>` + t(262, 70, 'Vrčin', 6, '#eeeff3', 500) + `<use href="#pin" x="270" y="134" width="12" height="16"/>` + t(232, 162, 'vaše skladište', 6, '#c9ccd3') + `<path d="M252 78 C256 100 266 116 276 132" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="4 3"/>` + nav() + panel({ kick: 'Servis', title: ['Servis dolazi', 'do vas.'], bullets: ['Servisna vozila širom Srbije', 'Hitne intervencije', 'Servis i drugih marki'], chip: ['Hitan servis +381 60 300 20 50', true], cta: 'Zakažite servis' }) + rail('Servis') + note(252, 188, 'van draws its route from Vrčin to your pin', 'middle'),
+      scene: 'The scene becomes a dark map card. A service van leaves Vrčin and draws its route to your pin.',
+      ui: 'Coverage and emergency service as bullets, the urgent number stays on screen.',
+      msg: 'They come to you, wherever you are.' },
+    { id: 'S3', px: '7,710 to 8,370px', mode: 'Scroll', title: 'Pit stop, then back to work',
+      svg: bg + `<rect x="210" y="180" width="100" height="6" rx="2" fill="#5e7175"/>` + truck(228, 130, 60) + [[-42, 28], [-24, 6], [0, -2], [24, 6], [42, 28]].map(([dx, dy], i) => `<g transform="translate(${258 + dx} ${dy + 102})"><circle r="8" fill="${i < 3 ? '#222' : '#ffffff'}" stroke="${i < 3 ? '#222' : '#c9ccd3'}"/>${i < 3 ? '<path d="M-3 0 l2.2 2.2 4 -4.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>' : ''}</g>`).join('') + nav() + panel({ kick: 'Servis', title: ['Kao pit stop.', 'Nazad na posao.'], bullets: ['Redovno održavanje', 'Ugovori o punom servisu', 'Zakonski pregledi', '300+ tipova, i drugih marki'], cta: 'Zakažite servis' }) + rail('Servis') + note(258, 86, 'checks tick like a pit crew', 'middle'),
+      scene: 'The truck rises on a short lift, checks tick around it one by one, then it drives off back to work.',
+      ui: 'The service offer as four bullets with the call to action.',
+      msg: 'Expert hands, any brand, done on site.' },
+  ] },
+  { id: 'kraj', name: 'Kraj', range: '8,370 to 9,000px', head: 'The whole fleet, one partner', frames: [
+    { id: 'K1', px: '8,370 to 9,000px', mode: 'Scroll', title: 'Four trucks, four services',
+      svg: bg + hall() + truck(160, 150, 38) + `<use href="#reach" x="206" y="128" width="38" height="58"/>` + truck(252, 150, 38) + truck(300, 150, 38) + chip(160, 134, 'Najam') + chip(204, 114, 'Novi') + chip(250, 134, 'Polovni') + chip(298, 134, 'Servis') + nav() + panel({ kick: 'Ekotehnika', title: ['Najam, polovni,', 'novi i servis.', 'Jedan partner.'], bullets: ['Od 1997.', '1.000+ klijenata', 'Zvanični Linde partner'], under: 'Prodaja +381 63 282-050', cta: 'Zatražite ponudu' }) + rail(''),
+      scene: 'The camera pulls back to the hall with four trucks, each tagged by how it got there.',
+      ui: 'The panel closes on the trust strip, the sales phone and the quote button. In direction A the tags become small vehicle cards with a status dot.',
+      msg: 'Whatever the visitor needs, they know who to call.' },
+  ] },
 ];
 
+// Annotated wireframe, the same frame at 2.5 times.
+document.getElementById('wire').innerHTML = `<g transform="scale(2.5)">${bg + hall() + truck(214, 142, 54) + `<use href="#rack" x="292" y="82" width="26" height="104"/>` + nav() + panel({ kick: 'Usluga', title: ['Naslov usluge,', 'dva ili tri reda.'], bullets: ['Kratka tačka', 'Kratka tačka', 'Kratka tačka'], block: (x, y) => `<rect x="${x}" y="${y - 2}" width="108" height="30" rx="6" fill="#eeeff3"/>` + t(x + 54, y + 16, 'slika, model ili broj', 5.4, '#5e7175', 400, 'middle'), blockH: 36, cta: 'Poziv na akciju' }) + rail('Najam')}</g>`
+  + `<g font-family="${F}" font-size="12" font-weight="500" fill="#2f63c9">
+      <path d="M450 4 V18" stroke="#2f63c9" stroke-dasharray="3 3"/><text x="458" y="14">Pill nav, centred, links to the site pages</text>
+      <path d="M130 4 V18" stroke="#2f63c9" stroke-dasharray="3 3"/><text x="138" y="14">Logo</text>
+      <path d="M800 4 V18" stroke="#2f63c9" stroke-dasharray="3 3"/><text x="690" y="14">Phone, quote button</text>
+      <rect x="28" y="73" width="324" height="420" rx="26" fill="none" stroke="#2f63c9" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="40" y="518" fill="#2f63c9">Left panel, almost full height,</text><text x="40" y="534" fill="#2f63c9">changes with every scene</text>
+      <rect x="370" y="73" width="512" height="400" rx="20" fill="none" stroke="#2f63c9" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="390" y="100">Scene, pinned, camera follows scroll, clips play here</text>
+      <text x="560" y="556">Service rail, jumps between services</text>
+    </g>`;
+document.getElementById('wire').setAttribute('viewBox', '0 0 900 562');
+
+// Scroll map to scale.
+const beats = parts.flatMap((p) => p.frames);
+const num = (s) => s.replace(/px/, '').split(' to ').map((n) => Number(n.replace(/,/g, '')));
+const W = 880;
+document.getElementById('map').innerHTML = `<g transform="translate(10 10)" font-family="${F}">` + beats.map((b) => {
+  const [a, z] = num(b.px); const x = (a / 9000) * W; const w = ((z - a) / 9000) * W - 3;
+  return `<rect x="${x}" y="0" width="${w}" height="44" rx="5" fill="${b.auto ? '#222' : '#ffffff'}" stroke="#c9ccd3"/><text x="${x + w / 2}" y="27" font-size="12" text-anchor="middle" fill="${b.auto ? '#fff' : '#222'}" font-weight="500">${b.id}</text>`;
+}).join('') + parts.map((p) => { const [a] = num(p.frames[0].px); const x = (a / 9000) * W; return `<path d="M${x} 50 V60" stroke="#c9ccd3"/><text x="${x + 2}" y="76" font-size="13" fill="#4a595c">${p.name}</text>`; }).join('') + `<text x="0" y="110" font-size="12" fill="#4a595c">0</text><text x="${W}" y="110" font-size="12" fill="#4a595c" text-anchor="end">9,000px</text></g>`;
+
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const root = document.getElementById('frames');
-root.innerHTML = parts.map((p) => `
+document.getElementById('frames').innerHTML = parts.map((p) => `
   <section id="${p.id}" aria-labelledby="h-${p.id}">
     <div class="seghead">
-      <div class="stack">
-        <p class="kick">${p.name} <span class="range">${p.range} of scroll</span></p>
-        <h2 id="h-${p.id}">${esc(p.head)}</h2>
-      </div>
-      ${p.job ? `<dl class="job">
-        <dt>Job to be done</dt><dd>${esc(p.job[0])}</dd>
-        <dt>The sentence a stranger repeats</dt><dd>${esc(p.job[1])}</dd>
-        <dt>Call to action</dt><dd>${esc(p.job[2])}</dd>
-      </dl>` : '<div></div>'}
+      <div class="stack"><p class="kick">${p.name} <span class="range">${p.range}</span></p><h2 id="h-${p.id}">${esc(p.head)}</h2></div>
+      ${p.job ? `<dl class="job"><dt>Job to be done</dt><dd>${esc(p.job[0])}</dd><dt>Call to action</dt><dd lang="sr">${esc(p.job[1])}</dd></dl>` : '<div></div>'}
     </div>
     <div class="frames${p.frames.length === 1 ? ' solo' : ''}">
       ${p.frames.map((f) => `
         <article class="frame" aria-labelledby="f-${f.id}">
-          <svg viewBox="0 0 320 200" role="img" aria-label="${esc(f.title)}, sketch">${f.svg}</svg>
+          <svg viewBox="0 0 360 225" role="img" aria-label="${esc(f.title)}, screen sketch">${f.svg}</svg>
           <div class="fbody">
-            <div class="fhead"><span class="fid">${f.id}</span><span class="fpct">${f.pct}</span></div>
+            <div class="fhead"><span class="fid">${f.id} <span class="range">${f.px}</span></span><span class="mode${f.auto ? ' auto' : ''}">${f.mode}</span></div>
             <h3 id="f-${f.id}">${esc(f.title)}</h3>
             <div class="row"><span>Scene</span><p>${esc(f.scene)}</p></div>
-            <div class="row"><span>Camera</span><p>${esc(f.camera)}</p></div>
-            <div class="row"><span>On screen</span><div class="copy" lang="sr">${esc(f.copy[0])}<em lang="en">${esc(f.copy[1])}</em></div></div>
-            ${(f.chips.length || (f.newChips || []).length) ? `<div class="chips">${f.chips.map((c) => `<span class="chip" lang="sr">${esc(c[0])}</span>`).join('')}${(f.newChips || []).map((c) => `<span class="chip new" lang="sr">${esc(c)}</span>`).join('')}</div>` : ''}
+            <div class="row"><span>Left panel</span><p>${esc(f.ui)}</p></div>
             <p class="msg">${esc(f.msg)}</p>
           </div>
         </article>`).join('')}

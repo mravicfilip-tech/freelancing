@@ -30,6 +30,7 @@ Task format
   - [x] Apply the bottom left headline layout to 2, 4 and 5
   - [x] Filip explains the process and motion
   - [x] Plan from the recording, the voice over and Figma, hardened
+  - [x] Pull Filip's Drive media and convert the Linde 3D models
   - [ ] Build the shell, copy, products, footer and Linija
   - [ ] Build the Grad scene
   - [ ] Build the Sistem scene

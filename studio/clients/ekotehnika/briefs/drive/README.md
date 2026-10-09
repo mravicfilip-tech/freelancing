@@ -30,6 +30,15 @@ Files are not copied into the repo. This note lists what matters for storyline 2
 | Rules | Linde co-branding guideline 1.3 (low and high res PDF), marketing playbook, truck overview catalogue |
 | Proizvodi range | 11 full range photos from the Linde photoshoot |
 
+## Pulled so far
+
+- Eight Linde models are converted from FBX and live in `ekotehnika-hero/public/models/linde/`, x50, h30d, r16, n20,
+  mt15c, d12, cmatic10 and cmatichp, about 7MB in all. The X50 wheel mesh was split into four wheels that spin on their
+  own centres.
+- The cmatic10 model carries a quicktron logo, another brand, so scenes hide that mesh.
+- The drone videos, promo photos, delivery photos, range photos, logos and rules are downloaded to the session
+  scratchpad only, 2.4GB. Nothing from them is in the app yet.
+
 ## Rules to check before shipping
 
 - The co-branding guideline decides how the Ekotehnika and Linde logos sit together.

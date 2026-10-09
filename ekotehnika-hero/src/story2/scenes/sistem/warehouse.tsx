@@ -201,17 +201,22 @@ function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | nu
   );
 }
 
-function Floor() {
+function Floor({ clock }: SceneProps) {
   const pool = useMemo(() => poolMaterial(0.3, C.lightGrey), []);
+  const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: C.lightGrey, toneMapped: false, transparent: true, opacity: 0 }), []);
+  // The lane lines wait for the text to leave, the floor is plain dark behind the prodaja block.
+  useFrame(() => {
+    lane.opacity = 0.55 * ease(range(uOf(clock), 7.5, 7.8));
+  });
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[(WH.x0 + WH.x1) / 2, 0.012, (WH.z0 + WH.z1) / 2]} receiveShadow>
         <planeGeometry args={[WH.x1 - WH.x0, WH.z1 - WH.z0]} />
-        <meshLambertMaterial color="#0a0c0d" />
+        <meshLambertMaterial color="#0d1011" />
       </mesh>
       {AISLES.map((z) =>
         [-1.55, 1.55].map((dz) => (
-          <mesh key={`${z}${dz}`} position={[(WH.x0 + WH.x1) / 2, 0.03, z + dz]} material={K.glowSoft}>
+          <mesh key={`${z}${dz}`} position={[(WH.x0 + WH.x1) / 2, 0.03, z + dz]} material={lane}>
             <boxGeometry args={[WH.x1 - WH.x0 - 0.5, 0.01, 0.07]} />
           </mesh>
         )),
@@ -266,7 +271,7 @@ export default function Warehouse({ clock }: SceneProps) {
     const u = uOf(clock);
     const pos = clock.pos.current;
     // roof gives way at the start of P
-    const roofOp = 1 - ease(range(u, 7.0, 7.32));
+    const roofOp = 1 - ease(range(u, 6.78, 7.0));
     roofMats.current.forEach((m) => {
       const a = m as THREE.Material & { opacity: number };
       a.opacity = m.type === 'LineBasicMaterial' ? 0.75 * roofOp : roofOp;
@@ -274,7 +279,7 @@ export default function Warehouse({ clock }: SceneProps) {
     });
     if (roof.current) {
       roof.current.visible = roofOp > 0.003;
-      roof.current.position.y = ease(range(u, 7.0, 7.32)) * 1.5;
+      roof.current.position.y = ease(range(u, 6.78, 7.0)) * 1.5;
     }
     if (inner.current) inner.current.visible = u > 7.45 && u < 10.4;
     if (strips.current) strips.current.visible = u >= 8.25;
@@ -314,7 +319,7 @@ export default function Warehouse({ clock }: SceneProps) {
 
   return (
     <group>
-      <Floor />
+      <Floor clock={clock} />
       <group ref={roof}>
         <Roof matsRef={roofMats} />
       </group>

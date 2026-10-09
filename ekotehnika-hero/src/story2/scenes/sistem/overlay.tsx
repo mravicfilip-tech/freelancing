@@ -48,6 +48,31 @@ function forkGeometry() {
   return g;
 }
 
+// A dark mask with soft edges. alpha(x, y) in half screen heights, x right and y up, drawn at 160 by 80 samples.
+function maskTexture(w: number, h: number, x0: number, x1: number, y0: number, y1: number, alpha: (x: number, y: number) => number) {
+  const c = document.createElement('canvas');
+  c.width = 160;
+  c.height = 80;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(160, 80);
+  for (let j = 0; j < 80; j++)
+    for (let i = 0; i < 160; i++) {
+      const x = x0 + ((i + 0.5) / 160) * (x1 - x0);
+      const y = y1 - ((j + 0.5) / 80) * (y1 - y0);
+      const k = (j * 160 + i) * 4;
+      img.data[k] = 9;
+      img.data[k + 1] = 10;
+      img.data[k + 2] = 11;
+      img.data[k + 3] = Math.round(255 * Math.min(1, Math.max(0, alpha(x, y))));
+    }
+  g.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  void w;
+  void h;
+  return t;
+}
+
 function curtainTexture() {
   const c = document.createElement('canvas');
   c.width = 256;
@@ -73,6 +98,10 @@ export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
   const size = useThree((s) => s.size);
   const fade = useRef<THREE.Mesh>(null);
+  const maskGroup = useRef<THREE.Group>(null);
+  const camera = useThree((st) => st.camera);
+  const maskTop = useRef<THREE.Mesh>(null);
+  const maskH = useRef<THREE.Mesh>(null);
   const forkRef = useRef<THREE.Mesh>(null);
   const curtain = useRef<THREE.Mesh>(null);
   const lines = useRef<(THREE.Mesh | null)[]>([]);
@@ -80,6 +109,18 @@ export default function Overlay({ clock }: SceneProps) {
   const fork = useMemo(forkGeometry, []);
   const cTex = useMemo(curtainTexture, []);
   const aspect = size.width / size.height;
+  // The top 110px stays dark at every beat, easing out by 210px, so the nav always sits on plain dark.
+  const topTex = useMemo(() => maskTexture(0, 0, -1, 1, 1 - 0.467, 1, (_x, y) => 1 - smooth(Math.min(1, Math.max(0, (1 - y - 0.244) / 0.223)))), []);
+  // At the hero the left 55 percent from y 470 to 840 stays plain dark for the headline.
+  const hTex = useMemo(
+    () =>
+      maskTexture(0, 0, -2.4, 0.5, -1.0, 0.2, (x, y) => {
+        const ax = 1 - smooth(Math.min(1, Math.max(0, (x + 0.15) / 0.31)));
+        const ay = smooth(Math.min(1, Math.max(0, (0.12 - y) / 0.16)));
+        return ax * ay;
+      }),
+    [],
+  );
   const items = useMemo(() => [...STRONG.map((o) => ({ o, w: 0.0085, a: 0.95 })), ...FAINT.map((o) => ({ o, w: 0.0032, a: 0.2 }))], []);
 
   useFrame(() => {
@@ -90,6 +131,14 @@ export default function Overlay({ clock }: SceneProps) {
     if (fade.current) {
       (fade.current.material as THREE.MeshBasicMaterial).opacity = black;
       fade.current.visible = black > 0.002;
+    }
+    // The masks stay on the screen whatever the lens shift is, so undo the shift for them.
+    const v = camera.view;
+    if (maskGroup.current && v) maskGroup.current.position.set((v.offsetX / v.fullWidth) * 2 * aspect, (-v.offsetY / v.fullHeight) * 2, 0);
+    if (maskH.current) {
+      const m = 1 - ease(range(u, 0.9, 1.3));
+      (maskH.current.material as THREE.MeshBasicMaterial).opacity = m;
+      maskH.current.visible = m > 0.003;
     }
     // driving lines, S and the first of L
     const on = u >= 10 && u < 11.9;
@@ -123,6 +172,16 @@ export default function Overlay({ clock }: SceneProps) {
 
   return createPortal(
     <>
+      <group ref={maskGroup}>
+      <mesh ref={maskTop} position={[0, 1 - 0.2335, 0.52]} scale={[1, 1, 1]}>
+        <planeGeometry args={[aspect * 2 + 0.2, 0.467]} />
+        <meshBasicMaterial map={topTex} transparent depthWrite={false} toneMapped={false} />
+      </mesh>
+      <mesh ref={maskH} position={[(-2.4 + 0.5) / 2 - 0.0, (-1.0 + 0.2) / 2, 0.5]}>
+        <planeGeometry args={[2.9, 1.2]} />
+        <meshBasicMaterial map={hTex} transparent depthWrite={false} toneMapped={false} />
+      </mesh>
+      </group>
       <mesh ref={fade} position={[0, 0, 0.55]} visible={false}>
         <planeGeometry args={[aspect * 4, 4]} />
         <meshBasicMaterial color="#000000" transparent opacity={0} depthWrite={false} toneMapped={false} />

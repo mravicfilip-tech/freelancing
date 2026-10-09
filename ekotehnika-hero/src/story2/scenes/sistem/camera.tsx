@@ -18,10 +18,10 @@ const ISO_PITCH = ISO.pitch;
 // Outdoor channels over u. The truck stays at the same place on screen, the camera follows it.
 const O_OX = track([[0, -0.45], [4, -0.45], [5, 0]]);
 const O_OY = track([[0, 1.15], [2, 1.2], [4, 1.15], [5, 0]]);
-const O_D = track([[0, 12], [2, 12.5], [3, 14], [4, 16], [5, 56], [6, 56]]);
+const O_D = track([[0, 16], [0.8, 16], [1.6, 12.2], [2, 12.5], [3, 14], [4, 16], [5, 56], [6, 56]]);
 const O_YAW = track([[0, 0], [4, 0], [5, 90], [6, 90]]);
 const O_PITCH = track([[0, -7], [2, -7], [3, -8], [4, -8], [5, -90], [6, -90]]);
-const O_SX = track([[0, 0.16], [1, 0.1], [2, -0.05], [3, 0.04], [4, 0.1], [5, 0.22], [6, 0.22]]);
+const O_SX = track([[0, 0.236], [0.8, 0.236], [2, -0.05], [3, -0.05], [4, 0.1], [5, 0.22], [6, 0.22]]);
 const O_SY = track([[0, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);

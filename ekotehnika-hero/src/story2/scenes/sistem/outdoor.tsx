@@ -112,7 +112,7 @@ function Block({ x, z, w, d, h, mat = K.silhouette, lines = 0.55 }: { x: number;
 }
 
 function Building() {
-  const sign = useMemo(() => signGeometry('EKOTEHNIKA', 1.15, 0.28), []);
+  const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
   const front = -9;
   const { on, dim, door } = useMemo(() => {
     const r = rng(7);
@@ -120,9 +120,11 @@ function Building() {
     const dim: [number, number, number][] = [];
     for (let i = 0; i < 9; i++) {
       const x = BUILDING_X - 11 + i * 2.7;
-      for (const y of [1.7, 5.0]) {
-        if (y < 3 && i >= 4 && i <= 6) continue; // the entrance glazing
-        if (y > 3 && x > BUILDING_X - 3.2 && x < BUILDING_X + 9) continue; // behind the sign
+      for (const y of [1.7]) {
+        // the left 45 percent of the frame stays empty at the stop, and the door and the sign keep their place
+        if (y < 3 && x > BUILDING_X - 4.2 && x < BUILDING_X + 4) continue;
+        if (y < 3 && x > BUILDING_X + 7 && x < BUILDING_X + 12) continue;
+        if (y > 3 && x > BUILDING_X + 3.5 && x < BUILDING_X + 13) continue;
         (r() < 0.78 ? on : dim).push([x, y, front + 0.04]);
       }
     }
@@ -130,7 +132,7 @@ function Building() {
     for (let i = 0; i < 5; i++) {
       (r() < 0.7 ? on : dim).push([BUILDING_X + 16 + i * 2.7, 1.9, front - 0.45 + 0.04]);
     }
-    return { on, dim, door: [BUILDING_X + 2.6, 1.8, front + 0.05] as [number, number, number] };
+    return { on, dim, door: [BUILDING_X + 9.5, 1.3, front + 0.05] as [number, number, number] };
   }, []);
   const hallLines = useMemo(() => Array.from({ length: 14 }, (_, i) => 63.8 + i * 0.85), []);
   return (
@@ -145,15 +147,19 @@ function Building() {
       ))}
       <Windows items={on} mat={K.windowOn} />
       <Windows items={dim} mat={K.windowDim} />
-      {/* entrance, a lit glass door under a canopy */}
-      <mesh position={[door[0], door[1], door[2]]} material={K.windowOn}>
-        <boxGeometry args={[6, 2.8, 0.1]} />
+      {/* entrance, a lit glass door at the right */}
+      <mesh position={[door[0], door[1], door[2]]}>
+        <boxGeometry args={[2.6, 2.4, 0.1]} />
+        <meshBasicMaterial color="#10171a" toneMapped={false} />
       </mesh>
-      <RoundedBox args={[8, 0.22, 2.2]} radius={0.05} position={[door[0], 3.15, front + 0.9]} material={K.metalGrey} castShadow />
+      <lineSegments position={[door[0], door[1], door[2] + 0.06]}>
+        <edgesGeometry args={[new THREE.BoxGeometry(2.6, 2.4, 0.02)]} />
+        <lineBasicMaterial color={C.lightGrey} transparent opacity={0.7} toneMapped={false} />
+      </lineSegments>
       {/* the live 3D name, Geist caps in white, lit from within */}
-      <mesh geometry={sign} material={K.sign} position={[BUILDING_X - 2.4, 3.75, front + 0.05]} />
-      <mesh position={[BUILDING_X + 3.0, 5.0, front + 0.02]}>
-        <planeGeometry args={[14.5, 3.0]} />
+      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 4.4, 2.75, front + 0.05]} />
+      <mesh position={[BUILDING_X + 8.4, 3.2, front + 0.02]}>
+        <planeGeometry args={[11, 2.2]} />
         <meshBasicMaterial map={softTexture()} color={C.lightGrey} transparent opacity={0.16} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
       </mesh>
     </group>
@@ -189,7 +195,7 @@ function Trees() {
   const items = useMemo(() => {
     const r = rng(21);
     const cy: [number, number, number, number][] = [
-      [BUILDING_X - 13, 0, -3.4, 4.2], [BUILDING_X - 12.2, 0, -3.1, 3.2], [BUILDING_X + 9, 0, -3.0, 3.6], [BUILDING_X + 12.5, 0, -3.4, 2.8], [BUILDING_X - 17, 0, -4, 4.5],
+      [BUILDING_X - 13, 0, -3.4, 4.2], [BUILDING_X - 12.2, 0, -3.1, 3.2], [BUILDING_X + 17, 0, -3.0, 3.6], [BUILDING_X + 20.5, 0, -3.4, 2.8], [BUILDING_X - 17, 0, -4, 4.5],
     ];
     for (let i = 0; i < 46; i++) cy.push([-60 + i * 3.1 + r() * 2, 0, -16 - r() * 22, 3.5 + r() * 4]);
     const bu: [number, number, number, number][] = [];

@@ -10,6 +10,12 @@
       "tree": "67c801d5b556be168c8e1e6667e09d3aeb7450ad",
       "at": "2026-10-08T19:57:37.769Z",
       "score": 1
+    },
+    {
+      "n": 2,
+      "tree": "64552e7149eade1ae55f26b18bfed9a1a45a401e",
+      "at": "2026-10-09T08:11:12.398Z",
+      "score": 6.5
     }
   ],
   "findings": [
@@ -100,8 +106,16 @@
       "what": "No skip link; brand, 3 nav links, theme toggle and Telegram CTA precede content. A main landmark exists.",
       "status": "open",
       "round": 1
+    },
+    {
+      "id": "F12",
+      "sev": 1,
+      "where": "/work/* case pages and the hero [001.2] note, 390, light and dark, src/lib/phoneReveal.js rise, fadeUp, landNow",
+      "what": "Phone arrivals never play for blocks passed as a single element. The empty-batch guard added in 93cdf1a (els?.length) is undefined for an Element, so fadeUp(n) in CaseStudy.jsx and fadeUp or landNow(footNote) in Hero.jsx return early. 21 case page blocks stay at opacity 0 and 24px low after hide,...",
+      "status": "open",
+      "round": 2
     }
   ],
   "cards": [],
-  "cardAt": "2026-10-09T08:04:56.947Z"
+  "cardAt": "2026-10-09T08:11:16.673Z"
 }

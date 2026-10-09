@@ -28,7 +28,8 @@ Rules
   - [x] Fix the blank phone case pages, project title line height, production deploy
   - [x] Clients logos section, quotes off until approved
   - [x] Testimonials back on, confirmed by Filip
-  - [ ] Filip's line on the card, promote the testimonials to production
+  - [x] Client logo sheet rejected, three treatments built (d6aa5dc), preview blocked by the Vercel free plan's 100 deploys a day
+  - [ ] Filip picks a logo treatment by number, then promote testimonials and logos to production
 
 ## Review
 

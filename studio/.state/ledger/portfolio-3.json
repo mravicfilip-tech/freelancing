@@ -34,7 +34,7 @@
       "sev": 1,
       "where": "/ at 1440, Tab from the LinkedIn CTA, a.btn Open case study x5 and button.cplate__pill Start a project",
       "what": "Tab lands on controls of inactive plates, rects at y -1375, -475, -447 in a 900px viewport, covered, no ring visible. Counter moves 03/09 to 07/09 but the screen shows another plate. Focus invisible for 6 stops.",
-      "status": "partly",
+      "status": "fixed",
       "round": 1
     },
     {

@@ -17,7 +17,7 @@ Rules
 
 ## In progress
 
-- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio, production https://filip-portfolio-five.vercel.app (deca31e), preview with the clients section https://filip-portfolio-ozqdxrbix-filip-mravic-s-projects.vercel.app (f8d0bbe)
+- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio, production https://filip-portfolio-five.vercel.app (deca31e), preview with the testimonials and client sheet https://filip-portfolio-ixhw7bwkb-filip-mravic-s-projects.vercel.app (fd62f02)
   - [x] /uireview round, accessibility and contrast, 1440 and 390, both themes
   - [x] Fix sev 1 and sev 2
   - [x] Mobile motion plan, content first, briefs/final-version.md
@@ -27,7 +27,8 @@ Rules
   - [x] Re-check, card, preview deploy
   - [x] Fix the blank phone case pages, project title line height, production deploy
   - [x] Clients logos section, quotes off until approved
-  - [ ] Filip's line on the card, testimonial approval, promote the clients section
+  - [x] Testimonials back on, confirmed by Filip
+  - [ ] Filip's line on the card, promote the testimonials to production
 
 ## Review
 

@@ -28,7 +28,7 @@ Background. The horizon glow, `src/atmo/variants/08-horizon-glow.js`, dark theme
 
 - Dark mode stays dark. From Filip, recorded in this session's standing constraints.
 - No hover movement on buttons. From Filip.
-- The unapproved testimonial ("Jelena") never ships in a production build. Check `grep -rl Jelena dist`.
+- Testimonials ship. Filip confirmed on 2026-10-09 that Jelena, Vladan and Boris each said their quote. With `testimonials.enabled` off, the clients plate takes their slot.
 - Every rule in `taste.md` in this folder. Its entries are the rules.
 
 ## Accessibility

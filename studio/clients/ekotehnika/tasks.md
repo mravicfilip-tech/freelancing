@@ -27,10 +27,14 @@ Task format
 
 - ekotehnika-4 Storyboard the four services on scroll, Najam, Polovni, Novi and Servis. Link https://claude.ai/artifact/RWHBH6HdwFZ1VnTj8Rj6SE
   - [x] Write the storyboard
-  - [ ] Filip reviews the storyboard
+  - [x] Filip reviews the storyboard
   - [x] Filip sends the UI references
   - [x] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
-  - [ ] Build the story and UI A, B and C, nine combinations
+  - [x] Write the shared story clock and timeline
+  - [ ] Build the shell with UI A, B and C and the Linija scene
+  - [ ] Build the Grad scene in 3D
+  - [ ] Build the Sistem scene in 3D
+  - [ ] Wire the nine combinations into the switcher and check them
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers

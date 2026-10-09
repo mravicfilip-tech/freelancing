@@ -17,14 +17,17 @@ Rules
 
 ## In progress
 
-- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio, preview https://filip-portfolio-1c2vs95hb-filip-mravic-s-projects.vercel.app (5c4d0af)
+- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio, production https://filip-portfolio-five.vercel.app (deca31e), preview with the clients section https://filip-portfolio-ozqdxrbix-filip-mravic-s-projects.vercel.app (f8d0bbe)
   - [x] /uireview round, accessibility and contrast, 1440 and 390, both themes
   - [x] Fix sev 1 and sev 2
   - [x] Mobile motion plan, content first, briefs/final-version.md
   - [x] Build the mobile motion pass
   - [x] Keep the glow dark under phone copy, small a11y leftovers
   - [x] Give the phone glow back between lines, keep AA
-  - [ ] Re-check, card, preview deploy
+  - [x] Re-check, card, preview deploy
+  - [x] Fix the blank phone case pages, project title line height, production deploy
+  - [x] Clients logos section, quotes off until approved
+  - [ ] Filip's line on the card, testimonial approval, promote the clients section
 
 ## Review
 

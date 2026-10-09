@@ -2,7 +2,7 @@
 // miniature of Ekotehnika in Vrčin, a camera that flies from beat to beat and the story props and
 // trucks that tell Najam, Polovni, Novi and Servis. Grey everywhere, red only on a truck's rear shell.
 // Every position is a function of the story time u, so any still clock draws a correct frame.
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, invalidate } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,6 +12,7 @@ import { City } from './city';
 import { Rig } from './camera';
 import { KEYS } from './keys';
 import { Story } from './story';
+import { LabelLayer } from './portal';
 
 export default function Scene({ clock }: SceneProps) {
   const [ready, setReady] = useState(false);
@@ -37,8 +38,10 @@ export default function Scene({ clock }: SceneProps) {
     return () => ids.forEach((i) => window.clearTimeout(i));
   }, [clock.still, ready]);
 
+  const labels = useRef<HTMLDivElement>(null);
   return (
     <div style={{ position: 'absolute', inset: 0, background: C.hoverLightGrey, isolation: 'isolate' }} aria-hidden="true">
+      <LabelLayer.Provider value={labels}>
       <Canvas
         shadows="soft"
         dpr={[1, 1.5]}
@@ -61,6 +64,8 @@ export default function Scene({ clock }: SceneProps) {
           </Suspense>
         )}
       </Canvas>
+      </LabelLayer.Provider>
+      <div ref={labels} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
     </div>
   );
 }

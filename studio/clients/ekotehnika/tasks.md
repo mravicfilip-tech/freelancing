@@ -31,10 +31,10 @@ Task format
   - [x] Filip sends the UI references
   - [x] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
   - [x] Write the shared story clock and timeline
-  - [ ] Build the shell with UI A, B and C and the Linija scene
-  - [ ] Build the Grad scene in 3D
-  - [ ] Build the Sistem scene in 3D
-  - [ ] Wire the nine combinations into the switcher and check them
+  - [x] Build the shell with UI A, B and C and the Linija scene
+  - [x] Build the Grad scene in 3D
+  - [x] Build the Sistem scene in 3D
+  - [x] Wire the nine combinations into the switcher and check them
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers

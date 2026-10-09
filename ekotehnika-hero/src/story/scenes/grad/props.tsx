@@ -1,7 +1,7 @@
 // The set pieces of the Grad story, racks that grow, the dock, the pile of pallets, the renewal line,
 // the pit stop rig, the seal, the warning and the labels. Each reads the story time itself, so none
 // needs to be told what to draw.
-import { useLayoutEffect, useMemo, useRef, type MutableRefObject, type ReactNode } from 'react';
+import { useContext, useLayoutEffect, useMemo, useRef, type MutableRefObject, type RefObject, type ReactNode } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Billboard, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,6 +12,7 @@ import { W, slatTexture } from '../../../variants/v4/look';
 import { rng } from './util';
 import { DOCK, LINE, PILE, PIT_H, STOP, pileItem, pitLift, pitRig, rackGrowth, renewProgress, uOf } from './plan';
 import { clamp01, lerp, seg, smooth } from './math';
+import { LabelLayer } from './portal';
 
 const unit = new THREE.BoxGeometry(1, 1, 1);
 const dummy = new THREE.Object3D();
@@ -545,6 +546,7 @@ export function Label({ position, text, kind = 'pill', state, clock, lift = 0, l
 }) {
   const el = useRef<HTMLDivElement>(null);
   const last = useRef('');
+  const layer = useContext(LabelLayer);
   useFrame(() => {
     const e = el.current;
     if (!e) return;
@@ -560,7 +562,7 @@ export function Label({ position, text, kind = 'pill', state, clock, lift = 0, l
   });
   return (
     <group position={position}>
-      <Html center zIndexRange={[20, 0]} position={[0, lift, 0]} style={{ pointerEvents: 'none' }}>
+      <Html center zIndexRange={[20, 0]} position={[0, lift, 0]} style={{ pointerEvents: 'none' }} portal={(layer ?? undefined) as RefObject<HTMLElement> | undefined}>
         <div style={{ position: 'relative' }}>
           <div ref={el} style={kind === 'disc' ? discStyle : pillStyle}>
             {text}

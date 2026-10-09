@@ -10,8 +10,8 @@ const StoryHarness = lazy(() => import('./story/Harness').then((m) => ({ default
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const readVariant = () => {
-  const v = Number(new URLSearchParams(window.location.search).get('v'));
-  return variants.some((x) => x.n === v) ? v : variants[0].n;
+  const v = (new URLSearchParams(window.location.search).get('v') ?? '').toUpperCase();
+  return variants.some((x) => x.id === v) ? v : variants[0].id;
 };
 
 export function App() {
@@ -46,20 +46,21 @@ function Variants() {
     return () => reducedQuery.removeEventListener('change', on);
   }, []);
 
-  const pick = (n: number) => {
+  const pick = (id: string) => {
     scrollToTop();
     const url = new URL(window.location.href);
-    url.searchParams.set('v', String(n));
+    url.searchParams.set('v', id);
     window.history.replaceState(null, '', url);
-    setV(n);
+    setV(id);
   };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return;
+      // Keys 1 to 9 pick the combinations in switcher order.
       const n = Number(e.key);
-      if (variants.some((x) => x.n === n)) pick(n);
+      if (n >= 1 && n <= variants.length) pick(variants[n - 1].id);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -71,7 +72,7 @@ function Variants() {
     return () => cancelAnimationFrame(id);
   }, [v]);
 
-  const { Component } = variants.find((x) => x.n === v)!;
+  const { Component } = variants.find((x) => x.id === v)!;
 
   return (
     <>
@@ -85,11 +86,10 @@ function Variants() {
         <Placeholder />
       </div>
       {/* Review chrome for comparing the variants, not part of any design. */}
-      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 2, 4 i 5">
+      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 1 do 9">
         {variants.map((x) => (
-          <button key={x.n} type="button" aria-pressed={x.n === v} onClick={() => pick(x.n)}>
-            <span>{x.n}</span>
-            {x.name}
+          <button key={x.id} type="button" aria-pressed={x.id === v} onClick={() => pick(x.id)} title={x.name}>
+            {x.id}
           </button>
         ))}
       </div>

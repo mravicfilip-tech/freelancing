@@ -1,0 +1,600 @@
+/* Storyline 2 shell. Tokens only, see src/styles.css :root. Geist, sentence case, no text under 14px, body 16px
+   or more. Desktop first, laid out for 1440 by 900 and held at 1280 by 800 and 1920 by 1080. */
+.s2 {
+  font-family: 'Geist', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--white);
+  --fg: var(--ink);
+  --fg2: var(--text-grey);
+  --line: rgb(34 34 34 / 0.16);
+  --card: var(--white);
+}
+
+.s2[data-tone='dark'] {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.s2 [data-ink='dark'],
+.s2[data-tone='dark'] {
+  --fg: var(--white);
+  --fg2: rgb(255 255 255 / 0.8);
+  --line: rgb(255 255 255 / 0.28);
+  --card: rgb(255 255 255 / 0.07);
+}
+
+.s2 h2,
+.s2 h3,
+.s2 p {
+  margin: 0;
+}
+
+.s2-stage {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+}
+
+.s2-scene {
+  position: absolute;
+  inset: 0;
+}
+
+/* one layer per hold beat, over the scene and under the shared hero frame */
+.s2-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  color: var(--fg);
+}
+
+.s2-layer [data-rise] {
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.s2 a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* type */
+.s2-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+.s2-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.s2-title {
+  font-size: clamp(56px, 5.6vw, 96px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--fg);
+}
+
+.s2-text {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--fg2);
+}
+
+.s2-lead {
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+/* cards and tiles, hairline edged, white on light and ink on dark */
+.s2-card,
+.s2-tile {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--fg);
+}
+
+.s2-tiles {
+  display: grid;
+  gap: 16px;
+}
+
+.s2-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: clamp(150px, 19vh, 200px);
+  padding: 22px 24px;
+  text-decoration: none;
+  text-align: left;
+}
+
+.s2-tile b {
+  font-size: clamp(26px, 2.3vw, 36px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.s2-tile span {
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--fg2);
+  font-variant-numeric: tabular-nums;
+}
+
+a.s2-tile:hover {
+  border-color: var(--fg);
+}
+
+.s2-tile svg {
+  margin-bottom: auto;
+  color: var(--fg);
+}
+
+/* the one call to action, linde-red, as the shared hero frame draws it */
+.s2-cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  height: 52px;
+  padding: 0 40px;
+  border-radius: 999px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.s2-cta:hover {
+  background: var(--dark-red);
+}
+
+/* Kompanija, the stop in front of the building. A line top left, a block and three tiles along the bottom. */
+.s2-pane {
+  position: absolute;
+  inset: 0;
+}
+
+.s2-c1-head {
+  position: absolute;
+  left: 48px;
+  top: max(116px, 13.5vh);
+  width: min(46vw, 660px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.s2-c1 .s2-title,
+.s2-r .s2-title {
+  font-size: clamp(44px, 4.4vw, 72px);
+}
+
+.s2-c1-text {
+  position: absolute;
+  left: 48px;
+  bottom: max(56px, 8vh);
+  width: min(30vw, 440px);
+  font-size: 20px;
+  color: var(--fg);
+}
+
+.s2-c1-tiles {
+  position: absolute;
+  right: 48px;
+  bottom: max(56px, 8vh);
+  grid-template-columns: repeat(3, clamp(200px, 19vw, 290px));
+}
+
+/* Kompanija, top down along the path. A column at the left third. */
+.s2-r {
+  inset: auto;
+  left: 48px;
+  top: max(116px, 13vh);
+  bottom: max(56px, 8vh);
+  width: min(30vw, 430px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.s2-r-tiles {
+  margin-top: auto;
+  gap: 12px;
+}
+
+.s2-r-tiles .s2-tile {
+  min-height: 0;
+  padding: 16px 22px;
+  gap: 2px;
+  justify-content: center;
+}
+
+.s2-r-tiles .s2-tile b {
+  font-size: 28px;
+}
+
+/* Prodaja and Najam, centred title, a wide block and tiles */
+.s2-p,
+.s2-n {
+  inset: auto;
+  left: 50%;
+  translate: -50% 0;
+  width: min(1040px, calc(100vw - 96px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.s2-p {
+  top: max(112px, 12.5vh);
+}
+
+.s2-n {
+  top: max(104px, 11.5vh);
+  gap: 14px;
+}
+
+.s2-n .s2-title {
+  font-size: clamp(48px, 4.6vw, 72px);
+}
+
+.s2-p-block,
+.s2-n-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 26px 32px;
+  text-align: left;
+}
+
+.s2-n-block {
+  padding: 16px 28px;
+}
+
+.s2-p-tiles,
+.s2-n-tiles {
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.s2-p-tiles .s2-tile b {
+  font-size: clamp(22px, 1.9vw, 28px);
+}
+
+.s2-n-tiles .s2-tile {
+  min-height: 0;
+  padding: 16px 22px;
+  gap: 4px;
+  justify-content: flex-start;
+}
+
+.s2-n-tiles .s2-tile b {
+  font-size: clamp(22px, 1.8vw, 26px);
+}
+
+/* Servis, text and two tiles in the left half */
+.s2-s {
+  inset: auto;
+  left: 48px;
+  top: max(112px, 12.5vh);
+  width: min(42vw, 600px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.s2-s-tiles {
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.s2-s-tiles .s2-tile {
+  min-height: clamp(130px, 17vh, 170px);
+}
+
+.s2-s .s2-cta {
+  margin-top: 6px;
+}
+
+/* Automatizacija, a very large word across the top and a short line */
+.s2-at-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: max(92px, 10vh);
+  text-align: center;
+  font-size: 15.4vw;
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  color: var(--fg);
+}
+
+.s2-at-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 49vh;
+  text-align: center;
+  font-size: clamp(26px, 2.1vw, 34px);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+/* Proizvodi, a plain range in one row */
+.s2-wrap {
+  width: min(1344px, calc(100vw - 96px));
+  margin: 0 auto;
+}
+
+.s2-products {
+  padding: 120px 0 128px;
+  border-top: 0;
+  background: var(--white);
+  color: var(--ink);
+}
+
+.s2[data-tone='dark'] .s2-products {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.s2-products .s2-title {
+  margin: 18px 0 56px;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: clamp(56px, 5.6vw, 96px);
+  font-weight: 500;
+  color: inherit;
+}
+
+.s2-cards {
+  list-style: none;
+  margin: 0 0 48px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.s2-product {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  padding: 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--light-grey);
+  color: var(--ink);
+}
+
+.s2[data-tone='dark'] .s2-product {
+  background: rgb(255 255 255 / 0.07);
+  color: var(--white);
+}
+
+.s2-product-art {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.s2-product h3 {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.s2-product p {
+  margin-top: 6px;
+  font-size: 16px;
+  color: var(--text-grey);
+}
+
+.s2[data-tone='dark'] .s2-product p {
+  color: rgb(255 255 255 / 0.8);
+}
+
+.s2-products .s2-kicker {
+  color: inherit;
+}
+
+/* Footer, classic */
+.s2-footer {
+  padding: 88px 0 40px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.s2-footer a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.s2-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.s2-footer a:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.s2-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+  gap: 48px;
+}
+
+.s2-footer h3 {
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.s2-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.s2-footer address {
+  font-style: normal;
+}
+
+.s2-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 14px 0 7px;
+  border-radius: 11px;
+  background: var(--white);
+}
+
+.s2-footer-brand p {
+  margin-top: 20px;
+  max-width: 340px;
+  color: rgb(255 255 255 / 0.8);
+}
+
+.s2-footer-base {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid rgb(255 255 255 / 0.2);
+  font-size: 14px;
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* Reduced motion, no pin. The hero still, then each hold beat as a section, text beside a still of the scene. */
+.s2-hero-still {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+}
+
+.s2-still {
+  display: grid;
+  grid-template-columns: minmax(340px, 5fr) 7fr;
+  gap: 48px;
+  align-items: center;
+  padding: 72px 48px;
+  min-height: 100vh;
+  background: var(--white);
+  color: var(--fg);
+}
+
+.s2-still[data-ink='dark'] {
+  background: var(--ink);
+}
+
+.s2-still-scene {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  isolation: isolate;
+}
+
+.s2-flow .s2-pane {
+  position: static;
+  inset: auto;
+  translate: none;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 20px;
+}
+
+.s2-flow .s2-pane > *,
+.s2-flow .s2-c1-head,
+.s2-flow .s2-c1-text,
+.s2-flow .s2-c1-tiles,
+.s2-flow .s2-at-word,
+.s2-flow .s2-at-line {
+  position: static;
+  width: auto;
+  max-width: 100%;
+}
+
+.s2-flow .s2-c1-head {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.s2-flow .s2-tiles {
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.s2-flow .s2-tile {
+  min-height: 130px;
+}
+
+.s2-flow .s2-card {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.s2-flow .s2-title {
+  font-size: clamp(44px, 4.6vw, 72px);
+}
+
+.s2-flow .s2-at-word {
+  font-size: clamp(48px, 5.6vw, 88px);
+  text-align: left;
+}
+
+.s2-flow .s2-at-line {
+  text-align: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s2-cta,
+  .s2-footer a {
+    transition: none;
+  }
+}

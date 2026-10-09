@@ -1,0 +1,15 @@
+/* Linija scene, the drawing fills its parent. Thin lines on the blueprint keep one pixel width at any scale. */
+.lj-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.lj-root svg {
+  display: block;
+}
+
+.lj-bp * {
+  vector-effect: non-scaling-stroke;
+}

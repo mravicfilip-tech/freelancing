@@ -1,6 +1,4 @@
-// The stops of the fly through, camera keys and the card copy for each stop.
-import { hero, pillars, SITE } from '../../content';
-
+// The camera keys of the fly through. A key with stop set is one the story rests on.
 export type Vec = [number, number, number];
 
 // A camera key. Target point, azimuth from +z toward -x in degrees, elevation in degrees,
@@ -22,80 +20,3 @@ export const keys: Key[] = [
   { p: 0.9, t: [40, 2, 0], az: 30, el: 38, d: 299, fov: 22 },
   { p: 1.0, t: [8, 0, 6], az: 32, el: 48, d: 507, fov: 22, stop: 6 },
 ];
-
-export const stopP = keys.filter((k) => k.stop !== undefined).map((k) => k.p);
-
-export type IconId = 'depo' | 'novi' | 'najam' | 'servis' | 'polovni' | 'hq';
-
-export type Stop = {
-  icon: IconId;
-  label: string;
-  title: string;
-  line: string;
-  a: { label: string; href: string };
-  // where the white hotspot ring sits in the scene
-  spot: Vec;
-};
-
-const [novi, najam, servis, polovni] = pillars;
-
-export const stops: Stop[] = [
-  {
-    icon: 'depo',
-    label: 'Ekotehnika',
-    title: hero.headline.join(' '),
-    line: hero.sub,
-    // dummy label, the link goes to the home page
-    a: { label: 'Pregled usluga', href: SITE },
-    spot: [-46, 6, -7.5],
-  },
-  {
-    icon: 'novi',
-    label: novi.name,
-    // dummy line
-    title: 'Novi Linde viljuškari, po meri vašeg skladišta.',
-    line: novi.line,
-    a: { label: novi.more, href: novi.href },
-    spot: [4, 6.2, -21],
-  },
-  {
-    icon: 'najam',
-    label: najam.name,
-    // dummy line
-    title: 'Najam Linde viljuškara, bez čekanja.',
-    line: najam.line,
-    a: { label: najam.more, href: najam.href },
-    spot: [-58, 3.4, 39],
-  },
-  {
-    icon: 'servis',
-    label: servis.name,
-    // dummy line
-    title: 'Servis je srce Ekotehnike, od 1997.',
-    line: servis.line,
-    a: { label: servis.more, href: servis.href },
-    spot: [44, 4, -5],
-  },
-  {
-    icon: 'polovni',
-    label: polovni.name,
-    // dummy line
-    title: 'Linde Approved Trucks, provereni polovni viljuškari.',
-    line: polovni.line,
-    a: { label: polovni.more, href: polovni.href },
-    spot: [46, 5, 38],
-  },
-  {
-    icon: 'hq',
-    label: 'Vrčin',
-    title: hero.kicker + '.',
-    // dummy line, facts from the brief
-    line: 'Servis od 1997, Linde viljuškari od 2000, zvanični partner od 2023.',
-    // dummy label, the link goes to the home page
-    a: { label: 'O nama', href: SITE },
-    spot: [79, 16, -13.6],
-  },
-];
-
-// The last key pulls back to the whole miniature and closes on the opening copy.
-export const stopForKey = (s: number) => (s >= stops.length ? 0 : s);

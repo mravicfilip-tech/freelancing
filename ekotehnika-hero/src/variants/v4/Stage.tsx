@@ -1,12 +1,11 @@
-// Everything inside the canvas. The light rig, the camera that flies the story, the fog and the
-// white hotspot ring on the current stop.
+// Everything inside the canvas. The light rig, the camera that flies the story and the fog.
 import { useMemo, useRef, type MutableRefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Billboard, Environment } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { C } from '../../tokens';
 import { clamp01, range } from '../../scroll/useScrollStory';
-import { keys, stops, type Key } from './story';
+import { keys, type Key } from './story';
 import { World } from './World';
 
 const rad = THREE.MathUtils.degToRad;
@@ -20,6 +19,11 @@ function keyPos(k: Key) {
 
 const stopIdx = keys.map((k, i) => (k.stop !== undefined ? i : -1)).filter((i) => i >= 0);
 const HOLD = 0.022;
+// The view is pulled back a little and the point the camera looks at is moved up and right, clear of
+// the hero frame's top row and bottom left block. ZOOM is the scale of the scene, AT is where the
+// look at point lands, as a share of the screen width and height.
+const ZOOM = 0.82;
+const AT = { x: 0.68, y: 0.4 };
 
 // Story progress to a continuous key index. The camera rests on each stop and flies through the
 // keys in between without stopping.
@@ -54,8 +58,9 @@ function Rig({ progress, reduced }: { progress: MutableRefObject<number>; reduce
     const cam = camera as THREE.PerspectiveCamera;
     if (size.width !== lastW.current) {
       lastW.current = size.width;
-      // the scene centre sits right of the glass card, like the reel
-      cam.setViewOffset(size.width, size.height, -size.width * 0.12, 0, size.width, size.height);
+      const fw = size.width * ZOOM;
+      const fh = size.height * ZOOM;
+      cam.setViewOffset(fw, fh, fw / 2 - size.width * AT.x, fh / 2 - size.height * AT.y, size.width, size.height);
     }
     const u = keyParam(clamp01(progress.current));
     const n = keys.length - 1;
@@ -122,63 +127,12 @@ function Rig({ progress, reduced }: { progress: MutableRefObject<number>; reduce
   );
 }
 
-// The stop markers, a white disc with a soft halo and a plus, drawn in the scene so they keep a
-// steady screen size and leave nothing behind when the canvas unmounts.
-function Hotspots({ idx }: { idx: number }) {
-  return (
-    <>
-      {stops.map((s, i) => (
-        <Spot key={i} position={s.spot} on={i === idx} />
-      ))}
-    </>
-  );
-}
-
-function Spot({ position, on }: { position: [number, number, number]; on: boolean }) {
-  const ref = useRef<THREE.Group>(null);
-  const k = useRef(0);
-  const p = useMemo(() => new THREE.Vector3(...position), [position]);
-  useFrame(({ camera }, dt) => {
-    const g = ref.current;
-    if (!g) return;
-    k.current += ((on ? 1 : 0) - k.current) * Math.min(1, dt * 6);
-    // about 30 css px across at 900px tall, whatever the camera distance
-    const persp = camera as THREE.PerspectiveCamera;
-    const h = 2 * camera.position.distanceTo(p) * Math.tan(THREE.MathUtils.degToRad(persp.fov ?? 30) / 2);
-    g.scale.setScalar(Math.max(0.0001, (h / 900) * 30 * (0.4 + 0.6 * k.current)));
-    g.visible = k.current > 0.01;
-  });
-  return (
-    <Billboard position={position}>
-      <group ref={ref}>
-        <mesh renderOrder={10}>
-          <circleGeometry args={[0.7, 40]} />
-          <meshBasicMaterial color={C.white} transparent opacity={0.35} depthTest={false} toneMapped={false} />
-        </mesh>
-        <mesh renderOrder={11}>
-          <circleGeometry args={[0.5, 40]} />
-          <meshBasicMaterial color={C.white} transparent opacity={0.92} depthTest={false} toneMapped={false} />
-        </mesh>
-        <mesh renderOrder={12}>
-          <planeGeometry args={[0.34, 0.05]} />
-          <meshBasicMaterial color={C.ink} depthTest={false} toneMapped={false} />
-        </mesh>
-        <mesh renderOrder={12} rotation={[0, 0, Math.PI / 2]}>
-          <planeGeometry args={[0.34, 0.05]} />
-          <meshBasicMaterial color={C.ink} depthTest={false} toneMapped={false} />
-        </mesh>
-      </group>
-    </Billboard>
-  );
-}
-
-export function Stage({ progress, reduced, idx }: { progress: MutableRefObject<number>; reduced: boolean; idx: number }) {
+export function Stage({ progress, reduced }: { progress: MutableRefObject<number>; reduced: boolean }) {
   return (
     <>
       <color attach="background" args={[C.hoverLightGrey]} />
       <Rig progress={progress} reduced={reduced} />
       <World reduced={reduced} />
-      <Hotspots idx={idx} />
     </>
   );
 }

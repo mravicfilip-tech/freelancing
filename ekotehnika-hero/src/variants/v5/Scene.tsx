@@ -45,8 +45,11 @@ function keyParam(p: number) {
   return 1;
 }
 
-// At scroll zero the lens shifts so the truck sits high and the headline has the floor below it.
-const LIFT = 0.18;
+// The lens shifts the whole scene right and up, so the truck, the cloud and the beams sit clear of the
+// hero frame's top row and its bottom left block. At scroll zero it lifts a little more.
+const SHIFT_X = 0.2;
+const LIFT = 0.1;
+const LIFT_START = 0.08;
 
 function Rig({ clock }: { clock: Clock }) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -54,13 +57,12 @@ function Rig({ clock }: { clock: Clock }) {
   const v = useMemo(() => ({ pos: new THREE.Vector3(), tgt: new THREE.Vector3(), lift: -1, w: 0, h: 0 }), []);
   useFrame(({ clock: c }) => {
     const p = clock.p();
-    const lift = LIFT * (1 - smooth(range(p, 0.0, 0.08)));
+    const lift = LIFT + LIFT_START * (1 - smooth(range(p, 0.0, 0.08)));
     if (Math.abs(lift - v.lift) > 1e-4 || size.width !== v.w || size.height !== v.h) {
       v.lift = lift;
       v.w = size.width;
       v.h = size.height;
-      if (lift > 0) camera.setViewOffset(size.width, size.height, 0, lift * size.height, size.width, size.height);
-      else camera.clearViewOffset();
+      camera.setViewOffset(size.width, size.height, -SHIFT_X * size.width, lift * size.height, size.width, size.height);
     }
     const u = keyParam(clamp01(p));
     posCurve.getPoint(u, v.pos);

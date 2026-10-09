@@ -1,0 +1,209 @@
+/* The shared hero layout for versions 2, 4 and 5, see HeroFrame.tsx. Tokens only, see src/styles.css.
+   Colour sets. ink is ink type with ink borders, white is white type with white 40 percent borders. */
+.hf {
+  --hf-top: var(--ink);
+  --hf-top-line: var(--ink);
+  --hf-top-wash: rgb(34 34 34 / 0.07);
+  --hf-bottom: var(--ink);
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  font-family: 'Geist', system-ui, sans-serif;
+}
+
+.hf[data-tone='white'] {
+  --hf-top: var(--white);
+  --hf-top-line: rgb(255 255 255 / 0.4);
+  --hf-top-wash: rgb(255 255 255 / 0.12);
+}
+
+.hf[data-tone-bottom='white'] {
+  --hf-bottom: var(--white);
+}
+
+.hf a {
+  pointer-events: auto;
+}
+
+.hf a {
+  text-decoration: none;
+}
+
+/* focus ring, 2px with a 2px offset, ink on a light scene and white on a dark one */
+.hf-top a:focus-visible {
+  outline: 2px solid var(--hf-top);
+  outline-offset: 2px;
+}
+
+.hf-bottom a:focus-visible,
+.hf-skip:focus-visible {
+  outline: 2px solid var(--hf-bottom);
+  outline-offset: 2px;
+}
+
+/* skip link, first in the tab order, shown when it has focus */
+.hf-skip {
+  position: absolute;
+  left: 48px;
+  top: 4px;
+  z-index: 1;
+  padding: 0 18px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  transform: translateY(-60px);
+}
+
+.hf-skip:focus-visible {
+  transform: none;
+  outline-color: var(--hf-top);
+}
+
+/* top row, 40px from the top, 48px tall, 48px side margins */
+.hf-top {
+  position: absolute;
+  top: 40px;
+  left: 48px;
+  right: 48px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  color: var(--hf-top);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.hf-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 14px 0 7px;
+  border-radius: 11px;
+  background: var(--white);
+}
+
+.hf-logo img {
+  display: block;
+}
+
+.hf-nav {
+  justify-self: center;
+}
+
+.hf-nav ul {
+  display: flex;
+  gap: clamp(24px, 2.5vw, 36px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hf-nav a {
+  position: relative;
+  display: block;
+  padding: 8px 0;
+  color: inherit;
+}
+
+/* the active page, a 2px underline 10px below the text */
+.hf-nav a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 2px);
+  height: 2px;
+  background: var(--hf-top);
+}
+
+.hf-nav a:not([aria-current='page']):hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.hf-phones {
+  display: flex;
+  gap: 12px;
+}
+
+.hf-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--hf-top-line);
+  border-radius: 999px;
+  color: var(--hf-top);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.2s;
+}
+
+.hf-pill:hover {
+  background: var(--hf-top-wash);
+}
+
+/* bottom left block, 48px from the left and 64px from the bottom */
+.hf-bottom {
+  position: absolute;
+  left: 48px;
+  bottom: 64px;
+  color: var(--hf-bottom);
+}
+
+.hf-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+}
+
+.hf-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.hf-h1 {
+  max-width: 760px;
+  margin: 24px 0 0;
+  font-size: clamp(48px, 5vw, 72px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.hf-quote {
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  margin-top: 40px;
+  padding: 0 40px;
+  border-radius: 999px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.hf-quote:hover {
+  background: var(--dark-red);
+}

@@ -21,6 +21,15 @@ export type Beat = {
 };
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+// Easing for the live story. Every curve maps 0 to 0 and 1 to 1, so the board keyframes at k 0, 0.5
+// and 1 are untouched and only the motion between them softens.
+const seg = (k: number, a: number, b: number) => clamp((k - a) / (b - a));
+const soft = (t: number) => t * t * (3 - 2 * t);
+const out3 = (t: number) => 1 - Math.pow(1 - t, 3);
+const bell = (t: number) => Math.sin(Math.PI * clamp(t));
+// V2 walks through four zones. The board keyframes sit on zone 0 at k 0, zone 1 at 0.5 and zone 3 at 1,
+// so the walk runs through zone 2 between them.
+const zoneAt = (k: number) => (k < 0.5 ? k * 2 : 1 + (k - 0.5) * 4);
 const PHONE = 'Prodaja +381 63 282-050';
 const URGENT = 'Hitan servis +381 60 300 20 50';
 
@@ -60,6 +69,50 @@ function DockWall() {
   );
 }
 
+
+// The pile of pallets with a fractional count. Pallet i drops in as n passes i, so the pile grows and
+// clears without popping. Same layout as Pile in scene.tsx, five then four then three.
+function SmoothPile({ n, x0 = 262, s = 0.14, base = GROUND }: { n: number; x0?: number; s?: number; base?: number }) {
+  const pw = 120 * s;
+  const rows = [5, 4, 3];
+  const out: ReactNode[] = [];
+  let c = 0;
+  for (let r = 0; r < 3; r++) {
+    for (let i = 0; i < rows[r]; i++, c++) {
+      const a = clamp(n - c);
+      if (a <= 0) continue;
+      out.push(
+        <g key={`${r}-${i}`} opacity={a} transform={`translate(0 ${-(1 - out3(a)) * 16})`}>
+          <Pallet x={x0 + r * (pw / 2) + i * (pw + 0.2)} y={base - r * 80 * s} s={s} kind={c % 3 === 1 ? 'wrap' : 'cartons'} />
+        </g>,
+      );
+    }
+  }
+  return <g>{out}</g>;
+}
+
+// The delivery truck's ramp at x 228, hinged 17 units up at the rear and 31.7 units long on the floor.
+// A forklift on it is placed by its two wheels, so it tilts to the slope and both tyres stay on the
+// surface. The wheel positions are the front tyre at the drawing origin and the rear one 158 units back.
+const RAMP_TOP = 228;
+const RAMP_FOOT = 196.3;
+const surface = (x: number) => clamp((x - RAMP_FOOT) / (RAMP_TOP - RAMP_FOOT)) * BED;
+function RampFork({ x, w, flip = false }: { x: number; w: number; flip?: boolean }) {
+  const sc = w / 402;
+  const ox = flip ? x + w - 218 * sc : x + 218 * sc;
+  const xf = ox;
+  const xr = flip ? ox + 158 * sc : ox - 158 * sc;
+  const dy = surface(xf) - surface(xr);
+  let a = Math.atan2(-dy, xf - xr) - (flip ? Math.PI : 0);
+  if (a < -Math.PI) a += 2 * Math.PI;
+  const mid = (surface(xf) + surface(xr)) / 2;
+  return (
+    <g transform={`translate(0 ${-mid}) rotate(${(a * 180) / Math.PI} ${(xf + xr) / 2} ${GROUND})`}>
+      <Fork x={x} w={w} flip={flip} />
+    </g>
+  );
+}
+
 const tagIcon = (id: string) => (
   <g className="bd-tag-icon">
     <ServiceIcon id={id} color={C.ink} />
@@ -88,7 +141,7 @@ export const BEATS: Beat[] = [
           <Rack x={296} h={100} seed={1} />
           <Rack x={324} h={100} seed={2} />
           <Pallet x={274} />
-          <Fork x={lerp(118, 204, k)} w={66} />
+          <Fork x={lerp(118, 204, out3(k))} w={66} />
         </>
       ),
     }),
@@ -108,7 +161,7 @@ export const BEATS: Beat[] = [
       children: (
         <>
           <Hall />
-          <Pile n={Math.round(lerp(3, 12, k))} />
+          <SmoothPile n={lerp(3, 12, soft(k))} />
           <Fork x={158} w={62} />
         </>
       ),
@@ -126,18 +179,24 @@ export const BEATS: Beat[] = [
       cta: 'Zatražite ponudu za najam',
     }),
     scene: (k) => {
-      const lx = k < 0.5 ? lerp(292, 228, k * 2) : 228;
-      const rk = k < 0.5 ? 0 : Math.min(1, (k - 0.5) * 3);
-      const out = k >= 1;
+      // The truck backs in, the ramp drops, then the forklift rolls down it to the pile.
+      const arrive = seg(k, 0, 0.5);
+      const lx = lerp(292, 228, out3(arrive));
+      const rk = soft(seg(k, 0.5, 0.7));
+      const roll = soft(seg(k, 0.7, 1));
+      const fx = lerp(RAMP_TOP + 22, 151, roll);
+      const inside = fx >= RAMP_TOP + 4;
       return {
         children: (
           <>
             <DockWall />
             <Pile n={12} x0={154} s={0.12} base={GROUND - 5} />
             <DeliveryTruck x={lx} ramp={rk}>
-              {!out && <Fork x={22} w={46} y={-BED} g={0} flip />}
+              {inside && <Fork x={fx - lx} w={46} y={-BED} g={0} flip />}
             </DeliveryTruck>
-            {out && <Fork x={151} w={46} flip />}
+            {!inside && <RampFork x={fx} w={46} flip />}
+            <Streaks x={lx + 126} y={150} op={0.9 * bell(arrive)} />
+            <Streaks x={fx + 48} y={160} op={0.7 * bell(roll)} />
           </>
         ),
       };
@@ -154,18 +213,23 @@ export const BEATS: Beat[] = [
       cta: 'Zatražite ponudu za najam',
     }),
     scene: (k) => {
-      const lx = k <= 0.5 ? 228 : lerp(228, 296, (k - 0.5) * 2);
-      const rk = k <= 0.5 ? 1 : 1 - (k - 0.5) * 2;
-      const inside = k >= 0.5;
+      // The pile clears while the forklift climbs the ramp, then the ramp lifts and the truck leaves.
+      const climb = soft(seg(k, 0.1, 0.5));
+      const fx = lerp(162, RAMP_TOP + 22, climb);
+      const rk = 1 - soft(seg(k, 0.5, 0.7));
+      const go = soft(seg(k, 0.6, 1));
+      const lx = lerp(228, 296, go);
+      const inside = fx >= RAMP_TOP;
       return {
         children: (
           <>
             <Hall />
-            <Pile n={Math.round(lerp(12, 0, Math.min(1, k * 2)))} x0={154} s={0.12} base={GROUND - 5} />
+            <SmoothPile n={12 * (1 - soft(seg(k, 0, 0.45)))} x0={154} s={0.12} base={GROUND - 5} />
             <DeliveryTruck x={lx} ramp={rk}>
-              {inside && <Fork x={22} w={46} y={-BED} g={0} />}
+              {inside && <Fork x={fx - 228} w={46} y={-BED} g={0} />}
             </DeliveryTruck>
-            {!inside && <Fork x={162} w={46} />}
+            {!inside && <RampFork x={fx} w={46} />}
+            <Streaks x={lx - 38} y={150} op={0.9 * bell(seg(k, 0.6, 1))} />
           </>
         ),
       };
@@ -185,7 +249,7 @@ export const BEATS: Beat[] = [
     scene: (k) => ({
       children: (
         <>
-          <Fork x={lerp(134, 206, k)} w={82} k={0} scuffs={lerp(0.7, 1, k)} />
+          <Fork x={lerp(134, 206, soft(k))} w={82} k={0} scuffs={lerp(0.7, 1, k)} />
         </>
       ),
     }),
@@ -207,7 +271,7 @@ export const BEATS: Beat[] = [
         children: (
           <>
             <Stations done={done} />
-            <Fork x={lerp(158, 296, k)} w={54} k={done / 7} y={-4} scuffs={1 - done / 7} />
+            <Fork x={lerp(158, 296, k)} w={54} k={k} y={-4} scuffs={1 - k} />
           </>
         ),
       };
@@ -225,8 +289,8 @@ export const BEATS: Beat[] = [
       cta: 'Zatražite ponudu za polovni',
     }),
     scene: (k) => {
-      const s = clamp(k * 2);
-      const hallK = Math.max(0, (k - 0.5) * 2);
+      const s = out3(clamp(k * 2));
+      const hallK = soft(Math.max(0, (k - 0.5) * 2));
       const tx = lerp(196, 214, hallK);
       const size = 32 * lerp(0.5, 1, s);
       return {
@@ -256,8 +320,8 @@ export const BEATS: Beat[] = [
       op: k === 0 ? 0.35 : 1,
     }),
     scene: (k) => {
-      const top = lerp(64, 46, k);
-      const h = lerp(70, 128, k);
+      const top = lerp(64, 46, soft(k));
+      const h = lerp(70, 128, soft(k));
       return {
         children: (
           <>
@@ -279,12 +343,12 @@ export const BEATS: Beat[] = [
       kick: 'Novi',
       title: ['96 Linde modela.', 'Ponuda po vašoj meri.'],
       bullets: ['Čeoni viljuškari', 'Retrak viljuškari', 'Paletari i slagači', 'Komisioneri'],
-      bold: k === 0 ? 0 : k < 1 ? 1 : 3,
+      bold: Math.round(zoneAt(k)),
       chip: { text: 'Elektro, dizel i TNG' },
       cta: 'Zatražite ponudu',
     }),
     scene: (k) => {
-      const z = k === 0 ? 0 : k < 1 ? 1 : 3;
+      const zf = zoneAt(k);
       const xs = [156, 204, 252, 300];
       const lab = ['Dvorište', 'Regali', 'Utovar', 'Prolaz'];
             return {
@@ -300,14 +364,17 @@ export const BEATS: Beat[] = [
               palletTruck(xs[2], 40),
               picker(xs[3], 44),
             ].map((node, i) => (
-              <g key={i} opacity={i === z ? 1 : 0.4} filter={i === z ? undefined : 'url(#bd-ghost)'}>
-                {node}
+              <g key={i}>
+                <g opacity={0.4} filter="url(#bd-ghost)">
+                  {node}
+                </g>
+                <g opacity={soft(clamp(1 - Math.abs(zf - i)))}>{node}</g>
               </g>
             ))}
             {lab.map((l, i) => (
               <g key={l}>
-                <rect x={xs[i] + 3} y={GROUND + 4} width={38} height={0.9} rx={0.45} fill={i === z ? C.ink : C.textGrey} opacity={i === z ? 1 : 0.3} />
-                <text x={xs[i] + 22} y={GROUND + 11.6} textAnchor="middle" fontFamily={FONT} fontSize={3.6} fontWeight={i === z ? 600 : 400} fill={i === z ? C.ink : C.textGrey}>
+                <rect x={xs[i] + 3} y={GROUND + 4} width={38} height={0.9} rx={0.45} fill={Math.round(zf) === i ? C.ink : C.textGrey} opacity={lerp(0.3, 1, clamp(1 - Math.abs(zf - i)))} />
+                <text x={xs[i] + 22} y={GROUND + 11.6} textAnchor="middle" fontFamily={FONT} fontSize={3.6} fontWeight={Math.round(zf) === i ? 600 : 400} fill={Math.round(zf) === i ? C.ink : C.textGrey}>
                   {l}
                 </text>
               </g>
@@ -331,7 +398,7 @@ export const BEATS: Beat[] = [
       children: (
         <>
           <Hall />
-          {palletTruck(lerp(166, 262, k), 62, 1, true)}
+          {palletTruck(lerp(166, 262, soft(k)), 62, 1, true)}
         </>
       ),
     }),
@@ -349,7 +416,14 @@ export const BEATS: Beat[] = [
       op: k === 0 ? 0.35 : 1,
     }),
     scene: (k) => {
-      const x = k < 0.5 ? lerp(164, 200, k * 2) : 200;
+      // The truck brakes to a stop by k 0.5, the sign pops in as it stops, then its rings spread.
+      const brake = seg(k, 0, 0.5);
+      const x = lerp(164, 200, out3(brake));
+      const sign = soft(seg(k, 0.3, 0.5));
+      const ring = out3(seg(k, 0.5, 1));
+      const wx = x + 38;
+      const wy = 118;
+      const wh = 26;
       return {
         dim: k * 0.08,
         children: (
@@ -357,7 +431,16 @@ export const BEATS: Beat[] = [
             <Hall />
             <Pile n={8} x0={270} />
             <Fork x={x} w={66} />
-            {k < 0.5 ? <Streaks x={x - 30} y={152} op={1 - k * 2} /> : <Warn cx={x + 38} cy={118} size={26} pulse={k === 1 ? 1 : 0} />}
+            <Streaks x={x - 30} y={152} op={1 - brake} />
+            {ring > 0 &&
+              [1, 2].map((i) => (
+                <circle key={i} cx={wx} cy={wy + wh * 0.08} r={wh * (0.5 + (0.28 + i * 0.3) * ring)} fill="none" stroke={C.ink} strokeWidth={0.45} opacity={(0.34 / i) * ring} />
+              ))}
+            {sign > 0 && (
+              <g opacity={sign} transform={`translate(${wx} ${wy}) scale(${0.7 + 0.3 * sign}) translate(${-wx} ${-wy})`}>
+                <Warn cx={wx} cy={wy} size={wh} />
+              </g>
+            )}
           </>
         ),
       };
@@ -387,10 +470,10 @@ export const BEATS: Beat[] = [
       cta: 'Zakažite servis',
     }),
     scene: (k) => {
-      const out = clamp((k - 0.66) * 3);
-      const lift = k < 0.66 ? 14 : lerp(14, 0, out);
-      const done = Math.round(Math.min(1, k * 1.5) * 5);
-      const x = k < 0.66 ? 212 : lerp(212, 300, out);
+      const out = soft(seg(k, 0.66, 1));
+      const lift = lerp(14, 0, out);
+      const ticks = Math.min(1, k * 1.5) * 5;
+      const x = lerp(212, 300, out);
       const deck = 3.4 + lift + 3;
       const rings: [number, number][] = [[-46, 30], [-27, 6], [0, -3], [27, 6], [46, 30]];
       return {
@@ -398,7 +481,24 @@ export const BEATS: Beat[] = [
           <>
             <LiftPlatform x={198} w={98} lift={lift} />
             <Fork x={x} w={58} y={-lerp(deck, 0, out)} />
-            {k < 1 && rings.map(([dx, dy], i) => <CheckRing key={i} cx={247 + dx} cy={dy + 80} done={i < done} />)}
+            <Streaks x={x - 34} y={150} op={0.9 * bell(seg(k, 0.66, 1))} />
+            <g opacity={1 - soft(seg(k, 0.8, 1))}>
+              {rings.map(([dx, dy], i) => {
+                const a = soft(seg(ticks, i + 0.1, i + 0.5));
+                return (
+                  <g key={i}>
+                    <g opacity={1 - a}>
+                      <CheckRing cx={247 + dx} cy={dy + 80} done={false} />
+                    </g>
+                    {a > 0 && (
+                      <g opacity={a}>
+                        <CheckRing cx={247 + dx} cy={dy + 80} done />
+                      </g>
+                    )}
+                  </g>
+                );
+              })}
+            </g>
           </>
         ),
       };
@@ -417,7 +517,8 @@ export const BEATS: Beat[] = [
       cta: 'Zatražite ponudu',
     }),
     scene: (k) => {
-      const n = 1 + Math.round(k * 3);
+      // The four trucks arrive one after another, 0 is always there, the rest rise in at these windows.
+      const win = [1, soft(seg(k, 0.05, 0.25)), soft(seg(k, 0.3, 0.5)), soft(seg(k, 0.7, 0.9))];
       const TY = 104;
       const w = (label: string) => label.length * 2.2 + 11;
       const items: { node: ReactNode; tag: ReactNode; cx: number; top: number }[] = [
@@ -436,14 +537,19 @@ export const BEATS: Beat[] = [
         },
         { cx: 304 + 22, top: 166, node: <Van key="d" x={304} w={44} />, tag: <Tag key="td" x={304 + 22 - w('Servis') / 2} y={TY} label="Servis" icon={tagIcon('servis')} /> },
       ];
-      const leaders = items.slice(0, n).map((i) => <line key={`l${i.cx}`} x1={i.cx} y1={TY + 7.4} x2={i.cx} y2={i.top - 5} stroke={C.tonedTextGrey} strokeWidth={0.25} strokeDasharray="0.1 1.1" strokeLinecap="round" opacity={0.8} />);
       return {
         children: (
           <>
             <Hall />
-            {leaders}
-            {items.slice(0, n).map((i) => i.node)}
-            {items.slice(0, n).map((i) => i.tag)}
+            {items.map((i, j) =>
+              win[j] > 0 ? (
+                <g key={i.cx} opacity={win[j]} transform={`translate(0 ${(1 - win[j]) * 8})`}>
+                  <line x1={i.cx} y1={TY + 7.4} x2={i.cx} y2={i.top - 5} stroke={C.tonedTextGrey} strokeWidth={0.25} strokeDasharray="0.1 1.1" strokeLinecap="round" opacity={0.8} />
+                  {i.node}
+                  {i.tag}
+                </g>
+              ) : null,
+            )}
           </>
         ),
       };

@@ -1,7 +1,7 @@
 // The Ekotehnika miniature in Vrčin. A bright soft lit model world seen from high and far with a
 // long lens, the way the Emons reel shows its site. Metres, x east, z south, ground at y = 0.
 //
-// North of the main road, west to east, the depot with its red dock facade, the warehouse with the
+// North of the main road, west to east, the depot with its grey dock facade, the warehouse with the
 // roof cut away, the service workshop and the head office. South of the road the rental fleet
 // yard, the service van park and the approved used truck lot, with a road winding off south.
 import { useLayoutEffect, useMemo, useRef, type MutableRefObject } from 'react';
@@ -380,8 +380,8 @@ function Depot() {
       <Block a={DEPOT} h={9} />
       <RoofKit a={[x0, -28, x1, -20]} y={9} seed={3} n={4} />
       <Skylights a={[x0, -21, x1 - 4, -9]} y={9} rows={3} gap={3.6} />
-      {/* red cladding over the dock row */}
-      <Box a={[x0 - 0.3, z1 - 0.1, x1 + 0.2, z1 + 0.45]} y={3.9} h={5.9} m={W.red} />
+      {/* grey cladding over the dock row */}
+      <Box a={[x0 - 0.3, z1 - 0.1, x1 + 0.2, z1 + 0.45]} y={3.9} h={5.9} m={W.clad} />
       <SignWord h={2.5} position={[(x0 + x1) / 2 + 0.5, 5.3, z1 + 0.46]} />
       {/* dock doors with dark frames, slatted roller doors, bumpers */}
       {doors.map((x, i) => (
@@ -395,11 +395,11 @@ function Depot() {
           <mesh geometry={unit} material={W.lamp} position={[0, 3.95, 0.5]} scale={[0.5, 0.12, 0.2]} />
         </group>
       ))}
-      {/* office block at the east end, red entrance portal */}
+      {/* office block at the east end, entrance portal */}
       <Block a={OFFICE} h={11.2} />
       <Bands a={OFFICE} floors={3} fh={3.6} y0={0.2} />
       <RoofKit a={OFFICE} y={11.2} seed={7} n={3} />
-      <Box a={[-37.4, -5.2, -32.6, -2.6]} h={4.2} m={W.red} />
+      <Box a={[-37.4, -5.2, -32.6, -2.6]} h={4.2} m={W.clad} />
       <Box a={[-36.4, -2.66, -33.6, -2.5]} h={3.1} m={W.ink} cast={false} />
     </group>
   );
@@ -492,9 +492,9 @@ function Warehouse({ racksRef }: { racksRef?: MutableRefObject<THREE.Group | nul
       <Box a={[x0, z0, x1, z0 + 0.7]} y={H} h={0.5} m={W.wallShade} />
       <Box a={[x1 - 0.7, z0, x1, z1]} y={H} h={0.5} m={W.wallShade} />
       <Box a={[x0 + 0.6, z0 + 0.6, x1 - 0.6, z0 + 0.66]} y={0.2} h={H - 0.4} m={W.wallShade} cast={false} />
-      {/* red corner volume at the south west and a red band on the east wall */}
-      <Box a={[x0 - 0.5, z0 - 0.5, x0 + 3.5, z0 + 1.4]} h={H + 0.8} m={W.red} />
-      <Box a={[x1 - 0.1, z0 + 2, x1 + 0.35, z1 - 2]} y={H - 2.6} h={1.6} m={W.red} />
+      {/* grey corner volume at the south west and an ink band on the east wall */}
+      <Box a={[x0 - 0.5, z0 - 0.5, x0 + 3.5, z0 + 1.4]} h={H + 0.8} m={W.clad} />
+      <Box a={[x1 - 0.1, z0 + 2, x1 + 0.35, z1 - 2]} y={H - 2.6} h={1.6} m={W.ink} />
       {/* skylight teeth on the north edge */}
       <group>
         {saw.map(([x, y, z], i) => (
@@ -506,7 +506,7 @@ function Warehouse({ racksRef }: { racksRef?: MutableRefObject<THREE.Group | nul
       <Inst mat={W.lamp} items={heads} cast={false} />
       <group ref={racksRef}>
         <Inst mat={W.steel} items={rack.ups} />
-        <Inst mat={W.red} items={rack.beams} />
+        <Inst mat={W.ink} items={rack.beams} />
         <Inst mat={W.pallet} items={rack.pallets} />
         <Inst mat={W.carton} items={rack.cartons} />
         <Inst mat={W.tape} items={rack.tape} cast={false} />
@@ -538,20 +538,20 @@ function Workshop() {
       <Box a={[x1 - 1.2, z1 - 0.5, x1, z1]} h={H} m={W.wall} />
       <Box a={[x0, z1 - 0.5, x1, z1]} y={5.4} h={H - 5.4} m={W.wall} />
       <Box a={[x0, z0, x1, z1]} y={H} h={0.4} m={W.roof} />
-      <Box a={[x0 - 0.2, z1 - 0.1, x1 + 0.2, z1 + 0.35]} y={5.6} h={2.4} m={W.red} />
+      <Box a={[x0 - 0.2, z1 - 0.1, x1 + 0.2, z1 + 0.35]} y={5.6} h={2.4} m={W.clad} />
       <Box a={[x0 + 0.5, z0 + 0.5, x1 - 0.5, z1 - 0.5]} y={0} h={0.1} m={W.wallShade} cast={false} />
       {/* closed roller door on the east bay */}
       <mesh material={doorMat} position={[x0 + 12.1, 2.7, z1 + 0.02]} scale={[5.6, 5.4, 1]}>
         <planeGeometry args={[1, 1]} />
       </mesh>
-      {/* inside, red tool cabinets along the back wall and a ceiling light */}
+      {/* inside, tool cabinets along the back wall and a ceiling light */}
       {[0, 1, 2, 3].map((i) => (
-        <Box key={i} a={[x0 + 1 + i * 1.6, z0 + 0.6, x0 + 2.4 + i * 1.6, z0 + 1.4]} h={1.6} m={W.red} />
+        <Box key={i} a={[x0 + 1 + i * 1.6, z0 + 0.6, x0 + 2.4 + i * 1.6, z0 + 1.4]} h={1.6} m={W.clad} />
       ))}
       <Box a={[x0 + 1.5, z0 + 4, x0 + 6, z0 + 14]} y={H - 0.5} h={0.12} m={W.lamp} cast={false} />
       {/* outdoor service canopy to the west of the hall */}
       <Box a={[33, -24, 41.4, -8]} y={6.2} h={0.35} m={W.wall} />
-      <Box a={[33, -8.3, 41.4, -7.7]} y={5.6} h={0.9} m={W.red} />
+      <Box a={[33, -8.3, 41.4, -7.7]} y={5.6} h={0.9} m={W.clad} />
       {[
         [33.3, -23.7],
         [41.1, -23.7],
@@ -583,19 +583,19 @@ function HeadOffice() {
         items={Array.from({ length: floors }, (_, f) => box([x0, z0, x1, z1], f * fh, 0.9))}
       />
       <Bands a={[x0, z0, x1, z1]} floors={floors} fh={fh} inset={0.1} />
-      {/* red crown with the name, red stair tower on the east side */}
-      <Box a={[x0 - 0.2, z0 - 0.2, x1 + 0.2, z1 + 0.25]} y={top} h={2.8} m={W.red} />
+      {/* grey crown with the name, stair tower on the east side */}
+      <Box a={[x0 - 0.2, z0 - 0.2, x1 + 0.2, z1 + 0.25]} y={top} h={2.8} m={W.clad} />
       <SignWord h={1.65} position={[(x0 + x1) / 2, top + 0.55, z1 + 0.26]} />
-      <Box a={TOWER} h={top + 4.2} m={W.red} />
+      <Box a={TOWER} h={top + 4.2} m={W.clad} />
       <Box a={[TOWER[0] + 2.6, TOWER[3] - 0.02, TOWER[0] + 4.4, TOWER[3] + 0.05]} y={1} h={top + 1.6} m={W.glass} cast={false} />
       <RoofKit a={[x0 + 1, z0 + 1, x1 - 1, z1 - 3]} y={top + 0.05} seed={23} n={5} />
       <Box a={[x0 + 3, z0 + 3, x0 + 9, z0 + 9]} y={top} h={3.2} m={W.wallShade} />
-      {/* low wing with the entrance and its red canopy */}
+      {/* low wing with the entrance and its ink canopy */}
       <Box a={[HQ_WING[0] + 0.4, HQ_WING[1], HQ_WING[2] - 0.4, HQ_WING[3] - 0.4]} h={3 * fh} m={W.wallShade} />
       <Inst mat={W.wall} items={Array.from({ length: 3 }, (_, f) => box(HQ_WING, f * fh, 0.9))} />
       <Box a={[HQ_WING[0], HQ_WING[1], HQ_WING[2], HQ_WING[3]]} y={3 * fh} h={0.7} m={W.wall} />
       <Bands a={HQ_WING} floors={3} fh={fh} inset={0.1} />
-      <Box a={[72, -3.2, 78, 0.6]} y={3.2} h={0.45} m={W.red} />
+      <Box a={[72, -3.2, 78, 0.6]} y={3.2} h={0.45} m={W.ink} />
       {[72.3, 77.7].map((x) => (
         <Box key={x} a={[x - 0.15, 0.2, x + 0.15, 0.5]} h={3.2} m={W.steel} />
       ))}
@@ -608,7 +608,7 @@ function Kiosk({ a }: { a: Rect }) {
   return (
     <group>
       <Box a={a} h={3.2} m={W.wall} />
-      <Box a={[x0 - 0.3, z0 - 0.3, x1 + 0.3, z1 + 0.3]} y={3.2} h={0.5} m={W.red} />
+      <Box a={[x0 - 0.3, z0 - 0.3, x1 + 0.3, z1 + 0.3]} y={3.2} h={0.5} m={W.ink} />
       <Box a={[x0 + 0.6, z1, x1 - 0.6, z1 + 0.06]} y={1} h={1.5} m={W.glass} cast={false} />
     </group>
   );
@@ -885,7 +885,7 @@ function Vehicles({ reduced }: { reduced: boolean }) {
       <group position={[37.2, 0, -19]}>
         <mesh geometry={unit} material={W.ink} position={[0, 0.1, 0]} scale={[4.4, 0.2, 2.2]} receiveShadow />
         <group ref={lift}>
-          <mesh geometry={unit} material={W.red} position={[0, 0, 0]} scale={[4.4, 0.18, 2.2]} castShadow receiveShadow />
+          <mesh geometry={unit} material={W.clad} position={[0, 0, 0]} scale={[4.4, 0.18, 2.2]} castShadow receiveShadow />
           <Forklift apiRef={liftFork} position={[0.2, 0.09, 0]} rotation={[0, -0.0, 0]} />
         </group>
       </group>

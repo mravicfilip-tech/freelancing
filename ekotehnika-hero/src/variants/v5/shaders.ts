@@ -30,7 +30,7 @@ export const skyFrag = /* glsl */ `
 uniform float uHorizon;
 uniform float uSky;
 uniform vec3 uInk;
-uniform vec3 uRed;
+uniform vec3 uMid;
 uniform vec3 uToned;
 uniform vec3 uDeep;
 uniform vec3 uWhite;
@@ -42,7 +42,7 @@ void main() {
   vec3 col = top;
   if (h > 0.0) {
     col = mix(uWhite, uToned, smoothstep(0.0, 0.07 + sun * 0.05, h));
-    col = mix(col, uRed, smoothstep(0.06, 0.26, h));
+    col = mix(col, uMid, smoothstep(0.06, 0.26, h));
     col = mix(col, uDeep * 0.75, smoothstep(0.22, 0.62, h));
     col = mix(col, top, smoothstep(0.55, 1.25, h));
     col *= 0.72 + 0.28 * sun;
@@ -134,7 +134,7 @@ void main() {
 }
 `;
 
-// The receding floor of rounded square tiles, lit by a soft red sweep.
+// The receding floor of rounded square tiles, lit by a soft light sweep.
 export const tileVert = /* glsl */ `
 attribute float aPhase;
 varying vec2 vUv;
@@ -159,7 +159,7 @@ uniform float uTime;
 uniform vec2 uSweep;
 uniform float uSweepOn;
 uniform float uEdge;
-uniform vec3 uRed;
+uniform vec3 uSweep2;
 uniform vec3 uFace;
 varying vec2 vUv;
 varying vec3 vW;
@@ -179,8 +179,8 @@ void main() {
   float fog = exp(-max(vDepth - 5.0, 0.0) * 0.075);
   float sw = exp(-pow(distance(vW.xz, uSweep) / 2.6, 2.0)) * uSweepOn;
   float pulse = smoothstep(0.93, 1.0, sin(uTime * 0.5 + vPhase * 31.0) * 0.5 + 0.5);
-  vec3 face = uFace * (0.26 + 0.08 * vPhase + 0.3 * pulse) + uRed * sw * 0.16;
-  vec3 edge = vec3(0.62) * lit * uEdge + uRed * sw * 0.7;
+  vec3 face = uFace * (0.26 + 0.08 * vPhase + 0.3 * pulse) + uSweep2 * sw * 0.16;
+  vec3 edge = vec3(0.62) * lit * uEdge + uSweep2 * sw * 0.7;
   vec3 col = mix(vec3(0.016), face, fill) + edge * line;
   float a = rev * fog * uOpacity;
   gl_FragColor = vec4(col, a);

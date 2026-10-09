@@ -7,7 +7,7 @@ import { C } from '../../tokens';
 import { W, vanSideTexture, withAO } from './look';
 import { wordGeometry } from './letters';
 
-const vanPaint = withAO(new THREE.MeshPhysicalMaterial({ color: C.lindeRed, roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.2 }), 1.0, 0.6);
+const vanPaint = withAO(new THREE.MeshPhysicalMaterial({ color: C.textGrey, roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.2 }), 1.0, 0.6);
 const vanBlack = withAO(new THREE.MeshStandardMaterial({ color: C.ink, roughness: 0.6 }), 1.0, 0.6);
 const vanGlass = new THREE.MeshPhysicalMaterial({ color: C.ink, roughness: 0.05, clearcoat: 1, envMapIntensity: 2 });
 const vanChrome = new THREE.MeshStandardMaterial({ color: C.shadeGrey, roughness: 0.25, metalness: 0.9 });
@@ -15,7 +15,7 @@ const vanChrome = new THREE.MeshStandardMaterial({ color: C.shadeGrey, roughness
 let sideMat: THREE.MeshStandardMaterial | null = null;
 const side = () => (sideMat ??= new THREE.MeshStandardMaterial({ map: vanSideTexture(), transparent: true, roughness: 0.5, polygonOffset: true, polygonOffsetFactor: -1 }));
 
-// A Linde red service van, about 6 m long, nose along +x, wheels on y = 0.
+// A text-grey service van, about 6 m long, nose along +x, wheels on y = 0.
 export function VanModel() {
   return (
     <group>
@@ -61,7 +61,7 @@ export function VanModel() {
   );
 }
 
-// The Linde Approved Trucks mark in the scene, a red shield with a white tick, upright, 1 m tall.
+// The Linde Approved Trucks mark in the scene, an ink shield with a white tick, upright, 1 m tall.
 export function ShieldModel() {
   const { body, tick } = useMemo(() => {
     const s = new THREE.Shape();
@@ -86,7 +86,7 @@ export function ShieldModel() {
   }, []);
   return (
     <group>
-      <mesh geometry={body} material={vanPaint} />
+      <mesh geometry={body} material={vanBlack} />
       <mesh geometry={tick} position={[0, 0, 0.09]} material={W.letters} />
       <mesh geometry={tick} position={[0, 0, -0.09]} rotation={[0, Math.PI, 0]} material={W.letters} />
     </group>

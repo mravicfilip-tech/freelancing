@@ -51,6 +51,45 @@ function bodyGeometry() {
   return g;
 }
 
+// Cuts a mesh at the plane x = cut and returns the part behind it and the part ahead of it, with the
+// shape and normals exactly as they were. Used to give the rear shell its own paint.
+function splitAtX(src: THREE.BufferGeometry, cut: number) {
+  const g = src.index ? src.toNonIndexed() : src;
+  const names = ['position', 'normal', 'uv'].filter((n) => g.getAttribute(n));
+  const attrs = names.map((n) => g.getAttribute(n));
+  const sides = { back: names.map(() => [] as number[]), front: names.map(() => [] as number[]) };
+  const vert = (i: number) => attrs.map((a) => Array.from({ length: a.itemSize }, (_, k) => a.getComponent(i, k)));
+  const emit = (out: number[][], poly: number[][][]) => {
+    for (let i = 1; i < poly.length - 1; i++) for (const v of [poly[0], poly[i], poly[i + 1]]) v.forEach((c, k) => out[k].push(...c));
+  };
+  for (let t = 0; t < g.getAttribute('position').count; t += 3) {
+    const vs = [vert(t), vert(t + 1), vert(t + 2)];
+    const d = vs.map((v) => v[0][0] - cut);
+    const back: number[][][] = [];
+    const front: number[][][] = [];
+    for (let i = 0; i < 3; i++) {
+      const a = vs[i];
+      const b = vs[(i + 1) % 3];
+      (d[i] < 0 ? back : front).push(a);
+      if (d[i] < 0 !== d[(i + 1) % 3] < 0) {
+        const s = d[i] / (d[i] - d[(i + 1) % 3]);
+        const m = a.map((c, k) => c.map((x, j) => x + (b[k][j] - x) * s));
+        m[0][0] = cut;
+        back.push(m);
+        front.push(m);
+      }
+    }
+    emit(sides.back, back);
+    emit(sides.front, front);
+  }
+  const build = (arrs: number[][]) => {
+    const out = new THREE.BufferGeometry();
+    names.forEach((n, k) => out.setAttribute(n, new THREE.Float32BufferAttribute(arrs[k], attrs[k].itemSize)));
+    return out;
+  };
+  return { back: build(sides.back), front: build(sides.front) };
+}
+
 function tyreGeometry(r: number, w: number) {
   const pts: THREE.Vector2[] = [];
   const inner = r * 0.6;
@@ -103,10 +142,10 @@ function Wheel({ r, w, x, z, register }: { r: number; w: number; x: number; z: n
           </mesh>
         );
       })}
-      <mesh rotation={[Math.PI / 2, 0, 0]} material={M.steelLight} castShadow>
+      <mesh rotation={[Math.PI / 2, 0, 0]} material={M.steel} castShadow>
         <cylinderGeometry args={[r * 0.6, r * 0.6, w * 0.92, 28]} />
       </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, (z > 0 ? 1 : -1) * w * 0.47]} material={M.black}>
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, (z > 0 ? 1 : -1) * w * 0.47]} material={M.steelLight}>
         <cylinderGeometry args={[r * 0.26, r * 0.3, 0.04, 20]} />
       </mesh>
       {[0, 1, 2, 3, 4].map((i) => {
@@ -134,7 +173,8 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
   const inner = useRef<THREE.Group>(null);
   const anchor = useRef<THREE.Object3D>(null);
   const wheels = useRef<{ g: THREE.Group; r: number }[]>([]);
-  const body = useMemo(bodyGeometry, []);
+  // Red only behind the cab, the rear shell and counterweight. The cowl ahead of it is grey.
+  const { back: shell, front: cowl } = useMemo(() => splitAtX(bodyGeometry(), -0.01), []);
   const fork = useMemo(forkGeometry, []);
   const register = useMemo(() => (g: THREE.Group, r: number) => {
     if (!wheels.current.some((w) => w.g === g)) wheels.current.push({ g, r });
@@ -149,13 +189,21 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
   return (
     <group ref={root} {...group}>
       {/* body, chassis skirt, counterweight bumper */}
-      <mesh geometry={body} material={paint} castShadow receiveShadow />
+      <mesh geometry={shell} material={paint} castShadow receiveShadow />
+      <mesh geometry={cowl} material={M.cowl} castShadow receiveShadow />
       <RoundedBox args={[2.1, 0.2, 1.06]} radius={0.05} position={[-0.32, 0.24, 0]} material={M.black} castShadow />
       <RoundedBox args={[0.3, 0.24, 1.0]} radius={0.06} position={[-1.42, 0.3, 0]} material={M.black} castShadow />
       {/* side step and the white plate on the cowl */}
       <RoundedBox args={[0.42, 0.06, 0.18]} radius={0.02} position={[-0.1, 0.42, 0.62]} material={M.black} />
       <RoundedBox args={[0.3, 0.1, 0.02]} radius={0.01} position={[-1.0, 0.82, 0.6]} material={M.white} />
       <RoundedBox args={[0.3, 0.1, 0.02]} radius={0.01} position={[-1.0, 0.82, -0.6]} material={M.white} />
+      {/* side panel insert under the cab, where the badge sits, with its light stripe */}
+      {[0.6, -0.6].map((z) => (
+        <group key={z}>
+          <RoundedBox args={[0.44, 0.3, 0.03]} radius={0.015} position={[-0.27, 0.62, z]} material={M.cowl} />
+          <RoundedBox args={[0.44, 0.022, 0.034]} radius={0.008} position={[-0.27, 0.8, z]} material={M.stripe} />
+        </group>
+      ))}
       {/* rear light strip */}
       <mesh position={[-1.555, 0.78, 0]} material={M.beacon}>
         <boxGeometry args={[0.02, 0.06, 0.7]} />
@@ -205,7 +253,7 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
 
       {/* tilt cylinders */}
       {[-0.42, 0.42].map((z) => (
-        <mesh key={z} position={[0.74, 0.84, z]} rotation={[0, 0, -1.25]} material={M.chrome}>
+        <mesh key={z} position={[0.74, 0.84, z]} rotation={[0, 0, -1.25]} material={M.steelLight}>
           <cylinderGeometry args={[0.035, 0.035, 0.42, 12]} />
         </mesh>
       ))}
@@ -218,7 +266,7 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
 
       {/* mast, outer channels, cross members, lift cylinder */}
       {[-0.36, 0.36].map((z) => (
-        <mesh key={z} position={[0.94, 1.27, z]} material={M.steel} castShadow>
+        <mesh key={z} position={[0.94, 1.27, z]} material={M.black} castShadow>
           <boxGeometry args={[0.11, 2.42, 0.1]} />
         </mesh>
       ))}
@@ -229,14 +277,14 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
       ))}
       <group ref={inner}>
         {[-0.28, 0.28].map((z) => (
-          <mesh key={z} position={[1.02, 1.24, z]} material={M.steelLight} castShadow>
+          <mesh key={z} position={[1.02, 1.24, z]} material={M.steel} castShadow>
             <boxGeometry args={[0.08, 2.3, 0.08]} />
           </mesh>
         ))}
-        <mesh position={[1.02, 2.36, 0]} material={M.steelLight}>
+        <mesh position={[1.02, 2.36, 0]} material={M.steel}>
           <boxGeometry args={[0.08, 0.08, 0.64]} />
         </mesh>
-        <mesh position={[0.99, 1.2, 0]} material={M.chrome}>
+        <mesh position={[0.99, 1.2, 0]} material={M.steelLight}>
           <cylinderGeometry args={[0.045, 0.045, 2.0, 12]} />
         </mesh>
         {[-0.14, 0.14].map((z) => (
@@ -260,7 +308,7 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
           <boxGeometry args={[0.04, 0.04, 0.82]} />
         </mesh>
         {[-0.28, 0.28].map((z) => (
-          <mesh key={z} geometry={fork} position={[1.16, 0.0, z]} material={M.black} castShadow />
+          <mesh key={z} geometry={fork} position={[1.16, 0.0, z]} material={M.fork} castShadow />
         ))}
         <object3D ref={anchor} position={[1.74, 0.05, 0]} />
         {children}
@@ -293,7 +341,7 @@ export function Pallet({ wrap = true, ...group }: { wrap?: boolean } & ThreeElem
       {wrap && (
         <group position={[0, 0.14, 0]}>
           <RoundedBox args={[1.08, 0.78, 0.86]} radius={0.025} position={[0, 0.39, 0]} material={M.card} castShadow receiveShadow />
-          <mesh position={[0, 0.39, 0]} material={M.paint}>
+          <mesh position={[0, 0.39, 0]} material={M.tape}>
             <boxGeometry args={[1.1, 0.79, 0.1]} />
           </mesh>
           <mesh position={[0.26, 0.42, 0.432]} material={M.white}>

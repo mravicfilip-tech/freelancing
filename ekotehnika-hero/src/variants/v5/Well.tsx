@@ -53,9 +53,9 @@ function Rig({ kind, still }: { kind: Kind; still: boolean }) {
         </Forklift>
         {kind === 'servis' && (
           <>
-            <RoundedBox args={[0.5, 0.36, 0.36]} radius={0.04} position={[-1.9, 0.18, 0.9]} material={M.paint} castShadow />
+            <RoundedBox args={[0.5, 0.36, 0.36]} radius={0.04} position={[-1.9, 0.18, 0.9]} material={M.steel} castShadow />
             <RoundedBox args={[0.5, 0.06, 0.36]} radius={0.02} position={[-1.9, 0.39, 0.9]} material={M.black} castShadow />
-            <Glow colour={C.tonedRed} size={0.5} opacity={0.6} position={[-0.55, 2.33, 0.42]} />
+            <Glow colour={C.white} size={0.5} opacity={0.6} position={[-0.55, 2.33, 0.42]} />
           </>
         )}
       </group>

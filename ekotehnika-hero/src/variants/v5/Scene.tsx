@@ -18,9 +18,10 @@ export type Clock = { p: () => number };
 
 const col = (hex: string) => new THREE.Color().setStyle(hex, THREE.NoColorSpace);
 const ink = col(C.ink);
-const red = col(C.lindeRed);
-const toned = col(C.tonedRed);
-const deep = col(C.primary900);
+// Dusk and glow colours are greys. Red is left to the truck's rear shell (see buildTruck).
+const mid = col(C.textGrey);
+const toned = col(C.tonedTextGrey);
+const light = col(C.lightGrey);
 const white = col(C.white);
 
 // Camera keys. Positions run through a Catmull Rom curve so the move never stops between keys.
@@ -86,9 +87,9 @@ function Sky({ clock }: { clock: Clock }) {
           uHorizon: { value: 0 },
           uSky: { value: 1 },
           uInk: { value: ink },
-          uRed: { value: red },
+          uMid: { value: mid },
           uToned: { value: toned },
-          uDeep: { value: deep },
+          uDeep: { value: ink },
           uWhite: { value: white },
         },
       }),
@@ -169,7 +170,7 @@ function buildTruck(root: THREE.Group, plane: THREE.Plane): Built {
       clones.set(orig, c);
     }
     mesh.material = c;
-    const isRed = orig === M.paint || orig === M.beacon;
+    const isRed = orig === M.paint;
     meshes.push({ mesh, m: new THREE.Matrix4().multiplyMatrices(inv, mesh.matrixWorld), red: isRed });
   });
 
@@ -445,7 +446,7 @@ function Tiles({ clock }: { clock: Clock }) {
           uSweep: { value: new THREE.Vector2(-14, -2) },
           uSweepOn: { value: 0 },
           uEdge: { value: 1 },
-          uRed: { value: toned },
+          uSweep2: { value: light },
           uFace: { value: col(C.ink).multiplyScalar(0.62) },
         },
       }),
@@ -482,11 +483,11 @@ function Tiles({ clock }: { clock: Clock }) {
 // the reel. The group rides with the camera, eight metres ahead, so the X always reads.
 const BEAM_Z = -8;
 // x and y in metres at that distance, the view is about 6.9 by 4.3 there.
-const BEAMS: { s: [number, number]; c: [number, number]; e: [number, number]; w: number; seed: number; red?: boolean; o?: number }[] = [
+const BEAMS: { s: [number, number]; c: [number, number]; e: [number, number]; w: number; seed: number; grey?: boolean; o?: number }[] = [
   { s: [-3.6, 2.5], c: [-1.0, 1.9], e: [-0.22, 0.12], w: 1.15, seed: 0.1 },
   { s: [3.4, 2.6], c: [1.5, 0.7], e: [0.24, 0.16], w: 1.05, seed: 2.3 },
   { s: [-4.2, 0.4], c: [-2.2, 0.1], e: [-0.55, -0.05], w: 0.9, seed: 5.2, o: 0.45 },
-  { s: [-1.5, -2.6], c: [-0.8, -1.3], e: [-0.3, -0.55], w: 0.45, seed: 4.1, red: true },
+  { s: [-1.5, -2.6], c: [-0.8, -1.3], e: [-0.3, -0.55], w: 0.45, seed: 4.1, grey: true },
   { s: [1.3, -2.6], c: [0.5, -1.4], e: [0.32, -0.5], w: 0.4, seed: 6.7, o: 0.8 },
 ];
 
@@ -540,10 +541,10 @@ function Beams({ clock }: { clock: Clock }) {
             uOpacity: { value: 0 },
             uGrow: { value: 0 },
             uSeed: { value: b.seed },
-            uColor: { value: b.red ? col(C.tonedRed) : new THREE.Color(0.9, 0.9, 0.92) },
+            uColor: { value: b.grey ? col(C.tonedTextGrey) : new THREE.Color(0.9, 0.9, 0.92) },
           },
         });
-        return { geo, mat, k: (b.red ? 1.3 : 1) * (b.o ?? 1) };
+        return { geo, mat, k: (b.grey ? 1.3 : 1) * (b.o ?? 1) };
       }),
     [],
   );
@@ -575,7 +576,7 @@ function Beams({ clock }: { clock: Clock }) {
             <mesh key={i} geometry={it.geo} material={it.mat} frustumCulled={false} renderOrder={20} />
           ))}
           <Glow colour={C.white} size={0.5} opacity={0.4} renderOrder={21} />
-          <Glow colour={C.tonedRed} size={1.6} opacity={0.08} renderOrder={21} />
+          <Glow colour={C.tonedTextGrey} size={1.6} opacity={0.08} renderOrder={21} />
         </group>
       </group>
     </group>
@@ -597,7 +598,7 @@ function Horizon({ clock }: { clock: Clock }) {
   });
   return (
     <group ref={ref}>
-      <Glow colour={C.tonedRed} size={14} opacity={0.35} position={[2.5, 0.4, -14]} userData={{ o: 0.35 }} />
+      <Glow colour={C.tonedTextGrey} size={14} opacity={0.35} position={[2.5, 0.4, -14]} userData={{ o: 0.35 }} />
       <Glow colour={C.white} size={5} opacity={0.2} position={[4.5, 0.2, -10]} userData={{ o: 0.2 }} />
     </group>
   );
@@ -626,7 +627,7 @@ export function SceneContents({ clock, invalidateRef }: { clock: Clock; invalida
         shadow-bias={-0.0004}
       />
       <directionalLight position={[-3, 4, -8]} intensity={2.2} color={C.white} />
-      <directionalLight position={[-6, 2, 4]} intensity={0.5} color={C.tonedRed} />
+      <directionalLight position={[-6, 2, 4]} intensity={0.5} color={C.tonedTextGrey} />
       <Horizon clock={clock} />
       <Ground clock={clock} />
       <Tiles clock={clock} />

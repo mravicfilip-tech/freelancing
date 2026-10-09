@@ -1,5 +1,4 @@
-// Dev route for storyline 2, /?story2=<linija|grad|sistem>. The versions 2, 4 and 5 switch to it once all three
-// scenes and the shell are in.
+// Dev route for storyline 2, /?story2=<linija|grad|sistem>, one scene without the version switcher.
 import { StoryShell } from './shell/StoryShell';
 import { SCENES, type SceneId } from './scenes';
 

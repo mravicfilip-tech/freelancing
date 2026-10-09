@@ -7,8 +7,12 @@ import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 type Variant = ComponentType<{ reduced: boolean }>;
 export type VariantInfo = { id: string; name: string; Component: LazyExoticComponent<Variant> };
 
+// Storyline 2 runs on all three, see src/story2. The earlier single scene versions stay in v2, v4 and v5.
+const story2 = (name: 'Linija' | 'Grad' | 'Sistem') =>
+  lazy(() => import('../story2/versions').then((m) => ({ default: m[name] })));
+
 export const variants: VariantInfo[] = [
-  { id: '2', name: 'Linija', Component: lazy(() => import('./v2')) },
-  { id: '4', name: 'Grad', Component: lazy(() => import('./v4')) },
-  { id: '5', name: 'Sistem', Component: lazy(() => import('./v5')) },
+  { id: '2', name: 'Linija', Component: story2('Linija') },
+  { id: '4', name: 'Grad', Component: story2('Grad') },
+  { id: '5', name: 'Sistem', Component: story2('Sistem') },
 ];

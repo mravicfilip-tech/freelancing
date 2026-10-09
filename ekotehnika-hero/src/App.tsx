@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { variants } from './variants';
-import { Placeholder } from './components/Placeholder';
 import { scrollToTop } from './scroll/useScrollStory';
 
 const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })));
@@ -89,7 +88,6 @@ function Variants() {
             <Component reduced={reduced} />
           </Suspense>
         </div>
-        <Placeholder />
       </div>
       {/* Review chrome for comparing the variants, not part of any design. */}
       <div className="dir-switch" role="group" aria-label="Verzije, tasteri 2, 4 i 5">

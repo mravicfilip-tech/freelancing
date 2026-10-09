@@ -43,6 +43,17 @@ export function useStoryClock(reduced: boolean) {
 
   useEffect(() => {
     if (reduced) return;
+    // Shots and reviews can freeze the clock on one keyframe, ?at=<beatId>&k=<0 to 1>.
+    const q = new URLSearchParams(window.location.search);
+    const at = TIMELINE.findIndex((b) => b.id === q.get('at'));
+    if (at >= 0) {
+      const kk = clamp01(Number(q.get('k') ?? 1));
+      beat.current = at;
+      k.current = kk;
+      pos.current = TIMELINE[at].start + (TIMELINE[at].end - TIMELINE[at].start) * kk;
+      setBeatState(at);
+      return;
+    }
     let lastRaw = raw.current;
     let lastMove = performance.now();
     let dir = 1;

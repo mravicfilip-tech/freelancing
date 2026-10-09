@@ -26,7 +26,7 @@ export function Wheel({ r, spin }: { r: number; spin?: GRef }) {
   const spokes = Array.from({ length: 6 }, (_, i) => {
     const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
     return (
-      <circle key={i} cx={Math.cos(a) * r * 0.46} cy={Math.sin(a) * r * 0.46} r={r * 0.06} fill={G2} />
+      <circle key={i} cx={Math.cos(a) * r * 0.46} cy={Math.sin(a) * r * 0.46} r={r * 0.06} fill={K} />
     );
   });
   return (
@@ -35,14 +35,14 @@ export function Wheel({ r, spin }: { r: number; spin?: GRef }) {
       <circle r={r - 1.7} fill="none" stroke={G} strokeWidth={2.6} strokeDasharray="2.4 2.2" />
       <circle r={r * 0.78} fill={K} stroke={G} strokeWidth={0.7} />
       <path d={`M ${-r * 0.7} ${-r * 0.42} A ${r * 0.82} ${r * 0.82} 0 0 1 ${-r * 0.1} ${-r * 0.81}`} fill="none" stroke={G2} strokeWidth={1.2} strokeLinecap="round" />
-      <circle r={r * 0.6} fill={SG} />
+      <circle r={r * 0.6} fill={G} />
       <circle r={r * 0.6} fill="none" stroke={G2} strokeWidth={1.1} />
-      <circle r={r * 0.52} fill="none" stroke={W} strokeWidth={0.9} />
+      <circle r={r * 0.52} fill="none" stroke={K} strokeWidth={0.9} />
       {spokes}
-      <circle r={r * 0.27} fill={LG} stroke={G2} strokeWidth={0.8} />
+      <circle r={r * 0.27} fill={G2} stroke={K} strokeWidth={0.8} />
       {bolts}
       <circle r={r * 0.13} fill={G} />
-      <circle r={r * 0.05} fill={K} />
+      <circle r={r * 0.05} fill={LG} />
     </g>
   );
 }
@@ -80,7 +80,7 @@ function Carton({ x, y, w, h, mark }: { x: number; y: number; w: number; h: numb
       <rect x={4} y={-h + 8} width={Math.min(15, w / 2 - 8)} height={9} fill={W} stroke={G2} strokeWidth={0.4} />
       <line x1={6} y1={-h + 11} x2={4 + Math.min(15, w / 2 - 8) - 2} y2={-h + 11} stroke={G2} strokeWidth={0.5} />
       <line x1={6} y1={-h + 14} x2={4 + Math.min(10, w / 2 - 12)} y2={-h + 14} stroke={G2} strokeWidth={0.5} />
-      {mark && <rect x={w - 9} y={-h + 8} width={4} height={4} fill={RH} />}
+      {mark && <rect x={w - 9} y={-h + 8} width={4} height={4} fill={G2} />}
     </g>
   );
 }
@@ -129,12 +129,12 @@ export function LoadSide({ x = 0, y = 0, kind = 'cartons' }: { x?: number; y?: n
       <>
         {[0, 40, 80].map((cx) => (
           <g key={cx} transform={`translate(${cx + 1} -14.4)`}>
-            <rect x={0} y={-36} width={38} height={36} fill={R} stroke={RDD} strokeWidth={0.6} />
-            <rect x={0} y={-36} width={38} height={4} fill={RH} />
+            <rect x={0} y={-36} width={38} height={36} fill={G} stroke={K} strokeWidth={0.6} />
+            <rect x={0} y={-36} width={38} height={4} fill={G2} />
             {[8, 16, 24].map((ly) => (
-              <line key={ly} x1={3} y1={-ly - 4} x2={35} y2={-ly - 4} stroke={RD} strokeWidth={0.8} />
+              <line key={ly} x1={3} y1={-ly - 4} x2={35} y2={-ly - 4} stroke={K} strokeWidth={0.8} />
             ))}
-            <rect x={13} y={-24} width={12} height={6} fill={RDD} />
+            <rect x={13} y={-24} width={12} height={6} fill={K} />
           </g>
         ))}
         <Carton x={8} y={-50.4} w={50} h={28} />
@@ -175,10 +175,10 @@ export function RackSide({ x = 0, levels = [150, 300, 450], height = 470, childr
         <g key={lv}>
           {[-2, D - 11].map((bx) => (
             <g key={bx}>
-              <rect x={bx} y={-lv} width={13} height={12} fill={R} />
-              <rect x={bx} y={-lv} width={13} height={2.2} fill={RH} />
-              <rect x={bx + 2.5} y={-lv + 4} width={8} height={5} fill={RD} />
-              <circle cx={bx + 6.5} cy={-lv + 6.5} r={1} fill={RH} />
+              <rect x={bx} y={-lv} width={13} height={12} fill={K} />
+              <rect x={bx} y={-lv} width={13} height={2.2} fill={G2} />
+              <rect x={bx + 2.5} y={-lv + 4} width={8} height={5} fill={G} />
+              <circle cx={bx + 6.5} cy={-lv + 6.5} r={1} fill={G2} />
             </g>
           ))}
         </g>
@@ -213,6 +213,11 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
           <stop offset={0.8} stopColor={R} />
           <stop offset={1} stopColor={RD} />
         </linearGradient>
+        <linearGradient id="v2-gChassis" gradientUnits="userSpaceOnUse" x1={0} y1={-134} x2={0} y2={-22}>
+          <stop offset={0} stopColor={G} />
+          <stop offset={0.3} stopColor={K} />
+          <stop offset={1} stopColor={K} />
+        </linearGradient>
         <linearGradient id="v2-gMast" x1={0} y1={0} x2={1} y2={0}>
           <stop offset={0} stopColor={G2} />
           <stop offset={0.5} stopColor={G} />
@@ -235,30 +240,37 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
         {/* wheel wells */}
         <path d="M -190.6 -22 A 33 33 0 1 1 -125.4 -22 Z" fill={K} />
         <path d="M -34.9 -22 A 36 36 0 0 1 27 -54.8 L 27 -22 Z" fill={K} />
-        {/* main shell */}
+        {/* chassis and cowl in ink, the red shell sits over the rear body only */}
         <path
           d="M 27 -55 L 23 -104 Q 22 -112 14 -112 L -4 -112 Q -10 -112 -12 -106 L -18 -60 L -40 -60 L -44 -104 Q -45 -110 -52 -110 L -126 -110 Q -133 -110 -137 -116 L -141 -124 Q -145 -131 -154 -131 L -178 -131 C -198 -131 -213 -116 -215 -92 L -215 -48 Q -215 -24 -198 -22 L -190.6 -22 A 33 33 0 1 1 -125.4 -22 L -34.9 -22 A 36 36 0 0 1 27 -55 Z"
+          fill="url(#v2-gChassis)"
+        />
+        {/* lower sill between the wheels */}
+        <path d="M -125.4 -22 L -34.9 -22 L -36 -38 L -122 -38 Z" fill={K} />
+        <rect x={-122} y={-38} width={86} height={1.2} fill={G} />
+        {/* red rear body shell and counterweight */}
+        <path
+          d="M -44 -104 Q -45 -110 -52 -110 L -126 -110 Q -133 -110 -137 -116 L -141 -124 Q -145 -131 -154 -131 L -178 -131 C -198 -131 -213 -116 -215 -92 L -215 -48 Q -215 -24 -198 -22 L -190.6 -22 A 33 33 0 1 1 -125.4 -22 L -122 -38 L -36 -38 L -40 -60 Z"
           fill="url(#v2-gBody)"
         />
-        {/* lower skirt shading between the wheels */}
-        <path d="M -125.4 -22 L -34.9 -22 L -36 -38 L -122 -38 Z" fill={RD} />
         <path d="M -215 -60 L -215 -48 Q -215 -24 -198 -22 L -190.6 -22 L -192 -40 L -206 -44 Z" fill={RD} />
         {/* counterweight panel, vents and tail lamp */}
         <path d="M -206 -100 C -204 -116 -194 -123 -178 -123 L -160 -123 L -160 -58 L -206 -58 Z" fill={RD} opacity={0.55} />
         {[-110, -103, -96, -89].map((vy) => (
           <line key={vy} x1={-196} y1={vy} x2={-168} y2={vy} stroke={RDD} strokeWidth={1.6} strokeLinecap="round" />
         ))}
-        <rect x={-216} y={-84} width={4} height={14} rx={1} fill={RH} stroke={RDD} strokeWidth={0.6} />
+        <rect x={-216} y={-84} width={4} height={14} rx={1} fill={G} stroke={K} strokeWidth={0.6} />
         <rect x={-216} y={-68} width={4} height={6} rx={1} fill={W} stroke={G2} strokeWidth={0.5} />
         <rect x={-206} y={-30} width={14} height={5} rx={1.5} fill={K} />
         {/* highlights along the top edges */}
         <path d="M -52 -110 L -126 -110 Q -133 -110 -137 -116 L -141 -124 Q -145 -131 -154 -131 L -178 -131 C -198 -131 -213 -116 -215 -92" fill="none" stroke={RH} strokeWidth={1.6} />
-        <path d="M 14 -112 L -4 -112" stroke={RH} strokeWidth={1.6} />
+        <path d="M 14 -112 L -4 -112" stroke={G2} strokeWidth={1.6} />
         {/* panel seams */}
         <line x1={-160} y1={-123} x2={-160} y2={-40} stroke={RDD} strokeWidth={0.7} />
-        <path d="M -122 -104 L -60 -104 L -58 -66 L -118 -66 Z" fill="none" stroke={RDD} strokeWidth={0.7} />
-        <rect x={-108} y={-98} width={22} height={9} rx={2} fill={RD} />
-        <circle cx={-66} cy={-74} r={2} fill={RDD} />
+        <path d="M -122 -104 L -60 -104 L -58 -66 L -118 -66 Z" fill={G} stroke={K} strokeWidth={0.7} />
+        <line x1={-121} y1={-107} x2={-61} y2={-107} stroke={SG} strokeWidth={1.4} strokeLinecap="round" />
+        <rect x={-108} y={-98} width={22} height={9} rx={2} fill={G2} />
+        <circle cx={-66} cy={-74} r={2} fill={G2} />
         {/* footstep and floor plate */}
         <rect x={-40} y={-62} width={22} height={3} fill={K} />
         <rect x={-36} y={-36} width={16} height={4} rx={1} fill={G} />
@@ -269,7 +281,7 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
         {[-93.5, -91, -88.5].map((ly) => (
           <line key={ly} x1={0} y1={ly} x2={9} y2={ly} stroke={G2} strokeWidth={0.45} />
         ))}
-        <rect x={-110} y={-84} width={14} height={8} fill={W} stroke={RDD} strokeWidth={0.4} />
+        <rect x={-110} y={-84} width={14} height={8} fill={W} stroke={K} strokeWidth={0.4} />
         <path d="M -108 -77.5 L -105 -82.5 L -102 -77.5 Z" fill={K} />
         <line x1={-100.5} y1={-81} x2={-97.5} y2={-81} stroke={G2} strokeWidth={0.5} />
         <line x1={-100.5} y1={-78.5} x2={-98} y2={-78.5} stroke={G2} strokeWidth={0.5} />
@@ -301,7 +313,7 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
       <path d="M -107 -150 L -94 -150" stroke={G} strokeWidth={0.8} />
       <rect x={-88} y={-138} width={24} height={5} rx={2.5} fill={K} />
       <line x1={-70} y1={-138} x2={-68} y2={-150} stroke={K} strokeWidth={2.2} strokeLinecap="round" />
-      <circle cx={-68} cy={-151} r={2.6} fill={RH} />
+      <circle cx={-68} cy={-151} r={2.6} fill={G2} />
       {/* steering column and wheel */}
       <line x1={-4} y1={-112} x2={-24} y2={-150} stroke={K} strokeWidth={6} strokeLinecap="round" />
       <ellipse cx={-27} cy={-153} rx={16} ry={3} transform="rotate(-24 -27 -153)" fill="none" stroke={K} strokeWidth={3} />
@@ -315,7 +327,7 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
       <line x1={18} y1={-178} x2={14} y2={-150} stroke={SG} strokeWidth={2.4} strokeLinecap="round" />
       <rect x={20} y={-230} width={11} height={9} rx={1.5} fill={SG} stroke={G2} strokeWidth={0.6} />
       <rect x={28} y={-228} width={3} height={5} fill={W} />
-      <path d="M -122 -221 Q -122 -230 -115 -230 Q -108 -230 -108 -221 Z" fill={RH} stroke={RDD} strokeWidth={0.6} />
+      <path d="M -122 -221 Q -122 -230 -115 -230 Q -108 -230 -108 -221 Z" fill={LG} stroke={G2} strokeWidth={0.6} />
       <rect x={-117} y={-228} width={2} height={4} fill={W} opacity={0.8} />
       <path d="M 22 -84 C 30 -84 30 -70 36 -66" fill="none" stroke={K} strokeWidth={1.3} />
       <path d="M 22 -80 C 28 -78 28 -62 35 -58" fill="none" stroke={K} strokeWidth={1.3} />
@@ -352,8 +364,8 @@ export function ForkliftSide({ parts = {}, lift = 0, load }: { parts?: SideParts
           <circle cx={56} cy={-10} r={1.3} fill={G2} />
           <path d="M 47 -44 Q 40 -60 46 -80" fill="none" stroke={K} strokeWidth={1.5} />
           <rect x={59} y={-40} width={6} height={44.5} fill={K} />
-          <path d="M 59 0 L 184 0 L 184 1.4 Q 184 4.5 172 4.5 L 65 4.5 Q 59 4.5 59 0 Z" fill={K} />
-          <line x1={65} y1={0.4} x2={182} y2={0.4} stroke={G} strokeWidth={0.8} />
+          <path d="M 59 0 L 184 0 L 184 1.4 Q 184 4.5 172 4.5 L 65 4.5 Q 59 4.5 59 0 Z" fill={G} />
+          <line x1={65} y1={0.6} x2={182} y2={0.6} stroke={G2} strokeWidth={0.9} />
           {load}
         </g>
       </g>
@@ -390,7 +402,7 @@ export function ForkliftFront({ parts = {}, lift = 0 }: { parts?: FrontParts; li
     <g>
       <ellipse cx={0} cy={1} rx={86} ry={4} fill={SG} />
       {/* counterweight top seen behind the cowl */}
-      <path d="M -62 -100 L -62 -118 Q -62 -132 -48 -132 L 48 -132 Q 62 -132 62 -118 L 62 -100 Z" fill={RD} />
+      <path d="M -62 -100 L -62 -118 Q -62 -132 -48 -132 L 48 -132 Q 62 -132 62 -118 L 62 -100 Z" fill={R} />
       <path d="M -58 -128 L 58 -128" stroke={RH} strokeWidth={1.4} />
       {/* rear guard posts */}
       <line x1={-54} y1={-214} x2={-56} y2={-130} stroke={G} strokeWidth={5} />
@@ -401,9 +413,10 @@ export function ForkliftFront({ parts = {}, lift = 0 }: { parts?: FrontParts; li
       <ellipse cx={-4} cy={-150} rx={17} ry={4.5} fill="none" stroke={K} strokeWidth={3} />
       <line x1={-4} y1={-146} x2={-4} y2={-112} stroke={K} strokeWidth={5} />
       {/* cowl and front body */}
-      <path d="M -58 -40 L -58 -104 Q -58 -112 -50 -112 L 50 -112 Q 58 -112 58 -104 L 58 -40 Z" fill={R} />
-      <path d="M -54 -112 L 54 -112" stroke={RH} strokeWidth={1.6} />
-      <rect x={-58} y={-60} width={116} height={20} fill={RD} />
+      <path d="M -58 -40 L -58 -104 Q -58 -112 -50 -112 L 50 -112 Q 58 -112 58 -104 L 58 -40 Z" fill={K} />
+      <path d="M -54 -112 L 54 -112" stroke={G2} strokeWidth={1.6} />
+      <rect x={-58} y={-60} width={116} height={20} fill={G} />
+      <rect x={-58} y={-60} width={116} height={1.4} fill={SG} />
       <rect x={-50} y={-102} width={9} height={6} rx={1} fill={W} stroke={G2} strokeWidth={0.5} />
       <rect x={41} y={-102} width={9} height={6} rx={1} fill={W} stroke={G2} strokeWidth={0.5} />
       <rect x={-42} y={-40} width={84} height={14} fill={K} />
@@ -420,8 +433,8 @@ export function ForkliftFront({ parts = {}, lift = 0 }: { parts?: FrontParts; li
       <line x1={-58} y1={-216} x2={-50} y2={-114} stroke={K} strokeWidth={7} strokeLinecap="round" />
       <line x1={58} y1={-216} x2={50} y2={-114} stroke={K} strokeWidth={7} strokeLinecap="round" />
       <rect x={-64} y={-222} width={128} height={8} rx={2.5} fill={K} />
-      <rect x={-62} y={-232} width={12} height={10} rx={1.5} fill={SG} stroke={G2} strokeWidth={0.6} />
-      <rect x={50} y={-232} width={12} height={10} rx={1.5} fill={SG} stroke={G2} strokeWidth={0.6} />
+      <rect x={-62} y={-232} width={12} height={10} rx={1.5} fill={LG} stroke={G2} strokeWidth={0.6} />
+      <rect x={50} y={-232} width={12} height={10} rx={1.5} fill={LG} stroke={G2} strokeWidth={0.6} />
       <rect x={-59} y={-229} width={6} height={4} fill={W} />
       <rect x={53} y={-229} width={6} height={4} fill={W} />
       {/* mast */}
@@ -468,8 +481,10 @@ export function ForkliftFront({ parts = {}, lift = 0 }: { parts?: FrontParts; li
         <g transform="translate(0 10)">
           <LoadFront />
         </g>
-        <rect x={-29} y={0} width={10} height={4.5} fill={K} />
-        <rect x={19} y={0} width={10} height={4.5} fill={K} />
+        <rect x={-29} y={0} width={10} height={4.5} fill={G} />
+        <rect x={19} y={0} width={10} height={4.5} fill={G} />
+        <rect x={-29} y={0} width={10} height={1.2} fill={G2} />
+        <rect x={19} y={0} width={10} height={1.2} fill={G2} />
       </g>
     </g>
   );
@@ -493,7 +508,7 @@ export function ForkliftTop() {
       {[-30, -18, -6, 6, 18, 30].map((vy) => (
         <line key={vy} x1={-196} y1={vy} x2={-168} y2={vy} stroke={RD} strokeWidth={2} strokeLinecap="round" />
       ))}
-      <rect x={-40} y={-40} width={56} height={80} rx={4} fill={RD} />
+      <rect x={-40} y={-40} width={56} height={80} rx={4} fill={K} />
       {/* overhead guard roof with slots */}
       <rect x={-134} y={-60} width={166} height={120} rx={8} fill={K} />
       {[-112, -88, -64, -40, -16, 8].map((sx) => (
@@ -501,13 +516,15 @@ export function ForkliftTop() {
       ))}
       <rect x={20} y={-58} width={10} height={14} rx={2} fill={W} />
       <rect x={20} y={44} width={10} height={14} rx={2} fill={W} />
-      <circle cx={-122} cy={0} r={7} fill={RH} stroke={RDD} strokeWidth={1.2} />
+      <circle cx={-122} cy={0} r={7} fill={LG} stroke={G2} strokeWidth={1.2} />
       {/* mast, carriage, forks */}
       <rect x={32} y={-44} width={18} height={88} fill={G} />
       <rect x={34} y={-40} width={4} height={80} fill={G2} />
       <rect x={50} y={-48} width={11} height={96} fill={K} />
-      <rect x={60} y={-30} width={126} height={11} fill={K} />
-      <rect x={60} y={19} width={126} height={11} fill={K} />
+      <rect x={60} y={-30} width={126} height={11} fill={G} />
+      <rect x={60} y={19} width={126} height={11} fill={G} />
+      <rect x={60} y={-30} width={126} height={2.4} fill={G2} />
+      <rect x={60} y={19} width={126} height={2.4} fill={G2} />
       {/* pallet and cartons */}
       <rect x={70} y={-42} width={116} height={84} fill={SG} stroke={G2} strokeWidth={1} />
       {[0, 1].map((cx) =>
@@ -517,7 +534,7 @@ export function ForkliftTop() {
             <rect x={0} y={16} width={54} height={6} fill={W} />
             <line x1={0} y1={16} x2={54} y2={16} stroke={G2} strokeWidth={0.5} />
             <line x1={0} y1={22} x2={54} y2={22} stroke={G2} strokeWidth={0.5} />
-            {(cx + cy) % 2 === 0 && <rect x={42} y={5} width={7} height={7} fill={RH} />}
+            {(cx + cy) % 2 === 0 && <rect x={42} y={5} width={7} height={7} fill={G2} />}
           </g>
         )),
       )}

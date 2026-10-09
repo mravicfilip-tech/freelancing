@@ -81,11 +81,11 @@ export function YardMap({ refs }: { refs: MapRefs }) {
           <rect x={x} y={2515} width={92} height={18} fill={C.textGrey} />
           <rect x={x - 8} y={2515} width={8} height={10} fill={C.ink} />
           <rect x={x + 92} y={2515} width={8} height={10} fill={C.ink} />
-          <rect x={x + 6} y={2533} width={80} height={4} fill={C.lindeRed} />
+          <rect x={x + 6} y={2533} width={80} height={4} fill={C.ink} />
         </g>
       ))}
-      {/* the planned route, dashed red, revealed ahead of the truck */}
-      <path ref={refs.route} d={ROUTE} fill="none" stroke={C.tonedRed} strokeWidth={4} strokeDasharray="22 18" mask="url(#v2-reveal)" />
+      {/* the planned route, dashed white on the ink aisle, revealed ahead of the truck */}
+      <path ref={refs.route} d={ROUTE} fill="none" stroke={C.white} strokeWidth={4} strokeDasharray="22 18" mask="url(#v2-reveal)" />
       <g ref={refs.truck}>
         <g ref={refs.truckInner}>
           <g transform="scale(0.55) translate(-10 0)">

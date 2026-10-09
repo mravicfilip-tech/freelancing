@@ -27,6 +27,7 @@ Task format
 
 - ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem
   - [x] Bring back the three versions and prep localhost
+  - [ ] Apply the bottom left headline layout to 2, 4 and 5
   - [ ] Filip explains the process and motion
   - [ ] Build it in the three styles
 

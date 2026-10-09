@@ -58,9 +58,10 @@ section { padding-top: 64px; }
 .mode.auto { background: var(--ink); color: var(--paper); }
 .bmsg { font-size: 15px; color: var(--muted); flex-basis: 100%; }
 .keys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-@media (max-width: 900px) { .keys { grid-template-columns: 1fr; } }
+@media (max-width: 1100px) { .keys { grid-template-columns: 1fr; } }
 .kf { margin: 0; display: grid; gap: 6px; min-width: 0; }
-.kf svg { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+.kf img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+.kf a { display: block; border-radius: 10px; }
 .kf figcaption { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
 .kf figcaption b { color: var(--ink); font-weight: 500; }
 .moves { overflow-x: auto; }
@@ -159,9 +160,9 @@ a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 <div class="wrap">
 
 <header class="top">
-  <p class="kick">Ekotehnika hero, storyboard for versions 2, 4 and 5, version 4 with keyframes</p>
+  <p class="kick">Ekotehnika hero, storyboard for versions 2, 4 and 5, version 5 with rendered keyframes</p>
   <h1>One warehouse, four ways Ekotehnika keeps it moving</h1>
-  <p class="lede">Every beat is drawn as three keyframes, where it starts, the middle and where it ends, with a table of what moves, from where to where, and what drives it. The panel on the left of each keyframe is the real copy that sits there.</p>
+  <p class="lede">Every beat is shown as three rendered keyframes at 1440 by 900, where it starts, the middle and where it ends, drawn from the real variant 2 art in the app. Under each is a table of what moves, from where to where, and what drives it. Click a frame to open it full size. The panel look is neutral here, A, B and C restyle it later.</p>
   <div class="meta">
     <span><b>Order</b> Najam, Polovni, Novi, Servis</span>
     <span><b>Length</b> 9,000px, the same as today</span>
@@ -440,7 +441,7 @@ document.getElementById('beats').innerHTML = SERVICES.map((s) => `
     ${s.beats.map((b) => `
       <article class="beat" id="b-${b.id}" aria-labelledby="bt-${b.id}">
         <div class="bhead"><span class="bid">${b.id}</span><span class="range">${b.px}</span><span class="mode${b.auto ? ' auto' : ''}">${b.mode}</span><h3 id="bt-${b.id}">${esc(b.title)}</h3><p class="bmsg">${esc(b.msg)}</p></div>
-        <div class="keys">${[0, 0.5, 1].map((k, i) => `<figure class="kf"><svg viewBox="0 0 360 225" role="img" aria-label="${esc(b.title)}, keyframe ${i + 1} of 3">${b.kf(k)}</svg><figcaption><b>${['Start', 'Middle', 'End'][i]}</b><span>${b.labels[i]}</span></figcaption></figure>`).join('')}</div>
+        <div class="keys">${[0, 50, 100].map((k, i) => `<figure class="kf"><a href="board/${b.id}-${k}.jpg" target="_blank" rel="noopener"><img src="board/${b.id}-${k}.jpg" width="1200" height="750" loading="lazy" alt="${esc(b.title)}, keyframe ${i + 1} of 3"></a><figcaption><b>${['Start', 'Middle', 'End'][i]}</b><span>${b.labels[i]}</span></figcaption></figure>`).join('')}</div>
         <div class="moves"><table><thead><tr><th>What moves</th><th>From</th><th>To</th><th>Driven by</th></tr></thead><tbody>${b.moves.map((m) => `<tr><td>${esc(m[0])}</td><td>${esc(m[1])}</td><td>${esc(m[2])}</td><td>${esc(m[3])}</td></tr>`).join('')}</tbody></table></div>
         <p class="panelnote"><b>Left panel.</b> ${esc(b.panel)}</p>
       </article>`).join('')}

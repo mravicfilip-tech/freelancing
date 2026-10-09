@@ -4,6 +4,7 @@ import { Placeholder } from './components/Placeholder';
 import { scrollToTop } from './scroll/useScrollStory';
 
 const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })));
+const Board = lazy(() => import('./board/Board').then((m) => ({ default: m.Board })));
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -17,6 +18,12 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <Gate />
+      </Suspense>
+    );
+  if (new URLSearchParams(window.location.search).has('board'))
+    return (
+      <Suspense fallback={null}>
+        <Board />
       </Suspense>
     );
   return <Variants />;

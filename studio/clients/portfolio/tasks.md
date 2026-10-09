@@ -17,12 +17,13 @@ Rules
 
 ## In progress
 
-- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio
+- portfolio-3 Portfolio final version, accessibility, contrast and mobile motion. Branch claude/halftone-slice in filip-portfolio, preview https://filip-portfolio-7a4xfxtff-filip-mravic-s-projects.vercel.app (93cdf1a)
   - [x] /uireview round, accessibility and contrast, 1440 and 390, both themes
   - [x] Fix sev 1 and sev 2
   - [x] Mobile motion plan, content first, briefs/final-version.md
   - [x] Build the mobile motion pass
-  - [ ] Keep the glow dark under phone copy, small a11y leftovers
+  - [x] Keep the glow dark under phone copy, small a11y leftovers
+  - [ ] Give the phone glow back between lines, keep AA
   - [ ] Re-check, card, preview deploy
 
 ## Review

@@ -71,7 +71,7 @@ Task format
 
 ## Review
 
-- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem
+- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem. Link https://ekotehnika-hero.vercel.app/?v=2
   - [x] Bring back the three versions and prep localhost
   - [x] Apply the bottom left headline layout to 2, 4 and 5
   - [x] Filip explains the process and motion
@@ -82,6 +82,7 @@ Task format
   - [x] Build the Grad scene
   - [x] Build the Sistem scene
   - [x] Put storyline 2 on versions 2, 4 and 5 and check
+  - [x] Deploy to production
 
 ## Done
 

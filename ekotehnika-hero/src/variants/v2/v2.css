@@ -84,10 +84,30 @@
   position: absolute;
   z-index: 4;
   top: 80px;
-  bottom: 132px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  height: 652px;
+}
+
+/* every card is placed by the chapter code, so it sits at the column top and is moved by transform.
+   Cards that are not in the chapter are hidden and out of the tab order. */
+.v2 .v2-col > .v2-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.v2 .v2-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .v2 .v2-left {
@@ -158,14 +178,13 @@
 
 /* hero card */
 .v2 .v2-herocard {
-  flex: 1 1 auto;
-  padding: 22px 24px 18px;
+  padding: 22px 24px 14px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.v2 .v2-herocard h1 {
+.v2 .v2-herocard .v2-h1 {
   margin-top: 14px;
   font-weight: 500;
   font-size: 32px;
@@ -185,7 +204,7 @@
   align-items: center;
   gap: 8px;
   min-height: 40px;
-  margin-top: auto;
+  margin-top: 10px;
   font: 500 16px/1 'Geist', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -452,10 +471,6 @@
   text-align: center;
 }
 
-.v2 .v2-routecard {
-  flex: 1 1 auto;
-}
-
 .v2 .v2-routecard .v2-cap {
   margin-top: 4px;
 }
@@ -468,19 +483,100 @@
   overflow: visible;
 }
 
-/* bottom strip, the vehicle carousel */
+/* pillar cards for the chapters, left column */
+.v2 .v2-pillar {
+  padding: 22px 24px 14px;
+}
+
+.v2 .v2-pillar > svg {
+  position: absolute;
+  right: 22px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  overflow: visible;
+}
+
+.v2 .v2-pillar > svg path,
+.v2 .v2-pillar > svg rect,
+.v2 .v2-pillar > svg circle {
+  stroke-width: 1.5;
+}
+
+.v2 .v2-pillar h2 {
+  max-width: 280px;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.v2 .v2-pillar p {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--text-grey);
+}
+
+.v2 .v2-pillar .v2-link {
+  margin-top: 6px;
+}
+
+/* promo and client tiles, right column */
+.v2 .v2-promo {
+  padding: 22px 24px 14px;
+}
+
+.v2 .v2-promo h2 {
+  margin-top: 14px;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.v2 .v2-big--price {
+  margin-top: 10px;
+  font-size: 48px;
+  color: var(--linde-red);
+}
+
+.v2 .v2-promo .v2-link {
+  margin-top: 8px;
+}
+
+.v2 .v2-clients .v2-big--red {
+  font-size: 64px;
+  color: var(--linde-red);
+}
+
+.v2 .v2-clients .v2-cap {
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+.v2 .v2-clients .v2-cap--grey {
+  margin-top: 2px;
+  font-size: 15px;
+}
+
+/* chapter rail, the current card grows wide and shows its line, the others fold to name and icon */
 .v2 .v2-strip {
   position: absolute;
   z-index: 4;
   left: 16px;
   right: 16px;
   bottom: 36px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.v2 .v2-ritem {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .v2 .v2-pcard {
@@ -488,20 +584,23 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  width: 100%;
   height: 80px;
-  padding: 0 20px 0 24px;
+  padding: 0 18px 0 22px;
+  overflow: hidden;
   border: 1px solid transparent;
   border-radius: 20px;
   background: var(--light-grey);
   color: var(--text-grey);
-  text-decoration: none;
-  transition: background-color 0.3s, transform 0.3s, border-color 0.3s, color 0.3s;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
-.v2 .v2-pcard[data-current] {
+.v2 .v2-ritem[data-current] .v2-pcard {
   background: var(--white);
   border-color: var(--shade-grey);
-  color: var(--ink);
   transform: translateY(-6px);
   box-shadow: 0 10px 24px -12px rgb(34 34 34 / 0.22);
 }
@@ -510,15 +609,15 @@
   background: var(--white);
 }
 
-/* the strip can sit over the black aisle, so the ring gets a white gap inside it */
 .v2 .v2-pcard:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--white);
 }
 
 .v2 .v2-ptext {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   min-width: 0;
 }
 
@@ -527,18 +626,31 @@
   font-size: 17px;
   line-height: 1.2;
   letter-spacing: -0.01em;
+  white-space: nowrap;
   color: var(--ink);
 }
 
-.v2 .v2-ptext span {
+.v2 .v2-pl {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
   font-size: 15px;
-  line-height: 1.2;
+  line-height: 20px;
+  color: var(--text-grey);
+  transition: max-height 0.5s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s, margin 0.5s;
+}
+
+.v2 .v2-ritem[data-current] .v2-pl {
+  max-height: 44px;
+  margin-top: 4px;
+  opacity: 1;
+  transition: max-height 0.5s cubic-bezier(0.2, 0, 0, 1), opacity 0.35s 0.2s, margin 0.5s;
 }
 
 .v2 .v2-pcard svg {
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   overflow: visible;
 }
 

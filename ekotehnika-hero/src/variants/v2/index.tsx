@@ -3,7 +3,8 @@
 // toward the camera, lowers it, drives right while the floor turns into a black aisle, then the view
 // tips to top down and the truck follows the aisle to the dock. SVG and GSAP only, the clock is
 // useScrollStory. The UI around the drawing is a floating dashboard, one rounded panel on a grey
-// page with white cards on top. Every word is Geist in sentence case.
+// page with white cards on top. The cards change with the story chapter, they leave and arrive with
+// motion when the chapter changes. Every word is Geist in sentence case.
 import { useEffect, useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import { useScrollStory, clamp01, range } from '../../scroll/useScrollStory';
@@ -60,7 +61,37 @@ const DELIVERY = 'Isporuka za 24 sata'; // dummy, from the najam line in content
 const MODELS = { n: 96, label: 'Linde modela' }; // from the novi line in content.ts
 const WARRANTY = { n: 6, unit: 'meseci', line: 'ili 500 radnih sati garancije', title: 'Linde Approved Trucks' }; // from the polovni line in content.ts
 const SIDE_TITLE = 'Servis na terenu'; // dummy
-const CONTACT = 'Prodaja'; // dummy, label from content.ts hero.sales
+const PROMO_LINK = 'Saznajte više'; // dummy
+const [PROMO_NAME, PROMO_PRICE] = hero.promo.text.split(', ');
+const CLIENTS = { n: trust[1].count, label: 'klijenata', since: trust[0].text };
+
+// The story chapters. Edges are the existing story beats, the pick off the rack, the turn, the drive
+// and the tip to the yard. Each chapter lists the cards on screen, top down, in each column.
+const EDGES = [0.1, 0.29, 0.44, 0.8];
+const CHAPTERS = [
+  { left: ['hero'], right: ['accent'] },
+  { left: ['delivery', 'novi'], right: ['promo'] },
+  { left: ['delivery', 'polovni'], right: ['gauge'] },
+  { left: ['delivery', 'najam'], right: ['clients'] },
+  { left: ['delivery', 'servis', 'service'], right: ['route'] },
+];
+// The rail follows the chapters, so its cards run novi, polovni, najam, servis.
+const RAIL = [pillars[0], pillars[3], pillars[1], pillars[2]];
+// Where a rail click lands, the middle of its chapter.
+const REST = [0.2, 0.36, 0.62, 0.9];
+const GAP = 12;
+
+function chapterOf(p: number, cur: number) {
+  let c = 0;
+  EDGES.forEach((e, i) => {
+    if (p >= e) c = i + 1;
+  });
+  if (cur >= 0 && c !== cur) {
+    const edge = c > cur ? EDGES[c - 1] : EDGES[cur - 1];
+    if (Math.abs(p - edge) < 0.003) return cur;
+  }
+  return c;
+}
 
 // The gauge, 270 degrees open at the bottom. Radius 78 around (100, 96).
 const GAUGE = 'M 44.85 151.15 A 78 78 0 1 1 155.15 151.15';
@@ -69,12 +100,11 @@ const ROUTE_LINE = 'M 10 74 C 46 74 58 30 96 38 S 148 82 184 56 S 238 14 266 24'
 
 // The story beat a progress value sits in, for the status chip and the pillar strip.
 const beatOf = (p: number) => (p < 0.2 ? 0 : p < 0.44 ? 1 : p < 0.97 ? 2 : 3);
-const pillarOf = (p: number) => Math.min(pillars.length - 1, Math.floor(p / 0.26));
 
 type Els = Record<string, HTMLElement | SVGElement | null>;
 
 export default function Variant2({ reduced }: { reduced: boolean }) {
-  const { stageRef, progress } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.07 });
+  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.07 });
   const els = useRef<Els>({});
   const r = (k: string) => (el: HTMLElement | SVGElement | null) => {
     els.current[k] = el;
@@ -84,7 +114,9 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
     const e = els.current as Record<string, any>;
     const frontRods = Array.from(stageRef.current?.querySelectorAll<SVGRectElement>('.v2-front .v2-frod') ?? []);
     const frontChains = Array.from(stageRef.current?.querySelectorAll<SVGLineElement>('.v2-front .v2-fchain') ?? []);
-    const pcards = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('.v2-pcard') ?? []);
+    const stage = stageRef.current as HTMLElement;
+    const cardEls = Array.from(stage.querySelectorAll<HTMLElement>('[data-card]'));
+    const railEls = Array.from(stage.querySelectorAll<HTMLElement>('.v2-ritem'));
 
     const route = e.route as SVGPathElement;
     const total = route.getTotalLength();
@@ -95,7 +127,86 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
 
     const intro = { v: reduced ? 1 : 0 };
     let beat = -1;
-    let cur = -1;
+    let ch = -1;
+    const shown = new Set<string>();
+    const isIn = (c: number, id: string) => CHAPTERS[c].left.includes(id) || CHAPTERS[c].right.includes(id);
+
+    // Top of each card in its column for a chapter, cards keep their natural height.
+    const layout = (c: number) => {
+      const out: Record<string, number> = {};
+      [CHAPTERS[c].left, CHAPTERS[c].right].forEach((col) => {
+        let y = 0;
+        col.forEach((id) => {
+          out[id] = y;
+          y += (stage.querySelector<HTMLElement>(`[data-card="${id}"]`)?.offsetHeight ?? 0) + GAP;
+        });
+      });
+      return out;
+    };
+
+    // Cards that leave drop opacity and lift a little with a slight blur, cards that arrive rise from
+    // below, a beat later and staggered. Cards that stay slide to their new place. Not scrubbed.
+    const goChapter = (c: number, instant: boolean) => {
+      const target = layout(c);
+      let n = 0;
+      cardEls.forEach((el) => {
+        const id = el.dataset.card as string;
+        const was = shown.has(id);
+        if (isIn(c, id)) {
+          const y = target[id];
+          if (instant) {
+            gsap.killTweensOf(el);
+            gsap.set(el, { y, opacity: 1, filter: 'none', visibility: 'visible' });
+          } else if (was) {
+            gsap.to(el, { y, duration: 0.6, ease: 'power3.out', overwrite: 'auto' });
+          } else {
+            gsap.killTweensOf(el);
+            if (el.style.visibility !== 'visible') gsap.set(el, { visibility: 'visible', opacity: 0, y: y + 24, filter: 'blur(3px)' });
+            gsap.to(el, {
+              y,
+              opacity: 1,
+              filter: 'blur(0px)',
+              duration: 0.55,
+              delay: 0.14 + n * 0.06,
+              ease: 'power3.out',
+              onComplete: () => {
+                gsap.set(el, { filter: 'none' });
+              },
+            });
+            n++;
+          }
+          el.removeAttribute('aria-hidden');
+          shown.add(id);
+        } else if (instant) {
+          gsap.killTweensOf(el);
+          gsap.set(el, { opacity: 0, visibility: 'hidden', filter: 'none' });
+          el.setAttribute('aria-hidden', 'true');
+          shown.delete(id);
+        } else if (was) {
+          gsap.killTweensOf(el);
+          el.setAttribute('aria-hidden', 'true');
+          gsap.to(el, {
+            y: '-=16',
+            opacity: 0,
+            filter: 'blur(4px)',
+            duration: 0.45,
+            ease: 'power2.out',
+            onComplete: () => {
+              gsap.set(el, { visibility: 'hidden', filter: 'none' });
+            },
+          });
+          shown.delete(id);
+        }
+      });
+      // The rail, the card of the current chapter grows wider and shows its line.
+      railEls.forEach((li, i) => {
+        li.toggleAttribute('data-current', i === c - 1);
+        li.querySelector('button')?.setAttribute('aria-current', i === c - 1 ? 'step' : 'false');
+        const to = i === c - 1 ? 2.6 : 1;
+        if (instant) gsap.set(li, { flexGrow: to });
+        else gsap.to(li, { flexGrow: to, duration: 0.6, ease: 'power3.out', overwrite: true });
+      });
+    };
 
     let last = -1;
     let lastIntro = -1;
@@ -186,6 +297,8 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       e.floor.style.visibility = p > 0.83 ? 'hidden' : 'visible';
       e.ground.setAttribute('y1', String(gy));
       e.ground.setAttribute('y2', String(gy));
+      e.ground2.setAttribute('y1', String(gy));
+      e.ground2.setAttribute('y2', String(gy));
       e.lane.setAttribute('y1', String(gy + 46));
       e.lane.setAttribute('y2', String(gy + 46));
       e.lane.setAttribute('stroke-dashoffset', String(fx * s));
@@ -241,8 +354,12 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       e.skirt.setAttribute('height', String(Math.max(0, skirt)));
       e.skirt.style.visibility = e.floor.style.visibility;
 
-      // UI layer. Cards follow the story. Reduced motion shows every gauge and line complete.
-      const done = reduced ? 1 : 0;
+      // UI layer. A new chapter swaps the cards, values inside a card follow the scroll.
+      const c = chapterOf(p, ch);
+      if (c !== ch) {
+        goChapter(c, ch < 0 || reduced);
+        ch = c;
+      }
       const bt = beatOf(p);
       if (bt !== beat) {
         beat = bt;
@@ -251,12 +368,11 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       const prog = range(p, 0, 0.985);
       e.fill.style.transform = `scaleX(${prog})`;
       e.marker.style.left = `${prog * 100}%`;
-      const n = Math.max(intro.v, range(p, 0, 0.1), done);
-      e.models.textContent = String(Math.round(MODELS.n * n));
-      e.warr.textContent = String(Math.round(WARRANTY.n * n));
-      const g = Math.max(done, io(range(p, 0.02, 0.5)));
-      e.gauge.setAttribute('stroke-dashoffset', String(1 - g));
-      const rl = Math.max(done, io(range(p, 0.04, 0.97)));
+      e.models.textContent = String(Math.round(MODELS.n * Math.max(intro.v, range(p, 0, 0.1))));
+      e.gauge.setAttribute('stroke-dashoffset', String(1 - io(range(p, 0.29, 0.44))));
+      const cn = Math.round(CLIENTS.n * io(range(p, 0.44, 0.58)));
+      e.clients.textContent = cn >= 1000 ? '1.000+' : `${cn}+`;
+      const rl = io(range(p, 0.8, 0.985));
       line.setAttribute('stroke-dashoffset', String(lineLen * (1 - rl)));
       const tip = line.getPointAtLength(lineLen * rl);
       const tipOn = clamp01((rl - 0.06) / 0.04);
@@ -267,11 +383,6 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       e.tipDrop.setAttribute('x2', String(tip.x));
       e.tipDrop.setAttribute('y1', String(tip.y));
       e.tipDrop.style.opacity = String(tipOn);
-      const pc = pillarOf(p);
-      if (pc !== cur) {
-        cur = pc;
-        pcards.forEach((c, i) => c.toggleAttribute('data-current', i === pc));
-      }
     };
 
     if (reduced) {
@@ -287,9 +398,14 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
       render(p);
     };
     render(0);
+    document.fonts?.ready.then(() => {
+      if (ch >= 0) goChapter(ch, true);
+    });
     gsap.ticker.add(tick);
     return () => {
       tw.kill();
+      gsap.killTweensOf(cardEls);
+      gsap.killTweensOf(railEls);
       gsap.ticker.remove(tick);
     };
   }, [reduced, progress, stageRef]);
@@ -320,6 +436,7 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
               </filter>
             </defs>
             <line ref={r('ground')} x1={0} x2={1440} y1={860} y2={860} stroke={C.shadeGrey} strokeWidth={1} />
+            <line ref={r('ground2')} x1={-1200} x2={0} y1={860} y2={860} stroke={C.shadeGrey} strokeWidth={1} />
             <g ref={r('cam1')}>
               <g ref={r('world')}>
                 {rack1}
@@ -382,13 +499,17 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
 
         <Nav theme="segment" className="v2-topnav" />
 
+        <h1 className="v2-sr">{hero.headline.join(' ')}</h1>
+
         <div className="v2-col v2-left">
-          <section className="v2-card v2-herocard v2-rise" style={{ '--i': 1 } as CSSProperties}>
+          <section className="v2-card v2-herocard v2-rise" data-card="hero" style={{ '--i': 1 } as CSSProperties}>
             <p className="v2-chip">
               <i className="v2-dot" />
               {hero.kicker}
             </p>
-            <h1>{hero.headline.join(' ')}</h1>
+            <p className="v2-h1" aria-hidden="true">
+              {hero.headline.join(' ')}
+            </p>
             <p className="v2-sub">{hero.sub}</p>
             <a className="v2-link" href={SERVICES.href}>
               {SERVICES.more}
@@ -396,7 +517,7 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
             </a>
           </section>
 
-          <section className="v2-card v2-delivery v2-rise" style={{ '--i': 2 } as CSSProperties} aria-label="Isporuka">
+          <section className="v2-card v2-delivery" data-card="delivery" aria-label="Isporuka">
             <div className="v2-row">
               <h2>{PROMO_TITLE}</h2>
               <p className="v2-chip v2-chip--sm">
@@ -418,27 +539,43 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
             <p className="v2-note">{DELIVERY}</p>
           </section>
 
-          <section className="v2-card v2-contact v2-rise" style={{ '--i': 3 } as CSSProperties} aria-label="Kontakt">
+          {[
+            ['novi', pillars[0]],
+            ['polovni', pillars[3]],
+            ['najam', pillars[1]],
+            ['servis', pillars[2]],
+          ].map(([id, pl]) => (
+            <section key={id as string} className="v2-card v2-pillar" data-card={id as string} aria-label={(pl as (typeof pillars)[number]).name}>
+              <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+                <ServiceIcon id={(pl as (typeof pillars)[number]).id} color={C.ink} />
+              </svg>
+              <h2>{(pl as (typeof pillars)[number]).name}</h2>
+              <p>{(pl as (typeof pillars)[number]).line}</p>
+              <a className="v2-link" href={(pl as (typeof pillars)[number]).href}>
+                {(pl as (typeof pillars)[number]).cta}
+                <Arrow />
+              </a>
+            </section>
+          ))}
+
+          <section className="v2-card v2-contact" data-card="service" aria-label={hero.service.label}>
             <span className="v2-avatar" aria-hidden="true">
               <Headset />
             </span>
             <div className="v2-who">
-              <h2>{CONTACT}</h2>
-              <p>{hero.sales.number}</p>
+              <h2>{hero.service.label}</h2>
+              <p>{hero.service.number}</p>
             </div>
-            <a className="v2-icobtn" href={hero.sales.tel} aria-label={`Pozovite prodaju, ${hero.sales.number}`} title={hero.sales.number}>
+            <a className="v2-icobtn" href={hero.service.tel} aria-label={`Pozovite hitan servis, ${hero.service.number}`} title={hero.service.number}>
               <Icon d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" />
-            </a>
-            <a className="v2-icobtn" href={hero.quote.href} aria-label="Pošaljite upit" title="Pošaljite upit">
-              <Icon d="M4 6.5h16v11H4z M4.5 7l7.5 6 7.5-6" />
             </a>
           </section>
         </div>
 
         <div className="v2-col v2-right">
-          <section className="v2-card v2-accent v2-rise" style={{ '--i': 4 } as CSSProperties} aria-label="Linde modeli">
-            <svg className="v2-wave" viewBox="0 0 324 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-              <path d="M0 0 H324 V16 C 270 36 230 2 170 14 S 70 36 0 14 Z" fill={C.primary700} />
+          <section className="v2-card v2-accent v2-rise" data-card="accent" style={{ '--i': 4 } as CSSProperties} aria-label="Linde modeli">
+            <svg className="v2-wave" viewBox="0 0 316 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M0 0 H316 V16 C 264 36 224 2 166 14 S 68 36 0 14 Z" fill={C.primary700} />
             </svg>
             <svg className="v2-fork" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
               <ServiceIcon id="novi" color={C.white} />
@@ -449,21 +586,42 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
             <p className="v2-cap">{MODELS.label}</p>
           </section>
 
-          <section className="v2-card v2-gauge v2-rise" style={{ '--i': 5 } as CSSProperties} aria-label={WARRANTY.title}>
+          <section className="v2-card v2-promo" data-card="promo" aria-label="Akcija">
+            <p className="v2-chip v2-chip--sm">
+              <i className="v2-dot" />
+              {hero.promo.lead.replace('.', '')}
+            </p>
+            <h2>{PROMO_NAME}</h2>
+            <p className="v2-big v2-big--price">{PROMO_PRICE}</p>
+            <a className="v2-link" href={hero.promo.href}>
+              {PROMO_LINK}
+              <Arrow />
+            </a>
+          </section>
+
+          <section className="v2-card v2-gauge" data-card="gauge" aria-label={WARRANTY.title}>
             <h2>{WARRANTY.title}</h2>
             <div className="v2-arc">
               <svg viewBox="0 0 200 160" aria-hidden="true" focusable="false">
                 <path d={GAUGE} fill="none" stroke={C.shadeGrey} strokeWidth={14} strokeLinecap="round" />
-                <path ref={r('gauge')} d={GAUGE} pathLength={1} strokeDasharray={1} strokeDashoffset={0} fill="none" stroke={C.lindeRed} strokeWidth={14} strokeLinecap="round" />
+                <path ref={r('gauge')} d={GAUGE} pathLength={1} strokeDasharray={1} strokeDashoffset={1} fill="none" stroke={C.lindeRed} strokeWidth={14} strokeLinecap="round" />
               </svg>
               <p className="v2-big v2-big--md">
-                <span ref={r('warr')}>{WARRANTY.n}</span> {WARRANTY.unit}
+                {WARRANTY.n} {WARRANTY.unit}
               </p>
             </div>
             <p className="v2-cap v2-cap--grey">{WARRANTY.line}</p>
           </section>
 
-          <section className="v2-card v2-routecard v2-rise" style={{ '--i': 6 } as CSSProperties} aria-label={SIDE_TITLE}>
+          <section className="v2-card v2-clients" data-card="clients" aria-label="Klijenti">
+            <p className="v2-big v2-big--red">
+              <span ref={r('clients')}>0+</span>
+            </p>
+            <p className="v2-cap">{CLIENTS.label}</p>
+            <p className="v2-cap v2-cap--grey">{CLIENTS.since}</p>
+          </section>
+
+          <section className="v2-card v2-routecard" data-card="route" aria-label={SIDE_TITLE}>
             <h2>{SIDE_TITLE}</h2>
             <p className="v2-cap v2-cap--grey">{trust[3].text}</p>
             <svg className="v2-line" viewBox="0 0 276 96" aria-hidden="true" focusable="false">
@@ -477,18 +635,18 @@ export default function Variant2({ reduced }: { reduced: boolean }) {
           </section>
         </div>
 
-        <ul className="v2-strip" aria-label="Usluge">
-          {pillars.map((pl, i) => (
-            <li key={pl.id} className="v2-rise" style={{ '--i': 7 + i } as CSSProperties}>
-              <a className="v2-pcard" href={pl.href} data-current={i === 0 ? '' : undefined}>
+        <ul className="v2-strip" aria-label="Poglavlja">
+          {RAIL.map((pl, i) => (
+            <li key={pl.id} className="v2-ritem v2-rise" style={{ '--i': 7 + i } as CSSProperties}>
+              <button type="button" className="v2-pcard" onClick={() => goTo(REST[i])}>
                 <span className="v2-ptext">
                   <strong>{pl.name}</strong>
-                  <span>{pl.more}</span>
+                  <span className="v2-pl">{pl.line}</span>
                 </span>
                 <svg viewBox="0 0 44 44" aria-hidden="true" focusable="false">
                   <ServiceIcon id={pl.id} color={C.ink} />
                 </svg>
-              </a>
+              </button>
             </li>
           ))}
         </ul>

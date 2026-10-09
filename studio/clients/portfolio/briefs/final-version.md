@@ -1,6 +1,6 @@
 # Portfolio final version, plan
 
-Status. Building. Task portfolio-3. Branch claude/halftone-slice in filip-portfolio, baseline f1346d4.
+Status. Built, in review. Task portfolio-3. Branch claude/halftone-slice in filip-portfolio, baseline f1346d4.
 
 Filip's ask on 2026-10-08. A full /uireview for accessibility and text contrast. A mobile pass so the
 motion makes sense from the content, not only the background. Then build the final version.
@@ -121,3 +121,19 @@ One shared helper first, then builders split by file so no two touch the same on
   ContactDrawer.jsx, contactdrawer.css, mobile.css.
 - Glow and chrome. Atmosphere.jsx, atmosphere.css, src/atmo/, Nav.jsx, nav.css, main.jsx.
 - Case page. src/pages/CaseStudy.jsx, case.css.
+
+## Outcome, phone text over the glow
+
+The glow's bright rim crossed phone copy in dark mode and dropped text to 1.0 to 2.1 to 1, in the old
+build too. Four treatments were measured on the phone at the same frozen moment of the glow.
+
+1. As it was. Best glow, text fails AA.
+2. Dark under whole copy blocks. Passes, but the glow is close to dead at contact and on the projects.
+3. Covers under each text element. Passes. First cut read as pasted boxes with a cold grey tone. The
+   kept version uses rounded covers with a long smooth falloff and a warm ember tone. Strict sweep,
+   rest and every dive, run twice, worst small text 4.84 to 1, worst large 3.35 to 1. Hero, project
+   and toolkit keep 99 percent of the glow's light, contact about 83 percent.
+4. A dark halo around each letter. Rejected on measurement, the pixels next to the strokes still read
+   2.1 to 2.4 to 1 where the white-hot rim crosses, and a halo dark enough to pass reads as an outline.
+
+The branch carries 3, refined (5c4d0af). Filip to confirm, or pick another by number.

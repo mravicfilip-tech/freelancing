@@ -25,6 +25,11 @@ Task format
 
 ## In progress
 
+- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem
+  - [x] Bring back the three versions and prep localhost
+  - [ ] Filip explains the process and motion
+  - [ ] Build it in the three styles
+
 - ekotehnika-4 Storyboard the four services on scroll, Najam, Polovni, Novi and Servis. Link https://claude.ai/artifact/RWHBH6HdwFZ1VnTj8Rj6SE
   - [x] Write the storyboard
   - [x] Filip reviews the storyboard

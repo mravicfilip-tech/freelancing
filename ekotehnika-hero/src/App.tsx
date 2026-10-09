@@ -58,9 +58,8 @@ function Variants() {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return;
-      // Keys 1 to 9 pick the combinations in switcher order.
-      const n = Number(e.key);
-      if (n >= 1 && n <= variants.length) pick(variants[n - 1].id);
+      // Keys 2, 4 and 5 pick the versions.
+      if (variants.some((x) => x.id === e.key)) pick(e.key);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -86,10 +85,11 @@ function Variants() {
         <Placeholder />
       </div>
       {/* Review chrome for comparing the variants, not part of any design. */}
-      <div className="dir-switch" role="group" aria-label="Varijante, tasteri 1 do 9">
+      <div className="dir-switch" role="group" aria-label="Verzije, tasteri 2, 4 i 5">
         {variants.map((x) => (
           <button key={x.id} type="button" aria-pressed={x.id === v} onClick={() => pick(x.id)} title={x.name}>
-            {x.id}
+            <span>{x.id}</span>
+            {x.name}
           </button>
         ))}
       </div>

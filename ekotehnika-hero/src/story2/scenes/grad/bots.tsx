@@ -30,18 +30,18 @@ const WALL_Z = -9.2;
 const CH = { x: 0.05, z: -1.75 }; // the charger pad, the robot stands here
 const LANE = -1.75; // the front lane
 const SLOT_Z = -3.6; // the row of shelf slots
-const SLOTS = [1.45, 2.65, 3.85]; // the third is empty
+const SLOTS = [1.4, 2.7]; // the row of two shelf slots, one beside the target
 const TARGET = 1; // the shelf the order is for
-const PX = 5.0; // the pick bay, the shelf is set down here
+const PX = 4.5; // the pick bay, the shelf is set down here
 const PERSON_X = PX + 1.12;
-const BACK = -5.7; // the lane deeper in the aisle
+const BACK = -5.6; // the lane deeper in the aisle
 
 const shelfBase = 0.34; // the legs of a shelf unit, clear of the C-Matic 10
 
 // Keys of the active robot over the phase of AT, [phase, x, z, yaw]. The yaw is the heading, 0 faces +x, pi / 2 faces the wall.
 const KEYS: [number, number, number, number][] = [
   [0.0, CH.x, CH.z, 0],
-  [0.1, CH.x, CH.z, 0],
+  [0.04, CH.x, CH.z, 0],
   [0.27, SLOTS[TARGET], LANE, 0],
   [0.31, SLOTS[TARGET], LANE, Math.PI / 2],
   [0.38, SLOTS[TARGET], SLOT_Z, Math.PI / 2],
@@ -56,7 +56,7 @@ const KEYS: [number, number, number, number][] = [
 ];
 // The legs of the route that are drawn ahead of the robot, [from phase, to phase, end of the leg]
 const LEGS: [number, number, [number, number]][] = [
-  [0.1, 0.27, [SLOTS[TARGET], LANE]],
+  [0.04, 0.27, [SLOTS[TARGET], LANE]],
   [0.31, 0.38, [SLOTS[TARGET], SLOT_Z]],
   [0.59, 0.78, [PX, LANE]],
   [0.82, 0.87, [PX, SLOT_Z]],
@@ -181,7 +181,9 @@ const lightBarDim = flat(G.mid);
 const benchTop = mat(G.dark, 0.2, 0.6);
 const benchLeg = mat(G.graphite, 0.18, 0.6);
 const personLeg = mat(G.graphite, 0.18);
-const personTorso = mat(G.light, 0.25);
+const personBoot = mat(G.black, 0.12);
+const personVest = mat(G.pale, 0.35);
+const personTorso = mat(G.mid, 0.25);
 const personHead = mat(G.pale, 0.25);
 const personArm = mat(G.mid, 0.2);
 const hatchMat = flat(G.white, 0.2);
@@ -199,7 +201,6 @@ export function BotsStage({ clock }: { clock: StoryClock }) {
   const armR = useRef<THREE.Group>(null);
   const hlA = useRef<THREE.Mesh>(null);
   const hlB = useRef<THREE.Mesh>(null);
-  const racks = useRef<THREE.Group>(null);
   const pathMat = useMemo(() => new LineMaterial({ color: 0xffffff, linewidth: 1, transparent: true, opacity: 0.75, toneMapped: false, depthWrite: false, depthTest: false }), []);
   const pathLine = useMemo(() => {
     const g = new LineSegmentsGeometry();
@@ -257,8 +258,8 @@ export function BotsStage({ clock }: { clock: StoryClock }) {
     // two more robots work deeper in the aisle, each moves a shelf unit along its lane and back, in step
     bg.current.forEach((b, i) => {
       if (!b) return;
-      const x0 = i === 0 ? 2.2 : 6.2;
-      const x1 = i === 0 ? 4.6 : 8.4;
+      const x0 = i === 0 ? 1.8 : 4.6;
+      const x1 = i === 0 ? 3.8 : 6.8;
       const c = (((ph * 2.2 + (i === 0 ? 0.0 : 0.35)) % 1) + 1) % 1;
       const u = c < 0.42 ? ease(c / 0.42) : c < 0.5 ? 1 : c < 0.92 ? 1 - ease((c - 0.5) / 0.42) : 0;
       const x = lerp(x0, x1, u);
@@ -299,12 +300,6 @@ export function BotsStage({ clock }: { clock: StoryClock }) {
         ob.position.copy(v.a.lerp(v.b, take));
       }
     }
-    // the racks rise from the floor as the hall comes up, a plain rise
-    const rise = smooth(seg(pos, 10850, 11010));
-    if (racks.current) {
-      racks.current.scale.y = Math.max(rise, 0.001);
-      racks.current.visible = rise > 0.003;
-    }
   });
 
   const botKinds: TruckName[] = ['cmatic10', 'cmatic10', 'cmatichp'];
@@ -320,7 +315,7 @@ export function BotsStage({ clock }: { clock: StoryClock }) {
       <mesh position={at3(0, 6, WALL_Z - 0.5)} material={wallMat} receiveShadow>
         <boxGeometry args={[200, 12, 1]} />
       </mesh>
-      <group ref={racks} position={at3(0, 0, 0)}>
+      <group position={at3(0, 0, 0)}>
         <Racks x0={2.4} x1={21.0} seed={11} />
       </group>
       <Inst geo={unitGeo} mat={outlineMat} items={marks.o.map(([x, y, z, ...r]) => [x, y, BOTS_Z + z, ...r] as It)} cast={false} receive={false} />
@@ -362,22 +357,42 @@ export function BotsStage({ clock }: { clock: StoryClock }) {
         </mesh>
       </group>
       <group position={at3(PERSON_X, 0, SLOT_Z)} rotation={[0, Math.PI, 0]}>
+        {/* a picker, 1.75 m, faceted like the rest of the city, legs and boots, a vest over the torso, a head on a neck, arms in two parts */}
         {[-0.1, 0.1].map((z) => (
-          <mesh key={z} position={[0, 0.45, z]} material={personLeg} castShadow>
-            <boxGeometry args={[0.14, 0.9, 0.14]} />
-          </mesh>
+          <group key={z}>
+            <mesh position={[0, 0.5, z]} material={personLeg} castShadow>
+              <boxGeometry args={[0.13, 0.78, 0.14]} />
+            </mesh>
+            <mesh position={[0.05, 0.05, z]} material={personBoot} castShadow>
+              <boxGeometry args={[0.28, 0.1, 0.15]} />
+            </mesh>
+          </group>
         ))}
         <mesh position={[0, 1.2, 0]} material={personTorso} castShadow>
-          <boxGeometry args={[0.24, 0.6, 0.44]} />
+          <boxGeometry args={[0.24, 0.58, 0.42]} />
         </mesh>
-        <mesh position={[0, 1.62, 0]} material={personHead} castShadow>
-          <icosahedronGeometry args={[0.13, 0]} />
+        <mesh position={[0.005, 1.22, 0]} material={personVest} castShadow>
+          <boxGeometry args={[0.25, 0.4, 0.44]} />
         </mesh>
-        {([[armL, -0.27], [armR, 0.27]] as [RefObject<THREE.Group | null>, number][]).map(([r, z], i) => (
+        <mesh position={[0, 1.54, 0]} material={personArm}>
+          <cylinderGeometry args={[0.05, 0.06, 0.1, 8]} />
+        </mesh>
+        <mesh position={[0, 1.65, 0]} material={personHead} castShadow>
+          <sphereGeometry args={[0.115, 8, 6]} />
+        </mesh>
+        {([[armL, -0.255], [armR, 0.255]] as [RefObject<THREE.Group | null>, number][]).map(([r, z], i) => (
           <group key={i} ref={r} position={[0, 1.44, z]}>
-            <mesh position={[0, -0.3, 0]} material={personArm} castShadow>
-              <boxGeometry args={[0.1, 0.62, 0.1]} />
+            <mesh position={[0, -0.15, 0]} material={personTorso} castShadow>
+              <boxGeometry args={[0.09, 0.3, 0.09]} />
             </mesh>
+            <group position={[0, -0.3, 0]} rotation={[0, 0, 0.3]}>
+              <mesh position={[0, -0.14, 0]} material={personArm} castShadow>
+                <boxGeometry args={[0.08, 0.28, 0.08]} />
+              </mesh>
+              <mesh position={[0, -0.3, 0]} material={personHead} castShadow>
+                <boxGeometry args={[0.09, 0.09, 0.09]} />
+              </mesh>
+            </group>
           </group>
         ))}
       </group>

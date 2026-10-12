@@ -146,10 +146,12 @@ export function Site() {
     fenceR.push([65, 0.88, -3.7, 70, 0.07, 0.05], [65, 0.55, -3.7, 70, 0.07, 0.05]);
     // low shrubs on the south side, close to the camera
     const south: It[] = [];
+    // they stop at the yard apron, x 98, so the south pavement of R is bare, the draws still run to 118 so nothing else moves
     for (let x = -72; x < 118; x += 4.4) {
       if (r() < 0.35) continue;
       const s = 0.6 + r() * 0.5;
-      south.push([x + r() * 2, s * 0.14, 8 + r() * 2, s * 0.4, s * 0.26, s * 0.38, r() * 6]);
+      const it: It = [x + r() * 2, s * 0.14, 8 + r() * 2, s * 0.4, s * 0.26, s * 0.38, r() * 6];
+      if (x < 98) south.push(it);
     }
     // far hangars
     const hang: It[] = [];

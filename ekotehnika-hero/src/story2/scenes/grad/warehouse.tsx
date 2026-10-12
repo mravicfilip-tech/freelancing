@@ -10,6 +10,7 @@ import { W } from '../../../variants/v4/look';
 import { useTruck } from './trucks';
 import { Person } from '../../../story/scenes/grad/vehicles';
 import { Box, Inst, Pools, cyl, rng, unit, type It, type Pool } from './kit';
+import { G } from './look';
 import { AISLE_Z, WH, indoorX, nearRacks, propsGrow, racksGrow, roofSlide, seg, smooth, wallsGrow, lerp } from './choreo';
 
 const FLOOR = 0.22;
@@ -20,8 +21,11 @@ const SLOPE = Math.hypot(HALF, RISE) + 0.45;
 
 const roofMat = new THREE.MeshStandardMaterial({ color: C.white, roughness: 0.78, side: THREE.DoubleSide });
 const roofMatN = new THREE.MeshStandardMaterial({ color: C.shadeGrey, roughness: 0.78, side: THREE.DoubleSide });
-// racks and pallets are pale with a little light of their own, so no dark slab can sit under the nav
+// pallets and cartons are pale with a little light of their own. The rack frame is graphite and mid grey, so the structure of the
+// aisle reads against the loads, uprights dark, beams lighter, no dark slab sits under the nav because the top row is a plain band
 const rackMat = new THREE.MeshStandardMaterial({ color: C.shadeGrey, emissive: C.white, emissiveIntensity: 0.4, roughness: 0.8 });
+const upMat = new THREE.MeshStandardMaterial({ color: G.graphite, emissive: G.graphite, emissiveIntensity: 0.25, roughness: 0.7 });
+const beamMat = new THREE.MeshStandardMaterial({ color: G.mid, emissive: G.mid, emissiveIntensity: 0.3, roughness: 0.6 });
 const floorMat = new THREE.MeshStandardMaterial({ color: C.shadeGrey, roughness: 0.95 });
 
 // A corrugated sheet, ribs across the slope
@@ -69,21 +73,35 @@ const BAYS = 12;
 const RX0 = WH.x0 + 3.2;
 const LEVELS = [0.05, 1.57, 3.05, 4.53];
 
-type Block = { ups: It[]; beams: It[]; pallets: It[]; cartons: It[]; tape: It[]; shade: It[]; label: It[]; code: It[]; wrap: It[] };
+type Block = { ups: It[]; feet: It[]; ties: It[]; beams: It[]; lips: It[]; pallets: It[]; cartons: It[]; tape: It[]; shade: It[]; label: It[][]; plabel: It[][]; wrap: It[] };
+const LABELS = 4; // label faces, each its own code, dealt out along the beams and the loads
 function makeBlock(zc: number, seed: number): Block {
   const r = rng(seed);
-  const b: Block = { ups: [], beams: [], pallets: [], cartons: [], tape: [], shade: [], label: [], code: [], wrap: [] };
+  const b: Block = { ups: [], feet: [], ties: [], beams: [], lips: [], pallets: [], cartons: [], tape: [], shade: [], label: Array.from({ length: LABELS }, () => []), plabel: Array.from({ length: LABELS }, () => []), wrap: [] };
+  let n = 0;
   for (const dz of [-0.55, 0.55]) {
     const z = zc + dz;
-    for (let i = 0; i <= BAYS; i++) for (const o of [-0.5, 0.5]) b.ups.push([RX0 + i * BAY, 3.0, z + o, 0.1, 6.0, 0.1]);
-    for (const by of [1.5, 2.98, 4.46, 5.94]) for (const o of [-0.5, 0.5]) b.beams.push([RX0 + (BAYS * BAY) / 2, by, z + o, BAYS * BAY, 0.14, 0.07]);
-    // a label plate and its code stripe on every beam of every bay, on the face toward the aisle
+    for (let i = 0; i <= BAYS; i++) {
+      for (const o of [-0.5, 0.5]) {
+        b.ups.push([RX0 + i * BAY, 3.0, z + o, 0.1, 6.0, 0.1]);
+        // a foot plate under every upright
+        b.feet.push([RX0 + i * BAY, 0.015, z + o, 0.26, 0.03, 0.26]);
+      }
+      // cross ties between the two uprights of a frame, at the beam heights
+      for (const by of [0.75, 2.24, 3.72, 5.2]) b.ties.push([RX0 + i * BAY, by, z, 0.06, 0.06, 1.0]);
+    }
+    for (const by of [1.5, 2.98, 4.46, 5.94])
+      for (const o of [-0.5, 0.5]) {
+        b.beams.push([RX0 + (BAYS * BAY) / 2, by, z + o, BAYS * BAY, 0.14, 0.07]);
+        // the lip of a box beam, a thin step under its lower edge
+        b.lips.push([RX0 + (BAYS * BAY) / 2, by - 0.09, z + o + Math.sign(o) * 0.025, BAYS * BAY, 0.04, 0.03]);
+      }
+    // a label plate with its bar code on every beam of every bay, on the face toward the aisle, a code per plate
     for (let i = 0; i < BAYS; i++)
       for (const by of [1.5, 2.98, 4.46]) {
         const o = dz > 0 ? 0.5 : -0.5;
         const x = RX0 + i * BAY + 0.55;
-        b.label.push([x, by, z + o + Math.sign(o) * 0.05, 0.34, 0.11, 0.012]);
-        b.code.push([x, by, z + o + Math.sign(o) * 0.058, 0.24, 0.03, 0.012]);
+        b.label[n++ % LABELS].push([x, by, z + o + Math.sign(o) * 0.05, 0.46, 0.15, 0.012]);
       }
     for (let i = 0; i < BAYS; i++) {
       for (const ly of LEVELS) {
@@ -93,8 +111,10 @@ function makeBlock(zc: number, seed: number): Block {
           const h = 0.7 + r() * 0.4;
           b.pallets.push([x, ly + 0.07, z, 1.2, 0.14, 0.95]);
           (r() < 0.3 ? b.shade : b.cartons).push([x, ly + 0.14 + h / 2, z, 1.08 - r() * 0.08, h, 0.86]);
-          // the stretch wrap, a pale shell round the load and a second band at the pallet
-          b.wrap.push([x, ly + 0.14 + h / 2, z, 1.13, h + 0.02, 0.9]);
+          // the stretch film, four opaque bands round the load, overlapping the way a spiral wrap does, and a pallet tag on the aisle face
+          for (const f of [0.14, 0.38, 0.62, 0.86]) b.wrap.push([x, ly + 0.14 + h * f, z, 1.13, 0.075, 0.9]);
+          const face = dz > 0 ? 1 : -1;
+          b.plabel[n++ % LABELS].push([x + 0.2, ly + 0.14 + h * 0.55, z + face * 0.462, 0.3, 0.2, 0.012]);
           if (r() < 0.35) b.tape.push([x, ly + 0.14 + h / 2, z, 1.1, h + 0.01, 0.1]);
         }
       }
@@ -103,22 +123,58 @@ function makeBlock(zc: number, seed: number): Block {
   return b;
 }
 
-const wrapMat = new THREE.MeshStandardMaterial({ color: C.white, transparent: true, opacity: 0.22, roughness: 0.2, depthWrite: false });
-const labelMat = new THREE.MeshBasicMaterial({ color: C.white, toneMapped: false });
-const codeMat = new THREE.MeshBasicMaterial({ color: C.ink, toneMapped: false });
+// The stretch film, bands of a glossy white, opaque, so the load reads as wrapped and nothing hazes over it
+const wrapMat = new THREE.MeshStandardMaterial({ color: C.white, emissive: C.white, emissiveIntensity: 0.25, roughness: 0.18 });
+
+// A label face, a white plate with a bar code and a short bay number in ink. Four codes are dealt out along the racks.
+const CODES = ['A-01-2', 'A-02-1', 'B-04-3', 'B-07-2'];
+const labelMats: THREE.MeshBasicMaterial[] = [];
+function labelMaterial(i: number) {
+  if (labelMats[i]) return labelMats[i];
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 84;
+  const g = c.getContext('2d')!;
+  g.fillStyle = C.white;
+  g.fillRect(0, 0, 256, 84);
+  g.fillStyle = C.ink;
+  // the bar code, bars of one to four units from a fixed sequence
+  const r = rng(300 + i);
+  let x = 14;
+  while (x < 242) {
+    const w = 2 + Math.floor(r() * 4);
+    if (r() > 0.4) g.fillRect(x, 10, w, 36);
+    x += w + 2;
+  }
+  g.font = '700 26px "Daxline Pro", Arial, sans-serif';
+  g.textBaseline = 'alphabetic';
+  g.fillText(CODES[i], 14, 76);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  labelMats[i] = new THREE.MeshBasicMaterial({ map: t, toneMapped: false });
+  return labelMats[i];
+}
 
 function RackBlock({ block, gref }: { block: Block; gref: (g: THREE.Group | null) => void }) {
   return (
     <group ref={gref}>
-      <Inst mat={rackMat} items={block.ups} />
-      <Inst mat={rackMat} items={block.beams} />
+      <Inst mat={upMat} items={block.ups} />
+      <Inst mat={upMat} items={block.feet} />
+      <Inst mat={upMat} items={block.ties} cast={false} />
+      <Inst mat={beamMat} items={block.beams} />
+      <Inst mat={beamMat} items={block.lips} cast={false} />
       <Inst mat={rackMat} items={block.pallets} />
       <Inst mat={W.carton} items={block.cartons} />
       <Inst mat={W.cartonShade} items={block.shade} />
       <Inst mat={rackMat} items={block.tape} cast={false} />
       <Inst mat={wrapMat} items={block.wrap} cast={false} receive={false} />
-      <Inst mat={labelMat} items={block.label} cast={false} receive={false} />
-      <Inst mat={codeMat} items={block.code} cast={false} receive={false} />
+      {block.label.map((items, i) => (
+        <Inst key={`l${i}`} mat={labelMaterial(i)} items={items} cast={false} receive={false} />
+      ))}
+      {block.plabel.map((items, i) => (
+        <Inst key={`p${i}`} mat={labelMaterial(i)} items={items} cast={false} receive={false} />
+      ))}
     </group>
   );
 }

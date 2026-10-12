@@ -156,14 +156,22 @@ const K = (p: number, t: [number, number, number], yaw: number, el: number, d: n
 const SX = 0.78;
 
 export type Region = 'site' | 'bp' | 'grid' | 'bots';
-export const SWAP_T = 10840; // the dark floor covers the whole screen, the robot floor takes over
+// T is one move. The hall of the robots, drawn from its own camera, pushes the rental depot off the top of the frame, the two meet on
+// one hard edge that climbs the frame, the depot above it and the hall below it. By STRIP_END the hall fills the frame.
+export const STRIP_START = 10500;
+export const STRIP_END = 10860;
+export const SWAP_T = STRIP_END;
+export const strip = (pos: number) => eio(seg(pos, STRIP_START, STRIP_END));
 export const regionAt = (pos: number): Region => (pos < T.S.start ? 'site' : pos < T.N.start ? 'bp' : pos < SWAP_T ? 'grid' : 'bots');
 
 // Keys per region. SITE target x is relative to the outdoor forklift's x, the others are absolute.
 const KEYS: Record<Region, Key[]> = {
   site: [
-    // H, D1, C1, D2 the side on drive, the forklift stays at the same spot on screen
-    K(0, [0.5, 1.2, 0], 0, 6, 16.5, 26, SX, 0.5, true),
+    // H holds the truck high enough that the road ends above the headline, so the title stands on bare ground. D1 lowers the view
+    // to the C1 framing, the road in the middle of the frame and the bare ground under it for the spec row.
+    K(0, [0.5, 1.2, 0], 0, 6, 16.5, 26, SX, 0.4, true),
+    K(500, [0.5, 1.2, 0], 0, 6, 16.5, 26, SX, 0.4, true),
+    K(1500, [0.5, 1.2, 0], 0, 6, 16.5, 26, SX, 0.5, true),
     K(2900, [0.5, 1.2, 0], 0, 6, 16.5, 26, SX, 0.5, true),
     // F flips from side on to straight down, swinging round to the front of the truck
     K(3180, [0.5, 0.8, -1.5], 46, 38, 23, 26, 0.62, 0.45),
@@ -174,7 +182,8 @@ const KEYS: Record<Region, Key[]> = {
     K(5300, [24, 11, -9], 90, 90, 13, 26, 0.5, 0.5, true),
     K(5850, [24, 11, -9], 90, 90, 13, 26, 0.5, 0.5, true),
     // P, then the model from a high corner
-    K(6400, [24, 1.5, -9], 40, 37, 104, 20, 0.5, 0.5, true),
+    // the hall sits in columns 7 to 12 of the frame, columns 1 to 6 belong to the text and its cell
+    K(6400, [24, 1.5, -9], 40, 37, 104, 20, 0.75, 0.5, true),
     // A, low and side on, then swinging into the aisle
     K(6700, [21, 1.3, -9], 6, 9, 26, 30, 0.5, 0.52),
     K(7050, [26.5, 1.2, -9], 50, 7, 18, 30, 0.5, 0.52),
@@ -188,7 +197,8 @@ const KEYS: Record<Region, Key[]> = {
   // N frames the depot under the text band, the rig fits it to the viewport, see gridFit
   grid: [K(9600, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true), K(SWAP_T, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true)],
   // AT, a three quarter view of the order at about 4 m eye height, from the south west, the job in the right half
-  bots: [K(SWAP_T, [3.0, 0.9, BOTS_Z - 2.9], -28, 15, 16, 26, 0.7, 0.6, true), K(12000, [3.0, 0.9, BOTS_Z - 2.9], -28, 15, 16, 26, 0.7, 0.6, true)],
+  // the order stays right of the column 7 line, the charger's left edge lands at x 1005 of 1920
+  bots: [K(SWAP_T, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 18, 26, 0.75, 0.6, true), K(12000, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 18, 26, 0.75, 0.6, true)],
 };
 
 const out = new Array(9).fill(0);
@@ -233,8 +243,21 @@ export const IN_X0 = 178;
 export const IN_X1 = 196.5;
 export const indoorX = (pos: number) => lerp(IN_X0, IN_X1, eio(seg(pos, 6450, 7600)));
 // the warehouse grows from a flat floor, and the hero truck only exists once props appear
-// B pushes the camera into the black part of the truck and cuts to black when it fills the frame, S cuts in from it, no fade
-export const blackOut = (pos: number) => (pos >= 7790 && pos < T.S.start ? 1 : 0);
+// B pushes the camera into the black part of the truck and cuts to black when it fills the frame. The black holds to the end of B,
+// then rolls up off the frame as a hard edged shutter while the schematic of S lights under it. The share of the frame it covers
+// from the top, 1 to 0.
+export const SHUTTER = 300;
+export const blackOut = (pos: number) => (pos < 7790 ? 0 : pos < T.S.start ? 1 : 1 - eio(seg(pos, T.S.start, T.S.start + SHUTTER)));
+
+// P text sits on a hard edged cell of plain ground, from the left edge to the column 7 line of the grid (the frame's 50 percent
+// and 12px) and from the top rule down. It wipes open by its right edge just before the text arrives and wipes shut as the text
+// leaves, the hall behind it is whole and runs on under it. The share of that width, 0 to 1.
+export const textCell = (pos: number) => eio(seg(pos, 5230, 5300)) * (1 - eio(seg(pos, T.P.start + 0.86 * (T.P.end - T.P.start), T.P.end)));
+
+// The plain band of the top row, 136px, in the ground of the beat. It turns dark where the shell turns the top row dark, 7790 to
+// 9525 and from 10790, and it is white on the lit light beats and the flat floor colour of the depot and the dark floors, so it reads as the ground and not as a panel.
+export const BAND = { site: '#ffffff', grid: '#eeeff3', dark: '#222222' };
+export const topBand = (pos: number) => ((pos >= 7790 && pos < 9525) || pos >= 10790 ? BAND.dark : pos >= 9525 ? BAND.grid : BAND.site);
 
 /* ------------------------------------------------------------------ S, L, N, T, AT */
 
@@ -243,17 +266,38 @@ export const bpRoll = (pos: number) => pos * 0.026; // metres of wheel travel, s
 // the blade has cleared the top row of the page at 9525, where the shell turns the nav from white to ink
 export const lift = (pos: number) =>
   pos < 9500 ? -1.2 + 2.27 * seg(pos, 9040, 9500) : pos < 9525 ? 1.07 + 0.23 * seg(pos, 9500, 9525) : 1.3 + 0.25 * seg(pos, 9525, 9610);
-// T, the dark floor comes up from the bottom while the grid drops away
-// and reaches the top row at 10790, where the shell turns the nav white
-export const darkRise = (pos: number) => -1.2 + 2.45 * seg(pos, 10520, 10830);
-// the fifteen trucks drive off to the right while the dark floor rises
-export const gridExit = (pos: number) => seg(pos, 10500, 10780);
+// the trucks of the depot drive off to both sides while the hall pushes the depot up
+export const gridExit = (pos: number) => seg(pos, STRIP_START, 10780);
 // the grid of fifteen fills row by row
 export const gridFill = (pos: number) => seg(pos, T.N.start + 60, T.N.end - 120);
-// the robots, the dotted paths draw on in the second half of T
-export const pathDraw = (pos: number) => smooth(seg(pos, SWAP_T + 10, 11120));
 export const botPhase = (pos: number) => seg(pos, T.AT.start, T.AT.end);
 
-// Where the fleet of N sits. The text takes the top band down to about y 500, the depot floor with its bays runs edge to
-// edge below it, and the fifteen trucks stand in the middle of the width, 1100px of 1920, with empty bays out to both edges.
-export const gridFit = (w: number, h: number) => ({ ox: 0.5, oy: 0.5 + 0.2445 - 32.5 / h, d: 105 / (w / h) });
+// Where the depot of N sits. The text takes the top band down to the bottom rule of the spec row, the depot floor with its bays
+// runs edge to edge under it, and the trucks stand in three rows across the whole width with bays going on past both edges.
+// The view looks north from the south at 24 degrees. The depot's near bay edge is put just above the bottom rule of the grid, and
+// the view backs off until the far trucks stand clear of the spec row, never closer than 38 m across. This is the camera maths of
+// the director written out for the depot, so the fit can be solved before the picture is drawn.
+const DEPOT = { el: 24, fov: 20, near: 5.4 + 2.3, far: -5.4 - 2.3, truck: 2.5, y: 1.2 };
+export const gridFit = (w: number, h: number, topLimit = 524) => {
+  const aspect = w / h;
+  const el = (DEPOT.el * Math.PI) / 180;
+  const f = h / 2 / Math.tan((DEPOT.fov * Math.PI) / 360);
+  // screen y of a point in the depot's own metres (z south, y up) for a camera d away, the look at point at the frame middle
+  const rowY = (d: number, z: number, y: number) => {
+    const vy = y - DEPOT.y - d * Math.sin(el);
+    const vz = z - d * Math.cos(el);
+    const depth = vy * -Math.sin(el) + vz * -Math.cos(el);
+    const up = vy * Math.cos(el) + vz * -Math.sin(el);
+    return h / 2 - (f * up) / depth;
+  };
+  let d = 105 / aspect;
+  const target = h - 65 - 10;
+  let oy = 0.5;
+  for (let i = 0; i < 10; i++) {
+    oy = 0.5 + (target - rowY(d, DEPOT.near, 0)) / h;
+    const farTop = rowY(d, DEPOT.far, DEPOT.truck) + (oy - 0.5) * h;
+    if (farTop >= topLimit + 12 || d > (105 / aspect) * 1.3) break;
+    d *= 1.04;
+  }
+  return { ox: 0.5, oy, d };
+};

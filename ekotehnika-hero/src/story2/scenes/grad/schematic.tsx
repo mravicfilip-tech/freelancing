@@ -1,6 +1,6 @@
 // S, the servis schematic. The real X50 as a technical drawing in three quarter perspective on the dark ground, drawn
 // with hidden line removal. The model is drawn as solid ink fills that write depth, so nothing behind a surface shows.
-// On top, the hard edges of each part (40 degrees, short bits dropped) as 1px lines at 55 percent white, depth tested,
+// On top, the hard edges of each part (55 degrees, bits under 12 cm dropped) as 1px lines at 55 percent white, depth tested,
 // and an inverted hull pass gives the outer contour one crisp 2px line at 90 percent white. The tyres are not edged, each
 // outer wheel face is one clean tyre circle, a hub circle and five lugs, turning with the story clock. Dashed centre lines,
 // and dimension lines in LMH turquoise 72 percent with the X50 / 600 figures from the
@@ -13,7 +13,7 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useGLTF } from '@react-three/drei';
 import type { StoryClock } from '../../clock';
-import { bpRoll, seg, smooth } from './choreo';
+import { bpRoll } from './choreo';
 import { X50, bodyEdges, prepareX50 } from './edges';
 import { INFO } from './look';
 
@@ -115,7 +115,7 @@ function dimensions() {
     labels.push({ text, p: [x + 0.06, GROUND + (top - GROUND) * at, z] });
   };
   gy(1.0, 1.25, 2.458, `H1 ${FIG.h1}`, [0.42, 2.458, 0.52], 0.3);
-  gy(1.95, 1.25, 2.511, `H6 ${FIG.h6}`, [-1.55, 2.511, 0.68], 0.68);
+  gy(-2.95, 1.25, 2.511, `H6 ${FIG.h6}`, [-1.55, 2.511, 0.68], 0.62);
   // the load centre over the near fork, and the capacity
   const x0 = tip - 1.2;
   const x1 = x0 + 0.6;
@@ -194,7 +194,7 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
     return s;
   }, [gltf, fill, hull]);
   const wheelNodes = useMemo(() => X50.wheels.map((w) => ({ obj: model.getObjectByName(w.node)!, r: w.r })), [model]);
-  const edges = useMemo(() => seg2(bodyEdges(gltf.scene, 40, 0.03), mats.detail), [gltf, mats]);
+  const edges = useMemo(() => seg2(bodyEdges(gltf.scene, 55, 0.12), mats.detail), [gltf, mats]);
   // wheel faces, in the wheel's own frame (unit tyre radius), on the outer face of each tyre
   const wheelLines = useMemo(
     () =>
@@ -241,6 +241,17 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
     };
   }, [invalidate]);
 
+  // every line sits at one fixed strength, 2px outlines at 90 percent, 1px detail at 55 percent
+  useEffect(() => {
+    mats.centre.opacity = 0.5;
+    mats.dim.opacity = 1;
+    mats.wheelO.opacity = 0.9;
+    mats.detail.opacity = 0.55;
+    mats.wheelD.opacity = 0.55;
+    hull.uniforms.uOpacity.value = 0.9;
+    labels.forEach((l) => (l.mat.opacity = 1));
+  }, [mats, hull, labels]);
+
   useEffect(() => {
     const f = Math.max(1, size.height / 900) * dpr;
     Object.values(mats).forEach((m) => m.resolution.set(size.width * dpr, size.height * dpr));
@@ -255,17 +266,7 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
 
   useFrame(() => {
     const pos = clock.pos.current;
-    // the guides and the dimensions are there from the first light, the truck draws in after them
-    const guides = smooth(seg(pos, 8040, 8240));
-    const draw = smooth(seg(pos, 8060, 8330));
-    const det = smooth(seg(pos, 8200, 8420));
-    mats.centre.opacity = 0.5 * guides;
-    mats.dim.opacity = guides;
-    labels.forEach((l) => (l.mat.opacity = guides));
-    hull.uniforms.uOpacity.value = 0.9 * draw;
-    mats.wheelO.opacity = 0.9 * draw;
-    mats.detail.opacity = 0.55 * det;
-    mats.wheelD.opacity = 0.55 * det;
+    // the whole drawing is there at once, the shutter that rolls off the black of B is what shows it, no line fades in
     const roll = bpRoll(pos) * 0.42;
     wheelNodes.forEach((w, i) => {
       const a = (X50.spin * roll) / w.r;

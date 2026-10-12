@@ -1,60 +1,14 @@
-// S, the dark blueprint. The same realistic Linde forklift as white lines (every edge of every part, drawn as
-// fat line segments), standing still while its tyres turn. Two diagonal lines and faint lines at the side slide
-// across the screen so the truck seems to drive.
-import { useLayoutEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+// S, the dark servis stage. The X50 drawn as a precise schematic (see schematic.tsx), standing still while its tyres
+// turn. A few faint diagonal lines slide across the scene half behind it so the truck seems to drive. The lines are cut square to
+// columns 5 to 12 between the two rules, they never cross the text columns or the top row.
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { C } from '../../../tokens';
 import type { StoryClock } from '../../clock';
-import { BP_Z, T, bpRoll, lift, seg, smooth } from './choreo';
+import { BP_Z, T, lift, seg, smooth } from './choreo';
+import { colEdge } from './look';
 import { ScreenSpace } from './screen';
-import { useTruck } from './trucks';
-
-const hidden = new THREE.MeshBasicMaterial({ visible: false });
-export const lineMat = new THREE.LineBasicMaterial({ color: C.white, transparent: true, opacity: 0.78, depthTest: true });
-
-// Every sharp edge of every part of the real X50, as thin white lines. The lines are children of the part they
-// outline, so a turning tyre turns its own lines.
-export function BlueprintTruck({ clock }: { clock: StoryClock }) {
-  const t = useTruck('x50');
-  const g = useRef<THREE.Group>(null);
-  useLayoutEffect(() => {
-    const host = g.current;
-    if (!host) return;
-    host.add(t.root);
-    const made: THREE.Object3D[] = [];
-    const meshes: THREE.Mesh[] = [];
-    t.root.traverse((o) => {
-      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
-    });
-    const orig = meshes.map((m) => m.material);
-    for (const mesh of meshes) {
-      const e = new THREE.EdgesGeometry(mesh.geometry, 28);
-      if (!e.getAttribute('position')?.count) continue;
-      const ls = new THREE.LineSegments(e, lineMat);
-      ls.renderOrder = 5;
-      ls.frustumCulled = false;
-      mesh.add(ls);
-      made.push(ls);
-      mesh.material = hidden;
-      mesh.castShadow = false;
-      mesh.receiveShadow = false;
-    }
-    return () => {
-      made.forEach((o) => o.removeFromParent());
-      meshes.forEach((m, i) => {
-        m.material = orig[i];
-      });
-      t.root.removeFromParent();
-    };
-  }, [t]);
-  useFrame(() => {
-    const pos = clock.pos.current;
-    t.setLift(0.45);
-    t.roll(bpRoll(pos));
-  });
-  return <group ref={g} />;
-}
+import Schematic from './schematic';
 
 /* ------------------------------------------------------------------ the diagonal lines */
 
@@ -65,14 +19,44 @@ const CENTRE = new THREE.Vector2(0.32, 0.0);
 const N_LINES = 14;
 
 export function Streaks({ clock, strength, rise }: { clock: StoryClock; strength: (pos: number) => number; rise: (pos: number) => number }) {
+  const size = useThree((s) => s.size);
+  const gl = useThree((s) => s.gl);
   const meshes = useRef<(THREE.Mesh | null)[]>([]);
-  const mats = useMemo(() => Array.from({ length: N_LINES }, () => new THREE.MeshBasicMaterial({ color: C.white, transparent: true, depthWrite: false, toneMapped: false })), []);
+  // each line is one sheet of white that is cut square to the scene cell in page pixels, columns 5 to 12 between the two rules
+  const rect = useMemo(() => new THREE.Vector4(), []);
+  const mats = useMemo(
+    () =>
+      Array.from(
+        { length: N_LINES },
+        () =>
+          new THREE.ShaderMaterial({
+            transparent: true,
+            depthWrite: false,
+            toneMapped: false,
+            uniforms: { uA: { value: 0 }, uRect: { value: rect }, uRes: { value: new THREE.Vector2(1, 1) } },
+            vertexShader: 'void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+            fragmentShader: `
+              uniform float uA; uniform vec4 uRect; uniform vec2 uRes;
+              void main() {
+                vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
+                if (p.x < uRect.x || p.x > uRect.z || p.y < uRect.y || p.y > uRect.w) discard;
+                float a = uA;
+                gl_FragColor = vec4(vec3(1.0), a);
+              }`,
+          }),
+      ),
+    [rect],
+  );
   const geo = useMemo(() => new THREE.PlaneGeometry(6, 1), []);
   useFrame(() => {
+    const k = gl.getPixelRatio();
+    const x0 = colEdge(size.width, 5);
+    // between the top rule (136px) and the bottom rule, 65px up from the bottom edge, inside the right margin
+    rect.set(x0 * k, 136 * k, (size.width - 48) * k, (size.height - 65) * k);
     const pos = clock.pos.current;
     const off = (pos - T.S.start) * 0.0006;
     const base = NORM.dot(CENTRE);
-    const k = strength(pos);
+    const s = strength(pos);
     const up = rise(pos);
     for (let i = 0; i < N_LINES; i++) {
       const m = meshes.current[i];
@@ -87,14 +71,17 @@ export function Streaks({ clock, strength, rise }: { clock: StoryClock; strength
       const p = base + q;
       m.position.set(CENTRE.x + NORM.x * (p - base), CENTRE.y + NORM.y * (p - base) + up, 0);
       m.rotation.z = ANG;
-      m.scale.y = 0.0016 + 0.0032 * env;
-      mats[i].opacity = (0.16 + 0.84 * env) * edge * k;
+      // 1px lines, 2px at the middle of the swell
+      m.scale.y = (1 + env) / size.height;
+      mats[i].uniforms.uRes.value.set(size.width * k, size.height * k);
+      mats[i].uniforms.uA.value = (0.1 + 0.3 * env) * edge * s;
     }
   });
+  // far behind the drawing, so the black fills of the truck hide them
   return (
-    <ScreenSpace dist={9}>
+    <ScreenSpace dist={60}>
       {mats.map((mat, i) => (
-        <mesh key={i} ref={(m) => { meshes.current[i] = m; }} geometry={geo} material={mat} renderOrder={9} />
+        <mesh key={i} ref={(m) => { meshes.current[i] = m; }} geometry={geo} material={mat} renderOrder={-4} />
       ))}
     </ScreenSpace>
   );
@@ -118,14 +105,13 @@ export function useLifted(clock: StoryClock, group: React.RefObject<THREE.Group 
 export function BlueprintStage({ clock }: { clock: StoryClock }) {
   const g = useRef<THREE.Group>(null);
   // as the lifter rises, the dark section is carried up out of the frame with it
-  useLifted(clock, g, [0, 0, BP_Z], (pos) => (lift(pos) + 1.2) / 2, 12.5);
+  useLifted(clock, g, [0, 0, BP_Z], (pos) => (lift(pos) + 1.2) / 2, 13);
   return (
     <>
       <group ref={g}>
-        <BlueprintTruck clock={clock} />
+        <Schematic clock={clock} />
       </group>
       <Streaks clock={clock} strength={() => 1} rise={(pos) => (lift(pos) + 1.2) / 2} />
     </>
   );
 }
-

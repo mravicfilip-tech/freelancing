@@ -313,7 +313,8 @@ export default function Schematic({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    const show = u >= 9.95 && u < 12.0;
+    // gone by 11.9, where the light curtain of L has covered the stage, so no label can reach the rental floor behind it
+    const show = u >= 9.95 && u < 11.9;
     if (root.current) root.current.visible = show;
     if (!show) return;
     // the guides and the dimensions are there from the first light, the truck draws in after them

@@ -8,7 +8,7 @@ import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import type { SceneProps, StoryClock } from '../../clock';
 import { C } from '../../../tokens';
-import { blackOut, camAt, lerp, regionAt, seg, smooth, type Region } from './choreo';
+import { blackOut, camAt, gridFit, lerp, regionAt, seg, smooth, type Region } from './choreo';
 import { heroX, Hero } from './hero';
 import { Site } from './site';
 import { Warehouse } from './warehouse';
@@ -22,9 +22,7 @@ const GROUND: Record<Region, string> = { site: C.hoverLightGrey, bp: C.ink, grid
 function Rig({ clock }: { clock: StoryClock }) {
   const { camera, size, scene } = useThree();
   const light = useRef<THREE.DirectionalLight>(null);
-  const fog = useMemo(() => new THREE.Fog(C.hoverLightGrey, 150, 600), []);
   const bg = useMemo(() => new THREE.Color(C.hoverLightGrey), []);
-  scene.fog = fog;
   scene.background = bg;
   const tgt = useMemo(() => new THREE.Vector3(), []);
 
@@ -33,6 +31,7 @@ function Rig({ clock }: { clock: StoryClock }) {
     const pos = clock.pos.current;
     const region = regionAt(pos);
     const p = camAt(pos, region);
+    if (region === 'grid') Object.assign(p, gridFit(size.width, size.height));
     const fx = region === 'site' ? heroX(pos) : 0;
     tgt.set(p.t[0] + fx, p.t[1], p.t[2]);
     const yaw = rad(p.yaw);
@@ -47,16 +46,8 @@ function Rig({ clock }: { clock: StoryClock }) {
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld();
 
-    // the ground colour, and the fog that fades the far miniature into it
+    // the ground colour of the region, nothing fades into it, every part of the world runs to the frame or ends at its own edge
     bg.set(GROUND[region]);
-    fog.color.set(GROUND[region]);
-    if (region === 'site') {
-      fog.near = p.d * 1.05;
-      fog.far = p.d * 3.6 + 120;
-    } else {
-      fog.near = 1e5;
-      fog.far = 2e5;
-    }
 
     // the key light follows what the camera looks at, high and steep once the hall is open
     const inside = smooth(seg(pos, 5300, 5900));
@@ -114,7 +105,7 @@ export default function Scene({ clock }: SceneProps) {
         setReady(true);
       }
     };
-    document.fonts?.load('600 62px Geist').then(go, go);
+    document.fonts?.load('500 62px "Daxline Pro"').then(go, go);
     const id = window.setTimeout(go, 1800);
     return () => window.clearTimeout(id);
   }, []);

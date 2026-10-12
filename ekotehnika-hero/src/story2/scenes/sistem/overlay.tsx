@@ -1,6 +1,7 @@
 // Things that live in front of the lens, in half screen heights so they fit any width. The black fade for the
-// push into the forklift, the plain ground masks that keep the text columns clear (the top 150px at every beat, the
-// hero headline, the R text column), and the very large steel fork tine that lifts the rental section into view.
+// push into the forklift, the plain band over the top row (hard edged on the top rule, nothing feathers into the scene
+// anywhere), and the very large steel fork tine that lifts the rental section into view. Each beat's text sits on an
+// empty part of the world itself, framed by the camera, never on a painted out ground.
 // They sit one metre from the camera so nothing in the world hides them.
 import { useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
@@ -71,31 +72,6 @@ function forkGeometry() {
   return g;
 }
 
-// A dark mask with soft edges. alpha(x, y) in half screen heights, x right and y up, drawn at 160 by 80 samples.
-function maskTexture(w: number, h: number, x0: number, x1: number, y0: number, y1: number, alpha: (x: number, y: number) => number) {
-  const c = document.createElement('canvas');
-  c.width = 160;
-  c.height = 80;
-  const g = c.getContext('2d')!;
-  const img = g.createImageData(160, 80);
-  for (let j = 0; j < 80; j++)
-    for (let i = 0; i < 160; i++) {
-      const x = x0 + ((i + 0.5) / 160) * (x1 - x0);
-      const y = y1 - ((j + 0.5) / 80) * (y1 - y0);
-      const k = (j * 160 + i) * 4;
-      img.data[k] = 255;
-      img.data[k + 1] = 255;
-      img.data[k + 2] = 255;
-      img.data[k + 3] = Math.round(255 * Math.min(1, Math.max(0, alpha(x, y))));
-    }
-  g.putImageData(img, 0, 0);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  void w;
-  void h;
-  return t;
-}
-
 function curtainTexture() {
   const c = document.createElement('canvas');
   c.width = 256;
@@ -111,47 +87,11 @@ function curtainTexture() {
   return t;
 }
 
-// Plain ground the text columns need, as rectangles in design pixels of a 1440 by 900 frame. Each fades its soft sides over
-// `feather` px (left, top, right, bottom) and is on for a stretch of the story, drawn in the ground colour of the beat.
-type Rect = { rect: [number, number, number, number]; feather: [number, number, number, number]; on: (u: number) => number };
-const win = (u: number, a: number, b: number, c: number, d: number) => ease(range(u, a, b)) * (1 - ease(range(u, c, d)));
-const RECTS: Rect[] = [
-  // H, the headline column
-  { rect: [0, 150, 760, 820], feather: [0, 0, 110, 70], on: (u) => 1 - ease(range(u, 0.9, 1.3)) },
-  // C1, the title and lede
-  { rect: [0, 140, 720, 460], feather: [0, 0, 70, 60], on: (u) => win(u, 1.75, 2.0, 2.8, 3.05) },
-  // R, the text column
-  { rect: [0, 0, 520, 900], feather: [0, 0, 90, 0], on: (u) => win(u, 4.9, 5.1, 5.9, 6.0) },
-  // N, the title, lede and spec row across the top
-  { rect: [0, 0, 1440, 540], feather: [0, 0, 0, 40], on: (u) => win(u, 11.9, 12.0, 12.95, 13.2) },
-  // AT, the text block and spec row
-  { rect: [0, 0, 1100, 360], feather: [0, 0, 80, 50], on: (u) => ease(range(u, 13.7, 13.95)) },
-];
-const expand = (r: Rect): [number, number, number, number] => [r.rect[0] - r.feather[0], r.rect[1] - r.feather[1], r.rect[2] + r.feather[2], r.rect[3] + r.feather[3]];
-function rectMask(r: Rect) {
-  const [x0, y0, x1, y1] = expand(r);
-  const W = 256;
-  const H = 256;
-  const c = document.createElement('canvas');
-  c.width = W;
-  c.height = H;
-  const g = c.getContext('2d')!;
-  const img = g.createImageData(W, H);
-  const ramp = (p: number, lo: number, hi: number, f: number, first: boolean) => (f <= 0 ? 1 : first ? smooth(Math.min(1, Math.max(0, (p - lo) / f))) : smooth(Math.min(1, Math.max(0, (hi - p) / f))));
-  for (let j = 0; j < H; j++)
-    for (let i = 0; i < W; i++) {
-      const x = x0 + ((i + 0.5) / W) * (x1 - x0);
-      const y = y0 + ((j + 0.5) / H) * (y1 - y0);
-      const a = ramp(x, x0, x1, r.feather[0], true) * ramp(y, y0, y1, r.feather[1], true) * ramp(x, x0, x1, r.feather[2], false) * ramp(y, y0, y1, r.feather[3], false);
-      const k = (j * W + i) * 4;
-      img.data[k] = img.data[k + 1] = img.data[k + 2] = 255;
-      img.data[k + 3] = Math.round(255 * a);
-    }
-  g.putImageData(img, 0, 0);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
+// A hard edged cell of plain ground for a text column the world cannot give an empty patch for. Pixel box of a frame
+// (x0, x1 from the left edge, the top at the top rule, down to the bottom of the frame), on the grid lines, and it wipes in
+// and out by its right edge, nothing fades. R is the one beat that needs it, the yard has no bare floor under its text.
+type Cell = { x: [number, number]; top: number; open: (u: number) => number };
+const CELLS: Cell[] = [{ x: [0, 972], top: 136, open: (u) => ease(range(u, 4.95, 5.12)) * (1 - ease(range(u, 5.9, 6.0))) }];
 
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
@@ -162,23 +102,25 @@ export default function Overlay({ clock }: SceneProps) {
   const maskTop = useRef<THREE.Mesh>(null);
   const forkRef = useRef<THREE.Mesh>(null);
   const curtain = useRef<THREE.Mesh>(null);
-  const rects = useRef<(THREE.Mesh | null)[]>([]);
+  const cells = useRef<(THREE.Mesh | null)[]>([]);
   const fork = useMemo(forkGeometry, []);
   const cTex = useMemo(curtainTexture, []);
   const mixCol = useMemo(() => new THREE.Color(), []);
   const lightCol = useMemo(() => new THREE.Color(PAPER.bg), []);
   const aspect = size.width / size.height;
-  // The top 150px stays plain at every beat, easing out by 250px, so the nav always sits on plain dark.
-  const topTex = useMemo(() => maskTexture(0, 0, -1, 1, 1 - 0.556, 1, (_x, y) => 1 - smooth(Math.min(1, Math.max(0, (1 - y - 0.333) / 0.223)))), []);
-  const rectTex = useMemo(() => RECTS.map((r) => rectMask(r)), []);
+  // The top row is a plain band, 136px tall, ending on the top rule of the grid in a hard edge.
+  const topH = 272 / size.height;
 
   useFrame(() => {
     const u = uOf(clock);
-    // black for the push into the forklift, fully black by pos 7790 (u 9.475), clear again as the schematic lights up
-    const black = u < 10 ? ease(range(u, 9.12, 9.47)) : 1 - ease(range(u, 10.0, 10.25));
+    // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
+    // shutter rolls up from the bottom edge and covers the frame by u 9.9, then rolls away upward as the schematic lights up.
+    const lo = u < 10 ? -1.05 : lerp(-1.05, 1.05, ease(range(u, 10.0, 10.25)));
+    const hi = u < 10 ? lerp(-1.05, 1.05, ease(range(u, 9.55, 9.9))) : 1.05;
     if (fade.current) {
-      (fade.current.material as THREE.MeshBasicMaterial).opacity = black;
-      fade.current.visible = black > 0.002;
+      fade.current.visible = hi - lo > 0.002;
+      fade.current.position.y = (lo + hi) / 2;
+      fade.current.scale.y = Math.max(hi - lo, 0.001) / 4;
     }
     // The masks stay on the screen whatever the lens shift is, so undo the shift for them.
     const v = camera.view;
@@ -186,13 +128,20 @@ export default function Overlay({ clock }: SceneProps) {
     // The masks take the ground of the beat, light everywhere but the servis blueprint.
     const mc = isDark(u) ? mixCol.set(DARK_BG).lerp(lightCol, ease(range(u, 11.7, 11.8))) : lightCol;
     if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
-    RECTS.forEach((r, i) => {
-      const m = rects.current[i];
+    CELLS.forEach((c, i) => {
+      const m = cells.current[i];
       if (!m) return;
-      const a = r.on(u);
+      const o = c.open(u);
+      m.visible = o > 0.001;
+      // px of this frame to half heights, x from the middle, y up from the middle
+      const half = size.height / 2;
+      const x0 = (c.x[0] - size.width / 2) / half;
+      const x1 = x0 + ((c.x[1] - c.x[0]) / half) * o;
+      const y0 = (half - c.top) / half;
+      const y1 = -1;
+      m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0.51);
+      m.scale.set(Math.max(x1 - x0, 1e-4), y0 - y1, 1);
       (m.material as THREE.MeshBasicMaterial).color.copy(mc);
-      (m.material as THREE.MeshBasicMaterial).opacity = a;
-      m.visible = a > 0.003;
     });
     // the fork and the section it carries
     const k = u - 11;
@@ -212,30 +161,29 @@ export default function Overlay({ clock }: SceneProps) {
   return createPortal(
     <>
       <group ref={maskGroup}>
-      <mesh ref={maskTop} position={[0, 1 - 0.278, 0.52]} scale={[1, 1, 1]}>
-        <planeGeometry args={[aspect * 2 + 0.2, 0.556]} />
-        <meshBasicMaterial map={topTex} transparent depthWrite={false} toneMapped={false} />
+      <mesh ref={maskTop} position={[0, 1 - topH / 2, 0.52]} scale={[1, 1, 1]}>
+        <planeGeometry args={[aspect * 2 + 0.2, topH]} />
+        <meshBasicMaterial depthWrite={false} toneMapped={false} />
       </mesh>
-      {RECTS.map((r, i) => {
-        const [x0, y0, x1, y1] = expand(r);
-        return (
-          <mesh key={i} ref={(m) => { rects.current[i] = m; }} position={[((x0 + x1) / 2 - 720) / 450, (450 - (y0 + y1) / 2) / 450, 0.5 + i * 0.001]} visible={false}>
-            <planeGeometry args={[(x1 - x0) / 450, (y1 - y0) / 450]} />
-            <meshBasicMaterial map={rectTex[i]} transparent opacity={0} depthWrite={false} toneMapped={false} />
-          </mesh>
-        );
-      })}
+      {CELLS.map((_, i) => (
+        <mesh key={i} ref={(m) => { cells.current[i] = m; }} visible={false}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial depthWrite={false} toneMapped={false} />
+        </mesh>
+      ))}
       </group>
-      <mesh ref={fade} position={[0, 0, 0.55]} visible={false}>
+      <mesh ref={fade} position={[0, 0, 0.55]} visible={false} renderOrder={30}>
         <planeGeometry args={[aspect * 4, 4]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial color="#000000" transparent opacity={1} depthWrite={false} toneMapped={false} />
       </mesh>
-      <mesh ref={curtain} visible={false}>
+      {/* The curtain and the tine draw after every dimension label, leader and arrowhead of the servis stage, which have no
+          depth test, so the dimensions go under the light ground and the steel the moment those cover them. */}
+      <mesh ref={curtain} visible={false} renderOrder={20}>
         <planeGeometry args={[aspect * 5, 10]} />
         <meshBasicMaterial map={cTex} transparent opacity={1} toneMapped={false} />
       </mesh>
-      <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]}>
-        <meshBasicMaterial vertexColors toneMapped={false} />
+      <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]} renderOrder={21}>
+        <meshBasicMaterial vertexColors transparent opacity={1} toneMapped={false} />
       </mesh>
     </>,
     root,

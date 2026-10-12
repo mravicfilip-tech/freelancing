@@ -2,9 +2,11 @@
 // gate with its house and a van, rows of parked Linde trucks in marked bays, floor pallet stacks, open racking,
 // kerbed verges with trees and hedges, a zebra crossing and lane lines. Layout after the drone stills of the yard
 // (reference only, nothing of the photos is used). Green is not a token, so verges are LMH light grey.
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { G, lam, lit, rng } from './kit';
+import type { StoryClock } from '../../clock';
+import { G, ease, lam, lit, range, rng, uOf } from './kit';
 import { BoxSet, Hedge, Planter, Trees, Van, type BoxItem, type TreeSpec } from './props';
 import { Roof, roofMaterials, type RoofSpec } from './roof';
 import { ProxyTrucks, type TruckSpec } from './trucks';
@@ -80,8 +82,18 @@ function Hall({ x0, x1, z0, z1, eave, peak, doors, vents = 0, unit }: HallSpec) 
   );
 }
 
+// The two rows that flank the warehouse drive off along their forks inside Z, so the roof push ends on a clear yard and
+// the P text never sits over a truck. Away from the building, in metres of z, and the stretch of u it takes.
+const LEAVE_DZ = 18;
+const LEAVE_FROM = 6.45;
+const LEAVE_TO = 6.92;
+
 // A row of parked trucks and the bay lines between them.
-function Bays({ x0, x1, z, forks, step = 2.05, skip = [] }: { x0: number; x1: number; z: number; forks: 1 | -1; step?: number; skip?: number[] }) {
+function Bays({ x0, x1, z, forks, step = 2.05, skip = [], clock }: { x0: number; x1: number; z: number; forks: 1 | -1; step?: number; skip?: number[]; clock?: StoryClock }) {
+  const row = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (clock && row.current) row.current.position.z = forks * LEAVE_DZ * ease(range(uOf(clock), LEAVE_FROM, LEAVE_TO));
+  });
   const trucks = useMemo(() => {
     const out: TruckSpec[] = [];
     let i = 0;
@@ -98,7 +110,9 @@ function Bays({ x0, x1, z, forks, step = 2.05, skip = [] }: { x0: number; x1: nu
   }, [x0, x1, z, step]);
   return (
     <group>
-      <ProxyTrucks items={trucks} />
+      <group ref={row}>
+        <ProxyTrucks items={trucks} />
+      </group>
       <BoxSet items={lines} mat={line} receive={false} />
     </group>
   );
@@ -217,7 +231,7 @@ function Gate() {
   );
 }
 
-export default function Yard() {
+export default function Yard({ clock }: { clock?: StoryClock }) {
   const apronTrees = useMemo<TreeSpec[]>(() => {
     const r = rng(77);
     const t: TreeSpec[] = [];
@@ -244,8 +258,8 @@ export default function Yard() {
       <Bays x0={89.5} x1={113.5} z={-20.9} forks={1} skip={[5]} />
       <Bays x0={74.5} x1={84} z={5.9} forks={-1} />
       <Bays x0={74.5} x1={84} z={10.5} forks={1} skip={[2]} />
-      <Bays x0={121} x1={160} z={-2.4} forks={1} step={2.05} skip={[4, 9, 15]} />
-      <Bays x0={121} x1={160} z={-27.2} forks={-1} step={2.05} skip={[2, 11]} />
+      <Bays x0={121} x1={160} z={-2.4} forks={1} step={2.05} skip={[4, 9, 15]} clock={clock} />
+      <Bays x0={121} x1={160} z={-27.2} forks={-1} step={2.05} skip={[2, 11]} clock={clock} />
       {/* floor stacks and open racking */}
       <Racking x0={69.2} x1={79.7} z={-5.2} />
       <Pallets x0={120} z0={3.4} cols={14} rows={4} seed={3} />

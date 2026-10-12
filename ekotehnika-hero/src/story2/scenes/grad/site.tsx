@@ -2,13 +2,14 @@
 // building behind it with the company name in sign letters, vans, parked forklifts, trees, lamps and a fence
 // for the side on drive, then the S shaped path and open land for the top down view. Metres, x east, z south.
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../../tokens';
 import { W, withAO } from '../../../variants/v4/look';
 import { Fleet, useBaked, type Placement } from '../../../variants/v4/bake';
 import { SignWord } from '../../../variants/v4/models';
-import { Box, Inst, Pools, cone, ico, dode, rng, ribbonGeometry, unit, type It, type Pool, type Rect } from './kit';
+import { Box, Inst, Pools, ico, dode, rng, ribbonGeometry, unit, type It, type Pool, type Rect } from './kit';
+import { G, mat } from './look';
+import Yard from './yard';
 import { ARC_R, END_X, JOG, S_X, routePoints } from './choreo';
 import { VanModel } from './models';
 import { useTruck } from './trucks';
@@ -27,44 +28,35 @@ function Parked({ at }: { at: Placement }) {
 }
 
 // The lane and the path are one grey ribbon, with a white kerb either side
-const laneMat = withAO(new THREE.MeshStandardMaterial({ color: C.tonedTextGrey, roughness: 0.96, emissive: C.tonedTextGrey, emissiveIntensity: 0.28 }), 0.3, 0.9);
+const laneMat = withAO(new THREE.MeshStandardMaterial({ color: G.dark, roughness: 0.96, emissive: G.dark, emissiveIntensity: 0.3 }), 0.3, 0.9);
 const kerbMat = new THREE.MeshStandardMaterial({ color: C.white, roughness: 0.9 });
 const markMat = W.mark.clone();
 
-// The road and its markings stop 150px short of the top of the picture, so the top row of the page stays plain.
-// The clip is in screen pixels and only ever touches these three materials.
-const clipTop = { value: new THREE.Vector2(1e5, 0) };
-function clipRoad(m: THREE.MeshStandardMaterial) {
-  const prev = m.onBeforeCompile;
-  m.onBeforeCompile = (shader, r) => {
-    prev?.call(m, shader, r);
-    shader.uniforms.uClip = clipTop;
-    shader.fragmentShader = `uniform vec2 uClip;\n${shader.fragmentShader}`.replace(
-      '#include <clipping_planes_fragment>',
-      '#include <clipping_planes_fragment>\n if (gl_FragCoord.y > uClip.x) discard;',
-    );
-  };
-  const key = m.customProgramCacheKey?.bind(m);
-  m.customProgramCacheKey = () => `${key ? key() : ''}clipTop`;
-}
-clipRoad(laneMat);
-clipRoad(kerbMat);
-clipRoad(markMat);
-export const ROAD_CLEAR = 150;
 // big walls, with a little light of their own so the shaded faces stay pale and the top of the frame stays plain
 const wallBright = new THREE.MeshStandardMaterial({ color: C.white, emissive: C.white, emissiveIntensity: 0.32, roughness: 0.9 });
 const lawnMat = new THREE.MeshStandardMaterial({ color: C.hoverLightGrey, roughness: 1 });
 
-const BLOCK_A: Rect = [38, -22, 76, -10];
-const BLOCK_B: Rect = [76, -20, 96, -10];
-const SHED: Rect = [100, -52, 128, -34];
+// The office block runs the whole picture at C1, a plain white wall that the title of C1 lands on, glazing on the ground
+// floor under it and on the upper floor from the right half on, the sign over the entrance. It is taller than the frame.
+const BLOCK_A: Rect = [34, -24, 108, -10];
+// the glazed office wing starts on the column 7 line of the page, the wing to its left is a plain white wall
+const WING_X = 64.6;
+const BLOCK_O: Rect = [WING_X, -24, 108, -9.7];
+const BLOCK_H = 13;
+// the upper floor glazing starts here, to the right of the C1 text columns
+const UP_X = 65.2;
+const glassMat = new THREE.MeshPhysicalMaterial({ color: G.mid, roughness: 0.15, metalness: 0.2, clearcoat: 1, envMapIntensity: 2, emissive: G.mid, emissiveIntensity: 0.2 });
+const glassDark = new THREE.MeshPhysicalMaterial({ color: G.dark, roughness: 0.15, metalness: 0.2, clearcoat: 1, envMapIntensity: 2, emissive: G.dark, emissiveIntensity: 0.15 });
+const officeWall = mat(G.pale, 0.4, 0.9, false);
+const plinthMat = mat(G.light, 0.3);
+const frameMat = mat(G.white, 0.45);
+const doorMat = mat(G.graphite, 0.15, 0.6);
+const hedgeMat = mat(G.mid, 0.2);
+const hedgeLight = mat(G.light, 0.3);
+const SHED: Rect = [112, -52, 140, -34];
 const YARD_SHED: Rect = [-34, -35, 14, -20];
 
 export function Site() {
-  useFrame(({ gl }) => {
-    const b = gl.getDrawingBufferSize(new THREE.Vector2());
-    clipTop.value.set(b.y - ROAD_CLEAR * gl.getPixelRatio(), 0);
-  });
   const lane = useMemo(() => {
     const pts = routePoints.filter((p) => p.x > -70);
     return { road: ribbonGeometry(pts, 3.7, 0.045), kerb: ribbonGeometry(pts, 4.5, 0.03) };
@@ -77,31 +69,32 @@ export function Site() {
     for (let x = -66; x < S_X - 2; x += 5) marks.push([x, 0.06, 0, 2.2, 0.02, 0.14]);
     // leg two of the path, dashes
     for (let x = S_X + 2 * ARC_R + 4; x < END_X - 3; x += 5) marks.push([x, 0.06, -JOG, 2.2, 0.02, 0.14]);
-    // the facade of the building, glazing on both floors, mullions, a strip of ink under the roof
+    // the facade, a storefront band of glazing on the ground floor all along, the upper floor from UP_X on, white frames
     const glass: It[] = [];
-    const lit: It[] = [];
-    for (let x = 41; x < 74; x += 3.1) {
-      if (x > 59 && x < 73) continue;
-      lit.push([x + 0.8, 1.5, -9.93, 1.7, 1.3, 0.12]);
-    }
-    // the entrance, dark glass in the ground floor
-    lit.push([66.5, 0.8, -9.92, 9, 1.6, 0.14]);
+    const glassLow: It[] = [];
+    const frames: It[] = [];
     const mull: It[] = [];
-    // the wing and the shed, band windows
-    for (let x = 78; x < 94; x += 3.4) glass.push([x + 0.8, 2.2, -9.93, 1.9, 1.3, 0.12]);
-    // bushes and low shrubs along the front, a lawn in front of the building
-    const shrubs: It[] = [];
-    for (let x = 38; x < 100; x += 2.7) {
-      if (r() < 0.2) continue;
-      const s = 0.7 + r() * 0.5;
-      shrubs.push([x + (r() - 0.5) * 1.2, s * 0.3, -8.3 - r() * 0.8, s * 0.6, s * 0.5, s * 0.6, r() * 6]);
+    for (let x = UP_X; x < BLOCK_A[2] - 2; x += 3.7) {
+      if (x + 3 > 68.9 && x < 74.2) continue; // the entrance
+      glassLow.push([x + 1.5, 1.5, -9.63, 3.0, 1.9, 0.12]);
+      frames.push([x + 1.5, 1.5, -9.67, 3.3, 2.15, 0.1]);
+      mull.push([x + 1.5, 1.5, -9.58, 0.07, 1.9, 0.14]);
     }
-    const cypress: It[] = [];
-    const cyTrunk: It[] = [];
-    for (const x of [41.5, 45, 56.5, 78, 84.5, 93]) {
-      const h = 3.2 + r() * 1.1;
-      cypress.push([x, h / 2 + 0.2, -7.3, 1.1, h, 1.1]);
-      cyTrunk.push([x, 0.2, -7.3, 0.2, 0.4, 0.2]);
+    for (let x = UP_X; x < BLOCK_A[2] - 2; x += 3.7) {
+      glass.push([x + 1.5, 5.3, -9.63, 3.0, 1.9, 0.12]);
+      frames.push([x + 1.5, 5.3, -9.67, 3.3, 2.15, 0.1]);
+      mull.push([x + 1.5, 5.3, -9.58, 0.07, 1.9, 0.14]);
+    }
+    // the entrance, a pair of tall doors and the glazing round them
+    glassLow.push([71.6, 1.3, -9.63, 5.0, 2.5, 0.12]);
+    frames.push([71.6, 1.3, -9.67, 5.4, 2.7, 0.1]);
+    mull.push([70.1, 1.3, -9.58, 0.09, 2.5, 0.14], [71.6, 1.3, -9.58, 0.12, 2.5, 0.14], [73.1, 1.3, -9.58, 0.09, 2.5, 0.14]);
+    // a low hedge along the foot of the facade in two greys, with a break at the doors
+    const hedges: It[] = [];
+    const hedgesL: It[] = [];
+    for (let x = 36; x < BLOCK_A[2] - 2; x += 3.2) {
+      if (x > 67 && x < 76) continue;
+      (r() < 0.5 ? hedges : hedgesL).push([x + 1.5, 0.3 + r() * 0.1, -8.9, 3.0, 0.6 + r() * 0.2, 0.8]);
     }
     // trees, a near row behind the building, far clusters
     const dark: It[] = [];
@@ -111,19 +104,22 @@ export function Site() {
       const h = (2.6 + r() * 2.2) * sc;
       const w = (1.6 + r() * 0.9) * sc;
       (r() < 0.6 && x > 118 ? dark : light).push([x, h, z, w, h * 0.62, w, r() * 6]);
+      // a second, smaller crown on the first, so a tree reads as a trunk and two masses
+      light.push([x + w * 0.12, h * 1.35, z - w * 0.1, w * 0.62, h * 0.36, w * 0.62, r() * 6]);
       trunks.push([x, h * 0.32, z, 0.24 * sc, h * 0.64, 0.24 * sc]);
     };
     const clear = (x: number, z: number, m = 0) => {
       const inR = ([x0, z0, x1, z1]: Rect) => x > x0 - m && x < x1 + m && z > z0 - m && z < z1 + m;
-      if ([BLOCK_A, BLOCK_B, SHED, YARD_SHED].some(inR)) return false;
+      if ([BLOCK_A, SHED, YARD_SHED].some(inR)) return false;
       if (x < S_X + 3 && Math.abs(z) < 5 + m) return false;
+      if (x > 28 && x < 112 && z < -6) return false; // behind the office block
+      if (x > 96 && x < 215 && z > -52 && z < 40) return false; // the yard apron of R
       if (x > 150 && x < 215 && z > -26 && z < 8) return false;
       // the S path, a margin round it
       if (x > S_X - 6 && x < END_X + 6 && z < 6 && z > -JOG - 6) return false;
       return true;
     };
     for (let x = -80; x < -38; x += 9) tree(x + r() * 2, -10 - r() * 3, 0.65);
-    for (let x = 98; x < 118; x += 10) tree(x + r() * 2, -14 - r() * 4, 0.9);
     for (let x = -80; x < 215; x += 9.5) {
       const z = -36 - r() * 14;
       if (clear(x, z)) tree(x, z, 0.7 + r() * 0.15);
@@ -139,7 +135,6 @@ export function Site() {
       const z = 22 + r() * 40;
       if (clear(x, z, 2)) tree(x, z, 0.9 + r() * 0.6);
     }
-    for (const [x, z] of [[108, 14], [123, 13], [131, 10], [139, 14], [141, -24], [152, -22], [153, 4], [160, 8], [160, -22]] as [number, number][]) tree(x, z, 0.75);
     // lamp posts on the south side of the lane, arms toward it
     const poles: It[] = [];
     const arms: It[] = [];
@@ -159,7 +154,7 @@ export function Site() {
     // far hangars
     const hang: It[] = [];
     for (let x = -80; x < 220; x += 34) hang.push([x + r() * 12, 2.2 + r(), -72 - r() * 14, 22 + r() * 10, 4.4 + r() * 2, 12 + r() * 5]);
-    return { marks, glass, lit, mull, shrubs, cypress, cyTrunk, dark, light, trunks, poles, arms, heads, fenceP, fenceR, south, hang };
+    return { marks, glass, glassLow, frames, mull, hedges, hedgesL, dark, light, trunks, poles, arms, heads, fenceP, fenceR, south, hang };
   }, []);
 
   const pools = useMemo<Pool[]>(() => {
@@ -175,8 +170,6 @@ export function Site() {
   const van = useBaked('g-van', <VanModel />, (m) => m);
   const vans = useMemo<Placement[]>(
     () => [
-      [49.5, 0, -5.6, 0],
-      [55, 0, -5.9, Math.PI],
       [92.5, 0, -5.8, 0],
       [-31, 0, -5.4, Math.PI],
       [16, 0, -5.6, 0],
@@ -204,33 +197,35 @@ export function Site() {
       <mesh geometry={lane.road} material={laneMat} receiveShadow />
       <Inst mat={markMat} items={data.marks} cast={false} />
 
-      {/* the office building, a two floor block with a wing and the shed of the yard */}
-      <Box a={BLOCK_A} h={8} m={wallBright} />
-      <Box a={[38, -22, 76, -9.7]} y={7.7} h={0.55} m={W.wallShade} />
-      <Box a={BLOCK_B} h={5} m={wallBright} />
-      <Box a={[76, -20, 96, -9.8]} y={4.9} h={0.4} m={W.wallShade} />
+      {/* the office block, a plain white wall with its glazing, the shed and the yard shed behind */}
+      <Box a={BLOCK_A} h={BLOCK_H} m={wallBright} />
+      <Box a={BLOCK_O} h={BLOCK_H} m={officeWall} />
+      <Box a={[BLOCK_A[0], BLOCK_A[1], WING_X, -9.85]} h={0.7} m={plinthMat} />
       <Box a={SHED} h={6.5} m={wallBright} />
       <Box a={YARD_SHED} h={4.6} m={wallBright} />
       <Box a={[-34.2, -35, 14.2, -19.8]} y={4.5} h={0.3} m={wallBright} />
-            {/* the roller doors of the yard shed, a row facing the lane */}
+      {/* the roller doors of the yard shed, a row facing the lane */}
       {[0, 1, 2, 3, 4, 5].map((i) => (
-        <mesh key={i} geometry={unit} material={W.door} position={[-29 + i * 8, 1.8, -19.9]} scale={[4.2, 3.6, 0.12]} />
+        <mesh key={i} geometry={unit} material={doorMat} position={[-29 + i * 8, 1.8, -19.9]} scale={[4.2, 3.6, 0.12]} />
       ))}
-      <Inst mat={W.glass} items={data.glass} cast={false} />
-      <Inst mat={W.glassLit} items={data.lit} cast={false} />
-      <Inst mat={W.ink} items={data.mull} cast={false} />
+      <Inst mat={frameMat} items={data.frames} cast={false} />
+      <Inst mat={glassMat} items={data.glass} cast={false} />
+      <Inst mat={glassDark} items={data.glassLow} cast={false} />
+      <Inst mat={frameMat} items={data.mull} cast={false} />
       {/* entrance canopy on two posts, with the company name above it */}
-      <Box a={[60, -10, 76, -7.4]} y={1.7} h={0.22} m={wallBright} />
-      {[61, 75.2].map((x) => (
-        <mesh key={x} geometry={unit} material={wallBright} position={[x, 0.85, -7.5]} scale={[0.16, 1.7, 0.16]} castShadow />
+      <Box a={[68.4, -9.7, 74.8, -7.4]} y={2.6} h={0.2} m={wallBright} />
+      {[68.8, 74.4].map((x) => (
+        <mesh key={x} geometry={unit} material={wallBright} position={[x, 1.3, -7.6]} scale={[0.16, 2.6, 0.16]} castShadow />
       ))}
-      <Box a={[67.9, -10.06, 73.2, -9.9]} y={3.1} h={0.8} m={W.ink} cast={false} />
-      <SignWord word="EKOTEHNIKA" h={0.45} position={[70.55, 3.27, -9.9]} />
+      <Box a={[67.9, -9.76, 73.2, -9.6]} y={3.1} h={0.8} m={W.ink} cast={false} />
+      <SignWord word="EKOTEHNIKA" h={0.45} position={[70.55, 3.27, -9.6]} />
+
+      {/* the yard seen from above, south of and around the S path */}
+      <Yard />
 
       {/* greenery in front, a fence and the lamps */}
-      <Inst geo={ico} mat={W.treeLight} items={data.shrubs} />
-      <Inst geo={cone} mat={W.treeLight} items={data.cypress} />
-      <Inst mat={W.trunk} items={data.cyTrunk} />
+      <Inst mat={hedgeMat} items={data.hedges} />
+      <Inst mat={hedgeLight} items={data.hedgesL} />
       <Inst geo={dode} mat={W.tree} items={data.dark} />
       <Inst geo={ico} mat={W.treeLight} items={data.light} />
       <Inst mat={W.trunk} items={data.trunks} />

@@ -22,7 +22,8 @@ const ROW_START = [0.05, 0.3, 0.55];
 const MIX: ModelName[] = ['x50', 'h30d', 'x50', 'r16', 'x50', 'h30d', 'x50', 'd12', 'x50', 'h30d', 'x50', 'r16', 'x50', 'h30d', 'x50'];
 const KINDS: ModelName[] = ['x50', 'h30d', 'r16', 'd12'];
 
-// Bay rows across the depot, the three with trucks and three empty rows, one in front, two behind.
+// Bay rows across the depot, the three with trucks and three empty rows, one in front, two behind. The bays run out past
+// both edges of the frame, so the floor is one piece edge to edge.
 const BAY_ROWS = [10.6, ...ROW_X, -10.2, -15.4];
 const BAY_COLS = Array.from({ length: 13 }, (_, i) => i - 6); // 13 bays across, five are taken
 const FLOOR = '#f6f6f6';
@@ -54,9 +55,11 @@ export default function Grid({ clock }: SceneProps) {
   const blobs = useRef<THREE.Mesh[]>([]);
   const m4 = useMemo(() => new THREE.Matrix4(), []);
   const blobMat = useMemo(() => blobMaterial(0), []);
-  // Painted bay lines, every bay of every row, a U with a wheel stop at the back. The lines fade as T begins.
-  const bayMat = useMemo(() => new THREE.MeshBasicMaterial({ color: G.mid, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }), []);
-  const stopMat = useMemo(() => lam(G.light, { transparent: true, opacity: 0 }), []);
+  // Painted bay lines, every bay of every row, a U with a wheel stop at the back. They spread out from the aisle line as N
+  // opens and close back onto it as T begins, so the floor is never faded, only drawn and drawn in.
+  const bays = useRef<THREE.Group>(null);
+  const bayMat = useMemo(() => new THREE.MeshBasicMaterial({ color: G.mid, opacity: 0.62, transparent: true, toneMapped: false, depthWrite: false }), []);
+  const stopMat = useMemo(() => lam(G.light), []);
   const bay = useMemo(() => {
     const lines: BoxItem[] = [];
     const stops: BoxItem[] = [];
@@ -86,9 +89,11 @@ export default function Grid({ clock }: SceneProps) {
     const u = uOf(clock);
     const k = u - 12;
     const sink = (r: number) => ease(range(u, 13.0 + (2 - r) * 0.06, 13.0 + (2 - r) * 0.06 + 0.25));
-    const lineFade = ease(range(u, 11.9, 12.1)) * (1 - ease(range(u, 13.0, 13.45)));
-    bayMat.opacity = 0.62 * lineFade;
-    stopMat.opacity = lineFade;
+    const spread = ease(range(u, 11.9, 12.1)) * (1 - ease(range(u, 13.0, 13.45)));
+    if (bays.current) {
+      bays.current.scale.z = Math.max(spread, 0.001);
+      bays.current.visible = spread > 0.002;
+    }
     for (let r = 0; r < ROWS; r++)
       for (let c = 0; c < COLS; c++) {
         const i = r * COLS + c;
@@ -111,9 +116,13 @@ export default function Grid({ clock }: SceneProps) {
 
   return (
     <group>
-      <BoxSet items={bay.lines} mat={bayMat} receive={false} />
-      <BoxSet items={bay.stops} mat={stopMat} />
-      <BoxSet items={bay.dash} mat={bayMat} receive={false} />
+      <group ref={bays} position={[0, 0, NP.z]}>
+        <group position={[0, 0, -NP.z]}>
+          <BoxSet items={bay.lines} mat={bayMat} receive={false} />
+          <BoxSet items={bay.stops} mat={stopMat} />
+          <BoxSet items={bay.dash} mat={bayMat} receive={false} />
+        </group>
+      </group>
       {Array.from({ length: ROWS * COLS }, (_, i) => {
         const r = Math.floor(i / COLS);
         const c = i % COLS;

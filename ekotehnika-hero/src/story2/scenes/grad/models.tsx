@@ -9,7 +9,7 @@ const vanBlack = withAO(new THREE.MeshStandardMaterial({ color: C.ink, roughness
 const vanGlass = new THREE.MeshPhysicalMaterial({ color: C.ink, roughness: 0.05, clearcoat: 1, envMapIntensity: 2 });
 const vanChrome = new THREE.MeshStandardMaterial({ color: C.shadeGrey, roughness: 0.25, metalness: 0.9 });
 
-// The company name on the van side, ink letters on the white body, Geist
+// The company name on the van side, ink letters on the white body, Daxline Pro
 let sideTex: THREE.CanvasTexture | null = null;
 function sideTexture() {
   if (sideTex) return sideTex;
@@ -18,7 +18,7 @@ function sideTexture() {
   c.height = 96;
   const g = c.getContext('2d')!;
   g.fillStyle = C.ink;
-  g.font = '600 62px Geist, sans-serif';
+  g.font = '500 62px "Daxline Pro", Arial, sans-serif';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   g.fillText('EKOTEHNIKA', 256, 50);

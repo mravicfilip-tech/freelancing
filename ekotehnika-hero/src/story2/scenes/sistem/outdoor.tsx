@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { BUILDING_X, ROUTE } from './route';
 import { G, K, lam, lit, rng, signGeometry } from './kit';
 import { BoxSet, Hedge, Kerb, LampPost, Planter, Trees, Van, type BoxItem, type TreeSpec } from './props';
+import type { StoryClock } from '../../clock';
 import Yard from './yard';
 
 function Ribbon({ half, y, material, step = 4 }: { half: number; y: number; material: THREE.Material; step?: number }) {
@@ -128,7 +129,7 @@ function windowRun(xs: number[], w: number, y0: number, y1: number, z: number) {
   return { frame, glass, bars, sills, reveal };
 }
 
-function Facade({ x0, x1, h, z = FRONT, doorX, band = true }: { x0: number; x1: number; h: number; z?: number; doorX?: number; band?: boolean }) {
+function Facade({ x0, x1, h, z = FRONT, doorX, band = true, plain = 0 }: { x0: number; x1: number; h: number; z?: number; doorX?: number; band?: boolean; plain?: number }) {
   const set = useMemo(() => {
     const w = 2.3;
     const gap = 0.55;
@@ -136,12 +137,14 @@ function Facade({ x0, x1, h, z = FRONT, doorX, band = true }: { x0: number; x1: 
     const xs: number[] = [];
     for (let x = x0 + 1.6 + w / 2; x < x1 - 1.4; x += pitch) {
       if (doorX !== undefined && Math.abs(x - doorX) < 2.6) continue;
+      // the first wing is a solid wall, so the C1 title and lede sit on bare facade and not on window rows
+      if (plain && x < x0 + plain) continue;
       xs.push(x);
     }
     const lower = windowRun(xs, w, 0.95, 2.45, z);
     const upper = band ? windowRun(xs, w, h - 1.85, h - 0.75, z) : null;
     return { lower, upper, xs };
-  }, [x0, x1, h, z, doorX]);
+  }, [x0, x1, h, z, doorX, plain, band]);
   const pilasters = useMemo(() => {
     const items: BoxItem[] = [];
     for (let x = x0; x <= x1 + 0.01; x += (x1 - x0) / 4) items.push([x, h / 2, z + 0.06, 0.34, h, 0.14]);
@@ -218,7 +221,7 @@ function Building() {
   const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
   return (
     <group>
-      <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} />
+      <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} plain={11.5} />
       <Hall x={BUILDING_X + 20.5} w={14} h={4.6} d={9} zc={FRONT - 4.5} />
       {/* the live 3D name, Daxline caps, the one dark element on the wall */}
       <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 0.2, 3.45, FRONT + 0.1]} castShadow />
@@ -322,7 +325,7 @@ function Horizon() {
   );
 }
 
-export default function Outdoor() {
+export default function Outdoor({ clock }: { clock?: StoryClock }) {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[25, -0.02, -60]} material={K.ground} receiveShadow>
@@ -341,7 +344,7 @@ export default function Outdoor() {
       {[-5.5, 14, 53, 70].map((lx) => (
         <LampPost key={lx} x={lx} z={-2.9} h={4.1} />
       ))}
-      <Yard />
+      <Yard clock={clock} />
       <Horizon />
     </group>
   );

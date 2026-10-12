@@ -6,7 +6,8 @@ import * as THREE from 'three';
 import { C } from '../../../tokens';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
-import { ATP, BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
+import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
+import { focusAt, toWorld } from './atplan';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -22,7 +23,7 @@ const O_D = track([[0, 16], [1.45, 16], [2.0, 18.6], [2.85, 18.6], [3.5, 16], [4
 const O_YAW = track([[0, 0], [4, 0], [5, 90], [6, 90]]);
 const O_PITCH = track([[0, -7], [2, -7], [3, -8], [4, -8], [5, -90], [6, -90]]);
 const O_SX = track([[0, 0.236], [1.4, 0.236], [2, 0.24], [2.85, 0.24], [3.5, 0.12], [4, 0.1], [5, 0.22], [6, 0.22]]);
-const O_SY = track([[0, 0], [1.6, 0], [2, 0.002], [2.85, 0.002], [3.5, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
+const O_SY = track([[0, -0.105], [1, -0.105], [1.6, 0], [2, 0.002], [2.85, 0.002], [3.5, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);
 const A_PITCH = track([[8, ISO_PITCH], [8.3, -10], [8.5, -9], [8.75, -3], [9, -3], [10, -1]]);
@@ -32,11 +33,18 @@ const A_SEP = track([[8.75, SEP0], [9, 6.5], [9.55, 3.2], [10, 1.45]]);
 const A_Y = track([[8.75, 2.2], [9, 1.65], [10, 1.25]]);
 
 
-// the automation floor sits 2.2 m to the right of the frame centre, so the text block keeps the top left plain
-const AT_Z = 2.2;
-// the rental fleet sits below y 540, the title, lede and spec row own the band above
+// The aisle is seen from about 4 m, a three quarter view from the left of the lane. The camera looks 18 degrees toward the
+// racks, so the hall's floor and wall fill the left half under the text and the work sits in columns 7 to 12.
+const AT_D = 13;
+const AT_YAW = 72;
+const AT_PITCH = -14;
+const AT_SX = 0.2;
+// The rental floor runs across the whole width, 38 m of painted bays at 47 m, with the fifteen trucks standing on the
+// lower part of the frame. The title, lede and spec row own the band above, so the floor's far rows end under them, on
+// plain ground. Nothing is masked or faded, the camera only places the world.
 const N_D = 47;
-const N_SY = 0.33;
+const N_SY = 0.3;
+const nShift = (_w: number, _h: number) => ({ sx: 0, sy: N_SY, d: N_D });
 const WARM = new THREE.Color('#fff5e4');
 
 const orbit = (t: THREE.Vector3, d: number, yawDeg: number, pitchDeg: number, out = new THREE.Vector3()) => {
@@ -49,7 +57,8 @@ export type Pose = { pos: THREE.Vector3; yaw: number; pitch: number; sx: number;
 
 const tmp = { t: new THREE.Vector3(), p0: new THREE.Vector3() };
 
-export function poseAt(u: number, pos: number, out: Pose): Pose {
+export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): Pose {
+  const n = nShift(w, h);
   const t = out.target;
   out.sx = 0;
   out.sy = 0;
@@ -119,27 +128,26 @@ export function poseAt(u: number, pos: number, out: Pose): Pose {
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
     t.set(NP.x - 0.5, 0.9, NP.z);
-    out.d = N_D;
+    out.d = n.d;
     out.yaw = 90;
     out.pitch = -24;
-    out.sy = N_SY;
+    out.sx = n.sx;
+    out.sy = n.sy;
     out.shadow = 18;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
-  } else if (u < 14) {
-    const e = ease(range(u, 13.12, 13.95));
-    t.set(lerp(NP.x - 0.5, ATP.x, e), lerp(0.9, ATP.y, e), lerp(0, AT_Z, e));
-    out.d = lerp(N_D, 26, e);
-    out.yaw = 90;
-    out.pitch = lerp(-24, -90, e);
-    out.sy = lerp(N_SY, 0, e);
-    out.shadow = lerp(18, 22, e);
-    orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
-    t.set(ATP.x, ATP.y, AT_Z);
-    out.d = 26;
-    out.yaw = 90;
-    out.pitch = -90;
-    out.shadow = 22;
+    // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the
+    // robot in columns 7 to 12, the left half of the frame is the hall's own floor and wall.
+    const e = ease(range(u, 13.1, 14.0));
+    const f = focusAt(Math.min(Math.max(u - 14, 0), 1));
+    const [fx, , fz] = toWorld(f.a, f.b);
+    out.d = lerp(n.d, AT_D, e);
+    out.yaw = lerp(90, AT_YAW, e);
+    out.pitch = lerp(-24, AT_PITCH, e);
+    t.set(lerp(NP.x - 0.5, fx, e), lerp(0.9, 1.0, e), lerp(0, fz, e));
+    out.sx = lerp(n.sx, AT_SX, e);
+    out.sy = lerp(n.sy, 0.02, e);
+    out.shadow = lerp(18, 14, e);
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   }
   return out;
@@ -159,7 +167,7 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
 
   useFrame(() => {
     const u = uOf(clock);
-    poseAt(u, clock.pos.current, pose);
+    poseAt(u, clock.pos.current, pose, size.width, size.height);
     camera.position.copy(pose.pos);
     euler.set(rad(pose.pitch), rad(pose.yaw), 0);
     camera.quaternion.setFromEuler(euler);

@@ -222,9 +222,15 @@ function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | nu
 function Floor({ clock }: SceneProps) {
   const pool = useMemo(() => poolMaterial(0.3, C.lightGrey), []);
   const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: C.tonedTextGrey, toneMapped: false, transparent: true, opacity: 0 }), []);
-  // The lane lines wait for the text to leave, the floor is plain dark behind the prodaja block.
+  // Nothing of the warehouse shows in P, the cut out is the only object. The lane lines draw on along the aisles as A begins.
+  const lanes = useRef<THREE.Group>(null);
   useFrame(() => {
-    lane.opacity = 0.55 * ease(range(uOf(clock), 7.5, 7.8));
+    const d = ease(range(uOf(clock), 8.0, 8.4));
+    lane.opacity = 0.55;
+    if (lanes.current) {
+      lanes.current.scale.x = Math.max(d, 0.001);
+      lanes.current.visible = d > 0.002;
+    }
   });
   return (
     <group>
@@ -232,13 +238,15 @@ function Floor({ clock }: SceneProps) {
         <planeGeometry args={[WH.x1 - WH.x0, WH.z1 - WH.z0]} />
         <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
       </mesh>
-      {AISLES.map((z) =>
-        [-1.55, 1.55].map((dz) => (
-          <mesh key={`${z}${dz}`} position={[(WH.x0 + WH.x1) / 2, 0.03, z + dz]} material={lane}>
-            <boxGeometry args={[WH.x1 - WH.x0 - 0.5, 0.01, 0.07]} />
-          </mesh>
-        )),
-      )}
+      <group ref={lanes} position={[(WH.x0 + WH.x1) / 2, 0, 0]}>
+        {AISLES.map((z) =>
+          [-1.55, 1.55].map((dz) => (
+            <mesh key={`${z}${dz}`} position={[0, 0.03, z + dz]} material={lane}>
+              <boxGeometry args={[WH.x1 - WH.x0 - 0.5, 0.01, 0.07]} />
+            </mesh>
+          ))
+        )}
+      </group>
       {/* a soft pool in the middle of the clean floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[WH.x0 + 18, 0.04, AISLES[1]]} material={pool}>
         <planeGeometry args={[40, 20]} />
@@ -310,18 +318,18 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   }, [gl]);
   useFrame(() => {
     const u = uOf(clock);
-    const on = u > 7.4 && u < 8.7;
+    const on = u > 8.0 && u < 8.95;
     if (root.current) root.current.visible = on;
     if (!on) return;
     mat.resolution.set(size.width * dpr, size.height * dpr);
     halo.resolution.set(size.width * dpr, size.height * dpr);
     mat.linewidth = Math.max(1, size.height / 900) * dpr;
     halo.linewidth = 3.2 * mat.linewidth;
-    const a = ease(range(u, 7.5, 7.75)) * (1 - ease(range(u, 8.35, 8.7)));
+    const a = ease(range(u, 8.1, 8.35)) * (1 - ease(range(u, 8.6, 8.9)));
     mat.opacity = 0.95 * a;
     halo.opacity = 0.55 * a;
     // the clip plane in world space, sweeping from the nose to the middle of the truck
-    const sweep = ease(range(u, 7.55, 7.95));
+    const sweep = ease(range(u, 8.12, 8.5));
     const cut = x(clock.pos.current) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);
     plane.constant = -cut;
     const roll = x(clock.pos.current);
@@ -370,17 +378,21 @@ export default function Warehouse({ clock }: SceneProps) {
       roof.current.visible = roofOp > 0.003;
       roof.current.position.y = ease(range(u, 6.78, 7.0)) * 1.5;
     }
-    if (inner.current) inner.current.visible = u > 7.45 && u < 10.4;
-    if (trucks.current) trucks.current.visible = u > 7.4 && u < 10.4;
-    // walls and racks rise from the clean floor in the second half of P
-    const wallRise = ease(range(u, 7.5, 7.75));
+    // The interior waits for A. P shows the cut out and nothing of the building, the walls, racks and trucks rise
+    // from the clean floor as the camera drops toward the aisle.
+    if (inner.current) inner.current.visible = u > 7.95 && u < 10.4;
+    if (trucks.current) {
+      trucks.current.visible = u > 7.95 && u < 10.4;
+      trucks.current.scale.y = Math.max(ease(range(u, 8.05, 8.3)), 0.001);
+    }
+    const wallRise = ease(range(u, 8.0, 8.25));
     if (walls.current) walls.current.scale.y = Math.max(wallRise, 0.001);
-    const nearDown = ease(range(u, 8.0, 8.18)) * (1 - ease(range(u, 8.7, 8.9)));
     ROWS.forEach((z, i) => {
       const g = rows.current[i];
       if (!g) return;
-      const rise = ease(range(u, 7.52 + i * 0.04, 7.78 + i * 0.04));
-      const s = Math.max(rise * (NEAR(z) ? 1 - nearDown : 1), 0.001);
+      // the near side rows stay down while the camera runs the aisle, so the view into the racks is open
+      const rise = NEAR(z) ? ease(range(u, 8.7, 8.9)) : ease(range(u, 8.02 + i * 0.04, 8.28 + i * 0.04));
+      const s = Math.max(rise, 0.001);
       g.scale.y = s;
       g.visible = s > 0.002;
     });

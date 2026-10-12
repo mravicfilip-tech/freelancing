@@ -69,14 +69,22 @@ const BAYS = 12;
 const RX0 = WH.x0 + 3.2;
 const LEVELS = [0.05, 1.57, 3.05, 4.53];
 
-type Block = { ups: It[]; beams: It[]; pallets: It[]; cartons: It[]; tape: It[]; shade: It[] };
+type Block = { ups: It[]; beams: It[]; pallets: It[]; cartons: It[]; tape: It[]; shade: It[]; label: It[]; code: It[]; wrap: It[] };
 function makeBlock(zc: number, seed: number): Block {
   const r = rng(seed);
-  const b: Block = { ups: [], beams: [], pallets: [], cartons: [], tape: [], shade: [] };
+  const b: Block = { ups: [], beams: [], pallets: [], cartons: [], tape: [], shade: [], label: [], code: [], wrap: [] };
   for (const dz of [-0.55, 0.55]) {
     const z = zc + dz;
     for (let i = 0; i <= BAYS; i++) for (const o of [-0.5, 0.5]) b.ups.push([RX0 + i * BAY, 3.0, z + o, 0.1, 6.0, 0.1]);
     for (const by of [1.5, 2.98, 4.46, 5.94]) for (const o of [-0.5, 0.5]) b.beams.push([RX0 + (BAYS * BAY) / 2, by, z + o, BAYS * BAY, 0.14, 0.07]);
+    // a label plate and its code stripe on every beam of every bay, on the face toward the aisle
+    for (let i = 0; i < BAYS; i++)
+      for (const by of [1.5, 2.98, 4.46]) {
+        const o = dz > 0 ? 0.5 : -0.5;
+        const x = RX0 + i * BAY + 0.55;
+        b.label.push([x, by, z + o + Math.sign(o) * 0.05, 0.34, 0.11, 0.012]);
+        b.code.push([x, by, z + o + Math.sign(o) * 0.058, 0.24, 0.03, 0.012]);
+      }
     for (let i = 0; i < BAYS; i++) {
       for (const ly of LEVELS) {
         for (const o of [-0.68, 0.68]) {
@@ -85,6 +93,8 @@ function makeBlock(zc: number, seed: number): Block {
           const h = 0.7 + r() * 0.4;
           b.pallets.push([x, ly + 0.07, z, 1.2, 0.14, 0.95]);
           (r() < 0.3 ? b.shade : b.cartons).push([x, ly + 0.14 + h / 2, z, 1.08 - r() * 0.08, h, 0.86]);
+          // the stretch wrap, a pale shell round the load and a second band at the pallet
+          b.wrap.push([x, ly + 0.14 + h / 2, z, 1.13, h + 0.02, 0.9]);
           if (r() < 0.35) b.tape.push([x, ly + 0.14 + h / 2, z, 1.1, h + 0.01, 0.1]);
         }
       }
@@ -92,6 +102,10 @@ function makeBlock(zc: number, seed: number): Block {
   }
   return b;
 }
+
+const wrapMat = new THREE.MeshStandardMaterial({ color: C.white, transparent: true, opacity: 0.22, roughness: 0.2, depthWrite: false });
+const labelMat = new THREE.MeshBasicMaterial({ color: C.white, toneMapped: false });
+const codeMat = new THREE.MeshBasicMaterial({ color: C.ink, toneMapped: false });
 
 function RackBlock({ block, gref }: { block: Block; gref: (g: THREE.Group | null) => void }) {
   return (
@@ -102,6 +116,9 @@ function RackBlock({ block, gref }: { block: Block; gref: (g: THREE.Group | null
       <Inst mat={W.carton} items={block.cartons} />
       <Inst mat={W.cartonShade} items={block.shade} />
       <Inst mat={rackMat} items={block.tape} cast={false} />
+      <Inst mat={wrapMat} items={block.wrap} cast={false} receive={false} />
+      <Inst mat={labelMat} items={block.label} cast={false} receive={false} />
+      <Inst mat={codeMat} items={block.code} cast={false} receive={false} />
     </group>
   );
 }
@@ -330,12 +347,39 @@ export function Warehouse({ clock }: { clock: StoryClock }) {
       <group ref={reg('roofS')} rotation={[THETA, 0, 0]}>
         <mesh geometry={roofGeo} material={roofMat} position={[0, 0.0, SLOPE / 2 - 0.05]} castShadow receiveShadow />
         <Vents sign={1} />
+        <Skylights sign={1} />
       </group>
       <group ref={reg('roofN')} rotation={[-THETA, 0, 0]}>
         <mesh geometry={roofGeo} material={roofMatN} position={[0, 0.0, -SLOPE / 2 + 0.05]} castShadow receiveShadow />
         <Vents sign={-1} />
+        <Skylights sign={-1} />
       </group>
     </group>
+  );
+}
+
+// Skylight strips down each slope, a pale pane in a graphite frame every 6 m, so the roof of Z reads as a hall roof
+const skyPane = new THREE.MeshStandardMaterial({ color: C.lightGrey, emissive: C.white, emissiveIntensity: 0.5, roughness: 0.3 });
+const skyFrame = new THREE.MeshStandardMaterial({ color: '#6b6b6b', roughness: 0.8 });
+function Skylights({ sign }: { sign: number }) {
+  const { pane, frame } = useMemo(() => {
+    const pane: It[] = [];
+    const frame: It[] = [];
+    const z = sign * SLOPE * 0.5;
+    const l = SLOPE * 0.44;
+    for (let i = 0; i < 6; i++) {
+      const x = WH.x0 + 4.5 + i * 6.8 - WH.cx;
+      pane.push([x, 0.09, z, 2.4, 0.05, l]);
+      for (const o of [-1.25, 1.25]) frame.push([x + o, 0.1, z, 0.1, 0.09, l + 0.1]);
+      for (const o of [-1, 1]) frame.push([x, 0.1, z + (o * l) / 2, 2.6, 0.09, 0.1]);
+    }
+    return { pane, frame };
+  }, [sign]);
+  return (
+    <>
+      <Inst mat={skyPane} items={pane} cast={false} />
+      <Inst mat={skyFrame} items={frame} cast={false} />
+    </>
   );
 }
 

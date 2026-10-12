@@ -17,7 +17,7 @@ import { Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
 import Overlay from './overlay';
-import Robots from './robots';
+import Aisle from './aisle';
 import { routeAt, truckS } from './route';
 import Warehouse from './warehouse';
 
@@ -80,7 +80,7 @@ function World({ clock }: SceneProps) {
       <Dust clock={clock} state={state} />
       {need(0, 9) && (
         <Place clock={clock} from={0} to={7.4}>
-          <Outdoor />
+          <Outdoor clock={clock} />
         </Place>
       )}
       {need(0, 7) && (
@@ -110,7 +110,7 @@ function World({ clock }: SceneProps) {
       )}
       {need(12, 14) && (
         <Place clock={clock} from={12.9} to={15.1}>
-          <Robots clock={clock} />
+          <Aisle clock={clock} />
         </Place>
       )}
       <Overlay clock={clock} />

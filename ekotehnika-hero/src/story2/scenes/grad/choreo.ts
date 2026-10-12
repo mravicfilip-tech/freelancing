@@ -180,11 +180,15 @@ const KEYS: Record<Region, Key[]> = {
     K(7050, [26.5, 1.2, -9], 50, 7, 18, 30, 0.5, 0.52),
     K(7600, [30.7, 1.15, -9], 90, 6.5, 11, 30, 0.5, 0.52, true),
     // B pushes into the black of the truck
+    K(7790, [31.1, 1.0, -9], 90, 4, 0.5, 30, 0.5, 0.5, true),
     K(8000, [31.1, 1.0, -9], 90, 4, 0.5, 30, 0.5, 0.5, true),
   ],
-  bp: [K(8000, [0, 1.1, BP_Z], 50, 28, 12.5, 24, 0.7, 0.5, true), K(9600, [0, 1.1, BP_Z], 50, 28, 12.5, 24, 0.7, 0.5, true)],
-  grid: [K(9600, [0, 1.2, GRID_Z], 0, 17, 44, 20, 0.5, 0.7, true), K(SWAP_T, [0, 1.2, GRID_Z], 0, 17, 44, 20, 0.5, 0.7, true)],
-  bots: [K(SWAP_T, [0, 0, BOTS_Z], 0, 90, 19, 26, 0.5, 0.5, true), K(12000, [0, 0, BOTS_Z], 0, 90, 19, 26, 0.5, 0.5, true)],
+  // S sees the X50 schematic from behind and above, in columns 5 to 12
+  bp: [K(8000, [-0.3, 1.0, BP_Z], -35, 26, 13, 28, 0.65, 0.5, true), K(9600, [-0.3, 1.0, BP_Z], -35, 26, 13, 28, 0.65, 0.5, true)],
+  // N frames the depot under the text band, the rig fits it to the viewport, see gridFit
+  grid: [K(9600, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true), K(SWAP_T, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true)],
+  // AT, a three quarter view of the order at about 4 m eye height, from the south west, the job in the right half
+  bots: [K(SWAP_T, [3.0, 0.9, BOTS_Z - 2.9], -28, 15, 16, 26, 0.7, 0.6, true), K(12000, [3.0, 0.9, BOTS_Z - 2.9], -28, 15, 16, 26, 0.7, 0.6, true)],
 };
 
 const out = new Array(9).fill(0);
@@ -229,7 +233,8 @@ export const IN_X0 = 178;
 export const IN_X1 = 196.5;
 export const indoorX = (pos: number) => lerp(IN_X0, IN_X1, eio(seg(pos, 6450, 7600)));
 // the warehouse grows from a flat floor, and the hero truck only exists once props appear
-export const blackOut = (pos: number) => (pos < T.S.start ? smooth(seg(pos, 7650, 7790)) : 1 - smooth(seg(pos, 8000, 8160)));
+// B pushes the camera into the black part of the truck and cuts to black when it fills the frame, S cuts in from it, no fade
+export const blackOut = (pos: number) => (pos >= 7790 && pos < T.S.start ? 1 : 0);
 
 /* ------------------------------------------------------------------ S, L, N, T, AT */
 
@@ -241,9 +246,14 @@ export const lift = (pos: number) =>
 // T, the dark floor comes up from the bottom while the grid drops away
 // and reaches the top row at 10790, where the shell turns the nav white
 export const darkRise = (pos: number) => -1.2 + 2.45 * seg(pos, 10520, 10830);
-export const gridDrop = (pos: number) => smooth(seg(pos, 10500, 10830));
+// the fifteen trucks drive off to the right while the dark floor rises
+export const gridExit = (pos: number) => seg(pos, 10500, 10780);
 // the grid of fifteen fills row by row
 export const gridFill = (pos: number) => seg(pos, T.N.start + 60, T.N.end - 120);
 // the robots, the dotted paths draw on in the second half of T
 export const pathDraw = (pos: number) => smooth(seg(pos, SWAP_T + 10, 11120));
 export const botPhase = (pos: number) => seg(pos, T.AT.start, T.AT.end);
+
+// Where the fleet of N sits. The text takes the top band down to about y 500, the depot floor with its bays runs edge to
+// edge below it, and the fifteen trucks stand in the middle of the width, 1100px of 1920, with empty bays out to both edges.
+export const gridFit = (w: number, h: number) => ({ ox: 0.5, oy: 0.5 + 0.2445 - 32.5 / h, d: 105 / (w / h) });

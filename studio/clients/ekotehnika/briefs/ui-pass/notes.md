@@ -23,3 +23,15 @@ and the plan is agreed. The story stays as it is.
    Open. Two rulings it touches. The headline mixes a heavy sans and a light serif, and the 2026-10-08 ruling is sans
    serif only. The images are photos, and the 2026-10-09 ruling keeps real photos to one strip in Proizvodi, so a
    collage needs either the 3D or drawn scene as the images or Filip opening that rule.
+3. **Offering cards in a staggered grid.** Ref `refs/03-offering-cards-staggered-grid.webp` (Lando Norris helmets).
+   Said: "same here - good grid, good UI, great UI card for the offering example".
+   What the ref does. A section head with a two line title on the left and a short paragraph top right. Below, four
+   columns of tall cards, every other column dropped half a card, so the grid steps. Each card is a hairline
+   outline on the ground, one product cut out and centred, and a notched tab in the bottom right corner with the
+   name and a year in the accent colour.
+   My read. This fits Proizvodi and the najam fleet, one Linde model per card, name plus type or capacity in the tab.
+   Material. The truck folder in the Drive holds about 9,000 PNGs, many of them official Linde cut out renders
+   (files named Freisteller), so real product images per card are likely there. The eight GLB models can also be
+   rendered as cut outs in one consistent light.
+   Open. Same serif accent in the title as note 2. Card tab text in linde red would break the red only for actions
+   rule, so the default is ink name and text-grey detail.

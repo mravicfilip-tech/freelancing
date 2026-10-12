@@ -4,7 +4,7 @@
 // CLAUDE.md, .claude/ and studio/, so it needs none of this.
 //
 //   node studio/install.mjs              rules, guard hooks and helper agents, for the user
-//   node studio/install.mjs --skills     also the five skills, for a machine where account skills
+//   node studio/install.mjs --skills     also the six skills, for a machine where account skills
 //                                        do not reach Claude Code
 //   node studio/install.mjs --cloud      for a cloud environment setup script. Does nothing when
 //                                        the current folder is the freelancing repo
@@ -111,7 +111,7 @@ function install() {
   // Skills, laid out as the account skill zips are, so K is each skill's own folder.
   if (flag('--skills')) {
     const skills = join(CLAUDE, 'skills');
-    for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
+    for (const name of ['uireview', 'harden', 'taste', 'newui', 'design', 'story']) {
       const dest = join(skills, name);
       if (existsSync(dest) && !existsSync(join(dest, MARK))) { say(`kept your own ${dest}, the kit's ${name} skill was not installed`); continue; }
       rmSync(dest, { recursive: true, force: true });

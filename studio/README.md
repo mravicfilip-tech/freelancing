@@ -11,7 +11,7 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
 
 - `CLAUDE.md` at the repo root, the operating agreement. It loads `studio/DOCTRINE.md`, the
   triggers, which loads `studio/foundation/writing.md`.
-- `.claude/skills/` with `/newui`, `/uireview`, `/design`, `/harden` and `/taste`. The other skills
+- `.claude/skills/` with `/newui`, `/story`, `/uireview`, `/design`, `/harden` and `/taste`. The other skills
   in that folder are Figma and frontend-design, not part of the kit. There is no `/mode`. The model
   row is picked from the task and never announced.
 - `.claude/agents/` with five helper tiers, `quick`, `read`, `build`, `deep` and `critic`.
@@ -22,7 +22,9 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
   scale, with `tailwind-preset.cjs` for the same scale in Tailwind.
 - `studio/scripts/` with the review ledger and pack, the base layout lint, screenshots with an
   interaction pass, the component kit, golden screens, the variant board, the task walkthrough, the
-  design board, the token report and the client registry.
+  design board, the deploy script for Vercel Hobby, the token report and the client registry.
+- `studio/foundation/env.md`, the traps the cloud container and Vercel have set, read before the
+  first shot, server restart or deploy.
 - `studio/clients/` with a template, `registry.json` and one folder per client. The template holds
   `glossary.md`, `base-override.json`, `flows/` and empty `kit/` and `golden/` folders.
 
@@ -66,6 +68,8 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
   answers by pasting a line. Pass means no open severity 1 finding.
 - `/design` lays every screen of a project out on one board at 1920 wide. It runs by itself when a
   project has more than 5 screens, before the preview link goes out.
+- `/story` settles a scroll story, hero sequence or 3D walk through in tables before anything is
+  built, then builds one beat in one version.
 - `/harden` pokes holes in words, meaning an answer, a plan, a doc or a drafted message.
 - `/taste` logs a design pick or rejection to the client's `taste.md` the turn it happens. "Rule it
   app wide" runs its app-wide flow.

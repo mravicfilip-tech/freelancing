@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(STUDIO, '..');
 // The kit's own skills. The other folders in .claude/skills belong to other plugins.
-const KIT_SKILLS = ['uireview', 'harden', 'taste', 'newui', 'design'];
+const KIT_SKILLS = ['uireview', 'harden', 'taste', 'newui', 'design', 'story'];
 const errors = [];
 const warnings = [];
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/');
@@ -72,6 +72,21 @@ for (const name of KIT_SKILLS) {
   }
   if (lines >= 180) errors.push(`.claude/skills/${name}/SKILL.md, ${lines} lines, limit 180`);
   for (const f of ['evals.md', 'lessons.md']) if (!existsSync(join(dir, f))) errors.push(`.claude/skills/${name}, missing ${f}`);
+}
+
+// ---------- taste logs ----------
+// Every UI session and every builder reads the whole log, so its size is a cost on each one. The taste
+// skill moves SUPERSEDED entries to taste-archive.md past 8,000 characters. This makes a missed move visible.
+const tasteRoot = join(STUDIO, 'clients');
+if (existsSync(tasteRoot)) for (const name of readdirSync(tasteRoot)) {
+  const file = join(tasteRoot, name, 'taste.md');
+  if (!existsSync(file)) continue;
+  const text = readFileSync(file, 'utf8');
+  const entries = text.split(/\r?\n/).filter((l) => l.startsWith('- **') && !l.includes('YYYY-MM-DD'));
+  const long = entries.filter((l) => l.length > 600);
+  const superseded = entries.filter((l) => /SUPERSEDED/.test(l)).length;
+  if (text.length > 8000) warnings.push(`${rel(file)}, ${text.length} characters, limit 8,000, ${superseded} marked SUPERSEDED and ready to archive`);
+  if (long.length) warnings.push(`${rel(file)}, ${long.length} of ${entries.length} entries over 600 characters, longest ${Math.max(...long.map((l) => l.length))}`);
 }
 
 // ---------- agents ----------

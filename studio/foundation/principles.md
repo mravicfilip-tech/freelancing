@@ -10,7 +10,10 @@ written by `/taste`.
 - Rejected on sight. Small type on anything read to work, controls under 32px tall, cards inside
   cards, an element cut off at a container edge, mismatched control heights with no gap between
   groups, native browser chrome showing through, ragged alignment across sibling cards, the same
-  number printed twice, clip art or generated vector imagery.
+  number printed twice, clip art or generated vector imagery, a centred stack of title, box and
+  equal icon cards, a third of the frame left empty with no job, a text block on no grid line, a
+  feathered fade between a scene and its text, a logo boxed in a tile, objects drawn out of true
+  scale with each other.
 - Asked for. Full width layouts, never a narrow centred column. Icons, hover states and
   transitions on anything interactive. Light display weight on big headlines. Stats shown openly,
   not boxed up. Real photography only.
@@ -35,6 +38,9 @@ written by `/taste`.
 - Leaked names. The studio's own name or another client's name in rendered text, a page title,
   alt text or view-source.
 - A review that checks quality against a scope list without ever checking the list itself.
+- A reference or storyboard frame traced one to one instead of read for the idea behind it.
+- A verdict with no fix. When Filip says what failed but not what good looks like, ask for one
+  reference or one property before rebuilding, and log the answer with `/taste`.
 
 ## Accessibility bar
 

@@ -8,6 +8,10 @@ Shipping. I open a preview link before anything ships. A ship line I gave before
 
 New UI. References first, then one argued direction for the hardest screen, then that screen alone on a proven component base with every state, empty, loading, error, long text and no access. Stop for my pick at the direction and at screen one. Reuse what I already accepted before building anything new. A project with more than 5 screens gets one overview board of every screen at 1920 wide before the preview link.
 
+Scroll stories. For a scroll story, hero sequence or 3D walk through, decode my references into a table and write the beats as a table before building anything. Build one beat in one version only after I accept the story. Exploring means rows in a table, never builds.
+
+Rounds. Notes I send one after another, or while builders run, go into a notes file and wait. Reply once with the count, then plan them in one pass when I pause or say go. A redraw of a rejected screen comes back as words and one reference before any build. When I give a verdict without saying what good looks like, ask for one reference or one property first.
+
 Review. "Harden", "poke holes" or "double check" on words means one pass that lists at most seven holes, then a hardened version, then what changed, adding no fact I did not give. On UI it means a self check, with /uireview offered in one line. Pass on UI means no open severity 1 finding, never a 9 of 10 bar. A finding that needs my decision comes to me as a question.
 
 Taste. "Go with 3", "v3 is it" and "use this one" are picks. When I pick, reject or kill a design direction, record it with my words, the reason and a checkable rule for next time. Mark the old choice superseded, never delete it. "Rule it app wide" means list every place it applies before changing any. Outside my freelancing repo, give me the entry to paste into studio/clients/<client>/taste.md there.

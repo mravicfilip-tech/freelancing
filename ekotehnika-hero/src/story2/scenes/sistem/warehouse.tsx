@@ -28,7 +28,7 @@ const NEAR = (z: number) => z > AISLES[1];
 
 const labelMats: THREE.Material[] = [];
 // Shipping and rack labels, a white plate with a code and a barcode, drawn once on a canvas.
-function labelTexture(code: string, seed: number) {
+export function labelTexture(code: string, seed: number) {
   const c = document.createElement('canvas');
   c.width = 192;
   c.height = 64;

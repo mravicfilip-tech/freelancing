@@ -218,3 +218,14 @@ S9. **Version 5, N, the najam text block, UI, UX and layout all bad.** Filip mar
    gets facts but no next step besides one button, no fleet to browse, no price or duration to choose.
    Candidates on file. Note 3 offering cards for the fleet, T06 calculator for najam (duration and count to a
    ponuda), ref 06 one big figure (24 sata) with a data line, note 5 grid.
+S10. **Version 5, AT, automatizacija taken too literally.** Ref `refs/scenes/s10-v5-at-automatizacija.webp`.
+   Said: "This screen is part of the storyboard - but taken too literally, bad execution illustration and UI wise."
+   What is there now. The word automatizacija set at about 270px across the full width, one centred line under it,
+   and seven top down robots (C-Matic models scaled up about 3 times) on dotted diagonal paths between pale circle
+   docks, on a light floor. It copies Figma frame 31 nearly one to one, the robots read as toys at that scale, the
+   dots and circles look like a diagram, and the giant word does all the work with nothing to read or do after it.
+   Read. Filip keeps the beat (automatizacija is in the story) but wants it designed, not traced from the storyboard.
+   Candidates on file. T02 real render with a wireframe overlay (the C-Matic at true scale in a warehouse, its route
+   drawn as a precise system overlay). Note 4 statement marquee for the word. T07 scroll fill for the line. A real
+   offer line from Ekotehnika on what automation they sell, plus one CTA, which the beat has none of today.
+   Open. Whether the giant single word stays at all.

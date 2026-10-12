@@ -132,3 +132,17 @@ S1. **Version 5, C1, the colouring is bad.** Our shot of the current state `refs
    The grey reads muddy against the white ground below, and the title and sign compete on the same tone.
    Open. What Filip wants instead. My read is a light ground behind the title (white to light-grey), the building
    as a lighter form with real windows and edges, the sign as the one dark element, and shrubs that read as plants.
+S2. **Bad UI on the top row and the C1 tiles, version 5.** Ref `refs/scenes/s02-v5-c1-top-row-and-tiles.webp`,
+   Filip marked the top row and the bottom band with the lede and three tiles. Said:
+   "I don't like the fact the logo is boxed up".
+   "Poorly executed button design".
+   "The empty space between the UI/animation is low, we can't clearly read the information".
+   What is there now. The two logos sit in a white rounded tile. The phones are two thin 1px outline pills with
+   15px text. At C1 the lede and the three white tiles sit right under the road, touching the scene, with no ground
+   between the picture and the text.
+   Open. Logo without a box. On light beats the red Linde block and the graphite wordmark can sit straight on the
+   ground. On the dark servis beat the graphite wordmark fails contrast, so it needs a white version, and the
+   co-branding guideline asks for graphite, so a white wordmark is Filip's call. Ties to T01, the floating nav bar.
+   Open. Buttons. T01 (filled primary, mono labels, solid secondary) is the strongest candidate on file.
+   Open. Space. My read is a clear band of plain ground between the scene and every text block, the scene framed
+   smaller or higher at the hold beats, so text never touches the picture.

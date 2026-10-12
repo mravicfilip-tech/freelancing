@@ -47,8 +47,8 @@ export function Footer() {
       <div className="s2-wrap s2-footer-grid">
         <div className="s2-footer-brand">
           <a className="s2-footer-logo" href={`${SITE}/`}>
-            <img src="/brand/linde-mh.svg" width={57} height={34} alt="Linde Material Handling" />
-            <img src="/brand/ekotehnika.svg" width={81} height={22} alt="Ekotehnika, početna strana" />
+            <img src="/brand/linde-mh.svg" width={160} height={96} alt="Linde Material Handling" />
+            <img src="/brand/ekotehnika.svg" width={160} height={33} alt="Ekotehnika, početna strana" />
           </a>
           <p>{footer.lede}</p>
         </div>

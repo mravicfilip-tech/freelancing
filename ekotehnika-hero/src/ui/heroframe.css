@@ -65,15 +65,16 @@
   outline-color: var(--hf-top);
 }
 
-/* top row, 40px from the top, 48px tall, 48px side margins */
+/* top row, 24px from the top, as tall as the logo tile, 48px side margins */
 .hf-top {
   position: absolute;
-  top: 40px;
+  top: 24px;
   left: 48px;
   right: 48px;
-  height: 48px;
+  height: 112px;
   display: grid;
   grid-template-columns: auto 1fr auto;
+  column-gap: 28px;
   align-items: center;
   color: var(--hf-top);
   font-size: 15px;
@@ -81,13 +82,14 @@
   line-height: 20px;
 }
 
+/* LMH co-branding guideline 1.3, the Linde logo at its 160 by 96px screen minimum and the dealer
+   wordmark exactly as wide, centred on it, 2x apart where x is 1/16 of the Linde logo width */
 .hf-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 48px;
-  padding: 0 14px 0 7px;
-  border-radius: 11px;
+  gap: 20px;
+  padding: 8px 18px 8px 8px;
+  border-radius: 14px;
   background: var(--white);
 }
 
@@ -101,7 +103,7 @@
 
 .hf-nav ul {
   display: flex;
-  gap: clamp(24px, 2.5vw, 36px);
+  gap: clamp(14px, 1.9vw, 36px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -140,7 +142,7 @@
   display: inline-flex;
   align-items: center;
   height: 44px;
-  padding: 0 22px;
+  padding: 0 18px;
   border: 1px solid var(--hf-top-line);
   border-radius: 999px;
   color: var(--hf-top);
@@ -151,6 +153,20 @@
 
 .hf-pill:hover {
   background: var(--hf-top-wash);
+}
+
+/* Under 1400px the taller logo tile leaves less room, so the row tightens a step */
+@media (max-width: 1400px) {
+  .hf-top {
+    column-gap: 18px;
+    font-size: 14px;
+  }
+  .hf-nav ul {
+    gap: 14px;
+  }
+  .hf-pill {
+    padding: 0 14px;
+  }
 }
 
 /* bottom left block, 48px from the left and 64px from the bottom */

@@ -2,6 +2,7 @@
 // building behind it with the company name in sign letters, vans, parked forklifts, trees, lamps and a fence
 // for the side on drive, then the S shaped path and open land for the top down view. Metres, x east, z south.
 import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../../tokens';
 import { W, withAO } from '../../../variants/v4/look';
@@ -28,6 +29,28 @@ function Parked({ at }: { at: Placement }) {
 // The lane and the path are one grey ribbon, with a white kerb either side
 const laneMat = withAO(new THREE.MeshStandardMaterial({ color: C.tonedTextGrey, roughness: 0.96, emissive: C.tonedTextGrey, emissiveIntensity: 0.28 }), 0.3, 0.9);
 const kerbMat = new THREE.MeshStandardMaterial({ color: C.white, roughness: 0.9 });
+const markMat = W.mark.clone();
+
+// The road and its markings stop 150px short of the top of the picture, so the top row of the page stays plain.
+// The clip is in screen pixels and only ever touches these three materials.
+const clipTop = { value: new THREE.Vector2(1e5, 0) };
+function clipRoad(m: THREE.MeshStandardMaterial) {
+  const prev = m.onBeforeCompile;
+  m.onBeforeCompile = (shader, r) => {
+    prev?.call(m, shader, r);
+    shader.uniforms.uClip = clipTop;
+    shader.fragmentShader = `uniform vec2 uClip;\n${shader.fragmentShader}`.replace(
+      '#include <clipping_planes_fragment>',
+      '#include <clipping_planes_fragment>\n if (gl_FragCoord.y > uClip.x) discard;',
+    );
+  };
+  const key = m.customProgramCacheKey?.bind(m);
+  m.customProgramCacheKey = () => `${key ? key() : ''}clipTop`;
+}
+clipRoad(laneMat);
+clipRoad(kerbMat);
+clipRoad(markMat);
+export const ROAD_CLEAR = 150;
 // big walls, with a little light of their own so the shaded faces stay pale and the top of the frame stays plain
 const wallBright = new THREE.MeshStandardMaterial({ color: C.white, emissive: C.white, emissiveIntensity: 0.32, roughness: 0.9 });
 const lawnMat = new THREE.MeshStandardMaterial({ color: C.hoverLightGrey, roughness: 1 });
@@ -38,6 +61,10 @@ const SHED: Rect = [100, -52, 128, -34];
 const YARD_SHED: Rect = [-34, -35, 14, -20];
 
 export function Site() {
+  useFrame(({ gl }) => {
+    const b = gl.getDrawingBufferSize(new THREE.Vector2());
+    clipTop.value.set(b.y - ROAD_CLEAR * gl.getPixelRatio(), 0);
+  });
   const lane = useMemo(() => {
     const pts = routePoints.filter((p) => p.x > -70);
     return { road: ribbonGeometry(pts, 3.7, 0.045), kerb: ribbonGeometry(pts, 4.5, 0.03) };
@@ -55,12 +82,11 @@ export function Site() {
     const lit: It[] = [];
     for (let x = 41; x < 74; x += 3.1) {
       if (x > 59 && x < 73) continue;
-      (r() < 0.2 ? lit : glass).push([x + 0.8, 1.5, -9.93, 1.7, 1.3, 0.12]);
+      lit.push([x + 0.8, 1.5, -9.93, 1.7, 1.3, 0.12]);
     }
     // the entrance, dark glass in the ground floor
-    glass.push([66.5, 0.8, -9.92, 9, 1.6, 0.14]);
+    lit.push([66.5, 0.8, -9.92, 9, 1.6, 0.14]);
     const mull: It[] = [];
-    for (let x = 62.3; x < 71; x += 1.5) mull.push([x, 0.8, -9.84, 0.09, 1.6, 0.12]);
     // the wing and the shed, band windows
     for (let x = 78; x < 94; x += 3.4) glass.push([x + 0.8, 2.2, -9.93, 1.9, 1.3, 0.12]);
     // bushes and low shrubs along the front, a lawn in front of the building
@@ -176,7 +202,7 @@ export function Site() {
       <Box a={[30, -9, 100, -3.9]} y={0.01} h={0.03} m={lawnMat} cast={false} />
       <mesh geometry={lane.kerb} material={kerbMat} receiveShadow />
       <mesh geometry={lane.road} material={laneMat} receiveShadow />
-      <Inst mat={W.mark} items={data.marks} cast={false} />
+      <Inst mat={markMat} items={data.marks} cast={false} />
 
       {/* the office building, a two floor block with a wing and the shed of the yard */}
       <Box a={BLOCK_A} h={8} m={wallBright} />
@@ -194,9 +220,9 @@ export function Site() {
       <Inst mat={W.glassLit} items={data.lit} cast={false} />
       <Inst mat={W.ink} items={data.mull} cast={false} />
       {/* entrance canopy on two posts, with the company name above it */}
-      <Box a={[60, -10, 76, -7.4]} y={1.7} h={0.22} m={W.clad} />
+      <Box a={[60, -10, 76, -7.4]} y={1.7} h={0.22} m={wallBright} />
       {[61, 75.2].map((x) => (
-        <mesh key={x} geometry={unit} material={W.ink} position={[x, 0.85, -7.5]} scale={[0.16, 1.7, 0.16]} castShadow />
+        <mesh key={x} geometry={unit} material={wallBright} position={[x, 0.85, -7.5]} scale={[0.16, 1.7, 0.16]} castShadow />
       ))}
       <Box a={[67.9, -10.06, 73.2, -9.9]} y={3.1} h={0.8} m={W.ink} cast={false} />
       <SignWord word="EKOTEHNIKA" h={0.45} position={[70.55, 3.27, -9.9]} />

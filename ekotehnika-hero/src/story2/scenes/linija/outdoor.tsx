@@ -156,26 +156,26 @@ const Building = memo(function Building({ x }: { x: number }) {
   );
   return (
     <g transform={`translate(${x} ${MY})`}>
-      {/* tall block */}
-      <rect x={0} y={-292} width={340} height={292} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={-6} y={-306} width={352} height={16} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={14} y={-262} width={290} height={80} fill={WH} stroke={G2} strokeOpacity={0.5} strokeWidth={1.4} />
-      <image href="/brand/ekotehnika.svg" x={30} y={-255} width={236} height={64} preserveAspectRatio="xMidYMid meet" />
-      {[40, 130, 220].map((wx) => win(wx, -156))}
-      {[40, 130, 220].map((wx) => win(wx, -84, 44, 50))}
+      {/* tall block, kept under y 360 on screen so the C1 title above it stays clear */}
+      <rect x={0} y={-228} width={340} height={228} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
+      <rect x={-6} y={-242} width={352} height={14} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
+      <rect x={14} y={-214} width={290} height={70} fill={WH} stroke={G2} strokeOpacity={0.5} strokeWidth={1.4} />
+      <image href="/brand/ekotehnika.svg" x={42.9} y={-199.3} width={212.4} height={40.5} preserveAspectRatio="xMidYMid meet" />
+      {[40, 130, 220].map((wx) => win(wx, -124, 44, 44))}
+      {[40, 130, 220].map((wx) => win(wx, -64, 44, 44))}
       {/* lower block */}
-      <rect x={340} y={-236} width={620} height={236} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={334} y={-250} width={632} height={16} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      {[380, 480, 580, 680, 780, 880].map((wx) => win(wx, -204))}
-      {[380, 480, 880].map((wx) => win(wx, -126, 44, 64))}
-      <path d="M 560 -140 L 880 -140 L 900 -110 L 540 -110 Z" fill={G} opacity={0.82} />
+      <rect x={340} y={-190} width={620} height={190} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
+      <rect x={334} y={-204} width={632} height={14} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
+      {[380, 480, 580, 680, 780, 880].map((wx) => win(wx, -172, 44, 44))}
+      {[380, 480, 880].map((wx) => win(wx, -104, 44, 62))}
+      <path d="M 560 -118 L 880 -118 L 900 -92 L 540 -92 Z" fill={G} opacity={0.82} />
       {[560, 620, 680, 740, 800, 860].map((ax) => (
-        <line key={ax} x1={ax} y1={-140} x2={ax - 8} y2={-110} stroke={WH} strokeWidth={2} opacity={0.5} />
+        <line key={ax} x1={ax} y1={-118} x2={ax - 8} y2={-92} stroke={WH} strokeWidth={2} opacity={0.5} />
       ))}
-      <rect x={604} y={-104} width={170} height={104} fill={G} opacity={0.55} />
-      <rect x={604} y={-104} width={170} height={104} fill="none" stroke={WH} strokeWidth={4} />
-      <line x1={689} y1={-104} x2={689} y2={0} stroke={WH} strokeWidth={3} />
-      <rect x={410} y={-276} width={44} height={26} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.2} />
+      <rect x={604} y={-92} width={170} height={92} fill={G} opacity={0.55} />
+      <rect x={604} y={-92} width={170} height={92} fill="none" stroke={WH} strokeWidth={4} />
+      <line x1={689} y1={-92} x2={689} y2={0} stroke={WH} strokeWidth={3} />
+      <rect x={410} y={-230} width={44} height={26} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.2} />
       {/* shrubs along the front */}
       {[-30, 30, 330, 360, 970, 1004].map((sx, i) => (
         <circle key={sx} cx={sx} cy={-18 - (i % 2) * 6} r={26 - (i % 3) * 3} fill={SG} stroke={G2} strokeOpacity={0.5} strokeWidth={1.2} />

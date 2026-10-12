@@ -13,10 +13,10 @@ import { useTruck, type TruckName } from './trucks';
 type Lane = { a: [number, number]; b: [number, number]; off: number };
 // Diagonal lanes in metres, x east, z south, the camera looks straight down with north up
 const LANES: Lane[] = [
-  { a: [-5.2, -0.1], b: [-6.5, 2.8], off: 0.0 },
+  { a: [-5.2, 0.6], b: [-6.5, 3.5], off: 0.0 },
   { a: [-2.7, 1.7], b: [-4.1, 4.4], off: 0.37 },
   { a: [1.9, 1.3], b: [0.5, 4.3], off: 0.62 },
-  { a: [5.3, -0.2], b: [3.9, 2.6], off: 0.18 },
+  { a: [5.3, 0.6], b: [3.9, 3.4], off: 0.18 },
   { a: [6.8, 0.8], b: [5.3, 4.3], off: 0.81 },
   { a: [-1.2, 2.0], b: [-2.4, 4.7], off: 0.5 },
 ];

@@ -201,10 +201,10 @@ export function RentalGrid({ k }: { k: number }) {
 // ---- the dark floor and the robots ------------------------------------------------------------------------------
 type Lane = { a: [number, number]; b: [number, number]; phase: number };
 const LANES: Lane[] = [
-  { a: [40, 868], b: [330, 340], phase: 0.0 },
+  { a: [40, 868], b: [300, 456], phase: 0.0 },
   { a: [404, 892], b: [668, 566], phase: 0.3 },
   { a: [830, 892], b: [1000, 640], phase: 0.55 },
-  { a: [1040, 872], b: [1344, 350], phase: 0.78 },
+  { a: [1040, 872], b: [1290, 460], phase: 0.78 },
 ];
 
 export function Paths({ p }: { p: number }) {

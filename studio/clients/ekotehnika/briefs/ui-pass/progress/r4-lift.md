@@ -53,6 +53,7 @@ run to run on software GL. One of three before runs and one of five after runs w
 
 ## Changes needed outside my file
 
+- **The top row switch moves to story 9300.** The blade's top edge reaches the top rule at 9252 (k 0.42). The steel covers the rule from 9252 to 9345, the section's top edge sits on the rule from 9300 (k 0.5), and the blade leaves the rule on its drop at 9345 (k 0.574). Today's `SISTEM_DARK_TOP` end of 9480 falls after the steel has gone, so the band would flip in the open over the light section. 9300 puts the flip under the steel. Checked in shots at k 0.42 and 0.5. Not edited here, `darkTop.ts` is the parent's.
 - None to land this. The move ends on the plain light section and cuts to N at u 12, as today.
 - If Filip wants the section to be N itself, with the bay lines and the floor rising on the blade, `grid.tsx` would need the bays spread before u 11.9 (today `range(u, 11.9, 12.1)`) and `camera.tsx` would need the N camera from about u 11.5. That is the automation branch's file and the parent's file, so I did not touch them.
 

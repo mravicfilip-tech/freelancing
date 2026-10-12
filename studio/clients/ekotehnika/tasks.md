@@ -46,7 +46,8 @@ Task format
   - [x] Build round 4 beat panes and sections, item 21 included
   - [x] Settle Q10 and Q11, Filip handed them over, servis branch started
   - [ ] Send preview 2 after the real scroll checks on head
-  - [ ] Merge the street, auto and lift branches
+  - [x] Merge the lift branch
+  - [ ] Merge the street, auto and servis branches
   - [ ] Build round 4
   - [ ] Review, check and deploy
 

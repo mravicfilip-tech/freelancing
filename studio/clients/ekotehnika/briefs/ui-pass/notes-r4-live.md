@@ -2,7 +2,7 @@
 
 Notes Filip sent in chat on 12 October night, after preview 2 was built. One line each, with where it went and its state.
 
-1. **S, "this line is being cut off here".** The two lowest dimension lines run past the bottom rule into the coordinate row. Sent to the servis branch, item 15. Open.
+1. **S, "this line is being cut off here".** The two lowest dimension lines run past the bottom rule into the coordinate row. Fixed on the servis branch, merged as a44627d, the lowest line at y 868 of 1080 against the rule at 1016. Done.
 2. **P, "lines dont appear same stroke".** The leader lines drew 2px and grey beside the 1px callout rules, from half pixel ends. Leader ends now sit on pixel centres. Fixed, to check on the next build.
 3. **P, "design to be more prominent / prettier", the ringed points.** Board of five, Filip picked 3, the square plus, "make the pins larger 20%". Built at 29px, taste 23:55. Done.
 4. **P, "angle lines are weirdly executed on all products".** No leader runs at an angle now. The range row runs across both cells and every leader drops straight from its rule. Fixed, to check on the next build.

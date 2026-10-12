@@ -322,11 +322,11 @@ Per Filip, one off branch per 3D scene, each built by its own cloud session, eac
 | `claude/awesome-faraday-lkhnn2-street` | 2 scene part, 3, 4, 7 modules, 9 edge, then the footer scenery still per Q11 | `props.tsx`, `outdoor.tsx`, `yard.tsx`, `index.tsx`, `public/footer/` |
 | `claude/awesome-faraday-lkhnn2-auto` | 20 | `aisle.tsx`, `atplan.ts`, `grid.tsx` |
 | `claude/awesome-faraday-lkhnn2-lift` | 16. Merged as 5f46e2c, the switch moved to 9300, the fork tag blank. Settled by Claude, the blade may cross the top row during the dock, it hides the flip | the fork tine in `overlay.tsx` only |
-| `claude/awesome-faraday-lkhnn2-servis` | 15, per Q10 | `schematic.tsx`, `bake.ts` |
+| `claude/awesome-faraday-lkhnn2-servis` | 15, per Q10. Merged as a44627d, the lit X50, every dimension line above the bottom rule | `schematic.tsx`, `bake.ts` |
 | `claude/awesome-faraday-lkhnn2-grad` | Grad round 3, F5 to F9 | `src/story2/scenes/grad/` |
 | `claude/awesome-faraday-lkhnn2`, here | everything in the shell and `src/ui`, plus 7 scroll, 8 camera, 17, 24 | `src/story2/shell/`, `src/ui/`, `camera.tsx`, `warehouse.tsx`, the band lines in `overlay.tsx`, `kit.ts`, `route.ts` |
 
-Resume check-ins, per the Sessions rule in the README. Each fires hourly at minute 34 into its own session and is deleted when its branch is merged. This session `trig_01BUFDXLPptijwxGrxN3mscL`, street `trig_01E4YcZnYUoN7MpmQATxMYe9`, automation `trig_01CgcqYubTLtP5cUJi1KRThD`, lift `trig_01BtbFadMSpBgWgZ5VuRv9xw` (deleted on merge), servis `trig_01Tbd7f6NtEeZAXkZLcNVLUs` (session `session_01NV8EXBSpqoYkmfpLjBXXec`, at minute 38).
+Resume check-ins, per the Sessions rule in the README. Each fires hourly at minute 34 into its own session and is deleted when its branch is merged. This session `trig_01BUFDXLPptijwxGrxN3mscL`, street `trig_01E4YcZnYUoN7MpmQATxMYe9`, automation `trig_01CgcqYubTLtP5cUJi1KRThD`, lift `trig_01BtbFadMSpBgWgZ5VuRv9xw` (deleted on merge), servis `trig_01Tbd7f6NtEeZAXkZLcNVLUs` (deleted on merge).
 
 ## Order of work
 

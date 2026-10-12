@@ -55,7 +55,8 @@ Task format
   - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
   - [ ] Preview at d74e332 or later, Vercel's daily limit of 100 deployments refused it at 22.55 UTC, the hourly check-in retries
   - [x] Merge the lift branch
-  - [ ] Merge the street, auto and servis branches
+  - [x] Merge the servis branch
+  - [ ] Merge the street and automation branches
   - [ ] Build round 4
   - [ ] Review, check and deploy
 

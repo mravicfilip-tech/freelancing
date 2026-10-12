@@ -1,314 +1,376 @@
-// The automation floor, T and AT. A warehouse seen from above as a precise plan drawing on the dark ground, laid out in
-// metres. Pallet racks stand on both sides of one aisle, a cross lane runs along the bottom with the docking station at its
-// left end and a pallet pick at its right end. The C-Matic 10 and C-Matic HP are drawn at true scale, 1.2 m, against 1.2 by 0.8
-// pallets, no enlargement. Their routes are system lines, 1px, dashed, one info colour (LMH blue), with small square stop
-// markers and a ring at each start. No arrowheads. Red outlines are gone, the robots are white line art on the dark floor.
-// Everything sits in columns 7 to 12 so the text column stays plain. The drawing is built in T, the floor lines first, then
-// the racks, the stations and the routes, and the robots drive in AT.
-import { memo, type ReactNode } from 'react';
-import { K, WH, clamp01, io, lerp, range, smooth } from './frame';
+// The automation floor, T and AT. One order carried out from start to finish across the AT hold, in a clean axonometric view
+// of a warehouse, line art on the dark ground. The back wall and the floor run edge to edge, the left half of the frame is plain
+// floor so the text sits on the warehouse's own floor, and the work happens in columns 7 to 12.
+//
+//   k 0 to 0.3     the C-Matic 10 leaves its charger and drives under the shelf unit with the target box
+//   k 0.3 to 0.6   it lifts the shelf unit and carries it out to the pick station
+//   k 0.6 to 1.0   a person walks up and takes the box from the highlighted slot and sets it on the pick table
+//
+// Two more C-Matics carry shelf units in the back aisle in the same windows, so it reads as a fleet run by one system. The only
+// system graphic is a 1px path drawn just ahead of the active robot and gone behind it, and a calm highlight on the target slot.
+// Every object is real size in metres, the robot is 1.2 m, a shelf unit 1.0 by 0.8 by 2.1 m, the person 1.75 m. Everything is a
+// function of k, so it scrubs and freezes. Nothing fades, parts move or they are drawn. White 1px lines on dark, no red.
+import type { ReactNode } from 'react';
+import { WH, io, lerp, range } from './frame';
 import type { Cols } from './stage';
 
-const INFO = '#468cc4'; // LMH blue, 72 percent tint, the one info colour of the automation floor
+// ---- the view, x runs down and to the right, y down and to the left, z up. Metres to pixels by U ---------------------------------
+const HX = 0.866;
+const HY = 0.62;
+const HZ = 0.9;
 
+type Proj = (x: number, y: number, z: number) => [number, number];
+
+export function viewOf(c: Cols) {
+  // the drawing is sized by its height and may run off the right edge of the frame, the left is held at column 7
+  const U = Math.min(54, (c.bottom - c.top - 40) / (18.5 * HY + 2.2 * HZ));
+  const ox = c.left(7) + 14 + 6.5 * HX * U;
+  const oy = c.top + 30 + Math.max(0, (c.bottom - c.top - 40 - (18.5 * HY + 2.2 * HZ) * U) / 2);
+  const P: Proj = (x, y, z) => [ox + (x - y) * HX * U, oy + (x + y) * HY * U - z * HZ * U];
+  return { U, ox, oy, P };
+}
+
+// ---- tones, fills that hide what is behind a solid, so every drawn edge reads as a hidden line removed drawing -----------------
+type Tone = { t: string; l: string; r: string };
+const FLOOR = '#2d2d2d';
+const WALL = '#1b1b1b';
+const PLATE: Tone = { t: '#3c3c3c', l: '#2b2b2b', r: '#333333' };
+const CARTON: Tone = { t: '#5a5a5a', l: '#3f3f3f', r: '#4b4b4b' };
+const BODY: Tone = { t: '#585858', l: '#383838', r: '#444444' };
+const PERSON: Tone = { t: '#505050', l: '#363636', r: '#434343' };
+const LINE = 0.85;
+
+const fmt = (p: [number, number]) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
+
+// A box by its centre, size and turn about the vertical, drawn as the visible sides and the top.
+function prism(P: Proj, key: string, cx: number, cy: number, z: number, w: number, d: number, h: number, ang: number, tone: Tone, o = LINE): ReactNode {
+  const c = Math.cos(ang);
+  const s = Math.sin(ang);
+  const pts = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]].map(([a, b]) => [cx + a * c - b * s, cy + a * s + b * c] as [number, number]);
+  const faces: ReactNode[] = [];
+  for (let i = 0; i < 4; i++) {
+    const a = pts[i];
+    const b = pts[(i + 1) % 4];
+    const ex = b[0] - a[0];
+    const ey = b[1] - a[1];
+    let nx = ey;
+    let ny = -ex;
+    if (nx * ((a[0] + b[0]) / 2 - cx) + ny * ((a[1] + b[1]) / 2 - cy) < 0) {
+      nx = -nx;
+      ny = -ny;
+    }
+    if (nx + ny <= 1e-6) continue;
+    const poly = [P(a[0], a[1], z), P(b[0], b[1], z), P(b[0], b[1], z + h), P(a[0], a[1], z + h)];
+    faces.push(<polygon key={i} points={poly.map(fmt).join(' ')} fill={Math.abs(nx) >= Math.abs(ny) ? tone.r : tone.l} />);
+  }
+  const top = pts.map((p) => fmt(P(p[0], p[1], z + h))).join(' ');
+  return (
+    <g key={key} stroke={WH} strokeOpacity={o} strokeWidth={1} strokeLinejoin="miter">
+      {faces}
+      <polygon points={top} fill={tone.t} />
+    </g>
+  );
+}
+
+const seg3 = (P: Proj, key: string, a: [number, number, number], b: [number, number, number], w = 1, o = LINE): ReactNode => {
+  const p = P(...a);
+  const q = P(...b);
+  return <line key={key} x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} stroke={WH} strokeOpacity={o} strokeWidth={w} />;
+};
+
+// ---- routes and the clock ------------------------------------------------------------------------------------------------------
 type V = [number, number];
-
-// ---- the plan in metres, x to the right, y down, origin at the top left ---------------------------------------------------
-const PW = 11;
-const PH = 11;
-const AISLE_L = 4.1;
-const AISLE_R = 6.9;
-const LANE_L = 4.8;
-const LANE_R = 6.2;
-const CROSS_T = 8.35;
-const CROSS_B = 10.75;
-const BAY = 2.4;
-const RACK_Y0 = 0.9;
-const BAYS = 3;
-const DOCK: V = [1.5, 9.2];
-
-type Route = { kind: 'c10' | 'hp'; pts: V[]; stops: V[]; off: number };
-const ROUTES: Route[] = [
-  { kind: 'c10', pts: [DOCK, [LANE_L, 9.2], [LANE_L, 1.5]], stops: [[LANE_L, 6.9], [LANE_L, 4.5], [LANE_L, 2.1]], off: 0 },
-  { kind: 'hp', pts: [[8.9, 9.2], [LANE_R, 9.2], [LANE_R, 1.5]], stops: [[LANE_R, 6.9], [LANE_R, 4.5], [LANE_R, 2.1]], off: 0.34 },
-  { kind: 'c10', pts: [[9.0, 10.1], [1.6, 10.1]], stops: [[5.3, 10.1]], off: 0.7 },
-];
-
 const len = (pts: V[]) => pts.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0);
-function at(pts: V[], d: number): { p: V; ang: number } {
-  let rest = d;
+function posAt(pts: V[], d: number): V {
+  let rest = Math.max(0, d);
   for (let i = 0; i < pts.length - 1; i++) {
     const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]);
     if (rest <= l || i === pts.length - 2) {
       const t = Math.min(1, rest / l);
-      return { p: [lerp(pts[i][0], pts[i + 1][0], t), lerp(pts[i][1], pts[i + 1][1], t)], ang: Math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0]) };
+      return [lerp(pts[i][0], pts[i + 1][0], t), lerp(pts[i][1], pts[i + 1][1], t)];
     }
     rest -= l;
   }
-  return { p: pts[pts.length - 1], ang: 0 };
+  return pts[pts.length - 1];
 }
-// the first share of a polyline, for the routes that draw on
-function sub(pts: V[], f: number): V[] {
-  const L = len(pts) * clamp01(f);
-  const out: V[] = [pts[0]];
-  let rest = L;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]);
-    if (rest >= l) {
-      out.push(pts[i + 1]);
-      rest -= l;
-    } else {
-      const t = rest / l;
-      out.push([lerp(pts[i][0], pts[i + 1][0], t), lerp(pts[i][1], pts[i + 1][1], t)]);
-      break;
-    }
+// the part of a route between two distances, as points
+function slice(pts: V[], a: number, b: number): V[] {
+  const out: V[] = [posAt(pts, a)];
+  let run = 0;
+  for (let i = 1; i < pts.length; i++) {
+    run += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    if (run > a + 1e-6 && run < b - 1e-6) out.push(pts[i]);
   }
+  out.push(posAt(pts, b));
   return out;
 }
-const poly = (pts: V[]) => pts.map((p) => `${p[0].toFixed(3)},${p[1].toFixed(3)}`).join(' ');
-
-const hatch = (x: number, y: number, w: number, h: number, step: number): ReactNode[] => {
-  const out: ReactNode[] = [];
-  for (let u = -h + step / 2; u < w; u += step) {
-    let x1 = u;
-    let y1 = h;
-    let x2 = u + h;
-    let y2 = 0;
-    if (x1 < 0) {
-      y1 = h + x1;
-      x1 = 0;
-    }
-    if (x2 > w) {
-      y2 = x2 - w;
-      x2 = w;
-    }
-    out.push(<line key={u} x1={x + x1} y1={y + y1} x2={x + x2} y2={y + y2} />);
-  }
-  return out;
+// heading from the route a little behind and ahead, so a corner is turned and not snapped
+const headingAt = (pts: V[], d: number) => {
+  const a = posAt(pts, d - 0.45);
+  const b = posAt(pts, d + 0.45);
+  return Math.atan2(b[1] - a[1], b[0] - a[0]);
 };
 
-const line = (o = 1, w = 1, fill = 'none') => ({ fill, stroke: WH, strokeOpacity: o, strokeWidth: w });
+// The block of shelf units stands against the back wall in two rows, the aisle runs along it toward the viewer. The deep end of the
+// aisle, small x, is where the fleet works. Two slots of the front row start empty, the fleet moves a unit into each.
+const SLOT_X = [1.7, 3.1, 4.5, 5.9, 7.3, 8.7, 10.1];
+const FRONT_Y = 2.5;
+const BACK_Y = 1.5;
+const LANE_M = 3.75; // the fleet's lane, nearest the units
+const LANE_F = 5.3; // the order's lane
+const UW = 1.0;
+const UD = 0.8;
+const LIFT = 0.15;
+const LEVELS = [0.4, 0.95, 1.5, 2.05];
+const TARGET = 3;
 
-// ---- the static plan, racks, floor markings and the two stations ------------------------------------------------------------
-const Pallet = ({ x, y, w = 1.2, h = 0.8, full }: { x: number; y: number; w?: number; h?: number; full: boolean }) => (
-  <g>
-    <rect x={x} y={y} width={w} height={h} {...line(0.5)} />
-    {[0.25, 0.5, 0.75].map((f) => (
-      <line key={f} x1={x + w * f} y1={y} x2={x + w * f} y2={y + h} {...line(0.3)} />
-    ))}
-    {full && (
-      <g>
-        <rect x={x + 0.08} y={y + 0.07} width={w - 0.16} height={h - 0.14} {...line(0.75)} />
-        <line x1={x + w / 2} y1={y + 0.07} x2={x + w / 2} y2={y + h - 0.07} {...line(0.4)} />
-        <line x1={x + 0.08} y1={y + h / 2} x2={x + w - 0.08} y2={y + h / 2} {...line(0.4)} />
-      </g>
-    )}
-  </g>
-);
+const lane = (x: number, y: number): V => [x, y];
+// R1 the C-Matic 10 on the order, from its charger under the target unit and out to the pick station
+const R1: V[] = [lane(0.9, LANE_F), lane(SLOT_X[TARGET], LANE_F), lane(SLOT_X[TARGET], FRONT_Y), lane(SLOT_X[TARGET], LANE_F), lane(8.0, LANE_F)];
+// R2 and R3 each move a front row unit into an empty slot, then drive away empty
+const R2: V[] = [lane(0.8, LANE_M), lane(SLOT_X[1], LANE_M), lane(SLOT_X[1], FRONT_Y), lane(SLOT_X[1], LANE_M), lane(SLOT_X[0], LANE_M), lane(SLOT_X[0], FRONT_Y), lane(SLOT_X[0], LANE_M), lane(0.8, LANE_M)];
+const R3: V[] = [lane(10.9, LANE_M), lane(SLOT_X[5], LANE_M), lane(SLOT_X[5], FRONT_Y), lane(SLOT_X[5], LANE_M), lane(SLOT_X[6], LANE_M), lane(SLOT_X[6], FRONT_Y), lane(SLOT_X[6], LANE_M), lane(10.9, LANE_M)];
 
-// A rack row, one side of one aisle. x0 to x1 across, bays run down the plan.
-function RackRow({ x0, x1, key0 }: { x0: number; x1: number; key0: number }) {
-  const els: ReactNode[] = [];
-  const dep = x1 - x0;
-  for (let b = 0; b < BAYS; b++) {
-    const y = RACK_Y0 + b * BAY;
-    els.push(<rect key={`f${b}`} x={x0} y={y} width={dep} height={BAY} {...line(0.6)} />);
-    for (let p = 0; p < 2; p++) {
-      const full = (key0 + b * 2 + p) % 5 !== 2;
-      els.push(<Pallet key={`p${b}${p}`} x={x0 + (dep - 0.8) / 2} y={y + 0.1 + p * 1.1} w={0.8} h={1.2} full={full} />);
+type Run = { s: number; lift: number; moving: boolean; carryEnd: number };
+// distance along the route at k, and the lift of the unit
+function runOf(k: number, route: V[], leave: boolean): Run {
+  const under = len(route.slice(0, 3));
+  const carryEnd = len(route.slice(0, leave ? 6 : 5));
+  const leaveEnd = len(route);
+  let s: number;
+  if (k < 0.3) s = under * io(k / 0.3);
+  else if (k < 0.36) s = under;
+  else if (k < 0.6) s = lerp(under, carryEnd, io((k - 0.36) / 0.24));
+  else if (!leave || k < 0.7) s = carryEnd;
+  else s = lerp(carryEnd, leaveEnd, io((k - 0.7) / 0.3));
+  const up = io(range(k, 0.3, 0.36));
+  const down = leave ? io(range(k, 0.6, 0.66)) : 0;
+  const moving = (k > 0 && k < 0.3) || (k > 0.36 && k < 0.6) || (leave && k > 0.7 && k < 1);
+  return { s, lift: LIFT * up * (1 - down), moving, carryEnd };
+}
+
+// ---- parts -----------------------------------------------------------------------------------------------------------------------
+type Shelf = { id: string; x: number; y: number; z: number; box: boolean };
+
+function shelfUnit(P: Proj, u: Shelf): ReactNode[] {
+  const { x, y, z } = u;
+  const h = (i: number) => 0.26 + ((Math.round(x * 7) + i) % 3) * 0.04;
+  const out: ReactNode[] = [];
+  const top = z + LEVELS[3] + 0.04;
+  out.push(seg3(P, 'p0', [x - UW / 2, y - UD / 2, z], [x - UW / 2, y - UD / 2, top], 1.2));
+  LEVELS.forEach((lv, i) => {
+    out.push(prism(P, `pl${i}`, x, y, z + lv, UW, UD, 0.04, 0, PLATE));
+    if (i < 3) {
+      out.push(prism(P, `ca${i}`, x - 0.22, y, z + lv + 0.04, 0.4, 0.52, h(i), 0, CARTON));
+      const isTarget = u.id === 'T' && i === 1;
+      if (!(isTarget && !u.box)) out.push(prism(P, `cb${i}`, x + 0.2, y, z + lv + 0.04, 0.34, 0.5, h(i + 1), 0, CARTON));
+    }
+  });
+  out.push(seg3(P, 'p1', [x + UW / 2, y - UD / 2, z], [x + UW / 2, y - UD / 2, top], 1.2));
+  out.push(seg3(P, 'p2', [x - UW / 2, y + UD / 2, z], [x - UW / 2, y + UD / 2, top], 1.2));
+  out.push(seg3(P, 'p3', [x + UW / 2, y + UD / 2, z], [x + UW / 2, y + UD / 2, top], 1.2));
+  return out;
+}
+
+// The C-Matic 10, 1.2 by 0.8 by 0.3 m, turned by ang, its top plate rising with the lift.
+function robot(P: Proj, x: number, y: number, ang: number, lift: number): ReactNode[] {
+  const c = Math.cos(ang);
+  const s = Math.sin(ang);
+  return [
+    prism(P, 'body', x, y, 0.02, 1.2, 0.8, 0.26, ang, BODY),
+    prism(P, 'bump', x + 0.6 * c, y + 0.6 * s, 0.07, 0.06, 0.7, 0.1, ang, PLATE),
+    prism(P, 'plate', x, y, 0.28 + lift, 0.9, 0.6, 0.04, ang, PLATE),
+  ];
+}
+
+type Group = { d: number; nodes: ReactNode };
+
+// build runs 0 to 1 through T and is only used by the shell for the rise, k is the AT hold 0 to 1, ty is the screen y of the
+// floor's top edge as it rises in T.
+export function Automation({ cols, k, ty }: { cols: Cols; k: number; ty: number }) {
+  const { U, ox, oy, P } = viewOf(cols);
+  const x0 = cols.x0 - 4;
+  const x1 = cols.x1 + 4;
+  const y1 = cols.y1 + 4;
+  const sl = HY / HX; // slope of the floor lines on screen
+  const wallY = (sx: number) => oy + (sx - ox) * sl;
+
+  // ---- the order ----
+  const r1 = runOf(k, R1, false);
+  const r2 = runOf(k, R2, true);
+  const r3 = runOf(k, R3, true);
+  const p1 = posAt(R1, r1.s);
+  const p2 = posAt(R2, r2.s);
+  const p3 = posAt(R3, r3.s);
+
+  // the shelf units, the carried ones sit on their robot from the lift on
+  const units: Shelf[] = [];
+  const carried = (id: string, route: V[], r: Run, x: number, y: number): Shelf => {
+    if (k < 0.3) return { id, x, y, z: 0, box: true };
+    const p = posAt(route, Math.min(r.s, r.carryEnd));
+    return { id, x: p[0], y: p[1], z: r.lift, box: true };
+  };
+  SLOT_X.forEach((x, i) => {
+    units.push({ id: `b${i}`, x, y: BACK_Y, z: 0, box: true });
+    if (i === TARGET) units.push(carried('T', R1, r1, x, FRONT_Y));
+    else if (i === 1) units.push(carried('f1', R2, r2, x, FRONT_Y));
+    else if (i === 5) units.push(carried('f5', R3, r3, x, FRONT_Y));
+    else if (i !== 0 && i !== 6) units.push({ id: `f${i}`, x, y: FRONT_Y, z: 0, box: true });
+  });
+  // the person and the box they take
+  const walk = io(range(k, 0.4, 0.66));
+  const px = lerp(17.5, 9.15, walk);
+  const py = LANE_F;
+  const step = walk > 0 && walk < 1 ? Math.sin((px * 9) % (Math.PI * 2)) : 0;
+  const reach = io(range(k, 0.68, 0.75));
+  const carryT = io(range(k, 0.8, 0.92));
+  const rest: [number, number, number] = [px - 0.04, py + 0.3, 0.95];
+  const slotHand: [number, number, number] = [8.56, LANE_F + 0.02, 1.24];
+  const tableHand: [number, number, number] = [9.3, LANE_F + 0.85, 1.08];
+  const free = k < 0.75 ? 0 : 1;
+  let hand: [number, number, number];
+  if (k < 0.75) hand = [lerp(rest[0], slotHand[0], reach), lerp(rest[1], slotHand[1], reach), lerp(rest[2], slotHand[2], reach)];
+  else if (k < 0.8) hand = slotHand;
+  else if (k < 0.92) hand = [lerp(slotHand[0], tableHand[0], carryT), lerp(slotHand[1], tableHand[1], carryT), lerp(slotHand[2], tableHand[2], carryT) + 0.12 * Math.sin(carryT * Math.PI)];
+  else {
+    const back = io(range(k, 0.94, 1));
+    hand = [lerp(tableHand[0], rest[0], back), lerp(tableHand[1], rest[1], back), lerp(tableHand[2], rest[2], back)];
+  }
+  const boxFree = k >= 0.75;
+  const boxPos: [number, number, number] =
+    k < 0.8 ? [r1.lift ? p1[0] + 0.2 : p1[0], p1[1], r1.lift + LEVELS[1] + 0.04] : k < 0.92 ? [hand[0] - 0.05, hand[1], hand[2] - 0.17] : [tableHand[0], LANE_F + 1.05, 0.9];
+
+  // ---- the ground, wall and floor edge to edge, floor markings only inside the automation zone ----
+  const ground: ReactNode[] = [];
+  const wy = (sx: number) => wallY(sx);
+  ground.push(<rect key="floor" x={x0} y={0} width={x1 - x0} height={y1} fill={FLOOR} />);
+  // the wall is everything above the wall line, cut off at the top of the room
+  const xc = Math.max(x0, ox - oy / sl);
+  ground.push(<polygon key="wall" points={`${xc},${wy(xc)} ${x1},${wy(x1)} ${x1},0 ${xc},0`} fill={WALL} />);
+  ground.push(<line key="wl" x1={xc} y1={wy(xc)} x2={x1} y2={wy(x1)} stroke={WH} strokeOpacity={0.35} strokeWidth={1} />);
+  // the wall's own joints and rails, only where the drawing is, right of column 7
+  const left7 = cols.left(7);
+  for (let wx = 0; wx <= 14; wx += 3) {
+    const a = P(wx, 0, 0);
+    const b = P(wx, 0, 3.6);
+    if (a[0] < left7) continue;
+    ground.push(<line key={`wj${wx}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={WH} strokeOpacity={0.14} strokeWidth={1} />);
+  }
+  {
+    const a = P(0, 0, 3.6);
+    const b = P(30, 0, 3.6);
+    const a0 = Math.max(a[0], left7);
+    ground.push(<line key="rail" x1={a0} y1={a[1] + (a0 - a[0]) * sl} x2={b[0]} y2={b[1]} stroke={WH} strokeOpacity={0.14} strokeWidth={1} />);
+    const s0 = P(0, 0, 0.25);
+    const s1 = P(30, 0, 0.25);
+    ground.push(<line key="skirt" x1={Math.max(s0[0], left7)} y1={s0[1] + (Math.max(s0[0], left7) - s0[0]) * sl} x2={s1[0]} y2={s1[1]} stroke={WH} strokeOpacity={0.14} strokeWidth={1} />);
+  }
+  // the zone, its left and front edges are designed edges, its lines run on to the frame edge
+  const xr = (cols.x1 - ox) / (HX * U) + 8;
+  const zoneY = 7.8;
+  const fl = (key: string, ya: number, yb: number, xa: number, xb: number, o = 0.28) => {
+    const a = P(xa, ya, 0);
+    const b = P(xb, yb, 0);
+    return <line key={key} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={WH} strokeOpacity={o} strokeWidth={1} />;
+  };
+  ground.push(fl('z-left', 0, zoneY, 0, 0, 0.4));
+  ground.push(fl('z-front', zoneY, zoneY, 0, xr, 0.4));
+  [3.15, 6.3].forEach((yy) => ground.push(fl(`a${yy}`, yy, yy, 0, xr)));
+  // footprints of the shelf unit slots and the staging slots, a rectangle on the floor
+  const rect = (key: string, cx: number, cy: number, w: number, d: number, o = 0.28) => {
+    const c = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]].map(([a, b]) => fmt(P(cx + a, cy + b, 0))).join(' ');
+    return <polygon key={key} points={c} fill="none" stroke={WH} strokeOpacity={o} strokeWidth={1} />;
+  };
+  SLOT_X.forEach((x, i) => {
+    ground.push(rect(`sf${i}`, x, FRONT_Y, UW + 0.1, UD + 0.1));
+    ground.push(rect(`sb${i}`, x, BACK_Y, UW + 0.1, UD + 0.1));
+  });
+  // chargers, one pad each, and the pick station zone
+  ground.push(rect('pad1', 0.95, LANE_F, 1.5, 1.1, 0.35));
+  ground.push(rect('pad2', 0.8, LANE_M, 1.5, 1.1, 0.35));
+  ground.push(rect('pad3', 10.9, LANE_M, 1.5, 1.1, 0.35));
+  ground.push(rect('pick', 9.4, LANE_F + 0.3, 3.4, 2.1, 0.35));
+
+  // the path, a thin solid line just ahead of the active robot and nothing behind it
+  if (r1.moving) {
+    const ahead = slice(R1, r1.s, Math.min(len(R1), r1.s + 2.8));
+    if (ahead.length > 1) {
+      ground.push(<polyline key="path" points={ahead.map((p) => fmt(P(p[0], p[1], 0.01))).join(' ')} fill="none" stroke={WH} strokeOpacity={0.95} strokeWidth={1} />);
     }
   }
-  // the uprights, a small solid square at every bay line
-  for (let b = 0; b <= BAYS; b++) {
-    const y = RACK_Y0 + b * BAY;
-    els.push(<rect key={`u${b}a`} x={x0 - 0.05} y={y - 0.05} width={0.1} height={0.1} fill={WH} fillOpacity={0.85} stroke="none" />);
-    els.push(<rect key={`u${b}b`} x={x1 - 0.05} y={y - 0.05} width={0.1} height={0.1} fill={WH} fillOpacity={0.85} stroke="none" />);
-  }
-  return <g>{els}</g>;
-}
 
-const Racks = memo(function Racks() {
-  return (
-    <g>
-      <RackRow x0={1.9} x1={3.0} key0={0} />
-      <RackRow x0={3.0} x1={AISLE_L} key0={1} />
-      <RackRow x0={AISLE_R} x1={8.0} key0={2} />
-      <RackRow x0={8.0} x1={9.1} key0={3} />
-    </g>
+  // ---- everything standing on the floor, sorted back to front by where it stands ----
+  const groups: Group[] = [];
+  const unitNode = (u: Shelf) => ({ d: u.x + u.y + 0.2, nodes: <g key={u.id}>{shelfUnit(P, u)}</g> });
+  units.forEach((u) => {
+    // the target unit carries the person's box only until it is taken
+    groups.push(unitNode({ ...u, box: !boxFree }));
+  });
+  // the target slot highlight, calm, on the end face the person takes from
+  const tu = units.find((u) => u.id === 'T')!;
+  const hz = tu.z + LEVELS[1] + 0.04;
+  const hl = [P(tu.x + UW / 2, tu.y - 0.38, hz), P(tu.x + UW / 2, tu.y + 0.38, hz), P(tu.x + UW / 2, tu.y + 0.38, hz + 0.44), P(tu.x + UW / 2, tu.y - 0.38, hz + 0.44)];
+  groups.push({ d: tu.x + tu.y + 0.9, nodes: <polygon key="hl" points={hl.map(fmt).join(' ')} fill={WH} fillOpacity={0.12} stroke={WH} strokeOpacity={0.9} strokeWidth={1.5} /> });
+
+  const rb = (key: string, p: V, route: V[], s: number, lift: number) => ({ d: p[0] + p[1], nodes: <g key={key}>{robot(P, p[0], p[1], headingAt(route, s), lift)}</g> });
+  groups.push(rb('r1', p1, R1, r1.s, r1.lift));
+  groups.push(rb('r2', p2, R2, r2.s, r2.lift));
+  groups.push(rb('r3', p3, R3, r3.s, r3.lift));
+
+  // charger posts at the pads
+  [[0.2, LANE_F], [0.1, LANE_M], [11.6, LANE_M]].forEach(([cx, cy], i) =>
+    groups.push({ d: cx + cy - 0.4, nodes: <g key={`ch${i}`}>{prism(P, 'post', cx, cy, 0, 0.3, 0.5, 1.1, 0, PLATE)}</g> }),
   );
-});
 
-const Floor = memo(function Floor() {
-  const ys = RACK_Y0 + BAYS * BAY;
-  return (
-    <g>
-      {/* aisle and cross lane edges, solid at 30 percent */}
-      <g {...line(0.3)}>
-        <line x1={AISLE_L} y1={0.4} x2={AISLE_L} y2={CROSS_T} />
-        <line x1={AISLE_R} y1={0.4} x2={AISLE_R} y2={CROSS_T} />
-        <line x1={0} y1={CROSS_T} x2={PW} y2={CROSS_T} />
-        <line x1={0} y1={CROSS_B} x2={PW} y2={CROSS_B} />
+  // the pick station, a table with a screen
+  groups.push({
+    d: 9.3 + LANE_F + 1.05 - 1.5,
+    nodes: (
+      <g key="table">
+        {prism(P, 'tb', 9.3, LANE_F + 1.05, 0, 0.9, 0.7, 0.9, 0, PLATE)}
+        {prism(P, 'scr', 9.7, LANE_F + 0.9, 0.9, 0.05, 0.4, 0.3, 0, BODY)}
       </g>
-      {/* walkways at the outer edges, dashed */}
-      <g {...line(0.3)} strokeDasharray="6 5">
-        <line x1={0.9} y1={0.4} x2={0.9} y2={CROSS_T} />
-        <line x1={10.1} y1={0.4} x2={10.1} y2={CROSS_T} />
-      </g>
-      {/* the aisle's own centre line, long dash and dot */}
-      <line x1={(AISLE_L + AISLE_R) / 2} y1={0.4} x2={(AISLE_L + AISLE_R) / 2} y2={CROSS_T} {...line(0.22)} strokeDasharray="14 3 2 3" />
-      {/* end of the racks, a wall line across the top */}
-      <line x1={1.9} y1={0.4} x2={9.1} y2={0.4} {...line(0.45)} />
-      <line x1={1.9} y1={ys + 0.3} x2={9.1} y2={ys + 0.3} {...line(0.2)} strokeDasharray="6 5" />
-    </g>
-  );
-});
+    ),
+  });
 
-// The docking station, a hatched bay with the charging post at the wall.
-const Dock = memo(function Dock() {
-  return (
-    <g>
-      <rect x={0.25} y={8.7} width={2.0} height={1.6} {...line(0.5)} />
-      <g {...line(0.28)}>{hatch(0.25, 8.7, 2.0, 1.6, 0.2)}</g>
-      <rect x={0.25} y={8.85} width={0.34} height={0.7} {...line(0.9, 1.5, K)} />
-      <line x1={0.59} y1={9.05} x2={0.74} y2={9.05} {...line(0.9)} />
-      <line x1={0.59} y1={9.35} x2={0.74} y2={9.35} {...line(0.9)} />
-    </g>
-  );
-});
-
-// The pallet pick, a dashed zone with a loaded pallet waiting in it.
-const Pick = memo(function Pick() {
-  return (
-    <g>
-      <rect x={8.8} y={8.7} width={2.0} height={1.6} {...line(0.5)} strokeDasharray="6 4" />
-      <rect x={9.2} y={8.8} width={1.2} height={0.8} {...line(0.9, 1.5, K)} />
-      {[0.25, 0.5, 0.75].map((f) => (
-        <line key={f} x1={9.2 + 1.2 * f} y1={8.8} x2={9.2 + 1.2 * f} y2={9.6} {...line(0.35)} />
-      ))}
-      <rect x={9.28} y={8.87} width={1.04} height={0.66} {...line(0.8)} />
-      <line x1={9.28} y1={8.87} x2={10.32} y2={9.53} {...line(0.4)} />
-      <line x1={10.32} y1={8.87} x2={9.28} y2={9.53} {...line(0.4)} />
-    </g>
-  );
-});
-
-// ---- a robot, plan view, nose along +x, 1.2 m by 0.78 m ---------------------------------------------------------------------
-const Robot = memo(function Robot({ kind }: { kind: 'c10' | 'hp' }) {
-  const hp = kind === 'hp';
-  return (
-    <g>
-      {/* drive wheels, outside the body */}
-      <rect x={-0.16} y={-0.47} width={0.32} height={0.09} {...line(0.8, 1, K)} />
-      <rect x={-0.16} y={0.38} width={0.32} height={0.09} {...line(0.8, 1, K)} />
-      <rect x={-0.6} y={-0.39} width={1.2} height={0.78} {...line(0.95, 1.5, K)} />
-      <rect x={-0.53} y={-0.32} width={1.06} height={0.64} {...line(0.5)} />
-      {/* the front sensor bar */}
-      <line x1={0.5} y1={-0.26} x2={0.5} y2={0.26} {...line(0.9, 1.5)} />
-      <circle cx={0.55} cy={-0.33} r={0.035} fill={WH} fillOpacity={0.9} stroke="none" />
-      <circle cx={0.55} cy={0.33} r={0.035} fill={WH} fillOpacity={0.9} stroke="none" />
-      {hp ? (
-        <g>
-          <rect x={-0.5} y={-0.35} width={0.98} height={0.7} {...line(0.75)} />
-          {[-0.17, 0.17].map((y) => (
-            <line key={y} x1={-0.5} y1={y} x2={0.48} y2={y} {...line(0.35)} />
-          ))}
-          <rect x={-0.4} y={-0.27} width={0.78} height={0.54} {...line(0.85)} />
-        </g>
-      ) : (
-        <g>
-          <rect x={-0.34} y={-0.25} width={0.62} height={0.5} {...line(0.9)} />
-          <line x1={-0.34} y1={0} x2={0.28} y2={0} {...line(0.5)} />
-          <line x1={-0.03} y1={-0.25} x2={-0.03} y2={0.25} {...line(0.5)} />
-        </g>
-      )}
-    </g>
-  );
-});
-
-function cycle(t: number) {
-  const f = ((t % 1) + 1) % 1;
-  if (f < 0.4) return { u: io(f / 0.4), back: 0 };
-  if (f < 0.5) return { u: 1, back: io((f - 0.4) / 0.1) };
-  if (f < 0.9) return { u: 1 - io((f - 0.5) / 0.4), back: 1 };
-  return { u: 0, back: 1 - io((f - 0.9) / 0.1) };
-}
-
-// The fitting of the plan to columns 7 to 12 between the grid rules.
-export function planOf(c: Cols) {
-  const left = c.left(7);
-  const right = c.right(12);
-  const top = c.top + 16;
-  const bottom = c.bottom - 12;
-  const m = Math.min((right - left - 24) / PW, (bottom - top) / PH);
-  return { m, ox: left + (right - left - PW * m) / 2, oy: top + (bottom - top - PH * m) / 2 };
-}
-
-// build runs 0 to 1 through T, t is story pixels since AT began, appear runs 0 to 1 as the robots drive in. Everything is drawn on
-// by a hard edged wipe in plan metres, the floor lines from the top down, the racks up from the cross lane, the stations in from
-// their walls, the routes along their length. Nothing dissolves.
-export function Automation({ cols, cid, build, t, appear }: { cols: Cols; cid: string; build: number; t: number; appear: number }) {
-  const { m, ox, oy } = planOf(cols);
-  const fl = smooth(range(build, 0, 0.35));
-  const rk = smooth(range(build, 0.25, 0.7));
-  const st = smooth(range(build, 0.5, 0.82));
-  const rp = io(range(build, 0.4, 1));
-  const marks = build >= 0.82;
-  const pad = 0.5;
-  const clip = (id: string, x: number, y: number, w: number, h: number) => (
-    <clipPath id={`${cid}-${id}`}>
-      <rect x={x} y={y} width={Math.max(0.001, w)} height={Math.max(0.001, h)} />
-    </clipPath>
-  );
-  return (
-    <g transform={`translate(${ox.toFixed(2)} ${oy.toFixed(2)}) scale(${m.toFixed(4)})`} className="lj-bp">
-      <defs>
-        {clip('fl', -pad, -pad, PW + 2 * pad, (PH + 2 * pad) * fl)}
-        {clip('rk', -pad, CROSS_T + pad - (CROSS_T + 2 * pad) * rk, PW + 2 * pad, (CROSS_T + 2 * pad) * rk)}
-        {clip('dk', -pad, -pad, (2.6 + pad) * st, PH + 2 * pad)}
-        {clip('pk', PW + pad - (2.6 + pad) * st, -pad, (2.6 + pad) * st, PH + 2 * pad)}
-      </defs>
-      <g clipPath={`url(#${cid}-fl)`}>
-        <Floor />
-      </g>
-      <g clipPath={`url(#${cid}-rk)`}>
-        <Racks />
-      </g>
-      <g clipPath={`url(#${cid}-dk)`}>
-        <Dock />
-      </g>
-      <g clipPath={`url(#${cid}-pk)`}>
-        <Pick />
-      </g>
-      {ROUTES.map((r, i) => (
-        <g key={i}>
-          <polyline points={poly(sub(r.pts, rp))} fill="none" stroke={INFO} strokeWidth={1} strokeDasharray="7 4" />
-          {marks && (
-            <g>
-              {r.stops.map(([x, y]) => (
-                <g key={`${x}${y}`} fill="none" stroke={INFO} strokeWidth={1}>
-                  <rect x={x - 0.21} y={y - 0.21} width={0.42} height={0.42} />
-                  <line x1={x - 0.1} y1={y} x2={x + 0.1} y2={y} />
-                  <line x1={x} y1={y - 0.1} x2={x} y2={y + 0.1} />
-                </g>
-              ))}
-              <circle cx={r.pts[0][0]} cy={r.pts[0][1]} r={0.2} fill="none" stroke={INFO} strokeWidth={1} />
-            </g>
-          )}
-        </g>
-      ))}
-      {ROUTES.map((r, i) => {
-        const c = cycle(t / 700 + r.off);
-        const L = len(r.pts);
-        const { p, ang } = at(r.pts, c.u * L);
-        const turn = Math.PI * c.back;
-        const s = smooth(range(appear, i * 0.12, i * 0.12 + 0.3));
-        if (s <= 0.01) return null;
+  // the person, 1.75 m, walking in and taking the box
+  const sway = step * 0.12;
+  const person = (
+    <g key="person">
+      {prism(P, 'lg1', px + sway, py - 0.11, 0, 0.16, 0.16, 0.85, 0, PERSON)}
+      {prism(P, 'lg2', px - sway, py + 0.11, 0, 0.16, 0.16, 0.85, 0, PERSON)}
+      {seg3(P, 'arm-l', [px, py - 0.24, 1.42], [px - 0.05 + sway, py - 0.3, 0.82], 2, 0.9)}
+      {prism(P, 'torso', px, py, 0.85, 0.24, 0.44, 0.62, 0, PERSON)}
+      {(() => {
+        const sh: [number, number, number] = [px, py + 0.24, 1.42];
+        const el: [number, number, number] = [(sh[0] + hand[0]) / 2 + 0.06, (sh[1] + hand[1]) / 2 + 0.1, (sh[2] + hand[2]) / 2 - 0.12];
         return (
-          <g key={i} transform={`translate(${p[0].toFixed(3)} ${p[1].toFixed(3)}) rotate(${(((ang + turn) * 180) / Math.PI).toFixed(2)}) scale(${s.toFixed(3)})`}>
-            <Robot kind={r.kind} />
+          <g>
+            {seg3(P, 'ua', sh, el, 2, 0.95)}
+            {seg3(P, 'fa', el, hand, 2, 0.95)}
           </g>
         );
-      })}
+      })()}
+      {(() => {
+        const c = P(px, py, 1.72);
+        return <circle key="head" cx={c[0]} cy={c[1]} r={0.11 * U * 1.05} fill={PERSON.t} stroke={WH} strokeOpacity={LINE} strokeWidth={1} />;
+      })()}
+    </g>
+  );
+  groups.push({ d: px + py + 0.5, nodes: person });
+  // the box once it is in the hand or on the table
+  if (boxFree) groups.push({ d: boxPos[0] + boxPos[1] + 1.2, nodes: <g key="box">{prism(P, 'bx', boxPos[0], boxPos[1], boxPos[2], 0.34, 0.5, 0.3, 0, CARTON)}</g> });
+  void free;
+
+  groups.sort((a, b) => a.d - b.d);
+
+  return (
+    <g transform={`translate(0 ${ty.toFixed(2)})`}>
+      {ground}
+      {groups.map((g, i) => (
+        <g key={i}>{g.nodes}</g>
+      ))}
     </g>
   );
 }
+

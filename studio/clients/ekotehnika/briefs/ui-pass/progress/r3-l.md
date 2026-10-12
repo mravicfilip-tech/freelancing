@@ -6,8 +6,8 @@ Sheets in this folder. r3-l-before.webp and r3-l-after-1920.webp show H, C1, R, 
 
 ## What changed per beat
 
-- AT. The rejected robots on dotted diagonals are gone. A plan drawing of a warehouse aisle sits in columns 7 to 12. Four rack rows with 1.2 by 0.8 pallets flank one aisle, a cross lane runs below with a hatched docking station at the left end and a pallet pick at the right end. The C-Matic 10 and HP are 1.2 m, drawn against the pallets with no enlargement. Routes are 1px dashed lines in LMH blue with square stop markers and a ring at each start, no arrowheads. Robots are white line art, no red.
-- T. The floor rises and the same plan is drawn on by wipes, floor lines from the top, racks up from the cross lane, stations in from their walls, routes along their length.
+- AT (superseded by the follow up below). The rejected robots on dotted diagonals are gone. A plan drawing of a warehouse aisle sits in columns 7 to 12. Four rack rows with 1.2 by 0.8 pallets flank one aisle, a cross lane runs below with a hatched docking station at the left end and a pallet pick at the right end. The C-Matic 10 and HP are 1.2 m, drawn against the pallets with no enlargement. Routes are 1px dashed lines in LMH blue with square stop markers and a ring at each start, no arrowheads. Robots are white line art, no red.
+- T (superseded by the follow up below). The floor rises and the same plan is drawn on by wipes, floor lines from the top, racks up from the cross lane, stations in from their walls, routes along their length.
 - C1. The truck now rests in columns 7 to 12, so the lede and title sit on plain ground. The building is rebuilt under 140 high in white and light grey with window bands and edge lines, the sign is the one dark element, shrubs are planted lobes on stems, lamps and cypresses are shortened where the text column sits.
 - R. The yard fills the right of the path and the lower left. Two hall roofs with standing seams and skylight strips, paved aprons with kerbs, rows of parked forklifts in bays, pallet stacks, outdoor racks, a van at the gate. Nothing is drawn left of world x -110, so the text lands on empty ground and no wash is used.
 - P. The scene is empty under the text at the hold, the 3D cut out carries it. The iso warehouse now reveals from the right edge, so it reaches columns 1 to 6 only after the text has left.
@@ -27,3 +27,30 @@ tsc clean, vite build clean, 0 console errors on every hold beat at 1920 and 144
 - P has no wireframe overlay truck (the T02 move in plan part C). It is a 3D idea and the Linija warehouse is already line art.
 - A and B were not redrawn, rack labels and pallet wrap from plan part C are open there.
 - Stage geometry reads the real stage size, so columns hold at any viewport, but only 1440 by 900 and 1920 by 1080 were shot.
+
+## Follow up 1, AT and T redone to the approved direction (taste 18:05 and 18:15, round 3 item 12)
+
+The plan view with dashed routes, stop markers and rings is gone. Sheets r3-l-at-aisle.webp (AT at k 0, 0.15, 0.3, 0.45, 0.6, 0.8, 1.0 at 1920 by 1080 and k 0.5 at 1440 by 900) and r3-l-at-t.webp (T at 0.25, 0.5, 0.75).
+
+- View. A clean axonometric of a warehouse in white line on the dark ground, never top down. Back wall and floor run edge to edge. The left half of the frame is plain floor, so the text sits on the floor. The work happens in columns 7 to 12 and bleeds off the right edge.
+- One order across the hold. k 0 to 0.3 the C-Matic 10 leaves its charger and drives under the target shelf unit. k 0.3 to 0.6 it lifts the unit and carries it to the pick station. k 0.6 to 1.0 a drawn person, 1.75 m, walks in, takes the box from the highlighted slot and sets it on the pick table.
+- Fleet. Two more C-Matics each move a shelf unit into an empty slot at the deep end of the aisle in the same windows, then drive away empty.
+- Scale. Robot 1.2 m, shelf unit 1.0 by 0.8 by 2.1 m, all in metres.
+- Only system graphic. A solid 1px path just ahead of the active robot and nothing behind it, and a calm highlight on the target slot. No dashed routes, stop markers, rings, arrowheads or plus markers.
+- T. The light depot and the dark aisle move up together as one piece, the aisle's top edge pushing the depot off the top. Every k has drawn content, the light trucks above and the aisle's wall, racks and chargers below. At k 1 it is the AT frame at k 0.
+- Files. src/story2/scenes/linija/automation.tsx rewritten, index.tsx for the T move.
+
+## Follow up 2, A and B redone
+
+Sheets r3-l-ab-before.webp and r3-l-ab-after.webp, k 0.25, 0.5 and 0.75 at 1920 by 1080.
+
+- Racks in the side room carry bay signs A-01 to A-06 and level plates 01 to 03. Loads carry stretch film as exact diagonal lines and bands, and pallet tags with a bar code.
+- Racks in the aisle carry bay label plates with a bar code on the beams, and film lines on the loads.
+- Everything in the iso warehouse, the side room, the aisle and the black push stops at the grid rule under the top row. Above it the ground is plain, white, or ink once the shell turns the top row dark at 7790.
+- B is the zoom into the truck and the black push, now clipped under the rule, with a hard wipe to black.
+- Red stays on the truck shells only. Nothing fades.
+- Not changed. The B zoom is still a scale up of the same front truck art, so its flat blocks are large at k 0.5.
+
+## Checks for both
+
+tsc clean, vite build clean, 0 console errors on the beats shot. No other beat was edited, H, C1, R, P, S and N were re-shot and look as before.

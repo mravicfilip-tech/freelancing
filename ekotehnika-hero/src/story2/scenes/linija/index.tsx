@@ -6,7 +6,7 @@
 import { memo, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { SceneProps } from '../../clock';
 import { ForkliftSide, LoadSide } from '../../../variants/v2/art';
-import { W, H, K, LG, WH, clamp01, eout3, ein, io, lerp, range, seg, smooth, start, end } from './frame';
+import { W, H, K, LG, WH, clamp01, eout3, io, lerp, range, seg, smooth, start, end } from './frame';
 import { Outdoor, GY, TS, axleX, dist, liftAt } from './outdoor';
 import { PATH_LEN, TOP_S, TopTruckAt, TopWorld, pathAt } from './topdown';
 import { IsoWarehouse } from './iso';
@@ -182,18 +182,19 @@ export default function Linija({ clock }: SceneProps) {
   const panelTopL = lerp(H + 168, 0, io(lK));
   const tK = seg(pos, 'T');
   const showPanel = pos >= start('L') && pos < start('T') + 440;
-  const panelTop = pos < start('T') ? panelTopL : lerp(0, H + 40, ein(range(tK, 0, 0.8)));
+  // in T the light depot and the dark aisle move up together as one piece, the aisle's top edge pushing the depot off the top
+  const rise = io(range(tK, 0.04, 0.96));
+  const panelTop = pos < start('T') ? panelTopL : -rise * (H + 120);
   const nK = seg(pos, 'N');
   const showBlade = pos >= start('L') && pos < start('N');
-  const floorTop = lerp(H, 0, io(range(tK, 0.1, 0.95)));
+  const floorTop = H * (1 - rise) + cols.y0 * rise * 0;
   const showFloor = pos >= start('T');
-  const pathP = pos >= end('T') ? 1 : range(tK, 0.35, 1);
-  const robotsIn = range(pos, start('AT'), start('AT') + 240);
 
   return (
     <div className="lj-root" aria-hidden="true" ref={rootRef}>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" width="100%" height="100%" focusable="false">
-        <rect x={0} y={0} width={W} height={H} fill={WH} />
+        {/* under the top row the ground is plain, the iso warehouse, the aisle and the black push all stop at the grid rule */}
+        <rect x={0} y={0} width={W} height={H} fill={pos >= 7790 && pos < 9525 ? K : WH} />
 
         {showMap && cam && (
           <g clipPath={`url(#${cid}-roof)`}>
@@ -226,7 +227,7 @@ export default function Linija({ clock }: SceneProps) {
         {showIso && (
           <g clipPath={`url(#${cid}-iso)`}>
             <clipPath id={`${cid}-iso`}>
-              <rect x={lerp(cols.x1, cols.x0, io(isoIn)) - 1} y={cols.y0 - 2} width={cols.x1 - cols.x0 + 4} height={cols.y1 - cols.y0 + 4} />
+              <rect x={lerp(cols.x1, cols.x0, io(isoIn)) - 1} y={cols.top} width={cols.x1 - cols.x0 + 4} height={cols.y1 - cols.top + 4} />
             </clipPath>
             <g transform={`translate(${W / 2} ${H / 2}) scale(${isoScale.toFixed(4)}) translate(${-W / 2} ${-H / 2})`}>
               <IsoWarehouse t={pos} />
@@ -237,10 +238,10 @@ export default function Linija({ clock }: SceneProps) {
         {showRoom && (
           <g clipPath={`url(#${cid}-room)`}>
             <clipPath id={`${cid}-room`}>
-              <rect x={cols.x0 - 2} y={cols.y0 - 2} width={Math.max(0.01, (cols.x1 - cols.x0 + 4) * roomWipe)} height={cols.y1 - cols.y0 + 4} />
+              <rect x={cols.x0 - 2} y={cols.top} width={Math.max(0.01, (cols.x1 - cols.x0 + 4) * roomWipe)} height={cols.y1 - cols.top + 4} />
             </clipPath>
             <g transform={`translate(0 ${roomUp.toFixed(1)})`}>
-              <SideRoom axle={sideAxle} refs={inn as unknown as SideRefs} />
+              <SideRoom axle={sideAxle} refs={inn as unknown as SideRefs} top={cols.top} />
             </g>
           </g>
         )}
@@ -248,7 +249,7 @@ export default function Linija({ clock }: SceneProps) {
         {showAisle && (
           <g clipPath={`url(#${cid}-aisle)`}>
             <clipPath id={`${cid}-aisle`}>
-              <rect x={cols.x0 - 2} y={cols.y0 - 2} width={cols.x1 - cols.x0 + 4} height={Math.max(0.01, (cols.y1 - cols.y0 + 4) * aisleWipe)} />
+              <rect x={cols.x0 - 2} y={cols.top} width={cols.x1 - cols.x0 + 4} height={Math.max(0.01, (cols.y1 - cols.top + 4) * aisleWipe)} />
             </clipPath>
             <g transform={zoomT}>
               <Aisle cam={pos >= start('B') ? aiEnd.cam : ai.cam} />
@@ -282,13 +283,7 @@ export default function Linija({ clock }: SceneProps) {
 
         {showFloor && (
           <g>
-            <rect x={0} y={floorTop} width={W} height={H - floorTop + 2} fill={K} />
-            <clipPath id={`${cid}-floor`}>
-              <rect x={0} y={floorTop} width={W} height={H} />
-            </clipPath>
-            <g clipPath={`url(#${cid}-floor)`}>
-              <Automation cols={cols} cid={cid} build={pathP} t={Math.max(0, pos - start('AT'))} appear={robotsIn} />
-            </g>
+            <Automation cols={cols} k={pos >= start('AT') ? seg(pos, 'AT') : 0} ty={floorTop} />
           </g>
         )}
 

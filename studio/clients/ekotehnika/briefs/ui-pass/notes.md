@@ -229,3 +229,13 @@ S10. **Version 5, AT, automatizacija taken too literally.** Ref `refs/scenes/s10
    drawn as a precise system overlay). Note 4 statement marquee for the word. T07 scroll fill for the line. A real
    offer line from Ekotehnika on what automation they sell, plus one CTA, which the beat has none of today.
    Open. Whether the giant single word stays at all.
+S11. **Proizvodi section, all versions.** Ref `refs/scenes/s11-proizvodi-section.webp`. Said: "Wordpress 2011
+   screen, really bad".
+   What is there now. A dot kicker and a 96px title (Glavni proizvodi) on white, five equal grey cards with a thin
+   line icon at the top and the model name and type at the bottom, a row of four 4 by 5 delivery photos with rounded
+   corners, then one red Pogledajte modele button, all left aligned in a 1344px column. Every block is a plain grid
+   of equal boxes stacked one under another, with no hierarchy, no motion and no link from a card to a model.
+   Read. The photo strip Filip accepted on 2026-10-09 is in it, so the idea of real photos stays open, but this
+   execution is rejected along with the rest of the section.
+   Candidates on file. Note 3 staggered offering cards with real Linde cut outs and a notched tab. T08 tabbed cards by
+   truck type. Ref 02 text left with a collage of the delivery photos. T03 notched edge into the section.

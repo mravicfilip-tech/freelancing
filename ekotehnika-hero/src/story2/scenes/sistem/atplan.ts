@@ -29,7 +29,8 @@ export const LANE_A = 1.0;
 export const LANE_B = -1.0;
 export const BAY_B = 3.1;
 export const COLS = [6.7, 8.3, 9.9, 11.5, 13.1, 14.7, 16.3, 17.9];
-export const TARGET = { a: COLS[2], b: BAY_B };
+// the target is the first bay of the front row, so no unit stands between the camera and the lift
+export const TARGET = { a: COLS[0], b: BAY_B };
 export const STATION = { a: 24.9, b: LANE_A };
 export const LIFT = 0.14;
 
@@ -80,18 +81,11 @@ export function poseOf(kfs: KF[], k: number): Pose {
   return { a: v[0], b: v[1], h: v[2], lift: v[3] };
 }
 
-// the camera follows the active robot loosely, a little ahead of it and toward the racks
-const FOCUS: KF[] = [
-  [0.0, 3.4, 1.2],
-  [0.28, 10.6, 1.5],
-  [0.5, 11.2, 2.2],
-  [0.64, 12.4, 1.7],
-  [0.86, 23.2, 1.4],
-  [1.0, 24.0, 1.4],
-];
+// The camera follows the active robot. Along the aisle it stays on it, across the aisle it follows a little over half of the move
+// into the bay, so the view does not sway on the turns.
 export const focusAt = (k: number) => {
-  const v = sampleKF(FOCUS, k);
-  return { a: v[0], b: v[1] };
+  const p = poseOf(ACTIVE, k);
+  return { a: p.a, b: LANE_A + 0.55 * (p.b - LANE_A) };
 };
 
 // The world, aisle metres to world metres. A heading h in the plan is a world yaw of PI - h.

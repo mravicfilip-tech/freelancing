@@ -1,7 +1,8 @@
-// The rental depot. A floor that runs edge to edge, bays painted on it across the whole width, and fifteen front on
-// trucks, five by three, rising out of it row by row with scroll, empty marked bays out to the frame on both sides.
-// The trucks are the real Linde models, baked once and instanced. In T the bays fade, the trucks sink back into the
-// floor and the same floor takes its warehouse lanes, see robots.tsx.
+// The rental depot, one hall. A floor that runs edge to edge, bays painted on it across the whole width out to the frame on
+// both sides, and fifteen front on trucks, five by three, rising out of it row by row with scroll. The floor ends at the
+// hall's end wall, which is also the end wall of the automation aisle, so the text above the floor sits on a real wall.
+// The trucks are the real Linde models, baked once and instanced. In T the bays draw back onto the aisle line, the trucks
+// sink into the floor and the same floor takes its warehouse lanes, see aisle.tsx.
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
@@ -24,18 +25,34 @@ const KINDS: ModelName[] = ['x50', 'h30d', 'r16', 'd12'];
 
 // Bay rows across the depot, the three with trucks and three empty rows, one in front, two behind. The bays run out past
 // both edges of the frame, so the floor is one piece edge to edge.
-const BAY_ROWS = [10.6, ...ROW_X, -10.2, -15.4];
-const BAY_COLS = Array.from({ length: 13 }, (_, i) => i - 6); // 13 bays across, five are taken
+const BAY_ROWS = [10.6, ...ROW_X, -10.2, -15.4, -20.6, -25.8];
+const BAY_COLS = Array.from({ length: 27 }, (_, i) => i - 13); // 27 bays across, five are taken
 const FLOOR = '#f6f6f6';
+// The end wall of the hall, 31.7 m behind the middle truck row, 16 m high and wider than any frame. Plain, with the same
+// base band as the walls of the automation aisle, so title, lede and spec row sit on empty wall.
+export const WALL_A = 31.7;
+const WALL_H = 16;
+const wallMat = lam(G.pale, { emissive: new THREE.Color().setScalar(0.56) });
+const wallBase = lam(G.light, { emissive: new THREE.Color().setScalar(0.46) });
 
 // The floor, one plane that runs out to the fog, so no edge shows anywhere.
 export function Depot({ clock }: SceneProps) {
   const floor = useMemo(() => lam(FLOOR, { emissive: new THREE.Color(FLOOR).multiplyScalar(0.12) }), []);
   void clock;
+  const wall = useMemo(() => {
+    const x = NP.x - WALL_A;
+    const w: BoxItem[] = [[x - 0.1, WALL_H / 2, NP.z, 0.2, WALL_H, 160]];
+    const band: BoxItem[] = [[x + 0.04, 0.4, NP.z, 0.1, 0.8, 160]];
+    return { w, band };
+  }, []);
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x - 60, 0, NP.z]} material={floor} receiveShadow>
-      <planeGeometry args={[520, 520]} />
-    </mesh>
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x - 60, 0, NP.z]} material={floor} receiveShadow>
+        <planeGeometry args={[520, 520]} />
+      </mesh>
+      <BoxSet items={wall.w} mat={wallMat} />
+      <BoxSet items={wall.band} mat={wallBase} />
+    </group>
   );
 }
 
@@ -72,8 +89,8 @@ export default function Grid({ clock }: SceneProps) {
     );
     // the drive aisle between the rows, a dashed centre line
     const dash: BoxItem[] = [];
-    [8.0, 2.8, -2.4, -7.6, -12.8].forEach((ax) => {
-      for (let z = -22; z < 22; z += 1.6) dash.push([NP.x + ax, 0.02, NP.z + z, 0.08, 0.01, 0.8]);
+    [8.0, 2.8, -2.4, -7.6, -12.8, -18.0, -23.2].forEach((ax) => {
+      for (let z = -40; z < 40; z += 1.6) dash.push([NP.x + ax, 0.02, NP.z + z, 0.08, 0.01, 0.8]);
     });
     return { lines, stops, dash };
   }, []);

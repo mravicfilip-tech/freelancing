@@ -78,8 +78,8 @@ function World({ clock }: SceneProps) {
       <Rig clock={clock} state={state} />
       <Lights clock={clock} state={state} />
       <Dust clock={clock} state={state} />
-      {need(0, 9) && (
-        <Place clock={clock} from={0} to={7.4}>
+      {need(0, 7) && (
+        <Place clock={clock} from={0} to={7.05}>
           <Outdoor clock={clock} />
         </Place>
       )}

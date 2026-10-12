@@ -14,9 +14,9 @@ import { bakeEdges } from './bake';
 import type { SceneProps } from '../../clock';
 import { track } from '../../../story/scenes/sistem/tracks';
 import { AISLES, WH } from './route';
-import { G, K, ease, lam, lerp, lit, poolMaterial, range, rng, uOf } from './kit';
+import { G, K, ease, lam, lerp, lit, range, rng, uOf } from './kit';
 import { BoxSet, type BoxItem } from './props';
-import { Roof, roofMaterials, type RoofSpec } from './roof';
+import { Roof, roofMaterials, type RoofSlopes, type RoofSpec } from './roof';
 
 const BAY = 2.7;
 const BAYS = 17;
@@ -184,15 +184,13 @@ const ROOF: RoofSpec = {
     { side: -1, x: 131, s: 4.6 },
     { side: 1, x: 162, s: 4.4 },
   ],
-  transparent: true,
 };
 
-function WarehouseRoof({ matsRef }: { matsRef: React.MutableRefObject<THREE.Material[]> }) {
-  const mats = useMemo(() => roofMaterials(true), []);
-  useLayoutEffect(() => {
-    matsRef.current = Object.values(mats);
-  }, [mats, matsRef]);
-  return <Roof spec={ROOF} mats={mats} />;
+// The roof is solid. At the start of P its two pitches slide apart down their slopes and out of the frame, so the floor
+// under them is open to the sky, nothing fades.
+function WarehouseRoof({ slopes }: { slopes: RoofSlopes }) {
+  const mats = useMemo(() => roofMaterials(false), []);
+  return <Roof spec={ROOF} mats={mats} slopes={slopes} outline={false} />;
 }
 
 function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | null> }) {
@@ -220,13 +218,12 @@ function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | nu
 }
 
 function Floor({ clock }: SceneProps) {
-  const pool = useMemo(() => poolMaterial(0.3, C.lightGrey), []);
-  const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: C.tonedTextGrey, toneMapped: false, transparent: true, opacity: 0 }), []);
-  // Nothing of the warehouse shows in P, the cut out is the only object. The lane lines draw on along the aisles as A begins.
+  const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: G.mid, toneMapped: false }), []);
+  // Nothing of the warehouse shows in P, the cut out is the only object. The floor runs out past any frame, so the roof's
+  // opening shows a floor and never an edge, and the lane lines draw on along the aisles as A begins.
   const lanes = useRef<THREE.Group>(null);
   useFrame(() => {
     const d = ease(range(uOf(clock), 8.0, 8.4));
-    lane.opacity = 0.55;
     if (lanes.current) {
       lanes.current.scale.x = Math.max(d, 0.001);
       lanes.current.visible = d > 0.002;
@@ -235,7 +232,7 @@ function Floor({ clock }: SceneProps) {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[(WH.x0 + WH.x1) / 2, 0.012, (WH.z0 + WH.z1) / 2]} receiveShadow>
-        <planeGeometry args={[WH.x1 - WH.x0, WH.z1 - WH.z0]} />
+        <planeGeometry args={[600, 600]} />
         <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
       </mesh>
       <group ref={lanes} position={[(WH.x0 + WH.x1) / 2, 0, 0]}>
@@ -247,14 +244,6 @@ function Floor({ clock }: SceneProps) {
           ))
         )}
       </group>
-      {/* a soft pool in the middle of the clean floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[WH.x0 + 18, 0.04, AISLES[1]]} material={pool}>
-        <planeGeometry args={[40, 20]} />
-      </mesh>
-      {/* a pool of light at the door end, where the day comes in */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[WH.x0 + 6, 0.04, AISLES[1]]} material={pool}>
-        <planeGeometry args={[18, 9]} />
-      </mesh>
     </group>
   );
 }
@@ -275,8 +264,8 @@ const T4X = track([[0, 130], [5300, 130], [6400, 133], [8000, 142], [12000, 142]
 const T5X = track([[0, 160], [5300, 160], [6400, 156], [8000, 146], [12000, 146]]);
 
 // The T02 move. One truck of the warehouse is drawn again as a precise wireframe on top of its lit self, the half from
-// the mast back to the front. A clip plane sweeps the wireframe in from the front and it clears again as the camera drops
-// into the aisle for A. Lines are 1px fat lines from the hard edges of the real model.
+// the mast back to the front. A clip plane sweeps the wireframe in from the front and sweeps it back out the same way as the
+// camera drops into the aisle for A, so the lines are drawn and erased, never faded. Lines are 1px fat lines from the hard edges of the real model.
 function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: number) => number }) {
   const gltf = useGLTF(modelUrl(name)) as unknown as { scene: THREE.Group };
   const spec = SPEC[name];
@@ -285,10 +274,8 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   const gl = useThree((s) => s.gl);
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 0), []);
   const edges = useMemo(() => bakeEdges(gltf.scene, name, 42), [gltf, name]);
-  // an ink line with a white halo under it, so the drawing reads over the dark truck and over the pale rack behind it
-  const lm = (color: number) => new LineMaterial({ color, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: false, clippingPlanes: [plane] });
-  const mat = useMemo(() => lm(0x222222), [plane]); // eslint-disable-line react-hooks/exhaustive-deps
-  const halo = useMemo(() => lm(0xffffff), [plane]); // eslint-disable-line react-hooks/exhaustive-deps
+  // a 1px line in the info blue of the automation floor, which reads over the red body, the dark mast and the pale rack alike
+  const mat = useMemo(() => new LineMaterial({ color: 0x468cc4, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: false, clippingPlanes: [plane] }), [plane]);
   const matWheel = mat;
   const mk = (pts: number[], m: LineMaterial) => {
     const g = new LineSegmentsGeometry();
@@ -298,7 +285,6 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
     return l;
   };
   const body = useMemo(() => mk(edges.body, mat), [edges, mat]);
-  const bodyHalo = useMemo(() => mk(edges.body, halo), [edges, halo]);
   // the truck's reach along the world x axis, from the model's own edges once it is turned to face +x
   const reach = useMemo(() => {
     let lo = Infinity;
@@ -310,7 +296,7 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
     }
     return { lo, hi };
   }, [edges, spec.yaw]);
-  const wheels = useMemo(() => edges.wheels.map((w) => ({ ...w, line: mk(w.pts, matWheel), halo: mk(w.pts, halo) })), [edges, matWheel, halo]);
+  const wheels = useMemo(() => edges.wheels.map((w) => ({ ...w, line: mk(w.pts, matWheel) })), [edges, matWheel]);
   const root = useRef<THREE.Group>(null);
   const wg = useRef<THREE.Group[]>([]);
   useLayoutEffect(() => {
@@ -322,14 +308,10 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
     if (root.current) root.current.visible = on;
     if (!on) return;
     mat.resolution.set(size.width * dpr, size.height * dpr);
-    halo.resolution.set(size.width * dpr, size.height * dpr);
     mat.linewidth = Math.max(1, size.height / 900) * dpr;
-    halo.linewidth = 3.2 * mat.linewidth;
-    const a = ease(range(u, 8.1, 8.35)) * (1 - ease(range(u, 8.6, 8.9)));
-    mat.opacity = 0.95 * a;
-    halo.opacity = 0.55 * a;
+    mat.opacity = 1;
     // the clip plane in world space, sweeping from the nose to the middle of the truck
-    const sweep = ease(range(u, 8.12, 8.5));
+    const sweep = ease(range(u, 8.12, 8.5)) * (1 - ease(range(u, 8.6, 8.9)));
     const cut = x(clock.pos.current) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);
     plane.constant = -cut;
     const roll = x(clock.pos.current);
@@ -341,11 +323,9 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   return (
     <group ref={root} visible={false} renderOrder={5}>
       <group position={[0, spec.ground, 0]} rotation={[0, spec.yaw, 0]}>
-        <primitive object={bodyHalo} />
         <primitive object={body} />
         {wheels.map((w, i) => (
           <group key={i} position={w.pos} scale={w.scale} ref={(g) => { if (g) wg.current[i] = g; }}>
-            <primitive object={w.halo} />
             <primitive object={w.line} />
           </group>
         ))}
@@ -355,8 +335,8 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
 }
 
 export default function Warehouse({ clock }: SceneProps) {
-  const roofMats = useRef<THREE.Material[]>([]);
-  const roof = useRef<THREE.Group>(null);
+  const roofNear = useRef<THREE.Group>(null);
+  const roofFar = useRef<THREE.Group>(null);
   const walls = useRef<THREE.Group | null>(null);
   const rows = useRef<(THREE.Group | null)[]>([]);
   const inner = useRef<THREE.Group>(null);
@@ -367,22 +347,22 @@ export default function Warehouse({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    // roof gives way at the start of P
-    const roofOp = 1 - ease(range(u, 6.78, 7.0));
-    roofMats.current.forEach((m) => {
-      const a = m as THREE.Material & { opacity: number };
-      a.opacity = m.type === 'LineBasicMaterial' ? 0.8 * roofOp : roofOp;
-      m.visible = roofOp > 0.003;
-    });
-    if (roof.current) {
-      roof.current.visible = roofOp > 0.003;
-      roof.current.position.y = ease(range(u, 6.78, 7.0)) * 1.5;
+    // The roof gives way at the start of P. Each pitch slides ten metres down its slope, a hard edged move, and is gone.
+    const slide = ease(range(u, 6.78, 7.0));
+    const gone = slide >= 1;
+    if (roofNear.current) {
+      roofNear.current.visible = !gone;
+      roofNear.current.position.z = slide * 10;
+    }
+    if (roofFar.current) {
+      roofFar.current.visible = !gone;
+      roofFar.current.position.z = -slide * 10;
     }
     // The interior waits for A. P shows the cut out and nothing of the building, the walls, racks and trucks rise
     // from the clean floor as the camera drops toward the aisle.
-    if (inner.current) inner.current.visible = u > 7.95 && u < 10.4;
+    if (inner.current) inner.current.visible = u > 8.001 && u < 10.4;
     if (trucks.current) {
-      trucks.current.visible = u > 7.95 && u < 10.4;
+      trucks.current.visible = u > 8.001 && u < 10.4;
       trucks.current.scale.y = Math.max(ease(range(u, 8.05, 8.3)), 0.001);
     }
     const wallRise = ease(range(u, 8.0, 8.25));
@@ -418,9 +398,7 @@ export default function Warehouse({ clock }: SceneProps) {
   return (
     <group>
       <Floor clock={clock} />
-      <group ref={roof}>
-        <WarehouseRoof matsRef={roofMats} />
-      </group>
+      <WarehouseRoof slopes={{ near: roofNear, far: roofFar }} />
       <group ref={inner}>
         <Walls groupRef={walls} />
         <Door />

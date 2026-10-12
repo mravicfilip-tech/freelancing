@@ -3,7 +3,6 @@
 // lamp posts, kerbs, and the road that turns into the grey S path. Everything is still, the truck drives past it,
 // so the parallax comes from the camera.
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { BUILDING_X, ROUTE } from './route';
 import { G, K, lam, lit, rng, signGeometry } from './kit';
@@ -294,37 +293,6 @@ function Pavement() {
 }
 
 
-// A band of haze along the horizon, so the site reads against the sky.
-function Horizon() {
-  const ref = useRef<THREE.Mesh>(null);
-  const camera = useThree((s) => s.camera);
-  const mat = useMemo(() => {
-    const c = document.createElement('canvas');
-    c.width = 4;
-    c.height = 256;
-    const g = c.getContext('2d')!;
-    const grd = g.createLinearGradient(0, 256, 0, 0);
-    grd.addColorStop(0, 'rgba(255,255,255,0)');
-    grd.addColorStop(0.26, 'rgba(255,255,255,0)');
-    grd.addColorStop(0.37, 'rgba(255,255,255,0.45)');
-    grd.addColorStop(0.72, 'rgba(255,255,255,0.1)');
-    grd.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = grd;
-    g.fillRect(0, 0, 4, 256);
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({ map: t, color: G.light, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false, fog: false });
-  }, []);
-  useFrame(() => {
-    if (ref.current) ref.current.position.x = camera.position.x;
-  });
-  return (
-    <mesh ref={ref} position={[0, 26, -230]} material={mat} renderOrder={-5}>
-      <planeGeometry args={[900, 110]} />
-    </mesh>
-  );
-}
-
 export default function Outdoor({ clock }: { clock?: StoryClock }) {
   return (
     <group>
@@ -345,7 +313,6 @@ export default function Outdoor({ clock }: { clock?: StoryClock }) {
         <LampPost key={lx} x={lx} z={-2.9} h={4.1} />
       ))}
       <Yard clock={clock} />
-      <Horizon />
     </group>
   );
 }

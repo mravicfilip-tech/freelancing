@@ -173,7 +173,7 @@ export default function Aisle({ clock }: SceneProps) {
   const statics = useMemo(() => {
     const out: { a: number; b: number; seed: number }[] = [];
     COLS.forEach((a, i) => {
-      if (![2, 6, 7].includes(i)) out.push({ a, b: BAY_B, seed: 20 + i });
+      if (![0, 6, 7].includes(i)) out.push({ a, b: BAY_B, seed: 20 + i });
       out.push({ a, b: BAY_B + 1.3, seed: 40 + i });
     });
     return out;
@@ -277,7 +277,7 @@ export default function Aisle({ clock }: SceneProps) {
       g.visible = r > 0.002;
     });
 
-    // the path, drawn from the active robot along the next 8 m of its route, and nothing behind it
+    // the path, drawn from the active robot along the next 5 m of its route, and nothing behind it
     {
       const geo = path.geometry as LineSegmentsGeometry & { attributes: { instanceStart: THREE.InterleavedBufferAttribute } };
       const arr = geo.attributes.instanceStart.data.array as Float32Array;
@@ -287,14 +287,14 @@ export default function Aisle({ clock }: SceneProps) {
         const p = poseOf(ACTIVE, k + ((t1 - k) * i) / 90);
         pts.push([p.a, p.b]);
       }
-      // trim to 8 m along the route
+      // trim to 5 m along the route
       let acc = 0;
       const keep: [number, number][] = [pts[0]];
       for (let i = 1; i < pts.length; i++) {
         const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
         if (d < 1e-5) continue;
-        if (acc + d > 8) {
-          const t = (8 - acc) / d;
+        if (acc + d > 5) {
+          const t = (5 - acc) / d;
           keep.push([pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * t, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * t]);
           break;
         }
@@ -395,7 +395,7 @@ export default function Aisle({ clock }: SceneProps) {
 
       {/* the charger, the pick station fittings and the cart */}
       <group ref={fixedRef} position={[ATP.x, 0, ATP.z]}>
-        <BoxSet items={[[chx - ATP.x, 0.5, chz - ATP.z, 0.6, 1.0, 0.3], [chx - ATP.x, 1.08, chz - ATP.z, 0.6, 0.16, 0.3]]} mat={frameMat} cast />
+        <BoxSet items={[[chx - ATP.x, 0.45, chz - ATP.z, 0.5, 0.9, 0.26], [chx - ATP.x, 0.97, chz - ATP.z, 0.5, 0.12, 0.26]]} mat={plinthMat} cast />
         <BoxSet items={[[chx - ATP.x, 0.62, chz - ATP.z - 0.16, 0.34, 0.5, 0.02]]} mat={cartonMats[0]} />
         <BoxSet items={[[sx - ATP.x, 0.65, sz - ATP.z, 0.12, 1.3, 0.12], [sx - ATP.x, 1.34, sz - ATP.z, 0.1, 0.4, 0.5]]} mat={frameMat} cast />
         <BoxSet items={[[cx - ATP.x, CART.top / 2, cz - ATP.z, 0.7, CART.top, 0.7]]} mat={plinthMat} cast />
@@ -445,28 +445,26 @@ export default function Aisle({ clock }: SceneProps) {
   );
 }
 
-// A plain hall. The left wall, the far wall and the wall behind the racks, each with a darker base band and pilasters.
+// A plain hall. The left wall and the wall behind the racks, each with a darker base band and pilasters. The end wall belongs to the
+// depot floor, see grid.tsx, so it already stands in N.
 function Walls() {
   const set = useMemo(() => {
     const wall: BoxItem[] = [];
     const band: BoxItem[] = [];
     const pil: BoxItem[] = [];
-    const H = 9;
+    const H = 16;
     const W = (a0: number, a1: number, b0: number, b1: number, list: BoxItem[], y0: number, h: number) => {
       const [x, , z] = toWorld((a0 + a1) / 2, (b0 + b1) / 2);
       list.push([x - ATP.x, y0 + h / 2, z - ATP.z, a1 - a0, h, b1 - b0]);
     };
     W(-14, 31.7, -17.2, -17, wall, 0, H);
     W(-14, 31.7, 10.9, 11.1, wall, 0, H);
-    W(31.5, 31.7, -17.2, 11.1, wall, 0, H);
     W(-14, 31.5, -17.0, -16.9, band, 0, 1.2);
     W(-14, 31.5, 10.8, 10.9, band, 0, 1.2);
-    W(31.4, 31.5, -17.2, 11.1, band, 0, 1.2);
     for (let a = -12; a <= 30; a += 6) {
       W(a - 0.15, a + 0.15, -17.0, -16.88, pil, 0, H);
       W(a - 0.15, a + 0.15, 10.78, 10.9, pil, 0, H);
     }
-    for (let b = -15; b <= 9; b += 6) W(31.28, 31.4, b - 0.15, b + 0.15, pil, 0, H);
     return { wall, band, pil };
   }, []);
   return (

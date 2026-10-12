@@ -1,7 +1,8 @@
 // A hall roof seen from above. Two pitches either side of a ridge that runs along x, standing seams down every
 // slope, translucent skylight strips in frames, a ridge cap, a gutter along each eave, round roof vents and a rooftop
 // unit with louvres and two fans. One component for the warehouse in the roof push and for the halls of the yard.
-// Every material is passed back in `mats`, so the warehouse can fade and lift the roof as a whole at the start of P.
+// Every material is passed back in `mats`. The two pitches can be handed out as groups, so the warehouse can slide them apart
+// at the start of P, and the outline can be left off.
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { G, lam, lit } from './kit';
@@ -142,7 +143,9 @@ function Slope({ spec, side, mats }: { spec: RoofSpec; side: 1 | -1; mats: RoofM
   );
 }
 
-export function Roof({ spec, mats }: { spec: RoofSpec; mats: RoofMats }) {
+export type RoofSlopes = { near?: React.Ref<THREE.Group>; far?: React.Ref<THREE.Group> };
+
+export function Roof({ spec, mats, slopes, outline: withOutline = true }: { spec: RoofSpec; mats: RoofMats; slopes?: RoofSlopes; outline?: boolean }) {
   const zc = (spec.z0 + spec.z1) / 2;
   const outline = useMemo(() => {
     const pts = [[spec.x0, spec.eave, spec.z1], [spec.x1, spec.eave, spec.z1], [spec.x1, spec.eave, spec.z0], [spec.x0, spec.eave, spec.z0], [spec.x0, spec.eave, spec.z1]].map((p) => new THREE.Vector3(...(p as [number, number, number])));
@@ -151,10 +154,14 @@ export function Roof({ spec, mats }: { spec: RoofSpec; mats: RoofMats }) {
   }, [spec.x0, spec.x1, spec.z0, spec.z1, spec.eave, spec.peak, zc]);
   return (
     <group>
-      <Slope spec={spec} side={1} mats={mats} />
-      <Slope spec={spec} side={-1} mats={mats} />
-      <lineLoop geometry={outline[0]} material={mats.line} />
-      <lineSegments geometry={outline[1]} material={mats.line} />
+      <group ref={slopes?.near}>
+        <Slope spec={spec} side={1} mats={mats} />
+      </group>
+      <group ref={slopes?.far}>
+        <Slope spec={spec} side={-1} mats={mats} />
+      </group>
+      {withOutline && <lineLoop geometry={outline[0]} material={mats.line} />}
+      {withOutline && <lineSegments geometry={outline[1]} material={mats.line} />}
     </group>
   );
 }

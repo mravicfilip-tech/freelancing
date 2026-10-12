@@ -33,17 +33,19 @@ const A_SEP = track([[8.75, SEP0], [9, 6.5], [9.55, 3.2], [10, 1.45]]);
 const A_Y = track([[8.75, 2.2], [9, 1.65], [10, 1.25]]);
 
 
-// The aisle is seen from about 4 m, a three quarter view from the left of the lane. The camera looks 18 degrees toward the
-// racks, so the hall's floor and wall fill the left half under the text and the work sits in columns 7 to 12.
-const AT_D = 13;
-const AT_YAW = 72;
-const AT_PITCH = -14;
-const AT_SX = 0.2;
-// The rental floor runs across the whole width, 38 m of painted bays at 47 m, with the fifteen trucks standing on the
-// lower part of the frame. The title, lede and spec row own the band above, so the floor's far rows end under them, on
-// plain ground. Nothing is masked or faded, the camera only places the world.
-const N_D = 47;
-const N_SY = 0.3;
+// The aisle is seen from about 4 m (the target is 0.8 m up and the eye 3.25 m above it), a three quarter view from behind the
+// robot. The camera keeps the active robot at the same place on screen, the lens shift puts it in column 9, and the view swings
+// slowly from 80 to 74 degrees as the order runs. The lanes run away to the right of centre, so everything deeper in the aisle
+// (the fleet, the station, the person) stays right of column 6, and the hall's floor and end wall fill the left under the text.
+const AT_D = 11.8;
+const AT_YAW = [80, 74];
+const AT_PITCH = -16;
+const AT_SX = 0.22;
+// The rental floor runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
+// The hall's end wall stands behind the last bay row and its foot lands on the grid rule under the spec row (y 543 at 1080),
+// so the title, lede and spec row sit on the wall itself. Nothing is masked or faded, the camera only places the world.
+const N_D = 52;
+const N_SY = 0.305;
 const nShift = (_w: number, _h: number) => ({ sx: 0, sy: N_SY, d: N_D });
 const WARM = new THREE.Color('#fff5e4');
 
@@ -76,7 +78,8 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
   } else if (u < 7) {
     const e = ease(u - 6);
     const rp = routeAt(truckS(4700));
-    t.set(lerp(rp.x, WH_C.x, e), lerp(0, 10, e), lerp(rp.z, WH_C.z, e));
+    // ends 20 m over the floor, which at 1920 by 1080 frames the hall's 18 m width and nothing beyond its walls
+    t.set(lerp(rp.x, WH_C.x, e), 0, lerp(rp.z, WH_C.z, e));
     out.d = lerp(56, 20, e);
     out.yaw = 90;
     out.pitch = -90;
@@ -86,7 +89,7 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 8) {
     const e = ease(range(u, 7.5, 8));
-    t.set(lerp(WH_C.x, ISO.x, e), lerp(10, ISO.y, e), lerp(WH_C.z, ISO.z, e));
+    t.set(lerp(WH_C.x, ISO.x, e), lerp(0, ISO.y, e), lerp(WH_C.z, ISO.z, e));
     out.d = lerp(20, ISO.d, e);
     out.yaw = lerp(90, ISO.yaw, e);
     out.pitch = lerp(-90, ISO.pitch, e);
@@ -137,14 +140,15 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the
-    // robot in columns 7 to 12, the left half of the frame is the hall's own floor and wall.
+    // robot in columns 7 to 12, the left half of the frame is the hall's own floor and end wall.
     const e = ease(range(u, 13.1, 14.0));
-    const f = focusAt(Math.min(Math.max(u - 14, 0), 1));
+    const k = Math.min(Math.max(u - 14, 0), 1);
+    const f = focusAt(k);
     const [fx, , fz] = toWorld(f.a, f.b);
     out.d = lerp(n.d, AT_D, e);
-    out.yaw = lerp(90, AT_YAW, e);
+    out.yaw = lerp(90, lerp(AT_YAW[0], AT_YAW[1], ease(k)), e);
     out.pitch = lerp(-24, AT_PITCH, e);
-    t.set(lerp(NP.x - 0.5, fx, e), lerp(0.9, 1.0, e), lerp(0, fz, e));
+    t.set(lerp(NP.x - 0.5, fx, e), lerp(0.9, 0.8, e), lerp(0, fz, e));
     out.sx = lerp(n.sx, AT_SX, e);
     out.sy = lerp(n.sy, 0.02, e);
     out.shadow = lerp(18, 14, e);
@@ -189,7 +193,8 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
     const fog = scene.fog as THREE.Fog | null;
     if (fog) {
       fog.color.set(bg);
-      fog.near = dark ? pose.d * 1.5 + 12 : pose.d * 0.9 + 6;
+      // the haze starts far behind the work, so no tree row, rack or bay line is washed out toward the ground colour
+      fog.near = dark ? pose.d * 1.5 + 12 : pose.d * 0.9 + 30;
       fog.far = fog.near + (dark ? 120 : 95);
     }
     scene.environmentIntensity = dark ? 0.28 : 0.6;

@@ -1,4 +1,4 @@
-// Things that live in front of the lens, in half screen heights so they fit any width. The black fade for the
+// Things that live in front of the lens, in half screen heights so they fit any width. The black shutter for the
 // push into the forklift, the plain band over the top row (hard edged on the top rule, nothing feathers into the scene
 // anywhere), and the very large steel fork tine that lifts the rental section into view. Each beat's text sits on an
 // empty part of the world itself, framed by the camera, never on a painted out ground.
@@ -7,9 +7,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
-import { DARK_BG, PAPER, ease, isDark, lerp, range, smooth, uOf } from './kit';
+import { DARK_BG, PAPER, ease, lerp, range, uOf } from './kit';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
+// The shell's top row turns light ink at scroll 7790, which is 190px into B, so u 9 + 190 / 400. The band under it goes dark with it.
+const DARK_TOP_FROM = 9.475;
 
 export function useOverlayRoot() {
   const camera = useThree((s) => s.camera);
@@ -72,21 +74,6 @@ function forkGeometry() {
   return g;
 }
 
-function curtainTexture() {
-  const c = document.createElement('canvas');
-  c.width = 256;
-  c.height = 256;
-  const g = c.getContext('2d')!;
-  const grd = g.createRadialGradient(128, 190, 10, 128, 190, 200);
-  grd.addColorStop(0, '#ffffff');
-  grd.addColorStop(1, '#f3f3f3');
-  g.fillStyle = grd;
-  g.fillRect(0, 0, 256, 256);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-
 // A hard edged cell of plain ground for a text column the world cannot give an empty patch for. Pixel box of a frame
 // (x0, x1 from the left edge, the top at the top rule, down to the bottom of the frame), on the grid lines, and it wipes in
 // and out by its right edge, nothing fades. R is the one beat that needs it, the yard has no bare floor under its text.
@@ -104,7 +91,6 @@ export default function Overlay({ clock }: SceneProps) {
   const curtain = useRef<THREE.Mesh>(null);
   const cells = useRef<(THREE.Mesh | null)[]>([]);
   const fork = useMemo(forkGeometry, []);
-  const cTex = useMemo(curtainTexture, []);
   const mixCol = useMemo(() => new THREE.Color(), []);
   const lightCol = useMemo(() => new THREE.Color(PAPER.bg), []);
   const aspect = size.width / size.height;
@@ -125,8 +111,9 @@ export default function Overlay({ clock }: SceneProps) {
     // The masks stay on the screen whatever the lens shift is, so undo the shift for them.
     const v = camera.view;
     if (maskGroup.current && v) maskGroup.current.position.set((v.offsetX / v.fullWidth) * 2 * aspect, (-v.offsetY / v.fullHeight) * 2, 0);
-    // The masks take the ground of the beat, light everywhere but the servis blueprint.
-    const mc = isDark(u) ? mixCol.set(DARK_BG).lerp(lightCol, ease(range(u, 11.7, 11.8))) : lightCol;
+    // The masks take the ground of the beat. The band over the top row goes dark where the shell turns the top row's ink
+    // light (scroll 7790, u 9.475) and back to light under the fork's light ground, a hard step each way.
+    const mc = u >= DARK_TOP_FROM && u < 11.8 ? mixCol.set(DARK_BG) : lightCol;
     if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
     CELLS.forEach((c, i) => {
       const m = cells.current[i];
@@ -139,7 +126,7 @@ export default function Overlay({ clock }: SceneProps) {
       const x1 = x0 + ((c.x[1] - c.x[0]) / half) * o;
       const y0 = (half - c.top) / half;
       const y1 = -1;
-      m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0.51);
+      m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0);
       m.scale.set(Math.max(x1 - x0, 1e-4), y0 - y1, 1);
       (m.material as THREE.MeshBasicMaterial).color.copy(mc);
     });
@@ -154,25 +141,24 @@ export default function Overlay({ clock }: SceneProps) {
     if (curtain.current) {
       curtain.current.visible = lifting;
       curtain.current.position.set(0, yEdge - 0.14 - 5, -0.01);
-      (curtain.current.material as THREE.MeshBasicMaterial).opacity = 1 - smooth(range(k, 0.93, 1));
     }
   });
 
   return createPortal(
     <>
       <group ref={maskGroup}>
-      <mesh ref={maskTop} position={[0, 1 - topH / 2, 0.52]} scale={[1, 1, 1]}>
+      <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={10}>
         <planeGeometry args={[aspect * 2 + 0.2, topH]} />
-        <meshBasicMaterial depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial transparent depthTest={false} depthWrite={false} toneMapped={false} />
       </mesh>
       {CELLS.map((_, i) => (
-        <mesh key={i} ref={(m) => { cells.current[i] = m; }} visible={false}>
+        <mesh key={i} ref={(m) => { cells.current[i] = m; }} visible={false} renderOrder={10}>
           <planeGeometry args={[1, 1]} />
-          <meshBasicMaterial depthWrite={false} toneMapped={false} />
+          <meshBasicMaterial transparent depthTest={false} depthWrite={false} toneMapped={false} />
         </mesh>
       ))}
       </group>
-      <mesh ref={fade} position={[0, 0, 0.55]} visible={false} renderOrder={30}>
+      <mesh ref={fade} position={[0, 0, 0]} visible={false} renderOrder={30}>
         <planeGeometry args={[aspect * 4, 4]} />
         <meshBasicMaterial color="#000000" transparent opacity={1} depthWrite={false} toneMapped={false} />
       </mesh>
@@ -180,7 +166,7 @@ export default function Overlay({ clock }: SceneProps) {
           depth test, so the dimensions go under the light ground and the steel the moment those cover them. */}
       <mesh ref={curtain} visible={false} renderOrder={20}>
         <planeGeometry args={[aspect * 5, 10]} />
-        <meshBasicMaterial map={cTex} transparent opacity={1} toneMapped={false} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={1} toneMapped={false} />
       </mesh>
       <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]} renderOrder={21}>
         <meshBasicMaterial vertexColors transparent opacity={1} toneMapped={false} />

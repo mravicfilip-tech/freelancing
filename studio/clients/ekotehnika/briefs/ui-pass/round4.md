@@ -213,6 +213,7 @@ Filip at 6m00, "you see how this is going over the grid, the schematic needs to 
 ![S wheels](refs/round4/17-s-wheels.webp)
 
 - **Fix.** Per Q5. Dimension lines end on grid lines or inside one cell, never across a line. No line is cut by the stage edge.
+- **The cut, pointed out by Filip later the same night.** On S at 1920 the two lowest dimension lines, under Y 2120 and at L2 3173, run past the bottom rule at y 1015 into the coordinate row and are cut by the canvas edge, around x 1045 to 1350. Every dimension line, extension line and arrow stays above the bottom rule. Sent to the servis branch.
 - **Files.** `src/story2/scenes/sistem/schematic.tsx`, `blueprint.tsx`, `src/story2/shell/panes.tsx` (SPane).
 
 ## L

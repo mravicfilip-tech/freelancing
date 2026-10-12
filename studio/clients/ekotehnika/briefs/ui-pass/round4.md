@@ -18,7 +18,7 @@ where it is known, the fix and the files. No code moves until Filip approves thi
 
 ## Answers needed first
 
-Filip replied "for the 3d work you can split into offbranches so we gain more speed, for the rest go" on 12 October, so every default below stands, except Q5, which is open again, see Q10.
+Filip replied "for the 3d work you can split into offbranches so we gain more speed, for the rest go" on 12 October, so every default below stands. Q10 and Q11 came later and Filip handed both to Claude, "resolve the open q10/q11 yourself".
 
 - **Q1, R left edge.** You said a fade to white won't work, then that it may be fine. Default is no fade. The R scene is reframed so the yard runs to the column 4 grid line at 642 and stops there on a clean edge, and the text column sits on plain ground beside it. Option 2 is a white fade over columns 3 and 4.
 - **Q2, hero load.** Default is no preloader screen. The page shows the white ground, the grid and the top row at once, then the grid draws on, the road and trees build in, and the forklift drives into place once its model is ready. A preloader adds a screen to wait on. Option 2 is a short preloader with both logos and a progress rule.
@@ -30,8 +30,8 @@ Filip replied "for the 3d work you can split into offbranches so we gain more sp
   - **Budget per branch.** Street 1.0MB, automation 0.5MB, lift 0.2MB, servis 0.4MB, about 19 percent in all. First frame no later than before, measured back to back on the same container. The scripts are `ekotehnika-hero/scripts/loadbudget.mjs` and `ekotehnika-hero/scripts/scrollpass.mjs`, the real scroll check from item 14.
 - **Q7, Grad session.** The Grad builder is blocked on two findings. F1 says the yard trucks use `#a00020` and not `#aa0020`. That is already settled by your 7.45pm guideline red ruling, so it is closed. F2 says the info turquoise on the S dimension lines is not a README token. Default is to keep it, since the plan set it. Then the builder fixes F5 to F9 and I merge its branch.
 - **Q8, versions 2 and 4.** Default is that the shell fixes reach them, and the scene fixes stay in version 5. Grad scene work runs in its own session.
-- **Q10, S after the footer ruling. Open.** At 10.30pm Filip said "I didn't want real 3d renders" about the footer row of four studio stills. In the video he asked for "a proper 3D render of the Linde forklift" on S. Default is that the footer ruling does not reach S, and S gets the real X50 lit on the dark ground per Q5. The servis branch waits for this answer.
-- **Q11, footer scenery. Open.** Filip, "We can maybe do some scenery here, doesn't have to be 4 products, let's move away from the idea". Default direction, one pick. The footer row becomes one wide still of the Ekotehnika site in Vrčin from the hero's own world, the company building with its name, the gate, trees, kerbs and one forklift parked by the door, seen low and side on like the hero, standing on the footer's bottom rule across all twelve columns. It closes the page where the story began, beside the address cell. It refuses product shots, a row of trucks, line art and a live second canvas. It is rendered once from the reworked street set, so it lands after item 7, on the street branch, shown to Filip as one frame before it goes in.
+- **Q10, S after the footer ruling. Settled by Claude**, on Filip's "resolve the open q10/q11 yourself". The footer ruling does not reach S. What Filip rejected at 10.30pm was product stills on a grey ground in a row, a catalogue strip. At S he asked for "a proper 3D render of the Linde forklift", and the hero forklift, the real model lit in the scene, is the one he holds up as the polish bar. So S gets the real X50 lit in the scene on the dark ground, finished like the hero truck, with one clean outline on its silhouette and the dimension lines inside the grid cells. Logged in taste.md at 22:09. The servis branch starts on this.
+- **Q11, footer scenery. Settled by Claude**, on the same line. The footer row becomes one wide still of the Ekotehnika site in Vrčin from the hero's own world, the company building with its name, the gate, trees, kerbs and one forklift parked by the door, seen low and side on like the hero, standing on the footer's bottom rule across all twelve columns, on the footer ground. It closes the page where the story began, beside the address cell. It refuses product shots, a row of trucks, line art and a live second canvas. The street branch renders it once from the reworked street set after item 7, as `public/footer/site.webp`, and this session wires it into the footer. Filip sees it on the preview with the rest.
 - **Q9, box branding.** Default is the EKOTEHNIKA wordmark from the logo file on two faces of the pallet box in the hero, dark on the light box, in version 5. Not redrawn, per the README logo rule.
 
 ## Defects first
@@ -318,10 +318,10 @@ Per Filip, one off branch per 3D scene, each built by its own cloud session, eac
 
 | Branch | Items | Files it owns |
 |---|---|---|
-| `claude/awesome-faraday-lkhnn2-street` | 2 scene part, 3, 4, 7 modules, 9 edge, then the footer scenery still after Q11 | `props.tsx`, `outdoor.tsx`, `yard.tsx`, `index.tsx`, `public/footer/` |
+| `claude/awesome-faraday-lkhnn2-street` | 2 scene part, 3, 4, 7 modules, 9 edge, then the footer scenery still per Q11 | `props.tsx`, `outdoor.tsx`, `yard.tsx`, `index.tsx`, `public/footer/` |
 | `claude/awesome-faraday-lkhnn2-auto` | 20 | `aisle.tsx`, `atplan.ts`, `grid.tsx` |
 | `claude/awesome-faraday-lkhnn2-lift` | 16 | the fork tine in `overlay.tsx` only |
-| `claude/awesome-faraday-lkhnn2-servis` | 15, waits for Q10 | `schematic.tsx`, `bake.ts` |
+| `claude/awesome-faraday-lkhnn2-servis` | 15, per Q10 | `schematic.tsx`, `bake.ts` |
 | `claude/awesome-faraday-lkhnn2-grad` | Grad round 3, F5 to F9 | `src/story2/scenes/grad/` |
 | `claude/awesome-faraday-lkhnn2`, here | everything in the shell and `src/ui`, plus 7 scroll, 8 camera, 17, 24 | `src/story2/shell/`, `src/ui/`, `camera.tsx`, `warehouse.tsx`, the band lines in `overlay.tsx`, `kit.ts`, `route.ts` |
 

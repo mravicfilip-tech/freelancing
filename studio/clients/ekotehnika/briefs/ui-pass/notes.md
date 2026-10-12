@@ -59,3 +59,16 @@ and the plan is agreed. The story stays as it is.
    A hairline rule under the top line and one above the bottom edge frame the screen, and a vertical hairline splits
    it into two equal halves. The object sits centred in the left half, the text block centred in the right half,
    and small tab labels run along the top of the right half with a dot over the active one.
+6. **Servis screen, a better design than ours.** Ref `refs/06-servis-screen-wireframe-data.webp` (Citrix and an
+   F1 team). Said: "example this is better screen design vs what we have for services".
+   What the ref does. Left column, a small uppercase kicker, a large two line title, two lines of small body, a
+   round play button with its label, and one text link. Centre, the car as a glowing wireframe on dark, with the
+   wheels lit hot as the one highlight. Behind the car, one giant faded number with its unit and a widely spaced
+   label (8958 RPM, rotational speed). Right edge, a section counter (02 over 03) and a thin vertical progress line.
+   Bottom, a small label with one line of data (telemetry data).
+   How it maps to our S beat. The X50 blueprint is our wireframe, the turning wheels are the highlight, a giant faded
+   figure sits behind it from the servis copy (300+ tipova vozila, or the Hitan servis number), the counter shows the
+   section, and the bottom line carries one servis fact. Our two tiles would go, replaced by the data line.
+   Open. The wheel highlight colour. Red glow is what the ref uses, and red is only for actions today. Default is a
+   white glow, red only if Filip opens that rule for the servis highlight.
+   Open. The round play button. We have no servis video, so the CTA stays Zakažite servis unless a video exists.

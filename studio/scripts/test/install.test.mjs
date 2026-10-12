@@ -83,10 +83,10 @@ test('uninstall takes it all out, keeps client data and the user\'s own text', (
   assert.ok(existsSync(join(C, 'studio', 'clients', 'note.md')));
 });
 
-test('pack writes five zips that hold SKILL.md at the top of a folder named for the skill', () => {
+test('pack writes six zips that hold SKILL.md at the top of a folder named for the skill', () => {
   const out = mkdtempSync(join(tmpdir(), 'pack-'));
-  assert.equal(pack(out).length, 5);
-  for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
+  assert.equal(pack(out).length, 6);
+  for (const name of ['uireview', 'harden', 'taste', 'newui', 'design', 'story']) {
     const buf = readFileSync(join(out, `${name}.zip`));
     assert.equal(buf.readUInt32LE(0), 0x04034b50);
     assert.ok(buf.includes(Buffer.from(`${name}/SKILL.md`)), `${name}/SKILL.md`);

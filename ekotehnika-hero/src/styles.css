@@ -1,5 +1,84 @@
-/* Tokens from studio/clients/ekotehnika/README.md. No other colours. */
+/* Daxline Pro, the Linde house type for small digital text (co-branding guideline p.13). Self hosted from
+   public/fonts/daxline, Light 350, Regular 400, Medium 500, Bold 700, ExtraBold 750, all with the Serbian
+   Latin letters. One family carries headlines and text until Dax Pro files arrive. */
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Light.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-ExtraBold.woff2') format('woff2');
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* The scenes draw some canvas text with the family name Geist, and the grad scene waits on it. This maps that name
+   to the Daxline files so no Geist file or Google Fonts request is left on the story routes. */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Regular.woff2') format('woff2');
+  font-weight: 100 450;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-display: swap;
+}
+
 :root {
+  /* Linde Material Handling set, co-branding guideline p.14. Red is for the filled primary button only. */
+  --lmh-red: #a00020;
+  --black: #000000;
+  --white: #ffffff;
+  --grey-pale: #e9e9e9;
+  --grey-light: #d2d2d2;
+  --grey-mid: #a1a1a1;
+  --grey-dark: #6b6b6b;
+  /* dark servis beat */
+  --dark-ground: #0b0b0b;
+  --dark-ground-2: #141414;
+  /* information colours, 72 percent tints, inside the servis schematic and spec tables only, one at a time */
+  --info-turquoise: #7fbccd;
+
+  --font: 'Daxline Pro', Arial, system-ui, sans-serif;
+  --ease-indicator: cubic-bezier(0.2, 0, 0, 1);
+  --ease-wipe: cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* Legacy tokens from the first hero build, read only by the older routes (/?story=, /?board=, /?gate=) and the
+     scene files. The story2 shell does not use them. */
   --linde-red: #aa0020;
   --dark-red: #990e1f;
   --toned-red: #cc132a;
@@ -11,11 +90,7 @@
   --light-grey: #eeeff3;
   --shade-grey: #e6e7eb;
   --hover-light-grey: #f5f6fa;
-  --white: #ffffff;
-
-  --font: 'DaxWebPro', 'Fira Sans', system-ui, sans-serif;
-  --font-medi: 'DaxWebPro-Medi', 'Fira Sans', system-ui, sans-serif;
-  --ease-indicator: cubic-bezier(0.2, 0, 0, 1);
+  --font-medi: var(--font);
   --header-h: 133px;
   --trust-h: 72px;
 }
@@ -30,9 +105,10 @@ html,
 body {
   margin: 0;
   background: var(--white);
-  color: var(--ink);
+  color: var(--black);
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 400;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -43,7 +119,7 @@ a {
 }
 
 :where(a, button):focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--black);
   outline-offset: 2px;
 }
 
@@ -129,46 +205,61 @@ a {
   border-top: 1px solid var(--shade-grey);
 }
 
-/* Direction switcher, review chrome, not part of any design */
+/* Direction switcher, review chrome, not part of any design. It sits in the bottom band under the grid. */
 .dir-switch {
   position: fixed;
   z-index: 100;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 48px;
+  bottom: 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2px;
   padding: 3px;
-  background: var(--ink);
-  border-radius: 6px;
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  background: var(--black);
+  border-radius: 4px;
+  font-family: var(--font);
+}
+
+.dir-switch {
+  transition: opacity 200ms;
+}
+
+html[data-after-story] .dir-switch {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .dir-switch button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 4px;
+  border-radius: 2px;
   background: transparent;
   color: var(--white);
-  font: 500 14px/1 'IBM Plex Mono', ui-monospace, monospace;
+  font: 500 14px/1 var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .dir-switch button span {
-  color: var(--shade-grey);
+  color: var(--grey-mid);
 }
 
 .dir-switch button:hover {
-  background: var(--text-grey);
+  background: var(--grey-dark);
 }
 
 .dir-switch button[aria-pressed='true'] {
-  background: var(--linde-red);
+  background: var(--white);
+  color: var(--black);
+}
+
+.dir-switch button[aria-pressed='true'] span {
+  color: var(--grey-dark);
 }
 
 .dir-switch button:focus-visible {

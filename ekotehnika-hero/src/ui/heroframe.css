@@ -1,44 +1,139 @@
-/* The shared hero layout for versions 2, 4 and 5, see HeroFrame.tsx. Tokens only, see src/styles.css.
-   Colour sets. ink is ink type with ink borders, white is white type with white 40 percent borders. */
+/* The shared frame over the scene, see HeroFrame.tsx and the UI pass plan A4, A5, A7. Tokens only, see src/styles.css.
+   Colour sets. ink is black on a light ground, white is white on the dark servis beat. Labels are 14px or more. */
 .hf {
-  --hf-top: var(--ink);
-  --hf-top-line: var(--ink);
-  --hf-top-wash: rgb(34 34 34 / 0.07);
-  --hf-bottom: var(--ink);
+  --hf-top: var(--black);
+  --hf-line: var(--grey-light);
+  --hf-sub: var(--grey-dark);
+  --bar: var(--black);
   position: absolute;
   inset: 0;
   z-index: 20;
   pointer-events: none;
-  font-family: 'Geist', system-ui, sans-serif;
+  font-family: var(--font);
 }
 
 .hf[data-tone='white'] {
   --hf-top: var(--white);
-  --hf-top-line: rgb(255 255 255 / 0.4);
-  --hf-top-wash: rgb(255 255 255 / 0.12);
-}
-
-.hf[data-tone-bottom='white'] {
-  --hf-bottom: var(--white);
+  --hf-line: rgb(255 255 255 / 0.3);
+  --hf-sub: rgb(255 255 255 / 0.7);
+  --bar: var(--white);
 }
 
 .hf a {
   pointer-events: auto;
-}
-
-.hf a {
   text-decoration: none;
 }
 
-/* focus ring, 2px with a 2px offset, ink on a light scene and white on a dark one */
-.hf-top a:focus-visible {
-  outline: 2px solid var(--hf-top);
+/* ---- shared parts, the block wipe and the buttons, used by the shell as well ---- */
+
+/* Block wipe. A bar of --bar covers the element and leaves to the right, the shell drives --bx and --tv from the story
+   clock. With no JS, which is reduced motion, the bar is off to the right and the text shows. */
+[data-wipe] {
+  position: relative;
+  overflow: hidden;
+  visibility: var(--tv, inherit);
+}
+
+[data-wipe]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--bar, var(--black));
+  transform: translateX(var(--bx, 101%));
+  visibility: var(--lv, visible);
+  pointer-events: none;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  isolation: isolate;
+  font: 500 14px/1 var(--font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  --btn-bg: var(--grey-pale);
+  --btn-fg: var(--black);
+  --btn-hover: var(--grey-light);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.btn-t {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn .num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* hover, a wipe of a darker fill from left to right in 240ms */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--btn-hover);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 240ms var(--ease-wipe);
+}
+
+.btn:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.btn-primary {
+  --btn-bg: var(--lmh-red);
+  --btn-fg: var(--white);
+  --btn-hover: var(--black);
+}
+
+.btn-secondary {
+  --btn-bg: var(--grey-pale);
+  --btn-fg: var(--black);
+  --btn-hover: var(--grey-light);
+}
+
+/* on the dark beat the primary becomes white with a black label, red is never on dark */
+.hf[data-tone='white'] .btn-primary,
+[data-ink='dark'] .btn-primary {
+  --btn-bg: var(--white);
+  --btn-fg: var(--black);
+  --btn-hover: var(--grey-light);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--black);
   outline-offset: 2px;
 }
 
-.hf-bottom a:focus-visible,
+.hf[data-tone='white'] .btn:focus-visible,
+[data-ink='dark'] .btn:focus-visible {
+  outline-color: var(--white);
+}
+
+/* focus ring on the links of the top row */
+.hf-nav a:focus-visible,
+.hf-logo:focus-visible,
 .hf-skip:focus-visible {
-  outline: 2px solid var(--hf-bottom);
+  outline: 2px solid var(--hf-top);
   outline-offset: 2px;
 }
 
@@ -48,62 +143,75 @@
   left: 48px;
   top: 4px;
   z-index: 1;
-  padding: 0 18px;
-  height: 32px;
   display: inline-flex;
   align-items: center;
-  border-radius: 999px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 4px;
   background: var(--white);
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 500;
+  color: var(--black);
+  font: 500 14px/1 var(--font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   transform: translateY(-60px);
 }
 
 .hf-skip:focus-visible {
   transform: none;
-  outline-color: var(--hf-top);
 }
 
-/* top row, 24px from the top, as tall as the logo tile, 48px side margins */
+/* ---- top row, A4. Logos at x 48 and y 24, nav on the grid centre, buttons on the right edge ---- */
 .hf-top {
   position: absolute;
   top: 24px;
   left: 48px;
   right: 48px;
-  height: 112px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  column-gap: 28px;
-  align-items: center;
+  height: 96px;
   color: var(--hf-top);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 20px;
 }
 
-/* LMH co-branding guideline 1.3, the Linde logo at its 160 by 96px screen minimum and the dealer
-   wordmark exactly as wide, centred on it, 2x apart where x is 1/16 of the Linde logo width */
+/* LMH co-branding guideline 1.3, the Linde logo at its 160 by 96px screen minimum and the dealer wordmark exactly as
+   wide, centred on it, 30px apart (3x where x is 1/16 of the Linde logo width). No box, no frame, no shadow. */
 .hf-logo {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 8px 18px 8px 8px;
-  border-radius: 14px;
-  background: var(--white);
+  gap: 30px;
+  transition: opacity 200ms;
 }
 
 .hf-logo img {
   display: block;
+  flex: none;
+  width: 160px;
+}
+
+.hf-logo img:first-child {
+  height: 96px;
+}
+
+.hf-logo img:last-child {
+  height: auto;
+}
+
+/* the Linde logo is banned on dark grey, so both logos leave over the dark span and the nav and buttons stay */
+.hf[data-logos='off'] .hf-logo {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hf-nav {
-  justify-self: center;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
 }
 
 .hf-nav ul {
   display: flex;
-  gap: clamp(14px, 1.9vw, 36px);
+  gap: 32px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -112,114 +220,161 @@
 .hf-nav a {
   position: relative;
   display: block;
-  padding: 8px 0;
+  padding: 6px 0;
   color: inherit;
+  font: 500 15px/20px var(--font);
 }
 
-/* the active page, a 2px underline 10px below the text */
-.hf-nav a[aria-current='page']::after {
+/* the active page, a 2px underline that draws on, and every link draws one on hover */
+.hf-nav a::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% + 2px);
+  bottom: 0;
   height: 2px;
-  background: var(--hf-top);
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms var(--ease-wipe);
 }
 
-.hf-nav a:not([aria-current='page']):hover {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
+.hf-nav a[aria-current='page']::after {
+  animation: hf-draw 600ms var(--ease-wipe) 400ms both;
 }
 
-.hf-phones {
+.hf-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+@keyframes hf-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hf-actions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   display: flex;
   gap: 12px;
 }
 
-.hf-pill {
-  display: inline-flex;
+/* ---- right margin, the counter and the progress line, A7 ---- */
+.hf-side {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 48px;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 44px;
-  padding: 0 18px;
-  border: 1px solid var(--hf-top-line);
-  border-radius: 999px;
   color: var(--hf-top);
-  white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  transition: background-color 0.2s;
 }
 
-.hf-pill:hover {
-  background: var(--hf-top-wash);
+/* plain ground under the numbers, so they never sit on the scene */
+.hf-nums {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+  background: rgb(255 255 255 / 0.94);
 }
 
-/* Under 1400px the taller logo tile leaves less room, so the row tightens a step */
-@media (max-width: 1400px) {
-  .hf-top {
-    column-gap: 18px;
-    font-size: 14px;
-  }
-  .hf-nav ul {
-    gap: 14px;
-  }
-  .hf-pill {
-    padding: 0 14px;
-  }
+.hf[data-tone='white'] .hf-nums {
+  background: rgb(11 11 11 / 0.75);
 }
 
-/* bottom left block, 48px from the left and 64px from the bottom */
+.hf-now {
+  font-size: 28px;
+  font-weight: 350;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hf-total {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hf-line);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--hf-sub);
+}
+
+.hf-track {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 200px;
+  margin-top: 20px;
+  background: var(--hf-line);
+}
+
+.hf-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--hf-top);
+  transform: scaleY(var(--prog, 0));
+  transform-origin: top;
+}
+
+/* ---- the corner label, bottom left, a coordinate as flavour ---- */
+.hf-coords {
+  position: absolute;
+  left: 48px;
+  bottom: 28px;
+  margin: 0;
+  display: flex;
+  gap: 14px;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--hf-sub);
+}
+
+/* ---- the hero block, columns 1 to 7, the plain band x 0 to 760 and y 470 to 840 ---- */
 .hf-bottom {
   position: absolute;
   left: 48px;
-  bottom: 64px;
-  color: var(--hf-bottom);
-}
-
-.hf-kicker {
+  bottom: 100px;
+  width: calc(7 * var(--cw) + 6 * 24px);
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0.02em;
-}
-
-.hf-dot {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  color: var(--hf-top);
 }
 
 .hf-h1 {
-  max-width: 760px;
-  margin: 24px 0 0;
-  font-size: clamp(48px, 5vw, 72px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
+  margin: 4px 0 0;
+  font-size: clamp(88px, 7.7cqw, 160px);
+  font-weight: 350;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.hf-lede {
+  max-width: calc(5 * var(--cw) + 4 * 24px);
 }
 
 .hf-quote {
-  display: inline-flex;
-  align-items: center;
-  height: 52px;
-  margin-top: 40px;
-  padding: 0 40px;
-  border-radius: 999px;
-  background: var(--linde-red);
-  color: var(--white);
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  margin-top: 12px;
 }
 
-.hf-quote:hover {
-  background: var(--dark-red);
+@media (prefers-reduced-motion: reduce) {
+  .hf-nav a[aria-current='page']::after {
+    animation: none;
+    transform: scaleX(1);
+  }
 }

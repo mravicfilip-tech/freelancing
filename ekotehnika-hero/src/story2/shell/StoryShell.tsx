@@ -1,14 +1,18 @@
-// The shared shell for storyline 2. It pins the stage with the story clock, mounts one scene behind it,
-// puts the shared hero frame over it and lays the text of each hold beat into the open space the scene
-// leaves. After the pinned stage come the products range and the footer as normal sections. With reduced
-// motion there is no pin, each hold beat is a still section with its text beside a still of the scene.
-// Text rises in as its beat starts and leaves as it ends, nothing but the top row stays between holds.
-import { Suspense, useEffect, useMemo, useRef, type ComponentType, type ReactNode } from 'react';
+// The shared shell for storyline 2. It pins the stage with the story clock, mounts one scene behind it, draws the
+// grid over the scene, lays the text of each hold beat on the grid and puts the shared frame on top. After the pinned
+// stage come the statement, Proizvodi, the client wall, the closing band and the footer as normal sections.
+//
+// All motion reads the story clock, so it scrubs with the scroll and freezes with ?at=. The loop below drives the
+// block wipes, the scroll fill, the count up, the grid, the counter and the logos from clock.pos with no React render.
+// With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
+import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { TIMELINE } from '../timeline';
+import { LENGTH, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
-import { ATPane, C1Pane, NPane, PPane, RPane, SPane } from './panes';
-import { Footer, Products } from './sections';
+import { Grid } from './Grid';
+import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
+import { Closing, Clients, Footer, Products, Statement } from './sections';
+import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -20,7 +24,7 @@ type LayerDef = { id: string; Pane: () => ReactNode; dark: boolean; still: numbe
 const LAYERS: LayerDef[] = [
   { id: 'C1', Pane: C1Pane, dark: false, still: 0.5 },
   { id: 'R', Pane: RPane, dark: false, still: 0.5 },
-  { id: 'P', Pane: PPane, dark: false, still: 0.95 },
+  { id: 'P', Pane: PPane, dark: false, still: 0.3 },
   { id: 'S', Pane: SPane, dark: true, still: 0.5 },
   { id: 'N', Pane: NPane, dark: false, still: 0.95 },
   { id: 'AT', Pane: ATPane, dark: true, still: 0.5 },
@@ -28,7 +32,7 @@ const LAYERS: LayerDef[] = [
 
 // Where the text leaves, as a share of its beat. P keeps its text through the first half, then lets the
 // warehouse reveal take over.
-const LEAVE: Record<string, [number, number]> = { P: [0.44, 0.7], AT: [1.01, 1.02] };
+const LEAVE: Record<string, [number, number]> = { P: [0.5, 0.74], AT: [1.01, 1.02] };
 const LEAVE_DEFAULT: [number, number] = [0.86, 1];
 
 // Story pixels where the ground under the top row is dark in the light versions, the black push at the end
@@ -38,8 +42,19 @@ const DARK_TOP: [number, number][] = [
   [10790, 13000],
 ];
 
-const range = (v: number, a: number, b: number) => Math.min(1, Math.max(0, (v - a) / (b - a)));
-const out3 = (t: number) => 1 - Math.pow(1 - t, 3);
+// The counter on the right edge, the number of the last hold passed.
+const COUNTER: [number, string][] = [
+  [10900, '06'],
+  [9600, '05'],
+  [8000, '04'],
+  [5300, '03'],
+  [3500, '02'],
+  [1500, '01'],
+  [0, '00'],
+];
+
+const HOLDS = TIMELINE.filter((b) => b.hold);
+const PAD = 16;
 
 const ink = (tone: Tone, dark: boolean) => (tone === 'dark' || dark ? 'dark' : 'light');
 
@@ -49,6 +64,101 @@ function mountScene(Scene: ComponentType<SceneProps>, clock: SceneProps['clock']
       <Scene clock={clock} />
     </Suspense>
   );
+}
+
+type Rect = { x: number; y: number; w: number; h: number };
+
+// Merge overlapping boxes so the XOR mask below never brings a line back inside a text box.
+function merge(rects: Rect[]): Rect[] {
+  const out = rects.map((r) => ({ ...r }));
+  let again = true;
+  while (again) {
+    again = false;
+    for (let i = 0; i < out.length && !again; i++) {
+      for (let j = i + 1; j < out.length; j++) {
+        const a = out[i];
+        const b = out[j];
+        if (a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h) {
+          const x = Math.min(a.x, b.x);
+          const y = Math.min(a.y, b.y);
+          out[i] = { x, y, w: Math.max(a.x + a.w, b.x + b.w) - x, h: Math.max(a.y + a.h, b.y + b.h) - y };
+          out.splice(j, 1);
+          again = true;
+          break;
+        }
+      }
+    }
+  }
+  return out;
+}
+
+// The grid is hidden behind every text box with 16px of padding. A full layer minus one box each, by XOR.
+function maskStyle(rects: Rect[]) {
+  const boxes = merge(rects);
+  if (!boxes.length) return { image: '', size: '', pos: '', repeat: '', comp: '' };
+  const solid = 'linear-gradient(#000,#000)';
+  return {
+    image: [...boxes.map(() => solid), solid].join(','),
+    size: [...boxes.map((r) => `${r.w.toFixed(1)}px ${r.h.toFixed(1)}px`), '100% 100%'].join(','),
+    pos: [...boxes.map((r) => `${r.x.toFixed(1)}px ${r.y.toFixed(1)}px`), '0 0'].join(','),
+    repeat: 'no-repeat',
+    comp: [...boxes.map(() => 'exclude'), 'add'].join(','),
+  };
+}
+
+type Group = {
+  id: string;
+  el: HTMLElement;
+  span: BeatSpan;
+  // layers leave by a share of their beat, the hero block leaves by story pixels
+  leave: [number, number];
+  leaveInPx: boolean;
+  wipes: { el: HTMLElement; order: number; last: string; target: number; suffix: string; lastText: string }[];
+  fills: { el: HTMLElement; letters: HTMLElement[]; on: number }[];
+  masks: HTMLElement[];
+  rects: Rect[];
+  tabs: HTMLElement | null;
+  persistent: boolean;
+  maxOrder: number;
+  last: string;
+};
+
+function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Group> = {}): Group {
+  const wipes = Array.from(el.querySelectorAll<HTMLElement>('[data-wipe]')).map((w) => ({
+    el: w,
+    order: Number(w.dataset.wipe ?? 0),
+    last: '',
+    target: w.dataset.count ? Number(w.dataset.count) : NaN,
+    suffix: w.dataset.suffix ?? '',
+    lastText: '',
+  }));
+  const fills = Array.from(el.querySelectorAll<HTMLElement>('[data-fill]')).map((f) => {
+    f.setAttribute('data-live', '');
+    return { el: f, letters: Array.from(f.querySelectorAll<HTMLElement>('.fl')), on: 0 };
+  });
+  return {
+    id,
+    el,
+    span,
+    leave: LEAVE_DEFAULT,
+    leaveInPx: false,
+    wipes,
+    fills,
+    masks: Array.from(el.querySelectorAll<HTMLElement>('[data-mask]')),
+    rects: [],
+    tabs: el.querySelector<HTMLElement>('.s2-p'),
+    persistent: false,
+    maxOrder: Math.max(1, ...wipes.map((w) => w.order)),
+    last: '',
+    ...opts,
+  };
+}
+
+// Box of an element inside the stage, from its layout position, so a running reveal never moves the mask.
+function boxIn(el: HTMLElement, stage: HTMLElement): Rect {
+  const a = el.getBoundingClientRect();
+  const b = stage.getBoundingClientRect();
+  return { x: a.left - b.left - PAD, y: a.top - b.top - PAD, w: a.width + PAD * 2, h: a.height + PAD * 2 };
 }
 
 type ShellProps = {
@@ -64,6 +174,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   const { stageRef, clock } = useStoryClock(reduced);
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === l.id), l.still)), []);
   const heroStill = useMemo(() => stillClock(0, 0.5), []);
   const frameTone = tone === 'dark' ? 'white' : 'ink';
@@ -72,80 +183,259 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     if (reduced) return;
     const stage = stageRef.current;
     const hf = heroRef.current;
-    if (!stage || !hf) return;
-    const layers = Array.from(stage.querySelectorAll<HTMLElement>('[data-layer]')).map((el) => {
-      const span = TIMELINE.find((b) => b.id === el.dataset.layer)!;
-      return { el, span, leave: LEAVE[span.id] ?? LEAVE_DEFAULT, items: Array.from(el.querySelectorAll<HTMLElement>('[data-rise]')), last: '' };
-    });
+    const grid = gridRef.current;
+    if (!stage || !hf || !grid) return;
+    const t0 = performance.now();
+    const H = TIMELINE[0];
+
+    const groups: Group[] = [];
+    // the top row buttons wipe in once at load and stay
+    const actions = hf.querySelector<HTMLElement>('.hf-actions');
+    if (actions) groups.push(collect('top', actions, H, { persistent: true }));
     const heroBottom = hf.querySelector<HTMLElement>('.hf-bottom');
+    if (heroBottom) groups.push(collect('H', heroBottom, H, { leave: [500, 780], leaveInPx: true }));
+    stage.querySelectorAll<HTMLElement>('[data-layer]').forEach((el) => {
+      const span = TIMELINE.find((b) => b.id === el.dataset.layer)!;
+      groups.push(collect(span.id, el, span, { leave: LEAVE[span.id] ?? LEAVE_DEFAULT }));
+    });
+    // boxes that are always there, logos, nav, buttons and the counter
+    const fixed = Array.from(hf.querySelectorAll<HTMLElement>('.hf-top [data-mask], .hf-nums, .hf-coords'));
+    let fixedRects: Rect[] = [];
+
+    const measure = () => {
+      fixedRects = fixed.map((e) => boxIn(e, stage));
+      for (const G of groups) G.rects = G.masks.map((e) => boxIn(e, stage));
+      lastMask = '\u0000';
+    };
+    let lastMask = '';
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(stage);
+    document.fonts?.ready.then(measure);
+    const settle = window.setTimeout(measure, 800);
+
     let lastTone = '';
-    let lastHero = -1;
+    let lastCounter = '';
+    let lastProg = -1;
+    let lastGrid = '';
     let id = 0;
+
     const loop = () => {
       const pos = clock.pos.current;
-      for (const L of layers) {
-        const k = (pos - L.span.start) / (L.span.end - L.span.start);
-        const on = k >= 0 && k <= 1;
-        const o = on ? range(k, L.leave[0], L.leave[1]) : 1;
-        const key = on ? `${Math.round(k * 4000)}` : 'off';
-        if (key === L.last) continue;
-        L.last = key;
-        if (!on || o >= 1) {
-          L.el.style.visibility = 'hidden';
-          continue;
+      // the hero block and the top row play on real time after load, 1.2s for all lines, then read the clock
+      const heroT = clamp01((performance.now() - t0) / 1000 / HERO_SECONDS);
+      const visible: Group[] = [];
+
+      for (const G of groups) {
+        const isHero = G.id === 'H' || G.id === 'top';
+        const len = G.span.end - G.span.start;
+        const k0 = (pos - G.span.start) / len;
+        // budget is the story pixels all wipes of this group share, the hero uses a fixed budget run by time
+        const budget = isHero ? 120 : WIPE_DONE * len;
+        const dur = budget * WIPE_SHARE;
+        const stagger = (budget - dur) / G.maxOrder;
+        const u = isHero ? Math.max(heroT * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
+        const k = isHero ? Math.max(k0, FILL_TO * heroT) : k0;
+        let o = 0;
+        let on: boolean;
+        if (G.persistent) on = true;
+        else if (G.leaveInPx) {
+          o = range(pos, G.leave[0], G.leave[1]);
+          on = o < 1;
+        } else {
+          on = k >= 0 && k <= 1;
+          o = on ? range(k, G.leave[0], G.leave[1]) : 1;
+          if (o >= 1) on = false;
         }
-        L.el.style.visibility = 'visible';
-        L.items.forEach((it, i) => {
-          const a = out3(range(k, i * 0.026, 0.13 + i * 0.026));
-          const op = a * (1 - o);
-          it.style.opacity = op.toFixed(3);
-          it.style.transform = `translateY(${((1 - a) * 30 - o * 22).toFixed(1)}px)`;
-          it.style.pointerEvents = op > 0.6 ? 'auto' : 'none';
-        });
-      }
-      if (heroBottom) {
-        const h = 1 - out3(range(pos, 500, 780));
-        const r = Math.round(h * 500);
-        if (r !== lastHero) {
-          lastHero = r;
-          heroBottom.style.opacity = h.toFixed(3);
-          heroBottom.style.transform = `translateY(${((1 - h) * -26).toFixed(1)}px)`;
-          heroBottom.style.visibility = h < 0.01 ? 'hidden' : 'visible';
+        const vis = on ? 'v' : 'h';
+        if (vis !== G.el.dataset.vis) {
+          G.el.dataset.vis = vis;
+          G.el.style.visibility = on ? 'visible' : 'hidden';
+          G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
+        }
+        if (!on) continue;
+        if (!G.persistent) visible.push(G);
+        if (!G.persistent) {
+          const op = (1 - o).toFixed(2);
+          if (G.el.style.opacity !== op) G.el.style.opacity = op;
+        }
+        const pe = !G.persistent && o > 0.4 ? 'none' : '';
+        if (G.el.style.pointerEvents !== pe) G.el.style.pointerEvents = pe;
+
+        // block wipes and count up
+        for (const W of G.wipes) {
+          const p = clamp01((u - W.order * stagger) / dur);
+          const key = String(Math.round(p * 240));
+          if (key !== W.last) {
+            W.last = key;
+            const w = wipeAt(p);
+            W.el.style.setProperty('--bx', `${w.bx.toFixed(1)}%`);
+            W.el.style.setProperty('--tv', w.shown ? 'inherit' : 'hidden');
+          }
+          if (!Number.isNaN(W.target)) {
+            const cs = W.order * stagger + dur * 0.35;
+            const cp = clamp01((u - cs) / Math.max(20, COUNT_DONE * len - cs));
+            const text = formatCount(W.target * outCubic(cp)) + W.suffix;
+            if (text !== W.lastText) {
+              W.lastText = text;
+              W.el.textContent = text;
+            }
+          }
+        }
+        // scroll fill, letter by letter
+        const f = range(k, FILL_FROM, FILL_TO);
+        for (const F of G.fills) {
+          const n = Math.round(f * F.letters.length);
+          if (n !== F.on) {
+            const a = Math.min(n, F.on);
+            const b = Math.max(n, F.on);
+            for (let i = a; i < b; i++) F.letters[i]?.classList.toggle('on', n > F.on);
+            F.on = n;
+          }
+        }
+        // Prodaja, the tabs step with k until the visitor picks one
+        if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) {
+          const step = Math.min(3, Math.max(0, Math.floor((k - 0.05) / 0.11)));
+          if (G.tabs.getAttribute('data-tab') !== String(step)) setTab(G.tabs, step);
         }
       }
+
+      // the grid, hidden behind the boxes that are on screen
+      const key = visible.map((g) => g.id).join();
+      if (key !== lastMask) {
+        lastMask = key;
+        const m = maskStyle([...fixedRects, ...visible.flatMap((g) => g.rects)]);
+        grid.style.maskImage = m.image;
+        grid.style.maskSize = m.size;
+        grid.style.maskPosition = m.pos;
+        grid.style.maskRepeat = m.repeat;
+        grid.style.maskComposite = m.comp;
+      }
+
+      // grid draw on at each hold, dim to 40 percent between holds, plus marks turn once on reveal
+      let go = 0.4;
+      let draw = 1;
+      const gPos = Math.max(pos, heroT * 200);
+      for (const h of HOLDS) {
+        const gp = h.id === 'H' ? gPos : pos;
+        if (gp >= h.start && gp <= h.end) {
+          go = 1;
+          draw = outCubic(range(gp - h.start, 0, 200));
+          break;
+        }
+        if (gp > h.end && gp - h.end < 150) go = Math.max(go, 1 - 0.6 * range(gp - h.end, 0, 150));
+        if (gp < h.start && h.start - gp < 120) go = Math.min(go, 0.4 * ((h.start - gp) / 120));
+      }
+      const gk = `${Math.round(go * 100)}|${Math.round(draw * 200)}`;
+      if (gk !== lastGrid) {
+        lastGrid = gk;
+        grid.style.setProperty('--go', go.toFixed(2));
+        grid.style.setProperty('--draw', draw.toFixed(3));
+        grid.style.setProperty('--rot', draw.toFixed(3));
+      }
+
+      // counter and progress line on the right edge
+      const prog = Math.round(clamp01(pos / LENGTH) * 2000) / 2000;
+      if (prog !== lastProg) {
+        lastProg = prog;
+        hf.style.setProperty('--prog', String(prog));
+      }
+      const c = COUNTER.find(([s]) => pos >= s)![1];
+      if (c !== lastCounter) {
+        lastCounter = c;
+        const now = hf.querySelector('.hf-now');
+        if (now) now.textContent = c;
+      }
+
+      // dark span, the grid and the frame turn white and the logos leave, the Linde logo is banned on dark grey
       const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
       const t = dark ? 'white' : 'ink';
       if (t !== lastTone) {
         lastTone = t;
         hf.dataset.tone = t;
         hf.dataset.toneBottom = t;
+        hf.dataset.logos = dark ? 'off' : 'on';
+        grid.dataset.tone = t;
       }
       id = requestAnimationFrame(loop);
     };
     id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
+    return () => {
+      cancelAnimationFrame(id);
+      ro.disconnect();
+      window.clearTimeout(settle);
+    };
   }, [reduced, clock, stageRef, tone, darkTop]);
+
+  // The version chip is review chrome in the bottom band of the story. Over the sections after the story it steps aside, so
+  // it never sits on a spec row, a figure or the footer copyright.
+  useEffect(() => {
+    const root = document.documentElement;
+    const on = () => {
+      const next = document.querySelector<HTMLElement>('[data-after-story]');
+      const after = !!next && next.getBoundingClientRect().top < window.innerHeight * 0.95;
+      if (after) root.setAttribute('data-after-story', '');
+      else root.removeAttribute('data-after-story');
+    };
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', on);
+      root.removeAttribute('data-after-story');
+    };
+  }, []);
+
+  // With reduced motion each hold is a still screen, the grid is hidden behind its boxes once, after the fonts load.
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!reduced) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const run = () => {
+      root.querySelectorAll<HTMLElement>('.s2-still').forEach((sec) => {
+        const g = sec.querySelector<HTMLElement>('.s2-grid');
+        if (!g) return;
+        const rects = Array.from(sec.querySelectorAll<HTMLElement>('[data-mask]')).map((e) => boxIn(e, sec));
+        const m = maskStyle(rects);
+        g.style.maskImage = m.image;
+        g.style.maskSize = m.size;
+        g.style.maskPosition = m.pos;
+        g.style.maskRepeat = m.repeat;
+        g.style.maskComposite = m.comp;
+      });
+    };
+    run();
+    document.fonts?.ready.then(run);
+    const ro = new ResizeObserver(run);
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, [reduced]);
 
   if (reduced) {
     return (
-      <div className="s2" data-tone={tone}>
-        <section className="s2-hero-still" aria-label="Ekotehnika, Linde viljuškari">
+      <div className="s2" data-tone={tone} ref={rootRef}>
+        <section className="s2-stage s2-still" aria-label="Ekotehnika, Linde viljuškari">
           <div className="s2-scene" aria-hidden="true">
             {mountScene(Scene, heroStill)}
           </div>
+          <Grid />
           <HeroFrame tone={frameTone} rootRef={heroRef} />
         </section>
         {LAYERS.map((l, i) => (
-          <section className="s2-still" data-ink={ink(tone, isDark(l))} key={l.id} aria-label={l.id}>
-            <div className="s2-flow">
-              <l.Pane />
-            </div>
-            <div className="s2-still-scene" aria-hidden="true">
+          <section className="s2-stage s2-still" data-ink={ink(tone, isDark(l))} key={l.id} aria-label={l.id}>
+            <div className="s2-scene" aria-hidden="true">
               {mountScene(Scene, stills[i])}
+            </div>
+            <Grid />
+            <div className="s2-layer" data-ink={ink(tone, isDark(l))} style={{ opacity: 1 }}>
+              <l.Pane />
             </div>
           </section>
         ))}
+        <Statement />
         <Products />
+        <Clients />
+        <Closing />
         <Footer />
       </div>
     );
@@ -157,14 +447,18 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         <div className="s2-scene" aria-hidden="true">
           {mountScene(Scene, clock)}
         </div>
+        <Grid rootRef={gridRef} />
         {LAYERS.map((l) => (
-          <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, isDark(l))} key={l.id} style={{ visibility: 'hidden' }}>
+          <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, isDark(l))} key={l.id} style={{ visibility: 'hidden', '--lv': 'hidden' } as CSSProperties}>
             <l.Pane />
           </section>
         ))}
         <HeroFrame tone={frameTone} rootRef={heroRef} />
       </div>
+      <Statement />
       <Products />
+      <Clients />
+      <Closing />
       <Footer />
     </div>
   );

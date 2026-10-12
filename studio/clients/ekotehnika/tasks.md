@@ -31,7 +31,7 @@ Task format
   - [x] Plan the pass from the notes
   - [x] Filip answers the plan's decisions
   - [x] Detail the plan with every reference and current frame
-  - [ ] Build the system, motion and sections
+  - [x] Build the system, motion and sections
   - [ ] Build the Sistem scene polish
   - [ ] Fit Linija and Grad to the new shell
   - [ ] Review, check and deploy

@@ -37,15 +37,27 @@ In `src/story2/scenes/sistem/overlay.tsx`, end the R cell on the centre grid lin
 
 ## Load budget
 
-Measured with `scripts/loadbudget.mjs`, `?v=5` at 1920, production build, this container.
+Measured with the parent's fixed `scripts/loadbudget.mjs` (pulled from `claude/awesome-faraday-lkhnn2` and committed here), which times the hero road first drawing on screen. The before build is 23fee3b and the after build is this branch. They were served side by side on this container and run back to back in pairs, three pairs.
 
-| | Load | Full scroll | First canvas frame |
-|---|---|---|---|
-| Before, 23fee3b | 10.93MB | 11.69MB | 2564, 1036, 1431ms |
-| After | 10.94MB | 11.72MB | 1017, 1048, 1092, 1270, 1126ms |
+| Pair | Before first frame | After first frame |
+|---|---|---|
+| 1 | 13,008ms | 12,259ms |
+| 2 | 18,841ms | 17,959ms |
+| 3 | 13,837ms | 13,925ms |
+| Median | 13,837ms | 13,925ms |
 
-- Bytes rose 0.01MB on load, against a 1.0MB slice. Everything is procedural and the wordmark is the 17KB SVG already in `public/brand`.
-- First frame time is noisy here. The baseline itself ranged 1036 to 2564ms, over the 1,000ms line, so the parent's 977ms reading was a quieter container. The after median is 1092ms against a before median of 1431ms. I read it as no change from my slice. It needs one run on the parent's container to compare with 977ms.
+- Bytes on load went from 10.93MB to 10.96MB, and after a full scroll from 11.69MB to 11.72MB. That is 0.03MB against a 1.0MB slice. The footer still is not counted, since it loads only when the footer is wired in.
+- The after median is 88ms later than the before median, and two of the three pairs came out faster. The script watches a patch of road at x 200 to 400, the far left of the frame, and my road now draws on from the left. It reaches that patch about 0.1s into the build in. So the 88ms is the draw on reaching the patch, not slower loading. Read strictly against "no later than your own before number", it is 88ms over, and that call is the parent's. The fix is to sample the patch nearer the forklift, or to let the road start drawing already past x 400.
+- The earlier numbers from the old script are void, since it timed the canvas appearing.
+
+## Footer still (Q11)
+
+- `ekotehnika-hero/public/footer/site.webp`, 3648 by 600 px, so 1824 by 300 css px at 2x, 57KB.
+- **Ground line.** The near kerb's foot sits 25 px from the bottom of the image, 12.3 css px. Stand the image so that line lands on the footer's bottom rule, so the image bottom goes 12.3 css px below the rule, or crop that strip off.
+- It is on the footer ground `--grey-pale` `#e9e9e9`, opaque. The ground plane only takes shadows, so the set stands on the footer colour itself. Fog is the same grey, so the far trees settle into it.
+- In frame, the company building with its name, the hall, the gate house with a barrier, trees in their pits, hedges and planters, the kerb and paving, two lamp posts and one X50 parked by the door, forks to the left, no load. It is seen low and side on like the hero. There is no road band, no row of trucks, no line art and no van.
+- Render with `npm run dev`, then `node render-footer-scene.mjs <ekotehnika-hero path>` from a scratch folder that has playwright-core. The scene is `scripts/footer-scene/`, a dev only page that is not in the site build. It reuses the street set, for which `Building`, `FrontGarden`, `Greenery`, `Pavement`, `GateHouse` and `Barrier` are now exported from `outdoor.tsx` and `yard.tsx`. Nothing else changed in them.
+- `sections.tsx` and `sections.css` are untouched.
 
 ## Shots
 

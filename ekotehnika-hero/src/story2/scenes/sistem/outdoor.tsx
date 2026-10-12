@@ -285,7 +285,7 @@ function Hall({ x, w, h, d, zc }: { x: number; w: number; h: number; d: number; 
   );
 }
 
-function Building() {
+export function Building() {
   const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
   return (
     <group>
@@ -303,7 +303,7 @@ function Building() {
 
 // ---- trees and green ----------------------------------------------------------------------------------------
 
-function Greenery() {
+export function Greenery() {
   const trees = useMemo<TreeSpec[]>(() => {
     const r = rng(21);
     const near: TreeSpec[] = [];
@@ -318,7 +318,7 @@ function Greenery() {
   return <Trees items={trees} rise />;
 }
 
-function FrontGarden() {
+export function FrontGarden() {
   // hedge runs along the sidewalk, planters between them, a gap for the entrance path
   const hedges: { x: number; len: number }[] = [];
   const planters: { x: number; len: number; seed: number }[] = [];
@@ -352,7 +352,7 @@ function FrontGarden() {
   );
 }
 
-function Pavement() {
+export function Pavement() {
   // the sidewalk behind the road, the forecourt paving with its parking bays
   const bays = useMemo(() => {
     const items: BoxItem[] = [];

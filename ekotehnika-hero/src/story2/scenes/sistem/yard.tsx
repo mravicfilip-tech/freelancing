@@ -220,7 +220,7 @@ const glassHi = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.6) });
 const steel = lam(G.graphite);
 
 // One barrier, a housing with a service door and a cap, the pivot, and the raised arm in white with graphite bands.
-function Barrier({ x, z }: { x: number; z: number }) {
+export function Barrier({ x, z }: { x: number; z: number }) {
   return (
     <group position={[x, 0, z]}>
       <BoxSet items={[[0, 0.03, 0, 0.6, 0.06, 0.6]]} mat={trim} />
@@ -238,7 +238,7 @@ function Barrier({ x, z }: { x: number; z: number }) {
 // The gate house, 3 m by 2.6 m. A plinth, corner trims, a window band in black seals with mullions on the road side and
 // the front, a door with its frame and handle, a flat roof with a fascia overhang and a coping line, a plant unit with
 // its grille on the far side, a plain plate by the door and a contact shadow round its foot.
-function GateHouse({ x, z }: { x: number; z: number }) {
+export function GateHouse({ x, z }: { x: number; z: number }) {
   const w = 3.0;
   const d = 2.6;
   const h = 2.8;

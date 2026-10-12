@@ -32,8 +32,8 @@ const laneMat = withAO(new THREE.MeshStandardMaterial({ color: G.dark, roughness
 const kerbMat = new THREE.MeshStandardMaterial({ color: C.white, roughness: 0.9 });
 const markMat = W.mark.clone();
 
-// big walls, with a little light of their own so the shaded faces stay pale and the top of the frame stays plain
-const wallBright = new THREE.MeshStandardMaterial({ color: C.white, emissive: C.white, emissiveIntensity: 0.32, roughness: 0.9 });
+// big walls, with light of their own so the shaded faces stay pale and the 14px grey of the section marker keeps 4.5 to 1 on them
+const wallBright = new THREE.MeshStandardMaterial({ color: C.white, emissive: C.white, emissiveIntensity: 0.5, roughness: 0.9 });
 const lawnMat = new THREE.MeshStandardMaterial({ color: C.hoverLightGrey, roughness: 1 });
 
 // The office block runs the whole picture at C1, a plain white wall that the title of C1 lands on, glazing on the ground
@@ -47,7 +47,8 @@ const BLOCK_H = 13;
 const UP_X = 65.2;
 const glassMat = new THREE.MeshPhysicalMaterial({ color: G.mid, roughness: 0.15, metalness: 0.2, clearcoat: 1, envMapIntensity: 2, emissive: G.mid, emissiveIntensity: 0.2 });
 const glassDark = new THREE.MeshPhysicalMaterial({ color: G.dark, roughness: 0.15, metalness: 0.2, clearcoat: 1, envMapIntensity: 2, emissive: G.dark, emissiveIntensity: 0.15 });
-const officeWall = mat(G.pale, 0.4, 0.9, false);
+// pale, with enough light of its own that the grey section counter of C1 keeps 4.5 to 1 where it lands on the wing at 1440
+const officeWall = mat(G.pale, 0.85, 0.9, false);
 const plinthMat = mat(G.light, 0.3);
 const frameMat = mat(G.white, 0.45);
 const doorMat = mat(G.graphite, 0.15, 0.6);
@@ -201,7 +202,8 @@ export function Site() {
 
       {/* the office block, a plain white wall with its glazing, the shed and the yard shed behind */}
       <Box a={BLOCK_A} h={BLOCK_H} m={wallBright} />
-      <Box a={BLOCK_O} h={BLOCK_H} m={officeWall} />
+      {/* the wing stands proud of the plain wall but casts no shadow on it, so the wall behind the C1 section counter stays even */}
+      <Box a={BLOCK_O} h={BLOCK_H} m={officeWall} cast={false} />
       <Box a={[BLOCK_A[0], BLOCK_A[1], WING_X, -9.85]} h={0.7} m={plinthMat} />
       <Box a={SHED} h={6.5} m={wallBright} />
       <Box a={YARD_SHED} h={4.6} m={wallBright} />

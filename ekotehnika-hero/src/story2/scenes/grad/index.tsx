@@ -180,8 +180,9 @@ export default function Scene({ clock }: SceneProps) {
       }
       if (cell.current) {
         const c = textCell(pos);
-        cell.current.style.display = c > 0.001 ? 'block' : 'none';
-        cell.current.style.width = `calc((50% + 12px) * ${c.toFixed(4)})`;
+        cell.current.style.display = c.share > 0.001 ? 'block' : 'none';
+        cell.current.style.width = `calc((${c.edge}) * ${c.share.toFixed(4)})`;
+        cell.current.style.background = c.ground;
       }
       if (!clock.still) raf = requestAnimationFrame(tick);
     };

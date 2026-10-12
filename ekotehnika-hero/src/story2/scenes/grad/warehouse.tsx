@@ -11,7 +11,7 @@ import { useTruck } from './trucks';
 import { Person } from '../../../story/scenes/grad/vehicles';
 import { Box, Inst, Pools, cyl, rng, unit, type It, type Pool } from './kit';
 import { G } from './look';
-import { AISLE_Z, WH, indoorX, nearRacks, propsGrow, racksGrow, roofSlide, seg, smooth, wallsGrow, lerp } from './choreo';
+import { AISLE_Z, WH, indoorX, linesOn, nearRacks, propsGrow, racksGrow, roofSlide, seg, smooth, wallsGrow, lerp } from './choreo';
 
 const FLOOR = 0.22;
 const HALF = 14;
@@ -295,20 +295,17 @@ export function Warehouse({ clock }: { clock: StoryClock }) {
       refs.props.scale.y = Math.max(0.0001, pg);
       refs.props.visible = pg > 0.002;
     }
-    if (refs.marks) {
-      refs.marks.scale.y = Math.max(0.0001, pg);
-      refs.marks.visible = pg > 0.002;
-    }
+    if (refs.marks) refs.marks.visible = linesOn(pos);
     // the hero truck in the main aisle, a Linde R16 heading east
     if (heroG.current) {
       heroG.current.visible = pg > 0.002;
       const x = indoorX(pos);
       heroG.current.position.set(x, FLOOR, AISLE_Z);
-      heroG.current.scale.setScalar(Math.max(0.001, smooth(seg(pos, 6150, 6350))));
+      heroG.current.scale.setScalar(Math.max(0.001, smooth(seg(pos, 6480, 6650))));
       hero.roll(x);
     }
     // four more work the aisles
-    const sc = Math.max(0.001, smooth(seg(pos, 6200, 6380))) * 1.15;
+    const sc = Math.max(0.001, smooth(seg(pos, 6500, 6660))) * 1.15;
     const run = (i: number, z: number, dir: number, per: number, ph: number, lo: number, hi: number) => {
       const g = ambG.current[i];
       if (!g) return;
@@ -326,7 +323,7 @@ export function Warehouse({ clock }: { clock: StoryClock }) {
     run(3, -14.6, -1, 1000, 140, RX0 + 1, RX0 + BAYS * BAY - 1);
     people.current.forEach((p, i) => {
       if (!p) return;
-      p.scale.setScalar(Math.max(0.001, smooth(seg(pos, 6200 + i * 40, 6380))));
+      p.scale.setScalar(Math.max(0.001, smooth(seg(pos, 6500 + i * 40, 6660))));
     });
   });
 

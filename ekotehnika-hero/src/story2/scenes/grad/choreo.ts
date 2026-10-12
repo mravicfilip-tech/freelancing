@@ -180,10 +180,12 @@ const KEYS: Record<Region, Key[]> = {
     K(4700, [0.5, 0, -4.5], 90, 90, 36, 26, 0.59, 0.4, true),
     // Z flies over the roof until it fills the screen
     K(5300, [24, 11, -9], 90, 90, 13, 26, 0.5, 0.5, true),
-    K(5850, [24, 11, -9], 90, 90, 13, 26, 0.5, 0.5, true),
-    // P, then the model from a high corner
-    // the hall sits in columns 7 to 12 of the frame, columns 1 to 6 belong to the text and its cell
-    K(6400, [24, 1.5, -9], 40, 37, 104, 20, 0.75, 0.5, true),
+    // the opened hall stays a calm floor with its lane lines under the cut out of the shell for the whole hold of the models
+    K(6240, [24, 11, -9], 90, 90, 13, 26, 0.5, 0.5, true),
+    // as the text leaves, the model from a high corner, the hall in columns 7 to 12, columns 1 to 6 still under the text cell
+    // it rises straight up first, so it never passes close to the trees round the hall, then swings to the corner
+    K(6390, [24, 1.5, -9], 90, 90, 70, 22, 0.72, 0.5, true),
+    K(6480, [24, 1.5, -9], 40, 37, 104, 20, 0.75, 0.5, true),
     // A, low and side on, then swinging into the aisle
     K(6700, [21, 1.3, -9], 6, 9, 26, 30, 0.5, 0.52),
     K(7050, [26.5, 1.2, -9], 50, 7, 18, 30, 0.5, 0.52),
@@ -197,8 +199,8 @@ const KEYS: Record<Region, Key[]> = {
   // N frames the depot under the text band, the rig fits it to the viewport, see gridFit
   grid: [K(9600, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true), K(SWAP_T, [0, 1.2, GRID_Z], 0, 24, 56, 20, 0.74, 0.7, true)],
   // AT, a three quarter view of the order at about 4 m eye height, from the south west, the job in the right half
-  // the order stays right of the column 7 line, the charger's left edge lands at x 1005 of 1920
-  bots: [K(SWAP_T, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 18, 26, 0.75, 0.6, true), K(12000, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 18, 26, 0.75, 0.6, true)],
+  // close enough that the active C-Matic is about 180px across at 1920, the order stays right of the column 7 line
+  bots: [K(SWAP_T, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 15.5, 26, 0.77, 0.63, true), K(12000, [3.0, 0.9, BOTS_Z - 2.9], -28, 13, 15.5, 26, 0.77, 0.63, true)],
 };
 
 const out = new Array(9).fill(0);
@@ -229,9 +231,12 @@ export function camAt(pos: number, region = regionAt(pos)): Pose {
 
 // Roof halves slide apart, then the model grows
 export const roofSlide = (pos: number) => smooth(seg(pos, 5450, 5700));
-export const wallsGrow = (pos: number) => smooth(seg(pos, 5800, 6150));
-export const racksGrow = (pos: number) => smooth(seg(pos, 5900, 6250));
-export const propsGrow = (pos: number) => smooth(seg(pos, 6050, 6350));
+// the camera backs off over the flat floor first, then the walls and racks rise under the high corner view
+export const wallsGrow = (pos: number) => smooth(seg(pos, 6380, 6560));
+export const racksGrow = (pos: number) => smooth(seg(pos, 6420, 6620));
+export const propsGrow = (pos: number) => smooth(seg(pos, 6460, 6650));
+// the lane lines of the floor are painted from the moment the roof is off, so the floor under the cut out reads as the hall's
+export const linesOn = (pos: number) => pos >= 5700;
 // the racks on the near side of the aisle are cut down for the side view, then rise again as the camera swings in
 export const nearRacks = (pos: number) => {
   const cut = lerp(0.22, 0, smooth(seg(pos, 6420, 6650)));
@@ -250,9 +255,27 @@ export const SHUTTER = 300;
 export const blackOut = (pos: number) => (pos < 7790 ? 0 : pos < T.S.start ? 1 : 1 - eio(seg(pos, T.S.start, T.S.start + SHUTTER)));
 
 // P text sits on a hard edged cell of plain ground, from the left edge to the column 7 line of the grid (the frame's 50 percent
-// and 12px) and from the top rule down. It wipes open by its right edge just before the text arrives and wipes shut as the text
-// leaves, the hall behind it is whole and runs on under it. The share of that width, 0 to 1.
-export const textCell = (pos: number) => eio(seg(pos, 5230, 5300)) * (1 - eio(seg(pos, T.P.start + 0.86 * (T.P.end - T.P.start), T.P.end)));
+// and 12px) and from the top rule down. It wipes open by its right edge just before the text arrives and holds to the end of the
+// hold, so no part of the hall enters columns 1 to 6 while P is on screen, then wipes shut at the start of A. The hall behind it
+// is whole and runs on under it. The share of that width, 0 to 1.
+//
+// R has the same cell over columns 1 to 4, to the column 5 line, in the exact ground colour of the yard as it renders (#f1f1f1),
+// so it cannot be seen until the hall and its shadow reach it late in the hold. It closes over the first 90px of Z.
+export type Cell = { share: number; edge: string; ground: string };
+const R_GROUND = '#f1f1f1';
+const cellOut: Cell = { share: 0, edge: '50% + 12px', ground: '#ffffff' };
+export const textCell = (pos: number): Cell => {
+  if (pos < T.Z.end) {
+    cellOut.share = eio(seg(pos, T.R.start + 0.5 * (T.R.end - T.R.start), T.R.start + 0.55 * (T.R.end - T.R.start))) * (1 - eio(seg(pos, T.R.end, T.R.end + 90)));
+    cellOut.edge = '33.3333% + 24px';
+    cellOut.ground = R_GROUND;
+  } else {
+    cellOut.share = eio(seg(pos, 5230, 5300)) * (1 - eio(seg(pos, T.P.end, T.P.end + 90)));
+    cellOut.edge = '50% + 12px';
+    cellOut.ground = BAND.site;
+  }
+  return cellOut;
+};
 
 // The plain band of the top row, 136px, in the ground of the beat. It turns dark where the shell turns the top row dark, 7790 to
 // 9525 and from 10790, and it is white on the lit light beats and the flat floor colour of the depot and the dark floors, so it reads as the ground and not as a panel.

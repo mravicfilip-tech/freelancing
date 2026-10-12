@@ -27,12 +27,12 @@ const WALL_Z = -9.2;
 
 /* ------------------------------------------------------------------ the layout */
 
-const CH = { x: 0.05, z: -1.75 }; // the charger pad, the robot stands here
+const CH = { x: 0.9, z: -1.75 }; // the charger pad, the robot stands here
 const LANE = -1.75; // the front lane
 const SLOT_Z = -3.6; // the row of shelf slots
-const SLOTS = [1.4, 2.7]; // the row of two shelf slots, one beside the target
+const SLOTS = [1.7, 2.9]; // the row of two shelf slots, one beside the target
 const TARGET = 1; // the shelf the order is for
-const PX = 4.5; // the pick bay, the shelf is set down here
+const PX = 4.2; // the pick bay, the shelf is set down here
 const PERSON_X = PX + 1.12;
 const BACK = -5.6; // the lane deeper in the aisle
 

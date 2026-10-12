@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { Box, Inst, rng, type It, type Rect } from './kit';
 import { G, flat, mat } from './look';
+import { WH } from './choreo';
 import { ProxyTrucks, type TruckSpec } from './proxy';
 
 const apron = mat(G.pale, 0.35, 0.95, false);
@@ -129,13 +130,14 @@ export default function Yard() {
           band.push([x, yy + 0.16 + h * 0.6, z, 1.17, 0.05, 0.79]);
         }
       }
-    // the verge north of the north row, a kerb and a hedge, trees along it
-    const verges: It[] = [[150, 0.1, -19.6, 90, 0.2, 3.6]];
-    const hedges: It[] = [[150, 0.6, -19.0, 90, 1.0, 0.8]];
+    // the verge north of the north row, a kerb and a hedge, trees along it, all ending 3 m short of the hall's west wall
+    const vEnd = WH.x0 - 3;
+    const verges: It[] = [[(105 + vEnd) / 2, 0.1, -19.6, vEnd - 105, 0.2, 3.6]];
+    const hedges: It[] = [[(105 + vEnd) / 2, 0.6, -19.0, vEnd - 105, 1.0, 0.8]];
     const crowns: It[] = [];
     const crownsD: It[] = [];
     const trunks: It[] = [];
-    for (let x = 100; x < 205; x += 6.5 + r() * 2) {
+    for (let x = 108; x < vEnd - 2; x += 6.5 + r() * 2) {
       const h = 4.2 + r() * 1.6;
       const w = 2.6 + r() * 1.2;
       trunks.push([x, h * 0.3, -20.4, 0.3, h * 0.6, 0.3]);

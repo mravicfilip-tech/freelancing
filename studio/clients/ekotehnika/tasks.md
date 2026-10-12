@@ -51,7 +51,9 @@ Task format
   - [x] Check batch A on a real scroll
   - [x] Build round 4 beat panes and sections, item 21 included
   - [x] Settle Q10 and Q11, Filip handed them over, servis branch started
-  - [ ] Send preview 2 after the real scroll checks on head
+  - [x] Send preview 2, ey7enqdue at c8d80ea, with the variant boards
+  - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
+  - [ ] Preview at d74e332 or later, Vercel's daily limit of 100 deployments refused it at 22.55 UTC, the hourly check-in retries
   - [x] Merge the lift branch
   - [ ] Merge the street, auto and servis branches
   - [ ] Build round 4

@@ -20,9 +20,10 @@ Filip, 12 October 2026. "I worked on a 9:16 video clip under chat Github portfol
 
 ## The music
 
-- T-Pain, "Church", feat. Teddy Verseti. The chat never downloads it from YouTube or anywhere else. Filip supplies the audio file in the reel chat, with the part of the song he wants (start and end), and the beat grid is measured from that file.
-- The audio is not committed to the repo, it is copyrighted. It lives in the chat's scratch folder only.
-- A commercial track is fine for a private pitch. For any public post or client use, the music may draw a copyright claim, so the plan notes a licensed or royalty free stand in, Filip's call.
+- T-Pain, "Church", feat. Teddy Verseti. Filip, "You don't need to pull it, just find the song and sync it for the BPM sound". No audio file is fetched or committed.
+- The chat finds the track's tempo from at least two published sources that agree (a BPM database and a music site), and says in the plan if they disagree.
+- The videos are silent and cut on that beat grid. Frame 0 is a downbeat, so Filip lays the track in his editor starting on any downbeat and every cut lands on the music, as with the portfolio reel.
+- A commercial track is fine for a private pitch. For a public post or client use, the music may draw a copyright claim, a licensed stand in is Filip's call.
 
 ## Brand and content
 

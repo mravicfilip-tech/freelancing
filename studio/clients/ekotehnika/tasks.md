@@ -26,7 +26,7 @@ Task format
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel
   - [ ] Plan the reel and its beat table for Filip's review
-  - [ ] Filip supplies the audio file and the part of the song
+  - [ ] Find the track's tempo, the videos are silent and cut on its beat grid
   - [ ] Build after the site ships, both formats
 
 ## In progress

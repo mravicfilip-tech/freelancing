@@ -72,3 +72,8 @@ and the plan is agreed. The story stays as it is.
    Open. The wheel highlight colour. Red glow is what the ref uses, and red is only for actions today. Default is a
    white glow, red only if Filip opens that rule for the servis highlight.
    Open. The round play button. We have no servis video, so the CTA stays Zakažite servis unless a video exists.
+7. **Sites to scan for layout and animation ideas.** Said: "check and scan this website for improvements even on
+   the animations etc", "Also check the UI layout too", for https://terminal-industries.com/,
+   https://animejs.com/ and https://floema.com/en. Not scanned yet, the environment's network policy blocks all
+   three. Once Filip allows them, each gets a full scroll at 1440 with section shots and frame steps of the motion,
+   and the findings land here as their own notes.

@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
-import { DARK_BG, PAPER, ease, lerp, range, uOf } from './kit';
+import { DARK_BG, PAPER, ease, lerp, range, rng, uOf } from './kit';
 import { darkTopAt } from './darkTop';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
@@ -28,49 +28,165 @@ export function useOverlayRoot() {
   return root;
 }
 
-// A steel fork tine in side view, a blade that thins to a bevelled tip, a heel bend and the shank with its hook rising
-// behind it. Blade top at y = 0, so the section it lifts starts just under it. Colours are baked by face, a lit top
-// edge, a steel front face that lightens upward, a dark underside, so it reads as metal in any light.
-function forkGeometry() {
-  const s = new THREE.Shape();
-  s.moveTo(-1.22, 0.62);
-  s.lineTo(-1.22, -0.05);
-  s.quadraticCurveTo(-1.22, -0.17, -1.1, -0.17);
-  s.lineTo(3.0, -0.17);
-  s.lineTo(3.45, -0.12);
-  s.lineTo(3.45, -0.075);
-  s.lineTo(2.1, 0.0);
-  s.lineTo(-0.88, 0.0);
-  s.quadraticCurveTo(-0.98, 0.0, -0.98, 0.1);
-  s.lineTo(-0.98, 0.54);
-  s.lineTo(-1.04, 0.62);
-  s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, { depth: 0.12, bevelEnabled: true, bevelSize: 0.006, bevelThickness: 0.008, bevelSegments: 1, curveSegments: 14 });
+// A steel fork tine in side view, built like a real hook mount fork. A forged blade that thins to a bevelled tip, a wide
+// heel bend, the shank, the top hook plate that hangs on the carriage bar with its locking pin and pull ring, and the
+// bottom hook. Blade top at y = 0, so the section it lifts starts just under it. Every edge carries a 45 degree chamfer.
+// Shading is baked per face from one key light up and to the left, so the chamfers catch a bright line on top and fall
+// dark underneath, and a brushed grain runs along the blade and up the shank. It reads as steel on the dark stage and on
+// the light ground alike, with no light in the scene.
+const KEY = new THREE.Vector3(-0.35, 0.75, 0.55).normalize();
+const HALF = KEY.clone().add(new THREE.Vector3(0, 0, 1)).normalize();
+const SHANK_X = -0.98;
+
+function bakeSteel(g: THREE.BufferGeometry) {
   g.computeVertexNormals();
   const p = g.getAttribute('position');
   const n = g.getAttribute('normal');
   const col = new Float32Array(p.count * 3);
+  const uv = new Float32Array(p.count * 2);
+  const nv = new THREE.Vector3();
   const lin = (v: number) => Math.pow(v, 2.2);
   for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i);
     const y = p.getY(i);
-    const nx = n.getX(i);
-    const ny = n.getY(i);
-    const nz = n.getZ(i);
-    let v: number;
-    if (nz > 0.5) {
-      // the front face, a steel grey that brightens toward the top edge, with a thin lit line right on it
-      const t = THREE.MathUtils.clamp((y + 0.17) / 0.17, 0, 1);
-      v = 0.3 + 0.32 * Math.pow(t, 1.5);
-      if (y > -0.03 && y < 0.03) v = 0.95;
-      if (y > 0.2) v = 0.42 + 0.1 * Math.sin((p.getX(i) + 1.22) * 16);
-    } else if (nz < -0.5) v = 0.25;
-    else if (ny > 0.5) v = 0.96;
-    else if (ny < -0.5) v = 0.2;
-    else v = nx > 0 ? 0.5 : 0.36;
-    col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = lin(v);
+    nv.set(n.getX(i), n.getY(i), n.getZ(i));
+    const shank = x < SHANK_X + 0.001 && y > 0.07;
+    let v = 0.2 + 0.55 * Math.max(0, nv.dot(KEY)) + 0.45 * Math.pow(Math.max(0, nv.dot(HALF)), 12);
+    if (nv.z > 0.95) {
+      // the flat front face, a soft reflected sky band near the top of the blade and down the light side of the shank
+      if (shank) v = 0.5 + 0.24 * THREE.MathUtils.smoothstep(x, -1.22, -1.06) - 0.1 * THREE.MathUtils.smoothstep(x, -1.06, SHANK_X);
+      else {
+        const t = THREE.MathUtils.clamp((y + 0.17) / 0.17, 0, 1);
+        v = 0.46 + 0.2 * t + 0.2 * Math.exp(-Math.pow((t - 0.72) / 0.12, 2));
+      }
+    }
+    col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = lin(Math.min(v, 0.97));
+    // the grain runs along the blade and up the shank, the way the forging is ground
+    uv[i * 2] = shank ? y * 0.5 : x * 0.25;
+    uv[i * 2 + 1] = shank ? x * 2.4 : y * 2.4;
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
   return g;
+}
+
+const CHAMFER = { bevelEnabled: true, bevelSize: 0.012, bevelThickness: 0.012, bevelSegments: 1, curveSegments: 16 };
+
+function forkGeometry() {
+  const s = new THREE.Shape();
+  // the underside of the blade, the tip, then the top of the blade back to the heel
+  s.moveTo(3.0, -0.17);
+  s.lineTo(3.45, -0.125);
+  s.lineTo(3.45, -0.085);
+  s.lineTo(2.1, 0.0);
+  s.lineTo(-0.91, 0.0);
+  // the inside of the heel bend, then the shank's front edge up to the top hook
+  s.quadraticCurveTo(SHANK_X, 0.0, SHANK_X, 0.07);
+  s.lineTo(SHANK_X, 0.6);
+  s.lineTo(-1.02, 0.66);
+  // the top hook plate, wider than the shank, with its lip coming down behind the carriage bar
+  s.lineTo(-1.37, 0.66);
+  s.lineTo(-1.41, 0.62);
+  s.lineTo(-1.41, 0.46);
+  s.lineTo(-1.38, 0.43);
+  s.lineTo(-1.34, 0.43);
+  s.lineTo(-1.34, 0.5);
+  s.lineTo(-1.22, 0.5);
+  // the shank's back edge down to the bottom hook, its claw turned up under the lower bar
+  s.lineTo(-1.22, 0.25);
+  s.lineTo(-1.3, 0.25);
+  s.lineTo(-1.3, 0.31);
+  s.lineTo(-1.36, 0.31);
+  s.lineTo(-1.36, 0.19);
+  s.lineTo(-1.32, 0.16);
+  s.lineTo(-1.22, 0.16);
+  // the outside of the heel bend, a wide forged radius
+  s.lineTo(-1.22, 0.1);
+  s.quadraticCurveTo(-1.22, -0.17, -0.95, -0.17);
+  s.closePath();
+  return bakeSteel(new THREE.ExtrudeGeometry(s, { depth: 0.12, ...CHAMFER }));
+}
+
+// The locking pin housing on top of the hook plate and the pull ring that frees it.
+function pinGeometry() {
+  const s = new THREE.Shape();
+  s.moveTo(-1.33, 0.66);
+  s.lineTo(-1.33, 0.695);
+  s.lineTo(-1.315, 0.705);
+  s.lineTo(-1.255, 0.705);
+  s.lineTo(-1.24, 0.695);
+  s.lineTo(-1.24, 0.66);
+  s.closePath();
+  const box = new THREE.ExtrudeGeometry(s, { depth: 0.08, ...CHAMFER, bevelSize: 0.006, bevelThickness: 0.006 });
+  box.translate(0, 0, 0.02);
+  return bakeSteel(box);
+}
+function ringGeometry() {
+  const g = new THREE.TorusGeometry(0.026, 0.0075, 8, 28);
+  g.translate(-1.285, 0.738, 0.07);
+  return bakeSteel(g.toNonIndexed());
+}
+
+// The brushed grain, fine streaks of slightly different greys with a few long scratches, drawn once into a canvas, no
+// download.
+function brushedTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512;
+  c.height = 256;
+  const g = c.getContext('2d')!;
+  const r = rng(53);
+  for (let y = 0; y < 256; y++) {
+    const v = 236 + Math.floor(r() * 20);
+    g.fillStyle = `rgb(${v},${v},${v})`;
+    g.fillRect(0, y, 512, 1);
+  }
+  for (let i = 0; i < 70; i++) {
+    const v = r() < 0.5 ? 255 : 214;
+    g.fillStyle = `rgba(${v},${v},${v},0.55)`;
+    g.fillRect(Math.floor(r() * 512), Math.floor(r() * 256), 40 + Math.floor(r() * 220), 1);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+}
+
+// The fork's tag on the shank, a small riveted steel plate with struck rule lines and no figures, since the site carries no
+// numbers beyond the company's own claims (README, settled 2026-10-12 for the lift branch's question).
+function tagTexture() {
+  const c = document.createElement('canvas');
+  c.width = 128;
+  c.height = 192;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#c4c4c4';
+  g.fillRect(0, 0, 128, 192);
+  g.strokeStyle = '#8a8a8a';
+  g.lineWidth = 3;
+  g.strokeRect(1.5, 1.5, 125, 189);
+  const rivet = (x: number, y: number) => {
+    g.fillStyle = '#e9e9e9';
+    g.beginPath();
+    g.arc(x, y, 6, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = '#7a7a7a';
+    g.beginPath();
+    g.arc(x + 1.5, y + 1.5, 6, 0, Math.PI);
+    g.fill();
+  };
+  rivet(64, 16);
+  rivet(64, 176);
+  // three struck rules, the lower edge of each catches the light and the groove sits in shadow
+  for (const y of [56, 92, 128]) {
+    g.fillStyle = '#ececec';
+    g.fillRect(30, y + 1.5, 68, 3);
+    g.fillStyle = '#6b6b6b';
+    g.fillRect(30, y, 68, 3);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
 }
 
 // A hard edged cell of plain ground for a text column the world cannot give an empty patch for. Pixel box of a frame
@@ -86,10 +202,14 @@ export default function Overlay({ clock }: SceneProps) {
   const maskGroup = useRef<THREE.Group>(null);
   const camera = useThree((st) => st.camera);
   const maskTop = useRef<THREE.Mesh>(null);
-  const forkRef = useRef<THREE.Mesh>(null);
+  const forkRef = useRef<THREE.Group>(null);
   const curtain = useRef<THREE.Mesh>(null);
   const cells = useRef<(THREE.Mesh | null)[]>([]);
   const fork = useMemo(forkGeometry, []);
+  const pin = useMemo(pinGeometry, []);
+  const ring = useMemo(ringGeometry, []);
+  const steel = useMemo(() => new THREE.MeshBasicMaterial({ vertexColors: true, map: brushedTexture(), transparent: true, toneMapped: false }), []);
+  const tag = useMemo(() => new THREE.MeshBasicMaterial({ map: tagTexture(), transparent: true, toneMapped: false }), []);
   const mixCol = useMemo(() => new THREE.Color(), []);
   const lightCol = useMemo(() => new THREE.Color(PAPER.bg), []);
   const aspect = size.width / size.height;
@@ -129,17 +249,23 @@ export default function Overlay({ clock }: SceneProps) {
       m.scale.set(Math.max(x1 - x0, 1e-4), y0 - y1, 1);
       (m.material as THREE.MeshBasicMaterial).color.copy(mc);
     });
-    // the fork and the section it carries
+    // The fork and the section it carries. The tine rises from under the frame through all of it and sets the light
+    // section's top edge on the top rule at k 0.5, the section stays there, and the tine lets go and drops out under the
+    // frame by k 0.8, so the light ground holds alone before N. The hook plate's back edge rides on the outer grid line.
     const k = u - 11;
-    const lifting = u >= 11 && u < 12;
-    const yEdge = lerp(-1.8, 1.35, ease(range(k, 0, 0.9)));
+    const ox = v ? (v.offsetX / v.fullWidth) * 2 * aspect : 0;
+    const oy = v ? (-v.offsetY / v.fullHeight) * 2 : 0;
+    const rule = 1 - topH;
+    const dock = rule + 0.14;
+    const yEdge = k < 0.5 ? lerp(-1.8, dock, ease(range(k, 0, 0.5))) : dock - (dock + 1.85) * Math.pow(range(k, 0.5, 0.8), 2);
     if (forkRef.current) {
-      forkRef.current.visible = lifting && k < 0.97;
-      forkRef.current.position.set(0, yEdge, 0.02);
+      forkRef.current.visible = u >= 11 && k < 0.8;
+      // the steel's front face sits 0.15 nearer the lens than the masks, so its screen x grows by 1 / (1 - 0.15 TAN)
+      forkRef.current.position.set((ox + (48 - size.width / 2) / (size.height / 2)) * (1 - 0.152 * TAN) + 1.422, yEdge + oy, 0.02);
     }
     if (curtain.current) {
-      curtain.current.visible = lifting;
-      curtain.current.position.set(0, yEdge - 0.14 - 5, -0.01);
+      curtain.current.visible = u >= 11 && u < 12;
+      curtain.current.position.set(ox, (k < 0.5 ? yEdge - 0.14 : rule) - 5 + oy, -0.01);
     }
   });
 
@@ -167,9 +293,14 @@ export default function Overlay({ clock }: SceneProps) {
         <planeGeometry args={[aspect * 5, 10]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={1} toneMapped={false} />
       </mesh>
-      <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]} renderOrder={21}>
-        <meshBasicMaterial vertexColors transparent opacity={1} toneMapped={false} />
-      </mesh>
+      <group ref={forkRef} visible={false}>
+        <mesh geometry={fork} material={steel} renderOrder={21} />
+        <mesh geometry={pin} material={steel} renderOrder={21} />
+        <mesh geometry={ring} material={steel} renderOrder={21} />
+        <mesh position={[-1.1, 0.36, 0.134]} material={tag} renderOrder={22}>
+          <planeGeometry args={[0.15, 0.225]} />
+        </mesh>
+      </group>
     </>,
     root,
   );

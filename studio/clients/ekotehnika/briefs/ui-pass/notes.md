@@ -239,3 +239,11 @@ S11. **Proizvodi section, all versions.** Ref `refs/scenes/s11-proizvodi-section
    execution is rejected along with the rest of the section.
    Candidates on file. Note 3 staggered offering cards with real Linde cut outs and a notched tab. T08 tabbed cards by
    truck type. Ref 02 text left with a collage of the delivery photos. T03 notched edge into the section.
+S12. **Footer, all versions.** Ref `refs/scenes/s12-footer.webp` when it saved, else the live footer at 1440.
+   Said: "same for footer giga bad execution".
+   What is there now. An ink band with the boxed logo tile and a one line lede on the left, then three plain columns
+   (Navigacija, Adresa, Kontakt) of 15px text links, a hairline, and a small copyright line, all inside the 1344px
+   column with wide empty ink at both sides. No closing statement, no CTA, the emails as plain text, nothing larger
+   than 15px except the logo.
+   Candidates on file. T11 closing band with one big line and one button before the footer, T03 notched edge into it,
+   note 5 grid for the columns, the logo unboxed per S2, a large Hitan servis number as the one loud element.

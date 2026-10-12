@@ -25,6 +25,11 @@ Task format
 
 ## In progress
 
+- ekotehnika-6 Version 5 in light mode, servis stays dark
+  - [x] Let the shell set dark beats per version
+  - [ ] Relight and redraw the Sistem scene for light
+  - [ ] Check every beat with the text on and deploy
+
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers
   - [x] Build the card UI over the existing motion

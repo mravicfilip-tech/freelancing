@@ -156,3 +156,14 @@ S3. **Version 5, R, too much empty space around the top down road.** Ref `refs/s
    palette, kept clear of the R text column. The drone stills in the Drive (ANDronEkotehn-1010, 1011, 1019, the
    yard straight down with rows of forklifts) are the drawing reference for the real layout, used as reference only,
    since drone footage is out.
+S4. **Version 5, R, the whole left column is bad.** Ref `refs/scenes/s04-v5-r-left-column.webp`, Filip marked the
+   kicker, title, subheadline and the three cards. Said: "This whole UI on the left is bad", "Bad subheadline",
+   "Bad cards", "Doesn't feel premium. No grid on this page, nothing just like really bad."
+   What is there now. A small dot kicker (Kompanija), a two line title at about 64px, a two line subheadline at 16px
+   in text-grey, then a gap and three white rounded cards stacked at the bottom, each a 22px title and a 14px caption.
+   Nothing lines up with anything else on the screen, and the column floats.
+   Read. This is the shared shell, so the same column style shows on C1 and servis in every version.
+   Open. Subheadline, the copy, the style, or both. The line is "Iz Vrčina, na južnoj ivici Beograda, naši tehničari
+   rade sa originalnim Linde delovima", from the competitive analysis.
+   Candidates on file for the fix. Note 5 grid, every block on a line. T07 scroll fill for the text. T05 mono step
+   labels. Ref 06 data line in place of cards (a big figure, a mono label, one line). Ref 02 placement.

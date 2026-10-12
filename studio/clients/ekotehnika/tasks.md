@@ -53,7 +53,9 @@ Task format
   - [x] Settle Q10 and Q11, Filip handed them over, servis branch started
   - [x] Send preview 2, ey7enqdue at c8d80ea, with the variant boards
   - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
-  - [ ] Preview at d74e332 or later, Vercel's daily limit of 100 deployments refused it at 22.55 UTC, the hourly check-in retries
+  - [x] Real scroll checks on the full round 4 build at 81aad36, P into S, the L exit and AT into Proizvodi all clean
+  - [ ] Preview 3 at 81aad36, Vercel's daily limit refused it at 23.40 UTC, the hourly check-in retries
+  - [ ] Filip's ship line on preview 3, then go to the reel chat
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell

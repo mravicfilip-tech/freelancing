@@ -30,3 +30,14 @@ Sheets are `r3-s-at.webp` (AT at k 0.15, 0.45, 0.8) and `r3-s-beats.webp` (H, C1
 ## Open
 - T, A and B are only checked in passing. Report 2 follows.
 - At 1920 the top row nav and the phone buttons on the dark beats come from the shell, the S frame shows the logos shifted left of the grid. Not touched.
+
+# Report 2
+
+Sheet `r3-s-tab.webp`, rows T, A and B at k 0.25, 0.5 and 0.75, 1920 by 1080.
+
+- T. The najam floor, its end wall and its bays are the same world as the AT hall. The bays draw back onto the aisle line, the trucks sink into the floor, the side walls, racks and shelf units rise and the lane lines draw on while the camera glides down the aisle. Every k has drawn content, nothing fades. No change was needed after the report 1 hall work.
+- A. It leads out of P with the bare floor, the walls and racks rise only after u 8.001, so no rack reaches columns 1 to 6 during P. Rack labels and wrapped pallets (a translucent shell and two bands per load) are in. The racks start on the y 136 rule and never cross the top row.
+- A wire truck. The reach truck's wireframe is a 1px info blue line with a lower edge angle (70 degrees), so the mast no longer fills in solid. It is swept in and swept out by its clip plane.
+- B. The band over the top row turns dark at u 9.475 with the shell's ink, and the black shutter rolls up from the bottom with a hard edge. Nothing crosses the top row.
+- Seen and left. At A 0.75 the near side racks are caught mid rise, which reads as a low rack bench for a moment.
+- The dev frame hook is removed, tsc is clean, nothing is committed.

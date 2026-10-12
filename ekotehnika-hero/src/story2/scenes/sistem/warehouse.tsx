@@ -273,7 +273,7 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   const dpr = useThree((s) => s.viewport.dpr);
   const gl = useThree((s) => s.gl);
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 0), []);
-  const edges = useMemo(() => bakeEdges(gltf.scene, name, 42), [gltf, name]);
+  const edges = useMemo(() => bakeEdges(gltf.scene, name, 70), [gltf, name]);
   // a 1px line in the info blue of the automation floor, which reads over the red body, the dark mast and the pale rack alike
   const mat = useMemo(() => new LineMaterial({ color: 0x468cc4, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: false, clippingPlanes: [plane] }), [plane]);
   const matWheel = mat;

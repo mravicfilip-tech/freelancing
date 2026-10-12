@@ -109,11 +109,12 @@ export function poseAt(u: number, pos: number, out: Pose): Pose {
       out.d = 10;
     }
   } else if (u < 11.9) {
-    // the schematic is a drawing laid over the frame, the camera only holds the dark ground
-    t.set(BP.x + 0.4, 1.0, BP.z);
-    out.d = 12;
+    // the X50 schematic in three quarter perspective, on the right of the frame
+    t.set(BP.x - 0.3, 1.0, BP.z);
+    out.d = 13;
     out.yaw = -35;
-    out.pitch = -30;
+    out.pitch = -26;
+    out.sx = 0.15;
     out.shadow = 8;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {

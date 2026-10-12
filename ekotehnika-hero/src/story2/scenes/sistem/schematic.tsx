@@ -1,207 +1,71 @@
-// The servis stage. The X50 as a technical drawing, an orthographic side elevation on a dark ground. Silhouette and
-// key edges only, 2px outline and 1px detail, built as 2D line geometry (fat lines, so the widths are real) from the
-// projected outline of the real model, see x50Elevation.ts. Dashed centre lines through the axles and the mast,
-// dimension lines with arrowheads and the X50 / 600 figures from the Linde data sheet DS_X35_X50_1254, a fine 24px
-// measuring grid at 8 percent behind. Wheels turn with the story clock. No glow, no red, one info colour, LMH turquoise
-// 72 percent, for the dimension lines. Everything is laid out in design pixels of a 1440 by 900 frame and anchored to the
-// right edge, so the picture holds its place at other sizes.
+// The servis stage. The real X50 as a technical illustration in three quarter perspective on the dark ground, drawn with
+// hidden line removal. The model is drawn as solid #0b0b0b fills that write depth, so nothing behind a surface shows.
+// On top, the hard edges of each mesh (30 to 40 degrees, short bits dropped) as 1px fat lines at 55 percent white, depth
+// tested, and an inverted hull pass gives the outer contour a crisp 2px line at 90 percent white. The tyre meshes are not
+// edged, each outer wheel face is one clean tyre circle, a hub circle and five lugs, turning with the story clock.
+// Dashed centre lines, a 0.5 m ground grid at 8 percent and dimension lines in 3D in LMH turquoise 72 percent with the
+// X50 / 600 figures from the Linde data sheet DS_X35_X50_1254. No glow.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import type { SceneProps } from '../../clock';
-import { X50 } from './x50Elevation';
-import { useOverlayRoot } from './overlay';
+import { useGLTF } from '@react-three/drei';
+import { bakeEdges } from './bake';
+import { prepare, SPEC, modelUrl } from './models';
+import { BP } from './route';
 import { ease, range, uOf } from './kit';
 
 const TURQUOISE = '#7fbccd'; // LMH turquoise at 72 percent
-const S = 0.2057; // design px per mm, 4376 mm of truck across 900 px
-const X0 = 1063; // design x of the front axle
-const GY = 696; // design y of the ground, on a grid line
-const px = (X: number) => X0 + X * S;
-const py = (Y: number) => GY - Y * S;
-type Pt = [number, number];
+const GROUND = 0.012;
+const FIG = { l1: '4373', l2: '3173', y: '2120', h1: '2523', h6: '2495', c: '600', q: '4990' };
 
-// ---- builders -----------------------------------------------------------------------------------------------
+// ---- small drawing helpers ---------------------------------------------------------------------------------------------
 
-class Lines {
+class L {
   a: number[] = [];
-  seg(x1: number, y1: number, x2: number, y2: number) {
-    this.a.push(x1, -y1, 0, x2, -y2, 0);
+  seg(p: number[], q: number[]) {
+    this.a.push(p[0], p[1], p[2], q[0], q[1], q[2]);
   }
-  poly(pts: Pt[], close = false) {
-    for (let i = 0; i < pts.length - 1; i++) this.seg(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1]);
-    if (close) this.seg(pts[pts.length - 1][0], pts[pts.length - 1][1], pts[0][0], pts[0][1]);
-  }
-  mm(flat: readonly number[]) {
-    const pts: Pt[] = [];
-    for (let i = 0; i < flat.length; i += 2) pts.push([px(flat[i]), py(flat[i + 1])]);
-    this.poly(pts);
-  }
-  circle(cx: number, cy: number, r: number, n = 96) {
+  circle(c: number[], r: number, plane: 'xy' | 'xz' | 'yz', n = 72) {
     for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2;
-      const b = ((i + 1) / n) * Math.PI * 2;
-      this.seg(cx + Math.cos(a) * r, cy + Math.sin(a) * r, cx + Math.cos(b) * r, cy + Math.sin(b) * r);
+      const t0 = (i / n) * Math.PI * 2;
+      const t1 = ((i + 1) / n) * Math.PI * 2;
+      const f = (t: number) => {
+        const u = Math.cos(t) * r;
+        const v = Math.sin(t) * r;
+        return plane === 'xy' ? [c[0] + u, c[1] + v, c[2]] : plane === 'xz' ? [c[0] + u, c[1], c[2] + v] : [c[0], c[1] + u, c[2] + v];
+      };
+      this.seg(f(t0), f(t1));
     }
   }
-  // A dash and dot centre line, long dash, gap, dot, gap.
-  dashdot(x1: number, y1: number, x2: number, y2: number) {
-    const len = Math.hypot(x2 - x1, y2 - y1);
-    const ux = (x2 - x1) / len;
-    const uy = (y2 - y1) / len;
-    const pat = [14, 4, 3, 4];
+  // a dash and dot centre line, long dash, gap, dot, gap
+  dashdot(p: number[], q: number[]) {
+    const d = [q[0] - p[0], q[1] - p[1], q[2] - p[2]];
+    const len = Math.hypot(...d);
+    const u = d.map((v) => v / len);
+    const pat = [0.2, 0.06, 0.04, 0.06];
     let t = 0;
     let i = 0;
     while (t < len) {
       const l = Math.min(pat[i % 4], len - t);
-      if (i % 2 === 0) this.seg(x1 + ux * t, y1 + uy * t, x1 + ux * (t + l), y1 + uy * (t + l));
+      if (i % 2 === 0) this.seg([p[0] + u[0] * t, p[1] + u[1] * t, p[2] + u[2] * t], [p[0] + u[0] * (t + l), p[1] + u[1] * (t + l), p[2] + u[2] * (t + l)]);
       t += pat[i % 4];
       i++;
     }
   }
 }
 
-type Arrow = [number, number, number]; // tip x, tip y, direction angle of the shaft in design px
-type Label = { text: string; x: number; y: number; anchor: 'c' | 'l' | 'r' };
-
-const FIG = {
-  l1: '4373', // overall length, 4.19
-  l2: '3173', // length including fork backs, 4.20
-  y: '2120', // wheel base, 1.9
-  h1: '2523', // height of mast, lowered, 4.2
-  h6: '2495', // height above overhead guard, 4.7
-  c: '600', // load centre distance, 1.6
-  q: '4990', // load capacity in kg, 1.5, X50 / 600
-};
-
-function build() {
-  const outline = new Lines();
-  const detail = new Lines();
-  const centre = new Lines();
-  const dim = new Lines();
-  const ground = new Lines();
-  const arrows: Arrow[] = [];
-  const labels: Label[] = [];
-
-  // outline, the projected silhouette, and the tyres
-  X50.silhouette.forEach((r) => outline.mm(r));
-  const w = X50.wheels;
-  [w.front, w.rear].forEach(([cx, cy, R]) => outline.circle(px(cx), py(cy), R * S, 120));
-  // key edges, the parts of the model each merged into one outline
-  [...X50.red, ...X50.grey, ...X50.mast, ...X50.carriage, ...X50.black].forEach((r) => detail.mm(r));
-  X50.openings.forEach((r) => detail.mm(r));
-  // the wheels, bead, rim, hub (static), lugs, webs and treads turn separately
-  [w.front, w.rear].forEach(([cx, cy, R, r]) => {
-    detail.circle(px(cx), py(cy), R * S * 0.8, 96);
-    detail.circle(px(cx), py(cy), r * S, 72);
-    detail.circle(px(cx), py(cy), r * S * 0.3, 40);
-  });
-
-  // ground line with hatching below it
-  ground.seg(528, GY, 1432, GY);
-  for (let x = 528; x < 1432; x += 12) ground.seg(x, GY, x - 8, GY + 8);
-
-  // centre lines through the axles and the mast, and the wheel centres
-  const top = py(2512) - 26;
-  const bottom = GY + 30;
-  [0, -2121].forEach((X) => centre.dashdot(px(X), top, px(X), bottom));
-  const mastX = -172;
-  centre.dashdot(px(mastX), top, px(mastX), bottom);
-  [w.front, w.rear].forEach(([cx, cy, R]) => centre.dashdot(px(cx) - R * S - 24, py(cy), px(cx) + R * S + 24, py(cy)));
-
-  // dimension helpers
-  const hDim = (x1: number, x2: number, y: number, text: string, from: [number, number]) => {
-    dim.seg(x1, from[0], x1, y + 8);
-    dim.seg(x2, from[1], x2, y + 8);
-    const tw = text.length * 9.2 + 14;
-    const mid = (x1 + x2) / 2;
-    dim.seg(x1, y, mid - tw / 2, y);
-    dim.seg(mid + tw / 2, y, x2, y);
-    arrows.push([x1, y, 0], [x2, y, Math.PI]);
-    labels.push({ text, x: mid, y, anchor: 'c' });
-  };
-  const vDim = (x: number, y1: number, y2: number, text: string, from: [number, number], at = 0.5) => {
-    dim.seg(from[0], y1, x + 8, y1);
-    dim.seg(from[1], y2, x + 8, y2);
-    const mid = y1 + (y2 - y1) * at;
-    dim.seg(x, y1, x, mid - 12);
-    dim.seg(x, mid + 12, x, y2);
-    arrows.push([x, y1, -Math.PI / 2], [x, y2, Math.PI / 2]);
-    labels.push({ text, x: x - 10, y: mid, anchor: 'r' });
-  };
-  const xr = X50.bounds[0];
-  const xt = X50.bounds[2];
-  // below, wheel base, length to the fork backs, overall length
-  hDim(px(-2121), px(0), 744, `Y ${FIG.y}`, [py(381) + 18, py(414) + 18]);
-  hDim(px(xr), px(xt - 1200), 768, `L2 ${FIG.l2}`, [GY + 6, GY + 6]);
-  hDim(px(xr), px(xt), 792, `L1 ${FIG.l1}`, [GY + 6, GY + 6]);
-  // right, mast lowered and the overhead guard, drawn from the ground
-  const guardTop = py(X50.bounds[3]);
-  const mastTop = py(2461);
-  vDim(1360, GY, guardTop, `H6 ${FIG.h6}`, [px(160) + 8, px(160) + 8], 0.62);
-  vDim(1296, GY, mastTop, `H1 ${FIG.h1}`, [px(423) + 8, px(423) + 8], 0.4);
-  // the load centre on the forks
-  const face = px(xt - 1200);
-  const cx = px(xt - 1200 + 600);
-  const cy = 556;
-  dim.seg(face, py(110), face, cy + 8);
-  dim.seg(cx, py(110), cx, cy + 8);
-  const tw = (`C ${FIG.c}`.length * 9.2) + 14;
-  dim.seg(face, cy, (face + cx) / 2 - tw / 2, cy);
-  dim.seg((face + cx) / 2 + tw / 2, cy, cx, cy);
-  arrows.push([face, cy, 0], [cx, cy, Math.PI]);
-  labels.push({ text: `C ${FIG.c}`, x: (face + cx) / 2, y: cy, anchor: 'c' });
-  labels.push({ text: `Q ${FIG.q} KG`, x: (face + cx) / 2, y: cy - 24, anchor: 'c' });
-  // the load centre mark, a small cross and a ring on the forks
-  dim.seg(cx - 8, py(110) - 4, cx + 8, py(110) - 4);
-  dim.circle(cx, py(110) - 4, 4, 20);
-
-  // the measuring grid, 24 px, fading towards the text column on the left and the bottom
-  const grid: number[] = [];
-  const gc: number[] = [];
-  const fade = (x: number, y: number) => Math.min(1, Math.max(0, (x - 528) / 96)) * Math.min(1, Math.max(0, (840 - y) / 60)) * Math.min(1, Math.max(0, (y - 156) / 48));
-  const addG = (x1: number, y1: number, x2: number, y2: number) => {
-    grid.push(x1, -y1, 0, x2, -y2, 0);
-    const a = fade(x1, y1);
-    const b = fade(x2, y2);
-    gc.push(a, a, a, b, b, b);
-  };
-  for (let x = 528; x <= 1440; x += 24) for (let y = 144; y < 840; y += 24) addG(x, y, x, y + 24);
-  for (let y = 144; y <= 840; y += 24) for (let x = 528; x < 1440; x += 24) addG(x, y, x + 24, y);
-
-  // rotating wheel parts, in each wheel's own frame
-  const wheelParts = [w.front, w.rear].map(([, , R, r]) => {
-    const l = new Lines();
-    const Rp = R * S;
-    const rp = r * S;
-    for (let i = 0; i < 48; i++) {
-      const a = (i / 48) * Math.PI * 2;
-      l.seg(Math.cos(a) * Rp * 0.9, Math.sin(a) * Rp * 0.9, Math.cos(a) * Rp, Math.sin(a) * Rp);
-    }
-    for (let i = 0; i < 5; i++) {
-      const a = (i / 5) * Math.PI * 2 + 0.3;
-      l.circle(Math.cos(a) * rp * 0.62, Math.sin(a) * rp * 0.62, rp * 0.075, 14);
-      l.seg(Math.cos(a + 0.63) * rp * 0.36, Math.sin(a + 0.63) * rp * 0.36, Math.cos(a + 0.63) * rp * 0.88, Math.sin(a + 0.63) * rp * 0.88);
-    }
-    return l.a;
-  });
-
-  return { outline: outline.a, detail: detail.a, centre: centre.a, dim: dim.a, ground: ground.a, arrows, labels, grid, gc, wheelParts };
-}
-
-// ---- labels -------------------------------------------------------------------------------------------------
-
 const FONT = '500 14px "Daxline Pro", Arial, sans-serif';
-function labelTexture(text: string) {
+function labelSprite(text: string) {
   const c = document.createElement('canvas');
   const g = c.getContext('2d')!;
   g.font = FONT;
   (g as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1.1px';
-  const w = Math.ceil(g.measureText(text).width) + 4;
-  const h = 20;
+  const w = Math.ceil(g.measureText(text).width) + 6;
+  const h = 22;
   c.width = w * 2;
   c.height = h * 2;
   g.scale(2, 2);
@@ -209,93 +73,223 @@ function labelTexture(text: string) {
   (g as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1.1px';
   g.fillStyle = TURQUOISE;
   g.textBaseline = 'middle';
-  g.fillText(text, 2, h / 2 + 1);
+  g.fillText(text, 3, h / 2 + 1);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;
-  return { t, w, h };
+  const mat = new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false, depthWrite: false, toneMapped: false, opacity: 0 });
+  return { mat, w, h };
 }
 
-const lineMat = (color: string, width: number, opacity = 1) => new LineMaterial({ color: new THREE.Color(color).getHex(), linewidth: width, transparent: true, opacity, toneMapped: false, depthWrite: false });
+const lineMat = (opacity: number, width: number, color = '#ffffff', depthTest = true) => new LineMaterial({ color: new THREE.Color(color).getHex(), linewidth: width, transparent: true, opacity, toneMapped: false, depthWrite: false, depthTest });
 const seg2 = (pts: number[], mat: LineMaterial) => {
   const g = new LineSegmentsGeometry();
-  g.setPositions(new Float32Array(pts));
+  g.setPositions(new Float32Array(pts.length ? pts : [0, 0, 0, 0, 0, 0]));
   const l = new LineSegments2(g, mat);
   l.frustumCulled = false;
   return l;
 };
 
+// Dimension lines in world metres relative to the truck, X forward, Y up, Z to the near side, the side the camera sees.
+function dimensions() {
+  const dim = new L();
+  const tris: number[] = [];
+  const labels: { text: string; p: number[] }[] = [];
+  const arrow = (tip: number[], dir: number[], normal: 'y' | 'z') => {
+    const len = 0.14;
+    const w = 0.045;
+    const base = [tip[0] + dir[0] * len, tip[1] + dir[1] * len, tip[2] + dir[2] * len];
+    const side = normal === 'y' ? [-dir[2], 0, dir[0]] : [-dir[1], dir[0], 0];
+    tris.push(...tip, base[0] + side[0] * w, base[1] + side[1] * w, base[2] + side[2] * w, base[0] - side[0] * w, base[1] - side[1] * w, base[2] - side[2] * w);
+  };
+  // along x on the ground, the line broken for its label
+  const gx = (x1: number, x2: number, z: number, text: string, extFrom: [number, number]) => {
+    dim.seg([x1, GROUND, extFrom[0]], [x1, GROUND, z + 0.1]);
+    dim.seg([x2, GROUND, extFrom[1]], [x2, GROUND, z + 0.1]);
+    const mid = (x1 + x2) / 2;
+    const gap = 0.07 * text.length * 0.5 + 0.12;
+    dim.seg([x1, GROUND, z], [mid - gap, GROUND, z]);
+    dim.seg([mid + gap, GROUND, z], [x2, GROUND, z]);
+    arrow([x1, GROUND, z], [1, 0, 0], 'y');
+    arrow([x2, GROUND, z], [-1, 0, 0], 'y');
+    labels.push({ text, p: [mid, 0.1, z] });
+  };
+  const L1x = -2.64;
+  const tip = 1.736;
+  gx(L1x, tip, 2.45, `L1 ${FIG.l1}`, [0.78, 0.2]);
+  gx(L1x, tip - 1.2, 2.05, `L2 ${FIG.l2}`, [0.78, 0.2]);
+  gx(-2.121, 0, 1.65, `Y ${FIG.y}`, [0.78, 0.7]);
+  // heights, vertical lines beside the truck with their extension lines in a horizontal plane
+  const gy = (x: number, z: number, top: number, text: string, from: number[], at: number) => {
+    dim.seg(from, [x, top, z]);
+    dim.seg([x, GROUND, z], [x, GROUND + (top - GROUND) * at - 0.14, z]);
+    dim.seg([x, GROUND + (top - GROUND) * at + 0.14, z], [x, top, z]);
+    dim.seg([x - 0.12, GROUND, z], [x + 0.12, GROUND, z]);
+    arrow([x, GROUND, z], [0, 1, 0], 'z');
+    arrow([x, top, z], [0, -1, 0], 'z');
+    labels.push({ text, p: [x + 0.06, GROUND + (top - GROUND) * at, z] });
+  };
+  gy(1.0, 1.25, 2.458, `H1 ${FIG.h1}`, [0.42, 2.458, 0.52], 0.3);
+  gy(1.95, 1.25, 2.511, `H6 ${FIG.h6}`, [-1.55, 2.511, 0.68], 0.68);
+  // the load centre over the near fork, and the capacity
+  const x0 = tip - 1.2;
+  const x1 = x0 + 0.6;
+  const zf = 0.3;
+  const yc = 0.95;
+  dim.seg([x0, 0.12, zf], [x0, yc + 0.08, zf]);
+  dim.seg([x1, 0.12, zf], [x1, yc + 0.08, zf]);
+  const gap = 0.07 * 5 * 0.5 + 0.12;
+  const mid = (x0 + x1) / 2;
+  dim.seg([x0, yc, zf], [mid - gap, yc, zf]);
+  dim.seg([mid + gap, yc, zf], [x1, yc, zf]);
+  arrow([x0, yc, zf], [1, 0, 0], 'z');
+  arrow([x1, yc, zf], [-1, 0, 0], 'z');
+  labels.push({ text: `C ${FIG.c}`, p: [mid, yc, zf] });
+  labels.push({ text: `Q ${FIG.q} KG`, p: [mid, yc + 0.3, zf] });
+  return { dim: dim.a, tris, labels };
+}
+
+// The inverted hull, back faces pushed out along their normals by a fixed number of pixels, drawn white. Only the rim
+// that sticks out past the front faces survives the depth test, which is the outer contour.
+function hullMaterial() {
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: { uThick: { value: 2 }, uRes: { value: new THREE.Vector2(1440, 900) }, uOpacity: { value: 0 } },
+    vertexShader: `
+      uniform float uThick; uniform vec2 uRes;
+      void main() {
+        vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vec3 n = normalize(normalMatrix * normal);
+        vec4 cn = projectionMatrix * vec4(n, 0.0);
+        vec2 d = cn.xy; float l = length(d);
+        vec2 off = l > 1e-5 ? d / l * uThick / uRes * 2.0 * clip.w : vec2(0.0);
+        gl_Position = clip + vec4(off, 0.0, 0.0);
+      }`,
+    fragmentShader: `uniform float uOpacity; void main() { gl_FragColor = vec4(vec3(1.0), uOpacity); }`,
+  });
+}
+
+// Three wheels turn, the outer face of each wheel: tyre circle, hub circle, five lugs. Wheel centre in the model frame.
+const WHEEL_NODES = SPEC.x50.wheels;
+
 export default function Schematic({ clock }: SceneProps) {
-  const root = useOverlayRoot();
+  const spec = SPEC.x50;
+  const gltf = useGLTF(modelUrl('x50')) as unknown as { scene: THREE.Group };
   const size = useThree((s) => s.size);
   const dpr = useThree((s) => s.viewport.dpr);
   const invalidate = useThree((s) => s.invalidate);
-  const [fontsReady, setFontsReady] = useState(0);
-  const data = useMemo(build, []);
+  const [fonts, setFonts] = useState(0);
+  const root = useRef<THREE.Group>(null);
+  const wheelRefs = useRef<(THREE.Group | null)[]>([]);
+
   const mats = useMemo(
     () => ({
-      outline: lineMat('#ffffff', 2, 1),
-      detail: lineMat('#ffffff', 1, 0.8),
-      centre: lineMat('#ffffff', 1, 0.5),
-      dim: lineMat(TURQUOISE, 1, 1),
-      ground: lineMat('#ffffff', 1, 0.55),
+      detail: lineMat(0.55, 1, '#ffffff', true),
+      wheelO: lineMat(0.9, 2, '#ffffff', true),
+      wheelD: lineMat(0.55, 1, '#ffffff', true),
+      centre: lineMat(0.5, 1, '#ffffff', false),
+      dim: lineMat(1, 1, TURQUOISE, false),
     }),
     [],
   );
-  const objs = useMemo(
-    () => ({
-      outline: seg2(data.outline, mats.outline),
-      detail: seg2(data.detail, mats.detail),
-      centre: seg2(data.centre, mats.centre),
-      dim: seg2(data.dim, mats.dim),
-      ground: seg2(data.ground, mats.ground),
-      wheels: data.wheelParts.map((p) => seg2(p, mats.detail)),
-    }),
-    [data, mats],
-  );
-  const gridGeo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(data.grid, 3));
-    g.setAttribute('color', new THREE.Float32BufferAttribute(data.gc, 3));
-    return g;
-  }, [data]);
-  const gridMat = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.08, toneMapped: false, depthWrite: false }), []);
-  const arrowGeo = useMemo(() => {
-    const p: number[] = [];
-    data.arrows.forEach(([x, y, a]) => {
-      const L = 11;
-      const Wd = 3.6;
-      const bx = x + Math.cos(a) * L;
-      const by = y + Math.sin(a) * L;
-      const nx = -Math.sin(a) * Wd;
-      const ny = Math.cos(a) * Wd;
-      p.push(x, -y, 0, bx + nx, -(by + ny), 0, bx - nx, -(by - ny), 0);
+  const hull = useMemo(hullMaterial, []);
+  const fill = useMemo(() => new THREE.MeshBasicMaterial({ color: '#0b0b0b', polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2, toneMapped: false }), []);
+  // the model as black fills, every mesh also gets its hull
+  const model = useMemo(() => {
+    const s = prepare(gltf.scene, 'x50');
+    const meshes: THREE.Mesh[] = [];
+    s.traverse((o) => {
+      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
     });
+    meshes.forEach((m) => {
+      m.material = fill;
+      m.castShadow = m.receiveShadow = false;
+      // the tyres get no hull, their clean circle is the outline
+      for (let p: THREE.Object3D | null = m; p; p = p.parent) if (WHEEL_NODES.some((w) => w.node === p!.name)) return;
+      const h = new THREE.Mesh(m.geometry, hull);
+      h.renderOrder = -1;
+      m.add(h);
+    });
+    return s;
+  }, [gltf, fill, hull]);
+  const wheelNodes = useMemo(() => WHEEL_NODES.map((w) => ({ obj: model.getObjectByName(w.node)!, r: w.r })), [model]);
+  // hard edges of the body, mast and forks, short bits dropped, a higher threshold on the busy body
+  const edges = useMemo(() => {
+    const keep = (pts: number[]) => {
+      const out: number[] = [];
+      for (let i = 0; i < pts.length; i += 6) {
+        if (Math.hypot(pts[i] - pts[i + 3], pts[i + 1] - pts[i + 4], pts[i + 2] - pts[i + 5]) >= 0.03) out.push(...pts.slice(i, i + 6));
+      }
+      return out;
+    };
+    return seg2(keep(bakeEdges(gltf.scene, 'x50', 40).body), mats.detail);
+  }, [gltf, mats]);
+  // wheel faces, in the wheel's own frame (unit tyre radius), on the outer face of each tyre
+  const wheelLines = useMemo(
+    () =>
+      wheelNodes.map((w) => {
+        const sign = Math.sign(w.obj.position.z) || 1;
+        const z = sign * 0.3;
+        const o = new L();
+        const d = new L();
+        o.circle([0, 0, z], 1, 'xy', 96);
+        d.circle([0, 0, z], 0.4, 'xy', 48);
+        d.circle([0, 0, z], 0.16, 'xy', 32);
+        for (let k = 0; k < 5; k++) {
+          const a = (k / 5) * Math.PI * 2 + 0.3;
+          d.circle([Math.cos(a) * 0.28, Math.sin(a) * 0.28, z], 0.045, 'xy', 12);
+        }
+        return { outline: seg2(o.a, mats.wheelO), detail: seg2(d.a, mats.wheelD) };
+      }),
+    [wheelNodes, mats],
+  );
+  const centre = useMemo(() => {
+    const c = new L();
+    [0, -2.121].forEach((x) => c.dashdot([x, 0.414, -1.0], [x, 0.414, 1.0]));
+    c.dashdot([-2.9, GROUND, 0], [2.0, GROUND, 0]);
+    c.dashdot([-0.17, GROUND, 0], [-0.17, 2.85, 0]);
+    return seg2(c.a, mats.centre);
+  }, [mats]);
+  const dims = useMemo(dimensions, []);
+  const dimLines = useMemo(() => seg2(dims.dim, mats.dim), [dims, mats]);
+  const arrowGeo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(dims.tris, 3));
+    return g;
+  }, [dims]);
+  const arrowMat = useMemo(() => new THREE.MeshBasicMaterial({ color: TURQUOISE, side: THREE.DoubleSide, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }), []);
+  const labels = useMemo(
+    () => dims.labels.map((l) => ({ ...l, ...labelSprite(l.text) })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dims, fonts],
+  );
+  const grid = useMemo(() => {
+    const p: number[] = [];
+    const c: number[] = [];
+    const R = 7;
+    const add = (a: number[], b: number[]) => {
+      p.push(...a, ...b);
+      for (const q of [a, b]) {
+        const k = Math.max(0, 1 - Math.hypot(q[0] + 0.5, q[2]) / R);
+        c.push(k, k, k);
+      }
+    };
+    for (let x = -7; x <= 6.001; x += 0.5) for (let z = -6; z < 6; z += 0.5) add([x, 0, z], [x, 0, z + 0.5]);
+    for (let z = -6; z <= 6.001; z += 0.5) for (let x = -7; x < 6; x += 0.5) add([x, 0, z], [x + 0.5, 0, z]);
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3));
     return g;
-  }, [data]);
-  const arrowMat = useMemo(() => new THREE.MeshBasicMaterial({ color: TURQUOISE, side: THREE.DoubleSide, transparent: true, toneMapped: false, depthWrite: false }), []);
-  const labels = useMemo(
-    () =>
-      data.labels.map((l) => {
-        const { t, w, h } = labelTexture(l.text);
-        const x = l.anchor === 'c' ? l.x : l.anchor === 'l' ? l.x + w / 2 : l.x - w / 2;
-        return { t, w, h, x, y: l.y };
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, fontsReady],
-  );
-  const labelMat = useRef<THREE.MeshBasicMaterial[]>([]);
-  const wheelGroups = useRef<(THREE.Group | null)[]>([]);
-  const grp = useRef<THREE.Group>(null);
-  const [fw, fh] = [size.width, size.height];
+  }, []);
+  const gridMat = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }), []);
 
   useEffect(() => {
     let live = true;
-    document.fonts?.load(FONT).then(() => {
+    Promise.all([document.fonts?.load(FONT, 'L1 Y KGHCQ'), document.fonts?.load(FONT, '0123456789')]).then(() => {
       if (live) {
-        setFontsReady((n) => n + 1);
+        setFonts((n) => n + 1);
         invalidate();
       }
     });
@@ -305,69 +299,73 @@ export default function Schematic({ clock }: SceneProps) {
   }, [invalidate]);
 
   useEffect(() => {
-    const f = fh / 900;
-    Object.values(mats).forEach((m) => m.resolution.set(fw * dpr, fh * dpr));
-    mats.outline.linewidth = 2 * f * dpr;
-    mats.detail.linewidth = Math.max(1, f) * dpr;
-    mats.centre.linewidth = Math.max(1, f) * dpr;
-    mats.dim.linewidth = Math.max(1, f) * dpr;
-    mats.ground.linewidth = Math.max(1, f) * dpr;
-  }, [mats, fw, fh, dpr]);
-
-  const WHEEL = [X50.wheels.front, X50.wheels.rear];
-  const total = data.outline.length / 6;
+    const f = Math.max(1, size.height / 900) * dpr;
+    Object.values(mats).forEach((m) => m.resolution.set(size.width * dpr, size.height * dpr));
+    mats.detail.linewidth = f;
+    mats.wheelO.linewidth = 2 * f;
+    mats.wheelD.linewidth = f;
+    mats.centre.linewidth = f;
+    mats.dim.linewidth = f;
+    hull.uniforms.uRes.value.set(size.width, size.height);
+    hull.uniforms.uThick.value = 2 * Math.max(1, size.height / 900);
+  }, [mats, hull, size, dpr]);
 
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    const g = grp.current;
-    if (!g) return;
     const show = u >= 9.95 && u < 12.0;
-    g.visible = show;
+    if (root.current) root.current.visible = show;
     if (!show) return;
-    const f = fh / 900;
-    g.scale.setScalar(1 / 450);
-    g.position.set((fw / 2 - f * 1440) / (fh / 2), 1, -0.004);
-    const lineIn = ease(range(u, 10.05, 10.4));
-    const draw = ease(range(u, 10.1, 10.62));
-    const det = ease(range(u, 10.45, 10.78));
-    const dims = ease(range(u, 10.62, 10.95));
-    gridMat.opacity = 0.08 * ease(range(u, 10.0, 10.35));
-    mats.ground.opacity = 0.55 * lineIn;
-    mats.centre.opacity = 0.5 * lineIn;
-    mats.outline.opacity = Math.min(1, draw * 4);
-    (objs.outline.geometry as LineSegmentsGeometry & { instanceCount: number }).instanceCount = Math.max(0, Math.floor(total * draw));
-    mats.detail.opacity = 0.8 * det;
-    mats.dim.opacity = dims;
-    arrowMat.opacity = dims;
-    labelMat.current.forEach((m) => m && (m.opacity = dims));
+    // the guides and the dimensions are there from the first light, the truck draws in after them
+    const guides = ease(range(u, 10.0, 10.3));
+    const draw = ease(range(u, 10.1, 10.55));
+    const det = ease(range(u, 10.3, 10.7));
+    gridMat.opacity = 0.08 * guides;
+    mats.centre.opacity = 0.5 * guides;
+    mats.dim.opacity = guides;
+    arrowMat.opacity = guides;
+    labels.forEach((l) => (l.mat.opacity = guides));
+    hull.uniforms.uOpacity.value = 0.9 * draw;
+    mats.wheelO.opacity = 0.9 * draw;
+    mats.detail.opacity = 0.55 * det;
+    mats.wheelD.opacity = 0.55 * det;
     const roll = (pos - 8000) * 0.011;
-    wheelGroups.current.forEach((wg, i) => {
-      if (wg) wg.rotation.z = -roll / (WHEEL[i][2] / 1000);
+    wheelNodes.forEach((w, i) => {
+      const a = (spec.spin * roll) / w.r;
+      w.obj.rotation.z = a;
+      const g = wheelRefs.current[i];
+      if (g) g.rotation.z = a;
     });
+    model.updateMatrixWorld(true);
   });
 
-  return createPortal(
-    <group ref={grp} visible={false} renderOrder={-2}>
-      <lineSegments geometry={gridGeo} material={gridMat} renderOrder={-3} />
-      <primitive object={objs.ground} />
-      <primitive object={objs.centre} />
-      <primitive object={objs.detail} />
-      <primitive object={objs.outline} />
-      {WHEEL.map(([cx, cy], i) => (
-        <group key={i} renderOrder={-2} position={[px(cx), -py(cy), 0]} ref={(el) => { wheelGroups.current[i] = el; }}>
-          <primitive object={objs.wheels[i]} />
-        </group>
-      ))}
-      <primitive object={objs.dim} />
-      <mesh geometry={arrowGeo} material={arrowMat} />
+  return (
+    <group ref={root} visible={false} position={[BP.x, 0, BP.z]}>
+      <lineSegments geometry={grid} material={gridMat} renderOrder={-3} />
+      <group position={[0, spec.ground, 0]} rotation={[0, spec.yaw, 0]}>
+        <primitive object={model} renderOrder={-2} />
+        <primitive object={edges} renderOrder={1} />
+        {wheelNodes.map((w, i) => (
+          <group
+            key={i}
+            ref={(g) => {
+              wheelRefs.current[i] = g;
+            }}
+            position={w.obj.position}
+            scale={w.obj.scale}
+            renderOrder={1}
+          >
+            <primitive object={wheelLines[i].detail} />
+            <primitive object={wheelLines[i].outline} />
+          </group>
+        ))}
+      </group>
+      <primitive object={centre} />
+      <primitive object={dimLines} />
+      <mesh geometry={arrowGeo} material={arrowMat} renderOrder={3} />
       {labels.map((l, i) => (
-        <mesh key={`${i}${fontsReady}`} position={[l.x, -l.y, 0.01]}>
-          <planeGeometry args={[l.w, l.h]} />
-          <meshBasicMaterial ref={(m) => { if (m) labelMat.current[i] = m; }} map={l.t} transparent opacity={0} depthWrite={false} toneMapped={false} />
-        </mesh>
+        <sprite key={`${i}${fonts}`} position={l.p as [number, number, number]} material={l.mat} scale={[l.w / 150, l.h / 150, 1]} renderOrder={4} />
       ))}
-    </group>,
-    root,
+    </group>
   );
 }

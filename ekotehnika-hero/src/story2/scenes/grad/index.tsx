@@ -8,7 +8,6 @@ import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import type { SceneProps, StoryClock } from '../../clock';
 import { C } from '../../../tokens';
-import { G } from './look';
 import { camAt, gridFit, lerp, regionAt, seg, smooth, strip, textCell, topBand, BAND, type Region } from './choreo';
 import { heroX, Hero } from './hero';
 import { Site } from './site';
@@ -136,7 +135,6 @@ export default function Scene({ clock }: SceneProps) {
   const [ready, setReady] = useState(false);
   const band = useRef<HTMLDivElement>(null);
   const cell = useRef<HTMLDivElement>(null);
-  const seam = useRef<HTMLDivElement>(null);
   const groups = useRef<Groups>({});
 
   // the van decals draw text on a canvas, so the font has to be in before the world mounts
@@ -167,11 +165,6 @@ export default function Scene({ clock }: SceneProps) {
     const tick = () => {
       const pos = clock.pos.current;
       if (band.current) band.current.style.background = topBand(pos);
-      if (seam.current) {
-        const t = strip(pos);
-        seam.current.style.display = t > 0.003 && t < 0.997 ? 'block' : 'none';
-        seam.current.style.top = `calc(${((1 - t) * 100).toFixed(3)}% - 16px)`;
-      }
       if (cell.current) {
         const c = textCell(pos);
         cell.current.style.display = c.share > 0.001 ? 'block' : 'none';
@@ -221,7 +214,6 @@ export default function Scene({ clock }: SceneProps) {
         )}
       </Canvas>
       <div ref={cell} style={{ position: 'absolute', left: 0, top: 136, bottom: 0, width: 0, display: 'none', background: BAND.site, pointerEvents: 'none' }} />
-      <div ref={seam} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 32, display: 'none', background: `repeating-linear-gradient(135deg, ${C.ink} 0 14px, ${G.mid} 14px 28px)`, pointerEvents: 'none' }} />
       <div ref={band} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 136, pointerEvents: 'none' }} />
     </div>
   );

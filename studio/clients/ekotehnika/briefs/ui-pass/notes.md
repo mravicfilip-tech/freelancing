@@ -295,3 +295,4 @@ R2. **Numbers.** Same shot. Said: "Don't use this font for numbers". Daxline Pro
 R3. **Schematic.** `refs/round2/r2-schematic-before-after.webp`. Said: "Schematic I liked it better in 3d and perspective how it was done before just mind my comments on the lines / execution/design". Back to three quarter perspective with precise lines.
 R4. **Arrows.** `refs/round2/r3-list-arrows.png`. Said: "Don't use arrows like I marked in the design they ugly af". No arrow glyphs anywhere.
 R5. **Section marker.** `refs/round2/r5-section-marker.webp`. Said: "i dont liek this change it", marking the circled 02 and KOMPANIJA above the R title. Numbered variants to pick from.
+R6. **Spacing in the R fact list.** Said: "we can do better spacing here", marking the gap between the lede and the first fact row, where the first hairline sits about 20px under the lede and cuts the VRČIN label. One 8px rhythm for every fact list and spec row.

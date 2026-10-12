@@ -23,6 +23,10 @@ Task format
 
 ## Backlog
 
+- ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md
+  - [ ] Filip gives his notes
+  - [ ] Plan the pass from the notes
+
 ## In progress
 
 - ekotehnika-7 Logos at the Linde co-branding sizes

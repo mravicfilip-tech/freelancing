@@ -1,4 +1,4 @@
-// Black line art of four Linde trucks seen from the side, standing on the ground line of the footer. MT15 pallet truck,
+// Black line art of four Linde trucks seen from the side, standing on the bottom rule of the footer. MT15 pallet truck,
 // H30 counterbalance, R16 reach truck and N20 order picker. One stroke weight, no fill, drawn with the ground at y 0.
 // Decorative, aria-hidden. Hand built for this footer, not traced from a Linde file.
 import type { ReactNode } from 'react';
@@ -123,10 +123,11 @@ const TRUCKS: { id: string; x: number; Art: () => ReactNode }[] = [
   { id: 'N20', x: 1190, Art: N20 },
 ];
 
-// A strip 1560 wide and 330 tall. The ground line is at the bottom edge.
+// A strip 1546 wide and 300 tall, from the tip of the MT15 platform at x 10 to the fork end of the N20 at x 1556. The ground line
+// is at the bottom edge. It fills the width of the footer, so the drawing is as wide as the grid and scales with it.
 export function FooterLine() {
   return (
-    <svg className="ft-line" viewBox="0 -330 1560 330" preserveAspectRatio="xMaxYMax meet" aria-hidden="true" focusable="false" style={{ overflow: 'visible' }}>
+    <svg className="sx-line" viewBox="10 -300 1546 300" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false" style={{ overflow: 'visible' }}>
       {TRUCKS.map((t) => (
         <g transform={`translate(${t.x} 0)`} key={t.id}>
           <t.Art />

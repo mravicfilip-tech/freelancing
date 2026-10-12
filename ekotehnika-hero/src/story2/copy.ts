@@ -143,31 +143,35 @@ export const statement = {
   photo: { src: '/photos/isporuka-3.webp', alt: 'Linde viljuškar na kamionu, pred istovar' },
 };
 
-// D2, Proizvodi. Counts in brackets are dummy until Ekotehnika gives the model count per type, they add up to the 96.
+// D2, Proizvodi, the products section after the story, round 3 item 8. One cell per Linde cut out in public/products.
+// Counts, ranges and capacities are dummy until Ekotehnika confirms them against the data sheets. The counts add up to the 96.
+// lead is the one cell that spans two rows. The range is the Linde model designation without the brand, the section is all Linde, and
+// the capacity is the nosivost, where the number is the nominal load in tenths of a tonne.
+export type ProductCell = { name: string; range: string; cap: string; count: number; img: string; alt: string; href: string; lead?: boolean };
+
 export const proizvodi = {
-  title: 'Proizvodi',
-  lede: ['Od čeonih viljuškara do automatizacije.', 'Sve na jednom mestu, sa servisom u Vrčinu.'], // dummy
-  list: [
-    { name: 'Čeoni viljuškari', count: 38, img: '/products/ceoni-elektro-e16p.webp', href: `${SITE}/viljuskari/` }, // count dummy
-    { name: 'Retrak viljuškari', count: 12, img: '/products/retrak-r16.webp', href: `${SITE}/viljuskari/` }, // count dummy
-    { name: 'Paletari i slagači', count: 30, img: '/products/slagac-l14r.webp', href: `${SITE}/viljuskari/` }, // count dummy
-    { name: 'Komisioneri', count: 12, img: '/products/komisioner-n20c.webp', href: `${SITE}/viljuskari/` }, // count dummy
-    { name: 'Automatizacija', count: 4, img: '/products/automatizacija-cmatic10.webp', href: `${SITE}/viljuskari/` }, // count dummy
-  ],
-  cards: [
-    { name: 'Linde H20 do H35', type: 'Čeoni viljuškari', img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar' },
-    { name: 'Linde R14 do R25', type: 'Retrak viljuškari', img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar' },
-    { name: 'Linde T20 do T25', type: 'Paletari', img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar' },
-    { name: 'Linde N20 do N25 C', type: 'Komisioneri', img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner' },
-  ],
-  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage.
+  label: 'Proizvodi',
+  total: 96, // pillars, novi
+  title: ['Glavni', 'proizvodi'],
+  lede: 'Od čeonih viljuškara do automatizacije.', // dummy
+  cta: { label: pillars[0].more, href: pillars[0].href } satisfies Cta,
+  unit: 'modela', // dummy
+  cells: [
+    { name: 'Čeoni dizel viljuškari', range: 'H20 do H35', cap: '2,0 do 3,5 t', count: 22, img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar sa dizel motorom', href: `${SITE}/viljuskari/`, lead: true }, // range, capacity and count dummy
+    { name: 'Čeoni električni', range: 'E12 do E20', cap: '1,2 do 2,0 t', count: 16, img: '/products/ceoni-elektro-e16p.webp', alt: 'Linde E16 P čeoni električni viljuškar', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Retrak viljuškari', range: 'R14 do R25', cap: '1,4 do 2,5 t', count: 12, img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar za uske hodnike', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Slagači', range: 'L10 do L16', cap: '1,0 do 1,6 t', count: 12, img: '/products/slagac-l14r.webp', alt: 'Linde L14 R slagač', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Paletari', range: 'T20 do T25', cap: '2,0 do 2,5 t', count: 18, img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', count: 12, img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', count: 4, img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+  ] satisfies ProductCell[],
+  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Not shown in this section, Q5 put them in N.
   photos: [
     { src: '/photos/isporuka-1.webp', alt: 'Linde E20 EVO, oznaka na boku viljuškara' },
     { src: '/photos/isporuka-2.webp', alt: 'Viljuškar se spušta sa kamiona pri isporuci' },
     { src: '/photos/isporuka-3.webp', alt: 'Linde viljuškar na kamionu, pred istovar' },
     { src: '/photos/isporuka-4.webp', alt: 'Linde viljuškar u kamionu, spreman za isporuku' },
   ],
-  cta: { label: pillars[0].more, href: pillars[0].href } satisfies Cta,
 };
 
 // D3, the client wall. Ekotehnika gave permission, the list and the logo files are still to come. Only Vemax and
@@ -198,11 +202,13 @@ export const footer = {
     { label: 'Kontakt', href: `${SITE}/kontakt/` },
   ],
   address: ['Moše Pijade 17b', '11224 Vrčin'],
+  // Row one of the footer, the two numbers with the e-mail under each. The e-mail pairing follows the address names.
   phones: [
-    { label: hero.sales.label, number: hero.sales.number, tel: hero.sales.tel },
-    { label: hero.service.label, number: hero.service.number, tel: hero.service.tel },
+    { label: hero.sales.label, number: hero.sales.number, tel: hero.sales.tel, email: 'info@ekotehnika.rs', cta: 'call-sales' },
+    { label: hero.service.label, number: hero.service.number, tel: hero.service.tel, email: 'servis@ekotehnika.rs', cta: 'call-service' },
   ],
   emails: ['info@ekotehnika.rs', 'servis@ekotehnika.rs'],
+  labels: { address: 'Adresa', nav: 'Navigacija' },
   copyright: '© 2026 Ekotehnika viljuškari d.o.o.',
   legal: 'Sva prava zadržana.', // dummy
   lede: 'Linde viljuškari. Prodaja, najam i servis na jednom mestu.', // hero headline

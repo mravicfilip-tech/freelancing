@@ -50,8 +50,9 @@
    fill of the one primary, with a black plus cell. A secondary is at the quarter weight of the top row phones on every beat
    (Filip 2026-10-12, video round 4, "the opacity is too strong for this button"), a 1px line at 12.5 percent over a 1 percent
    tint, black on light and white on dark, and carries the plus cell, or the phone cell on a phone button. The edge measures
-   1.37 to 1, under the 3 to 1 of WCAG 1.4.11, Filip's call, the label and the cell carry the button. The label block and the cell sit 1px apart. The hover is driven by one number, --hp, from 0
-   to 1, the border draws on clockwise from the top left, a quarter of the move per side. ---- */
+   1.37 to 1, under the 3 to 1 of WCAG 1.4.11, Filip's call, the label and the cell carry the button. The label block and the cell
+   sit 1px apart. A secondary's hover is driven by one number, --hp, from 0 to 1, the border draws on clockwise from the top left,
+   a quarter of the move per side. The primary's hover is its cell sweeping over the button, see .btn-primary below. ---- */
 @property --hp {
   syntax: '<number>';
   inherits: true;
@@ -98,6 +99,29 @@
   --c-bg: var(--black);
   --c-fg: var(--white);
   --d-stroke: var(--black);
+}
+
+/* The primary's hover, the cell sweeps left over the whole button and the label reads on it in the cell's ink, the plus stays at
+   the right. Picked by Filip on the board on 2026-10-12 (taste 23:50, variant 2), in place of the border that drew on round it.
+   The label's ink turns as the sweep passes its middle. */
+.btn-primary .btn-d {
+  display: none;
+}
+
+.btn-primary .btn-x {
+  transition: width 320ms var(--ease-wipe);
+}
+
+.btn-primary .btn-r {
+  transition: color 0s linear 160ms;
+}
+
+.btn-primary:is(:hover, :focus-visible) .btn-x {
+  width: 100%;
+}
+
+.btn-primary:is(:hover, :focus-visible) .btn-r {
+  color: var(--c-fg);
 }
 
 /* a secondary, drawn over the label block and the cell. The tint is 1 percent black laid on white and the cell 4.4 percent,
@@ -572,78 +596,4 @@
     animation: none;
     transform: scaleX(1);
   }
-}
-
-/* ---- review variants for the primary button hover (Filip 2026-10-12, "better hover here"), picked on a board with ?hv=1 to 5,
-   see src/review.ts. Only the picked one stays. Without ?hv the hover is as before. ---- */
-html[data-hv]:not([data-hv='4']) .btn-primary .btn-d {
-  display: none;
-}
-
-html[data-hv] .btn-primary .btn-t {
-  transition: background-color 200ms var(--ease-wipe);
-}
-
-html[data-hv] .btn-primary .btn-x::before {
-  transition: rotate 260ms var(--ease-wipe);
-}
-
-/* 1, the label turns the darkest red of the brand, primary-900, and the plus turns a quarter */
-html[data-hv='1'] .btn-primary:hover {
-  --b-bg: var(--primary-900);
-}
-
-html[data-hv='1'] .btn-primary:hover .btn-x::before,
-html[data-hv='3'] .btn-primary:hover .btn-x::before {
-  rotate: 90deg;
-}
-
-/* 2, the black cell sweeps left over the whole button, the label stays white on it */
-html[data-hv='2'] .btn-primary .btn-x {
-  transition: width 320ms var(--ease-wipe);
-}
-
-html[data-hv='2'] .btn-primary:hover .btn-x {
-  width: 100%;
-}
-
-/* 3, a 2px white rule draws on under the label from the left, inside the red block, the plus turns a quarter */
-html[data-hv='3'] .btn-primary .btn-t {
-  position: relative;
-}
-
-html[data-hv='3'] .btn-primary .btn-t::after {
-  content: '';
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 10px;
-  height: 2px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 260ms var(--ease-wipe);
-}
-
-html[data-hv='3'] .btn-primary:hover .btn-t::after {
-  transform: scaleX(1);
-}
-
-/* 4, the border still draws on clockwise, but white and 4px inside the red label block, so nothing frames the button outside */
-html[data-hv='4'] .btn-primary {
-  --d-stroke: var(--white);
-}
-
-html[data-hv='4'] .btn-primary .btn-d {
-  inset: 4px 53px 4px 4px;
-}
-
-/* 5, the two parts swap, the label block turns black and the cell turns red */
-html[data-hv='5'] .btn-primary .btn-x {
-  transition: background-color 200ms var(--ease-wipe);
-}
-
-html[data-hv='5'] .btn-primary:hover {
-  --b-bg: var(--black);
-  --c-bg: var(--lmh-red);
 }

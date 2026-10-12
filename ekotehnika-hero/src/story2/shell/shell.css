@@ -694,26 +694,20 @@
 
 /* the ring marks the part, a 16px circle with a 1px ink edge and a 4px centre, filled with the ground so it reads on a dark mast too */
 .p-dot {
+  /* the point, a white square with an ink edge and an ink plus, the sharp corners and the plus of the buttons. Picked by Filip on the
+     board on 2026-10-12 (taste 23:55, variant 3), then made 20 percent larger. Odd sizes, so on the pixel centre placeLeaders gives
+     it every edge and stroke lands on whole pixels. */
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 29px;
+  height: 29px;
   box-sizing: border-box;
   translate: -50% -50%;
   border: 1px solid var(--fg);
-  border-radius: 9999px;
-  background: var(--white);
+  background:
+    linear-gradient(var(--fg), var(--fg)) center / 15px 3px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) center / 3px 15px no-repeat,
+    var(--white);
   opacity: 0;
-}
-
-.p-dot::after {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 5px;
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  background: var(--fg);
 }
 
 .p-fig[data-st='on'] .p-dot {
@@ -953,124 +947,4 @@
     max-width: calc(var(--x2) - 72px - 24px);
     text-wrap: balance;
   }
-}
-
-/* ---- review variants for the Prodaja points (Filip 2026-10-12, "design to be more prominent / prettier"), picked on a board with
-   ?mk=1 to 5, see src/review.ts. Only the picked one stays. Without ?mk the points are as before. Ink and white only, red is
-   for the primary and the truck shells. ---- */
-html[data-mk] .p-dot::after {
-  content: none;
-}
-
-/* 1, a solid ink pin, 14px, in a 3px white halo and a faint outer ring, so it reads on red, grey and white */
-html[data-mk='1'] .p-dot {
-  width: 14px;
-  height: 14px;
-  border: 0;
-  background: var(--fg);
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 4px rgb(0 0 0 / 0.3);
-}
-
-/* 2, a drawing target, a 28px ring with a 6px centre and four ticks outside it, like the plus marks of the grid */
-html[data-mk='2'] .p-dot {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--fg);
-  background: radial-gradient(circle, var(--fg) 0 3px, rgb(255 255 255 / 0.55) 3.5px);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.8);
-}
-
-html[data-mk='2'] .p-dot::before {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  background:
-    linear-gradient(var(--fg), var(--fg)) center top / 1px 7px no-repeat,
-    linear-gradient(var(--fg), var(--fg)) center bottom / 1px 7px no-repeat,
-    linear-gradient(var(--fg), var(--fg)) left center / 7px 1px no-repeat,
-    linear-gradient(var(--fg), var(--fg)) right center / 7px 1px no-repeat;
-}
-
-/* 3, a square plus, a 24px white square with an ink edge and a 12px ink plus, the corners and the plus of the buttons */
-html[data-mk='3'] .p-dot {
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--fg);
-  border-radius: 0;
-  background:
-    linear-gradient(var(--fg), var(--fg)) center / 12px 2px no-repeat,
-    linear-gradient(var(--fg), var(--fg)) center / 2px 12px no-repeat,
-    var(--white);
-}
-
-/* 4, numbered, a 26px ink disc with its number in white, and the same number in front of its callout's label */
-html[data-mk='4'] .p-dot {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border: 2px solid var(--white);
-  background: var(--fg);
-  color: var(--white);
-  font: 500 14px/1 var(--font);
-}
-
-html[data-mk='4'] .p-dot-a::after,
-html[data-mk='4'] .p-dot-b::after,
-html[data-mk='4'] .p-dot-c::after {
-  position: static;
-  width: auto;
-  height: auto;
-  background: none;
-}
-
-html[data-mk='4'] .p-dot-a::after { content: '1'; }
-html[data-mk='4'] .p-dot-b::after { content: '2'; }
-html[data-mk='4'] .p-dot-c::after { content: '3'; }
-
-html[data-mk='4'] .p-call .lab::before {
-  display: inline-grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  border-radius: 9999px;
-  background: var(--fg);
-  color: var(--white);
-  font: 500 14px/1 var(--font);
-  letter-spacing: 0;
-  vertical-align: middle;
-}
-
-html[data-mk='4'] .p-call-a .lab::before { content: '1'; }
-html[data-mk='4'] .p-call-b .lab::before { content: '2'; }
-html[data-mk='4'] .p-call-c .lab::before { content: '3'; }
-
-/* 5, a 12px ink dot in a 2px white ring, and an outer 1px ring that opens out from it as the cut out lands */
-html[data-mk='5'] .p-dot {
-  width: 12px;
-  height: 12px;
-  border: 0;
-  background: var(--fg);
-  box-shadow: 0 0 0 2px var(--white);
-}
-
-html[data-mk='5'] .p-dot::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--fg);
-  border-radius: 9999px;
-  translate: -50% -50%;
-  scale: 0.4;
-}
-
-html[data-mk='5'] .p-fig[data-st='on'] .p-dot::before {
-  scale: 1;
-  transition: scale 500ms var(--ease-wipe) calc(1100ms + var(--n) * 120ms);
 }

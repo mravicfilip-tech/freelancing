@@ -24,8 +24,10 @@ Task format
 ## Backlog
 
 - ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md
-  - [ ] Filip gives his notes
-  - [ ] Plan the pass from the notes
+  - [x] Filip gives his notes
+  - [x] Scan the reference sites and read the Linde brand guideline
+  - [x] Plan the pass from the notes
+  - [ ] Filip answers the plan's decisions
 
 ## In progress
 

@@ -57,47 +57,62 @@ export const kompanija = {
 
 // The four tabs of Prodaja. The model range and the nosivost follow the Linde model designation, where the number
 // is the nominal load in tenths of a tonne. // dummy until Ekotehnika confirms against the data sheets.
+// size is the cut out file in its own pixels. a, b and c are marked parts in those pixels, a the mast badge or the nearest
+// plate for the range, b a fork tine for the capacity and c the plate on the body for the model shown. The shell maps them to the
+// screen through the fitted image, see PPane in shell/panes.tsx. model is the designation already in the alt text.
 export const prodaja = {
   title: ['Prodaja Linde', 'viljuškara'], // dummy
   text: '96 Linde modela, ponuda po vašoj meri.', // pillars, novi
   cta: { label: pillars[0].cta, href: pillars[0].href } satisfies Cta,
-  callouts: ['Raspon modela', 'Nosivost'], // dummy
+  callouts: ['Raspon modela', 'Nosivost', 'Na slici'], // dummy
   tabs: [
     {
       name: 'Čeoni viljuškari',
       range: 'Linde H20 do H35',
       cap: '2,0 do 3,5 t',
+      model: 'Linde H30 D', // alt text
       img: '/products/ceoni-dizel-h30d.webp',
       alt: 'Linde H30 D čeoni viljuškar sa dizel motorom',
-      a: [59, 21],
-      b: [81, 59],
+      size: [1200, 895],
+      a: [497, 142], // the Linde badge on the mast
+      b: [255, 832], // the front fork tine
+      c: [845, 566], // the H30 plate on the door
     },
     {
       name: 'Retrak viljuškari',
       range: 'Linde R14 do R25',
       cap: '1,4 do 2,5 t',
+      model: 'Linde R16', // alt text
       img: '/products/retrak-r16.webp',
       alt: 'Linde R16 retrak viljuškar za uske hodnike',
-      a: [52, 20],
-      b: [44, 66],
+      size: [794, 1088],
+      a: [520, 308], // the Linde badge on the mast roller
+      b: [235, 1018], // the front fork tine
+      c: [667, 628], // the Linde plate on the body
     },
     {
       name: 'Paletari i slagači',
       range: 'Linde T20 do T25',
       cap: '2,0 do 2,5 t',
+      model: 'Linde T20 R', // alt text
       img: '/products/paletar-t20r.webp',
       alt: 'Linde T20 R električni paletar',
-      a: [63, 24],
-      b: [23, 76],
+      size: [811, 721],
+      a: [700, 180], // the red rear cover, no badge shows on this truck
+      b: [215, 568], // the upper fork tine
+      c: [590, 390], // the battery door
     },
     {
       name: 'Komisioneri',
       range: 'Linde N20 do N25 C',
       cap: '2,0 do 2,5 t',
+      model: 'Linde N20 C', // alt text
       img: '/products/komisioner-n20c.webp',
       alt: 'Linde N20 C komisioner',
-      a: [72, 29],
-      b: [17, 70],
+      size: [1200, 712],
+      a: [930, 135], // the display on the operator deck
+      b: [330, 588], // the upper fork tine
+      c: [883, 330], // the red side frame
     },
   ],
 };

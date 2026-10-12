@@ -12,6 +12,13 @@ export const cols = (a: number, b: number): CSSProperties => ({
   width: `calc(${b - a + 1} * var(--cw) + ${b - a} * 24px)`,
 });
 
+// A block between two drawn vertical lines of the grid, a and b are the line numbers 1 to 5 (--x1 to --x5 of the stage). Its rules
+// start and end on a line, never inside a column. The text inside it sits 24px in from the line, see .stack in shell.css.
+export const between = (a: number, b: number): CSSProperties => ({
+  left: `var(--x${a})`,
+  width: `calc(var(--x${b}) - var(--x${a}))`,
+});
+
 // The section marker, a cell of the grid, the name at the left and the beat count at the right, the cell's top hairline sits on
 // the grid rule. See .s2-marker in shell.css.
 export const Marker = ({ m, order = 0 }: { m: MarkerData; order?: number }) => (

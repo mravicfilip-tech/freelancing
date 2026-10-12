@@ -97,6 +97,11 @@
   bottom: 64px;
 }
 
+/* a block at the bottom of the left column, 24px above the bottom rule like the text in a spec cell */
+.lb {
+  bottom: 88px;
+}
+
 /* ---- the grid, A3 and B4 ---- */
 .s2-grid {
   /* every line is a pair, a black half and a white half, each 1px. On a light ground the black half carries the line, on
@@ -458,21 +463,29 @@
 .s2 .rlist {
   list-style: none;
   padding: 0;
-  /* one 8px scale for every fact list. 56px from the lede to the first hairline, then in a row the hairline, 24px, the
-     label, 6px, the value, 20px, the next hairline, the text 24px in from the left line. The stack gap of 24px plus this
-     32px margin makes the 56px. */
-  margin-top: 32px;
-  width: 100%;
+  /* the rules of the list run from the first to the third vertical, the last one sits on the bottom rule */
   border-bottom: 1px solid var(--line);
 }
 
+/* a row, the hairline, 32px, the icon beside the label, 32px, the next hairline. The text sits 24px in from the line, then the
+   20px icon and a 24px gap. */
 .rlist li {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 24px 24px 20px;
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  column-gap: 24px;
+  row-gap: 4px;
+  align-items: start;
+  padding: 32px 24px;
   border-top: 1px solid var(--line);
+}
+
+.rlist .ico {
+  grid-row: 1 / span 2;
+}
+
+.rlist .lab,
+.rlist .line {
+  grid-column: 2;
 }
 
 .rlist .line {
@@ -484,11 +497,11 @@
 }
 
 /* ---- Prodaja, P. Four tabs, one cut out ---- */
-/* 56px from the lede to the first hairline, the stack gap of 24px plus 32px */
+/* the list sits at the bottom of the left column, its rules run from the first to the third vertical */
 .tabs {
-  margin-top: 32px;
   display: flex;
   flex-direction: column;
+  width: 100%;
   border-top: 1px solid var(--line);
 }
 
@@ -497,8 +510,8 @@
   display: grid;
   grid-template-columns: 40px 1fr auto;
   align-items: center;
-  height: 56px;
-  /* 24px in from the line on both sides. A row of the list keeps its 56px, the list as a block starts 56px under the lede */
+  height: 64px;
+  /* 24px in from the line on both sides */
   padding: 0 24px 0 24px;
   border: 0;
   border-bottom: 1px solid var(--line);
@@ -512,12 +525,13 @@
   transition: color 200ms;
 }
 
+/* the active row, a 2px ink rule over the hairline and the full ink label, the others stay text-grey */
 .tab::before {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
   height: 2px;
   background: var(--fg);
   transform: scaleX(0);
@@ -548,18 +562,17 @@
   pointer-events: none;
 }
 
-/* the leader lines are laid out in percent of this box, with cqw and cqh. It holds nothing that reads --cw, since a size
-   container changes what 100cqw means for everything inside it. */
+/* the leader lines and rings are placed in pixels of this box by placeLeaders in panes.tsx, from the image pixels. The cut out is
+   fit at 78 by 66 percent below, the same numbers as FIT in panes.tsx, keep the two together. */
 .p-leads {
   position: absolute;
   inset: 0;
-  container-type: size;
 }
 
 /* Each cut out is in one of three states, set by setTab in panes.tsx. wait is off to the right and ready to come in, on is
    shown, gone is off to the left. The one leaving slides 48px left and fades over 400ms, the one arriving comes from 48px
-   right over 600ms on the same ease. After it lands the two leader lines draw on 120ms apart, the dots land with them,
-   then the range and the capacity roll in. */
+   right over 600ms on the same ease. After it lands the three leader lines draw on 120ms apart, the rings land with them,
+   then the range, the capacity and the model roll in. */
 .p-fig {
   position: absolute;
   inset: 0;
@@ -616,16 +629,22 @@
   --n: 1;
 }
 
-/* a leader line, 1px, from its start to its dot, the length and angle from the percent pairs the markup sets */
+.p-lead-c,
+.p-dot-c,
+.p-call-c {
+  --n: 2;
+}
+
+/* a leader line, 1px, from its start on the callout rule to its ring, the length and angle from the pixel pairs placeLeaders sets */
 .p-lead {
   position: absolute;
-  left: calc(var(--x0) * 1cqw);
-  top: calc(var(--y0) * 1cqh);
+  left: calc(var(--x0, 0) * 1px);
+  top: calc(var(--y0, 0) * 1px);
   height: 1px;
-  width: hypot(calc((var(--x1) - var(--x0)) * 1cqw), calc((var(--y1) - var(--y0)) * 1cqh));
-  background: var(--black);
+  width: hypot(calc((var(--x1, 0) - var(--x0, 0)) * 1px), calc((var(--y1, 0) - var(--y0, 0)) * 1px));
+  background: var(--fg);
   transform-origin: 0 50%;
-  rotate: atan2(calc((var(--y1) - var(--y0)) * 1cqh), calc((var(--x1) - var(--x0)) * 1cqw));
+  rotate: atan2(calc((var(--y1, 0) - var(--y0, 0)) * 1px), calc((var(--x1, 0) - var(--x0, 0)) * 1px));
   scale: 0 1;
 }
 
@@ -640,12 +659,28 @@
   transition: opacity 400ms var(--ease-wipe);
 }
 
+/* the ring marks the part, a 16px circle with a 1px ink edge and a 4px centre, filled with the ground so it reads on a dark mast too */
 .p-dot {
   position: absolute;
-  width: 9px;
-  height: 9px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
   translate: -50% -50%;
+  border: 1px solid var(--fg);
+  border-radius: 9999px;
+  background: var(--white);
   opacity: 0;
+}
+
+.p-dot::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--fg);
 }
 
 .p-fig[data-st='on'] .p-dot {
@@ -658,36 +693,16 @@
   transition: opacity 400ms var(--ease-wipe);
 }
 
-.p-dot::before,
-.p-dot::after {
-  content: '';
-  position: absolute;
-  background: var(--black);
-}
-
-.p-dot::before {
-  left: 0;
-  right: 0;
-  top: 4px;
-  height: 1px;
-}
-
-.p-dot::after {
-  top: 0;
-  bottom: 0;
-  left: 4px;
-  width: 1px;
-}
-
-/* the callout, its rule shows as the cut out lands, the range and the capacity roll in after the leader lines */
+/* the callout, its rule shows as the cut out lands, the range, the capacity and the model roll in after the leader lines. Each
+   one is a cell of three columns between two verticals, the text 24px in from the line. */
 .p-call {
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  /* wide enough for the longest range, Linde N20 do N25 C, at 24px */
-  width: max(34%, 17em);
-  padding: 0 0 12px 24px;
+  width: calc(var(--x4) - var(--x3));
+  box-sizing: border-box;
+  padding: 24px 0 0 24px;
   opacity: 0;
 }
 
@@ -738,19 +753,25 @@
   top: -32px;
   height: calc(12% + 32px);
   justify-content: flex-start;
-  padding-top: 24px;
   border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--black);
+  border-bottom: 1px solid var(--fg);
+}
+
+/* the capacity and the model cells sit on the bottom of the stage, one under the first column cell and one under the second, their
+   top rule is where the leader line starts */
+.p-call-b,
+.p-call-c {
+  bottom: 0;
+  border-top: 1px solid var(--fg);
 }
 
 .p-call-b {
-  right: 0;
-  bottom: 0;
-  /* two columns, so its left edge sits on column line 11 */
-  width: calc(2 * var(--cw) + 24px);
-  height: auto;
-  padding: 24px 0 0 24px;
-  border-top: 1px solid var(--black);
+  left: 0;
+}
+
+.p-call-c {
+  left: calc(var(--x4) - var(--x3));
+  width: calc(var(--x5) - var(--x4));
 }
 
 /* ---- Servis, S, the dark beat ---- */
@@ -791,20 +812,21 @@
   --cap: 0px;
 }
 
-.spec .ico {
+.spec .ico,
+.rlist .ico {
   display: block;
   width: 20px;
   height: 20px;
-  margin-bottom: calc(32px - var(--cap) - 6px);
   color: var(--fg);
 }
 
-.spec .ico svg {
-  display: block;
+.spec .ico {
+  margin-bottom: calc(32px - var(--cap) - 6px);
 }
 
-.at-row {
-  margin-top: 32px;
+.spec .ico svg,
+.rlist .ico svg {
+  display: block;
 }
 
 .tabs + .btn {

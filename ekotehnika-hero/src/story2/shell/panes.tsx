@@ -1,8 +1,8 @@
 // The text of each hold beat, laid on the 12 column grid. Plain markup, the shell drives it from the story clock, see
 // ui.tsx for the data attributes. Copy comes from ../copy.ts. Every block starts on a column line.
-import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { automatizacija, kompanija, markers, najam, prodaja, servis } from '../copy';
-import { Btn, Fill, Marker, SpecRow, TitleLines, cols, type SpecFact } from './ui';
+import { Btn, Fill, Marker, SpecRow, TitleLines, between, type SpecFact } from './ui';
 
 // Show tab i on the Prodaja pane, for the loop that steps with k and for a click. -1 shows no model yet. Each cut out
 // is in one of three states, wait (off to the right, ready to come in), on, and gone (off to the left), see .p-fig in
@@ -25,16 +25,53 @@ export function setTab(root: HTMLElement, i: number) {
   });
 }
 
-// The custom properties of a leader line, from its start to its dot, in percent of the stage.
-const leader = (x0: number, y0: number, to: number[]) => ({ '--x0': x0, '--y0': y0, '--x1': to[0], '--y1': to[1] }) as CSSProperties;
+// The cut out is fit inside the stage at 78 by 66 percent with object-fit contain, see .p-fig img in shell.css. The anchors in
+// copy.ts are in the file's own pixels, so each one is mapped to the screen through the box the image really fills, from its
+// natural size and the contain fit, and not from percent of the stage. Run on load and on every resize of the stage.
+const FIT = { w: 0.78, h: 0.66 };
+const CALLS = ['a', 'b', 'c'] as const;
+
+function placeLeaders(stage: HTMLElement) {
+  const s = stage.getBoundingClientRect();
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+  stage.querySelectorAll<HTMLElement>('.p-fig').forEach((fig) => {
+    const t = prodaja.tabs[Number(fig.dataset.i)];
+    const [nw, nh] = t.size;
+    const k = Math.min((W * FIT.w) / nw, (H * FIT.h) / nh);
+    const ox = (W - nw * k) / 2;
+    const oy = (H - nh * k) / 2;
+    for (const key of CALLS) {
+      const call = fig.querySelector<HTMLElement>(`.p-call-${key}`);
+      const lead = fig.querySelector<HTMLElement>(`.p-lead-${key}`);
+      const dot = fig.querySelector<HTMLElement>(`.p-dot-${key}`);
+      if (!call || !lead || !dot) continue;
+      const x1 = ox + t[key][0] * k;
+      const y1 = oy + t[key][1] * k;
+      // the leader leaves the callout's own rule, straight down or up when the part is inside the cell, else at its nearest end
+      const r = call.getBoundingClientRect();
+      const x0 = Math.min(Math.max(x1, r.left - s.left + 24), r.right - s.left - 24);
+      const y0 = key === 'a' ? r.bottom - s.top - 1 : r.top - s.top;
+      lead.style.setProperty('--x0', x0.toFixed(1));
+      lead.style.setProperty('--y0', y0.toFixed(1));
+      lead.style.setProperty('--x1', x1.toFixed(1));
+      lead.style.setProperty('--y1', y1.toFixed(1));
+      dot.style.left = `${x1.toFixed(1)}px`;
+      dot.style.top = `${y1.toFixed(1)}px`;
+    }
+  });
+}
 
 export function C1Pane() {
   const c = kompanija.c1;
   const facts: SpecFact[] = c.facts.map((f, i) => ({ ...f, icon: C1_ICONS[i] }));
   return (
     <div className="s2-pane s2-c1">
-      <div className="blk stack" style={{ ...cols(1, 6), top: 168 }}>
+      {/* the marker stays in its cell on the top rule like on every beat, the title and the lede sit in the empty band under the road */}
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.c1} order={0} />
+      </div>
+      <div className="blk stack lb" style={between(1, 3)}>
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
         <Fill text={c.text} />
       </div>
@@ -45,7 +82,7 @@ export function C1Pane() {
         spans={[1, 1, 1]}
         template={SPLIT('--x3', '--x4')}
         order={2}
-        style={cols(7, 12)}
+        style={between(3, 5)}
       />
     </div>
   );
@@ -55,23 +92,27 @@ export function RPane() {
   const c = kompanija.r;
   return (
     <div className="s2-pane s2-r">
-      <div className="blk stack" style={{ ...cols(1, 4), top: 168 }}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.r} order={0} />
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
         <Fill text={c.text} />
-        <ul className="rlist" data-rule="b">
-          {c.list.map((r, i) => (
-            <li key={r.label} data-rule="t">
-              <b className="lab" data-wipe={5 + i * 2}>
-                {r.label}
-              </b>
-              <span className="line" data-wipe={6 + i * 2}>
-                {r.line}
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
+      {/* the list sits on the bottom rule of the left column, each row has its solid icon like the spec rows */}
+      <ul className="rlist blk at-bottom" data-rule="b" style={between(1, 3)}>
+        {c.list.map((r, i) => (
+          <li key={r.label} data-rule="t">
+            <span className="ico" data-wipe={4 + i * 2} aria-hidden="true">
+              {R_ICONS[i]}
+            </span>
+            <b className="lab" data-wipe={5 + i * 2}>
+              {r.label}
+            </b>
+            <span className="line" data-wipe={6 + i * 2}>
+              {r.line}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -81,17 +122,39 @@ export function PPane() {
   const c = prodaja;
   const [pick, setPick] = useState<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const choose = (i: number) => {
     setPick(i);
     if (root.current) setTab(root.current, i);
   };
+  // the leader lines and the rings are placed from the fitted image, again whenever the stage or the fonts change
+  useLayoutEffect(() => {
+    const el = stage.current;
+    if (el) placeLeaders(el);
+  }, []);
+  useEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const run = () => placeLeaders(el);
+    const ro = new ResizeObserver(run);
+    ro.observe(el);
+    document.fonts?.ready.then(run);
+    const settle = window.setTimeout(run, 800);
+    return () => {
+      ro.disconnect();
+      window.clearTimeout(settle);
+    };
+  }, []);
   return (
     <div className="s2-pane s2-p" ref={root} data-tab={pick ?? 0} data-pick={pick ?? undefined}>
-      <div className="blk stack" style={{ ...cols(1, 6), top: 168 }}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.p} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
-        <div className="tabs" role="tablist" aria-label="Vrste viljuškara" aria-orientation="vertical" data-rule="t" style={{ width: 'calc(5 * var(--cw) + 4 * 24px)' }}>
+      </div>
+      {/* the tab list and its button sit at the bottom of the left column, the rules run from the first to the third vertical */}
+      <div className="blk stack lb" style={between(1, 3)}>
+        <div className="tabs" role="tablist" aria-label="Vrste viljuškara" aria-orientation="vertical" data-rule="t">
           {c.tabs.map((t, i) => (
             <button
               type="button"
@@ -121,20 +184,22 @@ export function PPane() {
             </button>
           ))}
         </div>
-        <Btn href={c.cta.href} kind="secondary" order={5} cta="quote">
+        <Btn href={c.cta.href} kind="secondary" order={6} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
-      <div className="p-stage" style={cols(7, 12)}>
+      <div className="p-stage" style={between(3, 5)} ref={stage}>
         {c.tabs.map((t, i) => (
           <figure className="p-fig" role="tabpanel" id={`p-panel-${i}`} aria-labelledby={`p-tab-${i}`} data-i={i} data-st={i === 0 ? 'on' : 'wait'} key={t.name}>
             <img src={t.img} alt={t.alt} loading="eager" decoding="async" />
-            {/* the two leader lines run from the end of each callout rule to a dot on the truck, the numbers are percent of the stage */}
+            {/* a leader line from each callout's rule to a ringed point on the truck, placed by placeLeaders from the image pixels */}
             <div className="p-leads" aria-hidden="true">
-              <i className="p-lead p-lead-a" style={leader(34, 12, t.a)} />
-              <i className="p-lead p-lead-b" style={leader(69.1, 88, t.b)} />
-              <i className="p-dot p-dot-a" style={{ left: `${t.a[0]}%`, top: `${t.a[1]}%` }} />
-              <i className="p-dot p-dot-b" style={{ left: `${t.b[0]}%`, top: `${t.b[1]}%` }} />
+              {CALLS.map((k) => (
+                <i className={`p-lead p-lead-${k}`} key={`l${k}`} />
+              ))}
+              {CALLS.map((k) => (
+                <i className={`p-dot p-dot-${k}`} key={`d${k}`} />
+              ))}
             </div>
             <figcaption className="p-call p-call-a" data-rule="tb">
               <span className="lab">{c.callouts[0]}</span>
@@ -143,6 +208,10 @@ export function PPane() {
             <div className="p-call p-call-b" data-rule="t">
               <span className="lab">{c.callouts[1]}</span>
               <b>{t.cap}</b>
+            </div>
+            <div className="p-call p-call-c" data-rule="t">
+              <span className="lab">{c.callouts[2]}</span>
+              <b>{t.model}</b>
             </div>
           </figure>
         ))}
@@ -155,7 +224,7 @@ export function SPane() {
   const c = servis;
   return (
     <div className="s2-pane s2-s">
-      <div className="blk stack" style={{ ...cols(1, 4), top: 168 }}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.s} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
@@ -163,7 +232,7 @@ export function SPane() {
           {c.cta.label}
         </Btn>
       </div>
-      <div className="dataline blk at-bottom" style={cols(1, 4)} data-rule="tb">
+      <div className="dataline blk at-bottom" style={between(1, 3)} data-rule="tb">
         <span className="lab" data-wipe={6}>
           {c.dataLabel}
         </span>
@@ -229,48 +298,66 @@ const C1_ICONS: ReactNode[] = [
   ),
 ];
 
+// R, a factory for the service centre, a gear for the original parts and a mortarboard for the training. Solid, 20 by 20, like the
+// spec row icons. The gear is a ring with a hole and eight teeth, the factory has a saw tooth roof, a chimney and three windows cut out.
+const R_ICONS: ReactNode[] = [
+  ico(<path d="M0 20V8l5 3V8l5 3V8l5 3V1h5v19ZM3 14h3v3H3ZM8.5 14h3v3h-3ZM14 14h3v3h-3Z" />),
+  ico(
+    <>
+      <path d="M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM10 7.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Z" />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+        <path d="M8.25 0h3.5v4h-3.5Z" transform={`rotate(${a} 10 10)`} key={a} />
+      ))}
+    </>,
+  ),
+  ico(
+    <>
+      <path d="M10 2 0 7l10 5 10-5Z" />
+      <path d="M4 11.2v3.8c0 1.7 2.7 3 6 3s6-1.3 6-3v-3.8l-6 3Z" />
+      <path d="M18 9.5h1.6V15H18Z" />
+    </>,
+  ),
+];
+
 export function NPane() {
   const c = najam;
   const facts: SpecFact[] = c.facts.map((f, i) => ({ ...f, icon: N_ICONS[i] }));
   return (
     <div className="s2-pane s2-n">
-      <div className="blk stack" style={{ ...cols(1, 5), top: 168 }}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.n} order={0} />
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
       </div>
-      <div className="blk stack n-side" style={{ ...cols(7, 12), top: 220 }}>
+      <div className="blk stack n-side" style={{ ...between(3, 5), top: 220 }}>
         <Fill text={c.text} />
         <Btn href={c.cta.href} kind="secondary" order={3} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
-      <SpecRow className="blk n-row" facts={facts} spans={[3, 3, 3, 3]} order={3} style={cols(1, 12)} />
+      <SpecRow className="blk n-row" facts={facts} spans={[3, 3, 3, 3]} order={3} style={between(1, 5)} />
     </div>
   );
 }
+
+// Three equal boxes, each starting on its own vertical, the first on the first, the second on the second and the third on the third.
+// A cell's own left line is its start, so the first two columns are a pitch less the 24px gap and the last takes the rest.
+const THIRDS = 'calc(var(--x2) - var(--x1) - 24px) calc(var(--x3) - var(--x2) - 24px) 1fr';
 
 export function ATPane() {
   const c = automatizacija;
   const facts: SpecFact[] = c.facts.map((f, i) => ({ ...f, icon: AT_ICONS[i] }));
   return (
     <div className="s2-pane s2-at">
-      <div className="blk stack" style={{ ...cols(1, 6), top: 168 }}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.at} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
         <Btn href={c.cta.href} kind="secondary" order={4} cta="quote">
           {c.cta.label}
         </Btn>
-        {/* the row runs from the first to the third vertical, its cell lines sit on the second one, the first two facts share the first cell */}
-        <SpecRow
-          className="at-row"
-          facts={facts}
-          spans={[1, 1, 1]}
-          template={SPLIT('--x1', '--x2')}
-          order={6}
-          style={{ width: 'calc(var(--x3) - var(--x1))' }}
-        />
       </div>
+      {/* the facts sit on the bottom rule, three equal boxes from the first vertical to the fourth */}
+      <SpecRow className="blk at-bottom" facts={facts} spans={[1, 1, 1]} template={THIRDS} order={6} style={between(1, 4)} />
     </div>
   );
 }

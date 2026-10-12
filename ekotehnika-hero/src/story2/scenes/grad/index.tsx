@@ -33,10 +33,20 @@ function Director({ clock, groups }: { clock: StoryClock; groups: React.MutableR
   const tgt = useMemo(() => new THREE.Vector3(), []);
 
   // the depot is fitted under the spec row of N, wherever the shell puts its bottom rule
+  // read from the page at most every 500ms and on resize, never every frame, since it forces a layout
+  const spec = useRef({ v: 524, at: -1e9, w: 0, h: 0 });
   const specBottom = () => {
-    const e = document.querySelector('.s2-n .n-row');
-    const b = e ? e.getBoundingClientRect().bottom : 0;
-    return b > 200 ? b + 24 : 524;
+    const c = spec.current;
+    const now = performance.now();
+    if (now - c.at > 500 || c.w !== size.width || c.h !== size.height) {
+      const e = document.querySelector('.s2-n .n-row');
+      const b = e ? e.getBoundingClientRect().bottom : 0;
+      c.v = b > 200 ? b + 24 : 524;
+      c.at = now;
+      c.w = size.width;
+      c.h = size.height;
+    }
+    return c.v;
   };
 
   // one pass, the pose of a region with its content slid down by dy screens, drawn into the scissor rows y0 and h from the bottom

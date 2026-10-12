@@ -300,6 +300,8 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
     model.updateMatrixWorld(true);
   });
 
+  // the figures are 14px canvas text drawn about 15.5px tall at 1080, so below 1080 they grow with the frame and never drop under 14px
+  const lab = Math.max(1, 1080 / size.height);
   return (
     <group ref={root}>
       <group position={[0, X50.ground, 0]} rotation={[0, X50.yaw, 0]}>
@@ -323,7 +325,7 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
       <primitive object={centre} />
       <primitive object={dimLines} />
       {labels.map((l, i) => (
-        <sprite key={`${i}${fonts}`} position={l.p as [number, number, number]} material={l.mat} scale={[l.w / 150, l.h / 150, 1]} renderOrder={4} />
+        <sprite key={`${i}${fonts}`} position={l.p as [number, number, number]} material={l.mat} scale={[(l.w / 150) * lab, (l.h / 150) * lab, 1]} renderOrder={4} />
       ))}
     </group>
   );

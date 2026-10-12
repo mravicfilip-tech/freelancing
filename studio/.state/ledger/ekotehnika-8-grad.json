@@ -56,7 +56,7 @@
       "sev": 3,
       "where": "grad/schematic.tsx:54-73,326",
       "what": "unverified, dimension labels may render about 13px at 1440, under the 14px floor",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -64,7 +64,7 @@
       "sev": 3,
       "where": "grad/index.tsx:57-61,100",
       "what": "unverified, fog removed, the ground plane may end in a hard horizon step under the H headline",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -72,7 +72,7 @@
       "sev": 3,
       "where": "grad/bots.tsx:325, choreo.ts:232",
       "what": "unverified, the AT charger's left edge may touch the column 7 line",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -80,7 +80,7 @@
       "sev": 3,
       "where": "grad/choreo.ts:288, index.tsx:167",
       "what": "top band turns dark at 10790 while the light depot still shows under it, band and strip edge not in step",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -88,7 +88,7 @@
       "sev": 3,
       "where": "grad/index.tsx:37-42",
       "what": "specBottom queries the DOM and forces layout every frame in the N pass, cache it on resize",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     }
   ],

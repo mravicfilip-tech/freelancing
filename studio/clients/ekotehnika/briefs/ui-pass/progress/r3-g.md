@@ -48,3 +48,14 @@ Sheets r3-g-ab-before.webp (A and B at k 0.25, 0.5 and 0.75 as they were) and r3
 
 - A. The plan part C items were already in from the checkpoint, a label plate with a bar code and bay code on every beam, stretch film bands and a tag on every load. What was wrong was the camera. From k 0.6 to 0.85 it swung in through the near rack row while that row was rising, so one carton a metre from the lens filled the frame. The near row now stays flat until the camera is inside the aisle and rises over 7400 to 7650. Everything stops at the band under the top row.
 - B. The black hold from k 0.475 to the start of S is gone, and so is the shutter that rolled off it. Where the push into the truck's black fills the frame, the scene cuts to the dark schematic stage. There the X50 is drawn the way a draughtsman draws it. The outer contour and the speed lines are there from the cut, then the centre lines, the edges from the ground up, the wheels as arcs that close, and last the dimension lines with their figures. Lines are added segment by segment, never faded. The drawing is whole by the time the S text arrives, so S is unchanged.
+
+## Review fixes, ekotehnika-8-grad F5 to F9
+
+Sheet r3-g-review-fixes.webp, S, T at the band switch, AT, N and H at 1920 by 1080 and 1440 by 900. tsc and vite build clean.
+
+- F5. The S figures grow with the frame below 1080, so at 1440 by 900 they render about 18px, over the 14px floor.
+- F6. Cleared by shot. Under the H headline the ground is 241 and 242 only at both widths, no horizon step.
+- F7. Cleared by shot. The AT charger's left edge is at x 1000 of 1920 and x 767 of 1440, the column 7 line at 972 and 732.
+- F8. The T strip now ends at 10924, so its edge passes the top rule at 10790, the moment the shell turns the top row dark. At the switch the dark hall starts at y 137 to 139 at both widths, no light sliver under the dark band.
+- F9. The N spec row is read from the page at most every 500ms and on resize, not every frame.
+- F1 closed by Filip's guideline red ruling, F2 kept per the plan. The ledger still waits on Filip's own line on the card.

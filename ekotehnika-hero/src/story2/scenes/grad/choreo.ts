@@ -159,7 +159,9 @@ export type Region = 'site' | 'bp' | 'grid' | 'bots';
 // T is one move. The hall of the robots, drawn from its own camera, pushes the rental depot off the top of the frame, the two meet on
 // one hard edge that climbs the frame, the depot above it and the hall below it. By STRIP_END the hall fills the frame.
 export const STRIP_START = 10500;
-export const STRIP_END = 10860;
+// The edge passes the top rule (136px of 1080) at 10790, the moment the shell turns the top row dark, so the dark band never sits
+// over a light sliver of the depot. At 900 it is already 23px under the band then.
+export const STRIP_END = 10924;
 export const SWAP_T = STRIP_END;
 export const strip = (pos: number) => eio(seg(pos, STRIP_START, STRIP_END));
 // B cuts from the black of the truck straight to the dark stage of the schematic at B_CUT, where the drawing is drawn on

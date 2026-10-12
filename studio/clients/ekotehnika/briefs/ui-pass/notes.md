@@ -186,3 +186,15 @@ S6. **Version 5, S, the servis screen.** Ref `refs/scenes/s06-v5-s-servis.webp`,
    Candidates on file for the fix. Ref 06 is this beat almost one to one. Left column on the grid, the blueprint
    larger and centred, a giant faded figure behind it, a counter on the right edge, one data line at the bottom in
    place of the two tiles. Same shared column problem as S4.
+S7. **Version 5, S, the blueprint is not a proper schematic.** Ref `refs/scenes/s07-v5-s-blueprint-not-precise.webp`,
+   Filip marked the blueprint. Said: "The illustration on the right feels too much hand drawn, lines not precise,
+   doesn't feel like a proper schematic. Schematics are really precise."
+   What is there now. The X50 mesh drawn as edges geometry in a three quarter perspective view, with a soft glow.
+   Every mesh edge above the angle threshold shows, so the tyre treads turn into dense clumps, lines overlap and
+   double up, all lines have the same weight, and there are no dimensions or construction lines. Mast and forks are
+   missing (S6).
+   What a precise schematic needs, my read. An orthographic view (side elevation, or a clean isometric), silhouette
+   and key feature edges only, two line weights (outline heavier, detail thin), dashed hidden and centre lines,
+   dimension lines with arrowheads and real X50 figures, a fine measuring grid behind, no glow. The drawn Linija
+   blueprint on S is already closer to this than the 3D one.
+   Open. Whether the wheels still turn in the schematic. Default yes, the wheel outlines rotate with the clock.

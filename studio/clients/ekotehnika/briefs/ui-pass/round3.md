@@ -12,9 +12,9 @@ the screen as it is now, what is measured, the fix and the files. No code moves 
 
 Each has my default. Reply "yes" to take all defaults, or correct a line by its number.
 
-- **Q1, button cell.** Your pin "lets use this variant" landed on the board as a whole. Default is 1A stays until you name a cell such as 3C.
-- **Q2, logo on dark.** Default is option 3. The top band, 136px with the logos, nav and buttons, stays white over the dark beats, and the dark starts under the top rule. Option 1 keeps it hidden. Option 2 is a white field behind the logos, close to the rejected white frame.
-- **Q3, illustrations in versions 2 and 4.** Default is yes to all four points. Carry every S note into both versions in their own style, AT first, no red outlines on dark, and fill the empty left half of T in version 5.
+- **Q1, button cell.** Your pin "lets use this variant" landed on the board as a whole. Item 1 changes how every secondary looks, so the board is reshot with that change, one frame per cell, and you pick from that. Default is 1A until you name a cell such as 3C.
+- **Q2, logo on dark.** Default is option 3. The top band, 136px with the logos, nav and buttons, stays white over the dark beats, and the dark starts under the top rule. Option 1 keeps it hidden. Option 2 is a white field behind the logos, close to the rejected white frame. Option 3 changes how the dark servis beat looks, so before you pick, the board gets one mock frame of option 2 and option 3 on S in version 5.
+- **Q3, illustrations in versions 2 and 4.** Default is yes to all four points. Carry every S note into both versions in their own style, AT first, and no red outlines on dark. Filling the empty left half of T in version 5 is my addition, not something you raised, so it is a separate yes.
 - **Q4, grid lines behind text.** Default is the lines run unbroken across the whole stage, under the text layer, with no cut outs around text boxes. Text sits on top and stays readable because the lines drop to low opacity (item 2).
 - **Q5, where the delivery photos go.** Default is N, Najam, see item 7. Its copy is "24 sata isporuka" and "Besplatna dostava i preuzimanje", which is what the photos show.
 - **Q6, footer direction.** Default is the direction in item 9, in words, built only after a yes.
@@ -42,7 +42,8 @@ Filip, "Grid is broken and also these needs to be done and set an opacity so it 
 - **Cause, breaks.** `StoryShell.tsx` cuts the line layer out behind every `[data-mask]` text box (`maskStyle`, mask composite exclude). So a vertical stops wherever a title, lede, list or button block sits, at x 1016 under the hero headline block for example.
 - **Cause, missing marks.** Plus marks exist only where the five verticals meet the top and bottom rules, 10 marks. A pane's own block rule, such as the hairline over the hero marker at y 703, gets no mark where a vertical crosses it.
 - **Cause, contrast.** Lines are solid `#d2d2d2` on light, 1.47 to 1, and white at 18 percent on dark. Over the red truck the solid grey reads as a scratch on the model, and over dark scene parts it disappears.
-- **Fix, lines.** Per Q4, no cut outs. Each line becomes a pair, 1px black at 12 percent beside 1px white at 30 percent. On white the dark half reads, on dark the white half reads, and over the red and black truck both halves read, which is the mix Filip asked for. On the dark span the pair flips weight, white 22 percent and black 30 percent. Values get tuned on real pixels until a line reads on every ground without beating the content.
+- **Fix, lines.** Per Q4, no cut outs. Each line becomes a pair, 1px black beside 1px white, so the dark half reads on light ground, the white half reads on dark ground, and over the red and black truck both halves read, which is the mix Filip asked for.
+- **Starting values, measured.** Black at 18 percent gives 1.52 to 1 on the white ground, a touch above today's solid grey at 1.47 to 1, so lines do not get weaker on white. Black at 12 percent would drop to 1.31 to 1 and is too faint. White at 40 percent gives 2.22 to 1 on Linde red and 3.79 to 1 on the `#1f1f1f` dark ground. These are a start, tuned on real pixels until a line reads on every ground without beating the content.
 - **Fix, marks.** A plus mark at every crossing of a vertical with any horizontal rule on screen, the top and bottom rules and each block rule, from the same whole pixel numbers. Marks keep their solid ink.
 - **Files.** `src/story2/shell/Grid.tsx`, `src/story2/shell/StoryShell.tsx` (mask), `src/story2/shell/shell.css`.
 - **Check.** Shots of every hold beat in 2, 4 and 5, and one zoomed crop per ground (white, scene, dark) to check the pair.
@@ -92,7 +93,7 @@ Filip, "Remove these sections", "Remove these two sections", "Remove this sectio
 ![Removed, statement and Proizvodi](refs/round3/15-removed-statement-and-proizvodi.webp)
 
 - **Done** in 73d1380. The statement marquee, Proizvodi, the client wall and the closing band are out, only the footer follows the story.
-- **Changed since.** Filip then asked for a products section back, better executed. That is item 8. The taste log line from 17 05 gets its carry forward rewritten so it no longer bans a products section.
+- **Changed since.** Filip then asked for a products section back, better executed. That is item 8. The taste log entry for the removal already has its carry forward rewritten in 3c3f64b, so it no longer bans a products section.
 
 ## 7. Delivery photos inside the story
 
@@ -104,10 +105,10 @@ Filip, on the removed collage, "These images should have been set like this some
 
 Three places were checked, with the one I would pick first.
 
-- **N, Najam (pick).** The copy is "24 sata isporuka" and "Besplatna dostava i preuzimanje", the photos are trucks coming off a lorry. The collage takes columns 1 to 6 from y 300 to the bottom rule at 1015, about 900 by 700, and the rental floor scene frames into columns 7 to 12. Four photos overlap as in the removed collage, one large (about 520 by 470), one tall, one wide and the E20 EVO badge detail on top, each offset by whole grid steps of 24px, square corners. It costs a reframe of the N scene camera.
+- **N, Najam (pick).** The copy is "24 sata isporuka" and "Besplatna dostava i preuzimanje", the photos are trucks coming off a lorry. N's title, lede and stat row reach down to about y 500 at 1920 by 1080, so the collage takes columns 1 to 6 from y 528 to the bottom rule at 1015, about 900 by 487, and the rental floor scene frames into columns 7 to 12. Four photos overlap as in the removed collage, one large (about 430 by 390), one tall, one wide and the E20 EVO badge detail on top, each offset by whole grid steps of 24px, square corners. It costs a reframe of the N scene camera in versions 2, 4 and 5.
 - **C1, Kompanija.** The empty band under the road, columns 1 to 6, y 736 to 1015, is only 280px tall, so the photos would shrink to about 280 by 190. It proves "na terenu širom Srbije" but reads as a thumbnail strip.
 - **P, after the fourth model.** The cut out could give way to the collage for the last part of the hold, but that spends the scroll item 3 needs to slow the models down.
-- **Files.** `src/story2/shell/panes.tsx` (NPane), `src/story2/shell/shell.css`, the N camera in each version's scene, `public/photos/isporuka-1..4.webp`.
+- **Files.** `src/story2/shell/panes.tsx` (NPane), `src/story2/shell/shell.css`, `public/photos/isporuka-1..4.webp`. The N camera in `scenes/linija` and `scenes/grad` is done by the item 4 builders inside their own folders, and in `scenes/sistem` by the shell builder, so no folder has two owners.
 - **Motion.** The photos reveal one by one with the block wipe the titles use, 120ms apart, with a small parallax of up to 24px against the scroll.
 
 ## 8. A products section, better executed
@@ -130,7 +131,7 @@ Filip, "Better executed footer".
 
 ![Footer now](refs/round3/11-footer-now.webp)
 
-- **What is wrong.** Three columns of 16px links float in a pale band with about 600px of empty space between them and the line art, the Hitan servis number stands alone at the top right, and the drawn trucks sit in a corner with no relation to the columns.
+- **What is wrong.** Three columns of 15px links float in a pale band with a wide empty gap between them and the line art, the Hitan servis number stands alone at the top right, and the drawn trucks sit in a corner with no relation to the columns.
 - **Direction in words for Q6.** The footer keeps the story's grid, the same verticals and plus marks, so it closes the page on the system. Row 1 holds the two phone numbers as the largest type on the footer, Prodaja and Hitan servis side by side at 48px in Geist digits with their labels, and the email under each. Row 2 holds the logos at the guideline sizes, the address and the nav in grid cells at 16px. Row 3 is the drawn truck line, MT15, H30, R16 and N20, standing on the bottom rule across the full width with the copyright under the rule. The pale grey ground stays, so the red Linde logo stays on a legal ground.
 - **Files.** `src/story2/shell/sections.tsx` (Footer), `src/story2/shell/shell.css`, `src/story2/shell/lineart.tsx`.
 
@@ -149,8 +150,8 @@ Filip, "Better executed footer".
 1. Filip answers Q1 to Q8.
 2. Items 1, 2 and 11 together in the shell, one builder, since they share `heroframe.css`, `shell.css` and `StoryShell.tsx`. Then shots.
 3. Item 3 and the P overlap, the same builder after step 2, since it touches `StoryShell.tsx` again.
-4. Item 4, two builders in parallel, one in `scenes/linija`, one in `scenes/grad`.
-5. Items 7, 8 and 9 after their directions are approved, one builder for `sections.tsx` and one for NPane and the N cameras.
+4. Item 4, two builders in parallel, one in `scenes/linija`, one in `scenes/grad`. Each also reframes its own N camera for item 7, so it starts after Q5 is answered.
+5. Items 7, 8 and 9 after their directions are approved and after step 3 has left `panes.tsx`, one builder for `sections.tsx` and one for NPane and the Sistem N camera.
 6. Self check, before and after shots of every changed route at 1440 and 1920, contrast on real pixels.
 7. `/uireview` once, one round and one re-check, then the card.
 8. Board reshot at 1920, then the deploy with the git free copy, then the link.

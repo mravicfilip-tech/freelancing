@@ -39,13 +39,13 @@ function RowLines({ xs, ground }: { xs: number[]; ground?: boolean }) {
   );
 }
 
-// The nodes of the cell lattice as fractions of its width and counts of rows, where a vertical meets a horizontal line.
-// Columns 5 to 12 are cut in four equal units. The lead spans two units and two rows, two cells in the last row span two units.
+// The crossings of a vertical with a horizontal rule, as the vertical number n (--x1 to --x5) and the row line r from the top, 0 to 3.
+// The top and bottom rules cross all five verticals, the two rules inside the cells run from the third vertical to the last.
 const NODES: [number, number][] = [
-  [0, 0], [0.5, 0], [0.75, 0], [1, 0],
-  [0.5, 1], [0.75, 1], [1, 1],
-  [0, 2], [0.5, 2], [0.75, 2], [1, 2],
-  [0, 3], [0.5, 3], [1, 3],
+  [1, 0], [2, 0], [3, 0], [4, 0], [5, 0],
+  [3, 1], [4, 1], [5, 1],
+  [3, 2], [4, 2], [5, 2],
+  [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
 ];
 
 // The text reveal of the story beats, for sections that sit after the story clock. The same parts, a data-wipe block wipe from
@@ -89,7 +89,7 @@ function useReveal(root: RefObject<HTMLElement | null>) {
       if (!first) return;
       // armed, the bar waits off to the left of its part and the part is hidden under it
       for (const w of wipes) {
-        w.el.style.setProperty('--bx', '-100%');
+        w.el.style.setProperty('--bx', '-101%');
         w.el.style.setProperty('--tv', 'hidden');
       }
       fills.forEach((f) => f.setAttribute('data-live', ''));
@@ -116,7 +116,7 @@ function useReveal(root: RefObject<HTMLElement | null>) {
 
     function end(B: Block) {
       for (const W of B.wipes) {
-        W.el.style.setProperty('--bx', '100%');
+        W.el.style.setProperty('--bx', '101%');
         W.el.style.setProperty('--tv', 'inherit');
       }
       B.fills.forEach((f) => f.querySelectorAll('.fl').forEach((l) => l.classList.add('on')));
@@ -175,13 +175,15 @@ export function Products() {
 
   return (
     <section className="sx sx-products" ref={root} aria-labelledby="proizvodi-naslov" data-after-story>
-      <i className="sx-vl sx-vl-full" style={{ left: X(1) }} aria-hidden="true" />
-      <i className="sx-vl sx-vl-full" style={{ left: X(5) }} aria-hidden="true" />
+      {[1, 2, 3, 4, 5].map((n) => (
+        <i className="sx-vl sx-vl-full" style={{ left: X(n) }} aria-hidden="true" key={n} />
+      ))}
       <div className="sx-frame">
         <i className="sx-rule sx-rule-t" aria-hidden="true" />
         <i className="sx-rule sx-rule-b" aria-hidden="true" />
-        <Plus style={{ left: `calc(${X(1)} - 4px)`, top: -4 }} />
-        <Plus style={{ left: `calc(${X(1)} - 4px)`, top: 'calc(100% - 4px)' }} />
+        {NODES.map(([n, r]) => (
+          <Plus style={{ left: `calc(${X(n)} - 4px)`, top: `calc(${r} * var(--row) - 4px)` }} key={`${n}-${r}`} />
+        ))}
 
         <div className="sx-left">
           <div data-reveal="0">
@@ -210,7 +212,7 @@ export function Products() {
         <div className="sx-cells">
           {c.cells.map((p, i) => (
             <a
-              className={`sx-cell${p.lead ? ' sx-cell-lead' : ''}${i > 4 ? ' sx-cell-wide' : ''}${i > 2 ? ' sx-cell-t' : ''}`}
+              className={`sx-cell${p.lead ? ' sx-cell-lead' : ''}${i > 2 ? ' sx-cell-t' : ''}`}
               href={p.href}
               data-cta="product"
               data-reveal={i * 70}
@@ -233,9 +235,6 @@ export function Products() {
                 </span>
               </span>
             </a>
-          ))}
-          {NODES.map(([px, py]) => (
-            <i className="sx-p sx-p-n" style={{ '--px': px, '--py': py } as CSSProperties} aria-hidden="true" key={`${px}-${py}`} />
           ))}
         </div>
       </div>

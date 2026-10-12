@@ -37,10 +37,10 @@ for (let y = from; y <= to + step; y += step) {
     const after = document.documentElement.hasAttribute('data-after-story');
     return { y: Math.round(scrollY), layers, pfig, tone: hf?.dataset.tone ?? '', after };
   });
-  // the ground just under the top rule, 40 by 4 css px at the right of the stage. The scene canvas does not keep its
-  // drawing buffer and reads back blank, so this reads a screenshot of the patch.
+  // the ground the top row stands on, 40 by 4 css px above the buttons at the right, which is the scene's band over the top
+  // row. The scene canvas does not keep its drawing buffer and reads back blank, so this reads a screenshot of the patch.
   // software GL on a busy machine can take long over one frame, so a slow screenshot skips the tone check for this step
-  const png = await p.screenshot({ clip: { x: 1560, y: 150, width: 40, height: 4 }, type: 'png', timeout: 120000 }).catch(() => null);
+  const png = await p.screenshot({ clip: { x: 1560, y: 8, width: 40, height: 4 }, type: 'png', timeout: 120000 }).catch(() => null);
   const g = !png ? -1 : await p.evaluate(async (b64) => { const im = new Image(); im.src = 'data:image/png;base64,' + b64; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; let t = 0; for (let i = 0; i < d.length; i += 4) t += (d[i] + d[i + 1] + d[i + 2]) / 3; return Math.round(t / (d.length / 4)); }, png.toString('base64'));
   const layer = s.after ? 'after' : s.layers.join('+') || 'none';
   if (s.pfig && !s.layers.includes('P')) problems.push(`y ${s.y} layer ${layer}, a Prodaja cut out shows outside P`);

@@ -51,9 +51,10 @@ export const WIPE_SHARE = 0.6;
 export function wipeAt(p: number) {
   const a = wipeEase(range(p, 0, 0.35));
   const b = wipeEase(range(p, 0.35, 1));
-  // the bar leaves to 101 percent, not 100, so on a button of fractional width no sliver of it shows at the right edge
-  // through the clip (round 4 item 6, the line on the right of Hitan servis)
-  return { bx: p < 0.35 ? -100 + 100 * a : 101 * b, shown: p >= 0.35 };
+  // the bar waits at minus 101 percent and leaves to 101, not 100, so on a block of fractional width no sliver of it shows at
+  // either edge through the clip (round 4 item 6, the line on the right of Hitan servis, and the marks at the left of a block
+  // before its reveal)
+  return { bx: p < 0.35 ? -101 + 101 * a : 101 * b, shown: p >= 0.35 };
 }
 
 export const formatCount = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');

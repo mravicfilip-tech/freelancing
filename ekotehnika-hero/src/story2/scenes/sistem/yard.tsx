@@ -1,5 +1,5 @@
 // The Ekotehnika yard seen from above and from the flip. Concrete apron with slab joints, three halls with roofs, a
-// gate with its house and a van, rows of parked Linde trucks in marked bays, floor pallet stacks, open racking,
+// gate with its house (framed windows, a door, a fascia roof, a plant unit, a contact shadow) and a van, rows of parked Linde trucks in marked bays, floor pallet stacks, open racking,
 // kerbed verges with trees and hedges, a zebra crossing and lane lines. Layout after the drone stills of the yard
 // (reference only, nothing of the photos is used). Green is not a token, so verges are LMH light grey.
 import { useMemo, useRef } from 'react';
@@ -7,7 +7,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { StoryClock } from '../../clock';
 import { G, ease, lam, lit, range, rng, uOf } from './kit';
-import { BoxSet, Hedge, Planter, Trees, Van, type BoxItem, type TreeSpec } from './props';
+import { BoxSet, Hedge, Planter, Trees, Van, stripShadowMaterial, type BoxItem, type TreeSpec } from './props';
 import { Roof, roofMaterials, type RoofSpec } from './roof';
 import { ProxyTrucks, type TruckSpec } from './trucks';
 
@@ -135,7 +135,7 @@ function Island({ x0, x1, z0, z1, trees, hedge = true }: { x0: number; x1: numbe
         mat={wallPale}
         cast
       />
-      <Trees items={trees} mid />
+      <Trees items={trees} mid pit={false} ground={0.18} />
       {hedge && x1 - x0 > 6 && <Hedge x={x0 + 0.8} z={cz + (z1 - z0) * 0.3} len={x1 - x0 - 1.6} />}
     </group>
   );
@@ -213,17 +213,88 @@ function Zebra({ x, z0 = -1.5, z1 = 1.5 }: { x: number; z0?: number; z1?: number
   return <BoxSet items={items} mat={line} receive={false} />;
 }
 
+const gateFoot = stripShadowMaterial(0.34);
+const seal = lam(G.black);
+const glass = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.7) });
+const glassHi = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.6) });
+const steel = lam(G.graphite);
+
+// One barrier, a housing with a service door and a cap, the pivot, and the raised arm in white with graphite bands.
+function Barrier({ x, z }: { x: number; z: number }) {
+  return (
+    <group position={[x, 0, z]}>
+      <BoxSet items={[[0, 0.03, 0, 0.6, 0.06, 0.6]]} mat={trim} />
+      <BoxSet items={[[0, 0.58, 0, 0.4, 1.04, 0.4]]} mat={lam(G.dark)} cast />
+      <BoxSet items={[[0, 1.12, 0, 0.46, 0.06, 0.46]]} mat={steel} cast />
+      <BoxSet items={[[0.205, 0.55, 0, 0.01, 0.7, 0.28]]} mat={seal} />
+      <BoxSet items={[[0.21, 0.82, 0.08, 0.02, 0.04, 0.04]]} mat={lam(G.light)} />
+      <BoxSet items={[[0, 0.95, z > 0 ? -0.23 : 0.23, 0.14, 0.14, 0.06]]} mat={steel} />
+      <BoxSet items={[[0, 1.9, z > 0 ? -0.26 : 0.26, 0.09, 1.9, 0.09]]} mat={lam(G.white, { emissive: lit(G.white).multiplyScalar(0.5) })} cast />
+      <BoxSet items={[1.35, 1.95, 2.55].map((y) => [0, y, z > 0 ? -0.26 : 0.26, 0.095, 0.22, 0.095] as BoxItem)} mat={steel} />
+    </group>
+  );
+}
+
+// The gate house, 3 m by 2.6 m. A plinth, corner trims, a window band in black seals with mullions on the road side and
+// the front, a door with its frame and handle, a flat roof with a fascia overhang and a coping line, a plant unit with
+// its grille on the far side, a plain plate by the door and a contact shadow round its foot.
+function GateHouse({ x, z }: { x: number; z: number }) {
+  const w = 3.0;
+  const d = 2.6;
+  const h = 2.8;
+  return (
+    <group position={[x, 0, z]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.024, -d / 2 - 0.6]} material={gateFoot} renderOrder={1}>
+        <planeGeometry args={[w + 1.2, 1.2]} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, -Math.PI / 2]} position={[w / 2 + 0.6, 0.024, 0]} material={gateFoot} renderOrder={1}>
+        <planeGeometry args={[d + 1.2, 1.2]} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI]} position={[0, 0.024, d / 2 + 0.35]} material={gateFoot} renderOrder={1}>
+        <planeGeometry args={[w + 0.4, 0.7]} />
+      </mesh>
+      <BoxSet items={[[0, h / 2, 0, w, h, d]]} mat={wall} cast />
+      <BoxSet items={[[0, 0.15, 0, w + 0.06, 0.3, d + 0.06]]} mat={trim} cast />
+      {/* corner trims */}
+      <BoxSet items={[[-1, -1], [-1, 1], [1, -1], [1, 1]].map(([a, b]) => [(a * w) / 2, h / 2, (b * d) / 2, 0.1, h, 0.1] as BoxItem)} mat={wallPale} cast />
+      {/* the window band on the road side (-z) and the front (+x), seal, glass, a lighter band, mullions and a sill */}
+      <BoxSet items={[[0, 1.75, -d / 2 - 0.01, 2.3, 1.02, 0.04], [w / 2 + 0.01, 1.75, -0.2, 0.04, 1.02, 1.8]]} mat={seal} />
+      <BoxSet items={[[0, 1.75, -d / 2 - 0.03, 2.2, 0.92, 0.03], [w / 2 + 0.03, 1.75, -0.2, 0.03, 0.92, 1.7]]} mat={glass} />
+      <BoxSet items={[[0, 2.06, -d / 2 - 0.045, 2.2, 0.16, 0.02], [w / 2 + 0.045, 2.06, -0.2, 0.02, 0.16, 1.7]]} mat={glassHi} />
+      <BoxSet items={[[-0.37, 1.75, -d / 2 - 0.05, 0.05, 0.92, 0.03], [0.37, 1.75, -d / 2 - 0.05, 0.05, 0.92, 0.03], [w / 2 + 0.05, 1.75, -0.2, 0.03, 0.92, 0.05]]} mat={seal} />
+      <BoxSet items={[[0, 1.2, -d / 2 - 0.08, 2.4, 0.06, 0.16], [w / 2 + 0.08, 1.2, -0.2, 0.16, 0.06, 1.9]]} mat={trim} cast />
+      {/* the door on the yard side (+z), frame, slab, a vision panel and the handle, the step and a plain plate */}
+      <BoxSet items={[[0.5, 1.08, d / 2 + 0.02, 1.0, 2.16, 0.05]]} mat={edge} />
+      <BoxSet items={[[0.5, 1.04, d / 2 + 0.05, 0.88, 2.04, 0.03]]} mat={wallPale} />
+      <BoxSet items={[[0.5, 1.55, d / 2 + 0.07, 0.4, 0.5, 0.02]]} mat={glass} />
+      <BoxSet items={[[0.15, 1.0, d / 2 + 0.09, 0.04, 0.22, 0.04]]} mat={steel} />
+      <BoxSet items={[[0.5, 0.06, d / 2 + 0.3, 1.3, 0.12, 0.5]]} mat={trim} />
+      <BoxSet items={[[1.24, 1.6, d / 2 + 0.03, 0.4, 0.28, 0.03]]} mat={edge} />
+      <BoxSet items={[[1.24, 1.6, d / 2 + 0.05, 0.34, 0.22, 0.02]]} mat={lam(G.white, { emissive: lit(G.white).multiplyScalar(0.8) })} />
+      {/* a window beside the door on the yard side */}
+      <BoxSet items={[[-0.6, 1.75, d / 2 + 0.01, 1.3, 1.02, 0.04]]} mat={seal} />
+      <BoxSet items={[[-0.6, 1.75, d / 2 + 0.03, 1.2, 0.92, 0.03]]} mat={glass} />
+      <BoxSet items={[[-0.6, 2.06, d / 2 + 0.045, 1.2, 0.16, 0.02], [-0.6, 1.75, d / 2 + 0.05, 0.05, 0.92, 0.03]]} mat={glassHi} />
+      <BoxSet items={[[-0.6, 1.2, d / 2 + 0.08, 1.4, 0.06, 0.16]]} mat={trim} cast />
+      {/* the flat roof, a fascia overhang with a coping line and its shadow gap */}
+      <BoxSet items={[[0, h + 0.1, 0, w + 0.5, 0.2, d + 0.5]]} mat={wallPale} cast />
+      <BoxSet items={[[0, h + 0.22, 0, w + 0.54, 0.04, d + 0.54]]} mat={trim} />
+      <BoxSet items={[[0, h - 0.02, -d / 2 - 0.25, w + 0.5, 0.03, 0.02], [0, h - 0.02, d / 2 + 0.25, w + 0.5, 0.03, 0.02], [w / 2 + 0.25, h - 0.02, 0, 0.02, 0.03, d + 0.5]]} mat={edge} />
+      {/* a plant unit on the far side, a casing with grille slats and its feet */}
+      <BoxSet items={[[-w / 2 - 0.3, 0.75, 0.3, 0.5, 0.7, 0.9]]} mat={lam(G.light)} cast />
+      <BoxSet items={Array.from({ length: 6 }, (_, i) => [-w / 2 - 0.56, 0.5 + i * 0.1, 0.3, 0.02, 0.03, 0.8] as BoxItem)} mat={edge} />
+      <BoxSet items={[[-w / 2 - 0.3, 0.2, -0.05, 0.42, 0.4, 0.06], [-w / 2 - 0.3, 0.2, 0.65, 0.42, 0.4, 0.06]]} mat={steel} />
+    </group>
+  );
+}
+
 function Gate() {
   return (
     <group>
-      {/* the gate house with its roof, a window band and a door */}
-      <BoxSet items={[[63.8, 1.4, 3.7, 3.0, 2.8, 2.6]]} mat={wall} cast />
-      <BoxSet items={[[63.8, 2.9, 3.7, 3.5, 0.16, 3.1]]} mat={wallPale} cast />
-      <BoxSet items={[[63.8, 1.7, 2.38, 2.2, 1.0, 0.06]]} mat={lam(G.mid)} />
-      <BoxSet items={[[63.8, 0.1, 2.0, 3.6, 0.2, 1.2]]} mat={trim} />
-      {/* barrier housings either side of the road and the raised arms */}
-      <BoxSet items={[[66.2, 0.55, 2.35, 0.4, 1.1, 0.4], [66.2, 0.55, -2.35, 0.4, 1.1, 0.4]]} mat={lam(G.dark)} cast />
-      <BoxSet items={[[66.2, 1.6, 2.35, 0.1, 1.9, 0.1], [66.2, 1.6, -2.35, 0.1, 1.9, 0.1]]} mat={lam(G.white)} cast />
+      <GateHouse x={63.8} z={3.7} />
+      {/* barriers either side of the road, with the raised arms */}
+      <Barrier x={66.2} z={2.35} />
+      <Barrier x={66.2} z={-2.35} />
       {/* hatching before the gate */}
       <BoxSet items={Array.from({ length: 5 }, (_, i) => [69.4 + i * 1.1, 0.02, 3.6, 0.3, 0.01, 2.6] as BoxItem)} mat={line} receive={false} />
       <Van x={71.5} z={4.3} yaw={Math.PI} />

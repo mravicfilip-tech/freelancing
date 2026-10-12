@@ -54,10 +54,6 @@ const COUNTER: [number, string][] = [
   [0, '00'],
 ];
 
-// The beats that carry a primary button of their own. While one is on screen the top row quote button is a secondary, so a
-// view never has two primaries.
-const OWN_PRIMARY = new Set(['H', 'P', 'S', 'N', 'AT']);
-
 const HOLDS = TIMELINE.filter((b) => b.hold);
 const PAD = 16;
 
@@ -192,7 +188,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const stage = stageRef.current;
     const hf = heroRef.current;
     const grid = gridRef.current;
-    const quoteTop = hf?.querySelector<HTMLElement>('.hf-quote-top');
     const lines = grid?.querySelector<HTMLElement>('.s2-lines');
     const plus = stage?.querySelector<HTMLElement>('.s2-plus');
     if (!stage || !hf || !grid || !lines || !plus) return;
@@ -360,14 +355,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const now = hf.querySelector('.hf-now');
         if (now) now.textContent = c;
       }
-      // exactly one primary per view
-      const ownPrimary = visible.some((g) => OWN_PRIMARY.has(g.id));
-      if (quoteTop && quoteTop.dataset.level !== (ownPrimary ? 's' : 'p')) {
-        quoteTop.dataset.level = ownPrimary ? 's' : 'p';
-        quoteTop.classList.toggle('btn-primary', !ownPrimary);
-        quoteTop.classList.toggle('btn-secondary', ownPrimary);
-      }
-
       // dark span, the grid and the frame turn white and the logos leave, the Linde logo is banned on dark grey
       const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
       const t = dark ? 'white' : 'ink';

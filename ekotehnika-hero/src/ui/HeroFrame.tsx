@@ -71,8 +71,8 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
               {hero.service.label} <span className="num">{hero.service.number}</span>
             </BtnInner>
           </a>
-          {/* the quote button is the one primary only when no beat on screen has a primary of its own, the shell switches it */}
-          <a className="btn btn-secondary hf-quote-top" href={hero.quote.href} data-cta="quote" data-wipe="2">
+          {/* the quote button is the one primary on every beat, a beat's own buttons are secondaries */}
+          <a className="btn btn-primary hf-quote-top" href={hero.quote.href} data-cta="quote" data-wipe="2">
             <BtnInner>{hero.quote.label}</BtnInner>
           </a>
         </div>
@@ -102,7 +102,7 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
           </span>
         </h1>
         <Fill text={hero2.lede} className="hf-lede" />
-        <a className="btn btn-primary hf-quote" href={hero2.quote.href} data-cta="quote" data-wipe="3" data-mask>
+        <a className="btn btn-secondary hf-quote" href={hero2.quote.href} data-cta="quote" data-wipe="3" data-mask>
           <BtnInner>{hero2.quote.label}</BtnInner>
         </a>
       </div>

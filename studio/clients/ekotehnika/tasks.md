@@ -42,8 +42,10 @@ Task format
   - [x] Split the 3D work into one branch per scene, street, auto and lift running
   - [x] Build round 4 batch A, the P leak, the blink, buttons, marker rule, A colour, C1 reveal, chapter nav
   - [x] Merge the Grad round 3 branch
-  - [ ] Check batch A on a real scroll and send preview 2
-  - [ ] Build round 4 beat panes and sections
+  - [x] Check batch A on a real scroll
+  - [x] Build round 4 beat panes and sections, item 21 included
+  - [x] Settle Q10 and Q11, Filip handed them over, servis branch started
+  - [ ] Send preview 2 after the real scroll checks on head
   - [ ] Merge the street, auto and lift branches
   - [ ] Build round 4
   - [ ] Review, check and deploy

@@ -320,7 +320,7 @@ Per Filip, one off branch per 3D scene, each built by its own cloud session, eac
 |---|---|---|
 | `claude/awesome-faraday-lkhnn2-street` | 2 scene part, 3, 4, 7 modules, 9 edge, then the footer scenery still per Q11 | `props.tsx`, `outdoor.tsx`, `yard.tsx`, `index.tsx`, `public/footer/` |
 | `claude/awesome-faraday-lkhnn2-auto` | 20 | `aisle.tsx`, `atplan.ts`, `grid.tsx` |
-| `claude/awesome-faraday-lkhnn2-lift` | 16 | the fork tine in `overlay.tsx` only |
+| `claude/awesome-faraday-lkhnn2-lift` | 16. On merge, move the end of SISTEM_DARK_TOP in `darkTop.ts` from 9480 to 9300, where the finished blade covers the top rule | the fork tine in `overlay.tsx` only |
 | `claude/awesome-faraday-lkhnn2-servis` | 15, per Q10 | `schematic.tsx`, `bake.ts` |
 | `claude/awesome-faraday-lkhnn2-grad` | Grad round 3, F5 to F9 | `src/story2/scenes/grad/` |
 | `claude/awesome-faraday-lkhnn2`, here | everything in the shell and `src/ui`, plus 7 scroll, 8 camera, 17, 24 | `src/story2/shell/`, `src/ui/`, `camera.tsx`, `warehouse.tsx`, the band lines in `overlay.tsx`, `kit.ts`, `route.ts` |

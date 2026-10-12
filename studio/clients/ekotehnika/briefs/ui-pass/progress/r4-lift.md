@@ -33,10 +33,10 @@ Same container, `?v=5` at 1920, production build, three runs each.
 | | Load | Full scroll | First canvas frame |
 |---|---|---|---|
 | Before, 23fee3b | 10.93MB | 11.69MB | 959, 988, 1061ms |
-| After | 10.93MB | 11.69MB | 752, 724, and 715 and 1113 on two earlier runs |
+| After | 10.93MB | 11.69MB | 752, 724, 947, and 715 and 1113 on two earlier runs |
 
 The download does not move at two decimals, the textures are drawn at runtime. First frame times swing by about 300ms
-run to run on software GL, and the after runs sit at or under the before runs. Slice used is under 0.01MB of 0.2MB.
+run to run on software GL. One of three before runs and one of five after runs went over 1,000ms, and the after median of 752ms sits under the before median of 988ms. Slice used is under 0.01MB of 0.2MB.
 
 ## Shots
 

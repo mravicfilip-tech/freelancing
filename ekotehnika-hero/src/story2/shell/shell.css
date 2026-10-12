@@ -695,8 +695,9 @@
 /* the ring marks the part, a 16px circle with a 1px ink edge and a 4px centre, filled with the ground so it reads on a dark mast too */
 .p-dot {
   /* the point, a white square with an ink edge and an ink plus, the sharp corners and the plus of the buttons. Picked by Filip on the
-     board on 2026-10-12 (taste 23:55, variant 3), then made 20 percent larger. Odd sizes, so on the pixel centre placeLeaders gives
-     it every edge and stroke lands on whole pixels. */
+     board on 2026-10-12 (taste 23:55, variant 3), then made 20 percent larger, with a 2px plus ("set 2px stroke"). The box is odd,
+     so on the pixel centre placeLeaders gives it its edges land on whole pixels, and the 14px plus sits on whole pixels too, half a
+     pixel up and left of the exact centre, which keeps every stroke sharp. */
   position: absolute;
   width: 29px;
   height: 29px;
@@ -704,8 +705,8 @@
   translate: -50% -50%;
   border: 1px solid var(--fg);
   background:
-    linear-gradient(var(--fg), var(--fg)) center / 15px 3px no-repeat,
-    linear-gradient(var(--fg), var(--fg)) center / 3px 15px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) 6px 12px / 14px 2px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) 12px 6px / 2px 14px no-repeat,
     var(--white);
   opacity: 0;
 }

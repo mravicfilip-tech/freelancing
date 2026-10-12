@@ -325,6 +325,8 @@ Per Filip, one off branch per 3D scene, each built by its own cloud session, eac
 | `claude/awesome-faraday-lkhnn2-grad` | Grad round 3, F5 to F9 | `src/story2/scenes/grad/` |
 | `claude/awesome-faraday-lkhnn2`, here | everything in the shell and `src/ui`, plus 7 scroll, 8 camera, 17, 24 | `src/story2/shell/`, `src/ui/`, `camera.tsx`, `warehouse.tsx`, the band lines in `overlay.tsx`, `kit.ts`, `route.ts` |
 
+Resume check-ins, per the Sessions rule in the README. Each fires hourly at minute 34 into its own session and is deleted when its branch is merged. This session `trig_01BUFDXLPptijwxGrxN3mscL`, street `trig_01E4YcZnYUoN7MpmQATxMYe9`, automation `trig_01CgcqYubTLtP5cUJi1KRThD`, lift `trig_01BtbFadMSpBgWgZ5VuRv9xw`. The servis branch gets one when it starts.
+
 ## Order of work
 
 Shell work runs here beside the branches.

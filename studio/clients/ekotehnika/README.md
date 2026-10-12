@@ -61,6 +61,10 @@ Live site ekotehnika.rs, captured 8 October 2026 at 1440 by 900. Captures are in
 
 1440
 
+## Sessions
+
+- Every Ekotehnika chat picks its work back up on its own if usage runs out (Filip, 12 October 2026, "This is applied for all ekotehnika chats"). A session that starts work, or starts a builder session, sets an hourly Routine into that session that resumes unfinished work and stays silent when nothing is pending, and deletes it when the work is merged. The live ones are listed in the round's plan under Branches.
+
 ## Run
 
 - Folder `ekotehnika-hero/`, its own React and Vite app, separate from the Remittix app at the repo root. Node 22 or newer.

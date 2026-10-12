@@ -145,6 +145,19 @@ Filip, "Better executed footer".
 - After the first scroll past the story, `document.querySelector('[data-after-story]')` matches the page root, which the shell marks with the same attribute, so the version switch stays hidden from then on. The fix is to query inside the body. `StoryShell.tsx`, `HeroFrame.tsx`.
 - The story's last frame shows a strip of the AT scene above the footer notch, with blue route arrows cut by the band (image 11).
 
+## 12. Version 5 AT, redone from scratch
+
+Filip, "Redo this scene 100%, the point is to show automatization, how you gonna do it has to be 100x better than this". Direction approved 12 October, "yes go with that AT direction".
+
+- **Story.** One order, start to finish, across the AT hold, in one continuous camera move. At k 0 to 0.3 the C-Matic 10 leaves its charger. At 0.3 to 0.6 it drives under a rack, lifts the shelf unit and carries it out, the moment that says automation. At 0.6 to 1.0 it brings the box to a pick station where a person takes the order.
+- **View.** A three quarter view at about 4m eye height, like the servis schematic, never top down. The real `cmatic10.glb` at true scale, an aisle of real racks with real boxes, edge to edge with no fade.
+- **Fleet.** Two or three more C-Matics move in sync deeper in the aisle, so it reads as a fleet run by one system.
+- **System graphic.** Only a thin path line drawn just ahead of the active robot and erased behind it, and a calm highlight on the target rack slot.
+- **Text.** Columns 1 to 6 on the warehouse's own floor and wall.
+- **Refuses.** Top down views, dashed or dotted routes, arrowheads, plus markers, circle docks, toy scale, random wandering robots, faded masks.
+- **T.** Redone after AT so the najam floor leads into this aisle.
+- **Files.** `src/story2/scenes/sistem/**`, builder S, after its other items.
+
 ## Order of work
 
 1. Filip answers Q1 to Q8.

@@ -96,7 +96,7 @@ export function PPane() {
             </button>
           ))}
         </div>
-        <Btn href={c.cta.href} kind="primary" arrow order={5} cta="quote">
+        <Btn href={c.cta.href} kind="primary" order={5} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -137,7 +137,7 @@ export function SPane() {
         <Marker m={markers.s} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="primary" arrow order={5} cta="quote">
+        <Btn href={c.cta.href} kind="primary" order={5} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -163,7 +163,7 @@ export function NPane() {
       </div>
       <div className="blk stack n-side" style={{ ...cols(7, 12), top: 220 }}>
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="primary" arrow order={3} cta="quote">
+        <Btn href={c.cta.href} kind="primary" order={3} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -180,7 +180,7 @@ export function ATPane() {
         <Marker m={markers.at} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="primary" arrow order={4} cta="quote">
+        <Btn href={c.cta.href} kind="primary" order={4} cta="quote">
           {c.cta.label}
         </Btn>
         <SpecRow className="at-row" facts={c.facts} spans={[2, 2, 2]} order={6} style={{ width: '100%' }} />

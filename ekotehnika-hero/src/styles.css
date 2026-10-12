@@ -37,6 +37,72 @@
   font-display: swap;
 }
 
+/* Every digit on the site is Geist Sans, lining and tabular, because Daxline Pro only has old style figures. A digits only
+   subset (0 to 9, plus, percent, degree, superscript two) declared under the same family name after the Daxline faces,
+   so the digits come from it and the letters stay Daxline Pro, with no markup change. One face per Daxline weight, because
+   a face with a weight range loses the tie to the exact weight Daxline face at 400, 500, 700 and 750. size-adjust lines the Geist cap
+   height (710) up with the Daxline cap height (735), the metric overrides keep the line box the same. */
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+
 /* The scenes draw some canvas text with the family name Geist, and the grad scene waits on it. This maps that name
    to the Daxline files so no Geist file or Google Fonts request is left on the story routes. */
 @font-face {
@@ -110,6 +176,7 @@ body {
   font-size: 18px;
   font-weight: 400;
   line-height: 1.5;
+  font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }

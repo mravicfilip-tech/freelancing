@@ -6,7 +6,6 @@ import { SITE } from '../../content';
 import { closing, footer, klijenti, proizvodi, statement } from '../copy';
 import { FooterLine } from './lineart';
 import { formatCount, outCubic, range } from './motion';
-import { Arrow } from './ui';
 
 // One wide tab notch, 320px wide and 40px deep with 24px corners and 16px fillets, in the colour of the section below.
 export function Notch({ color }: { color: string }) {
@@ -120,9 +119,6 @@ export function Products() {
                 </span>
                 <img src={p.img} alt="" width={120} height={80} loading="lazy" decoding="async" />
                 <span className="pl-count">({p.count})</span>
-                <span className="pl-go" aria-hidden="true">
-                  <Arrow />
-                </span>
               </a>
             </li>
           ))}
@@ -144,10 +140,8 @@ export function Products() {
           <div className="co-text">
             <p className="s2-label">Isporuka</p>
             <a className="btn btn-primary" href={c.cta.href} data-cta="quote">
-              <span className="btn-t">
-                {c.cta.label}
-                <Arrow />
-              </span>
+              <span className="btn-t">{c.cta.label}</span>
+              <i className="btn-x" aria-hidden="true" />
             </a>
           </div>
           {c.photos.map((ph, i) => (
@@ -207,12 +201,19 @@ export function Clients() {
               <span>{cell.name}</span>
             </li>
           ))}
-          {Array.from({ length: (rows + 1) * (WALL_COLS + 1) }, (_, i) => (
+          {/* hairlines and plus marks come from the same whole pixel numbers, see .wall in shell.css */}
+          {Array.from({ length: WALL_COLS + 1 }, (_, i) => (
+            <i className="wl wl-v" style={{ '--i': i } as CSSProperties} aria-hidden="true" key={`v${i}`} />
+          ))}
+          {Array.from({ length: rows + 1 }, (_, r) => (
+            <i className="wl wl-h" style={{ '--r': r } as CSSProperties} aria-hidden="true" key={`h${r}`} />
+          ))}
+          {Array.from({ length: (rows + 1) * (WALL_COLS + 1) }, (_, n) => (
             <i
               className="gp"
-              style={{ left: `${((i % (WALL_COLS + 1)) / WALL_COLS) * 100}%`, top: `${(Math.floor(i / (WALL_COLS + 1)) / rows) * 100}%` }}
+              style={{ '--i': n % (WALL_COLS + 1), '--r': Math.floor(n / (WALL_COLS + 1)) } as CSSProperties}
               aria-hidden="true"
-              key={`p${i}`}
+              key={`p${n}`}
             />
           ))}
         </ul>
@@ -234,10 +235,8 @@ export function Closing() {
           ))}
         </h2>
         <a className="btn btn-primary" href={closing.cta.href} data-cta="quote">
-          <span className="btn-t">
-            {closing.cta.label}
-            <Arrow />
-          </span>
+          <span className="btn-t">{closing.cta.label}</span>
+          <i className="btn-x" aria-hidden="true" />
         </a>
       </div>
     </section>

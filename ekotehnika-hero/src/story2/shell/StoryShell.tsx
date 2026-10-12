@@ -13,6 +13,7 @@ import { Grid } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { Closing, Clients, Footer, Products, Statement } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
+import { applyBtnVariant } from './variant';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -172,6 +173,9 @@ type ShellProps = {
 
 export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TOP }: ShellProps) {
   const { stageRef, clock } = useStoryClock(reduced);
+  useEffect(() => {
+    applyBtnVariant();
+  }, []);
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -184,7 +188,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const stage = stageRef.current;
     const hf = heroRef.current;
     const grid = gridRef.current;
-    if (!stage || !hf || !grid) return;
+    const lines = grid?.querySelector<HTMLElement>('.s2-lines');
+    const plus = stage?.querySelector<HTMLElement>('.s2-plus');
+    if (!stage || !hf || !grid || !lines || !plus) return;
     const t0 = performance.now();
     const H = TIMELINE[0];
 
@@ -305,11 +311,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       if (key !== lastMask) {
         lastMask = key;
         const m = maskStyle([...fixedRects, ...visible.flatMap((g) => g.rects)]);
-        grid.style.maskImage = m.image;
-        grid.style.maskSize = m.size;
-        grid.style.maskPosition = m.pos;
-        grid.style.maskRepeat = m.repeat;
-        grid.style.maskComposite = m.comp;
+        lines.style.maskImage = m.image;
+        lines.style.maskSize = m.size;
+        lines.style.maskPosition = m.pos;
+        lines.style.maskRepeat = m.repeat;
+        lines.style.maskComposite = m.comp;
       }
 
       // grid draw on at each hold, dim to 40 percent between holds, plus marks turn once on reveal
@@ -330,8 +336,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       if (gk !== lastGrid) {
         lastGrid = gk;
         grid.style.setProperty('--go', go.toFixed(2));
+        plus.style.setProperty('--go', go.toFixed(2));
         grid.style.setProperty('--draw', draw.toFixed(3));
-        grid.style.setProperty('--rot', draw.toFixed(3));
+        plus.style.setProperty('--draw', draw.toFixed(3));
+        grid.style.setProperty('--rot', draw >= 0.999 ? '0' : draw.toFixed(3));
+        plus.style.setProperty('--rot', draw >= 0.999 ? '0' : draw.toFixed(3));
       }
 
       // counter and progress line on the right edge
@@ -356,6 +365,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         hf.dataset.toneBottom = t;
         hf.dataset.logos = dark ? 'off' : 'on';
         grid.dataset.tone = t;
+        plus.dataset.tone = t;
       }
       id = requestAnimationFrame(loop);
     };
@@ -393,7 +403,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     if (!root) return;
     const run = () => {
       root.querySelectorAll<HTMLElement>('.s2-still').forEach((sec) => {
-        const g = sec.querySelector<HTMLElement>('.s2-grid');
+        const g = sec.querySelector<HTMLElement>('.s2-lines');
         if (!g) return;
         const rects = Array.from(sec.querySelectorAll<HTMLElement>('[data-mask]')).map((e) => boxIn(e, sec));
         const m = maskStyle(rects);

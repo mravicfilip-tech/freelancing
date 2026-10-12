@@ -7,12 +7,6 @@
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
 import type { Fact, Marker as MarkerData } from '../copy';
 
-export const Arrow = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false">
-    <path d="M1 7h11M8 3l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" />
-  </svg>
-);
-
 // A block of the 12 column grid, columns a to b counted from 1. The stage is the container that sets --cw and --gx.
 export const cols = (a: number, b: number): CSSProperties => ({
   left: `calc(48px + ${a - 1} * var(--gx))`,
@@ -60,14 +54,14 @@ export function Fill({ text, className = '' }: { text: string; className?: strin
   );
 }
 
-type BtnProps = { href: string; kind?: 'primary' | 'secondary'; arrow?: boolean; order?: number; cta?: string; children: ReactNode; style?: CSSProperties };
+type BtnProps = { href: string; kind?: 'primary' | 'secondary'; icon?: 'plus' | 'phone'; hover?: boolean; order?: number; cta?: string; children: ReactNode; style?: CSSProperties };
 
-export const Btn = ({ href, kind = 'primary', arrow, order = 0, cta, children, style }: BtnProps) => (
-  <a className={`btn btn-${kind}`} href={href} data-wipe={order} data-mask data-cta={cta} style={style}>
-    <span className="btn-t">
-      {children}
-      {arrow ? <Arrow /> : null}
-    </span>
+// One button, five looks. The variant is picked on the page with ?btn=1 to 5, see variant.ts and the button rules in
+// heroframe.css. btn-x is the small cell some variants use, a plus or a phone, it is empty and hidden in the others.
+export const Btn = ({ href, kind = 'primary', icon, hover, order = 0, cta, children, style }: BtnProps) => (
+  <a className={`btn btn-${kind}${icon === 'phone' ? ' btn-phone' : ''}${hover ? ' is-hover' : ''}`} href={href} data-wipe={order} data-mask data-cta={cta} style={style}>
+    <span className="btn-t">{children}</span>
+    <i className="btn-x" aria-hidden="true" />
   </a>
 );
 

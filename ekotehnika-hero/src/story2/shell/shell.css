@@ -45,6 +45,12 @@
 .s2-stage {
   --cw: calc((100cqw - 96px - 264px) / 12);
   --gx: calc(var(--cw) + 24px);
+  /* the five vertical grid lines, columns 1, 4, 7, 10 and 13, on whole pixels */
+  --x1: 48px;
+  --x2: round(nearest, calc(48px + 3 * var(--gx)), 1px);
+  --x3: round(nearest, calc(48px + 6 * var(--gx)), 1px);
+  --x4: round(nearest, calc(48px + 9 * var(--gx)), 1px);
+  --x5: round(nearest, calc(100cqw - 48px), 1px);
   position: relative;
   height: 100vh;
   overflow: hidden;
@@ -107,7 +113,27 @@
 
 .s2-grid[data-tone='white'] {
   --gl: rgb(255 255 255 / 0.18);
+}
+
+.s2-plus {
+  --gp: var(--black);
+  --draw: 1;
+  --go: 0.4;
+  --rot: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  opacity: var(--go);
+}
+
+.s2-plus[data-tone='white'] {
   --gp: var(--white);
+}
+
+.s2-lines {
+  position: absolute;
+  inset: 0;
 }
 
 .s2-grid .gv {
@@ -139,13 +165,13 @@
 
 .gs-ma {
   top: 136px;
-  height: calc((100% - 200px) / 2);
+  height: calc((100% - 200px) / 2 + 1px);
   transform-origin: top;
 }
 
 .gs-mb {
   bottom: 64px;
-  height: calc((100% - 200px) / 2);
+  height: calc((100% - 200px) / 2 + 1px);
   transform-origin: bottom;
 }
 
@@ -174,19 +200,33 @@
   position: absolute;
   top: 0;
   height: 1px;
-  left: calc(48px + var(--s) * 3 * var(--gx));
-  width: calc(3 * var(--gx));
 }
 
-.s2-grid .hs:last-child {
-  width: calc(3 * var(--gx) - 24px);
+.hs:nth-child(1) {
+  left: var(--x1);
+  width: calc(var(--x2) - var(--x1));
+}
+
+.hs:nth-child(2) {
+  left: var(--x2);
+  width: calc(var(--x3) - var(--x2));
+}
+
+.hs:nth-child(3) {
+  left: var(--x3);
+  width: calc(var(--x4) - var(--x3));
+}
+
+.hs:nth-child(4) {
+  left: var(--x4);
+  width: calc(var(--x5) - var(--x4) + 1px);
 }
 
 .s2-grid .hl,
 .s2-grid .hr {
   top: 0;
   height: 1px;
-  width: 50%;
+  width: calc(50% + 1px);
   transform: scaleX(var(--draw));
 }
 
@@ -200,27 +240,27 @@
   transform-origin: right;
 }
 
-/* the plus mark, 9px, at every crossing, it turns a quarter once while the grid draws on */
-.s2-grid .gp {
+/* the plus mark, 9px with 1px arms, so its centre is one pixel. Its box starts 4px before the line pixel, both axes, so
+   the centre pixel is the crossing. It turns a quarter once while the grid draws on. */
+.s2-plus .gp {
   position: absolute;
   width: 9px;
   height: 9px;
-  translate: -50% -50%;
+  margin-left: -4px;
   rotate: calc(var(--rot) * 90deg);
 }
 
 .gp-top {
-  top: 136px;
+  top: calc(136px - 4px);
 }
 
+/* the bottom rule is the pixel row 65 up from the bottom edge, so its plus box ends 60px up */
 .gp-bottom {
-  top: auto;
-  bottom: 64px;
-  translate: -50% 50%;
+  bottom: 60px;
 }
 
-.s2-grid .gp::before,
-.s2-grid .gp::after,
+.s2-plus .gp::before,
+.s2-plus .gp::after,
 .wall .gp::before,
 .wall .gp::after {
   content: '';
@@ -228,7 +268,7 @@
   background: var(--gp, var(--black));
 }
 
-.s2-grid .gp::before,
+.s2-plus .gp::before,
 .wall .gp::before {
   left: 0;
   right: 0;
@@ -236,7 +276,7 @@
   height: 1px;
 }
 
-.s2-grid .gp::after,
+.s2-plus .gp::after,
 .wall .gp::after {
   top: 0;
   bottom: 0;
@@ -271,7 +311,7 @@
   border: 1px solid currentColor;
   border-radius: 50%;
   letter-spacing: 0;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .s2-title {
@@ -335,7 +375,8 @@
 }
 
 .spec .cell:last-child {
-  border-right: 1px solid var(--line);
+  /* drawn outside the box, so it sits on the right grid line pixel */
+  box-shadow: 1px 0 0 0 var(--line);
 }
 
 .fig {
@@ -347,7 +388,7 @@
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
   white-space: nowrap;
   color: var(--fg);
 }
@@ -448,7 +489,7 @@
 }
 
 .tab-range {
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .p-stage {
@@ -539,7 +580,7 @@
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .p-call-a {
@@ -578,8 +619,13 @@
   color: rgb(255 255 255 / 0.06);
 }
 
+/* the label sits above the figure, in the band over the drawing, y 148 to 168, so it never runs through the X50 */
 .s2-giant span {
-  margin-top: 8px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -12px;
+  text-align: center;
   font: 500 14px/20px var(--font);
   letter-spacing: 0.6em;
   text-transform: uppercase;
@@ -605,7 +651,7 @@
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
   text-decoration: none;
   color: var(--fg);
 }
@@ -848,18 +894,7 @@
 
 .pl-count {
   color: var(--grey-dark);
-  font-variant-numeric: tabular-nums;
-}
-
-.pl-go {
-  margin-left: auto;
-  display: inline-flex;
-  color: var(--black);
-}
-
-.pl-go svg {
-  width: 28px;
-  height: 28px;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .pcards {
@@ -999,7 +1034,7 @@
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .cl-claim b {
@@ -1007,22 +1042,20 @@
 }
 
 .wall {
+  --wall-w: calc(100cqw - 96px);
   grid-column: 1 / -1;
   position: relative;
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   grid-auto-rows: 128px;
-  border-top: 1px solid var(--grey-light);
-  border-left: 1px solid var(--grey-light);
+  height: calc(var(--rows) * 128px + 1px);
 }
 
 .wc {
   display: grid;
   place-items: center;
-  border-right: 1px solid var(--grey-light);
-  border-bottom: 1px solid var(--grey-light);
   font-size: 28px;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -1041,11 +1074,36 @@
   color: var(--grey-mid);
 }
 
+/* hairlines, 1px, on whole pixels. Column line i sits at round(i * (width - 1) / 6) and row line r at r * 128. The plus marks
+   take the same two numbers, so each plus is centred on its crossing. */
+.wall .wl {
+  position: absolute;
+  display: block;
+  background: var(--grey-light);
+  pointer-events: none;
+}
+
+.wall .wl-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  left: round(nearest, calc(var(--i) * (var(--wall-w) - 1px) / 6), 1px);
+}
+
+.wall .wl-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+  top: calc(var(--r) * 128px);
+}
+
 .wall .gp {
   position: absolute;
   width: 9px;
   height: 9px;
-  translate: -50% -50%;
+  margin: -4px 0 0 -4px;
+  left: round(nearest, calc(var(--i) * (var(--wall-w) - 1px) / 6), 1px);
+  top: calc(var(--r) * 128px);
   pointer-events: none;
 }
 
@@ -1115,7 +1173,7 @@
   font-weight: 350;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
   text-decoration: none;
   color: var(--black);
 }
@@ -1204,10 +1262,100 @@
 }
 
 /* reduced motion, every hold is a still screen, the grid stays at full strength and the story counter has nothing to count */
-.s2-still .s2-grid {
+.s2-still .s2-grid,
+.s2-still .s2-plus {
   --go: 1;
 }
 
 .s2-still .hf-side {
   display: none;
+}
+
+/* ---- the button board, /?buttons ---- */
+.bb {
+  padding: 48px;
+  min-height: 100vh;
+  background: var(--white);
+}
+
+.bb-title {
+  margin-bottom: 32px;
+  font-size: 40px;
+  font-weight: 350;
+  letter-spacing: -0.02em;
+}
+
+.bb-cols {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.bb-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bb-head b {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--black);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.bb-ground {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+  background: var(--white);
+  border: 1px solid var(--grey-light);
+  color: var(--black);
+}
+
+.bb-ground.btn-ground-dark {
+  background: var(--dark-ground);
+  border-color: var(--dark-ground);
+  color: var(--white);
+  --fg2: rgb(255 255 255 / 0.7);
+}
+
+.bb-set {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.plist a {
+  position: relative;
+}
+
+.plist a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: var(--black);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms var(--ease-wipe);
+}
+
+.plist a:hover::after,
+.plist a:focus-visible::after {
+  transform: scaleX(1);
 }

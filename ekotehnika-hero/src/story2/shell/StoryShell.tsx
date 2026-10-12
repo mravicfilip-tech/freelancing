@@ -48,9 +48,10 @@ const DARK_TOP: [number, number][] = [
 
 const HOLDS = TIMELINE.filter((b) => b.hold);
 
-// Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1 runs twice as long, its wipes and
-// counts took about 144px of scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast").
-const SLOW: Record<string, number> = { C1: 2 };
+// Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1's wipes and counts took about 144px of
+// scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast"), so they run over
+// 0.36 of the hold, twice the old pace, which is 1.45 times the slower pace every beat has now.
+const SLOW: Record<string, number> = { C1: 1.45 };
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
 const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };

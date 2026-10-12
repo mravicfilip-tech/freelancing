@@ -100,13 +100,6 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
               <li key={l.label}>
                 <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined} data-ch={l.ch}>
                   {l.label}
-                  {/* the same border as the buttons draws on around the link on hover */}
-                  <span className="btn-d" aria-hidden="true">
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                  </span>
                 </a>
               </li>
             ))}

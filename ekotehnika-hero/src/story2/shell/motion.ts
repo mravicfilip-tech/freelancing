@@ -36,13 +36,13 @@ export function bezier(x1: number, y1: number, x2: number, y2: number) {
 export const wipeEase = bezier(0.7, 0, 0.2, 1);
 export const outCubic = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
 
-// Every reveal on a hold beat finishes inside the first 18 percent of the beat, the count up by 25 percent and the
+// Every reveal on a hold beat finishes inside the first 25 percent of the beat, the count up by 34 percent and the
 // scroll fill by 40 percent, so the beat reads for most of its span. The hero block runs on real time after load,
-// 1.2s for all its lines.
-export const WIPE_DONE = 0.18;
-export const COUNT_DONE = 0.25;
+// 1.6s for all its lines. Both were 1.4 times quicker until Filip's "slow down these animations a bit" (2026-10-12).
+export const WIPE_DONE = 0.25;
+export const COUNT_DONE = 0.34;
 export const PX_PER_S = 500;
-export const HERO_SECONDS = 1.2;
+export const HERO_SECONDS = 1.6;
 // Line reveal, a share of the wipe budget, the rest is the stagger between lines.
 export const WIPE_SHARE = 0.6;
 

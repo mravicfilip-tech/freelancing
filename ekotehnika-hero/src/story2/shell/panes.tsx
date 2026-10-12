@@ -46,18 +46,27 @@ function placeLeaders(stage: HTMLElement) {
       const lead = fig.querySelector<HTMLElement>(`.p-lead-${key}`);
       const dot = fig.querySelector<HTMLElement>(`.p-dot-${key}`);
       if (!call || !lead || !dot) continue;
-      const x1 = ox + t[key][0] * k;
-      const y1 = oy + t[key][1] * k;
-      // the leader leaves the callout's own rule, straight down or up when the part is inside the cell, else at its nearest end
+      // Every end sits on the middle of a whole pixel. The leader is a 1px box turned about its own middle line, so on a whole
+      // pixel edge a straight down leader would straddle two columns and draw 2px wide and grey, heavier than the callout's 1px rule
+      // beside it (Filip 2026-10-12, "lines dont appear same stroke").
+      const mid = (v: number) => Math.round(v - 0.5) + 0.5;
+      const x1 = mid(ox + t[key][0] * k);
+      const y1 = mid(oy + t[key][1] * k);
+      // Every leader leaves its callout's rule straight down or up, never at an angle (Filip 2026-10-12, "angle lines are weirdly
+      // executed"). The range row runs across both cells, and its words sit in the cell on the side of the stage its point is on.
+      if (key === 'a') {
+        const split = fig.querySelector<HTMLElement>('.p-call-c')?.offsetLeft ?? W / 2;
+        call.classList.toggle('is-right', x1 >= split);
+      }
       const r = call.getBoundingClientRect();
-      const x0 = Math.min(Math.max(x1, r.left - s.left + 24), r.right - s.left - 24);
-      const y0 = key === 'a' ? r.bottom - s.top - 1 : r.top - s.top;
-      lead.style.setProperty('--x0', x0.toFixed(1));
-      lead.style.setProperty('--y0', y0.toFixed(1));
-      lead.style.setProperty('--x1', x1.toFixed(1));
-      lead.style.setProperty('--y1', y1.toFixed(1));
-      dot.style.left = `${x1.toFixed(1)}px`;
-      dot.style.top = `${y1.toFixed(1)}px`;
+      const x0 = x1;
+      const y0 = mid(key === 'a' ? r.bottom - s.top - 1 : r.top - s.top);
+      lead.style.setProperty('--x0', String(x0));
+      lead.style.setProperty('--y0', String(y0));
+      lead.style.setProperty('--x1', String(x1));
+      lead.style.setProperty('--y1', String(y1));
+      dot.style.left = `${x1}px`;
+      dot.style.top = `${y1}px`;
     }
   });
 }

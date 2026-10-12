@@ -259,11 +259,14 @@
   --bar: var(--grey-light);
 }
 
+/* The image box starts 8px below the top of the figure, which clips for the block wipe, so the 8px hover lift stays inside the
+   clip and the top of a tall truck is never cut (Filip 2026-10-12, "image cut off on hover"). */
 .sx-img {
   position: absolute;
-  inset: 0;
+  top: 8px;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 8px);
   object-fit: contain;
   object-position: center bottom;
   transition: transform 360ms var(--out);

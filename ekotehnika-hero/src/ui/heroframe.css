@@ -382,26 +382,15 @@
 }
 
 .hf-nav a {
-  --hp: 0;
-  --d-stroke: currentColor;
   position: relative;
   display: block;
   padding: 6px 0;
   color: inherit;
   font: 500 15px/20px var(--font);
-  transition: --hp 260ms var(--ease-wipe);
 }
 
-/* hover, the border of the buttons draws on clockwise around the link, 10px out to each side */
-.hf-nav a:hover {
-  --hp: 1;
-}
-
-.hf-nav .btn-d {
-  inset: 0 -10px;
-}
-
-/* the active page, a 2px underline that draws on. In the story the chapter bar below takes over. */
+/* the active page, a 2px underline that draws on, and every link draws one on hover. In the story the chapter bar below takes
+   over from the page underline. The border drawn round a link on hover was rejected (taste 2026-10-12 23:20). */
 .hf-nav a::after {
   content: '';
   position: absolute;
@@ -444,6 +433,11 @@
 .hf-nav[data-live] a[aria-current='page']::after {
   animation: none;
   transform: scaleX(0);
+}
+
+.hf-nav a:hover::after,
+.hf-nav[data-live] a[aria-current='page']:hover::after {
+  transform: scaleX(1);
 }
 
 @keyframes hf-draw {
@@ -578,4 +572,74 @@
     animation: none;
     transform: scaleX(1);
   }
+}
+
+/* ---- review variants for the primary button hover (Filip 2026-10-12, "better hover here"), picked on a board with ?hv=1 to 5,
+   see src/review.ts. Only the picked one stays. Without ?hv the hover is as before. ---- */
+html[data-hv]:not([data-hv='4']) .btn-primary .btn-d {
+  display: none;
+}
+
+html[data-hv] .btn-primary .btn-t {
+  transition: background-color 200ms var(--ease-wipe);
+}
+
+html[data-hv] .btn-primary .btn-x::before {
+  transition: rotate 260ms var(--ease-wipe);
+}
+
+/* 1, the label turns the deeper hover red of the brand and the plus turns a quarter */
+html[data-hv='1'] .btn-primary:hover {
+  --b-bg: var(--dark-red);
+}
+
+html[data-hv='1'] .btn-primary:hover .btn-x::before,
+html[data-hv='3'] .btn-primary:hover .btn-x::before {
+  rotate: 90deg;
+}
+
+/* 2, the black cell sweeps left over the whole button, the label stays white on it */
+html[data-hv='2'] .btn-primary .btn-x {
+  transition: width 320ms var(--ease-wipe);
+}
+
+html[data-hv='2'] .btn-primary:hover .btn-x {
+  width: 100%;
+}
+
+/* 3, a 2px white rule draws on under the label from the left, the plus turns a quarter */
+html[data-hv='3'] .btn-primary .btn-r::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms var(--ease-wipe);
+}
+
+html[data-hv='3'] .btn-primary:hover .btn-r::after {
+  transform: scaleX(1);
+}
+
+/* 4, the border still draws on clockwise, but white and 4px inside the red label block, so nothing frames the button outside */
+html[data-hv='4'] .btn-primary {
+  --d-stroke: var(--white);
+}
+
+html[data-hv='4'] .btn-primary .btn-d {
+  inset: 4px 53px 4px 4px;
+}
+
+/* 5, the two parts swap, the label block turns black and the cell turns red */
+html[data-hv='5'] .btn-primary .btn-x {
+  transition: background-color 200ms var(--ease-wipe);
+}
+
+html[data-hv='5'] .btn-primary:hover {
+  --b-bg: var(--black);
+  --c-bg: var(--lmh-red);
 }

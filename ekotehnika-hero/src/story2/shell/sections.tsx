@@ -51,12 +51,12 @@ const NODES: [number, number][] = [
 // The text reveal of the story beats, for sections that sit after the story clock. The same parts, a data-wipe block wipe from
 // ui.tsx and a Fill letter fill, driven by --bx and --tv through wipeAt in motion.ts, but started by an IntersectionObserver when
 // a block scrolls into view and run on real time. A block is any element marked data-reveal, the value is its extra start delay
-// in ms. It starts when its first wipe or fill enters the screen, and each wipe runs 720ms, the hero's own pace, 80ms after the one
-// before. Nothing fades. With reduced motion, or without the observer, nothing is armed and every part shows its end state.
+// in ms. It starts when its first wipe or fill enters the screen, and each wipe runs 1000ms, the hero's own pace, 110ms after the
+// one before, 1.4 times slower than first built (Filip 2026-10-12, "slow down these animations a bit"). Nothing fades. With reduced motion, or without the observer, nothing is armed and every part shows its end state.
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
-const WIPE_MS = 720;
-const STEP_MS = 80;
-const FILL_MS = 1100;
+const WIPE_MS = 1000;
+const STEP_MS = 110;
+const FILL_MS = 1500;
 
 function useReveal(root: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {

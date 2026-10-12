@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import type { SceneProps, StoryClock } from '../../clock';
 import { C } from '../../../tokens';
 import { G } from './look';
-import { blackOut, camAt, gridFit, lerp, regionAt, seg, smooth, strip, textCell, topBand, BAND, type Region } from './choreo';
+import { camAt, gridFit, lerp, regionAt, seg, smooth, strip, textCell, topBand, BAND, type Region } from './choreo';
 import { heroX, Hero } from './hero';
 import { Site } from './site';
 import { Warehouse } from './warehouse';
@@ -134,7 +134,6 @@ function Stage({ groups, region, children }: { groups: React.MutableRefObject<Gr
 
 export default function Scene({ clock }: SceneProps) {
   const [ready, setReady] = useState(false);
-  const veil = useRef<HTMLDivElement>(null);
   const band = useRef<HTMLDivElement>(null);
   const cell = useRef<HTMLDivElement>(null);
   const seam = useRef<HTMLDivElement>(null);
@@ -161,17 +160,12 @@ export default function Scene({ clock }: SceneProps) {
     return () => ids.forEach((i) => window.clearTimeout(i));
   }, [clock.still, ready]);
 
-  // The black of B and the shutter that rolls up off it as S lights, and the plain band of the top row. Both are hard edged
-  // blocks of ground colour drawn over the canvas, nothing fades. The band ends on the top rule of the grid, 136px down.
+  // The plain band of the top row and the text cells of R and P, hard edged blocks of ground colour drawn over the canvas,
+  // nothing fades. The band ends on the top rule of the grid, 136px down.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
       const pos = clock.pos.current;
-      if (veil.current) {
-        const c = blackOut(pos);
-        veil.current.style.display = c > 0.001 ? 'block' : 'none';
-        veil.current.style.height = `${c * 100}%`;
-      }
       if (band.current) band.current.style.background = topBand(pos);
       if (seam.current) {
         const t = strip(pos);
@@ -226,7 +220,6 @@ export default function Scene({ clock }: SceneProps) {
           </Suspense>
         )}
       </Canvas>
-      <div ref={veil} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 0, display: 'none', background: C.ink, pointerEvents: 'none' }} />
       <div ref={cell} style={{ position: 'absolute', left: 0, top: 136, bottom: 0, width: 0, display: 'none', background: BAND.site, pointerEvents: 'none' }} />
       <div ref={seam} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 32, display: 'none', background: `repeating-linear-gradient(135deg, ${C.ink} 0 14px, ${G.mid} 14px 28px)`, pointerEvents: 'none' }} />
       <div ref={band} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 136, pointerEvents: 'none' }} />

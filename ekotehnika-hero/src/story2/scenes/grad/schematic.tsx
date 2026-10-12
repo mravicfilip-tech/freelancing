@@ -13,7 +13,7 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useGLTF } from '@react-three/drei';
 import type { StoryClock } from '../../clock';
-import { bpRoll } from './choreo';
+import { bpRoll, drawOn, seg } from './choreo';
 import { X50, bodyEdges, prepareX50 } from './edges';
 import { INFO } from './look';
 
@@ -194,7 +194,14 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
     return s;
   }, [gltf, fill, hull]);
   const wheelNodes = useMemo(() => X50.wheels.map((w) => ({ obj: model.getObjectByName(w.node)!, r: w.r })), [model]);
-  const edges = useMemo(() => seg2(bodyEdges(gltf.scene, 55, 0.12), mats.detail), [gltf, mats]);
+  // the body edges sorted from the ground up, so drawing the first n of them builds the truck from its wheels to its guard
+  const edges = useMemo(() => {
+    const raw = bodyEdges(gltf.scene, 55, 0.12);
+    const segs: number[][] = [];
+    for (let i = 0; i < raw.length; i += 6) segs.push(raw.slice(i, i + 6));
+    segs.sort((p, q) => Math.min(p[1], p[4]) - Math.min(q[1], q[4]));
+    return seg2(segs.flat(), mats.detail);
+  }, [gltf, mats]);
   // wheel faces, in the wheel's own frame (unit tyre radius), on the outer face of each tyre
   const wheelLines = useMemo(
     () =>
@@ -266,7 +273,23 @@ export default function Schematic({ clock }: { clock: StoryClock }) {
 
   useFrame(() => {
     const pos = clock.pos.current;
-    // the whole drawing is there at once, the shutter that rolls off the black of B is what shows it, no line fades in
+    // the drawing is drawn on in B, each set of lines shows its first n segments, so lines are added and never faded. The contour
+    // (the hull) is there from the cut, then centre lines, edges, wheels, dimensions, and each figure once its dimension line is in
+    const d = drawOn(pos);
+    const part = (l: LineSegments2, a: number, b: number) => {
+      const g = l.geometry as LineSegmentsGeometry;
+      const n = (g.attributes.instanceStart as THREE.InterleavedBufferAttribute | undefined)?.count ?? 0;
+      g.instanceCount = Math.round(n * seg(d, a, b));
+      l.visible = g.instanceCount > 0;
+    };
+    part(centre, 0, 0.25);
+    part(edges, 0.08, 0.75);
+    wheelLines.forEach((w) => {
+      part(w.outline, 0.3, 0.6);
+      part(w.detail, 0.45, 0.75);
+    });
+    part(dimLines, 0.7, 0.97);
+    labels.forEach((l, i) => (l.mat.visible = d >= 0.72 + (0.25 * (i + 1)) / labels.length));
     const roll = bpRoll(pos) * 0.42;
     wheelNodes.forEach((w, i) => {
       const a = (X50.spin * roll) / w.r;

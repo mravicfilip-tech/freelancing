@@ -40,5 +40,11 @@ tsc clean, vite build clean. Every hold beat shot at 1920 by 1080, N and AT also
 
 ## Not done, and why
 
-- B is still solid black from k 0.475 to the start of S. That is item 5, the second commit.
 - Frozen shots in a busy software renderer sometimes come out blank, because a still draws only on a few timed frames. Every blank was re-shot and drew correctly. The live page renders every frame.
+
+## Follow up, A and B redone
+
+Sheets r3-g-ab-before.webp (A and B at k 0.25, 0.5 and 0.75 as they were) and r3-g-ab-after.webp (A at 0.25, 0.5 and 0.75, B at 0.25, 0.5, 0.6, 0.75 and 0.9), all at 1920 by 1080. tsc and vite build clean. Files choreo.ts, index.tsx and schematic.tsx.
+
+- A. The plan part C items were already in from the checkpoint, a label plate with a bar code and bay code on every beam, stretch film bands and a tag on every load. What was wrong was the camera. From k 0.6 to 0.85 it swung in through the near rack row while that row was rising, so one carton a metre from the lens filled the frame. The near row now stays flat until the camera is inside the aisle and rises over 7400 to 7650. Everything stops at the band under the top row.
+- B. The black hold from k 0.475 to the start of S is gone, and so is the shutter that rolled off it. Where the push into the truck's black fills the frame, the scene cuts to the dark schematic stage. There the X50 is drawn the way a draughtsman draws it. The outer contour and the speed lines are there from the cut, then the centre lines, the edges from the ground up, the wheels as arcs that close, and last the dimension lines with their figures. Lines are added segment by segment, never faded. The drawing is whole by the time the S text arrives, so S is unchanged.

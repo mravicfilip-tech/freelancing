@@ -162,7 +162,9 @@ export const STRIP_START = 10500;
 export const STRIP_END = 10860;
 export const SWAP_T = STRIP_END;
 export const strip = (pos: number) => eio(seg(pos, STRIP_START, STRIP_END));
-export const regionAt = (pos: number): Region => (pos < T.S.start ? 'site' : pos < T.N.start ? 'bp' : pos < SWAP_T ? 'grid' : 'bots');
+// B cuts from the black of the truck straight to the dark stage of the schematic at B_CUT, where the drawing is drawn on
+export const B_CUT = 7790;
+export const regionAt = (pos: number): Region => (pos < B_CUT ? 'site' : pos < T.N.start ? 'bp' : pos < SWAP_T ? 'grid' : 'bots');
 
 // Keys per region. SITE target x is relative to the outdoor forklift's x, the others are absolute.
 const KEYS: Record<Region, Key[]> = {
@@ -237,10 +239,11 @@ export const racksGrow = (pos: number) => smooth(seg(pos, 6420, 6620));
 export const propsGrow = (pos: number) => smooth(seg(pos, 6460, 6650));
 // the lane lines of the floor are painted from the moment the roof is off, so the floor under the cut out reads as the hall's
 export const linesOn = (pos: number) => pos >= 5700;
-// the racks on the near side of the aisle are cut down for the side view, then rise again as the camera swings in
+// the racks on the near side of the aisle are cut down for the side view, and rise again only once the camera has swung into the
+// aisle, so it never looks through a rising row at a load a metre from the lens
 export const nearRacks = (pos: number) => {
   const cut = lerp(0.22, 0, smooth(seg(pos, 6420, 6650)));
-  return pos < 6900 ? cut : lerp(0, 1, smooth(seg(pos, 6950, 7350)));
+  return pos < 6900 ? cut : lerp(0, 1, smooth(seg(pos, 7400, 7650)));
 };
 // the indoor truck in the main aisle, heading east
 export const AISLE_Z = WH.cz;
@@ -248,11 +251,11 @@ export const IN_X0 = 178;
 export const IN_X1 = 196.5;
 export const indoorX = (pos: number) => lerp(IN_X0, IN_X1, eio(seg(pos, 6450, 7600)));
 // the warehouse grows from a flat floor, and the hero truck only exists once props appear
-// B pushes the camera into the black part of the truck and cuts to black when it fills the frame. The black holds to the end of B,
-// then rolls up off the frame as a hard edged shutter while the schematic of S lights under it. The share of the frame it covers
-// from the top, 1 to 0.
-export const SHUTTER = 300;
-export const blackOut = (pos: number) => (pos < 7790 ? 0 : pos < T.S.start ? 1 : 1 - eio(seg(pos, T.S.start, T.S.start + SHUTTER)));
+// B pushes the camera into the black part of the truck and cuts, where it fills the frame, to the dark stage of the schematic. There
+// the X50 is drawn the way a draughtsman draws it, the outer contour at once, then the centre lines, the edges from the ground up, the
+// wheels as arcs that close, and last the dimensions with their figures. Lines are added, never faded. The share drawn, 0 to 1, is
+// whole by the time the S text arrives.
+export const drawOn = (pos: number) => (pos < B_CUT ? 0 : eio(seg(pos, B_CUT + 10, T.S.start - 20)));
 
 // P text sits on a hard edged cell of plain ground, from the left edge to the column 7 line of the grid (the frame's 50 percent
 // and 12px) and from the top rule down. It wipes open by its right edge just before the text arrives and holds to the end of the

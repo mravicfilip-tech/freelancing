@@ -2,25 +2,30 @@
 
 The session titled "Ekotehnika", 8 to 12 October 2026, branch `claude/awesome-faraday-lkhnn2`, still running when
 this was written. Every time below is UTC, taken from commits and transcript events. It is written for Filip, to hand
-to another Claude that will change the studio kit. Confidence tags mark how hard the evidence is.
+to another Claude that will change the studio kit. Confidence tags mark how hard the evidence is. The session ran on
+the kit as of PR #8 (5 Oct). The 12 Oct update in PR #9 merged only as it was ending, so none of its rules were
+loaded.
 
 ## Read this first
 
 - [Certain] Execution was not the slowest part. The slowest part was finding the story. From the brief at 4.23pm on
-  8 Oct to your "I'll be driving it" at 2.56pm on 9 Oct, about 11 working hours, Claude built 5 directions, then 5
-  one to one variants, then 9 story combinations. All of it was thrown out.
-- [Certain] Once you drove the story with your own recording, voice over and Figma, it went from plan to production
-  in about four hours, 2.56pm to 6.53pm on 9 Oct. Storyline 2 is still the base of everything since.
+  8 Oct to your "I'll be driving it" at 2.56pm on 9 Oct, Claude built 5 directions, then 5 one to one variants, then
+  9 story combinations. Every story in them was thrown out. The styles of 2, 4 and 5 survived, and 5 is today's pick.
+  [Likely] That span holds about 11 hours of active work.
+- [Certain] Once you drove the story with your own recording, voice over and Figma, it went from your ask to
+  production in about four hours, 2.56pm to 6.53pm on 9 Oct. Storyline 2 is still the base of everything since.
 - [Certain] One session carried four days and eight tasks and cost $419.69. At 2.32pm on 12 Oct the split was $191.53
   on the Opus main thread and $148.30 on Sonnet builders. The main thread held 786k tokens before an auto compaction.
 - [Certain] Today's estimate of 2.5 to 3.5 more hours came from the machine. Four builders rendered WebGL in software
-  on 4 cores at a load of about 18. More usage does not buy that back. A second container does.
+  on 4 cores at a load of about 18. More usage does not buy that back. [Likely] A second container helps. Claude's own
+  guess was 30 to 45 minutes saved.
 - [Certain] Claude told you twice that builder 3 was fitting Linija and Grad. It had stopped at 1.14pm and never
   committed. This is the worst miss in the session, because you planned around a false status.
 - [Certain] Two of the five round 3 builders, plus a second cloud session, work on versions 2 and 4. You picked
   version 5 at 9.57am on 12 Oct.
 - [Certain] None of the Ekotehnika studio files are on the default branch. The 56 taste entries, 8 tasks and every
-  brief live only on the session branch, with no PR. A fresh Ekotehnika session started today would know none of it.
+  brief live only on the session branch, with no PR. A fresh session started from the default branch would know none
+  of it.
 - [Certain] The kit update merged this evening (PR #9) already covers part of this. It does not cover the rest, and its
   new `/newui` skill is shaped for product apps with states and Radix controls, not for a scroll story site.
 
@@ -37,7 +42,7 @@ to another Claude that will change the studio kit. Confidence tags mark how hard
 | Taste entries | 56, of them 28 REJECTED and 27 ACCEPTED |
 | Rejections by day | 8 Oct 7, 9 Oct 1, 12 Oct 20 |
 | Entries where the why had to be guessed | 16 of 56, marked "(inferred)" |
-| `/uireview` runs | 1, on 8 Oct at 4.47pm, on a build you rejected 5 minutes later |
+| `/uireview` runs | 1 round and 1 re-check, on 8 Oct at 4.47pm, on a build you rejected 5 minutes later |
 | Production deploys without a review | Storyline 2 on 9 Oct, version 5 light on 12 Oct |
 
 ## What you were doing
@@ -79,7 +84,7 @@ to another Claude that will change the studio kit. Confidence tags mark how hard
 - Round 2 notes on buttons, digits, the schematic and arrows. Variant boards for buttons and section markers. The
   review board on the Design artifact.
 - 3.51pm you ruled boards are shot at 1920. Then round 3 comments on the board and in chat, nine of them between
-  4.03pm and 4.10pm.
+  4.03pm and 4.10pm, while the 1920 board was still rendering. No builder was running.
 - 4.10pm, "you need to stop now, let's create a plan to fix all of this I gave you 20+ comments you'll get confused".
 - 4.21pm the round 3 plan with eight questions and defaults. 4.35pm "Build the plan execute everything gogogo".
 - 4.58pm rejected the version 5 AT scene, "Redo this scene 100%". 5.03pm approved a new AT direction written in
@@ -107,28 +112,31 @@ Each item gives the evidence, the cost and where the kit can catch it.
 4. **AT was built twice before it was said in words.** [Certain] S10 traced Figma frame 31 one to one and was
    rejected as "taken too literally". The round 2 redo was rejected at 4.58pm. The direction written in words was
    approved in five minutes. Catch it with words first for any redraw of a rejected scene.
-5. **It acted on comments while builders ran.** [Certain] Between 4.00pm and 4.09pm Claude committed changes from
-   your incoming comments one by one, sections removed and a button rule changed, until you stopped it. Catch it
-   with a queue rule for notes that arrive during a build.
+5. **It acted on each comment as it arrived.** [Certain] Between 4.00pm and 4.09pm Claude committed changes from
+   your incoming comments one by one, a button rule and four sections removed, while the board it was reshooting
+   still showed the older commit. You stopped it at 4.10pm. Catch it with a rule that a run of notes is collected
+   first and planned once.
 6. **Too many screenshots for a 4 core machine.** [Certain] A 1920 frame of the 3D took about 40 seconds and the 38
    screen board about 25 minutes. Builders shot full sets at two widths. Claude only cut that back at 6.34pm, after
    you asked for speed.
 7. **Live builders in the shared working tree.** [Certain] The cloud stop hook asks for a commit whenever the tree is
-   dirty. It fired 4 times between 6.31pm and 6.37pm, so the visible ends of those turns read "The uncommitted files
-   belong to the four builders" instead of the answer you asked for. Builder A also had to make its own clean copy of
-   an old commit to get honest before shots.
+   dirty. It fired 4 times between 6.31pm and 6.37pm, so each answer you got was followed by an extra main thread
+   turn that only said "The uncommitted files belong to the four builders". Builder A also had to make its own clean
+   copy of an old commit to get honest before shots.
 8. **The task list went stale.** [Certain] ekotehnika-1, ekotehnika-2 and ekotehnika-3 still sit under In progress
    with open steps, though their directions were rejected or superseded days ago.
-9. **Studio files never reached the default branch.** [Certain] CLAUDE.md says taste and task edits reach the default
-   branch through a PR. Four days in, there is no PR and no `studio/clients/ekotehnika/` on the default branch.
+9. **Studio files never reached the default branch.** [Certain] Four days in, there is no PR and no
+   `studio/clients/ekotehnika/` on the default branch. This breaks no rule. CLAUDE.md moves taste and task edits only
+   when a concept is accepted or rejected, and nothing covers a concept that runs for days. That is the gap.
 10. **The taste log outgrew its own rule and contradicts itself.** [Certain] It is 39,727 characters against the
     8,000 limit, the longest entry is 2,614 characters, and every builder and the critic read all of it. Live entries
     still say "two outline pill buttons", "one filled linde-red pill", Geist type, "very rounded white cards" and
     "round icon buttons with an arrow", while newer rulings say sharp corners, the 2D button, Daxline Pro and no
     arrows. Only some older entries were marked SUPERSEDED.
 11. **The review never ran on the real work.** [Certain] `/uireview` ran once on the first build and scored it 6.5.
-    It never ran on storyline 2 or the UI pass before production. Its stale ekotehnika-1 ledger then blocked the
-    round 3 review until you pasted a line, and you had to ask "what is ekotehnika 1 what am i dropping?". A ledger
+    It never ran on storyline 2 or the UI pass before production. When you typed `/uireview` at 4.09pm on 12 Oct,
+    it printed the stale card from 8 Oct instead. That ledger then blocked the round 3 review until you pasted a
+    line, and you had to ask "what is ekotehnika 1 what am i dropping?". A ledger
     bug also refused your typed line, fixed in commit 2a9aff1 and now carried into the kit.
 12. **Lessons died in compaction.** [Certain] The compaction summary says `pkill -f` killed Claude's own shell
     "again". Environment traps learned in one context window were not written anywhere durable.
@@ -136,8 +144,9 @@ Each item gives the evidence, the cost and where the kit can catch it.
 ## What went wrong on your side
 
 1. **The brief described a different job.** [Certain] It asked for one standalone HTML file, real photos and no
-   illustrations, the live header rebuilt as is, and a light ground. You overrode all four within two hours. The reels
-   were the real brief, and they were not decoded on paper first.
+   illustrations, the live header rebuilt as is, and a light ground. You overrode three of those within two hours,
+   and CLAUDE.md overruled the standalone file. The reels were the real brief, and they were not decoded on paper
+   first.
 2. **Direction by volume.** [Certain] "explore five directions" and "3x3 = 9 total" produced 19 built variants
    before the story was yours. CLAUDE.md already says direction gets one argued pick. Exploring in builds is the most
    expensive way to explore, and in 3D it is slower still. I disagree with doing that again, because the moment you
@@ -149,17 +158,19 @@ Each item gives the evidence, the cost and where the kit can catch it.
 4. **Verdicts without the fix.** [Certain] 16 of 56 entries needed Claude to guess why. "Giga bad AI slop screen",
    "Wordpress 2011 screen" and "same for footer giga bad execution" say what failed, not what good looks like. Your
    notes that carried a reference or a property landed on the first try.
-5. **Comment floods during a build.** [Certain] Nine comments in seven minutes while builders ran. Your own stop at
+5. **Comments in a stream.** [Certain] Nine comments in seven minutes, each one a separate message. Your own stop at
    4.10pm was the right call, and the kit should make it for you.
 6. **Pins that name a frame, not an element.** [Certain] On V4 H Claude had to ask which button you meant before it
    could act.
 7. **Blanket yes on defaults that move layout.** [Certain] "Build the plan execute everything gogogo" approved Q5,
    the delivery photos in Najam. It was built, then reversed about 65 minutes later with "Remove this from here", and
-   the photos moved to a new closing section. One line per layout default would have caught it.
+   the photos moved to a new closing section. [Guessing] Answering that default on its own line might have caught it,
+   or you might only have seen the problem once it was built.
 8. **Kit work inside a live client round.** [Likely] "apply the kit update" landed with three builders running.
    Kit changes can change the rules a builder is halfway through following.
-9. **No deadline given.** [Likely] The ETA came at 6.31pm. With a deadline at the start of the round, the split into
-   two deploys and the second container would have been planned at 4.35pm instead of 6.34pm.
+9. **No deadline given.** [Guessing] I did not see the start of the round, so you may have given one. The ETA came
+   at 6.31pm. With a deadline at 4.35pm, the split into two deploys and the second container could have been planned
+   then instead of at 6.34pm.
 
 ## What went wrong in the environment
 
@@ -200,8 +211,10 @@ So the next Claude does not rebuild these.
 ## Changes to make, ranked by time saved
 
 Each change names the rule, where it goes and the evidence. Every rule text follows `studio/foundation/writing.md`.
+The ones marked (Filip decides) change cost or what the client sees, so they need his yes first. The rest are kit
+work.
 
-1. **A story gate for scroll and motion work.** A new `/story` skill, or a branch of `/newui` when the job is a
+1. **A story gate for scroll and motion work.** (Filip decides) A new `/story` skill, or a branch of `/newui` when the job is a
    scroll site. Steps, one, decode the references (change 2). Two, write the beats as a table, each beat with its
    camera move, what the scene shows and the one thing a stranger should understand. Three, Filip records a voice
    over or marks Figma frames, or approves the table. Stop. Four, build one beat in one version and show it. Stop.
@@ -210,7 +223,7 @@ Each change names the rule, where it goes and the evidence. Every rule text foll
 2. **A decode table for video references.** In step 1 of `/newui` and `/story`. Per reel, one frame per beat and a
    row each for camera, ground, type scale, chrome, rendering and the story device. Filip confirms before any build.
    Evidence, the flat pan at 4.41pm on 8 Oct.
-3. **A pick freezes the losers.** A DOCTRINE trigger. When Filip picks a version, the others freeze at their last
+3. **A pick freezes the losers.** (Filip decides) A DOCTRINE trigger. When Filip picks a version, the others freeze at their last
    commit and leave every later round's scope unless he names them. Claude asks once whether the client will see
    them. Evidence, round 3.
 4. **A scope matrix in every round plan.** Rows are the notes, columns are every live version and screen, each cell
@@ -219,30 +232,33 @@ Each change names the rule, where it goes and the evidence. Every rule text foll
 5. **Helper status from evidence only.** Extend the progress line in DOCTRINE. Before any status line about a
    helper, read its last report time and its changed files that turn. No output in 20 minutes means stalled, said
    plainly, then restart or report. Evidence, builder 3.
-6. **A queue for notes during a build.** A DOCTRINE trigger. When Filip sends design notes while builders run, Claude
-   writes them to the next round's notes file, touches no running builder and no code, and replies once with the
-   count. They are planned when the round lands or when Filip says go. Evidence, 4.00pm to 4.10pm on 12 Oct.
+6. **Collect a run of notes, plan once.** A DOCTRINE trigger. When Filip sends design notes one after another, or
+   while builders run, Claude writes them to the next round's notes file, touches no code and no running builder, and
+   replies once with the count. They are planned when he pauses or says go. Notes mode on 12 Oct morning already
+   worked this way, so make it the default. Evidence, 4.00pm to 4.10pm on 12 Oct.
 7. **One worktree per builder.** Build recipe step 2. Each builder works in its own git worktree on its own branch,
    and the main thread merges on its report. The main tree stays clean, so the stop hook stays quiet, and before
    shots come from a clean commit. Worktrees are removed when the round ends. Evidence, item 7 above.
-8. **A render budget for 3D.** In `foundation/models.md`. At most two 3D builders per container. Any further heavy 3D
+8. **A render budget for 3D.** (Filip decides) In `foundation/models.md`. At most two 3D builders per container,
+   [Guessing] a starting value from one afternoon, to be tuned. Any further heavy 3D
    slice goes to its own cloud session from the start, on a `<branch>-<slice>` branch. Interim shots are the changed
    beats only, one frame per fix, on one contact sheet. The full 1920 board is shot once, at round end. Evidence, a
    load of 18 on 4 cores and the 2.5 to 3.5 hour estimate.
 9. **A deploy script.** `studio/scripts/deploy.mjs` deploys from a copy with no git history, then checks the alias
    through the Vercel API. The kit's default `vercel.json` turns off git deploys for `claude/*` branches. Evidence,
    the 402 and the refused deploys, rediscovered in this session.
-10. **One session per round.** A DOCTRINE rule. A new round or task starts a fresh session that reads `tasks.md`, the
+10. **One session per round.** (Filip decides) A DOCTRINE rule. A new round or task starts a fresh session that reads `tasks.md`, the
     client rules and the round plan from the repo. No handoff document is needed, so the handoff hold stays. Main
-    thread at high effort, per `models.md`. Evidence, 786k tokens of context re-read on every main thread call.
+    thread at high effort, per `models.md`. Evidence, up to 786k tokens of context re-read on each main thread call.
     [Likely] The biggest cost lever. [Guessing] On how much it saves, I have no per call split.
 11. **A rules file beside the taste log.** `/taste` rewrites `clients/<client>/rules.md` after each entry. Current
     rules only, one line each, grouped by surface (buttons, type, logo, grid, scenes, motion), each with the date of
     its entry. Builders and the critic read `rules.md`, and the log only when asked. `lint.mjs` warns when the log
     passes 8,000 characters or an entry passes 600, and lists live entries on the same surface as a newer one.
     Evidence, item 10 above.
-12. **Studio files reach the default branch every day.** A studio only PR at the end of each working day, opened when
-    Filip says so. Evidence, item 9 above.
+12. **Studio files reach the default branch every day.** (Filip decides) A studio only PR at the end of each working
+    day, opened when Filip says so. The session branch carries code, so the PR needs its own branch cut from the
+    default branch with only the `studio/clients/<client>/` changes copied in. Evidence, item 9 above.
 13. **Superseded tasks close.** In the tasks trigger. When `/taste` marks a direction REJECTED or SUPERSEDED, its task
     moves to Done with "superseded by ekotehnika-N" in the same turn. Evidence, ekotehnika-1 to ekotehnika-3.
 14. **Feed the misses to the review.** Add these to `.state/review-misses.md` and to "Rejected on sight" in

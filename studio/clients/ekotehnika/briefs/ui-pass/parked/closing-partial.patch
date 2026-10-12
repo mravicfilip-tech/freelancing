@@ -1,0 +1,314 @@
+diff --git a/ekotehnika-hero/src/story2/copy.ts b/ekotehnika-hero/src/story2/copy.ts
+index cd38e36..751f30c 100644
+--- a/ekotehnika-hero/src/story2/copy.ts
++++ b/ekotehnika-hero/src/story2/copy.ts
+@@ -165,7 +165,7 @@ export const proizvodi = {
+     { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', count: 12, img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+     { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', count: 4, img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+   ] satisfies ProductCell[],
+-  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Not shown in this section, Q5 put them in N.
++  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Shown only in the closing section, see closing.photos.
+   photos: [
+     { src: '/photos/isporuka-1.webp', alt: 'Linde E20 EVO, oznaka na boku viljuškara' },
+     { src: '/photos/isporuka-2.webp', alt: 'Viljuškar se spušta sa kamiona pri isporuci' },
+@@ -187,10 +187,18 @@ export const klijenti = {
+   ] as { name: string; dummy?: boolean }[],
+ };
+ 
+-// D4, the closing band and the footer.
++// D4, the closing section between Proizvodi and the footer, Filip 2026-10-12 18:50. The four delivery photos sit in grid cells, two each
++// side, in the order left outer, left inner, right inner, right outer. The headline is the line from the removed closing band.
+ export const closing = {
++  label: 'Kontakt',
+   line: ['Recite nam', 'šta vam treba'], // dummy
++  text: 'Pozovite nas ili pošaljite upit za ponudu.', // dummy
+   cta: { label: hero.quote.label, href: hero.quote.href } satisfies Cta,
++  phones: [
++    { label: hero.sales.label, number: hero.sales.number, tel: hero.sales.tel, cta: 'call-sales' },
++    { label: hero.service.label, number: hero.service.number, tel: hero.service.tel, cta: 'call-service' },
++  ],
++  photos: [proizvodi.photos[1], proizvodi.photos[0], proizvodi.photos[2], proizvodi.photos[3]],
+ };
+ 
+ export const footer = {
+diff --git a/ekotehnika-hero/src/story2/shell/sections.css b/ekotehnika-hero/src/story2/shell/sections.css
+index 091ae08..dd09bb3 100644
+--- a/ekotehnika-hero/src/story2/shell/sections.css
++++ b/ekotehnika-hero/src/story2/shell/sections.css
+@@ -108,14 +108,15 @@
+   top: 100%;
+ }
+ 
+-/* columns 1 to 4, the label on the top rule like the story's section marker, the title, one line and the one primary */
++/* columns 1 to 4, the label under the top rule, the title, one line and the one primary. Nothing starts on the column 1 line, the
++   text sits 24px in from it and 36px under the rule, the same inset as a footer cell */
+ .sx-left {
+   grid-column: 1 / 5;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   align-items: flex-start;
+-  padding: 14px 0 24px;
++  padding: 36px 0 40px 24px;
+ }
+ 
+ /* the lede and the primary stand on the bottom rule, 24px above it like the text in the cells */
+@@ -221,7 +222,7 @@
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+-  padding: 24px 24px 24px 26px;
++  padding: 24px;
+ }
+ 
+ /* the top of a cell, the model range at the left and the count of models at the right */
+@@ -319,6 +320,121 @@
+     transform 640ms var(--out) calc(var(--i) * 90ms);
+ }
+ 
++/* ---- the closing section, the delivery photos flow in along the grid ---- */
++.sx-closing {
++  --pad: clamp(40px, 5vh, 60px);
++  --row: clamp(170px, calc((100vh - 140px) / 4), 230px);
++  --c1: var(--x1);
++  --c3: round(nearest, calc(48px + 2 * var(--gx)), 1px);
++  --c5: round(nearest, calc(48px + 4 * var(--gx)), 1px);
++  --c9: round(nearest, calc(48px + 8 * var(--gx)), 1px);
++  --c11: round(nearest, calc(48px + 10 * var(--gx)), 1px);
++  --c13: var(--x5);
++  padding: var(--pad) 0;
++  overflow-x: clip;
++}
++
++.sx-cframe {
++  position: relative;
++  height: calc(var(--row) * 4);
++}
++
++/* the side rules stop at the centre columns, the verticals run the full height and the two outer ones into the padding */
++.sx-hl-l {
++  width: calc(var(--c5) - var(--c1) + 1px);
++}
++
++.sx-hl-r {
++  left: var(--c9);
++  width: calc(var(--c13) - var(--c9) + 1px);
++}
++
++.sx-vl-frame {
++  bottom: -1px;
++}
++
++.sx-vl-ext {
++  top: calc(var(--pad) * -1);
++  bottom: calc(var(--pad) * -1);
++}
++
++.sx-cframe .sx-rule,
++.sx-cframe .sx-vl {
++  z-index: 2;
++}
++
++/* a photo fills one cell, two rows tall, with square corners. --k is the share of its way still to go, set from the scroll, 0 is in
++   place. A left photo starts with its right edge on the left edge of the window, a right photo with its left edge on the right edge. */
++.sx-ph {
++  position: absolute;
++  z-index: 1;
++  height: calc(var(--row) * 2);
++  overflow: hidden;
++  background: var(--grey-pale);
++}
++
++.sx-ph-l {
++  transform: translateX(calc(var(--k, 0) * (-100% - var(--cl))));
++}
++
++.sx-ph-r {
++  transform: translateX(calc(var(--k, 0) * (100cqw - var(--cl))));
++}
++
++.sx-ph img {
++  display: block;
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++
++/* columns 5 to 8, everything centred */
++.sx-mid {
++  position: absolute;
++  z-index: 4;
++  top: 0;
++  bottom: 0;
++  left: calc(var(--c5) + 2px);
++  width: calc(var(--c9) - var(--c5) - 2px);
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  justify-content: center;
++  padding: 36px 24px 40px;
++  text-align: center;
++}
++
++.sx-mid .sx-label {
++  align-self: auto;
++  justify-content: center;
++}
++
++.sx-ctitle {
++  margin-top: 28px;
++  font-size: clamp(44px, 4.2cqw, 80px);
++  font-weight: 400;
++  line-height: 0.95;
++  letter-spacing: -0.03em;
++}
++
++.sx-clede {
++  margin: 24px 0 32px;
++  font-size: clamp(18px, 1.15cqw, 22px);
++  line-height: 1.35;
++}
++
++.sx-phones {
++  display: flex;
++  flex-direction: column;
++  align-items: center;
++  gap: 12px;
++  margin-top: 20px;
++}
++
++.sx-mid .btn {
++  align-self: center;
++}
++
+ /* ---- the footer, on pale grey ---- */
+ .sx-footer {
+   --hd: rgb(0 0 0 / 0.24);
+diff --git a/ekotehnika-hero/src/story2/shell/sections.tsx b/ekotehnika-hero/src/story2/shell/sections.tsx
+index e1e23f8..1162b42 100644
+--- a/ekotehnika-hero/src/story2/shell/sections.tsx
++++ b/ekotehnika-hero/src/story2/shell/sections.tsx
+@@ -4,7 +4,7 @@
+ // AfterStory is what the story renders under its stage, the products first, then the footer.
+ import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+ import { SITE } from '../../content';
+-import { footer, proizvodi } from '../copy';
++import { closing, footer, proizvodi } from '../copy';
+ import { FooterLine } from './lineart';
+ import { Btn } from './ui';
+ import './sections.css';
+@@ -143,6 +143,106 @@ export function Products() {
+   );
+ }
+ 
++// The closing section, a get in touch ask between Proizvodi and the footer. The grid carries four delivery photos in from the left and
++// right edges as the section scrolls in, two a side, each exactly filling a cell. Verticals at columns 1, 3, 5, 9, 11 and 13 and
++// four rows of --row. The photos stair step, so no two cross a row they share while they travel.
++const CLOSE_X = [1, 3, 5, 9, 11, 13];
++const CLOSE_ROWS = [0, 1, 2, 3, 4];
++// from column, to column, first row, the side it flows in from, and when its move starts in the section's scroll
++const PHOTOS = [
++  { a: 1, b: 3, r: 0, from: 'l', at: 0 },
++  { a: 3, b: 5, r: 2, from: 'l', at: 0.2 },
++  { a: 9, b: 11, r: 2, from: 'r', at: 0.3 },
++  { a: 11, b: 13, r: 0, from: 'r', at: 0.1 },
++] as const;
++
++const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
++
++export function Closing() {
++  const c = closing;
++  const root = useRef<HTMLElement>(null);
++
++  // The photos are scroll linked. p runs from 0 as the section's top meets the bottom of the window to 1 once it is a quarter of the
++  // way up, each photo starts a little later than the one before and eases out. --k is the share of the way still to go, 0 in place.
++  // With reduced motion nothing runs and the photos stay in their cells.
++  useLayoutEffect(() => {
++    const el = root.current;
++    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
++    const ph = Array.from(el.querySelectorAll<HTMLElement>('.sx-ph'));
++    let raf = 0;
++    const update = () => {
++      raf = 0;
++      const vh = window.innerHeight;
++      const p = clamp01((vh - el.getBoundingClientRect().top) / (vh * 0.75));
++      ph.forEach((n, i) => {
++        const q = clamp01((p - PHOTOS[i].at) / 0.6);
++        n.style.setProperty('--k', String(Math.pow(1 - q, 3)));
++      });
++    };
++    const on = () => {
++      if (!raf) raf = requestAnimationFrame(update);
++    };
++    update();
++    window.addEventListener('scroll', on, { passive: true });
++    window.addEventListener('resize', on);
++    return () => {
++      window.removeEventListener('scroll', on);
++      window.removeEventListener('resize', on);
++      if (raf) cancelAnimationFrame(raf);
++    };
++  }, []);
++
++  return (
++    <section className="sx sx-closing" ref={root} aria-labelledby="kontakt-naslov">
++      <div className="sx-cframe">
++        <i className="sx-rule sx-rule-t" aria-hidden="true" />
++        <i className="sx-rule sx-rule-b" aria-hidden="true" />
++        {[1, 2, 3].flatMap((r) => [
++          <i className="sx-rule sx-hl-l" style={{ top: `calc(${r} * var(--row))` }} aria-hidden="true" key={`l${r}`} />,
++          <i className="sx-rule sx-hl-r" style={{ top: `calc(${r} * var(--row))` }} aria-hidden="true" key={`r${r}`} />,
++        ])}
++        {CLOSE_X.map((n) => (
++          <i className={`sx-vl sx-vl-frame${n === 1 || n === 13 ? ' sx-vl-ext' : ''}`} style={{ left: `var(--c${n})` }} aria-hidden="true" key={n} />
++        ))}
++        {PHOTOS.map((p, i) => (
++          <div
++            className={`sx-ph sx-ph-${p.from}`}
++            style={{ left: `var(--c${p.a})`, width: `calc(var(--c${p.b}) - var(--c${p.a}))`, top: `calc(${p.r} * var(--row))`, '--cl': `var(--c${p.a})` } as CSSProperties}
++            key={i}
++          >
++            <img src={c.photos[i].src} alt={c.photos[i].alt} loading="lazy" decoding="async" />
++          </div>
++        ))}
++        {CLOSE_X.flatMap((n) =>
++          CLOSE_ROWS.map((r) => <Plus style={{ left: `calc(var(--c${n}) - 4px)`, top: `calc(${r} * var(--row) - 4px)` }} key={`${n}-${r}`} />),
++        )}
++
++        <div className="sx-mid">
++          <p className="sx-label">{c.label}</p>
++          <h2 className="sx-ctitle" id="kontakt-naslov">
++            {c.line.map((t) => (
++              <span className="sx-ln" key={t}>
++                {t}
++              </span>
++            ))}
++          </h2>
++          <p className="sx-clede">{c.text}</p>
++          <Btn href={c.cta.href} kind="primary" cta="quote">
++            {c.cta.label}
++          </Btn>
++          <div className="sx-phones">
++            {c.phones.map((p) => (
++              <Btn href={p.tel} kind="secondary" icon="phone" cta={p.cta} key={p.label}>
++                {p.label} <span className="num">{p.number}</span>
++              </Btn>
++            ))}
++          </div>
++        </div>
++      </div>
++    </section>
++  );
++}
++
+ // The footer on pale grey, so the red Linde logo block sits on a legal ground (guideline p.12). Row one the two numbers, row two
+ // the logos, the address and the nav, row three the drawn trucks on the bottom rule, the copyright under the rule.
+ export function Footer() {
+@@ -209,6 +309,7 @@ export function AfterStory() {
+   return (
+     <>
+       <Products />
++      <Closing />
+       <Footer />
+     </>
+   );

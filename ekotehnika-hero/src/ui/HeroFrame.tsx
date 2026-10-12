@@ -16,12 +16,14 @@ import './heroframe.css';
 
 export type FrameTone = 'ink' | 'white';
 
+// ch names the story chapter a link stands for. In the story the nav's bar sits under that link while its chapter is on
+// screen, and under Početna where the chapter has no link, see StoryShell.
 const links = [
-  { label: 'Početna', href: '/', current: true },
-  { label: 'Novi', href: '/viljuskari/' },
+  { label: 'Početna', href: '/', current: true, ch: 'home' },
+  { label: 'Novi', href: '/viljuskari/', ch: 'prodaja' },
   { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
-  { label: 'Najam', href: '/iznajmljivanje-viljuskara-cena/' },
-  { label: 'Servis', href: '/servis/odrzavanje-i-popravka/' },
+  { label: 'Najam', href: '/iznajmljivanje-viljuskara-cena/', ch: 'najam' },
+  { label: 'Servis', href: '/servis/odrzavanje-i-popravka/', ch: 'servis' },
   { label: 'Kontakt', href: '/kontakt/' },
 ];
 
@@ -96,12 +98,20 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
           <ul>
             {links.map((l) => (
               <li key={l.label}>
-                <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined}>
+                <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined} data-ch={l.ch}>
                   {l.label}
+                  {/* the same border as the buttons draws on around the link on hover */}
+                  <span className="btn-d" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                 </a>
               </li>
             ))}
           </ul>
+          <span className="hf-nav-bar" aria-hidden="true" />
         </nav>
         <div className="hf-actions">
           <a className="btn btn-secondary btn-phone" href={hero.sales.tel} data-cta="call-sales" data-wipe="0">

@@ -48,6 +48,13 @@ const DARK_TOP: [number, number][] = [
 
 const HOLDS = TIMELINE.filter((b) => b.hold);
 
+// Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1 runs twice as long, its wipes and
+// counts took about 144px of scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast").
+const SLOW: Record<string, number> = { C1: 2 };
+
+// The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
+const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
+
 const ink = (tone: Tone, dark: boolean) => (tone === 'dark' || dark ? 'dark' : 'light');
 
 function mountScene(Scene: ComponentType<SceneProps>, clock: SceneProps['clock']) {
@@ -155,9 +162,26 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       if (G.id === 'P' && G.tabs) setTab(G.tabs, -1);
     }
 
+    // The nav's chapter bar, under the link for the chapter on screen, under Početna where the chapter has no link.
+    const nav = hf.querySelector<HTMLElement>('.hf-nav');
+    const bar = nav?.querySelector<HTMLElement>('.hf-nav-bar');
+    nav?.setAttribute('data-live', '');
+    let lastCh = '';
+    const placeBar = () => {
+      if (!nav || !bar) return;
+      const a = nav.querySelector<HTMLElement>(`a[data-ch="${lastCh}"]`) ?? nav.querySelector<HTMLElement>('a[data-ch="home"]');
+      if (!a) return;
+      const n = nav.getBoundingClientRect();
+      const r = a.getBoundingClientRect();
+      bar.style.setProperty('--nb-x', `${(r.left - n.left).toFixed(1)}px`);
+      bar.style.setProperty('--nb-y', `${(r.bottom - n.top - 2).toFixed(1)}px`);
+      bar.style.setProperty('--nb-w', `${r.width.toFixed(1)}px`);
+    };
+
     // the plus marks at every crossing of a vertical with a block rule, from the rules as laid out
     const measure = () => {
       for (const G of groups) if (G.wrap) paintMarks(G.wrap, ruleMarks(G.el, stage));
+      placeBar();
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -179,7 +203,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const len = G.span.end - G.span.start;
         const k0 = (pos - G.span.start) / len;
         // budget is the story pixels all wipes of this group share, the hero uses a fixed budget run by time
-        const budget = isHero ? 120 : WIPE_DONE * len;
+        const slow = SLOW[G.id] ?? 1;
+        const budget = isHero ? 120 : WIPE_DONE * slow * len;
         const dur = budget * WIPE_SHARE;
         const stagger = (budget - dur) / G.maxOrder;
         const u = isHero ? Math.max(heroT * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
@@ -198,8 +223,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           G.el.style.visibility = on ? 'visible' : 'hidden';
           G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
           if (G.wrap) G.wrap.style.visibility = on ? 'visible' : 'hidden';
-          // Prodaja shows no model while its beat is off screen, so the first one comes in again next time
-          else if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
+          // Prodaja shows no model while its beat is off screen, so the first one comes in again next time. A model the
+          // visitor picked stays picked, and is hidden with its pane, see .p-fig in shell.css.
+          if (!on && G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
         if (!on) continue;
         // the text of a beat is shown whole or not at all, so there is no opacity to drive here
@@ -216,7 +242,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           }
           if (!Number.isNaN(W.target)) {
             const cs = W.order * stagger + dur * 0.35;
-            const cp = clamp01((u - cs) / Math.max(20, COUNT_DONE * len - cs));
+            const cp = clamp01((u - cs) / Math.max(20, COUNT_DONE * slow * len - cs));
             const text = formatCount(W.target * outCubic(cp)) + W.suffix;
             if (text !== W.lastText) {
               W.lastText = text;
@@ -265,6 +291,14 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         plus.style.setProperty('--draw', draw.toFixed(3));
         grid.style.setProperty('--rot', draw >= 0.999 ? '0' : draw.toFixed(3));
         plus.style.setProperty('--rot', draw >= 0.999 ? '0' : draw.toFixed(3));
+      }
+
+      // the nav's chapter bar follows the section of the beat on screen
+      const after = document.documentElement.hasAttribute('data-after-story');
+      const ch = after ? 'home' : (CHAPTER[TIMELINE[clock.beat.current]?.section ?? ''] ?? 'home');
+      if (ch !== lastCh) {
+        lastCh = ch;
+        placeBar();
       }
 
       // dark span, the grid and the frame turn white, the Linde logo stays as supplied and the Ekotehnika wordmark turns white

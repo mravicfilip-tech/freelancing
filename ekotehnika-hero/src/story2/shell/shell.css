@@ -567,8 +567,9 @@
   transition: visibility 0s linear 400ms;
 }
 
+/* inherit, not visible, so the cut out is hidden whenever its pane is, a picked model included */
 .p-fig[data-st='on'] {
-  visibility: visible;
+  visibility: inherit;
   transition-delay: 0s;
 }
 

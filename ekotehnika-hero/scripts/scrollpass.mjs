@@ -3,7 +3,7 @@
 // the beat layer on screen, any Prodaja cut out still showing outside P, and the top row tone against the ground under
 // it. It saves one frame each time the layer on screen changes, and prints every problem it finds.
 // Run against `npx vite preview --port 4173` after `npm run build`, from a scratch folder that has playwright-core.
-// node scrollpass.mjs [version] [out dir] [step px]
+// node scrollpass.mjs [version] [out dir] [step px], BASE=http://localhost:4174 to point it at another server
 import { chromium } from 'playwright-core';
 import { mkdirSync } from 'node:fs';
 const v = process.argv[2] || '5';
@@ -12,7 +12,7 @@ const step = +(process.argv[4] || 120);
 mkdirSync(out, { recursive: true });
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
-await p.goto(`http://localhost:4173/?v=${v}`, { waitUntil: 'load' });
+await p.goto(`${process.env.BASE || 'http://localhost:4173'}/?v=${v}`, { waitUntil: 'load' });
 await p.waitForTimeout(6000);
 await p.mouse.move(960, 600);
 const H = await p.evaluate(() => document.documentElement.scrollHeight - innerHeight);

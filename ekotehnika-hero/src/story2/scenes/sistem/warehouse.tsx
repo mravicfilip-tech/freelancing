@@ -274,8 +274,9 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   const gl = useThree((s) => s.gl);
   const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 0), []);
   const edges = useMemo(() => bakeEdges(gltf.scene, name, 70), [gltf, name]);
-  // a 1px line in the info blue of the automation floor, which reads over the red body, the dark mast and the pale rack alike
-  const mat = useMemo(() => new LineMaterial({ color: 0x468cc4, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: false, clippingPlanes: [plane] }), [plane]);
+  // a 1px ink line at 60 percent, depth tested and pulled a touch toward the lens so only the edges the eye can see draw,
+  // never the back of the truck through the front (taste 2026-10-12 22:12, no coloured wireframe over a lit model)
+  const mat = useMemo(() => new LineMaterial({ color: 0x000000, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4, clippingPlanes: [plane] }), [plane]);
   const matWheel = mat;
   const mk = (pts: number[], m: LineMaterial) => {
     const g = new LineSegmentsGeometry();
@@ -309,7 +310,7 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
     if (!on) return;
     mat.resolution.set(size.width * dpr, size.height * dpr);
     mat.linewidth = Math.max(1, size.height / 900) * dpr;
-    mat.opacity = 1;
+    mat.opacity = 0.6;
     // the clip plane in world space, sweeping from the nose to the middle of the truck
     const sweep = ease(range(u, 8.12, 8.5)) * (1 - ease(range(u, 8.6, 8.9)));
     const cut = x(clock.pos.current) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);

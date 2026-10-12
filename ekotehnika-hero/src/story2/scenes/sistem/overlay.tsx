@@ -8,10 +8,9 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
 import { DARK_BG, PAPER, ease, lerp, range, uOf } from './kit';
+import { darkTopAt } from './darkTop';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
-// The shell's top row turns light ink at scroll 7790, which is 190px into B, so u 9 + 190 / 400. The band under it goes dark with it.
-const DARK_TOP_FROM = 9.475;
 
 export function useOverlayRoot() {
   const camera = useThree((s) => s.camera);
@@ -111,9 +110,9 @@ export default function Overlay({ clock }: SceneProps) {
     // The masks stay on the screen whatever the lens shift is, so undo the shift for them.
     const v = camera.view;
     if (maskGroup.current && v) maskGroup.current.position.set((v.offsetX / v.fullWidth) * 2 * aspect, (-v.offsetY / v.fullHeight) * 2, 0);
-    // The masks take the ground of the beat. The band over the top row goes dark where the shell turns the top row's ink
-    // light (scroll 7790, u 9.475) and back to light under the fork's light ground, a hard step each way.
-    const mc = u >= DARK_TOP_FROM && u < 11.8 ? mixCol.set(DARK_BG) : lightCol;
+    // The masks take the ground of the beat. The band over the top row goes dark on the same story pixels the shell turns
+    // the top row's ink light, from the one span in darkTop.ts, and back to light under the fork's light ground, a hard step each way.
+    const mc = darkTopAt(clock.pos.current) ? mixCol.set(DARK_BG) : lightCol;
     if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
     CELLS.forEach((c, i) => {
       const m = cells.current[i];

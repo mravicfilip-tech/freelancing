@@ -47,9 +47,10 @@
 
 /* ---- buttons. One look for the whole site, the split with an icon cell and the border that draws on, cell 2D on the review
    board, picked by Filip 2026-10-12 17:45. Corners are sharp, every button is 48px tall, nothing is an arrow. Red is only the
-   fill of the one primary, with a black plus cell. A secondary has a 1px line at 50 percent over a 4 percent tint (6 percent
-   on dark), black on light and white on dark, so its edge reads on any ground (3 to 1 and up, WCAG 1.4.11), and carries the plus cell, or the
-   phone cell on a phone button. The label block and the cell sit 1px apart. The hover is driven by one number, --hp, from 0
+   fill of the one primary, with a black plus cell. A secondary is at the quarter weight of the top row phones on every beat
+   (Filip 2026-10-12, video round 4, "the opacity is too strong for this button"), a 1px line at 12.5 percent over a 1 percent
+   tint, black on light and white on dark, and carries the plus cell, or the phone cell on a phone button. The edge measures
+   1.37 to 1, under the 3 to 1 of WCAG 1.4.11, Filip's call, the label and the cell carry the button. The label block and the cell sit 1px apart. The hover is driven by one number, --hp, from 0
    to 1, the border draws on clockwise from the top left, a quarter of the move per side. ---- */
 @property --hp {
   syntax: '<number>';
@@ -99,11 +100,12 @@
   --d-stroke: var(--black);
 }
 
-/* a secondary, a 4 percent tint and a 50 percent line, drawn over the label block and the cell */
-/* The tint is the 4 percent black laid on white, #f5f5f5, so it stays opaque and a grid line never shows through the label. */
+/* a secondary, drawn over the label block and the cell. The tint is 1 percent black laid on white and the cell 4.4 percent,
+   so both stay opaque and a grid line never shows through the label. */
 .btn-secondary {
-  --b-bg: #f5f5f5;
-  --line-c: rgb(0 0 0 / 0.5);
+  --b-bg: #fcfcfc;
+  --c-bg: #f4f4f4;
+  --line-c: rgb(0 0 0 / 0.125);
 }
 
 .btn-secondary::before {
@@ -127,28 +129,12 @@
 
 .hf[data-tone='white'] .btn-secondary,
 [data-ink='dark'] .btn-secondary {
-  /* 6 percent white laid on the dark ground #0b0b0b, opaque for the same reason */
-  --b-bg: #191919;
+  /* 1.5 percent white laid on the dark ground #0b0b0b for the label block and 4.8 percent for the cell, opaque for the same reason */
+  --b-bg: #0f0f0f;
   --b-fg: var(--white);
-  --c-bg: #3a3a3a;
+  --c-bg: #171717;
   --c-fg: var(--white);
   --d-stroke: var(--white);
-  --line-c: rgb(255 255 255 / 0.5);
-}
-
-/* The two phone buttons of the top row sit at a quarter of the secondary weight (Filip 2026-10-12 19:20, "reduce opacity by 75%
-   here"). The edge goes from 50 to 12.5 percent, the tint from 4 to 1 percent and the phone cell from 17.6 to 4.4 percent black
-   on light, and on the dark span from 6 to 1.5 percent and 19.3 to 4.8 percent white, all laid on the ground so they stay opaque.
-   The label and the phone glyph stay full ink, the hover is as before. Every other secondary keeps the 50 percent edge. */
-.hf-top .btn-secondary {
-  --b-bg: #fcfcfc;
-  --c-bg: #f4f4f4;
-  --line-c: rgb(0 0 0 / 0.125);
-}
-
-.hf[data-tone='white'] .hf-top .btn-secondary {
-  --b-bg: #0f0f0f;
-  --c-bg: #171717;
   --line-c: rgb(255 255 255 / 0.125);
 }
 
@@ -382,6 +368,7 @@
 }
 
 .hf-nav {
+  position: relative;
   grid-area: nav;
   justify-self: center;
 }
@@ -395,14 +382,26 @@
 }
 
 .hf-nav a {
+  --hp: 0;
+  --d-stroke: currentColor;
   position: relative;
   display: block;
   padding: 6px 0;
   color: inherit;
   font: 500 15px/20px var(--font);
+  transition: --hp 260ms var(--ease-wipe);
 }
 
-/* the active page, a 2px underline that draws on, and every link draws one on hover */
+/* hover, the border of the buttons draws on clockwise around the link, 10px out to each side */
+.hf-nav a:hover {
+  --hp: 1;
+}
+
+.hf-nav .btn-d {
+  inset: 0 -10px;
+}
+
+/* the active page, a 2px underline that draws on. In the story the chapter bar below takes over. */
 .hf-nav a::after {
   content: '';
   position: absolute;
@@ -420,8 +419,31 @@
   animation: hf-draw 600ms var(--ease-wipe) 400ms both;
 }
 
-.hf-nav a:hover::after {
-  transform: scaleX(1);
+/* The chapter bar. In the story the 2px rule follows the chapter on screen and slides between the links, Novi on Prodaja,
+   Servis on servis, Najam on najam, Početna elsewhere (Filip 2026-10-12, video round 4, "this navigation is cool, but I think
+   we can do better"). StoryShell sets data-live and the bar's place. Outside the story the page link keeps its own underline. */
+.hf-nav-bar {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--nb-w, 0px);
+  height: 2px;
+  background: currentColor;
+  transform: translate(var(--nb-x, 0px), var(--nb-y, 0px));
+  transition:
+    transform 500ms var(--ease-indicator),
+    width 500ms var(--ease-indicator);
+  pointer-events: none;
+}
+
+.hf-nav[data-live] .hf-nav-bar {
+  display: block;
+}
+
+.hf-nav[data-live] a[aria-current='page']::after {
+  animation: none;
+  transform: scaleX(0);
 }
 
 @keyframes hf-draw {
@@ -504,11 +526,13 @@
 
 /* ---- the hero block, columns 1 to 7, the plain band x 0 to 760 and y 470 to 840. The marker is a cell with its rule on the
    vertical, the title, lede and button sit 24px in from it. ---- */
+/* The block runs from the first vertical to the third, so the marker's top rule starts and ends on a drawn line and takes a plus
+   mark at both ends (round 4 item 1, it used to stop inside column 8). */
 .hf-bottom {
   position: absolute;
-  left: 48px;
+  left: var(--x1);
   bottom: 100px;
-  width: calc(7 * var(--cw) + 6 * 24px);
+  width: calc(var(--x3) - var(--x1));
   display: flex;
   flex-direction: column;
   align-items: flex-start;

@@ -35,7 +35,7 @@ Task format
   - [x] Build the Sistem scene polish
   - [ ] Fit Linija and Grad to the new shell
   - [x] Plan round 3 from Filip's board comments, briefs/ui-pass/round3.md
-  - [ ] Filip answers the round 3 questions
+  - [x] Filip answers the round 3 questions
   - [ ] Build round 3
   - [ ] Review, check and deploy
 

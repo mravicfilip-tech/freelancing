@@ -10,10 +10,10 @@ the screen as it is now, what is measured, the fix and the files. No code moves 
 
 ## Answers needed first
 
-Each has my default. Reply "yes" to take all defaults, or correct a line by its number.
+Filip replied "Build the plan execute everything" on 12 October, so every default below stands except Q2, which he answered himself.
 
 - **Q1, button cell.** Your pin "lets use this variant" landed on the board as a whole. Item 1 changes how every secondary looks, so the board is reshot with that change, one frame per cell, and you pick from that. Default is 1A until you name a cell such as 3C.
-- **Q2, logo on dark.** Default is option 3. The top band, 136px with the logos, nav and buttons, stays white over the dark beats, and the dark starts under the top rule. Option 1 keeps it hidden. Option 2 is a white field behind the logos, close to the rejected white frame. Option 3 changes how the dark servis beat looks, so before you pick, the board gets one mock frame of option 2 and option 3 on S in version 5.
+- **Q2, logo on dark. Answered 12 October.** Filip, "Just keep Linde logo as is and convert ekotehnika logo to light (white)". So on dark the Linde logo shows unchanged and the Ekotehnika wordmark turns white. The options below are kept for the record. Default was option 3. The top band, 136px with the logos, nav and buttons, stays white over the dark beats, and the dark starts under the top rule. Option 1 keeps it hidden. Option 2 is a white field behind the logos, close to the rejected white frame. Option 3 changes how the dark servis beat looks, so before you pick, the board gets one mock frame of option 2 and option 3 on S in version 5.
 - **Q3, illustrations in versions 2 and 4.** Default is yes to all four points. Carry every S note into both versions in their own style, AT first, and no red outlines on dark. Filling the empty left half of T in version 5 is my addition, not something you raised, so it is a separate yes.
 - **Q4, grid lines behind text.** Default is the lines run unbroken across the whole stage, under the text layer, with no cut outs around text boxes. Text sits on top and stays readable because the lines drop to low opacity (item 2).
 - **Q5, where the delivery photos go.** Default is N, Najam, see item 7. Its copy is "24 sata isporuka" and "Besplatna dostava i preuzimanje", which is what the photos show.

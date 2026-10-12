@@ -6,7 +6,7 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { C } from '../../../tokens';
 import type { SceneProps } from '../../clock';
-import { ease, lerp, range, smooth, uOf } from './kit';
+import { DARK_BG, PAPER, ease, isDark, lerp, range, smooth, uOf } from './kit';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -60,9 +60,9 @@ function maskTexture(w: number, h: number, x0: number, x1: number, y0: number, y
       const x = x0 + ((i + 0.5) / 160) * (x1 - x0);
       const y = y1 - ((j + 0.5) / 80) * (y1 - y0);
       const k = (j * 160 + i) * 4;
-      img.data[k] = 9;
-      img.data[k + 1] = 10;
-      img.data[k + 2] = 11;
+      img.data[k] = 255;
+      img.data[k + 1] = 255;
+      img.data[k + 2] = 255;
       img.data[k + 3] = Math.round(255 * Math.min(1, Math.max(0, alpha(x, y))));
     }
   g.putImageData(img, 0, 0);
@@ -79,8 +79,8 @@ function curtainTexture() {
   c.height = 256;
   const g = c.getContext('2d')!;
   const grd = g.createRadialGradient(128, 190, 10, 128, 190, 200);
-  grd.addColorStop(0, '#2a3235');
-  grd.addColorStop(1, '#14181a');
+  grd.addColorStop(0, '#ffffff');
+  grd.addColorStop(1, '#eeeff3');
   g.fillStyle = grd;
   g.fillRect(0, 0, 256, 256);
   const t = new THREE.CanvasTexture(c);
@@ -108,9 +108,11 @@ export default function Overlay({ clock }: SceneProps) {
   const diag = useRef<THREE.Group>(null);
   const fork = useMemo(forkGeometry, []);
   const cTex = useMemo(curtainTexture, []);
+  const mixCol = useMemo(() => new THREE.Color(), []);
+  const lightCol = useMemo(() => new THREE.Color(PAPER.bg), []);
   const aspect = size.width / size.height;
-  // The top 110px stays dark at every beat, easing out by 210px, so the nav always sits on plain dark.
-  const topTex = useMemo(() => maskTexture(0, 0, -1, 1, 1 - 0.467, 1, (_x, y) => 1 - smooth(Math.min(1, Math.max(0, (1 - y - 0.244) / 0.223)))), []);
+  // The top 150px stays plain at every beat, easing out by 250px, so the nav always sits on plain dark.
+  const topTex = useMemo(() => maskTexture(0, 0, -1, 1, 1 - 0.556, 1, (_x, y) => 1 - smooth(Math.min(1, Math.max(0, (1 - y - 0.333) / 0.223)))), []);
   // At the hero the left 55 percent from y 470 to 840 stays plain dark for the headline.
   const hTex = useMemo(
     () =>
@@ -135,6 +137,10 @@ export default function Overlay({ clock }: SceneProps) {
     // The masks stay on the screen whatever the lens shift is, so undo the shift for them.
     const v = camera.view;
     if (maskGroup.current && v) maskGroup.current.position.set((v.offsetX / v.fullWidth) * 2 * aspect, (-v.offsetY / v.fullHeight) * 2, 0);
+    // The masks take the ground of the beat, light everywhere but the servis blueprint.
+    const mc = isDark(u) ? mixCol.set(DARK_BG).lerp(lightCol, ease(range(u, 11.8, 11.9))) : lightCol;
+    if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
+    if (maskH.current) (maskH.current.material as THREE.MeshBasicMaterial).color.copy(mc);
     if (maskH.current) {
       const m = 1 - ease(range(u, 0.9, 1.3));
       (maskH.current.material as THREE.MeshBasicMaterial).opacity = m;
@@ -173,8 +179,8 @@ export default function Overlay({ clock }: SceneProps) {
   return createPortal(
     <>
       <group ref={maskGroup}>
-      <mesh ref={maskTop} position={[0, 1 - 0.2335, 0.52]} scale={[1, 1, 1]}>
-        <planeGeometry args={[aspect * 2 + 0.2, 0.467]} />
+      <mesh ref={maskTop} position={[0, 1 - 0.278, 0.52]} scale={[1, 1, 1]}>
+        <planeGeometry args={[aspect * 2 + 0.2, 0.556]} />
         <meshBasicMaterial map={topTex} transparent depthWrite={false} toneMapped={false} />
       </mesh>
       <mesh ref={maskH} position={[(-2.4 + 0.5) / 2 - 0.0, (-1.0 + 0.2) / 2, 0.5]}>
@@ -199,7 +205,7 @@ export default function Overlay({ clock }: SceneProps) {
         <meshBasicMaterial map={cTex} transparent opacity={1} toneMapped={false} />
       </mesh>
       <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]}>
-        <meshStandardMaterial vertexColors color="#b9c4c8" roughness={0.4} metalness={0.75} />
+        <meshStandardMaterial vertexColors color="#4a595c" roughness={0.4} metalness={0.75} />
       </mesh>
     </>,
     root,

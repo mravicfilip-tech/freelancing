@@ -9,7 +9,7 @@ import { Truck, type TruckApi } from './models';
 import type { SceneProps } from '../../clock';
 import { track } from '../../../story/scenes/sistem/tracks';
 import { AISLES, WH } from './route';
-import { K, ease, poolMaterial, range, rng, softTexture, uOf } from './kit';
+import { K, ease, lit, poolMaterial, range, rng, uOf } from './kit';
 
 const BAY = 2.7;
 const BAYS = 17;
@@ -19,8 +19,8 @@ const LEVELS = [0, 1.5, 3.0, 4.5];
 const ROWS = [-21.95, -17.65, -16.55, -12.25, -11.15, -6.85];
 const NEAR = (z: number) => z > AISLES[1];
 
-const BEAM = new THREE.MeshBasicMaterial({ color: '#b4bec2', toneMapped: false });
-const PALETTE = ['#2c363a', '#344045', '#283236', '#3d4a4f', '#303c40', '#46545a'];
+const BEAM = new THREE.MeshBasicMaterial({ color: C.textGrey, toneMapped: false });
+const PALETTE = [C.white, C.hoverLightGrey, C.lightGrey, C.shadeGrey, C.white, C.lightGrey];
 
 function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.Group | null) => void }) {
   const up = useRef<THREE.InstancedMesh>(null);
@@ -34,7 +34,7 @@ function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.G
         for (const side of [-0.6, 0.6]) {
           if (r() < 0.14) continue;
           const h = 0.9 + r() * 0.4;
-          loads.push({ x: RACK_X0 + b * BAY + BAY / 2 + side, y: ly + 0.15 + h / 2 + (ly === 0 ? 0.02 : 0.12), h, c: new THREE.Color(PALETTE[Math.floor(r() * PALETTE.length)]) });
+          loads.push({ x: RACK_X0 + b * BAY + BAY / 2 + side, y: ly + 0.15 + h / 2 + (ly === 0 ? 0.02 : 0.12), h, c: lit(PALETTE[Math.floor(r() * PALETTE.length)]) });
         }
     return loads;
   }, [index]);
@@ -62,39 +62,12 @@ function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.G
         <boxGeometry args={[0.1, 6.6, 0.1]} />
       </instancedMesh>
       <instancedMesh ref={beam} args={[undefined, undefined, BAYS * 5 * 2]} material={BEAM}>
-        <boxGeometry args={[BAY - 0.12, 0.1, 0.06]} />
+        <boxGeometry args={[BAY - 0.12, 0.07, 0.05]} />
       </instancedMesh>
       <instancedMesh ref={load} args={[undefined, undefined, data.length]} castShadow receiveShadow>
         <boxGeometry args={[1.12, 1, 0.92]} />
-        <meshStandardMaterial roughness={0.85} metalness={0.02} />
+        <meshLambertMaterial toneMapped={false} />
       </instancedMesh>
-    </group>
-  );
-}
-
-function Strips() {
-  const ref = useRef<THREE.InstancedMesh>(null);
-  const items = useMemo(() => {
-    const o: [number, number][] = [];
-    for (const z of AISLES) for (let x = 124; x < 168; x += 6) o.push([x, z]);
-    return o;
-  }, []);
-  useLayoutEffect(() => {
-    const m = new THREE.Matrix4();
-    items.forEach(([x, z], i) => ref.current!.setMatrixAt(i, m.makeTranslation(x, 8.3, z)));
-    ref.current!.instanceMatrix.needsUpdate = true;
-  }, [items]);
-  const tex = softTexture();
-  return (
-    <group>
-      <instancedMesh ref={ref} args={[undefined, undefined, items.length]} material={K.glow}>
-        <boxGeometry args={[3.6, 0.07, 0.22]} />
-      </instancedMesh>
-      {items.map(([x, z], i) => (
-        <sprite key={i} position={[x, 8.0, z]} scale={[5, 5, 1]}>
-          <spriteMaterial map={tex} color={C.lightGrey} transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-        </sprite>
-      ))}
     </group>
   );
 }
@@ -131,11 +104,11 @@ function ribTexture(base: string, rib: string) {
 function Roof({ matsRef }: { matsRef: React.MutableRefObject<THREE.Material[]> }) {
   const zc = (WH.z0 + WH.z1) / 2;
   const mats = useMemo(() => {
-    const light = new THREE.MeshStandardMaterial({ map: ribTexture('#3a4346', '#4d5a5e'), roughness: 0.7, metalness: 0.2, transparent: true });
-    const dark = new THREE.MeshStandardMaterial({ map: ribTexture('#1d2325', '#262e31'), roughness: 0.75, metalness: 0.2, transparent: true });
-    const sky = new THREE.MeshStandardMaterial({ color: '#4a565a', emissive: '#7b878b', emissiveIntensity: 0.3, roughness: 0.4, transparent: true });
-    const vent = new THREE.MeshStandardMaterial({ color: '#5c696e', roughness: 0.4, metalness: 0.6, transparent: true });
-    const line = new THREE.LineBasicMaterial({ color: C.lightGrey, transparent: true, opacity: 0.75, toneMapped: false });
+    const light = new THREE.MeshLambertMaterial({ map: ribTexture(C.white, C.lightGrey), color: lit('#ffffff'), transparent: true, toneMapped: false });
+    const dark = new THREE.MeshLambertMaterial({ map: ribTexture(C.shadeGrey, C.white), color: lit('#ffffff'), transparent: true, toneMapped: false });
+    const sky = new THREE.MeshLambertMaterial({ color: lit(C.tonedTextGrey), transparent: true, toneMapped: false });
+    const vent = new THREE.MeshLambertMaterial({ color: lit(C.textGrey), transparent: true, toneMapped: false });
+    const line = new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: 0.75, toneMapped: false });
     return { light, dark, sky, vent, line };
   }, []);
   useLayoutEffect(() => {
@@ -192,7 +165,7 @@ function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | nu
           <mesh material={K.silhouette} castShadow receiveShadow>
             <boxGeometry args={[p.w, p.h, p.d]} />
           </mesh>
-          <lineSegments material={new THREE.LineBasicMaterial({ color: C.lightGrey, transparent: true, opacity: 0.5, toneMapped: false })}>
+          <lineSegments material={new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: 0.5, toneMapped: false })}>
             <edgesGeometry args={[new THREE.BoxGeometry(p.w, p.h, p.d)]} />
           </lineSegments>
         </group>
@@ -203,7 +176,7 @@ function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | nu
 
 function Floor({ clock }: SceneProps) {
   const pool = useMemo(() => poolMaterial(0.3, C.lightGrey), []);
-  const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: C.lightGrey, toneMapped: false, transparent: true, opacity: 0 }), []);
+  const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: C.tonedTextGrey, toneMapped: false, transparent: true, opacity: 0 }), []);
   // The lane lines wait for the text to leave, the floor is plain dark behind the prodaja block.
   useFrame(() => {
     lane.opacity = 0.55 * ease(range(uOf(clock), 7.5, 7.8));
@@ -212,7 +185,7 @@ function Floor({ clock }: SceneProps) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[(WH.x0 + WH.x1) / 2, 0.012, (WH.z0 + WH.z1) / 2]} receiveShadow>
         <planeGeometry args={[WH.x1 - WH.x0, WH.z1 - WH.z0]} />
-        <meshLambertMaterial color="#0d1011" />
+        <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
       </mesh>
       {AISLES.map((z) =>
         [-1.55, 1.55].map((dz) => (
@@ -234,16 +207,10 @@ function Floor({ clock }: SceneProps) {
 }
 
 function Door() {
-  const tex = softTexture();
   return (
-    <group>
-      <mesh position={[WH.x0 + 0.2, 2.4, AISLES[1]]} rotation={[0, Math.PI / 2, 0]} material={K.glow}>
-        <planeGeometry args={[4.4, 4.8]} />
-      </mesh>
-      <sprite position={[WH.x0 + 1.2, 2.6, AISLES[1]]} scale={[16, 12, 1]}>
-        <spriteMaterial map={tex} color={C.white} transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-      </sprite>
-    </group>
+    <mesh position={[WH.x0 + 0.2, 2.4, AISLES[1]]} rotation={[0, Math.PI / 2, 0]} material={K.white}>
+      <planeGeometry args={[4.4, 4.8]} />
+    </mesh>
   );
 }
 
@@ -259,13 +226,10 @@ export default function Warehouse({ clock }: SceneProps) {
   const roof = useRef<THREE.Group>(null);
   const walls = useRef<THREE.Group | null>(null);
   const rows = useRef<(THREE.Group | null)[]>([]);
-  const lights = useRef<THREE.PointLight[]>([]);
   const inner = useRef<THREE.Group>(null);
-  const strips = useRef<THREE.Group>(null);
   const trucks = useRef<THREE.Group>(null);
   const apiRefs = useMemo(() => Array.from({ length: 5 }, () => ({ current: null as TruckApi | null })), []);
   const gs = useRef<(THREE.Group | null)[]>([]);
-  const lampPts = useMemo(() => [[126, -14.4], [140, -14.4], [154, -14.4], [166, -14.4], [132, -19.8], [152, -19.8], [132, -9], [152, -9], [124, -14.4]] as [number, number][], []);
 
   useFrame(() => {
     const u = uOf(clock);
@@ -282,7 +246,6 @@ export default function Warehouse({ clock }: SceneProps) {
       roof.current.position.y = ease(range(u, 6.78, 7.0)) * 1.5;
     }
     if (inner.current) inner.current.visible = u > 7.45 && u < 10.4;
-    if (strips.current) strips.current.visible = u >= 8.25;
     if (trucks.current) trucks.current.visible = u > 7.4 && u < 10.4;
     // walls and racks rise from the clean floor in the second half of P
     const wallRise = ease(range(u, 7.5, 7.75));
@@ -296,8 +259,6 @@ export default function Warehouse({ clock }: SceneProps) {
       g.scale.y = s;
       g.visible = s > 0.002;
     });
-    const lit = ease(range(u, 7.5, 8.0));
-    lights.current.forEach((l) => (l.intensity = lit * 14));
     const place = (i: number, x: number, z: number, yaw: number, lift: number, roll: number) => {
       const g = gs.current[i];
       if (!g) return;
@@ -326,14 +287,8 @@ export default function Warehouse({ clock }: SceneProps) {
       <group ref={inner}>
         <Walls groupRef={walls} />
         <Door />
-        <group ref={strips}>
-          <Strips />
-        </group>
         {ROWS.map((z, i) => (
           <Row key={z} z={z} index={i} group={(g) => (rows.current[i] = g)} />
-        ))}
-        {lampPts.map(([x, z], i) => (
-          <pointLight key={i} ref={(l) => { if (l) lights.current[i] = l; }} position={[x, 6.4, z]} intensity={0} distance={22} decay={2} color={C.white} />
         ))}
         <group ref={trucks}>
           <group ref={(g) => { gs.current[0] = g; }}>

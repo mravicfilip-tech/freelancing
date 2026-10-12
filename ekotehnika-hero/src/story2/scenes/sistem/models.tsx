@@ -7,6 +7,7 @@ import type { ThreeElements } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { Pallet } from '../../../r3f/Forklift';
+import { blobMaterial } from './kit';
 
 export type ModelName = 'x50' | 'h30d' | 'r16' | 'n20' | 'mt15c' | 'd12' | 'cmatic10' | 'cmatichp';
 
@@ -23,30 +24,40 @@ export type Spec = {
   /** where a pallet's base sits on the forks, in the model's own frame */
   load?: [number, number, number];
   hide?: string[];
+  /** contact shadow, length along the truck, width, and the centre along x once the truck faces +x */
+  foot: [number, number, number];
 };
 
 const PI = Math.PI;
 export const SPEC: Record<ModelName, Spec> = {
   x50: {
+    foot: [5.6, 2.9, -0.45],
     yaw: PI, ground: 0.425, spin: 1,
     wheels: [{ node: 'fl_wheel', r: 0.41 }, { node: 'fr_wheel', r: 0.41 }, { node: 'bl_wheel', r: 0.38 }, { node: 'br_wheel', r: 0.38 }],
     fork: 'gabel', load: [-1.15, -0.36, 0],
   },
   h30d: {
+    foot: [5.2, 2.7, -0.3],
     yaw: PI, ground: 0.34, spin: 1,
     wheels: [{ node: 'fl_wheel', r: 0.34 }, { node: 'fr_wheel', r: 0.34 }, { node: 'bl_wheel', r: 0.3 }, { node: 'br_wheel', r: 0.3 }],
     load: [-1.1, -0.3, 0],
   },
   r16: {
+    foot: [4.0, 2.4, 0],
     yaw: PI, ground: 0, spin: 1,
     wheels: [{ node: 'wheel_1', r: 0.14 }, { node: 'wheel_2', r: 0.18 }, { node: 'wheel_3', r: 0.14 }],
     load: [-0.75, 0.1, 0],
   },
-  n20: { yaw: PI, ground: 0, spin: 1, wheels: [], load: [-1.2, 0.1, 0] },
-  mt15c: { yaw: 0, ground: 0, spin: -1, wheels: [] },
-  d12: { yaw: PI, ground: 0, spin: 1, wheels: [], load: [-1.1, 0.1, 0] },
-  cmatic10: { yaw: PI, ground: 0, spin: 1, wheels: [], hide: ['quicktron_logo'] },
+  n20: {
+    foot: [5.0, 2.0, 0], yaw: PI, ground: 0, spin: 1, wheels: [], load: [-1.2, 0.1, 0] },
+  mt15c: {
+    foot: [2.6, 1.3, 0.1], yaw: 0, ground: 0, spin: -1, wheels: [] },
+  d12: {
+    foot: [3.4, 1.7, -0.8], yaw: PI, ground: 0, spin: 1, wheels: [], load: [-1.1, 0.1, 0] },
+  cmatic10: {
+    foot: [1.9, 1.5, 0], yaw: PI, ground: 0, spin: 1, wheels: [], hide: ['quicktron_logo'] },
   cmatichp: {
+    foot: [2.2, 1.5, 0.1],
     yaw: 0, ground: 0, spin: -1,
     wheels: [{ node: 'C_matic_wheels1', r: 0.073 }, { node: 'C_matic_wheels2', r: 0.073 }, { node: 'C_matic_wheels3', r: 0.08 }, { node: 'C_matic_wheels4', r: 0.08 }],
   },
@@ -96,6 +107,7 @@ export function Truck({ name, apiRef, load = false, children, ...group }: Props)
   const gltf = useGLTF(modelUrl(name)) as unknown as { scene: THREE.Group };
   const spec = SPEC[name];
   const root = useRef<THREE.Group>(null);
+  const blob = useMemo(() => blobMaterial(0.34), []);
   const loadRef = useRef<THREE.Group>(null);
   const built = useMemo(() => {
     const scene = prepare(gltf.scene, name);
@@ -120,6 +132,9 @@ export function Truck({ name, apiRef, load = false, children, ...group }: Props)
 
   return (
     <group ref={root} {...group}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[spec.foot[2], 0.03, 0]} material={blob} renderOrder={1}>
+        <planeGeometry args={[spec.foot[0], spec.foot[1]]} />
+      </mesh>
       <group position={[0, spec.ground, 0]} rotation={[0, spec.yaw, 0]}>
         <primitive object={built.scene} />
         {load && spec.load && (

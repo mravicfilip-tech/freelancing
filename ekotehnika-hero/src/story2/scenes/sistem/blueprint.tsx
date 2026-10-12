@@ -12,7 +12,7 @@ import { useGLTF } from '@react-three/drei';
 import { bakeEdges } from './bake';
 import { SPEC, modelUrl } from './models';
 import { BP } from './route';
-import { ease, range, poolMaterial, uOf } from './kit';
+import { ease, range, softTexture, uOf } from './kit';
 
 function seg(points: number[], mat: LineMaterial) {
   const g = new LineSegmentsGeometry();
@@ -46,7 +46,7 @@ export default function Blueprint({ clock }: SceneProps) {
       return new THREE.BufferGeometry().setFromPoints(p);
     });
   }, []);
-  const pool = useMemo(() => poolMaterial(0.35, C.lightGrey), []);
+  const pool = useMemo(() => new THREE.MeshBasicMaterial({ map: softTexture(), color: C.lightGrey, transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), []);
   const gridMat = useMemo(() => new THREE.LineBasicMaterial({ color: C.white, transparent: true, opacity: 0.045, toneMapped: false }), []);
   const ringMat = useMemo(() => new THREE.LineBasicMaterial({ color: C.white, transparent: true, opacity: 0.16, toneMapped: false }), []);
 

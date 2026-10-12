@@ -51,8 +51,18 @@ function mountScene(Scene: ComponentType<SceneProps>, clock: SceneProps['clock']
   );
 }
 
-export function StoryShell({ Scene, tone, reduced }: { Scene: ComponentType<SceneProps>; tone: Tone; reduced: boolean }) {
+type ShellProps = {
+  Scene: ComponentType<SceneProps>;
+  tone: Tone;
+  reduced: boolean;
+  // A version can name its own dark beats and dark spans under the top row, in place of the defaults.
+  darkLayers?: string[];
+  darkTop?: [number, number][];
+};
+
+export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TOP }: ShellProps) {
   const { stageRef, clock } = useStoryClock(reduced);
+  const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === l.id), l.still)), []);
   const heroStill = useMemo(() => stillClock(0, 0.5), []);
@@ -103,7 +113,7 @@ export function StoryShell({ Scene, tone, reduced }: { Scene: ComponentType<Scen
           heroBottom.style.visibility = h < 0.01 ? 'hidden' : 'visible';
         }
       }
-      const dark = tone === 'dark' || DARK_TOP.some(([a, b]) => pos >= a && pos < b);
+      const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
       const t = dark ? 'white' : 'ink';
       if (t !== lastTone) {
         lastTone = t;
@@ -114,7 +124,7 @@ export function StoryShell({ Scene, tone, reduced }: { Scene: ComponentType<Scen
     };
     id = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(id);
-  }, [reduced, clock, stageRef, tone]);
+  }, [reduced, clock, stageRef, tone, darkTop]);
 
   if (reduced) {
     return (
@@ -126,7 +136,7 @@ export function StoryShell({ Scene, tone, reduced }: { Scene: ComponentType<Scen
           <HeroFrame tone={frameTone} rootRef={heroRef} />
         </section>
         {LAYERS.map((l, i) => (
-          <section className="s2-still" data-ink={ink(tone, l.dark)} key={l.id} aria-label={l.id}>
+          <section className="s2-still" data-ink={ink(tone, isDark(l))} key={l.id} aria-label={l.id}>
             <div className="s2-flow">
               <l.Pane />
             </div>
@@ -148,7 +158,7 @@ export function StoryShell({ Scene, tone, reduced }: { Scene: ComponentType<Scen
           {mountScene(Scene, clock)}
         </div>
         {LAYERS.map((l) => (
-          <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, l.dark)} key={l.id} style={{ visibility: 'hidden' }}>
+          <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, isDark(l))} key={l.id} style={{ visibility: 'hidden' }}>
             <l.Pane />
           </section>
         ))}

@@ -10,7 +10,7 @@ import type { SceneProps } from '../../clock';
 import { bakeStatic } from './bake';
 import { modelUrl, type ModelName } from './models';
 import { NP } from './route';
-import { ease, lerp, poolMaterial, range, softTexture, uOf } from './kit';
+import { blobMaterial, lit, ease, lerp, poolMaterial, range, uOf } from './kit';
 
 const COLS = 5;
 const ROWS = 3;
@@ -36,16 +36,16 @@ export default function Grid({ clock }: SceneProps) {
   const meshes = useRef<THREE.InstancedMesh[][]>([]);
   const slab = useRef<THREE.Group>(null);
   const slots = useRef<THREE.LineLoop[]>([]);
-  const rings = useRef<THREE.Sprite[]>([]);
+  const blobs = useRef<THREE.Mesh[]>([]);
   const m4 = useMemo(() => new THREE.Matrix4(), []);
-  const pool = useMemo(() => poolMaterial(0.55, C.lightGrey), []);
-  const slotMat = useMemo(() => new THREE.LineBasicMaterial({ color: C.white, transparent: true, opacity: 0, toneMapped: false }), []);
+  const pool = useMemo(() => poolMaterial(0.9, C.white), []);
+  const slotMat = useMemo(() => new THREE.LineBasicMaterial({ color: C.textGrey, transparent: true, opacity: 0, toneMapped: false }), []);
+  const blobMat = useMemo(() => blobMaterial(0), []);
   const slotGeo = useMemo(() => {
     const p = [new THREE.Vector3(-2.7, 0, -1.0), new THREE.Vector3(1.9, 0, -1.0), new THREE.Vector3(1.9, 0, 1.0), new THREE.Vector3(-2.7, 0, 1.0)];
     return new THREE.BufferGeometry().setFromPoints(p);
   }, []);
   const slabEdges = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(25, 0.5, 21)), []);
-  const tex = softTexture();
 
   useLayoutEffect(() => {
     meshes.current.flat().forEach((m) => {
@@ -71,12 +71,11 @@ export default function Grid({ clock }: SceneProps) {
           if (j >= 0) meshes.current[ki]?.forEach((m) => m.setMatrixAt(j, m4));
         });
         const slot = slots.current[i];
-        if (slot) (slot.material as THREE.LineBasicMaterial).opacity = 0.55 * ease(range(k, 0.0, 0.1)) * (1 - ease(range(u, 13.0, 13.25)));
-        const ring = rings.current[i];
-        if (ring) {
-          const pulse = Math.sin(Math.PI * range(k, a, a + 0.22));
-          ring.visible = pulse > 0.01 && u < 13;
-          (ring.material as THREE.SpriteMaterial).opacity = 0.8 * pulse;
+        if (slot) (slot.material as THREE.LineBasicMaterial).opacity = 0.5 * ease(range(k, 0.0, 0.1)) * (1 - ease(range(u, 13.0, 13.25)));
+        const blob = blobs.current[i];
+        if (blob) {
+          const sunk = u >= 13 ? sink(r) : 0;
+          (blob.material as THREE.MeshBasicMaterial).opacity = 0.36 * rise * (1 - sunk);
         }
       }
     meshes.current.flat().forEach((m) => (m.instanceMatrix.needsUpdate = true));
@@ -88,10 +87,10 @@ export default function Grid({ clock }: SceneProps) {
       <group ref={slab}>
         <mesh position={[NP.x, -0.25, NP.z]} receiveShadow>
           <boxGeometry args={[25, 0.5, 21]} />
-          <meshStandardMaterial color="#20272a" roughness={0.55} metalness={0.2} />
+          <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
         </mesh>
         <lineSegments geometry={slabEdges} position={[NP.x, -0.25, NP.z]}>
-          <lineBasicMaterial color={C.lightGrey} transparent opacity={0.45} toneMapped={false} />
+          <lineBasicMaterial color={C.ink} transparent opacity={0.35} toneMapped={false} />
         </lineSegments>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x, 0.02, NP.z]} material={pool}>
           <planeGeometry args={[34, 26]} />
@@ -102,9 +101,9 @@ export default function Grid({ clock }: SceneProps) {
           return (
             <group key={i} position={[NP.x + ROW_X[r], 0.03, NP.z + COL_Z(c)]}>
               <lineLoop ref={(l) => { if (l) slots.current[i] = l; }} geometry={slotGeo} material={slotMat.clone()} />
-              <sprite ref={(s) => { if (s) rings.current[i] = s; }} position={[0.5, 0.2, 0]} scale={[5, 3, 1]} visible={false}>
-                <spriteMaterial map={tex} color={C.lightGrey} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-              </sprite>
+              <mesh ref={(m) => { if (m) blobs.current[i] = m; }} rotation={[-Math.PI / 2, 0, 0]} position={[-0.3, 0.02, 0]} material={blobMat.clone()}>
+                <planeGeometry args={[5.4, 2.8]} />
+              </mesh>
             </group>
           );
         })}

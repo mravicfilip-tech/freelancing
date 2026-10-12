@@ -2,7 +2,7 @@
 // lit on dark ground, with the outdoor site suggested by light and silhouettes, the warehouse as a lit model, a
 // blueprint, a very large fork, a rental platform and robots on lit dotted paths. Every pose is a pure function of
 // the story clock, so a frozen clock (?at=<beat>&k=<0 to 1>) always draws the same picture.
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,7 +12,7 @@ import Blueprint from './blueprint';
 import { Dust, Lights, Rig, type CamState } from './camera';
 import Grid from './grid';
 import { Truck, type TruckApi } from './models';
-import { GROUND, poolMaterial, uOf } from './kit';
+import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
 import Overlay from './overlay';
 import Robots from './robots';
@@ -23,7 +23,6 @@ import Warehouse from './warehouse';
 const HERO_LIFT = track([[0, 0.12], [1.6, 0.12], [2.15, 1.55], [2.85, 1.55], [3.25, 0.15], [12, 0.15]]);
 
 function Hero({ clock }: SceneProps) {
-  const pool = useMemo(() => poolMaterial(0.16), []);
   const g = useRef<THREE.Group>(null);
   const api = useRef<TruckApi | null>(null);
   useFrame(() => {
@@ -38,9 +37,6 @@ function Hero({ clock }: SceneProps) {
   return (
     <group ref={g}>
       <Truck name="x50" apiRef={api} load />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.2, 0.03, 0]} material={pool}>
-        <planeGeometry args={[11, 6.5]} />
-      </mesh>
     </group>
   );
 }
@@ -76,7 +72,7 @@ function World({ clock }: SceneProps) {
     <>
       <color attach="background" args={[GROUND]} />
       <fog attach="fog" args={[GROUND, 40, 160]} />
-      <Environment files="/hdri/studio_small_03_1k.hdr" environmentIntensity={0.28} />
+      <Environment files="/hdri/studio_small_03_1k.hdr" />
       <Rig clock={clock} state={state} />
       <Lights clock={clock} state={state} />
       <Dust clock={clock} state={state} />

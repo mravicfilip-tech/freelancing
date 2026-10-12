@@ -7,7 +7,7 @@ import { C } from '../../../tokens';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
 import { ATP, BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
-import { ease, lerp, range, rad, softTexture, uOf, GROUND } from './kit';
+import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
 
@@ -18,11 +18,11 @@ const ISO_PITCH = ISO.pitch;
 // Outdoor channels over u. The truck stays at the same place on screen, the camera follows it.
 const O_OX = track([[0, -0.45], [4, -0.45], [5, 0]]);
 const O_OY = track([[0, 1.15], [2, 1.2], [4, 1.15], [5, 0]]);
-const O_D = track([[0, 16], [0.8, 16], [1.6, 12.2], [2, 12.5], [3, 14], [4, 16], [5, 56], [6, 56]]);
+const O_D = track([[0, 16], [4, 16], [5, 56], [6, 56]]);
 const O_YAW = track([[0, 0], [4, 0], [5, 90], [6, 90]]);
 const O_PITCH = track([[0, -7], [2, -7], [3, -8], [4, -8], [5, -90], [6, -90]]);
 const O_SX = track([[0, 0.236], [0.8, 0.236], [2, -0.05], [3, -0.05], [4, 0.1], [5, 0.22], [6, 0.22]]);
-const O_SY = track([[0, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
+const O_SY = track([[0, 0], [1.7, 0], [2, 0.07], [3, 0.07], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);
 const A_PITCH = track([[8, ISO_PITCH], [8.3, -10], [8.5, -9], [8.75, -3], [9, -3], [10, -1]]);
@@ -166,11 +166,17 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
     state.current.target.copy(pose.target);
     state.current.d = pose.d;
     state.current.shadow = pose.shadow;
+    // Light ground everywhere but the servis blueprint, which keeps the dark one.
+    const dark = isDark(u);
+    const bg = dark ? DARK_BG : PAPER.bg;
+    if (scene.background instanceof THREE.Color) scene.background.set(bg);
     const fog = scene.fog as THREE.Fog | null;
     if (fog) {
-      fog.near = pose.d * 1.5 + 12;
-      fog.far = fog.near + 120;
+      fog.color.set(bg);
+      fog.near = dark ? pose.d * 1.5 + 12 : pose.d * 0.9 + 6;
+      fog.far = fog.near + (dark ? 120 : 95);
     }
+    scene.environmentIntensity = dark ? 0.28 : 0.6;
   });
   return null;
 }
@@ -179,6 +185,7 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
 export function Lights({ clock, state }: SceneProps & { state: React.MutableRefObject<CamState> }) {
   const key = useRef<THREE.DirectionalLight>(null);
   const rim = useRef<THREE.DirectionalLight>(null);
+  const hemi = useRef<THREE.HemisphereLight>(null);
   const shadowSize = useRef(0);
   useFrame(() => {
     const u = uOf(clock);
@@ -189,9 +196,8 @@ export function Lights({ clock, state }: SceneProps & { state: React.MutableRefO
     k.target.position.copy(s.target);
     k.position.set(s.target.x - 5, s.target.y + 9 + s.shadow * 0.4, s.target.z + 7 + s.shadow * 0.3);
     k.target.updateMatrixWorld();
-    const inWarehouse = u >= 6.3 && u < 10;
-    const blueprint = u >= 10 && u < 11.9;
-    k.intensity = blueprint ? 0.9 : inWarehouse ? 1.0 : u < 6.3 ? 2.4 : 2.2;
+    const dark = isDark(u);
+    k.intensity = dark ? 0.9 : u < 6.3 ? 1.7 : 1.5;
     if (Math.abs(shadowSize.current - s.shadow) > 0.5) {
       shadowSize.current = s.shadow;
       const cam = k.shadow.camera;
@@ -205,13 +211,14 @@ export function Lights({ clock, state }: SceneProps & { state: React.MutableRefO
     r.target.position.copy(s.target);
     r.position.set(s.target.x + 6, s.target.y + 4, s.target.z - 9);
     r.target.updateMatrixWorld();
-    r.intensity = blueprint ? 0.5 : 1.6;
+    r.intensity = dark ? 0.5 : 0.5;
+    if (hemi.current) hemi.current.intensity = dark ? 0.12 : 1.1;
   });
   return (
     <>
       <directionalLight ref={key} castShadow intensity={3} shadow-mapSize={[2048, 2048]} shadow-bias={-0.0004} shadow-normalBias={0.03} />
-      <directionalLight ref={rim} intensity={1.6} color="#dfe6ea" />
-      <hemisphereLight args={['#aeb9bd', GROUND, 0.12]} />
+      <directionalLight ref={rim} intensity={0.5} color="#ffffff" />
+      <hemisphereLight ref={hemi} args={['#ffffff', PAPER.shade, 1.1]} />
     </>
   );
 }
@@ -236,7 +243,7 @@ export function Dust({ clock, state }: SceneProps & { state: React.MutableRefObj
     g.setAttribute('position', new THREE.BufferAttribute(base.slice(), 3));
     return g;
   }, [base]);
-  const mat = useMemo(() => new THREE.PointsMaterial({ map: softTexture(), color: C.lightGrey, size: 0.09, sizeAttenuation: true, transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), []);
+  const mat = useMemo(() => new THREE.PointsMaterial({ map: softTexture(), color: C.tonedTextGrey, size: 0.09, sizeAttenuation: true, transparent: true, opacity: 0.25, depthWrite: false, toneMapped: false }), []);
   useFrame((st) => {
     const g = ref.current;
     if (!g) return;
@@ -252,7 +259,10 @@ export function Dust({ clock, state }: SceneProps & { state: React.MutableRefObj
     }
     p.needsUpdate = true;
     const u = uOf(clock);
-    mat.opacity = u >= 9.7 && u < 10.3 ? 0.1 : 0.4;
+    const dark = isDark(u);
+    mat.blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending;
+    mat.color.set(dark ? C.lightGrey : C.tonedTextGrey);
+    mat.opacity = dark ? 0.4 : 0.2;
   });
   return <points ref={ref} geometry={geo} material={mat} frustumCulled={false} />;
 }

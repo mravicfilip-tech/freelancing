@@ -1,11 +1,11 @@
-// Dev route for storyline 2, /?story2=<linija|grad|sistem>, one scene without the version switcher.
-import { StoryShell } from './shell/StoryShell';
-import { SCENES, type SceneId } from './scenes';
+// Dev route for storyline 2, /?story2=<linija|grad|sistem>, one version without the version switcher.
+import { Grad, Linija, Sistem } from './versions';
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const VERSIONS = { linija: Linija, grad: Grad, sistem: Sistem };
 
 export function Harness2() {
-  const q = new URLSearchParams(window.location.search);
-  const id = (q.get('story2') as SceneId) in SCENES ? (q.get('story2') as SceneId) : 'linija';
-  return <StoryShell Scene={SCENES[id]} tone={id === 'sistem' ? 'dark' : 'light'} reduced={reducedQuery.matches} />;
+  const id = new URLSearchParams(window.location.search).get('story2') ?? '';
+  const Version = VERSIONS[id as keyof typeof VERSIONS] ?? Linija;
+  return <Version reduced={reducedQuery.matches} />;
 }

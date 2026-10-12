@@ -9,14 +9,14 @@ import * as THREE from 'three';
 import { C } from '../../../tokens';
 import type { SceneProps } from '../../clock';
 import { ATP } from './route';
-import { K, ease, lerp, poolMaterial, range, uOf } from './kit';
+import { K, ease, lit, lerp, poolMaterial, range, uOf } from './kit';
 
 type V = [number, number];
 const CHAINS: V[][] = [
-  [[-14.5, -1.2], [-18.0, 4.9], [-21.5, 11.0]],
+  [[-14.5, 0.3], [-18.0, 5.9], [-21.5, 11.9]],
   [[-2.5, 5.8], [-7.5, 14.0]],
   [[6.0, 5.2], [1.5, 13.0]],
-  [[17.5, -1.0], [14.0, 5.1], [10.5, 11.2]],
+  [[17.5, 0.3], [14.0, 6.2], [10.5, 12.0]],
   [[22.5, 4.5], [19.5, 9.7]],
 ];
 type Seg = { a: V; b: V; len: number; yaw: number; dots: number; off: number };
@@ -55,7 +55,7 @@ export default function Robots({ clock }: SceneProps) {
   const floor = useRef<THREE.Mesh>(null);
   const pads = useRef<THREE.Group>(null);
   const total = useMemo(() => SEGS.reduce((n, s) => n + s.dots, 0), []);
-  const pool = useMemo(() => poolMaterial(0.12, C.lightGrey), []);
+  const pool = useMemo(() => poolMaterial(0.8, C.white), []);
   const m4 = useMemo(() => new THREE.Matrix4(), []);
   const q = useMemo(() => new THREE.Quaternion(), []);
   const ringGeo = useMemo(() => {
@@ -134,7 +134,7 @@ export default function Robots({ clock }: SceneProps) {
     <group>
       <mesh ref={floor} rotation={[-Math.PI / 2, 0, 0]} position={[ATP.x, ATP.y - 12, ATP.z]} receiveShadow visible={false}>
         <planeGeometry args={[400, 400]} />
-        <meshStandardMaterial color="#0b0d0e" roughness={0.7} metalness={0.15} />
+        <meshLambertMaterial color={lit(C.lightGrey)} toneMapped={false} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[ATP.x, ATP.y + 0.015, ATP.z]} material={pool}>
         <planeGeometry args={[70, 48]} />
@@ -148,11 +148,11 @@ export default function Robots({ clock }: SceneProps) {
           return (
             <group key={i} position={[x, y, z]}>
               <lineLoop geometry={ringGeo}>
-                <lineBasicMaterial color={C.white} transparent opacity={0.4} toneMapped={false} />
+                <lineBasicMaterial color={C.textGrey} transparent opacity={0.55} toneMapped={false} />
               </lineLoop>
               <mesh rotation={[-Math.PI / 2, 0, 0]}>
                 <circleGeometry args={[1.5, 32]} />
-                <meshStandardMaterial color="#14181a" roughness={0.6} />
+                <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
               </mesh>
             </group>
           );

@@ -7,9 +7,9 @@ import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 import { C } from '../../../tokens';
 import { BUILDING_X, ROUTE } from './route';
-import { K, poolMaterial, rng, signGeometry, softTexture } from './kit';
+import { K, rng, signGeometry } from './kit';
 
-const lineMat = (opacity: number) => new THREE.LineBasicMaterial({ color: C.lightGrey, transparent: true, opacity, toneMapped: false });
+const lineMat = (opacity: number) => new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: opacity * 0.7, toneMapped: false });
 const edgesOf = (geo: THREE.BufferGeometry, opacity = 0.3) => new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), lineMat(opacity));
 
 function Ribbon({ half, y, material, step = 4 }: { half: number; y: number; material: THREE.Material; step?: number }) {
@@ -58,16 +58,39 @@ function RoadEdge({ offset }: { offset: number }) {
     g.setIndex(idx);
     return g;
   }, [offset]);
-  return <mesh geometry={geo} material={K.glowSoft} />;
+  return <mesh geometry={geo} material={K.white} />;
+}
+
+// A white dashed centre line along the whole path.
+function Centre() {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const pts = useMemo(() => ROUTE.filter((_, i) => i % 16 === 0), []);
+  useLayoutEffect(() => {
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const e = new THREE.Euler();
+    pts.forEach((p, i) => {
+      e.set(0, p.yaw, 0);
+      q.setFromEuler(e);
+      ref.current!.setMatrixAt(i, m.compose(new THREE.Vector3(p.x, 0.02, p.z), q, new THREE.Vector3(1, 1, 1)));
+    });
+    ref.current!.instanceMatrix.needsUpdate = true;
+  }, [pts]);
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, pts.length]} material={K.white}>
+      <boxGeometry args={[1.8, 0.01, 0.14]} />
+    </instancedMesh>
+  );
 }
 
 function Road() {
-  const mat = useMemo(() => new THREE.MeshLambertMaterial({ color: '#12171a', emissive: '#242d31' }), []);
+  const mat = K.road;
   return (
     <group>
       <Ribbon half={1.85} y={0.005} material={mat} />
       <RoadEdge offset={1.7} />
       <RoadEdge offset={-1.7} />
+      <Centre />
     </group>
   );
 }
@@ -90,10 +113,10 @@ function Windows({ items, mat }: { items: [number, number, number][]; mat: THREE
       <instancedMesh ref={ref} args={[undefined, undefined, items.length]} material={mat}>
         <boxGeometry args={[1.5, 1.45, 0.12]} />
       </instancedMesh>
-      <instancedMesh ref={bar} args={[undefined, undefined, items.length]} material={K.silhouette}>
+      <instancedMesh ref={bar} args={[undefined, undefined, items.length]} material={K.white}>
         <boxGeometry args={[0.07, 1.5, 0.05]} />
       </instancedMesh>
-      <instancedMesh ref={bar2} args={[undefined, undefined, items.length]} material={K.silhouette}>
+      <instancedMesh ref={bar2} args={[undefined, undefined, items.length]} material={K.white}>
         <boxGeometry args={[1.55, 0.07, 0.05]} />
       </instancedMesh>
     </group>
@@ -122,7 +145,7 @@ function Building() {
       const x = BUILDING_X - 11 + i * 2.7;
       for (const y of [1.7]) {
         // the left 45 percent of the frame stays empty at the stop, and the door and the sign keep their place
-        if (y < 3 && x > BUILDING_X - 4.2 && x < BUILDING_X + 4) continue;
+        if (y < 3 && x > BUILDING_X - 9 && x < BUILDING_X + 6) continue;
         if (y < 3 && x > BUILDING_X + 7 && x < BUILDING_X + 12) continue;
         if (y > 3 && x > BUILDING_X + 3.5 && x < BUILDING_X + 13) continue;
         (r() < 0.78 ? on : dim).push([x, y, front + 0.04]);
@@ -150,18 +173,14 @@ function Building() {
       {/* entrance, a lit glass door at the right */}
       <mesh position={[door[0], door[1], door[2]]}>
         <boxGeometry args={[2.6, 2.4, 0.1]} />
-        <meshBasicMaterial color="#10171a" toneMapped={false} />
+        <meshBasicMaterial color="#5e7175" toneMapped={false} />
       </mesh>
       <lineSegments position={[door[0], door[1], door[2] + 0.06]}>
         <edgesGeometry args={[new THREE.BoxGeometry(2.6, 2.4, 0.02)]} />
-        <lineBasicMaterial color={C.lightGrey} transparent opacity={0.7} toneMapped={false} />
+        <lineBasicMaterial color={C.white} transparent opacity={0.8} toneMapped={false} />
       </lineSegments>
       {/* the live 3D name, Geist caps in white, lit from within */}
-      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 4.4, 2.75, front + 0.05]} />
-      <mesh position={[BUILDING_X + 8.4, 3.2, front + 0.02]}>
-        <planeGeometry args={[11, 2.2]} />
-        <meshBasicMaterial map={softTexture()} color={C.lightGrey} transparent opacity={0.16} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
-      </mesh>
+      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 5.1, 3.9, front + 0.05]} />
     </group>
   );
 }
@@ -215,7 +234,7 @@ function Trees() {
       <instancedMesh ref={cyp} args={[undefined, undefined, items.cy.length]} material={K.silhouetteFar} castShadow>
         <coneGeometry args={[0.85, 5, 7]} />
       </instancedMesh>
-      <instancedMesh ref={bush} args={[undefined, undefined, items.bu.length]} material={K.silhouette}>
+      <instancedMesh ref={bush} args={[undefined, undefined, items.bu.length]} material={K.silhouetteFar}>
         <sphereGeometry args={[0.8, 10, 8]} />
       </instancedMesh>
     </group>
@@ -223,9 +242,7 @@ function Trees() {
 }
 
 function Lamps() {
-  const xs = [-8, 14, 44, 62];
-  const pool = useMemo(() => poolMaterial(0.5, C.lightGrey), []);
-  const tex = softTexture();
+  const xs = [-8, 14, 53, 70];
   return (
     <group>
       {xs.map((x) => (
@@ -235,12 +252,6 @@ function Lamps() {
           </mesh>
           <mesh position={[0, 5.18, 0.3]} material={K.glow}>
             <boxGeometry args={[0.7, 0.06, 0.28]} />
-          </mesh>
-          <sprite position={[0, 5.15, 0.3]} scale={[4.2, 4.2, 1]}>
-            <spriteMaterial map={tex} color={C.lightGrey} transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-          </sprite>
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 1.2]} material={pool}>
-            <planeGeometry args={[11, 8]} />
           </mesh>
         </group>
       ))}
@@ -307,7 +318,7 @@ function Horizon() {
     g.fillRect(0, 0, 4, 256);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({ map: t, color: '#6f7b7f', transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, fog: false });
+    return new THREE.MeshBasicMaterial({ map: t, color: C.tonedTextGrey, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false, fog: false });
   }, []);
   useFrame(() => {
     if (ref.current) ref.current.position.x = camera.position.x;

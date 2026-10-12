@@ -9,7 +9,7 @@ export const AISLES = [-19.8, -14.4, -9.0];
 export const WH_C = new THREE.Vector3((WH.x0 + WH.x1) / 2, 0, (WH.z0 + WH.z1) / 2);
 export const BP = new THREE.Vector3(260, 0, -14.4);
 export const NP = new THREE.Vector3(360, 0, 0);
-export const ATP = new THREE.Vector3(360, -9, 0);
+export const ATP = new THREE.Vector3(360, 0, 0);
 
 // The road, a polyline with rounded corners. It runs along +x, jogs toward -z and runs on to the warehouse door.
 const WAY: [number, number][] = [

@@ -1,16 +1,18 @@
-// Sistem, the dark 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.5. The realistic Linde forklift
-// lit on dark ground, with the outdoor site suggested by light and silhouettes, the warehouse as a lit model, a
-// blueprint, a very large fork, a rental platform and robots on lit dotted paths. Every pose is a pure function of
-// the story clock, so a frozen clock (?at=<beat>&k=<0 to 1>) always draws the same picture.
+// Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.5. The real Linde forklift in a bright
+// white and grey site (low poly trees, hedges, lamp posts, the company building, vans), the yard from above, the
+// warehouse as a lit model with racks and wrapped pallets, a precise side elevation schematic of the X50 on the dark
+// servis ground, a steel fork tine, the rental depot floor and the automation floor with robots at true scale on system
+// routes. Every pose is a pure function of the story clock, so a frozen clock (?at=<beat>&k=<0 to 1>) always draws the
+// same picture.
 import { Suspense, useEffect, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
-import Blueprint from './blueprint';
+import Schematic from './schematic';
 import { Dust, Lights, Rig, type CamState } from './camera';
-import Grid from './grid';
+import Grid, { Depot } from './grid';
 import { Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
@@ -93,7 +95,12 @@ function World({ clock }: SceneProps) {
       )}
       {need(10, 11) && (
         <Place clock={clock} from={9.95} to={12.0}>
-          <Blueprint clock={clock} />
+          <Schematic clock={clock} />
+        </Place>
+      )}
+      {need(11, 14) && (
+        <Place clock={clock} from={11.85} to={15.1}>
+          <Depot clock={clock} />
         </Place>
       )}
       {need(11, 13) && (
@@ -101,7 +108,7 @@ function World({ clock }: SceneProps) {
           <Grid clock={clock} />
         </Place>
       )}
-      {need(13, 14) && (
+      {need(12, 14) && (
         <Place clock={clock} from={12.9} to={15.1}>
           <Robots clock={clock} />
         </Place>

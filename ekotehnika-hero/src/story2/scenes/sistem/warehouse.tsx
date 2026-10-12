@@ -2,14 +2,21 @@
 // ceiling strips, and three indoor trucks at work. The same building is the roof in Z, the cutaway in P and
 // the aisle in A and B.
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { C } from '../../../tokens';
-import { Truck, type TruckApi } from './models';
+import { Truck, SPEC, modelUrl, type TruckApi } from './models';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { bakeEdges } from './bake';
 import type { SceneProps } from '../../clock';
 import { track } from '../../../story/scenes/sistem/tracks';
 import { AISLES, WH } from './route';
-import { K, ease, lit, poolMaterial, range, rng, uOf } from './kit';
+import { G, K, ease, lam, lerp, lit, poolMaterial, range, rng, uOf } from './kit';
+import { BoxSet, type BoxItem } from './props';
+import { Roof, roofMaterials, type RoofSpec } from './roof';
 
 const BAY = 2.7;
 const BAYS = 17;
@@ -19,135 +26,173 @@ const LEVELS = [0, 1.5, 3.0, 4.5];
 const ROWS = [-21.95, -17.65, -16.55, -12.25, -11.15, -6.85];
 const NEAR = (z: number) => z > AISLES[1];
 
-const BEAM = new THREE.MeshBasicMaterial({ color: C.textGrey, toneMapped: false });
-const PALETTE = [C.white, C.hoverLightGrey, C.lightGrey, C.shadeGrey, C.white, C.lightGrey];
+const labelMats: THREE.Material[] = [];
+// Shipping and rack labels, a white plate with a code and a barcode, drawn once on a canvas.
+function labelTexture(code: string, seed: number) {
+  const c = document.createElement('canvas');
+  c.width = 192;
+  c.height = 64;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#ffffff';
+  g.fillRect(0, 0, 192, 64);
+  g.strokeStyle = '#a1a1a1';
+  g.lineWidth = 3;
+  g.strokeRect(1.5, 1.5, 189, 61);
+  g.fillStyle = '#222222';
+  g.font = '600 26px "Daxline Pro", Arial, sans-serif';
+  g.textBaseline = 'top';
+  g.fillText(code, 10, 8);
+  const r = rng(seed);
+  let x = 10;
+  while (x < 178) {
+    const w = 2 + Math.floor(r() * 4);
+    g.fillRect(x, 38, w, 20);
+    x += w + 1 + Math.floor(r() * 3);
+  }
+  g.fillStyle = '#6b6b6b';
+  g.fillRect(120, 12, 60, 4);
+  g.fillRect(120, 22, 40, 3);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  return t;
+}
+const labelMat = (i: number) => (labelMats[i] ??= new THREE.MeshBasicMaterial({ map: labelTexture(['A 12 03', 'B 07 02', 'C 21 04', 'D 03 01'][i], 31 + i * 7), toneMapped: false }));
+
+// Instanced flat plates. Each item is centre x, y, z and a width, height, with the plate facing +z or -z.
+function Plates({ items, face, mat }: { items: [number, number, number, number, number][]; face: 1 | -1; mat: THREE.Material }) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  useLayoutEffect(() => {
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, face > 0 ? 0 : Math.PI, 0));
+    items.forEach(([x, y, z, w, h], i) => ref.current!.setMatrixAt(i, m.compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(w, h, 1))));
+    ref.current!.instanceMatrix.needsUpdate = true;
+  }, [items, face]);
+  return (
+    <instancedMesh key={items.length} ref={ref} args={[undefined, undefined, Math.max(items.length, 1)]} count={items.length} material={mat} frustumCulled={false}>
+      <planeGeometry args={[1, 1]} />
+    </instancedMesh>
+  );
+}
+
+const rackGrey = lam(G.graphite);
+const beamWeb = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.4) });
+const beamFlange = lam(G.dark);
+const wrapShell = new THREE.MeshLambertMaterial({ color: lit(G.white), emissive: lit(G.white).multiplyScalar(0.6), transparent: true, opacity: 0.3, toneMapped: false, depthWrite: false });
+const wrapBand = new THREE.MeshLambertMaterial({ color: lit(G.white), emissive: lit(G.white).multiplyScalar(0.7), transparent: true, opacity: 0.75, toneMapped: false, depthWrite: false });
+const palletBase = lam(G.dark);
+const loadMats = [G.white, G.pale, G.light].map((c) => lam(c, { emissive: lit(c).multiplyScalar(0.3) }));
 
 function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.Group | null) => void }) {
-  const up = useRef<THREE.InstancedMesh>(null);
-  const beam = useRef<THREE.InstancedMesh>(null);
-  const load = useRef<THREE.InstancedMesh>(null);
-  const data = useMemo(() => {
+  const d = useMemo(() => {
     const r = rng(100 + index);
-    const loads: { x: number; y: number; h: number; c: THREE.Color }[] = [];
+    const up: BoxItem[] = [];
+    const plate: BoxItem[] = [];
+    const guard: BoxItem[] = [];
+    const brace: BoxItem[] = [];
+    const web: BoxItem[] = [];
+    const flange: BoxItem[] = [];
+    const base: BoxItem[] = [];
+    const shell: BoxItem[] = [];
+    const bands: BoxItem[] = [];
+    const loads: BoxItem[][] = [[], [], []];
+    const rackLabels: [number, number, number, number, number][][][] = [[[], []], [[], []]];
+    const loadLabels: [number, number, number, number, number][][][] = [[[], []], [[], []]];
+    for (let b = 0; b <= BAYS; b++) {
+      const x = RACK_X0 + b * BAY;
+      for (const dz of [-0.5, 0.5]) {
+        up.push([x, 3.3, dz, 0.1, 6.6, 0.1]);
+        plate.push([x, 0.012, dz, 0.26, 0.024, 0.26]);
+        guard.push([x, 0.22, dz + dz * 0.12, 0.16, 0.44, 0.1]);
+      }
+      // the frame between the two uprights, ladder bracing
+      for (const y of [0.45, 2.1, 3.9, 5.7]) brace.push([x, y, 0, 0.035, 0.05, 0.9]);
+    }
+    for (let b = 0; b < BAYS; b++) {
+      const cx = RACK_X0 + b * BAY + BAY / 2;
+      for (const ly of LEVELS.slice(1).concat([6.0]))
+        for (const dz of [-0.5, 0.5]) {
+          web.push([cx, ly, dz, BAY - 0.12, 0.14, 0.04]);
+          flange.push([cx, ly + 0.085, dz + (dz > 0 ? -0.03 : 0.03), BAY - 0.12, 0.03, 0.1]);
+        }
+      // a rack label on the lower three beams, on both aisle faces
+      for (const ly of [1.5, 3.0, 4.5]) {
+        const v = (b + Math.round(ly)) % 2;
+        rackLabels[v][0].push([cx, ly - 0.0, 0.525, 0.38, 0.12]);
+        rackLabels[v][1].push([cx, ly - 0.0, -0.525, 0.38, 0.12]);
+      }
+    }
     for (let b = 0; b < BAYS; b++)
       for (const ly of LEVELS)
         for (const side of [-0.6, 0.6]) {
           if (r() < 0.14) continue;
           const h = 0.9 + r() * 0.4;
-          loads.push({ x: RACK_X0 + b * BAY + BAY / 2 + side, y: ly + 0.15 + h / 2 + (ly === 0 ? 0.02 : 0.12), h, c: lit(PALETTE[Math.floor(r() * PALETTE.length)]) });
+          const x = RACK_X0 + b * BAY + BAY / 2 + side;
+          const y0 = ly + (ly === 0 ? 0.0 : 0.1);
+          base.push([x, y0 + 0.07, 0, 1.2, 0.14, 0.82]);
+          const yc = y0 + 0.14 + h / 2;
+          loads[Math.floor(r() * 3)].push([x, yc, 0, 1.08, h, 0.88]);
+          shell.push([x, yc, 0, 1.13, h + 0.03, 0.93]);
+          bands.push([x, y0 + 0.14 + h * 0.3, 0, 1.15, 0.07, 0.95], [x, y0 + 0.14 + h * 0.68, 0, 1.15, 0.07, 0.95]);
+          const v = (b + side * 2 + ly) % 2 < 1 ? 0 : 1;
+          loadLabels[Math.abs(v)][0].push([x - 0.2, yc + h * 0.1, 0.47, 0.34, 0.12]);
+          loadLabels[Math.abs(v)][1].push([x + 0.2, yc + h * 0.1, -0.47, 0.34, 0.12]);
         }
-    return loads;
+    return { up, plate, guard, brace, web, flange, base, shell, bands, loads, rackLabels, loadLabels };
   }, [index]);
-  useLayoutEffect(() => {
-    const m = new THREE.Matrix4();
-    let i = 0;
-    for (let b = 0; b <= BAYS; b++)
-      for (const dz of [-0.5, 0.5]) up.current!.setMatrixAt(i++, m.makeTranslation(RACK_X0 + b * BAY, 3.3, dz));
-    up.current!.instanceMatrix.needsUpdate = true;
-    i = 0;
-    for (let b = 0; b < BAYS; b++)
-      for (const ly of LEVELS.slice(1).concat([6.0]))
-        for (const dz of [-0.5, 0.5]) beam.current!.setMatrixAt(i++, m.makeTranslation(RACK_X0 + b * BAY + BAY / 2, ly, dz));
-    beam.current!.instanceMatrix.needsUpdate = true;
-    data.forEach((d, j) => {
-      load.current!.setMatrixAt(j, m.compose(new THREE.Vector3(d.x, d.y, 0), new THREE.Quaternion(), new THREE.Vector3(1, d.h, 1)));
-      load.current!.setColorAt(j, d.c);
-    });
-    load.current!.instanceMatrix.needsUpdate = true;
-    if (load.current!.instanceColor) load.current!.instanceColor.needsUpdate = true;
-  }, [data]);
   return (
     <group ref={group} position={[0, 0, z]}>
-      <instancedMesh ref={up} args={[undefined, undefined, (BAYS + 1) * 2]} material={K.metalGrey} castShadow>
-        <boxGeometry args={[0.1, 6.6, 0.1]} />
-      </instancedMesh>
-      <instancedMesh ref={beam} args={[undefined, undefined, BAYS * 5 * 2]} material={BEAM}>
-        <boxGeometry args={[BAY - 0.12, 0.07, 0.05]} />
-      </instancedMesh>
-      <instancedMesh ref={load} args={[undefined, undefined, data.length]} castShadow receiveShadow>
-        <boxGeometry args={[1.12, 1, 0.92]} />
-        <meshLambertMaterial toneMapped={false} />
-      </instancedMesh>
+      <BoxSet items={d.up} mat={rackGrey} cast />
+      <BoxSet items={d.plate} mat={beamFlange} receive={false} />
+      <BoxSet items={d.guard} mat={beamWeb} cast />
+      <BoxSet items={d.brace} mat={rackGrey} />
+      <BoxSet items={d.web} mat={beamWeb} cast />
+      <BoxSet items={d.flange} mat={beamFlange} />
+      <BoxSet items={d.base} mat={palletBase} cast />
+      {d.loads.map((l, i) => (
+        <BoxSet key={i} items={l} mat={loadMats[i]} cast />
+      ))}
+      <BoxSet items={d.shell} mat={wrapShell} receive={false} />
+      <BoxSet items={d.bands} mat={wrapBand} receive={false} />
+      {[0, 1].map((v) => (
+        <group key={v}>
+          <Plates items={d.rackLabels[v][0]} face={1} mat={labelMat(v)} />
+          <Plates items={d.rackLabels[v][1]} face={-1} mat={labelMat(v)} />
+          <Plates items={d.loadLabels[v][0]} face={1} mat={labelMat(v + 2)} />
+          <Plates items={d.loadLabels[v][1]} face={-1} mat={labelMat(v + 2)} />
+        </group>
+      ))}
     </group>
   );
 }
 
-function roofGeo(zEave: number, zRidge: number) {
-  const g = new THREE.BufferGeometry();
-  const x0 = WH.x0 - 0.3;
-  const x1 = WH.x1 + 0.3;
-  const pos = [x0, WH.eave, zEave, x1, WH.eave, zEave, x1, WH.peak, zRidge, x0, WH.peak, zRidge];
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2));
-  g.setIndex(zEave > zRidge ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]);
-  g.computeVertexNormals();
-  return g;
-}
+const ROOF: RoofSpec = {
+  x0: WH.x0 - 0.3,
+  x1: WH.x1 + 0.3,
+  z0: WH.z0,
+  z1: WH.z1,
+  eave: WH.eave,
+  peak: WH.peak,
+  sky: 4.9,
+  skyPhase: 2.4,
+  vents: [
+    ...Array.from({ length: 6 }, (_, i) => ({ side: 1 as const, x: WH.x0 + 8 + i * 8.6, s: 1.5 })),
+    ...Array.from({ length: 6 }, (_, i) => ({ side: -1 as const, x: WH.x0 + 12.3 + i * 8.6, s: 1.5 })),
+  ],
+  units: [
+    { side: 1, x: 146, s: 4.4 },
+    { side: -1, x: 131, s: 4.6 },
+    { side: 1, x: 162, s: 4.4 },
+  ],
+  transparent: true,
+};
 
-function ribTexture(base: string, rib: string) {
-  const c = document.createElement('canvas');
-  c.width = 64;
-  c.height = 8;
-  const g = c.getContext('2d')!;
-  g.fillStyle = base;
-  g.fillRect(0, 0, 64, 8);
-  g.fillStyle = rib;
-  for (let i = 0; i < 4; i++) g.fillRect(i * 16, 0, 4, 8);
-  const t = new THREE.CanvasTexture(c);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(56, 1);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
-  return t;
-}
-
-function Roof({ matsRef }: { matsRef: React.MutableRefObject<THREE.Material[]> }) {
-  const zc = (WH.z0 + WH.z1) / 2;
-  const mats = useMemo(() => {
-    const light = new THREE.MeshLambertMaterial({ map: ribTexture(C.white, C.lightGrey), color: lit('#ffffff'), transparent: true, toneMapped: false });
-    const dark = new THREE.MeshLambertMaterial({ map: ribTexture(C.shadeGrey, C.white), color: lit('#ffffff'), transparent: true, toneMapped: false });
-    const sky = new THREE.MeshLambertMaterial({ color: lit(C.tonedTextGrey), transparent: true, toneMapped: false });
-    const vent = new THREE.MeshLambertMaterial({ color: lit(C.textGrey), transparent: true, toneMapped: false });
-    const line = new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: 0.75, toneMapped: false });
-    return { light, dark, sky, vent, line };
-  }, []);
+function WarehouseRoof({ matsRef }: { matsRef: React.MutableRefObject<THREE.Material[]> }) {
+  const mats = useMemo(() => roofMaterials(true), []);
   useLayoutEffect(() => {
-    matsRef.current = [mats.light, mats.dark, mats.sky, mats.vent, mats.line];
+    matsRef.current = Object.values(mats);
   }, [mats, matsRef]);
-  const near = useMemo(() => roofGeo(WH.z1, zc), [zc]);
-  const far = useMemo(() => roofGeo(WH.z0, zc), [zc]);
-  const outline = useMemo(() => {
-    const pts = [
-      [WH.x0, WH.eave, WH.z1], [WH.x1, WH.eave, WH.z1], [WH.x1, WH.eave, WH.z0], [WH.x0, WH.eave, WH.z0], [WH.x0, WH.eave, WH.z1],
-    ].map((p) => new THREE.Vector3(...(p as [number, number, number])));
-    const ridge = [new THREE.Vector3(WH.x0, WH.peak, zc), new THREE.Vector3(WH.x1, WH.peak, zc)];
-    return [new THREE.BufferGeometry().setFromPoints(pts), new THREE.BufferGeometry().setFromPoints(ridge)];
-  }, [zc]);
-  const skylights = useMemo(() => {
-    const o: number[] = [];
-    for (let i = 0; i < 6; i++) o.push(WH.x0 + 5 + i * 8.6);
-    return o;
-  }, []);
-  const vents = useMemo(() => Array.from({ length: 6 }, (_, i) => WH.x0 + 8 + i * 8.6), []);
-  const slope = (WH.peak - WH.eave) / (zc - WH.z1);
-  return (
-    <group>
-      <mesh geometry={near} material={mats.light} />
-      <mesh geometry={far} material={mats.dark} />
-      {skylights.map((x) => (
-        <mesh key={x} position={[x, WH.eave + (-8 - WH.z1) * slope + 0.04, -8]} rotation={[Math.atan(slope) * -1, 0, 0]} material={mats.sky}>
-          <boxGeometry args={[3.6, 0.04, 1.5]} />
-        </mesh>
-      ))}
-      {vents.map((x) => (
-        <mesh key={x} position={[x, WH.peak + 0.25, zc - 1.2]} material={mats.vent}>
-          <cylinderGeometry args={[0.55, 0.65, 0.5, 20]} />
-        </mesh>
-      ))}
-      <lineLoop geometry={outline[0]} material={mats.line} />
-      <lineSegments geometry={outline[1]} material={mats.line} />
-    </group>
-  );
+  return <Roof spec={ROOF} mats={mats} />;
 }
 
 function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | null> }) {
@@ -221,6 +266,86 @@ const T3X = track([[0, 126], [5300, 126], [6400, 134], [7600, 148], [8000, 152],
 const T4X = track([[0, 130], [5300, 130], [6400, 133], [8000, 142], [12000, 142]]);
 const T5X = track([[0, 160], [5300, 160], [6400, 156], [8000, 146], [12000, 146]]);
 
+// The T02 move. One truck of the warehouse is drawn again as a precise wireframe on top of its lit self, the half from
+// the mast back to the front. A clip plane sweeps the wireframe in from the front and it clears again as the camera drops
+// into the aisle for A. Lines are 1px fat lines from the hard edges of the real model.
+function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: number) => number }) {
+  const gltf = useGLTF(modelUrl(name)) as unknown as { scene: THREE.Group };
+  const spec = SPEC[name];
+  const size = useThree((s) => s.size);
+  const dpr = useThree((s) => s.viewport.dpr);
+  const gl = useThree((s) => s.gl);
+  const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(1, 0, 0), 0), []);
+  const edges = useMemo(() => bakeEdges(gltf.scene, name, 42), [gltf, name]);
+  // an ink line with a white halo under it, so the drawing reads over the dark truck and over the pale rack behind it
+  const lm = (color: number) => new LineMaterial({ color, linewidth: 1, transparent: true, opacity: 0, toneMapped: false, depthWrite: false, depthTest: false, clippingPlanes: [plane] });
+  const mat = useMemo(() => lm(0x222222), [plane]); // eslint-disable-line react-hooks/exhaustive-deps
+  const halo = useMemo(() => lm(0xffffff), [plane]); // eslint-disable-line react-hooks/exhaustive-deps
+  const matWheel = mat;
+  const mk = (pts: number[], m: LineMaterial) => {
+    const g = new LineSegmentsGeometry();
+    g.setPositions(new Float32Array(pts));
+    const l = new LineSegments2(g, m);
+    l.frustumCulled = false;
+    return l;
+  };
+  const body = useMemo(() => mk(edges.body, mat), [edges, mat]);
+  const bodyHalo = useMemo(() => mk(edges.body, halo), [edges, halo]);
+  // the truck's reach along the world x axis, from the model's own edges once it is turned to face +x
+  const reach = useMemo(() => {
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (let i = 0; i < edges.body.length; i += 3) {
+      const wx = Math.cos(spec.yaw) * edges.body[i] + Math.sin(spec.yaw) * edges.body[i + 2];
+      lo = Math.min(lo, wx);
+      hi = Math.max(hi, wx);
+    }
+    return { lo, hi };
+  }, [edges, spec.yaw]);
+  const wheels = useMemo(() => edges.wheels.map((w) => ({ ...w, line: mk(w.pts, matWheel), halo: mk(w.pts, halo) })), [edges, matWheel, halo]);
+  const root = useRef<THREE.Group>(null);
+  const wg = useRef<THREE.Group[]>([]);
+  useLayoutEffect(() => {
+    gl.localClippingEnabled = true;
+  }, [gl]);
+  useFrame(() => {
+    const u = uOf(clock);
+    const on = u > 7.4 && u < 8.7;
+    if (root.current) root.current.visible = on;
+    if (!on) return;
+    mat.resolution.set(size.width * dpr, size.height * dpr);
+    halo.resolution.set(size.width * dpr, size.height * dpr);
+    mat.linewidth = Math.max(1, size.height / 900) * dpr;
+    halo.linewidth = 3.2 * mat.linewidth;
+    const a = ease(range(u, 7.5, 7.75)) * (1 - ease(range(u, 8.35, 8.7)));
+    mat.opacity = 0.95 * a;
+    halo.opacity = 0.55 * a;
+    // the clip plane in world space, sweeping from the nose to the middle of the truck
+    const sweep = ease(range(u, 7.55, 7.95));
+    const cut = x(clock.pos.current) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);
+    plane.constant = -cut;
+    const roll = x(clock.pos.current);
+    wheels.forEach((_w, i) => {
+      const g = wg.current[i];
+      if (g) g.rotation.z = (spec.spin * roll) / spec.wheels[i].r;
+    });
+  });
+  return (
+    <group ref={root} visible={false} renderOrder={5}>
+      <group position={[0, spec.ground, 0]} rotation={[0, spec.yaw, 0]}>
+        <primitive object={bodyHalo} />
+        <primitive object={body} />
+        {wheels.map((w, i) => (
+          <group key={i} position={w.pos} scale={w.scale} ref={(g) => { if (g) wg.current[i] = g; }}>
+            <primitive object={w.halo} />
+            <primitive object={w.line} />
+          </group>
+        ))}
+      </group>
+    </group>
+  );
+}
+
 export default function Warehouse({ clock }: SceneProps) {
   const roofMats = useRef<THREE.Material[]>([]);
   const roof = useRef<THREE.Group>(null);
@@ -238,7 +363,7 @@ export default function Warehouse({ clock }: SceneProps) {
     const roofOp = 1 - ease(range(u, 6.78, 7.0));
     roofMats.current.forEach((m) => {
       const a = m as THREE.Material & { opacity: number };
-      a.opacity = m.type === 'LineBasicMaterial' ? 0.75 * roofOp : roofOp;
+      a.opacity = m.type === 'LineBasicMaterial' ? 0.8 * roofOp : roofOp;
       m.visible = roofOp > 0.003;
     });
     if (roof.current) {
@@ -282,7 +407,7 @@ export default function Warehouse({ clock }: SceneProps) {
     <group>
       <Floor clock={clock} />
       <group ref={roof}>
-        <Roof matsRef={roofMats} />
+        <WarehouseRoof matsRef={roofMats} />
       </group>
       <group ref={inner}>
         <Walls groupRef={walls} />
@@ -293,6 +418,7 @@ export default function Warehouse({ clock }: SceneProps) {
         <group ref={trucks}>
           <group ref={(g) => { gs.current[0] = g; }}>
             <Truck name="r16" apiRef={apiRefs[0]} />
+            <WireTruck clock={clock} name="r16" x={T1X} />
           </group>
           <group ref={(g) => { gs.current[1] = g; }}>
             <Truck name="n20" load apiRef={apiRefs[1]} />

@@ -1,16 +1,14 @@
-// The Ekotehnika site at dusk, built from light and simple silhouettes. The building outline with its live 3D
-// name, vans, trees, lamps and the lit road that turns into the grey S path. Everything is still, the truck
-// drives past it, so the parallax comes from the camera.
+// The Ekotehnika site in daylight, white and the LMH greys. The company building with real windows, a door, a canopy
+// and a roof edge, its live 3D name in black, the van with its graphite livery, low poly trees, hedges and shrubs,
+// lamp posts, kerbs, and the road that turns into the grey S path. Everything is still, the truck drives past it,
+// so the parallax comes from the camera.
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
-import { C } from '../../../tokens';
 import { BUILDING_X, ROUTE } from './route';
-import { K, rng, signGeometry } from './kit';
-
-const lineMat = (opacity: number) => new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: opacity * 0.7, toneMapped: false });
-const edgesOf = (geo: THREE.BufferGeometry, opacity = 0.3) => new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), lineMat(opacity));
+import { G, K, lam, lit, rng, signGeometry } from './kit';
+import { BoxSet, Hedge, Kerb, LampPost, Planter, Trees, Van, type BoxItem, type TreeSpec } from './props';
+import Yard from './yard';
 
 function Ribbon({ half, y, material, step = 4 }: { half: number; y: number; material: THREE.Material; step?: number }) {
   const geo = useMemo(() => {
@@ -47,7 +45,7 @@ function RoadEdge({ offset }: { offset: number }) {
       const nz = Math.cos(p.yaw);
       const o1 = offset + w;
       const o2 = offset - w;
-      pos.push(p.x + nx * o1, 0.015, p.z + nz * o1, p.x + nx * o2, 0.015, p.z + nz * o2);
+      pos.push(p.x + nx * o1, 0.035, p.z + nz * o1, p.x + nx * o2, 0.035, p.z + nz * o2);
       if (i > 0) {
         const a = (i - 1) * 2;
         idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3);
@@ -72,7 +70,7 @@ function Centre() {
     pts.forEach((p, i) => {
       e.set(0, p.yaw, 0);
       q.setFromEuler(e);
-      ref.current!.setMatrixAt(i, m.compose(new THREE.Vector3(p.x, 0.02, p.z), q, new THREE.Vector3(1, 1, 1)));
+      ref.current!.setMatrixAt(i, m.compose(new THREE.Vector3(p.x, 0.04, p.z), q, new THREE.Vector3(1, 1, 1)));
     });
     ref.current!.instanceMatrix.needsUpdate = true;
   }, [pts]);
@@ -87,7 +85,7 @@ function Road() {
   const mat = K.road;
   return (
     <group>
-      <Ribbon half={1.85} y={0.005} material={mat} />
+      <Ribbon half={1.85} y={0.025} material={mat} />
       <RoadEdge offset={1.7} />
       <RoadEdge offset={-1.7} />
       <Centre />
@@ -95,211 +93,205 @@ function Road() {
   );
 }
 
-function Windows({ items, mat }: { items: [number, number, number][]; mat: THREE.Material }) {
-  const ref = useRef<THREE.InstancedMesh>(null);
-  const bar = useRef<THREE.InstancedMesh>(null);
-  const bar2 = useRef<THREE.InstancedMesh>(null);
-  useLayoutEffect(() => {
-    const m = new THREE.Matrix4();
-    items.forEach(([x, y, z], i) => {
-      ref.current!.setMatrixAt(i, m.makeTranslation(x, y, z));
-      bar.current!.setMatrixAt(i, m.makeTranslation(x, y, z + 0.07));
-      bar2.current!.setMatrixAt(i, m.makeTranslation(x, y, z + 0.07));
-    });
-    [ref, bar, bar2].forEach((r) => (r.current!.instanceMatrix.needsUpdate = true));
-  }, [items]);
+
+// ---- the company building ---------------------------------------------------------------------------------
+
+const wall = lam(G.white, { emissive: lit(G.white).multiplyScalar(0.62) });
+const wallPale = lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.6) });
+const trim = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.5) });
+const frameMat = lam(G.white, { emissive: lit(G.white).multiplyScalar(0.5) });
+const glassMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.85) });
+const glassLight = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.75) });
+const edgeMat = lam(G.mid);
+const doorMat = lam(G.dark);
+
+const FRONT = -9;
+const BX0 = BUILDING_X - 13;
+const BX1 = BUILDING_X + 13;
+
+// A run of window modules on a facade. Each is a pale frame, a glass pane set back, a mullion and a transom.
+function windowRun(xs: number[], w: number, y0: number, y1: number, z: number) {
+  const h = y1 - y0;
+  const frame: BoxItem[] = [];
+  const glass: BoxItem[] = [];
+  const bars: BoxItem[] = [];
+  const sills: BoxItem[] = [];
+  const reveal: BoxItem[] = [];
+  xs.forEach((x) => {
+    frame.push([x, y0 + h / 2, z + 0.03, w, h, 0.1]);
+    glass.push([x, y0 + h / 2, z + 0.07, w - 0.16, h - 0.16, 0.04]);
+    bars.push([x, y0 + h / 2, z + 0.11, 0.07, h - 0.1, 0.05]);
+    bars.push([x, y0 + h * 0.72, z + 0.11, w - 0.1, 0.06, 0.05]);
+    sills.push([x, y0 - 0.06, z + 0.1, w + 0.22, 0.1, 0.22]);
+    reveal.push([x, y1 + 0.04, z + 0.08, w + 0.12, 0.08, 0.16]);
+  });
+  return { frame, glass, bars, sills, reveal };
+}
+
+function Facade({ x0, x1, h, z = FRONT, doorX, band = true }: { x0: number; x1: number; h: number; z?: number; doorX?: number; band?: boolean }) {
+  const set = useMemo(() => {
+    const w = 2.3;
+    const gap = 0.55;
+    const pitch = w + gap;
+    const xs: number[] = [];
+    for (let x = x0 + 1.6 + w / 2; x < x1 - 1.4; x += pitch) {
+      if (doorX !== undefined && Math.abs(x - doorX) < 2.6) continue;
+      xs.push(x);
+    }
+    const lower = windowRun(xs, w, 0.95, 2.45, z);
+    const upper = band ? windowRun(xs, w, h - 1.85, h - 0.75, z) : null;
+    return { lower, upper, xs };
+  }, [x0, x1, h, z, doorX]);
+  const pilasters = useMemo(() => {
+    const items: BoxItem[] = [];
+    for (let x = x0; x <= x1 + 0.01; x += (x1 - x0) / 4) items.push([x, h / 2, z + 0.06, 0.34, h, 0.14]);
+    return items;
+  }, [x0, x1, h, z]);
+  const w = x1 - x0;
+  const all = (k: 'frame' | 'glass' | 'bars' | 'sills' | 'reveal') => [...set.lower[k], ...(set.upper ? set.upper[k] : [])];
   return (
     <group>
-      <instancedMesh ref={ref} args={[undefined, undefined, items.length]} material={mat}>
-        <boxGeometry args={[1.5, 1.45, 0.12]} />
-      </instancedMesh>
-      <instancedMesh ref={bar} args={[undefined, undefined, items.length]} material={K.white}>
-        <boxGeometry args={[0.07, 1.5, 0.05]} />
-      </instancedMesh>
-      <instancedMesh ref={bar2} args={[undefined, undefined, items.length]} material={K.white}>
-        <boxGeometry args={[1.55, 0.07, 0.05]} />
-      </instancedMesh>
+      {/* the wall, a plinth, the floor slab edge and the roof edge with its shadow gap */}
+      <mesh position={[(x0 + x1) / 2, h / 2, z - 5.5]} material={wall} castShadow receiveShadow>
+        <boxGeometry args={[w, h, 11]} />
+      </mesh>
+      <BoxSet items={[[(x0 + x1) / 2, 0.24, z + 0.05, w + 0.1, 0.48, 0.12]]} mat={trim} cast />
+      <BoxSet items={[[(x0 + x1) / 2, 2.95, z + 0.07, w + 0.1, 0.4, 0.14]]} mat={wallPale} cast />
+      <BoxSet items={[[(x0 + x1) / 2, 2.72, z + 0.02, w, 0.05, 0.04]]} mat={edgeMat} />
+      <BoxSet items={[[(x0 + x1) / 2, h + 0.1, z + 0.12, w + 0.5, 0.22, 0.62]]} mat={wallPale} cast />
+      <BoxSet items={[[(x0 + x1) / 2, h - 0.12, z + 0.02, w, 0.05, 0.04]]} mat={edgeMat} />
+      <BoxSet items={pilasters} mat={wallPale} cast />
+      <BoxSet items={all('frame')} mat={frameMat} cast />
+      <BoxSet items={all('glass')} mat={glassMat} />
+      <BoxSet items={all('bars')} mat={frameMat} />
+      <BoxSet items={all('sills')} mat={trim} cast />
+      <BoxSet items={all('reveal')} mat={trim} cast />
+      {/* glass lines, a lighter band high in each pane so the glass reads as glass */}
+      <BoxSet items={all('glass').map(([x, y, zz, ww, hh, d]) => [x, y + hh * 0.3, zz + 0.03, ww, hh * 0.28, d] as BoxItem)} mat={glassLight} />
+      {doorX !== undefined && <Door x={doorX} z={z} />}
     </group>
   );
 }
 
-function Block({ x, z, w, d, h, mat = K.silhouette, lines = 0.55 }: { x: number; z: number; w: number; d: number; h: number; mat?: THREE.Material; lines?: number }) {
-  const geo = useMemo(() => new THREE.BoxGeometry(w, h, d), [w, h, d]);
-  const edges = useMemo(() => edgesOf(geo, lines), [geo, lines]);
+function Door({ x, z }: { x: number; z: number }) {
   return (
-    <group position={[x, h / 2, z]}>
-      <mesh geometry={geo} material={mat} castShadow receiveShadow />
-      <primitive object={edges} />
+    <group position={[x, 0, z]}>
+      <BoxSet items={[[0, 1.2, 0.04, 2.9, 2.5, 0.12]]} mat={frameMat} cast />
+      <BoxSet items={[[-0.64, 1.1, 0.1, 1.2, 2.2, 0.05], [0.64, 1.1, 0.1, 1.2, 2.2, 0.05]]} mat={glassMat} />
+      <BoxSet items={[[0, 2.32, 0.1, 2.6, 0.28, 0.05]]} mat={glassLight} />
+      <BoxSet items={[[0, 1.1, 0.13, 0.06, 2.2, 0.05], [-0.62, 1.1, 0.13, 0.04, 2.2, 0.04], [0.62, 1.1, 0.13, 0.04, 2.2, 0.04]]} mat={doorMat} />
+      <BoxSet items={[[-0.14, 1.05, 0.2, 0.04, 0.5, 0.05], [0.14, 1.05, 0.2, 0.04, 0.5, 0.05]]} mat={frameMat} />
+      {/* canopy and its two posts, a step */}
+      <BoxSet items={[[0, 2.78, 0.62, 3.8, 0.14, 1.5]]} mat={wallPale} cast />
+      <BoxSet items={[[0, 2.7, 1.36, 3.8, 0.06, 0.04]]} mat={edgeMat} />
+      <BoxSet items={[[-1.8, 1.38, 1.3, 0.07, 2.76, 0.07], [1.8, 1.38, 1.3, 0.07, 2.76, 0.07]]} mat={edgeMat} cast />
+      <BoxSet items={[[0, 0.05, 0.9, 3.6, 0.1, 1.5]]} mat={trim} />
+    </group>
+  );
+}
+
+// The extension and the hall, plainer. A ribbed face, a roller door and a roof edge.
+function Hall({ x, w, h, d, zc }: { x: number; w: number; h: number; d: number; zc: number }) {
+  const front = zc + d / 2;
+  const ribs = useMemo(() => {
+    const items: BoxItem[] = [];
+    for (let i = 0; i <= Math.floor(w / 0.9); i++) items.push([x - w / 2 + 0.3 + i * 0.9, h / 2, front + 0.02, 0.05, h - 0.5, 0.05]);
+    return items;
+  }, [x, w, h, front]);
+  return (
+    <group>
+      <mesh position={[x, h / 2, zc]} material={wall} castShadow receiveShadow>
+        <boxGeometry args={[w, h, d]} />
+      </mesh>
+      <BoxSet items={ribs} mat={trim} />
+      <BoxSet items={[[x, 0.2, front + 0.04, w + 0.1, 0.4, 0.1]]} mat={trim} cast />
+      <BoxSet items={[[x, h + 0.1, front + 0.1, w + 0.4, 0.22, 0.5]]} mat={wallPale} cast />
+      <BoxSet items={[[x, h - 0.14, front + 0.02, w, 0.05, 0.04]]} mat={edgeMat} />
+      {/* roller door, a frame and slats */}
+      <BoxSet items={[[x, 2.1, front + 0.05, 4.4, 4.2, 0.1]]} mat={frameMat} cast />
+      <BoxSet items={Array.from({ length: 14 }, (_, i) => [x, 0.45 + i * 0.28, front + 0.12, 4.0, 0.03, 0.04] as BoxItem)} mat={edgeMat} />
     </group>
   );
 }
 
 function Building() {
   const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
-  const front = -9;
-  const { on, dim, door } = useMemo(() => {
-    const r = rng(7);
-    const on: [number, number, number][] = [];
-    const dim: [number, number, number][] = [];
-    for (let i = 0; i < 9; i++) {
-      const x = BUILDING_X - 11 + i * 2.7;
-      for (const y of [1.7]) {
-        // the left 45 percent of the frame stays empty at the stop, and the door and the sign keep their place
-        if (y < 3 && x > BUILDING_X - 9 && x < BUILDING_X + 6) continue;
-        if (y < 3 && x > BUILDING_X + 7 && x < BUILDING_X + 12) continue;
-        if (y > 3 && x > BUILDING_X + 3.5 && x < BUILDING_X + 13) continue;
-        (r() < 0.78 ? on : dim).push([x, y, front + 0.04]);
-      }
-    }
-    // the extension and the hall, lower and plainer
-    for (let i = 0; i < 5; i++) {
-      (r() < 0.7 ? on : dim).push([BUILDING_X + 16 + i * 2.7, 1.9, front - 0.45 + 0.04]);
-    }
-    return { on, dim, door: [BUILDING_X + 9.5, 1.3, front + 0.05] as [number, number, number] };
-  }, []);
-  const hallLines = useMemo(() => Array.from({ length: 14 }, (_, i) => 63.8 + i * 0.85), []);
   return (
     <group>
-      <Block x={BUILDING_X} z={front - 5.5} w={26} d={11} h={7.6} />
-      <Block x={BUILDING_X + 20} z={front - 4.5} w={14} d={9} h={5.2} />
-      <Block x={69} z={-14} w={12} d={16} h={7.2} mat={K.silhouetteFar} lines={0.25} />
-      {hallLines.map((x) => (
-        <mesh key={x} position={[x, 3.5, -5.95]} material={K.glowSoft}>
-          <boxGeometry args={[0.03, 6.6, 0.02]} />
-        </mesh>
-      ))}
-      <Windows items={on} mat={K.windowOn} />
-      <Windows items={dim} mat={K.windowDim} />
-      {/* entrance, a lit glass door at the right */}
-      <mesh position={[door[0], door[1], door[2]]}>
-        <boxGeometry args={[2.6, 2.4, 0.1]} />
-        <meshBasicMaterial color="#5e7175" toneMapped={false} />
-      </mesh>
-      <lineSegments position={[door[0], door[1], door[2] + 0.06]}>
-        <edgesGeometry args={[new THREE.BoxGeometry(2.6, 2.4, 0.02)]} />
-        <lineBasicMaterial color={C.white} transparent opacity={0.8} toneMapped={false} />
-      </lineSegments>
-      {/* the live 3D name, Geist caps in white, lit from within */}
-      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 5.1, 3.9, front + 0.05]} />
+      <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} />
+      <Hall x={BUILDING_X + 20.5} w={14} h={4.6} d={9} zc={FRONT - 4.5} />
+      {/* the live 3D name, Daxline caps, the one dark element on the wall */}
+      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 0.2, 3.45, FRONT + 0.1]} castShadow />
     </group>
   );
 }
 
-function Van({ x, z, yaw = 0, scale = 1 }: { x: number; z: number; yaw?: number; scale?: number }) {
-  return (
-    <group position={[x, 0, z]} rotation={[0, yaw, 0]} scale={scale}>
-      <RoundedBox args={[3.5, 1.65, 1.8]} radius={0.12} position={[-0.55, 1.18, 0]} material={K.van} castShadow receiveShadow />
-      <RoundedBox args={[1.5, 1.25, 1.8]} radius={0.16} position={[1.55, 0.98, 0]} material={K.van} castShadow />
-      <RoundedBox args={[0.7, 0.62, 1.74]} radius={0.06} position={[1.62, 1.42, 0]} material={K.vanGlass} />
-      <mesh position={[2.32, 0.78, 0.55]} material={K.glow}>
-        <boxGeometry args={[0.05, 0.16, 0.3]} />
-      </mesh>
-      <mesh position={[2.32, 0.78, -0.55]} material={K.glow}>
-        <boxGeometry args={[0.05, 0.16, 0.3]} />
-      </mesh>
-      {[-1.2, 1.55].map((wx) =>
-        [-0.9, 0.9].map((wz) => (
-          <mesh key={`${wx}${wz}`} position={[wx, 0.38, wz]} rotation={[Math.PI / 2, 0, 0]} material={K.tyre} castShadow>
-            <cylinderGeometry args={[0.38, 0.38, 0.26, 20]} />
-          </mesh>
-        )),
-      )}
-    </group>
-  );
-}
+// ---- trees and green ----------------------------------------------------------------------------------------
 
-function Trees() {
-  const cyp = useRef<THREE.InstancedMesh>(null);
-  const bush = useRef<THREE.InstancedMesh>(null);
-  const items = useMemo(() => {
+function Greenery() {
+  const trees = useMemo<TreeSpec[]>(() => {
     const r = rng(21);
-    const cy: [number, number, number, number][] = [
-      [BUILDING_X - 13, 0, -3.4, 4.2], [BUILDING_X - 12.2, 0, -3.1, 3.2], [BUILDING_X + 17, 0, -3.0, 3.6], [BUILDING_X + 20.5, 0, -3.4, 2.8], [BUILDING_X - 17, 0, -4, 4.5],
-    ];
-    for (let i = 0; i < 46; i++) cy.push([-60 + i * 3.1 + r() * 2, 0, -16 - r() * 22, 3.5 + r() * 4]);
-    const bu: [number, number, number, number][] = [];
-    for (let i = 0; i < 22; i++) bu.push([-40 + i * 4.6 + r() * 2, 0, -2.6 - r() * 1.2, 0.35 + r() * 0.3]);
-    return { cy, bu };
+    const near: TreeSpec[] = [];
+    // a tree row behind the front hedge, left of the building and on the far side of the hall
+    for (let x = -62; x < BX0 - 3; x += 5 + r() * 3.5) near.push({ x, z: -5.4 - r() * 1.2, h: 4.4 + r() * 1.8 });
+    near.push({ x: BX1 + 2, z: -6.1, h: 5.2 }, { x: BX1 + 6.2, z: -6.0, h: 4.4 });
+    for (let x = 80; x < 96; x += 6 + r() * 3) near.push({ x, z: -5.8 - r() * 1.4, h: 4.6 + r() * 1.5 });
+    // the far wood, a backdrop
+    for (let i = 0; i < 44; i++) near.push({ x: -62 + i * 3.4 + r() * 2.5, z: -17 - r() * 22, h: 3.8 + r() * 2.6 });
+    return near.map((t, i) => ({ ...t, v: i }));
   }, []);
-  useLayoutEffect(() => {
-    const m = new THREE.Matrix4();
-    const q = new THREE.Quaternion();
-    items.cy.forEach(([x, , z, h], i) => cyp.current!.setMatrixAt(i, m.compose(new THREE.Vector3(x, h / 2, z), q, new THREE.Vector3(1, h / 5, 1))));
-    items.bu.forEach(([x, , z, s], i) => bush.current!.setMatrixAt(i, m.compose(new THREE.Vector3(x, s * 0.6, z), q, new THREE.Vector3(s * 1.5, s, s * 1.2))));
-    cyp.current!.instanceMatrix.needsUpdate = true;
-    bush.current!.instanceMatrix.needsUpdate = true;
-  }, [items]);
-  return (
-    <group>
-      <instancedMesh ref={cyp} args={[undefined, undefined, items.cy.length]} material={K.silhouetteFar} castShadow>
-        <coneGeometry args={[0.85, 5, 7]} />
-      </instancedMesh>
-      <instancedMesh ref={bush} args={[undefined, undefined, items.bu.length]} material={K.silhouetteFar}>
-        <sphereGeometry args={[0.8, 10, 8]} />
-      </instancedMesh>
-    </group>
-  );
+  return <Trees items={trees} />;
 }
 
-function Lamps() {
-  const xs = [-8, 14, 53, 70];
+function FrontGarden() {
+  // hedge runs along the sidewalk, planters between them, a gap for the entrance path
+  const hedges: { x: number; len: number }[] = [];
+  const planters: { x: number; len: number; seed: number }[] = [];
+  let x = -62;
+  let i = 0;
+  while (x < 84) {
+    const hl = 9 + (i % 3) * 1.8;
+    const pl = 3.6;
+    if (x + hl > BUILDING_X + 7.4 && x < BUILDING_X + 12.4) {
+      x = BUILDING_X + 12.6;
+      continue;
+    }
+    hedges.push({ x, len: hl });
+    planters.push({ x: x + hl + 0.3, len: pl, seed: i + 3 });
+    x += hl + pl + 0.6;
+    i++;
+  }
   return (
     <group>
-      {xs.map((x) => (
-        <group key={x} position={[x, 0, -2.7]}>
-          <mesh position={[0, 2.6, 0]} material={K.metalGrey} castShadow>
-            <cylinderGeometry args={[0.05, 0.07, 5.2, 8]} />
-          </mesh>
-          <mesh position={[0, 5.18, 0.3]} material={K.glow}>
-            <boxGeometry args={[0.7, 0.06, 0.28]} />
-          </mesh>
-        </group>
+      {hedges.map((h) => (
+        <Hedge key={h.x} x={h.x} z={-3.65} len={h.len} />
+      ))}
+      {planters.map((p) => (
+        <Planter key={p.x} x={p.x} z={-3.65} len={p.len} seed={p.seed} s={0.95} d={1.2} />
       ))}
     </group>
   );
 }
 
-// Kerb lights, a dotted line along the front edge of the yard.
-function Kerb() {
-  const ref = useRef<THREE.InstancedMesh>(null);
-  const xs = useMemo(() => Array.from({ length: 36 }, (_, i) => -50 + i * 2.8), []);
-  useLayoutEffect(() => {
-    const m = new THREE.Matrix4();
-    xs.forEach((x, i) => ref.current!.setMatrixAt(i, m.makeTranslation(x, 0.04, -2.05)));
-    ref.current!.instanceMatrix.needsUpdate = true;
-  }, [xs]);
-  return (
-    <instancedMesh ref={ref} args={[undefined, undefined, xs.length]} material={K.glow}>
-      <boxGeometry args={[0.5, 0.06, 0.07]} />
-    </instancedMesh>
-  );
-}
-
-// Parked trucks in the yard, only their raised masts show against the sky.
-function Yard() {
-  const items = [[56, -10.5], [58.4, -11.6], [60.7, -10.8], [63.2, -9.4], [65, -12], [53.5, -9.8]];
+function Pavement() {
+  // the sidewalk behind the road, the forecourt paving with its parking bays
+  const bays = useMemo(() => {
+    const items: BoxItem[] = [];
+    for (const bx of [10.2, 16.4, 22.6]) items.push([bx, 0.012, -6.6, 0.07, 0.01, 5.0]);
+    for (const bx of [48.2, 54.4, 60.6]) items.push([bx, 0.012, -6.6, 0.07, 0.01, 5.0]);
+    return items;
+  }, []);
   return (
     <group>
-      {items.map(([x, z], i) => (
-        <group key={i} position={[x, 0, z]} rotation={[0, (i % 3) * 0.25, 0]}>
-          {[-0.3, 0.3].map((dz) => (
-            <mesh key={dz} position={[0, 2.5 + (i % 2) * 0.4, dz]} material={K.silhouetteFar} castShadow>
-              <boxGeometry args={[0.14, 5 + (i % 2) * 0.8, 0.12]} />
-            </mesh>
-          ))}
-          <mesh position={[-1.1, 1.2, 0]} material={K.silhouetteFar} castShadow>
-            <boxGeometry args={[2.4, 1.7, 1.15]} />
-          </mesh>
-          <mesh position={[-1.1, 2.4, 0]} material={K.silhouetteFar}>
-            <boxGeometry args={[1.6, 0.08, 1.2]} />
-          </mesh>
-        </group>
-      ))}
+      <BoxSet items={[[-5, 0.03, -2.65, 170, 0.06, 1.1]]} mat={lam(G.pale)} />
+      <BoxSet items={[[-5, 0.006, -6.3, 170, 0.012, 5.4]]} mat={lam(G.pale)} />
+      <BoxSet items={bays} mat={new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false })} receive={false} />
     </group>
   );
 }
 
-// A band of haze along the horizon, so the site reads against the dark.
+
+// A band of haze along the horizon, so the site reads against the sky.
 function Horizon() {
   const ref = useRef<THREE.Mesh>(null);
   const camera = useThree((s) => s.camera);
@@ -318,7 +310,7 @@ function Horizon() {
     g.fillRect(0, 0, 4, 256);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({ map: t, color: C.tonedTextGrey, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false, fog: false });
+    return new THREE.MeshBasicMaterial({ map: t, color: G.light, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false, fog: false });
   }, []);
   useFrame(() => {
     if (ref.current) ref.current.position.x = camera.position.x;
@@ -337,13 +329,18 @@ export default function Outdoor() {
         <planeGeometry args={[550, 440]} />
       </mesh>
       <Road />
-      <Kerb />
+      <Kerb x0={-90} x1={78} z={-2.12} />
+      <Kerb x0={-90} x1={78} z={2.12} />
+      <Pavement />
       <Building />
-      <Van x={13} z={-6.5} yaw={0.04} />
-      <Van x={19.5} z={-7.6} yaw={-0.12} />
-      <Van x={52} z={-6.5} yaw={Math.PI} />
-      <Trees />
-      <Lamps />
+      <FrontGarden />
+      <Van x={13} z={-5.9} yaw={0.03} />
+      <Van x={19.5} z={-7.4} yaw={-0.12} />
+      <Van x={52} z={-5.9} yaw={Math.PI} />
+      <Greenery />
+      {[-5.5, 14, 53, 70].map((lx) => (
+        <LampPost key={lx} x={lx} z={-2.9} h={4.1} />
+      ))}
       <Yard />
       <Horizon />
     </group>

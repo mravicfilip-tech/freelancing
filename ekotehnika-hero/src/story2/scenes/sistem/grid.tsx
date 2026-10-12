@@ -1,16 +1,17 @@
-// The rental platform. A lit slab in the dark, bays drawn on it, and fifteen front on trucks, five by three,
-// rising out of it row by row with scroll. The trucks are the real Linde models, baked once and instanced.
-// In T the trucks sink back and the slab drops away.
+// The rental depot. A floor that runs edge to edge, bays painted on it across the whole width, and fifteen front on
+// trucks, five by three, rising out of it row by row with scroll, empty marked bays out to the frame on both sides.
+// The trucks are the real Linde models, baked once and instanced. In T the bays fade, the trucks sink back into the
+// floor and the same floor takes its warehouse lanes, see robots.tsx.
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { C } from '../../../tokens';
 import type { SceneProps } from '../../clock';
 import { bakeStatic } from './bake';
 import { modelUrl, type ModelName } from './models';
 import { NP } from './route';
-import { blobMaterial, lit, ease, lerp, poolMaterial, range, uOf } from './kit';
+import { BoxSet, type BoxItem } from './props';
+import { G, K, blobMaterial, ease, lam, lerp, range, uOf } from './kit';
 
 const COLS = 5;
 const ROWS = 3;
@@ -20,6 +21,22 @@ const ROW_START = [0.05, 0.3, 0.55];
 // Which model stands in each of the fifteen bays, row by row from the front.
 const MIX: ModelName[] = ['x50', 'h30d', 'x50', 'r16', 'x50', 'h30d', 'x50', 'd12', 'x50', 'h30d', 'x50', 'r16', 'x50', 'h30d', 'x50'];
 const KINDS: ModelName[] = ['x50', 'h30d', 'r16', 'd12'];
+
+// Bay rows across the depot, the three with trucks and three empty rows, one in front, two behind.
+const BAY_ROWS = [10.6, ...ROW_X, -10.2, -15.4];
+const BAY_COLS = Array.from({ length: 13 }, (_, i) => i - 6); // 13 bays across, five are taken
+const FLOOR = '#f6f6f6';
+
+// The floor, one plane that runs out to the fog, so no edge shows anywhere.
+export function Depot({ clock }: SceneProps) {
+  const floor = useMemo(() => lam(FLOOR, { emissive: new THREE.Color(FLOOR).multiplyScalar(0.12) }), []);
+  void clock;
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x - 60, 0, NP.z]} material={floor} receiveShadow>
+      <planeGeometry args={[520, 520]} />
+    </mesh>
+  );
+}
 
 export default function Grid({ clock }: SceneProps) {
   const gltfs = KINDS.map((n) => useGLTF(modelUrl(n)) as unknown as { scene: THREE.Group });
@@ -34,18 +51,29 @@ export default function Grid({ clock }: SceneProps) {
     [gltfs[0], gltfs[1], gltfs[2], gltfs[3]],
   );
   const meshes = useRef<THREE.InstancedMesh[][]>([]);
-  const slab = useRef<THREE.Group>(null);
-  const slots = useRef<THREE.LineLoop[]>([]);
   const blobs = useRef<THREE.Mesh[]>([]);
   const m4 = useMemo(() => new THREE.Matrix4(), []);
-  const pool = useMemo(() => poolMaterial(0.9, C.white), []);
-  const slotMat = useMemo(() => new THREE.LineBasicMaterial({ color: C.textGrey, transparent: true, opacity: 0, toneMapped: false }), []);
   const blobMat = useMemo(() => blobMaterial(0), []);
-  const slotGeo = useMemo(() => {
-    const p = [new THREE.Vector3(-2.7, 0, -1.0), new THREE.Vector3(1.9, 0, -1.0), new THREE.Vector3(1.9, 0, 1.0), new THREE.Vector3(-2.7, 0, 1.0)];
-    return new THREE.BufferGeometry().setFromPoints(p);
+  // Painted bay lines, every bay of every row, a U with a wheel stop at the back. The lines fade as T begins.
+  const bayMat = useMemo(() => new THREE.MeshBasicMaterial({ color: G.mid, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }), []);
+  const stopMat = useMemo(() => lam(G.light, { transparent: true, opacity: 0 }), []);
+  const bay = useMemo(() => {
+    const lines: BoxItem[] = [];
+    const stops: BoxItem[] = [];
+    BAY_ROWS.forEach((rx) =>
+      BAY_COLS.forEach((c) => {
+        const z = COL_Z(c + 2);
+        lines.push([NP.x + rx - 0.45, 0.02, NP.z + z - 1.1, 4.7, 0.01, 0.08], [NP.x + rx - 0.45, 0.02, NP.z + z + 1.1, 4.7, 0.01, 0.08], [NP.x + rx - 2.75, 0.02, NP.z + z, 0.1, 0.01, 2.28]);
+        stops.push([NP.x + rx - 2.45, 0.06, NP.z + z, 0.16, 0.12, 1.5]);
+      }),
+    );
+    // the drive aisle between the rows, a dashed centre line
+    const dash: BoxItem[] = [];
+    [8.0, 2.8, -2.4, -7.6, -12.8].forEach((ax) => {
+      for (let z = -22; z < 22; z += 1.6) dash.push([NP.x + ax, 0.02, NP.z + z, 0.08, 0.01, 0.8]);
+    });
+    return { lines, stops, dash };
   }, []);
-  const slabEdges = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(25, 0.5, 21)), []);
 
   useLayoutEffect(() => {
     meshes.current.flat().forEach((m) => {
@@ -57,21 +85,21 @@ export default function Grid({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const k = u - 12;
-    const slabY = -11 * ease(range(u, 13.2, 13.75));
     const sink = (r: number) => ease(range(u, 13.0 + (2 - r) * 0.06, 13.0 + (2 - r) * 0.06 + 0.25));
+    const lineFade = ease(range(u, 11.9, 12.1)) * (1 - ease(range(u, 13.0, 13.45)));
+    bayMat.opacity = 0.62 * lineFade;
+    stopMat.opacity = lineFade;
     for (let r = 0; r < ROWS; r++)
       for (let c = 0; c < COLS; c++) {
         const i = r * COLS + c;
         const a = ROW_START[r] + c * 0.022;
         const rise = ease(range(k, a, a + 0.15));
-        const y = lerp(-3.6, 0, rise) - 3.6 * sink(r) * (u >= 13 ? 1 : 0) + slabY;
+        const y = lerp(-3.6, 0, rise) - 3.6 * sink(r) * (u >= 13 ? 1 : 0);
         m4.makeTranslation(NP.x + ROW_X[r], y, NP.z + COL_Z(c));
         kinds.forEach((kd, ki) => {
           const j = kd.slots.indexOf(i);
           if (j >= 0) meshes.current[ki]?.forEach((m) => m.setMatrixAt(j, m4));
         });
-        const slot = slots.current[i];
-        if (slot) (slot.material as THREE.LineBasicMaterial).opacity = 0.5 * ease(range(k, 0.0, 0.1)) * (1 - ease(range(u, 13.0, 13.25)));
         const blob = blobs.current[i];
         if (blob) {
           const sunk = u >= 13 ? sink(r) : 0;
@@ -79,35 +107,22 @@ export default function Grid({ clock }: SceneProps) {
         }
       }
     meshes.current.flat().forEach((m) => (m.instanceMatrix.needsUpdate = true));
-    if (slab.current) slab.current.position.y = slabY;
   });
 
   return (
     <group>
-      <group ref={slab}>
-        <mesh position={[NP.x, -0.25, NP.z]} receiveShadow>
-          <boxGeometry args={[25, 0.5, 21]} />
-          <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
-        </mesh>
-        <lineSegments geometry={slabEdges} position={[NP.x, -0.25, NP.z]}>
-          <lineBasicMaterial color={C.ink} transparent opacity={0.35} toneMapped={false} />
-        </lineSegments>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x, 0.02, NP.z]} material={pool}>
-          <planeGeometry args={[34, 26]} />
-        </mesh>
-        {Array.from({ length: ROWS * COLS }, (_, i) => {
-          const r = Math.floor(i / COLS);
-          const c = i % COLS;
-          return (
-            <group key={i} position={[NP.x + ROW_X[r], 0.03, NP.z + COL_Z(c)]}>
-              <lineLoop ref={(l) => { if (l) slots.current[i] = l; }} geometry={slotGeo} material={slotMat.clone()} />
-              <mesh ref={(m) => { if (m) blobs.current[i] = m; }} rotation={[-Math.PI / 2, 0, 0]} position={[-0.3, 0.02, 0]} material={blobMat.clone()}>
-                <planeGeometry args={[5.4, 2.8]} />
-              </mesh>
-            </group>
-          );
-        })}
-      </group>
+      <BoxSet items={bay.lines} mat={bayMat} receive={false} />
+      <BoxSet items={bay.stops} mat={stopMat} />
+      <BoxSet items={bay.dash} mat={bayMat} receive={false} />
+      {Array.from({ length: ROWS * COLS }, (_, i) => {
+        const r = Math.floor(i / COLS);
+        const c = i % COLS;
+        return (
+          <mesh key={i} ref={(m) => { if (m) blobs.current[i] = m; }} rotation={[-Math.PI / 2, 0, 0]} position={[NP.x + ROW_X[r] - 0.3, 0.03, NP.z + COL_Z(c)]} material={blobMat.clone()}>
+            <planeGeometry args={[5.4, 2.8]} />
+          </mesh>
+        );
+      })}
       {kinds.map((kd, ki) =>
         kd.baked.map((b, bi) => (
           <instancedMesh
@@ -124,3 +139,5 @@ export default function Grid({ clock }: SceneProps) {
     </group>
   );
 }
+
+export { K };

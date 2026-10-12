@@ -11,18 +11,18 @@ import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
 
-const ISO = { x: 134, y: 1, z: -14, d: 38, yaw: 20, pitch: -72 };
+const ISO = { x: 130, y: 1, z: -14.4, d: 32, yaw: 20, pitch: -72 };
 const ISO_YAW = ISO.yaw;
 const ISO_PITCH = ISO.pitch;
 
 // Outdoor channels over u. The truck stays at the same place on screen, the camera follows it.
 const O_OX = track([[0, -0.45], [4, -0.45], [5, 0]]);
 const O_OY = track([[0, 1.15], [2, 1.2], [4, 1.15], [5, 0]]);
-const O_D = track([[0, 16], [4, 16], [5, 56], [6, 56]]);
+const O_D = track([[0, 16], [1.45, 16], [2.0, 18.6], [2.85, 18.6], [3.5, 16], [4, 16], [5, 56], [6, 56]]);
 const O_YAW = track([[0, 0], [4, 0], [5, 90], [6, 90]]);
 const O_PITCH = track([[0, -7], [2, -7], [3, -8], [4, -8], [5, -90], [6, -90]]);
-const O_SX = track([[0, 0.236], [0.8, 0.236], [2, -0.05], [3, -0.05], [4, 0.1], [5, 0.22], [6, 0.22]]);
-const O_SY = track([[0, 0], [1.7, 0], [2, 0.07], [3, 0.07], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
+const O_SX = track([[0, 0.236], [1.4, 0.236], [2, 0.24], [2.85, 0.24], [3.5, 0.12], [4, 0.1], [5, 0.22], [6, 0.22]]);
+const O_SY = track([[0, 0], [1.6, 0], [2, 0.002], [2.85, 0.002], [3.5, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);
 const A_PITCH = track([[8, ISO_PITCH], [8.3, -10], [8.5, -9], [8.75, -3], [9, -3], [10, -1]]);
@@ -31,6 +31,13 @@ const SEP0 = 176 - T1X(7300);
 const A_SEP = track([[8.75, SEP0], [9, 6.5], [9.55, 3.2], [10, 1.45]]);
 const A_Y = track([[8.75, 2.2], [9, 1.65], [10, 1.25]]);
 
+
+// the automation floor sits 2.2 m to the right of the frame centre, so the text block keeps the top left plain
+const AT_Z = 2.2;
+// the rental fleet sits below y 540, the title, lede and spec row own the band above
+const N_D = 47;
+const N_SY = 0.33;
+const WARM = new THREE.Color('#fff5e4');
 
 const orbit = (t: THREE.Vector3, d: number, yawDeg: number, pitchDeg: number, out = new THREE.Vector3()) => {
   const y = rad(yawDeg);
@@ -55,7 +62,7 @@ export function poseAt(u: number, pos: number, out: Pose): Pose {
     out.pitch = O_PITCH(u);
     out.sx = O_SX(u);
     out.sy = O_SY(u);
-    out.shadow = u < 4 ? 9 : 16;
+    out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 7) {
     const e = ease(u - 6);
@@ -102,36 +109,36 @@ export function poseAt(u: number, pos: number, out: Pose): Pose {
       out.d = 10;
     }
   } else if (u < 11.9) {
+    // the schematic is a drawing laid over the frame, the camera only holds the dark ground
     t.set(BP.x + 0.4, 1.0, BP.z);
     out.d = 12;
     out.yaw = -35;
     out.pitch = -30;
-    out.sx = 0.27;
     out.shadow = 8;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
     t.set(NP.x - 0.5, 0.9, NP.z);
-    out.d = 33;
+    out.d = N_D;
     out.yaw = 90;
     out.pitch = -24;
-    out.sy = 0.17;
+    out.sy = N_SY;
     out.shadow = 18;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 14) {
     const e = ease(range(u, 13.12, 13.95));
-    t.set(lerp(NP.x - 0.5, ATP.x, e), lerp(0.9, ATP.y, e), 0);
-    out.d = lerp(33, 61, e);
+    t.set(lerp(NP.x - 0.5, ATP.x, e), lerp(0.9, ATP.y, e), lerp(0, AT_Z, e));
+    out.d = lerp(N_D, 26, e);
     out.yaw = 90;
     out.pitch = lerp(-24, -90, e);
-    out.sy = lerp(0.17, 0, e);
-    out.shadow = lerp(18, 30, e);
+    out.sy = lerp(N_SY, 0, e);
+    out.shadow = lerp(18, 22, e);
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
-    t.set(ATP.x, ATP.y, 0);
-    out.d = 61;
+    t.set(ATP.x, ATP.y, AT_Z);
+    out.d = 26;
     out.yaw = 90;
     out.pitch = -90;
-    out.shadow = 30;
+    out.shadow = 22;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   }
   return out;
@@ -198,6 +205,8 @@ export function Lights({ clock, state }: SceneProps & { state: React.MutableRefO
     k.target.updateMatrixWorld();
     const dark = isDark(u);
     k.intensity = dark ? 0.9 : u < 6.3 ? 1.7 : 1.5;
+    // bright warm daylight outdoors (guideline p.18), neutral once the story is inside
+    k.color.set('#ffffff').lerp(WARM, 1 - ease(range(u, 5.6, 6.6)));
     if (Math.abs(shadowSize.current - s.shadow) > 0.5) {
       shadowSize.current = s.shadow;
       const cam = k.shadow.camera;

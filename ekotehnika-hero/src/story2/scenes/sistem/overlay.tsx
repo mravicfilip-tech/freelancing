@@ -1,16 +1,16 @@
 // Things that live in front of the lens, in half screen heights so they fit any width. The black fade for the
-// push into the forklift, the diagonal lines that make the blueprint feel like driving, and the very large fork
-// that lifts the rental section into view. They sit one metre from the camera so nothing in the world hides them.
+// push into the forklift, the plain ground masks that keep the text columns clear (the top 150px at every beat, the
+// hero headline, the R text column), and the very large steel fork tine that lifts the rental section into view.
+// They sit one metre from the camera so nothing in the world hides them.
 import { useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { C } from '../../../tokens';
 import type { SceneProps } from '../../clock';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, smooth, uOf } from './kit';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
-function useOverlayRoot() {
+export function useOverlayRoot() {
   const camera = useThree((s) => s.camera);
   const scene = useThree((s) => s.scene);
   const root = useMemo(() => new THREE.Group(), []);
@@ -26,23 +26,46 @@ function useOverlayRoot() {
   return root;
 }
 
+// A steel fork tine in side view, a blade that thins to a bevelled tip, a heel bend and the shank with its hook rising
+// behind it. Blade top at y = 0, so the section it lifts starts just under it. Colours are baked by face, a lit top
+// edge, a steel front face that lightens upward, a dark underside, so it reads as metal in any light.
 function forkGeometry() {
   const s = new THREE.Shape();
-  s.moveTo(-1.28, -0.07);
-  s.lineTo(-1.16, 0.0);
-  s.lineTo(-0.9, 0.0);
-  s.lineTo(3.4, 0.0);
-  s.lineTo(3.4, -0.17);
-  s.lineTo(-0.5, -0.17);
-  s.quadraticCurveTo(-1.0, -0.17, -1.22, -0.12);
+  s.moveTo(-1.22, 0.62);
+  s.lineTo(-1.22, -0.05);
+  s.quadraticCurveTo(-1.22, -0.17, -1.1, -0.17);
+  s.lineTo(3.0, -0.17);
+  s.lineTo(3.45, -0.12);
+  s.lineTo(3.45, -0.075);
+  s.lineTo(2.1, 0.0);
+  s.lineTo(-0.88, 0.0);
+  s.quadraticCurveTo(-0.98, 0.0, -0.98, 0.1);
+  s.lineTo(-0.98, 0.54);
+  s.lineTo(-1.04, 0.62);
   s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, { depth: 0.12, bevelEnabled: true, bevelSize: 0.01, bevelThickness: 0.012, bevelSegments: 3, curveSegments: 12 });
+  const g = new THREE.ExtrudeGeometry(s, { depth: 0.12, bevelEnabled: true, bevelSize: 0.006, bevelThickness: 0.008, bevelSegments: 1, curveSegments: 14 });
+  g.computeVertexNormals();
   const p = g.getAttribute('position');
+  const n = g.getAttribute('normal');
   const col = new Float32Array(p.count * 3);
+  const lin = (v: number) => Math.pow(v, 2.2);
   for (let i = 0; i < p.count; i++) {
-    const t = THREE.MathUtils.clamp((p.getY(i) + 0.17) / 0.17, 0, 1); // 0 bottom, 1 top
-    const v = 0.34 + 0.66 * Math.pow(t, 0.8);
-    col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = v;
+    const y = p.getY(i);
+    const nx = n.getX(i);
+    const ny = n.getY(i);
+    const nz = n.getZ(i);
+    let v: number;
+    if (nz > 0.5) {
+      // the front face, a steel grey that brightens toward the top edge, with a thin lit line right on it
+      const t = THREE.MathUtils.clamp((y + 0.17) / 0.17, 0, 1);
+      v = 0.3 + 0.32 * Math.pow(t, 1.5);
+      if (y > -0.03 && y < 0.03) v = 0.95;
+      if (y > 0.2) v = 0.42 + 0.1 * Math.sin((p.getX(i) + 1.22) * 16);
+    } else if (nz < -0.5) v = 0.25;
+    else if (ny > 0.5) v = 0.96;
+    else if (ny < -0.5) v = 0.2;
+    else v = nx > 0 ? 0.5 : 0.36;
+    col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = lin(v);
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   return g;
@@ -80,7 +103,7 @@ function curtainTexture() {
   const g = c.getContext('2d')!;
   const grd = g.createRadialGradient(128, 190, 10, 128, 190, 200);
   grd.addColorStop(0, '#ffffff');
-  grd.addColorStop(1, '#eeeff3');
+  grd.addColorStop(1, '#f3f3f3');
   g.fillStyle = grd;
   g.fillRect(0, 0, 256, 256);
   const t = new THREE.CanvasTexture(c);
@@ -88,11 +111,47 @@ function curtainTexture() {
   return t;
 }
 
-// Where the blueprint's driving lines run, as offsets across their own direction.
-const STRONG = [-0.17, 0.17];
-const FAINT = [-1.9, -1.45, -1.0, -0.62, 0.62, 1.0, 1.45, 1.9];
-const PERIOD = 4.1;
-const ANGLE = (40 * Math.PI) / 180;
+// Plain ground the text columns need, as rectangles in design pixels of a 1440 by 900 frame. Each fades its soft sides over
+// `feather` px (left, top, right, bottom) and is on for a stretch of the story, drawn in the ground colour of the beat.
+type Rect = { rect: [number, number, number, number]; feather: [number, number, number, number]; on: (u: number) => number };
+const win = (u: number, a: number, b: number, c: number, d: number) => ease(range(u, a, b)) * (1 - ease(range(u, c, d)));
+const RECTS: Rect[] = [
+  // H, the headline column
+  { rect: [0, 150, 760, 820], feather: [0, 0, 110, 70], on: (u) => 1 - ease(range(u, 0.9, 1.3)) },
+  // C1, the title and lede
+  { rect: [0, 140, 720, 460], feather: [0, 0, 70, 60], on: (u) => win(u, 1.75, 2.0, 2.8, 3.05) },
+  // R, the text column
+  { rect: [0, 0, 520, 900], feather: [0, 0, 90, 0], on: (u) => win(u, 4.9, 5.1, 5.9, 6.0) },
+  // N, the title, lede and spec row across the top
+  { rect: [0, 0, 1440, 540], feather: [0, 0, 0, 40], on: (u) => win(u, 11.9, 12.0, 12.95, 13.2) },
+  // AT, the text block and spec row
+  { rect: [0, 0, 1100, 360], feather: [0, 0, 80, 50], on: (u) => ease(range(u, 13.7, 13.95)) },
+];
+const expand = (r: Rect): [number, number, number, number] => [r.rect[0] - r.feather[0], r.rect[1] - r.feather[1], r.rect[2] + r.feather[2], r.rect[3] + r.feather[3]];
+function rectMask(r: Rect) {
+  const [x0, y0, x1, y1] = expand(r);
+  const W = 256;
+  const H = 256;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W, H);
+  const ramp = (p: number, lo: number, hi: number, f: number, first: boolean) => (f <= 0 ? 1 : first ? smooth(Math.min(1, Math.max(0, (p - lo) / f))) : smooth(Math.min(1, Math.max(0, (hi - p) / f))));
+  for (let j = 0; j < H; j++)
+    for (let i = 0; i < W; i++) {
+      const x = x0 + ((i + 0.5) / W) * (x1 - x0);
+      const y = y0 + ((j + 0.5) / H) * (y1 - y0);
+      const a = ramp(x, x0, x1, r.feather[0], true) * ramp(y, y0, y1, r.feather[1], true) * ramp(x, x0, x1, r.feather[2], false) * ramp(y, y0, y1, r.feather[3], false);
+      const k = (j * W + i) * 4;
+      img.data[k] = img.data[k + 1] = img.data[k + 2] = 255;
+      img.data[k + 3] = Math.round(255 * a);
+    }
+  g.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
@@ -101,11 +160,9 @@ export default function Overlay({ clock }: SceneProps) {
   const maskGroup = useRef<THREE.Group>(null);
   const camera = useThree((st) => st.camera);
   const maskTop = useRef<THREE.Mesh>(null);
-  const maskH = useRef<THREE.Mesh>(null);
   const forkRef = useRef<THREE.Mesh>(null);
   const curtain = useRef<THREE.Mesh>(null);
-  const lines = useRef<(THREE.Mesh | null)[]>([]);
-  const diag = useRef<THREE.Group>(null);
+  const rects = useRef<(THREE.Mesh | null)[]>([]);
   const fork = useMemo(forkGeometry, []);
   const cTex = useMemo(curtainTexture, []);
   const mixCol = useMemo(() => new THREE.Color(), []);
@@ -113,23 +170,12 @@ export default function Overlay({ clock }: SceneProps) {
   const aspect = size.width / size.height;
   // The top 150px stays plain at every beat, easing out by 250px, so the nav always sits on plain dark.
   const topTex = useMemo(() => maskTexture(0, 0, -1, 1, 1 - 0.556, 1, (_x, y) => 1 - smooth(Math.min(1, Math.max(0, (1 - y - 0.333) / 0.223)))), []);
-  // At the hero the left 55 percent from y 470 to 840 stays plain dark for the headline.
-  const hTex = useMemo(
-    () =>
-      maskTexture(0, 0, -2.4, 0.5, -1.0, 0.2, (x, y) => {
-        const ax = 1 - smooth(Math.min(1, Math.max(0, (x + 0.15) / 0.31)));
-        const ay = smooth(Math.min(1, Math.max(0, (0.12 - y) / 0.16)));
-        return ax * ay;
-      }),
-    [],
-  );
-  const items = useMemo(() => [...STRONG.map((o) => ({ o, w: 0.0085, a: 0.95 })), ...FAINT.map((o) => ({ o, w: 0.0032, a: 0.2 }))], []);
+  const rectTex = useMemo(() => RECTS.map((r) => rectMask(r)), []);
 
   useFrame(() => {
     const u = uOf(clock);
-    const pos = clock.pos.current;
-    // black for the push into the forklift, clear again as the blueprint lights up
-    const black = u < 10 ? ease(range(u, 9.45, 9.95)) : 1 - ease(range(u, 10.0, 10.25));
+    // black for the push into the forklift, fully black by pos 7790 (u 9.475), clear again as the schematic lights up
+    const black = u < 10 ? ease(range(u, 9.12, 9.47)) : 1 - ease(range(u, 10.0, 10.25));
     if (fade.current) {
       (fade.current.material as THREE.MeshBasicMaterial).opacity = black;
       fade.current.visible = black > 0.002;
@@ -138,33 +184,20 @@ export default function Overlay({ clock }: SceneProps) {
     const v = camera.view;
     if (maskGroup.current && v) maskGroup.current.position.set((v.offsetX / v.fullWidth) * 2 * aspect, (-v.offsetY / v.fullHeight) * 2, 0);
     // The masks take the ground of the beat, light everywhere but the servis blueprint.
-    const mc = isDark(u) ? mixCol.set(DARK_BG).lerp(lightCol, ease(range(u, 11.8, 11.9))) : lightCol;
+    const mc = isDark(u) ? mixCol.set(DARK_BG).lerp(lightCol, ease(range(u, 11.7, 11.8))) : lightCol;
     if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
-    if (maskH.current) (maskH.current.material as THREE.MeshBasicMaterial).color.copy(mc);
-    if (maskH.current) {
-      const m = 1 - ease(range(u, 0.9, 1.3));
-      (maskH.current.material as THREE.MeshBasicMaterial).opacity = m;
-      maskH.current.visible = m > 0.003;
-    }
-    // driving lines, S and the first of L
-    const on = u >= 10 && u < 11.9;
-    if (diag.current) diag.current.visible = on;
-    if (on) {
-      const travel = (pos - 8000) * 0.0042;
-      items.forEach((it, i) => {
-        const m = lines.current[i];
-        if (!m) return;
-        const o = ((((it.o + travel + PERIOD / 2) % PERIOD) + PERIOD) % PERIOD) - PERIOD / 2;
-        const edge = 1 - smooth(range(Math.abs(o), PERIOD / 2 - 0.5, PERIOD / 2));
-        const show = ease(range(u, 10.05, 10.4)) * (1 - smooth(range(u, 11.3, 11.75)));
-        (m.material as THREE.MeshBasicMaterial).opacity = it.a * edge * show;
-        m.position.set(-Math.sin(ANGLE) * o, Math.cos(ANGLE) * o, 0);
-      });
-    }
+    RECTS.forEach((r, i) => {
+      const m = rects.current[i];
+      if (!m) return;
+      const a = r.on(u);
+      (m.material as THREE.MeshBasicMaterial).color.copy(mc);
+      (m.material as THREE.MeshBasicMaterial).opacity = a;
+      m.visible = a > 0.003;
+    });
     // the fork and the section it carries
     const k = u - 11;
     const lifting = u >= 11 && u < 12;
-    const yEdge = lerp(-1.25, 1.35, ease(range(k, 0, 0.9)));
+    const yEdge = lerp(-1.8, 1.35, ease(range(k, 0, 0.9)));
     if (forkRef.current) {
       forkRef.current.visible = lifting && k < 0.97;
       forkRef.current.position.set(0, yEdge, 0.02);
@@ -183,29 +216,26 @@ export default function Overlay({ clock }: SceneProps) {
         <planeGeometry args={[aspect * 2 + 0.2, 0.556]} />
         <meshBasicMaterial map={topTex} transparent depthWrite={false} toneMapped={false} />
       </mesh>
-      <mesh ref={maskH} position={[(-2.4 + 0.5) / 2 - 0.0, (-1.0 + 0.2) / 2, 0.5]}>
-        <planeGeometry args={[2.9, 1.2]} />
-        <meshBasicMaterial map={hTex} transparent depthWrite={false} toneMapped={false} />
-      </mesh>
+      {RECTS.map((r, i) => {
+        const [x0, y0, x1, y1] = expand(r);
+        return (
+          <mesh key={i} ref={(m) => { rects.current[i] = m; }} position={[((x0 + x1) / 2 - 720) / 450, (450 - (y0 + y1) / 2) / 450, 0.5 + i * 0.001]} visible={false}>
+            <planeGeometry args={[(x1 - x0) / 450, (y1 - y0) / 450]} />
+            <meshBasicMaterial map={rectTex[i]} transparent opacity={0} depthWrite={false} toneMapped={false} />
+          </mesh>
+        );
+      })}
       </group>
       <mesh ref={fade} position={[0, 0, 0.55]} visible={false}>
         <planeGeometry args={[aspect * 4, 4]} />
         <meshBasicMaterial color="#000000" transparent opacity={0} depthWrite={false} toneMapped={false} />
       </mesh>
-      <group ref={diag} visible={false}>
-        {items.map((it, i) => (
-          <mesh key={i} ref={(m) => { lines.current[i] = m; }} rotation={[0, 0, ANGLE]}>
-            <planeGeometry args={[9, it.w]} />
-            <meshBasicMaterial color={C.white} transparent opacity={0} depthWrite={false} toneMapped={false} />
-          </mesh>
-        ))}
-      </group>
       <mesh ref={curtain} visible={false}>
         <planeGeometry args={[aspect * 5, 10]} />
         <meshBasicMaterial map={cTex} transparent opacity={1} toneMapped={false} />
       </mesh>
       <mesh ref={forkRef} geometry={fork} visible={false} scale={[1, 1, 1]}>
-        <meshStandardMaterial vertexColors color="#4a595c" roughness={0.4} metalness={0.75} />
+        <meshBasicMaterial vertexColors toneMapped={false} />
       </mesh>
     </>,
     root,

@@ -32,7 +32,7 @@ Task format
   - [x] Filip answers the plan's decisions
   - [x] Detail the plan with every reference and current frame
   - [x] Build the system, motion and sections
-  - [ ] Build the Sistem scene polish
+  - [x] Build the Sistem scene polish
   - [ ] Fit Linija and Grad to the new shell
   - [ ] Review, check and deploy
 

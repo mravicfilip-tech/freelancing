@@ -5,7 +5,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { C } from '../../../tokens';
 import type { StoryClock } from '../../clock';
 import { clamp01, range, smooth } from '../../../story/scenes/sistem/tracks';
-import geist from './geistCaps.json';
+import dax from './daxCaps.json';
 
 export { clamp01, range, smooth };
 export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -16,20 +16,23 @@ export const rad = (d: number) => (d * Math.PI) / 180;
 export const uOf = (c: StoryClock) => c.beat.current + c.k.current;
 export const BEAT = { H: 0, D1: 1, C1: 2, D2: 3, F: 4, R: 5, Z: 6, P: 7, A: 8, B: 9, S: 10, L: 11, N: 12, T: 13, AT: 14 } as const;
 
-// Light ground, README tokens only. The servis blueprint keeps the dark ground, see isDark.
+// The Linde LMH greys, brand-rules.md section 2. Everything lit in the scene is white, one of these greys or black.
+export const G = { white: '#ffffff', pale: '#e9e9e9', light: '#d2d2d2', mid: '#a1a1a1', dark: '#6b6b6b', graphite: '#4d4d4d', black: '#000000' } as const;
+
+// Light ground. The servis schematic keeps the dark ground, see isDark.
 export const PAPER = {
-  bg: C.lightGrey, // background and fog
-  floor: C.hoverLightGrey,
+  bg: G.white, // background and fog
+  floor: '#f6f6f6',
   white: C.white,
-  shade: C.shadeGrey,
+  shade: G.pale,
   ink: C.ink,
-  grey: C.textGrey,
-  toned: C.tonedTextGrey,
+  grey: G.dark,
+  toned: G.dark,
 };
 export const GROUND = PAPER.bg;
-export const DARK_BG = '#0a0b0c';
+export const DARK_BG = '#0b0b0b';
 // The servis blueprint hold is dark, everything else is light. B ends fully black before it and L covers it.
-export const isDark = (u: number) => u >= 10 && u < 11.9;
+export const isDark = (u: number) => u >= 10 && u < 11.8;
 
 // The light rig is bright enough for the real models, so flat surfaces start at a third of their token and light up
 // to it. That keeps shading visible instead of clipping to white.
@@ -38,26 +41,26 @@ export const lit = (hex: string) => {
   const c = new THREE.Color(hex);
   return c.setRGB(c.r * 0.35, c.g * 0.317, c.b * 0.29);
 };
-const lam = (color: string, extra: Partial<THREE.MeshLambertMaterialParameters> = {}) => new THREE.MeshLambertMaterial({ color: lit(color), toneMapped: false, ...extra });
+export const lam = (color: string, extra: Partial<THREE.MeshLambertMaterialParameters> = {}) => new THREE.MeshLambertMaterial({ color: lit(color), toneMapped: false, ...extra });
 
 // Pale forms with soft shading on a light ground. Lambert and no tone mapping keep the tokens true on screen.
 export const K = {
   ground: lam(PAPER.floor),
-  road: lam(PAPER.toned),
-  silhouette: lam(PAPER.shade, { emissive: lit(PAPER.shade).multiplyScalar(0.55) }),
-  silhouetteFar: lam(PAPER.shade, { emissive: lit(PAPER.shade).multiplyScalar(0.55) }),
-  windowOn: lam(PAPER.grey),
-  windowDim: lam(PAPER.toned),
-  glow: new THREE.MeshBasicMaterial({ color: PAPER.ink, toneMapped: false }),
-  white: new THREE.MeshBasicMaterial({ color: PAPER.white, toneMapped: false }),
-  glowSoft: new THREE.MeshBasicMaterial({ color: PAPER.toned, toneMapped: false, transparent: true, opacity: 0.55 }),
-  sign: new THREE.MeshLambertMaterial({ color: lit(PAPER.ink), toneMapped: false }),
-  metalGrey: new THREE.MeshStandardMaterial({ color: C.textGrey, roughness: 0.5, metalness: 0.4 }),
-  van: lam(PAPER.white, { emissive: lit(PAPER.white).multiplyScalar(0.5) }),
-  vanGlass: lam(PAPER.grey),
+  road: lam(G.dark),
+  silhouette: lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.55) }),
+  silhouetteFar: lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.55) }),
+  windowOn: lam(G.mid),
+  windowDim: lam(G.dark),
+  glow: new THREE.MeshBasicMaterial({ color: G.black, toneMapped: false }),
+  white: new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false }),
+  glowSoft: new THREE.MeshBasicMaterial({ color: G.dark, toneMapped: false, transparent: true, opacity: 0.55 }),
+  sign: new THREE.MeshLambertMaterial({ color: lit(G.black), toneMapped: false }),
+  metalGrey: new THREE.MeshStandardMaterial({ color: G.graphite, roughness: 0.5, metalness: 0.4 }),
+  van: lam(G.white, { emissive: lit(G.white).multiplyScalar(0.5) }),
+  vanGlass: lam(G.mid),
   tyre: lam(PAPER.ink),
-  carton: lam(PAPER.white),
-  tape: lam(PAPER.grey),
+  carton: lam(G.white),
+  tape: lam(G.mid),
 };
 
 let sprite: THREE.Texture | undefined;
@@ -102,10 +105,10 @@ export function blobMaterial(opacity = 0.32) {
   return new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, opacity, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2 });
 }
 
-// "EKOTEHNIKA" in extruded Geist caps, the live 3D sign. Origin at the left baseline, cap height = capH metres.
+// "EKOTEHNIKA" in extruded Daxline Pro Medium caps, the live 3D sign. Origin at the left baseline, cap height = capH metres.
 export function signGeometry(text: string, capH: number, depth: number) {
-  const font = new Font(geist as never);
-  const size = capH / 0.71;
+  const font = new Font(dax as never);
+  const size = capH / 0.735;
   const g = new TextGeometry(text, { font, size, depth, curveSegments: 6, bevelEnabled: false });
   g.computeBoundingBox();
   return g;

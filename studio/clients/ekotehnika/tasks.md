@@ -37,6 +37,9 @@ Task format
   - [x] Plan round 3 from Filip's board comments, briefs/ui-pass/round3.md
   - [x] Filip answers the round 3 questions
   - [ ] Build round 3
+  - [x] Plan round 4 from Filip's video review, briefs/ui-pass/round4.md
+  - [ ] Filip answers the round 4 questions
+  - [ ] Build round 4
   - [ ] Review, check and deploy
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp

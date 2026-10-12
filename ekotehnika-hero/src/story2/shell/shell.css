@@ -702,7 +702,9 @@
   width: 29px;
   height: 29px;
   box-sizing: border-box;
-  translate: -50% -50%;
+  /* centred by a layout margin, not a translate, the browser snaps left and top to whole pixels and would leave a 14.5px
+     translate on a half pixel, a grey 2px edge */
+  margin: -14.5px 0 0 -14.5px;
   border: 1px solid var(--fg);
   background:
     linear-gradient(var(--fg), var(--fg)) 6px 12px / 14px 2px no-repeat,

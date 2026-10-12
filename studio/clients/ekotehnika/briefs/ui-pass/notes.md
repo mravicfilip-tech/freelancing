@@ -121,3 +121,14 @@ headings and body, and Geist Mono 11px uppercase for every label and button, whi
    on the left, a dark form card on the right. Copy for the ponuda form.
 18. **T11 Closing CTA and footer.** `t11-closing-cta-and-footer.webp`. A dark green band with one big line and one
    button, then the footer in the same colour. Copy the structure in ink for our footer.
+
+## Scenes Filip does not like or wants improved
+
+S1. **Version 5, C1, the colouring is bad.** Our shot of the current state `refs/scenes/s01-v5-c1-now.webp`.
+   Said: "Coloring here is bad", marking the band from the top row down to the forklift's mast top, across the
+   title and the EKOTEHNIKA sign.
+   What is there now. One flat mid warm grey wall fills that whole band, edge to edge, with the title and the 3D
+   EKOTEHNIKA letters both in ink on it, a slate teal door block, and pale grey blobs for shrubs along the kerb.
+   The grey reads muddy against the white ground below, and the title and sign compete on the same tone.
+   Open. What Filip wants instead. My read is a light ground behind the title (white to light-grey), the building
+   as a lighter form with real windows and edges, the sign as the one dark element, and shrubs that read as plants.

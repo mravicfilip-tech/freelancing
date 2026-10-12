@@ -45,6 +45,24 @@ run to run on software GL. One of three before runs and one of five after runs w
 - `r4-lift-after-tine-detail.webp`, the hook plate, pin, ring, tag and chamfers at full size.
 - `r4-lift-scroll-9000-10620.webp`, a real wheel pass through S end, L and N. No steel reaches N.
 
+## The parent's fixed scripts
+
+The parent's `loadbudget.mjs` and `scrollpass.mjs` are taken onto this branch. Back to back on this container, three runs
+each, before served from a 23fee3b worktree and after from this branch.
+
+| | First canvas frame, three runs | Median | Load | Full scroll |
+|---|---|---|---|---|
+| Before, 23fee3b | 18554, 17609, 14873ms | 17609ms | 10.93MB | 11.69MB |
+| After | 17494, 12255, 17322ms | 17322ms | 10.93MB | 11.69MB |
+
+The after median is under the before median, so the slice meets the first frame rule. The fixed script times the first
+real drawn frame, which takes 12 to 18 seconds under software GL here.
+
+`scrollpass.mjs 5` on the after build, from the top to the page end in 120px wheel steps.
+- It flags a Prodaja cut out outside P from S to the page end. That is item 14, fixed on the main branch and not on this one.
+- It flags a dark top row over a light ground once, at y 9494. That is the switch at 9525 on this branch against my light section from 9300, and moving the switch to 9300 as asked below clears it.
+- No fork layer shows on N or later. Frames `r4-lift-scrollpass-y9054.webp` and `r4-lift-scrollpass-y9620.webp`.
+
 ## Seen in the scroll pass, not mine
 
 - The P cut out, the red N20, sits over S, L and N in the real scroll. That is item 14 in the shell.

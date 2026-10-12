@@ -16,7 +16,7 @@ const X = (n: number) => `var(--x${n})`;
 const Plus = ({ style }: { style: CSSProperties }) => <i className="sx-p" style={style} aria-hidden="true" />;
 
 // The rule across the top of a footer row, the verticals it uses and a plus mark where each meets the rule. The bottom of the
-// last row passes ground, the ink rule the trucks stand on, with its own marks.
+// last row passes ground, the ink rule the site still stands on, with its own marks.
 function RowLines({ xs, ground }: { xs: number[]; ground?: boolean }) {
   return (
     <>
@@ -360,7 +360,7 @@ export function Footer() {
       </div>
 
       <div className="sx-row sx-r2">
-        <RowLines xs={[1, 3, 4, 5]} ground />
+        <RowLines xs={[1, 3, 4, 5]} />
         <div className="sx-c sx-brand" style={{ gridColumn: '1 / 7' }}>
           <a className="sx-logos" href={`${SITE}/`}>
             <img src="/brand/linde-mh.svg" width={160} height={96} alt="Linde Material Handling" />
@@ -383,6 +383,21 @@ export function Footer() {
             ))}
           </ul>
         </nav>
+      </div>
+
+      {/* the Ekotehnika site from the hero's own world, across all twelve columns, standing on the ground rule (round 4 Q11) */}
+      <div className="sx-row sx-scene">
+        <RowLines xs={[1, 3, 4, 5]} ground />
+        <figure className="sx-site" style={{ gridColumn: '1 / 13' }}>
+          <img
+            src="/footer/site.webp"
+            width={1824}
+            height={300}
+            alt="Ekotehnika u Vrčinu, zgrada firme, kapija i viljuškar parkiran ispred ulaza"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
       </div>
 
       <div className="sx-row sx-base">

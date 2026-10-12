@@ -570,6 +570,31 @@
   pointer-events: none;
 }
 
+/* The footer still, the Ekotehnika site in the hero's own white and grey 3D, rendered once from the street set (taste 22:30,
+   round 4 Q11). The file is 1824 by 300 at 2x on the footer ground, its kerb foot 12.3px above its bottom, so the figure keeps the
+   part above the kerb and the black ground rule under it is the kerb line. The grid's verticals run over it as over the story. */
+.sx-site {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1824 / 287.7;
+  overflow: hidden;
+}
+
+.sx-site img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sx-scene .sx-vl,
+.sx-scene .sx-ground {
+  z-index: 1;
+}
+
+.sx-scene .sx-p {
+  z-index: 2;
+}
+
 /* the copyright under the rule, in line with the text of the cells above */
 .sx-base p {
   padding: 24px 0 32px 24px;

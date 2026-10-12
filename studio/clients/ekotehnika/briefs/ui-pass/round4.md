@@ -348,3 +348,4 @@ The 1920 board reshoot from round 3 rides on preview 2.
 - The real scroll script shows no layer from one beat on another beat, in 2, 4 and 5.
 - Load numbers at or under the Q6 budget.
 - You have opened preview 2 and preview 3 and given a ship line for each.
+- Then the parent messages "go" to the reel chat, `session_01KEyRKaeQw5pSTYN96BmUKn` on `claude/awesome-faraday-lkhnn2-reel` (task ekotehnika-9), which builds the 9:16 and 16:9 reels from the shipped site.

@@ -289,16 +289,23 @@ a {
 }
 
 .dir-switch {
-  transition: opacity 200ms;
+  transition:
+    opacity 200ms,
+    visibility 0s;
 }
 
 body:has(.bb) .dir-switch {
   display: none;
 }
 
+/* hidden after the story, out of the tab order too, visibility waits for the 200ms fade */
 html[data-after-story] .dir-switch {
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transition:
+    opacity 200ms,
+    visibility 0s 200ms;
 }
 
 .dir-switch button {
@@ -323,6 +330,10 @@ html[data-after-story] .dir-switch {
 
 .dir-switch button:hover {
   background: var(--grey-dark);
+}
+
+.dir-switch button:hover span {
+  color: var(--white);
 }
 
 .dir-switch button[aria-pressed='true'] {

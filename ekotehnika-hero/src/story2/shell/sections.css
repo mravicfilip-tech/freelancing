@@ -237,11 +237,6 @@
   font: 500 16px/24px var(--font);
 }
 
-.sx-count {
-  font: 400 14px/20px var(--font);
-  white-space: nowrap;
-}
-
 /* the cut out stands on the bottom of its box, so the trucks in one row share a ground. Hover lifts it 8px. */
 .sx-fig {
   position: relative;

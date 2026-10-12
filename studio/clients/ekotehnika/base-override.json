@@ -1,1 +1,25 @@
-{}
+{
+  "_note": "Ekotehnika values Filip accepted that sit off the base scale. controlHeights adds 48 for the 2D button he picked on 2026-10-12 and 56 for the Prodaja tab rows. fontSizes adds the display title sizes, 54 and 74 at 1440, above the 48 top of the base scale.",
+  "controlHeights": [
+    32,
+    36,
+    40,
+    44,
+    48,
+    56
+  ],
+  "fontSizes": [
+    12,
+    14,
+    16,
+    18,
+    20,
+    24,
+    28,
+    32,
+    40,
+    48,
+    54,
+    74
+  ]
+}

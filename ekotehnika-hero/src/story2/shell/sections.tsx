@@ -120,9 +120,6 @@ export function Products() {
               <span className="sx-in">
                 <span className="sx-top">
                   <span className="sx-range">{p.range}</span>
-                  <span className="sx-count">
-                    {p.count} {c.unit}
-                  </span>
                 </span>
                 <span className="sx-fig">
                   <img className="sx-img" src={p.img} alt={p.alt} loading="lazy" decoding="async" />

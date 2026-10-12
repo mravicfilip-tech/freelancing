@@ -768,8 +768,8 @@
   width: fit-content;
   padding: 0.08em 0 0.12em;
   margin: -0.08em 0 -0.12em;
-  /* 46px, so the number ends 24px or more before the second vertical at 1920 */
-  font-size: 46px;
+  /* 40px, the spec row figure size, so the number ends well before the second vertical at 1920 and 1440 */
+  font-size: 40px;
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -857,7 +857,7 @@
 
 /* At 1440 the second vertical is at 390, so a line of a title or of the Servis text that ended 7 to 20px either side of it would
    hug it. Titles are 74px and 54px, their lines end 24px or more from it, the Servis lede stays inside the first cell and the
-   Servis number is 41px, one line of 377px that ends 35px past the line (at 46px it broke in two). */
+   Servis number keeps the 40px spec figure size on one line. */
 @container (min-width: 1400px) and (max-width: 1500px) {
   .s2-title {
     font-size: 74px;
@@ -868,8 +868,5 @@
   .s2-s .s2-lede {
     max-width: calc(var(--x2) - 72px - 24px);
     text-wrap: balance;
-  }
-  .dataline .num {
-    font-size: 41px;
   }
 }

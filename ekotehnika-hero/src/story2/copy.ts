@@ -130,7 +130,7 @@ export const automatizacija = {
   text: 'Mali roboti nose kutije, a vi radite posao.', // dummy, the offer line until Ekotehnika gives the real one
   cta: { label: hero.quote.label, href: hero.quote.href } satisfies Cta,
   facts: [
-    { figure: '24/7', label: 'Rad bez pauze' }, // dummy
+    { figure: 'Non-stop', label: 'Rad bez pauze' }, // dummy, no invented figure
     { figure: 'Palete', label: 'Prevoz po skladištu' }, // dummy
     { figure: 'Kutije', label: 'Do mesta isporuke' }, // dummy
   ] satisfies Fact[],
@@ -147,7 +147,7 @@ export const statement = {
 // Counts, ranges and capacities are dummy until Ekotehnika confirms them against the data sheets. The counts add up to the 96.
 // lead is the one cell that spans two rows. The range is the Linde model designation without the brand, the section is all Linde, and
 // the capacity is the nosivost, where the number is the nominal load in tenths of a tonne.
-export type ProductCell = { name: string; range: string; cap: string; count: number; img: string; alt: string; href: string; lead?: boolean };
+export type ProductCell = { name: string; range: string; cap: string; img: string; alt: string; href: string; lead?: boolean };
 
 export const proizvodi = {
   label: 'Proizvodi',
@@ -157,13 +157,13 @@ export const proizvodi = {
   cta: { label: pillars[0].more, href: pillars[0].href } satisfies Cta,
   unit: 'modela', // dummy
   cells: [
-    { name: 'Čeoni dizel viljuškari', range: 'H20 do H35', cap: '2,0 do 3,5 t', count: 22, img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar sa dizel motorom', href: `${SITE}/viljuskari/`, lead: true }, // range, capacity and count dummy
-    { name: 'Čeoni električni', range: 'E12 do E20', cap: '1,2 do 2,0 t', count: 16, img: '/products/ceoni-elektro-e16p.webp', alt: 'Linde E16 P čeoni električni viljuškar', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
-    { name: 'Retrak viljuškari', range: 'R14 do R25', cap: '1,4 do 2,5 t', count: 12, img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar za uske hodnike', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
-    { name: 'Slagači', range: 'L10 do L16', cap: '1,0 do 1,6 t', count: 12, img: '/products/slagac-l14r.webp', alt: 'Linde L14 R slagač', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
-    { name: 'Paletari', range: 'T20 do T25', cap: '2,0 do 2,5 t', count: 18, img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
-    { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', count: 12, img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
-    { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', count: 4, img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
+    { name: 'Čeoni dizel viljuškari', range: 'H20 do H35', cap: '2,0 do 3,5 t', img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar sa dizel motorom', href: `${SITE}/linde-dizel-viljuskari/`, lead: true }, // Linde series range and capacity
+    { name: 'Čeoni električni', range: 'E12 do E20', cap: '1,2 do 2,0 t', img: '/products/ceoni-elektro-e16p.webp', alt: 'Linde E16 P čeoni električni viljuškar', href: `${SITE}/linde-elektricni-viljuskari/` }, // Linde series range and capacity
+    { name: 'Retrak viljuškari', range: 'R14 do R25', cap: '1,4 do 2,5 t', img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar za uske hodnike', href: `${SITE}/linde-regalni-viljuskari/` }, // Linde series range and capacity
+    { name: 'Slagači', range: 'L10 do L16', cap: '1,0 do 1,6 t', img: '/products/slagac-l14r.webp', alt: 'Linde L14 R slagač', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
+    { name: 'Paletari', range: 'T20 do T25', cap: '2,0 do 2,5 t', img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
+    { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
+    { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/resenja/automatizacija/` }, // Linde series range and capacity
   ] satisfies ProductCell[],
   // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Shown only in the closing section, see closing.photos.
   photos: [

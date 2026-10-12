@@ -4,7 +4,120 @@
   "client": "ekotehnika",
   "trigger": "asked",
   "openedAt": "2026-10-12T18:57:46.975Z",
-  "rounds": [],
-  "findings": [],
-  "cards": []
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "2903533363a9cdcfbbc48baf404bd50f7051d973",
+      "at": "2026-10-12T19:01:33.077Z",
+      "score": 1
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "copy.ts:160-166, Proizvodi cells (sections.tsx:92,124,133)",
+      "what": "Seven per category counts (22, 16, 12, 12, 18, 12, 4), capacities and ranges are marked dummy in copy.ts and show as facts. README allows no numbers beyond the company's own claims; only the total 96 is from the brief.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "styles.css:129 --lmh-red",
+      "what": "Primary fill is #a00020, README token linde-red is #aa0020. The comment cites the guideline but no README ruling sets it.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "copy.ts:133, AT spec row 24/7",
+      "what": "24/7 is an invented figure marked dummy, not in the brief, against the README rule on number claims.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "Top row and footer nav Novi vs P beat Prodaja",
+      "what": "Glossary term is Prodaja for nav, P beat and footer, but the nav and footer say Novi while the P beat says Prodaja.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 2,
+      "where": "copy.ts:160-166, Proizvodi cells sections.tsx:113",
+      "what": "All 7 product cells link to the same URL SITE/viljuskari/, so the real links ruling (taste 12:10) is not met.",
+      "status": "partly",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 2,
+      "where": "styles.css:299-301 .dir-switch after the story",
+      "what": "After the story the switcher is opacity 0 and pointer-events none, but its 3 buttons stay in the Tab order with no visible focus.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 2,
+      "where": "heroframe.css:72, shell.css:500",
+      "what": "Button min-height 48px and the .tab row 56px are off the allowed control heights 32 to 44, base-override.json is empty.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 2,
+      "where": "shell.css:772, 863, 866, 873",
+      "what": "Off scale font sizes 46px (Servis number), 74px, 54px and 41px. Servis figure at 46 and 41 differs from the 40px spec row figures.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "copy.ts:123, N spec row Održavanje",
+      "what": "Glossary bars Održavanje as a section name, the N row uses it as a figure.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "styles.css:320-335 .dir-switch hover",
+      "what": "On hover the number span is #a1a1a1 on #6b6b6b, 2.4 to 1.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F11",
+      "sev": 3,
+      "where": "sections.css and shell.css spacing, z-index, stroke widths",
+      "what": "Off grid spacing 10, 15, 20, 28, 30, 36, 40, 72px and 6px gaps, z-index 1 to 5, 9, 25, stroke widths 1 and 2, icon width 15.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F12",
+      "sev": 3,
+      "where": "v5 C1 and N at 1920",
+      "what": "unverified. Right two thirds of C1 and the area under the N lede are blank grid in the contact sheet.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F13",
+      "sev": 3,
+      "where": "v5 AT marker 06/06 and title on the wall band",
+      "what": "unverified. Rack behind the beat count in #6b6b6b and the title on a pale grey band, risk under 4.5 to 1.",
+      "status": "open",
+      "round": 1
+    }
+  ],
+  "cards": [],
+  "cardAt": "2026-10-12T19:01:33.160Z"
 }

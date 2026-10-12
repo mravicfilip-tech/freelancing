@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(STUDIO, '..');
 // The kit's own skills. The other folders in .claude/skills belong to other plugins.
-const KIT_SKILLS = ['uireview', 'harden', 'taste', 'mode'];
+const KIT_SKILLS = ['uireview', 'harden', 'taste', 'newui', 'design'];
 const errors = [];
 const warnings = [];
 const rel = (p) => relative(ROOT, p).replace(/\\/g, '/');

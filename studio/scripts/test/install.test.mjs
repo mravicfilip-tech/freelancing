@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { pack } from '../pack.mjs';
+import { pack } from '../account-skills.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const INSTALL = join(STUDIO, 'install.mjs');
@@ -83,16 +83,18 @@ test('uninstall takes it all out, keeps client data and the user\'s own text', (
   assert.ok(existsSync(join(C, 'studio', 'clients', 'note.md')));
 });
 
-test('pack writes four zips that hold SKILL.md at the top of a folder named for the skill', () => {
+test('pack writes five zips that hold SKILL.md at the top of a folder named for the skill', () => {
   const out = mkdtempSync(join(tmpdir(), 'pack-'));
-  assert.equal(pack(out).length, 4);
-  for (const name of ['uireview', 'harden', 'taste', 'mode']) {
+  assert.equal(pack(out).length, 5);
+  for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
     const buf = readFileSync(join(out, `${name}.zip`));
     assert.equal(buf.readUInt32LE(0), 0x04034b50);
     assert.ok(buf.includes(Buffer.from(`${name}/SKILL.md`)), `${name}/SKILL.md`);
     assert.ok(buf.includes(Buffer.from(`${name}/foundation/writing.md`)));
   }
-  assert.ok(readFileSync(join(out, 'uireview.zip')).includes(Buffer.from('uireview/scripts/ledger.mjs')));
+  const ui = readFileSync(join(out, 'uireview.zip'));
+  for (const f of ['scripts/ledger.mjs', 'scripts/pack.mjs', 'scripts/lib/compact-report.mjs', 'hooks/guard.mjs']) assert.ok(ui.includes(Buffer.from(`uireview/${f}`)), f);
+  assert.ok(!ui.includes(Buffer.from('uireview/scripts/test/')), 'tests are left out');
 });
 
 console.log(`\n${passed} tests passed`);

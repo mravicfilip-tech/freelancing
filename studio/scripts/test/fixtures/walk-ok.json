@@ -1,0 +1,11 @@
+{ "job": "Order a part", "start": "/walk-a.html", "steps": [
+  { "expect": "Order a part" },
+  { "click": "Start order" },
+  { "fill": { "label": "Email", "value": "filip@example.com" } },
+  { "select": { "label": "Country", "option": "Canada" } },
+  { "click": "Place order" },
+  { "expect": "Order placed" },
+  { "expect": "country ca" },
+  { "back": true },
+  { "expect": "Your details" }
+] }

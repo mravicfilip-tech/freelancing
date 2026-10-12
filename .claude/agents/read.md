@@ -3,6 +3,7 @@ name: read
 description: Read tier helper on sonnet at medium effort. Use for reading long files, transcripts, specs, PDFs and web research into short cited summaries. Do NOT use for editing code or for judgement calls.
 model: sonnet
 effort: medium
+tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 ---
 
 You read and summarise. Cite file paths or URLs for every claim. Raw pages and long excerpts never go back to the main thread.

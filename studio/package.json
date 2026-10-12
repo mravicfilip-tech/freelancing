@@ -1,11 +1,15 @@
 {
   "name": "studio-freelance",
   "private": true,
-  "description": "A personal studio kit for Claude Code. Rules, skills, helpers and a small guard.",
+  "description": "A personal studio kit for Claude Code. Rules, skills, helpers, a base layout and small guards.",
   "scripts": {
     "lint": "node scripts/lint.mjs",
-    "test": "node scripts/test/ledger.test.mjs && node hooks/test/guard.test.mjs && node scripts/test/install.test.mjs",
-    "pack": "node scripts/pack.mjs",
+    "test": "node scripts/test/ledger.test.mjs && node scripts/test/baselint.test.mjs && node scripts/test/pack.test.mjs && node hooks/test/guard.test.mjs && node hooks/test/secrets.test.mjs && node scripts/test/install.test.mjs",
+    "test:browser": "node scripts/test/shoot-interact.test.mjs && node scripts/test/shoot-hierarchy.test.mjs && node scripts/test/kit-golden.test.mjs && node scripts/test/variants.test.mjs && node scripts/test/walk.test.mjs && node scripts/test/board.test.mjs",
+    "skills": "node scripts/account-skills.mjs",
     "install-user": "node install.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "25.13.0"
   }
 }

@@ -3,7 +3,7 @@
 
 Filip is a freelance product and UI designer. He builds real, running prototypes for clients and
 ships them to a preview URL the client can open. The studio kit below loads his writing rules, the
-triggers, the modes and the two guards.
+triggers, the base layout, the model rows and the two guards.
 
 @studio/DOCTRINE.md
 
@@ -27,6 +27,9 @@ apply to every client and every project.
   are for settling one detail, never for the thing that gets shown.
 - **It is deployed before it is presented.** A prototype that only runs on localhost is not
   finished. The preview URL is part of the deliverable.
+- **Filip opens the preview link before anything ships.** A Vercel preview behind the project's
+  usual password, sent in chat. A ship line given before he has opened that link does not count,
+  and one link covers one change set. Never production without his ship line for that link.
 - **Brand fidelity is not decoration.** The palette, the logo treatment and the type are the
   client's property and get matched exactly, from `studio/clients/<client>/README.md`. Do not
   improvise brand expression.
@@ -75,11 +78,16 @@ Fixing a named defect must not change anything that was not named.
   tool, enumerate the matches first, read every one, and screenshot the result before committing.
 - Keep the diff proportional to the ask. A one line defect should not produce a fifteen file
   commit.
+- Measure against the base layout. `studio/foundation/base-layout.css` holds the type, spacing,
+  radius, control, icon, shadow and z-index scale, and `studio/clients/<client>/base-override.json`
+  holds a client's own values. Run `node studio/scripts/baselint.mjs` on the diff, so a value that
+  drifted off the scale shows up before Filip sees it.
 
 ### Use the rails that already exist
 
 - **`/uireview` before anything reaches a client.** Its rubric catches small type, weak contrast,
-  invisible chips and inconsistent controls. Run it on my own work.
+  invisible chips and inconsistent controls. Run it on my own work. Its shots add an interaction
+  pass for pinned bars, menus, popups and hover states, so those are driven and not guessed.
 - If installed, `make-interfaces-feel-better` is for polish detail and `frontend-design` is for
   direction.
 

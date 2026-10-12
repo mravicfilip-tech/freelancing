@@ -23,13 +23,18 @@ Task format
 
 ## Backlog
 
+## In progress
+
 - ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md
   - [x] Filip gives his notes
   - [x] Scan the reference sites and read the Linde brand guideline
   - [x] Plan the pass from the notes
-  - [ ] Filip answers the plan's decisions
-
-## In progress
+  - [x] Filip answers the plan's decisions
+  - [x] Detail the plan with every reference and current frame
+  - [ ] Build the system, motion and sections
+  - [ ] Build the Sistem scene polish
+  - [ ] Fit Linija and Grad to the new shell
+  - [ ] Review, check and deploy
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers

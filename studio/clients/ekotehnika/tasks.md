@@ -25,6 +25,11 @@ Task format
 
 ## In progress
 
+- ekotehnika-7 Logos at the Linde co-branding sizes
+  - [x] Find the vector logos in the Drive and swap them in
+  - [x] Size the logo tile to the guideline and fit the top row
+  - [ ] Clear the scenes under the taller top row in 2, 4 and 5
+
 - ekotehnika-6 Version 5 in light mode, servis stays dark
   - [x] Let the shell set dark beats per version
   - [ ] Relight and redraw the Sistem scene for light

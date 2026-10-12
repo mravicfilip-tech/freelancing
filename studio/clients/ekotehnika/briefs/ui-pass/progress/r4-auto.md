@@ -32,16 +32,18 @@ Branch `claude/awesome-faraday-lkhnn2-auto`, from 23fee3b. Files changed are `ai
 
 ## Budget
 
-Measured with `ekotehnika-hero/scripts/loadbudget.mjs` on this container, production build, `?v=5` at 1920.
+Measured with the parent branch's fixed `loadbudget.mjs`, which times the first drawn hero road, production builds of
+23fee3b and of this branch served side by side, `?v=5` at 1920, three runs each, before and after alternating.
 
-| | Load | Full scroll | First frame |
-|---|---|---|---|
-| Before, 23fee3b | 10.93MB | 11.69MB | 1058ms, 1124ms (a cold first run 2767ms) |
-| After | AFTER_LOAD | AFTER_SCROLL | AFTER_MS |
+| | Load | Full scroll | First frame, three runs | Median |
+|---|---|---|---|---|
+| Before, 23fee3b | 10.93MB | 11.69MB | 15468, 14123, 21567ms | 15468ms |
+| After | 10.93MB | 11.69MB | 19627, 14578, 14360ms | 14578ms |
 
-- The slice adds no downloaded file, only code. Textures are drawn on canvases at load.
-- This container measures the baseline itself over 1,000ms, against 977ms in round4.md. Compare before and after here
-  only.
+- The slice adds no downloaded file and stays within 0.01MB, inside the 0.5MB slice budget. The labels and the punched
+  uprights are drawn on canvases at load.
+- The first frame median is under the before median, so it meets the rule. Software GL in this container spreads single
+  runs by 7 seconds, so the medians are the numbers to read.
 
 ## Scroll pass
 

@@ -3,8 +3,9 @@
 // warehouse as a lit model with racks and wrapped pallets, a precise side elevation schematic of the X50 on the dark
 // servis ground, a steel fork tine, the rental depot floor and the automation floor with robots at true scale on system
 // routes. Every pose is a pure function of the story clock, so a frozen clock (?at=<beat>&k=<0 to 1>) always draws the
-// same picture.
-import { Suspense, useEffect, useRef } from 'react';
+// same picture. The one exception is the build in on load (props.tsx), timed from the first frame, which a frozen clock
+// and reduced motion skip.
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -13,9 +14,10 @@ import type { SceneProps } from '../../clock';
 import Schematic from './schematic';
 import { Dust, Lights, Rig, type CamState } from './camera';
 import Grid, { Depot } from './grid';
-import { Truck, type TruckApi } from './models';
+import { SPEC, Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
+import { introClock } from './props';
 import Overlay from './overlay';
 import Aisle from './aisle';
 import { routeAt, truckS } from './route';
@@ -24,21 +26,96 @@ import Warehouse from './warehouse';
 // Forks low while driving, raised in front of the building and set down again for the road.
 const HERO_LIFT = track([[0, 0.12], [1.6, 0.12], [2.15, 1.55], [2.85, 1.55], [3.25, 0.15], [12, 0.15]]);
 
+// The EKOTEHNIKA wordmark from public/brand/ekotehnika.svg, the file itself drawn into a texture exactly as supplied,
+// its red mark included, never redrawn or recoloured. It prints dark on the light carton.
+const MARK_W = 0.7;
+const MARK_H = (MARK_W * 33.75) / 164.76;
+function useWordmark() {
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    let off = false;
+    fetch('/brand/ekotehnika.svg')
+      .then((r) => r.text())
+      .then((svg) => {
+        const w = 1024;
+        const h = Math.round((w * 33.75) / 164.76);
+        const img = new Image();
+        img.onload = () => {
+          if (off) return;
+          const c = document.createElement('canvas');
+          c.width = w;
+          c.height = h;
+          c.getContext('2d')!.drawImage(img, 0, 0, w, h);
+          const t = new THREE.CanvasTexture(c);
+          t.colorSpace = THREE.SRGBColorSpace;
+          t.anisotropy = 8;
+          setTex(t);
+          invalidate();
+        };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('<svg ', `<svg width="${w}" height="${h}" `));
+      })
+      .catch(() => {});
+    return () => {
+      off = true;
+    };
+  }, [invalidate]);
+  return tex;
+}
+
+// The wordmark printed on both long faces of the carton on the hero's pallet, high on the face above the bin label, in
+// the pallet's own frame (Pallet in r3f/Forklift.tsx, carton 1.08 by 0.78 by 0.86 from 0.14 up).
+function CartonMarks({ tex }: { tex: THREE.Texture }) {
+  const mat = useRef(new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2 })).current;
+  mat.map = tex;
+  mat.needsUpdate = true;
+  return (
+    <>
+      <mesh position={[0, 0.8, 0.4345]} material={mat}>
+        <planeGeometry args={[MARK_W, MARK_H]} />
+      </mesh>
+      <mesh position={[0, 0.8, -0.4345]} rotation={[0, Math.PI, 0]} material={mat}>
+        <planeGeometry args={[MARK_W, MARK_H]} />
+      </mesh>
+    </>
+  );
+}
+
+// On load the forklift drives into its hero place along the road once its model is ready, and comes to rest. Metres it
+// starts back along the road, and the seconds the drive takes.
+const DRIVE_IN = 16;
+const DRIVE_S = 1.7;
+
 function Hero({ clock }: SceneProps) {
   const g = useRef<THREE.Group>(null);
+  const marks = useRef<THREE.Group>(null);
   const api = useRef<TruckApi | null>(null);
+  const readyAt = useRef(-1);
+  const tex = useWordmark();
+  const load = SPEC.x50.load!;
   useFrame(() => {
     const u = uOf(clock);
-    const rp = routeAt(truckS(clock.pos.current));
+    const t = introClock();
+    let back = 0;
+    if (t !== Infinity) {
+      if (readyAt.current < 0) readyAt.current = Math.max(t, 0.45);
+      const e = Math.min(1, Math.max(0, (t - readyAt.current) / DRIVE_S));
+      back = DRIVE_IN * Math.pow(1 - e, 3);
+    }
+    const rp = routeAt(truckS(clock.pos.current) - back);
     if (!g.current) return;
     g.current.visible = u < 7;
     g.current.position.set(rp.x, 0, rp.z);
     g.current.rotation.y = rp.yaw;
-    api.current?.set(HERO_LIFT(u), rp.s);
+    const lift = HERO_LIFT(u);
+    api.current?.set(lift, rp.s);
+    if (marks.current) marks.current.position.set(load[0], load[1] + lift, load[2]);
   });
   return (
     <group ref={g}>
-      <Truck name="x50" apiRef={api} load />
+      <Truck name="x50" apiRef={api} load>
+        <group ref={marks}>{tex && <CartonMarks tex={tex} />}</group>
+      </Truck>
     </group>
   );
 }

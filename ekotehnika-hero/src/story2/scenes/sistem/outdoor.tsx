@@ -1,14 +1,30 @@
 // The Ekotehnika site in daylight, white and the LMH greys. The company building with real windows, a door, a canopy
-// and a roof edge, its live 3D name in black, the van with its graphite livery, low poly trees, hedges and shrubs,
-// lamp posts, kerbs, and the road that turns into the grey S path. Everything is still, the truck drives past it,
-// so the parallax comes from the camera.
+// and a roof edge, cladding seams, downpipes and a contact shadow along its foot, its live 3D name in black, the vans
+// with their graphite livery, low poly trees in kerbed pits, hedges and shrubs, lamp posts, kerbs, and the road that
+// turns into the grey S path. Everything is still, the truck drives past it, so the parallax comes from the camera.
+// On load the road, the kerbs and the pavement draw along and everything else rises out of the ground (props.tsx).
 import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { BUILDING_X, ROUTE } from './route';
 import { G, K, lam, lit, rng, signGeometry } from './kit';
-import { BoxSet, Hedge, Kerb, LampPost, Planter, Trees, Van, type BoxItem, type TreeSpec } from './props';
+import { BoxSet, Hedge, Kerb, LampPost, Planter, Rise, Trees, Van, introClock, introFront, stripShadowMaterial, type BoxItem, type TreeSpec } from './props';
 import type { StoryClock } from '../../clock';
 import Yard from './yard';
+
+// Draws a strip built along the route on from the left during the build in. xs is the x of each of its route points,
+// per the index count of one point's quad.
+function useDrawAlong(geo: THREE.BufferGeometry, xs: number[], per = 6) {
+  const landed = useRef(false);
+  useFrame(() => {
+    if (landed.current) return;
+    const f = introFront(introClock());
+    landed.current = f === Infinity;
+    let k = 0;
+    while (k < xs.length && xs[k] < f) k++;
+    geo.setDrawRange(0, landed.current ? Infinity : Math.max(0, k - 1) * per);
+  });
+}
 
 function Ribbon({ half, y, material, step = 4 }: { half: number; y: number; material: THREE.Material; step?: number }) {
   const geo = useMemo(() => {
@@ -30,6 +46,8 @@ function Ribbon({ half, y, material, step = 4 }: { half: number; y: number; mate
     g.setIndex(idx);
     return g;
   }, [half, y, step]);
+  const xs = useMemo(() => ROUTE.filter((_, i) => i % step === 0 || i === ROUTE.length - 1).map((p) => p.x), [step]);
+  useDrawAlong(geo, xs);
   return <mesh geometry={geo} material={material} receiveShadow />;
 }
 
@@ -56,6 +74,8 @@ function RoadEdge({ offset }: { offset: number }) {
     g.setIndex(idx);
     return g;
   }, [offset]);
+  const xs = useMemo(() => ROUTE.filter((_, i) => i % 4 === 0 || i === ROUTE.length - 1).map((p) => p.x), []);
+  useDrawAlong(geo, xs);
   return <mesh geometry={geo} material={K.white} />;
 }
 
@@ -74,6 +94,15 @@ function Centre() {
     });
     ref.current!.instanceMatrix.needsUpdate = true;
   }, [pts]);
+  const landed = useRef(false);
+  useFrame(() => {
+    if (!ref.current || landed.current) return;
+    const f = introFront(introClock());
+    landed.current = f === Infinity;
+    let k = 0;
+    while (k < pts.length && pts[k].x < f) k++;
+    ref.current.count = landed.current ? pts.length : k;
+  });
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, pts.length]} material={K.white}>
       <boxGeometry args={[1.8, 0.01, 0.14]} />
@@ -104,6 +133,30 @@ const glassMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.85) });
 const glassLight = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.75) });
 const edgeMat = lam(G.mid);
 const doorMat = lam(G.dark);
+const pipeMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.3) });
+const footMat = stripShadowMaterial(0.32);
+
+// A soft contact shadow along the foot of a wall that faces +z, w long, its wall edge at z.
+function WallFoot({ x, z, w, d = 1.3 }: { x: number; z: number; w: number; d?: number }) {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, Math.PI]} position={[x, 0.024, z + d / 2]} material={footMat} renderOrder={1}>
+      <planeGeometry args={[w, d]} />
+    </mesh>
+  );
+}
+
+// A downpipe from the roof edge to the ground, with its brackets and the shoe at the foot.
+function Downpipe({ x, z, h }: { x: number; z: number; h: number }) {
+  return (
+    <group position={[x, 0, z + 0.16]}>
+      <mesh position={[0, h / 2, 0]} material={pipeMat} castShadow>
+        <cylinderGeometry args={[0.055, 0.055, h, 10]} />
+      </mesh>
+      <BoxSet items={[0.9, h * 0.4, h * 0.75].map((y) => [0, y, -0.06, 0.16, 0.05, 0.12] as BoxItem)} mat={edgeMat} />
+      <BoxSet items={[[0.06, 0.1, 0.04, 0.2, 0.08, 0.14]]} mat={pipeMat} />
+    </group>
+  );
+}
 
 const FRONT = -9;
 const BX0 = BUILDING_X - 13;
@@ -171,6 +224,10 @@ function Facade({ x0, x1, h, z = FRONT, doorX, band = true, plain = 0 }: { x0: n
       {/* glass lines, a lighter band high in each pane so the glass reads as glass */}
       <BoxSet items={all('glass').map(([x, y, zz, ww, hh, d]) => [x, y + hh * 0.3, zz + 0.03, ww, hh * 0.28, d] as BoxItem)} mat={glassLight} />
       {doorX !== undefined && <Door x={doorX} z={z} />}
+      {/* a downpipe at each end, the shadow along the foot. The solid wing stays bare, the C1 title sits on it. */}
+      <Downpipe x={x0 + 0.5} z={z} h={h} />
+      <Downpipe x={x1 - 0.5} z={z} h={h} />
+      <WallFoot x={(x0 + x1) / 2} z={z + 0.12} w={w + 0.4} />
     </group>
   );
 }
@@ -188,6 +245,10 @@ function Door({ x, z }: { x: number; z: number }) {
       <BoxSet items={[[0, 2.7, 1.36, 3.8, 0.06, 0.04]]} mat={edgeMat} />
       <BoxSet items={[[-1.8, 1.38, 1.3, 0.07, 2.76, 0.07], [1.8, 1.38, 1.3, 0.07, 2.76, 0.07]]} mat={edgeMat} cast />
       <BoxSet items={[[0, 0.05, 0.9, 3.6, 0.1, 1.5]]} mat={trim} />
+      {/* a plain address plate beside the door and a lamp under the canopy */}
+      <BoxSet items={[[1.95, 1.6, 0.08, 0.5, 0.34, 0.04]]} mat={edgeMat} />
+      <BoxSet items={[[1.95, 1.6, 0.1, 0.44, 0.28, 0.02]]} mat={frameMat} />
+      <BoxSet items={[[0, 2.69, 0.9, 0.6, 0.04, 0.2]]} mat={glassLight} />
     </group>
   );
 }
@@ -212,25 +273,37 @@ function Hall({ x, w, h, d, zc }: { x: number; w: number; h: number; d: number; 
       {/* roller door, a frame and slats */}
       <BoxSet items={[[x, 2.1, front + 0.05, 4.4, 4.2, 0.1]]} mat={frameMat} cast />
       <BoxSet items={Array.from({ length: 14 }, (_, i) => [x, 0.45 + i * 0.28, front + 0.12, 4.0, 0.03, 0.04] as BoxItem)} mat={edgeMat} />
+      {/* the roller door's guide rails and head box, two bollards, a side door with its frame and handle */}
+      <BoxSet items={[[x - 2.25, 2.1, front + 0.12, 0.1, 4.2, 0.1], [x + 2.25, 2.1, front + 0.12, 0.1, 4.2, 0.1], [x, 4.35, front + 0.18, 4.7, 0.3, 0.3]]} mat={pipeMat} cast />
+      <BoxSet items={[[x - 2.7, 0.5, front + 0.5, 0.18, 1.0, 0.18], [x + 2.7, 0.5, front + 0.5, 0.18, 1.0, 0.18]]} mat={doorMat} cast />
+      <BoxSet items={[[x - 2.7, 0.78, front + 0.5, 0.2, 0.1, 0.2], [x + 2.7, 0.78, front + 0.5, 0.2, 0.1, 0.2]]} mat={trim} />
+      <BoxSet items={[[x + 4.6, 1.1, front + 0.05, 1.2, 2.2, 0.08]]} mat={edgeMat} cast />
+      <BoxSet items={[[x + 4.6, 1.06, front + 0.1, 1.04, 2.1, 0.04]]} mat={frameMat} />
+      <BoxSet items={[[x + 4.25, 1.05, front + 0.14, 0.04, 0.2, 0.05]]} mat={doorMat} />
+      <WallFoot x={x} z={front + 0.1} w={w + 0.4} />
     </group>
   );
 }
 
-function Building() {
+export function Building() {
   const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
   return (
     <group>
-      <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} plain={11.5} />
-      <Hall x={BUILDING_X + 20.5} w={14} h={4.6} d={9} zc={FRONT - 4.5} />
-      {/* the live 3D name, Daxline caps, the one dark element on the wall */}
-      <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 0.2, 3.45, FRONT + 0.1]} castShadow />
+      <Rise x={BUILDING_X} depth={7.6}>
+        <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} plain={11.5} />
+        {/* the live 3D name, Daxline caps, the one dark element on the wall */}
+        <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 0.2, 3.45, FRONT + 0.1]} castShadow />
+      </Rise>
+      <Rise x={BUILDING_X + 20.5} depth={5.8}>
+        <Hall x={BUILDING_X + 20.5} w={14} h={4.6} d={9} zc={FRONT - 4.5} />
+      </Rise>
     </group>
   );
 }
 
 // ---- trees and green ----------------------------------------------------------------------------------------
 
-function Greenery() {
+export function Greenery() {
   const trees = useMemo<TreeSpec[]>(() => {
     const r = rng(21);
     const near: TreeSpec[] = [];
@@ -242,10 +315,10 @@ function Greenery() {
     for (let i = 0; i < 44; i++) near.push({ x: -62 + i * 3.4 + r() * 2.5, z: -17 - r() * 22, h: 3.8 + r() * 2.6 });
     return near.map((t, i) => ({ ...t, v: i }));
   }, []);
-  return <Trees items={trees} />;
+  return <Trees items={trees} rise />;
 }
 
-function FrontGarden() {
+export function FrontGarden() {
   // hedge runs along the sidewalk, planters between them, a gap for the entrance path
   const hedges: { x: number; len: number }[] = [];
   const planters: { x: number; len: number; seed: number }[] = [];
@@ -266,16 +339,20 @@ function FrontGarden() {
   return (
     <group>
       {hedges.map((h) => (
-        <Hedge key={h.x} x={h.x} z={-3.65} len={h.len} />
+        <Rise key={h.x} x={h.x + h.len / 2} depth={1}>
+          <Hedge x={h.x} z={-3.65} len={h.len} />
+        </Rise>
       ))}
       {planters.map((p) => (
-        <Planter key={p.x} x={p.x} z={-3.65} len={p.len} seed={p.seed} s={0.95} d={1.2} />
+        <Rise key={p.x} x={p.x + p.len / 2} depth={1.2}>
+          <Planter x={p.x} z={-3.65} len={p.len} seed={p.seed} s={0.95} d={1.2} />
+        </Rise>
       ))}
     </group>
   );
 }
 
-function Pavement() {
+export function Pavement() {
   // the sidewalk behind the road, the forecourt paving with its parking bays
   const bays = useMemo(() => {
     const items: BoxItem[] = [];
@@ -283,11 +360,26 @@ function Pavement() {
     for (const bx of [48.2, 54.4, 60.6]) items.push([bx, 0.012, -6.6, 0.07, 0.01, 5.0]);
     return items;
   }, []);
+  // the paving draws along from its left end at x -90 with the road, the bay lines show as the front passes them
+  const pave = useRef<THREE.Group>(null);
+  const lines = useRef<THREE.Group>(null);
+  const landed = useRef(false);
+  useFrame(() => {
+    if (landed.current || !pave.current || !lines.current) return;
+    const f = introFront(introClock());
+    landed.current = f === Infinity;
+    pave.current.scale.x = landed.current ? 1 : Math.max(0.0001, Math.min(1, (f + 90) / 170));
+    lines.current.visible = f > 10.2;
+  });
   return (
     <group>
-      <BoxSet items={[[-5, 0.03, -2.65, 170, 0.06, 1.1]]} mat={lam(G.pale)} />
-      <BoxSet items={[[-5, 0.006, -6.3, 170, 0.012, 5.4]]} mat={lam(G.pale)} />
-      <BoxSet items={bays} mat={new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false })} receive={false} />
+      <group ref={pave} position={[-90, 0, 0]}>
+        <BoxSet items={[[85, 0.03, -2.65, 170, 0.06, 1.1]]} mat={lam(G.pale)} />
+        <BoxSet items={[[85, 0.006, -6.3, 170, 0.012, 5.4]]} mat={lam(G.pale)} />
+      </group>
+      <group ref={lines}>
+        <BoxSet items={bays} mat={new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false })} receive={false} />
+      </group>
     </group>
   );
 }
@@ -300,17 +392,21 @@ export default function Outdoor({ clock }: { clock?: StoryClock }) {
         <planeGeometry args={[550, 440]} />
       </mesh>
       <Road />
-      <Kerb x0={-90} x1={78} z={-2.12} />
-      <Kerb x0={-90} x1={78} z={2.12} />
+      <Kerb x0={-90} x1={78} z={-2.12} draw />
+      <Kerb x0={-90} x1={78} z={2.12} draw />
       <Pavement />
       <Building />
       <FrontGarden />
-      <Van x={13} z={-5.9} yaw={0.03} />
-      <Van x={19.5} z={-7.4} yaw={-0.12} />
-      <Van x={52} z={-5.9} yaw={Math.PI} />
+      {[[13, -5.9, 0.03], [19.5, -7.4, -0.12], [52, -5.9, Math.PI]].map(([vx, vz, vy]) => (
+        <Rise key={vx} x={vx} depth={3}>
+          <Van x={vx} z={vz} yaw={vy} />
+        </Rise>
+      ))}
       <Greenery />
       {[-5.5, 14, 53, 70].map((lx) => (
-        <LampPost key={lx} x={lx} z={-2.9} h={4.1} />
+        <Rise key={lx} x={lx} depth={5.6}>
+          <LampPost x={lx} z={-2.9} h={4.1} />
+        </Rise>
       ))}
       <Yard clock={clock} />
     </group>

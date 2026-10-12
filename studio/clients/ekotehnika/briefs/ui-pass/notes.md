@@ -74,6 +74,5 @@ and the plan is agreed. The story stays as it is.
    Open. The round play button. We have no servis video, so the CTA stays Zakažite servis unless a video exists.
 7. **Sites to scan for layout and animation ideas.** Said: "check and scan this website for improvements even on
    the animations etc", "Also check the UI layout too", for https://terminal-industries.com/,
-   https://animejs.com/, https://floema.com/en and https://brand.dropbox.com/typography (Filip, "this one too").
-   Not scanned yet, the environment's network policy blocks all four. Once Filip allows them, each gets a full scroll at 1440 with section shots and frame steps of the motion,
+   https://animejs.com/, https://floema.com/en and https://brand.dropbox.com/typography (Filip, "this one too"), then https://www.orano.group/ ("now this too"). Once Filip allows them, each gets a full scroll at 1440 with section shots and frame steps of the motion,
    and the findings land here as their own notes.

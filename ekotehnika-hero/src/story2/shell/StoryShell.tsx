@@ -11,7 +11,7 @@ import { LENGTH, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
-import { Closing, Clients, Footer, Products, Statement } from './sections';
+import { Footer } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
 import { applyBtnVariant } from './variant';
 import './shell.css';
@@ -441,10 +441,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             </div>
           </section>
         ))}
-        <Statement />
-        <Products />
-        <Clients />
-        <Closing />
         <Footer />
       </div>
     );
@@ -464,10 +460,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         ))}
         <HeroFrame tone={frameTone} rootRef={heroRef} />
       </div>
-      <Statement />
-      <Products />
-      <Clients />
-      <Closing />
       <Footer />
     </div>
   );

@@ -34,6 +34,9 @@ Task format
   - [x] Build the system, motion and sections
   - [x] Build the Sistem scene polish
   - [ ] Fit Linija and Grad to the new shell
+  - [x] Plan round 3 from Filip's board comments, briefs/ui-pass/round3.md
+  - [ ] Filip answers the round 3 questions
+  - [ ] Build round 3
   - [ ] Review, check and deploy
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp

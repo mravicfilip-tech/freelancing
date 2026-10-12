@@ -167,3 +167,11 @@ S4. **Version 5, R, the whole left column is bad.** Ref `refs/scenes/s04-v5-r-le
    rade sa originalnim Linde delovima", from the competitive analysis.
    Candidates on file for the fix. Note 5 grid, every block on a line. T07 scroll fill for the text. T05 mono step
    labels. Ref 06 data line in place of cards (a big figure, a mono label, one line). Ref 02 placement.
+S5. **Version 5, P, the prodaja screen.** Ref `refs/scenes/s05-v5-p-prodaja.webp`, Filip marked the whole screen.
+   Said: "Giga bad AI slop screen".
+   What is there now. Everything centred in one stack, a dot kicker, a 96px title, a wide hairline box with one line
+   and the red Zatražite ponudu button, then four equal hairline cards each with a thin line icon, a name and a model.
+   The lower half of the screen is empty white, with a faint lighter panel behind the middle. Nothing ties it to
+   the warehouse scene, every element has the same weight, and the icons are generic.
+   Candidates on file for the fix. Note 3 staggered offering cards with real Linde cut out renders. T08 tabbed
+   feature cards by truck type. Ref 02 text left with the products as the images. Note 1 block wipe on the title.

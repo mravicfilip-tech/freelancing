@@ -13,6 +13,10 @@
   --hd: rgb(0 0 0 / 0.18);
   --hl: rgb(255 255 255 / 0.4);
   --out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* the ink and the unfilled grey the Fill letter fill in ui.tsx reads, and the bar colour of the block wipe in heroframe.css */
+  --fg: var(--black);
+  --fill-off: var(--grey-mid);
+  --bar: var(--black);
   position: relative;
   z-index: 2;
   container-type: inline-size;
@@ -149,8 +153,20 @@
   letter-spacing: -0.03em;
 }
 
+/* a flex column keeps the negative margins of the masks from collapsing into each other, so the lines stay where they were */
+.sx-title,
+.sx-ctitle {
+  display: flex;
+  flex-direction: column;
+}
+
+/* each title line sits in a mask for the block wipe, with room for the carons and descenders, as .ln does in shell.css */
 .sx-ln {
   display: block;
+  width: fit-content;
+  padding: 0.1em 0 0.16em;
+  margin: -0.1em 0 -0.16em;
+  white-space: nowrap;
 }
 
 .sx-left .sx-lede {
@@ -243,6 +259,8 @@
   flex: 1 1 0;
   min-height: 0;
   margin: 12px 0 12px;
+  /* the block wipe over a product image is a light grey bar, a black slab that size would outweigh the text wipes */
+  --bar: var(--grey-light);
 }
 
 .sx-img {
@@ -299,20 +317,6 @@
 .sx-cell:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: -4px;
-}
-
-/* the reveal, each cell's content rises in 90ms after the one before, after the lattice scrolls into view */
-.sx-cells.is-armed .sx-in {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.sx-cells.is-armed.is-in .sx-in {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 560ms var(--out) calc(var(--i) * 90ms),
-    transform 640ms var(--out) calc(var(--i) * 90ms);
 }
 
 /* ---- the closing section, the delivery photos flow in along the grid ---- */
@@ -413,18 +417,15 @@
   letter-spacing: -0.03em;
 }
 
+.sx-mid .sx-ln {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .sx-mid .sx-clede {
   margin: 24px 0 32px;
   font-size: clamp(18px, 1.15cqw, 22px);
   line-height: 1.35;
-}
-
-.sx-phones {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
 }
 
 .sx-mid .btn {
@@ -551,44 +552,6 @@
   background: none;
 }
 
-/* row 3, the four truck stills, one in each grid cell, standing on the bottom rule. The cells are the four the verticals cut, so
-   the first three are 3 steps wide and the last one is 24px narrower, and the stills all share one width so the scale between
-   the trucks stays true. Each cell keeps its truck 24px in from its lines and clips what sinks below the rule. */
-.sx-r3 {
-  padding-top: 24px;
-}
-
-.sx-trucks {
-  grid-column: 1 / 13;
-  display: grid;
-  grid-template-columns: repeat(3, calc(3 * var(--gx))) 1fr;
-}
-
-.sx-truck {
-  padding: 0 24px;
-  overflow: clip;
-}
-
-/* the widest truck takes 88 percent of its still, so the still is 3 columns wide at that truck and 3 / 0.88 columns as a file. The
-   truck stays 24px in from the lines, only its soft edge and clear margin reach the padding. The shadow margin (22 of 1200 px)
-   is tucked under the rule. */
-.sx-truck img {
-  display: block;
-  width: calc(3 * var(--cw) / 0.88);
-  height: auto;
-  margin: 0 0 calc(var(--cw) * -0.0625) calc((100% - 3 * var(--cw) / 0.88) / 2);
-}
-
-/* the reveal, each truck rises 24px into place one cell after the one before, transform only, no fade */
-.sx-trucks.is-armed .sx-truck img {
-  transform: translateY(24px);
-}
-
-.sx-trucks.is-armed.is-in .sx-truck img {
-  transform: none;
-  transition: transform 720ms var(--out) calc(var(--i) * 120ms);
-}
-
 .sx-vl-ground {
   bottom: -1px;
 }
@@ -611,16 +574,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sx-cells.is-armed .sx-in {
-    opacity: 1;
-    transform: none;
-  }
-
-  .sx-trucks.is-armed .sx-truck img {
-    transform: none;
-    transition: none;
-  }
-
   .sx-cell,
   .sx-img,
   .sx-ul,

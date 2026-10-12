@@ -276,7 +276,8 @@ a {
 .dir-switch {
   position: fixed;
   z-index: 100;
-  right: 48px;
+  /* 24px in from the last vertical of the story grid */
+  right: 72px;
   bottom: 12px;
   display: flex;
   flex-direction: row;

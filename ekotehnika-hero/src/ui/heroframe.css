@@ -329,10 +329,6 @@
   .hf-top .hf-nav {
     justify-self: end;
   }
-  /* 31px between the links, so the fourth vertical runs through the middle of the gap between Novi and Polovni at 1440 */
-  .hf-top .hf-nav ul {
-    gap: 31px;
-  }
 }
 
 /* LMH co-branding guideline 1.3, the Linde logo at its 160 by 96px screen minimum and the dealer wordmark exactly as
@@ -350,7 +346,9 @@
   width: 160px;
 }
 
-.hf-logo img:first-child {
+/* only the Linde logo, a direct child. The wordmark stack has its own first child, which must keep its own height, or the ink file
+   sits centred in 96px and the white file at the top of the stack, 31px higher over the dark span. */
+.hf-logo > img:first-child {
   height: 96px;
 }
 
@@ -460,6 +458,31 @@
     width: 100%;
     justify-content: space-between;
     gap: 24px;
+  }
+}
+
+/* At 1440 every edge of the top row clears the verticals by 24px (second at 390, fourth at 1074). The wordmark starts 24px after the
+   second vertical, the Linde logo stays 24px after the first, so the pair keeps its sizes and is spread over two cells. The phone
+   and quote buttons take 14px type and 18px side padding to fit between the wordmark and the right edge, and the nav leaves a gap of
+   64px between Novi and Polovni, so the fourth vertical runs through it with 24px or more to each link. */
+@container (min-width: 1400px) and (max-width: 1500px) {
+  .hf-top {
+    column-gap: 24px;
+  }
+  .hf-wm {
+    margin-left: calc(var(--x2) - 238px);
+  }
+  .hf-actions .btn {
+    font-size: 14px;
+  }
+  .hf-actions .btn-t {
+    padding: 0 18px;
+  }
+  .hf-top .hf-nav ul {
+    gap: 24px;
+  }
+  .hf-nav li:nth-child(2) {
+    margin-right: 40px;
   }
 }
 

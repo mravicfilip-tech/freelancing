@@ -184,16 +184,13 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const stagger = (budget - dur) / G.maxOrder;
         const u = isHero ? Math.max(heroT * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
         const k = isHero ? Math.max(k0, FILL_TO * heroT) : k0;
-        let o = 0;
         let on: boolean;
         if (G.persistent) on = true;
         else if (G.leaveInPx) {
-          o = range(pos, G.leave[0], G.leave[1]);
-          on = o < 1;
+          // a hard cut half way through the leave window, no opacity ramp (taste 2026-10-12 17:55, nothing fades)
+          on = pos < (G.leave[0] + G.leave[1]) / 2;
         } else {
-          on = k >= 0 && k <= 1;
-          o = on ? range(k, G.leave[0], G.leave[1]) : 1;
-          if (o >= 1) on = false;
+          on = k >= 0 && k <= 1 && k < (G.leave[0] + G.leave[1]) / 2;
         }
         const vis = on ? 'v' : 'h';
         if (vis !== G.el.dataset.vis) {
@@ -205,13 +202,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           else if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
         if (!on) continue;
-        if (!G.persistent) {
-          const op = (1 - o).toFixed(2);
-          if (G.el.style.opacity !== op) G.el.style.opacity = op;
-          if (G.wrap && G.wrap.style.opacity !== op) G.wrap.style.opacity = op;
-        }
-        const pe = !G.persistent && o > 0.4 ? 'none' : '';
-        if (G.el.style.pointerEvents !== pe) G.el.style.pointerEvents = pe;
+        // the text of a beat is shown whole or not at all, so there is no opacity to drive here
 
         // block wipes and count up
         for (const W of G.wipes) {

@@ -3,7 +3,7 @@
 // the yard floor under the wheels. The forklift stays in one place on screen, so everything here is a function
 // of the distance driven. Tokens only.
 import { memo, type ReactNode } from 'react';
-import { ein, eout, io, kf, lerp, range, seg, smooth, W, H, K, G, G2, LG, SG, WH } from './frame';
+import { ein, eout, io, kf, lerp, range, seg, smooth, W, H, K, G, G2, LG, SG, HG, WH } from './frame';
 
 export const GY = 620; // the wheels stand on this line
 export const TS = 1.47; // forklift units to pixels, a 232 unit truck is about 340px tall
@@ -16,8 +16,9 @@ export function dist(pos: number) {
   return 2000 * smooth(seg(pos, 'D1')) + 700 * ein(seg(pos, 'D2')) + 700 * eout(seg(pos, 'F'));
 }
 
-// Where the front axle stands on screen. It rests to the right for the hero, then settles centre right.
-export const axleX = (pos: number) => lerp(1140, 790, io(range(pos, 500, 800)));
+// Where the front axle stands on screen. It rests to the right for the hero, then settles at the right so the whole truck
+// and its load stand in columns 7 to 12 and the C1 text sits on plain ground.
+export const axleX = (pos: number) => lerp(1140, 1060, io(range(pos, 500, 800)));
 
 // Mast height in truck units, raised at the building, lowered to a carrying height for the drive.
 export const liftAt = (pos: number) =>
@@ -78,9 +79,31 @@ function Round({ x, r }: { x: number; r: number }) {
 function Lamp({ x }: { x: number }) {
   return (
     <g transform={`translate(${x} ${MY})`}>
-      <line x1={0} y1={0} x2={0} y2={-150} stroke={G} strokeWidth={4} />
-      <circle cx={0} cy={-160} r={11} fill={WH} stroke={G} strokeWidth={2.4} />
+      <line x1={0} y1={0} x2={0} y2={-112} stroke={G} strokeWidth={4} />
+      <line x1={0} y1={-112} x2={14} y2={-112} stroke={G} strokeWidth={3} />
+      <rect x={8} y={-118} width={14} height={7} fill={WH} stroke={G} strokeWidth={2} />
       <rect x={-9} y={-14} width={18} height={14} fill={G} />
+    </g>
+  );
+}
+
+// A planted shrub, a low mass of overlapping lobes on short stems with a lit centre, so it reads as a plant and not a ball.
+function Shrub({ x, w = 56 }: { x: number; w?: number }) {
+  const lobes: [number, number, number][] = [[-0.3, -0.34, 0.3], [0.0, -0.48, 0.34], [0.3, -0.34, 0.3], [-0.12, -0.2, 0.26], [0.16, -0.2, 0.26]];
+  return (
+    <g transform={`translate(${x} 0)`}>
+      {[-0.28, -0.08, 0.14, 0.3].map((u) => (
+        <line key={u} x1={u * w} y1={0} x2={u * w * 0.8} y2={-w * 0.2} stroke={G2} strokeWidth={1.6} />
+      ))}
+      <g fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.2}>
+        {lobes.map(([lx, ly, lr], i) => (
+          <circle key={i} cx={lx * w} cy={ly * w} r={lr * w} />
+        ))}
+      </g>
+      <g fill="none" stroke={G2} strokeOpacity={0.5} strokeWidth={1.1}>
+        <path d={`M ${-0.1 * w} ${-0.5 * w} L ${-0.02 * w} ${-0.62 * w} M ${0.16 * w} ${-0.42 * w} L ${0.24 * w} ${-0.54 * w} M ${-0.36 * w} ${-0.3 * w} L ${-0.3 * w} ${-0.42 * w}`} />
+      </g>
+      <circle cx={-0.02 * w} cy={-0.52 * w} r={0.12 * w} fill={LG} />
     </g>
   );
 }
@@ -144,41 +167,50 @@ function Fence({ x, w }: { x: number; w: number }) {
   );
 }
 
-// The Ekotehnika building, a tall block with the sign at the left and a lower block with an awning and a glass
-// entrance at the right. The logo is the real image file.
-const Building = memo(function Building({ x }: { x: number }) {
-  const win = (wx: number, wy: number, ww = 44, hh = 54) => (
-    <g key={`${wx}-${wy}`}>
-      <rect x={wx} y={wy} width={ww} height={hh} fill={G} opacity={0.62} />
-      <rect x={wx} y={wy} width={ww} height={hh} fill="none" stroke={WH} strokeWidth={4} />
-      <line x1={wx + ww / 2} y1={wy} x2={wx + ww / 2} y2={wy + hh} stroke={WH} strokeWidth={2.5} />
+// The Ekotehnika building, two low blocks in white and light grey with continuous window bands and edge lines. The sign
+// is the one dark element. The whole building stays under 140 high so the C1 title and lede above it sit on plain ground.
+// The logo is the real image file.
+const Glazing = ({ x, y, w, h, panes }: { x: number; y: number; w: number; h: number; panes: number }) => {
+  const pw = w / panes;
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} fill={HG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      {Array.from({ length: panes }, (_, i) => (
+        <g key={i}>
+          <rect x={x + i * pw + 3} y={y + 3} width={pw - 6} height={h - 6} fill={i % 2 ? SG : LG} stroke={G2} strokeOpacity={0.45} strokeWidth={1} />
+          <line x1={x + i * pw + 3} y1={y + h * 0.42} x2={x + (i + 1) * pw - 3} y2={y + h * 0.42} stroke={G2} strokeOpacity={0.4} strokeWidth={1} />
+        </g>
+      ))}
     </g>
   );
+};
+
+const Building = memo(function Building({ x }: { x: number }) {
   return (
     <g transform={`translate(${x} ${MY})`}>
-      {/* tall block, kept under y 360 on screen so the C1 title above it stays clear */}
-      <rect x={0} y={-228} width={340} height={228} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={-6} y={-242} width={352} height={14} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={14} y={-214} width={290} height={70} fill={WH} stroke={G2} strokeOpacity={0.5} strokeWidth={1.4} />
-      <image href="/brand/ekotehnika.svg" x={42.9} y={-199.3} width={212.4} height={40.5} preserveAspectRatio="xMidYMid meet" />
-      {[40, 130, 220].map((wx) => win(wx, -124, 44, 44))}
-      {[40, 130, 220].map((wx) => win(wx, -64, 44, 44))}
-      {/* lower block */}
-      <rect x={340} y={-190} width={620} height={190} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      <rect x={334} y={-204} width={632} height={14} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
-      {[380, 480, 580, 680, 780, 880].map((wx) => win(wx, -172, 44, 44))}
-      {[380, 480, 880].map((wx) => win(wx, -104, 44, 62))}
-      <path d="M 560 -118 L 880 -118 L 900 -92 L 540 -92 Z" fill={G} opacity={0.82} />
-      {[560, 620, 680, 740, 800, 860].map((ax) => (
-        <line key={ax} x1={ax} y1={-118} x2={ax - 8} y2={-92} stroke={WH} strokeWidth={2} opacity={0.5} />
+      {/* sign block */}
+      <rect x={0} y={-124} width={340} height={124} fill={WH} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      <rect x={-6} y={-134} width={352} height={10} fill={SG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      <rect x={14} y={-114} width={312} height={52} fill={WH} stroke={K} strokeWidth={3} />
+      <image href="/brand/ekotehnika.svg" x={51} y={-108} width={238} height={40} preserveAspectRatio="xMidYMid meet" />
+      <Glazing x={14} y={-50} w={312} h={38} panes={7} />
+      {/* lower block with the entrance */}
+      <rect x={340} y={-96} width={620} height={96} fill={LG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      <rect x={334} y={-106} width={632} height={10} fill={SG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      <Glazing x={360} y={-78} w={170} h={34} panes={4} />
+      <Glazing x={770} y={-78} w={170} h={34} panes={4} />
+      <path d="M 540 -62 L 760 -62 L 772 -48 L 528 -48 Z" fill={G} opacity={0.82} />
+      {[548, 600, 652, 704, 756].map((ax) => (
+        <line key={ax} x1={ax} y1={-62} x2={ax - 6} y2={-48} stroke={WH} strokeWidth={2} opacity={0.5} />
       ))}
-      <rect x={604} y={-92} width={170} height={92} fill={G} opacity={0.55} />
-      <rect x={604} y={-92} width={170} height={92} fill="none" stroke={WH} strokeWidth={4} />
-      <line x1={689} y1={-92} x2={689} y2={0} stroke={WH} strokeWidth={3} />
-      <rect x={410} y={-230} width={44} height={26} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.2} />
-      {/* shrubs along the front */}
-      {[-30, 30, 330, 360, 970, 1004].map((sx, i) => (
-        <circle key={sx} cx={sx} cy={-18 - (i % 2) * 6} r={26 - (i % 3) * 3} fill={SG} stroke={G2} strokeOpacity={0.5} strokeWidth={1.2} />
+      <rect x={574} y={-52} width={132} height={52} fill={G} opacity={0.55} />
+      <rect x={574} y={-52} width={132} height={52} fill="none" stroke={WH} strokeWidth={3} />
+      <line x1={640} y1={-52} x2={640} y2={0} stroke={WH} strokeWidth={2.5} />
+      <rect x={410} y={-120} width={44} height={14} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.2} />
+      {/* the plinth */}
+      <rect x={-6} y={-6} width={972} height={6} fill={SG} stroke={G2} strokeOpacity={0.5} strokeWidth={1} />
+      {[-10, 352, 760, 972].map((sx, i) => (
+        <Shrub key={sx} x={sx} w={i % 2 ? 50 : 60} />
       ))}
     </g>
   );
@@ -187,9 +219,9 @@ const Building = memo(function Building({ x }: { x: number }) {
 type Item = { x: number; w: number; node: () => ReactNode };
 const MID: Item[] = [
   { x: 1000, w: 200, node: () => <Van x={1000} flip /> },
-  { x: 1160, w: 60, node: () => <Cypress x={1190} h={175} /> },
-  { x: 1200, w: 60, node: () => <Cypress x={1228} h={140} /> },
-  { x: 1250, w: 60, node: () => <Cypress x={1262} h={205} /> },
+  { x: 1160, w: 60, node: () => <Cypress x={1190} h={120} /> },
+  { x: 1200, w: 60, node: () => <Cypress x={1228} h={100} /> },
+  { x: 1250, w: 60, node: () => <Cypress x={1262} h={130} /> },
   { x: 1290, w: 40, node: () => <Lamp x={1316} /> },
   { x: 1340, w: 1040, node: () => <Building x={1380} /> },
   { x: 1720, w: 40, node: () => <Lamp x={1730} /> },

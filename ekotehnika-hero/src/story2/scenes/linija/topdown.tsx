@@ -3,6 +3,7 @@
 // 124 wide. Drawn in the variant 2 flat vector style from tokens.
 import { memo, type ReactNode } from 'react';
 import { ForkliftTop } from '../../../variants/v2/art';
+import { C } from '../../../tokens';
 import { K, G, G2, LG, SG, HG, WH } from './frame';
 
 // ---- the path -------------------------------------------------------------------------------------------
@@ -74,29 +75,162 @@ function Tree({ x, y, r }: { x: number; y: number; r: number }) {
   );
 }
 
+// Trees only where no text column sits at the hold, so everything left of x -110 stays empty, see the yard note below.
 const TREES: [number, number, number][] = [
-  [-220, -900, 40], [-340, -700, 50], [-180, -480, 34], [-300, -260, 44], [-160, -60, 38],
-  [190, -980, 38], [300, -760, 48], [160, -560, 34], [250, -340, 42], [330, -150, 36],
-  [90, 300, 38], [120, 760, 36], [60, 1200, 40], [-60, 1380, 34],
-  [600, 200, 46], [720, 420, 38], [560, 640, 52], [680, 860, 40], [600, 1100, 44], [760, 1300, 50],
-  [900, 100, 44], [-520, -300, 46], [560, -400, 50], [880, 700, 42], [1020, 1000, 48], [1000, 400, 40],
+  [150, -1120, 38], [260, -900, 46], [180, -640, 34], [320, -420, 42], [120, -250, 34],
+  [-82, -980, 30], [-86, -520, 28], [-84, -180, 26],
+  [520, -1100, 44], [640, -820, 50], [460, -560, 36], [700, -300, 44], [560, -60, 38], [820, -980, 46], [900, -620, 40], [980, -240, 48],
+  [1040, 220, 44], [1060, 700, 50], [1040, 1180, 46], [-80, 1540, 30],
 ];
 
+// A forklift parked in its bay seen from above, nose up. The art of the moving truck without its load, same units, half size.
+const ParkedTop = memo(function ParkedTop() {
+  return (
+    <g transform="rotate(-90) scale(0.5) translate(15 0)">
+      <rect x={-206} y={-60} width={400} height={128} rx={30} fill={K} opacity={0.08} transform="translate(8 8)" />
+      {[-1, 1].map((sg) => (
+        <g key={sg}>
+          <rect x={-31} y={sg > 0 ? 40 : -64} width={62} height={24} rx={6} fill={K} />
+          <rect x={-184} y={sg > 0 ? 34 : -54} width={52} height={20} rx={6} fill={K} />
+        </g>
+      ))}
+      <path d="M 28 -54 L 28 54 L -170 56 Q -216 56 -216 10 L -216 -10 Q -216 -56 -170 -56 Z" fill={C.lindeRed} />
+      <path d="M -150 -46 L -150 46 L -176 46 Q -206 46 -206 10 L -206 -10 Q -206 -46 -176 -46 Z" fill={C.tonedRed} />
+      {[-30, -18, -6, 6, 18, 30].map((vy) => (
+        <line key={vy} x1={-196} y1={vy} x2={-168} y2={vy} stroke={C.primary700} strokeWidth={2} />
+      ))}
+      <rect x={-40} y={-40} width={56} height={80} rx={4} fill={K} />
+      <rect x={-134} y={-60} width={166} height={120} rx={8} fill={K} />
+      {[-112, -88, -64, -40, -16, 8].map((sx) => (
+        <rect key={sx} x={sx} y={-46} width={14} height={92} rx={2} fill={G} />
+      ))}
+      <rect x={32} y={-44} width={18} height={88} fill={G} />
+      <rect x={50} y={-48} width={11} height={96} fill={K} />
+      <rect x={60} y={-30} width={126} height={11} fill={G} />
+      <rect x={60} y={19} width={126} height={11} fill={G} />
+    </g>
+  );
+});
+
+const Bay = ({ x, y, truck }: { x: number; y: number; truck: boolean }) => (
+  <g>
+    <rect x={x} y={y} width={80} height={214} fill="none" stroke={G2} strokeOpacity={0.5} strokeWidth={2} />
+    {truck && (
+      <g transform={`translate(${x + 40} ${y + 107})`}>
+        <ParkedTop />
+      </g>
+    )}
+  </g>
+);
+
+// A row of bays, every n-th one empty so the rows read as a working yard.
+const BayRow = ({ x, y, n, gap }: { x: number; y: number; n: number; gap: number }) => (
+  <g>
+    {Array.from({ length: n }, (_, i) => (
+      <Bay key={i} x={x + i * 86} y={y} truck={(i + gap) % 4 !== 3} />
+    ))}
+  </g>
+);
+
+const PalletStack = ({ x, y, k = 0 }: { x: number; y: number; k?: number }) => (
+  <g>
+    <rect x={x + 3} y={y + 3} width={56} height={56} fill={K} opacity={0.1} />
+    <rect x={x} y={y} width={56} height={56} fill={k % 3 === 0 ? WH : LG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.4} />
+    <line x1={x} y1={y} x2={x + 56} y2={y + 56} stroke={G2} strokeOpacity={0.35} strokeWidth={1} />
+    <line x1={x + 56} y1={y} x2={x} y2={y + 56} stroke={G2} strokeOpacity={0.35} strokeWidth={1} />
+    <rect x={x + 8} y={y + 8} width={40} height={40} fill="none" stroke={G2} strokeOpacity={0.5} strokeWidth={1} />
+  </g>
+);
+
+// An outdoor rack seen from above, long frame with the cross ties and the pallets on its beams.
+const RackYard = ({ x, y, w }: { x: number; y: number; w: number }) => {
+  const ties: ReactNode[] = [];
+  for (let i = 0; i <= w; i += 60) ties.push(<line key={i} x1={x + i} y1={y} x2={x + i} y2={y + 34} stroke={K} strokeOpacity={0.55} strokeWidth={2} />);
+  const pal: ReactNode[] = [];
+  for (let i = 0; i + 60 <= w; i += 60) pal.push(<rect key={i} x={x + i + 6} y={y + 5} width={48} height={24} fill={WH} stroke={G2} strokeOpacity={0.6} strokeWidth={1} />);
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={34} fill={LG} stroke={G2} strokeOpacity={0.7} strokeWidth={1.6} />
+      {pal}
+      {ties}
+    </g>
+  );
+};
+
+// A hall roof seen from above, two pitches with a ridge, skylight strips along each pitch and round vents on the ridge.
+const Hall = memo(function Hall({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  const mid = x + w / 2;
+  // standing seam lines across both pitches and three long skylight strips on each, parallel to the ridge
+  const lights: ReactNode[] = [];
+  for (let j = y + 14; j < y + h - 6; j += 14) lights.push(<line key={`s${j}`} x1={x} y1={j} x2={x + w} y2={j} stroke={G2} strokeOpacity={0.22} strokeWidth={1} />);
+  for (const f of [0.14, 0.27, 0.40, 0.60, 0.73, 0.86]) {
+    lights.push(<rect key={f} x={x + w * f - 7} y={y + 34} width={14} height={h - 68} fill={LG} stroke={K} strokeOpacity={0.5} strokeWidth={1.2} />);
+    lights.push(<line key={`m${f}`} x1={x + w * f} y1={y + 34} x2={x + w * f} y2={y + h - 34} stroke={K} strokeOpacity={0.25} strokeWidth={1} />);
+  }
+  const vents: ReactNode[] = [];
+  for (let j = y + 60; j < y + h - 30; j += 120) vents.push(<circle key={j} cx={mid} cy={j} r={9} fill={LG} stroke={K} strokeOpacity={0.5} strokeWidth={1.4} />);
+  return (
+    <g>
+      <rect x={x + 6} y={y + 6} width={w} height={h} fill={K} opacity={0.1} />
+      <rect x={x} y={y} width={mid - x} height={h} fill={WH} />
+      <rect x={mid} y={y} width={x + w - mid} height={h} fill={G2} opacity={0.4} />
+      {lights}
+      <line x1={mid} y1={y} x2={mid} y2={y + h} stroke={K} strokeOpacity={0.55} strokeWidth={2} />
+      {vents}
+      <rect x={x} y={y} width={w} height={h} fill="none" stroke={K} strokeOpacity={0.5} strokeWidth={3} />
+    </g>
+  );
+});
+
+// A van at the gate seen from above, nose down.
+const VanTop = ({ x, y }: { x: number; y: number }) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={3} y={3} width={58} height={128} fill={K} opacity={0.1} />
+    <rect x={0} y={0} width={58} height={128} rx={6} fill={WH} stroke={G} strokeWidth={1.6} />
+    <rect x={6} y={78} width={46} height={26} fill={LG} stroke={G} strokeWidth={1.2} />
+    <rect x={4} y={14} width={50} height={56} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1} />
+    <line x1={29} y1={14} x2={29} y2={70} stroke={G2} strokeOpacity={0.5} strokeWidth={1} />
+    {[8, 50].map((vx) => (
+      <rect key={vx} x={vx - 4} y={86} width={8} height={4} fill={K} />
+    ))}
+  </g>
+);
+
+// The yard, left to right of the E stretch of the path. Nothing is drawn left of world x -110 because the R text column sits
+// there at the hold, so the text lands on empty ground and no wash or fade is needed.
 const Yard = memo(function Yard() {
+  const rackRows: ReactNode[] = [];
+  for (let i = 0; i < 4; i++) rackRows.push(<RackYard key={`l${i}`} x={-80} y={1160 + i * 58} w={360} />);
+  const stacks: ReactNode[] = [];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) stacks.push(<PalletStack key={`s${r}${c}`} x={520 + c * 76} y={1180 + r * 76} k={r + c} />);
+  const stacksL: ReactNode[] = [];
+  for (let c = 0; c < 4; c++) stacksL.push(<PalletStack key={`m${c}`} x={-70 + c * 86} y={1440} k={c} />);
   return (
     <g>
       <rect x={-2400} y={-2400} width={5200} height={6400} fill={HG} />
       {TREES.map(([x, y, r]) => (
         <Tree key={`${x}${y}`} x={x} y={y} r={r} />
       ))}
-      {/* the apron in front of the warehouse and parking bays beside it */}
+      {/* paved aprons either side of the E stretch, with a kerb */}
+      <rect x={-110} y={560} width={438} height={1000} fill={SG} opacity={0.8} stroke={G2} strokeOpacity={0.5} strokeWidth={2} />
+      <rect x={452} y={560} width={560} height={1000} fill={SG} opacity={0.8} stroke={G2} strokeOpacity={0.5} strokeWidth={2} />
+      {/* lane markings on the aprons */}
+      <line x1={-110} y1={1112} x2={328} y2={1112} stroke={WH} strokeWidth={3} strokeDasharray="26 22" />
+      <line x1={452} y1={1112} x2={1012} y2={1112} stroke={WH} strokeWidth={3} strokeDasharray="26 22" />
+      {/* the halls */}
+      <Hall x={-90} y={180} w={380} h={340} />
+      <Hall x={520} y={140} w={400} h={400} />
+      {/* parked forklifts in bays */}
+      <BayRow x={-80} y={620} n={4} gap={0} />
+      <BayRow x={-80} y={872} n={4} gap={2} />
+      <BayRow x={500} y={620} n={6} gap={1} />
+      <BayRow x={500} y={872} n={6} gap={3} />
+      {rackRows}
+      {stacks}
+      {stacksL}
+      <VanTop x={470} y={1420} />
+      {/* the apron in front of the warehouse and the gate */}
       <rect x={ROOF.x0 - 40} y={ROOF.y0 - 10} width={ROOF.x1 - ROOF.x0 + 80} height={60} fill={SG} opacity={0.8} />
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <rect key={i} x={700 + (i % 2) * 90} y={1560 + Math.floor(i / 2) * 120} width={80} height={110} fill="none" stroke={G2} strokeOpacity={0.4} strokeWidth={2} />
-      ))}
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <rect key={`b${i}`} x={-30 - (i % 2) * 90} y={1560 + Math.floor(i / 2) * 120} width={80} height={110} fill="none" stroke={G2} strokeOpacity={0.4} strokeWidth={2} />
-      ))}
       {/* the path, a hairline edge, the surface and a dashed centre line */}
       <path d={D_PATH} fill="none" stroke={K} strokeOpacity={0.16} strokeWidth={PW + 8} strokeLinejoin="round" />
       <path d={D_PATH} fill="none" stroke={G2} strokeOpacity={0.4} strokeWidth={PW} strokeLinejoin="round" />

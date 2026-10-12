@@ -3,7 +3,7 @@
 // the view flips to top down along the S path, zooms into the warehouse roof, opens to an isometric warehouse,
 // drops into the aisle and pushes into the black of a forklift. Then the blueprint, the fork blade, the grid of
 // rental forklifts, the dark floor and the robots. Reuses the variant 2 drawings in src/variants/v2/art.tsx.
-import { memo, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { SceneProps } from '../../clock';
 import { ForkliftSide, LoadSide } from '../../../variants/v2/art';
 import { W, H, K, LG, WH, clamp01, eout3, ein, io, lerp, range, seg, smooth, start, end } from './frame';
@@ -11,7 +11,11 @@ import { Outdoor, GY, TS, axleX, dist, liftAt } from './outdoor';
 import { PATH_LEN, TOP_S, TopTruckAt, TopWorld, pathAt } from './topdown';
 import { IsoWarehouse } from './iso';
 import { Aisle, FrontTruck, SIDE_S, SideRoom, type SideRefs } from './indoor';
-import { BP, Blade, Blueprint, Paths, RentalGrid, Robots, Streaks } from './dark';
+import { Blade } from './dark';
+import { Schematic, SpeedLines } from './schematic';
+import { RentalGrid } from './rental';
+import { Automation } from './automation';
+import { colsOf, useStage } from './stage';
 import './linija.css';
 
 type El = SVGGElement | SVGRectElement | SVGLineElement | null;
@@ -49,12 +53,12 @@ const OutTruck = memo(function OutTruck({ refs }: { refs: SideRefs }) {
 const L_F0 = 420;
 const L_R0 = 700;
 const L_END = PATH_LEN - 97;
-const SIDE_C = { x: 768, y: 468 };
+const SIDE_C = { x: 1038, y: 468 };
 const TOP_C = { x: 980, y: 430 };
 const ROOF_FOCUS = { x: 390, y: 1900 };
 const Z_SCALE = 3.4;
 
-type Cam = { cx: number; cy: number; sx: number; sy: number; s: number; L: number; rot: number; opacity: number; truckOp: number; d: number };
+type Cam = { cx: number; cy: number; sx: number; sy: number; s: number; L: number; rot: number; truckOn: boolean; d: number };
 
 function topCam(pos: number): Cam {
   const f = seg(pos, 'F');
@@ -76,7 +80,6 @@ function topCam(pos: number): Cam {
     sy = lerp(TOP_C.y, H / 2, z);
     s = Math.exp(Math.log(Z_SCALE) * z);
   }
-  const roofFade = 1 - range(pos, start('P'), start('P') + 130);
   return {
     cx,
     cy,
@@ -85,8 +88,7 @@ function topCam(pos: number): Cam {
     s,
     L,
     rot: tp.a * rotMix,
-    opacity: (pos < end('F') ? range(f, 0.12, 0.5) : 1) * roofFade,
-    truckOp: range(f, 0.38, 0.7),
+    truckOn: f >= 0.55,
     d: pos < end('F') ? dist(pos) : 3400 + (L - L_R0),
   };
 }
@@ -110,6 +112,9 @@ export default function Linija({ clock }: SceneProps) {
   const out = useRefs();
   const inn = useRefs();
   const cid = useId().replace(/[^a-zA-Z0-9]/g, '');
+  const rootRef = useRef<HTMLDivElement>(null);
+  const stage = useStage(rootRef);
+  const cols = useMemo(() => colsOf(stage), [stage]);
 
   useEffect(() => {
     let id = 0;
@@ -136,27 +141,26 @@ export default function Linija({ clock }: SceneProps) {
   });
 
   const F = seg(pos, 'F');
-  const showOut = pos < end('F') + 20;
+  const showOut = pos < start('F') + 0.62 * (end('F') - start('F'));
   const showMap = pos >= start('F') + 100 && pos < start('P') + 140;
   const cam = showMap ? topCam(pos) : null;
 
   // outdoor side view, flattened as the camera pitches to top down
   const sideSY = 1 - smooth(range(F, 0.05, 0.6));
-  const sideOp = 1 - range(F, 0.4, 0.7);
 
   // the isometric warehouse
   const isoIn = range(pos, start('P') + 0.5 * (end('P') - start('P')), start('P') + 0.93 * (end('P') - start('P')));
   const isoOut = io(range(ak, 0.0, 0.26));
-  const showIso = pos >= start('P') + 500 && pos < end('A') - 700;
-  const isoOp = smooth(isoIn) * (1 - isoOut);
+  const showIso = pos >= start('P') + 500 && pos < start('A') + 0.28 * (end('A') - start('A'));
   const isoScale = lerp(0.88, 1, eout3(isoIn)) * lerp(1, 1.5, isoOut);
 
   // side room, then the aisle
   const showRoom = pos >= start('A') && pos < start('A') + 0.65 * (end('A') - start('A'));
-  const roomOp = smooth(range(ak, 0.1, 0.28)) * (1 - smooth(range(ak, 0.42, 0.6)));
+  // every change of scene is a hard edged wipe across the frame, never a dissolve
+  const roomWipe = range(ak, 0.1, 0.28);
+  const aisleWipe = range(ak, 0.38, 0.58);
   const roomUp = -170 * io(range(ak, 0.4, 0.64));
   const showAisle = pos >= start('A') + 0.36 * (end('A') - start('A')) && pos < start('S') + 60;
-  const aisleOp = smooth(range(ak, 0.38, 0.58));
   const ai = aisleAt(clamp01(ak));
   const bk = seg(pos, 'B');
   const aiEnd = aisleAt(1);
@@ -164,15 +168,16 @@ export default function Linija({ clock }: SceneProps) {
   const f0 = { x: W / 2, y: aiEnd.foot - 82 * aiEnd.s };
   const ft = { x: lerp(f0.x, W / 2, io(bk)), y: lerp(f0.y, H / 2, io(bk)) };
   const zoomT = bk > 0 ? `translate(${ft.x.toFixed(2)} ${ft.y.toFixed(2)}) scale(${bz.toFixed(3)}) translate(${(-f0.x).toFixed(2)} ${(-f0.y).toFixed(2)})` : '';
-  const truckOp = smooth(range(ak, 0.42, 0.55));
+  const truckOn = ak >= 0.5;
+  const blackWipe = range(bk, 0.55, 0.75);
+  const roofWipe = range(pos, start('P'), start('P') + 130);
 
   // dark chapters
   const showDark = pos >= start('B') + 300 && pos < start('N') + 40;
   const lK = seg(pos, 'L');
   const shift = Math.max(0, pos - start('S')) * 2.2;
-  const wheelBp = shift / (31 * BP.s);
   const draw = io(range(pos, start('S') + 40, start('S') + 460));
-  const streakOp = range(pos, start('S') + 60, start('S') + 300) * (1 - range(lK, 0.25, 0.8));
+  const streakOp = pos >= start('S') + 60 && lK < 0.25 ? 1 : 0;
   const bpUp = -150 * io(lK);
   const panelTopL = lerp(H + 168, 0, io(lK));
   const tK = seg(pos, 'T');
@@ -186,12 +191,31 @@ export default function Linija({ clock }: SceneProps) {
   const robotsIn = range(pos, start('AT'), start('AT') + 240);
 
   return (
-    <div className="lj-root" aria-hidden="true">
+    <div className="lj-root" aria-hidden="true" ref={rootRef}>
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" width="100%" height="100%" focusable="false">
         <rect x={0} y={0} width={W} height={H} fill={WH} />
 
+        {showMap && cam && (
+          <g clipPath={`url(#${cid}-roof)`}>
+            <clipPath id={`${cid}-roof`}>
+              <rect x={cols.x0 + (cols.x1 - cols.x0) * roofWipe} y={cols.y0 - 2} width={cols.x1 - cols.x0} height={cols.y1 - cols.y0 + 4} />
+            </clipPath>
+            <TopWorld cx={cam.cx} cy={cam.cy} sx={cam.sx} sy={cam.sy} s={cam.s} />
+            {cam.truckOn && (
+              <TopTruckAt
+                x={(pathAt(cam.L).x - cam.cx) * cam.s + cam.sx}
+                y={(pathAt(cam.L).y - cam.cy) * cam.s + cam.sy}
+                rot={cam.rot}
+                scale={TOP_S * cam.s}
+                d={cam.d}
+              />
+            )}
+          </g>
+        )}
+
+        {/* the side view closes like a shutter toward the ground line and shows the top view behind it */}
         {showOut && (
-          <g opacity={sideOp} transform={`translate(0 ${GY}) scale(1 ${Math.max(0.0001, sideSY)}) translate(0 ${-GY})`}>
+          <g transform={`translate(0 ${GY}) scale(1 ${Math.max(0.0001, sideSY)}) translate(0 ${-GY})`}>
             <Outdoor pos={pos} />
             <g transform={`translate(${axleX(pos).toFixed(1)} ${GY}) scale(${TS})`}>
               <OutTruck refs={out as unknown as SideRefs} />
@@ -199,51 +223,49 @@ export default function Linija({ clock }: SceneProps) {
           </g>
         )}
 
-        {showMap && cam && (
-          <g>
-            <TopWorld cx={cam.cx} cy={cam.cy} sx={cam.sx} sy={cam.sy} s={cam.s} opacity={cam.opacity} />
-            <TopTruckAt
-              x={(pathAt(cam.L).x - cam.cx) * cam.s + cam.sx}
-              y={(pathAt(cam.L).y - cam.cy) * cam.s + cam.sy}
-              rot={cam.rot}
-              scale={TOP_S * cam.s}
-              d={cam.d}
-              opacity={cam.truckOp * cam.opacity}
-            />
-          </g>
-        )}
-
         {showIso && (
-          <g opacity={isoOp} transform={`translate(${W / 2} ${H / 2}) scale(${isoScale.toFixed(4)}) translate(${-W / 2} ${-H / 2})`}>
-            <IsoWarehouse t={pos} />
+          <g clipPath={`url(#${cid}-iso)`}>
+            <clipPath id={`${cid}-iso`}>
+              <rect x={lerp(cols.x1, cols.x0, io(isoIn)) - 1} y={cols.y0 - 2} width={cols.x1 - cols.x0 + 4} height={cols.y1 - cols.y0 + 4} />
+            </clipPath>
+            <g transform={`translate(${W / 2} ${H / 2}) scale(${isoScale.toFixed(4)}) translate(${-W / 2} ${-H / 2})`}>
+              <IsoWarehouse t={pos} />
+            </g>
           </g>
         )}
 
         {showRoom && (
-          <g opacity={roomOp} transform={`translate(0 ${roomUp.toFixed(1)})`}>
-            <SideRoom axle={sideAxle} refs={inn as unknown as SideRefs} />
+          <g clipPath={`url(#${cid}-room)`}>
+            <clipPath id={`${cid}-room`}>
+              <rect x={cols.x0 - 2} y={cols.y0 - 2} width={Math.max(0.01, (cols.x1 - cols.x0 + 4) * roomWipe)} height={cols.y1 - cols.y0 + 4} />
+            </clipPath>
+            <g transform={`translate(0 ${roomUp.toFixed(1)})`}>
+              <SideRoom axle={sideAxle} refs={inn as unknown as SideRefs} />
+            </g>
           </g>
         )}
 
         {showAisle && (
-          <g opacity={aisleOp}>
+          <g clipPath={`url(#${cid}-aisle)`}>
+            <clipPath id={`${cid}-aisle`}>
+              <rect x={cols.x0 - 2} y={cols.y0 - 2} width={cols.x1 - cols.x0 + 4} height={Math.max(0.01, (cols.y1 - cols.y0 + 4) * aisleWipe)} />
+            </clipPath>
             <g transform={zoomT}>
               <Aisle cam={pos >= start('B') ? aiEnd.cam : ai.cam} />
-              <g opacity={truckOp} transform={`translate(${W / 2} ${(pos >= start('B') ? aiEnd.foot : ai.foot).toFixed(1)}) scale(${(pos >= start('B') ? aiEnd.s : ai.s).toFixed(4)})`}>
-                <FrontTruck />
-              </g>
+              {truckOn && (
+                <g transform={`translate(${W / 2} ${(pos >= start('B') ? aiEnd.foot : ai.foot).toFixed(1)}) scale(${(pos >= start('B') ? aiEnd.s : ai.s).toFixed(4)})`}>
+                  <FrontTruck />
+                </g>
+              )}
             </g>
-            <rect x={0} y={0} width={W} height={H} fill={K} opacity={range(bk, 0.7, 0.96)} />
+            <rect x={W / 2 - (W / 2 + 2) * blackWipe} y={-2} width={(W + 4) * blackWipe} height={H + 4} fill={K} />
           </g>
         )}
 
         {showDark && (
           <g>
-            <rect x={0} y={0} width={W} height={H} fill={K} opacity={range(pos, start('B') + 300, start('B') + 380)} />
-            <g transform={`translate(0 ${bpUp.toFixed(1)})`}>
-              <Streaks shift={shift} opacity={streakOp} />
-              <Blueprint wheel={wheelBp} draw={draw} cid={cid} />
-            </g>
+            <rect x={0} y={0} width={W} height={H} fill={K} />
+            <Schematic cols={cols} travel={shift} draw={draw} cid={cid} dy={bpUp} under={<SpeedLines cols={cols} shift={shift} opacity={streakOp} cid={cid} />} />
           </g>
         )}
 
@@ -252,7 +274,7 @@ export default function Linija({ clock }: SceneProps) {
             {pos >= start('T') && <rect x={0} y={0} width={W} height={H} fill={LG} />}
             <g transform={`translate(0 ${panelTop.toFixed(1)})`}>
               <rect x={0} y={0} width={W} height={H + 400} fill={LG} />
-              <RentalGrid k={nK} />
+              <RentalGrid k={nK} cols={cols} id={`${cid}-rt`} />
             </g>
             {showBlade && <Blade y={panelTop - 168} />}
           </g>
@@ -265,8 +287,7 @@ export default function Linija({ clock }: SceneProps) {
               <rect x={0} y={floorTop} width={W} height={H} />
             </clipPath>
             <g clipPath={`url(#${cid}-floor)`}>
-              <Paths p={pathP} />
-              <Robots t={Math.max(0, pos - start('AT'))} appear={robotsIn} />
+              <Automation cols={cols} cid={cid} build={pathP} t={Math.max(0, pos - start('AT'))} appear={robotsIn} />
             </g>
           </g>
         )}

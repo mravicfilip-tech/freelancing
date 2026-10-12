@@ -122,6 +122,46 @@ headings and body, and Geist Mono 11px uppercase for every label and button, whi
 18. **T11 Closing CTA and footer.** `t11-closing-cta-and-footer.webp`. A dark green band with one big line and one
    button, then the footer in the same colour. Copy the structure in ink for our footer.
 
+## Scan of the other five sites, items to copy
+
+Screens in `refs/scan/<site>/`, shot at 1440 by 900 with cookie banners hidden.
+
+19. **D drone.riotters.com, the closest to an Awwwards light industrial look.** Lenis, five WebGL canvases, Switzer
+   type with protoMono labels. Said: "I like the UI here too, maybe it's a bit too advanced but still good example."
+   D01 `d01-giant-light-wordmark-hero.webp`, a 240px weight 300 wordmark with -13px tracking, pale on white, the
+   product reveals behind it. D02 `d02-scroll-fill-text-on-split-grid.webp`, the screen split by one hairline into
+   halves, a statement filling grey to ink on scroll. D03 `d03-spec-row-hairline-cells.webp`, three figures (5
+   returns, plus or minus 2 cm, 450 m) in hairline cells with tiny mono captions, a dial arc drawing above them.
+   D04 `d04-giant-light-section-title-inline-tabs.webp`, section titles at about 120px light with a numbered circle
+   marker and inline text tabs under them. D05 `d05-spec-table-mono-labels.webp`, a small spec table of hairline
+   cells, mono label over value. D06 `d06-product-cut-out-with-spec-callouts.webp`, the product cut out large,
+   callout text left and right.
+   Copy for us. Geist 300 at display sizes for section titles, scroll fill text, spec rows and tables for each Linde
+   truck (nosivost, visina dizanja, baterija), numbered section markers, the cut out with callouts for prodaja.
+20. **F floema.com.** Lenis, Zimula type. F01 `f01-hero-floating-product-images.webp`, small product images drift
+   in and settle around the hero line. F04 `f04-category-list-with-inline-thumbs-and-counts.webp`, a centred list of
+   categories at about 40px with an icon, a small product image inline and a count, Urban (51). F06
+   `f06-footer-brand-shape-and-line-drawings.webp`, the footer is a brand colour band with one huge brand shape and
+   line drawings of the products standing on a ground line. F03 cut outs on light ground, F05 quote band and a
+   three step row (we design, we build, we implement).
+   Copy for us. F04 for Proizvodi (Čeoni viljuškari with a small truck image and a count of models), F06 for the
+   footer with the drawn Linija trucks on a ground line, F05 three step row for servis or najam.
+21. **O orano.group, corporate, mostly news.** O01 `o01-process-cycle-row-with-icons.webp`, the full cycle of the
+   business as a row of steps with icons on a band, plus marks on a grid. O02 `o02-network-map-dans-le-monde.webp`,
+   a dark map drawn as a dot and line network with the sites listed beside it. O03 a statement over a landscape
+   photo with one word highlighted on a solid block.
+   Copy for us. O02 as a servisna mreža map of Srbija i Crna Gora (servisna vozila širom Srbije is a real claim),
+   O01 as the cycle prodaja, najam, servis, delovi, otkup.
+22. **A animejs.com.** A dark instrument dial in the hero, the shape inside morphs while the rings stay, and section
+   titles in different accent colours appear around it as you scroll. Earlier scan showed a 3D part that turns into
+   a line drawing on light and then an exploded view. Copy for us. One instrument at S (a gauge for the X50 with
+   real figures), and the shaded to line drawing to exploded sequence as the bridge from P into the servis
+   schematic (pairs with S7).
+23. **B brand.dropbox.com typography.** B01 type hero on a visible grid with blue hairlines and editor style
+   handles. B02 specimen blocks, B03 a collage of type in many sizes and weights on colour tiles. Copy for us. The
+   type system idea, one family (Geist) used across weights 300 to 600 with a strict scale, and the visible grid
+   with handles as UI flavour (note 5).
+
 ## Scenes Filip does not like or wants improved
 
 S1. **Version 5, C1, the colouring is bad.** Our shot of the current state `refs/scenes/s01-v5-c1-now.webp`.

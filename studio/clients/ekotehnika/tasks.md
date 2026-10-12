@@ -31,7 +31,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md
+- ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md. Preview 3 https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
   - [x] Filip gives his notes
   - [x] Scan the reference sites and read the Linde brand guideline
   - [x] Plan the pass from the notes
@@ -54,7 +54,7 @@ Task format
   - [x] Send preview 2, ey7enqdue at c8d80ea, with the variant boards
   - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
   - [x] Real scroll checks on the full round 4 build at 81aad36, P into S, the L exit and AT into Proizvodi all clean
-  - [ ] Preview 3 at 81aad36, Vercel's daily limit refused it at 23.40 UTC, the hourly check-in retries
+  - [x] Preview 3 at 81aad36, https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
   - [ ] Filip's ship line on preview 3, then go to the reel chat
   - [x] Merge the lift branch
   - [x] Merge the servis branch

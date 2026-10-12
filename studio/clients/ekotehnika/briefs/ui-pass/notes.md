@@ -55,7 +55,7 @@ and the plan is agreed. The story stays as it is.
    beats and a faint white on the dark servis beat, a plus mark at the crossings, every text block and tile edge
    sitting on a line. Lines never run through text.
    Open. Whether the grid is fixed to the screen for the whole story or drawn per section.
-   Second example, `refs/05b-grid-split-halves-tabs.webp`, layout only. Said: "Another example what i said above".
+   Second example, shown in chat only (its file was not saved), layout only. Said: "Another example what i said above".
    A hairline rule under the top line and one above the bottom edge frame the screen, and a vertical hairline splits
    it into two equal halves. The object sits centred in the left half, the text block centred in the right half,
    and small tab labels run along the top of the right half with a dot over the active one.

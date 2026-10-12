@@ -56,7 +56,7 @@ Task format
   - [ ] Preview at d74e332 or later, Vercel's daily limit of 100 deployments refused it at 22.55 UTC, the hourly check-in retries
   - [x] Merge the lift branch
   - [x] Merge the servis branch
-  - [ ] Merge the street and automation branches
+  - [x] Merge the street and automation branches, wire the footer still and the R cell
   - [ ] Build round 4
   - [ ] Review, check and deploy
 

@@ -237,6 +237,14 @@
   gap: 12px;
 }
 
+/* The wipe clips its box, and the Daxline C reaches past its advance, so the last glyph of "N20 do N25 C" lost its right end.
+   A tenth of an em of room, given back by the margin, keeps the layout where it was (round 4, the clipped C). */
+.sx-range,
+.sx-cap {
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+}
+
 .sx-range {
   font: 500 16px/24px var(--font);
 }

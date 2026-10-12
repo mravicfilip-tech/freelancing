@@ -375,8 +375,9 @@
 .ln {
   display: block;
   width: fit-content;
-  padding: 0.1em 0 0.16em;
-  margin: -0.1em 0 -0.16em;
+  /* the right padding is for the overhang of the last glyph, the wipe box clips at its edge. See the note at .fig. */
+  padding: 0.1em 0.08em 0.16em 0;
+  margin: -0.1em -0.08em -0.16em 0;
   white-space: nowrap;
 }
 
@@ -429,8 +430,10 @@
 .fig {
   display: block;
   width: fit-content;
-  padding: 0.08em 0 0.12em;
-  margin: -0.08em 0 -0.12em;
+  /* [data-wipe] clips at its box, and a box as wide as its text cuts the part of a last glyph that reaches past its advance, the
+     terminal of a C for one. The right padding gives that overhang room, the same negative margin keeps the layout where it was. */
+  padding: 0.08em 0.1em 0.12em 0;
+  margin: -0.08em -0.1em -0.12em 0;
   font-size: 40px;
   font-weight: 350;
   line-height: 1;
@@ -456,6 +459,34 @@
 }
 
 /* ---- Kompanija, C1 and R ---- */
+/* C1 title and lede sit in the band under the road. The road ends at 68 percent of the screen height, so the title is sized to what is
+   left of the band, 100vh less the 68 percent, less the 24px bottom inset, the 24px clearance from the curb, 11px for the first line's ink,
+   which stands above its box, then the gap and the lede.
+   Two lines of 0.95 line height make the 1.9. Never under the 48px of the type scale, and never over the size it had. --lede is the
+   lede in lines, two lines of 32.4px, or one from 1850px wide. */
+.s2-c1 .lb {
+  --gap: 24px;
+  --lede: 65px;
+  gap: var(--gap);
+}
+
+/* on a screen under 1000px high, 900 at 1440 wide, the band is 176px and the ink of the first line sits about 11px over its box, so the gap
+   to the lede is 8px to keep 24px of ground between the curb and the title ink */
+@media (max-height: 999px) {
+  .s2-c1 .lb {
+    --gap: 8px;
+  }
+}
+
+@container (min-width: 1850px) {
+  .s2-c1 .lb {
+    --lede: 33px;
+  }
+}
+
+.s2-c1 .lb .s2-title-s {
+  font-size: min(clamp(48px, 4.6cqw, 72px), max(48px, calc((32vh - 123px - var(--gap) - var(--lede)) / 1.9)));
+}
 .s2-c1 .at-bottom {
   /* three cells across columns 7 to 12 */
 }
@@ -491,6 +522,8 @@
 .rlist .line {
   display: block;
   width: fit-content;
+  padding-right: 0.1em;
+  margin-right: -0.1em;
   font-size: 18px;
   line-height: 24px;
   color: var(--fg);
@@ -510,7 +543,7 @@
   display: grid;
   grid-template-columns: 40px 1fr auto;
   align-items: center;
-  height: 64px;
+  height: 56px;
   /* 24px in from the line on both sides */
   padding: 0 24px 0 24px;
   border: 0;
@@ -757,6 +790,24 @@
   border-bottom: 1px solid var(--fg);
 }
 
+/* The Linija scene of version 2 draws its plan under the cells, so there each cell is a hard edged ground cell, white, from one
+   vertical to the next. The 2px on the left leave the grid line on that vertical showing. */
+.variant-2 .p-call {
+  background: var(--white);
+  clip-path: inset(0 0 -80px 2px);
+}
+
+/* the bottom cells run on down to the bottom rule, 75px under the stage, so the plan does not show again under them */
+.variant-2 :is(.p-call-b, .p-call-c)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 75px;
+  background: var(--white);
+}
+
 /* the capacity and the model cells sit on the bottom of the stage, one under the first column cell and one under the second, their
    top rule is where the leader line starts */
 .p-call-b,
@@ -887,6 +938,9 @@
   }
   .s2-title-s {
     font-size: 54px;
+  }
+  .s2-c1 .lb .s2-title-s {
+    font-size: min(54px, max(48px, calc((32vh - 123px - var(--gap) - var(--lede)) / 1.9)));
   }
   .s2-s .s2-lede {
     max-width: calc(var(--x2) - 72px - 24px);

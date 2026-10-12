@@ -29,3 +29,15 @@ In `studio/clients/ekotehnika/briefs/ui-pass/progress`, all at 1920 by 1080.
 - Version 5 before and after, `r4-panes-before-*` and `r4-panes-after-*` for c1 at k 0.5, r at 0.5, p at 0.3 and 0.7, at at 0.5.
 - Version 2 and 4 before and after for p at 0.7 and at at 0.5.
 - Version 5 after only for s at 0.5 and n at 0.6, to check the rule changes there.
+
+## Follow-ups after 6a4a097
+
+Only `shell.css` changed. Shots are `r4-panes-fu-before-*` and `r4-panes-fu-after-*` in this folder. The preview on 4174 and my before build are stopped.
+
+- **Tab rows.** Back to 56px, on the scale. `base-override.json` is untouched.
+- **C1 title fit.** The road ends at 68 percent of the screen height at both 1440 by 900 and 1920 by 1080. The C1 title is now `min(old size, max(48px, fit))`, where fit is the band left under the road less the 24px bottom inset, 24px clearance, 11px for the ink standing above the first line, the gap and the lede. At 1440 by 900 it is 48px, the lede is two lines and the gap is 8px, and the ink clears the curb by 29px (measured on the shot, 612 to 641). At 1920 by 1080 the title stays 72px and the look is as before. At 1280 by 800 the band is 144px and the block needs about 164px at the 48px floor, so the title ink touches the curb. That width is not covered by the floor, it needs the scene to leave more band.
+- **P callouts in version 2.** The cells never moved relative to the stage. The capacity cell went from the right pair of columns to the left pair in 6a4a097, and the Linija plan starts at x 1063, inside the left pair, so its lines ran under the text. The range cell was already over the plan. In version 2 only, every callout is now a hard edged white cell from vertical to vertical, the bottom two run down to the bottom rule, and 2px on the left leave the grid line showing. Versions 4 and 5 are unchanged. The plan is hidden under the cells, which is the price of clear text.
+- **The C at the end of "N20 do N25 C".** In Proizvodi it is clipped. `[data-wipe]` in `heroframe.css` sets `overflow: hidden`, `.sx-range` is a box exactly as wide as its text, and the Daxline C reaches past its advance, so its right terminal is cut. Setting the overflow to visible in the browser showed the full letter. In the P tabs it is not clipped. No ancestor of `.tab-range` clips at its edge, and the wipe sits on the 924px wide button. The C there is the glyph, narrow with straight terminals, at 14px with 0.08em tracking.
+- **Fix in my files.** `.fig`, `.ln` and `.rlist .line` carry a right padding of 0.1em or 0.08em with the same negative margin, so any last glyph with an overhang survives the wipe and the layout does not move. `.lab` already has trailing letter spacing.
+- **Fix for Proizvodi.** `shell.css` does not reach it. `sections.css` needs `.sx-range` (and `.sx-cap` if it carries data-wipe) to take `padding-right: 0.1em; margin-right: -0.1em`. The same line in `heroframe.css` under `[data-wipe]` would fix every wipe box at once, that file is not in my slice.
+- **baselint.** The em values for the overhang compensation are flagged, as the existing ones in `.fig` and `.ln` were. They are glyph metrics and not spacing.

@@ -76,3 +76,48 @@ and the plan is agreed. The story stays as it is.
    the animations etc", "Also check the UI layout too", for https://terminal-industries.com/,
    https://animejs.com/, https://floema.com/en and https://brand.dropbox.com/typography (Filip, "this one too"), then https://www.orano.group/ ("now this too"). Once Filip allows them, each gets a full scroll at 1440 with section shots and frame steps of the motion,
    and the findings land here as their own notes.
+
+## Scan of terminal-industries.com, items to copy
+
+Screens in `refs/scan/terminal/`, shot at 1440 by 900. Logistics, trucks and yards, so the closest match to
+Ekotehnika of the five sites. Built on Lenis smooth scroll and one WebGL canvas. Type is Suisse Intl for
+headings and body, and Geist Mono 11px uppercase for every label and button, which pairs with our Geist.
+
+8. **T01 Floating nav bar.** `t01-hero-cinematic-truck-and-floating-nav.webp`, `t01b-nav-pill-detail.webp`.
+   One rounded grey glass bar, about 1110px wide and 78px tall, inset from the top and the sides. Logo, five links
+   with small chevrons, an ask box, then three buttons with mono uppercase labels, the bright one first.
+   Copy. A single bar for our top row in place of the separate tile, links and pills, with our two phones as the
+   two outlined buttons and Zatražite ponudu as the one filled one. Mono uppercase for the button labels.
+   Clash. The co-branding sizes, a 160 by 96 Linde logo does not fit a 78px bar, so the bar grows or the logo sits
+   outside it. Filip to choose.
+9. **T02 Real render with a wireframe overlay.** `t02-real-render-with-wireframe-overlay.webp`.
+   A lit photo real truck where part of it is redrawn as a glowing wireframe, real and digital in one frame.
+   Copy. The Z to P or A beat, a lit Linde model with its wireframe drawn over half of it, which leads into the
+   servis blueprint. Our models and edges geometry already do this.
+10. **T03 Section edge with a notch.** `t03-scroll-text-and-notched-section-edge.webp`.
+   A dark section ends on a curved bottom edge with a wide notch, and the next light section slides up under it.
+   Copy. The cut between the pinned story and Proizvodi, and between Proizvodi and the footer. Matches the tab
+   shapes in refs 01 and 03.
+11. **T04 Logo wall on a visible grid.** `t04-logo-wall-on-visible-grid.webp`. Client logos in grey, one per grid
+   cell, with hairlines and plus marks at the crossings. This is note 5 in practice.
+   Copy. A Klijenti row, only if Ekotehnika gives permission to show client logos. Filip to confirm.
+12. **T05 Three path cards with mono step labels.** `t05-three-path-cards-mono-labels.webp`.
+   Three equal cards, a mono label (01 Fast start), a short title, three lines, an image, a full width button.
+   Copy. Najam, Prodaja, Servis as three entry points, each card with its own CTA.
+13. **T06 Calculator with a dark result card.** `t06-roi-calculator-dark-result-card.webp`.
+   Inputs on the left (gates, shifts, wage), a dark card on the right with a big live result and a notched tab.
+   Copy. A najam calculator (koliko viljuškara, koliko meseci) with a price range in the result card and a
+   ponuda form under it. Needs real price data from Ekotehnika, otherwise dummy. Filip to decide if it is in scope.
+14. **T07 Scroll fill text reveal.** `t07-scroll-fill-text-reveal.webp`, `t07b-scroll-fill-text-reveal-later.webp`.
+   A heading and its paragraph start in pale grey and fill to ink letter by letter as the user scrolls, with a mono
+   step number (02) beside them. Measured, body at about 34px, line height about 41px.
+   Copy. The hold beat text on C1, R and S, filled by the story clock rather than a fade. Pairs with note 1.
+15. **T08 Tabbed feature cards.** `t08-tabbed-feature-cards.webp`. Mono pill tabs (at the gate, in the yard) over a
+   row of large cards, the active one bright with text, the next one grey, arrows to page.
+   Copy. Proizvodi by truck type, tabs for čeoni, retrak, paletari i slagači, komisioneri.
+16. **T09 Quote over a full bleed photo.** `t09-quote-over-full-bleed-photo.webp`. One client quote, centred,
+   white on a dark photo, name and company under it. Copy only with a real quote from Ekotehnika.
+17. **T10 Contact form on a dark card.** `t10-contact-form-dark-card.webp`. A short checklist of what happens next
+   on the left, a dark form card on the right. Copy for the ponuda form.
+18. **T11 Closing CTA and footer.** `t11-closing-cta-and-footer.webp`. A dark green band with one big line and one
+   button, then the footer in the same colour. Copy the structure in ink for our footer.

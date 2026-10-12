@@ -279,7 +279,7 @@ S11. **Proizvodi section, all versions.** Ref `refs/scenes/s11-proizvodi-section
    execution is rejected along with the rest of the section.
    Candidates on file. Note 3 staggered offering cards with real Linde cut outs and a notched tab. T08 tabbed cards by
    truck type. Ref 02 text left with a collage of the delivery photos. T03 notched edge into the section.
-S12. **Footer, all versions.** Ref `refs/scenes/s12-footer.webp` when it saved, else the live footer at 1440.
+S12. **Footer, all versions.** Ref `refs/current/v5-footer.webp`, the live footer at 1440 (Filip's screenshot did not save).
    Said: "same for footer giga bad execution".
    What is there now. An ink band with the boxed logo tile and a one line lede on the left, then three plain columns
    (Navigacija, Adresa, Kontakt) of 15px text links, a hairline, and a small copyright line, all inside the 1344px

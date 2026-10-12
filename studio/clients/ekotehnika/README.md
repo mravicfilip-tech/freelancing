@@ -39,7 +39,7 @@ Use the image files, never redraw them.
 
 ## Rules that never bend
 
-- Dax is a licensed Linde font. Never download or embed it. From the hero brief.
+- Dax is a licensed Linde font. Filip confirmed on 2026-10-12 that the Linde FF Dax web licence is in place, so Daxline Pro is self hosted from `ekotehnika-hero/public/fonts/daxline/` (files from the Drive). Dax Pro files are not in the Drive yet.
 - No link in the hero goes to linde-mh.rs. Every CTA stays on ekotehnika.rs or is a `tel` link.
 - No text baked into images. The MT15 C promo price is live text.
 - No numbers, awards, client names or testimonials beyond the company's own claims in the brief.

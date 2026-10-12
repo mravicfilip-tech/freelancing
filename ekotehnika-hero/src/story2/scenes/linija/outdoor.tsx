@@ -160,7 +160,7 @@ const Building = memo(function Building({ x }: { x: number }) {
       <rect x={0} y={-292} width={340} height={292} fill={LG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
       <rect x={-6} y={-306} width={352} height={16} fill={SG} stroke={G2} strokeOpacity={0.6} strokeWidth={1.6} />
       <rect x={14} y={-262} width={290} height={80} fill={WH} stroke={G2} strokeOpacity={0.5} strokeWidth={1.4} />
-      <image href="/brand/ekotehnika.png" x={30} y={-255} width={236} height={64} preserveAspectRatio="xMidYMid meet" />
+      <image href="/brand/ekotehnika.svg" x={30} y={-255} width={236} height={64} preserveAspectRatio="xMidYMid meet" />
       {[40, 130, 220].map((wx) => win(wx, -156))}
       {[40, 130, 220].map((wx) => win(wx, -84, 44, 50))}
       {/* lower block */}

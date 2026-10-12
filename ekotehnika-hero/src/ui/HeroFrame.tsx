@@ -44,8 +44,8 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
 
       <header className="hf-top">
         <a className="hf-logo" href={`${SITE}/`}>
-          <img src="/brand/linde-mh.png" width={57} height={34} alt="Linde Material Handling" />
-          <img src="/brand/ekotehnika.png" width={81} height={22} alt="Ekotehnika, početna strana" />
+          <img src="/brand/linde-mh.svg" width={57} height={34} alt="Linde Material Handling" />
+          <img src="/brand/ekotehnika.svg" width={81} height={22} alt="Ekotehnika, početna strana" />
         </a>
         <nav className="hf-nav" aria-label="Glavna navigacija">
           <ul>

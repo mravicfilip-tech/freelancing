@@ -712,17 +712,17 @@ test('proof, a line inside a wrapped block of a user turn is refused, a line bes
   assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'unclosed block');
   put('x.jsonl', userMsg('drop P-4', { origin: 'task-notification' }), userMsg('drop P-4', { origin: 'peer' }));
   assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'origin that is not human');
-  put('x.jsonl', userMsg('drop P-4', { origin: { kind: 'task-notification' } }), userMsg('drop P-4', { origin: { kind: 'peer' } }));
-  assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'object origin that is not human');
   assert.equal(ledgerOf('P-4').closed, undefined);
   say('<system-reminder>noise</system-reminder> drop P-4');
   assert.equal(raw('choose', 'P-4', 'drop P-4').code, 0);
 });
 
-test('proof, an object origin of kind human counts like the bare string', () => {
+test('proof, origin written as an object counts only when its kind is human', () => {
   carded('P-4b');
-  put('x.jsonl', userMsg('drop P-4b', { origin: { kind: 'human' } }));
-  assert.equal(raw('choose', 'P-4b', 'drop P-4b').code, 0);
+  put('o.jsonl', userMsg('drop P-4b', { origin: { kind: 'peer' } }), userMsg('drop P-4b', { origin: { kind: 'task-notification' } }));
+  assert.equal(raw('choose', 'P-4b', 'drop P-4b').err, NOT_RECORDED, 'object origin that is not human');
+  put('o2.jsonl', userMsg('drop P-4b', { origin: { kind: 'human' } }));
+  assert.equal(raw('choose', 'P-4b', 'drop P-4b').code, 0, 'object origin of kind human');
 });
 
 test('proof, tool results, meta lines and sidechains are not Filip', () => {
@@ -848,6 +848,24 @@ test('an automatic run is marked auto, a run Filip asked for is marked asked, an
   assert.match(r.out, /R-AUTO {2}auto/);
   assert.match(r.out, /R-ASK {2}asked/);
   assert.match(r.out, /^auto runs [1-9]\d*, sev 1 found \d+, shipped \d+$/m);
+});
+
+test('report lists one row per task, the latest run, when a reopened task left an archived run', () => {
+  const dir = join(state, 'ledger');
+  const card = (openedAt, closed) => JSON.stringify({ task: 'DUP-1', repo, client: 'acme', trigger: 'asked', openedAt, rounds: [], findings: [{ id: 'F1', sev: 1, where: '/a', what: 'x', status: 'fixed' }], cards: [], closed });
+  writeFileSync(join(dir, 'DUP-1.closed-1791209145428.json'), card('2026-10-05T13:15:32.182Z', 'dropped'));
+  writeFileSync(join(dir, 'DUP-1.json'), card('2026-10-05T14:05:45.429Z', 'shipped'));
+  const r = raw('report');
+  assert.equal(r.code, 0, r.err);
+  const rows = r.out.split('\n').filter((l) => /^DUP-1 /.test(l));
+  assert.equal(rows.length, 1, `expected one DUP-1 row, got ${rows.length}`);
+  assert.match(rows[0], /shipped$/);
+  assert.doesNotMatch(r.out, /DUP-1 .*dropped/);
+  // The archived run adds nothing to the totals once a later run exists.
+  const before = Number((r.out.match(/^asked runs (\d+)/m) || [])[1]);
+  rmSync(join(dir, 'DUP-1.closed-1791209145428.json'));
+  const after = Number((raw('report').out.match(/^asked runs (\d+)/m) || [])[1]);
+  assert.equal(before, after);
 });
 
 rmSync(root, { recursive: true, force: true });

@@ -93,7 +93,7 @@ function add(id, a) {
   const dest = join(CLIENTS, id);
   mkdirSync(dest, { recursive: true });
   const made = [];
-  for (const f of ['README.md', 'taste.md', 'tasks.md']) {
+  for (const f of ['README.md', 'taste.md', 'tasks.md', 'base-override.json']) {
     if (existsSync(join(dest, f)) || !existsSync(join(tpl, f))) continue;
     writeFileSync(join(dest, f), readFileSync(join(tpl, f), 'utf8').replace(/<client>/g, id));
     made.push(f);

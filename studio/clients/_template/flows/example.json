@@ -1,0 +1,14 @@
+{
+  "name": "Create a campaign",
+  "job": "A marketer creates a draft campaign and sees it in the list",
+  "start": "/campaigns",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "New campaign" },
+    { "fill": { "label": "Campaign name", "value": "Spring service offer" } },
+    { "fill": { "label": "Start date", "value": "2026-11-01" } },
+    { "click": "Save draft" },
+    { "expect": "Spring service offer" },
+    { "expect": "Draft" }
+  ]
+}

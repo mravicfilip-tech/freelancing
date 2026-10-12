@@ -1,0 +1,5 @@
+{ "job": "Order with a failed expect and a console error", "start": "/walk-a.html", "steps": [
+  { "expect": "Free shipping" },
+  { "click": "Diagnostics" },
+  { "expect": "Diagnostics" }
+] }

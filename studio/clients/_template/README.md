@@ -2,7 +2,9 @@
 
 Copy of the brand rules template. `node studio/scripts/registry.mjs add <client>` makes this folder for a
 new client. Fill in each section, then delete the hint lines. The `/uireview` critic reads Brand,
-Rules that never bend, Accessibility, Widths and Reference, so keep those headings.
+Rules that never bend, Accessibility, Widths and Reference, so keep those headings. A value that
+differs from the shared base layout goes in `base-override.json` in this folder, which starts as
+`{}`.
 
 ## Brand
 

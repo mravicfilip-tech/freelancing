@@ -15,6 +15,13 @@
           { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/studio/hooks/guard.mjs\"", "timeout": 10 }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/studio/hooks/secrets.mjs\"", "timeout": 5 }
+        ]
+      }
     ]
   }
 }

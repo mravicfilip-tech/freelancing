@@ -1,0 +1,5 @@
+{ "job": "Order with a dead end", "start": "/walk-a.html", "steps": [
+  { "click": "Start order" },
+  { "click": "Add to cart" },
+  { "expect": "Order placed" }
+] }

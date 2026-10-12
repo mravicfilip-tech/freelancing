@@ -4,7 +4,7 @@
 // CLAUDE.md, .claude/ and studio/, so it needs none of this.
 //
 //   node studio/install.mjs              rules, guard hooks and helper agents, for the user
-//   node studio/install.mjs --skills     also the four skills, for a machine where account skills
+//   node studio/install.mjs --skills     also the five skills, for a machine where account skills
 //                                        do not reach Claude Code
 //   node studio/install.mjs --cloud      for a cloud environment setup script. Does nothing when
 //                                        the current folder is the freelancing repo
@@ -15,8 +15,8 @@
 // What it writes
 //   ~/.claude/studio/            the kit, the rules and the scripts. clients/ and .state/ are kept
 //   ~/.claude/CLAUDE.md          one marked block that loads the rules. Text outside it is kept
-//   ~/.claude/settings.json      the two guard hooks, through hooks/wire.mjs
-//   ~/.claude/agents/            quick, read, build and deep. A file that is not the kit's is kept
+//   ~/.claude/settings.json      the two guard hooks and the secrets warning, through hooks/wire.mjs
+//   ~/.claude/agents/            quick, read, build, deep and critic. A file that is not the kit's is kept
 //   ~/.claude/skills/            with --skills only, each folder marked with .studio-kit
 // Running it twice is safe. No dependencies.
 
@@ -37,12 +37,12 @@ const KIT = join(CLAUDE, 'studio');
 const START = '<!-- studio kit start, written by studio/install.mjs -->';
 const END = '<!-- studio kit end -->';
 const MARK = '.studio-kit';
-const KIT_FILES = ['DOCTRINE.md', 'README.md', 'package.json', 'install.mjs', 'foundation', 'scripts', 'hooks', 'clients/_template'];
-const AGENTS = ['quick', 'read', 'build', 'deep'];
+const KIT_FILES = ['DOCTRINE.md', 'README.md', 'package.json', 'package-lock.json', 'install.mjs', 'foundation', 'scripts', 'hooks', 'clients/_template'];
+const AGENTS = ['quick', 'read', 'build', 'deep', 'critic'];
 const say = (m) => console.log(m);
 
 // The rules in the kit repo say studio/ for the kit root. Installed for the user, that is ~/.claude/studio.
-const homePaths = (text) => text.replace(/`studio\//g, '`~/.claude/studio/');
+const homePaths = (text) => text.replace(/`studio\//g, '`~/.claude/studio/').replace(/`\.claude\/skills\//g, '`~/.claude/skills/');
 
 function readJson(file, fallback) {
   if (!existsSync(file)) return fallback;
@@ -94,8 +94,8 @@ function install() {
 
   // Guard hooks.
   const settings = join(CLAUDE, 'settings.json');
-  writeJson(settings, addHooks(readJson(settings, {}), KIT.replace(/\\/g, '/')));
-  say(`guard hooks in ${settings}`);
+  writeJson(settings, addHooks(readJson(settings, {}), KIT.replace(/\\/g, '/'), true));
+  say(`guard hooks and the secrets warning in ${settings}`);
 
   // Helper agents. A file with the same name that is not the kit's is left alone.
   const agents = join(CLAUDE, 'agents');
@@ -111,7 +111,7 @@ function install() {
   // Skills, laid out as the account skill zips are, so K is each skill's own folder.
   if (flag('--skills')) {
     const skills = join(CLAUDE, 'skills');
-    for (const name of ['uireview', 'harden', 'taste', 'mode']) {
+    for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
       const dest = join(skills, name);
       if (existsSync(dest) && !existsSync(join(dest, MARK))) { say(`kept your own ${dest}, the kit's ${name} skill was not installed`); continue; }
       rmSync(dest, { recursive: true, force: true });

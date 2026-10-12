@@ -47,8 +47,13 @@ Measured with the parent branch's fixed `loadbudget.mjs`, which times the first 
 
 ## Scroll pass
 
-`r4-auto-before-scroll-*.webp` and `r4-auto-after-scroll-*.webp`, wheel steps from the top through T and AT. Nothing of
-the aisle shows outside T and AT. The N20 cut out over AT in both is the item 14 shell defect, not this branch.
+- Wheel step shots, `r4-auto-before-scroll-*.webp` and `r4-auto-after-scroll-*.webp`, from the top through T and AT.
+- The parent's `scrollpass.mjs` on the after build. The full page run passed 30 minutes in software GL and was stopped,
+  so it ran again from page 9,500 to 13,200, N through T and AT into Proizvodi. Its log is `r4-auto-scrollpass.txt`.
+- **Result.** Every problem it prints is a shell defect from the base, the Prodaja cut out outside P (item 14) at every
+  step, and the top row tone at the dark exit near 9,500 to 9,700 (item 17). None comes from the aisle.
+- `r4-auto-scrollpass-after-y12199.webp` is the first Proizvodi step. The aisle stays inside the story stage as it
+  scrolls up, and the picker stands with the box on the cart and the near arm in view.
 
 ## Outside my files
 

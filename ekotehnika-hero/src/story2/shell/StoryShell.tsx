@@ -9,7 +9,6 @@ import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSPrope
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { LENGTH, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
-import { markers } from '../copy';
 import { Grid } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { Closing, Clients, Footer, Products, Statement } from './sections';
@@ -45,15 +44,19 @@ const DARK_TOP: [number, number][] = [
 ];
 
 // The counter on the right edge, the number of the last hold passed.
-const COUNTER: [number, string, string][] = [
-  [10900, '06', markers.at.name],
-  [9600, '05', markers.n.name],
-  [8000, '04', markers.s.name],
-  [5300, '03', markers.p.name],
-  [3500, '02', markers.r.name],
-  [1500, '01', markers.c1.name],
-  [0, '00', 'Početna'],
+const COUNTER: [number, string][] = [
+  [10900, '06'],
+  [9600, '05'],
+  [8000, '04'],
+  [5300, '03'],
+  [3500, '02'],
+  [1500, '01'],
+  [0, '00'],
 ];
+
+// The beats that carry a primary button of their own. While one is on screen the top row quote button is a secondary, so a
+// view never has two primaries.
+const OWN_PRIMARY = new Set(['H', 'P', 'S', 'N', 'AT']);
 
 const HOLDS = TIMELINE.filter((b) => b.hold);
 const PAD = 16;
@@ -189,6 +192,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const stage = stageRef.current;
     const hf = heroRef.current;
     const grid = gridRef.current;
+    const quoteTop = hf?.querySelector<HTMLElement>('.hf-quote-top');
     const lines = grid?.querySelector<HTMLElement>('.s2-lines');
     const plus = stage?.querySelector<HTMLElement>('.s2-plus');
     if (!stage || !hf || !grid || !lines || !plus) return;
@@ -350,13 +354,18 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         lastProg = prog;
         hf.style.setProperty('--prog', String(prog));
       }
-      const [, c, cName] = COUNTER.find(([s]) => pos >= s)!;
+      const [, c] = COUNTER.find(([s]) => pos >= s)!;
       if (c !== lastCounter) {
         lastCounter = c;
         const now = hf.querySelector('.hf-now');
         if (now) now.textContent = c;
-        const nm = hf.querySelector('.hf-name');
-        if (nm) nm.textContent = cName;
+      }
+      // exactly one primary per view
+      const ownPrimary = visible.some((g) => OWN_PRIMARY.has(g.id));
+      if (quoteTop && quoteTop.dataset.level !== (ownPrimary ? 's' : 'p')) {
+        quoteTop.dataset.level = ownPrimary ? 's' : 'p';
+        quoteTop.classList.toggle('btn-primary', !ownPrimary);
+        quoteTop.classList.toggle('btn-secondary', ownPrimary);
       }
 
       // dark span, the grid and the frame turn white and the logos leave, the Linde logo is banned on dark grey

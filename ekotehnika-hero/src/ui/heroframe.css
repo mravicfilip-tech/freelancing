@@ -38,24 +38,38 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 9;
   background: var(--bar, var(--black));
   transform: translateX(var(--bx, 101%));
   visibility: var(--lv, visible);
   pointer-events: none;
 }
 
-/* ---- buttons, five variants, picked with ?btn=1 to 5, default 1. Red is only ever the fill of a primary. ----
-   Every variant is 48px tall or more, has a visible focus ring and AA contrast. The hover look is also reachable with the
-   class is-hover, so the button board can show it. No arrows anywhere. btn-x is the small cell of variants 2 and 3. */
+/* ---- buttons, six structures and five hovers, picked with ?btn=<1 to 6><A to E>, for example ?btn=3C, default 1A ----
+   Corners are sharp, every button is 48px tall, nothing is an arrow. Red is only the fill of the one primary. A primary is
+   always filled, the structure changes how a secondary looks. On the dark servis ground the primary is the only bright
+   block, a secondary is a #1f1f1f fill or a 40 percent white line, never a light fill. The hover is driven by one number,
+   --hp, from 0 to 1, so the board can freeze it at 0.6. Structures 1 solid, 2 split with an icon cell, 3 notched corner,
+   4 outline, 5 text forward, 6 bracket. Hovers A wipe from the left, B rise from the bottom, C text roll, D border draws
+   on clockwise, E the end tick or icon cell extends to fill the button. */
+@property --hp {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 .btn {
+  --hp: 0;
+  --tick: 4px;
   --b-bg: var(--grey-pale);
   --b-fg: var(--black);
-  --b-hover: var(--grey-light);
-  --b-hover-fg: var(--black);
-  --c-bg: var(--black);
-  --c-fg: var(--white);
-  --c-hover: var(--grey-dark);
+  --b-hover: var(--black);
+  --b-hover-fg: var(--white);
+  --c-bg: var(--grey-light);
+  --c-fg: var(--black);
+  --tick-bg: var(--black);
+  --d-stroke: var(--black);
+  --line-c: var(--black);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -63,7 +77,7 @@
   min-height: 48px;
   padding: 0 22px;
   border: 0;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
   isolation: isolate;
   font: 500 16px/1 var(--font);
@@ -74,9 +88,18 @@
   pointer-events: auto;
   background: var(--b-bg);
   color: var(--b-fg);
-  transition: background-color 200ms, color 200ms;
+  transition: --hp 260ms var(--ease-wipe);
 }
 
+.btn:is(:hover, .is-hover) {
+  --hp: 1;
+}
+
+.btn.is-hover-60 {
+  --hp: 0.6;
+}
+
+/* the primary, always filled */
 .btn-primary {
   --b-bg: var(--lmh-red);
   --b-fg: var(--white);
@@ -84,19 +107,11 @@
   --b-hover-fg: var(--white);
   --c-bg: var(--black);
   --c-fg: var(--white);
-  --c-hover: var(--grey-dark);
+  --tick-bg: var(--black);
+  --d-stroke: var(--black);
 }
 
-/* on the dark beat the primary becomes white with a black label, red is never on dark */
-.hf[data-tone='white'] .btn,
-[data-ink='dark'] .btn,
-.btn-ground-dark .btn {
-  --c-bg: var(--grey-dark);
-  --c-fg: var(--white);
-  --c-hover: var(--white);
-  --c-fg-hover: var(--black);
-}
-
+/* the dark ground, the primary turns white, a secondary is a #1f1f1f fill or a 40 percent white line, never a light fill */
 .hf[data-tone='white'] .btn-primary,
 [data-ink='dark'] .btn-primary,
 .btn-ground-dark .btn-primary {
@@ -104,49 +119,270 @@
   --b-fg: var(--black);
   --b-hover: var(--grey-light);
   --b-hover-fg: var(--black);
+  --c-bg: var(--grey-dark);
+  --c-fg: var(--white);
+  --tick-bg: var(--grey-light);
+  --d-stroke: var(--black);
 }
 
+.hf[data-tone='white'] .btn-secondary,
+[data-ink='dark'] .btn-secondary,
+.btn-ground-dark .btn-secondary {
+  --b-bg: #1f1f1f;
+  --b-fg: var(--white);
+  --b-hover: #3a3a3a;
+  --b-hover-fg: var(--white);
+  --c-bg: #3a3a3a;
+  --c-fg: var(--white);
+  --tick-bg: rgb(255 255 255 / 0.4);
+  --d-stroke: var(--white);
+  --line-c: rgb(255 255 255 / 0.4);
+}
+
+/* the label, in a box that clips for the text roll */
 .btn-t {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  transition: color 200ms, background-color 200ms;
+}
+
+.btn-r {
+  position: relative;
+  z-index: 4;
+  display: inline-flex;
+  overflow: hidden;
+  padding: 2px 0;
+  color: var(--b-fg);
+}
+
+.btn-l {
+  display: inline-block;
+}
+
+.btn-l2 {
+  display: none;
 }
 
 .btn .num {
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-.btn-x {
+.btn-x,
+.btn-d,
+.btn-k {
   display: none;
 }
 
-/* hover, a darker fill wipes in from the left in 240ms */
 .btn::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
+  display: none;
   background: var(--b-hover);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 240ms var(--ease-wipe);
 }
 
-.btn:is(:hover, .is-hover)::before {
-  transform: scaleX(1);
+/* hovers. A wipe from the left, B rise from the bottom */
+[data-bh='A'] .btn::before {
+  display: block;
+  transform: scaleX(var(--hp));
   transform-origin: left;
 }
 
-.btn:is(:hover, .is-hover) .btn-t {
-  color: var(--b-hover-fg);
+[data-bh='B'] .btn::before {
+  display: block;
+  transform: scaleY(var(--hp));
+  transform-origin: bottom;
+}
+
+/* A, B and E flip the label to the hover label colour as the fill arrives */
+:is([data-bh='A'], [data-bh='B'], [data-bh='E']) .btn-r {
+  color: color-mix(in srgb, var(--e-fg, var(--b-hover-fg)) calc(var(--hp) * 100%), var(--b-fg));
+}
+
+/* C text roll, the label slides up and a copy slides in from below */
+[data-bh='C'] .btn-l {
+  transform: translateY(calc(var(--hp) * -140%));
+}
+
+[data-bh='C'] .btn-l2 {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  white-space: nowrap;
+  transform: translateY(calc((1 - var(--hp)) * 140%));
+}
+
+/* D the border draws on clockwise from the top left, four bars, a quarter of the move each */
+[data-bh='D'] .btn-d {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.btn-d i {
+  position: absolute;
+  display: block;
+  background: var(--d-stroke);
+}
+
+.btn-d i:nth-child(1) {
+  left: 0;
+  top: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(clamp(0, calc(var(--hp) * 4), 1));
+}
+
+.btn-d i:nth-child(2) {
+  right: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform-origin: top;
+  transform: scaleY(clamp(0, calc(var(--hp) * 4 - 1), 1));
+}
+
+.btn-d i:nth-child(3) {
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: right;
+  transform: scaleX(clamp(0, calc(var(--hp) * 4 - 2), 1));
+}
+
+.btn-d i:nth-child(4) {
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  transform-origin: bottom;
+  transform: scaleY(clamp(0, calc(var(--hp) * 4 - 3), 1));
+}
+
+/* E the end tick, or the icon cell of the split, grows from its end to fill the whole button */
+[data-bh='E'] .btn-x {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(var(--tick) + (100% - var(--tick)) * var(--hp));
+  background: var(--tick-bg);
+}
+
+[data-bh='E'] .btn {
+  --e-fg: var(--b-hover-fg);
+}
+
+/* structure 1, solid, is the base look. 2, split, a label cell and a square icon cell, a 1px gap between */
+[data-bs='2'] .btn {
+  --tick: 48px;
+  padding: 0 49px 0 0;
+  background: transparent;
+}
+
+[data-bs='2'] .btn-t {
+  align-self: stretch;
+  padding: 0 22px;
+  background: var(--b-bg);
+}
+
+[data-bs='2'] .btn::before {
+  inset: 0 49px 0 0;
+}
+
+[data-bs='2'] .btn-x {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  background: var(--c-bg);
+}
+
+[data-bs='2'][data-bh='E'] .btn {
+  --e-fg: var(--c-fg);
+}
+
+[data-bs='2'][data-bh='E'] .btn-x {
+  width: calc(48px + (100% - 48px) * var(--hp));
+  background: var(--c-bg);
+}
+
+[data-bs='2'] .btn-x::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 14px;
+  margin: auto 0;
+  width: 20px;
+  height: 20px;
+  background: var(--c-fg);
+  -webkit-mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
+  mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
+}
+
+[data-bs='2'] .btn-phone {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.2 2.5h2.6l1.3 3.8-1.8 1.2a9.5 9.5 0 0 0 4.2 4.2l1.2-1.8 3.8 1.3v2.6a1.9 1.9 0 0 1-2 1.9C8.600 15.400 4.600 11.400 3.300 4.500a1.900 1.900 0 0 1 1.900-2z'/%3E%3C/svg%3E");
+}
+
+/* 3, notched, one corner cut 10px */
+[data-bs='3'] .btn {
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+/* 4, outline, 1px line, no fill. 5, text forward, a 2px rule under the label. 6, bracket, four corner ticks.
+   These three change the secondary only, the primary stays a solid block. */
+[data-bs='4'] .btn-secondary {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-c);
+}
+
+[data-bs='5'] .btn-secondary {
+  padding: 0 14px;
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--line-c);
+  font-size: 18px;
+}
+
+[data-bs='6'] .btn-secondary {
+  background: transparent;
+}
+
+[data-bs='6'] .btn-secondary .btn-k {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--line-c), var(--line-c)) left top / 10px 1px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) left top / 1px 10px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) right top / 10px 1px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) right top / 1px 10px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) left bottom / 10px 1px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) left bottom / 1px 10px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) right bottom / 10px 1px no-repeat,
+    linear-gradient(var(--line-c), var(--line-c)) right bottom / 1px 10px no-repeat;
 }
 
 .btn:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: 2px;
+}
+
+[data-bs='3'] .btn:focus-visible {
+  outline-offset: -6px;
+  outline-color: var(--b-fg);
 }
 
 .hf[data-tone='white'] .btn:focus-visible,
@@ -155,143 +391,9 @@
   outline-color: var(--white);
 }
 
-/* 2, a pill with a dot cell at the right end that slides across to the left end on hover */
-[data-btn='2'] .btn {
-  border-radius: 999px;
-  padding: 0 56px 0 24px;
-  transition: background-color 240ms, color 240ms, padding 300ms var(--ease-wipe);
-}
-
-[data-btn='2'] .btn::before {
-  display: none;
-}
-
-[data-btn='2'] .btn:is(:hover, .is-hover) {
-  padding: 0 24px 0 56px;
-  background: var(--b-hover);
-}
-
-[data-btn='2'] .btn-x {
-  display: block;
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: calc(100% - 40px);
-  width: 28px;
-  height: 28px;
-  margin-top: -14px;
-  border-radius: 50%;
-  background: var(--b-fg);
-  transition: left 300ms var(--ease-wipe), background-color 240ms;
-}
-
-[data-btn='2'] .btn:is(:hover, .is-hover) .btn-x {
-  left: 12px;
-  background: var(--b-hover-fg);
-}
-
-/* 3, a split button, a label cell and a square cell with a phone or a plus, joined by a 1px gap */
-[data-btn='3'] .btn {
-  gap: 1px;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-[data-btn='3'] .btn::before {
-  display: none;
-}
-
-[data-btn='3'] .btn-t {
-  align-self: stretch;
-  padding: 0 22px;
-  background: var(--b-bg);
-}
-
-[data-btn='3'] .btn:is(:hover, .is-hover) .btn-t {
-  background: var(--b-hover);
-}
-
-[data-btn='3'] .btn-x {
-  display: block;
-  position: relative;
-  flex: none;
-  width: 48px;
-  align-self: stretch;
-  background: var(--c-bg);
-  transition: background-color 240ms;
-}
-
-[data-btn='3'] .btn:is(:hover, .is-hover) .btn-x {
-  background: var(--c-hover);
-}
-
-[data-btn='3'] .btn-x::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 20px;
-  height: 20px;
-  background: var(--c-fg);
-  -webkit-mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
-  mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
-}
-
-[data-btn='3'] .btn:is(:hover, .is-hover) .btn-x::before {
-  background: var(--c-fg-hover, var(--c-fg));
-}
-
-[data-btn='3'] .btn-phone {
-  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.2 2.5h2.6l1.3 3.8-1.8 1.2a9.5 9.5 0 0 0 4.2 4.2l1.2-1.8 3.8 1.3v2.6a1.9 1.9 0 0 1-2 1.9C8.600 15.400 4.600 11.400 3.300 4.500a1.900 1.900 0 0 1 1.900-2z'/%3E%3C/svg%3E");
-}
-
-/* 4, the notched corner of the section edges, one corner cut 10px, uppercase label, the focus ring sits inside the cut shape */
-[data-btn='4'] .btn {
-  border-radius: 0;
-  padding: 0 24px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-}
-
-[data-btn='4'] .btn:focus-visible {
-  outline: 2px solid var(--b-fg);
-  outline-offset: -6px;
-}
-
-/* 5, text forward, a large label with a 2px bar under it that grows into a full fill on hover, for the secondary,
-   the primary stays a solid block */
-[data-btn='5'] .btn-secondary {
-  --b-bg: transparent;
-  --b-fg: var(--black);
-  --b-hover: var(--black);
-  --b-hover-fg: var(--white);
-  padding: 0 14px;
-  border-radius: 0;
-  font-size: 18px;
-  background: transparent;
-}
-
-[data-btn='5'] .btn-secondary::before {
-  inset: auto 0 0 0;
-  height: 2px;
-  transform: none;
-  transition: height 240ms var(--ease-wipe);
-}
-
-[data-btn='5'] .btn-secondary:is(:hover, .is-hover)::before {
-  height: 100%;
-}
-
-[data-btn='5'] .hf[data-tone='white'] .btn-secondary,
-[data-btn='5'] [data-ink='dark'] .btn-secondary,
-[data-btn='5'] .btn-ground-dark .btn-secondary {
-  --b-fg: var(--white);
-  --b-hover: var(--white);
-  --b-hover-fg: var(--black);
+[data-bs='3'] .hf[data-tone='white'] .btn-primary:focus-visible,
+[data-bs='3'] [data-ink='dark'] .btn-primary:focus-visible {
+  outline-color: var(--black);
 }
 
 /* focus ring on the links of the top row */
@@ -556,19 +658,4 @@
     animation: none;
     transform: scaleX(1);
   }
-}
-
-/* the section name in the counter, variant 4 of the markers only, set on its side under the numbers */
-.hf-name {
-  display: none;
-}
-
-[data-mk='4'] .hf-name {
-  display: block;
-  margin-top: 12px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font: 500 14px/1 var(--font);
-  color: var(--hf-top);
-  white-space: nowrap;
 }

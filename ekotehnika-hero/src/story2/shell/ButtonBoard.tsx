@@ -1,111 +1,86 @@
-// The button board at /?buttons. The five button variants side by side, each with its number, on white and on the dark
-// servis ground, at rest and with the hover look forced on. The site itself takes a variant with ?btn=1 to 5.
+// The button board at /?buttons. Two axes, structure 1 to 6 down and hover A to E across, so one answer is a number and a
+// letter, for example 3C. Each cell shows the primary and a phone secondary with the hover frozen at 60 percent of the move
+// and at its end, on white and then on the dark servis ground. The site takes a pair with ?btn=3C, default 1A.
 import { useEffect } from 'react';
-import { hero, pillars } from '../../content';
-import { kompanija, markers } from '../copy';
-import { Btn, Marker, TitleLines } from './ui';
+import { hero } from '../../content';
+import { Btn } from './ui';
 import '../../ui/heroframe.css';
 import './shell.css';
 
-const VARIANTS = ['1', '2', '3', '4', '5'];
+const STRUCTURES = [
+  ['1', 'Solid'],
+  ['2', 'Split, icon cell'],
+  ['3', 'Notched corner'],
+  ['4', 'Outline'],
+  ['5', 'Text forward'],
+  ['6', 'Bracket'],
+];
 
-const NAMES: Record<string, string> = {
-  '1': 'Solid, 2px radius',
-  '2': 'Pill with a sliding dot',
-  '3': 'Split, label and cell',
-  '4': 'Notched corner',
-  '5': 'Text forward',
-};
+const HOVERS = [
+  ['A', 'Fill wipe from the left'],
+  ['B', 'Fill rises from the bottom'],
+  ['C', 'Text roll'],
+  ['D', 'Border draws on'],
+  ['E', 'Tick or icon cell fills'],
+];
 
-const MK_NAMES = ['Linija i naziv', 'Broj i naziv', 'Ćelija mreže', 'Naziv u brojaču'];
-
-// A marker above a real hold title, on white and on the dark servis ground. Variant 4 shows the counter with the name.
-function MarkerGround({ dark }: { dark?: boolean }) {
+function Cell({ bs, bh }: { bs: string; bh: string }) {
   return (
-    <div className={`bb-ground bb-mk${dark ? ' btn-ground-dark' : ''}`} data-ink={dark ? 'dark' : undefined}>
-      <div className="stack bb-mk-stack">
-        <Marker m={markers.r} />
-        <TitleLines lines={kompanija.r.title} order={1} className="s2-title-s" />
-      </div>
-      <div className="hf bb-hf" data-tone={dark ? 'white' : 'ink'}>
-        <div className="hf-side">
-          <span className="hf-nums">
-            <b className="hf-now">{markers.r.n}</b>
-            <span className="hf-total">06</span>
-            <span className="hf-name">{markers.r.name}</span>
-          </span>
+    <div className="bb-cell" data-bs={bs} data-bh={bh}>
+      {(['frozen', true] as const).map((h) => (
+        <div className="bb-state" key={String(h)}>
+          <span className="s2-label">{h === 'frozen' ? '60 posto' : 'Kraj'}</span>
+          <Btn href="#" kind="primary" hover={h}>
+            {hero.quote.label}
+          </Btn>
+          <Btn href="#" kind="secondary" icon="phone" hover={h}>
+            {hero.sales.label} <span className="num">{hero.sales.number}</span>
+          </Btn>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
 
-function Set({ hover }: { hover?: boolean }) {
+function Table({ dark }: { dark?: boolean }) {
   return (
-    <div className="bb-set">
-      <Btn href="#" kind="primary" hover={hover}>
-        {hero.quote.label}
-      </Btn>
-      <Btn href="#" kind="secondary" hover={hover}>
-        {pillars[2].more}
-      </Btn>
-      <Btn href="#" kind="secondary" icon="phone" hover={hover}>
-        {hero.sales.label} <span className="num">{hero.sales.number}</span>
-      </Btn>
-      <Btn href="#" kind="secondary" icon="phone" hover={hover}>
-        {hero.service.label} <span className="num">{hero.service.number}</span>
-      </Btn>
-    </div>
+    <section className={`bb-table${dark ? ' btn-ground-dark' : ''}`} data-ink={dark ? 'dark' : undefined} aria-label={dark ? 'Tamna podloga' : 'Bela podloga'}>
+      <h2 className="bb-title">{dark ? 'Tamna podloga' : 'Bela podloga'}</h2>
+      <div className="bb-grid">
+        <div className="bb-row">
+          <span />
+          {HOVERS.map(([h, n]) => (
+            <p className="bb-colhead" key={h}>
+              <b>{h}</b>
+              {n}
+            </p>
+          ))}
+        </div>
+        {STRUCTURES.map(([s, sn]) => (
+          <div className="bb-row" key={s}>
+            <p className="bb-rowhead">
+              <b>{s}</b>
+              {sn}
+            </p>
+            {HOVERS.map(([h]) => (
+              <Cell bs={s} bh={h} key={h} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
 export function ButtonBoard() {
   useEffect(() => {
-    document.documentElement.removeAttribute('data-btn');
-    document.documentElement.removeAttribute('data-mk');
+    document.documentElement.removeAttribute('data-bs');
+    document.documentElement.removeAttribute('data-bh');
   }, []);
   return (
     <main className="s2 bb">
-      <h1 className="bb-title">Varijante dugmadi</h1>
-      <div className="bb-cols">
-        {VARIANTS.map((v) => (
-          <section className="bb-col" data-btn={v} key={v} aria-label={`Varijanta ${v}`}>
-            <h2 className="bb-head">
-              <b>{v}</b>
-              {NAMES[v]}
-            </h2>
-            <div className="bb-ground">
-              <p className="s2-label">Bela podloga</p>
-              <Set />
-              <p className="s2-label">Hover</p>
-              <Set hover />
-            </div>
-            <div className="bb-ground btn-ground-dark" data-ink="dark">
-              <p className="s2-label">Tamna podloga</p>
-              <Set />
-              <p className="s2-label">Hover</p>
-              <Set hover />
-            </div>
-          </section>
-        ))}
-      </div>
-
-      <h2 className="bb-title bb-title-2">Oznake odeljaka</h2>
-      <div className="bb-cols bb-cols-4">
-        {MK_NAMES.map((name, i) => {
-          const v = String(i + 1);
-          return (
-            <section className="bb-col" data-mk={v} key={v} aria-label={`Oznaka ${v}`}>
-              <h3 className="bb-head">
-                <b>{v}</b>
-                {name}
-              </h3>
-              <MarkerGround />
-              <MarkerGround dark />
-            </section>
-          );
-        })}
-      </div>
+      <Table />
+      <Table dark />
     </main>
   );
 }

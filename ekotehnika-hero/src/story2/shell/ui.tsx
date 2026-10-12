@@ -13,10 +13,10 @@ export const cols = (a: number, b: number): CSSProperties => ({
   width: `calc(${b - a + 1} * var(--cw) + ${b - a} * 24px)`,
 });
 
+// The section marker, a cell of the grid, the name at the left and the beat count at the right, the cell's top hairline sits on
+// the grid rule. See .s2-marker in shell.css.
 export const Marker = ({ m, order = 0 }: { m: MarkerData; order?: number }) => (
   <p className="s2-marker" data-wipe={order} data-mask>
-    <i className="mk-rule" aria-hidden="true" />
-    <span className="mk-n">{m.n}</span>
     <span className="mk-name">{m.name}</span>
     <span className="mk-count">
       {m.n}/{frame.total}
@@ -58,14 +58,53 @@ export function Fill({ text, className = '' }: { text: string; className?: strin
   );
 }
 
-type BtnProps = { href: string; kind?: 'primary' | 'secondary'; icon?: 'plus' | 'phone'; hover?: boolean; order?: number; cta?: string; children: ReactNode; style?: CSSProperties };
+// The inside of every button. The label is in a box that clips for the text roll, with a copy for the roll, then the end tick
+// or icon cell, the four bars of the border draw and the corner ticks. Which of them show depends on the structure and the
+// hover, see the button rules in heroframe.css.
+export function BtnInner({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <span className="btn-t">
+        <span className="btn-r">
+          <span className="btn-l">{children}</span>
+          <span className="btn-l2" aria-hidden="true">
+            {children}
+          </span>
+        </span>
+      </span>
+      <i className="btn-x" aria-hidden="true" />
+      <span className="btn-d" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </span>
+      <i className="btn-k" aria-hidden="true" />
+    </>
+  );
+}
 
-// One button, five looks. The variant is picked on the page with ?btn=1 to 5, see variant.ts and the button rules in
-// heroframe.css. btn-x is the small cell some variants use, a plus or a phone, it is empty and hidden in the others.
+type BtnProps = {
+  href: string;
+  kind?: 'primary' | 'secondary';
+  icon?: 'plus' | 'phone';
+  hover?: boolean | 'frozen';
+  order?: number;
+  cta?: string;
+  children: ReactNode;
+  style?: CSSProperties;
+};
+
 export const Btn = ({ href, kind = 'primary', icon, hover, order = 0, cta, children, style }: BtnProps) => (
-  <a className={`btn btn-${kind}${icon === 'phone' ? ' btn-phone' : ''}${hover ? ' is-hover' : ''}`} href={href} data-wipe={order} data-mask data-cta={cta} style={style}>
-    <span className="btn-t">{children}</span>
-    <i className="btn-x" aria-hidden="true" />
+  <a
+    className={`btn btn-${kind}${icon === 'phone' ? ' btn-phone' : ''}${hover === true ? ' is-hover' : hover === 'frozen' ? ' is-hover-60' : ''}`}
+    href={href}
+    data-wipe={order}
+    data-mask
+    data-cta={cta}
+    style={style}
+  >
+    <BtnInner>{children}</BtnInner>
   </a>
 );
 

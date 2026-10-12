@@ -6,6 +6,7 @@ import { SITE } from '../../content';
 import { closing, footer, klijenti, proizvodi, statement } from '../copy';
 import { FooterLine } from './lineart';
 import { formatCount, outCubic, range } from './motion';
+import { BtnInner } from './ui';
 
 // One wide tab notch, 320px wide and 40px deep with 24px corners and 16px fillets, in the colour of the section below.
 export function Notch({ color }: { color: string }) {
@@ -140,8 +141,7 @@ export function Products() {
           <div className="co-text">
             <p className="s2-label">Isporuka</p>
             <a className="btn btn-primary" href={c.cta.href} data-cta="quote">
-              <span className="btn-t">{c.cta.label}</span>
-              <i className="btn-x" aria-hidden="true" />
+              <BtnInner>{c.cta.label}</BtnInner>
             </a>
           </div>
           {c.photos.map((ph, i) => (
@@ -235,8 +235,7 @@ export function Closing() {
           ))}
         </h2>
         <a className="btn btn-primary" href={closing.cta.href} data-cta="quote">
-          <span className="btn-t">{closing.cta.label}</span>
-          <i className="btn-x" aria-hidden="true" />
+          <BtnInner>{closing.cta.label}</BtnInner>
         </a>
       </div>
     </section>

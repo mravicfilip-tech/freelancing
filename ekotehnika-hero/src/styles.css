@@ -291,6 +291,10 @@ a {
   transition: opacity 200ms;
 }
 
+body:has(.bb) .dir-switch {
+  display: none;
+}
+
 html[data-after-story] .dir-switch {
   opacity: 0;
   pointer-events: none;

@@ -292,91 +292,32 @@
   color: var(--fg2);
 }
 
-/* the section marker, four variants, ?mk=1 to 4, default 1. No circles, no dots, nothing under 14px. The default look is
-   variant 1, a 32px hairline and the section name in uppercase. The other pieces stay hidden until a variant asks for them. */
+/* the section marker, a cell of the grid. The name sits in its own cell, top left of the column, its top hairline is the grid rule
+   from the plus mark along the label, the beat count is at the far right of the cell, like a drawing title block. In a hold stack the
+   cell sits on the top rule at y 136, and the title stays where it was. */
 .s2-marker {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
   font: 500 14px/20px var(--font);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg);
 }
 
-.mk-rule {
-  flex: none;
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: currentColor;
-}
-
-.mk-n,
 .mk-count {
-  display: none;
-}
-
-/* 2, index and name on one line, the index in Geist Light at 40 percent, the name in sentence case, 12px apart */
-[data-mk='2'] .s2-marker {
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-[data-mk='2'] .mk-rule {
-  display: none;
-}
-
-[data-mk='2'] .mk-n {
-  display: inline;
-  font-weight: 350;
-  letter-spacing: 0;
-  opacity: 0.4;
-  font-variant-numeric: lining-nums tabular-nums;
-}
-
-/* 3, a grid label, the name in a cell of its own, the cell's top hairline is the grid rule from the plus mark along the label,
-   the beat count at the far right of the cell */
-[data-mk='3'] .s2-marker {
-  width: 100%;
-  justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-
-[data-mk='3'] .mk-rule {
-  display: none;
-}
-
-[data-mk='3'] .mk-count {
-  display: inline;
   font-weight: 350;
   letter-spacing: 0;
   font-variant-numeric: lining-nums tabular-nums;
   color: var(--fg2);
 }
 
-/* in a hold stack the cell sits on the top rule at y 136, and the title stays where it was */
-[data-mk='3'] .stack > .s2-marker {
+.stack > .s2-marker {
   margin-top: -32px;
   margin-bottom: 27px;
-}
-
-/* 4, no marker over the title, the name moves into the right edge counter. The empty band keeps the title in place. */
-[data-mk='4'] .s2-marker {
-  min-height: 28px;
-}
-
-[data-mk='4'] .s2-marker > * {
-  display: none;
-}
-
-[data-mk='4'] .s2-marker::after {
-  display: none;
-}
-
-[data-mk='4'] .hf-bottom .s2-marker {
-  display: none;
 }
 
 .s2-title {
@@ -1352,64 +1293,74 @@
   background: var(--white);
 }
 
-.bb-title {
-  margin-bottom: 32px;
-  font-size: 40px;
-  font-weight: 350;
-  letter-spacing: -0.02em;
-}
-
-.bb-cols {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.bb-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  font: 500 14px/20px var(--font);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bb-head b {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--black);
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-
-.bb-ground {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 24px;
-  margin-bottom: 16px;
+.bb-table {
+  margin-bottom: 48px;
+  padding: 32px;
   background: var(--white);
   border: 1px solid var(--grey-light);
   color: var(--black);
 }
 
-.bb-ground.btn-ground-dark {
+.bb-table.btn-ground-dark {
   background: var(--dark-ground);
   border-color: var(--dark-ground);
   color: var(--white);
   --fg2: rgb(255 255 255 / 0.7);
 }
 
-.bb-set {
+.bb-title {
+  margin-bottom: 24px;
+  font-size: 32px;
+  font-weight: 350;
+  letter-spacing: -0.02em;
+}
+
+.bb-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bb-row {
+  display: grid;
+  grid-template-columns: 160px repeat(5, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.bb-colhead,
+.bb-rowhead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bb-colhead b,
+.bb-rowhead b {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid currentColor;
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.bb-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+}
+
+.bb-state {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
 }
 
 .plist a {
@@ -1432,38 +1383,4 @@
 .plist a:hover::after,
 .plist a:focus-visible::after {
   transform: scaleX(1);
-}
-
-.bb-title-2 {
-  margin: 48px 0 32px;
-}
-
-.bb-cols-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-/* the marker board, a real hold title under each marker. The right strip is the counter, only variant 4 fills it. */
-.bb-mk {
-  position: relative;
-  min-height: 300px;
-  padding: 56px 72px 24px 24px;
-}
-
-.bb-mk .bb-hf {
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: 48px;
-}
-
-.bb-mk .hf-side {
-  top: 24px;
-  translate: none;
-}
-
-[data-mk]:not([data-mk='4']) .bb-hf {
-  display: none;
-}
-
-.bb-mk-stack {
-  align-self: stretch;
 }

@@ -5,7 +5,6 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { SITE } from '../../content';
 import { closing, footer, proizvodi } from '../copy';
-import { FooterLine } from './lineart';
 import { Btn } from './ui';
 import './sections.css';
 
@@ -16,7 +15,7 @@ const X = (n: number) => `var(--x${n})`;
 const Plus = ({ style }: { style: CSSProperties }) => <i className="sx-p" style={style} aria-hidden="true" />;
 
 // The rule across the top of a footer row, the verticals it uses and a plus mark where each meets the rule. The bottom of the
-// last row passes ground, the ink rule the drawn trucks stand on, with its own marks.
+// last row passes ground, the ink rule the trucks stand on, with its own marks.
 function RowLines({ xs, ground }: { xs: number[]; ground?: boolean }) {
   return (
     <>
@@ -240,8 +239,45 @@ export function Closing() {
   );
 }
 
+// The four Linde trucks standing on the bottom rule, one in each grid cell, as 2x stills of the real models. Each rises 24px
+// into place when the row scrolls in, one cell after the one before, by transform only. With reduced motion, or without the
+// observer, they just stand there.
+function FooterTrucks() {
+  const row = useRef<HTMLDivElement>(null);
+  const [armed, setArmed] = useState(false);
+  const [seen, setSeen] = useState(false);
+
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    const el = row.current;
+    if (!el) return;
+    setArmed(true);
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className={`sx-trucks${armed ? ' is-armed' : ''}${seen ? ' is-in' : ''}`} ref={row}>
+      {footer.trucks.map((t, i) => (
+        <div className="sx-truck" style={{ '--i': i } as CSSProperties} key={t.src}>
+          <img src={t.src} width={footer.trucksSize.w} height={footer.trucksSize.h} alt={t.alt} loading="lazy" decoding="async" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // The footer on pale grey, so the red Linde logo block sits on a legal ground (guideline p.12). Row one the two numbers, row two
-// the logos, the address and the nav, row three the drawn trucks on the bottom rule, the copyright under the rule.
+// the logos, the address and the nav, row three the truck stills on the bottom rule, the copyright under the rule.
 export function Footer() {
   return (
     <footer className="sx sx-footer" id="kontakt" data-after-story>
@@ -289,9 +325,7 @@ export function Footer() {
 
       <div className="sx-row sx-r3">
         <RowLines xs={[1, 2, 3, 4, 5]} ground />
-        <div className="sx-trucks">
-          <FooterLine />
-        </div>
+        <FooterTrucks />
       </div>
 
       <div className="sx-row sx-base">

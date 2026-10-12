@@ -551,21 +551,42 @@
   background: none;
 }
 
-/* row 3, the drawn trucks across the grid, 24px in from the outer verticals, standing on the bottom rule, an ink line, with a plus mark on each vertical */
+/* row 3, the four truck stills, one in each grid cell, standing on the bottom rule. The cells are the four the verticals cut, so
+   the first three are 3 steps wide and the last one is 24px narrower, and the stills all share one width so the scale between
+   the trucks stays true. Each cell keeps its truck 24px in from its lines and clips what sinks below the rule. */
 .sx-r3 {
-  padding-top: 72px;
+  padding-top: 24px;
 }
 
 .sx-trucks {
   grid-column: 1 / 13;
-  padding: 0 24px;
-  color: var(--black);
+  display: grid;
+  grid-template-columns: repeat(3, calc(3 * var(--gx))) 1fr;
 }
 
-.sx-line {
+.sx-truck {
+  padding: 0 24px;
+  overflow: clip;
+}
+
+/* the widest truck takes 88 percent of its still, so the still is 3 columns wide at that truck and 3 / 0.88 columns as a file. The
+   truck stays 24px in from the lines, only its soft edge and clear margin reach the padding. The shadow margin (22 of 1200 px)
+   is tucked under the rule. */
+.sx-truck img {
   display: block;
-  width: 100%;
+  width: calc(3 * var(--cw) / 0.88);
   height: auto;
+  margin: 0 0 calc(var(--cw) * -0.0625) calc((100% - 3 * var(--cw) / 0.88) / 2);
+}
+
+/* the reveal, each truck rises 24px into place one cell after the one before, transform only, no fade */
+.sx-trucks.is-armed .sx-truck img {
+  transform: translateY(24px);
+}
+
+.sx-trucks.is-armed.is-in .sx-truck img {
+  transform: none;
+  transition: transform 720ms var(--out) calc(var(--i) * 120ms);
 }
 
 .sx-vl-ground {
@@ -593,6 +614,11 @@
   .sx-cells.is-armed .sx-in {
     opacity: 1;
     transform: none;
+  }
+
+  .sx-trucks.is-armed .sx-truck img {
+    transform: none;
+    transition: none;
   }
 
   .sx-cell,

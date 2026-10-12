@@ -217,6 +217,15 @@ export const footer = {
   ],
   emails: ['info@ekotehnika.rs', 'servis@ekotehnika.rs'],
   labels: { address: 'Adresa', nav: 'Navigacija' },
+  // The truck row on the bottom rule, four stills of the real models from scripts/render-footer-trucks.mjs, one per grid cell.
+  // Every still is 600 by 507 css px (1200 by 1014 files) and shares one scale, so the sizes between the trucks are true.
+  trucks: [
+    { src: '/footer/mt15c.webp', alt: 'Linde MT15 električni paletar, u perspektivi' },
+    { src: '/footer/h30d.webp', alt: 'Linde H30 čeoni dizel viljuškar, u perspektivi' },
+    { src: '/footer/r16.webp', alt: 'Linde R16 retrak viljuškar sa visokim stubom, u perspektivi' },
+    { src: '/footer/n20.webp', alt: 'Linde N20 komisioner, u perspektivi' },
+  ],
+  trucksSize: { w: 600, h: 507 },
   copyright: '© 2026 Ekotehnika viljuškari d.o.o.',
   legal: 'Sva prava zadržana.', // dummy
   lede: 'Linde viljuškari. Prodaja, najam i servis na jednom mestu.', // hero headline

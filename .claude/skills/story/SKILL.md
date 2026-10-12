@@ -5,8 +5,8 @@ description: Settles the story of a scroll or motion site before anything is bui
 
 # Story
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise.
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
 
 On a scroll site the story is the hard part, not the build. One scroll site in October 2026 built 19
 variants over about 11 hours before the story was settled. Once Filip drove the story with a voice

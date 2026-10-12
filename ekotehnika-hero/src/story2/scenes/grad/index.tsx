@@ -8,7 +8,7 @@ import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import type { SceneProps, StoryClock } from '../../clock';
 import { C } from '../../../tokens';
-import { blackOut, camAt, gridFit, lerp, regionAt, seg, smooth, type Region } from './choreo';
+import { camAt, gridFit, lerp, regionAt, seg, smooth, strip, textCell, topBand, BAND, type Region } from './choreo';
 import { heroX, Hero } from './hero';
 import { Site } from './site';
 import { Warehouse } from './warehouse';
@@ -19,19 +19,45 @@ import { BotsStage } from './bots';
 const rad = THREE.MathUtils.degToRad;
 const GROUND: Record<Region, string> = { site: C.hoverLightGrey, bp: C.ink, grid: C.lightGrey, bots: C.ink };
 
-function Rig({ clock }: { clock: StoryClock }) {
-  const { camera, size, scene } = useThree();
+type Groups = { [R in Region]?: THREE.Group | null };
+
+// The director owns the camera, the key light and the drawing. Almost always the world is drawn once, from the pose of the region
+// the story is in. In T it is drawn twice, the rental depot above a hard edge and the automation hall below it, and the two views
+// ride a strip that scrolls up one screen, so the hall pushes the depot off the top as one move. Each view is cut by the scissor,
+// nothing blends.
+function Director({ clock, groups }: { clock: StoryClock; groups: React.MutableRefObject<Groups> }) {
+  const { camera, size, scene, gl } = useThree();
   const light = useRef<THREE.DirectionalLight>(null);
   const bg = useMemo(() => new THREE.Color(C.hoverLightGrey), []);
   scene.background = bg;
   const tgt = useMemo(() => new THREE.Vector3(), []);
 
-  useFrame(() => {
+  // the depot is fitted under the spec row of N, wherever the shell puts its bottom rule
+  // read from the page at most every 500ms and on resize, never every frame, since it forces a layout
+  const spec = useRef({ v: 524, at: -1e9, w: 0, h: 0 });
+  const specBottom = () => {
+    const c = spec.current;
+    const now = performance.now();
+    if (now - c.at > 500 || c.w !== size.width || c.h !== size.height) {
+      const e = document.querySelector('.s2-n .n-row');
+      const b = e ? e.getBoundingClientRect().bottom : 0;
+      c.v = b > 200 ? b + 24 : 524;
+      c.at = now;
+      c.w = size.width;
+      c.h = size.height;
+    }
+    return c.v;
+  };
+
+  // one pass, the pose of a region with its content slid down by dy screens, drawn into the scissor rows y0 and h from the bottom
+  const pass = (pos: number, region: Region, dy: number, y0: number, h: number | null) => {
     const cam = camera as THREE.PerspectiveCamera;
-    const pos = clock.pos.current;
-    const region = regionAt(pos);
+    (Object.keys(groups.current) as Region[]).forEach((r) => {
+      const g = groups.current[r];
+      if (g) g.visible = r === region;
+    });
     const p = camAt(pos, region);
-    if (region === 'grid') Object.assign(p, gridFit(size.width, size.height));
+    if (region === 'grid') Object.assign(p, gridFit(size.width, size.height, specBottom()));
     const fx = region === 'site' ? heroX(pos) : 0;
     tgt.set(p.t[0] + fx, p.t[1], p.t[2]);
     const yaw = rad(p.yaw);
@@ -42,7 +68,7 @@ function Rig({ clock }: { clock: StoryClock }) {
     cam.fov = p.fov;
     cam.near = THREE.MathUtils.clamp(p.d * 0.04, 0.04, 3);
     cam.far = 2600;
-    cam.setViewOffset(size.width, size.height, -size.width * (p.ox - 0.5), -size.height * (p.oy - 0.5), size.width, size.height);
+    cam.setViewOffset(size.width, size.height, -size.width * (p.ox - 0.5), -size.height * (p.oy - 0.5 + dy), size.width, size.height);
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld();
 
@@ -66,7 +92,26 @@ function Rig({ clock }: { clock: StoryClock }) {
       sc.far = 200 + half * 2;
       sc.updateProjectionMatrix();
     }
-  });
+    if (h === null) gl.setScissorTest(false);
+    else {
+      gl.setScissorTest(true);
+      gl.setScissor(0, y0, size.width, h);
+    }
+    gl.render(scene, camera);
+  };
+
+  // priority 1 takes over the drawing from the default loop
+  useFrame(() => {
+    const pos = clock.pos.current;
+    const s = strip(pos);
+    if (s > 0 && s < 1) {
+      const H = size.height;
+      const edge = Math.round(H * s); // rows from the bottom that belong to the hall
+      pass(pos, 'grid', -s, edge, H - edge);
+      pass(pos, 'bots', 1 - s, 0, edge);
+      gl.setScissorTest(false);
+    } else pass(pos, regionAt(pos), 0, 0, null);
+  }, 1);
 
   return (
     <directionalLight
@@ -83,18 +128,24 @@ function Rig({ clock }: { clock: StoryClock }) {
   );
 }
 
-// Shows only the stage the camera is in, so the others cost nothing
-function Stage({ clock, region, children }: { clock: StoryClock; region: Region; children: React.ReactNode }) {
-  const g = useRef<THREE.Group>(null);
-  useFrame(() => {
-    if (g.current) g.current.visible = regionAt(clock.pos.current) === region;
-  });
-  return <group ref={g}>{children}</group>;
+// A stage of the world. The director shows one of them per pass, so the others cost nothing
+function Stage({ groups, region, children }: { groups: React.MutableRefObject<Groups>; region: Region; children: React.ReactNode }) {
+  return (
+    <group
+      ref={(g) => {
+        groups.current[region] = g;
+      }}
+    >
+      {children}
+    </group>
+  );
 }
 
 export default function Scene({ clock }: SceneProps) {
   const [ready, setReady] = useState(false);
-  const veil = useRef<HTMLDivElement>(null);
+  const band = useRef<HTMLDivElement>(null);
+  const cell = useRef<HTMLDivElement>(null);
+  const groups = useRef<Groups>({});
 
   // the van decals draw text on a canvas, so the font has to be in before the world mounts
   useEffect(() => {
@@ -117,11 +168,19 @@ export default function Scene({ clock }: SceneProps) {
     return () => ids.forEach((i) => window.clearTimeout(i));
   }, [clock.still, ready]);
 
-  // the black of B and its fade into the blueprint, drawn over the canvas
+  // The plain band of the top row and the text cells of R and P, hard edged blocks of ground colour drawn over the canvas,
+  // nothing fades. The band ends on the top rule of the grid, 136px down.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
-      if (veil.current) veil.current.style.opacity = String(blackOut(clock.pos.current));
+      const pos = clock.pos.current;
+      if (band.current) band.current.style.background = topBand(pos);
+      if (cell.current) {
+        const c = textCell(pos);
+        cell.current.style.display = c.share > 0.001 ? 'block' : 'none';
+        cell.current.style.width = `calc((${c.edge}) * ${c.share.toFixed(4)})`;
+        cell.current.style.background = c.ground;
+      }
       if (!clock.still) raf = requestAnimationFrame(tick);
     };
     tick();
@@ -143,28 +202,29 @@ export default function Scene({ clock }: SceneProps) {
       >
         <Environment files="/hdri/studio_small_03_1k.hdr" environmentIntensity={0.07} />
         <hemisphereLight args={[C.white, C.lightGrey, 0.3]} />
-        <Rig clock={clock} />
+        <Director clock={clock} groups={groups} />
         {ready && (
           <Suspense fallback={null}>
-            <Stage clock={clock} region="site">
+            <Stage groups={groups} region="site">
               <Site />
               <Warehouse clock={clock} />
               <Hero clock={clock} />
             </Stage>
-            <Stage clock={clock} region="bp">
+            <Stage groups={groups} region="bp">
               <BlueprintStage clock={clock} />
             </Stage>
-            <Stage clock={clock} region="grid">
+            <Stage groups={groups} region="grid">
               <GridStage clock={clock} />
             </Stage>
-            <Stage clock={clock} region="bots">
+            <Stage groups={groups} region="bots">
               <BotsStage clock={clock} />
             </Stage>
             <Wipe clock={clock} />
           </Suspense>
         )}
       </Canvas>
-      <div ref={veil} style={{ position: 'absolute', inset: 0, background: C.ink, opacity: 0, pointerEvents: 'none' }} />
+      <div ref={cell} style={{ position: 'absolute', left: 0, top: 136, bottom: 0, width: 0, display: 'none', background: BAND.site, pointerEvents: 'none' }} />
+      <div ref={band} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: 136, pointerEvents: 'none' }} />
     </div>
   );
 }

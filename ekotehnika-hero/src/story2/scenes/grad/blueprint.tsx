@@ -5,7 +5,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { StoryClock } from '../../clock';
-import { BP_Z, T, lift, seg, smooth } from './choreo';
+import { BP_Z, T, lift } from './choreo';
 import { colEdge } from './look';
 import { ScreenSpace } from './screen';
 import Schematic from './schematic';
@@ -15,6 +15,8 @@ import Schematic from './schematic';
 const ANG = THREE.MathUtils.degToRad(40);
 const NORM = new THREE.Vector2(-Math.sin(ANG), Math.cos(ANG));
 const SP = 0.37;
+const WEIGHT = [1, 2]; // px, a 2px line every fourth
+const ALPHA = [0.16, 0.3];
 const CENTRE = new THREE.Vector2(0.32, 0.0);
 const N_LINES = 14;
 
@@ -61,20 +63,17 @@ export function Streaks({ clock, strength, rise }: { clock: StoryClock; strength
     for (let i = 0; i < N_LINES; i++) {
       const m = meshes.current[i];
       if (!m) continue;
-      // lines sit at q = (i - 6.5 + 0.5) * SP, slid by off, wrapped over the span
+      // lines sit at q = (i - 6.5 + 0.5) * SP, slid by off, wrapped over the span, which is far wider than the scene cell
       const span = N_LINES * SP;
       let q = (i - N_LINES / 2 + 0.5) * SP - off;
       q = ((((q + span / 2) % span) + span) % span) - span / 2;
-      const env = Math.exp(-Math.pow(q / 0.34, 2));
-      // fade the ends of the span so a line never pops in or out
-      const edge = 1 - smooth(seg(Math.abs(q), span / 2 - SP, span / 2));
       const p = base + q;
       m.position.set(CENTRE.x + NORM.x * (p - base), CENTRE.y + NORM.y * (p - base) + up, 0);
       m.rotation.z = ANG;
-      // 1px lines, 2px at the middle of the swell
-      m.scale.y = (1 + env) / size.height;
+      const heavy = i % 4 === 0 ? 1 : 0;
+      m.scale.y = WEIGHT[heavy] / size.height;
       mats[i].uniforms.uRes.value.set(size.width * k, size.height * k);
-      mats[i].uniforms.uA.value = (0.1 + 0.3 * env) * edge * s;
+      mats[i].uniforms.uA.value = ALPHA[heavy] * s;
     }
   });
   // far behind the drawing, so the black fills of the truck hide them

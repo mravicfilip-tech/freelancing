@@ -1,11 +1,13 @@
 // The Ekotehnika yard seen from above, for R and the flip. A paved apron with slab joints that runs under the whole S path,
-// a south strip of empty marked bays (the text of R lands on that pavement), pallet stacks and rows of parked trucks in their
+// a bare south strip (the text of R lands on that pavement), pallet stacks and rows of parked trucks in their
 // bays between and north of the path legs, a kerbed verge with trees, and a pitched hall roof with skylights and vents at
-// the west end. Everything is a hard edged object on the apron, nothing fades. Metres, x east, z south.
+// the west end. Everything is a hard edged object on the apron, nothing fades. The south strip, z 2 and beyond, is bare pavement
+// edge to edge, no joint, bay line or kerb, so the text of R stands on a plain floor. Metres, x east, z south.
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { Box, Inst, rng, type It, type Rect } from './kit';
 import { G, flat, mat } from './look';
+import { WH } from './choreo';
 import { ProxyTrucks, type TruckSpec } from './proxy';
 
 const apron = mat(G.pale, 0.35, 0.95, false);
@@ -14,7 +16,6 @@ const bayLine = flat(G.white);
 const palletBase = mat(G.mid, 0.2);
 const palletLoad = mat(G.white, 0.4);
 const palletBand = mat(G.light, 0.3);
-const kerb = mat(G.white, 0.4);
 const verge = mat(G.light, 0.3);
 const hedge = mat(G.mid, 0.2);
 const trunk = mat(G.dark, 0.2);
@@ -84,12 +85,12 @@ function HallRoof({ x0, x1, z0, z1, eave, peak }: { x0: number; x1: number; z0: 
 export default function Yard() {
   const data = useMemo(() => {
     const r = rng(41);
-    // slab joints every 5 m
+    // slab joints every 5 m, only on the north side of z 2. The south strip is bare pavement with no line on it, the text of R lands on it
     const joints: It[] = [];
-    for (let x = YARD.x0; x <= YARD.x1; x += 5) joints.push([x, 0.03, (YARD.z0 + YARD.z1) / 2, 0.04, 0.005, YARD.z1 - YARD.z0]);
-    for (let z = YARD.z0; z <= YARD.z1; z += 5) joints.push([(YARD.x0 + YARD.x1) / 2, 0.03, z, YARD.x1 - YARD.x0, 0.005, 0.04]);
-    // the south strip, two rows of empty marked bays the text of R lands on
-    const bays: It[] = [...bayRow(104, 200, 6.6, 5.2, 2.4), ...bayRow(104, 200, 12.2, 5.2, 2.4)];
+    const JZ = 2;
+    for (let x = YARD.x0; x <= YARD.x1; x += 5) joints.push([x, 0.03, (YARD.z0 + JZ) / 2, 0.04, 0.005, JZ - YARD.z0]);
+    for (let z = YARD.z0; z <= JZ; z += 5) joints.push([(YARD.x0 + YARD.x1) / 2, 0.03, z, YARD.x1 - YARD.x0, 0.005, 0.04]);
+    const bays: It[] = [];
     // north of the second leg, a row of parked trucks nose to the kerb, and its bay lines
     bays.push(...bayRow(126, 168, -14.6, 5.4, 2.1));
     // between the legs and south of the second leg, one row nose to the lane
@@ -129,22 +130,21 @@ export default function Yard() {
           band.push([x, yy + 0.16 + h * 0.6, z, 1.17, 0.05, 0.79]);
         }
       }
-    // the verge north of the north row, a kerb and a hedge, trees along it
-    const verges: It[] = [[150, 0.1, -19.6, 90, 0.2, 3.6]];
-    const hedges: It[] = [[150, 0.6, -19.0, 90, 1.0, 0.8]];
+    // the verge north of the north row, a kerb and a hedge, trees along it, all ending 3 m short of the hall's west wall
+    const vEnd = WH.x0 - 3;
+    const verges: It[] = [[(105 + vEnd) / 2, 0.1, -19.6, vEnd - 105, 0.2, 3.6]];
+    const hedges: It[] = [[(105 + vEnd) / 2, 0.6, -19.0, vEnd - 105, 1.0, 0.8]];
     const crowns: It[] = [];
     const crownsD: It[] = [];
     const trunks: It[] = [];
-    for (let x = 100; x < 205; x += 6.5 + r() * 2) {
+    for (let x = 108; x < vEnd - 2; x += 6.5 + r() * 2) {
       const h = 4.2 + r() * 1.6;
       const w = 2.6 + r() * 1.2;
       trunks.push([x, h * 0.3, -20.4, 0.3, h * 0.6, 0.3]);
       crowns.push([x, h * 0.78, -20.4, w, h * 0.46, w, r() * 6]);
       crownsD.push([x + 0.3, h * 1.0, -20.4 + 0.3, w * 0.62, h * 0.3, w * 0.62, r() * 6]);
     }
-    // the gate end, kerb islands in the south strip
-    const islands: It[] = [[100, 0.1, 9.4, 3.2, 0.2, 18.4]];
-    return { joints, bays, north, south, base, load, band, verges, hedges, crowns, crownsD, trunks, islands };
+    return { joints, bays, north, south, base, load, band, verges, hedges, crowns, crownsD, trunks };
   }, []);
   const rect: Rect = [YARD.x0, YARD.z0, YARD.x1, YARD.z1];
   return (
@@ -159,7 +159,6 @@ export default function Yard() {
       <Inst geo={unit} mat={palletBand} items={data.band} cast={false} />
       <Inst geo={unit} mat={verge} items={data.verges} />
       <Inst geo={unit} mat={hedge} items={data.hedges} />
-      <Inst geo={unit} mat={kerb} items={data.islands} />
       <Inst geo={unit} mat={trunk} items={data.trunks} />
       <Inst geo={ico} mat={crown} items={data.crowns} />
       <Inst geo={ico} mat={crownDark} items={data.crownsD} />

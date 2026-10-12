@@ -50,6 +50,11 @@ Measured with the parent's fixed `scripts/loadbudget.mjs` (pulled from `claude/a
 - The after median is 88ms later than the before median, and two of the three pairs came out faster. The script watches a patch of road at x 200 to 400, the far left of the frame, and my road now draws on from the left. It reaches that patch about 0.1s into the build in. So the 88ms is the draw on reaching the patch, not slower loading. Read strictly against "no later than your own before number", it is 88ms over, and that call is the parent's. The fix is to sample the patch nearer the forklift, or to let the road start drawing already past x 400.
 - The earlier numbers from the old script are void, since it timed the canvas appearing.
 
+## Scrollpass
+
+- `scripts/scrollpass.mjs` on the after build, page px 0 to 6,500, H through into P, in 120px wheel steps. It printed "clean, no leak and no tone mismatch". Layer changes landed at C1 1620, R 3672 and P 5400.
+- A full run to the page end timed out at 28 minutes in software GL. It had saved a frame at each layer change down to N 9720 by then, but it never printed its summary, so only the H to P stretch is a verified result.
+
 ## Footer still (Q11)
 
 - `ekotehnika-hero/public/footer/site.webp`, 3648 by 600 px, so 1824 by 300 css px at 2x, 57KB.

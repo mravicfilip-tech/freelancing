@@ -45,3 +45,7 @@ src/ui/heroframe.css, src/ui/HeroFrame.tsx, src/story2/shell/StoryShell.tsx, Gri
 - S in v5 needs about 20s of swiftshader to draw, shots at 9s show white. Not a regression, the baseline does the same.
 - Grid values are a start that holds on white, truck and dark. Filip may want black 22 percent on white if he wants it stronger.
 - Not run, /uireview.
+
+## Najam collage removed
+
+Filip, "Remove this from here". The photo collage is out of NPane. Removed the COLLAGE data and markup and the proizvodi import in panes.tsx, the .n-collage and .pw rules in shell.css, the photo reveal and parallax code in the StoryShell loop (the photos list, shownAt and the data-rt query), and the data-rt wipe selectors in heroframe.css. The spec row with its icons, the lede and the button are untouched. `tsc` is clean in my files. N checked at 1920 and 1440 in v2, v4 and v5, see r3-a-after-n-no-collage.webp. The area below the stat row is plain ground in v5 and shows the scene in v2 and v4, whose N cameras still have the framing from before. The v4 trucks run under the spec row at 1440, which is for the scene builders. The photo files and their alt texts in copy.ts are unchanged for the new closing section. Supersedes the item 7 text above.

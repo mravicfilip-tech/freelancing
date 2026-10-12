@@ -4,7 +4,7 @@
 //
 // All motion reads the story clock, so it scrubs with the scroll and freezes with ?at=. The loop below drives the
 // block wipes, the scroll fill, the count up, the grid and the logos from clock.pos with no React render.
-// The Prodaja tabs and the Najam photos run on real time once their beat is on screen, from the story clock for when.
+// The Prodaja tabs run on real time once their beat is on screen, from the story clock for when.
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
@@ -70,8 +70,6 @@ type Group = {
   // the plus marks at this group's block rules, drawn into .s2-plus
   wrap: HTMLElement | null;
   tabs: HTMLElement | null;
-  photos: HTMLElement[];
-  shownAt: number;
   persistent: boolean;
   maxOrder: number;
   last: string;
@@ -100,8 +98,6 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     fills,
     wrap: null,
     tabs: el.querySelector<HTMLElement>('.s2-p'),
-    photos: Array.from(el.querySelectorAll<HTMLElement>('[data-rt]')),
-    shownAt: 0,
     persistent: false,
     maxOrder: Math.max(1, ...wipes.map((w) => w.order)),
     last: '',
@@ -205,7 +201,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           G.el.style.visibility = on ? 'visible' : 'hidden';
           G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
           if (G.wrap) G.wrap.style.visibility = on ? 'visible' : 'hidden';
-          if (on) G.shownAt = performance.now();
           // Prodaja shows no model while its beat is off screen, so the first one comes in again next time
           else if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
@@ -253,25 +248,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) {
           const step = k < P_FIRST ? -1 : Math.min(3, Math.floor((k - P_FIRST) / P_STEP));
           if (G.tabs.getAttribute('data-tab') !== String(step)) setTab(G.tabs, step);
-        }
-        // Najam photos, a block wipe each 120ms after the one before on real time, and a parallax of up to 24px against the scroll
-        if (G.photos.length) {
-          const t = performance.now() - G.shownAt - 300;
-          G.photos.forEach((ph, i) => {
-            const p = clamp01((t - i * 120) / 700);
-            const key = String(Math.round(p * 240));
-            if (key !== ph.dataset.last) {
-              ph.dataset.last = key;
-              const w = wipeAt(p);
-              ph.style.setProperty('--bx', `${w.bx.toFixed(1)}%`);
-              ph.style.setProperty('--tv', w.shown ? 'inherit' : 'hidden');
-            }
-            const py = ((k - 0.5) * 2 * Number(ph.dataset.depth ?? 0)).toFixed(1);
-            if (py !== ph.dataset.py) {
-              ph.dataset.py = py;
-              ph.style.setProperty('--py', `${py}px`);
-            }
-          });
         }
       }
 

@@ -1,7 +1,7 @@
 // The text of each hold beat, laid on the 12 column grid. Plain markup, the shell drives it from the story clock, see
 // ui.tsx for the data attributes. Copy comes from ../copy.ts. Every block starts on a column line.
 import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { automatizacija, kompanija, markers, najam, prodaja, proizvodi, servis } from '../copy';
+import { automatizacija, kompanija, markers, najam, prodaja, servis } from '../copy';
 import { Btn, Fill, Marker, SpecRow, TitleLines, cols, type SpecFact } from './ui';
 
 // Show tab i on the Prodaja pane, for the loop that steps with k and for a click. -1 shows no model yet. Each cut out
@@ -166,17 +166,6 @@ export function SPane() {
   );
 }
 
-// The four delivery photos of N as an overlapping collage in columns 1 to 6, from the line under the stat row to the bottom
-// rule. Position and size are whole steps of one unit u, 24px at 1920 by 1080, so the offsets sit on the 24px step. The
-// collage is 37.5 by 20 units. Listed bottom to top, the E20 EVO badge detail on top. depth is the parallax in px, the
-// reveal and the parallax are driven by the shell, see data-rt in StoryShell.tsx.
-const COLLAGE = [
-  { photo: 2, x: 9, y: 1, w: 18, h: 16, depth: 6, pos: '50% 45%' },
-  { photo: 1, x: 23, y: 0, w: 14, h: 8, depth: 18, pos: '50% 38%' },
-  { photo: 3, x: 26, y: 6, w: 10, h: 14, depth: 12, pos: '50% 60%' },
-  { photo: 0, x: 4, y: 10, w: 8, h: 9, depth: 24, pos: '50% 50%' },
-];
-
 // The four icons of the N row, one per fact in order, 24 sata a clock, delivery a truck, Održavanje a wrench, Zamena two squares
 // that overlap. All are solid, 20 by 20, in the ink colour, with sharp joins and no arrows.
 const ico = (d: ReactNode) => (
@@ -207,19 +196,6 @@ export function NPane() {
         </Btn>
       </div>
       <SpecRow className="blk n-row" facts={facts} spans={[3, 3, 3, 3]} order={3} style={cols(1, 12)} />
-      <div className="n-collage">
-        {COLLAGE.map((p, i) => (
-          <figure
-            className="pw"
-            data-rt={i}
-            data-depth={p.depth}
-            style={{ '--ox': p.x, '--oy': p.y, '--ow': p.w, '--oh': p.h } as CSSProperties}
-            key={p.photo}
-          >
-            <img src={proizvodi.photos[p.photo].src} alt={proizvodi.photos[p.photo].alt} loading="eager" decoding="async" style={{ objectPosition: p.pos }} />
-          </figure>
-        ))}
-      </div>
     </div>
   );
 }

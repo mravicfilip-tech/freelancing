@@ -28,15 +28,13 @@
 
 /* Block wipe. A bar of --bar covers the element and leaves to the right, the shell drives --bx and --tv from the story
    clock. With no JS, which is reduced motion, the bar is off to the right and the text shows. */
-[data-wipe],
-[data-rt] {
+[data-wipe] {
   position: relative;
   overflow: hidden;
   visibility: var(--tv, inherit);
 }
 
-[data-wipe]::after,
-[data-rt]::after {
+[data-wipe]::after {
   content: '';
   position: absolute;
   inset: 0;

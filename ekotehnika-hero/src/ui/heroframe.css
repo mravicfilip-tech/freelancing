@@ -588,9 +588,9 @@ html[data-hv] .btn-primary .btn-x::before {
   transition: rotate 260ms var(--ease-wipe);
 }
 
-/* 1, the label turns the deeper hover red of the brand and the plus turns a quarter */
+/* 1, the label turns the darkest red of the brand, primary-900, and the plus turns a quarter */
 html[data-hv='1'] .btn-primary:hover {
-  --b-bg: var(--dark-red);
+  --b-bg: var(--primary-900);
 }
 
 html[data-hv='1'] .btn-primary:hover .btn-x::before,
@@ -607,13 +607,17 @@ html[data-hv='2'] .btn-primary:hover .btn-x {
   width: 100%;
 }
 
-/* 3, a 2px white rule draws on under the label from the left, the plus turns a quarter */
-html[data-hv='3'] .btn-primary .btn-r::after {
+/* 3, a 2px white rule draws on under the label from the left, inside the red block, the plus turns a quarter */
+html[data-hv='3'] .btn-primary .btn-t {
+  position: relative;
+}
+
+html[data-hv='3'] .btn-primary .btn-t::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 22px;
+  right: 22px;
+  bottom: 10px;
   height: 2px;
   background: currentColor;
   transform: scaleX(0);
@@ -621,7 +625,7 @@ html[data-hv='3'] .btn-primary .btn-r::after {
   transition: transform 260ms var(--ease-wipe);
 }
 
-html[data-hv='3'] .btn-primary:hover .btn-r::after {
+html[data-hv='3'] .btn-primary:hover .btn-t::after {
   transform: scaleX(1);
 }
 

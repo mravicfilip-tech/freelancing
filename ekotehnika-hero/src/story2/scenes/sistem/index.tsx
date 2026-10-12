@@ -26,9 +26,8 @@ import Warehouse from './warehouse';
 // Forks low while driving, raised in front of the building and set down again for the road.
 const HERO_LIFT = track([[0, 0.12], [1.6, 0.12], [2.15, 1.55], [2.85, 1.55], [3.25, 0.15], [12, 0.15]]);
 
-// The EKOTEHNIKA wordmark from public/brand/ekotehnika.svg, the file itself drawn into a texture, never redrawn. The one
-// red mark in it is set in the wordmark's own graphite, since red sits on truck shells only, so it prints dark on the
-// light carton.
+// The EKOTEHNIKA wordmark from public/brand/ekotehnika.svg, the file itself drawn into a texture exactly as supplied,
+// its red mark included, never redrawn or recoloured. It prints dark on the light carton.
 const MARK_W = 0.7;
 const MARK_H = (MARK_W * 33.75) / 164.76;
 function useWordmark() {
@@ -54,7 +53,7 @@ function useWordmark() {
           setTex(t);
           invalidate();
         };
-        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('<svg ', `<svg width="${w}" height="${h}" `).replace(/#a00020/gi, '#4d4d4d'));
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('<svg ', `<svg width="${w}" height="${h}" `));
       })
       .catch(() => {});
     return () => {

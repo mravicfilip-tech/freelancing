@@ -18,7 +18,7 @@ Branch `claude/awesome-faraday-lkhnn2-street`, built from 23fee3b. Files touched
 
 ### Item 4, box wordmark
 - The pallet box itself is `Pallet` in `src/r3f/Forklift.tsx`, which is outside my files. I did not touch it. The wordmark is printed from `index.tsx` instead, as two planes on the carton's long faces, riding with the fork lift, so no outside change is needed.
-- The texture is `public/brand/ekotehnika.svg` drawn into a canvas, not redrawn. The file has one small red square. I set that square to the wordmark's own graphite `#4d4d4d`, since red sits only on truck shells. That is the one open question below.
+- The texture is `public/brand/ekotehnika.svg` drawn into a canvas exactly as supplied, red mark included, per the parent's ruling that the logo's red is the brand's own mark. At box size the red is a small square beside the tagline and does not read loud, see `r4-street-box-logo-crop.webp` at H and C1.
 
 ### Item 2, the build in on load
 - It is timed from the scene's first frame, not from the scroll. The road, its edge lines, centre dashes, kerbs and pavement draw along from the left over 1.3s. Trees, hedges, planters, lamp posts, vans, the building and the hall rise out of the ground left to right, each over 0.75s. The forklift drives 16m into its hero place along the road once its model is ready, easing to rest by about 2.2s. Nothing fades.
@@ -68,4 +68,4 @@ Measured with the parent's fixed `scripts/loadbudget.mjs` (pulled from `claude/a
 
 ## Open questions for Filip
 
-- The red square in the Ekotehnika logo file prints in graphite on the box, so the box carries no red. Keep it graphite, or print the logo with its red square?
+- None from this slice. The logo question is settled, printed with its red.

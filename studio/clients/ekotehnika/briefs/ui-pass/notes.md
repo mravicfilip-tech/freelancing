@@ -287,3 +287,10 @@ S12. **Footer, all versions.** Ref `refs/current/v5-footer.webp`, the live foote
    than 15px except the logo.
    Candidates on file. T11 closing band with one big line and one button before the footer, T03 notched edge into it,
    note 5 grid for the columns, the logo unboxed per S2, a large Hitan servis number as the one loud element.
+
+## Round 2, Filip on the first build
+
+R1. **Buttons.** `refs/round2/r1-buttons-and-numbers.png`. Said: "Make sure we're designing buttons to be modern do a few variants". Numbered variants to pick from.
+R2. **Numbers.** Same shot. Said: "Don't use this font for numbers". Daxline Pro has old style figures only, so digits move to Geist lining tabular figures.
+R3. **Schematic.** `refs/round2/r2-schematic-before-after.webp`. Said: "Schematic I liked it better in 3d and perspective how it was done before just mind my comments on the lines / execution/design". Back to three quarter perspective with precise lines.
+R4. **Arrows.** `refs/round2/r3-list-arrows.png`. Said: "Don't use arrows like I marked in the design they ugly af". No arrow glyphs anywhere.

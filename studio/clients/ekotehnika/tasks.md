@@ -29,17 +29,6 @@ Task format
 
 ## In progress
 
-- ekotehnika-7 Logos at the Linde co-branding sizes
-  - [x] Find the vector logos in the Drive and swap them in
-  - [x] Size the logo tile to the guideline and fit the top row
-  - [x] Clear the scenes under the taller top row in 2 and 4
-  - [x] Clear the scenes under the taller top row in 5
-
-- ekotehnika-6 Version 5 in light mode, servis stays dark
-  - [x] Let the shell set dark beats per version
-  - [x] Relight and redraw the Sistem scene for light
-  - [ ] Check every beat with the text on and deploy
-
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
   - [x] Settle kickoff answers
   - [x] Build the card UI over the existing motion
@@ -85,6 +74,17 @@ Task format
   - [ ] Filip picks one by number
 
 ## Review
+
+- ekotehnika-6 Version 5 in light mode, servis stays dark. Link https://ekotehnika-hero.vercel.app/?v=5
+  - [x] Let the shell set dark beats per version
+  - [x] Relight and redraw the Sistem scene for light
+  - [x] Check every beat with the text on and deploy
+
+- ekotehnika-7 Logos at the Linde co-branding sizes
+  - [x] Find the vector logos in the Drive and swap them in
+  - [x] Size the logo tile to the guideline and fit the top row
+  - [x] Clear the scenes under the taller top row in 2 and 4
+  - [x] Clear the scenes under the taller top row in 5
 
 - ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem. Link https://ekotehnika-hero.vercel.app/?v=2
   - [x] Bring back the three versions and prep localhost

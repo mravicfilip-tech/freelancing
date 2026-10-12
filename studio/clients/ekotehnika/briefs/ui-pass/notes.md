@@ -35,3 +35,13 @@ and the plan is agreed. The story stays as it is.
    rendered as cut outs in one consistent light.
    Open. Same serif accent in the title as note 2. Card tab text in linde red would break the red only for actions
    rule, so the default is ink name and text-grey detail.
+4. **Statement moment, giant marquee text around a centred image.** Ref `refs/04-statement-marquee-centre-image.webp`
+   (Lando Norris, message from Lando). Said: "Same here".
+   What the ref does. A small mark and a tiny label centred at the top. Two lines of very large type run edge to
+   edge and move sideways with scroll, the two rows in opposite directions. One image card sits dead centre and the
+   type passes behind it. A hand drawn signature strokes on over the image.
+   My read. One pause in the page that says who Ekotehnika is, between the story and Proizvodi or as the Kompanija
+   opener. Candidate line, the company's own tagline from its logo, "Snaga koja pokreće", or a claim already on the
+   site such as Od 1997.
+   Open. The centre image. No owner photo is on file and the signature has no Ekotehnika equivalent, so my default
+   is a lit Linde truck render or one delivery photo in the card, and no signature. Same serif accent as notes 2 and 3.

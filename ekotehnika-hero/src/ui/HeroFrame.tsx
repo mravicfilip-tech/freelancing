@@ -84,6 +84,7 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <span className="hf-nums" data-mask>
           <b className="hf-now">00</b>
           <span className="hf-total">{frame.total}</span>
+          <span className="hf-name" />
         </span>
         <i className="hf-track">
           <i className="hf-fill" />
@@ -96,6 +97,7 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
 
       <div className="hf-bottom">
         <p className="s2-marker" data-wipe="0" data-mask>
+          <i className="mk-rule" aria-hidden="true" />
           <span className="mk-name">{hero2.marker}</span>
         </p>
         <h1 className="hf-h1" data-mask>

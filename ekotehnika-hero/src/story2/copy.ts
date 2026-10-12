@@ -45,7 +45,7 @@ export const kompanija = {
     ] satisfies Fact[],
   },
   r: {
-    title: ['Servis je', 'srce naše', 'firme.'], // analysis, the site calls the service centre the heart of the company
+    title: ['Servis je srce', 'naše firme.'], // analysis, the site calls the service centre the heart of the company
     text: 'Iz Vrčina, na južnoj ivici Beograda, naši tehničari rade sa originalnim Linde delovima.', // analysis, dummy wording
     list: [
       { label: 'Vrčin', line: 'Servisni centar i sedište firme' }, // analysis, dummy wording

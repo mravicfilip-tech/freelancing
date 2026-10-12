@@ -557,3 +557,18 @@
     transform: scaleX(1);
   }
 }
+
+/* the section name in the counter, variant 4 of the markers only, set on its side under the numbers */
+.hf-name {
+  display: none;
+}
+
+[data-mk='4'] .hf-name {
+  display: block;
+  margin-top: 12px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 500 14px/1 var(--font);
+  color: var(--hf-top);
+  white-space: nowrap;
+}

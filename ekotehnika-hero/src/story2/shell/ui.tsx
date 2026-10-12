@@ -5,7 +5,7 @@
 //   data-mask      a box the grid lines are hidden behind, with 16px of padding
 // With none of the driving JS running, which is the reduced motion case, every part shows its end state.
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
-import type { Fact, Marker as MarkerData } from '../copy';
+import { frame, type Fact, type Marker as MarkerData } from '../copy';
 
 // A block of the 12 column grid, columns a to b counted from 1. The stage is the container that sets --cw and --gx.
 export const cols = (a: number, b: number): CSSProperties => ({
@@ -15,8 +15,12 @@ export const cols = (a: number, b: number): CSSProperties => ({
 
 export const Marker = ({ m, order = 0 }: { m: MarkerData; order?: number }) => (
   <p className="s2-marker" data-wipe={order} data-mask>
+    <i className="mk-rule" aria-hidden="true" />
     <span className="mk-n">{m.n}</span>
     <span className="mk-name">{m.name}</span>
+    <span className="mk-count">
+      {m.n}/{frame.total}
+    </span>
   </p>
 );
 

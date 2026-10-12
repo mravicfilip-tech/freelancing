@@ -32,7 +32,8 @@ for (let y = from; y <= to + step; y += step) {
   const s = await p.evaluate(() => {
     const vis = (el) => { const r = el.getBoundingClientRect(); return getComputedStyle(el).visibility === 'visible' && r.bottom > 0 && r.top < innerHeight && r.width > 0; };
     const layers = [...document.querySelectorAll('[data-layer]')].filter((el) => el.style.visibility === 'visible').map((el) => el.dataset.layer);
-    const pfig = [...document.querySelectorAll('.p-fig')].filter((f) => vis(f) && [...f.querySelectorAll('img')].some(vis)).length;
+    // a cut out counts when it would draw, visible and not faded out, so the 400ms hand over of a leaving one does not count
+    const pfig = [...document.querySelectorAll('.p-fig')].filter((f) => vis(f) && [...f.querySelectorAll('img')].some((im) => vis(im) && +getComputedStyle(im).opacity > 0.05)).length;
     const hf = document.querySelector('.hf');
     const after = document.documentElement.hasAttribute('data-after-story');
     return { y: Math.round(scrollY), layers, pfig, tone: hf?.dataset.tone ?? '', after };
@@ -42,10 +43,13 @@ for (let y = from; y <= to + step; y += step) {
   // software GL on a busy machine can take long over one frame, so a slow screenshot skips the tone check for this step
   const png = await p.screenshot({ clip: { x: 1560, y: 8, width: 40, height: 4 }, type: 'png', timeout: 120000 }).catch(() => null);
   const g = !png ? -1 : await p.evaluate(async (b64) => { const im = new Image(); im.src = 'data:image/png;base64,' + b64; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data; let t = 0; for (let i = 0; i < d.length; i += 4) t += (d[i] + d[i + 1] + d[i + 2]) / 3; return Math.round(t / (d.length / 4)); }, png.toString('base64'));
+  // the clock keeps moving while the screenshot is taken, so a tone check only counts when the tone is the same before and after it
+  const toneAfter = await p.evaluate(() => document.querySelector('.hf')?.dataset.tone ?? '');
+  const toneOk = !s.after && g >= 0 && toneAfter === s.tone;
   const layer = s.after ? 'after' : s.layers.join('+') || 'none';
   if (s.pfig && !s.layers.includes('P')) problems.push(`y ${s.y} layer ${layer}, a Prodaja cut out shows outside P`);
-  if (!s.after && g >= 0 && s.tone === 'white' && g > 200) problems.push(`y ${s.y} layer ${layer}, top row is dark over a light ground (${g})`);
-  if (!s.after && g >= 0 && s.tone === 'ink' && g < 50) problems.push(`y ${s.y} layer ${layer}, top row is light over a dark ground (${g})`);
+  if (toneOk && s.tone === 'white' && g > 200) problems.push(`y ${s.y} layer ${layer}, top row is dark over a light ground (${g})`);
+  if (toneOk && s.tone === 'ink' && g < 50) problems.push(`y ${s.y} layer ${layer}, top row is light over a dark ground (${g})`);
   if (layer !== lastLayer) {
     lastLayer = layer;
     await p.screenshot({ path: `${out}/v${v}-${String(n++).padStart(2, '0')}-${layer}-y${s.y}.png`, timeout: 120000 }).catch(() => {});

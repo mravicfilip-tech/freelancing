@@ -30,24 +30,25 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
 
 ## Everywhere you work
 
-- **Cloud sessions on this repo.** Nothing to do once the kit is on the default branch.
-- **Every chat, Cowork and cloud sessions on other repos.** Run `node studio/scripts/account-skills.mjs`,
-  then upload each zip in `studio/dist/` in Claude settings under Capabilities, Skills, replacing
-  any older copy. Outside this repo a skill uses the scripts packed inside it, keeps review state in
-  `~/.claude/studio-state`, and prints taste entries for you to carry back here.
-- **The rules in every claude.ai chat.** Paste `studio/chat/preferences.md` into Settings,
-  Profile, under personal preferences.
-- **The rules and guards in cloud sessions on other repos.** In the cloud environment settings, add
-  this to the setup script.
+- **Cloud sessions on any repo, new ones by default.** In the cloud environment settings, put this
+  line in the setup script once. Every new session in that environment then clones the latest kit
+  and installs the rules, guards, helpers, skills and screenshot tools for the user, so each kit
+  update reaches new chats with nothing to redo.
 
   ```
-  git clone --depth 1 https://github.com/mravicfilip-tech/freelancing /tmp/studio-kit && node /tmp/studio-kit/studio/install.mjs --cloud || true
+  git clone --depth 1 https://github.com/mravicfilip-tech/freelancing /tmp/studio-kit && node /tmp/studio-kit/studio/install.mjs --cloud --skills --deps || true
   ```
 
-  It does nothing when the session is on this repo, and `|| true` keeps a failed clone from
-  stopping the session.
+  Inside this repo it installs nothing but the screenshot tools, since the repo carries the kit.
+  If it runs from another folder, nothing loads twice. This repo's `.claude/settings.json` leaves
+  out the home copy of the rules, and the home copy of each hook stays quiet when the repo has its
+  own. `|| true` keeps a failed clone from stopping the session.
+- **Every claude.ai chat and Cowork.** Run `node studio/scripts/account-skills.mjs`, then upload
+  each zip in `studio/dist/` in Claude settings under Capabilities, Skills, replacing any older
+  copy. Paste `studio/chat/preferences.md` into Settings, Profile, under personal preferences.
+  These two need a new upload after each kit update.
 - **Claude Code on your own machine.** From a clone of this repo run
-  `node studio/install.mjs --skills`. Remove it with `node studio/install.mjs --uninstall`.
+  `node studio/install.mjs --skills --deps`. Remove it with `node studio/install.mjs --uninstall`.
 
 ## Cloud sessions
 
@@ -56,9 +57,10 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
   `studio/` and get committed. Shots, packs and boards stay in `studio/.state/` and are not.
 - Sessions run on a `claude/<name>` branch. The concept name, the PR and the preview URL go in the
   task line in `studio/clients/<client>/tasks.md`. The default branch holds accepted work only.
-- Screenshots need puppeteer-core. Run `npm ci --prefix studio` once per session before the first
-  shot. The scripts find the cloud browser at `/opt/pw-browsers/chromium` by themselves. Elsewhere,
-  set `CHROME_PATH` if Chrome or Edge is somewhere unusual.
+- Screenshots need puppeteer-core. The setup script installs it. Without it, run
+  `npm ci --prefix studio` once per session before the first shot. The scripts find the cloud
+  browser at `/opt/pw-browsers/chromium` by themselves. Elsewhere, set `CHROME_PATH` if Chrome or
+  Edge is somewhere unusual.
 
 ## Commands
 

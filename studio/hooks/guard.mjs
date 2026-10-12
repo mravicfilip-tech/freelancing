@@ -459,8 +459,18 @@ export function decide(d) {
   return null;
 }
 
+// A copy installed for the user stays quiet when the project carries its own copy of this hook,
+// so the freelancing repo never runs it twice. CLAUDE_PROJECT_DIR is set by Claude Code for hooks.
+export function shadowedByProject(self, projectDir) {
+  if (!projectDir) return false;
+  const own = resolve(self);
+  const project = resolve(projectDir, 'studio', 'hooks', basename(own));
+  return project.toLowerCase() !== own.toLowerCase() && existsSync(project);
+}
+
 async function main() {
   const watchdog = setTimeout(() => process.exit(0), 3000);
+  if (shadowedByProject(fileURLToPath(import.meta.url), process.env.CLAUDE_PROJECT_DIR)) { clearTimeout(watchdog); process.exit(0); }
   try {
     let raw = '';
     process.stdin.setEncoding('utf8');

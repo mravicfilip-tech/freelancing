@@ -1,4 +1,9 @@
 {
+  "claudeMdExcludes": [
+    "**/.claude/studio/AGREEMENT.md",
+    "**/.claude/studio/DOCTRINE.md",
+    "**/.claude/studio/foundation/writing.md"
+  ],
   "hooks": {
     "SessionStart": [
       {

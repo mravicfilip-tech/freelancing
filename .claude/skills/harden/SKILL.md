@@ -5,8 +5,8 @@ description: Self-review of words, meaning an answer, a plan, a doc or a drafted
 
 # Harden
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise.
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
 
 One pass, in the main thread, no helpers. A subagent panel runs only when Filip asks for one.
 It runs when Filip asks, never by itself and never in a loop.

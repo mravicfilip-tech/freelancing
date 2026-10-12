@@ -145,7 +145,7 @@
 
   /* Legacy tokens from the first hero build, read only by the older routes (/?story=, /?board=, /?gate=) and the
      scene files. The story2 shell does not use them. */
-  --linde-red: #aa0020;
+  --linde-red: #a00020;
   --dark-red: #990e1f;
   --toned-red: #cc132a;
   --primary-700: #94001d;

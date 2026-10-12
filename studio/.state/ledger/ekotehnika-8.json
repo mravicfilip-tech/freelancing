@@ -32,7 +32,7 @@
       "sev": 2,
       "where": "styles.css:129 --lmh-red",
       "what": "Primary fill is #a00020, README token linde-red is #aa0020. The comment cites the guideline but no README ruling sets it.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {

@@ -10,7 +10,7 @@ Colour tokens. Do not invent new colours.
 
 | Token | Hex | Use |
 |---|---|---|
-| linde-red | `#aa0020` | Primary buttons, kicker text, active states |
+| linde-red | `#a00020` | Primary buttons, kicker text, active states. LMH red, RGB 160 0 32, co-branding guideline p.14, set by Filip 2026-10-12 over the live site's `#aa0020` |
 | dark-red | `#990e1f` | Hover and pressed red |
 | toned-red | `#cc132a` | Top bar phone chip, accents |
 | primary-700 | `#94001d` | Deeper red |

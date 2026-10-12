@@ -175,3 +175,14 @@ S5. **Version 5, P, the prodaja screen.** Ref `refs/scenes/s05-v5-p-prodaja.webp
    the warehouse scene, every element has the same weight, and the icons are generic.
    Candidates on file for the fix. Note 3 staggered offering cards with real Linde cut out renders. T08 tabbed
    feature cards by truck type. Ref 02 text left with the products as the images. Note 1 block wipe on the title.
+S6. **Version 5, S, the servis screen.** Ref `refs/scenes/s06-v5-s-servis.webp`, Filip marked the left block.
+   Said: "Bad UI on the left, too much space unused. The UI execution again bad."
+   What is there now. Kicker, a two line title at about 96px, two lines of body, two dark glass tiles (Hitan servis
+   with the number, 300+ tipova vozila) and the red Zakažite servis button, all packed into the top left third.
+   The rest of the dark frame holds only the diagonal lines and the X50 blueprint far right, and the lower half and
+   the middle are empty.
+   Also seen. In this frame the blueprint shows the cab and wheels but no mast or forks, so the truck reads as a
+   small car. A defect to fix in the scene.
+   Candidates on file for the fix. Ref 06 is this beat almost one to one. Left column on the grid, the blueprint
+   larger and centred, a giant faded figure behind it, a counter on the right edge, one data line at the bottom in
+   place of the two tiles. Same shared column problem as S4.

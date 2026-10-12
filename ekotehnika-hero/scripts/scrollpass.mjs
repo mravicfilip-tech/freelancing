@@ -3,7 +3,8 @@
 // the beat layer on screen, any Prodaja cut out still showing outside P, and the top row tone against the ground under
 // it. It saves one frame each time the layer on screen changes, and prints every problem it finds.
 // Run against `npx vite preview --port 4173` after `npm run build`, from a scratch folder that has playwright-core.
-// node scrollpass.mjs [version] [out dir] [step px], BASE=http://localhost:4174 to point it at another server
+// node scrollpass.mjs [version] [out dir] [step px], BASE=http://localhost:4174 to point it at another server, FROM and TO
+// in page pixels to run one stretch only, it jumps to FROM, settles, then scrolls on in wheel steps.
 import { chromium } from 'playwright-core';
 import { mkdirSync } from 'node:fs';
 const v = process.argv[2] || '5';
@@ -16,10 +17,16 @@ await p.goto(`${process.env.BASE || 'http://localhost:4173'}/?v=${v}`, { waitUnt
 await p.waitForTimeout(6000);
 await p.mouse.move(960, 600);
 const H = await p.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+const from = +(process.env.FROM || 0);
+const to = +(process.env.TO || H);
+if (from > 0) {
+  await p.evaluate((y) => { window.scrollTo(0, y); window.dispatchEvent(new Event('scroll')); }, from);
+  await p.waitForTimeout(4000);
+}
 const problems = [];
 let lastLayer = '';
 let n = 0;
-for (let y = 0; y <= H + step; y += step) {
+for (let y = from; y <= to + step; y += step) {
   await p.mouse.wheel(0, step);
   await p.waitForTimeout(90);
   const s = await p.evaluate(() => {

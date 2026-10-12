@@ -208,3 +208,13 @@ S8. **Version 5, N, empty sides of the najam screen.** Ref `refs/scenes/s08-v5-n
    lines of the platform extended to the full width as a depot floor, with more trucks or empty bays to the edges.
    Rental details placed on the grid in those fields (from note 3 cards or ref 06 data lines).
    Also seen. The same centred title, box and equal tiles stack as S5, so the S5 rule applies here too.
+S9. **Version 5, N, the najam text block, UI, UX and layout all bad.** Filip marked the centred kicker, title, the
+   wide box with the button and the four tiles. Said: "Really bad UI/UX, layout, everything here."
+   Screenshot `refs/scenes/s09-v5-n-text-block.webp` when it saved, else see S8's shot, same frame.
+   What is there now. The same stack S5 rejected. A dot kicker, a 64px title, a hairline box with one 18px line and a
+   red pill button, four equal white tiles with a 22px title and a 14px caption, all centred over the platform and
+   reading as a generic template. The six rental facts carry the same weight, so nothing leads.
+   Read. One block design repeats on P and N, so both get rebuilt together. The UX gap is the same too, the visitor
+   gets facts but no next step besides one button, no fleet to browse, no price or duration to choose.
+   Candidates on file. Note 3 offering cards for the fleet, T06 calculator for najam (duration and count to a
+   ponuda), ref 06 one big figure (24 sata) with a data line, note 5 grid.

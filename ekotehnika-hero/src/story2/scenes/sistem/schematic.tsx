@@ -1,10 +1,12 @@
-// The servis stage. The real X50 as a technical illustration in three quarter perspective on the dark ground, drawn with
-// hidden line removal. The model is drawn as solid #0b0b0b fills that write depth, so nothing behind a surface shows.
-// On top, the hard edges of each mesh (30 to 40 degrees, short bits dropped) as 1px fat lines at 55 percent white, depth
-// tested, and an inverted hull pass gives the outer contour a crisp 2px line at 90 percent white. The tyre meshes are not
-// edged, each outer wheel face is one clean tyre circle, a hub circle and five lugs, turning with the story clock.
-// Dashed centre lines, a 0.5 m ground grid at 8 percent and dimension lines in 3D in LMH turquoise 72 percent with the
-// X50 / 600 figures from the Linde data sheet DS_X35_X50_1254. No glow.
+// The servis stage. The real X50 lit in the scene on the dark ground, finished like the hero forklift, in three quarter
+// perspective on the right of the frame. Its own Linde parts, real tyres with tread on grey rims and hubs that turn with the
+// story clock, the shell in the brand red and every other part in an LMH grey. The studio environment is turned to light
+// it low key, a soft top light from the front left and a bright edge along the far side, so the dark truck reads on the
+// dark ground. One clean outline on the silhouette only, 2px white at 90 percent, drawn from a mask of the whole truck in
+// screen space so no inner edge is ever drawn. The ground is a 0.5 m floor grid edge to edge with the truck's shadow on it.
+// Three dimension lines with the X50 / 600 figures from the Linde data sheet DS_X35_X50_1254, each held inside one cell of
+// the page grid at 1440 and 1920, so none crosses a vertical or meets the stage edge. They draw on once the shutter of B
+// has rolled away. Nothing fades.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -13,281 +15,288 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import type { SceneProps } from '../../clock';
 import { useGLTF } from '@react-three/drei';
-import { bakeEdges } from './bake';
 import { prepare, SPEC, modelUrl } from './models';
 import { BP } from './route';
-import { ease, range, uOf } from './kit';
+import { G, ease, range, uOf } from './kit';
 
-const TURQUOISE = '#7fbccd'; // LMH turquoise at 72 percent
+const RED = '#a00020';
+const INK = G.mid; // dimension and extension lines
+const TEXT = G.pale; // dimension figures
 const GROUND = 0.012;
-const FIG = { l1: '4373', l2: '3173', y: '2120', h1: '2523', h6: '2495', c: '600', q: '4990' };
+// The studio environment at 80 percent, turned 1.2 rad about the vertical so its soft box sits high on the front left of
+// the truck and its bright strip runs along the far edges. Low key, the body stays dark between the highlights.
+const ENV = 0.8;
+const ROT = 1.2;
+const FIG = { y: '2120', h1: '2523', c: '600', q: '4990' };
 
-// ---- small drawing helpers ---------------------------------------------------------------------------------------------
-
-class L {
-  a: number[] = [];
-  seg(p: number[], q: number[]) {
-    this.a.push(p[0], p[1], p[2], q[0], q[1], q[2]);
-  }
-  circle(c: number[], r: number, plane: 'xy' | 'xz' | 'yz', n = 72) {
-    for (let i = 0; i < n; i++) {
-      const t0 = (i / n) * Math.PI * 2;
-      const t1 = ((i + 1) / n) * Math.PI * 2;
-      const f = (t: number) => {
-        const u = Math.cos(t) * r;
-        const v = Math.sin(t) * r;
-        return plane === 'xy' ? [c[0] + u, c[1] + v, c[2]] : plane === 'xz' ? [c[0] + u, c[1], c[2] + v] : [c[0], c[1] + u, c[2] + v];
-      };
-      this.seg(f(t0), f(t1));
-    }
-  }
-  // a dash and dot centre line, long dash, gap, dot, gap
-  dashdot(p: number[], q: number[]) {
-    const d = [q[0] - p[0], q[1] - p[1], q[2] - p[2]];
-    const len = Math.hypot(...d);
-    const u = d.map((v) => v / len);
-    const pat = [0.2, 0.06, 0.04, 0.06];
-    let t = 0;
-    let i = 0;
-    while (t < len) {
-      const l = Math.min(pat[i % 4], len - t);
-      if (i % 2 === 0) this.seg([p[0] + u[0] * t, p[1] + u[1] * t, p[2] + u[2] * t], [p[0] + u[0] * (t + l), p[1] + u[1] * (t + l), p[2] + u[2] * (t + l)]);
-      t += pat[i % 4];
-      i++;
-    }
-  }
-}
-
-const FONT = '500 14px "Daxline Pro", Arial, sans-serif';
-function labelSprite(text: string) {
-  const c = document.createElement('canvas');
-  const g = c.getContext('2d')!;
-  g.font = FONT;
-  (g as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1.1px';
-  const w = Math.ceil(g.measureText(text).width) + 6;
-  const h = 22;
-  c.width = w * 2;
-  c.height = h * 2;
-  g.scale(2, 2);
-  g.font = FONT;
-  (g as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1.1px';
-  g.fillStyle = TURQUOISE;
-  g.textBaseline = 'middle';
-  g.fillText(text, 3, h / 2 + 1);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
-  const mat = new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false, depthWrite: false, toneMapped: false, opacity: 0 });
-  return { mat, w, h };
-}
-
-const lineMat = (opacity: number, width: number, color = '#ffffff', depthTest = true) => new LineMaterial({ color: new THREE.Color(color).getHex(), linewidth: width, transparent: true, opacity, toneMapped: false, depthWrite: false, depthTest });
-const seg2 = (pts: number[], mat: LineMaterial) => {
-  const g = new LineSegmentsGeometry();
-  g.setPositions(new Float32Array(pts.length ? pts : [0, 0, 0, 0, 0, 0]));
-  const l = new LineSegments2(g, mat);
-  l.frustumCulled = false;
-  return l;
+// Each Linde material of the X50 gets one copy for this stage, its colour set to the shell red or an LMH grey. The hero
+// truck keeps the shared originals.
+const RECOLOUR: Record<string, string> = {
+  Linde_Red_bump: RED,
+  Linde_grau: G.graphite,
+  Linde_Silver: G.light,
+  Linde_White: G.pale,
+  lambert1: G.mid,
+  linde_gelb: G.mid,
 };
 
-// Dimension lines in world metres relative to the truck, X forward, Y up, Z to the near side, the side the camera sees.
-function dimensions() {
-  const dim = new L();
-  const tris: number[] = [];
-  const labels: { text: string; p: number[] }[] = [];
-  const arrow = (tip: number[], dir: number[], normal: 'y' | 'z') => {
-    const len = 0.14;
-    const w = 0.045;
+// ---- dimension lines ---------------------------------------------------------------------------------------------------
+
+type Dim = { segs: number[][]; tris: number[]; label: { text: string; p: number[]; c: [number, number] }[] };
+
+// In truck metres, X forward, Y up, Z to the near side, the side the camera sees. The places were measured against the
+// page grid at 1440 by 900 and 1920 by 1080 with the camera of camera.tsx, so each dimension stays inside one cell.
+// Y, the wheelbase, on the floor beside the near tyres, in the cell under the cab.
+// H1, the mast lowered, standing on the floor ahead of the forks, in the cell on the right.
+// C and Q, the load centre from the fork face and the capacity, beside the near fork, in the same cell.
+function dimensions(): Dim[] {
+  const arrow = (tris: number[], tip: number[], dir: number[], normal: 'y' | 'z') => {
+    const len = 0.13;
+    const w = 0.04;
     const base = [tip[0] + dir[0] * len, tip[1] + dir[1] * len, tip[2] + dir[2] * len];
     const side = normal === 'y' ? [-dir[2], 0, dir[0]] : [-dir[1], dir[0], 0];
     tris.push(...tip, base[0] + side[0] * w, base[1] + side[1] * w, base[2] + side[2] * w, base[0] - side[0] * w, base[1] - side[1] * w, base[2] - side[2] * w);
   };
-  // along x on the ground, the line broken for its label
-  const gx = (x1: number, x2: number, z: number, text: string, extFrom: [number, number]) => {
-    dim.seg([x1, GROUND, extFrom[0]], [x1, GROUND, z + 0.1]);
-    dim.seg([x2, GROUND, extFrom[1]], [x2, GROUND, z + 0.1]);
-    const mid = (x1 + x2) / 2;
-    const gap = 0.07 * text.length * 0.5 + 0.12;
-    dim.seg([x1, GROUND, z], [mid - gap, GROUND, z]);
-    dim.seg([mid + gap, GROUND, z], [x2, GROUND, z]);
-    arrow([x1, GROUND, z], [1, 0, 0], 'y');
-    arrow([x2, GROUND, z], [-1, 0, 0], 'y');
-    labels.push({ text, p: [mid, 0.1, z] });
-  };
-  const L1x = -2.64;
-  const tip = 1.736;
-  gx(L1x, tip, 2.45, `L1 ${FIG.l1}`, [0.78, 0.2]);
-  gx(L1x, tip - 1.2, 2.05, `L2 ${FIG.l2}`, [0.78, 0.2]);
-  gx(-2.121, 0, 1.65, `Y ${FIG.y}`, [0.78, 0.7]);
-  // heights, vertical lines beside the truck with their extension lines in a horizontal plane
-  const gy = (x: number, z: number, top: number, text: string, from: number[], at: number) => {
-    dim.seg(from, [x, top, z]);
-    dim.seg([x, GROUND, z], [x, GROUND + (top - GROUND) * at - 0.14, z]);
-    dim.seg([x, GROUND + (top - GROUND) * at + 0.14, z], [x, top, z]);
-    dim.seg([x - 0.12, GROUND, z], [x + 0.12, GROUND, z]);
-    arrow([x, GROUND, z], [0, 1, 0], 'z');
-    arrow([x, top, z], [0, -1, 0], 'z');
-    labels.push({ text, p: [x + 0.06, GROUND + (top - GROUND) * at, z] });
-  };
-  gy(1.0, 1.25, 2.458, `H1 ${FIG.h1}`, [0.42, 2.458, 0.52], 0.3);
-  gy(1.95, 1.25, 2.511, `H6 ${FIG.h6}`, [-1.55, 2.511, 0.68], 0.68);
-  // the load centre over the near fork, and the capacity
-  const x0 = tip - 1.2;
-  const x1 = x0 + 0.6;
-  const zf = 0.3;
-  const yc = 0.95;
-  dim.seg([x0, 0.12, zf], [x0, yc + 0.08, zf]);
-  dim.seg([x1, 0.12, zf], [x1, yc + 0.08, zf]);
-  const gap = 0.07 * 5 * 0.5 + 0.12;
-  const mid = (x0 + x1) / 2;
-  dim.seg([x0, yc, zf], [mid - gap, yc, zf]);
-  dim.seg([mid + gap, yc, zf], [x1, yc, zf]);
-  arrow([x0, yc, zf], [1, 0, 0], 'z');
-  arrow([x1, yc, zf], [-1, 0, 0], 'z');
-  labels.push({ text: `C ${FIG.c}`, p: [mid, yc, zf] });
-  labels.push({ text: `Q ${FIG.q} KG`, p: [mid, yc + 0.3, zf] });
-  return { dim: dim.a, tris, labels };
+  // Y, from the rear axle to the front axle
+  const y: Dim = { segs: [], tris: [], label: [] };
+  {
+    const z = 1.08;
+    const [x0, x1] = [-2.121, 0];
+    y.segs.push([x0, GROUND, 0.86, x0, GROUND, z + 0.08], [x1, GROUND, 0.86, x1, GROUND, z + 0.08], [x0, GROUND, z, x1, GROUND, z]);
+    arrow(y.tris, [x0, GROUND, z], [1, 0, 0], 'y');
+    arrow(y.tris, [x1, GROUND, z], [-1, 0, 0], 'y');
+    y.label.push({ text: `Y ${FIG.y}`, p: [(x0 + x1) / 2, GROUND, z], c: [0.5, 1.35] });
+  }
+  // H1, from the floor to the top of the mast
+  const h: Dim = { segs: [], tris: [], label: [] };
+  {
+    const [x, z, top] = [2.4, 0.4, 2.523];
+    h.segs.push([x, GROUND, z, x, top, z], [0.86, top, z, x + 0.1, top, z], [x - 0.1, GROUND, z, x + 0.1, GROUND, z]);
+    arrow(h.tris, [x, GROUND, z], [0, 1, 0], 'z');
+    arrow(h.tris, [x, top, z], [0, -1, 0], 'z');
+    h.label.push({ text: `H1 ${FIG.h1}`, p: [x, top * 0.55, z], c: [-0.12, 0.5] });
+  }
+  // C, from the fork face to the load centre, beside the near fork, and the capacity under it, both clear of the tines
+  const c: Dim = { segs: [], tris: [], label: [] };
+  {
+    const [x0, yc, z] = [0.536, 0.12, 1.06];
+    const x1 = x0 + 0.6;
+    c.segs.push([x0, yc, 0.86, x0, yc, z + 0.08], [x1, yc, 0.86, x1, yc, z + 0.08], [x0, yc, z, x1, yc, z]);
+    arrow(c.tris, [x0, yc, z], [1, 0, 0], 'y');
+    arrow(c.tris, [x1, yc, z], [-1, 0, 0], 'y');
+    c.label.push({ text: `C ${FIG.c}`, p: [(x0 + x1) / 2, yc, z], c: [0.5, 1.35] });
+    c.label.push({ text: `Q ${FIG.q} KG`, p: [(x0 + x1) / 2, yc, z], c: [0.5, 2.45] });
+  }
+  return [y, h, c];
 }
 
-// The inverted hull, back faces pushed out along their normals by a fixed number of pixels, drawn white. Only the rim
-// that sticks out past the front faces survives the depth test, which is the outer contour.
-function hullMaterial() {
+// Each segment drawn from its first point up to p of its length.
+function partial(dims: Dim[], p: number) {
+  const out: number[] = [];
+  dims.forEach((d) =>
+    d.segs.forEach((s) => {
+      out.push(s[0], s[1], s[2], s[0] + (s[3] - s[0]) * p, s[1] + (s[4] - s[1]) * p, s[2] + (s[5] - s[2]) * p);
+    }),
+  );
+  return new Float32Array(out);
+}
+
+const FONT = '500 15px "Daxline Pro", Arial, sans-serif';
+const LABEL_H = 22;
+function labelSprite(text: string, center: [number, number]) {
+  const c = document.createElement('canvas');
+  const g = c.getContext('2d')!;
+  const spaced = (x: CanvasRenderingContext2D) => ((x as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '1.1px');
+  g.font = FONT;
+  spaced(g);
+  const w = Math.ceil(g.measureText(text).width) + 6;
+  c.width = w * 3;
+  c.height = LABEL_H * 3;
+  g.scale(3, 3);
+  g.font = FONT;
+  spaced(g);
+  g.fillStyle = TEXT;
+  g.textBaseline = 'middle';
+  g.fillText(text, 3, LABEL_H / 2 + 1);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  // a fixed size on screen, so a figure is 15px at every width and every distance
+  const mat = new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false, depthWrite: false, toneMapped: false, sizeAttenuation: false });
+  const s = new THREE.Sprite(mat);
+  s.center.set(center[0], center[1]);
+  s.renderOrder = 4;
+  s.frustumCulled = false;
+  return { sprite: s, w };
+}
+
+// A black contact shadow under the truck. The kit's blob is ink grey, lighter than this ground, so it would glow here.
+function contactMaterial() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(0,0,0,1)');
+  grd.addColorStop(0.5, 'rgba(0,0,0,0.6)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c);
+  return new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, toneMapped: false });
+}
+
+// ---- the outline -------------------------------------------------------------------------------------------------------
+
+// A white mask of the whole truck is drawn into a target each frame, then one pass over the screen lights the pixels just
+// outside the mask. Only the outer contour can come out of it, never an edge inside the truck.
+function outlineMaterial(mask: THREE.Texture) {
   return new THREE.ShaderMaterial({
-    side: THREE.BackSide,
     transparent: true,
+    depthTest: false,
     depthWrite: false,
-    uniforms: { uThick: { value: 2 }, uRes: { value: new THREE.Vector2(1440, 900) }, uOpacity: { value: 0 } },
-    vertexShader: `
-      uniform float uThick; uniform vec2 uRes;
+    toneMapped: false,
+    uniforms: { uMask: { value: mask }, uRes: { value: new THREE.Vector2(1, 1) }, uThick: { value: 2 }, uOpacity: { value: 0.9 } },
+    vertexShader: `void main() { gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+    fragmentShader: `
+      uniform sampler2D uMask; uniform vec2 uRes; uniform float uThick; uniform float uOpacity;
       void main() {
-        vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        vec3 n = normalize(normalMatrix * normal);
-        vec4 cn = projectionMatrix * vec4(n, 0.0);
-        vec2 d = cn.xy; float l = length(d);
-        vec2 off = l > 1e-5 ? d / l * uThick / uRes * 2.0 * clip.w : vec2(0.0);
-        gl_Position = clip + vec4(off, 0.0, 0.0);
+        vec2 uv = gl_FragCoord.xy / uRes;
+        float c = texture2D(uMask, uv).r;
+        if (c > 0.995) discard;
+        float m = 0.0;
+        for (int i = 0; i < 16; i++) {
+          float a = float(i) * 0.3926991;
+          vec2 d = vec2(cos(a), sin(a)) / uRes;
+          m = max(m, texture2D(uMask, uv + d * uThick).r);
+          m = max(m, texture2D(uMask, uv + d * uThick * 0.5).r);
+        }
+        float k = clamp(m - c, 0.0, 1.0);
+        if (k < 0.004) discard;
+        gl_FragColor = vec4(vec3(1.0), k * uOpacity);
       }`,
-    fragmentShader: `uniform float uOpacity; void main() { gl_FragColor = vec4(vec3(1.0), uOpacity); }`,
   });
 }
 
-// Three wheels turn, the outer face of each wheel: tyre circle, hub circle, five lugs. Wheel centre in the model frame.
-const WHEEL_NODES = SPEC.x50.wheels;
-
-export default function Schematic({ clock }: SceneProps) {
+function Stage({ clock }: SceneProps) {
   const spec = SPEC.x50;
   const gltf = useGLTF(modelUrl('x50')) as unknown as { scene: THREE.Group };
   const size = useThree((s) => s.size);
   const dpr = useThree((s) => s.viewport.dpr);
+  const gl = useThree((s) => s.gl);
+  const camera = useThree((s) => s.camera);
+  const scene = useThree((s) => s.scene);
   const invalidate = useThree((s) => s.invalidate);
   const [fonts, setFonts] = useState(0);
   const root = useRef<THREE.Group>(null);
-  const wheelRefs = useRef<(THREE.Group | null)[]>([]);
+  const drawn = useRef(-1);
+  const warm = useRef(false);
 
-  const mats = useMemo(
-    () => ({
-      detail: lineMat(0.55, 1, '#ffffff', true),
-      wheelO: lineMat(0.9, 2, '#ffffff', true),
-      wheelD: lineMat(0.55, 1, '#ffffff', true),
-      centre: lineMat(0.5, 1, '#ffffff', false),
-      dim: lineMat(1, 1, TURQUOISE, false),
-    }),
-    [],
-  );
-  const hull = useMemo(hullMaterial, []);
-  const fill = useMemo(() => new THREE.MeshBasicMaterial({ color: '#0b0b0b', polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2, toneMapped: false }), []);
-  // the model as black fills, every mesh also gets its hull
+  // the truck in its own copies of the Linde materials, lit by the turned studio environment
+  const mats = useMemo(() => new Map<THREE.Material, THREE.MeshStandardMaterial>(), []);
   const model = useMemo(() => {
     const s = prepare(gltf.scene, 'x50');
-    const meshes: THREE.Mesh[] = [];
     s.traverse((o) => {
-      if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
-    });
-    meshes.forEach((m) => {
-      m.material = fill;
-      m.castShadow = m.receiveShadow = false;
-      // the tyres get no hull, their clean circle is the outline
-      for (let p: THREE.Object3D | null = m; p; p = p.parent) if (WHEEL_NODES.some((w) => w.node === p!.name)) return;
-      const h = new THREE.Mesh(m.geometry, hull);
-      h.renderOrder = -1;
-      m.add(h);
+      const m = o as THREE.Mesh;
+      if (!m.isMesh) return;
+      m.castShadow = true;
+      m.receiveShadow = true;
+      const src = (Array.isArray(m.material) ? m.material[0] : m.material) as THREE.MeshStandardMaterial;
+      let mat = mats.get(src);
+      if (!mat) {
+        mat = src.clone();
+        const hex = RECOLOUR[src.name];
+        if (hex) mat.color.set(hex);
+        // paint on the shell, plain rubber on the tyres, so neither turns into a mirror of the studio
+        if (src.name === 'Linde_Red_bump') {
+          mat.metalness = 0.05;
+          mat.roughness = 0.42;
+        }
+        if (src.name === 'rubber') {
+          mat.metalness = 0;
+          mat.roughness = 0.85;
+        }
+        mat.envMapRotation.set(0, ROT, 0);
+        mats.set(src, mat);
+      }
+      m.material = mat;
     });
     return s;
-  }, [gltf, fill, hull]);
-  const wheelNodes = useMemo(() => WHEEL_NODES.map((w) => ({ obj: model.getObjectByName(w.node)!, r: w.r })), [model]);
-  // hard edges of the body, mast and forks, short bits dropped, a higher threshold on the busy body
-  const edges = useMemo(() => {
-    const keep = (pts: number[]) => {
-      const out: number[] = [];
-      for (let i = 0; i < pts.length; i += 6) {
-        if (Math.hypot(pts[i] - pts[i + 3], pts[i + 1] - pts[i + 4], pts[i + 2] - pts[i + 5]) >= 0.03) out.push(...pts.slice(i, i + 6));
-      }
-      return out;
-    };
-    return seg2(keep(bakeEdges(gltf.scene, 'x50', 40).body), mats.detail);
   }, [gltf, mats]);
-  // wheel faces, in the wheel's own frame (unit tyre radius), on the outer face of each tyre
-  const wheelLines = useMemo(
-    () =>
-      wheelNodes.map((w) => {
-        const sign = Math.sign(w.obj.position.z) || 1;
-        const z = sign * 0.3;
-        const o = new L();
-        const d = new L();
-        o.circle([0, 0, z], 1, 'xy', 96);
-        d.circle([0, 0, z], 0.4, 'xy', 48);
-        d.circle([0, 0, z], 0.16, 'xy', 32);
-        for (let k = 0; k < 5; k++) {
-          const a = (k / 5) * Math.PI * 2 + 0.3;
-          d.circle([Math.cos(a) * 0.28, Math.sin(a) * 0.28, z], 0.045, 'xy', 12);
-        }
-        return { outline: seg2(o.a, mats.wheelO), detail: seg2(d.a, mats.wheelD) };
-      }),
-    [wheelNodes, mats],
-  );
-  const centre = useMemo(() => {
-    const c = new L();
-    [0, -2.121].forEach((x) => c.dashdot([x, 0.414, -1.0], [x, 0.414, 1.0]));
-    c.dashdot([-2.9, GROUND, 0], [2.0, GROUND, 0]);
-    c.dashdot([-0.17, GROUND, 0], [-0.17, 2.85, 0]);
-    return seg2(c.a, mats.centre);
-  }, [mats]);
-  const dims = useMemo(dimensions, []);
-  const dimLines = useMemo(() => seg2(dims.dim, mats.dim), [dims, mats]);
-  const arrowGeo = useMemo(() => {
+  const wheelNodes = useMemo(() => spec.wheels.map((w) => ({ obj: model.getObjectByName(w.node)!, r: w.r })), [model, spec]);
+
+  // the mask, a second copy of the truck in one white material, in a scene of its own
+  const mask = useMemo(() => {
+    const rt = new THREE.WebGLRenderTarget(1, 1, { samples: 4, depthBuffer: true });
+    const sc = new THREE.Scene();
+    sc.overrideMaterial = new THREE.MeshBasicMaterial({ color: '#ffffff' });
+    const holder = new THREE.Group();
+    holder.position.set(BP.x, spec.ground, BP.z);
+    holder.rotation.y = spec.yaw;
+    holder.add(prepare(gltf.scene, 'x50'));
+    sc.add(holder);
+    sc.updateMatrixWorld(true);
+    return { rt, sc };
+  }, [gltf, spec]);
+  const outline = useMemo(() => {
     const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(dims.tris, 3));
+    g.setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3));
+    const m = new THREE.Mesh(g, outlineMaterial(mask.rt.texture));
+    m.frustumCulled = false;
+    m.renderOrder = 2;
+    return m;
+  }, [mask]);
+
+  // the floor, a 0.5 m grid at 8 percent over the whole visible floor, a shadow catcher and the contact shadow
+  const grid = useMemo(() => {
+    // short 0.5 m segments, as a line that passes under the camera is dropped whole. The camera looks toward +x and -z
+    // from about (-7, 7, 10), so this box holds every bit of floor up to the top edge of the frame.
+    const p: number[] = [];
+    const [x0, x1, z0, z1] = [-36, 36, -36, 12];
+    for (let x = x0; x <= x1 + 0.001; x += 0.5) for (let z = z0; z < z1; z += 0.5) p.push(x, 0, z, x, 0, z + 0.5);
+    for (let z = z0; z <= z1 + 0.001; z += 0.5) for (let x = x0; x < x1; x += 0.5) p.push(x, 0, z, x + 0.5, 0, z);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
     return g;
+  }, []);
+  const gridMat = useMemo(() => new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.08, toneMapped: false, depthWrite: false }), []);
+  const shadowMat = useMemo(() => new THREE.ShadowMaterial({ color: '#000000', opacity: 0.7, depthWrite: false }), []);
+  const blob = useMemo(contactMaterial, []);
+
+  // dimensions
+  const dims = useMemo(dimensions, []);
+  const lineMat = useMemo(() => new LineMaterial({ color: new THREE.Color(INK).getHex(), linewidth: 1, toneMapped: false, depthWrite: false }), []);
+  const lines = useMemo(() => {
+    const g = new LineSegmentsGeometry();
+    g.setPositions(partial(dims, 0.001));
+    const l = new LineSegments2(g, lineMat);
+    l.frustumCulled = false;
+    l.renderOrder = 3;
+    return l;
+  }, [dims, lineMat]);
+  const arrows = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(dims.flatMap((d) => d.tris), 3));
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: INK, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
+    m.renderOrder = 3;
+    m.frustumCulled = false;
+    return m;
   }, [dims]);
-  const arrowMat = useMemo(() => new THREE.MeshBasicMaterial({ color: TURQUOISE, side: THREE.DoubleSide, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }), []);
   const labels = useMemo(
-    () => dims.labels.map((l) => ({ ...l, ...labelSprite(l.text) })),
+    () =>
+      dims.flatMap((d) =>
+        d.label.map((l) => {
+          const s = labelSprite(l.text, l.c);
+          s.sprite.position.set(l.p[0], l.p[1], l.p[2]);
+          return s;
+        }),
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dims, fonts],
   );
-  const grid = useMemo(() => {
-    const p: number[] = [];
-    const c: number[] = [];
-    const R = 7;
-    const add = (a: number[], b: number[]) => {
-      p.push(...a, ...b);
-      for (const q of [a, b]) {
-        const k = Math.max(0, 1 - Math.hypot(q[0] + 0.5, q[2]) / R);
-        c.push(k, k, k);
-      }
-    };
-    for (let x = -7; x <= 6.001; x += 0.5) for (let z = -6; z < 6; z += 0.5) add([x, 0, z], [x, 0, z + 0.5]);
-    for (let z = -6; z <= 6.001; z += 0.5) for (let x = -7; x < 6; x += 0.5) add([x, 0, z], [x + 0.5, 0, z]);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
-    g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3));
-    return g;
-  }, []);
-  const gridMat = useMemo(() => new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }), []);
 
   useEffect(() => {
     let live = true;
-    Promise.all([document.fonts?.load(FONT, 'L1 Y KGHCQ'), document.fonts?.load(FONT, '0123456789')]).then(() => {
+    Promise.all([document.fonts?.load(FONT, 'Y H C Q KG'), document.fonts?.load(FONT, '0123456789')]).then(() => {
       if (live) {
         setFonts((n) => n + 1);
         invalidate();
@@ -299,74 +308,102 @@ export default function Schematic({ clock }: SceneProps) {
   }, [invalidate]);
 
   useEffect(() => {
-    const f = Math.max(1, size.height / 900) * dpr;
-    Object.values(mats).forEach((m) => m.resolution.set(size.width * dpr, size.height * dpr));
-    mats.detail.linewidth = f;
-    mats.wheelO.linewidth = 2 * f;
-    mats.wheelD.linewidth = f;
-    mats.centre.linewidth = f;
-    mats.dim.linewidth = f;
-    hull.uniforms.uRes.value.set(size.width, size.height);
-    hull.uniforms.uThick.value = 2 * Math.max(1, size.height / 900);
-  }, [mats, hull, size, dpr]);
+    const f = Math.max(1, size.height / 900);
+    lineMat.resolution.set(size.width * dpr, size.height * dpr);
+    lineMat.linewidth = f * dpr;
+    mask.rt.setSize(Math.round(size.width * dpr), Math.round(size.height * dpr));
+    const u = (outline.material as THREE.ShaderMaterial).uniforms;
+    u.uRes.value.set(Math.round(size.width * dpr), Math.round(size.height * dpr));
+    u.uThick.value = 2 * dpr;
+    // sprites of a fixed size, LABEL_H css px tall whatever the frame height, fov 28
+    const k = (2 * Math.tan((28 / 2) * (Math.PI / 180))) / size.height;
+    labels.forEach((l) => l.sprite.scale.set(l.w * k, LABEL_H * k, 1));
+    invalidate();
+  }, [lineMat, mask, outline, labels, size, dpr, invalidate]);
+
+  useEffect(
+    () => () => {
+      mask.rt.dispose();
+    },
+    [mask],
+  );
 
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
     // gone by 11.9, where the light curtain of L has covered the stage, so no label can reach the rental floor behind it
     const show = u >= 9.95 && u < 11.9;
+    // Once the story is in B, the truck takes the studio environment and every shader of the stage is compiled while it
+    // is still hidden, so the first frame of S does not stall on them.
+    const env = scene.environment;
+    if (!warm.current && env && u >= 8.5 && u < 11.9 && root.current) {
+      mats.forEach((m) => {
+        m.envMap = env;
+        m.envMapIntensity = ENV;
+        m.needsUpdate = true;
+      });
+      const r = root.current;
+      r.visible = true;
+      gl.compile(r, camera, scene);
+      warm.current = true;
+    }
     if (root.current) root.current.visible = show;
     if (!show) return;
-    // the guides and the dimensions are there from the first light, the truck draws in after them
-    const guides = ease(range(u, 10.0, 10.3));
-    const draw = ease(range(u, 10.1, 10.55));
-    const det = ease(range(u, 10.3, 10.7));
-    gridMat.opacity = 0.08 * guides;
-    mats.centre.opacity = 0.5 * guides;
-    mats.dim.opacity = guides;
-    arrowMat.opacity = guides;
-    labels.forEach((l) => (l.mat.opacity = guides));
-    hull.uniforms.uOpacity.value = 0.9 * draw;
-    mats.wheelO.opacity = 0.9 * draw;
-    mats.detail.opacity = 0.55 * det;
-    mats.wheelD.opacity = 0.55 * det;
+    // the truck is there in full under the black shutter of B, the dimensions draw on once it has rolled away
+    const p = ease(range(u, 10.2, 10.5));
+    const q = Math.max(p, 0.001);
+    if (Math.abs(q - drawn.current) > 1e-4) {
+      drawn.current = q;
+      (lines.geometry as LineSegmentsGeometry).setPositions(partial(dims, q));
+    }
+    arrows.visible = p >= 0.999;
+    labels.forEach((l) => (l.sprite.visible = p >= 0.6));
     const roll = (pos - 8000) * 0.011;
-    wheelNodes.forEach((w, i) => {
-      const a = (spec.spin * roll) / w.r;
-      w.obj.rotation.z = a;
-      const g = wheelRefs.current[i];
-      if (g) g.rotation.z = a;
-    });
-    model.updateMatrixWorld(true);
+    wheelNodes.forEach((w) => (w.obj.rotation.z = (spec.spin * roll) / w.r));
+    // the mask of the truck, drawn with the camera this frame was posed with
+    const prev = gl.getRenderTarget();
+    const clear = gl.getClearAlpha();
+    const col = gl.getClearColor(new THREE.Color());
+    gl.setRenderTarget(mask.rt);
+    gl.setClearColor(0x000000, 1);
+    gl.clear(true, true, false);
+    gl.render(mask.sc, camera);
+    gl.setRenderTarget(prev);
+    gl.setClearColor(col, clear);
   });
 
   return (
     <group ref={root} visible={false} position={[BP.x, 0, BP.z]}>
       <lineSegments geometry={grid} material={gridMat} renderOrder={-3} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 0]} material={shadowMat} receiveShadow renderOrder={-2}>
+        <planeGeometry args={[16, 16]} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[spec.foot[2], 0.006, 0]} material={blob} renderOrder={-1}>
+        <planeGeometry args={[spec.foot[0], spec.foot[1]]} />
+      </mesh>
       <group position={[0, spec.ground, 0]} rotation={[0, spec.yaw, 0]}>
-        <primitive object={model} renderOrder={-2} />
-        <primitive object={edges} renderOrder={1} />
-        {wheelNodes.map((w, i) => (
-          <group
-            key={i}
-            ref={(g) => {
-              wheelRefs.current[i] = g;
-            }}
-            position={w.obj.position}
-            scale={w.obj.scale}
-            renderOrder={1}
-          >
-            <primitive object={wheelLines[i].detail} />
-            <primitive object={wheelLines[i].outline} />
-          </group>
-        ))}
+        <primitive object={model} />
       </group>
-      <primitive object={centre} />
-      <primitive object={dimLines} />
-      <mesh geometry={arrowGeo} material={arrowMat} renderOrder={3} />
+      <primitive object={outline} />
+      <primitive object={lines} />
+      <primitive object={arrows} />
       {labels.map((l, i) => (
-        <sprite key={`${i}${fonts}`} position={l.p as [number, number, number]} material={l.mat} scale={[l.w / 150, l.h / 150, 1]} renderOrder={4} />
+        <primitive key={`${i}${fonts}`} object={l.sprite} />
       ))}
     </group>
   );
+}
+
+// Nothing of the stage is built on page load. It is put together once the story reaches B, while the truck and the shutter
+// still cover the frame, so the first frame of the page does no work for S.
+export default function Schematic({ clock }: SceneProps) {
+  const [ready, setReady] = useState(false);
+  const invalidate = useThree((s) => s.invalidate);
+  useFrame(() => {
+    if (!ready && uOf(clock) >= 8.5) {
+      setReady(true);
+      invalidate();
+    }
+  });
+  return ready ? <Stage clock={clock} /> : null;
 }

@@ -712,9 +712,17 @@ test('proof, a line inside a wrapped block of a user turn is refused, a line bes
   assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'unclosed block');
   put('x.jsonl', userMsg('drop P-4', { origin: 'task-notification' }), userMsg('drop P-4', { origin: 'peer' }));
   assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'origin that is not human');
+  put('x.jsonl', userMsg('drop P-4', { origin: { kind: 'task-notification' } }), userMsg('drop P-4', { origin: { kind: 'peer' } }));
+  assert.equal(raw('choose', 'P-4', 'drop P-4').err, NOT_RECORDED, 'object origin that is not human');
   assert.equal(ledgerOf('P-4').closed, undefined);
   say('<system-reminder>noise</system-reminder> drop P-4');
   assert.equal(raw('choose', 'P-4', 'drop P-4').code, 0);
+});
+
+test('proof, an object origin of kind human counts like the bare string', () => {
+  carded('P-4b');
+  put('x.jsonl', userMsg('drop P-4b', { origin: { kind: 'human' } }));
+  assert.equal(raw('choose', 'P-4b', 'drop P-4b').code, 0);
 });
 
 test('proof, tool results, meta lines and sidechains are not Filip', () => {

@@ -235,7 +235,9 @@ function* linesBackward(path) {
 // The words Filip typed in a transcript line, or null when the line is not a genuine user message.
 function typedText(o) {
   if (!o || o.type !== 'user' || o.isMeta || o.isSidechain || o.toolUseResult) return null;
-  if (o.origin !== undefined && o.origin !== 'human') return null;
+  // newer transcripts write the origin as an object, { kind: 'human' }, older ones as the bare string
+  const origin = o.origin && typeof o.origin === 'object' ? o.origin.kind : o.origin;
+  if (origin !== undefined && origin !== 'human') return null;
   const c = o.message && o.message.content;
   let text;
   if (typeof c === 'string') text = c;

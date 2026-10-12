@@ -1,19 +1,19 @@
 // The shared shell for storyline 2. It pins the stage with the story clock, mounts one scene behind it, draws the
 // grid over the scene, lays the text of each hold beat on the grid and puts the shared frame on top. After the pinned
-// stage come the statement, Proizvodi, the client wall, the closing band and the footer as normal sections.
+// stage come the products and the footer as normal sections.
 //
 // All motion reads the story clock, so it scrubs with the scroll and freezes with ?at=. The loop below drives the
-// block wipes, the scroll fill, the count up, the grid, the counter and the logos from clock.pos with no React render.
+// block wipes, the scroll fill, the count up, the grid and the logos from clock.pos with no React render.
+// The Prodaja tabs and the Najam photos run on real time once their beat is on screen, from the story clock for when.
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { LENGTH, TIMELINE, type BeatSpan } from '../timeline';
+import { TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
-import { Grid } from './Grid';
+import { Grid, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
-import { Footer } from './sections';
+import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
-import { applyBtnVariant } from './variant';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -31,9 +31,12 @@ const LAYERS: LayerDef[] = [
   { id: 'AT', Pane: ATPane, dark: true, still: 0.5 },
 ];
 
-// Where the text leaves, as a share of its beat. P keeps its text through the first half, then lets the
-// warehouse reveal take over.
-const LEAVE: Record<string, [number, number]> = { P: [0.5, 0.74], AT: [1.01, 1.02] };
+// Where the text leaves, as a share of its beat. P holds its four models to the end of the hold.
+const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02] };
+
+// Prodaja steps one model per 0.22 of the hold, at k 0.06, 0.28, 0.50 and 0.72, the last one held to the end.
+const P_FIRST = 0.06;
+const P_STEP = 0.22;
 const LEAVE_DEFAULT: [number, number] = [0.86, 1];
 
 // Story pixels where the ground under the top row is dark in the light versions, the black push at the end
@@ -43,19 +46,7 @@ const DARK_TOP: [number, number][] = [
   [10790, 13000],
 ];
 
-// The counter on the right edge, the number of the last hold passed.
-const COUNTER: [number, string][] = [
-  [10900, '06'],
-  [9600, '05'],
-  [8000, '04'],
-  [5300, '03'],
-  [3500, '02'],
-  [1500, '01'],
-  [0, '00'],
-];
-
 const HOLDS = TIMELINE.filter((b) => b.hold);
-const PAD = 16;
 
 const ink = (tone: Tone, dark: boolean) => (tone === 'dark' || dark ? 'dark' : 'light');
 
@@ -67,46 +58,6 @@ function mountScene(Scene: ComponentType<SceneProps>, clock: SceneProps['clock']
   );
 }
 
-type Rect = { x: number; y: number; w: number; h: number };
-
-// Merge overlapping boxes so the XOR mask below never brings a line back inside a text box.
-function merge(rects: Rect[]): Rect[] {
-  const out = rects.map((r) => ({ ...r }));
-  let again = true;
-  while (again) {
-    again = false;
-    for (let i = 0; i < out.length && !again; i++) {
-      for (let j = i + 1; j < out.length; j++) {
-        const a = out[i];
-        const b = out[j];
-        if (a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h) {
-          const x = Math.min(a.x, b.x);
-          const y = Math.min(a.y, b.y);
-          out[i] = { x, y, w: Math.max(a.x + a.w, b.x + b.w) - x, h: Math.max(a.y + a.h, b.y + b.h) - y };
-          out.splice(j, 1);
-          again = true;
-          break;
-        }
-      }
-    }
-  }
-  return out;
-}
-
-// The grid is hidden behind every text box with 16px of padding. A full layer minus one box each, by XOR.
-function maskStyle(rects: Rect[]) {
-  const boxes = merge(rects);
-  if (!boxes.length) return { image: '', size: '', pos: '', repeat: '', comp: '' };
-  const solid = 'linear-gradient(#000,#000)';
-  return {
-    image: [...boxes.map(() => solid), solid].join(','),
-    size: [...boxes.map((r) => `${r.w.toFixed(1)}px ${r.h.toFixed(1)}px`), '100% 100%'].join(','),
-    pos: [...boxes.map((r) => `${r.x.toFixed(1)}px ${r.y.toFixed(1)}px`), '0 0'].join(','),
-    repeat: 'no-repeat',
-    comp: [...boxes.map(() => 'exclude'), 'add'].join(','),
-  };
-}
-
 type Group = {
   id: string;
   el: HTMLElement;
@@ -116,9 +67,11 @@ type Group = {
   leaveInPx: boolean;
   wipes: { el: HTMLElement; order: number; last: string; target: number; suffix: string; lastText: string }[];
   fills: { el: HTMLElement; letters: HTMLElement[]; on: number }[];
-  masks: HTMLElement[];
-  rects: Rect[];
+  // the plus marks at this group's block rules, drawn into .s2-plus
+  wrap: HTMLElement | null;
   tabs: HTMLElement | null;
+  photos: HTMLElement[];
+  shownAt: number;
   persistent: boolean;
   maxOrder: number;
   last: string;
@@ -145,21 +98,15 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     leaveInPx: false,
     wipes,
     fills,
-    masks: Array.from(el.querySelectorAll<HTMLElement>('[data-mask]')),
-    rects: [],
+    wrap: null,
     tabs: el.querySelector<HTMLElement>('.s2-p'),
+    photos: Array.from(el.querySelectorAll<HTMLElement>('[data-rt]')),
+    shownAt: 0,
     persistent: false,
     maxOrder: Math.max(1, ...wipes.map((w) => w.order)),
     last: '',
     ...opts,
   };
-}
-
-// Box of an element inside the stage, from its layout position, so a running reveal never moves the mask.
-function boxIn(el: HTMLElement, stage: HTMLElement): Rect {
-  const a = el.getBoundingClientRect();
-  const b = stage.getBoundingClientRect();
-  return { x: a.left - b.left - PAD, y: a.top - b.top - PAD, w: a.width + PAD * 2, h: a.height + PAD * 2 };
 }
 
 type ShellProps = {
@@ -173,9 +120,6 @@ type ShellProps = {
 
 export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TOP }: ShellProps) {
   const { stageRef, clock } = useStoryClock(reduced);
-  useEffect(() => {
-    applyBtnVariant();
-  }, []);
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -188,9 +132,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const stage = stageRef.current;
     const hf = heroRef.current;
     const grid = gridRef.current;
-    const lines = grid?.querySelector<HTMLElement>('.s2-lines');
     const plus = stage?.querySelector<HTMLElement>('.s2-plus');
-    if (!stage || !hf || !grid || !lines || !plus) return;
+    if (!stage || !hf || !grid || !plus) return;
     const t0 = performance.now();
     const H = TIMELINE[0];
 
@@ -204,16 +147,22 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       const span = TIMELINE.find((b) => b.id === el.dataset.layer)!;
       groups.push(collect(span.id, el, span, { leave: LEAVE[span.id] ?? LEAVE_DEFAULT }));
     });
-    // boxes that are always there, logos, nav, buttons and the counter
-    const fixed = Array.from(hf.querySelectorAll<HTMLElement>('.hf-top [data-mask], .hf-nums, .hf-coords'));
-    let fixedRects: Rect[] = [];
+    // each group draws the plus marks at its own block rules into a wrapper of its own, shown with the group
+    for (const G of groups) {
+      if (G.persistent) continue;
+      const w = document.createElement('div');
+      w.className = 'gpg';
+      w.style.visibility = 'hidden';
+      plus.appendChild(w);
+      G.wrap = w;
+      // Prodaja starts with no model on show, the first one comes in at k 0.06
+      if (G.id === 'P' && G.tabs) setTab(G.tabs, -1);
+    }
 
+    // the plus marks at every crossing of a vertical with a block rule, from the rules as laid out
     const measure = () => {
-      fixedRects = fixed.map((e) => boxIn(e, stage));
-      for (const G of groups) G.rects = G.masks.map((e) => boxIn(e, stage));
-      lastMask = '\u0000';
+      for (const G of groups) if (G.wrap) paintMarks(G.wrap, ruleMarks(G.el, stage));
     };
-    let lastMask = '';
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(stage);
@@ -221,8 +170,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const settle = window.setTimeout(measure, 800);
 
     let lastTone = '';
-    let lastCounter = '';
-    let lastProg = -1;
     let lastGrid = '';
     let id = 0;
 
@@ -230,7 +177,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       const pos = clock.pos.current;
       // the hero block and the top row play on real time after load, 1.2s for all lines, then read the clock
       const heroT = clamp01((performance.now() - t0) / 1000 / HERO_SECONDS);
-      const visible: Group[] = [];
 
       for (const G of groups) {
         const isHero = G.id === 'H' || G.id === 'top';
@@ -258,12 +204,16 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           G.el.dataset.vis = vis;
           G.el.style.visibility = on ? 'visible' : 'hidden';
           G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
+          if (G.wrap) G.wrap.style.visibility = on ? 'visible' : 'hidden';
+          if (on) G.shownAt = performance.now();
+          // Prodaja shows no model while its beat is off screen, so the first one comes in again next time
+          else if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
         if (!on) continue;
-        if (!G.persistent) visible.push(G);
         if (!G.persistent) {
           const op = (1 - o).toFixed(2);
           if (G.el.style.opacity !== op) G.el.style.opacity = op;
+          if (G.wrap && G.wrap.style.opacity !== op) G.wrap.style.opacity = op;
         }
         const pe = !G.persistent && o > 0.4 ? 'none' : '';
         if (G.el.style.pointerEvents !== pe) G.el.style.pointerEvents = pe;
@@ -299,23 +249,30 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             F.on = n;
           }
         }
-        // Prodaja, the tabs step with k until the visitor picks one
+        // Prodaja, the tabs step with k until the visitor picks one, one model per 0.22 of the hold
         if (G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) {
-          const step = Math.min(3, Math.max(0, Math.floor((k - 0.05) / 0.11)));
+          const step = k < P_FIRST ? -1 : Math.min(3, Math.floor((k - P_FIRST) / P_STEP));
           if (G.tabs.getAttribute('data-tab') !== String(step)) setTab(G.tabs, step);
         }
-      }
-
-      // the grid, hidden behind the boxes that are on screen
-      const key = visible.map((g) => g.id).join();
-      if (key !== lastMask) {
-        lastMask = key;
-        const m = maskStyle([...fixedRects, ...visible.flatMap((g) => g.rects)]);
-        lines.style.maskImage = m.image;
-        lines.style.maskSize = m.size;
-        lines.style.maskPosition = m.pos;
-        lines.style.maskRepeat = m.repeat;
-        lines.style.maskComposite = m.comp;
+        // Najam photos, a block wipe each 120ms after the one before on real time, and a parallax of up to 24px against the scroll
+        if (G.photos.length) {
+          const t = performance.now() - G.shownAt - 300;
+          G.photos.forEach((ph, i) => {
+            const p = clamp01((t - i * 120) / 700);
+            const key = String(Math.round(p * 240));
+            if (key !== ph.dataset.last) {
+              ph.dataset.last = key;
+              const w = wipeAt(p);
+              ph.style.setProperty('--bx', `${w.bx.toFixed(1)}%`);
+              ph.style.setProperty('--tv', w.shown ? 'inherit' : 'hidden');
+            }
+            const py = ((k - 0.5) * 2 * Number(ph.dataset.depth ?? 0)).toFixed(1);
+            if (py !== ph.dataset.py) {
+              ph.dataset.py = py;
+              ph.style.setProperty('--py', `${py}px`);
+            }
+          });
+        }
       }
 
       // grid draw on at each hold, dim to 40 percent between holds, plus marks turn once on reveal
@@ -343,26 +300,13 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         plus.style.setProperty('--rot', draw >= 0.999 ? '0' : draw.toFixed(3));
       }
 
-      // counter and progress line on the right edge
-      const prog = Math.round(clamp01(pos / LENGTH) * 2000) / 2000;
-      if (prog !== lastProg) {
-        lastProg = prog;
-        hf.style.setProperty('--prog', String(prog));
-      }
-      const [, c] = COUNTER.find(([s]) => pos >= s)!;
-      if (c !== lastCounter) {
-        lastCounter = c;
-        const now = hf.querySelector('.hf-now');
-        if (now) now.textContent = c;
-      }
-      // dark span, the grid and the frame turn white and the logos leave, the Linde logo is banned on dark grey
+      // dark span, the grid and the frame turn white, the Linde logo stays as supplied and the Ekotehnika wordmark turns white
       const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
       const t = dark ? 'white' : 'ink';
       if (t !== lastTone) {
         lastTone = t;
         hf.dataset.tone = t;
         hf.dataset.toneBottom = t;
-        hf.dataset.logos = dark ? 'off' : 'on';
         grid.dataset.tone = t;
         plus.dataset.tone = t;
       }
@@ -377,11 +321,12 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   }, [reduced, clock, stageRef, tone, darkTop]);
 
   // The version chip is review chrome in the bottom band of the story. Over the sections after the story it steps aside, so
-  // it never sits on a spec row, a figure or the footer copyright.
+  // it never sits on a spec row, a figure or the footer copyright. The root carries the same attribute for that, so the
+  // marked section is looked up inside the body.
   useEffect(() => {
     const root = document.documentElement;
     const on = () => {
-      const next = document.querySelector<HTMLElement>('[data-after-story]');
+      const next = document.body.querySelector<HTMLElement>('[data-after-story]');
       const after = !!next && next.getBoundingClientRect().top < window.innerHeight * 0.95;
       if (after) root.setAttribute('data-after-story', '');
       else root.removeAttribute('data-after-story');
@@ -394,7 +339,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     };
   }, []);
 
-  // With reduced motion each hold is a still screen, the grid is hidden behind its boxes once, after the fonts load.
+  // With reduced motion each hold is a still screen, the plus marks at its block rules are placed once, after the fonts load.
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!reduced) return;
@@ -402,15 +347,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     if (!root) return;
     const run = () => {
       root.querySelectorAll<HTMLElement>('.s2-still').forEach((sec) => {
-        const g = sec.querySelector<HTMLElement>('.s2-lines');
-        if (!g) return;
-        const rects = Array.from(sec.querySelectorAll<HTMLElement>('[data-mask]')).map((e) => boxIn(e, sec));
-        const m = maskStyle(rects);
-        g.style.maskImage = m.image;
-        g.style.maskSize = m.size;
-        g.style.maskPosition = m.pos;
-        g.style.maskRepeat = m.repeat;
-        g.style.maskComposite = m.comp;
+        const g = sec.querySelector<HTMLElement>('.s2-plus .gpg');
+        if (g) paintMarks(g, ruleMarks(sec, sec));
       });
     };
     run();
@@ -441,7 +379,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             </div>
           </section>
         ))}
-        <Footer />
+        <AfterStory />
       </div>
     );
   }
@@ -460,7 +398,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         ))}
         <HeroFrame tone={frameTone} rootRef={heroRef} />
       </div>
-      <Footer />
+      <AfterStory />
     </div>
   );
 }

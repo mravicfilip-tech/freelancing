@@ -99,7 +99,10 @@
 
 /* ---- the grid, A3 and B4 ---- */
 .s2-grid {
-  --gl: var(--grey-light);
+  /* every line is a pair, a black half and a white half, each 1px. On a light ground the black half carries the line, on
+     a dark ground the white half does, over the red and black truck both read. */
+  --gk: rgb(0 0 0 / 0.18);
+  --gw: rgb(255 255 255 / 0.4);
   --gp: var(--black);
   --draw: 1;
   --go: 0.4;
@@ -112,7 +115,8 @@
 }
 
 .s2-grid[data-tone='white'] {
-  --gl: rgb(255 255 255 / 0.18);
+  --gk: rgb(0 0 0 / 0.4);
+  --gw: rgb(255 255 255 / 0.4);
 }
 
 .s2-plus {
@@ -122,7 +126,8 @@
   --rot: 0;
   position: absolute;
   inset: 0;
-  z-index: 15;
+  /* above the frame too, so a block rule in the hero block never covers an arm of a mark */
+  z-index: 25;
   pointer-events: none;
   opacity: var(--go);
 }
@@ -148,12 +153,13 @@
 .s2-grid .hr {
   position: absolute;
   display: block;
-  background: var(--gl);
 }
 
+/* a vertical, the black half on the line pixel, the white half on the pixel to its right */
 .s2-grid .gs {
   left: 0;
-  width: 1px;
+  width: 2px;
+  background: linear-gradient(to right, var(--gk) 0 1px, var(--gw) 1px 2px);
   transform: scaleY(var(--draw));
 }
 
@@ -185,21 +191,22 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
 }
 
 .gh-top {
   top: 136px;
 }
 
+/* the black row is the pixel row 65 up from the bottom edge, the white row under it */
 .gh-bottom {
-  bottom: 64px;
+  bottom: 63px;
 }
 
 .s2-grid .hs {
   position: absolute;
   top: 0;
-  height: 1px;
+  height: 2px;
 }
 
 .hs:nth-child(1) {
@@ -219,14 +226,16 @@
 
 .hs:nth-child(4) {
   left: var(--x4);
-  width: calc(var(--x5) - var(--x4) + 1px);
+  width: calc(var(--x5) - var(--x4) + 2px);
 }
 
+/* a horizontal, the black half on the line pixel row, the white half on the row under it */
 .s2-grid .hl,
 .s2-grid .hr {
   top: 0;
-  height: 1px;
+  height: 2px;
   width: calc(50% + 1px);
+  background: linear-gradient(to bottom, var(--gk) 0 1px, var(--gw) 1px 2px);
   transform: scaleX(var(--draw));
 }
 
@@ -259,6 +268,12 @@
   bottom: 60px;
 }
 
+/* the marks at block rules, a wrapper per beat, the shell sets each mark's top from the rule it sits on */
+.s2-plus .gpg {
+  position: absolute;
+  inset: 0;
+}
+
 .s2-plus .gp::before,
 .s2-plus .gp::after,
 .wall .gp::before,
@@ -285,13 +300,6 @@
 }
 
 /* ---- type, A1 ---- */
-.s2-label {
-  font: 500 14px/20px var(--font);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg2);
-}
-
 /* the section marker, a cell of the grid. The name sits in its own cell, top left of the column, its top hairline is the grid rule
    from the plus mark along the label, the beat count is at the far right of the cell, like a drawing title block. In a hold stack the
    cell sits on the top rule at y 136, and the title stays where it was. */
@@ -306,6 +314,13 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg);
+}
+
+.mk-flag {
+  display: inline-block;
+  margin-right: 6px;
+  /* the bottom edge sits on the baseline, so a 10px flag spans the cap height of the 14px label */
+  vertical-align: baseline;
 }
 
 .mk-count {
@@ -461,7 +476,8 @@
   grid-template-columns: 40px 1fr auto;
   align-items: center;
   height: 56px;
-  padding: 0;
+  /* 4px of room at the right, so the last letter of the range is never cut by the wipe box (N20 do N25 C) */
+  padding: 0 4px 0 0;
   border: 0;
   border-bottom: 1px solid var(--line);
   background: none;
@@ -484,7 +500,7 @@
   background: var(--fg);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 300ms var(--ease-wipe);
+  transition: transform 600ms var(--ease-wipe);
 }
 
 .tab[aria-selected='true'] {
@@ -510,18 +526,32 @@
   pointer-events: none;
 }
 
+/* the leader lines are laid out in percent of this box, with cqw and cqh. It holds nothing that reads --cw, since a size
+   container changes what 100cqw means for everything inside it. */
+.p-leads {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+}
+
+/* Each cut out is in one of three states, set by setTab in panes.tsx. wait is off to the right and ready to come in, on is
+   shown, gone is off to the left. The one leaving slides 48px left and fades over 400ms, the one arriving comes from 48px
+   right over 600ms on the same ease. After it lands the two leader lines draw on 120ms apart, the dots land with them,
+   then the range and the capacity roll in. */
 .p-fig {
   position: absolute;
   inset: 0;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 520ms var(--ease-wipe);
+  visibility: hidden;
+  transition: visibility 0s linear 400ms;
 }
 
-.s2-p[data-tab='0'] .p-fig[data-i='0'],
-.s2-p[data-tab='1'] .p-fig[data-i='1'],
-.s2-p[data-tab='2'] .p-fig[data-i='2'],
-.s2-p[data-tab='3'] .p-fig[data-i='3'] {
-  clip-path: inset(0 0 0 0);
+.p-fig[data-st='on'] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.p-fig[data-st='gone'] {
+  visibility: hidden;
 }
 
 .p-fig img {
@@ -531,22 +561,60 @@
   width: 78%;
   height: 66%;
   object-fit: contain;
+  opacity: 0;
+  translate: calc(-50% + 48px) -50%;
+}
+
+.p-fig[data-st='on'] img {
+  opacity: 1;
   translate: -50% -50%;
+  transition:
+    opacity 600ms var(--ease-wipe),
+    translate 600ms var(--ease-wipe);
 }
 
-.p-leader {
+.p-fig[data-st='gone'] img {
+  opacity: 0;
+  translate: calc(-50% - 48px) -50%;
+  transition:
+    opacity 400ms var(--ease-wipe),
+    translate 400ms var(--ease-wipe);
+}
+
+.p-lead-a,
+.p-dot-a,
+.p-call-a {
+  --n: 0;
+}
+
+.p-lead-b,
+.p-dot-b,
+.p-call-b {
+  --n: 1;
+}
+
+/* a leader line, 1px, from its start to its dot, the length and angle from the percent pairs the markup sets */
+.p-lead {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  left: calc(var(--x0) * 1cqw);
+  top: calc(var(--y0) * 1cqh);
+  height: 1px;
+  width: hypot(calc((var(--x1) - var(--x0)) * 1cqw), calc((var(--y1) - var(--y0)) * 1cqh));
+  background: var(--black);
+  transform-origin: 0 50%;
+  rotate: atan2(calc((var(--y1) - var(--y0)) * 1cqh), calc((var(--x1) - var(--x0)) * 1cqw));
+  scale: 0 1;
 }
 
-.p-leader polyline {
-  fill: none;
-  stroke: var(--black);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
+.p-fig[data-st='on'] .p-lead {
+  scale: 1 1;
+  transition: scale 400ms var(--ease-wipe) calc(600ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-lead {
+  scale: 1 1;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
 }
 
 .p-dot {
@@ -554,6 +622,17 @@
   width: 9px;
   height: 9px;
   translate: -50% -50%;
+  opacity: 0;
+}
+
+.p-fig[data-st='on'] .p-dot {
+  opacity: 1;
+  transition: opacity 120ms linear calc(1000ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-dot {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
 }
 
 .p-dot::before,
@@ -577,13 +656,47 @@
   width: 1px;
 }
 
+/* the callout, its rule shows as the cut out lands, the range and the capacity roll in after the leader lines */
 .p-call {
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 34%;
+  /* wide enough for the longest range, Linde N20 do N25 C, at 24px */
+  width: max(34%, 15em);
   padding: 0 0 12px;
+  opacity: 0;
+}
+
+.p-call .lab,
+.p-call b {
+  opacity: 0;
+  translate: 0 12px;
+}
+
+.p-fig[data-st='on'] .p-call {
+  opacity: 1;
+  transition: opacity 200ms linear 400ms;
+}
+
+.p-fig[data-st='on'] .p-call .lab,
+.p-fig[data-st='on'] .p-call b {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 500ms var(--ease-wipe) calc(1120ms + var(--n) * 120ms),
+    translate 500ms var(--ease-wipe) calc(1120ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-call {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
+}
+
+.p-fig[data-st='gone'] .p-call .lab,
+.p-fig[data-st='gone'] .p-call b {
+  opacity: 1;
+  translate: 0 0;
 }
 
 .p-call b {
@@ -592,13 +705,18 @@
   line-height: 1.2;
   letter-spacing: -0.01em;
   font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
 }
 
+/* the label cell of the range, a cell of the grid like the section marker. Its top hairline sits on the grid rule at y 136 and
+   the label 12px under it, the same gap as the marker on the left, its bottom rule is where the first leader line starts. */
 .p-call-a {
   left: 0;
-  top: 0;
-  height: 12%;
+  top: -32px;
+  height: calc(12% + 32px);
   justify-content: flex-start;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--black);
 }
 
@@ -613,36 +731,6 @@
 }
 
 /* ---- Servis, S, the dark beat ---- */
-.s2-giant {
-  position: absolute;
-  top: 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-
-.s2-giant b {
-  font-size: clamp(180px, 19.4cqw, 320px);
-  font-weight: 350;
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  color: rgb(255 255 255 / 0.06);
-}
-
-/* the label sits above the figure, in the band over the drawing, y 148 to 168, so it never runs through the X50 */
-.s2-giant span {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -12px;
-  text-align: center;
-  font: 500 14px/20px var(--font);
-  letter-spacing: 0.6em;
-  text-transform: uppercase;
-  color: rgb(255 255 255 / 0.55);
-}
-
 .dataline {
   display: flex;
   flex-direction: column;
@@ -669,7 +757,29 @@
 
 /* ---- Najam, N, a top band ---- */
 .n-row {
-  top: 384px;
+  top: 376px;
+}
+
+/* The N row has a 20px solid icon above each figure and a smaller figure, for a clearer order. --cap is where the cap top of the
+   figure sits under its box top, so the gap from the icon to the cap top is exactly 32px. The stack gap of 6px is in the sum. */
+.n-row {
+  --cap: 0px;
+}
+
+.n-row .fig {
+  font-size: 40px;
+}
+
+.n-row .ico {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-bottom: calc(32px - var(--cap) - 6px);
+  color: var(--fg);
+}
+
+.n-row .ico svg {
+  display: block;
 }
 
 .at-row {
@@ -684,258 +794,52 @@
   gap: 24px;
 }
 
+/* The collage, columns 1 to 6, standing on the bottom rule. One unit u is 24px at 1920 by 1080 and shrinks with the stage height
+   so the 37.5 by 20 units fit under the stat row, which reaches y 500, at 1440 by 900 too. Every photo sits on whole units. */
+.n-collage {
+  --u: round(nearest, min(calc((100vh - 593px) / 20.2917), calc((6 * var(--cw) + 120px) / 37.5)), 1px);
+  position: absolute;
+  left: 48px;
+  bottom: 65px;
+  width: calc(37.5 * var(--u));
+  height: calc(20 * var(--u));
+  pointer-events: none;
+}
+
+.s2-n .pw {
+  position: absolute;
+  left: calc(var(--ox) * var(--u));
+  top: calc(var(--oy) * var(--u));
+  width: calc(var(--ow) * var(--u));
+  height: calc(var(--oh) * var(--u));
+  translate: 0 var(--py, 0px);
+  background: var(--grey-pale);
+}
+
+.s2-n .pw img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ---- the first screen, every beat's reveal is at its end in reduced motion ---- */
 .s2-still .s2-layer {
   visibility: visible;
 }
 
-/* ---- sections after the story, plan part D ---- */
-.s2-sec {
-  position: relative;
-  z-index: 2;
-  container-type: inline-size;
-  background: var(--white);
-  color: var(--black);
-}
-
-.sec-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: 24px;
-  padding: 0 48px;
-}
-
-.notch {
-  position: absolute;
-  left: 50%;
-  top: -39px;
-  translate: -50% 0;
-  height: 40px;
-  line-height: 0;
-  pointer-events: none;
-}
-
-.notch svg {
-  display: block;
-}
-
-/* the footer on pale grey, so the red Linde logo block sits on a legal ground (guideline p.12) */
-.s2-footer {
-  position: relative;
-  z-index: 2;
-  padding: 96px 0 0;
-  background: var(--grey-pale);
-  color: var(--black);
-}
-
-.ft-grid {
-  row-gap: 96px;
-  align-items: start;
-}
-
-.ft-logo {
-  grid-column: 1 / 5;
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  width: fit-content;
-}
-
-.ft-logo img {
-  display: block;
-  width: 160px;
-}
-
-.ft-logo img:first-child {
-  height: 96px;
-}
-
-.ft-logo img:last-child {
-  height: auto;
-}
-
-.ft-hitan {
-  grid-column: 7 / 13;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ft-num {
-  font-size: 40px;
-  font-weight: 350;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: lining-nums tabular-nums;
-  text-decoration: none;
-  color: var(--black);
-}
-
-.ft-col {
-  font-style: normal;
-}
-
-.ft-nav {
-  grid-column: 1 / 4;
-}
-
-.ft-adr {
-  grid-column: 4 / 7;
-}
-
-.ft-kon {
-  grid-column: 7 / 10;
-}
-
-.ft-col h3 {
-  margin-bottom: 16px;
-}
-
-.ft-col ul {
-  list-style: none;
-  padding: 0;
-}
-
-.ft-col li,
-.ft-col p {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.s2-footer a {
-  color: var(--black);
-  text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) left bottom / 0 1px no-repeat;
-  transition: background-size 200ms var(--ease-wipe);
-}
-
-.s2-footer a:hover,
-.s2-footer a:focus-visible {
-  background-size: 100% 1px;
-}
-
-.s2-footer .ft-logo,
-.s2-footer .ft-num {
-  background: none;
-}
-
-.ft-ground {
-  margin: 72px 48px 0;
-  border-bottom: 1px solid var(--black);
-  color: var(--black);
-}
-
-.ft-line {
-  display: block;
-  width: 100%;
-  height: 250px;
-}
-
-.ft-base {
-  display: flex;
-  justify-content: flex-start;
-  gap: 24px;
-  padding-top: 24px;
-  padding-bottom: 32px;
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--grey-dark);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .p-fig,
-  .tab::before,
-  .btn::before {
+  .p-fig *,
+  .tab::before {
     transition: none;
   }
 }
 
-/* reduced motion, every hold is a still screen, the grid stays at full strength and the story counter has nothing to count */
+/* reduced motion, every hold is a still screen, the grid stays at full strength */
 .s2-still .s2-grid,
 .s2-still .s2-plus {
   --go: 1;
-}
-
-.s2-still .hf-side {
-  display: none;
-}
-
-/* ---- the button board, /?buttons ---- */
-.bb {
-  padding: 48px;
-  min-height: 100vh;
-  background: var(--white);
-}
-
-.bb-table {
-  margin-bottom: 48px;
-  padding: 32px;
-  background: var(--white);
-  border: 1px solid var(--grey-light);
-  color: var(--black);
-}
-
-.bb-table.btn-ground-dark {
-  background: var(--dark-ground);
-  border-color: var(--dark-ground);
-  color: var(--white);
-  --fg2: rgb(255 255 255 / 0.7);
-}
-
-.bb-title {
-  margin-bottom: 24px;
-  font-size: 32px;
-  font-weight: 350;
-  letter-spacing: -0.02em;
-}
-
-.bb-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.bb-row {
-  display: grid;
-  grid-template-columns: 160px repeat(5, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.bb-colhead,
-.bb-rowhead {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font: 500 14px/20px var(--font);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bb-colhead b,
-.bb-rowhead b {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid currentColor;
-  font-size: 18px;
-  letter-spacing: 0;
-}
-
-.bb-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--line);
-}
-
-.bb-state {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
 }
 
 .plist a {

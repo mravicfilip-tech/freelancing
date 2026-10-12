@@ -45,3 +45,13 @@ and the plan is agreed. The story stays as it is.
    site such as Od 1997.
    Open. The centre image. No owner photo is on file and the signature has no Ekotehnika equivalent, so my default
    is a lit Linde truck render or one delivery photo in the card, and no signature. Same serif accent as notes 2 and 3.
+5. **UI placed against a visible grid.** Ref `refs/05-visible-grid-lines-crosshair.webp`, layout only, not its
+   content. Said: "I like placement of UI against a grid on the website - it adds to flavor and makes it look like
+   geometric".
+   What the ref does. Hairline guide lines stay visible on the page, a vertical centre line and a horizontal rule,
+   with a small plus mark where they cross. Image, caption and text blocks snap to those lines, so the layout
+   reads as measured.
+   My read. It suits an engineering brand and echoes the servis blueprint. Hairlines in shade-grey on the light
+   beats and a faint white on the dark servis beat, a plus mark at the crossings, every text block and tile edge
+   sitting on a line. Lines never run through text.
+   Open. Whether the grid is fixed to the screen for the whole story or drawn per section.

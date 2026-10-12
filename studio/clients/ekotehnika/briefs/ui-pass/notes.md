@@ -198,3 +198,13 @@ S7. **Version 5, S, the blueprint is not a proper schematic.** Ref `refs/scenes/
    dimension lines with arrowheads and real X50 figures, a fine measuring grid behind, no glow. The drawn Linija
    blueprint on S is already closer to this than the 3D one.
    Open. Whether the wheels still turn in the schematic. Default yes, the wheel outlines rotate with the clock.
+S8. **Version 5, N, empty sides of the najam screen.** Ref `refs/scenes/s08-v5-n-empty-sides.webp`, Filip marked the
+   two empty fields left and right of the text, above the platform. Said: "Nothing here illustration wide, can be a
+   grid or something else".
+   What is there now. A centred stack (kicker, title, a wide box with the red button, four tiles) above a white
+   platform with fifteen trucks in five by three bays. Both upper corners, about a third of the width each, are
+   plain light-grey ground, and the platform edges fade off into nothing.
+   Options Filip named or that fit. The visible layout grid from note 5 running edge to edge with plus marks. The bay
+   lines of the platform extended to the full width as a depot floor, with more trucks or empty bays to the edges.
+   Rental details placed on the grid in those fields (from note 3 cards or ref 06 data lines).
+   Also seen. The same centred title, box and equal tiles stack as S5, so the S5 rule applies here too.

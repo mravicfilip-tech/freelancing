@@ -3,6 +3,7 @@ name: deep
 description: Deep tier helper on opus at high effort. Use only for a judgement call Filip asks a helper to make, such as a cold read of a plan or a hard trade-off. Do NOT use for building, sweeps or routine reading.
 model: opus
 effort: high
+tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 ---
 
 You make one judgement call. State the answer first, then the reasoning that would change it, then what you would check next.

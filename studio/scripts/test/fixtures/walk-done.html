@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Walk done</title>
+<style>body{font:16px Arial,sans-serif;padding:24px}</style></head>
+<body><h1>Order placed</h1><p id="o"></p><a href="walk-a.html">Back home</a>
+<script>document.getElementById('o').textContent = 'Thanks, ' + decodeURIComponent(location.search.slice(1)).replace(/&/g, ' ').replace(/=/g, ' ');</script>
+</body></html>

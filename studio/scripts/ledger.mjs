@@ -40,6 +40,10 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync, renameSync, rmSync,
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+// Text the harness folds into a prompt that Filip did not type, such as helper reports, task notices
+// and system reminders. Cut out, including a block left open at the end.
+const NOT_FILIP = /<(agent-message|cross-session-message|task-notification|system-reminder)\b[\s\S]*?(<\/\1>|$)/gi;
+const ownWords = (prompt) => (prompt || '').replace(NOT_FILIP, ' ');
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // In the kit repo, state sits in studio/.state. Packed into an account skill, the kit folder has no
@@ -177,12 +181,6 @@ const oneLine = (s, max) => {
 };
 
 // ---------- proof that Filip typed it ----------
-
-// Text the harness folds into a prompt that Filip did not type, such as helper reports, task notices
-// and system reminders. Cut out, including a block left open at the end.
-const NOT_FILIP = /<(agent-message|cross-session-message|task-notification|system-reminder)\b[\s\S]*?(<\/\1>|$)/gi;
-const ownWords = (prompt) => (prompt || '').replace(NOT_FILIP, ' ');
-
 const norm = (s) => String(s).replace(/\s+/g, ' ').trim().toLowerCase();
 const NOT_PROVEN = 'Not recorded. Filip has not typed this line since the card. Show the card and wait.';
 
@@ -235,7 +233,9 @@ function* linesBackward(path) {
 // The words Filip typed in a transcript line, or null when the line is not a genuine user message.
 function typedText(o) {
   if (!o || o.type !== 'user' || o.isMeta || o.isSidechain || o.toolUseResult) return null;
-  if (o.origin !== undefined && o.origin !== 'human') return null;
+  // Newer transcripts write origin as { kind: 'human' } rather than the string.
+  const origin = o.origin && typeof o.origin === 'object' ? o.origin.kind : o.origin;
+  if (origin !== undefined && origin !== 'human') return null;
   const c = o.message && o.message.content;
   let text;
   if (typeof c === 'string') text = c;
@@ -534,16 +534,25 @@ function cmdStatus(task) {
   return `${task} round ${l.rounds.length}, score ${scoreOf(l.findings).toFixed(1)}, open ${c1} sev 1, ${c2} sev 2, ${c3} sev 3, ${state}`;
 }
 
-// Every review run, open, closed and archived, for the week one count of automatic runs.
+// Every task once, latest run only, for the week one count of automatic runs.
 function cmdReport() {
   let names = [];
   try { names = readdirSync(DIR).filter((n) => n.endsWith('.json')); } catch { /* no ledgers yet */ }
   const rows = [];
   const tot = { auto: { runs: 0, sev1: 0, shipped: 0 }, asked: { runs: 0, sev1: 0, shipped: 0 } };
+  // One row per task. A reopened task keeps its older run as <task>.closed-<time>.json beside the
+  // live ledger, so the latest openedAt wins and the live file wins a tie.
+  const latest = new Map();
   for (const n of names) {
     let l;
     try { l = JSON.parse(readFileSync(join(DIR, n), 'utf8').replace(/^﻿/, '')); } catch { continue; }
     if (!l || !Array.isArray(l.findings)) continue;
+    const key = l.task || n;
+    const prev = latest.get(key);
+    const at = String(l.openedAt || '');
+    if (!prev || at > prev.at || (at === prev.at && n === `${key}.json`)) latest.set(key, { l, at });
+  }
+  for (const { l } of latest.values()) {
     const trig = l.trigger === 'auto' ? 'auto' : 'asked';
     const s1 = l.findings.filter((x) => x.sev === 1).length;
     tot[trig].runs++;

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hierarchy fixture, good</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 Arial, sans-serif; color: #111; background: #fff; padding: 24px; }
+  h1 { font-size: 48px; margin: 0 0 16px; }
+  .fill { font: inherit; padding: 10px 20px; border: 0; background: #0b5; color: #fff; cursor: pointer; }
+  .ghost { font: inherit; padding: 10px 20px; border: 1px solid #333; background: #fff; color: #111; cursor: pointer; }
+  .icon { width: 40px; height: 40px; border: 1px solid #333; background: #fff; }
+  section { margin: 24px 0; padding: 16px; border: 1px solid #ccc; }
+  label { display: block; margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>Account</h1>
+<section>
+  <h2>Plans</h2>
+  <button type="button" class="ghost">Compare</button>
+  <button type="button" class="icon" aria-label="Help"><svg width="16" height="16"><circle cx="8" cy="8" r="6"/></svg></button>
+</section>
+<form action="#">
+  <h2>Sign up</h2>
+  <label>Email <input type="email" name="email"></label>
+  <label for="nm">Name</label><input id="nm" type="text" name="name">
+  <button type="submit" class="fill">Create account</button>
+</form>
+</body>
+</html>

@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decide, isBlindReplace, isDeploy, buildIndex } from '../guard.mjs';
-import { addHooks, removeHooks, hasHooks, hookBlocks } from '../wire.mjs';
+import { addHooks, removeHooks, hasHooks, hasSecrets, hookBlocks } from '../wire.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const KIT = resolve(HERE, '..', '..').replace(/\\/g, '/');
@@ -396,6 +396,26 @@ section('wiring');
   w = wire('add', sf, STUDIO_DIR);
   ok('wire add creates a missing settings file', w.status === 0 && hasHooks(JSON.parse(readFileSync(sf, 'utf8'))));
   ok('wire with no arguments exits 2', wire().status === 2);
+
+  // The secrets warning, wired only with --secrets.
+  const sec = hookBlocks(STUDIO_DIR, true);
+  ok('with secrets there is one extra event, UserPromptSubmit, in exec form with timeout 5', Object.keys(sec).length === 3 && sec.UserPromptSubmit[0].hooks.length === 1 && sec.UserPromptSubmit[0].hooks[0].args[0] === `${STUDIO_DIR}/hooks/secrets.mjs` && sec.UserPromptSubmit[0].hooks[0].timeout === 5 && sec.UserPromptSubmit[0].matcher === undefined);
+  ok('without secrets the default blocks are unchanged', Object.keys(hookBlocks(STUDIO_DIR)).length === 2);
+  const withSec = addHooks(JSON.parse(before), STUDIO_DIR, true);
+  ok('add with secrets keeps every other key and puts both in', hasSecrets(withSec) && hasHooks(withSec) && withSec.theme === 'dark' && withSec.hooks.Stop.length === 1);
+  ok('add with secrets twice gives one copy', JSON.stringify(addHooks(JSON.parse(JSON.stringify(withSec)), STUDIO_DIR, true)) === JSON.stringify(withSec));
+  ok('add without secrets drops an old secrets hook, so the flag decides', !hasSecrets(addHooks(JSON.parse(JSON.stringify(withSec)), STUDIO_DIR)));
+  ok('remove takes the secrets hook out too and gives back the original', JSON.stringify(removeHooks(JSON.parse(JSON.stringify(withSec)))) === before);
+  ok('a user UserPromptSubmit hook survives add and remove', (() => {
+    const own = { hooks: { UserPromptSubmit: [{ hooks: [{ type: 'command', command: 'echo' }] }] } };
+    const back = removeHooks(addHooks(JSON.parse(JSON.stringify(own)), STUDIO_DIR, true));
+    return back.hooks.UserPromptSubmit.length === 1 && back.hooks.UserPromptSubmit[0].hooks[0].command === 'echo';
+  })());
+  rmSync(sf, { force: true });
+  w = wire('add', sf, STUDIO_DIR, '--secrets');
+  ok('wire add --secrets exits 0 and wires both', w.status === 0 && hasSecrets(JSON.parse(readFileSync(sf, 'utf8'))) && hasHooks(JSON.parse(readFileSync(sf, 'utf8'))), w.stderr);
+  w = wire('remove', sf);
+  ok('wire remove after --secrets leaves an empty object', w.status === 0 && JSON.stringify(JSON.parse(readFileSync(sf, 'utf8'))) === '{}');
 }
 
 // ---------- 10. registry.mjs and the client files ----------
@@ -448,6 +468,8 @@ section('registry and clients');
   const tasks = readFileSync(`${KIT}/clients/_template/tasks.md`, 'utf8');
   ok('the tasks template has the four columns in order', ['## Backlog', '## In progress', '## Review', '## Done'].map((h) => tasks.indexOf(h)).every((v, i, arr) => v > 0 && (i === 0 || v > arr[i - 1])));
   ok('the taste template exists', existsSync(`${KIT}/clients/_template/taste.md`));
+  ok('the base override template holds {}', existsSync(`${KIT}/clients/_template/base-override.json`) && JSON.stringify(JSON.parse(readFileSync(`${KIT}/clients/_template/base-override.json`, 'utf8'))) === '{}');
+  ok('add copies the base override into a new client folder', existsSync(`${sc}/zeta/base-override.json`));
 }
 
 // ---------- 11. source and timing ----------

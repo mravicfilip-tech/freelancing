@@ -8,7 +8,7 @@ description: Self-review of words, meaning an answer, a plan, a doc or a drafted
 K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
 this skill was loaded from otherwise.
 
-One pass, in the main thread, no helpers.
+One pass, in the main thread, no helpers. A subagent panel runs only when Filip asks for one.
 It runs when Filip asks, never by itself and never in a loop.
 
 ## 1. Pick the target

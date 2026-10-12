@@ -2,8 +2,7 @@
 
 How anything gets written for Filip. Chat replies, drafted messages and
 emails, docs and reports all follow this. A deliverable with its own required
-layout keeps that layout. These rules govern the sentences inside it, not its
-structure.
+layout keeps that layout. These rules govern the sentences inside it, not its structure.
 
 ## Hard rules, no exceptions
 
@@ -37,14 +36,13 @@ structure.
 
 - The hard rules still apply. No colons even in a report heading, no em
   dashes in a table caption.
-- A deliverable with its own required layout keeps that layout untouched.
-  Write the sentences inside it under these rules.
+- A deliverable with its own required layout keeps that layout untouched. Write the sentences inside it under these rules.
 - Converting a source document. When a "Reviewer," "Author" or "By" field
   names an obvious placeholder, substitute Filip. He is the default author of
   his own design and review docs. Ask first if unsure.
 
 ## Why this matters
 
-He forwards this writing to clients and colleagues as is. Anything that
+He forwards this writing to colleagues and clients as is. Anything that
 reads like generated text is a tell he has had to strip out by hand more
 than once.

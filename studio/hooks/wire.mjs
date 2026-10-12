@@ -1,32 +1,36 @@
 #!/usr/bin/env node
-// Adds or removes the guard hooks in a Claude Code settings.json, for using the guard outside this
-// repo. The repo itself runs the guard from .claude/settings.json. Usage
+// Adds or removes the studio hooks in a Claude Code settings.json. install.ps1 and uninstall.ps1 call
+// it, so the JSON is edited by a real parser and every other key is left as it was.
 //
-//   node hooks/wire.mjs add    <settings.json> <studio folder>
+//   node hooks/wire.mjs add    <settings.json> <studio folder> [--secrets]
 //   node hooks/wire.mjs remove <settings.json>
 //   node hooks/wire.mjs check  <settings.json>        exit 0 when the guard hooks are present
 //
-// The hooks are exactly two, SessionStart with matcher startup|clear and PreToolUse with matcher
-// Bash|PowerShell, both in exec form (node plus args). An entry is ours when its args name
-// hooks/guard.mjs inside a folder called studio. Running add twice gives one copy. The file is
-// parsed before and after the edit, written next to itself and renamed, and a file that does not
-// parse is never touched. No dependencies.
+// The guard hooks are exactly two, SessionStart with matcher startup|clear and PreToolUse with matcher
+// Bash|PowerShell, both in exec form (node plus args). With --secrets it also adds the secrets
+// warning, one UserPromptSubmit hook that only warns. An entry is ours when its args name
+// hooks/guard.mjs or hooks/secrets.mjs inside a folder called studio. Running add twice gives one
+// copy. The file is parsed before and after the edit, written next to itself and renamed, and a
+// file that does not parse is never touched. No dependencies.
 
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
 const fwd = (p) => String(p || '').replace(/\\/g, '/');
-const OURS = /studio\/hooks\/guard\.mjs$/i;
+const OURS = /studio\/hooks\/(guard|secrets)\.mjs$/i;
 
 const isOurs = (h) => h && typeof h === 'object' && (Array.isArray(h.args) ? h.args : []).some((a) => typeof a === 'string' && OURS.test(fwd(a)));
 
-export function hookBlocks(studioDir) {
-  const guard = () => ({ type: 'command', command: 'node', args: [`${fwd(studioDir).replace(/\/+$/, '')}/hooks/guard.mjs`], timeout: 10 });
-  return {
+export function hookBlocks(studioDir, withSecrets = false) {
+  const dir = fwd(studioDir).replace(/\/+$/, '');
+  const guard = () => ({ type: 'command', command: 'node', args: [`${dir}/hooks/guard.mjs`], timeout: 10 });
+  const blocks = {
     SessionStart: [{ matcher: 'startup|clear', hooks: [guard()] }],
     PreToolUse: [{ matcher: 'Bash|PowerShell', hooks: [guard()] }],
   };
+  if (withSecrets) blocks.UserPromptSubmit = [{ hooks: [{ type: 'command', command: 'node', args: [`${dir}/hooks/secrets.mjs`], timeout: 5 }] }];
+  return blocks;
 }
 
 // Removes every guard hook. A group, an event or the hooks key that this leaves empty is removed
@@ -53,10 +57,10 @@ export function removeHooks(settings) {
   return s;
 }
 
-export function addHooks(settings, studioDir) {
+export function addHooks(settings, studioDir, withSecrets = false) {
   const s = removeHooks(settings && typeof settings === 'object' && !Array.isArray(settings) ? settings : {});
   if (!s.hooks || typeof s.hooks !== 'object' || Array.isArray(s.hooks)) s.hooks = {};
-  for (const [ev, groups] of Object.entries(hookBlocks(studioDir))) {
+  for (const [ev, groups] of Object.entries(hookBlocks(studioDir, withSecrets))) {
     s.hooks[ev] = (Array.isArray(s.hooks[ev]) ? s.hooks[ev] : []).concat(groups);
   }
   return s;
@@ -66,6 +70,12 @@ export function hasHooks(settings) {
   const h = settings && settings.hooks;
   if (!h || typeof h !== 'object') return false;
   return ['SessionStart', 'PreToolUse'].every((ev) => (Array.isArray(h[ev]) ? h[ev] : []).some((g) => g && Array.isArray(g.hooks) && g.hooks.some(isOurs)));
+}
+
+// True when the secrets warning is wired as a UserPromptSubmit hook.
+export function hasSecrets(settings) {
+  const g = settings && settings.hooks && settings.hooks.UserPromptSubmit;
+  return (Array.isArray(g) ? g : []).some((x) => x && Array.isArray(x.hooks) && x.hooks.some((h) => isOurs(h) && h.args.some((a) => /secrets\.mjs$/i.test(fwd(a)))));
 }
 
 function readSettings(file) {
@@ -78,27 +88,29 @@ function readSettings(file) {
   return v;
 }
 
-function save(file, obj, expectPresent) {
+function save(file, obj, expectPresent, expectSecrets = false) {
   const tmp = `${file}.tmp-${process.pid}`;
   const text = JSON.stringify(obj, null, 2) + '\n';
   writeFileSync(tmp, text);
   let back;
   try { back = JSON.parse(readFileSync(tmp, 'utf8')); } catch { rmSync(tmp, { force: true }); throw new Error('the edited settings did not parse, so nothing was saved'); }
-  if (hasHooks(back) !== expectPresent) { rmSync(tmp, { force: true }); throw new Error('the edited settings did not hold the expected hooks, so nothing was saved'); }
+  if (hasHooks(back) !== expectPresent || (expectPresent && expectSecrets && !hasSecrets(back))) { rmSync(tmp, { force: true }); throw new Error('the edited settings did not hold the expected hooks, so nothing was saved'); }
   renameSync(tmp, file);
 }
 
 function main() {
-  const [cmd, file, studio] = process.argv.slice(2);
+  const rest = process.argv.slice(2);
+  const withSecrets = rest.includes('--secrets');
+  const [cmd, file, studio] = rest.filter((a) => a !== '--secrets');
   if (!['add', 'remove', 'check'].includes(cmd) || !file || (cmd === 'add' && !studio)) {
-    console.error('usage wire.mjs add <settings.json> <studio folder>, or remove <settings.json>, or check <settings.json>');
+    console.error('usage wire.mjs add <settings.json> <studio folder> [--secrets], or remove <settings.json>, or check <settings.json>');
     process.exit(2);
   }
   try {
     const cur = readSettings(file);
     if (cmd === 'check') { process.exit(hasHooks(cur) ? 0 : 1); }
-    if (cmd === 'add') { save(file, addHooks(cur, studio), true); console.log(`guard hooks are in ${file}`); }
-    else if (hasHooks(cur) || JSON.stringify(cur).includes('guard.mjs')) { save(file, removeHooks(cur), false); console.log(`guard hooks removed from ${file}`); }
+    if (cmd === 'add') { save(file, addHooks(cur, studio, withSecrets), true, withSecrets); console.log(`${withSecrets ? 'guard hooks and the secrets warning are' : 'guard hooks are'} in ${file}`); }
+    else if (hasHooks(cur) || /guard\.mjs|secrets\.mjs/.test(JSON.stringify(cur))) { save(file, removeHooks(cur), false); console.log(`guard hooks removed from ${file}`); }
     else console.log(`no guard hooks in ${file}`);
   } catch (e) {
     console.error(e.message || e);

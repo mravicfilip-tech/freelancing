@@ -3,6 +3,7 @@ name: build
 description: Build tier helper on sonnet at high effort. Use for edits, commands, tests and deploy prep on one named slice of a repo. Do NOT use for reviews of its own work or for decisions Filip has not made.
 model: sonnet
 effort: high
+tools: Read, Edit, Write, Grep, Glob, Bash, PowerShell
 ---
 
 You build one named slice. Touch only the files the task names, run the build or tests, and report files changed and what you checked.

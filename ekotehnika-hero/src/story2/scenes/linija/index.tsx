@@ -12,7 +12,8 @@ import { PATH_LEN, TOP_S, TopTruckAt, TopWorld, pathAt } from './topdown';
 import { IsoWarehouse } from './iso';
 import { Aisle, FrontTruck, SIDE_S, SideRoom, type SideRefs } from './indoor';
 import { Blade } from './dark';
-import { Schematic, SpeedLines } from './schematic';
+import { Schematic, SpeedLines, sheetOf } from './schematic';
+import { Closing } from './closing';
 import { RentalGrid } from './rental';
 import { Automation } from './automation';
 import { colsOf, useStage } from './stage';
@@ -160,20 +161,19 @@ export default function Linija({ clock }: SceneProps) {
   const roomWipe = range(ak, 0.1, 0.28);
   const aisleWipe = range(ak, 0.38, 0.58);
   const roomUp = -170 * io(range(ak, 0.4, 0.64));
-  const showAisle = pos >= start('A') + 0.36 * (end('A') - start('A')) && pos < start('S') + 60;
+  const showAisle = pos >= start('A') + 0.36 * (end('A') - start('A')) && pos < start('B') + 0.72 * (end('B') - start('B'));
   const ai = aisleAt(clamp01(ak));
   const bk = seg(pos, 'B');
   const aiEnd = aisleAt(1);
-  const bz = Math.exp(Math.log(60) * io(bk));
-  const f0 = { x: W / 2, y: aiEnd.foot - 82 * aiEnd.s };
-  const ft = { x: lerp(f0.x, W / 2, io(bk)), y: lerp(f0.y, H / 2, io(bk)) };
-  const zoomT = bk > 0 ? `translate(${ft.x.toFixed(2)} ${ft.y.toFixed(2)}) scale(${bz.toFixed(3)}) translate(${(-f0.x).toFixed(2)} ${(-f0.y).toFixed(2)})` : '';
   const truckOn = ak >= 0.5;
-  const blackWipe = range(bk, 0.55, 0.75);
+  // B, two drawing sheets close over the aisle from both edges and draw the truck as line art, see closing.tsx
+  const closeP = io(range(bk, 0.12, 0.7));
+  const consR = io(range(bk, 0.7, 1));
   const roofWipe = range(pos, start('P'), start('P') + 130);
 
   // dark chapters
-  const showDark = pos >= start('B') + 300 && pos < start('N') + 40;
+  const showDark = pos >= start('B') + 0.7 * (end('B') - start('B')) && pos < start('N') + 40;
+  const showClosing = pos >= start('B') + 0.1 * (end('B') - start('B')) && pos < start('S') + 520;
   const lK = seg(pos, 'L');
   const shift = Math.max(0, pos - start('S')) * 2.2;
   const draw = io(range(pos, start('S') + 40, start('S') + 460));
@@ -251,7 +251,7 @@ export default function Linija({ clock }: SceneProps) {
             <clipPath id={`${cid}-aisle`}>
               <rect x={cols.x0 - 2} y={cols.top} width={cols.x1 - cols.x0 + 4} height={Math.max(0.01, (cols.y1 - cols.top + 4) * aisleWipe)} />
             </clipPath>
-            <g transform={zoomT}>
+            <g>
               <Aisle cam={pos >= start('B') ? aiEnd.cam : ai.cam} />
               {truckOn && (
                 <g transform={`translate(${W / 2} ${(pos >= start('B') ? aiEnd.foot : ai.foot).toFixed(1)}) scale(${(pos >= start('B') ? aiEnd.s : ai.s).toFixed(4)})`}>
@@ -259,15 +259,26 @@ export default function Linija({ clock }: SceneProps) {
                 </g>
               )}
             </g>
-            <rect x={W / 2 - (W / 2 + 2) * blackWipe} y={-2} width={(W + 4) * blackWipe} height={H + 4} fill={K} />
           </g>
         )}
 
         {showDark && (
           <g>
-            <rect x={0} y={0} width={W} height={H} fill={K} />
+            <rect x={cols.x0 - 2} y={cols.y0 - 2} width={cols.x1 - cols.x0 + 4} height={cols.y1 - cols.y0 + 4} fill={K} />
             <Schematic cols={cols} travel={shift} draw={draw} cid={cid} dy={bpUp} under={<SpeedLines cols={cols} shift={shift} opacity={streakOp} cid={cid} />} />
           </g>
+        )}
+
+        {showClosing && (
+          <Closing
+            cols={cols}
+            p={closeP}
+            cid={cid}
+            foot={aiEnd.foot}
+            s={aiEnd.s}
+            wipe={draw > 0 ? sheetOf(cols).left + (sheetOf(cols).w + 4) * draw : cols.x0}
+            r={consR}
+          />
         )}
 
         {showPanel && (

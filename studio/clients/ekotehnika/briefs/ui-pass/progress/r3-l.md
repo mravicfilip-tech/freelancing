@@ -54,3 +54,11 @@ Sheets r3-l-ab-before.webp and r3-l-ab-after.webp, k 0.25, 0.5 and 0.75 at 1920 
 ## Checks for both
 
 tsc clean, vite build clean, 0 console errors on the beats shot. No other beat was edited, H, C1, R, P, S and N were re-shot and look as before.
+
+## Follow up 3, AT framed close, B rebuilt, N back to full width
+
+Sheets r3-l-at2.webp (AT at k 0.3, 0.45, 0.6), r3-l-b2.webp (B at 0.25, 0.5, 0.75, 0.9) and r3-l-n2.webp (N at 0.5 and 0.95), all at 1920 by 1080. tsc and vite build clean.
+
+- AT. The view is framed closer, the axonometric unit grew from about 49 to 64, so the C-Matic is about 150px wide at 1920. The robot now has a body, two drive wheels, two casters, a nose light bar, a lift column and a top plate. The shelf units stand 0.62 m clear and lift 0.25 m, so the robot shows under them during the carry. The aisle still runs to the right frame edge, the fleet at the far end is small and partly off frame.
+- B. The 60x zoom into flat blocks is gone. Two dark drawing sheets close in from both edges with a hard 1px edge. On them the same truck is drawn as exact line art at the same place and size, so the real truck turns into a drawing as the sheets pass over it. When they meet the frame holds the 24px measuring grid, the front elevation, a centre line, a ground line with a 24px ruler across the full width and a scale ruler under the truck. S then wipes its sheet in from the left and the same edge removes the front drawing. Every k has drawn content, nothing fades. File closing.tsx, with edits in index.tsx.
+- N. The photo collage is out, so the depot is one drawing across the full width under the spec row. Three rows in marked bays, the middle row set half a bay over so the rows interlock, floor lines of each row running to both frame edges. Only the title, lede and spec row areas at the top are kept clear.

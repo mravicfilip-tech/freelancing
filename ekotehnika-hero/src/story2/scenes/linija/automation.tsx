@@ -22,10 +22,11 @@ const HZ = 0.9;
 type Proj = (x: number, y: number, z: number) => [number, number];
 
 export function viewOf(c: Cols) {
-  // the drawing is sized by its height and may run off the right edge of the frame, the left is held at column 7
-  const U = Math.min(54, (c.bottom - c.top - 40) / (18.5 * HY + 2.2 * HZ));
-  const ox = c.left(7) + 14 + 6.5 * HX * U;
-  const oy = c.top + 30 + Math.max(0, (c.bottom - c.top - 40 - (18.5 * HY + 2.2 * HZ) * U) / 2);
+  // framed close on the job, the C-Matic is 2.0 m across on screen, about 150px at 1920. The aisle and the fleet run off the right
+  // edge of the frame, the left is held at column 7 where the charger stands.
+  const U = Math.min(64, (c.bottom - c.top - 30) / 10.4);
+  const ox = c.left(7) + 14 + 5.2 * HX * U;
+  const oy = c.top + 16;
   const P: Proj = (x, y, z) => [ox + (x - y) * HX * U, oy + (x + y) * HY * U - z * HZ * U];
   return { U, ox, oy, P };
 }
@@ -36,14 +37,14 @@ const FLOOR = '#2d2d2d';
 const WALL = '#1b1b1b';
 const PLATE: Tone = { t: '#3c3c3c', l: '#2b2b2b', r: '#333333' };
 const CARTON: Tone = { t: '#5a5a5a', l: '#3f3f3f', r: '#4b4b4b' };
-const BODY: Tone = { t: '#585858', l: '#383838', r: '#444444' };
+const BODY: Tone = { t: '#6a6a6a', l: '#424242', r: '#535353' };
 const PERSON: Tone = { t: '#505050', l: '#363636', r: '#434343' };
 const LINE = 0.85;
 
 const fmt = (p: [number, number]) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
 
 // A box by its centre, size and turn about the vertical, drawn as the visible sides and the top.
-function prism(P: Proj, key: string, cx: number, cy: number, z: number, w: number, d: number, h: number, ang: number, tone: Tone, o = LINE): ReactNode {
+function prism(P: Proj, key: string, cx: number, cy: number, z: number, w: number, d: number, h: number, ang: number, tone: Tone, o = LINE, sw = 1): ReactNode {
   const c = Math.cos(ang);
   const s = Math.sin(ang);
   const pts = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]].map(([a, b]) => [cx + a * c - b * s, cy + a * s + b * c] as [number, number]);
@@ -65,7 +66,7 @@ function prism(P: Proj, key: string, cx: number, cy: number, z: number, w: numbe
   }
   const top = pts.map((p) => fmt(P(p[0], p[1], z + h))).join(' ');
   return (
-    <g key={key} stroke={WH} strokeOpacity={o} strokeWidth={1} strokeLinejoin="miter">
+    <g key={key} stroke={WH} strokeOpacity={o} strokeWidth={sw} strokeLinejoin="miter">
       {faces}
       <polygon points={top} fill={tone.t} />
     </g>
@@ -120,8 +121,8 @@ const LANE_M = 3.75; // the fleet's lane, nearest the units
 const LANE_F = 5.3; // the order's lane
 const UW = 1.0;
 const UD = 0.8;
-const LIFT = 0.15;
-const LEVELS = [0.4, 0.95, 1.5, 2.05];
+const LIFT = 0.25;
+const LEVELS = [0.62, 1.12, 1.62, 2.12];
 const TARGET = 3;
 
 const lane = (x: number, y: number): V => [x, y];
@@ -172,15 +173,29 @@ function shelfUnit(P: Proj, u: Shelf): ReactNode[] {
   return out;
 }
 
-// The C-Matic 10, 1.2 by 0.8 by 0.3 m, turned by ang, its top plate rising with the lift.
+// The C-Matic 10, 1.2 by 0.8 by 0.3 m, turned by ang. Body with a front sensor bar, two drive wheels and two casters, a lift column
+// and a top plate that rise together with the load.
 function robot(P: Proj, x: number, y: number, ang: number, lift: number): ReactNode[] {
   const c = Math.cos(ang);
   const s = Math.sin(ang);
-  return [
-    prism(P, 'body', x, y, 0.02, 1.2, 0.8, 0.26, ang, BODY),
-    prism(P, 'bump', x + 0.6 * c, y + 0.6 * s, 0.07, 0.06, 0.7, 0.1, ang, PLATE),
-    prism(P, 'plate', x, y, 0.28 + lift, 0.9, 0.6, 0.04, ang, PLATE),
-  ];
+  const at = (a: number, b: number): [number, number] => [x + a * c - b * s, y + a * s + b * c];
+  const out: ReactNode[] = [];
+  // the wheels first, they sit beside the body
+  [[-0.1, -0.44], [-0.1, 0.44], [0.42, -0.34], [0.42, 0.34]].forEach(([a, b], i) => {
+    const p = at(a, b);
+    const drive = i < 2;
+    out.push(prism(P, `w${i}`, p[0], p[1], 0, drive ? 0.34 : 0.18, drive ? 0.08 : 0.06, drive ? 0.2 : 0.12, ang, PLATE, 1, 1.2));
+  });
+  out.push(prism(P, 'body', x, y, 0.04, 1.2, 0.8, 0.24, ang, BODY, 1, 1.6));
+  const f = at(0.6, 0);
+  out.push(prism(P, 'bump', f[0], f[1], 0.1, 0.05, 0.66, 0.1, ang, PLATE, 1, 1.2));
+  // a light bar across the nose
+  const l0 = at(0.57, -0.28);
+  const l1 = at(0.57, 0.28);
+  out.push(seg3(P, 'led', [l0[0], l0[1], 0.285], [l1[0], l1[1], 0.285], 2, 1));
+  if (lift > 0.02) out.push(prism(P, 'col', x, y, 0.28, 0.28, 0.28, lift + 0.02, ang, PLATE, 1, 1.2));
+  out.push(prism(P, 'plate', x, y, 0.28 + lift, 0.9, 0.62, 0.05, ang, BODY, 1, 1.6));
+  return out;
 }
 
 type Group = { d: number; nodes: ReactNode };
@@ -225,7 +240,7 @@ export function Automation({ cols, k, ty }: { cols: Cols; k: number; ty: number 
   const reach = io(range(k, 0.68, 0.75));
   const carryT = io(range(k, 0.8, 0.92));
   const rest: [number, number, number] = [px - 0.04, py + 0.3, 0.95];
-  const slotHand: [number, number, number] = [8.56, LANE_F + 0.02, 1.24];
+  const slotHand: [number, number, number] = [8.56, LANE_F + 0.02, 1.32];
   const tableHand: [number, number, number] = [9.3, LANE_F + 0.85, 1.08];
   const free = k < 0.75 ? 0 : 1;
   let hand: [number, number, number];

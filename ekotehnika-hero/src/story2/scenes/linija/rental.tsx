@@ -1,6 +1,5 @@
-// Najam, the depot of rental forklifts seen from the front, fifteen in five bays by three rows, filling row by row. The shell
-// puts the delivery photos in columns 1 to 6 below the spec row, so the depot is framed into columns 7 to 12 under that row and
-// the left lower area stays plain ground. Each truck stands in a marked bay painted on the floor. Variant 2 flat vector style,
+// Najam, the depot of rental forklifts seen from the front, three rows in marked bays filling row by row, one drawing across the
+// full width under the spec row, with the floor lines of each row running to the frame edge. Each truck stands in a marked bay painted on the floor. Variant 2 flat vector style,
 // token fills only. Red only on the truck shells.
 import { memo, type ReactNode } from 'react';
 import { ForkliftFront } from '../../../variants/v2/art';
@@ -16,7 +15,7 @@ const GridTruck = memo(function GridTruck() {
   );
 });
 
-const COLS = 5;
+const COLS = 8;
 const ROWS = 3;
 // each row further back is a little smaller and stands higher, as a floor seen from slightly above
 const ROW_SCALE = [0.8, 0.9, 1];
@@ -27,16 +26,16 @@ const TRUCK_W = 128;
 const AREA_TOP_PX = 520;
 
 export function depotOf(c: Cols) {
-  const left = c.left(7);
+  const left = c.left(1);
   const right = c.right(12);
   const top = c.vy(AREA_TOP_PX);
   const bottom = c.bottom - 14;
   const spacing = (right - left) / COLS;
-  // three rows with a little overlap, each row's feet 0.72 of the front truck's height above the one in front
-  const h = (bottom - top) / 2.18;
+  // three rows set half a bay apart, so the rows interlock and each row's feet stand half a truck height above the one in front
+  const h = (bottom - top) / 1.8;
   const sc = Math.min(0.9, h / TRUCK_H, (0.8 * spacing) / TRUCK_W);
   const hh = TRUCK_H * sc;
-  const foot = [bottom - 1.38 * hh, bottom - 0.72 * hh, bottom];
+  const foot = [bottom - hh, bottom - 0.5 * hh, bottom];
   return { left, right, top, bottom, spacing, sc, foot };
 }
 
@@ -48,7 +47,9 @@ export function RentalGrid({ k, cols, id }: { k: number; cols: Cols; id: string 
     const rs = d.sc * ROW_SCALE[r];
     for (let c = 0; c < COLS; c++) {
       const i = r * COLS + c;
-      const cx = d.left + d.spacing * (c + 0.5);
+      // the middle row is set half a bay over, so the rows interlock and no truck stands behind another
+      if (r === 1 && c === COLS - 1) continue;
+      const cx = d.left + d.spacing * (c + (r === 1 ? 1 : 0.5));
       // the bay as a floor quad, wide at the front edge and narrower at the back
       const fy = d.foot[r] + 10 * rs;
       const by = d.foot[r] - 34 * rs;
@@ -82,8 +83,11 @@ export function RentalGrid({ k, cols, id }: { k: number; cols: Cols; id: string 
       );
     }
   }
+  // a floor line at the foot of each row runs across the whole frame
+  const floor = d.foot.map((fy, r) => <line key={`fl${r}`} x1={cols.x0 - 2} y1={fy + 10 * d.sc * ROW_SCALE[r]} x2={cols.x1 + 2} y2={fy + 10 * d.sc * ROW_SCALE[r]} stroke={G2} strokeOpacity={0.35} strokeWidth={1} />);
   return (
     <g>
+      {floor}
       {bays}
       {trucks}
     </g>

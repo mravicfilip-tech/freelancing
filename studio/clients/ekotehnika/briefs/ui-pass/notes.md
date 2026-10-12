@@ -146,3 +146,13 @@ S2. **Bad UI on the top row and the C1 tiles, version 5.** Ref `refs/scenes/s02-
    Open. Buttons. T01 (filled primary, mono labels, solid secondary) is the strongest candidate on file.
    Open. Space. My read is a clear band of plain ground between the scene and every text block, the scene framed
    smaller or higher at the hold beats, so text never touches the picture.
+S3. **Version 5, R, too much empty space around the top down road.** Ref `refs/scenes/s03-v5-r-empty-top-down.webp`,
+   Filip marked the two empty fields left and right of the road. Said: "Bad here - too much empty space, we don't
+   have anything around here on the illustration itself".
+   What is there now. One straight grey road with a white centre line and the forklift on it, then plain light
+   ground on both sides, edge to edge, with nothing drawn in it.
+   Open. What fills it. My read is the Ekotehnika yard seen from above, roofs of the two halls, rows of parked
+   forklifts, pallets and racks, kerbs and lane markings, trees and grass edges, a van at the gate, all in the light
+   palette, kept clear of the R text column. The drone stills in the Drive (ANDronEkotehn-1010, 1011, 1019, the
+   yard straight down with rows of forklifts) are the drawing reference for the real layout, used as reference only,
+   since drone footage is out.

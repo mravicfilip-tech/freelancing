@@ -108,14 +108,15 @@
   top: 100%;
 }
 
-/* columns 1 to 4, the label on the top rule like the story's section marker, the title, one line and the one primary */
+/* columns 1 to 4, the label under the top rule, the title, one line and the one primary. Nothing starts on the column 1 line, the
+   text sits 24px in from it and 36px under the rule, the same inset as a footer cell */
 .sx-left {
   grid-column: 1 / 5;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 14px 0 24px;
+  padding: 36px 0 40px 24px;
 }
 
 /* the lede and the primary stand on the bottom rule, 24px above it like the text in the cells */
@@ -221,7 +222,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 24px 24px 24px 26px;
+  padding: 24px;
 }
 
 /* the top of a cell, the model range at the left and the count of models at the right */
@@ -317,6 +318,122 @@
   transition:
     opacity 560ms var(--out) calc(var(--i) * 90ms),
     transform 640ms var(--out) calc(var(--i) * 90ms);
+}
+
+/* ---- the closing section, the delivery photos flow in along the grid ---- */
+.sx-closing {
+  --pad: clamp(40px, 5vh, 60px);
+  --row: clamp(170px, calc((100vh - 140px) / 4), 230px);
+  --c1: var(--x1);
+  --c3: round(nearest, calc(48px + 2 * var(--gx)), 1px);
+  --c5: round(nearest, calc(48px + 4 * var(--gx)), 1px);
+  --c9: round(nearest, calc(48px + 8 * var(--gx)), 1px);
+  --c11: round(nearest, calc(48px + 10 * var(--gx)), 1px);
+  --c13: var(--x5);
+  padding: var(--pad) 0;
+  overflow-x: clip;
+}
+
+.sx-cframe {
+  position: relative;
+  height: calc(var(--row) * 4);
+}
+
+/* the side rules stop at the centre columns, the verticals run the full height and the two outer ones into the padding */
+.sx-hl-l {
+  width: calc(var(--c5) - var(--c1) + 1px);
+}
+
+.sx-hl-r {
+  left: var(--c9);
+  width: calc(var(--c13) - var(--c9) + 1px);
+}
+
+.sx-vl-frame {
+  bottom: -1px;
+}
+
+.sx-vl-ext {
+  top: calc(var(--pad) * -1);
+  bottom: calc(var(--pad) * -1);
+}
+
+.sx-cframe .sx-rule,
+.sx-cframe .sx-vl {
+  z-index: 1;
+}
+
+/* a photo fills one cell, two rows tall, with square corners, over the hairlines and under the plus marks. --k is the share of its way
+   still to go, set from the scroll, 0 is in place. A left photo starts with its right edge on the left edge of the window, a right
+   photo with its left edge on the right edge. */
+.sx-ph {
+  position: absolute;
+  z-index: 2;
+  height: calc(var(--row) * 2);
+  overflow: hidden;
+  background: var(--grey-pale);
+}
+
+.sx-ph-l {
+  transform: translateX(calc(var(--k, 0) * (-100% - var(--cl))));
+}
+
+.sx-ph-r {
+  transform: translateX(calc(var(--k, 0) * (100cqw - var(--cl))));
+}
+
+.sx-ph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* columns 5 to 8, everything centred. The title and the line name .sx-mid so they outrank the .s2 margin reset in shell.css. */
+.sx-mid {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--c5) + 2px);
+  width: calc(var(--c9) - var(--c5) - 2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 24px 40px;
+  text-align: center;
+}
+
+.sx-mid .sx-label {
+  align-self: auto;
+  justify-content: center;
+}
+
+.sx-mid .sx-ctitle {
+  margin-top: 28px;
+  font-size: clamp(44px, 4.2cqw, 80px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.sx-mid .sx-clede {
+  margin: 24px 0 32px;
+  font-size: clamp(18px, 1.15cqw, 22px);
+  line-height: 1.35;
+}
+
+.sx-phones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.sx-mid .btn {
+  align-self: center;
 }
 
 /* ---- the footer, on pale grey ---- */
@@ -439,13 +556,14 @@
   background: none;
 }
 
-/* row 3, the drawn trucks as wide as the grid, standing on the bottom rule, an ink line, with a plus mark on each vertical */
+/* row 3, the drawn trucks across the grid, 24px in from the outer verticals, standing on the bottom rule, an ink line, with a plus mark on each vertical */
 .sx-r3 {
   padding-top: 72px;
 }
 
 .sx-trucks {
   grid-column: 1 / 13;
+  padding: 0 24px;
   color: var(--black);
 }
 

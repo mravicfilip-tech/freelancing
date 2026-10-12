@@ -165,7 +165,7 @@ export const proizvodi = {
     { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', count: 12, img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
     { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', count: 4, img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/viljuskari/` }, // range, capacity and count dummy
   ] satisfies ProductCell[],
-  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Not shown in this section, Q5 put them in N.
+  // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Shown only in the closing section, see closing.photos.
   photos: [
     { src: '/photos/isporuka-1.webp', alt: 'Linde E20 EVO, oznaka na boku viljuškara' },
     { src: '/photos/isporuka-2.webp', alt: 'Viljuškar se spušta sa kamiona pri isporuci' },
@@ -187,10 +187,18 @@ export const klijenti = {
   ] as { name: string; dummy?: boolean }[],
 };
 
-// D4, the closing band and the footer.
+// D4, the closing section between Proizvodi and the footer, Filip 2026-10-12 18:50. The four delivery photos sit in grid cells, two each
+// side, in the order left outer, left inner, right inner, right outer. The headline is the line from the removed closing band.
 export const closing = {
+  label: 'Kontakt',
   line: ['Recite nam', 'šta vam treba'], // dummy
+  text: 'Pozovite nas ili pošaljite upit za ponudu.', // dummy
   cta: { label: hero.quote.label, href: hero.quote.href } satisfies Cta,
+  phones: [
+    { label: hero.sales.label, number: hero.sales.number, tel: hero.sales.tel, cta: 'call-sales' },
+    { label: hero.service.label, number: hero.service.number, tel: hero.service.tel, cta: 'call-service' },
+  ],
+  photos: [proizvodi.photos[1], proizvodi.photos[0], proizvodi.photos[2], proizvodi.photos[3]],
 };
 
 export const footer = {

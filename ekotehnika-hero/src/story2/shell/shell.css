@@ -302,13 +302,14 @@
 /* ---- type, A1 ---- */
 /* the section marker, a cell of the grid. The name sits in its own cell, top left of the column, its top hairline is the grid rule
    from the plus mark along the label, the beat count is at the far right of the cell, like a drawing title block. In a hold stack the
-   cell sits on the top rule at y 136, and the title stays where it was. */
+   cell sits on the top rule at y 136, and the title stays where it was. Content does not hug the grid (Filip 2026-10-12 19:00,
+   like the footer cells), the name sits 24px in from the vertical and 24px under the rule, the count ends 24px before the end of the cell. */
 .s2-marker {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-top: 12px;
+  padding: 24px 24px 0;
   border-top: 1px solid var(--line);
   font: 500 14px/20px var(--font);
   letter-spacing: 0.1em;
@@ -332,7 +333,25 @@
 
 .stack > .s2-marker {
   margin-top: -32px;
-  margin-bottom: 27px;
+  /* 12px less than before, the label is 12px lower, so the title stays where it was */
+  margin-bottom: 15px;
+}
+
+/* A title, a lede and a button in a block sit 24px in from the grid line on both sides. The rules of a block, the marker, the
+   fact list, the tabs and the data line, run the whole cell and pad their own text. */
+.stack > :is(.s2-title, .s2-lede, .btn) {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+/* At 1920 the one line ledes of Prodaja and Automatizacija would end 6 to 10px before the second vertical, so from 1600px wide they
+   stay inside the first cell, 24px in from both lines, and break in two balanced lines. At 1440 they run past the line. */
+@container (min-width: 1600px) {
+  .s2-p .s2-lede,
+  .s2-at .s2-lede {
+    max-width: calc(var(--x2) - 72px - 24px);
+    text-wrap: balance;
+  }
 }
 
 .s2-title {
@@ -391,11 +410,13 @@
   align-items: flex-start;
   gap: 6px;
   min-width: 0;
-  padding: 16px 12px 16px 24px;
+  /* no padding at the right, the 24px column gap to the next cell line is the inset on that side */
+  padding: 24px 0 24px 24px;
   border-left: 1px solid var(--line);
 }
 
 .spec .cell:last-child {
+  padding-right: 24px;
   /* drawn outside the box, so it sits on the right grid line pixel */
   box-shadow: 1px 0 0 0 var(--line);
 }
@@ -405,7 +426,7 @@
   width: fit-content;
   padding: 0.08em 0 0.12em;
   margin: -0.08em 0 -0.12em;
-  font-size: 56px;
+  font-size: 40px;
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -437,8 +458,9 @@
 .s2 .rlist {
   list-style: none;
   padding: 0;
-  /* one 8px scale for every fact list. 56px from the lede to the first hairline, then in a row the hairline, 16px, the
-     label, 6px, the value, 16px, the next hairline. The stack gap of 24px plus this 32px margin makes the 56px. */
+  /* one 8px scale for every fact list. 56px from the lede to the first hairline, then in a row the hairline, 24px, the
+     label, 6px, the value, 20px, the next hairline, the text 24px in from the left line. The stack gap of 24px plus this
+     32px margin makes the 56px. */
   margin-top: 32px;
   width: 100%;
   border-bottom: 1px solid var(--line);
@@ -449,7 +471,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  padding: 16px 0;
+  padding: 24px 24px 20px;
   border-top: 1px solid var(--line);
 }
 
@@ -476,8 +498,8 @@
   grid-template-columns: 40px 1fr auto;
   align-items: center;
   height: 56px;
-  /* 4px of room at the right, so the last letter of the range is never cut by the wipe box (N20 do N25 C) */
-  padding: 0 4px 0 0;
+  /* 24px in from the line on both sides. A row of the list keeps its 56px, the list as a block starts 56px under the lede */
+  padding: 0 24px 0 24px;
   border: 0;
   border-bottom: 1px solid var(--line);
   background: none;
@@ -663,8 +685,8 @@
   flex-direction: column;
   gap: 4px;
   /* wide enough for the longest range, Linde N20 do N25 C, at 24px */
-  width: max(34%, 15em);
-  padding: 0 0 12px;
+  width: max(34%, 17em);
+  padding: 0 0 12px 24px;
   opacity: 0;
 }
 
@@ -709,13 +731,13 @@
 }
 
 /* the label cell of the range, a cell of the grid like the section marker. Its top hairline sits on the grid rule at y 136 and
-   the label 12px under it, the same gap as the marker on the left, its bottom rule is where the first leader line starts. */
+   the label 24px under it, the same gap as the marker on the left, its bottom rule is where the first leader line starts. */
 .p-call-a {
   left: 0;
   top: -32px;
   height: calc(12% + 32px);
   justify-content: flex-start;
-  padding-top: 12px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--black);
 }
@@ -726,7 +748,7 @@
   /* two columns, so its left edge sits on column line 11 */
   width: calc(2 * var(--cw) + 24px);
   height: auto;
-  padding: 12px 0 0;
+  padding: 24px 0 0 24px;
   border-top: 1px solid var(--black);
 }
 
@@ -736,7 +758,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  padding: 16px 0;
+  padding: 24px 24px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -746,7 +768,8 @@
   width: fit-content;
   padding: 0.08em 0 0.12em;
   margin: -0.08em 0 -0.12em;
-  font-size: 48px;
+  /* 46px, so the number ends 24px or more before the second vertical at 1920 */
+  font-size: 46px;
   font-weight: 350;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -760,17 +783,14 @@
   top: 376px;
 }
 
-/* The N row has a 20px solid icon above each figure and a smaller figure, for a clearer order. --cap is where the cap top of the
-   figure sits under its box top, so the gap from the icon to the cap top is exactly 32px. The stack gap of 6px is in the sum. */
-.n-row {
+/* Every spec row, N, C1 and AT, has a 20px solid icon above each figure and a 40px figure, for a clearer order. --cap is where
+   the cap top of the figure sits under its box top, so the gap from the icon to the cap top is exactly 32px. The stack gap of
+   6px is in the sum. */
+.spec {
   --cap: 0px;
 }
 
-.n-row .fig {
-  font-size: 40px;
-}
-
-.n-row .ico {
+.spec .ico {
   display: block;
   width: 20px;
   height: 20px;
@@ -778,7 +798,7 @@
   color: var(--fg);
 }
 
-.n-row .ico svg {
+.spec .ico svg {
   display: block;
 }
 

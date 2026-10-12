@@ -100,14 +100,29 @@ export const Btn = ({ href, kind = 'primary', icon, order = 0, cta, children, st
   </a>
 );
 
-// A fact with an optional 20px solid icon above its figure, only the N row carries icons.
+// A fact with an optional 20px solid icon above its figure, every spec row carries icons.
 export type SpecFact = Fact & { icon?: ReactNode };
 
-// A spec row, cells divided by hairlines that sit on grid columns. spans is the column span of each cell.
-export function SpecRow({ facts, spans, order = 4, className = '', style }: { facts: SpecFact[]; spans: number[]; order?: number; className?: string; style?: CSSProperties }) {
+// A spec row, cells divided by hairlines that sit on grid columns. spans is the column span of each cell. A row whose cells do not
+// divide the grid evenly passes its own column template instead, so a cell line can sit on a vertical of the grid.
+export function SpecRow({
+  facts,
+  spans,
+  template,
+  order = 4,
+  className = '',
+  style,
+}: {
+  facts: SpecFact[];
+  spans: number[];
+  template?: string;
+  order?: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
   const total = spans.reduce((a, b) => a + b, 0);
   return (
-    <div className={`spec ${className}`} data-rule="tb" style={{ ...style, gridTemplateColumns: `repeat(${total}, 1fr)` }}>
+    <div className={`spec ${className}`} data-rule="tb" style={{ ...style, gridTemplateColumns: template ?? `repeat(${total}, 1fr)` }}>
       {facts.map((f, i) => {
         const o = order + i * 2;
         const body = (
@@ -127,7 +142,7 @@ export function SpecRow({ facts, spans, order = 4, className = '', style }: { fa
           </>
         );
         return (
-          <div className="cell" style={{ gridColumn: `span ${spans[i]}` }} key={f.label}>
+          <div className="cell" style={template ? undefined : { gridColumn: `span ${spans[i]}` }} key={f.label}>
             {body}
           </div>
         );

@@ -38,7 +38,13 @@ Task format
   - [x] Filip answers the round 3 questions
   - [ ] Build round 3
   - [x] Plan round 4 from Filip's video review, briefs/ui-pass/round4.md
-  - [ ] Filip answers the round 4 questions
+  - [x] Filip answers the round 4 questions, Q10 S and Q11 footer scenery still open
+  - [x] Split the 3D work into one branch per scene, street, auto and lift running
+  - [x] Build round 4 batch A, the P leak, the blink, buttons, marker rule, A colour, C1 reveal, chapter nav
+  - [x] Merge the Grad round 3 branch
+  - [ ] Check batch A on a real scroll and send preview 2
+  - [ ] Build round 4 beat panes and sections
+  - [ ] Merge the street, auto and lift branches
   - [ ] Build round 4
   - [ ] Review, check and deploy
 

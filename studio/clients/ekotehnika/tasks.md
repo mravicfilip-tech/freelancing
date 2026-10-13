@@ -33,7 +33,9 @@ Task format
   - [x] Filip picks the look from the three still board
   - [x] Test 5 seconds, then render both formats
   - [x] Filip watches both with the track and gives notes, v1 rejected, 3 of 10
-  - [ ] Propose the redraw in words, the site's own 3D world rendered at 30 fps
+  - [x] Propose the redraw in words, the site's own 3D world rendered at 30 fps
+  - [x] Render v2 in both formats and send them
+  - [ ] Filip watches v2 with the track and gives notes
 
 - ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md. Preview 3 https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
   - [x] Filip gives his notes

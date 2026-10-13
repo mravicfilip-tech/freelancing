@@ -284,6 +284,8 @@ export function Dust({ clock, state }: SceneProps & { state: React.MutableRefObj
     p.needsUpdate = true;
     const u = uOf(clock);
     const dark = isDark(u);
+    // no dust on the servis stage, its ground is pure black (Filip round 5)
+    g.visible = !dark;
     mat.blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending;
     mat.color.set(dark ? C.lightGrey : C.tonedTextGrey);
     mat.opacity = dark ? 0.4 : 0.2;

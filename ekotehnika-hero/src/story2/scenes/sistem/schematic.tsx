@@ -3,7 +3,8 @@
 // story clock, the shell in the brand red and every other part in an LMH grey. The studio environment is turned to light
 // it low key, a soft top light from the front left and a bright edge along the far side, so the dark truck reads on the
 // dark ground. One clean outline on the silhouette only, 2px white at 90 percent, drawn from a mask of the whole truck in
-// screen space so no inner edge is ever drawn. The ground is a 0.5 m floor grid edge to edge with the truck's shadow on it.
+// screen space so no inner edge is ever drawn. The ground is pure black with no floor grid (Filip round 5, "screen should be
+// pure black background"), the truck's shadow still on it.
 // Three dimension lines with the X50 / 600 figures from the Linde data sheet DS_X35_X50_1254, each held inside one cell of
 // the page grid at 1440 and 1920, so none crosses a vertical or meets the stage edge. They draw on once the shutter of B
 // has rolled away. Nothing fades.
@@ -246,19 +247,7 @@ function Stage({ clock }: SceneProps) {
     return m;
   }, [mask]);
 
-  // the floor, a 0.5 m grid at 8 percent over the whole visible floor, a shadow catcher and the contact shadow
-  const grid = useMemo(() => {
-    // short 0.5 m segments, as a line that passes under the camera is dropped whole. The camera looks toward +x and -z
-    // from about (-7, 7, 10), so this box holds every bit of floor up to the top edge of the frame.
-    const p: number[] = [];
-    const [x0, x1, z0, z1] = [-36, 36, -36, 12];
-    for (let x = x0; x <= x1 + 0.001; x += 0.5) for (let z = z0; z < z1; z += 0.5) p.push(x, 0, z, x, 0, z + 0.5);
-    for (let z = z0; z <= z1 + 0.001; z += 0.5) for (let x = x0; x < x1; x += 0.5) p.push(x, 0, z, x + 0.5, 0, z);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
-    return g;
-  }, []);
-  const gridMat = useMemo(() => new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.08, toneMapped: false, depthWrite: false }), []);
+  // the floor, a shadow catcher and the contact shadow on the black ground
   const shadowMat = useMemo(() => new THREE.ShadowMaterial({ color: '#000000', opacity: 0.7, depthWrite: false }), []);
   const blob = useMemo(contactMaterial, []);
 
@@ -375,7 +364,6 @@ function Stage({ clock }: SceneProps) {
 
   return (
     <group ref={root} visible={false} position={[BP.x, 0, BP.z]}>
-      <lineSegments geometry={grid} material={gridMat} renderOrder={-3} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.003, 0]} material={shadowMat} receiveShadow renderOrder={-2}>
         <planeGeometry args={[16, 16]} />
       </mesh>

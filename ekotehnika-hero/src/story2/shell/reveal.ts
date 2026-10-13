@@ -9,28 +9,47 @@ const SPREAD = 6;
 
 export type Rise = { el: HTMLElement; letters: HTMLElement[]; last: string };
 
-// The text nodes of a part, leaving out svg and any part nested inside it that rises on its own.
-function textNodes(el: HTMLElement): Text[] {
-  const out: Text[] = [];
+// The text nodes of a part and the inline images in its text (the flags in the hero marker), in reading order, leaving out
+// any part nested inside it that rises on its own.
+function pieces(el: HTMLElement): (Text | Element)[] {
+  const out: (Text | Element)[] = [];
   const walk = (n: Node) => {
     for (const c of Array.from(n.childNodes)) {
       if (c.nodeType === Node.TEXT_NODE) {
         if ((c.nodeValue ?? '').trim()) out.push(c as Text);
-      } else if (c instanceof HTMLElement && !c.hasAttribute('data-wipe')) walk(c);
+      } else if (c instanceof HTMLImageElement || c instanceof SVGElement) out.push(c);
+      else if (c instanceof HTMLElement && !c.hasAttribute('data-wipe')) walk(c);
     }
   };
   walk(el);
   return out;
 }
 
+const mask = (inner: Node) => {
+  const l = document.createElement('span');
+  l.className = 'rl';
+  const c = document.createElement('span');
+  c.className = 'rc';
+  c.appendChild(inner);
+  l.appendChild(c);
+  return l;
+};
+
 // Split a part into words and letters, once. The original text node moves into a screen reader copy, so React keeps its node
 // and the part reads as one string, and the letters beside it are hidden from assistive tech.
 export function prepRise(el: HTMLElement): Rise {
   const whole = el.classList.contains('btn') || el.hasAttribute('data-count');
   if (el.hasAttribute('data-rise') || whole) return { el, letters: Array.from(el.querySelectorAll<HTMLElement>('.rc')), last: '' };
-  const nodes = textNodes(el);
-  if (!nodes.length) return { el, letters: [], last: '' };
+  const nodes = pieces(el);
+  if (!nodes.some((n) => n.nodeType === Node.TEXT_NODE)) return { el, letters: [], last: '' };
   for (const t of nodes) {
+    // an inline image rises in its place in the line, like one more letter
+    if (!(t instanceof Text)) {
+      const at = document.createComment('');
+      t.parentNode!.insertBefore(at, t);
+      at.replaceWith(mask(t));
+      continue;
+    }
     const sr = document.createElement('span');
     sr.className = 'sr-only';
     const vis = document.createElement('span');
@@ -44,15 +63,7 @@ export function prepRise(el: HTMLElement): Rise {
       }
       const w = document.createElement('span');
       w.className = 'rw';
-      for (const ch of Array.from(part)) {
-        const l = document.createElement('span');
-        l.className = 'rl';
-        const c = document.createElement('span');
-        c.className = 'rc';
-        c.textContent = ch;
-        l.appendChild(c);
-        w.appendChild(l);
-      }
+      for (const ch of Array.from(part)) w.appendChild(mask(document.createTextNode(ch)));
       vis.appendChild(w);
     }
     t.parentNode!.insertBefore(sr, t);
@@ -77,6 +88,6 @@ export function setRise(R: Rise, p: number) {
   }
   for (let i = 0; i < n; i++) {
     const t = Math.min(1, Math.max(0, (p * (n + SPREAD) - i) / SPREAD));
-    R.letters[i].style.setProperty('--y', `${(100 * (1 - outCubic(t))).toFixed(0)}%`);
+    R.letters[i].style.setProperty('--y', (1 - outCubic(t)).toFixed(3));
   }
 }

@@ -223,8 +223,10 @@ export default function Overlay({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
-    // shutter rolls up from the bottom edge and covers the frame by u 9.9, then rolls away upward as the schematic lights up.
-    const lo = u < 10 ? -1.05 : lerp(-1.05, 1.05, ease(range(u, 10.0, 10.25)));
+    // shutter rolls up from the bottom edge and covers the frame by u 9.9. Servis then opens on plain black while its text
+    // rises, and the shutter leaves in one hard cut at u 10.25 as the text lands, so no frame is half black and half floor
+    // (round 5, Filip's "screen should be just black here").
+    const lo = u < 10.25 ? -1.05 : 1.05;
     const hi = u < 10 ? lerp(-1.05, 1.05, ease(range(u, 9.55, 9.9))) : 1.05;
     if (fade.current) {
       fade.current.visible = hi - lo > 0.002;

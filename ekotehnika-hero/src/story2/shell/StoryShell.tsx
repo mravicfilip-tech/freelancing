@@ -16,6 +16,7 @@ import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
 import { prepRise, setRise, type Rise } from './reveal';
 import { forkBackFrom, forkBackTo, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
+import { INTRO_SKIP, introStart } from '../scenes/sistem/intro';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -40,6 +41,9 @@ const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02] };
 const P_FIRST = 0.06;
 const P_STEP = 0.22;
 const LEAVE_DEFAULT: [number, number] = [0.86, 1];
+// the hero block starts this long after the street does, as the road is drawing, and plays anyway after HERO_WAIT_MS
+const HERO_AFTER_MS = 350;
+const HERO_WAIT_MS = 10000;
 // the beat that comes in behind the L fork's tip, see scenes/sistem/forkTip.ts
 const BEHIND_FORK = 'N';
 
@@ -208,8 +212,13 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
     const loop = () => {
       const pos = clock.pos.current;
-      // the hero block and the top row play on real time after load, 1.2s for all lines, then read the clock
-      const heroT = clamp01((performance.now() - t0) / 1000 / HERO_SECONDS);
+      // the top row plays on real time from load. The hero block and the grid wait for the street to start building in, then
+      // rise with it, so the text never stands finished on an empty white stage (round 5). If the scene has not drawn after
+      // HERO_WAIT_MS, a failed or very slow canvas, they play anyway.
+      const now = performance.now();
+      const heroT = clamp01((now - t0) / 1000 / HERO_SECONDS);
+      const s0 = INTRO_SKIP ? t0 : introStart() >= 0 ? introStart() + HERO_AFTER_MS : now - t0 > HERO_WAIT_MS ? t0 + HERO_WAIT_MS : Infinity;
+      const blockT = clamp01((now - s0) / 1000 / HERO_SECONDS);
 
       for (const G of groups) {
         const isHero = G.id === 'H' || G.id === 'top';
@@ -220,8 +229,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const budget = isHero ? 120 : WIPE_DONE * slow * len;
         const dur = budget * WIPE_SHARE;
         const stagger = (budget - dur) / G.maxOrder;
-        const u = isHero ? Math.max(heroT * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
-        const k = isHero ? Math.max(k0, FILL_TO * heroT) : k0;
+        const ht = G.id === 'H' ? blockT : heroT;
+        const u = isHero ? Math.max(ht * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
+        const k = isHero ? Math.max(k0, FILL_TO * ht) : k0;
         let on: boolean;
         if (G.persistent) on = true;
         else if (G.leaveInPx) {
@@ -230,6 +240,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         } else {
           on = k >= 0 && k <= 1 && k < (G.leave[0] + G.leave[1]) / 2;
         }
+        // the hero block stays off until the street starts building in, its grey lede included, see s0 above
+        if (G.id === 'H' && s0 === Infinity) on = false;
         // Najam turns on as the fork starts backing out of L, cut at the blade's tip, so it draws on behind the steel and no frame
         // is an empty page (round 5, Filip's note 3). Its layout is unchanged.
         const behind = G.id === BEHIND_FORK && pos >= forkBackFrom && pos < forkBackTo;
@@ -286,7 +298,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       // grid draw on at each hold, dim to 40 percent between holds, plus marks turn once on reveal
       let go = 0.4;
       let draw = 1;
-      const gPos = Math.max(pos, heroT * 200);
+      const gPos = Math.max(pos, blockT * 200);
       for (const h of HOLDS) {
         const gp = h.id === 'H' ? gPos : pos;
         if (gp >= h.start && gp <= h.end) {

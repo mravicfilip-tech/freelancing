@@ -21,8 +21,9 @@
 .s2[data-tone='dark'] {
   --fg: var(--white);
   --fg2: rgb(255 255 255 / 0.7);
-  /* halved with the grid in round 5, so every line on S drops together and only the plus marks stay bright */
-  --line: rgb(255 255 255 / 0.15);
+  /* a quarter of round 4's 0.3, halved twice with the grid in round 5, so every line on S drops together and only the plus
+     marks stay bright */
+  --line: rgb(255 255 255 / 0.075);
   --bar: var(--white);
   --fill-off: rgb(255 255 255 / 0.25);
 }
@@ -121,9 +122,10 @@
 }
 
 .s2-grid[data-tone='white'] {
-  /* half strength on the dark ground, both halves, Filip's round 5 note 2. The plus marks keep their strength. */
-  --gk: rgb(0 0 0 / 0.2);
-  --gw: rgb(255 255 255 / 0.2);
+  /* a quarter of round 4's 0.4 on the dark ground, both halves, halved for Filip's round 5 note 2 and halved again on his
+     "should be 50% opacity less". The plus marks keep their strength. */
+  --gk: rgb(0 0 0 / 0.1);
+  --gw: rgb(255 255 255 / 0.1);
 }
 
 .s2-plus {
@@ -418,9 +420,11 @@
   margin: -0.1em -0.04em -0.16em 0;
 }
 
+/* --y runs from 1, under the mask, to 0, in place. Under means a whole letter box plus the mask's 0.16em of padding and a
+   margin, so no ascender peeks through the bottom of its mask while it waits. */
 [data-rise] .rc {
   display: inline-block;
-  transform: translateY(var(--y, 0%));
+  transform: translateY(calc(var(--y, 0) * (100% + 0.3em)));
 }
 
 /* ---- data rows, A6 ---- */

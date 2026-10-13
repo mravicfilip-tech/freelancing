@@ -23,13 +23,13 @@ Task format
 
 ## Backlog
 
+## In progress
+
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel
   - [ ] Plan the reel and its beat table for Filip's review
   - [ ] Find the track's tempo, the videos are silent and cut on its beat grid
   - [ ] Build after the site ships, both formats
-
-## In progress
 
 - ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md. Preview 3 https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
   - [x] Filip gives his notes
@@ -55,11 +55,12 @@ Task format
   - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
   - [x] Real scroll checks on the full round 4 build at 81aad36, P into S, the L exit and AT into Proizvodi all clean
   - [x] Preview 3 at 81aad36, https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
-  - [ ] Filip's ship line on preview 3, then go to the reel chat
+  - [x] Filip's ship line on preview 3, then go to the reel chat
+  - [x] Merge the round 4 build into the default branch
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell
-  - [ ] Build round 4
+  - [x] Build round 4
   - [ ] Review, check and deploy
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp

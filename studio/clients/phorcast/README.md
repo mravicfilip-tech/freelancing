@@ -65,7 +65,7 @@ code, no shots on file yet. Figma file `aczG8te17zRGoK5wvirB92`.
 
 ## Widths
 
-1440
+1920, 390
 
 ## Run
 

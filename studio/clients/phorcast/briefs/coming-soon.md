@@ -132,7 +132,7 @@ Form states
 | Empty | Field "Your email address", button "Get Early Access" |
 | Invalid | "Enter a valid email address, like name@example.com." under the field, in the error colour |
 | Sending | Button reads "Joining…", field locked |
-| Success | The form is replaced by "You're on the list. Check your inbox to confirm your email." with Discord and Telegram links |
+| Success | The form is replaced by "You're on the list." and, only when the list tool sends a confirmation email, "Check your inbox to confirm your email." Otherwise "We'll email you before launch." Then Discord and Telegram links |
 | Already on the list | "You're already on the list. We'll email you before launch." |
 | Server error | "Something went wrong on our side. Try again in a moment." The field keeps the address |
 | Too many tries | "Too many tries. Wait a minute and try again." |

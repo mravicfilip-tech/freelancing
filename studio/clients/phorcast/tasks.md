@@ -25,12 +25,15 @@ Task format
 
 ## In progress
 
-- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. No PR or preview yet
+- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. Branch `claude/great-shannon-tdvytn` in the phorcast repo, no PR or preview yet
   - [x] Read the Phorcast repo and the live landing copy
   - [x] Write the plan and the page content
-  - [ ] Filip answers the kickoff questions and approves the direction
+  - [x] Filip answers the kickoff questions and approves the direction
+  - [ ] Filip picks the How it works format, guided walk-through or static blocks
   - [ ] Client answers on the email tool, legal links and claims
-  - [ ] Build the page in the Phorcast repo
+  - [x] Build the hero, form, sign up function, benefits, markets, early access, FAQ and footer
+  - [ ] Build How it works in the format Filip picks
+  - [ ] Deploy a protected preview
   - [ ] Preview link to Filip
 
 ## Review

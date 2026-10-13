@@ -72,7 +72,8 @@ Task format
   - [x] Round 5 item 3, Najam draws on behind the fork's tip, layout unchanged, 3e426a1
   - [x] Build round 5, moved back to the planning chat on Filip's "just do the work and get it here"
   - [x] Filip's localhost notes 8 to 10, the hero in sync with the street, Servis black at the start, its lines at a quarter
-  - [ ] Filip looks at round 5 on his localhost
+  - [x] Filip looks at round 5 on his localhost
+  - [x] Production, Filip's "push to production", 28ecfa5 live at https://ekotehnika-hero.vercel.app
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell

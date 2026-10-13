@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { automatizacija, kompanija, markers, najam, prodaja, servis } from '../copy';
 import { Btn, Fill, Marker, SpecRow, TitleLines, between, type SpecFact } from './ui';
+import { REVEAL } from './reveal';
 
 // Show tab i on the Prodaja pane, for the loop that steps with k and for a click. -1 shows no model yet. Each cut out
 // is in one of three states, wait (off to the right, ready to come in), on, and gone (off to the left), see .p-fig in
@@ -335,10 +336,10 @@ export function NPane() {
     <div className="s2-pane s2-n">
       <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
         <Marker m={markers.n} order={0} />
-        <TitleLines lines={c.title} order={1} className="s2-title-s" />
+        <TitleLines lines={c.title} order={1} className="s2-title-s" reveal={REVEAL} />
       </div>
       <div className="blk stack n-side" style={{ ...between(3, 5), top: 220 }}>
-        <Fill text={c.text} />
+        <Fill text={c.text} reveal={REVEAL} />
         <Btn href={c.cta.href} order={3} cta="quote">
           {c.cta.label}
         </Btn>

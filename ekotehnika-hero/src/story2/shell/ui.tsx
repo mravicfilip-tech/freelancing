@@ -30,18 +30,58 @@ export const Marker = ({ m, order = 0 }: { m: MarkerData; order?: number }) => (
   </p>
 );
 
-export const TitleLines = ({ lines, order = 1, className = '' }: { lines: string[]; order?: number; className?: string }) => (
-  <h2 className={`s2-title ${className}`}>
-    {lines.map((t, i) => (
-      <span className="ln" data-wipe={order + i} key={t}>
-        {t}
+// Text split into words and letters for a text load in, see reveal.ts. Each word and each letter sits in its own mask, the
+// text stays one string for screen readers.
+function Letters({ text }: { text: string }) {
+  const words = text.split(' ');
+  return (
+    <>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {words.map((w, i) => (
+          <Fragment key={i}>
+            <span className="rw">
+              <span className="rwi">
+                {Array.from(w).map((c, j) => (
+                  <span className="rl" key={j}>
+                    <span className="rc">{c}</span>
+                  </span>
+                ))}
+              </span>
+            </span>
+            {i < words.length - 1 ? ' ' : null}
+          </Fragment>
+        ))}
       </span>
-    ))}
+    </>
+  );
+}
+
+// reveal is the text load in from reveal.ts, 0 keeps the block wipe and the scroll fill
+export const TitleLines = ({ lines, order = 1, className = '', reveal = 0 }: { lines: string[]; order?: number; className?: string; reveal?: number }) => (
+  <h2 className={`s2-title ${className}`}>
+    {lines.map((t, i) =>
+      reveal ? (
+        <span className="ln" data-reveal={reveal} data-order={order + i} key={t}>
+          <Letters text={t} />
+        </span>
+      ) : (
+        <span className="ln" data-wipe={order + i} key={t}>
+          {t}
+        </span>
+      ),
+    )}
   </h2>
 );
 
 // The lede. Split into words and letters for the scroll fill, kept as one string for screen readers.
-export function Fill({ text, className = '' }: { text: string; className?: string }) {
+export function Fill({ text, className = '', reveal = 0 }: { text: string; className?: string; reveal?: number }) {
+  if (reveal)
+    return (
+      <p className={`s2-lede ${className}`} data-reveal={reveal}>
+        <Letters text={text} />
+      </p>
+    );
   const words = text.split(' ');
   return (
     <p className={`s2-lede fill ${className}`} data-fill>

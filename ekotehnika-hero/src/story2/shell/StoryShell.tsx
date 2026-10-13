@@ -14,6 +14,7 @@ import { Grid, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
+import { applyReveal, makeReveal, type Reveal } from './reveal';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -75,6 +76,8 @@ type Group = {
   leaveInPx: boolean;
   wipes: { el: HTMLElement; order: number; last: string; target: number; suffix: string; lastText: string }[];
   fills: { el: HTMLElement; letters: HTMLElement[]; on: number }[];
+  // the text load in on the board, see reveal.ts
+  reveals: Reveal[];
   // the plus marks at this group's block rules, drawn into .s2-plus
   wrap: HTMLElement | null;
   tabs: HTMLElement | null;
@@ -96,6 +99,7 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     f.setAttribute('data-live', '');
     return { el: f, letters: Array.from(f.querySelectorAll<HTMLElement>('.fl')), on: 0 };
   });
+  const reveals = Array.from(el.querySelectorAll<HTMLElement>('[data-reveal]')).map(makeReveal);
   return {
     id,
     el,
@@ -104,10 +108,11 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     leaveInPx: false,
     wipes,
     fills,
+    reveals,
     wrap: null,
     tabs: el.querySelector<HTMLElement>('.s2-p'),
     persistent: false,
-    maxOrder: Math.max(1, ...wipes.map((w) => w.order)),
+    maxOrder: Math.max(1, ...wipes.map((w) => w.order), ...reveals.map((r) => r.order).filter((o) => !Number.isNaN(o))),
     last: '',
     ...opts,
   };
@@ -250,6 +255,10 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
               W.el.textContent = text;
             }
           }
+        }
+        // the text load in, a title line on its wipe's timing, a lede on the fill's
+        for (const R of G.reveals) {
+          applyReveal(R, Number.isNaN(R.order) ? range(k, FILL_FROM, FILL_TO) : clamp01((u - R.order * stagger) / dur));
         }
         // scroll fill, letter by letter
         const f = range(k, FILL_FROM, FILL_TO);

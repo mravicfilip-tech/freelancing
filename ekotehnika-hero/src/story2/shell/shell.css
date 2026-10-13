@@ -404,6 +404,67 @@
   color: var(--fg);
 }
 
+/* The text load in on Filip's board, round 5 item 5, see reveal.ts. JS sets data-s on each word or letter, with none set every
+   letter shows its end state. overflow clip keeps each mask on the text baseline, the padding gives carons and descenders room. */
+.rw,
+.rwi,
+.rc {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+[data-reveal] :is(.rw, .rc)[data-s='h'] {
+  visibility: hidden;
+}
+
+/* 1 rise, each letter in its own mask */
+[data-reveal='1'] .rl {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.1em 0.04em 0.16em 0;
+  margin: -0.1em -0.04em -0.16em 0;
+}
+
+[data-reveal='1'] .rc {
+  transform: translateY(var(--y, 0%));
+}
+
+/* 2 type on, the 2px ink caret after the last letter set */
+[data-reveal='2'] .rc {
+  position: relative;
+}
+
+[data-reveal='2'] .rc[data-s='c']::after {
+  content: '';
+  position: absolute;
+  top: 0.08em;
+  bottom: 0.02em;
+  right: -0.08em;
+  width: 2px;
+  background: var(--fg);
+}
+
+/* 3 ink up, the scroll fill's grey to ink */
+[data-reveal='3'] .rc {
+  transition: color 120ms linear;
+}
+
+[data-reveal='3'] .rc[data-s='h'] {
+  visibility: visible;
+  color: var(--fill-off);
+}
+
+/* 4 word slide, each word in its own mask */
+[data-reveal='4'] .rw {
+  overflow: clip;
+  padding: 0.1em 0.08em 0.16em 0;
+  margin: -0.1em -0.08em -0.16em 0;
+}
+
+[data-reveal='4'] .rwi {
+  transform: translateX(var(--x, 0px));
+}
+
 /* ---- data rows, A6 ---- */
 .spec {
   display: grid;

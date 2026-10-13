@@ -71,6 +71,7 @@ Task format
   - [x] Rise on every text load in, beat panes, hero and the sections after the story, 3e426a1
   - [x] Round 5 item 3, Najam draws on behind the fork's tip, layout unchanged, 3e426a1
   - [x] Build round 5, moved back to the planning chat on Filip's "just do the work and get it here"
+  - [x] Filip's localhost notes 8 to 10, the hero in sync with the street, Servis black at the start, its lines at a quarter
   - [ ] Filip looks at round 5 on his localhost
   - [x] Merge the lift branch
   - [x] Merge the servis branch

@@ -24,6 +24,12 @@ so the lesson outlives the context window.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.
 
+## Filip's machine
+
+- Windows with PowerShell, where the execution policy blocks `npm.ps1`, so `npm install` and `npm run live` fail with
+  PSSecurityException (relayed from the planning chat on 13 October 2026). Every localhost instruction to Filip gives the
+  `npm.cmd install` and `npm.cmd run live` form. Changing his execution policy is his call, never suggested as a step.
+
 ## Network
 
 - The agent proxy blocks `vercel.app`, so a preview cannot be opened from inside the container. Check

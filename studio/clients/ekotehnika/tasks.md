@@ -59,7 +59,9 @@ Task format
   - [x] Merge the round 4 build into the default branch
   - [x] Fix the L fork move, Filip's localhost note after the merge, the top row draws over the steel, the blade docks on the rule and backs out to the left
   - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app
-  - [ ] Plan round 5 from Filip's notes, briefs/ui-pass/notes-r5-live.md
+  - [x] Plan round 5 from Filip's notes, briefs/ui-pass/round5.md
+  - [ ] Filip answers the round 5 deadline and Q1 to Q3
+  - [ ] Build round 5 in a fresh session
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell

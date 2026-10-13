@@ -18,6 +18,15 @@
         "freelancing"
       ],
       "previewProjects": []
+    },
+    {
+      "id": "ekotehnika",
+      "repos": [
+        "ekotehnika-hero"
+      ],
+      "previewProjects": [
+        "ekotehnika-hero"
+      ]
     }
   ]
 }

@@ -1,0 +1,10 @@
+{
+  "name": "Request a quote",
+  "job": "A warehouse manager reads who Ekotehnika is and asks for an offer",
+  "start": "/?v=5",
+  "maxClicks": 2,
+  "steps": [
+    { "expect": "Linde viljuškari." },
+    { "click": "Zatražite ponudu" }
+  ]
+}

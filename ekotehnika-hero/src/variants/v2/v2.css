@@ -1,0 +1,53 @@
+/* V2 Linija. The illustrated scroll story fills the screen and the shared hero frame sits on top of
+   it. Tokens only, see src/styles.css :root. Scoped under .v2. */
+.v2 {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+  color: var(--ink);
+  font-family: 'Geist', system-ui, sans-serif;
+}
+
+.v2 .v2-panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--hover-light-grey);
+}
+
+/* The 1440 by 900 drawing, fitted to the screen and centred as one frame (transform set in
+   index.tsx). Nothing inside it is retimed. */
+.v2 .v2-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 900px;
+  transform-origin: 0 0;
+}
+
+.v2 svg.v2-layer {
+  position: absolute;
+  inset: 0;
+  width: 1440px;
+  height: 900px;
+  display: block;
+  overflow: visible;
+}
+
+.v2 .v2-map {
+  opacity: 0;
+}
+
+/* A fade in the page colour under the top row, so the black yard aisles that run off the top edge
+   in the last chapter never sit under the links. Invisible over the pale ground. */
+.v2 .v2-veil {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 124px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(245, 246, 250, 0.98) 0, rgba(245, 246, 250, 0.98) 98px, rgba(245, 246, 250, 0) 100%);
+}

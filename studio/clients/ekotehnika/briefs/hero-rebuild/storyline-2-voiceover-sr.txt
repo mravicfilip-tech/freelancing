@@ -1,0 +1,24 @@
+[   1.4 -   12.4] Pravimo jedan website koji se radi za ekotekniku. To je kompanija koja usaradni salinde vidluškarima postoje na teritoriji celog Balkana.
+[  12.4 -   26.4] Napravit ćemo mi jedan storytelling website z inspiraciju. Prvi del inspiracije do ovde će se tritirati kao ovaj inspiracija koju možda pogledaš sada.
+[  26.4 -   40.4] Znači umesto kamiona će ići vidluškar koji će se kretati kroz njihovu kompaniju dok se ne zavustavi. Kada se zavustavi ići ćemo drugu inspiraciju koja izgleda ovako.
+[  41.4 -   57.4] Znači jedan flip umesto kamiona će ići vidluškar koji će se kredati ovako nekim putem. Znači imamo tu tranziciju pogled sa strane kako se kreće vidluškar.
+[  57.4 -   65.4] Onda se taj vidluškar prebacuje na pogled od gore i kreće se tim putem do jednog skladišta. To je inspiracija sad i objašnjavamo ovo što smo mi napravili.
+[  66.4 -   82.4] Što stiče UI design ići ćemo sa ovako jednom postavkom da ćemo koristiti velike fontove da bude baš moćno moderno i jednostavno premium vibe.
+[  82.4 -   94.4] Ovaj vidluškar će se po defaultu nalaziti ovde. Imamo ovako prvi jedan deo ovoga storyboarda do ovog, do ovde. Znači ovo prva četiri screena.
+[  94.4 -  109.4] Koji će izgledati tako što će se ovaj vidluškar, samo sekund, kretati, vrtemu se točpovi. Što stiče stila vidluškara ja bi trebao da to bude neki možda jednostavni i 3D model ali hoće da bude realističan.
+[ 109.4 -  131.4] Vidluškar će biti statičan odnosno na pozadino što bi značalo da se pozadina pomera ovako, dok se skruzve pomeri točkovi mu se vrte i onda ostavimo prostora da možemo da popunimo okolo neki kao stop scroll gde bi ostavili mesta da popunimo detaljima firme.
+[ 132.4 -  149.4] Nakon toga ovaj vidluškar kreti se po putu, perspektiva se flipuje na top view, sve smut i ovaj vidluškar će se kretati sa ovom teretom do ovog skladišta.
+[ 149.4 -  157.4] To nam ostavljaju. Znači ovaj prostor okolo će biti prilično otvoren, empty space da bi mogli da ga popunimo sa nekim detaljima kompani.
+[ 157.4 -  162.4] Transicija između ovaj sledeće sekcije, znači ovaj prve tri se tiču kompanije.
+[ 162.4 -  176.4] I generalno pokazujemo outdoor vidluškar. Kada ovaj dođe vidluškar do skladišta, transicija sledeća, zoomira su skladište dok skrosti ne zauzme 3D model u tog skladišta,
+[ 177.4 -  182.4] koji će ujedno biti transicija sledeću sekciju, koja će prikazati.
+[ 182.4 -  194.4] Ove ćemo pisati njih u sledeću delatnu, stoje prodaja vidluškara, a za animaciju i sve transicije ćemo koristiti indoor vidluškare i prikaz skladišta.
+[ 194.4 -  205.4] Znači, zoomiramo, otvori se ovo skladište, poglede sa strane, kako se kreće vidluškar kod skladišta, kamera se spušta, ide u sredini prema direktu na ovaj vidluškar,
+[ 205.4 -  214.4] koji scrollom ima efekt kao da ti prilazi i kad skroz priđe, zoomira se u ovaj jedan crni del, koji će otkriti sledeću sekciju.
+[ 215.4 -  228.4] Ta sledeća sekcija koja će biti te boje, tamne, otkriva blueprint vidluškara, kojom se točkovi okreću i dolazimo sledeća delatnosti, koja je servis vidluškara.
+[ 228.4 -  239.4] Ovaj moment sa ovom animacijom vidluškar će biti statečan odnosno na pozadinu, samo ćemo se točkovi okretati, a iluziju okretanju ćemo postići pomeranjem linijeca sa strane.
+[ 239.4 -  252.4] Sledeći sekcije, transicija sledeće sekcije, podići jedan ovako veliki, pripo celo geprana forklift će podići scroll do sledeće sekcije, koja će otkriti njih u sledeću delatnost,
+[ 252.4 -  261.4] a to je najem vidluškara gde ćemo predstaviti ovde sa ovaj neki tekst, s početka će staviti ovako jedan veliki broj vidluškara spremni za retanje.
+[ 262.4 -  280.4] Sledeća sekcija, tada treba isto neku naprijeti transiciju, će otkriti automatizaciju skladišta gde oni prodojaju male robotiće koji se mogu prikazati kako po nekim putanjama nosi i vraćaju neke kutije, neke proizvode.
+[ 280.4 -  294.4] Sledeća sekcija će biti priročujednostavna spektra njihovih proizvoda, glavnih proizvoda koje ćemo dati i jedan klasičan futer.
+[ 294.4 -  299.4] To je to što se tiče storija, nadam se da ti je jasno.

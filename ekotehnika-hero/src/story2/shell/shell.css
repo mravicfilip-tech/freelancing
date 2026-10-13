@@ -1,0 +1,953 @@
+/* Storyline 2 shell, the UI pass. Tokens only, see src/styles.css :root. Daxline Pro, sentence case, nothing under 14px.
+   Desktop first, laid out for 1440 by 900 on a 12 column grid with a 48px margin and 24px gutters, held at 1280 by 800
+   and 1920 by 1080. The stage is a size container, so --cw and --gx follow its width and not the scroll bar. */
+.s2 {
+  font-family: var(--font);
+  color: var(--black);
+  background: var(--white);
+  --fg: var(--black);
+  --fg2: var(--grey-dark);
+  --line: var(--grey-light);
+  --bar: var(--black);
+  --fill-off: var(--grey-mid);
+}
+
+.s2[data-tone='dark'] {
+  background: var(--dark-ground);
+  color: var(--white);
+}
+
+.s2 [data-ink='dark'],
+.s2[data-tone='dark'] {
+  --fg: var(--white);
+  --fg2: rgb(255 255 255 / 0.7);
+  --line: rgb(255 255 255 / 0.3);
+  --bar: var(--white);
+  --fill-off: rgb(255 255 255 / 0.25);
+}
+
+.s2 h1,
+.s2 h2,
+.s2 h3,
+.s2 p,
+.s2 ul,
+.s2 figure {
+  margin: 0;
+}
+
+.s2 a:focus-visible,
+.s2 button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* ---- the stage, one screen pinned for the whole story ---- */
+.s2-stage {
+  --cw: calc((100cqw - 96px - 264px) / 12);
+  --gx: calc(var(--cw) + 24px);
+  /* the five vertical grid lines, columns 1, 4, 7, 10 and 13, on whole pixels */
+  --x1: 48px;
+  --x2: round(nearest, calc(48px + 3 * var(--gx)), 1px);
+  --x3: round(nearest, calc(48px + 6 * var(--gx)), 1px);
+  --x4: round(nearest, calc(48px + 9 * var(--gx)), 1px);
+  --x5: round(nearest, calc(100cqw - 48px), 1px);
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--white);
+  container-type: inline-size;
+}
+
+.s2-scene {
+  position: absolute;
+  inset: 0;
+}
+
+/* one layer per hold beat, over the scene and the grid, under the shared frame */
+.s2-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  color: var(--fg);
+}
+
+.s2-layer a,
+.s2-layer button {
+  pointer-events: auto;
+}
+
+.s2-pane {
+  position: absolute;
+  inset: 0;
+}
+
+.blk {
+  position: absolute;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.at-bottom {
+  bottom: 64px;
+}
+
+/* a block at the bottom of the left column, 24px above the bottom rule like the text in a spec cell */
+.lb {
+  bottom: 88px;
+}
+
+/* ---- the grid, A3 and B4 ---- */
+.s2-grid {
+  /* every line is a pair, a black half and a white half, each 1px. On a light ground the black half carries the line, on
+     a dark ground the white half does, over the red and black truck both read. */
+  --gk: rgb(0 0 0 / 0.18);
+  --gw: rgb(255 255 255 / 0.4);
+  --gp: var(--black);
+  --draw: 1;
+  --go: 0.4;
+  --rot: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--go);
+}
+
+.s2-grid[data-tone='white'] {
+  --gk: rgb(0 0 0 / 0.4);
+  --gw: rgb(255 255 255 / 0.4);
+}
+
+.s2-plus {
+  --gp: var(--black);
+  --draw: 1;
+  --go: 0.4;
+  --rot: 0;
+  position: absolute;
+  inset: 0;
+  /* above the frame too, so a block rule in the hero block never covers an arm of a mark */
+  z-index: 25;
+  pointer-events: none;
+  opacity: var(--go);
+}
+
+.s2-plus[data-tone='white'] {
+  --gp: var(--white);
+}
+
+.s2-lines {
+  position: absolute;
+  inset: 0;
+}
+
+.s2-grid .gv {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.s2-grid .gs,
+.s2-grid .hl,
+.s2-grid .hr {
+  position: absolute;
+  display: block;
+}
+
+/* a vertical, the black half on the line pixel, the white half on the pixel to its right */
+.s2-grid .gs {
+  left: 0;
+  width: 2px;
+  background: linear-gradient(to right, var(--gk) 0 1px, var(--gw) 1px 2px);
+  transform: scaleY(var(--draw));
+}
+
+.gs-top {
+  top: 0;
+  height: 136px;
+  transform-origin: bottom;
+}
+
+.gs-ma {
+  top: 136px;
+  height: calc((100% - 200px) / 2 + 1px);
+  transform-origin: top;
+}
+
+.gs-mb {
+  bottom: 64px;
+  height: calc((100% - 200px) / 2 + 1px);
+  transform-origin: bottom;
+}
+
+.gs-bot {
+  bottom: 0;
+  height: 64px;
+  transform-origin: top;
+}
+
+.s2-grid .gh {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.gh-top {
+  top: 136px;
+}
+
+/* the black row is the pixel row 65 up from the bottom edge, the white row under it */
+.gh-bottom {
+  bottom: 63px;
+}
+
+.s2-grid .hs {
+  position: absolute;
+  top: 0;
+  height: 2px;
+}
+
+.hs:nth-child(1) {
+  left: var(--x1);
+  width: calc(var(--x2) - var(--x1));
+}
+
+.hs:nth-child(2) {
+  left: var(--x2);
+  width: calc(var(--x3) - var(--x2));
+}
+
+.hs:nth-child(3) {
+  left: var(--x3);
+  width: calc(var(--x4) - var(--x3));
+}
+
+.hs:nth-child(4) {
+  left: var(--x4);
+  width: calc(var(--x5) - var(--x4) + 2px);
+}
+
+/* a horizontal, the black half on the line pixel row, the white half on the row under it */
+.s2-grid .hl,
+.s2-grid .hr {
+  top: 0;
+  height: 2px;
+  width: calc(50% + 1px);
+  background: linear-gradient(to bottom, var(--gk) 0 1px, var(--gw) 1px 2px);
+  transform: scaleX(var(--draw));
+}
+
+.s2-grid .hl {
+  left: 0;
+  transform-origin: left;
+}
+
+.s2-grid .hr {
+  right: 0;
+  transform-origin: right;
+}
+
+/* the plus mark, 9px with 1px arms, so its centre is one pixel. Its box starts 4px before the line pixel, both axes, so
+   the centre pixel is the crossing. It turns a quarter once while the grid draws on. */
+.s2-plus .gp {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin-left: -4px;
+  rotate: calc(var(--rot) * 90deg);
+}
+
+.gp-top {
+  top: calc(136px - 4px);
+}
+
+/* the bottom rule is the pixel row 65 up from the bottom edge, so its plus box ends 60px up */
+.gp-bottom {
+  bottom: 60px;
+}
+
+/* the marks at block rules, a wrapper per beat, the shell sets each mark's top from the rule it sits on */
+.s2-plus .gpg {
+  position: absolute;
+  inset: 0;
+}
+
+.s2-plus .gp::before,
+.s2-plus .gp::after,
+.wall .gp::before,
+.wall .gp::after {
+  content: '';
+  position: absolute;
+  background: var(--gp, var(--black));
+}
+
+.s2-plus .gp::before,
+.wall .gp::before {
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1px;
+}
+
+.s2-plus .gp::after,
+.wall .gp::after {
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+}
+
+/* ---- type, A1 ---- */
+/* the section marker, a cell of the grid. The name sits in its own cell, top left of the column, its top hairline is the grid rule
+   from the plus mark along the label, the beat count is at the far right of the cell, like a drawing title block. In a hold stack the
+   cell sits on the top rule at y 136, and the title stays where it was. Content does not hug the grid (Filip 2026-10-12 19:00,
+   like the footer cells), the name sits 24px in from the vertical and 24px under the rule, the count ends 24px before the end of the cell. */
+.s2-marker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24px 24px 0;
+  border-top: 1px solid var(--line);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.mk-flag {
+  display: inline-block;
+  margin-right: 6px;
+  /* the bottom edge sits on the baseline, so a 10px flag spans the cap height of the 14px label */
+  vertical-align: baseline;
+}
+
+.mk-count {
+  font-weight: 350;
+  letter-spacing: 0;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--fg2);
+}
+
+.stack > .s2-marker {
+  margin-top: -32px;
+  /* 12px less than before, the label is 12px lower, so the title stays where it was */
+  margin-bottom: 15px;
+}
+
+/* A title, a lede and a button in a block sit 24px in from the grid line on both sides. The rules of a block, the marker, the
+   fact list, the tabs and the data line, run the whole cell and pad their own text. */
+.stack > :is(.s2-title, .s2-lede, .btn) {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+/* At 1920 the one line ledes of Prodaja and Automatizacija would end 6 to 10px before the second vertical, so from 1600px wide they
+   stay inside the first cell, 24px in from both lines, and break in two balanced lines. At 1440 they run past the line. */
+@container (min-width: 1600px) {
+  .s2-p .s2-lede,
+  .s2-at .s2-lede {
+    max-width: calc(var(--x2) - 72px - 24px);
+    text-wrap: balance;
+  }
+}
+
+.s2-title {
+  font-size: clamp(56px, 6cqw, 96px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+}
+
+.s2-title-s {
+  font-size: clamp(48px, 4.6cqw, 72px);
+}
+
+/* each title line sits in a mask, with room for the carons and descenders */
+.ln {
+  display: block;
+  width: fit-content;
+  /* the right padding is for the overhang of the last glyph, the wipe box clips at its edge. See the note at .fig. */
+  padding: 0.1em 0.08em 0.16em 0;
+  margin: -0.1em -0.08em -0.16em 0;
+  white-space: nowrap;
+}
+
+.s2-lede {
+  font-size: 24px;
+  line-height: 1.35;
+  color: var(--fg);
+}
+
+/* scroll fill, B2, grey to ink letter by letter. With no JS every letter shows ink. */
+.fw {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.fill[data-live] .fl {
+  color: var(--fill-off);
+  transition: color 120ms linear;
+}
+
+.fill[data-live] .fl.on {
+  color: var(--fg);
+}
+
+/* ---- data rows, A6 ---- */
+.spec {
+  display: grid;
+  column-gap: 24px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.spec .cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  /* no padding at the right, the 24px column gap to the next cell line is the inset on that side */
+  padding: 24px 0 24px 24px;
+  border-left: 1px solid var(--line);
+}
+
+.spec .cell:last-child {
+  padding-right: 24px;
+  /* drawn outside the box, so it sits on the right grid line pixel */
+  box-shadow: 1px 0 0 0 var(--line);
+}
+
+.fig {
+  display: block;
+  width: fit-content;
+  /* [data-wipe] clips at its box, and a box as wide as its text cuts the part of a last glyph that reaches past its advance, the
+     terminal of a C for one. The right padding gives that overhang room, the same negative margin keeps the layout where it was. */
+  padding: 0.08em 0.1em 0.12em 0;
+  margin: -0.08em -0.1em -0.12em 0;
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+  color: var(--fg);
+}
+
+.lab {
+  display: block;
+  width: fit-content;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+.note {
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--fg2);
+}
+
+/* ---- Kompanija, C1 and R ---- */
+/* C1 title and lede sit in the band under the road. The road ends at 68 percent of the screen height, so the title is sized to what is
+   left of the band, 100vh less the 68 percent, less the 24px bottom inset, the 24px clearance from the curb, 11px for the first line's ink,
+   which stands above its box, then the gap and the lede.
+   Two lines of 0.95 line height make the 1.9. Never under the 48px of the type scale, and never over the size it had. --lede is the
+   lede in lines, two lines of 32.4px, or one from 1850px wide. */
+.s2-c1 .lb {
+  --gap: 24px;
+  --lede: 65px;
+  gap: var(--gap);
+}
+
+/* on a screen under 1000px high, 900 at 1440 wide, the band is 176px and the ink of the first line sits about 11px over its box, so the gap
+   to the lede is 8px to keep 24px of ground between the curb and the title ink */
+@media (max-height: 999px) {
+  .s2-c1 .lb {
+    --gap: 8px;
+  }
+}
+
+@container (min-width: 1850px) {
+  .s2-c1 .lb {
+    --lede: 33px;
+  }
+}
+
+.s2-c1 .lb .s2-title-s {
+  font-size: min(clamp(48px, 4.6cqw, 72px), max(48px, calc((32vh - 123px - var(--gap) - var(--lede)) / 1.9)));
+}
+.s2-c1 .at-bottom {
+  /* three cells across columns 7 to 12 */
+}
+
+.s2 .rlist {
+  list-style: none;
+  padding: 0;
+  /* the rules of the list run from the first to the third vertical, the last one sits on the bottom rule */
+  border-bottom: 1px solid var(--line);
+}
+
+/* a row, the hairline, 32px, the icon beside the label, 32px, the next hairline. The text sits 24px in from the line, then the
+   20px icon and a 24px gap. */
+.rlist li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  column-gap: 24px;
+  row-gap: 4px;
+  align-items: start;
+  padding: 32px 24px;
+  border-top: 1px solid var(--line);
+}
+
+.rlist .ico {
+  grid-row: 1 / span 2;
+}
+
+.rlist .lab,
+.rlist .line {
+  grid-column: 2;
+}
+
+.rlist .line {
+  display: block;
+  width: fit-content;
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+  font-size: 18px;
+  line-height: 24px;
+  color: var(--fg);
+}
+
+/* ---- Prodaja, P. Four tabs, one cut out ---- */
+/* the list sits at the bottom of the left column, its rules run from the first to the third vertical */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-top: 1px solid var(--line);
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  height: 56px;
+  /* 24px in from the line on both sides */
+  padding: 0 24px 0 24px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg2);
+  cursor: pointer;
+  transition: color 200ms;
+}
+
+/* the active row, a 2px ink rule over the hairline and the full ink label, the others stay text-grey */
+.tab::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-wipe);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--fg);
+}
+
+.tab[aria-selected='true']::before {
+  transform: scaleX(1);
+}
+
+.tab:hover {
+  color: var(--fg);
+}
+
+.tab-range {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.p-stage {
+  position: absolute;
+  top: 168px;
+  height: calc(100% - 168px - 140px);
+  pointer-events: none;
+}
+
+/* the leader lines and rings are placed in pixels of this box by placeLeaders in panes.tsx, from the image pixels. The cut out is
+   fit at 78 by 66 percent below, the same numbers as FIT in panes.tsx, keep the two together. */
+.p-leads {
+  position: absolute;
+  inset: 0;
+}
+
+/* Each cut out is in one of three states, set by setTab in panes.tsx. wait is off to the right and ready to come in, on is
+   shown, gone is off to the left. The one leaving slides 48px left and fades over 400ms, the one arriving comes from 48px
+   right over 600ms on the same ease. After it lands the three leader lines draw on 120ms apart, the rings land with them,
+   then the range, the capacity and the model roll in. */
+.p-fig {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 400ms;
+}
+
+/* inherit, not visible, so the cut out is hidden whenever its pane is, a picked model included */
+.p-fig[data-st='on'] {
+  visibility: inherit;
+  transition-delay: 0s;
+}
+
+.p-fig[data-st='gone'] {
+  visibility: hidden;
+}
+
+.p-fig img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 78%;
+  height: 66%;
+  object-fit: contain;
+  opacity: 0;
+  translate: calc(-50% + 48px) -50%;
+}
+
+.p-fig[data-st='on'] img {
+  opacity: 1;
+  translate: -50% -50%;
+  transition:
+    opacity 600ms var(--ease-wipe),
+    translate 600ms var(--ease-wipe);
+}
+
+.p-fig[data-st='gone'] img {
+  opacity: 0;
+  translate: calc(-50% - 48px) -50%;
+  transition:
+    opacity 400ms var(--ease-wipe),
+    translate 400ms var(--ease-wipe);
+}
+
+.p-lead-a,
+.p-dot-a,
+.p-call-a {
+  --n: 0;
+}
+
+.p-lead-b,
+.p-dot-b,
+.p-call-b {
+  --n: 1;
+}
+
+.p-lead-c,
+.p-dot-c,
+.p-call-c {
+  --n: 2;
+}
+
+/* a leader line, 1px, from its start on the callout rule to its ring, the length and angle from the pixel pairs placeLeaders sets */
+.p-lead {
+  position: absolute;
+  left: calc(var(--x0, 0) * 1px);
+  top: calc(var(--y0, 0) * 1px);
+  height: 1px;
+  width: hypot(calc((var(--x1, 0) - var(--x0, 0)) * 1px), calc((var(--y1, 0) - var(--y0, 0)) * 1px));
+  background: var(--fg);
+  transform-origin: 0 50%;
+  rotate: atan2(calc((var(--y1, 0) - var(--y0, 0)) * 1px), calc((var(--x1, 0) - var(--x0, 0)) * 1px));
+  scale: 0 1;
+}
+
+.p-fig[data-st='on'] .p-lead {
+  scale: 1 1;
+  transition: scale 400ms var(--ease-wipe) calc(600ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-lead {
+  scale: 1 1;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
+}
+
+/* the ring marks the part, a 16px circle with a 1px ink edge and a 4px centre, filled with the ground so it reads on a dark mast too */
+.p-dot {
+  /* the point, a white square with an ink edge and an ink plus, the sharp corners and the plus of the buttons. Picked by Filip on the
+     board on 2026-10-12 (taste 23:55, variant 3), then made 20 percent larger, with a 2px plus ("set 2px stroke"). The box is odd,
+     so on the pixel centre placeLeaders gives it its edges land on whole pixels, and the 14px plus sits on whole pixels too, half a
+     pixel up and left of the exact centre, which keeps every stroke sharp. */
+  position: absolute;
+  width: 29px;
+  height: 29px;
+  box-sizing: border-box;
+  /* centred by a layout margin, not a translate, the browser snaps left and top to whole pixels and would leave a 14.5px
+     translate on a half pixel, a grey 2px edge */
+  margin: -14.5px 0 0 -14.5px;
+  border: 1px solid var(--fg);
+  background:
+    linear-gradient(var(--fg), var(--fg)) 6px 12px / 14px 2px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) 12px 6px / 2px 14px no-repeat,
+    var(--white);
+  opacity: 0;
+}
+
+.p-fig[data-st='on'] .p-dot {
+  opacity: 1;
+  transition: opacity 120ms linear calc(1000ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-dot {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
+}
+
+/* the callout, its rule shows as the cut out lands, the range, the capacity and the model roll in after the leader lines. Each
+   one is a cell of three columns between two verticals, the text 24px in from the line. */
+.p-call {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: calc(var(--x4) - var(--x3));
+  box-sizing: border-box;
+  padding: 24px 0 0 24px;
+  opacity: 0;
+}
+
+.p-call .lab,
+.p-call b {
+  opacity: 0;
+  translate: 0 12px;
+}
+
+.p-fig[data-st='on'] .p-call {
+  opacity: 1;
+  transition: opacity 200ms linear 400ms;
+}
+
+.p-fig[data-st='on'] .p-call .lab,
+.p-fig[data-st='on'] .p-call b {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 500ms var(--ease-wipe) calc(1120ms + var(--n) * 120ms),
+    translate 500ms var(--ease-wipe) calc(1120ms + var(--n) * 120ms);
+}
+
+.p-fig[data-st='gone'] .p-call {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-wipe);
+}
+
+.p-fig[data-st='gone'] .p-call .lab,
+.p-fig[data-st='gone'] .p-call b {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.p-call b {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+/* the label cell of the range, a cell of the grid like the section marker. Its top hairline sits on the grid rule at y 136 and
+   the label 24px under it, the same gap as the marker on the left, its bottom rule is where the first leader line starts. */
+.p-call-a {
+  left: 0;
+  top: -32px;
+  width: calc(var(--x5) - var(--x3));
+  height: calc(12% + 32px);
+  justify-content: flex-start;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--fg);
+}
+
+/* the range row runs across both cells, so every leader drops straight from it, and its words sit in the cell on the side of the
+   stage its point is on, set by placeLeaders in panes.tsx */
+.p-call-a.is-right {
+  padding-left: calc(var(--x4) - var(--x3) + 24px);
+}
+
+/* The Linija scene of version 2 draws its plan under the cells, so there each cell is a hard edged ground cell, white, from one
+   vertical to the next. The 2px on the left leave the grid line on that vertical showing. */
+.variant-2 .p-call {
+  background: var(--white);
+  clip-path: inset(0 0 -80px 2px);
+}
+
+/* the bottom cells run on down to the bottom rule, 75px under the stage, so the plan does not show again under them */
+.variant-2 :is(.p-call-b, .p-call-c)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 75px;
+  background: var(--white);
+}
+
+/* the capacity and the model cells sit on the bottom of the stage, one under the first column cell and one under the second, their
+   top rule is where the leader line starts */
+.p-call-b,
+.p-call-c {
+  bottom: 0;
+  border-top: 1px solid var(--fg);
+}
+
+.p-call-b {
+  left: 0;
+}
+
+.p-call-c {
+  left: calc(var(--x4) - var(--x3));
+  width: calc(var(--x5) - var(--x4));
+}
+
+/* ---- Servis, S, the dark beat ---- */
+.dataline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 24px 24px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.dataline .num {
+  display: block;
+  width: fit-content;
+  padding: 0.08em 0 0.12em;
+  margin: -0.08em 0 -0.12em;
+  /* 40px, the spec row figure size, so the number ends well before the second vertical at 1920 and 1440 */
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+/* ---- Najam, N, a top band ---- */
+.n-row {
+  top: 376px;
+}
+
+/* Every spec row, N, C1 and AT, has a 20px solid icon above each figure and a 40px figure, for a clearer order. --cap is where
+   the cap top of the figure sits under its box top, so the gap from the icon to the cap top is exactly 32px. The stack gap of
+   6px is in the sum. */
+.spec {
+  --cap: 0px;
+}
+
+.spec .ico,
+.rlist .ico {
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--fg);
+}
+
+.spec .ico {
+  margin-bottom: calc(32px - var(--cap) - 6px);
+}
+
+.spec .ico svg,
+.rlist .ico svg {
+  display: block;
+}
+
+.tabs + .btn {
+  margin-top: 8px;
+}
+
+.n-side {
+  gap: 24px;
+}
+
+/* ---- the first screen, every beat's reveal is at its end in reduced motion ---- */
+.s2-still .s2-layer {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p-fig,
+  .p-fig *,
+  .tab::before {
+    transition: none;
+  }
+}
+
+/* reduced motion, every hold is a still screen, the grid stays at full strength */
+.s2-still .s2-grid,
+.s2-still .s2-plus {
+  --go: 1;
+}
+
+.plist a {
+  position: relative;
+}
+
+.plist a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: var(--black);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms var(--ease-wipe);
+}
+
+.plist a:hover::after,
+.plist a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* At 1440 the second vertical is at 390, so a line of a title or of the Servis text that ended 7 to 20px either side of it would
+   hug it. Titles are 74px and 54px, their lines end 24px or more from it, the Servis lede stays inside the first cell and the
+   Servis number keeps the 40px spec figure size on one line. */
+@container (min-width: 1400px) and (max-width: 1500px) {
+  .s2-title {
+    font-size: 74px;
+  }
+  .s2-title-s {
+    font-size: 54px;
+  }
+  .s2-c1 .lb .s2-title-s {
+    font-size: min(54px, max(48px, calc((32vh - 123px - var(--gap) - var(--lede)) / 1.9)));
+  }
+  .s2-s .s2-lede {
+    max-width: calc(var(--x2) - 72px - 24px);
+    text-wrap: balance;
+  }
+}

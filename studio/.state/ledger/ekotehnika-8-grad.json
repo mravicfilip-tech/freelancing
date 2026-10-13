@@ -1,0 +1,97 @@
+{
+  "task": "ekotehnika-8-grad",
+  "repo": "/home/user/freelancing",
+  "client": "ekotehnika",
+  "trigger": "asked",
+  "openedAt": "2026-10-12T19:55:46.070Z",
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "4d32ef99f1a24b018579cbc76cf8f095ee5ba69a",
+      "at": "2026-10-12T19:59:25.914Z",
+      "score": 4.8
+    },
+    {
+      "n": 2,
+      "tree": "770a52450e0a8da307cc27f2f9a9cf700aceffe4",
+      "at": "2026-10-12T20:03:25.877Z",
+      "score": 6.8
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 2,
+      "where": "grad/proxy.tsx:31",
+      "what": "yard truck proxies use red #a00020, brand token is linde-red #aa0020, off palette on every parked truck of R and the flip",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "grad/look.tsx:8, schematic.tsx:173,54-69",
+      "what": "INFO turquoise #7fbccd is not a README token, it colours every S dimension line and label; expected white or text-grey on ink",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "grad/index.tsx:223 seam div",
+      "what": "T seam is a 32px hatched stripe in ink and #a1a1a1, not a token and improvised expression; expected a plain hard edge in ink or shade-grey",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "grad/choreo.ts:270, index.tsx:224 R text cell",
+      "what": "R cell ground #f1f1f1 is hard coded to match the lit yard; any change in light or camera shows the cell as a rectangle. Unverified, no shot",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 3,
+      "where": "grad/schematic.tsx:54-73,326",
+      "what": "unverified, dimension labels may render about 13px at 1440, under the 14px floor",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "grad/index.tsx:57-61,100",
+      "what": "unverified, fog removed, the ground plane may end in a hard horizon step under the H headline",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "grad/bots.tsx:325, choreo.ts:232",
+      "what": "unverified, the AT charger's left edge may touch the column 7 line",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "grad/choreo.ts:288, index.tsx:167",
+      "what": "top band turns dark at 10790 while the light depot still shows under it, band and strip edge not in step",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "grad/index.tsx:37-42",
+      "what": "specBottom queries the DOM and forces layout every frame in the N pass, cache it on resize",
+      "status": "fixed",
+      "round": 1
+    }
+  ],
+  "cards": [],
+  "cardAt": "2026-10-12T20:03:25.939Z"
+}

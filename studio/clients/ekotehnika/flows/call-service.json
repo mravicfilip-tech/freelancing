@@ -1,0 +1,10 @@
+{
+  "name": "Call emergency service",
+  "job": "A customer with a broken truck finds the emergency service number and calls it",
+  "start": "/?v=5",
+  "maxClicks": 1,
+  "steps": [
+    { "expect": "+381 60 300 20 50" },
+    { "click": "Hitan servis +381 60 300 20 50" }
+  ]
+}

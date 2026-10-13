@@ -1,0 +1,300 @@
+/* Board frames, 1440 by 900. Tokens only, see src/styles.css :root. Red is the call to action, the
+   quote button and the logo. Everything else here is ink and the greys. */
+
+.bd {
+  position: relative;
+  width: 1440px;
+  height: 900px;
+  overflow: hidden;
+  background: var(--hover-light-grey);
+  font-family: 'Geist', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bd-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.bd-tag-icon * {
+  stroke-width: 3.6px;
+}
+
+/* The shared nav keeps its red icons on the live app. On the board they follow the red ruling. */
+.bd .ek-nav-segment .ek-seg-active svg,
+.bd .ek-seg-round {
+  color: var(--ink);
+}
+
+/* Left panel */
+.bd-panel {
+  position: absolute;
+  z-index: 10;
+  left: 24px;
+  top: 88px;
+  width: 440px;
+  height: 716px;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+}
+
+.bd-panel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.bd-kick {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--text-grey);
+}
+
+.bd-title {
+  margin: 14px 0 0;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.bd-block {
+  margin-top: 28px;
+}
+
+.bd-bullets {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.bd-bullets li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--text-grey);
+}
+
+.bd-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.bd-bullets li.bd-on {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.bd-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 0;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 20px;
+  background: var(--light-grey);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.bd-chip-dark {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.bd-chip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.bd-under {
+  margin: auto 0 0;
+  padding-top: 16px;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-grey);
+  font-variant-numeric: tabular-nums;
+}
+
+.bd-cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  margin-top: 18px;
+  padding: 0 26px;
+  border-radius: 14px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Large light numbers */
+.bd-big {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.bd-num {
+  font-size: 72px;
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+}
+
+.bd-unit {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-grey);
+}
+
+.bd-ring {
+  align-self: center;
+  margin-left: auto;
+}
+
+/* Renewal dots */
+.bd-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.bd-dots span {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-grey);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1.5px var(--shade-grey);
+}
+
+.bd-dots span.on {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: none;
+}
+
+/* Model card */
+.bd-model {
+  border-radius: 20px;
+  background: var(--light-grey);
+  padding: 20px 20px 16px;
+}
+
+.bd-model-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bd-price {
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+}
+
+.bd-price small {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-grey);
+}
+
+.bd-figs {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--shade-grey);
+}
+
+.bd-figs div {
+  padding: 0 0 0 12px;
+  border-left: 1px solid var(--shade-grey);
+}
+
+.bd-figs div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.bd-figs dt {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-grey);
+}
+
+.bd-figs dd {
+  margin: 2px 0 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Service rail under the scene */
+.bd-rail {
+  position: absolute;
+  z-index: 10;
+  left: 488px;
+  right: 24px;
+  top: 824px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bd-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 22px 0 16px;
+  border-radius: 22px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-grey);
+}
+
+.bd-pill svg * {
+  stroke-width: 2.8px;
+}
+
+.bd-pill-on {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: none;
+}

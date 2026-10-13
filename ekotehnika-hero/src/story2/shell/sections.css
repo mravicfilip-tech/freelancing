@@ -1,0 +1,612 @@
+/* The sections after the story, Proizvodi and the footer, round 3 items 8 and 9. Tokens only, see src/styles.css :root. Daxline Pro
+   with Geist digits, nothing under 14px, black text, red only on the one primary. The same 12 column grid as the story, 48px margin
+   and 24px gutters, the five verticals at columns 1, 4, 7, 10 and 13 on whole pixels. Every line is a pair of 1px lines, black at
+   18 percent beside white at 40 percent, so it reads on white, on pale grey and on a dark ground. Plus marks are solid ink. */
+.sx {
+  --cw: calc((100cqw - 96px - 264px) / 12);
+  --gx: calc(var(--cw) + 24px);
+  --x1: 48px;
+  --x2: round(nearest, calc(48px + 3 * var(--gx)), 1px);
+  --x3: round(nearest, calc(48px + 6 * var(--gx)), 1px);
+  --x4: round(nearest, calc(48px + 9 * var(--gx)), 1px);
+  --x5: round(nearest, calc(100cqw - 48px), 1px);
+  --hd: rgb(0 0 0 / 0.18);
+  --hl: rgb(255 255 255 / 0.4);
+  --out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* the ink and the unfilled grey the Fill letter fill in ui.tsx reads, and the bar colour of the block wipe in heroframe.css */
+  --fg: var(--black);
+  --fill-off: var(--grey-mid);
+  --bar: var(--black);
+  position: relative;
+  z-index: 2;
+  container-type: inline-size;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.sx:focus {
+  outline: none;
+}
+
+/* ---- lines and plus marks, shared by both sections ---- */
+
+/* a horizontal pair, the black row on the rule and the white row under it, from the first vertical to the last */
+.sx-rule {
+  position: absolute;
+  left: var(--x1);
+  top: 0;
+  width: calc(var(--x5) - var(--x1) + 1px);
+  height: 2px;
+  background: linear-gradient(180deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+  pointer-events: none;
+}
+
+/* a vertical pair, the black column on the line and the white column after it */
+.sx-vl {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(90deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+  pointer-events: none;
+}
+
+/* the plus mark, 9px with 1px arms, so its centre is one pixel, solid ink. Its box starts 4px before the crossing, both axes. */
+.sx-p {
+  position: absolute;
+  z-index: 3;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.sx-p::before,
+.sx-p::after {
+  content: '';
+  position: absolute;
+  background: var(--black);
+}
+
+.sx-p::before {
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1px;
+}
+
+.sx-p::after {
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+}
+
+/* ---- Proizvodi ---- */
+.sx-products {
+  padding: clamp(48px, 6.7vh, 80px) 0;
+}
+
+/* the five verticals sit on --x1 to --x5, the story's own, and run the whole section from its top edge, so as the stage scrolls
+   away its lines carry on into Proizvodi and on into the footer. Above the cells, so a hover tint never covers one. */
+.sx-vl-full {
+  top: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* the plus marks of Proizvodi stand over its verticals */
+.sx-products .sx-p {
+  z-index: 20;
+}
+
+/* four columns between the five verticals, the title block, the lead and two columns of models, three rows tall */
+.sx-frame {
+  --row: clamp(260px, 28vh, 304px);
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    calc(var(--x2) - var(--x1))
+    calc(var(--x3) - var(--x2))
+    calc(var(--x4) - var(--x3))
+    calc(var(--x5) - var(--x4));
+  grid-template-rows: repeat(3, var(--row));
+  padding: 0 48px;
+}
+
+.sx-rule-t {
+  top: 0;
+}
+
+.sx-rule-b {
+  top: 100%;
+}
+
+/* the first column, x1 to x2 and all three rows, the label under the top rule, the title, one line and the one primary. Nothing
+   starts on a line, the text sits 24px in from it and 36px under the rule, the same inset as a footer cell */
+.sx-left {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 36px 24px 40px;
+}
+
+/* the lede and the primary stand on the bottom rule, 24px above it like the text in the cells */
+.sx-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sx-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sx-total {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.sx-left .sx-title {
+  margin-top: 40px;
+  /* sized to its cell like the hero h1, 3 gx wide less the 24px insets, the longest line is about 3.8em wide, 96px at the most */
+  font-size: max(56px, min(96px, calc((3 * var(--gx) - 48px) / 3.9)));
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+/* a flex column keeps the negative margins of the masks from collapsing into each other, so the lines stay where they were */
+.sx-title,
+.sx-ctitle {
+  display: flex;
+  flex-direction: column;
+}
+
+/* each title line sits in a mask for the block wipe, with room for the carons and descenders, as .ln does in shell.css */
+.sx-ln {
+  display: block;
+  width: fit-content;
+  padding: 0.1em 0 0.16em;
+  margin: -0.1em 0 -0.16em;
+  white-space: nowrap;
+}
+
+.sx-left .sx-lede {
+  margin: 0 0 32px;
+  font-size: clamp(20px, 1.25cqw, 24px);
+  line-height: 1.35;
+}
+
+/* the cells sit straight on the frame grid, the lead in the second column across all rows, the six models two to a row in the
+   last two columns, no gaps, no shadows, no rounding */
+.sx-cells {
+  display: contents;
+}
+
+.sx-cell {
+  position: relative;
+  grid-column: span 1;
+  display: block;
+  min-width: 0;
+  color: var(--black);
+  text-decoration: none;
+  transition: background-color 240ms var(--out);
+}
+
+.sx-cell-lead {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+
+/* the verticals are the section's own, so a cell draws only its top line, and not in the first row, where the rule above it is the line */
+.sx-cell-t::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(180deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+}
+
+.sx-in {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+}
+
+/* the top of a cell, the model range at the left and the count of models at the right */
+.sx-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* The wipe clips its box, and the Daxline C reaches past its advance, so the last glyph of "N20 do N25 C" lost its right end.
+   A tenth of an em of room, given back by the margin, keeps the layout where it was (round 4, the clipped C). */
+.sx-range,
+.sx-cap {
+  padding-right: 0.1em;
+  margin-right: -0.1em;
+}
+
+.sx-range {
+  font: 500 16px/24px var(--font);
+}
+
+/* the cut out stands on the bottom of its box, so the trucks in one row share a ground. Hover lifts it 8px. */
+.sx-fig {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  margin: 12px 0 12px;
+  /* the block wipe over a product image is a light grey bar, a black slab that size would outweigh the text wipes */
+  --bar: var(--grey-light);
+}
+
+/* The image box starts 8px below the top of the figure, which clips for the block wipe, so the 8px hover lift stays inside the
+   clip and the top of a tall truck is never cut (Filip 2026-10-12, "image cut off on hover"). */
+.sx-img {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 8px);
+  object-fit: contain;
+  object-position: center bottom;
+  transition: transform 360ms var(--out);
+}
+
+.sx-name {
+  font: 500 18px/24px var(--font);
+}
+
+/* the name underline draws on from the left on hover and focus */
+.sx-ul {
+  padding-bottom: 3px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size 360ms var(--out);
+}
+
+.sx-cap {
+  display: block;
+  margin-top: 4px;
+  font: 400 16px/24px var(--font);
+}
+
+.sx-cell-lead .sx-name {
+  font-size: 28px;
+  line-height: 32px;
+}
+
+/* the lead stands in a tall cell of its own, so its image is centred and not set on the ground of a row */
+.sx-cell-lead .sx-img {
+  object-position: center;
+}
+
+.sx-cell-lead .sx-range,
+.sx-cell-lead .sx-cap {
+  font-size: 18px;
+}
+
+.sx-cell:is(:hover, :focus-visible) {
+  background: var(--grey-pale);
+}
+
+.sx-cell:is(:hover, :focus-visible) .sx-img {
+  transform: translateY(-8px);
+}
+
+.sx-cell:is(:hover, :focus-visible) .sx-ul {
+  background-size: 100% 2px;
+}
+
+.sx-cell:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: -4px;
+}
+
+/* ---- the closing section, the delivery photos flow in along the grid ---- */
+.sx-closing {
+  --pad: clamp(40px, 5vh, 60px);
+  --row: clamp(170px, calc((100vh - 140px) / 4), 230px);
+  --c1: var(--x1);
+  --c3: round(nearest, calc(48px + 2 * var(--gx)), 1px);
+  --c5: round(nearest, calc(48px + 4 * var(--gx)), 1px);
+  --c9: round(nearest, calc(48px + 8 * var(--gx)), 1px);
+  --c11: round(nearest, calc(48px + 10 * var(--gx)), 1px);
+  --c13: var(--x5);
+  padding: var(--pad) 0;
+  overflow-x: clip;
+}
+
+.sx-cframe {
+  position: relative;
+  height: calc(var(--row) * 4);
+}
+
+/* the side rules stop at the centre columns, the verticals run the full height and the two outer ones into the padding */
+.sx-hl-l {
+  width: calc(var(--c5) - var(--c1) + 1px);
+}
+
+.sx-hl-r {
+  left: var(--c9);
+  width: calc(var(--c13) - var(--c9) + 1px);
+}
+
+.sx-vl-frame {
+  bottom: -1px;
+}
+
+.sx-vl-ext {
+  top: calc(var(--pad) * -1);
+  bottom: calc(var(--pad) * -1);
+}
+
+.sx-cframe .sx-rule,
+.sx-cframe .sx-vl {
+  z-index: 1;
+}
+
+/* a photo fills one cell, two rows tall, with square corners, over the hairlines and under the plus marks. --k is the share of its way
+   still to go, set from the scroll, 0 is in place. A left photo starts with its right edge on the left edge of the window, a right
+   photo with its left edge on the right edge. */
+.sx-ph {
+  position: absolute;
+  z-index: 2;
+  height: calc(var(--row) * 2);
+  overflow: hidden;
+  background: var(--grey-pale);
+}
+
+.sx-ph-l {
+  transform: translateX(calc(var(--k, 0) * (-100% - var(--cl))));
+}
+
+.sx-ph-r {
+  transform: translateX(calc(var(--k, 0) * (100cqw - var(--cl))));
+}
+
+.sx-ph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* columns 5 to 8, everything centred. The title and the line name .sx-mid so they outrank the .s2 margin reset in shell.css. */
+.sx-mid {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--c5) + 2px);
+  width: calc(var(--c9) - var(--c5) - 2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 24px 40px;
+  text-align: center;
+}
+
+.sx-mid .sx-label {
+  align-self: auto;
+  justify-content: center;
+}
+
+.sx-mid .sx-ctitle {
+  margin-top: 28px;
+  font-size: clamp(44px, 4.2cqw, 80px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.sx-mid .sx-ln {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sx-mid .sx-clede {
+  margin: 24px 0 32px;
+  font-size: clamp(18px, 1.15cqw, 22px);
+  line-height: 1.35;
+}
+
+.sx-mid .btn {
+  align-self: center;
+}
+
+/* ---- the footer, on pale grey ---- */
+.sx-footer {
+  --hd: rgb(0 0 0 / 0.24);
+  background: var(--grey-pale);
+}
+
+/* a row of the footer, on the 12 column grid, with its own top rule, verticals and plus marks */
+.sx-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, var(--cw));
+  column-gap: 24px;
+  padding: 0 48px;
+}
+
+/* a cell of a row, its text 24px in from its line like the story's spec rows */
+.sx-c {
+  min-width: 0;
+  padding: 36px 0 40px 24px;
+  font-style: normal;
+}
+
+.sx-lab {
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* row 1, the two numbers, the largest type in the footer, with the e-mail under each */
+.sx-phone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.sx-num {
+  font-size: 48px;
+  font-weight: 350;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.sx-mail {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* row 2, the logos at the guideline sizes, the address and the nav at 16px */
+.sx-r2 .sx-c {
+  padding-top: 40px;
+}
+
+.sx-logos {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: fit-content;
+}
+
+.sx-logos img {
+  display: block;
+  width: 160px;
+}
+
+.sx-logos img:first-child {
+  height: 96px;
+}
+
+.sx-logos img:last-child {
+  height: auto;
+}
+
+.sx-adr p,
+.sx-nav li {
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.sx-adr .sx-lab,
+.sx-nav .sx-lab {
+  margin-bottom: 12px;
+}
+
+.sx-nav ul {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: start;
+  column-gap: 40px;
+  padding: 0;
+  list-style: none;
+}
+
+.sx-footer a {
+  color: var(--black);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 240ms var(--out);
+}
+
+.sx-footer a:is(:hover, :focus-visible) {
+  background-size: 100% 1px;
+}
+
+.sx-footer .sx-num {
+  padding-bottom: 4px;
+  background-size: 0 2px;
+}
+
+.sx-footer .sx-num:is(:hover, :focus-visible) {
+  background-size: 100% 2px;
+}
+
+.sx-footer .sx-logos {
+  padding-bottom: 0;
+  background: none;
+}
+
+.sx-vl-ground {
+  bottom: -1px;
+}
+
+.sx-ground {
+  position: absolute;
+  left: var(--x1);
+  bottom: -1px;
+  width: calc(var(--x5) - var(--x1) + 1px);
+  height: 1px;
+  background: var(--black);
+  pointer-events: none;
+}
+
+/* The footer still, the Ekotehnika site in the hero's own white and grey 3D, rendered once from the street set (taste 22:30,
+   round 4 Q11). The file is 1824 by 300 at 2x on the footer ground, its kerb foot 12.3px above its bottom, so the figure keeps the
+   part above the kerb and the black ground rule under it is the kerb line. The grid's verticals run over it as over the story. */
+.sx-site {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1824 / 287.7;
+  overflow: hidden;
+}
+
+.sx-site img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sx-scene .sx-vl,
+.sx-scene .sx-ground {
+  z-index: 1;
+}
+
+.sx-scene .sx-p {
+  z-index: 2;
+}
+
+/* the copyright under the rule, in line with the text of the cells above */
+.sx-base p {
+  padding: 24px 0 32px 24px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sx-cell,
+  .sx-img,
+  .sx-ul,
+  .sx-footer a {
+    transition: none;
+  }
+}

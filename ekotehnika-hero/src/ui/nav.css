@@ -1,0 +1,234 @@
+/* Shared nav for variants 2, 4 and 5. Tokens only, see src/styles.css :root. */
+
+.ek-nav {
+  position: absolute;
+  z-index: 20;
+  top: 20px;
+  left: 32px;
+  right: 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 8px;
+  border-radius: 16px;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+}
+
+.ek-nav-light {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+  color: var(--ink);
+}
+
+.ek-nav-glass {
+  background: rgb(255 255 255 / 0.78);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.9);
+  color: var(--ink);
+}
+
+.ek-nav-dark {
+  background: rgb(34 34 34 / 0.62);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  color: var(--white);
+}
+
+.ek-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 14px 0 7px;
+  border-radius: 11px;
+  background: var(--white);
+}
+
+.ek-nav-logo img {
+  display: block;
+}
+
+.ek-nav nav {
+  margin-left: 24px;
+}
+
+.ek-nav ul {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ek-nav ul a,
+.ek-nav-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.ek-nav-light ul a:hover,
+.ek-nav-glass ul a:hover,
+.ek-nav-light .ek-nav-phone:hover,
+.ek-nav-glass .ek-nav-phone:hover {
+  background: var(--light-grey);
+}
+
+.ek-nav-dark ul a:hover,
+.ek-nav-dark .ek-nav-phone:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.ek-nav-phone {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.ek-nav-phone svg {
+  color: var(--linde-red);
+}
+
+.ek-nav-dark .ek-nav-phone svg {
+  color: var(--white);
+}
+
+.ek-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 11px;
+  background: var(--linde-red);
+  color: var(--white);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.ek-nav-cta:hover {
+  background: var(--dark-red);
+}
+
+.ek-nav a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ek-nav-cta:focus-visible {
+  outline-color: var(--ink);
+}
+
+.ek-nav-dark .ek-nav-cta:focus-visible {
+  outline-color: var(--white);
+}
+
+/* Segment theme, additive. A floating dashboard bar with no bar of its own, a logo tile, a segmented
+   icon group and round controls. The light, glass and dark themes do not use any of this. */
+
+.ek-nav-segment {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  height: 56px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.ek-nav-segment .ek-nav-logo {
+  justify-self: start;
+  height: 56px;
+  padding: 0 18px 0 12px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+}
+
+.ek-nav-segment nav {
+  margin: 0;
+}
+
+.ek-nav-segment ul {
+  gap: 6px;
+}
+
+.ek-nav-segment ul a.ek-seg-tab {
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  gap: 10px;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+  color: var(--ink);
+}
+
+.ek-nav-segment ul a.ek-seg-square {
+  width: 48px;
+}
+
+.ek-nav-segment ul a.ek-seg-square:hover {
+  background: var(--white);
+}
+
+.ek-nav-segment ul a.ek-seg-active {
+  padding: 0 20px 0 16px;
+  background: var(--white);
+  font-weight: 500;
+}
+
+.ek-nav-segment ul a.ek-seg-active svg {
+  color: var(--linde-red);
+}
+
+.ek-seg-right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ek-seg-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--shade-grey);
+  color: var(--linde-red);
+  transition: background-color 0.2s;
+}
+
+.ek-seg-round:hover {
+  background: var(--light-grey);
+}
+
+.ek-nav-segment .ek-nav-cta {
+  min-height: 48px;
+  border-radius: 14px;
+}
+
+.ek-nav-segment a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

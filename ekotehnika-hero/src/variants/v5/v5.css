@@ -1,0 +1,37 @@
+/* Variant 5, Sistem. The scene fills the screen, the type is the shared hero frame. */
+.v5 {
+  --v5-night: #0a0a0a;
+  background: var(--v5-night);
+}
+
+.v5-stage {
+  position: relative;
+  height: 100vh;
+  min-height: 720px;
+  overflow: hidden;
+  background: var(--v5-night);
+}
+
+.v5-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* A soft dark floor under the bottom left block so white type keeps its contrast over the lines. */
+.v5-shade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  pointer-events: none;
+  background: radial-gradient(60% 80% at 22% 90%, rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0));
+}
+
+/* The same under the top row, so white links keep their contrast over the bright horizon, the
+   wireframe lines and the beams. */
+.v5-shade-top {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 170px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.86) 0, rgba(10, 10, 10, 0.86) 70px, rgba(10, 10, 10, 0));
+}

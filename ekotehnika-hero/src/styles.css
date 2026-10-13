@@ -1,0 +1,360 @@
+/* Daxline Pro, the Linde house type for small digital text (co-branding guideline p.13). Self hosted from
+   public/fonts/daxline, Light 350, Regular 400, Medium 500, Bold 700, ExtraBold 750, all with the Serbian
+   Latin letters. One family carries headlines and text until Dax Pro files arrive. */
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Light.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/daxline/DaxlinePro-ExtraBold.woff2') format('woff2');
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Every digit on the site is Geist Sans, lining and tabular, because Daxline Pro only has old style figures. A digits only
+   subset (0 to 9, plus, percent, degree, superscript two) declared under the same family name after the Daxline faces,
+   so the digits come from it and the letters stay Daxline Pro, with no markup change. One face per Daxline weight, because
+   a face with a weight range loses the tie to the exact weight Daxline face at 400, 500, 700 and 750. size-adjust lines the Geist cap
+   height (710) up with the Daxline cap height (735), the metric overrides keep the line box the same. */
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Daxline Pro';
+  src: url('/fonts/geist/geist-digits.woff2') format('woff2');
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002B, U+0025, U+00B0, U+00B2;
+  size-adjust: 103.5%;
+  ascent-override: 75.8%;
+  descent-override: 20.8%;
+  line-gap-override: 0%;
+}
+
+/* The scenes draw some canvas text with the family name Geist, and the grad scene waits on it. This maps that name
+   to the Daxline files so no Geist file or Google Fonts request is left on the story routes. */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Regular.woff2') format('woff2');
+  font-weight: 100 450;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/daxline/DaxlinePro-Bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-display: swap;
+}
+
+:root {
+  /* Linde Material Handling set, co-branding guideline p.14. Red is for the filled primary button only. */
+  --lmh-red: #a00020;
+  --black: #000000;
+  --white: #ffffff;
+  --grey-pale: #e9e9e9;
+  --grey-light: #d2d2d2;
+  --grey-mid: #a1a1a1;
+  --grey-dark: #6b6b6b;
+  /* dark servis beat */
+  --dark-ground: #0b0b0b;
+  --dark-ground-2: #141414;
+  /* information colours, 72 percent tints, inside the servis schematic and spec tables only, one at a time */
+  --info-turquoise: #7fbccd;
+
+  --font: 'Daxline Pro', Arial, system-ui, sans-serif;
+  --ease-indicator: cubic-bezier(0.2, 0, 0, 1);
+  --ease-wipe: cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* Legacy tokens from the first hero build, read only by the older routes (/?story=, /?board=, /?gate=) and the
+     scene files. The story2 shell does not use them. */
+  --linde-red: #a00020;
+  --dark-red: #990e1f;
+  --toned-red: #cc132a;
+  --primary-700: #94001d;
+  --primary-900: #700016;
+  --ink: #222222;
+  --text-grey: #4a595c;
+  --toned-text-grey: #5e7175;
+  --light-grey: #eeeff3;
+  --shade-grey: #e6e7eb;
+  --hover-light-grey: #f5f6fa;
+  --font-medi: var(--font);
+  --header-h: 133px;
+  --trust-h: 72px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-variant-numeric: lining-nums;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Placeholder content below the hero */
+.placeholder {
+  border-top: 1px solid var(--shade-grey);
+}
+
+.ph-section {
+  padding: 72px 64px;
+}
+
+.ph-kicker {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--linde-red);
+}
+
+.placeholder h2 {
+  margin: 0 0 28px;
+  font-family: var(--font-medi);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.ph-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.ph-card {
+  background: var(--light-grey);
+  padding: 0 0 24px;
+}
+
+.ph-img {
+  aspect-ratio: 16 / 9;
+  background: var(--shade-grey);
+}
+
+.ph-card h3 {
+  margin: 20px 24px 6px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ph-card p {
+  margin: 0 24px 14px;
+  color: var(--text-grey);
+}
+
+.ph-link {
+  margin: 0 24px;
+  color: var(--linde-red);
+  font-weight: 600;
+}
+
+.ph-band {
+  padding: 64px;
+  background: var(--light-grey);
+}
+
+.ph-band p {
+  margin: 0;
+  max-width: 640px;
+  color: var(--text-grey);
+  font-size: 18px;
+}
+
+.ph-footer {
+  padding: 28px 64px;
+  color: var(--text-grey);
+  border-top: 1px solid var(--shade-grey);
+}
+
+/* Direction switcher, review chrome, not part of any design. It sits in the bottom band under the grid. */
+.dir-switch {
+  position: fixed;
+  z-index: 100;
+  /* 24px in from the last vertical of the story grid */
+  right: 72px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  padding: 3px;
+  background: var(--black);
+  border-radius: 4px;
+  font-family: var(--font);
+}
+
+.dir-switch {
+  transition:
+    opacity 200ms,
+    visibility 0s;
+}
+
+body:has(.bb) .dir-switch {
+  display: none;
+}
+
+/* hidden after the story, out of the tab order too, visibility waits for the 200ms fade */
+html[data-after-story] .dir-switch {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 200ms,
+    visibility 0s 200ms;
+}
+
+.dir-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--white);
+  font: 500 14px/1 var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dir-switch button span {
+  color: var(--grey-mid);
+}
+
+.dir-switch button:hover {
+  background: var(--grey-dark);
+}
+
+.dir-switch button:hover span {
+  color: var(--white);
+}
+
+.dir-switch button[aria-pressed='true'] {
+  background: var(--white);
+  color: var(--black);
+}
+
+.dir-switch button[aria-pressed='true'] span {
+  color: var(--grey-dark);
+}
+
+.dir-switch button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

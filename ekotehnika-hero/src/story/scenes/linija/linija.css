@@ -1,0 +1,44 @@
+/* Linija scene. The layer of the beat that is leaving fades out, the one that is arriving fades in. */
+.lj-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.lj-root svg {
+  display: block;
+}
+
+.lj-in {
+  animation: lj-in 0.42s ease-out both;
+}
+
+.lj-out {
+  animation: lj-out 0.42s ease-in both;
+  pointer-events: none;
+}
+
+@keyframes lj-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lj-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lj-in,
+  .lj-out {
+    animation: none;
+  }
+}

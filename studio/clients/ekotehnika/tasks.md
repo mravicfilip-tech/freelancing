@@ -1,0 +1,147 @@
+# Tasks, ekotehnika
+
+Claude keeps this file current as a side effect of normal work and never asks first. A task is one
+thing Filip would say out loud in a status call, titled the way he would say it. Keys run
+`ekotehnika-1`, `ekotehnika-2` and so on, one higher than the highest key in this file.
+
+Rules
+- New work goes under Backlog, or under In progress when it starts at once.
+- When the state changes, cut the whole task block and paste it under the new heading.
+- Steps are the checklist under a task. Add them as the shape of the work becomes clear and tick
+  each one the moment the conversation shows it done. Ticking a step never moves the task.
+- Steps are for this file only. They never appear in anything sent to a client, a status note, an
+  invoice line or a summary. Those read at task level.
+- Put the preview URL, the ticket number or the design link in the task line.
+
+Task format
+
+```
+- ekotehnika-1 Pricing page prototype. Link https://example.com/preview
+  - [x] Capture the reference
+  - [ ] Build the page
+```
+
+## Backlog
+
+## In progress
+
+- ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
+  - [x] Write the brief from Filip's ask and the portfolio reel
+  - [ ] Plan the reel and its beat table for Filip's review
+  - [ ] Find the track's tempo, the videos are silent and cut on its beat grid
+  - [ ] Build after the site ships, both formats
+
+- ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md. Preview 3 https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
+  - [x] Filip gives his notes
+  - [x] Scan the reference sites and read the Linde brand guideline
+  - [x] Plan the pass from the notes
+  - [x] Filip answers the plan's decisions
+  - [x] Detail the plan with every reference and current frame
+  - [x] Build the system, motion and sections
+  - [x] Build the Sistem scene polish
+  - [ ] Fit Linija and Grad to the new shell
+  - [x] Plan round 3 from Filip's board comments, briefs/ui-pass/round3.md
+  - [x] Filip answers the round 3 questions
+  - [ ] Build round 3
+  - [x] Plan round 4 from Filip's video review, briefs/ui-pass/round4.md
+  - [x] Filip answers the round 4 questions, Q10 S and Q11 footer scenery still open
+  - [x] Split the 3D work into one branch per scene, street, auto and lift running
+  - [x] Build round 4 batch A, the P leak, the blink, buttons, marker rule, A colour, C1 reveal, chapter nav
+  - [x] Merge the Grad round 3 branch
+  - [x] Check batch A on a real scroll
+  - [x] Build round 4 beat panes and sections, item 21 included
+  - [x] Settle Q10 and Q11, Filip handed them over, servis branch started
+  - [x] Send preview 2, ey7enqdue at c8d80ea, with the variant boards
+  - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
+  - [x] Real scroll checks on the full round 4 build at 81aad36, P into S, the L exit and AT into Proizvodi all clean
+  - [x] Preview 3 at 81aad36, https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
+  - [x] Filip's ship line on preview 3, then go to the reel chat
+  - [x] Merge the round 4 build into the default branch
+  - [x] Merge the lift branch
+  - [x] Merge the servis branch
+  - [x] Merge the street and automation branches, wire the footer still and the R cell
+  - [x] Build round 4
+  - [ ] Review, check and deploy
+
+- ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp
+  - [x] Settle kickoff answers
+  - [x] Build the card UI over the existing motion
+  - [x] Check before and after shots
+  - [x] Filip reacts to the card version
+  - [x] Cards change per chapter and animate in and out
+  - [ ] Filip reacts to the chapter cards
+
+- ekotehnika-1 Homepage hero rebuild with scroll animation. Brief in briefs/hero-rebuild. Link https://ekotehnika-hero.vercel.app
+  - [x] File the brief and the competitive analysis
+  - [x] Analyse the three reference reels
+  - [x] Settle kickoff answers
+  - [x] Draw the forklift and the four stations
+  - [x] Build the hero
+  - [x] Animate the three variants on scroll
+  - [x] Deploy a preview
+  - [x] Run /uireview
+  - [x] Agree a camera direction that changes perspective on scroll
+  - [x] Build the 3D forklift and showroom, camera beats 1 and 2, scene full width
+  - [x] Filip checks beats 1 and 2
+  - [x] Agree the reel style hero UI
+  - [x] Write the delivery story, nine chapters
+  - [x] Build the warehouse, the route and the order pallet
+  - [x] Build the reel style UI, floating nav, big copy per chapter, story bar
+  - [x] Make the 3D engine story agnostic for five directions
+  - [x] Build five directions, each with its own UI, type and story
+  - [ ] Shoot and compare the five, Filip picks one by number
+  - [ ] Run /uireview on the picked direction
+
+- ekotehnika-2 Hero, five variants copying the reels 1:1 in style. Link https://ekotehnika-hero.vercel.app
+  - [x] Study the reels frame by frame
+  - [x] Plan the five variants and harden the plan
+  - [x] Move to React Three Fiber with lighting and post processing
+  - [x] Build the shared forklift model and lighting rig
+  - [x] Build the five variants
+  - [ ] Deploy, blocked by the Vercel daily deploy limit until it resets
+  - [ ] Run /uireview and fix
+  - [x] Filip narrows to 2, 4 and 5
+  - [x] Plan the clean up of 2, 4 and 5 and harden it
+  - [x] Shared nav and Geist type for 2, 4 and 5
+  - [x] Clean up 2, 4 and 5
+  - [x] Drop 1 and 3 from the app
+  - [ ] Filip picks one by number
+
+## Review
+
+- ekotehnika-6 Version 5 in light mode, servis stays dark. Link https://ekotehnika-hero.vercel.app/?v=5
+  - [x] Let the shell set dark beats per version
+  - [x] Relight and redraw the Sistem scene for light
+  - [x] Check every beat with the text on and deploy
+
+- ekotehnika-7 Logos at the Linde co-branding sizes
+  - [x] Find the vector logos in the Drive and swap them in
+  - [x] Size the logo tile to the guideline and fit the top row
+  - [x] Clear the scenes under the taller top row in 2 and 4
+  - [x] Clear the scenes under the taller top row in 5
+
+- ekotehnika-5 New hero storyline, Filip drives it, in Linija, Grad and Sistem. Link https://ekotehnika-hero.vercel.app/?v=2
+  - [x] Bring back the three versions and prep localhost
+  - [x] Apply the bottom left headline layout to 2, 4 and 5
+  - [x] Filip explains the process and motion
+  - [x] Plan from the recording, the voice over and Figma, hardened
+  - [x] Pull Filip's Drive media and convert the Linde 3D models
+  - [x] Add a strip of real delivery photos to Proizvodi
+  - [x] Build the shell, copy, products, footer and Linija
+  - [x] Build the Grad scene
+  - [x] Build the Sistem scene
+  - [x] Put storyline 2 on versions 2, 4 and 5 and check
+  - [x] Deploy to production
+
+## Done
+
+- ekotehnika-4 Storyboard the four services on scroll, Najam, Polovni, Novi and Servis. Link https://claude.ai/artifact/RWHBH6HdwFZ1VnTj8Rj6SE
+  - [x] Write the storyboard
+  - [x] Filip reviews the storyboard
+  - [x] Filip sends the UI references
+  - [x] Recolour the forklift illustrations like the real Linde trucks, red only on the body shell
+  - [x] Write the shared story clock and timeline
+  - [x] Build the shell with UI A, B and C and the Linija scene
+  - [x] Build the Grad scene in 3D
+  - [x] Build the Sistem scene in 3D
+  - [x] Wire the nine combinations into the switcher and check them

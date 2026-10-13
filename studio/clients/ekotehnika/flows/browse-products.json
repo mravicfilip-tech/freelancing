@@ -1,0 +1,10 @@
+{
+  "name": "Browse the products",
+  "job": "A buyer reaches the product range after the story and opens a category",
+  "start": "/?v=5",
+  "maxClicks": 2,
+  "steps": [
+    { "expect": "Glavni proizvodi" },
+    { "click": "Pogledajte modele" }
+  ]
+}

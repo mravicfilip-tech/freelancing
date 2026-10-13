@@ -1,0 +1,599 @@
+/* The shared frame over the scene, see HeroFrame.tsx and the UI pass plan A4, A5, A7. Tokens only, see src/styles.css.
+   Colour sets. ink is black on a light ground, white is white on the dark servis beat. Labels are 14px or more. */
+.hf {
+  --hf-top: var(--black);
+  --hf-line: var(--grey-light);
+  --hf-sub: var(--grey-dark);
+  --bar: var(--black);
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  font-family: var(--font);
+}
+
+.hf[data-tone='white'] {
+  --hf-top: var(--white);
+  --hf-line: rgb(255 255 255 / 0.3);
+  --hf-sub: rgb(255 255 255 / 0.7);
+  --bar: var(--white);
+}
+
+.hf a {
+  pointer-events: auto;
+  text-decoration: none;
+}
+
+/* ---- shared parts, the block wipe and the buttons, used by the shell as well ---- */
+
+/* Block wipe. A bar of --bar covers the element and leaves to the right, the shell drives --bx and --tv from the story
+   clock. With no JS, which is reduced motion, the bar is off to the right and the text shows. */
+[data-wipe] {
+  position: relative;
+  overflow: hidden;
+  visibility: var(--tv, inherit);
+}
+
+[data-wipe]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: var(--bar, var(--black));
+  transform: translateX(var(--bx, 101%));
+  visibility: var(--lv, visible);
+  pointer-events: none;
+}
+
+/* ---- buttons. One look for the whole site, the split with an icon cell and the border that draws on, cell 2D on the review
+   board, picked by Filip 2026-10-12 17:45. Corners are sharp, every button is 48px tall, nothing is an arrow. Red is only the
+   fill of the one primary, with a black plus cell. A secondary is at the quarter weight of the top row phones on every beat
+   (Filip 2026-10-12, video round 4, "the opacity is too strong for this button"), a 1px line at 12.5 percent over a 1 percent
+   tint, black on light and white on dark, and carries the plus cell, or the phone cell on a phone button. The edge measures
+   1.37 to 1, under the 3 to 1 of WCAG 1.4.11, Filip's call, the label and the cell carry the button. The label block and the cell
+   sit 1px apart. A secondary's hover is driven by one number, --hp, from 0 to 1, the border draws on clockwise from the top left,
+   a quarter of the move per side. The primary's hover is its cell sweeping over the button, see .btn-primary below. ---- */
+@property --hp {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.btn {
+  --hp: 0;
+  --b-bg: var(--grey-pale);
+  --b-fg: var(--black);
+  --c-bg: var(--grey-light);
+  --c-fg: var(--black);
+  --d-stroke: var(--black);
+  --line-c: var(--black);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 48px;
+  padding: 0 49px 0 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  isolation: isolate;
+  font: 500 16px/1 var(--font);
+  letter-spacing: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  background: transparent;
+  color: var(--b-fg);
+  transition: --hp 260ms var(--ease-wipe);
+}
+
+.btn:hover {
+  --hp: 1;
+}
+
+/* the primary, always filled, a black plus cell */
+.btn-primary {
+  --b-bg: var(--lmh-red);
+  --b-fg: var(--white);
+  --c-bg: var(--black);
+  --c-fg: var(--white);
+  --d-stroke: var(--black);
+}
+
+/* The primary's hover, the cell sweeps left over the whole button and the label reads on it in the cell's ink, the plus stays at
+   the right. Picked by Filip on the board on 2026-10-12 (taste 23:50, variant 2), in place of the border that drew on round it.
+   The label's ink turns as the sweep passes its middle. */
+.btn-primary .btn-d {
+  display: none;
+}
+
+.btn-primary .btn-x {
+  transition: width 320ms var(--ease-wipe);
+}
+
+.btn-primary .btn-r {
+  transition: color 0s linear 160ms;
+}
+
+.btn-primary:is(:hover, :focus-visible) .btn-x {
+  width: 100%;
+}
+
+.btn-primary:is(:hover, :focus-visible) .btn-r {
+  color: var(--c-fg);
+}
+
+/* a secondary, drawn over the label block and the cell. The tint is 1 percent black laid on white and the cell 4.4 percent,
+   so both stay opaque and a grid line never shows through the label. */
+.btn-secondary {
+  --b-bg: #fcfcfc;
+  --c-bg: #f4f4f4;
+  --line-c: rgb(0 0 0 / 0.125);
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  box-shadow: inset 0 0 0 1px var(--line-c);
+  pointer-events: none;
+}
+
+/* the dark ground, the primary turns white, a secondary keeps its line in white, never a light fill */
+.hf[data-tone='white'] .btn-primary,
+[data-ink='dark'] .btn-primary {
+  --b-bg: var(--white);
+  --b-fg: var(--black);
+  --c-bg: var(--grey-dark);
+  --c-fg: var(--white);
+  --d-stroke: var(--black);
+}
+
+.hf[data-tone='white'] .btn-secondary,
+[data-ink='dark'] .btn-secondary {
+  /* 1.5 percent white laid on the dark ground #0b0b0b for the label block and 4.8 percent for the cell, opaque for the same reason */
+  --b-bg: #0f0f0f;
+  --b-fg: var(--white);
+  --c-bg: #171717;
+  --c-fg: var(--white);
+  --d-stroke: var(--white);
+  --line-c: rgb(255 255 255 / 0.125);
+}
+
+/* the label block, in a box that clips the label */
+.btn-t {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  padding: 0 22px;
+  background: var(--b-bg);
+}
+
+.btn-r {
+  position: relative;
+  z-index: 4;
+  display: inline-flex;
+  overflow: hidden;
+  padding: 2px 0;
+  color: var(--b-fg);
+}
+
+.btn-l {
+  display: inline-block;
+}
+
+.btn .num {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* the square icon cell, the plus, or the phone on a phone button */
+.btn-x {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  background: var(--c-bg);
+}
+
+.btn-x::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 14px;
+  margin: auto 0;
+  width: 20px;
+  height: 20px;
+  background: var(--c-fg);
+  -webkit-mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
+  mask: var(--glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E")) center / contain no-repeat;
+}
+
+.btn-phone {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.2 2.5h2.6l1.3 3.8-1.8 1.2a9.5 9.5 0 0 0 4.2 4.2l1.2-1.8 3.8 1.3v2.6a1.9 1.9 0 0 1-2 1.9C8.600 15.400 4.600 11.400 3.300 4.500a1.900 1.900 0 0 1 1.900-2z'/%3E%3C/svg%3E");
+}
+
+/* the border draws on clockwise from the top left, four bars, a quarter of the move each */
+.btn-d {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.btn-d i {
+  position: absolute;
+  display: block;
+  background: var(--d-stroke);
+}
+
+.btn-d i:nth-child(1) {
+  left: 0;
+  top: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(clamp(0, calc(var(--hp) * 4), 1));
+}
+
+.btn-d i:nth-child(2) {
+  right: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform-origin: top;
+  transform: scaleY(clamp(0, calc(var(--hp) * 4 - 1), 1));
+}
+
+.btn-d i:nth-child(3) {
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: right;
+  transform: scaleX(clamp(0, calc(var(--hp) * 4 - 2), 1));
+}
+
+.btn-d i:nth-child(4) {
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  transform-origin: bottom;
+  transform: scaleY(clamp(0, calc(var(--hp) * 4 - 3), 1));
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: 2px;
+}
+
+.hf[data-tone='white'] .btn:focus-visible,
+[data-ink='dark'] .btn:focus-visible {
+  outline-color: var(--white);
+}
+
+/* focus ring on the links of the top row */
+.hf-nav a:focus-visible,
+.hf-logo:focus-visible,
+.hf-skip:focus-visible {
+  outline: 2px solid var(--hf-top);
+  outline-offset: 2px;
+}
+
+/* skip link, first in the tab order, shown when it has focus */
+.hf-skip {
+  position: absolute;
+  left: 72px;
+  top: 4px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--black);
+  font: 500 14px/1 var(--font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: translateY(-60px);
+}
+
+.hf-skip:focus-visible {
+  transform: none;
+}
+
+/* ---- top row, A4. Logos at x 72 and y 24, nav in the grid cell between the second and third lines, buttons on the right edge.
+   Nothing starts on a grid line (Filip 2026-10-12 19:00), the logos sit 24px in from the first vertical and the last button ends
+   24px before the last one. ---- */
+.hf-top {
+  position: absolute;
+  top: 24px;
+  left: 72px;
+  right: 72px;
+  height: 96px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'logo nav acts';
+  align-items: center;
+  column-gap: 40px;
+  color: var(--hf-top);
+}
+
+/* Below 1640px the three groups do not fit one line, so the nav and the buttons stack on the right as one block,
+   the block centred on the logo's middle line */
+@media (max-width: 1639px) {
+  .hf-top {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'logo nav' 'logo acts';
+    align-content: center;
+    row-gap: 8px;
+  }
+  .hf-top .hf-nav {
+    justify-self: end;
+  }
+}
+
+/* LMH co-branding guideline 1.3, the Linde logo at its 160 by 96px screen minimum and the dealer wordmark exactly as
+   wide, centred on it, 30px apart (3x where x is 1/16 of the Linde logo width). No box, no frame, no shadow. */
+.hf-logo {
+  grid-area: logo;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.hf-logo img {
+  display: block;
+  flex: none;
+  width: 160px;
+}
+
+/* only the Linde logo, a direct child. The wordmark stack has its own first child, which must keep its own height, or the ink file
+   sits centred in 96px and the white file at the top of the stack, 31px higher over the dark span. */
+.hf-logo > img:first-child {
+  height: 96px;
+}
+
+/* On a dark ground the Linde logo shows unchanged and the Ekotehnika wordmark crossfades to its white file (Filip
+   2026-10-12, "keep Linde logo as is and convert ekotehnika logo to light"). The two files sit stacked, same 160 width. */
+.hf-wm {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 160px;
+}
+
+.hf-wm img {
+  height: auto;
+  transition: opacity 200ms;
+}
+
+.hf-wm .wm-white {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.hf[data-tone='white'] .wm-ink {
+  opacity: 0;
+}
+
+.hf[data-tone='white'] .wm-white {
+  opacity: 1;
+}
+
+.hf-nav {
+  position: relative;
+  grid-area: nav;
+  justify-self: center;
+}
+
+.hf-nav ul {
+  display: flex;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hf-nav a {
+  position: relative;
+  display: block;
+  padding: 6px 0;
+  color: inherit;
+  font: 500 15px/20px var(--font);
+}
+
+/* the active page, a 2px underline that draws on, and every link draws one on hover. In the story the chapter bar below takes
+   over from the page underline. The border drawn round a link on hover was rejected (taste 2026-10-12 23:20). */
+.hf-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms var(--ease-wipe);
+}
+
+.hf-nav a[aria-current='page']::after {
+  animation: hf-draw 600ms var(--ease-wipe) 400ms both;
+}
+
+/* The chapter bar. In the story the 2px rule follows the chapter on screen and slides between the links, Novi on Prodaja,
+   Servis on servis, Najam on najam, Početna elsewhere (Filip 2026-10-12, video round 4, "this navigation is cool, but I think
+   we can do better"). StoryShell sets data-live and the bar's place. Outside the story the page link keeps its own underline. */
+.hf-nav-bar {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--nb-w, 0px);
+  height: 2px;
+  background: currentColor;
+  transform: translate(var(--nb-x, 0px), var(--nb-y, 0px));
+  transition:
+    transform 500ms var(--ease-indicator),
+    width 500ms var(--ease-indicator);
+  pointer-events: none;
+}
+
+.hf-nav[data-live] .hf-nav-bar {
+  display: block;
+}
+
+.hf-nav[data-live] a[aria-current='page']::after {
+  animation: none;
+  transform: scaleX(0);
+}
+
+.hf-nav a:hover::after,
+.hf-nav[data-live] a[aria-current='page']:hover::after {
+  transform: scaleX(1);
+}
+
+@keyframes hf-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hf-actions {
+  grid-area: acts;
+  justify-self: end;
+  display: flex;
+  /* 10px, so the first phone button starts 24px after the third vertical at 1920 */
+  gap: 10px;
+}
+
+/* From 1824px wide the nav fits the cell between the second and third vertical, 24px in from both, the first link starts and the
+   last one ends there and the gaps take the rest (at least 24px). Narrower, it stays centred and the lines run behind it. */
+@container (min-width: 1824px) {
+  .hf-nav {
+    grid-area: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--x2) + 24px - 72px);
+    width: calc(var(--x3) - var(--x2) - 48px);
+    display: flex;
+    align-items: center;
+  }
+  .hf-nav ul {
+    width: 100%;
+    justify-content: space-between;
+    gap: 24px;
+  }
+}
+
+/* At 1440 every edge of the top row clears the verticals by 24px (second at 390, fourth at 1074). The wordmark starts 24px after the
+   second vertical, the Linde logo stays 24px after the first, so the pair keeps its sizes and is spread over two cells. The phone
+   and quote buttons take 14px type and 18px side padding to fit between the wordmark and the right edge, and the nav leaves a gap of
+   64px between Novi and Polovni, so the fourth vertical runs through it with 24px or more to each link. */
+@container (min-width: 1400px) and (max-width: 1500px) {
+  .hf-top {
+    column-gap: 24px;
+  }
+  .hf-wm {
+    margin-left: calc(var(--x2) - 238px);
+  }
+  .hf-actions .btn {
+    font-size: 14px;
+  }
+  .hf-actions .btn-t {
+    padding: 0 18px;
+  }
+  .hf-top .hf-nav ul {
+    gap: 24px;
+  }
+  .hf-nav li:nth-child(2) {
+    margin-right: 40px;
+  }
+}
+
+/* ---- the corner label, bottom left, a coordinate as flavour ---- */
+.hf-coords {
+  position: absolute;
+  left: 72px;
+  /* 24px under the bottom rule, which sits 65px up from the edge, the line is 20px tall */
+  bottom: 20px;
+  margin: 0;
+  display: flex;
+  gap: 14px;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--hf-sub);
+}
+
+/* ---- the hero block, columns 1 to 7, the plain band x 0 to 760 and y 470 to 840. The marker is a cell with its rule on the
+   vertical, the title, lede and button sit 24px in from it. ---- */
+/* The block runs from the first vertical to the third, so the marker's top rule starts and ends on a drawn line and takes a plus
+   mark at both ends (round 4 item 1, it used to stop inside column 8). */
+.hf-bottom {
+  position: absolute;
+  left: var(--x1);
+  bottom: 100px;
+  width: calc(var(--x3) - var(--x1));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  color: var(--hf-top);
+}
+
+/* The title is sized to its cell, columns 1 to 6 less 24px each side, so it ends 24px before the third vertical. The line is 6.1em wide. */
+/* the rules of .s2 reset the margins of headings and paragraphs, so these two carry the block's class as well */
+.hf-bottom .hf-h1 {
+  margin: 0 0 0 24px;
+  font-size: calc((6 * var(--gx) - 48px) / 6.1);
+  font-weight: 350;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.hf-bottom .hf-lede {
+  margin-left: 24px;
+}
+
+/* At 1920 the one line lede would end 1px before the second vertical, so from 1600px wide it stays inside the first cell, 24px in
+   from both lines, in two balanced lines. At 1440 it runs past the line. */
+@container (min-width: 1600px) {
+  .hf-bottom .hf-lede {
+    max-width: calc(var(--x2) - 72px - 24px);
+    text-wrap: balance;
+  }
+}
+
+/* the hero marker is the longest one, at 14px and 0.1em it would end 22px before the second vertical at 1920, so 0.09em */
+.hf-bottom .s2-marker {
+  letter-spacing: 0.09em;
+}
+
+.hf-quote {
+  margin: 12px 0 0 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-nav a[aria-current='page']::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+}

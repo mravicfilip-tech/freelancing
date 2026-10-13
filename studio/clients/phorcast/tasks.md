@@ -43,6 +43,9 @@ Task format
   - [x] Real guided tour over an app window in the hero, every paragraph at 18px
   - [x] Fix the tour from Filip's step 3 review, add the leaderboard as a labelled preview
   - [ ] Client answers on the real registered count, the launch date, the leaderboard data and the banner image
-  - [ ] Filip's ship line for the preview
+  - [x] Filip's ship line for the preview, on a new domain
+  - [x] Claim phorcast-waitlist.vercel.app on the phorcast-soon project
+  - [ ] Production deploy and public access, waiting on deploy permission in this session
+  - [ ] Client's Loops key as LOOPS_API_KEY, so sign ups are stored
 
 ## Done

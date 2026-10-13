@@ -70,7 +70,7 @@ const SHOTS = [
   },
   {
     id: 'drive', from: 3, to: 5,
-    frames: seq('D1', [0.06, 0.18, 0.3, 0.42, 0.54, 0.66, 0.78, 0.9], STEP16),
+    frames: seq('D1', [0.18, 0.3, 0.42, 0.54, 0.66, 0.78, 0.9], STEP16),
     views: {
       169: [[0, [0, 0, 1920, 1080], 36, -14, { fw: 0.8 }]],
       916: [[0, [700, 120, 1920, 700], 34, -16, { fw: 1.0, sy: 0.5 }]],
@@ -253,7 +253,7 @@ function camAt(s, t) {
 // in 0.15 s.
 const WHIP_OUT = 0.1
 const WHIP_IN = 0.17
-const WHIP_PX = FMT === '916' ? 2000 : 2400
+const WHIP_PX = FMT === '916' ? 900 : 1100
 function whipOff(t) {
   let x = 0
   let y = 0

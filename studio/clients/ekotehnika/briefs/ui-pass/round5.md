@@ -4,7 +4,7 @@ Seven notes from `notes-r5-live.md`, planned in one pass on 13 October. Every no
 
 Deadline. Filip named none.
 
-Answers. Filip replied "go" on 13 October, which approves every default. Q1 yes, the S pane hairlines halve with the grid. Q3 delete the version 2 and 4 code. Q2 came back on 13 October as a relay from the planning chat, "keep the layout, only change the timing". It waits on Filip's own confirmation in the round 5 chat before item 3 builds. In anything written to Filip, beats go by their screen names, Najam, Servis, Prodaja, Automatizacija, not by letter.
+Answers. Filip replied "go" on 13 October, which approves every default. Q1 yes, the S pane hairlines halve with the grid. Q3 delete the version 2 and 4 code. Q2, Filip in the planning chat, "keep the layout, only change the timing". Then "just do the work and get it here, idc", so the round moved back to the planning chat, and Claude picked reveal 1 Rise from the board. Items 3 and 5 built as 3e426a1. In anything written to Filip, beats go by their screen names, Najam, Servis, Prodaja, Automatizacija, not by letter.
 
 ## Items
 

@@ -26,23 +26,18 @@
 
 /* ---- shared parts, the block wipe and the buttons, used by the shell as well ---- */
 
-/* Block wipe. A bar of --bar covers the element and leaves to the right, the shell drives --bx and --tv from the story
-   clock. With no JS, which is reduced motion, the bar is off to the right and the text shows. */
+/* The rise, in place of the block wipe Filip rejected on 2026-10-13, see story2/shell/reveal.ts. A part with text rises letter by
+   letter inside it. A part with none of its own, an icon, a button or a counting figure, rises whole, moved down by --wy and
+   clipped by the same amount at its bottom, so it comes up out of the mask of its own box. With no JS, which is reduced motion,
+   --wy is unset and every part shows. */
 [data-wipe] {
   position: relative;
   overflow: hidden;
-  visibility: var(--tv, inherit);
 }
 
-[data-wipe]::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 9;
-  background: var(--bar, var(--black));
-  transform: translateX(var(--bx, 101%));
-  visibility: var(--lv, visible);
-  pointer-events: none;
+[data-wipe]:not([data-rise]) {
+  transform: translateY(var(--wy, 0%));
+  clip-path: inset(0 0 var(--wy, 0%) 0);
 }
 
 /* ---- buttons. One look for the whole site, the split with an icon cell and the border that draws on, cell 2D on the review

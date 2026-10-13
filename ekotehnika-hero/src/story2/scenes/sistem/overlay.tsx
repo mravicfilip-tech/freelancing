@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
 import { DARK_BG, PAPER, ease, lerp, range, rng, uOf } from './kit';
 import { darkTopAt } from './darkTop';
+import { BACK_FROM, BACK_TO, NEAR, forkX } from './forkTip';
 import { gridXs } from '../../shell/Grid';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
@@ -257,28 +258,31 @@ export default function Overlay({ clock }: SceneProps) {
     // with the light section's top edge flush on its blade, and docks with the blade's top face on the top rule at k 0.5,
     // under the top row, which draws over the steel so the nav and the logo are never covered. It then lowers 8px so
     // the section rests on the rule, and backs out to the left until its tip leaves the frame by k 0.9. The hook plate's
-    // back edge rides on the outer grid line until it backs out.
+    // back edge rides on the outer grid line until it backs out. Where it is comes from forkTip.ts, which the shell reads too,
+    // so Najam's page is cut at the very same tip.
     const k = u - 11;
     const ox = v ? (v.offsetX / v.fullWidth) * 2 * aspect : 0;
     const oy = v ? (-v.offsetY / v.fullHeight) * 2 : 0;
     const rule = 1 - topH;
     // the steel's front face sits 0.15 nearer the lens than the masks, so its screen x and y grow by 1 / (1 - 0.15 TAN),
     // and y is scaled back the same way so the blade's top face lands on the rule and not 16px into the top row
-    const near = 1 - 0.152 * TAN;
+    const near = NEAR;
     // the blade top less its chamfer, so the steel's outer edge and not the shape's line meets the rule
     const dock = rule - CHAMFER.bevelSize / near;
     const settle = 16 / size.height;
     const yEdge = k < 0.5 ? lerp(-1.8, dock, ease(range(k, 0, 0.5))) : dock - settle * ease(range(k, 0.5, 0.56));
     if (forkRef.current) {
       forkRef.current.visible = u >= 11 && k < 0.9;
-      const x0 = (ox + (48 - size.width / 2) / (size.height / 2)) * near + 1.422;
-      // backing out, far enough that the bevelled tip at 3.45 clears the left frame edge with room to spare
-      const back = (x0 + 3.6 + aspect * 1.05) * ease(range(k, 0.58, 0.9));
-      forkRef.current.position.set(x0 - back, (yEdge + oy) * near, 0.02);
+      forkRef.current.position.set(forkX(k, size.width, size.height) + ox * near, (yEdge + oy) * near, 0.02);
     }
+    // The light ground the tine lifted. Once the tine backs out its right edge is cut at the blade's tip, so Najam's world comes
+    // in behind the tip and the frame is never one plain page. It sits 0.01 behind the masks, so its x is scaled out by as much.
     if (curtain.current) {
-      curtain.current.visible = u >= 11 && u < 12;
-      curtain.current.position.set(ox, (k < 0.5 ? yEdge + rule - dock : rule) - 5 + oy, -0.01);
+      const left = -aspect - 0.5;
+      const right = k < BACK_FROM ? aspect + 0.5 : ((forkX(k, size.width, size.height) + 3.462) / near) * (1 + 0.01 * TAN);
+      curtain.current.visible = u >= 11 && k < BACK_TO + 0.02 && right > left;
+      curtain.current.scale.x = Math.max(right - left, 1e-4);
+      curtain.current.position.set(ox + (left + right) / 2, (k < 0.5 ? yEdge + rule - dock : rule) - 5 + oy, -0.01);
     }
   });
 
@@ -304,7 +308,7 @@ export default function Overlay({ clock }: SceneProps) {
       {/* The curtain and the tine draw after every dimension label, leader and arrowhead of the servis stage, which have no
           depth test, so the dimensions go under the light ground and the steel the moment those cover them. */}
       <mesh ref={curtain} visible={false} renderOrder={20}>
-        <planeGeometry args={[aspect * 5, 10]} />
+        <planeGeometry args={[1, 10]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={1} toneMapped={false} />
       </mesh>
       <group ref={forkRef} visible={false}>

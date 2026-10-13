@@ -13,8 +13,9 @@ import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { AfterStory } from './sections';
-import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range, wipeAt } from './motion';
-import { applyReveal, makeReveal, type Reveal } from './reveal';
+import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
+import { prepRise, setRise, type Rise } from './reveal';
+import { forkBackFrom, forkBackTo, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -39,6 +40,8 @@ const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02] };
 const P_FIRST = 0.06;
 const P_STEP = 0.22;
 const LEAVE_DEFAULT: [number, number] = [0.86, 1];
+// the beat that comes in behind the L fork's tip, see scenes/sistem/forkTip.ts
+const BEHIND_FORK = 'N';
 
 // Story pixels where the ground under the top row is dark in the light versions, the black push at the end
 // of the warehouse, the blueprint and the fork lift, then the dark floor of the last chapter.
@@ -74,10 +77,10 @@ type Group = {
   // layers leave by a share of their beat, the hero block leaves by story pixels
   leave: [number, number];
   leaveInPx: boolean;
-  wipes: { el: HTMLElement; order: number; last: string; target: number; suffix: string; lastText: string }[];
+  // the parts that rise in, see reveal.ts, a figure among them counts up as it rises
+  // at is the story pixel a part starts rising on when the L fork's tip uncovers it, Najam only, NaN everywhere else
+  wipes: { el: HTMLElement; order: number; rise: Rise; at: number; target: number; suffix: string; lastText: string }[];
   fills: { el: HTMLElement; letters: HTMLElement[]; on: number }[];
-  // the text load in on the board, see reveal.ts
-  reveals: Reveal[];
   // the plus marks at this group's block rules, drawn into .s2-plus
   wrap: HTMLElement | null;
   tabs: HTMLElement | null;
@@ -90,7 +93,8 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
   const wipes = Array.from(el.querySelectorAll<HTMLElement>('[data-wipe]')).map((w) => ({
     el: w,
     order: Number(w.dataset.wipe ?? 0),
-    last: '',
+    rise: prepRise(w),
+    at: NaN,
     target: w.dataset.count ? Number(w.dataset.count) : NaN,
     suffix: w.dataset.suffix ?? '',
     lastText: '',
@@ -99,7 +103,6 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     f.setAttribute('data-live', '');
     return { el: f, letters: Array.from(f.querySelectorAll<HTMLElement>('.fl')), on: 0 };
   });
-  const reveals = Array.from(el.querySelectorAll<HTMLElement>('[data-reveal]')).map(makeReveal);
   return {
     id,
     el,
@@ -108,11 +111,10 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     leaveInPx: false,
     wipes,
     fills,
-    reveals,
     wrap: null,
     tabs: el.querySelector<HTMLElement>('.s2-p'),
     persistent: false,
-    maxOrder: Math.max(1, ...wipes.map((w) => w.order), ...reveals.map((r) => r.order).filter((o) => !Number.isNaN(o))),
+    maxOrder: Math.max(1, ...wipes.map((w) => w.order)),
     last: '',
     ...opts,
   };
@@ -187,6 +189,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     // the plus marks at every crossing of a vertical with a block rule, from the rules as laid out
     const measure = () => {
       for (const G of groups) if (G.wrap) paintMarks(G.wrap, ruleMarks(G.el, stage));
+      // Najam comes in behind the L fork as it backs out, so each of its parts rises once the tip has passed its left edge
+      const sr = stage.getBoundingClientRect();
+      for (const G of groups)
+        if (G.id === BEHIND_FORK)
+          for (const W of G.wipes) W.at = forkPassesPx(W.el.getBoundingClientRect().left - sr.left, stage.clientWidth, stage.clientHeight);
       placeBar();
     };
     measure();
@@ -223,6 +230,15 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         } else {
           on = k >= 0 && k <= 1 && k < (G.leave[0] + G.leave[1]) / 2;
         }
+        // Najam turns on as the fork starts backing out of L, cut at the blade's tip, so it draws on behind the steel and no frame
+        // is an empty page (round 5, Filip's note 3). Its layout is unchanged.
+        const behind = G.id === BEHIND_FORK && pos >= forkBackFrom && pos < forkBackTo;
+        if (G.id === BEHIND_FORK && pos >= forkBackFrom && k < 0) on = true;
+        const cut = behind ? `inset(0 0 0 ${Math.max(0, forkTipPx(pos, stage.clientWidth, stage.clientHeight)).toFixed(1)}px)` : '';
+        if (G.id === BEHIND_FORK && cut !== G.el.style.clipPath) {
+          G.el.style.clipPath = cut;
+          if (G.wrap) G.wrap.style.clipPath = cut;
+        }
         const vis = on ? 'v' : 'h';
         if (vis !== G.el.dataset.vis) {
           G.el.dataset.vis = vis;
@@ -236,16 +252,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (!on) continue;
         // the text of a beat is shown whole or not at all, so there is no opacity to drive here
 
-        // block wipes and count up
+        // the rise and the count up
         for (const W of G.wipes) {
-          const p = clamp01((u - W.order * stagger) / dur);
-          const key = String(Math.round(p * 240));
-          if (key !== W.last) {
-            W.last = key;
-            const w = wipeAt(p);
-            W.el.style.setProperty('--bx', `${w.bx.toFixed(1)}%`);
-            W.el.style.setProperty('--tv', w.shown ? 'inherit' : 'hidden');
-          }
+          setRise(W.rise, clamp01(Number.isNaN(W.at) ? (u - W.order * stagger) / dur : (pos - W.at - (W.order % 4) * 15) / dur));
           if (!Number.isNaN(W.target)) {
             const cs = W.order * stagger + dur * 0.35;
             const cp = clamp01((u - cs) / Math.max(20, COUNT_DONE * slow * len - cs));
@@ -255,10 +264,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
               W.el.textContent = text;
             }
           }
-        }
-        // the text load in, a title line on its wipe's timing, a lede on the fill's
-        for (const R of G.reveals) {
-          applyReveal(R, Number.isNaN(R.order) ? range(k, FILL_FROM, FILL_TO) : clamp01((u - R.order * stagger) / dur));
         }
         // scroll fill, letter by letter
         const f = range(k, FILL_FROM, FILL_TO);

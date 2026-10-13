@@ -1,5 +1,5 @@
 // Small parts every hold beat is built from. The shell reads these data attributes to drive them from the story clock.
-//   data-wipe="n"  the element reveals with a block wipe, n is its order, each step is 80ms later
+//   data-wipe="n"  the element rises in, its text letter by letter, n is its order (see reveal.ts)
 //   data-fill      a lede that fills from grey to ink letter by letter as the beat runs
 //   data-count="n" a figure that counts up from 0, it starts with its own wipe
 // With none of the driving JS running, which is the reduced motion case, every part shows its end state.
@@ -30,58 +30,18 @@ export const Marker = ({ m, order = 0 }: { m: MarkerData; order?: number }) => (
   </p>
 );
 
-// Text split into words and letters for a text load in, see reveal.ts. Each word and each letter sits in its own mask, the
-// text stays one string for screen readers.
-function Letters({ text }: { text: string }) {
-  const words = text.split(' ');
-  return (
-    <>
-      <span className="sr-only">{text}</span>
-      <span aria-hidden="true">
-        {words.map((w, i) => (
-          <Fragment key={i}>
-            <span className="rw">
-              <span className="rwi">
-                {Array.from(w).map((c, j) => (
-                  <span className="rl" key={j}>
-                    <span className="rc">{c}</span>
-                  </span>
-                ))}
-              </span>
-            </span>
-            {i < words.length - 1 ? ' ' : null}
-          </Fragment>
-        ))}
-      </span>
-    </>
-  );
-}
-
-// reveal is the text load in from reveal.ts, 0 keeps the block wipe and the scroll fill
-export const TitleLines = ({ lines, order = 1, className = '', reveal = 0 }: { lines: string[]; order?: number; className?: string; reveal?: number }) => (
+export const TitleLines = ({ lines, order = 1, className = '' }: { lines: string[]; order?: number; className?: string }) => (
   <h2 className={`s2-title ${className}`}>
-    {lines.map((t, i) =>
-      reveal ? (
-        <span className="ln" data-reveal={reveal} data-order={order + i} key={t}>
-          <Letters text={t} />
-        </span>
-      ) : (
-        <span className="ln" data-wipe={order + i} key={t}>
-          {t}
-        </span>
-      ),
-    )}
+    {lines.map((t, i) => (
+      <span className="ln" data-wipe={order + i} key={t}>
+        {t}
+      </span>
+    ))}
   </h2>
 );
 
 // The lede. Split into words and letters for the scroll fill, kept as one string for screen readers.
-export function Fill({ text, className = '', reveal = 0 }: { text: string; className?: string; reveal?: number }) {
-  if (reveal)
-    return (
-      <p className={`s2-lede ${className}`} data-reveal={reveal}>
-        <Letters text={text} />
-      </p>
-    );
+export function Fill({ text, className = '' }: { text: string; className?: string }) {
   const words = text.split(' ');
   return (
     <p className={`s2-lede fill ${className}`} data-fill>

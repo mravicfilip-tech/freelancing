@@ -331,8 +331,9 @@ function Stage({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    // gone by 11.9, where the light curtain of L has covered the stage, so no label can reach the rental floor behind it
-    const show = u >= 9.95 && u < 11.9;
+    // gone by 11.52, where the light curtain of L has covered the stage since 11.5 and the camera moves to the rental floor
+    // behind it (round 5, Najam comes in behind the fork's tip), so no label can reach that floor
+    const show = u >= 9.95 && u < 11.52;
     // Once the story is in B, the truck takes the studio environment and every shader of the stage is compiled while it
     // is still hidden, so the first frame of S does not stall on them.
     const env = scene.environment;

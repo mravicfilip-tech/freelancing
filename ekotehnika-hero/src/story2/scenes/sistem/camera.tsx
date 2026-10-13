@@ -120,8 +120,9 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
       t.set(x1, 1.3, AISLES[1]);
       out.d = 10;
     }
-  } else if (u < 11.9) {
-    // the X50 schematic in three quarter perspective, on the right of the frame
+  } else if (u < 11.52) {
+    // the X50 schematic in three quarter perspective, on the right of the frame. The cut to the rental floor sits at 11.52, under
+    // the light curtain that covers the whole frame from L k 0.5, so the floor is there when the fork's tip starts uncovering it
     t.set(BP.x - 0.3, 1.0, BP.z);
     out.d = 13;
     out.yaw = -35;

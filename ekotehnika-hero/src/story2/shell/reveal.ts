@@ -1,105 +1,82 @@
-// The text load in for Filip's board, round 5 item 5, in place of the block wipe he rejected on text (taste 2026-10-13 10:05).
-// Five reveals, picked with ?reveal=1 to 5 and shown on N's title and lede only until he answers with a number. With no
-// param nothing changes anywhere. Each is driven by the scroll like the wipe it replaces, and none fades (taste 2026-10-12
-// 17:55, nothing fades). Image, figure and cell reveals keep their wipes.
-//   1 Rise      each letter rises out of a mask at its own box, one after another
-//   2 Type on   letters set one by one behind a 2px ink caret, the caret leaves at the line end
-//   3 Ink up    every letter waits in the fill grey and turns ink in reading order, the C1 lede fill used as the load in
-//   4 Word slide  whole words slide in 24px from the left, each clipped at its own box
-//   5 Settle    each letter cycles through two other letters of its own word before it lands, left to right
-// With none of the driving JS running, which is the reduced motion case, every letter shows its end state.
-import { clamp01 } from './motion';
+// The load in of every part marked data-wipe, the Rise from Filip's round 5 board, in place of the block wipe he rejected
+// (taste 2026-10-13 10:05, picked by Claude on his "just do the work, idc"). Text rises letter by letter, each letter out of
+// its own mask at its baseline, a few letters in motion at once so a line reads as a wave. A part with no text of its own, an
+// icon, a button or a counting figure, rises whole out of the mask of its own box. Nothing fades and no bar covers anything.
+// With none of the driving JS running, which is the reduced motion case, every part shows its end state.
 
-export const REVEAL = (() => {
-  const n = Number(new URLSearchParams(window.location.search).get('reveal'));
-  return n >= 1 && n <= 5 ? n : 0;
-})();
+// letters in motion at once
+const SPREAD = 6;
 
-// letters a rise or a settle runs over at once, so the line reads as a wave and not one letter at a time
-const SPREAD: Record<number, number> = { 1: 6, 5: 4 };
-// words a slide runs over at once
-const WORD_SPREAD = 1.5;
+export type Rise = { el: HTMLElement; letters: HTMLElement[]; last: string };
 
-type Letter = { el: HTMLElement; ch: string; alt: [string, string]; last: string };
-type Word = { el: HTMLElement; last: string };
-export type Reveal = { el: HTMLElement; mode: number; order: number; letters: Letter[]; words: Word[]; key: string };
-
-// two other letters of the same word, the next ones round the word, never the letter itself where the word allows
-function altsOf(word: string, j: number): [string, string] {
-  const others = Array.from(word).filter((c, i) => i !== j && c.toLowerCase() !== word[j].toLowerCase());
-  if (!others.length) return [word[j], word[j]];
-  return [others[j % others.length], others[(j + 1) % others.length]];
+// The text nodes of a part, leaving out svg and any part nested inside it that rises on its own.
+function textNodes(el: HTMLElement): Text[] {
+  const out: Text[] = [];
+  const walk = (n: Node) => {
+    for (const c of Array.from(n.childNodes)) {
+      if (c.nodeType === Node.TEXT_NODE) {
+        if ((c.nodeValue ?? '').trim()) out.push(c as Text);
+      } else if (c instanceof HTMLElement && !c.hasAttribute('data-wipe')) walk(c);
+    }
+  };
+  walk(el);
+  return out;
 }
 
-export function makeReveal(el: HTMLElement): Reveal {
-  const words = Array.from(el.querySelectorAll<HTMLElement>('.rw'));
-  const letters: Letter[] = [];
-  for (const w of words) {
-    const ls = Array.from(w.querySelectorAll<HTMLElement>('.rc'));
-    const word = ls.map((l) => l.textContent ?? '').join('');
-    ls.forEach((l, j) => letters.push({ el: l, ch: l.textContent ?? '', alt: altsOf(word, j), last: '' }));
+// Split a part into words and letters, once. The original text node moves into a screen reader copy, so React keeps its node
+// and the part reads as one string, and the letters beside it are hidden from assistive tech.
+export function prepRise(el: HTMLElement): Rise {
+  const whole = el.classList.contains('btn') || el.hasAttribute('data-count');
+  if (el.hasAttribute('data-rise') || whole) return { el, letters: Array.from(el.querySelectorAll<HTMLElement>('.rc')), last: '' };
+  const nodes = textNodes(el);
+  if (!nodes.length) return { el, letters: [], last: '' };
+  for (const t of nodes) {
+    const sr = document.createElement('span');
+    sr.className = 'sr-only';
+    const vis = document.createElement('span');
+    vis.setAttribute('aria-hidden', 'true');
+    const parts = (t.nodeValue ?? '').split(/(\s+)/);
+    for (const part of parts) {
+      if (!part) continue;
+      if (/^\s+$/.test(part)) {
+        vis.appendChild(document.createTextNode(part));
+        continue;
+      }
+      const w = document.createElement('span');
+      w.className = 'rw';
+      for (const ch of Array.from(part)) {
+        const l = document.createElement('span');
+        l.className = 'rl';
+        const c = document.createElement('span');
+        c.className = 'rc';
+        c.textContent = ch;
+        l.appendChild(c);
+        w.appendChild(l);
+      }
+      vis.appendChild(w);
+    }
+    t.parentNode!.insertBefore(sr, t);
+    sr.appendChild(t);
+    sr.after(vis);
   }
-  return {
-    el,
-    mode: Number(el.dataset.reveal),
-    order: el.dataset.order === undefined ? NaN : Number(el.dataset.order),
-    letters,
-    words: words.map((w) => ({ el: w, last: '' })),
-    key: '',
-  };
+  el.setAttribute('data-rise', '');
+  return { el, letters: Array.from(el.querySelectorAll<HTMLElement>('.rc')), last: '' };
 }
 
 const outCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-// p runs 0 to 1 over the reveal of this element
-export function applyReveal(R: Reveal, p: number) {
+// p runs 0 to 1 over the load in of this part
+export function setRise(R: Rise, p: number) {
   const key = String(Math.round(p * 400));
-  if (key === R.key) return;
-  R.key = key;
+  if (key === R.last) return;
+  R.last = key;
   const n = R.letters.length;
-
-  if (R.mode === 4) {
-    const m = R.words.length;
-    R.words.forEach((W, i) => {
-      const t = clamp01((p * (m + WORD_SPREAD) - i) / WORD_SPREAD);
-      const s = t <= 0 ? 'h' : (24 * (1 - outCubic(t))).toFixed(1);
-      if (s === W.last) return;
-      W.last = s;
-      W.el.dataset.s = s === 'h' ? 'h' : 'v';
-      W.el.style.setProperty('--x', s === 'h' ? '-24px' : `-${s}px`);
-    });
+  if (!n) {
+    R.el.style.setProperty('--wy', `${(100 * (1 - outCubic(p))).toFixed(1)}%`);
     return;
   }
-
-  if (R.mode === 2 || R.mode === 3) {
-    // letters on so far, the caret sits after the last one until the line is set
-    const on = Math.round(p * n);
-    R.letters.forEach((L, i) => {
-      const s = i < on ? (R.mode === 2 && i === on - 1 && on < n ? 'c' : 'v') : 'h';
-      if (s === L.last) return;
-      L.last = s;
-      L.el.dataset.s = s;
-    });
-    return;
+  for (let i = 0; i < n; i++) {
+    const t = Math.min(1, Math.max(0, (p * (n + SPREAD) - i) / SPREAD));
+    R.letters[i].style.setProperty('--y', `${(100 * (1 - outCubic(t))).toFixed(0)}%`);
   }
-
-  const spread = SPREAD[R.mode];
-  R.letters.forEach((L, i) => {
-    const t = clamp01((p * (n + spread) - i) / spread);
-    if (R.mode === 1) {
-      const s = t <= 0 ? 'h' : (100 * (1 - outCubic(t))).toFixed(0);
-      if (s === L.last) return;
-      L.last = s;
-      L.el.dataset.s = s === 'h' ? 'h' : 'v';
-      L.el.style.setProperty('--y', s === 'h' ? '100%' : `${s}%`);
-    } else {
-      // settle, hidden, then the two other letters, then its own
-      const c = t <= 0 ? '' : t < 0.4 ? L.alt[0] : t < 0.8 ? L.alt[1] : L.ch;
-      const s = t <= 0 ? 'h' : c;
-      if (s === L.last) return;
-      L.last = s;
-      L.el.dataset.s = t <= 0 ? 'h' : 'v';
-      if (c) L.el.textContent = c;
-    }
-  });
 }

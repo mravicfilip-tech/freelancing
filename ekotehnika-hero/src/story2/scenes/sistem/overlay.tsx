@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
 import { DARK_BG, PAPER, ease, lerp, range, rng, uOf } from './kit';
 import { darkTopAt } from './darkTop';
+import { gridXs } from '../../shell/Grid';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -193,7 +194,9 @@ function tagTexture() {
 // (x0, x1 from the left edge, the top at the top rule, down to the bottom of the frame), on the grid lines, and it wipes in
 // and out by its right edge, nothing fades. R is the one beat that needs it, the yard has no bare floor under its text.
 type Cell = { x: [number, number]; top: number; open: (u: number) => number };
-const CELLS: Cell[] = [{ x: [0, 972], top: 136, open: (u) => ease(range(u, 4.95, 5.12)) * (1 - ease(range(u, 5.9, 6.0))) }];
+// x[0] is the left edge in pixels. The right edge is the centre grid line of the stage at any width (gridXs in Grid.tsx), so the
+// cut sits on a drawn line at 2560 as at 1920 (round 4 item 9, it stopped at 972 whatever the width).
+const CELLS: Cell[] = [{ x: [0, 0], top: 136, open: (u) => ease(range(u, 4.95, 5.12)) * (1 - ease(range(u, 5.9, 6.0))) }];
 
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
@@ -242,7 +245,8 @@ export default function Overlay({ clock }: SceneProps) {
       // px of this frame to half heights, x from the middle, y up from the middle
       const half = size.height / 2;
       const x0 = (c.x[0] - size.width / 2) / half;
-      const x1 = x0 + ((c.x[1] - c.x[0]) / half) * o;
+      const right = gridXs(size.width)[2];
+      const x1 = x0 + ((right - c.x[0]) / half) * o;
       const y0 = (half - c.top) / half;
       const y1 = -1;
       m.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0);

@@ -42,3 +42,7 @@ Answers. Filip replied "go" on 13 October, which approves every default. Q1 yes,
 - No open sev 1 on the `/uireview` card for the round 5 head.
 - The real scroll check shows no layer of one beat on another, from S through N.
 - Filip has looked at the round 5 head on his localhost and given a ship line for that commit.
+
+## Branches
+
+One branch, `claude/awesome-faraday-lkhnn2`, built by the round 5 session. Resume check-in, per the Sessions rule in the README, `trig_012UYHimVstoCorm7cHhZn3Q`, hourly at minute 18 into that session, deleted when the round is done.

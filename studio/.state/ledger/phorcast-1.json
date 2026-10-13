@@ -10,6 +10,12 @@
       "tree": "6e21f345c249329096856c2ff46b8d5a8994a213",
       "at": "2026-10-13T13:35:58.771Z",
       "score": 1
+    },
+    {
+      "n": 2,
+      "tree": "afd8d15127e5f0067b588734a645654997569c8c",
+      "at": "2026-10-13T13:51:21.955Z",
+      "score": 8.5
     }
   ],
   "findings": [
@@ -18,7 +24,7 @@
       "sev": 1,
       "where": "Soon.css and EmailForm.css, dark theme, early access panel",
       "what": "14px note, Privacy Policy link, social links and form message are on-accent #fffbf8 over the panel gradient, which reaches --accent #e5331e where the form sits. 4.17 to 1, under 4.5, fails AA.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -26,7 +32,7 @@
       "sev": 1,
       "where": "SoonHero.tsx, Tour.tsx, Benefits.tsx, dark theme eyebrows COMING SOON, HOW IT WORKS, WHY PHORCAST",
       "what": "16px eyebrow #626262 on #0f0e0d is 3.16 to 1, under 4.5. README says new work must not repeat this known failure.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -34,7 +40,7 @@
       "sev": 1,
       "where": "ComingSoon.tsx MARKETS_LINE and the Fan band tiles Elections, Geopolitics, Tech",
       "what": "Page claims elections, technology and geopolitics markets, which the FAQ does not back and the client has not confirmed. Unbacked claim on a sign up page.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -42,7 +48,7 @@
       "sev": 2,
       "where": "/ keyboard, Tour step buttons and EarlyAccess form",
       "what": "First Tab pass skips the three step buttons and the whole form because they stay visibility hidden until the entrance plays on scroll. A keyboard user can miss the tour steps and the form.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -58,7 +64,7 @@
       "sev": 3,
       "where": "Tour.css and Soon.css spacing",
       "what": "Spacing off scale, gap 20px, padding 20px, 14px, 72px, 88px, margin-top 144px, and 0.14em.",
-      "status": "open",
+      "status": "partly",
       "round": 1
     },
     {
@@ -66,7 +72,7 @@
       "sev": 3,
       "where": "Tour.tsx pause and play icon",
       "what": "Icon stroke-width 1.6, scale is 1.5.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -78,5 +84,6 @@
       "round": 1
     }
   ],
-  "cards": []
+  "cards": [],
+  "cardAt": "2026-10-13T13:51:22.032Z"
 }

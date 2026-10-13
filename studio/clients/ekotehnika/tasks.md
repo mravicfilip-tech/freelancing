@@ -58,7 +58,7 @@ Task format
   - [x] Filip's ship line on preview 3, then go to the reel chat
   - [x] Merge the round 4 build into the default branch
   - [x] Fix the L fork move, Filip's localhost note after the merge, the top row draws over the steel, the blade docks on the rule and backs out to the left
-  - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app
+  - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app, dd39bd7 merged into the default branch as 46a05c3 (PR 13), the ship line relayed from the planning chat, not yet confirmed in the round 5 chat
   - [x] Plan round 5 from Filip's notes, briefs/ui-pass/round5.md
   - [x] Filip answers the round 5 plan, go on the defaults, no deadline named
   - [ ] Filip answers round 5 Q2, N keeps its layout or not, relayed answer waits on his confirmation

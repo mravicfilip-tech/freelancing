@@ -8,7 +8,7 @@ Answers. Filip replied "go" on 13 October, which approves every default. Q1 yes,
 
 ## Items
 
-1. **L fork move.** Built as dd39bd7. The top row draws over the steel, the blade docks on the rule, lowers 8px and backs out to the left by L k 0.9. Waiting on Filip's ship line on that commit.
+1. **L fork move.** Built as dd39bd7. The top row draws over the steel, the blade docks on the rule, lowers 8px and backs out to the left by L k 0.9. Merged into the default branch as 46a05c3 (PR 13) with the preview hold commit b8850ba, checked in git. The ship line "ship dd39bd7" came as a relay from the planning chat and is not yet confirmed in the round 5 chat.
 
 2. **S grid at half strength, plus marks at full.** On the dark tone the grid line pair goes from 0.4 to 0.2, both halves, in `.s2-grid[data-tone='white']` in `shell/shell.css`. `.s2-plus` is not touched. The dark tone covers the push into the forklift, S and the first half of L, and only S is a hold, so S is where it shows.
    - **Q1.** The block rules inside the S pane, the hairline over Hitan servis and the marker's top line, are `--line` at 0.3 white under `[data-ink='dark']`. Default is to halve them to 0.15 with the grid, so every line on S drops together and only the plus marks stay bright.

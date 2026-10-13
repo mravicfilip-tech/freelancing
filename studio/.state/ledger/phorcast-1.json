@@ -1,0 +1,10 @@
+{
+  "task": "phorcast-1",
+  "repo": "/home/user/phorcast",
+  "client": "phorcast",
+  "trigger": "auto",
+  "openedAt": "2026-10-13T13:26:57.051Z",
+  "rounds": [],
+  "findings": [],
+  "cards": []
+}

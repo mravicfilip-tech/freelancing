@@ -1,0 +1,23 @@
+{
+  "name": "Join early access",
+  "job": "A visitor leaves an email after the tour and is told they are on the list",
+  "start": "/",
+  "maxClicks": 3,
+  "steps": [
+    {
+      "click": "Get Early Access"
+    },
+    {
+      "fill": {
+        "label": "Email address",
+        "value": "filip@example.com"
+      }
+    },
+    {
+      "click": "Get Early Access"
+    },
+    {
+      "expect": "on the list"
+    }
+  ]
+}

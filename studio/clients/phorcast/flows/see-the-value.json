@@ -1,0 +1,12 @@
+{
+  "name": "See the value",
+  "job": "A visitor reads what Phorcast is and goes into the tour",
+  "start": "/",
+  "maxClicks": 2,
+  "steps": [
+    { "expect": "Forecast What" },
+    { "expect": "Max Loss Is Your Stake" },
+    { "click": "See How It Works" },
+    { "expect": "One Question. Two Sides. A Clear Payout." }
+  ]
+}

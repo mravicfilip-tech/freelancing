@@ -1,0 +1,23 @@
+{
+  "name": "Try the tour",
+  "job": "A visitor picks a side in the example market and sees the payout",
+  "start": "/",
+  "maxClicks": 4,
+  "steps": [
+    {
+      "click": "See How It Works"
+    },
+    {
+      "click": "Choose YES or NO"
+    },
+    {
+      "click": "NO"
+    },
+    {
+      "expect": "You get $100"
+    },
+    {
+      "expect": "You lose $38, never more"
+    }
+  ]
+}

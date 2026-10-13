@@ -27,7 +27,7 @@ Task format
 
 ## Review
 
-- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. Branch `claude/great-shannon-tdvytn` in the phorcast repo, no PR yet. Preview https://phorcast-soon-5yqk6ild7-filip-mravic-s-projects.vercel.app
+- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. Branch `claude/great-shannon-tdvytn` in the phorcast repo, no PR yet. Preview https://phorcast-soon-5yqk6ild7-filip-mravic-s-projects.vercel.app. Live https://phorcast-waitlist.vercel.app. Code also in mravicfilip-tech/phorcast-waitlist
   - [x] Read the Phorcast repo and the live landing copy
   - [x] Write the plan and the page content
   - [x] Filip answers the kickoff questions and approves the direction
@@ -45,7 +45,7 @@ Task format
   - [ ] Client answers on the real registered count, the launch date, the leaderboard data and the banner image
   - [x] Filip's ship line for the preview, on a new domain
   - [x] Claim phorcast-waitlist.vercel.app on the phorcast-soon project
-  - [ ] Production deploy and public access, blocked by the Vercel Hobby cap of 100 deploys a day, retry scheduled for 22.05 UTC on 13 October
+  - [x] Production deploy and public access, live at phorcast-waitlist.vercel.app from 22.07 UTC on 13 October, deployment qtiksg08o, previews still protected
   - [ ] Client's Loops key as LOOPS_API_KEY, so sign ups are stored
   - [x] Coming soon code in its own private repo, mravicfilip-tech/phorcast-waitlist, main at d12d961 with full history
   - [ ] Milos (tankosic2324-design) added as collaborator on phorcast-waitlist, Filip adds him in the repo settings

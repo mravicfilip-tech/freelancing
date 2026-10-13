@@ -796,24 +796,6 @@
   padding-left: calc(var(--x4) - var(--x3) + 24px);
 }
 
-/* The Linija scene of version 2 draws its plan under the cells, so there each cell is a hard edged ground cell, white, from one
-   vertical to the next. The 2px on the left leave the grid line on that vertical showing. */
-.variant-2 .p-call {
-  background: var(--white);
-  clip-path: inset(0 0 -80px 2px);
-}
-
-/* the bottom cells run on down to the bottom rule, 75px under the stage, so the plan does not show again under them */
-.variant-2 :is(.p-call-b, .p-call-c)::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 75px;
-  background: var(--white);
-}
-
 /* the capacity and the model cells sit on the bottom of the stage, one under the first column cell and one under the second, their
    top rule is where the leader line starts */
 .p-call-b,

@@ -4,7 +4,79 @@
   "client": "phorcast",
   "trigger": "auto",
   "openedAt": "2026-10-13T13:26:57.051Z",
-  "rounds": [],
-  "findings": [],
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "6e21f345c249329096856c2ff46b8d5a8994a213",
+      "at": "2026-10-13T13:35:58.771Z",
+      "score": 1
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "Soon.css and EmailForm.css, dark theme, early access panel",
+      "what": "14px note, Privacy Policy link, social links and form message are on-accent #fffbf8 over the panel gradient, which reaches --accent #e5331e where the form sits. 4.17 to 1, under 4.5, fails AA.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 1,
+      "where": "SoonHero.tsx, Tour.tsx, Benefits.tsx, dark theme eyebrows COMING SOON, HOW IT WORKS, WHY PHORCAST",
+      "what": "16px eyebrow #626262 on #0f0e0d is 3.16 to 1, under 4.5. README says new work must not repeat this known failure.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 1,
+      "where": "ComingSoon.tsx MARKETS_LINE and the Fan band tiles Elections, Geopolitics, Tech",
+      "what": "Page claims elections, technology and geopolitics markets, which the FAQ does not back and the client has not confirmed. Unbacked claim on a sign up page.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "/ keyboard, Tour step buttons and EarlyAccess form",
+      "what": "First Tab pass skips the three step buttons and the whole form because they stay visibility hidden until the entrance plays on scroll. A keyboard user can miss the tour steps and the form.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 2,
+      "where": "/ dark theme, hero See How It Works .btn--primary and FAQ index numbers",
+      "what": "Primary label #fffbf8 on #e5331e is 4.23 to 1 at 16px, FAQ index #e5331e on #0f0e0d at 14px is 3.96 to 1. Pre-existing token pairs on the new page's primary CTA and FAQ, not in the README known failures list.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "Tour.css and Soon.css spacing",
+      "what": "Spacing off scale, gap 20px, padding 20px, 14px, 72px, 88px, margin-top 144px, and 0.14em.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "Tour.tsx pause and play icon",
+      "what": "Icon stroke-width 1.6, scale is 1.5.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "/ interact, nav z-index 5, container z-index 1, hover on logo and pause control",
+      "what": "z-index off the 0 to 60 by tens scale, and hover changes nothing on the logo and the pause control.",
+      "status": "open",
+      "round": 1
+    }
+  ],
   "cards": []
 }

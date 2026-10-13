@@ -25,10 +25,10 @@ export const DURATION = at(28);
 // layer over the scene from beat pb, the Prodaja models or the end card. frame916 renders the scene wider than the tall
 // frame and shows the part from x, at its own resolution, where the site's camera leaves the subject at an edge.
 type Cls = 'kicker' | 'title' | 'lede' | 'fact' | 'label';
-type Line = { text: string; b: number; cls: Cls; count?: number; suffix?: string; cls916?: Cls; only169?: boolean; only916?: boolean };
+type Line = { text: string; b: number; cls: Cls; count?: number; suffix?: string; cls916?: Cls; only169?: boolean; only916?: boolean; px916?: number };
 type Shot = {
   id: string; from: number; to: number; u0: number; u1: number;
-  lines?: Line[]; dark?: boolean; top916?: boolean; top?: boolean; push?: number; panel?: 'products' | 'end'; pb?: number; frame916?: { w: number; x: number };
+  lines?: Line[]; dark?: boolean; top916?: boolean; top?: boolean; push?: number; bottom916?: number; panel?: 'products' | 'end'; pb?: number; frame916?: { w: number; x: number };
 };
 export const SHOTS: Shot[] = [
   { id: 'hook', from: 0, to: 2, u0: 0.15, u1: 0.95, push: 0.06, lines: [
@@ -36,7 +36,7 @@ export const SHOTS: Shot[] = [
     { text: 'Linde viljuškari.', b: 0, cls: 'title' },
     { text: 'Prodaja, najam i servis na jednom mestu.', b: 1, cls: 'lede' },
   ] },
-  { id: 'drive', from: 2, to: 4, u0: 1.0, u1: 1.95, lines: [{ text: 'Snaga koja pokreće', b: 2, cls: 'title' }] },
+  { id: 'drive', from: 2, to: 4, u0: 1.0, u1: 1.95, lines: [{ text: 'Snaga koja pokreće', b: 2, cls: 'title', px916: 98 }] },
   { id: 'company', from: 4, to: 7, u0: 2.05, u1: 2.95, lines: [
     { text: 'Od 1997.', b: 4, cls: 'title' },
     { text: '1.000+ klijenata', b: 5, cls: 'lede', count: 1000, suffix: '+ klijenata' },
@@ -61,9 +61,9 @@ export const SHOTS: Shot[] = [
     { text: '24 sata', b: 21, cls: 'fact', count: 24, suffix: ' sata' },
     { text: 'Isporuka', b: 21, cls: 'label' },
   ] },
-  { id: 'automation', from: 22, to: 25, u0: 13.4, u1: 14.95, lines: [
-    { text: 'Automatizacija', b: 22, cls: 'title' },
-    { text: 'skladišta', b: 22.5, cls: 'title' },
+  { id: 'automation', from: 22, to: 25, u0: 13.4, u1: 14.95, bottom916: 400, lines: [
+    { text: 'Automatizacija', b: 22, cls: 'title', px916: 88 },
+    { text: 'skladišta', b: 22.5, cls: 'title', px916: 88 },
     { text: 'Mali roboti nose kutije, a vi radite posao.', b: 23.5, cls: 'lede' },
   ] },
   { id: 'end', from: 25, to: 28, u0: 14.95, u1: 14.99, panel: 'end', pb: 25 },
@@ -157,8 +157,10 @@ const built: Built[] = SHOTS.filter((s) => s.lines).map((shot) => {
   const block = document.createElement('div');
   block.className = `rl-block${shot.dark ? ' rl-dark' : ''}`;
   if (shot.top || (TALL && shot.top916)) Object.assign(block.style, { top: TALL ? '280px' : '170px', bottom: 'auto' });
+  if (TALL && shot.bottom916) block.style.bottom = `${shot.bottom916}px`;
   const lines = shot.lines!.filter((l) => !(TALL && l.only169) && !(!TALL && l.only916)).map((l) => {
     const el = lineEl(TALL && l.cls916 ? { ...l, cls: l.cls916 } : l);
+    if (TALL && l.px916) el.style.fontSize = `${l.px916}px`;
     block.appendChild(el);
     return { l, el };
   });

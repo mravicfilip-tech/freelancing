@@ -253,30 +253,40 @@ export default function Overlay({ clock }: SceneProps) {
       m.scale.set(Math.max(x1 - x0, 1e-4), y0 - y1, 1);
       (m.material as THREE.MeshBasicMaterial).color.copy(mc);
     });
-    // The fork and the section it carries. The tine rises from under the frame through all of it and sets the light
-    // section's top edge on the top rule at k 0.5, the section stays there, and the tine lets go and drops out under the
-    // frame by k 0.8, so the light ground holds alone before N. The hook plate's back edge rides on the outer grid line.
+    // The fork and the section it carries, moved the way a forklift sets a load down. The tine rises from under the frame
+    // with the light section's top edge flush on its blade, and docks with the blade's top face on the top rule at k 0.5,
+    // under the top row, which draws over the steel so the nav and the logo are never covered. It then lowers 8px so
+    // the section rests on the rule, and backs out to the left until its tip leaves the frame by k 0.9. The hook plate's
+    // back edge rides on the outer grid line until it backs out.
     const k = u - 11;
     const ox = v ? (v.offsetX / v.fullWidth) * 2 * aspect : 0;
     const oy = v ? (-v.offsetY / v.fullHeight) * 2 : 0;
     const rule = 1 - topH;
-    const dock = rule + 0.14;
-    const yEdge = k < 0.5 ? lerp(-1.8, dock, ease(range(k, 0, 0.5))) : dock - (dock + 1.85) * Math.pow(range(k, 0.5, 0.8), 2);
+    // the steel's front face sits 0.15 nearer the lens than the masks, so its screen x and y grow by 1 / (1 - 0.15 TAN),
+    // and y is scaled back the same way so the blade's top face lands on the rule and not 16px into the top row
+    const near = 1 - 0.152 * TAN;
+    // the blade top less its chamfer, so the steel's outer edge and not the shape's line meets the rule
+    const dock = rule - CHAMFER.bevelSize / near;
+    const settle = 16 / size.height;
+    const yEdge = k < 0.5 ? lerp(-1.8, dock, ease(range(k, 0, 0.5))) : dock - settle * ease(range(k, 0.5, 0.56));
     if (forkRef.current) {
-      forkRef.current.visible = u >= 11 && k < 0.8;
-      // the steel's front face sits 0.15 nearer the lens than the masks, so its screen x grows by 1 / (1 - 0.15 TAN)
-      forkRef.current.position.set((ox + (48 - size.width / 2) / (size.height / 2)) * (1 - 0.152 * TAN) + 1.422, yEdge + oy, 0.02);
+      forkRef.current.visible = u >= 11 && k < 0.9;
+      const x0 = (ox + (48 - size.width / 2) / (size.height / 2)) * near + 1.422;
+      // backing out, far enough that the bevelled tip at 3.45 clears the left frame edge with room to spare
+      const back = (x0 + 3.6 + aspect * 1.05) * ease(range(k, 0.58, 0.9));
+      forkRef.current.position.set(x0 - back, (yEdge + oy) * near, 0.02);
     }
     if (curtain.current) {
       curtain.current.visible = u >= 11 && u < 12;
-      curtain.current.position.set(ox, (k < 0.5 ? yEdge - 0.14 : rule) - 5 + oy, -0.01);
+      curtain.current.position.set(ox, (k < 0.5 ? yEdge + rule - dock : rule) - 5 + oy, -0.01);
     }
   });
 
   return createPortal(
     <>
       <group ref={maskGroup}>
-      <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={10}>
+      {/* The band over the top row draws after the fork and the curtain, so no steel ever crosses into the top row. */}
+      <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={25}>
         <planeGeometry args={[aspect * 2 + 0.2, topH]} />
         <meshBasicMaterial transparent depthTest={false} depthWrite={false} toneMapped={false} />
       </mesh>

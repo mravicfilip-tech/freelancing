@@ -27,7 +27,7 @@ Task format
 
 ## Review
 
-- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. Branch `claude/great-shannon-tdvytn` in the phorcast repo, no PR yet. Preview https://phorcast-soon-cm1zt0o6o-filip-mravic-s-projects.vercel.app
+- phorcast-1 Coming soon page. Brief `studio/clients/phorcast/briefs/coming-soon.md`. Branch `claude/great-shannon-tdvytn` in the phorcast repo, no PR yet. Preview https://phorcast-soon-5yqk6ild7-filip-mravic-s-projects.vercel.app
   - [x] Read the Phorcast repo and the live landing copy
   - [x] Write the plan and the page content
   - [x] Filip answers the kickoff questions and approves the direction
@@ -41,6 +41,7 @@ Task format
   - [x] Preview link to Filip
   - [x] Guided tour plays in the hero on load, client copy from lp.docx
   - [x] Real guided tour over an app window in the hero, every paragraph at 18px
+  - [x] Fix the tour from Filip's step 3 review, add the leaderboard as a labelled preview
   - [ ] Client answers on the real registered count, the launch date, the leaderboard data and the banner image
   - [ ] Filip's ship line for the preview
 

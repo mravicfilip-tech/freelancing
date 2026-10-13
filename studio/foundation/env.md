@@ -40,3 +40,8 @@ so the lesson outlives the context window.
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }
 ```
+
+- freelancing, phorecast, ekotehnika-hero and tok all build from this repo's root, so the root
+  `vercel.json` rule covers all four. Vercel reads it from the pushed commit, so a branch cut from a
+  main without the glob keeps building. An Ignored Build Step skip still counts toward the cap
+  (October 2026, 155 of 170 deploys in a day were these previews).

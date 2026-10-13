@@ -45,7 +45,7 @@ Task format
   - [ ] Client answers on the real registered count, the launch date, the leaderboard data and the banner image
   - [x] Filip's ship line for the preview, on a new domain
   - [x] Claim phorcast-waitlist.vercel.app on the phorcast-soon project
-  - [ ] Production deploy and public access, waiting on deploy permission in this session
+  - [ ] Production deploy and public access, blocked by the Vercel Hobby cap of 100 deploys a day, retry scheduled for 22.05 UTC on 13 October
   - [ ] Client's Loops key as LOOPS_API_KEY, so sign ups are stored
 
 ## Done

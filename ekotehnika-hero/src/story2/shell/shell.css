@@ -21,7 +21,8 @@
 .s2[data-tone='dark'] {
   --fg: var(--white);
   --fg2: rgb(255 255 255 / 0.7);
-  --line: rgb(255 255 255 / 0.3);
+  /* halved with the grid in round 5, so every line on S drops together and only the plus marks stay bright */
+  --line: rgb(255 255 255 / 0.15);
   --bar: var(--white);
   --fill-off: rgb(255 255 255 / 0.25);
 }
@@ -120,8 +121,9 @@
 }
 
 .s2-grid[data-tone='white'] {
-  --gk: rgb(0 0 0 / 0.4);
-  --gw: rgb(255 255 255 / 0.4);
+  /* half strength on the dark ground, both halves, Filip's round 5 note 2. The plus marks keep their strength. */
+  --gk: rgb(0 0 0 / 0.2);
+  --gw: rgb(255 255 255 / 0.2);
 }
 
 .s2-plus {

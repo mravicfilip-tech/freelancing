@@ -27,6 +27,13 @@
       "previewProjects": [
         "ekotehnika-hero"
       ]
+    },
+    {
+      "id": "phorcast",
+      "repos": [
+        "phorcast"
+      ],
+      "previewProjects": []
     }
   ]
 }

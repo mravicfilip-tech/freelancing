@@ -1,0 +1,7 @@
+# Round 5, Filip's notes after the round 4 merge
+
+Notes Filip sent in chat on 13 October, after round 4 merged into the default branch as b484763. One line each, with where it went and its state. Vercel previews are on hold (DOCTRINE.md, Holds), so each change is shown on Filip's localhost by its commit.
+
+1. **L, "This animation is broken fix it, adjust it or do something new".** The tine crossed the nav and the logo at k 0.5 and then fell back down across an empty page. The top row now draws over the steel, the blade docks on the rule, lowers 8px and backs out to the left by k 0.9. Built as dd39bd7, waiting on Filip's ship line. Shots in `refs/round5/01` and `02`.
+2. **S, "reduce the opacity of this grid by 50% on this screen you can keep the + 100% but the lines need to go down".** The grid lines on the dark servis screen at half their strength now, the plus marks stay at full. Open question for the plan, whether the block rules inside the S pane (the hairline over Hitan servis) count as grid lines and halve too. Queued. Shot in `refs/round5/03`.
+3. **L into N, "we should be seeing the other section animate in as this section goes, make sure then you rearrange everything then properly".** Screenshot at L about k 0.6, the blade under the top row and the rest of the frame empty white, marked in red. N's content starts animating in while the tine backs out, so no frame holds an empty page, and the N layout is arranged around the blade's path so nothing lands under it. Queued.

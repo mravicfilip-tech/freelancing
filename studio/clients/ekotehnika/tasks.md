@@ -61,7 +61,7 @@ Task format
   - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app
   - [x] Plan round 5 from Filip's notes, briefs/ui-pass/round5.md
   - [x] Filip answers the round 5 plan, go on the defaults, no deadline named
-  - [ ] Filip answers round 5 Q2, N keeps its layout or not
+  - [ ] Filip answers round 5 Q2, N keeps its layout or not, relayed answer waits on his confirmation
   - [x] Round 5 session started on claude/awesome-faraday-lkhnn2, resume check-in trig_012UYHimVstoCorm7cHhZn3Q
   - [x] Round 5 item 6, the primary call to action on the P, S, N and AT panes, 7aa7acf
   - [x] Round 5 item 2, the S grid and S pane hairlines at half, plus marks untouched, 2b0dfd2

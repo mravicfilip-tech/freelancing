@@ -83,7 +83,12 @@ async function main() {
       stdio: ['ignore', 'pipe', 'inherit'],
       env: { ...process.env, VERCEL_ORG_ID: orgId, VERCEL_PROJECT_ID: projectId },
     });
-    const url = (run.stdout || '').split(/\r?\n/).map((l) => l.trim()).filter((l) => /^https:\/\//.test(l)).pop();
+    // Newer CLIs print a label before the URL ("Production  https://..."), so
+    // the URL is matched anywhere in the line, and the alias line is skipped.
+    const url = (run.stdout || '').split(/\r?\n/)
+      .filter((l) => !/Aliased/.test(l))
+      .map((l) => (/(https:\/\/[^\s]+\.vercel\.app)/.exec(l) || [])[1])
+      .filter(Boolean).pop();
     if (run.status !== 0 || !url) { console.error('vercel deploy failed, see the output above.'); return 1; }
     const host = url.replace(/^https:\/\//, '').replace(/\/.*$/, '');
     console.log(`deployment ${url}`);

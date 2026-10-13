@@ -32,6 +32,9 @@ so the lesson outlives the context window.
   cap returns a 402 that blocks production too.
 - A git deploy of a commit an agent authored is refused. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
+- The first CLI deploy to a brand new project lands as Production, not Preview. Make a new
+  preview project's first deploy something you would be fine showing, and protect the project
+  before it (Phorcast, October 2026).
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

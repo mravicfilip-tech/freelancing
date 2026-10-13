@@ -33,7 +33,9 @@
       "repos": [
         "phorcast"
       ],
-      "previewProjects": []
+      "previewProjects": [
+        "phorcast-soon"
+      ]
     }
   ]
 }

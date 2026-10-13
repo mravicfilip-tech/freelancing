@@ -54,22 +54,21 @@ What does not carry over
 
 ## The direction, one pick
 
-One message, one action. The first screen says what Phorcast is in one line and puts the email
-field right under it. Every section below explains, proves or asks again. Nothing on the page
-links anywhere except the form, the socials and the legal pages.
+Updated 13 October 2026 after Filip's ruling. The value proposition leads the hero, a guided tour
+follows, and the form comes after the tour. The first version, with the form in the hero, is
+logged as rejected inside that ruling in `taste.md`.
 
 Page structure, top to bottom
-1. Slim bar. Logo left. Theme toggle and a "Get Early Access" button on the right, which scrolls
-   to the form. No Markets, Leaderboard, Login or Sign Up.
-2. Hero. Copy and form on the left, the 3D mark on the right, the existing `HeroLogo` with its
-   static fallback. Three proof chips under the form.
-3. How it works. Three illustrated blocks in a row, then one example market card the visitor can
-   tap. Picking YES or NO shows the payout in plain numbers and a link back to the form. This is
-   the one engaging moment, and it teaches the product in one tap.
-4. Why Phorcast. Six benefit blocks, three by two, each with a small illustration in the Bento and
-   Pillars style.
-5. Markets. The existing Fan band, six category pills on the arcs, with its title and line.
-6. Early access. A full-width brand red panel with the second form and the social links.
+1. Slim bar. Logo left. Theme toggle and an outline "Get Early Access" button on the right, which
+   focuses the form after the tour. It is the one shortcut for a visitor who is already sold.
+2. Hero. The value proposition, front and facing. Title, lede, three value points and a "See How
+   It Works" button into the tour. The 3D mark on the right.
+3. How it works, the tour. One market card carried through three beats, Pick a Question, Choose
+   YES or NO, Get $1 If You're Right. Built on the Steps band's cards and panel frame. Plays every
+   6 seconds with a pause control. A tap on YES or NO pauses it and shows that side's payout.
+4. Early access. The red panel with the form, the privacy note and the social links.
+5. Why Phorcast. Six benefit blocks, three by two.
+6. Markets. The existing Fan band.
 7. FAQ. Four questions in the existing accordion.
 8. Footer. Strapline, socials, Privacy Policy, Terms, the disclaimer.
 
@@ -147,42 +146,29 @@ Every heading uses the site's Title Case. Eyebrows stay uppercase. No em dashes.
 
 - Eyebrow. COMING SOON, with the live dot
 - Title. Forecast What Happens Next.
-- Lede. Phorcast is a prediction market for real-world events. Pick a question, choose YES or NO,
-  and every winning contract pays $1. Join the list to get in before everyone else.
-- Field. Your email address
-- Button. Get Early Access
-- Under the form. Early access invites go out before public launch. No spam, unsubscribe anytime.
-  Privacy Policy.
-- Proof chips. Max Loss Is Your Stake. No Leverage. Settled On-Chain.
+- Lede. Phorcast is a prediction market for real-world events. Take a YES or NO position on what
+  happens next, from where Bitcoin closes today to who lifts the trophy this season.
+- Value point 1. $1 Per Winning Contract. Know your payout before you take a position.
+- Value point 2. Max Loss Is Your Stake. No leverage, no liquidations, no margin calls.
+- Value point 3. Settled On-Chain. Every result can be checked.
+- Button. See How It Works
 
-Title alternates, in case the pick does not land
-- Your View Has a Market. The client's own line from the Familiar band.
-- Know Something? Take a Position.
-
-The pick stays "Forecast What Happens Next." It uses the brand's own verb and says what you do in
-four words.
-
-### How it works
+### How it works, the tour
 
 - Eyebrow. HOW IT WORKS
 - Title. One Question. Two Sides. A Clear Payout.
-- Block 1, Pick a Question. Will Bitcoin close higher today? Who lifts the trophy this season?
-  Choose a market you have a view on.
-- Block 2, Choose YES or NO. Prices run from 1¢ to 99¢ and read as odds. YES at 70¢ means the
-  market gives it a 70% chance.
-- Block 3, Get $1 If You're Right. Every winning contract pays $1. Or sell before the result to
-  lock in a profit or cut a loss.
-
-Demo card
-- Label. EXAMPLE MARKET
-- Question. Will Bitcoin close higher today?
-- Buttons. YES 62¢, 62% chance. NO 38¢, 38% chance.
-- After YES. 100 YES contracts at 62¢ cost $62. If Bitcoin closes higher, you get $100. If not,
-  you lose $62, never more.
-- After NO. 100 NO contracts at 38¢ cost $38. If Bitcoin does not close higher, you get $100. If
-  it does, you lose $38, never more.
-- Footnote. Example only, before fees. No real money.
-- Link. Ready to do it for real? Get early access.
+- Beat 1, Pick a Question. Will Bitcoin close higher today? Who lifts the trophy this season?
+  Choose a market you have a view on. The panel shows the Bitcoin card coming forward from a
+  stack with a Sport and a Finance market behind it.
+- Beat 2, Choose YES or NO. Prices run from 1¢ to 99¢ and read as odds. YES at 62¢ means the
+  market gives it a 62% chance. The card shows YES 62¢ and NO 38¢, an odds bar, and "The market
+  gives YES a 62% chance. Tap a side."
+- Beat 3, Get $1 If You're Right. Every winning contract pays $1. Or sell before the result to
+  lock in a profit or cut a loss. The card shows "100 YES at 62¢, cost $62", "If YES wins, you
+  get $100" and "If it doesn't, you lose $62, never more". With NO picked, 100 NO at 38¢, cost
+  $38.
+- Card labels. "Example market" in the corner, and "Example only, before fees. No real money."
+  under the payout.
 
 ### Why Phorcast
 

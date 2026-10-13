@@ -66,7 +66,8 @@ Task format
   - [x] Round 5 item 6, the primary call to action on the P, S, N and AT panes, 7aa7acf
   - [x] Round 5 item 2, the S grid and S pane hairlines at half, plus marks untouched, 2b0dfd2
   - [x] Round 5 item 4, versions 2 and 4 leave the app, 30 files deleted, 054ec3f
-  - [ ] Round 5 item 5, the board of five letter reveals on N, Filip picks by number
+  - [x] Round 5 item 5, the board of five letter reveals on N, refs/round5/r5-board-text-reveal.png
+  - [ ] Filip picks a letter reveal by number
   - [ ] Round 5 item 3, N comes in as the tine backs out, after Q2
   - [ ] Build round 5 in a fresh session
   - [x] Merge the lift branch

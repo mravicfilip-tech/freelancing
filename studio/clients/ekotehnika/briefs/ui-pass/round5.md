@@ -2,7 +2,9 @@
 
 Seven notes from `notes-r5-live.md`, planned in one pass on 13 October. Every note touches version 5 Sistem only, the one live version after note 4. Baseline is b9db9c0 on `claude/awesome-faraday-lkhnn2`, which holds the merged round 4 (b484763) plus the L fork fix. Vercel previews are on hold, so each change is shown on Filip's localhost by its commit.
 
-Deadline. Filip to name it.
+Deadline. Filip named none.
+
+Answers. Filip replied "go" on 13 October, which approves every default. Q1 yes, the S pane hairlines halve with the grid. Q3 delete the version 2 and 4 code. Q2 is still open, it needs its own answer, so item 3 waits on it and everything else builds meanwhile.
 
 ## Items
 

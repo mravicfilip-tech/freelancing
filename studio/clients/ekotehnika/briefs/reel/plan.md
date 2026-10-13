@@ -82,7 +82,7 @@ One timeline drives both. The shots, the beats and the lines are the same. Each 
 |---|---|---|---|
 | 0 to 3 | 0.00 to 2.25 | 1 Hook, H | The hero on beat 0, the headline and lede lift off the page on beat 1, held |
 | 3 to 5 | 2.25 to 3.75 | 2 Drive, D1 | Whip in, the site moves past, "Snaga koja pokreće" on beat 4 |
-| 5 to 8 | 3.75 to 6.00 | 3 Company, C1 | "Od 1997." on 5, "1.000+" counts up across 6, "Zvanični Linde partner" on 7 |
+| 5 to 8 | 3.75 to 6.00 | 3 Company, C1 | The building with "Od 1997. na terenu širom Srbije." and the fact row, 1997, 1.000+ and Linde, punched in on 6 and 7 |
 | 8 to 9 | 6.00 to 6.75 | 4 Yard, R | The flip to top down as the cut, the line on the half beat |
 | 9 to 12 | 6.75 to 9.00 | 5 Sales, P | The four cut outs on half beats from 9, the title with "96 Linde modela" lifts on 11, held |
 | 12 to 15 | 9.00 to 11.25 | 6 Service, S | Hard cut to dark on bar 4, the X50 on 12, the Hitan servis number lifts on 14 |
@@ -115,6 +115,6 @@ One timeline drives both. The shots, the beats and the lines are the same. Each 
 ## Build log
 
 - **13 October, the engine and the look board.** `ekotehnika-hero/video/reel.html` and `reel.js` are the renderer, `scripts/reel-capture.mjs` saves the site frames and `scripts/render-reel.mjs` renders stills or the full video. Frames and renders are git ignored and rebuilt from the scripts.
-- **Changed from the plan while building.** "300+" is not on the shipped S frame, so S lifts the Hitan servis number instead. The reel draws no type of its own, per the Dax default, so the end card is the two logos lifted from the top row and ekotehnika.rs is not drawn. The version switcher is hidden in every capture, since it is a review control. S starts on k 0.5, since k 0.25 catches the X50 mid move.
+- **Changed from the plan while building.** "300+" is not on the shipped S frame, so S lifts the Hitan servis number instead. The reel draws no type of its own, per the Dax default, so the end card is the two logos lifted from the top row and ekotehnika.rs is not drawn. The version switcher is hidden in every capture, since it is a review control. S starts on k 0.5, since k 0.25 catches the X50 mid move. C1 starts on k 0.5 and AT on k 0.3, since earlier frames freeze the site's text wipe half way, black blocks and all. So the 1.000+ count up is not in the reel, it is only on screen while the wipe runs.
 - **9 by 16.** A whole 1920 frame sits too small in a tall frame. So the camera holds the beat's subject large, and the lifted line flies to just under the subject on its beat.
 - **The board.** `board-look.png` in this folder, Hook, Sales and Service in both frames at the same moment.

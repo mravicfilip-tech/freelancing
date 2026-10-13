@@ -47,5 +47,6 @@ Task format
   - [x] Claim phorcast-waitlist.vercel.app on the phorcast-soon project
   - [ ] Production deploy and public access, blocked by the Vercel Hobby cap of 100 deploys a day, retry scheduled for 22.05 UTC on 13 October
   - [ ] Client's Loops key as LOOPS_API_KEY, so sign ups are stored
+  - [ ] Coming soon code in its own private repo, phorcast-waitlist, with Milos (tankosic2324-design) as collaborator. Waiting on Filip to create the empty repo, since the GitHub integration cannot
 
 ## Done

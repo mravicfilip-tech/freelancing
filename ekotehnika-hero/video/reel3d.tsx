@@ -28,10 +28,10 @@ type Cls = 'kicker' | 'title' | 'lede' | 'fact' | 'label';
 type Line = { text: string; b: number; cls: Cls; count?: number; suffix?: string; cls916?: Cls; only169?: boolean; only916?: boolean };
 type Shot = {
   id: string; from: number; to: number; u0: number; u1: number;
-  lines?: Line[]; dark?: boolean; top916?: boolean; top?: boolean; panel?: 'products' | 'end'; pb?: number; frame916?: { w: number; x: number };
+  lines?: Line[]; dark?: boolean; top916?: boolean; top?: boolean; push?: number; panel?: 'products' | 'end'; pb?: number; frame916?: { w: number; x: number };
 };
 export const SHOTS: Shot[] = [
-  { id: 'hook', from: 0, to: 2, u0: 0.15, u1: 0.95, lines: [
+  { id: 'hook', from: 0, to: 2, u0: 0.15, u1: 0.95, push: 0.06, lines: [
     { text: 'Zvanični Linde partner za Srbiju i Crnu Goru', b: 0, cls: 'kicker' },
     { text: 'Linde viljuškari.', b: 0, cls: 'title' },
     { text: 'Prodaja, najam i servis na jednom mestu.', b: 1, cls: 'lede' },
@@ -321,7 +321,9 @@ function drawLayer(t: number) {
   }
   // the scene: a punch in on every shot's first beat that settles in 0.15 s, and the wider render for a tall crop
   const dt = t - at(s.from);
-  const punch = 1 + 0.04 * Math.exp(-Math.max(dt, 0) / 0.06);
+  // a still beat on the site gets a slow push in over the shot, so the frame never stands still
+  const slow = 1 + (s.push ?? 0) * Math.min(1, Math.max(0, dt / (at(s.to) - at(s.from))));
+  const punch = slow * (1 + 0.04 * Math.exp(-Math.max(dt, 0) / 0.06));
   const f = TALL ? s.frame916 : undefined;
   Object.assign(stage.style, f
     ? { left: `${-f.x}px`, width: `${f.w}px`, right: 'auto', transform: `scale(${punch})` }

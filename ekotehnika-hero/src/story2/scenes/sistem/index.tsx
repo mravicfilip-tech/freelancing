@@ -176,12 +176,12 @@ function World({ clock }: SceneProps) {
         </Place>
       )}
       {need(11, 14) && (
-        <Place clock={clock} from={11.85} to={15.1}>
+        <Place clock={clock} from={11.5} to={15.1}>
           <Depot clock={clock} />
         </Place>
       )}
       {need(11, 13) && (
-        <Place clock={clock} from={11.85} to={14.0}>
+        <Place clock={clock} from={11.5} to={14.0}>
           <Grid clock={clock} />
         </Place>
       )}

@@ -5,7 +5,7 @@
 import { useLayoutEffect, useRef, type CSSProperties, type RefObject } from 'react';
 import { SITE } from '../../content';
 import { closing, footer, proizvodi } from '../copy';
-import { wipeAt } from './motion';
+import { prepRise, setRise, type Rise } from './reveal';
 import { Btn, Fill } from './ui';
 import './sections.css';
 
@@ -48,8 +48,8 @@ const NODES: [number, number][] = [
   [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
 ];
 
-// The text reveal of the story beats, for sections that sit after the story clock. The same parts, a data-wipe block wipe from
-// ui.tsx and a Fill letter fill, driven by --bx and --tv through wipeAt in motion.ts, but started by an IntersectionObserver when
+// The text reveal of the story beats, for sections that sit after the story clock. The same parts, a data-wipe part that rises
+// in from ui.tsx (see reveal.ts) and a Fill letter fill, but started by an IntersectionObserver when
 // a block scrolls into view and run on real time. A block is any element marked data-reveal, the value is its extra start delay
 // in ms. It starts when its first wipe or fill enters the screen, and each wipe runs 1000ms, the hero's own pace, 110ms after the
 // one before, 1.4 times slower than first built (Filip 2026-10-12, "slow down these animations a bit"). Nothing fades. With reduced motion, or without the observer, nothing is armed and every part shows its end state.
@@ -63,7 +63,7 @@ function useReveal(root: RefObject<HTMLElement | null>) {
     const el = root.current;
     if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
     const raf = new Set<number>();
-    type Block = { delay: number; wipes: { el: HTMLElement; order: number; last: string }[]; fills: HTMLElement[]; maxOrder: number };
+    type Block = { delay: number; wipes: { el: HTMLElement; order: number; rise: Rise }[]; fills: HTMLElement[]; maxOrder: number };
     const blocks = new Map<HTMLElement, Block>();
     const io = new IntersectionObserver(
       (es) => {
@@ -83,15 +83,12 @@ function useReveal(root: RefObject<HTMLElement | null>) {
     );
 
     el.querySelectorAll<HTMLElement>('[data-reveal]').forEach((g) => {
-      const wipes = Array.from(g.querySelectorAll<HTMLElement>('[data-wipe]')).map((w) => ({ el: w, order: Number(w.dataset.wipe ?? 0), last: '' }));
+      const wipes = Array.from(g.querySelectorAll<HTMLElement>('[data-wipe]')).map((w) => ({ el: w, order: Number(w.dataset.wipe ?? 0), rise: prepRise(w) }));
       const fills = Array.from(g.querySelectorAll<HTMLElement>('[data-fill]'));
       const first = g.querySelector<HTMLElement>('[data-wipe], [data-fill]');
       if (!first) return;
-      // armed, the bar waits off to the left of its part and the part is hidden under it
-      for (const w of wipes) {
-        w.el.style.setProperty('--bx', '-101%');
-        w.el.style.setProperty('--tv', 'hidden');
-      }
+      // armed, every part waits under its mask
+      for (const w of wipes) setRise(w.rise, 0);
       fills.forEach((f) => f.setAttribute('data-live', ''));
       blocks.set(first, { delay: Number(g.dataset.reveal) || 0, wipes, fills, maxOrder: Math.max(0, ...wipes.map((w) => w.order)) });
       io.observe(first);
@@ -115,10 +112,7 @@ function useReveal(root: RefObject<HTMLElement | null>) {
     window.addEventListener('scroll', onScroll, { passive: true });
 
     function end(B: Block) {
-      for (const W of B.wipes) {
-        W.el.style.setProperty('--bx', '101%');
-        W.el.style.setProperty('--tv', 'inherit');
-      }
+      for (const W of B.wipes) setRise(W.rise, 1);
       B.fills.forEach((f) => f.querySelectorAll('.fl').forEach((l) => l.classList.add('on')));
     }
 
@@ -134,13 +128,7 @@ function useReveal(root: RefObject<HTMLElement | null>) {
         let busy = false;
         for (const W of B.wipes) {
           const p = clamp01((now - t0 - W.order * STEP_MS) / WIPE_MS);
-          const key = String(Math.round(p * 240));
-          if (key !== W.last) {
-            W.last = key;
-            const w = wipeAt(p);
-            W.el.style.setProperty('--bx', `${w.bx.toFixed(1)}%`);
-            W.el.style.setProperty('--tv', w.shown ? 'inherit' : 'hidden');
-          }
+          setRise(W.rise, p);
           if (p < 1) busy = true;
         }
         const f = clamp01((now - fillAt) / FILL_MS);

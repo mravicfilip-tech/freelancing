@@ -21,7 +21,9 @@
 .s2[data-tone='dark'] {
   --fg: var(--white);
   --fg2: rgb(255 255 255 / 0.7);
-  --line: rgb(255 255 255 / 0.3);
+  /* a quarter of round 4's 0.3, halved twice with the grid in round 5, so every line on S drops together and only the plus
+     marks stay bright */
+  --line: rgb(255 255 255 / 0.075);
   --bar: var(--white);
   --fill-off: rgb(255 255 255 / 0.25);
 }
@@ -120,8 +122,10 @@
 }
 
 .s2-grid[data-tone='white'] {
-  --gk: rgb(0 0 0 / 0.4);
-  --gw: rgb(255 255 255 / 0.4);
+  /* a quarter of round 4's 0.4 on the dark ground, both halves, halved for Filip's round 5 note 2 and halved again on his
+     "should be 50% opacity less". The plus marks keep their strength. */
+  --gk: rgb(0 0 0 / 0.1);
+  --gw: rgb(255 255 255 / 0.1);
 }
 
 .s2-plus {
@@ -400,6 +404,27 @@
 
 .fill[data-live] .fl.on {
   color: var(--fg);
+}
+
+/* The rise, round 5, see reveal.ts. A part with text splits into words and letters, and each letter rises out of its own mask
+   at the baseline, the padding gives carons and descenders room inside the mask. With no JS every letter sits at 0. */
+[data-rise] .rw {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+[data-rise] .rl {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.1em 0.04em 0.16em 0;
+  margin: -0.1em -0.04em -0.16em 0;
+}
+
+/* --y runs from 1, under the mask, to 0, in place. Under means a whole letter box plus the mask's 0.16em of padding and a
+   margin, so no ascender peeks through the bottom of its mask while it waits. */
+[data-rise] .rc {
+  display: inline-block;
+  transform: translateY(calc(var(--y, 0) * (100% + 0.3em)));
 }
 
 /* ---- data rows, A6 ---- */
@@ -792,24 +817,6 @@
    stage its point is on, set by placeLeaders in panes.tsx */
 .p-call-a.is-right {
   padding-left: calc(var(--x4) - var(--x3) + 24px);
-}
-
-/* The Linija scene of version 2 draws its plan under the cells, so there each cell is a hard edged ground cell, white, from one
-   vertical to the next. The 2px on the left leave the grid line on that vertical showing. */
-.variant-2 .p-call {
-  background: var(--white);
-  clip-path: inset(0 0 -80px 2px);
-}
-
-/* the bottom cells run on down to the bottom rule, 75px under the stage, so the plan does not show again under them */
-.variant-2 :is(.p-call-b, .p-call-c)::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 75px;
-  background: var(--white);
 }
 
 /* the capacity and the model cells sit on the bottom of the stage, one under the first column cell and one under the second, their

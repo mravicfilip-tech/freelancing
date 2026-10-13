@@ -106,7 +106,8 @@ export default function Grid({ clock }: SceneProps) {
     const u = uOf(clock);
     const k = u - 12;
     const sink = (r: number) => ease(range(u, 13.0 + (2 - r) * 0.06, 13.0 + (2 - r) * 0.06 + 0.25));
-    const spread = ease(range(u, 11.9, 12.1)) * (1 - ease(range(u, 13.0, 13.45)));
+    // the bays open as the fork's tip uncovers the floor in L (round 5), not after it has gone
+    const spread = ease(range(u, 11.6, 11.85)) * (1 - ease(range(u, 13.0, 13.45)));
     if (bays.current) {
       bays.current.scale.z = Math.max(spread, 0.001);
       bays.current.visible = spread > 0.002;

@@ -60,7 +60,22 @@ Task format
   - [x] Filip's ship line on preview 3, then go to the reel chat
   - [x] Merge the round 4 build into the default branch
   - [x] Fix the L fork move, Filip's localhost note after the merge, the top row draws over the steel, the blade docks on the rule and backs out to the left
-  - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app
+  - [x] Filip's ship line on the L fork fix, "ship dd39bd7", merge only, merged into the default branch as 46a05c3 (PR 13)
+  - [x] Plan round 5 from Filip's notes, briefs/ui-pass/round5.md
+  - [x] Filip answers the round 5 plan, go on the defaults, no deadline named
+  - [x] Filip answers round 5 Q2, "keep the layout, only change the timing"
+  - [x] Round 5 session started on claude/awesome-faraday-lkhnn2, resume check-in trig_012UYHimVstoCorm7cHhZn3Q
+  - [x] Round 5 item 6, the primary call to action on the P, S, N and AT panes, 7aa7acf
+  - [x] Round 5 item 2, the S grid and S pane hairlines at half, plus marks untouched, 2b0dfd2
+  - [x] Round 5 item 4, versions 2 and 4 leave the app, 30 files deleted, 054ec3f
+  - [x] Round 5 item 5, the board of five letter reveals on N, refs/round5/r5-board-text-reveal.png
+  - [x] Letter reveal picked, 1 Rise, Claude's pick on Filip's "just do the work, idc"
+  - [x] Rise on every text load in, beat panes, hero and the sections after the story, 3e426a1
+  - [x] Round 5 item 3, Najam draws on behind the fork's tip, layout unchanged, 3e426a1
+  - [x] Build round 5, moved back to the planning chat on Filip's "just do the work and get it here"
+  - [x] Filip's localhost notes 8 to 10, the hero in sync with the street, Servis black at the start, its lines at a quarter
+  - [x] Filip looks at round 5 on his localhost
+  - [x] Production, Filip's "push to production", 28ecfa5 live at https://ekotehnika-hero.vercel.app
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell

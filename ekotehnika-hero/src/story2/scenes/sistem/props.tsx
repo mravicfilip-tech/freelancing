@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { RoundedBox } from '@react-three/drei';
 import { G, K, blobMaterial, clamp01, lam, lerp, lit, poolMaterial, rng, signGeometry } from './kit';
+import { INTRO_SKIP, introStart, markIntroStart } from './intro';
 
 // ---- geometry helpers ---------------------------------------------------------------------------------------
 
@@ -52,18 +53,15 @@ function tint(parts: Part[], smooth = false) {
 // from the left, the trees and the modules rise out of the ground one after another, and the forklift drives into its
 // place once its model is ready (index.tsx). Nothing fades. A frozen clock (?at=) or reduced motion skips it, so a
 // shot always shows the final pose.
-const SKIP =
-  typeof window === 'undefined' ||
-  new URLSearchParams(window.location.search).has('at') ||
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let t0 = -1;
+// The start is shared with the shell through intro.ts, so the hero text rises with the street.
+const SKIP = INTRO_SKIP;
 
 /** Seconds since the scene's first frame, Infinity when the build in is skipped. */
 export function introClock() {
   if (SKIP) return Infinity;
   const now = performance.now();
-  if (t0 < 0) t0 = now;
-  return (now - t0) / 1000;
+  markIntroStart(now);
+  return (now - introStart()) / 1000;
 }
 /** Every part of the build in has landed by then, in seconds. */
 export const INTRO_END = 2.6;

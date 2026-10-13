@@ -1,5 +1,5 @@
 // Small parts every hold beat is built from. The shell reads these data attributes to drive them from the story clock.
-//   data-wipe="n"  the element reveals with a block wipe, n is its order, each step is 80ms later
+//   data-wipe="n"  the element rises in, its text letter by letter, n is its order (see reveal.ts)
 //   data-fill      a lede that fills from grey to ink letter by letter as the beat runs
 //   data-count="n" a figure that counts up from 0, it starts with its own wipe
 // With none of the driving JS running, which is the reduced motion case, every part shows its end state.

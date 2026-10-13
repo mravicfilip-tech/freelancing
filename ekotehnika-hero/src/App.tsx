@@ -44,7 +44,7 @@ export function App() {
 
 function Variants() {
   const [reduced, setReduced] = useState(reducedQuery.matches);
-  const [v, setV] = useState(readVariant);
+  const [v] = useState(readVariant);
 
   useEffect(() => {
     const on = () => setReduced(reducedQuery.matches);
@@ -52,26 +52,7 @@ function Variants() {
     return () => reducedQuery.removeEventListener('change', on);
   }, []);
 
-  const pick = (id: string) => {
-    scrollToTop();
-    const url = new URL(window.location.href);
-    url.searchParams.set('v', id);
-    window.history.replaceState(null, '', url);
-    setV(id);
-  };
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return;
-      // Keys 2, 4 and 5 pick the versions.
-      if (variants.some((x) => x.id === e.key)) pick(e.key);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  // A switch always lands at the top.
+  // The page always opens at the top.
   useEffect(() => {
     const id = requestAnimationFrame(scrollToTop);
     return () => cancelAnimationFrame(id);
@@ -88,15 +69,6 @@ function Variants() {
             <Component reduced={reduced} />
           </Suspense>
         </div>
-      </div>
-      {/* Review chrome for comparing the variants, not part of any design. */}
-      <div className="dir-switch" role="group" aria-label="Verzije, tasteri 2, 4 i 5">
-        {variants.map((x) => (
-          <button key={x.id} type="button" aria-pressed={x.id === v} onClick={() => pick(x.id)} title={x.name}>
-            <span>{x.id}</span>
-            {x.name}
-          </button>
-        ))}
       </div>
     </>
   );

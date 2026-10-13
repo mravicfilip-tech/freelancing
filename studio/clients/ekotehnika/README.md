@@ -69,7 +69,7 @@ Live site ekotehnika.rs, captured 8 October 2026 at 1440 by 900. Captures are in
 
 - Folder `ekotehnika-hero/`, its own React and Vite app, separate from the Remittix app at the repo root. Node 22 or newer.
 - Install `npm install`. Dev server `npm run dev` on http://localhost:5173. Production build `npm run build`, then `npm run preview` on http://localhost:4173.
-- Variants at `/?v=2`, `/?v=4` and `/?v=5`, keys 2, 4 and 5 switch between them. 1 and 3 were dropped. `/?gate=1` shows the forklift model gate.
-- Routes to shoot `v2=/?v=2,v4=/?v=4,v5=/?v=5`. WebGL renders in software in the cloud container, wait about 6000ms per shot.
+- Version 5 Sistem is the only version, at `/` and any `/?v=` value. 1, 2, 3 and 4 were dropped, 2 and 4 on 13 October 2026. `/?gate=1` shows the forklift model gate.
+- Freeze a beat with `/?v=5&at=<beat>&k=<0 to 1>`, beat ids in `src/story2/timeline.ts`. Routes to shoot `v5=/?v=5`. WebGL renders in software in the cloud container, wait about 10000ms per shot. `studio/scripts/shoot.mjs` times out on its network idle wait here, so shoot with Playwright and the swiftshader flags from `scripts/scrollpass.mjs`.
 - Preview hosted on Vercel, project `ekotehnika-hero`, https://ekotehnika-hero.vercel.app.
 - Reduced motion in the browser freezes all motion and drops the scroll pin.

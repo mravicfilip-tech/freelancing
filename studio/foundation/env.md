@@ -18,8 +18,17 @@ so the lesson outlives the context window.
 - A 1920 frame of a 3D scene takes about 40 seconds, and a 38 screen board about 25 minutes. Interim
   shots cover the changed beats only, one frame per fix, on one contact sheet. The full board is shot
   once, at round end.
+- `shoot.mjs` needs puppeteer-core (install it in a scratch folder and set `PUPPETEER_CORE_PATH`), and on a live WebGL page
+  its `networkidle0` wait times out at 30s. Shoot such pages with Playwright, `waitUntil: 'load'` and the swiftshader flags.
+- Rebuilding `dist` while a scroll pass runs against `vite preview` swaps the lazy chunks under it. Commit, build, then run the pass.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.
+
+## Filip's machine
+
+- Windows with PowerShell, where the execution policy blocks `npm.ps1`, so `npm install` and `npm run live` fail with
+  PSSecurityException (relayed from the planning chat on 13 October 2026). Every localhost instruction to Filip gives the
+  `npm.cmd install` and `npm.cmd run live` form. Changing his execution policy is his call, never suggested as a step.
 
 ## Network
 

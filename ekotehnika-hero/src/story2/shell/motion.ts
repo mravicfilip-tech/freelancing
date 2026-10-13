@@ -46,17 +46,6 @@ export const HERO_SECONDS = 1.6;
 // Line reveal, a share of the wipe budget, the rest is the stagger between lines.
 export const WIPE_SHARE = 0.6;
 
-// A bar covers the line over the first 0.35 of the reveal, then leaves to the right. Returns the bar offset in
-// percent of its own width and whether the text under it shows.
-export function wipeAt(p: number) {
-  const a = wipeEase(range(p, 0, 0.35));
-  const b = wipeEase(range(p, 0.35, 1));
-  // the bar waits at minus 101 percent and leaves to 101, not 100, so on a block of fractional width no sliver of it shows at
-  // either edge through the clip (round 4 item 6, the line on the right of Hitan servis, and the marks at the left of a block
-  // before its reveal)
-  return { bx: p < 0.35 ? -101 + 101 * a : 101 * b, shown: p >= 0.35 };
-}
-
 export const formatCount = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 // Scroll fill window, plan B2 tightened, the lede fills as k runs from 0.04 to 0.4 of its beat.

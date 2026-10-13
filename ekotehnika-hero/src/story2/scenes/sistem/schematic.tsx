@@ -3,7 +3,8 @@
 // story clock, the shell in the brand red and every other part in an LMH grey. The studio environment is turned to light
 // it low key, a soft top light from the front left and a bright edge along the far side, so the dark truck reads on the
 // dark ground. One clean outline on the silhouette only, 2px white at 90 percent, drawn from a mask of the whole truck in
-// screen space so no inner edge is ever drawn. The ground is a 0.5 m floor grid edge to edge with the truck's shadow on it.
+// screen space so no inner edge is ever drawn. The ground is pure black (Filip round 5) with a 0.5 m floor grid edge to edge
+// and the truck's shadow on it, the grid kept on his "we lost the grid here on this page".
 // Three dimension lines with the X50 / 600 figures from the Linde data sheet DS_X35_X50_1254, each held inside one cell of
 // the page grid at 1440 and 1920, so none crosses a vertical or meets the stage edge. They draw on once the shutter of B
 // has rolled away. Nothing fades.
@@ -331,8 +332,9 @@ function Stage({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    // gone by 11.9, where the light curtain of L has covered the stage, so no label can reach the rental floor behind it
-    const show = u >= 9.95 && u < 11.9;
+    // gone by 11.52, where the light curtain of L has covered the stage since 11.5 and the camera moves to the rental floor
+    // behind it (round 5, Najam comes in behind the fork's tip), so no label can reach that floor
+    const show = u >= 9.95 && u < 11.52;
     // Once the story is in B, the truck takes the studio environment and every shader of the stage is compiled while it
     // is still hidden, so the first frame of S does not stall on them.
     const env = scene.environment;

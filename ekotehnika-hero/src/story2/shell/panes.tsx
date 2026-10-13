@@ -193,7 +193,7 @@ export function PPane() {
             </button>
           ))}
         </div>
-        <Btn href={c.cta.href} kind="secondary" order={6} cta="quote">
+        <Btn href={c.cta.href} order={6} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -237,7 +237,7 @@ export function SPane() {
         <Marker m={markers.s} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="secondary" order={5} cta="quote">
+        <Btn href={c.cta.href} order={5} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -339,7 +339,7 @@ export function NPane() {
       </div>
       <div className="blk stack n-side" style={{ ...between(3, 5), top: 220 }}>
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="secondary" order={3} cta="quote">
+        <Btn href={c.cta.href} order={3} cta="quote">
           {c.cta.label}
         </Btn>
       </div>
@@ -361,7 +361,7 @@ export function ATPane() {
         <Marker m={markers.at} order={0} />
         <TitleLines lines={c.title} order={1} />
         <Fill text={c.text} />
-        <Btn href={c.cta.href} kind="secondary" order={4} cta="quote">
+        <Btn href={c.cta.href} order={4} cta="quote">
           {c.cta.label}
         </Btn>
       </div>

@@ -30,9 +30,10 @@ export const PAPER = {
   toned: G.dark,
 };
 export const GROUND = PAPER.bg;
-export const DARK_BG = '#0b0b0b';
+// pure black, Filip round 5, "screen should be pure black background"
+export const DARK_BG = '#000000';
 // The servis blueprint hold is dark, everything else is light. B ends fully black before it and L covers it.
-export const isDark = (u: number) => u >= 10 && u < 11.8;
+export const isDark = (u: number) => u >= 10 && u < 11.52;
 
 // The light rig is bright enough for the real models, so flat surfaces start at a third of their token and light up
 // to it. That keeps shading visible instead of clipping to white.

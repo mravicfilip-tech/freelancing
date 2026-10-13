@@ -46,7 +46,7 @@ Logo. A line-drawn 3D mark (`HeroLogo`, three.js) with a static SVG fallback, an
   KNOWN-ISSUES 1.7.
 - No em dashes in any copy. Client feedback round, item 10.
 - No bold sentences. Project lead, item 11.
-- Paragraphs are 18px everywhere, one size per heading level. Item 12.
+- Paragraphs are 18px everywhere, one size per heading level. Item 12. Filip restated it for the coming soon page on 13 October 2026, legal lines and small print included; labels stay 16px.
 - Copy speaks of forecasting, not trading. The client moved the wording, KNOWN-ISSUES 1.5. Their
   footer strapline "Trade the outcome, not the asset." stays as supplied.
 - Only claims the FAQ backs. No KYC, instant withdrawals, 60 seconds, self-custody, the token and

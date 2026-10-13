@@ -23,13 +23,15 @@ Task format
 
 ## Backlog
 
+## In progress
+
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel
   - [x] Plan the reel for Filip's review, briefs/reel/plan.md
   - [x] Find the track's tempo, the videos are silent and cut on its beat grid
-  - [ ] Build after the site ships, both formats
-
-## In progress
+  - [x] Port the renderer and capture the shipped site frames
+  - [ ] Filip picks the look from the three still board
+  - [ ] Test 5 seconds, then render both formats
 
 - ekotehnika-8 UI pass and polish round on the website. Notes in briefs/ui-pass/notes.md. Preview 3 https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
   - [x] Filip gives his notes

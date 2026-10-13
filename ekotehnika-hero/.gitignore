@@ -1,3 +1,7 @@
 node_modules
 dist
 .vercel
+
+# reel frames and renders, rebuilt by scripts/reel-capture.mjs and render-reel.mjs
+video/frames/
+video/out/

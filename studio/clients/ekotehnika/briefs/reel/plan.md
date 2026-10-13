@@ -1,6 +1,6 @@
 # Showcase reel, plan
 
-Status. Draft for Filip's review. Nothing is built, rendered or tested. Building starts only when the parent session says go, after round 4 and every Ekotehnika builder chat are merged and Filip has given his ship line on the finished site.
+Status. Building. The parent session said go on 13 October at 08.57 UTC, after Filip's ship line on preview 3. Baseline is the site at 81aad36 on `claude/awesome-faraday-lkhnn2`, merged into this branch, and no frame comes from anything older or from production. Step 6, the look board, waits for Filip's pick.
 
 ## Read this first
 
@@ -80,18 +80,18 @@ One timeline drives both. The shots, the beats and the lines are the same. Each 
 
 | Beats | Time (s) | Shot | What lands on the grid |
 |---|---|---|---|
-| 0 to 3 | 0.00 to 2.25 | 1 Hook, H | "Linde viljuškari." on beat 0, the lede on beat 1, half beat stacking, holds a full beat |
+| 0 to 3 | 0.00 to 2.25 | 1 Hook, H | The hero on beat 0, the headline and lede lift off the page on beat 1, held |
 | 3 to 5 | 2.25 to 3.75 | 2 Drive, D1 | Whip in, the site moves past, "Snaga koja pokreće" on beat 4 |
 | 5 to 8 | 3.75 to 6.00 | 3 Company, C1 | "Od 1997." on 5, "1.000+" counts up across 6, "Zvanični Linde partner" on 7 |
 | 8 to 9 | 6.00 to 6.75 | 4 Yard, R | The flip to top down as the cut, the line on the half beat |
-| 9 to 12 | 6.75 to 9.00 | 5 Sales, P | The four cut outs on half beats from 9, "96 Linde modela" on 11, held |
-| 12 to 15 | 9.00 to 11.25 | 6 Service, S | Hard cut to dark on bar 4, the X50 on 12, "300+" on 13, "Hitan servis" on 14 |
+| 9 to 12 | 6.75 to 9.00 | 5 Sales, P | The four cut outs on half beats from 9, the title with "96 Linde modela" lifts on 11, held |
+| 12 to 15 | 9.00 to 11.25 | 6 Service, S | Hard cut to dark on bar 4, the X50 on 12, the Hitan servis number lifts on 14 |
 | 15 to 16 | 11.25 to 12.00 | 7 Lift, L | The fork crosses the frame across the beat and lifts the reel back to light |
 | 16 to 18 | 12.00 to 13.50 | 8 Rent, N | Rows fill on half beats, "24 sata" on 17 |
 | 18 to 20 | 13.50 to 15.00 | 9 Automation, AT | One C-Matic job in two beats, the line on 18 |
 | 20 to 22 | 15.00 to 16.50 | 10 Products, P cells | The lead cell on 20, the six others on half beats, "Glavni proizvodi" on 21 |
 | 22 to 24 | 16.50 to 18.00 | 11 Close | The photos enter from both sides on 22, "Zatražite ponudu" on 23 |
-| 24 to 28 | 18.00 to 21.00 | End card | Both logos on bar 6, ekotehnika.rs on 25, held to the end, the last frame rests on the grid so it loops |
+| 24 to 28 | 18.00 to 21.00 | End card | Both logos lift off the top row on bar 6, as supplied, on white, held to the end |
 
 ## Build steps, after go only
 
@@ -111,3 +111,10 @@ One timeline drives both. The shots, the beats and the lines are the same. Each 
 2. **Frame rate.** Default 30 fps. 60 doubles the render time.
 3. **Dax in the reel's own lines.** Default only if the licence covers video, see Read this first.
 4. **Music for any public use.** Default this track for the private pitch only. A licensed stand in is Filip's call.
+
+## Build log
+
+- **13 October, the engine and the look board.** `ekotehnika-hero/video/reel.html` and `reel.js` are the renderer, `scripts/reel-capture.mjs` saves the site frames and `scripts/render-reel.mjs` renders stills or the full video. Frames and renders are git ignored and rebuilt from the scripts.
+- **Changed from the plan while building.** "300+" is not on the shipped S frame, so S lifts the Hitan servis number instead. The reel draws no type of its own, per the Dax default, so the end card is the two logos lifted from the top row and ekotehnika.rs is not drawn. The version switcher is hidden in every capture, since it is a review control. S starts on k 0.5, since k 0.25 catches the X50 mid move.
+- **9 by 16.** A whole 1920 frame sits too small in a tall frame. So the camera holds the beat's subject large, and the lifted line flies to just under the subject on its beat.
+- **The board.** `board-look.png` in this folder, Hook, Sales and Service in both frames at the same moment.

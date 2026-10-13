@@ -3,7 +3,7 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "git": { "deploymentEnabled": { "claude/awesome-faraday-lkhnn2": false } },
+  "git": { "deploymentEnabled": { "claude/*": false } },
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {

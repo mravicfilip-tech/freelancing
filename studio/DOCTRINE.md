@@ -161,6 +161,13 @@ Filip to revoke it, and carry on without it.
 
 - Handoffs are on hold until Filip lifts it in his own words. Write no session handoff and no
   delivery handoff, and fill no handoff template. Reading an existing handoff is fine.
+- Vercel previews are on hold until Filip lifts it in his own words, to save the Hobby plan's
+  deploys. No agent runs `deploy.mjs`, `vercel deploy` or any other preview deploy, and every
+  project's `vercel.json` turns off git deploys for `claude/*` branches, per `foundation/env.md`, so
+  a push builds nothing. Filip reviews a change on his own localhost, pulled from the session
+  branch, with `npm run live` where the project has it. Wherever this file or CLAUDE.md says
+  preview link or preview URL, read the pushed commit, named by its short hash in chat. A ship line
+  covers that commit and nothing newer. Production still needs his ship line, as before.
 - Desktop first. Phone layouts only when the client brief names them. The Widths line in
   `clients/<client>/README.md` counts as the brief for this. `/uireview` and shots use those
   widths, and are desktop only when the line is missing or names no phone width. A phone item in a request with no brief

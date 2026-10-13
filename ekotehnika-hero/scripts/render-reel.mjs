@@ -21,6 +21,8 @@ const to = arg('to');
 const stills = arg('stills');
 const out = resolve(arg('out', `video/out/reel-${f}.mp4`));
 const port = Number(arg('port', 4971));
+const page = arg('page', 'reel');
+const query = arg('query', '');
 
 const req = createRequire(join(process.cwd(), 'package.json'));
 let pw;
@@ -48,9 +50,9 @@ try {
   });
   const p = await (await b.newContext({ viewport: { width: W, height: H } })).newPage();
   p.on('pageerror', (e) => console.log('PAGEERROR', e.message));
-  await p.goto(`${base}/video/reel.html?f=${f}`, { waitUntil: 'networkidle', timeout: 120000 });
+  await p.goto(`${base}/video/${page}.html?f=${f}${query ? '&' + query : ''}`, { waitUntil: 'networkidle', timeout: 120000 });
   await p.evaluate(() => window.reelReady);
-  const missing = await p.evaluate(() => window.reelMissing);
+  const missing = (await p.evaluate(() => window.reelMissing)) ?? [];
   if (stills) {
     if (missing.length) console.log('missing frames, shown blank', missing.join(' '));
     for (const t of stills.split(',').map(Number)) {

@@ -5,8 +5,9 @@ description: Reviews UI code in a client or prototype repo. One critic round plu
 
 # Review
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise. S is where review state lives, `K/.state` in the kit repo and
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
+S is where review state lives, `K/.state` when K holds `DOCTRINE.md` and
 `~/.claude/studio-state` otherwise.
 
 One round, one re-check, then Filip decides. The ledger holds the findings and the score.

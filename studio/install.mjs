@@ -4,12 +4,14 @@
 // CLAUDE.md, .claude/ and studio/, so it needs none of this.
 //
 //   node studio/install.mjs              rules, guard hooks and helper agents, for the user
-//   node studio/install.mjs --skills     also the five skills, for a machine where account skills
+//   node studio/install.mjs --skills     also the six skills, for a machine where account skills
 //                                        do not reach Claude Code
 //   node studio/install.mjs --cloud      for a cloud environment setup script. Does nothing when
 //                                        the current folder is the freelancing repo
 //   node studio/install.mjs --uninstall  takes it all out again. Client data in ~/.claude/studio
 //                                        is kept
+//   --deps                               also run npm ci for the screenshot tools, in ~/.claude/studio
+//                                        or, with --cloud inside the freelancing repo, in its studio/
 //   --home <dir>                         install under <dir>/.claude instead of the home folder
 //
 // What it writes
@@ -24,7 +26,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statS
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { addHooks, removeHooks } from './hooks/wire.mjs';
 
 const STUDIO = dirname(fileURLToPath(import.meta.url));
@@ -64,10 +66,18 @@ function setBlock(file, block) {
   writeFileSync(file, text);
 }
 
-function inKitRepo() {
+// The kit repo's root when the current folder is inside it, else null.
+function kitRepo() {
   let top = process.cwd();
   try { top = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { /* not a repo */ }
-  return existsSync(join(top, 'studio', 'DOCTRINE.md')) && existsSync(join(top, '.claude', 'skills', 'uireview'));
+  return existsSync(join(top, 'studio', 'DOCTRINE.md')) && existsSync(join(top, '.claude', 'skills', 'uireview')) ? top : null;
+}
+
+// puppeteer-core for the screenshot scripts. A failure only warns, since shots fall back to diff only.
+function deps(dir) {
+  if (!existsSync(join(dir, 'package-lock.json'))) return;
+  const r = spawnSync('npm', ['ci', '--silent', '--no-audit', '--no-fund'], { cwd: dir, stdio: 'inherit', shell: process.platform === 'win32' });
+  say(r.status === 0 ? `screenshot tools installed in ${dir}` : `npm ci failed in ${dir}, screenshots will run as diff only`);
 }
 
 function install() {
@@ -111,7 +121,7 @@ function install() {
   // Skills, laid out as the account skill zips are, so K is each skill's own folder.
   if (flag('--skills')) {
     const skills = join(CLAUDE, 'skills');
-    for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
+    for (const name of ['uireview', 'harden', 'taste', 'newui', 'design', 'story']) {
       const dest = join(skills, name);
       if (existsSync(dest) && !existsSync(join(dest, MARK))) { say(`kept your own ${dest}, the kit's ${name} skill was not installed`); continue; }
       rmSync(dest, { recursive: true, force: true });
@@ -138,9 +148,15 @@ function uninstall() {
 }
 
 try {
+  const repo = kitRepo();
   if (flag('--uninstall')) uninstall();
-  else if (flag('--cloud') && inKitRepo()) say('this is the freelancing repo, which carries its own kit. Nothing installed');
-  else install();
+  else if (flag('--cloud') && repo) {
+    say('this is the freelancing repo, which carries its own kit. Nothing installed');
+    if (flag('--deps')) deps(join(repo, 'studio'));
+  } else {
+    install();
+    if (flag('--deps')) deps(KIT);
+  }
 } catch (e) {
   console.error(`install.mjs failed ${e.message || e}`);
   process.exit(1);

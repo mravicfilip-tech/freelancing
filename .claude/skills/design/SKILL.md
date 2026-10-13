@@ -5,8 +5,9 @@ description: Builds a design board of every screen in a project, each captured f
 
 # Design board
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise. S is where review state lives, `K/.state` in the kit repo and
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
+S is where review state lives, `K/.state` when K holds `DOCTRINE.md` and
 `~/.claude/studio-state` otherwise.
 
 Filip's ruling, 12 Oct 2026. When there are more than 5 screens we do a /design board to preview

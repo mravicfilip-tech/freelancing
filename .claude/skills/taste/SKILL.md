@@ -5,8 +5,8 @@ description: Logs a design pick or rejection to the client's taste log the same 
 
 # Taste
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise.
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
 
 The `/uireview` critic and every builder read these logs before judging or building. An
 unlogged rejection gets rebuilt next week.

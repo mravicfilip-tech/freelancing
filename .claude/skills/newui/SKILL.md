@@ -5,8 +5,8 @@ description: Starts a new UI the way Filip wants it, references first, one argue
 
 # New UI
 
-K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, and the folder
-this skill was loaded from otherwise.
+K is the kit root. It is `studio/` when the repo root holds `studio/DOCTRINE.md`, else
+`~/.claude/studio` when that holds `DOCTRINE.md`, else the folder this skill was loaded from.
 
 A new UI built from a guess gets rejected. This skill replaces the guess with references, one
 direction Filip picks, and a kit that every later screen reuses. Desktop first. Phone layouts only when the client brief names them.

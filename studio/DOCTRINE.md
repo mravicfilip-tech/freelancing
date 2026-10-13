@@ -21,6 +21,9 @@ Each trigger fires on its own event and no other. None fires every turn or every
 - `/newui` runs for every new UI, and by itself when a new client app starts with no
   `clients/<client>/kit/`. References, one argued direction, the hardest screen, a Radix or shadcn
   base, every state. It stops for Filip's pick twice. Steps are in `.claude/skills/newui/SKILL.md`.
+- `/story` runs before anything is built when the job is a scroll story, a hero sequence or a 3D
+  walk through. Decode the references, write the beats, build one beat in one version. No more
+  than one built direction before Filip accepts the story. Steps are in `.claude/skills/story/SKILL.md`.
 - Kit first. Before building any control or card, run
   `node studio/scripts/kit.mjs list --client <id>` and reuse what is there. Build a
   new one only when the kit has none for that job.
@@ -43,7 +46,9 @@ Each trigger fires on its own event and no other. None fires every turn or every
   the conversation shows it done. Ticking a step never moves the task. Steps never appear in
   anything Filip sends a client, a status note, an invoice line or a summary. Those read at task
   level. A session whose work maps to no task gets one added. A client with no folder yet gets one
-  made with `node studio/scripts/registry.mjs add <id>`.
+  made with `node studio/scripts/registry.mjs add <id>`. When `/taste` marks a
+  direction REJECTED or SUPERSEDED, its task moves to Done the same turn with "superseded by
+  <task>" in its notes.
 - `/taste`. The turn Filip picks, rejects, accepts, kills a direction or sets an app-wide ruling,
   run it. "Go with 3", "v3 is it" and "use this one" are picks, so run it the same turn. It writes
   the client `taste.md`. A preference that applies beyond one client goes in
@@ -62,9 +67,31 @@ Each trigger fires on its own event and no other. None fires every turn or every
 - Standing yes. "Go" approves the last plan's recommendations and nothing else. Never a deploy, a
   send or a ship line.
 - Progress line. When work runs in background helpers, say once what is running, then post one
-  status line each time a helper reports, so Filip never has to ask for an update.
+  status line each time a helper reports, so Filip never has to ask for an update. A status line
+  about a helper comes from evidence read that turn, its last report time and the files it
+  changed, never from memory of what it was sent to do. A helper with no output for 20 minutes is
+  reported as stalled in plain words, then restarted.
 - Structure first. A "better layout", "restructure" or "organize this page" ask gets one argued
-  page structure in words before any code.
+  page structure in words before any code. A redraw of a rejected scene, section or screen is
+  proposed in words with one reference, and built only after Filip's yes.
+- Notes queue. When Filip sends design notes one after another, or any note while builders run,
+  write each to the round's notes file in `clients/<client>/briefs/`, touch no code and no running
+  builder, and reply once with the count. Plan them in one pass when he pauses or says go. "Do
+  this now" on a note skips the queue.
+- Round plan. A plan for a round of fixes asks for the deadline when the thread has none, names
+  which live versions each note touches, and puts any default that moves layout on its own
+  numbered line. "Go" or "execute everything" approves the rest. A layout line still needs its
+  own answer, so ask for it in one line and build the rest meanwhile.
+- A pick and the other versions. When Filip picks one version, ask once whether the client will
+  see the others. If he says only the pick, the others freeze at their last commit and leave every
+  later round unless he names them. Until he answers, they stay live.
+- One session per round. A new round or a new task starts a fresh session that reads
+  `clients/<client>/tasks.md`, the client rules and the round plan from the repo, with the main
+  thread at the effort `foundation/models.md` names. Before a round ends, commit its plan and notes
+  so nothing lives only in the old context, and say in one line that the next round starts fresh.
+  This needs no handoff document, so the handoff hold stands.
+- Environment. Read `foundation/env.md` once per session before the first shot, server restart or
+  deploy. Add a line to it the same turn a new trap costs a retry.
 - Grill and review. "Grill" plus "review" in one ask runs the grilling skill, when it is
   installed, on the plan, then `/uireview` on the build.
 - `/harden` is for words, an answer, a plan, a doc or a drafted message. Run it when Filip types
@@ -92,7 +119,9 @@ Each trigger fires on its own event and no other. None fires every turn or every
 ## Build recipe
 
 1. Plan first. Write the plan in a few lines and name the baseline commit before any edit.
-2. Spread agents. Split by folder or slice so no two builders touch the same file.
+2. Spread agents. Split by folder or slice so no two builders touch the same file. Each builder
+   works in its own git worktree on its own branch, and the main thread merges on its report.
+   Remove the worktrees when the round ends.
 3. Spawn helpers by tier, `quick`, `read`, `build` or `deep`, as the session's mode row in
    `foundation/models.md` says. Models and efforts live there and nowhere else, by alias only.
 4. Self-check before reporting. Run the build, click the changed flow, read the diff against the
@@ -101,13 +130,15 @@ Each trigger fires on its own event and no other. None fires every turn or every
    then report. `/uireview` comes after.
 5. Before and after shots of every changed route with
    `node studio/scripts/shoot.mjs`, per the regression rule in CLAUDE.md. Add
-   `--interact` when the build has pinned bars, menus, popups or hover states.
+   `--interact` when the build has pinned bars, menus, popups or hover states. Interim shots during
+   a round cover the changed beats or routes only. The full set is shot once, at round end.
 6. Preview link before any ship. Deploy the change to a preview URL Filip can open and click, a
    Vercel preview deployment behind the project's usual password, never production and never
    localhost, and send him that link in chat. Nothing merges to a shared branch, deploys to
    production, or reaches a client until Filip has opened that link and replied with a ship line
    for it. A ship line given before the link does not count, and one link covers one change set.
-   This holds for one line fixes too.
+   This holds for one line fixes too. On Vercel Hobby, deploy with
+   `node studio/scripts/deploy.mjs`, per `foundation/env.md`.
 
 Helper reports come back in five lines or fewer, detail in a file. Small edits Filip is watching
 live stay in the main thread.
@@ -130,6 +161,13 @@ Filip to revoke it, and carry on without it.
 
 - Handoffs are on hold until Filip lifts it in his own words. Write no session handoff and no
   delivery handoff, and fill no handoff template. Reading an existing handoff is fine.
+- Vercel previews are on hold until Filip lifts it in his own words, to save the Hobby plan's
+  deploys. No agent runs `deploy.mjs`, `vercel deploy` or any other preview deploy, and every
+  project's `vercel.json` turns off git deploys for `claude/*` branches, per `foundation/env.md`, so
+  a push builds nothing. Filip reviews a change on his own localhost, pulled from the session
+  branch, with `npm run live` where the project has it. Wherever this file or CLAUDE.md says
+  preview link or preview URL, read the pushed commit, named by its short hash in chat. A ship line
+  covers that commit and nothing newer. Production still needs his ship line, as before.
 - Desktop first. Phone layouts only when the client brief names them. The Widths line in
   `clients/<client>/README.md` counts as the brief for this. `/uireview` and shots use those
   widths, and are desktop only when the line is missing or names no phone width. A phone item in a request with no brief
@@ -154,6 +192,7 @@ freelancing repo, so the nearest registered folder above the work wins.
 | Models per role | `foundation/models.md` |
 | What good looks like | `foundation/principles.md` |
 | Base layout values | `foundation/base-layout.css`, `clients/<client>/base-override.json` |
+| Environment traps and deploys | `foundation/env.md` |
 | A client's rules and taste log | `clients/<client>/README.md`, `taste.md` |
 | A client's tasks | `clients/<client>/tasks.md` |
 | A job's brief | `clients/<client>/briefs/` |

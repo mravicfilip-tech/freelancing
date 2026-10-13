@@ -25,6 +25,7 @@ const EXTRA = {
   uireview: TOOLS,
   newui: TOOLS,
   design: TOOLS,
+  story: TOOLS,
   taste: TOOLS,
   harden: ['foundation/writing.md'],
 };

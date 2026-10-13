@@ -57,11 +57,14 @@ Task format
   - [x] Filip picks the primary hover (2) and the points (3, 20 percent larger, 2px)
   - [x] Real scroll checks on the full round 4 build at 81aad36, P into S, the L exit and AT into Proizvodi all clean
   - [x] Preview 3 at 81aad36, https://ekotehnika-hero-gzq9u7wgn-filip-mravic-s-projects.vercel.app
-  - [ ] Filip's ship line on preview 3, then go to the reel chat
+  - [x] Filip's ship line on preview 3, then go to the reel chat
+  - [x] Merge the round 4 build into the default branch
+  - [x] Fix the L fork move, Filip's localhost note after the merge, the top row draws over the steel, the blade docks on the rule and backs out to the left
+  - [ ] Filip's ship line on the L fork preview, https://ekotehnika-hero-1xuqsroio-filip-mravic-s-projects.vercel.app
   - [x] Merge the lift branch
   - [x] Merge the servis branch
   - [x] Merge the street and automation branches, wire the footer still and the R cell
-  - [ ] Build round 4
+  - [x] Build round 4
   - [ ] Review, check and deploy
 
 - ekotehnika-3 Variant 2 in the dashboard card style, in Linde colours, motion kept. Reference briefs/hero-rebuild/refs/dashboard-card-ui.webp

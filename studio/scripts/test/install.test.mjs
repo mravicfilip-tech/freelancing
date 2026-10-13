@@ -18,6 +18,8 @@ writeFileSync(join(C, 'CLAUDE.md'), '# my own notes\nkeep me\n');
 writeFileSync(join(C, 'settings.json'), JSON.stringify({ theme: 'dark' }));
 const run = (args, cwd = home) => spawnSync('node', [INSTALL, '--home', home, ...args], { cwd, encoding: 'utf8' });
 const read = (p) => readFileSync(join(C, p), 'utf8');
+const noProject = { ...process.env };
+delete noProject.CLAUDE_PROJECT_DIR;
 let passed = 0;
 const test = (name, fn) => { fn(); passed++; console.log(`ok  ${name}`); };
 
@@ -46,8 +48,15 @@ test('installed rules point at the home kit and load the doctrine', () => {
 
 test('installed skills carry the scripts they run, and the installed guard denies a sweep', () => {
   for (const f of ['SKILL.md', 'rubric.md', 'scripts/ledger.mjs', 'scripts/shoot.mjs', 'foundation/writing.md', '.studio-kit']) assert.ok(existsSync(join(C, 'skills', 'uireview', f)), f);
-  const r = spawnSync('node', [join(C, 'studio', 'hooks', 'guard.mjs')], { input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command: "grep -rl a . | xargs sed -i 's/a/b/'" } }), encoding: 'utf8' });
+  const r = spawnSync('node', [join(C, 'studio', 'hooks', 'guard.mjs')], { input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command: "grep -rl a . | xargs sed -i 's/a/b/'" } }), encoding: 'utf8', env: noProject });
   assert.match(r.stdout, /"deny"/);
+  // Inside the kit repo the installed copy stays quiet and the repo's own copy answers.
+  const inRepo = spawnSync('node', [join(C, 'studio', 'hooks', 'guard.mjs')], { input: JSON.stringify({ hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command: "grep -rl a . | xargs sed -i 's/a/b/'" } }), encoding: 'utf8', env: { ...noProject, CLAUDE_PROJECT_DIR: resolve(STUDIO, '..') } });
+  assert.equal(inRepo.stdout, '');
+  const secret = spawnSync('node', [join(C, 'studio', 'hooks', 'secrets.mjs')], { input: JSON.stringify({ hook_event_name: 'UserPromptSubmit', prompt: 'key ghp_' + 'a1B2c3D4e5F6g7H8i9J0k1L2m3N4o5P6q7R8' }), encoding: 'utf8', env: { ...noProject, CLAUDE_PROJECT_DIR: resolve(STUDIO, '..') } });
+  assert.equal(secret.stdout, '');
+  const loud = spawnSync('node', [join(C, 'studio', 'hooks', 'secrets.mjs')], { input: JSON.stringify({ hook_event_name: 'UserPromptSubmit', prompt: 'key ghp_' + 'a1B2c3D4e5F6g7H8i9J0k1L2m3N4o5P6q7R8' }), encoding: 'utf8', env: noProject });
+  assert.match(loud.stdout, /systemMessage/, 'outside the kit repo the installed copy warns');
 });
 
 test('a skill or agent of the same name that is not the kit\'s is kept', () => {
@@ -83,10 +92,10 @@ test('uninstall takes it all out, keeps client data and the user\'s own text', (
   assert.ok(existsSync(join(C, 'studio', 'clients', 'note.md')));
 });
 
-test('pack writes five zips that hold SKILL.md at the top of a folder named for the skill', () => {
+test('pack writes six zips that hold SKILL.md at the top of a folder named for the skill', () => {
   const out = mkdtempSync(join(tmpdir(), 'pack-'));
-  assert.equal(pack(out).length, 5);
-  for (const name of ['uireview', 'harden', 'taste', 'newui', 'design']) {
+  assert.equal(pack(out).length, 6);
+  for (const name of ['uireview', 'harden', 'taste', 'newui', 'design', 'story']) {
     const buf = readFileSync(join(out, `${name}.zip`));
     assert.equal(buf.readUInt32LE(0), 0x04034b50);
     assert.ok(buf.includes(Buffer.from(`${name}/SKILL.md`)), `${name}/SKILL.md`);

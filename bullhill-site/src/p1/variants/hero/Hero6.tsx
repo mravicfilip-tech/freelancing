@@ -4,11 +4,11 @@ import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
 import { Rise } from '../../motion/Rise';
 import { t6 } from './copy-hero6';
-import { ANCHORS, VIEWS, clamp01, dollyCam, driftCam, project, seamAt, smooth, type LayerId, type View } from './hero6/geometry';
-import { useProgress, useProgressValue, type Progress } from './hero6/progress';
+import { ANCHORS, CAMS, VIEWS, clamp01, driftCam, project, seamAt, type LayerId, type View } from './hero6/geometry';
+import { urlProgress, useProgress, type Progress } from './hero6/progress';
 import { StillSeam } from './hero6/StillSeam';
 import { DigCanvas } from './hero6/DigCanvas';
-import { restoreAt, seamEase } from './hero6/acts';
+import { STEPS, labelAt, stepAt, textGone } from './hero6/acts';
 import { LoadClock, SETTLED, assembleAt, riseEase, urlFreeze } from './hero6/timeline';
 import './hero.css';
 import './hero6.css';
@@ -21,14 +21,14 @@ import './hero6.css';
 // first frame. The labels are placed here by projecting 3D points with that camera, so a leader
 // ends on its part at every size.
 //
-// Beat 4, dig, lay, restore (hero6/acts.ts). The stage is pinned with position sticky for 120svh of
-// extra scroll, 30svh on phones, and p runs 0 to 1 across it (hero6/progress.ts). The scene reads p
-// every frame, opens the trench, lifts and drops the ground's points, slides the ducts in, sets the
-// seam and the dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the
-// labels move in the same animation frame as the canvas. Phones and no WebGL show StillSeam, the
-// still pair with the seam sliding in CSS, and DigCanvas plays the ground's points over it in 2D.
-// With motionOn() false there are no acts, the seam keeps its old mapping. Reduced motion gets no
-// pin and p 0.
+// The scroll is five named steps (hero6/acts.ts), dig, sand bed, ducts, ready for fibre, backfill and
+// restore. The stage is pinned with position sticky for 200svh of extra scroll, 100svh on phones, and p
+// runs 0 to 1 across it (hero6/progress.ts). The scene reads p every frame, sets the work on the render
+// half and draws, then calls paint(p) here. The step label is written by text(p), straight on its
+// elements, so it follows the scroll and never waits for a frame. The seam and the schematic half hold
+// still. Phones never run WebGL, they crossfade five stills of the scene, one per step, and DigCanvas
+// plays the ground's points over them. With motionOn() false there is no pin, no label and no work,
+// the hero is the settled block. Reduced motion is the same.
 //
 // Beats 1 to 3 (hero6/timeline.ts). The h1 is the shared Rise, the lede and buttons rise after its
 // last line in CSS, and the assemble is built by a LoadClock that the scene, the overlay and the
@@ -89,13 +89,14 @@ function hasWebgl() {
 }
 
 // Still render mode, for scripts/render-hero6.mjs. Only the scene, on a transparent page. `&seam=`
-// sets the split, 0 all render and 1 all schematic, for the phone stills of beat 4.
-function StillStage({ view, seam }: { view: View; seam: number }) {
+// sets the split, 0 all render and 1 all schematic. `&p=` sets the step state, and `&dust=0` leaves the
+// ground's points out, the phone stills carry the work and DigCanvas plays the points.
+function StillStage({ view, seam, p, dust }: { view: View; seam: number; p: number; dust: boolean }) {
   const [w, h] = VIEWS[view].nominal;
   return (
     <div className="h6-still" style={{ width: w, height: h }}>
       <Suspense fallback={null}>
-        <Scene view={view} still seam={seam} onReady={() => undefined} />
+        <Scene view={view} still seam={seam} stillP={p} dust={dust} onReady={() => undefined} />
       </Suspense>
     </div>
   );
@@ -105,11 +106,11 @@ type Meta = { id: LayerId; text: string; w: number };
 type Item = Meta & { px: number; py: number; ty: number; op: number };
 type Box = { w: number; h: number; x: number; y: number };
 
-// Where every moving piece of the overlay sits, in stage pixels, the camera at ease e and the seam at se. The part of a label is
-// real once the seam has gone left of its anchor, and its leader fades out while the tag stays.
-function place(view: View, box: Box, ch: number, metas: Meta[], e: number, se: number, moveCam: boolean, yaw = 0, pitch = 0) {
-  const cam = driftCam(dollyCam(view, moveCam ? e : 0), moveCam ? yaw : 0, moveCam ? pitch : 0);
-  const sf = seamAt(view, se);
+// Where every piece of the overlay sits, in stage pixels. The camera and the seam hold still. The part of
+// a label is real once the seam has gone left of its anchor, and its leader fades out while the tag stays.
+function place(view: View, box: Box, ch: number, metas: Meta[], moveCam: boolean, yaw = 0, pitch = 0) {
+  const cam = driftCam(CAMS[view], moveCam ? yaw : 0, moveCam ? pitch : 0);
+  const sf = seamAt(view, 0);
   const items: Item[] = metas
     .map((m) => {
       const [fx, fy] = project(cam, box.w / box.h, ANCHORS[m.id]);
@@ -131,13 +132,48 @@ function place(view: View, box: Box, ch: number, metas: Meta[], e: number, se: n
 
 type Els = { lead: SVGGElement | null; line: SVGLineElement | null; dot: SVGCircleElement | null; tag: SVGGElement | null };
 
-// Phones and no WebGL, beat 4 on the still pair. Its own component, so a scroll re-renders the two
-// stills and not the whole hero.
-// With the acts on, the seam waits for restore, the same as the live scene, and the ground's points
-// play over the pair on a 2D canvas.
-function SeamStill({ view, progress, enabled, animate, acts }: { view: View; progress: Progress; enabled: boolean; animate: boolean; acts: boolean }) {
-  const p = useProgressValue(progress, enabled);
-  return <StillSeam view={view} p={acts ? restoreAt(p) : p} alt="" animate={animate} />;
+// Phones, the five steps on stills. The still pair is the settled block, with beats 1 and 2 on it in
+// CSS. Over it sit five stills of the scene, each at the end of a step. Within a step the one before
+// fades out under the next, and the opacities are written straight on the images from p, so a scroll
+// never re-renders the hero. The stills load after the page, the first view needs only the pair.
+const STILLS = ['s1', 's2', 's3', 's4', 's5'];
+function stepFades(p: number) {
+  // t[i] is how far still i has come in, 0 to 1. Step i spans STEPS[i] to STEPS[i + 1], and the fade
+  // takes its middle 80 percent so each end holds still.
+  const t = STILLS.map((_, i) => {
+    const a = STEPS[i];
+    const b = STEPS[i + 1];
+    const k = clamp01((p - a - 0.1 * (b - a)) / (0.8 * (b - a)));
+    return k * k * (3 - 2 * k);
+  });
+  // a still stays under the next until the next is fully in, then it goes
+  return t.map((k, i) => (i + 1 < t.length && t[i + 1] >= 0.999 ? 0 : k));
+}
+
+function PhoneStills({ view, progress, animate, load }: { view: View; progress: Progress; animate: boolean; load: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const apply = (p: number) => {
+      const o = stepFades(p);
+      el.querySelectorAll<HTMLElement>('.h6st__img').forEach((im, i) => {
+        im.style.opacity = o[i].toFixed(3);
+      });
+    };
+    apply(progress.sample());
+    return progress.subscribe(apply);
+  }, [progress, load]);
+  return (
+    <>
+      <StillSeam view={view} p={0} alt="" animate={animate} />
+      <div ref={box} className="h6st" aria-hidden="true">
+        {load
+          ? STILLS.map((n) => <img key={n} className="h6st__img" src={`/render/hero6-${view}-${n}.webp`} width={VIEWS[view].nominal[0]} height={VIEWS[view].nominal[1]} alt="" decoding="async" fetchPriority="low" draggable={false} />)
+          : null}
+      </div>
+    </>
+  );
 }
 
 // Beat 1 with the clock frozen by ?t=. The words of the headline are set to where the rise has got
@@ -162,7 +198,7 @@ export function Hero6({ c }: { c: Content }) {
   const q = new URLSearchParams(window.location.search);
   const still = q.get('still');
   const seam = q.has('seam') ? Number(q.get('seam')) : 0.5;
-  if (still === 'wide' || still === 'mid' || still === 'tall') return <StillStage view={still} seam={Number.isFinite(seam) ? seam : 0.5} />;
+  if (still === 'wide' || still === 'mid' || still === 'tall') return <StillStage view={still} seam={Number.isFinite(seam) ? seam : 0.5} p={urlProgress() ?? 0} dust={q.get('dust') !== '0'} />;
   return <Specimen c={c} />;
 }
 
@@ -187,9 +223,26 @@ function Specimen({ c }: { c: Content }) {
   }, []);
 
   const view: View = wide ? 'wide' : desk ? 'mid' : 'tall';
+  // the phone stills load once the page has, so the first view carries only the pair
+  const [stillsLoad, setStillsLoad] = useState(false);
+  useEffect(() => {
+    if (!clock || view !== 'tall') return;
+    let id = 0;
+    const go = () => {
+      id = window.setTimeout(() => setStillsLoad(true), 300);
+    };
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener('load', go);
+    };
+  }, [clock, view]);
   const live = desk && gl && !reduced;
   // with motion the poster never shows, the scene builds the specimen itself
   const pinned = !reduced;
+  // the five steps play with motion on, on the live scene and on phones. Anything else is the settled block.
+  const steps = !!clock && pinned && (live || view === 'tall');
   // the still pair exists for tall and mid, wide without WebGL keeps its one poster
   const stills = !live && view !== 'wide';
   // phones show the specimen clean, no layer tags or leader lines, the seam and its two tags stay
@@ -232,25 +285,32 @@ function Specimen({ c }: { c: Content }) {
   const tagLEl = useRef<SVGGElement>(null);
   const tagREl = useRef<SVGGElement>(null);
   const els = useRef<Partial<Record<LayerId, Els>>>({});
-  const ctx = useRef({ view, box, ch, metas, live, stills, wL, tags });
-  ctx.current = { view, box, ch, metas, live, stills, wL, tags };
+  const ctx = useRef({ view, box, ch, metas, live, stills, wL, tags, steps });
+  ctx.current = { view, box, ch, metas, live, stills, wL, tags, steps };
+  const stepEl = useRef<HTMLDivElement>(null);
 
+  // the headline, lede and buttons leave in the last part of step 5, and the step label follows p
   const text = (p: number) => {
-    const t = smooth(clamp01((p - 2 / 3) * 3));
+    const t = ctx.current.steps ? textGone(p) : 0;
     const el = pin.current;
     if (!el) return;
     el.style.setProperty('--h6-t', t.toFixed(4));
     el.dataset.gone = t > 0.98 ? 'yes' : 'no';
+    const lab = stepEl.current;
+    if (lab && ctx.current.steps) {
+      const on = stepAt(p);
+      lab.dataset.step = String(on + 1);
+      lab.querySelectorAll<HTMLElement>('.hv6__stepi').forEach((n, i) => {
+        n.style.opacity = labelAt(p, i).toFixed(3);
+      });
+    }
   };
   const paint = (p: number) => {
     text(p);
     const k = ctx.current;
     if (!k.box) return;
-    // the still pair follows p with a fixed camera, the one poster is a still at p 0 and the overlay holds there
-    const e = k.live || k.stills ? smooth(p) : 0;
-    const se = k.live || k.stills ? seamEase(p, !!clock) : 0;
     const ck = clock;
-    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, se, k.live, ck?.view.yaw, ck?.view.pitch);
+    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, k.live, ck?.view.yaw, ck?.view.pitch);
     const top = k.box.y + k.box.h - TAG_H;
     // beat 2 on the overlay, the seam drops, the two tags and the leaders come in
     const st = ck ? assembleAt(ck.a()) : SETTLED;
@@ -412,8 +472,7 @@ function Specimen({ c }: { c: Content }) {
     });
   }, [clock, frozen, progress]);
 
-  const p0 = progress.sample();
-  const first = box ? place(view, box, ch, metas, live || stills ? smooth(p0) : 0, live || stills ? seamEase(p0, !!clock) : 0, live) : null;
+  const first = box ? place(view, box, ch, metas, live) : null;
   const seamX = first ? first.seamX : 0;
   const slot = (id: LayerId) => (els.current[id] ??= { lead: null, line: null, dot: null, tag: null });
 
@@ -431,11 +490,11 @@ function Specimen({ c }: { c: Content }) {
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
                 {stills ? (
-                  <SeamStill view={view} progress={progress} enabled={pinned} animate={!!clock} acts={!!clock} />
+                  steps ? <PhoneStills view={view} progress={progress} animate={!!clock} load={stillsLoad} /> : <StillSeam view={view} p={0} alt="" animate={!!clock} />
                 ) : (
                   <img className="hv6__poster" data-ready={(ready || !!clock) && live ? 'yes' : 'no'} data-anim={clock && !live ? 'yes' : undefined} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
                 )}
-                {!live && clock && pinned ? <DigCanvas view={view} progress={progress} /> : null}
+                {steps && !live ? <DigCanvas view={view} progress={progress} /> : null}
                 {live && mounted ? (
                   <div className="hv6__canvas">
                     <Suspense fallback={null}>
@@ -443,6 +502,16 @@ function Specimen({ c }: { c: Content }) {
                     </Suspense>
                   </div>
                 ) : null}
+              </div>
+            ) : null}
+            {steps ? (
+              <div ref={stepEl} className="hv6__step" aria-hidden="true">
+                {x.steps.map((name, i) => (
+                  <p key={name} className="hv6__stepi mono" style={{ opacity: 0 }}>
+                    <span className="hv6__stepn">{`0${i + 1} / 05`}</span>
+                    <span className="hv6__stepw">{name}</span>
+                  </p>
+                ))}
               </div>
             ) : null}
             {box && first ? (
@@ -494,7 +563,7 @@ function Specimen({ c }: { c: Content }) {
           </div>
         </div>
       </div>
-      {pinned ? <div className="hv6__run" aria-hidden="true" /> : null}
+      {steps ? <div className="hv6__run" aria-hidden="true" /> : null}
     </section>
   );
 }

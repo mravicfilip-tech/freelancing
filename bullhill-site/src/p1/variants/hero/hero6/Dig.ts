@@ -1,4 +1,4 @@
-// Beat 4 in the live scene, dig, lay, restore (hero6/acts.ts holds the timeline). Three pieces.
+// The five steps in the live scene (hero6/acts.ts holds the timeline). Three pieces.
 //   the cut     the faces of the ground inside the trench dissolve in small cells as their points
 //               leave, and come back as the points land. A shader patch on the specimen's own
 //               materials, so at rest every material draws exactly what it drew before.
@@ -9,7 +9,7 @@
 
 import * as THREE from 'three';
 import { DUCTS, H, L, R, Y } from './geometry';
-import { COURSES, FLOOR, NEAR_END, SLIDE, TZ, courseAt, cutAt, ductOut, lightAt, sampleGround } from './acts';
+import { BED, COURSES, FLOOR, NEAR_END, SLIDE, TZ, courseAt, cutAt, ductOut, fibreAlpha, lightAt, sampleGround } from './acts';
 
 // Counts, set by the frame budget. One draw call each, a few lines of vertex work per point.
 export const GROUND_POINTS = 9000;
@@ -17,22 +17,29 @@ export const LIGHT_POINTS = 140; // per duct
 
 export type DigRig = {
   u: {
-    uDigCut: { value: THREE.Vector4 }; // sand, backfill, base, surface
+    uDigCut: { value: THREE.Vector4 }; // sand haunch, backfill, base, surface
     uDigTape: { value: number };
+    uDigBed: { value: number };
     uLightHead: { value: number };
     uLightGlow: { value: number };
   };
   ducts: (THREE.Object3D | null)[];
   fibre: THREE.Object3D | null;
   trench: THREE.Object3D | null;
+  floor: THREE.Object3D | null; // the trench floor, it rises with the bed
+  wallTape: THREE.Object3D | null; // the tape line on the trench's far wall, back only with the tape
+  fade: ((a: number) => void) | null; // the fibre strands, set by the render
 };
 
 export function makeRig(): DigRig {
   return {
-    u: { uDigCut: { value: new THREE.Vector4() }, uDigTape: { value: 0 }, uLightHead: { value: 0 }, uLightGlow: { value: 0 } },
+    u: { uDigCut: { value: new THREE.Vector4() }, uDigTape: { value: 0 }, uDigBed: { value: 0 }, uLightHead: { value: 0 }, uLightGlow: { value: 0 } },
     ducts: DUCTS.map(() => null),
     fibre: null,
     trench: null,
+    floor: null,
+    wallTape: null,
+    fade: null,
   };
 }
 
@@ -46,15 +53,21 @@ export function applyRig(rig: DigRig, p: number) {
   const c = rig.u.uDigCut.value;
   c.set(cutAt(p, 'sand'), cutAt(p, 'backfill'), cutAt(p, 'base'), cutAt(p, 'surface'));
   rig.u.uDigTape.value = cutAt(p, 'tape');
+  rig.u.uDigBed.value = cutAt(p, 'bed');
+  if (rig.wallTape) rig.wallTape.visible = rig.u.uDigTape.value < 0.35;
+  if (rig.floor) rig.floor.position.y = FLOOR + (BED - FLOOR) * (1 - rig.u.uDigBed.value);
   rig.ducts.forEach((g, i) => {
     if (g) g.position.x = DUCT_X[i] - SLIDE * ductOut(p, i);
   });
   const fi = DUCTS.findIndex((d) => d.fibre);
   if (rig.fibre) rig.fibre.position.x = -SLIDE * ductOut(p, fi);
+  const fa = fibreAlpha(p);
+  if (rig.fibre) rig.fibre.visible = fa > 0.003;
+  rig.fade?.(fa);
   const lt = lightAt(p);
   rig.u.uLightHead.value = lt.head;
   rig.u.uLightGlow.value = lt.glow;
-  if (rig.trench) rig.trench.visible = c.x + c.y + c.z + c.w + rig.u.uDigTape.value > 0;
+  if (rig.trench) rig.trench.visible = c.x + c.y + c.z + c.w + rig.u.uDigTape.value + rig.u.uDigBed.value > 0;
   return p > 0 && p < 1;
 }
 
@@ -80,12 +93,13 @@ const DIG_FRAG = /* glsl */ `
   vec3 dq = digInst ? vDigC : vDigW;
   if (abs(dq.z) < ${f(TZ)} && dq.y > ${f(FLOOR)}) {
     float y0 = ${f(FLOOR)};
-    float y1 = ${f(Y.sand)};
-    float cut = uDigCut.x;
+    float y1 = ${f(BED)};
+    float cut = uDigBed;
     if (dq.y > ${f(Y.tape - Y.tapeT / 2)} && dq.y < ${f(Y.tape + Y.tapeT / 2)}) { y0 = ${f(Y.tape - Y.tapeT / 2)}; y1 = ${f(Y.tape + Y.tapeT / 2)}; cut = uDigTape; }
     else if (dq.y >= ${f(Y.base)}) { y0 = ${f(Y.base)}; y1 = ${f(H)}; cut = uDigCut.w; }
     else if (dq.y >= ${f(Y.backfill)}) { y0 = ${f(Y.backfill)}; y1 = ${f(Y.base)}; cut = uDigCut.z; }
     else if (dq.y >= ${f(Y.sand)}) { y0 = ${f(Y.sand)}; y1 = ${f(Y.backfill)}; cut = uDigCut.y; }
+    else if (dq.y >= ${f(BED)}) { y0 = ${f(BED)}; y1 = ${f(Y.sand)}; cut = uDigCut.x; }
     if (cut > 0.0) {
       vec3 cell = digInst ? floor(vDigC * 97.0) : floor(vDigW * 42.0);
       float n = fract(sin(dot(cell, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
@@ -105,9 +119,10 @@ export function patchCut(m: THREE.Material, rig: DigRig, early = false) {
   m.onBeforeCompile = (sh) => {
     sh.uniforms.uDigCut = rig.u.uDigCut;
     sh.uniforms.uDigTape = rig.u.uDigTape;
+    sh.uniforms.uDigBed = rig.u.uDigBed;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', `#include <common>\n${DIG_COMMON}`).replace('#include <project_vertex>', `#include <project_vertex>\n${DIG_VERT}`);
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', `#include <common>\n${DIG_COMMON}\nuniform vec4 uDigCut;\nuniform float uDigTape;`)
+      .replace('#include <common>', `#include <common>\n${DIG_COMMON}\nuniform vec4 uDigCut;\nuniform float uDigTape;\nuniform float uDigBed;`)
       .replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>\n${DIG_FRAG}`);
   };
   m.customProgramCacheKey = () => (early ? 'h6cut-early' : 'h6cut');
@@ -151,6 +166,7 @@ attribute vec3 aMeta;
 uniform vec4 uLift;
 uniform vec4 uFall;
 uniform vec2 uTape;
+uniform vec2 uBed;
 uniform float uP;
 uniform float uPx;
 varying vec3 vCol;
@@ -158,8 +174,9 @@ varying float vA;
 float sm(float t) { t = clamp(t, 0.0, 1.0); return t * t * (3.0 - 2.0 * t); }
 void main() {
   float ci = aMeta.x;
-  float li = ci < 0.5 ? uLift.x : ci < 1.5 ? uLift.y : ci < 2.5 ? uTape.x : ci < 3.5 ? uLift.z : uLift.w;
-  float fa = ci < 0.5 ? uFall.x : ci < 1.5 ? uFall.y : ci < 2.5 ? uTape.y : ci < 3.5 ? uFall.z : uFall.w;
+  // course order, bed, sand, backfill, tape, base, surface
+  float li = ci < 0.5 ? uBed.x : ci < 1.5 ? uLift.x : ci < 2.5 ? uLift.y : ci < 3.5 ? uTape.x : ci < 4.5 ? uLift.z : uLift.w;
+  float fa = ci < 0.5 ? uBed.y : ci < 1.5 ? uFall.x : ci < 2.5 ? uFall.y : ci < 3.5 ? uTape.y : ci < 4.5 ? uFall.z : uFall.w;
   float d = aMeta.y * 0.4;
   float k = sm((li - d) / 0.6) * (1.0 - sm((fa - d) / 0.6));
   float w = uP * 6.283 + aMeta.z * 6.283;
@@ -235,6 +252,7 @@ export function buildDig(dpr: number) {
     uLift: { value: new THREE.Vector4() },
     uFall: { value: new THREE.Vector4() },
     uTape: { value: new THREE.Vector2() },
+    uBed: { value: new THREE.Vector2() },
     uP: { value: 0 },
     uPx: { value: 2.4 * dpr },
   };
@@ -266,17 +284,19 @@ export function buildDig(dpr: number) {
   light.frustumCulled = false;
   scene.add(light);
 
-  // set the points for p, and say whether there is anything to draw
-  const update = (p: number) => {
+  // set the points for p, and say whether there is anything to draw. Without dust the ground's points
+  // stay hidden and only the light is drawn, for the stills, where the 2D layer plays the ground.
+  const update = (p: number, dust = true) => {
     const ks = COURSES.map((c) => courseAt(p, c));
-    // COURSES is sand, backfill, tape, base, surface
-    gu.uLift.value.set(ks[0].lift, ks[1].lift, ks[3].lift, ks[4].lift);
-    gu.uFall.value.set(ks[0].fall, ks[1].fall, ks[3].fall, ks[4].fall);
-    gu.uTape.value.set(ks[2].lift, ks[2].fall);
+    // COURSES is bed, sand, backfill, tape, base, surface
+    gu.uBed.value.set(ks[0].lift, ks[0].fall);
+    gu.uLift.value.set(ks[1].lift, ks[2].lift, ks[4].lift, ks[5].lift);
+    gu.uFall.value.set(ks[1].fall, ks[2].fall, ks[4].fall, ks[5].fall);
+    gu.uTape.value.set(ks[3].lift, ks[3].fall);
     gu.uP.value = p;
     const st = lightAt(p).stream;
     lu.uStream.value = st;
-    ground.visible = ks.some((k) => k.lift > 0 && k.fall < 1);
+    ground.visible = dust && ks.some((k) => k.lift > 0 && k.fall < 1);
     light.visible = st > 0 && st < 1;
     return ground.visible || light.visible;
   };

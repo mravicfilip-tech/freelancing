@@ -278,6 +278,7 @@ function Ducts({ env, dig }: { env: THREE.Texture; dig: DigRig }) {
 // ---- fibres, thin strands out of the orange duct with a lit tip each
 // Beat 3 runs light across the fibre ends. The rig sets how lit each one is, 0 at rest, and u is its
 // place along the row, 0 to 1, so a pulse can travel through them.
+// fade(a) is how much of the strands show, 0 to 1, for the steps where the ducts are empty.
 export type FibreRig = { u: number[]; set(i: number, level: number): void };
 
 function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: DigRig }) {
@@ -333,21 +334,48 @@ function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: Dig
     const zs = parts.out.map((f) => f.tip[2]);
     const lo = Math.min(...zs);
     const hi = Math.max(...zs);
+    let alpha = 1;
+    const levels = zs.map(() => 0);
+    const paint = (i: number) => {
+      const o = own[i];
+      const level = levels[i];
+      o.mat.emissiveIntensity = 0.1 + 1.1 * level;
+      o.glow.opacity = (0.55 + 0.45 * level) * alpha;
+      const sp = sprites[i];
+      const sc = 0.05 + 0.1 * level;
+      sp?.scale.set(sc, sc, sc);
+    };
     rig.current = {
       u: zs.map((z) => (z - lo) / (hi - lo || 1)),
       set(i, level) {
-        const o = own[i];
-        o.mat.emissiveIntensity = 0.1 + 1.1 * level;
-        o.glow.opacity = 0.55 + 0.45 * level;
-        const sp = sprites[i];
-        const sc = 0.05 + 0.1 * level;
-        sp?.scale.set(sc, sc, sc);
+        levels[i] = level;
+        paint(i);
       },
+    };
+    // the register the ducts' fade goes through, so a frame at p draws the same strands every time
+    dig.fade = (a) => {
+      if (a === alpha) return;
+      alpha = a;
+      const tr = a < 1;
+      parts.tipMat.opacity = a;
+      if (parts.tipMat.transparent !== tr) {
+        parts.tipMat.transparent = tr;
+        parts.tipMat.needsUpdate = true;
+      }
+      own.forEach((o, i) => {
+        o.mat.opacity = a;
+        if (o.mat.transparent !== tr) {
+          o.mat.transparent = tr;
+          o.mat.needsUpdate = true;
+        }
+        paint(i);
+      });
     };
     return () => {
       rig.current = null;
+      dig.fade = null;
     };
-  }, [parts, own, sprites, rig]);
+  }, [parts, own, sprites, rig, dig]);
   return (
     <group ref={(g) => void (dig.fibre = g)}>
       {parts.out.map((f, i) => (
@@ -380,10 +408,10 @@ function Trench({ ground, dig }: { ground: Record<Kind, Ground>; dig: DigRig }) 
           <planeGeometry args={[L, l.y1 - l.y0]} />
         </mesh>
       ))}
-      <mesh position={[0, Y.tape, -TZ + 0.003]} material={parts.tape}>
+      <mesh ref={(m) => void (dig.wallTape = m)} position={[0, Y.tape, -TZ + 0.003]} material={parts.tape}>
         <planeGeometry args={[L, Y.tapeT]} />
       </mesh>
-      <mesh position={[0, FLOOR, 0]} rotation-x={-Math.PI / 2} material={parts.floor}>
+      <mesh ref={(m) => void (dig.floor = m)} position={[0, FLOOR, 0]} rotation-x={-Math.PI / 2} material={parts.floor}>
         <planeGeometry args={[L, TZ * 2]} />
       </mesh>
     </group>

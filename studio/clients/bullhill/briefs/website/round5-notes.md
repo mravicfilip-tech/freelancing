@@ -118,6 +118,29 @@ Refused, and why.
    rest of the elements to make this fit". So one 844px screen. Headline halves 48 to 40px, the block
    to about 85 percent clear of both halves, gaps of 24 to 40px, lede and button unchanged in size.
 
+10. Hero storyboard, more straightforward. "the storyboard on the hero animation doesn't really make
+   sense", with his list, "1. We dig 2. We set pathway 3. We set cables 4. We shoot cable lines 5. We
+   cover ground", and "correct me if im wrong". Logged REJECTED in taste.md 17:51 for dig, lay,
+   restore as built. Proposed below, his order with two facts corrected from the site's own copy,
+   "We dig now. The fibre comes later." and ducts "Empty, ready for fibre".
+
+## Hero storyboard, proposed after Filip's five steps
+
+One thing happens at a time, in BullHill's real order, and each step is named on screen in mono as the
+scroll reaches it, so a stranger reads the job without a caption. The seam sweep comes out of the
+scroll, the schematic half holds still as the plan.
+1. Dig, p 0 to 0.2. The trench opens along the duct line, asphalt, gravel and soil lift out as points
+   in their own colours and hover above the block. "01 Dig".
+2. Pathway, p 0.2 to 0.35. Sand pours onto the trench floor and settles flat, the bed the ducts lie on.
+   "02 Sand bed".
+3. Ducts, p 0.35 to 0.55. The empty ducts slide in along the sand bed, green and orange. "03 Ducts".
+   Corrected from "set cables", BullHill lays ducts, not cable.
+4. Ready for fibre, p 0.55 to 0.7. A pulse of light shoots through the ducts and out of the open
+   ends. "04 Ready for fibre". Corrected from "shoot cable lines", the fibre is blown in later by
+   the network operator, so the light shows the route is ready, not that BullHill pulls fibre.
+5. Cover, p 0.7 to 1. Backfill falls back in layers, the red warning tape is laid above the ducts,
+   base and surface close flat and restored. "05 Surface back".
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

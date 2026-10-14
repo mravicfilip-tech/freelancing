@@ -20,7 +20,7 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 12 | Who we are headline top aligned | Done, 9224651, gap back to 96px b373700 |
 | 13 | Crew placeholders on phones, "dont hide them" | Kept, nothing hidden |
 | 14 | Phone hero cramped, then "in one block" | Done, one 844px screen, 6b999fc |
-| 15 | Hero storyboard, five steps | Done, 2b8b208. Filip, the crew does blow fibre in, so step 4 becomes Fibre blown in, in build |
+| 15 | Hero storyboard, five steps | Done, 2b8b208. The crew blows fibre in, so step 4 is Fibre blown in, copy 702675d, strands in build |
 | 16 | Audience particles moving like worldquantfoundry | Done, then rebuilt 1:1, then smaller and sparser, 93ad55c |
 | 17 | Service cards, micro animations, no entry from the left | Done, version 3 with a loop, 5e0c712 |
 | 18 | Dotted wave above the FAQ animated | Done, ccc5382 |

@@ -68,7 +68,8 @@ Task format
   - [x] Process steps as three ticks, Filip's yes
   - [x] Build the headline rise and the Process beat
   - [x] Who we are gap back to 96px
-  - [ ] Build the whole site motion, two slices, above and below Process
+  - [x] Build the whole site motion, two slices, above and below Process
+  - [ ] Motion clips to Filip at 1440 and 390
   - [ ] /uireview, then Filip's ship line
 
 ## Review

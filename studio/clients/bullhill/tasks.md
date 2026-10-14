@@ -61,7 +61,7 @@ Task format
   - [ ] Notes 2 to 4 of round 5, phone header, red Send the job, phone hero after worldquantfoundry
   - [x] Work caption number at the caption size, who we are headline top aligned
   - [x] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
-  - [ ] Build the phone structure and the phone header
+  - [x] Build the phone structure and the phone header
   - [ ] Build hero 6 beats 1 to 3
   - [x] Hero scroll out redraw, dig, lay, restore, Filip's yes
   - [ ] Build the hero scroll redraw, after beats 1 to 3 merge

@@ -45,6 +45,9 @@ Task format
   - [ ] Filip picks a hero, 1 to 6, and a button style, 1 to 5
   - [x] Filip says yes to hero 6 with every default
   - [x] Build hero 6, cable through ground, briefs/website/hero6.md
+  - [x] Collect Filip's round 4 notes, five in briefs/website/round4-notes.md
+  - [ ] Build round 4, slab button versions, sharp corners, closing photo, tracking, logo, briefs/website/round4.md
+  - [ ] Hero 6 motion, the story beats first for Filip's yes
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

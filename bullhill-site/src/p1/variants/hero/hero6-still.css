@@ -1,0 +1,31 @@
+/* Hero 6 beat 4 on phones, the two stills and the seam between them. Every selector under .p1.
+ * --x is the seam as a share of the box width, set by StillSeam from p. The render still is clipped
+ * to the right of it and the schematic still to the left, so neither shows through the other's soft edges. */
+
+.p1 .h6s { position: relative; width: 100%; }
+.p1 .h6s__img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; user-select: none; }
+.p1 .h6s__img--schem { clip-path: inset(0 calc(100% - var(--x)) 0 0); will-change: clip-path; }
+.p1 .h6s__img--render { clip-path: inset(0 0 0 var(--x)); will-change: clip-path; }
+.p1 .h6s__one { display: block; width: 100%; height: auto; user-select: none; }
+
+/* the seam, a 1px line the full height, and the two tags at its foot, one each side */
+.p1 .h6s__edge { position: absolute; inset: 0; pointer-events: none; }
+.p1 .h6s__line { position: absolute; top: 0; bottom: 0; left: var(--x); width: 1px; transform: translateX(-0.5px); background: var(--bh-grey-200); opacity: 0.7; }
+.p1 .h6s__tag {
+  display: block;
+  box-sizing: border-box;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--bh-grey-200);
+  background: var(--ink);
+  color: var(--bh-grey-100);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.p1 .h6s__tag--r { position: absolute; bottom: 0; left: max(var(--x), var(--wl)); }
+/* the left tag ends on the seam, and stops at the box's left edge when the seam runs closer than its own width, and the right tag steps off with it */
+.p1 .h6s__tagbox { position: absolute; bottom: 0; left: 0; display: flex; justify-content: flex-end; width: max(var(--x), var(--wl)); }

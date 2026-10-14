@@ -108,7 +108,7 @@
 .p1 .steps { position: relative; margin: 48px 0 0; padding: 0; list-style: none; }
 .p1 .step { row-gap: 24px; padding: 32px 0 48px; border-top: 1px solid var(--hair-ink); }
 .p1 .step__media, .p1 .step__text { grid-column: 1 / -1; }
-.p1 .step__text { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+.p1 .step__text { display: flex; flex-direction: column; justify-content: center; gap: 32px; }
 .p1 .step__n { margin: 0 0 24px; color: var(--ink); }
 .p1 .step__title { margin: 0; font-size: 28px; line-height: 28px; }
 .p1 .step__bot { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }

@@ -90,6 +90,15 @@ Refused, and why.
    16px and 18px. The 48 and 56px number column stays, so the caption text does not move. No running
    builder owns `r3-work.css`, so it can go in at once on a "do this now".
 
+8. Who we are, headline on the paragraph's top line. "somehow doesn't look right here - shouldn't
+   headline be in top alignment with paragraph?", on the services intro at desktop width. From 1200,
+   `.eth__top` in `foundry.css` sets `align-items: end` with `min-height: 360px`, so the kicker and
+   headline sit on the bottom of the right column and the headline lands level with the Meet the crew
+   button. Worldquantfoundry's ethos panel, the reference, puts the kicker level with the hairline and
+   the headline's top on the paragraph's first line. Fix, `align-items: start`, the kicker on the
+   hairline, the headline's cap top on the paragraph's first line, the min height kept so nothing below
+   moves. `foundry.css` is the phone builder's now, so it goes in after that slice reports.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

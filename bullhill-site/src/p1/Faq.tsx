@@ -1,8 +1,12 @@
 import { Accordion } from 'radix-ui';
+import { useRef } from 'react';
 import type { Content } from '../shared/content';
 import { Bracket } from './Bracket';
 import { Crosshairs } from './Crew';
 import { sh, t } from './copy';
+import { Rise } from './motion/Rise';
+import { useScrollVar } from './motion/motion';
+import './motion/sections-b.css';
 
 // The bull-red down right arrow before each question.
 function Arrow() {
@@ -24,17 +28,20 @@ function Chevron() {
 
 export function Faq({ c }: { c: Content }) {
   const x = t(c);
+  // the var sits on the section, which does not move, so the panel's own transform never feeds back
+  const ref = useRef<HTMLElement>(null);
+  useScrollVar(ref, '--fp', 1, 0.55);
   return (
-    <section className="faq" aria-labelledby="faq-title">
+    <section className="faq" ref={ref} aria-labelledby="faq-title">
       <div className="g">
         <div className="faq__panel">
           <span className="faq__glow" aria-hidden="true" />
           <div className="faq__frame">
             <Crosshairs />
             <div className="faq__intro">
-              <h2 id="faq-title" className="faq__title display">
+              <Rise id="faq-title" className="faq__title display">
                 {sh(c, c.faq.title)}
-              </h2>
+              </Rise>
               <Bracket href="#contact">{x.faqCta}</Bracket>
             </div>
             <Accordion.Root type="single" collapsible className="acc">

@@ -1,10 +1,11 @@
 import { useRef, type CSSProperties } from 'react';
 import type { Audience as AudienceT, Content } from '../shared/content';
-import { PixelIcon, WaveArt, type PixelName } from './art';
+import { PixelIcon, type PixelName } from './art';
 import { Bracket } from './Bracket';
 import { sh } from './copy';
 import { Rise } from './motion/Rise';
 import { ScatterCloud } from './motion/ScatterCloud';
+import { WaveField } from './motion/WaveField';
 import { useInView } from './motion/motion';
 import './motion/sections-b.css';
 
@@ -23,7 +24,7 @@ function Block({ c, a, icons, flip, seed, row }: { c: Content; a: AudienceT; ico
   useInView(ref);
   return (
     <div className={`aud${flip ? ' aud--flip' : ''}`} ref={ref} style={{ '--r': row } as CSSProperties}>
-      <ScatterCloud className={`art aud__field${flip ? ' aud__field--r' : ''}`} seed={seed} />
+      <ScatterCloud className={`art aud__field${flip ? ' aud__field--r' : ''}`} seed={seed} mirror={flip} />
       <div className="aud__text">
         <p className="mono kicker">{a.kicker}</p>
         <Rise className="aud__title display">{sh(c, a.title)}</Rise>
@@ -53,8 +54,8 @@ export function Audiences({ c }: { c: Content }) {
       <Block c={c} a={c.audiences.operators} icons={OP_ICONS} seed={11} row={0} />
       <Block c={c} a={c.audiences.contractors} icons={CO_ICONS} flip seed={23} row={1} />
       <div className="auds__wave" aria-hidden="true">
-        <WaveArt className="art art--wave auds__wave-d" w={1440} h={380} />
-        <WaveArt className="art art--wave auds__wave-p" w={390} h={240} />
+        <WaveField className="art art--wave auds__wave-d" w={1440} h={380} />
+        <WaveField className="art art--wave auds__wave-p" w={390} h={240} />
       </div>
     </section>
   );

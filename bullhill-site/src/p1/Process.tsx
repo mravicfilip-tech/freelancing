@@ -3,8 +3,9 @@ import { useLayoutEffect, useRef } from 'react';
 import type { CSSProperties, RefObject } from 'react';
 import type { Content } from '../shared/content';
 import { Media } from '../shared/Media';
-import { CUT_EDGE, CUT_PINS, CUT_VB, RadialField, TrenchCut, type CutId } from './art';
+import { CUT_EDGE, CUT_PINS, CUT_VB, TrenchCut, type CutId } from './art';
 import { sh } from './copy';
+import { RadialCloud } from './motion/RadialCloud';
 import { Rise } from './motion/Rise';
 import { clamp01, motionOn, onScroll, useInView } from './motion/motion';
 import { tp } from './copy-process';
@@ -121,8 +122,8 @@ export function Process({ c }: { c: Content }) {
   return (
     <section id="process" className="proc" aria-labelledby="proc-title">
       <div className="proc__field" aria-hidden="true">
-        <RadialField className="art art--light proc__field-d" w={1440} h={900} inner={430} />
-        <RadialField className="art art--light proc__field-p" w={390} h={760} inner={150} />
+        <RadialCloud className="art art--light proc__field-d" w={1440} h={900} inner={430} />
+        <RadialCloud className="art art--light proc__field-p" w={390} h={760} inner={150} />
       </div>
       <div className="g">
         <div className="proc__head gc">

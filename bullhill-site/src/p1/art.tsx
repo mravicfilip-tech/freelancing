@@ -40,7 +40,7 @@ function hillHeight(x: number, z: number) {
 }
 const trenchX = (z: number) => -0.16 + 0.3 * Math.sin((z + 1) * 2.4);
 
-type Cam = { yaw: number; tilt: number; hz: number; sx: number; sy: number; cx: number; cy: number; rMax: number; rMin: number };
+export type Cam = { yaw: number; tilt: number; hz: number; sx: number; sy: number; cx: number; cy: number; rMax: number; rMin: number };
 
 function project(x: number, z: number, h: number, cam: Cam) {
   const c = Math.cos(cam.yaw);
@@ -102,79 +102,85 @@ export function HillArt({ className, variant = 'hero' }: { className?: string; v
 // ---------------------------------------------------------------------------------------------
 // A wave of terrain, long and low, for the end of the dark sections.
 
-function waveDots(w: number, h: number, nx: number, nz: number, seed: number): Dot[] {
+export type WaveNode = { x: number; z: number; jit: number };
+export type WaveDot = { x: number; y: number; r: number; o: number; t: 1 | 2 | 3; ok: boolean };
+
+// The grid of the wave, nx by nz points on the ground plane, every other row shifted half a step.
+export function waveNodes(w: number, h: number, seed = 7): WaveNode[] {
+  const nx = Math.round(w / 15);
+  const nz = Math.round(h / 13);
   const rand = rng(seed);
-  const cam: Cam = { yaw: 0.18, tilt: 0.42, hz: 1, sx: w * 0.52, sy: h * 1.2, cx: w / 2, cy: h * 0.62, rMax: 2.2, rMin: 1 };
-  const out: Dot[] = [];
+  const out: WaveNode[] = [];
   for (let j = 0; j < nz; j++) {
     const z = -1 + (2 * j) / (nz - 1);
     for (let i = 0; i < nx; i++) {
-      const x = -1.1 + (2.2 * (i + (j % 2) * 0.5)) / (nx - 1);
-      const y = 0.16 * Math.sin(x * 4.2 + z * 1.7) + 0.09 * Math.sin(x * 9.5 - z * 2.4) + 0.06 * Math.cos(z * 3.3 + x * 2) + 0.04 * (rand() - 0.5);
-      const q = project(x, z, y + 0.1 * (1 - Math.abs(x)), cam);
-      if (q.x < -10 || q.x > w + 10) continue;
-      const near = 1 - q.dn;
-      out.push({ x: q.x, y: q.y, r: 1 + 1.2 * near, o: 0.35 + 0.65 * near, t: q.dn < 0.4 ? 1 : q.dn < 0.7 ? 2 : 3 });
+      out.push({ x: -1.1 + (2.2 * (i + (j % 2) * 0.5)) / (nx - 1), z, jit: 0.04 * (rand() - 0.5) });
     }
   }
   return out;
 }
 
-const waveCache = new Map<string, Dot[]>();
-export function WaveArt({ className, w, h }: { className?: string; w: number; h: number }) {
-  const key = `${w}x${h}`;
-  let dots = waveCache.get(key);
-  if (!dots) {
-    dots = waveDots(w, h, Math.round(w / 15), Math.round(h / 13), 7);
-    waveCache.set(key, dots);
-  }
-  return (
-    <svg className={className} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      <Dots dots={dots} />
-    </svg>
-  );
+export function waveCam(w: number, h: number): Cam {
+  return { yaw: 0.18, tilt: 0.42, hz: 1, sx: w * 0.52, sy: h * 1.2, cx: w / 2, cy: h * 0.62, rMax: 2.2, rMin: 1 };
+}
+
+// One point of the wave. t is the roll phase and amp scales the swell, at 0 and 1 it is the still wave.
+export function waveDot(n: WaveNode, cam: Cam, w: number, t: number, amp: number, out: WaveDot) {
+  const { x, z } = n;
+  const y = amp * (0.16 * Math.sin(x * 4.2 + z * 1.7 - t * 0.3) + 0.09 * Math.sin(x * 9.5 - z * 2.4 - t * 0.45) + 0.06 * Math.cos(z * 3.3 + x * 2 - t * 0.2)) + n.jit;
+  const q = project(x, z, y + 0.1 * (1 - Math.abs(x)), cam);
+  const near = 1 - q.dn;
+  out.x = q.x;
+  out.y = q.y;
+  out.r = 1 + 1.2 * near;
+  out.o = 0.35 + 0.65 * near;
+  out.t = q.dn < 0.4 ? 1 : q.dn < 0.7 ? 2 : 3;
+  out.ok = q.x >= -10 && q.x <= w + 10;
 }
 
 // ---------------------------------------------------------------------------------------------
 // The radial field behind the process title, elliptical rings that grow outward.
 
-function radialDots(w: number, h: number, innerX: number): Dot[] {
-  const out: Dot[] = [];
-  const cx = w / 2;
-  const cy = h * 0.42;
-  const rings = 24;
-  const outer = Math.hypot(w, h) * 0.62;
-  for (let i = 0; i < rings; i++) {
-    const t = i / (rings - 1);
-    const rx = innerX + Math.pow(t, 1.25) * (outer - innerX);
+// One ring of the radial field. t runs 0 at the inner ring to 1 at the outer, n dots, off the angle
+// the ring starts at.
+export type Ring = { t: number; n: number; off: number };
+export const RADIAL_RINGS = 24;
+
+export function radialGeom(w: number, h: number, inner: number) {
+  return { cx: w / 2, cy: h * 0.42, inner, outer: Math.hypot(w, h) * 0.62 };
+}
+export function radialRx(g: { inner: number; outer: number }, t: number) {
+  return g.inner + Math.pow(t, 1.25) * (g.outer - g.inner);
+}
+
+export function radialRings(w: number, h: number, inner: number): Ring[] {
+  const g = radialGeom(w, h, inner);
+  const out: Ring[] = [];
+  for (let i = 0; i < RADIAL_RINGS; i++) {
+    const t = i / (RADIAL_RINGS - 1);
+    const rx = radialRx(g, t);
     const ry = rx * 0.6;
     const gap = 16 + t * 34;
-    const n = Math.max(12, Math.round((2 * Math.PI * Math.sqrt((rx * rx + ry * ry) / 2)) / gap));
-    const off = i * 0.55;
+    out.push({ t, n: Math.max(12, Math.round((2 * Math.PI * Math.sqrt((rx * rx + ry * ry) / 2)) / gap)), off: i * 0.55 });
+  }
+  return out;
+}
+
+export function radialDots(w: number, h: number, inner: number): Dot[] {
+  const g = radialGeom(w, h, inner);
+  const out: Dot[] = [];
+  for (const { t, n, off } of radialRings(w, h, inner)) {
+    const rx = radialRx(g, t);
+    const ry = rx * 0.6;
     for (let k = 0; k < n; k++) {
       const a = off + (k / n) * Math.PI * 2;
-      const x = cx + Math.cos(a) * rx;
-      const y = cy + Math.sin(a) * ry;
+      const x = g.cx + Math.cos(a) * rx;
+      const y = g.cy + Math.sin(a) * ry;
       if (x < -20 || x > w + 20 || y < -20 || y > h + 20) continue;
       out.push({ x, y, r: 0.9 + t * 2.3, o: 0.35 + 0.55 * t, t: t < 0.4 ? 3 : t < 0.7 ? 2 : 1 });
     }
   }
   return out;
-}
-
-const radialCache = new Map<string, Dot[]>();
-export function RadialField({ className, w, h, inner }: { className?: string; w: number; h: number; inner: number }) {
-  const key = `${w}x${h}x${inner}`;
-  let dots = radialCache.get(key);
-  if (!dots) {
-    dots = radialDots(w, h, inner);
-    radialCache.set(key, dots);
-  }
-  return (
-    <svg className={className} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      <Dots dots={dots} />
-    </svg>
-  );
 }
 
 // ---------------------------------------------------------------------------------------------

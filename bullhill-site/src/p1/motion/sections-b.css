@@ -23,6 +23,18 @@
 @media (min-width: 1200px) {
   .p1[data-motion='on'] .pt { position: sticky; top: calc(128px + var(--k, 0) * 16px); }
 }
+/* The moving field is cut by its box, so its inner side and its top and bottom fade out, and the big
+ * discs never end on a hard line. Motion off keeps the still field as it was. */
+.p1[data-motion='on'] .aud__field {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent), linear-gradient(to right, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent), linear-gradient(to right, #000 70%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.p1[data-motion='on'] .aud__field--r {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent), linear-gradient(to left, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent), linear-gradient(to left, #000 70%, transparent);
+}
 /* Under 1200 each row rises and fades once. On phones the rows are the text blocks, 80ms apart.
  * From 768 the cards follow their text, 80ms apart. */
 @media (max-width: 1199px) {

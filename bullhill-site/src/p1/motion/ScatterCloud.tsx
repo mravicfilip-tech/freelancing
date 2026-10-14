@@ -1,189 +1,155 @@
 import { useEffect, useRef } from 'react';
 import { rng, scatterDots } from '../art';
-import { clamp01, motionOn, onScroll } from './motion';
+import { runField, type Env } from './fieldLoop';
 
-// The audience dot field. A canvas 2D cloud of points in 3D with a perspective projection, drawn in
-// the 720 by 960 units of the old static field and fitted with the same xMidYMid slice.
-//   scroll   the camera moves forward through the cloud as the block passes the viewport, driven by
-//            onScroll. Near points grow and leave past the edges, far points drift in from the depth,
-//            and points that pass the camera wrap to the back.
-//   turn     the cloud turns about its vertical axis, one turn in three minutes.
-// Size, brightness and tone come from depth only. Nothing runs while the canvas is off screen or the
-// tab is hidden. With motion off one still frame of the old field is drawn and nothing moves.
+// The audience dot field, matched to worldquantfoundry's investors and founders field, measured
+// from 26 frames at 1440 (one per 100px of scroll). A canvas 2D cloud of points in 3D with a
+// perspective projection, in the 720 by 960 units of the old static field, fitted with the same
+// xMidYMid slice. The camera flies down the axis as the block scrolls through.
+//   far      a vortex of fine dots, about 1px, with three spiral arms, sitting small in the middle
+//   fly in   points swell as they near, from 1px to flat translucent discs of about 80px, then fade
+//            as they pass. A few points are chunkier in themselves, so big discs are a minority
+//   tunnel   after the vortex, rings of dots on a tube, twisted a little so they line up in spokes
+// Dot radius is the point's own world size over its depth. Colour is --d1 only, opaque for the
+// fine and mid dots, 50 percent for the big discs, as measured. A slow roll about the view axis,
+// one turn in three minutes. Big discs are blitted from a pre-rendered sprite so frames stay cheap.
+// With motion off one still frame of the old field is drawn and nothing moves.
 
 const VW = 720;
 const VH = 960;
-const FOCAL = 720;        // projection scale in field units
-const ZN = 0.6;           // nearest depth, points wrap to the back past it
-const LEN = 3.6;          // depth of the cloud, the back is at ZN + LEN
-const ZMID = ZN + LEN / 2;
-const ZREF = 1.5;         // depth where the cloud's ellipse fills the field
-const SIZE = 4;           // dot radius is SIZE / depth
-const TRAVEL = 2.4;       // camera travel over the block's whole pass
-const TURN = (Math.PI * 2) / 180; // radians a second
+const CX = VW / 2;
+const CY = VH * 0.48;
+const FOCAL = 640;                 // drawing units
+const ZN = 0.1;                    // a point past this depth wraps to the back
+const LEN = 28;                    // depth the cloud repeats over
+const ZMAX = ZN + LEN;
+const VORTEX = [7, 12];            // depth of the vortex at the start of the pass
+const TUBE = [16.4, 23.9];         // depth of the tunnel rings
+const RINGS = 16;
+const TRAVEL = 19;                  // camera travel over the block's whole pass
+const TURN = (Math.PI * 2) / 180;  // radians a second
 
-type Cloud = { n: number; x: Float32Array; y: Float32Array; z: Float32Array };
+type Cloud = { n: number; x: Float32Array; y: Float32Array; z: Float32Array; rho: Float32Array };
 
-function makeCloud(seed: number, n: number): Cloud {
+function makeCloud(seed: number, n: number, mirror: boolean): Cloud {
   const rand = rng(seed * 7919 + 13);
   const x = new Float32Array(n);
   const y = new Float32Array(n);
   const z = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    const a = rand() * Math.PI * 2;
-    const rr = Math.pow(rand(), 0.7); // dense in the middle, as the still field is
-    const zz = ZN + Math.pow(rand(), 0.7) * LEN; // a little more of the cloud lies far, as in the still
-    const wide = 0.55 + 0.25 * zz; // a shallow cone, so the far end still fills the field
-    x[i] = Math.cos(a) * rr * 0.5 * ZREF * wide;
-    y[i] = Math.sin(a) * rr * (VH / VW / 2) * ZREF * wide;
-    z[i] = zz;
+  const rho = new Float32Array(n);
+  const nv = Math.round(n * 0.67);
+  const per = Math.max(6, Math.round((n - nv) / RINGS));
+  const flip = mirror ? -1 : 1;
+  let i = 0;
+  for (; i < nv; i++) {
+    const t = rand();
+    const rad = 2.1 * (1 - 0.5 * t) * Math.pow(rand(), 0.6);
+    const ang = Math.floor(rand() * 3) * 2.094 + 3 * t + rad * 0.5 + (rand() - 0.5) * 0.8;
+    x[i] = Math.cos(ang) * rad * flip;
+    y[i] = Math.sin(ang) * rad;
+    z[i] = VORTEX[0] + t * (VORTEX[1] - VORTEX[0]);
+    rho[i] = 0.007 + 0.07 * Math.pow(rand(), 8);
   }
-  return { n, x, y, z };
+  for (let k = 0; k < RINGS && i < n; k++) {
+    for (let j = 0; j < per && i < n; j++, i++) {
+      const ang = (j / per) * Math.PI * 2 + k * 0.28 + (rand() - 0.5) * 0.05;
+      const rad = 1.3 * (0.97 + 0.06 * rand());
+      x[i] = Math.cos(ang) * rad * flip;
+      y[i] = Math.sin(ang) * rad;
+      z[i] = TUBE[0] + (k / (RINGS - 1)) * (TUBE[1] - TUBE[0]);
+      rho[i] = 0.015 + 0.003 * rand();
+    }
+  }
+  return { n: i, x, y, z, rho };
+}
+
+// Flat discs with a feathered edge, three sizes, in the field's own grey.
+const SPRITES = [32, 96, 256];
+const spriteCache = new Map<string, HTMLCanvasElement[]>();
+function sprites(color: string) {
+  let s = spriteCache.get(color);
+  if (s) return s;
+  s = SPRITES.map((d) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = d;
+    const g = c.getContext('2d')!;
+    const grad = g.createRadialGradient(d / 2, d / 2, 0, d / 2, d / 2, d / 2);
+    grad.addColorStop(0, color);
+    grad.addColorStop(0.94, color);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, d, d);
+    return c;
+  });
+  spriteCache.set(color, s);
+  return s;
+}
+
+// Opacity from size, measured. Fine dots dim, mid dots near opaque, big discs about half.
+function alphaOf(r: number) {
+  if (r < 1.5) return 0.55;
+  if (r < 6) return 0.55 + ((r - 1.5) / 4.5) * 0.35;
+  if (r < 8) return 0.9;
+  if (r < 24) return 0.9 - ((r - 8) / 16) * 0.4;
+  return 0.5;
 }
 
 const mod = (v: number, m: number) => ((v % m) + m) % m;
 
-export function ScatterCloud({ className, seed }: { className?: string; seed: number }) {
+export function ScatterCloud({ className, seed, mirror }: { className?: string; seed: number; mirror?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const cv = ref.current;
-    const ctx = cv?.getContext('2d');
-    if (!cv || !ctx) return;
-    const live = motionOn();
-    const cloud = live ? makeCloud(seed, window.innerWidth < 768 ? 200 : 400) : null;
-    const still = live ? null : scatterDots(VW, VH, seed);
-    const tones = ['', '', '', ''];
-    let w = 0;
-    let h = 0;
-    let dpr = 1;
-    let p = 0;
-    let angle = (seed % 7) * 0.9;
-    let last = 0;
-    let lastDraw = 0;
-    let running = false;
-    let onScreen = false;
-    let unsub: (() => void) | null = null;
-    let idle = 0;
-
-    function fit() {
-      if (!cv || !ctx) return;
-      const cs = getComputedStyle(cv);
-      for (let t = 1; t <= 3; t++) tones[t] = cs.getPropertyValue(`--d${t}`).trim() || '#7a7a7a';
-      w = cv.clientWidth;
-      h = cv.clientHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(w * dpr);
-      cv.height = Math.round(h * dpr);
-    }
-
-    function frame() {
-      if (!ctx || !w || !h) return;
-      const k = Math.max(w / VW, h / VH) * dpr;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, cv!.width, cv!.height);
-      ctx.setTransform(k, 0, 0, k, (cv!.width - VW * k) / 2, (cv!.height - VH * k) / 2);
-      if (still) {
+    if (!cv) return;
+    let cloud: Cloud | null = null;
+    let still: ReturnType<typeof scatterDots> | null = null;
+    const start = (seed % 7) * 0.9;
+    return runField(cv, VW, VH, (ctx: CanvasRenderingContext2D, env: Env) => {
+      if (!env.live) {
+        still ??= scatterDots(VW, VH, seed);
+        ctx.fillStyle = env.tones[1];
         for (const d of still) {
           ctx.globalAlpha = d.o;
-          ctx.fillStyle = tones[d.t === 'r' ? 1 : d.t];
+          ctx.fillStyle = env.tones[d.t === 'r' ? 1 : d.t];
           ctx.beginPath();
           ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.globalAlpha = 1;
         return;
       }
-      if (!cloud) return;
-      const cam = p * TRAVEL;
-      const c = Math.cos(angle);
-      const s = Math.sin(angle);
-      const m = 24;
+      cloud ??= makeCloud(seed, window.innerWidth < 768 ? 460 : 1400, !!mirror);
+      const cam = env.p * TRAVEL;
+      const ang = start + env.time * TURN;
+      const c = Math.cos(ang);
+      const s = Math.sin(ang);
+      const grey = env.tones[1];
+      const sp = sprites(grey);
+      ctx.fillStyle = grey;
+      ctx.imageSmoothingQuality = 'high';
       for (let i = 0; i < cloud.n; i++) {
-        const dz = cloud.z[i] - ZMID;
-        const px = cloud.x[i] * c - dz * s;
-        const ze = ZN + mod(ZMID + dz * c + cloud.x[i] * s - cam - ZN, LEN);
+        const ze = ZN + mod(cloud.z[i] - cam - ZN, LEN);
         const f = FOCAL / ze;
-        const sx = VW / 2 + px * f;
-        const sy = VH / 2 + cloud.y[i] * f;
-        const r = SIZE / ze;
-        if (sx < -r - m || sx > VW + r + m || sy < -r - m || sy > VH + r + m) continue;
-        const near = 1 - (ze - ZN) / LEN;
-        // dim far, bright near, and a short fade at both ends of the depth so the wrap never shows
-        const fade = Math.min(1, (ze - ZN) / 0.4, (ZN + LEN - ze) / 0.5);
-        ctx.globalAlpha = (0.3 + 0.55 * near) * fade;
-        ctx.fillStyle = tones[ze < 1.6 ? 1 : ze < 2.8 ? 2 : 3];
-        ctx.beginPath();
-        ctx.arc(sx, sy, r, 0, Math.PI * 2);
-        ctx.fill();
+        const r = cloud.rho[i] * f;
+        if (r > 120) continue;
+        const sx = CX + (cloud.x[i] * c - cloud.y[i] * s) * f;
+        const sy = CY + (cloud.x[i] * s + cloud.y[i] * c) * f;
+        if (sx < -r || sx > VW + r || sy < -r || sy > VH + r) continue;
+        // a little fade as the point passes, and in from the back
+        const a = alphaOf(r) * Math.min(1, (ZMAX - ze) / 3) * (r > 60 ? 1 - (r - 60) / 60 : 1);
+        ctx.globalAlpha = a;
+        if (r < 3.5) {
+          ctx.beginPath();
+          ctx.arc(sx, sy, Math.max(r, 0.5), 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const d = r * 2 * env.k;
+          const img = d <= 36 ? sp[0] : d <= 110 ? sp[1] : sp[2];
+          ctx.drawImage(img, sx - r, sy - r, r * 2, r * 2);
+        }
       }
-      ctx.globalAlpha = 1;
-    }
-
-    function draw(now: number) {
-      const dt = last ? Math.min(now - last, 100) : 0;
-      last = now;
-      angle += (dt / 1000) * TURN;
-      lastDraw = now;
-      frame();
-    }
-
-    function progress() {
-      const r = cv!.getBoundingClientRect();
-      p = clamp01((window.innerHeight - r.top) / (window.innerHeight + r.height));
-    }
-
-    function idleLoop(now: number) {
-      idle = requestAnimationFrame(idleLoop);
-      if (now - lastDraw >= 33) draw(now); // the turn alone redraws at 30 a second
-    }
-
-    function start() {
-      if (running) return;
-      running = true;
-      last = 0;
-      unsub = onScroll(() => {
-        progress();
-        draw(performance.now());
-      });
-      idle = requestAnimationFrame(idleLoop);
-    }
-    function stop() {
-      if (!running) return;
-      running = false;
-      unsub?.();
-      unsub = null;
-      cancelAnimationFrame(idle);
-    }
-    const sync = () => (onScreen && !document.hidden ? start() : stop());
-
-    fit();
-    let ro: ResizeObserver | null = null;
-    let io: IntersectionObserver | null = null;
-    if (live) {
-      progress();
-      io = new IntersectionObserver((es) => {
-        onScreen = es[es.length - 1].isIntersecting;
-        sync();
-      });
-      io.observe(cv);
-      document.addEventListener('visibilitychange', sync);
-    }
-    ro = new ResizeObserver(() => {
-      fit();
-      if (live) progress();
-      frame();
     });
-    ro.observe(cv);
-    frame();
-
-    return () => {
-      stop();
-      io?.disconnect();
-      ro?.disconnect();
-      document.removeEventListener('visibilitychange', sync);
-    };
-  }, [seed]);
+  }, [seed, mirror]);
 
   return <canvas ref={ref} className={className} aria-hidden="true" />;
 }

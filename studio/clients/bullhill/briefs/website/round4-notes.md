@@ -28,6 +28,10 @@ the round starts.
    - `bullhill-site/src/p1/r3-process.css` line 85, the layer list resets it to 0.
    Check the small titles, 20 to 28px, in the shots. If letters touch at minus 0.05em there, they
    take minus 0.04em, the closest step that keeps the look. Recorded in `base-override.json`.
+5. Header logo 20 percent bigger. "lets make logo 20% bigger here", on the Foundry header at 1440.
+   `bullhill-site/src/p1/foundry.css` line 216, desktop `.hd__logo img` 40px becomes 48px, and line
+   175, phone 32px becomes 38px, so phone keeps the same step up. The header height `--hd-h`, 76
+   desktop and 68 phone, still fits both, check the menu sheet logo stays 32px.
 
 ## Open questions
 

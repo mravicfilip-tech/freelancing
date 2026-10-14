@@ -63,6 +63,20 @@ frozen at commit b0bf997 and change only where Filip names them.
    - line 770 to 828 `.end`, the closing splits the screen in two halves and insets the red panel
      24px from the screen edge, not on the grid.
    - The four Underground pieces in notes 1 to 5 come in on this grid, not on their own widths.
+7. Hero 6, cable through ground, after Other Matter. Filip, "could we insipire ourselves to do
+   something similar that would represent a cable going through a ground fibric? where 50% is a
+   shematic and the other 50% is a real cable render based on this? as one variant for the hero".
+   Reference https://other-matter-ten.vercel.app/?view=grid&specimen=aerogel-skin, captured
+   14 October 2026, six live WebGL material specimens, one object each on a plain ground with a
+   mono specimen card, `OM — 001`, name, material, one line. Proposed in words, waits on Filip's yes.
+   - One block of ground cut open, the duct bundle running through it, seen at a three quarter
+     angle like a specimen. A vertical seam down the middle. Left of it the same geometry as a
+     schematic, white hairlines and dot fill, layer labels with leaders as in note 2. Right of it
+     the real render, granular soil as fine particles like Other Matter's Dust Silk, the ducts as
+     glossy plastic tubes, the fibres inside them catching light at the cut end.
+   - Foundry's black ground and red glow, the headline and buttons on the grid above or beside
+     it, a mono specimen card in Foundry type, BullHill's own wording, never Other Matter's.
+   - Built in three.js with react three fiber, as on Ekotehnika, static camera now, motion later.
 
 ## Open questions
 
@@ -76,5 +90,10 @@ frozen at commit b0bf997 and change only where Filip names them.
   same family. Waits on Filip.
 - Where the FAQ sits in Foundry. Proposed default, after the audience cards and before the
   contact form, as on Underground. Waits on Filip.
+- Hero 6 duct colours. The real ducts in BullHill's photos are green and orange, so a true render
+  brings two hues the brand palette does not have. Proposed default, keep them true to the photos,
+  since it is a render of their real material. Waits on Filip.
+- Hero 6 delivery. Proposed default, the live WebGL scene on desktop, a still rendered from the same
+  scene for phones and as the poster while it loads. Waits on Filip.
 - Scroll rows and the grid. Proposed default, the work and project rows start on the grid's left
   edge and may run off the right edge of the screen, so the next card peeks. Waits on Filip.

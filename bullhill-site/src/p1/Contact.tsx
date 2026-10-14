@@ -1,17 +1,23 @@
 import { RadioGroup } from 'radix-ui';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import type { Content } from '../shared/content';
 import { Bracket } from './Bracket';
 import { sh, t } from './copy';
+import { Rise } from './motion/Rise';
+import { useInView } from './motion/motion';
+import './motion/sections-b.css';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
 type Values = { name: string; company: string; email: string; phone: string; place: string; length: string; message: string; role: string };
 const EMPTY: Values = { name: '', company: '', email: '', phone: '', place: '', length: '', message: '', role: '' };
 const REQUIRED: (keyof Values)[] = ['name', 'email', 'phone', 'role'];
 
-function Field({ id, label, required, error, children }: { id: string; label: string; required?: boolean; error?: string; children: React.ReactNode }) {
+// Each field draws its own hairline once it enters, f is its place in a pair so a row draws 60ms apart.
+function Field({ id, label, required, error, f = 0, children }: { id: string; label: string; required?: boolean; error?: string; f?: number; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useInView(ref);
   return (
-    <div className={`fld${error ? ' fld--bad' : ''}`}>
+    <div className={`fld${error ? ' fld--bad' : ''}`} ref={ref} style={{ '--f': f } as CSSProperties}>
       <label htmlFor={id} className="mono fld__label">
         {label}
         {required && (
@@ -21,7 +27,7 @@ function Field({ id, label, required, error, children }: { id: string; label: st
           </span>
         )}
       </label>
-      {children}
+      <div className="fld__box">{children}</div>
       {error && (
         <p id={`${id}-err`} className="mono fld__err">
           <span aria-hidden="true">! </span>
@@ -67,6 +73,8 @@ function CallBlock({ c, x, className }: { c: Content; x: ReturnType<typeof t>; c
 export function Contact({ c }: { c: Content }) {
   const x = t(c);
   const F = c.form;
+  const roleRef = useRef<HTMLDivElement>(null);
+  useInView(roleRef);
   const [v, setV] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [tried, setTried] = useState(false);
@@ -101,8 +109,8 @@ export function Contact({ c }: { c: Content }) {
     window.setTimeout(() => setStatus(new URLSearchParams(window.location.search).get('form') === 'error' ? 'error' : 'success'), 800);
   };
 
-  const txt = (k: keyof Values, label: string, opts: { type?: string; required?: boolean; ph?: string; auto?: string } = {}) => (
-    <Field id={`f-${k}`} label={label} required={opts.required} error={errors[k]}>
+  const txt = (k: keyof Values, label: string, opts: { type?: string; required?: boolean; ph?: string; auto?: string; f?: number } = {}) => (
+    <Field id={`f-${k}`} label={label} required={opts.required} error={errors[k]} f={opts.f}>
       <input
         id={`f-${k}`}
         name={k}
@@ -125,9 +133,9 @@ export function Contact({ c }: { c: Content }) {
       <section id="contact" className="con gc" aria-labelledby="con-title">
         <div className="con__left">
           <p className="mono kicker">{F.kicker}</p>
-          <h2 id="con-title" className="con__title display">
+          <Rise id="con-title" className="con__title display">
             {sh(c, F.title)}
-          </h2>
+          </Rise>
           <p className="con__lede mono-body">{F.lede}</p>
           <CallBlock c={c} x={x} className="call--ph" />
 
@@ -138,7 +146,7 @@ export function Contact({ c }: { c: Content }) {
             </div>
           ) : (
             <form className="form" onSubmit={submit} noValidate>
-              <div className={`fld fld--role${errors.role ? ' fld--bad' : ''}`}>
+              <div className={`fld fld--role${errors.role ? ' fld--bad' : ''}`} ref={roleRef}>
                 <p id="role-label" className="mono fld__label">
                   {F.roleLabel}
                   <span className="fld__req" aria-hidden="true">
@@ -178,13 +186,13 @@ export function Contact({ c }: { c: Content }) {
               </div>
 
               <div className="form__grid">
-                {txt('name', F.fields.name, { required: true, auto: 'name' })}
-                {txt('company', F.fields.company, { auto: 'organization' })}
-                {txt('email', F.fields.email, { type: 'email', required: true, auto: 'email' })}
-                {txt('phone', F.fields.phone, { type: 'tel', required: true, auto: 'tel' })}
-                {txt('place', F.fields.place, { ph: F.placeholders.place })}
-                {txt('length', F.fields.length, { ph: F.placeholders.length })}
-                <Field id="f-message" label={F.fields.message}>
+                {txt('name', F.fields.name, { required: true, auto: 'name', f: 0 })}
+                {txt('company', F.fields.company, { auto: 'organization', f: 1 })}
+                {txt('email', F.fields.email, { type: 'email', required: true, auto: 'email', f: 0 })}
+                {txt('phone', F.fields.phone, { type: 'tel', required: true, auto: 'tel', f: 1 })}
+                {txt('place', F.fields.place, { ph: F.placeholders.place, f: 0 })}
+                {txt('length', F.fields.length, { ph: F.placeholders.length, f: 1 })}
+                <Field id="f-message" label={F.fields.message} f={0}>
                   <textarea id="f-message" name="message" className="in in--area" rows={3} placeholder={F.placeholders.message} value={v.message} onChange={(e) => set('message', e.target.value)} />
                 </Field>
               </div>

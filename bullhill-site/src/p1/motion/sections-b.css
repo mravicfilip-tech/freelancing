@@ -1,0 +1,86 @@
+/* Motion for Crew, Audiences, FAQ, Contact and Closing, briefs/website/site-motion-story.md.
+ * Every hidden starting state sits under .p1[data-motion='on'], so reduced motion, ?motion=off and
+ * automated shots see the settled page. Scroll variables carry their settled value as the fallback.
+ * Transform, opacity and clip-path only. Timing comes from the --m-* tokens in motion.css. */
+
+/* ---------- crew, the portrait strip drifts 48px against the scroll, the matrix reveals once ---------- */
+.p1 .crew__strip { --drift: 24px; }
+@media (max-width: 767px) {
+  .p1 .crew__strip { --drift: 12px; } /* the phone grid has 16px side padding, so the travel is 24px there */
+}
+.p1[data-motion='on'] .crew__p {
+  transform: translateX(calc((var(--cs, 0.5) - 0.5) * -2 * var(--drift)));
+  will-change: transform;
+}
+.p1[data-motion='on'] .mx__cell {
+  transition: opacity 400ms var(--m-ease) calc(var(--c, 0) * 40ms), transform 500ms var(--m-ease) calc(var(--c, 0) * 40ms);
+}
+.p1[data-motion='on'] .mx__grid[data-in='no'] .mx__cell { opacity: 0; transform: translateY(16px); }
+
+/* ---------- audiences ---------- */
+/* From 1200 the cards stack. Each card pins a little lower than the one before and the next
+ * slides over it. The text column already pins in foundry.css. */
+@media (min-width: 1200px) {
+  .p1[data-motion='on'] .pt { position: sticky; top: calc(128px + var(--k, 0) * 16px); }
+}
+/* Under 1200 each row rises and fades once. On phones the rows are the text blocks, 80ms apart.
+ * From 768 the cards follow their text, 80ms apart. */
+@media (max-width: 1199px) {
+  .p1[data-motion='on'] .aud__text,
+  .p1[data-motion='on'] .pt {
+    transition: opacity var(--m-rise) var(--m-ease), transform var(--m-rise) var(--m-ease);
+  }
+  .p1[data-motion='on'] .pt { transition-delay: calc((var(--k, 0) + 1) * var(--m-step)); }
+  .p1[data-motion='on'] .aud[data-in='no'] .aud__text,
+  .p1[data-motion='on'] .aud[data-in='no'] .pt { opacity: 0; transform: translateY(24px); }
+}
+@media (max-width: 767px) {
+  .p1[data-motion='on'] .aud__text { transition-delay: calc(var(--r, 0) * var(--m-step)); }
+}
+
+/* ---------- FAQ, the light panel rises 48px into place as it enters ---------- */
+.p1[data-motion='on'] .faq__panel {
+  transform: translateY(calc((1 - var(--fp, 1)) * 48px));
+  will-change: transform;
+}
+
+/* ---------- contact, each field's hairline draws left to right, the labels fade in with it ---------- */
+.p1 .fld__box { position: relative; }
+.p1 .fld__box > .in { display: block; }
+.p1[data-motion='on'] .fld__box .in { border-bottom-color: transparent; }
+.p1[data-motion='on'] .fld__box::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--bh-grey-600);
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--m-reveal) var(--m-ease) calc(var(--f, 0) * 60ms), background-color 150ms ease 0s;
+}
+.p1[data-motion='on'] .fld__box:hover::after,
+.p1[data-motion='on'] .fld__box:focus-within::after { background: var(--ink); }
+.p1[data-motion='on'] .fld--bad .fld__box::after { background: var(--bh-red); }
+.p1[data-motion='on'] .fld[data-in='no'] .fld__box::after { transform: scaleX(0); }
+.p1[data-motion='on'] .fld__label { transition: opacity 500ms ease calc(var(--f, 0) * 60ms); }
+.p1[data-motion='on'] .fld[data-in='no'] .fld__label { opacity: 0; }
+
+/* ---------- closing, the nav links rise out of masks, the photo unmasks upward ---------- */
+.p1[data-motion='on'] .end__lm {
+  display: block;
+  overflow: hidden;
+  padding: 4px 0 2px;
+  margin: -4px 0 -2px;
+}
+.p1[data-motion='on'] .end__li {
+  display: block;
+  transition: transform var(--m-rise) var(--m-ease) calc(var(--l, 0) * var(--m-step));
+}
+.p1[data-motion='on'] .end__nav[data-in='no'] .end__li { transform: translateY(115%); }
+.p1[data-motion='on'] .end__art .hn__ph {
+  clip-path: inset(0);
+  transition: clip-path var(--m-reveal) var(--m-ease) 120ms;
+}
+.p1[data-motion='on'] .end__art[data-in='no'] .hn__ph { clip-path: inset(100% 0 0 0); }

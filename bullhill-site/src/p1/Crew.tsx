@@ -1,9 +1,12 @@
-import type { ReactNode } from 'react';
+import { useRef, type CSSProperties, type ReactNode } from 'react';
 import type { Content } from '../shared/content';
 import { Placeholder } from '../shared/Placeholder';
 import { Bracket } from './Bracket';
 import { sh, t } from './copy';
+import { Rise } from './motion/Rise';
+import { useInView, useScrollVar } from './motion/motion';
 import './r3-crew.css';
+import './motion/sections-b.css';
 
 // Plus shaped marks at the four corners of the box they sit in. Used by the matrix cells and the FAQ frame.
 export function Crosshairs() {
@@ -66,6 +69,12 @@ function MachineIcon({ index }: { index: number }) {
 
 export function Crew({ c }: { c: Content }) {
   const x = t(c);
+  const stripRef = useRef<HTMLUListElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  // the strip drifts on the scroll, the matrix cells reveal once, 40ms apart
+  useScrollVar(stripRef, '--cs', 1, -0.1);
+  useInView(gridRef);
+  const cell = (n: number) => ({ '--c': n }) as CSSProperties;
   return (
     <section id="crew" className="crew" aria-labelledby="crew-title">
       <div className="g">
@@ -78,11 +87,11 @@ export function Crew({ c }: { c: Content }) {
 
       <div className="g crew__main">
         <p className="crew__intro mono-body">{c.crew.body}</p>
-        <h2 id="crew-title" className="crew__title display">
+        <Rise id="crew-title" className="crew__title display">
           {sh(c, c.crew.title)}
-        </h2>
+        </Rise>
 
-        <ul className="crew__strip">
+        <ul className="crew__strip" ref={stripRef}>
           {c.crew.people.map((p, i) => (
             <li key={i} className="crew__p">
               <Placeholder shot={p.shot} label={c.ui.photo} index={i + 1} className="crew__ph" brief={false} />
@@ -92,7 +101,9 @@ export function Crew({ c }: { c: Content }) {
           ))}
         </ul>
 
-        <p className="crew__title crew__title--2 display">{sh(c, x.crewLine)}</p>
+        <Rise as="p" className="crew__title crew__title--2 display">
+          {sh(c, x.crewLine)}
+        </Rise>
       </div>
 
       <div className="mx">
@@ -105,10 +116,10 @@ export function Crew({ c }: { c: Content }) {
             <Bracket href="#contact">{c.audiences.contractors.cta}</Bracket>
           </div>
 
-          <div className="mx__grid">
+          <div className="mx__grid" ref={gridRef}>
             <ul className="mx__row mx__row--stats" aria-label={c.stats.kicker}>
-              {c.stats.items.map((s) => (
-                <li key={s.label} className="mx__cell">
+              {c.stats.items.map((s, i) => (
+                <li key={s.label} className="mx__cell" style={cell(i)}>
                   <Crosshairs />
                   <span className="mx__stat display">
                     {s.value}
@@ -120,7 +131,7 @@ export function Crew({ c }: { c: Content }) {
             </ul>
             <ul className="mx__row mx__row--machines" aria-label={c.crew.machinesTitle}>
               {c.crew.machines.map((m, i) => (
-                <li key={m.type} className="mx__cell mx__cell--machine">
+                <li key={m.type} className="mx__cell mx__cell--machine" style={cell(c.stats.items.length + i)}>
                   <Crosshairs />
                   <MachineIcon index={i} />
                   <span className="mx__type">{m.type}</span>

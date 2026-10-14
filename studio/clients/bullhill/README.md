@@ -43,6 +43,7 @@ every photo slot is a placeholder that carries the brief for the shot to take (F
 
 - Brand colours are the three tokens above, from the logo files Filip sent on 14 October 2026.
 - Logo artwork is used from `brand/`, never redrawn or recoloured outside the four lockups.
+- Every page shows the full logo, the excavator mark over the wordmark. The wordmark or the mark alone never stands in for it (Filip, 14 October 2026).
 
 ## Accessibility
 

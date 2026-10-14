@@ -39,7 +39,7 @@
 .p3-head__tab { filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.3)); position: relative; display: flex; align-items: center; gap: 8px; height: 60px; flex: 1 1 auto; margin-right: 64px; padding: 0 32px 0 4px; isolation: isolate; }
 .p3-head__shape { position: absolute; inset: 0; z-index: -1; background: var(--bh-grey-975); clip-path: polygon(0 0, 100% 0, calc(100% - 32px) 100%, 0 100%); }
 .p3-head__logo { display: flex; align-items: center; height: 44px; padding: 0 8px; }
-.p3-head__logo img { height: 20px; width: auto; }
+.p3-head__logo img { height: 40px; width: auto; }
 .p3-head__nav { display: none; }
 .p3-head__tab .p3-head__lang { display: none; }
 .p3-iconbtn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: var(--bh-white); }

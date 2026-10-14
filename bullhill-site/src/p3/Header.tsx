@@ -73,7 +73,7 @@ export function Header({ c, lang, setLang, container }: Props) {
           </Dialog.Portal>
         </Dialog.Root>
         <a className="p3-head__logo" href="#top" aria-label="BullHill">
-          <Logo variant="on-dark" kind="wordmark" height={20} alt="BullHill" />
+          <Logo variant="on-dark" height={40} alt="BullHill" />
         </a>
         <nav className="p3-head__nav" aria-label={t(c, 'mainNav')}>
           {navItems.map((n) => (

@@ -33,7 +33,9 @@
       "repos": [
         "bullhill-site"
       ],
-      "previewProjects": []
+      "previewProjects": [
+        "bullhill-site"
+      ]
     }
   ]
 }

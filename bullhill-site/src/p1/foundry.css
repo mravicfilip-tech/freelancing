@@ -160,9 +160,8 @@
   top: 0;
   z-index: 10;
   margin-bottom: calc(var(--hd-h) * -1);
-  background: rgba(0, 0, 0, 0.92);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  /* opaque brand black, taste.md 18:55, a 0.92 black read as #111 over the light sections */
+  background: var(--ground);
   color: var(--bh-grey-200);
 }
 .p1 .hd__in {

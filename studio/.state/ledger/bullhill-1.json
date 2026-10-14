@@ -4,7 +4,95 @@
   "client": "bullhill",
   "trigger": "auto",
   "openedAt": "2026-10-14T20:00:03.336Z",
-  "rounds": [],
-  "findings": [],
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "d9d338e3ba0fdd9b9abea5332c22a2bafd3483f0",
+      "at": "2026-10-14T20:14:43.994Z",
+      "score": 3.8
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 2,
+      "where": "walk german-1440, /?v=1&lang=de",
+      "what": "Walk step 2 fails at 1440. After the DE click the German projects title 'Trassen, die wir gebaut haben.' was not found in body text within 2502ms. Either the Rise title does not render at desktop after a language switch, or the flow text is wrong.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "bullhill-site/src/p1/foundry.css:163, header.hd",
+      "what": "Pinned header is translucent, rgba(0,0,0,0.92) with blur(12px), so light panels show through it. The round asked for full black grounds. Expected an opaque #000 (var(--ground)).",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "foundry @390 and @1440, a.hd__link, span.bk__l (MENU, SEND THE JOB, CALL US), foundry.css:567 .pc__rows dd",
+      "what": "Working text at 12px, 30 nodes per width. Nav links, button labels and project card values are read to do the job. Floor is 14px.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "whole page, motion layer (Rise.tsx, motion/ground.ts, hero6 acts, service art loop, particle fields)",
+      "what": "Nothing the round asked for was driven. Shots, interact and walks ran with motion off under automation. Block reveals, section ground changes, hero step 4 strands and the phone menu rise are unverified. Shoot ?motion=on mid-transition frames before the card.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 2,
+      "where": "hero 6 loop, service card art loop, audience and FAQ particle fields",
+      "what": "Looping decorative motion runs longer than 5s with no pause or stop control (WCAG 2.2.2). Reduced motion is honoured but no on-page control exists. Expected a pause control, or Filip accepts it.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "foundry @1440 hero, hv6__stage",
+      "what": "unverified. The settled shot shows the hero specimen block empty at 1440, only leader lines, tags and the BH 001 card. Likely headless WebGL not painting before the poster hides. Check a wide screen with no WebGL still shows hero6-wide.webp.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "Crew.tsx:120, Audiences.tsx:39, Faq.tsx:45, Hero.tsx:18",
+      "what": "Four labels for one action that all land on #contact, Send the job, Talk about a route, Book the crew (twice) and Ask us directly. Glossary says one verb per action.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "bullhill-site/src/p1/r3-process.css:19, 64, 83",
+      "what": "Process panels sit on --bh-grey-975 #0e0f0f, not the brand black #000 the 18:55 ruling sets for dark grounds. Unverified whether Filip counts these panels as grounds.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "bullhill-site/src/p1/motion/motion.css:18-19",
+      "what": "baselint. Word box padding 0.14em, 0.06em, 0.1em and matching negative margins are off the spacing scale. Needed for the mask, a note in base-override would clear it.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "foundry @390 and @1440, a.hd__logo",
+      "what": "No hover or focus change on the header logo link. Pre-existing.",
+      "status": "open",
+      "round": 1
+    }
+  ],
   "cards": []
 }

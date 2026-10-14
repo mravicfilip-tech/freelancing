@@ -27,6 +27,16 @@
   .p1 { --pad: 32px; }
 }
 
+/* ---------- the one content grid, taste.md 2026-10-14 12:56 ----------
+ * Backgrounds, panels, glows and art may run full width. Every text block, card, photo, form and
+ * the start of every scroll row sits on this grid. --gx is the grid's left content edge measured
+ * from the screen edge, for rows that scroll full width but start on the grid. */
+.p1 { --g-max: 1600px; --g-cols: 4; --g-gap: 16px; --gx: max(var(--pad), calc((100vw - var(--g-max)) / 2 + var(--pad))); }
+@media (min-width: 768px) { .p1 { --g-cols: 8; --g-gap: 24px; } }
+@media (min-width: 1200px) { .p1 { --g-cols: 12; } }
+.p1 .g { width: 100%; max-width: var(--g-max); margin-inline: auto; padding-inline: var(--pad); }
+.p1 .gc { display: grid; grid-template-columns: repeat(var(--g-cols), minmax(0, 1fr)); column-gap: var(--g-gap); }
+
 /* ---------- type ---------- */
 .p1 .display {
   font-family: var(--f-display);

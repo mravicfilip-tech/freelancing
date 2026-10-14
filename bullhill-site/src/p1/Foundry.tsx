@@ -13,15 +13,30 @@ import { Process } from './Process';
 import { Projects } from './Projects';
 import { Services } from './Services';
 import { Work } from './Work';
+import { ButtonLab } from './variants/buttons/Lab';
+import { HERO_VARIANTS } from './variants/hero';
+import { heroVariant, lab } from './variants/params';
 
 export default function Foundry() {
   const [c, setLang] = useContent();
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const hv = heroVariant();
+  const HeroN = hv === 1 ? Hero : HERO_VARIANTS[hv];
+  if (lab() === 'buttons') {
+    return (
+      <div className="p1" id="top" ref={setRoot} lang={c.lang}>
+        <Header c={c} setLang={setLang} root={root} />
+        <main>
+          <ButtonLab c={c} />
+        </main>
+      </div>
+    );
+  }
   return (
     <div className="p1" id="top" ref={setRoot} lang={c.lang}>
       <Header c={c} setLang={setLang} root={root} />
       <main>
-        <Hero c={c} />
+        <HeroN c={c} />
         <Work c={c} />
         <Services c={c} />
         <Process c={c} />

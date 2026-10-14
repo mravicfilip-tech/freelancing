@@ -38,7 +38,10 @@ Task format
   - [x] Round 2, real photos and a work section after the hero in all three, briefs/website/round2.md
   - [x] Full logo in the Underground header
   - [x] Filip picks a pathway, Foundry, the other two frozen at b0bf997
-  - [ ] Round 3, Foundry patches from Filip's notes, briefs/website/round3-notes.md
+  - [x] Collect Filip's round 3 notes, six in briefs/website/round3-notes.md
+  - [x] Plan round 3 in one pass, briefs/website/round3.md, Filip said execute
+  - [ ] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
+  - [ ] Button lab and hero board to Filip for a pick by number
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

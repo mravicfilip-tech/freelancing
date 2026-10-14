@@ -42,9 +42,9 @@ Task format
   - [x] Plan round 3 in one pass, briefs/website/round3.md, Filip said execute
   - [x] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
   - [x] Button lab and hero board to Filip for a pick by number
-  - [ ] Filip picks a hero and a button style
+  - [ ] Filip picks a hero, 1 to 6, and a button style, 1 to 5
   - [x] Filip says yes to hero 6 with every default
-  - [ ] Build hero 6, cable through ground, briefs/website/hero6.md
+  - [x] Build hero 6, cable through ground, briefs/website/hero6.md
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

@@ -26,8 +26,9 @@ Task format
 ## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
-  - [ ] Measure frame cost on a scripted scroll, phone and desktop
-  - [ ] Fix the worst costs, measure again
+  - [x] Measure frame cost on a scripted scroll, phone and desktop
+  - [x] Fix the worst costs, measure again, c9d30f3
+  - [ ] Filip feels it on his phone and desktop
 - bullhill-3 Excavator hero, a storyboard of the work, hero 7. Plan in briefs/website/hero7-excavator.md
   - [x] Plan, storyboard and the grilled answers
   - [ ] Dig beat built at 1440, sheet to Filip

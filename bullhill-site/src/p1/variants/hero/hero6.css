@@ -16,10 +16,10 @@
     radial-gradient(70% 34% at 50% 100%, rgba(208, 11, 17, 0.45), transparent 72%),
     radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%);
 }
-/* beat 4, the stage is pinned for the run below it, 30svh on phones and 120svh from 768 */
+/* the five steps, the stage is pinned for the run below it, 100svh on phones and 200svh from 768 */
 .p1 .hv6[data-pin='yes'] .hv6__pin { position: sticky; top: 0; z-index: 0; }
-.p1 .hv6__run { height: 30svh; }
-/* headline, lede and buttons move up and fade out in the last third of p, --h6-t runs 0 to 1 */
+.p1 .hv6__run { height: 100svh; }
+/* headline, lede and buttons move up and fade out in the last part of step 5, --h6-t runs 0 to 1 */
 .p1 .hv6[data-pin='yes'] .hv6__top,
 .p1 .hv6[data-pin='yes'] .hv6__side { opacity: calc(1 - var(--h6-t, 0)); transform: translateY(calc(var(--h6-t, 0) * -32px)); will-change: opacity, transform; }
 .p1 .hv6__pin[data-gone='yes'] .hv6__top,
@@ -37,6 +37,15 @@
 .p1 .hv6__dig { position: absolute; inset: -10% 0; width: 100%; height: 120%; pointer-events: none; }
 .p1 .hv6[data-pin='yes'] .hv6__canvas { inset: -10% 0; }
 .p1 .hv6__over { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+/* the step name, Foundry's mono label, 12px. One fixed place, the top right of the stage on desktop, under
+ * the headline and clear of the specimen card, the lede and the buttons, which sit at the foot. The five
+ * names are stacked in one cell and crossfade by opacity, written from p. */
+.p1 .hv6__step { position: absolute; z-index: 10; top: 0; right: 0; display: grid; justify-items: end; pointer-events: none; }
+.p1 .hv6__stepi { grid-area: 1 / 1; display: flex; gap: 12px; margin: 0; line-height: 16px; color: var(--bh-grey-100); white-space: nowrap; will-change: opacity; }
+.p1 .hv6__stepn { color: var(--bh-grey-300); }
+/* phones, the five stills over the pair */
+.p1 .h6st { position: absolute; inset: 0; pointer-events: none; }
+.p1 .h6st__img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; opacity: 0; user-select: none; will-change: opacity; }
 .p1 .hv6__seam { stroke: var(--bh-grey-200); stroke-width: 1; stroke-opacity: 0.7; shape-rendering: crispEdges; }
 .p1 .hv6__line { stroke: var(--bh-grey-200); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .p1 .hv6__end { fill: #fff; }
@@ -53,7 +62,7 @@
 .p1 .hv6__note { margin-top: 4px; text-transform: none; letter-spacing: 0.02em; }
 
 @media (min-width: 768px) {
-  .p1 .hv6__run { height: 120svh; }
+  .p1 .hv6__run { height: 200svh; }
   .p1 .hv6__title { font-size: 56px; line-height: 56px; }
   .p1 .hv6__stage { flex: 1; aspect-ratio: auto; min-height: 280px; margin-bottom: 96px; }
   /* the text rows sit over the bottom of the stage, the specimen leaves those corners empty */
@@ -87,6 +96,8 @@
   .p1 .hv6__stage { grid-area: 1 / 1; margin-top: 0; aspect-ratio: auto; }
   .p1 .hv6__bot { grid-area: 2 / 1; margin-top: 0; padding-top: 24px; border-top: 1px solid var(--hair-paper); }
   .p1 .hv6__card { display: none; }
+  /* the name sits in the 48px under the second headline half, 16px clear of it and of the hairline */
+  .p1 .hv6__step { top: auto; right: auto; left: 0; bottom: 16px; justify-items: start; }
 }
 
 /* ---- beats 1 to 3, only under data-load run or done and data-idle, set by Hero6 from the LoadClock.

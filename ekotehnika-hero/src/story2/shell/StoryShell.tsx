@@ -6,7 +6,7 @@
 // block wipes, the scroll fill, the count up, the grid and the logos from clock.pos with no React render.
 // The Prodaja tabs run on real time once their beat is on screen, from the story clock for when.
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
-import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
+import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { SERVIS_MAP, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
@@ -17,7 +17,7 @@ import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, cl
 import { prepRise, setRise, type Rise } from './reveal';
 import { forkBackFrom, forkBackTo, forkLiftFrom, forkLiftTopPx, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
 import { SMPane } from './map/ServisMap';
-import { INTRO_SKIP, introStart } from '../scenes/sistem/intro';
+import { INTRO_SKIP, introStart, markIntroStart } from '../scenes/sistem/intro';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -71,11 +71,45 @@ const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', 
 
 const ink = (tone: Tone, dark: boolean) => (tone === 'dark' || dark ? 'dark' : 'light');
 
+// Whether this browser can draw WebGL at all. Hardware acceleration turned off, a blocked GPU or a remote desktop gives it none,
+// and three then throws on its first render, which took the whole page down to a blank white screen (a client saw it on
+// production, 14 October). The test context is let go at once.
+const HAS_GL = (() => {
+  if (typeof document === 'undefined') return false;
+  try {
+    const gl = document.createElement('canvas').getContext('webgl2') ?? document.createElement('canvas').getContext('webgl');
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+    return !!gl;
+  } catch {
+    return false;
+  }
+})();
+
+// With no WebGL, or a scene that fails as it starts, the page goes on without the scene, its text on the plain ground, and the
+// hero text plays at once instead of waiting for a first frame that never comes.
+class SceneGuard extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: !HAS_GL };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidMount() {
+    if (this.state.failed) markIntroStart(performance.now());
+  }
+  componentDidUpdate() {
+    if (this.state.failed) markIntroStart(performance.now());
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 function mountScene(Scene: ComponentType<SceneProps>, clock: SceneProps['clock']) {
   return (
-    <Suspense fallback={null}>
-      <Scene clock={clock} />
-    </Suspense>
+    <SceneGuard>
+      <Suspense fallback={null}>
+        <Scene clock={clock} />
+      </Suspense>
+    </SceneGuard>
   );
 }
 
@@ -154,6 +188,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const hf = heroRef.current;
     const grid = gridRef.current;
     const plus = stage?.querySelector<HTMLElement>('.s2-plus');
+    const sceneEl = stage?.querySelector<HTMLElement>('.s2-scene');
     if (!stage || !hf || !grid || !plus) return;
     const t0 = performance.now();
     const H = TIMELINE[0];
@@ -213,6 +248,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const settle = window.setTimeout(measure, 800);
 
     let lastTone = '';
+    let lastGround = '';
     let lastGrid = '';
     let id = 0;
 
@@ -365,6 +401,13 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         hf.dataset.toneBottom = t;
         grid.dataset.tone = t;
         plus.dataset.tone = t;
+      }
+      // with no scene drawn, no WebGL or a scene still loading, the dark span gets its black ground from the page, so its white
+      // text never sits on white
+      const ground = dark && sceneEl && !sceneEl.firstElementChild ? '#000' : '';
+      if (ground !== lastGround && sceneEl) {
+        lastGround = ground;
+        sceneEl.style.background = ground;
       }
       id = requestAnimationFrame(loop);
     };

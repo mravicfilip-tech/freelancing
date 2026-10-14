@@ -65,6 +65,11 @@
   inset: 0;
 }
 
+/* a dark still with no scene drawn, no WebGL or one still loading, keeps its black ground, see SceneGuard in StoryShell */
+.s2-still[data-ink='dark'] > .s2-scene:empty {
+  background: #000;
+}
+
 /* one layer per hold beat, over the scene and the grid, under the shared frame */
 .s2-layer {
   position: absolute;

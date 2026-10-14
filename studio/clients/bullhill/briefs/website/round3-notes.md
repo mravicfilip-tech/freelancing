@@ -35,6 +35,13 @@ frozen at commit b0bf997 and change only where Filip names them.
    1440. In Foundry, photo and text sit side by side on the page grid, text block next to the
    photo and aligned to it, no empty middle. Source `.p3-steps` in `SectionsB.tsx` and
    `underground.css`.
+4. Crew and machines matrix. Bring Underground's crew and machines section into Foundry, "this
+   section too". The grey ground, the title, body and black button with the red dot on the left,
+   and on the right the hairline grid with crosshair marks where the lines meet, the four stats in
+   the top row and the four machines with a line icon, type, size and count below, the regions as a
+   mono line under the grid. Source the matrix in `SectionsB.tsx` and `.p3-matrix` in
+   `underground.css`. In Foundry it takes over the stats and the fleet rows that sit in the crew
+   section today.
 
 ## Open questions
 
@@ -43,3 +50,6 @@ frozen at commit b0bf997 and change only where Filip names them.
   list, and the list stays as its legend. Waits on Filip.
 - Whether the step rows replace Foundry's current four step columns in the process section or come
   in as their own section. Proposed default, they replace the four columns. Waits on Filip.
+- The matrix colours. Underground's grey ground is `--bh-grey-300`. Foundry's light panels are
+  `--bh-grey-200`. Proposed default, the matrix takes Foundry's light panel grey so it sits in the
+  same family. Waits on Filip.

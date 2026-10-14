@@ -22,7 +22,7 @@
   max-width: var(--g-max);
   margin: 64px auto 0;
   padding: 48px 0;
-  border-radius: 24px;
+  border-radius: 0;
   background: var(--paper);
   color: var(--ink);
 }
@@ -61,7 +61,7 @@
 
 /* ---------- FAQ, a light panel with the crosshair frame, Radix accordion on the right ---------- */
 .p1 .faq { padding: 0 0 64px; background: var(--ink); }
-.p1 .faq__panel { position: relative; padding: 12px; border-radius: 24px; background: var(--paper); color: var(--ink); overflow: hidden; }
+.p1 .faq__panel { position: relative; padding: 12px; border-radius: 0; background: var(--paper); color: var(--ink); overflow: hidden; }
 /* Soft bull-red glow along the bottom edge, fading to transparent. */
 .p1 .faq__glow {
   position: absolute;
@@ -104,7 +104,7 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 0;
   background: var(--ink);
   color: #fff;
   transition: transform 180ms ease, background-color 180ms ease;

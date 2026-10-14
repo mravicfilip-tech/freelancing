@@ -1,18 +1,27 @@
 import type { Content } from '../shared/content';
-import { DuctEnds, HillArt } from './art';
+import { DuctEnds } from './art';
+import { NotchFrame } from './variants/hero/Notch';
+import './variants/hero/hero.css';
 import { Bracket } from './Bracket';
 import { Logo } from '../shared/Logo';
 import { sh, t } from './copy';
 
 export function Closing({ c }: { c: Content }) {
   const x = t(c);
+  const doneN = c.work.items.findIndex((w) => w.photo === 'restored-lane') + 1;
+  const done = c.work.items[doneN - 1];
   return (
     <footer className="end">
       <div className="g gc end__grid">
-        <div className="end__art" aria-hidden="true">
-          <div className="end__hill" />
-          <HillArt variant="close" className="art art--close" />
-        </div>
+        {/* The page ends on finished work, the dot terrain and the glowing hill were rejected,
+            taste.md 2026-10-14 15:20. */}
+        <figure className="end__art">
+          <NotchFrame id={done.photo} lang={c.lang} sizes="(min-width: 1200px) 46vw, 92vw" focal="50% 62%" />
+          <figcaption className="end__cap mono">
+            <span className="end__n">{String(doneN).padStart(2, '0')} / {String(c.work.items.length).padStart(2, '0')}</span>
+            <span>{done.caption}</span>
+          </figcaption>
+        </figure>
         <div className="end__panel">
           <div className="end__a">
             <h2 className="end__title display">{sh(c, c.form.title)}</h2>

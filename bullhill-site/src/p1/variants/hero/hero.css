@@ -25,8 +25,8 @@
   min-height: 0;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--nh)), calc(100% - var(--nw)) calc(100% - var(--nh)), calc(100% - var(--nw) - var(--nc)) 100%, 0 100%);
 }
-.p1 .hn .hn__ph { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 8px; background: var(--bh-grey-850); }
-.p1 .hn--s .hn__ph { border-radius: 4px; }
+.p1 .hn .hn__ph { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; background: var(--bh-grey-850); }
+.p1 .hn--s .hn__ph { border-radius: 0; }
 .p1 .hn__bar {
   position: absolute;
   right: 24px;

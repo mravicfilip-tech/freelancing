@@ -342,7 +342,7 @@ export function DuctEnds({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 290 290" aria-hidden="true" focusable="false">
       {pills.map(([x, y, w], i) => (
         <g key={i}>
-          <rect x={x} y={y} width={w} height={58} rx={29} fill="#111111" />
+          <rect x={x} y={y} width={w} height={58} fill="#111111" />
           <circle cx={x + w - 29} cy={y + 29} r={13} fill="none" stroke="#3d3d3d" strokeWidth="2" />
           <circle cx={x + w - 29} cy={y + 29} r={5} fill="#3d3d3d" />
         </g>

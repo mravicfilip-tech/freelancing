@@ -15,7 +15,7 @@
   margin: 64px 0 0;
   padding: 24px 0;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 0;
   background: var(--bh-grey-975);
   color: #fff;
 }
@@ -128,12 +128,12 @@
   height: 100%;
   --ph-bg: var(--bh-black);
   --ph-fg: #fff;
-  --ph-radius: 8px;
+  --ph-radius: 0;
   --ph-pad: 16px;
   --ph-mono: var(--f-mono);
   --ph-mark-opacity: 0.1;
 }
-.p1 .pframe__ph.photo { border-radius: 8px; }
+.p1 .pframe__ph.photo { border-radius: 0; }
 .p1 .pframe .ph__brief { right: calc(var(--notch-w) + var(--notch-c) + 24px); }
 .p1 .pframe__bar { position: absolute; right: 24px; bottom: calc(8px + var(--notch-h) / 2 - 3px); width: calc(var(--notch-w) - 24px); height: 6px; background: var(--bh-grey-300); transform: skewX(-30deg); }
 .p1 .pframe__xh {

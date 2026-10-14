@@ -113,6 +113,7 @@ Refused, and why.
    halves and the block with air, the lede and Send the job sit just under the fold, and the header's
    phone button stays in view the whole time. The 30svh pin moves to the block only. The hero files
    belong to the dig, lay, restore session now, so it is built after that branch merges.
+   Filip said "yes go with 1.25 screens" at 17:17.
 
 ## Phone hero, proposed after the reference
 

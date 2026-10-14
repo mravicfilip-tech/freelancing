@@ -10,7 +10,7 @@ import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSPrope
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { SERVIS_MAP, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
-import { Grid, paintMarks, ruleMarks } from './Grid';
+import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
@@ -268,14 +268,26 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           if (!on && G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
         if (!on) continue;
-        // the servis map draws on from its own k, and the light section the fork lifts in L cuts it from below
+        // The servis map draws on from its own k. In L the fork pushes it up and out under the top row (Filip, "we're pushing up
+        // this content too and not overlaying it"). The page rides on the blade like a load, its bottom edge on the blade's top
+        // face, as a solid black sheet from the first frame of L, so the tine's shank rises behind it the way a mast stands
+        // behind its load and no steel ever crosses the type, not even before the blade comes into the frame. The sheet drops
+        // under the page grid, so the grid lines still draw over it, and it is cut at the top rule so it never crosses the top row.
         if (G.id === 'SM') {
           const kk = clamp01(k).toFixed(4);
           if (G.el.style.getPropertyValue('--k') !== kk) G.el.style.setProperty('--k', kk);
-          const lift = pos >= forkLiftFrom ? `inset(0 0 ${Math.max(0, stage.clientHeight - forkLiftTopPx(pos, stage.clientHeight)).toFixed(1)}px 0)` : '';
-          if (lift !== G.el.style.clipPath) {
-            G.el.style.clipPath = lift;
-            if (G.wrap) G.wrap.style.clipPath = lift;
+          const h = stage.clientHeight;
+          const load = pos >= forkLiftFrom;
+          const push = load ? Math.min(0, forkLiftTopPx(pos, h) - h) : 0;
+          const shift = push ? `translateY(${push.toFixed(1)}px)` : '';
+          const pane = G.el.firstElementChild as HTMLElement | null;
+          if (pane && (shift !== pane.style.transform || load !== (G.el.style.zIndex === '4'))) {
+            pane.style.transform = shift;
+            pane.style.background = load ? '#000' : '';
+            G.el.style.zIndex = load ? '4' : '';
+            if (G.wrap) G.wrap.style.transform = shift;
+            G.el.style.clipPath = load ? `inset(${RULE_TOP}px 0 0 0)` : '';
+            if (G.wrap) G.wrap.style.clipPath = load ? `inset(${RULE_TOP - push}px 0 0 0)` : '';
           }
         }
         // the text of a beat is shown whole or not at all, so there is no opacity to drive here

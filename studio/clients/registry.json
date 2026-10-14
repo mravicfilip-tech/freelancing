@@ -27,6 +27,13 @@
       "previewProjects": [
         "ekotehnika-hero"
       ]
+    },
+    {
+      "id": "bullhill",
+      "repos": [
+        "bullhill-site"
+      ],
+      "previewProjects": []
     }
   ]
 }

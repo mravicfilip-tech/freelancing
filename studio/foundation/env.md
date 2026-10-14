@@ -29,6 +29,11 @@ so the lesson outlives the context window.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.
 
+## Lint
+
+- In the freelancing repo `baselint.mjs` without `--client` reads the registry by repo name and picks
+  remittix, so a bullhill diff is checked against the wrong scale. Pass `--client <id>` every time.
+
 ## Network
 
 - The agent proxy blocks `vercel.app`, so a preview cannot be opened from inside the container. Check

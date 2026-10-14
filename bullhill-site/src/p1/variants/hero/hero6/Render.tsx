@@ -83,7 +83,8 @@ function Layers({ ground }: { ground: Record<Kind, Ground> }) {
     });
   }, [ground]);
   const top = useMemo(() => groundMat(ground.asphalt, L, W, 0.62, 1.8), [ground]);
-  const tape = useMemo(() => new THREE.MeshStandardMaterial({ color: '#d4632f', roughness: 0.55, metalness: 0 }), []);
+  // bull-red, taste.md 2026-10-14 13:36, only the ducts keep their real colours
+  const tape = useMemo(() => new THREE.MeshStandardMaterial({ color: '#d00b11', roughness: 0.55, metalness: 0 }), []);
   const shade = useMemo(() => falloff('edge'), []);
   const shadeMat = useMemo(() => new THREE.MeshBasicMaterial({ map: shade, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), [shade]);
   return (

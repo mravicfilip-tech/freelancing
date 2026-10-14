@@ -426,6 +426,7 @@ const STRATA = makeStrata(DESCENT.w, STRATA_Y);
 export function Descent() {
   return (
     <div className="p3-descent" aria-hidden="true">
+      <span className="p3-descent__hill" />
       <svg viewBox={`0 0 ${DESCENT.w} ${DESCENT.h}`} preserveAspectRatio="xMidYMin slice" focusable="false">
         <g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round">
           {STRATA.map((d, i) => (

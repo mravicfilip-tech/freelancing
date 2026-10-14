@@ -473,6 +473,35 @@ function cutTextures() {
 
 const CUT = cutTextures();
 
+// Trace stage of a part, read by r3-process.css as --s.
+const stage = (n: number) => ({ '--s': n }) as React.CSSProperties;
+
+// The block's structure lines, one entry per run of a layer, [stage, points, closed]. Split so each
+// layer draws in its turn from the surface down, ducts last. Joined, they are the same lines as one
+// outline, the top face, the front face, the right face, the two joints and the trench walls.
+type Pt = [number, number];
+const EDGES: [number, Pt[], boolean][] = [
+  [0, [[X0, Y_SLAB], [X0, Y_TOP], [X1, Y_TOP], [X1, Y_SLAB]], false],
+  [0, [[X0, Y_TOP], [X0 + DX, Y_TOP + DY], [X1 + DX, Y_TOP + DY], [X1, Y_TOP]], false],
+  [0, [[X1 + DX, Y_TOP + DY], [X1 + DX, Y_SLAB + DY]], false],
+  [0, [[X0, Y_SLAB], [X1, Y_SLAB], [X1 + DX, Y_SLAB + DY]], false],
+  [1, [[X0, Y_SLAB], [X0, Y_BASE]], false],
+  [1, [[X1, Y_SLAB], [X1, Y_BASE]], false],
+  [1, [[X1 + DX, Y_SLAB + DY], [X1 + DX, Y_BASE + DY]], false],
+  [1, [[X0, Y_BASE], [X1, Y_BASE], [X1 + DX, Y_BASE + DY]], false],
+  [2, [[X0, Y_BASE], [X0, Y_BOT]], false],
+  [2, [[X1, Y_BASE], [X1, Y_BOT]], false],
+  [2, [[X1 + DX, Y_BASE + DY], [X1 + DX, Y_BOT + DY]], false],
+  [2, [[T0, Y_BASE], [T0, Y_TRENCH]], false],
+  [2, [[T1, Y_BASE], [T1, Y_TRENCH]], false],
+  [3, [[T0, Y_TAPE0], [T1, Y_TAPE0]], false],
+  [3, [[T0, Y_TAPE1], [T1, Y_TAPE1]], false],
+  [4, [[T0, Y_SAND], [T1, Y_SAND]], false],
+  [4, [[T0, Y_TRENCH], [T1, Y_TRENCH]], false],
+  [4, [[X0, Y_BOT], [X1, Y_BOT]], false],
+  [4, [[X1 + DX, Y_BOT + DY], [X1, Y_BOT]], false],
+];
+
 export function TrenchCut({ className }: { className?: string }) {
   const earthFront = dstr(
     [
@@ -518,39 +547,58 @@ export function TrenchCut({ className }: { className?: string }) {
         </clipPath>
       </defs>
 
+      {/* Trace order. Each part carries its stage in --s, 0 surface, 1 base course, 2 backfill and the
+          earth, 3 tape, 4 sand bed and the floor, 5 ducts. .cut__d parts draw, .cut__f parts fade in
+          with their stage. The css is in r3-process.css and runs only with motion on. */}
+
       {/* native earth, hatched, front and right face */}
-      <g opacity="0.2" clipPath="url(#cut-earth)">
-        <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
-      </g>
-      <g opacity="0.2" clipPath="url(#cut-earth-side)">
-        <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
+      <g className="cut__f" style={stage(2)}>
+        <g opacity="0.2" clipPath="url(#cut-earth)">
+          <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
+        </g>
+        <g opacity="0.2" clipPath="url(#cut-earth-side)">
+          <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
+        </g>
       </g>
 
       {/* surface slab */}
-      <path d={CUT.surface} opacity="0.42" vectorEffect="non-scaling-stroke" />
+      <g className="cut__f" style={stage(0)}>
+        <path d={CUT.surface} opacity="0.42" vectorEffect="non-scaling-stroke" />
+      </g>
       {/* base course, stones */}
-      <g opacity="0.5">
-        {CUT.stones.map((s, i) => (
-          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} vectorEffect="non-scaling-stroke" />
-        ))}
+      <g className="cut__f" style={stage(1)}>
+        <g opacity="0.5">
+          {CUT.stones.map((s, i) => (
+            <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} vectorEffect="non-scaling-stroke" />
+          ))}
+        </g>
       </g>
       {/* backfill, fines */}
-      <g stroke="none" fill="currentColor" opacity="0.5">
-        {CUT.fill.map((s, i) => (
-          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} />
-        ))}
+      <g className="cut__f" style={stage(2)}>
+        <g stroke="none" fill="currentColor" opacity="0.5">
+          {CUT.fill.map((s, i) => (
+            <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} />
+          ))}
+        </g>
       </g>
       {/* sand bed, stipple */}
-      <g stroke="none" fill="currentColor" opacity="0.55">
-        {CUT.sand.map((s, i) => (
-          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r="0.7" />
-        ))}
+      <g className="cut__f" style={stage(4)}>
+        <g stroke="none" fill="currentColor" opacity="0.55">
+          {CUT.sand.map((s, i) => (
+            <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r="0.7" />
+          ))}
+        </g>
       </g>
       {/* warning tape, band with slashes */}
-      <path d={CUT.slashes} opacity="0.7" vectorEffect="non-scaling-stroke" />
+      <g className="cut__f" style={stage(3)}>
+        <path d={CUT.slashes} opacity="0.7" vectorEffect="non-scaling-stroke" />
+      </g>
 
-      {/* the block, structure lines */}
-      <g opacity="0.92">
+      {/* the block, structure lines, split by layer so each layer draws in its turn */}
+      {/* cut__whole is the outline as it was drawn before the trace, the settled page shows it, since
+          a closed rect and open runs do not antialias alike. cut__split is the same lines in runs,
+          shown instead of it only while the trace is on. */}
+      <g className="cut__whole" opacity="0.92">
         <path d={dstr([[X0, Y_TOP], [X1, Y_TOP], [X1, Y_BOT], [X0, Y_BOT]], true)} vectorEffect="non-scaling-stroke" />
         <path d={dstr([[X0, Y_TOP], [X0 + DX, Y_TOP + DY], [X1 + DX, Y_TOP + DY], [X1, Y_TOP]])} vectorEffect="non-scaling-stroke" />
         <path d={dstr([[X1 + DX, Y_TOP + DY], [X1 + DX, Y_BOT + DY], [X1, Y_BOT]])} vectorEffect="non-scaling-stroke" />
@@ -565,29 +613,42 @@ export function TrenchCut({ className }: { className?: string }) {
         {/* top of the sand bed */}
         <path d={dstr([[T0, Y_SAND], [T1, Y_SAND]])} vectorEffect="non-scaling-stroke" />
       </g>
-      {/* where the trench runs under the surface, along the top face */}
-      <g opacity="0.45" strokeDasharray="3 5">
-        <path d={dstr([[T0, Y_TOP], [T0 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
-        <path d={dstr([[T1, Y_TOP], [T1 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
+      <g className="cut__split" opacity="0.92">
+        {EDGES.map(([n, pts, close], i) => (
+          <path key={i} className="cut__d" style={stage(n)} pathLength={1} d={dstr(pts, close)} vectorEffect="non-scaling-stroke" />
+        ))}
       </g>
-      <g opacity="0.35">
-        <path d={CUT.top} vectorEffect="non-scaling-stroke" />
+      {/* where the trench runs under the surface, along the top face */}
+      <g className="cut__f" style={stage(0)}>
+        <g opacity="0.45" strokeDasharray="3 5">
+          <path d={dstr([[T0, Y_TOP], [T0 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
+          <path d={dstr([[T1, Y_TOP], [T1 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
+        </g>
+      </g>
+      <g className="cut__f" style={stage(0)}>
+        <g opacity="0.35">
+          <path d={CUT.top} vectorEffect="non-scaling-stroke" />
+        </g>
       </g>
 
       {/* ducts, ring with a wall. The one in bull-red is the duct the label names. */}
       {DUCTS.map(([cx, cy, red], i) => (
         <g key={i}>
-          <circle cx={cx} cy={cy} r={DUCT_R} style={red ? { fill: 'var(--bh-red)' } : { fill: 'var(--bh-grey-975)' }} vectorEffect="non-scaling-stroke" />
-          <circle cx={cx} cy={cy} r={DUCT_R - 4.5} opacity="0.7" vectorEffect="non-scaling-stroke" />
+          <g className="cut__f cut__f--q" style={stage(5)}>
+            <circle cx={cx} cy={cy} r={DUCT_R} stroke="none" style={red ? { fill: 'var(--bh-red)' } : { fill: 'var(--bh-grey-975)' }} />
+            <circle cx={cx} cy={cy} r={DUCT_R - 4.5} opacity="0.7" vectorEffect="non-scaling-stroke" />
+          </g>
+          <circle className="cut__d" style={stage(5)} pathLength={1} cx={cx} cy={cy} r={DUCT_R} fill="none" vectorEffect="non-scaling-stroke" />
         </g>
       ))}
 
-      {/* leader lines, level, from the label edge to the dot inside the part */}
+      {/* leader lines, level, from the label edge to the dot inside the part. --li is the layer's
+          place in the list, it sets when the line and its label arrive. */}
       <g className="cut__leads">
-        {pins.map(([id, p]) => (
-          <g key={id} className={`cut__lead cut__lead--${id}`}>
-            <path d={`M${CUT_EDGE[p.side]} ${p.ty} H${p.tx}`} vectorEffect="non-scaling-stroke" />
-            <circle cx={p.tx} cy={p.ty} r="3.5" style={{ fill: '#fff', stroke: 'var(--bh-grey-975)', strokeWidth: 1.5 }} vectorEffect="non-scaling-stroke" />
+        {pins.map(([id, p], li) => (
+          <g key={id} className={`cut__lead cut__lead--${id}`} style={{ '--li': li } as React.CSSProperties}>
+            <path className="cut__ld" pathLength={1} d={`M${CUT_EDGE[p.side]} ${p.ty} H${p.tx}`} vectorEffect="non-scaling-stroke" />
+            <circle className="cut__dot" cx={p.tx} cy={p.ty} r="3.5" style={{ fill: '#fff', stroke: 'var(--bh-grey-975)', strokeWidth: 1.5 }} vectorEffect="non-scaling-stroke" />
           </g>
         ))}
       </g>

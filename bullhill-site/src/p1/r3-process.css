@@ -111,8 +111,9 @@
 .p1 .step__text { display: flex; flex-direction: column; justify-content: center; gap: 32px; }
 .p1 .step__n { margin: 0 0 24px; color: var(--ink); }
 .p1 .step__title { margin: 0; font-size: 28px; line-height: 28px; }
-.p1 .step__bot { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
-.p1 .step__body { margin: 0; max-width: 34ch; }
+.p1 .step__ticks { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.p1 .step__tick { display: flex; align-items: center; gap: 12px; font-size: 16px; line-height: 24px; color: var(--ink); }
+.p1 .step__check { flex: none; }
 
 /* the notched photo frame of note 1, in Foundry's colours */
 .p1 .pframe { --notch-h: 32px; --notch-w: 96px; --notch-c: 32px; position: relative; isolation: isolate; padding: 8px; border: 1px solid var(--hair-ink); }
@@ -164,7 +165,7 @@
   .p1 .step[data-flip='true'] .step__text { grid-column: 1 / span 4; padding-inline-start: 0; padding-inline-end: 24px; }
   .p1 .pframe__clip { aspect-ratio: 1 / 1; }
   .p1 .step__title { font-size: 32px; line-height: 32px; }
-  .p1 .step__body { font-size: 18px; line-height: 28px; }
+  .p1 .step__tick { font-size: 18px; line-height: 28px; }
 }
 
 @media (min-width: 1200px) {
@@ -189,4 +190,69 @@
   .p1 .step[data-flip='true'] .step__text { grid-column: 1 / span 5; }
   .p1 .pframe__clip { aspect-ratio: 16 / 10; }
   .p1 .step__title { font-size: 40px; line-height: 40px; }
+}
+
+/* ---------- motion, briefs/website/site-motion-story.md, Process and Steps ----------
+ * Every hidden starting state sits under [data-motion='on'], so reduced motion, ?motion=off and
+ * automated shots see the settled page. All of it is transform, opacity, clip-path and
+ * stroke-dashoffset. */
+
+/* The trench traces itself, 1.6s from the first frame. Edges draw from the surface down, one stage
+ * every 110ms and 450ms long, ducts last, done at 1.0s. The leaders start at 0.95s, 60ms apart in
+ * list order, 350ms each, done at 1.6s, and each label fades in as its line leaves it. Dashes run
+ * on pathLength 1. --cs is the drawing's scale on screen, set by Process.tsx, and keeps the 1px
+ * stroke while the dash is measured in user units. */
+.p1[data-motion='on'] .pfig .cut__d,
+.p1[data-motion='on'] .pfig .cut__ld {
+  vector-effect: none;
+  stroke-width: calc(1px / var(--cs, 1));
+  stroke-dasharray: 1;
+  stroke-linecap: butt;
+}
+.p1[data-motion='on'] .pfig .cut__d { transition: stroke-dashoffset 450ms var(--m-ease) calc(var(--s, 0) * 110ms); }
+.p1[data-motion='on'] .pfig .cut__ld { transition: stroke-dashoffset 350ms var(--m-ease) calc(950ms + var(--li, 0) * 60ms); }
+.p1[data-motion='on'] .pfig .cut__f { transition: opacity 450ms var(--m-ease) calc(var(--s, 0) * 110ms + 100ms); }
+.p1[data-motion='on'] .pfig .cut__f--q { transition-duration: 250ms; }
+.p1[data-motion='on'] .pfig .cut__dot { transition: opacity 100ms linear calc(950ms + var(--li, 0) * 60ms + 250ms); }
+.p1[data-motion='on'] .pfig .cl,
+.p1[data-motion='on'] .pfig .cn { transition: opacity 250ms linear calc(950ms + var(--li, 0) * 60ms); }
+.p1[data-motion='on'] .pfig[data-in='no'] .cut__d,
+.p1[data-motion='on'] .pfig[data-in='no'] .cut__ld { stroke-dashoffset: 1; }
+.p1[data-motion='on'] .pfig[data-in='no'] .cut__f,
+.p1[data-motion='on'] .pfig[data-in='no'] .cut__dot,
+.p1[data-motion='on'] .pfig[data-in='no'] .cl,
+.p1[data-motion='on'] .pfig[data-in='no'] .cn { opacity: 0; }
+
+/* The layer list reads one row at a time. --lw is written per row by Process.tsx, 1 for the row at
+ * the middle of the viewport. Pale is the lightest grey of the settled ramp, so a pale row is no
+ * paler than the Surface row is now. */
+.p1[data-motion='on'] .layer { color: color-mix(in srgb, var(--ink) calc(var(--lw, 0) * 100%), var(--bh-grey-500)); }
+.p1[data-motion='on'] .layer__k,
+.p1[data-motion='on'] .layer:not(.layer--focus) .layer__note { color: color-mix(in srgb, var(--ink) calc(var(--lw, 0) * 100%), var(--bh-grey-600)); }
+
+/* Step rows. The photo unmasks upward over --m-reveal, the number and title rise after it as one
+ * block, the title does not use Rise because a card title moves with its card. */
+.p1[data-motion='on'] .step .pframe__ph { clip-path: inset(0 0 0 0); transition: clip-path var(--m-reveal) var(--m-ease); }
+.p1[data-motion='on'] .step .step__top { transition: transform var(--m-rise) var(--m-ease) 350ms, opacity var(--m-rise) var(--m-ease) 350ms; }
+.p1[data-motion='on'] .step[data-in='no'] .pframe__ph { clip-path: inset(100% 0 0 0); }
+.p1[data-motion='on'] .step[data-in='no'] .step__top { opacity: 0; transform: translateY(32px); }
+/* the ticks follow the title, 80ms apart */
+.p1[data-motion='on'] .step .step__tick { transition: transform var(--m-rise) var(--m-ease) calc(650ms + var(--k, 0) * var(--m-step)), opacity var(--m-rise) var(--m-ease) calc(650ms + var(--k, 0) * var(--m-step)); }
+.p1[data-motion='on'] .step[data-in='no'] .step__tick { opacity: 0; transform: translateY(16px); }
+
+/* the outline is drawn twice in the svg, as one whole for the settled page and in runs for the trace */
+.p1 .cut__split { display: none; }
+.p1[data-motion='on'] .cut__split { display: inline; }
+.p1[data-motion='on'] .cut__whole { display: none; }
+
+/* ---------- phones, under 768 only, Filip's restructure ----------
+ * The drawing traces with no badges, the layer list stays under it as the key in one column, and
+ * the step photos are 4 by 3. With no badges the leader lines would point at nothing, so they go
+ * too. 768 and up are unchanged. */
+@media (max-width: 767px) {
+  .p1 .cn, .p1 .cut__leads { display: none; }
+  .p1 .layer { display: block; }
+  .p1 .layer__k { display: none; }
+  .p1 .layer__note, .p1 .layer--focus .layer__note { display: flex; margin-top: 8px; }
+  .p1 .pframe__clip { aspect-ratio: 4 / 3; }
 }

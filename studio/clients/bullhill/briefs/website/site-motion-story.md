@@ -9,7 +9,8 @@ Captures from 14 October 2026 are in the scratchpad `secmo/`. Each reference was
 steps at 1440 by 900 and shot 150, 500 and 1400ms after each step, so a timed reveal shows
 half way and settled, and a scroll linked move shows the same in all three.
 
-Status. Waiting for Filip's yes on the beats.
+Status. Accepted, Filip said "go" at 16:13 on 14 October 2026. Process is in build with the headline
+rise, then Filip's yes on it, then the rest.
 
 ## Decode, worldquantfoundry.com below the hero
 
@@ -52,7 +53,7 @@ Vaulk because BullHill has the same kind of content, the trench drawing traces i
 
 | Section | Move | What moves | Runs | The one thing a stranger understands |
 |---|---|---|---|---|
-| Every headline | Lines rise out of a mask one by one, 600ms, 80ms apart, the same move as hero beat 1 | Every `.display` title | Once, as it enters | One voice from top to bottom |
+| Every headline | Lines rise out of a mask one by one, 600ms, 80ms apart, the same move as hero beat 1 | Section headlines, h1 and h2, with `Rise` from `src/p1/motion/`. Card titles move with their card | Once, as it enters | One voice from top to bottom |
 | Header | Still | Nothing | | The full logo stays, mark over wordmark |
 | Hero 6 | Beats 1 to 4 of `hero6-story.md` | | Load, idle, scroll | Plan into ground |
 | Work | The hairline and crosshairs of each notched frame draw, then the photo unmasks upward, 700ms, 80ms per card | Frames and photos | Once | Real trenches they dug |
@@ -78,7 +79,11 @@ Every case.
 - Phones at 390 get the same beats in CSS. The services cards start stacked and slide down into
   their column there.
 - Transform, opacity and clip-path only. One IntersectionObserver for the once beats, one
-  requestAnimationFrame loop writing CSS variables for the scroll beats, no new library.
+  requestAnimationFrame loop writing CSS variables for the scroll beats, no new library. Both live in
+  `src/p1/motion/motion.ts`.
+- Motion is off for reduced motion, `?motion=off` and automated shots (navigator.webdriver), so
+  regression shots and `/uireview` see the settled page. `?motion=on` forces it for motion shots.
+  Hidden starting states sit under `.p1[data-motion='on']` only.
 - The type moves share one timing, 600ms on `cubic-bezier(0.2, 0.7, 0.1, 1)`, 80ms between lines.
 
 Hardest beat, Process, because the drawing, its HTML labels and leader lines and the scrolling list

@@ -1,0 +1,79 @@
+import { Dialog } from 'radix-ui';
+import { useState } from 'react';
+import type { Content, Lang } from '../shared/content';
+import { LangSwitch } from '../shared/LangSwitch';
+import { Logo } from '../shared/Logo';
+import { PhoneIcon } from './art';
+import { Bracket } from './Bracket';
+import { t } from './copy';
+
+export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) => void; root: HTMLElement | null }) {
+  const [open, setOpen] = useState(false);
+  const x = t(c);
+  return (
+    <header className="hd">
+      <div className="hd__in">
+        <a className="hd__logo" href="#top" aria-label="BullHill">
+          <Logo variant="on-dark" height={40} />
+        </a>
+
+        <nav className="hd__nav" aria-label={x.mainNav}>
+          {c.nav.map((n) => (
+            <a key={n.id} href={`#${n.id}`} className="hd__link">
+              {n.label}
+            </a>
+          ))}
+        </nav>
+        <LangSwitch className="lang hd__lang" lang={c.lang} setLang={setLang} label={c.ui.langLabel} />
+        <Bracket className="hd__call" href={c.contact.phoneHref}>
+          {c.ui.call}
+        </Bracket>
+
+        <div className="hd__phone">
+          <Bracket square href={c.contact.phoneHref} aria-label={c.ui.call}>
+            <PhoneIcon />
+          </Bracket>
+          <Dialog.Root open={open} onOpenChange={setOpen}>
+            <Dialog.Trigger asChild>
+              <Bracket>{c.ui.menu}</Bracket>
+            </Dialog.Trigger>
+            <Dialog.Portal container={root}>
+              <Dialog.Content className="menu" aria-describedby={undefined}>
+                <Dialog.Title className="sr-only">{c.ui.menu}</Dialog.Title>
+                <div className="menu__top">
+                  <a className="hd__logo" href="#top" onClick={() => setOpen(false)} aria-label="BullHill">
+                    <Logo variant="on-dark" height={32} />
+                  </a>
+                  <Dialog.Close asChild>
+                    <Bracket>{c.ui.close}</Bracket>
+                  </Dialog.Close>
+                </div>
+                <nav className="menu__nav" aria-label={x.mainNav}>
+                  {c.nav.map((n, i) => (
+                    <a key={n.id} href={`#${n.id}`} className="menu__link" onClick={() => setOpen(false)}>
+                      <span className="menu__n">{String(i + 1).padStart(2, '0')}</span>
+                      {n.label}
+                    </a>
+                  ))}
+                </nav>
+                <div className="menu__foot">
+                  <a className="menu__contact" href={c.contact.phoneHref}>
+                    {c.contact.phone}
+                  </a>
+                  <a className="menu__contact" href={`mailto:${c.contact.email}`}>
+                    {c.contact.email}
+                  </a>
+                  <div className="menu__row">
+                    <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+                    <LangSwitch className="lang" lang={c.lang} setLang={setLang} label={c.ui.langLabel} />
+                  </div>
+                </div>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
+        </div>
+      </div>
+    </header>
+  );
+}
+

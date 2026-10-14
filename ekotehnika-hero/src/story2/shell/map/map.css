@@ -163,15 +163,21 @@
 
 /* ---- the live map in S, round 5 ---- */
 /* the figure is a size container so the map takes the largest box of its own shape that fits, centred */
+/* Between the top and the bottom rule, centred. Filip's "map is falling out, make it smaller and just center, reduce size by
+   30%", so the map stands at 70 percent of the top rule to frame foot height it had, which keeps it well inside both rules,
+   and everything in it is clipped to its own box. */
 .sm-fig-live {
+  bottom: 64px;
   container-type: size;
   place-items: center;
+  overflow: hidden;
 }
 
 .sm-live {
+  --mh: min(calc((100cqh + 64px) * 0.7), calc(100cqw * 764 / 659));
   position: relative;
-  width: min(100cqw, calc(100cqh * 659 / 764));
-  height: min(100cqh, calc(100cqw * 764 / 659));
+  width: calc(var(--mh) * 659 / 764);
+  height: var(--mh);
 }
 
 .sm-live svg {

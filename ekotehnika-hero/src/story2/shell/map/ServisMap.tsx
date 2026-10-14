@@ -56,8 +56,8 @@ export function ServisMap() {
     <div className="sm-live">
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         <defs>
-          <clipPath id="smv-box">
-            <rect width={W} height={H} />
+          <clipPath id="smv-serbia">
+            <path d={parts.outline.d} />
           </clipPath>
           {parts.roads.map((r) => (
             <mask id={`smv-m-${r.key}`} key={r.key} maskUnits="userSpaceOnUse" x={0} y={0} width={W} height={H}>
@@ -65,13 +65,15 @@ export function ServisMap() {
             </mask>
           ))}
         </defs>
-        <g clipPath="url(#smv-box)">
+        {/* the neighbours run on to the grid lines and the rules, where the figure clips them, see .sm-fig-live */}
+        <g>
           <path className="smd" d={parts.neighbours.d} fill="none" stroke="rgb(255 255 255 / 0.14)" strokeWidth={1} strokeLinejoin="round" style={win(K.neighbours[0], K.neighbours[1], parts.neighbours.len)} />
         </g>
         {/* the outer border as one line, a stroke twice the width with the fill over it, see the options file */}
         <path className="smd" d={parts.outline.d} fill="none" stroke="rgb(255 255 255 / 0.92)" strokeWidth={2} strokeLinejoin="round" style={win(K.outline[0], K.outline[1], parts.outline.len)} />
         <path d={parts.outline.d} fill="#000" />
-        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+        {/* the rivers are drawn inside Serbia only, so none ends in the air where the data stops */}
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round" clipPath="url(#smv-serbia)">
           {parts.rivers.map((r, i) => (
             <path key={i} className="smd" d={r.d} stroke={`rgb(255 255 255 / ${MAP.rivers[i].name === 'Danube' ? 0.33 : 0.22})`} strokeWidth={MAP.rivers[i].name === 'Danube' ? 1.5 : 1} style={win(K.rivers[0], K.rivers[1], r.len)} />
           ))}

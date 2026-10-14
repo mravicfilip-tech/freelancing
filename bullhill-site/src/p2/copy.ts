@@ -46,7 +46,7 @@ const en = {
   surface: { label: 'Surface', items: ['Asphalt', 'Paving', 'Gravel', 'Turf'], status: 'Restored' },
   proc: {
     cards: {
-      bars: { title: 'Share done', body: 'Every section is tracked from the first cut to the last patch.', rows: ['Trench', 'Ducts', 'Restored'] },
+      bars: { title: 'Progress per section', body: 'Every section is tracked from the first cut to the last patch.', rows: ['Trench', 'Ducts', 'Restored'] },
       check: { title: 'Ready for cable', body: 'A route is handed over only when every step is ticked.' },
       metrics: {
         title: 'Reported weekly',
@@ -131,7 +131,7 @@ const de: Copy = {
   surface: { label: 'Oberfläche', items: ['Asphalt', 'Pflaster', 'Schotter', 'Rasen'], status: 'Wiederhergestellt' },
   proc: {
     cards: {
-      bars: { title: 'Erledigter Anteil', body: 'Jeder Abschnitt wird vom ersten Schnitt bis zur letzten Flickstelle erfasst.', rows: ['Graben', 'Rohre', 'Oberfläche'] },
+      bars: { title: 'Fortschritt je Abschnitt', body: 'Jeder Abschnitt wird vom ersten Schnitt bis zur letzten Flickstelle erfasst.', rows: ['Graben', 'Rohre', 'Oberfläche'] },
       check: { title: 'Bereit für das Kabel', body: 'Eine Trasse wird erst übergeben, wenn jeder Schritt abgehakt ist.' },
       metrics: {
         title: 'Wöchentlicher Bericht',

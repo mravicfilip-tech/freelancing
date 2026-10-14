@@ -68,7 +68,8 @@ frozen at commit b0bf997 and change only where Filip names them.
    shematic and the other 50% is a real cable render based on this? as one variant for the hero".
    Reference https://other-matter-ten.vercel.app/?view=grid&specimen=aerogel-skin, captured
    14 October 2026, six live WebGL material specimens, one object each on a plain ground with a
-   mono specimen card, `OM — 001`, name, material, one line. Proposed in words, waits on Filip's yes.
+   mono specimen card, name, material, one line. Filip said yes with every default on
+   14 October 2026, "yes to hero 6, go with your defaults".
    - One block of ground cut open, the duct bundle running through it, seen at a three quarter
      angle like a specimen. A vertical seam down the middle. Left of it the same geometry as a
      schematic, white hairlines and dot fill, layer labels with leaders as in note 2. Right of it
@@ -92,8 +93,8 @@ frozen at commit b0bf997 and change only where Filip names them.
   contact form, as on Underground. Waits on Filip.
 - Hero 6 duct colours. The real ducts in BullHill's photos are green and orange, so a true render
   brings two hues the brand palette does not have. Proposed default, keep them true to the photos,
-  since it is a render of their real material. Waits on Filip.
+  since it is a render of their real material. Taken, Filip said yes.
 - Hero 6 delivery. Proposed default, the live WebGL scene on desktop, a still rendered from the same
-  scene for phones and as the poster while it loads. Waits on Filip.
+  scene for phones and as the poster while it loads. Taken, Filip said yes.
 - Scroll rows and the grid. Proposed default, the work and project rows start on the grid's left
   edge and may run off the right edge of the screen, so the next card peeks. Waits on Filip.

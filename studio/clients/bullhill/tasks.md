@@ -43,7 +43,8 @@ Task format
   - [x] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
   - [x] Button lab and hero board to Filip for a pick by number
   - [ ] Filip picks a hero and a button style
-  - [ ] Hero 6, cable through ground after Other Matter, waits on Filip's yes to the concept
+  - [x] Filip says yes to hero 6 with every default
+  - [ ] Build hero 6, cable through ground, briefs/website/hero6.md
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

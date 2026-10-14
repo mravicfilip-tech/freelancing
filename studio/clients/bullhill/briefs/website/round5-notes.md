@@ -100,6 +100,20 @@ Refused, and why.
    moves. `foundry.css` is the phone builder's now, so it goes in after that slice reports. Done on
    his "do this now", the kicker gap 12px at 1200 and up puts the cap tops within 1px.
 
+9. Phone hero needs air. "To cramped we need better spacing overall here - its fighting for air", on
+   the phone hero frames. Measured at 390 by 844, `round5-refs/phone-hero-before-air.png`. Header 0
+   to 68, first half 92 to 188, the block's box 87 to 660 behind both halves, second half 535 to 631,
+   hairline 655, lede 672 to 752, button 776 to 820, 24px to the screen's foot. Every gap is 17 to
+   24px because everything is held to one 844px screen. Worldquantfoundry's phone hero leaves about
+   125px above its first half and 170px between the second half and its hairline.
+
+   Proposed. The phone hero runs 1.25 screens, about 1056px, and the gaps go up on the 8px scale.
+   Header to first half 64. The block between the halves, 48 clear of each. Second half to hairline 64.
+   Hairline to lede 24. Lede to button 32. Button to the foot 48. The first screen then holds the two
+   halves and the block with air, the lede and Send the job sit just under the fold, and the header's
+   phone button stays in view the whole time. The 30svh pin moves to the block only. The hero files
+   belong to the dig, lay, restore session now, so it is built after that branch merges.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

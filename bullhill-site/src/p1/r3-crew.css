@@ -45,6 +45,16 @@
 .p1 .mx__rk { margin: 0; color: var(--bh-grey-700); }
 .p1 .mx__rl { margin: 0; font-size: 14px; line-height: 24px; }
 
+/* Phones, taste.md 2026-10-14 16:30. The fleet is a list of two columns, the machine and its count.
+ * The icon and the size note are display none, the stats and the regions stay. */
+@media (max-width: 767px) {
+  .p1 .mx__row--machines { grid-template-columns: minmax(0, 1fr); }
+  .p1 .mx__cell--machine { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; padding: 12px 16px; }
+  .p1 .mx__cell--machine .mx__icon { display: none; }
+  .p1 .mx__cell--machine .mx__meta { margin-top: 0; }
+  .p1 .mx__cell--machine .mx__meta span:first-child { display: none; }
+}
+
 @media (min-width: 768px) {
   .p1 .mx { margin-top: 96px; padding: 64px 0; }
   .p1 .mx__title { font-size: 32px; line-height: 32px; }

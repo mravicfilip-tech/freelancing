@@ -222,6 +222,26 @@
   .p1 .hd__phone { display: none; }
 }
 
+/* Phone header buttons, taste.md 2026-10-14 16:25. Under 768 the phone icon and MENU are ghosts, a
+ * fill of white at 6 percent, a 1px border of white at 6 percent inside the box, the label and the
+ * icon in white. MENU carries the two line burger, no arrow cell. The selectors out-rank slab.css
+ * so the button system stays as it is. The 44px targets hold. */
+.p1 .hd__burger { display: none; }
+@media (max-width: 767px) {
+  .p1 .hd__burger { display: block; flex: none; }
+  .p1.p1.p1 .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .p1.p1.p1 .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out:is(.bk--square, .bk--bare):is(:hover, .is-hover):not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+  .p1.p1.p1 .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out:is(:focus-visible, .is-focus) { outline-color: #fff; }
+}
+
 /* phone menu, a Radix Dialog */
 .p1 .menu {
   position: fixed;
@@ -563,6 +583,18 @@
   .p1 .proj__row { --cw: 420px; margin-top: 64px; }
 }
 
+/* Phones, taste.md 2026-10-14 16:30. The service cards lose their dot art and become compact rows,
+ * number, title and copy stacked, left aligned. 768 and up keeps the cards. */
+@media (max-width: 767px) {
+  .p1 .card { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 8px; padding: 24px; text-align: left; }
+  .p1 .card + .card, .p1 .card:nth-child(4) { margin-top: 0; padding: 24px; }
+  .p1 .card__art { display: none; }
+  .p1 .card__foot { display: contents; }
+  .p1 .card__n { order: -1; margin-bottom: 0; }
+  .p1 .card__title { font-size: 24px; line-height: 24px; }
+  .p1 .card__copy { max-width: 36ch; margin-inline: 0; }
+}
+
 /* ---------- crew ---------- */
 /* Round 3, the crew content sits on the one grid, so the section carries no side padding and each
  * block is a .g. The stats and the fleet became the matrix, see r3-crew.css. */
@@ -646,6 +678,20 @@
   .p1 .auds__wave-p { display: none; }
 }
 
+/* Phones, taste.md 2026-10-14 16:30. One block, each audience a row of kicker, title and the first
+ * sentence of its body. No cards, no CTA, no dot field, no wave. 768 and up keeps the blocks. */
+.p1 .aud__line { display: none; }
+@media (max-width: 767px) {
+  .p1 .auds { padding: 48px 0; }
+  .p1 .aud { display: block; padding: 0 var(--pad); }
+  .p1 .aud + .aud { margin-top: 24px; }
+  .p1 .aud__field, .p1 .aud__cards, .p1 .aud__body, .p1 .aud__text .bk, .p1 .auds__wave { display: none; }
+  .p1 .aud__line { display: block; margin: 16px 0 0; color: var(--bh-grey-300); }
+  .p1 .aud__text { padding-top: 24px; border-top: 1px solid var(--hair-paper); }
+  .p1 .aud__title { padding-bottom: 0; border-bottom: 0; font-size: 24px; line-height: 24px; }
+  .p1 .aud__text .kicker { margin-bottom: 8px; }
+}
+
 /* ---------- contact ---------- */
 .p1 .con {
   position: relative;
@@ -723,6 +769,14 @@
   .p1 .call { position: sticky; top: 112px; margin-top: 160px; }
 }
 
+/* Phones, taste.md 2026-10-14 16:30. The call block sits between the lede and the form. The copy
+ * beside the form is display none under 768, the copy above it is display none from 768. */
+.p1 .call--ph { display: none; }
+@media (max-width: 767px) {
+  .p1 .call--ph { display: block; margin-bottom: 48px; }
+  .p1 .call--dk { display: none; }
+}
+
 /* ---------- closing ---------- */
 .p1 .end {
   --d1: var(--bh-grey-400);
@@ -788,4 +842,9 @@
   .p1 .end__nav { align-self: end; }
   .p1 .end__info { align-self: end; }
   .p1 .end__base { grid-column: 1 / -1; }
+}
+
+/* Closing on phones, taste.md 2026-10-14 16:30. The big nav links are display none, the menu has them. */
+@media (max-width: 767px) {
+  .p1 .end__nav { display: none; }
 }

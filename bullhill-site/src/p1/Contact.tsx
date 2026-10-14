@@ -32,6 +32,38 @@ function Field({ id, label, required, error, children }: { id: string; label: st
   );
 }
 
+// The call block. It sits beside the form at 1200 and up, and above the form on phones, so it is
+// rendered twice and foundry.css shows one of them. The hidden copy is display none, never off screen.
+function CallBlock({ c, x, className }: { c: Content; x: ReturnType<typeof t>; className: string }) {
+  return (
+    <aside className={`call ${className}`} aria-label={c.ui.call}>
+      <p className="mono kicker">{c.ui.call}</p>
+      <a className="call__num display" href={c.contact.phoneHref}>
+        {c.contact.phone}
+      </a>
+      <ul className="call__rows">
+        <li>
+          <span className="mono call__k">{x.email}</span>
+          <a className="call__v" href={`mailto:${c.contact.email}`}>
+            {c.contact.email}
+          </a>
+        </li>
+        <li>
+          <span className="mono call__k">{c.contact.whatsapp}</span>
+          <a className="call__v" href={c.contact.whatsappHref}>
+            {c.contact.phone}
+          </a>
+        </li>
+        <li>
+          <span className="mono call__k">{x.hours}</span>
+          <span className="call__v">{c.contact.hours}</span>
+        </li>
+      </ul>
+      <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+    </aside>
+  );
+}
+
 export function Contact({ c }: { c: Content }) {
   const x = t(c);
   const F = c.form;
@@ -97,6 +129,7 @@ export function Contact({ c }: { c: Content }) {
             {sh(c, F.title)}
           </h2>
           <p className="con__lede mono-body">{F.lede}</p>
+          <CallBlock c={c} x={x} className="call--ph" />
 
           {status === 'success' ? (
             <div className="done" role="status">
@@ -179,31 +212,7 @@ export function Contact({ c }: { c: Content }) {
           )}
         </div>
 
-        <aside className="call" aria-label={c.ui.call}>
-          <p className="mono kicker">{c.ui.call}</p>
-          <a className="call__num display" href={c.contact.phoneHref}>
-            {c.contact.phone}
-          </a>
-          <ul className="call__rows">
-            <li>
-              <span className="mono call__k">{x.email}</span>
-              <a className="call__v" href={`mailto:${c.contact.email}`}>
-                {c.contact.email}
-              </a>
-            </li>
-            <li>
-              <span className="mono call__k">{c.contact.whatsapp}</span>
-              <a className="call__v" href={c.contact.whatsappHref}>
-                {c.contact.phone}
-              </a>
-            </li>
-            <li>
-              <span className="mono call__k">{x.hours}</span>
-              <span className="call__v">{c.contact.hours}</span>
-            </li>
-          </ul>
-          <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
-        </aside>
+        <CallBlock c={c} x={x} className="call--dk" />
       </section>
     </div>
   );

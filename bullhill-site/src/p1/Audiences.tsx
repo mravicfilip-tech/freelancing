@@ -7,6 +7,11 @@ const OP_ICONS: PixelName[] = ['bars', 'records', 'lead'];
 const CO_ICONS: PixelName[] = ['machine', 'check', 'bolt'];
 const TONES = ['red', 'charcoal', 'light'] as const;
 
+// The first sentence of an audience's body, the one line the phone rows carry. Existing copy only.
+function firstSentence(body: string) {
+  return body.split(/(?<=[.!?])\s+/)[0];
+}
+
 function Block({ c, a, icons, flip, seed }: { c: Content; a: AudienceT; icons: PixelName[]; flip?: boolean; seed: number }) {
   return (
     <div className={`aud${flip ? ' aud--flip' : ''}`}>
@@ -14,6 +19,7 @@ function Block({ c, a, icons, flip, seed }: { c: Content; a: AudienceT; icons: P
       <div className="aud__text">
         <p className="mono kicker">{a.kicker}</p>
         <h2 className="aud__title display">{sh(c, a.title)}</h2>
+        <p className="aud__line mono-body">{firstSentence(a.body)}</p>
         <p className="aud__body mono-body">{a.body}</p>
         <Bracket href="#contact">{a.cta}</Bracket>
       </div>

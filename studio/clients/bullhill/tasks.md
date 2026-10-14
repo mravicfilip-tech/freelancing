@@ -64,7 +64,7 @@ Task format
   - [x] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
   - [x] Build the phone structure and the phone header
   - [x] Hero scroll out redraw, dig, lay, restore, Filip's yes
-  - [ ] Build the hero scroll redraw, after beats 1 to 3 merge
+  - [x] Build the hero scroll redraw, dig, lay, restore
   - [x] Process steps as three ticks, Filip's yes
   - [x] Build the headline rise and the Process beat
   - [x] Who we are gap back to 96px

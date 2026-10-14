@@ -1,0 +1,96 @@
+/* Hero 7, the excavator. Desktop and tablet only, 768 and up, phones show hero 6 and its CSS. Every
+ * selector under .p1. The grid is .g and .gc from foundry.css. The canvas is transparent, so the red glow
+ * is the hero's own CSS background, Foundry's full black ground with bull-red radial gradients, the
+ * same as hero 6. */
+
+/* clip, never hidden, so the sticky stage still pins */
+.p1 .hv7 { background: var(--ground); overflow: clip; }
+.p1 .hv7__pin { position: sticky; top: 0; z-index: 0; background: var(--ground); }
+/* with motion the page ground is moving and the hero is transparent over it, as foundry.css does for hero 6 */
+.p1[data-motion='on'] .hv7__pin { background-color: transparent; }
+/* the red glow is its own layer, so it can breathe with opacity alone */
+.p1 .hv7__pin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 50% 54%, rgba(208, 11, 17, 0.36), transparent 74%),
+    radial-gradient(70% 34% at 50% 100%, rgba(208, 11, 17, 0.45), transparent 72%),
+    radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%);
+}
+/* the five steps, the stage is pinned for 200svh of scroll below it */
+.p1 .hv7__run { height: 200svh; }
+/* headline, lede and buttons move up and fade out in the last part of step 5, --h7-t runs 0 to 1 */
+.p1 .hv7 .hv7__top,
+.p1 .hv7 .hv7__side { opacity: calc(1 - var(--h7-t, 0)); transform: translateY(calc(var(--h7-t, 0) * -32px)); will-change: opacity, transform; }
+.p1 .hv7__pin[data-gone='yes'] .hv7__top,
+.p1 .hv7__pin[data-gone='yes'] .hv7__side { visibility: hidden; }
+.p1 .hv7__in { position: relative; display: flex; flex-direction: column; min-height: 100svh; padding-top: calc(var(--hd-h) + 24px); padding-bottom: 24px; }
+.p1 .hv7__title { grid-column: 1 / -1; font-size: 56px; line-height: 56px; color: #fff; text-wrap: balance; }
+.p1 .hv7__title .rise__part { display: block; }
+
+.p1 .hv7__stage { position: relative; flex: 1; width: 100%; min-height: 280px; margin-top: 16px; margin-bottom: 96px; }
+/* the canvas is the stage, the machine and its arm stay inside it */
+.p1 .hv7__canvas {
+  position: absolute;
+  inset: 0 0 -64px 0;
+  /* the ground fades out under the lede and the card, and into the page at both sides */
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+}
+/* the step name, Foundry's mono label, 12px. One fixed place, the top right of the stage, under the
+ * headline and clear of the card, the lede and the buttons, which sit at the foot. The five names are
+ * stacked in one cell and crossfade by opacity, written from p. */
+.p1 .hv7__step { position: absolute; z-index: 10; top: 0; right: 0; display: grid; justify-items: end; pointer-events: none; }
+.p1 .hv7__stepi { grid-area: 1 / 1; display: flex; gap: 12px; margin: 0; line-height: 16px; color: var(--bh-grey-100); white-space: nowrap; will-change: opacity; }
+.p1 .hv7__stepn { color: var(--bh-grey-300); }
+
+/* the text rows sit over the bottom of the stage, the route leaves those corners empty */
+.p1 .hv7__bot { position: absolute; left: var(--pad); right: var(--pad); bottom: 24px; align-items: end; row-gap: 24px; pointer-events: none; }
+.p1 .hv7__bot > * { pointer-events: auto; }
+.p1 .hv7__side { grid-column: 1 / span 5; }
+.p1 .hv7__lede { max-width: 44ch; color: var(--bh-grey-300); }
+.p1 .hv7__card { grid-column: 6 / -1; justify-self: end; width: 100%; max-width: 320px; padding-top: 12px; border-top: 1px solid var(--hair-paper); color: var(--bh-grey-300); }
+.p1 .hv7__card p { margin: 0; }
+.p1 .hv7__code { color: var(--bh-grey-400); }
+.p1 .hv7__name { margin-top: 4px; color: #fff; }
+.p1 .hv7__note { margin-top: 4px; text-transform: none; letter-spacing: 0.02em; }
+
+@media (min-width: 1200px) {
+  .p1 .hv7__title { font-size: 64px; line-height: 64px; }
+  .p1 .hv7__stage { min-height: 320px; margin-bottom: 64px; }
+  .p1 .hv7__card { grid-column: 10 / -1; max-width: none; }
+}
+
+/* ---- the load, only under data-load run or done and data-idle, set by Hero7. The tokens are the shared
+ * ones in motion/motion.css. --h6-fz is the time ?t= froze the load at, paused by --h6-ps, and a
+ * negative animation delay is how a CSS animation is held at that time. */
+
+/* the buttons rise after the lede's second line, --h6-last is the headline's last line index */
+@keyframes h7-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.p1 .hv7[data-load='run'] .hv__cta {
+  animation: h7-rise var(--m-rise) var(--m-ease) backwards;
+  animation-play-state: var(--h6-ps, running);
+  animation-delay: calc((var(--h6-last, 1) + 2) * var(--m-bstep) + var(--m-bcover) - var(--h6-fz, 0ms));
+}
+
+/* the red glow breathes while the hero is on screen and the page is loaded */
+@keyframes h7-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.p1 .hv7__pin[data-idle='run']::before,
+.p1 .hv7__pin[data-idle='pause']::before,
+.p1 .hv7__pin[data-idle='frozen']::before {
+  animation: h7-breathe 8s ease-in-out infinite;
+  animation-delay: var(--h6-bd, 0ms);
+  will-change: opacity;
+}
+.p1 .hv7__pin[data-idle='pause']::before,
+.p1 .hv7__pin[data-idle='frozen']::before { animation-play-state: paused; }
